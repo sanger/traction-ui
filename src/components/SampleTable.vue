@@ -2,7 +2,7 @@
   <div class="sample-table">
     
     <table>
-      <tr v-for="sample in samples">
+      <tr v-for="sample in samples" v-bind:key="sample.name">
         <td>{{ sample.name }}</td> 
       </tr>
     </table>

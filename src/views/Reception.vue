@@ -1,12 +1,12 @@
 <template>
   <div class="reception">
-    <sample-table></sample-table>
+    <sample-table v-bind:samples="samples" ></sample-table>
   </div>
 </template>
 
 <script>
 
-import samples from '@/../tests/data/samples.json'
+import samples from '@/../tests/data/samples'
 import SampleTable from '@/components/SampleTable'
 
 export default {
