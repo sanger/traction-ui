@@ -11,27 +11,20 @@ describe('Reception.vue', () => {
   let cmp, reception
 
   beforeEach(() => {
-    // Request.prototype.all = jest.fn(() => Promise.resolve(true))
-    // await flushPromises()
-    // cmp = mount(Reception, {})
-    // reception = cmp.vm
+    Request.all = jest.fn(() => Promise.resolve({ data: samples}))
   })
 
-  xit('will have a name', () => {
-    expect(cmp.name()).toEqual('Reception')
-  })
-
-  it('will have some samples', async () => {
-    // Request.prototype.all = jest.fn(() => Promise.resolve(true))
-    // await flushPromises()
+  it('will have some samples',  async() => {
     cmp = mount(Reception, {})
     reception = cmp.vm
-    reception.getSamples()
-    expect(true).toBeTruthy()
-    // expect(reception.samples.length).toEqual(Request.all.length)
+    await flushPromises()
+    expect(reception.samples.length).toEqual(samples.length)
   })
   
-  xit('will have a sample table', () => {
+  it('will have a sample table', async () => {
+    cmp = mount(Reception, {})
+    reception = cmp.vm
+    await flushPromises()
     expect(reception.$children.length).toBe(1)
     expect(cmp.contains('.sample-table')).toBe(true)
   })

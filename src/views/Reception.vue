@@ -1,6 +1,6 @@
 <template>
   <div class="reception">
-    <!-- <sample-table v-bind:samples="samples" ></sample-table> -->
+    <sample-table v-bind:samples="samples" ></sample-table>
   </div>
 </template>
 
@@ -14,22 +14,13 @@ export default {
 
   data () {
     return {
-      samples: {}
+      samples: []
     }
   },
-  mounted () {
-    // this.samples = Request.where({ type: 'long_read', state: 'pending'})
-    // let self = this
-    // Request.all().then(response => {
-    //   this.samples = response.data
-    // })
-  },
-  methods: {
-    getSamples () {
-      Request.all().then(response => {
-        this.samples = response.data
-      })
-    }
+  created () {
+    Request.all().then(response => {
+      this.samples = response.data
+    })
   },
   components: {
     SampleTable

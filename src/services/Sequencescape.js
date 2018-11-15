@@ -11,9 +11,9 @@ const ApplicationRecord = JSORMBase.extend({
 })
 
 const Request = ApplicationRecord.extend({
-  // static: {
-  //   jsonapiType: "requests"
-  // },
+  static: {
+    jsonapiType: "requests"
+  },
   attrs: {
     id: attr(),
     name: attr()
