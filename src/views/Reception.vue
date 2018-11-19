@@ -8,6 +8,7 @@
 
 import Request from '@/services/Sequencescape'
 import SampleTable from '@/components/SampleTable'
+import axios from 'axios'
 
 export default {
   name: 'Reception',
@@ -17,10 +18,17 @@ export default {
       samples: []
     }
   },
-  created () {
-    Request.all().then(response => {
-      this.samples = response.data
-    })
+  created() {
+    this.getSamples()
+  },
+  methods: {
+    getSamples() {
+      let self = this
+      axios.get('http://localhost:3000/api/v2/requests')
+        .then(function (response) {
+          self.samples = response.data.data.attributes.requests
+        })
+    }
   },
   components: {
     SampleTable

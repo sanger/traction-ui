@@ -1,9 +1,10 @@
 <template>
   <div class="sample-table">
-    
+
     <table>
       <tr v-for="sample in samples" v-bind:key="sample.name">
-        <td>{{ sample.name }}</td> 
+        <td>{{ sample.id }}</td> 
+        <td>{{ sample.name }}</td>
       </tr>
     </table>
   </div>
