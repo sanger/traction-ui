@@ -15,7 +15,12 @@ server.listen(3000, () => {
 router.render = (req, res) => {
   res.setHeader('Accept', 'application/vnd.api+json')
   res.setHeader('Content-Type', 'application/vnd.api+json')
+
   res.jsonp({
+    // JSORM
+    // data: [{type: "requests", attributes: res.locals.data }]
+
+    // AXIOS
     data: { attributes: { requests: res.locals.data } }
   })
 }
