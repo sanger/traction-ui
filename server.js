@@ -21,6 +21,6 @@ router.render = (req, res) => {
     // data: [{type: "requests", attributes: res.locals.data }]
 
     // AXIOS
-    data: { attributes: { requests: res.locals.data } }
+    // data: { attributes: { requests: res.locals.data } }
   })
 }

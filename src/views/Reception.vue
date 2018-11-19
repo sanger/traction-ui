@@ -29,10 +29,10 @@ export default {
       // });
 
       // AXIOS
-      axios.get('http://localhost:3000/api/v2/requests')
-        .then(function (response) {
-          self.samples = response.data.data.attributes.requests
-        })
+      // axios.get('http://localhost:3000/api/v2/requests')
+      //   .then(function (response) {
+      //     self.samples = response.data.data.attributes.requests
+      //   })
     }
   },
   components: {
