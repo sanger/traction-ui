@@ -5,7 +5,6 @@
 </template>
 
 <script>
-import Request from '@/services/Sequencescape'
 import SampleTable from '@/components/SampleTable'
 import axios from 'axios'
 
@@ -23,16 +22,11 @@ export default {
   methods: {
     getSamples() {
       let self = this
-      // JSORM
-      // Request.all().then(function(response) {
-      //   self.samples = response.raw.data[0].attributes
-      // });
 
-      // AXIOS
-      // axios.get('http://localhost:3000/api/v2/requests')
-      //   .then(function (response) {
-      //     self.samples = response.data.data.attributes.requests
-      //   })
+      axios.get('http://localhost:3000/api/v2/requests')
+        .then(function (response) {
+          self.samples = response.data.data.attributes.requests
+        })
     }
   },
   components: {

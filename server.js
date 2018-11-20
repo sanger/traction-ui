@@ -17,10 +17,6 @@ router.render = (req, res) => {
   res.setHeader('Content-Type', 'application/vnd.api+json')
 
   res.jsonp({
-    // JSORM
-    // data: [{type: "requests", attributes: res.locals.data }]
-
-    // AXIOS
-    // data: { attributes: { requests: res.locals.data } }
+    data: { attributes: { requests: res.locals.data } }
   })
 }

@@ -1,12 +1,13 @@
 import SampleTable from '@/components/SampleTable'
 import { mount } from '@vue/test-utils'
-import samples from '../data/samples.json'
+import Samples from '../data/samples.json'
 
 describe('SampleTable.vue', () => {
 
-  let cmp, sampleTable
+  let cmp, sampleTable, samples
 
   beforeEach(() => {
+    samples = Samples.requests
     cmp = mount(SampleTable, { propsData: { samples: samples }})
     sampleTable = cmp.vm
   })
@@ -24,15 +25,12 @@ describe('SampleTable.vue', () => {
   })
 
   it('will have a table with sample rows', () => {
-    expect(sampleTable.$el.querySelector('table').querySelectorAll('tr').length).toEqual(3)
+    expect(sampleTable.$el.querySelector('table').querySelectorAll('tr').length).toEqual(5)
   })
 
   it('will have a table the correct data', () => {
-    expect(sampleTable.$el.querySelector('table').querySelectorAll('tr')[0].textContent).toEqual(samples[0].name)
-    expect(sampleTable.$el.querySelector('table').querySelectorAll('tr')[1].textContent).toEqual(samples[1].name)
-    expect(sampleTable.$el.querySelector('table').querySelectorAll('tr')[2].textContent).toEqual(samples[2].name)
+    expect(sampleTable.$el.querySelector('table').querySelectorAll('tr')[0].querySelectorAll('td')[0].textContent).toEqual(samples[0].id.toString())
+    expect(sampleTable.$el.querySelector('table').querySelectorAll('tr')[0].querySelectorAll('td')[1].textContent).toEqual(samples[0].name)
   })
 
 })
-
-
