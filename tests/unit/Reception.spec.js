@@ -10,27 +10,38 @@ jest.mock('axios')
 
 describe('Reception.vue', () => {
 
-  let cmp, reception, response, samples
+  let cmp, reception, response, samples, stubs
 
   beforeEach(() => {
+    stubs = { stubs: ['b-table', 'b-button'] }
     samples = Samples
     response = { data: { data: { attributes: samples } } }
     axios.get.mockResolvedValue(response)
   })
 
   it('will have some samples',  async() => {
-    cmp = mount(Reception, {})
+    cmp = mount(Reception, stubs)
     reception = cmp.vm
     await flushPromises()
     expect(reception.samples.length).toEqual(samples.requests.length)
   })
 
   it('will have a sample table', async () => {
-    cmp = mount(Reception, {})
+    cmp = mount(Reception, stubs)
     reception = cmp.vm
-    await flushPromises()
-    expect(reception.$children.length).toBe(1)
-    expect(cmp.contains('.sample-table')).toBe(true)
+    expect(cmp.contains(SampleTable)).toBe(true)
   })
 
+  it('importSamples()', async () => {
+    response = { data: { status: 201 } }
+    axios.post.mockResolvedValue(response)
+
+    cmp = mount(Reception, stubs)
+    reception = cmp.vm
+
+    await flushPromises()
+    await flushPromises()
+    console.log(reception.importSamples())
+    return expect(reception.importSamples()).toEqual(response)
+  })
 })

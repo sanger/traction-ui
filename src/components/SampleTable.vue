@@ -1,13 +1,5 @@
 <template>
-  <div class="sample-table">
-
-    <table>
-      <tr v-for="sample in samples" v-bind:key="sample.name">
-        <td>{{ sample.id }}</td> 
-        <td>{{ sample.name }}</td>
-      </tr>
-    </table>
-  </div>
+  <b-table class="sample-table" striped hover :items="samples"></b-table>
 </template>
 
 <script>
