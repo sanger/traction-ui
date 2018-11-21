@@ -1,6 +1,10 @@
+import { mount, createLocalVue } from '@vue/test-utils'
 import SampleTable from '@/components/SampleTable'
-import { mount } from '@vue/test-utils'
 import Samples from '../data/samples.json'
+import BootstrapVue from 'bootstrap-vue'
+
+const localVue = createLocalVue()
+localVue.use(BootstrapVue)
 
 describe('SampleTable.vue', () => {
 
@@ -8,7 +12,7 @@ describe('SampleTable.vue', () => {
 
   beforeEach(() => {
     samples = Samples.requests
-    cmp = mount(SampleTable, { propsData: { samples: samples }})
+    cmp = mount(SampleTable, { localVue, propsData: { samples: samples }})
     sampleTable = cmp.vm
   })
 
@@ -24,13 +28,14 @@ describe('SampleTable.vue', () => {
     expect(cmp.contains('table')).toBe(true)
   })
 
-  it('will have a table with sample rows', () => {
-    expect(sampleTable.$el.querySelector('table').querySelectorAll('tr').length).toEqual(5)
+  it('will fill the table with the samples', () => {
+    expect(cmp.find('tbody').findAll('tr').length).toEqual(5)
   })
 
-  it('will have a table the correct data', () => {
-    expect(sampleTable.$el.querySelector('table').querySelectorAll('tr')[0].querySelectorAll('td')[0].textContent).toEqual(samples[0].id.toString())
-    expect(sampleTable.$el.querySelector('table').querySelectorAll('tr')[0].querySelectorAll('td')[1].textContent).toEqual(samples[0].name)
+  it('will have the correct data in each row', () => {
+    let tr = cmp.find('tbody').findAll('tr').at(0).findAll('td')
+    expect(tr.at(0).element.textContent).toEqual(samples[0].id.toString())
+    expect(tr.at(1).element.textContent).toEqual(samples[0].name)
   })
 
 })
