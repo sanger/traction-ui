@@ -1,6 +1,6 @@
 import Vue from 'vue'
 import Reception from '@/views/Reception'
-import SampleTable from '@/components/SampleTable'
+import SampleList from '@/components/SampleList'
 import { mount } from '@vue/test-utils'
 import Samples from '../data/samples.json'
 import flushPromises from 'flush-promises'
@@ -26,10 +26,9 @@ describe('Reception.vue', () => {
     expect(reception.samples.length).toEqual(samples.requests.length)
   })
 
-  it('will have a sample table', async () => {
+  it('will have a sample list', async () => {
     cmp = mount(Reception, stubs)
-    reception = cmp.vm
-    expect(cmp.contains(SampleTable)).toBe(true)
+    expect(cmp.contains(SampleList)).toBe(true)
   })
 
   it('importSamples()', async () => {
@@ -42,6 +41,6 @@ describe('Reception.vue', () => {
     await flushPromises()
     await flushPromises()
     console.log(reception.importSamples())
-    return expect(reception.importSamples()).toEqual(response)
+    expect(reception.importSamples()).toEqual(response)
   })
 })

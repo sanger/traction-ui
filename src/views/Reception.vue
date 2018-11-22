@@ -1,12 +1,12 @@
 <template>
   <div class="reception">
-    <sample-table v-bind:samples="samples" ></sample-table>
+    <sample-list v-bind:samples="samples"></sample-list>
     <b-button>Import Samples</b-button>
   </div>
 </template>
 
 <script>
-import SampleTable from '@/components/SampleTable'
+import SampleList from '@/components/SampleList'
 import axios from 'axios'
 
 export default {
@@ -39,7 +39,7 @@ export default {
     }
   },
   components: {
-    SampleTable
+    SampleList
   }
 }
 </script>

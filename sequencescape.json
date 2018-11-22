@@ -1,9 +1,9 @@
 {
   "requests": [
-    { "id": 1, "name": "DN11111" },
-    { "id": 2, "name": "DN11112" },
-    { "id": 3, "name": "DN11113" },
-    { "id": 4, "name": "DN11114" },
-    { "id": 5, "name": "DN11115" }
+    { "id": 1, "name": "DN11111", "species": "cat" },
+    { "id": 2, "name": "DN11112", "species": "cat" },
+    { "id": 3, "name": "DN11113", "species": "dog" },
+    { "id": 4, "name": "DN11114", "species": "dog" },
+    { "id": 5, "name": "DN11115", "species": "cat" }
   ]
 }
