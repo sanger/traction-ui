@@ -1,6 +1,6 @@
 <template>
   <div class="reception">
-    <sample-list v-bind:samples="samples"></sample-list>
+    <sample-list v-ref:sample-list v-bind:samples="samples"></sample-list>
     <b-button>Import Samples</b-button>
   </div>
 </template>
@@ -30,8 +30,6 @@ export default {
         })
     },
     importSamples() {
-      // console.log("import samples!")
-      // console.log(this.samples)
       return axios.post('http://localhost:3000/api/v2/requests', {})
         .then(function (response) {
           response.data
@@ -39,7 +37,7 @@ export default {
     }
   },
   components: {
-    SampleList
+    SampleList,
   }
 }
 </script>

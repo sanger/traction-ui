@@ -2,35 +2,36 @@ import { mount, createLocalVue } from '@vue/test-utils'
 import SampleList from '@/components/SampleList'
 import Sample from '@/components/Sample'
 import Samples from '../data/samples.json'
-import BootstrapVue from 'bootstrap-vue'
-
-const localVue = createLocalVue()
-localVue.use(BootstrapVue)
 
 describe('SampleList.vue', () => {
 
-  let cmp, sampleList, samples
+  let vm, wrapper, samples
 
   beforeEach(() => {
     samples = Samples.requests
-    cmp = mount(SampleList, { localVue, propsData: { samples: samples }})
-    sampleList = cmp.vm
+    wrapper = mount(SampleList, { propsData: { samples: samples }})
+    vm = wrapper.vm
   })
 
   it('will have a name', () => {
-    expect(cmp.name()).toEqual('SampleList')
+    expect(wrapper.name()).toEqual('SampleList')
   })
 
   it('will have some samples', () => {
-    expect(sampleList.samples.length).toEqual(samples.length)
+    expect(vm.samples.length).toEqual(samples.length)
   })
 
   it('will have a table', () => {
-    expect(cmp.contains('table')).toBe(true)
+    expect(wrapper.contains('table')).toBe(true)
   })
 
-  it('will have a table of sample rows', async () => {
-    expect(cmp.contains(Sample)).toBe(true)
+  it('will have a table of sample rows', () => {
+    expect(wrapper.contains(Sample)).toBe(true)
   })
 
+  it('getSelectedSamples() returns all selected samples', () => {
+    wrapper.findAll('input').at(0).setChecked()
+    wrapper.findAll('input').at(1).setChecked()
+    expect(vm.getSelectedSamples().length).toEqual(2)
+  })
 })

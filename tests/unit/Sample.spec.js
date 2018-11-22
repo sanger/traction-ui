@@ -28,4 +28,15 @@ describe('Sample.vue', () => {
     expect(sampleRow.at(2).text()).toEqual("DN11111")
     expect(sampleRow.at(3).text()).toEqual("cat")
   })
+
+  it('will have a select checkbox', () => {
+    let selectElement = wrapper.find('tr').findAll('td').at(0)
+    expect(selectElement.contains('input')).toBe(true)
+  })
+
+  it('will select samples', () => {
+    let input = wrapper.find('input')
+    input.setChecked()
+    expect(input.element.checked).toEqual(true)
+  })
 })

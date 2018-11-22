@@ -2,10 +2,10 @@
   <table class="table">
     <thead>
       <tr>
-        <th scope="col"></th>
-        <th scope="col">Sample ID</th>
-        <th scope="col">Name</th>
-        <th scope="col">Species</th>
+        <th></th>
+        <th>Sample ID</th>
+        <th>Name</th>
+        <th>Species</th>
       </tr>
     </thead>
     <tbody>
@@ -32,8 +32,16 @@ export default {
       }
     }
   },
+  methods: {
+    getSelectedSamples() {
+      return this.$children.filter(s => s.selected === true)
+    }
+  },
   components: {
     Sample
   }
 }
 </script>
+
+<style>
+</style>
