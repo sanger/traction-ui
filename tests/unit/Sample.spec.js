@@ -1,7 +1,6 @@
-import Vue from 'vue'
-import { mount } from '@vue/test-utils'
 import Sample from '@/components/Sample'
-import Samples from '../data/samples.json'
+import Samples from '../data/samples'
+import { mount } from './testHelper'
 
 describe('Sample.vue', () => {
 

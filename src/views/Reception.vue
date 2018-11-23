@@ -1,6 +1,6 @@
 <template>
   <div class="reception">
-    <sample-list v-ref:sample-list v-bind:samples="samples"></sample-list>
+    <sample-list ref:sample-list v-bind:samples="samples"></sample-list>
     <b-button>Import Samples</b-button>
   </div>
 </template>

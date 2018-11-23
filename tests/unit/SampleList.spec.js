@@ -1,7 +1,8 @@
-import { mount, createLocalVue } from '@vue/test-utils'
 import SampleList from '@/components/SampleList'
 import Sample from '@/components/Sample'
-import Samples from '../data/samples.json'
+import Samples from '../data/samples'
+import { mount } from './testHelper'
+
 
 describe('SampleList.vue', () => {
 
