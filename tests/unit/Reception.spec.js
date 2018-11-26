@@ -1,6 +1,6 @@
 import Reception from '@/views/Reception'
 import SampleList from '@/components/SampleList'
-import Samples from '../data/samples.json'
+import Samples from '../data/samples'
 import flushPromises from 'flush-promises'
 import axios from 'axios'
 import { mount, localVue } from './testHelper'

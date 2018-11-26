@@ -23,14 +23,13 @@ export default {
   methods: {
     getSamples() {
       let self = this
-
-      axios.get('http://localhost:3000/api/v2/requests')
+      axios.get(`${process.env.VUE_APP_SEQUENCESCAPE_BASE_URL}/api/v2/requests`)
         .then(function (response) {
           self.samples = response.data.data.attributes.requests
         })
     },
     importSamples() {
-      return axios.post('http://localhost:3000/api/v2/requests', {})
+      return axios.post(`${process.env.VUE_APP_SEQUENCESCAPE_BASE_URL}/api/v2/requests`, {})
         .then(function (response) {
           response.data
         })
