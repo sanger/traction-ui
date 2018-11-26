@@ -1,7 +1,7 @@
 <template>
   <div class="reception">
     <sample-list ref:sample-list v-bind:samples="samples"></sample-list>
-    <b-button>Import Samples</b-button>
+    <b-button @click="importSamples">Import Samples</b-button>
   </div>
 </template>
 
@@ -14,7 +14,7 @@ export default {
 
   data () {
     return {
-      samples: []
+      samples: this.$store.getters.samples
     }
   },
   created() {
@@ -25,14 +25,16 @@ export default {
       let self = this
       axios.get(`${process.env.VUE_APP_SEQUENCESCAPE_BASE_URL}/api/v2/requests`)
         .then(function (response) {
-          self.samples = response.data.data.attributes.requests
+          self.$store.commit('addSamples', response.data.data.attributes.requests)
         })
     },
     importSamples() {
-      return axios.post(`${process.env.VUE_APP_SEQUENCESCAPE_BASE_URL}/api/v2/requests`, {})
-        .then(function (response) {
-          response.data
-        })
+      let selectedSamples = this.$store.getters.selectedSamples
+      alert(selectedSamples)
+      // return axios.post(`${process.env.VUE_APP_SEQUENCESCAPE_BASE_URL}/api/v2/requests`, {})
+      //   .then(function (response) {
+      //     response.data
+      //   })
     }
   },
   components: {

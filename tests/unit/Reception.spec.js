@@ -1,3 +1,4 @@
+import Store from '@/store.js'
 import Reception from '@/views/Reception'
 import SampleList from '@/components/SampleList'
 import Samples from '../data/samples'
@@ -9,18 +10,20 @@ jest.mock('axios')
 
 describe('Reception.vue', () => {
 
-  let wrapper, reception, response, samples
+  let wrapper, reception, response, samples, $store
 
   beforeEach(() => {
     samples = Samples
+    $store = Store
     response = { data: { data: { attributes: samples } } }
     axios.get.mockResolvedValue(response)
   })
 
   it('will have some samples',  async() => {
-    wrapper = mount(Reception, { localVue })
+    wrapper = mount(Reception, {  mocks: { $store }, localVue })
     reception = wrapper.vm
     await flushPromises()
+    expect($store.state.samples.length).toEqual(samples.requests.length)
     expect(reception.samples.length).toEqual(samples.requests.length)
   })
 

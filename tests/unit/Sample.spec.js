@@ -1,14 +1,17 @@
 import Sample from '@/components/Sample'
-import Samples from '../data/samples'
 import { mount } from './testHelper'
+import Store from '@/store'
 
 describe('Sample.vue', () => {
 
-  let wrapper, aSample, sample
+  let wrapper, aSample, sample, $store
 
   beforeEach(() => {
-    aSample = Samples.requests[0]
-    wrapper = mount(Sample, { propsData: { sample: aSample }})
+    aSample = { id: '1', name: 'DN11111', species: 'cat' }
+    $store = Store
+    $store.commit('clear')
+    $store.commit('addSamples', [aSample])
+    wrapper = mount(Sample, { mocks: { $store }, propsData: { sample: aSample }})
     sample = wrapper.vm
   })
 
@@ -37,5 +40,11 @@ describe('Sample.vue', () => {
     let input = wrapper.find('input')
     input.setChecked()
     expect(input.element.checked).toEqual(true)
+  })
+
+  it('will update the sample in the store to select on click', () => {
+    let input = wrapper.find('input')
+    input.setChecked()
+    expect($store.getters.selectedSamples.length).toEqual(1)
   })
 })
