@@ -15,7 +15,8 @@ export default {
   data () {
     return {
       samples: this.$store.getters.samples,
-      postSelectedSamplesResponse: null
+      postSelectedSamplesResponse: null,
+      updateStatusResponse: null
     }
   },
   created() {
@@ -30,16 +31,8 @@ export default {
         })
     },
     async postSelectedSamples () {
-
-      let config = {
-        headers: {
-          'Content-Type': 'application/vnd.api+json',
-          'Accept': 'application/vnd.api+json'
-        }
-      }
-
       try {
-        const response = await axios.post(`${process.env.VUE_APP_TRACTION_API}/v1/samples`, { data: { attributes: { samples: this.getSelectedSamples() }}}, config)
+        const response = await axios.post(`${process.env.VUE_APP_TRACTION_API}/v1/samples`, { data: { attributes: { samples: this.getSelectedSamples() }}}, this.config)
         this.postSelectedSamplesResponse = response.data
       } catch (error) {
         this.postSelectedSamplesResponse = error.data
@@ -48,10 +41,25 @@ export default {
     },
     getSelectedSamples() {
       return this.$store.state.samples.filter(sample => sample.selected)
+    },
+    updateStatusJson () {
+      return this.getSelectedSamples().map(sample => ({ id: sample.id, state: 'started'}))
+    },
+    async updateStatus () {
+      const response = await axios.patch(`${process.env.VUE_APP_SEQUENCESCAPE_BASE_URL}/api/v2/requests`, { data: { attributes: { requests: this.getSelectedSamples() }}}, this.config)
+      this.updateStatusResponse = response.data
     }
   },
   components: {
     SampleList,
+  },
+  computed: {
+    config () {
+       return { headers: {
+        'Content-Type': 'application/vnd.api+json',
+        'Accept': 'application/vnd.api+json'
+      } }
+    }
   }
 }
 </script>
