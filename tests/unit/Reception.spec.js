@@ -52,6 +52,10 @@ describe('Reception.vue', () => {
       wrapper.find('button').trigger('click')
       await flushPromises()
       expect(reception.postSelectedSamplesResponse).toEqual(response.data)
+      expect(axios.post).toBeCalledWith(`${process.env.VUE_APP_TRACTION_API}/v1/samples`, { data: { attributes: { samples: reception.getSelectedSamples()}}}, { headers: 
+         { 'Content-Type': 'application/vnd.api+json',
+                   'Accept': 'application/vnd.api+json'}
+        })
     })
 
     it('rejected', async () => {
