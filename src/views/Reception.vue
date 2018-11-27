@@ -1,7 +1,7 @@
 <template>
   <div class="reception">
     <sample-list ref:sample-list v-bind:samples="samples"></sample-list>
-    <b-button v-on:click="importSamples">Import Samples</b-button>
+    <b-button @click="postSelectedSamples">Import Samples</b-button>
   </div>
 </template>
 
@@ -14,7 +14,8 @@ export default {
 
   data () {
     return {
-      samples: this.$store.getters.samples
+      samples: this.$store.getters.samples,
+      postSelectedSamplesResponse: null
     }
   },
   created() {
@@ -28,14 +29,31 @@ export default {
           self.$store.commit('addSamples', response.data.data.attributes.requests)
         })
     },
-    importSamples() {
-      let selectedSamples = this.$store.state.samples.filter(sample => sample.selected)
-      return selectedSamples.map(s => s.name)
+    async postSelectedSamples () {
 
-      // return axios.post(`${process.env.VUE_APP_SEQUENCESCAPE_BASE_URL}/api/v2/requests`, {})
-      //   .then(function (response) {
-      //     response.data
-      //   })
+      // const response = await axios({
+      //   url: '/v1/samples',
+      //   method: 'post',
+      //   baseURL: `${process.env.VUE_APP_TRACTION_API}`,
+      //   headers: {'Content-Type': 'application/x-www-form-urlencoded', 'Accept': 'application/vnd.api+json'},
+      //   data: {
+      //     attributes: 'Fred'
+      //   }
+      // })
+
+      let data = { attributes: {}}
+      let config = {
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded',
+          'Accept': 'application/vnd.api+json'
+        }
+      }
+
+      const response = await axios.post(`${process.env.VUE_APP_TRACTION_API}/v1/samples`, data, config)
+      this.postSelectedSamplesResponse = response.data
+    },
+    getSelectedSamples() {
+      return this.$store.state.samples.filter(sample => sample.selected)
     }
   },
   components: {
