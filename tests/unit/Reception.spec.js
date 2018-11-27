@@ -43,12 +43,26 @@ describe('Reception.vue', () => {
     expect(reception.getSelectedSamples()).toEqual(selectedSample)
   })
 
-  it('#postSelectedSamples', async () => {
-    await flushPromises()
-    let response = { data: { status: 201} }
-    axios.post.mockResolvedValue(response)
-    wrapper.find('button').trigger('click')
-    await flushPromises()
-    expect(reception.postSelectedSamplesResponse).toEqual(response.data)
+  describe('#postSelectedSamples', () => {
+
+    it('resolved', async () => {
+      await flushPromises()
+      let response = { data: { status: 201} }
+      axios.post.mockResolvedValue(response)
+      wrapper.find('button').trigger('click')
+      await flushPromises()
+      expect(reception.postSelectedSamplesResponse).toEqual(response.data)
+    })
+
+    it('rejected', async () => {
+      await flushPromises()
+      let response = { data: { status: 422} }
+      axios.post.mockRejectedValue(response)
+      wrapper.find('button').trigger('click')
+      await flushPromises()
+      expect(reception.postSelectedSamplesResponse).toEqual(response.data)
+
+    })
   })
+
 })

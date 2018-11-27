@@ -30,17 +30,6 @@ export default {
         })
     },
     async postSelectedSamples () {
-
-      // const response = await axios({
-      //   url: '/v1/samples',
-      //   method: 'post',
-      //   baseURL: `${process.env.VUE_APP_TRACTION_API}`,
-      //   headers: {'Content-Type': 'application/x-www-form-urlencoded', 'Accept': 'application/vnd.api+json'},
-      //   data: {
-      //     attributes: 'Fred'
-      //   }
-      // })
-
       let data = { attributes: {}}
       let config = {
         headers: {
@@ -49,8 +38,12 @@ export default {
         }
       }
 
-      const response = await axios.post(`${process.env.VUE_APP_TRACTION_API}/v1/samples`, data, config)
-      this.postSelectedSamplesResponse = response.data
+      try {
+        const response = await axios.post(`${process.env.VUE_APP_TRACTION_API}/v1/samples`, data, config)
+        this.postSelectedSamplesResponse = response.data
+      } catch (error) {
+        this.postSelectedSamplesResponse = error.data
+      }
     },
     getSelectedSamples() {
       return this.$store.state.samples.filter(sample => sample.selected)
