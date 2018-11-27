@@ -32,11 +32,6 @@ export default {
       }
     }
   },
-  methods: {
-    getSelectedSamples() {
-      return this.$children.filter(s => s.selected === true)
-    }
-  },
   components: {
     Sample
   }

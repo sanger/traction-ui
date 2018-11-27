@@ -29,10 +29,4 @@ describe('SampleList.vue', () => {
   it('will have a table of sample rows', () => {
     expect(wrapper.contains(Sample)).toBe(true)
   })
-
-  it('getSelectedSamples() returns all selected samples', () => {
-    wrapper.findAll('input').at(0).setChecked()
-    wrapper.findAll('input').at(1).setChecked()
-    expect(vm.getSelectedSamples().length).toEqual(2)
-  })
 })

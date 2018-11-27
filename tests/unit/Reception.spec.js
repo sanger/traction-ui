@@ -15,12 +15,13 @@ describe('Reception.vue', () => {
   beforeEach(() => {
     samples = Samples
     $store = Store
+    $store.commit('clear')
     response = { data: { data: { attributes: samples } } }
     axios.get.mockResolvedValue(response)
   })
 
   it('will have some samples',  async() => {
-    wrapper = mount(Reception, {  mocks: { $store }, localVue })
+    wrapper = mount(Reception, { mocks: { $store }, localVue })
     reception = wrapper.vm
     await flushPromises()
     expect($store.state.samples.length).toEqual(samples.requests.length)
@@ -28,29 +29,19 @@ describe('Reception.vue', () => {
   })
 
   it('will have a sample list', async () => {
-    wrapper = mount(Reception, { localVue })
+    wrapper = mount(Reception, { mocks: { $store }, localVue })
+    reception = wrapper.vm
+    await flushPromises()
     expect(wrapper.contains(SampleList)).toBe(true)
   })
 
-  xit('will get a list of selected samples on importSamples()', async () => {
-    wrapper = mount(Reception, { localVue })
+  it('will get a list of selected samples on importSamples()', async () => {
+    wrapper = mount(Reception, { mocks: { $store }, localVue })
     reception = wrapper.vm
     await flushPromises()
-    wrapper.findAll('input').at(0).setChecked()
-    wrapper.findAll('input').at(1).setChecked()
-    expect(reception.importSamples().length).toEqual(2)
-  })
-
-  xit('importSamples()', async () => {
-    response = { data: { status: 201 } }
-    axios.post.mockResolvedValue(response)
-
-    wrapper = mount(Reception, { localVue })
-    reception = wrapper.vm
-
-    await flushPromises()
-    await flushPromises()
-    console.log(reception.importSamples())
-    expect(reception.importSamples()).toEqual(response)
+    $store.commit('selectSample', samples.requests[0])
+    $store.commit('selectSample', samples.requests[3])
+    let selectedSampleNames = [samples.requests[0].name, samples.requests[3].name]
+    expect(reception.importSamples()).toEqual(selectedSampleNames)
   })
 })

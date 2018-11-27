@@ -1,7 +1,7 @@
 <template>
   <div class="reception">
     <sample-list ref:sample-list v-bind:samples="samples"></sample-list>
-    <b-button @click="importSamples">Import Samples</b-button>
+    <b-button v-on:click="importSamples">Import Samples</b-button>
   </div>
 </template>
 
@@ -29,8 +29,9 @@ export default {
         })
     },
     importSamples() {
-      let selectedSamples = this.$store.getters.selectedSamples
-      alert(selectedSamples)
+      let selectedSamples = this.$store.state.samples.filter(sample => sample.selected)
+      return selectedSamples.map(s => s.name)
+
       // return axios.post(`${process.env.VUE_APP_SEQUENCESCAPE_BASE_URL}/api/v2/requests`, {})
       //   .then(function (response) {
       //     response.data

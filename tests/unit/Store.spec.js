@@ -32,13 +32,12 @@ describe('Store.js', () => {
   describe('#selectSample', () => {
 
     it('selected', () => {
-      samples[0].selected = true
       store.commit('selectSample', samples[0])
       expect(store.getters.selectedSamples.length).toEqual(1)
     })
 
     it('deselected', () => {
-      samples[0].selected = false
+      store.commit('selectSample', samples[0])
       store.commit('selectSample', samples[0])
       expect(store.getters.selectedSamples.length).toEqual(0)
     })
