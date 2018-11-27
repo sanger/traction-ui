@@ -31,17 +31,6 @@ export default {
     },
     async postSelectedSamples () {
 
-      let body = {
-         data: {
-            attributes: {
-               samples: [
-                  {
-                     name: "sample2"
-                  }
-               ]
-            }
-         }
-      }
       let config = {
         headers: {
           'Content-Type': 'application/vnd.api+json',
