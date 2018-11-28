@@ -1,10 +1,10 @@
 import Store from '@/store.js'
 import Reception from '@/views/Reception'
 import SampleList from '@/components/SampleList'
+import Alert from '@/components/Alert'
 import flushPromises from 'flush-promises'
 import axios from 'axios'
 import { mount, localVue } from './testHelper'
-import { shallowMount } from '@vue/test-utils'
 
 jest.mock('axios')
 
@@ -59,46 +59,100 @@ describe('Reception.vue', () => {
   })
 
   describe('#postSelectedSamples', () => {
+    const headers = {
+      'Content-Type': 'application/vnd.api+json',
+      'Accept': 'application/vnd.api+json'
+    }
 
     it('resolved', async () => {
       await flushPromises()
       let response = { data: { status: 201} }
       axios.post.mockResolvedValue(response)
-      wrapper.find('button').trigger('click')
+      wrapper.find('#exportSamplesButton').trigger('click')
       await flushPromises()
-      expect(reception.postSelectedSamplesResponse).toEqual(response.data)
-      expect(axios.post).toBeCalledWith(`${process.env.VUE_APP_TRACTION_API}/v1/samples`, { data: { attributes: { samples: reception.getSelectedSamples()}}}, { headers: 
-         { 'Content-Type': 'application/vnd.api+json',
-                   'Accept': 'application/vnd.api+json'}
-        })
+
+      expect(axios.post).toBeCalledWith(
+        `${process.env.VUE_APP_TRACTION_API}/v1/samples`,
+        { data: { attributes: { samples: reception.getSelectedSamples() }}},
+        { headers: headers }
+      )
     })
 
     it('rejected', async () => {
       await flushPromises()
-      let response = { data: { status: 422} }
+      let response = { response: { data: { errors: [{ status: 422}]} } }
       axios.post.mockRejectedValue(response)
-      wrapper.find('button').trigger('click')
+      wrapper.find('#exportSamplesButton').trigger('click')
       await flushPromises()
-      expect(reception.postSelectedSamplesResponse).toEqual(response.data)
-
-
+      expect(axios.post).toBeCalledWith(
+        `${process.env.VUE_APP_TRACTION_API}/v1/samples`,
+        { data: { attributes: { samples: reception.getSelectedSamples() }}},
+        { headers: headers }
+      )
     })
   })
-
-  describe('posting status back to sequencescape once sample has been imported into traction', () => {
+// posting status back to sequencescape once sample has been imported into traction
+  describe('#updateSampleStatusInSS', () => {
+    const headers = {
+      'Content-Type': 'application/vnd.api+json',
+      'Accept': 'application/vnd.api+json'
+    }
 
     it('resolved', async () => {
       await flushPromises()
       let response = { data: { status: 200} }
       axios.patch.mockResolvedValue(response)
-      reception.updateStatus()
+      reception.updateSampleStatusInSS()
       await flushPromises()
-      expect(reception.updateStatusResponse).toEqual(response.data)
-      expect(axios.patch).toBeCalledWith(`${process.env.VUE_APP_SEQUENCESCAPE_BASE_URL}/api/v2/requests`, { data: { attributes: { requests: reception.updateStatusJson() }}}, { headers: 
-         { 'Content-Type': 'application/vnd.api+json',
-                   'Accept': 'application/vnd.api+json'}
-        })
+      expect(axios.patch).toBeCalledWith(
+        `${process.env.VUE_APP_SEQUENCESCAPE_BASE_URL}/api/v2/requests`,
+        { data: { attributes: { requests: reception.updateStatusJson() }}},
+        { headers: headers }
+      )
+      expect(wrapper.find('#showAlert').text()).toContain('200')
+    })
 
+    it('rejected', async () => {
+      await flushPromises()
+      let response = { response: { data: { errors: [{ status: 422}]} } }
+      axios.patch.mockRejectedValue(response)
+      reception.updateSampleStatusInSS()
+      await flushPromises()
+      expect(axios.patch).toBeCalledWith(
+        `${process.env.VUE_APP_SEQUENCESCAPE_BASE_URL}/api/v2/requests`,
+        { data: { attributes: { requests: reception.updateStatusJson() }}},
+        { headers: headers }
+      )
+      expect(wrapper.find('#showAlert').text()).toContain('422')
+    })
+  })
+
+  describe('alert', () => {
+    it('has a hidden alert', async () => {
+      await flushPromises()
+      expect(wrapper.contains('.showAlert')).toBe(false)
+    })
+
+    it('shows a successful alert on resolved', async () => {
+      await flushPromises()
+      let response = { data: { status: 201} }
+      axios.post.mockResolvedValue(response)
+      wrapper.find('#exportSamplesButton').trigger('click')
+      await flushPromises()
+      expect(wrapper.contains(Alert)).toBe(true)
+      expect(wrapper.find('#showAlert').text()).toContain('201')
+      expect(wrapper.contains('.alert-success')).toBe(true)
+    })
+
+    it('shows a danger alert on rejected', async () => {
+      await flushPromises()
+      let response = { response: { data: { errors: [{ status: 422}]} } }
+      axios.post.mockRejectedValue(response)
+      wrapper.find('#exportSamplesButton').trigger('click')
+      await flushPromises()
+      expect(wrapper.contains(Alert)).toBe(true)
+      expect(wrapper.find('#showAlert').text()).toContain('422')
+      expect(wrapper.contains('.alert-danger')).toBe(true)
     })
   })
 
