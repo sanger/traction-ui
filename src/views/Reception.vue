@@ -25,10 +25,25 @@ export default {
   methods: {
     getSamples() {
       let self = this
-      axios.get(`${process.env.VUE_APP_SEQUENCESCAPE_BASE_URL}/api/v2/requests`)
-        .then(function (response) {
-          self.$store.commit('addSamples', response.data.data.attributes.requests)
-        })
+      axios.get(`${process.env.VUE_APP_SEQUENCESCAPE_BASE_URL}`+
+        `/api/v2/requests?filter[state]=pending&filter[request_type]=longread`
+      )
+      .then(function (response) {
+        let samples = self.buildSamplesFromResponseHelper(response.data.data)
+        self.$store.commit('addSamples', samples)
+      })
+    },
+    buildSamplesFromResponseHelper(data) {
+      let samples = []
+      for (let i = 0; i < data.length; i++) {
+        let sample = {
+          id: data[i].id,
+          name: data[i].attributes.name,
+          species: data[i].attributes.species
+        }
+        samples.push(sample)
+      }
+      return samples
     },
     // Export the selected samples to Traction backend service
     async postSelectedSamples () {
