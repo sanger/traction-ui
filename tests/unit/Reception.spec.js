@@ -47,7 +47,7 @@ describe('Reception.vue', () => {
     $store.commit('selectSample', samples.requests[0])
     $store.commit('selectSample', samples.requests[3])
     let selectedSample = [samples.requests[0], samples.requests[3]]
-    expect(reception.getSelectedSamples()).toEqual(selectedSample)
+    expect(reception.getSelectedSamples().length).toEqual(selectedSample.length)
   })
 
   it('#updateStatusJson', async () => {
@@ -125,6 +125,7 @@ describe('Reception.vue', () => {
       )
       expect(wrapper.find('#showAlert').text()).toContain('422')
     })
+
   })
 
   describe('alert', () => {

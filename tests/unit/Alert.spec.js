@@ -7,6 +7,7 @@ describe('Alert.vue', () => {
 
   beforeEach(() => {
     wrapper = mount(Alert, { mocks: localVue })
+    alert = wrapper.vm
   })
 
   it('will have a name', () => {
@@ -18,50 +19,31 @@ describe('Alert.vue', () => {
   })
 
   it('has a message', () => {
-    const wrapper = mount(Alert, {
-      mocks: localVue
-    })
     wrapper.setData({ message: 'bar' })
     expect(wrapper.vm.message).toBe('bar')
   })
 
   it('has a type', () => {
-    const wrapper = mount(Alert, {
-      mocks: localVue
-    })
     wrapper.setData({ type: 'primary' })
     expect(wrapper.vm.type).toBe('primary')
   })
 
   it('is hidden as default', () => {
-    const wrapper = mount(Alert, {
-      mocks: localVue
-    })
     expect(wrapper.vm.showDismissibleAlert).toBe(false)
     expect(wrapper.contains('#showAlert')).toBe(false)
   })
 
   it('displays the message', () => {
-    const wrapper = mount(Alert, {
-      mocks: localVue
-    })
     wrapper.setData({ message: 'bar', showDismissibleAlert: true })
     expect(wrapper.html()).toContain('bar')
   })
 
   it('displays the type', () => {
-    const wrapper = mount(Alert, {
-      mocks: localVue
-    })
     wrapper.setData({ type: 'success', showDismissibleAlert: true })
     expect(wrapper.contains('.alert-success')).toBe(true)
   })
 
   it('#show sets the data', () => {
-    const wrapper = mount(Alert, {
-      mocks: localVue
-    })
-    const alert = wrapper.vm
     alert.show('msg', 'primary')
     expect(alert.message).toBe('msg')
     expect(alert.type).toBe('primary')

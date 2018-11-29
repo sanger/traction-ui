@@ -25,7 +25,7 @@ export default new Vuex.Store({
     samples: state => {
       return state.samples
     },
-    selectedSamples: state => {
+    selectedSamples: state => () => {
       return state.samples.filter(sample => sample.selected)
     }
   }

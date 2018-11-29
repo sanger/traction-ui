@@ -59,7 +59,7 @@ export default {
       }
     },
     getSelectedSamples() {
-      return this.$store.state.samples.filter(sample => sample.selected)
+      return this.$store.getters.selectedSamples()
     },
     updateStatusJson () {
       return this.getSelectedSamples().map(

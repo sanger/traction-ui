@@ -26,20 +26,19 @@ describe('Store.js', () => {
   it('#selectedSamples', () => {
     samples[1].selected = true
     samples[2].selected = true
-    expect(store.getters.selectedSamples.length).toEqual(2)
+    expect(store.getters.selectedSamples().length).toEqual(2)
   })
 
   describe('#selectSample', () => {
-
     it('selected', () => {
       store.commit('selectSample', samples[0])
-      expect(store.getters.selectedSamples.length).toEqual(1)
+      expect(store.getters.selectedSamples().length).toEqual(1)
     })
 
     it('deselected', () => {
       store.commit('selectSample', samples[0])
       store.commit('selectSample', samples[0])
-      expect(store.getters.selectedSamples.length).toEqual(0)
+      expect(store.getters.selectedSamples().length).toEqual(0)
     })
   })
 

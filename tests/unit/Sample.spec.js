@@ -45,6 +45,6 @@ describe('Sample.vue', () => {
   it('will update the sample in the store to select on click', () => {
     let input = wrapper.find('input')
     input.setChecked()
-    expect($store.getters.selectedSamples.length).toEqual(1)
+    expect($store.getters.selectedSamples().length).toEqual(1)
   })
 })
