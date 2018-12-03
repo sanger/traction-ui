@@ -4,6 +4,7 @@
     <td>{{ sample.id }}</td>
     <td>{{ sample.name }}</td>
     <td>{{ sample.species }}</td>
+    <td>{{ sample.state }}</td>
   </tr>
 
 </template>

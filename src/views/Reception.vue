@@ -95,3 +95,10 @@ export default {
   }
 }
 </script>
+
+<style lang="scss">
+#exportRequestsButton {
+  float: right;
+}
+</style>
+

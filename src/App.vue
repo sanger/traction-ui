@@ -1,5 +1,6 @@
 <template>
   <div id="app">
+    <h1 id="traction-header">Traction</h1>
     <div id="nav">
       <router-link to="/reception">Reception</router-link> |
       <router-link to="/samples">Samples</router-link>
@@ -25,5 +26,8 @@
       color: #42b983;
     }
   }
+}
+#traction-header {
+  float: left;
 }
 </style>

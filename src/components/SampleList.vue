@@ -6,6 +6,7 @@
         <th>Sample ID</th>
         <th>Name</th>
         <th>Species</th>
+        <th>State</th>
       </tr>
     </thead>
     <tbody>

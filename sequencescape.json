@@ -39,6 +39,14 @@
       "state": "pending",
       "request_type": "long_read",
       "type": "requests"
+    },
+    {
+      "id": 6,
+      "name": "DN11116",
+      "species": "cat",
+      "state": "pending",
+      "request_type": "long_read",
+      "type": "requests"
     }
   ]
 }
