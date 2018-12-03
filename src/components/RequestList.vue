@@ -9,16 +9,16 @@
       </tr>
     </thead>
     <tbody>
-      <sample-item v-for="sample in samples" v-bind:key="sample.id" v-bind:sample="sample"></sample-item>
+      <request-item v-for="sample in samples" v-bind:key="sample.id" v-bind:sample="sample"></request-item>
     </tbody>
   </table>
 </template>
 
 <script>
-import SampleItem from '@/components/SampleItem'
+import RequestItem from '@/components/RequestItem'
 
 export default {
-  name: 'SampleList',
+  name: 'RequestList',
 
   data () {
     return {
@@ -33,7 +33,7 @@ export default {
     }
   },
   components: {
-    SampleItem
+    RequestItem
   }
 }
 </script>

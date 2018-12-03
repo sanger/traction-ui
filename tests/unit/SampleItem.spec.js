@@ -1,8 +1,8 @@
-import Sample from '@/components/Sample'
+import SampleItem from '@/components/SampleItem'
 import { mount } from './testHelper'
 import Store from '@/store'
 
-describe('Sample.vue', () => {
+describe('SampleItem.vue', () => {
 
   let wrapper, aSample, sample, $store
 
@@ -11,12 +11,12 @@ describe('Sample.vue', () => {
     $store = Store
     $store.commit('clear')
     $store.commit('addSamples', [aSample])
-    wrapper = mount(Sample, { mocks: { $store }, propsData: { sample: aSample }})
+    wrapper = mount(SampleItem, { mocks: { $store }, propsData: { sample: aSample }})
     sample = wrapper.vm
   })
 
   it('will have a name', () => {
-    expect(wrapper.name()).toEqual('Sample')
+    expect(wrapper.name()).toEqual('SampleItem')
   })
 
   it('will have a sample', () => {

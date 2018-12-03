@@ -1,21 +1,21 @@
-import SampleList from '@/components/SampleList'
-import SampleItem from '@/components/SampleItem'
+import RequestList from '@/components/RequestList'
+import RequestItem from '@/components/RequestItem'
 import Samples from '../data/samples'
 import { mount } from './testHelper'
 
 
-describe('SampleList.vue', () => {
+describe('RequestList.vue', () => {
 
   let vm, wrapper, samples
 
   beforeEach(() => {
     samples = Samples.requests
-    wrapper = mount(SampleList, { propsData: { samples: samples }})
+    wrapper = mount(RequestList, { propsData: { samples: samples }})
     vm = wrapper.vm
   })
 
   it('will have a name', () => {
-    expect(wrapper.name()).toEqual('SampleList')
+    expect(wrapper.name()).toEqual('RequestList')
   })
 
   it('will have some samples', () => {
@@ -27,6 +27,6 @@ describe('SampleList.vue', () => {
   })
 
   it('will have a table of sample rows', () => {
-    expect(wrapper.contains(SampleItem)).toBe(true)
+    expect(wrapper.contains(RequestItem)).toBe(true)
   })
 })

@@ -11,7 +11,7 @@
 <script>
 
 export default {
-  name: 'Sample',
+  name: 'SampleItem',
   props: [
     'sample'
   ],

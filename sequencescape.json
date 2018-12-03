@@ -5,7 +5,7 @@
       "name": "DN11111",
       "species": "cat",
       "state": "pending",
-      "request_type": "longread",
+      "request_type": "long_read",
       "type": "requests"
     },
     {
@@ -13,7 +13,7 @@
       "name": "DN11112",
       "species": "cat",
       "state": "pending",
-      "request_type": "longread",
+      "request_type": "long_read",
       "type": "requests"
     },
     {
@@ -21,7 +21,7 @@
       "name": "DN11113",
       "species": "dog",
       "state": "pending",
-      "request_type": "longread",
+      "request_type": "long_read",
       "type": "requests"
     },
     {
@@ -29,7 +29,7 @@
       "name": "DN11114",
       "species": "dog",
       "state": "pending",
-      "request_type": "longread",
+      "request_type": "long_read",
       "type": "requests"
     },
     {
@@ -37,7 +37,7 @@
       "name": "DN11115",
       "species": "cat",
       "state": "pending",
-      "request_type": "longread",
+      "request_type": "long_read",
       "type": "requests"
     }
   ]

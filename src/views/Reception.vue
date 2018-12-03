@@ -1,13 +1,13 @@
 <template>
   <div class="reception">
     <alert ref='alert'></alert>
-    <sample-list ref:sample-list v-bind:samples="samples"></sample-list>
-    <b-button id="exportSamplesButton" @click="postSelectedSamples">Import Samples</b-button>
+    <request-list ref:sample-list v-bind:samples="requests"></request-list>
+    <b-button id="exportRequestsButton" @click="postSelectedRequests">Import samples</b-button>
   </div>
 </template>
 
 <script>
-import SampleList from '@/components/SampleList'
+import RequestList from '@/components/RequestList'
 import axios from 'axios'
 import Alert from '@/components/Alert'
 
@@ -16,41 +16,41 @@ export default {
 
   data () {
     return {
-      samples: this.$store.getters.samples
+      requests: this.$store.getters.requests
     }
   },
   created() {
-    this.getSamples()
+    this.getRequests()
   },
   methods: {
-    getSamples() {
+    getRequests() {
       let self = this
       axios.get(`${process.env.VUE_APP_SEQUENCESCAPE_BASE_URL}`+
-        `/api/v2/requests?filter[state]=pending&filter[request_type]=longread`
+        `/api/v2/requests?filter[state]=pending&filter[request_type]=long_read`
       )
       .then(function (response) {
-        let samples = self.buildSamplesFromResponseHelper(response.data.data)
-        self.$store.commit('addSamples', samples)
+        let requests = self.buildRequestsFromResponseHelper(response.data.data)
+        self.$store.commit('addRequests', requests)
       })
     },
-    buildSamplesFromResponseHelper(data) {
-      let samples = []
+    buildRequestsFromResponseHelper(data) {
+      let requests = []
       for (let i = 0; i < data.length; i++) {
-        let sample = {
+        let request = {
           id: data[i].id,
           name: data[i].attributes.name,
           species: data[i].attributes.species
         }
-        samples.push(sample)
+        requests.push(request)
       }
-      return samples
+      return requests
     },
-    // Export the selected samples to Traction backend service
-    async postSelectedSamples () {
+    // Export the selected requests to Traction backend service
+    async postSelectedRequests () {
       try {
         const response = await axios.post(
           `${process.env.VUE_APP_TRACTION_API}/v1/samples`,
-          { data: { attributes: { samples: this.getSelectedSamples() }}},
+          { data: { attributes: { samples: this.getSelectedRequests() }}},
           this.config
         )
         this.$refs.alert.show(response.data, 'success')
@@ -59,8 +59,8 @@ export default {
         this.$refs.alert.show(errors, 'danger')
       }
     },
-    // Update the status of samples in SS from pending to started
-    async updateSampleStatusInSS () {
+    // Update the status of requests in SS from pending to started
+    async updateRequestStatusInSS () {
       try {
         const response = await axios.patch(
           `${process.env.VUE_APP_SEQUENCESCAPE_BASE_URL}/api/v2/requests`,
@@ -73,16 +73,16 @@ export default {
         this.$refs.alert.show(errors, 'danger')
       }
     },
-    getSelectedSamples() {
-      return this.$store.getters.selectedSamples()
+    getSelectedRequests() {
+      return this.$store.getters.selectedRequests()
     },
     updateStatusJson () {
-      return this.getSelectedSamples().map(
-        sample => ({ id: sample.id, state: 'started'}))
+      return this.getSelectedRequests().map(
+        request => ({ id: request.id, state: 'started'}))
     }
   },
   components: {
-    SampleList,
+    RequestList,
     Alert
   },
   computed: {
