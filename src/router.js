@@ -9,8 +9,8 @@ export default new Router({
   routes: [
     {
       path: '/',
-      redirect: {name: 'Reception'},
-      component: Reception
+      redirect: { name: 'Samples' },
+      component: Samples
     },
     {
       path: '/reception',
