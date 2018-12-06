@@ -1,5 +1,6 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
+import Request from '@/api/Request'
 
 Vue.use(Vuex)
 
@@ -46,6 +47,33 @@ export default new Vuex.Store({
     },
     selectedSamples: state => () => {
       return state.samples.filter(sample => sample.selected)
+    }
+  },
+  actions: {
+    get ({ commit }) {
+      Request.get()
+      .then(data => {
+        commit('addRequests', data)
+      }).catch(function(r) {
+        // handle alerts
+        console.log(r)
+      })
+    },
+    post ({ commit }, data) {
+      Request.post(data)
+      .then(data => {
+        // handle alerts
+      }).catch(function(r) {
+        // handle alerts
+      })
+    },
+    patch ({ commit }, data) {
+      Request.patch(data)
+      .then(data => {
+        // handle alerts
+      }).catch(function(r) {
+        // handle alerts
+      })
     }
   }
 })

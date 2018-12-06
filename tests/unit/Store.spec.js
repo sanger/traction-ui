@@ -1,4 +1,8 @@
 import Store from '@/store.js'
+import axios from 'axios'
+import flushPromises from 'flush-promises'
+
+jest.mock('axios')
 
 describe('Store.js', () => {
 
@@ -67,10 +71,9 @@ describe('Store.js', () => {
       store.commit('addSamples', samples)
     })
 
-
     it('will have some samples', () => {
       expect(store.getters.samples.length).toEqual(3)
-    })  
+    })
 
     it('will not add duplicate samples', () =>{
       samples = [
@@ -93,6 +96,39 @@ describe('Store.js', () => {
         store.commit('selectSample', samples[0])
         expect(store.getters.selectedSamples().length).toEqual(0)
       })
+    })
+  })
+
+  describe('actions', () => {
+    it('#get', async () => {
+      let response = {status: 200, data: { data: [
+        {id: 1, attributes: {name: 'sample1', species: 'dog'}},
+        {id: 2, attributes: {name: 'sample1', species: 'cat'}}
+      ]}}
+      axios.get.mockResolvedValue(response)
+      store.dispatch('get')
+      await flushPromises()
+      expect(store.getters.requests.length).toEqual(2)
+    })
+
+    it('#post', async () => {
+      let data = { data: { attributes: { samples: [{ id: 1, name: 'sample1', species: 'dog'}] }}}
+      let response = {status: 200, data: { data: [{id: 1, attributes: {name: 'sample1', species: 'dog'}}]}}
+      axios.post.mockResolvedValue(response)
+      store.dispatch('post', data)
+      await flushPromises()
+      let headers = {'Content-Type': 'application/vnd.api+json', 'Accept': 'application/vnd.api+json'}
+      expect(axios.post).toBeCalledWith('http://example.com/api/v1', data, { headers: headers })
+    })
+
+    it('#patch', async () => {
+      let data = { data: { attributes: { requests: [{ id: 1, name: 'sample1', species: 'dog'}] }}}
+      let response = {status: 200, data: { data: [{id: 1, attributes: {name: 'sample1', species: 'dog'}}]}}
+      axios.patch.mockResolvedValue(response)
+      store.dispatch('patch', data)
+      await flushPromises()
+      let headers = {'Content-Type': 'application/vnd.api+json', 'Accept': 'application/vnd.api+json'}
+      expect(axios.patch).toBeCalledWith('http://example.com/api/v1', data, { headers: headers })
     })
   })
 

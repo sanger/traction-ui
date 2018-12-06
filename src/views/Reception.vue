@@ -10,6 +10,7 @@
 import RequestList from '@/components/RequestList'
 import axios from 'axios'
 import Alert from '@/components/Alert'
+import Request from '@/api/Request'
 
 export default {
   name: 'Reception',
@@ -24,54 +25,28 @@ export default {
   },
   methods: {
     getRequests() {
-      let self = this
-      axios.get(`${process.env.VUE_APP_SEQUENCESCAPE_BASE_URL}`+
-        `/api/v2/requests?filter[state]=pending&filter[request_type]=long_read`
-      )
-      .then(function (response) {
-        let requests = self.buildRequestsFromResponseHelper(response.data.data)
-        self.$store.commit('addRequests', requests)
-      })
-    },
-    buildRequestsFromResponseHelper(data) {
-      let requests = []
-      for (let i = 0; i < data.length; i++) {
-        let request = {
-          id: data[i].id,
-          name: data[i].attributes.name,
-          species: data[i].attributes.species
-        }
-        requests.push(request)
-      }
-      return requests
+      Request.baseUrl = process.env.VUE_APP_SEQUENCESCAPE_BASE_URL
+      Request.apiNamespace = '/api/v2/requests?filter[state]=pending&filter[request_type]=long_read'
+      this.$store.dispatch('get')
     },
     // Export the selected requests to Traction backend service
-    async postSelectedRequests () {
-      try {
-        const response = await axios.post(
-          `${process.env.VUE_APP_TRACTION_API}/v1/samples`,
-          { data: { attributes: { samples: this.getSelectedRequests() }}},
-          this.config
-        )
-        this.$refs.alert.show(response.data, 'success')
-      } catch (error) {
-        let errors = error.response.data.errors
-        this.$refs.alert.show(errors, 'danger')
-      }
+    postSelectedRequests () {
+      Request.baseUrl = process.env.VUE_APP_TRACTION_API
+      Request.apiNamespace = '/v1/samples'
+      let data = { data: { attributes: { samples: this.getSelectedRequests() }}}
+      this.$store.dispatch('post', data)
     },
     // Update the status of requests in SS from pending to started
-    async updateRequestStatusInSS () {
-      try {
-        const response = await axios.patch(
-          `${process.env.VUE_APP_SEQUENCESCAPE_BASE_URL}/api/v2/requests`,
-          { data: { attributes: { requests: this.updateStatusJson() }}},
-          this.config
-        )
-        this.$refs.alert.show(response.data, 'success')
-      } catch (error) {
-        let errors = error.response.data.errors
-        this.$refs.alert.show(errors, 'danger')
-      }
+    updateRequestStatusInSS () {
+      Request.baseUrl = process.env.VUE_APP_SEQUENCESCAPE_BASE_URL
+      Request.apiNamespace = '/api/v2/requests'
+      let data = { data: { attributes: { requests: this.updateStatusJson() }}}
+      this.$store.dispatch('patch', data)
+
+      //   handle alerts
+      //   let errors = error.response.data.errors
+      //   this.$refs.alert.show(error.response.data.errors, 'danger')
+
     },
     getSelectedRequests() {
       return this.$store.getters.selectedRequests()
@@ -101,4 +76,3 @@ export default {
   float: right;
 }
 </style>
-
