@@ -4,41 +4,34 @@ import Response from '@/api/Response'
 
 let defaultConfig = {
   baseUrl: 'http://example.com',
-  apiNamespace: '/api/v1',
+  apiNamespace: 'api/v1',
   headers: {'Content-Type': 'application/vnd.api+json', 'Accept': 'application/vnd.api+json'}
 }
 
 class Request {
   constructor(config) {
-    this.config = config
+    this.baseUrl = config.baseUrl
+    this.apiNamespace = config.apiNamespace
+    this.headers = config.headers
   }
 
-  get baseUrl () {
-    return this.config.baseUrl
+  get options() {
+    return {
+      baseUrl: `${this.baseUrl}/${this.apiNamespace}`,
+      headers: this.headers
+    }
   }
 
-  get apiNamespace () {
-    return this.config.apiNamespace
-  }
+  async get(resource, filters = {}) {
+    let url = resource
+    let mappedFilters
 
-  get headers () {
-    return this.config.headers
-  }
+    if (Object.keys(filters).length > 0) {
+      mappedFilters = Object.keys(filters).map(key => `filter[${key}]=${filters[key]}`)
+      url = `${resource}?${mappedFilters.join('&')}`
+    }
 
-  set baseUrl (_baseUrl) {
-    this.config.baseUrl = _baseUrl
-  }
-
-  set apiNamespace (_apiNamespace) {
-    this.config.apiNamespace = _apiNamespace
-  }
-
-  set headers (_headers) {
-    this.config.headers = _headers
-  }
-
-  get() {
-    return axios.get(this.baseUrl+this.apiNamespace)
+    return await axios.get(url, this.options)
       .then(function (response) {
         return new Response(response).body
       })
@@ -47,8 +40,8 @@ class Request {
       })
   }
 
-  async post(data) {
-    return await axios.post(this.baseUrl+this.apiNamespace, data, { headers: this.headers })
+  async post(resource, data) {
+    return await axios.post(resource, data, this.options)
       .then(function (response) {
         return new Response(response).body
       })
@@ -57,8 +50,8 @@ class Request {
       })
   }
 
-  async patch(data) {
-    return await axios.patch(this.baseUrl+this.apiNamespace, data, { headers: this.headers })
+  async patch(resource, data) {
+    return await axios.patch(resource, data, this.options)
       .then(function (response) {
         return new Response(response).body
       })
