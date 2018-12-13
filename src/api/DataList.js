@@ -1,5 +1,4 @@
 
-import axios from 'axios'
 import Query from '@/mixins/Query'
 
 export default {
@@ -12,7 +11,7 @@ export default {
         return { }
       }
     }
-  }
+  },
   computed: {
     endpoint () {
       if (Object.keys(this.filters).length === 0) return this.resource
