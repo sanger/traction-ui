@@ -1,4 +1,3 @@
-
 import Query from '@/mixins/Query'
 
 export default {
@@ -12,8 +11,13 @@ export default {
     },
     update(data) {
       return this.execute('patch', this.endpoint, data)
-    }
-
+    },
+    find(id) {
+      return this.execute('get', `${this.endpoint}/${id}`)
+    },
+    destroy(id) {
+      return this.execute('delete', `${this.endpoint}/${id}`);
+    },
   },
   render () {
   }

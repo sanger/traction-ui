@@ -38,12 +38,24 @@ describe('DataModel', () => {
 
   describe('find', () => {
 
-    it('will return the correct record if it exists', () => {
-
+    it('returns an appropriate response', () => {
+      let id = 123
+      response = {status: 200}
+      dataModel.execute.mockReturnValue(response)
+      expect(dataModel.find(id)).toEqual(response)
+      expect(dataModel.execute).toBeCalledWith('get', `${dataModel.endpoint}/${id}`)
     })
 
-    it('returns an error if the record does not exist', () => {
+  })
 
+  describe('destroy', () => {
+
+    it('returns an appropriate response', () => {
+      let id = 123
+      response = {status: 200}
+      dataModel.execute.mockReturnValue(response)
+      expect(dataModel.destroy(id)).toEqual(response)
+      expect(dataModel.execute).toBeCalledWith('delete', `${dataModel.endpoint}/${id}`)
     })
 
   })
