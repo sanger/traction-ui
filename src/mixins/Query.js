@@ -19,11 +19,19 @@ export default {
     headers: {
       type: Object,
       default: () => {
-        return { 
-          'Content-Type': 'application/vnd.api+json', 
+        return {
+          'Content-Type': 'application/vnd.api+json',
           'Accept': 'application/vnd.api+json'
         }
       }
+    }
+  },
+  data () {
+    return {
+      api:  {},
+      data: null,
+      errors: null,
+      loading: false
     }
   },
   computed: {
@@ -47,16 +55,8 @@ export default {
           this.data = null
           this.errors = response.data.errors
         })
-        
+
       this.loading = false
-    }
-  },
-  data () {
-    return {
-      api:  {},
-      data: null,
-      errors: null,
-      loading: false
     }
   },
   created () {

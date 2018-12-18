@@ -4,4 +4,4 @@ import { mount, createLocalVue } from '@vue/test-utils'
 const localVue = createLocalVue()
 localVue.use(BootstrapVue)
 
-export { mount, localVue } 
+export { mount, localVue }
