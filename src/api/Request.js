@@ -3,8 +3,8 @@ import axios from 'axios'
 import Response from '@/api/Response'
 
 let defaultConfig = {
-  baseUrl: 'http://example.com',
-  apiNamespace: 'api/v1',
+  baseUrl: 'http://localhost:3000',
+  apiNamespace: 'api/v2',
   headers: {'Content-Type': 'application/vnd.api+json', 'Accept': 'application/vnd.api+json'}
 }
 

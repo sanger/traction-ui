@@ -32,5 +32,9 @@ export default {
       load: this.load,
       loading: this.loading,
     })
+  },
+  created() {
+    // only load if data doesnt already exist
+    this.load()
   }
 }

@@ -18,7 +18,6 @@ describe('Reception.vue', () => {
     wrapper = mount(Reception, { localVue })
     wrapper.find(DataList).vm.data = data
     reception = wrapper.vm
-
   })
 
   it('has a data list', () => {

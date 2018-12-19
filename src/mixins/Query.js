@@ -7,11 +7,11 @@ export default {
   props: {
     baseURL: {
     type: String,
-    default: 'http://example.com'
+    default: 'http://localhost:3000'
     },
     apiNamespace: {
       type: String,
-      default: 'api/v1'
+      default: 'api/v2'
     },
     resource: {
       type: String,
@@ -42,7 +42,6 @@ export default {
   },
   methods: {
     async execute(type, ...params) {
-
       if (this.loading) return
 
       this.loading = true

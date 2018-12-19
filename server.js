@@ -17,6 +17,6 @@ router.render = (req, res) => {
   res.setHeader('Content-Type', 'application/vnd.api+json')
 
   res.jsonp({
-    data: { attributes: { requests: res.locals.data } }
+    data: res.locals.data
   })
 }
