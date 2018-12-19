@@ -8,7 +8,7 @@ import { mount, localVue } from './testHelper'
 
 jest.mock('axios')
 
-describe('Reception.vue', () => {
+describe.skip('Reception.vue', () => {
 
   let wrapper, reception, response, samples, $store
 

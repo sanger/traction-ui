@@ -4,7 +4,7 @@ import flushPromises from 'flush-promises'
 
 jest.mock('axios')
 
-describe('Store.js', () => {
+describe.skip('Store.js', () => {
 
   let store, requests, samples
 

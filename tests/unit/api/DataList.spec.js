@@ -21,7 +21,6 @@ const listCmp = Vue.extend({
   },
   data () {
     return {
-      requests: []
     }
   }
 })
@@ -77,33 +76,21 @@ describe('DataList', () => {
 
   describe('scoped slots', () => {
 
-    let wrapper, dataList, data
+    let wrapper, dataList, data, list, sampleRow
 
     beforeEach(() => {
       data = [{id: 1, attributes: {name: 'sample1', species: 'dog'}}, {id: 2, attributes: {name: 'sample2', species: 'cat'}}]
       wrapper = mount(listCmp)
-      wrapper.setData({ requests: data })
       dataList = wrapper.vm
     })
 
-    it('will have a two rows with sample data', () => {
-      expect(dataList.requests).toBe(data)
-      console.log(dataList.requests)
-      // let row = wrapper.find('#listCmp')
-      console.log(wrapper.html())
-      // expect(row.at(1).text()).toEqual("")
-      // expect(sampleRow.at(1).text()).toEqual("1")
-      // expect(sampleRow.at(2).text()).toEqual("DN11111")
-      // expect(sampleRow.at(3).text()).toEqual("cat")
-    })
-
-    xit('has two samples in the template', () => {
-      expect(dataList.data).toEqual(data)
-    })
-
-    xit('has scoped slots', () => {
-      console.log(dataList.$scopedSlots)
-      expect(dataList.$scopedSlots).toEqual({})
+    it('will render the sample data if they exist', () => {
+      wrapper.find(DataList).vm.data = data
+      list = wrapper.find('ul').findAll('li')
+      expect(list.length).toEqual(2)
+      sampleRow = list.at(0).findAll('h3')
+      expect(sampleRow.at(0).text()).toEqual('1')
+      expect(sampleRow.at(1).text()).toEqual('sample1')
     })
 
   })

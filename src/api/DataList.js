@@ -25,12 +25,7 @@ export default {
     }
   },
   render() {
-    // Render the default scoped slot and
-    // provide data and method properties
-    // via the slot scope.
-    console.log("render")
-    console.log(this.data)
-    console.log(this.requests)
+    if (this.$scopedSlots.default === undefined) return
     return this.$scopedSlots.default({
       data: this.data,
     //   errors: this.errors,
