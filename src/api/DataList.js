@@ -28,9 +28,9 @@ export default {
     if (this.$scopedSlots.default === undefined) return
     return this.$scopedSlots.default({
       data: this.data,
-    //   errors: this.errors,
+      errors: this.errors,
       load: this.load,
-    //   loading: this.loading,
-    });
+      loading: this.loading,
+    })
   }
 }

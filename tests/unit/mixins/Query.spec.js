@@ -2,6 +2,7 @@ import Vue from 'vue'
 import { mount, localVue } from '../testHelper'
 import flushPromises from 'flush-promises'
 import Query from '@/mixins/Query'
+import Response from '@/api/Response'
 
 const cmp = Vue.extend({
   mixins: [Query],
@@ -47,7 +48,7 @@ describe('Query', () => {
 
   describe('query', () => {
 
-    let response
+    let response, apiResponse
 
     describe('get', () => {
 
@@ -57,18 +58,20 @@ describe('Query', () => {
 
       it('returns some appropriate data if successful', async () => {
         response = {status: 200, data: { data: [{id: 1, attributes: {name: 'sample1', species: 'dog'}}]}}
+        apiResponse = new Response(response)
         query.api.get.mockResolvedValue(response)
         query.execute('get')
         await flushPromises()
-        expect(query.data).toEqual(response.data)
+        expect(query.data).toEqual(apiResponse.body)
       })
 
       it('returns an appropriate response if there is an error', async () => {
         response = {status: 422, data: { errors: [{ name: 'error message1' }, { name: 'error message2' }]}}
+        apiResponse = new Response(response)
         query.api.get.mockRejectedValue(response)
         query.execute('get')
         await flushPromises()
-        expect(query.errors).toEqual(response.data.errors)
+        expect(query.errors).toEqual(apiResponse.errors)
       })
 
       it('does nothing if the query is already loading', async () => {

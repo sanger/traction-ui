@@ -1,5 +1,6 @@
 
 import axios from 'axios'
+import Response from '@/api/Response'
 
 export default {
   name: 'Query',
@@ -48,12 +49,12 @@ export default {
 
       await this.api[type](...params)
         .then(response => {
-          this.data = response.data
+          this.data = new Response(response).body
           this.errors = null
         })
         .catch(response => {
           this.data = null
-          this.errors = response.data.errors
+          this.errors = new Response(response).errors
         })
 
       this.loading = false

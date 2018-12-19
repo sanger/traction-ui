@@ -2,13 +2,16 @@ import Vue from 'vue'
 import { mount, localVue } from '../testHelper'
 import flushPromises from 'flush-promises'
 import DataList from '@/api/DataList'
+import Response from '@/api/Response'
 
 const listCmp = Vue.extend({
   name: 'listCmp',
   template: `
               <data-list resource="requests">
-                <div slot-scope="{ data: requests }">
-                  <ul>
+                <div slot-scope="{ data: requests, errors, loading }">
+                  <span class="loading" v-if="loading">Loading...</span>
+                  <span class="errors" v-else-if="errors">{{ errors }}</span>
+                  <ul v-else>
                     <li v-for="request in requests" :key="request.id">
                       <h3>{{ request.id }}</h3>
                       <h3>{{ request.attributes.name }}</h3>
@@ -66,17 +69,18 @@ describe('DataList', () => {
     it('has data on execute', async () => {
       let data = { data: [{id: 1, attributes: {name: 'sample1', species: 'dog'}}]}
       let response = {status: 200, data: data }
+      let apiResponse = new Response(response)
       dataList.api.get.mockResolvedValue(response)
       dataList.load()
       await flushPromises()
-      expect(dataList.data).toEqual(data)
+      expect(dataList.data).toEqual(apiResponse.body)
     })
 
   })
 
   describe('scoped slots', () => {
 
-    let wrapper, dataList, data, list, sampleRow
+    let wrapper, dataList, data
 
     beforeEach(() => {
       data = [{id: 1, attributes: {name: 'sample1', species: 'dog'}}, {id: 2, attributes: {name: 'sample2', species: 'cat'}}]
@@ -86,11 +90,23 @@ describe('DataList', () => {
 
     it('will render the sample data if they exist', () => {
       wrapper.find(DataList).vm.data = data
-      list = wrapper.find('ul').findAll('li')
+      let list = wrapper.find('ul').findAll('li')
       expect(list.length).toEqual(2)
-      sampleRow = list.at(0).findAll('h3')
+      let sampleRow = list.at(0).findAll('h3')
       expect(sampleRow.at(0).text()).toEqual('1')
       expect(sampleRow.at(1).text()).toEqual('sample1')
+    })
+
+    it('will render an error if something goes wrong', () => {
+      wrapper.find(DataList).vm.errors = 'Something went wrong'
+      let errors = wrapper.find('.errors')
+      expect(errors.text()).toEqual('Something went wrong')
+    })
+
+    it('will provide a message if the data is being loaded', () => {
+       wrapper.find(DataList).vm.loading = true
+      let loading = wrapper.find('.loading')
+      expect(loading.text()).toEqual('Loading...')
     })
 
   })

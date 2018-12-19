@@ -51,7 +51,7 @@ export default new Vuex.Store({
   },
   actions: {
     get ({ commit }) {
-      Request.get()
+      Request.get('requests', Request.options)
       .then(data => {
         commit('addRequests', data)
       }).catch(function(r) {
