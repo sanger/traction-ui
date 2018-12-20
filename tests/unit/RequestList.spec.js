@@ -6,11 +6,11 @@ import { mount } from './testHelper'
 
 describe('RequestList.vue', () => {
 
-  let vm, wrapper, samples
+  let vm, wrapper, requests
 
   beforeEach(() => {
-    samples = Samples.requests
-    wrapper = mount(RequestList, { propsData: { samples: samples }})
+    requests = Samples.requests
+    wrapper = mount(RequestList, { propsData: { requests: requests }})
     vm = wrapper.vm
   })
 
@@ -18,15 +18,15 @@ describe('RequestList.vue', () => {
     expect(wrapper.name()).toEqual('RequestList')
   })
 
-  it('will have some samples', () => {
-    expect(vm.samples.length).toEqual(samples.length)
+  it('will have some requests', () => {
+    expect(vm.requests.length).toEqual(requests.length)
   })
 
   it('will have a table', () => {
     expect(wrapper.contains('table')).toBe(true)
   })
 
-  it('will have a table of sample rows', () => {
+  it('will have a table of request rows', () => {
     expect(wrapper.contains(RequestItem)).toBe(true)
   })
 })

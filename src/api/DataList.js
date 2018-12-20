@@ -20,11 +20,11 @@ export default {
     }
   },
   methods: {
-    load() {
+    load () {
       return this.execute('get', this.endpoint)
     }
   },
-  render() {
+  render () {
     if (this.$scopedSlots.default === undefined) return
     return this.$scopedSlots.default({
       data: this.data,
@@ -33,8 +33,8 @@ export default {
       loading: this.loading,
     })
   },
-  created() {
+  created () {
     // only load if data doesnt already exist
-    this.load()
+    if (this.data === undefined || this.errors === undefined) this.load()
   }
 }

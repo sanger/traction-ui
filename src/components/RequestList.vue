@@ -3,13 +3,13 @@
     <thead>
       <tr>
         <th></th>
-        <th>Sample ID</th>
+        <th>Request ID</th>
         <th>Name</th>
         <th>Species</th>
       </tr>
     </thead>
     <tbody>
-      <request-item v-for="sample in samples" v-bind:key="sample.id" v-bind:sample="sample"></request-item>
+      <request-item v-for="request in requests" v-bind:key="request.id" v-bind:request="request"></request-item>
     </tbody>
   </table>
 </template>
@@ -25,7 +25,7 @@ export default {
     }
   },
   props: {
-    samples: {
+    requests: {
       type: Array,
       default: function () {
         return []
