@@ -2,6 +2,7 @@ import Reception from '@/views/Reception'
 import Alert from '@/components/Alert'
 import { mount, localVue } from './testHelper'
 import DataList from '@/api/DataList'
+import DataModel from '@/api/DataModel'
 
 describe('Reception.vue', () => {
 
@@ -47,9 +48,33 @@ describe('Reception.vue', () => {
       expect(reception.selected.length).toEqual(3)
     })
 
-    xit('will allow for the import of selected requests into the service', () => {
+    describe('#importRequests', () => {
 
+      let response
+
+      beforeEach(() => {
+        reception.tractionApi.update = jest.fn()
+      })
+
+      it('success', () => {
+        response = {status: 201}
+        reception.tractionApi.data = response
+        reception.tractionApi.update.mockReturnValue(response)
+        wrapper.find('#importRequests').trigger('click')
+        expect(reception.message).toEqual("Samples imported")
+        expect(reception.tractionApi.update).toBeCalledWith(reception.selected)
+      })
+
+      it('failure', () => {
+        response = {message: 'Something went wrong'}
+        reception.tractionApi.errors = response
+        reception.tractionApi.update.mockReturnValue(response)
+        wrapper.find('#importRequests').trigger('click')
+        expect(reception.message).toEqual("Something went wrong")
+        expect(reception.tractionApi.update).toBeCalledWith(reception.selected)
+      })
     })
+
   })
 
 })

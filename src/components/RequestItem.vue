@@ -1,38 +1,44 @@
 <template>
   <tr>
     <td><input class="selected" type="checkbox" v-model="selected" /></td>
-    <td>{{ request.id }}</td>
-    <td>{{ request.name }}</td>
-    <td>{{ request.species }}</td>
+    <td>{{ id }}</td>
+    <td>{{ name }}</td>
+    <td>{{ species }}</td>
   </tr>
-
 </template>
 
 <script>
 
 export default {
   name: 'RequestItem',
-  props: [
-    'request'
-  ],
+  props: {
+    id: {
+      type: [String, Number]
+    },
+    name: {
+      type: String
+    },
+    species: {
+      type: String
+    }
+  },
   data () {
     return {
       selected: false
     }
   },
   methods: {
-    // select() {
-    //   console.log("click!")
-    //   // this.$store.commit('selectRequest', this.json)
-    // }
   },
   computed: {
-    // json () {
-    //   return Object.assign(this.sample, { selected: this.selected })
-    // }
+    json () {
+      return {
+        id: this.id,
+        name: this.name,
+        species: this.species
+      }
+    }
   }
 }
-
 </script>
 
 <style>

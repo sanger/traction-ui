@@ -62,7 +62,7 @@ describe('Query', () => {
         query.api.get.mockResolvedValue(response)
         query.execute('get')
         await flushPromises()
-        expect(query.data).toEqual(apiResponse.body)
+        expect(query.data).toEqual(apiResponse)
       })
 
       it('returns an appropriate response if there is an error', async () => {

@@ -30,7 +30,7 @@ export default {
       data: this.data,
       errors: this.errors,
       load: this.load,
-      loading: this.loading,
+      loading: this.loading
     })
   },
   created () {

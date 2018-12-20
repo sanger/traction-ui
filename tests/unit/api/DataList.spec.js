@@ -73,7 +73,7 @@ describe('DataList', () => {
       dataList.api.get.mockResolvedValue(response)
       dataList.load()
       await flushPromises()
-      expect(dataList.data).toEqual(apiResponse.body)
+      expect(dataList.data).toEqual(apiResponse)
     })
 
   })

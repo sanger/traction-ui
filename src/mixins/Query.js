@@ -48,7 +48,7 @@ export default {
 
       await this.api[type](...params)
         .then(response => {
-          this.data = new Response(response).body
+          this.data = new Response(response)
           this.errors = null
         })
         .catch(response => {
