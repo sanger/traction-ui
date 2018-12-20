@@ -3,6 +3,7 @@ import { mount, localVue } from '../testHelper'
 import flushPromises from 'flush-promises'
 import Query from '@/mixins/Query'
 import Response from '@/api/Response'
+import axios from 'axios'
 
 const cmp = Vue.extend({
   mixins: [Query],
@@ -62,6 +63,7 @@ describe('Query', () => {
         query.api.get.mockResolvedValue(response)
         query.execute('get')
         await flushPromises()
+        console.log(wrapper.emitted())
         expect(query.data).toEqual(apiResponse)
       })
 
@@ -80,6 +82,21 @@ describe('Query', () => {
         await flushPromises()
         expect(query.api.get).not.toBeCalled()
       })
+    })
+
+  })
+
+  describe('emit', () => {
+
+    beforeEach(() => {
+      let response = {status: 200, data: { data: [{id: 1, attributes: {name: 'sample1', species: 'dog'}}]}}
+      query.api.get = jest.fn(() => Promise.resolve(response))
+    })
+
+    it('emits a success event', async () => {
+      query.execute('get')
+      console.log(wrapper)
+      expect(wrapper.emitted().success).toBeTruthy()
     })
 
   })

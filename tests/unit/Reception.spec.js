@@ -61,6 +61,7 @@ describe('Reception.vue', () => {
         reception.tractionApi.update.mockReturnValue(response)
         reception.exportRequestsIntoTraction()
         expect(reception.message).toEqual("Samples imported")
+        let body = [{ id: 1, status: 'started'}, { id: 2, status: 'started'},  {id: 3, status: 'started'}]
         expect(reception.tractionApi.update).toBeCalledWith(reception.selected)
       })
 
@@ -75,10 +76,11 @@ describe('Reception.vue', () => {
     })
 
     describe('#updateSequencescapeRequests', () => {
-      let response
+      let response, body
 
       beforeEach(() => {
         reception.sequencescapeApi.update = jest.fn()
+        body = [{ id: 1, state: 'started'}, { id: 2, state: 'started'}, { id: 3, state: 'started'}]
       })
 
       it('success', () => {
@@ -87,7 +89,7 @@ describe('Reception.vue', () => {
         reception.sequencescapeApi.update.mockReturnValue(response)
         reception.updateSequencescapeRequests()
         expect(reception.message).toEqual("Samples imported")
-        expect(reception.sequencescapeApi.update).toBeCalledWith(reception.selected)
+        expect(reception.sequencescapeApi.update).toBeCalledWith(body)
       })
 
       it('failure', () => {
@@ -96,7 +98,7 @@ describe('Reception.vue', () => {
         reception.sequencescapeApi.update.mockReturnValue(response)
         reception.updateSequencescapeRequests()
         expect(reception.message).toEqual('Something went wrong')
-        expect(reception.sequencescapeApi.update).toBeCalledWith(reception.selected)
+        expect(reception.sequencescapeApi.update).toBeCalledWith(body)
       })
 
     })
@@ -114,31 +116,8 @@ describe('Reception.vue', () => {
         expect(reception.updateSequencescapeRequests).toBeCalled()
       })
 
-      it('incremenets the dataListKey', () => {
-        expect(reception.dataListKey).toEqual(0)
-        wrapper.find('#exportRequests').trigger('click')
-        expect(reception.dataListKey).toEqual(1)
-      })
-
     })
 
-    describe('rerenders', () => {
-
-      beforeEach(() => {
-        // data = [
-        //   { "id": 1, "name": "DN11111", "species": "cat" },
-        //   { "id": 2, "name": "DN11112", "species": "cat" }
-        // ]
-        // wrapper.find(DataList).vm.data = data
-        reception.updateSequencescapeRequests = jest.fn()
-      })
-
-      it('only shows the updated data', () => {
-        reception.forceRerender
-
-        expect(wrapper.find('tbody').findAll('tr').length).toEqual(2)
-      })
-    })
   })
 
 })

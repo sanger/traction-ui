@@ -48,8 +48,11 @@ export default {
 
       await this.api[type](...params)
         .then(response => {
+          console.log("response!")
           this.data = new Response(response)
           this.errors = null
+          console.log(response)
+          this.$emit('success', response)
         })
         .catch(response => {
           this.data = null

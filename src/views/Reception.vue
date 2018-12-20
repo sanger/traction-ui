@@ -10,7 +10,7 @@
         </tr>
       </thead>
       <tbody>
-        <data-list ref="requests" resource="requests" key="dataListKey">
+        <data-list ref="requests" resource="requests">
           <div slot-scope="{ data: requests, errors, loading, load }">
             <request-item v-for="request in requests" v-bind:key="request.id" v-bind="request"></request-item>
           </div>
@@ -32,8 +32,7 @@ export default {
   name: 'Reception',
   data () {
     return {
-      message: '',
-      dataListKey: 0
+      message: ''
     }
   },
   created () {
@@ -43,7 +42,6 @@ export default {
       // look into transaction?
       this.exportRequestsIntoTraction()
       this.updateSequencescapeRequests()
-      // this.forceRerender()
     },
     exportRequestsIntoTraction () {
       this.tractionApi.update(this.selected)
@@ -55,16 +53,13 @@ export default {
       }
     },
     updateSequencescapeRequests () {
-      this.sequencescapeApi.update(this.selected)
+      this.sequencescapeApi.update(this.selectedForSS)
       if (this.sequencescapeApi.data !== null) {
         this.message = 'Samples imported'
       }
       else {
         this.message = this.sequencescapeApi.errors.message
       }
-    },
-    forceRerender () {
-      this.dataListKey += 1
     }
   },
   components: {
@@ -75,6 +70,9 @@ export default {
     // should this property be in DataList??
     selected () {
       return this.$refs.requests.$children.filter(request => request.selected).map(request => request.json)
+    },
+    selectedForSS () {
+      return this.$refs.requests.$children.filter(request => request.selected).map(request => ({ id: request.id, state: 'started'}))
     },
     tractionApi () {
       let Cmp = Vue.extend(DataModel)
