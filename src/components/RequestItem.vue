@@ -1,6 +1,6 @@
 <template>
   <tr>
-    <td><input type="checkbox" v-model="selected" v-on:click="select" /></td>
+    <td><input class="selected" type="checkbox" v-model="selected" /></td>
     <td>{{ request.id }}</td>
     <td>{{ request.name }}</td>
     <td>{{ request.species }}</td>
@@ -21,10 +21,10 @@ export default {
     }
   },
   methods: {
-    select() {
-      console.log("click!")
-      // this.$store.commit('selectRequest', this.json)
-    }
+    // select() {
+    //   console.log("click!")
+    //   // this.$store.commit('selectRequest', this.json)
+    // }
   },
   computed: {
     // json () {

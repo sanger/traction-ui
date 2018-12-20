@@ -10,7 +10,7 @@
         </tr>
       </thead>
       <tbody>
-        <data-list resource="requests">
+        <data-list ref="requests" resource="requests">
           <div slot-scope="{ data: requests, errors, loading }">
             <request-item v-for="request in requests" v-bind:key="request.id" v-bind:request="request"></request-item>
           </div>
@@ -40,6 +40,10 @@ export default {
     RequestItem
   },
   computed: {
+    // should this property be in DataList??
+    selected () {
+      return this.$refs.requests.$children.filter(request => request.selected)
+    }
   }
 }
 </script>

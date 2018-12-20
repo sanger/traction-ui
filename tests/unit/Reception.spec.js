@@ -32,4 +32,24 @@ describe('Reception.vue', () => {
     expect(wrapper.find('tbody').findAll('tr').length).toEqual(data.length)
   })
 
+  describe('selected', () => {
+
+    let checkboxes
+
+    beforeEach(() => {
+      let checkboxes = wrapper.findAll(".selected")
+      checkboxes.at(0).trigger('click')
+      checkboxes.at(1).trigger('click')
+      checkboxes.at(2).trigger('click')
+    })
+
+    it('will find the requests which have been selected', () => {
+      expect(reception.selected.length).toEqual(3)
+    })
+
+    xit('will allow for the import of selected requests into the service', () => {
+
+    })
+  })
+
 })
