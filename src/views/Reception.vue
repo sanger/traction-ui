@@ -10,14 +10,14 @@
         </tr>
       </thead>
       <tbody>
-        <data-list ref="requests" resource="requests">
-          <div slot-scope="{ data: requests, errors, loading }">
+        <data-list ref="requests" resource="requests" key="dataListKey">
+          <div slot-scope="{ data: requests, errors, loading, load }">
             <request-item v-for="request in requests" v-bind:key="request.id" v-bind="request"></request-item>
           </div>
         </data-list>
       </tbody>
     </table>
-    <b-button id="importRequests" @click="importRequests">Import samples</b-button>
+    <b-button id="exportRequests" @click="exportRequests">Import samples</b-button>
   </div>
 </template>
 
@@ -25,20 +25,27 @@
 
 import Vue from 'vue'
 import DataList from '@/api/DataList'
-import DataModel from '@/api/Datamodel'
+import DataModel from '@/api/DataModel'
 import RequestItem from '@/components/RequestItem'
 
 export default {
   name: 'Reception',
   data () {
     return {
-      message: ''
+      message: '',
+      dataListKey: 0
     }
   },
   created () {
   },
   methods: {
-    importRequests () {
+    exportRequests () {
+      // look into transaction?
+      this.exportRequestsIntoTraction()
+      this.updateSequencescapeRequests()
+      // this.forceRerender()
+    },
+    exportRequestsIntoTraction () {
       this.tractionApi.update(this.selected)
       if (this.tractionApi.data !== null) {
         this.message = 'Samples imported'
@@ -46,6 +53,18 @@ export default {
       else {
         this.message = this.tractionApi.errors.message
       }
+    },
+    updateSequencescapeRequests () {
+      this.sequencescapeApi.update(this.selected)
+      if (this.sequencescapeApi.data !== null) {
+        this.message = 'Samples imported'
+      }
+      else {
+        this.message = this.sequencescapeApi.errors.message
+      }
+    },
+    forceRerender () {
+      this.dataListKey += 1
     }
   },
   components: {
@@ -60,6 +79,10 @@ export default {
     tractionApi () {
       let Cmp = Vue.extend(DataModel)
       return new Cmp({ propsData: { baseUrl: process.env.VUE_APP_TRACTION_API, apiNamespace: 'v1', resource: 'samples' }})
+    },
+    sequencescapeApi () {
+      let Cmp = Vue.extend(DataModel)
+      return new Cmp({ propsData: { baseUrl: process.env.VUE_APP_SEQUENCESCAPE_BASE_URL, apiNamespace: 'api/v2', resource: 'requests' }})
     }
   }
 }
