@@ -7,7 +7,7 @@ describe('DataModel', () => {
   let wrapper, dataModel, data, response
 
   beforeEach(() => {
-    wrapper = mount(DataModel, { mocks: localVue, propsData: { resource: 'samples' } })
+    wrapper = mount(DataModel, { propsData: { resource: 'samples' } })
     dataModel = wrapper.vm
     dataModel.execute = jest.fn()
   })
@@ -59,5 +59,4 @@ describe('DataModel', () => {
     })
 
   })
-
 })

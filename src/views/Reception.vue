@@ -1,5 +1,6 @@
 <template>
   <div class="reception">
+    <alert v-on:received="checkAlertMessages" ref='alert'></alert>
     <table class="table">
       <thead>
         <tr>
@@ -17,7 +18,7 @@
         </data-list>
       </tbody>
     </table>
-    <b-button id="exportRequests" @click="exportRequests">Import samples</b-button>
+    <b-button id="exportRequests" @click="exportRequests">Import Requests</b-button>
   </div>
 </template>
 
@@ -27,6 +28,7 @@ import Vue from 'vue'
 import DataList from '@/api/DataList'
 import DataModel from '@/api/DataModel'
 import RequestItem from '@/components/RequestItem'
+import Alert from '@/components/Alert'
 
 export default {
   name: 'Reception',
@@ -38,8 +40,10 @@ export default {
   created () {
   },
   methods: {
+    checkAlertMessages() {
+      this.showAlert
+    },
     exportRequests () {
-      // look into transaction?
       this.exportRequestsIntoTraction()
       this.updateSequencescapeRequests()
     },
@@ -64,7 +68,8 @@ export default {
   },
   components: {
     DataList,
-    RequestItem
+    RequestItem,
+    Alert
   },
   computed: {
     // should this property be in DataList??
@@ -81,6 +86,9 @@ export default {
     sequencescapeApi () {
       let Cmp = Vue.extend(DataModel)
       return new Cmp({ propsData: { baseUrl: process.env.VUE_APP_SEQUENCESCAPE_BASE_URL, apiNamespace: 'api/v2', resource: 'requests' }})
+    },
+    showAlert () {
+      return this.$refs.alert.show(this.message, 'danger')
     }
   }
 }

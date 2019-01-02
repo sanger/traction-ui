@@ -17,7 +17,7 @@ describe('Query', () => {
   beforeEach(() => {
     headers = { 'Content-Type': 'application/json', 'Accept': 'application/json' }
     props = {baseURL: 'http://sequencescape.com', apiNamespace: 'api/v2', headers: headers, resource: 'requests'}
-    wrapper = mount(cmp, { mocks: localVue, propsData: props })
+    wrapper = mount(cmp, { propsData: props })
     query = wrapper.vm
   })
 
@@ -63,7 +63,6 @@ describe('Query', () => {
         query.api.get.mockResolvedValue(response)
         query.execute('get')
         await flushPromises()
-        console.log(wrapper.emitted())
         expect(query.data).toEqual(apiResponse)
       })
 
@@ -89,14 +88,25 @@ describe('Query', () => {
   describe('emit', () => {
 
     beforeEach(() => {
-      let response = {status: 200, data: { data: [{id: 1, attributes: {name: 'sample1', species: 'dog'}}]}}
-      query.api.get = jest.fn(() => Promise.resolve(response))
+      query.api.get = jest.fn()
     })
 
-    it('emits a success event', async () => {
+    it('emits a success event on success', async () => {
+      let response = { status: 200, data: { data: [{id: 1, attributes: {name: 'sample1', species: 'dog'}}]}}
+      let apiResponse = new Response(response)
+      query.api.get.mockResolvedValue(response)
       query.execute('get')
-      console.log(wrapper)
-      expect(wrapper.emitted().success).toBeTruthy()
+      await flushPromises()
+      expect(wrapper.emitted().received).toBeTruthy()
+    })
+
+    it('emits a faiure event on failure', async () => {
+      let response = { status: 422, data: { errors: [{status: 422}]} }
+      let apiResponse = new Response(response)
+      query.api.get.mockRejectedValue(response)
+      query.execute('get')
+      await flushPromises()
+      expect(wrapper.emitted().received).toBeTruthy()
     })
 
   })

@@ -25,6 +25,11 @@ describe('Reception.vue', () => {
     expect(wrapper.contains(DataList)).toBe(true)
   })
 
+  it('has a alert', () => {
+    expect(wrapper.contains(Alert)).toBe(true)
+  })
+
+
   it('contains a table', () => {
     expect(wrapper.contains('table')).toBe(true)
   })
@@ -60,9 +65,9 @@ describe('Reception.vue', () => {
         reception.tractionApi.data = response
         reception.tractionApi.update.mockReturnValue(response)
         reception.exportRequestsIntoTraction()
+        expect(reception.tractionApi.update).toBeCalledWith(reception.selected)
         expect(reception.message).toEqual("Samples imported")
         let body = [{ id: 1, status: 'started'}, { id: 2, status: 'started'},  {id: 3, status: 'started'}]
-        expect(reception.tractionApi.update).toBeCalledWith(reception.selected)
       })
 
       it('failure', () => {

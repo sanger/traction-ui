@@ -1,4 +1,3 @@
-
 import axios from 'axios'
 import Response from '@/api/Response'
 
@@ -43,22 +42,19 @@ export default {
   methods: {
     async execute(type, ...params) {
       if (this.loading) return
-
       this.loading = true
 
       await this.api[type](...params)
         .then(response => {
-          console.log("response!")
           this.data = new Response(response)
           this.errors = null
-          console.log(response)
-          this.$emit('success', response)
+          this.$emit('received', response)
         })
         .catch(response => {
           this.data = null
           this.errors = new Response(response).errors
+          this.$emit('received')
         })
-
       this.loading = false
     }
   },
