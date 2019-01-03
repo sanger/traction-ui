@@ -22,12 +22,17 @@ export default {
   methods: {
     load () {
       return this.execute('get', this.endpoint)
+    },
+    getDataBody () {
+      if (this.data) return this.data.body
+      return []
     }
   },
   render () {
     if (this.$scopedSlots.default === undefined) return
     return this.$scopedSlots.default({
-      data: this.data,
+      data: this.getDataBody(),
+      // data: this.data,
       errors: this.errors,
       load: this.load,
       loading: this.loading
@@ -35,6 +40,8 @@ export default {
   },
   created () {
     // only load if data doesnt already exist
-    if (this.data === undefined || this.errors === undefined) this.load()
+    // TODO: sort out null checks
+    if ((this.data === undefined) || (this.errors === undefined)) this.load()
+    // if ((this.data === null) || (this.errors === null)) this.load()
   }
 }

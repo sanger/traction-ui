@@ -7,7 +7,7 @@ import Response from '@/api/Response'
 const listCmp = Vue.extend({
   name: 'listCmp',
   template: `
-              <data-list resource="requests">
+            <data-list ref="requests" baseURL="http://examplehost:1234" apiNamespace="abc/v1" resource="requests">
                 <div slot-scope="{ data: requests, errors, loading }">
                   <span class="loading" v-if="loading">Loading...</span>
                   <span class="errors" v-else-if="errors">{{ errors }}</span>
@@ -33,7 +33,7 @@ describe('DataList', () => {
   let props, filters
 
   beforeEach(() => {
-    props = {resource: 'requests'}
+    props = {resource: 'requests', baseURL: 'http://examplehost:1234', apiNamespace: "abc/v1"}
     filters = {type: 'long_read', state: 'pending'}
   })
 
@@ -83,7 +83,7 @@ describe('DataList', () => {
     let wrapper, dataList, data
 
     beforeEach(() => {
-      data = [{id: 1, attributes: {name: 'sample1', species: 'dog'}}, {id: 2, attributes: {name: 'sample2', species: 'cat'}}]
+      data = { body: [{id: 1, attributes: {name: 'sample1', species: 'dog'}}, {id: 2, attributes: {name: 'sample2', species: 'cat'}}]}
       wrapper = mount(listCmp)
       dataList = wrapper.vm
     })

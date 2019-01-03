@@ -1,23 +1,24 @@
 <template>
   <div class="reception">
-    <alert v-on:received="checkAlertMessages" ref='alert'></alert>
-    <table class="table">
-      <thead>
-        <tr>
-          <th></th>
-          <th>Sample ID</th>
-          <th>Name</th>
-          <th>Species</th>
-        </tr>
-      </thead>
-      <tbody>
-        <data-list ref="requests" resource="requests">
-          <div slot-scope="{ data: requests, errors, loading, load }">
-            <request-item v-for="request in requests" v-bind:key="request.id" v-bind="request"></request-item>
-          </div>
-        </data-list>
-      </tbody>
-    </table>
+    <alert ref='alert'></alert>
+      <table class="table">
+        <thead>
+          <tr>
+            <th></th>
+            <th>Sample ID</th>
+            <th>Name</th>
+            <th>Species</th>
+          </tr>
+        </thead>
+        <tbody>
+          <data-list v-on:myevent="doSomething" ref="requests" baseURL="http://localhost:3200" apiNamespace="api/v2" resource="requests">
+            <div slot-scope="{ data: requests, errors, loading, load }">
+              <request-item v-for="request in requests" v-bind:key="request.id" v-bind="request"></request-item>
+            </div>
+          </data-list>
+        </tbody>
+      </table>
+
     <b-button id="exportRequests" @click="exportRequests">Import Requests</b-button>
   </div>
 </template>
@@ -40,29 +41,36 @@ export default {
   created () {
   },
   methods: {
-    checkAlertMessages() {
+    doSomething () {
       this.showAlert
     },
     exportRequests () {
       this.exportRequestsIntoTraction()
       this.updateSequencescapeRequests()
+      this.showAlert
     },
-    exportRequestsIntoTraction () {
-      this.tractionApi.update(this.selected)
-      if (this.tractionApi.data !== null) {
-        this.message = 'Samples imported'
-      }
-      else {
-        this.message = this.tractionApi.errors.message
+    async exportRequestsIntoTraction () {
+      try {
+        let response = await this.tractionApi.update(this.selected)
+        if (this.tractionApi.data !== null) {
+          this.message = 'Samples imported into Traction'
+        } else {
+          this.message = this.tractionApi.errors.message
+        }
+      } catch(e) {
+        this.message = 'There was an error'
       }
     },
-    updateSequencescapeRequests () {
-      this.sequencescapeApi.update(this.selectedForSS)
-      if (this.sequencescapeApi.data !== null) {
-        this.message = 'Samples imported'
-      }
-      else {
-        this.message = this.sequencescapeApi.errors.message
+    async updateSequencescapeRequests () {
+      try {
+        let response = await this.sequencescapeApi.update(this.selectedForSS)
+        if (this.sequencescapeApi.data !== null) {
+          this.message = 'Samples updated in SS'
+        } else {
+          this.message = this.sequencescapeApi.errors.message
+        }
+      } catch(e) {
+        this.message = 'There was an error'
       }
     }
   },
@@ -81,14 +89,14 @@ export default {
     },
     tractionApi () {
       let Cmp = Vue.extend(DataModel)
-      return new Cmp({ propsData: { baseUrl: process.env.VUE_APP_TRACTION_API, apiNamespace: 'v1', resource: 'samples' }})
+      return new Cmp({ propsData: { baseURL: process.env.VUE_APP_TRACTION_API, apiNamespace: 'v1', resource: 'samples' }})
     },
     sequencescapeApi () {
       let Cmp = Vue.extend(DataModel)
-      return new Cmp({ propsData: { baseUrl: process.env.VUE_APP_SEQUENCESCAPE_BASE_URL, apiNamespace: 'api/v2', resource: 'requests' }})
+      return new Cmp({ propsData: { baseURL: process.env.VUE_APP_SEQUENCESCAPE_BASE_URL, apiNamespace: 'api/v2', resource: 'requests' }})
     },
     showAlert () {
-      return this.$refs.alert.show(this.message, 'danger')
+      return this.$refs.alert.show(this.message, 'primary')
     }
   }
 }
