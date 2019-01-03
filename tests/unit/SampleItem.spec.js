@@ -4,47 +4,50 @@ import Store from '@/store'
 
 describe('SampleItem.vue', () => {
 
-  let wrapper, aSample, sample, $store
+  let wrapper, sample, sampleItem, $store
 
   beforeEach(() => {
-    aSample = { id: '1', name: 'DN11111', species: 'cat' }
-    $store = Store
-    $store.commit('clear')
-    $store.commit('addSamples', [aSample])
-    wrapper = mount(SampleItem, { mocks: { $store }, propsData: { sample: aSample }})
-    sample = wrapper.vm
+    sample = { id: '1', name: 'DN11111', species: 'cat', state: 'pending' }
+    wrapper = mount(SampleItem, { mocks: { $store }, propsData: sample})
+    sampleItem = wrapper.vm
   })
 
   it('will have a name', () => {
     expect(wrapper.name()).toEqual('SampleItem')
   })
 
-  it('will have a sample', () => {
-    expect(sample.sample).toEqual(aSample)
+  it('will have an id', () => {
+    expect(sampleItem.id).toEqual('1')
+  })
+
+  it('will have a name', () => {
+    expect(sampleItem.name).toEqual('DN11111')
+  })
+
+  it('will have a species', () => {
+    expect(sampleItem.species).toEqual('cat')
+  })
+
+  it('will have a state', () => {
+    expect(sampleItem.state).toEqual('pending')
+  })
+
+  it('will produce some json', () => {
+    expect(sampleItem.json).toEqual(sample)
   })
 
   it('will have a row with sample data', () => {
-    let sampleRow = wrapper.find('tr').findAll('td')
-    expect(sampleRow.at(0).text()).toEqual("")
-    expect(sampleRow.at(1).text()).toEqual("1")
-    expect(sampleRow.at(2).text()).toEqual("DN11111")
-    expect(sampleRow.at(3).text()).toEqual("cat")
+    let row = wrapper.find('tr').findAll('td')
+    expect(row.at(0).text()).toEqual("")
+    expect(row.at(1).text()).toEqual("1")
+    expect(row.at(2).text()).toEqual("DN11111")
+    expect(row.at(3).text()).toEqual("cat")
+    expect(row.at(4).text()).toEqual("pending")
   })
 
-  it('will have a select checkbox', () => {
-    let selectElement = wrapper.find('tr').findAll('td').at(0)
-    expect(selectElement.contains('input')).toBe(true)
-  })
-
-  it('will select samples', () => {
+  it('will allow selection of samples', () => {
     let input = wrapper.find('input')
-    input.setChecked()
+    input.trigger('click')
     expect(input.element.checked).toEqual(true)
-  })
-
-  it('will update the sample in the store to select on click', () => {
-    let input = wrapper.find('input')
-    input.setChecked()
-    expect($store.getters.selectedSamples().length).toEqual(1)
   })
 })

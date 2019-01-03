@@ -1,48 +1,43 @@
 <template>
   <div class="samples">
-    <sample-list ref:sample-list v-bind:samples="samples"></sample-list>
+    <table class="table">
+      <thead>
+        <tr>
+          <th></th>
+          <th>Sample ID</th>
+          <th>Name</th>
+          <th>Species</th>
+          <th>State</th>
+        </tr>
+      </thead>
+      <tbody>
+        <data-list ref="samples" baseURL='http://localhost:3100' apiNamespace="v1" resource="samples">
+          <div slot-scope="{ data: samples, errors, loading, load }">
+            <sample-item v-for="sample in samples" v-bind:key="sample.id" v-bind="sample"></sample-item>
+          </div>
+        </data-list>
+      </tbody>
+    </table>
   </div>
 </template>
 
 <script>
-import SampleList from '@/components/SampleList'
-import axios from 'axios'
+import DataList from '@/api/DataList'
+import SampleItem from '@/components/SampleItem'
 
 export default {
   name: 'Samples',
-
   data () {
     return {
-      samples: this.$store.getters.samples
     }
   },
   created() {
-    this.getSamples()
   },
   methods: {
-    getSamples() {
-      let self = this
-      axios.get(`${process.env.VUE_APP_TRACTION_API}/v1/samples`)
-      .then(function (response) {
-        let samples = self.buildSamplesFromResponseHelper(response.data.data)
-        self.$store.commit('addSamples', samples)
-      })
-    },
-    buildSamplesFromResponseHelper(data) {
-      let samples = []
-      for (let i = 0; i < data.length; i++) {
-        let sample = {
-          id: data[i].id,
-          name: data[i].attributes.name,
-          species: data[i].attributes.species
-        }
-        samples.push(sample)
-      }
-      return samples
-    },
   },
   components: {
-    SampleList
+    DataList,
+    SampleItem
   },
   computed: {
   }

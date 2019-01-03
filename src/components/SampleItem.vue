@@ -1,34 +1,46 @@
 <template>
   <tr>
-    <td><input type="checkbox" v-model="selected" v-on:click="select" /></td>
-    <td>{{ sample.id }}</td>
-    <td>{{ sample.name }}</td>
-    <td>{{ sample.species }}</td>
-    <td>{{ sample.state }}</td>
+    <td><input class="selected" type="checkbox" v-model="selected" /></td>
+    <td>{{ id }}</td>
+    <td>{{ name }}</td>
+    <td>{{ species }}</td>
+    <td>{{ state }}</td>
   </tr>
-
 </template>
 
 <script>
 
 export default {
   name: 'SampleItem',
-  props: [
-    'sample'
-  ],
+  props: {
+    id: {
+      type: [String, Number]
+    },
+    name: {
+      type: String
+    },
+    species: {
+      type: String
+    },
+    state: {
+      type: String
+    }
+  },
   data () {
     return {
       selected: false
     }
   },
   methods: {
-    select() {
-      this.$store.commit('selectSample', this.json)
-    }
   },
   computed: {
     json () {
-      return Object.assign(this.sample, { selected: this.selected })
+      return {
+        id: this.id,
+        name: this.name,
+        species: this.species,
+        state: this.state,
+      }
     }
   }
 }
