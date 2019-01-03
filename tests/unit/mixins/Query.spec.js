@@ -29,12 +29,16 @@ describe('Query', () => {
     expect(query.apiNamespace).toEqual('api/v2')
   })
 
-  it('will have a rootUrl', () => {
-    expect(query.rootURL).toEqual('http://sequencescape.com/api/v2')
+  it('will have an resource', () => {
+    expect(query.resource).toEqual('requests')
   })
 
   it('will have some headers', () => {
     expect(query.headers).toEqual(headers)
+  })
+
+  it('will have a rootUrl', () => {
+    expect(query.rootURL).toEqual('http://sequencescape.com/api/v2')
   })
 
   it('will create an api instance', () => {
@@ -43,11 +47,7 @@ describe('Query', () => {
     expect(query.api.defaults.headers['Accept']).toEqual(headers['Accept'])
   })
 
-  it('must have an resource', () => {
-    expect(query.resource).toEqual('requests')
-  })
-
-  describe('query', () => {
+  describe('execute', () => {
 
     let response, apiResponse
 
@@ -72,7 +72,7 @@ describe('Query', () => {
         query.api.get.mockRejectedValue(response)
         query.execute('get')
         await flushPromises()
-        expect(query.errors).toEqual(apiResponse.errors)
+        expect(query.errors).toEqual({ message: 'error message1, error message2' })
       })
 
       it('does nothing if the query is already loading', async () => {
@@ -97,7 +97,7 @@ describe('Query', () => {
       query.api.get.mockResolvedValue(response)
       query.execute('get')
       await flushPromises()
-      expect(wrapper.emitted().received).toBeTruthy()
+      expect(wrapper.emitted().myevent).toBeTruthy()
     })
 
     it('emits a faiure event on failure', async () => {
@@ -106,7 +106,7 @@ describe('Query', () => {
       query.api.get.mockRejectedValue(response)
       query.execute('get')
       await flushPromises()
-      expect(wrapper.emitted().received).toBeTruthy()
+      expect(wrapper.emitted().myevent).toBeTruthy()
     })
 
   })

@@ -5,12 +5,12 @@ export default {
   name: 'Query',
   props: {
     baseURL: {
-    type: String,
-    default: 'http://localhost:3000'
+      type: String,
+      required: true
     },
     apiNamespace: {
       type: String,
-      default: 'api/v2'
+      required: true
     },
     resource: {
       type: String,
@@ -43,18 +43,19 @@ export default {
     async execute(type, ...params) {
       if (this.loading) return
       this.loading = true
-
-      await this.api[type](...params)
-        .then(response => {
-          this.data = new Response(response)
-          this.errors = null
-          this.$emit('received', response)
-        })
-        .catch(response => {
-          this.data = null
-          this.errors = new Response(response).errors
-          this.$emit('received')
-        })
+      let resp
+      try {
+        resp = await this.api[type](...params)
+        let response = new Response(resp)
+        this.data = response
+        this.errors = null
+        this.$emit('myevent')
+      } catch(resp) {
+        let response = new Response(resp)
+        this.data = null
+        this.errors = response.errors
+        this.$emit('myevent')
+      }
       this.loading = false
     }
   },
