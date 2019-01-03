@@ -1,47 +1,33 @@
 import Samples from '@/views/Samples'
-import SampleList from '@/components/SampleList'
-import { mount } from './testHelper'
-import Store from '@/store'
-import flushPromises from 'flush-promises'
-import axios from 'axios'
-
-jest.mock('axios')
+import { mount, localVue } from './testHelper'
+import DataList from '@/api/DataList'
 
 describe('Samples.vue', () => {
 
-  let wrapper, $store, samples, vm
+  let wrapper, samples, data
 
   beforeEach(() => {
-    samples = {
-      "requests": [
-        { "id": 1, "attributes": { "name": "DN11111", "species": "cat" }},
-        { "id": 2, "attributes": { "name": "DN11112", "species": "cat" }},
-        { "id": 3, "attributes": { "name": "DN11113", "species": "dog" }},
-        { "id": 4, "attributes": { "name": "DN11114", "species": "dog" }},
-        { "id": 5, "attributes": { "name": "DN11115", "species": "cat" }}
-      ]
-    }
-    $store = Store
-    $store.commit('clear')
-    let response = { data: { data: samples.requests } }
-    axios.get.mockResolvedValue(response)
-    wrapper = mount(Samples, { mocks: { $store }})
-    vm = wrapper.vm
+    data = { body: [
+      { "id": 1, "attributes": { "name": "DN11111", "species": "cat", "state": "pending" }},
+      { "id": 2, "attributes": { "name": "DN11112", "species": "cat", "state": "pending" }},
+      { "id": 3, "attributes": { "name": "DN11113", "species": "dog", "state": "pending" }},
+      { "id": 4, "attributes": { "name": "DN11114", "species": "dog", "state": "pending" }},
+      { "id": 5, "attributes": { "name": "DN11115", "species": "cat", "state": "pending" }}
+    ]}
+    wrapper = mount(Samples, { localVue })
+    wrapper.find(DataList).vm.data = data
+    samples = wrapper.vm
   })
 
-  it('will have a name', () => {
-    expect(wrapper.name()).toEqual('Samples')
+  it('has a data list', () => {
+    expect(wrapper.contains(DataList)).toBe(true)
   })
 
-  it('#getSamples()', async () => {
-    await flushPromises()
-    expect($store.state.samples.length).toEqual(samples.requests.length)
-    expect(vm.samples.length).toEqual(samples.requests.length)
+  it('contains a table', () => {
+    expect(wrapper.contains('table')).toBe(true)
   })
 
-  it('will have a sample list', async () => {
-    await flushPromises()
-    expect(wrapper.contains(SampleList)).toBe(true)
+  it('contains the correct data', () => {
+    expect(wrapper.find('tbody').findAll('tr').length).toEqual(data.body.length)
   })
-
 })
