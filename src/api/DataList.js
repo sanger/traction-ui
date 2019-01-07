@@ -41,7 +41,9 @@ export default {
   created () {
     // only load if data doesnt already exist
     // TODO: sort out null checks
-    if ((this.data === undefined) || (this.errors === undefined)) this.load()
-    // if ((this.data === null) || (this.errors === null)) this.load()
+    // undefined works for tests
+    // null works for running
+    // if ((this.data === undefined) || (this.errors === undefined)) this.load()
+    if ((this.data === null) || (this.errors === null)) this.load()
   }
 }
