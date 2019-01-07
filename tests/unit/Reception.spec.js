@@ -3,6 +3,7 @@ import Alert from '@/components/Alert'
 import { mount, localVue } from './testHelper'
 import DataList from '@/api/DataList'
 import DataModel from '@/api/DataModel'
+import flushPromises from 'flush-promises'
 
 describe('Reception.vue', () => {
 
@@ -59,20 +60,22 @@ describe('Reception.vue', () => {
         reception.tractionApi.update = jest.fn()
       })
 
-      it('success', () => {
+      it('success', async () => {
         response = {status: 201}
         reception.tractionApi.data = response
         reception.tractionApi.update.mockReturnValue(response)
         reception.exportRequestsIntoTraction()
+        await flushPromises()
         expect(reception.tractionApi.update).toBeCalledWith(reception.selected)
-        expect(reception.message).toEqual("Samples imported")
+        expect(reception.message).toEqual("Samples imported into Traction")
       })
 
-      it('failure', () => {
+      it('failure', async () => {
         response = {message: 'Something went wrong'}
         reception.tractionApi.errors = response
         reception.tractionApi.update.mockReturnValue(response)
         reception.exportRequestsIntoTraction()
+        await flushPromises()
         expect(reception.message).toEqual("Something went wrong")
         expect(reception.tractionApi.update).toBeCalledWith(reception.selected)
       })
@@ -86,20 +89,22 @@ describe('Reception.vue', () => {
         body = [{ id: 1, state: 'started'}, { id: 2, state: 'started'}, { id: 3, state: 'started'}]
       })
 
-      it('success', () => {
+      it('success', async () => {
         response = {status: 201}
         reception.sequencescapeApi.data = response
         reception.sequencescapeApi.update.mockReturnValue(response)
         reception.updateSequencescapeRequests()
-        expect(reception.message).toEqual("Samples imported")
+        await flushPromises()
+        expect(reception.message).toEqual('Samples updated in SS')
         expect(reception.sequencescapeApi.update).toBeCalledWith(body)
       })
 
-      it('failure', () => {
+      it('failure', async () => {
         response = {message: 'Something went wrong'}
         reception.sequencescapeApi.errors = response
         reception.sequencescapeApi.update.mockReturnValue(response)
         reception.updateSequencescapeRequests()
+        await flushPromises()
         expect(reception.message).toEqual('Something went wrong')
         expect(reception.sequencescapeApi.update).toBeCalledWith(body)
       })
