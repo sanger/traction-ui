@@ -1,15 +1,15 @@
 {
   "requests": [
     {
-      "id": 1,
+      "id": "1",
       "type": "requests",
       "name": "DN11111",
       "species": "cat",
-      "state": "started",
+      "state": "pending",
       "request_type": "long_read"
     },
     {
-      "id": 2,
+      "id": "2",
       "type": "requests",
       "name": "DN11112",
       "species": "cat",
@@ -17,7 +17,7 @@
       "request_type": "long_read"
     },
     {
-      "id": 3,
+      "id": "3",
       "type": "requests",
       "name": "DN11113",
       "species": "dog",
@@ -25,15 +25,15 @@
       "request_type": "long_read"
     },
     {
-      "id": 4,
+      "id": "4",
       "type": "requests",
       "name": "DN11114",
       "species": "dog",
-      "state": "completed",
+      "state": "pending",
       "request_type": "long_read"
     },
     {
-      "id": 5,
+      "id": "5",
       "type": "requests",
       "name": "DN11115",
       "species": "cat",
@@ -41,7 +41,7 @@
       "request_type": "long_read"
     },
     {
-      "id": 6,
+      "id": "6",
       "type": "requests",
       "name": "DN11116",
       "species": "cat",
