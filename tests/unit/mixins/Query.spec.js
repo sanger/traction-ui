@@ -98,6 +98,7 @@ describe('Query', () => {
       query.execute('get')
       await flushPromises()
       expect(wrapper.emitted().myevent).toBeTruthy()
+      expect(wrapper.emitted().myevent[0]).toEqual([apiResponse])
     })
 
     it('emits a faiure event on failure', async () => {
@@ -107,6 +108,7 @@ describe('Query', () => {
       query.execute('get')
       await flushPromises()
       expect(wrapper.emitted().myevent).toBeTruthy()
+      expect(wrapper.emitted().myevent[0]).toEqual([apiResponse])
     })
 
   })

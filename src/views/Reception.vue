@@ -41,8 +41,8 @@ export default {
   created () {
   },
   methods: {
-    doSomething () {
-      this.showAlert
+    doSomething (response) {
+      // this.showAlert
     },
     exportRequests () {
       this.exportRequestsIntoTraction()
@@ -51,7 +51,8 @@ export default {
     },
     async exportRequestsIntoTraction () {
       try {
-        let response = await this.tractionApi.update(this.selected)
+        let body = { data: { attributes: { samples: this.selected }}}
+        let response = await this.tractionApi.create(body)
         if (this.tractionApi.data !== null) {
           this.message = 'Samples imported into Traction'
         } else {

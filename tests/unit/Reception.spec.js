@@ -57,27 +57,30 @@ describe('Reception.vue', () => {
       let response
 
       beforeEach(() => {
-        reception.tractionApi.update = jest.fn()
+        reception.tractionApi.create = jest.fn()
       })
 
       it('success', async () => {
         response = {status: 201}
         reception.tractionApi.data = response
-        reception.tractionApi.update.mockReturnValue(response)
+        reception.tractionApi.create.mockReturnValue(response)
         reception.exportRequestsIntoTraction()
         await flushPromises()
-        expect(reception.tractionApi.update).toBeCalledWith(reception.selected)
+        let body = { data: { attributes: { samples: reception.selected }}}
+        expect(reception.tractionApi.create).toBeCalledWith(body)
         expect(reception.message).toEqual("Samples imported into Traction")
       })
 
       it('failure', async () => {
         response = {message: 'Something went wrong'}
         reception.tractionApi.errors = response
-        reception.tractionApi.update.mockReturnValue(response)
+        reception.tractionApi.create.mockReturnValue(response)
         reception.exportRequestsIntoTraction()
         await flushPromises()
+        let body = { data: { attributes: { samples: reception.selected }}}
+        expect(reception.tractionApi.create).toBeCalledWith(body)
         expect(reception.message).toEqual("Something went wrong")
-        expect(reception.tractionApi.update).toBeCalledWith(reception.selected)
+
       })
     })
 
