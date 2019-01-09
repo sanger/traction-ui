@@ -11,10 +11,11 @@ jsonApi.define({
   handlers: new jsonApi.MemoryHandler(),
   attributes: {
     id: jsonApi.Joi.number().integer(),
+    type: jsonApi.Joi.string(),
     name: jsonApi.Joi.string(),
     species: jsonApi.Joi.string(),
     state: jsonApi.Joi.string(),
-    request_type: jsonApi.Joi.string() 
+    request_type: jsonApi.Joi.string()
   },
   examples: samples.requests
 });

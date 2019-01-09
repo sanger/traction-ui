@@ -10,7 +10,7 @@
             <th>Species</th>
           </tr>
         </thead>
-        <data-list ref="requests" baseURL="http://localhost:3200" apiNamespace="api/v2" resource="requests">
+        <data-list ref="requests" baseURL="http://localhost:3200" apiNamespace="api/v2" resource="requests" v-bind:filters="{type: 'create_asset', state: 'pending'}">
           <tbody slot-scope="{ data: requests }">
             <request-item v-for="request in requests" v-bind:key="request.id" v-bind="request"></request-item>
           </tbody>
@@ -59,7 +59,11 @@ export default {
     },
     async updateSequencescapeRequests () {
       try {
-        await this.sequencescapeApi.update(this.selectedForSS)
+        for (let i = 0; i < this.selected.length; i++) {
+          let id = this.selected[i].id
+          let body = { data: { type: 'requests', id: id, attributes: { state: 'started' }}}
+          let response = await this.sequencescapeApi.update(id, body)
+        }
         if (this.sequencescapeApi.data !== null) {
           this.message = 'Samples updated in SS'
         } else {
