@@ -21,10 +21,6 @@ const listCmp = Vue.extend({
               </data-list>`,
   components: {
     DataList
-  },
-  data () {
-    return {
-    }
   }
 })
 

@@ -51,7 +51,6 @@ export default {
         this.errors = null
         this.$emit('myevent', response)
       } catch(resp) {
-        // resp.response includes errors
         let response = new Response(resp)
         this.data = null
         this.errors = response.errors

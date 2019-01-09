@@ -21,6 +21,7 @@ export default {
   },
   methods: {
     load () {
+      if (this.data !== null) return 
       return this.execute('get', this.endpoint)
     },
     getDataBody () {
@@ -32,18 +33,12 @@ export default {
     if (this.$scopedSlots.default === undefined) return
     return this.$scopedSlots.default({
       data: this.getDataBody(),
-      // data: this.data,
       errors: this.errors,
       load: this.load,
       loading: this.loading
     })
   },
   created () {
-    // only load if data doesnt already exist
-    // TODO: sort out null checks
-    // undefined works for tests
-    // null works for running
-    // if ((this.data === undefined) || (this.errors === undefined)) this.load()
-    if ((this.data === null) || (this.errors === null)) this.load()
+    this.load()
   }
 }

@@ -10,13 +10,11 @@
             <th>Species</th>
           </tr>
         </thead>
-        <tbody>
-          <data-list v-on:myevent="doSomething" ref="requests" baseURL="http://localhost:3200" apiNamespace="api/v2" resource="requests">
-            <div slot-scope="{ data: requests, errors, loading, load }">
-              <request-item v-for="request in requests" v-bind:key="request.id" v-bind="request"></request-item>
-            </div>
-          </data-list>
-        </tbody>
+        <data-list v-on:myevent="doSomething" ref="requests" baseURL="http://localhost:3200" apiNamespace="api/v2" resource="requests">
+          <tbody slot-scope="{ data: requests, errors, loading, load }">
+            <request-item v-for="request in requests" v-bind:key="request.id" v-bind="request"></request-item>
+          </tbody>
+        </data-list>
       </table>
 
     <b-button id="exportRequests" @click="exportRequests">Import Requests</b-button>
@@ -42,7 +40,7 @@ export default {
   },
   methods: {
     doSomething (response) {
-      // this.showAlert
+      this.showAlert
     },
     exportRequests () {
       this.exportRequestsIntoTraction()
