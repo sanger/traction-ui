@@ -1,6 +1,7 @@
 import Vue from 'vue'
 import { mount } from '../testHelper'
 import flushPromises from 'flush-promises'
+import Response from '@/api/Response'
 import Query from '@/mixins/Query'
 
 const cmp = Vue.extend({
