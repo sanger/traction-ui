@@ -1,5 +1,4 @@
-import { mount, localVue } from '../testHelper'
-import flushPromises from 'flush-promises'
+import { mount } from '../testHelper'
 import DataModel from '@/api/DataModel'
 
 describe('DataModel', () => {

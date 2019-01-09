@@ -1,6 +1,5 @@
 import SampleItem from '@/components/SampleItem'
 import { mount } from './testHelper'
-import Store from '@/store'
 
 describe('SampleItem.vue', () => {
 

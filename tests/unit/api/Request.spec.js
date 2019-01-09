@@ -1,5 +1,4 @@
 import Request from '@/api/Request'
-import Response from '@/api/Response'
 import axios from 'axios'
 
 jest.mock('axios')

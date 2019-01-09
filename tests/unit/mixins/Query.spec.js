@@ -1,13 +1,11 @@
 import Vue from 'vue'
-import { mount, localVue } from '../testHelper'
+import { mount } from '../testHelper'
 import flushPromises from 'flush-promises'
 import Query from '@/mixins/Query'
-import Response from '@/api/Response'
-import axios from 'axios'
 
 const cmp = Vue.extend({
   mixins: [Query],
-  render () {}
+  render () { return ''}
 })
 
 describe('Query', () => {

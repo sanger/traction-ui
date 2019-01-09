@@ -2,7 +2,6 @@ import Reception from '@/views/Reception'
 import Alert from '@/components/Alert'
 import { mount, localVue } from './testHelper'
 import DataList from '@/api/DataList'
-import DataModel from '@/api/DataModel'
 import flushPromises from 'flush-promises'
 
 describe('Reception.vue', () => {
@@ -43,7 +42,7 @@ describe('Reception.vue', () => {
     let checkboxes
 
     beforeEach(() => {
-      let checkboxes = wrapper.findAll(".selected")
+      checkboxes = wrapper.findAll(".selected")
       checkboxes.at(0).trigger('click')
       checkboxes.at(1).trigger('click')
       checkboxes.at(2).trigger('click')

@@ -76,12 +76,11 @@ describe('DataList', () => {
 
   describe('scoped slots', () => {
 
-    let wrapper, dataList, data
+    let wrapper, data
 
     beforeEach(() => {
       data = { body: [{id: 1, attributes: {name: 'sample1', species: 'dog'}}, {id: 2, attributes: {name: 'sample2', species: 'cat'}}]}
       wrapper = mount(listCmp)
-      dataList = wrapper.vm
     })
 
     it('will render the sample data if they exist', () => {

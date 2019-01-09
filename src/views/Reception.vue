@@ -10,8 +10,8 @@
             <th>Species</th>
           </tr>
         </thead>
-        <data-list v-on:myevent="doSomething" ref="requests" baseURL="http://localhost:3200" apiNamespace="api/v2" resource="requests">
-          <tbody slot-scope="{ data: requests, errors, loading, load }">
+        <data-list ref="requests" baseURL="http://localhost:3200" apiNamespace="api/v2" resource="requests">
+          <tbody slot-scope="{ data: requests }">
             <request-item v-for="request in requests" v-bind:key="request.id" v-bind="request"></request-item>
           </tbody>
         </data-list>
@@ -39,9 +39,6 @@ export default {
   created () {
   },
   methods: {
-    doSomething (response) {
-      this.showAlert
-    },
     exportRequests () {
       this.exportRequestsIntoTraction()
       this.updateSequencescapeRequests()
@@ -50,7 +47,7 @@ export default {
     async exportRequestsIntoTraction () {
       try {
         let body = { data: { attributes: { samples: this.selected }}}
-        let response = await this.tractionApi.create(body)
+        await this.tractionApi.create(body)
         if (this.tractionApi.data !== null) {
           this.message = 'Samples imported into Traction'
         } else {
@@ -62,7 +59,7 @@ export default {
     },
     async updateSequencescapeRequests () {
       try {
-        let response = await this.sequencescapeApi.update(this.selectedForSS)
+        await this.sequencescapeApi.update(this.selectedForSS)
         if (this.sequencescapeApi.data !== null) {
           this.message = 'Samples updated in SS'
         } else {

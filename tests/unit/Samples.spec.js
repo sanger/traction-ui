@@ -4,7 +4,7 @@ import DataList from '@/api/DataList'
 
 describe('Samples.vue', () => {
 
-  let wrapper, samples, data
+  let wrapper, data
 
   beforeEach(() => {
     data = { body: [
@@ -16,7 +16,6 @@ describe('Samples.vue', () => {
     ]}
     wrapper = mount(Samples, { localVue })
     wrapper.find(DataList).vm.data = data
-    samples = wrapper.vm
   })
 
   it('has a data list', () => {
