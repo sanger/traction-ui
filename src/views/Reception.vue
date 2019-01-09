@@ -5,7 +5,7 @@
         <thead>
           <tr>
             <th></th>
-            <th>Sample ID</th>
+            <th>Request ID</th>
             <th>Name</th>
             <th>Species</th>
           </tr>
@@ -16,7 +16,6 @@
           </tbody>
         </data-list>
       </table>
-
     <b-button id="exportRequests" @click="exportRequests">Import Requests</b-button>
   </div>
 </template>

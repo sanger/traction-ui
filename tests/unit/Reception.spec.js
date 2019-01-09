@@ -79,7 +79,6 @@ describe('Reception.vue', () => {
         let body = { data: { attributes: { samples: reception.selected }}}
         expect(reception.tractionApi.create).toBeCalledWith(body)
         expect(reception.message).toEqual("Something went wrong")
-
       })
     })
 
@@ -98,7 +97,7 @@ describe('Reception.vue', () => {
         reception.updateSequencescapeRequests()
         await flushPromises()
         expect(reception.message).toEqual('Samples updated in SS')
-        expect(reception.sequencescapeApi.update).toBeCalledWith(body)
+        expect(reception.sequencescapeApi.update).toHaveBeenCalledTimes(reception.selected.length)
       })
 
       it('failure', async () => {
@@ -108,7 +107,7 @@ describe('Reception.vue', () => {
         reception.updateSequencescapeRequests()
         await flushPromises()
         expect(reception.message).toEqual('Something went wrong')
-        expect(reception.sequencescapeApi.update).toBeCalledWith(body)
+        expect(reception.sequencescapeApi.update).toHaveBeenCalledTimes(reception.selected.length)
       })
 
     })

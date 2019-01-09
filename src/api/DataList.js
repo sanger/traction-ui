@@ -21,7 +21,7 @@ export default {
   },
   methods: {
     load () {
-      if (this.data !== null) return 
+      if (this.data !== null) return
       return this.execute('get', this.endpoint)
     },
     getDataBody () {
@@ -39,6 +39,7 @@ export default {
     })
   },
   created () {
-    this.load()
+    if ((this.data === null) || (this.errors === null)) this.load()
+    // if ((this.data === undefined) || (this.errors === undefined)) this.load()
   }
 }

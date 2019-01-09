@@ -84,32 +84,4 @@ describe('Query', () => {
 
   })
 
-  describe('emit', () => {
-
-    beforeEach(() => {
-      query.api.get = jest.fn()
-    })
-
-    it('emits a success event on success', async () => {
-      let response = { status: 200, data: { data: [{id: 1, attributes: {name: 'sample1', species: 'dog'}}]}}
-      let apiResponse = new Response(response)
-      query.api.get.mockResolvedValue(response)
-      query.execute('get')
-      await flushPromises()
-      expect(wrapper.emitted().myevent).toBeTruthy()
-      expect(wrapper.emitted().myevent[0]).toEqual([apiResponse])
-    })
-
-    it('emits a faiure event on failure', async () => {
-      let response = { status: 422, data: { errors: [{status: 422}]} }
-      let apiResponse = new Response(response)
-      query.api.get.mockRejectedValue(response)
-      query.execute('get')
-      await flushPromises()
-      expect(wrapper.emitted().myevent).toBeTruthy()
-      expect(wrapper.emitted().myevent[0]).toEqual([apiResponse])
-    })
-
-  })
-
 })

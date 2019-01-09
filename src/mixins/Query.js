@@ -49,12 +49,10 @@ export default {
         let response = new Response(resp)
         this.data = response
         this.errors = null
-        this.$emit('myevent', response)
       } catch(resp) {
         let response = new Response(resp)
         this.data = null
         this.errors = response.errors
-        this.$emit('myevent', response)
       }
       this.loading = false
     }

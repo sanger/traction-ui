@@ -10,13 +10,11 @@
           <th>State</th>
         </tr>
       </thead>
-      <tbody>
-        <data-list ref="samples" baseURL='http://localhost:3100' apiNamespace="v1" resource="samples">
-          <div slot-scope="{ data: samples }">
-            <sample-item v-for="sample in samples" v-bind:key="sample.id" v-bind="sample"></sample-item>
-          </div>
-        </data-list>
-      </tbody>
+      <data-list ref="samples" baseURL='http://localhost:3100' apiNamespace="v1" resource="samples">
+        <tbody slot-scope="{ data: samples }">
+          <sample-item v-for="sample in samples" v-bind:key="sample.id" v-bind="sample"></sample-item>
+        </tbody>
+      </data-list>
     </table>
   </div>
 </template>
