@@ -32,7 +32,7 @@ export default {
   computed: {
     json () {
       return {
-        id: this.id,
+        sequencescape_request_id: this.id,
         name: this.name,
         species: this.species
       }

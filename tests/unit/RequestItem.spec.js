@@ -28,7 +28,8 @@ describe('RequestItem.vue', () => {
   })
 
   it('will produce some json', () => {
-    expect(requestItem.json).toEqual(request)
+    let json_request = { sequencescape_request_id: request.id, name: request.name, species: request.species }
+    expect(requestItem.json).toEqual(json_request)
   })
 
   it('will have a row with sample data', () => {
