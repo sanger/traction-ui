@@ -14,7 +14,7 @@ describe('DataModel', () => {
   describe('post', () => {
 
     it('returns an appropriate response', () => {
-      data = { data: { attributes: { samples: [{ id: 1, name: 'sample1', species: 'dog'}] }}}
+      data = { data: { attributes: { requests: [{ sequencescape_request_id: 1, name: 'sample1', species: 'dog'}] }}}
       response = {data: {status: 201}}
       dataModel.execute.mockReturnValue(response)
       expect(dataModel.create(data)).toEqual(response)
@@ -26,11 +26,12 @@ describe('DataModel', () => {
   describe('patch', () => {
 
     it('returns an appropriate response', () => {
-      data = { data: { attributes: { requests: [{ id: 1, name: 'sample1', species: 'dog'}] }}}
+      let id = 1
+      data = { data: { attributes: { requests: [{ sequencescape_request_id: id, name: 'sample1', species: 'dog'}] }}}
       response = {status: 200}
       dataModel.execute.mockReturnValue(response)
-      expect(dataModel.update(data)).toEqual(response)
-      expect(dataModel.execute).toBeCalledWith('patch', dataModel.resource, data)
+      expect(dataModel.update(id, data)).toEqual(response)
+      expect(dataModel.execute).toBeCalledWith('patch', `${dataModel.resource}/${id}`, data)
     })
 
   })

@@ -1,10 +1,10 @@
-import RequestList from '@/components/RequestList'
+import RequestList from '@/components/_RequestList'
 import RequestItem from '@/components/RequestItem'
 import Samples from '../data/samples'
 import { mount } from './testHelper'
 
 
-describe('RequestList.vue', () => {
+describe.skip('RequestList.vue', () => {
 
   let vm, wrapper, requests
 

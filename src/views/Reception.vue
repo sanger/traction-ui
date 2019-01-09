@@ -41,7 +41,7 @@ export default {
     exportRequests () {
       this.exportRequestsIntoTraction()
       this.updateSequencescapeRequests()
-      this.showAlert
+      // this.showAlert
     },
     async exportRequestsIntoTraction () {
       try {
@@ -59,7 +59,7 @@ export default {
     async updateSequencescapeRequests () {
       try {
         for (let i = 0; i < this.selected.length; i++) {
-          let id = this.selected[i].id
+          let id = this.selected[i].sequencescape_request_id
           let body = { data: { type: 'requests', id: id, attributes: { state: 'started' }}}
           let response = await this.sequencescapeApi.update(id, body)
         }

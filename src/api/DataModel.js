@@ -9,8 +9,8 @@ export default {
     create(data) {
       return this.execute('post', this.resource, data)
     },
-    update(data) {
-      return this.execute('patch',`${this.resource}`, data)
+    update(id, data) {
+      return this.execute('patch',`${this.resource}/${id}`, data)
     },
     find(id) {
       return this.execute('get', `${this.resource}/${id}`)
