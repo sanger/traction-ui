@@ -41,7 +41,6 @@ export default {
     exportRequests () {
       this.exportRequestsIntoTraction()
       this.updateSequencescapeRequests()
-      // this.showAlert
     },
     async exportRequestsIntoTraction () {
       try {

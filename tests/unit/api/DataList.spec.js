@@ -31,6 +31,7 @@ describe('DataList', () => {
   beforeEach(() => {
     props = {resource: 'requests', baseURL: 'http://examplehost:1234', apiNamespace: "abc/v1"}
     filters = {type: 'long_read', state: 'pending'}
+    DataList.created = jest.fn()
   })
 
   describe('filters', () => {

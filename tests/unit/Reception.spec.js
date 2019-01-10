@@ -9,6 +9,10 @@ describe('Reception.vue', () => {
   let wrapper, reception, data
 
   beforeEach(() => {
+
+    // TODO: is this sustainable?
+    DataList.created = jest.fn()
+
     data = { body: [
       { "id": 1, "name": "DN11111", "species": "cat" },
       { "id": 2, "name": "DN11112", "species": "cat" },
