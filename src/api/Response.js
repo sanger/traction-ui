@@ -7,14 +7,14 @@ class Response {
   }
 
   get body() {
-    if (this._body === undefined) return
+    if (this._body === undefined) return {}
     return this._body.map(attrs =>
       Object.assign({ id: attrs.id }, attrs.attributes)
     )
   }
 
   get errors() {
-    if (this._errors === undefined) return
+    if (this._errors === undefined) return {}
     // if (Object.keys(this._errors).length === 1) return Object.values(this._errors)[0].join(', ')
     let message = this._errors.map(error => Object.values(error) ).join(', ')
     return Object.assign({ message: message })

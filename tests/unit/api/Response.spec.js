@@ -40,7 +40,7 @@ describe('Response', () => {
     it('is initialized with a response object', () => {
       let init = new Response(response)
       expect(init.status).toEqual(response.status)
-      expect(init.errors).not.toBeDefined()
+      expect(init.errors).toEqual({})
     })
 
     it('#get body', () => {
@@ -73,7 +73,7 @@ describe('Response', () => {
     it('is initialized with a response object', () => {
       let init = new Response(response)
       expect(init.status).toEqual(response.status)
-      expect(init.body).not.toBeDefined()
+      expect(init.body).toEqual({})
     })
 
     it('#get errors', () => {

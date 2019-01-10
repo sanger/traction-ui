@@ -87,11 +87,10 @@ describe('Reception.vue', () => {
     })
 
     describe('#updateSequencescapeRequests', () => {
-      let response, body
+      let response
 
       beforeEach(() => {
         reception.sequencescapeApi.update = jest.fn()
-        body = [{ id: 1, state: 'started'}, { id: 2, state: 'started'}, { id: 3, state: 'started'}]
       })
 
       it('success', async () => {

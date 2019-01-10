@@ -60,7 +60,7 @@ export default {
         for (let i = 0; i < this.selected.length; i++) {
           let id = this.selected[i].sequencescape_request_id
           let body = { data: { type: 'requests', id: id, attributes: { state: 'started' }}}
-          let response = await this.sequencescapeApi.update(id, body)
+          await this.sequencescapeApi.update(id, body)
         }
         if (this.sequencescapeApi.data !== null) {
           this.message = 'Samples updated in SS'
