@@ -15,9 +15,15 @@ class Response {
 
   get errors() {
     if (this._errors === undefined) return {}
-    // if (Object.keys(this._errors).length === 1) return Object.values(this._errors)[0].join(', ')
-    let message = this._errors.map(error => Object.values(error) ).join(', ')
-    return Object.assign({ message: message })
+    let msg
+    if (Object.keys(this._errors).length === 1) {
+      let key = Object.keys(this._errors)[0]
+      let error = Object.values(this._errors)[0].join(', ')
+      msg = key.concat(" ", error)
+    } else {
+      msg = this._errors.map(error => Object.values(error) ).join(', ')
+    }
+    return Object.assign({ message: msg })
   }
 }
 

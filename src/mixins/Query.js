@@ -50,7 +50,7 @@ export default {
         this.data = response
         this.errors = null
       } catch(resp) {
-        let response = new Response(resp)
+        let response = new Response(resp.response)
         this.data = null
         this.errors = response.errors
       }

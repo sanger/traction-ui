@@ -38,37 +38,39 @@ export default {
   created () {
   },
   methods: {
-    exportRequests () {
-      this.exportRequestsIntoTraction()
-      this.updateSequencescapeRequests()
+    async exportRequests () {
+      try {
+        await this.exportRequestsIntoTraction()
+        await this.updateSequencescapeRequests()
+      } catch (error) {
+        // log error
+      } finally {
+        this.showAlert
+      }
     },
     async exportRequestsIntoTraction () {
-      try {
-        let body = { data: { attributes: { samples: this.selected }}}
-        await this.tractionApi.create(body)
-        if (this.tractionApi.data !== null) {
-          this.message = 'Samples imported into Traction'
-        } else {
-          this.message = this.tractionApi.errors.message
-        }
-      } catch(e) {
-        this.message = 'There was an error'
+      let body = { data: { attributes: { samples: this.selected }}}
+      await this.tractionApi.create(body)
+
+      if (this.tractionApi.data !== null) {
+        this.message = 'Samples imported into Traction'
+      } else {
+        this.message = this.tractionApi.errors.message
+        // throw new Error(this.message)
       }
     },
     async updateSequencescapeRequests () {
-      try {
-        for (let i = 0; i < this.selected.length; i++) {
-          let id = this.selected[i].sequencescape_request_id
-          let body = { data: { type: 'requests', id: id, attributes: { state: 'started' }}}
-          await this.sequencescapeApi.update(id, body)
-        }
-        if (this.sequencescapeApi.data !== null) {
-          this.message = 'Samples updated in SS'
-        } else {
-          this.message = this.sequencescapeApi.errors.message
-        }
-      } catch(e) {
-        this.message = 'There was an error'
+      for (let i = 0; i < this.selected.length; i++) {
+        let id = this.selected[i].sequencescape_request_id
+        let body = { data: { type: 'requests', id: id, attributes: { state: 'started' }}}
+        await this.sequencescapeApi.update(id, body)
+      }
+
+      if (this.sequencescapeApi.data !== null) {
+        this.message = 'Samples updated in SS'
+      } else {
+        this.message = this.sequencescapeApi.errors.message
+        // throw new Error(this.message)
       }
     }
   },

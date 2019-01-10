@@ -122,10 +122,26 @@ describe('Reception.vue', () => {
         reception.updateSequencescapeRequests = jest.fn()
       })
 
-      it('calls both exportRequestsIntoTraction and updateSequencescapeRequests', () => {
-        wrapper.find('#exportRequests').trigger('click')
-        expect(reception.exportRequestsIntoTraction).toBeCalled()
-        expect(reception.updateSequencescapeRequests).toBeCalled()
+      describe('when exportRequestsIntoTraction is successful', () => {
+        it('calls updateSequencescapeRequests', async () => {
+          let response = {status: 201}
+          reception.exportRequestsIntoTraction.mockResolvedValue(response)
+          reception.updateSequencescapeRequests.mockResolvedValue(response)
+          wrapper.find('#exportRequests').trigger('click')
+          expect(reception.exportRequestsIntoTraction).toBeCalled()
+          await flushPromises()
+          expect(reception.updateSequencescapeRequests).toBeCalled()
+        })
+      })
+
+      describe('when exportRequestsIntoTraction fails', () => {
+        it('does not call updateSequencescapeRequests', () => {
+          let response = {message: 'Something went wrong'}
+          reception.exportRequestsIntoTraction.mockReturnValue(response)
+          wrapper.find('#exportRequests').trigger('click')
+          expect(reception.exportRequestsIntoTraction).toBeCalled()
+          expect(reception.updateSequencescapeRequests).not.toBeCalled()
+        })
       })
 
     })

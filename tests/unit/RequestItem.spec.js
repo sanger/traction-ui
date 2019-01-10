@@ -29,7 +29,7 @@ describe('RequestItem.vue', () => {
 
   it('will produce some json', () => {
     // TODO: currently stubbed species from SS
-    let json_request = { sequencescape_request_id: request.id, name: request.name, species: 'mockSpeciesForSS' }
+    let json_request = { sequencescape_request_id: request.id, name: request.name, species: request.species }
     expect(requestItem.json).toEqual(json_request)
   })
 

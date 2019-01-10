@@ -66,8 +66,7 @@ describe('Query', () => {
       })
 
       it('returns an appropriate response if there is an error', async () => {
-        response = {status: 422, data: { errors: [{ name: 'error message1' }, { name: 'error message2' }]}}
-        apiResponse = new Response(response)
+        response = { response: {status: 422, data: { errors: [{ name: 'error message1' }, { name: 'error message2' }]}} }
         query.api.get.mockRejectedValue(response)
         query.execute('get')
         await flushPromises()
