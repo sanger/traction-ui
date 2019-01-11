@@ -5,6 +5,9 @@ node_modules
 /tests/e2e/reports/
 selenium-debug.log
 
+# local asset build
+release.tar.gz
+
 # local env files
 .env.local
 .env.*.local
