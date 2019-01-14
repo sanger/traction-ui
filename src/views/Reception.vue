@@ -56,7 +56,7 @@ export default {
         this.message = 'Samples imported into Traction'
       } else {
         this.message = this.tractionApi.errors.message
-        // throw new Error(this.message)
+        throw this.message
       }
     },
     async updateSequencescapeRequests () {
@@ -70,7 +70,7 @@ export default {
         this.message = 'Samples updated in SS'
       } else {
         this.message = this.sequencescapeApi.errors.message
-        // throw new Error(this.message)
+        throw this.message
       }
     }
   },

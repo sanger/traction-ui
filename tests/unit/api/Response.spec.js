@@ -60,10 +60,10 @@ describe('Response', () => {
     beforeEach(() => {
       response = {
         data: {
-          errors: [
-            { name: 'example error message one' },
-            { name: 'example error message two' }
-          ]
+          errors: {
+            name: ['name error message 1'],
+            species: ['species error message 2.1', 'species error message 2.2']
+          }
         },
         status: 422,
         statusText: "Unprocessible entity"
@@ -78,7 +78,8 @@ describe('Response', () => {
 
     it('#get errors', () => {
       let init = new Response(response)
-      let expectedResponse = { message: 'example error message one, example error message two' }
+      let msg = 'name name error message 1, species species error message 2.1, species species error message 2.2'
+      let expectedResponse = { message: msg }
       expect(init.errors).toEqual(expectedResponse)
     })
 

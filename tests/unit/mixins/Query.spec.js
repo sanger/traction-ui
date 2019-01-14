@@ -66,11 +66,11 @@ describe('Query', () => {
       })
 
       it('returns an appropriate response if there is an error', async () => {
-        response = { response: {status: 422, data: { errors: [{ name: 'error message1' }, { name: 'error message2' }]}} }
+        response = { response: {status: 422, data: { errors: { name: ['error message1'], species: ['error message2'] }} }}
         query.api.get.mockRejectedValue(response)
         query.execute('get')
         await flushPromises()
-        expect(query.errors).toEqual({ message: 'error message1, error message2' })
+        expect(query.errors).toEqual({ message: 'name error message1, species error message2' })
       })
 
       it('does nothing if the query is already loading', async () => {

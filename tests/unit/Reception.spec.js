@@ -78,7 +78,8 @@ describe('Reception.vue', () => {
         response = {message: 'Something went wrong'}
         reception.tractionApi.errors = response
         reception.tractionApi.create.mockReturnValue(response)
-        reception.exportRequestsIntoTraction()
+        let fn = reception.exportRequestsIntoTraction()
+        await expect(fn).rejects.toBe("Something went wrong")
         await flushPromises()
         let body = { data: { attributes: { samples: reception.selected }}}
         expect(reception.tractionApi.create).toBeCalledWith(body)
@@ -107,7 +108,8 @@ describe('Reception.vue', () => {
         response = {message: 'Something went wrong'}
         reception.sequencescapeApi.errors = response
         reception.sequencescapeApi.update.mockReturnValue(response)
-        reception.updateSequencescapeRequests()
+        let fn = reception.updateSequencescapeRequests()
+        await expect(fn).rejects.toBe("Something went wrong")
         await flushPromises()
         expect(reception.message).toEqual('Something went wrong')
         expect(reception.sequencescapeApi.update).toHaveBeenCalledTimes(reception.selected.length)
