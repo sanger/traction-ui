@@ -78,7 +78,8 @@ describe('Reception.vue', () => {
         response = {message: 'Something went wrong'}
         reception.tractionApi.errors = response
         reception.tractionApi.create.mockReturnValue(response)
-        reception.exportRequestsIntoTraction()
+        let fn = reception.exportRequestsIntoTraction()
+        await expect(fn).rejects.toBe("Something went wrong")
         await flushPromises()
         let body = { data: { attributes: { samples: reception.selected }}}
         expect(reception.tractionApi.create).toBeCalledWith(body)
@@ -87,11 +88,10 @@ describe('Reception.vue', () => {
     })
 
     describe('#updateSequencescapeRequests', () => {
-      let response, body
+      let response
 
       beforeEach(() => {
         reception.sequencescapeApi.update = jest.fn()
-        body = [{ id: 1, state: 'started'}, { id: 2, state: 'started'}, { id: 3, state: 'started'}]
       })
 
       it('success', async () => {
@@ -108,7 +108,8 @@ describe('Reception.vue', () => {
         response = {message: 'Something went wrong'}
         reception.sequencescapeApi.errors = response
         reception.sequencescapeApi.update.mockReturnValue(response)
-        reception.updateSequencescapeRequests()
+        let fn = reception.updateSequencescapeRequests()
+        await expect(fn).rejects.toBe("Something went wrong")
         await flushPromises()
         expect(reception.message).toEqual('Something went wrong')
         expect(reception.sequencescapeApi.update).toHaveBeenCalledTimes(reception.selected.length)
@@ -123,10 +124,26 @@ describe('Reception.vue', () => {
         reception.updateSequencescapeRequests = jest.fn()
       })
 
-      it('calls both exportRequestsIntoTraction and updateSequencescapeRequests', () => {
-        wrapper.find('#exportRequests').trigger('click')
-        expect(reception.exportRequestsIntoTraction).toBeCalled()
-        expect(reception.updateSequencescapeRequests).toBeCalled()
+      describe('when exportRequestsIntoTraction is successful', () => {
+        it('calls updateSequencescapeRequests', async () => {
+          let response = {status: 201}
+          reception.exportRequestsIntoTraction.mockResolvedValue(response)
+          reception.updateSequencescapeRequests.mockResolvedValue(response)
+          wrapper.find('#exportRequests').trigger('click')
+          expect(reception.exportRequestsIntoTraction).toBeCalled()
+          await flushPromises()
+          expect(reception.updateSequencescapeRequests).toBeCalled()
+        })
+      })
+
+      describe('when exportRequestsIntoTraction fails', () => {
+        it('does not call updateSequencescapeRequests', () => {
+          let response = {message: 'Something went wrong'}
+          reception.exportRequestsIntoTraction.mockReturnValue(response)
+          wrapper.find('#exportRequests').trigger('click')
+          expect(reception.exportRequestsIntoTraction).toBeCalled()
+          expect(reception.updateSequencescapeRequests).not.toBeCalled()
+        })
       })
 
     })

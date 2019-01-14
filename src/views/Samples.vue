@@ -1,5 +1,6 @@
 <template>
   <div class="samples">
+    <alert ref='alert'></alert>
     <table class="table">
       <thead>
         <tr>
@@ -22,6 +23,7 @@
 <script>
 import DataList from '@/api/DataList'
 import SampleItem from '@/components/SampleItem'
+import Alert from '@/components/Alert'
 
 export default {
   name: 'Samples',
@@ -35,7 +37,8 @@ export default {
   },
   components: {
     DataList,
-    SampleItem
+    SampleItem,
+    Alert
   },
   computed: {
   }

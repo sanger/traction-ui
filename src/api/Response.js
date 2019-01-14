@@ -7,17 +7,26 @@ class Response {
   }
 
   get body() {
-    if (this._body === undefined) return
+    if (this._body === undefined) return {}
     return this._body.map(attrs =>
       Object.assign({ id: attrs.id }, attrs.attributes)
     )
   }
 
   get errors() {
-    if (this._errors === undefined) return
-    // if (Object.keys(this._errors).length === 1) return Object.values(this._errors)[0].join(', ')
-    let message = this._errors.map(error => Object.values(error) ).join(', ')
-    return Object.assign({ message: message })
+    if (this._errors === undefined) return {}
+    let msg = []
+
+    for (let i = 0; i < Object.keys(this._errors).length; i++) {
+      let key = Object.keys(this._errors)[i]
+      let errors = Object.values(this._errors)[i]
+
+      for (let n = 0; n < errors.length; n++) {
+        let message = key.concat(" ", errors[n])
+        msg.push(message)
+      }
+    }
+    return Object.assign({ message: msg.join(", ") })
   }
 }
 

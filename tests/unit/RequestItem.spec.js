@@ -3,11 +3,11 @@ import { mount } from './testHelper'
 
 describe('RequestItem.vue', () => {
 
-  let wrapper, request, requestItem, $store
+  let wrapper, request, requestItem
 
   beforeEach(() => {
     request = { id: '1', name: 'DN11111', species: 'cat' }
-    wrapper = mount(RequestItem, { mocks: { $store }, propsData: request})
+    wrapper = mount(RequestItem, { propsData: request})
     requestItem = wrapper.vm
   })
 
@@ -29,7 +29,7 @@ describe('RequestItem.vue', () => {
 
   it('will produce some json', () => {
     // TODO: currently stubbed species from SS
-    let json_request = { sequencescape_request_id: request.id, name: request.name, species: 'mockSpeciesForSS' }
+    let json_request = { sequencescape_request_id: request.id, name: request.name, species: request.species }
     expect(requestItem.json).toEqual(json_request)
   })
 

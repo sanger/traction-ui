@@ -34,7 +34,7 @@ export default {
       return {
         sequencescape_request_id: this.id,
         name: this.name,
-        species: 'mockSpeciesForSS' // TODO: currently stubbed species from SS
+        species: this.species //'mockSpeciesForSS' // TODO: currently stubbed species from SS
       }
     }
   }

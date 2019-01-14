@@ -3,11 +3,11 @@ import { mount } from './testHelper'
 
 describe('SampleItem.vue', () => {
 
-  let wrapper, sample, sampleItem, $store
+  let wrapper, sample, sampleItem
 
   beforeEach(() => {
     sample = { id: '1', name: 'DN11111', species: 'cat', state: 'pending' }
-    wrapper = mount(SampleItem, { mocks: { $store }, propsData: sample})
+    wrapper = mount(SampleItem, { propsData: sample })
     sampleItem = wrapper.vm
   })
 
