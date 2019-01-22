@@ -6,7 +6,7 @@ describe('LibraryItem.vue', () => {
   let wrapper, library, libraryItem
 
   beforeEach(() => {
-    library = { id: "1", barcode: 'TRAC-11111', state: 'pending' }
+    library = { id: "1", sampleName: 'sam', barcode: 'TRAC-11111', state: 'pending' }
     wrapper = mount(LibraryItem, { propsData: library })
     libraryItem = wrapper.vm
   })
@@ -17,6 +17,10 @@ describe('LibraryItem.vue', () => {
 
   it('will have an id', () => {
     expect(libraryItem.id).toEqual('1')
+  })
+
+  it('will have an sample name', () => {
+    expect(libraryItem.sampleName).toEqual('sam')
   })
 
   it('will have a barcode', () => {
@@ -35,8 +39,9 @@ describe('LibraryItem.vue', () => {
     let row = wrapper.find('tr').findAll('td')
     expect(row.at(0).text()).toEqual("")
     expect(row.at(1).text()).toEqual("1")
-    expect(row.at(2).text()).toEqual("TRAC-11111")
-    expect(row.at(3).text()).toEqual("pending")
+    expect(row.at(2).text()).toEqual("sam")
+    expect(row.at(3).text()).toEqual("TRAC-11111")
+    expect(row.at(4).text()).toEqual("pending")
   })
 
   it('will allow selection of samples', () => {

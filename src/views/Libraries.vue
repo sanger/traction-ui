@@ -6,6 +6,7 @@
         <tr>
           <th></th>
           <th>Library ID</th>
+          <th>Sample name</th>
           <th>Barcode</th>
           <th>State</th>
         </tr>

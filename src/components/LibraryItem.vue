@@ -2,6 +2,7 @@
   <tr>
     <td><input class="selected" type="checkbox" v-model="selected" /></td>
     <td>{{ id }}</td>
+    <td>{{ sampleName }}</td>
     <td>{{ barcode }}</td>
     <td>{{ state }}</td>
   </tr>
@@ -14,6 +15,9 @@ export default {
   props: {
     id: {
       type: [String, Number]
+    },
+    sampleName: {
+      type: String
     },
     barcode: {
       type: String
@@ -31,6 +35,7 @@ export default {
     json () {
       return {
         id: this.id,
+        sampleName: this.sampleName,
         barcode: this.barcode,
         state: this.state,
       }
