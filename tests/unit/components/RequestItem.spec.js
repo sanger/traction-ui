@@ -1,5 +1,5 @@
 import RequestItem from '@/components/RequestItem'
-import { mount } from './testHelper'
+import { mount } from '../testHelper'
 
 describe('RequestItem.vue', () => {
 

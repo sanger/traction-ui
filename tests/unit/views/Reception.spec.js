@@ -1,6 +1,6 @@
 import Reception from '@/views/Reception'
 import Alert from '@/components/Alert'
-import { mount, localVue } from './testHelper'
+import { mount, localVue } from '../testHelper'
 import DataList from '@/api/DataList'
 import flushPromises from 'flush-promises'
 

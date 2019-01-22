@@ -17,11 +17,14 @@
         </tbody>
       </data-list>
     </table>
+    <b-button id="createLibraries" @click="createLibraries">Create Libraries</b-button>
   </div>
 </template>
 
 <script>
+import Vue from 'vue'
 import DataList from '@/api/DataList'
+import DataModel from '@/api/DataModel'
 import SampleItem from '@/components/SampleItem'
 import Alert from '@/components/Alert'
 
@@ -34,6 +37,33 @@ export default {
   created() {
   },
   methods: {
+    async createLibraries () {
+      try {
+        await this.createLibrariesInTraction()
+      } catch (error) {
+        // log error
+      } finally {
+        this.showAlert
+      }
+    },
+    async createLibrariesInTraction () {
+      let sample_ids = []
+      for (let i = 0; i < this.selected.length; i++) {
+        let id = this.selected[i].id
+        sample_ids.push( {'sample_id': id} )
+      }
+      let body = { data: { type: 'libraries', attributes: { libraries: sample_ids }}}
+
+      await this.tractionApi.create(body)
+
+      if (this.tractionApi.data !== null) {
+        this.message = 'Libraries created in Traction'
+      } else {
+        this.message = this.tractionApi.errors.message
+        throw this.message
+      }
+
+    },
   },
   components: {
     DataList,
@@ -41,6 +71,16 @@ export default {
     Alert
   },
   computed: {
+    selected () {
+      return this.$refs.samples.$children.filter(sample => sample.selected).map(sample => sample.json)
+    },
+    tractionApi () {
+      let Cmp = Vue.extend(DataModel)
+      return new Cmp({ propsData: { baseURL: process.env.VUE_APP_TRACTION_API, apiNamespace: 'v1', resource: 'libraries' }})
+    },
+    showAlert () {
+      return this.$refs.alert.show(this.message, 'primary')
+    }
   }
 }
 </script>

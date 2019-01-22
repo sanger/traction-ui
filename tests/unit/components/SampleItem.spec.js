@@ -1,5 +1,5 @@
 import SampleItem from '@/components/SampleItem'
-import { mount } from './testHelper'
+import { mount } from '../testHelper'
 
 describe('SampleItem.vue', () => {
 

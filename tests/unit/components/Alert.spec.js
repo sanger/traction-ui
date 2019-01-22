@@ -1,4 +1,4 @@
-import { mount, localVue } from './testHelper'
+import { mount, localVue } from '../testHelper'
 import Alert from '@/components/Alert'
 
 describe('Alert.vue', () => {
