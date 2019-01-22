@@ -16,7 +16,7 @@
           </tbody>
         </data-list>
       </table>
-    <b-button id="exportRequests" @click="exportRequests">Import Requests</b-button>
+    <b-button id="exportRequests" @click="exportRequests" class="float-right">Import Requests</b-button>
   </div>
 </template>
 
@@ -103,4 +103,5 @@ export default {
 </script>
 
 <style lang="scss">
+
 </style>

@@ -8,6 +8,7 @@
           <th>Sample ID</th>
           <th>Name</th>
           <th>Species</th>
+          <th>Barcode</th>
           <th>State</th>
         </tr>
       </thead>
@@ -17,7 +18,7 @@
         </tbody>
       </data-list>
     </table>
-    <b-button id="createLibraries" @click="createLibraries">Create Libraries</b-button>
+    <b-button id="createLibraries" @click="createLibraries" class="float-right">Create Libraries</b-button>
   </div>
 </template>
 

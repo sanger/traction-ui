@@ -10,11 +10,11 @@ describe('Samples.vue', () => {
 
   beforeEach(() => {
     data = { body: [
-      { "id": 1, "attributes": { "name": "DN11111", "species": "cat", "state": "pending" }},
-      { "id": 2, "attributes": { "name": "DN11112", "species": "cat", "state": "pending" }},
-      { "id": 3, "attributes": { "name": "DN11113", "species": "dog", "state": "pending" }},
-      { "id": 4, "attributes": { "name": "DN11114", "species": "dog", "state": "pending" }},
-      { "id": 5, "attributes": { "name": "DN11115", "species": "cat", "state": "pending" }}
+      { "id": 1, "attributes": { "name": "DN11111", "species": "cat", "barcode": "TRAC-1", "state": "pending" }},
+      { "id": 2, "attributes": { "name": "DN11112", "species": "cat", "barcode": "TRAC-2", "state": "pending" }},
+      { "id": 3, "attributes": { "name": "DN11113", "species": "dog", "barcode": "TRAC-3", "state": "pending" }},
+      { "id": 4, "attributes": { "name": "DN11114", "species": "dog", "barcode": "TRAC-4", "state": "pending" }},
+      { "id": 5, "attributes": { "name": "DN11115", "species": "cat", "barcode": "TRAC-5", "state": "pending" }}
     ]}
     wrapper = mount(Samples, { localVue })
     wrapper.find(DataList).vm.data = data
