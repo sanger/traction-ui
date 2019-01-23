@@ -9,7 +9,6 @@
           <th>Name</th>
           <th>Species</th>
           <th>Barcode</th>
-          <th>State</th>
         </tr>
       </thead>
       <data-list ref="samples" baseURL='http://localhost:3100' apiNamespace="v1" resource="samples">

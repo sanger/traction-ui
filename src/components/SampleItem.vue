@@ -5,7 +5,6 @@
     <td>{{ name }}</td>
     <td>{{ species }}</td>
     <td>{{ barcode }}</td>
-    <td>{{ state }}</td>
   </tr>
 </template>
 
@@ -25,9 +24,6 @@ export default {
     },
     barcode: {
       type: String
-    },
-    state: {
-      type: String
     }
   },
   data () {
@@ -44,7 +40,6 @@ export default {
         name: this.name,
         species: this.species,
         barcode: this.barcode,
-        state: this.state,
       }
     }
   }
