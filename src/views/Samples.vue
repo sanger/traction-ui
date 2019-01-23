@@ -60,12 +60,12 @@ export default {
       }
       let body = { data: { type: 'libraries', attributes: { libraries: sample_ids }}}
 
-      await this.tractionApi.create(body)
+      await this.tractionApiLibrary.create(body)
 
-      if (this.tractionApi.data !== null) {
+      if (this.tractionApiLibrary.data !== null) {
         this.message = 'Libraries created in Traction'
       } else {
-        this.message = this.tractionApi.errors.message
+        this.message = this.tractionApiLibrary.errors.message
         throw this.message
       }
 
@@ -80,9 +80,9 @@ export default {
     selected () {
       return this.$refs.samples.$children.filter(sample => sample.selected).map(sample => sample.json)
     },
-    tractionApi () {
+    tractionApiLibrary () {
       let Cmp = Vue.extend(DataModel)
-      return new Cmp({ propsData: { baseURL: this.tractionBaseURL, apiNamespace: 'v1', resource: 'samples' }})
+      return new Cmp({ propsData: { baseURL: this.tractionBaseURL, apiNamespace: 'v1', resource: 'libraries' }})
     },
     showAlert () {
       return this.$refs.alert.show(this.message, 'primary')

@@ -56,13 +56,13 @@ describe('Samples.vue', () => {
       let response
 
       beforeEach(() => {
-        samples.tractionApi.create = jest.fn()
+        samples.tractionApiLibrary.create = jest.fn()
       })
 
       it('success', async () => {
         response = {status: 201}
-        samples.tractionApi.data = response
-        samples.tractionApi.create.mockReturnValue(response)
+        samples.tractionApiLibrary.data = response
+        samples.tractionApiLibrary.create.mockReturnValue(response)
         samples.createLibrariesInTraction()
         await flushPromises()
 
@@ -73,14 +73,14 @@ describe('Samples.vue', () => {
         }
 
         let body = { data: { type: 'libraries', attributes: { libraries: sample_ids }}}
-        expect(samples.tractionApi.create).toBeCalledWith(body)
+        expect(samples.tractionApiLibrary.create).toBeCalledWith(body)
         expect(samples.message).toEqual("Libraries created in Traction")
       })
 
       it('failuree', async () => {
         response = {message: 'Something went wrong'}
-        samples.tractionApi.errors = response
-        samples.tractionApi.create.mockReturnValue(response)
+        samples.tractionApiLibrary.errors = response
+        samples.tractionApiLibrary.create.mockReturnValue(response)
         let fn = samples.createLibrariesInTraction()
         await expect(fn).rejects.toBe("Something went wrong")
 
@@ -91,7 +91,7 @@ describe('Samples.vue', () => {
         }
 
         let body = { data: { type: 'libraries', attributes: { libraries: sample_ids }}}
-        expect(samples.tractionApi.create).toBeCalledWith(body)
+        expect(samples.tractionApiLibrary.create).toBeCalledWith(body)
         expect(samples.message).toEqual("Something went wrong")
       })
     })
