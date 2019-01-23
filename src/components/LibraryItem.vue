@@ -2,27 +2,27 @@
   <tr>
     <td><input class="selected" type="checkbox" v-model="selected" /></td>
     <td>{{ id }}</td>
-    <td>{{ name }}</td>
-    <td>{{ species }}</td>
+    <td>{{ sampleName }}</td>
     <td>{{ barcode }}</td>
+    <td>{{ state }}</td>
   </tr>
 </template>
 
 <script>
 
 export default {
-  name: 'SampleItem',
+  name: 'LibraryItem',
   props: {
     id: {
       type: [String, Number]
     },
-    name: {
-      type: String
-    },
-    species: {
+    sampleName: {
       type: String
     },
     barcode: {
+      type: String
+    },
+    state: {
       type: String
     }
   },
@@ -31,21 +31,17 @@ export default {
       selected: false
     }
   },
-  methods: {
-  },
   computed: {
     json () {
       return {
         id: this.id,
-        name: this.name,
-        species: this.species,
+        sampleName: this.sampleName,
         barcode: this.barcode,
+        state: this.state,
       }
     }
   }
 }
 
-</script>
 
-<style>
-</style>
+</script>

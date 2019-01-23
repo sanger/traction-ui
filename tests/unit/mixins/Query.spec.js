@@ -20,7 +20,7 @@ describe('Query', () => {
     query = wrapper.vm
   })
 
-  it('will have a baseUrl', () => {
+  it('will have a baseURL', () => {
     expect(query.baseURL).toEqual('http://sequencescape.com')
   })
 
