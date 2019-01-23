@@ -10,7 +10,7 @@
             <th>Species</th>
           </tr>
         </thead>
-        <data-list ref="requests" :baseURL="sequencescapeBaseUrl" apiNamespace="api/v2" resource="requests" v-bind:filters="{type: 'long_read', state: 'pending'}">
+        <data-list ref="requests" :baseURL="sequencescapeBaseURL" apiNamespace="api/v2" resource="requests" v-bind:filters="{type: 'long_read', state: 'pending'}">
           <tbody slot-scope="{ data: requests }">
             <request-item v-for="request in requests" v-bind:key="request.id" v-bind="request"></request-item>
           </tbody>
@@ -30,11 +30,11 @@ import Alert from '@/components/Alert'
 
 export default {
   props: {
-    sequencescapeBaseUrl: {
+    sequencescapeBaseURL: {
       type: String,
       default: process.env.VUE_APP_SEQUENCESCAPE_BASE_URL
     },
-    tractionBaseUrl: {
+    tractionBaseURL: {
       type: String,
       default: process.env.VUE_APP_TRACTION_BASE_URL
     }
@@ -99,11 +99,11 @@ export default {
     },
     tractionApi () {
       let Cmp = Vue.extend(DataModel)
-      return new Cmp({ propsData: { baseURL: this.tractionBaseUrl, apiNamespace: 'v1', resource: 'samples' }})
+      return new Cmp({ propsData: { baseURL: this.tractionBaseURL, apiNamespace: 'v1', resource: 'samples' }})
     },
     sequencescapeApi () {
       let Cmp = Vue.extend(DataModel)
-      return new Cmp({ propsData: { baseURL: this.sequencescapeBaseUrl, apiNamespace: 'api/v2', resource: 'requests' }})
+      return new Cmp({ propsData: { baseURL: this.sequencescapeBaseURL, apiNamespace: 'api/v2', resource: 'requests' }})
     },
     showAlert () {
       return this.$refs.alert.show(this.message, 'primary')

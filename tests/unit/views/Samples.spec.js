@@ -77,13 +77,12 @@ describe('Samples.vue', () => {
         expect(samples.message).toEqual("Libraries created in Traction")
       })
 
-      it('failure', async () => {
+      it('failuree', async () => {
         response = {message: 'Something went wrong'}
         samples.tractionApi.errors = response
         samples.tractionApi.create.mockReturnValue(response)
         let fn = samples.createLibrariesInTraction()
         await expect(fn).rejects.toBe("Something went wrong")
-        await flushPromises()
 
         let sample_ids = []
         for (let i = 0; i < samples.selected.length; i++) {

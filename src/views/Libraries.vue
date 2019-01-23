@@ -11,7 +11,7 @@
           <th>State</th>
         </tr>
       </thead>
-      <data-list ref="libraries" baseURL='http://localhost:3100' apiNamespace="v1" resource="libraries">
+      <data-list ref="libraries" :baseURL="tractionBaseURL" apiNamespace="v1" resource="libraries">
         <tbody slot-scope="{ data: libraries }">
           <library-item v-for="library in libraries" v-bind:key="library.id" v-bind="library"></library-item>
         </tbody>
@@ -27,6 +27,12 @@ import LibraryItem from '@/components/LibraryItem'
 
 export default {
   name: 'Libraries',
+  props: {
+    tractionBaseURL: {
+      type: String,
+      default: process.env.VUE_APP_TRACTION_BASE_URL
+    }
+  },
   components: {
     DataList,
     LibraryItem,
