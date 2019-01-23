@@ -5,7 +5,7 @@
 set -ev
 
 # Building assets
-yarn build --mode $3
+yarn build --mode $3 --dest $2/public
 
 # Storing revision hash
 git rev-parse HEAD > $2/REVISION

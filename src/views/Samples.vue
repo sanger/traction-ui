@@ -11,7 +11,7 @@
           <th>Barcode</th>
         </tr>
       </thead>
-      <data-list ref="samples" baseURL='http://localhost:3100' apiNamespace="v1" resource="samples">
+      <data-list ref="samples" :baseURL="tractionBaseUrl" apiNamespace="v1" resource="samples">
         <tbody slot-scope="{ data: samples }">
           <sample-item v-for="sample in samples" v-bind:key="sample.id" v-bind="sample"></sample-item>
         </tbody>
@@ -30,6 +30,12 @@ import Alert from '@/components/Alert'
 
 export default {
   name: 'Samples',
+  props: {
+    tractionBaseUrl: {
+      type: String,
+      default: process.env.VUE_APP_TRACTION_BASE_URL
+    }
+  },
   data () {
     return {
     }
