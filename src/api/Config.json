@@ -1,0 +1,26 @@
+{
+    "sequencescape": {
+      "name": "sequencescape",
+      "apiNamespace": "api/v2",
+      "resources": {
+        "requests": {
+          "name": "requests",
+          "filters": {
+            "type": "long_read",
+            "state": "pending"
+          },
+          "include": {
+            "samples.sample_metadata"
+          }
+        }
+      }
+    },
+    "traction": {
+      "name": "traction",
+      "apiNamespace": "v1",
+      "resources": {
+        "samples": {},
+        "libraries": {}
+      }
+    }
+}

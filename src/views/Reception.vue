@@ -10,7 +10,7 @@
             <th>Species</th>
           </tr>
         </thead>
-        <data-list ref="requests" :baseURL="sequencescapeBaseURL" apiNamespace="api/v2" resource="requests" v-bind:filters="{type: 'long_read', state: 'pending'}">
+        <data-list ref="requests" :baseURL="sequencescapeBaseURL" apiNamespace="api/v2" resource="requests" :filters="{type: 'long_read', state: 'pending'}">
           <tbody slot-scope="{ data: requests }">
             <request-item v-for="request in requests" v-bind:key="request.id" v-bind="request"></request-item>
           </tbody>
