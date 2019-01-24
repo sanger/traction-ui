@@ -3,7 +3,9 @@
     <td><input class="selected" type="checkbox" v-model="selected" /></td>
     <td>{{ id }}</td>
     <td>{{ name }}</td>
-    <td>{{ species }}</td>
+    <td>{{ sample_common_name }}</td>
+    <td>{{ sanger_sample_id }}</td>
+    <td>{{ state }}</td>
   </tr>
 </template>
 
@@ -18,7 +20,13 @@ export default {
     name: {
       type: String
     },
-    species: {
+    sample_common_name: {
+      type: String
+    },
+    sanger_sample_id: {
+      type: String
+    },
+    state: {
       type: String
     }
   },
@@ -31,10 +39,10 @@ export default {
   },
   computed: {
     json () {
-      return {
+      return { 
         sequencescape_request_id: this.id,
         name: this.name,
-        species: this.species //'mockSpeciesForSS' // TODO: currently stubbed species from SS
+        species: this.sample_common_name
       }
     }
   }

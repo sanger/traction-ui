@@ -5,12 +5,15 @@
         <thead>
           <tr>
             <th></th>
-            <th>Request ID</th>
+            <th>ID</th>
             <th>Name</th>
-            <th>Species</th>
+            <th>Sample Common Name</th>
+            <th>Sanger Sample ID</th>
+            <th>State</th>
           </tr>
         </thead>
-        <data-list ref="requests" :baseURL="sequencescapeBaseURL" apiNamespace="api/v2" resource="requests" v-bind:filters="{type: 'long_read', state: 'pending'}">
+        <!-- <data-list ref="requests" :baseURL="sequencescapeBaseURL" apiNamespace="api/v2" resource="requests" v-bind:filters="{type: 'long_read', state: 'pending'}"> -->
+        <data-list ref="requests" :baseURL="sequencescapeBaseURL" apiNamespace="api/v2" :resource="ssURL">
           <tbody slot-scope="{ data: requests }">
             <request-item v-for="request in requests" v-bind:key="request.id" v-bind="request"></request-item>
           </tbody>
@@ -19,6 +22,7 @@
     <b-button id="exportRequests" @click="exportRequests" class="float-right">Import Requests</b-button>
   </div>
 </template>
+
 
 <script>
 
@@ -32,11 +36,17 @@ export default {
   props: {
     sequencescapeBaseURL: {
       type: String,
-      default: process.env.VUE_APP_SEQUENCESCAPE_BASE_URL
+      // default: "http://dev.psd.sanger.ac.uk:6630" // for SS:6630
+      default: process.env.VUE_APP_SEQUENCESCAPE_BASE_URL  // for local
     },
     tractionBaseURL: {
       type: String,
       default: process.env.VUE_APP_TRACTION_BASE_URL
+    },
+    ssURL: {
+      type: String,
+      // default: "requests?filter[type]=long_read&filter[state]=pending&include=samples.sample_metadata"  // for SS:6630
+      default: "requests?filter[state]=pending&include=samples.sample_metadata" // for local
     }
   },
   name: 'Reception',
