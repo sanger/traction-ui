@@ -26,29 +26,35 @@ const listCmp = Vue.extend({
 
 describe('DataList', () => {
 
-  let props, filters
+  let props, filters, include
 
   beforeEach(() => {
     props = {resource: 'requests', baseURL: 'http://examplehost:1234', apiNamespace: "abc/v1"}
     filters = {type: 'long_read', state: 'pending'}
+    include = "samples.sample_metadata"
     DataList.created = jest.fn()
   })
 
-  describe('filters', () => {
+  describe('query', () => {
 
     let wrapper, dataList
 
     beforeEach(() => {
-      wrapper = mount(DataList, { mocks: localVue, propsData: Object.assign(props, { filters: filters }) })
+      wrapper = mount(DataList, { mocks: localVue, propsData: Object.assign(props, { filters: filters, include: include }) })
       dataList = wrapper.vm
     })
 
-    it('creates a suitable prop', () => {
+    it('creates suitable props', () => {
       expect(dataList.filters).toEqual(filters)
+      expect(dataList.include).toEqual(include)
+    })
+
+    it('creates a suitable query string', () => {
+      expect(dataList.query).toEqual('?filter[type]=long_read&filter[state]=pending&include=samples.sample_metadata')
     })
 
     it('creates a suitable endpoint', () => {
-      expect(dataList.endpoint).toEqual('requests?filter[type]=long_read&filter[state]=pending')
+      expect(dataList.endpoint).toEqual(`requests${dataList.query}`)
     })
 
   })
