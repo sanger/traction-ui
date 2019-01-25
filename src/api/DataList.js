@@ -9,14 +9,31 @@ export default {
       default: () => {
         return { }
       }
+    },
+    include: {
+      type: String,
+      default: ''
     }
   },
   computed: {
-    endpoint () {
-      if (Object.keys(this.filters).length === 0) return this.resource
+    query () {
+      if (Object.keys(this.filters).length === 0 && this.include.length === 0) return ''
 
-      let mappedFilters = Object.keys(this.filters).map(key => `filter[${key}]=${this.filters[key]}`)
-      return `${this.resource}?${mappedFilters.join('&')}`
+      let query = '?'
+
+      if (Object.keys(this.filters).length > 0) {
+        query += Object.keys(this.filters).map(key => `filter[${key}]=${this.filters[key]}`).join('&')
+      }
+
+      if (this.include.length > 0) {
+        query += `&include=${this.include}`
+      }
+
+      return query
+
+    },
+    endpoint () {
+      return this.resource.concat(this.query)
     }
   },
   methods: {
