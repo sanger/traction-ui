@@ -11,7 +11,7 @@
           <th>State</th>
         </tr>
       </thead>
-      <data-list ref="libraries" :baseURL="tractionBaseURL" apiNamespace="v1" resource="libraries">
+      <data-list ref="libraries" v-bind="tractionConfig.resource('libraries')">
         <tbody slot-scope="{ data: libraries }">
           <library-item v-for="library in libraries" v-bind:key="library.id" v-bind="library"></library-item>
         </tbody>
@@ -27,14 +27,12 @@ import DataList from '@/api/DataList'
 import DataModel from '@/api/DataModel'
 import Alert from '@/components/Alert'
 import LibraryItem from '@/components/LibraryItem'
+import ApiConfig from '@/api/Config'
+import ConfigItem from '@/api/ConfigItem'
 
 export default {
   name: 'Libraries',
   props: {
-    tractionBaseURL: {
-      type: String,
-      default: process.env.VUE_APP_TRACTION_BASE_URL
-    }
   },
   components: {
     DataList,
@@ -68,9 +66,13 @@ export default {
     selected () {
       return this.$refs.libraries.$children.filter(library => library.selected).map(library => library.json)
     },
+    tractionConfig () {
+      let Cmp = Vue.extend(ConfigItem)
+      return new Cmp({ propsData: ApiConfig.traction})
+    },
     tractionApi () {
       let Cmp = Vue.extend(DataModel)
-      return new Cmp({ propsData: { baseURL: this.tractionBaseURL, apiNamespace: 'v1', resource: 'libraries' }})
+      return new Cmp({ propsData: this.tractionConfig.resource('libraries')})
     },
     showAlert () {
       return this.$refs.alert.show(this.message, 'primary')

@@ -11,7 +11,7 @@
           <th>Barcode</th>
         </tr>
       </thead>
-      <data-list ref="samples" :baseURL="tractionBaseURL" apiNamespace="v1" resource="samples">
+      <data-list ref="samples" v-bind="tractionConfig.resource('samples')">
         <tbody slot-scope="{ data: samples }">
           <sample-item v-for="sample in samples" v-bind:key="sample.id" v-bind="sample"></sample-item>
         </tbody>
@@ -27,14 +27,12 @@ import DataList from '@/api/DataList'
 import DataModel from '@/api/DataModel'
 import SampleItem from '@/components/SampleItem'
 import Alert from '@/components/Alert'
+import ApiConfig from '@/api/Config'
+import ConfigItem from '@/api/ConfigItem'
 
 export default {
   name: 'Samples',
   props: {
-    tractionBaseURL: {
-      type: String,
-      default: process.env.VUE_APP_TRACTION_BASE_URL
-    }
   },
   data () {
     return {
@@ -80,9 +78,13 @@ export default {
     selected () {
       return this.$refs.samples.$children.filter(sample => sample.selected).map(sample => sample.json)
     },
+    tractionConfig () {
+      let Cmp = Vue.extend(ConfigItem)
+      return new Cmp({ propsData: ApiConfig.traction})
+    },
     tractionApiLibrary () {
       let Cmp = Vue.extend(DataModel)
-      return new Cmp({ propsData: { baseURL: this.tractionBaseURL, apiNamespace: 'v1', resource: 'libraries' }})
+      return new Cmp({ propsData: this.tractionConfig.resource('samples')})
     },
     showAlert () {
       return this.$refs.alert.show(this.message, 'primary')

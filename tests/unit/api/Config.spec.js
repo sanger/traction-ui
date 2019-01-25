@@ -17,9 +17,7 @@ describe('API Config', () => {
               "filter1": "foo",
               "filter2": "bar"
             },
-            "include": [
-              "users"
-            ]
+            "include": "users"
           },
           "resource2": {}
         }
@@ -57,6 +55,14 @@ describe('API Config', () => {
 
     it('has some resources', () => {
       expect(configItem.resources).toEqual(api.resources)
+    })
+
+    it('can find a particular resource', () => {
+      let resource = configItem.resource('resource1')
+      expect(resource.baseURL).toEqual(process.env.VUE_APP_API1_BASE_URL)
+      expect(resource.apiNamespace).toEqual(api.apiNamespace)
+      expect(resource.resource).toEqual(api.resources.resource1.name)
+      expect(resource.filters).toEqual(api.resources.resource1.filters)
     })
 
   })

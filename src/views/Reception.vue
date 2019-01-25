@@ -10,7 +10,7 @@
             <th>Species</th>
           </tr>
         </thead>
-        <data-list ref="requests" :baseURL="sequencescapeBaseURL" apiNamespace="api/v2" resource="requests" :filters="{type: 'long_read', state: 'pending'}">
+        <data-list ref="requests" v-bind="sequencescapeConfig.resource('requests')">
           <tbody slot-scope="{ data: requests }">
             <request-item v-for="request in requests" v-bind:key="request.id" v-bind="request"></request-item>
           </tbody>
@@ -27,17 +27,11 @@ import DataList from '@/api/DataList'
 import DataModel from '@/api/DataModel'
 import RequestItem from '@/components/RequestItem'
 import Alert from '@/components/Alert'
+import ApiConfig from '@/api/Config'
+import ConfigItem from '@/api/ConfigItem'
 
 export default {
   props: {
-    sequencescapeBaseURL: {
-      type: String,
-      default: process.env.VUE_APP_SEQUENCESCAPE_BASE_URL
-    },
-    tractionBaseURL: {
-      type: String,
-      default: process.env.VUE_APP_TRACTION_BASE_URL
-    }
   },
   name: 'Reception',
   data () {
@@ -75,7 +69,6 @@ export default {
         let body = { data: { type: 'requests', id: id, attributes: { state: 'started' }}}
         await this.sequencescapeApi.update(id, body)
       }
-
       if (this.sequencescapeApi.data !== null) {
         this.message = 'Samples updated in SS'
       } else {
@@ -97,13 +90,21 @@ export default {
     selectedForSS () {
       return this.$refs.requests.$children.filter(request => request.selected).map(request => ({ id: request.id, state: 'started'}))
     },
+    tractionConfig () {
+      let Cmp = Vue.extend(ConfigItem)
+      return new Cmp({ propsData: ApiConfig.traction})
+    },
     tractionApi () {
       let Cmp = Vue.extend(DataModel)
-      return new Cmp({ propsData: { baseURL: this.tractionBaseURL, apiNamespace: 'v1', resource: 'samples' }})
+      return new Cmp({ propsData: this.tractionConfig.resource('samples')})
+    },
+    sequencescapeConfig () {
+       let Cmp = Vue.extend(ConfigItem)
+      return new Cmp({ propsData: ApiConfig.sequencescape})
     },
     sequencescapeApi () {
       let Cmp = Vue.extend(DataModel)
-      return new Cmp({ propsData: { baseURL: this.sequencescapeBaseURL, apiNamespace: 'api/v2', resource: 'requests' }})
+      return new Cmp({ propsData: this.sequencescapeConfig.resource('requests')})
     },
     showAlert () {
       return this.$refs.alert.show(this.message, 'primary')
