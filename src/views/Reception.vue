@@ -29,17 +29,17 @@ import RequestItem from '@/components/RequestItem'
 import Alert from '@/components/Alert'
 import ApiConfig from '@/api/Config'
 import ConfigItem from '@/api/ConfigItem'
+import ComponentFactory from '@/mixins/ComponentFactory'
 
 export default {
+  name: 'Reception',
+  mixins: [ComponentFactory],
   props: {
   },
-  name: 'Reception',
   data () {
     return {
       message: ''
     }
-  },
-  created () {
   },
   methods: {
     async exportRequests () {
@@ -63,6 +63,7 @@ export default {
         throw this.message
       }
     },
+    // TODO: Refactor into patchAll
     async updateSequencescapeRequests () {
       for (let i = 0; i < this.selected.length; i++) {
         let id = this.selected[i].sequencescape_request_id
@@ -90,25 +91,21 @@ export default {
     selectedForSS () {
       return this.$refs.requests.$children.filter(request => request.selected).map(request => ({ id: request.id, state: 'started'}))
     },
-    tractionConfig () {
-      let Cmp = Vue.extend(ConfigItem)
-      return new Cmp({ propsData: ApiConfig.traction})
-    },
     tractionApi () {
-      let Cmp = Vue.extend(DataModel)
-      return new Cmp({ propsData: this.tractionConfig.resource('samples')})
+      let tractionConfig = this.build(ConfigItem, ApiConfig.traction)
+      return this.build(DataModel, tractionConfig.resource('samples'))
     },
     sequencescapeConfig () {
-       let Cmp = Vue.extend(ConfigItem)
-      return new Cmp({ propsData: ApiConfig.sequencescape})
+      return this.build(ConfigItem, ApiConfig.sequencescape)
     },
     sequencescapeApi () {
-      let Cmp = Vue.extend(DataModel)
-      return new Cmp({ propsData: this.sequencescapeConfig.resource('requests')})
+      return this.build(DataModel, this.sequencescapeConfig.resource('requests'))
     },
     showAlert () {
       return this.$refs.alert.show(this.message, 'primary')
     }
+  },
+  created () {
   }
 }
 </script>
