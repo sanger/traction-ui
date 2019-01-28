@@ -22,7 +22,6 @@
 </template>
 
 <script>
-import Vue from 'vue'
 import DataList from '@/api/DataList'
 import DataModel from '@/api/DataModel'
 import Alert from '@/components/Alert'

@@ -22,7 +22,6 @@
 
 <script>
 
-import Vue from 'vue'
 import DataList from '@/api/DataList'
 import DataModel from '@/api/DataModel'
 import RequestItem from '@/components/RequestItem'
