@@ -84,7 +84,7 @@ export default {
     },
     tractionApiLibrary () {
       let Cmp = Vue.extend(DataModel)
-      return new Cmp({ propsData: this.tractionConfig.resource('samples')})
+      return new Cmp({ propsData: this.tractionConfig.resource('libraries')})
     },
     showAlert () {
       return this.$refs.alert.show(this.message, 'primary')
