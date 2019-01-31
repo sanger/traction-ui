@@ -66,31 +66,33 @@ describe('Samples.vue', () => {
         samples.createLibrariesInTraction()
         await flushPromises()
 
-        let sample_ids = []
+        let libraryAttrs = []
         for (let i = 0; i < samples.selected.length; i++) {
-          let id = samples.selected[i].id
-          sample_ids.push( {'sample_id': id} )
+          let sampleId = samples.selected[i].id
+          let enzymeId = 1
+          libraryAttrs.push( {'sample_id': sampleId, enzymeId: enzymeId} )
         }
 
-        let body = { data: { type: 'libraries', attributes: { libraries: sample_ids }}}
+        let body = { data: { type: 'libraries', attributes: { libraries: libraryAttrs }}}
         expect(samples.tractionApiLibrary.create).toBeCalledWith(body)
         expect(samples.message).toEqual("Libraries created in Traction")
       })
 
-      it('failuree', async () => {
+      it('failure', async () => {
         response = {message: 'Something went wrong'}
         samples.tractionApiLibrary.errors = response
         samples.tractionApiLibrary.create.mockReturnValue(response)
         let fn = samples.createLibrariesInTraction()
         await expect(fn).rejects.toBe("Something went wrong")
 
-        let sample_ids = []
+        let libraryAttrs = []
         for (let i = 0; i < samples.selected.length; i++) {
-          let id = samples.selected[i].id
-          sample_ids.push( {'sample_id': id} )
+          let sampleId = samples.selected[i].id
+          let enzymeId = 1
+          libraryAttrs.push( {'sample_id': sampleId, enzymeId: enzymeId} )
         }
 
-        let body = { data: { type: 'libraries', attributes: { libraries: sample_ids }}}
+        let body = { data: { type: 'libraries', attributes: { libraries: libraryAttrs }}}
         expect(samples.tractionApiLibrary.create).toBeCalledWith(body)
         expect(samples.message).toEqual("Something went wrong")
       })

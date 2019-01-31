@@ -51,12 +51,13 @@ export default {
       }
     },
     async createLibrariesInTraction () {
-      let sample_ids = []
+      let libraryAttrs = []
       for (let i = 0; i < this.selected.length; i++) {
-        let id = this.selected[i].id
-        sample_ids.push( {'sample_id': id} )
+        let sampleId = this.selected[i].id
+        let enzymeId = 1 //TODO: replace with selected enzyme
+        libraryAttrs.push( {'sample_id': sampleId, enzymeId: enzymeId} )
       }
-      let body = { data: { type: 'libraries', attributes: { libraries: sample_ids }}}
+      let body = { data: { type: 'libraries', attributes: { libraries: libraryAttrs }}}
 
       await this.tractionApiLibrary.create(body)
 
