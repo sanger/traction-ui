@@ -6,6 +6,7 @@
       "requests": {
         "name": "requests",
         "filters": {
+          "type": "long_read",
           "state": "pending"
         },
         "include": "samples.sample_metadata"
