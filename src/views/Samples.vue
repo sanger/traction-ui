@@ -17,7 +17,10 @@
         </tbody>
       </data-list>
     </table>
-    <b-button id="createLibraries" @click="createLibraries" class="float-right">Create Libraries</b-button>
+
+    <!-- Button to create libraries -->
+    <modal v-on:selectEnzyme="createLibraries" :disabled=false class="float-right" ></modal>
+
   </div>
 </template>
 
@@ -29,6 +32,7 @@ import SampleItem from '@/components/SampleItem'
 import Alert from '@/components/Alert'
 import ApiConfig from '@/api/Config'
 import ConfigItem from '@/api/ConfigItem'
+import Modal from '@/components/Modal';
 
 export default {
   name: 'Samples',
@@ -41,21 +45,21 @@ export default {
   created() {
   },
   methods: {
-    async createLibraries () {
+    async createLibraries (selectedEnzymeId) {
       try {
-        await this.createLibrariesInTraction()
+        await this.createLibrariesInTraction(selectedEnzymeId)
       } catch (error) {
         // log error
       } finally {
         this.showAlert
       }
     },
-    async createLibrariesInTraction () {
+    async createLibrariesInTraction (selectedEnzymeId) {
       let libraryAttrs = []
       for (let i = 0; i < this.selected.length; i++) {
         let sampleId = this.selected[i].id
-        let enzymeId = 1 //TODO: replace with selected enzyme
-        libraryAttrs.push( {'sample_id': sampleId, enzymeId: enzymeId} )
+        let enzymeId = selectedEnzymeId
+        libraryAttrs.push( {'sample_id': sampleId, 'enzyme_id': enzymeId} )
       }
       let body = { data: { type: 'libraries', attributes: { libraries: libraryAttrs }}}
 
@@ -67,13 +71,19 @@ export default {
         this.message = this.tractionApiLibrary.errors.message
         throw this.message
       }
-
+    },
+    showModal() {
+      this.isModalVisible = true;
+    },
+    closeModal() {
+      this.isModalVisible = false;
     },
   },
   components: {
     DataList,
     SampleItem,
-    Alert
+    Alert,
+    Modal
   },
   computed: {
     selected () {
@@ -85,7 +95,7 @@ export default {
     },
     tractionApiLibrary () {
       let Cmp = Vue.extend(DataModel)
-      return new Cmp({ propsData: this.tractionConfig.resource('samples')})
+      return new Cmp({ propsData: this.tractionConfig.resource('libraries')})
     },
     showAlert () {
       return this.$refs.alert.show(this.message, 'primary')
