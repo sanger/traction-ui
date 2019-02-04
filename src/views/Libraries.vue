@@ -23,16 +23,17 @@
 </template>
 
 <script>
-import Vue from 'vue'
 import DataList from '@/api/DataList'
 import DataModel from '@/api/DataModel'
 import Alert from '@/components/Alert'
 import LibraryItem from '@/components/LibraryItem'
 import ApiConfig from '@/api/Config'
 import ConfigItem from '@/api/ConfigItem'
+import ComponentFactory from '@/mixins/ComponentFactory'
 
 export default {
   name: 'Libraries',
+  mixins: [ComponentFactory],
   props: {
   },
   components: {
@@ -68,12 +69,10 @@ export default {
       return this.$refs.libraries.$children.filter(library => library.selected).map(library => library.json)
     },
     tractionConfig () {
-      let Cmp = Vue.extend(ConfigItem)
-      return new Cmp({ propsData: ApiConfig.traction})
+      return this.build(ConfigItem, ApiConfig.traction)
     },
     tractionApi () {
-      let Cmp = Vue.extend(DataModel)
-      return new Cmp({ propsData: this.tractionConfig.resource('libraries')})
+      return this.build(DataModel, this.tractionConfig.resource('libraries'))
     },
     showAlert () {
       return this.$refs.alert.show(this.message, 'primary')
