@@ -16,7 +16,7 @@ export default {
       return this.execute('get', `${this.resource}/${id}`)
     },
     destroy(id) {
-      return this.execute('delete', `${this.resource}/${id}`);
+      return this.execute('delete', `${this.resource}/${id}`)
     },
   },
   render () {
