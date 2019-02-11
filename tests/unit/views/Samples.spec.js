@@ -96,7 +96,6 @@ describe('Samples.vue', () => {
         let libraryAttrs = []
         for (let i = 0; i < samples.selected.length; i++) {
           let sampleId = samples.selected[i].id
-          let enzymeId = 1
           libraryAttrs.push( {'sample_id': sampleId, 'enzyme_id': selectedEnzymeId} )
         }
 
