@@ -1,7 +1,6 @@
 <template>
   <div>
     <b-btn :disabled="disabled" v-b-modal.enzymeModal>Create Libraries with Enzyme</b-btn>
-
     <b-modal id="enzymeModal" title="Create Libraries" ref="enzymeModal" @ok="handleOk" @shown="clearSelect">
       <b-form-select v-model="selectedEnzymeId" :options="options" class="mb-3" />
     </b-modal>

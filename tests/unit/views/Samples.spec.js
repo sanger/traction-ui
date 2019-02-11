@@ -1,4 +1,5 @@
 import Samples from '@/views/Samples'
+import Modal from '@/components/Modal'
 import Alert from '@/components/Alert'
 import { mount, localVue } from '../testHelper'
 import DataList from '@/api/DataList'
@@ -33,6 +34,10 @@ describe('Samples.vue', () => {
     expect(wrapper.contains('table')).toBe(true)
   })
 
+  it('contains a modal component', () => {
+    expect(wrapper.contains(Modal)).toBe(true)
+  })
+
   it('contains the correct data', () => {
     expect(wrapper.find('tbody').findAll('tr').length).toEqual(data.body.length)
   })
@@ -63,14 +68,15 @@ describe('Samples.vue', () => {
         response = {status: 201}
         samples.tractionApiLibrary.data = response
         samples.tractionApiLibrary.create.mockReturnValue(response)
-        samples.createLibrariesInTraction()
+
+        let selectedEnzymeId = 1
+        samples.createLibrariesInTraction(selectedEnzymeId)
         await flushPromises()
 
         let libraryAttrs = []
         for (let i = 0; i < samples.selected.length; i++) {
           let sampleId = samples.selected[i].id
-          let enzymeId = 1
-          libraryAttrs.push( {'sample_id': sampleId, enzymeId: enzymeId} )
+          libraryAttrs.push( {'sample_id': sampleId, 'enzyme_id': selectedEnzymeId} )
         }
 
         let body = { data: { type: 'libraries', attributes: { libraries: libraryAttrs }}}
@@ -82,14 +88,16 @@ describe('Samples.vue', () => {
         response = {message: 'Something went wrong'}
         samples.tractionApiLibrary.errors = response
         samples.tractionApiLibrary.create.mockReturnValue(response)
-        let fn = samples.createLibrariesInTraction()
+
+        let selectedEnzymeId = 1
+        let fn = samples.createLibrariesInTraction(selectedEnzymeId)
         await expect(fn).rejects.toBe("Something went wrong")
 
         let libraryAttrs = []
         for (let i = 0; i < samples.selected.length; i++) {
           let sampleId = samples.selected[i].id
           let enzymeId = 1
-          libraryAttrs.push( {'sample_id': sampleId, enzymeId: enzymeId} )
+          libraryAttrs.push( {'sample_id': sampleId, 'enzyme_id': selectedEnzymeId} )
         }
 
         let body = { data: { type: 'libraries', attributes: { libraries: libraryAttrs }}}
@@ -100,4 +108,20 @@ describe('Samples.vue', () => {
 
   })
 
+  describe('modal', () => {
+    // it('button is disabled unless samples are selected', () => {
+    //   expect(wrapper.find(Modal).props().disabled).toBe(true)
+    // })
+    //
+    // it('button is not disabled when samples are selected', () => {
+    //   expect(wrapper.find(Modal).props().disabled).toBe(false)
+    // })
+
+    it('passes selected enzyme id to function on emit event', () => {
+      let modal = wrapper.find(Modal)
+      wrapper.vm.createLibrariesInTraction = jest.fn()
+      modal.vm.$emit('selectEnzyme', 2)
+      expect(wrapper.vm.createLibrariesInTraction).toBeCalledWith(2)
+    })
+  })
 })

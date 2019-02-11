@@ -19,7 +19,8 @@
     </table>
 
     <!-- Button to create libraries -->
-    <modal v-on:selectEnzyme="createLibraries" :disabled=false class="float-right" ></modal>
+    <!-- Add check to disable button if no samples are selected -->
+    <modal @selectEnzyme="createLibraries" :disabled=false class="float-right" ></modal>
 
   </div>
 </template>
