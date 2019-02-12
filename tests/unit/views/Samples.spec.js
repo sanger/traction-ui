@@ -73,6 +73,7 @@ describe('Samples.vue', () => {
         samples.createLibrariesInTraction(selectedEnzymeId)
         await flushPromises()
 
+// TODO: refactor processing
         let libraryAttrs = []
         for (let i = 0; i < samples.selected.length; i++) {
           let sampleId = samples.selected[i].id
@@ -93,6 +94,7 @@ describe('Samples.vue', () => {
         let fn = samples.createLibrariesInTraction(selectedEnzymeId)
         await expect(fn).rejects.toBe("Something went wrong")
 
+// TODO: refactor processing
         let libraryAttrs = []
         for (let i = 0; i < samples.selected.length; i++) {
           let sampleId = samples.selected[i].id
@@ -108,14 +110,6 @@ describe('Samples.vue', () => {
   })
 
   describe('modal', () => {
-    // it('button is disabled unless samples are selected', () => {
-    //   expect(wrapper.find(Modal).props().disabled).toBe(true)
-    // })
-    //
-    // it('button is not disabled when samples are selected', () => {
-    //   expect(wrapper.find(Modal).props().disabled).toBe(false)
-    // })
-
     it('passes selected enzyme id to function on emit event', () => {
       let modal = wrapper.find(Modal)
       wrapper.vm.createLibrariesInTraction = jest.fn()
