@@ -8,6 +8,7 @@
           <th>Library ID</th>
           <th>Sample name</th>
           <th>Barcode</th>
+          <th>Enzyme</th>
           <th>State</th>
         </tr>
       </thead>

@@ -9,11 +9,11 @@ describe('Libraries.vue', () => {
 
   beforeEach(() => {
     data = { body: [
-      { "id": 1, "attributes": { "barcode": "TRAC-11111", "state": "pending" }},
-      { "id": 2, "attributes": { "barcode": "TRAC-11112", "state": "pending" }},
-      { "id": 3, "attributes": { "barcode": "TRAC-11113", "state": "pending" }},
-      { "id": 4, "attributes": { "barcode": "TRAC-11114", "state": "pending" }},
-      { "id": 5, "attributes": { "barcode": "TRAC-11115", "state": "pending" }}
+      { "id": 1, "attributes": { "barcode": "TRAC-11111", "state": "pending", "enzyme": "EnZ.123" }},
+      { "id": 2, "attributes": { "barcode": "TRAC-11112", "state": "pending", "enzyme": "EnZ.245" }},
+      { "id": 3, "attributes": { "barcode": "TRAC-11113", "state": "pending", "enzyme": "EnZ.124" }},
+      { "id": 4, "attributes": { "barcode": "TRAC-11114", "state": "pending", "enzyme": "EnZ.342" }},
+      { "id": 5, "attributes": { "barcode": "TRAC-11115", "state": "pending", "enzyme": "EnZ.976" }}
     ]}
     wrapper = mount(Libraries, { localVue })
     wrapper.find(DataList).vm.data = data

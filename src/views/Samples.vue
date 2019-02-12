@@ -17,7 +17,11 @@
         </tbody>
       </data-list>
     </table>
-    <b-button id="createLibraries" @click="createLibraries" class="float-right">Create Libraries</b-button>
+
+    <!-- Button to create libraries -->
+    <!-- Add check to disable button if no samples are selected -->
+    <modal @selectEnzyme="createLibraries" :disabled=false class="float-right" ></modal>
+
   </div>
 </template>
 
@@ -29,6 +33,7 @@ import Alert from '@/components/Alert'
 import ApiConfig from '@/api/Config'
 import ConfigItem from '@/api/ConfigItem'
 import ComponentFactory from '@/mixins/ComponentFactory'
+import Modal from '@/components/Modal';
 
 export default {
   name: 'Samples',
@@ -42,22 +47,23 @@ export default {
   created() {
   },
   methods: {
-    async createLibraries () {
+    async createLibraries (selectedEnzymeId) {
       try {
-        await this.createLibrariesInTraction()
+        await this.createLibrariesInTraction(selectedEnzymeId)
       } catch (error) {
         // log error
       } finally {
         this.showAlert
       }
     },
-    async createLibrariesInTraction () {
-      let sample_ids = []
+    async createLibrariesInTraction (selectedEnzymeId) {
+      let libraryAttrs = []
       for (let i = 0; i < this.selected.length; i++) {
-        let id = this.selected[i].id
-        sample_ids.push( {'sample_id': id} )
+        let sampleId = this.selected[i].id
+        let enzymeId = selectedEnzymeId
+        libraryAttrs.push( {'sample_id': sampleId, 'enzyme_id': enzymeId} )
       }
-      let body = { data: { type: 'libraries', attributes: { libraries: sample_ids }}}
+      let body = { data: { type: 'libraries', attributes: { libraries: libraryAttrs }}}
 
       await this.tractionApiLibrary.create(body)
 
@@ -67,13 +73,19 @@ export default {
         this.message = this.tractionApiLibrary.errors.message
         throw this.message
       }
-
+    },
+    showModal() {
+      this.isModalVisible = true;
+    },
+    closeModal() {
+      this.isModalVisible = false;
     },
   },
   components: {
     DataList,
     SampleItem,
-    Alert
+    Alert,
+    Modal
   },
   computed: {
     selected () {
