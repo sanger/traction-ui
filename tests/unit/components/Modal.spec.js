@@ -1,5 +1,6 @@
 import { mount, localVue } from '../testHelper'
 import Modal from '@/components/Modal'
+import flushPromises from 'flush-promises'
 
 describe('Modal.vue', () => {
 
@@ -32,28 +33,59 @@ describe('Modal.vue', () => {
     expect(wrapper.vm.selectedEnzymeId).toBe(1)
   })
 
-  it('has a list of options', () => {
-    wrapper.setData({ options: [
-      { value: 1, text: 'option1' },
-      { value: 2, text: 'option2' }]
-    })
-    expect(modal.options.length).toBe(2)
-  })
-
   it('has a disabled property', () => {
     expect(wrapper.props().disabled).toBe(true)
   })
 
   it('has options', () => {
-    let options = [
-      { value: null, text: 'Please select an option' },
-      { value: 1, text: 'Nb.BsmI' },
-      { value: 2, text: 'Nt.BspQI' },
-      { value: 3, text: 'Nb.BssSI' },
-      { value: 4, text: 'DLE-1' }
-    ]
-    expect(modal.options).toEqual(options)
-    expect(wrapper.find('select').findAll('option').length).toEqual(options.length)
+    let enzymeOptions = { enzymeOptions: [{ value: null, text: 'Please select an option' },
+      { value: 0, text: 'enz1' },
+      { value: 1, text: 'enz2' }]
+    }
+
+    wrapper.setData(enzymeOptions)
+    expect(modal.enzymeOptions).toEqual(enzymeOptions.enzymeOptions)
+    expect(wrapper.find('select').findAll('option').length).toEqual(enzymeOptions.enzymeOptions.length)
+  })
+
+  describe('#getEnzymeOptions', () => {
+    let response
+
+    beforeEach(() => {
+      modal.tractionApiEnzyme.get = jest.fn()
+    })
+
+    it('success', async () => {
+      let enzymesResponse = [{ name: 'enz1' }, { name: 'enz2' }]
+      response = { body: enzymesResponse }
+
+      modal.tractionApiEnzyme.data = response
+      modal.tractionApiEnzyme.get.mockReturnValue(response)
+
+      modal.getEnzymeOptions()
+      await flushPromises()
+
+      expect(modal.tractionApiEnzyme.get).toBeCalled()
+
+      let enzymeOptions = [
+        { value: null, text: 'Please select an option' },
+        { value: 0, text: 'enz1' },
+        { value: 1, text: 'enz2' }
+      ]
+      expect(modal.enzymeOptions).toEqual(enzymeOptions)
+    })
+
+    it('failure', async () => {
+      response = {message: 'Something went wrong'}
+      modal.tractionApiEnzyme.errors = response
+      modal.tractionApiEnzyme.get.mockReturnValue(response)
+
+      let fn = modal.getEnzymeOptions()
+      await expect(fn).rejects.toBe("Something went wrong")
+
+      expect(modal.tractionApiEnzyme.get).toBeCalled()
+      expect(modal.message).toEqual("Something went wrong")
+    })
   })
 
   it('#handleOk without selectedEnzymeId', () => {
