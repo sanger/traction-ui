@@ -50,7 +50,7 @@ export default {
       await this.tractionApiEnzyme.get()
 
       if (this.tractionApiEnzyme.data !== null) {
-        let enzymeOptions = this.tractionApiEnzyme.data.body.map((enzyme, index) => Object.assign({ value: index, text: enzyme.name }))
+        let enzymeOptions = this.tractionApiEnzyme.data.body.map((enzyme, index) => Object.assign({ value: index+1, text: enzyme.name }))
         enzymeOptions.unshift({ value: null, text: "Please select an option" })
         this.enzymeOptions = enzymeOptions
       } else {

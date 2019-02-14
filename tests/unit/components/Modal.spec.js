@@ -39,8 +39,8 @@ describe('Modal.vue', () => {
 
   it('has options', () => {
     let enzymeOptions = { enzymeOptions: [{ value: null, text: 'Please select an option' },
-      { value: 0, text: 'enz1' },
-      { value: 1, text: 'enz2' }]
+      { value: 1, text: 'enz1' },
+      { value: 2, text: 'enz2' }]
     }
 
     wrapper.setData(enzymeOptions)
@@ -69,8 +69,8 @@ describe('Modal.vue', () => {
 
       let enzymeOptions = [
         { value: null, text: 'Please select an option' },
-        { value: 0, text: 'enz1' },
-        { value: 1, text: 'enz2' }
+        { value: 1, text: 'enz1' },
+        { value: 2, text: 'enz2' }
       ]
       expect(modal.enzymeOptions).toEqual(enzymeOptions)
     })
