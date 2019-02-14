@@ -2,7 +2,7 @@
   <div>
     <b-btn :disabled="disabled" v-b-modal.enzymeModal>Create Libraries with Enzyme</b-btn>
     <b-modal id="enzymeModal" title="Create Libraries" ref="enzymeModal" @ok="handleOk" @shown="clearSelect">
-      <b-form-select v-model="selectedEnzymeId" :options="options" class="mb-3" />
+      <b-form-select v-model="selectedEnzymeId" :options="enzymeOptions" class="mb-3" />
     </b-modal>
   </div>
 
@@ -10,19 +10,18 @@
 
 
 <script>
+import DataModel from '@/api/DataModel'
+import ApiConfig from '@/api/Config'
+import ConfigItem from '@/api/ConfigItem'
+import ComponentFactory from '@/mixins/ComponentFactory'
 
 export default {
   name: 'Modal',
+  mixins: [ComponentFactory],
   data () {
     return {
       selectedEnzymeId: null,
-      options: [
-        { value: null, text: 'Please select an option' },
-        { value: 1, text: 'Nb.BsmI' },
-        { value: 2, text: 'Nt.BspQI' },
-        { value: 3, text: 'Nb.BssSI' },
-        { value: 4, text: 'DLE-1' }
-      ]
+      enzymeOptions: []
     }
   },
   props: {
@@ -46,9 +45,30 @@ export default {
       this.$emit('selectEnzyme', this.selectedEnzymeId)
       this.clearSelect()
       this.$refs.enzymeModal.hide()
-    }
+    },
+    async getEnzymeOptions() {
+      await this.tractionApiEnzyme.get()
+
+      if (this.tractionApiEnzyme.data !== null) {
+        let enzymeOptions = this.tractionApiEnzyme.data.body.map((enzyme, index) => Object.assign({ value: index+1, text: enzyme.name }))
+        enzymeOptions.unshift({ value: null, text: "Please select an option" })
+        this.enzymeOptions = enzymeOptions
+      } else {
+        this.message = this.tractionApiEnzyme.errors.message
+        throw this.message
+      }
+    },
+  },
+  async created() {
+    this.getEnzymeOptions()
   },
   computed: {
+    tractionConfig () {
+      return this.build(ConfigItem, ApiConfig.traction)
+    },
+    tractionApiEnzyme () {
+      return this.build(DataModel, this.tractionConfig.resource('enzymes'))
+    }
   }
 }
 </script>

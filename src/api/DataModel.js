@@ -6,6 +6,9 @@ export default {
   props: {
   },
   methods: {
+    get() {
+      return this.execute('get', `${this.resource}`)
+    },
     create(data) {
       return this.execute('post', this.resource, data)
     },

@@ -11,6 +11,17 @@ describe('DataModel', () => {
     dataModel.execute = jest.fn()
   })
 
+  describe('get', () => {
+
+    it('returns an appropriate response', () => {
+      response = {data: { body: [{ name: 'enz1' }, { name: 'enz2' }] }}
+      dataModel.execute.mockReturnValue(response)
+      expect(dataModel.get()).toEqual(response)
+      expect(dataModel.execute).toBeCalledWith('get', dataModel.resource)
+    })
+
+  })
+
   describe('post', () => {
 
     it('returns an appropriate response', () => {
