@@ -1,59 +1,51 @@
 const extractAttributes = (data) => {
-  return { id: data.id, ...data.attributes }
+  return { id: data.id, type: data.type, ...data.attributes }
 }
 
-const extractRelationships = (data) => {
-  return Object.keys(data.relationships).map(relationship => data.relationships[relationship].data)
+const mapRelationships = (relationships) => {
+  if (relationships === undefined) return {}
+  return Object.keys(relationships).reduce((result, name) => {
+    result[name] = relationships[name].data
+    return result
+  }, {})
 }
 
-const extractIncludedData = (relationships, included) => {
-  return relationships.map(relationship => {
-    if (Array.isArray(relationship)) {
-      return extractIncludedData(relationship, included)
-    } else {
-      let found = included.find(item => item.id === relationship.id)
-      return found !== undefined ? extractAttributes(found) : found
-    }
-  }).filter(item => item !== undefined)
+const extractRelationship = (relationship, included) => {
+  if (Array.isArray(relationship)) {
+    return relationship.map(item => spreadIncluded(item, included))
+  } else {
+    return spreadIncluded(relationship, included)
+  }
 }
 
-const findRelationship = (id, relationships) => {
-  return relationships.find(relationship => {
-    if (Array.isArray(relationship)) {
-      return findRelationship(id, relationship)
-    } else {
-      return relationship.id === id
-    }
-  })
+const findIncluded = (id, included) => {
+  return included.find(item => item.id === id) || { attributes: {} }
 }
 
-const findRelationshipType = (id, relationships) => {
-  let relationship = findRelationship(id, relationships) 
-  if (relationship === undefined) return
-  return Array.isArray(relationship) ? relationship[0].type : relationship.type
+const spreadIncluded = (relationship, included) => {
+  let data = findIncluded(relationship.id, included)
+  return Object.assign({ ...relationship, ...data.attributes }, extractRelationships(data.relationships, included))
 }
 
-const reduceIncludedData = (relationships, extracted) => {
-  return extracted.reduce((result, currentValue) => {
-    let type = findRelationshipType( Array.isArray(currentValue) ? currentValue[0].id : currentValue.id, relationships)
-    result[type] = currentValue
+const extractRelationships = (relationships, included) => {
+  if (relationships === undefined) return {}
+  let mapped = mapRelationships(relationships)
+  return Object.keys(mapped).reduce((result, name) => {
+    result[name] = extractRelationship(mapped[name], included)
     return result
   }, {})
 }
 
 const extractResourceObject = (data, included) => {
-  let attributes = extractAttributes(data)
-  let relationships = extractRelationships(data)
-  let includedData = reduceIncludedData(relationships, extractIncludedData(relationships, included))
-  return { ...attributes, ...includedData}
+  return Object.assign(extractAttributes(data), extractRelationships(data.relationships, included))
 }
 
 export { 
   extractAttributes, 
-  extractRelationships, 
-  extractIncludedData,
-  findRelationship,
-  findRelationshipType,
-  reduceIncludedData,
+  mapRelationships,
+  extractRelationship,
+  findIncluded,
+  spreadIncluded,
+  extractRelationships,
   extractResourceObject
 }

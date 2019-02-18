@@ -8,7 +8,7 @@
           "self": "http://pretend.sequencescape/api/v1/cheeses/1"
         },
         "attributes": {
-          "attrA": "you got me",
+          "attrA": "you caught me",
           "attrB": "luv dancing"
         },
         "relationships": {
