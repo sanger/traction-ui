@@ -10,10 +10,11 @@
 
 
 <script>
-import DataModel from '@/api/DataModel'
 import ApiConfig from '@/api/Config'
 import ConfigItem from '@/api/ConfigItem'
 import ComponentFactory from '@/mixins/ComponentFactory'
+import Request from '@/mixins/Request'
+import Response from '@/api/Response'
 
 export default {
   name: 'Modal',
@@ -46,29 +47,33 @@ export default {
       this.clearSelect()
       this.$refs.enzymeModal.hide()
     },
-    async getEnzymeOptions() {
-      this.enzymeOptions = [{ value: 1, text: "DV12" }]
-      // await this.tractionApiEnzyme.get()
-      //
-      // if (this.tractionApiEnzyme.data !== null) {
-      //   let enzymeOptions = this.tractionApiEnzyme.data.body.map((enzyme, index) => Object.assign({ value: index+1, text: enzyme.name }))
-      //   enzymeOptions.unshift({ value: null, text: "Please select an option" })
-      //   this.enzymeOptions = enzymeOptions
-      // } else {
-      //   this.message = this.tractionApiEnzyme.errors.message
-      //   throw this.message
-      // }
+    async getEnzymeOptions () {
+      try {
+        let rawResponse = await this.enzymeRequest.get()
+        let response = new Response(rawResponse).data.enzymes
+
+        if (response.data !== null) {
+          let enzymeOptions = response.map((enzyme, index) => Object.assign({ value: index+1, text: enzyme.name }))
+          enzymeOptions.unshift({ value: null, text: "Please select an option" })
+          this.enzymeOptions = enzymeOptions
+        } else {
+          this.message = response.errors.message
+          throw this.message
+        }
+      } catch {
+        // log error
+      }
     },
   },
   async created() {
     this.getEnzymeOptions()
   },
   computed: {
+    enzymeRequest () {
+      return this.build(Request, this.tractionConfig.resource('enzymes'))
+    },
     tractionConfig () {
       return this.build(ConfigItem, ApiConfig.traction)
-    },
-    tractionApiEnzyme () {
-      return this.build(DataModel, this.tractionConfig.resource('enzymes'))
     }
   }
 }

@@ -1,6 +1,7 @@
 <template>
   <div class="samples">
     <alert ref='alert'></alert>
+
     <b-table
        show-empty
        :items="getSamples"
@@ -9,10 +10,8 @@
       <template slot="selected" slot-scope="row">
         <b-checkbox @change="toggleSelectedRow(row.item)"></b-checkbox>
       </template>
-
     </b-table>
 
-    {{ selected }}
     <!-- Button to create libraries -->
     <!-- Add check to disable button if no samples are selected -->
     <modal @selectEnzyme="createLibraries" :disabled=false class="float-right" ></modal>
@@ -38,10 +37,10 @@ export default {
     return {
       fields: [
         { key: 'selected', label: '' },
-        { key: 'id', label: 'Sample ID', sortable: true },
-        { key: 'name', label: 'Name', sortable: true },
-        { key: 'species', label: 'Species', sortable: true },
-        { key: 'barcode', label: 'Barcode', sortable: true },
+        { key: 'id', label: 'Sample ID' },
+        { key: 'name', label: 'Name' },
+        { key: 'species', label: 'Species' },
+        { key: 'barcode', label: 'Barcode' },
       ],
       selected: []
     }
@@ -114,9 +113,6 @@ export default {
     tractionConfig () {
       return this.build(ConfigItem, ApiConfig.traction)
     },
-    // tractionApiLibrary () {
-    //   return this.build(DataModel, this.tractionConfig.resource('libraries'))
-    // },
     showAlert () {
       return this.$refs.alert.show(this.message, 'primary')
     }
