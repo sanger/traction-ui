@@ -29,6 +29,8 @@ import Alert from '@/components/Alert'
 import ApiConfig from '@/api/Config'
 import ConfigItem from '@/api/ConfigItem'
 import ComponentFactory from '@/mixins/ComponentFactory'
+import Request from '@/mixins/Request'
+import Response from '@/api/Response'
 
 export default {
   name: 'Samples',
@@ -42,6 +44,14 @@ export default {
   created() {
   },
   methods: {
+    async getSamples () {
+      try {
+        let rawSamples = await this.sampleRequest.get()
+        return new Response(rawSamples).data
+      } catch {
+
+      }
+    },
     async createLibraries () {
       try {
         await this.createLibrariesInTraction()
@@ -76,6 +86,9 @@ export default {
     Alert
   },
   computed: {
+    sampleRequest () {
+      return this.build(Request, this.tractionConfig.resource('samples'))
+    },
     selected () {
       return this.$refs.samples.$children.filter(sample => sample.selected).map(sample => sample.json)
     },

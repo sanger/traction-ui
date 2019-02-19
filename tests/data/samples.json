@@ -1,9 +1,230 @@
 {
-  "requests": [
-    { "id": 1, "name": "DN11111", "species": "cat" },
-    { "id": 2, "name": "DN11112", "species": "cat" },
-    { "id": 3, "name": "DN11113", "species": "dog" },
-    { "id": 4, "name": "DN11114", "species": "dog" },
-    { "id": 5, "name": "DN11115", "species": "cat" }
-  ]
+  "data": {
+    "data": [
+      {
+        "id": "1",
+        "type": "samples",
+        "links": {
+          "self": "http://localhost:3100/v1/samples/1"
+        },
+        "attributes": {
+          "name": "sample2",
+          "sequencescape-request-id": null,
+          "species": null,
+          "barcode": null
+        },
+        "relationships": {
+          "libraries": {
+            "links": {
+              "self": "http://localhost:3100/v1/samples/1/relationships/libraries",
+              "related": "http://localhost:3100/v1/samples/1/libraries"
+            },
+            "data": []
+          },
+          "tube": {
+            "links": {
+              "self": "http://localhost:3100/v1/samples/1/relationships/tube",
+              "related": "http://localhost:3100/v1/samples/1/tube"
+            }
+          }
+        }
+      },
+      {
+        "id": "2",
+        "type": "samples",
+        "links": {
+          "self": "http://localhost:3100/v1/samples/2"
+        },
+        "attributes": {
+          "name": "DN11111",
+          "sequencescape-request-id": null,
+          "species": null,
+          "barcode": null
+        },
+        "relationships": {
+          "libraries": {
+            "links": {
+              "self": "http://localhost:3100/v1/samples/2/relationships/libraries",
+              "related": "http://localhost:3100/v1/samples/2/libraries"
+            },
+            "data": []
+          },
+          "tube": {
+            "links": {
+              "self": "http://localhost:3100/v1/samples/2/relationships/tube",
+              "related": "http://localhost:3100/v1/samples/2/tube"
+            }
+          }
+        }
+      },
+      {
+        "id": "3",
+        "type": "samples",
+        "links": {
+          "self": "http://localhost:3100/v1/samples/3"
+        },
+        "attributes": {
+          "name": "DN11112",
+          "sequencescape-request-id": null,
+          "species": null,
+          "barcode": null
+        },
+        "relationships": {
+          "libraries": {
+            "links": {
+              "self": "http://localhost:3100/v1/samples/3/relationships/libraries",
+              "related": "http://localhost:3100/v1/samples/3/libraries"
+            },
+            "data": []
+          },
+          "tube": {
+            "links": {
+              "self": "http://localhost:3100/v1/samples/3/relationships/tube",
+              "related": "http://localhost:3100/v1/samples/3/tube"
+            }
+          }
+        }
+      },
+      {
+        "id": "4",
+        "type": "samples",
+        "links": {
+          "self": "http://localhost:3100/v1/samples/4"
+        },
+        "attributes": {
+          "name": "testing123",
+          "sequencescape-request-id": null,
+          "species": null,
+          "barcode": null
+        },
+        "relationships": {
+          "libraries": {
+            "links": {
+              "self": "http://localhost:3100/v1/samples/4/relationships/libraries",
+              "related": "http://localhost:3100/v1/samples/4/libraries"
+            },
+            "data": []
+          },
+          "tube": {
+            "links": {
+              "self": "http://localhost:3100/v1/samples/4/relationships/tube",
+              "related": "http://localhost:3100/v1/samples/4/tube"
+            }
+          }
+        }
+      },
+      {
+        "id": "5",
+        "type": "samples",
+        "links": {
+          "self": "http://localhost:3100/v1/samples/5"
+        },
+        "attributes": {
+          "name": "DN11115",
+          "sequencescape-request-id": null,
+          "species": null,
+          "barcode": null
+        },
+        "relationships": {
+          "libraries": {
+            "links": {
+              "self": "http://localhost:3100/v1/samples/5/relationships/libraries",
+              "related": "http://localhost:3100/v1/samples/5/libraries"
+            },
+            "data": []
+          },
+          "tube": {
+            "links": {
+              "self": "http://localhost:3100/v1/samples/5/relationships/tube",
+              "related": "http://localhost:3100/v1/samples/5/tube"
+            }
+          }
+        }
+      },
+      {
+        "id": "6",
+        "type": "samples",
+        "links": {
+          "self": "http://localhost:3100/v1/samples/6"
+        },
+        "attributes": {
+          "name": "DN11114",
+          "sequencescape-request-id": null,
+          "species": null,
+          "barcode": null
+        },
+        "relationships": {
+          "libraries": {
+            "links": {
+              "self": "http://localhost:3100/v1/samples/6/relationships/libraries",
+              "related": "http://localhost:3100/v1/samples/6/libraries"
+            },
+            "data": []
+          },
+          "tube": {
+            "links": {
+              "self": "http://localhost:3100/v1/samples/6/relationships/tube",
+              "related": "http://localhost:3100/v1/samples/6/tube"
+            }
+          }
+        }
+      },
+      {
+        "id": "7",
+        "type": "samples",
+        "links": {
+          "self": "http://localhost:3100/v1/samples/7"
+        },
+        "attributes": {
+          "name": "DN11113",
+          "sequencescape-request-id": null,
+          "species": null,
+          "barcode": null
+        },
+        "relationships": {
+          "libraries": {
+            "links": {
+              "self": "http://localhost:3100/v1/samples/7/relationships/libraries",
+              "related": "http://localhost:3100/v1/samples/7/libraries"
+            },
+            "data": []
+          },
+          "tube": {
+            "links": {
+              "self": "http://localhost:3100/v1/samples/7/relationships/tube",
+              "related": "http://localhost:3100/v1/samples/7/tube"
+            }
+          }
+        }
+      },
+      {
+        "id": "8",
+        "type": "samples",
+        "links": {
+          "self": "http://localhost:3100/v1/samples/8"
+        },
+        "attributes": {
+          "name": "DN11116",
+          "sequencescape-request-id": null,
+          "species": null,
+          "barcode": null
+        },
+        "relationships": {
+          "libraries": {
+            "links": {
+              "self": "http://localhost:3100/v1/samples/8/relationships/libraries",
+              "related": "http://localhost:3100/v1/samples/8/libraries"
+            },
+            "data": []
+          },
+          "tube": {
+            "links": {
+              "self": "http://localhost:3100/v1/samples/8/relationships/tube",
+              "related": "http://localhost:3100/v1/samples/8/tube"
+            }
+          }
+        }
+      }
+    ]
+  }
 }

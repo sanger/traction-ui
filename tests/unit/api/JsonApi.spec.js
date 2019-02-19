@@ -52,7 +52,7 @@ describe('JsonApi', () => {
       })
 
       it('will work if single record is passed through deserializer', () => {
-        expect(JsonApi.deserialize({ data: dataItem, included: included})).toEqual(JsonApi.extractResourceObject(dataItem, included))
+        expect(JsonApi.deserialize({ data: dataItem, included: included})).toEqual({ cheeses: [JsonApi.extractResourceObject(dataItem, included)]})
       })
 
     })

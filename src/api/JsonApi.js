@@ -57,7 +57,8 @@ const deserialize = (response) => {
       return result
     }, {})
   } else {
-    return extractResourceObject(response.data, included)
+    const resourceObject = extractResourceObject(response.data, included)
+    return { [resourceObject.type]: [resourceObject]}
   }
 }
 
