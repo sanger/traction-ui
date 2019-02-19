@@ -5,7 +5,9 @@ const extractAttributes = (data) => {
 const mapRelationships = (relationships) => {
   if (relationships === undefined) return {}
   return Object.keys(relationships).reduce((result, name) => {
-    result[name] = relationships[name].data
+    if (Boolean(relationships[name].data)) {
+      result[name] = relationships[name].data
+    }
     return result
   }, {})
 }
@@ -18,18 +20,18 @@ const extractRelationship = (relationship, included) => {
   }
 }
 
-const findIncluded = (id, included) => {
-  return included.find(item => item.id === id) || { attributes: {} }
+const findIncluded = (relationship, included) => {
+  return included.find(item => item.id === relationship.id && item.type === relationship.type) || { attributes: {} }
 }
 
 const spreadIncluded = (relationship, included) => {
-  let data = findIncluded(relationship.id, included)
+  const data = findIncluded(relationship, included)
   return Object.assign({ ...relationship, ...data.attributes }, extractRelationships(data.relationships, included))
 }
 
 const extractRelationships = (relationships, included) => {
   if (relationships === undefined) return {}
-  let mapped = mapRelationships(relationships)
+  const mapped = mapRelationships(relationships)
   return Object.keys(mapped).reduce((result, name) => {
     result[name] = extractRelationship(mapped[name], included)
     return result
@@ -40,12 +42,35 @@ const extractResourceObject = (data, included) => {
   return Object.assign(extractAttributes(data), extractRelationships(data.relationships, included))
 }
 
+const deserialize = (response) => {
+
+  const included = response.included
+
+  if (Array.isArray(response.data)) {
+    return response.data.reduce((result, item) => {
+      const resourceObject = extractResourceObject(item, included)
+      const type = resourceObject.type
+      if (result.hasOwnProperty(type)) {
+        result[type].push(resourceObject)
+      } else {
+        result[type] = [resourceObject]
+      }
+      return result
+    }, {})
+  } else {
+    return extractResourceObject(response.data, included)
+  }
+}
+
 export { 
-  extractAttributes, 
+  extractAttributes,
   mapRelationships,
   extractRelationship,
   findIncluded,
   spreadIncluded,
   extractRelationships,
-  extractResourceObject
+  extractResourceObject,
+  deserialize
 }
+
+export default deserialize

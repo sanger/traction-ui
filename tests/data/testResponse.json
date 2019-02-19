@@ -43,6 +43,12 @@
                 "id": "12"
               }
             ]
+          },
+          "peaches": {
+            "links": {
+              "self": "http://pretend.sequencescape/api/v1/cheeses/1/relationships/peaches",
+              "related": "http://pretend.sequencescape/api/v1/cheeses/1/peaches"
+            }
           }
         }
       },
