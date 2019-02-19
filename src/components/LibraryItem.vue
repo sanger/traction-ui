@@ -4,6 +4,7 @@
     <td>{{ id }}</td>
     <td>{{ sampleName }}</td>
     <td>{{ barcode }}</td>
+    <td>{{ enzymeName }}</td>
     <td>{{ state }}</td>
   </tr>
 </template>
@@ -22,6 +23,9 @@ export default {
     barcode: {
       type: String
     },
+    enzymeName: {
+      String,
+    },
     state: {
       type: String
     }
@@ -37,6 +41,7 @@ export default {
         id: this.id,
         sampleName: this.sampleName,
         barcode: this.barcode,
+        enzymeName: this.enzymeName,
         state: this.state,
       }
     }

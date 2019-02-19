@@ -1,36 +1,33 @@
 <template>
   <div class="samples">
     <alert ref='alert'></alert>
-    <table class="table">
-      <thead>
-        <tr>
-          <th></th>
-          <th>Sample ID</th>
-          <th>Name</th>
-          <th>Species</th>
-          <th>Barcode</th>
-        </tr>
-      </thead>
-      <data-list ref="samples" v-bind="tractionConfig.resource('samples')">
-        <tbody slot-scope="{ data: samples }">
-          <sample-item v-for="sample in samples" v-bind:key="sample.id" v-bind="sample"></sample-item>
-        </tbody>
-      </data-list>
-    </table>
-    <b-button id="createLibraries" @click="createLibraries" class="float-right">Create Libraries</b-button>
+    <b-table
+       show-empty
+       :items="getSamples"
+       :fields="fields"
+    >
+      <template slot="selected" slot-scope="row">
+        <b-checkbox @change="toggleSelectedRow(row.item)"></b-checkbox>
+      </template>
+
+    </b-table>
+
+    {{ selected }}
+    <!-- Button to create libraries -->
+    <!-- Add check to disable button if no samples are selected -->
+    <modal @selectEnzyme="createLibraries" :disabled=false class="float-right" ></modal>
+
   </div>
 </template>
 
 <script>
-import DataList from '@/api/DataList'
-import DataModel from '@/api/DataModel'
-import SampleItem from '@/components/SampleItem'
 import Alert from '@/components/Alert'
 import ApiConfig from '@/api/Config'
 import ConfigItem from '@/api/ConfigItem'
 import ComponentFactory from '@/mixins/ComponentFactory'
 import Request from '@/mixins/Request'
 import Response from '@/api/Response'
+import Modal from '@/components/Modal';
 
 export default {
   name: 'Samples',
@@ -39,65 +36,87 @@ export default {
   },
   data () {
     return {
+      fields: [
+        { key: 'selected', label: '' },
+        { key: 'id', label: 'Sample ID', sortable: true },
+        { key: 'name', label: 'Name', sortable: true },
+        { key: 'species', label: 'Species', sortable: true },
+        { key: 'barcode', label: 'Barcode', sortable: true },
+      ],
+      selected: []
     }
   },
   created() {
   },
   methods: {
+    toggleSelectedRow(item) {
+      if (this.selected.indexOf(item) === -1) {
+        this.selected.push(item)
+      } else {
+        this.selected.splice(this.selected.indexOf(item), 1 );
+      }
+    },
     async getSamples () {
       try {
         let rawSamples = await this.sampleRequest.get()
-        return new Response(rawSamples).data
+        return new Response(rawSamples).data.samples
       } catch {
-
+        // log error
       }
     },
-    async createLibraries () {
+    async createLibraries (selectedEnzymeId) {
       try {
-        await this.createLibrariesInTraction()
+        await this.createLibrariesInTraction(selectedEnzymeId)
       } catch (error) {
         // log error
       } finally {
         this.showAlert
       }
     },
-    async createLibrariesInTraction () {
-      let sample_ids = []
+    async createLibrariesInTraction (selectedEnzymeId) {
+      let libraryAttrs = []
       for (let i = 0; i < this.selected.length; i++) {
-        let id = this.selected[i].id
-        sample_ids.push( {'sample_id': id} )
+        let sampleId = this.selected[i].id
+        let enzymeId = selectedEnzymeId
+        libraryAttrs.push( {'sample_id': sampleId, 'enzyme_id': enzymeId} )
       }
-      let body = { data: { type: 'libraries', attributes: { libraries: sample_ids }}}
 
-      await this.tractionApiLibrary.create(body)
+      let body = { data: { type: 'libraries', attributes: { libraries: libraryAttrs }}}
 
-      if (this.tractionApiLibrary.data !== null) {
+      let rawResponse = await this.libraryRequest.create(body)
+      let response = new Response(rawResponse)
+
+      if (Object.keys(response.errors).length === 0) {
         this.message = 'Libraries created in Traction'
       } else {
-        this.message = this.tractionApiLibrary.errors.message
+        this.message = response.errors.message
         throw this.message
       }
-
+    },
+    showModal() {
+      this.isModalVisible = true;
+    },
+    closeModal() {
+      this.isModalVisible = false;
     },
   },
   components: {
-    DataList,
-    SampleItem,
-    Alert
+    Alert,
+    Modal
   },
   computed: {
     sampleRequest () {
       return this.build(Request, this.tractionConfig.resource('samples'))
     },
-    selected () {
-      return this.$refs.samples.$children.filter(sample => sample.selected).map(sample => sample.json)
+    libraryRequest () {
+      return this.build(Request, this.tractionConfig.resource('libraries'))
     },
     tractionConfig () {
       return this.build(ConfigItem, ApiConfig.traction)
     },
-    tractionApiLibrary () {
-      return this.build(DataModel, this.tractionConfig.resource('libraries'))
-    },
+    // tractionApiLibrary () {
+    //   return this.build(DataModel, this.tractionConfig.resource('libraries'))
+    // },
     showAlert () {
       return this.$refs.alert.show(this.message, 'primary')
     }
