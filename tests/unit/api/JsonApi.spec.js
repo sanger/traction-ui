@@ -43,6 +43,7 @@ describe('JsonApi', () => {
 
       it('can extract the relationships', () => {
         expect(JsonApi.extractRelationships(undefined, included)).toEqual({})
+        expect(JsonApi.extractRelationships(dataItem.relationships, undefined)).toEqual({})
         expect(JsonApi.extractRelationships(dataItem.relationships, included)).toEqual({bean: {id: '10', type: 'beans'}, pickle: {attrI: 'I just keep', attrJ: 'rolling on', id: '11', type: 'pickles'}, chocolates: [{attrC: 'can you', attrD: 'feel it', 'id': '12', type: 'chocolates', crisps: {type: 'crisps', id: '100', attrE: 'Cyber Insekt'}}]})
       })
 
@@ -55,6 +56,8 @@ describe('JsonApi', () => {
       })
 
     })
+
+
 
     describe('for a bunch of records', () => {
 

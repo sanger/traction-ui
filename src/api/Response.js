@@ -4,13 +4,11 @@
 import deserialize from '@/api/JsonApi'
 
 class Response {
-  constructor(response, resource, included = '') {
+  constructor(response) {
     this.status = response.status
     this.statusText = response.statusText
     this._body = response.data
-    this.resource = resource
     this._errors = response.data.errors
-    this.included = included
   }
 
   get successful () {

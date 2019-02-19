@@ -20,7 +20,7 @@ describe('Response', () => {
           status: 200,
           statusText: "OK"
         },
-        response = new Response(mockResponse, 'requests')
+        response = new Response(mockResponse)
       })
 
       it('has a status', () => {

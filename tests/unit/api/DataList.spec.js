@@ -3,6 +3,7 @@ import { mount, localVue } from '../testHelper'
 import flushPromises from 'flush-promises'
 import DataList from '@/api/DataList'
 import Response from '@/api/Response'
+import deserialize from '@/api/JsonApi'
 
 const listCmp = Vue.extend({
   name: 'listCmp',
@@ -70,13 +71,15 @@ describe('DataList', () => {
     })
 
     it('has data on execute', async () => {
-      let data = { data: [{id: 1, attributes: {name: 'sample1', species: 'dog'}}]}
-      let response = {status: 200, data: data }
-      let apiResponse = new Response(response)
+      let data = { data: [{id: 1, type: 'requests', attributes: {name: 'sample1', species: 'dog'}}]}
+      let response = {status: 200, statusText: 'OK', data: data }
+
       dataList.api.get.mockResolvedValue(response)
       dataList.load()
       await flushPromises()
-      expect(dataList.data).toEqual(apiResponse)
+
+      let apiResponse = new Response(response)
+      expect(dataList.data).toEqual(apiResponse.data)
     })
 
   })

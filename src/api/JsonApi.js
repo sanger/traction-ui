@@ -30,7 +30,7 @@ const spreadIncluded = (relationship, included) => {
 }
 
 const extractRelationships = (relationships, included) => {
-  if (relationships === undefined) return {}
+  if (relationships === undefined || included === undefined) return {}
   const mapped = mapRelationships(relationships)
   return Object.keys(mapped).reduce((result, name) => {
     result[name] = extractRelationship(mapped[name], included)
@@ -43,7 +43,6 @@ const extractResourceObject = (data, included) => {
 }
 
 const deserialize = (response) => {
-
   const included = response.included
 
   if (Array.isArray(response.data)) {
@@ -62,7 +61,7 @@ const deserialize = (response) => {
   }
 }
 
-export { 
+export {
   extractAttributes,
   mapRelationships,
   extractRelationship,

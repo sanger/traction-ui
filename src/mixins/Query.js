@@ -47,7 +47,7 @@ export default {
       try {
         resp = await this.api[type](...params)
         let response = new Response(resp)
-        this.data = response
+        this.data = response.data
         this.errors = null
       } catch(resp) {
         let response = new Response(resp.response)

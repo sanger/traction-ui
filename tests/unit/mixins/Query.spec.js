@@ -57,12 +57,15 @@ describe('Query', () => {
       })
 
       it('returns some appropriate data if successful', async () => {
-        response = {status: 200, data: { data: [{id: 1, attributes: {name: 'sample1', species: 'dog'}}]}}
-        apiResponse = new Response(response)
+        let data = { data: [{id: 1, type: 'requests', attributes: {name: 'sample1', species: 'dog'}}]}
+        let response = {status: 200, statusText: 'OK', data: data }
+
         query.api.get.mockResolvedValue(response)
         query.execute('get')
         await flushPromises()
-        expect(query.data).toEqual(apiResponse)
+
+        apiResponse = new Response(response)
+        expect(query.data).toEqual(apiResponse.data)
       })
 
       it('returns an appropriate response if there is an error', async () => {
