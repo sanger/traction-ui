@@ -1,5 +1,6 @@
 import Response from '@/api/Response'
 import Requests from '../../data/requests'
+import deserialize from '@/api/JsonApi'
 
 describe('Response', () => {
 
@@ -9,11 +10,11 @@ describe('Response', () => {
 
     describe('Success', () => {
       beforeEach(() => {
-        mockResponse =  { 
-          data: { 
+        mockResponse =  {
+          data: {
             data: [
-               { id: 1, attributes: { name: "testname1", species: "testspecies1" }},
-               { id: 2, attributes: { name: "testname2", species: "testspecies2" }}
+               { id: 1, type: "requests", attributes: { name: "testname1", species: "testspecies1" }},
+               { id: 2, type: "requests", attributes: { name: "testname2", species: "testspecies2" }}
             ]
           },
           status: 200,
@@ -44,6 +45,11 @@ describe('Response', () => {
 
       it('has no errors', () => {
         expect(response.errors).toEqual({})
+      })
+
+      it('data returns serialized object', () => {
+        let serializedObj = deserialize(mockResponse.data)
+        expect(response.data).toEqual(serializedObj)
       })
     })
 
@@ -84,25 +90,5 @@ describe('Response', () => {
 
   })
 
-  describe('with associated data', () => {
-
-    let requests, request, expectedResponse
-
-    beforeEach(() => {
-      requests = Requests.request
-      response = new Response(requests, 'requests', 'samples.sample_metadata')
-    })
-
-    it('has the correct number of items', () => {
-      expect(response.body.requests.length).toEqual(requests.data.data.length)
-    })
-
-    it('includes the correct relationship data', () => {
-      expect(response.body.requests[0]).toEqual(Requests.response.requests[0])
-    })
-
-  })
-
-  
 
 })
