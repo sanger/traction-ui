@@ -48,8 +48,8 @@ export default {
       try {
         let rawSamples = await this.sampleRequest.get()
         return new Response(rawSamples).data
-      } catch {
-
+      } catch(error) {
+        return error
       }
     },
     async createLibraries () {

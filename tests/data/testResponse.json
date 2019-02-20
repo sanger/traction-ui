@@ -19,7 +19,7 @@
             },
             "data": {
               "type": "beans",
-              "id": "10"
+              "id": "1"
             }
           },
           "pickle": {
@@ -29,7 +29,7 @@
             },
             "data": {
               "type": "pickles",
-              "id": "11"
+              "id": "2"
             }
           },
           "chocolates": {
@@ -40,7 +40,7 @@
             "data": [
               {
                 "type": "chocolates",
-                "id": "12"
+                "id": "3"
               }
             ]
           },
@@ -49,6 +49,13 @@
               "self": "http://pretend.sequencescape/api/v1/cheeses/1/relationships/peaches",
               "related": "http://pretend.sequencescape/api/v1/cheeses/1/peaches"
             }
+          },
+          "mojitos": {
+            "links": {
+              "self": "http://pretend.sequencescape/api/v1/cheeses/1/relationships/mojitos",
+              "related": "http://pretend.sequencescape/api/v1/cheeses/1/mojitos"
+            },
+            "data": null
           }
         }
       },
@@ -100,10 +107,10 @@
     ],
     "included": [
        {
-        "id": "11",
+        "id": "2",
         "type": "pickles",
         "links": {
-          "self": "http://pretend.sequencescape/api/v1/pickles/11"
+          "self": "http://pretend.sequencescape/api/v1/pickles/1"
         },
         "attributes": {
           "attrI": "I just keep",
@@ -111,10 +118,10 @@
         }
       },
       {
-        "id": "12",
+        "id": "3",
         "type": "chocolates",
         "links": {
-          "self": "http://pretend.sequencescape/api/v1/chocolates/12"
+          "self": "http://pretend.sequencescape/api/v1/chocolates/3"
         },
         "attributes": {
           "attrC": "can you",

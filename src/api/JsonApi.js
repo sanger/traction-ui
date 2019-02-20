@@ -5,7 +5,7 @@ const extractAttributes = (data) => {
 const mapRelationships = (relationships) => {
   if (relationships === undefined) return {}
   return Object.keys(relationships).reduce((result, name) => {
-    if (Boolean(relationships[name].data)) {
+    if (relationships[name].data) {
       result[name] = relationships[name].data
     }
     return result

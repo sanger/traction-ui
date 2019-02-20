@@ -3,7 +3,6 @@ import { mount, localVue } from '../testHelper'
 import flushPromises from 'flush-promises'
 import DataList from '@/api/DataList'
 import Response from '@/api/Response'
-import deserialize from '@/api/JsonApi'
 
 const listCmp = Vue.extend({
   name: 'listCmp',

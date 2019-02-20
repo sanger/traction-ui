@@ -1,5 +1,4 @@
 import Response from '@/api/Response'
-import Requests from '../../data/requests'
 import deserialize from '@/api/JsonApi'
 
 describe('Response', () => {

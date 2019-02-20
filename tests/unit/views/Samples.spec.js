@@ -8,7 +8,7 @@ import flushPromises from 'flush-promises'
 
 describe('Samples.vue', () => {
 
-  let wrapper, samples, data, props
+  let wrapper, samples, data
 
   beforeEach(() => {
     wrapper = mount(Samples, { localVue })
