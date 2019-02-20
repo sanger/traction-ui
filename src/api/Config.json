@@ -22,6 +22,9 @@
       },
       "libraries": {
         "name": "libraries"
+      },
+      "enzymes": {
+        "name": "enzymes"
       }
     }
   }

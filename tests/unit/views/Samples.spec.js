@@ -1,5 +1,6 @@
 import Samples from '@/views/Samples'
 import SamplesJson from '../../data/samples'
+import Modal from '@/components/Modal'
 import Alert from '@/components/Alert'
 import { mount, localVue } from '../testHelper'
 import DataList from '@/api/DataList'
@@ -23,7 +24,7 @@ describe('Samples.vue', () => {
   it('will get a list of samples', async () => {
     samples.sampleRequest.execute = jest.fn()
     samples.sampleRequest.execute.mockResolvedValue(SamplesJson)
-    
+
     let JsonApiResponse = await samples.getSamples()
     let expected = new Response(SamplesJson)
     expect(JsonApiResponse).toEqual(expected.data)
@@ -41,7 +42,11 @@ describe('Samples.vue', () => {
     expect(wrapper.contains('table')).toBe(true)
   })
 
-  it.skip('contains the correct data', () => {
+  it('contains a modal component', () => {
+    expect(wrapper.contains(Modal)).toBe(true)
+  })
+
+  it('contains the correct data', () => {
     expect(wrapper.find('tbody').findAll('tr').length).toEqual(data.body.length)
   })
 
@@ -71,34 +76,40 @@ describe('Samples.vue', () => {
         response = {status: 201}
         samples.tractionApiLibrary.data = response
         samples.tractionApiLibrary.create.mockReturnValue(response)
-        samples.createLibrariesInTraction()
+
+        let selectedEnzymeId = 1
+        samples.createLibrariesInTraction(selectedEnzymeId)
         await flushPromises()
 
-        let sample_ids = []
+// TODO: refactor processing
+        let libraryAttrs = []
         for (let i = 0; i < samples.selected.length; i++) {
-          let id = samples.selected[i].id
-          sample_ids.push( {'sample_id': id} )
+          let sampleId = samples.selected[i].id
+          libraryAttrs.push( {'sample_id': sampleId, 'enzyme_id': selectedEnzymeId} )
         }
 
-        let body = { data: { type: 'libraries', attributes: { libraries: sample_ids }}}
+        let body = { data: { type: 'libraries', attributes: { libraries: libraryAttrs }}}
         expect(samples.tractionApiLibrary.create).toBeCalledWith(body)
         expect(samples.message).toEqual("Libraries created in Traction")
       })
 
-      it('failuree', async () => {
+      it('failure', async () => {
         response = {message: 'Something went wrong'}
         samples.tractionApiLibrary.errors = response
         samples.tractionApiLibrary.create.mockReturnValue(response)
-        let fn = samples.createLibrariesInTraction()
+
+        let selectedEnzymeId = 1
+        let fn = samples.createLibrariesInTraction(selectedEnzymeId)
         await expect(fn).rejects.toBe("Something went wrong")
 
-        let sample_ids = []
+// TODO: refactor processing
+        let libraryAttrs = []
         for (let i = 0; i < samples.selected.length; i++) {
-          let id = samples.selected[i].id
-          sample_ids.push( {'sample_id': id} )
+          let sampleId = samples.selected[i].id
+          libraryAttrs.push( {'sample_id': sampleId, 'enzyme_id': selectedEnzymeId} )
         }
 
-        let body = { data: { type: 'libraries', attributes: { libraries: sample_ids }}}
+        let body = { data: { type: 'libraries', attributes: { libraries: libraryAttrs }}}
         expect(samples.tractionApiLibrary.create).toBeCalledWith(body)
         expect(samples.message).toEqual("Something went wrong")
       })
@@ -106,4 +117,12 @@ describe('Samples.vue', () => {
 
   })
 
+  describe('modal', () => {
+    it('passes selected enzyme id to function on emit event', () => {
+      let modal = wrapper.find(Modal)
+      wrapper.vm.createLibrariesInTraction = jest.fn()
+      modal.vm.$emit('selectEnzyme', 2)
+      expect(wrapper.vm.createLibrariesInTraction).toBeCalledWith(2)
+    })
+  })
 })
