@@ -26,7 +26,7 @@ import ConfigItem from '@/api/ConfigItem'
 import ComponentFactory from '@/mixins/ComponentFactory'
 import Request from '@/mixins/Request'
 import Response from '@/api/Response'
-import Modal from '@/components/Modal';
+import Modal from '@/components/Modal'
 
 export default {
   name: 'Samples',
