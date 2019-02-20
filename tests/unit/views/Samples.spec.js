@@ -50,8 +50,68 @@ describe('Samples.vue', () => {
     expect(wrapper.find('tbody').findAll('tr').length).toEqual(data.body.length)
   })
 
-  describe.skip('selected', () => {
+  describe('#createLibrariesInTraction', () => {
+    let response
 
+    beforeEach(() => {
+      samples.libraryRequest.execute = jest.fn()
+    })
+
+    it('success', async () => {
+      let mockResponse =  {
+        data: {
+          data: [
+             { id: 1, type: "libraries", attributes: { name: "testname1" }},
+             { id: 2, type: "libraries", attributes: { name: "testname2" }}
+          ]
+        },
+        status: 200,
+        statusText: "OK"
+      }
+
+      samples.libraryRequest.execute.mockResolvedValue(mockResponse)
+
+      let selectedEnzymeId = 1
+      samples.selected = [{id: 1}]
+
+      await samples.createLibrariesInTraction(selectedEnzymeId)
+      expect(samples.message).toEqual("Libraries created in Traction")
+    })
+
+    it('failure', async () => {
+
+      let mockResponse = {
+        data: {
+          errors: {
+            name: ['name error message 1']
+          }
+        },
+        status: 422,
+        statusText: "Unprocessible entity"
+      }
+
+      samples.libraryRequest.execute.mockReturnValue(mockResponse)
+
+      let selectedEnzymeId = 1
+      samples.selected = [{id: 1}]
+
+      let fn = samples.createLibrariesInTraction(selectedEnzymeId)
+      await expect(fn).rejects.toBe("name name error message 1")
+      await flushPromises()
+      expect(samples.message).toEqual("name name error message 1")
+    })
+  })
+
+  describe('modal', () => {
+    it('passes selected enzyme id to function on emit event', () => {
+      let modal = wrapper.find(Modal)
+      wrapper.vm.createLibrariesInTraction = jest.fn()
+      modal.vm.$emit('selectEnzyme', 2)
+      expect(wrapper.vm.createLibrariesInTraction).toBeCalledWith(2)
+    })
+  })
+
+  describe.skip('selected', () => {
     let checkboxes
 
     beforeEach(() => {
@@ -65,64 +125,5 @@ describe('Samples.vue', () => {
       expect(samples.selected.length).toEqual(3)
     })
 
-    describe('#createLibrariesInTraction', () => {
-      let response
-
-      beforeEach(() => {
-        samples.tractionApiLibrary.create = jest.fn()
-      })
-
-      it('success', async () => {
-        response = {status: 201}
-        samples.tractionApiLibrary.data = response
-        samples.tractionApiLibrary.create.mockReturnValue(response)
-
-        let selectedEnzymeId = 1
-        samples.createLibrariesInTraction(selectedEnzymeId)
-        await flushPromises()
-
-// TODO: refactor processing
-        let libraryAttrs = []
-        for (let i = 0; i < samples.selected.length; i++) {
-          let sampleId = samples.selected[i].id
-          libraryAttrs.push( {'sample_id': sampleId, 'enzyme_id': selectedEnzymeId} )
-        }
-
-        let body = { data: { type: 'libraries', attributes: { libraries: libraryAttrs }}}
-        expect(samples.tractionApiLibrary.create).toBeCalledWith(body)
-        expect(samples.message).toEqual("Libraries created in Traction")
-      })
-
-      it('failure', async () => {
-        response = {message: 'Something went wrong'}
-        samples.tractionApiLibrary.errors = response
-        samples.tractionApiLibrary.create.mockReturnValue(response)
-
-        let selectedEnzymeId = 1
-        let fn = samples.createLibrariesInTraction(selectedEnzymeId)
-        await expect(fn).rejects.toBe("Something went wrong")
-
-// TODO: refactor processing
-        let libraryAttrs = []
-        for (let i = 0; i < samples.selected.length; i++) {
-          let sampleId = samples.selected[i].id
-          libraryAttrs.push( {'sample_id': sampleId, 'enzyme_id': selectedEnzymeId} )
-        }
-
-        let body = { data: { type: 'libraries', attributes: { libraries: libraryAttrs }}}
-        expect(samples.tractionApiLibrary.create).toBeCalledWith(body)
-        expect(samples.message).toEqual("Something went wrong")
-      })
-    })
-
-  })
-
-  describe('modal', () => {
-    it('passes selected enzyme id to function on emit event', () => {
-      let modal = wrapper.find(Modal)
-      wrapper.vm.createLibrariesInTraction = jest.fn()
-      modal.vm.$emit('selectEnzyme', 2)
-      expect(wrapper.vm.createLibrariesInTraction).toBeCalledWith(2)
-    })
   })
 })
