@@ -26,7 +26,8 @@ export default {
         baseURL: this.baseURL,
         apiNamespace: this.apiNamespace,
         resource: res.name,
-        filters: res.filters
+        filters: res.filters,
+        include: res.include
       }
     }
   }

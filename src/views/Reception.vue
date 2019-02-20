@@ -1,34 +1,29 @@
 <template>
   <div class="reception">
     <alert ref='alert'></alert>
-      <table class="table">
-        <thead>
-          <tr>
-            <th></th>
-            <th>Request ID</th>
-            <th>Name</th>
-            <th>Species</th>
-          </tr>
-        </thead>
-        <data-list ref="requests" v-bind="sequencescapeConfig.resource('requests')">
-          <tbody slot-scope="{ data: requests }">
-            <request-item v-for="request in requests" v-bind:key="request.id" v-bind="request"></request-item>
-          </tbody>
-        </data-list>
-      </table>
+
+      <b-table
+       show-empty
+       :items="getSSRequests"
+       :fields="fields"
+       >
+        <template slot="selected" slot-scope="row">
+          <b-checkbox @change="toggleSelectedRow(row.item)"></b-checkbox>
+        </template>
+      </b-table>
+
     <b-button id="exportRequests" @click="exportRequests" class="float-right">Import Requests</b-button>
   </div>
 </template>
 
 <script>
 
-import DataList from '@/api/DataList'
-import DataModel from '@/api/DataModel'
-import RequestItem from '@/components/RequestItem'
 import Alert from '@/components/Alert'
 import ApiConfig from '@/api/Config'
 import ConfigItem from '@/api/ConfigItem'
 import ComponentFactory from '@/mixins/ComponentFactory'
+import Request from '@/mixins/Request'
+import Response from '@/api/Response'
 
 export default {
   name: 'Reception',
@@ -37,10 +32,32 @@ export default {
   },
   data () {
     return {
-      message: ''
+      message: '',
+      fields: [
+        { key: 'selected', label: '' },
+        { key: 'id', label: 'Sample ID' },
+        { key: 'name', label: 'Name' },
+        { key: 'species', label: 'Species' },
+      ],
+      selected: []
     }
   },
   methods: {
+    toggleSelectedRow(item) {
+      if (this.selected.indexOf(item) === -1) {
+        this.selected.push(item)
+      } else {
+        this.selected.splice(this.selected.indexOf(item), 1 );
+      }
+    },
+    async getSSRequests () {
+      try {
+        let rawSSRequests = await this.ssRequestRequest.get()
+        return new Response(rawSSRequests).deserialize.requests
+      } catch(error) {
+        return error
+      }
+    },
     async exportRequests () {
       try {
         await this.exportRequestsIntoTraction()
@@ -52,53 +69,63 @@ export default {
       }
     },
     async exportRequestsIntoTraction () {
-      let body = { data: { attributes: { samples: this.selected }}}
-      await this.tractionApi.create(body)
+      let body = { data: { attributes: { samples: this.selectedJSON(this.selected) }}}
+      let rawResponse = await this.sampleRequest.create(body)
+      let response = new Response(rawResponse)
 
-      if (this.tractionApi.data !== null) {
+      if (Object.keys(response.errors).length === 0) {
         this.message = 'Samples imported into Traction'
       } else {
-        this.message = this.tractionApi.errors.message
+        this.message = response.errors.message
         throw this.message
       }
     },
-    // TODO: Refactor into patchAll
     async updateSequencescapeRequests () {
+      var requestBody = []
       for (let i = 0; i < this.selected.length; i++) {
-        let id = this.selected[i].sequencescape_request_id
-        let body = { data: { type: 'requests', id: id, attributes: { state: 'started' }}}
-        await this.sequencescapeApi.update(id, body)
+        let id = this.selected[i].id
+        let request = { data: { type: 'requests', id: id, attributes: { state: 'started' }} }
+        requestBody.push(request)
       }
-      if (this.sequencescapeApi.data !== null) {
+      let rawResponse = await this.ssRequestRequest.update(requestBody)
+
+      var responses = []
+      for (let i = 0; i < this.selected.length; i++) {
+        responses.push(new Response(rawResponse[i]))
+      }
+
+      if (responses.every(r => Object.keys(r.errors).length === 0)) {
         this.message = 'Samples updated in SS'
       } else {
-        this.message = this.sequencescapeApi.errors.message
+        this.message = responses.map(r => r.errors.message)
         throw this.message
       }
+    },
+    selectedJSON(selected) {
+      return selected.map(r =>
+        Object.assign({
+          sequencescape_request_id: r.id,
+          name: r.samples[0].name,
+          species: r.samples[0].sample_metadata.sample_common_name
+        }
+      ))
     }
   },
   components: {
-    DataList,
-    RequestItem,
     Alert
   },
   computed: {
-    // should this property be in DataList??
-    selected () {
-      return this.$refs.requests.$children.filter(request => request.selected).map(request => request.json)
+    sampleRequest () {
+      return this.build(Request, this.tractionConfig.resource('samples'))
     },
-    selectedForSS () {
-      return this.$refs.requests.$children.filter(request => request.selected).map(request => ({ id: request.id, state: 'started'}))
+    tractionConfig () {
+      return this.build(ConfigItem, ApiConfig.traction)
     },
-    tractionApi () {
-      let tractionConfig = this.build(ConfigItem, ApiConfig.traction)
-      return this.build(DataModel, tractionConfig.resource('samples'))
+    ssRequestRequest () {
+      return this.build(Request, this.sequencescapeConfig.resource('requests'))
     },
     sequencescapeConfig () {
       return this.build(ConfigItem, ApiConfig.sequencescape)
-    },
-    sequencescapeApi () {
-      return this.build(DataModel, this.sequencescapeConfig.resource('requests'))
     },
     showAlert () {
       return this.$refs.alert.show(this.message, 'primary')

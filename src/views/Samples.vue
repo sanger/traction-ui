@@ -1,22 +1,16 @@
 <template>
   <div class="samples">
     <alert ref='alert'></alert>
-    <table class="table">
-      <thead>
-        <tr>
-          <th></th>
-          <th>Sample ID</th>
-          <th>Name</th>
-          <th>Species</th>
-          <th>Barcode</th>
-        </tr>
-      </thead>
-      <data-list ref="samples" v-bind="tractionConfig.resource('samples')">
-        <tbody slot-scope="{ data: samples }">
-          <sample-item v-for="sample in samples" v-bind:key="sample.id" v-bind="sample"></sample-item>
-        </tbody>
-      </data-list>
-    </table>
+
+    <b-table
+       show-empty
+       :items="getSamples"
+       :fields="fields"
+    >
+      <template slot="selected" slot-scope="row">
+        <b-checkbox @change="toggleSelectedRow(row.item)"></b-checkbox>
+      </template>
+    </b-table>
 
     <!-- Button to create libraries -->
     <!-- Add check to disable button if no samples are selected -->
@@ -26,13 +20,12 @@
 </template>
 
 <script>
-import DataList from '@/api/DataList'
-import DataModel from '@/api/DataModel'
-import SampleItem from '@/components/SampleItem'
 import Alert from '@/components/Alert'
 import ApiConfig from '@/api/Config'
 import ConfigItem from '@/api/ConfigItem'
 import ComponentFactory from '@/mixins/ComponentFactory'
+import Request from '@/mixins/Request'
+import Response from '@/api/Response'
 import Modal from '@/components/Modal';
 
 export default {
@@ -42,11 +35,34 @@ export default {
   },
   data () {
     return {
+      fields: [
+        { key: 'selected', label: '' },
+        { key: 'id', label: 'Sample ID' },
+        { key: 'name', label: 'Name' },
+        { key: 'species', label: 'Species' },
+        { key: 'barcode', label: 'Barcode' },
+      ],
+      selected: []
     }
   },
   created() {
   },
   methods: {
+    toggleSelectedRow(item) {
+      if (this.selected.indexOf(item) === -1) {
+        this.selected.push(item)
+      } else {
+        this.selected.splice(this.selected.indexOf(item), 1 );
+      }
+    },
+    async getSamples () {
+      try {
+        let rawSamples = await this.sampleRequest.get()
+        return new Response(rawSamples).deserialize.samples
+      } catch(error) {
+        return error
+      }
+    },
     async createLibraries (selectedEnzymeId) {
       try {
         await this.createLibrariesInTraction(selectedEnzymeId)
@@ -63,14 +79,16 @@ export default {
         let enzymeId = selectedEnzymeId
         libraryAttrs.push( {'sample_id': sampleId, 'enzyme_id': enzymeId} )
       }
+
       let body = { data: { type: 'libraries', attributes: { libraries: libraryAttrs }}}
 
-      await this.tractionApiLibrary.create(body)
+      let rawResponse = await this.libraryRequest.create(body)
+      let response = new Response(rawResponse)
 
-      if (this.tractionApiLibrary.data !== null) {
+      if (Object.keys(response.errors).length === 0) {
         this.message = 'Libraries created in Traction'
       } else {
-        this.message = this.tractionApiLibrary.errors.message
+        this.message = response.errors.message
         throw this.message
       }
     },
@@ -82,20 +100,18 @@ export default {
     },
   },
   components: {
-    DataList,
-    SampleItem,
     Alert,
     Modal
   },
   computed: {
-    selected () {
-      return this.$refs.samples.$children.filter(sample => sample.selected).map(sample => sample.json)
+    sampleRequest () {
+      return this.build(Request, this.tractionConfig.resource('samples'))
+    },
+    libraryRequest () {
+      return this.build(Request, this.tractionConfig.resource('libraries'))
     },
     tractionConfig () {
       return this.build(ConfigItem, ApiConfig.traction)
-    },
-    tractionApiLibrary () {
-      return this.build(DataModel, this.tractionConfig.resource('libraries'))
     },
     showAlert () {
       return this.$refs.alert.show(this.message, 'primary')

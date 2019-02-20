@@ -1,16 +1,23 @@
+/*
+  TODO: separate out into reusable functional methods - currying and recursion.
+*/
+import deserialize from '@/api/JsonApi'
+
 class Response {
   constructor(response) {
     this.status = response.status
     this.statusText = response.statusText
-    this._body = response.data.data
+    this._body = response.data
     this._errors = response.data.errors
   }
 
-  get body() {
-    if (this._body === undefined) return {}
-    return this._body.map(attrs =>
-      Object.assign({ id: attrs.id }, attrs.attributes)
-    )
+  get successful () {
+    return (this.status >= 200 && this.status <= 400)
+  }
+
+  get deserialize () {
+    if (this._body.data === undefined) return {}
+    return deserialize(this._body)
   }
 
   get errors() {
@@ -20,12 +27,13 @@ class Response {
 
     return Object.assign({
       message:  Object.keys(self._errors).map(key => {
-                  return self._errors[key].map(error => key.concat(" ", error))
+                  return self._errors[key].map(error => key.concat(' ', error))
                 })
                 .reduce(function(a, b) { return(a.concat(b))}, [])
-                .join(", ")
+                .join(', ')
     })
   }
+
 }
 
 export default Response

@@ -10,10 +10,11 @@
 
 
 <script>
-import DataModel from '@/api/DataModel'
 import ApiConfig from '@/api/Config'
 import ConfigItem from '@/api/ConfigItem'
 import ComponentFactory from '@/mixins/ComponentFactory'
+import Request from '@/mixins/Request'
+import Response from '@/api/Response'
 
 export default {
   name: 'Modal',
@@ -46,15 +47,17 @@ export default {
       this.clearSelect()
       this.$refs.enzymeModal.hide()
     },
-    async getEnzymeOptions() {
-      await this.tractionApiEnzyme.get()
+    async getEnzymeOptions () {
+      let rawResponse = await this.enzymeRequest.get()
+      let response = new Response(rawResponse)
 
-      if (this.tractionApiEnzyme.data !== null) {
-        let enzymeOptions = this.tractionApiEnzyme.data.body.map((enzyme, index) => Object.assign({ value: index+1, text: enzyme.name }))
+      if (Object.keys(response.errors).length === 0) {
+        let enzymes = response.deserialize.enzymes
+        let enzymeOptions = enzymes.map((enzyme, index) => Object.assign({ value: index+1, text: enzyme.name }))
         enzymeOptions.unshift({ value: null, text: "Please select an option" })
         this.enzymeOptions = enzymeOptions
       } else {
-        this.message = this.tractionApiEnzyme.errors.message
+        this.message = response.errors.message
         throw this.message
       }
     },
@@ -63,11 +66,11 @@ export default {
     this.getEnzymeOptions()
   },
   computed: {
+    enzymeRequest () {
+      return this.build(Request, this.tractionConfig.resource('enzymes'))
+    },
     tractionConfig () {
       return this.build(ConfigItem, ApiConfig.traction)
-    },
-    tractionApiEnzyme () {
-      return this.build(DataModel, this.tractionConfig.resource('enzymes'))
     }
   }
 }
