@@ -52,7 +52,7 @@ export default {
       if (this.selected.indexOf(item) === -1) {
         this.selected.push(item)
       } else {
-        this.selected.splice(this.selected.indexOf(item), 1 );
+        this.selected.splice(this.selected.indexOf(item), 1 )
       }
     },
     async getSamples () {

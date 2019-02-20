@@ -30,6 +30,8 @@ import LibraryItem from '@/components/LibraryItem'
 import ApiConfig from '@/api/Config'
 import ConfigItem from '@/api/ConfigItem'
 import ComponentFactory from '@/mixins/ComponentFactory'
+import Request from '@/mixins/Request'
+import Response from '@/api/Response'
 
 export default {
   name: 'Libraries',
@@ -62,11 +64,22 @@ export default {
         this.message = this.tractionApi.errors.message
         throw this.message
       }
+    },
+    async getLibraries () {
+       try {
+        let libraries = await this.libraryRequest.get()
+        return new Response(libraries).deserialize.libraries
+      } catch(error) {
+        return error
+      }
     }
   },
   computed: {
     selected () {
       return this.$refs.libraries.$children.filter(library => library.selected).map(library => library.json)
+    },
+    libraryRequest () {
+      return this.build(Request, this.tractionConfig.resource('libraries'))
     },
     tractionConfig () {
       return this.build(ConfigItem, ApiConfig.traction)
