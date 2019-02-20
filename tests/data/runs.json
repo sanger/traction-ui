@@ -1,0 +1,43 @@
+{
+  "data":
+  {
+    "data": [{
+      "id": "1",
+      "type": "runs",
+      "links": {
+        "self": "/v1/runs/1"
+      },
+      "attributes": {
+        "state": "pending",
+        "chip-barcode": null
+      },
+      "relationships": {
+        "chip": {
+          "links": {
+            "self": "/v1/runs/1/relationships/chip",
+            "related": "/v1/runs/1/chip"
+          }
+        }
+      }
+    },
+    {
+      "id": "2",
+      "type": "runs",
+      "links": {
+        "self": "/v1/runs/2"
+      },
+      "attributes": {
+        "state": "started",
+        "chip-barcode": "TRAC-123"
+      },
+      "relationships": {
+        "chip": {
+          "links": {
+            "self": "/v1/runs/2/relationships/chip",
+            "related": "/v1/runs/2/chip"
+          }
+        }
+      }
+    }]
+  }
+}
