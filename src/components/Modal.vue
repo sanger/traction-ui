@@ -48,20 +48,17 @@ export default {
       this.$refs.enzymeModal.hide()
     },
     async getEnzymeOptions () {
-      try {
-        let rawResponse = await this.enzymeRequest.get()
-        let response = new Response(rawResponse).data.enzymes
+      let rawResponse = await this.enzymeRequest.get()
+      let response = new Response(rawResponse)
 
-        if (response.data !== null) {
-          let enzymeOptions = response.map((enzyme, index) => Object.assign({ value: index+1, text: enzyme.name }))
-          enzymeOptions.unshift({ value: null, text: "Please select an option" })
-          this.enzymeOptions = enzymeOptions
-        } else {
-          this.message = response.errors.message
-          throw this.message
-        }
-      } catch {
-        // log error
+      if (Object.keys(response.errors).length === 0) {
+        let enzymes = response.deserialize.enzymes
+        let enzymeOptions = enzymes.map((enzyme, index) => Object.assign({ value: index+1, text: enzyme.name }))
+        enzymeOptions.unshift({ value: null, text: "Please select an option" })
+        this.enzymeOptions = enzymeOptions
+      } else {
+        this.message = response.errors.message
+        throw this.message
       }
     },
   },

@@ -31,7 +31,7 @@ describe('Response', () => {
       })
 
       it('has some attributes', () => {
-        let attributes = response.data
+        let attributes = response.deserialize
         expect(attributes.requests.length).toEqual(2)
         let request = attributes.requests[0]
         expect(request.name).toEqual('testname1')
@@ -48,7 +48,7 @@ describe('Response', () => {
 
       it('data returns serialized object', () => {
         let serializedObj = deserialize(mockResponse.data)
-        expect(response.data).toEqual(serializedObj)
+        expect(response.deserialize).toEqual(serializedObj)
       })
     })
 
@@ -84,7 +84,7 @@ describe('Response', () => {
     })
 
     it('has no data', () => {
-      expect(response.data).toEqual({})
+      expect(response.deserialize).toEqual({})
     })
 
   })
