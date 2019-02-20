@@ -58,10 +58,10 @@ export default {
     async getSamples () {
       try {
         let rawSamples = await this.sampleRequest.get()
-        return new Response(rawSamples).data.samples
+        return new Response(rawSamples).deserialize.samples
       } catch(error) {
         return error
-      } 
+      }
     },
     async createLibraries (selectedEnzymeId) {
       try {
