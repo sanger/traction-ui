@@ -1,67 +1,179 @@
 <template>
   <div class="newrun">
-    <b-container>
-      <b-row>
-        <b-col>
-          <table class="table">
-            <thead>
-              <tr>
-                <th></th>
-                <th>Library ID</th>
-                <th>Sample name</th>
-                <th>Barcode</th>
-                <th>Enzyme</th>
-                <th>State</th>
-              </tr>
-            </thead>
-            <data-list ref="libraries" v-bind="tractionConfig.resource('libraries')">
-              <tbody slot-scope="{ data: libraries }">
-                <library-item v-for="library in libraries" v-bind:key="library.id" v-bind="library"></library-item>
-              </tbody>
-            </data-list>
-          </table>
-        </b-col>
-        <b-col>
-          <flowcell></flowcell>
-        </b-col>
-      </b-row>
-    </b-container>
+    <router-link :to="{name: 'Runs'}">
+      <b-button id="backToRunButton" class="float-right">Back</b-button>
+    </router-link>
+
+    <h1>Sequencing Run ID: {{ runId }}</h1>
+    <v-container grid-list-md>
+      <v-layout justify-space-around>
+        <v-flex xs12 sm6 md4 offset-xs1>
+          <b-form-input v-model="chipBarcode" type="text" placeholder="Chip barcode" @change="updateBarcode"/>
+        </v-flex>
+      </v-layout>
+
+      <v-layout justify-space-around>
+
+        <v-flex d-flex xs12 sm6 md6 offset-xs1>
+          <v-card>
+            <v-card-title primary class="title">Libraries</v-card-title>
+
+            <v-card-text>
+              <v-list two-line>
+                  <draggable v-model="libraries" :options="{group:'people'}" style="min-height: 10px">
+                  <template v-for="item in libraries">
+                    <v-list-tile :key="item.id" >
+
+                      <v-list-tile-content>
+                        <v-list-tile-title>Barcode: {{ item.barcode }}</v-list-tile-title>
+                        <v-list-tile-sub-title>
+                          Enzyme: {{ item["enzyme-name"] }}
+                          Sample: {{ item["sample-name"] }}
+                        </v-list-tile-sub-title>
+                      </v-list-tile-content>
+
+                    </v-list-tile>
+                  </template>
+                </draggable>
+              </v-list>
+            </v-card-text>
+          </v-card>
+        </v-flex>
+
+        <v-flex d-flex xs12 sm6 md4>
+          <v-layout column wrap>
+            <v-flex d-flex>
+              <v-card>
+                <v-card-title primary class="title">Flowcell 1</v-card-title>
+                <v-card-text>
+                  <v-list two-line>
+
+                    <draggable v-model="flowcell1" :options="{group:'people'}" style="min-height: 10px">
+                      <template v-for="item in flowcell1">
+                        <v-list-tile :key="item.id">
+                          <v-list-tile-content>
+                            <v-list-tile-title>Position: {{ item.position }}</v-list-tile-title>
+                            <v-list-tile-sub-title>ID: {{ item.id }}</v-list-tile-sub-title>
+                          </v-list-tile-content>
+                        </v-list-tile>
+                      </template>
+                    </draggable>
+
+                  </v-list>
+
+                </v-card-text>
+              </v-card>
+            </v-flex>
+
+            <v-flex d-flex>
+              <v-card>
+                <v-card-title primary class="title">Flowcell 2</v-card-title>
+
+                <v-card-text>
+                  <v-list two-line>
+
+                    <draggable v-model="flowcell2" :options="{group:'people'}" style="min-height: 10px">
+                      <template v-for="item in flowcell2">
+                        <v-list-tile :key="item.id">
+                          <v-list-tile-content>
+                            <v-list-tile-title>Position: {{ item.position }}</v-list-tile-title>
+                            <v-list-tile-sub-title>ID: {{ item.id }}</v-list-tile-sub-title>
+                          </v-list-tile-content>
+                        </v-list-tile>
+                      </template>
+                    </draggable>
+
+                  </v-list>
+
+                </v-card-text>
+              </v-card>
+            </v-flex>
+
+          </v-layout>
+        </v-flex>
+
+      </v-layout>
+    </v-container>
+
   </div>
 </template>
 
 <script>
-import DataList from '@/api/DataList'
-import DataModel from '@/api/DataModel'
-import ConfigItem from '@/api/ConfigItem'
+import draggable from 'vuedraggable'
 import ApiConfig from '@/api/Config'
+import ConfigItem from '@/api/ConfigItem'
 import ComponentFactory from '@/mixins/ComponentFactory'
-import LibraryItem from '@/components/LibraryItem'
-import Flowcell from '@/components/Flowcell'
+import Request from '@/mixins/Request'
+import Response from '@/api/Response'
 
 export default {
   name: 'NewRun',
   mixins: [ComponentFactory],
   props: {
+    runId: {
+      type: Number,
+      required: true
+    }
   },
   data () {
     return {
+      libraries: [],
+      flowcell1: [],
+      flowcell2: [],
+      id: null,
+      state: null,
+      chipBarcode: null
     }
   },
-  created() {
-  },
   methods: {
+    updateBarcode(){
+      alert("Update chip barcode")
+      // send update barcode request
+    },
+    async getRun(id) {
+      try {
+        let rawRun = await this.runRequest.find(id)
+        let run = new Response(rawRun).deserialize.runs[0]
+
+        this.id = run.id
+        this.state = run.state
+        this.chipBarcode = run.chip.barcode
+        this.flowcell1 = [run.chip.flowcells[0]]
+        this.flowcell2 = [run.chip.flowcells[1]]
+      } catch(error) {
+        return error
+      }
+    },
+    async getLibraries() {
+      try {
+        let rawLibraries = await this.librariesRequest.get()
+        let libraries = new Response(rawLibraries).deserialize.libraries
+        this.libraries = libraries
+      } catch(error) {
+        return error
+      }
+    }
   },
   components: {
-    DataList,
-    LibraryItem,
-    Flowcell,
+    draggable
   },
   computed: {
+    runRequest () {
+      return this.build(Request, this.tractionConfig.resource('runs'))
+    },
+    librariesRequest () {
+      return this.build(Request, this.tractionConfig.resource('libraries'))
+    },
     tractionConfig () {
       return this.build(ConfigItem, ApiConfig.traction)
     },
-    tractionApi () {
-      return this.build(DataModel, this.tractionConfig.resource('libraries'))
+  },
+  created() {
+    if (this.runId === undefined) {
+      this.$router.push({name: 'Runs'})
+    } else {
+      this.getRun(this.runId)
+      this.getLibraries()
     }
   }
 }

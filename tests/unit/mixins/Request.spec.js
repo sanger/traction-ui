@@ -13,9 +13,9 @@ describe('Request', () => {
 
   beforeEach(() => {
     headers = { 'Content-Type': 'application/json', 'Accept': 'application/json' }
-    props = { baseURL: 'http://sequencescape.com', 
-              apiNamespace: 'api/v2', 
-              headers: headers, 
+    props = { baseURL: 'http://sequencescape.com',
+              apiNamespace: 'api/v2',
+              headers: headers,
               resource: 'requests',
               filters: {type: 'long_read', state: 'pending'},
               include: 'samples.sample_metadata'
@@ -110,6 +110,16 @@ describe('Request', () => {
       expect(response.data).toEqual(mockResponse.data)
     })
 
+    it('find', async () => {
+      request.api.get = jest.fn()
+      mockResponse = {status: 200, data: { data: {id: 1, attributes: {name: 'sample1', species: 'dog'}}}}
+      request.api.get.mockResolvedValue(mockResponse)
+      let id = 1
+      response = await request.find(id)
+      expect(request.api.get).toBeCalledWith(`${request.resource}/1`)
+      expect(response.data).toEqual(mockResponse.data)
+    })
+
     it('create', async () => {
       request.api.post = jest.fn()
       data = { data: { attributes: { samples: [{name: 'sample1', species: 'dog'}, {name: 'sample2', species: 'cat'}] }}}
@@ -167,9 +177,9 @@ describe('Request', () => {
         expect(request.api.delete).toBeCalledTimes(data.length)
         expect(response.length).toEqual(data.length)
       })
-    
+
     })
-    
+
   })
 
 })

@@ -1,0 +1,214 @@
+{
+  "data":
+  {
+    "data": [{
+      "id": "1",
+      "type": "libraries",
+      "links": {
+        "self": "/v1/libraries/1"
+      },
+      "attributes": {
+        "state": "pending",
+        "barcode": "TRAC-2",
+        "sample-name": "mockNameForSS",
+        "enzyme-name": "DLE-1"
+      },
+      "relationships": {
+        "sample": {
+          "links": {
+            "self": "/v1/libraries/1/relationships/sample",
+            "related": "/v1/libraries/1/sample"
+          }
+        },
+        "tube": {
+          "links": {
+            "self": "/v1/libraries/1/relationships/tube",
+            "related": "/v1/libraries/1/tube"
+          }
+        }
+      }
+    }, {
+      "id": "2",
+      "type": "libraries",
+      "links": {
+        "self": "/v1/libraries/2"
+      },
+      "attributes": {
+        "state": "pending",
+        "barcode": "TRAC-3",
+        "sample-name": "namex",
+        "enzyme-name": "Nb.BbvCI"
+      },
+      "relationships": {
+        "sample": {
+          "links": {
+            "self": "/v1/libraries/2/relationships/sample",
+            "related": "/v1/libraries/2/sample"
+          }
+        },
+        "tube": {
+          "links": {
+            "self": "/v1/libraries/2/relationships/tube",
+            "related": "/v1/libraries/2/tube"
+          }
+        }
+      }
+    }, {
+      "id": "3",
+      "type": "libraries",
+      "links": {
+        "self": "/v1/libraries/3"
+      },
+      "attributes": {
+        "state": "pending",
+        "barcode": "TRAC-4",
+        "sample-name": "namex",
+        "enzyme-name": "Nb.BbvCI"
+      },
+      "relationships": {
+        "sample": {
+          "links": {
+            "self": "/v1/libraries/3/relationships/sample",
+            "related": "/v1/libraries/3/sample"
+          }
+        },
+        "tube": {
+          "links": {
+            "self": "/v1/libraries/3/relationships/tube",
+            "related": "/v1/libraries/3/tube"
+          }
+        }
+      }
+    }, {
+      "id": "4",
+      "type": "libraries",
+      "links": {
+        "self": "/v1/libraries/4"
+      },
+      "attributes": {
+        "state": "pending",
+        "barcode": "TRAC-5",
+        "sample-name": "namex",
+        "enzyme-name": "Nb.BbvCI"
+      },
+      "relationships": {
+        "sample": {
+          "links": {
+            "self": "/v1/libraries/4/relationships/sample",
+            "related": "/v1/libraries/4/sample"
+          }
+        },
+        "tube": {
+          "links": {
+            "self": "/v1/libraries/4/relationships/tube",
+            "related": "/v1/libraries/4/tube"
+          }
+        }
+      }
+    }, {
+      "id": "5",
+      "type": "libraries",
+      "links": {
+        "self": "/v1/libraries/5"
+      },
+      "attributes": {
+        "state": "pending",
+        "barcode": "TRAC-6",
+        "sample-name": "mockNameForSS",
+        "enzyme-name": "Nb.BbvCI"
+      },
+      "relationships": {
+        "sample": {
+          "links": {
+            "self": "/v1/libraries/5/relationships/sample",
+            "related": "/v1/libraries/5/sample"
+          }
+        },
+        "tube": {
+          "links": {
+            "self": "/v1/libraries/5/relationships/tube",
+            "related": "/v1/libraries/5/tube"
+          }
+        }
+      }
+    }, {
+      "id": "6",
+      "type": "libraries",
+      "links": {
+        "self": "/v1/libraries/6"
+      },
+      "attributes": {
+        "state": "pending",
+        "barcode": "TRAC-7",
+        "sample-name": "mockNameForSS",
+        "enzyme-name": "Nb.BsmI"
+      },
+      "relationships": {
+        "sample": {
+          "links": {
+            "self": "/v1/libraries/6/relationships/sample",
+            "related": "/v1/libraries/6/sample"
+          }
+        },
+        "tube": {
+          "links": {
+            "self": "/v1/libraries/6/relationships/tube",
+            "related": "/v1/libraries/6/tube"
+          }
+        }
+      }
+    }, {
+      "id": "7",
+      "type": "libraries",
+      "links": {
+        "self": "/v1/libraries/7"
+      },
+      "attributes": {
+        "state": "pending",
+        "barcode": "TRAC-8",
+        "sample-name": "namex",
+        "enzyme-name": "DLE-1"
+      },
+      "relationships": {
+        "sample": {
+          "links": {
+            "self": "/v1/libraries/7/relationships/sample",
+            "related": "/v1/libraries/7/sample"
+          }
+        },
+        "tube": {
+          "links": {
+            "self": "/v1/libraries/7/relationships/tube",
+            "related": "/v1/libraries/7/tube"
+          }
+        }
+      }
+    }, {
+      "id": "8",
+      "type": "libraries",
+      "links": {
+        "self": "/v1/libraries/8"
+      },
+      "attributes": {
+        "state": "pending",
+        "barcode": "TRAC-20",
+        "sample-name": "mockNameForSS",
+        "enzyme-name": "DLE-1"
+      },
+      "relationships": {
+        "sample": {
+          "links": {
+            "self": "/v1/libraries/8/relationships/sample",
+            "related": "/v1/libraries/8/sample"
+          }
+        },
+        "tube": {
+          "links": {
+            "self": "/v1/libraries/8/relationships/tube",
+            "related": "/v1/libraries/8/tube"
+          }
+        }
+      }
+    }]
+  }
+}

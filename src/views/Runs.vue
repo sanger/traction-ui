@@ -1,8 +1,6 @@
 <template>
     <div class="runs">
-      <router-link :to="{name: 'NewRun'}">
-        <b-button id="newRun" class="float-right">Create New Run</b-button>
-      </router-link>
+      <b-button id="newRun" class="float-right" @click="createNewRun">Create New Run</b-button>
 
       <b-table
          show-empty
@@ -12,8 +10,14 @@
         <template slot="selected" slot-scope="row">
           <b-checkbox @change="toggleSelectedRow(row.item)"></b-checkbox>
         </template>
+
+        <template slot="actions" slot-scope="row">
+          <b-button size="sm" @click="editRun(row.item)" class="mr-1">
+            Edit Run
+          </b-button>
+        </template>
       </b-table>
-      {{ selected }}
+
     </div>
 </template>
 
@@ -35,7 +39,8 @@ export default {
         { key: 'selected', label: '' },
         { key: 'id', label: 'Run ID' },
         { key: 'state', label: 'State' },
-        { key: 'chip-barcode', label: 'Chips Barcode' }
+        { key: 'chip-barcode', label: 'Chips Barcode' },
+        { key: 'actions', label: 'Actions' }
       ],
       selected: []
     }
@@ -50,6 +55,10 @@ export default {
         this.selected.splice(this.selected.indexOf(item), 1 );
       }
     },
+    editRun(item) {
+      let runId = item.id
+      this.$router.push({name: 'NewRun', params: {runId: parseInt(runId)}})
+    },
     async getRuns () {
       try {
         let rawRuns = await this.runRequest.get()
@@ -58,6 +67,22 @@ export default {
         return error
       }
     },
+    async createNewRun () {
+      let body = { data: { type: 'runs', attributes: { runs: [{ state: 'pending'}] }}}
+
+      let rawResponse = await this.runRequest.create(body)
+      let response = new Response(rawResponse)
+
+      let runId
+      if (Object.keys(response.errors).length === 0) {
+        runId = response.deserialize.runs[0].id
+        this.$router.push({name: 'NewRun', params: {runId: parseInt(runId)}})
+      } else {
+        this.message = response.errors.message
+        throw this.message
+      }
+
+    }
   },
   components: {
 

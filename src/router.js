@@ -38,7 +38,8 @@ export default new Router({
     {
       path: '/newrun',
       name: 'NewRun',
-      component: NewRun
+      component: NewRun,
+      props: true
     }
   ]
 })
