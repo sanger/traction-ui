@@ -1,23 +1,17 @@
 <template>
   <div class="libraries">
     <alert ref='alert'></alert>
-    <table class="table">
-      <thead>
-        <tr>
-          <th></th>
-          <th>Library ID</th>
-          <th>Sample name</th>
-          <th>Barcode</th>
-          <th>Enzyme</th>
-          <th>State</th>
-        </tr>
-      </thead>
-      <data-list ref="libraries" v-bind="tractionConfig.resource('libraries')">
-        <tbody slot-scope="{ data: libraries }">
-          <library-item v-for="library in libraries" v-bind:key="library.id" v-bind="library"></library-item>
-        </tbody>
-      </data-list>
-    </table>
+
+    <b-table
+       show-empty
+       :items="provider"
+       :fields="fields"
+    >
+      <template slot="selected" slot-scope="row">
+        <input type="checkbox" class="selected" v-model="selected" :value="row.item.id"></input>
+      </template>
+    </b-table>
+
     <b-button id="deleteLibrary" @click="deleteLibrary" class="float-right">Delete Library</b-button>
   </div>
 </template>
@@ -37,6 +31,18 @@ export default {
   name: 'Libraries',
   mixins: [ComponentFactory],
   props: {
+  },
+  data () {
+    return {
+      fields: [
+        { key: 'selected', label: '' },
+        { key: 'id', label: 'Library ID' },
+        { key: 'barcode', label: 'Barcode' },
+        { key: 'sample_name', label: 'Sample Name' },
+        { key: 'enzyme_name', label: 'Enzyme Name' }
+      ],
+      selected: []
+    }
   },
   components: {
     DataList,
@@ -66,18 +72,21 @@ export default {
       }
     },
     async getLibraries () {
-       try {
+      try {
         let libraries = await this.libraryRequest.get()
         return new Response(libraries).deserialize.libraries
       } catch(error) {
-        return error
+        return []
       }
+    },
+    provider(ctx) {
+      return this.getLibraries()
     }
   },
   computed: {
-    selected () {
-      return this.$refs.libraries.$children.filter(library => library.selected).map(library => library.json)
-    },
+    // selected () {
+    //   return this.$refs.libraries.$children.filter(library => library.selected).map(library => library.json)
+    // },
     libraryRequest () {
       return this.build(Request, this.tractionConfig.resource('libraries'))
     },
