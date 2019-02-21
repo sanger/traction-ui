@@ -83,12 +83,11 @@ export default {
     async updateSequencescapeRequests () {
       var requestBody = []
       for (let i = 0; i < this.selected.length; i++) {
-        let id = this.selected[i].sequencescape_request_id
-        let request = { type: 'requests', id: id, attributes: { state: 'started' }}
+        let id = this.selected[i].id
+        let request = { data: { type: 'requests', id: id, attributes: { state: 'started' }} }
         requestBody.push(request)
       }
-      let body = { data: requestBody }
-      let rawResponse = await this.ssRequestRequest.update(body)
+      let rawResponse = await this.ssRequestRequest.update(requestBody)
 
       var responses = []
       for (let i = 0; i < this.selected.length; i++) {
