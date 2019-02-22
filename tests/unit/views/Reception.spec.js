@@ -1,52 +1,75 @@
 import Reception from '@/views/Reception'
-import Alert from '@/components/Alert'
 import { mount, localVue } from '../testHelper'
 import flushPromises from 'flush-promises'
-import SSRequestsJson from '../../data/ssRequests'
+import RequestsJson from '../../data/sequencescapeRequests'
 import Response from '@/api/Response'
 
 describe('Reception.vue', () => {
 
-  let wrapper, reception, data
+  let wrapper, reception
 
-  beforeEach(() => {
-    wrapper = mount(Reception, { localVue })
-    reception = wrapper.vm
+  describe('request objects', () => {
+    beforeEach(() => {
+      wrapper = mount(Reception, { localVue, methods: { provider() { return } } })
+      reception = wrapper.vm
+    })
+
+    it('will create a reception request', () => {
+      let request = reception.receptionRequest
+      expect(request.resource).toBeDefined()
+    })
+
+    it('will create a sample request', () => {
+      let request = reception.sampleRequest
+      expect(request.resource).toBe('samples')
+    })
+
+    it('will get a list of requests',  async () => {
+      reception.receptionRequest.execute = jest.fn()
+      reception.receptionRequest.execute.mockResolvedValue(RequestsJson)
+
+      let sequencescapeResponse = await reception.getRequests()
+      let expected = new Response(RequestsJson)
+      expect(sequencescapeResponse).toEqual(expected.deserialize.requests)
+    })
   })
 
-  it('will have a name', () => {
-    expect(wrapper.name()).toEqual('Reception')
-  })
+  describe('building the table', () => {
 
-  it('has a alert', () => {
-    expect(wrapper.contains(Alert)).toBe(true)
-  })
+    let mockRequests
 
-  it('will create a sample request', () => {
-    let request = reception.sampleRequest
-    expect(request.resource).toBe('samples')
-  })
+    beforeEach(() => {
+      mockRequests = new Response(RequestsJson).deserialize.requests
+      wrapper = mount(Reception, { localVue, methods: { getRequests() { return mockRequests } }})
+      reception = wrapper.vm
+    })
 
-  it('will create a ss request request', () => {
-    let request = reception.ssRequestRequest
-    expect(request.resource).toBe('requests')
-  })
+    it('contains the correct fields', () => {
+      let headers = wrapper.findAll('th')
+      for (let field of reception.fields) {
+        expect(headers.filter(header => header.text() === field.label)).toBeDefined()
+      }
+    })
 
-  it('#getSSRequests will get a list of ss requests', async () => {
-    reception.ssRequestRequest.execute = jest.fn()
-    reception.ssRequestRequest.execute.mockResolvedValue(SSRequestsJson)
+    it('contains the correct data', () => {
+      expect(wrapper.find('tbody').findAll('tr').length).toEqual(mockRequests.length)
+    })
 
-    let JsonApiResponse = await reception.getSSRequests()
-    let expected = new Response(SSRequestsJson)
-    expect(JsonApiResponse).toEqual(expected.deserialize.requests)
-  })
+    describe('selecting requests', () => {
 
-  it('contains a table', () => {
-    expect(wrapper.contains('table')).toBe(true)
-  })
+      beforeEach(() => {
+        let checkboxes = wrapper.findAll(".selected")
+        checkboxes.at(0).trigger('click')
+        checkboxes.at(1).trigger('click')
+        checkboxes.at(2).trigger('click')
+      })
 
-  it.skip('contains the correct data', () => {
-    expect(wrapper.find('tbody').findAll('tr').length).toEqual(data.body.length)
+      it('will create a list of selected requests', () => {
+        expect(reception.selected.length).toEqual(3)
+      })
+
+    })
+
   })
 
   describe('#exportRequestsIntoTraction', () => {
@@ -101,7 +124,7 @@ describe('Reception.vue', () => {
   describe('#updateSequencescapeRequests', () => {
 
     beforeEach(() => {
-      reception.ssRequestRequest.execute = jest.fn()
+      reception.receptionRequest.execute = jest.fn()
     })
 
     it('success', async () => {
@@ -116,7 +139,7 @@ describe('Reception.vue', () => {
         statusText: "OK"
       }
 
-      reception.ssRequestRequest.execute.mockResolvedValue(mockResponse)
+      reception.receptionRequest.execute.mockResolvedValue(mockResponse)
 
       reception.selected = [{sequencescape_request_id: 1}]
       await reception.updateSequencescapeRequests()
@@ -136,7 +159,7 @@ describe('Reception.vue', () => {
         statusText: "Unprocessible entity"
       }
 
-      reception.ssRequestRequest.execute.mockReturnValue(mockResponse)
+      reception.receptionRequest.execute.mockReturnValue(mockResponse)
       reception.selected = [{sequencescape_request_id: 1}]
       let fn = reception.updateSequencescapeRequests()
       await expect(fn).rejects.toEqual(["name name error message 1, species species error message 1"])
@@ -150,7 +173,7 @@ describe('Reception.vue', () => {
 
     beforeEach(() => {
       reception.sampleRequest.execute = jest.fn()
-      reception.ssRequestRequest.execute = jest.fn()
+      reception.receptionRequest.execute = jest.fn()
 
       reception.selected = [
         { id: "4", samples: [{ name: "sample_d", sample_metadata: { sample_common_name: "human" }}]}
@@ -176,7 +199,7 @@ describe('Reception.vue', () => {
         await reception.exportRequests()
 
         expect(reception.sampleRequest.execute).toBeCalled()
-        expect(reception.ssRequestRequest.execute).toBeCalled()
+        expect(reception.receptionRequest.execute).toBeCalled()
 
       })
     })
@@ -197,7 +220,7 @@ describe('Reception.vue', () => {
 
         let fn = reception.exportRequests()
         expect(reception.sampleRequest.execute).toBeCalled()
-        expect(reception.ssRequestRequest.execute).not.toBeCalled()
+        expect(reception.receptionRequest.execute).not.toBeCalled()
       })
     })
 
