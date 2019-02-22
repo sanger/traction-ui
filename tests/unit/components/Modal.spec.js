@@ -1,9 +1,7 @@
 import { mount, localVue } from '../testHelper'
 import Modal from '@/components/Modal'
 import flushPromises from 'flush-promises'
-import Response from '@/api/Response'
 import EnzymesJson from '../../data/enzymes'
-
 
 describe('Modal.vue', () => {
 

@@ -7,7 +7,7 @@ import Response from '@/api/Response'
 
 describe('Reception.vue', () => {
 
-  let wrapper, reception
+  let wrapper, reception, data
 
   beforeEach(() => {
     wrapper = mount(Reception, { localVue })
@@ -50,7 +50,6 @@ describe('Reception.vue', () => {
   })
 
   describe('#exportRequestsIntoTraction', () => {
-    let response
 
     beforeEach(() => {
       reception.sampleRequest.execute = jest.fn()
@@ -100,7 +99,6 @@ describe('Reception.vue', () => {
   })
 
   describe('#updateSequencescapeRequests', () => {
-    let response
 
     beforeEach(() => {
       reception.ssRequestRequest.execute = jest.fn()

@@ -8,19 +8,17 @@
        :fields="fields"
     >
       <template slot="selected" slot-scope="row">
-        <input type="checkbox" class="selected" v-model="selected" :value="row.item.id"></input>
+        <input type="checkbox" class="selected" v-model="selected" :value="row.item.id" />
       </template>
     </b-table>
 
-    <b-button id="deleteLibrary" @click="deleteLibrary" class="float-right">Delete Library</b-button>
+    <b-button id="deleteLibraries" @click="deleteLibraries" class="float-right">Delete Libraries</b-button>
   </div>
 </template>
 
 <script>
-import DataList from '@/api/DataList'
-import DataModel from '@/api/DataModel'
+
 import Alert from '@/components/Alert'
-import LibraryItem from '@/components/LibraryItem'
 import ApiConfig from '@/api/Config'
 import ConfigItem from '@/api/ConfigItem'
 import ComponentFactory from '@/mixins/ComponentFactory'
@@ -41,34 +39,22 @@ export default {
         { key: 'sample_name', label: 'Sample Name' },
         { key: 'enzyme_name', label: 'Enzyme Name' }
       ],
-      selected: []
+      selected: [],
+      message: ''
     }
   },
   components: {
-    DataList,
-    LibraryItem,
     Alert
   },
   methods: {
-    async deleteLibrary () {
-      try {
-        await this.deleteLibraryInTraction()
-      } catch (error) {
-        // log error
-      } finally {
-        this.showAlert
-      }
-    },
-    async deleteLibraryInTraction () {
-      for (let i = 0; i < this.selected.length; i++) {
-        let id = this.selected[i].id
-        await this.tractionApi.destroy(id)
-      }
-      if (this.tractionApi.data !== null) {
-        this.message = 'Library deleted in Traction'
+    async deleteLibraries () {
+      let remoteResponse = await this.libraryRequest.destroy(this.selected)
+      let response = new Response(remoteResponse)
+
+      if (response.successful) {
+        this.message = `Libraries ${this.selected.join(',')} successfully deleted`
       } else {
-        this.message = this.tractionApi.errors.message
-        throw this.message
+        this.message = 'There was an error'
       }
     },
     async getLibraries () {
@@ -79,22 +65,16 @@ export default {
         return []
       }
     },
-    provider(ctx) {
+    provider() {
       return this.getLibraries()
     }
   },
   computed: {
-    // selected () {
-    //   return this.$refs.libraries.$children.filter(library => library.selected).map(library => library.json)
-    // },
     libraryRequest () {
       return this.build(Request, this.tractionConfig.resource('libraries'))
     },
     tractionConfig () {
       return this.build(ConfigItem, ApiConfig.traction)
-    },
-    tractionApi () {
-      return this.build(DataModel, this.tractionConfig.resource('libraries'))
     },
     showAlert () {
       return this.$refs.alert.show(this.message, 'primary')

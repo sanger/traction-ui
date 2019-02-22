@@ -1,19 +1,17 @@
 import Libraries from '@/views/Libraries'
-import Alert from '@/components/Alert'
 import { mount, localVue } from '../testHelper'
-import DataList from '@/api/DataList'
 import LibrariesJson from '../../data/libraries'
 import Response from '@/api/Response'
 import flushPromises from 'flush-promises'
 
 describe('Libraries.vue', () => {
 
-  let wrapper, libraries, data, librariesResponse
+  let wrapper, libraries
 
   describe('library request', () => {
 
     beforeEach(() => {
-      wrapper = mount(Libraries, { localVue })
+      wrapper = mount(Libraries, { localVue, methods: { provider() { return } } })
       libraries = wrapper.vm
     })
 
@@ -22,7 +20,7 @@ describe('Libraries.vue', () => {
       expect(request.resource).toBeDefined()
     })
 
-    it('will get a list of libraries', async () => {
+    it('will get a list of libraries',  async () => {
       libraries.libraryRequest.execute = jest.fn()
       libraries.libraryRequest.execute.mockResolvedValue(LibrariesJson)
 
@@ -67,33 +65,32 @@ describe('Libraries.vue', () => {
         expect(libraries.selected.length).toEqual(3)
       })
 
-      it('can delete the selected libraries', () => {
-        
+      describe('deleting', () => {
+        beforeEach(() => {
+          libraries.libraryRequest.destroy = jest.fn()
+        })
+
+        it('successfully', async () => {
+          let mockResponse = { status: 200, data: { } }
+          libraries.libraryRequest.destroy.mockResolvedValue(mockResponse)
+          wrapper.find('#deleteLibraries').trigger('click')
+          await flushPromises()
+          expect(libraries.message).toEqual(`Libraries ${libraries.selected.join(',')} successfully deleted`)
+          expect(libraries.libraryRequest.destroy).toBeCalledWith(libraries.selected)
+        })
+
+        it('unsuccessfully', async () => {
+          let mockResponse =  { data: { errors: { it: ['was a bust'] } }, status: 422 }
+          libraries.libraryRequest.destroy.mockReturnValue(mockResponse)
+          wrapper.find('#deleteLibraries').trigger('click')
+          await flushPromises()
+          expect(libraries.message).toEqual('There was an error')
+          expect(libraries.libraryRequest.destroy).toBeCalledWith(libraries.selected)
+        })
       })
+
     })
 
- 
-
-    // describe('deleting the libraries', () => {
-
-    // })
-
-  })
-
-  it.skip('has a data list', () => {
-    expect(wrapper.contains(DataList)).toBe(true)
-  })
-
-  it.skip('has a alert', () => {
-    expect(wrapper.contains(Alert)).toBe(true)
-  })
-
-  it.skip('contains a table', () => {
-    expect(wrapper.contains('table')).toBe(true)
-  })
-
-  it.skip('contains the correct data', () => {
-    expect(wrapper.find('tbody').findAll('tr').length).toEqual(data.body.length)
   })
 
 })

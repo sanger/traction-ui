@@ -51,7 +51,6 @@ describe('Samples.vue', () => {
   })
 
   describe('#createLibrariesInTraction', () => {
-    let response
 
     beforeEach(() => {
       samples.libraryRequest.execute = jest.fn()
