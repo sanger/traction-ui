@@ -4,11 +4,11 @@
 
     <b-table
        show-empty
-       :items="getSamples"
+       :items="provider"
        :fields="fields"
     >
       <template slot="selected" slot-scope="row">
-        <b-checkbox @change="toggleSelectedRow(row.item)"></b-checkbox>
+        <input type="checkbox" class="selected" v-model="selected" :value="row.item" />
       </template>
     </b-table>
 
@@ -48,13 +48,6 @@ export default {
   created() {
   },
   methods: {
-    toggleSelectedRow(item) {
-      if (this.selected.indexOf(item) === -1) {
-        this.selected.push(item)
-      } else {
-        this.selected.splice(this.selected.indexOf(item), 1 )
-      }
-    },
     async getSamples () {
       try {
         let rawSamples = await this.sampleRequest.get()
@@ -73,24 +66,23 @@ export default {
       }
     },
     async createLibrariesInTraction (selectedEnzymeId) {
-      let libraryAttrs = []
-      for (let i = 0; i < this.selected.length; i++) {
-        let sampleId = this.selected[i].id
-        let enzymeId = selectedEnzymeId
-        libraryAttrs.push( {'sample_id': sampleId, 'enzyme_id': enzymeId} )
-      }
+   
+      let libraries = this.selected.map(item => { return {'sample_id': item.id, 'enzyme_id': selectedEnzymeId}})
 
-      let body = { data: { type: 'libraries', attributes: { libraries: libraryAttrs }}}
+      let body = { data: { type: 'libraries', attributes: { libraries: libraries }}}
 
       let rawResponse = await this.libraryRequest.create(body)
       let response = new Response(rawResponse)
 
-      if (Object.keys(response.errors).length === 0) {
+      if (response.successful) {
         this.message = 'Libraries created in Traction'
       } else {
         this.message = response.errors.message
         throw this.message
       }
+    },
+    provider () {
+      return this.getSamples()
     },
     showModal() {
       this.isModalVisible = true;
