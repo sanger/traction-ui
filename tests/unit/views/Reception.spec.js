@@ -218,7 +218,7 @@ describe('Reception.vue', () => {
 
         reception.sampleRequest.execute.mockReturnValue(mockResponse)
 
-        let fn = reception.exportRequests()
+        reception.exportRequests()
         expect(reception.sampleRequest.execute).toBeCalled()
         expect(reception.receptionRequest.execute).not.toBeCalled()
       })
