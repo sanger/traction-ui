@@ -21,12 +21,9 @@
 
 <script>
 import Alert from '@/components/Alert'
-import ApiConfig from '@/api/Config'
-import ConfigItem from '@/api/ConfigItem'
 import ComponentFactory from '@/mixins/ComponentFactory'
-import Request from '@/api/Request'
-import Response from '@/api/Response'
 import Modal from '@/components/Modal'
+import Api from '@/api'
 
 export default {
   name: 'Samples',
@@ -51,7 +48,7 @@ export default {
     async getSamples () {
       try {
         let rawSamples = await this.sampleRequest.get()
-        return new Response(rawSamples).deserialize.samples
+        return new Api.Response(rawSamples).deserialize.samples
       } catch(error) {
         return error
       }
@@ -72,7 +69,7 @@ export default {
       let body = { data: { type: 'libraries', attributes: { libraries: libraries }}}
 
       let rawResponse = await this.libraryRequest.create(body)
-      let response = new Response(rawResponse)
+      let response = new Api.Response(rawResponse)
 
       if (response.successful) {
         this.message = 'Libraries created in Traction'
@@ -97,13 +94,13 @@ export default {
   },
   computed: {
     sampleRequest () {
-      return this.build(Request, this.tractionConfig.resource('samples'))
+      return this.build(Api.Request, this.tractionConfig.resource('samples'))
     },
     libraryRequest () {
-      return this.build(Request, this.tractionConfig.resource('libraries'))
+      return this.build(Api.Request, this.tractionConfig.resource('libraries'))
     },
     tractionConfig () {
-      return this.build(ConfigItem, ApiConfig.traction)
+      return this.build(Api.ConfigItem, Api.Config.traction)
     },
     showAlert () {
       return this.$refs.alert.show(this.message, 'primary')

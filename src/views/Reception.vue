@@ -19,11 +19,8 @@
 <script>
 
 import Alert from '@/components/Alert'
-import ApiConfig from '@/api/Config'
-import ConfigItem from '@/api/ConfigItem'
 import ComponentFactory from '@/mixins/ComponentFactory'
-import Request from '@/api/Request'
-import Response from '@/api/Response'
+import Api from '@/api'
 
 export default {
   name: 'Reception',
@@ -46,7 +43,7 @@ export default {
     async getRequests () {
       try {
         let requests = await this.receptionRequest.get()
-        return new Response(requests).deserialize.requests
+        return new Api.Response(requests).deserialize.requests
       } catch(error) {
         return error
       }
@@ -64,7 +61,7 @@ export default {
     async exportRequestsIntoTraction () {
       let body = { data: { attributes: { samples: this.selectedJSON(this.selected) }}}
       let rawResponse = await this.sampleRequest.create(body)
-      let response = new Response(rawResponse)
+      let response = new Api.Response(rawResponse)
 
       if (response.successful) {
         this.message = 'Samples imported into Traction'
@@ -82,7 +79,7 @@ export default {
 
       let rawResponse = await this.receptionRequest.update(body)
 
-      let responses = rawResponse.map(item => new Response(item))
+      let responses = rawResponse.map(item => new Api.Response(item))
 
       if (responses.every(r => Object.keys(r.errors).length === 0)) {
         this.message = 'Samples updated in SS'
@@ -109,16 +106,16 @@ export default {
   },
   computed: {
     sampleRequest () {
-      return this.build(Request, this.tractionConfig.resource('samples'))
+      return this.build(Api.Request, this.tractionConfig.resource('samples'))
     },
     tractionConfig () {
-      return this.build(ConfigItem, ApiConfig.traction)
+      return this.build(Api.ConfigItem, Api.Config.traction)
     },
     receptionRequest () {
-      return this.build(Request, this.sequencescapeConfig.resource('requests'))
+      return this.build(Api.Request, this.sequencescapeConfig.resource('requests'))
     },
     sequencescapeConfig () {
-      return this.build(ConfigItem, ApiConfig.sequencescape)
+      return this.build(Api.ConfigItem, Api.Config.sequencescape)
     },
     showAlert () {
       return this.$refs.alert.show(this.message, 'primary')

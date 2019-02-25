@@ -19,11 +19,8 @@
 <script>
 
 import Alert from '@/components/Alert'
-import ApiConfig from '@/api/Config'
-import ConfigItem from '@/api/ConfigItem'
 import ComponentFactory from '@/mixins/ComponentFactory'
-import Request from '@/api/Request'
-import Response from '@/api/Response'
+import Api from '@/api'
 
 export default {
   name: 'Libraries',
@@ -49,7 +46,7 @@ export default {
   methods: {
     async deleteLibraries () {
       let remoteResponse = await this.libraryRequest.destroy(this.selected)
-      let response = new Response(remoteResponse)
+      let response = new Api.Response(remoteResponse)
 
       if (response.successful) {
         this.message = `Libraries ${this.selected.join(',')} successfully deleted`
@@ -60,7 +57,7 @@ export default {
     async getLibraries () {
       try {
         let libraries = await this.libraryRequest.get()
-        return new Response(libraries).deserialize.libraries
+        return new Api.Response(libraries).deserialize.libraries
       } catch(error) {
         return []
       }
@@ -71,10 +68,10 @@ export default {
   },
   computed: {
     libraryRequest () {
-      return this.build(Request, this.tractionConfig.resource('libraries'))
+      return this.build(Api.Request, this.tractionConfig.resource('libraries'))
     },
     tractionConfig () {
-      return this.build(ConfigItem, ApiConfig.traction)
+      return this.build(Api.ConfigItem, Api.Config.traction)
     },
     showAlert () {
       return this.$refs.alert.show(this.message, 'primary')
