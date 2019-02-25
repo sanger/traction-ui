@@ -28,6 +28,9 @@
       },
       "runs": {
         "name": "runs"
+      },
+      "chips": {
+        "name": "chips"
       }
     }
   }

@@ -1,14 +1,19 @@
 <template>
   <div class="newrun">
+    <alert ref='alert'></alert>
+
     <router-link :to="{name: 'Runs'}">
-      <b-button id="backToRunButton" class="float-right">Back</b-button>
+      <b-button id="backToRunsButton" class="float-right">Back</b-button>
     </router-link>
+
+    <b-button id="startRun" variant="success" class="float-right" @click="onStartRun">Start Run</b-button>
 
     <h1>Sequencing Run ID: {{ runId }}</h1>
     <v-container grid-list-md>
       <v-layout justify-space-around>
         <v-flex xs12 sm6 md4 offset-xs1>
-          <b-form-input v-model="chipBarcode" type="text" placeholder="Chip barcode" @change="updateBarcode"/>
+          <label for="barcode">Chip barcode:</label>
+          <b-form-input id="barcode" v-model="chipBarcode" type="text" placeholder="Chip barcode" @change="onBarcodeInput"/>
         </v-flex>
       </v-layout>
 
@@ -105,6 +110,7 @@ import ConfigItem from '@/api/ConfigItem'
 import ComponentFactory from '@/mixins/ComponentFactory'
 import Request from '@/mixins/Request'
 import Response from '@/api/Response'
+import Alert from '@/components/Alert'
 
 export default {
   name: 'NewRun',
@@ -122,21 +128,40 @@ export default {
       flowcell2: [],
       id: null,
       state: null,
-      chipBarcode: null
+      chipBarcode: null,
+      chipId: null
     }
   },
   methods: {
-    updateBarcode(){
-      alert("Update chip barcode")
-      // send update barcode request
+    async onBarcodeInput () {
+      try {
+        await this.updateBarcode()
+      } catch (error) {
+        // log error
+      } finally {
+        this.showAlert
+      }
+    },
+    async updateBarcode(){
+      let requestBody = { data: { type: 'chips', id: this.chipId, attributes: { barcode: this.chipBarcode }} }
+
+      let rawResponse = await this.chipsRequest.update(requestBody)
+      let response = new Response(rawResponse[0])
+
+      if (Object.keys(response.errors).length === 0) {
+        this.message = 'Chip barcode updated'
+      } else {
+        this.message = response.errors.message
+        throw this.message
+      }
     },
     async getRun(id) {
       try {
         let rawRun = await this.runRequest.find(id)
         let run = new Response(rawRun).deserialize.runs[0]
-
         this.id = run.id
         this.state = run.state
+        this.chipId = run.chip.id
         this.chipBarcode = run.chip.barcode
         this.flowcell1 = [run.chip.flowcells[0]]
         this.flowcell2 = [run.chip.flowcells[1]]
@@ -152,10 +177,33 @@ export default {
       } catch(error) {
         return error
       }
-    }
+    },
+    async onStartRun () {
+      try {
+        await this.startRun()
+      } catch (error) {
+        // log error
+      } finally {
+        this.showAlert
+      }
+    },
+    async startRun(){
+      let requestBody = { data: { type: 'runs', id: this.id, attributes: { state: 'started' }} }
+
+      let rawResponse = await this.runRequest.update(requestBody)
+      let response = new Response(rawResponse[0])
+
+      if (Object.keys(response.errors).length === 0) {
+        this.message = 'Sequencing Run started'
+      } else {
+        this.message = response.errors.message
+        throw this.message
+      }
+    },
   },
   components: {
-    draggable
+    draggable,
+    Alert
   },
   computed: {
     runRequest () {
@@ -164,9 +212,15 @@ export default {
     librariesRequest () {
       return this.build(Request, this.tractionConfig.resource('libraries'))
     },
+    chipsRequest () {
+      return this.build(Request, this.tractionConfig.resource('chips'))
+    },
     tractionConfig () {
       return this.build(ConfigItem, ApiConfig.traction)
     },
+    showAlert () {
+      return this.$refs.alert.show(this.message, 'primary')
+    }
   },
   created() {
     if (this.runId === undefined) {
