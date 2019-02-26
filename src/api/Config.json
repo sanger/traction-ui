@@ -31,6 +31,9 @@
       },
       "chips": {
         "name": "chips"
+      },
+      "flowcells": {
+        "name": "flowcells"
       }
     }
   }
