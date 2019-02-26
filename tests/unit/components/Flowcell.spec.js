@@ -4,11 +4,10 @@ import FlowcellLibrary from '@/components/FlowcellLibrary'
 
 describe('Flowcell.vue', () => {
 
-  let wrapper, flowcell
+  let wrapper
 
   beforeEach(() => {
     wrapper = mount(Flowcell, { mocks: localVue })
-    flowcell = wrapper.vm
   })
 
   it('will have a name', () => {

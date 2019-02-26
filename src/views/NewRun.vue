@@ -113,11 +113,8 @@
 
 <script>
 import draggable from 'vuedraggable'
-import ApiConfig from '@/api/Config'
-import ConfigItem from '@/api/ConfigItem'
 import ComponentFactory from '@/mixins/ComponentFactory'
-import Request from '@/mixins/Request'
-import Response from '@/api/Response'
+import Api from '@/api'
 import Alert from '@/components/Alert'
 
 export default {
@@ -172,7 +169,7 @@ export default {
       let requestBody = { data: { type: 'flowcells', id: flowcellId, attributes: { library_id: libraryId }} }
 
       let rawResponse = await this.flowcellsRequest.update(requestBody)
-      let response = new Response(rawResponse[0])
+      let response = new Api.Response(rawResponse[0])
 
       if (Object.keys(response.errors).length === 0) {
         this.message = 'Library added to flowcell'
@@ -195,7 +192,7 @@ export default {
       let requestBody = { data: { type: 'chips', id: this.chipId, attributes: { barcode: this.chipBarcode }} }
 
       let rawResponse = await this.chipsRequest.update(requestBody)
-      let response = new Response(rawResponse[0])
+      let response = new Api.Response(rawResponse[0])
 
       if (Object.keys(response.errors).length === 0) {
         this.message = 'Chip barcode updated'
@@ -207,7 +204,7 @@ export default {
     async getRun(id) {
       try {
         let rawRun = await this.runRequest.find(id)
-        let run = new Response(rawRun).deserialize.runs[0]
+        let run = new Api.Response(rawRun).deserialize.runs[0]
 
         let chipBarcode = ''
         if (run.chip.barcode) {
@@ -227,7 +224,7 @@ export default {
     async getLibraries() {
       try {
         let rawLibraries = await this.librariesRequest.get()
-        let libraries = new Response(rawLibraries).deserialize.libraries
+        let libraries = new Api.Response(rawLibraries).deserialize.libraries
         this.libraries = libraries
       } catch(error) {
         return error
@@ -246,7 +243,7 @@ export default {
       let requestBody = { data: { type: 'runs', id: this.id, attributes: { state: 'started' }} }
 
       let rawResponse = await this.runRequest.update(requestBody)
-      let response = new Response(rawResponse[0])
+      let response = new Api.Response(rawResponse[0])
 
       if (Object.keys(response.errors).length === 0) {
         this.message = 'Sequencing Run started'
@@ -262,19 +259,19 @@ export default {
   },
   computed: {
     runRequest () {
-      return this.build(Request, this.tractionConfig.resource('runs'))
+      return this.build(Api.Request, this.tractionConfig.resource('runs'))
     },
     librariesRequest () {
-      return this.build(Request, this.tractionConfig.resource('libraries'))
+      return this.build(Api.Request, this.tractionConfig.resource('libraries'))
     },
     chipsRequest () {
-      return this.build(Request, this.tractionConfig.resource('chips'))
+      return this.build(Api.Request, this.tractionConfig.resource('chips'))
     },
     flowcellsRequest () {
-      return this.build(Request, this.tractionConfig.resource('flowcells'))
+      return this.build(Api.Request, this.tractionConfig.resource('flowcells'))
     },
     tractionConfig () {
-      return this.build(ConfigItem, ApiConfig.traction)
+      return this.build(Api.ConfigItem, Api.Config.traction)
     },
     showAlert () {
       return this.$refs.alert.show(this.message, 'primary')

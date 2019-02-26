@@ -7,7 +7,7 @@ import Response from '@/api/Response'
 
 describe('Runs.vue', () => {
 
-  let wrapper, data, runs
+  let wrapper, runs
 
   beforeEach(() => {
     const router = new VueRouter({ routes:
@@ -37,7 +37,6 @@ describe('Runs.vue', () => {
   })
 
   describe('#createNewRun', () => {
-    let response
 
     beforeEach(() => {
       runs.runRequest.execute = jest.fn()
@@ -48,8 +47,6 @@ describe('Runs.vue', () => {
       runs.runRequest.execute.mockResolvedValue(mockResponse)
 
       await runs.createNewRun()
-      let expected = new Response(mockResponse)
-      let newRunId = expected.deserialize.runs[0].id
       expect(wrapper.vm.$route.name).toBe('NewRun')
     })
 

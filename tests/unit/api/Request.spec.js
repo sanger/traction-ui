@@ -1,6 +1,6 @@
 import Vue from 'vue'
 import { mount } from '../testHelper'
-import Request from '@/mixins/Request'
+import Request from '@/api/Request'
 
 const cmp = Vue.extend({
   mixins: [Request],

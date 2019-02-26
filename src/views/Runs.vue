@@ -22,11 +22,8 @@
 </template>
 
 <script>
-import ApiConfig from '@/api/Config'
-import ConfigItem from '@/api/ConfigItem'
 import ComponentFactory from '@/mixins/ComponentFactory'
-import Request from '@/mixins/Request'
-import Response from '@/api/Response'
+import Api from '@/api'
 
 export default {
   name: 'Runs',
@@ -62,7 +59,7 @@ export default {
     async getRuns () {
       try {
         let rawRuns = await this.runRequest.get()
-        return new Response(rawRuns).deserialize.runs
+        return new Api.Response(rawRuns).deserialize.runs
       } catch(error) {
         return error
       }
@@ -71,7 +68,7 @@ export default {
       let body = { data: { type: 'runs', attributes: { runs: [{ state: 'pending'}] }}}
 
       let rawResponse = await this.runRequest.create(body)
-      let response = new Response(rawResponse)
+      let response = new Api.Response(rawResponse)
 
       let runId
       if (Object.keys(response.errors).length === 0) {
@@ -89,10 +86,10 @@ export default {
   },
   computed: {
     runRequest () {
-      return this.build(Request, this.tractionConfig.resource('runs'))
+      return this.build(Api.Request, this.tractionConfig.resource('runs'))
     },
     tractionConfig () {
-      return this.build(ConfigItem, ApiConfig.traction)
+      return this.build(Api.ConfigItem, Api.Config.traction)
     },
   }
 }

@@ -4,11 +4,11 @@
 
       <b-table
        show-empty
-       :items="getSSRequests"
+       :items="provider"
        :fields="fields"
        >
         <template slot="selected" slot-scope="row">
-          <b-checkbox @change="toggleSelectedRow(row.item)"></b-checkbox>
+           <input type="checkbox" class="selected" v-model="selected" :value="row.item" />
         </template>
       </b-table>
 
@@ -19,11 +19,8 @@
 <script>
 
 import Alert from '@/components/Alert'
-import ApiConfig from '@/api/Config'
-import ConfigItem from '@/api/ConfigItem'
 import ComponentFactory from '@/mixins/ComponentFactory'
-import Request from '@/mixins/Request'
-import Response from '@/api/Response'
+import Api from '@/api'
 
 export default {
   name: 'Reception',
@@ -43,17 +40,10 @@ export default {
     }
   },
   methods: {
-    toggleSelectedRow(item) {
-      if (this.selected.indexOf(item) === -1) {
-        this.selected.push(item)
-      } else {
-        this.selected.splice(this.selected.indexOf(item), 1 );
-      }
-    },
-    async getSSRequests () {
+    async getRequests () {
       try {
-        let rawSSRequests = await this.ssRequestRequest.get()
-        return new Response(rawSSRequests).deserialize.requests
+        let requests = await this.receptionRequest.get()
+        return new Api.Response(requests).deserialize.requests
       } catch(error) {
         return error
       }
@@ -71,28 +61,25 @@ export default {
     async exportRequestsIntoTraction () {
       let body = { data: { attributes: { samples: this.selectedJSON(this.selected) }}}
       let rawResponse = await this.sampleRequest.create(body)
-      let response = new Response(rawResponse)
+      let response = new Api.Response(rawResponse)
 
-      if (Object.keys(response.errors).length === 0) {
+      if (response.successful) {
         this.message = 'Samples imported into Traction'
       } else {
         this.message = response.errors.message
         throw this.message
       }
     },
+    //TODO: This is a perfect place to implement a batch request
     async updateSequencescapeRequests () {
-      var requestBody = []
-      for (let i = 0; i < this.selected.length; i++) {
-        let id = this.selected[i].id
-        let request = { data: { type: 'requests', id: id, attributes: { state: 'started' }} }
-        requestBody.push(request)
-      }
-      let rawResponse = await this.ssRequestRequest.update(requestBody)
 
-      var responses = []
-      for (let i = 0; i < this.selected.length; i++) {
-        responses.push(new Response(rawResponse[i]))
-      }
+      let body = this.selected.map(item => {
+        return { data: { type: 'requests', id: item.id, attributes: { state: 'started' }} }
+      })
+
+      let rawResponse = await this.receptionRequest.update(body)
+
+      let responses = rawResponse.map(item => new Api.Response(item))
 
       if (responses.every(r => Object.keys(r.errors).length === 0)) {
         this.message = 'Samples updated in SS'
@@ -109,6 +96,9 @@ export default {
           species: r.samples[0].sample_metadata.sample_common_name
         }
       ))
+    },
+    provider() {
+      return this.getRequests()
     }
   },
   components: {
@@ -116,16 +106,16 @@ export default {
   },
   computed: {
     sampleRequest () {
-      return this.build(Request, this.tractionConfig.resource('samples'))
+      return this.build(Api.Request, this.tractionConfig.resource('samples'))
     },
     tractionConfig () {
-      return this.build(ConfigItem, ApiConfig.traction)
+      return this.build(Api.ConfigItem, Api.Config.traction)
     },
-    ssRequestRequest () {
-      return this.build(Request, this.sequencescapeConfig.resource('requests'))
+    receptionRequest () {
+      return this.build(Api.Request, this.sequencescapeConfig.resource('requests'))
     },
     sequencescapeConfig () {
-      return this.build(ConfigItem, ApiConfig.sequencescape)
+      return this.build(Api.ConfigItem, Api.Config.sequencescape)
     },
     showAlert () {
       return this.$refs.alert.show(this.message, 'primary')

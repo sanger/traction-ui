@@ -13,7 +13,7 @@
 import ApiConfig from '@/api/Config'
 import ConfigItem from '@/api/ConfigItem'
 import ComponentFactory from '@/mixins/ComponentFactory'
-import Request from '@/mixins/Request'
+import Request from '@/api/Request'
 import Response from '@/api/Response'
 
 export default {

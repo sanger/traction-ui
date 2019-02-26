@@ -1,11 +1,9 @@
 import NewRun from '@/views/NewRun'
-import Flowcell from '@/components/Flowcell'
 import { mount, localVue } from '../testHelper'
 import VueRouter from 'vue-router'
 import Runs from '@/views/Runs'
 import Vuetify from 'vuetify'
 import Response from '@/api/Response'
-import RunJson from '../../data/run'
 import RunNoLibraryJson from '../../data/run_no_library'
 import RunWithLibraryJson from '../../data/run_with_library'
 import LibrariesJson from '../../data/libraries'
@@ -14,7 +12,7 @@ import Alert from '@/components/Alert'
 
 describe('NewRun.vue', () => {
 
-  let wrapper, data, newRun
+  let wrapper, newRun
 
   beforeEach(() => {
     const router = new VueRouter({ routes:
