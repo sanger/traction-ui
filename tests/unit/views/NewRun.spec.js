@@ -25,82 +25,179 @@ describe('NewRun.vue', () => {
       router,
       propsData: {
         runId: 123
+      },
+      methods: {
+        provider () { return }
       }
     })
     newRun = wrapper.vm
   })
 
-  it('creates suitable props', () => {
-    expect(newRun.runId).toEqual(123)
+  describe('alert', () => {
+    it('has a alert', () => {
+      expect(wrapper.contains(Alert)).toBe(true)
+    })
   })
 
-  it('contains a back to runs button', () => {
-    expect(wrapper.contains('#backToRunsButton')).toBe(true)
+  describe('props', () => {
+    it('creates suitable props', () => {
+      expect(newRun.runId).toEqual(123)
+    })
   })
 
-  it('contains a start run button', () => {
-    expect(wrapper.contains('#startRun')).toBe(true)
+  describe('data', () => {
+    it('shows the current id of the run', () => {
+      expect(wrapper.contains('#runId')).toBe(true)
+      let runId = wrapper.find('#runId').text()
+      expect(runId).toEqual("Sequencing Run ID: " + newRun.runId)
+    })
+
+    it('shows the current state of the run', () => {
+      let state = 'pending'
+      wrapper.setData({state: state})
+      expect(wrapper.contains('#runState')).toBe(true)
+      let runState = wrapper.find('#runState').text()
+      expect(runState).toMatch("Run state: "+ state)
+    })
+
+    it('can have run data', () => {
+      wrapper.setData({ id: 1, state: 'pending', chipBarcode: 'TRAC123', chipId: '123', flowcell1: [], flowcell2: [], libraries: [] })
+      expect(newRun.id).toEqual(1)
+      expect(newRun.state).toEqual('pending')
+      expect(newRun.chipBarcode).toEqual('TRAC123')
+      expect(newRun.chipId).toEqual('123')
+      expect(newRun.flowcell1).toEqual([])
+      expect(newRun.flowcell2).toEqual([])
+      expect(newRun.libraries).toEqual([])
+    })
   })
 
-  it('has a alert', () => {
-    expect(wrapper.contains(Alert)).toBe(true)
+  describe('back button', () => {
+    it('contains a back to runs button', () => {
+      expect(wrapper.contains('#backToRunsButton')).toBe(true)
+    })
   })
 
-  it('can have run data', () => {
-    wrapper.setData({ id: 1, state: 'pending', chipBarcode: 'TRAC123', chipId: '123', flowcell1: [], flowcell2: [], libraries: [] })
-    expect(newRun.id).toEqual(1)
-    expect(newRun.state).toEqual('pending')
-    expect(newRun.chipBarcode).toEqual('TRAC123')
-    expect(newRun.chipId).toEqual('123')
-    expect(newRun.flowcell1).toEqual([])
-    expect(newRun.flowcell2).toEqual([])
-    expect(newRun.libraries).toEqual([])
+  describe('start button', () => {
+    it('contains a start run button', () => {
+      expect(wrapper.contains('#startRun')).toBe(true)
+    })
+
+    it('is disabled is the run state is not pending', () => {
+      let state = 'started'
+      wrapper.setData({state: state})
+      let startButton = wrapper.find('#startRun')
+      expect(startButton.attributes('disabled')).toBeTruthy()
+    })
+
+    it('is is enabled when the run state is pending', () => {
+      let state = 'pending'
+      wrapper.setData({state: state})
+      let startButton = wrapper.find('#startRun')
+      expect(startButton.attributes('disabled')).toBeFalsy()
+    })
+  })
+
+  describe('complete button', () => {
+    it('contains a complete run button', () => {
+      expect(wrapper.contains('#completeRun')).toBe(true)
+    })
+
+    it('is disabled is the run state is completed', () => {
+      let state = 'completed'
+      wrapper.setData({state: state})
+      let startButton = wrapper.find('#startRun')
+      expect(startButton.attributes('disabled')).toBeTruthy()
+    })
+
+    it('is disabled is the run state is cancelled', () => {
+      let state = 'cancelled'
+      wrapper.setData({state: state})
+      let startButton = wrapper.find('#startRun')
+      expect(startButton.attributes('disabled')).toBeTruthy()
+    })
+
+    it('is is enabled when the run state is pending or started', () => {
+      let state = 'pending'
+      wrapper.setData({state: state})
+      let startButton = wrapper.find('#startRun')
+      expect(startButton.attributes('disabled')).toBeFalsy()
+    })
+  })
+
+  describe('cancel button', () => {
+    it('contains a cancel run button', () => {
+      expect(wrapper.contains('#cancelRun')).toBe(true)
+    })
+
+    it('is disabled is the run state is completed', () => {
+      let state = 'completed'
+      wrapper.setData({state: state})
+      let startButton = wrapper.find('#startRun')
+      expect(startButton.attributes('disabled')).toBeTruthy()
+    })
+
+    it('is disabled is the run state is cancelled', () => {
+      let state = 'cancelled'
+      wrapper.setData({state: state})
+      let startButton = wrapper.find('#startRun')
+      expect(startButton.attributes('disabled')).toBeTruthy()
+    })
+
+    it('is is enabled when the run state is pending or started', () => {
+      let state = 'pending'
+      wrapper.setData({state: state})
+      let startButton = wrapper.find('#startRun')
+      expect(startButton.attributes('disabled')).toBeFalsy()
+    })
   })
 
   describe('#getRun', () => {
-      it('when flowcell libraries exist, flowcells have their respective library', async () => {
-        newRun.runRequest.execute = jest.fn()
-        newRun.runRequest.execute.mockResolvedValue(RunWithLibraryJson)
+    it('when flowcell libraries exist, flowcells have their respective library', async () => {
+      newRun.runRequest.execute = jest.fn()
+      newRun.runRequest.execute.mockResolvedValue(RunWithLibraryJson)
 
-        let id = 1
-        await newRun.getRun(id)
+      let id = 1
+      await newRun.getRun(id)
 
-        let expectedRun = new Response(RunWithLibraryJson).deserialize.runs[0]
+      let expectedRun = new Response(RunWithLibraryJson).deserialize.runs[0]
 
-        expect(newRun.id).toEqual(expectedRun.id)
-        expect(newRun.state).toEqual(expectedRun.state)
-        expect(newRun.chipBarcode).toEqual(expectedRun.chip.barcode)
-        expect(newRun.chipId).toEqual(expectedRun.chip.id)
-        expect(newRun.flowcell1).toEqual([expectedRun.chip.flowcells[0]])
-        expect(newRun.flowcell2).toEqual([expectedRun.chip.flowcells[1]])
-      })
+      expect(newRun.id).toEqual(expectedRun.id)
+      expect(newRun.state).toEqual(expectedRun.state)
+      expect(newRun.chipBarcode).toEqual(expectedRun.chip.barcode)
+      expect(newRun.chipId).toEqual(expectedRun.chip.id)
+      expect(newRun.flowcell1).toEqual([expectedRun.chip.flowcells[0]])
+      expect(newRun.flowcell2).toEqual([expectedRun.chip.flowcells[1]])
+    })
 
-      it('when flowcell libraries do not exist, flowcell1 is an empty list', async () => {
-        newRun.runRequest.execute = jest.fn()
-        newRun.runRequest.execute.mockResolvedValue(RunNoLibraryJson)
+    it('when flowcell libraries do not exist, flowcell1 is an empty list', async () => {
+      newRun.runRequest.execute = jest.fn()
+      newRun.runRequest.execute.mockResolvedValue(RunNoLibraryJson)
 
-        let id = 1
-        await newRun.getRun(id)
+      let id = 1
+      await newRun.getRun(id)
 
-        let expectedRun = new Response(RunNoLibraryJson).deserialize.runs[0]
+      let expectedRun = new Response(RunNoLibraryJson).deserialize.runs[0]
 
-        expect(newRun.id).toEqual(expectedRun.id)
-        expect(newRun.state).toEqual(expectedRun.state)
-        expect(newRun.chipBarcode).toEqual('')
-        expect(newRun.chipId).toEqual(expectedRun.chip.id)
-        expect(newRun.flowcell1).toEqual([{"id": "27", "position": 1, "type": "flowcells"}])
-        expect(newRun.flowcell2).toEqual([{"id": "28", "position": 2, "type": "flowcells"}])
-      })
+      expect(newRun.id).toEqual(expectedRun.id)
+      expect(newRun.state).toEqual(expectedRun.state)
+      expect(newRun.chipBarcode).toEqual('')
+      expect(newRun.chipId).toEqual(expectedRun.chip.id)
+      expect(newRun.flowcell1).toEqual([{"id": "27", "position": 1, "type": "flowcells"}])
+      expect(newRun.flowcell2).toEqual([{"id": "28", "position": 2, "type": "flowcells"}])
+    })
   })
 
-  it('#getLibraries will get a list of libraries', async () => {
-    newRun.librariesRequest.execute = jest.fn()
-    newRun.librariesRequest.execute.mockResolvedValue(LibrariesJson)
+  describe('#getLibraries', () => {
+    it('getLibraries will get a list of libraries', async () => {
+      newRun.librariesRequest.execute = jest.fn()
+      newRun.librariesRequest.execute.mockResolvedValue(LibrariesJson)
 
-    await newRun.getLibraries()
+      await newRun.getLibraries()
 
-    let libraries = new Response(LibrariesJson).deserialize.libraries
-    expect(newRun.libraries).toEqual(libraries)
+      let libraries = new Response(LibrariesJson).deserialize.libraries
+      expect(newRun.libraries).toEqual(libraries)
+    })
   })
 
   describe('#updateBarcode', () => {
@@ -135,8 +232,7 @@ describe('NewRun.vue', () => {
       newRun.chipId = 1
       newRun.chipBarcode = "barcode12345"
 
-      let fn = newRun.updateBarcode()
-      await expect(fn).rejects.toEqual("barcode error message 1")
+      await newRun.updateBarcode()
       await flushPromises()
       expect(newRun.message).toEqual("barcode error message 1")
     })
@@ -144,7 +240,7 @@ describe('NewRun.vue', () => {
   })
 
   describe('#startRun', () => {
-    it('success', async () => {
+    it('startRun success', async () => {
 
       let mockResponse =  {
         data: { id: 1, type: "runs", attributes: { state: "started" } },
@@ -156,10 +252,11 @@ describe('NewRun.vue', () => {
       newRun.runRequest.execute.mockResolvedValue(mockResponse)
 
       await newRun.startRun()
+      await flushPromises()
       expect(newRun.message).toEqual('Sequencing Run started')
     })
 
-    it('failure', async () => {
+    it('startRun failure', async () => {
       let mockResponse = {
         data: { errors: { state: ['error message 1'] }},
         status: 422,
@@ -169,9 +266,109 @@ describe('NewRun.vue', () => {
       newRun.runRequest.execute = jest.fn()
       newRun.runRequest.execute.mockReturnValue(mockResponse)
 
-      let fn = newRun.startRun()
-      await expect(fn).rejects.toEqual("state error message 1")
-      // await flushPromises()
+      await newRun.startRun()
+      await flushPromises()
+      expect(newRun.message).toEqual("state error message 1")
+    })
+
+  })
+
+  describe('#completeRun', () => {
+    it('completeRun success', async () => {
+
+      let mockResponse =  {
+        data: { id: 1, type: "runs", attributes: { state: "completed" } },
+        status: 200,
+        statusText: "OK"
+      }
+
+      newRun.runRequest.execute = jest.fn()
+      newRun.runRequest.execute.mockResolvedValue(mockResponse)
+
+      await newRun.completeRun()
+      await flushPromises()
+      expect(newRun.message).toEqual('Sequencing Run completed')
+    })
+
+    it('completeRun failure', async () => {
+      let mockResponse = {
+        data: { errors: { state: ['error message 1'] }},
+        status: 422,
+        statusText: "Unprocessible entity"
+      }
+
+      newRun.runRequest.execute = jest.fn()
+      newRun.runRequest.execute.mockReturnValue(mockResponse)
+
+      await newRun.completeRun()
+      await flushPromises()
+      expect(newRun.message).toEqual("state error message 1")
+    })
+  })
+
+  describe('#cancelRun', () => {
+    it('cancelRun success', async () => {
+
+      let mockResponse =  {
+        data: { id: 1, type: "runs", attributes: { state: "cancelled" } },
+        status: 200,
+        statusText: "OK"
+      }
+
+      newRun.runRequest.execute = jest.fn()
+      newRun.runRequest.execute.mockResolvedValue(mockResponse)
+
+      await newRun.cancelRun()
+      await flushPromises()
+      expect(newRun.message).toEqual('Sequencing Run cancelled')
+    })
+
+    it('cancelRun failure', async () => {
+      let mockResponse = {
+        data: { errors: { state: ['error message 1'] }},
+        status: 422,
+        statusText: "Unprocessible entity"
+      }
+
+      newRun.runRequest.execute = jest.fn()
+      newRun.runRequest.execute.mockReturnValue(mockResponse)
+
+      await newRun.cancelRun()
+      await flushPromises()
+      expect(newRun.message).toEqual("state error message 1")
+    })
+  })
+
+  describe('#updateRunState', () => {
+    it('updateRunState success', async () => {
+
+      let mockResponse =  {
+        data: { id: 1, type: "runs", attributes: { state: "started" } },
+        status: 200,
+        statusText: "OK"
+      }
+
+      newRun.runRequest.execute = jest.fn()
+      newRun.runRequest.execute.mockResolvedValue(mockResponse)
+
+      let state = 'started'
+      await newRun.updateRunState(state)
+      expect(newRun.message).toEqual('Sequencing Run started')
+    })
+
+    it('updateRunState failure', async () => {
+      let mockResponse = {
+        data: { errors: { state: ['error message 1'] }},
+        status: 422,
+        statusText: "Unprocessible entity"
+      }
+
+      newRun.runRequest.execute = jest.fn()
+      newRun.runRequest.execute.mockReturnValue(mockResponse)
+
+      let state = 'started'
+      await newRun.updateRunState(state)
+      await flushPromises()
       expect(newRun.message).toEqual("state error message 1")
     })
 
@@ -222,9 +419,8 @@ describe('NewRun.vue', () => {
       let flowcellId = 1
       let libraryId = 123
 
-      let fn = newRun.updateFlowcellInTraction(flowcellId, libraryId)
-      await expect(fn).rejects.toEqual("library error message 1")
-      // await flushPromises()
+      await newRun.updateFlowcellInTraction(flowcellId, libraryId)
+      await flushPromises()
       expect(newRun.message).toEqual("library error message 1")
     })
 

@@ -6,14 +6,18 @@
       <b-button id="backToRunsButton" class="float-right">Back</b-button>
     </router-link>
 
-    <b-button id="startRun" variant="success" class="float-right" @click="onStartRun">Start Run</b-button>
+    <b-button id="startRun" variant="success" class="float-right" @click="startRun" :disabled="state!=='pending'">Start Run</b-button>
+    <b-button id="completeRun" variant="primary" class="float-right" @click="completeRun" :disabled="state==='completed' || state==='cancelled'">Complete Run</b-button>
+    <b-button id="cancelRun" variant="danger" class="float-right" @click="cancelRun" :disabled="state==='completed' || state==='cancelled'">Cancel Run</b-button>
 
-    <h1>Sequencing Run ID: {{ runId }}</h1>
+    <h1 id="runId">Sequencing Run ID: {{ runId }}</h1>
+    <h2 id="runState">Run state: {{ state }}</h2>
+
     <v-container grid-list-md>
       <v-layout justify-space-around>
         <v-flex xs12 sm6 md4 offset-xs1>
           <label for="barcode">Chip barcode:</label>
-          <b-form-input id="barcode" v-model="chipBarcode" type="text" placeholder="Chip barcode" @change="onBarcodeInput"/>
+          <b-form-input id="barcode" v-model="chipBarcode" type="text" placeholder="Chip barcode" @change="updateBarcode"/>
         </v-flex>
       </v-layout>
 
@@ -176,16 +180,6 @@ export default {
         this.showAlert
       } else {
         this.message = response.errors.message
-        throw this.message
-      }
-    },
-    async onBarcodeInput () {
-      try {
-        await this.updateBarcode()
-      } catch (error) {
-        // log error
-      } finally {
-        this.showAlert
       }
     },
     async updateBarcode(){
@@ -198,60 +192,72 @@ export default {
         this.message = 'Chip barcode updated'
       } else {
         this.message = response.errors.message
-        throw this.message
       }
+      this.showAlert
     },
     async getRun(id) {
-      try {
-        let rawRun = await this.runRequest.find(id)
-        let run = new Api.Response(rawRun).deserialize.runs[0]
+      let rawRun = await this.runRequest.find(id)
+      let response = new Api.Response(rawRun)
+      let run = response.deserialize.runs[0]
 
+      if (Object.keys(response.errors).length === 0) {
         let chipBarcode = ''
         if (run.chip.barcode) {
           chipBarcode = run.chip.barcode
         }
-
         this.id = run.id
         this.state = run.state
         this.chipId = run.chip.id
         this.chipBarcode = chipBarcode
         this.flowcell1 = [run.chip.flowcells[0]]
         this.flowcell2 = [run.chip.flowcells[1]]
-      } catch(error) {
-        return error
+      } else {
+        this.message = response.errors.message
+        this.showAlert
       }
     },
     async getLibraries() {
-      try {
-        let rawLibraries = await this.librariesRequest.get()
-        let libraries = new Api.Response(rawLibraries).deserialize.libraries
+      let rawLibraries = await this.librariesRequest.get()
+      let response = new Api.Response(rawLibraries)
+      let libraries = response.deserialize.libraries
+
+      if (Object.keys(response.errors).length === 0) {
         this.libraries = libraries
-      } catch(error) {
-        return error
-      }
-    },
-    async onStartRun () {
-      try {
-        await this.startRun()
-      } catch (error) {
-        // log error
-      } finally {
+      } else {
+        this.message = response.errors.message
         this.showAlert
       }
     },
     async startRun(){
-      let requestBody = { data: { type: 'runs', id: this.id, attributes: { state: 'started' }} }
+      this.updateRunState('started')
+    },
+    async completeRun () {
+      this.updateRunState('completed')
+    },
+    async cancelRun () {
+      this.updateRunState('cancelled')
+    },
+    async updateRunState(state){
+      let requestBody = { data: { type: 'runs', id: this.id, attributes: { state: state }} }
 
       let rawResponse = await this.runRequest.update(requestBody)
       let response = new Api.Response(rawResponse[0])
 
       if (Object.keys(response.errors).length === 0) {
-        this.message = 'Sequencing Run started'
+        this.message = 'Sequencing Run ' + state
       } else {
         this.message = response.errors.message
-        throw this.message
       }
+      this.showAlert
     },
+    provider () {
+      if (this.runId === undefined) {
+        this.$router.push({name: 'Runs'})
+      } else {
+        this.getRun(this.runId)
+        this.getLibraries()
+      }
+    }
   },
   components: {
     draggable,
@@ -278,12 +284,7 @@ export default {
     }
   },
   created() {
-    if (this.runId === undefined) {
-      this.$router.push({name: 'Runs'})
-    } else {
-      this.getRun(this.runId)
-      this.getLibraries()
-    }
+    this.provider()
   }
 }
 </script>
