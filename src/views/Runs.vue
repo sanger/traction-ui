@@ -36,7 +36,7 @@ export default {
         { key: 'selected', label: '' },
         { key: 'id', label: 'Run ID' },
         { key: 'state', label: 'State' },
-        { key: 'chip-barcode', label: 'Chips Barcode' },
+        { key: 'chip_barcode', label: 'Chips Barcode' },
         { key: 'actions', label: 'Actions' }
       ],
       selected: []

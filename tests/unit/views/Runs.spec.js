@@ -43,7 +43,7 @@ describe('Runs.vue', () => {
     })
 
     it('success', async () => {
-      let mockResponse = {status: 201, data: { data: [{id: 1, type: "runs", attributes: {state: 'pending', 'chip-barcode': null }}]}}
+      let mockResponse = {status: 201, data: { data: [{id: 1, type: "runs", attributes: {state: 'pending', 'chip_barcode': null }}]}}
       runs.runRequest.execute.mockResolvedValue(mockResponse)
 
       await runs.createNewRun()

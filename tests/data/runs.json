@@ -9,7 +9,7 @@
       },
       "attributes": {
         "state": "pending",
-        "chip-barcode": null
+        "chip_barcode": null
       },
       "relationships": {
         "chip": {
@@ -28,7 +28,7 @@
       },
       "attributes": {
         "state": "started",
-        "chip-barcode": "TRAC-123"
+        "chip_barcode": "TRAC-123"
       },
       "relationships": {
         "chip": {

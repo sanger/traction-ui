@@ -9,7 +9,7 @@
       },
       "attributes": {
         "state": "pending",
-        "chip-barcode": null
+        "chip_barcode": null
       },
       "relationships": {
         "chip": {
