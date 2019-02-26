@@ -1,112 +1,122 @@
 import Samples from '@/views/Samples'
+import SamplesJson from '../../data/samples'
 import Modal from '@/components/Modal'
-import Alert from '@/components/Alert'
 import { mount, localVue } from '../testHelper'
-import DataList from '@/api/DataList'
+import Response from '@/api/Response'
 import flushPromises from 'flush-promises'
 
 describe('Samples.vue', () => {
 
-  let wrapper, samples, data
+  let wrapper, samples
 
-  beforeEach(() => {
-    data = { body: [
-      { "id": 1, "attributes": { "name": "DN11111", "species": "cat", "barcode": "TRAC-1" }},
-      { "id": 2, "attributes": { "name": "DN11112", "species": "cat", "barcode": "TRAC-2" }},
-      { "id": 3, "attributes": { "name": "DN11113", "species": "dog", "barcode": "TRAC-3" }},
-      { "id": 4, "attributes": { "name": "DN11114", "species": "dog", "barcode": "TRAC-4" }},
-      { "id": 5, "attributes": { "name": "DN11115", "species": "cat", "barcode": "TRAC-5" }}
-    ]}
-    wrapper = mount(Samples, { localVue })
-    wrapper.find(DataList).vm.data = data
-    samples = wrapper.vm
+  describe('sample request', () => {
+    beforeEach(() => {
+      wrapper = mount(Samples, { localVue, methods: { provider() { return } } })
+      samples = wrapper.vm
+    })
+
+    it('will create a sample request', () => {
+      let request = samples.sampleRequest
+      expect(request.resource).toBeDefined()
+    })
+
+    it('will get a list of samples',  async () => {
+      samples.sampleRequest.execute = jest.fn()
+      samples.sampleRequest.execute.mockResolvedValue(SamplesJson)
+
+      let response = await samples.getSamples()
+      let expected = new Response(SamplesJson)
+      expect(response).toEqual(expected.deserialize.samples)
+    })
   })
 
-  it('has a data list', () => {
-    expect(wrapper.contains(DataList)).toBe(true)
-  })
+  describe('building the table', () => {
 
-  it('has a alert', () => {
-    expect(wrapper.contains(Alert)).toBe(true)
-  })
-
-  it('contains a table', () => {
-    expect(wrapper.contains('table')).toBe(true)
-  })
-
-  it('contains a modal component', () => {
-    expect(wrapper.contains(Modal)).toBe(true)
-  })
-
-  it('contains the correct data', () => {
-    expect(wrapper.find('tbody').findAll('tr').length).toEqual(data.body.length)
-  })
-
-  describe('selected', () => {
-
-    let checkboxes
+    let mockSamples
 
     beforeEach(() => {
-      checkboxes = wrapper.findAll(".selected")
-      checkboxes.at(0).trigger('click')
-      checkboxes.at(1).trigger('click')
-      checkboxes.at(2).trigger('click')
+      mockSamples = new Response(SamplesJson).deserialize.samples
+      wrapper = mount(Samples, { localVue, methods: { getSamples() { return mockSamples } }})
+      samples = wrapper.vm
     })
 
-    it('will find the sample which have been selected', () => {
-      expect(samples.selected.length).toEqual(3)
+    it('contains the correct fields', () => {
+      let headers = wrapper.findAll('th')
+      for (let field of samples.fields) {
+        expect(headers.filter(header => header.text() === field.label)).toBeDefined()
+      }
     })
 
-    describe('#createLibrariesInTraction', () => {
-      let response
+    it('contains the correct data', () => {
+      expect(wrapper.find('tbody').findAll('tr').length).toEqual(mockSamples.length)
+    })
+
+    describe('selecting samples', () => {
 
       beforeEach(() => {
-        samples.tractionApiLibrary.create = jest.fn()
+        let checkboxes = wrapper.findAll(".selected")
+        checkboxes.at(0).trigger('click')
+        checkboxes.at(1).trigger('click')
+        checkboxes.at(2).trigger('click')
       })
 
-      it('success', async () => {
-        response = {status: 201}
-        samples.tractionApiLibrary.data = response
-        samples.tractionApiLibrary.create.mockReturnValue(response)
-
-        let selectedEnzymeId = 1
-        samples.createLibrariesInTraction(selectedEnzymeId)
-        await flushPromises()
-
-// TODO: refactor processing
-        let libraryAttrs = []
-        for (let i = 0; i < samples.selected.length; i++) {
-          let sampleId = samples.selected[i].id
-          libraryAttrs.push( {'sample_id': sampleId, 'enzyme_id': selectedEnzymeId} )
-        }
-
-        let body = { data: { type: 'libraries', attributes: { libraries: libraryAttrs }}}
-        expect(samples.tractionApiLibrary.create).toBeCalledWith(body)
-        expect(samples.message).toEqual("Libraries created in Traction")
+      it('will create a list of selected requests', () => {
+        expect(samples.selected.length).toEqual(3)
       })
 
-      it('failure', async () => {
-        response = {message: 'Something went wrong'}
-        samples.tractionApiLibrary.errors = response
-        samples.tractionApiLibrary.create.mockReturnValue(response)
-
-        let selectedEnzymeId = 1
-        let fn = samples.createLibrariesInTraction(selectedEnzymeId)
-        await expect(fn).rejects.toBe("Something went wrong")
-
-// TODO: refactor processing
-        let libraryAttrs = []
-        for (let i = 0; i < samples.selected.length; i++) {
-          let sampleId = samples.selected[i].id
-          libraryAttrs.push( {'sample_id': sampleId, 'enzyme_id': selectedEnzymeId} )
-        }
-
-        let body = { data: { type: 'libraries', attributes: { libraries: libraryAttrs }}}
-        expect(samples.tractionApiLibrary.create).toBeCalledWith(body)
-        expect(samples.message).toEqual("Something went wrong")
-      })
     })
 
+  })
+
+  describe('#createLibrariesInTraction', () => {
+
+    beforeEach(() => {
+      samples.libraryRequest.execute = jest.fn()
+    })
+
+    it('success', async () => {
+      let mockResponse =  {
+        data: {
+          data: [
+             { id: 1, type: "libraries", attributes: { name: "testname1" }},
+             { id: 2, type: "libraries", attributes: { name: "testname2" }}
+          ]
+        },
+        status: 200,
+        statusText: "OK"
+      }
+
+      samples.libraryRequest.execute.mockResolvedValue(mockResponse)
+
+      let selectedEnzymeId = 1
+      samples.selected = [{id: 1}]
+
+      await samples.createLibrariesInTraction(selectedEnzymeId)
+      expect(samples.message).toEqual("Libraries created in Traction")
+    })
+
+    it('failure', async () => {
+
+      let mockResponse = {
+        data: {
+          errors: {
+            name: ['name error message 1']
+          }
+        },
+        status: 422,
+        statusText: "Unprocessible entity"
+      }
+
+      samples.libraryRequest.execute.mockReturnValue(mockResponse)
+
+      let selectedEnzymeId = 1
+      samples.selected = [{id: 1}]
+
+      let fn = samples.createLibrariesInTraction(selectedEnzymeId)
+      await expect(fn).rejects.toBe("name name error message 1")
+      await flushPromises()
+      expect(samples.message).toEqual("name name error message 1")
+    })
   })
 
   describe('modal', () => {
@@ -117,4 +127,5 @@ describe('Samples.vue', () => {
       expect(wrapper.vm.createLibrariesInTraction).toBeCalledWith(2)
     })
   })
+
 })

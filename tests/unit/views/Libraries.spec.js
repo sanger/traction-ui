@@ -1,38 +1,96 @@
 import Libraries from '@/views/Libraries'
-import Alert from '@/components/Alert'
 import { mount, localVue } from '../testHelper'
-import DataList from '@/api/DataList'
+import LibrariesJson from '../../data/libraries'
+import Response from '@/api/Response'
+import flushPromises from 'flush-promises'
 
 describe('Libraries.vue', () => {
 
-  let wrapper, data
+  let wrapper, libraries
 
-  beforeEach(() => {
-    data = { body: [
-      { "id": 1, "attributes": { "barcode": "TRAC-11111", "state": "pending", "enzyme": "EnZ.123" }},
-      { "id": 2, "attributes": { "barcode": "TRAC-11112", "state": "pending", "enzyme": "EnZ.245" }},
-      { "id": 3, "attributes": { "barcode": "TRAC-11113", "state": "pending", "enzyme": "EnZ.124" }},
-      { "id": 4, "attributes": { "barcode": "TRAC-11114", "state": "pending", "enzyme": "EnZ.342" }},
-      { "id": 5, "attributes": { "barcode": "TRAC-11115", "state": "pending", "enzyme": "EnZ.976" }}
-    ]}
-    wrapper = mount(Libraries, { localVue })
-    wrapper.find(DataList).vm.data = data
+  describe('library request', () => {
+
+    beforeEach(() => {
+      wrapper = mount(Libraries, { localVue, methods: { provider() { return } } })
+      libraries = wrapper.vm
+    })
+
+    it('will create a library request', () => {
+      let request = libraries.libraryRequest
+      expect(request.resource).toBeDefined()
+    })
+
+    it('will get a list of libraries',  async () => {
+      libraries.libraryRequest.execute = jest.fn()
+      libraries.libraryRequest.execute.mockResolvedValue(LibrariesJson)
+
+      let librariesResponse = await libraries.getLibraries()
+      let expected = new Response(LibrariesJson)
+      expect(librariesResponse).toEqual(expected.deserialize.libraries)
+    })
+
   })
 
-  it('has a data list', () => {
-    expect(wrapper.contains(DataList)).toBe(true)
-  })
+  describe('building the table', () => {
 
-  it('has a alert', () => {
-    expect(wrapper.contains(Alert)).toBe(true)
-  })
+    let mockLibraries
 
-  it('contains a table', () => {
-    expect(wrapper.contains('table')).toBe(true)
-  })
+    beforeEach(() => {
+      mockLibraries = new Response(LibrariesJson).deserialize.libraries
+      wrapper = mount(Libraries, { localVue, methods: { getLibraries() { return mockLibraries } }})
+      libraries = wrapper.vm
+    })
 
-  it('contains the correct data', () => {
-    expect(wrapper.find('tbody').findAll('tr').length).toEqual(data.body.length)
+    it('contains the correct fields', () => {
+      let headers = wrapper.findAll('th')
+      for (let field of libraries.fields) {
+        expect(headers.filter(header => header.text() === field.label)).toBeDefined()
+      }
+    })
+
+    it('contains the correct data', () => {
+      expect(wrapper.find('tbody').findAll('tr').length).toEqual(mockLibraries.length)
+    })
+
+    describe('selecting libraries', () => {
+
+      beforeEach(() => {
+        let checkboxes = wrapper.findAll(".selected")
+        checkboxes.at(0).trigger('click')
+        checkboxes.at(1).trigger('click')
+        checkboxes.at(2).trigger('click')
+      })
+
+      it('will create a list of selected libraries', () => {
+        expect(libraries.selected.length).toEqual(3)
+      })
+
+      describe('deleting', () => {
+        beforeEach(() => {
+          libraries.libraryRequest.destroy = jest.fn()
+        })
+
+        it('successfully', async () => {
+          let mockResponse = { status: 200, data: { } }
+          libraries.libraryRequest.destroy.mockResolvedValue(mockResponse)
+          wrapper.find('#deleteLibraries').trigger('click')
+          await flushPromises()
+          expect(libraries.message).toEqual(`Libraries ${libraries.selected.join(',')} successfully deleted`)
+          expect(libraries.libraryRequest.destroy).toBeCalledWith(libraries.selected)
+        })
+
+        it('unsuccessfully', async () => {
+          let mockResponse =  { data: { errors: { it: ['was a bust'] } }, status: 422 }
+          libraries.libraryRequest.destroy.mockReturnValue(mockResponse)
+          wrapper.find('#deleteLibraries').trigger('click')
+          await flushPromises()
+          expect(libraries.message).toEqual('There was an error')
+          expect(libraries.libraryRequest.destroy).toBeCalledWith(libraries.selected)
+        })
+      })
+
+    })
+
   })
 
 })

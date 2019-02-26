@@ -1,6 +1,7 @@
 import { mount, localVue } from '../testHelper'
 import Modal from '@/components/Modal'
 import flushPromises from 'flush-promises'
+import EnzymesJson from '../../data/enzymes'
 
 describe('Modal.vue', () => {
 
@@ -11,6 +12,9 @@ describe('Modal.vue', () => {
       localVue,
       propsData: {
         disabled: true
+      },
+      methods: {
+        getEnzymeOptions: () => {}
       }
     })
     modal = wrapper.vm
@@ -48,43 +52,44 @@ describe('Modal.vue', () => {
     expect(wrapper.find('select').findAll('option').length).toEqual(enzymeOptions.enzymeOptions.length)
   })
 
-  describe('#getEnzymeOptions', () => {
-    let response
+  describe.skip('#getEnzymeOptions', () => {
 
     beforeEach(() => {
-      modal.tractionApiEnzyme.get = jest.fn()
+      modal.enzymeRequest.execute = jest.fn()
     })
 
     it('success', async () => {
-      let enzymesResponse = [{ name: 'enz1' }, { name: 'enz2' }]
-      response = { body: enzymesResponse }
+      modal.enzymeRequest.execute.mockResolvedValue(EnzymesJson)
 
-      modal.tractionApiEnzyme.data = response
-      modal.tractionApiEnzyme.get.mockReturnValue(response)
-
-      modal.getEnzymeOptions()
+      await modal.getEnzymeOptions()
       await flushPromises()
-
-      expect(modal.tractionApiEnzyme.get).toBeCalled()
 
       let enzymeOptions = [
         { value: null, text: 'Please select an option' },
         { value: 1, text: 'enz1' },
-        { value: 2, text: 'enz2' }
+        { value: 2, text: 'enz2' },
+        { value: 3, text: 'enz3' }
       ]
       expect(modal.enzymeOptions).toEqual(enzymeOptions)
     })
 
     it('failure', async () => {
-      response = {message: 'Something went wrong'}
-      modal.tractionApiEnzyme.errors = response
-      modal.tractionApiEnzyme.get.mockReturnValue(response)
+      let mockResponse = {
+        data: {
+          errors: {
+            name: ['name error message 1']
+          }
+        },
+        status: 422,
+        statusText: "Unprocessible entity"
+      }
 
+      modal.enzymeRequest.execute.mockReturnValue(mockResponse)
       let fn = modal.getEnzymeOptions()
-      await expect(fn).rejects.toBe("Something went wrong")
+      await expect(fn).rejects.toBe("name name error message 1")
+      await flushPromises()
 
-      expect(modal.tractionApiEnzyme.get).toBeCalled()
-      expect(modal.message).toEqual("Something went wrong")
+      expect(modal.message).toEqual("name name error message 1")
     })
   })
 

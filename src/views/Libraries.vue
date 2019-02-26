@@ -1,78 +1,77 @@
 <template>
   <div class="libraries">
     <alert ref='alert'></alert>
-    <table class="table">
-      <thead>
-        <tr>
-          <th></th>
-          <th>Library ID</th>
-          <th>Sample name</th>
-          <th>Barcode</th>
-          <th>Enzyme</th>
-          <th>State</th>
-        </tr>
-      </thead>
-      <data-list ref="libraries" v-bind="tractionConfig.resource('libraries')">
-        <tbody slot-scope="{ data: libraries }">
-          <library-item v-for="library in libraries" v-bind:key="library.id" v-bind="library"></library-item>
-        </tbody>
-      </data-list>
-    </table>
-    <b-button id="deleteLibrary" @click="deleteLibrary" class="float-right">Delete Library</b-button>
+
+    <b-table
+       show-empty
+       :items="provider"
+       :fields="fields"
+    >
+      <template slot="selected" slot-scope="row">
+        <input type="checkbox" class="selected" v-model="selected" :value="row.item.id" />
+      </template>
+    </b-table>
+
+    <b-button id="deleteLibraries" @click="deleteLibraries" class="float-right">Delete Libraries</b-button>
   </div>
 </template>
 
 <script>
-import DataList from '@/api/DataList'
-import DataModel from '@/api/DataModel'
+
 import Alert from '@/components/Alert'
-import LibraryItem from '@/components/LibraryItem'
-import ApiConfig from '@/api/Config'
-import ConfigItem from '@/api/ConfigItem'
 import ComponentFactory from '@/mixins/ComponentFactory'
+import Api from '@/api'
 
 export default {
   name: 'Libraries',
   mixins: [ComponentFactory],
   props: {
   },
+  data () {
+    return {
+      fields: [
+        { key: 'selected', label: '' },
+        { key: 'id', label: 'Library ID' },
+        { key: 'barcode', label: 'Barcode' },
+        { key: 'sample_name', label: 'Sample Name' },
+        { key: 'enzyme_name', label: 'Enzyme Name' }
+      ],
+      selected: [],
+      message: ''
+    }
+  },
   components: {
-    DataList,
-    LibraryItem,
     Alert
   },
   methods: {
-    async deleteLibrary () {
-      try {
-        await this.deleteLibraryInTraction()
-      } catch (error) {
-        // log error
-      } finally {
-        this.showAlert
+    async deleteLibraries () {
+      let remoteResponse = await this.libraryRequest.destroy(this.selected)
+      let response = new Api.Response(remoteResponse)
+
+      if (response.successful) {
+        this.message = `Libraries ${this.selected.join(',')} successfully deleted`
+      } else {
+        this.message = 'There was an error'
       }
     },
-    async deleteLibraryInTraction () {
-      for (let i = 0; i < this.selected.length; i++) {
-        let id = this.selected[i].id
-        await this.tractionApi.destroy(id)
+    async getLibraries () {
+      try {
+        let libraries = await this.libraryRequest.get()
+        return new Api.Response(libraries).deserialize.libraries
+      } catch(error) {
+        return []
       }
-      if (this.tractionApi.data !== null) {
-        this.message = 'Library deleted in Traction'
-      } else {
-        this.message = this.tractionApi.errors.message
-        throw this.message
-      }
+    },
+    provider() {
+      return this.getLibraries()
     }
   },
   computed: {
-    selected () {
-      return this.$refs.libraries.$children.filter(library => library.selected).map(library => library.json)
+    libraryRequest () {
+      return this.build(Api.Request, this.tractionConfig.resource('libraries'))
     },
     tractionConfig () {
-      return this.build(ConfigItem, ApiConfig.traction)
-    },
-    tractionApi () {
-      return this.build(DataModel, this.tractionConfig.resource('libraries'))
+      return this.build(Api.ConfigItem, Api.Config.traction)
     },
     showAlert () {
       return this.$refs.alert.show(this.message, 'primary')
