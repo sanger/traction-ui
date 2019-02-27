@@ -2,6 +2,8 @@ import { mount, localVue } from '../testHelper'
 import Modal from '@/components/Modal'
 import flushPromises from 'flush-promises'
 import EnzymesJson from '../../data/enzymes'
+import Response from '@/api/Response'
+import Alert from '@/components/Alert'
 
 describe('Modal.vue', () => {
 
@@ -14,10 +16,16 @@ describe('Modal.vue', () => {
         disabled: true
       },
       methods: {
-        getEnzymeOptions: () => {}
+        provider () { return }
       }
     })
     modal = wrapper.vm
+  })
+
+  describe('alert', () => {
+    it('has a alert', () => {
+      expect(wrapper.contains(Alert)).toBe(true)
+    })
   })
 
   it('will have a name', () => {
@@ -52,7 +60,7 @@ describe('Modal.vue', () => {
     expect(wrapper.find('select').findAll('option').length).toEqual(enzymeOptions.enzymeOptions.length)
   })
 
-  describe.skip('#getEnzymeOptions', () => {
+  describe('#getEnzymeOptions', () => {
 
     beforeEach(() => {
       modal.enzymeRequest.execute = jest.fn()
@@ -62,14 +70,11 @@ describe('Modal.vue', () => {
       modal.enzymeRequest.execute.mockResolvedValue(EnzymesJson)
 
       await modal.getEnzymeOptions()
-      await flushPromises()
 
-      let enzymeOptions = [
-        { value: null, text: 'Please select an option' },
-        { value: 1, text: 'enz1' },
-        { value: 2, text: 'enz2' },
-        { value: 3, text: 'enz3' }
-      ]
+      let enzymes = new Response(EnzymesJson).deserialize.enzymes
+      let enzymeOptions = enzymes.map((enzyme, index) => Object.assign({ value: index+1, text: enzyme.name }))
+      enzymeOptions.unshift({ value: null, text: "Please select an option" })
+
       expect(modal.enzymeOptions).toEqual(enzymeOptions)
     })
 
@@ -85,8 +90,8 @@ describe('Modal.vue', () => {
       }
 
       modal.enzymeRequest.execute.mockReturnValue(mockResponse)
-      let fn = modal.getEnzymeOptions()
-      await expect(fn).rejects.toBe("name name error message 1")
+
+      await modal.getEnzymeOptions()
       await flushPromises()
 
       expect(modal.message).toEqual("name name error message 1")

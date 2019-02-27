@@ -1,5 +1,7 @@
 <template>
-  <div>
+  <div class="modal">
+    <alert ref='alert'></alert>
+
     <b-btn :disabled="disabled" v-b-modal.enzymeModal>Create Libraries with Enzyme</b-btn>
     <b-modal id="enzymeModal" title="Create Libraries" ref="enzymeModal" @ok="handleOk" @shown="clearSelect">
       <b-form-select v-model="selectedEnzymeId" :options="enzymeOptions" class="mb-3" />
@@ -13,8 +15,8 @@
 import ApiConfig from '@/api/Config'
 import ConfigItem from '@/api/ConfigItem'
 import ComponentFactory from '@/mixins/ComponentFactory'
-import Request from '@/api/Request'
-import Response from '@/api/Response'
+import Api from '@/api'
+import Alert from '@/components/Alert'
 
 export default {
   name: 'Modal',
@@ -49,7 +51,7 @@ export default {
     },
     async getEnzymeOptions () {
       let rawResponse = await this.enzymeRequest.get()
-      let response = new Response(rawResponse)
+      let response = new Api.Response(rawResponse)
 
       if (Object.keys(response.errors).length === 0) {
         let enzymes = response.deserialize.enzymes
@@ -58,19 +60,28 @@ export default {
         this.enzymeOptions = enzymeOptions
       } else {
         this.message = response.errors.message
-        throw this.message
+        this.showAlert
       }
     },
+    async provider () {
+      this.getEnzymeOptions()
+    }
   },
   async created() {
     this.getEnzymeOptions()
   },
+  components: {
+    Alert
+  },
   computed: {
     enzymeRequest () {
-      return this.build(Request, this.tractionConfig.resource('enzymes'))
+      return this.build(Api.Request, this.tractionConfig.resource('enzymes'))
     },
     tractionConfig () {
       return this.build(ConfigItem, ApiConfig.traction)
+    },
+    showAlert () {
+      return this.$refs.alert.show(this.message, 'primary')
     }
   }
 }
