@@ -4,6 +4,7 @@ import { mount, localVue } from '../testHelper'
 import VueRouter from 'vue-router'
 import RunsJson from '../../data/runs'
 import Response from '@/api/Response'
+import Alert from '@/components/Alert'
 
 describe('Runs.vue', () => {
 
@@ -16,6 +17,12 @@ describe('Runs.vue', () => {
 
     wrapper = mount(Runs, { localVue, router })
     runs = wrapper.vm
+  })
+
+  describe('alert', () => {
+    it('has a alert', () => {
+      expect(wrapper.contains(Alert)).toBe(true)
+    })
   })
 
   it('contains a create new run button', () => {
@@ -63,8 +70,7 @@ describe('Runs.vue', () => {
 
       runs.runRequest.execute.mockResolvedValue(mockResponse)
 
-      let fn = runs.createNewRun()
-      await expect(fn).rejects.toMatch("state state error message 1")
+      await runs.createNewRun()
       expect(runs.message).toEqual("state state error message 1")
     })
   })

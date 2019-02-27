@@ -29,8 +29,15 @@ describe('Reception.vue', () => {
       reception.receptionRequest.execute.mockResolvedValue(RequestsJson)
 
       let sequencescapeResponse = await reception.getRequests()
-      let expected = new Response(RequestsJson)
-      expect(sequencescapeResponse).toEqual(expected.deserialize.requests)
+      let expected = new Response(RequestsJson).deserialize.requests
+
+      expect(sequencescapeResponse.length).toEqual(expected.length)
+      expect(sequencescapeResponse[0].id).toEqual("1")
+      expect(sequencescapeResponse[1].id).toEqual("4")
+      expect(sequencescapeResponse[0].name).toEqual("sample_a")
+      expect(sequencescapeResponse[1].name).toEqual("sample_d")
+      expect(sequencescapeResponse[0].species).toEqual("common")
+      expect(sequencescapeResponse[1].species).toEqual("human")
     })
   })
 
@@ -61,11 +68,10 @@ describe('Reception.vue', () => {
         let checkboxes = wrapper.findAll(".selected")
         checkboxes.at(0).trigger('click')
         checkboxes.at(1).trigger('click')
-        checkboxes.at(2).trigger('click')
       })
 
       it('will create a list of selected requests', () => {
-        expect(reception.selected.length).toEqual(3)
+        expect(reception.selected.length).toEqual(mockRequests.length)
       })
 
     })
@@ -230,12 +236,8 @@ describe('Reception.vue', () => {
     it('returns the json formatted request', () => {
       let selected = [{
        id: "4",
-       samples: [
-         {  name: "sample_d",
-            sample_metadata:
-              { sample_common_name: "human" }
-          }
-        ]
+       name: "sample_d",
+       species: "human"
       }]
 
       let expected = [{ sequencescape_request_id: '4', name: 'sample_d', species: 'human' }]

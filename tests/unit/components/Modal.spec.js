@@ -3,7 +3,6 @@ import Modal from '@/components/Modal'
 import flushPromises from 'flush-promises'
 import EnzymesJson from '../../data/enzymes'
 import Response from '@/api/Response'
-import Alert from '@/components/Alert'
 
 describe('Modal.vue', () => {
 
@@ -20,12 +19,6 @@ describe('Modal.vue', () => {
       }
     })
     modal = wrapper.vm
-  })
-
-  describe('alert', () => {
-    it('has a alert', () => {
-      expect(wrapper.contains(Alert)).toBe(true)
-    })
   })
 
   it('will have a name', () => {

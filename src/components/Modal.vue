@@ -1,8 +1,7 @@
 <template>
-  <div class="modal">
-    <alert ref='alert'></alert>
 
-    <b-btn :disabled="disabled" v-b-modal.enzymeModal>Create Libraries with Enzyme</b-btn>
+  <div class="modal">
+    <b-btn id="createLibrariesWithEnzymeButton" :disabled="disabled" v-b-modal.enzymeModal>Create Libraries with Enzyme</b-btn>
     <b-modal id="enzymeModal" title="Create Libraries" ref="enzymeModal" @ok="handleOk" @shown="clearSelect">
       <b-form-select v-model="selectedEnzymeId" :options="enzymeOptions" class="mb-3" />
     </b-modal>
@@ -16,7 +15,6 @@ import ApiConfig from '@/api/Config'
 import ConfigItem from '@/api/ConfigItem'
 import ComponentFactory from '@/mixins/ComponentFactory'
 import Api from '@/api'
-import Alert from '@/components/Alert'
 
 export default {
   name: 'Modal',
@@ -60,7 +58,6 @@ export default {
         this.enzymeOptions = enzymeOptions
       } else {
         this.message = response.errors.message
-        this.showAlert
       }
     },
     async provider () {
@@ -71,7 +68,6 @@ export default {
     this.provider()
   },
   components: {
-    Alert
   },
   computed: {
     enzymeRequest () {
@@ -79,9 +75,6 @@ export default {
     },
     tractionConfig () {
       return this.build(ConfigItem, ApiConfig.traction)
-    },
-    showAlert () {
-      return this.$refs.alert.show(this.message, 'primary')
     }
   }
 }
@@ -89,5 +82,10 @@ export default {
 
 
 <style>
+
+.modal {
+  display: inline;
+  position: relative;
+}
 
 </style>

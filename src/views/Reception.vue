@@ -41,11 +41,21 @@ export default {
   },
   methods: {
     async getRequests () {
-      try {
-        let requests = await this.receptionRequest.get()
-        return new Api.Response(requests).deserialize.requests
-      } catch(error) {
-        return error
+      let rawResponse = await this.receptionRequest.get()
+      let response = new Api.Response(rawResponse)
+
+      if (Object.keys(response.errors).length === 0) {
+        let requests = response.deserialize.requests
+
+        return requests.map(r => Object.assign({
+          id: r.id,
+          name: r.samples[0].name,
+          species: r.samples[0].sample_metadata.sample_common_name
+        }))
+      } else {
+        this.message = response.errors.message
+        this.showAlert
+        return []
       }
     },
     async exportRequests () {
@@ -92,8 +102,8 @@ export default {
       return selected.map(r =>
         Object.assign({
           sequencescape_request_id: r.id,
-          name: r.samples[0].name,
-          species: r.samples[0].sample_metadata.sample_common_name
+          name: r.name,
+          species: r.species
         }
       ))
     },

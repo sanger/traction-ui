@@ -1,10 +1,12 @@
 <template>
     <div class="runs">
+      <alert ref='alert'></alert>
+
       <b-button id="newRun" class="float-right" @click="createNewRun">Create New Run</b-button>
 
       <b-table
          show-empty
-         :items="getRuns"
+         :items="provider"
          :fields="fields"
       >
 
@@ -13,12 +15,14 @@
             Edit Run
           </b-button>
         </template>
+
       </b-table>
 
     </div>
 </template>
 
 <script>
+import Alert from '@/components/Alert'
 import ComponentFactory from '@/mixins/ComponentFactory'
 import Api from '@/api'
 
@@ -45,11 +49,16 @@ export default {
       this.$router.push({name: 'NewRun', params: {runId: parseInt(runId)}})
     },
     async getRuns () {
-      try {
-        let rawRuns = await this.runRequest.get()
-        return new Api.Response(rawRuns).deserialize.runs
-      } catch(error) {
-        return error
+      let rawResponse = await this.runRequest.get()
+      let response = new Api.Response(rawResponse)
+
+      if (Object.keys(response.errors).length === 0) {
+        let runs = response.deserialize.runs
+        return runs
+      } else {
+        this.message = response.errors.message
+        this.showAlert
+        return []
       }
     },
     async createNewRun () {
@@ -64,13 +73,15 @@ export default {
         this.$router.push({name: 'NewRun', params: {runId: parseInt(runId)}})
       } else {
         this.message = response.errors.message
-        throw this.message
+        this.showAlert
       }
-
+    },
+    provider() {
+      return this.getRuns()
     }
   },
   components: {
-
+    Alert
   },
   computed: {
     runRequest () {
@@ -79,6 +90,9 @@ export default {
     tractionConfig () {
       return this.build(Api.ConfigItem, Api.Config.traction)
     },
+    showAlert () {
+      return this.$refs.alert.show(this.message, 'primary')
+    }
   }
 }
 </script>

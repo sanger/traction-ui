@@ -45,20 +45,26 @@ export default {
   },
   methods: {
     async deleteLibraries () {
-      let remoteResponse = await this.libraryRequest.destroy(this.selected)
-      let response = new Api.Response(remoteResponse)
+      let rawResponse = await this.libraryRequest.destroy(this.selected)
+      let responses = rawResponse.map(item => new Api.Response(item))
 
-      if (response.successful) {
+      if (responses.every(r => Object.keys(r.errors).length === 0)) {
         this.message = `Libraries ${this.selected.join(',')} successfully deleted`
       } else {
-        this.message = 'There was an error'
+        this.message = responses.map(r => r.errors.message)
       }
+      this.showAlert
     },
     async getLibraries () {
-      try {
-        let libraries = await this.libraryRequest.get()
-        return new Api.Response(libraries).deserialize.libraries
-      } catch(error) {
+      let rawResponse = await this.libraryRequest.get()
+      let response = new Api.Response(rawResponse)
+
+      if (Object.keys(response.errors).length === 0) {
+        let libraries = response.deserialize.libraries
+        return libraries
+      } else {
+        this.message = response.errors.message
+        this.showAlert
         return []
       }
     },

@@ -14,7 +14,7 @@
 
     <!-- Button to create libraries -->
     <!-- Add check to disable button if no samples are selected -->
-    <modal @selectEnzyme="createLibraries" :disabled=false class="float-right" ></modal>
+    <modal @selectEnzyme="createLibrariesInTraction" :disabled=false class="float-right" ></modal>
 
   </div>
 </template>
@@ -46,28 +46,22 @@ export default {
   },
   methods: {
     async getSamples () {
-      try {
-        let rawSamples = await this.sampleRequest.get()
-        return new Api.Response(rawSamples).deserialize.samples
-      } catch(error) {
-        return error
-      }
-    },
-    async createLibraries (selectedEnzymeId) {
-      try {
-        await this.createLibrariesInTraction(selectedEnzymeId)
-      } catch (error) {
-        // log error
-      } finally {
+      let rawResponse = await this.sampleRequest.get()
+      let response = new Api.Response(rawResponse)
+
+      if (Object.keys(response.errors).length === 0) {
+        let samples = response.deserialize.samples
+        return samples
+      } else {
+        this.message = response.errors.message
         this.showAlert
+        return []
       }
     },
     async createLibrariesInTraction (selectedEnzymeId) {
-   
       let libraries = this.selected.map(item => { return {'sample_id': item.id, 'enzyme_id': selectedEnzymeId}})
 
       let body = { data: { type: 'libraries', attributes: { libraries: libraries }}}
-
       let rawResponse = await this.libraryRequest.create(body)
       let response = new Api.Response(rawResponse)
 
@@ -75,18 +69,12 @@ export default {
         this.message = 'Libraries created in Traction'
       } else {
         this.message = response.errors.message
-        throw this.message
       }
+      this.showAlert
     },
     provider () {
       return this.getSamples()
-    },
-    showModal() {
-      this.isModalVisible = true;
-    },
-    closeModal() {
-      this.isModalVisible = false;
-    },
+    }
   },
   components: {
     Alert,

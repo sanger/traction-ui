@@ -256,6 +256,7 @@ export default {
       } else {
         this.getRun(this.runId)
         this.getLibraries()
+        console.log(this.libraries)
       }
     }
   },
