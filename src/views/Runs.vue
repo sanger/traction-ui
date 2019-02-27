@@ -7,9 +7,6 @@
          :items="getRuns"
          :fields="fields"
       >
-        <template slot="selected" slot-scope="row">
-          <b-checkbox @change="toggleSelectedRow(row.item)"></b-checkbox>
-        </template>
 
         <template slot="actions" slot-scope="row">
           <b-button size="sm" @click="editRun(row.item)" class="mr-1">
@@ -33,25 +30,16 @@ export default {
   data () {
     return {
       fields: [
-        { key: 'selected', label: '' },
         { key: 'id', label: 'Run ID' },
         { key: 'state', label: 'State' },
         { key: 'chip_barcode', label: 'Chips Barcode' },
         { key: 'actions', label: 'Actions' }
       ],
-      selected: []
     }
   },
   created: function () {
   },
   methods: {
-    toggleSelectedRow(item) {
-      if (this.selected.indexOf(item) === -1) {
-        this.selected.push(item)
-      } else {
-        this.selected.splice(this.selected.indexOf(item), 1 );
-      }
-    },
     editRun(item) {
       let runId = item.id
       this.$router.push({name: 'NewRun', params: {runId: parseInt(runId)}})
