@@ -62,7 +62,10 @@ export default {
       }
 
       if (this.include.length > 0) {
-        query += `&include=${this.include}`
+        if (Object.keys(this.filters).length > 0) {
+          query += '&'
+        }
+        query += `include=${this.include}`
       }
 
       return query
