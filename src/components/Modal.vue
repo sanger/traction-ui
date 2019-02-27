@@ -68,7 +68,7 @@ export default {
     }
   },
   async created() {
-    this.getEnzymeOptions()
+    this.provider()
   },
   components: {
     Alert
