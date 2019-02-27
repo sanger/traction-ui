@@ -27,7 +27,8 @@
         "name": "enzymes"
       },
       "runs": {
-        "name": "runs"
+        "name": "runs",
+        "include": "chip.flowcells.library"
       },
       "chips": {
         "name": "chips"
