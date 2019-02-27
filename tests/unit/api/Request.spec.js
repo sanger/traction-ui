@@ -113,7 +113,7 @@ describe('Request', () => {
         request.api.get.mockResolvedValue(mockResponse)
         let id = 1
         response = await request.find(id)
-        expect(request.api.get).toBeCalledWith(`${request.resource}/1`)
+        expect(request.api.get).toBeCalledWith(`${request.resource}/1${request.query}`)
         expect(response.data).toEqual(mockResponse.data)
       })
 
