@@ -9,12 +9,18 @@ describe('Samples.vue', () => {
 
   let wrapper, samples
 
-  describe('sample request', () => {
     beforeEach(() => {
       wrapper = mount(Samples, { localVue, methods: { provider() { return } } })
       samples = wrapper.vm
     })
 
+    it('has a create libraries with enzyme button', () => {
+      expect(wrapper.contains('#createLibrariesWithEnzymeButton')).toBe(true)
+      let button = wrapper.find('#createLibrariesWithEnzymeButton').text()
+      expect(button).toEqual("Create Libraries with Enzyme")
+    })
+
+  describe('sample request', () => {
     it('will create a sample request', () => {
       let request = samples.sampleRequest
       expect(request.resource).toBeDefined()
@@ -112,8 +118,8 @@ describe('Samples.vue', () => {
       let selectedEnzymeId = 1
       samples.selected = [{id: 1}]
 
-      let fn = samples.createLibrariesInTraction(selectedEnzymeId)
-      await expect(fn).rejects.toBe("name name error message 1")
+      await samples.createLibrariesInTraction(selectedEnzymeId)
+      // await expect(fn).rejects.toBe("name name error message 1")
       await flushPromises()
       expect(samples.message).toEqual("name name error message 1")
     })
@@ -121,10 +127,15 @@ describe('Samples.vue', () => {
 
   describe('modal', () => {
     it('passes selected enzyme id to function on emit event', () => {
+
+      samples.selected = [{id: 1}]
+
       let modal = wrapper.find(Modal)
-      wrapper.vm.createLibrariesInTraction = jest.fn()
+      samples.libraryRequest.create = jest.fn()
+
       modal.vm.$emit('selectEnzyme', 2)
-      expect(wrapper.vm.createLibrariesInTraction).toBeCalledWith(2)
+      let expectedBody = {data: {attributes: {libraries: [{enzyme_id: 2, sample_id: 1}]}, type: "libraries"}}
+      expect(samples.libraryRequest.create).toBeCalledWith(expectedBody)
     })
   })
 

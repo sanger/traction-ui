@@ -25,6 +25,15 @@
       },
       "enzymes": {
         "name": "enzymes"
+      },
+      "runs": {
+        "name": "runs"
+      },
+      "chips": {
+        "name": "chips"
+      },
+      "flowcells": {
+        "name": "flowcells"
       }
     }
   }

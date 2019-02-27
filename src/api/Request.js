@@ -85,6 +85,9 @@ export default {
     get () {
       return this.execute('get', `${this.resource}${this.query}`)
     },
+    find (id) {
+      return this.execute('get', `${this.resource}/${id}`)
+    },
     create (data) {
       return this.execute('post', this.resource, data)
     },

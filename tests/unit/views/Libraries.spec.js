@@ -71,7 +71,7 @@ describe('Libraries.vue', () => {
         })
 
         it('successfully', async () => {
-          let mockResponse = { status: 200, data: { } }
+          let mockResponse = [{ status: 204, data: "" }]
           libraries.libraryRequest.destroy.mockResolvedValue(mockResponse)
           wrapper.find('#deleteLibraries').trigger('click')
           await flushPromises()
@@ -80,11 +80,11 @@ describe('Libraries.vue', () => {
         })
 
         it('unsuccessfully', async () => {
-          let mockResponse =  { data: { errors: { it: ['was a bust'] } }, status: 422 }
+          let mockResponse =  [{ data: { errors: { it: ['was a bust'] } }, status: 422 }]
           libraries.libraryRequest.destroy.mockReturnValue(mockResponse)
           wrapper.find('#deleteLibraries').trigger('click')
           await flushPromises()
-          expect(libraries.message).toEqual('There was an error')
+          expect(libraries.message).toEqual(['it was a bust'])
           expect(libraries.libraryRequest.destroy).toBeCalledWith(libraries.selected)
         })
       })
