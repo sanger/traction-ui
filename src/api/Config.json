@@ -35,6 +35,9 @@
       },
       "flowcells": {
         "name": "flowcells"
+      },
+      "tubes": {
+        
       }
     }
   }
