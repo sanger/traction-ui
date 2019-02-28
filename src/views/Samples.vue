@@ -42,7 +42,7 @@ export default {
       selected: []
     }
   },
-  created() {
+  created () {
   },
   methods: {
     async getSamples () {

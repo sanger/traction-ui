@@ -119,7 +119,6 @@ describe('Samples.vue', () => {
       samples.selected = [{id: 1}]
 
       await samples.createLibrariesInTraction(selectedEnzymeId)
-      // await expect(fn).rejects.toBe("name name error message 1")
       await flushPromises()
       expect(samples.message).toEqual("name name error message 1")
     })
@@ -132,6 +131,7 @@ describe('Samples.vue', () => {
 
       let modal = wrapper.find(Modal)
       samples.libraryRequest.create = jest.fn()
+      samples.libraryRequest.create.mockResolvedValue({status: 201, data: {}})
 
       modal.vm.$emit('selectEnzyme', 2)
       let expectedBody = {data: {attributes: {libraries: [{enzyme_id: 2, sample_id: 1}]}, type: "libraries"}}
