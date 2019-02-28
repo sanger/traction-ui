@@ -44,9 +44,9 @@ export default {
       message: '',
       fields: [
         { key: 'selected', label: '' },
-        { key: 'id', label: 'Sample ID' },
-        { key: 'name', label: 'Name' },
-        { key: 'species', label: 'Species' },
+        { key: 'id', label: 'Sample ID', sortable: true },
+        { key: 'name', label: 'Name', sortable: true },
+        { key: 'species', label: 'Species', sortable: true },
       ],
       selected: [],
       filter: null,

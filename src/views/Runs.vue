@@ -46,9 +46,9 @@ export default {
   data () {
     return {
       fields: [
-        { key: 'id', label: 'Run ID' },
-        { key: 'state', label: 'State' },
-        { key: 'chip_barcode', label: 'Chips Barcode' },
+        { key: 'id', label: 'Run ID', sortable: true },
+        { key: 'state', label: 'State', sortable: true },
+        { key: 'chip_barcode', label: 'Chips Barcode', sortable: true },
         { key: 'actions', label: 'Actions' }
       ],
       items: [],

@@ -43,10 +43,10 @@ export default {
     return {
       fields: [
         { key: 'selected', label: '' },
-        { key: 'id', label: 'Library ID' },
-        { key: 'barcode', label: 'Barcode' },
-        { key: 'sample_name', label: 'Sample Name' },
-        { key: 'enzyme_name', label: 'Enzyme Name' }
+        { key: 'id', label: 'Library ID', sortable: true },
+        { key: 'barcode', label: 'Barcode', sortable: true },
+        { key: 'sample_name', label: 'Sample Name', sortable: true },
+        { key: 'enzyme_name', label: 'Enzyme Name', sortable: true }
       ],
       selected: [],
       message: '',
