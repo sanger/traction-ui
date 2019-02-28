@@ -5,16 +5,14 @@
       <b-button id="newRun" class="float-right" @click="createNewRun">Create New Run</b-button>
 
       <b-col md="6" class="my-1">
-        <b-form-group label-cols-sm="3" label="Filter" class="mb-0">
-          <b-input-group>
-            <b-form-input v-model="filter" placeholder="Type to Search" />
-            <b-input-group-append>
-              <b-button :disabled="!filter" @click="filter = ''">Clear</b-button>
-            </b-input-group-append>
-          </b-input-group>
-        </b-form-group>
+        <b-input-group>
+          <b-form-input v-model="filter" placeholder="Type to Filter" />
+          <b-input-group-append>
+            <b-button :disabled="!filter" @click="filter = ''">Clear</b-button>
+          </b-input-group-append>
+        </b-input-group>
       </b-col>
-      
+
       <b-table
          show-empty
          :items="items"
