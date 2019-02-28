@@ -2,10 +2,22 @@
   <div class="samples">
     <alert ref='alert'></alert>
 
+    <b-col md="6" class="my-1">
+      <b-form-group label-cols-sm="3" label="Filter" class="mb-0">
+        <b-input-group>
+          <b-form-input v-model="filter" placeholder="Type to Search" />
+          <b-input-group-append>
+            <b-button :disabled="!filter" @click="filter = ''">Clear</b-button>
+          </b-input-group-append>
+        </b-input-group>
+      </b-form-group>
+    </b-col>
+
     <b-table
        show-empty
-       :items="provider"
+       :items="items"
        :fields="fields"
+       :filter="filter"
     >
       <template slot="selected" slot-scope="row">
         <input type="checkbox" class="selected" v-model="selected" :value="row.item" />
@@ -39,10 +51,10 @@ export default {
         { key: 'species', label: 'Species' },
         { key: 'barcode', label: 'Barcode' },
       ],
-      selected: []
+      selected: [],
+      filter: null,
+      items: []
     }
-  },
-  created () {
   },
   methods: {
     async getSamples () {
@@ -51,11 +63,11 @@ export default {
 
       if (Object.keys(response.errors).length === 0) {
         let samples = response.deserialize.samples
-        return samples
+        this.items = samples
       } else {
         this.message = response.errors.message
         this.showAlert
-        return []
+        this.items = []
       }
     },
     async createLibrariesInTraction (selectedEnzymeId) {
@@ -73,12 +85,15 @@ export default {
       this.showAlert
     },
     provider () {
-      return this.getSamples()
+      this.getSamples()
     }
   },
   components: {
     Alert,
     Modal
+  },
+  created() {
+    this.provider()
   },
   computed: {
     sampleRequest () {

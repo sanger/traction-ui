@@ -9,7 +9,7 @@
       },
       "attributes": {
         "state": "pending",
-        "chip_barcode": null
+        "chip_barcode": "TRAC-456"
       },
       "relationships": {
         "chip": {

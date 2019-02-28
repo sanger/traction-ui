@@ -2,10 +2,22 @@
   <div class="reception">
     <alert ref='alert'></alert>
 
+    <b-col md="6" class="my-1">
+      <b-form-group label-cols-sm="3" label="Filter" class="mb-0">
+        <b-input-group>
+          <b-form-input v-model="filter" placeholder="Type to Search" />
+          <b-input-group-append>
+            <b-button :disabled="!filter" @click="filter = ''">Clear</b-button>
+          </b-input-group-append>
+        </b-input-group>
+      </b-form-group>
+    </b-col>
+
       <b-table
        show-empty
-       :items="provider"
+       :items="items"
        :fields="fields"
+       :filter="filter"
        >
         <template slot="selected" slot-scope="row">
            <input type="checkbox" class="selected" v-model="selected" :value="row.item" />
@@ -36,7 +48,9 @@ export default {
         { key: 'name', label: 'Name' },
         { key: 'species', label: 'Species' },
       ],
-      selected: []
+      selected: [],
+      filter: null,
+      items: []
     }
   },
   methods: {
@@ -47,7 +61,7 @@ export default {
       if (Object.keys(response.errors).length === 0) {
         let requests = response.deserialize.requests
 
-        return requests.map(r => Object.assign({
+        this.items = requests.map(r => Object.assign({
           id: r.id,
           name: r.samples[0].name,
           species: r.samples[0].sample_metadata.sample_common_name
@@ -55,7 +69,7 @@ export default {
       } else {
         this.message = response.errors.message
         this.showAlert
-        return []
+        this.items = []
       }
     },
     async exportRequests () {
@@ -132,6 +146,7 @@ export default {
     }
   },
   created () {
+    this.provider()
   }
 }
 </script>

@@ -2,10 +2,22 @@
   <div class="libraries">
     <alert ref='alert'></alert>
 
+    <b-col md="6" class="my-1">
+      <b-form-group label-cols-sm="3" label="Filter" class="mb-0">
+        <b-input-group>
+          <b-form-input v-model="filter" placeholder="Type to Search" />
+          <b-input-group-append>
+            <b-button :disabled="!filter" @click="filter = ''">Clear</b-button>
+          </b-input-group-append>
+        </b-input-group>
+      </b-form-group>
+    </b-col>
+
     <b-table
        show-empty
-       :items="provider"
+       :items="items"
        :fields="fields"
+       :filter="filter"
     >
       <template slot="selected" slot-scope="row">
         <input type="checkbox" class="selected" v-model="selected" :value="row.item.id" />
@@ -37,7 +49,9 @@ export default {
         { key: 'enzyme_name', label: 'Enzyme Name' }
       ],
       selected: [],
-      message: ''
+      message: '',
+      filter: null,
+      items: []
     }
   },
   components: {
@@ -61,16 +75,19 @@ export default {
 
       if (Object.keys(response.errors).length === 0) {
         let libraries = response.deserialize.libraries
-        return libraries
+        this.items = libraries
       } else {
         this.message = response.errors.message
         this.showAlert
-        return []
+        this.items = []
       }
     },
     provider() {
-      return this.getLibraries()
+      this.getLibraries()
     }
+  },
+  created() {
+    this.provider()
   },
   computed: {
     libraryRequest () {

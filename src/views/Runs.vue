@@ -4,10 +4,22 @@
 
       <b-button id="newRun" class="float-right" @click="createNewRun">Create New Run</b-button>
 
+      <b-col md="6" class="my-1">
+        <b-form-group label-cols-sm="3" label="Filter" class="mb-0">
+          <b-input-group>
+            <b-form-input v-model="filter" placeholder="Type to Search" />
+            <b-input-group-append>
+              <b-button :disabled="!filter" @click="filter = ''">Clear</b-button>
+            </b-input-group-append>
+          </b-input-group>
+        </b-form-group>
+      </b-col>
+      
       <b-table
          show-empty
-         :items="provider"
+         :items="items"
          :fields="fields"
+         :filter="filter"
       >
 
         <template slot="actions" slot-scope="row">
@@ -39,9 +51,9 @@ export default {
         { key: 'chip_barcode', label: 'Chips Barcode' },
         { key: 'actions', label: 'Actions' }
       ],
+      items: [],
+      filter: null
     }
-  },
-  created: function () {
   },
   methods: {
     editRun(item) {
@@ -54,11 +66,11 @@ export default {
 
       if (Object.keys(response.errors).length === 0) {
         let runs = response.deserialize.runs
-        return runs
+        this.items = runs
       } else {
         this.message = response.errors.message
         this.showAlert
-        return []
+        this.items = []
       }
     },
     async createNewRun () {
@@ -77,8 +89,11 @@ export default {
       }
     },
     provider() {
-      return this.getRuns()
+      this.getRuns()
     }
+  },
+  created() {
+    this.provider()
   },
   components: {
     Alert

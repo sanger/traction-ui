@@ -30,9 +30,9 @@ describe('Samples.vue', () => {
       samples.sampleRequest.execute = jest.fn()
       samples.sampleRequest.execute.mockResolvedValue(SamplesJson)
 
-      let response = await samples.getSamples()
+      await samples.getSamples()
       let expected = new Response(SamplesJson)
-      expect(response).toEqual(expected.deserialize.samples)
+      expect(samples.items).toEqual(expected.deserialize.samples)
     })
   })
 
@@ -42,7 +42,19 @@ describe('Samples.vue', () => {
 
     beforeEach(() => {
       mockSamples = new Response(SamplesJson).deserialize.samples
-      wrapper = mount(Samples, { localVue, methods: { getSamples() { return mockSamples } }})
+
+      wrapper = mount(Samples, { localVue,
+        methods: {
+          provider() {
+            return
+          }
+        },
+        data() {
+          return {
+            items: mockSamples
+          }
+        }
+      })
       samples = wrapper.vm
     })
 
@@ -136,6 +148,33 @@ describe('Samples.vue', () => {
       modal.vm.$emit('selectEnzyme', 2)
       let expectedBody = {data: {attributes: {libraries: [{enzyme_id: 2, sample_id: 1}]}, type: "libraries"}}
       expect(samples.libraryRequest.create).toBeCalledWith(expectedBody)
+    })
+  })
+
+  describe('filtering samples', () => {
+    let mockSamples
+
+    beforeEach(() => {
+      mockSamples = new Response(SamplesJson).deserialize.samples
+
+      wrapper = mount(Samples, { localVue,
+        methods: {
+          provider() {
+            return
+          }
+        },
+        data() {
+          return {
+            items: mockSamples,
+            filter: mockSamples[0].name
+          }
+        }
+      })
+    })
+
+    it('will filter the samples in the table', () => {
+      expect(wrapper.find('tbody').findAll('tr').length).toEqual(1)
+      expect(wrapper.find('tbody').findAll('tr').at(0).text()).toMatch(/sample2/)
     })
   })
 
