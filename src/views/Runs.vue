@@ -45,10 +45,10 @@ export default {
     return {
       fields: [
         { key: 'id', label: 'Run ID', sortable: true },
-        { key: 'created_at', label: 'Created at', sortable: true },
         { key: 'state', label: 'State', sortable: true },
         { key: 'chip_barcode', label: 'Chips Barcode', sortable: true },
-        { key: 'actions', label: 'Actions' }
+        { key: 'actions', label: 'Actions' },
+        { key: 'created_at', label: 'Created at', sortable: true },
       ],
       items: [],
       filter: null

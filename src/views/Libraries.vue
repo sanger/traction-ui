@@ -42,10 +42,10 @@ export default {
       fields: [
         { key: 'selected', label: '' },
         { key: 'id', label: 'Library ID', sortable: true },
-        { key: 'created_at', label: 'Created at', sortable: true },
         { key: 'barcode', label: 'Barcode', sortable: true },
         { key: 'sample_name', label: 'Sample Name', sortable: true },
-        { key: 'enzyme_name', label: 'Enzyme Name', sortable: true }
+        { key: 'enzyme_name', label: 'Enzyme Name', sortable: true },
+        { key: 'created_at', label: 'Created at', sortable: true },
       ],
       selected: [],
       message: '',
