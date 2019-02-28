@@ -2,10 +2,20 @@
   <div class="libraries">
     <alert ref='alert'></alert>
 
+    <b-col md="6" class="my-1">
+      <b-input-group>
+        <b-form-input v-model="filter" placeholder="Type to Filter" />
+        <b-input-group-append>
+          <b-button :disabled="!filter" @click="filter = ''">Clear</b-button>
+        </b-input-group-append>
+      </b-input-group>
+    </b-col>
+
     <b-table
        show-empty
-       :items="provider"
+       :items="items"
        :fields="fields"
+       :filter="filter"
     >
       <template slot="selected" slot-scope="row">
         <input type="checkbox" class="selected" v-model="selected" :value="row.item.id" />
@@ -31,13 +41,16 @@ export default {
     return {
       fields: [
         { key: 'selected', label: '' },
-        { key: 'id', label: 'Library ID' },
-        { key: 'barcode', label: 'Barcode' },
-        { key: 'sample_name', label: 'Sample Name' },
-        { key: 'enzyme_name', label: 'Enzyme Name' }
+        { key: 'id', label: 'Library ID', sortable: true },
+        { key: 'barcode', label: 'Barcode', sortable: true },
+        { key: 'sample_name', label: 'Sample Name', sortable: true },
+        { key: 'enzyme_name', label: 'Enzyme Name', sortable: true },
+        { key: 'created_at', label: 'Created at', sortable: true },
       ],
       selected: [],
-      message: ''
+      message: '',
+      filter: null,
+      items: []
     }
   },
   components: {
@@ -61,16 +74,19 @@ export default {
 
       if (Object.keys(response.errors).length === 0) {
         let libraries = response.deserialize.libraries
-        return libraries
+        this.items = libraries
       } else {
         this.message = response.errors.message
         this.showAlert
-        return []
+        this.items = []
       }
     },
     provider() {
-      return this.getLibraries()
+      this.getLibraries()
     }
+  },
+  created() {
+    this.provider()
   },
   computed: {
     libraryRequest () {

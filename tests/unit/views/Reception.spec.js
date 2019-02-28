@@ -24,20 +24,38 @@ describe('Reception.vue', () => {
       expect(request.resource).toBe('samples')
     })
 
-    it('will get a list of requests',  async () => {
-      reception.receptionRequest.execute = jest.fn()
-      reception.receptionRequest.execute.mockResolvedValue(RequestsJson)
+    describe('#getRequests', () => {
+      it('will get a list of requests on success',  async () => {
+        reception.receptionRequest.execute = jest.fn()
+        reception.receptionRequest.execute.mockResolvedValue(RequestsJson)
 
-      let sequencescapeResponse = await reception.getRequests()
-      let expected = new Response(RequestsJson).deserialize.requests
+        await reception.getRequests()
+        let expected = new Response(RequestsJson)
 
-      expect(sequencescapeResponse.length).toEqual(expected.length)
-      expect(sequencescapeResponse[0].id).toEqual("1")
-      expect(sequencescapeResponse[1].id).toEqual("4")
-      expect(sequencescapeResponse[0].name).toEqual("sample_a")
-      expect(sequencescapeResponse[1].name).toEqual("sample_d")
-      expect(sequencescapeResponse[0].species).toEqual("common")
-      expect(sequencescapeResponse[1].species).toEqual("human")
+        expect(reception.items.length).toEqual(expected.deserialize.requests.length)
+        expect(reception.items[0].id).toEqual("1")
+        expect(reception.items[1].id).toEqual("4")
+        expect(reception.items[0].name).toEqual("sample_a")
+        expect(reception.items[1].name).toEqual("sample_d")
+        expect(reception.items[0].species).toEqual("common")
+        expect(reception.items[1].species).toEqual("human")
+      })
+
+      it('will return get an empty list on failure',  async () => {
+        let mockResponse = {
+          data: { errors: { request: ['error message 1'] }},
+          status: 422,
+          statusText: "Unprocessible entity"
+        }
+
+        reception.receptionRequest.execute = jest.fn()
+        reception.receptionRequest.execute.mockReturnValue(mockResponse)
+
+        await reception.getRequests()
+        await flushPromises()
+        expect(reception.message).toEqual("request error message 1")
+        expect(reception.items).toEqual([])
+      })
     })
   })
 
@@ -47,7 +65,18 @@ describe('Reception.vue', () => {
 
     beforeEach(() => {
       mockRequests = new Response(RequestsJson).deserialize.requests
-      wrapper = mount(Reception, { localVue, methods: { getRequests() { return mockRequests } }})
+      wrapper = mount(Reception, { localVue,
+        methods: {
+          provider() {
+            return
+          }
+        },
+        data() {
+          return {
+            items: mockRequests,
+          }
+        }
+      })
       reception = wrapper.vm
     })
 
@@ -65,6 +94,7 @@ describe('Reception.vue', () => {
     describe('selecting requests', () => {
 
       beforeEach(() => {
+
         let checkboxes = wrapper.findAll(".selected")
         checkboxes.at(0).trigger('click')
         checkboxes.at(1).trigger('click')
@@ -242,6 +272,33 @@ describe('Reception.vue', () => {
 
       let expected = [{ sequencescape_request_id: '4', name: 'sample_d', species: 'human' }]
       expect(reception.selectedJSON(selected)).toEqual(expected)
+    })
+  })
+
+  describe('filtering requests', () => {
+    let wrapper
+
+    beforeEach(() => {
+      let mockRequests = new Response(RequestsJson).deserialize.requests
+
+      wrapper = mount(Reception, { localVue,
+        methods: {
+          provider() {
+            return
+          }
+        },
+        data() {
+          return {
+            items: mockRequests,
+            filter: mockRequests[0].state
+          }
+        }
+      })
+    })
+
+    it('will filter the libraries in the table', () => {
+      expect(wrapper.find('tbody').findAll('tr').length).toEqual(2)
+      expect(wrapper.find('tbody').findAll('tr').at(0).html()).toMatch(/1/)
     })
   })
 
