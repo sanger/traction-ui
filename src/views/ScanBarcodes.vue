@@ -28,11 +28,18 @@ export default {
   computed: {
     queryString () {
       return this.barcodes.split('\n').filter(Boolean).join(',')
+    },
+    tractionConfig () {
+      return this.build(Api.ConfigItem, Api.Config.traction)
+    },
+    tubeRequest () {
+      return this.build(Api.Request, {...this.tractionConfig.resource('tubes'), filters: { barcode: this.queryString }})
     }
   },
   methods: {
-    findTubes () {
-      
+    async findTubes () {
+      let rawResponse = await this.tubeRequest.get() 
+      return new Api.Response(rawResponse).deserialize.tubes
     }
   }
 }

@@ -1,5 +1,7 @@
 import ScanBarcodes from '@/views/ScanBarcodes'
 import { mount, localVue } from '../testHelper'
+import TubesJson from '../../data/tubes'
+import Response from '@/api/Response'
 
 describe('Scan Barcodes', () => {
 
@@ -31,11 +33,19 @@ describe('Scan Barcodes', () => {
       scan.barcodes = 'TRAC-1\nTRAC-2\nTRAC-3\nTRAC-4\nTRAC-5'
       let request = scan.tubeRequest
       expect(request.filters).toEqual({barcode: scan.queryString})
-      expect(request.include).toEqual('material')
     })
   })
 
-  it.skip('will allow scanning in of barcodes and will return the relevant tube', () => {
+  it('will allow tubes to be found', async () => {
+    scan.barcodes = 'TRAC-1\nTRAC-2\nTRAC-3\nTRAC-4\nTRAC-5'
+    scan.tubeRequest.execute = jest.fn()
+    scan.tubeRequest.execute.mockResolvedValue(TubesJson)
+
+    let response = await scan.findTubes()
+    expect(response).toEqual(new Response(TubesJson).deserialize.tubes)
+  })
+
+  it('will allow scanning in of barcodes and will return the relevant tube', () => {
     const input = wrapper.find('textarea')
     input.setValue(barcodes)
     let button = wrapper.find('#findTubes')

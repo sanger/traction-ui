@@ -5,6 +5,7 @@ import Samples from './views/Samples'
 import Libraries from './views/Libraries'
 import Runs from './views/Runs'
 import NewRun from './views/NewRun'
+import ScanBarcodes from './views/ScanBarcodes'
 
 Vue.use(Router)
 
@@ -40,6 +41,11 @@ export default new Router({
       name: 'NewRun',
       component: NewRun,
       props: true
+    },
+    {
+      path: 'scanbarcodes',
+      name: 'ScanBarcodes',
+      component: ScanBarcodes
     }
   ]
 })
