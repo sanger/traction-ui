@@ -31,7 +31,7 @@ export default {
         }
       }
     },
-    filters: {
+    filter: {
       type: Object,
       default: () => {
         return { }
@@ -53,23 +53,22 @@ export default {
       return `${this.baseURL}/${this.apiNamespace}`
     },
     query () {
-      if (Object.keys(this.filters).length === 0 && this.include.length === 0) return ''
+      if (Object.keys(this.filter).length === 0 && this.include.length === 0) return ''
 
       let query = '?'
 
-      if (Object.keys(this.filters).length > 0) {
-        query += Object.keys(this.filters).map(key => `filter[${key}]=${this.filters[key]}`).join('&')
+      if (Object.keys(this.filter).length > 0) {
+        query += Object.keys(this.filter).map(key => `filter[${key}]=${this.filter[key]}`).join('&')
       }
 
       if (this.include.length > 0) {
-        if (Object.keys(this.filters).length > 0) {
+        if (Object.keys(this.filter).length > 0) {
           query += '&'
         }
         query += `include=${this.include}`
       }
 
       return query
-
     }
   },
   methods: {
@@ -85,8 +84,23 @@ export default {
       this.loading = false
       return response
     },
-    get () {
-      return this.execute('get', `${this.resource}${this.query}`)
+    buildQuery(parameters = [], values = {}) {
+      let queryString = parameters.map(parameter => {
+        let queryObject = values[parameter] || this[parameter]
+        if (this.isObject(queryObject)) {
+          return Object.keys(queryObject).map(key => `${parameter}[${key}]=${queryObject[key]}`).join('&')
+        }
+        if (typeof(queryObject) === 'string' && queryObject.length > 0) {
+          return `${parameter}=${queryObject}`
+        }
+      }).filter(Boolean).join('&')
+      return (queryString ? `?${queryString}` : '')
+    },
+    isObject (value) {
+      return value && typeof value === 'object' && value.constructor === Object
+    },
+    get (queryParameters = {}) {
+      return this.execute('get', `${this.resource}${this.buildQuery(['filter','include'], queryParameters)}`)
     },
     find (id) {
       return this.execute('get', `${this.resource}/${id}${this.query}`)

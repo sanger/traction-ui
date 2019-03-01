@@ -18,7 +18,7 @@ describe('Request', () => {
                 apiNamespace: 'api/v2',
                 headers: headers,
                 resource: 'requests',
-                filters: {type: 'long_read', state: 'pending'},
+                filter: {type: 'long_read', state: 'pending'},
                 include: 'samples.sample_metadata'
               }
       wrapper = mount(cmp, { propsData: props })
@@ -52,7 +52,7 @@ describe('Request', () => {
     })
 
     it('can have some filters', () => {
-      expect(request.filters).toEqual(props.filters)
+      expect(request.filter).toEqual(props.filter)
     })
 
     it('can have an include', () => {
@@ -191,7 +191,7 @@ describe('Request', () => {
               }
     })
 
-    it('creates a suitable query string with no filters or includes', () => {
+    it('creates a suitable query string with no filter or includes', () => {
       wrapper = mount(cmp, { propsData: props })
       request = wrapper.vm
 
@@ -199,15 +199,15 @@ describe('Request', () => {
     })
 
     it('creates a suitable query string', () => {
-      Object.assign(props, {filters: {type: 'long_read', state: 'pending'}, include: 'samples.sample_metadata'})
+      Object.assign(props, {filter: {type: 'long_read', state: 'pending'}, include: 'samples.sample_metadata'})
       wrapper = mount(cmp, { propsData: props })
       request = wrapper.vm
 
       expect(request.query).toEqual('?filter[type]=long_read&filter[state]=pending&include=samples.sample_metadata')
     })
 
-    it('creates a suitable query string with filters, no includes', () => {
-      Object.assign(props, {filters: {type: 'long_read', state: 'pending'}})
+    it('creates a suitable query string with filter, no includes', () => {
+      Object.assign(props, {filter: {type: 'long_read', state: 'pending'}})
       wrapper = mount(cmp, { propsData: props })
       request = wrapper.vm
 
@@ -215,12 +215,64 @@ describe('Request', () => {
 
     })
 
-    it('creates a suitable query string with includes, no filters', () => {
+    it('creates a suitable query string with includes, no filter', () => {
       Object.assign(props, {include: 'samples.sample_metadata'})
       wrapper = mount(cmp, { propsData: props })
       request = wrapper.vm
 
       expect(request.query).toEqual('?include=samples.sample_metadata')
+    })
+
+    describe('build query', () => {
+
+      it('without any query parameters', () => {
+        wrapper = mount(cmp, { propsData: props })
+        request = wrapper.vm
+        expect(request.buildQuery()).toEqual('')
+      })
+
+      it('with filter only', () => {
+        Object.assign(props, {filter: {type: 'long_read', state: 'pending'}})
+        wrapper = mount(cmp, { propsData: props })
+        request = wrapper.vm
+        expect(request.buildQuery(['filter'])).toEqual('?filter[type]=long_read&filter[state]=pending')
+      })
+
+      it('with include only', () => {
+        Object.assign(props, {include: 'samples.sample_metadata'})
+        wrapper = mount(cmp, { propsData: props })
+        request = wrapper.vm
+        expect(request.buildQuery(['include'])).toEqual('?include=samples.sample_metadata')
+      })
+
+      it('with filter and includes', () => {
+        Object.assign(props, {filter: {type: 'long_read', state: 'pending'}, include: 'samples.sample_metadata'})
+        wrapper = mount(cmp, { propsData: props })
+        request = wrapper.vm
+        expect(request.buildQuery(['filter', 'include'])).toEqual('?filter[type]=long_read&filter[state]=pending&include=samples.sample_metadata')
+      })
+
+      it('with dynamic filter', () => {
+        Object.assign(props, {filter: {type: 'long_read', state: 'pending'}})
+        wrapper = mount(cmp, { propsData: props })
+        request = wrapper.vm
+        expect(request.buildQuery(['filter', 'include'], {filter: {see: 'you_there', from: 'here'}})).toEqual('?filter[see]=you_there&filter[from]=here')
+      })
+
+      it('with dynamic include', () => {
+        Object.assign(props, {include: 'samples.sample_metadata'})
+        include: 'samples.sample_metadata'
+        wrapper = mount(cmp, { propsData: props })
+        request = wrapper.vm
+        expect(request.buildQuery(['filter', 'include'], {include: 'snap.crackle.pop'})).toEqual('?include=snap.crackle.pop')
+      })
+
+      it('with dynamic filter and includes', () => {
+        Object.assign(props, {filter: {type: 'long_read', state: 'pending'}, include: 'samples.sample_metadata'})
+        wrapper = mount(cmp, { propsData: props })
+        request = wrapper.vm
+        expect(request.buildQuery(['filter', 'include'], {filter: {see: 'you_there', from: 'here'}, include: 'snap.crackle.pop'})).toEqual('?filter[see]=you_there&filter[from]=here&include=snap.crackle.pop')
+      })
     })
 
   })
