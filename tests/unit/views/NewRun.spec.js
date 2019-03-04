@@ -6,7 +6,6 @@ import Vuetify from 'vuetify'
 import Response from '@/api/Response'
 import RunNoLibraryJson from '../../data/run_no_library'
 import RunWithLibraryJson from '../../data/run_with_library'
-import LibrariesJson from '../../data/libraries'
 import flushPromises from 'flush-promises'
 import Alert from '@/components/Alert'
 
@@ -185,7 +184,6 @@ describe('NewRun.vue', () => {
       expect(newRun.state).toEqual(expectedRun.state)
       expect(newRun.chipBarcode).toEqual(expectedRun.chip.barcode)
       expect(newRun.chipId).toEqual(expectedRun.chip.id)
-      console.log(expectedRun)
       expect(newRun.flowcellOneLibraryBarcode).toEqual(expectedRun.chip.flowcells[0].library.barcode)
       expect(newRun.flowcellTwoLibraryBarcode).toEqual(expectedRun.chip.flowcells[1].library.barcode)
     })
