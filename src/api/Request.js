@@ -66,6 +66,7 @@ export default {
       this.loading = false
       return response
     },
+    // build query parameters
     buildQuery(queryParameters = {}) {
       let queryString = Object.keys(queryParameters).map(parameter => {
         let queryObject = queryParameters[parameter] || this[parameter]
