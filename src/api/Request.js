@@ -51,24 +51,6 @@ export default {
   computed: {
     rootURL () {
       return `${this.baseURL}/${this.apiNamespace}`
-    },
-    query () {
-      if (Object.keys(this.filter).length === 0 && this.include.length === 0) return ''
-
-      let query = '?'
-
-      if (Object.keys(this.filter).length > 0) {
-        query += Object.keys(this.filter).map(key => `filter[${key}]=${this.filter[key]}`).join('&')
-      }
-
-      if (this.include.length > 0) {
-        if (Object.keys(this.filter).length > 0) {
-          query += '&'
-        }
-        query += `include=${this.include}`
-      }
-
-      return query
     }
   },
   methods: {
@@ -84,9 +66,9 @@ export default {
       this.loading = false
       return response
     },
-    buildQuery(parameters = [], values = {}) {
-      let queryString = parameters.map(parameter => {
-        let queryObject = values[parameter] || this[parameter]
+    buildQuery(queryParameters = {}) {
+      let queryString = Object.keys(queryParameters).map(parameter => {
+        let queryObject = queryParameters[parameter] || this[parameter]
         if (this.isObject(queryObject)) {
           return Object.keys(queryObject).map(key => `${parameter}[${key}]=${queryObject[key]}`).join('&')
         }
@@ -100,10 +82,10 @@ export default {
       return value && typeof value === 'object' && value.constructor === Object
     },
     get (queryParameters = {}) {
-      return this.execute('get', `${this.resource}${this.buildQuery(['filter','include'], queryParameters)}`)
+      return this.execute('get', `${this.resource}${this.buildQuery(Object.assign({filter: undefined, include: undefined}, queryParameters))}`)
     },
-    find (id) {
-      return this.execute('get', `${this.resource}/${id}${this.query}`)
+    find (id, queryParameters = {}) {
+      return this.execute('get', `${this.resource}/${id}${this.buildQuery(Object.assign({include: undefined}, queryParameters))}`)
     },
     create (data) {
       return this.execute('post', this.resource, data)

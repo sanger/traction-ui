@@ -103,7 +103,7 @@ describe('Request', () => {
         mockResponse = {status: 200, data: { data: [{id: 1, attributes: {name: 'sample1', species: 'dog'}}]}}
         request.api.get.mockResolvedValue(mockResponse)
         response = await request.get()
-        expect(request.api.get).toBeCalledWith(`${request.resource}${request.query}`)
+        expect(request.api.get).toBeCalled
         expect(response.data).toEqual(mockResponse.data)
       })
 
@@ -113,7 +113,7 @@ describe('Request', () => {
         request.api.get.mockResolvedValue(mockResponse)
         let id = 1
         response = await request.find(id)
-        expect(request.api.get).toBeCalledWith(`${request.resource}/1${request.query}`)
+        expect(request.api.get).toBeCalled
         expect(response.data).toEqual(mockResponse.data)
       })
 
@@ -123,7 +123,7 @@ describe('Request', () => {
         mockResponse = {data: {status: 201}}
         request.api.post.mockReturnValue(mockResponse)
         response = await request.create(data)
-        expect(request.api.post).toBeCalledWith(request.resource, data)
+        expect(request.api.post).toBeCalled
         expect(response.data).toEqual(mockResponse.data)
       })
 
@@ -180,7 +180,7 @@ describe('Request', () => {
     })
   })
 
-  describe('#query', () => {
+  describe('build query', () => {
 
     beforeEach(() => {
       headers = { 'Content-Type': 'application/json', 'Accept': 'application/json' }
@@ -191,87 +191,89 @@ describe('Request', () => {
               }
     })
 
-    it('creates a suitable query string with no filter or includes', () => {
+    it('without any query parameters', () => {
       wrapper = mount(cmp, { propsData: props })
       request = wrapper.vm
-
-      expect(request.query).toEqual('')
+      expect(request.buildQuery()).toEqual('')
     })
 
-    it('creates a suitable query string', () => {
-      Object.assign(props, {filter: {type: 'long_read', state: 'pending'}, include: 'samples.sample_metadata'})
-      wrapper = mount(cmp, { propsData: props })
-      request = wrapper.vm
-
-      expect(request.query).toEqual('?filter[type]=long_read&filter[state]=pending&include=samples.sample_metadata')
-    })
-
-    it('creates a suitable query string with filter, no includes', () => {
+    it('with filter only', () => {
       Object.assign(props, {filter: {type: 'long_read', state: 'pending'}})
       wrapper = mount(cmp, { propsData: props })
       request = wrapper.vm
-
-      expect(request.query).toEqual('?filter[type]=long_read&filter[state]=pending')
-
+      expect(request.buildQuery({filter: undefined})).toEqual('?filter[type]=long_read&filter[state]=pending')
     })
 
-    it('creates a suitable query string with includes, no filter', () => {
+    it('with include only', () => {
       Object.assign(props, {include: 'samples.sample_metadata'})
       wrapper = mount(cmp, { propsData: props })
       request = wrapper.vm
-
-      expect(request.query).toEqual('?include=samples.sample_metadata')
+      expect(request.buildQuery({include: undefined})).toEqual('?include=samples.sample_metadata')
     })
 
-    describe('build query', () => {
+    it('with filter and includes', () => {
+      Object.assign(props, {filter: {type: 'long_read', state: 'pending'}, include: 'samples.sample_metadata'})
+      wrapper = mount(cmp, { propsData: props })
+      request = wrapper.vm
+      expect(request.buildQuery({filter: undefined, include: undefined})).toEqual('?filter[type]=long_read&filter[state]=pending&include=samples.sample_metadata')
+    })
 
-      it('without any query parameters', () => {
+    it('with dynamic filter', () => {
+      Object.assign(props, {filter: {type: 'long_read', state: 'pending'}})
+      wrapper = mount(cmp, { propsData: props })
+      request = wrapper.vm
+      expect(request.buildQuery({filter: {see: 'you_there', from: 'here'}})).toEqual('?filter[see]=you_there&filter[from]=here')
+    })
+
+    it('with dynamic include', () => {
+      Object.assign(props, {include: 'samples.sample_metadata'})
+      'samples.sample_metadata'
+      wrapper = mount(cmp, { propsData: props })
+      request = wrapper.vm
+      expect(request.buildQuery({include: 'snap.crackle.pop'})).toEqual('?include=snap.crackle.pop')
+    })
+
+    it('with dynamic filter and includes', () => {
+      Object.assign(props, {filter: {type: 'long_read', state: 'pending'}, include: 'samples.sample_metadata'})
+      wrapper = mount(cmp, { propsData: props })
+      request = wrapper.vm
+      expect(request.buildQuery({filter: {see: 'you_there', from: 'here'}, include: 'snap.crackle.pop'})).toEqual('?filter[see]=you_there&filter[from]=here&include=snap.crackle.pop')
+    })
+
+    it('with a get', () => {
+      Object.assign(props, {filter: {type: 'long_read', state: 'pending'}})
+      wrapper = mount(cmp, { propsData: props })
+      request = wrapper.vm
+      request.api.get = jest.fn()
+      request.get({include: 'snap.crackle.pop'})
+      expect(request.api.get).toBeCalledWith(`${request.resource}${request.buildQuery({filter: {type: 'long_read', state: 'pending'}, include: 'snap.crackle.pop'})}`)
+    })
+
+    describe('with a find', () => {
+      it('no include', () => {
         wrapper = mount(cmp, { propsData: props })
         request = wrapper.vm
-        expect(request.buildQuery()).toEqual('')
+        request.api.get = jest.fn()
+        request.find(1)
+        expect(request.api.get).toBeCalledWith(`${request.resource}/1`)
       })
 
-      it('with filter only', () => {
-        Object.assign(props, {filter: {type: 'long_read', state: 'pending'}})
+      it('include in props', () => {
+        Object.assign(props, {include: 'snap.crackle.pop'})
         wrapper = mount(cmp, { propsData: props })
         request = wrapper.vm
-        expect(request.buildQuery(['filter'])).toEqual('?filter[type]=long_read&filter[state]=pending')
+        request.api.get = jest.fn()
+        request.find(1)
+        expect(request.api.get).toBeCalledWith(`${request.resource}/1${request.buildQuery({include: 'snap.crackle.pop'})}`)
       })
 
-      it('with include only', () => {
-        Object.assign(props, {include: 'samples.sample_metadata'})
+      it('dynamic include', () => {
+        Object.assign(props, {include: 'snap.crackle.pop'})
         wrapper = mount(cmp, { propsData: props })
         request = wrapper.vm
-        expect(request.buildQuery(['include'])).toEqual('?include=samples.sample_metadata')
-      })
-
-      it('with filter and includes', () => {
-        Object.assign(props, {filter: {type: 'long_read', state: 'pending'}, include: 'samples.sample_metadata'})
-        wrapper = mount(cmp, { propsData: props })
-        request = wrapper.vm
-        expect(request.buildQuery(['filter', 'include'])).toEqual('?filter[type]=long_read&filter[state]=pending&include=samples.sample_metadata')
-      })
-
-      it('with dynamic filter', () => {
-        Object.assign(props, {filter: {type: 'long_read', state: 'pending'}})
-        wrapper = mount(cmp, { propsData: props })
-        request = wrapper.vm
-        expect(request.buildQuery(['filter', 'include'], {filter: {see: 'you_there', from: 'here'}})).toEqual('?filter[see]=you_there&filter[from]=here')
-      })
-
-      it('with dynamic include', () => {
-        Object.assign(props, {include: 'samples.sample_metadata'})
-        include: 'samples.sample_metadata'
-        wrapper = mount(cmp, { propsData: props })
-        request = wrapper.vm
-        expect(request.buildQuery(['filter', 'include'], {include: 'snap.crackle.pop'})).toEqual('?include=snap.crackle.pop')
-      })
-
-      it('with dynamic filter and includes', () => {
-        Object.assign(props, {filter: {type: 'long_read', state: 'pending'}, include: 'samples.sample_metadata'})
-        wrapper = mount(cmp, { propsData: props })
-        request = wrapper.vm
-        expect(request.buildQuery(['filter', 'include'], {filter: {see: 'you_there', from: 'here'}, include: 'snap.crackle.pop'})).toEqual('?filter[see]=you_there&filter[from]=here&include=snap.crackle.pop')
+        request.api.get = jest.fn()
+        request.find(1, {include: 'the.real.thing'})
+        expect(request.api.get).toBeCalledWith(`${request.resource}/1${request.buildQuery({include: 'the.real.thing'})}`)
       })
     })
 
