@@ -35,6 +35,10 @@
       },
       "flowcells": {
         "name": "flowcells"
+      },
+      "tubes": {
+        "name": "tubes",
+        "include": "material"
       }
     }
   }
