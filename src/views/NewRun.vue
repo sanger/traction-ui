@@ -10,113 +10,27 @@
     <b-button id="completeRun" variant="primary" class="float-right" @click="completeRun" :disabled="state==='completed' || state==='cancelled'">Complete Run</b-button>
     <b-button id="cancelRun" variant="danger" class="float-right" @click="cancelRun" :disabled="state==='completed' || state==='cancelled'">Cancel Run</b-button>
 
-    <h1 id="runId">Sequencing Run ID: {{ runId }}</h1>
-    <h2 id="runState">Run state: {{ state }}</h2>
+    <h1 class="runInfo" id="runId">Sequencing Run ID: {{ runId }}</h1>
+    <h2 class="runInfo" id="runState">Run state: {{ state }}</h2>
+    <b-form-input class="runInfo" id="chipBarcode" v-model="chipBarcode" type="text" placeholder="Chip barcode" @change="updateBarcode"/>
 
-    <v-container grid-list-md>
-      <v-layout justify-space-around>
-        <v-flex xs12 sm6 md4 offset-xs1>
-          <label for="barcode">Chip barcode:</label>
-          <b-form-input id="barcode" v-model="chipBarcode" type="text" placeholder="Chip barcode" @change="updateBarcode"/>
-        </v-flex>
-      </v-layout>
-
-      <v-layout justify-space-around>
-
-        <v-flex d-flex xs12 sm6 md6 offset-xs1>
-          <v-card>
-            <v-card-title primary class="title">Libraries</v-card-title>
-
-            <v-card-text>
-              <v-list two-line>
-                <template v-for="item in libraries">
-                  <draggable v-bind:key="item.id" v-model="libraries" :options="{group:'people'}" style="min-height: 10px" @end="onDrop($event, item)">
-
-                    <v-list-tile :key="item.id" >
-
-                      <v-list-tile-content>
-                        <v-list-tile-title>Barcode: {{ item.barcode }}</v-list-tile-title>
-                        <v-list-tile-sub-title>
-                          Enzyme: {{ item.enzyme_name }}
-                          Sample: {{ item.sample_name }}
-                        </v-list-tile-sub-title>
-                      </v-list-tile-content>
-
-                    </v-list-tile>
-                  </draggable>
-
-                </template>
-              </v-list>
-            </v-card-text>
-          </v-card>
-        </v-flex>
-
-        <v-flex d-flex xs12 sm6 md4>
-          <v-layout column wrap>
-            <v-flex d-flex>
-              <v-card>
-                <v-card-title primary class="title">Flowcell 1</v-card-title>
-                <v-card-text>
-                  <v-list two-line>
-
-                    <draggable id="flowcell1" v-model="flowcell1" :options="{group:'people'}" style="min-height: 10px">
-                      <template v-for="item in flowcell1">
-                        <v-list-tile :key="item.id">
-                          <v-list-tile-content v-if="item.library">
-                            <v-list-tile-title>Barcode: {{ item.library.barcode }}</v-list-tile-title>
-                            <v-list-tile-sub-title>
-                              Enzyme: {{ item.library.enzyme_name }}
-                              Sample: {{ item.library.sample_name }}
-                            </v-list-tile-sub-title>
-                          </v-list-tile-content>
-                        </v-list-tile>
-                      </template>
-                    </draggable>
-
-                  </v-list>
-
-                </v-card-text>
-              </v-card>
-            </v-flex>
-
-            <v-flex d-flex>
-              <v-card>
-                <v-card-title primary class="title">Flowcell 2</v-card-title>
-
-                <v-card-text>
-                  <v-list two-line>
-
-                    <draggable id="flowcell2" v-model="flowcell2" :options="{group:'people'}" style="min-height: 10px">
-                      <template v-for="item in flowcell2">
-                        <v-list-tile :key="item.id">
-                          <v-list-tile-content v-if="item.library">
-                            <v-list-tile-title>Barcode: {{ item.library.barcode }}</v-list-tile-title>
-                            <v-list-tile-sub-title>
-                              Enzyme: {{ item.library.enzyme_name }}
-                              Sample: {{ item.library.sample_name }}
-                            </v-list-tile-sub-title>
-                          </v-list-tile-content>
-                        </v-list-tile>
-                      </template>
-                    </draggable>
-
-                  </v-list>
-
-                </v-card-text>
-              </v-card>
-            </v-flex>
-
-          </v-layout>
-        </v-flex>
-
-      </v-layout>
-    </v-container>
+    <b-container class="chip">
+      <b-row id="flowcellOne">
+        <b-col>
+          <b-form-input id="flowcellOneLibraryBarcode" v-model="flowcellOneLibraryBarcode" type="text" placeholder="Flowcell One Library Barcode Scanner"/>
+        </b-col>
+      </b-row>
+      <b-row id="flowcellTwo">
+        <b-col>
+          <b-form-input id="flowcellTwoLibraryBarcode" v-model="flowcellTwoLibraryBarcode" type="text" placeholder="Flowcell Two Library Barcode Scanner"/>
+        </b-col>
+      </b-row>
+    </b-container>
 
   </div>
 </template>
 
 <script>
-import draggable from 'vuedraggable'
 import ComponentFactory from '@/mixins/ComponentFactory'
 import Api from '@/api'
 import Alert from '@/components/Alert'
@@ -132,9 +46,8 @@ export default {
   },
   data () {
     return {
-      libraries: [],
-      flowcell1: [],
-      flowcell2: [],
+      flowcellOneLibraryBarcode: '',
+      flowcellTwoLibraryBarcode: '',
       id: null,
       state: null,
       chipBarcode: null,
@@ -142,33 +55,6 @@ export default {
     }
   },
   methods: {
-    onDrop(event, item) {
-      let library = item
-      let flowcell = event.to.id
-
-      this.updateFlowcell(flowcell, library)
-      this.getLibraries()
-    },
-    updateFlowcell(flowcell, library) {
-      if (flowcell === 'flowcell1') {
-        let oldFlowcellWithLibrary = this.flowcell1.filter(e => e.type=='flowcells')[0]
-        oldFlowcellWithLibrary.library = library
-
-        let newFlowcellToRemove = this.flowcell1.filter(e => e.type=='libraries')[0]
-        let indexOfNewFlowcellToRemove = this.flowcell1.indexOf(newFlowcellToRemove)
-
-        this.flowcell1.splice(indexOfNewFlowcellToRemove, 1)
-        this.updateFlowcellInTraction(this.flowcell1[0].id, this.flowcell1[0].library.id)
-      }
-      if (flowcell === 'flowcell2') {
-        let oldFlowcellWithLibrary = this.flowcell2.filter(e => e.type=='flowcells')[0]
-        oldFlowcellWithLibrary.library = library
-        let newFlowcellToRemove = this.flowcell2.filter(e => e.type=='libraries')[0]
-        let indexOfNewFlowcellToRemove = this.flowcell2.indexOf(newFlowcellToRemove)
-        this.flowcell2.splice(indexOfNewFlowcellToRemove, 1)
-        this.updateFlowcellInTraction(this.flowcell2[0].id, this.flowcell2[0].library.id)
-      }
-    },
     async updateFlowcellInTraction(flowcellId, libraryId){
       let requestBody = { data: { type: 'flowcells', id: flowcellId, attributes: { library_id: libraryId }} }
 
@@ -201,28 +87,28 @@ export default {
       let run = response.deserialize.runs[0]
 
       if (Object.keys(response.errors).length === 0) {
+
         let chipBarcode = ''
         if (run.chip.barcode) {
           chipBarcode = run.chip.barcode
         }
+
+        let flowcellOneLibraryBarcode = ''
+        let flowcellTwoLibraryBarcode = ''
+        if (run.chip.flowcells[0].library) {
+          flowcellOneLibraryBarcode = run.chip.flowcells[0].library.barcode
+        }
+        if (run.chip.flowcells[1].library) {
+          flowcellTwoLibraryBarcode = run.chip.flowcells[1].library.barcode
+        }
+
         this.id = run.id
         this.state = run.state
         this.chipId = run.chip.id
         this.chipBarcode = chipBarcode
-        this.flowcell1 = [run.chip.flowcells[0]]
-        this.flowcell2 = [run.chip.flowcells[1]]
-      } else {
-        this.message = response.errors.message
-        this.showAlert
-      }
-    },
-    async getLibraries() {
-      let rawLibraries = await this.librariesRequest.get()
-      let response = new Api.Response(rawLibraries)
-      let libraries = response.deserialize.libraries
+        this.flowcellOneLibraryBarcode = flowcellOneLibraryBarcode
+        this.flowcellTwoLibraryBarcode = flowcellTwoLibraryBarcode
 
-      if (Object.keys(response.errors).length === 0) {
-        this.libraries = libraries
       } else {
         this.message = response.errors.message
         this.showAlert
@@ -255,20 +141,15 @@ export default {
         this.$router.push({name: 'Runs'})
       } else {
         this.getRun(this.runId)
-        this.getLibraries()
       }
     }
   },
   components: {
-    draggable,
     Alert
   },
   computed: {
     runRequest () {
       return this.build(Api.Request, this.tractionConfig.resource('runs'))
-    },
-    librariesRequest () {
-      return this.build(Api.Request, this.tractionConfig.resource('libraries'))
     },
     chipsRequest () {
       return this.build(Api.Request, this.tractionConfig.resource('chips'))
@@ -288,3 +169,39 @@ export default {
   }
 }
 </script>
+
+
+<style>
+
+.container {
+  border: 1px solid black;
+  max-width: 50%;
+  padding: 10px;
+  margin-top: 50px;
+}
+
+.row {
+  border: 1px solid #42b983;
+  padding-top: .75rem;
+  padding-bottom: .75rem;
+  margin-top: 5px;
+  margin-bottom: 5px;
+  margin-right: 0px;
+  margin-left: 0px;
+}
+
+.runInfo {
+  text-align: left;
+  margin-top: 5px;
+}
+
+#chipBarcode {
+  max-width: 30%;
+}
+
+button {
+  margin-right: 2px;
+  margin-left: 2px;
+}
+
+</style>

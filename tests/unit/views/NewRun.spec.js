@@ -61,14 +61,33 @@ describe('NewRun.vue', () => {
     })
 
     it('can have run data', () => {
-      wrapper.setData({ id: 1, state: 'pending', chipBarcode: 'TRAC123', chipId: '123', flowcell1: [], flowcell2: [], libraries: [] })
+      wrapper.setData({ id: 1, state: 'pending', chipBarcode: 'TRAC123', chipId: '123', flowcellOneLibraryBarcode: 'TRAC-123', flowcellTwoLibraryBarcode: 'TRAC-456' })
       expect(newRun.id).toEqual(1)
       expect(newRun.state).toEqual('pending')
       expect(newRun.chipBarcode).toEqual('TRAC123')
       expect(newRun.chipId).toEqual('123')
-      expect(newRun.flowcell1).toEqual([])
-      expect(newRun.flowcell2).toEqual([])
-      expect(newRun.libraries).toEqual([])
+      expect(newRun.flowcellOneLibraryBarcode).toEqual('TRAC-123')
+      expect(newRun.flowcellTwoLibraryBarcode).toEqual('TRAC-456')
+    })
+  })
+
+  describe('chip barcode', () => {
+    it('contains a barcode input', () => {
+      expect(wrapper.contains('#chipBarcode')).toBe(true)
+    })
+
+    it('is populared with the barcode if it exists', () => {
+      let barcode = 'TRAC-234'
+      wrapper.setData({chipBarcode: barcode})
+      let chipBarcode = wrapper.find('#chipBarcode')
+      expect(chipBarcode.attributes().value).toEqual(barcode)
+    })
+  })
+
+  describe('chip', () => {
+    it('contains two flowcells', () => {
+      expect(wrapper.contains('#flowcellOneLibraryBarcode')).toBe(true)
+      expect(wrapper.contains('#flowcellTwoLibraryBarcode')).toBe(true)
     })
   })
 
@@ -166,8 +185,9 @@ describe('NewRun.vue', () => {
       expect(newRun.state).toEqual(expectedRun.state)
       expect(newRun.chipBarcode).toEqual(expectedRun.chip.barcode)
       expect(newRun.chipId).toEqual(expectedRun.chip.id)
-      expect(newRun.flowcell1).toEqual([expectedRun.chip.flowcells[0]])
-      expect(newRun.flowcell2).toEqual([expectedRun.chip.flowcells[1]])
+      console.log(expectedRun)
+      expect(newRun.flowcellOneLibraryBarcode).toEqual(expectedRun.chip.flowcells[0].library.barcode)
+      expect(newRun.flowcellTwoLibraryBarcode).toEqual(expectedRun.chip.flowcells[1].library.barcode)
     })
 
     it('when flowcell libraries do not exist, flowcell1 is an empty list', async () => {
@@ -183,20 +203,8 @@ describe('NewRun.vue', () => {
       expect(newRun.state).toEqual(expectedRun.state)
       expect(newRun.chipBarcode).toEqual('')
       expect(newRun.chipId).toEqual(expectedRun.chip.id)
-      expect(newRun.flowcell1).toEqual([{"id": "27", "position": 1, "type": "flowcells"}])
-      expect(newRun.flowcell2).toEqual([{"id": "28", "position": 2, "type": "flowcells"}])
-    })
-  })
-
-  describe('#getLibraries', () => {
-    it('getLibraries will get a list of libraries', async () => {
-      newRun.librariesRequest.execute = jest.fn()
-      newRun.librariesRequest.execute.mockResolvedValue(LibrariesJson)
-
-      await newRun.getLibraries()
-
-      let libraries = new Response(LibrariesJson).deserialize.libraries
-      expect(newRun.libraries).toEqual(libraries)
+      expect(newRun.flowcellOneLibraryBarcode).toEqual('')
+      expect(newRun.flowcellTwoLibraryBarcode).toEqual('')
     })
   })
 
@@ -372,20 +380,6 @@ describe('NewRun.vue', () => {
       expect(newRun.message).toEqual("state error message 1")
     })
 
-  })
-
-  describe('#updateFlowcell', () => {
-    it('replaces the library value of the flowcell with the new library', () => {
-      let library = {type: 'libraries', id: "123"}
-
-      wrapper.setData({ flowcell1: [
-        {type: 'flowcells', id: '12345', library: {barcode: 'TRAC123'}},
-        library
-      ]})
-
-      newRun.updateFlowcell('flowcell1', library)
-      expect(newRun.flowcell1).toEqual([{type: 'flowcells', id: "12345", library: library}])
-    })
   })
 
   describe('#updateFlowcellInTraction', () => {
