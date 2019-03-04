@@ -43,7 +43,7 @@ export default new Router({
       props: true
     },
     {
-      path: 'scanbarcodes',
+      path: '/scanbarcodes',
       name: 'ScanBarcodes',
       component: ScanBarcodes
     }

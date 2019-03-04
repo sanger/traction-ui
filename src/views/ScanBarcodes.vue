@@ -1,8 +1,10 @@
 <template>
   <div class="scan-barcodes">
-    <label for="barcodes">barcodes:</label>
-    <textarea type="text" v-model="barcodes" rows="10" cols="30" name="barcodes" id="barcodes" />
-    <b-button id="findTubes" variant="success" class="float-right" @click="findTubes" >Go!</b-button>
+    <div class="form-group">
+      <label for="barcodes">barcodes:</label>
+      <textarea type="text" v-model="barcodes" class="form-control" rows="10" cols="10" name="barcodes" id="barcodes" />
+      <b-button id="findTubes" variant="success" @click="findTubes" >Go!</b-button>
+    </div>
   </div>
 </template>
 
@@ -39,9 +41,18 @@ export default {
   methods: {
     async findTubes () {
       let rawResponse = await this.tubeRequest.get() 
-      return new Api.Response(rawResponse).deserialize.tubes
+      let response = new Api.Response(rawResponse).deserialize.tubes
+      console.log(response)
+      // return new Api.Response(rawResponse).deserialize.tubes
+      return response
     }
   }
 }
 
 </script>
+
+<style lang="scss">
+  textarea {
+    border: 1px solid;
+  }
+</style>
