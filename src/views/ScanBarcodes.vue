@@ -10,7 +10,6 @@
 
 <script>
 
-import Alert from '@/components/Alert'
 import ComponentFactory from '@/mixins/ComponentFactory'
 import Api from '@/api'
 
@@ -21,11 +20,11 @@ export default {
   },
   data () {
     return {
-      barcodes: []
+      barcodes: [],
+      message: ''
     }
   },
   components: {
-    Alert
   },
   computed: {
     queryString () {
@@ -35,14 +34,22 @@ export default {
       return this.build(Api.ConfigItem, Api.Config.traction)
     },
     tubeRequest () {
-      return this.build(Api.Request, {...this.tractionConfig.resource('tubes'), filters: { barcode: this.queryString }})
+      return this.build(Api.Request, this.tractionConfig.resource('tubes'))
     }
   },
   methods: {
     async findTubes () {
-      let rawResponse = await this.tubeRequest.get() 
-      let response = new Api.Response(rawResponse).deserialize.tubes
-      return response
+      let rawResponse = await this.tubeRequest.get({filter: { barcode: this.queryString} }) 
+      let response = new Api.Response(rawResponse)
+      if (response.successful) {
+        this.message = 'tubes successfully found'
+        console.log(this.message)
+        return response.deserialize.tubes
+      } else {
+        this.message = 'there was an error'
+        console.log(this.message)
+        return response
+      }
     }
   }
 }
