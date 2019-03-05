@@ -8443,6 +8443,11 @@ socks@~1.1.5:
     ip "^1.1.4"
     smart-buffer "^1.0.13"
 
+sortablejs@^1.7.0:
+  version "1.8.3"
+  resolved "https://registry.yarnpkg.com/sortablejs/-/sortablejs-1.8.3.tgz#5ae908ef96300966e95440a143340f5dd565a0df"
+  integrity sha512-AftvD4hdKcR5QlGi7L/JST506zGNGrysE8/QohDpwKXJarHWqCt+TUlrtoMk/wkECB607Q019/OZlJViyWiD6A==
+
 source-list-map@^2.0.0:
   version "2.0.1"
   resolved "https://registry.yarnpkg.com/source-list-map/-/source-list-map-2.0.1.tgz#3993bd873bfc48479cca9ea3a547835c7c154b34"
@@ -9419,10 +9424,10 @@ vuedraggable@^2.17.0:
   dependencies:
     sortablejs "^1.7.0"
 
-vuetify@^1.5.2:
-  version "1.5.2"
-  resolved "https://registry.yarnpkg.com/vuetify/-/vuetify-1.5.2.tgz#7563b3ff4b7305f2dff724873f70b024f3672d96"
-  integrity sha512-OzXHXklOpfYufV1l8v/av99gty6osJ/acTKqd/4CsRPOW+eyJA4nABXWk+4Qm9eAF/Uuf/fSHOprv4donvTeLw==
+vuetify@^1.5.4:
+  version "1.5.4"
+  resolved "https://registry.yarnpkg.com/vuetify/-/vuetify-1.5.4.tgz#2f0f3a457ba0dcbf5bb1931b644532ae1e46533d"
+  integrity sha512-hlTJHh4a1vAZQq4XwIcEpdDXoKNPqXbE95iV2a780FXvFnacu7qjHO4BrOUOkWGeAuFb1NTQM2vJtb4Jhxn26Q==
 
 vuex@^3.0.1:
   version "3.0.1"
