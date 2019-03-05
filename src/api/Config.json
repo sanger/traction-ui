@@ -5,7 +5,7 @@
     "resources": {
       "requests": {
         "name": "requests",
-        "filters": {
+        "filter": {
           "type": "long_read",
           "state": "pending"
         },

@@ -13,7 +13,7 @@ describe('API Config', () => {
         "resources": {
           "resource1": {
             "name": "resource1",
-            "filters": {
+            "filter": {
               "filter1": "foo",
               "filter2": "bar"
             },
@@ -62,7 +62,7 @@ describe('API Config', () => {
       expect(resource.baseURL).toEqual(process.env.VUE_APP_API1_BASE_URL)
       expect(resource.apiNamespace).toEqual(api.apiNamespace)
       expect(resource.resource).toEqual(api.resources.resource1.name)
-      expect(resource.filters).toEqual(api.resources.resource1.filters)
+      expect(resource.filter).toEqual(api.resources.resource1.filter)
     })
 
   })

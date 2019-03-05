@@ -43,11 +43,9 @@ export default {
       let response = new Api.Response(rawResponse)
       if (response.successful) {
         this.message = 'tubes successfully found'
-        console.log(this.message)
         return response.deserialize.tubes
       } else {
         this.message = 'there was an error'
-        console.log(this.message)
         return response
       }
     }
