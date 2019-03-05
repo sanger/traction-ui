@@ -42,12 +42,11 @@ export default {
     async findTubes () {
       let rawResponse = await this.tubeRequest.get() 
       let response = new Api.Response(rawResponse).deserialize.tubes
-      console.log(response)
-      // return new Api.Response(rawResponse).deserialize.tubes
       return response
     }
   }
 }
+
 
 </script>
 
