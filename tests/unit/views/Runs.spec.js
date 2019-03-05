@@ -5,6 +5,7 @@ import VueRouter from 'vue-router'
 import RunsJson from '../../data/runs'
 import Response from '@/api/Response'
 import Alert from '@/components/Alert'
+import flushPromises from 'flush-promises'
 
 describe('Runs.vue', () => {
 
@@ -29,18 +30,40 @@ describe('Runs.vue', () => {
     expect(wrapper.contains('button')).toBe(true)
   })
 
+  it('contains a table', () => {
+    expect(wrapper.contains('table')).toBe(true)
+  })
+
   it('will create a run request', () => {
     let request = runs.runRequest
     expect(request.resource).toBeDefined()
   })
 
-  it('#getRuns will get a list of samples', async () => {
-    runs.runRequest.execute = jest.fn()
-    runs.runRequest.execute.mockResolvedValue(RunsJson)
+  describe('#getRuns', () => {
+    it('will get a list of runs on success',  async () => {
+      runs.runRequest.execute = jest.fn()
+      runs.runRequest.execute.mockResolvedValue(RunsJson)
 
-    let JsonApiResponse = await runs.getRuns()
-    let expected = new Response(RunsJson)
-    expect(JsonApiResponse).toEqual(expected.deserialize.runs)
+      await runs.getRuns()
+      let expected = new Response(RunsJson)
+      expect(runs.items).toEqual(expected.deserialize.runs)
+    })
+
+    it('will return get an empty list on failure',  async () => {
+      let mockResponse = {
+        data: { errors: { runs: ['error message 1'] }},
+        status: 422,
+        statusText: "Unprocessible entity"
+      }
+
+      runs.runRequest.execute = jest.fn()
+      runs.runRequest.execute.mockResolvedValue(mockResponse)
+
+      await runs.getRuns()
+      await flushPromises()
+      expect(runs.message).toEqual("runs error message 1")
+      expect(runs.items).toEqual([])
+    })
   })
 
   describe('#createNewRun', () => {
@@ -84,8 +107,32 @@ describe('Runs.vue', () => {
 
   })
 
-  it('contains a table', () => {
-    expect(wrapper.contains('table')).toBe(true)
+  describe('filtering runs', () => {
+    let mockRuns
+
+    beforeEach(() => {
+      mockRuns = new Response(RunsJson).deserialize.runs
+
+      wrapper = mount(Runs, { localVue,
+        methods: {
+          provider() {
+            return
+          }
+        },
+        data() {
+          return {
+            items: mockRuns,
+            filter: mockRuns[0].chip_barcode
+          }
+        }
+      })
+    })
+
+    it('will filter the libraries in the table', () => {
+      expect(wrapper.find('tbody').findAll('tr').length).toEqual(1)
+      expect(wrapper.find('tbody').findAll('tr').at(0).text()).toMatch(/TRAC-456/)
+    })
   })
+
 
 })
