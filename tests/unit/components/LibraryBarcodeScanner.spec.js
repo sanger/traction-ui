@@ -82,8 +82,6 @@ describe('LibraryBarcodeScanner.vue', () => {
 
   describe('#getLibraryFromBarcode', () => {
     it('success when library for barcode exists', async () => {
-      let libraryId = 123
-
       let validBarcode = 'TRAC-234'
       wrapper.setData({libraryBarcode: validBarcode})
 
@@ -106,20 +104,18 @@ describe('LibraryBarcodeScanner.vue', () => {
       scanner.tubeRequest.execute = jest.fn()
       scanner.tubeRequest.execute.mockResolvedValue(mockResponse)
 
-      let library = await scanner.getLibraryFromBarcode()
+      await scanner.getLibraryFromBarcode()
       expect(scanner.message).toEqual("This library does not exist")
     })
 
     it('failure when the barcode does not contain a library', async () => {
-      let libraryId = 123
-
       let validBarcode = 'TRAC-234'
       wrapper.setData({libraryBarcode: validBarcode})
 
       scanner.tubeRequest.execute = jest.fn()
       scanner.tubeRequest.execute.mockResolvedValue(TubeWithSample)
 
-      let library = await scanner.getLibraryFromBarcode()
+      await scanner.getLibraryFromBarcode()
       expect(scanner.message).toEqual("This barcode does not contain a library")
     })
   })

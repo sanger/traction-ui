@@ -10,7 +10,6 @@
 
 <script>
 
-import Alert from '@/components/Alert'
 import ComponentFactory from '@/mixins/ComponentFactory'
 import Api from '@/api'
 
@@ -25,7 +24,6 @@ export default {
     }
   },
   components: {
-    Alert
   },
   computed: {
     queryString () {
@@ -40,10 +38,8 @@ export default {
   },
   methods: {
     async findTubes () {
-      let rawResponse = await this.tubeRequest.get() 
+      let rawResponse = await this.tubeRequest.get()
       let response = new Api.Response(rawResponse).deserialize.tubes
-      console.log(response)
-      // return new Api.Response(rawResponse).deserialize.tubes
       return response
     }
   }

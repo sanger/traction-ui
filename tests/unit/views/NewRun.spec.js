@@ -8,8 +8,6 @@ import RunNoLibraryJson from '../../data/run_no_library'
 import RunWithLibraryJson from '../../data/run_with_library'
 import flushPromises from 'flush-promises'
 import Alert from '@/components/Alert'
-import LibraryBarcodeScanner from '@/components/LibraryBarcodeScanner'
-
 
 describe('NewRun.vue', () => {
 
