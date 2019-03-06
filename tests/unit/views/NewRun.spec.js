@@ -8,6 +8,8 @@ import RunNoLibraryJson from '../../data/run_no_library'
 import RunWithLibraryJson from '../../data/run_with_library'
 import flushPromises from 'flush-promises'
 import Alert from '@/components/Alert'
+import LibraryBarcodeScanner from '@/components/LibraryBarcodeScanner'
+
 
 describe('NewRun.vue', () => {
 
@@ -27,8 +29,10 @@ describe('NewRun.vue', () => {
       },
       methods: {
         provider () { return }
-      }
+      },
+      stubs: ['libraryBarcodeScanner']
     })
+
     newRun = wrapper.vm
   })
 
@@ -39,9 +43,9 @@ describe('NewRun.vue', () => {
   })
 
   describe('props', () => {
-    it('creates suitable props', () => {
-      expect(newRun.runId).toEqual(123)
-    })
+  //   it('creates suitable props', () => {
+  //     expect(newRun.runId).toEqual(123)
+  //   })
   })
 
   describe('data', () => {
@@ -60,13 +64,15 @@ describe('NewRun.vue', () => {
     })
 
     it('can have run data', () => {
-      wrapper.setData({ id: 1, state: 'pending', chipBarcode: 'TRAC123', chipId: '123', flowcellOneLibraryBarcode: 'TRAC-123', flowcellTwoLibraryBarcode: 'TRAC-456' })
+      let flowcellOne = {id: 1, position: 1, library: { barcode: 'TRAC-1' }}
+      let flowcellTwo = {id: 2, position: 2, library: { barcode: 'TRAC-2' } }
+      wrapper.setData({ id: 1, state: 'pending', chipBarcode: 'TRAC123', chipId: '123', flowcellOne: flowcellOne, flowcellTwo: flowcellTwo})
       expect(newRun.id).toEqual(1)
       expect(newRun.state).toEqual('pending')
       expect(newRun.chipBarcode).toEqual('TRAC123')
       expect(newRun.chipId).toEqual('123')
-      expect(newRun.flowcellOneLibraryBarcode).toEqual('TRAC-123')
-      expect(newRun.flowcellTwoLibraryBarcode).toEqual('TRAC-456')
+      expect(newRun.flowcellOne).toEqual(flowcellOne)
+      expect(newRun.flowcellTwo).toEqual(flowcellTwo)
     })
   })
 
@@ -85,8 +91,8 @@ describe('NewRun.vue', () => {
 
   describe('chip', () => {
     it('contains two flowcells', () => {
-      expect(wrapper.contains('#flowcellOneLibraryBarcode')).toBe(true)
-      expect(wrapper.contains('#flowcellTwoLibraryBarcode')).toBe(true)
+      expect(wrapper.contains('#flowcellOne')).toBe(true)
+      expect(wrapper.contains('#flowcellTwo')).toBe(true)
     })
   })
 
@@ -184,8 +190,8 @@ describe('NewRun.vue', () => {
       expect(newRun.state).toEqual(expectedRun.state)
       expect(newRun.chipBarcode).toEqual(expectedRun.chip.barcode)
       expect(newRun.chipId).toEqual(expectedRun.chip.id)
-      expect(newRun.flowcellOneLibraryBarcode).toEqual(expectedRun.chip.flowcells[0].library.barcode)
-      expect(newRun.flowcellTwoLibraryBarcode).toEqual(expectedRun.chip.flowcells[1].library.barcode)
+      expect(newRun.flowcellOne).toEqual(expectedRun.chip.flowcells[0])
+      expect(newRun.flowcellTwo).toEqual(expectedRun.chip.flowcells[1])
     })
 
     it('when flowcell libraries do not exist, flowcell1 is an empty list', async () => {
@@ -201,8 +207,8 @@ describe('NewRun.vue', () => {
       expect(newRun.state).toEqual(expectedRun.state)
       expect(newRun.chipBarcode).toEqual('')
       expect(newRun.chipId).toEqual(expectedRun.chip.id)
-      expect(newRun.flowcellOneLibraryBarcode).toEqual('')
-      expect(newRun.flowcellTwoLibraryBarcode).toEqual('')
+      expect(newRun.flowcellOne).toEqual({"id": "27", "position": 1, "type": "flowcells"})
+      expect(newRun.flowcellTwo).toEqual({"id": "28", "position": 2, "type": "flowcells"})
     })
   })
 
@@ -380,41 +386,4 @@ describe('NewRun.vue', () => {
 
   })
 
-  describe('#updateFlowcellInTraction', () => {
-    it('success', async () => {
-      let flowcellId = 1
-      let libraryId = 123
-
-      let mockResponse =  {
-        data: { id: flowcellId, type: "flowcell", attributes: { library_id: libraryId } },
-        status: 200,
-        statusText: "OK"
-      }
-
-      newRun.flowcellsRequest.execute = jest.fn()
-      newRun.flowcellsRequest.execute.mockResolvedValue(mockResponse)
-
-      await newRun.updateFlowcellInTraction(flowcellId, libraryId)
-      expect(newRun.message).toEqual('Library added to flowcell')
-    })
-
-    it('failure', async () => {
-      let mockResponse = {
-        data: { errors: { library: ['error message 1'] }},
-        status: 422,
-        statusText: "Unprocessible entity"
-      }
-
-      newRun.flowcellsRequest.execute = jest.fn()
-      newRun.flowcellsRequest.execute.mockReturnValue(mockResponse)
-
-      let flowcellId = 1
-      let libraryId = 123
-
-      await newRun.updateFlowcellInTraction(flowcellId, libraryId)
-      await flushPromises()
-      expect(newRun.message).toEqual("library error message 1")
-    })
-
-  })
 })

@@ -1,6 +1,6 @@
 import ScanBarcodes from '@/views/ScanBarcodes'
 import { mount, localVue } from '../testHelper'
-import TubesJson from '../../data/tubes'
+import TubesJson from '../../data/tubes_with_sample'
 import Response from '@/api/Response'
 
 describe('Scan Barcodes', () => {

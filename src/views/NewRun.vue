@@ -17,12 +17,12 @@
     <b-container class="chip">
       <b-row id="flowcellOne">
         <b-col>
-          <b-form-input id="flowcellOneLibraryBarcode" v-model="flowcellOneLibraryBarcode" type="text" placeholder="Flowcell One Library Barcode Scanner"/>
+          <libraryBarcodeScanner v-if="this.flowcellOne.id !== undefined" v-bind:flowcell="flowcellOne"></libraryBarcodeScanner>
         </b-col>
       </b-row>
       <b-row id="flowcellTwo">
         <b-col>
-          <b-form-input id="flowcellTwoLibraryBarcode" v-model="flowcellTwoLibraryBarcode" type="text" placeholder="Flowcell Two Library Barcode Scanner"/>
+          <libraryBarcodeScanner v-if="this.flowcellTwo.id !== undefined" v-bind:flowcell="flowcellTwo"></libraryBarcodeScanner>
         </b-col>
       </b-row>
     </b-container>
@@ -34,6 +34,7 @@
 import ComponentFactory from '@/mixins/ComponentFactory'
 import Api from '@/api'
 import Alert from '@/components/Alert'
+import LibraryBarcodeScanner from '@/components/LibraryBarcodeScanner'
 
 export default {
   name: 'NewRun',
@@ -46,29 +47,17 @@ export default {
   },
   data () {
     return {
-      flowcellOneLibraryBarcode: '',
-      flowcellTwoLibraryBarcode: '',
+      flowcellOne: {},
+      flowcellTwo: {},
       id: null,
       state: null,
       chipBarcode: null,
-      chipId: null
+      chipId: null,
+      message: ''
     }
   },
   methods: {
-    async updateFlowcellInTraction(flowcellId, libraryId){
-      let requestBody = { data: { type: 'flowcells', id: flowcellId, attributes: { library_id: libraryId }} }
-
-      let rawResponse = await this.flowcellsRequest.update(requestBody)
-      let response = new Api.Response(rawResponse[0])
-
-      if (Object.keys(response.errors).length === 0) {
-        this.message = 'Library added to flowcell'
-        this.showAlert
-      } else {
-        this.message = response.errors.message
-      }
-    },
-    async updateBarcode(){
+    async updateBarcode() {
       let requestBody = { data: { type: 'chips', id: this.chipId, attributes: { barcode: this.chipBarcode }} }
 
       let rawResponse = await this.chipsRequest.update(requestBody)
@@ -93,22 +82,12 @@ export default {
           chipBarcode = run.chip.barcode
         }
 
-        let flowcellOneLibraryBarcode = ''
-        let flowcellTwoLibraryBarcode = ''
-        if (run.chip.flowcells[0].library) {
-          flowcellOneLibraryBarcode = run.chip.flowcells[0].library.barcode
-        }
-        if (run.chip.flowcells[1].library) {
-          flowcellTwoLibraryBarcode = run.chip.flowcells[1].library.barcode
-        }
-
         this.id = run.id
         this.state = run.state
         this.chipId = run.chip.id
         this.chipBarcode = chipBarcode
-        this.flowcellOneLibraryBarcode = flowcellOneLibraryBarcode
-        this.flowcellTwoLibraryBarcode = flowcellTwoLibraryBarcode
-
+        this.flowcellOne = run.chip.flowcells[0]
+        this.flowcellTwo = run.chip.flowcells[1]
       } else {
         this.message = response.errors.message
         this.showAlert
@@ -145,7 +124,8 @@ export default {
     }
   },
   components: {
-    Alert
+    Alert,
+    LibraryBarcodeScanner
   },
   computed: {
     runRequest () {

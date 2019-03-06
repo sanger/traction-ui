@@ -1,0 +1,54 @@
+{
+  "data": {
+    "data": [{
+      "id": "3",
+      "type": "tubes",
+      "links": {
+        "self": "http://localhost:3100/v1/tubes/3"
+      },
+      "attributes": {
+        "barcode": "TRAC-3"
+      },
+      "relationships": {
+        "material": {
+          "links": {
+            "self": "http://localhost:3100/v1/tubes/3/relationships/material",
+            "related": "http://localhost:3100/v1/tubes/3/material"
+          },
+          "data": {
+            "type": "libraries",
+            "id": "2"
+          }
+        }
+      }
+    }],
+    "included": [{
+      "id": "2",
+      "type": "libraries",
+      "links": {
+        "self": "http://localhost:3100/v1/libraries/2"
+      },
+      "attributes": {
+        "state": "pending",
+        "barcode": "TRAC-3",
+        "sample_name": "sample_d",
+        "enzyme_name": "Nb.BbvCI",
+        "created_at": "02/27/2019 04:05"
+      },
+      "relationships": {
+        "sample": {
+          "links": {
+            "self": "http://localhost:3100/v1/libraries/2/relationships/sample",
+            "related": "http://localhost:3100/v1/libraries/2/sample"
+          }
+        },
+        "tube": {
+          "links": {
+            "self": "http://localhost:3100/v1/libraries/2/relationships/tube",
+            "related": "http://localhost:3100/v1/libraries/2/tube"
+          }
+        }
+      }
+    }]
+  }
+}
