@@ -158,4 +158,13 @@ describe('LibraryBarcodeScanner.vue', () => {
 
   })
 
+  describe('showAlert', () => {
+    it('emits an event with the message', () => {
+      wrapper.setData({ message: 'show this message' })
+      scanner.showAlert
+      expect(wrapper.emitted().alert).toBeTruthy()
+    })
+
+  })
+
 })

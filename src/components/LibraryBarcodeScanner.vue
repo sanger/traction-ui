@@ -77,8 +77,7 @@ export default {
       return this.build(Api.Request, this.tractionConfig.resource('flowcells'))
     },
     showAlert () {
-      console.log('alert')
-      return ''
+      return this.$emit('alert', this.message)
     }
   }
 }

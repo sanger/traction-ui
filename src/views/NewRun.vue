@@ -17,12 +17,12 @@
     <b-container class="chip">
       <b-row id="flowcellOne">
         <b-col>
-          <libraryBarcodeScanner v-if="this.flowcellOne.id !== undefined" v-bind:flowcell="flowcellOne"></libraryBarcodeScanner>
+          <libraryBarcodeScanner v-if="this.flowcellOne.id !== undefined" v-bind:flowcell="flowcellOne" @alert="showBarcodeScannerMessage"></libraryBarcodeScanner>
         </b-col>
       </b-row>
       <b-row id="flowcellTwo">
         <b-col>
-          <libraryBarcodeScanner v-if="this.flowcellTwo.id !== undefined" v-bind:flowcell="flowcellTwo"></libraryBarcodeScanner>
+          <libraryBarcodeScanner v-if="this.flowcellTwo.id !== undefined" v-bind:flowcell="flowcellTwo" @alert="showBarcodeScannerMessage"></libraryBarcodeScanner>
         </b-col>
       </b-row>
     </b-container>
@@ -121,6 +121,10 @@ export default {
       } else {
         this.getRun(this.runId)
       }
+    },
+    showBarcodeScannerMessage (message) {
+      this.message = message
+      this.showAlert
     }
   },
   components: {

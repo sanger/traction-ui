@@ -8,6 +8,7 @@ import RunNoLibraryJson from '../../data/run_no_library'
 import RunWithLibraryJson from '../../data/run_with_library'
 import flushPromises from 'flush-promises'
 import Alert from '@/components/Alert'
+import LibraryBarcodeScanner from '@/components/LibraryBarcodeScanner'
 
 describe('NewRun.vue', () => {
 
@@ -63,7 +64,7 @@ describe('NewRun.vue', () => {
 
     it('can have run data', () => {
       let flowcellOne = {id: 1, position: 1, library: { barcode: 'TRAC-1' }}
-      let flowcellTwo = {id: 2, position: 2, library: { barcode: 'TRAC-2' } }
+      let flowcellTwo = {id: 2, position: 2, library: { barcode: 'TRAC-2' }}
       wrapper.setData({ id: 1, state: 'pending', chipBarcode: 'TRAC123', chipId: '123', flowcellOne: flowcellOne, flowcellTwo: flowcellTwo})
       expect(newRun.id).toEqual(1)
       expect(newRun.state).toEqual('pending')
@@ -382,6 +383,36 @@ describe('NewRun.vue', () => {
       expect(newRun.message).toEqual("state error message 1")
     })
 
+  })
+
+  describe('libraryBarcodeScanner', () => {
+    let wrapperWithScanner
+
+    beforeEach(() => {
+      const router = new VueRouter({ routes:
+        [{ path: '/runs', name: 'Runs', component: Runs }]
+      })
+
+      wrapperWithScanner = mount(NewRun, {
+        localVue,
+        router,
+        propsData: {
+          runId: 123
+        },
+        methods: {
+          provider () { return }
+        }
+      })
+    })
+
+    it('passes the message to function on emit event', () => {
+      let flowcellOne = {id: 2, position: 2, library: { barcode: 'TRAC-2' }}
+      wrapperWithScanner.setData({ flowcellOne: flowcellOne })
+
+      let scanner = wrapperWithScanner.find(LibraryBarcodeScanner)
+      scanner.vm.$emit('alert', 'a message')
+      expect(wrapperWithScanner.vm.message).toEqual('a message')
+    })
   })
 
 })
