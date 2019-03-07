@@ -8444,10 +8444,6 @@ socks@~1.1.5:
     ip "^1.1.4"
     smart-buffer "^1.0.13"
 
-sortablejs@^1.7.0:
-  version "1.8.3"
-  resolved "https://registry.yarnpkg.com/sortablejs/-/sortablejs-1.8.3.tgz#5ae908ef96300966e95440a143340f5dd565a0df"
-
 source-list-map@^2.0.0:
   version "2.0.1"
   resolved "https://registry.yarnpkg.com/source-list-map/-/source-list-map-2.0.1.tgz#3993bd873bfc48479cca9ea3a547835c7c154b34"
@@ -9409,9 +9405,9 @@ vue-loader@^15.4.2:
     vue-hot-reload-api "^2.3.0"
     vue-style-loader "^4.1.0"
 
-vue-router@^3.0.1:
-  version "3.0.1"
-  resolved "https://registry.yarnpkg.com/vue-router/-/vue-router-3.0.1.tgz#d9b05ad9c7420ba0f626d6500d693e60092cc1e9"
+vue-router@^3.0.2:
+  version "3.0.2"
+  resolved "https://registry.yarnpkg.com/vue-router/-/vue-router-3.0.2.tgz#dedc67afe6c4e2bc25682c8b1c2a8c0d7c7e56be"
 
 vue-style-loader@^4.1.0:
   version "4.1.2"
