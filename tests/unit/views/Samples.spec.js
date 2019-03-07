@@ -84,6 +84,17 @@ describe('Samples.vue', () => {
 
     })
 
+    describe('filtering samples by barcode', () => {
+      it('filters the items in the table when given a barcode', () => {
+        wrapper.setData({ filter: 'TRAC-1' })
+        expect(wrapper.find('tbody').findAll('tr').length).toEqual(1)
+      })
+
+      it('filters the items in the table when given a list of barcodes', () => {
+        wrapper.setData({ filter: 'TRAC-1, TRAC-2, TRAC-3' })
+        expect(wrapper.find('tbody').findAll('tr').length).toEqual(3)
+      })
+    })
   })
 
   describe('#createLibrariesInTraction', () => {
@@ -148,33 +159,6 @@ describe('Samples.vue', () => {
       modal.vm.$emit('selectEnzyme', 2)
       let expectedBody = {data: {attributes: {libraries: [{enzyme_id: 2, sample_id: 1}]}, type: "libraries"}}
       expect(samples.libraryRequest.create).toBeCalledWith(expectedBody)
-    })
-  })
-
-  describe('filtering samples', () => {
-    let mockSamples
-
-    beforeEach(() => {
-      mockSamples = new Response(SamplesJson).deserialize.samples
-
-      wrapper = mount(Samples, { localVue,
-        methods: {
-          provider() {
-            return
-          }
-        },
-        data() {
-          return {
-            items: mockSamples,
-            filter: mockSamples[0].name
-          }
-        }
-      })
-    })
-
-    it('will filter the samples in the table', () => {
-      expect(wrapper.find('tbody').findAll('tr').length).toEqual(1)
-      expect(wrapper.find('tbody').findAll('tr').at(0).text()).toMatch(/sample2/)
     })
   })
 

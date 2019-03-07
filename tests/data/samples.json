@@ -11,7 +11,7 @@
           "name": "sample2",
           "sequencescape-request-id": null,
           "species": null,
-          "barcode": null
+          "barcode": "TRAC-1"
         },
         "relationships": {
           "libraries": {
@@ -39,7 +39,7 @@
           "name": "DN11111",
           "sequencescape-request-id": null,
           "species": null,
-          "barcode": null
+          "barcode": "TRAC-2"
         },
         "relationships": {
           "libraries": {
@@ -67,7 +67,7 @@
           "name": "DN11112",
           "sequencescape-request-id": null,
           "species": null,
-          "barcode": null
+          "barcode": "TRAC-3"
         },
         "relationships": {
           "libraries": {
@@ -95,7 +95,7 @@
           "name": "testing123",
           "sequencescape-request-id": null,
           "species": null,
-          "barcode": null
+          "barcode": "TRAC-4"
         },
         "relationships": {
           "libraries": {
@@ -123,7 +123,7 @@
           "name": "DN11115",
           "sequencescape-request-id": null,
           "species": null,
-          "barcode": null
+          "barcode": "TRAC-5"
         },
         "relationships": {
           "libraries": {
@@ -151,7 +151,7 @@
           "name": "DN11114",
           "sequencescape-request-id": null,
           "species": null,
-          "barcode": null
+          "barcode": "TRAC-6"
         },
         "relationships": {
           "libraries": {
@@ -179,7 +179,7 @@
           "name": "DN11113",
           "sequencescape-request-id": null,
           "species": null,
-          "barcode": null
+          "barcode": "TRAC-7"
         },
         "relationships": {
           "libraries": {
@@ -207,7 +207,7 @@
           "name": "DN11116",
           "sequencescape-request-id": null,
           "species": null,
-          "barcode": null
+          "barcode": "TRAC-8"
         },
         "relationships": {
           "libraries": {
