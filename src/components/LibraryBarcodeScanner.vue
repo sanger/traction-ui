@@ -71,7 +71,7 @@ export default {
       return this.build(Api.ConfigItem, Api.Config.traction)
     },
     tubeRequest () {
-      return this.build(Api.Request, {...this.tractionConfig.resource('tubes'), filters: { barcode: this.libraryBarcode }})
+      return this.build(Api.Request, {...this.tractionConfig.resource('tubes'), filter: { barcode: this.libraryBarcode }})
     },
     flowcellsRequest () {
       return this.build(Api.Request, this.tractionConfig.resource('flowcells'))
