@@ -42,9 +42,9 @@ describe('NewRun.vue', () => {
   })
 
   describe('props', () => {
-  //   it('creates suitable props', () => {
-  //     expect(newRun.runId).toEqual(123)
-  //   })
+    it('creates suitable props', () => {
+      expect(newRun.runId).toEqual(123)
+    })
   })
 
   describe('data', () => {
