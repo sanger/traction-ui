@@ -5,7 +5,7 @@
     "resources": {
       "requests": {
         "name": "requests",
-        "filters": {
+        "filter": {
           "type": "long_read",
           "state": "pending"
         },
@@ -35,6 +35,10 @@
       },
       "flowcells": {
         "name": "flowcells"
+      },
+      "tubes": {
+        "name": "tubes",
+        "include": "material"
       }
     }
   }
