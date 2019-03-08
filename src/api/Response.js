@@ -15,6 +15,10 @@ class Response {
     return (this.status >= 200 && this.status <= 400)
   }
 
+  get empty () {
+    return !this._body.data.length
+  }
+
   get deserialize () {
     if (this._body.data === undefined) return {}
     return deserialize(this._body)
