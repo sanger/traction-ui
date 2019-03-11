@@ -5,54 +5,57 @@ describe('Response', () => {
 
   let mockResponse, response
 
-  describe('basic', () => {
 
-    describe('Success', () => {
-      beforeEach(() => {
-        mockResponse =  {
-          data: {
-            data: [
-               { id: 1, type: "requests", attributes: { name: "testname1", species: "testspecies1" }},
-               { id: 2, type: "requests", attributes: { name: "testname2", species: "testspecies2" }}
-            ]
-          },
-          status: 200,
-          statusText: "OK"
-        },
-        response = new Response(mockResponse)
-      })
-
-      it('has a status', () => {
-        expect(response.status).toEqual(200)
-      })
-
-      it('has a status text', () => {
-        expect(response.statusText).toEqual('OK')
-      })
-
-      it('has some attributes', () => {
-        let attributes = response.deserialize
-        expect(attributes.requests.length).toEqual(2)
-        let request = attributes.requests[0]
-        expect(request.name).toEqual('testname1')
-        expect(request.species).toEqual('testspecies1')
-      })
-
-      it('flagged as successful', () => {
-        expect(response.successful).toBeTruthy()
-      })
-
-      it('has no errors', () => {
-        expect(response.errors).toEqual({})
-      })
-
-      it('data returns serialized object', () => {
-        let serializedObj = deserialize(mockResponse.data)
-        expect(response.deserialize).toEqual(serializedObj)
-      })
-    })
+  it('can be empty', () => {
+    expect(new Response({data: { data: [] }, status: 200, statusText: 'OK' }).empty).toBeTruthy()
 
   })
+
+  describe('Success', () => {
+    beforeEach(() => {
+      mockResponse =  {
+        data: {
+          data: [
+             { id: 1, type: "requests", attributes: { name: "testname1", species: "testspecies1" }},
+             { id: 2, type: "requests", attributes: { name: "testname2", species: "testspecies2" }}
+          ]
+        },
+        status: 200,
+        statusText: "OK"
+      },
+      response = new Response(mockResponse)
+    })
+
+    it('has a status', () => {
+      expect(response.status).toEqual(200)
+    })
+
+    it('has a status text', () => {
+      expect(response.statusText).toEqual('OK')
+    })
+
+    it('has some attributes', () => {
+      let attributes = response.deserialize
+      expect(attributes.requests.length).toEqual(2)
+      let request = attributes.requests[0]
+      expect(request.name).toEqual('testname1')
+      expect(request.species).toEqual('testspecies1')
+    })
+
+    it('flagged as successful', () => {
+      expect(response.successful).toBeTruthy()
+    })
+
+    it('has no errors', () => {
+      expect(response.errors).toEqual({})
+    })
+
+    it('data returns serialized object', () => {
+      let serializedObj = deserialize(mockResponse.data)
+      expect(response.deserialize).toEqual(serializedObj)
+    })
+  })
+
 
   describe('Failure', () => {
 
@@ -86,8 +89,6 @@ describe('Response', () => {
     it('has no data', () => {
       expect(response.deserialize).toEqual({})
     })
-
   })
-
 
 })

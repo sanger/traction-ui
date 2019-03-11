@@ -10,6 +10,9 @@
           "state": "pending"
         },
         "include": "samples.sample_metadata"
+      },
+      "tubes": {
+        "name": "tubes"
       }
     }
   },
