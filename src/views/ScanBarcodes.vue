@@ -3,7 +3,7 @@
     <div class="form-group">
       <label for="barcodes">barcodes:</label>
       <textarea type="text" v-model="barcodes" class="form-control" rows="10" cols="10" name="barcodes" id="barcodes" />
-      <b-button id="findSequencescapeTubes" variant="success" @click="findSequencescapeTubes" >find Sequencescape Tubes</b-button>
+      <!-- b-button id="findSequencescapeTubes" variant="success" @click="findSequencescapeTubes" >find Sequencescape Tubes</b-button -->
       <b-button id="findTractionTubes" variant="success" @click="findTractionTubes" >find Traction Tubes</b-button>
 
     </div>
@@ -51,6 +51,7 @@ export default {
   },
   methods: {
     async findTubes (request) {
+      if(!this.queryString) return
       let rawResponse = await request.get({filter: { barcode: this.queryString} })
       let response = new Api.Response(rawResponse)
       if (response.successful) {

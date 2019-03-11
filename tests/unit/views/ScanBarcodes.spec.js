@@ -79,13 +79,19 @@ describe('Scan Barcodes', () => {
       expect(response).toEqual(new Response(emptyResponse))
       expect(scan.message).toEqual('no tubes found')
     })
+
+    it('when there is no query string', async () => {
+      scan.barcodes = ''
+      response = await scan.findTubes(request)
+      expect(request.get).not.toBeCalled()
+    })
   })
 
   describe('scanning in barcodes', () => {
 
     let input
 
-    describe('sequencescape', () => {
+    describe.skip('sequencescape', () => {
 
       let sequencescapeBarcodes
 
