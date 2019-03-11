@@ -4,7 +4,7 @@
 
     <b-col md="6" class="my-1">
       <b-input-group>
-        <b-form-input v-model="filter" placeholder="Type to Filter" />
+        <b-form-input v-model="filter" placeholder="Type to Filter by barcode" />
         <b-input-group-append>
           <b-button :disabled="!filter" @click="filter = ''">Clear</b-button>
         </b-input-group-append>
@@ -13,9 +13,8 @@
 
     <b-table
        show-empty
-       :items="items"
+       :items="itemsFiltered"
        :fields="fields"
-       :filter="filter"
     >
       <template slot="selected" slot-scope="row">
         <input type="checkbox" class="selected" v-model="selected" :value="row.item" />
@@ -106,6 +105,14 @@ export default {
     },
     showAlert () {
       return this.$refs.alert.show(this.message, 'primary')
+    },
+    itemsFiltered () {
+      if (this.filter) {
+        let filterList = this.filter.split(', ')
+        return this.items.filter(i => filterList.includes(i.barcode))
+      } else {
+        return this.items
+      }
     }
   }
 }
