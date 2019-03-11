@@ -22,4 +22,12 @@ describe('Library', () => {
   it('can have a tube', () => {
     expect(library.tube).toEqual(props.tube)
   })
+
+  describe('barcodes', () => {
+
+    it('will populate the barcode from the tube', () => {
+      expect(library.barcode).toEqual(props.tube.barcode)
+    })
+
+  })
 })

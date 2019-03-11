@@ -14,12 +14,13 @@ export default {
     tube: {
       type: Object,
       default: () => {
-        return { id: '', barcode: ''}
+        return { id: '', barcode: '' }
       }
     }
   },
   data () {
     return {
+      barcode: this.tube.barcode
     }
   },
   methods: {
