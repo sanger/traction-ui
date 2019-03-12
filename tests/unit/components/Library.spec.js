@@ -3,7 +3,7 @@ import Library from '@/components/Library'
 
 describe('Library', () => {
 
-  let wrapper, library, props
+  let wrapper, library, props, input
 
   beforeEach(() => {
     props = { id: 1, tube: { id: 1, barcode: 'TRAC-1'} }
@@ -27,6 +27,12 @@ describe('Library', () => {
 
     it('will populate the barcode from the tube', () => {
       expect(library.barcode).toEqual(props.tube.barcode)
+    })
+
+    it('will allow the user to scan in a barcopde', () => {
+      input = wrapper.find('#barcode')
+      input.setValue('TRAC-2')
+      expect(library.barcode).toEqual('TRAC-2')
     })
 
   })

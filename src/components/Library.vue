@@ -1,5 +1,6 @@
 <template>
   <div class="library">
+     <input id="barcode" v-model="barcode" type="text" @change="findLibrary" />
   </div>
 </template>
 
@@ -20,10 +21,13 @@ export default {
   },
   data () {
     return {
-      barcode: this.tube.barcode
+      barcode: this.tube.barcode 
     }
   },
   methods: {
+    findLibrary () {
+      return
+    }
   },
   computed: {
   }
