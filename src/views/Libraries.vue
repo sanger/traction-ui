@@ -1,21 +1,11 @@
 <template>
   <div class="libraries">
     <alert ref='alert'></alert>
-
-    <b-col md="6" class="my-1">
-      <b-input-group>
-        <b-form-input v-model="filter" placeholder="Type to Filter" />
-        <b-input-group-append>
-          <b-button :disabled="!filter" @click="filter = ''">Clear</b-button>
-        </b-input-group-append>
-      </b-input-group>
-    </b-col>
-
+    
     <b-table
        show-empty
        :items="items"
        :fields="fields"
-       :filter="filter"
     >
       <template slot="selected" slot-scope="row">
         <input type="checkbox" class="selected" v-model="selected" :value="row.item.id" />
@@ -36,6 +26,7 @@ export default {
   name: 'Libraries',
   mixins: [ComponentFactory],
   props: {
+    items: Array
   },
   data () {
     return {
@@ -48,9 +39,7 @@ export default {
         { key: 'created_at', label: 'Created at', sortable: true },
       ],
       selected: [],
-      message: '',
-      filter: null,
-      items: []
+      message: ''
     }
   },
   components: {
@@ -67,26 +56,7 @@ export default {
         this.message = responses.map(r => r.errors.message)
       }
       this.showAlert
-    },
-    async getLibraries () {
-      let rawResponse = await this.libraryRequest.get()
-      let response = new Api.Response(rawResponse)
-
-      if (Object.keys(response.errors).length === 0) {
-        let libraries = response.deserialize.libraries
-        this.items = libraries
-      } else {
-        this.message = response.errors.message
-        this.showAlert
-        this.items = []
-      }
-    },
-    provider() {
-      this.getLibraries()
     }
-  },
-  created() {
-    this.provider()
   },
   computed: {
     libraryRequest () {

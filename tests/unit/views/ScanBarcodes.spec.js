@@ -5,14 +5,20 @@ import Response from '@/api/Response'
 import flushPromises from 'flush-promises'
 import Request from '@/api/Request'
 import Vue from 'vue'
+import VueRouter from 'vue-router'
+import Table from '@/views/Table'
 
 describe('Scan Barcodes', () => {
 
   let wrapper, scan, barcodes, barcode, input
 
   beforeEach(() => {
+    const router = new VueRouter({ routes:
+      [{ path: '/table', name: 'Table', component: Table, props: true }]
+    })
+
     barcodes = 'TRAC-1\nTRAC-2\nTRAC-3\nTRAC-4\nTRAC-5'
-    wrapper = mount(ScanBarcodes, { localVue } )
+    wrapper = mount(ScanBarcodes, { localVue, router } )
     scan = wrapper.vm
   })
 
@@ -60,7 +66,7 @@ describe('Scan Barcodes', () => {
       request.get.mockResolvedValue(TubesJson)
       response = await scan.findTubes(request)
       expect(request.get).toBeCalledWith({ filter: { barcode: scan.queryString } })
-      expect(response).toEqual(new Response(TubesJson).deserialize.tubes)
+      // expect route to be table
       expect(scan.message).toEqual('tubes successfully found')
     })
 

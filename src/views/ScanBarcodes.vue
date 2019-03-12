@@ -1,10 +1,10 @@
 <template>
   <div class="scan-barcodes">
     <div class="form-group">
-      <label for="barcodes">barcodes:</label>
+      <label for="barcodes">Barcodes:</label>
       <textarea type="text" v-model="barcodes" class="form-control" rows="10" cols="10" name="barcodes" id="barcodes" />
       <!-- b-button id="findSequencescapeTubes" variant="success" @click="findSequencescapeTubes" >find Sequencescape Tubes</b-button -->
-      <b-button id="findTractionTubes" variant="success" @click="findTractionTubes" >find Traction Tubes</b-button>
+      <b-button id="findTractionTubes" variant="success" @click="findTractionTubes">Find Traction Tubes</b-button>
 
     </div>
   </div>
@@ -30,7 +30,7 @@ export default {
   },
   computed: {
     queryString () {
-      if (this.barcodes === undefined || !this.barcodes.length) return '' 
+      if (this.barcodes === undefined || !this.barcodes.length) return ''
       return this.barcodes.split('\n').filter(Boolean).join(',')
     },
     tractionConfig () {
@@ -60,7 +60,9 @@ export default {
           return response
         } else {
           this.message = 'tubes successfully found'
-          return response.deserialize.tubes
+          let tubes = response.deserialize.tubes
+          // handle tubes of different type
+          this.$router.push({name: 'Table', params: {items: tubes}})
         }
       } else {
         this.message = 'there was an error'

@@ -1,19 +1,9 @@
 <template>
   <div class="samples">
     <alert ref='alert'></alert>
-
-    <b-col md="6" class="my-1">
-      <b-input-group>
-        <b-form-input v-model="filter" placeholder="Type to Filter by barcode" />
-        <b-input-group-append>
-          <b-button :disabled="!filter" @click="filter = ''">Clear</b-button>
-        </b-input-group-append>
-      </b-input-group>
-    </b-col>
-
     <b-table
        show-empty
-       :items="itemsFiltered"
+       :items="items"
        :fields="fields"
     >
       <template slot="selected" slot-scope="row">
@@ -38,6 +28,7 @@ export default {
   name: 'Samples',
   mixins: [ComponentFactory],
   props: {
+    items: Array
   },
   data () {
     return {
@@ -49,25 +40,10 @@ export default {
         { key: 'barcode', label: 'Barcode', sortable: true },
         { key: 'created_at', label: 'Created at', sortable: true },
       ],
-      selected: [],
-      filter: null,
-      items: []
+      selected: []
     }
   },
   methods: {
-    async getSamples () {
-      let rawResponse = await this.sampleRequest.get()
-      let response = new Api.Response(rawResponse)
-
-      if (Object.keys(response.errors).length === 0) {
-        let samples = response.deserialize.samples
-        this.items = samples
-      } else {
-        this.message = response.errors.message
-        this.showAlert
-        this.items = []
-      }
-    },
     async createLibrariesInTraction (selectedEnzymeId) {
       let libraries = this.selected.map(item => { return {'sample_id': item.id, 'enzyme_id': selectedEnzymeId}})
 
@@ -81,17 +57,11 @@ export default {
         this.message = response.errors.message
       }
       this.showAlert
-    },
-    provider () {
-      this.getSamples()
     }
   },
   components: {
     Alert,
     Modal
-  },
-  created() {
-    this.provider()
   },
   computed: {
     sampleRequest () {
@@ -106,14 +76,6 @@ export default {
     showAlert () {
       return this.$refs.alert.show(this.message, 'primary')
     },
-    itemsFiltered () {
-      if (this.filter) {
-        let filterList = this.filter.split(', ')
-        return this.items.filter(i => filterList.includes(i.barcode))
-      } else {
-        return this.items
-      }
-    }
   }
 }
 </script>
