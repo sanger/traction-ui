@@ -47,8 +47,8 @@ export default {
   },
   data () {
     return {
-      flowcellOne: {},
-      flowcellTwo: {},
+      flowcellOne: { library: {}},
+      flowcellTwo: { library: {}},
       id: null,
       state: null,
       chipBarcode: null,
