@@ -2,8 +2,8 @@ import { mount, localVue } from '../testHelper'
 import LibraryBarcodeScanner from '@/components/LibraryBarcodeScanner'
 import flushPromises from 'flush-promises'
 import Response from '@/api/Response'
-import TubeWithLibrary from '../../data/tube_with_library'
-import TubeWithSample from '../../data/tubes_with_sample'
+import TubeWithLibrary from '../../data/tubeWithLibrary'
+import TubeWithSample from '../../data/tubeWithSample'
 
 describe('LibraryBarcodeScanner.vue', () => {
 

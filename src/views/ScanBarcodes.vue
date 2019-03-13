@@ -44,9 +44,6 @@ export default {
     },
     tractionTubeRequest () {
       return this.build(Api.Request, this.tractionConfig.resource('tubes'))
-    },
-    tubeRequest () {
-      return this.build(Api.Request, this.tractionConfig.resource('tubes'))
     }
   },
   methods: {

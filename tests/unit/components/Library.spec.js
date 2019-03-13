@@ -1,9 +1,11 @@
 import { mount, localVue } from '../testHelper'
 import Library from '@/components/Library'
+import TubeJson from '../../data/tubeWithLibrary'
+import Response from '@/api/Response'
 
 describe('Library', () => {
 
-  let wrapper, library, props, input
+  let wrapper, library, props, input, response
 
   beforeEach(() => {
     props = { id: 1, tube: { id: 1, barcode: 'TRAC-1'} }
@@ -35,5 +37,53 @@ describe('Library', () => {
       expect(library.barcode).toEqual('TRAC-2')
     })
 
+    it('will create a query string', () => {
+      input = wrapper.find('#barcode')
+      input.setValue('TRAC-2\n')
+      expect(library.queryString).toEqual('TRAC-2')
+    })
+
+  })
+ 
+  describe('finding the library', () => {
+    beforeEach(() => {
+      library.tubeRequest.get = jest.fn()
+    })
+
+    it('successfully', async () => {
+      library.tubeRequest.get.mockResolvedValue(TubeJson)
+      response = await library.findLibrary()
+      expect(library.tubeRequest.get).toBeCalledWith({ filter: { barcode: library.queryString } })
+      expect(response).toEqual(new Response(TubeJson))
+      expect(library.message).toEqual('Library updated')
+    })
+
+    it('unsuccessfully', async () => {
+      let failedResponse = { 'data': { }, 'status': 500, 'statusText': 'Internal Server Error' }
+      library.tubeRequest.get.mockReturnValue(failedResponse)
+      response = await library.findLibrary()
+      expect(library.tubeRequest.get).toBeCalledWith({ filter: { barcode: library.queryString } })
+      expect(response).toEqual(new Response(failedResponse))
+      expect(library.message).toEqual('there was an error')
+    })
+
+    it('when there is no library', async () => {
+      let emptyResponse = { 'data': { 'data': []}, 'status': 200, 'statusText': 'Success'}
+      library.tubeRequest.get.mockReturnValue(emptyResponse)
+      response = await library.findLibrary()
+      expect(library.tubeRequest.get).toBeCalledWith({ filter: { barcode: library.queryString } })
+      expect(response).toEqual(new Response(emptyResponse))
+      expect(library.message).toEqual('There is no library')
+    })
+  })
+
+  describe('changing the library', () => {
+    beforeEach(() => {
+      library.tubeRequest.get = jest.fn()
+    })
+
+    it('emits an event', () => {
+      
+    })
   })
 })

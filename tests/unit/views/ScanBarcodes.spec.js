@@ -1,6 +1,6 @@
 import ScanBarcodes from '@/views/ScanBarcodes'
 import { mount, localVue } from '../testHelper'
-import TubesJson from '../../data/tubes_with_sample'
+import TubeJson from '../../data/tubeWithSample'
 import Response from '@/api/Response'
 import flushPromises from 'flush-promises'
 import Request from '@/api/Request'
@@ -32,12 +32,6 @@ describe('Scan Barcodes', () => {
       expect(scan.queryString).toEqual('TRAC-1,TRAC-2,TRAC-3,TRAC-4,TRAC-5')
     })
 
-    it('will build a request', () => {
-      scan.barcodes = barcodes
-      let request = scan.tubeRequest
-      expect(request.include).toEqual('material')
-    })
-
     it('no barcodes', () => {
       expect(scan.queryString).toEqual('')
     })
@@ -57,10 +51,10 @@ describe('Scan Barcodes', () => {
     })
 
     it('successfully', async () => {
-      request.get.mockResolvedValue(TubesJson)
+      request.get.mockResolvedValue(TubeJson)
       response = await scan.findTubes(request)
       expect(request.get).toBeCalledWith({ filter: { barcode: scan.queryString } })
-      expect(response).toEqual(new Response(TubesJson).deserialize.tubes)
+      expect(response).toEqual(new Response(TubeJson).deserialize.tubes)
       expect(scan.message).toEqual('tubes successfully found')
     })
 
@@ -105,7 +99,7 @@ describe('Scan Barcodes', () => {
       })
 
       it('successfully', async () => {
-        scan.sequencescapeTubeRequest.get.mockResolvedValue(TubesJson)
+        scan.sequencescapeTubeRequest.get.mockResolvedValue(TubeJson)
         const input = wrapper.find('textarea')
         input.setValue(sequencescapeBarcodes)
         let button = wrapper.find('#findSequencescapeTubes')
@@ -127,7 +121,7 @@ describe('Scan Barcodes', () => {
       })
 
       it('successfully', async () => {
-        scan.tractionTubeRequest.get.mockResolvedValue(TubesJson)
+        scan.tractionTubeRequest.get.mockResolvedValue(TubeJson)
         input = wrapper.find('textarea')
         input.setValue(barcodes)
         let button = wrapper.find('#findTractionTubes')
