@@ -12,11 +12,11 @@ export default {
   name: 'LibraryBarcodeScanner',
   mixins: [ComponentFactory],
   props: {
-    flowcell: Object,
+    flowcell: Object
   },
   data () {
     return {
-      libraryBarcode: this.flowcell.library.barcode,
+      libraryBarcode: this.flowcell.library.barcode
     }
   },
   methods: {
