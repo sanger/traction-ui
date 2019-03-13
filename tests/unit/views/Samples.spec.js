@@ -1,8 +1,6 @@
 import Samples from '@/views/Samples'
-import SamplesJson from '../../data/samples'
 import Modal from '@/components/Modal'
 import { mount, localVue } from '../testHelper'
-import Response from '@/api/Response'
 import flushPromises from 'flush-promises'
 
 describe('Samples.vue', () => {

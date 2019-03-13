@@ -1,7 +1,5 @@
 import Libraries from '@/views/Libraries'
 import { mount, localVue } from '../testHelper'
-import LibrariesJson from '../../data/libraries'
-import Response from '@/api/Response'
 import flushPromises from 'flush-promises'
 
 describe('Libraries.vue', () => {
@@ -50,7 +48,6 @@ describe('Libraries.vue', () => {
   })
 
   describe('selecting libraries', () => {
-    let mockLibraries
 
     beforeEach(() => {
       let checkboxes = wrapper.findAll(".selected")
