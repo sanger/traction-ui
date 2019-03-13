@@ -78,7 +78,7 @@ describe('Samples.vue', () => {
       samples.selected = [{id: 1}]
 
       await samples.createLibrariesInTraction(selectedEnzymeId)
-      expect(samples.message).toEqual("Libraries created in Traction")
+      expect(samples.message).toEqual("Libraries 1,2 created in Traction")
     })
 
     it('failure', async () => {

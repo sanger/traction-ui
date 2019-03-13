@@ -48,7 +48,9 @@ export default {
       let response = new Api.Response(rawResponse)
 
       if (response.successful) {
-        this.message = 'Libraries created in Traction'
+        let newLibrariesID = response.deserialize.libraries.map(l => l.id)
+        let libraryText = newLibrariesID.length > 1 ? 'Libraries' : 'Library'
+        this.message = `${libraryText} ${newLibrariesID.join(',')} created in Traction`
       } else {
         this.message = response.errors.message
       }
