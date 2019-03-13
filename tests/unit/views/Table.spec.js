@@ -2,6 +2,7 @@ import { mount, localVue } from '../testHelper'
 import Table from '@/views/Table'
 import Samples from '@/views/Samples'
 import Libraries from '@/views/Libraries'
+import Alert from '@/components/Alert'
 
 describe('Table.vue', () => {
 
@@ -64,6 +65,12 @@ describe('Table.vue', () => {
     })
   })
 
+  describe('alert', () => {
+    it('has a alert', () => {
+      expect(wrapper.contains(Alert)).toBe(true)
+    })
+  })
+
   describe('#getItems', () => {
     it('returns the items props', () => {
       expect(table.getItems).toEqual([ { id: 345, attr1: 'test', barcode: 123, type: 'samples' } ])
@@ -74,6 +81,14 @@ describe('Table.vue', () => {
     it('returns the items props', () => {
       table.setType()
       expect(table.dataType).toEqual('samples')
+    })
+  })
+
+  describe('#showAlert', () => {
+    it('passes the message to function on emit event', () => {
+      let samples = wrapper.find(Samples)
+      samples.vm.$emit('alert', 'a message')
+      expect(table.message).toEqual('a message')
     })
   })
 })

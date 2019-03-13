@@ -1,6 +1,5 @@
 <template>
   <div class="samples">
-    <alert ref='alert'></alert>
     <b-table
        show-empty
        :items="items"
@@ -11,15 +10,11 @@
       </template>
     </b-table>
 
-    <!-- Button to create libraries -->
-    <!-- Add check to disable button if no samples are selected -->
-    <modal @selectEnzyme="createLibrariesInTraction" :disabled=false class="float-right" ></modal>
-
+    <modal @selectEnzyme="createLibrariesInTraction" :disabled="this.selected.length === 0" class="float-right" ></modal>
   </div>
 </template>
 
 <script>
-import Alert from '@/components/Alert'
 import ComponentFactory from '@/mixins/ComponentFactory'
 import Modal from '@/components/Modal'
 import Api from '@/api'
@@ -39,6 +34,7 @@ export default {
         { key: 'species', label: 'Species', sortable: true },
         { key: 'barcode', label: 'Barcode', sortable: true },
         { key: 'created_at', label: 'Created at', sortable: true },
+        { key: 'deactivated_at', label: 'Deactivated at', sortable: true },
       ],
       selected: []
     }
@@ -56,25 +52,21 @@ export default {
       } else {
         this.message = response.errors.message
       }
-      this.showAlert
+      this.emitAlert
     }
   },
   components: {
-    Alert,
     Modal
   },
   computed: {
-    sampleRequest () {
-      return this.build(Api.Request, this.tractionConfig.resource('samples'))
-    },
     libraryRequest () {
       return this.build(Api.Request, this.tractionConfig.resource('libraries'))
     },
     tractionConfig () {
       return this.build(Api.ConfigItem, Api.Config.traction)
     },
-    showAlert () {
-      return this.$refs.alert.show(this.message, 'primary')
+    emitAlert () {
+      return this.$emit('alert', this.message)
     },
   }
 }

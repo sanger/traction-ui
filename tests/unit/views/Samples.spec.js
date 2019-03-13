@@ -28,17 +28,6 @@ describe('Samples.vue', () => {
       expect(button).toEqual("Create Libraries with Enzyme")
     })
 
-  describe('sample request', () => {
-    it('will create a sample request', () => {
-      let request = samples.sampleRequest
-      expect(request.resource).toBeDefined()
-    })
-
-    it('will get a list of samples',  async () => {
-      expect(samples.items).toEqual(mockSamples)
-    })
-  })
-
   describe('building the table', () => {
     it('contains the correct fields', () => {
       let headers = wrapper.findAll('th')
@@ -127,6 +116,14 @@ describe('Samples.vue', () => {
       modal.vm.$emit('selectEnzyme', 2)
       let expectedBody = {data: {attributes: {libraries: [{enzyme_id: 2, sample_id: 1}]}, type: "libraries"}}
       expect(samples.libraryRequest.create).toBeCalledWith(expectedBody)
+    })
+  })
+
+  describe('emitAlert', () => {
+    it('emits an event with the message', () => {
+      wrapper.setData({ message: 'show this message' })
+      samples.emitAlert
+      expect(wrapper.emitted().alert).toBeTruthy()
     })
   })
 

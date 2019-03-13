@@ -1,8 +1,10 @@
 <template>
   <div class="table">
+    <alert ref='alert'></alert>
+
     <dataTable>
-      <samples v-if="dataType === 'samples'" :items="getItems"></samples>
-      <libraries v-if="dataType === 'libraries'" :items="getItems"></libraries>
+      <samples v-if="dataType === 'samples'" :items="getItems" @alert="showAlert"></samples>
+      <libraries v-if="dataType === 'libraries'" :items="getItems" @alert="showAlert"></libraries>
     </dataTable>
   </div>
 </template>
@@ -11,6 +13,7 @@
 import Samples from '@/views/Samples'
 import Libraries from '@/views/Libraries'
 import DataTable from '@/components/DataTable'
+import Alert from '@/components/Alert'
 
 export default {
   name: 'Table',
@@ -20,14 +23,20 @@ export default {
   components: {
     DataTable,
     Samples,
-    Libraries
+    Libraries,
+    Alert
   },
   data () {
     return {
-      dataType: ''
+      dataType: '',
+      message: ''
     }
   },
   methods: {
+    showAlert (message) {
+      this.message = message
+      this.alert
+    },
     setType () {
       if (Object.keys(this.items[0]).includes('material')) {
         this.dataType = this.items[0].material.type
@@ -37,6 +46,9 @@ export default {
   computed: {
     getItems () {
       return this.items.map(i => Object.assign(i.material, {barcode: i.barcode}))
+    },
+    alert () {
+      return this.$refs.alert.show(this.message, 'primary')
     }
   },
   created() {

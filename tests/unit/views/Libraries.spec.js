@@ -61,6 +61,8 @@ describe('Libraries.vue', () => {
     describe('deleting', () => {
       beforeEach(() => {
         libraries.libraryRequest.destroy = jest.fn()
+        let checkboxes = wrapper.findAll(".selected")
+        checkboxes.at(0).trigger('click')
       })
 
       it('successfully', async () => {
@@ -84,4 +86,11 @@ describe('Libraries.vue', () => {
 
   })
 
+  describe('emitAlert', () => {
+    it('emits an event with the message', () => {
+      wrapper.setData({ message: 'show this message' })
+      libraries.emitAlert
+      expect(wrapper.emitted().alert).toBeTruthy()
+    })
+  })
 })

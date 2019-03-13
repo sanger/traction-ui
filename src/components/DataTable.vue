@@ -7,16 +7,6 @@
 <script>
 
 export default {
-  name: 'DataTable',
-  data () {
-    return {
-    }
-  },
-  methods: {
-  },
-  props: {
-  },
-  computed: {
-  }
+  name: 'DataTable'
 }
 </script>
