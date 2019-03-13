@@ -1,5 +1,7 @@
 import { mount, localVue } from '../testHelper'
 import Table from '@/views/Table'
+import Samples from '@/views/Samples'
+import Libraries from '@/views/Libraries'
 
 describe('Table.vue', () => {
 
@@ -26,6 +28,40 @@ describe('Table.vue', () => {
 
   it('btable contains the correct data', () => {
     expect(wrapper.find('tbody').findAll('tr').length).toEqual(table.items.length)
+  })
+
+  describe('dataTable', () => {
+    describe('when dataType is samples', () => {
+      it('has a sample table if requested', () => {
+        expect(wrapper.contains(Samples)).toBe(true)
+      })
+
+      it('renders the sample table', () => {
+        let typeIDHeader = wrapper.find('thead').find('tr').findAll('th').at(1).html()
+        expect(typeIDHeader).toMatch('Sample ID')
+      })
+    })
+
+    describe('when dataType is libraries', () => {
+      let libraryWrapper
+      beforeEach(() => {
+        libraryWrapper = mount(Table, {
+          localVue,
+          propsData: {
+            items: [{id: 1, barcode: 123, material: {id: 345, attr1: 'test', type: 'libraries'}}]
+          },
+        })
+      })
+
+      it('has a libraries table if requested', () => {
+        expect(libraryWrapper.contains(Libraries)).toBe(true)
+      })
+
+      it('renders the library table', () => {
+        let typeIDHeader = libraryWrapper.find('thead').find('tr').findAll('th').at(1).html()
+        expect(typeIDHeader).toMatch('Library ID')
+      })
+    })
   })
 
   describe('#getItems', () => {

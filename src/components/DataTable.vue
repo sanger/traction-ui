@@ -10,7 +10,6 @@ export default {
   name: 'DataTable',
   data () {
     return {
-      message: '',
     }
   },
   methods: {

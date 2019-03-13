@@ -66,7 +66,7 @@ describe('Scan Barcodes', () => {
       request.get.mockResolvedValue(TubesJson)
       response = await scan.findTubes(request)
       expect(request.get).toBeCalledWith({ filter: { barcode: scan.queryString } })
-      // expect route to be table
+      expect(scan.$route.path).toEqual('/table')
       expect(scan.message).toEqual('tubes successfully found')
     })
 
