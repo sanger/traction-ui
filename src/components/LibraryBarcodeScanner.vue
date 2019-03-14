@@ -16,7 +16,8 @@ export default {
   },
   data () {
     return {
-      libraryBarcode: this.flowcell.library.barcode
+      libraryBarcode: this.flowcell.library.barcode,
+      message: ''
     }
   },
   methods: {

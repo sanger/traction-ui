@@ -36,7 +36,8 @@ export default {
         { key: 'created_at', label: 'Created at', sortable: true },
         { key: 'deactivated_at', label: 'Deactivated at', sortable: true },
       ],
-      selected: []
+      selected: [],
+      message: ''
     }
   },
   methods: {

@@ -1,0 +1,86 @@
+{
+  "data": {
+    "data": [{
+      "id": "4",
+      "type": "tubes",
+      "links": {
+        "self": "http://localhost:3200/api/v2/tubes/4"
+      },
+      "attributes": {
+        "uuid": "d1a21312-1354-11e9-8606-4a0008355b90",
+        "name": "sample_d",
+        "labware_barcode": {
+          "ean13_barcode": "3980000004826",
+          "machine_barcode": "3980000004826",
+          "human_barcode": "NT4R"
+        },
+        "state": "unknown",
+        "created_at": "2019-01-08T14:51:02+00:00",
+        "updated_at": "2019-01-08T14:51:02+00:00"
+      },
+      "relationships": {
+        "purpose": {
+          "links": {
+            "self": "http://localhost:3200/api/v2/tubes/4/relationships/purpose",
+            "related": "http://localhost:3200/api/v2/tubes/4/purpose"
+          }
+        },
+        "custom_metadatum_collection": {
+          "links": {
+            "self": "http://localhost:3200/api/v2/tubes/4/relationships/custom_metadatum_collection",
+            "related": "http://localhost:3200/api/v2/tubes/4/custom_metadatum_collection"
+          }
+        },
+        "samples": {
+          "links": {
+            "self": "http://localhost:3200/api/v2/tubes/4/relationships/samples",
+            "related": "http://localhost:3200/api/v2/tubes/4/samples"
+          },
+          "data": [{
+            "type": "samples",
+            "id": "5"
+          }]
+        }
+      }
+    }],
+    "included": [{
+      "id": "5",
+      "type": "samples",
+      "links": {
+        "self": "http://localhost:3200/api/v2/samples/5"
+      },
+      "attributes": {
+        "name": "sample_d",
+        "sanger_sample_id": "4321",
+        "uuid": "d1a03e16-1354-11e9-8606-4a0008355b90"
+      },
+      "relationships": {
+        "sample_metadata": {
+          "links": {
+            "self": "http://localhost:3200/api/v2/samples/5/relationships/sample_metadata",
+            "related": "http://localhost:3200/api/v2/samples/5/sample_metadata"
+          },
+          "data": {
+            "type": "sample_metadata",
+            "id": "5"
+          }
+        }
+      }
+    }, {
+      "id": "5",
+      "type": "sample_metadata",
+      "links": {
+        "self": "http://localhost:3200/api/v2/sample_metadata/5"
+      },
+      "attributes": {
+        "sample_common_name": "human"
+      }
+    }],
+    "links": {
+      "first": "http://localhost:3200/api/v2/tubes?filter%5Bbarcode%5D=NT4R&include=samples.sample_metadata&page%5Bnumber%5D=1&page%5Bsize%5D=100",
+      "last": "http://localhost:3200/api/v2/tubes?filter%5Bbarcode%5D=NT4R&include=samples.sample_metadata&page%5Bnumber%5D=1&page%5Bsize%5D=100"
+    }
+  },
+  "status": 200,
+  "statusText": "Success"
+}

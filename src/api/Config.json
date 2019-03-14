@@ -12,7 +12,8 @@
         "include": "samples.sample_metadata"
       },
       "tubes": {
-        "name": "tubes"
+        "name": "tubes",
+        "include": "samples.sample_metadata"
       }
     }
   },

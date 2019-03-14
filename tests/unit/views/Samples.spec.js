@@ -2,6 +2,8 @@ import Samples from '@/views/Samples'
 import Modal from '@/components/Modal'
 import { mount, localVue } from '../testHelper'
 import flushPromises from 'flush-promises'
+import Libraries from '../../data/libraries'
+
 
 describe('Samples.vue', () => {
 
@@ -111,7 +113,7 @@ describe('Samples.vue', () => {
 
       let modal = wrapper.find(Modal)
       samples.libraryRequest.create = jest.fn()
-      samples.libraryRequest.create.mockResolvedValue({status: 201, data: {}})
+      samples.libraryRequest.create.mockResolvedValue(Libraries)
 
       modal.vm.$emit('selectEnzyme', 2)
       let expectedBody = {data: {attributes: {libraries: [{enzyme_id: 2, sample_id: 1}]}, type: "libraries"}}
