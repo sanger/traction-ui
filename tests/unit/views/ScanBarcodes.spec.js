@@ -9,6 +9,7 @@ import Request from '@/api/Request'
 import Vue from 'vue'
 import VueRouter from 'vue-router'
 import Table from '@/views/Table'
+import Alert from '@/components/Alert'
 
 describe('Scan Barcodes', () => {
 
@@ -182,4 +183,17 @@ describe('Scan Barcodes', () => {
 
   })
 
+  describe('alert', () => {
+    it('has a alert', () => {
+      expect(wrapper.contains(Alert)).toBe(true)
+    })
+  })
+
+  describe('#showAlert', () => {
+    it('passes the message to function on emit event', () => {
+      wrapper.setData({ message: 'show this message' })
+      scan.showAlert()
+      expect(wrapper.find(Alert).html()).toMatch('show this message')
+    })
+  })
 })

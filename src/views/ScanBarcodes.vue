@@ -1,11 +1,14 @@
 <template>
   <div class="scan-barcodes">
+    <alert ref='alert'></alert>
+
     <div class="form-group">
       <label for="barcodes">Barcodes:</label>
       <textarea type="text" v-model="barcodes" class="form-control" rows="10" cols="10" name="barcodes" id="barcodes" />
-      <b-button id="findSequencescapeTubes" variant="success" @click="handleSequencescapeTubes">Find Sequencescape Tubes</b-button>
-      <b-button id="findTractionTubes" variant="success" @click="handleTractionTubes">Find Traction Tubes</b-button>
     </div>
+    <b-button class="scanButton" id="findSequencescapeTubes" variant="success" @click="handleSequencescapeTubes" :disabled="this.barcodes.length === 0">Import Sequencescape Tubes</b-button>
+    <b-button class="scanButton" id="findTractionTubes" variant="success" @click="handleTractionTubes" :disabled="this.barcodes.length === 0">Find Traction Tubes</b-button>
+
   </div>
 </template>
 
@@ -13,6 +16,8 @@
 
 import ComponentFactory from '@/mixins/ComponentFactory'
 import Api from '@/api'
+import Alert from '@/components/Alert'
+
 
 export default {
   name: 'ScanBarcodes',
@@ -26,16 +31,21 @@ export default {
     }
   },
   components: {
+    Alert
   },
   methods: {
     async handleSequencescapeTubes () {
       let tubes = await this.findTubes(this.sequencescapeTubeRequest)
       await this.exportSampleTubesIntoTraction(tubes)
       await this.handleTractionTubes()
+      this.showAlert()
     },
     async handleTractionTubes () {
       let tubes = await this.findTubes(this.tractionTubeRequest)
-      this.$router.push({name: 'Table', params: {items: tubes}})
+      if (tubes.some(t => t.material)) {
+          this.$router.push({name: 'Table', params: {items: tubes}})
+      }
+      this.showAlert()
     },
     async findTubes (request) {
       if(!this.queryString) return
@@ -75,6 +85,9 @@ export default {
         this.message = response.errors.message
         return response
       }
+    },
+    showAlert () {
+      return this.$refs.alert.show(this.message, 'primary')
     }
   },
   computed: {
@@ -96,7 +109,8 @@ export default {
     },
     sampleRequest () {
       return this.build(Api.Request, this.tractionConfig.resource('samples'))
-    }
+    },
+
   }
 }
 
@@ -105,5 +119,9 @@ export default {
 <style lang="scss">
   textarea {
     border: 1px solid;
+  }
+
+  .scanButton {
+    margin: 0.5rem;
   }
 </style>
