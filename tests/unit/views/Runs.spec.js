@@ -97,7 +97,7 @@ describe('Runs.vue', () => {
       expect(runs.message).toEqual("state state error message 1")
     })
   })
-
+  
   describe('#editRun', () => {
     it('routes to the NewRun view', () => {
       let existingRunItem = {id: 1}

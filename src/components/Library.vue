@@ -40,6 +40,7 @@ export default {
           return response
         } else {
           this.message = 'Library updated'
+          this.$emit('updateLibrary', response.deserialize.tubes[0].material)
           return response
         }
       } else {

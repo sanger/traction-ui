@@ -6,7 +6,8 @@
       <router-link to="/samples">Samples</router-link> |
       <router-link to="/libraries">Libraries</router-link> |
       <router-link to="/runs">Runs</router-link> |
-      <router-link to="/scanbarcodes">Scan Barcodes</router-link>
+      <router-link to="/scanbarcodes">Scan Barcodes</router-link> |
+      <router-link to="/run">Run</router-link>
     </div>
     <router-view/>
   </div>

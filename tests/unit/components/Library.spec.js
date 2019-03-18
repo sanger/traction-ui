@@ -45,23 +45,26 @@ describe('Library', () => {
 
   })
  
-  describe('finding the library', () => {
+  describe('updating the library', () => {
     beforeEach(() => {
       library.tubeRequest.get = jest.fn()
     })
 
     it('successfully', async () => {
       library.tubeRequest.get.mockResolvedValue(TubeJson)
-      response = await library.findLibrary()
+      let apiResponse = new Response(TubeJson)
+      response = await library.updateLibrary()
       expect(library.tubeRequest.get).toBeCalledWith({ filter: { barcode: library.queryString } })
       expect(response).toEqual(new Response(TubeJson))
       expect(library.message).toEqual('Library updated')
+      expect(wrapper.emitted().updateLibrary).toBeTruthy()
+      expect(wrapper.emitted().updateLibrary[0]).toEqual([apiResponse.deserialize.tubes[0].material])
     })
 
     it('unsuccessfully', async () => {
       let failedResponse = { 'data': { }, 'status': 500, 'statusText': 'Internal Server Error' }
       library.tubeRequest.get.mockReturnValue(failedResponse)
-      response = await library.findLibrary()
+      response = await library.updateLibrary()
       expect(library.tubeRequest.get).toBeCalledWith({ filter: { barcode: library.queryString } })
       expect(response).toEqual(new Response(failedResponse))
       expect(library.message).toEqual('there was an error')
@@ -70,20 +73,11 @@ describe('Library', () => {
     it('when there is no library', async () => {
       let emptyResponse = { 'data': { 'data': []}, 'status': 200, 'statusText': 'Success'}
       library.tubeRequest.get.mockReturnValue(emptyResponse)
-      response = await library.findLibrary()
+      response = await library.updateLibrary()
       expect(library.tubeRequest.get).toBeCalledWith({ filter: { barcode: library.queryString } })
       expect(response).toEqual(new Response(emptyResponse))
       expect(library.message).toEqual('There is no library')
     })
   })
 
-  describe('changing the library', () => {
-    beforeEach(() => {
-      library.tubeRequest.get = jest.fn()
-    })
-
-    it('emits an event', () => {
-      
-    })
-  })
 })
