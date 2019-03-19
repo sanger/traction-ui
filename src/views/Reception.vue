@@ -113,7 +113,7 @@ export default {
     selectedJSON(selected) {
       return selected.map(r =>
         Object.assign({
-          sequencescape_request_id: r.id,
+          external_id: r.id,
           name: r.name,
           species: r.species
         }

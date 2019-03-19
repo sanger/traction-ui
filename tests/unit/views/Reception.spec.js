@@ -177,7 +177,7 @@ describe('Reception.vue', () => {
 
       reception.receptionRequest.execute.mockResolvedValue(mockResponse)
 
-      reception.selected = [{sequencescape_request_id: 1}]
+      reception.selected = [{external_id: 1}]
       await reception.updateSequencescapeRequests()
       expect(reception.message).toEqual('Samples updated in SS')
     })
@@ -196,7 +196,7 @@ describe('Reception.vue', () => {
       }
 
       reception.receptionRequest.execute.mockReturnValue(mockResponse)
-      reception.selected = [{sequencescape_request_id: 1}]
+      reception.selected = [{external_id: 1}]
       let fn = reception.updateSequencescapeRequests()
       await expect(fn).rejects.toEqual(["name name error message 1, species species error message 1"])
       await flushPromises()
@@ -270,7 +270,7 @@ describe('Reception.vue', () => {
        species: "human"
       }]
 
-      let expected = [{ sequencescape_request_id: '4', name: 'sample_d', species: 'human' }]
+      let expected = [{ external_id: '4', name: 'sample_d', species: 'human' }]
       expect(reception.selectedJSON(selected)).toEqual(expected)
     })
   })
