@@ -11,8 +11,8 @@ describe('Samples.vue', () => {
 
     beforeEach(() => {
       mockSamples = [
-        { "id": "1", "name": "sample_d", "sequencescape_request_id": 4, "species": "human", "barcode": "TRAC-1", "created_at": "02/27/2019 04:05" },
-        { "id": "1", "name": "sample_d", "sequencescape_request_id": 4, "species": "human", "barcode": "TRAC-1", "created_at": "02/27/2019 04:05" }
+        { "id": "1", "name": "sample_d", "external_id": 4, "species": "human", "barcode": "TRAC-1", "created_at": "02/27/2019 04:05" },
+        { "id": "1", "name": "sample_d", "external_id": 4, "species": "human", "barcode": "TRAC-1", "created_at": "02/27/2019 04:05" }
       ]
 
       wrapper = mount(Samples, { localVue,

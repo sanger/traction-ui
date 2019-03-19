@@ -68,7 +68,7 @@ export default {
     async exportSampleTubesIntoTraction (tubes) {
       let sampleTubeJSON = tubes.map(t => Object.assign(
         {
-          sequencescape_request_id: t.samples[0].sanger_sample_id, // TODO: check
+          external_id: t.samples[0].id,
           name: t.name,
           species: t.samples[0].sample_metadata.sample_common_name
         }
