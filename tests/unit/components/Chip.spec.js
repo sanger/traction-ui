@@ -67,6 +67,13 @@ describe('Chip', () => {
       expect(chip.message).toEqual('There was an error')
     })
 
+    it('will be updated when the button is clicked', () => {
+      chip.updateChip = jest.fn()
+      input = wrapper.find('#barcode')
+      input.setValue('CHIP-2345')
+      expect(chip.updateChip).toBeCalled()
+    })
+
   })
 
 })

@@ -30,6 +30,10 @@ export default new Router({
       component: Run,
       props: true
     },
+    { path: '/run/:run',
+      component: Run,
+      props: true
+    },
     {
       path: '/table',
       name: 'Table',

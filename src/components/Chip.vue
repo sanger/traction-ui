@@ -1,6 +1,6 @@
 <template>
   <b-container class="chip">
-    <b-form-input id="barcode" v-model="localBarcode" type="text" />
+    <b-form-input id="barcode" v-model="localBarcode" type="text" @change="updateChip" />
     <flowcell v-for="(flowcell, index) in flowcells" v-bind="flowcell" v-bind:key="index"></flowcell>
   </b-container>
 </template>
@@ -38,7 +38,7 @@ export default {
     async updateChip () {
       let rawResponse = await this.request.update(this.payload)
       let response = new Api.Response(rawResponse[0])
-
+      console.log(response)
       if (response.successful) {
         this.message = 'Chip updated'
         return response
@@ -56,6 +56,7 @@ export default {
       return this.build(Api.Request, this.tractionConfig.resource('chips'))
     },
     payload () {
+      console.log(this.id)
       return {
         data: { 
           id: this.id,
@@ -70,5 +71,6 @@ export default {
   components: {
     Flowcell
   }
+
 }
 </script>
