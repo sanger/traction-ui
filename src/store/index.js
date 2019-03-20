@@ -1,14 +1,14 @@
 import Vuex from 'vuex';
 import Vue from 'vue';
 import Api from '@/api'
-import buildRequest from '@/api/BuildRequest'
+import buildRequestHelper from '@/api/BuildRequest'
 
 Vue.use(Vuex);
 
 export default new Vuex.Store({
   state: {
-    traction: buildRequest(Api.Config.traction),
-    sequencescape: buildRequest(Api.Config.sequencescape),
+    traction: buildRequestHelper(Api.Config.traction),
+    sequencescape: buildRequestHelper(Api.Config.sequencescape),
   },
   mutations: {
   },

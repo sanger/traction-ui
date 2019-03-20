@@ -1,11 +1,19 @@
-import buildRequest from '@/api/BuildRequest'
+import * as BuildRequest from '@/api/BuildRequest'
 import Api from '@/api'
 
 describe('BuildRequest', () => {
-  describe('buildRequest', () => {
 
+  describe('buildComponent', () => {
+    it('creates a new component with given props', () => {
+      let cmp = BuildRequest.buildComponent(Api.ConfigItem, {name: 'aname', apiNamespace: 'abc'})
+      expect(cmp.name).toEqual('aname')
+      expect(cmp.apiNamespace).toEqual('abc')
+    })
+  })
+
+  describe('buildRequestHelper', () => {
     it('returns an object with the api resources as keys', () => {
-      let request = buildRequest(Api.Config.traction)
+      let request = BuildRequest.buildRequestHelper(Api.Config.traction)
 
       expect(request).toHaveProperty('samples')
       expect(request).toHaveProperty('libraries')
@@ -17,7 +25,7 @@ describe('BuildRequest', () => {
     })
 
     it('returns an object where the api resources values are Request objects', () => {
-      let request = buildRequest(Api.Config.traction)
+      let request = BuildRequest.buildRequestHelper(Api.Config.traction)
 
       expect(request.samples).toHaveProperty('baseURL')
       expect(request.samples).toHaveProperty('apiNamespace')
