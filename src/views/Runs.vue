@@ -2,7 +2,7 @@
     <div class="runs">
       <alert ref='alert'></alert>
 
-      <b-button id="newRun" class="float-right" @click="createNewRun">Create New Run</b-button>
+      <b-button id="newRun" class="float-right" @click="showRun()">Create New Run</b-button>
 
       <b-col md="6" class="my-1">
         <b-input-group>
@@ -21,7 +21,7 @@
       >
 
         <template slot="actions" slot-scope="row">
-          <b-button size="sm" @click="editRun(row.item)" class="mr-1">
+          <b-button size="sm" @click="showRun(row.item.id)" class="mr-1">
             Edit Run
           </b-button>
         </template>
@@ -55,10 +55,6 @@ export default {
     }
   },
   methods: {
-    editRun(item) {
-      let runId = item.id
-      this.$router.push({name: 'NewRun', params: {runId: parseInt(runId)}})
-    },
     async getRuns () {
       let rawResponse = await this.runRequest.get()
       let response = new Api.Response(rawResponse)
@@ -72,20 +68,27 @@ export default {
         this.items = []
       }
     },
-    async createNewRun () {
-      let body = { data: { type: 'runs', attributes: { runs: [{ state: 'pending'}] }}}
-
-      let rawResponse = await this.runRequest.create(body)
-      let response = new Api.Response(rawResponse)
-
-      let runId
-      if (Object.keys(response.errors).length === 0) {
-        runId = response.deserialize.runs[0].id
-        this.$router.push({name: 'NewRun', params: {runId: parseInt(runId)}})
+    async createRun () {
+      let rawResponse = await this.runRequest.create(this.payload)
+      return new Api.Response(rawResponse)
+    },
+    async findRun (id) {
+      let rawResponse = await this.runRequest.find(id)
+      return new Api.Response(rawResponse)
+    },
+    async showRun (id) {
+      let response
+      if (id === undefined) {
+        response = await this.createRun()
       } else {
-        this.message = response.errors.message
-        this.showAlert
+        response = await this.findRun(id)
       }
+      if (response.successful) {
+        this.$router.push({name: 'Run', params: response.deserialize.runs[0]})
+      } else {
+        this.message = 'There was an error'
+      }
+
     },
     provider() {
       this.getRuns()
@@ -106,6 +109,16 @@ export default {
     },
     showAlert () {
       return this.$refs.alert.show(this.message, 'primary')
+    },
+    payload () {
+      return { 
+        data: { 
+          type: 'runs', 
+          attributes: { 
+            runs: [ { } ] 
+          }
+        }
+      }
     }
   }
 }

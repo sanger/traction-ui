@@ -1,7 +1,6 @@
 <template>
   <div class="run">
 
-
     <b-button id="startRun" variant="success" class="float-right" @click="startRun" :disabled="localState!=='pending'">Start Run</b-button>
     <b-button id="completeRun" variant="primary" class="float-right" @click="completeRun" :disabled="localState==='completed' || localState==='cancelled'">Complete Run</b-button>
     <b-button id="cancelRun" variant="danger" class="float-right" @click="cancelRun" :disabled="localState==='completed' || localState==='cancelled'">Cancel Run</b-button>
@@ -30,7 +29,7 @@ export default {
       type: [Number, String]
     },
     name: {
-      type: String
+      type: [Number, String]
     },
     state: {
       type: String,

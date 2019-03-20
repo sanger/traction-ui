@@ -4,7 +4,6 @@ import Reception from './views/Reception'
 import Samples from './views/Samples'
 import Libraries from './views/Libraries'
 import Runs from './views/Runs'
-import NewRun from './views/NewRun'
 import ScanBarcodes from './views/ScanBarcodes'
 import Run from '@/views/Run'
 
@@ -38,12 +37,6 @@ export default new Router({
       component: Runs
     },
     {
-      path: '/newrun',
-      name: 'NewRun',
-      component: NewRun,
-      props: true
-    },
-    {
       path: '/scanbarcodes',
       name: 'ScanBarcodes',
       component: ScanBarcodes
@@ -51,7 +44,8 @@ export default new Router({
     {
       path: '/run',
       name: 'Run',
-      component: Run
+      component: Run,
+      props: true
     }
   ]
 })

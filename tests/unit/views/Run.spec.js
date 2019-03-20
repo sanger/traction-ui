@@ -1,6 +1,5 @@
 import Run from '@/views/Run'
 import { mount, localVue } from '../testHelper'
-import flushPromises from 'flush-promises'
 
 describe('Run.vue', () => {
 
@@ -47,8 +46,8 @@ describe('Run.vue', () => {
   it('can have an name which will default to the id', () => {
     expect(run.name).toEqual(props.name)
 
-    const { name, ...propsNoName } = props
-    wrapper = mount(Run, { localVue, propsData: propsNoName } )
+    delete props.name
+    wrapper = mount(Run, { localVue, propsData: props } )
     run = wrapper.vm
     expect(run.localName).toEqual(props.id)
   })
