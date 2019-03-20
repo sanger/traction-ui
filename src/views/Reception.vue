@@ -1,5 +1,5 @@
 <template>
-  <div class="scan-barcodes">
+  <div class="reception">
     <alert ref='alert'></alert>
 
     <div class="form-group">
@@ -20,7 +20,7 @@ import Alert from '@/components/Alert'
 
 
 export default {
-  name: 'ScanBarcodes',
+  name: 'Reception',
   mixins: [ComponentFactory],
   props: {
   },
