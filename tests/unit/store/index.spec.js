@@ -1,7 +1,4 @@
 import Store from '@/store/index'
-import Vue from 'vue'
-import buildRequest from '@/api/BuildRequest'
-import Api from '@/api'
 
 describe('index', () => {
 
@@ -34,7 +31,7 @@ describe('index', () => {
     it('sequencescape', () => {
       expect(Store.getters.sequencescape).toEqual(Store.state.sequencescape)
     })
-    
+
     it('traction', () => {
       expect(Store.getters.traction).toEqual(Store.state.traction)
     })

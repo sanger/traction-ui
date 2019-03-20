@@ -17,7 +17,6 @@
 import ComponentFactory from '@/mixins/ComponentFactory'
 import Api from '@/api'
 import Alert from '@/components/Alert'
-import buildRequest from '@/api/BuildRequest'
 
 export default {
   name: 'ScanBarcodes',

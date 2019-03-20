@@ -1,6 +1,5 @@
-import Vue from 'vue';
 import Vuex from 'vuex';
-import ComponentFactory from '@/mixins/ComponentFactory'
+import Vue from 'vue';
 import Api from '@/api'
 import buildRequest from '@/api/BuildRequest'
 
