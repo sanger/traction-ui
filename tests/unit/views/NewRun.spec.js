@@ -2,7 +2,6 @@ import NewRun from '@/views/NewRun'
 import { mount, localVue } from '../testHelper'
 import VueRouter from 'vue-router'
 import Runs from '@/views/Runs'
-import Vuetify from 'vuetify'
 import Response from '@/api/Response'
 import RunNoLibraryJson from '../../data/run_no_library'
 import RunWithLibraryJson from '../../data/run_with_library'
@@ -18,7 +17,6 @@ describe('NewRun.vue', () => {
     const router = new VueRouter({ routes:
       [{ path: '/runs', name: 'Runs', component: Runs }]
     })
-    localVue.use(Vuetify)
 
     wrapper = mount(NewRun, {
       localVue,

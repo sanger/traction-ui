@@ -3,7 +3,8 @@ import LibraryBarcodeScanner from '@/components/LibraryBarcodeScanner'
 import flushPromises from 'flush-promises'
 import Response from '@/api/Response'
 import TubeWithLibrary from '../../data/tube_with_library'
-import TubeWithSample from '../../data/tubes_with_sample'
+import TractionTubesJson from '../../data/traction_tubes_with_sample'
+
 
 describe('LibraryBarcodeScanner.vue', () => {
 
@@ -113,7 +114,7 @@ describe('LibraryBarcodeScanner.vue', () => {
       wrapper.setData({libraryBarcode: validBarcode})
 
       scanner.tubeRequest.execute = jest.fn()
-      scanner.tubeRequest.execute.mockResolvedValue(TubeWithSample)
+      scanner.tubeRequest.execute.mockResolvedValue(TractionTubesJson)
 
       await scanner.getLibraryFromBarcode()
       expect(scanner.message).toEqual("This barcode does not contain a library")

@@ -1,16 +1,26 @@
 import Samples from '@/views/Samples'
-import SamplesJson from '../../data/samples'
 import Modal from '@/components/Modal'
 import { mount, localVue } from '../testHelper'
-import Response from '@/api/Response'
 import flushPromises from 'flush-promises'
+import Libraries from '../../data/libraries'
+
 
 describe('Samples.vue', () => {
 
-  let wrapper, samples
+  let wrapper, samples, mockSamples
 
     beforeEach(() => {
-      wrapper = mount(Samples, { localVue, methods: { provider() { return } } })
+      mockSamples = [
+        { "id": "1", "name": "sample_d", "external_id": 4, "species": "human", "barcode": "TRAC-1", "created_at": "02/27/2019 04:05" },
+        { "id": "1", "name": "sample_d", "external_id": 4, "species": "human", "barcode": "TRAC-1", "created_at": "02/27/2019 04:05" }
+      ]
+
+      wrapper = mount(Samples, { localVue,
+        propsData: {
+          items: mockSamples
+        },
+        methods: { provider() { return } }
+      })
       samples = wrapper.vm
     })
 
@@ -20,44 +30,7 @@ describe('Samples.vue', () => {
       expect(button).toEqual("Create Libraries with Enzyme")
     })
 
-  describe('sample request', () => {
-    it('will create a sample request', () => {
-      let request = samples.sampleRequest
-      expect(request.resource).toBeDefined()
-    })
-
-    it('will get a list of samples',  async () => {
-      samples.sampleRequest.execute = jest.fn()
-      samples.sampleRequest.execute.mockResolvedValue(SamplesJson)
-
-      await samples.getSamples()
-      let expected = new Response(SamplesJson)
-      expect(samples.items).toEqual(expected.deserialize.samples)
-    })
-  })
-
   describe('building the table', () => {
-
-    let mockSamples
-
-    beforeEach(() => {
-      mockSamples = new Response(SamplesJson).deserialize.samples
-
-      wrapper = mount(Samples, { localVue,
-        methods: {
-          provider() {
-            return
-          }
-        },
-        data() {
-          return {
-            items: mockSamples
-          }
-        }
-      })
-      samples = wrapper.vm
-    })
-
     it('contains the correct fields', () => {
       let headers = wrapper.findAll('th')
       for (let field of samples.fields) {
@@ -74,26 +47,12 @@ describe('Samples.vue', () => {
       beforeEach(() => {
         let checkboxes = wrapper.findAll(".selected")
         checkboxes.at(0).trigger('click')
-        checkboxes.at(1).trigger('click')
-        checkboxes.at(2).trigger('click')
       })
 
       it('will create a list of selected requests', () => {
-        expect(samples.selected.length).toEqual(3)
+        expect(samples.selected.length).toEqual(1)
       })
 
-    })
-
-    describe('filtering samples by barcode', () => {
-      it('filters the items in the table when given a barcode', () => {
-        wrapper.setData({ filter: 'TRAC-1' })
-        expect(wrapper.find('tbody').findAll('tr').length).toEqual(1)
-      })
-
-      it('filters the items in the table when given a list of barcodes', () => {
-        wrapper.setData({ filter: 'TRAC-1, TRAC-2, TRAC-3' })
-        expect(wrapper.find('tbody').findAll('tr').length).toEqual(3)
-      })
     })
   })
 
@@ -121,7 +80,7 @@ describe('Samples.vue', () => {
       samples.selected = [{id: 1}]
 
       await samples.createLibrariesInTraction(selectedEnzymeId)
-      expect(samples.message).toEqual("Libraries created in Traction")
+      expect(samples.message).toEqual("Libraries 1,2 created in Traction")
     })
 
     it('failure', async () => {
@@ -154,11 +113,19 @@ describe('Samples.vue', () => {
 
       let modal = wrapper.find(Modal)
       samples.libraryRequest.create = jest.fn()
-      samples.libraryRequest.create.mockResolvedValue({status: 201, data: {}})
+      samples.libraryRequest.create.mockResolvedValue(Libraries)
 
       modal.vm.$emit('selectEnzyme', 2)
       let expectedBody = {data: {attributes: {libraries: [{enzyme_id: 2, sample_id: 1}]}, type: "libraries"}}
       expect(samples.libraryRequest.create).toBeCalledWith(expectedBody)
+    })
+  })
+
+  describe('emitAlert', () => {
+    it('emits an event with the message', () => {
+      wrapper.setData({ message: 'show this message' })
+      samples.emitAlert
+      expect(wrapper.emitted().alert).toBeTruthy()
     })
   })
 

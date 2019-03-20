@@ -1,12 +1,14 @@
 <template>
   <div class="scan-barcodes">
-    <div class="form-group">
-      <label for="barcodes">barcodes:</label>
-      <textarea type="text" v-model="barcodes" class="form-control" rows="10" cols="10" name="barcodes" id="barcodes" />
-      <!-- b-button id="findSequencescapeTubes" variant="success" @click="findSequencescapeTubes" >find Sequencescape Tubes</b-button -->
-      <b-button id="findTractionTubes" variant="success" @click="findTractionTubes" >find Traction Tubes</b-button>
+    <alert ref='alert'></alert>
 
+    <div class="form-group">
+      <label for="barcodes">Barcodes:</label>
+      <textarea type="text" v-model="barcodes" class="form-control" rows="10" cols="10" name="barcodes" id="barcodes" />
     </div>
+    <b-button class="scanButton" id="findSequencescapeTubes" variant="success" @click="handleSequencescapeTubes" :disabled="this.barcodes.length === 0">Import Sequencescape Tubes</b-button>
+    <b-button class="scanButton" id="findTractionTubes" variant="success" @click="handleTractionTubes" :disabled="this.barcodes.length === 0">Find Traction Tubes</b-button>
+
   </div>
 </template>
 
@@ -14,6 +16,8 @@
 
 import ComponentFactory from '@/mixins/ComponentFactory'
 import Api from '@/api'
+import Alert from '@/components/Alert'
+
 
 export default {
   name: 'ScanBarcodes',
@@ -27,10 +31,68 @@ export default {
     }
   },
   components: {
+    Alert
+  },
+  methods: {
+    async handleSequencescapeTubes () {
+      let tubes = await this.findTubes(this.sequencescapeTubeRequest)
+      await this.exportSampleTubesIntoTraction(tubes)
+      await this.handleTractionTubes()
+      this.showAlert()
+    },
+    async handleTractionTubes () {
+      let tubes = await this.findTubes(this.tractionTubeRequest)
+      if (tubes.some(t => t.material)) {
+          this.$router.push({name: 'Table', params: {items: tubes}})
+      }
+      this.showAlert()
+    },
+    async findTubes (request) {
+      if(!this.queryString) return
+      let rawResponse = await request.get({filter: { barcode: this.queryString} })
+      let response = new Api.Response(rawResponse)
+
+      if (response.successful) {
+        if (response.empty) {
+          this.message = 'No tubes found'
+          return response
+        } else {
+          this.message = 'Tubes successfully found'
+          return response.deserialize.tubes
+        }
+      } else {
+        this.message = 'There was an error'
+        return response
+      }
+    },
+    async exportSampleTubesIntoTraction (tubes) {
+      let sampleTubeJSON = tubes.map(t => Object.assign(
+        {
+          external_id: t.samples[0].id,
+          name: t.name,
+          species: t.samples[0].sample_metadata.sample_common_name
+        }
+      ))
+
+      let body = { data: { attributes: { samples: sampleTubeJSON }}}
+      let rawResponse = await this.sampleRequest.create(body)
+      let response = new Api.Response(rawResponse)
+
+      if (response.successful) {
+        this.barcodes = response.deserialize.samples.map(s=> s.barcode).join('\n')
+        return response
+      } else {
+        this.message = response.errors.message
+        return response
+      }
+    },
+    showAlert () {
+      return this.$refs.alert.show(this.message, 'primary')
+    }
   },
   computed: {
     queryString () {
-      if (this.barcodes === undefined || !this.barcodes.length) return '' 
+      if (this.barcodes === undefined || !this.barcodes.length) return ''
       return this.barcodes.split('\n').filter(Boolean).join(',')
     },
     tractionConfig () {
@@ -45,34 +107,10 @@ export default {
     tractionTubeRequest () {
       return this.build(Api.Request, this.tractionConfig.resource('tubes'))
     },
-    tubeRequest () {
-      return this.build(Api.Request, this.tractionConfig.resource('tubes'))
-    }
-  },
-  methods: {
-    async findTubes (request) {
-      if(!this.queryString) return
-      let rawResponse = await request.get({filter: { barcode: this.queryString} })
-      let response = new Api.Response(rawResponse)
-      if (response.successful) {
-        if (response.empty) {
-          this.message = 'no tubes found'
-          return response
-        } else {
-          this.message = 'tubes successfully found'
-          return response.deserialize.tubes
-        }
-      } else {
-        this.message = 'there was an error'
-        return response
-      }
+    sampleRequest () {
+      return this.build(Api.Request, this.tractionConfig.resource('samples'))
     },
-    async findSequencescapeTubes () {
-      return this.findTubes(this.sequencescapeTubeRequest)
-    },
-    async findTractionTubes () {
-      return this.findTubes(this.tractionTubeRequest)
-    }
+
   }
 }
 
@@ -81,5 +119,9 @@ export default {
 <style lang="scss">
   textarea {
     border: 1px solid;
+  }
+
+  .scanButton {
+    margin: 0.5rem;
   }
 </style>

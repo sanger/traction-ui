@@ -1,17 +1,23 @@
 import Libraries from '@/views/Libraries'
 import { mount, localVue } from '../testHelper'
-import LibrariesJson from '../../data/libraries'
-import Response from '@/api/Response'
 import flushPromises from 'flush-promises'
 
 describe('Libraries.vue', () => {
 
-  let wrapper, libraries
+  let wrapper, libraries, mockLibraries
 
   describe('library request', () => {
+    mockLibraries =  [
+      { "type": "libraries", "id": "6", "state": "pending", "barcode": "TRAC-8", "sample_name": "sample_d", "enzyme_name": "Nb.BsrDI", "created_at": "03/12/2019 11:49" },
+      { "type": "libraries", "id": "6", "state": "pending", "barcode": "TRAC-8", "sample_name": "sample_d", "enzyme_name": "Nb.BsrDI", "created_at": "03/12/2019 11:49" }
+    ]
 
     beforeEach(() => {
-      wrapper = mount(Libraries, { localVue, methods: { provider() { return } } })
+      wrapper = mount(Libraries, { localVue,
+        propsData: {
+          items: mockLibraries
+        }
+      })
       libraries = wrapper.vm
     })
 
@@ -20,57 +26,13 @@ describe('Libraries.vue', () => {
       expect(request.resource).toBeDefined()
     })
 
-    describe('#getLibraries', () => {
-      it('will get a list of libraries on success',  async () => {
-        libraries.libraryRequest.execute = jest.fn()
-        libraries.libraryRequest.execute.mockResolvedValue(LibrariesJson)
-
-        await libraries.getLibraries()
-        let expected = new Response(LibrariesJson)
-        expect(libraries.items).toEqual(expected.deserialize.libraries)
-      })
-
-
-      it('will return get an empty list on failure',  async () => {
-        let mockResponse = {
-          data: { errors: { library: ['error message 1'] }},
-          status: 422,
-          statusText: "Unprocessible entity"
-        }
-
-        libraries.libraryRequest.execute = jest.fn()
-        libraries.libraryRequest.execute.mockReturnValue(mockResponse)
-
-        await libraries.getLibraries()
-        await flushPromises()
-        expect(libraries.message).toEqual("library error message 1")
-        expect(libraries.items).toEqual([])
-      })
+    it('will get a list of libraries on success',  async () => {
+      expect(libraries.items).toEqual(mockLibraries)
     })
 
   })
 
   describe('building the table', () => {
-
-    let mockLibraries
-
-    beforeEach(() => {
-      mockLibraries = new Response(LibrariesJson).deserialize.libraries
-
-      wrapper = mount(Libraries, { localVue,
-        methods: {
-          provider() {
-            return
-          }
-        },
-        data() {
-          return {
-            items: mockLibraries
-          }
-        }
-      })
-      libraries = wrapper.vm
-    })
 
     it('contains the correct fields', () => {
       let headers = wrapper.findAll('th')
@@ -86,38 +48,21 @@ describe('Libraries.vue', () => {
   })
 
   describe('selecting libraries', () => {
-    let mockLibraries
 
     beforeEach(() => {
-      mockLibraries = new Response(LibrariesJson).deserialize.libraries
-
-      wrapper = mount(Libraries, { localVue,
-        methods: {
-          provider() {
-            return
-          }
-        },
-        data() {
-          return {
-            items: mockLibraries
-          }
-        }
-      })
-      libraries = wrapper.vm
-
       let checkboxes = wrapper.findAll(".selected")
       checkboxes.at(0).trigger('click')
-      checkboxes.at(1).trigger('click')
-      checkboxes.at(2).trigger('click')
     })
 
     it('will create a list of selected libraries', () => {
-      expect(libraries.selected.length).toEqual(3)
+      expect(libraries.selected.length).toEqual(1)
     })
 
     describe('deleting', () => {
       beforeEach(() => {
         libraries.libraryRequest.destroy = jest.fn()
+        let checkboxes = wrapper.findAll(".selected")
+        checkboxes.at(0).trigger('click')
       })
 
       it('successfully', async () => {
@@ -141,31 +86,11 @@ describe('Libraries.vue', () => {
 
   })
 
-  describe('filtering libraries', () => {
-    let mockLibraries
-
-    beforeEach(() => {
-      mockLibraries = new Response(LibrariesJson).deserialize.libraries
-
-      wrapper = mount(Libraries, { localVue,
-        methods: {
-          provider() {
-            return
-          }
-        },
-        data() {
-          return {
-            items: mockLibraries,
-            filter: mockLibraries[0].sample_name
-          }
-        }
-      })
-    })
-
-    it('will filter the libraries in the table', () => {
-      expect(wrapper.find('tbody').findAll('tr').length).toEqual(1)
-      expect(wrapper.find('tbody').findAll('tr').at(0).text()).toMatch(/sample2/)
+  describe('emitAlert', () => {
+    it('emits an event with the message', () => {
+      wrapper.setData({ message: 'show this message' })
+      libraries.emitAlert
+      expect(wrapper.emitted().alert).toBeTruthy()
     })
   })
-
 })
