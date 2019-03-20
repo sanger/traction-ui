@@ -1,9 +1,7 @@
 import Samples from '@/views/Samples'
 import Modal from '@/components/Modal'
 import { mount, localVue } from '../testHelper'
-import flushPromises from 'flush-promises'
 import Libraries from '../../data/libraries'
-
 
 describe('Samples.vue', () => {
 

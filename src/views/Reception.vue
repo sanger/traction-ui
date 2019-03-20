@@ -1,5 +1,5 @@
 <template>
-  <div class="scan-barcodes">
+  <div class="reception">
     <alert ref='alert'></alert>
 
     <div class="form-group">
@@ -19,7 +19,7 @@ import Alert from '@/components/Alert'
 import store from '@/store/index'
 
 export default {
-  name: 'ScanBarcodes',
+  name: 'Reception',
   props: {
   },
   data () {

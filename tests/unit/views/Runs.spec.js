@@ -5,7 +5,6 @@ import VueRouter from 'vue-router'
 import RunsJson from '../../data/runs'
 import Response from '@/api/Response'
 import Alert from '@/components/Alert'
-import flushPromises from 'flush-promises'
 
 describe('Runs.vue', () => {
 
