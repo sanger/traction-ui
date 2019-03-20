@@ -1,19 +1,8 @@
 <template>
   <div class="samples">
-    <alert ref='alert'></alert>
-
-    <b-col md="6" class="my-1">
-      <b-input-group>
-        <b-form-input v-model="filter" placeholder="Type to Filter by barcode" />
-        <b-input-group-append>
-          <b-button :disabled="!filter" @click="filter = ''">Clear</b-button>
-        </b-input-group-append>
-      </b-input-group>
-    </b-col>
-
     <b-table
        show-empty
-       :items="itemsFiltered"
+       :items="items"
        :fields="fields"
     >
       <template slot="selected" slot-scope="row">
@@ -21,15 +10,11 @@
       </template>
     </b-table>
 
-    <!-- Button to create libraries -->
-    <!-- Add check to disable button if no samples are selected -->
-    <modal @selectEnzyme="createLibrariesInTraction" :disabled=false class="float-right" ></modal>
-
+    <modal @selectEnzyme="createLibrariesInTraction" :disabled="this.selected.length === 0" class="float-right" ></modal>
   </div>
 </template>
 
 <script>
-import Alert from '@/components/Alert'
 import ComponentFactory from '@/mixins/ComponentFactory'
 import Modal from '@/components/Modal'
 import Api from '@/api'
@@ -38,6 +23,7 @@ export default {
   name: 'Samples',
   mixins: [ComponentFactory],
   props: {
+    items: Array
   },
   data () {
     return {
@@ -48,26 +34,13 @@ export default {
         { key: 'species', label: 'Species', sortable: true },
         { key: 'barcode', label: 'Barcode', sortable: true },
         { key: 'created_at', label: 'Created at', sortable: true },
+        { key: 'deactivated_at', label: 'Deactivated at', sortable: true },
       ],
       selected: [],
-      filter: null,
-      items: []
+      message: ''
     }
   },
   methods: {
-    async getSamples () {
-      let rawResponse = await this.sampleRequest.get()
-      let response = new Api.Response(rawResponse)
-
-      if (Object.keys(response.errors).length === 0) {
-        let samples = response.deserialize.samples
-        this.items = samples
-      } else {
-        this.message = response.errors.message
-        this.showAlert
-        this.items = []
-      }
-    },
     async createLibrariesInTraction (selectedEnzymeId) {
       let libraries = this.selected.map(item => { return {'sample_id': item.id, 'enzyme_id': selectedEnzymeId}})
 
@@ -76,44 +49,28 @@ export default {
       let response = new Api.Response(rawResponse)
 
       if (response.successful) {
-        this.message = 'Libraries created in Traction'
+        let newLibrariesID = response.deserialize.libraries.map(l => l.id)
+        let libraryText = newLibrariesID.length > 1 ? 'Libraries' : 'Library'
+        this.message = `${libraryText} ${newLibrariesID.join(',')} created in Traction`
       } else {
         this.message = response.errors.message
       }
-      this.showAlert
-    },
-    provider () {
-      this.getSamples()
+      this.emitAlert
     }
   },
   components: {
-    Alert,
     Modal
   },
-  created() {
-    this.provider()
-  },
   computed: {
-    sampleRequest () {
-      return this.build(Api.Request, this.tractionConfig.resource('samples'))
-    },
     libraryRequest () {
       return this.build(Api.Request, this.tractionConfig.resource('libraries'))
     },
     tractionConfig () {
       return this.build(Api.ConfigItem, Api.Config.traction)
     },
-    showAlert () {
-      return this.$refs.alert.show(this.message, 'primary')
+    emitAlert () {
+      return this.$emit('alert', this.message)
     },
-    itemsFiltered () {
-      if (this.filter) {
-        let filterList = this.filter.split(', ')
-        return this.items.filter(i => filterList.includes(i.barcode))
-      } else {
-        return this.items
-      }
-    }
   }
 }
 </script>

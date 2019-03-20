@@ -33,7 +33,7 @@
         },
         "attributes": {
           "name": "Sample1",
-          "sequencescape_request_id": 1,
+          "external_id": 1,
           "species": "Species1",
           "barcode": "TRAC-1"
         },
