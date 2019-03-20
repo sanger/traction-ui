@@ -14,13 +14,12 @@
 
 <script>
 
-import ComponentFactory from '@/mixins/ComponentFactory'
 import Api from '@/api'
 import Alert from '@/components/Alert'
+import store from '@/store/index'
 
 export default {
   name: 'ScanBarcodes',
-  mixins: [ComponentFactory],
   props: {
   },
   data () {
@@ -94,20 +93,14 @@ export default {
       if (this.barcodes === undefined || !this.barcodes.length) return ''
       return this.barcodes.split('\n').filter(Boolean).join(',')
     },
-    tractionConfig () {
-      return this.build(Api.ConfigItem, Api.Config.traction)
-    },
-    sequencescapeConfig () {
-      return this.build(Api.ConfigItem, Api.Config.sequencescape)
-    },
     sequencescapeTubeRequest () {
-      return this.build(Api.Request, this.sequencescapeConfig.resource('tubes'))
+      return store.getters.sequencescape.tubes
     },
     tractionTubeRequest () {
-      return this.build(Api.Request, this.tractionConfig.resource('tubes'))
+      return store.getters.traction.tubes
     },
     sampleRequest () {
-      return this.build(Api.Request, this.tractionConfig.resource('samples'))
+      return store.getters.traction.samples
     },
 
   }

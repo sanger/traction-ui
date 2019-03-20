@@ -11,14 +11,11 @@
 
 
 <script>
-import ApiConfig from '@/api/Config'
-import ConfigItem from '@/api/ConfigItem'
-import ComponentFactory from '@/mixins/ComponentFactory'
 import Api from '@/api'
+import store from '@/store/index'
 
 export default {
   name: 'Modal',
-  mixins: [ComponentFactory],
   data () {
     return {
       selectedEnzymeId: null,
@@ -71,10 +68,7 @@ export default {
   },
   computed: {
     enzymeRequest () {
-      return this.build(Api.Request, this.tractionConfig.resource('enzymes'))
-    },
-    tractionConfig () {
-      return this.build(ConfigItem, ApiConfig.traction)
+      return store.getters.traction.enzymes
     }
   }
 }

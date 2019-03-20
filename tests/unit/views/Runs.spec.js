@@ -60,7 +60,6 @@ describe('Runs.vue', () => {
       runs.runRequest.execute.mockResolvedValue(mockResponse)
 
       await runs.getRuns()
-      await flushPromises()
       expect(runs.message).toEqual("runs error message 1")
       expect(runs.items).toEqual([])
     })

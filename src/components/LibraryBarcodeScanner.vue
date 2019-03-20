@@ -5,12 +5,11 @@
 </template>
 
 <script>
-import ComponentFactory from '@/mixins/ComponentFactory'
 import Api from '@/api'
+import store from '@/store/index'
 
 export default {
   name: 'LibraryBarcodeScanner',
-  mixins: [ComponentFactory],
   props: {
     flowcell: Object
   },
@@ -68,14 +67,12 @@ export default {
     }
   },
   computed: {
-    tractionConfig () {
-      return this.build(Api.ConfigItem, Api.Config.traction)
-    },
     tubeRequest () {
-      return this.build(Api.Request, {...this.tractionConfig.resource('tubes'), filter: { barcode: this.libraryBarcode }})
+      // use of filter updated in Steves refactor but may no currently work until merged
+      return store.getters.traction.tubes
     },
     flowcellsRequest () {
-      return this.build(Api.Request, this.tractionConfig.resource('flowcells'))
+      return store.getters.traction.flowcells
     },
     showAlert () {
       return this.$emit('alert', this.message)

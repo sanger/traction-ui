@@ -15,12 +15,11 @@
 </template>
 
 <script>
-import ComponentFactory from '@/mixins/ComponentFactory'
 import Api from '@/api'
+import store from '@/store/index'
 
 export default {
   name: 'Libraries',
-  mixins: [ComponentFactory],
   props: {
     items: Array
   },
@@ -56,10 +55,7 @@ export default {
   },
   computed: {
     libraryRequest () {
-      return this.build(Api.Request, this.tractionConfig.resource('libraries'))
-    },
-    tractionConfig () {
-      return this.build(Api.ConfigItem, Api.Config.traction)
+      return store.getters.traction.libraries
     },
     emitAlert () {
       return this.$emit('alert', this.message)

@@ -31,14 +31,13 @@
 </template>
 
 <script>
-import ComponentFactory from '@/mixins/ComponentFactory'
 import Api from '@/api'
 import Alert from '@/components/Alert'
 import LibraryBarcodeScanner from '@/components/LibraryBarcodeScanner'
+import store from '@/store/index'
 
 export default {
   name: 'NewRun',
-  mixins: [ComponentFactory],
   props: {
     runId: {
       type: Number,
@@ -133,16 +132,13 @@ export default {
   },
   computed: {
     runRequest () {
-      return this.build(Api.Request, this.tractionConfig.resource('runs'))
+      return store.getters.traction.runs
     },
     chipsRequest () {
-      return this.build(Api.Request, this.tractionConfig.resource('chips'))
+      return store.getters.traction.chips
     },
     flowcellsRequest () {
-      return this.build(Api.Request, this.tractionConfig.resource('flowcells'))
-    },
-    tractionConfig () {
-      return this.build(Api.ConfigItem, Api.Config.traction)
+      return store.getters.traction.flowcells
     },
     showAlert () {
       return this.$refs.alert.show(this.message, 'primary')

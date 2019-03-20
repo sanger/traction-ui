@@ -101,7 +101,6 @@ describe('Samples.vue', () => {
       samples.selected = [{id: 1}]
 
       await samples.createLibrariesInTraction(selectedEnzymeId)
-      await flushPromises()
       expect(samples.message).toEqual("name name error message 1")
     })
   })

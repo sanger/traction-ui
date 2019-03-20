@@ -33,12 +33,11 @@
 
 <script>
 import Alert from '@/components/Alert'
-import ComponentFactory from '@/mixins/ComponentFactory'
 import Api from '@/api'
+import store from '@/store/index'
 
 export default {
   name: 'Runs',
-  mixins: [ComponentFactory],
   props: {
   },
   data () {
@@ -99,10 +98,7 @@ export default {
   },
   computed: {
     runRequest () {
-      return this.build(Api.Request, this.tractionConfig.resource('runs'))
-    },
-    tractionConfig () {
-      return this.build(Api.ConfigItem, Api.Config.traction)
+      return store.getters.traction.runs
     },
     showAlert () {
       return this.$refs.alert.show(this.message, 'primary')
