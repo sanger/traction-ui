@@ -16,8 +16,8 @@
 
 <script>
 import Modal from '@/components/Modal'
-import Api from '@/api'
 import store from '@/store/index'
+import handlePromise from '@/api/PromiseHelper'
 
 export default {
   name: 'Samples',
@@ -44,8 +44,9 @@ export default {
       let libraries = this.selected.map(item => { return {'sample_id': item.id, 'enzyme_id': selectedEnzymeId}})
 
       let body = { data: { type: 'libraries', attributes: { libraries: libraries }}}
-      let rawResponse = await this.libraryRequest.create(body)
-      let response = new Api.Response(rawResponse)
+
+      let promise = this.libraryRequest.create(body)
+      let response = await handlePromise(promise)
 
       if (response.successful) {
         let newLibrariesID = response.deserialize.libraries.map(l => l.id)
