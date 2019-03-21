@@ -54,17 +54,9 @@ export default {
     }
   },
   methods: {
+    // returns a Promise object
     async execute(type, ...params) {
-      if (this.loading) return
-      this.loading = true
-      let response
-      try {
-        response = await this.api[type](...params)
-      } catch(resp) {
-        response = resp
-      }
-      this.loading = false
-      return response
+      return this.api[type](...params)
     },
     // build query parameters
     buildQuery(queryParameters = {}) {
@@ -91,17 +83,17 @@ export default {
     create (data) {
       return this.execute('post', this.resource, data)
     },
-    async update (data) {
-      let response = []
+    update (data) {
+      let promises = []
       for (let item of (Array.isArray(data) ? data : [data])) {
-        response.push(await this.execute('patch', `${this.resource}/${item.data.id}`, item))
+        promises.push(this.execute('patch', `${this.resource}/${item.data.id}`, item))
       }
-      return response
+      return promises
     },
-    async destroy (ids) {
+    destroy (ids) {
       let response = []
       for (let item of (Array.isArray(ids) ? ids : [ids])) {
-        response.push(await this.execute('delete', `${this.resource}/${item}`))
+        response.push(this.execute('delete', `${this.resource}/${item}`))
       }
       return response
     }
