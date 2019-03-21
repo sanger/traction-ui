@@ -5,8 +5,8 @@
 </template>
 
 <script>
-import Api from '@/api'
 import store from '@/store/index'
+import handlePromise from '@/api/PromiseHelper'
 
 export default {
   name: 'LibraryBarcodeScanner',
@@ -35,32 +35,33 @@ export default {
       }
     },
     async getLibraryFromBarcode() {
-      let rawResponse = await this.tubeRequest.get()
-      let response = new Api.Response(rawResponse).deserialize.tubes
+      let promise = this.tubeRequest.get({filter: { barcode: this.queryString} })
+      let response = await handlePromise(promise)
 
-      // assuming there is only one material with the tubes barcode
       var library = {}
-      if (response === undefined) {
+      if (response.successful) {
+        // assuming there is only one material with the tubes barcode
+        if (response.deserialize.tubes[0].material.type !== 'libraries') {
+          this.message = 'This barcode does not contain a library'
+          this.showAlert
+        } else {
+          library = response.deserialize.tubes[0].material
+        }
+      } else {
         this.message = 'This library does not exist'
         this.showAlert
-      } else if (response[0].material.type !== 'libraries') {
-        this.message = 'This barcode does not contain a library'
-        this.showAlert
-      } else {
-        library = response[0].material
       }
       return library
     },
     async updateFlowcellInTraction(flowcellId, libraryId) {
       let requestBody = { data: { type: 'flowcells', id: flowcellId, attributes: { library_id: libraryId }} }
 
-      let rawResponse = await this.flowcellsRequest.update(requestBody)
-      let response = new Api.Response(rawResponse[0])
+      let promises = this.flowcellsRequest.update(requestBody)
+      let response = await handlePromise(promises[0])
 
-      if (Object.keys(response.errors).length === 0) {
+      if (response.successful) {
         this.message = 'Library added to flowcell'
         this.showAlert
-
       } else {
         this.message = response.errors.message
       }
@@ -76,6 +77,9 @@ export default {
     },
     showAlert () {
       return this.$emit('alert', this.message)
+    },
+    queryString () {
+      return this.libraryBarcode.replace('\n','')
     }
   }
 }

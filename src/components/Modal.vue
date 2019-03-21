@@ -9,10 +9,9 @@
 
 </template>
 
-
 <script>
-import Api from '@/api'
 import store from '@/store/index'
+import handlePromise from '@/api/PromiseHelper'
 
 export default {
   name: 'Modal',
@@ -45,10 +44,10 @@ export default {
       this.$refs.enzymeModal.hide()
     },
     async getEnzymeOptions () {
-      let rawResponse = await this.enzymeRequest.get()
-      let response = new Api.Response(rawResponse)
+      let promise = this.enzymeRequest.get()
+      let response = await handlePromise(promise)
 
-      if (Object.keys(response.errors).length === 0) {
+      if (response.successful) {
         let enzymes = response.deserialize.enzymes
         let enzymeOptions = enzymes.map((enzyme, index) => Object.assign({ value: index+1, text: enzyme.name }))
         enzymeOptions.unshift({ value: null, text: "Please select an option" })

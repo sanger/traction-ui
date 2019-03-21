@@ -72,7 +72,7 @@ describe('Request', () => {
           request.api.get.mockResolvedValue(mockResponse)
 
           let promise = request.execute('get')
-          await expect(promise).resolves.toEqual(mockResponse);
+          await expect(promise).resolves.toEqual(mockResponse)
         })
 
         it('rejects promise to an appropriate response if there is an error', async () => {
@@ -80,7 +80,7 @@ describe('Request', () => {
           request.api.get.mockRejectedValue(mockResponse)
 
           let promise = request.execute('get')
-          await expect(promise).rejects.toEqual(mockResponse);
+          await expect(promise).rejects.toEqual(mockResponse)
         })
 
         it('returns a promise', () => {
@@ -106,7 +106,7 @@ describe('Request', () => {
 
         let promise = request.get()
         expect(request.api.get).toBeCalled
-        expect(promise).resolves.toEqual(mockResponse);
+        expect(promise).resolves.toEqual(mockResponse)
       })
 
       it('find', () => {
@@ -117,7 +117,7 @@ describe('Request', () => {
 
         let promise = request.find(id)
         expect(request.api.get).toBeCalled
-        expect(promise).resolves.toEqual(mockResponse);
+        expect(promise).resolves.toEqual(mockResponse)
       })
 
       it('create', () => {
@@ -128,7 +128,7 @@ describe('Request', () => {
 
         let promise = request.create(data)
         expect(request.api.post).toBeCalled
-        expect(promise).resolves.toEqual(mockResponse);
+        expect(promise).resolves.toEqual(mockResponse)
       })
 
       describe('update', () => {
@@ -145,23 +145,23 @@ describe('Request', () => {
         })
 
         it('single', () => {
-          let promise = new Promise()
+          let promise = new Promise(() => {})
           request.api.patch.mockReturnValue(promise)
 
           let promises = request.update(data[0])
 
           expect(request.api.patch).toBeCalledWith(`${request.resource}/1`, data[0])
-          expect(promises).toEqual([promise]);
+          expect(promises).toEqual([promise])
         })
 
         it('multiple', () => {
-          let promise = new Promise()
+          let promise = new Promise(() => {})
           request.api.patch.mockReturnValue(promise)
 
           let promises = request.update(data)
 
           expect(request.api.patch).toBeCalledTimes(data.length)
-          expect(promises).toEqual([promise, promise, promise, promise, promise]);
+          expect(promises).toEqual([promise, promise, promise, promise, promise])
         })
 
       })
@@ -172,7 +172,7 @@ describe('Request', () => {
         })
 
         it('single', () => {
-          let promise = new Promise()
+          let promise = new Promise(() => {})
           request.api.delete.mockReturnValue(promise)
 
           let promises = request.destroy(1)
@@ -182,13 +182,13 @@ describe('Request', () => {
         })
 
         it('multiple', () => {
-          let promise = new Promise()
+          let promise = new Promise(() => {})
           request.api.delete.mockReturnValue(promise)
 
           let promises = request.destroy([1,2,3,4,5])
 
           expect(request.api.delete).toBeCalledTimes(data.length)
-          expect(promises).toEqual([promise, promise, promise, promise, promise]);
+          expect(promises).toEqual([promise, promise, promise, promise, promise])
         })
 
       })

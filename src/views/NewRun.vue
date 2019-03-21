@@ -31,10 +31,10 @@
 </template>
 
 <script>
-import Api from '@/api'
 import Alert from '@/components/Alert'
 import LibraryBarcodeScanner from '@/components/LibraryBarcodeScanner'
 import store from '@/store/index'
+import handlePromise from '@/api/PromiseHelper'
 
 export default {
   name: 'NewRun',
@@ -44,6 +44,7 @@ export default {
       required: true
     }
   },
+
   data () {
     return {
       flowcellOne: { library: {}},
@@ -59,10 +60,10 @@ export default {
     async updateBarcode() {
       let requestBody = { data: { type: 'chips', id: this.chipId, attributes: { barcode: this.chipBarcode }} }
 
-      let rawResponse = await this.chipsRequest.update(requestBody)
-      let response = new Api.Response(rawResponse[0])
+      let promises = this.chipsRequest.update(requestBody)
+      let response = await handlePromise(promises[0])
 
-      if (Object.keys(response.errors).length === 0) {
+      if (response.successful) {
         this.message = 'Chip barcode updated'
       } else {
         this.message = response.errors.message
@@ -70,12 +71,12 @@ export default {
       this.showAlert
     },
     async getRun(id) {
-      let rawRun = await this.runRequest.find(id)
-      let response = new Api.Response(rawRun)
+      let promise = this.runRequest.find(id)
+      let response = await handlePromise(promise)
+
       let run = response.deserialize.runs[0]
 
-      if (Object.keys(response.errors).length === 0) {
-
+      if (response.successful) {
         let chipBarcode = ''
         if (run.chip.barcode) {
           chipBarcode = run.chip.barcode
@@ -104,10 +105,10 @@ export default {
     async updateRunState(state){
       let requestBody = { data: { type: 'runs', id: this.id, attributes: { state: state }} }
 
-      let rawResponse = await this.runRequest.update(requestBody)
-      let response = new Api.Response(rawResponse[0])
+      let promises = this.runRequest.update(requestBody)
+      let response = await handlePromise(promises[0])
 
-      if (Object.keys(response.errors).length === 0) {
+      if (response.successful) {
         this.message = 'Sequencing Run ' + state
       } else {
         this.message = response.errors.message
@@ -136,9 +137,6 @@ export default {
     },
     chipsRequest () {
       return store.getters.traction.chips
-    },
-    flowcellsRequest () {
-      return store.getters.traction.flowcells
     },
     showAlert () {
       return this.$refs.alert.show(this.message, 'primary')

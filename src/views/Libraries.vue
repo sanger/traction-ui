@@ -15,8 +15,8 @@
 </template>
 
 <script>
-import Api from '@/api'
 import store from '@/store/index'
+import handlePromise from '@/api/PromiseHelper'
 
 export default {
   name: 'Libraries',
@@ -42,10 +42,10 @@ export default {
   },
   methods: {
     async deleteLibraries () {
-      let rawResponse = await this.libraryRequest.destroy(this.selected)
-      let responses = rawResponse.map(item => new Api.Response(item))
+      let promises = this.libraryRequest.destroy(this.selected)
+      let responses = await Promise.all(promises.map(promise => handlePromise(promise)))
 
-      if (responses.every(r => Object.keys(r.errors).length === 0)) {
+      if (responses.every(r => r.successful)) {
         this.message = `Libraries ${this.selected.join(',')} successfully deleted`
       } else {
         this.message = responses.map(r => r.errors.message)

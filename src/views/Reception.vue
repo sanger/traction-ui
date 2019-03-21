@@ -13,10 +13,9 @@
 </template>
 
 <script>
-
-import Api from '@/api'
 import Alert from '@/components/Alert'
 import store from '@/store/index'
+import handlePromise from '@/api/PromiseHelper'
 
 export default {
   name: 'Reception',
@@ -47,8 +46,9 @@ export default {
     },
     async findTubes (request) {
       if(!this.queryString) return
-      let rawResponse = await request.get({filter: { barcode: this.queryString} })
-      let response = new Api.Response(rawResponse)
+
+      let promise = request.get({filter: { barcode: this.queryString} })
+      let response = await handlePromise(promise)
 
       if (response.successful) {
         if (response.empty) {
@@ -73,14 +73,16 @@ export default {
       ))
 
       let body = { data: { attributes: { samples: sampleTubeJSON }}}
-      let rawResponse = await this.sampleRequest.create(body)
-      let response = new Api.Response(rawResponse)
+
+      let promise = this.sampleRequest.create(body)
+      let response = await handlePromise(promise)
 
       if (response.successful) {
         this.barcodes = response.deserialize.samples.map(s=> s.barcode).join('\n')
         return response
       } else {
         this.message = response.errors.message
+        // throw
         return response
       }
     },

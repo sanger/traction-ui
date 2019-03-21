@@ -33,8 +33,8 @@
 
 <script>
 import Alert from '@/components/Alert'
-import Api from '@/api'
 import store from '@/store/index'
+import handlePromise from '@/api/PromiseHelper'
 
 export default {
   name: 'Runs',
@@ -59,10 +59,10 @@ export default {
       this.$router.push({name: 'NewRun', params: {runId: parseInt(runId)}})
     },
     async getRuns () {
-      let rawResponse = await this.runRequest.get()
-      let response = new Api.Response(rawResponse)
+      let promise = this.runRequest.get()
+      let response = await handlePromise(promise)
 
-      if (Object.keys(response.errors).length === 0) {
+      if (response.successful) {
         let runs = response.deserialize.runs
         this.items = runs
       } else {
@@ -74,11 +74,11 @@ export default {
     async createNewRun () {
       let body = { data: { type: 'runs', attributes: { runs: [{ state: 'pending'}] }}}
 
-      let rawResponse = await this.runRequest.create(body)
-      let response = new Api.Response(rawResponse)
+      let promise = this.runRequest.create(body)
+      let response = await handlePromise(promise)
 
       let runId
-      if (Object.keys(response.errors).length === 0) {
+      if (response.successful) {
         runId = response.deserialize.runs[0].id
         this.$router.push({name: 'NewRun', params: {runId: parseInt(runId)}})
       } else {

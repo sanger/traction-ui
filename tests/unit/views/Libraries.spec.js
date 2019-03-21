@@ -1,6 +1,5 @@
 import Libraries from '@/views/Libraries'
 import { mount, localVue } from '../testHelper'
-import flushPromises from 'flush-promises'
 
 describe('Libraries.vue', () => {
 
@@ -50,6 +49,18 @@ describe('Libraries.vue', () => {
   describe('selecting libraries', () => {
 
     beforeEach(() => {
+      mockLibraries =  [
+        { "type": "libraries", "id": "6", "state": "pending", "barcode": "TRAC-8", "sample_name": "sample_d", "enzyme_name": "Nb.BsrDI", "created_at": "03/12/2019 11:49" },
+        { "type": "libraries", "id": "6", "state": "pending", "barcode": "TRAC-8", "sample_name": "sample_d", "enzyme_name": "Nb.BsrDI", "created_at": "03/12/2019 11:49" }
+      ]
+
+      wrapper = mount(Libraries, { localVue,
+        propsData: {
+          items: mockLibraries
+        }
+      })
+      libraries = wrapper.vm
+
       let checkboxes = wrapper.findAll(".selected")
       checkboxes.at(0).trigger('click')
     })
@@ -60,27 +71,37 @@ describe('Libraries.vue', () => {
 
     describe('deleting', () => {
       beforeEach(() => {
-        libraries.libraryRequest.destroy = jest.fn()
-        let checkboxes = wrapper.findAll(".selected")
-        checkboxes.at(0).trigger('click')
+        libraries.libraryRequest.execute = jest.fn()
       })
 
       it('successfully', async () => {
-        let mockResponse = [{ status: 204, data: "" }]
-        libraries.libraryRequest.destroy.mockResolvedValue(mockResponse)
-        wrapper.find('#deleteLibraries').trigger('click')
-        await flushPromises()
+        let mockResponse =  {
+          data: {},
+          status: 204,
+          statusText: "OK"
+        }
+
+        let promise = new Promise((resolve) => {
+          resolve(mockResponse)
+        })
+
+        libraries.libraryRequest.execute.mockResolvedValue(promise)
+
+        await libraries.deleteLibraries()
         expect(libraries.message).toEqual(`Libraries ${libraries.selected.join(',')} successfully deleted`)
-        expect(libraries.libraryRequest.destroy).toBeCalledWith(libraries.selected)
       })
 
       it('unsuccessfully', async () => {
-        let mockResponse =  [{ data: { errors: { it: ['was a bust'] } }, status: 422 }]
-        libraries.libraryRequest.destroy.mockReturnValue(mockResponse)
-        wrapper.find('#deleteLibraries').trigger('click')
-        await flushPromises()
+        let mockResponse =  {  data: { errors: { it: ['was a bust'] } }, status: 422 }
+
+        let promise = new Promise((reject) => {
+          reject(mockResponse)
+        })
+
+        libraries.libraryRequest.execute.mockResolvedValue(promise)
+
+        await libraries.deleteLibraries()
         expect(libraries.message).toEqual(['it was a bust'])
-        expect(libraries.libraryRequest.destroy).toBeCalledWith(libraries.selected)
       })
     })
 

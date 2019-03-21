@@ -91,11 +91,11 @@ export default {
       return promises
     },
     destroy (ids) {
-      let response = []
+      let promises = []
       for (let item of (Array.isArray(ids) ? ids : [ids])) {
-        response.push(this.execute('delete', `${this.resource}/${item}`))
+        promises.push(this.execute('delete', `${this.resource}/${item}`))
       }
-      return response
+      return promises
     }
   },
   created () {

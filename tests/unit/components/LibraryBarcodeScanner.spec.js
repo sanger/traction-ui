@@ -96,11 +96,11 @@ describe('LibraryBarcodeScanner.vue', () => {
     })
 
     it('failure when library for barcode does not exist', async () => {
-      let mockResponse = {
+      let mockResponse = { data: {
         data: { errors: { tube: ['error message 1'] }},
         status: 422,
         statusText: "Unprocessible entity"
-      }
+      }}
 
       scanner.tubeRequest.execute = jest.fn()
       scanner.tubeRequest.execute.mockResolvedValue(mockResponse)
