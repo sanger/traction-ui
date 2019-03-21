@@ -6,6 +6,7 @@ import RunsJson from '../../data/runs'
 import RunJson from '../../data/runWithLibrary'
 import Response from '@/api/Response'
 import Alert from '@/components/Alert'
+import flushPromises from 'flush-promises'
 
 describe('Runs.vue', () => {
 
@@ -13,7 +14,10 @@ describe('Runs.vue', () => {
 
   beforeEach(() => {
     const router = new VueRouter({ routes:
-      [ { path: '/run', name: 'Run', component: Run, props: true } ]
+      [ 
+        { path: '/runs', name: 'Runs', component: Runs },
+        { path: '/run', name: 'Run', component: Run, props: {id: true} },
+        { path: '/run/:id', component: Run, props: true } ]
     })
 
     wrapper = mount(Runs, { localVue, router })
@@ -87,21 +91,6 @@ describe('Runs.vue', () => {
 
   })
 
-  describe('find run', () => {
-    beforeEach(() => {
-      runs.runRequest.find = jest.fn()
-    })
-
-    it('success', async () => {
-      let mockResponse = {status: 200, data: { data: [{id: 1, type: "runs" }]}}
-      runs.runRequest.find.mockResolvedValue(mockResponse)
-
-      let response = await runs.findRun(1)
-      expect(runs.runRequest.find).toBeCalledWith(1)
-      expect(response).toEqual(new Response(mockResponse))
-    })
-  })
-
   describe('show run', () => {
 
     let mockResponse
@@ -112,39 +101,35 @@ describe('Runs.vue', () => {
       runs.createRun.mockResolvedValue(mockResponse)
       await runs.showRun()
       expect(runs.createRun).toBeCalled()
-      expect(wrapper.vm.$route.name).toBe('Run')
-      expect(wrapper.vm.$route.params).toEqual(mockResponse.deserialize.runs[0])
+      expect(wrapper.vm.$route.path).toBe(`/run/${mockResponse.deserialize.runs[0].id}`)
     })
 
-    it('with an id will find a run', async () => {
-      mockResponse = new Response(RunJson)
-      runs.findRun = jest.fn()
-      runs.findRun.mockResolvedValue(mockResponse)
+    it('with an id will redirect to the run', async () => {
       await runs.showRun(1)
-      expect(runs.findRun).toBeCalledWith(1)
-      expect(wrapper.vm.$route.name).toBe('Run')
+      expect(wrapper.vm.$route.path).toBe('/run/1')
     })
 
     it('with an error will provide a message', async () => {
       mockResponse = [{ 'data': { }, 'status': 500, 'statusText': 'Internal Server Error' }]
-      runs.findRun = jest.fn()
-      runs.findRun.mockReturnValue(mockResponse)
-      await runs.showRun(1)
-      expect(runs.findRun).toBeCalled()
+      runs.createRun = jest.fn()
+      runs.createRun.mockReturnValue(mockResponse)
+      await runs.showRun()
       expect(runs.message).toEqual('There was an error')
     })
 
   })
 
-  it('will redirect to the run when newRun is clicked', () => {
+  it('will redirect to the run when newRun is clicked', async () => {
     runs.runRequest.execute = jest.fn()
     runs.runRequest.execute.mockResolvedValue(RunsJson)
     let mockResponse = new Response(RunJson)
+    let id = mockResponse.deserialize.runs[0].id
     runs.createRun = jest.fn()
     runs.createRun.mockResolvedValue(mockResponse)
     let button = wrapper.find('#newRun')
     button.trigger('click')
-    expect(wrapper.vm.$route.name).toBe('Run')
+    await flushPromises()
+    expect(wrapper.vm.$route.path).toBe(`/run/${id}`)
   })
  
   describe('filtering runs', () => {

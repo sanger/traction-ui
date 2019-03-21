@@ -1,7 +1,7 @@
-import ScanBarcodes from '@/views/ScanBarcodes'
+import Reception from '@/views/Reception'
 import { mount, localVue } from '../testHelper'
-import TractionTubesJson from '../../data/traction_tubes_with_sample'
-import SSTubesJson from '../../data/ss_tubes_with_sample'
+import TractionTubesJson from '../../data/tractionTubesWithSample'
+import SequencescapeTubesJson from '../../data/sequencescapeTubesWithSample'
 import SamplesJson from '../../data/samples'
 import Response from '@/api/Response'
 import flushPromises from 'flush-promises'
@@ -11,9 +11,9 @@ import VueRouter from 'vue-router'
 import Table from '@/views/Table'
 import Alert from '@/components/Alert'
 
-describe('Scan Barcodes', () => {
+describe('Reception', () => {
 
-  let wrapper, scan, barcodes, barcode, input
+  let wrapper, reception, barcodes, barcode, input
 
   beforeEach(() => {
     const router = new VueRouter({ routes:
@@ -21,8 +21,8 @@ describe('Scan Barcodes', () => {
     })
 
     barcodes = 'TRAC-1\nTRAC-2\nTRAC-3\nTRAC-4\nTRAC-5'
-    wrapper = mount(ScanBarcodes, { localVue, router } )
-    scan = wrapper.vm
+    wrapper = mount(Reception, { localVue, router } )
+    reception = wrapper.vm
   })
 
   describe('scanning in barcodes', () => {
@@ -30,25 +30,25 @@ describe('Scan Barcodes', () => {
       barcode = 'TRAC-1\n'
       input = wrapper.find('textarea')
       input.setValue(barcode)
-      expect(scan.barcodes).toEqual(barcode)
-      expect(scan.queryString).toEqual('TRAC-1')
+      expect(reception.barcodes).toEqual(barcode)
+      expect(reception.queryString).toEqual('TRAC-1')
     })
 
     it('multiple barcodes', () => {
       input = wrapper.find('textarea')
       input.setValue(barcodes)
-      expect(scan.barcodes).toEqual(barcodes)
-      expect(scan.queryString).toEqual('TRAC-1,TRAC-2,TRAC-3,TRAC-4,TRAC-5')
+      expect(reception.barcodes).toEqual(barcodes)
+      expect(reception.queryString).toEqual('TRAC-1,TRAC-2,TRAC-3,TRAC-4,TRAC-5')
     })
 
     // it('will build a request', () => {
-    //   scan.barcodes = barcodes
-    //   let request = scan.tubeRequest
+    //   reception.barcodes = barcodes
+    //   let request = reception.tubeRequest
     //   expect(request.include).toEqual('material')
     // })
 
     it('no barcodes', () => {
-      expect(scan.queryString).toEqual('')
+      expect(reception.queryString).toEqual('')
     })
   })
 
@@ -62,36 +62,36 @@ describe('Scan Barcodes', () => {
       cmp = Vue.extend(Request)
       request = new cmp({propsData: { baseURL: 'http://sequencescape.com', apiNamespace: 'api/v2', resource: 'requests'}})
       request.get = jest.fn()
-      scan.barcodes = barcodes
+      reception.barcodes = barcodes
     })
 
     it('successfully', async () => {
       request.get.mockResolvedValue(TractionTubesJson)
-      response = await scan.findTubes(request)
-      expect(request.get).toBeCalledWith({ filter: { barcode: scan.queryString } })
+      response = await reception.findTubes(request)
+      expect(request.get).toBeCalledWith({ filter: { barcode: reception.queryString } })
       expect(response).toEqual(new Response(TractionTubesJson).deserialize.tubes)
-      expect(scan.message).toEqual('Tubes successfully found')
+      expect(reception.message).toEqual('Tubes successfully found')
     })
 
     it('unsuccessfully', async () => {
       request.get.mockReturnValue(failedResponse)
-      response = await scan.findTubes(request)
-      expect(request.get).toBeCalledWith({ filter: { barcode: scan.queryString } })
+      response = await reception.findTubes(request)
+      expect(request.get).toBeCalledWith({ filter: { barcode: reception.queryString } })
       expect(response).toEqual(new Response(failedResponse))
-      expect(scan.message).toEqual('There was an error')
+      expect(reception.message).toEqual('There was an error')
     })
 
     it('when no tubes exist', async () => {
       request.get.mockReturnValue(emptyResponse)
-      response = await scan.findTubes(request)
-      expect(request.get).toBeCalledWith({ filter: { barcode: scan.queryString } })
+      response = await reception.findTubes(request)
+      expect(request.get).toBeCalledWith({ filter: { barcode: reception.queryString } })
       expect(response).toEqual(new Response(emptyResponse))
-      expect(scan.message).toEqual('No tubes found')
+      expect(reception.message).toEqual('No tubes found')
     })
 
     it('when there is no query string', async () => {
-      scan.barcodes = ''
-      response = await scan.findTubes(request)
+      reception.barcodes = ''
+      response = await reception.findTubes(request)
       expect(request.get).not.toBeCalled()
     })
   })
@@ -99,22 +99,22 @@ describe('Scan Barcodes', () => {
   describe('#handleTractionTubes', () => {
 
     beforeEach(() => {
-      scan.tractionTubeRequest.get = jest.fn()
+      reception.tractionTubeRequest.get = jest.fn()
     })
 
     it('will build a request', () => {
-      expect(scan.tractionTubeRequest).toBeDefined()
+      expect(reception.tractionTubeRequest).toBeDefined()
     })
 
     it('successfully', async () => {
-      scan.tractionTubeRequest.get.mockResolvedValue(TractionTubesJson)
+      reception.tractionTubeRequest.get.mockResolvedValue(TractionTubesJson)
       input = wrapper.find('textarea')
       input.setValue(barcodes)
       let button = wrapper.find('#findTractionTubes')
       button.trigger('click')
       await flushPromises()
-      expect(scan.message).toEqual('Tubes successfully found')
-      expect(scan.$route.path).toEqual('/table')
+      expect(reception.message).toEqual('Tubes successfully found')
+      expect(reception.$route.path).toEqual('/table')
     })
 
   })
@@ -125,17 +125,17 @@ describe('Scan Barcodes', () => {
 
     beforeEach(() => {
       sequencescapeBarcodes = 'DN1\nDN2\nDN3\nDN4\nDN5'
-      scan.sequencescapeTubeRequest.get = jest.fn()
-      scan.exportSampleTubesIntoTraction = jest.fn()
-      scan.handleTractionTubes = jest.fn()
+      reception.sequencescapeTubeRequest.get = jest.fn()
+      reception.exportSampleTubesIntoTraction = jest.fn()
+      reception.handleTractionTubes = jest.fn()
     })
 
     it('will build a request', () => {
-      expect(scan.sequencescapeTubeRequest).toBeDefined()
+      expect(reception.sequencescapeTubeRequest).toBeDefined()
     })
 
     it('successfully', async () => {
-      scan.sequencescapeTubeRequest.get.mockResolvedValue(SSTubesJson)
+      reception.sequencescapeTubeRequest.get.mockResolvedValue(SequencescapeTubesJson)
       const input = wrapper.find('textarea')
       input.setValue(sequencescapeBarcodes)
       let button = wrapper.find('#findSequencescapeTubes')
@@ -144,10 +144,10 @@ describe('Scan Barcodes', () => {
       await flushPromises()
       await flushPromises()
 
-      let tubes = new Response(SSTubesJson).deserialize.tubes
-      expect(scan.exportSampleTubesIntoTraction).toBeCalledWith(tubes)
-      expect(scan.handleTractionTubes).toBeCalled()
-      expect(scan.message).toEqual('Tubes successfully found')
+      let tubes = new Response(SequencescapeTubesJson).deserialize.tubes
+      expect(reception.exportSampleTubesIntoTraction).toBeCalledWith(tubes)
+      expect(reception.handleTractionTubes).toBeCalled()
+      expect(reception.message).toEqual('Tubes successfully found')
     })
 
   })
@@ -156,29 +156,29 @@ describe('Scan Barcodes', () => {
     let ssTubes
 
     beforeEach(() => {
-      scan.sampleRequest.create = jest.fn()
-      ssTubes = new Response(SSTubesJson).deserialize.tubes
+      reception.sampleRequest.create = jest.fn()
+      ssTubes = new Response(SequencescapeTubesJson).deserialize.tubes
     })
 
     it('successfully', async () => {
-      scan.sampleRequest.create.mockResolvedValue(SamplesJson)
-      let response = await scan.exportSampleTubesIntoTraction(ssTubes)
+      reception.sampleRequest.create.mockResolvedValue(SamplesJson)
+      let response = await reception.exportSampleTubesIntoTraction(ssTubes)
 
-      expect(scan.sampleRequest.create).toBeCalled()
+      expect(reception.sampleRequest.create).toBeCalled()
       let tractionSamplesTubesBarcode = new Response(SamplesJson).deserialize.samples.map(s=> s.barcode).join('\n')
-      expect(scan.barcodes).toEqual(tractionSamplesTubesBarcode)
+      expect(reception.barcodes).toEqual(tractionSamplesTubesBarcode)
       expect(response).toEqual(new Response(SamplesJson))
     })
 
     it('unsuccessfully', async () => {
       let failedResponse = { status: 422, statusText: 'Unprocessable Entity', data: { errors: { name: ['error message'] }} }
 
-      scan.sampleRequest.create.mockResolvedValue(failedResponse)
-      let response = await scan.exportSampleTubesIntoTraction(ssTubes)
+      reception.sampleRequest.create.mockResolvedValue(failedResponse)
+      let response = await reception.exportSampleTubesIntoTraction(ssTubes)
 
-      expect(scan.sampleRequest.create).toBeCalled()
+      expect(reception.sampleRequest.create).toBeCalled()
       expect(response).toEqual(new Response(failedResponse))
-      expect(scan.message).toEqual('name error message')
+      expect(reception.message).toEqual('name error message')
     })
 
   })
@@ -192,7 +192,7 @@ describe('Scan Barcodes', () => {
   describe('#showAlert', () => {
     it('passes the message to function on emit event', () => {
       wrapper.setData({ message: 'show this message' })
-      scan.showAlert()
+      reception.showAlert()
       expect(wrapper.find(Alert).html()).toMatch('show this message')
     })
   })

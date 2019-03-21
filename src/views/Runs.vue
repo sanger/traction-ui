@@ -72,23 +72,20 @@ export default {
       let rawResponse = await this.runRequest.create(this.payload)
       return new Api.Response(rawResponse)
     },
-    async findRun (id) {
-      let rawResponse = await this.runRequest.find(id)
-      return new Api.Response(rawResponse)
-    },
     async showRun (id) {
-      let response
+      let runId
       if (id === undefined) {
-        response = await this.createRun()
+        let response = await this.createRun()
+        if (response.successful) {
+          runId = response.deserialize.runs[0].id
+        } else {
+          this.message = 'There was an error'
+          return
+        }
       } else {
-        response = await this.findRun(id)
+        runId = id
       }
-      if (response.successful) {
-        this.$router.push({name: 'Run', params: response.deserialize.runs[0]})
-      } else {
-        this.message = 'There was an error'
-      }
-
+      this.$router.push({ path: `/run/${runId}` })
     },
     provider() {
       this.getRuns()

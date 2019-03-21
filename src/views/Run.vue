@@ -1,17 +1,21 @@
 <template>
   <div class="run">
 
-    <b-button id="startRun" variant="success" class="float-right" @click="startRun" :disabled="localState!=='pending'">Start Run</b-button>
-    <b-button id="completeRun" variant="primary" class="float-right" @click="completeRun" :disabled="localState==='completed' || localState==='cancelled'">Complete Run</b-button>
-    <b-button id="cancelRun" variant="danger" class="float-right" @click="cancelRun" :disabled="localState==='completed' || localState==='cancelled'">Cancel Run</b-button>
+    <router-link :to="{name: 'Runs'}">
+      <b-button id="backToRunsButton" class="float-right">Back</b-button>
+    </router-link>
+
+    <b-button id="startRun" variant="success" class="float-right" @click="startRun" :disabled="state!=='pending'">Start Run</b-button>
+    <b-button id="completeRun" variant="primary" class="float-right" @click="completeRun" :disabled="state==='completed' || state==='cancelled'">Complete Run</b-button>
+    <b-button id="cancelRun" variant="danger" class="float-right" @click="cancelRun" :disabled="state==='completed' || state==='cancelled'">Cancel Run</b-button>
 
     <h1 class="runInfo">Run</h1>
     <h1 class="runInfo" id="id">ID: {{ id }}</h1>
     <h2 class="runInfo" id="state">state: {{ state }}</h2>
 
-    <b-form-input class="runInfo" id="name" v-model="localName" type="text" @change="updateName" />
+    <b-form-input class="runInfo" id="name" v-model="name" placeholder="name" type="text" @change="updateName" />
 
-    <chip v-bind="chip"></chip>
+    <chip v-if="this.chip !== null" v-bind="chip"></chip>
 
   </div>
 </template>
@@ -27,25 +31,14 @@ export default {
   props: {
     id: {
       type: [Number, String]
-    },
-    name: {
-      type: [Number, String]
-    },
-    state: {
-      type: String,
-      default: 'pending'
-    },
-    chip: {
-      type: Object,
-      default: () => {
-        return {}
-      }
     }
   },
   data () {
     return {
-      localName: this.name || this.id,
-      localState: this.state
+      name: this.id,
+      state: null, 
+      chip: null,
+      message: ''
     }
   },
   methods: {
@@ -61,8 +54,19 @@ export default {
         return response
       }
     },
+    async getRun (id) {
+      let rawResponse = await this.request.find(id)
+      let response = new Api.Response(rawResponse)
+
+      if (response.successful) {
+        return response.deserialize.runs[0]
+      } else {
+        this.message = 'There was an error'
+        return { state: null, chip: null }
+      }
+    },
     updateName () {
-      this.updateRun({name: this.localName})
+      this.updateRun({name: this.name})
     },
     startRun() {
       this.updateRun({state: 'started'})
@@ -81,6 +85,11 @@ export default {
           attributes: attributes
         }
       }
+    },
+    async provider () {
+      let data = await this.getRun(this.id)
+      this.state = data.state
+      this.chip = data.chip
     }
   },
   components: {
@@ -93,6 +102,9 @@ export default {
     request () {
       return this.build(Api.Request, this.tractionConfig.resource('runs'))
     }
+  },
+  created () {
+    this.provider()
   }
 }
 </script>

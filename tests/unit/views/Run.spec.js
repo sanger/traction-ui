@@ -1,13 +1,22 @@
 import Run from '@/views/Run'
+import Runs from '@/views/Runs'
 import { mount, localVue } from '../testHelper'
+import RunWithLibraryJson from '../../data/runWithLibrary'
+import Response from '@/api/Response'
+import flushPromises from 'flush-promises'
+import VueRouter from 'vue-router'
 
 describe('Run.vue', () => {
 
-  let wrapper, run, props, input, button
+  let wrapper, run, props, input, button, router
 
   beforeEach(() => {
-    props = { id: 1, name: 'runrunrun', state: 'pending' }
-    wrapper = mount(Run, { localVue, propsData: props } )
+    props = { id: 1}
+    router = new VueRouter({ routes:
+      [{ path: '/runs', name: 'Runs', component: Runs }]
+    })
+    wrapper = mount(Run, { localVue, router, propsData: props, methods: { provider () { return } } } )
+    wrapper.setData({name: 'runrunrun', state: 'pending', chip: {}})
     run = wrapper.vm
   })
 
@@ -24,8 +33,7 @@ describe('Run.vue', () => {
   })
 
   it('will have a state', () => {
-    expect(run.state).toEqual(props.state)
-    expect(run.localState).toEqual(props.state)
+    expect(run.state).toEqual('pending')
   })
 
   it('shows the current id of the run', () => {
@@ -44,24 +52,71 @@ describe('Run.vue', () => {
   })
 
   it('can have an name which will default to the id', () => {
-    expect(run.name).toEqual(props.name)
-
-    delete props.name
-    wrapper = mount(Run, { localVue, propsData: props } )
+    wrapper = mount(Run, { localVue, router, propsData: props, methods: { provider () { return } } } )
     run = wrapper.vm
-    expect(run.localName).toEqual(props.id)
+    expect(run.name).toEqual(props.id)
   })
 
   it('allows the user to update the name', () => {
     input = wrapper.find('#name')
     input.setValue('runaway')
-    expect(run.localName).toEqual('runaway')
+    expect(run.name).toEqual('runaway')
   })
 
   it('can have a payload', () => {
     let data = run.payload({nick: 'nack'}).data
     expect(data.id).toEqual(run.id)
     expect(data.attributes).toEqual({nick: 'nack'})
+  })
+
+  describe('getting the run', () => {
+
+    
+
+    beforeEach(() => {
+      run.request.find = jest.fn()
+    })
+
+    it('successfully', async () => {
+      run.request.find.mockResolvedValue(RunWithLibraryJson)
+      let foundRun = await run.getRun(1)
+      let expectedRun = new Response(RunWithLibraryJson).deserialize.runs[0]
+      expect(run.request.find).toBeCalledWith(1)
+      expect(foundRun).toEqual(expectedRun)
+    })
+
+    it('unsuccessfully', async () => {
+      let failedResponse = { 'data': { }, 'status': 500, 'statusText': 'Internal Server Error' }
+      run.request.find.mockReturnValue(failedResponse)
+      await run.getRun(1)
+      expect(run.message).toEqual('There was an error')
+    })
+  })
+
+  describe('setting the data', () => {
+
+    let mockResponse
+
+    beforeEach(() => {
+    })
+
+    it('when the run exists', async () => {
+      mockResponse = new Response(RunWithLibraryJson).deserialize.runs[0]
+      wrapper = mount(Run, { localVue, router, propsData: props, methods: { getRun () { return mockResponse } } } )
+      run = wrapper.vm
+      await flushPromises()
+      expect(run.state).toEqual(mockResponse.state)
+      expect(run.chip).toEqual(mockResponse.chip)
+    })
+
+    it('when no run is returned', async () => {
+      mockResponse = { state: null, chip: null }
+      wrapper = mount(Run, { localVue, router, propsData: props, methods: { getRun () { return mockResponse } } } )
+      run = wrapper.vm
+      await flushPromises()
+      expect(run.state).toBeNull()
+      expect(run.chip).toBeNull()
+    })
   })
 
   describe('updating the run', () => {
@@ -121,7 +176,7 @@ describe('Run.vue', () => {
   describe('start button', () => {
 
     it('is disabled is the run state is not pending', () => {
-      run.localState = 'started'
+      run.state = 'started'
       button = wrapper.find('#startRun')
       expect(button.attributes('disabled')).toBeTruthy()
     })
@@ -135,13 +190,13 @@ describe('Run.vue', () => {
   describe('complete button', () => {
   
     it('is disabled is the run state is completed', () => {
-      run.localState = 'completed'
+      run.state = 'completed'
       button = wrapper.find('#completeRun')
       expect(button.attributes('disabled')).toBeTruthy()
     })
 
     it('is disabled is the run state is cancelled', () => {
-      run.localState = 'cancelled'
+      run.state = 'cancelled'
       button = wrapper.find('#completeRun')
       expect(button.attributes('disabled')).toBeTruthy()
     })
@@ -155,19 +210,19 @@ describe('Run.vue', () => {
   describe('cancel button', () => {
   
     it('is disabled is the run state is completed', () => {
-      run.localState = 'completed'
+      run.state = 'completed'
       button = wrapper.find('#cancelRun')
       expect(button.attributes('disabled')).toBeTruthy()
     })
 
     it('is disabled is the run state is cancelled', () => {
-      run.localState = 'cancelled'
+      run.state = 'cancelled'
       button = wrapper.find('#cancelRun')
       expect(button.attributes('disabled')).toBeTruthy()
     })
 
     it('is is enabled when the run state is pending or started', () => {
-      run.localState = 'pending'
+      run.state = 'pending'
       button = wrapper.find('#cancelRun')
       expect(button.attributes('disabled')).toBeFalsy()
     })

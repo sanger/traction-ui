@@ -71,6 +71,7 @@ describe('Chip', () => {
       chip.updateChip = jest.fn()
       input = wrapper.find('#barcode')
       input.setValue('CHIP-2345')
+      input.trigger('change')
       expect(chip.updateChip).toBeCalled()
     })
 
