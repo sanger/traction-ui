@@ -9,7 +9,7 @@ const cmp = Vue.extend({
 
 describe('Request', () => {
 
-  let headers, props, wrapper, request, response, mockResponse
+  let headers, props, wrapper, request, mockResponse
 
   describe('Request', () => {
     beforeEach(() => {
@@ -145,7 +145,7 @@ describe('Request', () => {
         })
 
         it('single', () => {
-          let promise = new Promise((resolve, reject) => {})
+          let promise = new Promise()
           request.api.patch.mockReturnValue(promise)
 
           let promises = request.update(data[0])
@@ -155,7 +155,7 @@ describe('Request', () => {
         })
 
         it('multiple', () => {
-          let promise = new Promise((resolve, reject) => {})
+          let promise = new Promise()
           request.api.patch.mockReturnValue(promise)
 
           let promises = request.update(data)
@@ -172,7 +172,7 @@ describe('Request', () => {
         })
 
         it('single', () => {
-          let promise = new Promise((resolve, reject) => {})
+          let promise = new Promise()
           request.api.delete.mockReturnValue(promise)
 
           let promises = request.destroy(1)
@@ -182,7 +182,7 @@ describe('Request', () => {
         })
 
         it('multiple', () => {
-          let promise = new Promise((resolve, reject) => {})
+          let promise = new Promise()
           request.api.delete.mockReturnValue(promise)
 
           let promises = request.destroy([1,2,3,4,5])
