@@ -7,7 +7,7 @@ const buildComponent = (component, props) => {
 }
 
 // api - an Api.Config resource
-// return an object with key of api resource, and value of a Request for the resource
+// return - an object with api resource key, and resource Request value
 
 const buildRequestHelper = (api) => {
   let config = buildComponent(Api.ConfigItem, api)

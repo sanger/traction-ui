@@ -4,8 +4,8 @@ describe('index', () => {
 
   describe('state', () => {
     it('has state', () => {
-      expect(Store.state).toHaveProperty('traction')
-      expect(Store.state).toHaveProperty('sequencescape')
+      expect(Store.state.traction).toBeDefined()
+      expect(Store.state.sequencescape).toBeDefined()
     })
 
     describe('traction', () => {
