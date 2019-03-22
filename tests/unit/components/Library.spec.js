@@ -1,6 +1,7 @@
 import { mount, localVue } from '../testHelper'
 import Library from '@/components/Library'
-import TubeJson from '../../data/tubeWithLibrary'
+import LibraryTubeJson from '../../data/tubeWithLibrary'
+import SampleTubeJson from '../../data/tractionTubesWithSample'
 import Response from '@/api/Response'
 
 describe('Library', () => {
@@ -51,11 +52,11 @@ describe('Library', () => {
     })
 
     it('successfully', async () => {
-      library.tubeRequest.get.mockResolvedValue(TubeJson)
-      let apiResponse = new Response(TubeJson)
+      library.tubeRequest.get.mockResolvedValue(LibraryTubeJson)
+      let apiResponse = new Response(LibraryTubeJson)
       response = await library.updateLibrary()
       expect(library.tubeRequest.get).toBeCalledWith({ filter: { barcode: library.queryString } })
-      expect(response).toEqual(new Response(TubeJson))
+      expect(response).toEqual(new Response(LibraryTubeJson))
       expect(library.message).toEqual('Library updated')
       expect(wrapper.emitted().updateLibrary).toBeTruthy()
       expect(wrapper.emitted().updateLibrary[0]).toEqual([apiResponse.deserialize.tubes[0].material])
@@ -77,6 +78,15 @@ describe('Library', () => {
       expect(library.tubeRequest.get).toBeCalledWith({ filter: { barcode: library.queryString } })
       expect(response).toEqual(new Response(emptyResponse))
       expect(library.message).toEqual('There is no library')
+    })
+
+    it('when it is not a library', async () => {
+      library.tubeRequest.get.mockResolvedValue(SampleTubeJson)
+      let apiResponse = new Response(SampleTubeJson)
+      response = await library.updateLibrary()
+      expect(library.tubeRequest.get).toBeCalledWith({ filter: { barcode: library.queryString } })
+      expect(response).toEqual(new Response(SampleTubeJson))
+      expect(library.message).toEqual('This is not a library')
     })
   })
 

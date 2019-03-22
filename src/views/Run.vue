@@ -15,7 +15,7 @@
 
     <b-form-input class="runInfo" id="name" v-model="name" placeholder="name" type="text" @change="updateName" />
 
-    <chip v-if="this.chip !== null" v-bind="chip"></chip>
+    <chip v-if="Boolean(this.chip)" v-bind="chip"></chip>
 
   </div>
 </template>

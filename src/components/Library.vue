@@ -30,6 +30,7 @@ export default {
     }
   },
   methods: {
+    //TODO: horrible logic needs refactoring
     async updateLibrary () {
       if(!this.queryString) return
       let rawResponse = await this.tubeRequest.get({filter: { barcode: this.queryString} })
@@ -39,9 +40,15 @@ export default {
           this.message = 'There is no library'
           return response
         } else {
-          this.message = 'Library updated'
-          this.$emit('updateLibrary', response.deserialize.tubes[0].material)
-          return response
+          let material = response.deserialize.tubes[0].material
+          if (material.type === 'libraries') {
+            this.message = 'Library updated'
+            this.$emit('updateLibrary', response.deserialize.tubes[0].material)
+            return response
+          } else {
+            this.message = 'This is not a library'
+            return response
+          }
         }
       } else {
         this.message = 'there was an error'
