@@ -82,7 +82,6 @@ describe('Library', () => {
 
     it('when it is not a library', async () => {
       library.tubeRequest.get.mockResolvedValue(SampleTubeJson)
-      let apiResponse = new Response(SampleTubeJson)
       response = await library.updateLibrary()
       expect(library.tubeRequest.get).toBeCalledWith({ filter: { barcode: library.queryString } })
       expect(response).toEqual(new Response(SampleTubeJson))
