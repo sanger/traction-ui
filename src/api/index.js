@@ -3,7 +3,7 @@ import ConfigItem from './ConfigItem'
 import JsonApi from './JsonApi'
 import Request from './Request'
 import Response from './Response'
-import BuildRequest from './BuildRequest'
+import ApiBuilder from './ApiBuilder'
 
 export default {
   Config,
@@ -11,5 +11,5 @@ export default {
   JsonApi,
   Request,
   Response,
-  BuildRequest
+  ApiBuilder
 }

@@ -1,45 +1,19 @@
-import * as BuildRequest from '@/api/BuildRequest'
+import * as ApiBuilder from '@/api/ApiBuilder'
 import Api from '@/api'
 
-describe('BuildRequest', () => {
+describe('ApiBuilder', () => {
 
   describe('buildComponent', () => {
     it('creates a new component with given props', () => {
-      let cmp = BuildRequest.buildComponent(Api.ConfigItem, {name: 'aname', apiNamespace: 'abc'})
+      let cmp = ApiBuilder.buildComponent(Api.ConfigItem, {name: 'aname', apiNamespace: 'abc'})
       expect(cmp.name).toEqual('aname')
       expect(cmp.apiNamespace).toEqual('abc')
     })
   })
 
-  // describe('buildRequestHelper', () => {
-  //   it('returns an object with the api resources as keys', () => {
-  //     let request = BuildRequest.buildRequestHelper(Api.Config.traction)
-  //
-  //     expect(request).toHaveProperty('samples')
-  //     expect(request).toHaveProperty('libraries')
-  //     expect(request).toHaveProperty('enzymes')
-  //     expect(request).toHaveProperty('runs')
-  //     expect(request).toHaveProperty('chips')
-  //     expect(request).toHaveProperty('flowcells')
-  //     expect(request).toHaveProperty('tubes')
-  //   })
-  //
-  //   it('returns an object where the api resources values are Request objects', () => {
-  //     let request = BuildRequest.buildRequestHelper(Api.Config.traction)
-  //
-  //     expect(request.samples).toHaveProperty('baseURL')
-  //     expect(request.samples).toHaveProperty('apiNamespace')
-  //     expect(request.samples).toHaveProperty('resource')
-  //     expect(request.samples).toHaveProperty('headers')
-  //     expect(request.samples).toHaveProperty('filter')
-  //     expect(request.samples).toHaveProperty('include')
-  //   })
-  //
-  // })
-
   describe('build', () => {
 
-  let api, apis
+    let api, apis
 
     beforeEach(() => {
       process.env.VUE_APP_API1_BASE_URL = 'http://api1'
@@ -70,8 +44,7 @@ describe('BuildRequest', () => {
          }
        }
      }
-     api = BuildRequest.build(apis, process.env)
-
+      api = ApiBuilder.build(apis, process.env)
     })
 
     it('will create an item for each api', () => {

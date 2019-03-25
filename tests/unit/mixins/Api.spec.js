@@ -1,5 +1,5 @@
 import ApiMixin from '@/mixins/Api'
-import build from '@/api/BuildRequest'
+import build from '@/api/ApiBuilder'
 import Config from '@/api/Config'
 import { mount, localVue, store } from '../testHelper'
 
