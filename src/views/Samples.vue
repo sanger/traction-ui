@@ -16,7 +16,6 @@
 
 <script>
 import Modal from '@/components/Modal'
-import store from '@/store/index'
 import handlePromise from '@/api/PromiseHelper'
 
 export default {
@@ -63,7 +62,7 @@ export default {
   },
   computed: {
     libraryRequest () {
-      return store.getters.traction.libraries
+      return this.$store.getters.traction.libraries
     },
     emitAlert () {
       return this.$emit('alert', this.message)

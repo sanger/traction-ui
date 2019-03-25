@@ -14,7 +14,6 @@
 
 <script>
 import Alert from '@/components/Alert'
-import store from '@/store/index'
 import handlePromise from '@/api/PromiseHelper'
 
 export default {
@@ -96,13 +95,13 @@ export default {
       return this.barcodes.split('\n').filter(Boolean).join(',')
     },
     sequencescapeTubeRequest () {
-      return store.getters.sequencescape.tubes
+      return this.$store.getters.sequencescape.tubes
     },
     tractionTubeRequest () {
-      return store.getters.traction.tubes
+      return this.$store.getters.traction.tubes
     },
     sampleRequest () {
-      return store.getters.traction.samples
+      return this.$store.getters.traction.samples
     },
 
   }

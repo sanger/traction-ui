@@ -1,4 +1,4 @@
-import { mount, localVue } from '../testHelper'
+import { mount, localVue, store } from '../testHelper'
 import Modal from '@/components/Modal'
 import flushPromises from 'flush-promises'
 import EnzymesJson from '../../data/enzymes'
@@ -11,6 +11,7 @@ describe('Modal.vue', () => {
   beforeEach(() => {
     wrapper = mount(Modal, {
       localVue,
+      store,
       propsData: {
         disabled: true
       },

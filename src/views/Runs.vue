@@ -33,7 +33,6 @@
 
 <script>
 import Alert from '@/components/Alert'
-import store from '@/store/index'
 import handlePromise from '@/api/PromiseHelper'
 
 export default {
@@ -98,7 +97,7 @@ export default {
   },
   computed: {
     runRequest () {
-      return store.getters.traction.runs
+      return this.$store.getters.traction.runs
     },
     showAlert () {
       return this.$refs.alert.show(this.message, 'primary')

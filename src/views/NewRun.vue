@@ -33,7 +33,6 @@
 <script>
 import Alert from '@/components/Alert'
 import LibraryBarcodeScanner from '@/components/LibraryBarcodeScanner'
-import store from '@/store/index'
 import handlePromise from '@/api/PromiseHelper'
 
 export default {
@@ -133,10 +132,10 @@ export default {
   },
   computed: {
     runRequest () {
-      return store.getters.traction.runs
+      return this.$store.getters.traction.runs
     },
     chipsRequest () {
-      return store.getters.traction.chips
+      return this.$store.getters.traction.chips
     },
     showAlert () {
       return this.$refs.alert.show(this.message, 'primary')

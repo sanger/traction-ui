@@ -1,5 +1,5 @@
 import Reception from '@/views/Reception'
-import { mount, localVue } from '../testHelper'
+import { mount, localVue, store } from '../testHelper'
 import TractionTubesJson from '../../data/tractionTubesWithSample'
 import SequencescapeTubesJson from '../../data/sequencescapeTubesWithSample'
 import SamplesJson from '../../data/samples'
@@ -21,7 +21,7 @@ describe('Reception', () => {
     })
 
     barcodes = 'TRAC-1\nTRAC-2\nTRAC-3\nTRAC-4\nTRAC-5'
-    wrapper = mount(Reception, { localVue, router } )
+    wrapper = mount(Reception, { localVue, router, store } )
     reception = wrapper.vm
   })
 

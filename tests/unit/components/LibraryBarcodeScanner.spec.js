@@ -1,4 +1,4 @@
-import { mount, localVue } from '../testHelper'
+import { mount, localVue, store } from '../testHelper'
 import LibraryBarcodeScanner from '@/components/LibraryBarcodeScanner'
 import flushPromises from 'flush-promises'
 import Response from '@/api/Response'
@@ -13,6 +13,7 @@ describe('LibraryBarcodeScanner.vue', () => {
   beforeEach(() => {
     wrapper = mount(LibraryBarcodeScanner, {
       localVue,
+      store,
       propsData: {
         flowcell: {id: 123, library: {id: 1, barcode: 'TRAC-1' }}
       }

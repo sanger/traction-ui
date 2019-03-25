@@ -1,6 +1,6 @@
 import Runs from '@/views/Runs'
 import NewRun from '@/views/NewRun'
-import { mount, localVue } from '../testHelper'
+import { mount, localVue, store } from '../testHelper'
 import VueRouter from 'vue-router'
 import RunsJson from '../../data/runs'
 import Response from '@/api/Response'
@@ -15,7 +15,7 @@ describe('Runs.vue', () => {
       [{ path: '/newrun', name: 'NewRun', component: NewRun, props: true }]
     })
 
-    wrapper = mount(Runs, { localVue, router })
+    wrapper = mount(Runs, { localVue, router, store })
     runs = wrapper.vm
   })
 

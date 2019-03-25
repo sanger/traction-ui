@@ -12,6 +12,7 @@ Vue.use(BootstrapVue)
 Vue.use(Vuex)
 
 new Vue({
+  store,
   router,
   render: h => h(App)
 }).$mount('#app')

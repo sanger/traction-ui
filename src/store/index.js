@@ -3,7 +3,7 @@ import Vue from 'vue';
 import Api from '@/api'
 import buildRequestHelper from '@/api/BuildRequest'
 
-Vue.use(Vuex);
+Vue.use(Vuex)
 
 export default new Vuex.Store({
   state: {

@@ -1,4 +1,4 @@
-import { mount, localVue } from '../testHelper'
+import { mount, localVue, store } from '../testHelper'
 import Table from '@/views/Table'
 import Samples from '@/views/Samples'
 import Libraries from '@/views/Libraries'
@@ -11,6 +11,7 @@ describe('Table.vue', () => {
   beforeEach(() => {
     wrapper = mount(Table, {
       localVue,
+      store,
       propsData: {
         items: [{id: 1, barcode: 123, material: {id: 345, attr1: 'test', type: 'samples'}}]
       },

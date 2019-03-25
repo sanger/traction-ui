@@ -10,7 +10,6 @@
 </template>
 
 <script>
-import store from '@/store/index'
 import handlePromise from '@/api/PromiseHelper'
 
 export default {
@@ -67,7 +66,7 @@ export default {
   },
   computed: {
     enzymeRequest () {
-      return store.getters.traction.enzymes
+      return this.$store.getters.traction.enzymes
     }
   }
 }

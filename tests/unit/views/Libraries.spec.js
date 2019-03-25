@@ -1,5 +1,5 @@
 import Libraries from '@/views/Libraries'
-import { mount, localVue } from '../testHelper'
+import { mount, localVue, store } from '../testHelper'
 
 describe('Libraries.vue', () => {
 
@@ -13,6 +13,7 @@ describe('Libraries.vue', () => {
 
     beforeEach(() => {
       wrapper = mount(Libraries, { localVue,
+        store,
         propsData: {
           items: mockLibraries
         }
@@ -55,6 +56,7 @@ describe('Libraries.vue', () => {
       ]
 
       wrapper = mount(Libraries, { localVue,
+        store,
         propsData: {
           items: mockLibraries
         }

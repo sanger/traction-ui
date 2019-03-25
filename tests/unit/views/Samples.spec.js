@@ -1,6 +1,6 @@
 import Samples from '@/views/Samples'
 import Modal from '@/components/Modal'
-import { mount, localVue } from '../testHelper'
+import { mount, localVue, store } from '../testHelper'
 import Libraries from '../../data/libraries'
 
 describe('Samples.vue', () => {
@@ -14,6 +14,7 @@ describe('Samples.vue', () => {
       ]
 
       wrapper = mount(Samples, { localVue,
+        store,
         propsData: {
           items: mockSamples
         },

@@ -5,7 +5,6 @@
 </template>
 
 <script>
-import store from '@/store/index'
 import handlePromise from '@/api/PromiseHelper'
 
 export default {
@@ -70,10 +69,10 @@ export default {
   computed: {
     tubeRequest () {
       // use of filter updated in Steves refactor but may no currently work until merged
-      return store.getters.traction.tubes
+      return this.$store.getters.traction.tubes
     },
     flowcellsRequest () {
-      return store.getters.traction.flowcells
+      return this.$store.getters.traction.flowcells
     },
     showAlert () {
       return this.$emit('alert', this.message)

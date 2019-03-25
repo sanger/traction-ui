@@ -1,5 +1,5 @@
 import NewRun from '@/views/NewRun'
-import { mount, localVue } from '../testHelper'
+import { mount, localVue, store } from '../testHelper'
 import VueRouter from 'vue-router'
 import Runs from '@/views/Runs'
 import Response from '@/api/Response'
@@ -20,6 +20,7 @@ describe('NewRun.vue', () => {
 
     wrapper = mount(NewRun, {
       localVue,
+      store,
       router,
       propsData: {
         runId: 123
@@ -393,6 +394,7 @@ describe('NewRun.vue', () => {
 
       wrapperWithScanner = mount(NewRun, {
         localVue,
+        store,
         router,
         propsData: {
           runId: 123
