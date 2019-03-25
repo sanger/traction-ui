@@ -1,5 +1,3 @@
-import Vue from 'vue'
-
 export default {
   name: 'Api',
   props: {
