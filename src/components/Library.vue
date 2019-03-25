@@ -1,6 +1,6 @@
 <template>
   <div class="library">
-     <input id="barcode" v-model="barcode" type="text" placeholder="barcode" @change="updateLibrary" />
+     <b-form-input id="barcode" v-model="barcode" type="text" placeholder="barcode" @change="updateLibrary" />
   </div>
 </template>
 

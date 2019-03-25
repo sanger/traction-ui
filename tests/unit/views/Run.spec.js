@@ -11,7 +11,7 @@ describe('Run.vue', () => {
   let wrapper, run, props, input, button, router
 
   beforeEach(() => {
-    props = { id: 1}
+    props = { id: 1 }
     router = new VueRouter({ routes:
       [{ path: '/runs', name: 'Runs', component: Runs }]
     })
@@ -51,10 +51,8 @@ describe('Run.vue', () => {
     expect(wrapper.contains('.chip')).toBeTruthy()
   })
 
-  it('can have an name which will default to the id', () => {
-    wrapper = mount(Run, { localVue, router, propsData: props, methods: { provider () { return } } } )
-    run = wrapper.vm
-    expect(run.name).toEqual(props.id)
+  it('can have an name', () => {
+    expect(run.name).toEqual('runrunrun')
   })
 
   it('allows the user to update the name', () => {

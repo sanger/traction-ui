@@ -35,7 +35,7 @@ export default {
   },
   data () {
     return {
-      name: this.id,
+      name: this.name,
       state: null, 
       chip: null,
       message: ''
@@ -88,6 +88,7 @@ export default {
     },
     async provider () {
       let data = await this.getRun(this.id)
+      this.name = data.name
       this.state = data.state
       this.chip = data.chip
     }
