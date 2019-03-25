@@ -34,9 +34,11 @@
 <script>
 import Alert from '@/components/Alert'
 import handlePromise from '@/api/PromiseHelper'
+import Api from '@/mixins/api'
 
 export default {
   name: 'Runs',
+  mixins: [Api],
   props: {
   },
   data () {
@@ -97,7 +99,7 @@ export default {
   },
   computed: {
     runRequest () {
-      return this.$store.getters.traction.runs
+      return this.api.traction.runs
     },
     showAlert () {
       return this.$refs.alert.show(this.message, 'primary')

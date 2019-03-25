@@ -11,9 +11,11 @@
 
 <script>
 import handlePromise from '@/api/PromiseHelper'
+import Api from '@/mixins/api'
 
 export default {
   name: 'Modal',
+  mixins: [Api],
   data () {
     return {
       selectedEnzymeId: null,
@@ -66,7 +68,7 @@ export default {
   },
   computed: {
     enzymeRequest () {
-      return this.$store.getters.traction.enzymes
+      return this.api.traction.enzymes
     }
   }
 }

@@ -1,30 +1,34 @@
 import Vue from 'vue'
-import Api from '@/api'
+import Request from '@/api/Request'
 
 const buildComponent = (component, props) => {
   let cmp = Vue.extend(component)
   return new cmp({ propsData: props})
 }
 
-// api - an Api.Config resource
-// return - an object with api resource key, and resource Request value
+const build = (config, environment) => {
+  return Object.keys(config).reduce((result, key) => {
+    const {resources, ...props} = config[key]
+    result[key] = buildResources(resources, apiProps(key, props, environment))
+    return result
+  }, {})
+}
 
-const buildRequestHelper = (api) => {
-  let config = buildComponent(Api.ConfigItem, api)
+const buildResources = (resources, props) => {
+  return Object.keys(resources).reduce((result, key) => {
+    result[key] = buildComponent(Request, Object.assign(props, {resource: key, ...resources[key]}))
+    return result
+  }, {})
+}
 
-  let requestObject = {}
-
-  Object.keys(config.resources).forEach(key => {
-    let request = buildComponent(Api.Request, config.resource(key))
-    requestObject[key] = request
-  })
-
-  return requestObject
+const apiProps = (api, props, environment) => {
+  const baseURL = environment[`VUE_APP_${api.toUpperCase()}_BASE_URL`]
+  return { baseURL: baseURL, ...props}
 }
 
 export {
   buildComponent,
-  buildRequestHelper
+  build
 }
 
-export default buildRequestHelper
+export default build

@@ -34,9 +34,11 @@
 import Alert from '@/components/Alert'
 import LibraryBarcodeScanner from '@/components/LibraryBarcodeScanner'
 import handlePromise from '@/api/PromiseHelper'
+import Api from '@/mixins/api'
 
 export default {
   name: 'NewRun',
+  mixins: [Api],
   props: {
     runId: {
       type: Number,
@@ -132,10 +134,10 @@ export default {
   },
   computed: {
     runRequest () {
-      return this.$store.getters.traction.runs
+      return this.api.traction.runs
     },
     chipsRequest () {
-      return this.$store.getters.traction.chips
+      return this.api.traction.chips
     },
     showAlert () {
       return this.$refs.alert.show(this.message, 'primary')

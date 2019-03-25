@@ -15,9 +15,11 @@
 <script>
 import Alert from '@/components/Alert'
 import handlePromise from '@/api/PromiseHelper'
+import Api from '@/mixins/api'
 
 export default {
   name: 'Reception',
+  mixins: [Api],
   props: {
   },
   data () {
@@ -95,13 +97,13 @@ export default {
       return this.barcodes.split('\n').filter(Boolean).join(',')
     },
     sequencescapeTubeRequest () {
-      return this.$store.getters.sequencescape.tubes
+      return this.api.sequencescape.tubes
     },
     tractionTubeRequest () {
-      return this.$store.getters.traction.tubes
+      return this.api.traction.tubes
     },
     sampleRequest () {
-      return this.$store.getters.traction.samples
+      return this.api.traction.samples
     },
 
   }

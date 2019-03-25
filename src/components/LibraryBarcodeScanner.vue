@@ -6,9 +6,11 @@
 
 <script>
 import handlePromise from '@/api/PromiseHelper'
+import Api from '@/mixins/api'
 
 export default {
   name: 'LibraryBarcodeScanner',
+  mixins: [Api],
   props: {
     flowcell: Object
   },
@@ -69,10 +71,10 @@ export default {
   computed: {
     tubeRequest () {
       // use of filter updated in Steves refactor but may no currently work until merged
-      return this.$store.getters.traction.tubes
+      return this.api.traction.tubes
     },
     flowcellsRequest () {
-      return this.$store.getters.traction.flowcells
+      return this.api.traction.flowcells
     },
     showAlert () {
       return this.$emit('alert', this.message)

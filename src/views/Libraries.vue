@@ -16,9 +16,11 @@
 
 <script>
 import handlePromise from '@/api/PromiseHelper'
+import Api from '@/mixins/api'
 
 export default {
   name: 'Libraries',
+  mixins: [Api],
   props: {
     items: Array
   },
@@ -54,7 +56,7 @@ export default {
   },
   computed: {
     libraryRequest () {
-      return this.$store.getters.traction.libraries
+      return this.api.traction.libraries
     },
     emitAlert () {
       return this.$emit('alert', this.message)
