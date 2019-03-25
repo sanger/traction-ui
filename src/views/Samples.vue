@@ -17,7 +17,7 @@
 <script>
 import Modal from '@/components/Modal'
 import handlePromise from '@/api/PromiseHelper'
-import Api from '@/mixins/api'
+import Api from '@/mixins/Api'
 
 export default {
   name: 'Samples',

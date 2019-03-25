@@ -15,7 +15,7 @@
 <script>
 import Alert from '@/components/Alert'
 import handlePromise from '@/api/PromiseHelper'
-import Api from '@/mixins/api'
+import Api from '@/mixins/Api'
 
 export default {
   name: 'Reception',
