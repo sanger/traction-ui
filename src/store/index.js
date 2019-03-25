@@ -1,5 +1,5 @@
-import Vuex from 'vuex';
-import Vue from 'vue';
+import Vuex from 'vuex'
+import Vue from 'vue'
 import Api from '@/api'
 import build from '@/api/ApiBuilder'
 
