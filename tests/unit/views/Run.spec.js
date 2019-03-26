@@ -173,7 +173,7 @@ describe('Run.vue', () => {
     })
   })
 
-  describe('#startRun', () => {
+  describe('start button', () => {
 
     it('is disabled is the run state is not pending', () => {
       run.state = 'started'
@@ -187,7 +187,7 @@ describe('Run.vue', () => {
     })
   })
 
-  describe('#completeRun', () => {
+  describe('complete button', () => {
 
     it('is disabled is the run state is completed', () => {
       run.state = 'completed'
@@ -207,7 +207,7 @@ describe('Run.vue', () => {
     })
   })
 
-  describe('#cancelRun', () => {
+  describe('cancel button', () => {
 
     it('is disabled is the run state is completed', () => {
       run.state = 'completed'

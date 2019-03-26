@@ -51,8 +51,10 @@ describe('Request', () => {
       })
     })
 
-    it('#rootUrl', () => {
-      expect(request.rootURL).toEqual('http://sequencescape.com/api/v2')
+    describe('#rootURL', () => {
+      it('will have a rootUrl', () => {
+        expect(request.rootURL).toEqual('http://sequencescape.com/api/v2')
+      })
     })
 
     describe('created', () => {

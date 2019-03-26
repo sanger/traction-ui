@@ -63,13 +63,15 @@ describe('API Config', () => {
       expect(configItem.baseURL).toEqual('http://api1')
     })
 
-    it('#resource', () => {
-      let resource = configItem.resource('resource1')
-      expect(resource.baseURL).toEqual(process.env.VUE_APP_API1_BASE_URL)
-      expect(resource.apiNamespace).toEqual(api.apiNamespace)
-      expect(resource.resource).toEqual(api.resources.resource1.name)
-      expect(resource.filter).toEqual(api.resources.resource1.filter)
-      expect(resource.include).toEqual(api.resources.resource1.include)
+    describe('#resource', () => {
+      it('can find a particular resource', () => {
+        let resource = configItem.resource('resource1')
+        expect(resource.baseURL).toEqual(process.env.VUE_APP_API1_BASE_URL)
+        expect(resource.apiNamespace).toEqual(api.apiNamespace)
+        expect(resource.resource).toEqual(api.resources.resource1.name)
+        expect(resource.filter).toEqual(api.resources.resource1.filter)
+        expect(resource.include).toEqual(api.resources.resource1.include)
+      })
     })
 
   })
