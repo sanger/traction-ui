@@ -26,8 +26,13 @@ describe('Library', () => {
     expect(library.tube).toEqual(props.tube)
   })
 
-  describe('barcodes', () => {
+  describe('#tubeRequest', () => {
+    it('will have a request', () => {
+      expect(library.tubeRequest).toBeDefined()
+    })
+  })
 
+  describe('#queryString', () => {
     it('will populate the barcode from the tube', () => {
       expect(library.barcode).toEqual(props.tube.barcode)
     })
@@ -43,10 +48,9 @@ describe('Library', () => {
       input.setValue('TRAC-2\n')
       expect(library.queryString).toEqual('TRAC-2')
     })
-
   })
 
-  describe('updating the library', () => {
+  describe('#updateLibrary', () => {
     beforeEach(() => {
       library.tubeRequest.get = jest.fn()
     })

@@ -35,18 +35,22 @@ describe('Chip', () => {
     expect(chip.localBarcode).toEqual('CHIP-2345')
   })
 
-  it('will have a request', () => {
-    expect(chip.chipRequest).toBeDefined()
+  describe('#chipRequest', () => {
+    it('will have a request', () => {
+      expect(chip.chipRequest).toBeDefined()
+    })
   })
 
-  it('will have a payload', () => {
-    chip.localBarcode = 'CHIP-2345'
-    let data = chip.payload.data
-    expect(data.id).toEqual(props.id)
-    expect(data.attributes.barcode).toEqual('CHIP-2345')
+  describe('#payload', () => {
+    it('will have a payload', () => {
+      chip.localBarcode = 'CHIP-2345'
+      let data = chip.payload.data
+      expect(data.id).toEqual(props.id)
+      expect(data.attributes.barcode).toEqual('CHIP-2345')
+    })
   })
 
-  describe('updating the chip', () => {
+  describe('#updateChip', () => {
 
     beforeEach(() => {
       chip.chipRequest.update = jest.fn()

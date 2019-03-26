@@ -6,7 +6,7 @@ describe('API Config', () => {
   let apis, cmp
 
   beforeEach(() => {
-     apis = { 
+     apis = {
       "api1": {
         "name": "api1",
         "apiNamespace": "api/v1",
@@ -45,24 +45,31 @@ describe('API Config', () => {
       configItem = new cmp({ propsData:  api })
     })
 
-    it('has a baseURL', () => {
+    describe('props', () => {
+      it('has a name', () => {
+        expect(configItem.name).toEqual(api.name)
+      })
+
+      it('has an api namespace', () => {
+        expect(configItem.apiNamespace).toEqual(api.apiNamespace)
+      })
+
+      it('has some resources', () => {
+        expect(configItem.resources).toEqual(api.resources)
+      })
+    })
+
+    it('#baseURL', () => {
       expect(configItem.baseURL).toEqual('http://api1')
     })
 
-    it('has an api namespace', () => {
-      expect(configItem.apiNamespace).toEqual(api.apiNamespace)
-    })
-
-    it('has some resources', () => {
-      expect(configItem.resources).toEqual(api.resources)
-    })
-
-    it('can find a particular resource', () => {
+    it('#resource', () => {
       let resource = configItem.resource('resource1')
       expect(resource.baseURL).toEqual(process.env.VUE_APP_API1_BASE_URL)
       expect(resource.apiNamespace).toEqual(api.apiNamespace)
       expect(resource.resource).toEqual(api.resources.resource1.name)
       expect(resource.filter).toEqual(api.resources.resource1.filter)
+      expect(resource.include).toEqual(api.resources.resource1.include)
     })
 
   })

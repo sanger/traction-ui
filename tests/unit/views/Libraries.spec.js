@@ -47,7 +47,7 @@ describe('Libraries.vue', () => {
 
   })
 
-  describe('selecting libraries', () => {
+  describe('#deleteLibraries', () => {
 
     beforeEach(() => {
       mockLibraries =  [
@@ -65,51 +65,53 @@ describe('Libraries.vue', () => {
 
       let checkboxes = wrapper.findAll(".selected")
       checkboxes.at(0).trigger('click')
+
+      libraries.libraryRequest.execute = jest.fn()
     })
 
     it('will create a list of selected libraries', () => {
       expect(libraries.selected.length).toEqual(1)
     })
 
-    describe('deleting', () => {
-      beforeEach(() => {
-        libraries.libraryRequest.execute = jest.fn()
+    it('successfully', async () => {
+      let mockResponse =  {
+        data: {},
+        status: 204,
+        statusText: "OK"
+      }
+
+      let promise = new Promise((resolve) => {
+        resolve(mockResponse)
       })
 
-      it('successfully', async () => {
-        let mockResponse =  {
-          data: {},
-          status: 204,
-          statusText: "OK"
-        }
+      libraries.libraryRequest.execute.mockResolvedValue(promise)
 
-        let promise = new Promise((resolve) => {
-          resolve(mockResponse)
-        })
+      await libraries.deleteLibraries()
+      expect(libraries.message).toEqual(`Libraries ${libraries.selected.join(',')} successfully deleted`)
+    })
 
-        libraries.libraryRequest.execute.mockResolvedValue(promise)
+    it('unsuccessfully', async () => {
+      let mockResponse =  {  data: { errors: { it: ['was a bust'] } }, status: 422 }
 
-        await libraries.deleteLibraries()
-        expect(libraries.message).toEqual(`Libraries ${libraries.selected.join(',')} successfully deleted`)
+      let promise = new Promise((reject) => {
+        reject(mockResponse)
       })
 
-      it('unsuccessfully', async () => {
-        let mockResponse =  {  data: { errors: { it: ['was a bust'] } }, status: 422 }
+      libraries.libraryRequest.execute.mockResolvedValue(promise)
 
-        let promise = new Promise((reject) => {
-          reject(mockResponse)
-        })
-
-        libraries.libraryRequest.execute.mockResolvedValue(promise)
-
-        await libraries.deleteLibraries()
-        expect(libraries.message).toEqual(['it was a bust'])
-      })
+      await libraries.deleteLibraries()
+      expect(libraries.message).toEqual(['it was a bust'])
     })
 
   })
 
-  describe('emitAlert', () => {
+  describe('#libraryRequest', () => {
+    it('will have a request', () => {
+      expect(libraries.libraryRequest).toBeDefined()
+    })
+  })
+
+  describe('#emitAlert', () => {
     it('emits an event with the message', () => {
       wrapper.setData({ message: 'show this message' })
       libraries.emitAlert

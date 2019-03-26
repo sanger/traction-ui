@@ -28,20 +28,24 @@ describe('Flowcell', () => {
     expect(wrapper.find('.position').text()).toMatch(new RegExp(props.position))
   })
 
-  it('will have a request', () => {
-    expect(flowcell.flowcellRequest).toBeDefined()
-  })
-
   it('can have a library', () => {
     expect(flowcell.library).toBeDefined()
     expect(wrapper.contains('.library')).toBeTruthy()
   })
 
-  it('can have a payload', () => {
-    expect(flowcell.payload(library)).toEqual({ data: { type: 'flowcells', id: flowcell.id, attributes: { library_id: library.id }} })
+  describe('#flowcellRequest', () => {
+    it('will have a request', () => {
+      expect(flowcell.flowcellRequest).toBeDefined()
+    })
   })
 
-  describe('update the library', () => {
+  describe('#payload', () => {
+    it('can have a payload', () => {
+      expect(flowcell.payload(library)).toEqual({ data: { type: 'flowcells', id: flowcell.id, attributes: { library_id: library.id }} })
+    })
+  })
+
+  describe('#updateFlowcell', () => {
 
     beforeEach(() => {
       flowcell.flowcellRequest.update = jest.fn()

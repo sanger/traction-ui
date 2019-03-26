@@ -5,10 +5,8 @@ describe('Response', () => {
 
   let mockResponse, response
 
-
   it('can be empty', () => {
     expect(new Response({data: { data: [] }, status: 200, statusText: 'OK' }).empty).toBeTruthy()
-
   })
 
   describe('Success', () => {
@@ -46,6 +44,10 @@ describe('Response', () => {
       expect(response.successful).toBeTruthy()
     })
 
+    it('is not empty', () => {
+      expect(response.empty).toBeFalsy()
+    })
+
     it('has no errors', () => {
       expect(response.errors).toEqual({})
     })
@@ -55,7 +57,6 @@ describe('Response', () => {
       expect(response.deserialize).toEqual(serializedObj)
     })
   })
-
 
   describe('Failure', () => {
 

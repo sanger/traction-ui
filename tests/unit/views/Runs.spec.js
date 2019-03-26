@@ -38,17 +38,6 @@ describe('Runs.vue', () => {
     expect(wrapper.contains('table')).toBe(true)
   })
 
-  it('will create a run request', () => {
-    let request = runs.runRequest
-    expect(request.resource).toBeDefined()
-  })
-
-  it('will have a payload', () => {
-    let payload = runs.payload.data
-    expect(payload.type).toEqual('runs')
-    expect(payload.attributes).toBeDefined()
-  })
-
   describe('#getRuns', () => {
     it('will get a list of runs on success',  async () => {
       runs.runRequest.execute = jest.fn()
@@ -75,7 +64,7 @@ describe('Runs.vue', () => {
     })
   })
 
-  describe('create run', () => {
+  describe('#createRun', () => {
     beforeEach(() => {
       runs.runRequest.create = jest.fn()
     })
@@ -91,7 +80,7 @@ describe('Runs.vue', () => {
 
   })
 
-  describe('show run', () => {
+  describe('#showRun', () => {
 
     let mockResponse
 
@@ -117,19 +106,19 @@ describe('Runs.vue', () => {
       expect(runs.message).toEqual('There was an error')
     })
 
-  })
+    it('will redirect to the run when newRun is clicked', async () => {
+      runs.runRequest.execute = jest.fn()
+      runs.runRequest.execute.mockResolvedValue(RunsJson)
+      let mockResponse = new Response(RunJson)
+      let id = mockResponse.deserialize.runs[0].id
+      runs.createRun = jest.fn()
+      runs.createRun.mockResolvedValue(mockResponse)
+      let button = wrapper.find('#newRun')
+      button.trigger('click')
+      await flushPromises()
+      expect(wrapper.vm.$route.path).toBe(`/run/${id}`)
+    })
 
-  it('will redirect to the run when newRun is clicked', async () => {
-    runs.runRequest.execute = jest.fn()
-    runs.runRequest.execute.mockResolvedValue(RunsJson)
-    let mockResponse = new Response(RunJson)
-    let id = mockResponse.deserialize.runs[0].id
-    runs.createRun = jest.fn()
-    runs.createRun.mockResolvedValue(mockResponse)
-    let button = wrapper.find('#newRun')
-    button.trigger('click')
-    await flushPromises()
-    expect(wrapper.vm.$route.path).toBe(`/run/${id}`)
   })
 
   describe('filtering runs', () => {
@@ -159,5 +148,15 @@ describe('Runs.vue', () => {
     })
   })
 
+  describe('#runRequest', () => {
+    it('will have a request', () => {
+      expect(runs.runRequest).toBeDefined()
+    })
+  })
 
+  it('#payload', () => {
+    let payload = runs.payload.data
+    expect(payload.type).toEqual('runs')
+    expect(payload.attributes).toBeDefined()
+  })
 })

@@ -25,38 +25,42 @@ describe('Request', () => {
       request = wrapper.vm
     })
 
-    it('will have a baseURL', () => {
-      expect(request.baseURL).toEqual('http://sequencescape.com')
+    describe('props', () => {
+      it('will have a baseURL', () => {
+        expect(request.baseURL).toEqual('http://sequencescape.com')
+      })
+
+      it('will have an apiNamespace', () => {
+        expect(request.apiNamespace).toEqual('api/v2')
+      })
+
+      it('will have an resource', () => {
+        expect(request.resource).toEqual('requests')
+      })
+
+      it('will have some headers', () => {
+        expect(request.headers).toEqual(headers)
+      })
+
+      it('can have some filters', () => {
+        expect(request.filter).toEqual(props.filter)
+      })
+
+      it('can have an include', () => {
+        expect(request.include).toEqual(props.include)
+      })
     })
 
-    it('will have an apiNamespace', () => {
-      expect(request.apiNamespace).toEqual('api/v2')
-    })
-
-    it('will have an resource', () => {
-      expect(request.resource).toEqual('requests')
-    })
-
-    it('will have some headers', () => {
-      expect(request.headers).toEqual(headers)
-    })
-
-    it('will have a rootUrl', () => {
+    it('#rootUrl', () => {
       expect(request.rootURL).toEqual('http://sequencescape.com/api/v2')
     })
 
-    it('will create an api instance', () => {
-      expect(request.api.defaults.baseURL).toEqual(request.rootURL)
-      expect(request.api.defaults.headers['Content-Type']).toEqual(headers['Content-Type'])
-      expect(request.api.defaults.headers['Accept']).toEqual(headers['Accept'])
-    })
-
-    it('can have some filters', () => {
-      expect(request.filter).toEqual(props.filter)
-    })
-
-    it('can have an include', () => {
-      expect(request.include).toEqual(props.include)
+    describe('created', () => {
+      it('will create an api instance', () => {
+        expect(request.api.defaults.baseURL).toEqual(request.rootURL)
+        expect(request.api.defaults.headers['Content-Type']).toEqual(headers['Content-Type'])
+        expect(request.api.defaults.headers['Accept']).toEqual(headers['Accept'])
+      })
     })
 
     describe('execute', () => {

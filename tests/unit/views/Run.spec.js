@@ -24,68 +24,36 @@ describe('Run.vue', () => {
     expect(wrapper.name()).toEqual('Run')
   })
 
-  it('can have an id', () => {
-    expect(run.id).toEqual(props.id)
+  describe('props', () => {
+    it('can have an id', () => {
+      expect(run.id).toEqual(props.id)
+    })
   })
 
-  it('will have a request', () => {
-    expect(run.runsRequest).toBeDefined()
-  })
-
-  it('will have a state', () => {
-    expect(run.state).toEqual('pending')
-  })
-
-  it('shows the current id of the run', () => {
-    let id = wrapper.find('#id').text()
-    expect(id).toEqual(`ID: ${run.id}`)
-  })
-
-  it('shows the current state of the run', () => {
-    let state = wrapper.find('#state').text()
-    expect(state).toMatch(`state: ${run.state}`)
-  })
-
-  it('will have a chip', () => {
-    expect(run.chip).toBeDefined()
-    expect(wrapper.contains('.chip')).toBeTruthy()
-  })
-
-  it('can have an name', () => {
-    expect(run.name).toEqual('runrunrun')
-  })
-
-  it('allows the user to update the name', () => {
-    input = wrapper.find('#name')
-    input.setValue('runaway')
-    expect(run.name).toEqual('runaway')
-  })
-
-  it('can have a payload', () => {
-    let data = run.payload({nick: 'nack'}).data
-    expect(data.id).toEqual(run.id)
-    expect(data.attributes).toEqual({nick: 'nack'})
-  })
-
-  describe('getting the run', () => {
-
-    beforeEach(() => {
-      run.runsRequest.find = jest.fn()
+  describe('data', () => {
+    it('can have an name', () => {
+      expect(run.name).toEqual('runrunrun')
     })
 
-    it('successfully', async () => {
-      run.runsRequest.find.mockResolvedValue(RunWithLibraryJson)
-      let foundRun = await run.getRun(1)
-      let expectedRun = new Response(RunWithLibraryJson).deserialize.runs[0]
-      expect(run.runsRequest.find).toBeCalledWith(1)
-      expect(foundRun).toEqual(expectedRun)
+    it('will have a state', () => {
+      expect(run.state).toEqual('pending')
     })
 
-    it('unsuccessfully', async () => {
-      let failedResponse = { 'data': { }, 'status': 500, 'statusText': 'Internal Server Error' }
-      run.runsRequest.find.mockReturnValue(failedResponse)
-      await run.getRun(1)
-      expect(run.message).toEqual('There was an error')
+    it('will have a chip', () => {
+      expect(run.chip).toBeDefined()
+      expect(wrapper.contains('.chip')).toBeTruthy()
+    })
+  })
+
+  describe('displaying the data', () => {
+    it('shows the current id of the run', () => {
+      let id = wrapper.find('#id').text()
+      expect(id).toEqual(`ID: ${run.id}`)
+    })
+
+    it('shows the current state of the run', () => {
+      let state = wrapper.find('#state').text()
+      expect(state).toMatch(`state: ${run.state}`)
     })
   })
 
@@ -115,7 +83,35 @@ describe('Run.vue', () => {
     })
   })
 
-  describe('updating the run', () => {
+  it('#payload', () => {
+    let data = run.payload({nick: 'nack'}).data
+    expect(data.id).toEqual(run.id)
+    expect(data.attributes).toEqual({nick: 'nack'})
+  })
+
+  describe('#getRun', () => {
+
+    beforeEach(() => {
+      run.runsRequest.find = jest.fn()
+    })
+
+    it('successfully', async () => {
+      run.runsRequest.find.mockResolvedValue(RunWithLibraryJson)
+      let foundRun = await run.getRun(1)
+      let expectedRun = new Response(RunWithLibraryJson).deserialize.runs[0]
+      expect(run.runsRequest.find).toBeCalledWith(1)
+      expect(foundRun).toEqual(expectedRun)
+    })
+
+    it('unsuccessfully', async () => {
+      let failedResponse = { 'data': { }, 'status': 500, 'statusText': 'Internal Server Error' }
+      run.runsRequest.find.mockReturnValue(failedResponse)
+      await run.getRun(1)
+      expect(run.message).toEqual('There was an error')
+    })
+  })
+
+  describe('#updateRun', () => {
 
     beforeEach(() => {
       run.runsRequest.update = jest.fn()
@@ -136,6 +132,14 @@ describe('Run.vue', () => {
       expect(run.message).toEqual('There was an error')
     })
 
+  })
+
+  describe('updateName', () => {
+    it('allows the user to update the name', () => {
+      input = wrapper.find('#name')
+      input.setValue('runaway')
+      expect(run.name).toEqual('runaway')
+    })
   })
 
   describe('modifying the run', () => {
@@ -169,7 +173,7 @@ describe('Run.vue', () => {
     })
   })
 
-  describe('start button', () => {
+  describe('#startRun', () => {
 
     it('is disabled is the run state is not pending', () => {
       run.state = 'started'
@@ -183,7 +187,7 @@ describe('Run.vue', () => {
     })
   })
 
-  describe('complete button', () => {
+  describe('#completeRun', () => {
 
     it('is disabled is the run state is completed', () => {
       run.state = 'completed'
@@ -203,7 +207,7 @@ describe('Run.vue', () => {
     })
   })
 
-  describe('cancel button', () => {
+  describe('#cancelRun', () => {
 
     it('is disabled is the run state is completed', () => {
       run.state = 'completed'
@@ -224,6 +228,9 @@ describe('Run.vue', () => {
     })
   })
 
-
-
+  describe('#runsRequest', () => {
+    it('will have a request', () => {
+      expect(run.runsRequest).toBeDefined()
+    })
+  })
 })

@@ -104,8 +104,7 @@ export default {
     },
     sampleRequest () {
       return this.api.traction.samples
-    },
-
+    }
   }
 }
 

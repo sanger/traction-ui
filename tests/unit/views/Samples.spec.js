@@ -127,4 +127,9 @@ describe('Samples.vue', () => {
     })
   })
 
+  describe('#libraryRequest', () => {
+    it('will have a request', () => {
+      expect(samples.libraryRequest).toBeDefined()
+    })
+  })
 })
