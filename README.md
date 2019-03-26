@@ -29,3 +29,9 @@ yarn run test:unit
 ```
 yarn run test:e2e
 ```
+
+
+## Branches
+devel
+uat
+master
