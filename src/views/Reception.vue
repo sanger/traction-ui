@@ -2,35 +2,22 @@
   <div class="reception">
     <alert ref='alert'></alert>
 
-    <b-col md="6" class="my-1">
-      <b-input-group>
-        <b-form-input v-model="filter" placeholder="Type to Filter" />
-        <b-input-group-append>
-          <b-button :disabled="!filter" @click="filter = ''">Clear</b-button>
-        </b-input-group-append>
-      </b-input-group>
-    </b-col>
+    <div class="form-group">
+      <label for="barcodes">Barcodes:</label>
+      <textarea type="text" v-model="barcodes" class="form-control" rows="10" cols="10" name="barcodes" id="barcodes" />
+    </div>
+    <b-button class="scanButton" id="findSequencescapeTubes" variant="success" @click="handleSequencescapeTubes" :disabled="this.barcodes.length === 0">Import Sequencescape Tubes</b-button>
+    <b-button class="scanButton" id="findTractionTubes" variant="success" @click="handleTractionTubes" :disabled="this.barcodes.length === 0">Find Traction Tubes</b-button>
 
-      <b-table
-       show-empty
-       :items="items"
-       :fields="fields"
-       :filter="filter"
-       >
-        <template slot="selected" slot-scope="row">
-           <input type="checkbox" class="selected" v-model="selected" :value="row.item" />
-        </template>
-      </b-table>
-
-    <b-button id="exportRequests" @click="exportRequests" class="float-right">Import Requests</b-button>
   </div>
 </template>
 
 <script>
 
-import Alert from '@/components/Alert'
 import ComponentFactory from '@/mixins/ComponentFactory'
 import Api from '@/api'
+import Alert from '@/components/Alert'
+
 
 export default {
   name: 'Reception',
@@ -39,116 +26,102 @@ export default {
   },
   data () {
     return {
-      message: '',
-      fields: [
-        { key: 'selected', label: '' },
-        { key: 'id', label: 'Sample ID', sortable: true },
-        { key: 'name', label: 'Name', sortable: true },
-        { key: 'species', label: 'Species', sortable: true },
-      ],
-      selected: [],
-      filter: null,
-      items: []
-    }
-  },
-  methods: {
-    async getRequests () {
-      let rawResponse = await this.receptionRequest.get()
-      let response = new Api.Response(rawResponse)
-
-      if (Object.keys(response.errors).length === 0) {
-        let requests = response.deserialize.requests
-
-        this.items = requests.map(r => Object.assign({
-          id: r.id,
-          name: r.samples[0].name,
-          species: r.samples[0].sample_metadata.sample_common_name
-        }))
-      } else {
-        this.message = response.errors.message
-        this.showAlert
-        this.items = []
-      }
-    },
-    async exportRequests () {
-      try {
-        await this.exportRequestsIntoTraction()
-        await this.updateSequencescapeRequests()
-      } catch (error) {
-        // log error
-      } finally {
-        this.showAlert
-      }
-    },
-    async exportRequestsIntoTraction () {
-      let body = { data: { attributes: { samples: this.selectedJSON(this.selected) }}}
-      let rawResponse = await this.sampleRequest.create(body)
-      let response = new Api.Response(rawResponse)
-
-      if (response.successful) {
-        this.message = 'Samples imported into Traction'
-      } else {
-        this.message = response.errors.message
-        throw this.message
-      }
-    },
-    //TODO: This is a perfect place to implement a batch request
-    async updateSequencescapeRequests () {
-
-      let body = this.selected.map(item => {
-        return { data: { type: 'requests', id: item.id, attributes: { state: 'started' }} }
-      })
-
-      let rawResponse = await this.receptionRequest.update(body)
-
-      let responses = rawResponse.map(item => new Api.Response(item))
-
-      if (responses.every(r => Object.keys(r.errors).length === 0)) {
-        this.message = 'Samples updated in SS'
-      } else {
-        this.message = responses.map(r => r.errors.message)
-        throw this.message
-      }
-    },
-    selectedJSON(selected) {
-      return selected.map(r =>
-        Object.assign({
-          sequencescape_request_id: r.id,
-          name: r.name,
-          species: r.species
-        }
-      ))
-    },
-    provider() {
-      return this.getRequests()
+      barcodes: [],
+      message: ''
     }
   },
   components: {
     Alert
   },
-  computed: {
-    sampleRequest () {
-      return this.build(Api.Request, this.tractionConfig.resource('samples'))
+  methods: {
+    async handleSequencescapeTubes () {
+      let tubes = await this.findTubes(this.sequencescapeTubeRequest)
+      await this.exportSampleTubesIntoTraction(tubes)
+      await this.handleTractionTubes()
+      this.showAlert()
     },
-    tractionConfig () {
-      return this.build(Api.ConfigItem, Api.Config.traction)
+    async handleTractionTubes () {
+      let tubes = await this.findTubes(this.tractionTubeRequest)
+      if (tubes.some(t => t.material)) {
+          this.$router.push({name: 'Table', params: {items: tubes}})
+      }
+      this.showAlert()
     },
-    receptionRequest () {
-      return this.build(Api.Request, this.sequencescapeConfig.resource('requests'))
+    async findTubes (request) {
+      if(!this.queryString) return
+      let rawResponse = await request.get({filter: { barcode: this.queryString} })
+      let response = new Api.Response(rawResponse)
+
+      if (response.successful) {
+        if (response.empty) {
+          this.message = 'No tubes found'
+          return response
+        } else {
+          this.message = 'Tubes successfully found'
+          return response.deserialize.tubes
+        }
+      } else {
+        this.message = 'There was an error'
+        return response
+      }
     },
-    sequencescapeConfig () {
-      return this.build(Api.ConfigItem, Api.Config.sequencescape)
+    async exportSampleTubesIntoTraction (tubes) {
+      let sampleTubeJSON = tubes.map(t => Object.assign(
+        {
+          external_id: t.samples[0].id,
+          name: t.name,
+          species: t.samples[0].sample_metadata.sample_common_name
+        }
+      ))
+
+      let body = { data: { attributes: { samples: sampleTubeJSON }}}
+      let rawResponse = await this.sampleRequest.create(body)
+      let response = new Api.Response(rawResponse)
+
+      if (response.successful) {
+        this.barcodes = response.deserialize.samples.map(s=> s.barcode).join('\n')
+        return response
+      } else {
+        this.message = response.errors.message
+        return response
+      }
     },
     showAlert () {
       return this.$refs.alert.show(this.message, 'primary')
     }
   },
-  created () {
-    this.provider()
+  computed: {
+    queryString () {
+      if (this.barcodes === undefined || !this.barcodes.length) return ''
+      return this.barcodes.split('\n').filter(Boolean).join(',')
+    },
+    tractionConfig () {
+      return this.build(Api.ConfigItem, Api.Config.traction)
+    },
+    sequencescapeConfig () {
+      return this.build(Api.ConfigItem, Api.Config.sequencescape)
+    },
+    sequencescapeTubeRequest () {
+      return this.build(Api.Request, this.sequencescapeConfig.resource('tubes'))
+    },
+    tractionTubeRequest () {
+      return this.build(Api.Request, this.tractionConfig.resource('tubes'))
+    },
+    sampleRequest () {
+      return this.build(Api.Request, this.tractionConfig.resource('samples'))
+    },
+
   }
 }
+
 </script>
 
 <style lang="scss">
+  textarea {
+    border: 1px solid;
+  }
 
+  .scanButton {
+    margin: 0.5rem;
+  }
 </style>

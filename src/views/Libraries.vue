@@ -1,34 +1,20 @@
 <template>
   <div class="libraries">
-    <alert ref='alert'></alert>
-
-    <b-col md="6" class="my-1">
-      <b-input-group>
-        <b-form-input v-model="filter" placeholder="Type to Filter" />
-        <b-input-group-append>
-          <b-button :disabled="!filter" @click="filter = ''">Clear</b-button>
-        </b-input-group-append>
-      </b-input-group>
-    </b-col>
-
     <b-table
        show-empty
        :items="items"
        :fields="fields"
-       :filter="filter"
     >
       <template slot="selected" slot-scope="row">
         <input type="checkbox" class="selected" v-model="selected" :value="row.item.id" />
       </template>
     </b-table>
 
-    <b-button id="deleteLibraries" @click="deleteLibraries" class="float-right">Delete Libraries</b-button>
+    <b-button id="deleteLibraries" @click="deleteLibraries" :disabled="this.selected.length === 0" class="float-right">Delete Libraries</b-button>
   </div>
 </template>
 
 <script>
-
-import Alert from '@/components/Alert'
 import ComponentFactory from '@/mixins/ComponentFactory'
 import Api from '@/api'
 
@@ -36,6 +22,7 @@ export default {
   name: 'Libraries',
   mixins: [ComponentFactory],
   props: {
+    items: Array
   },
   data () {
     return {
@@ -46,15 +33,13 @@ export default {
         { key: 'sample_name', label: 'Sample Name', sortable: true },
         { key: 'enzyme_name', label: 'Enzyme Name', sortable: true },
         { key: 'created_at', label: 'Created at', sortable: true },
+        { key: 'deactivated_at', label: 'Deactivated at', sortable: true },
       ],
       selected: [],
-      message: '',
-      filter: null,
-      items: []
+      message: ''
     }
   },
   components: {
-    Alert
   },
   methods: {
     async deleteLibraries () {
@@ -66,27 +51,8 @@ export default {
       } else {
         this.message = responses.map(r => r.errors.message)
       }
-      this.showAlert
-    },
-    async getLibraries () {
-      let rawResponse = await this.libraryRequest.get()
-      let response = new Api.Response(rawResponse)
-
-      if (Object.keys(response.errors).length === 0) {
-        let libraries = response.deserialize.libraries
-        this.items = libraries
-      } else {
-        this.message = response.errors.message
-        this.showAlert
-        this.items = []
-      }
-    },
-    provider() {
-      this.getLibraries()
+      this.emitAlert
     }
-  },
-  created() {
-    this.provider()
   },
   computed: {
     libraryRequest () {
@@ -95,9 +61,9 @@ export default {
     tractionConfig () {
       return this.build(Api.ConfigItem, Api.Config.traction)
     },
-    showAlert () {
-      return this.$refs.alert.show(this.message, 'primary')
-    }
+    emitAlert () {
+      return this.$emit('alert', this.message)
+    },
   }
 }
 

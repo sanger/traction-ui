@@ -6,7 +6,7 @@ describe('Alert.vue', () => {
   let wrapper, alert
 
   beforeEach(() => {
-    wrapper = mount(Alert, { mocks: localVue })
+    wrapper = mount(Alert, { localVue })
     alert = wrapper.vm
   })
 
