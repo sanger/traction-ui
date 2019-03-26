@@ -1,7 +1,7 @@
 import Vue from 'vue'
 import Router from 'vue-router'
 import Runs from './views/Runs'
-import NewRun from './views/NewRun'
+import Run from '@/views/Run'
 import Reception from './views/Reception'
 import Table from './views/Table'
 
@@ -20,15 +20,19 @@ export default new Router({
       component: Runs
     },
     {
-      path: '/newrun',
-      name: 'NewRun',
-      component: NewRun,
-      props: true
-    },
-    {
       path: '/reception',
       name: 'Reception',
       component: Reception
+    },
+    {
+      path: '/run',
+      name: 'Run',
+      component: Run,
+      props: {id: true}
+    },
+    { path: '/run/:id',
+      component: Run,
+      props: true
     },
     {
       path: '/table',

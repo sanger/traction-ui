@@ -2,7 +2,7 @@
     <div class="runs">
       <alert ref='alert'></alert>
 
-      <b-button id="newRun" class="float-right" @click="createNewRun">Create New Run</b-button>
+      <b-button id="newRun" class="float-right" @click="showRun()">Create New Run</b-button>
 
       <b-col md="6" class="my-1">
         <b-input-group>
@@ -21,7 +21,7 @@
       >
 
         <template slot="actions" slot-scope="row">
-          <b-button size="sm" @click="editRun(row.item)" class="mr-1">
+          <b-button size="sm" @click="showRun(row.item.id)" class="mr-1">
             Edit Run
           </b-button>
         </template>
@@ -55,10 +55,6 @@ export default {
     }
   },
   methods: {
-    editRun(item) {
-      let runId = item.id
-      this.$router.push({name: 'NewRun', params: {runId: parseInt(runId)}})
-    },
     async getRuns () {
       let promise = this.runRequest.get()
       let response = await handlePromise(promise)
@@ -72,20 +68,24 @@ export default {
         this.items = []
       }
     },
-    async createNewRun () {
-      let body = { data: { type: 'runs', attributes: { runs: [{ state: 'pending'}] }}}
-
-      let promise = this.runRequest.create(body)
-      let response = await handlePromise(promise)
-
+    async createRun () {
+      let promise = this.runRequest.create(this.payload)
+      return await handlePromise(promise)
+    },
+    async showRun (id) {
       let runId
-      if (response.successful) {
-        runId = response.deserialize.runs[0].id
-        this.$router.push({name: 'NewRun', params: {runId: parseInt(runId)}})
+      if (id === undefined) {
+        let response = await this.createRun()
+        if (response.successful) {
+          runId = response.deserialize.runs[0].id
+        } else {
+          this.message = 'There was an error'
+          return
+        }
       } else {
-        this.message = response.errors.message
-        this.showAlert
+        runId = id
       }
+      this.$router.push({ path: `/run/${runId}` })
     },
     provider() {
       this.getRuns()
@@ -103,6 +103,16 @@ export default {
     },
     showAlert () {
       return this.$refs.alert.show(this.message, 'primary')
+    },
+    payload () {
+      return {
+        data: {
+          type: 'runs',
+          attributes: {
+            runs: [ { } ]
+          }
+        }
+      }
     }
   }
 }
