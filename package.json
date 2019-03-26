@@ -27,7 +27,7 @@
     "webpack-dev-server": "^3.1.11"
   },
   "devDependencies": {
-    "@vue/cli-plugin-babel": "^3.0.1",
+    "@vue/cli-plugin-babel": "^3.5.1",
     "@vue/cli-plugin-e2e-nightwatch": "^3.5.1",
     "@vue/cli-plugin-eslint": "^3.5.1",
     "@vue/cli-plugin-unit-jest": "^3.5.1",
