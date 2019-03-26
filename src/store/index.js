@@ -14,8 +14,6 @@ export default new Vuex.Store({
   actions: {
   },
   getters: {
-    sequencescape: state => state.sequencescape,
-    traction: state => state.traction,
     api: state => state.api
   }
 })

@@ -1,6 +1,6 @@
 import Run from '@/views/Run'
 import Runs from '@/views/Runs'
-import { mount, localVue } from '../testHelper'
+import { mount, localVue, store } from '../testHelper'
 import RunWithLibraryJson from '../../data/runWithLibrary'
 import Response from '@/api/Response'
 import flushPromises from 'flush-promises'
@@ -15,7 +15,7 @@ describe('Run.vue', () => {
     router = new VueRouter({ routes:
       [{ path: '/runs', name: 'Runs', component: Runs }]
     })
-    wrapper = mount(Run, { localVue, router, propsData: props, methods: { provider () { return } } } )
+    wrapper = mount(Run, { localVue, router, store, propsData: props, methods: { provider () { return } } } )
     wrapper.setData({name: 'runrunrun', state: 'pending', chip: {}})
     run = wrapper.vm
   })
@@ -29,7 +29,7 @@ describe('Run.vue', () => {
   })
 
   it('will have a request', () => {
-    expect(run.request).toBeDefined()
+    expect(run.runsRequest).toBeDefined()
   })
 
   it('will have a state', () => {
@@ -69,23 +69,21 @@ describe('Run.vue', () => {
 
   describe('getting the run', () => {
 
-    
-
     beforeEach(() => {
-      run.request.find = jest.fn()
+      run.runsRequest.find = jest.fn()
     })
 
     it('successfully', async () => {
-      run.request.find.mockResolvedValue(RunWithLibraryJson)
+      run.runsRequest.find.mockResolvedValue(RunWithLibraryJson)
       let foundRun = await run.getRun(1)
       let expectedRun = new Response(RunWithLibraryJson).deserialize.runs[0]
-      expect(run.request.find).toBeCalledWith(1)
+      expect(run.runsRequest.find).toBeCalledWith(1)
       expect(foundRun).toEqual(expectedRun)
     })
 
     it('unsuccessfully', async () => {
       let failedResponse = { 'data': { }, 'status': 500, 'statusText': 'Internal Server Error' }
-      run.request.find.mockReturnValue(failedResponse)
+      run.runsRequest.find.mockReturnValue(failedResponse)
       await run.getRun(1)
       expect(run.message).toEqual('There was an error')
     })
@@ -120,20 +118,20 @@ describe('Run.vue', () => {
   describe('updating the run', () => {
 
     beforeEach(() => {
-      run.request.update = jest.fn()
+      run.runsRequest.update = jest.fn()
     })
 
     it('successfully', async () => {
       let successfulResponse = [{ 'data': {}, 'status': 200, 'statusText': 'Success'}]
-      run.request.update.mockResolvedValue(successfulResponse)
+      run.runsRequest.update.mockResolvedValue(successfulResponse)
       await run.updateRun({dib: 'dab'})
-      expect(run.request.update).toBeCalledWith(run.payload({dib: 'dab'}))
+      expect(run.runsRequest.update).toBeCalledWith(run.payload({dib: 'dab'}))
       expect(run.message).toEqual('Run updated')
     })
 
     it('unsuccessfully', async () => {
       let failedResponse = [{ 'data': { }, 'status': 500, 'statusText': 'Internal Server Error' }]
-      run.request.update.mockReturnValue(failedResponse)
+      run.runsRequest.update.mockReturnValue(failedResponse)
       await run.updateRun({dib: 'dab'})
       expect(run.message).toEqual('There was an error')
     })
@@ -186,7 +184,7 @@ describe('Run.vue', () => {
   })
 
   describe('complete button', () => {
-  
+
     it('is disabled is the run state is completed', () => {
       run.state = 'completed'
       button = wrapper.find('#completeRun')
@@ -206,7 +204,7 @@ describe('Run.vue', () => {
   })
 
   describe('cancel button', () => {
-  
+
     it('is disabled is the run state is completed', () => {
       run.state = 'completed'
       button = wrapper.find('#cancelRun')

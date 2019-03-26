@@ -1,4 +1,4 @@
-import { mount, localVue } from '../testHelper'
+import { mount, localVue, store } from '../testHelper'
 import Chip from '@/components/Chip'
 
 describe('Chip', () => {
@@ -7,7 +7,7 @@ describe('Chip', () => {
 
   beforeEach(() => {
     props = { id: 1, barcode: 'CHIP-1234', flowcells: [ { id: 1, position: 1}, {id: 2, position: 2}]}
-    wrapper = mount(Chip, { localVue, propsData: props } )
+    wrapper = mount(Chip, { localVue, store, propsData: props } )
     chip = wrapper.vm
   })
 
@@ -36,7 +36,7 @@ describe('Chip', () => {
   })
 
   it('will have a request', () => {
-    expect(chip.request).toBeDefined()
+    expect(chip.chipRequest).toBeDefined()
   })
 
   it('will have a payload', () => {
@@ -49,20 +49,20 @@ describe('Chip', () => {
   describe('updating the chip', () => {
 
     beforeEach(() => {
-      chip.request.update = jest.fn()
+      chip.chipRequest.update = jest.fn()
     })
 
     it('successfully', async () => {
       let successfulResponse = [{ 'data': {}, 'status': 200, 'statusText': 'Success'}]
-      chip.request.update.mockResolvedValue(successfulResponse)
+      chip.chipRequest.update.mockResolvedValue(successfulResponse)
       await chip.updateChip()
-      expect(chip.request.update).toBeCalledWith(chip.payload)
+      expect(chip.chipRequest.update).toBeCalledWith(chip.payload)
       expect(chip.message).toEqual('Chip updated')
     })
 
     it('unsuccessfully', async () => {
       let failedResponse = { 'data': { }, 'status': 500, 'statusText': 'Internal Server Error' }
-      chip.request.update.mockReturnValue([failedResponse])
+      chip.chipRequest.update.mockReturnValue([failedResponse])
       await chip.updateChip()
       expect(chip.message).toEqual('There was an error')
     })

@@ -1,4 +1,4 @@
-import { mount, localVue } from '../testHelper'
+import { mount, localVue, store } from '../testHelper'
 import Library from '@/components/Library'
 import LibraryTubeJson from '../../data/tubeWithLibrary'
 import SampleTubeJson from '../../data/tractionTubesWithSample'
@@ -10,7 +10,7 @@ describe('Library', () => {
 
   beforeEach(() => {
     props = { id: 1, tube: { id: 1, barcode: 'TRAC-1'} }
-    wrapper = mount(Library, { localVue, propsData: props } )
+    wrapper = mount(Library, { localVue, store, propsData: props } )
     library = wrapper.vm
   })
 
@@ -45,7 +45,7 @@ describe('Library', () => {
     })
 
   })
- 
+
   describe('updating the library', () => {
     beforeEach(() => {
       library.tubeRequest.get = jest.fn()

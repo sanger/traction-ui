@@ -6,12 +6,12 @@
 
 <script>
 
-import ComponentFactory from '@/mixins/ComponentFactory'
-import Api from '@/api'
+import Api from '@/mixins/Api'
+import handlePromise from '@/api/PromiseHelper'
 
 export default {
   name: 'Library',
-  mixins: [ComponentFactory],
+  mixins: [Api],
   props: {
     id: {
       type: [Number, String]
@@ -33,8 +33,10 @@ export default {
     //TODO: horrible logic needs refactoring
     async updateLibrary () {
       if(!this.queryString) return
-      let rawResponse = await this.tubeRequest.get({filter: { barcode: this.queryString} })
-      let response = new Api.Response(rawResponse)
+
+      let promise = await this.tubeRequest.get({filter: { barcode: this.queryString} })
+      let response = await handlePromise(promise)
+
       if (response.successful) {
         if (response.empty) {
           this.message = 'There is no library'
@@ -57,11 +59,8 @@ export default {
     },
   },
   computed: {
-    tractionConfig () {
-      return this.build(Api.ConfigItem, Api.Config.traction)
-    },
     tubeRequest () {
-      return this.build(Api.Request, this.tractionConfig.resource('tubes'))
+      return this.api.traction.tubes
     },
     queryString () {
       return this.barcode.replace('\n','')

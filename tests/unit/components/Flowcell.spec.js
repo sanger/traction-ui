@@ -1,4 +1,4 @@
-import { mount, localVue } from '../testHelper'
+import { mount, localVue, store } from '../testHelper'
 import Flowcell from '@/components/Flowcell'
 
 describe('Flowcell', () => {
@@ -7,7 +7,7 @@ describe('Flowcell', () => {
 
   beforeEach(() => {
     props = { id: 1, position: 1 }
-    wrapper = mount(Flowcell, { localVue, propsData: props } )
+    wrapper = mount(Flowcell, { localVue, store, propsData: props } )
     flowcell = wrapper.vm
     library =  {id: 2, type: 'libraries', state: 'pending', barcode: "TRAC-3", sample_name: "sample_d", enzyme_name: "Nb.BbvCI", created_at: "02/27/2019 04:05"}
   })
@@ -29,7 +29,7 @@ describe('Flowcell', () => {
   })
 
   it('will have a request', () => {
-    expect(flowcell.request).toBeDefined()
+    expect(flowcell.flowcellRequest).toBeDefined()
   })
 
   it('can have a library', () => {
@@ -44,20 +44,20 @@ describe('Flowcell', () => {
   describe('update the library', () => {
 
     beforeEach(() => {
-      flowcell.request.update = jest.fn()
+      flowcell.flowcellRequest.update = jest.fn()
     })
 
     it('successfully', async () => {
       let successfulResponse = [{ 'data': {}, 'status': 200, 'statusText': 'Success'}]
-      flowcell.request.update.mockResolvedValue(successfulResponse)
+      flowcell.flowcellRequest.update.mockResolvedValue(successfulResponse)
       await flowcell.updateFlowcell(library)
-      expect(flowcell.request.update).toBeCalledWith(flowcell.payload(library))
+      expect(flowcell.flowcellRequest.update).toBeCalledWith(flowcell.payload(library))
       expect(flowcell.message).toEqual('Library added to flowcell')
     })
 
     it('unsuccessfully', async () => {
       let failedResponse = { 'data': { }, 'status': 500, 'statusText': 'Internal Server Error' }
-      flowcell.request.update.mockReturnValue([failedResponse])
+      flowcell.flowcellRequest.update.mockReturnValue([failedResponse])
       await flowcell.updateFlowcell(library)
       expect(flowcell.message).toEqual('There was an error')
     })
