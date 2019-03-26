@@ -1,6 +1,6 @@
 <template>
   <div class="library">
-     <b-form-input id="barcode" v-model="barcode" type="text" placeholder="barcode" @change="updateLibrary" />
+     <b-form-input id="barcode" v-model="libraryBarcode" type="text" placeholder="barcode" @change="updateLibrary" />
   </div>
 </template>
 
@@ -16,16 +16,13 @@ export default {
     id: {
       type: [Number, String]
     },
-    tube: {
-      type: Object,
-      default: () => {
-        return { id: '', barcode: '' }
-      }
+    barcode: {
+      type: [Number, String]
     }
   },
   data () {
     return {
-      barcode: this.tube.barcode,
+      libraryBarcode: this.barcode,
       message: ''
     }
   },
@@ -63,7 +60,7 @@ export default {
       return this.api.traction.tubes
     },
     queryString () {
-      return this.barcode.replace('\n','')
+      return this.libraryBarcode.replace('\n','')
     }
   }
 }

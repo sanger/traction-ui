@@ -9,7 +9,7 @@ describe('Library', () => {
   let wrapper, library, props, input, response
 
   beforeEach(() => {
-    props = { id: 1, tube: { id: 1, barcode: 'TRAC-1'} }
+    props = { id: 1, barcode: 'TRAC-1'}
     wrapper = mount(Library, { localVue, store, propsData: props } )
     library = wrapper.vm
   })
@@ -18,35 +18,13 @@ describe('Library', () => {
     expect(wrapper.name()).toEqual('Library')
   })
 
-  it('can have an id', () => {
-    expect(library.id).toEqual(1)
-  })
-
-  it('can have a tube', () => {
-    expect(library.tube).toEqual(props.tube)
-  })
-
-  describe('#tubeRequest', () => {
-    it('will have a request', () => {
-      expect(library.tubeRequest).toBeDefined()
-    })
-  })
-
-  describe('#queryString', () => {
-    it('will populate the barcode from the tube', () => {
-      expect(library.barcode).toEqual(props.tube.barcode)
+  describe('props', () => {
+    it('can have an id', () => {
+      expect(library.id).toEqual(props.id)
     })
 
-    it('will allow the user to scan in a barcopde', () => {
-      input = wrapper.find('#barcode')
-      input.setValue('TRAC-2')
-      expect(library.barcode).toEqual('TRAC-2')
-    })
-
-    it('will create a query string', () => {
-      input = wrapper.find('#barcode')
-      input.setValue('TRAC-2\n')
-      expect(library.queryString).toEqual('TRAC-2')
+    it('can have a barcode and sets the libraryBarcode data', () => {
+      expect(library.libraryBarcode).toEqual(props.barcode)
     })
   })
 
@@ -90,6 +68,30 @@ describe('Library', () => {
       expect(library.tubeRequest.get).toBeCalledWith({ filter: { barcode: library.queryString } })
       expect(response).toEqual(new Response(SampleTubeJson))
       expect(library.message).toEqual('This is not a library')
+    })
+  })
+
+  describe('#tubeRequest', () => {
+    it('will have a request', () => {
+      expect(library.tubeRequest).toBeDefined()
+    })
+  })
+
+  describe('#queryString', () => {
+    it('will populate the barcode from the tube', () => {
+      expect(library.libraryBarcode).toEqual(props.barcode)
+    })
+
+    it('will allow the user to scan in a barcopde', () => {
+      input = wrapper.find('#barcode')
+      input.setValue('TRAC-2')
+      expect(library.libraryBarcode).toEqual('TRAC-2')
+    })
+
+    it('will create a query string', () => {
+      input = wrapper.find('#barcode')
+      input.setValue('TRAC-2\n')
+      expect(library.queryString).toEqual('TRAC-2')
     })
   })
 
