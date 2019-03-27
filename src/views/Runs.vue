@@ -14,10 +14,12 @@
       </b-col>
 
       <b-table
-         show-empty
-         :items="items"
-         :fields="fields"
-         :filter="filter"
+          show-empty
+          :items="items"
+          :fields="fields"
+          :filter="filter"
+          :sort-by.sync="sortBy" 
+          :sort-desc.sync="sortDesc"
       >
 
         <template slot="actions" slot-scope="row">
@@ -51,7 +53,9 @@ export default {
         { key: 'actions', label: 'Actions' },
       ],
       items: [],
-      filter: null
+      filter: null,
+      sortBy: 'created_at',
+      sortDesc: true
     }
   },
   methods: {
