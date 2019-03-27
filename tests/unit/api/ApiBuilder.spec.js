@@ -1,13 +1,14 @@
 import * as ApiBuilder from '@/api/ApiBuilder'
-import Api from '@/api'
+import Request from '@/api/Request'
 
 describe('ApiBuilder', () => {
 
   describe('buildComponent', () => {
     it('creates a new component with given props', () => {
-      let cmp = ApiBuilder.buildComponent(Api.ConfigItem, {name: 'aname', apiNamespace: 'abc'})
-      expect(cmp.name).toEqual('aname')
+      let cmp = ApiBuilder.buildComponent(Request, {baseURL: 'aname', apiNamespace: 'abc', resource: 'cats'})
+      expect(cmp.baseURL).toEqual('aname')
       expect(cmp.apiNamespace).toEqual('abc')
+      expect(cmp.resource).toEqual('cats')
     })
   })
 
