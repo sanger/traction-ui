@@ -21,13 +21,13 @@
 </template>
 
 <script>
-import ComponentFactory from '@/mixins/ComponentFactory'
-import Api from '@/api'
+import Api from '@/mixins/Api'
+import handlePromise from '@/api/PromiseHelper'
 import Chip from '@/components/Chip'
 
 export default {
   name: 'Run',
-  mixins: [ComponentFactory],
+  mixins: [Api],
   props: {
     id: {
       type: [Number, String]
@@ -36,15 +36,15 @@ export default {
   data () {
     return {
       name: this.name,
-      state: null, 
+      state: null,
       chip: null,
       message: ''
     }
   },
   methods: {
     async updateRun (attributes) {
-      let rawResponse = await this.request.update(this.payload(attributes))
-      let response = new Api.Response(rawResponse[0])
+      let promise = await this.runsRequest.update(this.payload(attributes))
+      let response = await handlePromise(promise[0])
 
       if (response.successful) {
         this.message = 'Run updated'
@@ -55,8 +55,8 @@ export default {
       }
     },
     async getRun (id) {
-      let rawResponse = await this.request.find(id)
-      let response = new Api.Response(rawResponse)
+      let promise = await this.runsRequest.find(id)
+      let response = await handlePromise(promise)
 
       if (response.successful) {
         return response.deserialize.runs[0]
@@ -79,7 +79,7 @@ export default {
     },
     payload (attributes) {
       return {
-        data: { 
+        data: {
           id: this.id,
           type: 'runs',
           attributes: attributes
@@ -97,11 +97,8 @@ export default {
     Chip
   },
   computed: {
-    tractionConfig () {
-      return this.build(Api.ConfigItem, Api.Config.traction)
-    },
-    request () {
-      return this.build(Api.Request, this.tractionConfig.resource('runs'))
+    runsRequest () {
+      return this.api.traction.runs
     }
   },
   created () {

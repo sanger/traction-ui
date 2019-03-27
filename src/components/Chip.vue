@@ -7,13 +7,13 @@
 
 <script>
 
-import ComponentFactory from '@/mixins/ComponentFactory'
-import Api from '@/api'
 import Flowcell from '@/components/Flowcell'
+import Api from '@/mixins/Api'
+import handlePromise from '@/api/PromiseHelper'
 
 export default {
   name: 'Chip',
-  mixins: [ComponentFactory],
+  mixins: [Api],
   props: {
     id: {
       type: [Number, String]
@@ -36,8 +36,9 @@ export default {
   },
   methods: {
     async updateChip () {
-      let rawResponse = await this.request.update(this.payload)
-      let response = new Api.Response(rawResponse[0])
+      let promise = await this.chipRequest.update(this.payload)
+      let response = await handlePromise(promise[0])
+
       if (response.successful) {
         this.message = 'Chip updated'
         return response
@@ -48,15 +49,12 @@ export default {
     }
   },
   computed: {
-    tractionConfig () {
-      return this.build(Api.ConfigItem, Api.Config.traction)
-    },
-    request () {
-      return this.build(Api.Request, this.tractionConfig.resource('chips'))
+    chipRequest () {
+      return this.api.traction.chips
     },
     payload () {
       return {
-        data: { 
+        data: {
           id: this.id,
           type: 'chips',
           attributes: {

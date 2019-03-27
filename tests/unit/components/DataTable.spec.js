@@ -1,4 +1,4 @@
-import { mount, localVue } from '../testHelper'
+import { mount, localVue, store } from '../testHelper'
 import DataTable from '@/components/DataTable'
 import Samples from '@/views/Samples'
 
@@ -8,7 +8,8 @@ describe('DataTable.vue', () => {
 
   beforeEach(() => {
     wrapper = mount(DataTable, {
-      mocks: localVue,
+      localVue,
+      store,
       slots: {
         default: Samples
       }

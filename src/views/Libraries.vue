@@ -15,12 +15,12 @@
 </template>
 
 <script>
-import ComponentFactory from '@/mixins/ComponentFactory'
-import Api from '@/api'
+import handlePromise from '@/api/PromiseHelper'
+import Api from '@/mixins/Api'
 
 export default {
   name: 'Libraries',
-  mixins: [ComponentFactory],
+  mixins: [Api],
   props: {
     items: Array
   },
@@ -43,10 +43,10 @@ export default {
   },
   methods: {
     async deleteLibraries () {
-      let rawResponse = await this.libraryRequest.destroy(this.selected)
-      let responses = rawResponse.map(item => new Api.Response(item))
+      let promises = this.libraryRequest.destroy(this.selected)
+      let responses = await Promise.all(promises.map(promise => handlePromise(promise)))
 
-      if (responses.every(r => Object.keys(r.errors).length === 0)) {
+      if (responses.every(r => r.successful)) {
         this.message = `Libraries ${this.selected.join(',')} successfully deleted`
       } else {
         this.message = responses.map(r => r.errors.message)
@@ -56,10 +56,7 @@ export default {
   },
   computed: {
     libraryRequest () {
-      return this.build(Api.Request, this.tractionConfig.resource('libraries'))
-    },
-    tractionConfig () {
-      return this.build(Api.ConfigItem, Api.Config.traction)
+      return this.api.traction.libraries
     },
     emitAlert () {
       return this.$emit('alert', this.message)

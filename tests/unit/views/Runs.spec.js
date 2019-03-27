@@ -1,6 +1,6 @@
 import Runs from '@/views/Runs'
 import Run from '@/views/Run'
-import { mount, localVue } from '../testHelper'
+import { mount, localVue, store } from '../testHelper'
 import VueRouter from 'vue-router'
 import RunsJson from '../../data/runs'
 import RunJson from '../../data/runWithLibrary'
@@ -14,13 +14,13 @@ describe('Runs.vue', () => {
 
   beforeEach(() => {
     const router = new VueRouter({ routes:
-      [ 
+      [
         { path: '/runs', name: 'Runs', component: Runs },
         { path: '/run', name: 'Run', component: Run, props: {id: true} },
         { path: '/run/:id', component: Run, props: true } ]
     })
 
-    wrapper = mount(Runs, { localVue, router })
+    wrapper = mount(Runs, { localVue, router, store })
     runs = wrapper.vm
   })
 
@@ -36,17 +36,6 @@ describe('Runs.vue', () => {
 
   it('contains a table', () => {
     expect(wrapper.contains('table')).toBe(true)
-  })
-
-  it('will create a run request', () => {
-    let request = runs.runRequest
-    expect(request.resource).toBeDefined()
-  })
-
-  it('will have a payload', () => {
-    let payload = runs.payload.data
-    expect(payload.type).toEqual('runs')
-    expect(payload.attributes).toBeDefined()
   })
 
   describe('#getRuns', () => {
@@ -75,7 +64,7 @@ describe('Runs.vue', () => {
     })
   })
 
-  describe('create run', () => {
+  describe('#createRun', () => {
     beforeEach(() => {
       runs.runRequest.create = jest.fn()
     })
@@ -91,7 +80,7 @@ describe('Runs.vue', () => {
 
   })
 
-  describe('show run', () => {
+  describe('#showRun', () => {
 
     let mockResponse
 
@@ -117,21 +106,21 @@ describe('Runs.vue', () => {
       expect(runs.message).toEqual('There was an error')
     })
 
+    it('will redirect to the run when newRun is clicked', async () => {
+      runs.runRequest.execute = jest.fn()
+      runs.runRequest.execute.mockResolvedValue(RunsJson)
+      let mockResponse = new Response(RunJson)
+      let id = mockResponse.deserialize.runs[0].id
+      runs.createRun = jest.fn()
+      runs.createRun.mockResolvedValue(mockResponse)
+      let button = wrapper.find('#newRun')
+      button.trigger('click')
+      await flushPromises()
+      expect(wrapper.vm.$route.path).toBe(`/run/${id}`)
+    })
+
   })
 
-  it('will redirect to the run when newRun is clicked', async () => {
-    runs.runRequest.execute = jest.fn()
-    runs.runRequest.execute.mockResolvedValue(RunsJson)
-    let mockResponse = new Response(RunJson)
-    let id = mockResponse.deserialize.runs[0].id
-    runs.createRun = jest.fn()
-    runs.createRun.mockResolvedValue(mockResponse)
-    let button = wrapper.find('#newRun')
-    button.trigger('click')
-    await flushPromises()
-    expect(wrapper.vm.$route.path).toBe(`/run/${id}`)
-  })
- 
   describe('filtering runs', () => {
     let mockRuns
 
@@ -159,5 +148,15 @@ describe('Runs.vue', () => {
     })
   })
 
+  describe('#runRequest', () => {
+    it('will have a request', () => {
+      expect(runs.runRequest).toBeDefined()
+    })
+  })
 
+  it('#payload', () => {
+    let payload = runs.payload.data
+    expect(payload.type).toEqual('runs')
+    expect(payload.attributes).toBeDefined()
+  })
 })

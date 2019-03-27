@@ -1,9 +1,7 @@
 import Samples from '@/views/Samples'
 import Modal from '@/components/Modal'
-import { mount, localVue } from '../testHelper'
-import flushPromises from 'flush-promises'
+import { mount, localVue, store } from '../testHelper'
 import Libraries from '../../data/libraries'
-
 
 describe('Samples.vue', () => {
 
@@ -16,6 +14,7 @@ describe('Samples.vue', () => {
       ]
 
       wrapper = mount(Samples, { localVue,
+        store,
         propsData: {
           items: mockSamples
         },
@@ -101,7 +100,6 @@ describe('Samples.vue', () => {
       samples.selected = [{id: 1}]
 
       await samples.createLibrariesInTraction(selectedEnzymeId)
-      await flushPromises()
       expect(samples.message).toEqual("name name error message 1")
     })
   })
@@ -129,4 +127,9 @@ describe('Samples.vue', () => {
     })
   })
 
+  describe('#libraryRequest', () => {
+    it('will have a request', () => {
+      expect(samples.libraryRequest).toBeDefined()
+    })
+  })
 })

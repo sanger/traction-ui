@@ -1,31 +1,28 @@
 <template>
   <div class="library">
-     <b-form-input id="barcode" v-model="barcode" type="text" placeholder="barcode" @change="updateLibrary" />
+     <b-form-input id="barcode" v-model="libraryBarcode" type="text" placeholder="barcode" @change="updateLibrary" />
   </div>
 </template>
 
 <script>
 
-import ComponentFactory from '@/mixins/ComponentFactory'
-import Api from '@/api'
+import Api from '@/mixins/Api'
+import handlePromise from '@/api/PromiseHelper'
 
 export default {
   name: 'Library',
-  mixins: [ComponentFactory],
+  mixins: [Api],
   props: {
     id: {
       type: [Number, String]
     },
-    tube: {
-      type: Object,
-      default: () => {
-        return { id: '', barcode: '' }
-      }
+    barcode: {
+      type: [Number, String]
     }
   },
   data () {
     return {
-      barcode: this.tube.barcode,
+      libraryBarcode: this.barcode,
       message: ''
     }
   },
@@ -33,8 +30,10 @@ export default {
     //TODO: horrible logic needs refactoring
     async updateLibrary () {
       if(!this.queryString) return
-      let rawResponse = await this.tubeRequest.get({filter: { barcode: this.queryString} })
-      let response = new Api.Response(rawResponse)
+
+      let promise = await this.tubeRequest.get({filter: { barcode: this.queryString} })
+      let response = await handlePromise(promise)
+
       if (response.successful) {
         if (response.empty) {
           this.message = 'There is no library'
@@ -57,14 +56,11 @@ export default {
     },
   },
   computed: {
-    tractionConfig () {
-      return this.build(Api.ConfigItem, Api.Config.traction)
-    },
     tubeRequest () {
-      return this.build(Api.Request, this.tractionConfig.resource('tubes'))
+      return this.api.traction.tubes
     },
     queryString () {
-      return this.barcode.replace('\n','')
+      return this.libraryBarcode.replace('\n','')
     }
   }
 }

@@ -1,5 +1,5 @@
 import Reception from '@/views/Reception'
-import { mount, localVue } from '../testHelper'
+import { mount, localVue, store } from '../testHelper'
 import TractionTubesJson from '../../data/tractionTubesWithSample'
 import SequencescapeTubesJson from '../../data/sequencescapeTubesWithSample'
 import SamplesJson from '../../data/samples'
@@ -21,8 +21,14 @@ describe('Reception', () => {
     })
 
     barcodes = 'TRAC-1\nTRAC-2\nTRAC-3\nTRAC-4\nTRAC-5'
-    wrapper = mount(Reception, { localVue, router } )
+    wrapper = mount(Reception, { localVue, router, store } )
     reception = wrapper.vm
+  })
+
+  describe('alert', () => {
+    it('has a alert', () => {
+      expect(wrapper.contains(Alert)).toBe(true)
+    })
   })
 
   describe('scanning in barcodes', () => {
@@ -31,24 +37,28 @@ describe('Reception', () => {
       input = wrapper.find('textarea')
       input.setValue(barcode)
       expect(reception.barcodes).toEqual(barcode)
-      expect(reception.queryString).toEqual('TRAC-1')
     })
 
     it('multiple barcodes', () => {
       input = wrapper.find('textarea')
       input.setValue(barcodes)
       expect(reception.barcodes).toEqual(barcodes)
-      expect(reception.queryString).toEqual('TRAC-1,TRAC-2,TRAC-3,TRAC-4,TRAC-5')
     })
-
-    // it('will build a request', () => {
-    //   reception.barcodes = barcodes
-    //   let request = reception.tubeRequest
-    //   expect(request.include).toEqual('material')
-    // })
 
     it('no barcodes', () => {
       expect(reception.queryString).toEqual('')
+    })
+  })
+
+  describe('#queryString', () => {
+    it('will allow the user to scan in a barcopde', () => {
+      wrapper.setData({ barcodes: 'TRAC-2' })
+      expect(reception.queryString).toEqual('TRAC-2')
+    })
+
+    it('will allow the user to scan in multiple barcodes', () => {
+      wrapper.setData({ barcodes: barcodes })
+      expect(reception.queryString).toEqual('TRAC-1,TRAC-2,TRAC-3,TRAC-4,TRAC-5')
     })
   })
 
@@ -183,17 +193,29 @@ describe('Reception', () => {
 
   })
 
-  describe('alert', () => {
-    it('has a alert', () => {
-      expect(wrapper.contains(Alert)).toBe(true)
-    })
-  })
-
   describe('#showAlert', () => {
     it('passes the message to function on emit event', () => {
       wrapper.setData({ message: 'show this message' })
       reception.showAlert()
       expect(wrapper.find(Alert).html()).toMatch('show this message')
+    })
+  })
+
+  describe('#sequencescapeTubeRequest', () => {
+    it('will have a request', () => {
+      expect(reception.sequencescapeTubeRequest).toBeDefined()
+    })
+  })
+
+  describe('#tractionTubeRequest', () => {
+    it('will have a request', () => {
+      expect(reception.tractionTubeRequest).toBeDefined()
+    })
+  })
+
+  describe('#sampleRequest', () => {
+    it('will have a request', () => {
+      expect(reception.sampleRequest).toBeDefined()
     })
   })
 })

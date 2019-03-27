@@ -15,13 +15,13 @@
 </template>
 
 <script>
-import ComponentFactory from '@/mixins/ComponentFactory'
 import Modal from '@/components/Modal'
-import Api from '@/api'
+import handlePromise from '@/api/PromiseHelper'
+import Api from '@/mixins/Api'
 
 export default {
   name: 'Samples',
-  mixins: [ComponentFactory],
+  mixins: [Api],
   props: {
     items: Array
   },
@@ -45,8 +45,9 @@ export default {
       let libraries = this.selected.map(item => { return {'sample_id': item.id, 'enzyme_id': selectedEnzymeId}})
 
       let body = { data: { type: 'libraries', attributes: { libraries: libraries }}}
-      let rawResponse = await this.libraryRequest.create(body)
-      let response = new Api.Response(rawResponse)
+
+      let promise = this.libraryRequest.create(body)
+      let response = await handlePromise(promise)
 
       if (response.successful) {
         let newLibrariesID = response.deserialize.libraries.map(l => l.id)
@@ -63,10 +64,7 @@ export default {
   },
   computed: {
     libraryRequest () {
-      return this.build(Api.Request, this.tractionConfig.resource('libraries'))
-    },
-    tractionConfig () {
-      return this.build(Api.ConfigItem, Api.Config.traction)
+      return this.api.traction.libraries
     },
     emitAlert () {
       return this.$emit('alert', this.message)

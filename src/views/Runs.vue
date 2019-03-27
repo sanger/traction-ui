@@ -33,12 +33,12 @@
 
 <script>
 import Alert from '@/components/Alert'
-import ComponentFactory from '@/mixins/ComponentFactory'
-import Api from '@/api'
+import handlePromise from '@/api/PromiseHelper'
+import Api from '@/mixins/Api'
 
 export default {
   name: 'Runs',
-  mixins: [ComponentFactory],
+  mixins: [Api],
   props: {
   },
   data () {
@@ -56,10 +56,10 @@ export default {
   },
   methods: {
     async getRuns () {
-      let rawResponse = await this.runRequest.get()
-      let response = new Api.Response(rawResponse)
+      let promise = this.runRequest.get()
+      let response = await handlePromise(promise)
 
-      if (Object.keys(response.errors).length === 0) {
+      if (response.successful) {
         let runs = response.deserialize.runs
         this.items = runs
       } else {
@@ -69,8 +69,8 @@ export default {
       }
     },
     async createRun () {
-      let rawResponse = await this.runRequest.create(this.payload)
-      return new Api.Response(rawResponse)
+      let promise = this.runRequest.create(this.payload)
+      return await handlePromise(promise)
     },
     async showRun (id) {
       let runId
@@ -99,20 +99,17 @@ export default {
   },
   computed: {
     runRequest () {
-      return this.build(Api.Request, this.tractionConfig.resource('runs'))
-    },
-    tractionConfig () {
-      return this.build(Api.ConfigItem, Api.Config.traction)
+      return this.api.traction.runs
     },
     showAlert () {
       return this.$refs.alert.show(this.message, 'primary')
     },
     payload () {
-      return { 
-        data: { 
-          type: 'runs', 
-          attributes: { 
-            runs: [ { } ] 
+      return {
+        data: {
+          type: 'runs',
+          attributes: {
+            runs: [ { } ]
           }
         }
       }
