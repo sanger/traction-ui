@@ -2,7 +2,7 @@
     <div class="runs">
       <alert ref='alert'></alert>
 
-      <b-button id="newRun" class="float-right" @click="showRun()">Create New Run</b-button>
+      <b-button id="newRun" class="float-right" @click="showRun()" variant="success">Create New Run</b-button>
 
       <b-col md="6" class="my-1">
         <b-input-group>
@@ -14,18 +14,27 @@
       </b-col>
 
       <b-table
-         show-empty
-         :items="items"
-         :fields="fields"
-         :filter="filter"
+          show-empty
+          :items="items"
+          :fields="fields"
+          :filter="filter"
+          :sort-by.sync="sortBy"
+          :sort-desc.sync="sortDesc"
       >
 
         <template slot="actions" slot-scope="row">
           <b-button size="sm" @click="showRun(row.item.id)" class="mr-1">
             Edit Run
           </b-button>
-        </template>
 
+          <b-button id="completeRun" size="sm" class="mr-1" @click="completeRun(row.item.id)">
+            Complete Run
+          </b-button>
+
+          <b-button id="cancelRun" size="sm" class="mr-1" @click="cancelRun(row.item.id)">
+            Cancel Run
+          </b-button>
+        </template>
       </b-table>
 
     </div>
@@ -33,12 +42,12 @@
 
 <script>
 import Alert from '@/components/Alert'
-import handlePromise from '@/api/PromiseHelper'
 import Api from '@/mixins/Api'
+import RunMixin from '@/mixins/RunMixin'
 
 export default {
   name: 'Runs',
-  mixins: [Api],
+  mixins: [Api, RunMixin],
   props: {
   },
   data () {
@@ -51,44 +60,14 @@ export default {
         { key: 'actions', label: 'Actions' },
       ],
       items: [],
-      filter: null
+      filter: null,
+      sortBy: 'created_at',
+      sortDesc: true
     }
   },
   methods: {
-    async getRuns () {
-      let promise = this.runRequest.get()
-      let response = await handlePromise(promise)
-
-      if (response.successful) {
-        let runs = response.deserialize.runs
-        this.items = runs
-      } else {
-        this.message = response.errors.message
-        this.showAlert
-        this.items = []
-      }
-    },
-    async createRun () {
-      let promise = this.runRequest.create(this.payload)
-      return await handlePromise(promise)
-    },
-    async showRun (id) {
-      let runId
-      if (id === undefined) {
-        let response = await this.createRun()
-        if (response.successful) {
-          runId = response.deserialize.runs[0].id
-        } else {
-          this.message = 'There was an error'
-          return
-        }
-      } else {
-        runId = id
-      }
-      this.$router.push({ path: `/run/${runId}` })
-    },
-    provider() {
-      this.getRuns()
+    async provider() {
+      this.items = await this.getRuns()
     }
   },
   created() {
@@ -98,22 +77,9 @@ export default {
     Alert
   },
   computed: {
-    runRequest () {
-      return this.api.traction.runs
-    },
-    showAlert () {
-      return this.$refs.alert.show(this.message, 'primary')
-    },
-    payload () {
-      return {
-        data: {
-          type: 'runs',
-          attributes: {
-            runs: [ { } ]
-          }
-        }
-      }
-    }
+    // showAlert () {
+    //   return this.$refs.alert.show(this.message, 'primary')
+    // }
   }
 }
 </script>
