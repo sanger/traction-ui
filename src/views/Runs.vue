@@ -42,12 +42,11 @@
 
 <script>
 import Alert from '@/components/Alert'
-import Api from '@/mixins/Api'
 import RunMixin from '@/mixins/RunMixin'
 
 export default {
   name: 'Runs',
-  mixins: [Api, RunMixin],
+  mixins: [RunMixin],
   props: {
   },
   data () {

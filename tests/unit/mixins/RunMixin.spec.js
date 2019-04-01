@@ -38,14 +38,6 @@ describe('RunMixin', () => {
     attributes = {foo: 'bar'}
   })
 
-  describe('#payload', () => {
-    it('returns an object with the given id and attributes', () => {
-      let data = cmp.payload(runId, attributes).data
-      expect(data.id).toEqual(runId)
-      expect(data.attributes).toEqual({foo: 'bar'})
-    })
-  })
-
   describe('#getRun', () => {
 
     beforeEach(() => {
@@ -211,6 +203,14 @@ describe('RunMixin', () => {
       expect(cmp.message).toEqual('There was an error')
     })
 
+  })
+
+  describe('#payload', () => {
+    it('returns an object with the given id and attributes', () => {
+      let data = cmp.payload(runId, attributes).data
+      expect(data.id).toEqual(runId)
+      expect(data.attributes).toEqual({foo: 'bar'})
+    })
   })
 
   describe('#runsRequest', () => {
