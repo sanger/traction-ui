@@ -37,8 +37,14 @@ describe('Runs.vue', () => {
     expect(wrapper.contains('table')).toBe(true)
   })
 
-  describe('#provider sets the data', () => {
+  describe('sorting', () => {
+    it('will sort the runs by created at', () => {
+      wrapper.setData({items: new Response(RunsJson).deserialize.runs})
+      expect(wrapper.find('tbody').findAll('tr').at(0).text()).toMatch(/TRAC-234/)
+    })
+  })
 
+  describe('#provider sets the data', () => {
     it('when runs exists', async () => {
       let mockResponse = new Response(RunsJson).deserialize.runs
       wrapper = mount(Runs, { localVue, router, store, methods: { getRuns() { return mockResponse } } } )
