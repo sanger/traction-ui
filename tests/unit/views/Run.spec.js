@@ -122,47 +122,6 @@ describe('Run.vue', () => {
     })
   })
 
-  // describe('complete button', () => {
-  //
-  //   it('is disabled is the run state is completed', () => {
-  //     run.state = 'completed'
-  //     button = wrapper.find('#completeRun')
-  //     expect(button.attributes('disabled')).toBeTruthy()
-  //   })
-  //
-  //   it('is disabled is the run state is cancelled', () => {
-  //     run.state = 'cancelled'
-  //     button = wrapper.find('#completeRun')
-  //     expect(button.attributes('disabled')).toBeTruthy()
-  //   })
-  //
-  //   it('is is enabled when the run state is pending or started', () => {
-  //     button = wrapper.find('#completeRun')
-  //     expect(button.attributes('disabled')).toBeFalsy()
-  //   })
-  // })
-
-  // describe('cancel button', () => {
-  //
-  //   it('is disabled is the run state is completed', () => {
-  //     run.state = 'completed'
-  //     button = wrapper.find('#cancelRun')
-  //     expect(button.attributes('disabled')).toBeTruthy()
-  //   })
-  //
-  //   it('is disabled is the run state is cancelled', () => {
-  //     run.state = 'cancelled'
-  //     button = wrapper.find('#cancelRun')
-  //     expect(button.attributes('disabled')).toBeTruthy()
-  //   })
-  //
-  //   it('is is enabled when the run state is pending or started', () => {
-  //     run.state = 'pending'
-  //     button = wrapper.find('#cancelRun')
-  //     expect(button.attributes('disabled')).toBeFalsy()
-  //   })
-  // })
-
   describe('#runsRequest', () => {
     it('will have a request', () => {
       expect(run.runsRequest).toBeDefined()

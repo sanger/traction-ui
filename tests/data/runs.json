@@ -9,7 +9,7 @@
       },
       "attributes": {
         "state": "pending",
-        "chip_barcode": "TRAC-456"
+        "chip_barcode": "TRAC-123"
       },
       "relationships": {
         "chip": {
@@ -28,13 +28,51 @@
       },
       "attributes": {
         "state": "started",
-        "chip_barcode": "TRAC-123"
+        "chip_barcode": "TRAC-234"
       },
       "relationships": {
         "chip": {
           "links": {
             "self": "/v1/runs/2/relationships/chip",
             "related": "/v1/runs/2/chip"
+          }
+        }
+      }
+    },
+    {
+      "id": "3",
+      "type": "runs",
+      "links": {
+        "self": "/v1/runs/3"
+      },
+      "attributes": {
+        "state": "completed",
+        "chip_barcode": "TRAC-345"
+      },
+      "relationships": {
+        "chip": {
+          "links": {
+            "self": "/v1/runs/3/relationships/chip",
+            "related": "/v1/runs/3/chip"
+          }
+        }
+      }
+    },
+    {
+      "id": "4",
+      "type": "runs",
+      "links": {
+        "self": "/v1/runs/4"
+      },
+      "attributes": {
+        "state": "cancelled",
+        "chip_barcode": "TRAC-456"
+      },
+      "relationships": {
+        "chip": {
+          "links": {
+            "self": "/v1/runs/4/relationships/chip",
+            "related": "/v1/runs/4/chip"
           }
         }
       }

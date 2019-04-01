@@ -27,11 +27,11 @@
             Edit Run
           </b-button>
 
-          <b-button id="completeRun" size="sm" class="mr-1" @click="completeRun(row.item.id)">
+          <b-button id="completeRun" size="sm" class="mr-1" @click="completeRun(row.item.id)" :disabled="isRunDisabled(row.item)">
             Complete Run
           </b-button>
 
-          <b-button id="cancelRun" size="sm" class="mr-1" @click="cancelRun(row.item.id)">
+          <b-button id="cancelRun" size="sm" class="mr-1" @click="cancelRun(row.item.id)" :disabled="isRunDisabled(row.item)">
             Cancel Run
           </b-button>
         </template>
@@ -68,6 +68,9 @@ export default {
   methods: {
     async provider() {
       this.items = await this.getRuns()
+    },
+    isRunDisabled(run) {
+      return run.state == 'completed' || run.state == 'cancelled'
     }
   },
   created() {
