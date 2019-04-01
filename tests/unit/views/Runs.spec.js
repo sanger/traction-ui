@@ -38,6 +38,11 @@ describe('Runs.vue', () => {
     expect(wrapper.contains('table')).toBe(true)
   })
 
+  it('will sort the runs by created at', () => {
+    wrapper.setData({items: new Response(RunsJson).deserialize.runs})
+    expect(wrapper.find('tbody').findAll('tr').at(0).text()).toMatch(/TRAC-123/)
+  })
+
   describe('#getRuns', () => {
     it('will get a list of runs on success',  async () => {
       runs.runRequest.execute = jest.fn()
