@@ -33,10 +33,6 @@ describe('Runs.vue', () => {
     })
   })
 
-  it('contains a create new run button', () => {
-    expect(wrapper.contains('button')).toBe(true)
-  })
-
   it('contains a table', () => {
     expect(wrapper.contains('table')).toBe(true)
   })
@@ -157,4 +153,17 @@ describe('Runs.vue', () => {
     })
   })
 
+  describe('new run button', () => {
+
+    it('contains a create new run button', () => {
+      expect(wrapper.contains('button')).toBe(true)
+    })
+
+    it('will redirect to the run when newRun is clicked', async () => {
+      runs.showRun = jest.fn()
+      let button = wrapper.find('#newRun')
+      button.trigger('click')
+      expect(runs.showRun).toBeCalled()
+    })
+  })
 })

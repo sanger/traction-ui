@@ -2,7 +2,10 @@ import RunMixin from '@/mixins/RunMixin'
 import { mount, localVue, store } from '../testHelper'
 import RunWithLibraryJson from '../../data/runWithLibrary'
 import RunsJson from '../../data/runs'
+import RunJson from '../../data/runWithLibrary'
 import Response from '@/api/Response'
+import VueRouter from 'vue-router'
+import Run from '@/views/Run'
 
 const Cmp = {
   template: '<div class="testRunMixin"></div>',
@@ -24,7 +27,12 @@ describe('RunMixin', () => {
   let wrapper, cmp, runId, attributes
 
   beforeEach(() => {
-    wrapper = mount(Cmp, {store, localVue})
+    let router = new VueRouter({ routes:
+      [
+        { path: '/run/:id', component: Run, props: true } ]
+    })
+
+    wrapper = mount(Cmp, { store, router, localVue })
     cmp = wrapper.vm
     runId = 1
     attributes = {foo: 'bar'}
@@ -149,62 +157,61 @@ describe('RunMixin', () => {
     })
   })
 
-  // describe('#createRun', () => {
-  //
-  //   beforeEach(() => {
-  //     runs.runRequest.create = jest.fn()
-  //   })
-  //
-  //   it('success', async () => {
-  //     let mockResponse = {status: 201, data: { data: [{id: 1, type: "runs" }]}}
-  //     runs.runRequest.create.mockResolvedValue(mockResponse)
-  //
-  //     let response = await runs.createRun()
-  //     expect(runs.runRequest.create).toBeCalledWith(runs.payload)
-  //     expect(response).toEqual(new Response(mockResponse))
-  //   })
-  // })
-  //
-  // describe('#showRun', () => {
-  //
-  //   let mockResponse
-  //
-  //   it('with no id will create a run', async () => {
-  //     mockResponse = new Response(RunJson)
-  //     runs.createRun = jest.fn()
-  //     runs.createRun.mockResolvedValue(mockResponse)
-  //     await runs.showRun()
-  //     expect(runs.createRun).toBeCalled()
-  //     expect(wrapper.vm.$route.path).toBe(`/run/${mockResponse.deserialize.runs[0].id}`)
-  //   })
-  //
-  //   it('with an id will redirect to the run', async () => {
-  //     await runs.showRun(1)
-  //     expect(wrapper.vm.$route.path).toBe('/run/1')
-  //   })
-  //
-  //   it('with an error will provide a message', async () => {
-  //     mockResponse = [{ 'data': { }, 'status': 500, 'statusText': 'Internal Server Error' }]
-  //     runs.createRun = jest.fn()
-  //     runs.createRun.mockReturnValue(mockResponse)
-  //     await runs.showRun()
-  //     expect(runs.message).toEqual('There was an error')
-  //   })
-  //
-  //   it('will redirect to the run when newRun is clicked', async () => {
-  //     runs.runRequest.execute = jest.fn()
-  //     runs.runRequest.execute.mockResolvedValue(RunsJson)
-  //     let mockResponse = new Response(RunJson)
-  //     let id = mockResponse.deserialize.runs[0].id
-  //     runs.createRun = jest.fn()
-  //     runs.createRun.mockResolvedValue(mockResponse)
-  //     let button = wrapper.find('#newRun')
-  //     button.trigger('click')
-  //     await flushPromises()
-  //     expect(wrapper.vm.$route.path).toBe(`/run/${id}`)
-  //   })
-  //
-  // })
+  describe('#createRun', () => {
+
+    beforeEach(() => {
+      cmp.runsRequest.create = jest.fn()
+    })
+
+    it('successfully', async () => {
+      let mockResponse = {status: 201, data: { data: [{id: 1, type: "runs" }]}}
+      cmp.runsRequest.create.mockResolvedValue(mockResponse)
+
+      let response = await cmp.createRun()
+      expect(cmp.runsRequest.create).toBeCalledWith(cmp.createPayload)
+      expect(response).toEqual(new Response(mockResponse))
+    })
+
+    it('unsuccessfully', async () => {
+      let failedResponse = { 'data': { }, 'status': 500, 'statusText': 'Internal Server Error' }
+      cmp.runsRequest.create.mockReturnValue(failedResponse)
+      let response = await cmp.createRun()
+      expect(cmp.runsRequest.create).toBeCalledWith(cmp.createPayload)
+      expect(response).toEqual(new Response(failedResponse))
+    })
+  })
+
+  describe('#showRun', () => {
+
+    beforeEach(() => {
+      cmp.createRun = jest.fn()
+    })
+
+    let mockResponse
+
+    it('with no id will create a run', async () => {
+      let mockResponse = new Response(RunJson)
+      cmp.createRun.mockResolvedValue(mockResponse)
+
+      await cmp.showRun()
+
+      expect(cmp.createRun).toBeCalled()
+      expect(wrapper.vm.$route.path).toBe(`/run/${mockResponse.deserialize.runs[0].id}`)
+    })
+
+    it('with an id will redirect to the run', async () => {
+      await cmp.showRun(1)
+      expect(wrapper.vm.$route.path).toBe('/run/1')
+    })
+
+    it('with an error will provide a message', async () => {
+      mockResponse = { 'data': { }, 'status': 500, 'statusText': 'Internal Server Error' }
+      cmp.createRun.mockReturnValue(mockResponse)
+      await cmp.showRun()
+      expect(cmp.message).toEqual('There was an error')
+    })
+
+  })
 
   describe('#runsRequest', () => {
     it('will have a request', () => {
