@@ -23,20 +23,20 @@
       >
 
         <template slot="actions" slot-scope="row">
-          <b-button id="editRun" size="sm" @click="showRun(row.item.id)" class="mr-1">
-            Edit Run
+          <b-button id="editRun" variant="outline-dark" size="sm" @click="showRun(row.item.id)" class="mr-1">
+            Edit
           </b-button>
 
-          <b-button id="startRun" variant="success" size="sm" class="mr-1" @click="startRun(row.item.id)" :disabled="row.item.state !== 'pending'">
-            Start Run
+          <b-button id="startRun" variant="outline-success" size="sm" class="mr-1" @click="startRun(row.item.id)" :disabled="row.item.state !== 'pending'">
+            Start
           </b-button>
 
-          <b-button id="completeRun" size="sm" class="mr-1" @click="completeRun(row.item.id)" :disabled="isRunDisabled(row.item)">
-            Complete Run
+          <b-button id="completeRun" variant="outline-primary" size="sm" class="mr-1" @click="completeRun(row.item.id)" :disabled="isRunDisabled(row.item)">
+            Complete
           </b-button>
 
-          <b-button id="cancelRun" size="sm" class="mr-1" @click="cancelRun(row.item.id)" :disabled="isRunDisabled(row.item)">
-            Cancel Run
+          <b-button id="cancelRun" variant="outline-danger" size="sm" class="mr-1" @click="cancelRun(row.item.id)" :disabled="isRunDisabled(row.item)">
+            Cancel
           </b-button>
         </template>
       </b-table>
