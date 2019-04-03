@@ -8,7 +8,7 @@ import VueRouter from 'vue-router'
 
 describe('Run.vue', () => {
 
-  let wrapper, run, props, input, button, router
+  let wrapper, run, props, input, router
 
   beforeEach(() => {
     props = { id: 1 }
@@ -95,30 +95,6 @@ describe('Run.vue', () => {
 
       input.trigger('change')
       expect(run.updateName).toBeCalledWith(run.id, 'runaway')
-    })
-  })
-
-  describe('start button', () => {
-
-    beforeEach(() => {
-      run.startRun = jest.fn()
-    })
-
-    it('is disabled is the run state is not pending', () => {
-      run.state = 'started'
-      button = wrapper.find('#startRun')
-      expect(button.attributes('disabled')).toBeTruthy()
-    })
-
-    it('is enabled when the run state is pending', () => {
-      button = wrapper.find('#startRun')
-      expect(button.attributes('disabled')).toBeFalsy()
-    })
-
-    it('on click startRun is called', () => {
-      button = wrapper.find('#startRun')
-      button.trigger('click')
-      expect(run.startRun).toBeCalledWith(run.id)
     })
   })
 

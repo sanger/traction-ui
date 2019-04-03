@@ -10,7 +10,7 @@
       "attributes": {
         "state": "pending",
         "chip_barcode": "TRAC-123",
-        "created_at":  "03/21/2019 02:01"
+        "created_at":  "03/21/2019 01:01"
       },
       "relationships": {
         "chip": {
@@ -30,7 +30,7 @@
       "attributes": {
         "state": "started",
         "chip_barcode": "TRAC-234",
-        "created_at":  "03/21/2019 03:01"
+        "created_at":  "03/21/2019 02:01"
       },
       "relationships": {
         "chip": {
@@ -49,7 +49,8 @@
       },
       "attributes": {
         "state": "completed",
-        "chip_barcode": "TRAC-345"
+        "chip_barcode": "TRAC-345",
+        "created_at":  "03/21/2019 03:01"
       },
       "relationships": {
         "chip": {
@@ -68,7 +69,8 @@
       },
       "attributes": {
         "state": "cancelled",
-        "chip_barcode": "TRAC-456"
+        "chip_barcode": "TRAC-456",
+        "created_at":  "03/21/2019 04:01"
       },
       "relationships": {
         "chip": {

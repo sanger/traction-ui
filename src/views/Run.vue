@@ -5,8 +5,6 @@
       <b-button id="backToRunsButton" class="float-right">Back</b-button>
     </router-link>
 
-    <b-button id="startRun" variant="success" class="float-right" @click="startRun(id)" :disabled="state!=='pending'">Start Run</b-button>
-
     <h1 class="runInfo" id="id">Run ID: {{ id }}</h1>
     <h2 class="runInfo" id="state">state: {{ state }}</h2>
 

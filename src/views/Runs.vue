@@ -2,7 +2,7 @@
     <div class="runs">
       <alert ref='alert'></alert>
 
-      <b-button id="newRun" class="float-right" @click="showRun()" variant="success">Create New Run</b-button>
+      <b-button id="newRun" class="float-right" @click="showRun()" variant="success">New Run</b-button>
 
       <b-col md="6" class="my-1">
         <b-input-group>
@@ -23,8 +23,12 @@
       >
 
         <template slot="actions" slot-scope="row">
-          <b-button size="sm" @click="showRun(row.item.id)" class="mr-1">
+          <b-button id="editRun" size="sm" @click="showRun(row.item.id)" class="mr-1">
             Edit Run
+          </b-button>
+
+          <b-button id="startRun" variant="success" size="sm" class="mr-1" @click="startRun(row.item.id)" :disabled="row.item.state !== 'pending'">
+            Start Run
           </b-button>
 
           <b-button id="completeRun" size="sm" class="mr-1" @click="completeRun(row.item.id)" :disabled="isRunDisabled(row.item)">
@@ -70,6 +74,9 @@ export default {
     },
     isRunDisabled(run) {
       return run.state == 'completed' || run.state == 'cancelled'
+    },
+    isRunPending(run) {
+      return run.state !== 'pending'
     }
   },
   created() {
