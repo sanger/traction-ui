@@ -162,6 +162,21 @@ describe('Reception', () => {
 
   })
 
+  describe('#sampleTubesJson', () => {
+
+    it('will convert a deserialized response to the correct format', () => {
+      let tubes = new Response(SequencescapeTubesJson).deserialize.tubes
+      let json = reception.sampleTubesJson(tubes)
+      let tube = json[0]
+      expect(tube.external_id).toBeDefined()
+      expect(tube.external_id.includes('-')).toBeTruthy()
+      expect(tube.external_study_id).toBeDefined()
+      expect(tube.external_id.includes('-')).toBeTruthy()
+      expect(tube.name).toBeDefined()
+      expect(tube.species).toBeDefined()
+    })
+  })
+
   describe('#exportSampleTubesIntoTraction', () => {
     let ssTubes
 

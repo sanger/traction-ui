@@ -5,7 +5,7 @@
     "resources": {
       "tubes": {
         "name": "tubes",
-        "include": "samples.sample_metadata"
+        "include": "samples.sample_metadata,studies"
       }
     }
   },
