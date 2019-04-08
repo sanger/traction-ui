@@ -31,7 +31,7 @@ export default {
     async updateLibrary () {
       if(!this.queryString) return
 
-      let promise = await this.tubeRequest.get({filter: { barcode: this.queryString} })
+      let promise = this.tubeRequest.get({filter: { barcode: this.queryString} })
       let response = await handlePromise(promise)
 
       if (response.successful) {

@@ -36,7 +36,7 @@ export default {
   },
   methods: {
     async updateChip () {
-      let promise = await this.chipRequest.update(this.payload)
+      let promise = this.chipRequest.update(this.payload)
       let response = await handlePromise(promise[0])
 
       if (response.successful) {

@@ -11,7 +11,7 @@ export default {
   },
   methods: {
     async getRun (id) {
-      let promise = await this.runsRequest.find(id)
+      let promise = this.runsRequest.find(id)
       let response = await handlePromise(promise)
 
       if (response.successful) {
@@ -33,8 +33,8 @@ export default {
       }
     },
     async updateRun (id, attributes) {
-      let promise = await this.runsRequest.update(this.payload(id, attributes))
-      let response = await handlePromise(promise[0])
+      let promises = this.runsRequest.update(this.payload(id, attributes))
+      let response = await handlePromise(promises[0])
 
       if (response.successful) {
         this.message = 'Run updated'

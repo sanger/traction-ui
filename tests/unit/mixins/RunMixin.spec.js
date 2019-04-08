@@ -97,7 +97,7 @@ describe('RunMixin', () => {
 
     it('successfully', async () => {
       let successfulResponse = [{ 'data': {}, 'status': 200, 'statusText': 'Success'}]
-      cmp.runsRequest.update.mockResolvedValue(successfulResponse)
+      cmp.runsRequest.update.mockReturnValue(successfulResponse)
 
       await cmp.updateRun(runId, attributes)
 

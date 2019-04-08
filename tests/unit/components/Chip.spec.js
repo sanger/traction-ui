@@ -58,7 +58,7 @@ describe('Chip', () => {
 
     it('successfully', async () => {
       let successfulResponse = [{ 'data': {}, 'status': 200, 'statusText': 'Success'}]
-      chip.chipRequest.update.mockResolvedValue(successfulResponse)
+      chip.chipRequest.update.mockReturnValue(successfulResponse)
       await chip.updateChip()
       expect(chip.chipRequest.update).toBeCalledWith(chip.payload)
       expect(chip.message).toEqual('Chip updated')

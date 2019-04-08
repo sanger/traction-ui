@@ -53,7 +53,7 @@ describe('Flowcell', () => {
 
     it('successfully', async () => {
       let successfulResponse = [{ 'data': {}, 'status': 200, 'statusText': 'Success'}]
-      flowcell.flowcellRequest.update.mockResolvedValue(successfulResponse)
+      flowcell.flowcellRequest.update.mockReturnValue(successfulResponse)
       await flowcell.updateFlowcell(library)
       expect(flowcell.flowcellRequest.update).toBeCalledWith(flowcell.payload(library))
       expect(flowcell.message).toEqual('Library added to flowcell')
