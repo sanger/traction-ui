@@ -23,19 +23,19 @@
       >
 
         <template slot="actions" slot-scope="row">
-          <b-button id="editRun" variant="outline-dark" size="sm" @click="showRun(row.item.id)" class="mr-1">
+          <b-button :id="generateId('createRun',row.item.id)" variant="outline-dark" size="sm" @click="showRun(row.item.id)" class="mr-1">
             Edit
           </b-button>
 
-          <b-button id="startRun" variant="outline-success" size="sm" class="mr-1" @click="startRun(row.item.id)" :disabled="row.item.state !== 'pending'">
+          <b-button :id="generateId('startRun',row.item.id)" variant="outline-success" size="sm" class="mr-1" @click="startRun(row.item.id)" :disabled="row.item.state !== 'pending'">
             Start
           </b-button>
 
-          <b-button id="completeRun" variant="outline-primary" size="sm" class="mr-1" @click="completeRun(row.item.id)" :disabled="isRunDisabled(row.item)">
+          <b-button :id="generateId('completeRun',row.item.id)" variant="outline-primary" size="sm" class="mr-1" @click="completeRun(row.item.id)" :disabled="isRunDisabled(row.item)">
             Complete
           </b-button>
 
-          <b-button id="cancelRun" variant="outline-danger" size="sm" class="mr-1" @click="cancelRun(row.item.id)" :disabled="isRunDisabled(row.item)">
+          <b-button :id="generateId('cancelRun',row.item.id)" variant="outline-danger" size="sm" class="mr-1" @click="cancelRun(row.item.id)" :disabled="isRunDisabled(row.item)">
             Cancel
           </b-button>
         </template>
@@ -77,6 +77,9 @@ export default {
     },
     isRunPending(run) {
       return run.state !== 'pending'
+    },
+    generateId(text, id) {
+      return `${text}-${id}`
     }
   },
   created() {

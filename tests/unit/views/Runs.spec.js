@@ -90,18 +90,20 @@ describe('Runs.vue', () => {
     })
   })
 
+  // TODO: Move data creation into factories as we are having to reference data that is
+  // outside of the tests.
   describe('start button', () => {
     let button
 
     it('is enabled when the run state is pending', () => {
       // run at(3) is in state pending
-      button = wrapper.find('tbody').findAll('tr').at(3).findAll('td').at(4).find('#startRun')
+      button = wrapper.find('#startRun-1')
       expect(button.attributes('disabled')).toBeFalsy()
     })
 
     it('is disabled is the run state is not pending', () => {
       // run at(2) is in state started
-      button = wrapper.find('tbody').findAll('tr').at(2).findAll('td').at(4).find('#startRun')
+      button = wrapper.find('#startRun-2')
       expect(button.attributes('disabled')).toBeTruthy()
     })
 
@@ -109,7 +111,7 @@ describe('Runs.vue', () => {
       // run at(3) is in state pending
       runs.startRun = jest.fn()
 
-      button = wrapper.find('tbody').findAll('tr').at(3).findAll('td').at(4).find('#startRun')
+      button = wrapper.find('#startRun-1')
       button.trigger('click')
 
       let runId = wrapper.find('tbody').findAll('tr').at(3).findAll('td').at(0).text()
@@ -122,25 +124,25 @@ describe('Runs.vue', () => {
 
     it('is is enabled when the run state is pending', () => {
       // run at(3) is in state pending
-      button = wrapper.find('tbody').findAll('tr').at(3).findAll('td').at(4).find('#completeRun')
+      button = wrapper.find('#completeRun-1')
       expect(button.attributes('disabled')).toBeFalsy()
     })
 
     it('is is enabled when the run state is started', () => {
       // run at(2) is in state started
-      button = wrapper.find('tbody').findAll('tr').at(2).findAll('td').at(4).find('#completeRun')
+      button = wrapper.find('#completeRun-2')
       expect(button.attributes('disabled')).toBeFalsy()
     })
 
     it('is disabled if the run state is completed', () => {
       // run at(1) is in state completed
-      button = wrapper.find('tbody').findAll('tr').at(1).findAll('td').at(4).find('#completeRun')
+      button = wrapper.find('#completeRun-3')
       expect(button.attributes('disabled')).toBeTruthy()
     })
 
     it('is disabled is the run state is cancelled', () => {
       // run at(0) is in state cancelled
-      button = wrapper.find('tbody').findAll('tr').at(0).findAll('td').at(4).find('#completeRun')
+      button = wrapper.find('#completeRun-4')
       expect(button.attributes('disabled')).toBeTruthy()
     })
 
@@ -148,7 +150,7 @@ describe('Runs.vue', () => {
       // run at(2) is in state started
       runs.completeRun = jest.fn()
 
-      button = wrapper.find('tbody').findAll('tr').at(2).findAll('td').at(4).find('#completeRun')
+      button = wrapper.find('#completeRun-2')
       button.trigger('click')
 
       let runId = wrapper.find('tbody').findAll('tr').at(2).findAll('td').at(0).text()
@@ -161,25 +163,25 @@ describe('Runs.vue', () => {
 
     it('is is enabled when the run state is pending', () => {
       // run at(3) is in state pending
-      button = wrapper.find('tbody').findAll('tr').at(3).findAll('td').at(4).find('#cancelRun')
+      button = wrapper.find('#cancelRun-1')
       expect(button.attributes('disabled')).toBeFalsy()
     })
 
     it('is is enabled when the run state is started', () => {
       // run at(2) is in state started
-      button = wrapper.find('tbody').findAll('tr').at(2).findAll('td').at(4).find('#cancelRun')
+      button = wrapper.find('#cancelRun-2')
       expect(button.attributes('disabled')).toBeFalsy()
     })
 
     it('is disabled if the run state is completed', () => {
       // run at(1) is in state completed
-      button = wrapper.find('tbody').findAll('tr').at(1).findAll('td').at(4).find('#cancelRun')
+      button = wrapper.find('#cancelRun-3')
       expect(button.attributes('disabled')).toBeTruthy()
     })
 
     it('is disabled is the run state is cancelled', () => {
       // run at(0) is in state cancelled
-      button = wrapper.find('tbody').findAll('tr').at(0).findAll('td').at(4).find('#cancelRun')
+      button = wrapper.find('#cancelRun-4')
       expect(button.attributes('disabled')).toBeTruthy()
     })
 
@@ -187,7 +189,7 @@ describe('Runs.vue', () => {
       // run at(2) is in state started
       runs.cancelRun = jest.fn()
 
-      button = wrapper.find('tbody').findAll('tr').at(2).findAll('td').at(4).find('#cancelRun')
+      button = wrapper.find('#cancelRun-2')
       button.trigger('click')
 
       let runId = wrapper.find('tbody').findAll('tr').at(2).findAll('td').at(0).text()
