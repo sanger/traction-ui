@@ -32,6 +32,15 @@ export default {
     Alert
   },
   methods: {
+    //TODO: Find a better way to extract information from responses.
+    sampleTubesJson (tubes) {
+      return tubes.map(t => ({ 
+        external_id: t.samples[0].uuid, 
+        external_study_id: t.studies[0].uuid, 
+        name: t.name, 
+        species: t.samples[0].sample_metadata.sample_common_name
+      }))
+    },
     async handleSequencescapeTubes () {
       let tubes = await this.findTubes(this.sequencescapeTubeRequest)
       await this.exportSampleTubesIntoTraction(tubes)
@@ -65,15 +74,8 @@ export default {
       }
     },
     async exportSampleTubesIntoTraction (tubes) {
-      let sampleTubeJSON = tubes.map(t => Object.assign(
-        {
-          external_id: t.samples[0].id,
-          name: t.name,
-          species: t.samples[0].sample_metadata.sample_common_name
-        }
-      ))
 
-      let body = { data: { attributes: { samples: sampleTubeJSON }}}
+      let body = { data: { attributes: { samples: this.sampleTubesJson(tubes) }}}
 
       let promise = this.sampleRequest.create(body)
       let response = await handlePromise(promise)
