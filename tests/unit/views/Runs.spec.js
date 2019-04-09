@@ -3,24 +3,27 @@ import Run from '@/views/Run'
 import { mount, localVue, store } from '../testHelper'
 import VueRouter from 'vue-router'
 import RunsJson from '../../data/runs'
-import RunJson from '../../data/runWithLibrary'
 import Response from '@/api/Response'
 import Alert from '@/components/Alert'
 import flushPromises from 'flush-promises'
 
 describe('Runs.vue', () => {
 
-  let wrapper, runs
+  let wrapper, runs, router
 
   beforeEach(() => {
-    const router = new VueRouter({ routes:
+    router = new VueRouter({ routes:
       [
         { path: '/runs', name: 'Runs', component: Runs },
         { path: '/run', name: 'Run', component: Run, props: {id: true} },
         { path: '/run/:id', component: Run, props: true } ]
     })
 
-    wrapper = mount(Runs, { localVue, router, store })
+    wrapper = mount(Runs, { localVue, router, store, methods: { provider () { return } } } )
+
+    let mockRuns = new Response(RunsJson).deserialize.runs
+    wrapper.setData({items: mockRuns})
+
     runs = wrapper.vm
   })
 
@@ -30,100 +33,34 @@ describe('Runs.vue', () => {
     })
   })
 
-  it('contains a create new run button', () => {
-    expect(wrapper.contains('button')).toBe(true)
-  })
-
   it('contains a table', () => {
     expect(wrapper.contains('table')).toBe(true)
   })
 
-  it('will sort the runs by created at', () => {
-    wrapper.setData({items: new Response(RunsJson).deserialize.runs})
-    expect(wrapper.find('tbody').findAll('tr').at(0).text()).toMatch(/TRAC-123/)
-  })
-
-  describe('#getRuns', () => {
-    it('will get a list of runs on success',  async () => {
-      runs.runRequest.execute = jest.fn()
-      runs.runRequest.execute.mockResolvedValue(RunsJson)
-
-      await runs.getRuns()
-      let expected = new Response(RunsJson)
-      expect(runs.items).toEqual(expected.deserialize.runs)
-    })
-
-    it('will return get an empty list on failure',  async () => {
-      let mockResponse = {
-        data: { errors: { runs: ['error message 1'] }},
-        status: 422,
-        statusText: "Unprocessible entity"
-      }
-
-      runs.runRequest.execute = jest.fn()
-      runs.runRequest.execute.mockResolvedValue(mockResponse)
-
-      await runs.getRuns()
-      expect(runs.message).toEqual("runs error message 1")
-      expect(runs.items).toEqual([])
+  describe('sorting', () => {
+    it('will sort the runs by created at', () => {
+      wrapper.setData({items: new Response(RunsJson).deserialize.runs})
+      expect(wrapper.find('tbody').findAll('tr').at(0).text()).toMatch(/TRAC-456/)
     })
   })
 
-  describe('#createRun', () => {
-    beforeEach(() => {
-      runs.runRequest.create = jest.fn()
-    })
+  describe('#provider sets the data', () => {
+    it('when runs exists', async () => {
+      let mockResponse = new Response(RunsJson).deserialize.runs
+      wrapper = mount(Runs, { localVue, router, store, methods: { getRuns() { return mockResponse } } } )
+      runs = wrapper.vm
 
-    it('success', async () => {
-      let mockResponse = {status: 201, data: { data: [{id: 1, type: "runs" }]}}
-      runs.runRequest.create.mockResolvedValue(mockResponse)
-
-      let response = await runs.createRun()
-      expect(runs.runRequest.create).toBeCalledWith(runs.payload)
-      expect(response).toEqual(new Response(mockResponse))
-    })
-
-  })
-
-  describe('#showRun', () => {
-
-    let mockResponse
-
-    it('with no id will create a run', async () => {
-      mockResponse = new Response(RunJson)
-      runs.createRun = jest.fn()
-      runs.createRun.mockResolvedValue(mockResponse)
-      await runs.showRun()
-      expect(runs.createRun).toBeCalled()
-      expect(wrapper.vm.$route.path).toBe(`/run/${mockResponse.deserialize.runs[0].id}`)
-    })
-
-    it('with an id will redirect to the run', async () => {
-      await runs.showRun(1)
-      expect(wrapper.vm.$route.path).toBe('/run/1')
-    })
-
-    it('with an error will provide a message', async () => {
-      mockResponse = [{ 'data': { }, 'status': 500, 'statusText': 'Internal Server Error' }]
-      runs.createRun = jest.fn()
-      runs.createRun.mockReturnValue(mockResponse)
-      await runs.showRun()
-      expect(runs.message).toEqual('There was an error')
-    })
-
-    it('will redirect to the run when newRun is clicked', async () => {
-      runs.runRequest.execute = jest.fn()
-      runs.runRequest.execute.mockResolvedValue(RunsJson)
-      let mockResponse = new Response(RunJson)
-      let id = mockResponse.deserialize.runs[0].id
-      runs.createRun = jest.fn()
-      runs.createRun.mockResolvedValue(mockResponse)
-      let button = wrapper.find('#newRun')
-      button.trigger('click')
       await flushPromises()
-      expect(wrapper.vm.$route.path).toBe(`/run/${id}`)
+      expect(runs.items).toEqual(mockResponse)
     })
 
+    it('when no runs are returned', async () => {
+      let mockResponse = []
+      wrapper = mount(Runs, { localVue, router, store, methods: { getRuns () { return mockResponse } } } )
+      runs = wrapper.vm
+      await flushPromises()
+      expect(runs.items).toEqual(mockResponse)
+    })
   })
 
   describe('filtering runs', () => {
@@ -149,19 +86,128 @@ describe('Runs.vue', () => {
 
     it('will filter the libraries in the table', () => {
       expect(wrapper.find('tbody').findAll('tr').length).toEqual(1)
-      expect(wrapper.find('tbody').findAll('tr').at(0).text()).toMatch(/TRAC-456/)
+      expect(wrapper.find('tbody').findAll('tr').at(0).text()).toMatch(/TRAC-123/)
     })
   })
 
-  describe('#runRequest', () => {
-    it('will have a request', () => {
-      expect(runs.runRequest).toBeDefined()
+  // TODO: Move data creation into factories as we are having to reference data that is
+  // outside of the tests.
+  describe('start button', () => {
+    let button
+
+    it('is enabled when the run state is pending', () => {
+      // run at(3) is in state pending
+      button = wrapper.find('#startRun-1')
+      expect(button.attributes('disabled')).toBeFalsy()
+    })
+
+    it('is disabled is the run state is not pending', () => {
+      // run at(2) is in state started
+      button = wrapper.find('#startRun-2')
+      expect(button.attributes('disabled')).toBeTruthy()
+    })
+
+    it('on click startRun is called', () => {
+      // run at(3) is in state pending
+      runs.startRun = jest.fn()
+
+      button = wrapper.find('#startRun-1')
+      button.trigger('click')
+
+      let runId = wrapper.find('tbody').findAll('tr').at(3).findAll('td').at(0).text()
+      expect(runs.startRun).toBeCalledWith(runId)
     })
   })
 
-  it('#payload', () => {
-    let payload = runs.payload.data
-    expect(payload.type).toEqual('runs')
-    expect(payload.attributes).toBeDefined()
+  describe('complete button', () => {
+    let button
+
+    it('is is enabled when the run state is pending', () => {
+      // run at(3) is in state pending
+      button = wrapper.find('#completeRun-1')
+      expect(button.attributes('disabled')).toBeFalsy()
+    })
+
+    it('is is enabled when the run state is started', () => {
+      // run at(2) is in state started
+      button = wrapper.find('#completeRun-2')
+      expect(button.attributes('disabled')).toBeFalsy()
+    })
+
+    it('is disabled if the run state is completed', () => {
+      // run at(1) is in state completed
+      button = wrapper.find('#completeRun-3')
+      expect(button.attributes('disabled')).toBeTruthy()
+    })
+
+    it('is disabled is the run state is cancelled', () => {
+      // run at(0) is in state cancelled
+      button = wrapper.find('#completeRun-4')
+      expect(button.attributes('disabled')).toBeTruthy()
+    })
+
+    it('on click completeRun is called', () => {
+      // run at(2) is in state started
+      runs.completeRun = jest.fn()
+
+      button = wrapper.find('#completeRun-2')
+      button.trigger('click')
+
+      let runId = wrapper.find('tbody').findAll('tr').at(2).findAll('td').at(0).text()
+      expect(runs.completeRun).toBeCalledWith(runId)
+    })
+  })
+
+  describe('cancel button', () => {
+    let button
+
+    it('is is enabled when the run state is pending', () => {
+      // run at(3) is in state pending
+      button = wrapper.find('#cancelRun-1')
+      expect(button.attributes('disabled')).toBeFalsy()
+    })
+
+    it('is is enabled when the run state is started', () => {
+      // run at(2) is in state started
+      button = wrapper.find('#cancelRun-2')
+      expect(button.attributes('disabled')).toBeFalsy()
+    })
+
+    it('is disabled if the run state is completed', () => {
+      // run at(1) is in state completed
+      button = wrapper.find('#cancelRun-3')
+      expect(button.attributes('disabled')).toBeTruthy()
+    })
+
+    it('is disabled is the run state is cancelled', () => {
+      // run at(0) is in state cancelled
+      button = wrapper.find('#cancelRun-4')
+      expect(button.attributes('disabled')).toBeTruthy()
+    })
+
+    it('on click completeRun is called', () => {
+      // run at(2) is in state started
+      runs.cancelRun = jest.fn()
+
+      button = wrapper.find('#cancelRun-2')
+      button.trigger('click')
+
+      let runId = wrapper.find('tbody').findAll('tr').at(2).findAll('td').at(0).text()
+      expect(runs.cancelRun).toBeCalledWith(runId)
+    })
+  })
+
+  describe('new run button', () => {
+
+    it('contains a create new run button', () => {
+      expect(wrapper.contains('button')).toBe(true)
+    })
+
+    it('will redirect to the run when newRun is clicked', async () => {
+      runs.showRun = jest.fn()
+      let button = wrapper.find('#newRun')
+      button.trigger('click')
+      expect(runs.showRun).toBeCalled()
+    })
   })
 })

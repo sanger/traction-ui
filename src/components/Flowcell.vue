@@ -49,7 +49,7 @@ export default {
       }
     },
     async updateFlowcell (library) {
-      let promise = await this.flowcellRequest.update(this.payload(library))
+      let promise = this.flowcellRequest.update(this.payload(library))
       let response = await handlePromise(promise[0])
 
       if (response.successful) {

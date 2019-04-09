@@ -2,7 +2,7 @@
     <div class="runs">
       <alert ref='alert'></alert>
 
-      <b-button id="newRun" class="float-right" @click="showRun()">Create New Run</b-button>
+      <b-button id="newRun" class="float-right" @click="showRun()" variant="success">New Run</b-button>
 
       <b-col md="6" class="my-1">
         <b-input-group>
@@ -18,16 +18,27 @@
           :items="items"
           :fields="fields"
           :filter="filter"
-          :sort-by.sync="sortBy" 
+          :sort-by.sync="sortBy"
           :sort-desc.sync="sortDesc"
       >
 
         <template slot="actions" slot-scope="row">
-          <b-button size="sm" @click="showRun(row.item.id)" class="mr-1">
-            Edit Run
+          <b-button :id="generateId('createRun',row.item.id)" variant="outline-dark" size="sm" @click="showRun(row.item.id)" class="mr-1">
+            Edit
+          </b-button>
+
+          <b-button :id="generateId('startRun',row.item.id)" variant="outline-success" size="sm" class="mr-1" @click="startRun(row.item.id)" :disabled="row.item.state !== 'pending'">
+            Start
+          </b-button>
+
+          <b-button :id="generateId('completeRun',row.item.id)" variant="outline-primary" size="sm" class="mr-1" @click="completeRun(row.item.id)" :disabled="isRunDisabled(row.item)">
+            Complete
+          </b-button>
+
+          <b-button :id="generateId('cancelRun',row.item.id)" variant="outline-danger" size="sm" class="mr-1" @click="cancelRun(row.item.id)" :disabled="isRunDisabled(row.item)">
+            Cancel
           </b-button>
         </template>
-
       </b-table>
 
     </div>
@@ -35,12 +46,11 @@
 
 <script>
 import Alert from '@/components/Alert'
-import handlePromise from '@/api/PromiseHelper'
-import Api from '@/mixins/Api'
+import RunMixin from '@/mixins/RunMixin'
 
 export default {
   name: 'Runs',
-  mixins: [Api],
+  mixins: [RunMixin],
   props: {
   },
   data () {
@@ -59,40 +69,17 @@ export default {
     }
   },
   methods: {
-    async getRuns () {
-      let promise = this.runRequest.get()
-      let response = await handlePromise(promise)
-
-      if (response.successful) {
-        let runs = response.deserialize.runs
-        this.items = runs
-      } else {
-        this.message = response.errors.message
-        this.showAlert
-        this.items = []
-      }
+    async provider() {
+      this.items = await this.getRuns()
     },
-    async createRun () {
-      let promise = this.runRequest.create(this.payload)
-      return await handlePromise(promise)
+    isRunDisabled(run) {
+      return run.state == 'completed' || run.state == 'cancelled'
     },
-    async showRun (id) {
-      let runId
-      if (id === undefined) {
-        let response = await this.createRun()
-        if (response.successful) {
-          runId = response.deserialize.runs[0].id
-        } else {
-          this.message = 'There was an error'
-          return
-        }
-      } else {
-        runId = id
-      }
-      this.$router.push({ path: `/run/${runId}` })
+    isRunPending(run) {
+      return run.state !== 'pending'
     },
-    provider() {
-      this.getRuns()
+    generateId(text, id) {
+      return `${text}-${id}`
     }
   },
   created() {
@@ -102,22 +89,9 @@ export default {
     Alert
   },
   computed: {
-    runRequest () {
-      return this.api.traction.runs
-    },
-    showAlert () {
-      return this.$refs.alert.show(this.message, 'primary')
-    },
-    payload () {
-      return {
-        data: {
-          type: 'runs',
-          attributes: {
-            runs: [ { } ]
-          }
-        }
-      }
-    }
+    // showAlert () {
+    //   return this.$refs.alert.show(this.message, 'primary')
+    // }
   }
 }
 </script>
