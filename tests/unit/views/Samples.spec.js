@@ -2,7 +2,6 @@ import Samples from '@/views/Samples'
 import Modal from '@/components/Modal'
 import { mount, localVue, store } from '../testHelper'
 import Libraries from '@/views/Libraries'
-import flushPromises from 'flush-promises'
 import TractionTubesWithLibrariesJson from '../../data/tubeWithLibrary'
 import Vue from 'vue'
 import Request from '@/api/Request'
@@ -228,8 +227,6 @@ describe('Samples.vue', () => {
   })
 
   describe('#queryString', () => {
-    let barcodes
-
     it('will allow the user to scan in a barcopde', () => {
       wrapper.setData({ barcodes: 'TRAC-2' })
       expect(samples.queryString).toEqual('TRAC-2')
