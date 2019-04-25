@@ -3,7 +3,8 @@ import Router from 'vue-router'
 import Runs from './views/Runs'
 import Run from '@/views/Run'
 import Reception from './views/Reception'
-import Table from './views/Table'
+import Samples from './views/Samples'
+import Libraries from './views/Libraries'
 
 Vue.use(Router)
 
@@ -35,9 +36,15 @@ export default new Router({
       props: true
     },
     {
-      path: '/table',
-      name: 'Table',
-      component: Table,
+      path: '/samples',
+      name: 'Samples',
+      component: Samples,
+      props: true
+    },
+    {
+      path: '/libraries',
+      name: 'Libraries',
+      component: Libraries,
       props: true
     }
   ]

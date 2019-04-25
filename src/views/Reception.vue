@@ -34,10 +34,10 @@ export default {
   methods: {
     //TODO: Find a better way to extract information from responses.
     sampleTubesJson (tubes) {
-      return tubes.map(t => ({ 
-        external_id: t.samples[0].uuid, 
-        external_study_id: t.studies[0].uuid, 
-        name: t.name, 
+      return tubes.map(t => ({
+        external_id: t.samples[0].uuid,
+        external_study_id: t.studies[0].uuid,
+        name: t.name,
         species: t.samples[0].sample_metadata.sample_common_name
       }))
     },
@@ -49,10 +49,8 @@ export default {
     },
     async handleTractionTubes () {
       let tubes = await this.findTubes(this.tractionTubeRequest)
-      if (tubes.some(t => t.material)) {
-          this.$router.push({name: 'Table', params: {items: tubes}})
-      }
-      this.showAlert()
+      let table = tubes.every(t => t.material.type == "samples") ? "Samples" : "Libraries"
+      this.$router.push({name: table, params: {items: tubes}})
     },
     async findTubes (request) {
       if(!this.queryString) return

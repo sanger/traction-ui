@@ -1,14 +1,16 @@
 import Reception from '@/views/Reception'
 import { mount, localVue, store } from '../testHelper'
-import TractionTubesJson from '../../data/tractionTubesWithSample'
+import TractionTubesWithSamplesJson from '../../data/tractionTubesWithSample'
+import TractionTubesWithLibrariesJson from '../../data/tubeWithLibrary'
 import SequencescapeTubesJson from '../../data/sequencescapeTubesWithSample'
 import SamplesJson from '../../data/samples'
 import Response from '@/api/Response'
 import flushPromises from 'flush-promises'
 import Request from '@/api/Request'
 import Vue from 'vue'
+import Samples from '@/views/Samples'
+import Libraries from '@/views/Libraries'
 import VueRouter from 'vue-router'
-import Table from '@/views/Table'
 import Alert from '@/components/Alert'
 
 describe('Reception', () => {
@@ -17,7 +19,10 @@ describe('Reception', () => {
 
   beforeEach(() => {
     const router = new VueRouter({ routes:
-      [{ path: '/table', name: 'Table', component: Table, props: true }]
+      [
+        { path: '/samples', name: 'Samples', component: Samples, props: true },
+        { path: '/libraries', name: 'Libraries', component: Libraries, props: true }
+      ]
     })
 
     barcodes = 'TRAC-1\nTRAC-2\nTRAC-3\nTRAC-4\nTRAC-5'
@@ -76,10 +81,10 @@ describe('Reception', () => {
     })
 
     it('successfully', async () => {
-      request.get.mockResolvedValue(TractionTubesJson)
+      request.get.mockResolvedValue(TractionTubesWithSamplesJson)
       response = await reception.findTubes(request)
       expect(request.get).toBeCalledWith({ filter: { barcode: reception.queryString } })
-      expect(response).toEqual(new Response(TractionTubesJson).deserialize.tubes)
+      expect(response).toEqual(new Response(TractionTubesWithSamplesJson).deserialize.tubes)
       expect(reception.message).toEqual('Tubes successfully found')
     })
 
@@ -116,15 +121,26 @@ describe('Reception', () => {
       expect(reception.tractionTubeRequest).toBeDefined()
     })
 
-    it('successfully', async () => {
-      reception.tractionTubeRequest.get.mockResolvedValue(TractionTubesJson)
+    it('successfully for samples', async () => {
+      reception.tractionTubeRequest.get.mockResolvedValue(TractionTubesWithSamplesJson)
       input = wrapper.find('textarea')
       input.setValue(barcodes)
       let button = wrapper.find('#findTractionTubes')
       button.trigger('click')
       await flushPromises()
       expect(reception.message).toEqual('Tubes successfully found')
-      expect(reception.$route.path).toEqual('/table')
+      expect(reception.$route.path).toEqual('/samples')
+    })
+
+    it('successfully for libraries', async () => {
+      reception.tractionTubeRequest.get.mockResolvedValue(TractionTubesWithLibrariesJson)
+      input = wrapper.find('textarea')
+      input.setValue(barcodes)
+      let button = wrapper.find('#findTractionTubes')
+      button.trigger('click')
+      await flushPromises()
+      expect(reception.message).toEqual('Tubes successfully found')
+      expect(reception.$route.path).toEqual('/libraries')
     })
 
   })
