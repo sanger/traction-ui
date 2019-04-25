@@ -18,6 +18,7 @@
 import Modal from '@/components/Modal'
 import handlePromise from '@/api/PromiseHelper'
 import Api from '@/mixins/Api'
+import getTubesForBarcodes from '@/api/TubeRequests'
 
 export default {
   name: 'Samples',
@@ -66,28 +67,19 @@ export default {
       }
     },
     async handleTractionTubes () {
-      let tubes = await this.findTubes(this.tractionTubeRequest)
-      if (tubes.every(t => t.material.type == "libraries")) {
-        this.$router.push({name: 'Libraries', params: {items: tubes}})
+      if (this.barcodes === undefined || !this.barcodes.length) {
+        this.message = 'There are no barcodes'
+        return
       }
-    },
-    async findTubes (request) {
-      if(!this.queryString) return
 
-      let promise = request.get({filter: { barcode: this.queryString} })
-      let response = await handlePromise(promise)
-
-      if (response.successful) {
-        if (response.empty) {
-          this.message = 'No tubes found'
-          return response
-        } else {
-          this.message = 'Tubes successfully found'
-          return response.deserialize.tubes
+      let response = await getTubesForBarcodes(this.barcodes, this.tractionTubeRequest)
+      if (response.successful && !response.empty) {
+        let tubes = response.deserialize.tubes
+        if (tubes.every(t => t.material.type == "libraries")) {
+          this.$router.push({name: 'Libraries', params: {items: tubes}})
         }
       } else {
         this.message = 'There was an error'
-        return response
       }
     }
   },
@@ -98,15 +90,11 @@ export default {
     libraryRequest () {
       return this.api.traction.libraries
     },
-    emitAlert () {
-      return this.$emit('alert', this.message)
-    },
     tractionTubeRequest () {
       return this.api.traction.tubes
     },
-    queryString () {
-      if (this.barcodes === undefined || !this.barcodes.length) return ''
-      return this.barcodes.split('\n').filter(Boolean).join(',')
+    emitAlert () {
+      return this.$emit('alert', this.message)
     },
     getItems () {
       return this.items.map(i => Object.assign(i.material, {barcode: i.barcode}))

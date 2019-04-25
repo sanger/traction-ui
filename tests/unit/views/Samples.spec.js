@@ -3,9 +3,6 @@ import Modal from '@/components/Modal'
 import { mount, localVue, store } from '../testHelper'
 import Libraries from '@/views/Libraries'
 import TractionTubesWithLibrariesJson from '../../data/tubeWithLibrary'
-import Vue from 'vue'
-import Request from '@/api/Request'
-import Response from '@/api/Response'
 import VueRouter from 'vue-router'
 
 describe('Samples.vue', () => {
@@ -139,62 +136,39 @@ describe('Samples.vue', () => {
   })
 
   describe('#handleTractionTubes', () => {
+    let successfulResponse, emptyResponse, failedResponse
 
     beforeEach(() => {
-      samples.findTubes = jest.fn()
+      wrapper.setData({ barcodes: 'TRAC-1\nTRAC-2' })
+      samples.tractionTubeRequest.get = jest.fn()
+
+      successfulResponse = TractionTubesWithLibrariesJson
+      emptyResponse = { data: { data: [] }, status: 200, statusText: 'Success'}
+      failedResponse = { data: { data: [] }, status: 500, statusText: 'Internal Server Error' }
     })
 
-    it('successfully for libraries', async () => {
-      let tubes = new Response(TractionTubesWithLibrariesJson).deserialize.tubes
-      samples.findTubes.mockResolvedValue(tubes)
+    it('successfully', async () => {
+      samples.tractionTubeRequest.get.mockResolvedValue(successfulResponse)
       await samples.handleTractionTubes()
       expect(samples.$route.path).toEqual('/libraries')
     })
 
-  })
-
-  describe('#findTubes', () => {
-
-    let emptyResponse, failedResponse, request, cmp, response, barcodes
-
-    beforeEach(() => {
-      emptyResponse = { data: { data: []}, status: 200, statusText: 'Success'}
-      failedResponse = { data: { }, status: 500, statusText: 'Internal Server Error' }
-      cmp = Vue.extend(Request)
-      request = new cmp({propsData: { baseURL: 'http://sequencescape.com', apiNamespace: 'api/v2', resource: 'requests'}})
-      request.get = jest.fn()
-      barcodes = 'TRAC-1\nTRAC-2\nTRAC-3\nTRAC-4\nTRAC-5'
-      samples.barcodes = barcodes
-    })
-
-    it('successfully', async () => {
-      request.get.mockResolvedValue(TractionTubesWithLibrariesJson)
-      response = await samples.findTubes(request)
-      expect(request.get).toBeCalledWith({ filter: { barcode: samples.queryString } })
-      expect(response).toEqual(new Response(TractionTubesWithLibrariesJson).deserialize.tubes)
-      expect(samples.message).toEqual('Tubes successfully found')
-    })
-
     it('unsuccessfully', async () => {
-      request.get.mockReturnValue(failedResponse)
-      response = await samples.findTubes(request)
-      expect(request.get).toBeCalledWith({ filter: { barcode: samples.queryString } })
-      expect(response).toEqual(new Response(failedResponse))
+      samples.tractionTubeRequest.get.mockResolvedValue(failedResponse)
+      await samples.handleTractionTubes()
       expect(samples.message).toEqual('There was an error')
     })
 
     it('when no tubes exist', async () => {
-      request.get.mockReturnValue(emptyResponse)
-      response = await samples.findTubes(request)
-      expect(request.get).toBeCalledWith({ filter: { barcode: samples.queryString } })
-      expect(response).toEqual(new Response(emptyResponse))
-      expect(samples.message).toEqual('No tubes found')
+      samples.tractionTubeRequest.get.mockResolvedValue(emptyResponse)
+      await samples.handleTractionTubes()
+      expect(samples.message).toEqual('There was an error')
     })
 
-    it('when there is no query string', async () => {
-      samples.barcodes = ''
-      response = await samples.findTubes(request)
-      expect(request.get).not.toBeCalled()
+    it('when there is no barcodes', async () => {
+      wrapper.setData({ barcodes: '' })
+      await samples.handleTractionTubes()
+      expect(samples.message).toEqual("There are no barcodes")
     })
   })
 
@@ -226,16 +200,9 @@ describe('Samples.vue', () => {
     })
   })
 
-  describe('#queryString', () => {
-    it('will allow the user to scan in a barcopde', () => {
-      wrapper.setData({ barcodes: 'TRAC-2' })
-      expect(samples.queryString).toEqual('TRAC-2')
-    })
-
-    it('will allow the user to scan in multiple barcodes', () => {
-      let barcodes = 'TRAC-1\nTRAC-2\nTRAC-3\nTRAC-4\nTRAC-5'
-      wrapper.setData({ barcodes: barcodes })
-      expect(samples.queryString).toEqual('TRAC-1,TRAC-2,TRAC-3,TRAC-4,TRAC-5')
+  describe('#tractionTubeRequest', () => {
+    it('will have a request', () => {
+      expect(samples.tractionTubeRequest).toBeDefined()
     })
   })
 

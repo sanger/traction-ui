@@ -16,6 +16,7 @@
 import Alert from '@/components/Alert'
 import handlePromise from '@/api/PromiseHelper'
 import Api from '@/mixins/Api'
+import getTubesForBarcodes from '@/api/TubeRequests'
 
 export default {
   name: 'Reception',
@@ -42,37 +43,20 @@ export default {
       }))
     },
     async handleSequencescapeTubes () {
-      let tubes = await this.findTubes(this.sequencescapeTubeRequest)
-      await this.exportSampleTubesIntoTraction(tubes)
-      await this.handleTractionTubes()
-      this.showAlert()
-    },
-    async handleTractionTubes () {
-      let tubes = await this.findTubes(this.tractionTubeRequest)
-      let table = tubes.every(t => t.material.type == "samples") ? "Samples" : "Libraries"
-      this.$router.push({name: table, params: {items: tubes}})
-    },
-    async findTubes (request) {
-      if(!this.queryString) return
+      let response = await getTubesForBarcodes(this.barcodes, this.sequencescapeTubeRequest)
+      let tubes
 
-      let promise = request.get({filter: { barcode: this.queryString} })
-      let response = await handlePromise(promise)
-
-      if (response.successful) {
-        if (response.empty) {
-          this.message = 'No tubes found'
-          return response
-        } else {
-          this.message = 'Tubes successfully found'
-          return response.deserialize.tubes
-        }
+      if (response.successful && !response.empty) {
+        tubes = response.deserialize.tubes
       } else {
         this.message = 'There was an error'
-        return response
+        return
       }
+
+      await this.exportSampleTubesIntoTraction(tubes)
+      await this.handleTractionTubes()
     },
     async exportSampleTubesIntoTraction (tubes) {
-
       let body = { data: { attributes: { samples: this.sampleTubesJson(tubes) }}}
 
       let promise = this.sampleRequest.create(body)
@@ -83,8 +67,24 @@ export default {
         return response
       } else {
         this.message = response.errors.message
-        // throw
         return response
+      }
+    },
+    async handleTractionTubes () {
+      if (this.barcodes === undefined || !this.barcodes.length) {
+        this.message = 'There are no barcodes'
+        return
+      }
+
+      let response = await getTubesForBarcodes(this.barcodes, this.tractionTubeRequest)
+      if (response.successful && !response.empty) {
+        let tubes = response.deserialize.tubes
+        let table = tubes.every(t => t.material.type == "samples") ? "Samples" : "Libraries"
+        if (table) {
+          this.$router.push({name: table, params: {items: tubes}})
+        }
+      } else {
+        this.message = 'There was an error'
       }
     },
     showAlert () {
@@ -92,10 +92,6 @@ export default {
     }
   },
   computed: {
-    queryString () {
-      if (this.barcodes === undefined || !this.barcodes.length) return ''
-      return this.barcodes.split('\n').filter(Boolean).join(',')
-    },
     sequencescapeTubeRequest () {
       return this.api.sequencescape.tubes
     },
