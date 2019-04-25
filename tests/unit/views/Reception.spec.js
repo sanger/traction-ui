@@ -79,6 +79,87 @@ describe('Reception', () => {
     })
   })
 
+  describe('#sampleTubesJson', () => {
+
+    it('will convert a deserialized response to the correct format', () => {
+      let tubes = new Response(SequencescapeTubesJson).deserialize.tubes
+      let json = reception.sampleTubesJson(tubes)
+      let tube = json[0]
+      expect(tube.external_id).toBeDefined()
+      expect(tube.external_id.includes('-')).toBeTruthy()
+      expect(tube.external_study_id).toBeDefined()
+      expect(tube.external_id.includes('-')).toBeTruthy()
+      expect(tube.name).toBeDefined()
+      expect(tube.species).toBeDefined()
+    })
+  })
+
+  describe('#handleSequencescapeTubes', () => {
+
+    let sequencescapeBarcodes
+
+    beforeEach(() => {
+      sequencescapeBarcodes = 'DN1\nDN2\nDN3\nDN4\nDN5'
+      reception.sequencescapeTubeRequest.get = jest.fn()
+      reception.exportSampleTubesIntoTraction = jest.fn()
+      reception.handleTractionTubes = jest.fn()
+    })
+
+    it('successfully', async () => {
+      reception.sequencescapeTubeRequest.get.mockResolvedValue(SequencescapeTubesJson)
+      wrapper.setData({ barcodes: sequencescapeBarcodes })
+      await reception.handleSequencescapeTubes()
+
+      let tubes = new Response(SequencescapeTubesJson).deserialize.tubes
+      expect(reception.exportSampleTubesIntoTraction).toBeCalledWith(tubes)
+      expect(reception.handleTractionTubes).toBeCalled()
+    })
+
+
+    it('unsuccessfully', async () => {
+      let failedResponse = { status: 422, statusText: 'Unprocessable Entity', data: { errors: { name: ['error message'] }} }
+      reception.sequencescapeTubeRequest.get.mockResolvedValue(failedResponse)
+      wrapper.setData({ barcodes: sequencescapeBarcodes })
+      await reception.handleSequencescapeTubes()
+
+      expect(reception.message).toEqual('There was an error')
+      expect(reception.exportSampleTubesIntoTraction).not.toBeCalled()
+      expect(reception.handleTractionTubes).not.toBeCalled()
+    })
+
+  })
+
+  describe('#exportSampleTubesIntoTraction', () => {
+    let ssTubes
+
+    beforeEach(() => {
+      reception.sampleRequest.create = jest.fn()
+      ssTubes = new Response(SequencescapeTubesJson).deserialize.tubes
+    })
+
+    it('successfully', async () => {
+      reception.sampleRequest.create.mockResolvedValue(SamplesJson)
+      let response = await reception.exportSampleTubesIntoTraction(ssTubes)
+
+      expect(reception.sampleRequest.create).toBeCalled()
+      let tractionSamplesTubesBarcode = new Response(SamplesJson).deserialize.samples.map(s=> s.barcode).join('\n')
+      expect(reception.barcodes).toEqual(tractionSamplesTubesBarcode)
+      expect(response).toEqual(new Response(SamplesJson))
+    })
+
+    it('unsuccessfully', async () => {
+      let failedResponse = { status: 422, statusText: 'Unprocessable Entity', data: { errors: { name: ['error message'] }} }
+
+      reception.sampleRequest.create.mockResolvedValue(failedResponse)
+      let response = await reception.exportSampleTubesIntoTraction(ssTubes)
+
+      expect(reception.sampleRequest.create).toBeCalled()
+      expect(response).toEqual(new Response(failedResponse))
+      expect(reception.message).toEqual('name error message')
+    })
+
+  })
+
   describe('#handleTractionTubes', () => {
     let emptyResponse, failedResponse
 
@@ -119,79 +200,6 @@ describe('Reception', () => {
       await reception.handleTractionTubes()
       expect(reception.message).toEqual("There are no barcodes")
     })
-  })
-
-  describe('#handleSequencescapeTubes', () => {
-
-    let sequencescapeBarcodes
-
-    beforeEach(() => {
-      sequencescapeBarcodes = 'DN1\nDN2\nDN3\nDN4\nDN5'
-      reception.sequencescapeTubeRequest.get = jest.fn()
-      reception.exportSampleTubesIntoTraction = jest.fn()
-      reception.handleTractionTubes = jest.fn()
-    })
-
-    it('will build a request', () => {
-      expect(reception.sequencescapeTubeRequest).toBeDefined()
-    })
-
-    it('successfully', async () => {
-      reception.sequencescapeTubeRequest.get.mockResolvedValue(SequencescapeTubesJson)
-      wrapper.setData({ barcodes: sequencescapeBarcodes })
-      await reception.handleSequencescapeTubes()
-
-      let tubes = new Response(SequencescapeTubesJson).deserialize.tubes
-      expect(reception.exportSampleTubesIntoTraction).toBeCalledWith(tubes)
-      expect(reception.handleTractionTubes).toBeCalled()
-    })
-
-  })
-
-  describe('#sampleTubesJson', () => {
-
-    it('will convert a deserialized response to the correct format', () => {
-      let tubes = new Response(SequencescapeTubesJson).deserialize.tubes
-      let json = reception.sampleTubesJson(tubes)
-      let tube = json[0]
-      expect(tube.external_id).toBeDefined()
-      expect(tube.external_id.includes('-')).toBeTruthy()
-      expect(tube.external_study_id).toBeDefined()
-      expect(tube.external_id.includes('-')).toBeTruthy()
-      expect(tube.name).toBeDefined()
-      expect(tube.species).toBeDefined()
-    })
-  })
-
-  describe('#exportSampleTubesIntoTraction', () => {
-    let ssTubes
-
-    beforeEach(() => {
-      reception.sampleRequest.create = jest.fn()
-      ssTubes = new Response(SequencescapeTubesJson).deserialize.tubes
-    })
-
-    it('successfully', async () => {
-      reception.sampleRequest.create.mockResolvedValue(SamplesJson)
-      let response = await reception.exportSampleTubesIntoTraction(ssTubes)
-
-      expect(reception.sampleRequest.create).toBeCalled()
-      let tractionSamplesTubesBarcode = new Response(SamplesJson).deserialize.samples.map(s=> s.barcode).join('\n')
-      expect(reception.barcodes).toEqual(tractionSamplesTubesBarcode)
-      expect(response).toEqual(new Response(SamplesJson))
-    })
-
-    it('unsuccessfully', async () => {
-      let failedResponse = { status: 422, statusText: 'Unprocessable Entity', data: { errors: { name: ['error message'] }} }
-
-      reception.sampleRequest.create.mockResolvedValue(failedResponse)
-      let response = await reception.exportSampleTubesIntoTraction(ssTubes)
-
-      expect(reception.sampleRequest.create).toBeCalled()
-      expect(response).toEqual(new Response(failedResponse))
-      expect(reception.message).toEqual('name error message')
-    })
-
   })
 
   describe('#showAlert', () => {

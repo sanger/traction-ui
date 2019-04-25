@@ -86,7 +86,7 @@ describe('Samples.vue', () => {
       samples.libraryRequest.create = jest.fn()
     })
 
-    it('success', async () => {
+    it('stores the create library barcodes', async () => {
       let mockResponse =  {
         data: {
           data: [
@@ -112,7 +112,7 @@ describe('Samples.vue', () => {
       expect(samples.barcodes).toEqual('TRAC-1\nTRAC-2')
     })
 
-    it('failure', async () => {
+    it('doesnt store any library barcodes', async () => {
 
       let mockResponse = {
         data: {

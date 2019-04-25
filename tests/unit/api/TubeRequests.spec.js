@@ -31,8 +31,8 @@ describe('TubeRequests', () => {
       let barcodes = 'TRAC-1\nTRAC-2'
       let queryString = TubeRequests.queryString(barcodes)
       let response = await TubeRequests.getTubesForBarcodes(barcodes, request)
-      expect(request.get).toBeCalledWith({ filter: { barcode: queryString } })
 
+      expect(request.get).toBeCalledWith({ filter: { barcode: queryString } })
       let expected = new Response(mockResponse)
       expect(response).toEqual(expected)
     })
@@ -45,11 +45,11 @@ describe('TubeRequests', () => {
   })
 
   describe('queryString', () => {
-    it('will allow the user to scan in a barcopde', () => {
+    it('will allow one barcode', () => {
       expect(TubeRequests.queryString('TRAC-2')).toEqual('TRAC-2')
     })
 
-    it('will allow the user to scan in multiple barcodes', () => {
+    it('will allow multiple barcodes', () => {
       let barcodes = 'TRAC-1\nTRAC-2\nTRAC-3\nTRAC-4\nTRAC-5'
       expect(TubeRequests.queryString(barcodes)).toEqual('TRAC-1,TRAC-2,TRAC-3,TRAC-4,TRAC-5')
     })
