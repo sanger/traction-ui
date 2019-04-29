@@ -76,7 +76,7 @@ describe('RunMixin', () => {
       expect(foundRuns).toEqual(expectedRuns)
     })
 
-    it('unsuccessfullyy', async () => {
+    it('unsuccessfully', async () => {
       let failedResponse = {
         data: { errors: { runs: ['error message 1'] }},
         status: 422,

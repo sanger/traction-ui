@@ -40,7 +40,7 @@ describe('Reception', () => {
     })
 
     it('calls the right function', () => {
-      const input = wrapper.find('textarea')
+      let input = wrapper.find('textarea')
       input.setValue(barcodes)
       let button = wrapper.find('#findSequencescapeTubes')
       button.trigger('click')

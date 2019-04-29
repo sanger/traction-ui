@@ -57,7 +57,6 @@ describe('Flowcell', () => {
       flowcell.flowcellRequest.update.mockReturnValue(successfulResponse)
       await flowcell.updateFlowcell(library)
       expect(flowcell.flowcellRequest.update).toBeCalledWith(flowcell.payload(library))
-      // expect(flowcell.message).toEqual('Library added to flowcell')
       expect(flowcell.alert).toBeCalledWith('Library added to flowcell')
 
     })
@@ -74,6 +73,7 @@ describe('Flowcell', () => {
     it('emits an event with the message', () => {
       flowcell.alert('emit this message')
       expect(wrapper.emitted().alert).toBeTruthy()
+      expect(wrapper.emitted().alert[0]).toEqual(['emit this message'])
     })
   })
 

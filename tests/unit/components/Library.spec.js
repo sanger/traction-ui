@@ -122,6 +122,7 @@ describe('Library', () => {
       library.message = 'emit this message'
       library.emitAlert()
       expect(wrapper.emitted().alert).toBeTruthy()
+      expect(wrapper.emitted().alert[0]).toEqual(['emit this message'])
     })
   })
 

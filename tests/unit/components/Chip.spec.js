@@ -86,6 +86,7 @@ describe('Chip', () => {
     it('emits an event with the message', () => {
       chip.alert('emit this message')
       expect(wrapper.emitted().alert).toBeTruthy()
+      expect(wrapper.emitted().alert[0]).toEqual(['emit this message'])
     })
   })
 
