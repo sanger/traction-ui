@@ -28,33 +28,10 @@ describe('Library', () => {
     })
   })
 
-  describe('#handleLibraryUpdate', () => {
-    beforeEach(() => {
-      library.updateLibrary = jest.fn()
-      library.emitAlert = jest.fn()
-    })
-
-    it('calls updateLibrary', async () => {
-      await library.handleLibraryUpdate()
-      expect(library.updateLibrary).toBeCalled()
-      expect(library.emitAlert).not.toBeCalled()
-    })
-
-    it('calls showAlert when there is an error', async () => {
-      library.updateLibrary.mockImplementation(() => {
-        throw 'Raise this error'
-      })
-
-      await library.handleLibraryUpdate()
-      expect(library.updateLibrary).toBeCalled()
-      expect(library.message).toEqual('Raise this error')
-      expect(library.emitAlert).toBeCalled()
-    })
-  })
-
   describe('#updateLibrary', () => {
     beforeEach(() => {
       library.tractionTubeRequest.get = jest.fn()
+      library.alert = jest.fn()
     })
 
     it('successfully', async () => {
@@ -69,45 +46,28 @@ describe('Library', () => {
     it('unsuccessfully', async () => {
       let failedResponse = { 'data': { }, 'status': 500, 'statusText': 'Internal Server Error' }
       library.tractionTubeRequest.get.mockReturnValue(failedResponse)
-
-      let message
-      try {
-        await library.updateLibrary()
-      } catch (err) {
-        message = err
-      }
+      await library.updateLibrary()
 
       expect(library.tractionTubeRequest.get).toBeCalledWith({ filter: { barcode: 'TRAC-1' } })
-      expect(message).toEqual('There was an error')
+      expect(library.alert).toBeCalledWith('There was an error')
+
     })
 
     it('when there is no library', async () => {
       let emptyResponse = { 'data': { 'data': []}, 'status': 200, 'statusText': 'Success'}
       library.tractionTubeRequest.get.mockReturnValue(emptyResponse)
-
-      let message
-      try {
-        await library.updateLibrary()
-      } catch (err) {
-        message = err
-      }
+      await library.updateLibrary()
 
       expect(library.tractionTubeRequest.get).toBeCalledWith({ filter: { barcode: 'TRAC-1' } })
-      expect(message).toEqual('There was an error')
+      expect(library.alert).toBeCalledWith('There was an error')
     })
 
     it('when it is not a library', async () => {
       library.tractionTubeRequest.get.mockResolvedValue(SampleTubeJson)
-
-      let message
-      try {
-        await library.updateLibrary()
-      } catch (err) {
-        message = err
-      }
+      await library.updateLibrary()
 
       expect(library.tractionTubeRequest.get).toBeCalledWith({ filter: { barcode: 'TRAC-1' } })
-      expect(message).toEqual('This is not a library')
+      expect(library.alert).toBeCalledWith('This is not a library')
     })
   })
 
@@ -117,10 +77,9 @@ describe('Library', () => {
     })
   })
 
-  describe('emitAlert', () => {
+  describe('alert', () => {
     it('emits an event with the message', () => {
-      library.message = 'emit this message'
-      library.emitAlert()
+      library.alert('emit this message')
       expect(wrapper.emitted().alert).toBeTruthy()
       expect(wrapper.emitted().alert[0]).toEqual(['emit this message'])
     })

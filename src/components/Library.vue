@@ -1,6 +1,6 @@
 <template>
   <div class="library">
-     <b-form-input id="barcode" v-model="libraryBarcode" type="text" placeholder="barcode" @change="handleLibraryUpdate" />
+     <b-form-input id="barcode" v-model="libraryBarcode" type="text" placeholder="barcode" @change="updateLibrary" />
   </div>
 </template>
 
@@ -27,33 +27,25 @@ export default {
     }
   },
   methods: {
-    async handleLibraryUpdate () {
-      try {
-        await this.updateLibrary()
-      } catch (err) {
-        this.message = err
-        this.emitAlert()
-      }
-    },
     async updateLibrary () {
       if(!this.libraryBarcode) return
 
       let response = await getTubesForBarcodes(this.libraryBarcode, this.tractionTubeRequest)
-      
+
       if (response.successful && !response.empty) {
         let material = response.deserialize.tubes[0].material
         if (material.type === 'libraries') {
           this.$emit('updateLibrary', response.deserialize.tubes[0].material)
         } else {
-          throw 'This is not a library'
+          this.alert('This is not a library')
         }
       } else {
-        throw 'There was an error'
+        this.alert('There was an error')
       }
     },
-    emitAlert () {
-      return this.$emit('alert', this.message)
-    },
+    alert (message) {
+      this.$emit('alert', message)
+    }
   },
   computed: {
     tractionTubeRequest () {
