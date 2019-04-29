@@ -6,7 +6,7 @@
       <label for="barcodes">Barcodes:</label>
       <textarea type="text" v-model="barcodes" class="form-control" rows="10" cols="10" name="barcodes" id="barcodes" />
     </div>
-    <b-button class="scanButton" id="findSequencescapeTubes" variant="success" @click="importSequencescapeTubes" :disabled="this.barcodes.length === 0">Import Sequencescape Tubes</b-button>
+    <b-button class="scanButton" id="findSequencescapeTubes" variant="success" @click="handleSequencescapeTubes" :disabled="this.barcodes.length === 0">Import Sequencescape Tubes</b-button>
     <b-button class="scanButton" id="findTractionTubes" variant="success" @click="handleTractionTubes" :disabled="this.barcodes.length === 0">Find Traction Tubes</b-button>
 
   </div>
@@ -42,9 +42,9 @@ export default {
         species: t.samples[0].sample_metadata.sample_common_name
       }))
     },
-    async importSequencescapeTubes () {
+    async handleSequencescapeTubes () {
       try {
-        let tubes = await this.handleSequencescapeTubes()
+        let tubes = await this.getSequencescapeTubes()
         await this.exportSampleTubesIntoTraction(tubes)
         await this.handleTractionTubes()
       } catch (err) {
@@ -52,7 +52,7 @@ export default {
         this.showAlert()
       }
     },
-    async handleSequencescapeTubes () {
+    async getSequencescapeTubes () {
       let response = await getTubesForBarcodes(this.barcodes, this.sequencescapeTubeRequest)
 
       if (response.successful && !response.empty) {

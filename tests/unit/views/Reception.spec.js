@@ -36,7 +36,7 @@ describe('Reception', () => {
   describe('findSequencescapeTubes button', () => {
 
     beforeEach(() => {
-      reception.importSequencescapeTubes = jest.fn()
+      reception.handleSequencescapeTubes = jest.fn()
     })
 
     it('calls the right function', () => {
@@ -44,7 +44,7 @@ describe('Reception', () => {
       input.setValue(barcodes)
       let button = wrapper.find('#findSequencescapeTubes')
       button.trigger('click')
-      expect(reception.importSequencescapeTubes).toBeCalled()
+      expect(reception.handleSequencescapeTubes).toBeCalled()
     })
 
   })
@@ -95,17 +95,17 @@ describe('Reception', () => {
     })
   })
 
-  describe('#importSequencescapeTubes', () => {
+  describe('#handleSequencescapeTubes', () => {
     beforeEach(() => {
-      reception.handleSequencescapeTubes = jest.fn()
+      reception.getSequencescapeTubes = jest.fn()
       reception.exportSampleTubesIntoTraction = jest.fn()
       reception.handleTractionTubes = jest.fn()
       reception.showAlert = jest.fn()
     })
 
     it('calls the correct functions', async () => {
-      await reception.importSequencescapeTubes()
-      expect(reception.handleSequencescapeTubes).toBeCalled()
+      await reception.handleSequencescapeTubes()
+      expect(reception.getSequencescapeTubes).toBeCalled()
       expect(reception.exportSampleTubesIntoTraction).toBeCalled()
       expect(reception.handleTractionTubes).toBeCalled()
       expect(reception.showAlert).not.toBeCalled()
@@ -116,8 +116,8 @@ describe('Reception', () => {
         throw 'Raise this error'
       })
 
-      await reception.importSequencescapeTubes()
-      expect(reception.handleSequencescapeTubes).toBeCalled()
+      await reception.handleSequencescapeTubes()
+      expect(reception.getSequencescapeTubes).toBeCalled()
       expect(reception.exportSampleTubesIntoTraction).toBeCalled()
       expect(reception.handleTractionTubes).toBeCalled()
       expect(reception.message).toEqual('Raise this error')
@@ -125,7 +125,7 @@ describe('Reception', () => {
     })
   })
 
-  describe('#handleSequencescapeTubes', () => {
+  describe('#getSequencescapeTubes', () => {
 
     let sequencescapeBarcodes
 
@@ -138,7 +138,7 @@ describe('Reception', () => {
       reception.sequencescapeTubeRequest.get.mockResolvedValue(SequencescapeTubesJson)
       wrapper.setData({ barcodes: sequencescapeBarcodes })
 
-      let tubes = await reception.handleSequencescapeTubes()
+      let tubes = await reception.getSequencescapeTubes()
       let expectedTubes = new Response(SequencescapeTubesJson).deserialize.tubes
 
       expect(expectedTubes).toEqual(tubes)
@@ -152,7 +152,7 @@ describe('Reception', () => {
 
       let message
       try {
-        await reception.handleSequencescapeTubes()
+        await reception.getSequencescapeTubes()
       } catch (err) {
         message = err
       }
