@@ -89,9 +89,6 @@ export default {
     Alert
   },
   computed: {
-    // showAlert () {
-    //   return this.$refs.alert.show(this.message, 'primary')
-    // }
   }
 }
 </script>

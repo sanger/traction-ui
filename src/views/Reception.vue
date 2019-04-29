@@ -6,7 +6,7 @@
       <label for="barcodes">Barcodes:</label>
       <textarea type="text" v-model="barcodes" class="form-control" rows="10" cols="10" name="barcodes" id="barcodes" />
     </div>
-    <b-button class="scanButton" id="findSequencescapeTubes" variant="success" @click="handleSequencescapeTubes" :disabled="this.barcodes.length === 0">Import Sequencescape Tubes</b-button>
+    <b-button class="scanButton" id="findSequencescapeTubes" variant="success" @click="importSequencescapeTubes" :disabled="this.barcodes.length === 0">Import Sequencescape Tubes</b-button>
     <b-button class="scanButton" id="findTractionTubes" variant="success" @click="handleTractionTubes" :disabled="this.barcodes.length === 0">Find Traction Tubes</b-button>
 
   </div>
@@ -42,41 +42,44 @@ export default {
         species: t.samples[0].sample_metadata.sample_common_name
       }))
     },
+    async importSequencescapeTubes () {
+      try {
+        let tubes = await this.handleSequencescapeTubes()
+        await this.exportSampleTubesIntoTraction(tubes)
+        await this.handleTractionTubes()
+      } catch (err) {
+        this.message = err
+        this.showAlert()
+      }
+    },
     async handleSequencescapeTubes () {
       let response = await getTubesForBarcodes(this.barcodes, this.sequencescapeTubeRequest)
-      let tubes
 
       if (response.successful && !response.empty) {
-        tubes = response.deserialize.tubes
+        return response.deserialize.tubes
       } else {
-        this.message = 'There was an error'
-        return
+        throw 'Failed to find tubes in Sequencescape'
       }
-
-      await this.exportSampleTubesIntoTraction(tubes)
-      await this.handleTractionTubes()
     },
     async exportSampleTubesIntoTraction (tubes) {
       let body = { data: { attributes: { samples: this.sampleTubesJson(tubes) }}}
 
-      let promise = this.sampleRequest.create(body)
+      let promise = await this.sampleRequest.create(body)
       let response = await handlePromise(promise)
 
       if (response.successful) {
         this.barcodes = response.deserialize.samples.map(s=> s.barcode).join('\n')
-        return response
       } else {
-        this.message = response.errors.message
-        return response
+        throw 'Failed to create tubes in Traction'
       }
     },
     async handleTractionTubes () {
       if (this.barcodes === undefined || !this.barcodes.length) {
-        this.message = 'There are no barcodes'
-        return
+        throw 'There are no barcodes'
       }
 
       let response = await getTubesForBarcodes(this.barcodes, this.tractionTubeRequest)
+
       if (response.successful && !response.empty) {
         let tubes = response.deserialize.tubes
         let table = tubes.every(t => t.material.type == "samples") ? "Samples" : "Libraries"
@@ -84,7 +87,7 @@ export default {
           this.$router.push({name: table, params: {items: tubes}})
         }
       } else {
-        this.message = 'There was an error'
+        throw 'Failed to get Traction tubes'
       }
     },
     showAlert () {

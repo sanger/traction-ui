@@ -2,7 +2,7 @@
   <b-row class="flowcell">
     <b-col>
       <div class="position">{{ position }}</div>
-      <library @updateLibrary="updateFlowcell" v-bind="library"></library>
+      <library @updateLibrary="updateFlowcell" v-bind="library" @alert="alert" ></library>
     </b-col>
   </b-row>
 </template>
@@ -53,13 +53,15 @@ export default {
       let response = await handlePromise(promise[0])
 
       if (response.successful) {
-        this.message = 'Library added to flowcell'
+        this.alert('Library added to flowcell')
         return response
       } else {
-        this.message = 'There was an error'
-        return response
+        this.alert('There was an error')
       }
-    }
+    },
+    alert (message) {
+      this.$emit('alert', message)
+    },
   },
   computed: {
     flowcellRequest () {

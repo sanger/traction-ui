@@ -1,5 +1,6 @@
 import Libraries from '@/views/Libraries'
 import { mount, localVue, store } from '../testHelper'
+import Alert from '@/components/Alert'
 
 describe('Libraries.vue', () => {
 
@@ -32,6 +33,12 @@ describe('Libraries.vue', () => {
 
   })
 
+  describe('alert', () => {
+    it('has a alert', () => {
+      expect(wrapper.contains(Alert)).toBe(true)
+    })
+  })
+
   describe('building the table', () => {
 
     it('contains the correct fields', () => {
@@ -45,6 +52,30 @@ describe('Libraries.vue', () => {
       expect(wrapper.find('tbody').findAll('tr').length).toEqual(mockLibraries.length)
     })
 
+  })
+
+  describe('#handleLibraryDelete', () => {
+    beforeEach(() => {
+      libraries.deleteLibraries = jest.fn()
+      libraries.showAlert = jest.fn()
+    })
+
+    it('calls the correct functions', async () => {
+      await libraries.handleLibraryDelete()
+      expect(libraries.deleteLibraries).toBeCalled()
+      expect(libraries.showAlert).not.toBeCalled()
+    })
+
+    it('calls showAlert when there is an error', async () => {
+      libraries.deleteLibraries.mockImplementation(() => {
+        throw 'Raise this error'
+      })
+
+      await libraries.handleLibraryDelete()
+      expect(libraries.deleteLibraries).toBeCalled()
+      expect(libraries.message).toEqual('Raise this error')
+      expect(libraries.showAlert).toBeCalled()
+    })
   })
 
   describe('#deleteLibraries', () => {
@@ -99,8 +130,13 @@ describe('Libraries.vue', () => {
 
       libraries.libraryRequest.execute.mockResolvedValue(promise)
 
-      await libraries.deleteLibraries()
-      expect(libraries.message).toEqual(['it was a bust'])
+      let message
+      try {
+        await await libraries.deleteLibraries()
+      } catch (err) {
+        message = err
+      }
+      expect(message).toEqual(['it was a bust'])
     })
 
   })
@@ -111,11 +147,11 @@ describe('Libraries.vue', () => {
     })
   })
 
-  describe('#emitAlert', () => {
-    it('emits an event with the message', () => {
+  describe('#showAlert', () => {
+    it('passes the message to function on emit event', () => {
       wrapper.setData({ message: 'show this message' })
-      libraries.emitAlert
-      expect(wrapper.emitted().alert).toBeTruthy()
+      libraries.showAlert()
+      expect(wrapper.find(Alert).html()).toMatch('show this message')
     })
   })
 })

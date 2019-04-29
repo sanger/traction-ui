@@ -4,6 +4,7 @@ import { mount, localVue, store } from '../testHelper'
 import Libraries from '@/views/Libraries'
 import TractionTubesWithLibrariesJson from '../../data/tubeWithLibrary'
 import VueRouter from 'vue-router'
+import Alert from '@/components/Alert'
 
 describe('Samples.vue', () => {
 
@@ -36,6 +37,12 @@ describe('Samples.vue', () => {
       expect(wrapper.contains('#createLibrariesWithEnzymeButton')).toBe(true)
       let button = wrapper.find('#createLibrariesWithEnzymeButton').text()
       expect(button).toEqual("Create Libraries with Enzyme")
+    })
+
+    describe('alert', () => {
+      it('has a alert', () => {
+        expect(wrapper.contains(Alert)).toBe(true)
+      })
     })
 
   describe('building the table', () => {
@@ -71,12 +78,26 @@ describe('Samples.vue', () => {
       selectedEnzymeId = 123
       samples.createLibrariesInTraction = jest.fn()
       samples.handleTractionTubes = jest.fn()
+      samples.showAlert = jest.fn()
     })
 
-    it('successfully', async () => {
+    it('calls the correct functions', async () => {
       await samples.handleLibraryCreate(selectedEnzymeId)
       expect(samples.createLibrariesInTraction).toBeCalledWith(selectedEnzymeId)
       expect(samples.handleTractionTubes).toBeCalled()
+      expect(samples.showAlert).not.toBeCalled()
+    })
+
+    it('calls showAlert when there is an error', async () => {
+      samples.handleTractionTubes.mockImplementation(() => {
+        throw 'Raise this error'
+      })
+
+      await samples.handleLibraryCreate(selectedEnzymeId)
+      expect(samples.createLibrariesInTraction).toBeCalledWith(selectedEnzymeId)
+      expect(samples.handleTractionTubes).toBeCalled()
+      expect(samples.message).toEqual('Raise this error')
+      expect(samples.showAlert).toBeCalled()
     })
   })
 
@@ -107,8 +128,6 @@ describe('Samples.vue', () => {
 
       let expectedBody = {data: {attributes: {libraries: [{enzyme_id: 1, sample_id: 1}]}, type: "libraries"}}
       expect(samples.libraryRequest.create).toBeCalledWith(expectedBody)
-
-      expect(samples.message).toEqual("Libraries 1,2 created in Traction")
       expect(samples.barcodes).toEqual('TRAC-1\nTRAC-2')
     })
 
@@ -129,8 +148,14 @@ describe('Samples.vue', () => {
       let selectedEnzymeId = 1
       samples.selected = [{id: 1}]
 
-      await samples.createLibrariesInTraction(selectedEnzymeId)
-      expect(samples.message).toEqual("name name error message 1")
+      let message
+      try {
+        await samples.createLibrariesInTraction(selectedEnzymeId)
+      } catch (err) {
+        message = err
+      }
+
+      expect(message).toEqual("name name error message 1")
       expect(samples.barcodes).toEqual("")
     })
   })
@@ -155,20 +180,39 @@ describe('Samples.vue', () => {
 
     it('unsuccessfully', async () => {
       samples.tractionTubeRequest.get.mockResolvedValue(failedResponse)
-      await samples.handleTractionTubes()
-      expect(samples.message).toEqual('There was an error')
+
+      let message
+      try {
+        await await samples.handleTractionTubes()
+      } catch (err) {
+        message = err
+      }
+      expect(message).toEqual('Failed to get Traction tubes')
     })
 
     it('when no tubes exist', async () => {
       samples.tractionTubeRequest.get.mockResolvedValue(emptyResponse)
-      await samples.handleTractionTubes()
-      expect(samples.message).toEqual('There was an error')
+
+      let message
+      try {
+        await await samples.handleTractionTubes()
+      } catch (err) {
+        message = err
+      }
+      expect(message).toEqual('Failed to get Traction tubes')
     })
 
     it('when there is no barcodes', async () => {
       wrapper.setData({ barcodes: '' })
-      await samples.handleTractionTubes()
-      expect(samples.message).toEqual("There are no barcodes")
+
+      let message
+      try {
+        await samples.handleTractionTubes()
+      } catch (err) {
+        message = err
+      }
+
+      expect(message).toEqual("There are no barcodes")
     })
   })
 
@@ -186,11 +230,11 @@ describe('Samples.vue', () => {
     })
   })
 
-  describe('emitAlert', () => {
-    it('emits an event with the message', () => {
+  describe('#showAlert', () => {
+    it('passes the message to function on emit event', () => {
       wrapper.setData({ message: 'show this message' })
-      samples.emitAlert
-      expect(wrapper.emitted().alert).toBeTruthy()
+      samples.showAlert()
+      expect(wrapper.find(Alert).html()).toMatch('show this message')
     })
   })
 

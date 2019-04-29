@@ -65,6 +65,7 @@ describe('RunMixin', () => {
 
     beforeEach(() => {
       cmp.runsRequest.get = jest.fn()
+      cmp.showAlert = jest.fn()
     })
 
     it('successfully', async () => {
@@ -75,7 +76,7 @@ describe('RunMixin', () => {
       expect(foundRuns).toEqual(expectedRuns)
     })
 
-    it('unsuccessfully', async () => {
+    it('unsuccessfullyy', async () => {
       let failedResponse = {
         data: { errors: { runs: ['error message 1'] }},
         status: 422,
@@ -86,6 +87,31 @@ describe('RunMixin', () => {
       let foundRuns = await cmp.getRuns()
       expect(foundRuns).toEqual([])
       expect(cmp.message).toEqual('runs error message 1')
+      expect(cmp.showAlert).toBeCalled()
+    })
+  })
+
+  describe('#handleUpdate', () => {
+    beforeEach(() => {
+      cmp.updateRun = jest.fn()
+      cmp.showAlert = jest.fn()
+    })
+
+    it('calls updateRun', async () => {
+      await cmp.handleUpdate(runId, attributes)
+      expect(cmp.updateRun).toBeCalled()
+      expect(cmp.showAlert).not.toBeCalled()
+    })
+
+    it('calls showAlert when there is an error', async () => {
+      cmp.updateRun.mockImplementation(() => {
+        throw 'Raise this error'
+      })
+
+      await cmp.handleUpdate(runId, attributes)
+      expect(cmp.updateRun).toBeCalled()
+      expect(cmp.message).toEqual('Raise this error')
+      expect(cmp.showAlert).toBeCalled()
     })
   })
 
@@ -93,6 +119,7 @@ describe('RunMixin', () => {
 
     beforeEach(() => {
       cmp.runsRequest.update = jest.fn()
+      cmp.showAlert = jest.fn()
     })
 
     it('successfully', async () => {
@@ -109,8 +136,14 @@ describe('RunMixin', () => {
     it('unsuccessfully', async () => {
       let failedResponse = [{ 'data': { }, 'status': 500, 'statusText': 'Internal Server Error' }]
       cmp.runsRequest.update.mockReturnValue(failedResponse)
-      await cmp.updateRun(runId, attributes)
-      expect(cmp.message).toEqual('There was an error')
+
+      let message
+      try {
+        await cmp.updateRun(runId, attributes)
+      } catch (err) {
+        message = err
+      }
+      expect(message).toEqual('There was an error')
     })
   })
 
