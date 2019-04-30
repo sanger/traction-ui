@@ -191,7 +191,7 @@ describe('Reception', () => {
       }
 
       expect(reception.sampleRequest.create).toBeCalled()
-      expect(message).toEqual('Failed to create tubes in Traction')
+      expect(message).toEqual('Failed to create tubes in Traction: name error message')
     })
 
   })

@@ -75,7 +75,8 @@ export default {
         if (response.successful) {
           runId = response.deserialize.runs[0].id
         } else {
-          this.message = 'There was an error'
+          this.message = 'There was an error: ' + response.errors.message
+          this.showAlert()
           return
         }
       } else {

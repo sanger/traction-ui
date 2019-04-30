@@ -63,14 +63,13 @@ export default {
     },
     async exportSampleTubesIntoTraction (tubes) {
       let body = { data: { attributes: { samples: this.sampleTubesJson(tubes) }}}
-
-      let promise = await this.sampleRequest.create(body)
+      let promise = this.sampleRequest.create(body)
       let response = await handlePromise(promise)
 
       if (response.successful) {
         this.barcodes = response.deserialize.samples.map(s=> s.barcode).join('\n')
       } else {
-        throw 'Failed to create tubes in Traction'
+        throw 'Failed to create tubes in Traction: ' + response.errors.message
       }
     },
     async handleTractionTubes () {
