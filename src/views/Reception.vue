@@ -73,7 +73,6 @@ export default {
       }
     },
     async handleTractionTubes () {
-      // TODO add catch when directly called from findTractionTubes button
       if (this.barcodes === undefined || !this.barcodes.length) {
         throw 'There are no barcodes'
       }
@@ -87,7 +86,8 @@ export default {
           this.$router.push({name: table, params: {items: tubes}})
         }
       } else {
-        throw 'Failed to get Traction tubes'
+        this.message = 'Failed to get Traction tubes'
+        this.showAlert()
       }
     },
     showAlert () {

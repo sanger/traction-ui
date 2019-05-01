@@ -221,25 +221,14 @@ describe('Reception', () => {
 
     it('unsuccessfully', async () => {
       reception.tractionTubeRequest.get.mockResolvedValue(failedResponse)
-      let message
-      try {
-        await reception.handleTractionTubes()
-      } catch (err) {
-        message = err
-      }
-      expect(message).toEqual('Failed to get Traction tubes')
+      await reception.handleTractionTubes()
+      expect(reception.message).toEqual('Failed to get Traction tubes')
     })
 
     it('when no tubes exist', async () => {
       reception.tractionTubeRequest.get.mockResolvedValue(emptyResponse)
-
-      let message
-      try {
-        await reception.handleTractionTubes()
-      } catch (err) {
-        message = err
-      }
-      expect(message).toEqual('Failed to get Traction tubes')
+      await reception.handleTractionTubes()
+      expect(reception.message).toEqual('Failed to get Traction tubes')
     })
 
     it('when there is no barcodes', async () => {
