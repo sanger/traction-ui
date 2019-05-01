@@ -62,10 +62,10 @@ describe('Flowcell', () => {
     })
 
     it('unsuccessfully', async () => {
-      let failedResponse = { 'data': { }, 'status': 500, 'statusText': 'Internal Server Error' }
+      let failedResponse = { 'data': { errors: { library: ['error message'] }}, 'status': 500, 'statusText': 'Internal Server Error' }
       flowcell.flowcellRequest.update.mockReturnValue([failedResponse])
       await flowcell.updateFlowcell(library)
-      expect(flowcell.alert).toBeCalledWith('There was an error')
+      expect(flowcell.alert).toBeCalledWith('There was an error: library error message')
     })
   })
 

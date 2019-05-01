@@ -35,7 +35,7 @@ export default {
       if (response.successful && !response.empty) {
         let material = response.deserialize.tubes[0].material
         if (material.type === 'libraries') {
-          this.$emit('updateLibrary', response.deserialize.tubes[0].material)
+          this.$emit('updateLibrary', material)
         } else {
           this.alert('This is not a library')
         }

@@ -50,7 +50,7 @@ export default {
       try {
         await this.deleteLibraries()
       } catch (err) {
-        this.message = err
+        this.message = 'Failed to delete: ' + err
         this.showAlert()
       }
     },
@@ -62,7 +62,7 @@ export default {
         this.message = `Libraries ${this.selected.join(',')} successfully deleted`
         this.showAlert()
       } else {
-        throw responses.map(r => r.errors.message)
+        throw responses.map(r => r.errors.message).join(',')
       }
     },
     showAlert () {

@@ -66,10 +66,10 @@ describe('Chip', () => {
     })
 
     it('unsuccessfully', async () => {
-      let failedResponse = { 'data': { }, 'status': 500, 'statusText': 'Internal Server Error' }
+      let failedResponse = { 'data': { errors: { barcode: ['error message'] }}, 'status': 500, 'statusText': 'Internal Server Error' }
       chip.chipRequest.update.mockReturnValue([failedResponse])
       await chip.updateChip()
-      expect(chip.alert).toBeCalledWith('There was an error')
+      expect(chip.alert).toBeCalledWith('There was an error: barcode error message')
     })
 
     it('will be updated when the button is clicked', () => {

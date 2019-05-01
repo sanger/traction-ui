@@ -133,12 +133,7 @@ describe('Samples.vue', () => {
 
     it('doesnt store any library barcodes', async () => {
 
-      let mockResponse = {
-        data: {
-          errors: {
-            name: ['name error message 1']
-          }
-        },
+      let mockResponse = { data: { errors: { name: ['name error message 1']}},
         status: 422,
         statusText: "Unprocessible entity"
       }
@@ -155,7 +150,7 @@ describe('Samples.vue', () => {
         message = err
       }
 
-      expect(message).toEqual("name name error message 1")
+      expect(message).toEqual("Failed to create library in Traction: name name error message 1")
       expect(samples.barcodes).toEqual("")
     })
   })

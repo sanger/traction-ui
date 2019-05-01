@@ -73,7 +73,7 @@ describe('Libraries.vue', () => {
 
       await libraries.handleLibraryDelete()
       expect(libraries.deleteLibraries).toBeCalled()
-      expect(libraries.message).toEqual('Raise this error')
+      expect(libraries.message).toEqual('Failed to delete: Raise this error')
       expect(libraries.showAlert).toBeCalled()
     })
   })
@@ -136,7 +136,7 @@ describe('Libraries.vue', () => {
       } catch (err) {
         message = err
       }
-      expect(message).toEqual(['it was a bust'])
+      expect(message).toEqual("it was a bust")
     })
 
   })

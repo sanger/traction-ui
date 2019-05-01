@@ -66,7 +66,7 @@ export default {
       if (response.successful) {
         this.barcodes = response.deserialize.libraries.map(l => l.barcode).join('\n')
       } else {
-        throw response.errors.message
+        throw 'Failed to create library in Traction: ' + response.errors.message
       }
     },
     async handleTractionTubes () {

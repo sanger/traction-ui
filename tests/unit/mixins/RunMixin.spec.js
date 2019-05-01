@@ -105,12 +105,12 @@ describe('RunMixin', () => {
 
     it('calls showAlert when there is an error', async () => {
       cmp.updateRun.mockImplementation(() => {
-        throw 'Raise this error'
+        throw 'error message'
       })
 
       await cmp.handleUpdate(runId, attributes)
       expect(cmp.updateRun).toBeCalled()
-      expect(cmp.message).toEqual('Raise this error')
+      expect(cmp.message).toEqual('Failed to update Run: error message')
       expect(cmp.showAlert).toBeCalled()
     })
   })
@@ -134,7 +134,11 @@ describe('RunMixin', () => {
     })
 
     it('unsuccessfully', async () => {
-      let failedResponse = [{ 'data': { }, 'status': 500, 'statusText': 'Internal Server Error' }]
+      let failedResponse = [{ data: { errors: { run: ['error message']}},
+        status: 500,
+        statusText: "Unprocessible entity"
+      }]
+
       cmp.runsRequest.update.mockReturnValue(failedResponse)
 
       let message
@@ -143,7 +147,7 @@ describe('RunMixin', () => {
       } catch (err) {
         message = err
       }
-      expect(message).toEqual('There was an error')
+      expect(message).toEqual('run error message')
     })
   })
 

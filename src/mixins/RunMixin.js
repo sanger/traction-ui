@@ -35,9 +35,9 @@ export default {
     },
     async handleUpdate (id, attributes) {
       try {
-        this.updateRun(id, attributes)
+        await this.updateRun(id, attributes)
       } catch (err) {
-        this.message = err
+        this.message = 'Failed to update Run: ' + err
         this.showAlert()
       }
     },
@@ -49,7 +49,7 @@ export default {
         this.message = 'Run updated'
         this.showAlert()
       } else {
-        throw 'There was an error'
+        throw response.errors.message
       }
     },
     updateName (id, name) {

@@ -42,7 +42,7 @@ export default {
       if (response.successful) {
         this.alert('Chip updated')
       } else {
-        this.alert('There was an error')
+        this.alert('There was an error: ' + response.errors.message)
       }
     },
     alert (message) {

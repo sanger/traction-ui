@@ -56,7 +56,7 @@ export default {
         this.alert('Library added to flowcell')
         return response
       } else {
-        this.alert('There was an error')
+        this.alert('There was an error: ' + response.errors.message)
       }
     },
     alert (message) {
