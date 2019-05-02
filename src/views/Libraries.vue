@@ -1,5 +1,7 @@
 <template>
   <div class="libraries">
+    <alert ref='alert'></alert>
+
     <b-table
        show-empty
        :items="getItems"
@@ -10,13 +12,14 @@
       </template>
     </b-table>
 
-    <b-button id="deleteLibraries" @click="deleteLibraries" :disabled="this.selected.length === 0" class="float-right">Delete Libraries</b-button>
+    <b-button id="deleteLibraries" @click="handleLibraryDelete" :disabled="this.selected.length === 0" class="float-right">Delete Libraries</b-button>
   </div>
 </template>
 
 <script>
 import handlePromise from '@/api/PromiseHelper'
 import Api from '@/mixins/Api'
+import Alert from '@/components/Alert'
 
 export default {
   name: 'Libraries',
@@ -40,26 +43,35 @@ export default {
     }
   },
   components: {
+    Alert
   },
   methods: {
+    async handleLibraryDelete () {
+      try {
+        await this.deleteLibraries()
+      } catch (err) {
+        this.message = 'Failed to delete: ' + err
+        this.showAlert()
+      }
+    },
     async deleteLibraries () {
       let promises = this.libraryRequest.destroy(this.selected)
       let responses = await Promise.all(promises.map(promise => handlePromise(promise)))
 
       if (responses.every(r => r.successful)) {
         this.message = `Libraries ${this.selected.join(',')} successfully deleted`
+        this.showAlert()
       } else {
-        this.message = responses.map(r => r.errors.message)
+        throw responses.map(r => r.errors.message).join(',')
       }
-      this.emitAlert
+    },
+    showAlert () {
+      return this.$refs.alert.show(this.message, 'primary')
     }
   },
   computed: {
     libraryRequest () {
       return this.api.traction.libraries
-    },
-    emitAlert () {
-      return this.$emit('alert', this.message)
     },
     getItems () {
       return this.items.map(i => Object.assign(i.material, {barcode: i.barcode}))

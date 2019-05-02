@@ -71,6 +71,7 @@ describe('Modal.vue', () => {
       let evt = { preventDefault: () => { return {} }}
       wrapper.vm.handleOk(evt)
       expect(wrapper.emitted().selectEnzyme).toBeTruthy()
+      expect(wrapper.emitted().selectEnzyme[0]).toEqual([1])
     })
   })
 
@@ -79,6 +80,7 @@ describe('Modal.vue', () => {
       wrapper.setData({ selectedEnzymeId: 1 })
       wrapper.vm.handleSubmit()
       expect(wrapper.emitted().selectEnzyme).toBeTruthy()
+      expect(wrapper.emitted().selectEnzyme[0]).toEqual([1])
     })
   })
 

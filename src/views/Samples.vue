@@ -1,5 +1,7 @@
 <template>
   <div class="samples">
+    <alert ref='alert'></alert>
+
     <b-table
        show-empty
        :items="getItems"
@@ -19,6 +21,7 @@ import Modal from '@/components/Modal'
 import handlePromise from '@/api/PromiseHelper'
 import Api from '@/mixins/Api'
 import getTubesForBarcodes from '@/api/TubeRequests'
+import Alert from '@/components/Alert'
 
 export default {
   name: 'Samples',
@@ -44,8 +47,13 @@ export default {
   },
   methods: {
     async handleLibraryCreate (selectedEnzymeId) {
-      await this.createLibrariesInTraction(selectedEnzymeId)
-      await this.handleTractionTubes()
+      try {
+        await this.createLibrariesInTraction(selectedEnzymeId)
+        await this.handleTractionTubes()
+      } catch (err) {
+        this.message = err
+        this.showAlert()
+      }
     },
     async createLibrariesInTraction (selectedEnzymeId) {
       let libraries = this.selected.map(item => { return {'sample_id': item.id, 'enzyme_id': selectedEnzymeId}})
@@ -56,20 +64,14 @@ export default {
       let response = await handlePromise(promise)
 
       if (response.successful) {
-        let newLibrariesID = response.deserialize.libraries.map(l => l.id)
-        let libraryText = newLibrariesID.length > 1 ? 'Libraries' : 'Library'
-        this.message = `${libraryText} ${newLibrariesID.join(',')} created in Traction`
         this.barcodes = response.deserialize.libraries.map(l => l.barcode).join('\n')
-        return response
       } else {
-        this.message = response.errors.message
-        return response
+        throw 'Failed to create library in Traction: ' + response.errors.message
       }
     },
     async handleTractionTubes () {
       if (this.barcodes === undefined || !this.barcodes.length) {
-        this.message = 'There are no barcodes'
-        return
+        throw 'There are no barcodes'
       }
 
       let response = await getTubesForBarcodes(this.barcodes, this.tractionTubeRequest)
@@ -79,12 +81,16 @@ export default {
           this.$router.push({name: 'Libraries', params: {items: tubes}})
         }
       } else {
-        this.message = 'There was an error'
+        throw 'Failed to get Traction tubes'
       }
+    },
+    showAlert () {
+      return this.$refs.alert.show(this.message, 'primary')
     }
   },
   components: {
-    Modal
+    Modal,
+    Alert
   },
   computed: {
     libraryRequest () {
@@ -92,9 +98,6 @@ export default {
     },
     tractionTubeRequest () {
       return this.api.traction.tubes
-    },
-    emitAlert () {
-      return this.$emit('alert', this.message)
     },
     getItems () {
       return this.items.map(i => Object.assign(i.material, {barcode: i.barcode}))

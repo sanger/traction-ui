@@ -5,6 +5,7 @@ import RunWithLibraryJson from '../../data/runWithLibrary'
 import Response from '@/api/Response'
 import flushPromises from 'flush-promises'
 import VueRouter from 'vue-router'
+import Alert from '@/components/Alert'
 
 describe('Run.vue', () => {
 
@@ -22,6 +23,12 @@ describe('Run.vue', () => {
 
   it('will have a name', () => {
     expect(wrapper.name()).toEqual('Run')
+  })
+
+  describe('alert', () => {
+    it('has a alert', () => {
+      expect(wrapper.contains(Alert)).toBe(true)
+    })
   })
 
   describe('props', () => {
@@ -103,4 +110,27 @@ describe('Run.vue', () => {
       expect(run.runsRequest).toBeDefined()
     })
   })
+
+  describe('#alert', () => {
+    beforeEach(() => {
+      run.showAlert = jest.fn()
+    })
+
+    it('emits an event with the message', () => {
+      run.alert('emit this message')
+      expect(run.showAlert).toBeCalled()
+    })
+  })
+
+  describe('#showAlert', () => {
+    beforeEach(() => {
+      run.message = 'show this message'
+    })
+
+    it('emits an event with the message', () => {
+      run.showAlert()
+      expect(wrapper.find(Alert).text()).toMatch(/show this message/)
+    })
+  })
+
 })

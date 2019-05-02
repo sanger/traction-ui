@@ -54,6 +54,7 @@ describe('Chip', () => {
 
     beforeEach(() => {
       chip.chipRequest.update = jest.fn()
+      chip.alert = jest.fn()
     })
 
     it('successfully', async () => {
@@ -61,14 +62,14 @@ describe('Chip', () => {
       chip.chipRequest.update.mockReturnValue(successfulResponse)
       await chip.updateChip()
       expect(chip.chipRequest.update).toBeCalledWith(chip.payload)
-      expect(chip.message).toEqual('Chip updated')
+      expect(chip.alert).toBeCalledWith('Chip updated')
     })
 
     it('unsuccessfully', async () => {
-      let failedResponse = { 'data': { }, 'status': 500, 'statusText': 'Internal Server Error' }
+      let failedResponse = { 'data': { errors: { barcode: ['error message'] }}, 'status': 500, 'statusText': 'Internal Server Error' }
       chip.chipRequest.update.mockReturnValue([failedResponse])
       await chip.updateChip()
-      expect(chip.message).toEqual('There was an error')
+      expect(chip.alert).toBeCalledWith('There was an error: barcode error message')
     })
 
     it('will be updated when the button is clicked', () => {
@@ -79,6 +80,14 @@ describe('Chip', () => {
       expect(chip.updateChip).toBeCalled()
     })
 
+  })
+
+  describe('alert', () => {
+    it('emits an event with the message', () => {
+      chip.alert('emit this message')
+      expect(wrapper.emitted().alert).toBeTruthy()
+      expect(wrapper.emitted().alert[0]).toEqual(['emit this message'])
+    })
   })
 
 })

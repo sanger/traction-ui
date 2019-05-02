@@ -43,40 +43,42 @@ export default {
       }))
     },
     async handleSequencescapeTubes () {
+      try {
+        let tubes = await this.getSequencescapeTubes()
+        await this.exportSampleTubesIntoTraction(tubes)
+        await this.handleTractionTubes()
+      } catch (err) {
+        this.message = err
+        this.showAlert()
+      }
+    },
+    async getSequencescapeTubes () {
       let response = await getTubesForBarcodes(this.barcodes, this.sequencescapeTubeRequest)
-      let tubes
 
       if (response.successful && !response.empty) {
-        tubes = response.deserialize.tubes
+        return response.deserialize.tubes
       } else {
-        this.message = 'There was an error'
-        return
+        throw 'Failed to find tubes in Sequencescape'
       }
-
-      await this.exportSampleTubesIntoTraction(tubes)
-      await this.handleTractionTubes()
     },
     async exportSampleTubesIntoTraction (tubes) {
       let body = { data: { attributes: { samples: this.sampleTubesJson(tubes) }}}
-
       let promise = this.sampleRequest.create(body)
       let response = await handlePromise(promise)
 
       if (response.successful) {
         this.barcodes = response.deserialize.samples.map(s=> s.barcode).join('\n')
-        return response
       } else {
-        this.message = response.errors.message
-        return response
+        throw 'Failed to create tubes in Traction: ' + response.errors.message
       }
     },
     async handleTractionTubes () {
       if (this.barcodes === undefined || !this.barcodes.length) {
-        this.message = 'There are no barcodes'
-        return
+        throw 'There are no barcodes'
       }
 
       let response = await getTubesForBarcodes(this.barcodes, this.tractionTubeRequest)
+
       if (response.successful && !response.empty) {
         let tubes = response.deserialize.tubes
         let table = tubes.every(t => t.material.type == "samples") ? "Samples" : "Libraries"
@@ -84,7 +86,8 @@ export default {
           this.$router.push({name: table, params: {items: tubes}})
         }
       } else {
-        this.message = 'There was an error'
+        this.message = 'Failed to get Traction tubes'
+        this.showAlert()
       }
     },
     showAlert () {

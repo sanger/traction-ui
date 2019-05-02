@@ -40,7 +40,7 @@ describe('Reception', () => {
     })
 
     it('calls the right function', () => {
-      const input = wrapper.find('textarea')
+      let input = wrapper.find('textarea')
       input.setValue(barcodes)
       let button = wrapper.find('#findSequencescapeTubes')
       button.trigger('click')
@@ -48,6 +48,7 @@ describe('Reception', () => {
     })
 
   })
+
   describe('findTractionTubes button', () => {
 
       beforeEach(() => {
@@ -95,24 +96,52 @@ describe('Reception', () => {
   })
 
   describe('#handleSequencescapeTubes', () => {
+    beforeEach(() => {
+      reception.getSequencescapeTubes = jest.fn()
+      reception.exportSampleTubesIntoTraction = jest.fn()
+      reception.handleTractionTubes = jest.fn()
+      reception.showAlert = jest.fn()
+    })
+
+    it('calls the correct functions', async () => {
+      await reception.handleSequencescapeTubes()
+      expect(reception.getSequencescapeTubes).toBeCalled()
+      expect(reception.exportSampleTubesIntoTraction).toBeCalled()
+      expect(reception.handleTractionTubes).toBeCalled()
+      expect(reception.showAlert).not.toBeCalled()
+    })
+
+    it('calls showAlert when there is an error', async () => {
+      reception.handleTractionTubes.mockImplementation(() => {
+        throw 'Raise this error'
+      })
+
+      await reception.handleSequencescapeTubes()
+      expect(reception.getSequencescapeTubes).toBeCalled()
+      expect(reception.exportSampleTubesIntoTraction).toBeCalled()
+      expect(reception.handleTractionTubes).toBeCalled()
+      expect(reception.message).toEqual('Raise this error')
+      expect(reception.showAlert).toBeCalled()
+    })
+  })
+
+  describe('#getSequencescapeTubes', () => {
 
     let sequencescapeBarcodes
 
     beforeEach(() => {
       sequencescapeBarcodes = 'DN1\nDN2\nDN3\nDN4\nDN5'
       reception.sequencescapeTubeRequest.get = jest.fn()
-      reception.exportSampleTubesIntoTraction = jest.fn()
-      reception.handleTractionTubes = jest.fn()
     })
 
     it('successfully', async () => {
       reception.sequencescapeTubeRequest.get.mockResolvedValue(SequencescapeTubesJson)
       wrapper.setData({ barcodes: sequencescapeBarcodes })
-      await reception.handleSequencescapeTubes()
 
-      let tubes = new Response(SequencescapeTubesJson).deserialize.tubes
-      expect(reception.exportSampleTubesIntoTraction).toBeCalledWith(tubes)
-      expect(reception.handleTractionTubes).toBeCalled()
+      let tubes = await reception.getSequencescapeTubes()
+      let expectedTubes = new Response(SequencescapeTubesJson).deserialize.tubes
+
+      expect(expectedTubes).toEqual(tubes)
     })
 
 
@@ -120,11 +149,14 @@ describe('Reception', () => {
       let failedResponse = { status: 422, statusText: 'Unprocessable Entity', data: { errors: { name: ['error message'] }} }
       reception.sequencescapeTubeRequest.get.mockResolvedValue(failedResponse)
       wrapper.setData({ barcodes: sequencescapeBarcodes })
-      await reception.handleSequencescapeTubes()
 
-      expect(reception.message).toEqual('There was an error')
-      expect(reception.exportSampleTubesIntoTraction).not.toBeCalled()
-      expect(reception.handleTractionTubes).not.toBeCalled()
+      let message
+      try {
+        await reception.getSequencescapeTubes()
+      } catch (err) {
+        message = err
+      }
+      expect(message).toEqual('Failed to find tubes in Sequencescape')
     })
 
   })
@@ -139,23 +171,27 @@ describe('Reception', () => {
 
     it('successfully', async () => {
       reception.sampleRequest.create.mockResolvedValue(SamplesJson)
-      let response = await reception.exportSampleTubesIntoTraction(ssTubes)
+      await reception.exportSampleTubesIntoTraction(ssTubes)
 
       expect(reception.sampleRequest.create).toBeCalled()
       let tractionSamplesTubesBarcode = new Response(SamplesJson).deserialize.samples.map(s=> s.barcode).join('\n')
       expect(reception.barcodes).toEqual(tractionSamplesTubesBarcode)
-      expect(response).toEqual(new Response(SamplesJson))
     })
 
     it('unsuccessfully', async () => {
       let failedResponse = { status: 422, statusText: 'Unprocessable Entity', data: { errors: { name: ['error message'] }} }
 
       reception.sampleRequest.create.mockResolvedValue(failedResponse)
-      let response = await reception.exportSampleTubesIntoTraction(ssTubes)
+
+      let message
+      try {
+        await reception.exportSampleTubesIntoTraction(ssTubes)
+      } catch (err) {
+        message = err
+      }
 
       expect(reception.sampleRequest.create).toBeCalled()
-      expect(response).toEqual(new Response(failedResponse))
-      expect(reception.message).toEqual('name error message')
+      expect(message).toEqual('Failed to create tubes in Traction: name error message')
     })
 
   })
@@ -186,19 +222,26 @@ describe('Reception', () => {
     it('unsuccessfully', async () => {
       reception.tractionTubeRequest.get.mockResolvedValue(failedResponse)
       await reception.handleTractionTubes()
-      expect(reception.message).toEqual('There was an error')
+      expect(reception.message).toEqual('Failed to get Traction tubes')
     })
 
     it('when no tubes exist', async () => {
       reception.tractionTubeRequest.get.mockResolvedValue(emptyResponse)
       await reception.handleTractionTubes()
-      expect(reception.message).toEqual('There was an error')
+      expect(reception.message).toEqual('Failed to get Traction tubes')
     })
 
     it('when there is no barcodes', async () => {
       wrapper.setData({ barcodes: '' })
-      await reception.handleTractionTubes()
-      expect(reception.message).toEqual("There are no barcodes")
+
+      let message
+      try {
+        await reception.handleTractionTubes()
+      } catch (err) {
+        message = err
+      }
+
+      expect(message).toEqual("There are no barcodes")
     })
   })
 

@@ -49,6 +49,7 @@ describe('Flowcell', () => {
 
     beforeEach(() => {
       flowcell.flowcellRequest.update = jest.fn()
+      flowcell.alert = jest.fn()
     })
 
     it('successfully', async () => {
@@ -56,14 +57,23 @@ describe('Flowcell', () => {
       flowcell.flowcellRequest.update.mockReturnValue(successfulResponse)
       await flowcell.updateFlowcell(library)
       expect(flowcell.flowcellRequest.update).toBeCalledWith(flowcell.payload(library))
-      expect(flowcell.message).toEqual('Library added to flowcell')
+      expect(flowcell.alert).toBeCalledWith('Library added to flowcell')
+
     })
 
     it('unsuccessfully', async () => {
-      let failedResponse = { 'data': { }, 'status': 500, 'statusText': 'Internal Server Error' }
+      let failedResponse = { 'data': { errors: { library: ['error message'] }}, 'status': 500, 'statusText': 'Internal Server Error' }
       flowcell.flowcellRequest.update.mockReturnValue([failedResponse])
       await flowcell.updateFlowcell(library)
-      expect(flowcell.message).toEqual('There was an error')
+      expect(flowcell.alert).toBeCalledWith('There was an error: library error message')
+    })
+  })
+
+  describe('alert', () => {
+    it('emits an event with the message', () => {
+      flowcell.alert('emit this message')
+      expect(wrapper.emitted().alert).toBeTruthy()
+      expect(wrapper.emitted().alert[0]).toEqual(['emit this message'])
     })
   })
 

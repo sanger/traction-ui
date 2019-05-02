@@ -1,7 +1,7 @@
 <template>
   <b-container class="chip">
     <b-form-input id="barcode" v-model="localBarcode" type="text" placeholder="Chip barcode" @change="updateChip" />
-    <flowcell v-for="(flowcell, index) in flowcells" v-bind="flowcell" v-bind:key="index"></flowcell>
+    <flowcell v-for="(flowcell, index) in flowcells" v-bind="flowcell" v-bind:key="index" @alert="alert"></flowcell>
   </b-container>
 </template>
 
@@ -40,13 +40,14 @@ export default {
       let response = await handlePromise(promise[0])
 
       if (response.successful) {
-        this.message = 'Chip updated'
-        return response
+        this.alert('Chip updated')
       } else {
-        this.message = 'There was an error'
-        return response
+        this.alert('There was an error: ' + response.errors.message)
       }
-    }
+    },
+    alert (message) {
+      this.$emit('alert', message)
+    },
   },
   computed: {
     chipRequest () {

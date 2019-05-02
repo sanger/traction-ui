@@ -29,7 +29,16 @@ export default {
         return response.deserialize.runs
       } else {
         this.message = response.errors.message
+        this.showAlert()
         return []
+      }
+    },
+    async handleUpdate (id, attributes) {
+      try {
+        await this.updateRun(id, attributes)
+      } catch (err) {
+        this.message = 'Failed to update Run: ' + err
+        this.showAlert()
       }
     },
     async updateRun (id, attributes) {
@@ -38,23 +47,22 @@ export default {
 
       if (response.successful) {
         this.message = 'Run updated'
-        return response
+        this.showAlert()
       } else {
-        this.message = 'There was an error'
-        return response
+        throw response.errors.message
       }
     },
     updateName (id, name) {
-      this.updateRun(id, {name: name})
+      this.handleUpdate(id, {name: name})
     },
     startRun(id) {
-      this.updateRun(id, {state: 'started'})
+      this.handleUpdate(id, {state: 'started'})
     },
     completeRun (id) {
-      this.updateRun(id, {state: 'completed'})
+      this.handleUpdate(id, {state: 'completed'})
     },
     cancelRun (id) {
-      this.updateRun(id, {state: 'cancelled'})
+      this.handleUpdate(id, {state: 'cancelled'})
     },
     async createRun () {
       let promise = this.runsRequest.create(this.createPayload)
@@ -67,7 +75,8 @@ export default {
         if (response.successful) {
           runId = response.deserialize.runs[0].id
         } else {
-          this.message = 'There was an error'
+          this.message = 'There was an error: ' + response.errors.message
+          this.showAlert()
           return
         }
       } else {
@@ -84,6 +93,9 @@ export default {
         }
       }
     },
+    showAlert () {
+      return this.$refs.alert.show(this.message, 'primary')
+    }
   },
   computed: {
     runsRequest () {

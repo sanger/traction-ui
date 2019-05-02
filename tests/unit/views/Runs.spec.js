@@ -210,4 +210,16 @@ describe('Runs.vue', () => {
       expect(runs.showRun).toBeCalled()
     })
   })
+
+  describe('#showAlert', () => {
+    beforeEach(() => {
+      runs.message = 'show this message'
+    })
+
+    it('emits an event with the message', () => {
+      runs.showAlert()
+      expect(wrapper.find(Alert).text()).toMatch(/show this message/)
+    })
+  })
+
 })

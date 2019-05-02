@@ -1,5 +1,6 @@
 <template>
   <div class="run">
+    <alert ref='alert'></alert>
 
     <router-link :to="{name: 'Runs'}">
       <b-button id="backToRunsButton" class="float-right">Back</b-button>
@@ -10,7 +11,7 @@
 
     <b-form-input class="runInfo" id="name" v-model="name" placeholder="name" type="text" @change="updateName(id, name)" />
 
-    <chip v-if="Boolean(this.chip)" v-bind="chip"></chip>
+    <chip v-if="Boolean(this.chip)" v-bind="chip" @alert="alert"></chip>
 
   </div>
 </template>
@@ -18,6 +19,7 @@
 <script>
 import RunMixin from '@/mixins/RunMixin'
 import Chip from '@/components/Chip'
+import Alert from '@/components/Alert'
 
 export default {
   name: 'Run',
@@ -31,7 +33,8 @@ export default {
     return {
       name: this.name,
       state: null,
-      chip: null
+      chip: null,
+      message: ''
     }
   },
   methods: {
@@ -40,10 +43,18 @@ export default {
       this.name = data.name
       this.state = data.state
       this.chip = data.chip
+    },
+    alert (message) {
+      this.message = message
+      this.showAlert()
+    },
+    showAlert () {
+      return this.$refs.alert.show(this.message, 'primary')
     }
   },
   components: {
-    Chip
+    Chip,
+    Alert
   },
   computed: {
   },

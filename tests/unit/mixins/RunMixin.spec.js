@@ -65,6 +65,7 @@ describe('RunMixin', () => {
 
     beforeEach(() => {
       cmp.runsRequest.get = jest.fn()
+      cmp.showAlert = jest.fn()
     })
 
     it('successfully', async () => {
@@ -86,6 +87,31 @@ describe('RunMixin', () => {
       let foundRuns = await cmp.getRuns()
       expect(foundRuns).toEqual([])
       expect(cmp.message).toEqual('runs error message 1')
+      expect(cmp.showAlert).toBeCalled()
+    })
+  })
+
+  describe('#handleUpdate', () => {
+    beforeEach(() => {
+      cmp.updateRun = jest.fn()
+      cmp.showAlert = jest.fn()
+    })
+
+    it('calls updateRun', async () => {
+      await cmp.handleUpdate(runId, attributes)
+      expect(cmp.updateRun).toBeCalled()
+      expect(cmp.showAlert).not.toBeCalled()
+    })
+
+    it('calls showAlert when there is an error', async () => {
+      cmp.updateRun.mockImplementation(() => {
+        throw 'error message'
+      })
+
+      await cmp.handleUpdate(runId, attributes)
+      expect(cmp.updateRun).toBeCalled()
+      expect(cmp.message).toEqual('Failed to update Run: error message')
+      expect(cmp.showAlert).toBeCalled()
     })
   })
 
@@ -93,6 +119,7 @@ describe('RunMixin', () => {
 
     beforeEach(() => {
       cmp.runsRequest.update = jest.fn()
+      cmp.showAlert = jest.fn()
     })
 
     it('successfully', async () => {
@@ -107,10 +134,20 @@ describe('RunMixin', () => {
     })
 
     it('unsuccessfully', async () => {
-      let failedResponse = [{ 'data': { }, 'status': 500, 'statusText': 'Internal Server Error' }]
+      let failedResponse = [{ data: { errors: { run: ['error message']}},
+        status: 500,
+        statusText: "Unprocessible entity"
+      }]
+
       cmp.runsRequest.update.mockReturnValue(failedResponse)
-      await cmp.updateRun(runId, attributes)
-      expect(cmp.message).toEqual('There was an error')
+
+      let message
+      try {
+        await cmp.updateRun(runId, attributes)
+      } catch (err) {
+        message = err
+      }
+      expect(message).toEqual('run error message')
     })
   })
 
@@ -177,6 +214,7 @@ describe('RunMixin', () => {
 
     beforeEach(() => {
       cmp.createRun = jest.fn()
+      cmp.showAlert = jest.fn()
     })
 
     let mockResponse
@@ -197,10 +235,12 @@ describe('RunMixin', () => {
     })
 
     it('with an error will provide a message', async () => {
-      mockResponse = { 'data': { }, 'status': 500, 'statusText': 'Internal Server Error' }
-      cmp.createRun.mockReturnValue(mockResponse)
+      mockResponse = { status: 422, statusText: 'Unprocessable Entity', data: { errors: { name: ['error message'] }} }
+      let resp = new Response(mockResponse)
+      cmp.createRun.mockReturnValue(resp)
       await cmp.showRun()
-      expect(cmp.message).toEqual('There was an error')
+      expect(cmp.message).toEqual('There was an error: name error message')
+      expect(cmp.showAlert).toBeCalled()
     })
 
   })
