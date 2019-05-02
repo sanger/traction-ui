@@ -2,7 +2,7 @@
   <div class="samples">
     <b-table
        show-empty
-       :items="items"
+       :items="getItems"
        :fields="fields"
     >
       <template slot="selected" slot-scope="row">
@@ -10,7 +10,7 @@
       </template>
     </b-table>
 
-    <modal @selectEnzyme="createLibrariesInTraction" :disabled="this.selected.length === 0" class="float-right" ></modal>
+    <modal @selectEnzyme="handleLibraryCreate" :disabled="this.selected.length === 0" class="float-right" ></modal>
   </div>
 </template>
 
@@ -18,6 +18,7 @@
 import Modal from '@/components/Modal'
 import handlePromise from '@/api/PromiseHelper'
 import Api from '@/mixins/Api'
+import getTubesForBarcodes from '@/api/TubeRequests'
 
 export default {
   name: 'Samples',
@@ -37,10 +38,15 @@ export default {
         { key: 'deactivated_at', label: 'Deactivated at', sortable: true },
       ],
       selected: [],
-      message: ''
+      message: '',
+      barcodes: ''
     }
   },
   methods: {
+    async handleLibraryCreate (selectedEnzymeId) {
+      await this.createLibrariesInTraction(selectedEnzymeId)
+      await this.handleTractionTubes()
+    },
     async createLibrariesInTraction (selectedEnzymeId) {
       let libraries = this.selected.map(item => { return {'sample_id': item.id, 'enzyme_id': selectedEnzymeId}})
 
@@ -53,10 +59,28 @@ export default {
         let newLibrariesID = response.deserialize.libraries.map(l => l.id)
         let libraryText = newLibrariesID.length > 1 ? 'Libraries' : 'Library'
         this.message = `${libraryText} ${newLibrariesID.join(',')} created in Traction`
+        this.barcodes = response.deserialize.libraries.map(l => l.barcode).join('\n')
+        return response
       } else {
         this.message = response.errors.message
+        return response
       }
-      this.emitAlert
+    },
+    async handleTractionTubes () {
+      if (this.barcodes === undefined || !this.barcodes.length) {
+        this.message = 'There are no barcodes'
+        return
+      }
+
+      let response = await getTubesForBarcodes(this.barcodes, this.tractionTubeRequest)
+      if (response.successful && !response.empty) {
+        let tubes = response.deserialize.tubes
+        if (tubes.every(t => t.material.type == "libraries")) {
+          this.$router.push({name: 'Libraries', params: {items: tubes}})
+        }
+      } else {
+        this.message = 'There was an error'
+      }
     }
   },
   components: {
@@ -66,9 +90,15 @@ export default {
     libraryRequest () {
       return this.api.traction.libraries
     },
+    tractionTubeRequest () {
+      return this.api.traction.tubes
+    },
     emitAlert () {
       return this.$emit('alert', this.message)
     },
+    getItems () {
+      return this.items.map(i => Object.assign(i.material, {barcode: i.barcode}))
+    }
   }
 }
 </script>

@@ -2,7 +2,7 @@
   <div class="libraries">
     <b-table
        show-empty
-       :items="items"
+       :items="getItems"
        :fields="fields"
     >
       <template slot="selected" slot-scope="row">
@@ -61,6 +61,9 @@ export default {
     emitAlert () {
       return this.$emit('alert', this.message)
     },
+    getItems () {
+      return this.items.map(i => Object.assign(i.material, {barcode: i.barcode}))
+    }
   }
 }
 
