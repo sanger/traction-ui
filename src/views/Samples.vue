@@ -1,8 +1,10 @@
 <template>
   <div class="samples">
+    <alert ref='alert'></alert>
+
     <b-table
        show-empty
-       :items="items"
+       :items="getItems"
        :fields="fields"
     >
       <template slot="selected" slot-scope="row">
@@ -10,18 +12,20 @@
       </template>
     </b-table>
 
-    <modal @selectEnzyme="createLibrariesInTraction" :disabled="this.selected.length === 0" class="float-right" ></modal>
+    <modal @selectEnzyme="handleLibraryCreate" :disabled="this.selected.length === 0" class="float-right" ></modal>
   </div>
 </template>
 
 <script>
-import ComponentFactory from '@/mixins/ComponentFactory'
 import Modal from '@/components/Modal'
-import Api from '@/api'
+import handlePromise from '@/api/PromiseHelper'
+import Api from '@/mixins/Api'
+import getTubesForBarcodes from '@/api/TubeRequests'
+import Alert from '@/components/Alert'
 
 export default {
   name: 'Samples',
-  mixins: [ComponentFactory],
+  mixins: [Api],
   props: {
     items: Array
   },
@@ -37,40 +41,67 @@ export default {
         { key: 'deactivated_at', label: 'Deactivated at', sortable: true },
       ],
       selected: [],
-      message: ''
+      message: '',
+      barcodes: ''
     }
   },
   methods: {
+    async handleLibraryCreate (selectedEnzymeId) {
+      try {
+        await this.createLibrariesInTraction(selectedEnzymeId)
+        await this.handleTractionTubes()
+      } catch (err) {
+        this.message = err
+        this.showAlert()
+      }
+    },
     async createLibrariesInTraction (selectedEnzymeId) {
       let libraries = this.selected.map(item => { return {'sample_id': item.id, 'enzyme_id': selectedEnzymeId}})
 
       let body = { data: { type: 'libraries', attributes: { libraries: libraries }}}
-      let rawResponse = await this.libraryRequest.create(body)
-      let response = new Api.Response(rawResponse)
+
+      let promise = this.libraryRequest.create(body)
+      let response = await handlePromise(promise)
 
       if (response.successful) {
-        let newLibrariesID = response.deserialize.libraries.map(l => l.id)
-        let libraryText = newLibrariesID.length > 1 ? 'Libraries' : 'Library'
-        this.message = `${libraryText} ${newLibrariesID.join(',')} created in Traction`
+        this.barcodes = response.deserialize.libraries.map(l => l.barcode).join('\n')
       } else {
-        this.message = response.errors.message
+        throw 'Failed to create library in Traction: ' + response.errors.message
       }
-      this.emitAlert
+    },
+    async handleTractionTubes () {
+      if (this.barcodes === undefined || !this.barcodes.length) {
+        throw 'There are no barcodes'
+      }
+
+      let response = await getTubesForBarcodes(this.barcodes, this.tractionTubeRequest)
+      if (response.successful && !response.empty) {
+        let tubes = response.deserialize.tubes
+        if (tubes.every(t => t.material.type == "libraries")) {
+          this.$router.push({name: 'Libraries', params: {items: tubes}})
+        }
+      } else {
+        throw 'Failed to get Traction tubes'
+      }
+    },
+    showAlert () {
+      return this.$refs.alert.show(this.message, 'primary')
     }
   },
   components: {
-    Modal
+    Modal,
+    Alert
   },
   computed: {
     libraryRequest () {
-      return this.build(Api.Request, this.tractionConfig.resource('libraries'))
+      return this.api.traction.libraries
     },
-    tractionConfig () {
-      return this.build(Api.ConfigItem, Api.Config.traction)
+    tractionTubeRequest () {
+      return this.api.traction.tubes
     },
-    emitAlert () {
-      return this.$emit('alert', this.message)
-    },
+    getItems () {
+      return this.items.map(i => Object.assign(i.material, {barcode: i.barcode}))
+    }
   }
 }
 </script>

@@ -3,17 +3,9 @@
     "name": "sequencescape",
     "apiNamespace": "api/v2",
     "resources": {
-      "requests": {
-        "name": "requests",
-        "filter": {
-          "type": "long_read",
-          "state": "pending"
-        },
-        "include": "samples.sample_metadata"
-      },
       "tubes": {
         "name": "tubes",
-        "include": "samples.sample_metadata"
+        "include": "samples.sample_metadata,studies"
       }
     }
   },

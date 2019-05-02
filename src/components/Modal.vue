@@ -9,16 +9,13 @@
 
 </template>
 
-
 <script>
-import ApiConfig from '@/api/Config'
-import ConfigItem from '@/api/ConfigItem'
-import ComponentFactory from '@/mixins/ComponentFactory'
-import Api from '@/api'
+import handlePromise from '@/api/PromiseHelper'
+import Api from '@/mixins/Api'
 
 export default {
   name: 'Modal',
-  mixins: [ComponentFactory],
+  mixins: [Api],
   data () {
     return {
       selectedEnzymeId: null,
@@ -48,10 +45,10 @@ export default {
       this.$refs.enzymeModal.hide()
     },
     async getEnzymeOptions () {
-      let rawResponse = await this.enzymeRequest.get()
-      let response = new Api.Response(rawResponse)
+      let promise = this.enzymeRequest.get()
+      let response = await handlePromise(promise)
 
-      if (Object.keys(response.errors).length === 0) {
+      if (response.successful) {
         let enzymes = response.deserialize.enzymes
         let enzymeOptions = enzymes.map((enzyme, index) => Object.assign({ value: index+1, text: enzyme.name }))
         enzymeOptions.unshift({ value: null, text: "Please select an option" })
@@ -71,10 +68,7 @@ export default {
   },
   computed: {
     enzymeRequest () {
-      return this.build(Api.Request, this.tractionConfig.resource('enzymes'))
-    },
-    tractionConfig () {
-      return this.build(ConfigItem, ApiConfig.traction)
+      return this.api.traction.enzymes
     }
   }
 }

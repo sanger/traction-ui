@@ -1,4 +1,4 @@
-import { mount, localVue } from '../testHelper'
+import { mount, localVue, store } from '../testHelper'
 import Library from '@/components/Library'
 import LibraryTubeJson from '../../data/tubeWithLibrary'
 import SampleTubeJson from '../../data/tractionTubesWithSample'
@@ -6,11 +6,11 @@ import Response from '@/api/Response'
 
 describe('Library', () => {
 
-  let wrapper, library, props, input, response
+  let wrapper, library, props
 
   beforeEach(() => {
-    props = { id: 1, tube: { id: 1, barcode: 'TRAC-1'} }
-    wrapper = mount(Library, { localVue, propsData: props } )
+    props = { id: 1, barcode: 'TRAC-1'}
+    wrapper = mount(Library, { localVue, store, propsData: props } )
     library = wrapper.vm
   })
 
@@ -18,74 +18,70 @@ describe('Library', () => {
     expect(wrapper.name()).toEqual('Library')
   })
 
-  it('can have an id', () => {
-    expect(library.id).toEqual(1)
-  })
-
-  it('can have a tube', () => {
-    expect(library.tube).toEqual(props.tube)
-  })
-
-  describe('barcodes', () => {
-
-    it('will populate the barcode from the tube', () => {
-      expect(library.barcode).toEqual(props.tube.barcode)
+  describe('props', () => {
+    it('can have an id', () => {
+      expect(library.id).toEqual(props.id)
     })
 
-    it('will allow the user to scan in a barcopde', () => {
-      input = wrapper.find('#barcode')
-      input.setValue('TRAC-2')
-      expect(library.barcode).toEqual('TRAC-2')
+    it('can have a barcode and sets the libraryBarcode data', () => {
+      expect(library.libraryBarcode).toEqual(props.barcode)
     })
-
-    it('will create a query string', () => {
-      input = wrapper.find('#barcode')
-      input.setValue('TRAC-2\n')
-      expect(library.queryString).toEqual('TRAC-2')
-    })
-
   })
- 
-  describe('updating the library', () => {
+
+  describe('#updateLibrary', () => {
     beforeEach(() => {
-      library.tubeRequest.get = jest.fn()
+      library.tractionTubeRequest.get = jest.fn()
+      library.alert = jest.fn()
     })
 
     it('successfully', async () => {
-      library.tubeRequest.get.mockResolvedValue(LibraryTubeJson)
+      library.tractionTubeRequest.get.mockResolvedValue(LibraryTubeJson)
       let apiResponse = new Response(LibraryTubeJson)
-      response = await library.updateLibrary()
-      expect(library.tubeRequest.get).toBeCalledWith({ filter: { barcode: library.queryString } })
-      expect(response).toEqual(new Response(LibraryTubeJson))
-      expect(library.message).toEqual('Library updated')
+      await library.updateLibrary()
+      expect(library.tractionTubeRequest.get).toBeCalledWith({ filter: { barcode: 'TRAC-1' } })
       expect(wrapper.emitted().updateLibrary).toBeTruthy()
       expect(wrapper.emitted().updateLibrary[0]).toEqual([apiResponse.deserialize.tubes[0].material])
     })
 
     it('unsuccessfully', async () => {
       let failedResponse = { 'data': { }, 'status': 500, 'statusText': 'Internal Server Error' }
-      library.tubeRequest.get.mockReturnValue(failedResponse)
-      response = await library.updateLibrary()
-      expect(library.tubeRequest.get).toBeCalledWith({ filter: { barcode: library.queryString } })
-      expect(response).toEqual(new Response(failedResponse))
-      expect(library.message).toEqual('there was an error')
+      library.tractionTubeRequest.get.mockReturnValue(failedResponse)
+      await library.updateLibrary()
+
+      expect(library.tractionTubeRequest.get).toBeCalledWith({ filter: { barcode: 'TRAC-1' } })
+      expect(library.alert).toBeCalledWith('There was an error')
+
     })
 
     it('when there is no library', async () => {
       let emptyResponse = { 'data': { 'data': []}, 'status': 200, 'statusText': 'Success'}
-      library.tubeRequest.get.mockReturnValue(emptyResponse)
-      response = await library.updateLibrary()
-      expect(library.tubeRequest.get).toBeCalledWith({ filter: { barcode: library.queryString } })
-      expect(response).toEqual(new Response(emptyResponse))
-      expect(library.message).toEqual('There is no library')
+      library.tractionTubeRequest.get.mockReturnValue(emptyResponse)
+      await library.updateLibrary()
+
+      expect(library.tractionTubeRequest.get).toBeCalledWith({ filter: { barcode: 'TRAC-1' } })
+      expect(library.alert).toBeCalledWith('There was an error')
     })
 
     it('when it is not a library', async () => {
-      library.tubeRequest.get.mockResolvedValue(SampleTubeJson)
-      response = await library.updateLibrary()
-      expect(library.tubeRequest.get).toBeCalledWith({ filter: { barcode: library.queryString } })
-      expect(response).toEqual(new Response(SampleTubeJson))
-      expect(library.message).toEqual('This is not a library')
+      library.tractionTubeRequest.get.mockResolvedValue(SampleTubeJson)
+      await library.updateLibrary()
+
+      expect(library.tractionTubeRequest.get).toBeCalledWith({ filter: { barcode: 'TRAC-1' } })
+      expect(library.alert).toBeCalledWith('This is not a library')
+    })
+  })
+
+  describe('#tractionTubeRequest', () => {
+    it('will have a request', () => {
+      expect(library.tractionTubeRequest).toBeDefined()
+    })
+  })
+
+  describe('alert', () => {
+    it('emits an event with the message', () => {
+      library.alert('emit this message')
+      expect(wrapper.emitted().alert).toBeTruthy()
+      expect(wrapper.emitted().alert[0]).toEqual(['emit this message'])
     })
   })
 

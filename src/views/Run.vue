@@ -1,33 +1,29 @@
 <template>
   <div class="run">
+    <alert ref='alert'></alert>
 
     <router-link :to="{name: 'Runs'}">
       <b-button id="backToRunsButton" class="float-right">Back</b-button>
     </router-link>
 
-    <b-button id="startRun" variant="success" class="float-right" @click="startRun" :disabled="state!=='pending'">Start Run</b-button>
-    <b-button id="completeRun" variant="primary" class="float-right" @click="completeRun" :disabled="state==='completed' || state==='cancelled'">Complete Run</b-button>
-    <b-button id="cancelRun" variant="danger" class="float-right" @click="cancelRun" :disabled="state==='completed' || state==='cancelled'">Cancel Run</b-button>
-
-    <h1 class="runInfo">Run</h1>
-    <h1 class="runInfo" id="id">ID: {{ id }}</h1>
+    <h1 class="runInfo" id="id">Run ID: {{ id }}</h1>
     <h2 class="runInfo" id="state">state: {{ state }}</h2>
 
-    <b-form-input class="runInfo" id="name" v-model="name" placeholder="name" type="text" @change="updateName" />
+    <b-form-input class="runInfo" id="name" v-model="name" placeholder="name" type="text" @change="updateName(id, name)" />
 
-    <chip v-if="Boolean(this.chip)" v-bind="chip"></chip>
+    <chip v-if="Boolean(this.chip)" v-bind="chip" @alert="alert"></chip>
 
   </div>
 </template>
 
 <script>
-import ComponentFactory from '@/mixins/ComponentFactory'
-import Api from '@/api'
+import RunMixin from '@/mixins/RunMixin'
 import Chip from '@/components/Chip'
+import Alert from '@/components/Alert'
 
 export default {
   name: 'Run',
-  mixins: [ComponentFactory],
+  mixins: [RunMixin],
   props: {
     id: {
       type: [Number, String]
@@ -36,73 +32,31 @@ export default {
   data () {
     return {
       name: this.name,
-      state: null, 
+      state: null,
       chip: null,
       message: ''
     }
   },
   methods: {
-    async updateRun (attributes) {
-      let rawResponse = await this.request.update(this.payload(attributes))
-      let response = new Api.Response(rawResponse[0])
-
-      if (response.successful) {
-        this.message = 'Run updated'
-        return response
-      } else {
-        this.message = 'There was an error'
-        return response
-      }
-    },
-    async getRun (id) {
-      let rawResponse = await this.request.find(id)
-      let response = new Api.Response(rawResponse)
-
-      if (response.successful) {
-        return response.deserialize.runs[0]
-      } else {
-        this.message = 'There was an error'
-        return { state: null, chip: null }
-      }
-    },
-    updateName () {
-      this.updateRun({name: this.name})
-    },
-    startRun() {
-      this.updateRun({state: 'started'})
-    },
-    completeRun () {
-      this.updateRun({state: 'completed'})
-    },
-    cancelRun () {
-      this.updateRun({state: 'cancelled'})
-    },
-    payload (attributes) {
-      return {
-        data: { 
-          id: this.id,
-          type: 'runs',
-          attributes: attributes
-        }
-      }
-    },
     async provider () {
       let data = await this.getRun(this.id)
       this.name = data.name
       this.state = data.state
       this.chip = data.chip
+    },
+    alert (message) {
+      this.message = message
+      this.showAlert()
+    },
+    showAlert () {
+      return this.$refs.alert.show(this.message, 'primary')
     }
   },
   components: {
-    Chip
+    Chip,
+    Alert
   },
   computed: {
-    tractionConfig () {
-      return this.build(Api.ConfigItem, Api.Config.traction)
-    },
-    request () {
-      return this.build(Api.Request, this.tractionConfig.resource('runs'))
-    }
   },
   created () {
     this.provider()

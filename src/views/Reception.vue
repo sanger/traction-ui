@@ -13,15 +13,14 @@
 </template>
 
 <script>
-
-import ComponentFactory from '@/mixins/ComponentFactory'
-import Api from '@/api'
 import Alert from '@/components/Alert'
-
+import handlePromise from '@/api/PromiseHelper'
+import Api from '@/mixins/Api'
+import getTubesForBarcodes from '@/api/TubeRequests'
 
 export default {
   name: 'Reception',
-  mixins: [ComponentFactory],
+  mixins: [Api],
   props: {
   },
   data () {
@@ -34,56 +33,61 @@ export default {
     Alert
   },
   methods: {
+    //TODO: Find a better way to extract information from responses.
+    sampleTubesJson (tubes) {
+      return tubes.map(t => ({
+        external_id: t.samples[0].uuid,
+        external_study_id: t.studies[0].uuid,
+        name: t.name,
+        species: t.samples[0].sample_metadata.sample_common_name
+      }))
+    },
     async handleSequencescapeTubes () {
-      let tubes = await this.findTubes(this.sequencescapeTubeRequest)
-      await this.exportSampleTubesIntoTraction(tubes)
-      await this.handleTractionTubes()
-      this.showAlert()
-    },
-    async handleTractionTubes () {
-      let tubes = await this.findTubes(this.tractionTubeRequest)
-      if (tubes.some(t => t.material)) {
-          this.$router.push({name: 'Table', params: {items: tubes}})
+      try {
+        let tubes = await this.getSequencescapeTubes()
+        await this.exportSampleTubesIntoTraction(tubes)
+        await this.handleTractionTubes()
+      } catch (err) {
+        this.message = err
+        this.showAlert()
       }
-      this.showAlert()
     },
-    async findTubes (request) {
-      if(!this.queryString) return
-      let rawResponse = await request.get({filter: { barcode: this.queryString} })
-      let response = new Api.Response(rawResponse)
+    async getSequencescapeTubes () {
+      let response = await getTubesForBarcodes(this.barcodes, this.sequencescapeTubeRequest)
 
-      if (response.successful) {
-        if (response.empty) {
-          this.message = 'No tubes found'
-          return response
-        } else {
-          this.message = 'Tubes successfully found'
-          return response.deserialize.tubes
-        }
+      if (response.successful && !response.empty) {
+        return response.deserialize.tubes
       } else {
-        this.message = 'There was an error'
-        return response
+        throw 'Failed to find tubes in Sequencescape'
       }
     },
     async exportSampleTubesIntoTraction (tubes) {
-      let sampleTubeJSON = tubes.map(t => Object.assign(
-        {
-          external_id: t.samples[0].id,
-          name: t.name,
-          species: t.samples[0].sample_metadata.sample_common_name
-        }
-      ))
-
-      let body = { data: { attributes: { samples: sampleTubeJSON }}}
-      let rawResponse = await this.sampleRequest.create(body)
-      let response = new Api.Response(rawResponse)
+      let body = { data: { attributes: { samples: this.sampleTubesJson(tubes) }}}
+      let promise = this.sampleRequest.create(body)
+      let response = await handlePromise(promise)
 
       if (response.successful) {
         this.barcodes = response.deserialize.samples.map(s=> s.barcode).join('\n')
-        return response
       } else {
-        this.message = response.errors.message
-        return response
+        throw 'Failed to create tubes in Traction: ' + response.errors.message
+      }
+    },
+    async handleTractionTubes () {
+      if (this.barcodes === undefined || !this.barcodes.length) {
+        throw 'There are no barcodes'
+      }
+
+      let response = await getTubesForBarcodes(this.barcodes, this.tractionTubeRequest)
+
+      if (response.successful && !response.empty) {
+        let tubes = response.deserialize.tubes
+        let table = tubes.every(t => t.material.type == "samples") ? "Samples" : "Libraries"
+        if (table) {
+          this.$router.push({name: table, params: {items: tubes}})
+        }
+      } else {
+        this.message = 'Failed to get Traction tubes'
+        this.showAlert()
       }
     },
     showAlert () {
@@ -91,26 +95,15 @@ export default {
     }
   },
   computed: {
-    queryString () {
-      if (this.barcodes === undefined || !this.barcodes.length) return ''
-      return this.barcodes.split('\n').filter(Boolean).join(',')
-    },
-    tractionConfig () {
-      return this.build(Api.ConfigItem, Api.Config.traction)
-    },
-    sequencescapeConfig () {
-      return this.build(Api.ConfigItem, Api.Config.sequencescape)
-    },
     sequencescapeTubeRequest () {
-      return this.build(Api.Request, this.sequencescapeConfig.resource('tubes'))
+      return this.api.sequencescape.tubes
     },
     tractionTubeRequest () {
-      return this.build(Api.Request, this.tractionConfig.resource('tubes'))
+      return this.api.traction.tubes
     },
     sampleRequest () {
-      return this.build(Api.Request, this.tractionConfig.resource('samples'))
-    },
-
+      return this.api.traction.samples
+    }
   }
 }
 

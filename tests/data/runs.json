@@ -9,7 +9,8 @@
       },
       "attributes": {
         "state": "pending",
-        "chip_barcode": "TRAC-456"
+        "chip_barcode": "TRAC-123",
+        "created_at":  "03/21/2019 01:01"
       },
       "relationships": {
         "chip": {
@@ -28,7 +29,8 @@
       },
       "attributes": {
         "state": "started",
-        "chip_barcode": "TRAC-123"
+        "chip_barcode": "TRAC-234",
+        "created_at":  "03/21/2019 02:01"
       },
       "relationships": {
         "chip": {
@@ -38,6 +40,48 @@
           }
         }
       }
+    },
+    {
+      "id": "3",
+      "type": "runs",
+      "links": {
+        "self": "/v1/runs/3"
+      },
+      "attributes": {
+        "state": "completed",
+        "chip_barcode": "TRAC-345",
+        "created_at":  "03/21/2019 03:01"
+      },
+      "relationships": {
+        "chip": {
+          "links": {
+            "self": "/v1/runs/3/relationships/chip",
+            "related": "/v1/runs/3/chip"
+          }
+        }
+      }
+    },
+    {
+      "id": "4",
+      "type": "runs",
+      "links": {
+        "self": "/v1/runs/4"
+      },
+      "attributes": {
+        "state": "cancelled",
+        "chip_barcode": "TRAC-456",
+        "created_at":  "03/21/2019 04:01"
+      },
+      "relationships": {
+        "chip": {
+          "links": {
+            "self": "/v1/runs/4/relationships/chip",
+            "related": "/v1/runs/4/chip"
+          }
+        }
+      }
     }]
-  }
+  },
+  "status": 200,
+  "statusText": "Success"
 }

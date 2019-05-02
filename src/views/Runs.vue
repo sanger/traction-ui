@@ -2,7 +2,7 @@
     <div class="runs">
       <alert ref='alert'></alert>
 
-      <b-button id="newRun" class="float-right" @click="showRun()">Create New Run</b-button>
+      <b-button id="newRun" class="float-right" @click="showRun()" variant="success">New Run</b-button>
 
       <b-col md="6" class="my-1">
         <b-input-group>
@@ -14,18 +14,31 @@
       </b-col>
 
       <b-table
-         show-empty
-         :items="items"
-         :fields="fields"
-         :filter="filter"
+          show-empty
+          :items="items"
+          :fields="fields"
+          :filter="filter"
+          :sort-by.sync="sortBy"
+          :sort-desc.sync="sortDesc"
       >
 
         <template slot="actions" slot-scope="row">
-          <b-button size="sm" @click="showRun(row.item.id)" class="mr-1">
-            Edit Run
+          <b-button :id="generateId('createRun',row.item.id)" variant="outline-dark" size="sm" @click="showRun(row.item.id)" class="mr-1">
+            Edit
+          </b-button>
+
+          <b-button :id="generateId('startRun',row.item.id)" variant="outline-success" size="sm" class="mr-1" @click="startRun(row.item.id)" :disabled="row.item.state !== 'pending'">
+            Start
+          </b-button>
+
+          <b-button :id="generateId('completeRun',row.item.id)" variant="outline-primary" size="sm" class="mr-1" @click="completeRun(row.item.id)" :disabled="isRunDisabled(row.item)">
+            Complete
+          </b-button>
+
+          <b-button :id="generateId('cancelRun',row.item.id)" variant="outline-danger" size="sm" class="mr-1" @click="cancelRun(row.item.id)" :disabled="isRunDisabled(row.item)">
+            Cancel
           </b-button>
         </template>
-
       </b-table>
 
     </div>
@@ -33,12 +46,11 @@
 
 <script>
 import Alert from '@/components/Alert'
-import ComponentFactory from '@/mixins/ComponentFactory'
-import Api from '@/api'
+import RunMixin from '@/mixins/RunMixin'
 
 export default {
   name: 'Runs',
-  mixins: [ComponentFactory],
+  mixins: [RunMixin],
   props: {
   },
   data () {
@@ -51,44 +63,23 @@ export default {
         { key: 'actions', label: 'Actions' },
       ],
       items: [],
-      filter: null
+      filter: null,
+      sortBy: 'created_at',
+      sortDesc: true
     }
   },
   methods: {
-    async getRuns () {
-      let rawResponse = await this.runRequest.get()
-      let response = new Api.Response(rawResponse)
-
-      if (Object.keys(response.errors).length === 0) {
-        let runs = response.deserialize.runs
-        this.items = runs
-      } else {
-        this.message = response.errors.message
-        this.showAlert
-        this.items = []
-      }
+    async provider() {
+      this.items = await this.getRuns()
     },
-    async createRun () {
-      let rawResponse = await this.runRequest.create(this.payload)
-      return new Api.Response(rawResponse)
+    isRunDisabled(run) {
+      return run.state == 'completed' || run.state == 'cancelled'
     },
-    async showRun (id) {
-      let runId
-      if (id === undefined) {
-        let response = await this.createRun()
-        if (response.successful) {
-          runId = response.deserialize.runs[0].id
-        } else {
-          this.message = 'There was an error'
-          return
-        }
-      } else {
-        runId = id
-      }
-      this.$router.push({ path: `/run/${runId}` })
+    isRunPending(run) {
+      return run.state !== 'pending'
     },
-    provider() {
-      this.getRuns()
+    generateId(text, id) {
+      return `${text}-${id}`
     }
   },
   created() {
@@ -98,25 +89,6 @@ export default {
     Alert
   },
   computed: {
-    runRequest () {
-      return this.build(Api.Request, this.tractionConfig.resource('runs'))
-    },
-    tractionConfig () {
-      return this.build(Api.ConfigItem, Api.Config.traction)
-    },
-    showAlert () {
-      return this.$refs.alert.show(this.message, 'primary')
-    },
-    payload () {
-      return { 
-        data: { 
-          type: 'runs', 
-          attributes: { 
-            runs: [ { } ] 
-          }
-        }
-      }
-    }
   }
 }
 </script>

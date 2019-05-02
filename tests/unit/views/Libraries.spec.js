@@ -1,6 +1,6 @@
 import Libraries from '@/views/Libraries'
-import { mount, localVue } from '../testHelper'
-import flushPromises from 'flush-promises'
+import { mount, localVue, store } from '../testHelper'
+import Alert from '@/components/Alert'
 
 describe('Libraries.vue', () => {
 
@@ -8,12 +8,13 @@ describe('Libraries.vue', () => {
 
   describe('library request', () => {
     mockLibraries =  [
-      { "type": "libraries", "id": "6", "state": "pending", "barcode": "TRAC-8", "sample_name": "sample_d", "enzyme_name": "Nb.BsrDI", "created_at": "03/12/2019 11:49" },
-      { "type": "libraries", "id": "6", "state": "pending", "barcode": "TRAC-8", "sample_name": "sample_d", "enzyme_name": "Nb.BsrDI", "created_at": "03/12/2019 11:49" }
+      { barcode: 'TRAC-8', material: {id: 6, type: 'libraries', state: 'pending', sample_name: 'sample_d', enzyme_name: 'Nb.BsrDI', created_at: '03/12/2019 11:49' }},
+      { barcode: 'TRAC-8', material: {id: 6, type: 'libraries', state: 'pending', sample_name: 'sample_d', enzyme_name: 'Nb.BsrDI', created_at: '03/12/2019 11:49' }}
     ]
 
     beforeEach(() => {
       wrapper = mount(Libraries, { localVue,
+        store,
         propsData: {
           items: mockLibraries
         }
@@ -32,6 +33,12 @@ describe('Libraries.vue', () => {
 
   })
 
+  describe('alert', () => {
+    it('has a alert', () => {
+      expect(wrapper.contains(Alert)).toBe(true)
+    })
+  })
+
   describe('building the table', () => {
 
     it('contains the correct fields', () => {
@@ -47,50 +54,104 @@ describe('Libraries.vue', () => {
 
   })
 
-  describe('selecting libraries', () => {
+  describe('#handleLibraryDelete', () => {
+    beforeEach(() => {
+      libraries.deleteLibraries = jest.fn()
+      libraries.showAlert = jest.fn()
+    })
+
+    it('calls the correct functions', async () => {
+      await libraries.handleLibraryDelete()
+      expect(libraries.deleteLibraries).toBeCalled()
+      expect(libraries.showAlert).not.toBeCalled()
+    })
+
+    it('calls showAlert when there is an error', async () => {
+      libraries.deleteLibraries.mockImplementation(() => {
+        throw 'Raise this error'
+      })
+
+      await libraries.handleLibraryDelete()
+      expect(libraries.deleteLibraries).toBeCalled()
+      expect(libraries.message).toEqual('Failed to delete: Raise this error')
+      expect(libraries.showAlert).toBeCalled()
+    })
+  })
+
+  describe('#deleteLibraries', () => {
 
     beforeEach(() => {
+      mockLibraries =  [
+        { barcode: 'TRAC-8', material: {id: 6, type: 'libraries', state: 'pending', sample_name: 'sample_d', enzyme_name: 'Nb.BsrDI', created_at: '03/12/2019 11:49' }},
+        { barcode: 'TRAC-8', material: {id: 6, type: 'libraries', state: 'pending', sample_name: 'sample_d', enzyme_name: 'Nb.BsrDI', created_at: '03/12/2019 11:49' }}
+      ]
+
+      wrapper = mount(Libraries, { localVue,
+        store,
+        propsData: {
+          items: mockLibraries
+        }
+      })
+      libraries = wrapper.vm
+
       let checkboxes = wrapper.findAll(".selected")
       checkboxes.at(0).trigger('click')
+
+      libraries.libraryRequest.execute = jest.fn()
     })
 
     it('will create a list of selected libraries', () => {
       expect(libraries.selected.length).toEqual(1)
     })
 
-    describe('deleting', () => {
-      beforeEach(() => {
-        libraries.libraryRequest.destroy = jest.fn()
-        let checkboxes = wrapper.findAll(".selected")
-        checkboxes.at(0).trigger('click')
+    it('successfully', async () => {
+      let mockResponse =  {
+        data: {},
+        status: 204,
+        statusText: "OK"
+      }
+
+      let promise = new Promise((resolve) => {
+        resolve(mockResponse)
       })
 
-      it('successfully', async () => {
-        let mockResponse = [{ status: 204, data: "" }]
-        libraries.libraryRequest.destroy.mockResolvedValue(mockResponse)
-        wrapper.find('#deleteLibraries').trigger('click')
-        await flushPromises()
-        expect(libraries.message).toEqual(`Libraries ${libraries.selected.join(',')} successfully deleted`)
-        expect(libraries.libraryRequest.destroy).toBeCalledWith(libraries.selected)
+      libraries.libraryRequest.execute.mockResolvedValue(promise)
+
+      await libraries.deleteLibraries()
+      expect(libraries.message).toEqual(`Libraries ${libraries.selected.join(',')} successfully deleted`)
+    })
+
+    it('unsuccessfully', async () => {
+      let mockResponse =  {  data: { errors: { it: ['was a bust'] } }, status: 422 }
+
+      let promise = new Promise((reject) => {
+        reject(mockResponse)
       })
 
-      it('unsuccessfully', async () => {
-        let mockResponse =  [{ data: { errors: { it: ['was a bust'] } }, status: 422 }]
-        libraries.libraryRequest.destroy.mockReturnValue(mockResponse)
-        wrapper.find('#deleteLibraries').trigger('click')
-        await flushPromises()
-        expect(libraries.message).toEqual(['it was a bust'])
-        expect(libraries.libraryRequest.destroy).toBeCalledWith(libraries.selected)
-      })
+      libraries.libraryRequest.execute.mockResolvedValue(promise)
+
+      let message
+      try {
+        await await libraries.deleteLibraries()
+      } catch (err) {
+        message = err
+      }
+      expect(message).toEqual("it was a bust")
     })
 
   })
 
-  describe('emitAlert', () => {
-    it('emits an event with the message', () => {
+  describe('#libraryRequest', () => {
+    it('will have a request', () => {
+      expect(libraries.libraryRequest).toBeDefined()
+    })
+  })
+
+  describe('#showAlert', () => {
+    it('passes the message to function on emit event', () => {
       wrapper.setData({ message: 'show this message' })
-      libraries.emitAlert
-      expect(wrapper.emitted().alert).toBeTruthy()
+      libraries.showAlert()
+      expect(wrapper.find(Alert).html()).toMatch('show this message')
     })
   })
 })

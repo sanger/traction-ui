@@ -1,70 +1,55 @@
 <template>
   <div class="library">
-     <b-form-input id="barcode" v-model="barcode" type="text" placeholder="barcode" @change="updateLibrary" />
+     <b-form-input id="barcode" v-model="libraryBarcode" type="text" placeholder="barcode" @change="updateLibrary" />
   </div>
 </template>
 
 <script>
 
-import ComponentFactory from '@/mixins/ComponentFactory'
-import Api from '@/api'
+import Api from '@/mixins/Api'
+import getTubesForBarcodes from '@/api/TubeRequests'
 
 export default {
   name: 'Library',
-  mixins: [ComponentFactory],
+  mixins: [Api],
   props: {
     id: {
       type: [Number, String]
     },
-    tube: {
-      type: Object,
-      default: () => {
-        return { id: '', barcode: '' }
-      }
+    barcode: {
+      type: [Number, String]
     }
   },
   data () {
     return {
-      barcode: this.tube.barcode,
+      libraryBarcode: this.barcode,
       message: ''
     }
   },
   methods: {
-    //TODO: horrible logic needs refactoring
     async updateLibrary () {
-      if(!this.queryString) return
-      let rawResponse = await this.tubeRequest.get({filter: { barcode: this.queryString} })
-      let response = new Api.Response(rawResponse)
-      if (response.successful) {
-        if (response.empty) {
-          this.message = 'There is no library'
-          return response
+      if(!this.libraryBarcode) return
+
+      let response = await getTubesForBarcodes(this.libraryBarcode, this.tractionTubeRequest)
+
+      if (response.successful && !response.empty) {
+        let material = response.deserialize.tubes[0].material
+        if (material.type === 'libraries') {
+          this.$emit('updateLibrary', material)
         } else {
-          let material = response.deserialize.tubes[0].material
-          if (material.type === 'libraries') {
-            this.message = 'Library updated'
-            this.$emit('updateLibrary', response.deserialize.tubes[0].material)
-            return response
-          } else {
-            this.message = 'This is not a library'
-            return response
-          }
+          this.alert('This is not a library')
         }
       } else {
-        this.message = 'there was an error'
-        return response
+        this.alert('There was an error')
       }
     },
+    alert (message) {
+      this.$emit('alert', message)
+    }
   },
   computed: {
-    tractionConfig () {
-      return this.build(Api.ConfigItem, Api.Config.traction)
-    },
-    tubeRequest () {
-      return this.build(Api.Request, this.tractionConfig.resource('tubes'))
-    },
-    queryString () {
-      return this.barcode.replace('\n','')
+    tractionTubeRequest () {
+      return this.api.traction.tubes
     }
   }
 }

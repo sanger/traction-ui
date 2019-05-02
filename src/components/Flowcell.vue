@@ -2,20 +2,21 @@
   <b-row class="flowcell">
     <b-col>
       <div class="position">{{ position }}</div>
-      <library @updateLibrary="updateFlowcell" v-bind="library"></library>
+      <library @updateLibrary="updateFlowcell" v-bind="library" @alert="alert" ></library>
     </b-col>
   </b-row>
 </template>
 
 <script>
 
-import ComponentFactory from '@/mixins/ComponentFactory'
-import Api from '@/api'
+
 import Library from '@/components/Library'
+import Api from '@/mixins/Api'
+import handlePromise from '@/api/PromiseHelper'
 
 export default {
   name: 'Flowcell',
-  mixins: [ComponentFactory],
+  mixins: [Api],
   props: {
     id: {
       type: [Number, String]
@@ -38,7 +39,7 @@ export default {
   methods: {
     payload (library) {
       return {
-        data: { 
+        data: {
           id: this.id,
           type: 'flowcells',
           attributes: {
@@ -48,24 +49,23 @@ export default {
       }
     },
     async updateFlowcell (library) {
-      let rawResponse = await this.request.update(this.payload(library))
-      let response = new Api.Response(rawResponse[0])
+      let promise = this.flowcellRequest.update(this.payload(library))
+      let response = await handlePromise(promise[0])
 
       if (response.successful) {
-        this.message = 'Library added to flowcell'
+        this.alert('Library added to flowcell')
         return response
       } else {
-        this.message = 'There was an error'
-        return response
+        this.alert('There was an error: ' + response.errors.message)
       }
-    }
+    },
+    alert (message) {
+      this.$emit('alert', message)
+    },
   },
   computed: {
-    tractionConfig () {
-      return this.build(Api.ConfigItem, Api.Config.traction)
-    },
-    request () {
-      return this.build(Api.Request, this.tractionConfig.resource('flowcells'))
+    flowcellRequest () {
+      return this.api.traction.flowcells
     }
   },
   components: {
