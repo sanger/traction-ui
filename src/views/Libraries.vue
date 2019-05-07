@@ -13,6 +13,7 @@
     </b-table>
 
     <b-button id="deleteLibraries" @click="handleLibraryDelete" :disabled="this.selected.length === 0" class="float-right">Delete Libraries</b-button>
+    <printerModal @selectPrinter="handlePrintLabel" :disabled="this.selected.length === 0"></printerModal>
   </div>
 </template>
 
@@ -20,6 +21,7 @@
 import handlePromise from '@/api/PromiseHelper'
 import Api from '@/mixins/Api'
 import Alert from '@/components/Alert'
+import PrinterModal from '@/components/PrinterModal'
 
 export default {
   name: 'Libraries',
@@ -43,9 +45,13 @@ export default {
     }
   },
   components: {
-    Alert
+    Alert,
+    PrinterModal
   },
   methods: {
+    handlePrintLabel (printerName) {
+      console.log(printerName)
+    },
     async handleLibraryDelete () {
       try {
         await this.deleteLibraries()

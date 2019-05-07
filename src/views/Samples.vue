@@ -13,11 +13,13 @@
     </b-table>
 
     <modal @selectEnzyme="handleLibraryCreate" :disabled="this.selected.length === 0" class="float-right" ></modal>
+    <printerModal @selectPrinter="handlePrintLabel" :disabled="this.selected.length === 0"></printerModal>
   </div>
 </template>
 
 <script>
 import Modal from '@/components/Modal'
+import PrinterModal from '@/components/PrinterModal'
 import handlePromise from '@/api/PromiseHelper'
 import Api from '@/mixins/Api'
 import getTubesForBarcodes from '@/api/TubeRequests'
@@ -46,6 +48,9 @@ export default {
     }
   },
   methods: {
+    handlePrintLabel (printerName) {
+      console.log(printerName)
+    },
     async handleLibraryCreate (selectedEnzymeId) {
       try {
         await this.createLibrariesInTraction(selectedEnzymeId)
@@ -90,6 +95,7 @@ export default {
   },
   components: {
     Modal,
+    PrinterModal,
     Alert
   },
   computed: {

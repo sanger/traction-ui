@@ -1,6 +1,7 @@
 import Libraries from '@/views/Libraries'
 import { mount, localVue, store } from '../testHelper'
 import Alert from '@/components/Alert'
+import PrinterModal from '@/components/PrinterModal'
 
 describe('Libraries.vue', () => {
 
@@ -139,6 +140,20 @@ describe('Libraries.vue', () => {
       expect(message).toEqual("it was a bust")
     })
 
+  })
+
+  describe('printerModal', () => {
+    beforeEach(() => {
+      libraries.handlePrintLabel = jest.fn()
+    })
+
+    it('passes selected printer to function on emit event', () => {
+      libraries.selected = [{id: 1}]
+      let modal = wrapper.find(PrinterModal)
+      modal.vm.$emit('selectPrinter', 'printer1')
+
+      expect(libraries.handlePrintLabel).toBeCalledWith('printer1')
+    })
   })
 
   describe('#libraryRequest', () => {

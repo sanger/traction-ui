@@ -1,5 +1,6 @@
 import Samples from '@/views/Samples'
 import Modal from '@/components/Modal'
+import PrinterModal from '@/components/PrinterModal'
 import { mount, localVue, store } from '../testHelper'
 import Libraries from '@/views/Libraries'
 import TractionTubesWithLibrariesJson from '../../data/tubeWithLibrary'
@@ -222,6 +223,20 @@ describe('Samples.vue', () => {
       modal.vm.$emit('selectEnzyme', 2)
 
       expect(samples.handleLibraryCreate).toBeCalledWith(2)
+    })
+  })
+
+  describe('printerModal', () => {
+    beforeEach(() => {
+      samples.handlePrintLabel = jest.fn()
+    })
+
+    it('passes selected printer to function on emit event', () => {
+      samples.selected = [{id: 1}]
+      let modal = wrapper.find(PrinterModal)
+      modal.vm.$emit('selectPrinter', 'printer1')
+
+      expect(samples.handlePrintLabel).toBeCalledWith('printer1')
     })
   })
 
