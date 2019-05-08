@@ -11,6 +11,10 @@ describe('index', () => {
       expect(Store.state.printers).toBeDefined()
     })
 
+    it('has a label template id', () => {
+      expect(Store.state.labelTemplateId).toBeDefined()
+    })
+
     describe('api', () => {
       it('contains multiple resources', () => {
         expect(Store.state.api.sequencescape).toBeDefined()
@@ -26,6 +30,10 @@ describe('index', () => {
 
     it('printers', () => {
       expect(Store.getters.printers).toBeDefined()
+    })
+
+    it('labelTemplateId', () => {
+      expect(Store.getters.labelTemplateId).toBeDefined()
     })
   })
 
