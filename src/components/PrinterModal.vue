@@ -44,7 +44,7 @@ export default {
       this.$refs.printerModal.hide()
     },
     setPrinterNames () {
-      let printerOptions = this.$store.state.printers.map(
+      let printerOptions = this.$store.getters.printers.map(
         (printer, index) => Object.assign({ value: index+1, text: printer })
       )
       printerOptions.unshift({ value: null, text: "Please select an printer" })
