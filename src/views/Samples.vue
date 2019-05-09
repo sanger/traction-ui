@@ -24,6 +24,7 @@ import handlePromise from '@/api/PromiseHelper'
 import Api from '@/mixins/Api'
 import getTubesForBarcodes from '@/api/TubeRequests'
 import Alert from '@/components/Alert'
+import printJob from '@/api/PrintJobRequests'
 
 export default {
   name: 'Samples',
@@ -49,7 +50,7 @@ export default {
   },
   methods: {
     handlePrintLabel (printerName) {
-      console.log(printerName)
+      // printJob(printerName, this.selected)
     },
     async handleLibraryCreate (selectedEnzymeId) {
       try {

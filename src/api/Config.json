@@ -42,7 +42,7 @@
     "name": "printMyBarcode",
     "apiNamespace": "v1",
     "resources": {
-      "printJobs": {
+      "print_jobs": {
         "name": "printJobs"
       }
     }
