@@ -49,8 +49,15 @@ export default {
     }
   },
   methods: {
-    handlePrintLabel (printerName) {
-      // printJob(printerName, this.selected)
+    async handlePrintLabel (printerName) {
+      let response = await printJob(printerName, this.selected)
+
+      if (response.successful) {
+        this.message = "Printed successfully"
+      } else {
+        this.message = response.errors.message
+      }
+      this.showAlert()
     },
     async handleLibraryCreate (selectedEnzymeId) {
       try {

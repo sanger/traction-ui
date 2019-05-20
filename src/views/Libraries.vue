@@ -55,10 +55,10 @@ export default {
 
       if (response.successful) {
         this.message = "Printed successfully"
-        this.showAlert()
       } else {
         this.message = response.errors.message
       }
+      this.showAlert()
     },
     async handleLibraryDelete () {
       try {

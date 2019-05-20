@@ -144,21 +144,6 @@ describe('Libraries.vue', () => {
 
   })
 
-  // describe('printerModal', () => {
-  //   before(() => {
-  //     libraries.handlePrintLabel = jest.fn()
-  //   })
-  //
-  //   it('passes selected printer to function on emit event', () => {
-  //     libraries.handlePrintLabel.mockReturnValue()
-  //     libraries.selected = [{ id: 1, type: 'libraries', enzyme_name: 'enz1', barcode: 'TRAC-1' }]
-  //     let modal = wrapper.find(PrinterModal)
-  //     modal.vm.$emit('selectPrinter', 'printer1')
-  //
-  //     expect(libraries.handlePrintLabel).toBeCalledWith('printer1')
-  //   })
-  // })
-
   describe('#handlePrintLabel', () => {
     let request
 
@@ -222,6 +207,20 @@ describe('Libraries.vue', () => {
       expect(libraries.message).toEqual('it was a bust')
     })
 
+  })
+
+  describe('printerModal', () => {
+    beforeEach(() => {
+      libraries.handlePrintLabel = jest.fn()
+    })
+
+    it('passes selected printer to function on emit event', () => {
+      libraries.selected = [{id: 1}]
+      let modal = wrapper.find(PrinterModal)
+      modal.vm.$emit('selectPrinter', 'printer1')
+
+      expect(libraries.handlePrintLabel).toBeCalledWith('printer1')
+    })
   })
 
   describe('#libraryRequest', () => {
