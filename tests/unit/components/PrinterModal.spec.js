@@ -117,7 +117,10 @@ describe('Modal.vue', () => {
       let printerOptions = printerNames.map((printer, index) => Object.assign({ value: index+1, text: printer }))
       printerOptions.unshift({ value: null, text: "Please select an printer" })
 
-      expect(modal.printerOptions).toEqual(printerOptions)
+      expect(modal.printerOptions[0]).toEqual({ value: null, text: "Please select an printer" })
+      expect(modal.printerOptions[1]).toBeDefined()
+      expect(modal.printerOptions[2]).toBeDefined()
+      expect(modal.printerOptions[3]).toBeDefined()
     })
   })
 })

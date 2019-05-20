@@ -165,7 +165,7 @@ describe('Libraries.vue', () => {
     beforeEach(() => {
       libraries.selected = [{ id: 1, type: 'libraries', enzyme_name: 'enz1', barcode: 'TRAC-1' }]
 
-      request = store.getters.api.printMyBarcode.printJobs
+      request = store.getters.api.printMyBarcode.print_jobs
       request.create = jest.fn()
     })
 

@@ -103,7 +103,7 @@ describe('PrintJobRequests', () => {
   describe('printMyBarcodeRequest', () => {
     it ('returns a pmb request', () => {
       let request = PrintJobRequests.printMyBarcodeRequest()
-      expect(request.baseURL).toEqual('http://pmb')
+      expect(request.baseURL).toEqual('http://printmybarcode')
       expect(request.apiNamespace).toEqual('v1')
     })
   })
@@ -112,7 +112,7 @@ describe('PrintJobRequests', () => {
     let request, payload
 
     beforeEach(() => {
-      request = store.getters.api.printMyBarcode.printJobs
+      request = store.getters.api.printMyBarcode.print_jobs
       payload = PrintJobRequests.createPrintJobJson(printerName, selectedSamples)
       request.create = jest.fn()
     })
