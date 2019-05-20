@@ -19,9 +19,9 @@ export default {
       printerOptions: []
     }
   },
-    props: {
-      disabled: Boolean,
-    },
+  props: {
+    disabled: Boolean,
+  },
   methods: {
     clearSelect () {
       this.selectedPrinterId = null
@@ -37,7 +37,7 @@ export default {
       }
     },
     handleSubmit () {
-      // OR store holds key id and text value - emit id then store hadles get text
+      // OR store holds key id and text value - emit id then store handles get name
       let printerName = this.printerOptions[this.selectedPrinterId].text
       this.$emit('selectPrinter', printerName)
       this.clearSelect()
