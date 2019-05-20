@@ -4,7 +4,6 @@ import Api from '@/api'
 // return - a Api.Response object
 const handlePromise = async (promise) => {
   let rawResponse
-  debugger
   try {
     rawResponse = await promise
   } catch(resp) {
