@@ -1,6 +1,7 @@
 import * as PrintJobRequests from '@/api/PrintJobRequests'
 import moment from 'moment'
 import { store } from '../testHelper'
+import Response from '@/api/Response'
 
 describe('PrintJobRequests', () => {
   let selectedSamples, selectedLibraries, printerName
@@ -18,11 +19,50 @@ describe('PrintJobRequests', () => {
   })
 
   describe('printJob', () => {
+    let request
 
     beforeEach(() => {
+      request = store.getters.api.printMyBarcode.print_jobs
+      request.create = jest.fn()
     })
 
-    it('returns a response',  () => {
+    it('returns a response on success', async () => {
+      let mockResponse =  {
+        data: {},
+        status: 201,
+        statusText: "Created"
+      }
+
+      let promise = new Promise((resolve) => {
+        resolve(mockResponse)
+      })
+
+      request.create.mockResolvedValue(promise)
+      let expected = new Response(mockResponse)
+
+      let response = await PrintJobRequests.printJob(printerName, selectedSamples)
+      expect(response).toEqual(expected)
+    })
+
+    it('returns a response on failure', async () => {
+      let mockResponse =  {
+        data: {
+          errors: {
+            it: ['was a bust']
+          }
+        },
+        status: 422
+      }
+
+      let promise = new Promise((reject) => {
+        reject(mockResponse)
+      })
+
+      request.create.mockReturnValue(promise)
+      let expected = new Response(mockResponse)
+
+      let response = await PrintJobRequests.printJob(printerName, selectedSamples)
+      expect(response).toEqual(expected)
     })
 
   })
@@ -148,7 +188,7 @@ describe('PrintJobRequests', () => {
         reject(mockResponse)
       })
 
-      request.create.mockResolvedValue(promise)
+      request.create.mockReturnValue(promise)
       let response = await PrintJobRequests.postPrintJob(request, payload)
       expect(response.successful).toBeFalsy()
     })
