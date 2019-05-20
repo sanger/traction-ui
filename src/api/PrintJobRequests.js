@@ -5,8 +5,7 @@ import handlePromise from '@/api/PromiseHelper'
 const printJob = async (printerName, selected) => {
   let request = printMyBarcodeRequest()
   let payload = createPrintJobJson(printerName, selected)
-  let resp = await postPrintJob(request, payload)
-  return resp
+  return await postPrintJob(request, payload)
 }
 
 const createPrintJobJson = (printerName, selected) => {
