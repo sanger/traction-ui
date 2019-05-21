@@ -1,5 +1,6 @@
 import Samples from '@/views/Samples'
 import Modal from '@/components/Modal'
+import PrinterModal from '@/components/PrinterModal'
 import { mount, localVue, store } from '../testHelper'
 import Libraries from '@/views/Libraries'
 import TractionTubesWithLibrariesJson from '../../data/tubeWithLibrary'
@@ -222,6 +223,85 @@ describe('Samples.vue', () => {
       modal.vm.$emit('selectEnzyme', 2)
 
       expect(samples.handleLibraryCreate).toBeCalledWith(2)
+    })
+  })
+
+  describe('#handlePrintLabel', () => {
+    let request
+
+    beforeEach(() => {
+      samples.selected = [{ id: 1, type: 'samples', name: 'enz1', barcode: 'TRAC-1' }]
+
+      request = store.getters.api.printMyBarcode.print_jobs
+      request.create = jest.fn()
+    })
+
+    it('passes selected printer to function on emit event', () => {
+      let successfulResponse =  {
+        data: {},
+        status: 201,
+        statusText: "OK"
+      }
+
+      let successfulPromise = new Promise((resolve) => {
+        resolve(successfulResponse)
+      })
+
+      request.create.mockResolvedValue(successfulPromise)
+      let modal = wrapper.find(PrinterModal)
+      modal.vm.$emit('selectPrinter', 'printer1')
+
+      expect(request.create).toBeCalled()
+    })
+
+    it('successfully prints label', async () => {
+      let successfulResponse =  {
+        data: {},
+        status: 201,
+        statusText: "OK"
+      }
+
+      let successfulPromise = new Promise((resolve) => {
+        resolve(successfulResponse)
+      })
+
+      request.create.mockResolvedValue(successfulPromise)
+      await samples.handlePrintLabel('printer1')
+      expect(samples.message).toEqual('Printed successfully')
+    })
+
+    it('unsuccessfully', async () => {
+      let failedResponse =  {
+        data: {
+          errors: {
+            it: ['was a bust']
+          }
+        },
+        status: 422
+      }
+
+      let failedPromise = new Promise((reject) => {
+        reject(failedResponse)
+      })
+
+      request.create.mockReturnValue(failedPromise)
+      await samples.handlePrintLabel('printer1')
+      expect(samples.message).toEqual('it was a bust')
+    })
+
+  })
+
+  describe('printerModal', () => {
+    beforeEach(() => {
+      samples.handlePrintLabel = jest.fn()
+    })
+
+    it('passes selected printer to function on emit event', () => {
+      samples.selected = [{id: 1}]
+      let modal = wrapper.find(PrinterModal)
+      modal.vm.$emit('selectPrinter', 'printer1')
+
+      expect(samples.handlePrintLabel).toBeCalledWith('printer1')
     })
   })
 
