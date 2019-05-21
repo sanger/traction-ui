@@ -43,7 +43,7 @@ describe('Modal.vue', () => {
     })
 
     it('has printer options', () => {
-      let printerOptions = [{ value: null, text: 'Please select an printer' },
+      let printerOptions = [{ value: null, text: 'Please select a printer' },
         { value: 1, text: 'print1' },
         { value: 2, text: 'printer2' }]
 
@@ -54,7 +54,7 @@ describe('Modal.vue', () => {
 
   describe('modal', () => {
     it('has printer select form', () => {
-      let printerOptions = [{ value: null, text: 'Please select an printer' },
+      let printerOptions = [{ value: null, text: 'Please select a printer' },
         { value: 1, text: 'printer1' },
         { value: 2, text: 'printer2' }]
 
@@ -79,7 +79,7 @@ describe('Modal.vue', () => {
       let evt = { preventDefault: () => { return {} }}
       window.alert = jest.fn()
       modal.handleOk(evt)
-      expect(window.alert).toBeCalledWith('Please select an printer')
+      expect(window.alert).toBeCalledWith('Please select a printer')
       expect(modal.handleSubmit).not.toBeCalled()
     })
 
@@ -95,7 +95,7 @@ describe('Modal.vue', () => {
     it('#handleSubmit', () => {
       wrapper.setData({ selectedPrinterId: 1 })
 
-      let printerOptions = [{ value: null, text: 'Please select an printer' },
+      let printerOptions = [{ value: null, text: 'Please select a printer' },
         { value: 1, text: 'printer1' },
         { value: 2, text: 'printer2' }]
 
@@ -115,9 +115,9 @@ describe('Modal.vue', () => {
 
       let printerNames = ['printer1', 'printer2', 'printer3']
       let printerOptions = printerNames.map((printer, index) => Object.assign({ value: index+1, text: printer }))
-      printerOptions.unshift({ value: null, text: "Please select an printer" })
+      printerOptions.unshift({ value: null, text: "Please select a printer" })
 
-      expect(modal.printerOptions[0]).toEqual({ value: null, text: "Please select an printer" })
+      expect(modal.printerOptions[0]).toEqual({ value: null, text: "Please select a printer" })
       expect(modal.printerOptions[1]).toBeDefined()
       expect(modal.printerOptions[2]).toBeDefined()
       expect(modal.printerOptions[3]).toBeDefined()
