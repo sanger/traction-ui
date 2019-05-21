@@ -45,7 +45,7 @@ export default {
     },
     setPrinterNames () {
       let printerOptions = this.$store.getters.printers.map(
-        (printer, index) => Object.assign({ value: index+1, text: printer })
+        (printer, index) => ({ value: index+1, text: printer })
       )
       printerOptions.unshift({ value: null, text: "Please select a printer" })
       this.printerOptions = printerOptions
