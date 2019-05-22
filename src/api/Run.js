@@ -84,21 +84,45 @@ const createFlowcell = async (flowcell, chipId, request) => {
 }
 
 const create = async (run, request) => {
+
+  let responses = []
+
   try {
     let runResponse = await createRun(run, request.runs)
+    responses.push(runResponse)
     let runId = runResponse.deserialize.runs[0].id
 
     let chipResponse = await createChip(run.chip, runId, request.chips)
+    responses.push(chipResponse)
     let chipId = chipResponse.deserialize.chips[0].id
 
     for (const flowcell of run.chip.flowcells) {
-      await createFlowcell(flowcell, chipId, request.flowcells)
+      let flowcellResponse = await createFlowcell(flowcell, chipId, request.flowcells)
+      responses.push(flowcellResponse)
     }
 
   } catch (err) {
+    rollback(responses, request)
     return false
   }
   return true
+}
+
+const rollback = (responses, request) => {
+  for (const response of responses) {
+    let deserializedResponse = response.deserialize
+    let type = Object.keys(deserializedResponse)[0]
+    let id = deserializedResponse[type][0].id
+
+    destroy(id, request[type])
+  }
+
+  return true
+}
+
+const destroy = async (id, request) => {
+  let promise = request.destroy(id)
+  return await handlePromise(promise)
 }
 
 export {
@@ -108,5 +132,7 @@ export {
   createRun,
   createChip,
   createFlowcell,
-  create
+  create,
+  rollback,
+  destroy
 }
