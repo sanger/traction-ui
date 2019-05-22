@@ -1,12 +1,39 @@
 import Vue from 'vue'
 import { mount } from '../testHelper'
 import Request from '@/api/Request'
+import createRunJson from '../../data/createRun'
+import createChipJson from '../../data/createChip'
+import createFlowcellJson from '../../data/createFlowcell'
 import LibraryTubeJson from '../../data/tubeWithLibrary'
 import SampleTubeJson from '../../data/tractionTubesWithSample'
 import Response from '@/api/Response'
 import * as Run from '@/api/Run'
+import build from '@/api/ApiBuilder'
+import Api from '@/api'
 
 describe('Run', () => {
+
+  let cmp, props, wrapper, request, mockResponse, response, failedResponse, chipBarcode, barcode1
+
+  beforeEach(() => {
+    cmp = Vue.extend({
+      mixins: [Request],
+      render () { return ''}
+    })
+
+    props = { baseURL: 'http://sequencescape.com',
+              apiNamespace: 'api/v2',
+              resource: 'requests' }
+    wrapper = mount(cmp, { propsData: props })
+
+    request = wrapper.vm.api
+    request.get = jest.fn()
+
+    failedResponse = { status: 404, statusText: 'Record not found', data: { errors: { title: ['The record identified by 100 could not be found.'] }} }
+
+    chipBarcode = 'XYZ1234567891012'
+    barcode1 = 'DN123'
+  })
 
   let run
 
@@ -36,141 +63,204 @@ describe('Run', () => {
 
   })
 
-  describe('creating a run', () => {
-
-    let cmp, props, wrapper, request, mockResponse, response, failedResponse, chipBarcode, barcode1, barcode2
-
-    beforeEach(() => {
-      cmp = Vue.extend({
-        mixins: [Request],
-        render () { return ''}
-      })
-
-      props = { baseURL: 'http://sequencescape.com',
-                apiNamespace: 'api/v2',
-                resource: 'requests' }
-      wrapper = mount(cmp, { propsData: props })
-
-      request = wrapper.vm.api
-      request.get = jest.fn()
-
-      failedResponse = { status: 404, statusText: 'Record not found', data: { errors: { title: ['The record identified by 100 could not be found.'] }} }
-
-      chipBarcode = 'XYZ1234567891012'
-      barcode1 = 'DN123'
-      barcode2 = 'DN234'
+  describe('getLibrary', () => {
+    it('when it returns a library', async () => {
+      mockResponse = new Response(LibraryTubeJson).deserialize.tubes[0].material
+      request.get.mockResolvedValue(LibraryTubeJson)
+      response = await Run.getLibrary('DN123', request)
+      expect(response).toEqual(mockResponse)
     })
 
-    describe('getLibrary', () => {
-      it('when it returns a library', async () => {
+    it('when it returns a sample', async () => {
+      request.get.mockResolvedValue(SampleTubeJson)
+      response = await Run.getLibrary('DN123', request)
+      expect(response).not.toBeDefined()
+    })
+
+    it('when it returns nothing', async() => {
+      request.get.mockResolvedValue(failedResponse)
+      response = await Run.getLibrary('DN123', request)
+      expect(response).not.toBeDefined()
+    })
+  })
+
+  describe('validate', () => {
+    let result
+
+    beforeEach(() => {
+      run = Run.build()
+    })
+
+    describe('chip', () => {
+
+      it('will raise an error if the barcode is not present', async () => {
+        result = await Run.validate(run)
+        expect(result.chip).toEqual("barcode not present")
+      })
+
+      it('will raise an error if the barcode is not in the correct format', async () => {
+        run.chip['barcode'] = 'XYZ1234'
+        result = await Run.validate(run)
+        expect(result.chip).toEqual("barcode not in correct format")
+      })
+    })
+
+    describe('flowcell', () => {
+
+      beforeEach(() => {
+        run.chip['barcode'] = chipBarcode
+        run.chip.flowcells[0].library.barcode = barcode1
+      })
+
+      it('will raise an error if the library is not present', async () => {
         mockResponse = new Response(LibraryTubeJson).deserialize.tubes[0].material
         request.get.mockResolvedValue(LibraryTubeJson)
-        response = await Run.getLibrary('DN123', request)
+        result = await Run.validate(run, request)
+        expect(result.flowcells['2']).toEqual('library not present')
+      })
+
+      it('will raise an error if the library does not exist', async () => {
+        request.get.mockResolvedValue(failedResponse)
+        result = await Run.validate(run, request)
+        expect(result.flowcells['1']).toEqual('library does not exist')
+
+        request.get.mockResolvedValue(SampleTubeJson)
+        result = await Run.validate(run, request)
+        expect(result.flowcells['1']).toEqual('library does not exist')
+      })
+    })
+  })
+
+  describe('creating a run', () => {
+
+    beforeEach(() => {
+      run = Run.build()
+      run['name'] = 'run1'
+      run.chip['barcode'] = chipBarcode
+      run.chip.flowcells[0] = { position: 1, library: { id: 1 } }
+      run.chip.flowcells[1] = { position: 2, library: { id: 2 } }
+      request.create = jest.fn()
+    })
+
+    describe('createRun', () => {
+
+      it('success', async () => {
+        request.create.mockResolvedValue(createRunJson)
+
+        let mockResponse = new Response(createRunJson)
+        let response = await Run.createRun(run, request)
+
         expect(response).toEqual(mockResponse)
       })
 
-      it('when it returns a sample', async () => {
-        request.get.mockResolvedValue(SampleTubeJson)
-        response = await Run.getLibrary('DN123', request)
-        expect(response).not.toBeDefined()
-      })
+      it('failure', async () => {
+        request.create.mockReturnValue(failedResponse)
 
-      it('when it returns nothing', async() => {
-        request.get.mockResolvedValue(failedResponse)
-        response = await Run.getLibrary('DN123', request)
-        expect(response).not.toBeDefined()
+        let message
+        try {
+          await Run.createRun(run, request)
+        } catch (err) {
+          message = err.message
+        }
+        expect(message).toEqual("title The record identified by 100 could not be found.")
       })
     })
 
-    describe('validate', () => {
-      let result
+    describe('createChip', () => {
+      let chip, runId
 
       beforeEach(() => {
-        run = Run.build()
+        chip = run.chip
+        runId = 1
       })
 
-      describe('chip', () => {
+      it('will create a chip and return a response', async () => {
+        request.create.mockResolvedValue(createChipJson)
 
-        it('will raise an error if the barcode is not present', async () => {
-          result = await Run.validate(run)
-          expect(result.chip).toEqual("barcode not present")
-        }) 
-
-        it('will raise an error if the barcode is not in the correct format', async () => {
-          run.chip['barcode'] = 'XYZ1234'
-          result = await Run.validate(run)
-          expect(result.chip).toEqual("barcode not in correct format")
-        })
+        let mockResponse = new Response(createChipJson)
+        let response = await Run.createChip(chip, runId, request)
+        expect(response).toEqual(mockResponse)
       })
 
-      describe('flowcell', () => {
+      it('failure', async () => {
+        request.create.mockReturnValue(failedResponse)
 
-        beforeEach(() => {
-          run.chip['barcode'] = chipBarcode
-          run.chip.flowcells[0].library.barcode = barcode1
-        })
-
-        it('will raise an error if the library is not present', async () => {
-          mockResponse = new Response(LibraryTubeJson).deserialize.tubes[0].material
-          request.get.mockResolvedValue(LibraryTubeJson)
-          result = await Run.validate(run, request)
-          expect(result.flowcells['2']).toEqual('library not present')
-        })
-
-        it('will raise an error if the library does not exist', async () => {
-          request.get.mockResolvedValue(failedResponse)
-          result = await Run.validate(run, request)
-          expect(result.flowcells['1']).toEqual('library does not exist')
-
-          request.get.mockResolvedValue(SampleTubeJson)
-          result = await Run.validate(run, request)
-          expect(result.flowcells['1']).toEqual('library does not exist')
-        })
+        let message
+        try {
+          await Run.createChip(chip, runId, request)
+        } catch (err) {
+          message = err.message
+        }
+        expect(message).toEqual("title The record identified by 100 could not be found.")
       })
+    })
+
+    describe('createFlowcell', () => {
+      let flowcell, chipId
+
+      beforeEach(() => {
+        flowcell = run.chip.flowcells[0]
+        chipId = 1
+      })
+
+      it('will create a flowcell and return a response', async () => {
+        request.create.mockResolvedValue(createFlowcellJson)
+
+        let mockResponse = new Response(createFlowcellJson)
+        let response = await Run.createFlowcell(flowcell, chipId, request)
+        expect(response).toEqual(mockResponse)
+      })
+
+      it('failure', async () => {
+        request.create.mockReturnValue(failedResponse)
+
+        let message
+        try {
+          await Run.createFlowcell(flowcell, chipId, request)
+        } catch (err) {
+          message = err.message
+        }
+        expect(message).toEqual("title The record identified by 100 could not be found.")
+      })
+
     })
 
     describe('create', () => {
+      let api
 
-      describe('success', () => {
-
-        beforeEach(() => {
-          run = Run.build()
-          run['name'] = 'run1'
-          run.chip['barcode'] = chipBarcode
-          run.chip.flowcells[0].barcode = barcode1
-          run.chip.flowcells[1].barcode = barcode2
-          request.post = jest.fn()
-        })
-
-        it('will create a run', () => {
-          mockResponse = 
-
-        })
-
-        it('will create a chip', () => {
-
-        })
-
-        it('will create some flowcells', () => {
-
-        })
+      beforeEach(() => {
+        api = build(Api.Config, process.env)
+        api.traction.runs.create = jest.fn()
+        api.traction.chips.create = jest.fn()
+        api.traction.flowcells.create = jest.fn()
       })
 
-      describe('when the run is invalid', () => {
-        it('will not create a run', () => {
-
-        })
+      it('returns true', async () => {
+        api.traction.runs.create.mockResolvedValue(createRunJson)
+        api.traction.chips.create.mockResolvedValue(createChipJson)
+        api.traction.flowcells.create.mockResolvedValue(createFlowcellJson)
+        expect(await Run.create(run, api.traction)).toBeTruthy()
       })
 
-      describe('if any call is unsuccessful', () => {
+      it('returns false if the run cannot be created', async () => {
+        api.traction.runs.create.mockReturnValue(failedResponse)
+        expect(api.traction.chips.create).not.toBeCalled()
+        expect(api.traction.flowcells.create).not.toBeCalled()
+        expect(await Run.create(run, api.traction)).toBeFalsy()
+      })
 
-        it('will generate an error message', () => {
+      it('returns false if the chip cannot be created', async () => {
+        api.traction.runs.create.mockReturnValue(createRunJson)
+        api.traction.chips.create.mockResolvedValue(failedResponse)
+        expect(api.traction.flowcells.create).not.toBeCalled()
+        expect(await Run.create(run, api.traction)).toBeFalsy()
+      })
 
-        })
-
-        it('will rollback', () => {
-
-        })
+      it('returns false if the flowcells cannot be created', async () => {
+        api.traction.runs.create.mockResolvedValue(createRunJson)
+        api.traction.chips.create.mockResolvedValue(createChipJson)
+        api.traction.flowcells.create.mockResolvedValue(failedResponse)
+        expect(await Run.create(run, api.traction)).toBeFalsy()
       })
     })
   })
