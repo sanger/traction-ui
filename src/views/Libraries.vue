@@ -8,11 +8,12 @@
        :fields="fields"
     >
       <template slot="selected" slot-scope="row">
-        <input type="checkbox" class="selected" v-model="selected" :value="row.item.id" />
+        <input type="checkbox" class="selected" v-model="selected" :value="row.item" />
       </template>
     </b-table>
 
     <b-button id="deleteLibraries" @click="handleLibraryDelete" :disabled="this.selected.length === 0" class="float-right">Delete Libraries</b-button>
+    <printerModal @selectPrinter="handlePrintLabel" :disabled="this.selected.length === 0"></printerModal>
   </div>
 </template>
 
@@ -20,6 +21,8 @@
 import handlePromise from '@/api/PromiseHelper'
 import Api from '@/mixins/Api'
 import Alert from '@/components/Alert'
+import PrinterModal from '@/components/PrinterModal'
+import printJob from '@/api/PrintJobRequests'
 
 export default {
   name: 'Libraries',
@@ -43,9 +46,20 @@ export default {
     }
   },
   components: {
-    Alert
+    Alert,
+    PrinterModal
   },
   methods: {
+    async handlePrintLabel (printerName) {
+      let response = await printJob(printerName, this.selected)
+
+      if (response.successful) {
+        this.message = "Printed successfully"
+      } else {
+        this.message = response.errors.message
+      }
+      this.showAlert()
+    },
     async handleLibraryDelete () {
       try {
         await this.deleteLibraries()
@@ -55,11 +69,12 @@ export default {
       }
     },
     async deleteLibraries () {
-      let promises = this.libraryRequest.destroy(this.selected)
+      let selectedIds = this.selected.map(s => s.id)
+      let promises = this.libraryRequest.destroy(selectedIds)
       let responses = await Promise.all(promises.map(promise => handlePromise(promise)))
 
       if (responses.every(r => r.successful)) {
-        this.message = `Libraries ${this.selected.join(',')} successfully deleted`
+        this.message = `Libraries ${selectedIds.join(',')} successfully deleted`
         this.showAlert()
       } else {
         throw responses.map(r => r.errors.message).join(',')
