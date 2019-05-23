@@ -58,18 +58,6 @@ const createChip = async (chip, runId, request) => {
   }
 }
 
-const createFlowcell = async (flowcell, chipId, request) => {
-  let chipJson = { data: { type: "flowcells", attributes: { position: flowcell.position, library_id: flowcell.library.id, chip_id: chipId } } }
-  let promise = request.create(chipJson)
-
-  let response = await handlePromise(promise)
-  if (response.successful) {
-    return response
-  } else {
-    throw response.errors
-  }
-}
-
 const createResource = async (payload, request) => {
   let response = await handlePromise(request.create(payload))
   if (response.successful) {
@@ -81,21 +69,20 @@ const createResource = async (payload, request) => {
 
 const create = async (run, request) => {
 
-  let response, id
+  let id
   let responses = []
 
   try {
-    response = await createResource({ data: { type: "runs", attributes: { name: run.name } } }, request.runs)
-    id = response.deserialize.runs[0].id
-    responses.push(response)
+    let runResponse = await createResource({ data: { type: "runs", attributes: { name: run.name } } }, request.runs)
+    id = runResponse.deserialize.runs[0].id
+    responses.push(runResponse)
 
-    response = await createResource({ data: { type: "chips", attributes: { barcode: run.chip.barcode, run_id: id } } }, request.chips)
-    id = response.deserialize.chips[0].id
-    responses.push(response)
+    let chipResponse = await createResource({ data: { type: "chips", attributes: { barcode: run.chip.barcode, run_id: id } } }, request.chips)
+    id = chipResponse.deserialize.chips[0].id
+    responses.push(chipResponse)
 
     for (const flowcell of run.chip.flowcells) {
-      // await createResource({ data: { type: "flowcells", attributes: { position: flowcell.position, library_id: flowcell.library.id, chip_id: id } } }, request.flowcells)
-      let flowcellResponse = await createFlowcell(flowcell, chipId, request.flowcells)
+      let flowcellResponse = await createResource({ data: { type: "flowcells", attributes: { position: flowcell.position, library_id: flowcell.library.id, chip_id: id } } }, request.flowcells)
       responses.push(flowcellResponse)
     }
 
@@ -127,14 +114,8 @@ export {
   build,
   validate,
   getLibrary,
-  createChip,
-  createFlowcell,
-<<<<<<< HEAD
   createResource,
-  create
-=======
   create,
   rollback,
   destroy
->>>>>>> a66c4f595f91f6188f85b48e34f0976886e15804
 }

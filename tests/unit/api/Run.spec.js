@@ -208,7 +208,7 @@ describe('Run', () => {
         request.create.mockResolvedValue(createFlowcellJson)
 
         let mockResponse = new Response(createFlowcellJson)
-        let response = await Run.createFlowcell(flowcell, chipId, request)
+        let response = await Run.createResource({ data: { type: "flowcells", attributes: { position: flowcell.position, library_id: flowcell.library.id, chip_id: chipId } } }, request)
         expect(response).toEqual(mockResponse)
       })
 
@@ -217,7 +217,7 @@ describe('Run', () => {
 
         let message
         try {
-          await Run.createFlowcell(flowcell, chipId, request)
+          await Run.createResource({ data: { type: "flowcells", attributes: { position: flowcell.position, library_id: flowcell.library.id, chip_id: chipId } } }, request)
         } catch (err) {
           message = err.message
         }
@@ -292,6 +292,7 @@ describe('Run', () => {
       })
     })
 
+    // TODO: fix UnhandledPromiseRejectionWarning
     describe('rollback', () => {
       let responses, api, runResponse, chipResponse
 
