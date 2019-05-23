@@ -307,6 +307,9 @@ describe('Run', () => {
       })
 
       it ('gets a list of responses', () => {
+        api.traction.runs.destroy.mockResolvedValue(successfulDestroyJson)
+        api.traction.chips.destroy.mockResolvedValue(successfulDestroyJson)
+
         Run.rollback(responses, api.traction)
         expect(api.traction.runs.destroy).toBeCalledWith(runResponse.deserialize.runs[0].id)
         expect(api.traction.chips.destroy).toBeCalledWith(chipResponse.deserialize.chips[0].id)

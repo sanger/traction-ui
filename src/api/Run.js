@@ -45,19 +45,6 @@ const validate = async (run, request) => {
   return errors
 }
 
-const createChip = async (chip, runId, request) => {
-  let barcode = chip.barcode
-  let chipJson = { data: { type: "chips", attributes: { barcode: barcode, run_id: runId } } }
-  let promise = request.create(chipJson)
-
-  let response = await handlePromise(promise)
-  if (response.successful) {
-    return response
-  } else {
-    throw response.errors
-  }
-}
-
 const createResource = async (payload, request) => {
   let response = await handlePromise(request.create(payload))
   if (response.successful) {
