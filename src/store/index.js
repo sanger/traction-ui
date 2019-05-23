@@ -10,15 +10,20 @@ export default new Vuex.Store({
   state: {
     api: build(Api.Config, process.env),
     printers: PrinterList,
-    labelTemplateId: process.env.VUE_APP_LABEL_TEMPLATE_ID
+    labelTemplateId: process.env.VUE_APP_LABEL_TEMPLATE_ID,
+    run: {}
   },
   mutations: {
+    updateRun (state, run) {
+      state.run = run
+    }
   },
   actions: {
   },
   getters: {
     api: state => state.api,
     printers: state => state.printers,
-    labelTemplateId: state => state.labelTemplateId
+    labelTemplateId: state => state.labelTemplateId,
+    run: state => state.run
   }
 })

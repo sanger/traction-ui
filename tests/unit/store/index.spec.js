@@ -1,4 +1,5 @@
 import Store from '@/store/index'
+import * as Run from '@/api/Run'
 
 describe('index', () => {
 
@@ -35,6 +36,21 @@ describe('index', () => {
 
     it('labelTemplateId', () => {
       expect(Store.getters.labelTemplateId).toBeDefined()
+    })
+
+    it('run', () => {
+      expect(Store.getters.run).toBeDefined()
+    })
+  })
+
+  describe('mutations', () => {
+
+    let run
+
+    it('updateRun', () => {
+      run = Run.build()
+      Store.commit('updateRun', run)
+      expect(Store.getters.run).toEqual(run)
     })
   })
 

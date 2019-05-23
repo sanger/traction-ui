@@ -292,7 +292,6 @@ describe('Run', () => {
       })
     })
 
-    // TODO: fix UnhandledPromiseRejectionWarning
     describe('rollback', () => {
       let responses, api, runResponse, chipResponse
 
