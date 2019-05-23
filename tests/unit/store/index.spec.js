@@ -38,20 +38,16 @@ describe('index', () => {
       expect(Store.getters.labelTemplateId).toBeDefined()
     })
 
-    it('run', () => {
-      expect(Store.getters.run).toBeDefined()
-    })
   })
 
-  describe('mutations', () => {
+  describe('runs', () => {
 
     let run
 
-    it('updateRun', () => {
-      run = Run.build()
-      Store.commit('updateRun', run)
-      expect(Store.getters.run).toEqual(run)
+    it('has a getter', () => {
+      expect(Store.getters.runs).toBeDefined()
     })
+
   })
 
 })
