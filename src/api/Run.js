@@ -82,22 +82,45 @@ const createResource = async (payload, request) => {
 const create = async (run, request) => {
 
   let response, id
+  let responses = []
 
   try {
     response = await createResource({ data: { type: "runs", attributes: { name: run.name } } }, request.runs)
     id = response.deserialize.runs[0].id
+    responses.push(response)
 
     response = await createResource({ data: { type: "chips", attributes: { barcode: run.chip.barcode, run_id: id } } }, request.chips)
     id = response.deserialize.chips[0].id
+    responses.push(response)
 
     for (const flowcell of run.chip.flowcells) {
-      await createResource({ data: { type: "flowcells", attributes: { position: flowcell.position, library_id: flowcell.library.id, chip_id: id } } }, request.flowcells)
+      // await createResource({ data: { type: "flowcells", attributes: { position: flowcell.position, library_id: flowcell.library.id, chip_id: id } } }, request.flowcells)
+      let flowcellResponse = await createFlowcell(flowcell, chipId, request.flowcells)
+      responses.push(flowcellResponse)
     }
 
   } catch (err) {
+    rollback(responses, request)
     return false
   }
   return true
+}
+
+const rollback = (responses, request) => {
+  for (const response of responses) {
+    let deserializedResponse = response.deserialize
+    let type = Object.keys(deserializedResponse)[0]
+    let id = deserializedResponse[type][0].id
+
+    destroy(id, request[type])
+  }
+
+  return true
+}
+
+const destroy = async (id, request) => {
+  let promise = request.destroy(id)
+  return await handlePromise(promise)
 }
 
 export {
@@ -106,6 +129,12 @@ export {
   getLibrary,
   createChip,
   createFlowcell,
+<<<<<<< HEAD
   createResource,
   create
+=======
+  create,
+  rollback,
+  destroy
+>>>>>>> a66c4f595f91f6188f85b48e34f0976886e15804
 }

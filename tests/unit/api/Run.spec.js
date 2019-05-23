@@ -4,6 +4,7 @@ import Request from '@/api/Request'
 import createRunJson from '../../data/createRun'
 import createChipJson from '../../data/createChip'
 import createFlowcellJson from '../../data/createFlowcell'
+import successfulDestroyJson from '../../data/successfulDestroy'
 import LibraryTubeJson from '../../data/tubeWithLibrary'
 import SampleTubeJson from '../../data/tractionTubesWithSample'
 import Response from '@/api/Response'
@@ -233,6 +234,8 @@ describe('Run', () => {
         api.traction.runs.create = jest.fn()
         api.traction.chips.create = jest.fn()
         api.traction.flowcells.create = jest.fn()
+        api.traction.runs.destroy = jest.fn()
+        api.traction.chips.destroy = jest.fn()
       })
 
       it('returns true', async () => {
@@ -249,18 +252,82 @@ describe('Run', () => {
         expect(await Run.create(run, api.traction)).toBeFalsy()
       })
 
-      it('returns false if the chip cannot be created', async () => {
+      it('returns false and rollsback if the chip cannot be created', async () => {
         api.traction.runs.create.mockReturnValue(createRunJson)
         api.traction.chips.create.mockResolvedValue(failedResponse)
+
+        api.traction.runs.destroy.mockResolvedValue(successfulDestroyJson)
+
+        let runResponse = new Response(createRunJson)
+        let runId = runResponse.deserialize.runs[0].id
+
+        let resp = await Run.create(run, api.traction)
+
+        expect(api.traction.runs.destroy).toBeCalledWith(runId)
         expect(api.traction.flowcells.create).not.toBeCalled()
-        expect(await Run.create(run, api.traction)).toBeFalsy()
+        
+        expect(resp).toBeFalsy()
       })
 
-      it('returns false if the flowcells cannot be created', async () => {
+      it('returns false and rollsback if the flowcells cannot be created', async () => {
         api.traction.runs.create.mockResolvedValue(createRunJson)
         api.traction.chips.create.mockResolvedValue(createChipJson)
         api.traction.flowcells.create.mockResolvedValue(failedResponse)
-        expect(await Run.create(run, api.traction)).toBeFalsy()
+
+        api.traction.chips.destroy.mockResolvedValue(successfulDestroyJson)
+        api.traction.runs.destroy.mockResolvedValue(successfulDestroyJson)
+
+        let runResponse = new Response(createRunJson)
+        let runId = runResponse.deserialize.runs[0].id
+
+        let chipResponse = new Response(createChipJson)
+        let chipId = chipResponse.deserialize.chips[0].id
+
+        let resp = await Run.create(run, api.traction)
+
+        expect(api.traction.runs.destroy).toBeCalledWith(runId)
+        expect(api.traction.chips.destroy).toBeCalledWith(chipId)
+
+        expect(resp).toBeFalsy()
+      })
+    })
+
+    describe('rollback', () => {
+      let responses, api, runResponse, chipResponse
+
+      beforeEach(() =>{
+        api = build(Api.Config, process.env)
+        runResponse = new Response(createRunJson)
+        chipResponse = new Response(createChipJson)
+        responses = [runResponse, chipResponse]
+
+        api.traction.runs.destroy = jest.fn()
+        api.traction.chips.destroy = jest.fn()
+      })
+
+      it ('gets a list of responses', () => {
+        Run.rollback(responses, api.traction)
+        expect(api.traction.runs.destroy).toBeCalledWith(runResponse.deserialize.runs[0].id)
+        expect(api.traction.chips.destroy).toBeCalledWith(chipResponse.deserialize.chips[0].id)
+      })
+    })
+
+    describe('destroy', () =>{
+      let api
+
+      beforeEach(() =>{
+        api = build(Api.Config, process.env)
+        api.traction.runs.destroy = jest.fn()
+      })
+
+      it('rolls back the request', async () => {
+        api.traction.runs.destroy.mockResolvedValue(successfulDestroyJson)
+        let expected = new Response(successfulDestroyJson)
+
+        let runResponse = new Response(createRunJson)
+        let response = await Run.destroy(runResponse, api.traction.runs)
+
+        expect(response).toEqual(expected)
       })
     })
   })
