@@ -67,19 +67,19 @@ describe('Run', () => {
     it('when it returns a library', async () => {
       mockResponse = new Response(LibraryTubeJson).deserialize.tubes[0].material
       request.get.mockResolvedValue(LibraryTubeJson)
-      response = await Run.getLibrary('DN123', request)
+      response = await Run.getLibrary(barcode1, request)
       expect(response).toEqual(mockResponse)
     })
 
     it('when it returns a sample', async () => {
       request.get.mockResolvedValue(SampleTubeJson)
-      response = await Run.getLibrary('DN123', request)
+      response = await Run.getLibrary(barcode1, request)
       expect(response).not.toBeDefined()
     })
 
     it('when it returns nothing', async() => {
       request.get.mockResolvedValue(failedResponse)
-      response = await Run.getLibrary('DN123', request)
+      response = await Run.getLibrary(barcode1, request)
       expect(response).not.toBeDefined()
     })
   })
@@ -148,7 +148,7 @@ describe('Run', () => {
         request.create.mockResolvedValue(createRunJson)
 
         let mockResponse = new Response(createRunJson)
-        let response = await Run.createRun(run, request)
+        let response = await Run.createResource({ data: { type: "runs", attributes: { name: run.name } } }, request)
 
         expect(response).toEqual(mockResponse)
       })
@@ -158,7 +158,7 @@ describe('Run', () => {
 
         let message
         try {
-          await Run.createRun(run, request)
+          await Run.createResource({ data: { type: "runs", attributes: { name: run.name } } }, request)
         } catch (err) {
           message = err.message
         }
@@ -178,7 +178,7 @@ describe('Run', () => {
         request.create.mockResolvedValue(createChipJson)
 
         let mockResponse = new Response(createChipJson)
-        let response = await Run.createChip(chip, runId, request)
+        let response = await Run.createResource({ data: { type: "chips", attributes: { barcode: run.chip.barcode, run_id: runId } } }, request)
         expect(response).toEqual(mockResponse)
       })
 
@@ -187,7 +187,7 @@ describe('Run', () => {
 
         let message
         try {
-          await Run.createChip(chip, runId, request)
+          await Run.createResource({ data: { type: "chips", attributes: { barcode: run.chip.barcode, run_id: runId } } }, request)
         } catch (err) {
           message = err.message
         }

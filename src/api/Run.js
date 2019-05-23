@@ -45,19 +45,6 @@ const validate = async (run, request) => {
   return errors
 }
 
-const createRun = async (run, request) => {
-  let name = run.name
-  let runJson = { data: { type: "runs", attributes: { name: name } } }
-  let promise = request.create(runJson)
-
-  let response = await handlePromise(promise)
-  if (response.successful) {
-    return response
-  } else {
-    throw response.errors
-  }
-}
-
 const createChip = async (chip, runId, request) => {
   let barcode = chip.barcode
   let chipJson = { data: { type: "chips", attributes: { barcode: barcode, run_id: runId } } }
@@ -83,16 +70,28 @@ const createFlowcell = async (flowcell, chipId, request) => {
   }
 }
 
-const create = async (run, request) => {
-  try {
-    let runResponse = await createRun(run, request.runs)
-    let runId = runResponse.deserialize.runs[0].id
+const createResource = async (payload, request) => {
+  let response = await handlePromise(request.create(payload))
+  if (response.successful) {
+    return response
+  } else {
+    throw response.errors
+  }
+}
 
-    let chipResponse = await createChip(run.chip, runId, request.chips)
-    let chipId = chipResponse.deserialize.chips[0].id
+const create = async (run, request) => {
+
+  let response, id
+
+  try {
+    response = await createResource({ data: { type: "runs", attributes: { name: run.name } } }, request.runs)
+    id = response.deserialize.runs[0].id
+
+    response = await createResource({ data: { type: "chips", attributes: { barcode: run.chip.barcode, run_id: id } } }, request.chips)
+    id = response.deserialize.chips[0].id
 
     for (const flowcell of run.chip.flowcells) {
-      await createFlowcell(flowcell, chipId, request.flowcells)
+      await createResource({ data: { type: "flowcells", attributes: { position: flowcell.position, library_id: flowcell.library.id, chip_id: id } } }, request.flowcells)
     }
 
   } catch (err) {
@@ -105,8 +104,8 @@ export {
   build,
   validate,
   getLibrary,
-  createRun,
   createChip,
   createFlowcell,
+  createResource,
   create
 }
