@@ -1,6 +1,7 @@
 import Libraries from '@/views/Libraries'
 import { mount, localVue, store } from '../testHelper'
 import Alert from '@/components/Alert'
+import PrinterModal from '@/components/PrinterModal'
 
 describe('Libraries.vue', () => {
 
@@ -118,7 +119,9 @@ describe('Libraries.vue', () => {
       libraries.libraryRequest.execute.mockResolvedValue(promise)
 
       await libraries.deleteLibraries()
-      expect(libraries.message).toEqual(`Libraries ${libraries.selected.join(',')} successfully deleted`)
+
+      let selectedIds = libraries.selected.map(s => s.id)
+      expect(libraries.message).toEqual(`Libraries ${selectedIds.join(',')} successfully deleted`)
     })
 
     it('unsuccessfully', async () => {
@@ -139,6 +142,85 @@ describe('Libraries.vue', () => {
       expect(message).toEqual("it was a bust")
     })
 
+  })
+
+  describe('#handlePrintLabel', () => {
+    let request
+
+    beforeEach(() => {
+      libraries.selected = [{ id: 1, type: 'libraries', enzyme_name: 'enz1', barcode: 'TRAC-1' }]
+
+      request = store.getters.api.printMyBarcode.print_jobs
+      request.create = jest.fn()
+    })
+
+    it('passes selected printer to function on emit event', () => {
+      let successfulResponse =  {
+        data: {},
+        status: 201,
+        statusText: "OK"
+      }
+
+      let successfulPromise = new Promise((resolve) => {
+        resolve(successfulResponse)
+      })
+
+      request.create.mockResolvedValue(successfulPromise)
+      let modal = wrapper.find(PrinterModal)
+      modal.vm.$emit('selectPrinter', 'printer1')
+
+      expect(request.create).toBeCalled()
+    })
+
+    it('successfully prints label', async () => {
+      let successfulResponse =  {
+        data: {},
+        status: 201,
+        statusText: "OK"
+      }
+
+      let successfulPromise = new Promise((resolve) => {
+        resolve(successfulResponse)
+      })
+
+      request.create.mockResolvedValue(successfulPromise)
+      await libraries.handlePrintLabel('printer1')
+      expect(libraries.message).toEqual('Printed successfully')
+    })
+
+    it('unsuccessfully', async () => {
+      let failedResponse =  {
+        data: {
+          errors: {
+            it: ['was a bust']
+          }
+        },
+        status: 422
+      }
+
+      let failedPromise = new Promise((reject) => {
+        reject(failedResponse)
+      })
+
+      request.create.mockReturnValue(failedPromise)
+      await libraries.handlePrintLabel('printer1')
+      expect(libraries.message).toEqual('it was a bust')
+    })
+
+  })
+
+  describe('printerModal', () => {
+    beforeEach(() => {
+      libraries.handlePrintLabel = jest.fn()
+    })
+
+    it('passes selected printer to function on emit event', () => {
+      libraries.selected = [{id: 1}]
+      let modal = wrapper.find(PrinterModal)
+      modal.vm.$emit('selectPrinter', 'printer1')
+
+      expect(libraries.handlePrintLabel).toBeCalledWith('printer1')
+    })
   })
 
   describe('#libraryRequest', () => {

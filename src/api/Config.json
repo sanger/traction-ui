@@ -37,5 +37,14 @@
         "include": "material"
       }
     }
+  },
+  "printMyBarcode": {
+    "name": "printMyBarcode",
+    "apiNamespace": "v1",
+    "resources": {
+      "print_jobs": {
+        "name": "printJobs"
+      }
+    }
   }
 }
