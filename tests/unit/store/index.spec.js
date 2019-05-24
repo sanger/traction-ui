@@ -71,6 +71,11 @@ describe('index', () => {
       expect(Object.keys(Store.getters.runs).length).toEqual(2)
     })
 
+    it('can get a run', () => {
+      Store.commit('addRuns', [run1, run2])
+      expect(Store.getters.run(run1.id)).toEqual(run1)
+    })
+
   })
 
 })

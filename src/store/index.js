@@ -32,6 +32,9 @@ export default new Vuex.Store({
     api: state => state.api,
     printers: state => state.printers,
     labelTemplateId: state => state.labelTemplateId,
-    runs: state => state.runs
+    runs: state => state.runs,
+    run: state => (id) => {
+      return state.runs[id]
+    }
   }
 })
