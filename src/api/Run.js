@@ -3,6 +3,7 @@ import handlePromise from './PromiseHelper'
 
 const build = () => {
   return {
+    id: 'new',
     chip: {
       flowcells: [
         { position: 1, library: {} },

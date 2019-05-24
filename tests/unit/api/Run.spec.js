@@ -44,6 +44,10 @@ describe('Run', () => {
       run = Run.build()
     })
 
+    it('will have a temporary id', () => {
+      expect(run.id).toEqual('new')
+    })
+
     it('will have an empty chip', () => {
       expect(run.chip).toBeDefined()
     })

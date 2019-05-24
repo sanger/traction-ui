@@ -14,6 +14,17 @@ export default new Vuex.Store({
     runs: {}
   },
   mutations: {
+    addRun (state, run) {
+      state.runs[run.id] = run
+    },
+    addRuns (state, runs) {
+      for (let run of runs) {
+        this.commit('addRun', run)
+      }
+    },
+    clearRuns (state) {
+      state.runs = {}
+    }
   },
   actions: {
   },
