@@ -1,6 +1,5 @@
 import RunMixin from '@/mixins/RunMixin'
 import { mount, localVue, store } from '../testHelper'
-import RunWithLibraryJson from '../../data/runWithLibrary'
 import RunsJson from '../../data/runs'
 import RunJson from '../../data/runWithLibrary'
 import Response from '@/api/Response'
@@ -11,6 +10,7 @@ const Cmp = {
   template: '<div class="testRunMixin"></div>',
   name: 'testRunMixin',
   mixins: [RunMixin],
+  store,
   props: {
   },
   methods: {
@@ -24,7 +24,7 @@ const Cmp = {
 
 describe('RunMixin', () => {
 
-  let wrapper, cmp, runId, attributes
+  let wrapper, cmp, runId, attributes, runs
 
   beforeEach(() => {
     let router = new VueRouter({ routes:
@@ -34,31 +34,22 @@ describe('RunMixin', () => {
 
     wrapper = mount(Cmp, { store, router, localVue })
     cmp = wrapper.vm
-    runId = 1
     attributes = {foo: 'bar'}
+    runs = new Response(RunsJson).deserialize.runs
+    runId = runs[0].id
   })
 
   describe('#getRun', () => {
 
     beforeEach(() => {
-      cmp.runsRequest.find = jest.fn()
+      store.commit('addRuns', runs)
     })
 
-    it('successfully', async () => {
-      cmp.runsRequest.find.mockResolvedValue(RunWithLibraryJson)
-      let foundRun = await cmp.getRun(runId)
-      let expectedRun = new Response(RunWithLibraryJson).deserialize.runs[0]
-      expect(cmp.runsRequest.find).toBeCalledWith(runId)
-      expect(foundRun).toEqual(expectedRun)
+    it('will retrieve run from store', () => {
+      let run = cmp.getRun(runId)
+      expect(run).toEqual(runs[0])
     })
 
-    it('unsuccessfully', async () => {
-      let failedResponse = { 'data': { }, 'status': 500, 'statusText': 'Internal Server Error' }
-      cmp.runsRequest.find.mockReturnValue(failedResponse)
-      let foundRun = await cmp.getRun(runId)
-      expect(foundRun).toEqual({ state: null, chip: null })
-      expect(cmp.message).toEqual('There was an error')
-    })
   })
 
   describe('#getRuns', () => {
@@ -74,6 +65,7 @@ describe('RunMixin', () => {
       let expectedRuns = new Response(RunsJson).deserialize.runs
       expect(cmp.runsRequest.get).toBeCalled()
       expect(foundRuns).toEqual(expectedRuns)
+      expect(Object.keys(store.getters.runs).length).toEqual(expectedRuns.length)
     })
 
     it('unsuccessfully', async () => {
@@ -123,14 +115,19 @@ describe('RunMixin', () => {
     })
 
     it('successfully', async () => {
-      let successfulResponse = [{ 'data': {}, 'status': 200, 'statusText': 'Success'}]
-      cmp.runsRequest.update.mockReturnValue(successfulResponse)
+      let promise = new Promise((resolve) => {
+        resolve(RunJson)
+      })
+      cmp.runsRequest.update.mockReturnValue([promise])
+
+      let run = new Response(RunJson).deserialize.runs[0]
 
       await cmp.updateRun(runId, attributes)
 
       let payload = cmp.payload(runId, attributes)
       expect(cmp.runsRequest.update).toBeCalledWith(payload)
       expect(cmp.message).toEqual('Run updated')
+      expect(store.getters.run(run.id)).toEqual(run)
     })
 
     it('unsuccessfully', async () => {
@@ -186,30 +183,6 @@ describe('RunMixin', () => {
     })
   })
 
-  describe('#createRun', () => {
-
-    beforeEach(() => {
-      cmp.runsRequest.create = jest.fn()
-    })
-
-    it('successfully', async () => {
-      let mockResponse = {status: 201, data: { data: [{id: 1, type: "runs" }]}}
-      cmp.runsRequest.create.mockResolvedValue(mockResponse)
-
-      let response = await cmp.createRun()
-      expect(cmp.runsRequest.create).toBeCalledWith(cmp.createPayload)
-      expect(response).toEqual(new Response(mockResponse))
-    })
-
-    it('unsuccessfully', async () => {
-      let failedResponse = { 'data': { }, 'status': 500, 'statusText': 'Internal Server Error' }
-      cmp.runsRequest.create.mockReturnValue(failedResponse)
-      let response = await cmp.createRun()
-      expect(cmp.runsRequest.create).toBeCalledWith(cmp.createPayload)
-      expect(response).toEqual(new Response(failedResponse))
-    })
-  })
-
   describe('#showRun', () => {
 
     beforeEach(() => {
@@ -217,30 +190,17 @@ describe('RunMixin', () => {
       cmp.showAlert = jest.fn()
     })
 
-    let mockResponse
+    it('with no id will build a run and add it to the store', () => {
 
-    it('with no id will create a run', async () => {
-      let mockResponse = new Response(RunJson)
-      cmp.createRun.mockResolvedValue(mockResponse)
+      cmp.showRun()
 
-      await cmp.showRun()
-
-      expect(cmp.createRun).toBeCalled()
-      expect(wrapper.vm.$route.path).toBe(`/run/${mockResponse.deserialize.runs[0].id}`)
+      expect(store.getters.run('new')).toBeDefined()
+      expect(wrapper.vm.$route.path).toBe(`/run/new`)
     })
 
     it('with an id will redirect to the run', async () => {
       await cmp.showRun(1)
       expect(wrapper.vm.$route.path).toBe('/run/1')
-    })
-
-    it('with an error will provide a message', async () => {
-      mockResponse = { status: 422, statusText: 'Unprocessable Entity', data: { errors: { name: ['error message'] }} }
-      let resp = new Response(mockResponse)
-      cmp.createRun.mockReturnValue(resp)
-      await cmp.showRun()
-      expect(cmp.message).toEqual('There was an error: name error message')
-      expect(cmp.showAlert).toBeCalled()
     })
 
   })

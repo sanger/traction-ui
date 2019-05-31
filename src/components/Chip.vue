@@ -68,6 +68,5 @@ export default {
   components: {
     Flowcell
   }
-
 }
 </script>

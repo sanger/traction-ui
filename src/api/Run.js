@@ -4,6 +4,7 @@ import handlePromise from './PromiseHelper'
 const build = () => {
   return {
     id: 'new',
+    name: '',
     chip: {
       flowcells: [
         { position: 1, library: {} },
@@ -48,6 +49,7 @@ const validate = async (run, request) => {
 
 const createResource = async (payload, request) => {
   let response = await handlePromise(request.create(payload))
+
   if (response.successful) {
     return response
   } else {
@@ -86,7 +88,6 @@ const rollback = (responses, request) => {
     let deserializedResponse = response.deserialize
     let type = Object.keys(deserializedResponse)[0]
     let id = deserializedResponse[type][0].id
-
     destroy(id, request[type])
   }
 
@@ -95,6 +96,7 @@ const rollback = (responses, request) => {
 
 const destroy = async (id, request) => {
   let promise = request.destroy(id)
+  
   return await handlePromise(promise)
 }
 

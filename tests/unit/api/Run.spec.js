@@ -48,6 +48,10 @@ describe('Run', () => {
       expect(run.id).toEqual('new')
     })
 
+    it('will have a name', () => {
+      expect(run.name).toBeDefined()
+    })
+
     it('will have an empty chip', () => {
       expect(run.chip).toBeDefined()
     })
@@ -172,10 +176,9 @@ describe('Run', () => {
     })
 
     describe('createChip', () => {
-      let chip, runId
+      let runId
 
       beforeEach(() => {
-        chip = run.chip
         runId = 1
       })
 

@@ -6,10 +6,14 @@
       <b-button id="backToRunsButton" class="float-right">Back</b-button>
     </router-link>
 
+    <button class="float-right" id="create" variant="success" @click="create">Create</button>
+
+
     <h1 class="runInfo" id="id">Run ID: {{ id }}</h1>
     <h2 class="runInfo" id="state">state: {{ state }}</h2>
 
     <b-form-input class="runInfo" id="name" v-model="name" placeholder="name" type="text" @change="updateName(id, name)" />
+    <!-- b-form-input class="runInfo" id="name" v-model="name" placeholder="name" type="text" /-->
 
     <chip v-if="Boolean(this.chip)" v-bind="chip" @alert="alert"></chip>
 
@@ -20,6 +24,7 @@
 import RunMixin from '@/mixins/RunMixin'
 import Chip from '@/components/Chip'
 import Alert from '@/components/Alert'
+import * as RunApi from '@/api/Run' 
 
 export default {
   name: 'Run',
@@ -38,8 +43,9 @@ export default {
     }
   },
   methods: {
-    async provider () {
-      let data = await this.getRun(this.id)
+    provider () {
+
+      let data = this.$store.getters.run(this.id)
       this.name = data.name
       this.state = data.state
       this.chip = data.chip
@@ -50,6 +56,21 @@ export default {
     },
     showAlert () {
       return this.$refs.alert.show(this.message, 'primary')
+    },
+    async create () {
+      let result
+      let run = this.$store.getters.run(this.id)
+      let errors = await RunApi.validate(run, this.api.traction.tubes)
+      if (Object.keys(errors).length === 0) {
+        result = await RunApi.create(run, this.api.traction)
+        if (result) {
+          this.alert('run was successfully created')
+        } else {
+          this.alert('run could not be created')
+        }
+      } else {
+        this.alert(errors)
+      }
     }
   },
   components: {
@@ -63,7 +84,6 @@ export default {
   }
 }
 </script>
-
 
 <style>
 
