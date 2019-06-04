@@ -1,8 +1,31 @@
 import getTubesForBarcodes from './TubeRequests'
 import handlePromise from './PromiseHelper'
 
-const build = () => {
-  return {
+const isObject = (item) => {
+  return (item !== undefined && item instanceof Object)
+}
+
+const assign = (object, other) => {
+  const otherKey = Object.keys(other)[0]
+  return Object.keys(object).reduce((result, key) => {
+    if (key === otherKey) {
+      if (isObject(object[key]) && isObject(other[otherKey])) {
+        result[key] = {...object[key], ...other[otherKey]}
+      } else {
+        result[key] = other[otherKey]
+      }
+    }
+    else if (isObject(object[key])) {
+      result[key] = assign(object[key], other)
+    } else {
+      result[key] = object[key]
+    }
+    return result
+  }, {})
+}
+
+const build = (object) => {
+  let run = object || {
     id: 'new',
     name: '',
     chip: {
@@ -12,6 +35,8 @@ const build = () => {
       ]
     }
   }
+  run.assign = (object) => { assign(this, object) }
+  return run
 }
 
 const getLibrary = async (barcode, request) => {
@@ -23,27 +48,47 @@ const getLibrary = async (barcode, request) => {
   return
 }
 
-const validate = async (run, request) => {
+const validateChip = (chip) => {
+  if (chip.barcode === undefined) {
+    return 'barcode not present'
+  }
+  if (chip.barcode && chip.barcode.length < 16) {
+    return 'barcode not in correct format'
+  }
+}
+
+const validateFlowcell = (flowcell) => {
+  if (flowcell.library.id === undefined) {
+    return 'library does not exist'
+  } else if (flowcell.library.barcode === undefined) {
+    return 'library not present'
+  }
+}
+
+const validateFlowcells = (flowcells) => {
+  let error
+  return flowcells.reduce((errors, flowcell) => {
+    error = validateFlowcell(flowcell)
+    if (error !== undefined) {
+      errors[flowcell.position] = error
+    }
+    return errors
+  }, {})
+}
+
+const validate = (run) => {
   let errors = {}
-  if (run.chip.barcode === undefined) {
-    errors['chip'] = 'barcode not present'
+  
+  let error = validateChip(run.chip)
+  if (error !== undefined) {
+    Object.assign(errors, {chip: error})
   }
-  if (run.chip.barcode && run.chip.barcode.length < 16) {
-    errors['chip'] = 'barcode not in correct format'
+
+  error = validateFlowcells(run.chip.flowcells)
+  if (Object.keys(error).length > 0) {
+    Object.assign(errors, {flowcells: error})
   }
-  for (const flowcell of run.chip.flowcells) {
-    if (flowcell.library.barcode === undefined) {
-      if (errors['flowcells'] === undefined) { errors['flowcells'] = {} }
-      errors.flowcells[flowcell.position] = 'library not present'
-    }
-    else {
-      let library = await getLibrary(flowcell.library.barcode, request)
-      if (library === undefined) {
-        if (errors['flowcells'] === undefined) { errors['flowcells'] = {} }
-        errors.flowcells[flowcell.position] = 'library does not exist'
-      }
-    }
-  }
+
   return errors
 }
 
@@ -107,5 +152,9 @@ export {
   createResource,
   create,
   rollback,
-  destroy
+  destroy,
+  assign,
+  validateChip,
+  validateFlowcell,
+  validateFlowcells
 }

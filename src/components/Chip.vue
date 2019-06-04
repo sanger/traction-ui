@@ -22,7 +22,7 @@ export default {
       type: String
     },
     flowcells: {
-      type: Array,
+      type: [Array],
       default: () => {
         return [ {}, {} ]
       }

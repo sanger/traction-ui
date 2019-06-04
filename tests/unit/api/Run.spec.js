@@ -14,7 +14,7 @@ import Api from '@/api'
 
 describe('Run', () => {
 
-  let cmp, props, wrapper, request, mockResponse, response, failedResponse, chipBarcode, barcode1
+  let cmp, props, wrapper, request, mockResponse, response, failedResponse, chipBarcode, barcode1, run
 
   beforeEach(() => {
     cmp = Vue.extend({
@@ -36,40 +36,82 @@ describe('Run', () => {
     barcode1 = 'DN123'
   })
 
-  let run
-
   describe('build', () => {
 
+    describe('new object', () => {
+      beforeEach(() => {
+        run = Run.build()
+      })
+
+      it('will have a temporary id', () => {
+        expect(run.id).toEqual('new')
+      })
+
+      it('will have a name', () => {
+        expect(run.name).toBeDefined()
+      })
+
+      it('will have an empty chip', () => {
+        expect(run.chip).toBeDefined()
+      })
+
+      it('will have two flowcells', () => {
+        expect(run.chip.flowcells.length).toEqual(2)
+      })
+
+      it('each flowcell will have a library', () => {
+        expect(run.chip.flowcells[0].library).toBeDefined()
+      })
+
+      it('each flowcell will have a position', () => {
+        let flowcells = run.chip.flowcells
+        expect(flowcells['0'].position).toEqual(1)
+        expect(flowcells['1'].position).toEqual(2)
+      })
+
+    })
+
+    describe('existing object', () => {
+      beforeEach(() => {
+        run = Run.build({id: 1, name: 'name1'})
+      })
+
+      it('assigns the object correctly', () => {
+        expect(run.id).toEqual(1)
+        expect(run.name).toEqual('name1')
+      })
+    })
+
+   
+
+  })
+
+  describe('assign', () => {
+    let object, assigned
+
     beforeEach(() => {
-      run = Run.build()
+      object = { a: 'a', b: { c: 'c', d: { e: 'e', f: 'f' } } }
     })
 
-    it('will have a temporary id', () => {
-      expect(run.id).toEqual('new')
+    it('if the key exists at the top level', () => {
+      assigned = Run.assign(object, {a: 'why'})
+      expect(assigned).toEqual({ a: 'why', b: { c: 'c', d: { e: 'e', f: 'f' } } })
     })
 
-    it('will have a name', () => {
-      expect(run.name).toBeDefined()
+    it('if the key exists at the second level', () => {
+      assigned = Run.assign(object, {b: {c: 'dont'}})
+      expect(assigned).toEqual({ a: 'a', b: { c: 'dont', d: { e: 'e', f: 'f' } } })
     })
 
-    it('will have an empty chip', () => {
-      expect(run.chip).toBeDefined()
+    it('if the key exists at the third level', () => {
+      assigned = Run.assign(object, {d: {e: 'dont', g: 'you'}})
+      expect(assigned).toEqual({ a: 'a', b: { c: 'c', d: { e: 'dont', f: 'f', g: 'you' } } })
     })
 
-    it('will have two flowcells', () => {
-      expect(run.chip.flowcells.length).toEqual(2)
+    it('if the key does not exist', () => {
+      assigned = Run.assign(object, {h: 'just turn off your television set and go and do something less boring instead'})
+      expect(assigned).toEqual(object)
     })
-
-    it('each flowcell will have a library', () => {
-      expect(run.chip.flowcells[0].library).toBeDefined()
-    })
-
-    it('each flowcell will have a position', () => {
-      let flowcells = run.chip.flowcells
-      expect(flowcells[0].position).toEqual(1)
-      expect(flowcells[1].position).toEqual(2)
-    })
-
   })
 
   describe('getLibrary', () => {
@@ -94,48 +136,85 @@ describe('Run', () => {
   })
 
   describe('validate', () => {
-    let result
+    let errors, flowcells, validFlowcell, invalidFlowcell, validChip, invalidChip
 
     beforeEach(() => {
       run = Run.build()
+
+      validFlowcell = { position: 1, library: { barcode: 'TRAC-1', id: 1}}
+      invalidFlowcell = { position: 2, library: { barcode: 'TRAC-1' }}
+
+      validChip = {barcode: 'FLEVEAOLPTOWPNWU20319131581014320190911XXXXXXXXXXXXX'}
+      invalidChip = {barcode: 'XYZ1234'}
     })
 
     describe('chip', () => {
 
-      it('will raise an error if the barcode is not present', async () => {
-        result = await Run.validate(run)
-        expect(result.chip).toEqual("barcode not present")
+      it('will raise an error if the barcode is not present', () => {
+        expect(Run.validateChip(run.chip)).toEqual("barcode not present")
       })
 
-      it('will raise an error if the barcode is not in the correct format', async () => {
-        run.chip['barcode'] = 'XYZ1234'
-        result = await Run.validate(run)
-        expect(result.chip).toEqual("barcode not in correct format")
+      it('will raise an error if the barcode is not in the correct format', () => {
+        expect(Run.validateChip(invalidChip)).toEqual("barcode not in correct format")
+      })
+
+      it('will be valid if barcode is in correct format', () => {
+        expect(Run.validateChip(validChip)).not.toBeDefined()
       })
     })
 
     describe('flowcell', () => {
 
+      let flowcell
+
       beforeEach(() => {
-        run.chip['barcode'] = chipBarcode
-        run.chip.flowcells[0].library.barcode = barcode1
+        flowcell = {library: {}}
       })
 
-      it('will raise an error if the library is not present', async () => {
-        mockResponse = new Response(LibraryTubeJson).deserialize.tubes[0].material
-        request.get.mockResolvedValue(LibraryTubeJson)
-        result = await Run.validate(run, request)
-        expect(result.flowcells['2']).toEqual('library not present')
+      it('will raise an error if the library is not present', () => {
+        expect(Run.validateFlowcell(flowcell)).toEqual('library does not exist')
       })
 
-      it('will raise an error if the library does not exist', async () => {
-        request.get.mockResolvedValue(failedResponse)
-        result = await Run.validate(run, request)
-        expect(result.flowcells['1']).toEqual('library does not exist')
+      it('will be valid if the library id is present', () => {
+        flowcell.library.barcode = barcode1
+        flowcell.library.id = 1
+        expect(Run.validateFlowcell(flowcell)).not.toBeDefined()
+      })
+    })
 
-        request.get.mockResolvedValue(SampleTubeJson)
-        result = await Run.validate(run, request)
-        expect(result.flowcells['1']).toEqual('library does not exist')
+    describe('flowcells', () => {
+
+      it('will raise an error if one of the flowcells is not valid', () => {
+        flowcells = [validFlowcell, invalidFlowcell]
+        errors = Run.validateFlowcells(flowcells)
+        expect(errors['2']).toBeDefined()
+      })
+
+      it('will be valid if both flowcells are valid', () => {
+        flowcells = [validFlowcell, validFlowcell]
+        errors = Run.validateFlowcells(flowcells)
+        expect(Object.keys(errors).length).toEqual(0)
+      })
+
+    })
+
+    describe('run', () => {
+      it('will raise an error if the chip is not valid', () => {
+        run.chip = invalidChip
+        run.chip.flowcells = [validFlowcell, validFlowcell]
+        expect(Run.validate(run).chip).toBeDefined()
+      })
+
+      it('will raise an error if one of the flowcells is not valid', () => {
+        run.chip = validChip
+        run.chip.flowcells = [validFlowcell, invalidFlowcell]
+        expect(Run.validate(run).flowcells[invalidFlowcell.position]).toBeDefined()
+      })
+
+      it('if valid will raise no errors', () => {
+        run.chip = validChip
+        run.chip.flowcells = [validFlowcell, validFlowcell]
+        expect(Object.keys(Run.validate(run)).length).toEqual(0)
       })
     })
   })

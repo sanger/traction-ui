@@ -8,6 +8,7 @@
 
 import Api from '@/mixins/Api'
 import getTubesForBarcodes from '@/api/TubeRequests'
+import * as Run from '@/api/Run'
 
 export default {
   name: 'Library',
@@ -18,11 +19,18 @@ export default {
     },
     barcode: {
       type: [Number, String]
+    },
+    runId: {
+      type: [Number, String]
+    },
+    flowcellPosition: {
+      type: [Number, String]
     }
   },
   data () {
     return {
       libraryBarcode: this.barcode,
+      libraryId: this.id,
       message: ''
     }
   },
@@ -30,17 +38,12 @@ export default {
     async updateLibrary () {
       if(!this.libraryBarcode) return
 
-      let response = await getTubesForBarcodes(this.libraryBarcode, this.tractionTubeRequest)
+      let material = await Run.getLibrary(this.libraryBarcode, this.tractionTubeRequest)
 
-      if (response.successful && !response.empty) {
-        let material = response.deserialize.tubes[0].material
-        if (material.type === 'libraries') {
-          this.$emit('updateLibrary', material)
-        } else {
-          this.alert('This is not a library')
-        }
+      if (material !== undefined) {
+        this.libraryId = material.id
       } else {
-        this.alert('There was an error')
+        this.libraryId = undefined
       }
     },
     alert (message) {
