@@ -46,7 +46,7 @@ export default {
           id: this.id,
           type: 'flowcells',
           attributes: {
-            library_id: library.id
+            library_id: library.libraryId
           }
         }
       }

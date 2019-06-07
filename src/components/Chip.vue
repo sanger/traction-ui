@@ -39,26 +39,30 @@ export default {
     }
   },
   methods: {
-    // async updateChip () {
-    //   let promise = this.chipRequest.update(this.payload)
-    //   let response = await handlePromise(promise[0])
-
-    //   if (response.successful) {
-    //     this.alert('Chip updated')
-    //   } else {
-    //     this.alert('There was an error: ' + response.errors.message)
-    //   }
-    // },
-    updateChip () {
+    async updateChip () {
       let run = this.$store.getters.run(this.runId)
       let updatedRun = Run.updateChip(run, this.localBarcode)
       this.$store.commit('addRun', updatedRun)
+
+      if (this.existingRecord) {
+        let promise = this.chipRequest.update(this.payload)
+        let response = await handlePromise(promise[0])
+
+        if (response.successful) {
+          this.alert('Chip updated')
+        } else {
+          this.alert('There was an error: ' + response.errors.message)
+        }
+      }
     },
     alert (message) {
       this.$emit('alert', message)
     },
   },
   computed: {
+    existingRecord () {
+      return !isNaN(this.runId)
+    },
     chipRequest () {
       return this.api.traction.chips
     },

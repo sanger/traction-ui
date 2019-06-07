@@ -41,6 +41,17 @@ describe('Chip', () => {
     expect(chip.localBarcode).toEqual('CHIP-2345')
   })
 
+  describe('existing record', () => {
+    it('if the run is new', () => {
+      expect(chip.existingRecord).toBeFalsy()
+    })
+
+    it('if the run is persisted', () => {
+      wrapper.setProps({runId: 1})
+      expect(chip.existingRecord).toBeTruthy()
+    })
+  })
+
   describe('#chipRequest', () => {
     it('will have a request', () => {
       expect(chip.chipRequest).toBeDefined()
@@ -56,44 +67,14 @@ describe('Chip', () => {
     })
   })
 
-  // describe('#updateChip', () => {
-
-  //   beforeEach(() => {
-  //     chip.chipRequest.update = jest.fn()
-  //     chip.alert = jest.fn()
-  //   })
-
-  //   it('successfully', async () => {
-  //     let successfulResponse = [{ 'data': {}, 'status': 200, 'statusText': 'Success'}]
-  //     chip.chipRequest.update.mockReturnValue(successfulResponse)
-  //     await chip.updateChip()
-  //     expect(chip.chipRequest.update).toBeCalledWith(chip.payload)
-  //     expect(chip.alert).toBeCalledWith('Chip updated')
-  //   })
-
-  //   it('unsuccessfully', async () => {
-  //     let failedResponse = { 'data': { errors: { barcode: ['error message'] }}, 'status': 500, 'statusText': 'Internal Server Error' }
-  //     chip.chipRequest.update.mockReturnValue([failedResponse])
-  //     await chip.updateChip()
-  //     expect(chip.alert).toBeCalledWith('There was an error: barcode error message')
-  //   })
-
-  //   it('will be updated when the button is clicked', () => {
-  //     chip.updateChip = jest.fn()
-  //     input = wrapper.find('#barcode')
-  //     input.setValue('CHIP-2345')
-  //     input.trigger('change')
-  //     expect(chip.updateChip).toBeCalled()
-  //   })
-
-  // })
-
   describe('updateChip', () => {
 
     let newBarcode
 
     beforeEach(() => {
+      run.id = 1
       store.commit('addRun', run)
+      wrapper.setProps({runId: run.id})
       newBarcode = 'FLEVEAOLPTOWPNWU20319131581014320190911XXXXXXXXXXXXX'
       chip.localBarcode = newBarcode
     })
@@ -101,6 +82,36 @@ describe('Chip', () => {
     it('will update the chip in the store', () => {
       chip.updateChip()
       expect(store.getters.run(run.id).chip.barcode).toEqual(newBarcode)
+    })
+
+    describe('existing record', () => {
+      beforeEach(() => {
+        chip.chipRequest.update = jest.fn()
+        chip.alert = jest.fn()
+      })
+
+      it('successfully', async () => {
+        let successfulResponse = [{ 'data': {}, 'status': 200, 'statusText': 'Success'}]
+        chip.chipRequest.update.mockReturnValue(successfulResponse)
+        await chip.updateChip()
+        expect(chip.chipRequest.update).toBeCalledWith(chip.payload)
+        expect(chip.alert).toBeCalledWith('Chip updated')
+      })
+
+      it('unsuccessfully', async () => {
+        let failedResponse = { 'data': { errors: { barcode: ['error message'] }}, 'status': 500, 'statusText': 'Internal Server Error' }
+        chip.chipRequest.update.mockReturnValue([failedResponse])
+        await chip.updateChip()
+        expect(chip.alert).toBeCalledWith('There was an error: barcode error message')
+      })
+
+      it('will be updated when the button is clicked', () => {
+        chip.updateChip = jest.fn()
+        input = wrapper.find('#barcode')
+        input.setValue('CHIP-2345')
+        input.trigger('change')
+        expect(chip.updateChip).toBeCalled()
+      })
     })
   })
 

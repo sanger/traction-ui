@@ -45,6 +45,9 @@ export default {
         let run = this.$store.getters.run(this.runId)
         let updatedRun = Run.updateFlowcell(run, this.flowcellPosition, this.libraryId)
         this.$store.commit('addRun', updatedRun)
+        if (this.existingRecord) {
+          this.$emit('updateLibrary', material)
+        }
       } else {
         this.libraryId = undefined
       }
@@ -56,6 +59,9 @@ export default {
   computed: {
     tractionTubeRequest () {
       return this.api.traction.tubes
+    },
+    existingRecord () {
+      return !isNaN(this.runId)
     }
   }
 }

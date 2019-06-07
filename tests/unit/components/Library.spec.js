@@ -39,9 +39,25 @@ describe('Library', () => {
     })
   })
 
-  describe('#updateLibrary', () => {
-    beforeEach(() => {
+  describe('existing record', () => {
+    it('if the run is new', () => {
+      expect(library.existingRecord).toBeFalsy()
+    })
 
+    it('if the run is persisted', () => {
+      wrapper.setProps({runId: 1})
+      expect(library.existingRecord).toBeTruthy()
+    })
+  })
+
+  describe('#updateLibrary', () => {
+
+    let apiResponse
+
+    beforeEach(() => {
+      run.id = 1
+      store.commit('addRun', run)
+      wrapper.setProps({runId: run.id})
       library.tractionTubeRequest.get = jest.fn()
       library.alert = jest.fn()
     })
@@ -51,9 +67,9 @@ describe('Library', () => {
       let apiResponse = new Response(LibraryTubeJson)
       await library.updateLibrary()
       expect(library.tractionTubeRequest.get).toBeCalledWith({ filter: { barcode: 'TRAC-1' } })
-      // expect(wrapper.emitted().updateLibrary).toBeTruthy()
+      expect(wrapper.emitted().updateLibrary).toBeTruthy()
       material = apiResponse.deserialize.tubes[0].material
-      // expect(wrapper.emitted().updateLibrary[0]).toEqual([material])
+      expect(wrapper.emitted().updateLibrary[0]).toEqual([material])
       expect(library.libraryId).toEqual(material.id)
       expect(store.getters.run(run.id).chip.flowcells[0].library.id).toEqual(material.id)
     })
