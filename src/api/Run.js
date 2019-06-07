@@ -60,8 +60,6 @@ const validateChip = (chip) => {
 const validateFlowcell = (flowcell) => {
   if (flowcell.library.id === undefined) {
     return 'library does not exist'
-  } else if (flowcell.library.barcode === undefined) {
-    return 'library not present'
   }
 }
 
@@ -74,6 +72,17 @@ const validateFlowcells = (flowcells) => {
     }
     return errors
   }, {})
+}
+
+const updateFlowcell = (run, flowcellPosition, libraryId) => {
+  let index = run.chip.flowcells.findIndex((obj => obj.position === flowcellPosition))
+  run.chip.flowcells[index].library.id = libraryId
+  return run
+}
+
+const updateChip = (run, chipBarcode) => {
+  run.chip.barcode = chipBarcode
+  return run
 }
 
 const validate = (run) => {
@@ -156,5 +165,7 @@ export {
   assign,
   validateChip,
   validateFlowcell,
-  validateFlowcells
+  validateFlowcells,
+  updateFlowcell,
+  updateChip
 }

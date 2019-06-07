@@ -6,16 +6,15 @@
       <b-button id="backToRunsButton" class="float-right">Back</b-button>
     </router-link>
 
-    <button class="float-right" id="create" variant="success" @click="create">Create</button>
+    <button v-if="newRecord" class="float-right" id="create" variant="success" @click="create">Create</button>
 
 
     <h1 class="runInfo" id="id">Run ID: {{ id }}</h1>
     <h2 class="runInfo" id="state">state: {{ state }}</h2>
 
-    <b-form-input class="runInfo" id="name" v-model="name" placeholder="name" type="text" @change="updateName(id, name)" />
-    <!-- b-form-input class="runInfo" id="name" v-model="name" placeholder="name" type="text" /-->
+    <b-form-input class="runInfo" id="name" v-model="name" placeholder="name" type="text" @change="updateName()" />
 
-    <chip v-if="Boolean(this.chip)" v-bind="chip" @alert="alert"></chip>
+    <chip v-if="Boolean(this.chip)" v-bind="chip" v-bind:runId="id" @alert="alert"></chip>
 
   </div>
 </template>
@@ -57,6 +56,11 @@ export default {
     showAlert () {
       return this.$refs.alert.show(this.message, 'primary')
     },
+    updateName () {
+      let run = this.$store.getters.run(this.id)
+      run.name = this.name
+      this.$store.commit('addRun', run)
+    },
     async create () {
       let result
       let run = this.$store.getters.run(this.id)
@@ -78,6 +82,9 @@ export default {
     Alert
   },
   computed: {
+     newRecord () {
+      return isNaN(this.id)
+    }
   },
   created () {
     this.provider()

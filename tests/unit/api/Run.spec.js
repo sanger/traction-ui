@@ -14,7 +14,7 @@ import Api from '@/api'
 
 describe('Run', () => {
 
-  let cmp, props, wrapper, request, mockResponse, response, failedResponse, chipBarcode, barcode1, run
+  let cmp, props, wrapper, request, mockResponse, response, failedResponse, chipBarcode, barcode1, run, updatedRun
 
   beforeEach(() => {
     cmp = Vue.extend({
@@ -420,4 +420,36 @@ describe('Run', () => {
       })
     })
   })
+
+  describe('updateFlowcell', () => {
+
+    let flowcell, libraryId
+
+    beforeEach(() => {
+      run = Run.build()
+      libraryId = 1
+      flowcell = run.chip.flowcells[0]
+      updatedRun = Run.updateFlowcell(run, flowcell.position, libraryId)
+    })
+
+    it('will update the correct flowcell in the run', () => {
+      expect(updatedRun.chip.flowcells[0].library.id).toEqual(libraryId)
+    })
+  })
+
+  describe('updateChip', () => {
+
+    beforeEach(() => {
+      run = Run.build()
+      chipBarcode = 'FLEVEAOLPTOWPNWU20319131581014320190911XXXXXXXXXXXXX'
+      updatedRun = Run.updateChip(run, chipBarcode)
+    })
+
+
+    it('will update the chip barcode', () => {
+      expect(updatedRun.chip.barcode).toEqual(chipBarcode)
+    })
+    
+  })
+
 })

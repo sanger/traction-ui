@@ -6,7 +6,7 @@ describe('Flowcell', () => {
   let wrapper, flowcell, props, library
 
   beforeEach(() => {
-    props = { id: 1, position: 1 }
+    props = { id: 1, position: 1, runId: 1 }
     wrapper = mount(Flowcell, { localVue, store, propsData: props } )
     flowcell = wrapper.vm
     library =  {id: 2, type: 'libraries', state: 'pending', barcode: "TRAC-3", sample_name: "sample_d", enzyme_name: "Nb.BbvCI", created_at: "02/27/2019 04:05"}
@@ -22,6 +22,10 @@ describe('Flowcell', () => {
 
   it('must have a position', () => {
     expect(flowcell.position).toEqual(props.position)
+  })
+
+  it('can have a run id', () => {
+    expect(flowcell.runId).toEqual(props.runId)
   })
 
   it('will display the position', () => {

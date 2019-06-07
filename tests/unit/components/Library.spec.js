@@ -3,13 +3,16 @@ import Library from '@/components/Library'
 import LibraryTubeJson from '../../data/tubeWithLibrary'
 import SampleTubeJson from '../../data/tractionTubesWithSample'
 import Response from '@/api/Response'
+import * as Run from '@/api/Run'
 
 describe('Library', () => {
 
-  let wrapper, library, props, material
+  let wrapper, library, props, material, run
 
   beforeEach(() => {
-    props = { id: 1, barcode: 'TRAC-1', runId: 'new', flowcellPosition: 1 }
+    run = Run.build()
+    store.commit('addRun', run)
+    props = { id: 1, barcode: 'TRAC-1', runId: run.id, flowcellPosition: 1 }
     wrapper = mount(Library, { localVue, store, propsData: props } )
     library = wrapper.vm
   })
@@ -38,6 +41,7 @@ describe('Library', () => {
 
   describe('#updateLibrary', () => {
     beforeEach(() => {
+
       library.tractionTubeRequest.get = jest.fn()
       library.alert = jest.fn()
     })
@@ -51,6 +55,7 @@ describe('Library', () => {
       material = apiResponse.deserialize.tubes[0].material
       // expect(wrapper.emitted().updateLibrary[0]).toEqual([material])
       expect(library.libraryId).toEqual(material.id)
+      expect(store.getters.run(run.id).chip.flowcells[0].library.id).toEqual(material.id)
     })
 
     it('unsuccessfully', async () => {

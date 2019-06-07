@@ -42,6 +42,9 @@ export default {
 
       if (material !== undefined) {
         this.libraryId = material.id
+        let run = this.$store.getters.run(this.runId)
+        let updatedRun = Run.updateFlowcell(run, this.flowcellPosition, this.libraryId)
+        this.$store.commit('addRun', updatedRun)
       } else {
         this.libraryId = undefined
       }

@@ -16,7 +16,7 @@ import * as RunApi from '@/api/Run'
 
 describe('Run.vue', () => {
 
-  let wrapper, run, props, input, router, runs, foundRun
+  let wrapper, run, props, input, router, runs, foundRun, runId
 
   beforeAll(() => {
     runs = new Response(RunsJson).deserialize.runs
@@ -24,7 +24,8 @@ describe('Run.vue', () => {
   })
 
   beforeEach(() => {
-    props = { id: runs[0].id }
+    runId = runs[0].id
+    props = { id: runId }
     router = new VueRouter({ routes:
       [{ path: '/runs', name: 'Runs', component: Runs }]
     })
@@ -76,6 +77,12 @@ describe('Run.vue', () => {
     })
   })
 
+  describe('create button', () => {
+    it('will only show if the record is new', () => {
+      expect(wrapper.find('#create').exists()).toBeFalsy()
+    })
+  })
+
   describe('#provider sets the data', () => {
 
     let mockResponse
@@ -105,16 +112,19 @@ describe('Run.vue', () => {
 
   describe('name input', () => {
     beforeEach(() => {
-      run.updateName = jest.fn()
+      // run.updateName = jest.fn()
     })
 
     it('updates the name v-model', () => {
+
+      let name = 'runaway'
       input = wrapper.find('#name')
-      input.setValue('runaway')
-      expect(run.name).toEqual('runaway')
+      input.setValue(name)
+      expect(run.name).toEqual(name)
 
       input.trigger('change')
-      expect(run.updateName).toBeCalledWith(run.id, 'runaway')
+      // expect(run.updateName).toBeCalledWith(run.id, 'runaway')
+      expect(store.getters.run(runId).name).toEqual(name)
     })
   })
 
@@ -164,8 +174,9 @@ describe('Run.vue', () => {
       failedResponse = { status: 404, statusText: 'Record not found', data: { errors: { title: ['The record identified by 100 could not be found.'] }} }
 
       foundRun = new Response(RunWithLibraryJson).deserialize.runs[0]
+      foundRun.id = 'new'
       store.commit('addRun', foundRun)
-      wrapper = mount(Run, { localVue, router, store, propsData: { id: foundRun.id } })
+      wrapper = mount(Run, { localVue, router, store, propsData: { id: 'new' } })
       run = wrapper.vm
   
     })
@@ -174,7 +185,6 @@ describe('Run.vue', () => {
 
       beforeEach(() => {
        
-
         run.api.traction.runs.create.mockResolvedValue(createRunJson)
         run.api.traction.chips.create.mockResolvedValue(createChipJson)
         run.api.traction.tubes.get.mockResolvedValue(tubeWithLibraryJson)
