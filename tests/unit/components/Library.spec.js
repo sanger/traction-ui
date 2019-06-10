@@ -1,7 +1,6 @@
 import { mount, localVue, store } from '../testHelper'
 import Library from '@/components/Library'
 import LibraryTubeJson from '../../data/tubeWithLibrary'
-import SampleTubeJson from '../../data/tractionTubesWithSample'
 import Response from '@/api/Response'
 import * as Run from '@/api/Run'
 
@@ -52,8 +51,6 @@ describe('Library', () => {
 
   describe('#updateLibrary', () => {
 
-    let apiResponse
-
     beforeEach(() => {
       run.id = 1
       store.commit('addRun', run)
@@ -81,27 +78,8 @@ describe('Library', () => {
 
       expect(library.libraryId).not.toBeDefined()
 
-      // expect(library.tractionTubeRequest.get).toBeCalledWith({ filter: { barcode: 'TRAC-1' } })
-      // expect(library.alert).toBeCalledWith('There was an error')
-
     })
 
-    // it('when there is no library', async () => {
-    //   let emptyResponse = { 'data': { 'data': []}, 'status': 200, 'statusText': 'Success'}
-    //   library.tractionTubeRequest.get.mockReturnValue(emptyResponse)
-    //   await library.updateLibrary()
-
-    //   expect(library.tractionTubeRequest.get).toBeCalledWith({ filter: { barcode: 'TRAC-1' } })
-    //   expect(library.alert).toBeCalledWith('There was an error')
-    // })
-
-    // it('when it is not a library', async () => {
-    //   library.tractionTubeRequest.get.mockResolvedValue(SampleTubeJson)
-    //   await library.updateLibrary()
-
-    //   expect(library.tractionTubeRequest.get).toBeCalledWith({ filter: { barcode: 'TRAC-1' } })
-    //   expect(library.alert).toBeCalledWith('This is not a library')
-    // })
   })
 
   describe('#tractionTubeRequest', () => {

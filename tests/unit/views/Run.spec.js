@@ -85,8 +85,6 @@ describe('Run.vue', () => {
 
   describe('#provider sets the data', () => {
 
-    let mockResponse
-
     beforeEach(() => {
     })
 
@@ -111,10 +109,7 @@ describe('Run.vue', () => {
   })
 
   describe('name input', () => {
-    beforeEach(() => {
-      // run.updateName = jest.fn()
-    })
-
+  
     it('updates the name v-model', () => {
 
       let name = 'runaway'
@@ -123,8 +118,33 @@ describe('Run.vue', () => {
       expect(run.name).toEqual(name)
 
       input.trigger('change')
-      // expect(run.updateName).toBeCalledWith(run.id, 'runaway')
       expect(store.getters.run(runId).name).toEqual(name)
+    })
+  })
+
+  describe('update', () => {
+
+    let name
+
+    beforeEach(() => {
+      run.updateName = jest.fn()
+      name = 'runaway'
+    })
+
+    it('if it is a new run', () => {
+      let newRun = RunApi.build()
+      wrapper.setProps({id: newRun.id})
+      run.name = name
+      run.update()
+      expect(store.getters.run(newRun.id).name).toEqual(name)
+      expect(run.updateName).not.toBeCalled()
+    })
+
+    it('if it is an existing run', () => {
+      run.name = name
+      run.update()
+      expect(store.getters.run(runId).name).toEqual(name)
+      expect(run.updateName).toBeCalled()
     })
   })
 

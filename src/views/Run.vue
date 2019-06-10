@@ -12,7 +12,7 @@
     <h1 class="runInfo" id="id">Run ID: {{ id }}</h1>
     <h2 class="runInfo" id="state">state: {{ state }}</h2>
 
-    <b-form-input class="runInfo" id="name" v-model="name" placeholder="name" type="text" @change="updateName()" />
+    <b-form-input class="runInfo" id="name" v-model="name" placeholder="name" type="text" @change="update" />
 
     <chip v-if="Boolean(this.chip)" v-bind="chip" v-bind:runId="id" @alert="alert"></chip>
 
@@ -56,10 +56,14 @@ export default {
     showAlert () {
       return this.$refs.alert.show(this.message, 'primary')
     },
-    updateName () {
+    update () {
       let run = this.$store.getters.run(this.id)
       run.name = this.name
       this.$store.commit('addRun', run)
+
+      if (!this.newRecord) {
+        this.updateName(this.id, this.name)
+      }
     },
     async create () {
       let result

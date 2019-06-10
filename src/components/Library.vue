@@ -7,7 +7,6 @@
 <script>
 
 import Api from '@/mixins/Api'
-import getTubesForBarcodes from '@/api/TubeRequests'
 import * as Run from '@/api/Run'
 
 export default {
