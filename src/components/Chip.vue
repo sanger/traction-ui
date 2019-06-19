@@ -1,7 +1,7 @@
 <template>
   <b-container class="chip">
     <b-form-input id="barcode" v-model="localBarcode" type="text" placeholder="Chip barcode" @change="updateChip" />
-    <flowcell v-for="(flowcell, index) in flowcells" v-bind="flowcell" v-bind:key="index" @alert="alert"></flowcell>
+    <flowcell v-for="(flowcell, index) in flowcells" v-bind="flowcell" v-bind:key="index" v-bind:runId="runId" @alert="alert"></flowcell>
   </b-container>
 </template>
 
@@ -10,6 +10,7 @@
 import Flowcell from '@/components/Flowcell'
 import Api from '@/mixins/Api'
 import handlePromise from '@/api/PromiseHelper'
+import * as Run from '@/api/Run'
 
 export default {
   name: 'Chip',
@@ -22,10 +23,13 @@ export default {
       type: String
     },
     flowcells: {
-      type: Array,
+      type: [Array],
       default: () => {
         return [ {}, {} ]
       }
+    },
+    runId: {
+      type: [Number, String]
     }
   },
   data () {
@@ -36,13 +40,19 @@ export default {
   },
   methods: {
     async updateChip () {
-      let promise = this.chipRequest.update(this.payload)
-      let response = await handlePromise(promise[0])
+      let run = this.$store.getters.run(this.runId)
+      let updatedRun = Run.updateChip(run, this.localBarcode)
+      this.$store.commit('addRun', updatedRun)
 
-      if (response.successful) {
-        this.alert('Chip updated')
-      } else {
-        this.alert('There was an error: ' + response.errors.message)
+      if (this.existingRecord) {
+        let promise = this.chipRequest.update(this.payload)
+        let response = await handlePromise(promise[0])
+
+        if (response.successful) {
+          this.alert('Chip updated')
+        } else {
+          this.alert('There was an error: ' + response.errors.message)
+        }
       }
     },
     alert (message) {
@@ -50,6 +60,9 @@ export default {
     },
   },
   computed: {
+    existingRecord () {
+      return !isNaN(this.runId)
+    },
     chipRequest () {
       return this.api.traction.chips
     },
@@ -68,6 +81,5 @@ export default {
   components: {
     Flowcell
   }
-
 }
 </script>
