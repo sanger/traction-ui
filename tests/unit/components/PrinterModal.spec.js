@@ -113,14 +113,9 @@ describe('Modal.vue', () => {
     it('sets printerOptions data', async () => {
       modal.setPrinterNames()
 
-      let printerNames = ['printer1', 'printer2', 'printer3']
-      let printerOptions = printerNames.map((printer, index) => Object.assign({ value: index+1, text: printer }))
-      printerOptions.unshift({ value: null, text: "Please select a printer" })
-
       expect(modal.printerOptions[0]).toEqual({ value: null, text: "Please select a printer" })
       expect(modal.printerOptions[1]).toBeDefined()
       expect(modal.printerOptions[2]).toBeDefined()
-      expect(modal.printerOptions[3]).toBeDefined()
     })
   })
 })
