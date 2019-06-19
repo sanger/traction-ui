@@ -6,7 +6,7 @@
       <b-button id="backToRunsButton" class="float-right">Back</b-button>
     </router-link>
 
-    <button v-if="newRecord" class="float-right" id="create" variant="success" @click="create">Create</button>
+    <b-button v-if="newRecord" class="float-right" id="create" variant="success" @click="create">Create</b-button>
 
 
     <h1 class="runInfo" id="id">Run ID: {{ id }}</h1>
