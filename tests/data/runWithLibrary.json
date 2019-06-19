@@ -9,7 +9,7 @@
       },
       "attributes": {
         "state": "pending",
-        "chip_barcode": "TRAC123"
+        "chip_barcode": "FLEVEAOLPTOWPNWU20319131581014320190911XXXXXXXXXXXXX"
       },
       "relationships": {
         "chip": {
@@ -31,7 +31,7 @@
         "self": "/v1/chips/14"
       },
       "attributes": {
-        "barcode": "TRAC123"
+        "barcode": "FLEVEAOLPTOWPNWU20319131581014320190911XXXXXXXXXXXXX"
       },
       "relationships": {
         "flowcells": {

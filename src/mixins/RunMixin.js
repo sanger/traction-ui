@@ -1,5 +1,6 @@
 import Api from '@/mixins/Api'
 import handlePromise from '@/api/PromiseHelper'
+import * as Run from '@/api/Run'
 
 export default {
   name: 'RunMixin',
@@ -10,23 +11,17 @@ export default {
     }
   },
   methods: {
-    async getRun (id) {
-      let promise = this.runsRequest.find(id)
-      let response = await handlePromise(promise)
-
-      if (response.successful) {
-        return response.deserialize.runs[0]
-      } else {
-        this.message = 'There was an error'
-        return { state: null, chip: null }
-      }
+    getRun (id) {
+      return this.$store.getters.run(id)
     },
     async getRuns () {
       let promise = this.runsRequest.get()
       let response = await handlePromise(promise)
 
       if (response.successful) {
-        return response.deserialize.runs
+        let runs = response.deserialize.runs
+        this.$store.commit('addRuns', runs)
+        return runs
       } else {
         this.message = response.errors.message
         this.showAlert()
@@ -47,6 +42,7 @@ export default {
 
       if (response.successful) {
         this.message = 'Run updated'
+        this.$store.commit('addRun', response.deserialize.runs[0])
         this.showAlert()
       } else {
         throw response.errors.message
@@ -64,21 +60,12 @@ export default {
     cancelRun (id) {
       this.handleUpdate(id, {state: 'cancelled'})
     },
-    async createRun () {
-      let promise = this.runsRequest.create(this.createPayload)
-      return await handlePromise(promise)
-    },
     async showRun(id) {
-      let runId
+      let runId, run
       if (id === undefined) {
-        let response = await this.createRun()
-        if (response.successful) {
-          runId = response.deserialize.runs[0].id
-        } else {
-          this.message = 'There was an error: ' + response.errors.message
-          this.showAlert()
-          return
-        }
+        run = Run.build()
+        this.$store.commit('addRun', run)
+        runId = run.id
       } else {
         runId = id
       }

@@ -2,7 +2,7 @@
   <b-row class="flowcell">
     <b-col>
       <div class="position">{{ position }}</div>
-      <library @updateLibrary="updateFlowcell" v-bind="library" @alert="alert" ></library>
+      <library @updateLibrary="updateFlowcell" v-bind="library" v-bind:flowcellPosition="position" v-bind:runId="runId" @alert="alert" ></library>
     </b-col>
   </b-row>
 </template>
@@ -29,6 +29,9 @@ export default {
       default: () => {
         return {}
       }
+    },
+    runId: {
+      type: [Number, String]
     }
   },
   data () {
