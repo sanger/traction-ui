@@ -1,0 +1,50 @@
+{
+  "sequencescape": {
+    "name": "sequencescape",
+    "apiNamespace": "api/v2",
+    "resources": {
+      "tubes": {
+        "name": "tubes",
+        "include": "samples.sample_metadata,studies"
+      }
+    }
+  },
+  "traction": {
+    "name": "traction",
+    "apiNamespace": "v1",
+    "resources": {
+      "samples": {
+        "name": "samples"
+      },
+      "libraries": {
+        "name": "libraries"
+      },
+      "enzymes": {
+        "name": "enzymes"
+      },
+      "runs": {
+        "name": "runs",
+        "include": "chip.flowcells.library"
+      },
+      "chips": {
+        "name": "chips"
+      },
+      "flowcells": {
+        "name": "flowcells"
+      },
+      "tubes": {
+        "name": "tubes",
+        "include": "material"
+      }
+    }
+  },
+  "printMyBarcode": {
+    "name": "printMyBarcode",
+    "apiNamespace": "v1",
+    "resources": {
+      "print_jobs": {
+        "name": "printJobs"
+      }
+    }
+  }
+}

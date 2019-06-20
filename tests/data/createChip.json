@@ -1,0 +1,13 @@
+{
+  "data": {
+    "data": {
+      "id": "1",
+      "type": "chips",
+      "attributes": {
+        "barcode": "barcodebarcodebarcode"
+      }
+    }
+  },
+  "status": 201,
+  "statusText": "Created"
+}
