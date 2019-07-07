@@ -978,12 +978,12 @@
     babel-loader "^8.0.5"
     webpack ">=4 < 4.29"
 
-"@vue/cli-plugin-e2e-nightwatch@^3.8.0":
-  version "3.8.0"
-  resolved "https://registry.yarnpkg.com/@vue/cli-plugin-e2e-nightwatch/-/cli-plugin-e2e-nightwatch-3.8.0.tgz#91efd14cab2c9363243d923036dc133fb0a0936f"
-  integrity sha512-xEsPHf7+NVZRA9IlEziwH4Y3CcqbGWT1+x0PJfzJTbaH79wT0bUt+SauXOLAD07baBfOtDm2C5jk6DCUMfgCwA==
+"@vue/cli-plugin-e2e-nightwatch@^3.9.2":
+  version "3.9.2"
+  resolved "https://registry.yarnpkg.com/@vue/cli-plugin-e2e-nightwatch/-/cli-plugin-e2e-nightwatch-3.9.2.tgz#7ed58c576eb4b8559e1fb86458ea11693317b832"
+  integrity sha512-olDeE3C5Fmd8ZG2SxNIjWKyhLzi8RXaDNKIFw7ZNrdoJKe8Av0OAweSjP6y5iRApgOQOX2JfS1vum47LC/Dh8g==
   dependencies:
-    "@vue/cli-shared-utils" "^3.8.0"
+    "@vue/cli-shared-utils" "^3.9.0"
     chromedriver "^2.46.0"
     deepmerge "^3.2.0"
     execa "^1.0.0"
@@ -1084,6 +1084,24 @@
   version "3.8.0"
   resolved "https://registry.yarnpkg.com/@vue/cli-shared-utils/-/cli-shared-utils-3.8.0.tgz#e7e728164eb92bd9e205fcd08dae896ee79cba5a"
   integrity sha512-wn1L8pmQnotfftHOYm0VeXs2+cQTySd73uhWXwyO6pT0ehjqlY5c2RTipClmFF3Q+YCYjwlNpsV650F3l1tV8w==
+  dependencies:
+    "@hapi/joi" "^15.0.1"
+    chalk "^2.4.1"
+    execa "^1.0.0"
+    launch-editor "^2.2.1"
+    lru-cache "^5.1.1"
+    node-ipc "^9.1.1"
+    open "^6.3.0"
+    ora "^3.4.0"
+    request "^2.87.0"
+    request-promise-native "^1.0.7"
+    semver "^6.0.0"
+    string.prototype.padstart "^3.0.0"
+
+"@vue/cli-shared-utils@^3.9.0":
+  version "3.9.0"
+  resolved "https://registry.yarnpkg.com/@vue/cli-shared-utils/-/cli-shared-utils-3.9.0.tgz#cb56a443bf763a873849a11d07e9e7638aa16cc2"
+  integrity sha512-wumeMZTz5aQ+1Y6uxTKegIsgOXEWT3hT8f9sW2mj5SwNDVyQ+AHZTgSynYExTUJg3dH81uKgFDUpPdAvGxzh8g==
   dependencies:
     "@hapi/joi" "^15.0.1"
     chalk "^2.4.1"
