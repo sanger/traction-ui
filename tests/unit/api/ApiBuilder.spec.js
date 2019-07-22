@@ -19,6 +19,7 @@ describe('ApiBuilder', () => {
     beforeEach(() => {
       process.env.VUE_APP_API1_BASE_URL = 'http://api1'
       process.env.VUE_APP_API2_BASE_URL = 'http://api2'
+      process.env.VUE_APP_API3_BASE_URL = 'http://api3'
 
       apis = {
        "api1": {
@@ -43,7 +44,24 @@ describe('ApiBuilder', () => {
            "resource1": {},
            "resource2": {}
          }
-       }
+       },
+       "api3": {
+         "name": "api3",
+         "apiNamespace": "v3",
+         "resources": {
+           "samples": {
+             "name": "samples"
+           },
+           "saphyr": {
+             "libraries": {
+               "name": "libraries"
+             },
+             "flowcells": {
+               "name": "flowcells"
+             }
+           }
+         }
+       },
      }
       api = ApiBuilder.build(apis, process.env)
     })
@@ -65,5 +83,12 @@ describe('ApiBuilder', () => {
       expect(request.include).toEqual(apis.api1.resources.resource1.include)
     })
 
+    describe('api3', () => {
+      it('will create the resource', () => {
+        expect(api.api3.samples.resource).toEqual("samples")
+        expect(api.api3.saphyr.libraries.resource).toEqual("saphyr/libraries")
+        expect(api.api3.saphyr.flowcells.resource).toEqual("saphyr/flowcells")
+      })
+    })
   })
 })
