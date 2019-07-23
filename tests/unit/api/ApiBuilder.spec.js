@@ -3,15 +3,6 @@ import Request from '@/api/Request'
 
 describe('ApiBuilder', () => {
 
-  describe('buildComponent', () => {
-    it('creates a new component with given props', () => {
-      let cmp = ApiBuilder.buildComponent(Request, {baseURL: 'aname', apiNamespace: 'abc', resource: 'cats'})
-      expect(cmp.baseURL).toEqual('aname')
-      expect(cmp.apiNamespace).toEqual('abc')
-      expect(cmp.resource).toEqual('cats')
-    })
-  })
-
   describe('build', () => {
 
     let api, apis
@@ -41,8 +32,12 @@ describe('ApiBuilder', () => {
          "name": "api2",
          "apiNamespace": "v2",
          "resources": {
-           "resource1": {},
-           "resource2": {}
+           "resource1": {
+             "name": "resource1"
+           },
+           "resource2": {
+             "name": "resource2"
+           }
          }
        },
        "api3": {
@@ -67,28 +62,79 @@ describe('ApiBuilder', () => {
     })
 
     it('will create an item for each api', () => {
-      expect(Object.keys(api).length).toEqual(Object.keys(apis).length)
+      expect(Object.keys(api)).toEqual(['api1', 'api2', 'api3'])
+      expect(api.api1).toBeDefined()
+      expect(api.api2).toBeDefined()
+      expect(api.api3).toBeDefined()
     })
 
-    it('will create some requests', () => {
-      expect(Object.keys(api.api1).length).toEqual(2)
+    it('will create an item for each resource of the api', () => {
+      expect(api.api1.resource1).toBeDefined()
+      expect(api.api2.resource1).toBeDefined()
+      expect(api.api2.resource2).toBeDefined()
+      expect(api.api3.samples).toBeDefined()
+      expect(api.api3.saphyr.libraries).toBeDefined()
+      expect(api.api3.saphyr.flowcells).toBeDefined()
     })
 
     it('will create a request component for each resource', () => {
-      let request = api.api1.resource1
-      expect(request.resource).toEqual(apis.api1.resources.resource1.name)
-      expect(request.baseURL).toEqual(process.env.VUE_APP_API1_BASE_URL)
-      expect(request.apiNamespace).toEqual(apis.api1.apiNamespace)
-      expect(request.filter).toEqual(apis.api1.resources.resource1.filter)
-      expect(request.include).toEqual(apis.api1.resources.resource1.include)
+      let request1 = api.api1.resource1
+      expect(request1.baseURL).toEqual(process.env.VUE_APP_API1_BASE_URL)
+      expect(request1.apiNamespace).toEqual(apis.api1.apiNamespace)
+      expect(request1.resource).toEqual(apis.api1.resources.resource1.name)
+      expect(request1.headers).toBeDefined()
+      expect(request1.filter).toEqual(apis.api1.resources.resource1.filter)
+      expect(request1.include).toEqual(apis.api1.resources.resource1.include)
+
+      let request2 = api.api2.resource1
+      expect(request2.baseURL).toEqual(process.env.VUE_APP_API2_BASE_URL)
+      expect(request2.apiNamespace).toEqual(apis.api2.apiNamespace)
+      expect(request2.resource).toEqual(apis.api2.resources.resource1.name)
+      expect(request2.headers).toBeDefined()
+      expect(request2.filter).toEqual({})
+      expect(request2.include).toEqual('')
+
+      let request3 = api.api2.resource2
+      expect(request3.baseURL).toEqual(process.env.VUE_APP_API2_BASE_URL)
+      expect(request3.apiNamespace).toEqual(apis.api2.apiNamespace)
+      expect(request3.resource).toEqual(apis.api2.resources.resource2.name)
+      expect(request3.headers).toBeDefined()
+      expect(request3.filter).toEqual({})
+      expect(request3.include).toEqual('')
+
+      let request4 = api.api3.samples
+      expect(request4.baseURL).toEqual(process.env.VUE_APP_API3_BASE_URL)
+      expect(request4.apiNamespace).toEqual(apis.api3.apiNamespace)
+      expect(request4.resource).toEqual('samples')
+      expect(request4.headers).toBeDefined()
+      expect(request4.filter).toEqual({})
+      expect(request4.include).toEqual('')
+
+      let request5 = api.api3.saphyr.libraries
+      expect(request5.baseURL).toEqual(process.env.VUE_APP_API3_BASE_URL)
+      expect(request5.apiNamespace).toEqual(apis.api3.apiNamespace)
+      expect(request5.resource).toEqual('saphyr/libraries')
+      expect(request5.headers).toBeDefined()
+      expect(request5.filter).toEqual({})
+      expect(request5.include).toEqual('')
+
+      let request6 = api.api3.saphyr.flowcells
+      expect(request6.baseURL).toEqual(process.env.VUE_APP_API3_BASE_URL)
+      expect(request6.apiNamespace).toEqual(apis.api3.apiNamespace)
+      expect(request6.resource).toEqual('saphyr/flowcells')
+      expect(request6.headers).toBeDefined()
+      expect(request6.filter).toEqual({})
+      expect(request6.include).toEqual('')
     })
 
-    describe('api3', () => {
-      it('will create the resource', () => {
-        expect(api.api3.samples.resource).toEqual("samples")
-        expect(api.api3.saphyr.libraries.resource).toEqual("saphyr/libraries")
-        expect(api.api3.saphyr.flowcells.resource).toEqual("saphyr/flowcells")
-      })
+  })
+
+  describe('buildComponent', () => {
+    it('creates a new component with given props', () => {
+      let cmp = ApiBuilder.buildComponent(Request, {baseURL: 'aname', apiNamespace: 'abc', resource: 'cats'})
+      expect(cmp.baseURL).toEqual('aname')
+      expect(cmp.apiNamespace).toEqual('abc')
+      expect(cmp.resource).toEqual('cats')
     })
   })
 })
