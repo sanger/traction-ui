@@ -86,7 +86,7 @@ export default {
   },
   computed: {
     libraryRequest () {
-      return this.api.traction.libraries
+      return this.api.traction.saphyr.libraries
     },
     getItems () {
       return this.items.map(i => Object.assign(i.material, {barcode: i.barcode}))

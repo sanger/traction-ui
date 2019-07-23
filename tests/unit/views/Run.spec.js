@@ -109,7 +109,7 @@ describe('Run.vue', () => {
   })
 
   describe('name input', () => {
-  
+
     it('updates the name v-model', () => {
 
       let name = 'runaway'
@@ -184,13 +184,13 @@ describe('Run.vue', () => {
 
     beforeEach(() => {
       run.api.traction.tubes.get = jest.fn()
-      run.api.traction.runs.create = jest.fn()
-      run.api.traction.runs.destroy = jest.fn()
-      run.api.traction.runs.destroy.mockResolvedValue(successfulDestroyJson)
-      run.api.traction.chips.create = jest.fn()
-      run.api.traction.chips.destroy = jest.fn()
-      run.api.traction.chips.destroy.mockResolvedValue(successfulDestroyJson)
-      run.api.traction.flowcells.create = jest.fn()
+      run.api.traction.saphyr.runs.create = jest.fn()
+      run.api.traction.saphyr.runs.destroy = jest.fn()
+      run.api.traction.saphyr.runs.destroy.mockResolvedValue(successfulDestroyJson)
+      run.api.traction.saphyr.chips.create = jest.fn()
+      run.api.traction.saphyr.chips.destroy = jest.fn()
+      run.api.traction.saphyr.chips.destroy.mockResolvedValue(successfulDestroyJson)
+      run.api.traction.saphyr.flowcells.create = jest.fn()
       failedResponse = { status: 404, statusText: 'Record not found', data: { errors: { title: ['The record identified by 100 could not be found.'] }} }
 
       foundRun = new Response(RunWithLibraryJson).deserialize.runs[0]
@@ -198,21 +198,19 @@ describe('Run.vue', () => {
       store.commit('addRun', foundRun)
       wrapper = mount(Run, { localVue, router, store, propsData: { id: 'new' } })
       run = wrapper.vm
-  
     })
 
     describe('when the run is valid', () => {
 
       beforeEach(() => {
-       
-        run.api.traction.runs.create.mockResolvedValue(createRunJson)
-        run.api.traction.chips.create.mockResolvedValue(createChipJson)
+        run.api.traction.saphyr.runs.create.mockResolvedValue(createRunJson)
+        run.api.traction.saphyr.chips.create.mockResolvedValue(createChipJson)
         run.api.traction.tubes.get.mockResolvedValue(tubeWithLibraryJson)
       })
 
       it('success', async () => {
 
-        run.api.traction.flowcells.create.mockResolvedValue(createFlowcellJson)
+        run.api.traction.saphyr.flowcells.create.mockResolvedValue(createFlowcellJson)
 
         await run.create()
         expect(run.message).toEqual('run was successfully created')
@@ -220,7 +218,7 @@ describe('Run.vue', () => {
 
       it('failure', async () => {
 
-        run.api.traction.flowcells.create.mockReturnValue(failedResponse)
+        run.api.traction.saphyr.flowcells.create.mockReturnValue(failedResponse)
 
         await run.create()
         expect(run.message).toEqual('run could not be created')
@@ -231,7 +229,7 @@ describe('Run.vue', () => {
 
         run.showAlert = jest.fn()
 
-        run.api.traction.flowcells.create.mockResolvedValue(createFlowcellJson)
+        run.api.traction.saphyr.flowcells.create.mockResolvedValue(createFlowcellJson)
 
         let button = wrapper.find('#create')
         button.trigger('click')

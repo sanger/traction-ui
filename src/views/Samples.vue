@@ -108,7 +108,7 @@ export default {
   },
   computed: {
     libraryRequest () {
-      return this.api.traction.libraries
+      return this.api.traction.saphyr.libraries
     },
     tractionTubeRequest () {
       return this.api.traction.tubes
