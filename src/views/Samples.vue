@@ -40,8 +40,7 @@ export default {
         { key: 'sample_name', label: 'Name', sortable: true },
         { key: 'species', label: 'Species', sortable: true },
         { key: 'barcode', label: 'Barcode', sortable: true },
-        { key: 'created_at', label: 'Created at', sortable: true },
-        { key: 'deactivated_at', label: 'Deactivated at', sortable: true },
+        { key: 'created_at', label: 'Created at', sortable: true }
       ],
       selected: [],
       message: '',
