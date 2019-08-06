@@ -1,6 +1,6 @@
 import Reception from '@/views/Reception'
 import { mount, localVue, store } from '../testHelper'
-import TractionSaphyrTubesWithRequestJson from '../../data/TractionSaphyrTubesWithRequest'
+import TractionSaphyrTubesWithRequestJson from '../../data/tractionSaphyrTubesWithRequest'
 import TractionTubesWithLibrariesJson from '../../data/tubeWithLibrary'
 import SequencescapeTubesJson from '../../data/sequencescapeTubesWithSample'
 import RequestsJson from '../../data/requests'
