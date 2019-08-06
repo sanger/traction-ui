@@ -70,7 +70,7 @@ export default {
     },
     async deleteLibraries () {
       let selectedIds = this.selected.map(s => s.id)
-      let promises = this.libraryRequest.destroy(selectedIds)
+      let promises = this.tractionSaphyrLibraryRequest.destroy(selectedIds)
       let responses = await Promise.all(promises.map(promise => handlePromise(promise)))
 
       if (responses.every(r => r.successful)) {
@@ -85,7 +85,7 @@ export default {
     }
   },
   computed: {
-    libraryRequest () {
+    tractionSaphyrLibraryRequest () {
       return this.api.traction.saphyr.libraries
     },
     getItems () {

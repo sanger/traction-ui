@@ -149,8 +149,20 @@ describe('Run.vue', () => {
   })
 
   describe('#runsRequest', () => {
-    it('will have a request', () => {
+    it('will have a runsRequest', () => {
       expect(run.runsRequest).toBeDefined()
+    })
+  })
+
+  describe('#tractionSaphyrTubeRequest', () => {
+    it('will have a tractionSaphyrTubeRequest', () => {
+      expect(run.tractionSaphyrTubeRequest).toBeDefined()
+    })
+  })
+
+  describe('#saphyrRequest', () => {
+    it('will have a saphyrRequest', () => {
+      expect(run.saphyrRequest).toBeDefined()
     })
   })
 
@@ -183,7 +195,7 @@ describe('Run.vue', () => {
     let failedResponse
 
     beforeEach(() => {
-      run.api.traction.tubes.get = jest.fn()
+      run.api.traction.saphyr.tubes.get = jest.fn()
       run.api.traction.saphyr.runs.create = jest.fn()
       run.api.traction.saphyr.runs.destroy = jest.fn()
       run.api.traction.saphyr.runs.destroy.mockResolvedValue(successfulDestroyJson)
@@ -205,7 +217,7 @@ describe('Run.vue', () => {
       beforeEach(() => {
         run.api.traction.saphyr.runs.create.mockResolvedValue(createRunJson)
         run.api.traction.saphyr.chips.create.mockResolvedValue(createChipJson)
-        run.api.traction.tubes.get.mockResolvedValue(tubeWithLibraryJson)
+        run.api.traction.saphyr.tubes.get.mockResolvedValue(tubeWithLibraryJson)
       })
 
       it('success', async () => {
@@ -246,7 +258,7 @@ describe('Run.vue', () => {
     describe('when the run is not valid', () => {
 
       beforeEach(() => {
-        run.api.traction.tubes.get.mockReturnValue(failedResponse)
+        run.api.traction.saphyr.tubes.get.mockReturnValue(failedResponse)
       })
 
       it('will not try to create the run', async () => {

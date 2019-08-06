@@ -16,10 +16,6 @@
       "samples": {
         "name": "samples"
       },
-      "tubes": {
-        "name": "tubes",
-        "include": "material"
-      },
       "saphyr": {
         "libraries": {
           "name": "libraries"
@@ -36,6 +32,13 @@
         },
         "flowcells": {
           "name": "flowcells"
+        },
+        "requests": {
+          "name": "requests"
+        },
+        "tubes": {
+          "name": "tubes",
+          "include": "material"
         }
       }
     }

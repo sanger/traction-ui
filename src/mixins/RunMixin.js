@@ -88,6 +88,12 @@ export default {
     runsRequest () {
       return this.api.traction.saphyr.runs
     },
+    tractionSaphyrTubeRequest () {
+      return this.api.traction.saphyr.tubes
+    },
+    saphyrRequest () {
+      return this.api.traction.saphyr
+    },
     createPayload () {
       return {
         data: {

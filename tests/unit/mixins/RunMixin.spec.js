@@ -214,8 +214,20 @@ describe('RunMixin', () => {
   })
 
   describe('#runsRequest', () => {
-    it('will have a request', () => {
+    it('will have a runsRequest', () => {
       expect(cmp.runsRequest).toBeDefined()
+    })
+  })
+
+  describe('#tractionSaphyrTubeRequest', () => {
+    it('will have a tractionSaphyrTubeRequest', () => {
+      expect(cmp.tractionSaphyrTubeRequest).toBeDefined()
+    })
+  })
+
+  describe('#saphyrRequest', () => {
+    it('will have a saphyrRequest', () => {
+      expect(cmp.saphyrRequest).toBeDefined()
     })
   })
 

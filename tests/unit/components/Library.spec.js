@@ -55,15 +55,15 @@ describe('Library', () => {
       run.id = 1
       store.commit('addRun', run)
       wrapper.setProps({runId: run.id})
-      library.tractionTubeRequest.get = jest.fn()
+      library.tractionSaphyrTubeRequest.get = jest.fn()
       library.alert = jest.fn()
     })
 
     it('successfully', async () => {
-      library.tractionTubeRequest.get.mockResolvedValue(LibraryTubeJson)
+      library.tractionSaphyrTubeRequest.get.mockResolvedValue(LibraryTubeJson)
       let apiResponse = new Response(LibraryTubeJson)
       await library.updateLibrary()
-      expect(library.tractionTubeRequest.get).toBeCalledWith({ filter: { barcode: 'TRAC-1' } })
+      expect(library.tractionSaphyrTubeRequest.get).toBeCalledWith({ filter: { barcode: 'TRAC-1' } })
       expect(wrapper.emitted().updateLibrary).toBeTruthy()
       material = apiResponse.deserialize.tubes[0].material
       expect(wrapper.emitted().updateLibrary[0]).toEqual([material])
@@ -73,7 +73,7 @@ describe('Library', () => {
 
     it('unsuccessfully', async () => {
       let failedResponse = { 'data': { }, 'status': 500, 'statusText': 'Internal Server Error' }
-      library.tractionTubeRequest.get.mockReturnValue(failedResponse)
+      library.tractionSaphyrTubeRequest.get.mockReturnValue(failedResponse)
       await library.updateLibrary()
 
       expect(library.libraryId).not.toBeDefined()
@@ -82,9 +82,9 @@ describe('Library', () => {
 
   })
 
-  describe('#tractionTubeRequest', () => {
+  describe('#tractionSaphyrTubeRequest', () => {
     it('will have a request', () => {
-      expect(library.tractionTubeRequest).toBeDefined()
+      expect(library.tractionSaphyrTubeRequest).toBeDefined()
     })
   })
 
