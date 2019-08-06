@@ -36,7 +36,7 @@ export default {
     return {
       fields: [
         { key: 'selected', label: ''},
-        { key: 'id', label: 'Sample ID', sortable: true },
+        { key: 'id', label: 'Sample ID (Request)', sortable: true },
         { key: 'sample_name', label: 'Name', sortable: true },
         { key: 'species', label: 'Species', sortable: true },
         { key: 'barcode', label: 'Barcode', sortable: true },
