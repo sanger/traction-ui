@@ -38,7 +38,7 @@ export default {
         { key: 'selected', label: ''},
         { key: 'id', label: 'Sample ID (Request)', sortable: true },
         { key: 'sample_name', label: 'Name', sortable: true },
-        { key: 'species', label: 'Species', sortable: true },
+        { key: 'sample_species', label: 'Species', sortable: true },
         { key: 'barcode', label: 'Barcode', sortable: true },
         { key: 'created_at', label: 'Created at', sortable: true }
       ],
