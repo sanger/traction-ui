@@ -335,7 +335,7 @@ describe('Run', () => {
         api.traction.saphyr.runs.create.mockReturnValue(failedResponse)
         expect(api.traction.saphyr.chips.create).not.toBeCalled()
         expect(api.traction.saphyr.flowcells.create).not.toBeCalled()
-        expect(await Run.create(run, api.traction)).toBeFalsy()
+        expect(await Run.create(run, api.traction.saphyr)).toBeFalsy()
       })
 
       it('returns false and rollsback if the chip cannot be created', async () => {

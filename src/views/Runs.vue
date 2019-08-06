@@ -57,6 +57,7 @@ export default {
     return {
       fields: [
         { key: 'id', label: 'Run ID', sortable: true },
+        { key: 'name', label: 'Name', sortable: true },
         { key: 'state', label: 'State', sortable: true },
         { key: 'chip_barcode', label: 'Chips Barcode', sortable: true },
         { key: 'created_at', label: 'Created at', sortable: true },

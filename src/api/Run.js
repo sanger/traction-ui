@@ -87,7 +87,7 @@ const updateChip = (run, chipBarcode) => {
 
 const validate = (run) => {
   let errors = {}
-  
+
   let error = validateChip(run.chip)
   if (error !== undefined) {
     Object.assign(errors, {chip: error})
@@ -121,12 +121,12 @@ const create = async (run, request) => {
     id = runResponse.deserialize.runs[0].id
     responses.push(runResponse)
 
-    let chipResponse = await createResource({ data: { type: "chips", attributes: { barcode: run.chip.barcode, run_id: id } } }, request.chips)
+    let chipResponse = await createResource({ data: { type: "chips", attributes: { barcode: run.chip.barcode, saphyr_run_id: id } } }, request.chips)
     id = chipResponse.deserialize.chips[0].id
     responses.push(chipResponse)
 
     for (const flowcell of run.chip.flowcells) {
-      let flowcellResponse = await createResource({ data: { type: "flowcells", attributes: { position: flowcell.position, library_id: flowcell.library.id, chip_id: id } } }, request.flowcells)
+      let flowcellResponse = await createResource({ data: { type: "flowcells", attributes: { position: flowcell.position, saphyr_library_id: flowcell.library.id, saphyr_chip_id: id } } }, request.flowcells)
       responses.push(flowcellResponse)
     }
 
@@ -150,7 +150,7 @@ const rollback = (responses, request) => {
 
 const destroy = async (id, request) => {
   let promise = request.destroy(id)
-  
+
   return await handlePromise(promise)
 }
 
