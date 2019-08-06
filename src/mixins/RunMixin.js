@@ -15,7 +15,7 @@ export default {
       return this.$store.getters.run(id)
     },
     async getRuns () {
-      let promise = this.runsRequest.get()
+      let promise = this.tractionSaphyrRunsRequest.get()
       let response = await handlePromise(promise)
 
       if (response.successful) {
@@ -37,7 +37,7 @@ export default {
       }
     },
     async updateRun (id, attributes) {
-      let promises = this.runsRequest.update(this.payload(id, attributes))
+      let promises = this.tractionSaphyrRunsRequest.update(this.payload(id, attributes))
       let response = await handlePromise(promises[0])
 
       if (response.successful) {
@@ -85,7 +85,7 @@ export default {
     }
   },
   computed: {
-    runsRequest () {
+    tractionSaphyrRunsRequest () {
       return this.api.traction.saphyr.runs
     },
     tractionSaphyrTubeRequest () {

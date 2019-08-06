@@ -148,9 +148,9 @@ describe('Run.vue', () => {
     })
   })
 
-  describe('#runsRequest', () => {
-    it('will have a runsRequest', () => {
-      expect(run.runsRequest).toBeDefined()
+  describe('#tractionSaphyrRunsRequest', () => {
+    it('will have a tractionSaphyrRunsRequest', () => {
+      expect(run.tractionSaphyrRunsRequest).toBeDefined()
     })
   })
 
