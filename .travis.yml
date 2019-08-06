@@ -1,19 +1,15 @@
 dist: trusty
 sudo: required
 language: node_js
-
 addons:
   chrome: stable
-
 before_script:
   - google-chrome-stable --headless --disable-gpu --remote-debugging-port=9222 http://localhost &
 
 script:
   - yarn test
   - yarn lint
-
 before_deploy: "./compile-build.sh release.tar.gz dist staging"
-
 deploy:
   provider: releases
   api_key:
@@ -22,3 +18,6 @@ deploy:
   on:
     repo: sanger/traction-ui
     branch: devel
+notifications:
+  slack:
+    secure: WZbwTFZ1hsylP7UTOXRPZOoUWw+X6GriinzmFTxRQGube2x3r2yJyrWM90txBsJVUR/s4rEaipl6vD+/UCVzkEbIaD3O66tcox4w+rqjpyet8qLBgV+y0f03NYvQ8sHckA6tOZWDaXxMSVAcP35i8VpvyHSeSoTqyM5LYuWaGpiWs/DSMdRmr3eCR4jFJfk7xDJMG6WgkCir+st9HyZuIJlDpQOfKMtPuziOQ5QxGM3dytJMUdspGDYKw4ZzfdY1fbVoMLCsw8kxJcdszylGYIPjpcxKYqVojA7K/mEjRaJNukZuYwu61rfLMWNqzxkydK+9R3N1QPwLIB/1rHZOde4PMUVjLSB09BiKWagzvrtpfzB5UdV81cJfo+GXch0XB7SWNeBJK79S43SgD5tYKNrs8s6hQj6xg8+3cnUM7Qa3yHP6XDGz5uyAreTj9SmLIXyFYMBWVkjj/j0kx9j6CZBs6BZkyfA/MuWnrgMbz52kWOte2/bJW4XcYF3Euq9XGX1dWN2MVEe+D+VeS/g9NuyHw7A956L0//ItXCZBNzzWfRQFXBJZexpTltvyFf4qQmkSWeDZ212yZgNN6MCumJbE0UaS4OBImmWkKYv05+Ztflr4WWpLwlzZ6fIRAG3LHNPlVoRb/pcT6BnBWZr/UwmczqOKXQpCFHIBc5doJIE=
