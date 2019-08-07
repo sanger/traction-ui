@@ -2,7 +2,7 @@
 
   <div class="modal">
     <b-btn id="printLabels" :disabled="disabled" v-b-modal.printerModal>Print Labels</b-btn>
-    <b-modal id="printerModal" title="Print Labels" ref="printerModal" @ok="handleOk" @shown="clearSelect">
+    <b-modal id="printerModal" title="Print Labels" ref="printerModal" :static="isStatic" @ok="handleOk" @shown="clearSelect">
       <b-form-select v-model="selectedPrinterId" :options="printerOptions" class="mb-3" />
     </b-modal>
   </div>
@@ -21,6 +21,7 @@ export default {
   },
   props: {
     disabled: Boolean,
+    isStatic: Boolean
   },
   methods: {
     clearSelect () {

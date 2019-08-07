@@ -13,7 +13,8 @@ describe('Modal.vue', () => {
       localVue,
       store,
       propsData: {
-        disabled: true
+        disabled: true,
+        isStatic: true
       },
       methods: {
         provider () { return }

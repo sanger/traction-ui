@@ -109,7 +109,7 @@ describe('Run.vue', () => {
   })
 
   describe('name input', () => {
-  
+
     it('updates the name v-model', () => {
 
       let name = 'runaway'
@@ -198,13 +198,13 @@ describe('Run.vue', () => {
       store.commit('addRun', foundRun)
       wrapper = mount(Run, { localVue, router, store, propsData: { id: 'new' } })
       run = wrapper.vm
-  
+
     })
 
     describe('when the run is valid', () => {
 
       beforeEach(() => {
-       
+
         run.api.traction.runs.create.mockResolvedValue(createRunJson)
         run.api.traction.chips.create.mockResolvedValue(createChipJson)
         run.api.traction.tubes.get.mockResolvedValue(tubeWithLibraryJson)
