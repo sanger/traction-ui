@@ -73,7 +73,7 @@ export default {
         result = await RunApi.create(run, this.api.traction)
         if (result) {
           this.alert('run was successfully created')
-          this.$router.push({name: 'Runs'}).catch(err => {})
+          this.$router.push({name: 'Runs'}).catch(() => {})
         } else {
           this.alert('run could not be created')
         }
