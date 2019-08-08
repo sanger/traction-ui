@@ -11,6 +11,7 @@ language: node_js
 script:
   - yarn test:unit
   - yarn lint
+
 before_deploy: "./compile-build.sh release.tar.gz dist"
 
 deploy:
@@ -21,7 +22,7 @@ deploy:
   name: devel-$(date)
   on:
     repo: sanger/traction-ui
-    branch: devel
+    branch: update-readme
 
 notifications:
   slack:
