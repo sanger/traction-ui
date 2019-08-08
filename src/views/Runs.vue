@@ -13,6 +13,14 @@
         </b-input-group>
       </b-col>
 
+      <b-col>
+        <b-pagination
+          v-model="currentPage"
+          :total-rows="rows"
+          :per-page="perPage"
+        ></b-pagination>
+      </b-col>
+
       <b-table
           show-empty
           :items="items"
@@ -20,6 +28,8 @@
           :filter="filter"
           :sort-by.sync="sortBy"
           :sort-desc.sync="sortDesc"
+          :per-page="perPage"
+          :current-page="currentPage"
       >
 
         <template slot="actions" slot-scope="row">
@@ -66,7 +76,9 @@ export default {
       items: [],
       filter: null,
       sortBy: 'created_at',
-      sortDesc: true
+      sortDesc: true,
+      perPage: 10,
+      currentPage: 1,
     }
   },
   methods: {
