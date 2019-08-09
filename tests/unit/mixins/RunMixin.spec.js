@@ -55,15 +55,15 @@ describe('RunMixin', () => {
   describe('#getRuns', () => {
 
     beforeEach(() => {
-      cmp.runsRequest.get = jest.fn()
+      cmp.tractionSaphyrRunsRequest.get = jest.fn()
       cmp.showAlert = jest.fn()
     })
 
     it('successfully', async () => {
-      cmp.runsRequest.get.mockResolvedValue(RunsJson)
+      cmp.tractionSaphyrRunsRequest.get.mockResolvedValue(RunsJson)
       let foundRuns = await cmp.getRuns()
       let expectedRuns = new Response(RunsJson).deserialize.runs
-      expect(cmp.runsRequest.get).toBeCalled()
+      expect(cmp.tractionSaphyrRunsRequest.get).toBeCalled()
       expect(foundRuns).toEqual(expectedRuns)
       expect(Object.keys(store.getters.runs).length).toEqual(expectedRuns.length)
     })
@@ -75,7 +75,7 @@ describe('RunMixin', () => {
         statusText: "Unprocessible entity"
       }
 
-      cmp.runsRequest.get.mockReturnValue(failedResponse)
+      cmp.tractionSaphyrRunsRequest.get.mockReturnValue(failedResponse)
       let foundRuns = await cmp.getRuns()
       expect(foundRuns).toEqual([])
       expect(cmp.message).toEqual('runs error message 1')
@@ -110,7 +110,7 @@ describe('RunMixin', () => {
   describe('#updateRun', () => {
 
     beforeEach(() => {
-      cmp.runsRequest.update = jest.fn()
+      cmp.tractionSaphyrRunsRequest.update = jest.fn()
       cmp.showAlert = jest.fn()
     })
 
@@ -118,14 +118,14 @@ describe('RunMixin', () => {
       let promise = new Promise((resolve) => {
         resolve(RunJson)
       })
-      cmp.runsRequest.update.mockReturnValue([promise])
+      cmp.tractionSaphyrRunsRequest.update.mockReturnValue([promise])
 
       let run = new Response(RunJson).deserialize.runs[0]
 
       await cmp.updateRun(runId, attributes)
 
       let payload = cmp.payload(runId, attributes)
-      expect(cmp.runsRequest.update).toBeCalledWith(payload)
+      expect(cmp.tractionSaphyrRunsRequest.update).toBeCalledWith(payload)
       expect(cmp.message).toEqual('Run updated')
       expect(store.getters.run(run.id)).toEqual(run)
     })
@@ -136,7 +136,7 @@ describe('RunMixin', () => {
         statusText: "Unprocessible entity"
       }]
 
-      cmp.runsRequest.update.mockReturnValue(failedResponse)
+      cmp.tractionSaphyrRunsRequest.update.mockReturnValue(failedResponse)
 
       let message
       try {
@@ -213,9 +213,21 @@ describe('RunMixin', () => {
     })
   })
 
-  describe('#runsRequest', () => {
-    it('will have a request', () => {
-      expect(cmp.runsRequest).toBeDefined()
+  describe('#tractionSaphyrRunsRequest', () => {
+    it('will have a tractionSaphyrRunsRequest', () => {
+      expect(cmp.tractionSaphyrRunsRequest).toBeDefined()
+    })
+  })
+
+  describe('#tractionSaphyrTubeRequest', () => {
+    it('will have a tractionSaphyrTubeRequest', () => {
+      expect(cmp.tractionSaphyrTubeRequest).toBeDefined()
+    })
+  })
+
+  describe('#saphyrRequest', () => {
+    it('will have a saphyrRequest', () => {
+      expect(cmp.saphyrRequest).toBeDefined()
     })
   })
 

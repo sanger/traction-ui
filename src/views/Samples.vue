@@ -36,12 +36,11 @@ export default {
     return {
       fields: [
         { key: 'selected', label: ''},
-        { key: 'id', label: 'Sample ID', sortable: true },
-        { key: 'name', label: 'Name', sortable: true },
-        { key: 'species', label: 'Species', sortable: true },
+        { key: 'id', label: 'Sample ID (Request)', sortable: true },
+        { key: 'sample_name', label: 'Name', sortable: true },
+        { key: 'sample_species', label: 'Species', sortable: true },
         { key: 'barcode', label: 'Barcode', sortable: true },
-        { key: 'created_at', label: 'Created at', sortable: true },
-        { key: 'deactivated_at', label: 'Deactivated at', sortable: true },
+        { key: 'created_at', label: 'Created at', sortable: true }
       ],
       selected: [],
       message: '',
@@ -69,11 +68,11 @@ export default {
       }
     },
     async createLibrariesInTraction (selectedEnzymeId) {
-      let libraries = this.selected.map(item => { return {'sample_id': item.id, 'enzyme_id': selectedEnzymeId}})
+      let libraries = this.selected.map(item => { return { 'state': 'pending', 'saphyr_request_id': item.id, 'saphyr_enzyme_id': selectedEnzymeId } })
 
-      let body = { data: { type: 'libraries', attributes: { libraries: libraries }}}
+      let body = { data: { type: 'libraries', attributes: { libraries: libraries } } }
 
-      let promise = this.libraryRequest.create(body)
+      let promise = this.tractionSaphyrLibraryRequest.create(body)
       let response = await handlePromise(promise)
 
       if (response.successful) {
@@ -87,7 +86,7 @@ export default {
         throw 'There are no barcodes'
       }
 
-      let response = await getTubesForBarcodes(this.barcodes, this.tractionTubeRequest)
+      let response = await getTubesForBarcodes(this.barcodes, this.tractionSaphyrTubeRequest)
       if (response.successful && !response.empty) {
         let tubes = response.deserialize.tubes
         if (tubes.every(t => t.material.type == "libraries")) {
@@ -107,11 +106,11 @@ export default {
     Alert
   },
   computed: {
-    libraryRequest () {
-      return this.api.traction.libraries
+    tractionSaphyrLibraryRequest () {
+      return this.api.traction.saphyr.libraries
     },
-    tractionTubeRequest () {
-      return this.api.traction.tubes
+    tractionSaphyrTubeRequest () {
+      return this.api.traction.saphyr.tubes
     },
     getItems () {
       return this.items.map(i => Object.assign(i.material, {barcode: i.barcode}))

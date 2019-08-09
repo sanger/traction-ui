@@ -64,7 +64,7 @@ export default {
       return !isNaN(this.runId)
     },
     chipRequest () {
-      return this.api.traction.chips
+      return this.api.traction.saphyr.chips
     },
     payload () {
       return {

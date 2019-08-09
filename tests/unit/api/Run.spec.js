@@ -82,7 +82,7 @@ describe('Run', () => {
       })
     })
 
-   
+
 
   })
 
@@ -317,51 +317,51 @@ describe('Run', () => {
 
       beforeEach(() => {
         api = build(Api.Config, process.env)
-        api.traction.runs.create = jest.fn()
-        api.traction.chips.create = jest.fn()
-        api.traction.flowcells.create = jest.fn()
-        api.traction.runs.destroy = jest.fn()
-        api.traction.chips.destroy = jest.fn()
+        api.traction.saphyr.runs.create = jest.fn()
+        api.traction.saphyr.chips.create = jest.fn()
+        api.traction.saphyr.flowcells.create = jest.fn()
+        api.traction.saphyr.runs.destroy = jest.fn()
+        api.traction.saphyr.chips.destroy = jest.fn()
       })
 
       it('returns true', async () => {
-        api.traction.runs.create.mockResolvedValue(createRunJson)
-        api.traction.chips.create.mockResolvedValue(createChipJson)
-        api.traction.flowcells.create.mockResolvedValue(createFlowcellJson)
-        expect(await Run.create(run, api.traction)).toBeTruthy()
+        api.traction.saphyr.runs.create.mockResolvedValue(createRunJson)
+        api.traction.saphyr.chips.create.mockResolvedValue(createChipJson)
+        api.traction.saphyr.flowcells.create.mockResolvedValue(createFlowcellJson)
+        expect(await Run.create(run, api.traction.saphyr)).toBeTruthy()
       })
 
       it('returns false if the run cannot be created', async () => {
-        api.traction.runs.create.mockReturnValue(failedResponse)
-        expect(api.traction.chips.create).not.toBeCalled()
-        expect(api.traction.flowcells.create).not.toBeCalled()
-        expect(await Run.create(run, api.traction)).toBeFalsy()
+        api.traction.saphyr.runs.create.mockReturnValue(failedResponse)
+        expect(api.traction.saphyr.chips.create).not.toBeCalled()
+        expect(api.traction.saphyr.flowcells.create).not.toBeCalled()
+        expect(await Run.create(run, api.traction.saphyr)).toBeFalsy()
       })
 
       it('returns false and rollsback if the chip cannot be created', async () => {
-        api.traction.runs.create.mockReturnValue(createRunJson)
-        api.traction.chips.create.mockResolvedValue(failedResponse)
+        api.traction.saphyr.runs.create.mockReturnValue(createRunJson)
+        api.traction.saphyr.chips.create.mockResolvedValue(failedResponse)
 
-        api.traction.runs.destroy.mockResolvedValue(successfulDestroyJson)
+        api.traction.saphyr.runs.destroy.mockResolvedValue(successfulDestroyJson)
 
         let runResponse = new Response(createRunJson)
         let runId = runResponse.deserialize.runs[0].id
 
-        let resp = await Run.create(run, api.traction)
+        let resp = await Run.create(run, api.traction.saphyr)
 
-        expect(api.traction.runs.destroy).toBeCalledWith(runId)
-        expect(api.traction.flowcells.create).not.toBeCalled()
-        
+        expect(api.traction.saphyr.runs.destroy).toBeCalledWith(runId)
+        expect(api.traction.saphyr.flowcells.create).not.toBeCalled()
+
         expect(resp).toBeFalsy()
       })
 
       it('returns false and rollsback if the flowcells cannot be created', async () => {
-        api.traction.runs.create.mockResolvedValue(createRunJson)
-        api.traction.chips.create.mockResolvedValue(createChipJson)
-        api.traction.flowcells.create.mockResolvedValue(failedResponse)
+        api.traction.saphyr.runs.create.mockResolvedValue(createRunJson)
+        api.traction.saphyr.chips.create.mockResolvedValue(createChipJson)
+        api.traction.saphyr.flowcells.create.mockResolvedValue(failedResponse)
 
-        api.traction.chips.destroy.mockResolvedValue(successfulDestroyJson)
-        api.traction.runs.destroy.mockResolvedValue(successfulDestroyJson)
+        api.traction.saphyr.chips.destroy.mockResolvedValue(successfulDestroyJson)
+        api.traction.saphyr.runs.destroy.mockResolvedValue(successfulDestroyJson)
 
         let runResponse = new Response(createRunJson)
         let runId = runResponse.deserialize.runs[0].id
@@ -369,10 +369,10 @@ describe('Run', () => {
         let chipResponse = new Response(createChipJson)
         let chipId = chipResponse.deserialize.chips[0].id
 
-        let resp = await Run.create(run, api.traction)
+        let resp = await Run.create(run, api.traction.saphyr)
 
-        expect(api.traction.runs.destroy).toBeCalledWith(runId)
-        expect(api.traction.chips.destroy).toBeCalledWith(chipId)
+        expect(api.traction.saphyr.runs.destroy).toBeCalledWith(runId)
+        expect(api.traction.saphyr.chips.destroy).toBeCalledWith(chipId)
 
         expect(resp).toBeFalsy()
       })
@@ -387,17 +387,17 @@ describe('Run', () => {
         chipResponse = new Response(createChipJson)
         responses = [runResponse, chipResponse]
 
-        api.traction.runs.destroy = jest.fn()
-        api.traction.chips.destroy = jest.fn()
+        api.traction.saphyr.runs.destroy = jest.fn()
+        api.traction.saphyr.chips.destroy = jest.fn()
       })
 
       it ('gets a list of responses', () => {
-        api.traction.runs.destroy.mockResolvedValue(successfulDestroyJson)
-        api.traction.chips.destroy.mockResolvedValue(successfulDestroyJson)
+        api.traction.saphyr.runs.destroy.mockResolvedValue(successfulDestroyJson)
+        api.traction.saphyr.chips.destroy.mockResolvedValue(successfulDestroyJson)
 
-        Run.rollback(responses, api.traction)
-        expect(api.traction.runs.destroy).toBeCalledWith(runResponse.deserialize.runs[0].id)
-        expect(api.traction.chips.destroy).toBeCalledWith(chipResponse.deserialize.chips[0].id)
+        Run.rollback(responses, api.traction.saphyr)
+        expect(api.traction.saphyr.runs.destroy).toBeCalledWith(runResponse.deserialize.runs[0].id)
+        expect(api.traction.saphyr.chips.destroy).toBeCalledWith(chipResponse.deserialize.chips[0].id)
       })
     })
 
@@ -406,15 +406,15 @@ describe('Run', () => {
 
       beforeEach(() =>{
         api = build(Api.Config, process.env)
-        api.traction.runs.destroy = jest.fn()
+        api.traction.saphyr.runs.destroy = jest.fn()
       })
 
       it('rolls back the request', async () => {
-        api.traction.runs.destroy.mockResolvedValue(successfulDestroyJson)
+        api.traction.saphyr.runs.destroy.mockResolvedValue(successfulDestroyJson)
         let expected = new Response(successfulDestroyJson)
 
         let runResponse = new Response(createRunJson)
-        let response = await Run.destroy(runResponse, api.traction.runs)
+        let response = await Run.destroy(runResponse, api.traction.saphyr.runs)
 
         expect(response).toEqual(expected)
       })
@@ -449,7 +449,7 @@ describe('Run', () => {
     it('will update the chip barcode', () => {
       expect(updatedRun.chip.barcode).toEqual(chipBarcode)
     })
-    
+
   })
 
 })

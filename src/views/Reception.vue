@@ -62,12 +62,20 @@ export default {
       }
     },
     async exportSampleTubesIntoTraction (tubes) {
-      let body = { data: { attributes: { samples: this.sampleTubesJson(tubes) }}}
-      let promise = this.sampleRequest.create(body)
+      let body = {
+        data: {
+          type: "requests",
+          attributes: {
+            requests: this.sampleTubesJson(tubes)
+          }
+        }
+      }
+
+      let promise = this.tractionSaphyrRequestsRequest.create(body)
       let response = await handlePromise(promise)
 
       if (response.successful) {
-        this.barcodes = response.deserialize.samples.map(s=> s.barcode).join('\n')
+        this.barcodes = response.deserialize.requests.map(r => r.barcode).join('\n')
       } else {
         throw 'Failed to create tubes in Traction: ' + response.errors.message
       }
@@ -77,11 +85,11 @@ export default {
         throw 'There are no barcodes'
       }
 
-      let response = await getTubesForBarcodes(this.barcodes, this.tractionTubeRequest)
+      let response = await getTubesForBarcodes(this.barcodes, this.tractionSaphyrTubeRequest)
 
       if (response.successful && !response.empty) {
         let tubes = response.deserialize.tubes
-        let table = tubes.every(t => t.material.type == "samples") ? "Samples" : "Libraries"
+        let table = tubes.every(t => t.material.type == "requests") ? "Samples" : "Libraries"
         if (table) {
           this.$router.push({name: table, params: {items: tubes}})
         }
@@ -98,11 +106,11 @@ export default {
     sequencescapeTubeRequest () {
       return this.api.sequencescape.tubes
     },
-    tractionTubeRequest () {
-      return this.api.traction.tubes
+    tractionSaphyrTubeRequest () {
+      return this.api.traction.saphyr.tubes
     },
-    sampleRequest () {
-      return this.api.traction.samples
+    tractionSaphyrRequestsRequest () {
+      return this.api.traction.saphyr.requests
     }
   }
 }

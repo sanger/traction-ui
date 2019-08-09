@@ -69,7 +69,7 @@ export default {
   },
   computed: {
     enzymeRequest () {
-      return this.api.traction.enzymes
+      return this.api.traction.saphyr.enzymes
     }
   }
 }

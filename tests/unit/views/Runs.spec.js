@@ -222,4 +222,32 @@ describe('Runs.vue', () => {
     })
   })
 
+  describe ('pagination', () => {
+    let mockRuns
+
+    beforeEach(() => {
+      mockRuns = new Response(RunsJson).deserialize.runs
+
+      wrapper = mount(Runs, { localVue,
+        methods: {
+          provider() {
+            return
+          }
+        },
+        data() {
+          return {
+            items: mockRuns,
+            perPage: 2,
+            currentPage: 1
+          }
+        }
+      })
+    })
+
+    it('will paginate the runs in the table', () => {
+      expect(wrapper.find('tbody').findAll('tr').length).toEqual(2)
+    })
+
+  })
+
 })

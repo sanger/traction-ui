@@ -24,7 +24,7 @@ describe('Libraries.vue', () => {
     })
 
     it('will create a library request', () => {
-      let request = libraries.libraryRequest
+      let request = libraries.tractionSaphyrLibraryRequest
       expect(request.resource).toBeDefined()
     })
 
@@ -98,7 +98,7 @@ describe('Libraries.vue', () => {
       let checkboxes = wrapper.findAll(".selected")
       checkboxes.at(0).trigger('click')
 
-      libraries.libraryRequest.execute = jest.fn()
+      libraries.tractionSaphyrLibraryRequest.execute = jest.fn()
     })
 
     it('will create a list of selected libraries', () => {
@@ -116,7 +116,7 @@ describe('Libraries.vue', () => {
         resolve(mockResponse)
       })
 
-      libraries.libraryRequest.execute.mockResolvedValue(promise)
+      libraries.tractionSaphyrLibraryRequest.execute.mockResolvedValue(promise)
 
       await libraries.deleteLibraries()
 
@@ -131,7 +131,7 @@ describe('Libraries.vue', () => {
         reject(mockResponse)
       })
 
-      libraries.libraryRequest.execute.mockResolvedValue(promise)
+      libraries.tractionSaphyrLibraryRequest.execute.mockResolvedValue(promise)
 
       let message
       try {
@@ -223,9 +223,9 @@ describe('Libraries.vue', () => {
     })
   })
 
-  describe('#libraryRequest', () => {
+  describe('#tractionSaphyrLibraryRequest', () => {
     it('will have a request', () => {
-      expect(libraries.libraryRequest).toBeDefined()
+      expect(libraries.tractionSaphyrLibraryRequest).toBeDefined()
     })
   })
 
