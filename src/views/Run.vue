@@ -23,7 +23,7 @@
 import RunMixin from '@/mixins/RunMixin'
 import Chip from '@/components/Chip'
 import Alert from '@/components/Alert'
-import * as RunApi from '@/api/Run' 
+import * as RunApi from '@/api/Run'
 
 export default {
   name: 'Run',
@@ -73,7 +73,7 @@ export default {
         result = await RunApi.create(run, this.api.traction)
         if (result) {
           this.alert('run was successfully created')
-          this.$router.push({name: 'Runs'})
+          this.$router.push({name: 'Runs'}).catch(() => {})
         } else {
           this.alert('run could not be created')
         }
