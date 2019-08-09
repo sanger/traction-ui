@@ -29,15 +29,11 @@ describe('Samples.vue', () => {
         propsData: {
           items: mockSamples
         },
-        methods: { provider() { return } }
+        stubs: {
+          Modal: true
+        }
       })
       samples = wrapper.vm
-    })
-
-    it('has a create libraries with enzyme button', () => {
-      expect(wrapper.contains('#createLibrariesWithEnzymeButton')).toBe(true)
-      let button = wrapper.find('#createLibrariesWithEnzymeButton').text()
-      expect(button).toEqual("Create Libraries with Enzyme")
     })
 
     describe('alert', () => {
