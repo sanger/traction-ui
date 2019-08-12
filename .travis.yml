@@ -22,7 +22,7 @@ deploy:
   name: devel-release-date
   on:
     repo: sanger/traction-ui
-    branch: devel
+    branch: test-release
 
 notifications:
   slack:
