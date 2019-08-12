@@ -1,5 +1,9 @@
+# only build if not a tag - this is to prevent builing after a tag is created by deployment
+if: tag IS blank
 language: node_js
-cache: yarn
+cache:
+  - yarn
+  - bundler
 git:
   depth: false
   submodules: false
@@ -24,7 +28,6 @@ script:
   - yarn lint
 
 before_deploy:
-  - echo "TRAVIS_BRANCH:" ${TRAVIS_BRANCH}
   - ./compile-build.sh release.tar.gz dist
   - export TAG_NAME=${TRAVIS_BRANCH}/$(date +'%Y-%m-%d/%H%M%S')
   - git tag "${TAG_NAME}"
