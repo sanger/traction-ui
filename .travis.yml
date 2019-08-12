@@ -2,7 +2,6 @@
 if: tag IS blank
 language: node_js
 cache:
-  - yarn
   - bundler
 git:
   depth: false
