@@ -1,6 +1,7 @@
 import handlePromise from '@/api/PromiseHelper'
 
 const tubeModule = {
+  // namespace everything so this would be 'store/saphyr/tube'
   namespaced: true,
   state: {
     tubes: []

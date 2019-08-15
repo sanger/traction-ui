@@ -38,6 +38,7 @@ export default new Vuex.Store({
       return state.runs[id]
     }
   },
+  // import the saphyr module
   modules: {
     saphyr: saphyrModule
   }

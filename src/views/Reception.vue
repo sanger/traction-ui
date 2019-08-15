@@ -20,8 +20,13 @@ import handlePromise from '@/api/PromiseHelper'
 import Api from '@/mixins/Api'
 import getTubesForBarcodes from '@/api/TubeRequests'
 
+// These are only needed if we use action types
 // import store from '@/store'
 // import * as actionTypes from '@/store/action_types'
+
+// createNamespacedHelpers lets us specify the module path
+// so we can access that modules state/ getters/ actions/ mutations
+// directly
 
 import { createNamespacedHelpers } from 'vuex'
 const { mapState, mapActions } = createNamespacedHelpers('saphyr/tube')
@@ -109,7 +114,13 @@ export default {
     async testHandleTractionTubes () {
       let barcodeString = this.barcodes.split('\n').filter(Boolean).join(',')
 
+      // Example 1:
+      // using ...mapActions
+      // to make the saphyr/tube namespaced modules actions accessible
       await this.getTractionTubesForBarcodes(barcodeString)
+
+      // Example 2:
+      // can use the action_types.js to call a constant
       // await store.dispatch(actionTypes.GET_TRACTION_TUBES_FOR_BARCODES, barcodeString)
 
       if (!this.tubes.empty) {
@@ -125,8 +136,11 @@ export default {
     showAlert () {
       return this.$refs.alert.show(this.message, 'primary')
     },
+    // using the createNamespacedHelpers to access getTractionTubesForBarcodes
+    // action from the saphyr tube module
+    // to call, use this.getTractionTubesForBarcodes()
     ...mapActions([
-      'getTractionTubesForBarcodes' // -> this.getTractionTubesForBarcodes()
+      'getTractionTubesForBarcodes'
     ])
   },
   computed: {
@@ -139,8 +153,11 @@ export default {
     tractionSaphyrRequestsRequest () {
       return this.api.traction.saphyr.requests
     },
+    // using the createNamespacedHelpers to access tubes
+    // getters from the saphyr tube module
+    // to call, use this.tubes
     ...mapState({
-      tubes: state => state.tubes // -> this.tubes
+      tubes: state => state.tubes
     })
   }
 }
