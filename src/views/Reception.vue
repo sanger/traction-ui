@@ -9,6 +9,8 @@
     <b-button class="scanButton" id="findSequencescapeTubes" variant="success" @click="handleSequencescapeTubes" :disabled="this.barcodes.length === 0">Import Sequencescape Tubes</b-button>
     <b-button class="scanButton" id="findTractionTubes" variant="success" @click="handleTractionTubes" :disabled="this.barcodes.length === 0">Find Traction Tubes</b-button>
 
+    <b-button id="testFindTractionTubes" variant="success" @click="testHandleTractionTubes" :disabled="this.barcodes.length === 0">Test Find Traction Tubes</b-button>
+
   </div>
 </template>
 
@@ -17,6 +19,12 @@ import Alert from '@/components/Alert'
 import handlePromise from '@/api/PromiseHelper'
 import Api from '@/mixins/Api'
 import getTubesForBarcodes from '@/api/TubeRequests'
+
+// import store from '@/store'
+// import * as actionTypes from '@/store/action_types'
+
+import { createNamespacedHelpers } from 'vuex'
+const { mapState, mapActions } = createNamespacedHelpers('saphyr/tube')
 
 export default {
   name: 'Reception',
@@ -98,9 +106,28 @@ export default {
         this.showAlert()
       }
     },
+    async testHandleTractionTubes () {
+      let barcodeString = this.barcodes.split('\n').filter(Boolean).join(',')
+
+      await this.getTractionTubesForBarcodes(barcodeString)
+      // await store.dispatch(actionTypes.GET_TRACTION_TUBES_FOR_BARCODES, barcodeString)
+
+      if (!this.tubes.empty) {
+        let table = this.tubes.every(t => t.material.type == "requests") ? "Samples" : "Libraries"
+        if (table) {
+          this.$router.push({name: table, params: {items: this.tubes}})
+        }
+      } else {
+        this.message = 'Failed to get Traction tubes'
+        this.showAlert()
+      }
+    },
     showAlert () {
       return this.$refs.alert.show(this.message, 'primary')
-    }
+    },
+    ...mapActions([
+      'getTractionTubesForBarcodes' // -> this.getTractionTubesForBarcodes()
+    ])
   },
   computed: {
     sequencescapeTubeRequest () {
@@ -111,7 +138,10 @@ export default {
     },
     tractionSaphyrRequestsRequest () {
       return this.api.traction.saphyr.requests
-    }
+    },
+    ...mapState({
+      tubes: state => state.tubes // -> this.tubes
+    })
   }
 }
 

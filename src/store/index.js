@@ -3,6 +3,7 @@ import Vue from 'vue'
 import Api from '@/api'
 import build from '@/api/ApiBuilder'
 import PrinterList from '@/config/PrinterList'
+import saphyrModule from '@/store/saphyr/saphyrModule'
 
 Vue.use(Vuex)
 
@@ -36,5 +37,8 @@ export default new Vuex.Store({
     run: state => (id) => {
       return state.runs[id]
     }
+  },
+  modules: {
+    saphyr: saphyrModule
   }
 })
