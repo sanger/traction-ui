@@ -4,11 +4,29 @@
 
     <div class="form-group">
       <label for="barcodes">Barcodes:</label>
-      <textarea type="text" v-model="barcodes" class="form-control" rows="10" cols="10" name="barcodes" id="barcodes" />
+      <textarea type="text"
+                v-model="barcodes"
+                class="form-control"
+                rows="10"
+                cols="10"
+                name="barcodes"
+                id="barcodes"/>
     </div>
-    <b-button class="scanButton" id="findSequencescapeTubes" variant="success" @click="handleSequencescapeTubes" :disabled="this.barcodes.length === 0">Import Sequencescape Tubes</b-button>
-    <b-button class="scanButton" id="findTractionTubes" variant="success" @click="handleTractionTubes" :disabled="this.barcodes.length === 0">Find Traction Tubes</b-button>
 
+    <b-button class="scanButton"
+              id="findSequencescapeTubes"
+              variant="success"
+              @click="handleSequencescapeTubes"
+              :disabled="this.barcodes.length === 0">
+      Import Sequencescape Tubes
+    </b-button>
+    <b-button class="scanButton"
+              id="findTractionTubes"
+              variant="success"
+              @click="handleTractionTubes"
+              :disabled="this.barcodes.length === 0">
+      Find Traction Tubes
+    </b-button>
   </div>
 </template>
 
@@ -16,11 +34,13 @@
 import Alert from '@/components/Alert'
 import handlePromise from '@/api/PromiseHelper'
 import Api from '@/mixins/Api'
+import Helper from '@/mixins/Helper'
 import getTubesForBarcodes from '@/api/TubeRequests'
+import * as consts from '@/consts/consts'
 
 export default {
   name: 'Reception',
-  mixins: [Api],
+  mixins: [Api, Helper],
   props: {
   },
   data () {
@@ -48,8 +68,7 @@ export default {
         await this.exportSampleTubesIntoTraction(tubes)
         await this.handleTractionTubes()
       } catch (err) {
-        this.message = err
-        this.showAlert()
+        this.showAlert(err, 'danger')
       }
     },
     async getSequencescapeTubes () {
@@ -58,7 +77,7 @@ export default {
       if (response.successful && !response.empty) {
         return response.deserialize.tubes
       } else {
-        throw 'Failed to find tubes in Sequencescape'
+        throw consts.MESSAGE_ERROR_FIND_TUBES_FAILED
       }
     },
     async exportSampleTubesIntoTraction (tubes) {
@@ -77,30 +96,48 @@ export default {
       if (response.successful) {
         this.barcodes = response.deserialize.requests.map(r => r.barcode).join('\n')
       } else {
-        throw 'Failed to create tubes in Traction: ' + response.errors.message
+        throw consts.MESSAGE_ERROR_CREATE_TUBES_FAILED + response.errors.message
       }
     },
     async handleTractionTubes () {
       if (this.barcodes === undefined || !this.barcodes.length) {
-        throw 'There are no barcodes'
+        throw consts.MESSAGE_ERROR_NO_BARCODES
       }
 
       let response = await getTubesForBarcodes(this.barcodes, this.tractionSaphyrTubeRequest)
 
       if (response.successful && !response.empty) {
         let tubes = response.deserialize.tubes
-        let table = tubes.every(t => t.material.type == "requests") ? "Samples" : "Libraries"
-        if (table) {
-          this.$router.push({name: table, params: {items: tubes}})
+        this.log(`tubes:`)
+        this.log(tubes)
+        let barcodesList = this.barcodes.split('\n')
+        // check that all barcodes are valid
+        if (tubes.length !== barcodesList.length) {
+          let validBarcodes = tubes.map((tube) => tube.barcode)
+          let invalidBarcodes = barcodesList.filter(
+            scannedBarcode => !validBarcodes.includes(scannedBarcode))
+          this.showAlert(
+            consts.MESSAGE_ERROR_INVALID_BARCODES.concat(invalidBarcodes.join(', ')),
+            'danger')
+          return
+        }
+
+        // check that all the barcodes are either samples (requests) or libraries
+        let isAllRequests = tubes.every(t => t.material.type == 'requests')
+        let isAllLibraries = tubes.every(t => t.material.type == 'libraries')
+
+        if (isAllRequests) {
+          this.$router.push({ path: 'samples', query: { barcode: barcodesList } })
+        } else if (isAllLibraries) {
+          this.$router.push({ path: 'libraries', query: { barcode: barcodesList } })
+        } else {
+          // We only want barcodes of the same type
+          this.showAlert(consts.MESSAGE_ERROR_SINGLE_TYPE, 'danger')
         }
       } else {
-        this.message = 'Failed to get Traction tubes'
-        this.showAlert()
+        this.showAlert(consts.MESSAGE_ERROR_GET_TRACTION_TUBES, 'danger')
       }
     },
-    showAlert () {
-      return this.$refs.alert.show(this.message, 'primary')
-    }
   },
   computed: {
     sequencescapeTubeRequest () {

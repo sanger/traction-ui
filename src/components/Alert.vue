@@ -1,5 +1,5 @@
 <template>
-  <div class="alert">
+  <div>
     <b-alert
       id="showAlert"
       :variant="type"
@@ -12,7 +12,6 @@
 </template>
 
 <script>
-
 export default {
   name: 'Alert',
   data () {
@@ -29,9 +28,5 @@ export default {
       this.showDismissibleAlert = true
     }
   },
-  props: {
-  },
-  computed: {
-  }
 }
 </script>
