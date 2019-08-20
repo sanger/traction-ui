@@ -3,7 +3,8 @@ import Vue from 'vue'
 import Api from '@/api'
 import build from '@/api/ApiBuilder'
 import PrinterList from '@/config/PrinterList'
-import saphyrModule from '@/store/saphyr/saphyrModule'
+import traction from '@/store/traction/index'
+import sequencescape from '@/store/sequencescape/index'
 
 Vue.use(Vuex)
 
@@ -38,8 +39,8 @@ export default new Vuex.Store({
       return state.runs[id]
     }
   },
-  // import the saphyr module
   modules: {
-    saphyr: saphyrModule
+    traction,
+    sequencescape
   }
 })

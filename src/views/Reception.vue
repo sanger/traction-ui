@@ -6,34 +6,19 @@
       <label for="barcodes">Barcodes:</label>
       <textarea type="text" v-model="barcodes" class="form-control" rows="10" cols="10" name="barcodes" id="barcodes" />
     </div>
-    <b-button class="scanButton" id="findSequencescapeTubes" variant="success" @click="handleSequencescapeTubes" :disabled="this.barcodes.length === 0">Import Sequencescape Tubes</b-button>
-    <b-button class="scanButton" id="findTractionTubes" variant="success" @click="handleTractionTubes" :disabled="this.barcodes.length === 0">Find Traction Tubes</b-button>
 
-    <b-button id="testFindTractionTubes" variant="success" @click="testHandleTractionTubes" :disabled="this.barcodes.length === 0">Test Find Traction Tubes</b-button>
+    <b-button id="findSequencescapeTubes" variant="success" @click="handleSequencescapeTubes" :disabled="this.barcodes.length === 0">Test Find Sequencescape Tubes</b-button>
+    <b-button id="findTractionTubes" variant="success" @click="handleTractionTubes" :disabled="this.barcodes.length === 0">Test Find Traction Tubes</b-button>
 
   </div>
 </template>
 
 <script>
 import Alert from '@/components/Alert'
-import handlePromise from '@/api/PromiseHelper'
-import Api from '@/mixins/Api'
-import getTubesForBarcodes from '@/api/TubeRequests'
-
-// These are only needed if we use action types
-// import store from '@/store'
-// import * as actionTypes from '@/store/action_types'
-
-// createNamespacedHelpers lets us specify the module path
-// so we can access that modules state/ getters/ actions/ mutations
-// directly
-
-import { createNamespacedHelpers } from 'vuex'
-const { mapState, mapActions } = createNamespacedHelpers('saphyr/tube')
+import { mapActions, mapState } from 'vuex'
 
 export default {
   name: 'Reception',
-  mixins: [Api],
   props: {
   },
   data () {
@@ -46,118 +31,55 @@ export default {
     Alert
   },
   methods: {
-    //TODO: Find a better way to extract information from responses.
-    sampleTubesJson (tubes) {
-      return tubes.map(t => ({
-        external_id: t.samples[0].uuid,
-        external_study_id: t.studies[0].uuid,
-        name: t.name,
-        species: t.samples[0].sample_metadata.sample_common_name
-      }))
+    async handleTractionTubes () {
+      let barcodes = this.getBarcodes()
+      // check barcodes exist
+      let response = await this.getTractionTubesForBarcodes(barcodes)
+      
+      if (response.successful && !response.empty) {
+          this.handleTubeRedirect()
+      } else {
+        this.message = response.errors
+        this.showAlert()
+      }
     },
     async handleSequencescapeTubes () {
-      try {
-        let tubes = await this.getSequencescapeTubes()
-        await this.exportSampleTubesIntoTraction(tubes)
-        await this.handleTractionTubes()
-      } catch (err) {
-        this.message = err
-        this.showAlert()
-      }
-    },
-    async getSequencescapeTubes () {
-      let response = await getTubesForBarcodes(this.barcodes, this.sequencescapeTubeRequest)
-
-      if (response.successful && !response.empty) {
-        return response.deserialize.tubes
-      } else {
-        throw 'Failed to find tubes in Sequencescape'
-      }
-    },
-    async exportSampleTubesIntoTraction (tubes) {
-      let body = {
-        data: {
-          type: "requests",
-          attributes: {
-            requests: this.sampleTubesJson(tubes)
-          }
-        }
-      }
-
-      let promise = this.tractionSaphyrRequestsRequest.create(body)
-      let response = await handlePromise(promise)
-
-      if (response.successful) {
-        this.barcodes = response.deserialize.requests.map(r => r.barcode).join('\n')
-      } else {
-        throw 'Failed to create tubes in Traction: ' + response.errors.message
-      }
-    },
-    async handleTractionTubes () {
-      if (this.barcodes === undefined || !this.barcodes.length) {
-        throw 'There are no barcodes'
-      }
-
-      let response = await getTubesForBarcodes(this.barcodes, this.tractionSaphyrTubeRequest)
-
-      if (response.successful && !response.empty) {
-        let tubes = response.deserialize.tubes
-        let table = tubes.every(t => t.material.type == "requests") ? "Samples" : "Libraries"
-        if (table) {
-          this.$router.push({name: table, params: {items: tubes}})
-        }
-      } else {
-        this.message = 'Failed to get Traction tubes'
-        this.showAlert()
-      }
-    },
-    async testHandleTractionTubes () {
-      let barcodeString = this.barcodes.split('\n').filter(Boolean).join(',')
-
-      // Example 1:
-      // using ...mapActions
-      // to make the saphyr/tube namespaced modules actions accessible
-      await this.getTractionTubesForBarcodes(barcodeString)
-
-      // Example 2:
-      // can use the action_types.js to call a constant
-      // await store.dispatch(actionTypes.GET_TRACTION_TUBES_FOR_BARCODES, barcodeString)
-
-      if (!this.tubes.empty) {
-        let table = this.tubes.every(t => t.material.type == "requests") ? "Samples" : "Libraries"
-        if (table) {
-          this.$router.push({name: table, params: {items: this.tubes}})
-        }
-      } else {
-        this.message = 'Failed to get Traction tubes'
-        this.showAlert()
-      }
+      let barcodes = this.getBarcodes()
+      await this.getSequencescapeTubesForBarcodes(barcodes)
+      await this.exportSampleTubesIntoTraction(this.sequencescapeTubes)
+      this.handleTubeRedirect()
     },
     showAlert () {
       return this.$refs.alert.show(this.message, 'primary')
     },
-    // using the createNamespacedHelpers to access getTractionTubesForBarcodes
-    // action from the saphyr tube module
-    // to call, use this.getTractionTubesForBarcodes()
-    ...mapActions([
-      'getTractionTubesForBarcodes'
+    getBarcodes () {
+      return this.barcodes.split('\n').filter(Boolean).join(',')
+    },
+    handleTubeRedirect() {
+      if (!this.tractionTubes.empty) {
+        let table = this.tractionTubes.every(t => t.material.type == "requests") ? "Samples" : "Libraries"
+        if (table) {
+          this.$router.push({name: table, params: {items: this.tractionTubes}})
+        }
+      } else {
+        this.message = 'Failed to get Traction tubes'
+        this.showAlert()
+      }
+    },
+    ...mapActions('traction/saphyr', [
+      'getTractionTubesForBarcodes',
+      'exportSampleTubesIntoTraction'
+    ]),
+    ...mapActions('sequencescape', [
+      'getSequencescapeTubesForBarcodes'
     ])
   },
   computed: {
-    sequencescapeTubeRequest () {
-      return this.api.sequencescape.tubes
-    },
-    tractionSaphyrTubeRequest () {
-      return this.api.traction.saphyr.tubes
-    },
-    tractionSaphyrRequestsRequest () {
-      return this.api.traction.saphyr.requests
-    },
-    // using the createNamespacedHelpers to access tubes
-    // getters from the saphyr tube module
-    // to call, use this.tubes
-    ...mapState({
-      tubes: state => state.tubes
+    ...mapState('traction/saphyr', {
+      tractionTubes: state => state.tractionTubes
+    }),
+    ...mapState('sequencescape', {
+      sequencescapeTubes: state => state.sequencescapeTubes
     })
   }
 }
