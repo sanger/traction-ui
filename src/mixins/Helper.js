@@ -1,6 +1,9 @@
 /**
  * A helper mixin to store commonly used functionality
  */
+import printJob from '@/api/PrintJobRequests'
+import * as consts from '@/consts/consts'
+
 export default {
   name: 'Helper',
   methods: {
@@ -20,6 +23,12 @@ export default {
       if (process.env !== 'production') {
         console.log(message)
       }
-    }
+    },
+    async handlePrintLabel(printerName) {
+      let response = await printJob(printerName, this.selected)
+
+      let message = response.successful ? consts.MESSAGE_SUCCESS_PRINTER : response.errors.message
+      this.showAlert(message)
+    },
   }
 }

@@ -7,12 +7,13 @@
       Print Labels
     </b-btn>
     <b-modal id="printerModal"
+             size="sm"
              title="Print Labels"
              ref="printerModal"
              :static="isStatic"
              @ok="handleOk"
              @shown="clearSelect">
-      <b-form-select v-model="selectedPrinterId" :options="printerOptions" class="mb-3" />
+      <b-form-select v-model="selectedPrinterId" :options="printerOptions" />
     </b-modal>
   </div>
 </template>

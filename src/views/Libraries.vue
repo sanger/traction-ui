@@ -101,12 +101,6 @@ export default {
     PrinterModal
   },
   methods: {
-    async handlePrintLabel (printerName) {
-      let response = await printJob(printerName, this.selected)
-
-      let message = response.successful ? consts.MESSAGE_SUCCESS_PRINTER : response.errors.message
-      this.showAlert(message)
-    },
     async handleLibraryDelete () {
       try {
         await this.deleteLibraries()
@@ -130,7 +124,7 @@ export default {
     async provider() {
       this.items = await this.getLibraries()
     },
-    async getLibraries (ignorePreFilter = false) {
+    async getLibraries() {
       this.log('getLibraries()')
       let promise = this.tractionSaphyrLibraryRequest.get()
       let response = await handlePromise(promise)
@@ -140,7 +134,7 @@ export default {
         this.$store.commit('addLibraries', libraries)
 
         // Pre-filter the libraries to those provided as a query paramater
-        if (!ignorePreFilter && typeof this.$route.query.barcode !== 'undefined'
+        if (typeof this.$route.query.barcode !== 'undefined'
               && this.$route.query.barcode !== '') {
 
           let preFilteredBarcodes = []

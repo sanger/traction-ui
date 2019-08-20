@@ -1,12 +1,21 @@
 <template>
-
-  <div class="modal">
-    <b-btn id="createLibrariesWithEnzymeButton" :disabled="disabled" v-b-modal.enzymeModal>Create Libraries with Enzyme</b-btn>
-    <b-modal id="enzymeModal" title="Create Libraries" ref="enzymeModal" :static="isStatic" @ok="handleOk" @shown="clearSelect">
+  <div>
+    <b-btn id="createLibrariesWithEnzymeButton"
+           :disabled="disabled"
+           v-b-modal.enzymeModal
+           variant="success">
+      Create Libraries
+    </b-btn>
+    <b-modal id="enzymeModal"
+             size="sm"
+             title="Create Libraries"
+             ref="enzymeModal"
+             :static="isStatic"
+             @ok="handleOk"
+             @shown="clearSelect">
       <b-form-select v-model="selectedEnzymeId" :options="enzymeOptions" class="mb-3" />
     </b-modal>
   </div>
-
 </template>
 
 <script>
@@ -51,7 +60,8 @@ export default {
 
       if (response.successful) {
         let enzymes = response.deserialize.enzymes
-        let enzymeOptions = enzymes.map((enzyme, index) => Object.assign({ value: index+1, text: enzyme.name }))
+        let enzymeOptions = enzymes.map(
+          (enzyme, index) => Object.assign({ value: index+1, text: enzyme.name }))
         enzymeOptions.unshift({ value: null, text: "Please select an option" })
         this.enzymeOptions = enzymeOptions
       } else {
@@ -65,8 +75,6 @@ export default {
   async created() {
     this.provider()
   },
-  components: {
-  },
   computed: {
     enzymeRequest () {
       return this.api.traction.saphyr.enzymes
@@ -74,13 +82,3 @@ export default {
   }
 }
 </script>
-
-
-<style>
-
-.modal {
-  display: inline;
-  position: relative;
-}
-
-</style>
