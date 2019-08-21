@@ -1,4 +1,5 @@
-import handlePromise from '@/api/PromiseHelper'
+import handlePromise  from '@/api/PromiseHelper'
+import printJob       from '@/api/PrintJobRequests'
 
 const getTractionTubesForBarcodes = async ({ commit, getters }, barcodeString)  => {
   let request = getters.tubeRequest
@@ -43,7 +44,7 @@ const sampleTubeJson = (tubes) => {
   }))
 }
 
-const deleteLibraries = async ({ getters }, libraryIds)  => {
+const deleteLibraries = async ({ getters }, libraryIds) => {
   let request = getters.libraryRequest
   let promises = request.destroy(libraryIds)
 
@@ -51,18 +52,25 @@ const deleteLibraries = async ({ getters }, libraryIds)  => {
   return responses
 }
 
+const printLabels = async (printerName, libraries) => {
+  let response = await printJob(printerName, libraries)
+  return response
+}
+
 const actions = {
   getTractionTubesForBarcodes,
   exportSampleTubesIntoTraction,
   sampleTubeJson,
-  deleteLibraries
+  deleteLibraries,
+  printLabels
 }
 
 export {
   getTractionTubesForBarcodes,
   exportSampleTubesIntoTraction,
   sampleTubeJson,
-  deleteLibraries
+  deleteLibraries,
+  printLabels
 }
 
 export default actions

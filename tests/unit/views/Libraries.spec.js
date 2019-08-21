@@ -73,8 +73,8 @@ describe('Libraries.vue', () => {
     })
 
     it('calls the correct functions when there is an error', async () => {
-      let mockResponse = { data: { data: [] }, status: 500, statusText: 'Internal Server Error' }
-      let expectedResponse = new Response(mockResponse)
+      let failedResponse =  { data: { errors: { it: ['was a bust'] } }, status: 422, statusText: 'Internal Server Error' }
+      let expectedResponse = new Response(failedResponse)
 
       libraries.deleteLibraries.mockReturnValue([expectedResponse])
 
@@ -82,70 +82,54 @@ describe('Libraries.vue', () => {
 
       expect(libraries.deleteLibraries).toBeCalled()
       expect(libraries.showAlert).toBeCalled()
-      expect(libraries.message).toEqual("Failed to delete: ")
+      expect(libraries.message).toEqual("Failed to delete: it was a bust")
     })
   })
 
   describe('#handlePrintLabel', () => {
-    let request
+    let printerName
 
     beforeEach(() => {
+      printerName = "abc123"
       libraries.selected = [{ id: 1, type: 'libraries', enzyme_name: 'enz1', barcode: 'TRAC-1' }]
-
-      request = store.getters.api.printMyBarcode.print_jobs
-      request.create = jest.fn()
+      libraries.printLabels = jest.fn()
     })
 
     it('passes selected printer to function on emit event', () => {
-      let successfulResponse =  {
-        data: {},
-        status: 201,
-        statusText: "OK"
-      }
+      let successfulResponse =  { data: {}, status: 201, statusText: "OK" }
 
-      let successfulPromise = new Promise((resolve) => {
-        resolve(successfulResponse)
-      })
+      let expectedResponse = new Response(successfulResponse)
+      libraries.printLabels.mockReturnValue(expectedResponse)
 
-      request.create.mockResolvedValue(successfulPromise)
       let modal = wrapper.find(PrinterModal)
-      modal.vm.$emit('selectPrinter', 'printer1')
+      modal.vm.$emit('selectPrinter', printerName)
 
-      expect(request.create).toBeCalled()
+      expect(libraries.printLabels).toBeCalledWith(printerName, libraries.selected)
     })
 
     it('successfully prints label', async () => {
-      let successfulResponse =  {
-        data: {},
-        status: 201,
-        statusText: "OK"
-      }
+      let successfulResponse =  { data: {}, status: 201, statusText: "OK" }
 
-      let successfulPromise = new Promise((resolve) => {
-        resolve(successfulResponse)
-      })
+      let expectedResponse = new Response(successfulResponse)
 
-      request.create.mockResolvedValue(successfulPromise)
-      await libraries.handlePrintLabel('printer1')
+      libraries.printLabels.mockReturnValue(expectedResponse)
+
+      await libraries.handlePrintLabel(printerName)
+
+      expect(libraries.printLabels).toBeCalledWith(printerName, libraries.selected)
       expect(libraries.message).toEqual('Printed successfully')
     })
 
     it('unsuccessfully', async () => {
-      let failedResponse =  {
-        data: {
-          errors: {
-            it: ['was a bust']
-          }
-        },
-        status: 422
-      }
+      let failedResponse =  { data: { errors: { it: ['was a bust'] } }, status: 422 }
 
-      let failedPromise = new Promise((reject) => {
-        reject(failedResponse)
-      })
+      let expectedResponse = new Response(failedResponse)
 
-      request.create.mockReturnValue(failedPromise)
-      await libraries.handlePrintLabel('printer1')
+      libraries.printLabels.mockReturnValue(expectedResponse)
+
+      await libraries.handlePrintLabel(printerName)
+
+      expect(libraries.printLabels).toBeCalledWith(printerName, libraries.selected)
       expect(libraries.message).toEqual('it was a bust')
     })
 
