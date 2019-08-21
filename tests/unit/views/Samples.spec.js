@@ -6,6 +6,7 @@ import Libraries from '@/views/Libraries'
 import TractionTubesWithLibrariesJson from '../../data/tubeWithLibrary'
 import VueRouter from 'vue-router'
 import Alert from '@/components/Alert'
+import Response from '@/api/Response'
 
 describe('Samples.vue', () => {
 
@@ -223,65 +224,49 @@ describe('Samples.vue', () => {
   })
 
   describe('#handlePrintLabel', () => {
-    let request
+    let printerName
 
     beforeEach(() => {
-      samples.selected = [{ id: 1, type: 'samples', name: 'enz1', barcode: 'TRAC-1' }]
-
-      request = store.getters.api.printMyBarcode.print_jobs
-      request.create = jest.fn()
+      printerName = "abc123"
+      samples.selected = [{ id: 1, type: 'libraries', enzyme_name: 'enz1', barcode: 'TRAC-1' }]
+      samples.printLabels = jest.fn()
     })
 
     it('passes selected printer to function on emit event', () => {
-      let successfulResponse =  {
-        data: {},
-        status: 201,
-        statusText: "OK"
-      }
+      let successfulResponse =  { data: {}, status: 201, statusText: "OK" }
 
-      let successfulPromise = new Promise((resolve) => {
-        resolve(successfulResponse)
-      })
+      let expectedResponse = new Response(successfulResponse)
+      samples.printLabels.mockReturnValue(expectedResponse)
 
-      request.create.mockResolvedValue(successfulPromise)
       let modal = wrapper.find(PrinterModal)
-      modal.vm.$emit('selectPrinter', 'printer1')
+      modal.vm.$emit('selectPrinter', printerName)
 
-      expect(request.create).toBeCalled()
+      expect(samples.printLabels).toBeCalledWith(printerName, samples.selected)
     })
 
     it('successfully prints label', async () => {
-      let successfulResponse =  {
-        data: {},
-        status: 201,
-        statusText: "OK"
-      }
+      let successfulResponse =  { data: {}, status: 201, statusText: "OK" }
 
-      let successfulPromise = new Promise((resolve) => {
-        resolve(successfulResponse)
-      })
+      let expectedResponse = new Response(successfulResponse)
 
-      request.create.mockResolvedValue(successfulPromise)
-      await samples.handlePrintLabel('printer1')
+      samples.printLabels.mockReturnValue(expectedResponse)
+
+      await samples.handlePrintLabel(printerName)
+
+      expect(samples.printLabels).toBeCalledWith(printerName, samples.selected)
       expect(samples.message).toEqual('Printed successfully')
     })
 
     it('unsuccessfully', async () => {
-      let failedResponse =  {
-        data: {
-          errors: {
-            it: ['was a bust']
-          }
-        },
-        status: 422
-      }
+      let failedResponse =  { data: { errors: { it: ['was a bust'] } }, status: 422 }
 
-      let failedPromise = new Promise((reject) => {
-        reject(failedResponse)
-      })
+      let expectedResponse = new Response(failedResponse)
 
-      request.create.mockReturnValue(failedPromise)
-      await samples.handlePrintLabel('printer1')
+      samples.printLabels.mockReturnValue(expectedResponse)
+
+      await samples.handlePrintLabel(printerName)
+
+      expect(samples.printLabels).toBeCalledWith(printerName, samples.selected)
       expect(samples.message).toEqual('it was a bust')
     })
 

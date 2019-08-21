@@ -52,7 +52,7 @@ const deleteLibraries = async ({ getters }, libraryIds) => {
   return responses
 }
 
-const printLabels = async (printerName, libraries) => {
+const printLabels = async ({}, printerName, libraries) => {
   let response = await printJob(printerName, libraries)
   return response
 }

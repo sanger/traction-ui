@@ -24,7 +24,9 @@ import handlePromise from '@/api/PromiseHelper'
 import Api from '@/mixins/Api'
 import getTubesForBarcodes from '@/api/TubeRequests'
 import Alert from '@/components/Alert'
-import printJob from '@/api/PrintJobRequests'
+
+import { createNamespacedHelpers } from 'vuex'
+const { mapActions } = createNamespacedHelpers('traction/saphyr')
 
 export default {
   name: 'Samples',
@@ -49,7 +51,7 @@ export default {
   },
   methods: {
     async handlePrintLabel (printerName) {
-      let response = await printJob(printerName, this.selected)
+      let response = await this.printLabels(printerName, this.selected)
 
       if (response.successful) {
         this.message = "Printed successfully"
@@ -98,7 +100,10 @@ export default {
     },
     showAlert () {
       return this.$refs.alert.show(this.message, 'primary')
-    }
+    },
+    ...mapActions([
+      'printLabels'
+    ]),
   },
   components: {
     Modal,
