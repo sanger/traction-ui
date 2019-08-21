@@ -2,8 +2,8 @@ import Reception from '@/views/Reception'
 import { mount, localVue, store } from '../testHelper'
 import TractionSaphyrTubesWithRequestJson from '../../data/tractionSaphyrTubesWithRequest'
 // import TractionTubesWithLibrariesJson from '../../data/tubeWithLibrary'
-// import SequencescapeTubesJson from '../../data/sequencescapeTubesWithSample'
-// import RequestsJson from '../../data/requests'
+import SequencescapeTubesJson from '../../data/sequencescapeTubesWithSample'
+import RequestsJson from '../../data/requests'
 import Response from '@/api/Response'
 import Samples from '@/views/Samples'
 import Libraries from '@/views/Libraries'
@@ -99,19 +99,51 @@ describe('Reception', () => {
   })
 
   describe('#handleSequencescapeTubes', () => {
+    let emptyResponse
 
     beforeEach(() => {
       reception.getSequencescapeTubesForBarcodes = jest.fn()
       reception.exportSampleTubesIntoTraction = jest.fn()
       reception.handleTubeRedirect = jest.fn()
       wrapper.setData({ barcodes: 'TRAC-1\nTRAC-2' })
+
+      emptyResponse = { data: { data: [] }, status: 200, statusText: 'Success'}
     })
 
-    it('calls the correct functions', async () => {
+    it('calls the correct functions when successful', async () => {
+      let sequencescapeTubesResponse = new Response(SequencescapeTubesJson)
+      reception.getSequencescapeTubesForBarcodes.mockReturnValue(sequencescapeTubesResponse)
+
+      let requestsJsonResponse = new Response(RequestsJson)
+      reception.exportSampleTubesIntoTraction.mockReturnValue(requestsJsonResponse)
+
       await reception.handleSequencescapeTubes()
       expect(reception.getSequencescapeTubesForBarcodes).toBeCalled()
       expect(reception.exportSampleTubesIntoTraction).toBeCalled()
       expect(reception.handleTubeRedirect).toBeCalled()
+    })
+
+    it('errors when getSequencescapeTubesForBarcodes fails', async () => {
+      let sequencescapeTubesResponse = new Response(emptyResponse)
+      reception.getSequencescapeTubesForBarcodes.mockReturnValue(sequencescapeTubesResponse)
+
+      await reception.handleSequencescapeTubes()
+      expect(reception.getSequencescapeTubesForBarcodes).toBeCalled()
+      expect(reception.exportSampleTubesIntoTraction).not.toBeCalled()
+      expect(reception.handleTubeRedirect).not.toBeCalled()
+    })
+
+    it('errors when exportSampleTubesIntoTraction fails', async () => {
+      let sequencescapeTubesResponse = new Response(SequencescapeTubesJson)
+      reception.getSequencescapeTubesForBarcodes.mockReturnValue(sequencescapeTubesResponse)
+
+      let requestsJsonResponse = new Response(emptyResponse)
+      reception.exportSampleTubesIntoTraction.mockReturnValue(requestsJsonResponse)
+
+      await reception.handleSequencescapeTubes()
+      expect(reception.getSequencescapeTubesForBarcodes).toBeCalled()
+      expect(reception.exportSampleTubesIntoTraction).toBeCalled()
+      expect(reception.handleTubeRedirect).not.toBeCalled()
     })
   })
 

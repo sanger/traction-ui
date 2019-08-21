@@ -7,8 +7,8 @@
       <textarea type="text" v-model="barcodes" class="form-control" rows="10" cols="10" name="barcodes" id="barcodes" />
     </div>
 
-    <b-button id="findSequencescapeTubes" variant="success" @click="handleSequencescapeTubes" :disabled="this.barcodes.length === 0">Test Find Sequencescape Tubes</b-button>
-    <b-button id="findTractionTubes" variant="success" @click="handleTractionTubes" :disabled="this.barcodes.length === 0">Test Find Traction Tubes</b-button>
+    <b-button class="scanButton" id="findSequencescapeTubes" variant="success" @click="handleSequencescapeTubes" :disabled="this.barcodes.length === 0">Find Sequencescape Tubes</b-button>
+    <b-button class="scanButton" id="findTractionTubes" variant="success" @click="handleTractionTubes" :disabled="this.barcodes.length === 0">Find Traction Tubes</b-button>
 
   </div>
 </template>
@@ -33,9 +33,8 @@ export default {
   methods: {
     async handleTractionTubes () {
       let barcodes = this.getBarcodes()
-      // check barcodes exist
-      let response = await this.getTractionTubesForBarcodes(barcodes)
       
+      let response = await this.getTractionTubesForBarcodes(barcodes)
       if (response.successful && !response.empty) {
           this.handleTubeRedirect()
       } else {
@@ -45,9 +44,23 @@ export default {
     },
     async handleSequencescapeTubes () {
       let barcodes = this.getBarcodes()
-      await this.getSequencescapeTubesForBarcodes(barcodes)
-      await this.exportSampleTubesIntoTraction(this.sequencescapeTubes)
-      this.handleTubeRedirect()
+
+      try {
+        let getSSTubeResponse = await this.getSequencescapeTubesForBarcodes(barcodes)
+        if (!getSSTubeResponse.successful || getSSTubeResponse.empty) {
+          throw getSSTubeResponse.errors
+        }
+
+        let exportSampleTubesResponse = await this.exportSampleTubesIntoTraction(this.sequencescapeTubes)
+        if (!exportSampleTubesResponse.successful || exportSampleTubesResponse.empty) {
+          throw exportSampleTubesResponse.errors
+        }
+
+        this.handleTubeRedirect()
+      } catch (err) {
+        this.message = err
+        this.showAlert()
+      }
     },
     showAlert () {
       return this.$refs.alert.show(this.message, 'primary')
