@@ -1,5 +1,5 @@
 <template>
-    <div class="runs">
+    <div>
       <alert ref='alert'></alert>
 
       <b-button id="newRun" class="float-right" @click="showRun()" variant="success">New Run</b-button>
@@ -51,6 +51,7 @@
         </template>
       </b-table>
 
+      <span class="font-weight-bold">Total records: {{ rows }}</span>
     </div>
 </template>
 
@@ -74,10 +75,11 @@ export default {
         { key: 'actions', label: 'Actions' },
       ],
       items: [],
+      filteredItems: [],
       filter: null,
       sortBy: 'created_at',
       sortDesc: true,
-      perPage: 10,
+      perPage: 5,
       currentPage: 1,
     }
   },
@@ -93,7 +95,12 @@ export default {
     },
     generateId(text, id) {
       return `${text}-${id}`
-    }
+    },
+    onFiltered(filteredItems) {
+      // Trigger pagination to update the number of buttons/pages due to filtering
+      this.filteredItems = filteredItems
+      this.currentPage = 1
+    },
   },
   created() {
     this.provider()
@@ -102,6 +109,21 @@ export default {
     Alert
   },
   computed: {
+    /**
+     * We need the pagination component to reflect the correct number of rows dependent on the
+     * items after filtering has been applied
+     */
+    rows() {
+      if (this.filteredItems.length > 0) {
+        return this.filteredItems.length
+      }
+
+      if (this.filteredItems.length == 0 && this.filter !== '' && this.filter !== null) {
+        return this.filteredItems.length
+      }
+
+      return this.items.length
+    }
   }
 }
 </script>
