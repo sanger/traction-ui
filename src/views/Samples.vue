@@ -70,7 +70,6 @@ import Api from '@/mixins/Api'
 import Helper from '@/mixins/Helper'
 import getTubesForBarcodes from '@/api/TubeRequests'
 import Alert from '@/components/Alert'
-import printJob from '@/api/PrintJobRequests'
 import * as consts from '@/consts/consts'
 
 export default {
