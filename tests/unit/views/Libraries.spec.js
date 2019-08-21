@@ -2,36 +2,30 @@ import Libraries from '@/views/Libraries'
 import { mount, localVue, store } from '../testHelper'
 import Alert from '@/components/Alert'
 import PrinterModal from '@/components/PrinterModal'
+import Response from '@/api/Response'
 
 describe('Libraries.vue', () => {
-
   let wrapper, libraries, mockLibraries
 
-  describe('library request', () => {
+  beforeEach(() => {
     mockLibraries =  [
       { barcode: 'TRAC-8', material: {id: 6, type: 'libraries', state: 'pending', sample_name: 'sample_d', enzyme_name: 'Nb.BsrDI', created_at: '03/12/2019 11:49' }},
       { barcode: 'TRAC-8', material: {id: 6, type: 'libraries', state: 'pending', sample_name: 'sample_d', enzyme_name: 'Nb.BsrDI', created_at: '03/12/2019 11:49' }}
     ]
 
-    beforeEach(() => {
-      wrapper = mount(Libraries, { localVue,
-        store,
-        propsData: {
-          items: mockLibraries
-        }
-      })
-      libraries = wrapper.vm
+    wrapper = mount(Libraries, { localVue,
+      store,
+      propsData: {
+        items: mockLibraries
+      }
     })
+    libraries = wrapper.vm
+  })
 
-    it('will create a library request', () => {
-      let request = libraries.tractionSaphyrLibraryRequest
-      expect(request.resource).toBeDefined()
-    })
-
+  describe('library request', () => {
     it('will get a list of libraries on success',  async () => {
       expect(libraries.items).toEqual(mockLibraries)
     })
-
   })
 
   describe('alert', () => {
@@ -56,92 +50,40 @@ describe('Libraries.vue', () => {
   })
 
   describe('#handleLibraryDelete', () => {
+
     beforeEach(() => {
       libraries.deleteLibraries = jest.fn()
       libraries.showAlert = jest.fn()
+
+      libraries.selected = [{ id: 1, type: 'libraries', enzyme_name: 'enz1', barcode: 'TRAC-1' },
+                            { id:2, type: 'libraries', enzyme_name: 'enz2', barcode: 'TRAC-2' }]
     })
 
-    it('calls the correct functions', async () => {
-      await libraries.handleLibraryDelete()
-      expect(libraries.deleteLibraries).toBeCalled()
-      expect(libraries.showAlert).not.toBeCalled()
-    })
+    it('calls the correct functions when successful', async () => {
+      let mockResponse =  { data: {}, status: 204, statusText: "OK" }
+      let expectedResponse = new Response(mockResponse)
 
-    it('calls showAlert when there is an error', async () => {
-      libraries.deleteLibraries.mockImplementation(() => {
-        throw 'Raise this error'
-      })
+      libraries.deleteLibraries.mockReturnValue([expectedResponse])
 
       await libraries.handleLibraryDelete()
+
       expect(libraries.deleteLibraries).toBeCalled()
-      expect(libraries.message).toEqual('Failed to delete: Raise this error')
       expect(libraries.showAlert).toBeCalled()
-    })
-  })
-
-  describe('#deleteLibraries', () => {
-
-    beforeEach(() => {
-      mockLibraries =  [
-        { barcode: 'TRAC-8', material: {id: 6, type: 'libraries', state: 'pending', sample_name: 'sample_d', enzyme_name: 'Nb.BsrDI', created_at: '03/12/2019 11:49' }},
-        { barcode: 'TRAC-8', material: {id: 6, type: 'libraries', state: 'pending', sample_name: 'sample_d', enzyme_name: 'Nb.BsrDI', created_at: '03/12/2019 11:49' }}
-      ]
-
-      wrapper = mount(Libraries, { localVue,
-        store,
-        propsData: {
-          items: mockLibraries
-        }
-      })
-      libraries = wrapper.vm
-
-      let checkboxes = wrapper.findAll(".selected")
-      checkboxes.at(0).trigger('click')
-
-      libraries.tractionSaphyrLibraryRequest.execute = jest.fn()
+      expect(libraries.message).toEqual("Libraries 1,2 successfully deleted")
     })
 
-    it('will create a list of selected libraries', () => {
-      expect(libraries.selected.length).toEqual(1)
+    it('calls the correct functions when there is an error', async () => {
+      let mockResponse = { data: { data: [] }, status: 500, statusText: 'Internal Server Error' }
+      let expectedResponse = new Response(mockResponse)
+
+      libraries.deleteLibraries.mockReturnValue([expectedResponse])
+
+      await libraries.handleLibraryDelete()
+
+      expect(libraries.deleteLibraries).toBeCalled()
+      expect(libraries.showAlert).toBeCalled()
+      expect(libraries.message).toEqual("Failed to delete: ")
     })
-
-    it('successfully', async () => {
-      let mockResponse =  {
-        data: {},
-        status: 204,
-        statusText: "OK"
-      }
-
-      let promise = new Promise((resolve) => {
-        resolve(mockResponse)
-      })
-
-      libraries.tractionSaphyrLibraryRequest.execute.mockResolvedValue(promise)
-
-      await libraries.deleteLibraries()
-
-      let selectedIds = libraries.selected.map(s => s.id)
-      expect(libraries.message).toEqual(`Libraries ${selectedIds.join(',')} successfully deleted`)
-    })
-
-    it('unsuccessfully', async () => {
-      let mockResponse =  {  data: { errors: { it: ['was a bust'] } }, status: 422 }
-
-      let promise = new Promise((reject) => {
-        reject(mockResponse)
-      })
-
-      libraries.tractionSaphyrLibraryRequest.execute.mockResolvedValue(promise)
-
-      let message
-      try {
-        await await libraries.deleteLibraries()
-      } catch (err) {
-        message = err
-      }
-      expect(message).toEqual("it was a bust")
-    })
-
   })
 
   describe('#handlePrintLabel', () => {
@@ -220,12 +162,6 @@ describe('Libraries.vue', () => {
       modal.vm.$emit('selectPrinter', 'printer1')
 
       expect(libraries.handlePrintLabel).toBeCalledWith('printer1')
-    })
-  })
-
-  describe('#tractionSaphyrLibraryRequest', () => {
-    it('will have a request', () => {
-      expect(libraries.tractionSaphyrLibraryRequest).toBeDefined()
     })
   })
 

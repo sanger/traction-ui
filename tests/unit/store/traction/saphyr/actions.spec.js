@@ -117,3 +117,44 @@ describe('#sampleTubesJson', () => {
     expect(tube.species).toBeDefined()
   })
 })
+
+describe('#deleteLibraries', () => {
+  let destroy, getters, libraryIds, failedResponse
+
+  beforeEach(() => {
+    destroy = jest.fn()
+    getters = { 'libraryRequest': { 'destroy': destroy } }
+    libraryIds = [1,2]
+
+    failedResponse = { data: { data: [] }, status: 500, statusText: 'Internal Server Error' }
+  })
+
+  it('successfully', async () => {
+    let mockResponse =  { data: {}, status: 204, statusText: "OK" }
+
+    let promise = new Promise((resolve) => {
+      resolve(mockResponse)
+    })
+
+    destroy.mockReturnValue([promise])
+
+    let expectedResponse = new Response(mockResponse)
+    let response = await Actions.deleteLibraries({ getters }, libraryIds)
+
+    expect(response).toEqual([expectedResponse])
+  })
+
+  it('unsuccessfully', async () => {
+    let promise = new Promise((reject) => {
+      reject(failedResponse)
+    })
+
+    destroy.mockReturnValue([promise])
+
+    let expectedResponse = new Response(failedResponse)
+    let response = await Actions.deleteLibraries({ getters }, libraryIds)
+
+    expect(response).toEqual([expectedResponse])
+  })
+
+})

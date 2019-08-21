@@ -18,15 +18,16 @@
 </template>
 
 <script>
-import handlePromise from '@/api/PromiseHelper'
-import Api from '@/mixins/Api'
+
 import Alert from '@/components/Alert'
 import PrinterModal from '@/components/PrinterModal'
 import printJob from '@/api/PrintJobRequests'
 
+import { createNamespacedHelpers } from 'vuex'
+const { mapActions } = createNamespacedHelpers('traction/saphyr')
+
 export default {
   name: 'Libraries',
-  mixins: [Api],
   props: {
     items: Array
   },
@@ -61,33 +62,26 @@ export default {
       this.showAlert()
     },
     async handleLibraryDelete () {
-      try {
-        await this.deleteLibraries()
-      } catch (err) {
-        this.message = 'Failed to delete: ' + err
-        this.showAlert()
-      }
-    },
-    async deleteLibraries () {
       let selectedIds = this.selected.map(s => s.id)
-      let promises = this.tractionSaphyrLibraryRequest.destroy(selectedIds)
-      let responses = await Promise.all(promises.map(promise => handlePromise(promise)))
+      let responses = await this.deleteLibraries(selectedIds)
 
       if (responses.every(r => r.successful)) {
         this.message = `Libraries ${selectedIds.join(',')} successfully deleted`
         this.showAlert()
       } else {
-        throw responses.map(r => r.errors.message).join(',')
+        let errors = responses.map(r => r.errors.message).join(',')
+        this.message = 'Failed to delete: ' + errors
+        this.showAlert()
       }
     },
     showAlert () {
       return this.$refs.alert.show(this.message, 'primary')
-    }
+    },
+    ...mapActions([
+      'deleteLibraries'
+    ]),
   },
   computed: {
-    tractionSaphyrLibraryRequest () {
-      return this.api.traction.saphyr.libraries
-    },
     getItems () {
       return this.items.map(i => Object.assign(i.material, {barcode: i.barcode}))
     }

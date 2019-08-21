@@ -43,16 +43,26 @@ const sampleTubeJson = (tubes) => {
   }))
 }
 
+const deleteLibraries = async ({ getters }, libraryIds)  => {
+  let request = getters.libraryRequest
+  let promises = request.destroy(libraryIds)
+
+  let responses = await Promise.all(promises.map(promise => handlePromise(promise)))
+  return responses
+}
+
 const actions = {
   getTractionTubesForBarcodes,
   exportSampleTubesIntoTraction,
-  sampleTubeJson
+  sampleTubeJson,
+  deleteLibraries
 }
 
 export {
   getTractionTubesForBarcodes,
   exportSampleTubesIntoTraction,
-  sampleTubeJson
+  sampleTubeJson,
+  deleteLibraries
 }
 
 export default actions
