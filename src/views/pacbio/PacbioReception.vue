@@ -1,6 +1,6 @@
 <template>
   <div class="reception">
-    <h4>Pacbio Reception</h4>
+    <h5>Pacbio Reception</h5>
   </div>
 </template>
 

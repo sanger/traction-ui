@@ -1,6 +1,6 @@
 <template>
   <div class="samples">
-    <h4>Pacbio Samples</h4>
+    <h5>Pacbio Samples</h5>
   </div>
 </template>
 

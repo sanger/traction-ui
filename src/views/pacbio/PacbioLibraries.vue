@@ -1,6 +1,6 @@
 <template>
   <div class="libraries">
-    <h4>Pacbio Libraries</h4>
+    <h5>Pacbio Libraries</h5>
   </div>
 </template>
 

@@ -23,28 +23,28 @@ describe('Pacbio.vue', () => {
       link = wrapper.find('a.reception')
       link.trigger('click')
       expect(wrapper.vm.$route.path).toBe('/pacbio/reception')
-      expect(wrapper.find('h4').text()).toEqual('Pacbio Reception')
+      expect(wrapper.find('h5').text()).toEqual('Pacbio Reception')
     })
 
     it('will have a link to the samples page', () => {
       link = wrapper.find('a.samples')
       link.trigger('click')
       expect(wrapper.vm.$route.path).toBe('/pacbio/samples')
-      expect(wrapper.find('h4').text()).toEqual('Pacbio Samples')
+      expect(wrapper.find('h5').text()).toEqual('Pacbio Samples')
     })
 
     it('will have a link to the libraries page', () => {
       link = wrapper.find('a.libraries')
       link.trigger('click')
       expect(wrapper.vm.$route.path).toBe('/pacbio/libraries')
-      expect(wrapper.find('h4').text()).toEqual('Pacbio Libraries')
+      expect(wrapper.find('h5').text()).toEqual('Pacbio Libraries')
     })
 
     it('will have a link to the runs page', () => {
       link = wrapper.find('.runs')
       link.trigger('click')
       expect(wrapper.vm.$route.path).toBe('/pacbio/runs')
-      expect(wrapper.find('h4').text()).toEqual('Pacbio Runs')
+      expect(wrapper.find('h5').text()).toEqual('Pacbio Runs')
     })
 
   })

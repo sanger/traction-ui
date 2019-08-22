@@ -4,7 +4,7 @@ import RunsJson from '../../data/runs'
 import RunJson from '../../data/runWithLibrary'
 import Response from '@/api/Response'
 import VueRouter from 'vue-router'
-import Run from '@/views/Run'
+import Run from '@/views/saphyr/SaphyrRun'
 
 const Cmp = {
   template: '<div class="testRunMixin"></div>',

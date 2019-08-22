@@ -1,6 +1,6 @@
 <template>
   <div class="runs">
-    <h4>Pacbio Runs</h4>
+    <h5>Pacbio Runs</h5>
   </div>
 </template>
 
