@@ -23,7 +23,7 @@ import handlePromise from '@/api/PromiseHelper'
 import Api from '@/mixins/Api'
 
 export default {
-  name: 'Modal',
+  name: 'EnzymeModal',
   mixins: [Api],
   data () {
     return {
@@ -52,7 +52,14 @@ export default {
     handleSubmit () {
       this.$emit('selectEnzyme', this.selectedEnzymeId)
       this.clearSelect()
-      this.$refs.enzymeModal.hide()
+      /**
+       * Hide the modal manually
+       * https://vuejsdevelopers.com/2019/01/22/vue-what-is-next-tick/
+       * https://bootstrap-vue.js.org/docs/components/modal/#prevent-closing
+       */
+      this.$nextTick(() => {
+        this.$refs.enzymeModal.hide()
+      })
     },
     async getEnzymeOptions () {
       let promise = this.enzymeRequest.get()

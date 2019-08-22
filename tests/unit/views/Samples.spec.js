@@ -1,46 +1,44 @@
 import Samples from '@/views/Samples'
-import Modal from '@/components/Modal'
+import EnzymeModal from '@/components/EnzymeModal'
 import PrinterModal from '@/components/PrinterModal'
 import { mount, localVue, store } from '../testHelper'
 import Libraries from '@/views/Libraries'
 import TractionTubesWithLibrariesJson from '../../data/tubeWithLibrary'
+import TractionSaphyrRequests from '../../data/tractionSaphyrRequests'
+
 import VueRouter from 'vue-router'
 import Alert from '@/components/Alert'
+import * as consts from '@/consts/consts'
 
 describe('Samples.vue', () => {
 
-  let wrapper, samples, mockSamples
+  let wrapper, samples
 
-    beforeEach(() => {
-      mockSamples = [
-        { barcode: 'TRAC-1', material: {id: 1, type: 'samples', name: 'sample_d', external_id: 4, species: 'human', created_at: '02/27/2019 04:05' }},
-        { barcode: 'TRAC-1', material: {id: 1, type: 'samples', name: 'sample_d', external_id: 4, species: 'human', created_at: '02/27/2019 04:05' }},
+  beforeEach(() => {
+    const router = new VueRouter({ routes:
+      [
+        { path: '/libraries', name: 'Libraries', component: Libraries, props: true }
       ]
-
-      const router = new VueRouter({ routes:
-        [
-          { path: '/libraries', name: 'Libraries', component: Libraries, props: true }
-        ]
-      })
-
-      wrapper = mount(Samples, { localVue,
-        store,
-        router,
-        propsData: {
-          items: mockSamples
-        },
-        stubs: {
-          Modal: true
-        }
-      })
-      samples = wrapper.vm
     })
 
-    describe('alert', () => {
-      it('has a alert', () => {
-        expect(wrapper.contains(Alert)).toBe(true)
-      })
+    wrapper = mount(Samples, {
+      localVue,
+      store,
+      router,
+      stubs: {
+        EnzymeModal: true
+      }
     })
+    samples = wrapper.vm
+
+    samples.tractionSaphyrRequestsRequest.get = jest.fn()
+  })
+
+  describe('alert', () => {
+    it('has a alert', () => {
+      expect(wrapper.contains(Alert)).toBe(true)
+    })
+  })
 
   describe('building the table', () => {
     it('contains the correct fields', () => {
@@ -50,13 +48,16 @@ describe('Samples.vue', () => {
       }
     })
 
-    it('contains the correct data', () => {
-      expect(wrapper.find('tbody').findAll('tr').length).toEqual(mockSamples.length)
+    it('contains the correct data', async () => {
+      samples.tractionSaphyrRequestsRequest.get.mockResolvedValue(TractionSaphyrRequests)
+      await samples.provider()
+      expect(wrapper.find('tbody').findAll('tr').length).toEqual(5)
     })
 
     describe('selecting samples', () => {
-
-      beforeEach(() => {
+      beforeEach(async () => {
+        samples.tractionSaphyrRequestsRequest.get.mockResolvedValue(TractionSaphyrRequests)
+        await samples.provider()
         let checkboxes = wrapper.findAll(".selected")
         checkboxes.at(0).trigger('click')
       })
@@ -64,7 +65,6 @@ describe('Samples.vue', () => {
       it('will create a list of selected requests', () => {
         expect(samples.selected.length).toEqual(1)
       })
-
     })
   })
 
@@ -93,7 +93,6 @@ describe('Samples.vue', () => {
       await samples.handleLibraryCreate(selectedEnzymeId)
       expect(samples.createLibrariesInTraction).toBeCalledWith(selectedEnzymeId)
       expect(samples.handleTractionTubes).toBeCalled()
-      expect(samples.message).toEqual('Raise this error')
       expect(samples.showAlert).toBeCalled()
     })
   })
@@ -128,7 +127,7 @@ describe('Samples.vue', () => {
       expect(samples.barcodes).toEqual('TRAC-1\nTRAC-2')
     })
 
-    it('doesnt store any library barcodes', async () => {
+    it('does not store any library barcodes', async () => {
 
       let mockResponse = { data: { errors: { name: ['name error message 1']}},
         status: 422,
@@ -140,15 +139,10 @@ describe('Samples.vue', () => {
       let selectedEnzymeId = 1
       samples.selected = [{id: 1}]
 
-      let message
-      try {
-        await samples.createLibrariesInTraction(selectedEnzymeId)
-      } catch (err) {
-        message = err
-      }
-
-      expect(message).toEqual("Failed to create library in Traction: name name error message 1")
-      expect(samples.barcodes).toEqual("")
+      await samples.createLibrariesInTraction(selectedEnzymeId)
+      expect(wrapper.find(Alert).vm.message).toMatch(
+        consts.MESSAGE_ERROR_CREATE_LIBRARY_FAILED + "name name error message 1")
+      expect(samples.barcodes).toEqual([])
     })
   })
 
@@ -172,39 +166,20 @@ describe('Samples.vue', () => {
 
     it('unsuccessfully', async () => {
       samples.tractionSaphyrTubeRequest.get.mockResolvedValue(failedResponse)
-
-      let message
-      try {
-        await await samples.handleTractionTubes()
-      } catch (err) {
-        message = err
-      }
-      expect(message).toEqual('Failed to get Traction tubes')
+      await await samples.handleTractionTubes()
+      expect(wrapper.find(Alert).vm.message).toEqual(consts.MESSAGE_ERROR_GET_TRACTION_TUBES)
     })
 
     it('when no tubes exist', async () => {
       samples.tractionSaphyrTubeRequest.get.mockResolvedValue(emptyResponse)
-
-      let message
-      try {
-        await await samples.handleTractionTubes()
-      } catch (err) {
-        message = err
-      }
-      expect(message).toEqual('Failed to get Traction tubes')
+      await await samples.handleTractionTubes()
+      expect(wrapper.find(Alert).vm.message).toEqual(consts.MESSAGE_ERROR_GET_TRACTION_TUBES)
     })
 
     it('when there is no barcodes', async () => {
       wrapper.setData({ barcodes: '' })
-
-      let message
-      try {
-        await samples.handleTractionTubes()
-      } catch (err) {
-        message = err
-      }
-
-      expect(message).toEqual("There are no barcodes")
+      await samples.handleTractionTubes()
+      expect(wrapper.find(Alert).vm.message).toEqual(consts.MESSAGE_WARNING_NO_BARCODES)
     })
   })
 
@@ -215,7 +190,7 @@ describe('Samples.vue', () => {
 
     it('passes selected enzyme id to function on emit event', () => {
       samples.selected = [{id: 1}]
-      let modal = wrapper.find(Modal)
+      let modal = wrapper.find(EnzymeModal)
       modal.vm.$emit('selectEnzyme', 2)
 
       expect(samples.handleLibraryCreate).toBeCalledWith(2)
@@ -263,7 +238,7 @@ describe('Samples.vue', () => {
 
       request.create.mockResolvedValue(successfulPromise)
       await samples.handlePrintLabel('printer1')
-      expect(samples.message).toEqual('Printed successfully')
+      expect(wrapper.find(Alert).vm.message).toEqual(consts.MESSAGE_SUCCESS_PRINTER)
     })
 
     it('unsuccessfully', async () => {
@@ -282,7 +257,7 @@ describe('Samples.vue', () => {
 
       request.create.mockReturnValue(failedPromise)
       await samples.handlePrintLabel('printer1')
-      expect(samples.message).toEqual('it was a bust')
+      expect(wrapper.find(Alert).vm.message).toEqual('it was a bust')
     })
 
   })
@@ -303,8 +278,7 @@ describe('Samples.vue', () => {
 
   describe('#showAlert', () => {
     it('passes the message to function on emit event', () => {
-      wrapper.setData({ message: 'show this message' })
-      samples.showAlert()
+      samples.showAlert('show this message')
       expect(wrapper.find(Alert).html()).toMatch('show this message')
     })
   })

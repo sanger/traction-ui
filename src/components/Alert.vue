@@ -1,7 +1,7 @@
 <template>
   <div>
     <b-alert
-      id="showAlert"
+      id="tracAlert"
       :variant="type"
       dismissible
       :show="showDismissibleAlert"
@@ -22,7 +22,7 @@ export default {
     }
   },
   methods: {
-    show(message, type) {
+    show(message, type = 'primary') {
       this.message = message
       this.type = type
       this.showDismissibleAlert = true

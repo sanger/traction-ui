@@ -10,9 +10,9 @@ export default {
     /**
      * Toggle the alert (of type provided) on the page with the provided message
      * @param {*} message the message to show in the alert box
-     * @param {string} [type='primary'] the variant of the alert
+     * @param {string} type the variant (colour) of the alert
      */
-    showAlert(message, type = 'primary') {
+    showAlert(message, type) {
       return this.$refs.alert.show(message, type)
     },
     /**
@@ -27,8 +27,7 @@ export default {
     async handlePrintLabel(printerName) {
       let response = await printJob(printerName, this.selected)
 
-      let message = response.successful ? consts.MESSAGE_SUCCESS_PRINTER : response.errors.message
-      this.showAlert(message)
+      this.showAlert(response.successful ? consts.MESSAGE_SUCCESS_PRINTER : response.errors.message)
     },
   }
 }

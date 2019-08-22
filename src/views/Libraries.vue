@@ -104,7 +104,7 @@ export default {
       try {
         await this.deleteLibraries()
       } catch (err) {
-        this.showAlert(consts.MESSAGE_ERROR_DELETION_FAILED, 'danger')
+        this.showAlert(consts.MESSAGE_ERROR_DELETION_FAILED + err, 'danger')
       }
     },
     async deleteLibraries () {
@@ -113,7 +113,8 @@ export default {
       let responses = await Promise.all(promises.map(promise => handlePromise(promise)))
 
       if (responses.every(r => r.successful)) {
-        this.showAlert(`Libraries ${selectedIds.join(',')} successfully deleted`)
+        let keyword = selectedIds.length > 1 ? 'Libraries' : 'Library'
+        this.showAlert(`${keyword} ${selectedIds.join(', ')} successfully deleted`)
       } else {
         throw responses.map(r => r.errors.message).join(',')
       }

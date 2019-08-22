@@ -130,7 +130,7 @@ export default {
     },
     async handleTractionTubes () {
       if (this.barcodes === undefined || !this.barcodes.length) {
-        throw consts.MESSAGE_ERROR_NO_BARCODES
+        throw consts.MESSAGE_WARNING_NO_BARCODES
       }
 
       let response = await getTubesForBarcodes(this.barcodes, this.tractionSaphyrTubeRequest)
@@ -138,11 +138,11 @@ export default {
         let tubes = response.deserialize.tubes
         console.log(tubes)
         // Surely all these tubes will be libraries since we are creating libraries?
-        if (tubes.every(t => t.material.type == "libraries")) {
+        if (tubes.every(t => t.material.type === "libraries")) {
           this.$router.push({name: 'Libraries', query: { barcode: tubes.map(tube => tube.barcode) }})
         }
       } else {
-        throw 'Failed to get Traction tubes'
+        throw consts.MESSAGE_ERROR_GET_TRACTION_TUBES
       }
     },
     async provider() {
@@ -151,7 +151,7 @@ export default {
     // Get all the samples (requests)
     async getSamples() {
       this.log('getSamples()')
-      let promise = this.tractionSaphyrRequestRequest.get()
+      let promise = this.tractionSaphyrRequestsRequest.get()
       let response = await handlePromise(promise)
 
       if (response.successful) {
@@ -213,7 +213,7 @@ export default {
     tractionSaphyrTubeRequest () {
       return this.api.traction.saphyr.tubes
     },
-    tractionSaphyrRequestRequest () {
+    tractionSaphyrRequestsRequest () {
       return this.api.traction.saphyr.requests
     },
     /**

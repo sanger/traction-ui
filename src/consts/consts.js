@@ -8,7 +8,7 @@ const MESSAGE_ERROR_DELETION_FAILED = 'Failed to delete: '
 const MESSAGE_ERROR_FIND_TUBES_FAILED = 'Failed to find tubes in Sequencescape'
 const MESSAGE_ERROR_CREATE_TUBES_FAILED = 'Failed to create tubes in Traction: '
 const MESSAGE_ERROR_CREATE_LIBRARY_FAILED = 'Failed to create library in Traction: '
-const MESSAGE_ERROR_NO_BARCODES = 'There are no barcodes'
+const MESSAGE_WARNING_NO_BARCODES = 'There are no barcodes'
 
 const MESSAGE_SUCCESS_PRINTER = 'Printed successfully'
 
@@ -20,6 +20,6 @@ export {
   MESSAGE_ERROR_FIND_TUBES_FAILED,
   MESSAGE_ERROR_CREATE_TUBES_FAILED,
   MESSAGE_ERROR_CREATE_LIBRARY_FAILED,
-  MESSAGE_ERROR_NO_BARCODES,
+  MESSAGE_WARNING_NO_BARCODES,
   MESSAGE_SUCCESS_PRINTER
 }

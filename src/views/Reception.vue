@@ -101,15 +101,14 @@ export default {
     },
     async handleTractionTubes () {
       if (this.barcodes === undefined || !this.barcodes.length) {
-        throw consts.MESSAGE_ERROR_NO_BARCODES
+        this.showAlert(consts.MESSAGE_WARNING_NO_BARCODES, 'warning')
+        return
       }
 
       let response = await getTubesForBarcodes(this.barcodes, this.tractionSaphyrTubeRequest)
 
       if (response.successful && !response.empty) {
         let tubes = response.deserialize.tubes
-        this.log(`tubes:`)
-        this.log(tubes)
         let barcodesList = this.barcodes.split('\n')
         // check that all barcodes are valid
         if (tubes.length !== barcodesList.length) {

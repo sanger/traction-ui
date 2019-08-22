@@ -9,6 +9,7 @@ import Samples from '@/views/Samples'
 import Libraries from '@/views/Libraries'
 import VueRouter from 'vue-router'
 import Alert from '@/components/Alert'
+import * as consts from '@/consts/consts'
 
 describe('Reception', () => {
 
@@ -120,7 +121,6 @@ describe('Reception', () => {
       expect(reception.getSequencescapeTubes).toBeCalled()
       expect(reception.exportSampleTubesIntoTraction).toBeCalled()
       expect(reception.handleTractionTubes).toBeCalled()
-      expect(reception.message).toEqual('Raise this error')
       expect(reception.showAlert).toBeCalled()
     })
   })
@@ -209,12 +209,20 @@ describe('Reception', () => {
     })
 
     it('successfully for samples', async () => {
+      wrapper.setData({ barcodes: 'TRAC-1' })
       reception.tractionSaphyrTubeRequest.get.mockResolvedValue(TractionSaphyrTubesWithRequestJson)
       await reception.handleTractionTubes()
       expect(reception.$route.path).toEqual('/samples')
     })
 
+    it('invalid barcodes', async () => {
+      reception.tractionSaphyrTubeRequest.get.mockResolvedValue(TractionSaphyrTubesWithRequestJson)
+      await reception.handleTractionTubes()
+      expect(wrapper.find(Alert).vm.message).toMatch(consts.MESSAGE_ERROR_INVALID_BARCODES)
+    })
+
     it('successfully for libraries', async () => {
+      wrapper.setData({ barcodes: 'TRAC-3' })
       reception.tractionSaphyrTubeRequest.get.mockResolvedValue(TractionTubesWithLibrariesJson)
       await reception.handleTractionTubes()
       expect(reception.$route.path).toEqual('/libraries')
@@ -223,33 +231,25 @@ describe('Reception', () => {
     it('unsuccessfully', async () => {
       reception.tractionSaphyrTubeRequest.get.mockResolvedValue(failedResponse)
       await reception.handleTractionTubes()
-      expect(reception.message).toEqual('Failed to get Traction tubes')
+      expect(wrapper.find(Alert).vm.message).toEqual(consts.MESSAGE_ERROR_GET_TRACTION_TUBES)
     })
 
     it('when no tubes exist', async () => {
       reception.tractionSaphyrTubeRequest.get.mockResolvedValue(emptyResponse)
       await reception.handleTractionTubes()
-      expect(reception.message).toEqual('Failed to get Traction tubes')
+      expect(wrapper.find(Alert).vm.message).toEqual(consts.MESSAGE_ERROR_GET_TRACTION_TUBES)
     })
 
-    it('when there is no barcodes', async () => {
+    it('when there are no barcodes', async () => {
       wrapper.setData({ barcodes: '' })
-
-      let message
-      try {
-        await reception.handleTractionTubes()
-      } catch (err) {
-        message = err
-      }
-
-      expect(message).toEqual("There are no barcodes")
+      await reception.handleTractionTubes()
+      expect(wrapper.find(Alert).vm.message).toEqual(consts.MESSAGE_WARNING_NO_BARCODES)
     })
   })
 
   describe('#showAlert', () => {
     it('passes the message to function on emit event', () => {
-      wrapper.setData({ message: 'show this message' })
-      reception.showAlert()
+      reception.showAlert('show this message')
       expect(wrapper.find(Alert).html()).toMatch('show this message')
     })
   })
