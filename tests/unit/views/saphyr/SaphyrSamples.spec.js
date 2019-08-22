@@ -1,9 +1,9 @@
-import Samples from '@/views/Samples'
+import Samples from '@/views/saphyr/SaphyrSamples'
 import Modal from '@/components/Modal'
 import PrinterModal from '@/components/PrinterModal'
-import { mount, localVue, store } from '../testHelper'
-import Libraries from '@/views/Libraries'
-import TractionTubesWithLibrariesJson from '../../data/tubeWithLibrary'
+import { mount, localVue, store } from '../../testHelper'
+import Libraries from '@/views/saphyr/SaphyrLibraries'
+import TractionTubesWithLibrariesJson from '../../../data/tubeWithLibrary'
 import VueRouter from 'vue-router'
 import Alert from '@/components/Alert'
 
@@ -19,7 +19,7 @@ describe('Samples.vue', () => {
 
       const router = new VueRouter({ routes:
         [
-          { path: '/libraries', name: 'Libraries', component: Libraries, props: true }
+          { path: '/saphyr/libraries', name: 'SaphyrLibraries', component: Libraries, props: true }
         ]
       })
 
@@ -167,7 +167,7 @@ describe('Samples.vue', () => {
     it('successfully', async () => {
       samples.tractionSaphyrTubeRequest.get.mockResolvedValue(successfulResponse)
       await samples.handleTractionTubes()
-      expect(samples.$route.path).toEqual('/libraries')
+      expect(samples.$route.path).toEqual('/saphyr/libraries')
     })
 
     it('unsuccessfully', async () => {

@@ -1,12 +1,12 @@
-import Reception from '@/views/Reception'
-import { mount, localVue, store } from '../testHelper'
-import TractionSaphyrTubesWithRequestJson from '../../data/tractionSaphyrTubesWithRequest'
-import TractionTubesWithLibrariesJson from '../../data/tubeWithLibrary'
-import SequencescapeTubesJson from '../../data/sequencescapeTubesWithSample'
-import RequestsJson from '../../data/requests'
+import Reception from '@/views/saphyr/SaphyrReception'
+import { mount, localVue, store } from '../../testHelper'
+import TractionSaphyrTubesWithRequestJson from '../../../data/tractionSaphyrTubesWithRequest'
+import TractionTubesWithLibrariesJson from '../../../data/tubeWithLibrary'
+import SequencescapeTubesJson from '../../../data/sequencescapeTubesWithSample'
+import RequestsJson from '../../../data/requests'
 import Response from '@/api/Response'
-import Samples from '@/views/Samples'
-import Libraries from '@/views/Libraries'
+import Samples from '@/views/saphyr/SaphyrSamples'
+import Libraries from '@/views/saphyr/SaphyrLibraries'
 import VueRouter from 'vue-router'
 import Alert from '@/components/Alert'
 
@@ -17,8 +17,8 @@ describe('Reception', () => {
   beforeEach(() => {
     const router = new VueRouter({ routes:
       [
-        { path: '/samples', name: 'Samples', component: Samples, props: true },
-        { path: '/libraries', name: 'Libraries', component: Libraries, props: true }
+        { path: '/saphyr/samples', name: 'SaphyrSamples', component: Samples, props: true },
+        { path: '/saphyr/libraries', name: 'SaphyrLibraries', component: Libraries, props: true }
       ]
     })
 
@@ -211,13 +211,13 @@ describe('Reception', () => {
     it('successfully for samples', async () => {
       reception.tractionSaphyrTubeRequest.get.mockResolvedValue(TractionSaphyrTubesWithRequestJson)
       await reception.handleTractionTubes()
-      expect(reception.$route.path).toEqual('/samples')
+      expect(reception.$route.path).toEqual('/saphyr/samples')
     })
 
     it('successfully for libraries', async () => {
       reception.tractionSaphyrTubeRequest.get.mockResolvedValue(TractionTubesWithLibrariesJson)
       await reception.handleTractionTubes()
-      expect(reception.$route.path).toEqual('/libraries')
+      expect(reception.$route.path).toEqual('/saphyr/libraries')
     })
 
     it('unsuccessfully', async () => {

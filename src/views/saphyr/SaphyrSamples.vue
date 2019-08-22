@@ -1,7 +1,6 @@
 <template>
   <div class="samples">
     <alert ref='alert'></alert>
-
     <b-table
        show-empty
        :items="getItems"
@@ -30,7 +29,10 @@ export default {
   name: 'Samples',
   mixins: [Api],
   props: {
-    items: Array
+    items: {
+      type: Array,
+      default: () => []
+    }
   },
   data () {
     return {
@@ -90,7 +92,7 @@ export default {
       if (response.successful && !response.empty) {
         let tubes = response.deserialize.tubes
         if (tubes.every(t => t.material.type == "libraries")) {
-          this.$router.push({name: 'Libraries', params: {items: tubes}})
+          this.$router.push({name: 'SaphyrLibraries', params: {items: tubes}})
         }
       } else {
         throw 'Failed to get Traction tubes'
@@ -114,7 +116,7 @@ export default {
     },
     getItems () {
       return this.items.map(i => Object.assign(i.material, {barcode: i.barcode}))
-    }
+    },
   }
 }
 </script>

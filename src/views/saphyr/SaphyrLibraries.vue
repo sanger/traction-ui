@@ -28,7 +28,10 @@ export default {
   name: 'Libraries',
   mixins: [Api],
   props: {
-    items: Array
+    items: {
+      type: Array,
+      default: () => []
+    },
   },
   data () {
     return {

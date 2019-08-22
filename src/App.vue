@@ -1,10 +1,6 @@
 <template>
   <div id="app">
     <h1 id="traction-header">Traction</h1>
-    <div id="nav">
-      <router-link to="/reception">Reception</router-link> |
-      <router-link to="/runs">Runs</router-link>
-    </div>
     <router-view/>
   </div>
 </template>

@@ -1,14 +1,12 @@
 <template>
   <div class="reception">
     <alert ref='alert'></alert>
-
     <div class="form-group">
       <label for="barcodes">Barcodes:</label>
       <textarea type="text" v-model="barcodes" class="form-control" rows="10" cols="10" name="barcodes" id="barcodes" />
     </div>
     <b-button class="scanButton" id="findSequencescapeTubes" variant="success" @click="handleSequencescapeTubes" :disabled="this.barcodes.length === 0">Import Sequencescape Tubes</b-button>
     <b-button class="scanButton" id="findTractionTubes" variant="success" @click="handleTractionTubes" :disabled="this.barcodes.length === 0">Find Traction Tubes</b-button>
-
   </div>
 </template>
 
@@ -89,7 +87,7 @@ export default {
 
       if (response.successful && !response.empty) {
         let tubes = response.deserialize.tubes
-        let table = tubes.every(t => t.material.type == "requests") ? "Samples" : "Libraries"
+        let table = tubes.every(t => t.material.type == "requests") ? "SaphyrSamples" : "SaphyrLibraries"
         if (table) {
           this.$router.push({name: table, params: {items: tubes}})
         }

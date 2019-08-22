@@ -1,13 +1,13 @@
-import Run from '@/views/Run'
-import Runs from '@/views/Runs'
-import { mount, localVue, store } from '../testHelper'
-import RunWithLibraryJson from '../../data/runWithLibrary'
-import tubeWithLibraryJson from '../../data/tubeWithLibrary'
-import successfulDestroyJson from '../../data/successfulDestroy'
-import createRunJson from '../../data/createRun'
-import createChipJson from '../../data/createChip'
-import createFlowcellJson from '../../data/createFlowcell'
-import RunsJson from '../../data/runs'
+import Run from '@/views/saphyr/SaphyrRun'
+import Runs from '@/views/saphyr/SaphyrRuns'
+import { mount, localVue, store } from '../../testHelper'
+import RunWithLibraryJson from '../../../data/runWithLibrary'
+import tubeWithLibraryJson from '../../../data/tubeWithLibrary'
+import successfulDestroyJson from '../../../data/successfulDestroy'
+import createRunJson from '../../../data/createRun'
+import createChipJson from '../../../data/createChip'
+import createFlowcellJson from '../../../data/createFlowcell'
+import RunsJson from '../../../data/runs'
 import Response from '@/api/Response'
 import flushPromises from 'flush-promises'
 import VueRouter from 'vue-router'
@@ -112,6 +112,8 @@ describe('Run.vue', () => {
 
     it('updates the name v-model', () => {
 
+      run.updateName = jest.fn()
+
       let name = 'runaway'
       input = wrapper.find('#name')
       input.setValue(name)
@@ -119,6 +121,7 @@ describe('Run.vue', () => {
 
       input.trigger('change')
       expect(store.getters.run(runId).name).toEqual(name)
+      expect(run.updateName).toBeCalled()
     })
   })
 

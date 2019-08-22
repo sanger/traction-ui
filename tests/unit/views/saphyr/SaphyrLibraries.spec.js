@@ -1,5 +1,5 @@
-import Libraries from '@/views/Libraries'
-import { mount, localVue, store } from '../testHelper'
+import Libraries from '@/views/saphyr/SaphyrLibraries'
+import { mount, localVue, store } from '../../testHelper'
 import Alert from '@/components/Alert'
 import PrinterModal from '@/components/PrinterModal'
 
