@@ -86,13 +86,27 @@ const createLibrariesInTraction = async ({ dispatch, getters }, payload) => {
   return response
 }
 
+const getRuns = async ({ commit, getters }) => {
+  let request = getters.runRequest
+  let promise = request.get()
+  let response = await handlePromise(promise)
+
+  if (response.successful && !response.empty) {
+    let runs = response.deserialize.runs
+    commit('setRuns', runs)
+  }
+
+  return response
+}
+
 const actions = {
   getTractionTubesForBarcodes,
   exportSampleTubesIntoTraction,
   sampleTubeJson,
   deleteLibraries,
   printLabels,
-  createLibrariesInTraction
+  createLibrariesInTraction,
+  getRuns
 }
 
 export {
@@ -101,7 +115,8 @@ export {
   sampleTubeJson,
   deleteLibraries,
   printLabels,
-  createLibrariesInTraction
+  createLibrariesInTraction,
+  getRuns
 }
 
 export default actions

@@ -2,6 +2,7 @@ import SequencescapeTubesJson from '../../../../data/sequencescapeTubesWithSampl
 import TractionSaphyrTubesWithRequestJson from '../../../../data/tractionSaphyrTubesWithRequest'
 import TractionTubesWithLibrariesJson from '../../../../data/tubeWithLibrary'
 import RequestsJson from '../../../../data/requests'
+import RunsJson from '../../../../data/runs'
 
 import Response from '@/api/Response'
 import * as Actions from '@/store/traction/saphyr/actions'
@@ -208,6 +209,42 @@ describe('#createLibrariesInTraction', () => {
     let response = await Actions.createLibrariesInTraction({ dispatch, getters }, payload)
 
     expect(dispatch).not.toHaveBeenCalledWith('getTractionTubesForBarcodes')
+    expect(response).toEqual(expectedResponse)
+  })
+
+})
+
+describe('#getRuns', () => {
+  let commit, get, getters, failedResponse
+
+  beforeEach(() => {
+    commit = jest.fn()
+    get = jest.fn()
+    getters = { 'runRequest': { 'get': get } }
+
+    failedResponse = { data: { data: [] }, status: 500, statusText: 'Internal Server Error' }
+  })
+
+  it('successfully', async () => {
+    get.mockReturnValue(RunsJson)
+
+    let expectedResponse = new Response(RunsJson)
+    let expectedRuns = expectedResponse.deserialize.runs
+
+    let response = await Actions.getRuns({ commit, getters })
+
+    expect(commit).toHaveBeenCalledWith("setRuns", expectedRuns)
+    expect(response).toEqual(expectedResponse)
+  })
+
+  it('unsuccessfully', async () => {
+    get.mockReturnValue(failedResponse)
+
+    let expectedResponse = new Response(failedResponse)
+
+    let response = await Actions.getRuns({ commit, getters })
+
+    expect(commit).not.toHaveBeenCalled()
     expect(response).toEqual(expectedResponse)
   })
 

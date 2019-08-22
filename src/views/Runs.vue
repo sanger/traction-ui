@@ -16,14 +16,13 @@
       <b-col>
         <b-pagination
           v-model="currentPage"
-          :total-rows="rows"
           :per-page="perPage"
         ></b-pagination>
       </b-col>
 
       <b-table
           show-empty
-          :items="items"
+          :items="runs"
           :fields="fields"
           :filter="filter"
           :sort-by.sync="sortBy"
@@ -57,6 +56,8 @@
 <script>
 import Alert from '@/components/Alert'
 import RunMixin from '@/mixins/RunMixin'
+import { createNamespacedHelpers } from 'vuex'
+const { mapActions, mapState } = createNamespacedHelpers('traction/saphyr')
 
 export default {
   name: 'Runs',
@@ -73,18 +74,15 @@ export default {
         { key: 'created_at', label: 'Created at', sortable: true },
         { key: 'actions', label: 'Actions' },
       ],
-      items: [],
       filter: null,
       sortBy: 'created_at',
       sortDesc: true,
       perPage: 10,
       currentPage: 1,
+      message: ''
     }
   },
   methods: {
-    async provider() {
-      this.items = await this.getRuns()
-    },
     isRunDisabled(run) {
       return run.state == 'completed' || run.state == 'cancelled'
     },
@@ -93,15 +91,24 @@ export default {
     },
     generateId(text, id) {
       return `${text}-${id}`
-    }
+    },
+    showAlert () {
+      return this.$refs.alert.show(this.message, 'primary')
+    },
+    ...mapActions([
+      'getRuns'
+    ]),
   },
   created() {
-    this.provider()
+    this.getRuns()
   },
   components: {
     Alert
   },
   computed: {
+    ...mapState({
+      runs: state => state.runs
+    })
   }
 }
 </script>
