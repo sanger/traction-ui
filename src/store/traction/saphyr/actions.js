@@ -30,7 +30,7 @@ const exportSampleTubesIntoTraction = async ({ dispatch, getters }, tubes)  => {
 
   if (response.successful && !response.empty) {
     let barcodes = response.deserialize.requests.map(r => r.barcode).join('\n')
-    await dispatch('getTractionTubesForBarcodes', barcodes)
+    response = await dispatch('getTractionTubesForBarcodes', barcodes)
   }
   return response
 }
@@ -57,12 +57,42 @@ const printLabels = async ({}, printerName, libraries) => {
   return response
 }
 
+const createLibrariesInTraction = async ({ dispatch, getters }, payload) => {
+  let libraries = payload.samples.map(item => {
+    return {
+      state: 'pending',
+      saphyr_request_id: item.id,
+      saphyr_enzyme_id: payload.enzymeID
+    }
+  })
+
+  let body = {
+    data: {
+      type: 'libraries',
+      attributes: {
+        libraries: libraries
+      }
+    }
+  }
+
+  let request = getters.libraryRequest
+  let promise = request.create(body)
+  let response = await handlePromise(promise)
+
+  if (response.successful && !response.empty) {
+    let barcodes = response.deserialize.libraries.map(r => r.barcode).join('\n')
+    response = await dispatch('getTractionTubesForBarcodes', barcodes)
+  }
+  return response
+}
+
 const actions = {
   getTractionTubesForBarcodes,
   exportSampleTubesIntoTraction,
   sampleTubeJson,
   deleteLibraries,
-  printLabels
+  printLabels,
+  createLibrariesInTraction
 }
 
 export {
@@ -70,7 +100,8 @@ export {
   exportSampleTubesIntoTraction,
   sampleTubeJson,
   deleteLibraries,
-  printLabels
+  printLabels,
+  createLibrariesInTraction
 }
 
 export default actions

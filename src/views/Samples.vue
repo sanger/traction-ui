@@ -20,17 +20,13 @@
 <script>
 import Modal from '@/components/Modal'
 import PrinterModal from '@/components/PrinterModal'
-import handlePromise from '@/api/PromiseHelper'
-import Api from '@/mixins/Api'
-import getTubesForBarcodes from '@/api/TubeRequests'
 import Alert from '@/components/Alert'
 
 import { createNamespacedHelpers } from 'vuex'
-const { mapActions } = createNamespacedHelpers('traction/saphyr')
+const { mapActions, mapState } = createNamespacedHelpers('traction/saphyr')
 
 export default {
   name: 'Samples',
-  mixins: [Api],
   props: {
     items: Array
   },
@@ -62,47 +58,35 @@ export default {
     },
     async handleLibraryCreate (selectedEnzymeId) {
       try {
-        await this.createLibrariesInTraction(selectedEnzymeId)
-        await this.handleTractionTubes()
-      } catch (err) {
-        this.message = err
+        let payload = {'samples': this.selected, 'enzymeID': selectedEnzymeId}
+        let response = await this.createLibrariesInTraction(payload)
+
+        if (!response.successful || response.empty) {
+          throw response.errors
+        }
+
+        this.handleTubeRedirect()
+      } catch (error) {
+        this.message = error.message
         this.showAlert()
       }
     },
-    async createLibrariesInTraction (selectedEnzymeId) {
-      let libraries = this.selected.map(item => { return { 'state': 'pending', 'saphyr_request_id': item.id, 'saphyr_enzyme_id': selectedEnzymeId } })
-
-      let body = { data: { type: 'libraries', attributes: { libraries: libraries } } }
-
-      let promise = this.tractionSaphyrLibraryRequest.create(body)
-      let response = await handlePromise(promise)
-
-      if (response.successful) {
-        this.barcodes = response.deserialize.libraries.map(l => l.barcode).join('\n')
-      } else {
-        throw 'Failed to create library in Traction: ' + response.errors.message
-      }
-    },
-    async handleTractionTubes () {
-      if (this.barcodes === undefined || !this.barcodes.length) {
-        throw 'There are no barcodes'
-      }
-
-      let response = await getTubesForBarcodes(this.barcodes, this.tractionSaphyrTubeRequest)
-      if (response.successful && !response.empty) {
-        let tubes = response.deserialize.tubes
-        if (tubes.every(t => t.material.type == "libraries")) {
-          this.$router.push({name: 'Libraries', params: {items: tubes}})
+    handleTubeRedirect() {
+      if (!this.tractionTubes.empty) {
+        if (this.tractionTubes.every(t => t.material.type == "libraries")) {
+          this.$router.push({name: 'Libraries', params: {items: this.tractionTubes}})
         }
       } else {
-        throw 'Failed to get Traction tubes'
+        this.message = 'Failed to get Traction tubes'
+        this.showAlert()
       }
     },
     showAlert () {
       return this.$refs.alert.show(this.message, 'primary')
     },
     ...mapActions([
-      'printLabels'
+      'printLabels',
+      'createLibrariesInTraction'
     ]),
   },
   components: {
@@ -111,15 +95,12 @@ export default {
     Alert
   },
   computed: {
-    tractionSaphyrLibraryRequest () {
-      return this.api.traction.saphyr.libraries
-    },
-    tractionSaphyrTubeRequest () {
-      return this.api.traction.saphyr.tubes
-    },
     getItems () {
       return this.items.map(i => Object.assign(i.material, {barcode: i.barcode}))
-    }
+    },
+    ...mapState({
+      tractionTubes: state => state.tractionTubes
+    }),
   }
 }
 </script>
