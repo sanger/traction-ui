@@ -1,7 +1,7 @@
 <template>
   <div>
     <b-alert
-      id="tracAlert"
+      id="showAlert"
       :variant="type"
       dismissible
       :show="showDismissibleAlert"

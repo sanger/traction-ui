@@ -116,7 +116,7 @@ export default {
         let keyword = selectedIds.length > 1 ? 'Libraries' : 'Library'
         this.showAlert(`${keyword} ${selectedIds.join(', ')} successfully deleted`)
       } else {
-        throw responses.map(r => r.errors.message).join(',')
+        throw Error(responses.map(r => r.errors.message).join(','))
       }
     },
     // Get all the libraries

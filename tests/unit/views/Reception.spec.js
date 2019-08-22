@@ -144,21 +144,14 @@ describe('Reception', () => {
       expect(expectedTubes).toEqual(tubes)
     })
 
-
     it('unsuccessfully', async () => {
       let failedResponse = { status: 422, statusText: 'Unprocessable Entity', data: { errors: { name: ['error message'] }} }
       reception.sequencescapeTubeRequest.get.mockResolvedValue(failedResponse)
       wrapper.setData({ barcodes: sequencescapeBarcodes })
 
-      let message
-      try {
-        await reception.getSequencescapeTubes()
-      } catch (err) {
-        message = err
-      }
-      expect(message).toEqual('Failed to find tubes in Sequencescape')
+      await expect(reception.getSequencescapeTubes()).rejects.toThrow(
+        'Failed to find tubes in Sequencescape')
     })
-
   })
 
   describe('#exportSampleTubesIntoTraction', () => {
@@ -184,17 +177,11 @@ describe('Reception', () => {
 
       reception.tractionSaphyrRequestsRequest.create.mockResolvedValue(failedResponse)
 
-      let message
-      try {
-        await reception.exportSampleTubesIntoTraction(ssTubes)
-      } catch (err) {
-        message = err
-      }
+      await expect(reception.exportSampleTubesIntoTraction(ssTubes)).rejects.toThrow(
+        'Failed to create tubes in Traction: name error message')
 
       expect(reception.tractionSaphyrRequestsRequest.create).toBeCalled()
-      expect(message).toEqual('Failed to create tubes in Traction: name error message')
     })
-
   })
 
   describe('#handleTractionTubes', () => {
@@ -230,20 +217,20 @@ describe('Reception', () => {
 
     it('unsuccessfully', async () => {
       reception.tractionSaphyrTubeRequest.get.mockResolvedValue(failedResponse)
-      await reception.handleTractionTubes()
-      expect(wrapper.find(Alert).vm.message).toEqual(consts.MESSAGE_ERROR_GET_TRACTION_TUBES)
+      await expect(reception.handleTractionTubes()).rejects.toThrow(
+        consts.MESSAGE_ERROR_GET_TRACTION_TUBES)
     })
 
     it('when no tubes exist', async () => {
       reception.tractionSaphyrTubeRequest.get.mockResolvedValue(emptyResponse)
-      await reception.handleTractionTubes()
-      expect(wrapper.find(Alert).vm.message).toEqual(consts.MESSAGE_ERROR_GET_TRACTION_TUBES)
+      await expect(reception.handleTractionTubes()).rejects.toThrow(
+        consts.MESSAGE_ERROR_GET_TRACTION_TUBES)
     })
 
     it('when there are no barcodes', async () => {
       wrapper.setData({ barcodes: '' })
-      await reception.handleTractionTubes()
-      expect(wrapper.find(Alert).vm.message).toEqual(consts.MESSAGE_WARNING_NO_BARCODES)
+      await expect(reception.handleTractionTubes()).rejects.toThrow(
+        consts.MESSAGE_WARNING_NO_BARCODES)
     })
   })
 

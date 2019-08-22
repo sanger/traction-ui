@@ -77,7 +77,7 @@ export default {
       if (response.successful && !response.empty) {
         return response.deserialize.tubes
       } else {
-        throw consts.MESSAGE_ERROR_FIND_TUBES_FAILED
+        throw Error(consts.MESSAGE_ERROR_FIND_TUBES_FAILED)
       }
     },
     async exportSampleTubesIntoTraction (tubes) {
@@ -96,13 +96,12 @@ export default {
       if (response.successful) {
         this.barcodes = response.deserialize.requests.map(r => r.barcode).join('\n')
       } else {
-        throw consts.MESSAGE_ERROR_CREATE_TUBES_FAILED + response.errors.message
+        throw Error(consts.MESSAGE_ERROR_CREATE_TUBES_FAILED + response.errors.message)
       }
     },
     async handleTractionTubes () {
       if (this.barcodes === undefined || !this.barcodes.length) {
-        this.showAlert(consts.MESSAGE_WARNING_NO_BARCODES, 'warning')
-        return
+        throw Error(consts.MESSAGE_WARNING_NO_BARCODES, 'warning')
       }
 
       let response = await getTubesForBarcodes(this.barcodes, this.tractionSaphyrTubeRequest)
@@ -134,7 +133,7 @@ export default {
           this.showAlert(consts.MESSAGE_ERROR_SINGLE_TYPE, 'danger')
         }
       } else {
-        this.showAlert(consts.MESSAGE_ERROR_GET_TRACTION_TUBES, 'danger')
+        throw Error(consts.MESSAGE_ERROR_GET_TRACTION_TUBES, 'danger')
       }
     },
   },

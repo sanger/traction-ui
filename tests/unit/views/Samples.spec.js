@@ -128,20 +128,19 @@ describe('Samples.vue', () => {
     })
 
     it('does not store any library barcodes', async () => {
-
       let mockResponse = { data: { errors: { name: ['name error message 1']}},
         status: 422,
         statusText: "Unprocessible entity"
       }
 
-      samples.tractionSaphyrLibraryRequest.create.mockReturnValue(mockResponse)
+      samples.tractionSaphyrLibraryRequest.create.mockResolvedValue(mockResponse)
 
       let selectedEnzymeId = 1
       samples.selected = [{id: 1}]
 
-      await samples.createLibrariesInTraction(selectedEnzymeId)
-      expect(wrapper.find(Alert).vm.message).toMatch(
-        consts.MESSAGE_ERROR_CREATE_LIBRARY_FAILED + "name name error message 1")
+      await expect(samples.createLibrariesInTraction(selectedEnzymeId)).rejects.toThrow(
+        consts.MESSAGE_ERROR_CREATE_LIBRARY_FAILED + "name name error message 1"
+      )
       expect(samples.barcodes).toEqual([])
     })
   })
@@ -166,20 +165,20 @@ describe('Samples.vue', () => {
 
     it('unsuccessfully', async () => {
       samples.tractionSaphyrTubeRequest.get.mockResolvedValue(failedResponse)
-      await await samples.handleTractionTubes()
-      expect(wrapper.find(Alert).vm.message).toEqual(consts.MESSAGE_ERROR_GET_TRACTION_TUBES)
+      await expect(samples.handleTractionTubes()).rejects.toThrow(
+        consts.MESSAGE_ERROR_GET_TRACTION_TUBES)
     })
 
     it('when no tubes exist', async () => {
       samples.tractionSaphyrTubeRequest.get.mockResolvedValue(emptyResponse)
-      await await samples.handleTractionTubes()
-      expect(wrapper.find(Alert).vm.message).toEqual(consts.MESSAGE_ERROR_GET_TRACTION_TUBES)
+      await expect(samples.handleTractionTubes()).rejects.toThrow(
+        consts.MESSAGE_ERROR_GET_TRACTION_TUBES)
     })
 
-    it('when there is no barcodes', async () => {
+    it('when there are no barcodes', async () => {
       wrapper.setData({ barcodes: '' })
-      await samples.handleTractionTubes()
-      expect(wrapper.find(Alert).vm.message).toEqual(consts.MESSAGE_WARNING_NO_BARCODES)
+      await expect(samples.handleTractionTubes()).rejects.toThrow(
+        consts.MESSAGE_WARNING_NO_BARCODES)
     })
   })
 

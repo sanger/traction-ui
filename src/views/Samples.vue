@@ -125,12 +125,12 @@ export default {
       if (response.successful) {
         this.barcodes = response.deserialize.libraries.map(l => l.barcode).join('\n')
       } else {
-        throw consts.MESSAGE_ERROR_CREATE_LIBRARY_FAILED + response.errors.message
+        throw Error(consts.MESSAGE_ERROR_CREATE_LIBRARY_FAILED + response.errors.message)
       }
     },
     async handleTractionTubes () {
       if (this.barcodes === undefined || !this.barcodes.length) {
-        throw consts.MESSAGE_WARNING_NO_BARCODES
+        throw Error(consts.MESSAGE_WARNING_NO_BARCODES)
       }
 
       let response = await getTubesForBarcodes(this.barcodes, this.tractionSaphyrTubeRequest)
@@ -142,7 +142,7 @@ export default {
           this.$router.push({name: 'Libraries', query: { barcode: tubes.map(tube => tube.barcode) }})
         }
       } else {
-        throw consts.MESSAGE_ERROR_GET_TRACTION_TUBES
+        throw Error(consts.MESSAGE_ERROR_GET_TRACTION_TUBES)
       }
     },
     async provider() {

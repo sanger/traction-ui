@@ -145,8 +145,7 @@ describe('Libraries.vue', () => {
 
       libraries.tractionSaphyrLibraryRequest.execute.mockResolvedValue(promise)
 
-      await libraries.deleteLibraries()
-      expect(wrapper.find(Alert).vm.message).toEqual("it was a bust")
+      await expect(libraries.deleteLibraries()).rejects.toThrow("it was a bust")
     })
 
   })
