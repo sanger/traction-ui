@@ -55,13 +55,13 @@
 
 <script>
 import Alert from '@/components/Alert'
-import RunMixin from '@/mixins/RunMixin'
+// import RunMixin from '@/mixins/RunMixin'
 import { createNamespacedHelpers } from 'vuex'
 const { mapActions, mapState } = createNamespacedHelpers('traction/saphyr')
 
 export default {
   name: 'Runs',
-  mixins: [RunMixin],
+  // mixins: [RunMixin],
   props: {
   },
   data () {
@@ -96,7 +96,10 @@ export default {
       return this.$refs.alert.show(this.message, 'primary')
     },
     ...mapActions([
-      'getRuns'
+      'getRuns',
+      'startRun',
+      'completeRun',
+      'cancelRun',
     ]),
   },
   created() {
