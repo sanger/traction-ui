@@ -2,7 +2,7 @@
 
   <div class="modal">
     <b-btn id="createLibrariesWithEnzymeButton" :disabled="disabled" v-b-modal.enzymeModal>Create Libraries with Enzyme</b-btn>
-    <b-modal id="enzymeModal" title="Create Libraries" ref="enzymeModal" @ok="handleOk" @shown="clearSelect">
+    <b-modal id="enzymeModal" title="Create Libraries" ref="enzymeModal" :static="isStatic" @ok="handleOk" @shown="clearSelect">
       <b-form-select v-model="selectedEnzymeId" :options="enzymeOptions" class="mb-3" />
     </b-modal>
   </div>
@@ -24,6 +24,7 @@ export default {
   },
   props: {
     disabled: Boolean,
+    isStatic: Boolean
   },
   methods: {
     clearSelect () {
@@ -68,7 +69,7 @@ export default {
   },
   computed: {
     enzymeRequest () {
-      return this.api.traction.enzymes
+      return this.api.traction.saphyr.enzymes
     }
   }
 }

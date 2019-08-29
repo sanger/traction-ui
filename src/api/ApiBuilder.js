@@ -1,11 +1,6 @@
 import Vue from 'vue'
 import Request from '@/api/Request'
 
-const buildComponent = (component, props) => {
-  let cmp = Vue.extend(component)
-  return new cmp({ propsData: props})
-}
-
 const build = (config, environment) => {
   return Object.keys(config).reduce((result, key) => {
     const {resources, ...props} = config[key]
@@ -15,10 +10,24 @@ const build = (config, environment) => {
 }
 
 const buildResources = (resources, props) => {
+  let pipelines = ['saphyr']
+
   return Object.keys(resources).reduce((result, key) => {
-    result[key] = buildComponent(Request, Object.assign(props, {resource: key, ...resources[key]}))
+    if (pipelines.includes(key)) {
+      result[key] = Object.keys(resources[key]).reduce((accumulator, resource) => {
+        accumulator[resource] = buildComponent(Request, Object.assign(props, {resource: key + "/" + resource, ...resources[key][resource] }))
+        return accumulator
+      }, {})
+    } else {
+      result[key] = buildComponent(Request, Object.assign(props, {resource: key, ...resources[key]}))
+    }
     return result
   }, {})
+}
+
+const buildComponent = (component, props) => {
+  let cmp = Vue.extend(component)
+  return new cmp({ propsData: props})
 }
 
 const apiProps = (api, props, environment) => {

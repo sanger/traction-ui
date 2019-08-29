@@ -68,7 +68,7 @@ export default {
   },
   computed: {
     flowcellRequest () {
-      return this.api.traction.flowcells
+      return this.api.traction.saphyr.flowcells
     }
   },
   components: {

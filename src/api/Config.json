@@ -16,25 +16,30 @@
       "samples": {
         "name": "samples"
       },
-      "libraries": {
-        "name": "libraries"
-      },
-      "enzymes": {
-        "name": "enzymes"
-      },
-      "runs": {
-        "name": "runs",
-        "include": "chip.flowcells.library"
-      },
-      "chips": {
-        "name": "chips"
-      },
-      "flowcells": {
-        "name": "flowcells"
-      },
-      "tubes": {
-        "name": "tubes",
-        "include": "material"
+      "saphyr": {
+        "libraries": {
+          "name": "libraries"
+        },
+        "enzymes": {
+          "name": "enzymes"
+        },
+        "runs": {
+          "name": "runs",
+          "include": "chip.flowcells.library"
+        },
+        "chips": {
+          "name": "chips"
+        },
+        "flowcells": {
+          "name": "flowcells"
+        },
+        "requests": {
+          "name": "requests"
+        },
+        "tubes": {
+          "name": "tubes",
+          "include": "material"
+        }
       }
     }
   },

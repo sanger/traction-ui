@@ -23,7 +23,7 @@
 import RunMixin from '@/mixins/RunMixin'
 import Chip from '@/components/Chip'
 import Alert from '@/components/Alert'
-import * as RunApi from '@/api/Run' 
+import * as RunApi from '@/api/Run'
 
 export default {
   name: 'Run',
@@ -68,12 +68,12 @@ export default {
     async create () {
       let result
       let run = this.$store.getters.run(this.id)
-      let errors = await RunApi.validate(run, this.api.traction.tubes)
+      let errors = await RunApi.validate(run, this.tractionSaphyrTubeRequest)
       if (Object.keys(errors).length === 0) {
-        result = await RunApi.create(run, this.api.traction)
+        result = await RunApi.create(run, this.saphyrRequest)
         if (result) {
           this.alert('run was successfully created')
-          this.$router.push({name: 'Runs'})
+          this.$router.push({name: 'Runs'}).catch(() => {})
         } else {
           this.alert('run could not be created')
         }
