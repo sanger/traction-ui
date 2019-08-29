@@ -37,7 +37,7 @@ export default {
     async updateLibrary () {
       if(!this.libraryBarcode) return
 
-      let material = await Run.getLibrary(this.libraryBarcode, this.tractionTubeRequest)
+      let material = await Run.getLibrary(this.libraryBarcode, this.tractionSaphyrTubeRequest)
 
       if (material !== undefined) {
         this.libraryId = material.id
@@ -56,8 +56,8 @@ export default {
     }
   },
   computed: {
-    tractionTubeRequest () {
-      return this.api.traction.tubes
+    tractionSaphyrTubeRequest () {
+      return this.api.traction.saphyr.tubes
     },
     existingRecord () {
       return !isNaN(this.runId)

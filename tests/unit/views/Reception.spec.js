@@ -1,9 +1,9 @@
 import Reception from '@/views/Reception'
 import { mount, localVue, store } from '../testHelper'
-import TractionTubesWithSamplesJson from '../../data/tractionTubesWithSample'
+import TractionSaphyrTubesWithRequestJson from '../../data/tractionSaphyrTubesWithRequest'
 import TractionTubesWithLibrariesJson from '../../data/tubeWithLibrary'
 import SequencescapeTubesJson from '../../data/sequencescapeTubesWithSample'
-import SamplesJson from '../../data/samples'
+import RequestsJson from '../../data/requests'
 import Response from '@/api/Response'
 import Samples from '@/views/Samples'
 import Libraries from '@/views/Libraries'
@@ -165,23 +165,24 @@ describe('Reception', () => {
     let ssTubes
 
     beforeEach(() => {
-      reception.sampleRequest.create = jest.fn()
+      reception.tractionSaphyrRequestsRequest.create = jest.fn()
       ssTubes = new Response(SequencescapeTubesJson).deserialize.tubes
     })
 
     it('successfully', async () => {
-      reception.sampleRequest.create.mockResolvedValue(SamplesJson)
+      reception.tractionSaphyrRequestsRequest.create.mockResolvedValue(RequestsJson)
       await reception.exportSampleTubesIntoTraction(ssTubes)
 
-      expect(reception.sampleRequest.create).toBeCalled()
-      let tractionSamplesTubesBarcode = new Response(SamplesJson).deserialize.samples.map(s=> s.barcode).join('\n')
-      expect(reception.barcodes).toEqual(tractionSamplesTubesBarcode)
+      expect(reception.tractionSaphyrRequestsRequest.create).toBeCalled()
+
+      let tractionSaphyrRequestTubesBarcode = new Response(RequestsJson).deserialize.requests.map(s=> s.barcode).join('\n')
+      expect(reception.barcodes).toEqual(tractionSaphyrRequestTubesBarcode)
     })
 
     it('unsuccessfully', async () => {
       let failedResponse = { status: 422, statusText: 'Unprocessable Entity', data: { errors: { name: ['error message'] }} }
 
-      reception.sampleRequest.create.mockResolvedValue(failedResponse)
+      reception.tractionSaphyrRequestsRequest.create.mockResolvedValue(failedResponse)
 
       let message
       try {
@@ -190,7 +191,7 @@ describe('Reception', () => {
         message = err
       }
 
-      expect(reception.sampleRequest.create).toBeCalled()
+      expect(reception.tractionSaphyrRequestsRequest.create).toBeCalled()
       expect(message).toEqual('Failed to create tubes in Traction: name error message')
     })
 
@@ -201,32 +202,32 @@ describe('Reception', () => {
 
     beforeEach(() => {
       wrapper.setData({ barcodes: 'TRAC-1\nTRAC-2' })
-      reception.tractionTubeRequest.get = jest.fn()
+      reception.tractionSaphyrTubeRequest.get = jest.fn()
 
       emptyResponse = { data: { data: [] }, status: 200, statusText: 'Success'}
       failedResponse = { data: { data: [] }, status: 500, statusText: 'Internal Server Error' }
     })
 
     it('successfully for samples', async () => {
-      reception.tractionTubeRequest.get.mockResolvedValue(TractionTubesWithSamplesJson)
+      reception.tractionSaphyrTubeRequest.get.mockResolvedValue(TractionSaphyrTubesWithRequestJson)
       await reception.handleTractionTubes()
       expect(reception.$route.path).toEqual('/samples')
     })
 
     it('successfully for libraries', async () => {
-      reception.tractionTubeRequest.get.mockResolvedValue(TractionTubesWithLibrariesJson)
+      reception.tractionSaphyrTubeRequest.get.mockResolvedValue(TractionTubesWithLibrariesJson)
       await reception.handleTractionTubes()
       expect(reception.$route.path).toEqual('/libraries')
     })
 
     it('unsuccessfully', async () => {
-      reception.tractionTubeRequest.get.mockResolvedValue(failedResponse)
+      reception.tractionSaphyrTubeRequest.get.mockResolvedValue(failedResponse)
       await reception.handleTractionTubes()
       expect(reception.message).toEqual('Failed to get Traction tubes')
     })
 
     it('when no tubes exist', async () => {
-      reception.tractionTubeRequest.get.mockResolvedValue(emptyResponse)
+      reception.tractionSaphyrTubeRequest.get.mockResolvedValue(emptyResponse)
       await reception.handleTractionTubes()
       expect(reception.message).toEqual('Failed to get Traction tubes')
     })
@@ -259,15 +260,15 @@ describe('Reception', () => {
     })
   })
 
-  describe('#tractionTubeRequest', () => {
+  describe('#tractionSaphyrTubeRequest', () => {
     it('will have a request', () => {
-      expect(reception.tractionTubeRequest).toBeDefined()
+      expect(reception.tractionSaphyrTubeRequest).toBeDefined()
     })
   })
 
-  describe('#sampleRequest', () => {
-    it('will have a request', () => {
-      expect(reception.sampleRequest).toBeDefined()
+  describe('#tractionSaphyrRequestsRequest', () => {
+    it('will have a saphyr request request', () => {
+      expect(reception.tractionSaphyrRequestsRequest).toBeDefined()
     })
   })
 })
