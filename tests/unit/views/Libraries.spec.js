@@ -77,7 +77,7 @@ describe('Libraries.vue', () => {
 
     it('calls showAlert when there is an error', async () => {
       libraries.deleteLibraries.mockImplementation(() => {
-        throw 'Raise this error'
+        throw Error('Raise this error')
       })
 
       await libraries.handleLibraryDelete()

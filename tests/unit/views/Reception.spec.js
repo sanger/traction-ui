@@ -204,7 +204,7 @@ describe('Reception', () => {
 
     it('invalid barcodes', async () => {
       reception.tractionSaphyrTubeRequest.get.mockResolvedValue(TractionSaphyrTubesWithRequestJson)
-      await reception.handleTractionTubes()
+      await reception.findTractionTubes()
       expect(wrapper.find(Alert).vm.message).toMatch(consts.MESSAGE_ERROR_INVALID_BARCODES)
     })
 

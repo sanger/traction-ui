@@ -23,7 +23,7 @@
     <b-button class="scanButton"
               id="findTractionTubes"
               variant="success"
-              @click="handleTractionTubes"
+              @click="findTractionTubes"
               :disabled="this.barcodes.length === 0">
       Find Traction Tubes
     </b-button>
@@ -67,8 +67,8 @@ export default {
         let tubes = await this.getSequencescapeTubes()
         await this.exportSampleTubesIntoTraction(tubes)
         await this.handleTractionTubes()
-      } catch (err) {
-        this.showAlert(err, 'danger')
+      } catch (error) {
+        this.showAlert(error.message, 'danger')
       }
     },
     async getSequencescapeTubes () {
@@ -99,43 +99,65 @@ export default {
         throw Error(consts.MESSAGE_ERROR_CREATE_TUBES_FAILED + response.errors.message)
       }
     },
+    async findTractionTubes() {
+      try {
+        await this.handleTractionTubes()
+      } catch (error) {
+        this.showAlert(error.message, 'danger')
+      }
+    },
     async handleTractionTubes () {
       if (this.barcodes === undefined || !this.barcodes.length) {
-        throw Error(consts.MESSAGE_WARNING_NO_BARCODES, 'warning')
+        throw Error(consts.MESSAGE_WARNING_NO_BARCODES)
       }
 
       let response = await getTubesForBarcodes(this.barcodes, this.tractionSaphyrTubeRequest)
+      this.log(response)
 
       if (response.successful && !response.empty) {
         let tubes = response.deserialize.tubes
         let barcodesList = this.barcodes.split('\n')
         // check that all barcodes are valid
-        if (tubes.length !== barcodesList.length) {
-          let validBarcodes = tubes.map((tube) => tube.barcode)
-          let invalidBarcodes = barcodesList.filter(
-            scannedBarcode => !validBarcodes.includes(scannedBarcode))
-          this.showAlert(
-            consts.MESSAGE_ERROR_INVALID_BARCODES.concat(invalidBarcodes.join(', ')),
-            'danger')
-          return
-        }
+        this.checkBarcodes(tubes, barcodesList)
 
         // check that all the barcodes are either samples (requests) or libraries
-        let isAllRequests = tubes.every(t => t.material.type == 'requests')
-        let isAllLibraries = tubes.every(t => t.material.type == 'libraries')
-
-        if (isAllRequests) {
-          this.$router.push({ path: 'samples', query: { barcode: barcodesList } })
-        } else if (isAllLibraries) {
-          this.$router.push({ path: 'libraries', query: { barcode: barcodesList } })
-        } else {
-          // We only want barcodes of the same type
-          this.showAlert(consts.MESSAGE_ERROR_SINGLE_TYPE, 'danger')
-        }
+        this.checkMaterialTypes(tubes, barcodesList)
       } else {
-        throw Error(consts.MESSAGE_ERROR_GET_TRACTION_TUBES, 'danger')
+        throw Error(consts.MESSAGE_ERROR_GET_TRACTION_TUBES)
       }
     },
+    /**
+     * Check that the list of barcodes provided match barcodes we have available and alert those
+     * which are invalid
+     * @param {*} barcodesList A list of barcodes which a user has entered/scanned
+     */
+    checkBarcodes(tubes, barcodesList) {
+      if (tubes.length !== barcodesList.length) {
+        let validBarcodes = tubes.map((tube) => tube.barcode)
+        let invalidBarcodes = barcodesList.filter(
+          scannedBarcode => !validBarcodes.includes(scannedBarcode))
+        throw Error(consts.MESSAGE_ERROR_INVALID_BARCODES.concat(invalidBarcodes.join(', ')))
+      }
+    },
+    /**
+     * To be directed to the correct view, either samples or libraries, we need to ensure that all
+     * the tubes are of the same material type
+     * @param {*} tubes All the tubes returned from the query
+     * @param {*} barcodesList A list of barcodes which a user has entered/scanned
+     */
+    checkMaterialTypes(tubes, barcodesList) {
+      let isAllRequests = tubes.every(t => t.material.type == 'requests')
+      let isAllLibraries = tubes.every(t => t.material.type == 'libraries')
+
+      if (isAllRequests) {
+        this.$router.push({ path: 'samples', query: { barcode: barcodesList } })
+      } else if (isAllLibraries) {
+        this.$router.push({ path: 'libraries', query: { barcode: barcodesList } })
+      } else {
+        // We only want barcodes of the same type
+      throw Error(consts.MESSAGE_ERROR_SINGLE_TYPE)
+      }
+    }
   },
   computed: {
     sequencescapeTubeRequest () {
@@ -149,7 +171,6 @@ export default {
     }
   }
 }
-
 </script>
 
 <style lang="scss">

@@ -13,7 +13,7 @@ export default new Vuex.Store({
     labelTemplateId: process.env.VUE_APP_LABEL_TEMPLATE_ID,
     runs: {},
     libraries: {},
-    samples: {}
+    requests: {}
   },
   mutations: {
     addRun (state, run) {
@@ -22,8 +22,8 @@ export default new Vuex.Store({
     addLibrary (state, library) {
       state.libraries[library.id] = library
     },
-    addSample (state, sample) {
-      state.samples[sample.id] = sample
+    addRequest (state, request) {
+      state.requests[request.id] = request
     },
     addRuns (state, runs) {
       for (let run of runs) {
@@ -35,9 +35,9 @@ export default new Vuex.Store({
         this.commit('addLibrary', library)
       }
     },
-    addSamples (state, samples) {
-      for (let sample of samples) {
-        this.commit('addSample', sample)
+    addRequests (state, requests) {
+      for (let request of requests) {
+        this.commit('addRequest', request)
       }
     },
     clearRuns (state) {
@@ -58,9 +58,9 @@ export default new Vuex.Store({
     library: state => (id) => {
       return state.libraries[id]
     },
-    samples: state => state.samples,
-    sample: state => (id) => {
-      return state.samples[id]
+    requests: state => state.requests,
+    request: state => (id) => {
+      return state.requests[id]
     }
   }
 })

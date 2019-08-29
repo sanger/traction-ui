@@ -2,8 +2,8 @@
   <div>
     <alert ref='alert'></alert>
 
-    <p v-if="this.preFilteredSamples.length > 0" class="font-weight-bold">
-      Only showing samples for the following barcodes: {{ this.preFilteredSamples.map(sample => sample.barcode).join(', ') }}
+    <p v-if="this.preFilteredMaterials.length > 0" class="font-weight-bold">
+      Only showing samples for the following barcodes: {{ this.preFilteredMaterials.map(sample => sample.barcode).join(', ') }}
       <b-button @click="clearPreFilter" size="sm" variant="info">Clear pre-filter</b-button>
     </p>
 
@@ -68,13 +68,15 @@ import PrinterModal from '@/components/PrinterModal'
 import handlePromise from '@/api/PromiseHelper'
 import Api from '@/mixins/Api'
 import Helper from '@/mixins/Helper'
+import MatType from '@/mixins/MatType'
+import TableHelper from '@/mixins/TableHelper'
 import getTubesForBarcodes from '@/api/TubeRequests'
 import Alert from '@/components/Alert'
 import * as consts from '@/consts/consts'
 
 export default {
   name: 'Samples',
-  mixins: [Api, Helper],
+  mixins: [Api, Helper, MatType, TableHelper],
   components: {
     EnzymeModal,
     PrinterModal,
@@ -96,7 +98,7 @@ export default {
       filter: null,
       perPage: 5,
       currentPage: 1,
-      preFilteredSamples: [],
+      preFilteredMaterials: [],
       barcodes: []
     }
   },
@@ -136,7 +138,6 @@ export default {
       let response = await getTubesForBarcodes(this.barcodes, this.tractionSaphyrTubeRequest)
       if (response.successful && !response.empty) {
         let tubes = response.deserialize.tubes
-        console.log(tubes)
         // Surely all these tubes will be libraries since we are creating libraries?
         if (tubes.every(t => t.material.type === "libraries")) {
           this.$router.push({name: 'Libraries', query: { barcode: tubes.map(tube => tube.barcode) }})
@@ -146,61 +147,13 @@ export default {
       }
     },
     async provider() {
-      this.items = await this.getSamples()
-    },
-    // Get all the samples (requests)
-    async getSamples() {
-      this.log('getSamples()')
-      let promise = this.tractionSaphyrRequestsRequest.get()
-      let response = await handlePromise(promise)
-
-      if (response.successful) {
-        let samples = response.deserialize.requests
-        this.$store.commit('addSamples', samples)
-
-        // Pre-filter the samples to those provided as a query paramater
-        if (typeof this.$route.query.barcode !== 'undefined'
-              && this.$route.query.barcode !== '') {
-
-          let preFilteredBarcodes = []
-          if (typeof this.$route.query.barcode === 'string') {
-            preFilteredBarcodes.push(this.$route.query.barcode)
-          } else {
-            preFilteredBarcodes.push(...this.$route.query.barcode)
-          }
-          this.log(`preFilteredBarcodes: ${preFilteredBarcodes}`)
-
-          // There might be barcodes in the query which are invalid, remove these and alert the user
-          let barcodesOfSamples = samples.map(sample => sample.barcode)
-          let invalidBarcodes = preFilteredBarcodes.filter(
-            barcode => !barcodesOfSamples.includes(barcode))
-
-          if (invalidBarcodes.length > 0) {
-            this.showAlert(consts.MESSAGE_ERROR_INVALID_BARCODES.concat(invalidBarcodes.join(', ')),
-              'danger')
-          }
-
-          this.preFilteredSamples = samples.filter(
-            sample => preFilteredBarcodes.includes(sample.barcode))
-
-          return this.preFilteredSamples
-        }
-        return samples
-      } else {
-        this.showAlert(response.errors.message)
-        return []
-      }
-    },
-    onFiltered(filteredItems) {
-      // Trigger pagination to update the number of buttons/pages due to filtering
-      this.filteredItems = filteredItems
-      this.currentPage = 1
+      this.items = await this.getMaterial(consts.MAT_TYPE_REQUESTS)
     },
     clearPreFilter() {
       this.log('clearPreFilter()')
-      this.items = Object.keys(this.$store.getters.samples).map(
-        key => this.$store.getters.sample(key))
-      this.preFilteredSamples = []
+      this.items = Object.keys(this.$store.getters.requests).map(
+        key => this.$store.getters.request(key))
+      this.preFilteredMaterials = []
     }
   },
   created() {
@@ -213,24 +166,6 @@ export default {
     tractionSaphyrTubeRequest () {
       return this.api.traction.saphyr.tubes
     },
-    tractionSaphyrRequestsRequest () {
-      return this.api.traction.saphyr.requests
-    },
-    /**
-     * We need the pagination component to reflect the correct number of rows dependent on the
-     * items after filtering has been applied
-     */
-    rows() {
-      if (this.filteredItems.length > 0) {
-        return this.filteredItems.length
-      }
-
-      if (this.filteredItems.length == 0 && this.filter !== '' && this.filter !== null) {
-        return this.filteredItems.length
-      }
-
-      return this.items.length
-    }
   }
 }
 </script>

@@ -1,35 +1,12 @@
 /**
- * A helper mixin to store commonly used functionality
+ * A mixin to store commonly used functionality for the material types
  */
-import printJob from '@/api/PrintJobRequests'
 import * as consts from '@/consts/consts'
 import handlePromise from '@/api/PromiseHelper'
 
 export default {
-  name: 'Helper',
+  name: 'MatType',
   methods: {
-    /**
-     * Toggle the alert (of type provided) on the page with the provided message
-     * @param {*} message the message to show in the alert box
-     * @param {string} type the variant (colour) of the alert
-     */
-    showAlert(message, type) {
-      return this.$refs.alert.show(message, type)
-    },
-    /**
-     * Send message to the console - only when not in production
-     * @param {*} message the message to log
-     */
-    log(message) {
-      if (process.env !== 'production') {
-        console.log(message)
-      }
-    },
-    async handlePrintLabel(printerName) {
-      let response = await printJob(printerName, this.selected)
-
-      this.showAlert(response.successful ? consts.MESSAGE_SUCCESS_PRINTER : response.errors.message)
-    },
     async getMaterial(materialType) {
       this.log(`getMaterial(${materialType})`)
 
@@ -46,13 +23,12 @@ export default {
 
       if (response.successful) {
         let materials = eval(`response.deserialize.${materialType}`)
+        this.log(materials)
 
         this.$store.commit(`add${this.capitalizeFirstLetter(materialType)}`, materials)
 
         // Pre-filter the samples to those provided as a query paramater
-        if (typeof this.$route.query.barcode !== 'undefined' &&
-          this.$route.query.barcode !== '') {
-
+        if (typeof this.$route.query.barcode !== 'undefined' && this.$route.query.barcode !== '') {
           let preFilteredBarcodes = []
           if (typeof this.$route.query.barcode === 'string') {
             preFilteredBarcodes.push(this.$route.query.barcode)
@@ -62,7 +38,7 @@ export default {
           this.log(`preFilteredBarcodes: ${preFilteredBarcodes}`)
 
           // There might be barcodes in the query which are invalid, remove these and alert the user
-          let barcodesOfMaterials = materials.map(sample => sample.barcode)
+          let barcodesOfMaterials = materials.map(material => material.barcode)
           let invalidBarcodes = preFilteredBarcodes.filter(
             barcode => !barcodesOfMaterials.includes(barcode))
 
@@ -71,10 +47,14 @@ export default {
               'danger')
           }
 
-          this.preFilteredSamples = materials.filter(
-            sample => preFilteredBarcodes.includes(sample.barcode))
+          // Pre-filter the materials with the supplied barcodes
+          this.preFilteredMaterials = materials.filter(
+            material => preFilteredBarcodes.includes(material.barcode))
 
-          return this.preFilteredSamples
+          // If there are no materials after pre-filtering (due to invalid barcodes), show all
+          if (this.preFilteredMaterials.length === 0) return materials
+
+          return this.preFilteredMaterials
         }
         return materials
       } else {
@@ -82,13 +62,6 @@ export default {
         return []
       }
     },
-    /**
-     * https: //stackoverflow.com/a/1026087
-     * @param {*} string the string to capitalize
-     */
-    capitalizeFirstLetter(string) {
-      return string.charAt(0).toUpperCase() + string.slice(1);
-    }
   },
   computed: {
     tractionSaphyrRequestsRequest() {

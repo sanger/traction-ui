@@ -73,10 +73,11 @@
 import Alert from '@/components/Alert'
 import RunMixin from '@/mixins/RunMixin'
 import Helper from '@/mixins/Helper'
+import TableHelper from '@/mixins/TableHelper'
 
 export default {
   name: 'Runs',
-  mixins: [RunMixin, Helper],
+  mixins: [RunMixin, Helper, TableHelper],
   props: {
   },
   data () {
@@ -111,11 +112,6 @@ export default {
     generateId(text, id) {
       return `${text}-${id}`
     },
-    onFiltered(filteredItems) {
-      // Trigger pagination to update the number of buttons/pages due to filtering
-      this.filteredItems = filteredItems
-      this.currentPage = 1
-    },
   },
   created() {
     this.provider()
@@ -123,22 +119,5 @@ export default {
   components: {
     Alert
   },
-  computed: {
-    /**
-     * We need the pagination component to reflect the correct number of rows dependent on the
-     * items after filtering has been applied
-     */
-    rows() {
-      if (this.filteredItems.length > 0) {
-        return this.filteredItems.length
-      }
-
-      if (this.filteredItems.length == 0 && this.filter !== '' && this.filter !== null) {
-        return this.filteredItems.length
-      }
-
-      return this.items.length
-    }
-  }
 }
 </script>

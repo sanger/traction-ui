@@ -2,8 +2,8 @@
   <div>
     <alert ref='alert'></alert>
 
-    <p v-if="this.preFilteredLibraries.length > 0" class="font-weight-bold">
-      Only showing libraries for the following barcodes: {{ this.preFilteredLibraries.map(library => library.barcode).join(', ') }}
+    <p v-if="this.preFilteredMaterials.length > 0" class="font-weight-bold">
+      Only showing libraries for the following barcodes: {{ this.preFilteredMaterials.map(library => library.barcode).join(', ') }}
       <b-button @click="clearPreFilter" size="sm" variant="info">Clear pre-filter</b-button>
     </p>
 
@@ -68,13 +68,15 @@
 import handlePromise from '@/api/PromiseHelper'
 import Api from '@/mixins/Api'
 import Helper from '@/mixins/Helper'
+import MatType from '@/mixins/MatType'
+import TableHelper from '@/mixins/TableHelper'
 import Alert from '@/components/Alert'
 import PrinterModal from '@/components/PrinterModal'
 import * as consts from '@/consts/consts'
 
 export default {
   name: 'Libraries',
-  mixins: [Api, Helper],
+  mixins: [Api, Helper, MatType, TableHelper],
   data () {
     return {
       fields: [
@@ -92,7 +94,7 @@ export default {
       filter: null,
       perPage: 5,
       currentPage: 1,
-      preFilteredLibraries: []
+      preFilteredMaterials: []
     }
   },
   components: {
@@ -103,8 +105,8 @@ export default {
     async handleLibraryDelete () {
       try {
         await this.deleteLibraries()
-      } catch (err) {
-        this.showAlert(consts.MESSAGE_ERROR_DELETION_FAILED + err, 'danger')
+      } catch (error) {
+        this.showAlert(consts.MESSAGE_ERROR_DELETION_FAILED + error.message, 'danger')
       }
     },
     async deleteLibraries () {
@@ -120,62 +122,15 @@ export default {
       }
     },
     // Get all the libraries
-    // Provider function used my the bootstrap-vue table component
+    // Provider function used by the bootstrap-vue table component
     async provider() {
-      this.items = await this.getLibraries()
-    },
-    async getLibraries() {
-      this.log('getLibraries()')
-      let promise = this.tractionSaphyrLibraryRequest.get()
-      let response = await handlePromise(promise)
-
-      if (response.successful) {
-        let libraries = response.deserialize.libraries
-        this.$store.commit('addLibraries', libraries)
-
-        // Pre-filter the libraries to those provided as a query paramater
-        if (typeof this.$route.query.barcode !== 'undefined'
-              && this.$route.query.barcode !== '') {
-
-          let preFilteredBarcodes = []
-          if (typeof this.$route.query.barcode === 'string') {
-            preFilteredBarcodes.push(this.$route.query.barcode)
-          } else {
-            preFilteredBarcodes.push(...this.$route.query.barcode)
-          }
-          this.log(`preFilteredBarcodes: ${preFilteredBarcodes}`)
-
-          // There might be barcodes in the query which are invalid, remove these and alert the user
-          let barcodesOfLibraries = libraries.map(library => library.barcode)
-          let invalidBarcodes = preFilteredBarcodes.filter(
-            barcode => !barcodesOfLibraries.includes(barcode))
-
-          if (invalidBarcodes.length > 0) {
-            this.showAlert(consts.MESSAGE_ERROR_INVALID_BARCODES.concat(invalidBarcodes.join(', ')),
-              'danger')
-          }
-
-          this.preFilteredLibraries = libraries.filter(
-            library => preFilteredBarcodes.includes(library.barcode))
-
-          return this.preFilteredLibraries
-        }
-        return libraries
-      } else {
-        this.showAlert(response.errors.message)
-        return []
-      }
-    },
-    onFiltered(filteredItems) {
-      // Trigger pagination to update the number of buttons/pages due to filtering
-      this.filteredItems = filteredItems
-      this.currentPage = 1
+      this.items = await this.getMaterial(consts.MAT_TYPE_LIBRARIES)
     },
     clearPreFilter() {
       this.log('clearPreFilter()')
       this.items = Object.keys(this.$store.getters.libraries).map(
         key => this.$store.getters.library(key))
-      this.preFilteredLibraries = []
+      this.preFilteredMaterials = []
     }
   },
   created() {
@@ -183,25 +138,5 @@ export default {
     // items for the table
     this.provider()
   },
-  computed: {
-    tractionSaphyrLibraryRequest () {
-      return this.api.traction.saphyr.libraries
-    },
-    /**
-     * We need the pagination component to reflect the correct number of rows dependent on the
-     * items after filtering has been applied
-     */
-    rows() {
-      if (this.filteredItems.length > 0) {
-        return this.filteredItems.length
-      }
-
-      if (this.filteredItems.length == 0 && this.filter !== '' && this.filter !== null) {
-        return this.filteredItems.length
-      }
-
-      return this.items.length
-    }
-  }
 }
 </script>
