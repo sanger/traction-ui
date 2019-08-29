@@ -1,12 +1,12 @@
 # only build if not a tag - this is to prevent builing after a tag is created by deployment
-# if: tag IS blank - commented for now while we decide if we want to build on tagging too
+if: tag IS blank
 language: node_js
 cache:
   - yarn
 git:
   depth: false
   submodules: false
-dist: trusty
+dist: xenial
 sudo: required
 
 before_install:
