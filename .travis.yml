@@ -1,5 +1,5 @@
 # only build if not a tag - this is to prevent builing after a tag is created by deployment
-if: tag IS blank
+# if: tag IS blank - commented for now while we decide if we want to build on tagging too
 language: node_js
 cache:
   - yarn
@@ -41,7 +41,7 @@ deploy:
   on:
     repo: sanger/traction-ui
     all_branches: true
-    condition: $TRAVIS_BRANCH =~ ^devel|uat|master$
+    condition: $TRAVIS_BRANCH =~ ^uat|master$ # only build a release on uat and master branches
 
 notifications:
   slack:
