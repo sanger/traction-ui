@@ -2,7 +2,7 @@
     <div class="runs">
       <alert ref='alert'></alert>
 
-      <b-button id="newRun" class="float-right" @click="showRun()" variant="success">New Run</b-button>
+      <b-button id="newRun" class="float-right" @click="buildRun()" variant="success">New Run</b-button>
 
       <b-col md="6" class="my-1">
         <b-input-group>
@@ -32,7 +32,7 @@
       >
 
         <template slot="actions" slot-scope="row">
-          <b-button :id="generateId('createRun',row.item.id)" variant="outline-dark" size="sm" @click="showRun(row.item.id)" class="mr-1">
+          <b-button :id="generateId('editRun',row.item.id)" variant="outline-dark" size="sm" @click="editRun(row.item.id)" class="mr-1">
             Edit
           </b-button>
 
@@ -55,13 +55,11 @@
 
 <script>
 import Alert from '@/components/Alert'
-// import RunMixin from '@/mixins/RunMixin'
 import { createNamespacedHelpers } from 'vuex'
-const { mapActions, mapState } = createNamespacedHelpers('traction/saphyr')
+const { mapActions, mapState, mapGetters } = createNamespacedHelpers('traction/saphyr')
 
 export default {
   name: 'Runs',
-  // mixins: [RunMixin],
   props: {
   },
   data () {
@@ -100,6 +98,8 @@ export default {
       'startRun',
       'completeRun',
       'cancelRun',
+      'editRun',
+      'buildRun'
     ]),
   },
   created() {
@@ -109,9 +109,9 @@ export default {
     Alert
   },
   computed: {
-    ...mapState({
-      runs: state => state.runs
-    })
+    ...mapGetters([
+      'runs'
+    ])
   }
 }
 </script>

@@ -1,5 +1,7 @@
 import handlePromise  from '@/api/PromiseHelper'
 import printJob       from '@/api/PrintJobRequests'
+import router         from '@/router'
+import * as Run       from '@/api/Run'
 
 const getTractionTubesForBarcodes = async ({ commit, getters }, barcodeString)  => {
   let request = getters.tubeRequest
@@ -135,6 +137,72 @@ const runPayloadJson = (payload) => {
   }
 }
 
+const editRun = ({ getters, commit }, runId) => {
+  let run = getters.run(runId)
+  commit('setCurrentRun', run)
+  router.push({ path: `/run/${runId}` })
+}
+
+const buildRun = ({ commit }) => {
+  let run = Run.build()
+  commit('setCurrentRun', run)
+  router.push({ path: `/run/${run.id}` })
+}
+
+const updateRunName = async ({ dispatch, commit, getters }, attributes)=> {
+  let id = attributes.id
+  let name = attributes.name
+
+  let isNewRecord = isNaN(id)
+
+  if (isNewRecord) {
+    let run = getters.run(id)
+    run.name = name
+    commit('updateRun', run)
+  } else {
+    let payload = { id: id, attributes: { name: name } }
+    await dispatch('handleUpdate', payload)
+  }
+}
+
+const updateChipBarcode = async ({ dispatch, commit, getters }, attributes)=> {
+  let id = attributes.id
+  let barcode = attributes.barcode
+
+  let isNewRecord = isNaN(id)
+
+  if (isNewRecord) {
+    let run = getters.run(id)
+    Run.updateChipBarcode(run, barcode)
+    run.chip.barcode = barcode
+    commit('updateRun', run)
+  } else {
+    let chipPayloadJson = { id: id, attributes: { barcode: barcode } }
+    await dispatch('handleChipUpdate', chipPayloadJson)
+  }
+}
+
+const handleChipUpdate = async ({ getters }, payload) => {
+  let request = getters.chipRequest
+  let chipPayload = chipPayloadJson(payload)
+  let promises = await request.update(chipPayload)
+  let response = await handlePromise(promises[0])
+  return response
+}
+
+const chipPayloadJson = (payload) => {
+  let id = payload.id
+  let attributes = payload.attributes
+
+  return {
+    data: {
+      id: id,
+      type: 'chips',
+      attributes: attributes
+    }
+  }
+}
+
 const actions = {
   getTractionTubesForBarcodes,
   exportSampleTubesIntoTraction,
@@ -147,7 +215,13 @@ const actions = {
   completeRun,
   cancelRun,
   handleUpdate,
-  runPayloadJson
+  runPayloadJson,
+  editRun,
+  buildRun,
+  updateRunName,
+  updateChipBarcode,
+  handleChipUpdate,
+  chipPayloadJson
 }
 
 export {
@@ -162,7 +236,13 @@ export {
   completeRun,
   cancelRun,
   handleUpdate,
-  runPayloadJson
+  runPayloadJson,
+  editRun,
+  buildRun,
+  updateRunName,
+  updateChipBarcode,
+  handleChipUpdate,
+  chipPayloadJson
 }
 
 export default actions

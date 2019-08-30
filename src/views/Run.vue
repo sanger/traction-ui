@@ -2,19 +2,20 @@
   <div class="run">
     <alert ref='alert'></alert>
 
+    {{ this.currentRun }}
+
     <router-link :to="{name: 'Runs'}">
       <b-button id="backToRunsButton" class="float-right">Back</b-button>
     </router-link>
 
     <b-button v-if="newRecord" class="float-right" id="create" variant="success" @click="create">Create</b-button>
 
+    <h1 class="runInfo" id="id">Run ID: {{ this.currentRun.id }}</h1>
+    <h2 class="runInfo" id="state">State: {{ this.currentRun.state }}</h2>
 
-    <h1 class="runInfo" id="id">Run ID: {{ id }}</h1>
-    <h2 class="runInfo" id="state">state: {{ state }}</h2>
+    <b-form-input class="runInfo" id="name" :value="name" @input="updateName" placeholder="name" type="text" />
 
-    <b-form-input class="runInfo" id="name" v-model="name" placeholder="name" type="text" @change="update" />
-
-    <chip v-if="Boolean(this.chip)" v-bind="chip" v-bind:runId="id" @alert="alert"></chip>
+    <chip :value="chip" v-bind:runId="id" @alert="alert"></chip>
 
   </div>
 </template>
@@ -24,6 +25,8 @@ import RunMixin from '@/mixins/RunMixin'
 import Chip from '@/components/Chip'
 import Alert from '@/components/Alert'
 import * as RunApi from '@/api/Run'
+import { createNamespacedHelpers } from 'vuex'
+const { mapGetters, mapActions, mapState, mapMutations } = createNamespacedHelpers('traction/saphyr')
 
 export default {
   name: 'Run',
@@ -35,35 +38,16 @@ export default {
   },
   data () {
     return {
-      name: this.name,
-      state: null,
-      chip: null,
       message: ''
     }
   },
   methods: {
-    provider () {
-
-      let data = this.$store.getters.run(this.id)
-      this.name = data.name
-      this.state = data.state
-      this.chip = data.chip
-    },
     alert (message) {
       this.message = message
       this.showAlert()
     },
     showAlert () {
       return this.$refs.alert.show(this.message, 'primary')
-    },
-    update () {
-      let run = this.$store.getters.run(this.id)
-      run.name = this.name
-      this.$store.commit('addRun', run)
-
-      if (!this.newRecord) {
-        this.updateName(this.id, this.name)
-      }
     },
     async create () {
       let result
@@ -80,7 +64,13 @@ export default {
       } else {
         this.alert(errors)
       }
-    }
+    },
+    ...mapActions([
+      // 'updateRunName',
+    ]),
+    ...mapMutations([
+      'updateName',
+    ]),
   },
   components: {
     Chip,
@@ -89,10 +79,15 @@ export default {
   computed: {
      newRecord () {
       return isNaN(this.id)
-    }
-  },
-  created () {
-    this.provider()
+    },
+    ...mapGetters([
+      'currentRun'
+    ]),
+    ...mapState({
+      name: state => state.currentRun.name,
+      chip: state => state.currentRun.chip,
+      // currentRun: state => state.currentRun,
+    })
   }
 }
 </script>

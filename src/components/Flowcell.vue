@@ -1,38 +1,20 @@
 <template>
   <b-row class="flowcell">
     <b-col>
-      <div class="position">{{ position }}</div>
-      <library @updateLibrary="updateFlowcell" v-bind="library" v-bind:flowcellPosition="position" v-bind:runId="runId" @alert="alert" ></library>
+      <b-form-input id="barcode" :value="libraryBarcode" @input="updateLibrary" placeholder="Library barcode" type="text" />
     </b-col>
   </b-row>
 </template>
 
 <script>
 
-
-import Library from '@/components/Library'
-import Api from '@/mixins/Api'
-import handlePromise from '@/api/PromiseHelper'
+import { createNamespacedHelpers } from 'vuex'
+const { mapGetters, mapActions, mapMutations, mapState } = createNamespacedHelpers('traction/saphyr')
 
 export default {
   name: 'Flowcell',
-  mixins: [Api],
   props: {
-    id: {
-      type: [Number, String]
-    },
-    position: {
-      type: [Number, String]
-    },
-    library: {
-      type: Object,
-      default: () => {
-        return {}
-      }
-    },
-    runId: {
-      type: [Number, String]
-    }
+    index: {},
   },
   data () {
     return {
@@ -40,39 +22,25 @@ export default {
     }
   },
   methods: {
-    payload (library) {
-      return {
-        data: {
-          id: this.id,
-          type: 'flowcells',
-          attributes: {
-            library_id: library.id
-          }
-        }
-      }
-    },
-    async updateFlowcell (library) {
-      let promise = this.flowcellRequest.update(this.payload(library))
-      let response = await handlePromise(promise[0])
-
-      if (response.successful) {
-        this.alert('Library added to flowcell')
-        return response
-      } else {
-        this.alert('There was an error: ' + response.errors.message)
-      }
+    updateLibrary (e) {
+      let payload = { index: this.index, libraryBarcode: e }
+      this.updateLibraryBarcode(payload)
     },
     alert (message) {
       this.$emit('alert', message)
     },
+    ...mapMutations([
+      'updateLibraryBarcode',
+    ]),
   },
   computed: {
-    flowcellRequest () {
-      return this.api.traction.saphyr.flowcells
-    }
+    ...mapState({
+      libraryBarcode (state) {
+        return state.currentRun.chip.flowcells[this.index].library.barcode
+      }
+    }),
   },
   components: {
-    Library
   }
 }
 </script>

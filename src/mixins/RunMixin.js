@@ -11,9 +11,9 @@ export default {
     }
   },
   methods: {
-    getRun (id) {
-      return this.$store.getters.run(id)
-    },
+    // getRun (id) {
+    //   return this.$store.getters.run(id)
+    // },
     async handleUpdate (id, attributes) {
       try {
         await this.updateRun(id, attributes)
@@ -22,19 +22,17 @@ export default {
         this.showAlert()
       }
     },
-    updateName (id, name) {
-      this.handleUpdate(id, {name: name})
-    },
+    // updateName (id, name) {
+    //   this.handleUpdate(id, {name: name})
+    // },
+    // async buildRun() {
+    //   let run = Run.build()
+    //   this.$store.commit('addRun', run)
+    //   let runId = run.id
+    //   this.$router.push({ path: `/run/${runId}` })
+    // },
     async showRun(id) {
-      let runId, run
-      if (id === undefined) {
-        run = Run.build()
-        this.$store.commit('addRun', run)
-        runId = run.id
-      } else {
-        runId = id
-      }
-      this.$router.push({ path: `/run/${runId}` })
+      this.$router.push({ path: `/run/${id}` })
     },
     showAlert () {
       return this.$refs.alert.show(this.message, 'primary')

@@ -13,20 +13,20 @@ export default new Vuex.Store({
     api: build(Api.Config, process.env),
     printers: PrinterList,
     labelTemplateId: process.env.VUE_APP_LABEL_TEMPLATE_ID,
-    runs: {}
+    // runs: {}
   },
   mutations: {
-    addRun (state, run) {
-      state.runs[run.id] = run
-    },
-    addRuns (state, runs) {
-      for (let run of runs) {
-        this.commit('addRun', run)
-      }
-    },
-    clearRuns (state) {
-      state.runs = {}
-    }
+    // addRun (state, run) {
+    //   state.runs[run.id] = run
+    // },
+    // addRuns (state, runs) {
+    //   for (let run of runs) {
+    //     this.commit('addRun', run)
+    //   }
+    // },
+    // clearRuns (state) {
+    //   state.runs = {}
+    // }
   },
   actions: {
   },
@@ -34,10 +34,10 @@ export default new Vuex.Store({
     api: state => state.api,
     printers: state => state.printers,
     labelTemplateId: state => state.labelTemplateId,
-    runs: state => state.runs,
-    run: state => (id) => {
-      return state.runs[id]
-    }
+    // runs: state => state.runs,
+    // run: state => (id) => {
+    //   return state.runs[id]
+    // }
   },
   modules: {
     traction,

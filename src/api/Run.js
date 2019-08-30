@@ -26,12 +26,13 @@ const assign = (object, other) => {
 
 const build = (object) => {
   let run = object || {
-    id: 'new',
+    id: null,
     name: '',
     chip: {
+      barcode: '',
       flowcells: [
-        { position: 1, library: {} },
-        { position: 2, library: {} }
+        { position: 1, library: { barcode: '' } },
+        { position: 2, library: { barcode: '' } }
       ]
     }
   }
@@ -80,7 +81,7 @@ const updateFlowcell = (run, flowcellPosition, libraryId) => {
   return run
 }
 
-const updateChip = (run, chipBarcode) => {
+const updateChipBarcode = (run, chipBarcode) => {
   run.chip.barcode = chipBarcode
   return run
 }
@@ -167,5 +168,5 @@ export {
   validateFlowcell,
   validateFlowcells,
   updateFlowcell,
-  updateChip
+  updateChipBarcode
 }
