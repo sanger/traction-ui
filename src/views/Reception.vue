@@ -79,7 +79,7 @@ export default {
         this.showAlert()
       }
     },
-    ...mapActions('traction/saphyr', [
+    ...mapActions('traction/saphyr/tubes', [
       'getTractionTubesForBarcodes',
       'exportSampleTubesIntoTraction'
     ]),
@@ -88,7 +88,7 @@ export default {
     ])
   },
   computed: {
-    ...mapState('traction/saphyr', {
+    ...mapState('traction/saphyr/tubes', {
       tractionTubes: state => state.tractionTubes
     }),
     ...mapState('sequencescape', {

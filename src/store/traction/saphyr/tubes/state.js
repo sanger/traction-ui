@@ -1,6 +1,5 @@
 const state = {
-  runs: [],
-  currentRun: {}
+  tractionTubes: []
 }
 
 export default state
