@@ -33,12 +33,12 @@ export default {
   methods: {
     async handleTractionTubes () {
       let barcodes = this.getBarcodes()
-      
+
       let response = await this.getTractionTubesForBarcodes(barcodes)
       if (response.successful && !response.empty) {
           this.handleTubeRedirect()
       } else {
-        this.message = response.errors
+        this.message = response.errors.message
         this.showAlert()
       }
     },
