@@ -2,20 +2,19 @@
   <div class="run">
     <alert ref='alert'></alert>
 
-    {{ this.currentRun }}
-
     <router-link :to="{name: 'Runs'}">
       <b-button id="backToRunsButton" class="float-right">Back</b-button>
     </router-link>
 
     <b-button v-if="newRecord" class="float-right" id="create" variant="success" @click="create">Create</b-button>
 
-    <h1 class="runInfo" id="id">Run ID: {{ this.currentRun.id }}</h1>
-    <h2 class="runInfo" id="state">State: {{ this.currentRun.state }}</h2>
 
-    <b-form-input class="runInfo" id="name" :value="name" @input="updateName" placeholder="name" type="text" />
+    <h1 class="runInfo" id="id">Run ID: {{ id }}</h1>
+    <h2 class="runInfo" id="state">state: {{ state }}</h2>
 
-    <chip :value="chip" v-bind:runId="id" @alert="alert"></chip>
+    <b-form-input class="runInfo" id="name" v-model="name" placeholder="name" type="text" @change="update" />
+
+    <chip v-if="Boolean(this.chip)" v-bind="chip" v-bind:runId="id" @alert="alert"></chip>
 
   </div>
 </template>
@@ -25,9 +24,6 @@ import RunMixin from '@/mixins/RunMixin'
 import Chip from '@/components/Chip'
 import Alert from '@/components/Alert'
 import * as RunApi from '@/api/Run'
-import { createNamespacedHelpers } from 'vuex'
-const { mapGetters, mapActions, mapState, mapMutations } = createNamespacedHelpers('traction/saphyr')
-
 export default {
   name: 'Run',
   mixins: [RunMixin],
@@ -38,10 +34,19 @@ export default {
   },
   data () {
     return {
+      name: this.name,
+      state: null,
+      chip: null,
       message: ''
     }
   },
   methods: {
+    provider () {
+      let data = this.$store.getters.run(this.id)
+      this.name = data.name
+      this.state = data.state
+      this.chip = data.chip
+    },
     alert (message) {
       this.message = message
       this.showAlert()
@@ -49,23 +54,30 @@ export default {
     showAlert () {
       return this.$refs.alert.show(this.message, 'primary')
     },
-    async create () {
-      let responses = await this.createRun()
-
-      if (responses.every(r => r.successful)) {
-        this.$router.push({name: 'Runs'})
-      } else {
-        let errors = responses.map(r => r.errors.message).join(',')
-        this.message = 'Failed to create run: ' + errors
-        this.showAlert()
+    update () {
+      let run = this.$store.getters.run(this.id)
+      run.name = this.name
+      this.$store.commit('addRun', run)
+      if (!this.newRecord) {
+        this.updateName(this.id, this.name)
       }
     },
-    ...mapActions([
-      'createRun',
-    ]),
-    ...mapMutations([
-      'updateName',
-    ]),
+    async create () {
+      let result
+      let run = this.$store.getters.run(this.id)
+      let errors = await RunApi.validate(run, this.tractionSaphyrTubeRequest)
+      if (Object.keys(errors).length === 0) {
+        result = await RunApi.create(run, this.saphyrRequest)
+        if (result) {
+          this.alert('run was successfully created')
+          this.$router.push({name: 'Runs'}).catch(() => {})
+        } else {
+          this.alert('run could not be created')
+        }
+      } else {
+        this.alert(errors)
+      }
+    }
   },
   components: {
     Chip,
@@ -74,28 +86,21 @@ export default {
   computed: {
      newRecord () {
       return isNaN(this.id)
-    },
-    ...mapGetters([
-      'currentRun'
-    ]),
-    ...mapState({
-      name: state => state.currentRun.name,
-      chip: state => state.currentRun.chip,
-      // currentRun: state => state.currentRun,
-    })
+    }
+  },
+  created () {
+    this.provider()
   }
 }
 </script>
 
 <style>
-
 .container {
   border: 1px solid black;
   max-width: 50%;
   padding: 10px;
   margin-top: 50px;
 }
-
 .row {
   border: 1px solid #42b983;
   padding-top: .75rem;
@@ -105,15 +110,12 @@ export default {
   margin-right: 0px;
   margin-left: 0px;
 }
-
 .runInfo {
   text-align: left;
   margin-top: 5px;
 }
-
 button {
   margin-right: 2px;
   margin-left: 2px;
 }
-
 </style>
