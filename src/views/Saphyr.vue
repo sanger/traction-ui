@@ -1,32 +1,9 @@
-<template>
-  <div class="saphyr">
-    <pipeline-router pipeline="saphyr" />
-    <h4>Saphyr</h4>
-    <router-view></router-view>
-  </div>
-</template>
-
 <script>
 
-import PipelineRouter from '@/components/PipelineRouter'
+import PipelineView from '@/mixins/PipelineView'
 
 export default {
   name: 'Saphyr',
-  mixins: [],
-  props: {
-  },
-  data () {
-    return {
-    }
-  },
-  methods: {
-  },
-  components: {
-    PipelineRouter
-  },
-  computed: {
-  },
-  created () {
-  }
+  mixins: [PipelineView]
 }
 </script>
