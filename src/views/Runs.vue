@@ -57,6 +57,7 @@
 <script>
 import Alert from '@/components/Alert'
 import RunMixin from '@/mixins/RunMixin'
+
 export default {
   name: 'Runs',
   mixins: [RunMixin],

@@ -6,10 +6,12 @@
 </template>
 
 <script>
+
 import Flowcell from '@/components/Flowcell'
 import Api from '@/mixins/Api'
 import handlePromise from '@/api/PromiseHelper'
 import * as Run from '@/api/Run'
+
 export default {
   name: 'Chip',
   mixins: [Api],
@@ -41,9 +43,11 @@ export default {
       let run = this.$store.getters.run(this.runId)
       let updatedRun = Run.updateChip(run, this.localBarcode)
       this.$store.commit('addRun', updatedRun)
+
       if (this.existingRecord) {
         let promise = this.chipRequest.update(this.payload)
         let response = await handlePromise(promise[0])
+        
         if (response.successful) {
           this.alert('Chip updated')
         } else {

@@ -24,6 +24,7 @@ import RunMixin from '@/mixins/RunMixin'
 import Chip from '@/components/Chip'
 import Alert from '@/components/Alert'
 import * as RunApi from '@/api/Run'
+
 export default {
   name: 'Run',
   mixins: [RunMixin],
@@ -42,6 +43,7 @@ export default {
   },
   methods: {
     provider () {
+
       let data = this.$store.getters.run(this.id)
       this.name = data.name
       this.state = data.state
@@ -58,6 +60,7 @@ export default {
       let run = this.$store.getters.run(this.id)
       run.name = this.name
       this.$store.commit('addRun', run)
+
       if (!this.newRecord) {
         this.updateName(this.id, this.name)
       }
@@ -95,12 +98,14 @@ export default {
 </script>
 
 <style>
+
 .container {
   border: 1px solid black;
   max-width: 50%;
   padding: 10px;
   margin-top: 50px;
 }
+
 .row {
   border: 1px solid #42b983;
   padding-top: .75rem;
@@ -110,10 +115,12 @@ export default {
   margin-right: 0px;
   margin-left: 0px;
 }
+
 .runInfo {
   text-align: left;
   margin-top: 5px;
 }
+
 button {
   margin-right: 2px;
   margin-left: 2px;
