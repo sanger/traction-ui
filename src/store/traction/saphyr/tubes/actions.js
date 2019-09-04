@@ -1,4 +1,5 @@
 import handlePromise  from '@/api/PromiseHelper'
+import printJob       from '@/api/PrintJobRequests'
 
 const getTractionTubesForBarcodes = async ({ commit, getters }, barcodeString)  => {
   let request = getters.tubeRequest
@@ -42,15 +43,63 @@ const sampleTubeJson = (tubes) => {
   }))
 }
 
+const createLibrariesInTraction = async ({ dispatch, getters }, payload) => {
+  let libraries = payload.samples.map(item => {
+    return {
+      state: 'pending',
+      saphyr_request_id: item.id,
+      saphyr_enzyme_id: payload.enzymeID
+    }
+  })
+
+  let body = {
+    data: {
+      type: 'libraries',
+      attributes: {
+        libraries: libraries
+      }
+    }
+  }
+
+  let request = getters.libraryRequest
+  let promise = request.create(body)
+  let response = await handlePromise(promise)
+
+  if (response.successful && !response.empty) {
+    let barcodes = response.deserialize.libraries.map(r => r.barcode).join('\n')
+    response = await dispatch('getTractionTubesForBarcodes', barcodes)
+  }
+  return response
+}
+
+const deleteLibraries = async ({ getters }, libraryIds) => {
+  let request = getters.libraryRequest
+  let promises = request.destroy(libraryIds)
+
+  let responses = await Promise.all(promises.map(promise => handlePromise(promise)))
+  return responses
+}
+
+const printLabels = async ({}, printerName, libraries) => {
+  let response = await printJob(printerName, libraries)
+  return response
+}
+
 const actions = {
   getTractionTubesForBarcodes,
-  exportSampleTubesIntoTraction
+  exportSampleTubesIntoTraction,
+  createLibrariesInTraction,
+  deleteLibraries,
+  printLabels
 }
 
 export {
   getTractionTubesForBarcodes,
   exportSampleTubesIntoTraction,
-  sampleTubeJson
+  sampleTubeJson,
+  createLibrariesInTraction,
+  deleteLibraries,
+  printLabels
 }
 
 export default actions

@@ -1,49 +1,6 @@
 import handlePromise  from '@/api/PromiseHelper'
-import printJob       from '@/api/PrintJobRequests'
 import router         from '@/router'
 import * as Run       from '@/api/Run'
-
-const deleteLibraries = async ({ getters }, libraryIds) => {
-  let request = getters.libraryRequest
-  let promises = request.destroy(libraryIds)
-
-  let responses = await Promise.all(promises.map(promise => handlePromise(promise)))
-  return responses
-}
-
-const printLabels = async ({}, printerName, libraries) => {
-  let response = await printJob(printerName, libraries)
-  return response
-}
-
-const createLibrariesInTraction = async ({ dispatch, getters }, payload) => {
-  let libraries = payload.samples.map(item => {
-    return {
-      state: 'pending',
-      saphyr_request_id: item.id,
-      saphyr_enzyme_id: payload.enzymeID
-    }
-  })
-
-  let body = {
-    data: {
-      type: 'libraries',
-      attributes: {
-        libraries: libraries
-      }
-    }
-  }
-
-  let request = getters.libraryRequest
-  let promise = request.create(body)
-  let response = await handlePromise(promise)
-
-  if (response.successful && !response.empty) {
-    let barcodes = response.deserialize.libraries.map(r => r.barcode).join('\n')
-    response = await dispatch('getTractionTubesForBarcodes', barcodes)
-  }
-  return response
-}
 
 const getRuns = async ({ commit, getters }) => {
   let request = getters.runRequest
@@ -161,9 +118,6 @@ const chipPayloadJson = (payload) => {
 }
 
 const actions = {
-  deleteLibraries,
-  printLabels,
-  createLibrariesInTraction,
   getRuns,
   startRun,
   completeRun,
@@ -179,9 +133,6 @@ const actions = {
 }
 
 export {
-  deleteLibraries,
-  printLabels,
-  createLibrariesInTraction,
   getRuns,
   startRun,
   completeRun,

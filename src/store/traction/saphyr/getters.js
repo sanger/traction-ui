@@ -1,6 +1,5 @@
 const getters = {
   runs:            state => state.runs,
-  libraryRequest:  (state, getters, rootState) => rootState.api.traction.saphyr.libraries,
   runRequest:      (state, getters, rootState) => rootState.api.traction.saphyr.runs,
   chipRequest:     (state, getters, rootState) => rootState.api.traction.saphyr.chips,
   run:             state => (id) => {

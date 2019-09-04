@@ -4,7 +4,7 @@
 
     <b-table
        show-empty
-       :items="getItems"
+       :items="tractionTubesWithInfo"
        :fields="fields"
     >
       <template slot="selected" slot-scope="row">
@@ -23,13 +23,10 @@ import Alert from '@/components/Alert'
 import PrinterModal from '@/components/PrinterModal'
 
 import { createNamespacedHelpers } from 'vuex'
-const { mapActions } = createNamespacedHelpers('traction/saphyr')
+const { mapActions, mapGetters } = createNamespacedHelpers('traction/saphyr/tubes')
 
 export default {
   name: 'Libraries',
-  props: {
-    items: Array
-  },
   data () {
     return {
       fields: [
@@ -82,9 +79,10 @@ export default {
     ]),
   },
   computed: {
-    getItems () {
-      return this.items.map(i => Object.assign(i.material, {barcode: i.barcode}))
-    }
+    ...mapGetters([
+      'tractionTubesWithInfo',
+      'tractionTubes'
+    ])
   }
 }
 

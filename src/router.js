@@ -38,14 +38,12 @@ export default new Router({
     {
       path: '/samples',
       name: 'Samples',
-      component: Samples,
-      props: true
+      component: Samples
     },
     {
       path: '/libraries',
       name: 'Libraries',
-      component: Libraries,
-      props: true
+      component: Libraries
     }
   ]
 })

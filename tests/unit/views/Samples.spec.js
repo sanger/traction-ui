@@ -1,7 +1,7 @@
 import Samples from '@/views/Samples'
 import Modal from '@/components/Modal'
 import PrinterModal from '@/components/PrinterModal'
-import { mount, localVue, store } from '../testHelper'
+import { mount, localVue, Vuex } from '../testHelper'
 import Libraries from '@/views/Libraries'
 import TractionTubesWithLibrariesJson from '../../data/tubeWithLibrary'
 import VueRouter from 'vue-router'
@@ -18,29 +18,44 @@ describe('Samples.vue', () => {
         { barcode: 'TRAC-1', material: {id: 1, type: 'samples', name: 'sample_d', external_id: 4, species: 'human', created_at: '02/27/2019 04:05' }},
       ]
 
-      const router = new VueRouter({ routes:
-        [
-          { path: '/libraries', name: 'Libraries', component: Libraries, props: true }
-        ]
+      const router = new VueRouter({
+        routes: [{ path: '/libraries', name: 'Libraries', component: Libraries, props: true }]
+      })
+
+      let store = new Vuex.Store({
+        modules: {
+          traction: {
+            namespaced: true,
+            modules: {
+              saphyr: {
+                namespaced: true,
+                  modules: {
+                    tubes: {
+                      namespaced: true,
+                      state: {
+                        tractionTubes: mockSamples
+                      },
+                      getters: {
+                        tractionTubesWithInfo: state => state.tractionTubes.map(i => Object.assign(i.material, {barcode: i.barcode}))
+                      }
+                    }
+                  }
+              }
+            }
+          }
+        }
       })
 
       wrapper = mount(Samples, { localVue,
         store,
         router,
-        propsData: {
-          items: mockSamples
-        },
         stubs: {
-          Modal: true
+          Alert: Alert,
+          PrinterModal: true,
+          Modal: true,
         }
       })
       samples = wrapper.vm
-    })
-
-    describe('alert', () => {
-      it('has a alert', () => {
-        expect(wrapper.contains(Alert)).toBe(true)
-      })
     })
 
   describe('building the table', () => {
@@ -75,7 +90,6 @@ describe('Samples.vue', () => {
     beforeEach(() => {
       selectedEnzymeId = 123
       samples.createLibrariesInTraction = jest.fn()
-      samples.handleTractionTubes = jest.fn()
       samples.handleTubeRedirect = jest.fn()
       samples.showAlert = jest.fn()
       samples.selected = mockSamples
@@ -107,20 +121,6 @@ describe('Samples.vue', () => {
     })
   })
 
-  describe('modal', () => {
-    beforeEach(() => {
-      samples.handleLibraryCreate = jest.fn()
-    })
-
-    it('passes selected enzyme id to function on emit event', () => {
-      samples.selected = [{id: 1}]
-      let modal = wrapper.find(Modal)
-      modal.vm.$emit('selectEnzyme', 2)
-
-      expect(samples.handleLibraryCreate).toBeCalledWith(2)
-    })
-  })
-
   describe('#handlePrintLabel', () => {
     let printerName
 
@@ -128,9 +128,12 @@ describe('Samples.vue', () => {
       printerName = "abc123"
       samples.selected = [{ id: 1, type: 'libraries', enzyme_name: 'enz1', barcode: 'TRAC-1' }]
       samples.printLabels = jest.fn()
+      samples.showAlert = jest.fn()
     })
 
     it('passes selected printer to function on emit event', () => {
+      samples.handlePrintLabel = jest.fn()
+
       let successfulResponse =  { data: {}, status: 201, statusText: "OK" }
 
       let expectedResponse = new Response(successfulResponse)
@@ -138,8 +141,7 @@ describe('Samples.vue', () => {
 
       let modal = wrapper.find(PrinterModal)
       modal.vm.$emit('selectPrinter', printerName)
-
-      expect(samples.printLabels).toBeCalledWith(printerName, samples.selected)
+      expect(modal.emitted().selectPrinter[0]).toEqual([printerName])
     })
 
     it('successfully prints label', async () => {
@@ -153,6 +155,7 @@ describe('Samples.vue', () => {
 
       expect(samples.printLabels).toBeCalledWith(printerName, samples.selected)
       expect(samples.message).toEqual('Printed successfully')
+      expect(samples.showAlert).toBeCalled()
     })
 
     it('unsuccessfully', async () => {
@@ -166,8 +169,23 @@ describe('Samples.vue', () => {
 
       expect(samples.printLabels).toBeCalledWith(printerName, samples.selected)
       expect(samples.message).toEqual('it was a bust')
+      expect(samples.showAlert).toBeCalled()
     })
 
+  })
+
+  describe('#showAlert', () => {
+    it('passes the message to function on emit event', () => {
+      wrapper.setData({ message: 'show this message' })
+      samples.showAlert()
+      expect(wrapper.find(Alert).html()).toMatch('show this message')
+    })
+  })
+
+  describe('alert', () => {
+    it('has a alert', () => {
+      expect(wrapper.contains(Alert)).toBe(true)
+    })
   })
 
   describe('printerModal', () => {
@@ -184,11 +202,17 @@ describe('Samples.vue', () => {
     })
   })
 
-  describe('#showAlert', () => {
-    it('passes the message to function on emit event', () => {
-      wrapper.setData({ message: 'show this message' })
-      samples.showAlert()
-      expect(wrapper.find(Alert).html()).toMatch('show this message')
+  describe('modal', () => {
+    beforeEach(() => {
+      samples.handleLibraryCreate = jest.fn()
+    })
+
+    it('passes selected enzyme id to function on emit event', () => {
+      samples.selected = [{id: 1}]
+      let modal = wrapper.find(Modal)
+      modal.vm.$emit('selectEnzyme', 2)
+
+      expect(samples.handleLibraryCreate).toBeCalledWith(2)
     })
   })
 

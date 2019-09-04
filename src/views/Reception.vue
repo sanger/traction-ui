@@ -72,7 +72,7 @@ export default {
       if (!this.tractionTubes.empty) {
         let table = this.tractionTubes.every(t => t.material.type == "requests") ? "Samples" : "Libraries"
         if (table) {
-          this.$router.push({name: table, params: {items: this.tractionTubes}})
+          this.$router.push({name: table})
         }
       } else {
         this.message = 'Failed to get Traction tubes'

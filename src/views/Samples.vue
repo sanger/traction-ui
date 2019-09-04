@@ -4,7 +4,7 @@
 
     <b-table
        show-empty
-       :items="getItems"
+       :items="tractionTubesWithInfo"
        :fields="fields"
     >
       <template slot="selected" slot-scope="row">
@@ -23,13 +23,10 @@ import PrinterModal from '@/components/PrinterModal'
 import Alert from '@/components/Alert'
 
 import { createNamespacedHelpers } from 'vuex'
-const { mapActions, mapState } = createNamespacedHelpers('traction/saphyr')
+const { mapActions, mapGetters } = createNamespacedHelpers('traction/saphyr/tubes')
 
 export default {
   name: 'Samples',
-  props: {
-    items: Array
-  },
   data () {
     return {
       fields: [
@@ -41,8 +38,7 @@ export default {
         { key: 'created_at', label: 'Created at', sortable: true }
       ],
       selected: [],
-      message: '',
-      barcodes: ''
+      message: ''
     }
   },
   methods: {
@@ -74,7 +70,7 @@ export default {
     handleTubeRedirect() {
       if (!this.tractionTubes.empty) {
         if (this.tractionTubes.every(t => t.material.type == "libraries")) {
-          this.$router.push({name: 'Libraries', params: {items: this.tractionTubes}})
+          this.$router.push({name: 'Libraries'})
         }
       } else {
         this.message = 'Failed to get Traction tubes'
@@ -95,12 +91,11 @@ export default {
     Alert
   },
   computed: {
-    getItems () {
-      return this.items.map(i => Object.assign(i.material, {barcode: i.barcode}))
-    },
-    ...mapState({
-      tractionTubes: state => state.tractionTubes
-    }),
+    ...mapGetters([
+      'tractionTubesWithInfo',
+      'tractionTubes'
+    ])
   }
 }
+
 </script>
