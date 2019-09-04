@@ -47,7 +47,7 @@ export default {
       if (this.existingRecord) {
         let promise = this.chipRequest.update(this.payload)
         let response = await handlePromise(promise[0])
-        
+
         if (response.successful) {
           this.alert('Chip updated')
         } else {
