@@ -3,6 +3,9 @@ import { mount, localVue, Vuex } from '../testHelper'
 import Alert from '@/components/Alert'
 import PrinterModal from '@/components/PrinterModal'
 import Response from '@/api/Response'
+import * as consts from '@/consts/consts'
+import TractionSaphyrLibraries from '../../data/tractionSaphyrLibraries'
+import VueRouter from 'vue-router'
 
 describe('Libraries.vue', () => {
   let wrapper, libraries, mockLibraries
@@ -12,6 +15,15 @@ describe('Libraries.vue', () => {
       { barcode: 'TRAC-8', material: {id: 6, type: 'libraries', state: 'pending', sample_name: 'sample_d', enzyme_name: 'Nb.BsrDI', created_at: '03/12/2019 11:49' }},
       { barcode: 'TRAC-8', material: {id: 6, type: 'libraries', state: 'pending', sample_name: 'sample_d', enzyme_name: 'Nb.BsrDI', created_at: '03/12/2019 11:49' }}
     ]
+
+    const router = new VueRouter({
+      routes: [{
+        path: '/libraries',
+        name: 'Libraries',
+        component: Libraries,
+        props: true
+      }]
+    })
 
     let store = new Vuex.Store({
       modules: {
@@ -39,6 +51,7 @@ describe('Libraries.vue', () => {
 
     wrapper = mount(Libraries, {
       store,
+      router,
       localVue,
       stubs: {
         Alert: Alert,
@@ -49,7 +62,6 @@ describe('Libraries.vue', () => {
   })
 
   describe('building the table', () => {
-
     it('contains the correct fields', () => {
       let headers = wrapper.findAll('th')
       for (let field of libraries.fields) {
@@ -57,33 +69,62 @@ describe('Libraries.vue', () => {
       }
     })
 
-    it('contains the correct data', () => {
-      expect(wrapper.find('tbody').findAll('tr').length).toEqual(mockLibraries.length)
+    it('contains the correct data', async () => {
+      libraries.tractionSaphyrLibraryRequest.get.mockResolvedValue(TractionSaphyrLibraries)
+      await libraries.provider()
+      expect(wrapper.find('tbody').findAll('tr').length).toEqual(libraries.perPage)
+    })
+  })
+
+  describe('#handleLibraryDelete', () => {
+    beforeEach(() => {
+      libraries.deleteLibraries = jest.fn()
     })
 
-    describe('selecting libraries', () => {
+    it('calls the correct functions', async () => {
+      libraries.showAlert = jest.fn()
+      await libraries.handleLibraryDelete()
+      expect(libraries.deleteLibraries).toBeCalled()
+      expect(libraries.showAlert).not.toBeCalled()
+    })
 
-      beforeEach(() => {
-        let checkboxes = wrapper.findAll(".selected")
-        checkboxes.at(0).trigger('click')
+    it('calls showAlert when there is an error', async () => {
+      libraries.deleteLibraries.mockImplementation(() => {
+        throw Error('Raise this error')
       })
 
-      it('will create a list of selected requests', () => {
-        expect(libraries.selected.length).toEqual(1)
-      })
-
+      await libraries.handleLibraryDelete()
+      expect(libraries.deleteLibraries).toBeCalled()
+      expect(wrapper.find(Alert).vm.message).toEqual(
+        consts.MESSAGE_ERROR_DELETION_FAILED + 'Raise this error')
     })
 
   })
 
-  describe('#handleLibraryDelete', () => {
+  describe('#deleteLibraries', () => {
+    beforeEach(async () => {
+      const router = new VueRouter({
+        routes: [{
+          path: '/libraries',
+          name: 'Libraries',
+          component: Libraries,
+          props: true
+        }]
+      })
 
-    beforeEach(() => {
-      libraries.deleteLibraries = jest.fn()
-      libraries.showAlert = jest.fn()
+      wrapper = mount(Libraries, {
+        localVue,
+        store,
+        router,
+      })
+      libraries = wrapper.vm
 
-      libraries.selected = [{ id: 1, type: 'libraries', enzyme_name: 'enz1', barcode: 'TRAC-1' },
-                            { id:2, type: 'libraries', enzyme_name: 'enz2', barcode: 'TRAC-2' }]
+      libraries.tractionSaphyrLibraryRequest.execute = jest.fn()
+      libraries.tractionSaphyrLibraryRequest.get.mockResolvedValue(TractionSaphyrLibraries)
+      await libraries.provider()
+
+      let checkboxes = wrapper.findAll(".selected")
+      checkboxes.at(0).trigger('click')
     })
 
     it('calls the correct functions when successful', async () => {
@@ -94,22 +135,18 @@ describe('Libraries.vue', () => {
 
       await libraries.handleLibraryDelete()
 
-      expect(libraries.deleteLibraries).toBeCalled()
-      expect(libraries.message).toEqual("Libraries 1,2 successfully deleted")
-      expect(libraries.showAlert).toBeCalled()
+      let selectedIds = libraries.selected.map(s => s.id)
+      expect(wrapper.find(Alert).vm.message).toEqual(`Library ${selectedIds.join(',')} successfully deleted`)
     })
 
-    it('calls the correct functions when there is an error', async () => {
-      let failedResponse =  { data: { errors: { it: ['was a bust'] } }, status: 422, statusText: 'Internal Server Error' }
-      let expectedResponse = new Response(failedResponse)
+    it('unsuccessfully', async () => {
+      let mockResponse =  { data: { errors: { it: ['was a bust'] } }, status: 422 }
 
       libraries.deleteLibraries.mockReturnValue([expectedResponse])
 
       await libraries.handleLibraryDelete()
 
-      expect(libraries.deleteLibraries).toBeCalled()
-      expect(libraries.message).toEqual("Failed to delete: it was a bust")
-      expect(libraries.showAlert).toBeCalled()
+      await expect(libraries.deleteLibraries()).rejects.toThrow("it was a bust")
     })
   })
 
@@ -141,13 +178,9 @@ describe('Libraries.vue', () => {
 
       let expectedResponse = new Response(successfulResponse)
 
-      libraries.printLabels.mockReturnValue(expectedResponse)
-
-      await libraries.handlePrintLabel(printerName)
-
-      expect(libraries.printLabels).toBeCalledWith(printerName, libraries.selected)
-      expect(libraries.message).toEqual('Printed successfully')
-      expect(libraries.showAlert).toBeCalled()
+      request.create.mockResolvedValue(successfulPromise)
+      await libraries.handlePrintLabel('printer1')
+      expect(wrapper.find(Alert).vm.message).toEqual('Printed successfully')
     })
 
     it('unsuccessfully', async () => {
@@ -159,9 +192,9 @@ describe('Libraries.vue', () => {
 
       await libraries.handlePrintLabel(printerName)
 
-      expect(libraries.printLabels).toBeCalledWith(printerName, libraries.selected)
-      expect(libraries.message).toEqual('it was a bust')
-      expect(libraries.showAlert).toBeCalled()
+      request.create.mockReturnValue(failedPromise)
+      await libraries.handlePrintLabel('printer1')
+      expect(wrapper.find(Alert).vm.message).toEqual('it was a bust')
     })
 
   })
@@ -194,4 +227,10 @@ describe('Libraries.vue', () => {
     })
   })
 
+  describe('#showAlert', () => {
+    it('passes the message to function on emit event', () => {
+      libraries.showAlert('show this message')
+      expect(wrapper.find(Alert).vm.message).toMatch('show this message')
+    })
+  })
 })

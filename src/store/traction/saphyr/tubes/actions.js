@@ -1,11 +1,11 @@
 import handlePromise  from '@/api/PromiseHelper'
 import printJob       from '@/api/PrintJobRequests'
 
-const getTractionTubesForBarcodes = async ({ commit, getters }, barcodeString)  => {
+const getTractionTubesForBarcodes = async ({ commit, getters }, barcodes)  => {
   let request = getters.tubeRequest
+  let barcodeString = barcodes.join(',')
   let promise = request.get({filter: { barcode: barcodeString} })
   let response = await handlePromise(promise)
-
   if (response.successful && !response.empty) {
     let tubes = response.deserialize.tubes
     commit('setTubes', tubes)
@@ -27,10 +27,6 @@ const exportSampleTubesIntoTraction = async ({ dispatch, getters }, tubes)  => {
   let promise = request.create(body)
   let response = await handlePromise(promise)
 
-  if (response.successful && !response.empty) {
-    let barcodes = response.deserialize.requests.map(r => r.barcode).join('\n')
-    response = await dispatch('getTractionTubesForBarcodes', barcodes)
-  }
   return response
 }
 
@@ -65,10 +61,10 @@ const createLibrariesInTraction = async ({ dispatch, getters }, payload) => {
   let promise = request.create(body)
   let response = await handlePromise(promise)
 
-  if (response.successful && !response.empty) {
-    let barcodes = response.deserialize.libraries.map(r => r.barcode).join('\n')
-    response = await dispatch('getTractionTubesForBarcodes', barcodes)
-  }
+  // if (response.successful && !response.empty) {
+  //   let barcodes = response.deserialize.libraries.map(r => r.barcode).join('\n')
+  //   response = await dispatch('getTractionTubesForBarcodes', barcodes)
+  // }
   return response
 }
 

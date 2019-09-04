@@ -1,12 +1,21 @@
 <template>
-
-  <div class="modal">
-    <b-btn id="createLibrariesWithEnzymeButton" :disabled="disabled" v-b-modal.enzymeModal>Create Libraries with Enzyme</b-btn>
-    <b-modal id="enzymeModal" title="Create Libraries" ref="enzymeModal" :static="isStatic" @ok="handleOk" @shown="clearSelect">
+  <div>
+    <b-btn id="createLibrariesWithEnzymeButton"
+           :disabled="disabled"
+           v-b-modal.enzymeModal
+           variant="success">
+      Create Libraries
+    </b-btn>
+    <b-modal id="enzymeModal"
+             size="sm"
+             title="Create Libraries"
+             ref="enzymeModal"
+             :static="isStatic"
+             @ok="handleOk"
+             @shown="clearSelect">
       <b-form-select v-model="selectedEnzymeId" :options="enzymeOptions" class="mb-3" />
     </b-modal>
   </div>
-
 </template>
 
 <script>
@@ -14,7 +23,7 @@ import handlePromise from '@/api/PromiseHelper'
 import Api from '@/mixins/Api'
 
 export default {
-  name: 'Modal',
+  name: 'EnzymeModal',
   mixins: [Api],
   data () {
     return {
@@ -43,7 +52,14 @@ export default {
     handleSubmit () {
       this.$emit('selectEnzyme', this.selectedEnzymeId)
       this.clearSelect()
-      this.$refs.enzymeModal.hide()
+      /**
+       * Hide the modal manually
+       * https://vuejsdevelopers.com/2019/01/22/vue-what-is-next-tick/
+       * https://bootstrap-vue.js.org/docs/components/modal/#prevent-closing
+       */
+      this.$nextTick(() => {
+        this.$refs.enzymeModal.hide()
+      })
     },
     async getEnzymeOptions () {
       let promise = this.enzymeRequest.get()
@@ -51,7 +67,8 @@ export default {
 
       if (response.successful) {
         let enzymes = response.deserialize.enzymes
-        let enzymeOptions = enzymes.map((enzyme, index) => Object.assign({ value: index+1, text: enzyme.name }))
+        let enzymeOptions = enzymes.map(
+          (enzyme, index) => Object.assign({ value: index+1, text: enzyme.name }))
         enzymeOptions.unshift({ value: null, text: "Please select an option" })
         this.enzymeOptions = enzymeOptions
       } else {
@@ -65,8 +82,6 @@ export default {
   async created() {
     this.provider()
   },
-  components: {
-  },
   computed: {
     enzymeRequest () {
       return this.api.traction.saphyr.enzymes
@@ -74,13 +89,3 @@ export default {
   }
 }
 </script>
-
-
-<style>
-
-.modal {
-  display: inline;
-  position: relative;
-}
-
-</style>

@@ -1,6 +1,20 @@
-dist: trusty
-sudo: required
+# only build if not a tag - this is to prevent builing after a tag is created by deployment
+if: tag IS blank
 language: node_js
+cache:
+  - yarn
+git:
+  depth: false
+  submodules: false
+dist: xenial
+sudo: required
+
+before_install:
+  - export TZ=Europe/London
+  - date
+
+install:
+  - yarn install
 
 # Disable e2e testing while we don't need it
 # addons:
@@ -12,17 +26,22 @@ script:
   - yarn test:unit
   - yarn lint
 
-before_deploy: "./compile-build.sh release.tar.gz dist"
+before_deploy:
+  - ./compile-build.sh release.tar.gz dist
+  - export TAG_NAME=${TRAVIS_BRANCH}/$(date +'%Y-%m-%d/%H%M%S')
+  - git tag "${TAG_NAME}"
 
 deploy:
   provider: releases
+  name: ${TAG_NAME}
+  skip_cleanup: true
+  file: release.tar.gz
   api_key:
     secure: jbeqmYk6AVhZuJxNsIZ2nt5GiCuS8ap9ojRuV0T2pgSx+Z9D9Yve0O/iTPE2u5bsNMkDrvJFodndB1/T9Ya4Q34Zw6eVZ4kwTDiU+QdYd21lz80/bMHV18sVFpEBJa4QbEyyBo2pemCwDyupODRJIzrpC//GunyCyfD9X+ODisr7vdG6apOLvYYDpCzUGOReErRGQ4eapn1LdMgNzNySlN8lqbxvq2TFWR5Fa7yxJO/i91g2yvcDDmR4C4Ba7Wl4E/hdRemA+iv2K23L85pFTaoEqqZYusm3Z59Trt+pZczqCTe0r3SKpRZ0LsJ2N21oIKOy9Jopr+Mv8OfB3FDPlXzPgTw7Gl7hxD9OX/hKgAI6Ir8srRbN6UO8zDG/9UFrWSZiiAdT/mGFB96qd9VagJwG09+fQbcm0s5GBOG/fC9YC66VjaRRhtIrNnmN0xnNe38iQGMkX/aAfFaZf0ndDpIp/fWXdUJk4hzZRzOKwpXXVQyCQk8bRBbzhh9Nidb/L4mezkU5eAgvru+dZPmBrZsQAMXKUZb7kka7dJ/QFG/P4NTsAFtJ8xAMt6LlIR5E4FJ1w+yba+CYp42YeDC01vsjUXFsRHRduN9UtzE7kAxAN+iwsoCeX9Z/5STNllzqLCxyy4catL7YT2p75MT3RjI2H1IT3/WxH7iPGsXRTDw=
-  file: release.tar.gz
-  name: devel-release-date
   on:
     repo: sanger/traction-ui
-    branch: devel
+    all_branches: true
+    condition: $TRAVIS_BRANCH =~ ^uat|master$ # only build a release on uat and master branches
 
 notifications:
   slack:

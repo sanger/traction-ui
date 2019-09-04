@@ -1,6 +1,7 @@
 import handlePromise from '@/api/PromiseHelper'
 
-const getSequencescapeTubesForBarcodes = async ({ commit, getters }, barcodeString)  => {
+const getSequencescapeTubesForBarcodes = async ({ commit, getters }, barcodes)  => {
+  let barcodeString = barcodes.join(',')
   let request = getters.sequencescapeTubeRequest
   let promise = request.get({filter: { barcode: barcodeString} })
   let response = await handlePromise(promise)
