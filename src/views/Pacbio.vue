@@ -1,18 +1,14 @@
 <template>
-   <div class="pacbio">
-     <div id="nav">
-      <router-link to="/dashboard" class="dashboard">Dashboard</router-link> |
-      <router-link to="/pacbio/reception" class="reception">Reception</router-link> |
-      <router-link to="/pacbio/samples" class="samples">Samples</router-link> |
-      <router-link to="/pacbio/libraries" class="libraries">Libraries</router-link> |
-      <router-link to="/pacbio/runs" class="runs">Runs</router-link>
-    </div>
-    <h4>PacBio</h4>
+  <div class="pacbio">
+    <pipeline-router pipeline="pacbio" />
+    <h4>Pacbio</h4>
     <router-view></router-view>
   </div>
 </template>
 
 <script>
+
+import PipelineRouter from '@/components/PipelineRouter'
 
 export default {
   name: 'Pacbio',
@@ -26,6 +22,7 @@ export default {
   methods: {
   },
   components: {
+    PipelineRouter
   },
   computed: {
   },
@@ -33,6 +30,3 @@ export default {
   }
 }
 </script>
-
-<style>
-</style>
