@@ -11,9 +11,23 @@ export default {
     }
   },
   methods: {
-    // getRun (id) {
-    //   return this.$store.getters.run(id)
-    // },
+    getRun (id) {
+      return this.$store.getters.run(id)
+    },
+    async getRuns () {
+      let promise = this.tractionSaphyrRunsRequest.get()
+      let response = await handlePromise(promise)
+
+      if (response.successful) {
+        let runs = response.deserialize.runs
+        this.$store.commit('addRuns', runs)
+        return runs
+      } else {
+        this.message = response.errors.message
+        this.showAlert()
+        return []
+      }
+    },
     async handleUpdate (id, attributes) {
       try {
         await this.updateRun(id, attributes)
@@ -22,17 +36,49 @@ export default {
         this.showAlert()
       }
     },
-    // updateName (id, name) {
-    //   this.handleUpdate(id, {name: name})
-    // },
-    // async buildRun() {
-    //   let run = Run.build()
-    //   this.$store.commit('addRun', run)
-    //   let runId = run.id
-    //   this.$router.push({ path: `/run/${runId}` })
-    // },
+    async updateRun (id, attributes) {
+      let promises = this.tractionSaphyrRunsRequest.update(this.payload(id, attributes))
+      let response = await handlePromise(promises[0])
+
+      if (response.successful) {
+        this.message = 'Run updated'
+        this.$store.commit('addRun', response.deserialize.runs[0])
+        this.showAlert()
+      } else {
+        throw response.errors.message
+      }
+    },
+    updateName (id, name) {
+      this.handleUpdate(id, {name: name})
+    },
+    startRun(id) {
+      this.handleUpdate(id, {state: 'started'})
+    },
+    completeRun (id) {
+      this.handleUpdate(id, {state: 'completed'})
+    },
+    cancelRun (id) {
+      this.handleUpdate(id, {state: 'cancelled'})
+    },
     async showRun(id) {
-      this.$router.push({ path: `/run/${id}` })
+      let runId, run
+      if (id === undefined) {
+        run = Run.build()
+        this.$store.commit('addRun', run)
+        runId = run.id
+      } else {
+        runId = id
+      }
+      this.$router.push({ path: `/run/${runId}` })
+    },
+    payload (id, attributes) {
+      return {
+        data: {
+          id: id,
+          type: 'runs',
+          attributes: attributes
+        }
+      }
     },
     showAlert () {
       return this.$refs.alert.show(this.message, 'primary')
