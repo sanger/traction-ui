@@ -26,13 +26,12 @@ const assign = (object, other) => {
 
 const build = (object) => {
   let run = object || {
-    id: null,
+    id: 'new',
     name: '',
     chip: {
-      barcode: '',
       flowcells: [
-        { position: 1, library: { barcode: '' } },
-        { position: 2, library: { barcode: '' } }
+        { position: 1, library: {} },
+        { position: 2, library: {} }
       ]
     }
   }
@@ -50,10 +49,10 @@ const getLibrary = async (barcode, request) => {
 }
 
 const validateChip = (chip) => {
-  if (!chip.barcode) {
+  if (chip.barcode === undefined) {
     return 'barcode not present'
   }
-  if (chip.barcode.length < 16) {
+  if (chip.barcode && chip.barcode.length < 16) {
     return 'barcode not in correct format'
   }
 }
@@ -81,7 +80,7 @@ const updateFlowcell = (run, flowcellPosition, libraryId) => {
   return run
 }
 
-const updateChipBarcode = (run, chipBarcode) => {
+const updateChip = (run, chipBarcode) => {
   run.chip.barcode = chipBarcode
   return run
 }
@@ -133,9 +132,9 @@ const create = async (run, request) => {
 
   } catch (err) {
     rollback(responses, request)
-    return responses
+    return false
   }
-  return responses
+  return true
 }
 
 const rollback = (responses, request) => {
@@ -168,5 +167,5 @@ export {
   validateFlowcell,
   validateFlowcells,
   updateFlowcell,
-  updateChipBarcode
+  updateChip
 }
