@@ -117,3 +117,101 @@ describe('#sampleTubesJson', () => {
     expect(tube.species).toBeDefined()
   })
 })
+
+describe('#createLibrariesInTraction', () => {
+  let dispatch, create, getters, payload
+
+  beforeEach(() => {
+    dispatch = jest.fn()
+    create = jest.fn()
+    getters = { 'libraryRequest': { 'create': create } }
+    let samples = [
+      { barcode: 'TRAC-1', material: {id: 1, type: 'samples', name: 'sample_d', external_id: 4, species: 'human', created_at: '02/27/2019 04:05' }},
+      { barcode: 'TRAC-1', material: {id: 1, type: 'samples', name: 'sample_d', external_id: 4, species: 'human', created_at: '02/27/2019 04:05' }},
+    ]
+    let enzymeID = 1
+    payload = {'samples': samples, 'enzymeID': enzymeID}
+  })
+
+  it('successfully', async () => {
+
+    let mockResponse =  {
+      data: {
+        data: [
+           { id: 1, type: "libraries", attributes: { name: "testname1", barcode: 'TRAC-1' }},
+           { id: 2, type: "libraries", attributes: { name: "testname2", barcode: 'TRAC-2' }}
+        ]
+      },
+      status: 200,
+      statusText: "OK"
+    }
+
+    let expectedResponse = new Response(TractionTubesWithLibrariesJson)
+    let expectedBarcodes = new Response(mockResponse).deserialize.libraries.map(s=> s.barcode).join('\n')
+
+    create.mockReturnValue(mockResponse)
+    dispatch.mockReturnValue(expectedResponse)
+
+    let response = await Actions.createLibrariesInTraction({ dispatch, getters }, payload)
+
+    expect(dispatch).toHaveBeenCalledWith('getTractionTubesForBarcodes', expectedBarcodes)
+    expect(response).toEqual(expectedResponse)
+  })
+
+  it('unsuccessfully', async () => {
+    let failedResponse = { status: 422, statusText: 'Unprocessable Entity', data: { errors: { name: ['error message'] }} }
+    let expectedResponse = new Response(failedResponse)
+
+    create.mockReturnValue(failedResponse)
+
+    let response = await Actions.createLibrariesInTraction({ dispatch, getters }, payload)
+
+    expect(dispatch).not.toHaveBeenCalledWith('getTractionTubesForBarcodes')
+    expect(response).toEqual(expectedResponse)
+  })
+
+})
+
+describe('#deleteLibraries', () => {
+  let destroy, getters, libraryIds, failedResponse
+
+  beforeEach(() => {
+    destroy = jest.fn()
+    getters = { 'libraryRequest': { 'destroy': destroy } }
+    libraryIds = [1,2]
+
+    failedResponse = { data: { data: [] }, status: 500, statusText: 'Internal Server Error' }
+  })
+
+  it('successfully', async () => {
+    let mockResponse =  { data: {}, status: 204, statusText: "OK" }
+
+    let promise = new Promise((resolve) => {
+      resolve(mockResponse)
+    })
+
+    destroy.mockReturnValue([promise])
+
+    let expectedResponse = new Response(mockResponse)
+    let response = await Actions.deleteLibraries({ getters }, libraryIds)
+
+    expect(response).toEqual([expectedResponse])
+  })
+
+  it('unsuccessfully', async () => {
+    let promise = new Promise((reject) => {
+      reject(failedResponse)
+    })
+
+    destroy.mockReturnValue([promise])
+
+    let expectedResponse = new Response(failedResponse)
+    let response = await Actions.deleteLibraries({ getters }, libraryIds)
+
+    expect(response).toEqual([expectedResponse])
+  })
+
+})
+
+describe('#printLabels', () => {
+})
