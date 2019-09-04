@@ -1,5 +1,5 @@
 import Reception from '@/views/Reception'
-import { mount, localVue, store } from '../testHelper'
+import { mount, localVue, Vuex } from '../testHelper'
 import TractionSaphyrTubesWithRequestJson from '../../data/tractionSaphyrTubesWithRequest'
 import TractionTubesWithLibrariesJson from '../../data/tubeWithLibrary'
 import SequencescapeTubesJson from '../../data/sequencescapeTubesWithSample'
@@ -12,18 +12,18 @@ import Alert from '@/components/Alert'
 
 describe('Reception', () => {
 
-  let wrapper, reception, barcodes, barcode, input
+  let wrapper, reception, barcodes, barcode, input, router
 
   beforeEach(() => {
-    const router = new VueRouter({ routes:
+    router = new VueRouter({ routes:
       [
-        { path: '/samples', name: 'Samples', component: Samples, props: true },
-        { path: '/libraries', name: 'Libraries', component: Libraries, props: true }
+        { path: '/samples', name: 'Samples', component: Samples },
+        { path: '/libraries', name: 'Libraries', component: Libraries }
       ]
     })
 
     barcodes = 'TRAC-1\nTRAC-2\nTRAC-3\nTRAC-4\nTRAC-5'
-    wrapper = mount(Reception, { localVue, router, store } )
+    wrapper = mount(Reception, { localVue, router } )
     reception = wrapper.vm
   })
 
@@ -130,6 +130,23 @@ describe('Reception', () => {
     let failedResponse
 
     beforeEach(() => {
+      let mockSSTubes =  [{ },{ }]
+
+      let store = new Vuex.Store({
+        modules: {
+          sequencescape: {
+            namespaced: true,
+            state: {
+              sequencescapeTubes: mockSSTubes
+            }
+          }
+        }
+      })
+
+
+      wrapper = mount(Reception, { localVue, router, store } )
+      reception = wrapper.vm
+
       reception.getSequencescapeTubesForBarcodes = jest.fn()
       reception.exportSampleTubesIntoTraction = jest.fn()
       reception.handleTubeRedirect = jest.fn()
@@ -163,7 +180,7 @@ describe('Reception', () => {
       expect(reception.message).toBeDefined()
       expect(reception.showAlert).toBeCalled()
     })
-
+    
     it('errors when exportSampleTubesIntoTraction fails', async () => {
       let sequencescapeTubesResponse = new Response(SequencescapeTubesJson)
       reception.getSequencescapeTubesForBarcodes.mockReturnValue(sequencescapeTubesResponse)
