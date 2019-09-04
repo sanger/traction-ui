@@ -2,7 +2,7 @@
     <div class="runs">
       <alert ref='alert'></alert>
 
-      <b-button id="newRun" class="float-right" @click="buildRun()" variant="success">New Run</b-button>
+      <b-button id="newRun" class="float-right" @click="showRun()" variant="success">New Run</b-button>
 
       <b-col md="6" class="my-1">
         <b-input-group>
@@ -16,13 +16,14 @@
       <b-col>
         <b-pagination
           v-model="currentPage"
+          :total-rows="rows"
           :per-page="perPage"
         ></b-pagination>
       </b-col>
 
       <b-table
           show-empty
-          :items="runs"
+          :items="items"
           :fields="fields"
           :filter="filter"
           :sort-by.sync="sortBy"
@@ -32,7 +33,7 @@
       >
 
         <template slot="actions" slot-scope="row">
-          <b-button :id="generateId('editRun',row.item.id)" variant="outline-dark" size="sm" @click="editRun(row.item.id)" class="mr-1">
+          <b-button :id="generateId('createRun',row.item.id)" variant="outline-dark" size="sm" @click="showRun(row.item.id)" class="mr-1">
             Edit
           </b-button>
 
@@ -55,11 +56,10 @@
 
 <script>
 import Alert from '@/components/Alert'
-import { createNamespacedHelpers } from 'vuex'
-const { mapActions, mapState, mapGetters } = createNamespacedHelpers('traction/saphyr')
-
+import RunMixin from '@/mixins/RunMixin'
 export default {
   name: 'Runs',
+  mixins: [RunMixin],
   props: {
   },
   data () {
@@ -72,15 +72,18 @@ export default {
         { key: 'created_at', label: 'Created at', sortable: true },
         { key: 'actions', label: 'Actions' },
       ],
+      items: [],
       filter: null,
       sortBy: 'created_at',
       sortDesc: true,
       perPage: 10,
       currentPage: 1,
-      message: ''
     }
   },
   methods: {
+    async provider() {
+      this.items = await this.getRuns()
+    },
     isRunDisabled(run) {
       return run.state == 'completed' || run.state == 'cancelled'
     },
@@ -89,29 +92,15 @@ export default {
     },
     generateId(text, id) {
       return `${text}-${id}`
-    },
-    showAlert () {
-      return this.$refs.alert.show(this.message, 'primary')
-    },
-    ...mapActions([
-      'getRuns',
-      'startRun',
-      'completeRun',
-      'cancelRun',
-      'editRun',
-      'buildRun'
-    ]),
+    }
   },
   created() {
-    this.getRuns()
+    this.provider()
   },
   components: {
     Alert
   },
   computed: {
-    ...mapGetters([
-      'runs'
-    ])
   }
 }
 </script>
