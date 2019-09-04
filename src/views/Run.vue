@@ -50,23 +50,18 @@ export default {
       return this.$refs.alert.show(this.message, 'primary')
     },
     async create () {
-      let result
-      let run = this.$store.getters.run(this.id)
-      let errors = await RunApi.validate(run, this.tractionSaphyrTubeRequest)
-      if (Object.keys(errors).length === 0) {
-        result = await RunApi.create(run, this.saphyrRequest)
-        if (result) {
-          this.alert('run was successfully created')
-          this.$router.push({name: 'Runs'}).catch(() => {})
-        } else {
-          this.alert('run could not be created')
-        }
+      let responses = await this.createRun()
+
+      if (responses.every(r => r.successful)) {
+        this.$router.push({name: 'Runs'})
       } else {
-        this.alert(errors)
+        let errors = responses.map(r => r.errors.message).join(',')
+        this.message = 'Failed to create run: ' + errors
+        this.showAlert()
       }
     },
     ...mapActions([
-      // 'updateRunName',
+      'createRun',
     ]),
     ...mapMutations([
       'updateName',

@@ -50,10 +50,10 @@ const getLibrary = async (barcode, request) => {
 }
 
 const validateChip = (chip) => {
-  if (chip.barcode === undefined) {
+  if (!chip.barcode) {
     return 'barcode not present'
   }
-  if (chip.barcode && chip.barcode.length < 16) {
+  if (chip.barcode.length < 16) {
     return 'barcode not in correct format'
   }
 }
@@ -133,9 +133,9 @@ const create = async (run, request) => {
 
   } catch (err) {
     rollback(responses, request)
-    return false
+    return responses
   }
-  return true
+  return responses
 }
 
 const rollback = (responses, request) => {
