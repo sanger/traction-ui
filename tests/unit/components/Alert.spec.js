@@ -15,7 +15,7 @@ describe('Alert.vue', () => {
   })
 
   it('will have an alert component', () => {
-    expect(wrapper.contains('.alert')).toBe(true)
+    expect(wrapper.contains(Alert)).toBe(true)
   })
 
   it('has a message', () => {

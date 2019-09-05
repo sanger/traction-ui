@@ -34,7 +34,8 @@
           "name": "flowcells"
         },
         "requests": {
-          "name": "requests"
+          "name": "requests",
+          "include": ""
         },
         "tubes": {
           "name": "tubes",

@@ -1,15 +1,15 @@
 import { mount, localVue, store } from '../testHelper'
-import Modal from '@/components/Modal'
+import EnzymeModal from '@/components/EnzymeModal'
 import flushPromises from 'flush-promises'
 import EnzymesJson from '../../data/enzymes'
 import Response from '@/api/Response'
 
-describe('Modal.vue', () => {
+describe('EnzymeModal.vue', () => {
 
-  let wrapper, modal
+  let wrapper, enzymeModal
 
   beforeEach(() => {
-    wrapper = mount(Modal, {
+    wrapper = mount(EnzymeModal, {
       localVue,
       store,
       propsData: {
@@ -20,19 +20,19 @@ describe('Modal.vue', () => {
         provider () { return }
       }
     })
-    modal = wrapper.vm
+    enzymeModal = wrapper.vm
   })
 
   it('will have a name', () => {
-    expect(wrapper.name()).toEqual('Modal')
+    expect(wrapper.name()).toEqual('EnzymeModal')
   })
 
   it('will have an button component', () => {
-    expect(wrapper.contains('.btn')).toBe(true)
+    expect(wrapper.contains('#createLibrariesWithEnzymeButton')).toBe(true)
   })
 
   it('will have an modal component', () => {
-    expect(wrapper.contains('.modal')).toBe(true)
+    expect(wrapper.contains('#enzymeModal')).toBe(true)
   })
 
   describe('data', () => {
@@ -48,7 +48,7 @@ describe('Modal.vue', () => {
       }
 
       wrapper.setData(enzymeOptions)
-      expect(modal.enzymeOptions).toEqual(enzymeOptions.enzymeOptions)
+      expect(enzymeModal.enzymeOptions).toEqual(enzymeOptions.enzymeOptions)
       expect(wrapper.find('select').findAll('option').length).toEqual(enzymeOptions.enzymeOptions.length)
     })
   })
@@ -88,19 +88,19 @@ describe('Modal.vue', () => {
   describe('#getEnzymeOptions', () => {
 
     beforeEach(() => {
-      modal.enzymeRequest.execute = jest.fn()
+      enzymeModal.enzymeRequest.execute = jest.fn()
     })
 
     it('success', async () => {
-      modal.enzymeRequest.execute.mockResolvedValue(EnzymesJson)
+      enzymeModal.enzymeRequest.execute.mockResolvedValue(EnzymesJson)
 
-      await modal.getEnzymeOptions()
+      await enzymeModal.getEnzymeOptions()
 
       let enzymes = new Response(EnzymesJson).deserialize.enzymes
       let enzymeOptions = enzymes.map((enzyme, index) => Object.assign({ value: index+1, text: enzyme.name }))
       enzymeOptions.unshift({ value: null, text: "Please select an option" })
 
-      expect(modal.enzymeOptions).toEqual(enzymeOptions)
+      expect(enzymeModal.enzymeOptions).toEqual(enzymeOptions)
     })
 
     it('failure', async () => {
@@ -114,18 +114,18 @@ describe('Modal.vue', () => {
         statusText: "Unprocessible entity"
       }
 
-      modal.enzymeRequest.execute.mockReturnValue(mockResponse)
+      enzymeModal.enzymeRequest.execute.mockReturnValue(mockResponse)
 
-      await modal.getEnzymeOptions()
+      await enzymeModal.getEnzymeOptions()
       await flushPromises()
 
-      expect(modal.message).toEqual("name name error message 1")
+      expect(enzymeModal.message).toEqual("name name error message 1")
     })
   })
 
   describe('#enzymeRequest', () => {
     it('will have a request', () => {
-      expect(modal.enzymeRequest).toBeDefined()
+      expect(enzymeModal.enzymeRequest).toBeDefined()
     })
   })
 })

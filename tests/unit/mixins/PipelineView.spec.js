@@ -40,8 +40,4 @@ describe('PipelineView', () => {
     expect(wrapper.find('nav').findAll('a').length).toBeTruthy()
   })
 
-  it('will have a description', () => {
-
-  })
-
 })

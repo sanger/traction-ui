@@ -212,12 +212,8 @@ describe('Runs.vue', () => {
   })
 
   describe('#showAlert', () => {
-    beforeEach(() => {
-      runs.message = 'show this message'
-    })
-
     it('emits an event with the message', () => {
-      runs.showAlert()
+      runs.showAlert(/show this message/)
       expect(wrapper.find(Alert).text()).toMatch(/show this message/)
     })
   })
