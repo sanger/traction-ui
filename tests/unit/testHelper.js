@@ -1,5 +1,5 @@
 import BootstrapVue from 'bootstrap-vue'
-import { mount, createLocalVue } from '@vue/test-utils'
+import { mount, createLocalVue, shallowMount } from '@vue/test-utils'
 import VueRouter from 'vue-router'
 import Vuex from 'vuex'
 import store from '@/store'
@@ -9,4 +9,4 @@ localVue.use(BootstrapVue)
 localVue.use(VueRouter)
 localVue.use(Vuex)
 
-export { mount, localVue, Vuex, store }
+export { mount, localVue, Vuex, store, shallowMount }

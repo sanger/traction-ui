@@ -138,7 +138,11 @@ export default {
       }
     },
     async provider() {
-      this.items = await this.getMaterial(consts.MAT_TYPE_REQUESTS)
+      try {
+        this.items = await this.getMaterial(consts.MAT_TYPE_REQUESTS)
+      } catch (err) {
+        this.log(err)
+      }
     },
     clearPreFilter() {
       this.log('clearPreFilter()')
