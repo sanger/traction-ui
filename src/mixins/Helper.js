@@ -20,7 +20,7 @@ export default {
      * @param {*} message the message to log
      */
     log(message) {
-      if (process.env !== 'production') {
+      if (process.env.VUE_APP_LOG === 'true') {
         console.log(message)
       }
     },
