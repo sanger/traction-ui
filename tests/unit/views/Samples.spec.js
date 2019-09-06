@@ -189,7 +189,7 @@ describe('Samples.vue', () => {
                       tractionTubes: mockLibrariesTubes
                     },
                     getters: {
-                      tractionTubes:   state => state.tractionTubes
+                      tractionTubes: state => state.tractionTubes
                     }
                   }
                 }
@@ -216,20 +216,24 @@ describe('Samples.vue', () => {
       samples = wrapper.vm
 
       samples.getTractionTubesForBarcodes = jest.fn()
+      samples.redirectToLibraries = jest.fn()
     })
 
     it('successfully for libraries', async () => {
       wrapper.setData({ barcodes: ['TRAC-3'] })
+
       let expectedResponse = new Response(TractionTubesWithLibrariesJson)
       samples.getTractionTubesForBarcodes.mockReturnValue(expectedResponse)
 
-      // await samples.handleTractionTubes()
-      // expect(wrapper.vm.$route.path).toEqual(`libraries`)
+      await samples.handleTractionTubes()
+      expect(samples.redirectToLibraries).toBeCalled()
     })
 
     it('unsuccessfully', async () => {
       wrapper.setData({ barcodes: ['TRAC-3'] })
-      samples.getTractionTubesForBarcodes.mockReturnValue(new Response(failedResponse))
+
+      let expectedResponse = new Response(failedResponse)
+      samples.getTractionTubesForBarcodes.mockReturnValue(expectedResponse)
 
       await expect(samples.handleTractionTubes()).rejects.toThrow(
         consts.MESSAGE_ERROR_GET_TRACTION_TUBES)

@@ -131,11 +131,14 @@ export default {
         let tubes = this.tractionTubes
         // Surely all these tubes will be libraries since we are creating libraries?
         if (tubes.every(t => t.material.type === "libraries")) {
-          this.$router.push({name: 'Libraries', query: { barcode: tubes.map(tube => tube.barcode) }})
+          this.redirectToLibraries(tubes)
         }
       } else {
         throw Error(consts.MESSAGE_ERROR_GET_TRACTION_TUBES)
       }
+    },
+    redirectToLibraries (tubes) {
+      this.$router.push({name: 'Libraries', query: { barcode: tubes.map(tube => tube.barcode) }})
     },
     async provider() {
       try {
