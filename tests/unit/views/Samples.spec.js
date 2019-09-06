@@ -1,18 +1,15 @@
 import Samples from '@/views/Samples'
 import EnzymeModal from '@/components/EnzymeModal'
 import PrinterModal from '@/components/PrinterModal'
-import { mount, localVue, Vuex, shallowMount } from '../testHelper'
+import { mount, localVue, Vuex } from '../testHelper'
 import Libraries from '@/views/Libraries'
 import TractionTubesWithLibrariesJson from '../../data/tubeWithLibrary'
 import TractionSaphyrRequests from '../../data/tractionSaphyrRequests'
 import LibrariesJson from '../../data/libraries'
-import MatType from '@/mixins/MatType'
 import Response from '@/api/Response'
 import VueRouter from 'vue-router'
 import Alert from '@/components/Alert'
 import * as consts from '@/consts/consts'
-import Api from '@/api'
-import build from '@/api/ApiBuilder'
 
 describe('Samples.vue', () => {
 
@@ -246,6 +243,13 @@ describe('Samples.vue', () => {
     })
   })
 
+  describe('#showAlert', () => {
+    it('passes the message to function on emit event', () => {
+      samples.showAlert('show this message', 'danger')
+      expect(wrapper.find(Alert).html()).toMatch('show this message')
+    })
+  })
+
   describe('printerModal', () => {
     beforeEach(() => {
       samples.handlePrintLabel = jest.fn()
@@ -260,14 +264,10 @@ describe('Samples.vue', () => {
     })
   })
 
-  describe('#showAlert', () => {
+
+  describe('enzymeModal', () => {
     beforeEach(() => {
       samples.handleLibraryCreate = jest.fn()
-    })
-
-    it('passes the message to function on emit event', () => {
-      samples.showAlert('show this message')
-      expect(wrapper.find(Alert).html()).toMatch('show this message')
     })
 
     it('passes selected enzyme id to function on emit event', () => {

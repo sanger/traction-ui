@@ -3,7 +3,6 @@ import { mount, localVue, Vuex } from '../testHelper'
 import Alert from '@/components/Alert'
 import PrinterModal from '@/components/PrinterModal'
 import Response from '@/api/Response'
-import * as consts from '@/consts/consts'
 import TractionSaphyrLibraries from '../../data/tractionSaphyrLibraries'
 import VueRouter from 'vue-router'
 
@@ -106,80 +105,28 @@ describe('Libraries.vue', () => {
     })
 
   })
-  //
-  // describe('#deleteLibraries', () => {
-  //   beforeEach(async () => {
-  //     const router = new VueRouter({
-  //       routes: [{
-  //         path: '/libraries',
-  //         name: 'Libraries',
-  //         component: Libraries,
-  //         props: true
-  //       }]
-  //     })
-  //
-  //     wrapper = mount(Libraries, {
-  //       localVue,
-  //       store,
-  //       router,
-  //     })
-  //     libraries = wrapper.vm
-  //
-  //     libraries.tractionSaphyrLibraryRequest.execute = jest.fn()
-  //     libraries.tractionSaphyrLibraryRequest.get.mockResolvedValue(TractionSaphyrLibraries)
-  //     await libraries.provider()
-  //
-  //     let checkboxes = wrapper.findAll(".selected")
-  //     checkboxes.at(0).trigger('click')
-  //   })
-  //
-  //   it('calls the correct functions when successful', async () => {
-  //     let mockResponse =  { data: {}, status: 204, statusText: "OK" }
-  //     let expectedResponse = new Response(mockResponse)
-  //
-  //     libraries.deleteLibraries.mockReturnValue([expectedResponse])
-  //
-  //     await libraries.handleLibraryDelete()
-  //
-  //     let selectedIds = libraries.selected.map(s => s.id)
-  //     expect(wrapper.find(Alert).vm.message).toEqual(`Library ${selectedIds.join(',')} successfully deleted`)
-  //   })
-  //
-  //   it('unsuccessfully', async () => {
-  //     let mockResponse =  { data: { errors: { it: ['was a bust'] } }, status: 422 }
-  //
-  //     libraries.deleteLibraries.mockReturnValue([expectedResponse])
-  //
-  //     await libraries.handleLibraryDelete()
-  //
-  //     await expect(libraries.deleteLibraries()).rejects.toThrow("it was a bust")
-  //   })
-  // })
-  //
-  //
-  // describe('#showAlert', () => {
-  //   it('passes the message to function on emit event', () => {
-  //     wrapper.setData({ message: 'show this message' })
-  //     libraries.showAlert()
-  //     expect(wrapper.find(Alert).html()).toMatch('show this message')
-  //     expect(wrapper.find(Alert).vm.message).toMatch('show this message')
-  //   })
-  // })
-  //
-  // describe('printerModal', () => {
-  //   beforeEach(() => {
-  //     libraries.handlePrintLabel = jest.fn()
-  //   })
-  //
-  //   it('passes selected printer to function on emit event', () => {
-  //     libraries.selected = [{id: 1}]
-  //     let modal = wrapper.find(PrinterModal)
-  //     modal.vm.$emit('selectPrinter', 'printer1')
-  //
-  //     expect(libraries.handlePrintLabel).toBeCalledWith('printer1')
-  //   })
-  // })
-  //
+
+  describe('#showAlert', () => {
+    it('passes the message to function on emit event', () => {
+      libraries.showAlert('show this message', 'danger')
+      expect(wrapper.find(Alert).html()).toMatch('show this message')
+    })
+  })
+
+  describe('printerModal', () => {
+    beforeEach(() => {
+      libraries.handlePrintLabel = jest.fn()
+    })
+
+    it('passes selected printer to function on emit event', () => {
+      libraries.selected = [{id: 1}]
+      let modal = wrapper.find(PrinterModal)
+      modal.vm.$emit('selectPrinter', 'printer1')
+
+      expect(libraries.handlePrintLabel).toBeCalledWith('printer1')
+    })
+  })
+
   describe('alert', () => {
     it('has a alert', () => {
       expect(wrapper.contains(Alert)).toBe(true)

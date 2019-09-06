@@ -1,7 +1,7 @@
 import Reception from '@/views/Reception'
 import { mount, localVue, Vuex } from '../testHelper'
 import TractionSaphyrTubesWithRequestJson from '../../data/tractionSaphyrTubesWithRequest'
-import TractionTubesWithLibrariesJson from '../../data/tubeWithLibrary'
+// import TractionTubesWithLibrariesJson from '../../data/tubeWithLibrary'
 import SequencescapeTubesJson from '../../data/sequencescapeTubesWithSample'
 import RequestsJson from '../../data/requests'
 import Response from '@/api/Response'
@@ -147,7 +147,7 @@ describe('Reception', () => {
   })
 
   describe('#handleSequencescapeTubes', () => {
-    let emptyResponse, failedResponse
+    let failedResponse
 
     beforeEach(() => {
       let store = new Vuex.Store({

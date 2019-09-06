@@ -1,7 +1,6 @@
 import SequencescapeTubesJson from '../../../../../data/sequencescapeTubesWithSample'
 import TractionSaphyrTubesWithRequestJson from '../../../../../data/tractionSaphyrTubesWithRequest'
 import TractionTubesWithLibrariesJson from '../../../../../data/tubeWithLibrary'
-import RequestsJson from '../../../../../data/requests'
 
 import Response from '@/api/Response'
 import * as Actions from '@/store/traction/saphyr/tubes/actions'
@@ -124,18 +123,6 @@ describe('#createLibrariesInTraction', () => {
   })
 
   it('successfully', async () => {
-
-    let mockResponse =  {
-      data: {
-        data: [
-           { id: 1, type: "libraries", attributes: { name: "testname1", barcode: 'TRAC-1' }},
-           { id: 2, type: "libraries", attributes: { name: "testname2", barcode: 'TRAC-2' }}
-        ]
-      },
-      status: 200,
-      statusText: "OK"
-    }
-
     let expectedResponse = new Response(TractionTubesWithLibrariesJson)
     create.mockReturnValue(TractionTubesWithLibrariesJson)
 
@@ -194,7 +181,4 @@ describe('#deleteLibraries', () => {
     expect(response).toEqual([expectedResponse])
   })
 
-})
-
-describe('#printLabels', () => {
 })
