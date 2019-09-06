@@ -20,7 +20,7 @@ export default {
      * @param {*} message the message to log
      */
     log(message) {
-      if (process.env.VUE_APP_LOG === 'true') {
+      if (process.env.VUE_APP_LOG === 'true') { // https://stackoverflow.com/a/264037
         console.log(message)
       }
     },
