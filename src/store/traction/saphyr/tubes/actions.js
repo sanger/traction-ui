@@ -13,7 +13,7 @@ const getTractionTubesForBarcodes = async ({ commit, getters }, barcodes)  => {
   return response
 }
 
-const exportSampleTubesIntoTraction = async ({ dispatch, getters }, tubes)  => {
+const exportSampleTubesIntoTraction = async ({ getters }, tubes)  => {
   let body = {
     data: {
       type: "requests",
@@ -39,7 +39,7 @@ const sampleTubeJson = (tubes) => {
   }))
 }
 
-const createLibrariesInTraction = async ({ dispatch, getters }, payload) => {
+const createLibrariesInTraction = async ({ getters }, payload) => {
   let libraries = payload.samples.map(item => {
     return {
       state: 'pending',
@@ -61,10 +61,6 @@ const createLibrariesInTraction = async ({ dispatch, getters }, payload) => {
   let promise = request.create(body)
   let response = await handlePromise(promise)
 
-  // if (response.successful && !response.empty) {
-  //   let barcodes = response.deserialize.libraries.map(r => r.barcode).join('\n')
-  //   response = await dispatch('getTractionTubesForBarcodes', barcodes)
-  // }
   return response
 }
 

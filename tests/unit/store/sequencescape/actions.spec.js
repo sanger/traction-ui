@@ -3,13 +3,13 @@ import Response from '@/api/Response'
 import * as Actions from '@/store/sequencescape/actions'
 
 describe('#getSequencescapeTubesForBarcodes', () => {
-  let commit, get, getters, barcodeString, failedResponse, emptyResponse
+  let commit, get, getters, barcodeList, failedResponse, emptyResponse
 
   beforeEach(() => {
     commit = jest.fn()
     get = jest.fn()
     getters = { 'sequencescapeTubeRequest': { 'get': get } }
-    barcodeString = "NT4R"
+    barcodeList = ["NT4R"]
 
     emptyResponse = { data: { data: [] }, status: 200, statusText: 'Success'}
     failedResponse = { data: { data: [] }, status: 500, statusText: 'Internal Server Error' }
@@ -21,7 +21,7 @@ describe('#getSequencescapeTubesForBarcodes', () => {
     let expectedResponse = new Response(SequencescapeTubesJson)
     let expectedTubes = expectedResponse.deserialize.tubes
 
-    let response = await Actions.getSequencescapeTubesForBarcodes({ commit, getters }, barcodeString)
+    let response = await Actions.getSequencescapeTubesForBarcodes({ commit, getters }, barcodeList)
 
     expect(commit).toHaveBeenCalledWith("setSequencescapeTubes", expectedTubes)
     expect(response).toEqual(expectedResponse)
@@ -32,7 +32,7 @@ describe('#getSequencescapeTubesForBarcodes', () => {
 
     let expectedResponse = new Response(failedResponse)
 
-    let response = await Actions.getSequencescapeTubesForBarcodes({ commit, getters }, barcodeString)
+    let response = await Actions.getSequencescapeTubesForBarcodes({ commit, getters }, barcodeList)
 
     expect(commit).not.toHaveBeenCalled()
     expect(response).toEqual(expectedResponse)
@@ -43,7 +43,7 @@ describe('#getSequencescapeTubesForBarcodes', () => {
 
     let expectedResponse = new Response(emptyResponse)
 
-    let response = await Actions.getSequencescapeTubesForBarcodes({ commit, getters }, barcodeString)
+    let response = await Actions.getSequencescapeTubesForBarcodes({ commit, getters }, barcodeList)
 
     expect(commit).not.toHaveBeenCalled()
     expect(response).toEqual(expectedResponse)

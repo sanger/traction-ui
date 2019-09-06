@@ -7,13 +7,13 @@ import Response from '@/api/Response'
 import * as Actions from '@/store/traction/saphyr/tubes/actions'
 
 describe('#getTractionTubesForBarcodes', () => {
-  let commit, get, getters, barcodeString, failedResponse, emptyResponse
+  let commit, get, getters, barcodeList, failedResponse, emptyResponse
 
   beforeEach(() => {
     commit = jest.fn()
     get = jest.fn()
     getters = { 'tubeRequest': { 'get': get } }
-    barcodeString = "TRAC-1"
+    barcodeList = ["TRAC-1"]
 
     emptyResponse = { data: { data: [] }, status: 200, statusText: 'Success'}
     failedResponse = { data: { data: [] }, status: 500, statusText: 'Internal Server Error' }
@@ -25,7 +25,7 @@ describe('#getTractionTubesForBarcodes', () => {
     let expectedResponse = new Response(TractionSaphyrTubesWithRequestJson)
     let expectedTubes = expectedResponse.deserialize.tubes
 
-    let response = await Actions.getTractionTubesForBarcodes({ commit, getters }, barcodeString)
+    let response = await Actions.getTractionTubesForBarcodes({ commit, getters }, barcodeList)
 
     expect(commit).toHaveBeenCalledWith("setTubes", expectedTubes)
     expect(response).toEqual(expectedResponse)
@@ -37,7 +37,7 @@ describe('#getTractionTubesForBarcodes', () => {
     let expectedResponse = new Response(TractionTubesWithLibrariesJson)
     let expectedTubes = expectedResponse.deserialize.tubes
 
-    let response = await Actions.getTractionTubesForBarcodes({ commit, getters }, barcodeString)
+    let response = await Actions.getTractionTubesForBarcodes({ commit, getters }, barcodeList)
 
     expect(commit).toHaveBeenCalledWith("setTubes", expectedTubes)
     expect(response).toEqual(expectedResponse)
@@ -48,7 +48,7 @@ describe('#getTractionTubesForBarcodes', () => {
 
     let expectedResponse = new Response(failedResponse)
 
-    let response = await Actions.getTractionTubesForBarcodes({ commit, getters }, barcodeString)
+    let response = await Actions.getTractionTubesForBarcodes({ commit, getters }, barcodeList)
 
     expect(commit).not.toHaveBeenCalled()
     expect(response).toEqual(expectedResponse)
@@ -59,7 +59,7 @@ describe('#getTractionTubesForBarcodes', () => {
 
     let expectedResponse = new Response(emptyResponse)
 
-    let response = await Actions.getTractionTubesForBarcodes({ commit, getters }, barcodeString)
+    let response = await Actions.getTractionTubesForBarcodes({ commit, getters }, barcodeList)
 
     expect(commit).not.toHaveBeenCalled()
     expect(response).toEqual(expectedResponse)
@@ -70,7 +70,6 @@ describe('#exportSampleTubesIntoTraction', () => {
   let dispatch, create, getters, tubes
 
   beforeEach(() => {
-    dispatch = jest.fn()
     create = jest.fn()
     getters = { 'requestsRequest': { 'create': create } }
     tubes = new Response(SequencescapeTubesJson).deserialize.tubes
@@ -78,14 +77,9 @@ describe('#exportSampleTubesIntoTraction', () => {
 
   it('successfully', async () => {
     let expectedResponse = new Response(TractionSaphyrTubesWithRequestJson)
-    let expectedBarcodes = new Response(RequestsJson).deserialize.requests.map(s=> s.barcode).join('\n')
+    create.mockReturnValue(TractionSaphyrTubesWithRequestJson)
 
-    create.mockReturnValue(RequestsJson)
-    dispatch.mockReturnValue(expectedResponse)
-
-    let response = await Actions.exportSampleTubesIntoTraction({ dispatch, getters }, tubes)
-
-    expect(dispatch).toHaveBeenCalledWith("getTractionTubesForBarcodes", expectedBarcodes)
+    let response = await Actions.exportSampleTubesIntoTraction({ getters }, tubes)
     expect(response).toEqual(expectedResponse)
   })
 
@@ -96,11 +90,8 @@ describe('#exportSampleTubesIntoTraction', () => {
     create.mockReturnValue(failedResponse)
 
     let response = await Actions.exportSampleTubesIntoTraction({ dispatch, getters }, tubes)
-
-    expect(dispatch).not.toHaveBeenCalledWith("getTractionTubesForBarcodes")
     expect(response).toEqual(expectedResponse)
   })
-
 })
 
 describe('#sampleTubesJson', () => {
@@ -119,10 +110,9 @@ describe('#sampleTubesJson', () => {
 })
 
 describe('#createLibrariesInTraction', () => {
-  let dispatch, create, getters, payload
+  let create, getters, payload
 
   beforeEach(() => {
-    dispatch = jest.fn()
     create = jest.fn()
     getters = { 'libraryRequest': { 'create': create } }
     let samples = [
@@ -147,14 +137,9 @@ describe('#createLibrariesInTraction', () => {
     }
 
     let expectedResponse = new Response(TractionTubesWithLibrariesJson)
-    let expectedBarcodes = new Response(mockResponse).deserialize.libraries.map(s=> s.barcode).join('\n')
+    create.mockReturnValue(TractionTubesWithLibrariesJson)
 
-    create.mockReturnValue(mockResponse)
-    dispatch.mockReturnValue(expectedResponse)
-
-    let response = await Actions.createLibrariesInTraction({ dispatch, getters }, payload)
-
-    expect(dispatch).toHaveBeenCalledWith('getTractionTubesForBarcodes', expectedBarcodes)
+    let response = await Actions.createLibrariesInTraction({ getters }, payload)
     expect(response).toEqual(expectedResponse)
   })
 
@@ -164,9 +149,7 @@ describe('#createLibrariesInTraction', () => {
 
     create.mockReturnValue(failedResponse)
 
-    let response = await Actions.createLibrariesInTraction({ dispatch, getters }, payload)
-
-    expect(dispatch).not.toHaveBeenCalledWith('getTractionTubesForBarcodes')
+    let response = await Actions.createLibrariesInTraction({ getters }, payload)
     expect(response).toEqual(expectedResponse)
   })
 
