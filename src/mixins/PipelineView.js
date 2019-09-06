@@ -27,7 +27,7 @@ export default {
       'div', 
       { class: this.pipeline },
       [
-        createElement('pipeline-router', { props: { pipeline: this.pipeline}}),
+        createElement('pipeline-router', { props: { pipeline: this.pipeline, routes: this.routes }}),
         createElement('h4', this.$options.name),
         createElement('router-view')
       ]

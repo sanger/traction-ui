@@ -32,11 +32,12 @@ export default new Router({
       name: 'Saphyr',
       component: Saphyr,
       children: [
-        { path: 'reception', component: SaphyrReception },
-        { path: 'samples', component: SaphyrSamples },
-        { path: 'libraries', component: SaphyrLibraries },
-        { path: 'runs', component: SaphyrRuns },
-        { path: 'run', component: SaphyrRun, props: {id: true} },
+        { path: '', component: SaphyrReception},
+        { path: 'reception', name: 'SaphyrReception', component: SaphyrReception },
+        { path: 'samples', name: 'SaphyrSamples', component: SaphyrSamples },
+        { path: 'libraries', name: 'SaphyrLibraries', component: SaphyrLibraries },
+        { path: 'runs', name: 'SaphyrRuns', component: SaphyrRuns },
+        { path: 'run', name: 'SaphyrRun', component: SaphyrRun, props: {id: true} },
         { path: 'run/:id', component: SaphyrRun, props: true }
       ]
     },
