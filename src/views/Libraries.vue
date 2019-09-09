@@ -138,8 +138,7 @@ export default {
       this.preFilteredMaterials = []
     },
     ...mapActions([
-      'deleteLibraries',
-      'printLabels'
+      'deleteLibraries'
     ])
   },
   created() {

@@ -154,7 +154,6 @@ export default {
       this.preFilteredMaterials = []
     },
     ...mapActions([
-      'printLabels',
       'createLibrariesInTraction',
       'getTractionTubesForBarcodes'
     ]),
