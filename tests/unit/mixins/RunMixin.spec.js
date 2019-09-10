@@ -192,15 +192,15 @@ describe('RunMixin', () => {
 
     it('with no id will build a run and add it to the store', () => {
 
-      cmp.showRun()
+      cmp.showRun('saphyr')
 
       expect(store.getters.run('new')).toBeDefined()
-      expect(wrapper.vm.$route.path).toBe(`/run/new`)
+      expect(wrapper.vm.$route.path).toBe(`/saphyr/run/new`)
     })
 
     it('with an id will redirect to the run', async () => {
-      await cmp.showRun(1)
-      expect(wrapper.vm.$route.path).toBe('/run/1')
+      await cmp.showRun('saphyr', 1)
+      expect(wrapper.vm.$route.path).toBe('/saphyr/run/1')
     })
 
   })

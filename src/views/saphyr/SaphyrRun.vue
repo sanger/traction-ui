@@ -73,7 +73,7 @@ export default {
         result = await RunApi.create(run, this.saphyrRequest)
         if (result) {
           this.alert('run was successfully created')
-          this.$router.push({name: 'Runs'}).catch(() => {})
+          this.$router.push({path: '/saphyr/runs'}).catch(() => {})
         } else {
           this.alert('run could not be created')
         }
