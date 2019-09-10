@@ -24,7 +24,7 @@
       }
     },
     methods: {
-      capitalize (s) {
+      titleise (s) {
         return s.charAt(0).toUpperCase() + s.slice(1)
       }
     },
@@ -49,7 +49,7 @@
                   props: { 
                     to: `/${self.pipeline}/${route}`
                   }
-                }, this.capitalize(route)
+                }, this.titleise(route)
               )
             )
             return result
