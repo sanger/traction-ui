@@ -32,7 +32,7 @@ export default new Router({
       name: 'Saphyr',
       component: Saphyr,
       children: [
-        { path: '', component: SaphyrReception},
+        { path: '', redirect: 'reception'},
         { path: 'reception', name: 'SaphyrReception', component: SaphyrReception },
         { path: 'samples', name: 'SaphyrSamples', component: SaphyrSamples },
         { path: 'libraries', name: 'SaphyrLibraries', component: SaphyrLibraries },
