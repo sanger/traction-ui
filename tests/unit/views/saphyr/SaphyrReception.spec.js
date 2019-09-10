@@ -1,12 +1,12 @@
-import Reception from '@/views/Reception'
-import { mount, localVue, Vuex } from '../testHelper'
-import TractionSaphyrTubesWithRequestJson from '../../data/tractionSaphyrTubesWithRequest'
-// import TractionTubesWithLibrariesJson from '../../data/tubeWithLibrary'
-import SequencescapeTubesJson from '../../data/sequencescapeTubesWithSample'
-import RequestsJson from '../../data/requests'
+import Reception from '@/views/saphyr/SaphyrReception'
+import { mount, localVue, Vuex } from '../../testHelper'
+import TractionSaphyrTubesWithRequestJson from '../../../data/tractionSaphyrTubesWithRequest'
+import TractionTubesWithLibrariesJson from '../../../data/tubeWithLibrary'
+import SequencescapeTubesJson from '../../../data/sequencescapeTubesWithSample'
+import RequestsJson from '../../../data/requests'
 import Response from '@/api/Response'
-import Samples from '@/views/Samples'
-import Libraries from '@/views/Libraries'
+import Samples from '@/views/saphyr/SaphyrSamples'
+import Libraries from '@/views/saphyr/SaphyrLibraries'
 import VueRouter from 'vue-router'
 import Alert from '@/components/Alert'
 import * as consts from '@/consts/consts'
@@ -18,8 +18,8 @@ describe('Reception', () => {
   beforeEach(() => {
     router = new VueRouter({ routes:
       [
-        { path: '/samples', name: 'Samples', component: Samples },
-        { path: '/libraries', name: 'Libraries', component: Libraries }
+        { path: '/saphyr/samples', name: 'SaphyrSamples', component: Samples, props: true },
+        { path: '/saphyr/libraries', name: 'SaphyrLibraries', component: Libraries, props: true }
       ]
     })
 
@@ -127,6 +127,17 @@ describe('Reception', () => {
         expect(reception.checkBarcodes).toBeCalled()
         expect(reception.checkMaterialTypes).toBeCalled()
       })
+
+      it('calls the correct functions when the tubes are libraries', async () => {
+        let expectedResponse = new Response(TractionTubesWithLibrariesJson)
+        reception.getTractionTubesForBarcodes.mockReturnValue(expectedResponse)
+
+        await reception.handleTractionTubes(barcodeList)
+
+        expect(reception.getTractionTubesForBarcodes).toBeCalled()
+        expect(reception.checkBarcodes).toBeCalled()
+        expect(reception.checkMaterialTypes).toBeCalled()
+      })
     })
 
     describe('unsuccessful', () => {
@@ -220,6 +231,11 @@ describe('Reception', () => {
 
   // TODO: add
   // checkMaterialTypes
+  // success:
+  // expect(reception.$route.path).toEqual('/saphyr/samples')
+  // failure:
+  // expect(reception.$route.path).toEqual('/saphyr/libraries')
+
   // checkBarcodes
 
   // describe('#handleTractionTubes', () => {

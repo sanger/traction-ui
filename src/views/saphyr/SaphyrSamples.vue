@@ -138,7 +138,7 @@ export default {
       }
     },
     redirectToLibraries (tubes) {
-      this.$router.push({name: 'Libraries', query: { barcode: tubes.map(tube => tube.barcode) }})
+      this.$router.push({name: 'SaphyrLibraries', query: { barcode: tubes.map(tube => tube.barcode) }})
     },
     async provider() {
       try {
@@ -170,5 +170,4 @@ export default {
     ])
   }
 }
-
 </script>

@@ -71,7 +71,6 @@ import TableHelper from '@/mixins/TableHelper'
 import Alert from '@/components/Alert'
 import PrinterModal from '@/components/PrinterModal'
 import * as consts from '@/consts/consts'
-
 import { createNamespacedHelpers } from 'vuex'
 const { mapActions, mapGetters } = createNamespacedHelpers('traction/saphyr/tubes')
 

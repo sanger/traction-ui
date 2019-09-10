@@ -1,24 +1,24 @@
-import Samples from '@/views/Samples'
+import Samples from '@/views/saphyr/SaphyrSamples'
 import EnzymeModal from '@/components/EnzymeModal'
 import PrinterModal from '@/components/PrinterModal'
-import { mount, localVue, Vuex } from '../testHelper'
-import Libraries from '@/views/Libraries'
-import TractionTubesWithLibrariesJson from '../../data/tubeWithLibrary'
-import TractionSaphyrRequests from '../../data/tractionSaphyrRequests'
-import LibrariesJson from '../../data/libraries'
-import Response from '@/api/Response'
+import { mount, localVue, Vuex } from '../../testHelper'
+import Libraries from '@/views/saphyr/SaphyrLibraries'
+import TractionTubesWithLibrariesJson from '../../../data/tubeWithLibrary'
+import TractionSaphyrRequests from '../../../data/tractionSaphyrRequests'
 import VueRouter from 'vue-router'
 import Alert from '@/components/Alert'
 import * as consts from '@/consts/consts'
+import LibrariesJson from '../../../data/libraries'
+import Response from '@/api/Response'
+
 
 describe('Samples.vue', () => {
 
   let wrapper, samples, router
 
   beforeEach(() => {
-
     router = new VueRouter({
-      routes: [{ path: '/libraries', name: 'Libraries', component: Libraries, props: true }]
+      routes: [{ path: '/saphyr/libraries', name: 'SaphyrLibraries', component: Libraries, props: true }]
     })
 
     let store = new Vuex.Store({
@@ -282,5 +282,8 @@ describe('Samples.vue', () => {
       expect(samples.handleLibraryCreate).toBeCalledWith(2)
     })
   })
+
+  // add redirectToLibraries test
+  // expect(samples.$route.path).toEqual('/saphyr/libraries')
 
 })

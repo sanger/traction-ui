@@ -1,10 +1,11 @@
-import Libraries from '@/views/Libraries'
-import { mount, localVue, Vuex } from '../testHelper'
+import Libraries from '@/views/saphyr/SaphyrLibraries'
+import { mount, localVue, Vuex } from '../../testHelper'
 import Alert from '@/components/Alert'
 import PrinterModal from '@/components/PrinterModal'
-import Response from '@/api/Response'
-import TractionSaphyrLibraries from '../../data/tractionSaphyrLibraries'
+import * as consts from '@/consts/consts'
+import TractionSaphyrLibraries from '../../../data/tractionSaphyrLibraries'
 import VueRouter from 'vue-router'
+import Response from '@/api/Response'
 
 describe('Libraries.vue', () => {
   let wrapper, libraries, mockLibraries
@@ -101,7 +102,7 @@ describe('Libraries.vue', () => {
 
       expect(libraries.deleteLibraries).toBeCalled()
 
-      expect(libraries.showAlert).toBeCalledWith('Failed to delete: ', 'danger')
+      expect(libraries.showAlert).toBeCalledWith(consts.MESSAGE_ERROR_DELETION_FAILED, 'danger')
     })
 
   })
