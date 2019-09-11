@@ -36,13 +36,5 @@ export default {
     capitalizeFirstLetter(string) {
       return string.charAt(0).toUpperCase() + string.slice(1);
     }
-  },
-  computed: {
-    tractionSaphyrRequestsRequest() {
-      return this.api.traction.saphyr.requests
-    },
-    tractionSaphyrLibraryRequest() {
-      return this.api.traction.saphyr.libraries
-    },
   }
 }

@@ -1,44 +1,62 @@
 import Samples from '@/views/saphyr/SaphyrSamples'
 import EnzymeModal from '@/components/EnzymeModal'
 import PrinterModal from '@/components/PrinterModal'
-import { mount, localVue, store } from '../../testHelper'
+import { mount, localVue, Vuex } from '../../testHelper'
 import Libraries from '@/views/saphyr/SaphyrLibraries'
 import TractionTubesWithLibrariesJson from '../../../data/tubeWithLibrary'
 import TractionSaphyrRequests from '../../../data/tractionSaphyrRequests'
 import VueRouter from 'vue-router'
 import Alert from '@/components/Alert'
 import * as consts from '@/consts/consts'
+import LibrariesJson from '../../../data/libraries'
+import Response from '@/api/Response'
+
 
 describe('Samples.vue', () => {
 
-  let wrapper, samples, mockSamples
+  let wrapper, samples, router
 
   beforeEach(() => {
+    router = new VueRouter({
+      routes: [{ path: '/saphyr/libraries', name: 'SaphyrLibraries', component: Libraries, props: true }]
+    })
 
-    mockSamples = [
-        { barcode: 'TRAC-1', material: {id: 1, type: 'samples', name: 'sample_d', external_id: 4, species: 'human', created_at: '02/27/2019 04:05' }},
-        { barcode: 'TRAC-1', material: {id: 1, type: 'samples', name: 'sample_d', external_id: 4, species: 'human', created_at: '02/27/2019 04:05' }},
-      ]
-
-      const router = new VueRouter({ routes:
-        [
-          { path: '/saphyr/libraries', name: 'SaphyrLibraries', component: Libraries, props: true }
-        ]
-      })
-
-      wrapper = mount(Samples, { localVue,
-        store,
-        router,
-        propsData: {
-          items: mockSamples
-        },
-        stubs: {
-          EnzymeModal: true
+    let store = new Vuex.Store({
+      modules: {
+        traction: {
+          namespaced: true,
+          modules: {
+            saphyr: {
+              namespaced: true,
+                modules: {
+                tubes: {
+                  namespaced: true,
+                  state: {
+                    tractionTubes: []
+                  }
+                }
+              }
+            }
+          }
         }
-      })
-      samples = wrapper.vm
+      }
+    })
 
-    samples.tractionSaphyrRequestsRequest.get = jest.fn()
+    wrapper = mount(Samples, { localVue,
+      store,
+      router,
+      stubs: {
+        Alert: Alert,
+        PrinterModal: true,
+        Modal: true,
+        EnzymeModal: true
+      },
+      methods: {
+        provider () { return }
+      }
+    })
+
+    samples = wrapper.vm
   })
 
   describe('alert', () => {
@@ -56,216 +74,184 @@ describe('Samples.vue', () => {
     })
 
     it('contains the correct data', async () => {
-      samples.tractionSaphyrRequestsRequest.get.mockResolvedValue(TractionSaphyrRequests)
-      await samples.provider()
+      let mockSamples = new Response( TractionSaphyrRequests).deserialize.requests
+      wrapper.setData({ items: mockSamples })
       expect(wrapper.find('tbody').findAll('tr').length).toEqual(5)
     })
+  })
 
-    describe('selecting samples', () => {
-      beforeEach(async () => {
-        samples.tractionSaphyrRequestsRequest.get.mockResolvedValue(TractionSaphyrRequests)
-        await samples.provider()
-        let checkboxes = wrapper.findAll(".selected")
-        checkboxes.at(0).trigger('click')
-      })
+  describe('selecting samples', () => {
+    beforeEach(async () => {
+      let mockSamples = new Response( TractionSaphyrRequests).deserialize.requests
+      wrapper.setData({ items: mockSamples })
 
-      it('will create a list of selected requests', () => {
-        expect(samples.selected.length).toEqual(1)
-      })
+      let checkboxes = wrapper.findAll(".selected")
+      checkboxes.at(0).trigger('click')
+    })
+
+    it('will create a list of selected requests', () => {
+      expect(samples.selected.length).toEqual(1)
     })
   })
 
   describe('#handleLibraryCreate', () => {
-    let selectedEnzymeId
+     let selectedEnzymeId
+
+     beforeEach(() => {
+       selectedEnzymeId = 123
+       samples.createLibraries = jest.fn()
+       samples.handleTractionTubes = jest.fn()
+       samples.showAlert = jest.fn()
+     })
+
+     it('successful', async () => {
+       samples.createLibraries.mockReturnValue()
+       samples.handleTractionTubes.mockReturnValue()
+
+       await samples.handleLibraryCreate(selectedEnzymeId)
+
+       expect(samples.createLibraries).toBeCalled()
+       expect(samples.handleTractionTubes).toBeCalled()
+       expect(samples.showAlert).not.toBeCalled()
+     })
+
+     it('unsuccessful', async () => {
+       samples.createLibraries.mockReturnValue()
+
+       samples.handleTractionTubes.mockImplementation(() => {
+         throw Error('Raise this error')
+       })
+
+       await samples.handleLibraryCreate(selectedEnzymeId)
+
+       expect(samples.createLibraries).toBeCalled()
+       expect(samples.handleTractionTubes).toBeCalled()
+       expect(samples.showAlert).toBeCalled()
+     })
+  })
+
+  describe('#createLibraries', () => {
+    let selectedEnzymeId, payload, mockSamples
 
     beforeEach(() => {
+      mockSamples = new Response(TractionSaphyrRequests).deserialize.requests
+
       selectedEnzymeId = 123
       samples.createLibrariesInTraction = jest.fn()
-      samples.handleTractionTubes = jest.fn()
-      samples.showAlert = jest.fn()
+
+      samples.selected = mockSamples[0]
+      payload = {'samples': samples.selected, 'enzymeID': selectedEnzymeId}
     })
 
     it('calls the correct functions', async () => {
-      await samples.handleLibraryCreate(selectedEnzymeId)
-      expect(samples.createLibrariesInTraction).toBeCalledWith(selectedEnzymeId)
-      expect(samples.handleTractionTubes).toBeCalled()
-      expect(samples.showAlert).not.toBeCalled()
+      let expectedResponse = new Response(LibrariesJson)
+      samples.createLibrariesInTraction.mockReturnValue(expectedResponse)
+
+      await samples.createLibraries(selectedEnzymeId)
+
+      expect(samples.createLibrariesInTraction).toBeCalledWith(payload)
+      expect(samples.barcodes).toEqual(["TRAC-1", "TRAC-2", "TRAC-3", "TRAC-4", "TRAC-5"])
     })
 
-    it('calls showAlert when there is an error', async () => {
-      samples.handleTractionTubes.mockImplementation(() => {
-        throw 'Raise this error'
-      })
+    it('throws an Error when there is an error', async () => {
+      let failedResponse = { status: 422, statusText: 'Unprocessable Entity', data: { data: { errors: { it: ['did not work'] }} } }
+      let expectedResponse = new Response(failedResponse)
 
-      await samples.handleLibraryCreate(selectedEnzymeId)
-      expect(samples.createLibrariesInTraction).toBeCalledWith(selectedEnzymeId)
-      expect(samples.handleTractionTubes).toBeCalled()
-      expect(samples.showAlert).toBeCalled()
-    })
-  })
+      samples.createLibrariesInTraction.mockReturnValue(expectedResponse)
 
-  describe('#createLibrariesInTraction', () => {
-
-    beforeEach(() => {
-      samples.tractionSaphyrLibraryRequest.create = jest.fn()
-    })
-
-    it('stores the create library barcodes', async () => {
-      let mockResponse =  {
-        data: {
-          data: [
-             { id: 1, type: "libraries", attributes: { name: "testname1", barcode: 'TRAC-1' }},
-             { id: 2, type: "libraries", attributes: { name: "testname2", barcode: 'TRAC-2' }}
-          ]
-        },
-        status: 200,
-        statusText: "OK"
-      }
-
-      samples.tractionSaphyrLibraryRequest.create.mockResolvedValue(mockResponse)
-
-      let selectedEnzymeId = 1
-      samples.selected = [{id: 1}]
-
-      await samples.createLibrariesInTraction(selectedEnzymeId)
-
-      let expectedBody = {data: {attributes: {libraries: [{state: 'pending', saphyr_enzyme_id: 1, saphyr_request_id: 1}]}, type: "libraries"}}
-      expect(samples.tractionSaphyrLibraryRequest.create).toBeCalledWith(expectedBody)
-      expect(samples.barcodes).toEqual('TRAC-1\nTRAC-2')
-    })
-
-    it('does not store any library barcodes', async () => {
-      let mockResponse = { data: { errors: { name: ['name error message 1']}},
-        status: 422,
-        statusText: "Unprocessible entity"
-      }
-
-      samples.tractionSaphyrLibraryRequest.create.mockResolvedValue(mockResponse)
-
-      let selectedEnzymeId = 1
-      samples.selected = [{id: 1}]
-
-      await expect(samples.createLibrariesInTraction(selectedEnzymeId)).rejects.toThrow(
-        consts.MESSAGE_ERROR_CREATE_LIBRARY_FAILED + "name name error message 1"
-      )
-      expect(samples.barcodes).toEqual([])
+      await expect(samples.createLibraries(selectedEnzymeId)).rejects.toThrow(
+        consts.MESSAGE_ERROR_CREATE_LIBRARY_FAILED + expectedResponse.errors.message)
     })
   })
 
   describe('#handleTractionTubes', () => {
-    let successfulResponse, emptyResponse, failedResponse
+    let failedResponse, mockLibrariesTubes
 
     beforeEach(() => {
-      wrapper.setData({ barcodes: 'TRAC-1\nTRAC-2' })
-      samples.tractionSaphyrTubeRequest.get = jest.fn()
+      failedResponse = { status: 422, statusText: 'Unprocessable Entity', data: { data: { errors: { it: ['did not work'] }} } }
 
-      successfulResponse = TractionTubesWithLibrariesJson
-      emptyResponse = { data: { data: [] }, status: 200, statusText: 'Success'}
-      failedResponse = { data: { data: [] }, status: 500, statusText: 'Internal Server Error' }
+      mockLibrariesTubes =  [
+        { id: 1, type: "tubes", barcode: 'TRAC-1', material: {id: 6, type: 'libraries', state: 'pending', sample_name: 'sample_d', enzyme_name: 'Nb.BsrDI', created_at: '03/12/2019 11:49' }},
+        { id: 2, type: "tubes", barcode: 'TRAC-2', material: {id: 6, type: 'libraries', state: 'pending', sample_name: 'sample_d', enzyme_name: 'Nb.BsrDI', created_at: '03/12/2019 11:49' }}
+      ]
+
+      let store = new Vuex.Store({
+        modules: {
+          traction: {
+            namespaced: true,
+            modules: {
+              saphyr: {
+                namespaced: true,
+                  modules: {
+                  tubes: {
+                    namespaced: true,
+                    state: {
+                      tractionTubes: mockLibrariesTubes
+                    },
+                    getters: {
+                      tractionTubes: state => state.tractionTubes
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      })
+
+      wrapper = mount(Samples, { localVue,
+        store,
+        router,
+        stubs: {
+          Alert: Alert,
+          PrinterModal: true,
+          Modal: true,
+          EnzymeModal: true
+        },
+        methods: {
+          provider () { return }
+        }
+      })
+
+      samples = wrapper.vm
+
+      samples.getTractionTubesForBarcodes = jest.fn()
+      samples.redirectToLibraries = jest.fn()
     })
 
-    it('successfully', async () => {
-      samples.tractionSaphyrTubeRequest.get.mockResolvedValue(successfulResponse)
+    it('successfully for libraries', async () => {
+      wrapper.setData({ barcodes: ['TRAC-3'] })
+
+      let expectedResponse = new Response(TractionTubesWithLibrariesJson)
+      samples.getTractionTubesForBarcodes.mockReturnValue(expectedResponse)
+
       await samples.handleTractionTubes()
-      expect(samples.$route.path).toEqual('/saphyr/libraries')
+      expect(samples.redirectToLibraries).toBeCalled()
     })
 
     it('unsuccessfully', async () => {
-      samples.tractionSaphyrTubeRequest.get.mockResolvedValue(failedResponse)
-      await expect(samples.handleTractionTubes()).rejects.toThrow(
-        consts.MESSAGE_ERROR_GET_TRACTION_TUBES)
-    })
+      wrapper.setData({ barcodes: ['TRAC-3'] })
 
-    it('when no tubes exist', async () => {
-      samples.tractionSaphyrTubeRequest.get.mockResolvedValue(emptyResponse)
+      let expectedResponse = new Response(failedResponse)
+      samples.getTractionTubesForBarcodes.mockReturnValue(expectedResponse)
+
       await expect(samples.handleTractionTubes()).rejects.toThrow(
         consts.MESSAGE_ERROR_GET_TRACTION_TUBES)
     })
 
     it('when there are no barcodes', async () => {
       wrapper.setData({ barcodes: '' })
+
       await expect(samples.handleTractionTubes()).rejects.toThrow(
         consts.MESSAGE_WARNING_NO_BARCODES)
     })
   })
 
-  describe('modal', () => {
-    beforeEach(() => {
-      samples.handleLibraryCreate = jest.fn()
+  describe('#showAlert', () => {
+    it('passes the message to function on emit event', () => {
+      samples.showAlert('show this message', 'danger')
+      expect(wrapper.find(Alert).html()).toMatch('show this message')
     })
-
-    it('passes selected enzyme id to function on emit event', () => {
-      samples.selected = [{id: 1}]
-      let modal = wrapper.find(EnzymeModal)
-      modal.vm.$emit('selectEnzyme', 2)
-
-      expect(samples.handleLibraryCreate).toBeCalledWith(2)
-    })
-  })
-
-  describe('#handlePrintLabel', () => {
-    let request
-
-    beforeEach(() => {
-      samples.selected = [{ id: 1, type: 'samples', name: 'enz1', barcode: 'TRAC-1' }]
-
-      request = store.getters.api.printMyBarcode.print_jobs
-      request.create = jest.fn()
-    })
-
-    it('passes selected printer to function on emit event', () => {
-      let successfulResponse =  {
-        data: {},
-        status: 201,
-        statusText: "OK"
-      }
-
-      let successfulPromise = new Promise((resolve) => {
-        resolve(successfulResponse)
-      })
-
-      request.create.mockResolvedValue(successfulPromise)
-      let modal = wrapper.find(PrinterModal)
-      modal.vm.$emit('selectPrinter', 'printer1')
-
-      expect(request.create).toBeCalled()
-    })
-
-    it('successfully prints label', async () => {
-      let successfulResponse =  {
-        data: {},
-        status: 201,
-        statusText: "OK"
-      }
-
-      let successfulPromise = new Promise((resolve) => {
-        resolve(successfulResponse)
-      })
-
-      request.create.mockResolvedValue(successfulPromise)
-      await samples.handlePrintLabel('printer1')
-      expect(wrapper.find(Alert).vm.message).toEqual(consts.MESSAGE_SUCCESS_PRINTER)
-    })
-
-    it('unsuccessfully', async () => {
-      let failedResponse =  {
-        data: {
-          errors: {
-            it: ['was a bust']
-          }
-        },
-        status: 422
-      }
-
-      let failedPromise = new Promise((reject) => {
-        reject(failedResponse)
-      })
-
-      request.create.mockReturnValue(failedPromise)
-      await samples.handlePrintLabel('printer1')
-      expect(wrapper.find(Alert).vm.message).toEqual('it was a bust')
-    })
-
   })
 
   describe('printerModal', () => {
@@ -282,23 +268,22 @@ describe('Samples.vue', () => {
     })
   })
 
-  describe('#showAlert', () => {
-    it('passes the message to function on emit event', () => {
-      samples.showAlert('show this message')
-      expect(wrapper.find(Alert).html()).toMatch('show this message')
+
+  describe('enzymeModal', () => {
+    beforeEach(() => {
+      samples.handleLibraryCreate = jest.fn()
+    })
+
+    it('passes selected enzyme id to function on emit event', () => {
+      samples.selected = [{id: 1}]
+      let modal = wrapper.find(EnzymeModal)
+      modal.vm.$emit('selectEnzyme', 2)
+
+      expect(samples.handleLibraryCreate).toBeCalledWith(2)
     })
   })
 
-  describe('#tractionSaphyrLibraryRequest', () => {
-    it('will have a request', () => {
-      expect(samples.tractionSaphyrLibraryRequest).toBeDefined()
-    })
-  })
-
-  describe('#tractionSaphyrTubeRequest', () => {
-    it('will have a request', () => {
-      expect(samples.tractionSaphyrTubeRequest).toBeDefined()
-    })
-  })
+  // add redirectToLibraries test
+  // expect(samples.$route.path).toEqual('/saphyr/libraries')
 
 })

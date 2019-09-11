@@ -9,7 +9,7 @@
         },
         "attributes": {
           "state": "pending",
-          "barcode": null,
+          "barcode": "TRAC-1",
           "sample_name": "sample2",
           "enzyme_name": "Nb.BbvCI"
         },
@@ -36,7 +36,7 @@
         },
         "attributes": {
           "state": "pending",
-          "barcode": null,
+          "barcode": "TRAC-2",
           "sample_name": "DN11111",
           "enzyme_name": "Nb.BsmI"
         },
@@ -63,7 +63,7 @@
         },
         "attributes": {
           "state": "pending",
-          "barcode": null,
+          "barcode": "TRAC-3",
           "sample_name": "DN11112",
           "enzyme_name": "Nb.BsrDI"
         },
@@ -90,7 +90,7 @@
         },
         "attributes": {
           "state": "pending",
-          "barcode": null,
+          "barcode": "TRAC-4",
           "sample_name": "testing123",
           "enzyme_name": "Nt.BspQI"
         },
@@ -117,7 +117,7 @@
         },
         "attributes": {
           "state": "pending",
-          "barcode": null,
+          "barcode": "TRAC-5",
           "sample_name": "DN11115",
           "enzyme_name": "Nb.BssSI"
         },

@@ -32,96 +32,69 @@
 
 <script>
 import Alert from '@/components/Alert'
-import handlePromise from '@/api/PromiseHelper'
-import Api from '@/mixins/Api'
 import Helper from '@/mixins/Helper'
-import getTubesForBarcodes from '@/api/TubeRequests'
 import * as consts from '@/consts/consts'
+
+import { mapActions, mapState } from 'vuex'
 
 export default {
   name: 'Reception',
-  mixins: [Api, Helper],
+  mixins: [Helper],
   props: {
   },
   data () {
     return {
-      barcodes: [],
-      message: ''
+      barcodes: []
     }
   },
   components: {
     Alert
   },
   methods: {
-    //TODO: Find a better way to extract information from responses.
-    sampleTubesJson (tubes) {
-      return tubes.map(t => ({
-        external_id: t.samples[0].uuid,
-        external_study_id: t.studies[0].uuid,
-        name: t.name,
-        species: t.samples[0].sample_metadata.sample_common_name
-      }))
+    getBarcodes () {
+      return this.barcodes.split('\n').filter(Boolean)
     },
     async handleSequencescapeTubes () {
       try {
-        let tubes = await this.getSequencescapeTubes()
-        await this.exportSampleTubesIntoTraction(tubes)
-        await this.handleTractionTubes()
+        let getSSTubeResponse = await this.getSequencescapeTubesForBarcodes(this.getBarcodes())
+        if (!getSSTubeResponse.successful || getSSTubeResponse.empty) {
+          throw getSSTubeResponse.errors
+        }
+
+        let exportSampleTubesResponse = await this.exportSampleTubesIntoTraction(this.sequencescapeTubes)
+        if (!exportSampleTubesResponse.successful || exportSampleTubesResponse.empty) {
+          throw exportSampleTubesResponse.errors
+        }
+
+        let tractionTubesBarcodeList = exportSampleTubesResponse.deserialize.requests.map(r => r.barcode)
+        await this.handleTractionTubes(tractionTubesBarcodeList)
+
       } catch (error) {
         this.showAlert(error.message, 'danger')
-      }
-    },
-    async getSequencescapeTubes () {
-      let response = await getTubesForBarcodes(this.barcodes, this.sequencescapeTubeRequest)
-
-      if (response.successful && !response.empty) {
-        return response.deserialize.tubes
-      } else {
-        throw Error(consts.MESSAGE_ERROR_FIND_TUBES_FAILED)
-      }
-    },
-    async exportSampleTubesIntoTraction (tubes) {
-      let body = {
-        data: {
-          type: "requests",
-          attributes: {
-            requests: this.sampleTubesJson(tubes)
-          }
-        }
-      }
-
-      let promise = this.tractionSaphyrRequestsRequest.create(body)
-      let response = await handlePromise(promise)
-
-      if (response.successful) {
-        this.barcodes = response.deserialize.requests.map(r => r.barcode).join('\n')
-      } else {
-        throw Error(consts.MESSAGE_ERROR_CREATE_TUBES_FAILED + response.errors.message)
       }
     },
     async findTractionTubes() {
       try {
-        await this.handleTractionTubes()
+        await this.handleTractionTubes(this.getBarcodes())
       } catch (error) {
         this.showAlert(error.message, 'danger')
       }
     },
-    async handleTractionTubes () {
-      if (this.barcodes === undefined || !this.barcodes.length) {
+    async handleTractionTubes (barcodeList) {
+      if (barcodeList === undefined || !barcodeList.length) {
         throw Error(consts.MESSAGE_WARNING_NO_BARCODES)
       }
 
-      let response = await getTubesForBarcodes(this.barcodes, this.tractionSaphyrTubeRequest)
-      this.log(response)
+      let response = await this.getTractionTubesForBarcodes(barcodeList)
 
       if (response.successful && !response.empty) {
-        let tubes = response.deserialize.tubes
-        let barcodesList = this.barcodes.split('\n')
+        let tubes = this.tractionTubes
+
         // check that all barcodes are valid
-        this.checkBarcodes(tubes, barcodesList)
+        this.checkBarcodes(tubes, barcodeList)
 
         // check that all the barcodes are either samples (requests) or libraries
-        this.checkMaterialTypes(tubes, barcodesList)
+        this.checkMaterialTypes(tubes, barcodeList)
       } else {
         throw Error(consts.MESSAGE_ERROR_GET_TRACTION_TUBES)
       }
@@ -157,18 +130,22 @@ export default {
         // We only want barcodes of the same type
       throw Error(consts.MESSAGE_ERROR_SINGLE_TYPE)
       }
-    }
+    },
+    ...mapActions('traction/saphyr/tubes', [
+      'getTractionTubesForBarcodes',
+      'exportSampleTubesIntoTraction'
+    ]),
+    ...mapActions('sequencescape', [
+      'getSequencescapeTubesForBarcodes'
+    ])
   },
   computed: {
-    sequencescapeTubeRequest () {
-      return this.api.sequencescape.tubes
-    },
-    tractionSaphyrTubeRequest () {
-      return this.api.traction.saphyr.tubes
-    },
-    tractionSaphyrRequestsRequest () {
-      return this.api.traction.saphyr.requests
-    }
+    ...mapState('traction/saphyr/tubes', {
+      tractionTubes: state => state.tractionTubes
+    }),
+    ...mapState('sequencescape', {
+      sequencescapeTubes: state => state.sequencescapeTubes
+    })
   }
 }
 </script>
