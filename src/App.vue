@@ -1,16 +1,7 @@
 <template>
   <div id="app">
-    <b-container>
-      <h1 class="text-left">Traction</h1>
-      <h4 class="text-left"><span style="text-decoration: underline;">Saphyr</span> pipeline</h4>
-      <div id="nav">
-        <router-link to="/reception">Reception</router-link> |
-        <router-link to="/libraries">Libraries</router-link> |
-        <router-link to="/samples">Samples</router-link> |
-        <router-link to="/runs">Runs</router-link>
-      </div>
-      <router-view/>
-    </b-container>
+    <h1 id="traction-header">Traction</h1>
+    <router-view/>
   </div>
 </template>
 

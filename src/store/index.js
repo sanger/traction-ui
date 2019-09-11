@@ -3,6 +3,8 @@ import Vue from 'vue'
 import Api from '@/api'
 import build from '@/api/ApiBuilder'
 import PrinterList from '@/config/PrinterList'
+import traction from '@/store/traction/index'
+import sequencescape from '@/store/sequencescape/index'
 
 Vue.use(Vuex)
 
@@ -62,5 +64,9 @@ export default new Vuex.Store({
     request: state => (id) => {
       return state.requests[id]
     }
+  },
+  modules: {
+    traction,
+    sequencescape
   }
 })

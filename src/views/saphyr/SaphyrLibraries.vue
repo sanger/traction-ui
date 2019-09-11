@@ -65,18 +65,18 @@
 </template>
 
 <script>
-import handlePromise from '@/api/PromiseHelper'
-import Api from '@/mixins/Api'
 import Helper from '@/mixins/Helper'
 import MatType from '@/mixins/MatType'
 import TableHelper from '@/mixins/TableHelper'
 import Alert from '@/components/Alert'
 import PrinterModal from '@/components/PrinterModal'
 import * as consts from '@/consts/consts'
+import { createNamespacedHelpers } from 'vuex'
+const { mapActions, mapGetters } = createNamespacedHelpers('traction/saphyr/tubes')
 
 export default {
   name: 'Libraries',
-  mixins: [Api, Helper, MatType, TableHelper],
+  mixins: [Helper, MatType, TableHelper],
   data () {
     return {
       fields: [
@@ -101,24 +101,28 @@ export default {
     Alert,
     PrinterModal
   },
+  computed: {
+    ...mapGetters([
+      'tractionTubesWithInfo',
+      'tractionTubes',
+      'requestsRequest',
+      'libraryRequest'
+    ])
+  },
   methods: {
     async handleLibraryDelete () {
       try {
-        await this.deleteLibraries()
+        let selectedIds = this.selected.map(s => s.id)
+        let responses = await this.deleteLibraries(selectedIds)
+
+        if (responses.every(r => r.successful)) {
+          let keyword = selectedIds.length > 1 ? 'Libraries' : 'Library'
+          this.showAlert(`${keyword} ${selectedIds.join(', ')} successfully deleted`)
+        } else {
+          throw Error(responses.map(r => r.errors.message).join(','))
+        }
       } catch (error) {
         this.showAlert(consts.MESSAGE_ERROR_DELETION_FAILED + error.message, 'danger')
-      }
-    },
-    async deleteLibraries () {
-      let selectedIds = this.selected.map(s => s.id)
-      let promises = this.tractionSaphyrLibraryRequest.destroy(selectedIds)
-      let responses = await Promise.all(promises.map(promise => handlePromise(promise)))
-
-      if (responses.every(r => r.successful)) {
-        let keyword = selectedIds.length > 1 ? 'Libraries' : 'Library'
-        this.showAlert(`${keyword} ${selectedIds.join(', ')} successfully deleted`)
-      } else {
-        throw Error(responses.map(r => r.errors.message).join(','))
       }
     },
     // Get all the libraries
@@ -131,7 +135,10 @@ export default {
       this.items = Object.keys(this.$store.getters.libraries).map(
         key => this.$store.getters.library(key))
       this.preFilteredMaterials = []
-    }
+    },
+    ...mapActions([
+      'deleteLibraries'
+    ])
   },
   created() {
     // When this component is created (the 'created' lifecycle hook is called), we need to get the

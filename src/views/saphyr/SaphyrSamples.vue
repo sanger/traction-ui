@@ -65,18 +65,18 @@
 <script>
 import EnzymeModal from '@/components/EnzymeModal'
 import PrinterModal from '@/components/PrinterModal'
-import handlePromise from '@/api/PromiseHelper'
-import Api from '@/mixins/Api'
 import Helper from '@/mixins/Helper'
 import MatType from '@/mixins/MatType'
 import TableHelper from '@/mixins/TableHelper'
-import getTubesForBarcodes from '@/api/TubeRequests'
 import Alert from '@/components/Alert'
 import * as consts from '@/consts/consts'
+import { createNamespacedHelpers } from 'vuex'
+
+const { mapActions, mapGetters } = createNamespacedHelpers('traction/saphyr/tubes')
 
 export default {
   name: 'Samples',
-  mixins: [Api, Helper, MatType, TableHelper],
+  mixins: [Helper, MatType, TableHelper],
   components: {
     EnzymeModal,
     PrinterModal,
@@ -105,27 +105,18 @@ export default {
   methods: {
     async handleLibraryCreate (selectedEnzymeId) {
       try {
-        await this.createLibrariesInTraction(selectedEnzymeId)
+        await this.createLibraries(selectedEnzymeId)
         await this.handleTractionTubes()
       } catch (err) {
         this.showAlert(err)
       }
     },
-    async createLibrariesInTraction (selectedEnzymeId) {
-      let libraries = this.selected.map(
-        item => { return {
-          'state': 'pending',
-          'saphyr_request_id': item.id,
-          'saphyr_enzyme_id': selectedEnzymeId }
-        })
+    async createLibraries (selectedEnzymeId) {
+      let payload = {'samples': this.selected, 'enzymeID': selectedEnzymeId}
+      let response = await this.createLibrariesInTraction(payload)
 
-      let body = { data: { type: 'libraries', attributes: { libraries: libraries } } }
-
-      let promise = this.tractionSaphyrLibraryRequest.create(body)
-      let response = await handlePromise(promise)
-
-      if (response.successful) {
-        this.barcodes = response.deserialize.libraries.map(l => l.barcode).join('\n')
+      if (response.successful || !response.empty ) {
+        this.barcodes = response.deserialize.libraries.map(l => l.barcode)
       } else {
         throw Error(consts.MESSAGE_ERROR_CREATE_LIBRARY_FAILED + response.errors.message)
       }
@@ -135,37 +126,48 @@ export default {
         throw Error(consts.MESSAGE_WARNING_NO_BARCODES)
       }
 
-      let response = await getTubesForBarcodes(this.barcodes, this.tractionSaphyrTubeRequest)
+      let response = await this.getTractionTubesForBarcodes(this.barcodes)
       if (response.successful && !response.empty) {
-        let tubes = response.deserialize.tubes
+        let tubes = this.tractionTubes
         // Surely all these tubes will be libraries since we are creating libraries?
         if (tubes.every(t => t.material.type === "libraries")) {
-          this.$router.push({name: 'Libraries', query: { barcode: tubes.map(tube => tube.barcode) }})
+          this.redirectToLibraries(tubes)
         }
       } else {
         throw Error(consts.MESSAGE_ERROR_GET_TRACTION_TUBES)
       }
     },
+    redirectToLibraries (tubes) {
+      this.$router.push({name: 'SaphyrLibraries', query: { barcode: tubes.map(tube => tube.barcode) }})
+    },
     async provider() {
-      this.items = await this.getMaterial(consts.MAT_TYPE_REQUESTS)
+      try {
+        this.items = await this.getMaterial(consts.MAT_TYPE_REQUESTS)
+      } catch (err) {
+        this.log(err)
+      }
     },
     clearPreFilter() {
       this.log('clearPreFilter()')
       this.items = Object.keys(this.$store.getters.requests).map(
         key => this.$store.getters.request(key))
       this.preFilteredMaterials = []
-    }
+    },
+    ...mapActions([
+      'createLibrariesInTraction',
+      'getTractionTubesForBarcodes'
+    ]),
   },
   created() {
     this.provider()
   },
   computed: {
-    tractionSaphyrLibraryRequest () {
-      return this.api.traction.saphyr.libraries
-    },
-    tractionSaphyrTubeRequest () {
-      return this.api.traction.saphyr.tubes
-    },
+    ...mapGetters([
+      'tractionTubesWithInfo',
+      'tractionTubes',
+      'requestsRequest',
+      'libraryRequest'
+    ])
   }
 }
 </script>

@@ -12,9 +12,9 @@ export default {
 
       let promise = null
       if (materialType === consts.MAT_TYPE_REQUESTS) {
-        promise = this.tractionSaphyrRequestsRequest.get()
+        promise = this.requestsRequest.get()
       } else if (materialType === consts.MAT_TYPE_LIBRARIES) {
-        promise = this.tractionSaphyrLibraryRequest.get()
+        promise = this.libraryRequest.get()
       } else {
         throw Error(consts.MESSAGE_ERROR_INTERNAL)
       }
@@ -61,14 +61,6 @@ export default {
         this.showAlert(response.errors.message)
         return []
       }
-    },
-  },
-  computed: {
-    tractionSaphyrRequestsRequest() {
-      return this.api.traction.saphyr.requests
-    },
-    tractionSaphyrLibraryRequest() {
-      return this.api.traction.saphyr.libraries
     },
   }
 }
