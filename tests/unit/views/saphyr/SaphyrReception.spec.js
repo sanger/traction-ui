@@ -1,9 +1,5 @@
 import Reception from '@/views/saphyr/SaphyrReception'
-import { mount, localVue, Vuex } from '../../testHelper'
-import TractionSaphyrTubesWithRequestJson from '../../../data/tractionSaphyrTubesWithRequest'
-import TractionTubesWithLibrariesJson from '../../../data/tubeWithLibrary'
-import SequencescapeTubesJson from '../../../data/sequencescapeTubesWithSample'
-import RequestsJson from '../../../data/requests'
+import { mount, localVue, Vuex, Data } from '../../testHelper'
 import Response from '@/api/Response'
 import Samples from '@/views/saphyr/SaphyrSamples'
 import Libraries from '@/views/saphyr/SaphyrLibraries'
@@ -118,7 +114,7 @@ describe('Reception', () => {
 
     describe('successful', () => {
       it('calls the correct functions when the tubes are requests', async () => {
-        let expectedResponse = new Response(TractionSaphyrTubesWithRequestJson)
+        let expectedResponse = new Response(Data.TractionSaphyrTubesWithRequest)
         reception.getTractionTubesForBarcodes.mockReturnValue(expectedResponse)
 
         await reception.handleTractionTubes(barcodeList)
@@ -129,7 +125,7 @@ describe('Reception', () => {
       })
 
       it('calls the correct functions when the tubes are libraries', async () => {
-        let expectedResponse = new Response(TractionTubesWithLibrariesJson)
+        let expectedResponse = new Response(Data.TubeWithLibrary)
         reception.getTractionTubesForBarcodes.mockReturnValue(expectedResponse)
 
         await reception.handleTractionTubes(barcodeList)
@@ -185,8 +181,8 @@ describe('Reception', () => {
     })
 
     it('successfully for samples', async () => {
-      reception.getSequencescapeTubesForBarcodes.mockResolvedValue(new Response(SequencescapeTubesJson))
-      reception.exportSampleTubesIntoTraction.mockResolvedValue(new Response(RequestsJson))
+      reception.getSequencescapeTubesForBarcodes.mockResolvedValue(new Response(Data.SequencescapeTubesWithSample))
+      reception.exportSampleTubesIntoTraction.mockResolvedValue(new Response(Data.Requests))
 
       await reception.handleSequencescapeTubes()
       expect(reception.getSequencescapeTubesForBarcodes).toBeCalled()
@@ -196,7 +192,7 @@ describe('Reception', () => {
     })
 
     it('is unsuccessful when getSequencescapeTubesForBarcodes fails', async () => {
-      reception.getSequencescapeTubesForBarcodes.mockResolvedValue(new Response(SequencescapeTubesJson))
+      reception.getSequencescapeTubesForBarcodes.mockResolvedValue(new Response(Data.SequencescapeTubesWithSample))
       reception.exportSampleTubesIntoTraction.mockResolvedValue(new Response(failedResponse))
 
       await reception.handleSequencescapeTubes()
@@ -229,76 +225,75 @@ describe('Reception', () => {
     })
   })
 
-  // TODO: add
-  // checkMaterialTypes
-  // success:
-  // expect(reception.$route.path).toEqual('/saphyr/samples')
-  // failure:
-  // expect(reception.$route.path).toEqual('/saphyr/libraries')
-
-  // checkBarcodes
-
-  // describe('#handleTractionTubes', () => {
-  //   let failedResponse
-  //
-  //   beforeEach(() => {
-  //     reception.getTractionTubesForBarcodes = jest.fn()
-  //     reception.checkBarcodes = jest.fn()
-  //     reception.checkMaterialTypes = jest.fn()
-  //   })
-  //
-  //   it('invalid barcodes', async () => {
-  //     reception.tractionSaphyrTubeRequest.get.mockResolvedValue(TractionSaphyrTubesWithRequestJson)
-  //     await reception.handleTractionTubes()
-  //     expect(wrapper.find(Alert).vm.message).toMatch(consts.MESSAGE_ERROR_INVALID_BARCODES)
-  //   })
-  //
-  //   it('successfully for libraries', async () => {
-  //     wrapper.setData({ barcodes: 'TRAC-3' })
-  //     reception.tractionSaphyrTubeRequest.get.mockResolvedValue(TractionTubesWithLibrariesJson)
-  //     await reception.handleTractionTubes()
-  //     expect(reception.$route.path).toEqual('/libraries')
-  //   })
-  //
-  //   it('unsuccessfully', async () => {
-  //     reception.tractionSaphyrTubeRequest.get.mockResolvedValue(failedResponse)
-  //     await expect(reception.handleTractionTubes()).rejects.toThrow(
-  //       consts.MESSAGE_ERROR_GET_TRACTION_TUBES)
-  //   })
-  //
-  //   it('when no tubes exist', async () => {
-  //     reception.tractionSaphyrTubeRequest.get.mockResolvedValue(emptyResponse)
-  //     await expect(reception.handleTractionTubes()).rejects.toThrow(
-  //       consts.MESSAGE_ERROR_GET_TRACTION_TUBES)
-  //   })
-  //
-  //   it('when there are no barcodes', async () => {
-  //     wrapper.setData({ barcodes: '' })
-  //     await expect(reception.handleTractionTubes()).rejects.toThrow(
-  //       consts.MESSAGE_WARNING_NO_BARCODES)
-  //   })
-  //
-  //
-  //   it('successfully', async () => {
-  //     reception.tractionSaphyrRequestsRequest.create.mockResolvedValue(RequestsJson)
-  //     await reception.exportSampleTubesIntoTraction(ssTubes)
-  //
-  //     expect(reception.tractionSaphyrRequestsRequest.create).toBeCalled()
-  //
-  //     let tractionSaphyrRequestTubesBarcode = new Response(RequestsJson).deserialize.requests.map(s=> s.barcode).join('\n')
-  //     expect(reception.barcodes).toEqual(tractionSaphyrRequestTubesBarcode)
-  //   })
-  //
-  //   it('unsuccessfully', async () => {
-  //     let failedResponse = { status: 422, statusText: 'Unprocessable Entity', data: { errors: { name: ['error message'] }} }
-  //
-  //     reception.tractionSaphyrRequestsRequest.create.mockResolvedValue(failedResponse)
-  //
-  //     await expect(reception.exportSampleTubesIntoTraction(ssTubes)).rejects.toThrow(
-  //       'Failed to create tubes in Traction: name error message')
-  //
-  //     expect(reception.tractionSaphyrRequestsRequest.create).toBeCalled()
-  //   })
-  // })
+  /* TODO: add
+    checkMaterialTypes
+    success:
+    expect(reception.$route.path).toEqual('/saphyr/samples')
+    failure:
+    expect(reception.$route.path).toEqual('/saphyr/libraries')
+    checkBarcodes 
+  */
+  describe.skip('#handleTractionTubes', () => {
+    let failedResponse, emptyResponse, ssTubes
+  
+    beforeEach(() => {
+      reception.getTractionTubesForBarcodes = jest.fn()
+      reception.checkBarcodes = jest.fn()
+      reception.checkMaterialTypes = jest.fn()
+    })
+  
+    it('invalid barcodes', async () => {
+      reception.tractionSaphyrTubeRequest.get.mockResolvedValue(Data.TractionSaphyrTubesWithRequest)
+      await reception.handleTractionTubes()
+      expect(wrapper.find(Alert).vm.message).toMatch(consts.MESSAGE_ERROR_INVALID_BARCODES)
+    })
+  
+    it('successfully for libraries', async () => {
+      wrapper.setData({ barcodes: 'TRAC-3' })
+      reception.tractionSaphyrTubeRequest.get.mockResolvedValue(Data.TractionSaphyrTubesWithRequest)
+      await reception.handleTractionTubes()
+      expect(reception.$route.path).toEqual('/libraries')
+    })
+  
+    it('unsuccessfully', async () => {
+      reception.tractionSaphyrTubeRequest.get.mockResolvedValue(failedResponse)
+      await expect(reception.handleTractionTubes()).rejects.toThrow(
+        consts.MESSAGE_ERROR_GET_TRACTION_TUBES)
+    })
+  
+    it('when no tubes exist', async () => {
+      reception.tractionSaphyrTubeRequest.get.mockResolvedValue(emptyResponse)
+      await expect(reception.handleTractionTubes()).rejects.toThrow(
+        consts.MESSAGE_ERROR_GET_TRACTION_TUBES)
+    })
+  
+    it('when there are no barcodes', async () => {
+      wrapper.setData({ barcodes: '' })
+      await expect(reception.handleTractionTubes()).rejects.toThrow(
+        consts.MESSAGE_WARNING_NO_BARCODES)
+    })
+  
+  
+    it('successfully', async () => {
+      reception.tractionSaphyrRequestsRequest.create.mockResolvedValue(Data.Requests)
+      await reception.exportSampleTubesIntoTraction(ssTubes)
+  
+      expect(reception.tractionSaphyrRequestsRequest.create).toBeCalled()
+  
+      let tractionSaphyrRequestTubesBarcode = new Response(Data.Requests).deserialize.requests.map(s=> s.barcode).join('\n')
+      expect(reception.barcodes).toEqual(tractionSaphyrRequestTubesBarcode)
+    })
+  
+    it('unsuccessfully', async () => {
+      let failedResponse = { status: 422, statusText: 'Unprocessable Entity', data: { errors: { name: ['error message'] }} }
+  
+      reception.tractionSaphyrRequestsRequest.create.mockResolvedValue(failedResponse)
+  
+      await expect(reception.exportSampleTubesIntoTraction(ssTubes)).rejects.toThrow(
+        'Failed to create tubes in Traction: name error message')
+  
+      expect(reception.tractionSaphyrRequestsRequest.create).toBeCalled()
+    })
+  })
 
 })

@@ -1,8 +1,7 @@
 import Runs from '@/views/saphyr/SaphyrRuns'
 import Run from '@/views/saphyr/SaphyrRun'
-import { mount, localVue, store } from '../../testHelper'
+import { mount, localVue, store, Data } from '../../testHelper'
 import VueRouter from 'vue-router'
-import RunsJson from '../../../data/runs'
 import Response from '@/api/Response'
 import Alert from '@/components/Alert'
 import flushPromises from 'flush-promises'
@@ -21,7 +20,7 @@ describe('Runs.vue', () => {
 
     wrapper = mount(Runs, { localVue, router, store, methods: { provider () { return } } } )
 
-    let mockRuns = new Response(RunsJson).deserialize.runs
+    let mockRuns = new Response(Data.Runs).deserialize.runs
     wrapper.setData({items: mockRuns})
 
     runs = wrapper.vm
@@ -39,14 +38,14 @@ describe('Runs.vue', () => {
 
   describe('sorting', () => {
     it('will sort the runs by created at', () => {
-      wrapper.setData({items: new Response(RunsJson).deserialize.runs})
+      wrapper.setData({items: new Response(Data.Runs).deserialize.runs})
       expect(wrapper.find('tbody').findAll('tr').at(0).text()).toMatch(/TRAC-456/)
     })
   })
 
   describe('#provider sets the data', () => {
     it('when runs exists', async () => {
-      let mockResponse = new Response(RunsJson).deserialize.runs
+      let mockResponse = new Response(Data.Runs).deserialize.runs
       wrapper = mount(Runs, { localVue, router, store, methods: { getRuns() { return mockResponse } } } )
       runs = wrapper.vm
 
@@ -67,7 +66,7 @@ describe('Runs.vue', () => {
     let mockRuns
 
     beforeEach(() => {
-      mockRuns = new Response(RunsJson).deserialize.runs
+      mockRuns = new Response(Data.Runs).deserialize.runs
 
       wrapper = mount(Runs, { localVue,
         methods: {
@@ -222,7 +221,7 @@ describe('Runs.vue', () => {
     let mockRuns
 
     beforeEach(() => {
-      mockRuns = new Response(RunsJson).deserialize.runs
+      mockRuns = new Response(Data.Runs).deserialize.runs
 
       wrapper = mount(Runs, { localVue,
         methods: {
