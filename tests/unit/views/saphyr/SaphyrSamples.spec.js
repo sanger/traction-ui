@@ -1,35 +1,42 @@
-import Samples from '@/views/Samples'
+import Samples from '@/views/saphyr/SaphyrSamples'
 import EnzymeModal from '@/components/EnzymeModal'
 import PrinterModal from '@/components/PrinterModal'
-import { mount, localVue, store } from '../testHelper'
-import Libraries from '@/views/Libraries'
-import TractionTubesWithLibrariesJson from '../../data/tubeWithLibrary'
-import TractionSaphyrRequests from '../../data/tractionSaphyrRequests'
-
+import { mount, localVue, store } from '../../testHelper'
+import Libraries from '@/views/saphyr/SaphyrLibraries'
+import TractionTubesWithLibrariesJson from '../../../data/tubeWithLibrary'
+import TractionSaphyrRequests from '../../../data/tractionSaphyrRequests'
 import VueRouter from 'vue-router'
 import Alert from '@/components/Alert'
 import * as consts from '@/consts/consts'
 
 describe('Samples.vue', () => {
 
-  let wrapper, samples
+  let wrapper, samples, mockSamples
 
   beforeEach(() => {
-    const router = new VueRouter({ routes:
-      [
-        { path: '/libraries', name: 'Libraries', component: Libraries, props: true }
-      ]
-    })
 
-    wrapper = mount(Samples, {
-      localVue,
-      store,
-      router,
-      stubs: {
-        EnzymeModal: true
-      }
-    })
-    samples = wrapper.vm
+    mockSamples = [
+        { barcode: 'TRAC-1', material: {id: 1, type: 'samples', name: 'sample_d', external_id: 4, species: 'human', created_at: '02/27/2019 04:05' }},
+        { barcode: 'TRAC-1', material: {id: 1, type: 'samples', name: 'sample_d', external_id: 4, species: 'human', created_at: '02/27/2019 04:05' }},
+      ]
+
+      const router = new VueRouter({ routes:
+        [
+          { path: '/saphyr/libraries', name: 'SaphyrLibraries', component: Libraries, props: true }
+        ]
+      })
+
+      wrapper = mount(Samples, { localVue,
+        store,
+        router,
+        propsData: {
+          items: mockSamples
+        },
+        stubs: {
+          EnzymeModal: true
+        }
+      })
+      samples = wrapper.vm
 
     samples.tractionSaphyrRequestsRequest.get = jest.fn()
   })
@@ -160,7 +167,7 @@ describe('Samples.vue', () => {
     it('successfully', async () => {
       samples.tractionSaphyrTubeRequest.get.mockResolvedValue(successfulResponse)
       await samples.handleTractionTubes()
-      expect(samples.$route.path).toEqual('/libraries')
+      expect(samples.$route.path).toEqual('/saphyr/libraries')
     })
 
     it('unsuccessfully', async () => {

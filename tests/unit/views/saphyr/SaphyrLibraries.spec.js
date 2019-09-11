@@ -1,9 +1,9 @@
-import Libraries from '@/views/Libraries'
-import { mount, localVue, store } from '../testHelper'
+import Libraries from '@/views/saphyr/SaphyrLibraries'
+import { mount, localVue, store } from '../../testHelper'
 import Alert from '@/components/Alert'
 import PrinterModal from '@/components/PrinterModal'
 import * as consts from '@/consts/consts'
-import TractionSaphyrLibraries from '../../data/tractionSaphyrLibraries'
+import TractionSaphyrLibraries from '../../../data/tractionSaphyrLibraries'
 import VueRouter from 'vue-router'
 
 describe('Libraries.vue', () => {

@@ -73,7 +73,6 @@ import TableHelper from '@/mixins/TableHelper'
 import getTubesForBarcodes from '@/api/TubeRequests'
 import Alert from '@/components/Alert'
 import * as consts from '@/consts/consts'
-
 export default {
   name: 'Samples',
   mixins: [Api, Helper, MatType, TableHelper],
@@ -118,12 +117,9 @@ export default {
           'saphyr_request_id': item.id,
           'saphyr_enzyme_id': selectedEnzymeId }
         })
-
       let body = { data: { type: 'libraries', attributes: { libraries: libraries } } }
-
       let promise = this.tractionSaphyrLibraryRequest.create(body)
       let response = await handlePromise(promise)
-
       if (response.successful) {
         this.barcodes = response.deserialize.libraries.map(l => l.barcode).join('\n')
       } else {
@@ -134,13 +130,12 @@ export default {
       if (this.barcodes === undefined || !this.barcodes.length) {
         throw Error(consts.MESSAGE_WARNING_NO_BARCODES)
       }
-
       let response = await getTubesForBarcodes(this.barcodes, this.tractionSaphyrTubeRequest)
       if (response.successful && !response.empty) {
         let tubes = response.deserialize.tubes
         // Surely all these tubes will be libraries since we are creating libraries?
         if (tubes.every(t => t.material.type === "libraries")) {
-          this.$router.push({name: 'Libraries', query: { barcode: tubes.map(tube => tube.barcode) }})
+          this.$router.push({name: 'SaphyrLibraries', query: { barcode: tubes.map(tube => tube.barcode) }})
         }
       } else {
         throw Error(consts.MESSAGE_ERROR_GET_TRACTION_TUBES)

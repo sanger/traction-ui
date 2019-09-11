@@ -150,9 +150,9 @@ export default {
       let isAllLibraries = tubes.every(t => t.material.type == 'libraries')
 
       if (isAllRequests) {
-        this.$router.push({ path: 'samples', query: { barcode: barcodesList } })
+        this.$router.push({ name: 'SaphyrSamples', query: { barcode: barcodesList } })
       } else if (isAllLibraries) {
-        this.$router.push({ path: 'libraries', query: { barcode: barcodesList } })
+        this.$router.push({ name: 'SaphyrLibraries', query: { barcode: barcodesList } })
       } else {
         // We only want barcodes of the same type
       throw Error(consts.MESSAGE_ERROR_SINGLE_TYPE)

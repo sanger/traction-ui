@@ -1,8 +1,8 @@
-import Runs from '@/views/Runs'
-import Run from '@/views/Run'
-import { mount, localVue, store } from '../testHelper'
+import Runs from '@/views/saphyr/SaphyrRuns'
+import Run from '@/views/saphyr/SaphyrRun'
+import { mount, localVue, store } from '../../testHelper'
 import VueRouter from 'vue-router'
-import RunsJson from '../../data/runs'
+import RunsJson from '../../../data/runs'
 import Response from '@/api/Response'
 import Alert from '@/components/Alert'
 import flushPromises from 'flush-promises'
@@ -14,9 +14,9 @@ describe('Runs.vue', () => {
   beforeEach(() => {
     router = new VueRouter({ routes:
       [
-        { path: '/runs', name: 'Runs', component: Runs },
-        { path: '/run', name: 'Run', component: Run, props: {id: true} },
-        { path: '/run/:id', component: Run, props: true } ]
+        { path: '/saphyr/runs', name: 'SaphyrRuns', component: Runs },
+        { path: '/saphyr/run', name: 'SaphyrRun', component: Run, props: {id: true} },
+        { path: '/saphyr/run/:id', component: Run, props: true } ]
     })
 
     wrapper = mount(Runs, { localVue, router, store, methods: { provider () { return } } } )

@@ -73,7 +73,6 @@ import TableHelper from '@/mixins/TableHelper'
 import Alert from '@/components/Alert'
 import PrinterModal from '@/components/PrinterModal'
 import * as consts from '@/consts/consts'
-
 export default {
   name: 'Libraries',
   mixins: [Api, Helper, MatType, TableHelper],
@@ -113,7 +112,6 @@ export default {
       let selectedIds = this.selected.map(s => s.id)
       let promises = this.tractionSaphyrLibraryRequest.destroy(selectedIds)
       let responses = await Promise.all(promises.map(promise => handlePromise(promise)))
-
       if (responses.every(r => r.successful)) {
         let keyword = selectedIds.length > 1 ? 'Libraries' : 'Library'
         this.showAlert(`${keyword} ${selectedIds.join(', ')} successfully deleted`)
