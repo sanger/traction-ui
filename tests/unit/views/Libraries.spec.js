@@ -1,14 +1,15 @@
 import Libraries from '@/views/Libraries'
-import { mount, localVue, store } from '../testHelper'
+import { mount, localVue, store, Data } from '../testHelper'
 import Alert from '@/components/Alert'
 import PrinterModal from '@/components/PrinterModal'
 import * as consts from '@/consts/consts'
-import TractionSaphyrLibraries from '../../data/tractionSaphyrLibraries'
 import VueRouter from 'vue-router'
 
 describe('Libraries.vue', () => {
 
-  let wrapper, libraries
+  let wrapper, libraries, tractionSaphyrLibraries
+
+
   beforeEach(() => {
     const router = new VueRouter({
       routes: [{
@@ -19,6 +20,8 @@ describe('Libraries.vue', () => {
       }]
     })
 
+    tractionSaphyrLibraries = Data.TractionSaphyrLibraries
+    
     wrapper = mount(Libraries, {
       localVue,
       store,
@@ -36,7 +39,7 @@ describe('Libraries.vue', () => {
     })
 
     it('will get a list of libraries on success',  async () => {
-      libraries.tractionSaphyrLibraryRequest.get.mockResolvedValue(TractionSaphyrLibraries)
+      libraries.tractionSaphyrLibraryRequest.get.mockResolvedValue(tractionSaphyrLibraries)
       await libraries.provider()
       expect(libraries.items.length).toEqual(17)
     })
@@ -57,7 +60,7 @@ describe('Libraries.vue', () => {
     })
 
     it('contains the correct data', async () => {
-      libraries.tractionSaphyrLibraryRequest.get.mockResolvedValue(TractionSaphyrLibraries)
+      libraries.tractionSaphyrLibraryRequest.get.mockResolvedValue(tractionSaphyrLibraries)
       await libraries.provider()
       expect(wrapper.find('tbody').findAll('tr').length).toEqual(libraries.perPage)
     })
@@ -106,7 +109,7 @@ describe('Libraries.vue', () => {
       libraries = wrapper.vm
 
       libraries.tractionSaphyrLibraryRequest.execute = jest.fn()
-      libraries.tractionSaphyrLibraryRequest.get.mockResolvedValue(TractionSaphyrLibraries)
+      libraries.tractionSaphyrLibraryRequest.get.mockResolvedValue(tractionSaphyrLibraries)
       await libraries.provider()
 
       let checkboxes = wrapper.findAll(".selected")
