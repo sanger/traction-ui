@@ -23,7 +23,7 @@
       <b-table id="runs-table"
                hover
                show-empty
-               :items="items"
+               :items="runs"
                :fields="fields"
                :filter="filter"
                :sort-by.sync="sortBy"
@@ -50,7 +50,7 @@
         </template>
       </b-table>
 
-      <span class="font-weight-bold">Total records: {{ rows }}</span>
+      <span class="font-weight-bold">Total records: {{ runs.length }}</span>
 
       <div class="clearfix">
         <b-button id="newRun"
@@ -61,7 +61,7 @@
         </b-button>
         <b-pagination class="float-right"
                       v-model="currentPage"
-                      :total-rows="rows"
+                      :total-rows="runs.length"
                       :per-page="perPage"
                       aria-controls="libraries-table">
         </b-pagination>
@@ -74,6 +74,9 @@ import Alert from '@/components/Alert'
 import RunMixin from '@/mixins/RunMixin'
 import Helper from '@/mixins/Helper'
 import TableHelper from '@/mixins/TableHelper'
+
+import { createNamespacedHelpers } from 'vuex'
+const { mapActions, mapGetters } = createNamespacedHelpers('traction/saphyr/runs')
 
 export default {
   name: 'Runs',
@@ -90,19 +93,16 @@ export default {
         { key: 'created_at', label: 'Created at', sortable: true },
         { key: 'actions', label: 'Actions' },
       ],
-      items: [],
       filteredItems: [],
       filter: null,
       sortBy: 'created_at',
       sortDesc: true,
       perPage: 5,
       currentPage: 1,
+      message: '',
     }
   },
   methods: {
-    async provider() {
-      this.items = await this.getRuns()
-    },
     isRunDisabled(run) {
       return run.state == 'completed' || run.state == 'cancelled'
     },
@@ -112,9 +112,24 @@ export default {
     generateId(text, id) {
       return `${text}-${id}`
     },
+    async provider() {
+      try {
+        await this.setRuns()
+      } catch (error) {
+        this.showAlert("Failed to get runs: " + error.message, 'danger')
+      }
+    },
+    ...mapActions([
+      'setRuns',
+    ])
   },
   created() {
     this.provider()
+  },
+  computed: {
+    ...mapGetters([
+      'runs'
+    ])
   },
   components: {
     Alert

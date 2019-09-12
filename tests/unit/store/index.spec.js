@@ -1,5 +1,4 @@
 import Store from '@/store/index'
-import * as Run from '@/api/Run'
 
 describe('index', () => {
 
@@ -39,43 +38,4 @@ describe('index', () => {
     })
 
   })
-
-  describe('runs', () => {
-
-    let run1, run2
-
-    beforeEach(() => {
-      run1 = Run.build()
-      run1.id = '1'
-
-      run2 = Run.build()
-      run2.id = '2'
-    })
-
-    afterEach(() => {
-      Store.commit('clearRuns')
-    })
-
-    it('has a getter', () => {
-      expect(Store.getters.runs).toBeDefined()
-    })
-
-    it('can add an individual run', () => {
-      Store.commit('addRun', run1)
-      Store.commit('addRun', run2)
-      expect(Object.keys(Store.getters.runs).length).toEqual(2)
-    })
-
-    it('can add multiple runs', () => {
-      Store.commit('addRuns', [run1, run2])
-      expect(Object.keys(Store.getters.runs).length).toEqual(2)
-    })
-
-    it('can get a run', () => {
-      Store.commit('addRuns', [run1, run2])
-      expect(Store.getters.run(run1.id)).toEqual(run1)
-    })
-
-  })
-
 })

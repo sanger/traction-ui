@@ -22,7 +22,7 @@ const Cmp = {
   }
 }
 
-describe('RunMixin', () => {
+describe.skip('RunMixin', () => {
 
   let wrapper, cmp, runId, attributes, runs
 

@@ -4,7 +4,7 @@ import LibraryTubeJson from '../../data/tubeWithLibrary'
 import Response from '@/api/Response'
 import * as Run from '@/api/Run'
 
-describe('Library', () => {
+describe.skip('Library', () => {
 
   let wrapper, library, props, material, run
 

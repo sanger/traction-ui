@@ -43,7 +43,6 @@ export default {
   },
   methods: {
     provider () {
-
       let data = this.$store.getters.run(this.id)
       this.name = data.name
       this.state = data.state

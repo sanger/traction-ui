@@ -14,7 +14,7 @@ import VueRouter from 'vue-router'
 import Alert from '@/components/Alert'
 import * as RunApi from '@/api/Run'
 
-describe('Run.vue', () => {
+describe.skip('Run.vue', () => {
 
   let wrapper, run, props, input, router, runs, foundRun, runId
 

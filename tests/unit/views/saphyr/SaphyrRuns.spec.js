@@ -1,30 +1,61 @@
 import Runs from '@/views/saphyr/SaphyrRuns'
-import Run from '@/views/saphyr/SaphyrRun'
-import { mount, localVue, store } from '../../testHelper'
-import VueRouter from 'vue-router'
+// import Run from '@/views/saphyr/SaphyrRun'
+import { mount, localVue, Vuex } from '../../testHelper'
+// import VueRouter from 'vue-router'
 import RunsJson from '../../../data/runs'
 import Response from '@/api/Response'
 import Alert from '@/components/Alert'
-import flushPromises from 'flush-promises'
 
 describe('Runs.vue', () => {
 
-  let wrapper, runs, router
+  let wrapper, runs, mockRuns, store
 
   beforeEach(() => {
-    router = new VueRouter({ routes:
-      [
-        { path: '/saphyr/runs', name: 'SaphyrRuns', component: Runs },
-        { path: '/saphyr/run', name: 'SaphyrRun', component: Run, props: {id: true} },
-        { path: '/saphyr/run/:id', component: Run, props: true } ]
+    // router = new VueRouter({ routes:
+    //   [
+    //     { path: '/saphyr/runs', name: 'SaphyrRuns', component: Runs },
+    //     { path: '/saphyr/run', name: 'SaphyrRun', component: Run, props: {id: true} },
+    //     { path: '/saphyr/run/:id', component: Run, props: true } ]
+    // })
+
+    mockRuns = new Response(RunsJson).deserialize.runs
+
+    store = new Vuex.Store({
+      modules: {
+      traction: {
+        namespaced: true,
+        modules: {
+          saphyr: {
+            namespaced: true,
+            modules: {
+              runs: {
+                namespaced: true,
+                state: {
+                  runs: mockRuns
+                },
+                getters: {
+                  runs: state => state.runs,
+                },
+                actions: {
+                  setRuns: jest.fn()
+                }
+              }
+            }
+
+          }
+        }
+      }
+    }
     })
 
-    wrapper = mount(Runs, { localVue, router, store, methods: { provider () { return } } } )
-
-    let mockRuns = new Response(RunsJson).deserialize.runs
-    wrapper.setData({items: mockRuns})
-
+    wrapper = mount(Runs, { store, localVue, methods: { provider() { return } } }) 
     runs = wrapper.vm
+  })
+
+  describe('created hook', () => {
+    it('sets the runs data', () => {
+      expect(runs.runs).toEqual(mockRuns)
+    })
   })
 
   describe('alert', () => {
@@ -39,37 +70,15 @@ describe('Runs.vue', () => {
 
   describe('sorting', () => {
     it('will sort the runs by created at', () => {
-      wrapper.setData({items: new Response(RunsJson).deserialize.runs})
       expect(wrapper.find('tbody').findAll('tr').at(0).text()).toMatch(/TRAC-456/)
     })
   })
 
-  describe('#provider sets the data', () => {
-    it('when runs exists', async () => {
-      let mockResponse = new Response(RunsJson).deserialize.runs
-      wrapper = mount(Runs, { localVue, router, store, methods: { getRuns() { return mockResponse } } } )
-      runs = wrapper.vm
-
-      await flushPromises()
-      expect(runs.items).toEqual(mockResponse)
-    })
-
-    it('when no runs are returned', async () => {
-      let mockResponse = []
-      wrapper = mount(Runs, { localVue, router, store, methods: { getRuns () { return mockResponse } } } )
-      runs = wrapper.vm
-      await flushPromises()
-      expect(runs.items).toEqual(mockResponse)
-    })
-  })
-
   describe('filtering runs', () => {
-    let mockRuns
-
     beforeEach(() => {
-      mockRuns = new Response(RunsJson).deserialize.runs
-
-      wrapper = mount(Runs, { localVue,
+      wrapper = mount(Runs, {
+        store,
+        localVue,
         methods: {
           provider() {
             return
@@ -77,11 +86,10 @@ describe('Runs.vue', () => {
         },
         data() {
           return {
-            items: mockRuns,
             filter: mockRuns[0].chip_barcode
           }
         }
-      })
+      }) 
     })
 
     it('will filter the libraries in the table', () => {
@@ -219,12 +227,10 @@ describe('Runs.vue', () => {
   })
 
   describe ('pagination', () => {
-    let mockRuns
-
     beforeEach(() => {
-      mockRuns = new Response(RunsJson).deserialize.runs
-
-      wrapper = mount(Runs, { localVue,
+      wrapper = mount(Runs, {
+        store,
+        localVue,
         methods: {
           provider() {
             return
@@ -232,12 +238,11 @@ describe('Runs.vue', () => {
         },
         data() {
           return {
-            items: mockRuns,
             perPage: 2,
             currentPage: 1
           }
         }
-      })
+      }) 
     })
 
     it('will paginate the runs in the table', () => {
@@ -245,5 +250,4 @@ describe('Runs.vue', () => {
     })
 
   })
-
 })

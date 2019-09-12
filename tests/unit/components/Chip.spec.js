@@ -2,7 +2,7 @@ import { mount, localVue, store } from '../testHelper'
 import Chip from '@/components/Chip'
 import * as Run from '@/api/Run'
 
-describe('Chip', () => {
+describe.skip('Chip', () => {
 
   let wrapper, chip, props, input, run
 
