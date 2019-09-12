@@ -282,7 +282,9 @@ describe('Samples.vue', () => {
     })
   })
 
-  // add redirectToLibraries test
-  // expect(samples.$route.path).toEqual('/saphyr/libraries')
+  // TODO: add redirectToLibraries test
+  it.skip('redirects to libraries', () => {
+    expect(samples.$route.path).toEqual('/saphyr/libraries')
+  })
 
 })
