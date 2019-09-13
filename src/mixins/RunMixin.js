@@ -14,20 +14,6 @@ export default {
     getRun (id) {
       return this.$store.getters.run(id)
     },
-    async getRuns () {
-      let promise = this.tractionSaphyrRunsRequest.get()
-      let response = await handlePromise(promise)
-
-      if (response.successful) {
-        let runs = response.deserialize.runs
-        this.$store.commit('addRuns', runs)
-        return runs
-      } else {
-        this.message = response.errors.message
-        this.showAlert()
-        return []
-      }
-    },
     async handleUpdate (id, attributes) {
       try {
         await this.updateRun(id, attributes)
@@ -50,15 +36,6 @@ export default {
     },
     updateName (id, name) {
       this.handleUpdate(id, {name: name})
-    },
-    startRun(id) {
-      this.handleUpdate(id, {state: 'started'})
-    },
-    completeRun (id) {
-      this.handleUpdate(id, {state: 'completed'})
-    },
-    cancelRun (id) {
-      this.handleUpdate(id, {state: 'cancelled'})
     },
     async showRun(pipeline, id) {
       let runId, run

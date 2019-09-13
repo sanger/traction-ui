@@ -52,37 +52,6 @@ describe.skip('RunMixin', () => {
 
   })
 
-  describe('#getRuns', () => {
-
-    beforeEach(() => {
-      cmp.tractionSaphyrRunsRequest.get = jest.fn()
-      cmp.showAlert = jest.fn()
-    })
-
-    it('successfully', async () => {
-      cmp.tractionSaphyrRunsRequest.get.mockResolvedValue(RunsJson)
-      let foundRuns = await cmp.getRuns()
-      let expectedRuns = new Response(RunsJson).deserialize.runs
-      expect(cmp.tractionSaphyrRunsRequest.get).toBeCalled()
-      expect(foundRuns).toEqual(expectedRuns)
-      expect(Object.keys(store.getters.runs).length).toEqual(expectedRuns.length)
-    })
-
-    it('unsuccessfully', async () => {
-      let failedResponse = {
-        data: { errors: { runs: ['error message 1'] }},
-        status: 422,
-        statusText: "Unprocessible entity"
-      }
-
-      cmp.tractionSaphyrRunsRequest.get.mockReturnValue(failedResponse)
-      let foundRuns = await cmp.getRuns()
-      expect(foundRuns).toEqual([])
-      expect(cmp.message).toEqual('runs error message 1')
-      expect(cmp.showAlert).toBeCalled()
-    })
-  })
-
   describe('#handleUpdate', () => {
     beforeEach(() => {
       cmp.updateRun = jest.fn()
@@ -161,26 +130,6 @@ describe.skip('RunMixin', () => {
       })
     })
 
-    describe('#startRun', () => {
-      it('calls updateRun with the given arguments', async () => {
-        await cmp.startRun(runId)
-        expect(cmp.updateRun).toBeCalledWith(runId, {state: 'started'})
-      })
-    })
-
-    describe('#completeRun', () => {
-      it('calls updateRun with the given arguments', async () => {
-        await cmp.completeRun(runId)
-        expect(cmp.updateRun).toBeCalledWith(runId, {state: 'completed'})
-      })
-    })
-
-    describe('#cancelRun', () => {
-      it('calls updateRun with the given arguments', async () => {
-        await cmp.cancelRun(runId)
-        expect(cmp.updateRun).toBeCalledWith(runId, {state: 'cancelled'})
-      })
-    })
   })
 
   describe('#showRun', () => {

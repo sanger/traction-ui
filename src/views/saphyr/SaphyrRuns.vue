@@ -121,6 +121,9 @@ export default {
     },
     ...mapActions([
       'setRuns',
+      'startRun',
+      'completeRun',
+      'cancelRun'
     ])
   },
   created() {
