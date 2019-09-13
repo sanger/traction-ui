@@ -29,6 +29,7 @@ const build = (object) => {
     id: 'new',
     name: '',
     chip: {
+      barcode: '',
       flowcells: [
         { position: 1, library: {} },
         { position: 2, library: {} }

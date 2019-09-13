@@ -1,5 +1,6 @@
 const state = {
-    runs: []
+    runs: [],
+    currentRun: {}
 }
 
 export default state

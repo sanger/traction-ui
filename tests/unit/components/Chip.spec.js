@@ -1,15 +1,46 @@
-import { mount, localVue, store } from '../testHelper'
+import { mount, localVue, Vuex } from '../testHelper'
 import Chip from '@/components/Chip'
 import * as Run from '@/api/Run'
+import Response from '@/api/Response'
 
-describe.skip('Chip', () => {
+describe('Chip', () => {
 
-  let wrapper, chip, props, input, run
+  let wrapper, chip, props, input, run, actions
 
   beforeEach(() => {
     run = Run.build()
-    props = { id: 1, barcode: 'CHIP-1234', runId: run.id, flowcells: [ { id: 1, position: 1}, {id: 2, position: 2}]}
-    wrapper = mount(Chip, { localVue, store, propsData: props } )
+        
+    actions = {
+      updateChipBarcode: jest.fn()
+    }
+
+    let store = new Vuex.Store({
+      modules: {
+        traction: {
+          namespaced: true,
+          modules: {
+            saphyr: {
+              namespaced: true,
+              modules: {
+                runs: {
+                  namespaced: true,
+                  state: {
+                    currentRun: run
+                  },
+                  getters: {
+                    currentRun: state => state.currentRun,
+                  },
+                  actions
+                }
+              }
+
+            }
+          }
+        }
+      }
+    })
+
+    wrapper = mount(Chip, { localVue, store } )
     chip = wrapper.vm
   })
 
@@ -17,74 +48,46 @@ describe.skip('Chip', () => {
     expect(wrapper.name()).toEqual('Chip')
   })
 
-  it('can have an id', () => {
-    expect(chip.id).toEqual(props.id)
+  it('can have state', () => {
+    expect(chip.chipBarcode).toEqual(run.chip.barcode)
+    expect(chip.flowcells).toEqual(run.chip.flowcells)
   })
 
-  it('can have a barcode', () => {
-    expect(chip.barcode).toEqual(props.barcode)
-    expect(chip.localBarcode).toEqual(props.barcode)
+  it('can have getters', () => {
+    expect(chip.currentRun).toBeDefined()
   })
 
   it('can have some flowcells', () => {
-    expect(chip.flowcells).toEqual(props.flowcells)
     expect(wrapper.findAll('.flowcell').length).toEqual(2)
   })
 
-  it('can have a run id', () => {
-    expect(chip.runId).toEqual(run.id)
-  })
-
-  it('allows the user to scan in a barcode', () => {
-    input = wrapper.find('#barcode')
-    input.setValue('CHIP-2345')
-    expect(chip.localBarcode).toEqual('CHIP-2345')
-  })
-
-  describe('existing record', () => {
-    it('if the run is new', () => {
-      expect(chip.existingRecord).toBeFalsy()
-    })
-
-    it('if the run is persisted', () => {
-      wrapper.setProps({runId: 1})
-      expect(chip.existingRecord).toBeTruthy()
+  describe.skip('#updateBarcode', () => {
+    it('allows the user to scan in a barcode', () => {
+      chip.updateBarcode = jest.fn()
+      input = wrapper.find('#barcode')
+      input.setValue('CHIP-2345')
+      input.trigger('change')
+      expect(chip.updateBarcode).toBeCalled()
     })
   })
 
-  describe('#chipRequest', () => {
-    it('will have a request', () => {
-      expect(chip.chipRequest).toBeDefined()
-    })
-  })
-
-  describe('#payload', () => {
-    it('will have a payload', () => {
-      chip.localBarcode = 'CHIP-2345'
-      let data = chip.payload.data
-      expect(data.id).toEqual(props.id)
-      expect(data.attributes.barcode).toEqual('CHIP-2345')
-    })
-  })
-
-  describe('updateChip', () => {
-
+  describe('updateBarcode', () => {
     let newBarcode
 
     beforeEach(() => {
-      run.id = 1
-      store.commit('addRun', run)
-      wrapper.setProps({runId: run.id})
       newBarcode = 'FLEVEAOLPTOWPNWU20319131581014320190911XXXXXXXXXXXXX'
-      chip.localBarcode = newBarcode
+      chip.alert = jest.fn()
     })
 
-    it('will update the chip in the store', () => {
-      chip.updateChip()
-      expect(store.getters.run(run.id).chip.barcode).toEqual(newBarcode)
+    it('successful', () => {
+      let successfulResponse = { 'data': {}, 'status': 200, 'statusText': 'Success' }
+      actions.updateChipBarcode.mockReturnValue(new Response(successfulResponse))
+
+      chip.updateBarcode(newBarcode)
+      expect(chip.alert).toBeCalled()
     })
 
-    describe('existing record', () => {
+    describe.skip('existing record', () => {
       beforeEach(() => {
         chip.chipRequest.update = jest.fn()
         chip.alert = jest.fn()
@@ -117,9 +120,10 @@ describe.skip('Chip', () => {
 
   describe('alert', () => {
     it('emits an event with the message', () => {
-      chip.alert('emit this message')
+      chip.alert('emit this message', 'success')
       expect(wrapper.emitted().alert).toBeTruthy()
-      expect(wrapper.emitted().alert[0]).toEqual(['emit this message'])
+      expect(wrapper.emitted().alert[0][0]).toEqual('emit this message')
+      expect(wrapper.emitted().alert[0][1]).toEqual('success')
     })
   })
 

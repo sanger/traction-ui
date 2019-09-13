@@ -1,4 +1,6 @@
 import handlePromise from '@/api/PromiseHelper'
+import router from '@/router'
+import Response from '@/api/Response'
 
 const setRuns = async ({ commit, getters }) => {
     let request = getters.runRequest
@@ -49,12 +51,78 @@ const runPayloadJson = (payload) => {
     }
 }
 
+const editRun = ({ getters, commit }, runId) => {
+    let run = getters.run(runId)
+    commit('setCurrentRun', run)
+    router.push({ path: `/saphyr/run/${runId}` })
+}
+
+const updateRunName = async ({ getters, commit, dispatch }, name) => {
+    commit('updateRunName', name)
+    let run = getters.currentRun
+
+    if (isExistingRecord(run)) {
+        let payload = { id: run.id, attributes: { name: name } }
+        let response = await dispatch('handleUpdate', payload)
+        return response
+    }
+}
+
+const updateChipBarcode = async ({ commit, getters }, barcode) => {
+    commit('updateChipBarcode', barcode)
+    let run = getters.currentRun
+
+    if (isExistingRecord(run)) {
+        let chip = run.chip
+        let isValid = validateChip(chip)
+        
+        let response
+        if (isValid) {
+            let request = getters.chipRequest
+
+            let payload = {
+                data: {
+                    id: chip.id,
+                    type: 'chips',
+                    attributes: {
+                        barcode: chip.barcode
+                    }
+                }
+            }
+
+            let promise = request.update(payload)
+            response = await handlePromise(promise[0])
+        } else {
+            let mockResponse = { data: { errors: { chip: ['is not in a valid format'] } }, status: 422 }
+            response = new Response(mockResponse)
+        }
+        return response
+    }
+}
+
+const validateChip = (chip) => {
+    return chip.barcode && chip.barcode.length >= 16
+}
+
+const updateLibraryBarcode = async ({ commit }, payload) => {
+    commit('updateLibraryBarcode', payload)
+}
+
+const isExistingRecord = (run) => {
+    return !isNaN(run.id)
+}
+
 const actions = {
     setRuns,
     startRun,
     completeRun,
     cancelRun,
-    handleUpdate
+    handleUpdate,
+    editRun,
+    updateRunName,
+    updateChipBarcode,
+    validateChip,
+    updateLibraryBarcode
 }
 
 export {
@@ -63,7 +131,12 @@ export {
     completeRun,
     cancelRun,
     handleUpdate,
-    runPayloadJson
+    runPayloadJson,
+    editRun,
+    updateRunName,
+    updateChipBarcode,
+    validateChip,
+    updateLibraryBarcode
 }
 
 export default actions

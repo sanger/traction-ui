@@ -128,7 +128,6 @@ describe('#handleUpdate', () => {
 
 })
 
-
 describe('#runPayloadJson', () => {
 
   it('will convert a payload to the correct format', () => {
@@ -138,5 +137,25 @@ describe('#runPayloadJson', () => {
     expect(json.data.id).toEqual(1)
     expect(json.data.attributes).toBeDefined()
     expect(json.data.attributes.state).toEqual('a state')
+  })
+})
+
+
+describe('#editRun', () => {
+  let getters, commit, mockRun, run
+
+  beforeEach(() => {
+    mockRun = new Response(RunsJson).deserialize.runs[0]
+
+    run = jest.fn()
+    getters = { 'run': run }
+    commit = jest.fn()
+  })
+
+  it('successfully', async () => {
+    run.mockReturnValue(mockRun)
+
+    Actions.editRun({ getters, commit }, mockRun.id)
+    expect(commit).toHaveBeenCalledWith("setCurrentRun", mockRun)
   })
 })

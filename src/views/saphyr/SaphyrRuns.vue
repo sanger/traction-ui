@@ -32,7 +32,7 @@
                :current-page="currentPage"
                @filtered="onFiltered">
         <template slot="actions" slot-scope="row">
-          <b-button :id="generateId('createRun',row.item.id)" variant="outline-dark" size="sm" @click="showRun(row.item.id)" class="mr-1">
+          <b-button :id="generateId('edit', row.item.id)" variant="outline-dark" size="sm" @click="editRun(row.item.id)" class="mr-1">
             Edit
           </b-button>
 
@@ -123,7 +123,8 @@ export default {
       'setRuns',
       'startRun',
       'completeRun',
-      'cancelRun'
+      'cancelRun',
+      'editRun'
     ])
   },
   created() {

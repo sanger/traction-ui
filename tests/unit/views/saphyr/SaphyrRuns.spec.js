@@ -22,30 +22,30 @@ describe('Runs.vue', () => {
 
     store = new Vuex.Store({
       modules: {
-      traction: {
-        namespaced: true,
-        modules: {
-          saphyr: {
-            namespaced: true,
-            modules: {
-              runs: {
-                namespaced: true,
-                state: {
-                  runs: mockRuns
-                },
-                getters: {
-                  runs: state => state.runs,
-                },
-                actions: {
-                  setRuns: jest.fn()
+        traction: {
+          namespaced: true,
+          modules: {
+            saphyr: {
+              namespaced: true,
+              modules: {
+                runs: {
+                  namespaced: true,
+                  state: {
+                    runs: mockRuns
+                  },
+                  getters: {
+                    runs: state => state.runs,
+                  },
+                  actions: {
+                    setRuns: jest.fn()
+                  }
                 }
               }
-            }
 
+            }
           }
         }
       }
-    }
     })
 
     wrapper = mount(Runs, { store, localVue, methods: { provider() { return } } }) 
