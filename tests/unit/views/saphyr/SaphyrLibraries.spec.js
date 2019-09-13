@@ -1,9 +1,9 @@
 import Libraries from '@/views/saphyr/SaphyrLibraries'
-import { mount, localVue, Vuex } from '../../testHelper'
+import { mount, localVue, Vuex, Data } from '../../testHelper'
 import Alert from '@/components/Alert'
 import PrinterModal from '@/components/PrinterModal'
 import * as consts from '@/consts/consts'
-import TractionSaphyrLibraries from '../../../data/tractionSaphyrLibraries'
+// import TractionSaphyrLibraries from '../../../data/tractionSaphyrLibraries'
 import VueRouter from 'vue-router'
 import Response from '@/api/Response'
 
@@ -73,7 +73,7 @@ describe('Libraries.vue', () => {
     })
 
     it('contains the correct data', async () => {
-      let mockLibraries = new Response(TractionSaphyrLibraries).deserialize.libraries
+      let mockLibraries = new Response(Data.TractionSaphyrLibraries).deserialize.libraries
       wrapper.setData({ items: mockLibraries })
       expect(wrapper.find('tbody').findAll('tr').length).toEqual(5)
     })
@@ -87,7 +87,7 @@ describe('Libraries.vue', () => {
     })
 
     it('calls the correct functions', async () => {
-      libraries.deleteLibraries.mockReturnValue([new Response(TractionSaphyrLibraries)])
+      libraries.deleteLibraries.mockReturnValue([new Response(Data.TractionSaphyrLibraries)])
       await libraries.handleLibraryDelete()
 
       expect(libraries.deleteLibraries).toBeCalledWith(mockLibraries.map(s => s.id))

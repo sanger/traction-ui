@@ -1,16 +1,15 @@
 import Samples from '@/views/saphyr/SaphyrSamples'
 import EnzymeModal from '@/components/EnzymeModal'
 import PrinterModal from '@/components/PrinterModal'
-import { mount, localVue, Vuex } from '../../testHelper'
+import { mount, localVue, Vuex, Data } from '../../testHelper'
 import Libraries from '@/views/saphyr/SaphyrLibraries'
-import TractionTubesWithLibrariesJson from '../../../data/tubeWithLibrary'
-import TractionSaphyrRequests from '../../../data/tractionSaphyrRequests'
+// import TractionTubesWithLibrariesJson from '../../../data/tubeWithLibrary'
+// import TractionSaphyrRequests from '../../../data/tractionSaphyrRequests'
 import VueRouter from 'vue-router'
 import Alert from '@/components/Alert'
 import * as consts from '@/consts/consts'
-import LibrariesJson from '../../../data/libraries'
+// import LibrariesJson from '../../../data/libraries'
 import Response from '@/api/Response'
-
 
 describe('Samples.vue', () => {
 
@@ -74,7 +73,7 @@ describe('Samples.vue', () => {
     })
 
     it('contains the correct data', async () => {
-      let mockSamples = new Response( TractionSaphyrRequests).deserialize.requests
+      let mockSamples = new Response(Data.TractionSaphyrRequests).deserialize.requests
       wrapper.setData({ items: mockSamples })
       expect(wrapper.find('tbody').findAll('tr').length).toEqual(5)
     })
@@ -82,7 +81,7 @@ describe('Samples.vue', () => {
 
   describe('selecting samples', () => {
     beforeEach(async () => {
-      let mockSamples = new Response( TractionSaphyrRequests).deserialize.requests
+      let mockSamples = new Response(Data.TractionSaphyrRequests).deserialize.requests
       wrapper.setData({ items: mockSamples })
 
       let checkboxes = wrapper.findAll(".selected")
@@ -134,7 +133,7 @@ describe('Samples.vue', () => {
     let selectedEnzymeId, payload, mockSamples
 
     beforeEach(() => {
-      mockSamples = new Response(TractionSaphyrRequests).deserialize.requests
+      mockSamples = new Response(Data.TractionSaphyrRequests).deserialize.requests
 
       selectedEnzymeId = 123
       samples.createLibrariesInTraction = jest.fn()
@@ -144,7 +143,7 @@ describe('Samples.vue', () => {
     })
 
     it('calls the correct functions', async () => {
-      let expectedResponse = new Response(LibrariesJson)
+      let expectedResponse = new Response(Data.Libraries)
       samples.createLibrariesInTraction.mockReturnValue(expectedResponse)
 
       await samples.createLibraries(selectedEnzymeId)
@@ -222,7 +221,7 @@ describe('Samples.vue', () => {
     it('successfully for libraries', async () => {
       wrapper.setData({ barcodes: ['TRAC-3'] })
 
-      let expectedResponse = new Response(TractionTubesWithLibrariesJson)
+      let expectedResponse = new Response(Data.TubeWithLibrary)
       samples.getTractionTubesForBarcodes.mockReturnValue(expectedResponse)
 
       await samples.handleTractionTubes()
@@ -283,7 +282,9 @@ describe('Samples.vue', () => {
     })
   })
 
-  // add redirectToLibraries test
-  // expect(samples.$route.path).toEqual('/saphyr/libraries')
+  // TODO: add redirectToLibraries test
+  it.skip('redirects to libraries', () => {
+    expect(samples.$route.path).toEqual('/saphyr/libraries')
+  })
 
 })

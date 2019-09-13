@@ -1,4 +1,4 @@
-import SequencescapeTubesJson from '../../../data/sequencescapeTubesWithSample'
+import { Data } from '../../testHelper'
 import Response from '@/api/Response'
 import * as Actions from '@/store/sequencescape/actions'
 
@@ -16,9 +16,9 @@ describe('#getSequencescapeTubesForBarcodes', () => {
   })
 
   it('successfully for samples', async () => {
-    get.mockReturnValue(SequencescapeTubesJson)
+    get.mockReturnValue(Data.SequencescapeTubesWithSample)
 
-    let expectedResponse = new Response(SequencescapeTubesJson)
+    let expectedResponse = new Response(Data.SequencescapeTubesWithSample)
     let expectedTubes = expectedResponse.deserialize.tubes
 
     let response = await Actions.getSequencescapeTubesForBarcodes({ commit, getters }, barcodeList)

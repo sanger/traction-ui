@@ -1,7 +1,4 @@
-import SequencescapeTubesJson from '../../../../../data/sequencescapeTubesWithSample'
-import TractionSaphyrTubesWithRequestJson from '../../../../../data/tractionSaphyrTubesWithRequest'
-import TractionTubesWithLibrariesJson from '../../../../../data/tubeWithLibrary'
-
+import { Data } from '../../../../testHelper'
 import Response from '@/api/Response'
 import * as Actions from '@/store/traction/saphyr/tubes/actions'
 
@@ -19,9 +16,9 @@ describe('#getTractionTubesForBarcodes', () => {
   })
 
   it('successfully for samples', async () => {
-    get.mockReturnValue(TractionSaphyrTubesWithRequestJson)
+    get.mockReturnValue(Data.TractionSaphyrTubesWithRequest)
 
-    let expectedResponse = new Response(TractionSaphyrTubesWithRequestJson)
+    let expectedResponse = new Response(Data.TractionSaphyrTubesWithRequest)
     let expectedTubes = expectedResponse.deserialize.tubes
 
     let response = await Actions.getTractionTubesForBarcodes({ commit, getters }, barcodeList)
@@ -31,9 +28,9 @@ describe('#getTractionTubesForBarcodes', () => {
   })
 
   it('successfully for libraries', async () => {
-    get.mockReturnValue(TractionTubesWithLibrariesJson)
+    get.mockReturnValue(Data.TubeWithLibrary)
 
-    let expectedResponse = new Response(TractionTubesWithLibrariesJson)
+    let expectedResponse = new Response(Data.TubeWithLibrary)
     let expectedTubes = expectedResponse.deserialize.tubes
 
     let response = await Actions.getTractionTubesForBarcodes({ commit, getters }, barcodeList)
@@ -71,12 +68,12 @@ describe('#exportSampleTubesIntoTraction', () => {
   beforeEach(() => {
     create = jest.fn()
     getters = { 'requestsRequest': { 'create': create } }
-    tubes = new Response(SequencescapeTubesJson).deserialize.tubes
+    tubes = new Response(Data.SequencescapeTubesWithSample).deserialize.tubes
   })
 
   it('successfully', async () => {
-    let expectedResponse = new Response(TractionSaphyrTubesWithRequestJson)
-    create.mockReturnValue(TractionSaphyrTubesWithRequestJson)
+    let expectedResponse = new Response(Data.TractionSaphyrTubesWithRequest)
+    create.mockReturnValue(Data.TractionSaphyrTubesWithRequest)
 
     let response = await Actions.exportSampleTubesIntoTraction({ getters }, tubes)
     expect(response).toEqual(expectedResponse)
@@ -96,7 +93,7 @@ describe('#exportSampleTubesIntoTraction', () => {
 describe('#sampleTubesJson', () => {
 
   it('will convert a deserialized response to the correct format', () => {
-    let tubes = new Response(SequencescapeTubesJson).deserialize.tubes
+    let tubes = new Response(Data.SequencescapeTubesWithSample).deserialize.tubes
     let json = Actions.sampleTubeJson(tubes)
     let tube = json[0]
     expect(tube.external_id).toBeDefined()
@@ -123,8 +120,8 @@ describe('#createLibrariesInTraction', () => {
   })
 
   it('successfully', async () => {
-    let expectedResponse = new Response(TractionTubesWithLibrariesJson)
-    create.mockReturnValue(TractionTubesWithLibrariesJson)
+    let expectedResponse = new Response(Data.TubeWithLibrary)
+    create.mockReturnValue(Data.TubeWithLibrary)
 
     let response = await Actions.createLibrariesInTraction({ getters }, payload)
     expect(response).toEqual(expectedResponse)
