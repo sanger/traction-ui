@@ -4,7 +4,7 @@
 
     {{ this.currentRun }}
 
-    <router-link :to="{name: 'Runs'}">
+    <router-link :to="{name: 'SaphyrRuns'}">
       <b-button id="backToRunsButton" class="float-right">Back</b-button>
     </router-link>
 
@@ -35,7 +35,7 @@ export default {
       let response = await this.updateRunName(name)
 
       if (response.successful) {
-        this.showAlert('Run updated', 'success')
+        this.showAlert('Run name updated', 'success')
       } else {
         this.showAlert('There was an error: ' + response.errors.message, 'danger')
       }

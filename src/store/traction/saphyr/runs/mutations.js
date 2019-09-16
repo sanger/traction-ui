@@ -11,10 +11,10 @@ const mutations = {
     updateChipBarcode(state, barcode) {
         state.currentRun.chip.barcode = barcode
     },
-    updateLibraryBarcode(state, payload) {
-        let barcode = payload.barcode
+    updateLibrary(state, payload) {
+        let library = payload.library
         let flowcellIndex = payload.flowcellIndex
-        state.currentRun.chip.flowcells[flowcellIndex].library.barcode = barcode
+        state.currentRun.chip.flowcells[flowcellIndex].library = library
     }
 }
 

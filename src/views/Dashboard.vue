@@ -6,12 +6,12 @@
           <div class="description"> Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</div>
         </router-link>
       </div>
-     <div class="pipeline pacbio">
+      <div class="pipeline pacbio">
         <router-link :to="{ path: '/pacbio' }" tag="a">
           <h4>Pacbio</h4>
           <div class="description"> Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</div>
         </router-link>
-     </div>
+      </div>
     </div>
 </template>
 

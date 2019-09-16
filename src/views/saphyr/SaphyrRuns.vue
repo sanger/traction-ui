@@ -71,7 +71,6 @@
 
 <script>
 import Alert from '@/components/Alert'
-import RunMixin from '@/mixins/RunMixin'
 import Helper from '@/mixins/Helper'
 import TableHelper from '@/mixins/TableHelper'
 
@@ -80,7 +79,7 @@ const { mapActions, mapGetters } = createNamespacedHelpers('traction/saphyr/runs
 
 export default {
   name: 'Runs',
-  mixins: [RunMixin, Helper, TableHelper],
+  mixins: [Helper, TableHelper],
   props: {
   },
   data () {

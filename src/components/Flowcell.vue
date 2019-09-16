@@ -2,20 +2,19 @@
   <b-row class="flowcell">
     <b-col>
       <div class="position">{{ position }}</div>
-      <b-form-input v-model="libraryBarcode" id="libraryBarcode" placeholder="Library barcode" type="text" />
+
+      <b-form-input :value="libraryBarcode" @change="updateBarcode" id="libraryBarcode" placeholder="Library barcode" type="text" />
     </b-col>
   </b-row>
 </template>
 
 <script>
 
-import Api from '@/mixins/Api'
 import { createNamespacedHelpers } from 'vuex'
 const { mapGetters, mapState, mapActions } = createNamespacedHelpers('traction/saphyr/runs')
 
 export default {
   name: 'Flowcell',
-  mixins: [Api],
   props: {
     position: {
       type: [Number]
@@ -24,59 +23,38 @@ export default {
       type: [Number]
     }
   },
-  data () {
-    return {
-      message: ''
-    }
-  },
   methods: {
-    // payload (library) {
-    //   return {
-    //     data: {
-    //       id: this.id,
-    //       type: 'flowcells',
-    //       attributes: {
-    //         library_id: library.id
-    //       }
-    //     }
-    //   }
-    // }, 
-    // async updateFlowcell (library) {
-      // let promise = this.flowcellRequest.update(this.payload(library))
-      // let response = await handlePromise(promise[0])
+    async updateBarcode(barcode) {
+      if (!barcode) {
+        this.alert('Please enter a barcode', 'danger')
+        return
+      }
 
-      // if (response.successful) {
-      //   this.alert('Library added to flowcell')
-      //   return response
-      // } else {
-      //   this.alert('There was an error: ' + response.errors.message)
-      // }
-    // },
-    alert (message) {
-      this.$emit('alert', message)
+      let payload = { barcode: barcode, flowcellIndex: this.index}
+      let response = await this.updateLibraryBarcode(payload)
+
+      if (response.successful) {
+        this.alert('Library updated', 'success')
+      } else {
+        this.alert('There was an error: ' + response.errors.message, 'danger')
+      }
     },
     ...mapActions([
       'updateLibraryBarcode',
     ]),
+    alert (message, type) {
+      this.$emit('alert', message, type)
+    },
   },
   computed: {
     ...mapGetters([
       'currentRun'
     ]),
     ...mapState({
-      barcode (state) {
+      libraryBarcode (state) {
         return state.currentRun.chip.flowcells[this.index].library.barcode
       }
-    }),
-    libraryBarcode: {
-      get () {
-        return this.barcode
-      },
-      set (value) {
-        let payload = { barcode: value, flowcellIndex: this.index}
-        this.updateLibraryBarcode(payload)
-      }
-    },
+    })
   }
 }
 </script>

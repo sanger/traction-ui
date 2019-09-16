@@ -1,4 +1,3 @@
-import getTubesForBarcodes from './TubeRequests'
 import handlePromise from './PromiseHelper'
 
 const isObject = (item) => {
@@ -31,75 +30,13 @@ const build = (object) => {
     chip: {
       barcode: '',
       flowcells: [
-        { position: 1, library: {} },
-        { position: 2, library: {} }
+        { position: 1, library: { barcode: ''} },
+        { position: 2, library: { barcode: ''} }
       ]
     }
   }
   run.assign = (object) => { assign(this, object) }
   return run
-}
-
-const getLibrary = async (barcode, request) => {
-  let response = await getTubesForBarcodes(barcode, request)
-  if (response.successful && !response.empty) {
-    let material = response.deserialize.tubes[0].material
-    if (material.type === 'libraries') { return material }
-  }
-  return
-}
-
-const validateChip = (chip) => {
-  if (chip.barcode === undefined) {
-    return 'barcode not present'
-  }
-  if (chip.barcode && chip.barcode.length < 16) {
-    return 'barcode not in correct format'
-  }
-}
-
-const validateFlowcell = (flowcell) => {
-  if (flowcell.library.id === undefined) {
-    return 'library does not exist'
-  }
-}
-
-const validateFlowcells = (flowcells) => {
-  let error
-  return flowcells.reduce((errors, flowcell) => {
-    error = validateFlowcell(flowcell)
-    if (error !== undefined) {
-      errors[flowcell.position] = error
-    }
-    return errors
-  }, {})
-}
-
-const updateFlowcell = (run, flowcellPosition, libraryId) => {
-  let index = run.chip.flowcells.findIndex((obj => obj.position === flowcellPosition))
-  run.chip.flowcells[index].library.id = libraryId
-  return run
-}
-
-const updateChip = (run, chipBarcode) => {
-  run.chip.barcode = chipBarcode
-  return run
-}
-
-const validate = (run) => {
-  let errors = {}
-
-  let error = validateChip(run.chip)
-  if (error !== undefined) {
-    Object.assign(errors, {chip: error})
-  }
-
-  error = validateFlowcells(run.chip.flowcells)
-  if (Object.keys(error).length > 0) {
-    Object.assign(errors, {flowcells: error})
-  }
-
-  return errors
 }
 
 const createResource = async (payload, request) => {
@@ -157,16 +94,9 @@ const destroy = async (id, request) => {
 
 export {
   build,
-  validate,
-  getLibrary,
   createResource,
   create,
   rollback,
   destroy,
-  assign,
-  validateChip,
-  validateFlowcell,
-  validateFlowcells,
-  updateFlowcell,
-  updateChip
+  assign
 }

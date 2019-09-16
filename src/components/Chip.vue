@@ -10,19 +10,22 @@
 <script>
 
 import Flowcell from '@/components/Flowcell'
-import Helper from '@/mixins/Helper'
 import { createNamespacedHelpers } from 'vuex'
 const { mapGetters, mapState, mapActions } = createNamespacedHelpers('traction/saphyr/runs')
 
 export default {
   name: 'Chip',
-  mixins: [Helper],
   methods: {
     async updateBarcode(barcode) {
+      if (barcode.length < 16) {
+        this.alert('Chip barcode is not valid', 'danger')
+        return
+      }
+
       let response = await this.updateChipBarcode(barcode)
 
       if (response.successful) {
-        this.alert('Chip updated', 'success')
+        this.alert('Chip barcode updated', 'success')
       } else {
         this.alert('There was an error: ' + response.errors.message, 'danger')
       }

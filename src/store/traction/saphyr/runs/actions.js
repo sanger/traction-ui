@@ -74,38 +74,83 @@ const updateChipBarcode = async ({ commit, getters }, barcode) => {
 
     if (isExistingRecord(run)) {
         let chip = run.chip
-        let isValid = validateChip(chip)
-        
-        let response
-        if (isValid) {
-            let request = getters.chipRequest
+        let request = getters.chipRequest
 
-            let payload = {
-                data: {
-                    id: chip.id,
-                    type: 'chips',
-                    attributes: {
-                        barcode: chip.barcode
-                    }
+        let payload = {
+            data: {
+                id: chip.id,
+                type: 'chips',
+                attributes: {
+                    barcode: chip.barcode
                 }
             }
-
-            let promise = request.update(payload)
-            response = await handlePromise(promise[0])
-        } else {
-            let mockResponse = { data: { errors: { chip: ['is not in a valid format'] } }, status: 422 }
-            response = new Response(mockResponse)
         }
-        return response
+
+        let promise = request.update(payload)
+        return await handlePromise(promise[0])
     }
 }
 
-const validateChip = (chip) => {
-    return chip.barcode && chip.barcode.length >= 16
+const updateLibraryBarcode = async ({ commit, getters, dispatch }, payload) => {   
+    let barcode = payload.barcode
+    let index = payload.flowcellIndex
+
+    // Get the new material for the given barcode
+    let libraryTube = await dispatch('getTubeForBarcode', barcode)
+
+    // Check the material is a library
+    let isValid = validateLibraryTube(libraryTube)
+
+    if (isValid) {
+        let library = libraryTube.material
+        let updatedPayload = { flowcellIndex: index, library: library}
+
+        // Update the library state of the current run
+        commit('updateLibrary', updatedPayload)
+    } else {
+        let failedResponse = { data: { errors: { library: ['is not valid'] } }, status: 422 }
+        return new Response(failedResponse)
+    }
+
+    let run = getters.currentRun
+    if (isExistingRecord(run)) {
+        // Request to update flowcell with new library
+        let flowcell = run.chip.flowcells[index]
+        let library = flowcell.library
+
+        let request = getters.flowcellRequest
+
+        let requestData = {
+            data: {
+                id: flowcell.id,
+                type: 'flowcells',
+                attributes: {
+                    saphyr_library_id: library.id
+                }
+            }
+        }
+
+        let promise = request.update(requestData)
+        return await handlePromise(promise[0])
+    }
 }
 
-const updateLibraryBarcode = async ({ commit }, payload) => {
-    commit('updateLibraryBarcode', payload)
+// Reuse action from tubes module?
+const getTubeForBarcode = async ({ rootGetters }, barcode) => {
+    let request = rootGetters["traction/saphyr/tubes/tubeRequest"]
+    let promise = request.get({ filter: { barcode: barcode } })
+    let response = await handlePromise(promise)
+
+    if (response.successful && !response.empty) {
+        return response.deserialize.tubes[0]
+    }
+}
+
+const validateLibraryTube = (tube) => {
+    if (!tube) { return false }
+    if (!tube.material) { return false }
+    if (tube.material.type != 'libraries') { return false }
+    return true
 }
 
 const isExistingRecord = (run) => {
@@ -121,8 +166,8 @@ const actions = {
     editRun,
     updateRunName,
     updateChipBarcode,
-    validateChip,
-    updateLibraryBarcode
+    updateLibraryBarcode,
+    getTubeForBarcode
 }
 
 export {
@@ -135,8 +180,8 @@ export {
     editRun,
     updateRunName,
     updateChipBarcode,
-    validateChip,
-    updateLibraryBarcode
+    updateLibraryBarcode,
+    getTubeForBarcode
 }
 
 export default actions

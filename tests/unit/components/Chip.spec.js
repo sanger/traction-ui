@@ -5,7 +5,7 @@ import Response from '@/api/Response'
 
 describe('Chip', () => {
 
-  let wrapper, chip, props, input, run, actions
+  let wrapper, chip, run, actions
 
   beforeEach(() => {
     run = Run.build()
@@ -61,16 +61,6 @@ describe('Chip', () => {
     expect(wrapper.findAll('.flowcell').length).toEqual(2)
   })
 
-  describe.skip('#updateBarcode', () => {
-    it('allows the user to scan in a barcode', () => {
-      chip.updateBarcode = jest.fn()
-      input = wrapper.find('#barcode')
-      input.setValue('CHIP-2345')
-      input.trigger('change')
-      expect(chip.updateBarcode).toBeCalled()
-    })
-  })
-
   describe('updateBarcode', () => {
     let newBarcode
 
@@ -79,42 +69,23 @@ describe('Chip', () => {
       chip.alert = jest.fn()
     })
 
-    it('successful', () => {
+    it('successful', async () => {
       let successfulResponse = { 'data': {}, 'status': 200, 'statusText': 'Success' }
-      actions.updateChipBarcode.mockReturnValue(new Response(successfulResponse))
+      let expectedResponse = new Response(successfulResponse)
+      actions.updateChipBarcode.mockReturnValue(expectedResponse)
 
-      chip.updateBarcode(newBarcode)
-      expect(chip.alert).toBeCalled()
+      await chip.updateBarcode(newBarcode)
+      expect(chip.alert).toBeCalledWith('Chip barcode updated', 'success')
     })
 
-    describe.skip('existing record', () => {
-      beforeEach(() => {
-        chip.chipRequest.update = jest.fn()
-        chip.alert = jest.fn()
-      })
 
-      it('successfully', async () => {
-        let successfulResponse = [{ 'data': {}, 'status': 200, 'statusText': 'Success'}]
-        chip.chipRequest.update.mockReturnValue(successfulResponse)
-        await chip.updateChip()
-        expect(chip.chipRequest.update).toBeCalledWith(chip.payload)
-        expect(chip.alert).toBeCalledWith('Chip updated')
-      })
+    it('unsuccessful', async () => {
+      let failedResponse = { 'data': { errors: { barcode: ['error message'] } }, 'status': 500, 'statusText': 'Internal Server Error' }
+      let expectedResponse = new Response(failedResponse)
+      actions.updateChipBarcode.mockReturnValue(expectedResponse)
 
-      it('unsuccessfully', async () => {
-        let failedResponse = { 'data': { errors: { barcode: ['error message'] }}, 'status': 500, 'statusText': 'Internal Server Error' }
-        chip.chipRequest.update.mockReturnValue([failedResponse])
-        await chip.updateChip()
-        expect(chip.alert).toBeCalledWith('There was an error: barcode error message')
-      })
-
-      it('will be updated when the button is clicked', () => {
-        chip.updateChip = jest.fn()
-        input = wrapper.find('#barcode')
-        input.setValue('CHIP-2345')
-        input.trigger('change')
-        expect(chip.updateChip).toBeCalled()
-      })
+      await chip.updateBarcode(newBarcode)
+      expect(chip.alert).toBeCalledWith('There was an error: barcode error message', 'danger')
     })
   })
 
