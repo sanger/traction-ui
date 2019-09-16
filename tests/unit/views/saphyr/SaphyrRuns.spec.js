@@ -1,8 +1,7 @@
-import Runs from '@/views/Runs'
-import Run from '@/views/Run'
-import { mount, localVue, store } from '../testHelper'
+import Runs from '@/views/saphyr/SaphyrRuns'
+import Run from '@/views/saphyr/SaphyrRun'
+import { mount, localVue, store, Data } from '../../testHelper'
 import VueRouter from 'vue-router'
-import RunsJson from '../../data/runs'
 import Response from '@/api/Response'
 import Alert from '@/components/Alert'
 import flushPromises from 'flush-promises'
@@ -14,14 +13,14 @@ describe('Runs.vue', () => {
   beforeEach(() => {
     router = new VueRouter({ routes:
       [
-        { path: '/runs', name: 'Runs', component: Runs },
-        { path: '/run', name: 'Run', component: Run, props: {id: true} },
-        { path: '/run/:id', component: Run, props: true } ]
+        { path: '/saphyr/runs', name: 'SaphyrRuns', component: Runs },
+        { path: '/saphyr/run', name: 'SaphyrRun', component: Run, props: {id: true} },
+        { path: '/saphyr/run/:id', component: Run, props: true } ]
     })
 
     wrapper = mount(Runs, { localVue, router, store, methods: { provider () { return } } } )
 
-    let mockRuns = new Response(RunsJson).deserialize.runs
+    let mockRuns = new Response(Data.Runs).deserialize.runs
     wrapper.setData({items: mockRuns})
 
     runs = wrapper.vm
@@ -39,14 +38,14 @@ describe('Runs.vue', () => {
 
   describe('sorting', () => {
     it('will sort the runs by created at', () => {
-      wrapper.setData({items: new Response(RunsJson).deserialize.runs})
+      wrapper.setData({items: new Response(Data.Runs).deserialize.runs})
       expect(wrapper.find('tbody').findAll('tr').at(0).text()).toMatch(/TRAC-456/)
     })
   })
 
   describe('#provider sets the data', () => {
     it('when runs exists', async () => {
-      let mockResponse = new Response(RunsJson).deserialize.runs
+      let mockResponse = new Response(Data.Runs).deserialize.runs
       wrapper = mount(Runs, { localVue, router, store, methods: { getRuns() { return mockResponse } } } )
       runs = wrapper.vm
 
@@ -67,7 +66,7 @@ describe('Runs.vue', () => {
     let mockRuns
 
     beforeEach(() => {
-      mockRuns = new Response(RunsJson).deserialize.runs
+      mockRuns = new Response(Data.Runs).deserialize.runs
 
       wrapper = mount(Runs, { localVue,
         methods: {
@@ -212,12 +211,8 @@ describe('Runs.vue', () => {
   })
 
   describe('#showAlert', () => {
-    beforeEach(() => {
-      runs.message = 'show this message'
-    })
-
     it('emits an event with the message', () => {
-      runs.showAlert()
+      runs.showAlert(/show this message/)
       expect(wrapper.find(Alert).text()).toMatch(/show this message/)
     })
   })
@@ -226,7 +221,7 @@ describe('Runs.vue', () => {
     let mockRuns
 
     beforeEach(() => {
-      mockRuns = new Response(RunsJson).deserialize.runs
+      mockRuns = new Response(Data.Runs).deserialize.runs
 
       wrapper = mount(Runs, { localVue,
         methods: {

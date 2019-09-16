@@ -1,10 +1,8 @@
 import RunMixin from '@/mixins/RunMixin'
-import { mount, localVue, store } from '../testHelper'
-import RunsJson from '../../data/runs'
-import RunJson from '../../data/runWithLibrary'
+import { mount, localVue, store, Data } from '../testHelper'
 import Response from '@/api/Response'
 import VueRouter from 'vue-router'
-import Run from '@/views/Run'
+import Run from '@/views/saphyr/SaphyrRun'
 
 const Cmp = {
   template: '<div class="testRunMixin"></div>',
@@ -35,7 +33,7 @@ describe('RunMixin', () => {
     wrapper = mount(Cmp, { store, router, localVue })
     cmp = wrapper.vm
     attributes = {foo: 'bar'}
-    runs = new Response(RunsJson).deserialize.runs
+    runs = new Response(Data.Runs).deserialize.runs
     runId = runs[0].id
   })
 
@@ -60,9 +58,9 @@ describe('RunMixin', () => {
     })
 
     it('successfully', async () => {
-      cmp.tractionSaphyrRunsRequest.get.mockResolvedValue(RunsJson)
+      cmp.tractionSaphyrRunsRequest.get.mockResolvedValue(Data.Runs)
       let foundRuns = await cmp.getRuns()
-      let expectedRuns = new Response(RunsJson).deserialize.runs
+      let expectedRuns = new Response(Data.Runs).deserialize.runs
       expect(cmp.tractionSaphyrRunsRequest.get).toBeCalled()
       expect(foundRuns).toEqual(expectedRuns)
       expect(Object.keys(store.getters.runs).length).toEqual(expectedRuns.length)
@@ -116,11 +114,11 @@ describe('RunMixin', () => {
 
     it('successfully', async () => {
       let promise = new Promise((resolve) => {
-        resolve(RunJson)
+        resolve(Data.RunWithLibrary)
       })
       cmp.tractionSaphyrRunsRequest.update.mockReturnValue([promise])
 
-      let run = new Response(RunJson).deserialize.runs[0]
+      let run = new Response(Data.RunWithLibrary).deserialize.runs[0]
 
       await cmp.updateRun(runId, attributes)
 
@@ -192,15 +190,15 @@ describe('RunMixin', () => {
 
     it('with no id will build a run and add it to the store', () => {
 
-      cmp.showRun()
+      cmp.showRun('saphyr')
 
       expect(store.getters.run('new')).toBeDefined()
-      expect(wrapper.vm.$route.path).toBe(`/run/new`)
+      expect(wrapper.vm.$route.path).toBe(`/saphyr/run/new`)
     })
 
     it('with an id will redirect to the run', async () => {
-      await cmp.showRun(1)
-      expect(wrapper.vm.$route.path).toBe('/run/1')
+      await cmp.showRun('saphyr', 1)
+      expect(wrapper.vm.$route.path).toBe('/saphyr/run/1')
     })
 
   })

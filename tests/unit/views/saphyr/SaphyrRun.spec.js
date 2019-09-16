@@ -1,13 +1,6 @@
-import Run from '@/views/Run'
-import Runs from '@/views/Runs'
-import { mount, localVue, store } from '../testHelper'
-import RunWithLibraryJson from '../../data/runWithLibrary'
-import tubeWithLibraryJson from '../../data/tubeWithLibrary'
-import successfulDestroyJson from '../../data/successfulDestroy'
-import createRunJson from '../../data/createRun'
-import createChipJson from '../../data/createChip'
-import createFlowcellJson from '../../data/createFlowcell'
-import RunsJson from '../../data/runs'
+import Run from '@/views/saphyr/SaphyrRun'
+import Runs from '@/views/saphyr/SaphyrRuns'
+import { mount, localVue, store, Data } from '../../testHelper'
 import Response from '@/api/Response'
 import flushPromises from 'flush-promises'
 import VueRouter from 'vue-router'
@@ -19,7 +12,7 @@ describe('Run.vue', () => {
   let wrapper, run, props, input, router, runs, foundRun, runId
 
   beforeAll(() => {
-    runs = new Response(RunsJson).deserialize.runs
+    runs = new Response(Data.Runs).deserialize.runs
     store.commit('addRuns', runs)
   })
 
@@ -112,6 +105,8 @@ describe('Run.vue', () => {
 
     it('updates the name v-model', () => {
 
+      run.updateName = jest.fn()
+
       let name = 'runaway'
       input = wrapper.find('#name')
       input.setValue(name)
@@ -119,6 +114,7 @@ describe('Run.vue', () => {
 
       input.trigger('change')
       expect(store.getters.run(runId).name).toEqual(name)
+      expect(run.updateName).toBeCalled()
     })
   })
 
@@ -198,14 +194,14 @@ describe('Run.vue', () => {
       run.api.traction.saphyr.tubes.get = jest.fn()
       run.api.traction.saphyr.runs.create = jest.fn()
       run.api.traction.saphyr.runs.destroy = jest.fn()
-      run.api.traction.saphyr.runs.destroy.mockResolvedValue(successfulDestroyJson)
+      run.api.traction.saphyr.runs.destroy.mockResolvedValue(Data.SuccessfulDestroy)
       run.api.traction.saphyr.chips.create = jest.fn()
       run.api.traction.saphyr.chips.destroy = jest.fn()
-      run.api.traction.saphyr.chips.destroy.mockResolvedValue(successfulDestroyJson)
+      run.api.traction.saphyr.chips.destroy.mockResolvedValue(Data.SuccessfulDestroy)
       run.api.traction.saphyr.flowcells.create = jest.fn()
       failedResponse = { status: 404, statusText: 'Record not found', data: { errors: { title: ['The record identified by 100 could not be found.'] }} }
 
-      foundRun = new Response(RunWithLibraryJson).deserialize.runs[0]
+      foundRun = new Response(Data.RunWithLibrary).deserialize.runs[0]
       foundRun.id = 'new'
       store.commit('addRun', foundRun)
       wrapper = mount(Run, { localVue, router, store, propsData: { id: 'new' } })
@@ -215,14 +211,14 @@ describe('Run.vue', () => {
     describe('when the run is valid', () => {
 
       beforeEach(() => {
-        run.api.traction.saphyr.runs.create.mockResolvedValue(createRunJson)
-        run.api.traction.saphyr.chips.create.mockResolvedValue(createChipJson)
-        run.api.traction.saphyr.tubes.get.mockResolvedValue(tubeWithLibraryJson)
+        run.api.traction.saphyr.runs.create.mockResolvedValue(Data.CreateRun)
+        run.api.traction.saphyr.chips.create.mockResolvedValue(Data.CreateChip)
+        run.api.traction.saphyr.tubes.get.mockResolvedValue(Data.TubeWithLibrary)
       })
 
       it('success', async () => {
 
-        run.api.traction.saphyr.flowcells.create.mockResolvedValue(createFlowcellJson)
+        run.api.traction.saphyr.flowcells.create.mockResolvedValue(Data.CreateFlowcell)
 
         await run.create()
         expect(run.message).toEqual('run was successfully created')
@@ -241,7 +237,7 @@ describe('Run.vue', () => {
 
         run.showAlert = jest.fn()
 
-        run.api.traction.saphyr.flowcells.create.mockResolvedValue(createFlowcellJson)
+        run.api.traction.saphyr.flowcells.create.mockResolvedValue(Data.CreateFlowcell)
 
         let button = wrapper.find('#create')
         button.trigger('click')

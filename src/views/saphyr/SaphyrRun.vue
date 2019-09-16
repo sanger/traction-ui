@@ -73,7 +73,7 @@ export default {
         result = await RunApi.create(run, this.saphyrRequest)
         if (result) {
           this.alert('run was successfully created')
-          this.$router.push({name: 'Runs'}).catch(() => {})
+          this.$router.push({path: '/saphyr/runs'}).catch(() => {})
         } else {
           this.alert('run could not be created')
         }
@@ -99,7 +99,7 @@ export default {
 
 <style>
 
-.container {
+/* .container {
   border: 1px solid black;
   max-width: 50%;
   padding: 10px;
@@ -114,7 +114,7 @@ export default {
   margin-bottom: 5px;
   margin-right: 0px;
   margin-left: 0px;
-}
+} */
 
 .runInfo {
   text-align: left;

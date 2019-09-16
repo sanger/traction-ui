@@ -60,7 +60,7 @@ export default {
     cancelRun (id) {
       this.handleUpdate(id, {state: 'cancelled'})
     },
-    async showRun(id) {
+    async showRun(pipeline, id) {
       let runId, run
       if (id === undefined) {
         run = Run.build()
@@ -69,7 +69,7 @@ export default {
       } else {
         runId = id
       }
-      this.$router.push({ path: `/run/${runId}` })
+      this.$router.push({ path: `/${pipeline}/run/${runId}` })
     },
     payload (id, attributes) {
       return {

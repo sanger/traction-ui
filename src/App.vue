@@ -1,10 +1,6 @@
 <template>
   <div id="app">
     <h1 id="traction-header">Traction</h1>
-    <div id="nav">
-      <router-link to="/reception">Reception</router-link> |
-      <router-link to="/runs">Runs</router-link>
-    </div>
     <router-view/>
   </div>
 </template>
@@ -19,16 +15,16 @@
   margin: 20px;
 }
 #nav {
-  padding: 30px;
+  padding-bottom: 20px;
   a {
     font-weight: bold;
     color: #2c3e50;
     &.router-link-exact-active {
       color: #42b983;
     }
+    &.router-link-active {
+      color: #42b983;
+    }
   }
-}
-#traction-header {
-  float: left;
 }
 </style>
