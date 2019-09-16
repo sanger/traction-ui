@@ -39,11 +39,14 @@ const sampleTubeJson = (tubes) => {
 }
 
 const createLibrariesInTraction = async ({ getters }, payload) => {
-  let libraries = payload.samples.map(item => {
+  let libraries = payload.map(item => {
     return {
       state: 'pending',
-      saphyr_request_id: item.id,
-      saphyr_enzyme_id: payload.enzymeID
+      pacbio_request_id: item.id,
+      volume: item.volume,
+      concentration: item.concentration,
+      library_kit_barcode: item.libraryKitBarcode,
+      fragment_size: item.fragmentSize
     }
   })
 

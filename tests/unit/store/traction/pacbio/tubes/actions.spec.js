@@ -106,24 +106,28 @@ describe('#sampleTubesJson', () => {
 })
 
 describe('#createLibrariesInTraction', () => {
-  let create, getters, payload
+  let create, getters, libraries, payload
 
   beforeEach(() => {
     create = jest.fn()
     getters = { 'libraryRequest': { 'create': create } }
-    let samples = [
-      { barcode: 'TRAC-1', material: {id: 1, type: 'samples', name: 'sample_d', external_id: 4, species: 'human', created_at: '02/27/2019 04:05' }},
-      { barcode: 'TRAC-1', material: {id: 1, type: 'samples', name: 'sample_d', external_id: 4, species: 'human', created_at: '02/27/2019 04:05' }},
+    libraries = [
+      { id: 1, volume: 1.0, concentration: 1.0, libraryKitBarcode: "LK12345", fragmentSize: 100 },
+      { id: 2, volume: 1.0, concentration: 1.0, libraryKitBarcode: "LK12345", fragmentSize: 100 },
     ]
-    payload = {'samples': samples, volume:1.0, concentration: 1.0, library_kit_barcode: "LK12345", fragment_size:100}
+    payload = [
+      { pacbio_request_id: 1, state: 'pending', volume: 1.0, concentration: 1.0, library_kit_barcode: "LK12345", fragment_size: 100 },
+      { pacbio_request_id: 2, state: 'pending', volume: 1.0, concentration: 1.0, library_kit_barcode: "LK12345", fragment_size: 100 },
+    ]
   })
 
   it('successfully', async () => {
     let expectedResponse = new Response(Data.PacbioTubeWithLibrary)
     create.mockReturnValue(Data.PacbioTubeWithLibrary)
 
-    let response = await Actions.createLibrariesInTraction({ getters }, payload)
+    let response = await Actions.createLibrariesInTraction({ getters }, libraries)
     expect(response).toEqual(expectedResponse)
+    expect(create).toBeCalledWith({data: { type: 'libraries', attributes: { libraries: payload}}})
   })
 
   it('unsuccessfully', async () => {

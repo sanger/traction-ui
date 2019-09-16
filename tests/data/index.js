@@ -19,6 +19,7 @@ import TractionTubesWithSample from './tractionTubesWithSample'
 import TubeWithLibrary from './tubeWithLibrary'
 import TractionPacbioTubesWithRequest from './tractionPacbioTubesWithRequest'
 import PacbioTubeWithLibrary from './pacbioTubeWithLibrary'
+import TractionPacbioLibraries from './tractionPacbioLibraries'
 
 export default {
   CreateChip,
@@ -41,5 +42,6 @@ export default {
   TractionTubesWithSample,
   TubeWithLibrary,
   TractionPacbioTubesWithRequest,
-  PacbioTubeWithLibrary
+  PacbioTubeWithLibrary,
+  TractionPacbioLibraries
 }
