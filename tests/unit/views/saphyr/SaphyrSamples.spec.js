@@ -3,12 +3,9 @@ import EnzymeModal from '@/components/EnzymeModal'
 import PrinterModal from '@/components/PrinterModal'
 import { mount, localVue, Vuex, Data } from '../../testHelper'
 import Libraries from '@/views/saphyr/SaphyrLibraries'
-// import TractionTubesWithLibrariesJson from '../../../data/tubeWithLibrary'
-// import TractionSaphyrRequests from '../../../data/tractionSaphyrRequests'
 import VueRouter from 'vue-router'
 import Alert from '@/components/Alert'
 import * as consts from '@/consts/consts'
-// import LibrariesJson from '../../../data/libraries'
 import Response from '@/api/Response'
 
 describe('Samples.vue', () => {

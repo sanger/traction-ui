@@ -3,7 +3,6 @@ import { mount, localVue, Vuex, Data } from '../../testHelper'
 import Alert from '@/components/Alert'
 import PrinterModal from '@/components/PrinterModal'
 import * as consts from '@/consts/consts'
-// import TractionSaphyrLibraries from '../../../data/tractionSaphyrLibraries'
 import VueRouter from 'vue-router'
 import Response from '@/api/Response'
 
