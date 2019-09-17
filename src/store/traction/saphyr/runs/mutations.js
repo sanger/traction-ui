@@ -5,13 +5,13 @@ const mutations = {
     setCurrentRun(state, run) {
         state.currentRun = run
     },
-    updateRunName(state, name) {
+    setRunName(state, name) {
         state.currentRun.name = name
     },
-    updateChipBarcode(state, barcode) {
+    setChipBarcode(state, barcode) {
         state.currentRun.chip.barcode = barcode
     },
-    updateLibrary(state, payload) {
+    setLibraryBarcode(state, payload) {
         let library = payload.library
         let flowcellIndex = payload.flowcellIndex
         state.currentRun.chip.flowcells[flowcellIndex].library = library

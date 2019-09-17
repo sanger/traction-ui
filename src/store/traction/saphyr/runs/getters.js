@@ -6,7 +6,8 @@ const getters = {
     },
     currentRun: state => state.currentRun,
     chipRequest: (state, getters, rootState) => rootState.api.traction.saphyr.chips,
-    flowcellRequest: (state, getters, rootState) => rootState.api.traction.saphyr.flowcells
+    flowcellRequest: (state, getters, rootState) => rootState.api.traction.saphyr.flowcells,
+    saphyrRequests: (state, getters, rootState) => rootState.api.traction.saphyr,
 }
 
 export default getters

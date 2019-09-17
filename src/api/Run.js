@@ -39,18 +39,7 @@ const build = (object) => {
   return run
 }
 
-const createResource = async (payload, request) => {
-  let response = await handlePromise(request.create(payload))
-
-  if (response.successful) {
-    return response
-  } else {
-    throw response.errors
-  }
-}
-
 const create = async (run, request) => {
-
   let id
   let responses = []
 
@@ -75,6 +64,51 @@ const create = async (run, request) => {
   return true
 }
 
+const createResource = async (payload, request) => {
+  let response = await handlePromise(request.create(payload))
+
+  if (response.successful) {
+    return response
+  } else {
+    throw response.errors
+  }
+}
+
+const update = async (run, request) => {
+  let responses = []
+
+  try {
+    let runPayload = { data: { id: run.id, type: "runs", attributes: { name: run.name } } }
+    let runResponse = await updateResource(runPayload, request.runs)
+    responses.push(runResponse)
+
+    let chipPayload = { data: { id: run.chip.id, type: "chips", attributes: { barcode: run.chip.barcode } } }
+    let chipResponse = await updateResource(chipPayload, request.chips)
+    responses.push(chipResponse)
+
+    for (const flowcell of run.chip.flowcells) {
+      let flowcellPayload = { data: { id: flowcell.id, type: "flowcells", attributes: { saphyr_library_id: flowcell.library.id } } }
+      let flowcellResponse = await updateResource(flowcellPayload, request.flowcells)
+      responses.push(flowcellResponse)
+    }
+  } catch (err) {
+    rollback(responses, request)
+    return false
+  }
+  return true
+}
+
+const updateResource = async (payload, request) => {
+  let promises = await request.update(payload)
+  let response = await handlePromise(promises[0])
+
+  if (response.successful) {
+    return response
+  } else {
+    throw response.errors
+  }
+}
+
 const rollback = (responses, request) => {
   for (const response of responses) {
     let deserializedResponse = response.deserialize
@@ -96,7 +130,9 @@ export {
   build,
   createResource,
   create,
+  update,
   rollback,
   destroy,
-  assign
+  assign,
+  updateResource
 }

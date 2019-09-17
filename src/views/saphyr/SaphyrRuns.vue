@@ -55,7 +55,7 @@
       <div class="clearfix">
         <b-button id="newRun"
                   class="float-left"
-                  @click="showRun()"
+                  @click="newRun()"
                   variant="success">
           New Run
         </b-button>
@@ -123,7 +123,8 @@ export default {
       'startRun',
       'completeRun',
       'cancelRun',
-      'editRun'
+      'editRun',
+      'newRun'
     ])
   },
   created() {

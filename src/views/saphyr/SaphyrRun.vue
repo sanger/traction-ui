@@ -9,11 +9,12 @@
     </router-link>
 
     <b-button v-if="newRecord" class="float-right" id="create" variant="success" @click="create">Create</b-button>
+    <b-button v-if="!newRecord" class="float-right" id="update" variant="primary" @click="update">Update</b-button>
 
     <h1 class="runInfo" id="id">Run ID: {{ this.currentRun.id }}</h1>
     <h2 class="runInfo" id="state">State: {{ this.currentRun.state }}</h2>
 
-    <b-form-input :value="runName" @change="updateName" class="runInfo" id="name" placeholder="name" type="text"/>
+    <b-form-input :value="runName" @change="setRunName" class="runInfo" id="name" placeholder="name" type="text"/>
 
     <chip @alert="showAlert"></chip> 
 
@@ -25,23 +26,36 @@ import Chip from '@/components/Chip'
 import Alert from '@/components/Alert'
 import Helper from '@/mixins/Helper'
 import { createNamespacedHelpers } from 'vuex'
-const { mapGetters, mapActions, mapState } = createNamespacedHelpers('traction/saphyr/runs')
+const { mapGetters, mapActions, mapState, mapMutations } = createNamespacedHelpers('traction/saphyr/runs')
 
 export default {
   name: 'Run',
   mixins: [Helper],
   methods: {
-    async updateName(name) {
-      let response = await this.updateRunName(name)
+    async create() {
+      let success = await this.createRun()
 
-      if (response.successful) {
-        this.showAlert('Run name updated', 'success')
+      if (success) {
+        this.$router.push({ name: 'SaphyrRuns' })
       } else {
-        this.showAlert('There was an error: ' + response.errors.message, 'danger')
+        this.showAlert('Failed to create run', 'danger')
+      }
+    },
+    async update() {
+      let success = await this.updateRun()
+
+      if (success) {
+        this.$router.push({ name: 'SaphyrRuns' })
+      } else {
+        this.showAlert('Failed to update run', 'danger')
       }
     },
     ...mapActions([
-      'updateRunName',
+      'createRun',
+      'updateRun'
+    ]),
+    ...mapMutations([
+      'setRunName',
     ]),
   },
   components: {
@@ -49,7 +63,7 @@ export default {
     Alert
   },
   computed: {
-     newRecord () {
+    newRecord () {
       return isNaN(this.currentRun.id)
     },
     ...mapGetters([

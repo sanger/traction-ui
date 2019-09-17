@@ -3,7 +3,7 @@
     <b-col>
       <div class="position">{{ position }}</div>
 
-      <b-form-input :value="libraryBarcode" @change="updateBarcode" id="libraryBarcode" placeholder="Library barcode" type="text" />
+      <b-form-input :value="libraryBarcode" @change="setBarcode" id="libraryBarcode" placeholder="Library barcode" type="text" />
     </b-col>
   </b-row>
 </template>
@@ -11,7 +11,7 @@
 <script>
 
 import { createNamespacedHelpers } from 'vuex'
-const { mapGetters, mapState, mapActions } = createNamespacedHelpers('traction/saphyr/runs')
+const { mapGetters, mapState, mapActions , mapMutations} = createNamespacedHelpers('traction/saphyr/runs')
 
 export default {
   name: 'Flowcell',
@@ -24,23 +24,25 @@ export default {
     }
   },
   methods: {
-    async updateBarcode(barcode) {
-      if (!barcode) {
-        this.alert('Please enter a barcode', 'danger')
-        return
-      }
+    async setBarcode(barcode) {
+      let isValid = await this.isLibraryBarcodeValid(barcode)
 
-      let payload = { barcode: barcode, flowcellIndex: this.index}
-      let response = await this.updateLibraryBarcode(payload)
+      if (isValid) {
+        let libraryTube = await this.getTubeForBarcode(barcode)
+        let library = libraryTube.material
+        let payload = { library: library, flowcellIndex: this.index}
 
-      if (response.successful) {
-        this.alert('Library updated', 'success')
+        this.setLibraryBarcode(payload)
       } else {
-        this.alert('There was an error: ' + response.errors.message, 'danger')
+        this.alert('Library is not valid', 'danger')
       }
     },
     ...mapActions([
-      'updateLibraryBarcode',
+      'isLibraryBarcodeValid',
+      'getTubeForBarcode',
+    ]),
+    ...mapMutations([
+      'setLibraryBarcode',
     ]),
     alert (message, type) {
       this.$emit('alert', message, type)

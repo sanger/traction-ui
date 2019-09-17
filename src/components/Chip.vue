@@ -1,7 +1,7 @@
 <template>
   <b-container class="chip">
 
-    <b-form-input :value="chipBarcode" @change="updateBarcode" id="barcode" placeholder="Chip barcode" type="text"/>
+    <b-form-input :value="chipBarcode" @change="setBarcode" id="barcode" placeholder="Chip barcode" type="text"/>
     <flowcell v-for="(flowcell, index) in flowcells" v-bind="flowcell" v-bind:key="index" v-bind:index="index" @alert="alert"></flowcell>
 
   </b-container>
@@ -11,27 +11,26 @@
 
 import Flowcell from '@/components/Flowcell'
 import { createNamespacedHelpers } from 'vuex'
-const { mapGetters, mapState, mapActions } = createNamespacedHelpers('traction/saphyr/runs')
+const { mapGetters, mapState, mapActions, mapMutations } = createNamespacedHelpers('traction/saphyr/runs')
 
 export default {
   name: 'Chip',
   methods: {
-    async updateBarcode(barcode) {
-      if (barcode.length < 16) {
-        this.alert('Chip barcode is not valid', 'danger')
-        return
-      }
+    async setBarcode(barcode) {
+      let isValid = this.isChipBarcodeValid(barcode)
 
-      let response = await this.updateChipBarcode(barcode)
-
-      if (response.successful) {
-        this.alert('Chip barcode updated', 'success')
+      if (isValid) {
+        this.setChipBarcode(barcode)
       } else {
-        this.alert('There was an error: ' + response.errors.message, 'danger')
+        this.alert('Chip barcode is not valid', 'danger')
       }
     },
-    ...mapActions([
-      'updateChipBarcode',
+    isChipBarcodeValid(barcode) {
+      if (barcode.length < 16) { return false }
+      return true
+    },
+    ...mapMutations([
+      'setChipBarcode',
     ]),
     alert (message, type) {
       this.$emit('alert', message, type)

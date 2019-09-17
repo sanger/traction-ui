@@ -212,10 +212,10 @@ describe('Runs.vue', () => {
     })
 
     it('will redirect to the run when newRun is clicked', async () => {
-      runs.showRun = jest.fn()
+      runs.newRun = jest.fn()
       let button = wrapper.find('#newRun')
       button.trigger('click')
-      expect(runs.showRun).toBeCalled()
+      expect(runs.newRun).toBeCalled()
     })
   })
 

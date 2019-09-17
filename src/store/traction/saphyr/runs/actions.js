@@ -1,6 +1,6 @@
 import handlePromise from '@/api/PromiseHelper'
 import router from '@/router'
-import Response from '@/api/Response'
+import * as Run from '@/api/Run'
 
 const setRuns = async ({ commit, getters }) => {
     let request = getters.runRequest
@@ -51,88 +51,10 @@ const runPayloadJson = (payload) => {
     }
 }
 
-const editRun = ({ getters, commit }, runId) => {
-    let run = getters.run(runId)
-    commit('setCurrentRun', run)
-    router.push({ path: `/saphyr/run/${runId}` })
-}
-
-const updateRunName = async ({ getters, commit, dispatch }, name) => {
-    commit('updateRunName', name)
-    let run = getters.currentRun
-
-    if (isExistingRecord(run)) {
-        let payload = { id: run.id, attributes: { name: name } }
-        let response = await dispatch('handleUpdate', payload)
-        return response
-    }
-}
-
-const updateChipBarcode = async ({ commit, getters }, barcode) => {
-    commit('updateChipBarcode', barcode)
-    let run = getters.currentRun
-
-    if (isExistingRecord(run)) {
-        let chip = run.chip
-        let request = getters.chipRequest
-
-        let payload = {
-            data: {
-                id: chip.id,
-                type: 'chips',
-                attributes: {
-                    barcode: chip.barcode
-                }
-            }
-        }
-
-        let promise = request.update(payload)
-        return await handlePromise(promise[0])
-    }
-}
-
-const updateLibraryBarcode = async ({ commit, getters, dispatch }, payload) => {   
-    let barcode = payload.barcode
-    let index = payload.flowcellIndex
-
-    // Get the new material for the given barcode
+const isLibraryBarcodeValid = async ({ dispatch }, barcode) => {
+    if (!barcode) { return false }
     let libraryTube = await dispatch('getTubeForBarcode', barcode)
-
-    // Check the material is a library
-    let isValid = validateLibraryTube(libraryTube)
-
-    if (isValid) {
-        let library = libraryTube.material
-        let updatedPayload = { flowcellIndex: index, library: library}
-
-        // Update the library state of the current run
-        commit('updateLibrary', updatedPayload)
-    } else {
-        let failedResponse = { data: { errors: { library: ['is not valid'] } }, status: 422 }
-        return new Response(failedResponse)
-    }
-
-    let run = getters.currentRun
-    if (isExistingRecord(run)) {
-        // Request to update flowcell with new library
-        let flowcell = run.chip.flowcells[index]
-        let library = flowcell.library
-
-        let request = getters.flowcellRequest
-
-        let requestData = {
-            data: {
-                id: flowcell.id,
-                type: 'flowcells',
-                attributes: {
-                    saphyr_library_id: library.id
-                }
-            }
-        }
-
-        let promise = request.update(requestData)
-        return await handlePromise(promise[0])
-    }
+    return validateLibraryTube(libraryTube)
 }
 
 // Reuse action from tubes module?
@@ -153,8 +75,30 @@ const validateLibraryTube = (tube) => {
     return true
 }
 
-const isExistingRecord = (run) => {
-    return !isNaN(run.id)
+const editRun = ({ getters, commit }, runId) => {
+    let run = getters.run(runId)
+    commit('setCurrentRun', run)
+    router.push({ path: `/saphyr/run/${runId}` })
+}
+
+const newRun = ({ commit }) => {
+    let run = Run.build()
+    commit('setCurrentRun', run)
+    router.push({ path: `/saphyr/run/new` })
+}
+
+const createRun = async ({ getters }) => {
+    let run = getters.currentRun
+    let request = getters.saphyrRequests
+
+    return await Run.create(run, request)
+}
+
+const updateRun = async ({ getters }) => {
+    let run = getters.currentRun
+    let request = getters.saphyrRequests
+
+    return await Run.update(run, request)
 }
 
 const actions = {
@@ -163,11 +107,12 @@ const actions = {
     completeRun,
     cancelRun,
     handleUpdate,
+    isLibraryBarcodeValid,
+    getTubeForBarcode,
     editRun,
-    updateRunName,
-    updateChipBarcode,
-    updateLibraryBarcode,
-    getTubeForBarcode
+    newRun,
+    createRun,
+    updateRun
 }
 
 export {
@@ -177,11 +122,12 @@ export {
     cancelRun,
     handleUpdate,
     runPayloadJson,
+    isLibraryBarcodeValid,
+    getTubeForBarcode,
     editRun,
-    updateRunName,
-    updateChipBarcode,
-    updateLibraryBarcode,
-    getTubeForBarcode
+    newRun,
+    createRun,
+    updateRun
 }
 
 export default actions
