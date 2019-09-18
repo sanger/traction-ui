@@ -1,4 +1,4 @@
-import { mount, localVue } from '../testHelper'
+import { mount, localVue, store } from '../testHelper'
 import PipelineRouter from '@/components/PipelineRouter'
 import VueRouter from 'vue-router'
 
@@ -9,12 +9,16 @@ describe('PipelineRouter.vue', () => {
   beforeEach(() => {
     routes = ['a','b','c','d']
     const router = new VueRouter({})
-    wrapper = mount(PipelineRouter, {localVue, router, propsData: {routes: routes, pipeline: 'pipelineA'}})
+    wrapper = mount(PipelineRouter, {localVue, router, store, propsData: {routes: routes, pipeline: 'pipelineA'}})
     pipelineRouter = wrapper.vm
   })
 
   it('has the correct pipeline', () => {
     expect(pipelineRouter.pipeline).toEqual('pipelineA')
+  })
+
+  it('saves the pipeline to the store', () => {
+    expect(store.getters.pipeline).toEqual('pipelineA')
   })
 
   it('creates a nav bar', () => {
@@ -35,5 +39,4 @@ describe('PipelineRouter.vue', () => {
       }
     })
   })
-
 })

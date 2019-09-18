@@ -12,10 +12,10 @@ export default new Vuex.Store({
   state: {
     api: build(Api.Config, process.env),
     printers: PrinterList,
-    labelTemplateId: process.env.VUE_APP_LABEL_TEMPLATE_ID,
     runs: {},
     libraries: {},
-    requests: {}
+    requests: {},
+    pipeline: ''
   },
   mutations: {
     addRun (state, run) {
@@ -44,6 +44,9 @@ export default new Vuex.Store({
     },
     clearRuns (state) {
       state.runs = {}
+    },
+    setPipeline(state, pipeline) {
+      state.pipeline = pipeline
     }
   },
   actions: {
@@ -51,7 +54,6 @@ export default new Vuex.Store({
   getters: {
     api: state => state.api,
     printers: state => state.printers,
-    labelTemplateId: state => state.labelTemplateId,
     runs: state => state.runs,
     run: state => (id) => {
       return state.runs[id]
@@ -63,7 +65,8 @@ export default new Vuex.Store({
     requests: state => state.requests,
     request: state => (id) => {
       return state.requests[id]
-    }
+    },
+    pipeline: state => state.pipeline
   },
   modules: {
     traction,

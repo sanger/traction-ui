@@ -81,8 +81,8 @@ describe('Samples.vue', () => {
       let mockSamples = new Response(Data.TractionSaphyrRequests).deserialize.requests
       wrapper.setData({ items: mockSamples })
 
-      let checkboxes = wrapper.findAll(".selected")
-      checkboxes.at(0).trigger('click')
+      let firstCell = wrapper.find('[role="cell"]')
+      firstCell.trigger('click')
     })
 
     it('will create a list of selected requests', () => {
