@@ -86,7 +86,6 @@ export default {
         { key: 'sample_name', label: 'Sample Name', sortable: true },
         { key: 'enzyme_name', label: 'Enzyme Name', sortable: true },
         { key: 'created_at', label: 'Created at', sortable: true },
-        { key: 'deactivated_at', label: 'Deactivated at', sortable: true },
       ],
       items: [],
       filteredItems: [],

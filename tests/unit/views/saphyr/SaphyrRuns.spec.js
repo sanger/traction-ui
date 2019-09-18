@@ -1,10 +1,10 @@
 import Runs from '@/views/saphyr/SaphyrRuns'
-// import Run from '@/views/saphyr/SaphyrRun'
-import { mount, localVue, Vuex } from '../../testHelper'
-// import VueRouter from 'vue-router'
-import RunsJson from '../../../data/runs'
+import Run from '@/views/saphyr/SaphyrRun'
+import { mount, localVue, Vuex, Data } from '../../testHelper'
+import VueRouter from 'vue-router'
 import Response from '@/api/Response'
 import Alert from '@/components/Alert'
+import RunsJson from '../../../data/runs'
 
 describe('Runs.vue', () => {
 

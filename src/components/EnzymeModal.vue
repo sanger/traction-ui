@@ -68,7 +68,7 @@ export default {
       if (response.successful) {
         let enzymes = response.deserialize.enzymes
         let enzymeOptions = enzymes.map(
-          (enzyme, index) => Object.assign({ value: index+1, text: enzyme.name }))
+          (enzyme) => Object.assign({ value: parseInt(enzyme.id), text: enzyme.name }))
         enzymeOptions.unshift({ value: null, text: "Please select an option" })
         this.enzymeOptions = enzymeOptions
       } else {
