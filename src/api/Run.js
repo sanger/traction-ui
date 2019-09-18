@@ -44,16 +44,19 @@ const create = async (run, request) => {
   let responses = []
 
   try {
-    let runResponse = await createResource({ data: { type: "runs", attributes: { name: run.name } } }, request.runs)
+    let runPayload = { data: { type: "runs", attributes: { name: run.name } } }
+    let runResponse = await createResource(runPayload, request.runs)
     id = runResponse.deserialize.runs[0].id
     responses.push(runResponse)
 
-    let chipResponse = await createResource({ data: { type: "chips", attributes: { barcode: run.chip.barcode, saphyr_run_id: id } } }, request.chips)
+    let chipPayload = { data: { type: "chips", attributes: { barcode: run.chip.barcode, saphyr_run_id: id } } }
+    let chipResponse = await createResource(chipPayload, request.chips)
     id = chipResponse.deserialize.chips[0].id
     responses.push(chipResponse)
 
     for (const flowcell of run.chip.flowcells) {
-      let flowcellResponse = await createResource({ data: { type: "flowcells", attributes: { position: flowcell.position, saphyr_library_id: flowcell.library.id, saphyr_chip_id: id } } }, request.flowcells)
+      let flowcellPayload = { data: { type: "flowcells", attributes: { position: flowcell.position, saphyr_library_id: flowcell.library.id, saphyr_chip_id: id } } }
+      let flowcellResponse = await createResource(flowcellPayload, request.flowcells)
       responses.push(flowcellResponse)
     }
 
