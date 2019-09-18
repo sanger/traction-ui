@@ -7,11 +7,11 @@ import VueRouter from 'vue-router'
 import Alert from '@/components/Alert'
 
 // import RunWithLibraryJson from '../../../data/runWithLibrary'
-// import tubeWithLibraryJson from '../../../data/tubeWithLibrary'
-// import successfulDestroyJson from '../../../data/successfulDestroy'
-// import createRunJson from '../../../data/createRun'
-// import createChipJson from '../../../data/createChip'
-// import createFlowcellJson from '../../../data/createFlowcell'
+import tubeWithLibraryJson from '../../../data/tubeWithLibrary'
+import successfulDestroyJson from '../../../data/successfulDestroy'
+import createRunJson from '../../../data/createRun'
+import createChipJson from '../../../data/createChip'
+import createFlowcellJson from '../../../data/createFlowcell'
 
 
 describe('Run.vue', () => {
@@ -151,10 +151,10 @@ describe('Run.vue', () => {
       saphyrRun.api.traction.saphyr.flowcells.create = jest.fn()
       failedResponse = { status: 404, statusText: 'Record not found', data: { errors: { title: ['The record identified by 100 could not be found.'] }} }
 
-      foundRun = new Response(Data.RunWithLibrary).deserialize.runs[0]
+      let foundRun = new Response(Data.RunWithLibrary).deserialize.runs[0]
       foundRun.id = 'new'
       store.commit('addRun', foundRun)
-      wrapper = mount(Run, { localVue, router, store, propsData: { id: 'new' } })
+      wrapper = mount(SaphyrRun, { localVue, router, store, propsData: { id: 'new' } })
       saphyrRun = wrapper.vm
     })
 
