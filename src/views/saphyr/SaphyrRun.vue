@@ -31,20 +31,19 @@ export default {
   mixins: [Helper],
   methods: {
     async create() {
-      let success = await this.createRun()
-
-      if (success) {
-        this.$router.push({ name: 'SaphyrRuns' })
-      } else {
+      try {
+        await this.createRun()
+        this.redirectToRuns()
+      } catch (err) {
         this.showAlert('Failed to create run', 'danger')
       }
+      
     },
     async update() {
-      let success = await this.updateRun()
-
-      if (success) {
-        this.$router.push({ name: 'SaphyrRuns' })
-      } else {
+      try {
+        await this.updateRun()
+        this.redirectToRuns()
+      } catch (err) {
         this.showAlert('Failed to update run', 'danger')
       }
     },
@@ -55,6 +54,9 @@ export default {
     ...mapMutations([
       'setRunName',
     ]),
+    redirectToRuns() {
+      this.$router.push({ name: 'SaphyrRuns' })  
+    }
   },
   components: {
     Chip,

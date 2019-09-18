@@ -1,28 +1,19 @@
 import SaphyrRun from '@/views/saphyr/SaphyrRun'
-import Runs from '@/views/saphyr/SaphyrRuns'
 import { mount, localVue, store, Data, Vuex } from '../../testHelper'
-import Response from '@/api/Response'
-import flushPromises from 'flush-promises'
 import VueRouter from 'vue-router'
 import Alert from '@/components/Alert'
 
-// import RunWithLibraryJson from '../../../data/runWithLibrary'
-import tubeWithLibraryJson from '../../../data/tubeWithLibrary'
-import successfulDestroyJson from '../../../data/successfulDestroy'
-import createRunJson from '../../../data/createRun'
-import createChipJson from '../../../data/createChip'
-import createFlowcellJson from '../../../data/createFlowcell'
-
-
 describe('Run.vue', () => {
 
-  let wrapper, mockRun, actions, saphyrRun, router
-
-  router = new VueRouter({ routes:
-    [{ path: '/runs', name: 'Runs', component: Runs }]
-  })
+  let wrapper, mockRun, actions, saphyrRun, router, store
 
   beforeEach(() => {
+    router = new VueRouter({
+      routes: [
+        { path: '/runs', name: 'SaphyrRuns', component: require('@/views/saphyr/SaphyrRuns') },
+      ]
+    })
+
     mockRun =  {
       id: '1',
       name: '',
@@ -36,11 +27,7 @@ describe('Run.vue', () => {
       }
     }
 
-    actions = {
-      updateRunName: jest.fn()
-    }
-
-    let store = new Vuex.Store({
+    store = new Vuex.Store({
       modules: {
         traction: {
           namespaced: true,
@@ -57,10 +44,8 @@ describe('Run.vue', () => {
                   getters: {
                     currentRun: state => state.currentRun,
                   },
-                  actions
                 }
               }
-
             }
           }
         }
@@ -97,33 +82,89 @@ describe('Run.vue', () => {
     it('will only show if the record is new', () => {
       expect(wrapper.find('#create').exists()).toBeFalsy()
     })
+
+    // it('calls the right function', async () => {
+    //   saphyrRun.create = jest.fn()
+    //   let button = wrapper.find('#create')
+    //   await button.trigger('click')
+    //   expect(saphyrRun.create).toBeCalled()
+    // })
   })
 
+  describe('update button', () => {
+    beforeEach(() => {
+      saphyrRun.updateRun = jest.fn()
+    })
 
-  describe('updateName', () => {
-    let name
+    it('will only show if the record is new', () => {
+      expect(wrapper.find('#update').exists()).toBeTruthy()
+    })
+
+    it('calls the right function', async () => {
+      let button = wrapper.find('#update')
+      await button.trigger('click')
+      expect(saphyrRun.updateRun).toBeCalled()
+    })
+  })
+
+  describe('#create', () => {
 
     beforeEach(() => {
-      name = 'a new name'
       saphyrRun.showAlert = jest.fn()
+      saphyrRun.createRun = jest.fn()
+      saphyrRun.redirectToRuns = jest.fn()
+    })
+
+    it('calls createRun', async () => { 
+      await saphyrRun.create()
+      expect(saphyrRun.createRun).toBeCalled()
     })
 
     it('successful', async () => {
-      let successfulResponse = { 'data': {}, 'status': 200, 'statusText': 'Success' }
-      let expectedResponse = new Response(successfulResponse)
-      actions.updateRunName.mockReturnValue(expectedResponse)
-
-      await saphyrRun.updateName(name)
-      expect(saphyrRun.showAlert).toBeCalledWith('Run name updated', 'success')
+      await saphyrRun.create()
+      expect(saphyrRun.createRun).toBeCalled()
+      expect(saphyrRun.redirectToRuns).toBeCalled()
     })
 
     it('unsuccessful', async () => {
-      let failedResponse = { 'data': { errors: { run: ['error message'] } }, 'status': 500, 'statusText': 'Internal Server Error' }
-      let expectedResponse = new Response(failedResponse)
-      actions.updateRunName.mockReturnValue(expectedResponse)
+      saphyrRun.createRun.mockImplementation(() => {
+        throw Error('Raise this error')
+      })
+      await saphyrRun.create()
+      expect(saphyrRun.createRun).toBeCalled()
+      expect(saphyrRun.showAlert).toBeCalled()
+      expect(saphyrRun.redirectToRuns).not.toBeCalled()
+    })
+  })
 
-      await saphyrRun.updateName(name)
-      expect(saphyrRun.showAlert).toBeCalledWith('There was an error: run error message', 'danger')
+  describe('#update', () => {
+
+    beforeEach(() => {
+      saphyrRun.showAlert = jest.fn()
+      saphyrRun.updateRun = jest.fn()
+      saphyrRun.redirectToRuns = jest.fn()
+    })
+
+    it('calls updateRun', async () => {
+      await saphyrRun.update()
+      expect(saphyrRun.updateRun).toBeCalled()
+      expect(saphyrRun.redirectToRuns).toBeCalled()
+    })
+
+    it('successful', async () => {
+      await saphyrRun.update()
+      expect(saphyrRun.updateRun).toBeCalled()
+      expect(saphyrRun.redirectToRuns).toBeCalled()
+    })
+
+    it('unsuccessful', async () => {
+      saphyrRun.updateRun.mockImplementation(() => {
+        throw Error('Raise this error')
+      })
+      await saphyrRun.update()
+      expect(saphyrRun.updateRun).toBeCalled()
+      expect(saphyrRun.showAlert).toBeCalled()
+      expect(saphyrRun.redirectToRuns).not.toBeCalled()
     })
   })
 
@@ -131,88 +172,6 @@ describe('Run.vue', () => {
     it('emits an event with the message', () => {
       saphyrRun.showAlert('show this message', 'success')
       expect(wrapper.find(Alert).text()).toMatch(/show this message/)
-    })
-  })
-
-  // TODO: we have to mock out parts of the api method which are not relevant.
-  // This is a massive code smell. Need to refactor or find a better way to test.
-  describe.skip('#create', () => {
-
-    let failedResponse
-
-    beforeEach(() => {
-      saphyrRun.api.traction.saphyr.tubes.get = jest.fn()
-      saphyrRun.api.traction.saphyr.runs.create = jest.fn()
-      saphyrRun.api.traction.saphyr.runs.destroy = jest.fn()
-      saphyrRun.api.traction.saphyr.runs.destroy.mockResolvedValue(successfulDestroyJson)
-      saphyrRun.api.traction.saphyr.chips.create = jest.fn()
-      saphyrRun.api.traction.saphyr.chips.destroy = jest.fn()
-      saphyrRun.api.traction.saphyr.chips.destroy.mockResolvedValue(successfulDestroyJson)
-      saphyrRun.api.traction.saphyr.flowcells.create = jest.fn()
-      failedResponse = { status: 404, statusText: 'Record not found', data: { errors: { title: ['The record identified by 100 could not be found.'] }} }
-
-      let foundRun = new Response(Data.RunWithLibrary).deserialize.runs[0]
-      foundRun.id = 'new'
-      store.commit('addRun', foundRun)
-      wrapper = mount(SaphyrRun, { localVue, router, store, propsData: { id: 'new' } })
-      saphyrRun = wrapper.vm
-    })
-
-    describe('when the run is valid', () => {
-
-      beforeEach(() => {
-        saphyrRun.api.traction.saphyr.runs.create.mockResolvedValue(createRunJson)
-        saphyrRun.api.traction.saphyr.chips.create.mockResolvedValue(createChipJson)
-        saphyrRun.api.traction.saphyr.tubes.get.mockResolvedValue(tubeWithLibraryJson)
-      })
-
-      it('success', async () => {
-
-        saphyrRun.api.traction.saphyr.flowcells.create.mockResolvedValue(createFlowcellJson)
-
-        await saphyrRun.create()
-        expect(saphyrRun.message).toEqual('run was successfully created')
-      })
-
-      it('failure', async () => {
-
-        saphyrRun.api.traction.saphyr.flowcells.create.mockReturnValue(failedResponse)
-
-        await saphyrRun.create()
-        expect(saphyrRun.message).toEqual('run could not be created')
-
-      })
-
-      it('clicking the button', async () => {
-
-        saphyrRun.showAlert = jest.fn()
-
-        saphyrRun.api.traction.saphyr.flowcells.create.mockResolvedValue(createFlowcellJson)
-
-        let button = wrapper.find('#create')
-        button.trigger('click')
-
-        // without this no message
-        await flushPromises()
-
-        expect(saphyrRun.message).toEqual('run was successfully created')
-
-      })
-
-    })
-
-    describe('when the run is not valid', () => {
-
-      beforeEach(() => {
-        saphyrRun.api.traction.saphyr.tubes.get.mockReturnValue(failedResponse)
-      })
-
-      it('will not try to create the run', async () => {
-        await saphyrRun.create()
-
-        expect(saphyrRun.message.length).not.toEqual(0)
-      })
-
     })
   })
 
