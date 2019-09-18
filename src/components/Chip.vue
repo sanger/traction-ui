@@ -11,7 +11,7 @@
 
 import Flowcell from '@/components/Flowcell'
 import { createNamespacedHelpers } from 'vuex'
-const { mapGetters, mapState, mapActions, mapMutations } = createNamespacedHelpers('traction/saphyr/runs')
+const { mapGetters, mapState, mapMutations } = createNamespacedHelpers('traction/saphyr/runs')
 
 export default {
   name: 'Chip',

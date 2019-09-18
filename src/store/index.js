@@ -16,6 +16,24 @@ export default new Vuex.Store({
     libraries: {},
     requests: {}
   },
+  mutations: {
+    addLibrary (state, library) {
+      state.libraries[library.id] = library
+    },
+    addRequest (state, request) {
+      state.requests[request.id] = request
+    },
+    addLibraries (state, libraries) {
+      for (let library of libraries) {
+        this.commit('addLibrary', library)
+      }
+    },
+    addRequests (state, requests) {
+      for (let request of requests) {
+        this.commit('addRequest', request)
+      }
+    },
+  },
   getters: {
     api: state => state.api,
     printers: state => state.printers,
@@ -28,24 +46,6 @@ export default new Vuex.Store({
     request: state => (id) => {
       return state.requests[id]
     }
-  },
-  mutations: {
-    addLibrary(state, library) {
-      state.libraries[library.id] = library
-    },
-    addRequest(state, request) {
-      state.requests[request.id] = request
-    },
-    addLibraries(state, libraries) {
-      for (let library of libraries) {
-        this.commit('addLibrary', library)
-      }
-    },
-    addRequests(state, requests) {
-      for (let request of requests) {
-        this.commit('addRequest', request)
-      }
-    },
   },
   modules: {
     traction,
