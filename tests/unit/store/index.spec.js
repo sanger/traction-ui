@@ -2,7 +2,6 @@ import Store from '@/store/index'
 import * as Run from '@/api/Run'
 
 describe('index', () => {
-
   describe('state', () => {
     it('has api state', () => {
       expect(Store.state.api).toBeDefined()
@@ -10,10 +9,6 @@ describe('index', () => {
 
     it('has a list of printers', () => {
       expect(Store.state.printers).toBeDefined()
-    })
-
-    it('has a label template id', () => {
-      expect(Store.state.labelTemplateId).toBeDefined()
     })
 
     describe('api', () => {
@@ -33,15 +28,9 @@ describe('index', () => {
     it('printers', () => {
       expect(Store.getters.printers).toBeDefined()
     })
-
-    it('labelTemplateId', () => {
-      expect(Store.getters.labelTemplateId).toBeDefined()
-    })
-
   })
 
   describe('runs', () => {
-
     let run1, run2
 
     beforeEach(() => {
@@ -75,7 +64,5 @@ describe('index', () => {
       Store.commit('addRuns', [run1, run2])
       expect(Store.getters.run(run1.id)).toEqual(run1)
     })
-
   })
-
 })

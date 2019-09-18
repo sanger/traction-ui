@@ -1,13 +1,13 @@
 import Api from '@/mixins/Api'
 import handlePromise from '@/api/PromiseHelper'
 import * as Run from '@/api/Run'
+import truncate from 'lodash-es/truncate'
 
 export default {
   name: 'RunMixin',
   mixins: [Api],
   data () {
     return {
-      message: ''
     }
   },
   methods: {
@@ -19,12 +19,23 @@ export default {
       let response = await handlePromise(promise)
 
       if (response.successful) {
+        if(response.empty) {
+          return []
+        }
+
         let runs = response.deserialize.runs
         this.$store.commit('addRuns', runs)
+
+        runs = runs.map(run => {
+          run.chip_barcode = truncate(run.chip_barcode, { length: 40 })
+
+          return run
+        })
+
         return runs
       } else {
-        this.message = response.errors.message
-        this.showAlert()
+        this.showAlert(response.errors.message)
+
         return []
       }
     },
@@ -32,8 +43,7 @@ export default {
       try {
         await this.updateRun(id, attributes)
       } catch (err) {
-        this.message = 'Failed to update Run: ' + err
-        this.showAlert()
+        this.showAlert('Failed to update Run: ' + err)
       }
     },
     async updateRun (id, attributes) {
@@ -41,11 +51,10 @@ export default {
       let response = await handlePromise(promises[0])
 
       if (response.successful) {
-        this.message = 'Run updated'
         this.$store.commit('addRun', response.deserialize.runs[0])
-        this.showAlert()
+        this.showAlert('Run updated')
       } else {
-        throw response.errors.message
+        throw Error(response.errors.message)
       }
     },
     updateName (id, name) {
@@ -80,9 +89,6 @@ export default {
         }
       }
     },
-    showAlert () {
-      return this.$refs.alert.show(this.message, 'primary')
-    }
   },
   computed: {
     tractionSaphyrRunsRequest () {

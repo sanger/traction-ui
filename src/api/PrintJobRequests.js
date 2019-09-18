@@ -9,20 +9,20 @@ const printJob = async (printerName, selected) => {
 }
 
 const createPrintJobJson = (printerName, selected) => {
-  let labelTemplateId = store.getters.labelTemplateId
+  let pipeline = store.getters.pipeline
+  let labelTemplateId = store.getters[`traction/${pipeline}/labelTemplateId`]
   let labels = createLabels(selected)
   return { data: { attributes: { printer_name: printerName, label_template_id: labelTemplateId, labels: labels } } }
 }
 
 const createLabels = (selected) => {
   let body = []
-  let pipeline = 'SAPHYR'
 
   for (let i in selected) {
     let text = getTextForSelected(selected[i])
 
     let label = {
-      pipeline: pipeline,
+      pipeline: store.getters.pipeline.toUpperCase(),
       barcode_text: selected[i].barcode,
       date: moment().format('MMMM Do YYYY'),
       text_1: text,
