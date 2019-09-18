@@ -98,7 +98,6 @@ export default {
       sortDesc: true,
       perPage: 5,
       currentPage: 1,
-      message: '',
     }
   },
   methods: {

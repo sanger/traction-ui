@@ -2,8 +2,6 @@
   <div class="run">
     <alert ref='alert'></alert>
 
-    {{ this.currentRun }}
-
     <router-link :to="{name: 'SaphyrRuns'}">
       <b-button id="backToRunsButton" class="float-right">Back</b-button>
     </router-link>
@@ -87,6 +85,22 @@ export default {
 button {
   margin-right: 2px;
   margin-left: 2px;
+}
+
+.container {
+  border: 1px solid black;
+  max-width: 50%;
+  padding: 10px;
+  margin-top: 50px;
+}
+.row {
+  border: 1px solid #42b983;
+  padding-top: .75rem;
+  padding-bottom: .75rem;
+  margin-top: 5px;
+  margin-bottom: 5px;
+  margin-right: 0px;
+  margin-left: 0px;
 }
 
 </style>
