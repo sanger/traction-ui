@@ -1,4 +1,4 @@
-import { mount, localVue, Vuex } from '../testHelper'
+import { mount, localVue, Vuex, Data } from '../testHelper'
 import Flowcell from '@/components/Flowcell'
 import * as Run from '@/api/Run'
 import Response from '@/api/Response'
@@ -9,10 +9,6 @@ describe('Flowcell', () => {
 
   beforeEach(() => {
     run = Run.build()
-
-    actions = {
-      updateLibraryBarcode: jest.fn()
-    }
 
     let store = new Vuex.Store({
       modules: {
@@ -29,8 +25,7 @@ describe('Flowcell', () => {
                   },
                   getters: {
                     currentRun: state => state.currentRun,
-                  },
-                  actions
+                  }
                 }
               }
 
@@ -44,8 +39,6 @@ describe('Flowcell', () => {
 
     wrapper = mount(Flowcell, { localVue, store, propsData: props })
     flowcell = wrapper.vm
-
-    // library =  {id: 2, type: 'libraries', state: 'pending', barcode: "TRAC-3", sample_name: "sample_d", enzyme_name: "Nb.BbvCI", created_at: "02/27/2019 04:05", libraryId: 2}
   })
 
   it('will have a name', () => {
@@ -72,25 +65,37 @@ describe('Flowcell', () => {
     expect(wrapper.contains('#libraryBarcode')).toBeTruthy()
   })
 
-  describe('#updateBarcode', () => {
+  describe('setBarcode', () => {
+    let newBarcode
 
     beforeEach(() => {
+      newBarcode = 'TRAC-1'
       flowcell.alert = jest.fn()
+      flowcell.isLibraryBarcodeValid = jest.fn()
+      flowcell.getTubeForBarcode = jest.fn()
+      flowcell.setLibraryBarcode = jest.fn()
     })
 
-    it('successful', async () => {
-      let newBarcode = "TRAC-1"
-      let successfulResponse = { 'data': {}, 'status': 200, 'statusText': 'Success' }
-      let expectedResponse = new Response(successfulResponse)
-      actions.updateLibraryBarcode.mockReturnValue(expectedResponse)
+    it('successful when barcode is valid', async () => {
+      let libraryTube = Data.TubeWithLibrary
+      let successfulResponse = new Response(libraryTube)
+      let tube = successfulResponse.deserialize.tubes[0]
 
-      await flowcell.updateBarcode(newBarcode)
-      expect(flowcell.alert).toBeCalledWith('Library updated', 'success')
+      flowcell.isLibraryBarcodeValid.mockReturnValue(true)
+      flowcell.getTubeForBarcode.mockReturnValue(tube)
+
+      await flowcell.setBarcode(newBarcode)
+
+      expect(flowcell.setLibraryBarcode).toBeCalled()
+      expect(flowcell.alert).not.toBeCalled()
     })
 
-    it('fails when the barcode is not valid', async () => {
-      await flowcell.updateBarcode('')
-      expect(flowcell.alert).toBeCalledWith('Please enter a barcode', 'danger')
+    it('is unsuccessful when chip is not valid', async () => {
+      flowcell.isLibraryBarcodeValid.mockReturnValue(false)
+
+      await flowcell.setBarcode(newBarcode)
+      expect(flowcell.setLibraryBarcode).not.toBeCalled()
+      expect(flowcell.alert).toBeCalled()
     })
   })
 
