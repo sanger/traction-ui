@@ -309,4 +309,93 @@ describe('Run', () => {
     })
   })
 
+  describe('updateResource', () => {
+    let request, payload
+
+    beforeEach(() => {
+      let api = build(Api.Config, process.env)
+      request = api.traction.saphyr
+      request.update = jest.fn()
+
+      payload = { data: { type: "runs", attributes: { name: run.name } } }
+    })
+
+    it('successful', async () => {
+      request.update.mockResolvedValue([Data.CreateRun])
+      let mockResponse = new Response(Data.CreateRun)
+
+      let response = await Run.updateResource(payload, request)
+      expect(response).toEqual(mockResponse)
+    })
+
+    it('unsuccessful', async () => {
+      let failedResponse = { status: 404, statusText: 'Record not found', data: { errors: { run: ['Failed to update.'] } } }
+
+      request.update.mockReturnValue([failedResponse])
+      let mockResponse = new Response(failedResponse)
+
+      await expect(Run.updateResource(payload, request)).rejects.toEqual(mockResponse.errors)
+    })
+  })
+
+  describe('#update', () => {
+    let run, request
+
+    beforeEach(() => {
+      run = Run.build()
+      run['name'] = 'run1'
+      run.chip['barcode'] = chipBarcode
+      run.chip.flowcells[0] = { position: 1, library: { baroce: 'TRAC-1' } }
+      run.chip.flowcells[1] = { position: 2, library: { baroce: 'TRAC-2' } }
+
+      let api = build(Api.Config, process.env)
+      request = api.traction.saphyr
+
+      request.runs.update = jest.fn()
+      request.chips.update = jest.fn()
+      request.flowcells.update = jest.fn()
+
+      request.runs.destroy = jest.fn()
+      request.chips.destroy = jest.fn()
+      request.flowcells.destroy = jest.fn()
+    })
+
+    it('returns true', async () => {
+      request.runs.update.mockResolvedValue([Data.CreateRun])
+      request.chips.update.mockResolvedValue([Data.CreateChip])
+      request.flowcells.update.mockResolvedValue([Data.CreateFlowcell])
+
+      expect(await Run.update(run, request)).toBeTruthy()
+    })
+
+    it('returns false if the run cannot be created', async () => {
+      request.runs.update.mockReturnValue([failedResponse])
+      request.runs.destroy.mockReturnValue(Data.SuccessfulDestroy)
+
+      expect(await Run.update(run, request)).toBeFalsy()
+    })
+
+    it('returns false and rollsback if the chip cannot be created', async () => {
+      request.runs.update.mockResolvedValue([Data.CreateRun])
+      request.chips.update.mockReturnValue([failedResponse])
+
+      request.runs.destroy.mockReturnValue(Data.SuccessfulDestroy)
+      request.chips.destroy.mockReturnValue(Data.SuccessfulDestroy)
+
+      expect(await Run.update(run, request)).toBeFalsy()
+    })
+
+    it('returns false and rollsback if the flowcells cannot be created', async () => {
+      request.runs.update.mockResolvedValue([Data.CreateRun])
+      request.chips.update.mockResolvedValue([Data.CreateRun])
+      request.flowcells.update.mockReturnValue([failedResponse])
+
+      request.runs.destroy.mockReturnValue(Data.SuccessfulDestroy)
+      request.chips.destroy.mockReturnValue(Data.SuccessfulDestroy)
+      request.flowcells.destroy.mockReturnValue(Data.SuccessfulDestroy)
+
+      expect(await Run.update(run, request)).toBeFalsy()
+    })
+
+  })
 })
