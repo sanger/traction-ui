@@ -61,31 +61,38 @@ describe('Chip', () => {
     expect(wrapper.findAll('.flowcell').length).toEqual(2)
   })
 
-  describe('updateBarcode', () => {
+  describe('setBarcode', () => {
     let newBarcode
 
     beforeEach(() => {
       newBarcode = 'FLEVEAOLPTOWPNWU20319131581014320190911XXXXXXXXXXXXX'
       chip.alert = jest.fn()
+      chip.isChipBarcodeValid = jest.fn()
+      chip.setChipBarcode = jest.fn()
     })
 
-    it('successful', async () => {
-      let successfulResponse = { 'data': {}, 'status': 200, 'statusText': 'Success' }
-      let expectedResponse = new Response(successfulResponse)
-      actions.updateChipBarcode.mockReturnValue(expectedResponse)
-
-      await chip.updateBarcode(newBarcode)
-      expect(chip.alert).toBeCalledWith('Chip barcode updated', 'success')
+    it('successful when chip is valid', () => {
+      chip.isChipBarcodeValid.mockReturnValue(true)
+      chip.setBarcode(newBarcode)
+      expect(chip.setChipBarcode).toBeCalledWith(newBarcode)
+      expect(chip.alert).not.toBeCalled()
     })
 
+    it('is unsuccessful when chip is not valid', () => {
+      chip.isChipBarcodeValid.mockReturnValue(false)
+      chip.setBarcode(newBarcode)
+      expect(chip.setChipBarcode).not.toBeCalled()
+      expect(chip.alert).toBeCalled()
+    })
+  })
 
-    it('unsuccessful', async () => {
-      let failedResponse = { 'data': { errors: { barcode: ['error message'] } }, 'status': 500, 'statusText': 'Internal Server Error' }
-      let expectedResponse = new Response(failedResponse)
-      actions.updateChipBarcode.mockReturnValue(expectedResponse)
+  describe('isChipBarcodeValid', () => {
+    it('returns true when barcode is valid', () => {
+      expect(chip.isChipBarcodeValid('barcodewithlength')).toEqual(true)
+    })
 
-      await chip.updateBarcode(newBarcode)
-      expect(chip.alert).toBeCalledWith('There was an error: barcode error message', 'danger')
+    it('returns false when barcode is not valid', () => {
+      expect(chip.isChipBarcodeValid('badbarcode')).toEqual(false)
     })
   })
 
