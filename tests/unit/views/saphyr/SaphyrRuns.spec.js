@@ -1,15 +1,14 @@
 import Runs from '@/views/saphyr/SaphyrRuns'
-import { mount, localVue, Vuex } from '../../testHelper'
+import { mount, localVue, Vuex, Data } from '../../testHelper'
 import Response from '@/api/Response'
 import Alert from '@/components/Alert'
-import RunsJson from '../../../data/runs'
 
 describe('Runs.vue', () => {
 
   let wrapper, runs, mockRuns, store
 
   beforeEach(() => {
-    mockRuns = new Response(RunsJson).deserialize.runs
+    mockRuns = new Response(Data.Runs).deserialize.runs
 
     store = new Vuex.Store({
       modules: {

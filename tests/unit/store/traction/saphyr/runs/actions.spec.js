@@ -1,4 +1,3 @@
-import RunsJson from '../../../../../data/runs'
 import Response from '@/api/Response'
 import * as Actions from '@/store/traction/saphyr/runs/actions'
 import { Data } from '../../../../testHelper'
@@ -16,9 +15,9 @@ describe('#setRuns', () => {
   })
 
   it('successfully', async () => {
-    get.mockReturnValue(RunsJson)
+    get.mockReturnValue(Data.Runs)
 
-    let expectedResponse = new Response(RunsJson)
+    let expectedResponse = new Response(Data.Runs)
     let expectedRuns = expectedResponse.deserialize.runs
 
     let response = await Actions.setRuns({ commit, getters })
@@ -216,7 +215,7 @@ describe('#editRun', () => {
   let getters, commit, mockRun, run
 
   beforeEach(() => {
-    mockRun = new Response(RunsJson).deserialize.runs[0]
+    mockRun = new Response(Data.Runs).deserialize.runs[0]
 
     run = jest.fn()
     getters = { 'run': run }
@@ -252,7 +251,7 @@ describe('#createRun', () => {
   let getters, saphyrRequests, mockRun
 
   beforeEach(() => {
-    mockRun = new Response(RunsJson).deserialize.runs[0]
+    mockRun = new Response(Data.Runs).deserialize.runs[0]
     saphyrRequests = jest.fn()
     getters = { 'currentRun': mockRun, 'saphyrRequests': saphyrRequests }
 
@@ -265,11 +264,11 @@ describe('#createRun', () => {
   })
 })
 
-describe('#createRun', () => {
+describe('#updateRun', () => {
   let getters, saphyrRequests, mockRun
 
   beforeEach(() => {
-    mockRun = new Response(RunsJson).deserialize.runs[0]
+    mockRun = new Response(Data.Runs).deserialize.runs[0]
     saphyrRequests = jest.fn()
     getters = { 'currentRun': mockRun, 'saphyrRequests': saphyrRequests }
 
