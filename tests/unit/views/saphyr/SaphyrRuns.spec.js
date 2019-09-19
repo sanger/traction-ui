@@ -250,4 +250,28 @@ describe('Runs.vue', () => {
     })
 
   })
+
+  describe('#provider', () => {
+    beforeEach(() => {
+      wrapper = mount(Runs, { store, localVue })
+      runs = wrapper.vm
+
+      runs.setRuns = jest.fn()
+      runs.showAlert = jest.fn()
+    })
+
+    it('calls setRuns successfully', () => {
+      runs.provider()
+      expect(runs.setRuns).toBeCalled()
+    })
+
+    it('calls setRuns unsuccessfully', () => {
+      runs.setRuns.mockImplementation(() => {
+        throw Error('Raise this error')
+      })
+      runs.provider()
+      expect(runs.showAlert).toBeCalled()
+    })
+
+  })
 })

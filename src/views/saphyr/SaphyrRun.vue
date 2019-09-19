@@ -30,7 +30,7 @@ export default {
   name: 'Run',
   mixins: [Helper],
   methods: {
-    async create() {
+    async create () {
       try {
         await this.createRun()
         this.redirectToRuns()
@@ -39,7 +39,7 @@ export default {
       }
       
     },
-    async update() {
+    async update () {
       try {
         await this.updateRun()
         this.redirectToRuns()

@@ -78,32 +78,28 @@ describe('Run.vue', () => {
     })
   })
 
-  describe('create button', () => {
-    it('will only show if the record is new', () => {
-      expect(wrapper.find('#create').exists()).toBeFalsy()
+  describe('back button', () => {
+    it('will always show', () => {
+      expect(wrapper.find('#backToRunsButton').exists()).toBeTruthy()
     })
-
-    // it('calls the right function', async () => {
-    //   saphyrRun.create = jest.fn()
-    //   let button = wrapper.find('#create')
-    //   await button.trigger('click')
-    //   expect(saphyrRun.create).toBeCalled()
-    // })
   })
 
   describe('update button', () => {
-    beforeEach(() => {
-      saphyrRun.updateRun = jest.fn()
-    })
-
     it('will only show if the record is new', () => {
       expect(wrapper.find('#update').exists()).toBeTruthy()
     })
+  })
 
-    it('calls the right function', async () => {
-      let button = wrapper.find('#update')
-      await button.trigger('click')
-      expect(saphyrRun.updateRun).toBeCalled()
+  describe('create button', () => {
+
+    it('will only show if the record is new', () => {
+      expect(wrapper.find('#create').exists()).toBeFalsy()
+    })
+  })
+
+  describe('update button', () => {
+    it('will only show if the record is new', () => {
+      expect(wrapper.find('#update').exists()).toBeTruthy()
     })
   })
 
