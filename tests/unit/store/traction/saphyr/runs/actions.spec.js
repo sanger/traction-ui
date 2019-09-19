@@ -249,7 +249,7 @@ describe('#newRun', () => {
 })
 
 describe('#createRun', () => {
-  let getters, saphyrRequests, mockRun, run
+  let getters, saphyrRequests, mockRun
 
   beforeEach(() => {
     mockRun = new Response(RunsJson).deserialize.runs[0]
@@ -266,7 +266,7 @@ describe('#createRun', () => {
 })
 
 describe('#createRun', () => {
-  let getters, saphyrRequests, mockRun, run
+  let getters, saphyrRequests, mockRun
 
   beforeEach(() => {
     mockRun = new Response(RunsJson).deserialize.runs[0]
