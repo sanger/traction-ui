@@ -127,7 +127,8 @@ export {
     editRun,
     newRun,
     createRun,
-    updateRun
+    updateRun,
+    validateLibraryTube
 }
 
 export default actions
