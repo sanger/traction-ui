@@ -1,11 +1,11 @@
 import SaphyrRun from '@/views/saphyr/SaphyrRun'
-import { mount, localVue, store, Data, Vuex } from '../../testHelper'
+import { mount, localVue, Vuex } from '../../testHelper'
 import VueRouter from 'vue-router'
 import Alert from '@/components/Alert'
 
 describe('Run.vue', () => {
 
-  let wrapper, mockRun, actions, saphyrRun, router, store
+  let wrapper, mockRun, saphyrRun, router, store
 
   beforeEach(() => {
     router = new VueRouter({

@@ -140,7 +140,6 @@ describe('#runPayloadJson', () => {
   })
 })
 
-
 describe('#editRun', () => {
   let getters, commit, mockRun, run
 

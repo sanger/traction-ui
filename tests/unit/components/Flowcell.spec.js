@@ -5,7 +5,7 @@ import Response from '@/api/Response'
 
 describe('Flowcell', () => {
 
-  let wrapper, flowcell, props, run, actions
+  let wrapper, flowcell, props, run
 
   beforeEach(() => {
     run = Run.build()
