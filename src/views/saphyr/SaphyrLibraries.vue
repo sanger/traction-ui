@@ -71,10 +71,8 @@ import TableHelper from '@/mixins/TableHelper'
 import Alert from '@/components/Alert'
 import PrinterModal from '@/components/PrinterModal'
 import * as consts from '@/consts/consts'
-// import { createNamespacedHelpers } from 'vuex'
-import { mapActions, mapGetters } from 'vuex'
-// const { mapActions, mapGetters } = createNamespacedHelpers('traction/saphyr/tubes')
-const PIPELINE = 'traction'
+import { createNamespacedHelpers } from 'vuex'
+const { mapActions, mapGetters } = createNamespacedHelpers('traction/saphyr/tubes')
 
 export default {
   name: 'Libraries',
@@ -109,10 +107,7 @@ export default {
     PrinterModal
   },
   computed: {
-    namespace () {
-      return `traction/${this.pipeline}/tubes`
-    },
-    ...mapGetters(`traction/${PIPELINE}/tubes`, [
+    ...mapGetters([
       'tractionTubesWithInfo',
       'tractionTubes',
       'requestsRequest',
@@ -146,7 +141,7 @@ export default {
         key => this.$store.getters.library(key))
       this.preFilteredMaterials = []
     },
-    ...mapActions(`traction/${PIPELINE}/tubes`, [
+    ...mapActions([
       'deleteLibraries'
     ])
   },
