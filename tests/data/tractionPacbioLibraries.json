@@ -6,7 +6,7 @@
       "attributes": {
         "state": "pending",
         "barcode": "TRAC-11",
-        "sample_name": "Sample1",
+        "sample_names": "Sample1",
         "volume": 1.0, 
         "concentration": 1.0, 
         "library_kit_barcode": "LK12345", 
@@ -20,7 +20,7 @@
       "attributes": {
         "state": "pending",
         "barcode": "TRAC-12",
-        "sample_name": "Sample2",
+        "sample_names": "Sample2,Sample3",
          "volume": 1.0, 
         "concentration": 1.0, 
         "library_kit_barcode": "LK12345", 
@@ -34,7 +34,7 @@
       "attributes": {
         "state": "pending",
         "barcode": "TRAC-13",
-        "sample_name": "Sample3",
+        "sample_names": "Sample3",
         "volume": 1.0, 
         "concentration": 1.0, 
         "library_kit_barcode": "LK12345", 
@@ -48,7 +48,7 @@
       "attributes": {
         "state": "pending",
         "barcode": "TRAC-14",
-        "sample_name": "Sample4",
+        "sample_names": "Sample4",
         "volume": 1.0, 
         "concentration": 1.0, 
         "library_kit_barcode": "LK12345", 
@@ -62,7 +62,7 @@
       "attributes": {
         "state": "pending",
         "barcode": "TRAC-15",
-        "sample_name": "Sample5",
+        "sample_names": "Sample5",
         "volume": 1.0, 
         "concentration": 1.0, 
         "library_kit_barcode": "LK12345", 
@@ -76,7 +76,7 @@
       "attributes": {
         "state": "pending",
         "barcode": "TRAC-16",
-        "sample_name": "Sample1",
+        "sample_names": "Sample1",
         "volume": 1.0, 
         "concentration": 1.0, 
         "library_kit_barcode": "LK12345", 
@@ -90,7 +90,7 @@
       "attributes": {
         "state": "pending",
         "barcode": "TRAC-17",
-        "sample_name": "Sample1",
+        "sample_names": "Sample1",
         "volume": 1.0, 
         "concentration": 1.0, 
         "library_kit_barcode": "LK12345", 
@@ -104,7 +104,7 @@
       "attributes": {
         "state": "pending",
         "barcode": "TRAC-18",
-        "sample_name": "Sample1",
+        "sample_names": "Sample1",
         "volume": 1.0, 
         "concentration": 1.0, 
         "library_kit_barcode": "LK12345", 
@@ -118,7 +118,7 @@
       "attributes": {
         "state": "pending",
         "barcode": "TRAC-19",
-        "sample_name": "Sample1",
+        "sample_names": "Sample1",
         "volume": 1.0, 
         "concentration": 1.0, 
         "library_kit_barcode": "LK12345", 
@@ -132,7 +132,7 @@
       "attributes": {
         "state": "pending",
         "barcode": "TRAC-20",
-        "sample_name": "Sample2",
+        "sample_names": "Sample2",
         "volume": 1.0, 
         "concentration": 1.0, 
         "library_kit_barcode": "LK12345", 
@@ -146,7 +146,7 @@
       "attributes": {
         "state": "pending",
         "barcode": "TRAC-21",
-        "sample_name": "Sample3",
+        "sample_names": "Sample3",
         "volume": 1.0, 
         "concentration": 1.0, 
         "library_kit_barcode": "LK12345", 
@@ -160,7 +160,7 @@
       "attributes": {
         "state": "pending",
         "barcode": "TRAC-22",
-        "sample_name": "Sample1",
+        "sample_names": "Sample1",
         "volume": 1.0, 
         "concentration": 1.0, 
         "library_kit_barcode": "LK12345", 
@@ -174,7 +174,7 @@
       "attributes": {
         "state": "pending",
         "barcode": "TRAC-23",
-        "sample_name": "Sample1",
+        "sample_names": "Sample1",
         "volume": 1.0, 
         "concentration": 1.0, 
         "library_kit_barcode": "LK12345", 
@@ -188,7 +188,7 @@
       "attributes": {
         "state": "pending",
         "barcode": "TRAC-24",
-        "sample_name": "Sample3",
+        "sample_names": "Sample3,Sample4",
         "volume": 1.0, 
         "concentration": 1.0, 
         "library_kit_barcode": "LK12345", 
@@ -202,7 +202,7 @@
       "attributes": {
         "state": "pending",
         "barcode": "TRAC-25",
-        "sample_name": "Sample5",
+        "sample_names": "Sample5",
         "volume": 1.0, 
         "concentration": 1.0, 
         "library_kit_barcode": "LK12345", 
@@ -216,7 +216,7 @@
       "attributes": {
         "state": "pending",
         "barcode": "TRAC-26",
-        "sample_name": "Sample4",
+        "sample_names": "Sample4",
         "volume": 1.0, 
         "concentration": 1.0, 
         "library_kit_barcode": "LK12345", 
@@ -230,7 +230,7 @@
       "attributes": {
         "state": "pending",
         "barcode": "TRAC-27",
-        "sample_name": "Sample1",
+        "sample_names": "Sample1,Sample2",
         "volume": 1.0, 
         "concentration": 1.0, 
         "library_kit_barcode": "LK12345", 

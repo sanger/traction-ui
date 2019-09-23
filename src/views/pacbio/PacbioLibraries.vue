@@ -83,7 +83,7 @@ export default {
         { key: 'selected', label: '' },
         { key: 'id', label: 'Library ID', sortable: true },
         { key: 'barcode', label: 'Barcode', sortable: true },
-        { key: 'sample_name', label: 'Sample Name', sortable: true },
+        { key: 'sample_names', label: 'Sample Names', sortable: true },
         { key: 'volume', label: 'Volume', sortable: true },
         { key: 'concentration', label: 'Concentration', sortable: true },
         { key: 'library_kit_barcode', label: 'Library Kit Barcode', sortable: true },
