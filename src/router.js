@@ -29,7 +29,6 @@ export default new Router({
     },
     {
       path: '/saphyr',
-      name: 'Saphyr',
       component: Saphyr,
       children: [
         { path: '', redirect: 'reception'},
@@ -43,7 +42,6 @@ export default new Router({
     },
     {
       path: '/pacbio',
-      name: 'Pacbio',
       component: Pacbio,
       children: [
         { path: 'reception', component: PacbioReception },

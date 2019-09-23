@@ -77,6 +77,12 @@ const { mapActions, mapGetters } = createNamespacedHelpers('traction/saphyr/tube
 export default {
   name: 'Libraries',
   mixins: [Helper, MatType, TableHelper],
+  props: {
+    pipeline: {
+      type: String,
+      default: 'saphyr'
+    }
+  },
   data () {
     return {
       fields: [

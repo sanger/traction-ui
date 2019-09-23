@@ -1,0 +1,42 @@
+{
+  "data": {
+    "data": [
+      {
+        "id": "19",
+        "type": "tubes",
+        "links": {
+          "self": "http://localhost:3000/v1/pacbio/tubes/19"
+        },
+        "attributes": {
+          "barcode": "TRAC-19"
+        },
+        "relationships": {
+          "material": {
+            "links": {
+              "self": "http://localhost:3000/v1/pacbio/tubes/19/relationships/material",
+              "related": "http://localhost:3000/v1/pacbio/tubes/19/material"
+            },
+            "data": {
+              "type": "libraries",
+              "id": "4"
+            }
+          }
+        }
+      }
+    ],
+    "included": [
+      {
+        "id": "4",
+        "type": "libraries",
+        "attributes": {
+          "volume": 1.0,
+          "concentration": 1.0,
+          "library_kit_barcode": "LK12345",
+          "fragment_size": 100
+        }
+      }
+    ]
+  },
+  "status": 200,
+  "statusText": "Success"
+}
