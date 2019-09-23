@@ -10,7 +10,7 @@ const build = (config, environment) => {
 }
 
 const buildResources = (resources, props) => {
-  let pipelines = ['saphyr']
+  let pipelines = ['saphyr', 'pacbio']
 
   return Object.keys(resources).reduce((result, key) => {
     if (pipelines.includes(key)) {

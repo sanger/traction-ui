@@ -8,6 +8,7 @@ export default {
   name: 'MatType',
   methods: {
     async getMaterial(materialType) {
+      this.log(this.libraryRequest.include)
       this.log(`getMaterial(${materialType})`)
 
       let promise = null

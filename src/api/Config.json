@@ -41,6 +41,20 @@
           "name": "tubes",
           "include": "material"
         }
+      },
+      "pacbio": {
+        "libraries": {
+          "name": "libraries",
+          "include": ""
+        },
+        "requests": {
+          "name": "requests",
+          "include": ""
+        },
+        "tubes": {
+          "name": "tubes",
+          "include": "material"
+        }
       }
     }
   },
