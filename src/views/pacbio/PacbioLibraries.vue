@@ -33,9 +33,20 @@
              :per-page="perPage"
              :current-page="currentPage"
              hover
-             @filtered="onFiltered">
-      <template slot="selected" slot-scope="row">
-        <input type="checkbox" class="selected" v-model="selected" :value="row.item" />
+             @filtered="onFiltered"
+               selectable
+             select-mode="multi"
+             @row-selected="onRowSelected"
+             :busy.sync="isBusy">
+      <template v-slot:cell(selected)="{ rowSelected }">
+        <template v-if="rowSelected">
+          <span>&check;</span>
+          <span class="sr-only">Selected</span>
+        </template>
+        <template v-else>
+          <span>&nbsp;</span>
+          <span class="sr-only">Not selected</span>
+        </template>
       </template>
     </b-table>
 
