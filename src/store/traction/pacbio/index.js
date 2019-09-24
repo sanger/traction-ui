@@ -6,7 +6,7 @@ const pacbio = {
     tubes: pacbioTubesModule
   },
   state: {
-      labelTemplateId: process.env.VUE_APP_PACBIO_LABEL_TEMPLATE_ID,
+    labelTemplateId: process.env.VUE_APP_PACBIO_LABEL_TEMPLATE_ID,
   },
   getters: {
     labelTemplateId: state => state.labelTemplateId,
