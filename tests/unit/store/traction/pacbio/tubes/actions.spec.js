@@ -105,7 +105,7 @@ describe('#sampleTubesJson', () => {
   })
 })
 
-describe('#createLibrariesInTraction', () => {
+describe.skip('#createLibrariesInTraction', () => {
   let create, getters, libraries, payload
 
   beforeEach(() => {
