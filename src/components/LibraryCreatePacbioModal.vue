@@ -11,61 +11,72 @@
              title="Create Libraries"
              ref="pacbioLibraryModal"
              :static="isStatic"
-             @ok="handleOk"
-             @shown="clearSelect">
-      <!-- <b-form-select v-model="selectedEnzymeId" :options="enzymeOptions" class="mb-3" /> -->
+             scrollable
+             >
+      <alert ref='alert'></alert>
       <b-form  >
+        <p>
+          The following samples are used to create this library:
+          <ul>
+            <template v-for="(sample, index) in selectedSamples">
+              <li>{{sample.sample_name}} ({{ sample.barcode}})</li>
+            </template>
+          </ul>
+        </p>
+
         <b-form-group id="input-group-1"
                       label="Volume:"
                       label-for="input-1">
-          <b-form-input
-            id="input-1"
-            v-model="library_form.volume"
-            type="number"
-            required
-            placeholder="1.0"
-          ></b-form-input>
+          <b-form-input id="input-1"
+                        v-model="library.volume"
+                        type="number"
+                        required
+                        placeholder="1.0">
+          </b-form-input>
         </b-form-group>
 
         <b-form-group id="input-group-2"
                       label="Concentration:"
                       label-for="input-2">
-          <b-form-input
-            id="input-2"
-            v-model="library_form.concentration"
-            type="number"
-            required
-            placeholder="1.0"
-          ></b-form-input>
+          <b-form-input id="input-2"
+                        v-model="library.concentration"
+                        type="number"
+                        required
+                        placeholder="1.0">
+          </b-form-input>
         </b-form-group>
 
         <b-form-group id="input-group-2"
                       label="Library kit barcode:"
                       label-for="input-3">
-          <b-form-input
-            id="input-3"
-            v-model="library_form.library_kit_barcode"
-            type="text"
-            required
-            placeholder="ABC"
-          ></b-form-input>
+          <b-form-input id="input-3"
+                        v-model="library.libraryKitBarcode"
+                        type="text"
+                        required
+                        placeholder="ABC">
+          </b-form-input>
         </b-form-group>
 
+        <b-form-group id="input-group-2"
+                      label="Fragment size"
+                      label-for="input-4">
+          <b-form-input id="input-4"
+                        v-model="library.fragmentSize"
+                        type="number"
+                        required
+                        placeholder="100">
+          </b-form-input>
+        </b-form-group>
       </b-form>
+
       <template v-slot:modal-footer="{ ok, cancel }">
-        <!-- <b>Custom Footer</b> -->
-        <!-- Emulate built in modal footer ok and cancel button actions -->
         <b-button @click="cancel()">
           Cancel
         </b-button>
-        <b-button variant="success" @click="handleCreate()">
+
+        <b-button variant="success" @click="handleLibraryCreate()">
           Create
         </b-button>
-
-        <!-- Button with custom close trigger value -->
-        <!-- <b-button size="sm" variant="outline-secondary" @click="hide('forget')">
-          Forget it
-        </b-button> -->
       </template>
     </b-modal>
   </div>
@@ -74,77 +85,79 @@
 <script>
 import handlePromise from '@/api/PromiseHelper'
 import Api from '@/mixins/Api'
+import Alert from '@/components/Alert'
+import Helper from '@/mixins/Helper'
+import * as consts from '@/consts/consts'
+import { createNamespacedHelpers } from 'vuex'
+
+const { mapActions, mapGetters } = createNamespacedHelpers('traction/pacbio/tubes')
 
 export default {
   name: 'LibraryCreatePacbioModal',
-  mixins: [Api],
+  mixins: [Api, Helper],
   data () {
     return {
-      // selectedEnzymeId: null,
-      // enzymeOptions: []
-      library_form: {
-          volume: '',
-          concentration: '',
-          library_kit_barcode: '',
-          fragment_size: ''
-      },
+      library: {}
     }
+  },
+  components: {
+    Alert
   },
   props: {
     disabled: Boolean,
-    isStatic: Boolean
+    isStatic: Boolean,
+    selectedSamples: Array
   },
   methods: {
-    // clearSelect () {
-    //   this.selectedEnzymeId = null
-    // },
-    handleCreate (evt) {
-      // Prevent modal from closing
-      evt.preventDefault()
-
-      // if (!this.selectedEnzymeId) {
-      //   alert('Please select an enzyme')
-      // } else {
-      //   this.handleSubmit()
-      // }
+    ...mapActions([
+      'createLibrariesInTraction',
+      'getTractionTubesForBarcodes'
+    ]),
+    async handleLibraryCreate () {
+      try {
+        await this.createLibraries()
+        await this.handleTractionTubes()
+      } catch (err) {
+        this.showAlert(err, 'danger')
+      }
     },
-    // handleSubmit () {
-      // this.$emit('selectEnzyme', this.selectedEnzymeId)
-      // this.clearSelect()
-      /**
-       * Hide the modal manually
-       * https://vuejsdevelopers.com/2019/01/22/vue-what-is-next-tick/
-       * https://bootstrap-vue.js.org/docs/components/modal/#prevent-closing
-       */
-    //   this.$nextTick(() => {
-    //     this.$refs.pacbioLibraryModal.hide()
-    //   })
-    // },
-    // async getEnzymeOptions () {
-    //   let promise = this.enzymeRequest.get()
-    //   let response = await handlePromise(promise)
+    async createLibraries () {
+      let payload = { samples: this.selectedSamples, library: this.library }
+      let response = await this.createLibrariesInTraction(payload)
 
-    //   if (response.successful) {
-    //     let enzymes = response.deserialize.enzymes
-    //     let enzymeOptions = enzymes.map(
-    //       (enzyme) => Object.assign({ value: parseInt(enzyme.id), text: enzyme.name }))
-    //     enzymeOptions.unshift({ value: null, text: "Please select an option" })
-    //     this.enzymeOptions = enzymeOptions
-    //   } else {
-    //     this.message = response.errors.message
-    //   }
-    // },
-    // async provider () {
-    //   this.getEnzymeOptions()
-    // }
+      if (response.successful || !response.empty ) {
+        this.barcodes = response.deserialize.libraries.map(l => l.barcode)
+      } else {
+        throw Error(consts.MESSAGE_ERROR_CREATE_LIBRARY_FAILED + response.errors.message)
+      }
+    },
+    async handleTractionTubes () {
+      if (this.barcodes === undefined || !this.barcodes.length) {
+        throw Error(consts.MESSAGE_WARNING_NO_BARCODES)
+      }
+
+      let response = await this.getTractionTubesForBarcodes(this.barcodes)
+      if (response.successful && !response.empty) {
+        let tubes = this.tractionTubes
+        // Surely all these tubes will be libraries since we are creating libraries?
+        if (tubes.every(t => t.material.type === "libraries")) {
+          this.redirectToLibraries(tubes)
+        }
+      } else {
+        throw Error(consts.MESSAGE_ERROR_GET_TRACTION_TUBES)
+      }
+    },
+    redirectToLibraries (tubes) {
+      this.$router.push({name: 'PacbioLibraries', query: { barcode: tubes.map(tube => tube.barcode) }})
+    },
   },
-  // async created() {
-  //   this.provider()
-  // },
   computed: {
-    // enzymeRequest () {
-    //   return this.api.traction.saphyr.enzymes
-    // }
+    ...mapGetters([
+      'tractionTubesWithInfo',
+      'tractionTubes',
+      'requestsRequest',
+      'libraryRequest'
+    ])
   }
 }
 </script>

@@ -46,7 +46,7 @@ export default new Router({
       children: [
         { path: 'reception', component: PacbioReception },
         { path: 'samples', component: PacbioSamples },
-        { path: 'libraries', component: PacbioLibraries },
+        { path: 'libraries', name: 'PacbioLibraries', component: PacbioLibraries },
         { path: 'runs', component: PacbioRuns }
       ]
     }

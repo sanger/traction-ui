@@ -39,22 +39,37 @@ const sampleTubeJson = (tubes) => {
 }
 
 const createLibrariesInTraction = async ({ getters }, payload) => {
-  let libraries = payload.map(item => {
+  let requests = payload.samples.map(item => {
     return {
-      state: 'pending',
-      pacbio_request_id: item.id,
-      volume: item.volume,
-      concentration: item.concentration,
-      library_kit_barcode: item.libraryKitBarcode,
-      fragment_size: item.fragmentSize
+      id: item.id,
+      type: 'requests',
+      relationships: {
+        tag: {
+          data: {
+            id: 1
+          }
+        }
+      }
     }
   })
+
+  let library = {
+    volume: payload.library.volume,
+    concentration: payload.library.concentration,
+    library_kit_barcode: payload.library.libraryKitBarcode,
+    fragment_size: payload.library.fragmentSize,
+    relationships: {
+      requests: {
+        data: requests
+      }
+    }
+  }
 
   let body = {
     data: {
       type: 'libraries',
       attributes: {
-        libraries: libraries
+        libraries: [library]
       }
     }
   }
