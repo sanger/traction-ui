@@ -23,6 +23,10 @@ export default {
       this.log(response)
 
       if (response.successful) {
+        if (response.empty) {
+          return []
+        }
+
         let materials = eval(`response.deserialize.${materialType}`)
         this.log(materials)
 

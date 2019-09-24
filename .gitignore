@@ -25,3 +25,7 @@ yarn-error.log*
 *.njsproj
 *.sln
 *.sw*
+
+# json-server files
+db.json
+routes.json

@@ -31,7 +31,7 @@
                :per-page="perPage"
                :current-page="currentPage"
                @filtered="onFiltered">
-        <template slot="actions" slot-scope="row">
+        <template v-slot:cell(actions)="row">
           <b-button :id="generateId('createRun',row.item.id)" variant="outline-dark" size="sm" @click="showRun(row.item.id)" class="mr-1">
             Edit
           </b-button>
@@ -86,7 +86,7 @@ export default {
         { key: 'id', label: 'Run ID', sortable: true },
         { key: 'name', label: 'Name', sortable: true },
         { key: 'state', label: 'State', sortable: true },
-        { key: 'chip_barcode', label: 'Chips Barcode', sortable: true },
+        { key: 'chip_barcode', label: 'Chip Barcode', sortable: true },
         { key: 'created_at', label: 'Created at', sortable: true },
         { key: 'actions', label: 'Actions' },
       ],

@@ -4,6 +4,9 @@
 export default {
   name: 'TableHelper',
   methods: {
+    onRowSelected(items) {
+      this.selected = items
+    },
     onFiltered(filteredItems) {
       // Trigger pagination to update the number of buttons/pages due to filtering
       this.filteredItems = filteredItems

@@ -1,6 +1,9 @@
 /*
   Store constants here which can be used throughout the app.
 */
+const PIPELINE_SAPHYR = 'saphyr'
+const PIPELINE_PACBIO = 'pacbio'
+
 const MAT_TYPE_REQUESTS = 'requests'
 const MAT_TYPE_LIBRARIES = 'libraries'
 
@@ -18,6 +21,8 @@ const MESSAGE_WARNING_NO_BARCODES = 'There are no barcodes'
 const MESSAGE_SUCCESS_PRINTER = 'Printed successfully'
 
 export {
+  PIPELINE_SAPHYR,
+  PIPELINE_PACBIO,
   MAT_TYPE_REQUESTS,
   MAT_TYPE_LIBRARIES,
   MESSAGE_ERROR_GET_TRACTION_TUBES,

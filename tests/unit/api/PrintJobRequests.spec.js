@@ -2,6 +2,7 @@ import * as PrintJobRequests from '@/api/PrintJobRequests'
 import moment from 'moment'
 import { store } from '../testHelper'
 import Response from '@/api/Response'
+import * as consts from '@/consts/consts'
 
 describe('PrintJobRequests', () => {
   let selectedSamples, selectedLibraries, printerName
@@ -16,6 +17,7 @@ describe('PrintJobRequests', () => {
       { id: 2, type: 'libraries', enzyme_name: 'enz2', barcode: 'TRAC-2' }
     ]
     printerName = 'printer1'
+    store.commit('setPipeline', consts.PIPELINE_SAPHYR)
   })
 
   describe('printJob', () => {
@@ -64,24 +66,43 @@ describe('PrintJobRequests', () => {
       let response = await PrintJobRequests.printJob(printerName, selectedSamples)
       expect(response).toEqual(expected)
     })
-
   })
 
   describe('createPrintJobJson', () => {
-
-    it('return json', async () => {
-      let labelTemplateId = "1"
+    it('return JSON for saphyr pipeline', async () => {
       let resp = PrintJobRequests.createPrintJobJson(printerName, selectedSamples)
       let labels = PrintJobRequests.createLabels(selectedSamples)
-      let expected = { data: { attributes: { printer_name: printerName, label_template_id: labelTemplateId, labels: labels } } }
+      let expected = {
+        data: {
+          attributes: {
+            printer_name: printerName,
+            label_template_id: process.env.VUE_APP_SAPHYR_LABEL_TEMPLATE_ID,
+            labels: labels
+          }
+        }
+      }
       expect(resp).toEqual(expected)
     })
 
+    it('return JSON for pacbio pipeline', async () => {
+      store.commit('setPipeline', consts.PIPELINE_PACBIO)
+      let resp = PrintJobRequests.createPrintJobJson(printerName, selectedSamples)
+      let labels = PrintJobRequests.createLabels(selectedSamples)
+      let expected = {
+        data: {
+          attributes: {
+            printer_name: printerName,
+            label_template_id: process.env.VUE_APP_PACBIO_LABEL_TEMPLATE_ID,
+            labels: labels
+          }
+        }
+      }
+      expect(resp).toEqual(expected)
+    })
   })
 
   describe('createLabels', () => {
-
-    it('return json for samples', async () => {
+    it('returns JSON for saphyr samples', async () => {
       let resp = PrintJobRequests.createLabels(selectedSamples)
       let expectedLabel1 = resp.body[0].main_label
       let expectedLabel2 = resp.body[1].main_label
@@ -89,20 +110,20 @@ describe('PrintJobRequests', () => {
       expect(expectedLabel1.barcode).toEqual("TRAC-1")
       expect(expectedLabel1.barcode_text).toEqual("TRAC-1")
       expect(expectedLabel1.date).toEqual(moment().format('MMMM Do YYYY'))
-      expect(expectedLabel1.pipeline).toEqual("SAPHYR")
+      expect(expectedLabel1.pipeline).toEqual(consts.PIPELINE_SAPHYR.toUpperCase())
       expect(expectedLabel1.text_1).toEqual("sample1")
       expect(expectedLabel1.round_label_top_line).toEqual("")
       expect(expectedLabel1.round_label_bottom_line).toEqual("")
       expect(expectedLabel2.barcode).toEqual("TRAC-2")
       expect(expectedLabel2.barcode_text).toEqual("TRAC-2")
       expect(expectedLabel2.date).toEqual(moment().format('MMMM Do YYYY'))
-      expect(expectedLabel2.pipeline).toEqual("SAPHYR")
+      expect(expectedLabel2.pipeline).toEqual(consts.PIPELINE_SAPHYR.toUpperCase())
       expect(expectedLabel2.text_1).toEqual("sample2")
       expect(expectedLabel2.round_label_top_line).toEqual("")
       expect(expectedLabel2.round_label_bottom_line).toEqual("")
     })
 
-    it('return json for libraries', async () => {
+    it('returns JSON for saphyr libraries', async () => {
       let resp = PrintJobRequests.createLabels(selectedLibraries)
       let expectedLabel1 = resp.body[0].main_label
       let expectedLabel2 = resp.body[1].main_label
@@ -110,30 +131,72 @@ describe('PrintJobRequests', () => {
       expect(expectedLabel1.barcode).toEqual("TRAC-1")
       expect(expectedLabel1.barcode_text).toEqual("TRAC-1")
       expect(expectedLabel1.date).toEqual(moment().format('MMMM Do YYYY'))
-      expect(expectedLabel1.pipeline).toEqual("SAPHYR")
+      expect(expectedLabel1.pipeline).toEqual(consts.PIPELINE_SAPHYR.toUpperCase())
       expect(expectedLabel1.text_1).toEqual("enz1")
       expect(expectedLabel1.round_label_top_line).toEqual("")
       expect(expectedLabel1.round_label_bottom_line).toEqual("")
       expect(expectedLabel2.barcode).toEqual("TRAC-2")
       expect(expectedLabel2.barcode_text).toEqual("TRAC-2")
       expect(expectedLabel2.date).toEqual(moment().format('MMMM Do YYYY'))
-      expect(expectedLabel2.pipeline).toEqual("SAPHYR")
+      expect(expectedLabel2.pipeline).toEqual(consts.PIPELINE_SAPHYR.toUpperCase())
       expect(expectedLabel2.text_1).toEqual("enz2")
       expect(expectedLabel2.round_label_top_line).toEqual("")
       expect(expectedLabel2.round_label_bottom_line).toEqual("")
     })
 
+    it('returns JSON for pacbio samples', async () => {
+      store.commit('setPipeline', consts.PIPELINE_PACBIO)
+      let resp = PrintJobRequests.createLabels(selectedSamples)
+      let expectedLabel1 = resp.body[0].main_label
+      let expectedLabel2 = resp.body[1].main_label
+
+      expect(expectedLabel1.barcode).toEqual("TRAC-1")
+      expect(expectedLabel1.barcode_text).toEqual("TRAC-1")
+      expect(expectedLabel1.date).toEqual(moment().format('MMMM Do YYYY'))
+      expect(expectedLabel1.pipeline).toEqual(consts.PIPELINE_PACBIO.toUpperCase())
+      expect(expectedLabel1.text_1).toEqual("sample1")
+      expect(expectedLabel1.round_label_top_line).toEqual("")
+      expect(expectedLabel1.round_label_bottom_line).toEqual("")
+      expect(expectedLabel2.barcode).toEqual("TRAC-2")
+      expect(expectedLabel2.barcode_text).toEqual("TRAC-2")
+      expect(expectedLabel2.date).toEqual(moment().format('MMMM Do YYYY'))
+      expect(expectedLabel2.pipeline).toEqual(consts.PIPELINE_PACBIO.toUpperCase())
+      expect(expectedLabel2.text_1).toEqual("sample2")
+      expect(expectedLabel2.round_label_top_line).toEqual("")
+      expect(expectedLabel2.round_label_bottom_line).toEqual("")
+    })
+
+    it('returns JSON for pacbio libraries', async () => {
+      store.commit('setPipeline', consts.PIPELINE_PACBIO)
+      let resp = PrintJobRequests.createLabels(selectedLibraries)
+      let expectedLabel1 = resp.body[0].main_label
+      let expectedLabel2 = resp.body[1].main_label
+
+      expect(expectedLabel1.barcode).toEqual("TRAC-1")
+      expect(expectedLabel1.barcode_text).toEqual("TRAC-1")
+      expect(expectedLabel1.date).toEqual(moment().format('MMMM Do YYYY'))
+      expect(expectedLabel1.pipeline).toEqual(consts.PIPELINE_PACBIO.toUpperCase())
+      expect(expectedLabel1.text_1).toEqual("enz1")
+      expect(expectedLabel1.round_label_top_line).toEqual("")
+      expect(expectedLabel1.round_label_bottom_line).toEqual("")
+      expect(expectedLabel2.barcode).toEqual("TRAC-2")
+      expect(expectedLabel2.barcode_text).toEqual("TRAC-2")
+      expect(expectedLabel2.date).toEqual(moment().format('MMMM Do YYYY'))
+      expect(expectedLabel2.pipeline).toEqual(consts.PIPELINE_PACBIO.toUpperCase())
+      expect(expectedLabel2.text_1).toEqual("enz2")
+      expect(expectedLabel2.round_label_top_line).toEqual("")
+      expect(expectedLabel2.round_label_bottom_line).toEqual("")
+    })
   })
 
   describe('getTextForSelected', () => {
-
     it('returns the correct text for sample', async () => {
       let text = PrintJobRequests.getTextForSelected(selectedSamples[0])
       let expected = 'sample1'
       expect(text).toEqual(expected)
     })
 
-    it('returns the correct text for sample', async () => {
+    it('returns the correct text for library', async () => {
       let text = PrintJobRequests.getTextForSelected(selectedLibraries[0])
       let expected = 'enz1'
       expect(text).toEqual(expected)
@@ -143,7 +206,7 @@ describe('PrintJobRequests', () => {
   describe('printMyBarcodeRequest', () => {
     it ('returns a pmb request', () => {
       let request = PrintJobRequests.printMyBarcodeRequest()
-      expect(request.baseURL).toEqual('http://printmybarcode')
+      expect(request.baseURL).toEqual(process.env.VUE_APP_PRINTMYBARCODE_BASE_URL)
       expect(request.apiNamespace).toEqual('v1')
     })
   })
@@ -192,6 +255,5 @@ describe('PrintJobRequests', () => {
       let response = await PrintJobRequests.postPrintJob(request, payload)
       expect(response.successful).toBeFalsy()
     })
-
   })
 })

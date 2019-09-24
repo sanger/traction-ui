@@ -28,13 +28,16 @@
         return s.charAt(0).toUpperCase() + s.slice(1)
       }
     },
-    /* 
+    mounted: function() {
+      this.$store.commit('setPipeline', this.pipeline)
+    },
+    /*
       This is where the magic happens
       Takes an array of routes and turns them into an array of link elements
       Each route is namespaced with the pipeline
       The Dashboard element is injected at the start
       Each element is interspersed with a |
-      e.g. [a,b,c] with pipelineA would become 
+      e.g. [a,b,c] with pipelineA would become
       ['<a href="#/dashboard">Dashboard</a>', '<a href="#/pipelineA/a">A</a>', '<a href="#/pipelineA/b">B</a>', '<a href="#/pipelineA/c">C</a>']
     */
     render (createElement) {
@@ -45,8 +48,8 @@
             result.push(' | ')
             result.push(
               createElement(
-                'router-link', { 
-                  props: { 
+                'router-link', {
+                  props: {
                     to: `/${self.pipeline}/${route}`
                   }
                 }, this.titleise(route)
@@ -63,7 +66,6 @@
 
 <style lang="scss">
   nav {
-    padding: 30px;
     a {
       font-weight: bold;
       color: #2c3e50;

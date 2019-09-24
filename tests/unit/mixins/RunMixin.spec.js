@@ -76,8 +76,7 @@ describe('RunMixin', () => {
       cmp.tractionSaphyrRunsRequest.get.mockReturnValue(failedResponse)
       let foundRuns = await cmp.getRuns()
       expect(foundRuns).toEqual([])
-      expect(cmp.message).toEqual('runs error message 1')
-      expect(cmp.showAlert).toBeCalled()
+      expect(cmp.showAlert).toBeCalledWith('runs error message 1')
     })
   })
 
@@ -100,8 +99,7 @@ describe('RunMixin', () => {
 
       await cmp.handleUpdate(runId, attributes)
       expect(cmp.updateRun).toBeCalled()
-      expect(cmp.message).toEqual('Failed to update Run: error message')
-      expect(cmp.showAlert).toBeCalled()
+      expect(cmp.showAlert).toBeCalledWith('Failed to update Run: error message')
     })
   })
 
@@ -124,7 +122,7 @@ describe('RunMixin', () => {
 
       let payload = cmp.payload(runId, attributes)
       expect(cmp.tractionSaphyrRunsRequest.update).toBeCalledWith(payload)
-      expect(cmp.message).toEqual('Run updated')
+      expect(cmp.showAlert).toBeCalledWith('Run updated')
       expect(store.getters.run(run.id)).toEqual(run)
     })
 
@@ -136,13 +134,7 @@ describe('RunMixin', () => {
 
       cmp.tractionSaphyrRunsRequest.update.mockReturnValue(failedResponse)
 
-      let message
-      try {
-        await cmp.updateRun(runId, attributes)
-      } catch (err) {
-        message = err
-      }
-      expect(message).toEqual('run error message')
+      await expect(cmp.updateRun(runId, attributes)).rejects.toThrow('run error message')
     })
   })
 
