@@ -19,9 +19,9 @@
           The following samples are used to create this library:
           <ul>
             <template v-for="sample in selectedSamples">
-              <li>{{sample.sample_name}} ({{ sample.barcode}})</li>
+              <li :key="sample.id">{{sample.sample_name}} ({{ sample.barcode}})</li>
               Tag:
-              <b-form-select class="mb-3">
+              <b-form-select class="mb-3" :key="sample.id">
                 <option :value="1">ATGC</option>
               </b-form-select>
             </template>
@@ -87,7 +87,6 @@
 </template>
 
 <script>
-import handlePromise from '@/api/PromiseHelper'
 import Api from '@/mixins/Api'
 import Alert from '@/components/Alert'
 import Helper from '@/mixins/Helper'

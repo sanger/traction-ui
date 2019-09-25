@@ -57,8 +57,8 @@
       <template v-slot:row-details="row">
         <b-card class="text-left">
           <template v-for="field in field_in_details">
-            <span class="font-weight-bold">{{ field.label }}</span>: {{ row.item[field.item] }}
-            <br>
+            <span :key="field.label" class="font-weight-bold">{{ field.label }}</span>: {{ row.item[field.item] }}
+            <br :key="field.label">
           </template>
 
           <p class="text-center">
