@@ -18,8 +18,12 @@
         <p>
           The following samples are used to create this library:
           <ul>
-            <template v-for="(sample, index) in selectedSamples">
+            <template v-for="sample in selectedSamples">
               <li>{{sample.sample_name}} ({{ sample.barcode}})</li>
+              Tag:
+              <b-form-select class="mb-3">
+                <option :value="1">ATGC</option>
+              </b-form-select>
             </template>
           </ul>
         </p>
@@ -122,7 +126,8 @@ export default {
       }
     },
     async createLibraries () {
-      let payload = { samples: this.selectedSamples, library: this.library }
+      this.library.samples = this.selectedSamples
+      let payload = { libraries: [this.library] }
       let response = await this.createLibrariesInTraction(payload)
 
       if (response.successful || !response.empty ) {
