@@ -15,6 +15,7 @@ const setRuns = async ({ commit, getters }) => {
     return response
 }
 
+// TODO: turn these methods into one
 const startRun = async ({ dispatch }, id) => {
     let payload = { id: id, attributes: { state: 'started' } }
     await dispatch('handleUpdate', payload)
@@ -57,7 +58,7 @@ const isLibraryBarcodeValid = async ({ dispatch }, barcode) => {
     return validateLibraryTube(libraryTube)
 }
 
-// Reuse action from tubes module?
+// TODO: Reuse action from tubes module?
 const getTubeForBarcode = async ({ rootGetters }, barcode) => {
     let request = rootGetters["traction/saphyr/tubes/tubeRequest"]
     let promise = request.get({ filter: { barcode: barcode } })

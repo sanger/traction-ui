@@ -1,4 +1,4 @@
-import saphyrModule from '@/store/traction/saphyr/index'
+import saphyrModule from '@/store/traction/saphyr'
 
 const traction = {
   namespaced: true,

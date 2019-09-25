@@ -1,5 +1,5 @@
-import saphyrTubesModule from '@/store/traction/saphyr/tubes/index'
-import saphyrRunsModule from '@/store/traction/saphyr/runs/index'
+import saphyrTubesModule from '@/store/traction/saphyr/tubes'
+import saphyrRunsModule from '@/store/traction/saphyr/runs'
 
 const saphyr = {
     namespaced: true,
