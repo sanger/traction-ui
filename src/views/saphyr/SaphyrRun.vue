@@ -14,7 +14,7 @@
 
     <b-form-input :value="runName" @change="setRunName" class="runInfo" id="name" placeholder="name" type="text"/>
 
-    <chip @alert="showAlert"></chip> 
+    <chip @alert="showAlert"></chip>
 
   </div>
 </template>
@@ -37,7 +37,7 @@ export default {
       } catch (err) {
         this.showAlert('Failed to create run', 'danger')
       }
-      
+
     },
     async update () {
       try {
@@ -55,7 +55,7 @@ export default {
       'setRunName',
     ]),
     redirectToRuns() {
-      this.$router.push({ name: 'SaphyrRuns' })  
+      this.$router.push({ name: 'SaphyrRuns' })
     }
   },
   components: {
@@ -89,13 +89,7 @@ button {
   margin-left: 2px;
 }
 
-.container {
-  border: 1px solid black;
-  max-width: 50%;
-  padding: 10px;
-  margin-top: 50px;
-}
-.row {
+/* .run_row {
   border: 1px solid #42b983;
   padding-top: .75rem;
   padding-bottom: .75rem;
@@ -103,6 +97,6 @@ button {
   margin-bottom: 5px;
   margin-right: 0px;
   margin-left: 0px;
-}
+} */
 
 </style>

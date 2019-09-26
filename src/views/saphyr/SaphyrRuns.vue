@@ -31,7 +31,12 @@
                :per-page="perPage"
                :current-page="currentPage"
                @filtered="onFiltered">
-        <template slot="actions" slot-scope="row">
+
+        <template v-slot:cell(chip_barcode)="data">
+          {{ truncateText(data.value, 40) }}
+        </template>
+
+        <template v-slot:cell(actions)="row">
           <b-button :id="generateId('edit', row.item.id)" variant="outline-dark" size="sm" @click="editRun(row.item.id)" class="mr-1">
             Edit
           </b-button>
@@ -73,6 +78,7 @@
 import Alert from '@/components/Alert'
 import Helper from '@/mixins/Helper'
 import TableHelper from '@/mixins/TableHelper'
+import truncate from 'lodash-es/truncate'
 
 import { createNamespacedHelpers } from 'vuex'
 const { mapActions, mapGetters } = createNamespacedHelpers('traction/saphyr/runs')
@@ -109,6 +115,9 @@ export default {
     },
     generateId(text, id) {
       return `${text}-${id}`
+    },
+    truncateText(text, chars) {
+      return truncate(text, { length: chars })
     },
     async provider() {
       try {
