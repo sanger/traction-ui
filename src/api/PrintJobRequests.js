@@ -9,41 +9,34 @@ const printJob = async (printerName, selected) => {
 }
 
 const createPrintJobJson = (printerName, selected) => {
-  let labelTemplateId = store.getters.labelTemplateId
+  let pipeline = store.getters.pipeline
+  let labelTemplateId = store.getters[`traction/${pipeline}/labelTemplateId`]
   let labels = createLabels(selected)
   return { data: { attributes: { printer_name: printerName, label_template_id: labelTemplateId, labels: labels } } }
 }
 
 const createLabels = (selected) => {
-  let body = []
-  let pipeline = 'SAPHYR'
-
-  for (let i in selected) {
-    let text = getTextForSelected(selected[i])
-
-    let label = {
-      pipeline: pipeline,
-      barcode_text: selected[i].barcode,
-      date: moment().format('MMMM Do YYYY'),
-      text_1: text,
-      barcode: selected[i].barcode,
-      round_label_top_line: '',
-      round_label_bottom_line: '',
-    }
-
-    body.push({ main_label: label })
+  return {
+    body: selected.reduce((result, label) => {
+      result.push( { 
+        main_label: {
+          pipeline: store.getters.pipeline.toUpperCase(),
+          barcode_text: label.barcode,
+          date: moment().format('MMMM Do YYYY'),
+          text_1: getTextForSelected(label),
+          barcode: label.barcode,
+          round_label_top_line: '',
+          round_label_bottom_line: ''
+        }
+      })
+      return result
+    },[])
   }
-  return { body: body }
 }
 
 const getTextForSelected = (selected) => {
-  let text
-  if (selected.type == 'samples') {
-    text = selected.name
-  } else if (selected.type == 'libraries') {
-    text = selected.enzyme_name
-  }
-  return text
+  if (selected.type == 'samples') { return selected.name}
+  if (selected.type == 'libraries') { return selected.enzyme_name }
 }
 
 const printMyBarcodeRequest = () => {

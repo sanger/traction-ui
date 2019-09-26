@@ -28,11 +28,11 @@ describe('Dashboard.vue', () => {
     })
 
     it('will have the name', () => {
-      expect(box.find('h4').text()).toEqual('Saphyr')      
+      expect(box.find('h4').text()).toEqual('Saphyr')
     })
 
     it('will have the description', () => {
-      expect(box.find('.description').text()).toBeDefined()
+      expect(box.find('p').text()).toBeDefined()
     })
 
     it('will redirect to the namespace', () => {
@@ -49,11 +49,11 @@ describe('Dashboard.vue', () => {
     })
 
     it('will have the name', () => {
-      expect(box.find('h4').text()).toEqual('Pacbio')      
+      expect(box.find('h4').text()).toEqual('Pacbio')
     })
 
     it('will have the description', () => {
-      expect(box.find('.description').text()).toBeDefined()
+      expect(box.find('p').text()).toBeDefined()
     })
 
     it('will redirect to the namespace', () => {
@@ -64,4 +64,3 @@ describe('Dashboard.vue', () => {
   })
 
 })
-

@@ -12,12 +12,17 @@ export default new Vuex.Store({
   state: {
     api: build(Api.Config, process.env),
     printers: PrinterList,
-    labelTemplateId: process.env.VUE_APP_LABEL_TEMPLATE_ID
+    pipeline: ''
+  },
+  mutations: {
+    setPipeline(state, pipeline) {
+      state.pipeline = pipeline
+    }
   },
   getters: {
     api: state => state.api,
     printers: state => state.printers,
-    labelTemplateId: state => state.labelTemplateId,
+    pipeline: state => state.pipeline
   },
   modules: {
     traction,

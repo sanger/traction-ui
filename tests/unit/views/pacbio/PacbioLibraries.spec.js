@@ -1,4 +1,4 @@
-import Libraries from '@/views/saphyr/SaphyrLibraries'
+import Libraries from '@/views/pacbio/PacbioLibraries'
 import { mount, localVue, Vuex, Data } from '../../testHelper'
 import Alert from '@/components/Alert'
 import PrinterModal from '@/components/PrinterModal'
@@ -11,14 +11,14 @@ describe('Libraries.vue', () => {
 
   beforeEach(() => {
     mockLibraries =  [
-      { id: 1, barcode: 'TRAC-8', material: {id: 6, type: 'libraries', state: 'pending', sample_name: 'sample_d', enzyme_name: 'Nb.BsrDI', created_at: '03/12/2019 11:49' }},
-      { id: 2, barcode: 'TRAC-9', material: {id: 6, type: 'libraries', state: 'pending', sample_name: 'sample_d', enzyme_name: 'Nb.BsrDI', created_at: '03/12/2019 11:49' }}
+      { id: 1, barcode: 'TRAC-8', material: {id: 6, type: 'libraries', state: 'pending', sample_names: 'sample_d,sample_e', volume: 1.0, concentration: 1.0, library_kit_barcode: 'LK12345', fragment_size: 100, created_at: '03/12/2019 11:49' }},
+      { id: 2, barcode: 'TRAC-8', material: {id: 6, type: 'libraries', state: 'pending', sample_name: 'sample_d,sample_e', volume: 1.0, concentration: 1.0, library_kit_barcode: 'LK12345', fragment_size: 100, created_at: '03/12/2019 11:49' }}
     ]
 
     const router = new VueRouter({
       routes: [{
-        path: '/libraries',
-        name: 'Libraries',
+        path: '/pacbio/libraries',
+        name: 'PacbioLibraries',
         component: Libraries,
         props: true
       }]
@@ -29,7 +29,7 @@ describe('Libraries.vue', () => {
         traction: {
           namespaced: true,
           modules: {
-            saphyr: {
+            pacbio: {
               namespaced: true,
                 modules: {
                   tubes: {
@@ -72,7 +72,7 @@ describe('Libraries.vue', () => {
     })
 
     it('contains the correct data', async () => {
-      let mockLibraries = new Response(Data.TractionSaphyrLibraries).deserialize.libraries
+      let mockLibraries = new Response(Data.TractionPacbioLibraries).deserialize.libraries
       wrapper.setData({ items: mockLibraries })
       expect(wrapper.find('tbody').findAll('tr').length).toEqual(5)
     })
@@ -86,11 +86,11 @@ describe('Libraries.vue', () => {
     })
 
     it('calls the correct functions', async () => {
-      libraries.deleteLibraries.mockReturnValue([new Response(Data.TractionSaphyrLibraries)])
+      libraries.deleteLibraries.mockReturnValue([new Response(Data.TractionPacbioLibraries)])
       await libraries.handleLibraryDelete()
 
       expect(libraries.deleteLibraries).toBeCalledWith(mockLibraries.map(s => s.id))
-      expect(libraries.showAlert).toBeCalledWith('Libraries TRAC-8, TRAC-9 successfully deleted', 'success')
+      expect(libraries.showAlert).toBeCalledWith('Libraries 1, 2 successfully deleted')
     })
 
     it('calls showAlert when there is an error', async () => {

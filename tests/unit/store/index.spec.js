@@ -1,7 +1,6 @@
 import Store from '@/store/index'
 
 describe('index', () => {
-
   describe('state', () => {
     it('has api state', () => {
       expect(Store.state.api).toBeDefined()
@@ -9,10 +8,6 @@ describe('index', () => {
 
     it('has a list of printers', () => {
       expect(Store.state.printers).toBeDefined()
-    })
-
-    it('has a label template id', () => {
-      expect(Store.state.labelTemplateId).toBeDefined()
     })
 
     describe('api', () => {
@@ -32,10 +27,5 @@ describe('index', () => {
     it('printers', () => {
       expect(Store.getters.printers).toBeDefined()
     })
-
-    it('labelTemplateId', () => {
-      expect(Store.getters.labelTemplateId).toBeDefined()
-    })
-
   })
 })

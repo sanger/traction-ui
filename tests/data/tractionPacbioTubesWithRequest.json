@@ -1,0 +1,41 @@
+{
+  "data": {
+    "data": [{
+      "id": "1",
+      "type": "tubes",
+      "links": {
+        "self": "http://localhost:3100/v1/pacbio/tubes/1"
+      },
+      "attributes": {
+        "barcode": "TRAC-1"
+      },
+      "relationships": {
+        "material": {
+          "links": {
+            "self": "http://localhost:3100/v1/pacbio/tubes/1/relationships/material",
+            "related": "http://localhost:3100/v1/pacbio/tubes/1/material"
+          },
+          "data": {
+            "type": "requests",
+            "id": "1"
+          }
+        }
+      }
+    }],
+    "included": [{
+      "id": "1",
+      "type": "requests",
+      "attributes": {
+        "external_study_id": "1",
+        "sample_name": "Sample1",
+        "barcode": "TRAC-1",
+        "library_type": 1,
+        "estimate_of_gb_required": 5,
+        "number_of_smrt_cells": 3,
+        "cost_code": "AB1234"
+      }
+    }]
+  },
+  "status": 200,
+  "statusText": "Success"
+}
