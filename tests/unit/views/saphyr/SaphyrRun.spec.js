@@ -1,30 +1,59 @@
-import Run from '@/views/saphyr/SaphyrRun'
-import Runs from '@/views/saphyr/SaphyrRuns'
-import { mount, localVue, store, Data } from '../../testHelper'
-import Response from '@/api/Response'
-import flushPromises from 'flush-promises'
+import SaphyrRun from '@/views/saphyr/SaphyrRun'
+import { mount, localVue, Vuex } from '../../testHelper'
 import VueRouter from 'vue-router'
 import Alert from '@/components/Alert'
-import * as RunApi from '@/api/Run'
 
 describe('Run.vue', () => {
 
-  let wrapper, run, props, input, router, runs, foundRun, runId
-
-  beforeAll(() => {
-    runs = new Response(Data.Runs).deserialize.runs
-    store.commit('addRuns', runs)
-  })
+  let wrapper, mockRun, saphyrRun, router, store
 
   beforeEach(() => {
-    runId = runs[0].id
-    props = { id: runId }
-    router = new VueRouter({ routes:
-      [{ path: '/runs', name: 'Runs', component: Runs }]
+    router = new VueRouter({
+      routes: [
+        { path: '/runs', name: 'SaphyrRuns', component: require('@/views/saphyr/SaphyrRuns') },
+      ]
     })
-    wrapper = mount(Run, { localVue, router, store, propsData: props }  )
-    wrapper.setData({name: 'runrunrun', state: 'pending', chip: {}})
-    run = wrapper.vm
+
+    mockRun =  {
+      id: '1',
+      name: '',
+      state: 'pending',
+      chip: {
+        barcode: '',
+        flowcells: [
+          { position: 1, library: { barcode: '' } },
+          { position: 2, library: { barcode: '' } }
+        ]
+      }
+    }
+
+    store = new Vuex.Store({
+      modules: {
+        traction: {
+          namespaced: true,
+          modules: {
+            saphyr: {
+              namespaced: true,
+              modules: {
+                runs: {
+                  namespaced: true,
+                  state: {
+                    currentRun: mockRun,
+                    runName: mockRun.name
+                  },
+                  getters: {
+                    currentRun: state => state.currentRun,
+                  },
+                }
+              }
+            }
+          }
+        }
+      }
+    })
+
+    wrapper = mount(SaphyrRun, { localVue, store, router })
+    saphyrRun = wrapper.vm
   })
 
   it('will have a name', () => {
@@ -37,232 +66,108 @@ describe('Run.vue', () => {
     })
   })
 
-  describe('props', () => {
-    it('can have an id', () => {
-      expect(run.id).toEqual(props.id)
-    })
-  })
-
-  describe('data', () => {
-    it('can have an name', () => {
-      expect(run.name).toEqual('runrunrun')
-    })
-
-    it('will have a state', () => {
-      expect(run.state).toEqual('pending')
-    })
-
-    it('will have a chip', () => {
-      expect(run.chip).toBeDefined()
-      expect(wrapper.contains('.chip')).toBeTruthy()
-    })
-  })
-
   describe('displaying the data', () => {
     it('shows the current id of the run', () => {
       let id = wrapper.find('#id').text()
-      expect(id).toEqual(`Run ID: ${run.id}`)
+      expect(id).toEqual(`Run ID: ${mockRun.id}`)
     })
 
     it('shows the current state of the run', () => {
       let state = wrapper.find('#state').text()
-      expect(state).toMatch(`state: ${run.state}`)
+      expect(state).toMatch(`State: ${mockRun.state}`)
+    })
+  })
+
+  describe('back button', () => {
+    it('will always show', () => {
+      expect(wrapper.find('#backToRunsButton').exists()).toBeTruthy()
+    })
+  })
+
+  describe('update button', () => {
+    it('will only show if the record is new', () => {
+      expect(wrapper.find('#update').exists()).toBeTruthy()
     })
   })
 
   describe('create button', () => {
+
     it('will only show if the record is new', () => {
       expect(wrapper.find('#create').exists()).toBeFalsy()
     })
   })
 
-  describe('#provider sets the data', () => {
+  describe('update button', () => {
+    it('will only show if the record is new', () => {
+      expect(wrapper.find('#update').exists()).toBeTruthy()
+    })
+  })
+
+  describe('#create', () => {
 
     beforeEach(() => {
+      saphyrRun.showAlert = jest.fn()
+      saphyrRun.createRun = jest.fn()
+      saphyrRun.redirectToRuns = jest.fn()
     })
 
-    it('existing run', () => {
-      foundRun = runs[0]
-
-      wrapper = mount(Run, { localVue, router, store, propsData: props })
-      run = wrapper.vm
-      expect(run.state).toEqual(foundRun.state)
-      expect(run.chip).toEqual(foundRun.chip)
+    it('calls createRun', async () => { 
+      await saphyrRun.create()
+      expect(saphyrRun.createRun).toBeCalled()
     })
 
-    it('new run', async () => {
-      foundRun = RunApi.build()
-      store.commit('addRun', foundRun)
-
-      wrapper = mount(Run, { localVue, router, store, propsData: {id: foundRun.id} } )
-      run = wrapper.vm
-      expect(run.state).toEqual(foundRun.state)
-      expect(run.chip).toEqual(foundRun.chip)
+    it('successful', async () => {
+      await saphyrRun.create()
+      expect(saphyrRun.createRun).toBeCalled()
+      expect(saphyrRun.redirectToRuns).toBeCalled()
     })
-  })
 
-  describe('name input', () => {
-
-    it('updates the name v-model', () => {
-
-      run.updateName = jest.fn()
-
-      let name = 'runaway'
-      input = wrapper.find('#name')
-      input.setValue(name)
-      expect(run.name).toEqual(name)
-
-      input.trigger('change')
-      expect(store.getters.run(runId).name).toEqual(name)
-      expect(run.updateName).toBeCalled()
+    it('unsuccessful', async () => {
+      saphyrRun.createRun.mockImplementation(() => {
+        throw Error('Raise this error')
+      })
+      await saphyrRun.create()
+      expect(saphyrRun.createRun).toBeCalled()
+      expect(saphyrRun.showAlert).toBeCalled()
+      expect(saphyrRun.redirectToRuns).not.toBeCalled()
     })
   })
 
-  describe('update', () => {
-
-    let name
+  describe('#update', () => {
 
     beforeEach(() => {
-      run.updateName = jest.fn()
-      name = 'runaway'
+      saphyrRun.showAlert = jest.fn()
+      saphyrRun.updateRun = jest.fn()
+      saphyrRun.redirectToRuns = jest.fn()
     })
 
-    it('if it is a new run', () => {
-      let newRun = RunApi.build()
-      wrapper.setProps({id: newRun.id})
-      run.name = name
-      run.update()
-      expect(store.getters.run(newRun.id).name).toEqual(name)
-      expect(run.updateName).not.toBeCalled()
+    it('calls updateRun', async () => {
+      await saphyrRun.update()
+      expect(saphyrRun.updateRun).toBeCalled()
+      expect(saphyrRun.redirectToRuns).toBeCalled()
     })
 
-    it('if it is an existing run', () => {
-      run.name = name
-      run.update()
-      expect(store.getters.run(runId).name).toEqual(name)
-      expect(run.updateName).toBeCalled()
-    })
-  })
-
-  describe('#tractionSaphyrRunsRequest', () => {
-    it('will have a tractionSaphyrRunsRequest', () => {
-      expect(run.tractionSaphyrRunsRequest).toBeDefined()
-    })
-  })
-
-  describe('#tractionSaphyrTubeRequest', () => {
-    it('will have a tractionSaphyrTubeRequest', () => {
-      expect(run.tractionSaphyrTubeRequest).toBeDefined()
-    })
-  })
-
-  describe('#saphyrRequest', () => {
-    it('will have a saphyrRequest', () => {
-      expect(run.saphyrRequest).toBeDefined()
-    })
-  })
-
-  describe('#alert', () => {
-    beforeEach(() => {
-      run.showAlert = jest.fn()
+    it('successful', async () => {
+      await saphyrRun.update()
+      expect(saphyrRun.updateRun).toBeCalled()
+      expect(saphyrRun.redirectToRuns).toBeCalled()
     })
 
-    it('emits an event with the message', () => {
-      run.alert('emit this message')
-      expect(run.showAlert).toBeCalled()
+    it('unsuccessful', async () => {
+      saphyrRun.updateRun.mockImplementation(() => {
+        throw Error('Raise this error')
+      })
+      await saphyrRun.update()
+      expect(saphyrRun.updateRun).toBeCalled()
+      expect(saphyrRun.showAlert).toBeCalled()
+      expect(saphyrRun.redirectToRuns).not.toBeCalled()
     })
   })
 
   describe('#showAlert', () => {
-    beforeEach(() => {
-      run.message = 'show this message'
-    })
-
     it('emits an event with the message', () => {
-      run.showAlert()
+      saphyrRun.showAlert('show this message', 'success')
       expect(wrapper.find(Alert).text()).toMatch(/show this message/)
-    })
-  })
-
-  // TODO: we have to mock out parts of the api method which are not relevant.
-  // This is a massive code smell. Need to refactor or find a better way to test.
-  describe('#create', () => {
-
-    let failedResponse
-
-    beforeEach(() => {
-      run.api.traction.saphyr.tubes.get = jest.fn()
-      run.api.traction.saphyr.runs.create = jest.fn()
-      run.api.traction.saphyr.runs.destroy = jest.fn()
-      run.api.traction.saphyr.runs.destroy.mockResolvedValue(Data.SuccessfulDestroy)
-      run.api.traction.saphyr.chips.create = jest.fn()
-      run.api.traction.saphyr.chips.destroy = jest.fn()
-      run.api.traction.saphyr.chips.destroy.mockResolvedValue(Data.SuccessfulDestroy)
-      run.api.traction.saphyr.flowcells.create = jest.fn()
-      failedResponse = { status: 404, statusText: 'Record not found', data: { errors: { title: ['The record identified by 100 could not be found.'] }} }
-
-      foundRun = new Response(Data.RunWithLibrary).deserialize.runs[0]
-      foundRun.id = 'new'
-      store.commit('addRun', foundRun)
-      wrapper = mount(Run, { localVue, router, store, propsData: { id: 'new' } })
-      run = wrapper.vm
-    })
-
-    describe('when the run is valid', () => {
-
-      beforeEach(() => {
-        run.api.traction.saphyr.runs.create.mockResolvedValue(Data.CreateRun)
-        run.api.traction.saphyr.chips.create.mockResolvedValue(Data.CreateChip)
-        run.api.traction.saphyr.tubes.get.mockResolvedValue(Data.TubeWithLibrary)
-      })
-
-      it('success', async () => {
-
-        run.api.traction.saphyr.flowcells.create.mockResolvedValue(Data.CreateFlowcell)
-
-        await run.create()
-        expect(run.message).toEqual('run was successfully created')
-      })
-
-      it('failure', async () => {
-
-        run.api.traction.saphyr.flowcells.create.mockReturnValue(failedResponse)
-
-        await run.create()
-        expect(run.message).toEqual('run could not be created')
-
-      })
-
-      it('clicking the button', async () => {
-
-        run.showAlert = jest.fn()
-
-        run.api.traction.saphyr.flowcells.create.mockResolvedValue(Data.CreateFlowcell)
-
-        let button = wrapper.find('#create')
-        button.trigger('click')
-
-        // without this no message
-        await flushPromises()
-
-        expect(run.message).toEqual('run was successfully created')
-
-      })
-
-    })
-
-    describe('when the run is not valid', () => {
-
-      beforeEach(() => {
-        run.api.traction.saphyr.tubes.get.mockReturnValue(failedResponse)
-      })
-
-      it('will not try to create the run', async () => {
-        await run.create()
-
-        expect(run.message.length).not.toEqual(0)
-      })
-
     })
   })
 

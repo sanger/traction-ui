@@ -1,4 +1,3 @@
-import getTubesForBarcodes from './TubeRequests'
 import handlePromise from './PromiseHelper'
 
 const isObject = (item) => {
@@ -29,9 +28,10 @@ const build = (object) => {
     id: 'new',
     name: '',
     chip: {
+      barcode: '',
       flowcells: [
-        { position: 1, library: {} },
-        { position: 2, library: {} }
+        { position: 1, library: { barcode: ''} },
+        { position: 2, library: { barcode: ''} }
       ]
     }
   }
@@ -39,66 +39,32 @@ const build = (object) => {
   return run
 }
 
-const getLibrary = async (barcode, request) => {
-  let response = await getTubesForBarcodes(barcode, request)
-  if (response.successful && !response.empty) {
-    let material = response.deserialize.tubes[0].material
-    if (material.type === 'libraries') { return material }
-  }
-  return
-}
+const create = async (run, request) => {
+  let id
+  let responses = []
 
-const validateChip = (chip) => {
-  if (chip.barcode === undefined) {
-    return 'barcode not present'
-  }
-  if (chip.barcode && chip.barcode.length < 16) {
-    return 'barcode not in correct format'
-  }
-}
+  try {
+    let runPayload = { data: { type: "runs", attributes: { name: run.name } } }
+    let runResponse = await createResource(runPayload, request.runs)
+    id = runResponse.deserialize.runs[0].id
+    responses.push(runResponse)
 
-const validateFlowcell = (flowcell) => {
-  if (flowcell.library.id === undefined) {
-    return 'library does not exist'
-  }
-}
+    let chipPayload = { data: { type: "chips", attributes: { barcode: run.chip.barcode, saphyr_run_id: id } } }
+    let chipResponse = await createResource(chipPayload, request.chips)
+    id = chipResponse.deserialize.chips[0].id
+    responses.push(chipResponse)
 
-const validateFlowcells = (flowcells) => {
-  let error
-  return flowcells.reduce((errors, flowcell) => {
-    error = validateFlowcell(flowcell)
-    if (error !== undefined) {
-      errors[flowcell.position] = error
+    for (const flowcell of run.chip.flowcells) {
+      let flowcellPayload = { data: { type: "flowcells", attributes: { position: flowcell.position, saphyr_library_id: flowcell.library.id, saphyr_chip_id: id } } }
+      let flowcellResponse = await createResource(flowcellPayload, request.flowcells)
+      responses.push(flowcellResponse)
     }
-    return errors
-  }, {})
-}
 
-const updateFlowcell = (run, flowcellPosition, libraryId) => {
-  let index = run.chip.flowcells.findIndex((obj => obj.position === flowcellPosition))
-  run.chip.flowcells[index].library.id = libraryId
-  return run
-}
-
-const updateChip = (run, chipBarcode) => {
-  run.chip.barcode = chipBarcode
-  return run
-}
-
-const validate = (run) => {
-  let errors = {}
-
-  let error = validateChip(run.chip)
-  if (error !== undefined) {
-    Object.assign(errors, {chip: error})
+  } catch (err) {
+    rollback(responses, request)
+    return false
   }
-
-  error = validateFlowcells(run.chip.flowcells)
-  if (Object.keys(error).length > 0) {
-    Object.assign(errors, {flowcells: error})
-  }
-
-  return errors
+  return true
 }
 
 const createResource = async (payload, request) => {
@@ -111,30 +77,39 @@ const createResource = async (payload, request) => {
   }
 }
 
-const create = async (run, request) => {
-
-  let id
+const update = async (run, request) => {
   let responses = []
 
   try {
-    let runResponse = await createResource({ data: { type: "runs", attributes: { name: run.name } } }, request.runs)
-    id = runResponse.deserialize.runs[0].id
+    let runPayload = { data: { id: run.id, type: "runs", attributes: { name: run.name } } }
+    let runResponse = await updateResource(runPayload, request.runs)
     responses.push(runResponse)
 
-    let chipResponse = await createResource({ data: { type: "chips", attributes: { barcode: run.chip.barcode, saphyr_run_id: id } } }, request.chips)
-    id = chipResponse.deserialize.chips[0].id
+    let chipPayload = { data: { id: run.chip.id, type: "chips", attributes: { barcode: run.chip.barcode } } }
+    let chipResponse = await updateResource(chipPayload, request.chips)
     responses.push(chipResponse)
 
     for (const flowcell of run.chip.flowcells) {
-      let flowcellResponse = await createResource({ data: { type: "flowcells", attributes: { position: flowcell.position, saphyr_library_id: flowcell.library.id, saphyr_chip_id: id } } }, request.flowcells)
+      let flowcellPayload = { data: { id: flowcell.id, type: "flowcells", attributes: { saphyr_library_id: flowcell.library.id } } }
+      let flowcellResponse = await updateResource(flowcellPayload, request.flowcells)
       responses.push(flowcellResponse)
     }
-
   } catch (err) {
     rollback(responses, request)
     return false
   }
   return true
+}
+
+const updateResource = async (payload, request) => {
+  let promises = await request.update(payload)
+  let response = await handlePromise(promises[0])
+
+  if (response.successful) {
+    return response
+  } else {
+    throw response.errors
+  }
 }
 
 const rollback = (responses, request) => {
@@ -156,16 +131,11 @@ const destroy = async (id, request) => {
 
 export {
   build,
-  validate,
-  getLibrary,
   createResource,
   create,
+  update,
   rollback,
   destroy,
   assign,
-  validateChip,
-  validateFlowcell,
-  validateFlowcells,
-  updateFlowcell,
-  updateChip
+  updateResource
 }

@@ -74,7 +74,7 @@ describe('PipelineView', () => {
       links = wrapper.find('nav').findAll('a')
     })
 
-    describe.skip('default', () => {
+    describe('default', () => {
 
       beforeEach(() => {
         wrapper.vm.$router.push({path: '/mypipeline'})
