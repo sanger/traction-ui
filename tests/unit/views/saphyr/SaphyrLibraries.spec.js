@@ -12,7 +12,7 @@ describe('Libraries.vue', () => {
   beforeEach(() => {
     mockLibraries =  [
       { id: 1, barcode: 'TRAC-8', material: {id: 6, type: 'libraries', state: 'pending', sample_name: 'sample_d', enzyme_name: 'Nb.BsrDI', created_at: '03/12/2019 11:49' }},
-      { id: 2, barcode: 'TRAC-8', material: {id: 6, type: 'libraries', state: 'pending', sample_name: 'sample_d', enzyme_name: 'Nb.BsrDI', created_at: '03/12/2019 11:49' }}
+      { id: 2, barcode: 'TRAC-9', material: {id: 6, type: 'libraries', state: 'pending', sample_name: 'sample_d', enzyme_name: 'Nb.BsrDI', created_at: '03/12/2019 11:49' }}
     ]
 
     const router = new VueRouter({
@@ -90,7 +90,7 @@ describe('Libraries.vue', () => {
       await libraries.handleLibraryDelete()
 
       expect(libraries.deleteLibraries).toBeCalledWith(mockLibraries.map(s => s.id))
-      expect(libraries.showAlert).toBeCalledWith('Libraries 1, 2 successfully deleted')
+      expect(libraries.showAlert).toBeCalledWith('Libraries TRAC-8, TRAC-9 successfully deleted', 'success')
     })
 
     it('calls showAlert when there is an error', async () => {

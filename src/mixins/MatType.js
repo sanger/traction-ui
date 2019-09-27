@@ -8,6 +8,7 @@ export default {
   name: 'MatType',
   methods: {
     async getMaterial(materialType) {
+      this.log(this.libraryRequest.include)
       this.log(`getMaterial(${materialType})`)
 
       let promise = null
@@ -22,6 +23,10 @@ export default {
       this.log(response)
 
       if (response.successful) {
+        if (response.empty) {
+          return []
+        }
+
         let materials = eval(`response.deserialize.${materialType}`)
         this.log(materials)
 

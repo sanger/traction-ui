@@ -26,8 +26,8 @@ export default {
     },
     async handlePrintLabel(printerName) {
       let response = await printJob(printerName, this.selected)
-
-      this.showAlert(response.successful ? consts.MESSAGE_SUCCESS_PRINTER : response.errors.message)
+      let variant = response.successful ? 'success' : 'danger'
+      this.showAlert(response.successful ? consts.MESSAGE_SUCCESS_PRINTER : response.errors.message, variant)
     },
     /**
      * https: //stackoverflow.com/a/1026087

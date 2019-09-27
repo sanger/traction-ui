@@ -26,6 +26,7 @@
     <br>
 
     <b-table id="libraries-table"
+             ref="libraries_table"
              show-empty
              :items="items"
              :fields="fields"
@@ -33,15 +34,31 @@
              :per-page="perPage"
              :current-page="currentPage"
              hover
-             @filtered="onFiltered">
-      <template slot="selected" slot-scope="row">
-        <input type="checkbox" class="selected" v-model="selected" :value="row.item" />
+             @filtered="onFiltered"
+             selectable
+             select-mode="multi"
+             @row-selected="onRowSelected"
+             :busy.sync="isBusy">
+      <template v-slot:cell(selected)="{ rowSelected }">
+        <template v-if="rowSelected">
+          <span>&check;</span>
+          <span class="sr-only">Selected</span>
+        </template>
+        <template v-else>
+          <span>&nbsp;</span>
+          <span class="sr-only">Not selected</span>
+        </template>
       </template>
     </b-table>
 
     <span class="font-weight-bold">Total records: {{ rows }}</span>
 
     <div class="clearfix">
+      <printerModal class="float-left"
+                    @selectPrinter="handlePrintLabel"
+                    :disabled="this.selected.length === 0">
+      </printerModal>
+
       <b-button variant="danger"
                 class="float-left"
                 id="deleteLibraries"
@@ -49,10 +66,6 @@
                 :disabled="this.selected.length === 0">
         Delete Libraries
       </b-button>
-      <printerModal class="float-left"
-                    @selectPrinter="handlePrintLabel"
-                    :disabled="this.selected.length === 0">
-      </printerModal>
 
       <b-pagination class="float-right"
                     v-model="currentPage"
@@ -77,6 +90,12 @@ const { mapActions, mapGetters } = createNamespacedHelpers('traction/saphyr/tube
 export default {
   name: 'Libraries',
   mixins: [Helper, MatType, TableHelper],
+  props: {
+    pipeline: {
+      type: String,
+      default: 'saphyr'
+    }
+  },
   data () {
     return {
       fields: [
@@ -93,7 +112,8 @@ export default {
       filter: null,
       perPage: 5,
       currentPage: 1,
-      preFilteredMaterials: []
+      preFilteredMaterials: [],
+      isBusy: false
     }
   },
   components: {
@@ -112,11 +132,13 @@ export default {
     async handleLibraryDelete () {
       try {
         let selectedIds = this.selected.map(s => s.id)
+        let selectedBarcodes = this.selected.map(s => s.barcode)
         let responses = await this.deleteLibraries(selectedIds)
 
         if (responses.every(r => r.successful)) {
           let keyword = selectedIds.length > 1 ? 'Libraries' : 'Library'
-          this.showAlert(`${keyword} ${selectedIds.join(', ')} successfully deleted`)
+          this.showAlert(`${keyword} ${selectedBarcodes.join(', ')} successfully deleted`, 'success')
+          this.provider()
         } else {
           throw Error(responses.map(r => r.errors.message).join(','))
         }
