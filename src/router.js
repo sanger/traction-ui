@@ -44,8 +44,9 @@ export default new Router({
       path: '/pacbio',
       component: Pacbio,
       children: [
-        { path: 'reception', component: PacbioReception },
-        { path: 'samples', component: PacbioSamples },
+        { path: '', redirect: 'reception'},
+        { path: 'reception', name: 'PacbioReception', component: PacbioReception },
+        { path: 'samples', name: 'PacbioSamples', component: PacbioSamples },
         { path: 'libraries', name: 'PacbioLibraries', component: PacbioLibraries },
         { path: 'runs', component: PacbioRuns }
       ]

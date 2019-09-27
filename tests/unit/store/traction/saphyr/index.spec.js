@@ -1,15 +1,16 @@
-import Store from '@/store/traction/saphyr/index'
+//TODO: fix loading issues
+import Store from '@/store'
 
 describe('index', () => {
   describe('state', () => {
     it('has a label template id', () => {
-      expect(Store.state.labelTemplateId).toBeDefined()
+      expect(Store.state.traction.saphyr.labelTemplateId).toBeDefined()
     })
   })
 
   describe('getters', () => {
     it('labelTemplateId', () => {
-      expect(Store.getters.labelTemplateId).toBeDefined()
+      expect(Store.getters['traction/saphyr/labelTemplateId']).toBeDefined()
     })
   })
 })

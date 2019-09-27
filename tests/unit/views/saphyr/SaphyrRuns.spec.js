@@ -1,29 +1,51 @@
 import Runs from '@/views/saphyr/SaphyrRuns'
-import Run from '@/views/saphyr/SaphyrRun'
-import { mount, localVue, store, Data } from '../../testHelper'
-import VueRouter from 'vue-router'
+import { mount, localVue, Vuex, Data } from '../../testHelper'
 import Response from '@/api/Response'
 import Alert from '@/components/Alert'
-import flushPromises from 'flush-promises'
 
 describe('Runs.vue', () => {
 
-  let wrapper, runs, router
+  let wrapper, runs, mockRuns, store
 
   beforeEach(() => {
-    router = new VueRouter({ routes:
-      [
-        { path: '/saphyr/runs', name: 'SaphyrRuns', component: Runs },
-        { path: '/saphyr/run', name: 'SaphyrRun', component: Run, props: {id: true} },
-        { path: '/saphyr/run/:id', component: Run, props: true } ]
+    mockRuns = new Response(Data.Runs).deserialize.runs
+
+    store = new Vuex.Store({
+      modules: {
+        traction: {
+          namespaced: true,
+          modules: {
+            saphyr: {
+              namespaced: true,
+              modules: {
+                runs: {
+                  namespaced: true,
+                  state: {
+                    runs: mockRuns
+                  },
+                  getters: {
+                    runs: state => state.runs,
+                  },
+                  actions: {
+                    setRuns: jest.fn()
+                  }
+                }
+              }
+
+            }
+          }
+        }
+      }
     })
 
-    wrapper = mount(Runs, { localVue, router, store, methods: { provider () { return } } } )
-
-    let mockRuns = new Response(Data.Runs).deserialize.runs
-    wrapper.setData({items: mockRuns})
-
+    wrapper = mount(Runs, { store, localVue, methods: { provider() { return } } }) 
     runs = wrapper.vm
+  })
+
+  describe('created hook', () => {
+    it('sets the runs data', () => {
+      expect(runs.runs).toEqual(mockRuns)
+    })
   })
 
   describe('alert', () => {
@@ -38,37 +60,15 @@ describe('Runs.vue', () => {
 
   describe('sorting', () => {
     it('will sort the runs by created at', () => {
-      wrapper.setData({items: new Response(Data.Runs).deserialize.runs})
       expect(wrapper.find('tbody').findAll('tr').at(0).text()).toMatch(/TRAC-456/)
     })
   })
 
-  describe('#provider sets the data', () => {
-    it('when runs exists', async () => {
-      let mockResponse = new Response(Data.Runs).deserialize.runs
-      wrapper = mount(Runs, { localVue, router, store, methods: { getRuns() { return mockResponse } } } )
-      runs = wrapper.vm
-
-      await flushPromises()
-      expect(runs.items).toEqual(mockResponse)
-    })
-
-    it('when no runs are returned', async () => {
-      let mockResponse = []
-      wrapper = mount(Runs, { localVue, router, store, methods: { getRuns () { return mockResponse } } } )
-      runs = wrapper.vm
-      await flushPromises()
-      expect(runs.items).toEqual(mockResponse)
-    })
-  })
-
   describe('filtering runs', () => {
-    let mockRuns
-
     beforeEach(() => {
-      mockRuns = new Response(Data.Runs).deserialize.runs
-
-      wrapper = mount(Runs, { localVue,
+      wrapper = mount(Runs, {
+        store,
+        localVue,
         methods: {
           provider() {
             return
@@ -76,14 +76,13 @@ describe('Runs.vue', () => {
         },
         data() {
           return {
-            items: mockRuns,
             filter: mockRuns[0].chip_barcode
           }
         }
-      })
+      }) 
     })
 
-    it('will filter the libraries in the table', () => {
+    it('will filter the runs in the table', () => {
       expect(wrapper.find('tbody').findAll('tr').length).toEqual(1)
       expect(wrapper.find('tbody').findAll('tr').at(0).text()).toMatch(/TRAC-123/)
     })
@@ -203,10 +202,10 @@ describe('Runs.vue', () => {
     })
 
     it('will redirect to the run when newRun is clicked', async () => {
-      runs.showRun = jest.fn()
+      runs.newRun = jest.fn()
       let button = wrapper.find('#newRun')
       button.trigger('click')
-      expect(runs.showRun).toBeCalled()
+      expect(runs.newRun).toBeCalled()
     })
   })
 
@@ -218,12 +217,10 @@ describe('Runs.vue', () => {
   })
 
   describe ('pagination', () => {
-    let mockRuns
-
     beforeEach(() => {
-      mockRuns = new Response(Data.Runs).deserialize.runs
-
-      wrapper = mount(Runs, { localVue,
+      wrapper = mount(Runs, {
+        store,
+        localVue,
         methods: {
           provider() {
             return
@@ -231,12 +228,11 @@ describe('Runs.vue', () => {
         },
         data() {
           return {
-            items: mockRuns,
             perPage: 2,
             currentPage: 1
           }
         }
-      })
+      }) 
     })
 
     it('will paginate the runs in the table', () => {
@@ -245,4 +241,27 @@ describe('Runs.vue', () => {
 
   })
 
+  describe('#provider', () => {
+    beforeEach(() => {
+      wrapper = mount(Runs, { store, localVue })
+      runs = wrapper.vm
+
+      runs.setRuns = jest.fn()
+      runs.showAlert = jest.fn()
+    })
+
+    it('calls setRuns successfully', () => {
+      runs.provider()
+      expect(runs.setRuns).toBeCalled()
+    })
+
+    it('calls setRuns unsuccessfully', () => {
+      runs.setRuns.mockImplementation(() => {
+        throw Error('Raise this error')
+      })
+      runs.provider()
+      expect(runs.showAlert).toBeCalled()
+    })
+
+  })
 })

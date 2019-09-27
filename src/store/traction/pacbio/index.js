@@ -1,4 +1,4 @@
-import pacbioTubesModule from '@/store/traction/pacbio/tubes/index'
+import pacbioTubesModule from '@/store/traction/pacbio/tubes'
 
 const pacbio = {
   namespaced: true,

@@ -23,7 +23,7 @@
       <b-table id="runs-table"
                hover
                show-empty
-               :items="items"
+               :items="runs"
                :fields="fields"
                :filter="filter"
                :sort-by.sync="sortBy"
@@ -31,8 +31,13 @@
                :per-page="perPage"
                :current-page="currentPage"
                @filtered="onFiltered">
+
+        <template v-slot:cell(chip_barcode)="data">
+          {{ truncateText(data.value, 40) }}
+        </template>
+
         <template v-slot:cell(actions)="row">
-          <b-button :id="generateId('createRun',row.item.id)" variant="outline-dark" size="sm" @click="showRun(row.item.id)" class="mr-1">
+          <b-button :id="generateId('edit', row.item.id)" variant="outline-dark" size="sm" @click="editRun(row.item.id)" class="mr-1">
             Edit
           </b-button>
 
@@ -50,18 +55,18 @@
         </template>
       </b-table>
 
-      <span class="font-weight-bold">Total records: {{ rows }}</span>
+      <span class="font-weight-bold">Total records: {{ runs.length }}</span>
 
       <div class="clearfix">
         <b-button id="newRun"
                   class="float-left"
-                  @click="showRun()"
+                  @click="newRun()"
                   variant="success">
           New Run
         </b-button>
         <b-pagination class="float-right"
                       v-model="currentPage"
-                      :total-rows="rows"
+                      :total-rows="runs.length"
                       :per-page="perPage"
                       aria-controls="libraries-table">
         </b-pagination>
@@ -71,13 +76,16 @@
 
 <script>
 import Alert from '@/components/Alert'
-import RunMixin from '@/mixins/RunMixin'
 import Helper from '@/mixins/Helper'
 import TableHelper from '@/mixins/TableHelper'
+import truncate from 'lodash-es/truncate'
+
+import { createNamespacedHelpers } from 'vuex'
+const { mapActions, mapGetters } = createNamespacedHelpers('traction/saphyr/runs')
 
 export default {
   name: 'Runs',
-  mixins: [RunMixin, Helper, TableHelper],
+  mixins: [Helper, TableHelper],
   props: {
   },
   data () {
@@ -90,7 +98,6 @@ export default {
         { key: 'created_at', label: 'Created at', sortable: true },
         { key: 'actions', label: 'Actions' },
       ],
-      items: [],
       filteredItems: [],
       filter: null,
       sortBy: 'created_at',
@@ -100,9 +107,6 @@ export default {
     }
   },
   methods: {
-    async provider() {
-      this.items = await this.getRuns()
-    },
     isRunDisabled(run) {
       return run.state == 'completed' || run.state == 'cancelled'
     },
@@ -112,9 +116,32 @@ export default {
     generateId(text, id) {
       return `${text}-${id}`
     },
+    truncateText(text, chars) {
+      return truncate(text, { length: chars })
+    },
+    async provider() {
+      try {
+        await this.setRuns()
+      } catch (error) {
+        this.showAlert("Failed to get runs: " + error.message, 'danger')
+      }
+    },
+    ...mapActions([
+      'setRuns',
+      'startRun',
+      'completeRun',
+      'cancelRun',
+      'editRun',
+      'newRun'
+    ])
   },
   created() {
     this.provider()
+  },
+  computed: {
+    ...mapGetters([
+      'runs'
+    ])
   },
   components: {
     Alert

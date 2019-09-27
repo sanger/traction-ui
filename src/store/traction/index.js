@@ -1,5 +1,5 @@
-import saphyrModule from '@/store/traction/saphyr/index'
-import pacbioModule from '@/store/traction/pacbio/index'
+import saphyrModule from '@/store/traction/saphyr'
+import pacbioModule from '@/store/traction/pacbio'
 
 const traction = {
   namespaced: true,
