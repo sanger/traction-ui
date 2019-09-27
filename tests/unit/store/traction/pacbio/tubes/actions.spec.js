@@ -105,19 +105,20 @@ describe('#sampleTubesJson', () => {
   })
 })
 
+// TODO: we really need factories rather than building payloads manually
 describe('#createLibrariesInTraction', () => {
   let create, getters, libraries, payload
 
   beforeEach(() => {
     create = jest.fn()
     getters = { 'libraryRequest': { 'create': create } }
-    libraries = [
-      { id: 1, volume: 1.0, concentration: 1.0, libraryKitBarcode: "LK12345", fragmentSize: 100 },
-      { id: 2, volume: 1.0, concentration: 1.0, libraryKitBarcode: "LK12345", fragmentSize: 100 },
-    ]
+    libraries = { libraries: [
+      { volume: 1.0, concentration: 1.0, libraryKitBarcode: "LK12345", fragmentSize: 100, samples: [{id: 1}] },
+      { volume: 1.0, concentration: 1.0, libraryKitBarcode: "LK12345", fragmentSize: 100, samples: [{id: 2}] }
+    ]}
     payload = [
-      { pacbio_request_id: 1, state: 'pending', volume: 1.0, concentration: 1.0, library_kit_barcode: "LK12345", fragment_size: 100 },
-      { pacbio_request_id: 2, state: 'pending', volume: 1.0, concentration: 1.0, library_kit_barcode: "LK12345", fragment_size: 100 },
+      {concentration: 1, fragment_size: 100, library_kit_barcode: "LK12345", relationships: {requests: {data: [{id: 1, relationships: {tag: { data: {id: 1}}}, type: "requests"}]}}, volume: 1}, 
+      {concentration: 1, fragment_size: 100, library_kit_barcode: "LK12345", relationships: {requests: {data: [{id: 2, relationships: {tag: { data: {id: 1}}}, type: "requests"}]}}, volume: 1}
     ]
   })
 
@@ -136,7 +137,7 @@ describe('#createLibrariesInTraction', () => {
 
     create.mockReturnValue(failedResponse)
 
-    let response = await Actions.createLibrariesInTraction({ getters }, payload)
+    let response = await Actions.createLibrariesInTraction({ getters }, libraries)
     expect(response).toEqual(expectedResponse)
   })
 

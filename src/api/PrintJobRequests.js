@@ -18,7 +18,7 @@ const createPrintJobJson = (printerName, selected) => {
 const createLabels = (selected) => {
   return {
     body: selected.reduce((result, label) => {
-      result.push( { 
+      result.push( {
         main_label: {
           pipeline: store.getters.pipeline.toUpperCase(),
           barcode_text: label.barcode,
