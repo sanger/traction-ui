@@ -33,6 +33,8 @@
           @filtered="onFiltered">
   </b-table>
 
+    <span class="font-weight-bold">Total records: {{ runs.length }}</span>
+
   </div>
 </template>
 
