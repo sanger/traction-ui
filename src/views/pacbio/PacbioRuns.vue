@@ -31,9 +31,17 @@
           :per-page="perPage"
           :current-page="currentPage"
           @filtered="onFiltered">
-  </b-table>
+    </b-table>
 
     <span class="font-weight-bold">Total records: {{ runs.length }}</span>
+
+    <div>
+      <b-pagination class="float-right"
+              v-model="currentPage"
+              :total-rows="runs.length"
+              :per-page="perPage">
+      </b-pagination>
+    </div>
 
   </div>
 </template>
