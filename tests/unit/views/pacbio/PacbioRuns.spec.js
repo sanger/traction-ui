@@ -144,21 +144,20 @@ describe('Runs.vue', () => {
 
     })
 
-    describe('generate sample sheet button', () => {
-        let button
+    describe('generate sample sheet link', () => {
+        let link, id
 
-        it('exists', () => {
-            button = wrapper.find('#generate-sample-sheet-1')
-            expect(button).toBeTruthy()
+        beforeEach(() => {
+            id = 1
+            link = wrapper.find('#generate-sample-sheet-' + id)
         })
 
-        it('on click generateSampleSheet is called', () => {
-            runs.generateSampleSheet = jest.fn()
+        it('exists', () => {
+            expect(link).toBeTruthy()
+        })
 
-            button = wrapper.find('#generate-sample-sheet-1')
-            button.trigger('click')
-
-            expect(runs.generateSampleSheet).toBeCalledWith("1")
+        it('has the correct href link', () => {
+            expect(link.attributes("href")).toBe(process.env.VUE_APP_TRACTION_BASE_URL + "/v1/pacbio/runs/" + id + "/sample_sheet")
         })
     })
 })

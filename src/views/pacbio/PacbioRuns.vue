@@ -33,13 +33,10 @@
           @filtered="onFiltered">
 
         <template v-slot:cell(actions)="row">
-          <b-button :id="generateId('generate-sample-sheet', row.item.id)"
-                    variant="outline-dark"
-                    size="sm"
-                    class="mr-1"
-                    @click="generateSampleSheet(row.item.id)">
-            Generate Sample Sheet
-          </b-button>
+          <a :id="generateId('generate-sample-sheet', row.item.id)"
+             :href="generateSampleSheetPath(row.item.id)">
+             Generate Sample Sheet
+          </a>
         </template>
 
     </b-table>
@@ -93,6 +90,9 @@ export default {
     },
     generateId(text, id) {
       return `${text}-${id}`
+    },
+    generateSampleSheetPath(id) {
+      return process.env.VUE_APP_TRACTION_BASE_URL + '/v1/pacbio/runs/' + id + '/sample_sheet'
     },
     ...mapActions([
       'setRuns',
