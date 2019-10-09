@@ -143,4 +143,22 @@ describe('Runs.vue', () => {
         })
 
     })
+
+    describe('generate sample sheet button', () => {
+        let button
+
+        it('exists', () => {
+            button = wrapper.find('#generate-sample-sheet-1')
+            expect(button).toBeTruthy()
+        })
+
+        it('on click generateSampleSheet is called', () => {
+            runs.generateSampleSheet = jest.fn()
+
+            button = wrapper.find('#generate-sample-sheet-1')
+            button.trigger('click')
+
+            expect(runs.generateSampleSheet).toBeCalledWith("1")
+        })
+    })
 })

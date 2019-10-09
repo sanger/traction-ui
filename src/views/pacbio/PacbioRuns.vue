@@ -31,7 +31,18 @@
           :per-page="perPage"
           :current-page="currentPage"
           @filtered="onFiltered">
-  </b-table>
+
+        <template v-slot:cell(actions)="row">
+          <b-button :id="generateId('generate-sample-sheet', row.item.id)"
+                    variant="outline-dark"
+                    size="sm"
+                    class="mr-1"
+                    @click="generateSampleSheet(row.item.id)">
+            Generate Sample Sheet
+          </b-button>
+        </template>
+
+    </b-table>
 
   </div>
 </template>
@@ -80,8 +91,12 @@ export default {
         this.showAlert("Failed to get runs: " + error.message, 'danger')
       }
     },
+    generateId(text, id) {
+      return `${text}-${id}`
+    },
     ...mapActions([
-      'setRuns'
+      'setRuns',
+      'generateSampleSheet'
     ])
   },
   components: {

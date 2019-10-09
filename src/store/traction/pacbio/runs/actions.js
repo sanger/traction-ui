@@ -13,12 +13,19 @@ const setRuns = async ({ commit, getters }) => {
     return response
 }
 
+const generateSampleSheet = async (id) => {
+    console.log(id)
+    console.log("generateSampleSheet")
+}
+
 const actions = {
-    setRuns
+    setRuns,
+    generateSampleSheet
 }
 
 export {
-    setRuns
+    setRuns,
+    generateSampleSheet
 }
 
 export default actions
