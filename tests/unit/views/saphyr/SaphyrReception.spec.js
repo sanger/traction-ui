@@ -45,18 +45,18 @@ describe('Reception', () => {
     })
   })
 
-  describe('findSequencescapeTubes button', () => {
+  describe('findSampleExtractionTubes button', () => {
 
     beforeEach(() => {
-      reception.handleSequencescapeTubes = jest.fn()
+      reception.handleSampleExtractionTubes = jest.fn()
     })
 
     it('calls the right function', () => {
       let input = wrapper.find('textarea')
       input.setValue(barcodes)
-      let button = wrapper.find('#findSequencescapeTubes')
+      let button = wrapper.find('#findSampleExtractionTubes')
       button.trigger('click')
-      expect(reception.handleSequencescapeTubes).toBeCalled()
+      expect(reception.handleSampleExtractionTubes).toBeCalled()
     })
 
   })
@@ -153,16 +153,16 @@ describe('Reception', () => {
     })
   })
 
-  describe('#handleSequencescapeTubes', () => {
+  describe('#handleSampleExtractionTubes', () => {
     let failedResponse
 
     beforeEach(() => {
       let store = new Vuex.Store({
         modules: {
-          sequencescape: {
+          sampleExtraction: {
             namespaced: true,
             state: {
-              sequencescapeTubes: []
+              sampleExtractionTubes: []
             }
           }
         }
@@ -171,8 +171,8 @@ describe('Reception', () => {
       wrapper = mount(Reception, { localVue, store } )
       reception = wrapper.vm
 
-      reception.getSequencescapeTubesForBarcodes = jest.fn()
-      reception.exportSampleTubesIntoTraction = jest.fn()
+      reception.getSampleExtractionTubesForBarcodes = jest.fn()
+      reception.exportSampleExtractionTubesIntoTraction = jest.fn()
       reception.handleTractionTubes = jest.fn()
       reception.showAlert = jest.fn()
       wrapper.setData({ barcodes: 'TRAC-1\nTRAC-2' })
@@ -181,23 +181,23 @@ describe('Reception', () => {
     })
 
     it('successfully for samples', async () => {
-      reception.getSequencescapeTubesForBarcodes.mockResolvedValue(new Response(Data.SequencescapeTubesWithSample))
-      reception.exportSampleTubesIntoTraction.mockResolvedValue(new Response(Data.Requests))
+      reception.getSampleExtractionTubesForBarcodes.mockResolvedValue(new Response(Data.SequencescapeTubesWithSample))
+      reception.exportSampleExtractionTubesIntoTraction.mockResolvedValue(new Response(Data.Requests))
 
-      await reception.handleSequencescapeTubes()
-      expect(reception.getSequencescapeTubesForBarcodes).toBeCalled()
-      expect(reception.exportSampleTubesIntoTraction).toBeCalled()
+      await reception.handleSampleExtractionTubes()
+      expect(reception.getSampleExtractionTubesForBarcodes).toBeCalled()
+      expect(reception.exportSampleExtractionTubesIntoTraction).toBeCalled()
       expect(reception.handleTractionTubes).toBeCalled()
       expect(reception.showAlert).not.toBeCalled()
     })
 
-    it('is unsuccessful when getSequencescapeTubesForBarcodes fails', async () => {
-      reception.getSequencescapeTubesForBarcodes.mockResolvedValue(new Response(Data.SequencescapeTubesWithSample))
-      reception.exportSampleTubesIntoTraction.mockResolvedValue(new Response(failedResponse))
+    it('is unsuccessful when getSampleExtractionTubesForBarcodes fails', async () => {
+      reception.getSampleExtractionTubesForBarcodes.mockResolvedValue(new Response(Data.SequencescapeTubesWithSample))
+      reception.exportSampleExtractionTubesIntoTraction.mockResolvedValue(new Response(failedResponse))
 
-      await reception.handleSequencescapeTubes()
-      expect(reception.getSequencescapeTubesForBarcodes).toBeCalled()
-      expect(reception.exportSampleTubesIntoTraction).toBeCalled()
+      await reception.handleSampleExtractionTubes()
+      expect(reception.getSampleExtractionTubesForBarcodes).toBeCalled()
+      expect(reception.exportSampleExtractionTubesIntoTraction).toBeCalled()
       expect(reception.handleTractionTubes).not.toBeCalled()
       expect(reception.showAlert).toBeCalled()
     })

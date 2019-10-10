@@ -66,5 +66,15 @@
         "name": "printJobs"
       }
     }
+  },
+  "sampleExtraction": {
+    "name": "sampleExtraction",
+    "apiNamespace": "api/v1",
+    "resources": {
+      "assets": {
+        "name": "assets",
+        "include": ""
+      }
+    }
   }
 }

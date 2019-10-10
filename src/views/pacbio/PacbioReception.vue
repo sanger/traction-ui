@@ -135,7 +135,7 @@ export default {
       'getTractionTubesForBarcodes',
       'exportSampleTubesIntoTraction'
     ]),
-    ...mapActions('sequencescape', [
+    ...mapActions('sampleExtraction', [
       'getSequencescapeTubesForBarcodes'
     ])
   },
