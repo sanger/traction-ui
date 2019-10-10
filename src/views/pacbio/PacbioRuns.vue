@@ -31,6 +31,13 @@
           :per-page="perPage"
           :current-page="currentPage"
           @filtered="onFiltered">
+
+        <template v-slot:cell(actions)="row">
+          <a :id="generateId('generate-sample-sheet', row.item.id)"
+             :href="generateSampleSheetPath(row.item.id)">
+             Generate Sample Sheet
+          </a>
+        </template>
     </b-table>
 
     <span class="font-weight-bold">Total records: {{ runs.length }}</span>
