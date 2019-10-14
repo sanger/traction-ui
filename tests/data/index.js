@@ -20,6 +20,7 @@ import TubeWithLibrary from './tubeWithLibrary'
 import TractionPacbioTubesWithRequest from './tractionPacbioTubesWithRequest'
 import PacbioTubeWithLibrary from './pacbioTubeWithLibrary'
 import TractionPacbioLibraries from './tractionPacbioLibraries'
+import SampleExtractionTubesWithSample from './sampleExtractionTubesWithSample'
 
 export default {
   CreateChip,
@@ -33,7 +34,7 @@ export default {
   Runs,
   RunWithLibrary,
   Samples,
-  SequencescapeTubesWithSample,
+  SampleExtractionTubesWithSample,
   SuccessfulDestroy,
   TestResponse,
   TractionSaphyrLibraries,
