@@ -28,8 +28,7 @@
                         "sanger_sample_id": "5200STDY7322947",
                         "sample_id": "5200STDY7322947",
                         "location": "A01",
-                        "parent": "5888a006-e8f4-11e9-9231-68b59977951e",
-                        "pushedTo": "Sequencescape"
+                        "parent": "5888a006-e8f4-11e9-9231-68b59977951e"
                     }
                 }
             }

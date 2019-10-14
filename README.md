@@ -17,7 +17,6 @@ To specify the required config, use `.env` files by creating a `.env.<environmen
 add the config to it. The esential config required:
 
 ```bash
-VUE_APP_SEQUENCESCAPE_BASE_URL=<url>
 VUE_APP_TRACTION_BASE_URL=<url>
 VUE_APP_PRINTMYBARCODE_BASE_URL=<url>
 VUE_APP_SAMPLEEXTRACTION_BASE_URL=<url>
@@ -80,7 +79,7 @@ Saphyr with minimal information
 
 1. Upload manifest in SS - creates the samples in SS within the tubes copy barcodes from SS
 1. Import SS tubes in Traction UI
-1. Paste barcodes in the text box 'Import Sequencescape Tubes'
+1. Paste barcodes in the text box 'Import Sample Extraction Tubes'
     * goes gets sample meta data from SS
     * creates samples in Traction in tubes with Traction barcode
     * redirected to samples table
