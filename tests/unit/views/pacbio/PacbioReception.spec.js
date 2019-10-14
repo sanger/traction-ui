@@ -1,8 +1,8 @@
-import Reception from '@/views/saphyr/SaphyrReception'
+import Reception from '@/views/pacbio/PacbioReception'
 import { mount, localVue, Vuex, Data } from '../../testHelper'
 import Response from '@/api/Response'
-import Samples from '@/views/saphyr/SaphyrSamples'
-import Libraries from '@/views/saphyr/SaphyrLibraries'
+import Samples from '@/views/pacbio/PacbioSamples'
+import Libraries from '@/views/pacbio/PacbioLibraries'
 import VueRouter from 'vue-router'
 import Alert from '@/components/Alert'
 import * as consts from '@/consts/consts'
@@ -14,8 +14,8 @@ describe('Reception', () => {
   beforeEach(() => {
     router = new VueRouter({ routes:
       [
-        { path: '/saphyr/samples', name: 'SaphyrSamples', component: Samples, props: true },
-        { path: '/saphyr/libraries', name: 'SaphyrLibraries', component: Libraries, props: true }
+        { path: '/pacbio/samples', name: 'PacbioSamples', component: Samples, props: true },
+        { path: '/pacbio/libraries', name: 'PacbioLibraries', component: Libraries, props: true }
       ]
     })
 
@@ -86,7 +86,7 @@ describe('Reception', () => {
           traction: {
             namespaced: true,
             modules: {
-              saphyr: {
+              pacbio: {
                 namespaced: true,
                   modules: {
                     tubes: {
@@ -228,9 +228,9 @@ describe('Reception', () => {
   /* TODO: add
     checkMaterialTypes
     success:
-    expect(reception.$route.path).toEqual('/saphyr/samples')
+    expect(reception.$route.path).toEqual('/pacbio/samples')
     failure:
-    expect(reception.$route.path).toEqual('/saphyr/libraries')
+    expect(reception.$route.path).toEqual('/pacbio/libraries')
     checkBarcodes 
   */
   describe.skip('#handleTractionTubes', () => {
@@ -243,26 +243,26 @@ describe('Reception', () => {
     })
   
     it('invalid barcodes', async () => {
-      reception.tractionSaphyrTubeRequest.get.mockResolvedValue(Data.TractionSaphyrTubesWithRequest)
+      reception.tractionPacbioTubeRequest.get.mockResolvedValue(Data.TractionSaphyrTubesWithRequest)
       await reception.handleTractionTubes()
       expect(wrapper.find(Alert).vm.message).toMatch(consts.MESSAGE_ERROR_INVALID_BARCODES)
     })
   
     it('successfully for libraries', async () => {
       wrapper.setData({ barcodes: 'TRAC-3' })
-      reception.tractionSaphyrTubeRequest.get.mockResolvedValue(Data.TractionSaphyrTubesWithRequest)
+      reception.tractionPacbioTubeRequest.get.mockResolvedValue(Data.TractionSaphyrTubesWithRequest)
       await reception.handleTractionTubes()
       expect(reception.$route.path).toEqual('/libraries')
     })
   
     it('unsuccessfully', async () => {
-      reception.tractionSaphyrTubeRequest.get.mockResolvedValue(failedResponse)
+      reception.tractionPacbioTubeRequest.get.mockResolvedValue(failedResponse)
       await expect(reception.handleTractionTubes()).rejects.toThrow(
         consts.MESSAGE_ERROR_GET_TRACTION_TUBES)
     })
   
     it('when no tubes exist', async () => {
-      reception.tractionSaphyrTubeRequest.get.mockResolvedValue(emptyResponse)
+      reception.tractionPacbioTubeRequest.get.mockResolvedValue(emptyResponse)
       await expect(reception.handleTractionTubes()).rejects.toThrow(
         consts.MESSAGE_ERROR_GET_TRACTION_TUBES)
     })
@@ -275,24 +275,24 @@ describe('Reception', () => {
   
   
     it('successfully', async () => {
-      reception.tractionSaphyrRequestsRequest.create.mockResolvedValue(Data.Requests)
+      reception.tractionPacbioRequestsRequest.create.mockResolvedValue(Data.Requests)
       await reception.exportSampleTubesIntoTraction(ssTubes)
   
-      expect(reception.tractionSaphyrRequestsRequest.create).toBeCalled()
+      expect(reception.tractionPacbioRequestsRequest.create).toBeCalled()
   
-      let tractionSaphyrRequestTubesBarcode = new Response(Data.Requests).deserialize.requests.map(s=> s.barcode).join('\n')
-      expect(reception.barcodes).toEqual(tractionSaphyrRequestTubesBarcode)
+      let tractionPacbioRequestTubesBarcode = new Response(Data.Requests).deserialize.requests.map(s=> s.barcode).join('\n')
+      expect(reception.barcodes).toEqual(tractionPacbioRequestTubesBarcode)
     })
   
     it('unsuccessfully', async () => {
       let failedResponse = { status: 422, statusText: 'Unprocessable Entity', data: { errors: { name: ['error message'] }} }
   
-      reception.tractionSaphyrRequestsRequest.create.mockResolvedValue(failedResponse)
+      reception.tractionPacbioRequestsRequest.create.mockResolvedValue(failedResponse)
   
       await expect(reception.exportSampleTubesIntoTraction(ssTubes)).rejects.toThrow(
         'Failed to create tubes in Traction: name error message')
   
-      expect(reception.tractionSaphyrRequestsRequest.create).toBeCalled()
+      expect(reception.tractionPacbioRequestsRequest.create).toBeCalled()
     })
   })
 

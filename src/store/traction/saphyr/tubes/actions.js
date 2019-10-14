@@ -31,10 +31,10 @@ const exportSampleExtractionTubesIntoTraction = async ({ getters }, tubes)  => {
 
 const sampleExtractionTubeJson = (tubes) => {
   return tubes.map(t => ({
-    external_id: 'mockExternal-ID',
-    external_study_id: 'mockStudy-ID',
-    name: 'mockName',
-    species: 'mockSpecies'
+    name: t.fields.sanger_sample_id + 'mock',
+    species: 'mock sample_common_name',
+    external_id: t.sample_uuid,
+    external_study_id: t.study_uuid + '-mock'
   }))
 }
 

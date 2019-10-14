@@ -12,12 +12,12 @@ const getTractionTubesForBarcodes = async ({ commit, getters }, barcodes)  => {
   return response
 }
 
-const exportSampleTubesIntoTraction = async ({ getters }, tubes)  => {
+const exportSampleExtractionTubesIntoTraction = async ({ getters }, tubes)  => {
   let body = {
     data: {
       type: "requests",
       attributes: {
-        requests: sampleTubeJson(tubes)
+        requests: sampleExtractionTubeJson(tubes)
       }
     }
   }
@@ -29,12 +29,16 @@ const exportSampleTubesIntoTraction = async ({ getters }, tubes)  => {
   return response
 }
 
-const sampleTubeJson = (tubes) => {
+const sampleExtractionTubeJson = (tubes) => {
   return tubes.map(t => ({
-    external_id: t.samples[0].uuid,
-    external_study_id: t.studies[0].uuid,
-    name: t.name,
-    species: t.samples[0].sample_metadata.sample_common_name
+    name: t.fields.sanger_sample_id + 'mock',
+    species: 'mock sample_common_name',
+    external_id: t.sample_uuid,
+    external_study_id: t.study_uuid + '-mock',
+    library_type: t.library_type + ' mock',
+    estimate_of_gb_required: t.estimate_of_gb_required + 'mock',
+    number_of_smrt_cells: t.number_of_smrt_cells + 'mock',
+    cost_code: t.cost_code + 'mock'
   }))
 }
 
@@ -91,15 +95,15 @@ const deleteLibraries = async ({ getters }, libraryIds) => {
 
 const actions = {
   getTractionTubesForBarcodes,
-  exportSampleTubesIntoTraction,
+  exportSampleExtractionTubesIntoTraction,
   createLibrariesInTraction,
   deleteLibraries
 }
 
 export {
   getTractionTubesForBarcodes,
-  exportSampleTubesIntoTraction,
-  sampleTubeJson,
+  exportSampleExtractionTubesIntoTraction,
+  sampleExtractionTubeJson,
   createLibrariesInTraction,
   deleteLibraries
 }

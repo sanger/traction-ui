@@ -68,7 +68,7 @@ describe('#exportSampleExtractionTubesIntoTraction', () => {
   beforeEach(() => {
     create = jest.fn()
     getters = { 'requestsRequest': { 'create': create } }
-    tubes = new Response(Data.SequencescapeTubesWithSample).deserialize.tubes
+    tubes = new Response(Data.SampleExtractionTubesWithSample).deserialize.assets
   })
 
   it('successfully', async () => {
@@ -93,7 +93,7 @@ describe('#exportSampleExtractionTubesIntoTraction', () => {
 describe('#sampleExtractionTubeJson', () => {
 
   it('will convert a deserialized response to the correct format', () => {
-    let tubes = new Response(Data.SequencescapeTubesWithSample).deserialize.tubes
+    let tubes = new Response(Data.SampleExtractionTubesWithSample).deserialize.assets
     let json = Actions.sampleExtractionTubeJson(tubes)
     let tube = json[0]
     expect(tube.external_id).toBeDefined()

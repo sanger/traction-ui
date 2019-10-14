@@ -44,5 +44,6 @@ export default {
   TubeWithLibrary,
   TractionPacbioTubesWithRequest,
   PacbioTubeWithLibrary,
-  TractionPacbioLibraries
+  TractionPacbioLibraries,
+  SequencescapeTubesWithSample
 }
