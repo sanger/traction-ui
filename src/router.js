@@ -12,6 +12,7 @@ import PacbioReception from './views/pacbio/PacbioReception'
 import PacbioSamples from './views/pacbio/PacbioSamples'
 import PacbioLibraries from './views/pacbio/PacbioLibraries'
 import PacbioRuns from './views/pacbio/PacbioRuns'
+import PacbioRun from './views/pacbio/PacbioRun'
 
 Vue.use(Router)
 
@@ -48,7 +49,9 @@ export default new Router({
         { path: 'reception', name: 'PacbioReception', component: PacbioReception },
         { path: 'samples', name: 'PacbioSamples', component: PacbioSamples },
         { path: 'libraries', name: 'PacbioLibraries', component: PacbioLibraries },
-        { path: 'runs', component: PacbioRuns }
+        { path: 'runs', name: 'PacbioRuns', component: PacbioRuns },
+        { path: 'run', name: 'PacbioRun', component: PacbioRun, props: { id: true } },
+        { path: 'run/:id', component: PacbioRun, props: true }
       ]
     }
   ]

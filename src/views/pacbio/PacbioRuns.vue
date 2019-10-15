@@ -35,6 +35,15 @@
 
     <span class="font-weight-bold">Total records: {{ runs.length }}</span>
 
+    <div class="clearfix">
+      <b-button id="newRun"
+                class="float-left"
+                @click="newRun()"
+                variant="success">
+        New Run
+      </b-button>
+    </div>
+
   </div>
 </template>
 
@@ -83,7 +92,8 @@ export default {
       }
     },
     ...mapActions([
-      'setRuns'
+      'setRuns',
+      'newRun'
     ])
   },
   components: {

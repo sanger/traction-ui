@@ -1,4 +1,6 @@
 import handlePromise from '@/api/PromiseHelper'
+import * as PacbioRun from '@/api/PacbioRun'
+import router from '@/router'
 
 const setRuns = async ({ commit, getters }) => {
     let request = getters.runRequest
@@ -13,12 +15,20 @@ const setRuns = async ({ commit, getters }) => {
     return response
 }
 
+const newRun = ({ commit }) => {
+    let run = PacbioRun.build()
+    commit('setCurrentRun', run)
+    router.push({ path: `/pacbio/run/new` })
+}
+
 const actions = {
-    setRuns
+    setRuns,
+    newRun
 }
 
 export {
-    setRuns
+    setRuns,
+    newRun
 }
 
 export default actions

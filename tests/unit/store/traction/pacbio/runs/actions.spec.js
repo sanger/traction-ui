@@ -1,6 +1,7 @@
 import Response from '@/api/Response'
-import * as Actions from '@/store/traction/saphyr/runs/actions'
+import * as Actions from '@/store/traction/pacbio/runs/actions'
 import { Data } from '../../../../testHelper'
+import * as Run from '@/api/PacbioRun'
 
 describe('#setRuns', () => {
   let commit, get, getters, failedResponse
@@ -34,5 +35,22 @@ describe('#setRuns', () => {
 
     expect(commit).not.toHaveBeenCalled()
     expect(response).toEqual(expectedResponse)
+  })
+})
+
+describe('#newRun', () => {
+  let commit
+
+  beforeEach(() => {
+    commit = jest.fn()
+  })
+
+  it('successfully', async () => {
+    let newRun = Run.build()
+    Run.build = jest.fn()
+    Run.build.mockReturnValue(newRun)
+
+    Actions.newRun({ commit })
+    expect(commit).toHaveBeenCalledWith("setCurrentRun", newRun)
   })
 })

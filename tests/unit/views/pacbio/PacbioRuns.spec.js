@@ -58,6 +58,20 @@ describe('Runs.vue', () => {
         expect(wrapper.contains('table')).toBe(true)
     })
 
+    describe('new run button', () => {
+
+        it('contains a create new run button', () => {
+            expect(wrapper.contains('button')).toBe(true)
+        })
+
+        it('will redirect to the run when newRun is clicked', async () => {
+            runs.newRun = jest.fn()
+            let button = wrapper.find('#newRun')
+            button.trigger('click')
+            expect(runs.newRun).toBeCalled()
+        })
+    })
+
     describe('sorting', () => {
         it('will sort the runs by created at', () => {
             expect(wrapper.find('tbody').findAll('tr').at(0).text()).toMatch(/Sequel II/)
