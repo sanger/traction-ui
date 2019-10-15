@@ -11,6 +11,7 @@
 
     <div>
       <pacbioRunInfo></pacbioRunInfo>
+      <br>
       <pacbioLibrariesTable></pacbioLibrariesTable>
       <plate></plate>
     </div>

@@ -1,5 +1,5 @@
 import PacbioRun from '@/views/pacbio/PacbioRun'
-import { mount, localVue, Vuex } from '../../testHelper'
+import { shallowMount, localVue, Vuex } from '../../testHelper'
 import VueRouter from 'vue-router'
 import Alert from '@/components/Alert'
 import PacbioRunInfo from '@/components/PacbioRunInfo'
@@ -8,7 +8,7 @@ import Plate from '@/components/Plate'
 
 describe('Run.vue', () => {
 
-    let wrapper, mockRun, pacbioRun, router, store
+    let wrapper, mockRun, router, store
 
     beforeEach(() => {
         router = new VueRouter({
@@ -63,8 +63,7 @@ describe('Run.vue', () => {
             }
         })
 
-        wrapper = mount(PacbioRun, { localVue, store, router })
-        pacbioRun = wrapper.vm
+        wrapper = shallowMount(PacbioRun, { localVue, store, router })
     })  
 
     it('will have a name', () => {
@@ -100,92 +99,4 @@ describe('Run.vue', () => {
             expect(wrapper.find('#backToRunsButton').exists()).toBeTruthy()
         })
     })
-
-    // describe('update button', () => {
-    //     it('will only show if the record is new', () => {
-    //         expect(wrapper.find('#update').exists()).toBeTruthy()
-    //     })
-    // })
-
-    // describe('create button', () => {
-
-    //     it('will only show if the record is new', () => {
-    //         expect(wrapper.find('#create').exists()).toBeFalsy()
-    //     })
-    // })
-
-    // describe('update button', () => {
-    //     it('will only show if the record is new', () => {
-    //         expect(wrapper.find('#update').exists()).toBeTruthy()
-    //     })
-    // })
-
-    // describe('#create', () => {
-
-    //     beforeEach(() => {
-    //         saphyrRun.showAlert = jest.fn()
-    //         saphyrRun.createRun = jest.fn()
-    //         saphyrRun.redirectToRuns = jest.fn()
-    //     })
-
-    //     it('calls createRun', async () => {
-    //         await saphyrRun.create()
-    //         expect(saphyrRun.createRun).toBeCalled()
-    //     })
-
-    //     it('successful', async () => {
-    //         await saphyrRun.create()
-    //         expect(saphyrRun.createRun).toBeCalled()
-    //         expect(saphyrRun.redirectToRuns).toBeCalled()
-    //     })
-
-    //     it('unsuccessful', async () => {
-    //         saphyrRun.createRun.mockImplementation(() => {
-    //             throw Error('Raise this error')
-    //         })
-    //         await saphyrRun.create()
-    //         expect(saphyrRun.createRun).toBeCalled()
-    //         expect(saphyrRun.showAlert).toBeCalled()
-    //         expect(saphyrRun.redirectToRuns).not.toBeCalled()
-    //     })
-    // })
-
-    // describe('#update', () => {
-
-    //     beforeEach(() => {
-    //         saphyrRun.showAlert = jest.fn()
-    //         saphyrRun.updateRun = jest.fn()
-    //         saphyrRun.redirectToRuns = jest.fn()
-    //     })
-
-    //     it('calls updateRun', async () => {
-    //         await saphyrRun.update()
-    //         expect(saphyrRun.updateRun).toBeCalled()
-    //         expect(saphyrRun.redirectToRuns).toBeCalled()
-    //     })
-
-    //     it('successful', async () => {
-    //         await saphyrRun.update()
-    //         expect(saphyrRun.updateRun).toBeCalled()
-    //         expect(saphyrRun.redirectToRuns).toBeCalled()
-    //     })
-
-    //     it('unsuccessful', async () => {
-    //         saphyrRun.updateRun.mockImplementation(() => {
-    //             throw Error('Raise this error')
-    //         })
-    //         await saphyrRun.update()
-    //         expect(saphyrRun.updateRun).toBeCalled()
-    //         expect(saphyrRun.showAlert).toBeCalled()
-    //         expect(saphyrRun.redirectToRuns).not.toBeCalled()
-    //     })
-    // })
-
-    describe('#showAlert', () => {
-        it('emits an event with the message', () => {
-            pacbioRun.showAlert('show this message', 'success')
-            expect(wrapper.find(Alert).text()).toMatch(/show this message/)
-        })
-    })
-
 })
