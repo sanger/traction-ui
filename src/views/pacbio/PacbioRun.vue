@@ -6,9 +6,14 @@
       <b-button id="backToRunsButton" class="float-right">Back</b-button>
     </router-link>
 
-    <pacbioRunInfo></pacbioRunInfo>
-    <pacbioLibrariesTable></pacbioLibrariesTable>
-    <plate></plate>
+    <br>
+    <br>
+
+    <div>
+      <pacbioRunInfo></pacbioRunInfo>
+      <pacbioLibrariesTable></pacbioLibrariesTable>
+      <plate></plate>
+    </div>
 
   </div>
 </template>
@@ -48,11 +53,6 @@ export default {
 </script>
 
 <style>
-
-.runInfo {
-  text-align: left;
-  margin-top: 5px;
-}
 
 button {
   margin-right: 2px;
