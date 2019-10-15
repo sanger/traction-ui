@@ -39,9 +39,6 @@ export default {
     Plate
   },
   computed: {
-    newRecord () {
-      return isNaN(this.currentRun.id)
-    },
     ...mapGetters([
       'currentRun'
     ]),
