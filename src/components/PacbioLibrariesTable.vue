@@ -33,9 +33,7 @@ export default {
         { key: 'library_kit_barcode', label: 'Library Kit Barcode', sortable: true },
         { key: 'fragment_size', label: 'Fragment Size', sortable: true },
       ],
-      items: [],
-      perPage: 5,
-      currentPage: 1
+      items: []
     }
   },
   computed: {
