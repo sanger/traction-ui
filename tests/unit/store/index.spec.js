@@ -12,7 +12,6 @@ describe('index', () => {
 
     describe('api', () => {
       it('contains multiple resources', () => {
-        expect(Store.state.api.sequencescape).toBeDefined()
         expect(Store.state.api.traction).toBeDefined()
         expect(Store.state.api.printMyBarcode).toBeDefined()
       })

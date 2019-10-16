@@ -14,12 +14,13 @@
     </div>
 
     <b-button class="scanButton"
-              id="findSequencescapeTubes"
+              id="findSampleExtractionTubes"
               variant="success"
-              @click="handleSequencescapeTubes"
+              @click="handleSampleExtractionTubes"
               :disabled="this.barcodes.length === 0">
-      Import Sequencescape Tubes
+      Import Sample Extraction Tubes
     </b-button>
+
     <b-button class="scanButton"
               id="findTractionTubes"
               variant="success"
@@ -54,14 +55,15 @@ export default {
     getBarcodes () {
       return this.barcodes.split('\n').filter(Boolean)
     },
-    async handleSequencescapeTubes () {
+    async handleSampleExtractionTubes () {
       try {
-        let getSSTubeResponse = await this.getSequencescapeTubesForBarcodes(this.getBarcodes())
-        if (!getSSTubeResponse.successful || getSSTubeResponse.empty) {
-          throw getSSTubeResponse.errors
+        let getSETubeResponse = await this.getSampleExtractionTubesForBarcodes(this.getBarcodes())
+        if (!getSETubeResponse.successful || getSETubeResponse.empty) {
+          throw getSETubeResponse.errors
         }
 
-        let exportSampleTubesResponse = await this.exportSampleTubesIntoTraction(this.sequencescapeTubes)
+        let exportSampleTubesResponse = await this.exportSampleExtractionTubesIntoTraction(this.sampleExtractionTubes)
+
         if (!exportSampleTubesResponse.successful || exportSampleTubesResponse.empty) {
           throw exportSampleTubesResponse.errors
         }
@@ -133,18 +135,18 @@ export default {
     },
     ...mapActions('traction/saphyr/tubes', [
       'getTractionTubesForBarcodes',
-      'exportSampleTubesIntoTraction'
+      'exportSampleExtractionTubesIntoTraction'
     ]),
-    ...mapActions('sequencescape', [
-      'getSequencescapeTubesForBarcodes'
+    ...mapActions('sampleExtraction', [
+      'getSampleExtractionTubesForBarcodes'
     ])
   },
   computed: {
     ...mapState('traction/saphyr/tubes', {
       tractionTubes: state => state.tractionTubes
     }),
-    ...mapState('sequencescape', {
-      sequencescapeTubes: state => state.sequencescapeTubes
+    ...mapState('sampleExtraction', {
+      sampleExtractionTubes: state => state.sampleExtractionTubes
     })
   }
 }

@@ -14,7 +14,7 @@ describe('Request', () => {
   describe('Request', () => {
     beforeEach(() => {
       headers = { 'Content-Type': 'application/json', 'Accept': 'application/json' }
-      props = { baseURL: 'http://sequencescape.com',
+      props = { baseURL: 'http://traction.com',
                 apiNamespace: 'api/v2',
                 headers: headers,
                 resource: 'requests',
@@ -27,7 +27,7 @@ describe('Request', () => {
 
     describe('props', () => {
       it('will have a baseURL', () => {
-        expect(request.baseURL).toEqual('http://sequencescape.com')
+        expect(request.baseURL).toEqual('http://traction.com')
       })
 
       it('will have an apiNamespace', () => {
@@ -53,7 +53,7 @@ describe('Request', () => {
 
     describe('#rootURL', () => {
       it('will have a rootUrl', () => {
-        expect(request.rootURL).toEqual('http://sequencescape.com/api/v2')
+        expect(request.rootURL).toEqual('http://traction.com/api/v2')
       })
     })
 
@@ -206,7 +206,7 @@ describe('Request', () => {
 
     beforeEach(() => {
       headers = { 'Content-Type': 'application/json', 'Accept': 'application/json' }
-      props = { baseURL: 'http://sequencescape.com',
+      props = { baseURL: 'http://traction.com',
                 apiNamespace: 'api/v2',
                 headers: headers,
                 resource: 'requests'

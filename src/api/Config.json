@@ -1,14 +1,4 @@
 {
-  "sequencescape": {
-    "name": "sequencescape",
-    "apiNamespace": "api/v2",
-    "resources": {
-      "tubes": {
-        "name": "tubes",
-        "include": "samples.sample_metadata,studies"
-      }
-    }
-  },
   "traction": {
     "name": "traction",
     "apiNamespace": "v1",
@@ -68,6 +58,16 @@
     "resources": {
       "print_jobs": {
         "name": "printJobs"
+      }
+    }
+  },
+  "sampleExtraction": {
+    "name": "sampleExtraction",
+    "apiNamespace": "api/v1",
+    "resources": {
+      "assets": {
+        "name": "assets",
+        "include": ""
       }
     }
   }
