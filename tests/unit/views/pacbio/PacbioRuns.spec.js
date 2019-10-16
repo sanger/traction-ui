@@ -143,4 +143,21 @@ describe('Runs.vue', () => {
         })
 
     })
+
+    describe('generate sample sheet link', () => {
+        let link, id
+
+        beforeEach(() => {
+            id = 1
+            link = wrapper.find('#generate-sample-sheet-' + id)
+        })
+
+        it('exists', () => {
+            expect(link).toBeTruthy()
+        })
+
+        it('has the correct href link', () => {
+            expect(link.attributes("href")).toBe(process.env.VUE_APP_TRACTION_BASE_URL + "/v1/pacbio/runs/" + id + "/sample_sheet")
+        })
+    })
 })

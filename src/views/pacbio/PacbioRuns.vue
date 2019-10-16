@@ -31,6 +31,13 @@
           :per-page="perPage"
           :current-page="currentPage"
           @filtered="onFiltered">
+
+        <template v-slot:cell(actions)="row">
+          <a :id="generateId('generate-sample-sheet', row.item.id)"
+             :href="generateSampleSheetPath(row.item.id)">
+             Generate Sample Sheet
+          </a>
+        </template>
     </b-table>
 
     <span class="font-weight-bold">Total records: {{ runs.length }}</span>
@@ -82,8 +89,15 @@ export default {
         this.showAlert("Failed to get runs: " + error.message, 'danger')
       }
     },
+    generateId(text, id) {
+      return `${text}-${id}`
+    },
+    generateSampleSheetPath(id) {
+      return process.env.VUE_APP_TRACTION_BASE_URL + '/v1/pacbio/runs/' + id + '/sample_sheet'
+    },
     ...mapActions([
-      'setRuns'
+      'setRuns',
+      'generateSampleSheet'
     ])
   },
   components: {
