@@ -2,8 +2,7 @@ import * as Actions from '@/store/sampleExtraction/actions'
 import { Data } from '../../testHelper'
 import Response from '@/api/Response'
 
-// skip this test as using mock data until Sample Extraction allows CORS
-describe.skip('#getSampleExtractionTubesForBarcodes', () => {
+describe('#getSampleExtractionTubesForBarcodes', () => {
     let commit, get, getters, barcodeList, failedResponse, emptyResponse
 
     beforeEach(() => {
