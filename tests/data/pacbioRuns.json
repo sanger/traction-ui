@@ -1,0 +1,42 @@
+{
+    "data": {
+        "data": [
+            {
+                "id": "1",
+                "type": "runs",
+                "links": {
+                    "self": "http://localhost:3100/v1/pacbio/runs/1"
+                },
+                "attributes": {
+                    "name": "aname",
+                    "template_prep_kit_box_barcode": "DM111710025910011171",
+                    "binding_kit_box_barcode": "DM11171008622001111",
+                    "sequencing_kit_box_barcode": "DM000110086180012311",
+                    "dna_control_complex_box_barcode": "Lxxxxx10171760012311",
+                    "system_name": "Sequel I",
+                    "created_at": "11/09/2019 01:11"
+                }
+            },
+            {
+                "id": "2",
+                "type": "runs",
+                "links": {
+                    "self": "http://localhost:3100/v1/pacbio/runs/1"
+                },
+                "attributes": {
+                    "name": "anothername",
+                    "template_prep_kit_box_barcode": "DM111710025910011172",
+                    "binding_kit_box_barcode": "DM11171008622001112",
+                    "sequencing_kit_box_barcode": "DM000110086180012312",
+                    "dna_control_complex_box_barcode": "Lxxxxx10171760012312",
+                    "system_name": "Sequel II",
+                    "created_at": "12/09/2019 02:22"
+                }
+            }
+        ],
+        "included": [
+        ]
+    },
+    "status": 200,
+    "statusText": "Success"
+}
