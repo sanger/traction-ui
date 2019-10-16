@@ -62,20 +62,20 @@ describe('#getTractionTubesForBarcodes', () => {
   })
 })
 
-describe('#exportSampleTubesIntoTraction', () => {
+describe('#exportSampleExtractionTubesIntoTraction', () => {
   let dispatch, create, getters, tubes
 
   beforeEach(() => {
     create = jest.fn()
     getters = { 'requestsRequest': { 'create': create } }
-    tubes = new Response(Data.SequencescapeTubesWithSample).deserialize.tubes
+    tubes = new Response(Data.SampleExtractionTubesWithSample).deserialize.assets
   })
 
   it('successfully', async () => {
     let expectedResponse = new Response(Data.TractionSaphyrTubesWithRequest)
     create.mockReturnValue(Data.TractionSaphyrTubesWithRequest)
 
-    let response = await Actions.exportSampleTubesIntoTraction({ getters }, tubes)
+    let response = await Actions.exportSampleExtractionTubesIntoTraction({ getters }, tubes)
     expect(response).toEqual(expectedResponse)
   })
 
@@ -85,21 +85,21 @@ describe('#exportSampleTubesIntoTraction', () => {
 
     create.mockReturnValue(failedResponse)
 
-    let response = await Actions.exportSampleTubesIntoTraction({ dispatch, getters }, tubes)
+    let response = await Actions.exportSampleExtractionTubesIntoTraction({ dispatch, getters }, tubes)
     expect(response).toEqual(expectedResponse)
   })
 })
 
-describe('#sampleTubesJson', () => {
+describe('#sampleExtractionTubeJson', () => {
 
   it('will convert a deserialized response to the correct format', () => {
-    let tubes = new Response(Data.SequencescapeTubesWithSample).deserialize.tubes
-    let json = Actions.sampleTubeJson(tubes)
+    let tubes = new Response(Data.SampleExtractionTubesWithSample).deserialize.assets
+    let json = Actions.sampleExtractionTubeJson(tubes)
     let tube = json[0]
     expect(tube.external_id).toBeDefined()
     expect(tube.external_id.includes('-')).toBeTruthy()
     expect(tube.external_study_id).toBeDefined()
-    expect(tube.external_id.includes('-')).toBeTruthy()
+    expect(tube.external_study_id.includes('-')).toBeTruthy()
     expect(tube.name).toBeDefined()
     expect(tube.species).toBeDefined()
   })

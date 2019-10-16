@@ -3,7 +3,7 @@ import getters from './getters'
 import mutations from './mutations'
 import actions from './actions'
 
-const sequencescape = {
+const sampleExtraction = {
   namespaced: true,
   state,
   getters,
@@ -11,4 +11,4 @@ const sequencescape = {
   actions
 }
 
-export default sequencescape
+export default sampleExtraction

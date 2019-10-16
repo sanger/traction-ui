@@ -9,7 +9,6 @@ import RunNoLibrary from './runNoLibrary'
 import Runs from './runs'
 import RunWithLibrary from './runWithLibrary'
 import Samples from './samples'
-import SequencescapeTubesWithSample from './sequencescapeTubesWithSample'
 import SuccessfulDestroy from './successfulDestroy'
 import TestResponse from './testResponse'
 import TractionSaphyrLibraries from './tractionSaphyrLibraries'
@@ -20,6 +19,7 @@ import TubeWithLibrary from './tubeWithLibrary'
 import TractionPacbioTubesWithRequest from './tractionPacbioTubesWithRequest'
 import PacbioTubeWithLibrary from './pacbioTubeWithLibrary'
 import TractionPacbioLibraries from './tractionPacbioLibraries'
+import SampleExtractionTubesWithSample from './sampleExtractionTubesWithSample'
 import PacbioRuns from './pacbioRuns'
 
 export default {
@@ -34,7 +34,7 @@ export default {
   Runs,
   RunWithLibrary,
   Samples,
-  SequencescapeTubesWithSample,
+  SampleExtractionTubesWithSample,
   SuccessfulDestroy,
   TestResponse,
   TractionSaphyrLibraries,

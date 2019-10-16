@@ -1,24 +1,24 @@
 import handlePromise from '@/api/PromiseHelper'
 
-const getSequencescapeTubesForBarcodes = async ({ commit, getters }, barcodes)  => {
+const getSampleExtractionTubesForBarcodes = async ({ commit, getters }, barcodes)  => {
   let barcodeString = barcodes.join(',')
-  let request = getters.sequencescapeTubeRequest
+  let request = getters.sampleExtractionTubeRequest
   let promise = request.get({filter: { barcode: barcodeString} })
   let response = await handlePromise(promise)
 
   if (response.successful && !response.empty) {
-    let tubes = response.deserialize.tubes
-    commit('setSequencescapeTubes', tubes)
+    let assets = response.deserialize.assets
+    commit('setSampleExtractionTubes', assets)
   }
   return response
 }
 
 const actions = {
-  getSequencescapeTubesForBarcodes
+  getSampleExtractionTubesForBarcodes
 }
 
 export {
-  getSequencescapeTubesForBarcodes
+  getSampleExtractionTubesForBarcodes
 }
 
 export default actions
