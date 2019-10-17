@@ -49,7 +49,6 @@ describe('PacbioRunInfo', () => {
         expect(runInfo.sequencingKitBoxBarcode).toBeDefined()
         expect(runInfo.dnaControlComplexBoxBarcode).toBeDefined()
         expect(runInfo.comments).toBeDefined()
-        expect(runInfo.uuid).toBeDefined()
         expect(runInfo.systemName).toBeDefined()
     })
 

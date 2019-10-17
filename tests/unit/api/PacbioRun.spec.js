@@ -62,10 +62,6 @@ describe('Run', () => {
         expect(run.comments).toBeDefined()
       })
       
-      it('will have an uuid', () => {
-        expect(run.uuid).toBeDefined()
-      })
-      
       it('will have an system_name', () => {
         expect(run.system_name).toBeDefined()
       })

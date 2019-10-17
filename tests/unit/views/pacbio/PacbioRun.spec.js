@@ -25,7 +25,6 @@ describe('Run.vue', () => {
             sequencing_kit_box_barcode: '',
             dna_control_complex_box_barcode: '',
             comments: '',
-            uuid: '',
             system_name: '',
             plate: {
                 barcode: '',

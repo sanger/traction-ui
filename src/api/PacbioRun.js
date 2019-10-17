@@ -9,7 +9,6 @@ const build = (object) => {
         sequencing_kit_box_barcode: '',
         dna_control_complex_box_barcode: '',
         comments: '',
-        uuid: '',
         system_name: '',
         plate: {
             barcode: '',
@@ -26,8 +25,8 @@ const build = (object) => {
     return run
 }
 
+// REFACTOR
 const create = async (run, request) => {
-    let id
     let responses = []
 
     try {
@@ -46,21 +45,21 @@ const create = async (run, request) => {
         }
 
         let runResponse = await createResource(runPayload, request.runs)
-        id = runResponse.deserialize.runs[0].id
+        let runId = runResponse.deserialize.runs[0].id
         responses.push(runResponse)
 
         let platePayload = {
             data: {
                 type: "plates",
                 attributes: {
-                    pacbio_run_id: id,
+                    pacbio_run_id: runId,
                     barcode: run.plate.barcode
                 }
             }
         }
 
         let plateResponse = await createResource(platePayload, request.plates)
-        id = plateResponse.deserialize.plates[0].id
+        let plateId = plateResponse.deserialize.plates[0].id
         responses.push(plateResponse)
 
         for (const well of run.plate.wells) {
@@ -70,7 +69,7 @@ const create = async (run, request) => {
                     attributes: {
                         row: well.row,
                         column: well.column,
-                        pacbio_plate_id: id,
+                        pacbio_plate_id: plateId,
                         movie_time: well.movie_time,
                         insert_size: well.insert_size,
                         on_plate_loading_concentration: well.on_plate_loading_concentration,
@@ -80,9 +79,24 @@ const create = async (run, request) => {
             }
 
             let wellResponse = await createResource(wellPayload, request.wells)
+            // let wellId = wellResponse.deserialize.wells[0].id 
             responses.push(wellResponse)
 
-            // create well library
+            // let wellLibraryPayload = {
+            //     data: {
+            //         type: "libraries",
+            //         attributes: {
+            //         },
+            //         relationships: {
+            //             libraries: {
+            //                 data: [{ "type": "libraries", "id": "1" }]
+            //             }
+            //         }
+            //     }
+            // }
+
+            // let wellLibraryResponse = await createResource(wellLibraryPayload, request.wells)
+            // responses.push(wellLibraryResponse)
         }
 
     } catch (err) {
