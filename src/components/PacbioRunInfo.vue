@@ -1,5 +1,5 @@
 <template>
-  <div class="runInfo">
+  <div class="pacbioRunInfo">
 
     <b-row>
       <b-col>
@@ -116,7 +116,7 @@ export default {
 
 <style>
 
-.runInfo {
+.pacbioRunInfo {
   border: solid;
   border-width: 1px;
   padding: 10px;
