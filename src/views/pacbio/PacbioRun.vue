@@ -6,6 +6,8 @@
       <b-button id="backToRunsButton" class="float-right">Back</b-button>
     </router-link>
 
+    <b-button v-if="newRecord" class="float-right" id="create" variant="success" @click="create">Create</b-button>
+
     <br>
     <br>
 
@@ -26,12 +28,26 @@ import Plate from '@/components/Plate'
 import Alert from '@/components/Alert'
 import Helper from '@/mixins/Helper'
 import { createNamespacedHelpers } from 'vuex'
-const { mapGetters, mapState } = createNamespacedHelpers('traction/pacbio/runs')
+const { mapGetters, mapState, mapActions } = createNamespacedHelpers('traction/pacbio/runs')
 
 export default {
   name: 'Run',
   mixins: [Helper],
   methods: {
+    async create () {
+      try {
+        await this.createRun()
+        this.redirectToRuns()
+      } catch (err) {
+        this.showAlert('Failed to create run', 'danger')
+      }
+    },
+    ...mapActions([
+      'createRun'
+    ]),
+    redirectToRuns() {
+      this.$router.push({ name: 'PacbioRuns' })
+    }
   },
   components: {
     Alert,
@@ -40,6 +56,9 @@ export default {
     Plate
   },
   computed: {
+    newRecord () {
+      return isNaN(this.currentRun.id)
+    },
     ...mapGetters([
       'currentRun'
     ]),

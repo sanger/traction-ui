@@ -1,0 +1,23 @@
+{
+    "data": {
+        "data": [
+            {
+                "id": "1",
+                "type": "libraries",
+                "attributes": {
+                    "state": "pending",
+                    "barcode": null,
+                    "volume": 1.111,
+                    "concentration": 2.222,
+                    "library_kit_barcode": "LK1234567",
+                    "fragment_size": 100,
+                    "created_at": "10/09/2019 10:25",
+                    "deactivated_at": null,
+                    "sample_names": ""
+                }
+            }
+        ]
+    },
+    "status": 200,
+    "statusText": "Success"
+}

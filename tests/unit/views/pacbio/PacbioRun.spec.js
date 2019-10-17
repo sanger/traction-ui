@@ -8,7 +8,7 @@ import Plate from '@/components/Plate'
 
 describe('Run.vue', () => {
 
-    let wrapper, mockRun, router, store
+    let wrapper, mockRun, router, store, pacbioRun
 
     beforeEach(() => {
         router = new VueRouter({
@@ -64,6 +64,7 @@ describe('Run.vue', () => {
         })
 
         wrapper = shallowMount(PacbioRun, { localVue, store, router })
+        pacbioRun = wrapper.vm
     })  
 
     it('will have a name', () => {
@@ -99,4 +100,41 @@ describe('Run.vue', () => {
             expect(wrapper.find('#backToRunsButton').exists()).toBeTruthy()
         })
     })
+
+    describe('Create button', () => {
+        it('will only show if the record is new', () => {
+            expect(wrapper.find('#create').exists()).toBeFalsy()
+        })
+    })
+
+    describe('#create', () => {
+
+        beforeEach(() => {
+            pacbioRun.showAlert = jest.fn()
+            pacbioRun.createRun = jest.fn()
+            pacbioRun.redirectToRuns = jest.fn()
+        })
+
+        it('calls createRun', async () => {
+            await pacbioRun.create()
+            expect(pacbioRun.createRun).toBeCalled()
+        })
+
+        it('successful', async () => {
+            await pacbioRun.create()
+            expect(pacbioRun.createRun).toBeCalled()
+            expect(pacbioRun.redirectToRuns).toBeCalled()
+        })
+
+        it('unsuccessful', async () => {
+            pacbioRun.createRun.mockImplementation(() => {
+                throw Error('Raise this error')
+            })
+            await pacbioRun.create()
+            expect(pacbioRun.createRun).toBeCalled()
+            expect(pacbioRun.showAlert).toBeCalled()
+            expect(pacbioRun.redirectToRuns).not.toBeCalled()
+        })
+    })
+
 })

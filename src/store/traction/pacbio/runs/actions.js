@@ -21,14 +21,23 @@ const newRun = ({ commit }) => {
     router.push({ path: `/pacbio/run/new` })
 }
 
+const createRun = async ({ getters }) => {
+    let run = getters.currentRun
+    let request = getters.pacbioRequests
+
+    return await PacbioRun.create(run, request)
+}
+
 const actions = {
     setRuns,
-    newRun
+    newRun,
+    createRun
 }
 
 export {
     setRuns,
-    newRun
+    newRun,
+    createRun
 }
 
 export default actions

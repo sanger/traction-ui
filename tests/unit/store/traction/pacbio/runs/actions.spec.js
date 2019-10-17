@@ -54,3 +54,20 @@ describe('#newRun', () => {
     expect(commit).toHaveBeenCalledWith("setCurrentRun", newRun)
   })
 })
+
+describe('#createRun', () => {
+  let getters, pacbioRequests, mockRun
+
+  beforeEach(() => {
+    mockRun = new Response(Data.PacbioRun).deserialize.runs[0]
+    pacbioRequests = jest.fn()
+    getters = { 'currentRun': mockRun, 'pacbioRequests': pacbioRequests }
+
+    Run.create = jest.fn()
+  })
+
+  it('successfully', async () => {
+    Actions.createRun({ getters })
+    expect(Run.create).toHaveBeenCalledWith(mockRun, pacbioRequests)
+  })
+})

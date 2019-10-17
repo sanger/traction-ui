@@ -37,7 +37,6 @@ export default {
       } catch (err) {
         this.showAlert('Failed to create run', 'danger')
       }
-
     },
     async update () {
       try {
