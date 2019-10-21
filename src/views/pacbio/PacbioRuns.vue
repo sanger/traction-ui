@@ -33,15 +33,15 @@
           @filtered="onFiltered">
 
       <template v-slot:cell(actions)="row">
-        <b-button :id="generateId('startRun', row.item.id)" variant="outline-success" size="sm" class="mr-1" @click="startRun(row.item.id)" :disabled="row.item.state !== 'pending'">
+        <b-button :id="generateId('startRun', row.item.id)" variant="outline-success" size="sm" class="mr-1" @click="updateRun('start', row.item.id)" :disabled="row.item.state !== 'pending'">
           Start
         </b-button>
 
-        <b-button :id="generateId('completeRun', row.item.id)" variant="outline-primary" size="sm" class="mr-1" @click="completeRun(row.item.id)" :disabled="isRunDisabled(row.item)">
+        <b-button :id="generateId('completeRun', row.item.id)" variant="outline-primary" size="sm" class="mr-1" @click="updateRun('complete', row.item.id)" :disabled="isRunDisabled(row.item)">
           Complete
         </b-button>
 
-        <b-button :id="generateId('cancelRun', row.item.id)" variant="outline-danger" size="sm" class="mr-1" @click="cancelRun(row.item.id)" :disabled="isRunDisabled(row.item)">
+        <b-button :id="generateId('cancelRun', row.item.id)" variant="outline-danger" size="sm" class="mr-1" @click="updateRun('cancel', row.item.id)" :disabled="isRunDisabled(row.item)">
           Cancel
         </b-button>
       </template>
@@ -108,6 +108,14 @@ export default {
     },
     generateId(text, id) {
       return `${text}-${id}`
+    },
+    updateRun(status, id) {
+      try {
+        this[status+"Run"](id)
+        this.provider()
+      } catch (error) {
+        this.showAlert("Failed to update run: " + error.message, 'danger')
+      }
     },
     ...mapActions('traction/pacbio/runs', [
       'setRuns',
