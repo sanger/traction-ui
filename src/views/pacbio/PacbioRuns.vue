@@ -65,9 +65,7 @@
 import Alert from '@/components/Alert'
 import Helper from '@/mixins/Helper'
 import TableHelper from '@/mixins/TableHelper'
-
-import { createNamespacedHelpers } from 'vuex'
-const { mapActions, mapGetters } = createNamespacedHelpers('traction/pacbio/runs')
+import { mapActions, mapGetters } from 'vuex'
 
 export default {
   name: 'PacbioRuns',
@@ -111,19 +109,21 @@ export default {
     generateId(text, id) {
       return `${text}-${id}`
     },
-    ...mapActions([
+    ...mapActions('traction/pacbio/runs', [
       'setRuns',
       'newRun',
+    ]),
+    ...mapActions('traction', [
       'startRun',
       'completeRun',
       'cancelRun',
-    ])
+    ]),
   },
   components: {
     Alert
   },
   computed: {
-    ...mapGetters([
+    ...mapGetters('traction/pacbio/runs', [
       'runs'
     ])
   },

@@ -79,9 +79,7 @@ import Alert from '@/components/Alert'
 import Helper from '@/mixins/Helper'
 import TableHelper from '@/mixins/TableHelper'
 import truncate from 'lodash-es/truncate'
-
-import { createNamespacedHelpers } from 'vuex'
-const { mapActions, mapGetters } = createNamespacedHelpers('traction/saphyr/runs')
+import { mapActions, mapGetters } from 'vuex'
 
 export default {
   name: 'Runs',
@@ -126,20 +124,22 @@ export default {
         this.showAlert("Failed to get runs: " + error.message, 'danger')
       }
     },
-    ...mapActions([
+    ...mapActions('traction/saphyr/runs', [
       'setRuns',
+      'editRun',
+      'newRun'
+    ]),
+    ...mapActions('traction', [
       'startRun',
       'completeRun',
       'cancelRun',
-      'editRun',
-      'newRun'
-    ])
+    ]),
   },
   created() {
     this.provider()
   },
   computed: {
-    ...mapGetters([
+    ...mapGetters('traction/saphyr/runs', [
       'runs'
     ])
   },
