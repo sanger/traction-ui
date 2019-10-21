@@ -16,7 +16,7 @@ describe('Run', () => {
       render () { return ''}
     })
 
-    props = { baseURL: 'http://sequencescape.com',
+    props = { baseURL: 'http://traction.com',
               apiNamespace: 'api/v2',
               resource: 'requests' }
     wrapper = mount(cmp, { propsData: props })

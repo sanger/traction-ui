@@ -44,6 +44,11 @@
         <b-button :id="generateId('cancelRun', row.item.id)" variant="outline-danger" size="sm" class="mr-1" @click="updateRun('cancel', row.item.id)" :disabled="isRunDisabled(row.item)">
           Cancel
         </b-button>
+
+        <a :id="generateId('generate-sample-sheet', row.item.id)"
+            :href="generateSampleSheetPath(row.item.id)">
+            Generate Sample Sheet
+        </a>
       </template>
     </b-table>
 
@@ -116,6 +121,9 @@ export default {
     generateId(text, id) {
       return `${text}-${id}`
     },
+    generateSampleSheetPath(id) {
+      return process.env.VUE_APP_TRACTION_BASE_URL + '/v1/pacbio/runs/' + id + '/sample_sheet'
+    },
     updateRun(status, id) {
       try {
         this[status+"Run"](id)
@@ -127,6 +135,7 @@ export default {
     ...mapActions('traction/pacbio/runs', [
       'setRuns',
       'newRun',
+      'generateSampleSheet'
     ]),
     ...mapActions('traction', [
       'startRun',

@@ -1,5 +1,5 @@
 const state = {
-  sequencescapeTubes: []
+  sampleExtractionTubes: []
 }
 
 export default state
