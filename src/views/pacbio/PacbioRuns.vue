@@ -31,6 +31,20 @@
           :per-page="perPage"
           :current-page="currentPage"
           @filtered="onFiltered">
+
+      <template v-slot:cell(actions)="row">
+        <b-button :id="generateId('startRun', row.item.id)" variant="outline-success" size="sm" class="mr-1" @click="startRun(row.item.id)" :disabled="row.item.state !== 'pending'">
+          Start
+        </b-button>
+
+        <b-button :id="generateId('completeRun', row.item.id)" variant="outline-primary" size="sm" class="mr-1" @click="completeRun(row.item.id)" :disabled="isRunDisabled(row.item)">
+          Complete
+        </b-button>
+
+        <b-button :id="generateId('cancelRun', row.item.id)" variant="outline-danger" size="sm" class="mr-1" @click="cancelRun(row.item.id)" :disabled="isRunDisabled(row.item)">
+          Cancel
+        </b-button>
+      </template>
     </b-table>
 
     <span class="font-weight-bold">Total records: {{ runs.length }}</span>
@@ -91,9 +105,18 @@ export default {
         this.showAlert("Failed to get runs: " + error.message, 'danger')
       }
     },
+    isRunDisabled(run) {
+      return run.state == 'completed' || run.state == 'cancelled' || run.state == 'pending'
+    },
+    generateId(text, id) {
+      return `${text}-${id}`
+    },
     ...mapActions([
       'setRuns',
-      'newRun'
+      'newRun',
+      'startRun',
+      'completeRun',
+      'cancelRun',
     ])
   },
   components: {
