@@ -37,10 +37,8 @@ const createRun = async ({ getters }) => {
     //         barcode: 'dsfsdfds',
     //         // create wells in seperate function
     //         wells: [
-    //             { row: 'A', column: '1', movie_time: '1', insert_size: '11', on_plate_loading_concentration: 'x', sequencing_mode: 'CCS', library: { id: '' } },
-    //             { row: 'A', column: '2', movie_time: '1', insert_size: '11', on_plate_loading_concentration: 'x', sequencing_mode: 'CCS', library: { id: '' } },
-    //             { row: 'B', column: '1', movie_time: '1', insert_size: '11', on_plate_loading_concentration: 'x', sequencing_mode: 'CCS', library: { id: '' } },
-    //             { row: 'B', column: '2', movie_time: '1', insert_size: '11', on_plate_loading_concentration: 'x', sequencing_mode: 'CCS', library: { id: '' } },
+    //             { row: 'A', column: '1', movie_time: '1', insert_size: '11', on_plate_loading_concentration: 'x', sequencing_mode: 'CCS', library: { id: '15' } },
+    //             { row: 'A', column: '2', movie_time: '1', insert_size: '11', on_plate_loading_concentration: 'x', sequencing_mode: 'CCS', library: { id: '15' } },
     //         ]
     //     }
     // }

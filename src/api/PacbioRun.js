@@ -27,7 +27,7 @@ const build = (object) => {
 
 // REFACTOR
 const create = async (run, request) => {
-    let responses = []
+    let runId
 
     try {
         let runPayload = {
@@ -45,8 +45,7 @@ const create = async (run, request) => {
         }
 
         let runResponse = await createResource(runPayload, request.runs)
-        let runId = runResponse.deserialize.runs[0].id
-        responses.push(runResponse)
+        runId = runResponse.deserialize.runs[0].id
 
         let platePayload = {
             data: {
@@ -60,7 +59,6 @@ const create = async (run, request) => {
 
         let plateResponse = await createResource(platePayload, request.plates)
         let plateId = plateResponse.deserialize.plates[0].id
-        responses.push(plateResponse)
 
         for (const well of run.plate.wells) {
             let wellPayload = {
@@ -79,28 +77,26 @@ const create = async (run, request) => {
             }
 
             let wellResponse = await createResource(wellPayload, request.wells)
-            // let wellId = wellResponse.deserialize.wells[0].id 
-            responses.push(wellResponse)
+            let wellId = wellResponse.deserialize.wells[0].id
 
-            // let wellLibraryPayload = {
-            //     data: {
-            //         type: "libraries",
-            //         attributes: {
-            //         },
-            //         relationships: {
-            //             libraries: {
-            //                 data: [{ "type": "libraries", "id": "1" }]
-            //             }
-            //         }
-            //     }
-            // }
+            let wellLibraryPayload = {
+                data: {
+                    type: "libraries",
+                    attributes: {
+                    },
+                    relationships: {
+                        libraries: {
+                            data: [{ "type": "libraries", "id": well.library.id }]
+                        }
+                    }
+                }
+            }
 
-            // let wellLibraryResponse = await createResource(wellLibraryPayload, request.wells)
-            // responses.push(wellLibraryResponse)
+            await createRelationshipResource(wellLibraryPayload, request.wells, wellId, 'libraries')
         }
 
     } catch (err) {
-        rollback(responses, request)
+        destroy(runId, request.runs)
         return false
     }
     return true
@@ -116,20 +112,18 @@ const createResource = async (payload, request) => {
     }
 }
 
-const rollback = (responses, request) => {
-    for (const response of responses) {
-        let deserializedResponse = response.deserialize
-        let type = Object.keys(deserializedResponse)[0]
-        let id = deserializedResponse[type][0].id
-        destroy(id, request[type])
-    }
+const createRelationshipResource = async (payload, request, id, relationship) => {
+    let response = await handlePromise(request.createRelationship(id, relationship, payload))
 
-    return true
+    if (response.successful) {
+        return response
+    } else {
+        throw response.errors
+    }
 }
 
 const destroy = async (id, request) => {
     let promise = request.destroy(id)
-
     return await handlePromise(promise)
 }
 
@@ -138,6 +132,6 @@ export {
     build,
     create,
     createResource,
-    rollback,
+    createRelationshipResource,
     destroy
 }

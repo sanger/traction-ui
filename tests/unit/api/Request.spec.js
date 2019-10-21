@@ -137,6 +137,31 @@ describe('Request', () => {
         expect(promise).resolves.toEqual(mockResponse)
       })
 
+      it('createRelationship', () => {
+        request.api.post = jest.fn()
+
+        data = {
+          data: {
+            type: "libraries",
+            relationships: {
+              libraries: {
+                data: [{ "type": "libraries", "id": 123 }]
+              }
+            }
+          }
+        }
+
+        mockResponse = { data: { status: 201 } }
+        request.api.post.mockReturnValue(mockResponse)
+
+        let id = 1
+        let relationship = 'libraries'
+
+        let promise = request.createRelationship(id, relationship, data)
+        expect(request.api.post).toBeCalledWith("requests/1/libraries", data)
+        expect(promise).resolves.toEqual(mockResponse)
+      })
+
       describe('update', () => {
 
         beforeEach(() => {
