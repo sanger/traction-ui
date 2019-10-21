@@ -56,6 +56,13 @@
                 variant="success">
         New Run
       </b-button>
+
+      <b-pagination class="float-right"
+              v-model="currentPage"
+              :total-rows="runs.length"
+              :per-page="perPage"
+              aria-controls="libraries-table">
+      </b-pagination>
     </div>
 
   </div>
@@ -91,7 +98,7 @@ export default {
       filter: null,
       sortBy: 'created_at',
       sortDesc: true,
-      perPage: 5,
+      perPage: 10,
       currentPage: 1,
     }
   },
