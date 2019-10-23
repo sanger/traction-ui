@@ -17,7 +17,7 @@
     "flush-promises": "^1.0.2",
     "global": "^4.4.0",
     "growl": "^1.10.0",
-    "https-proxy-agent": "^2.2.2",
+    "https-proxy-agent": "^2.2.3",
     "lodash-es": "^4.17.15",
     "moment": "^2.24.0",
     "vue": "^2.6.10",
