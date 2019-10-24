@@ -28,9 +28,18 @@
 export default {
   name: 'Well',
   props: {
-    position: {
+    row: {
       type: String,
       required: true
+    },
+    column: {
+      type: [String,Number],
+      required: true
+    }
+  },
+  computed: {
+    position () {
+      return this.row.concat(this.column)
     }
   },
   data () {

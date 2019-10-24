@@ -29,6 +29,9 @@ const mutations = {
     setSystemName(state, systemName) {
         state.currentRun.system_name = systemName
     },
+    setLibraryBarcode(state, payload) {
+        state.currentRun.plate.wells.filter(well => well.position === payload.position).library = payload.library
+    }
 }
 
 export default mutations

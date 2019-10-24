@@ -7,7 +7,7 @@ describe('Row.vue', () => {
   let row, wrapper, props
 
   beforeEach(() => {
-    props = { id: 1, columns: ['A','B','C','D','E','F','G','H'] }
+    props = { id: 'A', columns: ['1','2','3','4','5','6','7','8','9','10','11','12'] }
     wrapper = mount(Row, { propsData: props, localVue })
     row = wrapper.vm
   })

@@ -20,7 +20,7 @@ describe('Plate.vue', () => {
   })
 
   it('will have some rows', () => {
-    expect(wrapper.findAll('tr').length).toEqual(12)
+    expect(wrapper.findAll('tr').length).toEqual(8)
   })
 
 })

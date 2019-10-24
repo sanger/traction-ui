@@ -6,7 +6,7 @@ describe('Well.vue', () => {
   let well, wrapper, props
 
   beforeEach(() => {
-    props = { position: 'A1' }
+    props = { row: 'A', column: '1' }
     wrapper = mount(Well, { propsData: props, localVue })
     well = wrapper.vm
   })
@@ -15,8 +15,16 @@ describe('Well.vue', () => {
     expect(wrapper.name()).toEqual('Well')
   })
 
-  it('must have a position', () => {
-    expect(well.position).toEqual(props.position)
+  it('must have a row', () => {
+    expect(well.row).toEqual('A')
+  })
+
+  it('must have a column', () => {
+    expect(well.column).toEqual('1')
+  })
+
+  it('will have a position', () => {
+    expect(well.position).toEqual('A1')
   })
 
   describe('entering data', () => {
