@@ -82,6 +82,7 @@ describe('Well.vue', () => {
 
     beforeEach(() => {
       newBarcode = 'TRAC-1'
+      well.alert = jest.fn()
       well.isLibraryBarcodeValid = jest.fn()
       well.getTubeForBarcode = jest.fn()
       well.setLibraryBarcode = jest.fn()
@@ -97,8 +98,26 @@ describe('Well.vue', () => {
       await well.setBarcode(newBarcode)
 
       expect(well.setLibraryBarcode).toBeCalled()
+      expect(well.alert).not.toBeCalled()
     })
 
+    it('is unsuccessful when barcode is not valid', async () => {
+      well.isLibraryBarcodeValid.mockReturnValue(false)
+
+      await well.setBarcode(newBarcode)
+      expect(well.setLibraryBarcode).not.toBeCalled()
+      expect(well.alert).toBeCalled()
+    })
+
+  })
+
+   describe('alert', () => {
+    it('emits an event with the message', () => {
+      well.alert('emit this message', 'success')
+      expect(wrapper.emitted().alert).toBeTruthy()
+      expect(wrapper.emitted().alert[0][0]).toEqual('emit this message')
+      expect(wrapper.emitted().alert[0][1]).toEqual('success')
+    })
   })
 
 })

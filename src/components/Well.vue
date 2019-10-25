@@ -86,6 +86,8 @@ export default {
         let payload = { library: library, position: this.position}
 
         this.setLibraryBarcode(payload)
+      } else {
+        this.alert('Library is not valid', 'danger')
       }
     },
      ...mapActions([
@@ -95,6 +97,9 @@ export default {
     ...mapMutations([
       'setLibraryBarcode',
     ]),
+    alert (message, type) {
+      this.$emit('alert', message, type)
+    }
   }
 }
 </script>
