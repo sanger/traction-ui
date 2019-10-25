@@ -57,7 +57,7 @@
 <script>
 
 import { createNamespacedHelpers } from 'vuex'
-const { mapGetters, mapState, mapActions , mapMutations} = createNamespacedHelpers('traction/pacbio/runs')
+const { mapActions , mapMutations} = createNamespacedHelpers('traction/pacbio/runs')
 
 export default {
   name: 'Well',
@@ -86,7 +86,6 @@ export default {
         let payload = { library: library, position: this.position}
 
         this.setLibraryBarcode(payload)
-      } else {
       }
     },
      ...mapActions([

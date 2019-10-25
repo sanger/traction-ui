@@ -30,7 +30,6 @@ describe('Well.vue', () => {
                   }
                 }
               }
-
             }
           }
         }
