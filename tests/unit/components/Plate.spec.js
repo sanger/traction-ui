@@ -19,12 +19,12 @@ describe('Plate.vue', () => {
     expect(wrapper.name()).toEqual('Plate')
   })
 
-  it('will have some headers', () => {
+  it.skip('will have some headers', () => {
     //include extra header for column name
     expect(wrapper.findAll('th').length).toEqual(plate.columns.length+1)
   })
 
-  it('will have some rows', () => {
+  it.skip('will have some rows', () => {
     expect(wrapper.findAll('tr').length).toEqual(8)
   })
 

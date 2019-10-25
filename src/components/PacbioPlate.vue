@@ -10,8 +10,6 @@
 
 <script>
 
-import Row from '@/components/Row'
-
 export default {
   name: 'Plate',
   props: {
@@ -33,7 +31,7 @@ export default {
     }
   },
   components: {
-    Row
+    Test
   },
   computed: {
     rows () {

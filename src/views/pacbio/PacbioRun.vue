@@ -14,8 +14,14 @@
     <div>
       <pacbioRunInfo></pacbioRunInfo>
       <br>
-      <pacbioLibrariesTable></pacbioLibrariesTable>
-      <plate></plate>
+      <b-row>
+        <b-col>
+          <pacbioLibrariesTable></pacbioLibrariesTable>
+        </b-col>
+        <b-col>
+          <plate></plate>
+        </b-col>
+      </b-row>
     </div>
 
   </div>
