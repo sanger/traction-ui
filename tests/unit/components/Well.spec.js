@@ -1,26 +1,49 @@
-import { mount, localVue } from '../testHelper'
+import { mount, localVue, Vuex } from '../testHelper'
+import libraryTube from '../../data/pacbioTubeWithLibrary'
 import Well from '@/components/Well'
+import * as Run from '@/api/PacbioRun'
+import Response from '@/api/Response'
 
 describe('Well.vue', () => {
 
-  let well, wrapper, props
+  let well, wrapper, props, run
 
   beforeEach(() => {
-    props = { row: 'A', column: '1' }
-    wrapper = mount(Well, { propsData: props, localVue })
+
+    run = Run.build()
+
+    let store = new Vuex.Store({
+      modules: {
+        traction: {
+          namespaced: true,
+          modules: {
+            pacbio: {
+              namespaced: true,
+              modules: {
+                runs: {
+                  namespaced: true,
+                  state: {
+                    currentRun: run
+                  },
+                  getters: {
+                    currentRun: state => state.currentRun,
+                  }
+                }
+              }
+
+            }
+          }
+        }
+      }
+    })
+
+    props = { position: 'A1' }
+    wrapper = mount(Well, { localVue, store, propsData: props })
     well = wrapper.vm
   })
 
   it('will have a name', () => {
     expect(wrapper.name()).toEqual('Well')
-  })
-
-  it('must have a row', () => {
-    expect(well.row).toEqual('A')
-  })
-
-  it('must have a column', () => {
-    expect(well.column).toEqual('1')
   })
 
   it('will have a position', () => {
@@ -32,7 +55,7 @@ describe('Well.vue', () => {
       let select = wrapper.find({ref: 'movieTime'}).element
       select.value = 20
       select.dispatchEvent(new Event('change'))
-      expect(well.movieTime).toEqual('20')
+      expect(well.movieTime).toEqual(20)
     })
 
     it('insert size', () => {
@@ -56,7 +79,27 @@ describe('Well.vue', () => {
   })
 
   describe('setBarcode', () => {
-    
+    let newBarcode
+
+    beforeEach(() => {
+      newBarcode = 'TRAC-1'
+      well.isLibraryBarcodeValid = jest.fn()
+      well.getTubeForBarcode = jest.fn()
+      well.setLibraryBarcode = jest.fn()
+    })
+
+    it('successful when barcode is valid', async () => {
+      let successfulResponse = new Response(libraryTube)
+      let tube = successfulResponse.deserialize.tubes[0]
+
+      well.isLibraryBarcodeValid.mockReturnValue(true)
+      well.getTubeForBarcode.mockReturnValue(tube)
+
+      await well.setBarcode(newBarcode)
+
+      expect(well.setLibraryBarcode).toBeCalled()
+    })
+
   })
 
 })
