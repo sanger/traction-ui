@@ -4,7 +4,7 @@ import VueRouter from 'vue-router'
 import Alert from '@/components/Alert'
 import PacbioRunInfo from '@/components/PacbioRunInfo'
 import PacbioLibrariesTable from '@/components/PacbioLibrariesTable'
-import Plate from '@/components/PacbioPlate'
+import Plate from '@/components/Plate'
 
 describe('Run.vue', () => {
 

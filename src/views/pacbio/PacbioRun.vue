@@ -30,7 +30,7 @@
 <script>
 import PacbioRunInfo from '@/components/PacbioRunInfo'
 import PacbioLibrariesTable from '@/components/PacbioLibrariesTable'
-import Plate from '@/components/PacbioPlate'
+import Plate from '@/components/Plate'
 import Alert from '@/components/Alert'
 import Helper from '@/mixins/Helper'
 import { createNamespacedHelpers } from 'vuex'
