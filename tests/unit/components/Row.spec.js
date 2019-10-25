@@ -1,13 +1,14 @@
 import { mount, localVue } from '../testHelper'
 import Row from '@/components/Row'
 import Well from '@/components/Well'
+import wells from '../../data/row'
 
 describe('Row.vue', () => {
 
   let row, wrapper, props
 
   beforeEach(() => {
-    props = { id: 'A', columns: ['1','2','3','4','5','6','7','8','9','10','11','12'] }
+    props = { id: 'A', wells: wells }
     wrapper = mount(Row, { propsData: props, localVue })
     row = wrapper.vm
   })
@@ -21,7 +22,7 @@ describe('Row.vue', () => {
   })
 
   it('will have some cells', () => {
-    expect(wrapper.findAll(Well).length).toEqual(row.columns.length)
+    expect(wrapper.findAll(Well).length).toEqual(wells.length)
   })
 
 })

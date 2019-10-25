@@ -1,7 +1,46 @@
 import handlePromise from './PromiseHelper'
 
+const NO_OF_COLUMNS = 12
+const NO_OF_ROWS = 8
+
+const columns = () => {
+  return Array.from(Array(NO_OF_COLUMNS), (e, i) => String(i + 1))
+}
+
+const rows = () => {
+  return Array.from(Array(NO_OF_ROWS), (e, i) => String.fromCharCode(65 + i))
+}
+
+const buildWell = (row, column) => {
+  return  {
+    row: row, 
+    column: column, 
+    position: `${row}${column}`,
+    movie_time: '',
+    insert_size: '',
+    on_plate_loading_concentration: '',
+    sequencing_mode: '',
+    library: {
+      id: '',
+      barcode: ''
+    }
+  }
+}
+
+const buildWells = () => {
+  let wells = []
+
+  for (const column of columns()) {
+    for (const row of rows()) {
+      wells.push(buildWell(row, column))
+    }
+  }
+
+  return wells
+}
+
 const build = (object) => {
-    let run = object || {
+     return object || {
         id: 'new',
         name: '',
         template_prep_kit_box_barcode: '',
@@ -11,18 +50,10 @@ const build = (object) => {
         comments: '',
         system_name: '',
         plate: {
-            barcode: '',
-            // create wells in seperate function
-            wells: [
-                { row: 'A', column: '1', movie_time: '', insert_size: '', on_plate_loading_concentration: '', sequencing_mode: '', library: { id: '' } },
-                { row: 'A', column: '2', movie_time: '', insert_size: '', on_plate_loading_concentration: '', sequencing_mode: '', library: { id: '' } },
-                { row: 'B', column: '1', movie_time: '', insert_size: '', on_plate_loading_concentration: '', sequencing_mode: '', library: { id: '' } },
-                { row: 'B', column: '2', movie_time: '', insert_size: '', on_plate_loading_concentration: '', sequencing_mode: '', library: { id: '' } },
-            ]
+          barcode: '',
+          wells: buildWells()
         }
     }
-    // run.assign = (object) => { assign(this, object) }
-    return run
 }
 
 // REFACTOR

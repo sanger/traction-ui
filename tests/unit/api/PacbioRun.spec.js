@@ -74,28 +74,67 @@ describe('Run', () => {
         expect(run.plate.barcode).toBeDefined()
       })
 
-      it('will have a plate with wells', () => {
-        expect(run.plate.wells.length).toEqual(4) //TODO
-      })
+      describe('wells', () => {
 
-      it('each well will have a library', () => {
-        expect(run.plate.wells[0].library).toBeDefined()
-      })
+        let wells
 
-      it('each well will have a row', () => {
-        let wells = run.plate.wells
-        expect(wells['0'].row).toEqual('A')
-        expect(wells['1'].row).toEqual('A')
-        expect(wells['2'].row).toEqual('B')
-        expect(wells['3'].row).toEqual('B')
-      })
+        beforeEach(() => {
+          wells = run.plate.wells
+        })
 
-      it('each well will have a column', () => {
-        let wells = run.plate.wells
-        expect(wells['0'].column).toEqual('1')
-        expect(wells['1'].column).toEqual('2')
-        expect(wells['2'].column).toEqual('1')
-        expect(wells['3'].column).toEqual('2')
+        it('will create 96 wells', () => {
+          expect(wells.length).toEqual(96)
+        })
+
+        describe('each', () => {
+
+          let firstWell, lastWell
+
+          beforeEach(() => {
+            firstWell = wells[0]
+            lastWell = wells[95]
+          })
+
+          it('will have a row', () => {
+            expect(firstWell.row).toEqual('A')
+            expect(lastWell.row).toEqual('H')
+          })
+
+          it('will have a column', () => {
+            expect(firstWell.column).toEqual('1')
+            expect(lastWell.column).toEqual('12')
+          })
+
+          it('will have a position', () => {
+            expect(firstWell.position).toEqual('A1')
+            expect(lastWell.position).toEqual('H12')
+          })
+
+          it('will have movie_time', () => {
+            expect(firstWell.movie_time).toBeDefined()
+            expect(lastWell.movie_time).toBeDefined()
+          })
+
+          it('will have an insert_size', () => {
+            expect(firstWell.insert_size).toBeDefined()
+            expect(lastWell.insert_size).toBeDefined()
+          })
+
+          it('will have an on_plate_laoding_concentration', () => {
+            expect(firstWell.on_plate_loading_concentration).toBeDefined()
+            expect(lastWell.on_plate_loading_concentration).toBeDefined()
+          })
+
+          it('will have a sequencing_mode', () => {
+            expect(firstWell.sequencing_mode).toBeDefined()
+            expect(lastWell.sequencing_mode).toBeDefined()
+          })
+
+          it('will have a library', () => {
+            expect(firstWell.library).toEqual({id: '', barcode: ''})
+            expect(lastWell.library).toEqual({id: '', barcode: ''})
+          })
+        })
       })
 
       // TODO: add other well metadata

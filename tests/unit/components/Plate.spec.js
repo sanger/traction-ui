@@ -1,13 +1,18 @@
 import { mount, localVue } from '../testHelper'
-import Plate from '@/components/Plate'
+import Plate from '@/components/PacbioPlate'
+import wells from '../../data/wells'
 
 describe('Plate.vue', () => {
 
   let plate, wrapper
 
   beforeEach(() => {
-    wrapper = mount(Plate, { localVue })
+    wrapper = mount(Plate, { localVue, propsData: { wells: wells} })
     plate = wrapper.vm
+  })
+
+  it('must have some wells', () => {
+    expect(plate.wells).toEqual(wells)
   })
 
   it('will have a name', () => {

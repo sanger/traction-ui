@@ -4,7 +4,7 @@
       <th>&nbsp;</th>
       <th v-for="column in columns" v-bind:key="column">{{ column}}</th>
     </thead>
-    <row v-for="row in rows" v-bind:key="row" v-bind:id="row" v-bind:columns="columns"></row>
+    <row v-for="(key, row) in rows" v-bind:key="key" v-bind="row" v-bind:columns="columns"></row>
   </div>
 </template>
 
@@ -15,7 +15,11 @@ import Row from '@/components/Row'
 export default {
   name: 'Plate',
   props: {
-    rows: {
+    wells: {
+      type: Array,
+      required: true
+    },
+    rowHeaders: {
       type: Array,
       default: () => {
         return ['A','B','C','D','E','F','G','H']
@@ -31,5 +35,14 @@ export default {
   components: {
     Row
   },
+  computed: {
+    rows () {
+      return this.wells.reduce((objectsByKeyValue, obj) => {
+        const value = obj['row']
+        objectsByKeyValue[value] = (objectsByKeyValue[value] || []).concat(obj)
+        return objectsByKeyValue
+      }, {})
+    }
+  }
 }
 </script>
