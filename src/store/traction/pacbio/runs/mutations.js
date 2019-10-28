@@ -31,6 +31,12 @@ const mutations = {
     },
     setLibraryBarcode(state, payload) {
         state.currentRun.plate.wells.filter(well => well.position === payload.position).library = payload.library
+    },
+    updateWell(state, payload) {
+        let well = state.currentRun.plate.wells.filter(well => well.position === payload.position)[0]
+        Object.keys(payload).map(attribute => {
+            well[attribute] = payload[attribute]
+        })
     }
 }
 

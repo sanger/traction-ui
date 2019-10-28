@@ -120,4 +120,16 @@ describe('Well.vue', () => {
     })
   })
 
+  describe('updateWell', () => {
+
+    beforeEach(() => {
+      well.updateWell = jest.fn()
+      well.update()
+    })
+
+    it('should update the well', () => {
+      expect(well.updateWell).toBeCalled()
+    })
+  })
+
 })

@@ -48,7 +48,7 @@
         Cancel
       </b-button>
 
-      <b-button variant="success" @click="updateWell()">
+      <b-button variant="success" @click="update()">
         Create
       </b-button>
     </div>
@@ -57,7 +57,7 @@
 <script>
 
 import { createNamespacedHelpers } from 'vuex'
-const { mapActions , mapMutations} = createNamespacedHelpers('traction/pacbio/runs')
+const { mapState, mapActions, mapMutations} = createNamespacedHelpers('traction/pacbio/runs')
 
 export default {
   name: 'Well',
@@ -90,13 +90,28 @@ export default {
         this.alert('Library is not valid', 'danger')
       }
     },
+    payload () {
+      return {
+        position: this.position,
+        movie_time: this.movieTime,
+        insert_size: this.insertSize,
+        on_plate_loading_concentration: this.onPlateLoadingConc
+      }
+    },
+    update () {
+      this.updateWell(this.payload())
+    },
      ...mapActions([
       'isLibraryBarcodeValid',
       'getTubeForBarcode',
     ]),
     ...mapMutations([
       'setLibraryBarcode',
+      'updateWell'
     ]),
+    ...mapState({
+      currentRun: state => state.currentRun
+    }),
     alert (message, type) {
       this.$emit('alert', message, type)
     }
