@@ -5,7 +5,7 @@
       <b-col>
         <b-form-input :value="runName"
                 @change="setName"
-                id="name"
+                id="run_name"
                 placeholder="Run name"
                 type="text"
                 width="48"/>
@@ -30,37 +30,18 @@
 
     <b-row>
       <b-col>
-          <b-form-input :value="sequencingKitBoxBarcode"
-            @change="setSequencingKitBoxBarcode"
-            id="sequencing_kit_box_barcode"
-            placeholder="Sequencing Kit Box Barcode"
-            type="text"
-            width="48"/>
-     </b-col>
+        <b-form-input :value="sequencingKitBoxBarcode"
+          @change="setSequencingKitBoxBarcode"
+          id="sequencing_kit_box_barcode"
+          placeholder="Sequencing Kit Box Barcode"
+          type="text"
+          width="48"/>
+      </b-col>
       <b-col>
         <b-form-input :value="dnaControlComplexBoxBarcode"
           @change="setDNAControlComplexBoxBarcode"
           id="dna_control_complex_box_barcode"
           placeholder="DNA Control Complex Box Barcode"
-          type="text"
-          width="48"/>
-     </b-col>
-    <b-col>
-      <b-form-input :value="comments"
-        @change="setComments"
-        id="comments"
-        placeholder="Comments"
-        type="text"
-        width="48"/>
-     </b-col>
-    </b-row>
-    
-    <b-row>
-      <b-col>
-        <b-form-input :value="uuid"
-          @change="setUuid"
-          id="uuid"
-          placeholder="UUID"
           type="text"
           width="48"/>
       </b-col>
@@ -69,6 +50,17 @@
           @change="setSystemName"
           id="system_name"
           placeholder="System Name"
+          type="text"
+          width="48"/>
+      </b-col>
+    </b-row>
+    
+    <b-row>
+      <b-col>
+        <b-form-input :value="comments"
+          @change="setComments"
+          id="comments"
+          placeholder="Comments"
           type="text"
           width="48"/>
       </b-col>

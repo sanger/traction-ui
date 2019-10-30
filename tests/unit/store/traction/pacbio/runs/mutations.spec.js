@@ -1,7 +1,7 @@
 import * as Mutations from '@/store/traction/pacbio/runs/mutations'
 import * as Run from '@/api/PacbioRun'
 
-describe('#updateWell', () => {
+describe.skip('#updateWell', () => {
 
   let run, payload, well, state
 

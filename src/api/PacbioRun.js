@@ -40,7 +40,7 @@ const buildWells = () => {
 }
 
 const build = (object) => {
-     return object || {
+    return object || {
         id: 'new',
         name: '',
         template_prep_kit_box_barcode: '',
@@ -50,8 +50,8 @@ const build = (object) => {
         comments: '',
         system_name: '',
         plate: {
-          barcode: '',
-          wells: buildWells()
+            barcode: '',
+            wells: buildWells()
         }
     }
 }
@@ -77,7 +77,6 @@ const create = async (run, request) => {
 
         let runResponse = await createResource(runPayload, request.runs)
         runId = runResponse.deserialize.runs[0].id
-
         let platePayload = {
             data: {
                 type: "plates",
@@ -91,41 +90,46 @@ const create = async (run, request) => {
         let plateResponse = await createResource(platePayload, request.plates)
         let plateId = plateResponse.deserialize.plates[0].id
 
-        for (const well of run.plate.wells) {
-            let wellPayload = {
-                data: {
-                    type: "wells",
-                    attributes: {
-                        row: well.row,
-                        column: well.column,
-                        pacbio_plate_id: plateId,
-                        movie_time: well.movie_time,
-                        insert_size: well.insert_size,
-                        on_plate_loading_concentration: well.on_plate_loading_concentration,
-                        sequencing_mode: well.sequencing_mode,
-                    }
-                }
-            }
+        let wellsWithLibraries = run.plate.wells.filter(well => well.library.id)
 
-            let wellResponse = await createResource(wellPayload, request.wells)
-            let wellId = wellResponse.deserialize.wells[0].id
-
-            let wellLibraryPayload = {
-                data: {
-                    type: "libraries",
-                    attributes: {
-                    },
-                    relationships: {
-                        libraries: {
-                            data: [{ "type": "libraries", "id": well.library.id }]
+        let wellsAttributes = wellsWithLibraries.reduce((accumulator, well) => {
+            accumulator.push({
+                row: well.row,
+                column: well.column,
+                movie_time: well.movie_time,
+                insert_size: well.insert_size,
+                on_plate_loading_concentration: well.on_plate_loading_concentration,
+                sequencing_mode: well.sequencing_mode,
+                relationships: {
+                    plate: {
+                        data: {
+                            type: "plate",
+                            id: plateId
                         }
+                    },
+                    libraries: {
+                        data: [
+                            {
+                                type: "libraries",
+                                id: well.library.id
+                            }
+                        ]
                     }
                 }
-            }
+            })
+            return accumulator
+        }, [])
 
-            await createRelationshipResource(wellLibraryPayload, request.wells, wellId, 'libraries')
+        let wellPayload = {
+            data: {
+                type: "wells",
+                attributes: {
+                    wells: wellsAttributes
+                }
+            }
         }
 
+        await createResource(wellPayload, request.wells)
     } catch (err) {
         destroy(runId, request.runs)
         return false
@@ -135,16 +139,6 @@ const create = async (run, request) => {
 
 const createResource = async (payload, request) => {
     let response = await handlePromise(request.create(payload))
-
-    if (response.successful) {
-        return response
-    } else {
-        throw response.errors
-    }
-}
-
-const createRelationshipResource = async (payload, request, id, relationship) => {
-    let response = await handlePromise(request.createRelationship(id, relationship, payload))
 
     if (response.successful) {
         return response
@@ -163,6 +157,5 @@ export {
     build,
     create,
     createResource,
-    createRelationshipResource,
     destroy
 }

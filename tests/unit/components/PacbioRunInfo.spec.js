@@ -55,4 +55,28 @@ describe('PacbioRunInfo', () => {
     it('can have getters', () => {
         expect(runInfo.currentRun).toBeDefined()
     })
+
+    describe('form inputs', () => {
+        it('has a Run Name input', () => {
+            expect(wrapper.find('.run_name')).toBeDefined()
+        })
+        it('has a Template Prep Kit Box Barcode input', () => {
+            expect(wrapper.find('.template_prep_kit_box_barcode')).toBeDefined()
+        })
+        it('has a Binding Kit Box Barcode input', () => {
+            expect(wrapper.find('.binding_kit_box_barcode')).toBeDefined()
+        })
+        it('has a Sequencing Kit Box Barcode input', () => {
+            expect(wrapper.find('.sequencing_kit_box_barcode')).toBeDefined()
+        })
+        it('has a DNA Control Complex Box Barcode input', () => {
+            expect(wrapper.find('.dna_control_complex_box_barcode')).toBeDefined()
+        })
+        it('has a System Name input', () => {
+            expect(wrapper.find('.system_name')).toBeDefined()
+        })
+        it('has a Comments input', () => {
+            expect(wrapper.find('.comments')).toBeDefined()
+        })
+    })
 })

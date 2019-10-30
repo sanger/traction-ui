@@ -4,41 +4,49 @@
       <alert ref='alert'></alert>
 
       Position: {{ this.position }}
-      insertSize: {{ this.insertSize }}
 
       <b-form>
-        <!-- <b-form-group
+        <b-form-input
+          ref="libraryBarcode"
           id="libraryBarcode"
-          label-cols-sm="4"
-          label-cols-lg="3"
-          label="Barcode:"
-          label-for="libraryBarcode"
-          >
-          <b-form-input ref="libraryBarcode" id="libraryBarcode" v-model="libraryBarcode" @change="setBarcode"></b-form-input>
-        </b-form-group> -->
+          :value="libraryBarcode"
+          @change="updateLibraryBarcode"
+          placeholder="Library Barcode">
+        </b-form-input>
 
-        <!-- <b-form-group
+        <b-form-group
           id="movieTime"
           label-cols-sm="4"
           label-cols-lg="3"
           label="Movie Time:"
           label-for="movieTime"
           >
-          <b-form-select ref="movieTime" id="movieTime" v-model="movieTime" :options="movieTimeOptions"></b-form-select>
-        </b-form-group> -->
-        
-        <!-- <b-form-group
-          id="onPlateLoadingConc"
-          label-cols-sm="4"
-          label-cols-lg="3"
-          label="Concentration:"
-          description="On Plate Loading Concentration (mP)"
-          label-for="onPlateLoadingConc"
-          >
-          <b-form-input ref="onPlateLoadingConc" id="onPlateLoadingConc" v-model="onPlateLoadingConc"></b-form-input>
-        </b-form-group> -->
+          <b-form-select ref="movieTime" id="movieTime" :value="movieTime" :options="movieTimeOptions" @change="updateMovieTime"></b-form-select>
+        </b-form-group>
 
-        <b-form-input ref="insertSize" id="insertSize" :value="insertSize" @change="updateInsertSize" placeholder="Insert Size"></b-form-input>
+        <b-form-input
+          ref="onPlateLoadingConc"
+          id="onPlateLoadingConc"
+          :value="onPlateLoadingConc"
+          @change="updateOnPlateLoadingConc"
+          placeholder="On Plate Loading Concentration (mP)">
+        </b-form-input>
+
+        <b-form-input
+          ref="insertSize"
+          id="insertSize"
+          :value="insertSize"
+          @change="updateInsertSize"
+          placeholder="Insert Size">
+        </b-form-input>
+
+        <b-form-input
+          ref="sequencingMode"
+          id="sequencingMode"
+          :value="sequencingMode"
+          @change="updateSequencingMode"
+          placeholder="Sequencing Mode">
+        </b-form-input>
       </b-form>
 
       <template v-slot:modal-footer="{ ok, cancel }">
@@ -89,27 +97,38 @@ export default {
     updateInsertSize(insertSize) {
       this.setInsertSize({ position: this.position, insertSize: insertSize})
     },
-    // async setBarcode(barcode) {
-    //   let isValid = await this.isLibraryBarcodeValid(barcode)
+    updateOnPlateLoadingConc(conc) {
+      this.setOnPlateLoadingConc({ position: this.position, onPlateLoadingConc: conc})
+    },
+    updateMovieTime(movieTime) {
+      this.setMovieTime({ position: this.position, movieTime: movieTime})
+    },
+    updateSequencingMode(seqMode) {
+      this.setSequencingMode({ position: this.position, sequencingMode: seqMode})
+    },
+    async updateLibraryBarcode(barcode) {
+      let isValid = await this.isLibraryBarcodeValid(barcode)
 
-    //   if (isValid) {
-    //     let libraryTube = await this.getTubeForBarcode(barcode)
-    //     let library = libraryTube.material
-    //     let payload = { library: library, position: this.position}
+      if (isValid) {
+        let libraryTube = await this.getTubeForBarcode(barcode)
+        let library = libraryTube.material
+        let payload = { position: this.position, library: { id: library.id, barcode: library.barcode }}
 
-    //     this.setLibraryBarcode(payload)
-    //     this.showAlert('Library is valid', 'success')
-    //   } else {
-    //     this.showAlert('Library is not valid', 'danger')
-    //   }
-    // },
+        this.setLibraryBarcode(payload)
+      } else {
+        this.showAlert('Library is not valid', 'danger')
+      }
+    },
      ...mapActions([
-      // 'isLibraryBarcodeValid',
-      // 'getTubeForBarcode',
+      'isLibraryBarcodeValid',
+      'getTubeForBarcode',
     ]),
     ...mapMutations([
-      // 'setLibraryBarcode',
+      'setLibraryBarcode',
       'setInsertSize',
+      'setOnPlateLoadingConc',
+      'setMovieTime',
+      'setSequencingMode'
     ]),
     alert (message, type) {
       this.$emit('alert', message, type)
@@ -120,9 +139,20 @@ export default {
       'currentRun'
     ]),
     ...mapState({
-      currentRun: state => state.currentRun,
       insertSize (state) {
         return state.currentRun.plate.wells.filter(well => well.position === this.position)[0].insert_size
+      },
+      onPlateLoadingConc (state) {
+        return state.currentRun.plate.wells.filter(well => well.position === this.position)[0].on_plate_loading_concentration
+      },
+      movieTime (state) {
+        return state.currentRun.plate.wells.filter(well => well.position === this.position)[0].movie_time
+      },
+      libraryBarcode (state) {
+        return state.currentRun.plate.wells.filter(well => well.position === this.position)[0].library.barcode
+      },
+      sequencingMode (state) {
+        return state.currentRun.plate.wells.filter(well => well.position === this.position)[0].sequencing_mode
       }
     })
   },

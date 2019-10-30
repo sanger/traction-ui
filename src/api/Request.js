@@ -83,9 +83,6 @@ export default {
     create (data) {
       return this.execute('post', this.resource, data)
     },
-    createRelationship(id, relationship, data) {
-      return this.execute('post', `${this.resource}/${id}/${relationship}`, data)
-    },
     update (data) {
       let promises = []
       for (let item of (Array.isArray(data) ? data : [data])) {

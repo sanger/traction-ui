@@ -168,37 +168,6 @@ describe('Run', () => {
 
   })
 
-  describe('createRelationshipResource', () => {
-    let id, relationship
-
-    beforeEach(() => {
-      request.createRelationship = jest.fn()
-      id = 1
-      relationship = 'libraries'
-    })
-
-    it('success', async () => {
-      request.createRelationship.mockResolvedValue(Data.PacbioRun)
-      let mockResponse = new Response(Data.PacbioRun)
-
-      let response = await Run.createRelationshipResource({}, request, id, relationship)
-      expect(response).toEqual(mockResponse)
-    })
-
-    it('failure', async () => {
-      request.createRelationship.mockReturnValue(failedResponse)
-
-      let message
-      try {
-        await Run.createRelationshipResource({}, request, id, relationship)
-      } catch (err) {
-        message = err.message
-      }
-      expect(message).toEqual("title The record identified by 100 could not be found.")
-    })
-
-  })
-
   describe('create', () => {
     let api
 
@@ -214,7 +183,6 @@ describe('Run', () => {
       api.traction.pacbio.runs.create = jest.fn()
       api.traction.pacbio.plates.create = jest.fn()
       api.traction.pacbio.wells.create = jest.fn()
-      api.traction.pacbio.wells.createRelationship = jest.fn()
       api.traction.pacbio.runs.destroy = jest.fn()
       api.traction.pacbio.plates.destroy = jest.fn()
       api.traction.pacbio.wells.destroy = jest.fn()
@@ -224,7 +192,6 @@ describe('Run', () => {
       api.traction.pacbio.runs.create.mockResolvedValue(Data.PacbioRun)
       api.traction.pacbio.plates.create.mockResolvedValue(Data.PacbioPlate)
       api.traction.pacbio.wells.create.mockResolvedValue(Data.PacbioWell)
-      api.traction.pacbio.wells.createRelationship.mockResolvedValue(Data.PacbioWellLibrary)
 
       let resp = await Run.create(run, api.traction.pacbio)
 
@@ -243,7 +210,6 @@ describe('Run', () => {
       expect(api.traction.pacbio.runs.create).toBeCalled()
       expect(api.traction.pacbio.plates.create).not.toBeCalled()
       expect(api.traction.pacbio.wells.create).not.toBeCalled()
-      expect(api.traction.pacbio.wells.createRelationship).not.toBeCalled()
 
       expect(resp).toBeFalsy()
     })
@@ -262,7 +228,6 @@ describe('Run', () => {
       expect(api.traction.pacbio.runs.create).toBeCalled()
       expect(api.traction.pacbio.plates.create).toBeCalled()
       expect(api.traction.pacbio.wells.create).not.toBeCalled()
-      expect(api.traction.pacbio.wells.createRelationship).not.toBeCalled()
 
       expect(api.traction.pacbio.runs.destroy).toBeCalledWith(runId)
   
@@ -285,32 +250,6 @@ describe('Run', () => {
       expect(api.traction.pacbio.runs.create).toBeCalled()
       expect(api.traction.pacbio.plates.create).toBeCalled()
       expect(api.traction.pacbio.wells.create).toBeCalled()
-      expect(api.traction.pacbio.wells.createRelationship).not.toBeCalled()
-
-      expect(api.traction.pacbio.runs.destroy).toBeCalledWith(runId)
-
-      expect(resp).toBeFalsy()
-    })
-
-    it('returns false and rollsback if the well libraries cannot be created', async () => {
-      api.traction.pacbio.runs.create.mockResolvedValue(Data.PacbioRun)
-      api.traction.pacbio.plates.create.mockResolvedValue(Data.PacbioPlate)
-      api.traction.pacbio.wells.create.mockResolvedValue(Data.PacbioWell)
-      api.traction.pacbio.wells.createRelationship.mockResolvedValue(failedResponse)
-
-      api.traction.pacbio.runs.destroy.mockResolvedValue(Data.SuccessfulDestroy)
-      api.traction.pacbio.plates.destroy.mockResolvedValue(Data.SuccessfulDestroy)
-      api.traction.pacbio.wells.destroy.mockResolvedValue(Data.SuccessfulDestroy)
-
-      let runResponse = new Response(Data.PacbioRun)
-      let runId = runResponse.deserialize.runs[0].id
-
-      let resp = await Run.create(run, api.traction.pacbio)
-
-      expect(api.traction.pacbio.runs.create).toBeCalled()
-      expect(api.traction.pacbio.plates.create).toBeCalled()
-      expect(api.traction.pacbio.wells.create).toBeCalled()
-      expect(api.traction.pacbio.wells.createRelationship).toBeCalled()
 
       expect(api.traction.pacbio.runs.destroy).toBeCalledWith(runId)
 

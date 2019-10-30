@@ -23,23 +23,26 @@ const mutations = {
     setComments(state, comments) {
         state.currentRun.comments = comments
     },
-    setUuid(state, uuid) {
-        state.currentRun.uuid = uuid
+    setPlateBarcode(state, barcode) {
+        state.currentRun.plate.barcode = barcode
     },
     setSystemName(state, systemName) {
         state.currentRun.system_name = systemName
     },
     setLibraryBarcode(state, payload) {
-        state.currentRun.plate.wells.filter(well => well.position === payload.position).library = payload.library
+        state.currentRun.plate.wells.filter(well => well.position === payload.position)[0].library = payload.library
     },
     setInsertSize(state, payload) {
         state.currentRun.plate.wells.filter(well => well.position === payload.position)[0].insert_size = payload.insertSize
     },
-    updateWell(state, payload) {
-        let well = state.currentRun.plate.wells.filter(well => well.position === payload.position)[0]
-        Object.keys(payload).map(attribute => {
-            well[attribute] = payload[attribute]
-        })
+    setOnPlateLoadingConc(state, payload) {
+        state.currentRun.plate.wells.filter(well => well.position === payload.position)[0].on_plate_loading_concentration = payload.onPlateLoadingConc
+    },
+    setMovieTime(state, payload) {
+        state.currentRun.plate.wells.filter(well => well.position === payload.position)[0].movie_time = payload.movieTime
+    },
+    setSequencingMode(state, payload) {
+        state.currentRun.plate.wells.filter(well => well.position === payload.position)[0].sequencing_mode = payload.sequencingMode
     }
 }
 

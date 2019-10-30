@@ -19,7 +19,7 @@
           <pacbioLibrariesTable></pacbioLibrariesTable>
         </b-col>
         <b-col>
-          <Plate></Plate>
+          <Plate @alert="showAlert"></Plate>
         </b-col>
       </b-row>
     </div>
