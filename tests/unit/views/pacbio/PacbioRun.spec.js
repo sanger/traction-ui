@@ -115,23 +115,26 @@ describe('Run.vue', () => {
         })
 
         it('calls createRun', async () => {
+            pacbioRun.createRun.mockReturnValue([])
+
             await pacbioRun.create()
             expect(pacbioRun.createRun).toBeCalled()
         })
 
         it('successful', async () => {
+            pacbioRun.createRun.mockReturnValue([])
+
             await pacbioRun.create()
             expect(pacbioRun.createRun).toBeCalled()
             expect(pacbioRun.redirectToRuns).toBeCalled()
         })
 
         it('unsuccessful', async () => {
-            pacbioRun.createRun.mockImplementation(() => {
-                throw Error('Raise this error')
-            })
+            pacbioRun.createRun.mockReturnValue(['this is an error'])
+
             await pacbioRun.create()
             expect(pacbioRun.createRun).toBeCalled()
-            expect(pacbioRun.showAlert).toBeCalled()
+            expect(pacbioRun.showAlert).toBeCalledWith(['this is an error'], 'danger')
             expect(pacbioRun.redirectToRuns).not.toBeCalled()
         })
     })

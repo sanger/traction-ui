@@ -199,7 +199,7 @@ describe('Run', () => {
       expect(api.traction.pacbio.plates.create).toBeCalled()
       expect(api.traction.pacbio.wells.create).toBeCalled()
 
-      expect(resp).toBeTruthy()
+      expect(resp).toEqual([])
     })
 
     it('returns false if the run cannot be created', async () => {
@@ -211,7 +211,7 @@ describe('Run', () => {
       expect(api.traction.pacbio.plates.create).not.toBeCalled()
       expect(api.traction.pacbio.wells.create).not.toBeCalled()
 
-      expect(resp).toBeFalsy()
+      expect(resp).toEqual("title The record identified by 100 could not be found.")
     })
 
     it('returns false and rollsback if the plate cannot be created', async () => {
@@ -231,7 +231,7 @@ describe('Run', () => {
 
       expect(api.traction.pacbio.runs.destroy).toBeCalledWith(runId)
   
-      expect(resp).toBeFalsy()
+      expect(resp).toEqual("title The record identified by 100 could not be found.")
     })
 
     it('returns false and rollsback if the wells cannot be created', async () => {
@@ -253,7 +253,7 @@ describe('Run', () => {
 
       expect(api.traction.pacbio.runs.destroy).toBeCalledWith(runId)
 
-      expect(resp).toBeFalsy()
+      expect(resp).toEqual("title The record identified by 100 could not be found.")
     })
   })
 
