@@ -46,12 +46,7 @@
           width="48"/>
       </b-col>
       <b-col>
-        <b-form-input :value="systemName"
-          @change="setSystemName"
-          id="system_name"
-          placeholder="System Name"
-          type="text"
-          width="48"/>
+        <b-form-select ref="systemName" id="systemName" :value="systemName" :options="systemNameOptions" @change="setSystemName"></b-form-select>
       </b-col>
     </b-row>
     
@@ -76,6 +71,11 @@ const { mapGetters, mapState, mapMutations} = createNamespacedHelpers('traction/
 
 export default {
   name: 'PacbioRunInfo',
+  data () {
+    return {
+      systemNameOptions: [{ text: 'System Name', value: "" }, 'Sequel I', 'Sequel II'],
+    }
+  },
   methods: {
     ...mapMutations([
       'setName',
