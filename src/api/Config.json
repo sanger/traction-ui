@@ -48,6 +48,14 @@
         "runs": {
           "name": "runs",
           "include": ""
+        },
+        "plates": {
+          "name": "plates",
+          "include": ""
+        },
+        "wells": {
+          "name": "wells",
+          "include": ""
         }
       }
     }

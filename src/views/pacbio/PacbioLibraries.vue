@@ -36,8 +36,7 @@
              @filtered="onFiltered"
                selectable
              select-mode="multi"
-             @row-selected="onRowSelected"
-             :busy.sync="isBusy">
+             @row-selected="onRowSelected">
       <template v-slot:cell(selected)="{ rowSelected }">
         <template v-if="rowSelected">
           <span>&check;</span>
@@ -93,8 +92,6 @@ export default {
       fields: [
         { key: 'selected', label: '' },
         { key: 'id', label: 'Library ID', sortable: true },
-        { key: 'barcode', label: 'Barcode', sortable: true },
-        { key: 'sample_names', label: 'Sample Names', sortable: true },
         { key: 'volume', label: 'Volume', sortable: true },
         { key: 'concentration', label: 'Concentration', sortable: true },
         { key: 'library_kit_barcode', label: 'Library Kit Barcode', sortable: true },

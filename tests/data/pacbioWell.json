@@ -1,0 +1,23 @@
+{   
+    "data": {
+        "data": {
+            "id": "5",
+            "type": "wells",
+            "links": {
+                "self": "/v1/pacbio/wells/5"
+            },
+            "attributes": {
+                "movie_time": "10.0",
+                "insert_size": 1001,
+                "on_plate_loading_concentration": 10.1,
+                "row": "A",
+                "column": "01",
+                "pacbio_plate_id": 5,
+                "comment": null,
+                "sequencing_mode": "CLR"
+            }
+        }
+    },
+    "status": 200,
+    "statusText": "Success"
+}

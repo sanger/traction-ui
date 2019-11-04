@@ -1,4 +1,6 @@
 import handlePromise from '@/api/PromiseHelper'
+import * as PacbioRun from '@/api/PacbioRun'
+import router from '@/router'
 
 const setRuns = async ({ commit, getters }) => {
     let request = getters.runRequest
@@ -13,12 +15,58 @@ const setRuns = async ({ commit, getters }) => {
     return response
 }
 
+const newRun = ({ commit }) => {
+    let run = PacbioRun.build()
+    commit('setCurrentRun', run)
+    router.push({ path: `/pacbio/run/new` })
+}
+
+const createRun = async ({ getters }) => {
+    let run = getters.currentRun
+
+    let request = getters.pacbioRequests
+    return await PacbioRun.create(run, request)
+}
+
+const isLibraryBarcodeValid = async ({ dispatch }, barcode) => {
+    if (!barcode) { return false }
+    let libraryTube = await dispatch('getTubeForBarcode', barcode)
+    return validateLibraryTube(libraryTube)
+}
+
+// TODO: Reuse action from tubes module?
+const getTubeForBarcode = async ({ rootGetters }, barcode) => {
+    let request = rootGetters["traction/pacbio/tubes/tubeRequest"]
+    let promise = request.get({ filter: { barcode: barcode } })
+    let response = await handlePromise(promise)
+
+    if (response.successful && !response.empty) {
+        return response.deserialize.tubes[0]
+    }
+}
+
+const validateLibraryTube = (tube) => {
+    if (!tube) { return false }
+    if (!tube.material) { return false }
+    if (tube.material.type != 'libraries') { return false }
+    return true
+}
+
 const actions = {
-    setRuns
+    setRuns,
+    newRun,
+    createRun,
+    isLibraryBarcodeValid,
+    getTubeForBarcode,
 }
 
 export {
-    setRuns
+    setRuns,
+    newRun,
+    createRun,
+    isLibraryBarcodeValid,
+    getTubeForBarcode,
+    validateLibraryTube
 }
 
 export default actions
