@@ -56,6 +56,10 @@ describe('PacbioRunInfo', () => {
         expect(runInfo.currentRun).toBeDefined()
     })
 
+    it('must have systemName data', () => {
+        expect(runInfo.systemNameOptions).toEqual([{ text: 'System Name', value: "" }, 'Sequel I', 'Sequel II'])
+    })
+
     describe('form inputs', () => {
         it('has a Run Name input', () => {
             expect(wrapper.find('.run_name')).toBeDefined()

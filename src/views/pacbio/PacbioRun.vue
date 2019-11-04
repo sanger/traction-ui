@@ -41,11 +41,12 @@ export default {
   mixins: [Helper],
   methods: {
     async create () {
-      try {
-        await this.createRun()
+      let responses = await this.createRun()
+
+      if (responses.length == 0) {
         this.redirectToRuns()
-      } catch (err) {
-        this.showAlert('Failed to create run', 'danger')
+      } else {
+          this.showAlert(responses, 'danger')
       }
     },
     ...mapActions([

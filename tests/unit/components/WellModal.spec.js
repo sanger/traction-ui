@@ -51,7 +51,11 @@ describe('PacbioRunInfo', () => {
     })
 
     it('must have movieTimeOptions data', () => {
-        expect(modal.movieTimeOptions).toEqual([15, 20, 30])
+        expect(modal.movieTimeOptions).toEqual([{ text: 'Movie Time', value: "" }, 15, 20, 30])
+    })
+
+    it('must have sequencingMode data', () => {
+        expect(modal.sequencingModeOptions).toEqual([{ text: 'Sequencing Mode', value: "" }, 'CLR', 'CCS'])
     })
 
     it('can have mapState', () => {

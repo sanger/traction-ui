@@ -59,6 +59,7 @@ const build = (object) => {
 // REFACTOR
 const create = async (run, request) => {
     let runId
+    let responses = []
 
     try {
         let runPayload = {
@@ -76,6 +77,8 @@ const create = async (run, request) => {
         }
 
         let runResponse = await createResource(runPayload, request.runs)
+        responses.push(runResponse)
+
         runId = runResponse.deserialize.runs[0].id
         let platePayload = {
             data: {
@@ -88,6 +91,8 @@ const create = async (run, request) => {
         }
 
         let plateResponse = await createResource(platePayload, request.plates)
+        responses.push(plateResponse)
+
         let plateId = plateResponse.deserialize.plates[0].id
 
         let wellsWithLibraries = run.plate.wells.filter(well => well.library.id)
@@ -129,17 +134,17 @@ const create = async (run, request) => {
             }
         }
 
-        await createResource(wellPayload, request.wells)
+        let wellResponse = await createResource(wellPayload, request.wells)
+        responses.push(wellResponse)
     } catch (err) {
         destroy(runId, request.runs)
-        return false
+        return err.message
     }
-    return true
+    return []
 }
 
 const createResource = async (payload, request) => {
     let response = await handlePromise(request.create(payload))
-
     if (response.successful) {
         return response
     } else {

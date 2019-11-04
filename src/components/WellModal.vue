@@ -14,15 +14,7 @@
           placeholder="Library Barcode">
         </b-form-input>
 
-        <b-form-group
-          id="movieTime"
-          label-cols-sm="4"
-          label-cols-lg="3"
-          label="Movie Time:"
-          label-for="movieTime"
-          >
-          <b-form-select ref="movieTime" id="movieTime" :value="movieTime" :options="movieTimeOptions" @change="updateMovieTime"></b-form-select>
-        </b-form-group>
+        <b-form-select ref="movieTime" id="movieTime" :value="movieTime" :options="movieTimeOptions" @change="updateMovieTime"></b-form-select>
 
         <b-form-input
           ref="onPlateLoadingConc"
@@ -40,13 +32,8 @@
           placeholder="Insert Size">
         </b-form-input>
 
-        <b-form-input
-          ref="sequencingMode"
-          id="sequencingMode"
-          :value="sequencingMode"
-          @change="updateSequencingMode"
-          placeholder="Sequencing Mode">
-        </b-form-input>
+        <b-form-select ref="sequencingMode" id="sequencingMode" :value="sequencingMode" :options="sequencingModeOptions" @change="updateSequencingMode"></b-form-select>
+
       </b-form>
 
       <template v-slot:modal-footer="{ ok, cancel }">
@@ -80,7 +67,8 @@ export default {
   },
   data () {
     return {
-      movieTimeOptions: [15,20,30],
+      movieTimeOptions: [ { text: 'Movie Time', value: "" }, 15, 20, 30 ],
+      sequencingModeOptions: [ { text: 'Sequencing Mode', value: "" }, 'CLR', 'CCS'],
     }
   },
   methods: {
