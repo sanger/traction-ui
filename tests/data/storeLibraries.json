@@ -1,0 +1,72 @@
+[
+  {
+    "id": "1",
+    "type": "libraries",
+    "state": "pending",
+    "barcode": "TRAC-16",
+    "volume": 1.0,
+    "concentration": 1.0,
+    "library_kit_barcode": "LK12345",
+    "fragment_size": 100,
+    "created_at": "09/23/2019 11:18",
+    "deactivated_at": null,
+    "sample_names": "4616STDY7535900,4616STDY7535900",
+    "tag_oligos": "ATGC,CGTA"
+  },
+  {
+    "id": "2",
+    "type": "libraries",
+    "state": "pending",
+    "barcode": "TRAC-17",
+    "volume": 1.0,
+    "concentration": 1.0,
+    "library_kit_barcode": "LK12345",
+    "fragment_size": 100,
+    "created_at": "09/23/2019 11:18",
+    "deactivated_at": null,
+    "sample_names": "4616STDY7535900",
+    "tag_oligos": "ATGC"
+  },    
+  {
+    "id": "3",
+    "type": "libraries",
+    "state": "pending",
+    "barcode": "TRAC-18",
+    "volume": 1.0,
+    "concentration": 1.0,
+    "library_kit_barcode": "LK12345",
+    "fragment_size": 100,
+    "created_at": "09/23/2019 11:18",
+    "deactivated_at": null,
+    "sample_names": "4642STDY7515249",
+    "tag_oligos": "ATGC"
+  },
+  {
+    "id": "4",
+    "type": "libraries",
+    "state": "pending",
+    "barcode": "TRAC-19",
+    "volume": 1.0,
+    "concentration": 1.0,
+    "library_kit_barcode": "LK12345",
+    "fragment_size": 100,
+    "created_at": "09/23/2019 11:18",
+    "deactivated_at": null,
+    "sample_names": "4616STDY7644356",
+    "tag_oligos": "ATGC"
+  },
+  {
+    "id": "5",
+    "type": "libraries",
+    "state": "pending",
+    "barcode": "TRAC-20",
+    "volume": 1.0,
+    "concentration": 1.0,
+    "library_kit_barcode": "LK12345",
+    "fragment_size": 100,
+    "created_at": "09/23/2019 11:18",
+    "deactivated_at": null,
+    "sample_names": "25G257228308",
+    "tag_oligos": "ATGC"
+  }
+]

@@ -187,3 +187,35 @@ describe('#deleteLibraries', () => {
   })
 
 })
+
+describe('#setLibraries', () => {
+  let commit, get, getters, failedResponse
+
+  beforeEach(() => {
+    commit = jest.fn()
+    get = jest.fn()
+    getters = { 'libraryRequest': { 'get': get } }
+
+    failedResponse = { data: { data: [] }, status: 500, statusText: 'Internal Server Error' }
+  })
+
+  it('successfully', async () => {
+    get.mockReturnValue(Data.TractionPacbioLibraries)
+
+    let libraries = await Actions.setLibraries({ commit, getters })
+
+    expect(commit).toHaveBeenCalledWith("setLibraries", libraries)
+    let library = libraries[0]
+    expect(library.requests.length).toEqual(2)
+    expect(library.tag_oligos).toEqual('ATGC,CGTA')
+  })
+
+  it('unsuccessfully', async () => {
+    get.mockReturnValue(failedResponse)
+
+    let response = await Actions.setLibraries({ commit, getters })
+
+    expect(commit).not.toHaveBeenCalled()
+    expect(response).toBeNull()
+  })
+})

@@ -15,7 +15,7 @@
       <pacbioRunInfo></pacbioRunInfo>
       <br>
       <b-row>
-        <b-col>
+        <b-col cols="6">
           <pacbioLibrariesTable></pacbioLibrariesTable>
         </b-col>
         <b-col>

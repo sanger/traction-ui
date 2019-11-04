@@ -46,14 +46,6 @@ describe('Plate.vue', () => {
     expect(wrapper.name()).toEqual('Plate')
   })
 
-  it('can have state', () => {
-    expect(plate.plateBarcode).toEqual(run.plate.barcode)
-  })
-
-  it('has a Plate Barcode input', () => {
-    expect(wrapper.find('.plateBarcode')).toBeDefined()
-  })
-
   describe('alert', () => {
     it('emits an event with the message', () => {
       plate.alert('emit this message', 'success')
