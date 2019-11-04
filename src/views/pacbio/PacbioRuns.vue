@@ -32,15 +32,43 @@
           :current-page="currentPage"
           @filtered="onFiltered">
 
-        <template v-slot:cell(actions)="row">
-          <a :id="generateId('generate-sample-sheet', row.item.id)"
-             :href="generateSampleSheetPath(row.item.id)">
-             Generate Sample Sheet
-          </a>
-        </template>
+      <template v-slot:cell(actions)="row">
+        <b-button :id="generateId('startRun', row.item.id)" variant="outline-success" size="sm" class="mr-1" @click="updateRun('start', row.item.id)" :disabled="row.item.state !== 'pending'">
+          Start
+        </b-button>
+
+        <b-button :id="generateId('completeRun', row.item.id)" variant="outline-primary" size="sm" class="mr-1" @click="updateRun('complete', row.item.id)" :disabled="isRunDisabled(row.item)">
+          Complete
+        </b-button>
+
+        <b-button :id="generateId('cancelRun', row.item.id)" variant="outline-danger" size="sm" class="mr-1" @click="updateRun('cancel', row.item.id)" :disabled="isRunDisabled(row.item)">
+          Cancel
+        </b-button>
+
+        <a :id="generateId('generate-sample-sheet', row.item.id)"
+            :href="generateSampleSheetPath(row.item.id)">
+            Generate Sample Sheet
+        </a>
+      </template>
     </b-table>
 
     <span class="font-weight-bold">Total records: {{ runs.length }}</span>
+
+    <div class="clearfix">
+      <b-button id="newRun"
+                class="float-left"
+                @click="newRun()"
+                variant="success">
+        New Run
+      </b-button>
+
+      <b-pagination class="float-right"
+              v-model="currentPage"
+              :total-rows="runs.length"
+              :per-page="perPage"
+              aria-controls="libraries-table">
+      </b-pagination>
+    </div>
 
   </div>
 </template>
@@ -49,9 +77,7 @@
 import Alert from '@/components/Alert'
 import Helper from '@/mixins/Helper'
 import TableHelper from '@/mixins/TableHelper'
-
-import { createNamespacedHelpers } from 'vuex'
-const { mapActions, mapGetters } = createNamespacedHelpers('traction/pacbio/runs')
+import { mapActions, mapGetters } from 'vuex'
 
 export default {
   name: 'PacbioRuns',
@@ -77,7 +103,7 @@ export default {
       filter: null,
       sortBy: 'created_at',
       sortDesc: true,
-      perPage: 5,
+      perPage: 10,
       currentPage: 1,
     }
   },
@@ -89,22 +115,39 @@ export default {
         this.showAlert("Failed to get runs: " + error.message, 'danger')
       }
     },
+    isRunDisabled(run) {
+      return run.state == 'completed' || run.state == 'cancelled' || run.state == 'pending'
+    },
     generateId(text, id) {
       return `${text}-${id}`
     },
     generateSampleSheetPath(id) {
       return process.env.VUE_APP_TRACTION_BASE_URL + '/v1/pacbio/runs/' + id + '/sample_sheet'
     },
-    ...mapActions([
+    updateRun(status, id) {
+      try {
+        this[status+"Run"](id)
+        this.provider()
+      } catch (error) {
+        this.showAlert("Failed to update run: " + error.message, 'danger')
+      }
+    },
+    ...mapActions('traction/pacbio/runs', [
       'setRuns',
+      'newRun',
       'generateSampleSheet'
-    ])
+    ]),
+    ...mapActions('traction', [
+      'startRun',
+      'completeRun',
+      'cancelRun',
+    ]),
   },
   components: {
     Alert
   },
   computed: {
-    ...mapGetters([
+    ...mapGetters('traction/pacbio/runs', [
       'runs'
     ])
   },

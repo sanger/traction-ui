@@ -41,15 +41,15 @@
             Edit
           </b-button>
 
-          <b-button :id="generateId('startRun',row.item.id)" variant="outline-success" size="sm" class="mr-1" @click="startRun(row.item.id)" :disabled="row.item.state !== 'pending'">
+          <b-button :id="generateId('startRun',row.item.id)" variant="outline-success" size="sm" class="mr-1" @click="updateRun('start', row.item.id)" :disabled="row.item.state !== 'pending'">
             Start
           </b-button>
 
-          <b-button :id="generateId('completeRun',row.item.id)" variant="outline-primary" size="sm" class="mr-1" @click="completeRun(row.item.id)" :disabled="isRunDisabled(row.item)">
+          <b-button :id="generateId('completeRun',row.item.id)" variant="outline-primary" size="sm" class="mr-1" @click="updateRun('complete', row.item.id)" :disabled="isRunDisabled(row.item)">
             Complete
           </b-button>
 
-          <b-button :id="generateId('cancelRun',row.item.id)" variant="outline-danger" size="sm" class="mr-1" @click="cancelRun(row.item.id)" :disabled="isRunDisabled(row.item)">
+          <b-button :id="generateId('cancelRun',row.item.id)" variant="outline-danger" size="sm" class="mr-1" @click="updateRun('cancel', row.item.id)" :disabled="isRunDisabled(row.item)">
             Cancel
           </b-button>
         </template>
@@ -79,9 +79,7 @@ import Alert from '@/components/Alert'
 import Helper from '@/mixins/Helper'
 import TableHelper from '@/mixins/TableHelper'
 import truncate from 'lodash-es/truncate'
-
-import { createNamespacedHelpers } from 'vuex'
-const { mapActions, mapGetters } = createNamespacedHelpers('traction/saphyr/runs')
+import { mapActions, mapGetters } from 'vuex'
 
 export default {
   name: 'Runs',
@@ -102,7 +100,7 @@ export default {
       filter: null,
       sortBy: 'created_at',
       sortDesc: true,
-      perPage: 5,
+      perPage: 10,
       currentPage: 1,
     }
   },
@@ -119,6 +117,14 @@ export default {
     truncateText(text, chars) {
       return truncate(text, { length: chars })
     },
+    updateRun(status, id) {
+      try {
+        this[status+"Run"](id)
+        this.provider()
+      } catch (error) {
+        this.showAlert("Failed to update run: " + error.message, 'danger')
+      }
+    },
     async provider() {
       try {
         await this.setRuns()
@@ -126,20 +132,22 @@ export default {
         this.showAlert("Failed to get runs: " + error.message, 'danger')
       }
     },
-    ...mapActions([
+    ...mapActions('traction/saphyr/runs', [
       'setRuns',
+      'editRun',
+      'newRun'
+    ]),
+    ...mapActions('traction', [
       'startRun',
       'completeRun',
       'cancelRun',
-      'editRun',
-      'newRun'
-    ])
+    ]),
   },
   created() {
     this.provider()
   },
   computed: {
-    ...mapGetters([
+    ...mapGetters('traction/saphyr/runs', [
       'runs'
     ])
   },

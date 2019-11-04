@@ -1,0 +1,23 @@
+{
+    "data":
+    {
+        "data": {
+            "id": "1",
+            "type": "runs",
+            "links": {
+                "self": "/v1/pacbio/runs/9"
+            },
+            "attributes": {
+                "name": "aname",
+                "template_prep_kit_box_barcode": "DM111710025910011171",
+                "binding_kit_box_barcode": "DM11171008622001117",
+                "sequencing_kit_box_barcode": "DM000110086180012312",
+                "dna_control_complex_box_barcode": "Lxxxxx10171760012319",
+                "system_name": "Sequel II",
+                "created_at": "10/17/2019 12:56"
+            }
+        }
+    },
+    "status": 200,
+    "statusText": "Success"
+}

@@ -58,6 +58,132 @@ describe('Runs.vue', () => {
         expect(wrapper.contains('table')).toBe(true)
     })
 
+    describe('new run button', () => {
+
+        it('contains a create new run button', () => {
+            expect(wrapper.contains('button')).toBe(true)
+        })
+
+        it('will redirect to the run when newRun is clicked', async () => {
+            runs.newRun = jest.fn()
+            let button = wrapper.find('#newRun')
+            button.trigger('click')
+            expect(runs.newRun).toBeCalled()
+        })
+    })
+
+    describe('start button', () => {
+        let button
+
+        it('is enabled when the run state is pending', () => {
+            // run at(1) is in state pending
+            button = wrapper.find('#startRun-1')
+            expect(button.attributes('disabled')).toBeFalsy()
+        })
+
+        it('is disabled is the run state is started', () => {
+            // run at(2) is in state started
+            button = wrapper.find('#startRun-2')
+            expect(button.attributes('disabled')).toBeTruthy()
+        })
+
+        it('is disabled is the run state is completed', () => {
+            // run at(3) is in state started
+            button = wrapper.find('#startRun-3')
+            expect(button.attributes('disabled')).toBeTruthy()
+        })
+
+        it('is disabled is the run state is cancelled', () => {
+            // run at(4) is in state started
+            button = wrapper.find('#startRun-4')
+            expect(button.attributes('disabled')).toBeTruthy()
+        })
+
+        it('on click startRun is called', () => {
+            runs.startRun = jest.fn()
+
+            button = wrapper.find('#startRun-1')
+            button.trigger('click')
+            expect(runs.startRun).toBeCalledWith(mockRuns[0].id)
+        })
+    })
+
+    describe('complete button', () => {
+        let button
+
+        it('is is enabled when the run state is pending', () => {
+            // run at(1) is in state pending
+            button = wrapper.find('#completeRun-1')
+            expect(button.attributes('disabled')).toBeTruthy()
+        })
+
+        it('is is enabled when the run state is started', () => {
+            // run at(2) is in state started
+            button = wrapper.find('#completeRun-2')
+            expect(button.attributes('disabled')).toBeFalsy()
+        })
+
+        it('is disabled if the run state is completed', () => {
+            // run at(3) is in state cancelled
+            button = wrapper.find('#completeRun-3')
+            expect(button.attributes('disabled')).toBeTruthy()
+        })
+
+        it('is disabled is the run state is cancelled', () => {
+            // run at(4) is in state cancelled
+            button = wrapper.find('#completeRun-4')
+            expect(button.attributes('disabled')).toBeTruthy()
+        })
+
+        it('on click completeRun is called', () => {
+            // run at(2) is in state started
+            runs.completeRun = jest.fn()
+
+            button = wrapper.find('#completeRun-2')
+            button.trigger('click')
+
+            expect(runs.completeRun).toBeCalledWith(mockRuns[1].id)
+        })
+    })
+
+    describe('cancel button', () => {
+        let button
+
+        it('is is enabled when the run state is pending', () => {
+            // run at(1) is in state pending
+            button = wrapper.find('#cancelRun-1')
+            expect(button.attributes('disabled')).toBeTruthy()
+        })
+
+        it('is is enabled when the run state is started', () => {
+            // run at(2) is in state started
+            button = wrapper.find('#cancelRun-2')
+            expect(button.attributes('disabled')).toBeFalsy()
+        })
+
+        it('is disabled if the run state is completed', () => {
+            // run at(3) is in state cancelled
+            button = wrapper.find('#cancelRun-3')
+            expect(button.attributes('disabled')).toBeTruthy()
+        })
+
+        it('is disabled is the run state is cancelled', () => {
+            // run at(4) is in state cancelled
+            button = wrapper.find('#cancelRun-4')
+            expect(button.attributes('disabled')).toBeTruthy()
+        })
+
+        it('on click cancelRun is called', () => {
+            // run at(2) is in state started
+            runs.cancelRun = jest.fn()
+
+            button = wrapper.find('#cancelRun-2')
+            button.trigger('click')
+
+            expect(runs.cancelRun).toBeCalledWith(mockRuns[1].id)
+        })
+    })
+
     describe('sorting', () => {
         it('will sort the runs by created at', () => {
             expect(wrapper.find('tbody').findAll('tr').at(0).text()).toMatch(/Sequel II/)
@@ -144,6 +270,43 @@ describe('Runs.vue', () => {
 
     })
 
+    describe('#updateRun', () => {
+        beforeEach(() => {
+            runs.startRun = jest.fn()
+            runs.completeRun = jest.fn()
+            runs.cancelRun = jest.fn()
+            runs.provider = jest.fn()
+            runs.showAlert = jest.fn()
+        })
+
+        it('calls startRun successfully', () => {
+            runs.updateRun('start', 1)
+            expect(runs.startRun).toBeCalledWith(1)
+            expect(runs.provider).toBeCalled()
+        })
+
+        it('calls completeRun successfully', () => {
+            runs.updateRun('complete', 1)
+            expect(runs.completeRun).toBeCalledWith(1)
+            expect(runs.provider).toBeCalled()
+        })
+
+        it('calls cancelRun successfully', () => {
+            runs.updateRun('cancel', 1)
+            expect(runs.cancelRun).toBeCalledWith(1)
+            expect(runs.provider).toBeCalled()
+        })
+
+        it('calls setRuns unsuccessfully', () => {
+            runs.startRun.mockImplementation(() => {
+                throw Error('Raise this error')
+            })
+            runs.updateRun('start', 1)
+            expect(runs.provider).not.toBeCalled()
+            expect(runs.showAlert).toBeCalled()
+        })
+    })
+
     describe('generate sample sheet link', () => {
         let link, id
 
@@ -160,4 +323,5 @@ describe('Runs.vue', () => {
             expect(link.attributes("href")).toBe(process.env.VUE_APP_TRACTION_BASE_URL + "/v1/pacbio/runs/" + id + "/sample_sheet")
         })
     })
+
 })
