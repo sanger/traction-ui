@@ -23,9 +23,6 @@ const mutations = {
     setComments(state, comments) {
         state.currentRun.comments = comments
     },
-    setPlateBarcode(state, barcode) {
-        state.currentRun.plate.barcode = barcode
-    },
     setSystemName(state, systemName) {
         state.currentRun.system_name = systemName
     },

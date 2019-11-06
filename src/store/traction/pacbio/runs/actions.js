@@ -57,7 +57,7 @@ const actions = {
     newRun,
     createRun,
     isLibraryBarcodeValid,
-    getTubeForBarcode,
+    getTubeForBarcode
 }
 
 export {

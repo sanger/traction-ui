@@ -1,13 +1,13 @@
 import { mount, localVue, Vuex } from '../testHelper'
 import PacbioLibrariesTable from '@/components/PacbioLibrariesTable'
-import * as Run from '@/api/PacbioRun'
+import StoreLibraries from '../../data/StoreLibraries'
 
 describe('PacbioLibrariesTable', () => {
 
-    let wrapper, librariesTable, run
+    let wrapper, librariesTable, libraries
 
     beforeEach(() => {
-        run = Run.build()
+        libraries = StoreLibraries
 
         let store = new Vuex.Store({
             modules: {
@@ -17,13 +17,13 @@ describe('PacbioLibrariesTable', () => {
                         pacbio: {
                             namespaced: true,
                             modules: {
-                                runs: {
+                                tubes: {
                                     namespaced: true,
                                     state: {
-                                        currentRun: run
+                                        libraries: libraries
                                     },
                                     getters: {
-                                        currentRun: state => state.currentRun,
+                                        libraries: state => state.libraries,
                                     },
                                 }
                             }
@@ -58,4 +58,9 @@ describe('PacbioLibrariesTable', () => {
             expect(headers.filter(header => header.text() === field.label)).toBeDefined()
         }
     })
+
+    it('contains the correct data', () => {
+        expect(wrapper.find('tbody').findAll('tr').length).toEqual(5)
+    })
+
 })
