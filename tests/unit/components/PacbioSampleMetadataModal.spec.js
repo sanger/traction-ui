@@ -57,10 +57,10 @@ describe('PacbioSampleMetadataModal.vue', () => {
 
   it('can have mapState', () => {
     expect(modal.libraryType).toEqual(mockSamples[0].library_type)
-    // expect(modal.estimateOfGBRequired).toBeDefined()
-    // expect(modal.numOfSMRTCells).toBeDefined()
-    // expect(modal.costCode).toBeDefined()
-    // expect(modal.externalStudyID).toBeDefined()
+    expect(modal.estimateOfGBRequired).toBeDefined()
+    expect(modal.numberOfSMRTCells).toBeDefined()
+    expect(modal.costCode).toBeDefined()
+    expect(modal.externalStudyId).toBeDefined()
   })
     
   describe('Edit button', () => {
@@ -78,10 +78,36 @@ describe('PacbioSampleMetadataModal.vue', () => {
     })
   })
 
-  it('updateLibraryType', () => {
-    modal.setLibraryType = jest.fn()
-    modal.updateLibraryType('lib type')
-    expect(modal.setLibraryType).toBeCalledWith({ requestId: mockSamples[0].id, libraryType: 'lib type' })
+  describe('mutators', () => {
+    it('updateLibraryType', () => {
+      modal.setLibraryType = jest.fn()
+      modal.updateLibraryType('lib type')
+      expect(modal.setLibraryType).toBeCalledWith({ requestId: mockSamples[0].id, libraryType: 'lib type' })
+    })
+
+    it('updateEstimateOfGBRequired', () => {
+      modal.setEstimateOfGBRequired = jest.fn()
+      modal.updateEstimateOfGBRequired("100")
+      expect(modal.setEstimateOfGBRequired).toBeCalledWith({ requestId: mockSamples[0].id, estimateOfGBRequired: "100" })
+    })
+
+    it('updateNumberOfSMRTCells', () => {
+      modal.setNumberOfSMRTCells = jest.fn()
+      modal.updateNumberOfSMRTCells("1")
+      expect(modal.setNumberOfSMRTCells).toBeCalledWith({ requestId: mockSamples[0].id, numberOfSMRTCells: "1" })
+    })
+
+    it('updateCostCode', () => {
+      modal.setCostCode = jest.fn()
+      modal.updateCostCode('ABC123')
+      expect(modal.setCostCode).toBeCalledWith({ requestId: mockSamples[0].id, costCode: 'ABC123' })
+    })
+
+    it('updateExternalStudyId', () => {
+      modal.setExternalStudyId = jest.fn()
+      modal.updateExternalStudyId('123')
+      expect(modal.setExternalStudyId).toBeCalledWith({ requestId: mockSamples[0].id, externalStudyId: '123' })
+    })
   })
 
   describe('update', () => {
@@ -102,7 +128,7 @@ describe('PacbioSampleMetadataModal.vue', () => {
         throw Error('Raise this error')
       })
       await modal.update()
-      expect(modal.alert).toBeCalledWith('Failed to update sample', 'danger')
+      expect(modal.alert).toBeCalledWith('Failed to update sample. Error: Raise this error', 'danger')
     })
 
   })

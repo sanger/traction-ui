@@ -23,6 +23,7 @@ const updateRequest = async ({ getters }, id) => {
                 library_type: sample.library_type,
                 estimate_of_gb_required: sample.estimate_of_gb_required,
                 number_of_smrt_cells: sample.number_of_smrt_cells,
+                cost_code: sample.cost_code,
                 external_study_id: sample.external_study_id,
             } 
         } 

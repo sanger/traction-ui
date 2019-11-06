@@ -21,6 +21,54 @@
             placeholder="Library Type">
           </b-form-input>
         </b-form-group>
+
+        <b-form-group id="estimateOfGBRequired"
+                      label="Estimate of GB required:"
+                      label-for="estimateOfGBRequired">
+          <b-form-input
+            ref="estimateOfGBRequired"
+            id="estimateOfGBRequired"
+            :value="estimateOfGBRequired"
+            @change="updateEstimateOfGBRequired"
+            placeholder="Library Type">
+          </b-form-input>
+        </b-form-group>
+
+        <b-form-group id="numberOfSMRTCells"
+                      label="Number of SMRT Cells:"
+                      label-for="numberOfSMRTCells">
+          <b-form-input
+            ref="numberOfSMRTCells"
+            id="numberOfSMRTCells"
+            :value="numberOfSMRTCells"
+            @change="updateNumberOfSMRTCells"
+            placeholder="Number of SMRT Cells">
+          </b-form-input>
+        </b-form-group>
+
+        <b-form-group id="costCode"
+                      label="Cost Code:"
+                      label-for="costCode">
+          <b-form-input
+            ref="costCode"
+            id="costCode"
+            :value="costCode"
+            @change="updateCostCode"
+            placeholder="Cost Code">
+          </b-form-input>
+        </b-form-group>
+
+        <b-form-group id="externalStudyId"
+                      label="External Study ID:"
+                      label-for="externalStudyId">
+          <b-form-input
+            ref="externalStudyId"
+            id="externalStudyId"
+            :value="externalStudyId"
+            @change="updateExternalStudyId"
+            placeholder="External Study ID">
+          </b-form-input>
+        </b-form-group>
       </b-form>
 
       <template v-slot:modal-footer="{ ok, cancel }">
@@ -60,7 +108,7 @@ export default {
         await this.updateRequest(this.id)
         this.alert('Sample updated', 'success')
       } catch (err) {
-        this.alert('Failed to update sample', 'danger')
+        this.alert('Failed to update sample. ' + err, 'danger')
       }
       this.hide()
     },
@@ -70,11 +118,27 @@ export default {
     updateLibraryType(libraryType) {
       this.setLibraryType({ requestId: this.id, libraryType: libraryType})
     },
+    updateEstimateOfGBRequired(estimateOfGBRequired) {
+      this.setEstimateOfGBRequired({ requestId: this.id, estimateOfGBRequired: estimateOfGBRequired})
+    },
+    updateNumberOfSMRTCells(numberOfSMRTCells) {
+      this.setNumberOfSMRTCells({ requestId: this.id, numberOfSMRTCells: numberOfSMRTCells})
+    },
+    updateCostCode(costCode) {
+      this.setCostCode({ requestId: this.id, costCode: costCode})
+    },
+    updateExternalStudyId(externalStudyId) {
+      this.setExternalStudyId({ requestId: this.id, externalStudyId: externalStudyId})
+    },
     ...mapActions([
       'updateRequest',
     ]),
     ...mapMutations([
       'setLibraryType',
+      'setEstimateOfGBRequired',
+      'setNumberOfSMRTCells',
+      'setCostCode',
+      'setExternalStudyId',
     ]),
     hide() {
       this.$refs['modal'].hide()
@@ -90,6 +154,18 @@ export default {
     ...mapState({
       libraryType (state) {
         return state.requests.find(s => s.id === this.id).library_type
+      },
+      estimateOfGBRequired (state) {
+        return state.requests.find(s => s.id === this.id).estimate_of_gb_required
+      },
+      numberOfSMRTCells (state) {
+        return state.requests.find(s => s.id === this.id).number_of_smrt_cells
+      },
+      costCode (state) {
+        return state.requests.find(s => s.id === this.id).cost_code
+      },
+      externalStudyId (state) {
+        return state.requests.find(s => s.id === this.id).external_study_id
       },
     })
   },
