@@ -2,11 +2,6 @@
   <div>
     <alert ref='alert'></alert>
 
-    <p v-if="this.preFilteredMaterials.length > 0" class="font-weight-bold">
-      Only showing samples for the following barcodes: {{ this.preFilteredMaterials.map(sample => sample.barcode).join(', ') }}
-      <b-button @click="clearPreFilter" size="sm" variant="info">Clear pre-filter</b-button>
-    </p>
-
     <b-form-group label="Filter"
                   label-cols-sm="1"
                   label-align-sm="right"
@@ -27,7 +22,7 @@
 
     <b-table id="samples-table"
              show-empty
-             :items="items"
+             :items="requests"
              :fields="fields"
              :filter="filter"
              :per-page="perPage"
@@ -37,6 +32,7 @@
              selectable
              select-mode="multi"
              @row-selected="onRowSelected">
+
       <template v-slot:cell(selected)="{ rowSelected }">
         <template v-if="rowSelected">
           <span>&check;</span>
@@ -48,16 +44,21 @@
         </template>
       </template>
 
+      <template v-slot:cell(actions)="row">
+        <PacbioSampleMetadataModal :id="row.item.id" @alert="showAlert" >
+        </PacbioSampleMetadataModal>
+      </template>
+
       <template v-slot:cell(show_details)="row">
-        <b-button size="sm" @click="row.toggleDetails" class="mr-2">
+        <b-button size="sm" @click="row.toggleDetails" class="mr-2" variant="outline-info">
           {{ row.detailsShowing ? 'Hide' : 'Show'}} Details
         </b-button>
       </template>
 
       <template v-slot:row-details="row">
         <b-card class="text-left">
-          <template v-for="field in field_in_details">
-            <span :key="field.label" class="font-weight-bold">{{ field.label }}</span>: {{ row.item[field.item] }}
+          <template v-for="(field, index) in field_in_details">
+            <span :key="field.label+index" class="font-weight-bold">{{ field.label }}</span>: {{ row.item[field.item] }}
             <br :key="field.label">
           </template>
 
@@ -93,23 +94,23 @@
 
 <script>
 import LibraryCreatePacbioModal from '@/components/LibraryCreatePacbioModal'
+import PacbioSampleMetadataModal from '@/components/PacbioSampleMetadataModal'
 import PrinterModal from '@/components/PrinterModal'
 import Helper from '@/mixins/Helper'
-import MatType from '@/mixins/MatType'
 import TableHelper from '@/mixins/TableHelper'
 import Alert from '@/components/Alert'
-import * as consts from '@/consts/consts'
-import { createNamespacedHelpers } from 'vuex'
 
-const { mapGetters } = createNamespacedHelpers('traction/pacbio/tubes')
+import { createNamespacedHelpers } from 'vuex'
+const { mapActions, mapGetters } = createNamespacedHelpers('traction/pacbio/requests')
 
 export default {
   name: 'Samples',
-  mixins: [Helper, MatType, TableHelper],
+  mixins: [Helper, TableHelper],
   components: {
     LibraryCreatePacbioModal,
     PrinterModal,
-    Alert
+    Alert,
+    PacbioSampleMetadataModal
   },
   data () {
     return {
@@ -120,6 +121,7 @@ export default {
         { key: 'sample_species', label: 'Species', sortable: true },
         { key: 'barcode', label: 'Barcode', sortable: true },
         { key: 'created_at', label: 'Created at', sortable: true },
+        { key: 'actions', label: 'Actions' },
         { key: 'show_details', label: '' }
       ],
       field_in_details: [
@@ -135,33 +137,28 @@ export default {
       filter: null,
       perPage: 5,
       currentPage: 1,
-      preFilteredMaterials: [],
-      barcodes: []
     }
   },
   methods: {
     async provider() {
       try {
-        this.items = await this.getMaterial(consts.MAT_TYPE_REQUESTS)
-      } catch (err) {
-        this.log(err)
+        await this.setRequests()
+        this.items = this.requests
+      } catch (error) {
+        this.showAlert("Failed to get samples: " + error.message, 'danger')
       }
     },
-    clearPreFilter() {
-      this.log('clearPreFilter()')
-      this.items = Object.keys(this.$store.getters.requests).map(
-        key => this.$store.getters.request(key))
-      this.preFilteredMaterials = []
-    },
+    ...mapActions([
+      'setRequests'
+    ]),
+  },
+  computed: {
+    ...mapGetters([
+      'requests'
+    ])
   },
   created() {
     this.provider()
   },
-  computed: {
-    ...mapGetters([ // TODO: these should probably go in the mattype mixin
-      'requestsRequest',
-      'libraryRequest'
-    ])
-  }
 }
 </script>

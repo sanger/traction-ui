@@ -2,7 +2,6 @@ import Samples from '@/views/pacbio/PacbioSamples'
 import { mount, localVue, Vuex, Data } from '../../testHelper'
 import Alert from '@/components/Alert'
 import PrinterModal from '@/components/PrinterModal'
-import * as consts from '@/consts/consts'
 import VueRouter from 'vue-router'
 import Response from '@/api/Response'
 
@@ -10,10 +9,7 @@ describe('Samples.vue', () => {
     let wrapper, samples, mockSamples
 
     beforeEach(() => {
-        mockSamples = [
-            { id: 1, barcode: 'TRAC-8', material: { id: 6, type: 'requests', library_type: 'type', estimate_of_gb_required: 100, number_of_smrt_cells: 3, sample_name: 'a name1', created_at: '03/12/2019 11:49' } },
-            { id: 2, barcode: 'TRAC-8', material: { id: 6, type: 'requests', library_type: 'type', estimate_of_gb_required: 100, number_of_smrt_cells: 3, sample_name: 'a name2', created_at: '03/12/2019 11:49' } }
-        ]
+        mockSamples = new Response(Data.TractionPacbioSamples).deserialize.requests
 
         const router = new VueRouter({
             routes: [{
@@ -32,13 +28,13 @@ describe('Samples.vue', () => {
                         pacbio: {
                             namespaced: true,
                             modules: {
-                                tubes: {
+                                requests: {
                                     namespaced: true,
                                     state: {
-                                        tractionTubes: mockSamples
+                                        requests: mockSamples
                                     },
                                     getters: {
-                                        tractionTubesWithInfo: state => state.tractionTubes.map(i => Object.assign(i.material, { barcode: i.barcode }))
+                                        requests: state => state.requests
                                     }
                                 }
                             }
@@ -60,6 +56,8 @@ describe('Samples.vue', () => {
                 provider() { return }
             }
         })
+
+        wrapper.setData({ items: mockSamples })
         samples = wrapper.vm
     })
 
@@ -72,8 +70,6 @@ describe('Samples.vue', () => {
         })
 
         it('contains the correct data', async () => {
-            let mockSamples = new Response(Data.TractionPacbioSamples).deserialize.requests
-            wrapper.setData({ items: mockSamples })
             expect(wrapper.find('tbody').findAll('tr').length).toEqual(5)
         })
     })
@@ -102,6 +98,15 @@ describe('Samples.vue', () => {
     describe('alert', () => {
         it('has a alert', () => {
             expect(wrapper.contains(Alert)).toBe(true)
+        })
+    })
+
+    describe('Edit button', () => {
+        let button
+
+        it('is present for each sample', () => {
+            button = wrapper.find('#editRun-1')
+            expect(button.text()).toEqual('Edit')
         })
     })
 })
