@@ -4,6 +4,7 @@ const getters = {
   requestsRequest: (state, getters, rootState) => rootState.api.traction.pacbio.requests,
   tractionTubesWithInfo:   state => state.tractionTubes.map(i => Object.assign(i.material, {barcode: i.barcode})),
   libraryRequest:  (state, getters, rootState) => rootState.api.traction.pacbio.libraries,
+  libraries: state => state.libraries
 }
 
 export default getters

@@ -1,12 +1,5 @@
 <template>
   <div>
-    <b-form-input
-      ref="plateBarcode"
-      id="plateBarcode"
-      :value="plateBarcode"
-      @change="setPlateBarcode"
-      placeholder="Plate Barcode">
-    </b-form-input>
 
     <!-- <?xml version="1.0" encoding="UTF-8" standalone="no"?> -->
     <!-- Created with Inkscape (http://www.inkscape.org/) -->
@@ -1778,7 +1771,7 @@
 <script>
 import WellModal from '@/components/WellModal'
 import { createNamespacedHelpers } from 'vuex'
-const { mapState, mapMutations, mapGetters} = createNamespacedHelpers('traction/pacbio/runs')
+const { mapGetters } = createNamespacedHelpers('traction/pacbio/runs')
 
 export default {
   name: 'Plate',
@@ -1793,18 +1786,12 @@ export default {
     },
     alert (message, type) {
       this.$emit('alert', message, type)
-    },
-    ...mapMutations([
-      'setPlateBarcode',
-    ]),
+    }
   },
   computed: {
     ...mapGetters([
       'currentRun'
-    ]),
-    ...mapState({
-      plateBarcode: state => state.currentRun.plate.barcode,
-    })
+    ])
   },
   mounted() {
     // Add on 'click' event listener for each well,

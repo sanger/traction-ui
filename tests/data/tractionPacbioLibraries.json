@@ -1,244 +1,204 @@
 {
   "data": {
-    "data": [{
-      "id": "1",
-      "type": "libraries",
-      "attributes": {
-        "state": "pending",
-        "barcode": "TRAC-11",
-        "sample_names": "Sample1",
-        "volume": 1.0, 
-        "concentration": 1.0, 
-        "library_kit_barcode": "LK12345", 
-        "fragment_size": 100,
-        "created_at": "08/14/2019 10:05",
-        "deactivated_at": "08/19/2019 02:12"
+    "data": [
+      {
+        "id": "1",
+        "type": "libraries",
+        "attributes": {
+          "state": "pending",
+          "barcode": "TRAC-16",
+          "volume": 1.0,
+          "concentration": 1.0,
+          "library_kit_barcode": "LK12345",
+          "fragment_size": 100,
+          "created_at": "09/23/2019 11:18",
+          "deactivated_at": null,
+          "sample_names": "4616STDY7535900,4616STDY7535900"
+        },
+        "relationships": {
+          "requests": {
+            "data": [
+              {
+                "type": "request_libraries",
+                "id": "1"
+              },
+              {
+                "type": "request_libraries",
+                "id": "6"
+              }
+            ]
+          }
+        }
+      },
+      {
+        "id": "2",
+        "type": "libraries",
+        "attributes": {
+          "state": "pending",
+          "barcode": "TRAC-17",
+          "volume": 1.0,
+          "concentration": 1.0,
+          "library_kit_barcode": "LK12345",
+          "fragment_size": 100,
+          "created_at": "09/23/2019 11:18",
+          "deactivated_at": null,
+          "sample_names": "4616STDY7535900"
+        },
+        "relationships": {
+          "requests": {
+            "data": [
+              {
+                "type": "request_libraries",
+                "id": "2"
+              }
+            ]
+          }
+        }
+      },
+      {
+        "id": "3",
+        "type": "libraries",
+        "attributes": {
+          "state": "pending",
+          "barcode": "TRAC-18",
+          "volume": 1.0,
+          "concentration": 1.0,
+          "library_kit_barcode": "LK12345",
+          "fragment_size": 100,
+          "created_at": "09/23/2019 11:18",
+          "deactivated_at": null,
+          "sample_names": "4642STDY7515249"
+        },
+        "relationships": {
+          "requests": {
+            "data": [
+              {
+                "type": "request_libraries",
+                "id": "3"
+              }
+            ]
+          }
+        }
+      },
+      {
+        "id": "4",
+        "type": "libraries",
+        "attributes": {
+          "state": "pending",
+          "barcode": "TRAC-19",
+          "volume": 1.0,
+          "concentration": 1.0,
+          "library_kit_barcode": "LK12345",
+          "fragment_size": 100,
+          "created_at": "09/23/2019 11:18",
+          "deactivated_at": null,
+          "sample_names": "4616STDY7644356"
+        },
+        "relationships": {
+          "requests": {
+            "data": [
+              {
+                "type": "request_libraries",
+                "id": "4"
+              }
+            ]
+          }
+        }
+      },
+      {
+        "id": "5",
+        "type": "libraries",
+        "attributes": {
+          "state": "pending",
+          "barcode": "TRAC-20",
+          "volume": 1.0,
+          "concentration": 1.0,
+          "library_kit_barcode": "LK12345",
+          "fragment_size": 100,
+          "created_at": "09/23/2019 11:18",
+          "deactivated_at": null,
+          "sample_names": "25G257228308"
+        },
+        "relationships": {
+          "requests": {
+            "data": [
+              {
+                "type": "request_libraries",
+                "id": "5"
+              }
+            ]
+          }
+        }
       }
-    }, {
-      "id": "2",
-      "type": "libraries",
-      "attributes": {
-        "state": "pending",
-        "barcode": "TRAC-12",
-        "sample_names": "Sample2,Sample3",
-         "volume": 1.0, 
-        "concentration": 1.0, 
-        "library_kit_barcode": "LK12345", 
-        "fragment_size": 100,
-        "created_at": "08/14/2019 10:05",
-        "deactivated_at": null
+    ],
+    "included": [
+      {
+        "id": "1",
+        "type": "request_libraries",
+        "attributes": {
+          "sample_name": "4616STDY7535900",
+          "tag_oligo": "ATGC",
+          "tag_group_id": 1,
+          "tag_set_name": "pacbio",
+          "tag_id": 1
+        }
+      },
+      {
+        "id": "6",
+        "type": "request_libraries",
+        "attributes": {
+          "sample_name": "4616STDY7535900",
+          "tag_oligo": "CGTA",
+          "tag_group_id": 1,
+          "tag_set_name": "pacbio",
+          "tag_id": 2
+        }
+      },
+      {
+        "id": "2",
+        "type": "request_libraries",
+        "attributes": {
+          "sample_name": "4616STDY7535900",
+          "tag_oligo": "ATGC",
+          "tag_group_id": 1,
+          "tag_set_name": "pacbio",
+          "tag_id": 1
+        }
+      },
+      {
+        "id": "3",
+        "type": "request_libraries",
+        "attributes": {
+          "sample_name": "4642STDY7515249",
+          "tag_oligo": "ATGC",
+          "tag_group_id": 1,
+          "tag_set_name": "pacbio",
+          "tag_id": 1
+        }
+      },
+      {
+        "id": "4",
+        "type": "request_libraries",
+        "attributes": {
+          "sample_name": "4616STDY7644356",
+          "tag_oligo": "ATGC",
+          "tag_group_id": 1,
+          "tag_set_name": "pacbio",
+          "tag_id": 1
+        }
+      },
+      {
+        "id": "5",
+        "type": "request_libraries",
+        "attributes": {
+          "sample_name": "25G257228308",
+          "tag_oligo": "ATGC",
+          "tag_group_id": 1,
+          "tag_set_name": "pacbio",
+          "tag_id": 1
+        }
       }
-    }, {
-      "id": "3",
-      "type": "libraries",
-      "attributes": {
-        "state": "pending",
-        "barcode": "TRAC-13",
-        "sample_names": "Sample3",
-        "volume": 1.0, 
-        "concentration": 1.0, 
-        "library_kit_barcode": "LK12345", 
-        "fragment_size": 100,
-        "created_at": "08/14/2019 10:05",
-        "deactivated_at": null
-      }
-    }, {
-      "id": "4",
-      "type": "libraries",
-      "attributes": {
-        "state": "pending",
-        "barcode": "TRAC-14",
-        "sample_names": "Sample4",
-        "volume": 1.0, 
-        "concentration": 1.0, 
-        "library_kit_barcode": "LK12345", 
-        "fragment_size": 100,
-        "created_at": "08/14/2019 10:05",
-        "deactivated_at": null
-      }
-    }, {
-      "id": "5",
-      "type": "libraries",
-      "attributes": {
-        "state": "pending",
-        "barcode": "TRAC-15",
-        "sample_names": "Sample5",
-        "volume": 1.0, 
-        "concentration": 1.0, 
-        "library_kit_barcode": "LK12345", 
-        "fragment_size": 100,
-        "created_at": "08/14/2019 10:05",
-        "deactivated_at": null
-      }
-    }, {
-      "id": "6",
-      "type": "libraries",
-      "attributes": {
-        "state": "pending",
-        "barcode": "TRAC-16",
-        "sample_names": "Sample1",
-        "volume": 1.0, 
-        "concentration": 1.0, 
-        "library_kit_barcode": "LK12345", 
-        "fragment_size": 100,
-        "created_at": "08/14/2019 10:05",
-        "deactivated_at": null
-      }
-    }, {
-      "id": "7",
-      "type": "libraries",
-      "attributes": {
-        "state": "pending",
-        "barcode": "TRAC-17",
-        "sample_names": "Sample1",
-        "volume": 1.0, 
-        "concentration": 1.0, 
-        "library_kit_barcode": "LK12345", 
-        "fragment_size": 100,
-        "created_at": "08/14/2019 10:19",
-        "deactivated_at": null
-      }
-    }, {
-      "id": "8",
-      "type": "libraries",
-      "attributes": {
-        "state": "pending",
-        "barcode": "TRAC-18",
-        "sample_names": "Sample1",
-        "volume": 1.0, 
-        "concentration": 1.0, 
-        "library_kit_barcode": "LK12345", 
-        "fragment_size": 100,
-        "created_at": "08/14/2019 10:42",
-        "deactivated_at": null
-      }
-    }, {
-      "id": "9",
-      "type": "libraries",
-      "attributes": {
-        "state": "pending",
-        "barcode": "TRAC-19",
-        "sample_names": "Sample1",
-        "volume": 1.0, 
-        "concentration": 1.0, 
-        "library_kit_barcode": "LK12345", 
-        "fragment_size": 100,
-        "created_at": "08/14/2019 01:31",
-        "deactivated_at": null
-      }
-    }, {
-      "id": "10",
-      "type": "libraries",
-      "attributes": {
-        "state": "pending",
-        "barcode": "TRAC-20",
-        "sample_names": "Sample2",
-        "volume": 1.0, 
-        "concentration": 1.0, 
-        "library_kit_barcode": "LK12345", 
-        "fragment_size": 100,
-        "created_at": "08/14/2019 01:31",
-        "deactivated_at": null
-      }
-    }, {
-      "id": "11",
-      "type": "libraries",
-      "attributes": {
-        "state": "pending",
-        "barcode": "TRAC-21",
-        "sample_names": "Sample3",
-        "volume": 1.0, 
-        "concentration": 1.0, 
-        "library_kit_barcode": "LK12345", 
-        "fragment_size": 100,
-        "created_at": "08/14/2019 01:32",
-        "deactivated_at": null
-      }
-    }, {
-      "id": "12",
-      "type": "libraries",
-      "attributes": {
-        "state": "pending",
-        "barcode": "TRAC-22",
-        "sample_names": "Sample1",
-        "volume": 1.0, 
-        "concentration": 1.0, 
-        "library_kit_barcode": "LK12345", 
-        "fragment_size": 100,
-        "created_at": "08/20/2019 02:18",
-        "deactivated_at": null
-      }
-    }, {
-      "id": "13",
-      "type": "libraries",
-      "attributes": {
-        "state": "pending",
-        "barcode": "TRAC-23",
-        "sample_names": "Sample1",
-        "volume": 1.0, 
-        "concentration": 1.0, 
-        "library_kit_barcode": "LK12345", 
-        "fragment_size": 100,
-        "created_at": "08/20/2019 02:26",
-        "deactivated_at": null
-      }
-    }, {
-      "id": "14",
-      "type": "libraries",
-      "attributes": {
-        "state": "pending",
-        "barcode": "TRAC-24",
-        "sample_names": "Sample3,Sample4",
-        "volume": 1.0, 
-        "concentration": 1.0, 
-        "library_kit_barcode": "LK12345", 
-        "fragment_size": 100,
-        "created_at": "08/20/2019 02:26",
-        "deactivated_at": null
-      }
-    }, {
-      "id": "15",
-      "type": "libraries",
-      "attributes": {
-        "state": "pending",
-        "barcode": "TRAC-25",
-        "sample_names": "Sample5",
-        "volume": 1.0, 
-        "concentration": 1.0, 
-        "library_kit_barcode": "LK12345", 
-        "fragment_size": 100,
-        "created_at": "08/20/2019 02:28",
-        "deactivated_at": null
-      }
-    }, {
-      "id": "16",
-      "type": "libraries",
-      "attributes": {
-        "state": "pending",
-        "barcode": "TRAC-26",
-        "sample_names": "Sample4",
-        "volume": 1.0, 
-        "concentration": 1.0, 
-        "library_kit_barcode": "LK12345", 
-        "fragment_size": 100,
-        "created_at": "08/20/2019 02:31",
-        "deactivated_at": null
-      }
-    }, {
-      "id": "17",
-      "type": "libraries",
-      "attributes": {
-        "state": "pending",
-        "barcode": "TRAC-27",
-        "sample_names": "Sample1,Sample2",
-        "volume": 1.0, 
-        "concentration": 1.0, 
-        "library_kit_barcode": "LK12345", 
-        "fragment_size": 100,
-        "created_at": "08/22/2019 09:52",
-        "deactivated_at": null
-      }
-    }]
+    ]
   },
   "status": 200,
   "statusText": "Success"
