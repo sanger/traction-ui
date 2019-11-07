@@ -47,7 +47,15 @@ describe('PacbioSampleMetadataModal.vue', () => {
     expect(wrapper.name()).toEqual('PacbioSampleMetadataModal')
   })
 
-  it('must have a position prop', () => {
+  it('will have a modal', () => {
+    expect(wrapper.find('#editSampleModal')).toBeDefined()
+  })
+
+  it('will have a form', () => {
+    expect(wrapper.find('#sampleMetaDataForm')).toBeDefined()
+  })
+
+  it('must have a id prop', () => {
     expect(modal.id).toEqual(props.id)
   })
 
@@ -121,6 +129,7 @@ describe('PacbioSampleMetadataModal.vue', () => {
       modal.updateRequest.mockReturnValue(true)
       await modal.update()
       expect(modal.alert).toBeCalledWith('Sample updated', 'success')
+      expect(modal.hide).toBeCalled()
     })
 
     it('unsuccessful ', async () => {
@@ -129,6 +138,7 @@ describe('PacbioSampleMetadataModal.vue', () => {
       })
       await modal.update()
       expect(modal.alert).toBeCalledWith('Failed to update sample. Error: Raise this error', 'danger')
+      expect(modal.hide).toBeCalled()
     })
 
   })

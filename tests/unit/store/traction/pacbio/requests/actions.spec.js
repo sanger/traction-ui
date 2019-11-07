@@ -53,4 +53,20 @@ describe('actions', () => {
 
     })
   })
+
+  describe("createRequestPayload", () => {
+    it("creates the payload for the sample", async () => {
+      let sample = new Response(Data.TractionPacbioSamples).deserialize.requests[0]
+      let result = Actions.createRequestPayload(sample)
+
+      expect(result.data.id).toEqual(sample.id)
+      expect(result.data.type).toEqual('requests')
+      expect(result.data.attributes.library_type).toEqual(sample.library_type)
+      expect(result.data.attributes.estimate_of_gb_required).toEqual(sample.estimate_of_gb_required)
+      expect(result.data.attributes.number_of_smrt_cells).toEqual(sample.number_of_smrt_cells)
+      expect(result.data.attributes.cost_code).toEqual(sample.cost_code)
+      expect(result.data.attributes.external_study_id).toEqual(sample.external_study_id)
+    })
+  })
+
 })

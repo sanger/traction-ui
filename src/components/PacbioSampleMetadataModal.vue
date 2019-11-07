@@ -9,7 +9,7 @@
       title="Edit Sample"      
     >    
 
-      <b-form>
+      <b-form id="sampleMetaDataForm">
         <b-form-group id="libraryType"
                       label="Library Type:"
                       label-for="libraryType">
