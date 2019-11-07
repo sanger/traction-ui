@@ -1,10 +1,7 @@
 import { mount, localVue, store } from '../testHelper'
 import LibraryCreatePacbioModal from '@/components/LibraryCreatePacbioModal'
-// import flushPromises from 'flush-promises'
-// import EnzymesJson from '../../data/enzymes'
-// import Response from '@/api/Response'
 
-describe('EnzymeModal.vue', () => {
+describe('LibraryCreatePacbioModal.vue', () => {
 
     let wrapper, modal, props
 
