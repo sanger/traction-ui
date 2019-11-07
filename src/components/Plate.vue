@@ -2002,6 +2002,7 @@ export default {
     wells.map(well => {
       well.addEventListener('click', () => this.onWellClick(well.getAttribute('class')))
       
+      // Please leave. We need to be able to add a function to the element.
       //let element = document.createElementNS("http://www.w3.org/2000/svg","title")
       // document.querySelector(`.${well.getAttribute('class')}`).appendChild(element)
     })
