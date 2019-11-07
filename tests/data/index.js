@@ -25,6 +25,7 @@ import PacbioRun from './pacbioRun'
 import PacbioPlate from './pacbioPlate'
 import PacbioWell from './pacbioWell'
 import PacbioWellLibrary from './pacbioWellLibrary'
+import TractionTags from './tractionTags'
 
 export default {
   CreateChip,
@@ -53,5 +54,6 @@ export default {
   PacbioRun,
   PacbioPlate,
   PacbioWell,
-  PacbioWellLibrary
+  PacbioWellLibrary,
+  TractionTags
 }

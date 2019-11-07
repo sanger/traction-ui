@@ -1,5 +1,6 @@
 import Response from '@/api/Response'
 import * as Actions from '@/store/traction/actions'
+import { Data } from '../../testHelper'
 
 describe('#startRun', () => {
   let dispatch, id, payload
@@ -99,5 +100,40 @@ describe('#runPayloadJson', () => {
     expect(json.data.id).toEqual(1)
     expect(json.data.attributes).toBeDefined()
     expect(json.data.attributes.state).toEqual('a state')
+  })
+})
+
+describe('#setTags', () => {
+  let commit, get, getters, failedResponse
+
+  beforeEach(() => {
+    commit = jest.fn()
+    get = jest.fn()
+    getters = { 'tagsRequest': { 'get': get } }
+
+    failedResponse = { data: { data: [] }, status: 500, statusText: 'Internal Server Error' }
+  })
+
+  it('successfully', async () => {
+    get.mockReturnValue(Data.TractionTags)
+
+    let expectedResponse = new Response(Data.TractionTags)
+    let expectedTags = expectedResponse.deserialize.tags
+
+    let response = await Actions.setTags({ getters, commit })
+
+    expect(commit).toHaveBeenCalledWith("setTags", expectedTags)
+    expect(response).toEqual(expectedResponse)
+  })
+
+  it('unsuccessfully', async () => {
+    get.mockReturnValue(failedResponse)
+
+    let expectedResponse = new Response(failedResponse)
+
+    let response = await Actions.setTags({ getters, commit })
+
+    expect(commit).not.toHaveBeenCalled()
+    expect(response).toEqual(expectedResponse)
   })
 })
