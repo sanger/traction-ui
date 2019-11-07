@@ -156,4 +156,5 @@ describe('PacbioRunInfo', () => {
 
         })
     })
+
 })
