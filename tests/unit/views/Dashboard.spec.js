@@ -31,8 +31,8 @@ describe('Dashboard.vue', () => {
       expect(box.find('h4').text()).toEqual('Saphyr')
     })
 
-    it('will have the description', () => {
-      expect(box.find('p').text()).toBeDefined()
+    it('will have the links', () => {
+      expect(box.find('nav').exists()).toBeTruthy()
     })
 
     it('will redirect to the namespace', () => {
@@ -52,8 +52,8 @@ describe('Dashboard.vue', () => {
       expect(box.find('h4').text()).toEqual('Pacbio')
     })
 
-    it('will have the description', () => {
-      expect(box.find('p').text()).toBeDefined()
+    it('will have the links', () => {
+      expect(box.find('nav').exists()).toBeTruthy()
     })
 
     it('will redirect to the namespace', () => {
