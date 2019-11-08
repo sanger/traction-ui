@@ -35,7 +35,7 @@
       "pacbio": {
         "libraries": {
           "name": "libraries",
-          "include": ""
+          "include": "requests"
         },
         "requests": {
           "name": "requests",

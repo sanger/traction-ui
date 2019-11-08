@@ -32,7 +32,8 @@
           "volume": 1.0,
           "concentration": 1.0,
           "library_kit_barcode": "LK12345",
-          "fragment_size": 100
+          "fragment_size": 100,
+          "barcode": "TRAC-19"
         }
       }
     ]

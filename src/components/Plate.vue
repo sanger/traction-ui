@@ -1,12 +1,5 @@
 <template>
-  <div>
-    <b-form-input
-      ref="plateBarcode"
-      id="plateBarcode"
-      :value="plateBarcode"
-      @change="setPlateBarcode"
-      placeholder="Plate Barcode">
-    </b-form-input>
+  <div class="plate">
 
     <!-- <?xml version="1.0" encoding="UTF-8" standalone="no"?> -->
     <!-- Created with Inkscape (http://www.inkscape.org/) -->
@@ -53,7 +46,9 @@
           ry="11.032985"
           transform="matrix(0.91863074,0,0,0.92029059,955.85411,1007.3112)"
           class="A1"
-          style="stroke:none" />
+          style="stroke:none">
+               <title>{{showBarcode('A1')}}</title>
+          </ellipse>
           <ellipse
           cx="60.440327"
           cy="75.818642"
@@ -69,7 +64,9 @@
           ry="11.032985"
           transform="matrix(0.91863074,0,0,0.92029059,955.85411,1007.3112)"
           class="B1"
-          style="stroke:none"/>
+          style="stroke:none">
+               <title>{{showBarcode('B1')}}</title>
+          </ellipse>
           <ellipse
           cx="60.440327"
           cy="102.29776"
@@ -85,7 +82,9 @@
           ry="11.032985"
           transform="matrix(0.91863074,0,0,0.92029059,955.85411,1007.3112)"
           class="C1"
-          style="stroke:none"/>
+          style="stroke:none">
+               <title>{{showBarcode('C1')}}</title>
+          </ellipse>
           <ellipse
           cx="60.440327"
           cy="128.77689"
@@ -101,7 +100,9 @@
           ry="11.032985"
           transform="matrix(0.91863074,0,0,0.92029059,955.85411,1007.3112)"
           class="D1"
-          style="stroke:none"/>
+          style="stroke:none">
+               <title>{{showBarcode('D1')}}</title>
+          </ellipse>
           <ellipse
           cx="60.440327"
           cy="155.256"
@@ -117,7 +118,9 @@
           ry="11.032985"
           transform="matrix(0.91863074,0,0,0.92029059,955.85411,1007.3112)"
           class="E1"
-          style="stroke:none"/>
+          style="stroke:none">
+               <title>{{showBarcode('E1')}}</title>
+          </ellipse>
           <ellipse
           cx="60.440327"
           cy="181.73512"
@@ -133,7 +136,9 @@
           ry="11.032985"
           transform="matrix(0.91863074,0,0,0.92029059,955.85411,1007.3112)"
           class="F1"
-          style="stroke:none"/>
+          style="stroke:none">
+               <title>{{showBarcode('F1')}}</title>
+          </ellipse>
           <ellipse
           cx="60.440327"
           cy="208.21423"
@@ -149,7 +154,9 @@
           ry="11.032985"
           transform="matrix(0.91863074,0,0,0.92029059,955.85411,1007.3112)"
           class="G1"
-          style="stroke:none"/>
+          style="stroke:none">
+               <title>{{showBarcode('G1')}}</title>
+          </ellipse>
           <ellipse
           cx="60.440327"
           cy="234.69337"
@@ -165,7 +172,9 @@
           ry="11.032985"
           transform="matrix(0.91863074,0,0,0.92029059,955.85411,1007.3112)"
           class="H1"
-          style="stroke:none"/>
+          style="stroke:none">
+               <title>{{showBarcode('H1')}}</title>
+          </ellipse>
           <ellipse
           cx="60.440327"
           cy="261.17249"
@@ -181,7 +190,9 @@
           ry="11.032985"
           transform="matrix(0.91863074,0,0,0.92029059,955.85411,1007.3112)"
           class="A2"
-          style="stroke:none"/>
+          style="stroke:none">
+               <title>{{showBarcode('A2')}}</title>
+          </ellipse>
           <ellipse
           cx="87.706512"
           cy="75.818642"
@@ -197,7 +208,9 @@
           ry="11.032985"
           transform="matrix(0.91863074,0,0,0.92029059,955.85411,1007.3112)"
           class="B2"
-          style="stroke:none"/>
+          style="stroke:none">
+               <title>{{showBarcode('B2')}}</title>
+          </ellipse>
           <ellipse
           cx="87.706512"
           cy="102.29776"
@@ -213,7 +226,9 @@
           ry="11.032985"
           transform="matrix(0.91863074,0,0,0.92029059,955.85411,1007.3112)"
           class="C2"
-          style="stroke:none"/>
+          style="stroke:none">
+               <title>{{showBarcode('C2')}}</title>
+          </ellipse>
           <ellipse
           cx="87.706512"
           cy="128.77689"
@@ -229,7 +244,9 @@
           ry="11.032985"
           transform="matrix(0.91863074,0,0,0.92029059,955.85411,1007.3112)"
           class="D2"
-          style="stroke:none"/>
+          style="stroke:none">
+               <title>{{showBarcode('D2')}}</title>
+          </ellipse>
           <ellipse
           cx="87.706512"
           cy="155.256"
@@ -245,7 +262,9 @@
           ry="11.032985"
           transform="matrix(0.91863074,0,0,0.92029059,955.85411,1007.3112)"
           class="E2"
-          style="stroke:none"/>
+          style="stroke:none">
+               <title>{{showBarcode('E2')}}</title>
+          </ellipse>
           <ellipse
           cx="87.706512"
           cy="181.73512"
@@ -261,7 +280,9 @@
           ry="11.032985"
           transform="matrix(0.91863074,0,0,0.92029059,955.85411,1007.3112)"
           class="F2"
-          style="stroke:none"/>
+          style="stroke:none">
+               <title>{{showBarcode('F2')}}</title>
+          </ellipse>
           <ellipse
           cx="87.706512"
           cy="208.21423"
@@ -277,7 +298,9 @@
           ry="11.032985"
           transform="matrix(0.91863074,0,0,0.92029059,955.85411,1007.3112)"
           class="G2"
-          style="stroke:none"/>
+          style="stroke:none">
+               <title>{{showBarcode('G2')}}</title>
+          </ellipse>
           <ellipse
           cx="87.706512"
           cy="234.69337"
@@ -293,7 +316,9 @@
           ry="11.032985"
           transform="matrix(0.91863074,0,0,0.92029059,955.85411,1007.3112)"
           class="H2"
-          style="stroke:none"/>
+          style="stroke:none">
+               <title>{{showBarcode('H2')}}</title>
+          </ellipse>
           <ellipse
           cx="87.706512"
           cy="261.17249"
@@ -309,7 +334,9 @@
           ry="11.032985"
           transform="matrix(0.91863074,0,0,0.92029059,955.85411,1007.3112)"
           class="A3"
-          style="stroke:none" />
+          style="stroke:none" >
+               <title>{{showBarcode('A3')}}</title>
+          </ellipse>
           <ellipse
           cx="116.06335"
           cy="75.818642"
@@ -324,8 +351,10 @@
           rx="10.906492"
           ry="11.032985"
           transform="matrix(0.91863074,0,0,0.92029059,955.85411,1007.3112)"
-          class="C2"
-          style="stroke:none" />
+          class="B3"
+          style="stroke:none" >
+               <title>{{showBarcode('B3')}}</title>
+          </ellipse>
           <ellipse
           cx="116.06335"
           cy="102.29776"
@@ -341,7 +370,9 @@
           ry="11.032985"
           transform="matrix(0.91863074,0,0,0.92029059,955.85411,1007.3112)"
           class="C3"
-          style="stroke:none" />
+          style="stroke:none" >
+               <title>{{showBarcode('C3')}}</title>
+          </ellipse>
           <ellipse
           cx="116.06335"
           cy="128.77689"
@@ -357,7 +388,9 @@
           ry="11.032985"
           transform="matrix(0.91863074,0,0,0.92029059,955.85411,1007.3112)"
           class="D3"
-          style="stroke:none" />
+          style="stroke:none" >
+               <title>{{showBarcode('D3')}}</title>
+          </ellipse>
           <ellipse
           cx="116.06335"
           cy="155.256"
@@ -373,7 +406,9 @@
           ry="11.032985"
           transform="matrix(0.91863074,0,0,0.92029059,955.85411,1007.3112)"
           class="E3"
-          style="stroke:none" />
+          style="stroke:none" >
+               <title>{{showBarcode('E3')}}</title>
+          </ellipse>
           <ellipse
           cx="116.06335"
           cy="181.73512"
@@ -389,7 +424,9 @@
           ry="11.032985"
           transform="matrix(0.91863074,0,0,0.92029059,955.85411,1007.3112)"
           class="F3"
-          style="stroke:none" />
+          style="stroke:none" >
+               <title>{{showBarcode('F3')}}</title>
+          </ellipse>
           <ellipse
           cx="116.06335"
           cy="208.21423"
@@ -405,7 +442,9 @@
           ry="11.032985"
           transform="matrix(0.91863074,0,0,0.92029059,955.85411,1007.3112)"
           class="G3"
-          style="stroke:none" />
+          style="stroke:none" >
+               <title>{{showBarcode('G3')}}</title>
+          </ellipse>
           <ellipse
           cx="116.06335"
           cy="234.69337"
@@ -421,7 +460,9 @@
           ry="11.032985"
           transform="matrix(0.91863074,0,0,0.92029059,955.85411,1007.3112)"
           class="H3"
-          style="stroke:none" />
+          style="stroke:none" >
+               <title>{{showBarcode('H3')}}</title>
+          </ellipse>
           <ellipse
           cx="116.06335"
           cy="261.17249"
@@ -437,7 +478,9 @@
           ry="11.032985"
           transform="matrix(0.91863074,0,0,0.92029059,955.85411,1007.3112)"
           class="A4"
-          style="stroke:none" />
+          style="stroke:none" >
+               <title>{{showBarcode('A4')}}</title>
+          </ellipse>
           <ellipse
           cx="143.32953"
           cy="75.818642"
@@ -453,7 +496,9 @@
           ry="11.032985"
           transform="matrix(0.91863074,0,0,0.92029059,955.85411,1007.3112)"
           class="B4"
-          style="stroke:none" />
+          style="stroke:none" >
+               <title>{{showBarcode('B4')}}</title>
+          </ellipse>
           <ellipse
           cx="143.32953"
           cy="102.29776"
@@ -469,7 +514,9 @@
           ry="11.032985"
           transform="matrix(0.91863074,0,0,0.92029059,955.85411,1007.3112)"
           class="C4"
-          style="stroke:none" />
+          style="stroke:none" >
+               <title>{{showBarcode('C4')}}</title>
+          </ellipse>
           <ellipse
           cx="143.32953"
           cy="128.77689"
@@ -485,7 +532,9 @@
           ry="11.032985"
           transform="matrix(0.91863074,0,0,0.92029059,955.85411,1007.3112)"
           class="D4"
-          style="stroke:none" />
+          style="stroke:none" >
+               <title>{{showBarcode('D4')}}</title>
+          </ellipse>
           <ellipse
           cx="143.32953"
           cy="155.256"
@@ -501,7 +550,9 @@
           ry="11.032985"
           transform="matrix(0.91863074,0,0,0.92029059,955.85411,1007.3112)"
           class="E4"
-          style="stroke:none" />
+          style="stroke:none" >
+               <title>{{showBarcode('E4')}}</title>
+          </ellipse>
           <ellipse
           cx="143.32953"
           cy="181.73512"
@@ -517,7 +568,9 @@
           ry="11.032985"
           transform="matrix(0.91863074,0,0,0.92029059,955.85411,1007.3112)"
           class="F4"
-          style="stroke:none" />
+          style="stroke:none" >
+               <title>{{showBarcode('F4')}}</title>
+          </ellipse>
           <ellipse
           cx="143.32953"
           cy="208.21423"
@@ -533,7 +586,9 @@
           ry="11.032985"
           transform="matrix(0.91863074,0,0,0.92029059,955.85411,1007.3112)"
           class="G4"
-          style="stroke:none" />
+          style="stroke:none" >
+               <title>{{showBarcode('G4')}}</title>
+          </ellipse>
           <ellipse
           cx="143.32953"
           cy="234.69337"
@@ -549,7 +604,9 @@
           ry="11.032985"
           transform="matrix(0.91863074,0,0,0.92029059,955.85411,1007.3112)"
           class="H4"
-          style="stroke:none" />
+          style="stroke:none" >
+               <title>{{showBarcode('H4')}}</title>
+          </ellipse>
           <ellipse
           cx="143.32953"
           cy="261.17249"
@@ -565,7 +622,9 @@
           ry="11.032985"
           transform="matrix(0.91863074,0,0,0.92029059,955.85411,1007.3112)"
           class="A5"
-          style="stroke:none" />
+          style="stroke:none" >
+               <title>{{showBarcode('A5')}}</title>
+          </ellipse>
           <ellipse
           cx="170.59572"
           cy="75.818642"
@@ -581,7 +640,9 @@
           ry="11.032985"
           transform="matrix(0.91863074,0,0,0.92029059,955.85411,1007.3112)"
           class="B5"
-          style="stroke:none" />
+          style="stroke:none" >
+               <title>{{showBarcode('B5')}}</title>
+          </ellipse>
           <ellipse
           cx="170.59572"
           cy="102.29776"
@@ -597,7 +658,9 @@
           ry="11.032985"
           transform="matrix(0.91863074,0,0,0.92029059,955.85411,1007.3112)"
           class="C5"
-          style="stroke:none" />
+          style="stroke:none" >
+               <title>{{showBarcode('C5')}}</title>
+          </ellipse>
           <ellipse
           cx="170.59572"
           cy="128.77689"
@@ -613,7 +676,9 @@
           ry="11.032985"
           transform="matrix(0.91863074,0,0,0.92029059,955.85411,1007.3112)"
           class="D5"
-          style="stroke:none" />
+          style="stroke:none" >
+               <title>{{showBarcode('D5')}}</title>
+          </ellipse>
           <ellipse
           cx="170.59572"
           cy="155.256"
@@ -629,7 +694,9 @@
           ry="11.032985"
           transform="matrix(0.91863074,0,0,0.92029059,955.85411,1007.3112)"
           class="E5"
-          style="stroke:none" />
+          style="stroke:none" >
+               <title>{{showBarcode('E5')}}</title>
+          </ellipse>
           <ellipse
           cx="171.68637"
           cy="181.73512"
@@ -645,7 +712,9 @@
           ry="11.032985"
           transform="matrix(0.91863074,0,0,0.92029059,955.85411,1007.3112)"
           class="F5"
-          style="stroke:none" />
+          style="stroke:none" >
+               <title>{{showBarcode('F5')}}</title>
+          </ellipse>
           <ellipse
           cx="170.59572"
           cy="208.21423"
@@ -661,7 +730,9 @@
           ry="11.032985"
           transform="matrix(0.91863074,0,0,0.92029059,955.85411,1007.3112)"
           class="G5"
-          style="stroke:none" />
+          style="stroke:none" >
+               <title>{{showBarcode('G5')}}</title>
+          </ellipse>
           <ellipse
           cx="170.59572"
           cy="234.69337"
@@ -677,7 +748,9 @@
           ry="11.032985"
           transform="matrix(0.91863074,0,0,0.92029059,955.85411,1007.3112)"
           class="H5"
-          style="stroke:none" />
+          style="stroke:none" >
+               <title>{{showBarcode('H5')}}</title>
+          </ellipse>
           <ellipse
           cx="170.59572"
           cy="261.17249"
@@ -693,7 +766,9 @@
           ry="11.032985"
           transform="matrix(0.91863074,0,0,0.92029059,955.85411,1007.3112)"
           class="A6"
-          style="stroke:none" />
+          style="stroke:none" >
+               <title>{{showBarcode('A6')}}</title>
+          </ellipse>
           <ellipse
           cx="197.86191"
           cy="75.818642"
@@ -709,7 +784,9 @@
           ry="11.032985"
           transform="matrix(0.91863074,0,0,0.92029059,955.85411,1007.3112)"
           class="B6"
-          style="stroke:none" />
+          style="stroke:none" >
+               <title>{{showBarcode('B6')}}</title>
+          </ellipse>
           <ellipse
           cx="197.86191"
           cy="102.29776"
@@ -725,7 +802,9 @@
           ry="11.032985"
           transform="matrix(0.91863074,0,0,0.92029059,955.85411,1007.3112)"
           class="C6"
-          style="stroke:none" />
+          style="stroke:none" >
+               <title>{{showBarcode('C6')}}</title>
+          </ellipse>
           <ellipse
           cx="197.86191"
           cy="128.77689"
@@ -741,7 +820,9 @@
           ry="11.032985"
           transform="matrix(0.91863074,0,0,0.92029059,955.85411,1007.3112)"
           class="D6"
-          style="stroke:none" />
+          style="stroke:none" >
+               <title>{{showBarcode('D6')}}</title>
+          </ellipse>
           <ellipse
           cx="197.86191"
           cy="155.256"
@@ -757,7 +838,9 @@
           ry="11.032985"
           transform="matrix(0.91863074,0,0,0.92029059,955.85411,1007.3112)"
           class="E6"
-          style="stroke:none" />
+          style="stroke:none" >
+               <title>{{showBarcode('E6')}}</title>
+          </ellipse>
           <ellipse
           cx="197.86191"
           cy="181.73512"
@@ -773,7 +856,9 @@
           ry="11.032985"
           transform="matrix(0.91863074,0,0,0.92029059,955.85411,1007.3112)"
           class="F6"
-          style="stroke:none" />
+          style="stroke:none" >
+               <title>{{showBarcode('F6')}}</title>
+          </ellipse>
           <ellipse
           cx="197.86191"
           cy="208.21423"
@@ -789,7 +874,9 @@
           ry="11.032985"
           transform="matrix(0.91863074,0,0,0.92029059,955.85411,1007.3112)"
           class="G6"
-          style="stroke:none" />
+          style="stroke:none" >
+               <title>{{showBarcode('G6')}}</title>
+          </ellipse>
           <ellipse
           cx="197.86191"
           cy="234.69337"
@@ -805,7 +892,9 @@
           ry="11.032985"
           transform="matrix(0.91863074,0,0,0.92029059,955.85411,1007.3112)"
           class="H6"
-          style="stroke:none" />
+          style="stroke:none" >
+               <title>{{showBarcode('H6')}}</title>
+          </ellipse>
           <ellipse
           cx="197.86191"
           cy="261.17249"
@@ -821,7 +910,9 @@
           ry="11.032985"
           transform="matrix(0.91863074,0,0,0.92029059,955.85411,1007.3112)"
           class="A7"
-          style="stroke:none" />
+          style="stroke:none" >
+               <title>{{showBarcode('A7')}}</title>
+          </ellipse>
           <ellipse
           cx="226.21873"
           cy="75.818642"
@@ -837,7 +928,9 @@
           ry="11.032985"
           transform="matrix(0.91863074,0,0,0.92029059,955.85411,1007.3112)"
           class="B7"
-          style="stroke:none" />
+          style="stroke:none" >
+               <title>{{showBarcode('B7')}}</title>
+          </ellipse>
           <ellipse
           cx="226.21873"
           cy="102.29776"
@@ -853,7 +946,9 @@
           ry="11.032985"
           transform="matrix(0.91863074,0,0,0.92029059,955.85411,1007.3112)"
           class="C7"
-          style="stroke:none" />
+          style="stroke:none" >
+               <title>{{showBarcode('C7')}}</title>
+          </ellipse>
           <ellipse
           cx="226.21873"
           cy="128.77689"
@@ -869,7 +964,9 @@
           ry="11.032985"
           transform="matrix(0.91863074,0,0,0.92029059,955.85411,1007.3112)"
           class="D7"
-          style="stroke:none" />
+          style="stroke:none" >
+               <title>{{showBarcode('D7')}}</title>
+          </ellipse>
           <ellipse
           cx="226.21873"
           cy="155.256"
@@ -885,7 +982,9 @@
           ry="11.032985"
           transform="matrix(0.91863074,0,0,0.92029059,955.85411,1007.3112)"
           class="E7"
-          style="stroke:none" />
+          style="stroke:none" >
+               <title>{{showBarcode('E7')}}</title>
+          </ellipse>
           <ellipse
           cx="226.21873"
           cy="181.73512"
@@ -901,7 +1000,9 @@
           ry="11.032985"
           transform="matrix(0.91863074,0,0,0.92029059,955.85411,1007.3112)"
           class="F7"
-          style="stroke:none" />
+          style="stroke:none" >
+               <title>{{showBarcode('F7')}}</title>
+          </ellipse>
           <ellipse
           cx="226.21873"
           cy="208.21423"
@@ -917,7 +1018,9 @@
           ry="11.032985"
           transform="matrix(0.91863074,0,0,0.92029059,955.85411,1007.3112)"
           class="G7"
-          style="stroke:none" />
+          style="stroke:none" >
+               <title>{{showBarcode('G7')}}</title>
+          </ellipse>
           <ellipse
           cx="226.21873"
           cy="234.69337"
@@ -933,7 +1036,9 @@
           ry="11.032985"
           transform="matrix(0.91863074,0,0,0.92029059,955.85411,1007.3112)"
           class="H7"
-          style="stroke:none" />
+          style="stroke:none" >
+               <title>{{showBarcode('H7')}}</title>
+          </ellipse>
           <ellipse
           cx="226.21873"
           cy="261.17249"
@@ -949,7 +1054,9 @@
           ry="11.032985"
           transform="matrix(0.91863074,0,0,0.92029059,955.85411,1007.3112)"
           class="A8"
-          style="stroke:none" />
+          style="stroke:none" >
+               <title>{{showBarcode('A8')}}</title>
+          </ellipse>
           <ellipse
           cx="253.48492"
           cy="75.818642"
@@ -965,7 +1072,9 @@
           ry="11.032985"
           transform="matrix(0.91863074,0,0,0.92029059,955.85411,1007.3112)"
           class="B8"
-          style="stroke:none" />
+          style="stroke:none" >
+               <title>{{showBarcode('B8')}}</title>
+          </ellipse>
           <ellipse
           cx="253.48492"
           cy="102.29776"
@@ -981,7 +1090,9 @@
           ry="11.032985"
           transform="matrix(0.91863074,0,0,0.92029059,955.85411,1007.3112)"
           class="C8"
-          style="stroke:none" />
+          style="stroke:none" >
+               <title>{{showBarcode('C8')}}</title>
+          </ellipse>
           <ellipse
           cx="253.48492"
           cy="128.77689"
@@ -997,7 +1108,9 @@
           ry="11.032985"
           transform="matrix(0.91863074,0,0,0.92029059,955.85411,1007.3112)"
           class="D8"
-          style="stroke:none" />
+          style="stroke:none" >
+               <title>{{showBarcode('D8')}}</title>
+          </ellipse>
           <ellipse
           cx="253.48492"
           cy="155.256"
@@ -1013,7 +1126,9 @@
           ry="11.032985"
           transform="matrix(0.91863074,0,0,0.92029059,955.85411,1007.3112)"
           class="E8"
-          style="stroke:none" />
+          style="stroke:none" >
+               <title>{{showBarcode('E8')}}</title>
+          </ellipse>
           <ellipse
           cx="253.48492"
           cy="181.73512"
@@ -1029,7 +1144,9 @@
           ry="11.032985"
           transform="matrix(0.91863074,0,0,0.92029059,955.85411,1007.3112)"
           class="F8"
-          style="stroke:none" />
+          style="stroke:none" >
+               <title>{{showBarcode('F8')}}</title>
+          </ellipse>
           <ellipse
           cx="253.48492"
           cy="208.21423"
@@ -1045,7 +1162,9 @@
           ry="11.032985"
           transform="matrix(0.91863074,0,0,0.92029059,955.85411,1007.3112)"
           class="G8"
-          style="stroke:none" />
+          style="stroke:none" >
+               <title>{{showBarcode('G8')}}</title>
+          </ellipse>
           <ellipse
           cx="253.48492"
           cy="234.69337"
@@ -1061,7 +1180,9 @@
           ry="11.032985"
           transform="matrix(0.91863074,0,0,0.92029059,955.85411,1007.3112)"
           class="H8"
-          style="stroke:none" />
+          style="stroke:none" >
+               <title>{{showBarcode('H8')}}</title>
+          </ellipse>
           <ellipse
           cx="253.48492"
           cy="261.17249"
@@ -1077,7 +1198,9 @@
           ry="11.032985"
           transform="matrix(0.91863074,0,0,0.92029059,955.85411,1007.3112)"
           class="A9"
-          style="stroke:none" />
+          style="stroke:none" >
+               <title>{{showBarcode('A9')}}</title>
+          </ellipse>
           <ellipse
           cx="280.75113"
           cy="75.818642"
@@ -1093,7 +1216,9 @@
           ry="11.032985"
           transform="matrix(0.91863074,0,0,0.92029059,955.85411,1007.3112)"
           class="B9"
-          style="stroke:none" />
+          style="stroke:none" >
+               <title>{{showBarcode('B9')}}</title>
+          </ellipse>
           <ellipse
           cx="280.75113"
           cy="102.29776"
@@ -1109,7 +1234,9 @@
           ry="11.032985"
           transform="matrix(0.91863074,0,0,0.92029059,955.85411,1007.3112)"
           class="C9"
-          style="stroke:none" />
+          style="stroke:none" >
+               <title>{{showBarcode('C9')}}</title>
+          </ellipse>
           <ellipse
           cx="280.75113"
           cy="128.77689"
@@ -1125,7 +1252,9 @@
           ry="11.032985"
           transform="matrix(0.91863074,0,0,0.92029059,955.85411,1007.3112)"
           class="D9"
-          style="stroke:none" />
+          style="stroke:none" >
+               <title>{{showBarcode('D9')}}</title>
+          </ellipse>
           <ellipse
           cx="280.75113"
           cy="155.256"
@@ -1141,7 +1270,9 @@
           ry="11.032985"
           transform="matrix(0.91863074,0,0,0.92029059,955.85411,1007.3112)"
           class="E9"
-          style="stroke:none" />
+          style="stroke:none" >
+               <title>{{showBarcode('E9')}}</title>
+          </ellipse>
           <ellipse
           cx="280.75113"
           cy="181.73512"
@@ -1157,7 +1288,9 @@
           ry="11.032985"
           transform="matrix(0.91863074,0,0,0.92029059,955.85411,1007.3112)"
           class="F9"
-          style="stroke:none" />
+          style="stroke:none" >
+               <title>{{showBarcode('F9')}}</title>
+          </ellipse>
           <ellipse
           cx="280.75113"
           cy="208.21423"
@@ -1173,7 +1306,9 @@
           ry="11.032985"
           transform="matrix(0.91863074,0,0,0.92029059,955.85411,1007.3112)"
           class="G9"
-          style="stroke:none" />
+          style="stroke:none" >
+               <title>{{showBarcode('G9')}}</title>
+          </ellipse>
           <ellipse
           cx="280.75113"
           cy="234.69337"
@@ -1189,7 +1324,9 @@
           ry="11.032985"
           transform="matrix(0.91863074,0,0,0.92029059,955.85411,1007.3112)"
           class="H9"
-          style="stroke:none" />
+          style="stroke:none" >
+               <title>{{showBarcode('H9')}}</title>
+          </ellipse>
           <ellipse
           cx="280.75113"
           cy="261.17249"
@@ -1205,7 +1342,9 @@
           ry="11.032985"
           transform="matrix(0.91863074,0,0,0.92029059,955.85411,1007.3112)"
           class="A10"
-          style="stroke:none" />
+          style="stroke:none" >
+               <title>{{showBarcode('A10')}}</title>
+          </ellipse>
           <ellipse
           cx="308.0173"
           cy="75.818642"
@@ -1221,7 +1360,9 @@
           ry="11.032985"
           transform="matrix(0.91863074,0,0,0.92029059,955.85411,1007.3112)"
           class="B10"
-          style="stroke:none" />
+          style="stroke:none" >
+               <title>{{showBarcode('B10')}}</title>
+          </ellipse>
           <ellipse
           cx="308.0173"
           cy="102.29776"
@@ -1237,7 +1378,9 @@
           ry="11.032985"
           transform="matrix(0.91863074,0,0,0.92029059,955.85411,1007.3112)"
           class="C10"
-          style="stroke:none" />
+          style="stroke:none" >
+               <title>{{showBarcode('C10')}}</title>
+          </ellipse>
           <ellipse
           cx="308.0173"
           cy="128.77689"
@@ -1253,7 +1396,9 @@
           ry="11.032985"
           transform="matrix(0.91863074,0,0,0.92029059,955.85411,1007.3112)"
           class="D10"
-          style="stroke:none" />
+          style="stroke:none" >
+               <title>{{showBarcode('D10')}}</title>
+          </ellipse>
           <ellipse
           cx="308.0173"
           cy="155.256"
@@ -1269,7 +1414,9 @@
           ry="11.032985"
           transform="matrix(0.91863074,0,0,0.92029059,955.85411,1007.3112)"
           class="E10"
-          style="stroke:none" />
+          style="stroke:none" >
+               <title>{{showBarcode('E10')}}</title>
+          </ellipse>
           <ellipse
           cx="308.0173"
           cy="181.73512"
@@ -1285,7 +1432,9 @@
           ry="11.032985"
           transform="matrix(0.91863074,0,0,0.92029059,955.85411,1007.3112)"
           class="F10"
-          style="stroke:none" />
+          style="stroke:none" >
+               <title>{{showBarcode('F10')}}</title>
+          </ellipse>
           <ellipse
           cx="308.0173"
           cy="208.21423"
@@ -1301,7 +1450,9 @@
           ry="11.032985"
           transform="matrix(0.91863074,0,0,0.92029059,955.85411,1007.3112)"
           class="G10"
-          style="stroke:none" />
+          style="stroke:none" >
+               <title>{{showBarcode('G10')}}</title>
+          </ellipse>
           <ellipse
           cx="308.0173"
           cy="234.69337"
@@ -1317,7 +1468,9 @@
           ry="11.032985"
           transform="matrix(0.91863074,0,0,0.92029059,955.85411,1007.3112)"
           class="H10"
-          style="stroke:none" />
+          style="stroke:none" >
+               <title>{{showBarcode('H10')}}</title>
+          </ellipse>
           <ellipse
           cx="308.0173"
           cy="261.17249"
@@ -1333,7 +1486,9 @@
           ry="11.032985"
           transform="matrix(0.91863074,0,0,0.92029059,955.85411,1007.3112)"
           class="A11"
-          style="stroke:none" />
+          style="stroke:none" >
+               <title>{{showBarcode('A11')}}</title>
+          </ellipse>
           <ellipse
           cx="336.37415"
           cy="75.818642"
@@ -1349,7 +1504,9 @@
           ry="11.032985"
           transform="matrix(0.91863074,0,0,0.92029059,955.85411,1007.3112)"
           class="B11"
-          style="stroke:none" />
+          style="stroke:none" >
+               <title>{{showBarcode('B11')}}</title>
+          </ellipse>
           <ellipse
           cx="336.37415"
           cy="102.29776"
@@ -1365,7 +1522,9 @@
           ry="11.032985"
           transform="matrix(0.91863074,0,0,0.92029059,955.85411,1007.3112)"
           class="C11"
-          style="stroke:none" />
+          style="stroke:none" >
+               <title>{{showBarcode('C11')}}</title>
+          </ellipse>
           <ellipse
           cx="336.37415"
           cy="128.77689"
@@ -1381,7 +1540,9 @@
           ry="11.032985"
           transform="matrix(0.91863074,0,0,0.92029059,955.85411,1007.3112)"
           class="D11"
-          style="stroke:none" />
+          style="stroke:none" >
+               <title>{{showBarcode('D11')}}</title>
+          </ellipse>
           <ellipse
           cx="336.37415"
           cy="155.256"
@@ -1397,7 +1558,9 @@
           ry="11.032985"
           transform="matrix(0.91863074,0,0,0.92029059,955.85411,1007.3112)"
           class="E11"
-          style="stroke:none" />
+          style="stroke:none">
+               <title>{{showBarcode('E11')}}</title>
+          </ellipse>
           <ellipse
           cx="336.37415"
           cy="181.73512"
@@ -1413,7 +1576,9 @@
           ry="11.032985"
           transform="matrix(0.91863074,0,0,0.92029059,955.85411,1007.3112)"
           class="F11"
-          style="stroke:none" />
+          style="stroke:none" >
+               <title>{{showBarcode('F11')}}</title>
+          </ellipse>
           <ellipse
           cx="336.37415"
           cy="208.21423"
@@ -1429,7 +1594,9 @@
           ry="11.032985"
           transform="matrix(0.91863074,0,0,0.92029059,955.85411,1007.3112)"
           class="G11"
-          style="stroke:none" />
+          style="stroke:none" >
+               <title>{{showBarcode('G11')}}</title>
+          </ellipse>
           <ellipse
           cx="336.37415"
           cy="234.69337"
@@ -1445,7 +1612,9 @@
           ry="11.032985"
           transform="matrix(0.91863074,0,0,0.92029059,955.85411,1007.3112)"
           class="H11"
-          style="stroke:none" />
+          style="stroke:none" >
+               <title>{{showBarcode('H11')}}</title>
+          </ellipse>
           <ellipse
           cx="336.37415"
           cy="261.17249"
@@ -1461,7 +1630,9 @@
           ry="11.032985"
           transform="matrix(0.91863074,0,0,0.92029059,955.85411,1007.3112)"
           class="A12"
-          style="stroke:none" />
+          style="stroke:none" >
+               <title>{{showBarcode('A12')}}</title>
+          </ellipse>
           <ellipse
           cx="363.64032"
           cy="75.818642"
@@ -1477,7 +1648,9 @@
           ry="11.032985"
           transform="matrix(0.91863074,0,0,0.92029059,955.85411,1007.3112)"
           class="B12"
-          style="stroke:none" />
+          style="stroke:none" >
+               <title>{{showBarcode('B12')}}</title>
+          </ellipse>
           <ellipse
           cx="363.64032"
           cy="102.29776"
@@ -1493,7 +1666,9 @@
           ry="11.032985"
           transform="matrix(0.91863074,0,0,0.92029059,955.85411,1007.3112)"
           class="C12"
-          style="stroke:none" />
+          style="stroke:none" >
+               <title>{{showBarcode('C12')}}</title>
+          </ellipse>
           <ellipse
           cx="363.64032"
           cy="128.77689"
@@ -1509,7 +1684,9 @@
           ry="11.032985"
           transform="matrix(0.91863074,0,0,0.92029059,955.85411,1007.3112)"
           class="D12"
-          style="stroke:none" />
+          style="stroke:none" >
+               <title>{{showBarcode('D12')}}</title>
+          </ellipse>
           <ellipse
           cx="363.64032"
           cy="155.256"
@@ -1525,7 +1702,9 @@
           ry="11.032985"
           transform="matrix(0.91863074,0,0,0.92029059,955.85411,1007.3112)"
           class="E12"
-          style="stroke:none" />
+          style="stroke:none" >
+               <title>{{showBarcode('E12')}}</title>
+          </ellipse>
           <ellipse
           cx="363.64032"
           cy="181.73512"
@@ -1541,7 +1720,9 @@
           ry="11.032985"
           transform="matrix(0.91863074,0,0,0.92029059,955.85411,1007.3112)"
           class="F12"
-          style="stroke:none" />
+          style="stroke:none" >
+               <title>{{showBarcode('F12')}}</title>
+          </ellipse>
           <ellipse
           cx="363.64032"
           cy="208.21423"
@@ -1557,7 +1738,9 @@
           ry="11.032985"
           transform="matrix(0.91863074,0,0,0.92029059,955.85411,1007.3112)"
           class="G12"
-          style="stroke:none" />
+          style="stroke:none" >
+               <title>{{showBarcode('G12')}}</title>
+          </ellipse>
           <ellipse
           cx="363.64032"
           cy="234.69337"
@@ -1573,7 +1756,9 @@
           ry="11.032985"
           transform="matrix(0.91863074,0,0,0.92029059,955.85411,1007.3112)"
           class="H12"
-          style="stroke:none" />
+          style="stroke:none" >
+               <title>{{showBarcode('H12')}}</title>
+          </ellipse>
           <ellipse
           cx="363.64032"
           cy="261.17249"
@@ -1778,7 +1963,7 @@
 <script>
 import WellModal from '@/components/WellModal'
 import { createNamespacedHelpers } from 'vuex'
-const { mapState, mapMutations, mapGetters} = createNamespacedHelpers('traction/pacbio/runs')
+const { mapGetters } = createNamespacedHelpers('traction/pacbio/runs')
 
 export default {
   name: 'Plate',
@@ -1789,22 +1974,24 @@ export default {
   },
   methods: {
     onWellClick(position) {
-      this.selectedWellPosition = position
+     this.selectedWellPosition = position
+    },
+    showBarcode (position) {
+     let currentWell = this.well(position)
+     let barcode = currentWell.library.barcode
+     if (barcode.length > 0) {
+          return barcode
+     }
     },
     alert (message, type) {
       this.$emit('alert', message, type)
-    },
-    ...mapMutations([
-      'setPlateBarcode',
-    ]),
+    }
   },
   computed: {
     ...mapGetters([
-      'currentRun'
-    ]),
-    ...mapState({
-      plateBarcode: state => state.currentRun.plate.barcode,
-    })
+     'currentRun',
+      'well'
+    ])
   },
   mounted() {
     // Add on 'click' event listener for each well,
@@ -1814,6 +2001,10 @@ export default {
 
     wells.map(well => {
       well.addEventListener('click', () => this.onWellClick(well.getAttribute('class')))
+      
+      // Please leave. We need to be able to add a function to the element.
+      //let element = document.createElementNS("http://www.w3.org/2000/svg","title")
+      // document.querySelector(`.${well.getAttribute('class')}`).appendChild(element)
     })
   },
   components: {
@@ -1826,3 +2017,20 @@ export default {
   },
 }
 </script>
+
+<style>
+
+.well-info {
+  border: solid;
+  border-width: 1px;
+  padding: 20px;
+  background-color: black;
+  color: white;
+  position: relative;
+  top: -400px;
+  left: 0px;
+  width: 100px;
+  height: 100px;
+}
+
+</style>

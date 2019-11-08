@@ -3,7 +3,7 @@
     <b-table id="libraries-table"
              sticky-header
              show-empty
-             :items="items"
+             :items="libraries"
              :fields="fields"
              hover
              selectable
@@ -15,36 +15,39 @@
 
 <script>
 import Helper from '@/mixins/Helper'
-import MatType from '@/mixins/MatType'
 import TableHelper from '@/mixins/TableHelper'
-import * as consts from '@/consts/consts'
 import { createNamespacedHelpers } from 'vuex'
-const { mapGetters } = createNamespacedHelpers('traction/pacbio/tubes')
+const { mapActions, mapGetters } = createNamespacedHelpers('traction/pacbio/tubes')
 
 export default {
   name: 'PacbioLibrariesTable',
-  mixins: [Helper, MatType, TableHelper],
+  mixins: [Helper, TableHelper],
   data () {
     return {
       fields: [
-        { key: 'id', label: 'Library ID', sortable: true },
-        { key: 'volume', label: 'Volume', sortable: true },
-        { key: 'concentration', label: 'Concentration', sortable: true },
-        { key: 'library_kit_barcode', label: 'Library Kit Barcode', sortable: true },
-        { key: 'fragment_size', label: 'Fragment Size', sortable: true },
+        { key: 'barcode', label: 'Barcode', sortable: true},
+        { key: 'sample_names', label: 'Sample Names', sortable: true },
+        { key: 'tag_oligos', label: 'Tags', sortable: true }
       ],
       items: []
     }
   },
   computed: {
     ...mapGetters([
-      'libraryRequest'
+      'libraries'
     ])
   },
   methods: {
     async provider() {
-      this.items = await this.getMaterial(consts.MAT_TYPE_LIBRARIES)
+        try {
+        await this.setLibraries()
+      } catch (error) {
+        this.showAlert("Failed to get libraries: " + error.message, 'danger')
+      }
     },
+    ...mapActions([
+      'setLibraries'
+    ]),
   },
   created() {
     this.provider()

@@ -162,5 +162,6 @@ export {
     build,
     create,
     createResource,
-    destroy
+    destroy,
+    buildWell
 }
