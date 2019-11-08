@@ -19,6 +19,7 @@ import TubeWithLibrary from './tubeWithLibrary'
 import TractionPacbioTubesWithRequest from './tractionPacbioTubesWithRequest'
 import PacbioTubeWithLibrary from './pacbioTubeWithLibrary'
 import TractionPacbioLibraries from './tractionPacbioLibraries'
+import TractionPacbioSamples from './tractionPacbioSamples'
 import SampleExtractionTubesWithSample from './sampleExtractionTubesWithSample'
 import PacbioRuns from './pacbioRuns'
 import PacbioRun from './pacbioRun'
@@ -49,6 +50,7 @@ export default {
   TractionPacbioTubesWithRequest,
   PacbioTubeWithLibrary,
   TractionPacbioLibraries,
+  TractionPacbioSamples,
   PacbioRuns,
   PacbioRun,
   PacbioPlate,
