@@ -65,7 +65,6 @@ describe('actions', () => {
       expect(result.data.attributes.estimate_of_gb_required).toEqual(sample.estimate_of_gb_required)
       expect(result.data.attributes.number_of_smrt_cells).toEqual(sample.number_of_smrt_cells)
       expect(result.data.attributes.cost_code).toEqual(sample.cost_code)
-      expect(result.data.attributes.external_study_id).toEqual(sample.external_study_id)
     })
   })
 

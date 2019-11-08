@@ -57,18 +57,6 @@
             placeholder="Cost Code">
           </b-form-input>
         </b-form-group>
-
-        <b-form-group id="externalStudyId"
-                      label="External Study ID:"
-                      label-for="externalStudyId">
-          <b-form-input
-            ref="externalStudyId"
-            id="externalStudyId"
-            :value="externalStudyId"
-            @change="updateExternalStudyId"
-            placeholder="External Study ID">
-          </b-form-input>
-        </b-form-group>
       </b-form>
 
       <template v-slot:modal-footer="{ ok, cancel }">
@@ -127,9 +115,6 @@ export default {
     updateCostCode(costCode) {
       this.setCostCode({ requestId: this.id, costCode: costCode})
     },
-    updateExternalStudyId(externalStudyId) {
-      this.setExternalStudyId({ requestId: this.id, externalStudyId: externalStudyId})
-    },
     ...mapActions([
       'updateRequest',
     ]),
@@ -137,8 +122,7 @@ export default {
       'setLibraryType',
       'setEstimateOfGBRequired',
       'setNumberOfSMRTCells',
-      'setCostCode',
-      'setExternalStudyId',
+      'setCostCode'
     ]),
     hide() {
       this.$refs['modal'].hide()
@@ -163,10 +147,7 @@ export default {
       },
       costCode (state) {
         return state.requests.find(s => s.id === this.id).cost_code
-      },
-      externalStudyId (state) {
-        return state.requests.find(s => s.id === this.id).external_study_id
-      },
+      }
     })
   },
 }

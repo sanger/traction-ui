@@ -49,12 +49,5 @@ describe('mutations', () => {
         expect(state.requests[0].cost_code).toEqual('ABC123')
     })
 
-    it('"setExternalStudyId" sets the requests "external_study_id" to the given externalStudyId', () => {
-        const state = {
-            requests: requests
-        }
-        mutations.setExternalStudyId(state, { requestId: requests[0].id, externalStudyId: '123' })
-        expect(state.requests[0].external_study_id).toEqual('123')
-    })
 })
 

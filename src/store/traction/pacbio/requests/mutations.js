@@ -13,10 +13,7 @@ const mutations = {
   },
   setCostCode(state, payload) {
     state.requests.filter(r => r.id === payload.requestId)[0].cost_code = payload.costCode
-  },
-  setExternalStudyId(state, payload) {
-    state.requests.filter(r => r.id === payload.requestId)[0].external_study_id = payload.externalStudyId
-  },
+  }
 }
 
 export default mutations

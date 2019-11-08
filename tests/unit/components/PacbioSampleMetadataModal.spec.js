@@ -68,7 +68,6 @@ describe('PacbioSampleMetadataModal.vue', () => {
     expect(modal.estimateOfGBRequired).toBeDefined()
     expect(modal.numberOfSMRTCells).toBeDefined()
     expect(modal.costCode).toBeDefined()
-    expect(modal.externalStudyId).toBeDefined()
   })
     
   describe('Edit button', () => {
@@ -111,11 +110,6 @@ describe('PacbioSampleMetadataModal.vue', () => {
       expect(modal.setCostCode).toBeCalledWith({ requestId: mockSamples[0].id, costCode: 'ABC123' })
     })
 
-    it('updateExternalStudyId', () => {
-      modal.setExternalStudyId = jest.fn()
-      modal.updateExternalStudyId('123')
-      expect(modal.setExternalStudyId).toBeCalledWith({ requestId: mockSamples[0].id, externalStudyId: '123' })
-    })
   })
 
   describe('update', () => {
