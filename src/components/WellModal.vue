@@ -101,7 +101,6 @@ export default {
         let libraryTube = await this.getTubeForBarcode(barcode)
         let library = libraryTube.material
         let payload = { position: this.position, library: { id: library.id, barcode: library.barcode }}
-
         this.setLibraryBarcode(payload)
       } else {
         this.showAlert('Library is not valid', 'danger')

@@ -15,14 +15,13 @@
 
 <script>
 import Helper from '@/mixins/Helper'
-import MatType from '@/mixins/MatType'
 import TableHelper from '@/mixins/TableHelper'
 import { createNamespacedHelpers } from 'vuex'
 const { mapActions, mapGetters } = createNamespacedHelpers('traction/pacbio/tubes')
 
 export default {
   name: 'PacbioLibrariesTable',
-  mixins: [Helper, MatType, TableHelper],
+  mixins: [Helper, TableHelper],
   data () {
     return {
       fields: [
