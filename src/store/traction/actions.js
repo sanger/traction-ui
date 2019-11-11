@@ -37,11 +37,24 @@ const runPayloadJson = (payload) => {
     }
 }
 
+const setTags = async ({getters, commit}) => {
+    let request = getters.tagsRequest
+    let promise = request.get()
+    let response = await handlePromise(promise)
+
+    if (response.successful && !response.empty) {
+        let tags = response.deserialize.tags
+        commit('setTags', tags)
+    }
+    return response
+}
+
 const actions = {
     startRun,
     completeRun,
     cancelRun,
     handleRunUpdate,
+    setTags
 }
 
 export {
@@ -49,7 +62,8 @@ export {
     completeRun,
     cancelRun,
     handleRunUpdate,
-    runPayloadJson
+    runPayloadJson,
+    setTags
 }
 
 export default actions
