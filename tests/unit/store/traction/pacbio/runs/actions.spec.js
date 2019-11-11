@@ -144,3 +144,22 @@ describe('#validateLibraryTube', () => {
     expect(Actions.validateLibraryTube({ 'material': { 'type': 'libraries'} })).toBeTruthy()
   })
 })
+
+describe('#editRun', () => {
+  let getters, commit, mockRun, run
+
+  beforeEach(() => {
+    mockRun = new Response(Data.PacbioRuns).deserialize.runs[0]
+
+    run = jest.fn()
+    getters = { 'run': run }
+    commit = jest.fn()
+  })
+
+  it('successfully', async () => {
+    run.mockReturnValue(mockRun)
+
+    Actions.editRun({ getters, commit }, mockRun.id)
+    expect(commit).toHaveBeenCalledWith("setCurrentRun", mockRun)
+  })
+})

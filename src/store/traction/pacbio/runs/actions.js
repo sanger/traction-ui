@@ -28,6 +28,12 @@ const createRun = async ({ getters }) => {
     return await PacbioRun.create(run, request)
 }
 
+const editRun = ({ getters, commit }, runId) => {
+    let run = getters.run(runId)
+    commit('setCurrentRun', run)
+    router.push({ path: `/pacbio/run/${runId}` })
+}
+
 const isLibraryBarcodeValid = async ({ dispatch }, barcode) => {
     if (!barcode) { return false }
     let libraryTube = await dispatch('getTubeForBarcode', barcode)
@@ -57,7 +63,8 @@ const actions = {
     newRun,
     createRun,
     isLibraryBarcodeValid,
-    getTubeForBarcode
+    getTubeForBarcode,
+    editRun
 }
 
 export {
@@ -66,7 +73,8 @@ export {
     createRun,
     isLibraryBarcodeValid,
     getTubeForBarcode,
-    validateLibraryTube
+    validateLibraryTube,
+    editRun
 }
 
 export default actions
