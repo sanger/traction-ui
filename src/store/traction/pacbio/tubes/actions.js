@@ -45,7 +45,7 @@ const sampleExtractionTubeJson = (tubes) => {
 const createLibrariesInTraction = async ({ rootGetters, getters }, payload) => {
 
   let libraries = payload.libraries.map(library => {
-    let tagId = rootGetters['traction/tractionTags'].find(t => t.oligo == library.tag).id
+    let tagId = rootGetters['traction/tractionTags'].find(l => l.group_id == library.tag.group_id).id
 
     return {
       volume: library.volume,

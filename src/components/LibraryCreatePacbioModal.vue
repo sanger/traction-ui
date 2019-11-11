@@ -29,7 +29,7 @@
         <b-form-group id="tag-select-input"
                           label="Tag:"
                           label-for="tag-input">
-          <b-form-select id="tag-input" v-model="library.tag" :options="tagOptions" class="mb-3" />
+          <b-form-select id="tag-input" v-model="library.tag.group_id" :options="tagOptions" class="mb-3" />
         </b-form-group>
 
         <b-form-group id="input-group-1"
@@ -103,7 +103,7 @@ export default {
   mixins: [Api, Helper],
   data () {
     return {
-      library: {},
+      library: { tag: {}},
       tagOptions: []
     }
   },
@@ -119,7 +119,7 @@ export default {
     async provider() {
       try {
         await this.setTags()
-        this.tagOptions = this.tractionTags.map(tag => tag.oligo)
+        this.tagOptions = this.tractionTags.map(tag => tag.group_id)
       } catch (error) {
         this.showAlert("Failed to get tags: " + error.message, 'danger')
       }

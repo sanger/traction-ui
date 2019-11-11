@@ -115,15 +115,15 @@ describe('#createLibrariesInTraction', () => {
 
   beforeEach(() => {
     create = jest.fn()
-    rootGetters = { 'traction/tractionTags': [{ id: 1, oligo: 'ATGC' }, { id: 1, oligo: 'ATGG' }] }
+    rootGetters = { 'traction/tractionTags': [{ id: 1, group_id: '123abc1' }, { id: 2, group_id: '123abc2' }] }
     getters = { 'libraryRequest': { 'create': create } }
     libraries = { libraries: [
-      { tag: 'ATGC', volume: 1.0, concentration: 1.0, libraryKitBarcode: "LK12345", fragmentSize: 100, samples: [{id: 1}] },
-      { tag: 'ATGG', volume: 1.0, concentration: 1.0, libraryKitBarcode: "LK12345", fragmentSize: 100, samples: [{id: 2}] }
+      { tag: { group_id: '123abc1'}, volume: 1.0, concentration: 1.0, libraryKitBarcode: "LK12345", fragmentSize: 100, samples: [{id: 1}] },
+      { tag: { group_id: '123abc2'}, volume: 1.0, concentration: 1.0, libraryKitBarcode: "LK12345", fragmentSize: 100, samples: [{id: 2}] }
     ]}
     payload = [
       {concentration: 1, fragment_size: 100, library_kit_barcode: "LK12345", relationships: {requests: {data: [{id: 1, relationships: {tag: { data: {id: 1}}}, type: "requests"}]}}, volume: 1}, 
-      {concentration: 1, fragment_size: 100, library_kit_barcode: "LK12345", relationships: {requests: {data: [{id: 2, relationships: {tag: { data: {id: 1}}}, type: "requests"}]}}, volume: 1}
+      {concentration: 1, fragment_size: 100, library_kit_barcode: "LK12345", relationships: {requests: {data: [{id: 2, relationships: {tag: { data: {id: 2}}}, type: "requests"}]}}, volume: 1}
     ]
   })
 
