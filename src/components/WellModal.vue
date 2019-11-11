@@ -123,23 +123,24 @@ export default {
   },
   computed: {
     ...mapGetters([
-      'currentRun'
+      'currentRun',
+      'well'
     ]),
     ...mapState({
-      insertSize (state) {
-        return state.currentRun.plate.wells.filter(well => well.position === this.position)[0].insert_size
+      insertSize () {
+        return (this.well(this.position) ? this.well(this.position).insert_size : '')
       },
-      onPlateLoadingConc (state) {
-        return state.currentRun.plate.wells.filter(well => well.position === this.position)[0].on_plate_loading_concentration
+      onPlateLoadingConc () {
+        return (this.well(this.position) ? this.well(this.position).on_plate_loading_concentration : '')
       },
-      movieTime (state) {
-        return state.currentRun.plate.wells.filter(well => well.position === this.position)[0].movie_time
+      movieTime () {
+        return (this.well(this.position) ? this.well(this.position).movie_time : '')
       },
-      libraryBarcode (state) {
-        return state.currentRun.plate.wells.filter(well => well.position === this.position)[0].library.barcode
+      libraryBarcode () {
+        return (this.well(this.position) ? this.well(this.position).libraries[0].barcode : '')
       },
-      sequencingMode (state) {
-        return state.currentRun.plate.wells.filter(well => well.position === this.position)[0].sequencing_mode
+      sequencingMode () {
+        return (this.well(this.position) ? this.well(this.position).sequencing_mode : '')
       }
     })
   },
