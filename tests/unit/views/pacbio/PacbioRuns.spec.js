@@ -324,4 +324,17 @@ describe('Runs.vue', () => {
         })
     })
 
+    describe('Edit Run button', () => {
+
+        it('contains a Edit Run button', () => {
+            expect(wrapper.find('#editRun-1')).toBeDefined()
+        })
+
+        it('will call editRun when Edit is clicked', async () => {
+            runs.editRun = jest.fn()
+            let button = wrapper.find('#editRun-1')
+            button.trigger('click')
+            expect(runs.editRun).toBeCalled()
+        })
+    })
 })

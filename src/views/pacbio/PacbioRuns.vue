@@ -45,6 +45,10 @@
           Cancel
         </b-button>
 
+        <b-button :id="generateId('editRun', row.item.id)" variant="outline-info" size="sm" class="mr-1" @click="editRun(row.item.id)">
+          Edit
+        </b-button>
+
         <a :id="generateId('generate-sample-sheet', row.item.id)"
             :href="generateSampleSheetPath(row.item.id)">
             Generate Sample Sheet
@@ -82,8 +86,6 @@ import { mapActions, mapGetters } from 'vuex'
 export default {
   name: 'PacbioRuns',
   mixins: [Helper, TableHelper],
-  props: {
-  },
   data () {
     return {
       fields: [
@@ -135,7 +137,8 @@ export default {
     ...mapActions('traction/pacbio/runs', [
       'setRuns',
       'newRun',
-      'generateSampleSheet'
+      'generateSampleSheet',
+      'editRun'
     ]),
     ...mapActions('traction', [
       'startRun',
