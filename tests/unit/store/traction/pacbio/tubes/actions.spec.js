@@ -111,18 +111,19 @@ describe('#sampleExtractionTubeJson', () => {
 
 // TODO: we really need factories rather than building payloads manually
 describe('#createLibrariesInTraction', () => {
-  let create, getters, libraries, payload
+  let create, getters, libraries, payload, rootGetters
 
   beforeEach(() => {
     create = jest.fn()
+    rootGetters = { 'traction/tractionTags': [{ id: 1, group_id: '123abc1' }, { id: 2, group_id: '123abc2' }] }
     getters = { 'libraryRequest': { 'create': create } }
     libraries = { libraries: [
-      { volume: 1.0, concentration: 1.0, libraryKitBarcode: "LK12345", fragmentSize: 100, samples: [{id: 1}] },
-      { volume: 1.0, concentration: 1.0, libraryKitBarcode: "LK12345", fragmentSize: 100, samples: [{id: 2}] }
+      { tag: { group_id: '123abc1'}, volume: 1.0, concentration: 1.0, libraryKitBarcode: "LK12345", fragmentSize: 100, samples: [{id: 1}] },
+      { tag: { group_id: '123abc2'}, volume: 1.0, concentration: 1.0, libraryKitBarcode: "LK12345", fragmentSize: 100, samples: [{id: 2}] }
     ]}
     payload = [
       {concentration: 1, fragment_size: 100, library_kit_barcode: "LK12345", relationships: {requests: {data: [{id: 1, relationships: {tag: { data: {id: 1}}}, type: "requests"}]}}, volume: 1}, 
-      {concentration: 1, fragment_size: 100, library_kit_barcode: "LK12345", relationships: {requests: {data: [{id: 2, relationships: {tag: { data: {id: 1}}}, type: "requests"}]}}, volume: 1}
+      {concentration: 1, fragment_size: 100, library_kit_barcode: "LK12345", relationships: {requests: {data: [{id: 2, relationships: {tag: { data: {id: 2}}}, type: "requests"}]}}, volume: 1}
     ]
   })
 
@@ -130,7 +131,7 @@ describe('#createLibrariesInTraction', () => {
     let expectedResponse = new Response(Data.PacbioTubeWithLibrary)
     create.mockReturnValue(Data.PacbioTubeWithLibrary)
 
-    let response = await Actions.createLibrariesInTraction({ getters }, libraries)
+    let response = await Actions.createLibrariesInTraction({ getters, rootGetters }, libraries)
     expect(response).toEqual(expectedResponse)
     expect(create).toBeCalledWith({data: { type: 'libraries', attributes: { libraries: payload}}})
   })
@@ -141,7 +142,7 @@ describe('#createLibrariesInTraction', () => {
 
     create.mockReturnValue(failedResponse)
 
-    let response = await Actions.createLibrariesInTraction({ getters }, libraries)
+    let response = await Actions.createLibrariesInTraction({ getters, rootGetters }, libraries)
     expect(response).toEqual(expectedResponse)
   })
 
