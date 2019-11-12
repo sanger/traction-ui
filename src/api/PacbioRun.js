@@ -169,13 +169,12 @@ const update = async (run, request) => {
         // Assuming there is only one library in a well
         let wellsWithLibraries = run.plate.wells.filter(well => well.libraries[0].id)
 
-        let wellsAttributes = updateWellsPayload(run, wellsWithLibraries)
-
-        let wellPayload = { data: wellsAttributes }
-
-        let wellResponse = await updateBatchResource(wellPayload, request.wells)
-        responses.push(wellResponse)
-
+        // Couldn't do batch update PATCH /wells doesnt exist
+        for (const well of wellsWithLibraries) {
+            let wellPayload = updateWellPayload(well)
+            let wellResponse = await updateResource(wellPayload, request.wells)
+            responses.push(wellResponse)
+        }
     } catch (err) {
         // What to do if update fails?
         return responses
@@ -186,17 +185,6 @@ const update = async (run, request) => {
 const updateResource = async (payload, request) => {
     let promises = await request.update(payload)
     let response = await handlePromise(promises[0])
-
-    if (response.successful) {
-        return response
-    } else {
-        throw response.errors
-    }
-}
-
-const updateBatchResource = async (payload, request) => {
-    let promise = await request.updateBatch(payload)
-    let response = await handlePromise(promise)
 
     if (response.successful) {
         return response
@@ -222,9 +210,9 @@ const updateRunPayload = (run) => {
     }
 }
 
-const updateWellsPayload = (run, wellsWithLibraries) => {
-    let wellBody = wellsWithLibraries.reduce((accumulator, well) => {
-        accumulator.push({
+const updateWellPayload = (well) => {
+    return {
+        data: {
             id: well.id,
             type: "wells",
             attributes: {
@@ -235,12 +223,6 @@ const updateWellsPayload = (run, wellsWithLibraries) => {
                 on_plate_loading_concentration: well.on_plate_loading_concentration,
                 sequencing_mode: well.sequencing_mode,
                 relationships: {
-                    plate: {
-                        data: {
-                            type: "plate",
-                            id: run.plate.id
-                        }
-                    },
                     libraries: {
                         data: [
                             {
@@ -251,10 +233,8 @@ const updateWellsPayload = (run, wellsWithLibraries) => {
                     }
                 }
             }
-        })
-        return accumulator
-    }, [])
-    return wellBody
+        }
+    }
 }
 
 export {
@@ -265,5 +245,4 @@ export {
     buildWell,
     update,
     updateResource,
-    updateBatchResource
 }

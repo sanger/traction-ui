@@ -324,30 +324,4 @@ describe('Run', () => {
     })
   })
 
-  describe('updateBatchResource', () => {
-    beforeEach(() => {
-      request.updateBatch = jest.fn()
-    })
-
-    it('success', async () => {
-      request.updateBatch.mockResolvedValue(Data.PacbioRun)
-      let mockResponse = new Response(Data.PacbioRun)
-
-      let response = await Run.updateBatchResource({}, request)
-      expect(response).toEqual(mockResponse)
-    })
-
-    it('failure', async () => {
-      request.updateBatch.mockReturnValue(failedResponse)
-
-      let message
-      try {
-        await Run.updateBatchResource({}, request)
-      } catch (err) {
-        message = err.message
-      }
-      expect(message).toEqual("title The record identified by 100 could not be found.")
-    })
-  })
-
 })
