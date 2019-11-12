@@ -172,6 +172,28 @@ describe('Request', () => {
 
       })
 
+      describe('updateBatch', () => {
+        let data
+
+        beforeEach(() => {
+          data = { data: [
+            { type: 'wells', id: 1, attributes: { row: 'A', column: 1 } },
+            { type: 'wells', id: 2, attributes: { row: 'A', column: 2 } }
+          ]}
+          request.api.patch = jest.fn()
+        })
+
+        it('performs a batch update', () => {
+          let promise = new Promise(() => { })
+          request.api.patch.mockReturnValue(promise)
+
+          let response = request.updateBatch(data)
+
+          expect(request.api.patch).toBeCalledWith(request.resource, data)
+          expect(response).toEqual(promise)
+        })
+      })
+
       describe('destroy', () => {
         beforeEach(() => {
           request.api.delete = jest.fn()

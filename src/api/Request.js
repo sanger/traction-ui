@@ -90,6 +90,9 @@ export default {
       }
       return promises
     },
+    updateBatch(data) {
+      return this.execute('patch', this.resource, data)
+    },
     destroy (ids) {
       let promises = []
       for (let item of (Array.isArray(ids) ? ids : [ids])) {

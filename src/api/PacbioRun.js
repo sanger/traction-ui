@@ -159,12 +159,103 @@ const destroy = async (id, request) => {
 }
 
 const update = async (run, request) => {
-    console.log('Update')
-    console.log(run)
-    console.log(request)
+    let responses = []
+
+    try {
+        let runPayload = updateRunPayload(run)
+        let runResponse = await updateResource(runPayload, request.runs)
+        responses.push(runResponse)
+
+        // Assuming there is only one library in a well
+        let wellsWithLibraries = run.plate.wells.filter(well => well.libraries[0].id)
+
+        let wellsAttributes = updateWellsPayload(run, wellsWithLibraries)
+
+        let wellPayload = { data: wellsAttributes }
+
+        let wellResponse = await updateBatchResource(wellPayload, request.wells)
+        responses.push(wellResponse)
+
+    } catch (err) {
+        // What to do if update fails?
+        return responses
+    }
     return []
 }
 
+const updateResource = async (payload, request) => {
+    let promises = await request.update(payload)
+    let response = await handlePromise(promises[0])
+
+    if (response.successful) {
+        return response
+    } else {
+        throw response.errors
+    }
+}
+
+const updateBatchResource = async (payload, request) => {
+    let promise = await request.updateBatch(payload)
+    let response = await handlePromise(promise)
+
+    if (response.successful) {
+        return response
+    } else {
+        throw response.errors
+    }
+}
+
+const updateRunPayload = (run) => {
+    return {
+        data: {
+            id: run.id,
+            type: "runs",
+            attributes: {
+                name: run.name,
+                template_prep_kit_box_barcode: run.template_prep_kit_box_barcode,
+                binding_kit_box_barcode: run.binding_kit_box_barcode,
+                sequencing_kit_box_barcode: run.sequencing_kit_box_barcode,
+                dna_control_complex_box_barcode: run.dna_control_complex_box_barcode,
+                system_name: run.system_name,
+            }
+        }
+    }
+}
+
+const updateWellsPayload = (run, wellsWithLibraries) => {
+    let wellBody = wellsWithLibraries.reduce((accumulator, well) => {
+        accumulator.push({
+            id: well.id,
+            type: "wells",
+            attributes: {
+                row: well.row,
+                column: well.column,
+                movie_time: well.movie_time,
+                insert_size: well.insert_size,
+                on_plate_loading_concentration: well.on_plate_loading_concentration,
+                sequencing_mode: well.sequencing_mode,
+                relationships: {
+                    plate: {
+                        data: {
+                            type: "plate",
+                            id: run.plate.id
+                        }
+                    },
+                    libraries: {
+                        data: [
+                            {
+                                type: "libraries",
+                                id: well.libraries[0].id // Assuming there is only one library in a well
+                            }
+                        ]
+                    }
+                }
+            }
+        })
+        return accumulator
+    }, [])
+    return wellBody
+}
 
 export {
     build,
@@ -172,5 +263,7 @@ export {
     createResource,
     destroy,
     buildWell,
-    update
+    update,
+    updateResource,
+    updateBatchResource
 }
