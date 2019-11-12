@@ -27,7 +27,8 @@ const mutations = {
         state.currentRun.system_name = systemName
     },
     setLibraryBarcode(state, payload) {
-        state.currentRun.plate.wells.filter(well => well.position === payload.position)[0].library = payload.library
+        // Assuming there is only one library in a well
+        state.currentRun.plate.wells.filter(well => well.position === payload.position)[0].libraries[0] = payload.library
     },
     setInsertSize(state, payload) {
         state.currentRun.plate.wells.filter(well => well.position === payload.position)[0].insert_size = payload.insertSize

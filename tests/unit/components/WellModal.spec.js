@@ -3,6 +3,7 @@ import WellModal from '@/components/WellModal'
 import * as Run from '@/api/PacbioRun'
 import Response from '@/api/Response'
 import libraryTube from '../../data/pacbioTubeWithLibrary'
+import pacbioRunModule from '../../../src/store/traction/pacbio/runs'
 
 describe('PacbioRunInfo', () => {
 
@@ -22,11 +23,10 @@ describe('PacbioRunInfo', () => {
                                 runs: {
                                     namespaced: true,
                                     state: {
-                                        currentRun: run
+                                        currentRun: run,
+                                        well: { libraries: [ { barcode: 'TRAC-0'}]}
                                     },
-                                    getters: {
-                                        currentRun: state => state.currentRun,
-                                    },
+                                    getters: pacbioRunModule.getters
                                 }
                             }
 
@@ -51,7 +51,7 @@ describe('PacbioRunInfo', () => {
     })
 
     it('must have movieTimeOptions data', () => {
-        expect(modal.movieTimeOptions).toEqual([{ text: 'Movie Time', value: "" }, 15, 20, 30])
+        expect(modal.movieTimeOptions).toEqual([{ text: 'Movie Time', value: "" }, "15.0", "20.0", "30.0"])
     })
 
     it('must have sequencingMode data', () => {

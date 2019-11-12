@@ -131,8 +131,9 @@ describe('Run', () => {
           })
 
           it('will have a library', () => {
-            expect(firstWell.library).toEqual({id: '', barcode: ''})
-            expect(lastWell.library).toEqual({id: '', barcode: ''})
+            // Assuming there is only one library in a well
+            expect(firstWell.libraries[0]).toEqual({id: '', barcode: ''})
+            expect(lastWell.libraries[0]).toEqual({id: '', barcode: ''})
           })
         })
       })
@@ -176,8 +177,8 @@ describe('Run', () => {
       run = Run.build()
       run['name'] = 'run1'
       run.plate['barcode'] = "abc123barcode"
-      run.plate.wells[0] = { position: 'A1', library: { id: 1 } }
-      run.plate.wells[1] = { position: 'A2', library: { id: 2 } }
+      run.plate.wells[0] = { position: 'A1', libraries: [{ id: 1 }] }
+      run.plate.wells[1] = { position: 'A2', libraries: [{ id: 2 }] }
 
       api = build(Api.Config, process.env)
       api.traction.pacbio.runs.create = jest.fn()

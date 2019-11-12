@@ -63,7 +63,7 @@ describe('Plate.vue', () => {
     })
   })
 
-  describe('tooltip', () => {
+  describe.skip('tooltip', () => {
 
     beforeEach(() => {
     })

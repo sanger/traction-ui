@@ -67,7 +67,7 @@ export default {
   },
   data () {
     return {
-      movieTimeOptions: [ { text: 'Movie Time', value: "" }, 15, 20, 30 ],
+      movieTimeOptions: [ { text: 'Movie Time', value: "" }, '15.0', '20.0', '30.0' ],
       sequencingModeOptions: [ { text: 'Sequencing Mode', value: "" }, 'CLR', 'CCS'],
     }
   },
@@ -137,6 +137,7 @@ export default {
         return (this.well(this.position) ? this.well(this.position).movie_time : '')
       },
       libraryBarcode () {
+        // Assuming there is only one library in a well
         return (this.well(this.position) ? this.well(this.position).libraries[0].barcode : '')
       },
       sequencingMode () {

@@ -20,10 +20,10 @@ const buildWell = (row, column) => {
     insert_size: '',
     on_plate_loading_concentration: '',
     sequencing_mode: '',
-    library: {
+    libraries: [{
       id: '',
       barcode: ''
-    }
+    }]
   }
 }
 
@@ -95,7 +95,8 @@ const create = async (run, request) => {
 
         let plateId = plateResponse.deserialize.plates[0].id
 
-        let wellsWithLibraries = run.plate.wells.filter(well => well.library.id)
+        // Assuming there is only one library in a well
+        let wellsWithLibraries = run.plate.wells.filter(well => well.libraries[0].id)
 
         let wellsAttributes = wellsWithLibraries.reduce((accumulator, well) => {
             accumulator.push({
@@ -116,7 +117,7 @@ const create = async (run, request) => {
                         data: [
                             {
                                 type: "libraries",
-                                id: well.library.id
+                                id: well.libraries[0].id // Assuming there is only one library in a well
                             }
                         ]
                     }
