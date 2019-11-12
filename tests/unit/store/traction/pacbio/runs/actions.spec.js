@@ -163,3 +163,20 @@ describe('#editRun', () => {
     expect(commit).toHaveBeenCalledWith("setCurrentRun", mockRun)
   })
 })
+
+describe('#updateRun', () => {
+  let getters, pacbioRequests, mockRun
+
+  beforeEach(() => {
+    mockRun = new Response(Data.PacbioRun).deserialize.runs[0]
+    pacbioRequests = jest.fn()
+    getters = { 'currentRun': mockRun, 'pacbioRequests': pacbioRequests }
+
+    Run.update = jest.fn()
+  })
+
+  it('successfully', async () => {
+    Actions.updateRun({ getters })
+    expect(Run.update).toHaveBeenCalledWith(mockRun, pacbioRequests)
+  })
+})

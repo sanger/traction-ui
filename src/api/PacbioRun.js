@@ -158,11 +158,19 @@ const destroy = async (id, request) => {
     return await handlePromise(promise)
 }
 
+const update = async (run, request) => {
+    console.log('Update')
+    console.log(run)
+    console.log(request)
+    return []
+}
+
 
 export {
     build,
     create,
     createResource,
     destroy,
-    buildWell
+    buildWell,
+    update
 }

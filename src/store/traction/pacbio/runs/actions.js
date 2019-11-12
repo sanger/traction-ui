@@ -58,13 +58,21 @@ const validateLibraryTube = (tube) => {
     return true
 }
 
+const updateRun = async ({ getters }) => {
+    let run = getters.currentRun
+    let request = getters.pacbioRequests
+
+    return await PacbioRun.update(run, request)
+}
+
 const actions = {
     setRuns,
     newRun,
     createRun,
     isLibraryBarcodeValid,
     getTubeForBarcode,
-    editRun
+    editRun,
+    updateRun
 }
 
 export {
@@ -74,7 +82,8 @@ export {
     isLibraryBarcodeValid,
     getTubeForBarcode,
     validateLibraryTube,
-    editRun
+    editRun,
+    updateRun
 }
 
 export default actions
