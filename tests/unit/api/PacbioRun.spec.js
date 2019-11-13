@@ -324,4 +324,48 @@ describe('Run', () => {
     })
   })
 
+  describe('updateRunPayload', () => {
+    let run
+
+    beforeEach(() => {
+      run = new Response(Data.PacbioRun).deserialize.runs[0]
+    })
+
+    it('return run payload', async () => {
+      let result = Run.updateRunPayload(run)
+
+      expect(result.data.id).toEqual(run.id)
+      expect(result.data.type).toEqual("runs")
+      expect(result.data.attributes.name).toEqual(run.name)
+      expect(result.data.attributes.template_prep_kit_box_barcode).toEqual(run.template_prep_kit_box_barcode)
+      expect(result.data.attributes.binding_kit_box_barcode).toEqual(run.binding_kit_box_barcode)
+      expect(result.data.attributes.sequencing_kit_box_barcode).toEqual(run.sequencing_kit_box_barcode)
+      expect(result.data.attributes.dna_control_complex_box_barcode).toEqual(run.dna_control_complex_box_barcode)
+      expect(result.data.attributes.system_name).toEqual(run.system_name)
+    })
+  })
+
+  describe('updateWellPayload', () => {
+    let well
+
+    beforeEach(() => {
+      well = new Response(Data.PacbioWell).deserialize.wells[0]
+      well.libraries = [{id: 1}]
+    })
+
+    it('return run payload', async () => {
+      let result = Run.updateWellPayload(well)
+
+      expect(result.data.id).toEqual(well.id)
+      expect(result.data.type).toEqual("wells")
+      expect(result.data.attributes.row).toEqual(well.row)
+      expect(result.data.attributes.column).toEqual(well.column)
+      expect(result.data.attributes.movie_time).toEqual(well.movie_time)
+      expect(result.data.attributes.insert_size).toEqual(well.insert_size)
+      expect(result.data.attributes.on_plate_loading_concentration).toEqual(well.on_plate_loading_concentration)
+      expect(result.data.attributes.sequencing_mode).toEqual(well.sequencing_mode)
+      expect(result.data.relationships.libraries.data[0].type).toEqual("libraries")
+      expect(result.data.relationships.libraries.data[0].id).toEqual(well.libraries[0].id)
+    })
+  })
 })

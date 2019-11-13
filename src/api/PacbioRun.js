@@ -222,15 +222,15 @@ const updateWellPayload = (well) => {
                 insert_size: well.insert_size,
                 on_plate_loading_concentration: well.on_plate_loading_concentration,
                 sequencing_mode: well.sequencing_mode,
-                relationships: {
-                    libraries: {
-                        data: [
-                            {
-                                type: "libraries",
-                                id: well.libraries[0].id // Assuming there is only one library in a well
-                            }
-                        ]
-                    }
+            },
+            relationships: {
+                libraries: {
+                    data: [
+                        {
+                            type: "libraries",
+                            id: well.libraries[0].id // Assuming there is only one library in a well
+                        }
+                    ]
                 }
             }
         }
@@ -245,4 +245,6 @@ export {
     buildWell,
     update,
     updateResource,
+    updateRunPayload,
+    updateWellPayload
 }
