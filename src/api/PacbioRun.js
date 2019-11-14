@@ -50,7 +50,6 @@ const build = (object) => {
         comments: '',
         system_name: '',
         plate: {
-            barcode: '',
             wells: buildWells()
         }
     }
@@ -86,7 +85,6 @@ const create = async (run, request) => {
                 type: "plates",
                 attributes: {
                     pacbio_run_id: runId,
-                    barcode: run.plate.barcode
                 }
             }
         }

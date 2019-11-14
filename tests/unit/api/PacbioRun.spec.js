@@ -70,8 +70,8 @@ describe('Run', () => {
         expect(run.plate).toBeDefined()
       })
 
-      it('will have a plate with a barcode', () => {
-        expect(run.plate.barcode).toBeDefined()
+      it('will have an plate with wells', () => {
+        expect(run.plate.wells).toBeDefined()
       })
 
       describe('wells', () => {
@@ -176,7 +176,6 @@ describe('Run', () => {
     beforeEach(() => {
       run = Run.build()
       run['name'] = 'run1'
-      run.plate['barcode'] = "abc123barcode"
       run.plate.wells[0] = { position: 'A1', libraries: [{ id: 1 }] }
       run.plate.wells[1] = { position: 'A2', libraries: [{ id: 2 }] }
 
@@ -281,7 +280,6 @@ describe('Run', () => {
     beforeEach(() => {
       run = Run.build()
       run['name'] = 'run1'
-      run.plate['barcode'] = "abc123barcode"
       run.plate.wells[0] = { position: 'A1', libraries: [{ id: 1 }] }
       run.plate.wells[1] = { position: 'A2', libraries: [{ id: 2 }] }
 

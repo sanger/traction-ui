@@ -27,7 +27,6 @@ describe('Run.vue', () => {
             comments: '',
             system_name: '',
             plate: {
-                barcode: '',
                 wells: [
                     { position: 'A1', library: { barcode: '' } },
                     { position: 'A2', library: { barcode: '' } },
