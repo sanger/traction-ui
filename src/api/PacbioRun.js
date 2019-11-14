@@ -55,87 +55,27 @@ const build = (object) => {
     }
 }
 
-// REFACTOR
 const create = async (run, request) => {
     let runId
     let responses = []
 
     try {
-        let runPayload = {
-            data: {
-                type: "runs",
-                attributes: {
-                    name: run.name,
-                    template_prep_kit_box_barcode: run.template_prep_kit_box_barcode,
-                    binding_kit_box_barcode: run.binding_kit_box_barcode,
-                    sequencing_kit_box_barcode: run.sequencing_kit_box_barcode,
-                    dna_control_complex_box_barcode: run.dna_control_complex_box_barcode,
-                    system_name: run.system_name,
-                    comments: run.comments,
-                }
-            }
-        }
-
+        let runPayload = createRunPayload(run)
         let runResponse = await createResource(runPayload, request.runs)
         responses.push(runResponse)
-
         runId = runResponse.deserialize.runs[0].id
-        let platePayload = {
-            data: {
-                type: "plates",
-                attributes: {
-                    pacbio_run_id: runId,
-                }
-            }
-        }
 
+        let platePayload = createPlatePayload(runId)
         let plateResponse = await createResource(platePayload, request.plates)
         responses.push(plateResponse)
-
         let plateId = plateResponse.deserialize.plates[0].id
 
         // Assuming there is only one library in a well
         let wellsWithLibraries = run.plate.wells.filter(well => well.libraries[0].id)
-
-        let wellsAttributes = wellsWithLibraries.reduce((accumulator, well) => {
-            accumulator.push({
-                row: well.row,
-                column: well.column,
-                movie_time: well.movie_time,
-                insert_size: well.insert_size,
-                on_plate_loading_concentration: well.on_plate_loading_concentration,
-                sequencing_mode: well.sequencing_mode,
-                relationships: {
-                    plate: {
-                        data: {
-                            type: "plate",
-                            id: plateId
-                        }
-                    },
-                    libraries: {
-                        data: [
-                            {
-                                type: "libraries",
-                                id: well.libraries[0].id // Assuming there is only one library in a well
-                            }
-                        ]
-                    }
-                }
-            })
-            return accumulator
-        }, [])
-
-        let wellPayload = {
-            data: {
-                type: "wells",
-                attributes: {
-                    wells: wellsAttributes
-                }
-            }
-        }
-
-        let wellResponse = await createResource(wellPayload, request.wells)
+        let wellsPayload = createWellsPayload(wellsWithLibraries, plateId)
+        let wellResponse = await createResource(wellsPayload, request.wells)
         responses.push(wellResponse)
+
     } catch (err) {
         destroy(runId, request.runs)
         return err.message
@@ -152,11 +92,6 @@ const createResource = async (payload, request) => {
     }
 }
 
-const destroy = async (id, request) => {
-    let promise = request.destroy(id)
-    return await handlePromise(promise)
-}
-
 const update = async (run, request) => {
     let responses = []
 
@@ -168,11 +103,18 @@ const update = async (run, request) => {
         // Assuming there is only one library in a well
         let wellsWithLibraries = run.plate.wells.filter(well => well.libraries[0].id)
 
-        // Couldn't do batch update PATCH /wells doesnt exist
         for (const well of wellsWithLibraries) {
-            let wellPayload = updateWellPayload(well)
-            let wellResponse = await updateResource(wellPayload, request.wells)
-            responses.push(wellResponse)
+            if (well.id) {
+                // Well exists - Update well
+                let wellPayload = updateWellPayload(well)
+                let wellResponse = await updateResource(wellPayload, request.wells)
+                responses.push(wellResponse)
+            } else {
+                // Well does not exist - Create well
+                let wellPayload = createWellsPayload([well], run.plate.id)
+                let wellResponse = await createResource(wellPayload, request.wells)
+                responses.push(wellResponse)
+            }
         }
     } catch (err) {
         // What to do if update fails?
@@ -192,6 +134,73 @@ const updateResource = async (payload, request) => {
     }
 }
 
+const createRunPayload = (run) => {
+    return {
+        data: {
+            type: "runs",
+            attributes: {
+                name: run.name,
+                template_prep_kit_box_barcode: run.template_prep_kit_box_barcode,
+                binding_kit_box_barcode: run.binding_kit_box_barcode,
+                sequencing_kit_box_barcode: run.sequencing_kit_box_barcode,
+                dna_control_complex_box_barcode: run.dna_control_complex_box_barcode,
+                system_name: run.system_name,
+                comments: run.comments,
+            }
+        }
+    }
+}
+
+const createPlatePayload = (runId) => {
+    return {
+        data: {
+            type: "plates",
+            attributes: {
+                pacbio_run_id: runId,
+            }
+        }
+    }
+}
+
+const createWellsPayload = (wells, plateId) => {
+    let wellsAttributes = wells.reduce((accumulator, well) => {
+        accumulator.push({
+            row: well.row,
+            column: well.column,
+            movie_time: well.movie_time,
+            insert_size: well.insert_size,
+            on_plate_loading_concentration: well.on_plate_loading_concentration,
+            sequencing_mode: well.sequencing_mode,
+            relationships: {
+                plate: {
+                    data: {
+                        type: "plates",
+                        id: plateId
+                    }
+                },
+                libraries: {
+                    data: [
+                        {
+                            type: "libraries",
+                            id: well.libraries[0].id // Assuming there is only one library in a well
+                        }
+                    ]
+                }
+            }
+        })
+        return accumulator
+    }, [])
+
+    return {
+        data: {
+            type: "wells",
+            attributes: {
+                wells: wellsAttributes
+            }
+        }
+    }
+}
+
 const updateRunPayload = (run) => {
     return {
         data: {
@@ -204,6 +213,7 @@ const updateRunPayload = (run) => {
                 sequencing_kit_box_barcode: run.sequencing_kit_box_barcode,
                 dna_control_complex_box_barcode: run.dna_control_complex_box_barcode,
                 system_name: run.system_name,
+                comments: run.comments,
             }
         }
     }
@@ -236,14 +246,21 @@ const updateWellPayload = (well) => {
     }
 }
 
+const destroy = async (id, request) => {
+    let promise = request.destroy(id)
+    return await handlePromise(promise)
+}
+
 export {
     build,
     create,
     createResource,
-    destroy,
-    buildWell,
+    createRunPayload,
+    createPlatePayload,
+    createWellsPayload,
     update,
     updateResource,
     updateRunPayload,
-    updateWellPayload
+    updateWellPayload,
+    destroy,
 }

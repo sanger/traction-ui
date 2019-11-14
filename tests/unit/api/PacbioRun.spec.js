@@ -142,33 +142,6 @@ describe('Run', () => {
     })
   })
 
-  describe('createResource', () => {
-    beforeEach(() => {
-      request.create = jest.fn()
-    })
-
-    it('success', async () => {
-      request.create.mockResolvedValue(Data.PacbioRun)
-      let mockResponse = new Response(Data.PacbioRun)
-
-      let response = await Run.createResource({}, request)
-      expect(response).toEqual(mockResponse)
-    })
-
-    it('failure', async () => {
-      request.create.mockReturnValue(failedResponse)
-
-      let message
-      try {
-        await Run.createResource({}, request)
-      } catch (err) {
-        message = err.message
-      }
-      expect(message).toEqual("title The record identified by 100 could not be found.")
-    })
-
-  })
-
   describe('create', () => {
     let api
 
@@ -204,7 +177,7 @@ describe('Run', () => {
 
     it('returns false if the run cannot be created', async () => {
       api.traction.pacbio.runs.create.mockReturnValue(failedResponse)
-      
+
       let resp = await Run.create(run, api.traction.pacbio)
 
       expect(api.traction.pacbio.runs.create).toBeCalled()
@@ -230,7 +203,7 @@ describe('Run', () => {
       expect(api.traction.pacbio.wells.create).not.toBeCalled()
 
       expect(api.traction.pacbio.runs.destroy).toBeCalledWith(runId)
-  
+
       expect(resp).toEqual("title The record identified by 100 could not be found.")
     })
 
@@ -244,7 +217,7 @@ describe('Run', () => {
 
       let runResponse = new Response(Data.PacbioRun)
       let runId = runResponse.deserialize.runs[0].id
-      
+
       let resp = await Run.create(run, api.traction.pacbio)
 
       expect(api.traction.pacbio.runs.create).toBeCalled()
@@ -257,20 +230,84 @@ describe('Run', () => {
     })
   })
 
-  describe('destroy', () => {
-    let api
-
+  describe('createResource', () => {
     beforeEach(() => {
-      api = build(Api.Config, process.env)
-      api.traction.pacbio.runs.destroy = jest.fn()
+      request.create = jest.fn()
     })
 
-    it('rolls back the request', async () => {
-      api.traction.pacbio.runs.destroy.mockResolvedValue(Data.SuccessfulDestroy)
-      let expected = new Response(Data.SuccessfulDestroy)
+    it('success', async () => {
+      request.create.mockResolvedValue(Data.PacbioRun)
+      let mockResponse = new Response(Data.PacbioRun)
 
-      let response = await Run.destroy(1, api.traction.pacbio.runs)
-      expect(response).toEqual(expected)
+      let response = await Run.createResource({}, request)
+      expect(response).toEqual(mockResponse)
+    })
+
+    it('failure', async () => {
+      request.create.mockReturnValue(failedResponse)
+
+      let message
+      try {
+        await Run.createResource({}, request)
+      } catch (err) {
+        message = err.message
+      }
+      expect(message).toEqual("title The record identified by 100 could not be found.")
+    })
+
+  })
+
+  describe('createRunPayload', () => {
+    let run
+
+    beforeEach(() => {
+      run = new Response(Data.PacbioRun).deserialize.runs[0]
+    })
+
+    it('returns a runs payload', async () => {
+      let result = Run.createRunPayload(run)
+
+      expect(result.data.type).toEqual("runs")
+      expect(result.data.attributes.name).toEqual(run.name)
+      expect(result.data.attributes.template_prep_kit_box_barcode).toEqual(run.template_prep_kit_box_barcode)
+      expect(result.data.attributes.binding_kit_box_barcode).toEqual(run.binding_kit_box_barcode)
+      expect(result.data.attributes.sequencing_kit_box_barcode).toEqual(run.sequencing_kit_box_barcode)
+      expect(result.data.attributes.dna_control_complex_box_barcode).toEqual(run.dna_control_complex_box_barcode)
+      expect(result.data.attributes.system_name).toEqual(run.system_name)
+    })
+  })
+
+  describe('createPlatePayload', () => {
+    it('returns a plates payload', async () => {
+      let result = Run.createPlatePayload(123)
+
+      expect(result.data.type).toEqual("plates")
+      expect(result.data.attributes.pacbio_run_id).toEqual(123)
+    })
+  })
+
+  describe('createWellsPayload', () => {
+    let wells, plateID
+    beforeEach(() => {
+      run = Run.build()
+      wells = run.plate.wells
+      plateID = 1
+    })
+
+    it('returns wells payload', async () => {
+      let result = Run.createWellsPayload(wells, plateID)
+
+      expect(result.data.type).toEqual("wells")
+      expect(result.data.attributes.wells[0].row).toEqual(wells[0].row)
+      expect(result.data.attributes.wells[0].column).toEqual(wells[0].column)
+      expect(result.data.attributes.wells[0].movie_time).toEqual(wells[0].movie_time)
+      expect(result.data.attributes.wells[0].insert_size).toEqual(wells[0].insert_size)
+      expect(result.data.attributes.wells[0].on_plate_loading_concentration).toEqual(wells[0].on_plate_loading_concentration)
+      expect(result.data.attributes.wells[0].sequencing_mode).toEqual(wells[0].sequencing_mode)
+      expect(result.data.attributes.wells[0].relationships.plate.data.type).toEqual("plates")
+      expect(result.data.attributes.wells[0].relationships.plate.data.id).toEqual(plateID)
+      expect(result.data.attributes.wells[0].relationships.libraries.data[0].type).toEqual("libraries")
+      expect(result.data.attributes.wells[0].relationships.libraries.data[0].id).toEqual(wells[0].libraries[0].id)
     })
   })
 
@@ -340,6 +377,7 @@ describe('Run', () => {
       expect(result.data.attributes.sequencing_kit_box_barcode).toEqual(run.sequencing_kit_box_barcode)
       expect(result.data.attributes.dna_control_complex_box_barcode).toEqual(run.dna_control_complex_box_barcode)
       expect(result.data.attributes.system_name).toEqual(run.system_name)
+      expect(result.data.attributes.comments).toEqual(run.comments)
     })
   })
 
@@ -364,6 +402,23 @@ describe('Run', () => {
       expect(result.data.attributes.sequencing_mode).toEqual(well.sequencing_mode)
       expect(result.data.relationships.libraries.data[0].type).toEqual("libraries")
       expect(result.data.relationships.libraries.data[0].id).toEqual(well.libraries[0].id)
+    })
+  })
+
+  describe('destroy', () => {
+    let api
+
+    beforeEach(() => {
+      api = build(Api.Config, process.env)
+      api.traction.pacbio.runs.destroy = jest.fn()
+    })
+
+    it('rolls back the request', async () => {
+      api.traction.pacbio.runs.destroy.mockResolvedValue(Data.SuccessfulDestroy)
+      let expected = new Response(Data.SuccessfulDestroy)
+
+      let response = await Run.destroy(1, api.traction.pacbio.runs)
+      expect(response).toEqual(expected)
     })
   })
 })
