@@ -72,6 +72,7 @@ const create = async (run, request) => {
                     sequencing_kit_box_barcode: run.sequencing_kit_box_barcode,
                     dna_control_complex_box_barcode: run.dna_control_complex_box_barcode,
                     system_name: run.system_name,
+                    comments: run.comments,
                 }
             }
         }
