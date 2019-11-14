@@ -104,13 +104,11 @@ const update = async (run, request) => {
         let wellsWithLibraries = run.plate.wells.filter(well => well.libraries[0].id)
 
         for (const well of wellsWithLibraries) {
-            if (well.id) {
-                // Well exists - Update well
+            if (well.id) { // Well exists - Update well
                 let wellPayload = updateWellPayload(well)
                 let wellResponse = await updateResource(wellPayload, request.wells)
                 responses.push(wellResponse)
-            } else {
-                // Well does not exist - Create well
+            } else { // Well does not exist - Create well
                 let wellPayload = createWellsPayload([well], run.plate.id)
                 let wellResponse = await createResource(wellPayload, request.wells)
                 responses.push(wellResponse)

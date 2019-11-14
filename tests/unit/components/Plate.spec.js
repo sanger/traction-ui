@@ -72,7 +72,7 @@ describe('Plate.vue', () => {
       expect(plate.showBarcode('B1')).toEqual("")
     })
 
-    it('showBarcode will return nothing if well doesn not exists', () => {
+    it('showBarcode will return nothing if well does not exists', () => {
       expect(plate.showBarcode('X1')).not.toBeDefined()
     })
   })

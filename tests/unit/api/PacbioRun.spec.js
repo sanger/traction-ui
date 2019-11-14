@@ -70,7 +70,7 @@ describe('Run', () => {
         expect(run.plate).toBeDefined()
       })
 
-      it('will have an plate with wells', () => {
+      it('will have a plate with wells', () => {
         expect(run.plate.wells).toBeDefined()
       })
 
