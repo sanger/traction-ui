@@ -1,6 +1,6 @@
 <template>
   <div>
-    <b-btn id="create"
+    <b-btn id="createLibraryPacbioModal"
            :disabled="disabled"
            v-b-modal.pacbioLibraryModal
            variant="success">
@@ -14,19 +14,23 @@
              scrollable
              >
       <alert ref='alert'></alert>
-      <b-form  >
+      
+      <b-form id="libraryCreateModal">
         <p>
           The following samples are used to create this library:
           <ul>
             <template v-for="sample in selectedSamples">
               <li :key="sample.id">{{sample.sample_name}} ({{ sample.barcode}})</li>
-              Tag:
-              <b-form-select class="mb-3" :key="sample.id">
-                <option :value="1">ATGC</option>
-              </b-form-select>
+
             </template>
           </ul>
         </p>
+
+        <b-form-group id="tag-select-input"
+                          label="Tag:"
+                          label-for="tag-input">
+          <b-form-select id="tag-input" v-model="library.tag.group_id" :options="tagOptions" class="mb-3" />
+        </b-form-group>
 
         <b-form-group id="input-group-1"
                       label="Volume:"
@@ -71,6 +75,7 @@
                         placeholder="100">
           </b-form-input>
         </b-form-group>
+
       </b-form>
 
       <template v-slot:modal-footer="{ ok, cancel }">
@@ -91,16 +96,15 @@ import Api from '@/mixins/Api'
 import Alert from '@/components/Alert'
 import Helper from '@/mixins/Helper'
 import * as consts from '@/consts/consts'
-import { createNamespacedHelpers } from 'vuex'
-
-const { mapActions, mapGetters } = createNamespacedHelpers('traction/pacbio/tubes')
+import { mapActions, mapGetters } from 'vuex'
 
 export default {
   name: 'LibraryCreatePacbioModal',
   mixins: [Api, Helper],
   data () {
     return {
-      library: {}
+      library: { tag: {}},
+      tagOptions: []
     }
   },
   components: {
@@ -112,9 +116,20 @@ export default {
     selectedSamples: Array
   },
   methods: {
-    ...mapActions([
+    async provider() {
+      try {
+        await this.setTags()
+        this.tagOptions = this.tractionTags.map(tag => tag.group_id)
+      } catch (error) {
+        this.showAlert("Failed to get tags: " + error.message, 'danger')
+      }
+    },
+    ...mapActions('traction/pacbio/tubes', [
       'createLibrariesInTraction',
-      'getTractionTubesForBarcodes'
+      'getTractionTubesForBarcodes',
+    ]),
+    ...mapActions('traction', [
+      'setTags',
     ]),
     async handleLibraryCreate () {
       try {
@@ -156,12 +171,19 @@ export default {
     },
   },
   computed: {
-    ...mapGetters([
+    ...mapGetters('traction/pacbio/tubes', [
       'tractionTubesWithInfo',
       'tractionTubes',
       'requestsRequest',
-      'libraryRequest'
+      'libraryRequest',
+      'tractionTags'
+    ]),
+    ...mapGetters('traction', [
+      'tractionTags'
     ])
-  }
+  },
+  created() {
+    this.provider()
+  },
 }
 </script>

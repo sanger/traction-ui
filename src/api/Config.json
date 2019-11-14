@@ -6,6 +6,9 @@
       "samples": {
         "name": "samples"
       },
+      "tags": {
+        "name": "tags"
+      },
       "saphyr": {
         "libraries": {
           "name": "libraries"
