@@ -253,6 +253,7 @@ const destroy = async (id, request) => {
 
 export {
     build,
+    buildWell,
     create,
     createResource,
     createRunPayload,

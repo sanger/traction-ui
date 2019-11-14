@@ -142,6 +142,26 @@ describe('Run', () => {
     })
   })
 
+  describe('buildWell', () => {
+    let well
+
+    beforeEach(() => {
+      well = Run.buildWell('A', 1)
+    })
+
+    it('will have the correct data', () => {
+      expect(well.row).toEqual('A')
+      expect(well.column).toEqual(1)
+      expect(well.position).toEqual('A1')
+      expect(well.movie_time).toEqual('')
+      expect(well.insert_size).toEqual('')
+      expect(well.on_plate_loading_concentration).toEqual('')
+      expect(well.sequencing_mode).toEqual('')
+      expect(well.libraries[0].id).toEqual('')
+      expect(well.libraries[0].barcode).toEqual('')
+    })
+  })
+
   describe('create', () => {
     let api
 
