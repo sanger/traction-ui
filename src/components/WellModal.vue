@@ -83,16 +83,16 @@ export default {
       this.alert('Well updated', 'success')
     },
     updateInsertSize(insertSize) {
-      this.setInsertSize({ position: this.position, insertSize: insertSize})
+      this.mutateWell({ position: this.position, property: 'insert_size', with: insertSize })
     },
     updateOnPlateLoadingConc(conc) {
-      this.setOnPlateLoadingConc({ position: this.position, onPlateLoadingConc: conc})
+      this.mutateWell({ position: this.position, property: 'on_plate_loading_concentration', with: conc })
     },
     updateMovieTime(movieTime) {
-      this.setMovieTime({ position: this.position, movieTime: movieTime})
+      this.mutateWell({ position: this.position, property: 'movie_time', with: movieTime })
     },
     updateSequencingMode(seqMode) {
-      this.setSequencingMode({ position: this.position, sequencingMode: seqMode})
+      this.mutateWell({ position: this.position, property: 'sequencing_mode', with: seqMode })
     },
     async updateLibraryBarcode(barcode) {
       let isValid = await this.isLibraryBarcodeValid(barcode)
@@ -100,8 +100,8 @@ export default {
       if (isValid) {
         let libraryTube = await this.getTubeForBarcode(barcode)
         let library = libraryTube.material
-        let payload = { position: this.position, library: { id: library.id, barcode: library.barcode }}
-        this.setLibraryBarcode(payload)
+        let payload = { position: this.position, property: 'libraries', with: [{ id: library.id, barcode: library.barcode }]}
+        this.mutateWell(payload)
       } else {
         this.showAlert('Library is not valid', 'danger')
       }
@@ -111,11 +111,7 @@ export default {
       'getTubeForBarcode',
     ]),
     ...mapMutations([
-      'setLibraryBarcode',
-      'setInsertSize',
-      'setOnPlateLoadingConc',
-      'setMovieTime',
-      'setSequencingMode'
+      'mutateWell'
     ]),
     alert (message, type) {
       this.$emit('alert', message, type)

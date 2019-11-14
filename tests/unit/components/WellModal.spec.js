@@ -98,28 +98,28 @@ describe('PacbioRunInfo', () => {
     })
 
     describe('methods', () => {
+        beforeEach(() => {
+            modal.mutateWell = jest.fn()
+        })
+
         it('updateInsertSize', () => {
-            modal.setInsertSize = jest.fn()
             modal.updateInsertSize(123)
-            expect(modal.setInsertSize).toBeCalledWith({insertSize: 123, position: props.position})
+            expect(modal.mutateWell).toBeCalledWith({ position: props.position, property: 'insert_size', with: 123})
         })
 
         it('updateOnPlateLoadingConc', () => {
-            modal.setOnPlateLoadingConc = jest.fn()
             modal.updateOnPlateLoadingConc(123)
-            expect(modal.setOnPlateLoadingConc).toBeCalledWith({ onPlateLoadingConc: 123, position: props.position })
+            expect(modal.mutateWell).toBeCalledWith({ position: props.position, property: 'on_plate_loading_concentration', with: 123 })
         })
 
         it('updateMovieTime', () => {
-            modal.setMovieTime = jest.fn()
             modal.updateMovieTime(123)
-            expect(modal.setMovieTime).toBeCalledWith({ movieTime: 123, position: props.position })
+            expect(modal.mutateWell).toBeCalledWith({ position: props.position, property: 'movie_time', with: 123 })
         })
 
         it('updateSequencingMode', () => {
-            modal.setSequencingMode = jest.fn()
             modal.updateSequencingMode('CLR')
-            expect(modal.setSequencingMode).toBeCalledWith({ sequencingMode: 'CLR', position: props.position })
+            expect(modal.mutateWell).toBeCalledWith({ position: props.position, property: 'sequencing_mode', with: 'CLR' })
         })
 
         describe('updateLibraryBarcode', () => {
@@ -130,19 +130,20 @@ describe('PacbioRunInfo', () => {
                 modal.showAlert = jest.fn()
                 modal.isLibraryBarcodeValid = jest.fn()
                 modal.getTubeForBarcode = jest.fn()
-                modal.setLibraryBarcode = jest.fn()
+                modal.mutateWell = jest.fn()
             })
 
             it('successful when barcode is valid', async () => {
                 let successfulResponse = new Response(libraryTube)
                 let tube = successfulResponse.deserialize.tubes[0]
+                let library = tube.material
 
                 modal.isLibraryBarcodeValid.mockReturnValue(true)
                 modal.getTubeForBarcode.mockReturnValue(tube)
 
                 await modal.updateLibraryBarcode(newBarcode)
 
-                expect(modal.setLibraryBarcode).toBeCalled()
+                expect(modal.mutateWell).toBeCalledWith({ position: props.position, property: 'libraries', with: [{ id: library.id, barcode: library.barcode }] })
                 expect(modal.showAlert).not.toBeCalled()
             })
 
@@ -150,7 +151,7 @@ describe('PacbioRunInfo', () => {
                 modal.isLibraryBarcodeValid.mockReturnValue(false)
 
                 await modal.updateLibraryBarcode(newBarcode)
-                expect(modal.setLibraryBarcode).not.toBeCalled()
+                expect(modal.mutateWell).not.toBeCalled()
                 expect(modal.showAlert).toBeCalledWith('Library is not valid', 'danger')
             })
 
