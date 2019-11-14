@@ -58,14 +58,33 @@ const validateLibraryTube = (tube) => {
     return true
 }
 
-const updateRun = async ({ getters }) => {
+const updateRun = async ({ getters, dispatch }) => {
     let run = getters.currentRun
-    let request = getters.pacbioRequests
+    let originalRun = await dispatch('getRun', run.id)
 
-    return await PacbioRun.update(run, request)
+    let request = getters.pacbioRequests
+    let responses = await PacbioRun.update(run, request)
+
+    if (!!responses.length == 0) {
+        // Rollback - rever run back to original data
+        await PacbioRun.update(originalRun, request)
+    }
+    return responses
+}
+
+const getRun = async ({ getters }, id) => {
+    let request = getters.runRequest
+    let promise = request.find(id)
+    let response = await handlePromise(promise)
+
+    if (response.successful) {
+        let run = response.deserialize.runs[0]
+        return run
+    }
 }
 
 const actions = {
+    getRun,
     setRuns,
     newRun,
     createRun,

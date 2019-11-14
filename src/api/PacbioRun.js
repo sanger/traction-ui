@@ -115,8 +115,7 @@ const update = async (run, request) => {
             }
         }
     } catch (err) {
-        // What to do if update fails?
-        return responses
+        return [err.message]
     }
     return []
 }

@@ -56,7 +56,7 @@ export default {
       if (responses.length == 0) {
         this.redirectToRuns()
       } else {
-          this.showAlert(responses, 'danger')
+        this.showAlert(responses, 'danger')
       }
     },
     ...mapActions([
