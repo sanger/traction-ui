@@ -26,7 +26,7 @@ export default {
     return {
       fields: [
         { key: 'barcode', label: 'Barcode', sortable: true},
-        { key: 'sample_names', label: 'Sample Names', sortable: true },
+        { key: 'sample_names', label: 'Sample Name', sortable: true },
         { key: 'tag_oligos', label: 'Tags', sortable: true }
       ],
       items: []

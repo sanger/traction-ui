@@ -67,7 +67,7 @@ export default {
   },
   data () {
     return {
-      movieTimeOptions: [ { text: 'Movie Time', value: "" }, 15, 20, 30 ],
+      movieTimeOptions: [ { text: 'Movie Time', value: "" }, '15.0', '20.0', '30.0' ],
       sequencingModeOptions: [ { text: 'Sequencing Mode', value: "" }, 'CLR', 'CCS'],
     }
   },
@@ -83,16 +83,16 @@ export default {
       this.alert('Well updated', 'success')
     },
     updateInsertSize(insertSize) {
-      this.setInsertSize({ position: this.position, insertSize: insertSize})
+      this.mutateWell({ position: this.position, property: 'insert_size', with: insertSize })
     },
     updateOnPlateLoadingConc(conc) {
-      this.setOnPlateLoadingConc({ position: this.position, onPlateLoadingConc: conc})
+      this.mutateWell({ position: this.position, property: 'on_plate_loading_concentration', with: conc })
     },
     updateMovieTime(movieTime) {
-      this.setMovieTime({ position: this.position, movieTime: movieTime})
+      this.mutateWell({ position: this.position, property: 'movie_time', with: movieTime })
     },
     updateSequencingMode(seqMode) {
-      this.setSequencingMode({ position: this.position, sequencingMode: seqMode})
+      this.mutateWell({ position: this.position, property: 'sequencing_mode', with: seqMode })
     },
     async updateLibraryBarcode(barcode) {
       let isValid = await this.isLibraryBarcodeValid(barcode)
@@ -100,8 +100,8 @@ export default {
       if (isValid) {
         let libraryTube = await this.getTubeForBarcode(barcode)
         let library = libraryTube.material
-        let payload = { position: this.position, library: { id: library.id, barcode: library.barcode }}
-        this.setLibraryBarcode(payload)
+        let payload = { position: this.position, property: 'libraries', with: [{ id: library.id, barcode: library.barcode }]}
+        this.mutateWell(payload)
       } else {
         this.showAlert('Library is not valid', 'danger')
       }
@@ -111,11 +111,7 @@ export default {
       'getTubeForBarcode',
     ]),
     ...mapMutations([
-      'setLibraryBarcode',
-      'setInsertSize',
-      'setOnPlateLoadingConc',
-      'setMovieTime',
-      'setSequencingMode'
+      'mutateWell'
     ]),
     alert (message, type) {
       this.$emit('alert', message, type)
@@ -123,23 +119,25 @@ export default {
   },
   computed: {
     ...mapGetters([
-      'currentRun'
+      'currentRun',
+      'well'
     ]),
     ...mapState({
-      insertSize (state) {
-        return state.currentRun.plate.wells.filter(well => well.position === this.position)[0].insert_size
+      insertSize () {
+        return (this.well(this.position) ? this.well(this.position).insert_size : '')
       },
-      onPlateLoadingConc (state) {
-        return state.currentRun.plate.wells.filter(well => well.position === this.position)[0].on_plate_loading_concentration
+      onPlateLoadingConc () {
+        return (this.well(this.position) ? this.well(this.position).on_plate_loading_concentration : '')
       },
-      movieTime (state) {
-        return state.currentRun.plate.wells.filter(well => well.position === this.position)[0].movie_time
+      movieTime () {
+        return (this.well(this.position) ? this.well(this.position).movie_time : '')
       },
-      libraryBarcode (state) {
-        return state.currentRun.plate.wells.filter(well => well.position === this.position)[0].library.barcode
+      libraryBarcode () {
+        // Assuming there is only one library in a well
+        return (this.well(this.position) ? this.well(this.position).libraries[0].barcode : '')
       },
-      sequencingMode (state) {
-        return state.currentRun.plate.wells.filter(well => well.position === this.position)[0].sequencing_mode
+      sequencingMode () {
+        return (this.well(this.position) ? this.well(this.position).sequencing_mode : '')
       }
     })
   },

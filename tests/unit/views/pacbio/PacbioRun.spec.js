@@ -27,7 +27,6 @@ describe('Run.vue', () => {
             comments: '',
             system_name: '',
             plate: {
-                barcode: '',
                 wells: [
                     { position: 'A1', library: { barcode: '' } },
                     { position: 'A2', library: { barcode: '' } },
@@ -106,6 +105,12 @@ describe('Run.vue', () => {
         })
     })
 
+    describe('Update button', () => {
+        it('will only show if the record is existing', () => {
+            expect(wrapper.find('#update').exists()).toBeTruthy()
+        })
+    })
+
     describe('#create', () => {
 
         beforeEach(() => {
@@ -134,6 +139,39 @@ describe('Run.vue', () => {
 
             await pacbioRun.create()
             expect(pacbioRun.createRun).toBeCalled()
+            expect(pacbioRun.showAlert).toBeCalledWith(['this is an error'], 'danger')
+            expect(pacbioRun.redirectToRuns).not.toBeCalled()
+        })
+    })
+
+    describe('#update', () => {
+
+        beforeEach(() => {
+            pacbioRun.showAlert = jest.fn()
+            pacbioRun.updateRun = jest.fn()
+            pacbioRun.redirectToRuns = jest.fn()
+        })
+
+        it('calls updateRun', async () => {
+            pacbioRun.updateRun.mockReturnValue([])
+
+            await pacbioRun.update()
+            expect(pacbioRun.updateRun).toBeCalled()
+        })
+
+        it('successful', async () => {
+            pacbioRun.updateRun.mockReturnValue([])
+
+            await pacbioRun.update()
+            expect(pacbioRun.updateRun).toBeCalled()
+            expect(pacbioRun.redirectToRuns).toBeCalled()
+        })
+
+        it('unsuccessful', async () => {
+            pacbioRun.updateRun.mockReturnValue(['this is an error'])
+
+            await pacbioRun.update()
+            expect(pacbioRun.updateRun).toBeCalled()
             expect(pacbioRun.showAlert).toBeCalledWith(['this is an error'], 'danger')
             expect(pacbioRun.redirectToRuns).not.toBeCalled()
         })

@@ -10,7 +10,7 @@ describe('Plate.vue', () => {
     // TODO: Yuk! Needs to be done elsewhere
     run = Run.build()
     well = Run.buildWell('A','1')
-    well.library = { id: 1, barcode: 'TRAC-1'}
+    well.libraries = [{ id: 1, barcode: 'TRAC-1'}]
     run.plate.wells[0] = well
 
     let store = new Vuex.Store({
@@ -64,18 +64,17 @@ describe('Plate.vue', () => {
   })
 
   describe('tooltip', () => {
-
-    beforeEach(() => {
+    it('showBarcode will return barcode if it exists', () => {
+      expect(plate.showBarcode(well.position)).toEqual(well.libraries[0].barcode)
     })
 
-    it('showBarcode will return barcode if it exists ', () => {
-      expect(plate.showBarcode(well.position)).toEqual(well.library.barcode)
+    it('showBarcode will an empty string if well exists but there are no libraries', () => {
+      expect(plate.showBarcode('B1')).toEqual("")
     })
 
-    it('showBarcode will return nothing if it does not exist', () => {
-      expect(plate.showBarcode('B1')).not.toBeDefined()
+    it('showBarcode will return nothing if well does not exists', () => {
+      expect(plate.showBarcode('X1')).not.toBeDefined()
     })
   })
-
 
 })

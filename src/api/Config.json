@@ -50,7 +50,7 @@
         },
         "runs": {
           "name": "runs",
-          "include": ""
+          "include": "plate.wells.libraries"
         },
         "plates": {
           "name": "plates",
