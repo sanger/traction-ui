@@ -144,3 +144,73 @@ describe('#validateLibraryTube', () => {
     expect(Actions.validateLibraryTube({ 'material': { 'type': 'libraries'} })).toBeTruthy()
   })
 })
+
+describe('#editRun', () => {
+  let getters, commit, mockRun, run
+
+  beforeEach(() => {
+    mockRun = new Response(Data.PacbioRuns).deserialize.runs[0]
+
+    run = jest.fn()
+    getters = { 'run': run }
+    commit = jest.fn()
+  })
+
+  it('successfully', async () => {
+    run.mockReturnValue(mockRun)
+
+    Actions.editRun({ getters, commit }, mockRun.id)
+    expect(commit).toHaveBeenCalledWith("setCurrentRun", mockRun)
+  })
+})
+
+describe('#updateRun', () => {
+  let getters, pacbioRequests, mockRun, dispatch
+
+  beforeEach(() => {
+    mockRun = new Response(Data.PacbioRun).deserialize.runs[0]
+    pacbioRequests = jest.fn()
+    getters = { 'currentRun': mockRun, 'pacbioRequests': pacbioRequests }
+    dispatch = jest.fn()
+
+    Run.update = jest.fn()
+  })
+
+  it('when successful, it doesnt rollback', async () => {
+    Run.update.mockReturnValue([])
+    let resp = await Actions.updateRun({ getters, dispatch })
+
+    expect(Run.update).toHaveBeenCalledWith(mockRun, pacbioRequests)
+    expect(Run.update).toHaveBeenCalledTimes(1)
+    expect(resp).toEqual([])
+  })
+
+  it('when unsuccessful, it does rollback', async () => {
+    Run.update.mockReturnValue([{error: 'this is an error'}])
+    let resp = await Actions.updateRun({ getters, dispatch })
+
+    expect(Run.update).toHaveBeenCalledWith(mockRun, pacbioRequests)
+    expect(Run.update).toHaveBeenCalledTimes(2)
+    expect(resp).toEqual([{ error: 'this is an error' }])
+  })
+})
+
+describe('#getRun', () => {
+  let find, getters
+
+  beforeEach(() => {
+    find = jest.fn()
+    getters = { 'runRequest': { 'find': find } }
+  })
+
+  it('successfully', async () => {
+    find.mockReturnValue(Data.PacbioRun)
+
+    let expectedResponse = new Response(Data.PacbioRun)
+    let expectedRun = expectedResponse.deserialize.runs[0]
+
+    let response = await Actions.getRun({ getters })
+
+    expect(response).toEqual(expectedRun)
+  })
+})

@@ -28,6 +28,12 @@ const createRun = async ({ getters }) => {
     return await PacbioRun.create(run, request)
 }
 
+const editRun = ({ getters, commit }, runId) => {
+    let run = getters.run(runId)
+    commit('setCurrentRun', run)
+    router.push({ path: `/pacbio/run/${runId}` })
+}
+
 const isLibraryBarcodeValid = async ({ dispatch }, barcode) => {
     if (!barcode) { return false }
     let libraryTube = await dispatch('getTubeForBarcode', barcode)
@@ -52,12 +58,40 @@ const validateLibraryTube = (tube) => {
     return true
 }
 
+const updateRun = async ({ getters, dispatch }) => {
+    let run = getters.currentRun
+    let originalRun = await dispatch('getRun', run.id)
+
+    let request = getters.pacbioRequests
+    let responses = await PacbioRun.update(run, request)
+
+    if (responses.length != 0) {
+        // Rollback - revert run back to original data
+        await PacbioRun.update(originalRun, request)
+    }
+    return responses
+}
+
+const getRun = async ({ getters }, id) => {
+    let request = getters.runRequest
+    let promise = request.find(id)
+    let response = await handlePromise(promise)
+
+    if (response.successful) {
+        let run = response.deserialize.runs[0]
+        return run
+    }
+}
+
 const actions = {
+    getRun,
     setRuns,
     newRun,
     createRun,
     isLibraryBarcodeValid,
-    getTubeForBarcode
+    getTubeForBarcode,
+    editRun,
+    updateRun
 }
 
 export {
@@ -66,7 +100,10 @@ export {
     createRun,
     isLibraryBarcodeValid,
     getTubeForBarcode,
-    validateLibraryTube
+    validateLibraryTube,
+    editRun,
+    updateRun,
+    getRun
 }
 
 export default actions

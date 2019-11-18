@@ -1974,14 +1974,16 @@ export default {
   },
   methods: {
     onWellClick(position) {
-     this.selectedWellPosition = position
+      this.selectedWellPosition = position
     },
     showBarcode (position) {
-     let currentWell = this.well(position)
-     let barcode = currentWell.library.barcode
-     if (barcode.length > 0) {
-          return barcode
-     }
+      let currentWell = this.well(position)
+      if (currentWell) {
+        let barcodesList = currentWell.libraries.map(l =>  l.barcode)
+        if (barcodesList.length > 0) {
+          return barcodesList.join(',')
+        }
+      }
     },
     alert (message, type) {
       this.$emit('alert', message, type)
@@ -1989,7 +1991,7 @@ export default {
   },
   computed: {
     ...mapGetters([
-     'currentRun',
+      'currentRun',
       'well'
     ])
   },

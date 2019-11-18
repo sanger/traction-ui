@@ -7,6 +7,7 @@
     </router-link>
 
     <b-button v-if="newRecord" class="float-right" id="create" variant="success" @click="create">Create</b-button>
+    <b-button v-if="!newRecord" class="float-right" id="update" variant="primary" @click="update">Update</b-button>
 
     <br>
     <br>
@@ -49,8 +50,18 @@ export default {
           this.showAlert(responses, 'danger')
       }
     },
+    async update () {
+      let responses = await this.updateRun()
+
+      if (responses.length == 0) {
+        this.redirectToRuns()
+      } else {
+        this.showAlert(responses, 'danger')
+      }
+    },
     ...mapActions([
-      'createRun'
+      'createRun',
+      'updateRun'
     ]),
     redirectToRuns() {
       this.$router.push({ name: 'PacbioRuns' })

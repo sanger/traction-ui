@@ -50,7 +50,8 @@ describe('Samples.vue', () => {
             localVue,
             stubs: {
                 Alert: Alert,
-                PrinterModal: true
+                PrinterModal: true,
+                LibraryCreatePacbioModal: true
             },
             methods: {
                 provider() { return }
