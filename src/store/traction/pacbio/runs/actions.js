@@ -66,7 +66,7 @@ const updateRun = async ({ getters, dispatch }) => {
     let responses = await PacbioRun.update(run, request)
 
     if (responses.length != 0) {
-        // Rollback - rever run back to original data
+        // Rollback - revert run back to original data
         await PacbioRun.update(originalRun, request)
     }
     return responses
