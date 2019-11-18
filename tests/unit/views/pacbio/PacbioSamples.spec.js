@@ -4,6 +4,7 @@ import Alert from '@/components/Alert'
 import PrinterModal from '@/components/PrinterModal'
 import VueRouter from 'vue-router'
 import Response from '@/api/Response'
+import LibraryCreatePacbioModal from '@/components/LibraryCreatePacbioModal'
 
 describe('Samples.vue', () => {
     let wrapper, samples, mockSamples
@@ -50,7 +51,8 @@ describe('Samples.vue', () => {
             localVue,
             stubs: {
                 Alert: Alert,
-                PrinterModal: true
+                PrinterModal: true,
+                LibraryCreatePacbioModal: true
             },
             methods: {
                 provider() { return }
