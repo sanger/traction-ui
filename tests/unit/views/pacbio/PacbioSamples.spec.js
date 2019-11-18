@@ -4,7 +4,6 @@ import Alert from '@/components/Alert'
 import PrinterModal from '@/components/PrinterModal'
 import VueRouter from 'vue-router'
 import Response from '@/api/Response'
-import LibraryCreatePacbioModal from '@/components/LibraryCreatePacbioModal'
 
 describe('Samples.vue', () => {
     let wrapper, samples, mockSamples

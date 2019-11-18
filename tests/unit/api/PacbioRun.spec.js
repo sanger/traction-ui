@@ -332,24 +332,53 @@ describe('Run', () => {
   })
 
   describe('update', () => {
-    let api
+    let api, well1, well2, failedResponse
 
     beforeEach(() => {
       run = Run.build()
       run['name'] = 'run1'
-      run.plate.wells[0] = { position: 'A1', libraries: [{ id: 1 }] }
-      run.plate.wells[1] = { position: 'A2', libraries: [{ id: 2 }] }
+
+      well1 = new Response(Data.PacbioWells).deserialize.wells[0]
+      well2 = new Response(Data.PacbioWells).deserialize.wells[1]
+
+      well1['libraries'] = [{ id: 1 }]
+      well2['libraries'] = [{ id: 2 }]
+      run.plate.wells[0] = well1
+      run.plate.wells[1] = well2
 
       api = build(Api.Config, process.env)
+
       api.traction.pacbio.runs.update = jest.fn()
+      api.traction.pacbio.wells.update = jest.fn()
+
+      failedResponse = { status: 404, statusText: 'Record not found', data: { errors: { title: ['The record identified by 100 could not be found.'] } } }
     })
 
-    it('returns true', async () => {
-      api.traction.pacbio.runs.update.mockResolvedValue(Data.PacbioRun)
+    it('on succuess, it returns an empty list when there are no errors', async () => {
+      api.traction.pacbio.runs.update.mockResolvedValue([Data.PacbioRun])
+      api.traction.pacbio.wells.update.mockResolvedValue([Data.PacbioWell])
+
       let resp = await Run.update(run, api.traction.pacbio)
 
-      expect(api.traction.pacbio.runs.update).toBeCalled()
+      let expectedRunPayload = Run.updateRunPayload(run)
+      let expectedWell1Payload = Run.updateWellPayload(well1)
+      let expectedWell2Payload = Run.updateWellPayload(well2)
+
+      expect(api.traction.pacbio.runs.update).toBeCalledWith(expectedRunPayload)
+      expect(api.traction.pacbio.wells.update).toHaveBeenNthCalledWith(1, expectedWell1Payload)
+      expect(api.traction.pacbio.wells.update).toHaveBeenNthCalledWith(2, expectedWell2Payload)
+
       expect(resp).toEqual([])
+    })
+
+    it('on failure, it returns a list of errors', async () => {
+      api.traction.pacbio.runs.update.mockResolvedValue([failedResponse])
+      let resp = await Run.update(run, api.traction.pacbio)
+
+      expect(api.traction.pacbio.runs.update).toHaveBeenCalled()
+      expect(api.traction.pacbio.wells.update).not.toHaveBeenCalled()
+
+      expect(resp).toEqual(["title The record identified by 100 could not be found."])
     })
   })
 

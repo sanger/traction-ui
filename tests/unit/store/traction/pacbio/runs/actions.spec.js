@@ -165,7 +165,7 @@ describe('#editRun', () => {
 })
 
 describe('#updateRun', () => {
-  let getters, pacbioRequests, mockRun, dispatch, getRun
+  let getters, pacbioRequests, mockRun, dispatch
 
   beforeEach(() => {
     mockRun = new Response(Data.PacbioRun).deserialize.runs[0]
@@ -192,5 +192,25 @@ describe('#updateRun', () => {
     expect(Run.update).toHaveBeenCalledWith(mockRun, pacbioRequests)
     expect(Run.update).toHaveBeenCalledTimes(2)
     expect(resp).toEqual([{ error: 'this is an error' }])
+  })
+})
+
+describe('#getRun', () => {
+  let find, getters
+
+  beforeEach(() => {
+    find = jest.fn()
+    getters = { 'runRequest': { 'find': find } }
+  })
+
+  it('successfully', async () => {
+    find.mockReturnValue(Data.PacbioRun)
+
+    let expectedResponse = new Response(Data.PacbioRun)
+    let expectedRun = expectedResponse.deserialize.runs[0]
+
+    let response = await Actions.getRun({ getters })
+
+    expect(response).toEqual(expectedRun)
   })
 })

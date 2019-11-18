@@ -102,7 +102,8 @@ export {
     getTubeForBarcode,
     validateLibraryTube,
     editRun,
-    updateRun
+    updateRun,
+    getRun
 }
 
 export default actions

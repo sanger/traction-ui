@@ -25,6 +25,7 @@ import PacbioRuns from './pacbioRuns'
 import PacbioRun from './pacbioRun'
 import PacbioPlate from './pacbioPlate'
 import PacbioWell from './pacbioWell'
+import PacbioWells from './pacbioWells'
 import PacbioWellLibrary from './pacbioWellLibrary'
 import TractionTags from './tractionTags'
 
@@ -56,6 +57,7 @@ export default {
   PacbioRun,
   PacbioPlate,
   PacbioWell,
+  PacbioWells,
   PacbioWellLibrary,
   TractionTags
 }
