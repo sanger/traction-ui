@@ -165,18 +165,32 @@ describe('#editRun', () => {
 })
 
 describe('#updateRun', () => {
-  let getters, pacbioRequests, mockRun
+  let getters, pacbioRequests, mockRun, dispatch, getRun
 
   beforeEach(() => {
     mockRun = new Response(Data.PacbioRun).deserialize.runs[0]
     pacbioRequests = jest.fn()
     getters = { 'currentRun': mockRun, 'pacbioRequests': pacbioRequests }
+    dispatch = jest.fn()
 
     Run.update = jest.fn()
   })
 
-  it('successfully', async () => {
-    Actions.updateRun({ getters })
+  it('when successful, it doesnt rollback', async () => {
+    Run.update.mockReturnValue([])
+    let resp = await Actions.updateRun({ getters, dispatch })
+
     expect(Run.update).toHaveBeenCalledWith(mockRun, pacbioRequests)
+    expect(Run.update).toHaveBeenCalledTimes(1)
+    expect(resp).toEqual([])
+  })
+
+  it('when unsuccessful, it does rollback', async () => {
+    Run.update.mockReturnValue([{error: 'this is an error'}])
+    let resp = await Actions.updateRun({ getters, dispatch })
+
+    expect(Run.update).toHaveBeenCalledWith(mockRun, pacbioRequests)
+    expect(Run.update).toHaveBeenCalledTimes(2)
+    expect(resp).toEqual([{ error: 'this is an error' }])
   })
 })
