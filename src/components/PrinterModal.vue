@@ -1,16 +1,25 @@
 <template>
-
-  <div class="modal">
-    <b-btn id="printLabels" :disabled="disabled" v-b-modal.printerModal>Print Labels</b-btn>
-    <b-modal id="printerModal" title="Print Labels" ref="printerModal" :static="isStatic" @ok="handleOk" @shown="clearSelect">
-      <b-form-select v-model="selectedPrinterId" :options="printerOptions" class="mb-3" />
+  <div>
+    <b-btn variant="primary"
+           id="printLabels"
+           :disabled="disabled"
+           v-b-modal.printerModal>
+      Print Labels
+    </b-btn>
+    <b-modal id="printerModal"
+             size="sm"
+             title="Print Labels"
+             ref="printerModal"
+             :static="isStatic"
+             @ok="handleOk"
+             @shown="clearSelect">
+      <b-form-select v-model="selectedPrinterId" :options="printerOptions" />
     </b-modal>
   </div>
-
 </template>
 
 <script>
-
+const MESSAGE_PRINTER_SELECT = 'Please select a printer'
 export default {
   name: 'PrinterModal',
   data () {
@@ -32,7 +41,7 @@ export default {
       evt.preventDefault()
 
       if (!this.selectedPrinterId) {
-        alert('Please select a printer')
+        alert(MESSAGE_PRINTER_SELECT)
       } else {
         this.handleSubmit()
       }
@@ -42,13 +51,20 @@ export default {
       let printerName = this.printerOptions[this.selectedPrinterId].text
       this.$emit('selectPrinter', printerName)
       this.clearSelect()
-      this.$refs.printerModal.hide()
+      /**
+       * Hide the modal manually
+       * https://vuejsdevelopers.com/2019/01/22/vue-what-is-next-tick/
+       * https://bootstrap-vue.js.org/docs/components/modal/#prevent-closing
+       */
+      this.$nextTick(() => {
+        this.$refs.printerModal.hide()
+      })
     },
     setPrinterNames () {
       let printerOptions = this.$store.getters.printers.map(
-        (printer, index) => ({ value: index+1, text: printer })
+        (printer, index) => ({ value: index + 1, text: printer })
       )
-      printerOptions.unshift({ value: null, text: "Please select a printer" })
+      printerOptions.unshift({ value: null, text: MESSAGE_PRINTER_SELECT })
       this.printerOptions = printerOptions
     },
     provider () {
@@ -60,12 +76,3 @@ export default {
   }
 }
 </script>
-
-<style>
-
-.modal {
-  display: inline;
-  position: relative;
-}
-
-</style>

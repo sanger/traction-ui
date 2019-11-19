@@ -1,20 +1,13 @@
 {
-  "sequencescape": {
-    "name": "sequencescape",
-    "apiNamespace": "api/v2",
-    "resources": {
-      "tubes": {
-        "name": "tubes",
-        "include": "samples.sample_metadata,studies"
-      }
-    }
-  },
   "traction": {
     "name": "traction",
     "apiNamespace": "v1",
     "resources": {
       "samples": {
         "name": "samples"
+      },
+      "tags": {
+        "name": "tags"
       },
       "saphyr": {
         "libraries": {
@@ -34,11 +27,38 @@
           "name": "flowcells"
         },
         "requests": {
-          "name": "requests"
+          "name": "requests",
+          "include": ""
         },
         "tubes": {
           "name": "tubes",
           "include": "material"
+        }
+      },
+      "pacbio": {
+        "libraries": {
+          "name": "libraries",
+          "include": "requests"
+        },
+        "requests": {
+          "name": "requests",
+          "include": ""
+        },
+        "tubes": {
+          "name": "tubes",
+          "include": "material"
+        },
+        "runs": {
+          "name": "runs",
+          "include": "plate.wells.libraries"
+        },
+        "plates": {
+          "name": "plates",
+          "include": ""
+        },
+        "wells": {
+          "name": "wells",
+          "include": ""
         }
       }
     }
@@ -49,6 +69,16 @@
     "resources": {
       "print_jobs": {
         "name": "printJobs"
+      }
+    }
+  },
+  "sampleExtraction": {
+    "name": "sampleExtraction",
+    "apiNamespace": "api/v1",
+    "resources": {
+      "assets": {
+        "name": "assets",
+        "include": ""
       }
     }
   }

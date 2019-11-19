@@ -1,6 +1,6 @@
 # Traction UI
 
-A Vue front-end app to interact with the Traction API.
+A Vue front-end app to interact with the [Traction API](https://github.com/sanger/traction-service).
 
 ## Requirements
 
@@ -11,39 +11,43 @@ A Vue front-end app to interact with the Traction API.
 
 Install the required libraries using yarn: `yarn install`
 
-## Config using .dotenv
+## Config using `.dotenv`
 
-To specify the required config, use `.env` files by creating a `.env.development.local` file and
+To specify the required config, use `.env` files by creating a `.env.<environment>.local` file and
 add the config to it. The esential config required:
+
+```bash
+VUE_APP_TRACTION_BASE_URL=<url>
+VUE_APP_PRINTMYBARCODE_BASE_URL=<url>
+VUE_APP_SAMPLEEXTRACTION_BASE_URL=<url>
+VUE_APP_LABEL_TEMPLATE_ID=<id>
+VUE_APP_LOG=false
 ```
-VUE_APP_SEQUENCESCAPE_BASE_URL=
-VUE_APP_TRACTION_BASE_URL=
-VUE_APP_PRINTMYBARCODE_BASE_URL=
-```
+
+To enable logging and use the convenience method `this.log()` (from the `Helper.vue` mixin) instead
+of `console.log()`, set `VUE_APP_LOG=true` in `.env.development.local`.
 
 ## Running
 
 To run the app and have hot-reloads for development: `yarn run serve`
 
-## Building a release for deployment
-
-Before building a release for either UAT or production, make sure to create the `.env.uat.local` or
-`.env.prod.local` files. Once they are created: `yarn run build`
-
 ## Testing
 
 ### Lints and fixes files
-```
+
+```bash
 yarn run lint
 ```
 
 ### Run your unit tests
-```
+
+```bash
 yarn run test:unit
 ```
 
 ### Run your end-to-end tests
-```
+
+```bash
 yarn run test:e2e
 ```
 
@@ -63,7 +67,7 @@ To see how the UI and service work, follow this process to get a run created.
     * select supplier
     * number of tubes required
 
-1. Download sample manifest from SS - manifest looks like exec we've created sample manifest for
+1. Download sample manifest from SS - manifest looks like exec(?) we've created sample manifest for
 Saphyr with minimal information
 
 1. User adds data into sample manifest:
@@ -75,9 +79,9 @@ Saphyr with minimal information
 
 1. Upload manifest in SS - creates the samples in SS within the tubes copy barcodes from SS
 1. Import SS tubes in Traction UI
-1. Paste barcodes in the text box 'Import SS tubes'
-    * Goes gets sample meta data from SS
-    * Creates samples in Traction in tubes with Traction barcode
+1. Paste barcodes in the text box 'Import Sample Extraction Tubes'
+    * goes gets sample meta data from SS
+    * creates samples in Traction in tubes with Traction barcode
     * redirected to samples table
     * shows the recently created sample
 1. Create library from sample

@@ -1,12 +1,6 @@
 import Vue from 'vue'
-import { mount } from '../testHelper'
+import { mount, Data } from '../testHelper'
 import Request from '@/api/Request'
-import createRunJson from '../../data/createRun'
-import createChipJson from '../../data/createChip'
-import createFlowcellJson from '../../data/createFlowcell'
-import successfulDestroyJson from '../../data/successfulDestroy'
-import LibraryTubeJson from '../../data/tubeWithLibrary'
-import SampleTubeJson from '../../data/tractionTubesWithSample'
 import Response from '@/api/Response'
 import * as Run from '@/api/Run'
 import build from '@/api/ApiBuilder'
@@ -14,7 +8,7 @@ import Api from '@/api'
 
 describe('Run', () => {
 
-  let cmp, props, wrapper, request, mockResponse, response, failedResponse, chipBarcode, barcode1, run, updatedRun
+  let cmp, props, wrapper, request, failedResponse, chipBarcode, run
 
   beforeEach(() => {
     cmp = Vue.extend({
@@ -22,7 +16,7 @@ describe('Run', () => {
       render () { return ''}
     })
 
-    props = { baseURL: 'http://sequencescape.com',
+    props = { baseURL: 'http://traction.com',
               apiNamespace: 'api/v2',
               resource: 'requests' }
     wrapper = mount(cmp, { propsData: props })
@@ -33,7 +27,6 @@ describe('Run', () => {
     failedResponse = { status: 404, statusText: 'Record not found', data: { errors: { title: ['The record identified by 100 could not be found.'] }} }
 
     chipBarcode = 'XYZ1234567891012'
-    barcode1 = 'DN123'
   })
 
   describe('build', () => {
@@ -114,111 +107,6 @@ describe('Run', () => {
     })
   })
 
-  describe('getLibrary', () => {
-    it('when it returns a library', async () => {
-      mockResponse = new Response(LibraryTubeJson).deserialize.tubes[0].material
-      request.get.mockResolvedValue(LibraryTubeJson)
-      response = await Run.getLibrary(barcode1, request)
-      expect(response).toEqual(mockResponse)
-    })
-
-    it('when it returns a sample', async () => {
-      request.get.mockResolvedValue(SampleTubeJson)
-      response = await Run.getLibrary(barcode1, request)
-      expect(response).not.toBeDefined()
-    })
-
-    it('when it returns nothing', async() => {
-      request.get.mockResolvedValue(failedResponse)
-      response = await Run.getLibrary(barcode1, request)
-      expect(response).not.toBeDefined()
-    })
-  })
-
-  describe('validate', () => {
-    let errors, flowcells, validFlowcell, invalidFlowcell, validChip, invalidChip
-
-    beforeEach(() => {
-      run = Run.build()
-
-      validFlowcell = { position: 1, library: { barcode: 'TRAC-1', id: 1}}
-      invalidFlowcell = { position: 2, library: { barcode: 'TRAC-1' }}
-
-      validChip = {barcode: 'FLEVEAOLPTOWPNWU20319131581014320190911XXXXXXXXXXXXX'}
-      invalidChip = {barcode: 'XYZ1234'}
-    })
-
-    describe('chip', () => {
-
-      it('will raise an error if the barcode is not present', () => {
-        expect(Run.validateChip(run.chip)).toEqual("barcode not present")
-      })
-
-      it('will raise an error if the barcode is not in the correct format', () => {
-        expect(Run.validateChip(invalidChip)).toEqual("barcode not in correct format")
-      })
-
-      it('will be valid if barcode is in correct format', () => {
-        expect(Run.validateChip(validChip)).not.toBeDefined()
-      })
-    })
-
-    describe('flowcell', () => {
-
-      let flowcell
-
-      beforeEach(() => {
-        flowcell = {library: {}}
-      })
-
-      it('will raise an error if the library is not present', () => {
-        expect(Run.validateFlowcell(flowcell)).toEqual('library does not exist')
-      })
-
-      it('will be valid if the library id is present', () => {
-        flowcell.library.barcode = barcode1
-        flowcell.library.id = 1
-        expect(Run.validateFlowcell(flowcell)).not.toBeDefined()
-      })
-    })
-
-    describe('flowcells', () => {
-
-      it('will raise an error if one of the flowcells is not valid', () => {
-        flowcells = [validFlowcell, invalidFlowcell]
-        errors = Run.validateFlowcells(flowcells)
-        expect(errors['2']).toBeDefined()
-      })
-
-      it('will be valid if both flowcells are valid', () => {
-        flowcells = [validFlowcell, validFlowcell]
-        errors = Run.validateFlowcells(flowcells)
-        expect(Object.keys(errors).length).toEqual(0)
-      })
-
-    })
-
-    describe('run', () => {
-      it('will raise an error if the chip is not valid', () => {
-        run.chip = invalidChip
-        run.chip.flowcells = [validFlowcell, validFlowcell]
-        expect(Run.validate(run).chip).toBeDefined()
-      })
-
-      it('will raise an error if one of the flowcells is not valid', () => {
-        run.chip = validChip
-        run.chip.flowcells = [validFlowcell, invalidFlowcell]
-        expect(Run.validate(run).flowcells[invalidFlowcell.position]).toBeDefined()
-      })
-
-      it('if valid will raise no errors', () => {
-        run.chip = validChip
-        run.chip.flowcells = [validFlowcell, validFlowcell]
-        expect(Object.keys(Run.validate(run)).length).toEqual(0)
-      })
-    })
-  })
-
   describe('creating a run', () => {
 
     beforeEach(() => {
@@ -233,9 +121,9 @@ describe('Run', () => {
     describe('createRun', () => {
 
       it('success', async () => {
-        request.create.mockResolvedValue(createRunJson)
+        request.create.mockResolvedValue(Data.CreateRun)
 
-        let mockResponse = new Response(createRunJson)
+        let mockResponse = new Response(Data.CreateRun)
         let response = await Run.createResource({ data: { type: "runs", attributes: { name: run.name } } }, request)
 
         expect(response).toEqual(mockResponse)
@@ -262,9 +150,9 @@ describe('Run', () => {
       })
 
       it('will create a chip and return a response', async () => {
-        request.create.mockResolvedValue(createChipJson)
+        request.create.mockResolvedValue(Data.CreateChip)
 
-        let mockResponse = new Response(createChipJson)
+        let mockResponse = new Response(Data.CreateChip)
         let response = await Run.createResource({ data: { type: "chips", attributes: { barcode: run.chip.barcode, run_id: runId } } }, request)
         expect(response).toEqual(mockResponse)
       })
@@ -291,9 +179,9 @@ describe('Run', () => {
       })
 
       it('will create a flowcell and return a response', async () => {
-        request.create.mockResolvedValue(createFlowcellJson)
+        request.create.mockResolvedValue(Data.CreateFlowcell)
 
-        let mockResponse = new Response(createFlowcellJson)
+        let mockResponse = new Response(Data.CreateFlowcell)
         let response = await Run.createResource({ data: { type: "flowcells", attributes: { position: flowcell.position, library_id: flowcell.library.id, chip_id: chipId } } }, request)
         expect(response).toEqual(mockResponse)
       })
@@ -325,9 +213,9 @@ describe('Run', () => {
       })
 
       it('returns true', async () => {
-        api.traction.saphyr.runs.create.mockResolvedValue(createRunJson)
-        api.traction.saphyr.chips.create.mockResolvedValue(createChipJson)
-        api.traction.saphyr.flowcells.create.mockResolvedValue(createFlowcellJson)
+        api.traction.saphyr.runs.create.mockResolvedValue(Data.CreateRun)
+        api.traction.saphyr.chips.create.mockResolvedValue(Data.CreateChip)
+        api.traction.saphyr.flowcells.create.mockResolvedValue(Data.CreateFlowcell)
         expect(await Run.create(run, api.traction.saphyr)).toBeTruthy()
       })
 
@@ -339,12 +227,12 @@ describe('Run', () => {
       })
 
       it('returns false and rollsback if the chip cannot be created', async () => {
-        api.traction.saphyr.runs.create.mockReturnValue(createRunJson)
+        api.traction.saphyr.runs.create.mockReturnValue(Data.CreateRun)
         api.traction.saphyr.chips.create.mockResolvedValue(failedResponse)
 
-        api.traction.saphyr.runs.destroy.mockResolvedValue(successfulDestroyJson)
+        api.traction.saphyr.runs.destroy.mockResolvedValue(Data.SuccessfulDestroy)
 
-        let runResponse = new Response(createRunJson)
+        let runResponse = new Response(Data.CreateRun)
         let runId = runResponse.deserialize.runs[0].id
 
         let resp = await Run.create(run, api.traction.saphyr)
@@ -356,17 +244,17 @@ describe('Run', () => {
       })
 
       it('returns false and rollsback if the flowcells cannot be created', async () => {
-        api.traction.saphyr.runs.create.mockResolvedValue(createRunJson)
-        api.traction.saphyr.chips.create.mockResolvedValue(createChipJson)
+        api.traction.saphyr.runs.create.mockResolvedValue(Data.CreateRun)
+        api.traction.saphyr.chips.create.mockResolvedValue(Data.CreateChip)
         api.traction.saphyr.flowcells.create.mockResolvedValue(failedResponse)
 
-        api.traction.saphyr.chips.destroy.mockResolvedValue(successfulDestroyJson)
-        api.traction.saphyr.runs.destroy.mockResolvedValue(successfulDestroyJson)
+        api.traction.saphyr.chips.destroy.mockResolvedValue(Data.SuccessfulDestroy)
+        api.traction.saphyr.runs.destroy.mockResolvedValue(Data.SuccessfulDestroy)
 
-        let runResponse = new Response(createRunJson)
+        let runResponse = new Response(Data.CreateRun)
         let runId = runResponse.deserialize.runs[0].id
 
-        let chipResponse = new Response(createChipJson)
+        let chipResponse = new Response(Data.CreateChip)
         let chipId = chipResponse.deserialize.chips[0].id
 
         let resp = await Run.create(run, api.traction.saphyr)
@@ -383,8 +271,8 @@ describe('Run', () => {
 
       beforeEach(() =>{
         api = build(Api.Config, process.env)
-        runResponse = new Response(createRunJson)
-        chipResponse = new Response(createChipJson)
+        runResponse = new Response(Data.CreateRun)
+        chipResponse = new Response(Data.CreateChip)
         responses = [runResponse, chipResponse]
 
         api.traction.saphyr.runs.destroy = jest.fn()
@@ -392,8 +280,8 @@ describe('Run', () => {
       })
 
       it ('gets a list of responses', () => {
-        api.traction.saphyr.runs.destroy.mockResolvedValue(successfulDestroyJson)
-        api.traction.saphyr.chips.destroy.mockResolvedValue(successfulDestroyJson)
+        api.traction.saphyr.runs.destroy.mockResolvedValue(Data.SuccessfulDestroy)
+        api.traction.saphyr.chips.destroy.mockResolvedValue(Data.SuccessfulDestroy)
 
         Run.rollback(responses, api.traction.saphyr)
         expect(api.traction.saphyr.runs.destroy).toBeCalledWith(runResponse.deserialize.runs[0].id)
@@ -410,10 +298,10 @@ describe('Run', () => {
       })
 
       it('rolls back the request', async () => {
-        api.traction.saphyr.runs.destroy.mockResolvedValue(successfulDestroyJson)
-        let expected = new Response(successfulDestroyJson)
+        api.traction.saphyr.runs.destroy.mockResolvedValue(Data.SuccessfulDestroy)
+        let expected = new Response(Data.SuccessfulDestroy)
 
-        let runResponse = new Response(createRunJson)
+        let runResponse = new Response(Data.CreateRun)
         let response = await Run.destroy(runResponse, api.traction.saphyr.runs)
 
         expect(response).toEqual(expected)
@@ -421,35 +309,93 @@ describe('Run', () => {
     })
   })
 
-  describe('updateFlowcell', () => {
-
-    let flowcell, libraryId
+  describe('updateResource', () => {
+    let request, payload
 
     beforeEach(() => {
-      run = Run.build()
-      libraryId = 1
-      flowcell = run.chip.flowcells[0]
-      updatedRun = Run.updateFlowcell(run, flowcell.position, libraryId)
+      let api = build(Api.Config, process.env)
+      request = api.traction.saphyr
+      request.update = jest.fn()
+
+      payload = { data: { type: "runs", attributes: { name: run.name } } }
     })
 
-    it('will update the correct flowcell in the run', () => {
-      expect(updatedRun.chip.flowcells[0].library.id).toEqual(libraryId)
+    it('successful', async () => {
+      request.update.mockResolvedValue([Data.CreateRun])
+      let mockResponse = new Response(Data.CreateRun)
+
+      let response = await Run.updateResource(payload, request)
+      expect(response).toEqual(mockResponse)
+    })
+
+    it('unsuccessful', async () => {
+      let failedResponse = { status: 404, statusText: 'Record not found', data: { errors: { run: ['Failed to update.'] } } }
+
+      request.update.mockReturnValue([failedResponse])
+      let mockResponse = new Response(failedResponse)
+
+      await expect(Run.updateResource(payload, request)).rejects.toEqual(mockResponse.errors)
     })
   })
 
-  describe('updateChip', () => {
+  describe('#update', () => {
+    let run, request
 
     beforeEach(() => {
       run = Run.build()
-      chipBarcode = 'FLEVEAOLPTOWPNWU20319131581014320190911XXXXXXXXXXXXX'
-      updatedRun = Run.updateChip(run, chipBarcode)
+      run['name'] = 'run1'
+      run.chip['barcode'] = chipBarcode
+      run.chip.flowcells[0] = { position: 1, library: { baroce: 'TRAC-1' } }
+      run.chip.flowcells[1] = { position: 2, library: { baroce: 'TRAC-2' } }
+
+      let api = build(Api.Config, process.env)
+      request = api.traction.saphyr
+
+      request.runs.update = jest.fn()
+      request.chips.update = jest.fn()
+      request.flowcells.update = jest.fn()
+
+      request.runs.destroy = jest.fn()
+      request.chips.destroy = jest.fn()
+      request.flowcells.destroy = jest.fn()
     })
 
+    it('returns true', async () => {
+      request.runs.update.mockResolvedValue([Data.CreateRun])
+      request.chips.update.mockResolvedValue([Data.CreateChip])
+      request.flowcells.update.mockResolvedValue([Data.CreateFlowcell])
 
-    it('will update the chip barcode', () => {
-      expect(updatedRun.chip.barcode).toEqual(chipBarcode)
+      expect(await Run.update(run, request)).toBeTruthy()
+    })
+
+    it('returns false if the run cannot be created', async () => {
+      request.runs.update.mockReturnValue([failedResponse])
+      request.runs.destroy.mockReturnValue(Data.SuccessfulDestroy)
+
+      expect(await Run.update(run, request)).toBeFalsy()
+    })
+
+    it('returns false and rollsback if the chip cannot be created', async () => {
+      request.runs.update.mockResolvedValue([Data.CreateRun])
+      request.chips.update.mockReturnValue([failedResponse])
+
+      request.runs.destroy.mockReturnValue(Data.SuccessfulDestroy)
+      request.chips.destroy.mockReturnValue(Data.SuccessfulDestroy)
+
+      expect(await Run.update(run, request)).toBeFalsy()
+    })
+
+    it('returns false and rollsback if the flowcells cannot be created', async () => {
+      request.runs.update.mockResolvedValue([Data.CreateRun])
+      request.chips.update.mockResolvedValue([Data.CreateRun])
+      request.flowcells.update.mockReturnValue([failedResponse])
+
+      request.runs.destroy.mockReturnValue(Data.SuccessfulDestroy)
+      request.chips.destroy.mockReturnValue(Data.SuccessfulDestroy)
+      request.flowcells.destroy.mockReturnValue(Data.SuccessfulDestroy)
+
+      expect(await Run.update(run, request)).toBeFalsy()
     })
 
   })
-
 })

@@ -1,0 +1,205 @@
+{
+  "data": {
+    "data": [
+      {
+        "id": "1",
+        "type": "libraries",
+        "attributes": {
+          "state": "pending",
+          "barcode": "TRAC-16",
+          "volume": 1.0,
+          "concentration": 1.0,
+          "library_kit_barcode": "LK12345",
+          "fragment_size": 100,
+          "created_at": "09/23/2019 11:18",
+          "deactivated_at": null,
+          "sample_names": "4616STDY7535900,4616STDY7535900"
+        },
+        "relationships": {
+          "requests": {
+            "data": [
+              {
+                "type": "request_libraries",
+                "id": "1"
+              },
+              {
+                "type": "request_libraries",
+                "id": "6"
+              }
+            ]
+          }
+        }
+      },
+      {
+        "id": "2",
+        "type": "libraries",
+        "attributes": {
+          "state": "pending",
+          "barcode": "TRAC-17",
+          "volume": 1.0,
+          "concentration": 1.0,
+          "library_kit_barcode": "LK12345",
+          "fragment_size": 100,
+          "created_at": "09/23/2019 11:18",
+          "deactivated_at": null,
+          "sample_names": "4616STDY7535900"
+        },
+        "relationships": {
+          "requests": {
+            "data": [
+              {
+                "type": "request_libraries",
+                "id": "2"
+              }
+            ]
+          }
+        }
+      },
+      {
+        "id": "3",
+        "type": "libraries",
+        "attributes": {
+          "state": "pending",
+          "barcode": "TRAC-18",
+          "volume": 1.0,
+          "concentration": 1.0,
+          "library_kit_barcode": "LK12345",
+          "fragment_size": 100,
+          "created_at": "09/23/2019 11:18",
+          "deactivated_at": null,
+          "sample_names": "4642STDY7515249"
+        },
+        "relationships": {
+          "requests": {
+            "data": [
+              {
+                "type": "request_libraries",
+                "id": "3"
+              }
+            ]
+          }
+        }
+      },
+      {
+        "id": "4",
+        "type": "libraries",
+        "attributes": {
+          "state": "pending",
+          "barcode": "TRAC-19",
+          "volume": 1.0,
+          "concentration": 1.0,
+          "library_kit_barcode": "LK12345",
+          "fragment_size": 100,
+          "created_at": "09/23/2019 11:18",
+          "deactivated_at": null,
+          "sample_names": "4616STDY7644356"
+        },
+        "relationships": {
+          "requests": {
+            "data": [
+              {
+                "type": "request_libraries",
+                "id": "4"
+              }
+            ]
+          }
+        }
+      },
+      {
+        "id": "5",
+        "type": "libraries",
+        "attributes": {
+          "state": "pending",
+          "barcode": "TRAC-20",
+          "volume": 1.0,
+          "concentration": 1.0,
+          "library_kit_barcode": "LK12345",
+          "fragment_size": 100,
+          "created_at": "09/23/2019 11:18",
+          "deactivated_at": null,
+          "sample_names": "25G257228308"
+        },
+        "relationships": {
+          "requests": {
+            "data": [
+              {
+                "type": "request_libraries",
+                "id": "5"
+              }
+            ]
+          }
+        }
+      }
+    ],
+    "included": [
+      {
+        "id": "1",
+        "type": "request_libraries",
+        "attributes": {
+          "sample_name": "4616STDY7535900",
+          "tag_oligo": "ATGC",
+          "tag_group_id": 1,
+          "tag_set_name": "pacbio",
+          "tag_id": 1
+        }
+      },
+      {
+        "id": "6",
+        "type": "request_libraries",
+        "attributes": {
+          "sample_name": "4616STDY7535900",
+          "tag_oligo": "CGTA",
+          "tag_group_id": 1,
+          "tag_set_name": "pacbio",
+          "tag_id": 2
+        }
+      },
+      {
+        "id": "2",
+        "type": "request_libraries",
+        "attributes": {
+          "sample_name": "4616STDY7535900",
+          "tag_oligo": "ATGC",
+          "tag_group_id": 1,
+          "tag_set_name": "pacbio",
+          "tag_id": 1
+        }
+      },
+      {
+        "id": "3",
+        "type": "request_libraries",
+        "attributes": {
+          "sample_name": "4642STDY7515249",
+          "tag_oligo": "ATGC",
+          "tag_group_id": 1,
+          "tag_set_name": "pacbio",
+          "tag_id": 1
+        }
+      },
+      {
+        "id": "4",
+        "type": "request_libraries",
+        "attributes": {
+          "sample_name": "4616STDY7644356",
+          "tag_oligo": "ATGC",
+          "tag_group_id": 1,
+          "tag_set_name": "pacbio",
+          "tag_id": 1
+        }
+      },
+      {
+        "id": "5",
+        "type": "request_libraries",
+        "attributes": {
+          "sample_name": "25G257228308",
+          "tag_oligo": "ATGC",
+          "tag_group_id": 1,
+          "tag_set_name": "pacbio",
+          "tag_id": 1
+        }
+      }
+    ]
+  },
+  "status": 200,
+  "statusText": "Success"
+}

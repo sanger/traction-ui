@@ -1,10 +1,18 @@
 import Vue from 'vue'
 import Router from 'vue-router'
-import Runs from './views/Runs'
-import Run from '@/views/Run'
-import Reception from './views/Reception'
-import Samples from './views/Samples'
-import Libraries from './views/Libraries'
+import Dashboard from './views/Dashboard'
+import Saphyr from './views/Saphyr'
+import SaphyrReception from './views/saphyr/SaphyrReception'
+import SaphyrSamples from './views/saphyr/SaphyrSamples'
+import SaphyrLibraries from './views/saphyr/SaphyrLibraries'
+import SaphyrRuns from './views/saphyr/SaphyrRuns'
+import SaphyrRun from './views/saphyr/SaphyrRun'
+import Pacbio from './views/Pacbio'
+import PacbioReception from './views/pacbio/PacbioReception'
+import PacbioSamples from './views/pacbio/PacbioSamples'
+import PacbioLibraries from './views/pacbio/PacbioLibraries'
+import PacbioRuns from './views/pacbio/PacbioRuns'
+import PacbioRun from './views/pacbio/PacbioRun'
 
 Vue.use(Router)
 
@@ -12,40 +20,39 @@ export default new Router({
   routes: [
     {
       path: '/',
-      redirect: { name: 'Reception' },
-      component: Reception
+      redirect: { name: 'Dashboard' },
+      component: Dashboard
     },
     {
-      path: '/runs',
-      name: 'Runs',
-      component: Runs
+      path: '/dashboard',
+      name: 'Dashboard',
+      component: Dashboard
     },
     {
-      path: '/reception',
-      name: 'Reception',
-      component: Reception
+      path: '/saphyr',
+      component: Saphyr,
+      children: [
+        { path: '', redirect: 'reception'},
+        { path: 'reception', name: 'SaphyrReception', component: SaphyrReception },
+        { path: 'samples', name: 'SaphyrSamples', component: SaphyrSamples },
+        { path: 'libraries', name: 'SaphyrLibraries', component: SaphyrLibraries },
+        { path: 'runs', name: 'SaphyrRuns', component: SaphyrRuns },
+        { path: 'run', name: 'SaphyrRun', component: SaphyrRun, props: {id: true} },
+        { path: 'run/:id', component: SaphyrRun, props: true }
+      ]
     },
     {
-      path: '/run',
-      name: 'Run',
-      component: Run,
-      props: {id: true}
-    },
-    { path: '/run/:id',
-      component: Run,
-      props: true
-    },
-    {
-      path: '/samples',
-      name: 'Samples',
-      component: Samples,
-      props: true
-    },
-    {
-      path: '/libraries',
-      name: 'Libraries',
-      component: Libraries,
-      props: true
+      path: '/pacbio',
+      component: Pacbio,
+      children: [
+        { path: '', redirect: 'reception'},
+        { path: 'reception', name: 'PacbioReception', component: PacbioReception },
+        { path: 'samples', name: 'PacbioSamples', component: PacbioSamples },
+        { path: 'libraries', name: 'PacbioLibraries', component: PacbioLibraries },
+        { path: 'runs', name: 'PacbioRuns', component: PacbioRuns },
+        { path: 'run', name: 'PacbioRun', component: PacbioRun, props: { id: true } },
+        { path: 'run/:id', component: PacbioRun, props: true }
+      ]
     }
   ]
 })

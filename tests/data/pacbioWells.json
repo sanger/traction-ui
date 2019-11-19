@@ -1,0 +1,60 @@
+{
+    "data": {
+        "data": [
+            {
+                "id": "1",
+                "type": "wells",
+                "links": {
+                    "self": "http://localhost:3100/v1/pacbio/wells/1"
+                },
+                "attributes": {
+                    "movie_time": "10.0",
+                    "insert_size": 1001,
+                    "on_plate_loading_concentration": 10.1,
+                    "row": "A",
+                    "column": "01",
+                    "pacbio_plate_id": 1,
+                    "comment": "comment1",
+                    "sequencing_mode": "CLR",
+                    "position": "A01"
+                },
+                "relationships": {
+                    "libraries": {
+                        "links": {
+                            "self": "http://localhost:3100/v1/pacbio/wells/1/relationships/libraries",
+                            "related": "http://localhost:3100/v1/pacbio/wells/1/libraries"
+                        }
+                    }
+                }
+            },
+            {
+                "id": "4",
+                "type": "wells",
+                "links": {
+                    "self": "http://localhost:3100/v1/pacbio/wells/4"
+                },
+                "attributes": {
+                    "movie_time": "10.0",
+                    "insert_size": 1001,
+                    "on_plate_loading_concentration": 10.1,
+                    "row": "A",
+                    "column": "01",
+                    "pacbio_plate_id": 5,
+                    "comment": null,
+                    "sequencing_mode": "CLR",
+                    "position": "A01"
+                },
+                "relationships": {
+                    "libraries": {
+                        "links": {
+                            "self": "http://localhost:3100/v1/pacbio/wells/4/relationships/libraries",
+                            "related": "http://localhost:3100/v1/pacbio/wells/4/libraries"
+                        }
+                    }
+                }
+            }
+        ]
+    },
+    "status": 200,
+    "statusText": "Success"
+}
