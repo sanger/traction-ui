@@ -63,6 +63,10 @@ describe('Plate.vue', () => {
     })
   })
 
+  describe('wells', () => {
+    
+  })
+
   describe('tooltip', () => {
     it('showBarcode will return barcode if it exists', () => {
       expect(plate.showBarcode(well.position)).toEqual(well.libraries[0].barcode)
