@@ -1,8 +1,7 @@
-import { mount, localVue, Vuex } from '../testHelper'
+import { mount, localVue } from '../testHelper'
 import Well from '@/components/Well'
 import * as Run from '@/api/PacbioRun'
 import store from '@/store'
-import WellModal from '@/components/WellModal'
 
 describe('Well.vue', () => {
 
@@ -69,7 +68,7 @@ describe('Well.vue', () => {
   it('will have an ellipse with the correct attributes', () => {
     let ellipse = wrapper.find('ellipse')
     expect(ellipse.exists()).toBeTruthy()
-    expect(ellipse.attributes('class')).toEqual(well.position)
+    expect(ellipse.attributes('class')).toMatch(well.position)
     expect(ellipse.attributes('cx')).toEqual(well.cx)
     expect(ellipse.attributes('cy')).toEqual(well.cy)
     expect(ellipse.attributes('rx')).toEqual(well.rx)
