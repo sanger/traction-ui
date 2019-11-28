@@ -56,15 +56,6 @@ describe('Plate.vue', () => {
     expect(wrapper.name()).toEqual('Plate')
   })
 
-  describe('alert', () => {
-    it('emits an event with the message', () => {
-      plate.alert('emit this message', 'success')
-      expect(wrapper.emitted().alert).toBeTruthy()
-      expect(wrapper.emitted().alert[0][0]).toEqual('emit this message')
-      expect(wrapper.emitted().alert[0][1]).toEqual('success')
-    })
-  })
-
   describe('wells', () => {
 
     it('has the correct number of columns', () => {
@@ -84,21 +75,6 @@ describe('Plate.vue', () => {
       expect(ellipses.length).toEqual(Object.keys(PlateMap.wells).length)
     })
 
-
-  })
-
-  describe('tooltip', () => {
-    it('showBarcode will return barcode if it exists', () => {
-      expect(plate.showBarcode(well.position)).toEqual(well.libraries[0].barcode)
-    })
-
-    it('showBarcode will be an empty string if well exists but there are no libraries', () => {
-      expect(plate.showBarcode('B1')).toEqual("")
-    })
-
-    it('showBarcode will return nothing if well does not exists', () => {
-      expect(plate.showBarcode('X1')).not.toBeDefined()
-    })
   })
 
 })
