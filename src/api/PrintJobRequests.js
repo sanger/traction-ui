@@ -22,7 +22,7 @@ const createLabels = (selected) => {
         main_label: {
           pipeline: store.getters.pipeline.toUpperCase(),
           barcode_text: label.barcode,
-          date: moment().format('MMMM Do YYYY'),
+          date: moment().format('DD-MMM-YY'),
           text_1: getTextForSelected(label),
           barcode: label.barcode,
           round_label_top_line: '',
