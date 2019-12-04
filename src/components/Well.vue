@@ -73,7 +73,7 @@ export default {
     },
     tooltip () {
       if (this.hasLibraries) {
-        return this.position
+        return this.libraryBarcodes
       } else {
         return ''
       }  

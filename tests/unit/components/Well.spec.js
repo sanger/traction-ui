@@ -102,7 +102,7 @@ describe('Well.vue', () => {
 
     it('will be visible if there are some libraries', () => {
       title = wrapper.find('title')
-      expect(title.text()).toEqual(well.position)
+      expect(title.text()).toEqual(well.libraryBarcodes)
     })
 
     it('will be absent if there are no libraries', () => {
