@@ -79,8 +79,8 @@ export default {
       this.$refs['well-modal'].hide()
     },
     update() {
-      this.hide()
       this.alert('Well updated', 'success')
+      this.hide()
     },
     updateInsertSize(insertSize) {
       this.mutateWell({ position: this.position, property: 'insert_size', with: insertSize })
