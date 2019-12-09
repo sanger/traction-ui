@@ -29,8 +29,9 @@ const mutations = {
 
             state.currentRun.plate.wells.push(currentWell)
         }
-        currentWell[payload.property] = payload.with
-    }
+        debugger
+        currentWell[payload.property] << payload.with
+    },
 }
 
 export default mutations
