@@ -1,6 +1,5 @@
 import handlePromise from '@/api/PromiseHelper'
 import * as PacbioRun from '@/api/PacbioRun'
-import router from '@/router'
 
 const setRuns = async ({ commit, getters }) => {
     let request = getters.runRequest
@@ -18,7 +17,17 @@ const setRuns = async ({ commit, getters }) => {
 const newRun = ({ commit }) => {
     let run = PacbioRun.build()
     commit('setCurrentRun', run)
-    // router.push({ path: `/pacbio/run/new` })
+}
+
+const editRun = async ({ getters, commit }, runId) => {
+    let request = getters.runRequest
+    let promise = request.find(runId)
+    let response = await handlePromise(promise)
+
+    if (response.successful) {
+        let run = response.deserialize.runs[0]
+        commit('setCurrentRun', run)
+    }
 }
 
 const createRun = async ({ getters }) => {
@@ -26,12 +35,6 @@ const createRun = async ({ getters }) => {
 
     let request = getters.pacbioRequests
     return await PacbioRun.create(run, request)
-}
-
-const editRun = ({ getters, commit }, runId) => {
-    // let run = getters.run(runId)
-    // commit('setCurrentRun', run)
-    router.push({ path: `/pacbio/run/${runId}` })
 }
 
 const isLibraryBarcodeValid = async ({ dispatch }, barcode) => {
@@ -83,17 +86,6 @@ const getRun = async ({ getters }, id) => {
     }
 }
 
-const getAndSetRun = async ({ getters, commit }, id) => {
-    let request = getters.runRequest
-    let promise = request.find(id)
-    let response = await handlePromise(promise)
-
-    if (response.successful) {
-        let run = response.deserialize.runs[0]
-        commit('setCurrentRun', run)
-    }   
-}
-
 const actions = {
     getRun,
     setRuns,
@@ -103,7 +95,6 @@ const actions = {
     getTubeForBarcode,
     editRun,
     updateRun,
-    getAndSetRun
 }
 
 export {
@@ -116,7 +107,6 @@ export {
     editRun,
     updateRun,
     getRun,
-    getAndSetRun
 }
 
 export default actions

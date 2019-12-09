@@ -20,7 +20,7 @@
           <pacbioLibrariesTable></pacbioLibrariesTable>
         </b-col>
         <b-col>
-          <Plate @alert="showAlert"></Plate>
+          <Plate v-if="this.currentRun.id" @alert="showAlert"></Plate>
         </b-col>
       </b-row>
     </div>
@@ -63,7 +63,7 @@ export default {
     ...mapActions([
       'createRun',
       'updateRun',
-      'getAndSetRun',
+      'editRun',
       'newRun'
     ]),
     redirectToRuns() {
@@ -76,11 +76,7 @@ export default {
     } else {
       let path = this.$route.params.id 
       let runId = parseInt(path)
-      console.log("1")
-      debugger
-      await this.getAndSetRun(runId)
-      debugger
-      console.log("2")
+      await this.editRun(runId)
     }
   },
   components: {

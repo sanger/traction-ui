@@ -45,7 +45,7 @@
           Cancel
         </b-button>
 
-        <b-button :id="generateId('editRun', row.item.id)" variant="outline-info" size="sm" class="mr-1" @click="editRun(row.item.id)">
+        <b-button :id="generateId('editRun', row.item.id)" variant="outline-info" size="sm" class="mr-1" @click="redirectToEditRun(row.item.id)">
           Edit
         </b-button>
 
@@ -137,11 +137,12 @@ export default {
     redirectToNewRun() {
       this.$router.push({ path: `/pacbio/run/new` })
     },
+    redirectToEditRun(runId) {
+      this.$router.push({ path: `/pacbio/run/${runId}` })
+    },
     ...mapActions('traction/pacbio/runs', [
       'setRuns',
-      // 'newRun',
       'generateSampleSheet',
-      'editRun'
     ]),
     ...mapActions('traction', [
       'startRun',
