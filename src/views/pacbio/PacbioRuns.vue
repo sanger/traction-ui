@@ -61,7 +61,7 @@
     <div class="clearfix">
       <b-button id="newRun"
                 class="float-left"
-                @click="newRun()"
+                @click="redirectToNewRun()"
                 variant="success">
         New Run
       </b-button>
@@ -134,9 +134,12 @@ export default {
         this.showAlert("Failed to update run: " + error.message, 'danger')
       }
     },
+    redirectToNewRun() {
+      this.$router.push({ path: `/pacbio/run/new` })
+    },
     ...mapActions('traction/pacbio/runs', [
       'setRuns',
-      'newRun',
+      // 'newRun',
       'generateSampleSheet',
       'editRun'
     ]),

@@ -1995,6 +1995,9 @@ export default {
       'well'
     ])
   },
+  created () {
+     console.log('here')
+  },
   mounted() {
     // Add on 'click' event listener for each well,
     // could add on drop, on hover etc

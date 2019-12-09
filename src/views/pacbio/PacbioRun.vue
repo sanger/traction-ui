@@ -40,11 +40,7 @@ const { mapGetters, mapState, mapActions } = createNamespacedHelpers('traction/p
 export default {
   name: 'Run',
   mixins: [Helper],
-  props: {
-    id: {
-      type: [Number]
-    },
-  },
+  props: ['id'],
   methods: {
     async create () {
       let responses = await this.createRun()
@@ -67,15 +63,25 @@ export default {
     ...mapActions([
       'createRun',
       'updateRun',
-      'getAndSetRun'
+      'getAndSetRun',
+      'newRun'
     ]),
     redirectToRuns() {
       this.$router.push({ name: 'PacbioRuns' })
     }
   },
-  created () {
-    let id = parseInt(this.$route.params.id)
-    this.getAndSetRun(id)
+  async created () {
+    if (this.newRecord) {
+      this.newRun()
+    } else {
+      let path = this.$route.params.id 
+      let runId = parseInt(path)
+      console.log("1")
+      debugger
+      await this.getAndSetRun(runId)
+      debugger
+      console.log("2")
+    }
   },
   components: {
     Alert,
@@ -85,7 +91,8 @@ export default {
   },
   computed: {
     newRecord () {
-      return isNaN(this.currentRun.id)
+      // return isNaN(this.currentRun.id)
+      return isNaN(this.$route.params.id)
     },
     ...mapGetters([
       'currentRun'

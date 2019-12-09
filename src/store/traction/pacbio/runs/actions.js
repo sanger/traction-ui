@@ -18,7 +18,7 @@ const setRuns = async ({ commit, getters }) => {
 const newRun = ({ commit }) => {
     let run = PacbioRun.build()
     commit('setCurrentRun', run)
-    router.push({ path: `/pacbio/run/new` })
+    // router.push({ path: `/pacbio/run/new` })
 }
 
 const createRun = async ({ getters }) => {
@@ -29,8 +29,8 @@ const createRun = async ({ getters }) => {
 }
 
 const editRun = ({ getters, commit }, runId) => {
-    let run = getters.run(runId)
-    commit('setCurrentRun', run)
+    // let run = getters.run(runId)
+    // commit('setCurrentRun', run)
     router.push({ path: `/pacbio/run/${runId}` })
 }
 
