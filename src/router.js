@@ -50,8 +50,8 @@ export default new Router({
         { path: 'samples', name: 'PacbioSamples', component: PacbioSamples },
         { path: 'libraries', name: 'PacbioLibraries', component: PacbioLibraries },
         { path: 'runs', name: 'PacbioRuns', component: PacbioRuns },
-        { path: 'run', name: 'PacbioRun', component: PacbioRun, props: { id: true } },
-        { path: 'run/:id', component: PacbioRun, props: true }
+        //{ path: 'run', name: 'PacbioRun', component: PacbioRun, props: { id: true } },
+        { path: 'run/:id', name: 'PacbioRun', component: PacbioRun, props: true}
       ]
     }
   ]

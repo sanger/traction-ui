@@ -83,6 +83,17 @@ const getRun = async ({ getters }, id) => {
     }
 }
 
+const getAndSetRun = async ({ getters, commit }, id) => {
+    let request = getters.runRequest
+    let promise = request.find(id)
+    let response = await handlePromise(promise)
+
+    if (response.successful) {
+        let run = response.deserialize.runs[0]
+        commit('setCurrentRun', run)
+    }   
+}
+
 const actions = {
     getRun,
     setRuns,
@@ -91,7 +102,8 @@ const actions = {
     isLibraryBarcodeValid,
     getTubeForBarcode,
     editRun,
-    updateRun
+    updateRun,
+    getAndSetRun
 }
 
 export {
@@ -103,7 +115,8 @@ export {
     validateLibraryTube,
     editRun,
     updateRun,
-    getRun
+    getRun,
+    getAndSetRun
 }
 
 export default actions

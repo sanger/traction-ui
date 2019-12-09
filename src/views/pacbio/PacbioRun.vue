@@ -40,6 +40,11 @@ const { mapGetters, mapState, mapActions } = createNamespacedHelpers('traction/p
 export default {
   name: 'Run',
   mixins: [Helper],
+  props: {
+    id: {
+      type: [Number]
+    },
+  },
   methods: {
     async create () {
       let responses = await this.createRun()
@@ -61,11 +66,16 @@ export default {
     },
     ...mapActions([
       'createRun',
-      'updateRun'
+      'updateRun',
+      'getAndSetRun'
     ]),
     redirectToRuns() {
       this.$router.push({ name: 'PacbioRuns' })
     }
+  },
+  created () {
+    let id = parseInt(this.$route.params.id)
+    this.getAndSetRun(id)
   },
   components: {
     Alert,
