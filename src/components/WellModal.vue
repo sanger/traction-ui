@@ -1,5 +1,5 @@
 <template>
-    <b-modal ref="well-modal" title="Add Library to Well">
+    <b-modal ref="well-modal" hide-footer title="Add Library to Well">
       
       <alert ref='alert'></alert>
 
@@ -35,16 +35,6 @@
         <b-form-select ref="sequencingMode" id="sequencingMode" :value="sequencingMode" :options="sequencingModeOptions" @change="updateSequencingMode"></b-form-select>
 
       </b-form>
-
-      <template v-slot:modal-footer="{ ok, cancel }">
-        <b-button @click="cancel()">
-          Cancel
-        </b-button>
-
-        <b-button variant="success" @click="update()">
-          Update Well
-        </b-button>
-      </template>
     </b-modal>
 </template>
 

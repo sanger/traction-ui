@@ -61,7 +61,14 @@ describe('Run.vue', () => {
             }
         })
 
-        wrapper = shallowMount(PacbioRun, { localVue, store, router })
+        wrapper = shallowMount(PacbioRun, {
+            localVue, 
+            store, 
+            router,
+            methods: {
+               provider() { return }
+            }
+        })
         pacbioRun = wrapper.vm
     })  
 
@@ -99,15 +106,22 @@ describe('Run.vue', () => {
         })
     })
 
-    describe('Create button', () => {
-        it('will only show if the record is new', () => {
-            expect(wrapper.find('#create').exists()).toBeFalsy()
+    describe('button', () => {
+        beforeEach(() => {
+            pacbioRun.newRecord = jest.fn()
         })
-    })
+        describe('Create button', () => {
+            xit('will only show if the record is new', () => {
+                pacbioRun.newRecord.mockReturnValue(true)
+                expect(wrapper.find('#create').exists()).toBeTruthy()
+            })
+        })
 
-    describe('Update button', () => {
-        it('will only show if the record is existing', () => {
-            expect(wrapper.find('#update').exists()).toBeTruthy()
+        describe('Update button', () => {
+            it('will only show if the record is existing', () => {
+                pacbioRun.newRecord.mockReturnValue(false)
+                expect(wrapper.find('#update').exists()).toBeTruthy()
+            })
         })
     })
 

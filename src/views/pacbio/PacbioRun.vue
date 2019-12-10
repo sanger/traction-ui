@@ -6,8 +6,8 @@
       <b-button id="backToRunsButton" class="float-right">Back</b-button>
     </router-link>
 
-    <b-button v-if="newRecord" class="float-right" id="create" variant="success" @click="create">Create</b-button>
-    <b-button v-if="!newRecord" class="float-right" id="update" variant="primary" @click="update">Update</b-button>
+    <b-button v-if="newRecord()" class="float-right" id="create" variant="success" @click="create">Create</b-button>
+    <b-button v-if="!newRecord()" class="float-right" id="update" variant="primary" @click="update">Update</b-button>
 
     <br>
     <br>
@@ -68,16 +68,19 @@ export default {
     ]),
     redirectToRuns() {
       this.$router.push({ name: 'PacbioRuns' })
-    }
-  },
-  async created () {
-    if (this.newRecord) {
-      this.newRun()
-    } else {
-      let path = this.$route.params.id 
-      let runId = parseInt(path)
-      await this.editRun(runId)
-    }
+    },
+    async provider () {
+      if (this.newRecord) {
+        this.newRun()
+      } else {
+        let path = this.$route.params.id 
+        let runId = parseInt(path)
+        await this.editRun(runId)
+      }
+    },
+    newRecord () { // this function is used for testing
+      return isNaN(this.$route.params.id)
+    },
   },
   components: {
     Alert,
@@ -86,17 +89,16 @@ export default {
     Plate
   },
   computed: {
-    newRecord () {
-      // return isNaN(this.currentRun.id)
-      return isNaN(this.$route.params.id)
-    },
     ...mapGetters([
       'currentRun'
     ]),
     ...mapState({
       currentRun: state => state.currentRun
-    })
+    }),
   },
+  created() {
+    this.provider()
+  }
 }
 </script>
 
