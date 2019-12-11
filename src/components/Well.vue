@@ -64,9 +64,11 @@ export default {
       return `${this.row}${this.column}`
     },
     libraryBarcodes () {
+      console.log(this.position)
       let well = this.well(this.position)
       if (well === undefined) return ''
       let barcodesList = well.libraries.map(l =>  l.barcode)
+      console.log(barcodesList)
       if (barcodesList.length > 0) {
         return barcodesList.join(',')
       } else {

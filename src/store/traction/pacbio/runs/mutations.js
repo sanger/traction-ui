@@ -29,9 +29,29 @@ const mutations = {
 
             state.currentRun.plate.wells.push(currentWell)
         }
-        debugger
-        currentWell[payload.property] << payload.with
+
+        currentWell[payload.property] = payload.with
     },
+    addEmptyLibraryToWell(state, position) {
+        let currentWell = state.currentRun.plate.wells.filter(well => well.position === position)[0]
+
+        if (!currentWell) {
+            // If well does not exist - Build a new well
+            let row = position.split("")[0] // e.g. A
+            let column = position.split("")[1] // e.g. 1
+            currentWell = PacbioRun.buildWell(row, column)
+        }
+        currentWell.libraries.push({ id: '', barcode: '' })
+    },
+    removeLibraryFromWell(state, payload) {
+        let currentWell = state.currentRun.plate.wells.filter(well => well.position === payload.position)[0]
+        currentWell.libraries.splice(payload.index, 1)
+    },
+    addLibraryToWell(state, payload) {
+        let index = payload.index
+        let currentWell = state.currentRun.plate.wells.filter(well => well.position === payload.position)[0]
+        currentWell.libraries[index] = payload.with
+    }
 }
 
 export default mutations
