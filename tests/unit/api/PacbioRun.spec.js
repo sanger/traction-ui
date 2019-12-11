@@ -131,7 +131,6 @@ describe('Run', () => {
           })
 
           it('will have a library', () => {
-            // Assuming there is only one library in a well
             expect(firstWell.libraries).toEqual([])
           })
         })

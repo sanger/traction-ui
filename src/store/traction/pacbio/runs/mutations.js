@@ -32,6 +32,7 @@ const mutations = {
 
         currentWell[payload.property] = payload.with
     },
+    // refactor
     addEmptyLibraryToWell(state, position) {
         let currentWell = state.currentRun.plate.wells.filter(well => well.position === position)[0]
 
