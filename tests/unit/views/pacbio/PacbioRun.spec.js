@@ -1,4 +1,5 @@
-import PacbioRun from '@/views/pacbio/PacbioRun'
+import PacbioRun from '@/views/pacbio/PacbioRun'    
+import PacbioRuns from '@/views/pacbio/PacbioRuns'
 import { shallowMount, localVue, Vuex } from '../../testHelper'
 import VueRouter from 'vue-router'
 import Alert from '@/components/Alert'
@@ -13,7 +14,8 @@ describe('Run.vue', () => {
     beforeEach(() => {
         router = new VueRouter({
             routes: [
-                { path: '/runs', name: 'PacbioRuns', component: require('@/views/pacbio/PacbioRuns') },
+                { path: '/run/:id', name: 'PacbioRun', component: PacbioRun },
+                { path: '/runs', name: 'PacbioRuns', component: PacbioRuns },
             ]
         })
 
@@ -36,7 +38,6 @@ describe('Run.vue', () => {
             }
         }
         
-
         store = new Vuex.Store({
             modules: {
                 traction: {
@@ -62,9 +63,9 @@ describe('Run.vue', () => {
         })
 
         wrapper = shallowMount(PacbioRun, {
-            localVue, 
             store, 
             router,
+            localVue,
             methods: {
                provider() { return }
             }
@@ -107,19 +108,16 @@ describe('Run.vue', () => {
     })
 
     describe('button', () => {
-        beforeEach(() => {
-            pacbioRun.newRecord = jest.fn()
-        })
         describe('Create button', () => {
-            xit('will only show if the record is new', () => {
-                pacbioRun.newRecord.mockReturnValue(true)
+            it('will only show if the record is new', () => {
+                wrapper.setData({ newRecord: true })
                 expect(wrapper.find('#create').exists()).toBeTruthy()
             })
         })
 
         describe('Update button', () => {
             it('will only show if the record is existing', () => {
-                pacbioRun.newRecord.mockReturnValue(false)
+                wrapper.setData({ newRecord: false })
                 expect(wrapper.find('#update').exists()).toBeTruthy()
             })
         })

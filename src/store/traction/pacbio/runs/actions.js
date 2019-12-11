@@ -21,14 +21,11 @@ const newRun = ({ commit }) => {
 
 const editRun = async ({ commit, getters }, runId) => {
     let request = getters.runRequest
-    console.log(request)
     let promise = request.find(runId)
-    console.log(promise)
     let response = await handlePromise(promise)
+    
     if (response.successful) {
         let run = response.deserialize.runs[0]
-        console.log(commit)
-        debugger
         commit('setCurrentRun', run)
     }
 }

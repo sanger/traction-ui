@@ -149,7 +149,7 @@ describe('#editRun', () => {
   let getters, commit, mockRun, find
 
   beforeEach(() => {
-    mockRun = new Response(Data.PacbioRuns).deserialize.runs[0]
+    mockRun = new Response(Data.PacbioRun).deserialize.runs[0]
 
     find = jest.fn()
     getters = { 'runRequest': { 'find': find } }
@@ -157,8 +157,8 @@ describe('#editRun', () => {
   })
 
   it('successfully', async () => {
-    find.mockReturnValue(Data.PacbioRuns)
-    Actions.editRun({ getters, commit }, mockRun.id)
+    find.mockReturnValue(Data.PacbioRun)
+    await Actions.editRun({ commit, getters }, mockRun.id)
     expect(commit).toHaveBeenCalled() //("setCurrentRun", mockRun)
   })
 })
