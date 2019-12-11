@@ -67,8 +67,8 @@ const create = async (run, request) => {
         responses.push(plateResponse)
         let plateId = plateResponse.deserialize.plates[0].id
 
-        // Assuming there is only one library in a well
-        let wellsWithLibraries = run.plate.wells.filter(well => well.libraries[0].id)
+        let wellsWithLibraries = run.plate.wells.filter(well => well.libraries.length != 0)
+
         let wellsPayload = createWellsPayload(wellsWithLibraries, plateId)
         let wellResponse = await createResource(wellsPayload, request.wells)
         responses.push(wellResponse)
@@ -97,8 +97,7 @@ const update = async (run, request) => {
         let runResponse = await updateResource(runPayload, request.runs)
         responses.push(runResponse)
 
-        // Assuming there is only one library in a well
-        let wellsWithLibraries = run.plate.wells.filter(well => well.libraries[0].id)
+        let wellsWithLibraries = run.plate.wells.filter(well => well.libraries.length != 0)
 
         for (const well of wellsWithLibraries) {
             if (well.id) { // Well exists - Update well
@@ -158,6 +157,8 @@ const createPlatePayload = (runId) => {
 
 const createWellsPayload = (wells, plateId) => {
     let wellsAttributes = wells.reduce((accumulator, well) => {
+        let librariesAttributes = well.libraries.map(l => { return { type: "libraries", id: l.id } })
+
         accumulator.push({
             row: well.row,
             column: well.column,
@@ -173,12 +174,7 @@ const createWellsPayload = (wells, plateId) => {
                     }
                 },
                 libraries: {
-                    data: [
-                        {
-                            type: "libraries",
-                            id: well.libraries[0].id // Assuming there is only one library in a well
-                        }
-                    ]
+                    data: librariesAttributes
                 }
             }
         })
@@ -214,6 +210,8 @@ const updateRunPayload = (run) => {
 }
 
 const updateWellPayload = (well) => {
+    let librariesAttributes = well.libraries.map(l => { return { type: "libraries", id: l.id } })
+
     return {
         data: {
             id: well.id,
@@ -228,12 +226,7 @@ const updateWellPayload = (well) => {
             },
             relationships: {
                 libraries: {
-                    data: [
-                        {
-                            type: "libraries",
-                            id: well.libraries[0].id // Assuming there is only one library in a well
-                        }
-                    ]
+                    data: librariesAttributes
                 }
             }
         }

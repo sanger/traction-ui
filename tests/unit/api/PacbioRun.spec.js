@@ -132,8 +132,7 @@ describe('Run', () => {
 
           it('will have a library', () => {
             // Assuming there is only one library in a well
-            expect(firstWell.libraries[0]).toEqual({id: '', barcode: ''})
-            expect(lastWell.libraries[0]).toEqual({id: '', barcode: ''})
+            expect(firstWell.libraries).toEqual([])
           })
         })
       })
@@ -157,8 +156,7 @@ describe('Run', () => {
       expect(well.insert_size).toEqual('')
       expect(well.on_plate_loading_concentration).toEqual('')
       expect(well.sequencing_mode).toEqual('')
-      expect(well.libraries[0].id).toEqual('')
-      expect(well.libraries[0].barcode).toEqual('')
+      expect(well.libraries).toEqual([])
     })
   })
 
@@ -308,8 +306,13 @@ describe('Run', () => {
 
   describe('createWellsPayload', () => {
     let wells, plateID
+
     beforeEach(() => {
       run = Run.build()
+
+      run.plate.wells[0] = { position: 'A1', libraries: [{ id: 1 }, { id: 2 }] }
+      run.plate.wells[1] = { position: 'A2', libraries: [{ id: 2 }] }
+
       wells = run.plate.wells
       plateID = 1
     })
@@ -328,6 +331,10 @@ describe('Run', () => {
       expect(result.data.attributes.wells[0].relationships.plate.data.id).toEqual(plateID)
       expect(result.data.attributes.wells[0].relationships.libraries.data[0].type).toEqual("libraries")
       expect(result.data.attributes.wells[0].relationships.libraries.data[0].id).toEqual(wells[0].libraries[0].id)
+      expect(result.data.attributes.wells[0].relationships.libraries.data[1].type).toEqual("libraries")
+      expect(result.data.attributes.wells[0].relationships.libraries.data[1].id).toEqual(wells[0].libraries[1].id)
+      expect(result.data.attributes.wells[1].relationships.libraries.data[0].type).toEqual("libraries")
+      expect(result.data.attributes.wells[1].relationships.libraries.data[0].id).toEqual(wells[1].libraries[0].id)
     })
   })
 
@@ -341,7 +348,7 @@ describe('Run', () => {
       well1 = new Response(Data.PacbioWells).deserialize.wells[0]
       well2 = new Response(Data.PacbioWells).deserialize.wells[1]
 
-      well1['libraries'] = [{ id: 1 }]
+      well1['libraries'] = [{ id: 1 }, { id: 2 }]
       well2['libraries'] = [{ id: 2 }]
       run.plate.wells[0] = well1
       run.plate.wells[1] = well2
