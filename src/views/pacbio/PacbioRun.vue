@@ -70,7 +70,7 @@ export default {
       this.$router.push({ name: 'PacbioRuns' })
     },
     async provider () {
-      if (this.newRecord) {
+      if (this.newRecord()) {
         this.newRun()
       } else {
         let path = this.$route.params.id 
