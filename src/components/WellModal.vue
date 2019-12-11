@@ -29,7 +29,7 @@
 
       </b-form>
 
-      <b-table stacked :items="wellLibraries" :fields="wellLibrariesFields">
+      <b-table stacked :items="wellLibraries" :fields="wellLibrariesFields" id="wellLibraries">
         <template v-slot:table-caption>Libraries</template>
 
         <template v-slot:cell(barcode)="row" >
@@ -42,19 +42,19 @@
               placeholder="Library Barcode">
             </b-form-input>
 
-            <button class="button btn-xs btn-success" @click="removeRow(row)" inline>-</button>
+            <b-button class="button btn-xs btn-danger" @click="removeRow(row)" inline>-</b-button>
           </b-form>
         </template>
       </b-table>
 
-      <button class="button btn-xs btn-success" @click="addRow">+</button>
+      <b-button class="button btn-xs btn-success" @click="addRow">+</b-button>
 
       <template v-slot:modal-footer="{ ok, cancel }">
         <b-button @click="cancel()">
           Cancel
         </b-button>
 
-        <b-button variant="success" @click="update()">
+        <b-button variant="primary" @click="update()">
           Update Well
         </b-button>
       </template>
@@ -126,7 +126,7 @@ export default {
         let libraryTube = await this.getTubeForBarcode(barcode)
         let library = libraryTube.material
         let payload = { position: this.position, index: index, property: 'libraries', with: { id: library.id, barcode: library.barcode }}
-        this.addLibraryToWell(payload) 
+        this.addLibraryToWell(payload) // could be refactored to mutateWell? 
       } else {
         this.showAlert('Library is not valid', 'danger')
       }
