@@ -49,18 +49,6 @@ describe('mutateWell', () => {
       let well = state.currentRun.plate.wells.filter(well => well.position === position)[0]
       expect(well.sequencing_mode).toEqual('seqMode')
     })
-
-    // TODO possibly refactor
-    xit('mutates the well, e.g. libraries', () => {
-      position = 'A1'
-      let payload = { position: position, property: 'libraries', with: [{ id: 123, barcode: 'TRAC-1' }] }
-      Mutations.default.mutateWell(state, payload)
-
-      let well = state.currentRun.plate.wells.filter(well => well.position === position)[0]
-      expect(well.libraries.length).toEqual(payload.with.length)
-      expect(well.libraries[0].id).toEqual(123)
-      expect(well.libraries[0].barcode).toEqual('TRAC-1')
-    })
   })
 
   describe('when well does not exist', () => {
