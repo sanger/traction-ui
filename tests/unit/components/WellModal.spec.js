@@ -148,7 +148,7 @@ describe('PacbioRunInfo', () => {
 
                 await modal.updateLibraryBarcode(row, newBarcode)
 
-                expect(modal.addLibraryToWell).toBeCalledWith({ index: anIndex, position: props.position, property: 'libraries', with: { id: library.id, barcode: library.barcode } })
+                expect(modal.addLibraryToWell).toBeCalledWith({ index: anIndex, position: props.position, with: { id: library.id, barcode: library.barcode } })
                 expect(modal.showAlert).not.toBeCalled()
             })
 

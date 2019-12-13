@@ -125,7 +125,7 @@ export default {
       if (isValid) {
         let libraryTube = await this.getTubeForBarcode(barcode)
         let library = libraryTube.material
-        let payload = { position: this.position, index: index, property: 'libraries', with: { id: library.id, barcode: library.barcode }}
+        let payload = { position: this.position, index: index, with: { id: library.id, barcode: library.barcode }}
         this.addLibraryToWell(payload) // could be refactored to mutateWell? 
       } else {
         this.showAlert('Library is not valid', 'danger')

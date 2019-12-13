@@ -8,6 +8,10 @@ const mutateRun = key => (state, val) => {
     state.currentRun[key] = val
 }
 
+const getCurrentWell = (state, position) => {
+    return state.currentRun.plate.wells.filter(well => well.position === position)[0]
+}
+
 const mutations = {
     setRuns: mutate('runs'),
     setCurrentRun: mutate('currentRun'),
@@ -19,7 +23,7 @@ const mutations = {
     setComments: mutateRun('comments'),
     setSystemName: mutateRun('system_name'),
     mutateWell(state, payload) {
-        let currentWell = state.currentRun.plate.wells.filter(well => well.position === payload.position)[0]
+        let currentWell = getCurrentWell(state, payload.position)
 
         if (!currentWell) {
             // If well does not exist - Build a new well
@@ -32,10 +36,8 @@ const mutations = {
 
         currentWell[payload.property] = payload.with
     },
-    // refactor
     addEmptyLibraryToWell(state, position) {
-        let currentWell = state.currentRun.plate.wells.filter(well => well.position === position)[0]
-
+        let currentWell = getCurrentWell(state, position)
         if (!currentWell) {
             // If well does not exist - Build a new well
             let row = position.split("")[0] // e.g. A
@@ -45,7 +47,7 @@ const mutations = {
         currentWell.libraries.push({ id: '', barcode: '' })
     },
     removeLibraryFromWell(state, payload) {
-        let currentWell = state.currentRun.plate.wells.filter(well => well.position === payload.position)[0]
+        let currentWell = getCurrentWell(state, payload.position)
         currentWell.libraries.splice(payload.index, 1)
     },
     addLibraryToWell(state, payload) {
