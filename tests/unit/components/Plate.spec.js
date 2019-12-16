@@ -1,6 +1,8 @@
 import { mount, localVue, Vuex } from '../testHelper'
 import Plate from '@/components/Plate'
 import * as Run from '@/api/PacbioRun'
+import PlateMap from '@/config/PlateMap'
+
 
 describe('Plate.vue', () => {
 
@@ -54,27 +56,25 @@ describe('Plate.vue', () => {
     expect(wrapper.name()).toEqual('Plate')
   })
 
-  describe('alert', () => {
-    it('emits an event with the message', () => {
-      plate.alert('emit this message', 'success')
-      expect(wrapper.emitted().alert).toBeTruthy()
-      expect(wrapper.emitted().alert[0][0]).toEqual('emit this message')
-      expect(wrapper.emitted().alert[0][1]).toEqual('success')
-    })
-  })
+  describe('wells', () => {
 
-  describe('tooltip', () => {
-    it('showBarcode will return barcode if it exists', () => {
-      expect(plate.showBarcode(well.position)).toEqual(well.libraries[0].barcode)
+    it('has the correct number of columns', () => {
+      for (const column in PlateMap.columns) {
+        expect(wrapper.find(`#column${column}`).exists()).toBeTruthy()
+      }
     })
 
-    it('showBarcode will an empty string if well exists but there are no libraries', () => {
-      expect(plate.showBarcode('B1')).toEqual("")
+    it('has the correct number of rows', () => {
+      for (const row in PlateMap.rows) {
+        expect(wrapper.find(`#row${row}`).exists()).toBeTruthy()
+      }
     })
 
-    it('showBarcode will return nothing if well does not exists', () => {
-      expect(plate.showBarcode('X1')).not.toBeDefined()
+    it('has the correct number of wells', () => {
+      let ellipses = wrapper.findAll('ellipse')
+      expect(ellipses.length).toEqual(Object.keys(PlateMap.wells).length)
     })
+
   })
 
 })
