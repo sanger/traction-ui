@@ -65,7 +65,6 @@ export default {
   },
   data () {
     return {
-      // newRecord: isNaN(this.$route.params.id)
       newRecord: isNaN(this.id)
     }
   },
