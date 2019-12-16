@@ -104,7 +104,6 @@ export default {
   },
   computed: {
     currentAction () {
-      console.log(this.id)
       return this.actions[this.newRecord ? 'create' : 'update']
     },
     ...mapGetters([
