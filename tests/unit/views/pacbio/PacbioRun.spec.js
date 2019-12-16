@@ -1,4 +1,5 @@
-import PacbioRun from '@/views/pacbio/PacbioRun'
+import PacbioRun from '@/views/pacbio/PacbioRun'    
+import PacbioRuns from '@/views/pacbio/PacbioRuns'
 import { shallowMount, localVue, Vuex } from '../../testHelper'
 import VueRouter from 'vue-router'
 import Alert from '@/components/Alert'
@@ -13,7 +14,8 @@ describe('Run.vue', () => {
     beforeEach(() => {
         router = new VueRouter({
             routes: [
-                { path: '/runs', name: 'PacbioRuns', component: require('@/views/pacbio/PacbioRuns') },
+                { path: '/run/:id', name: 'PacbioRun', component: PacbioRun },
+                { path: '/runs', name: 'PacbioRuns', component: PacbioRuns },
             ]
         })
 
@@ -36,7 +38,6 @@ describe('Run.vue', () => {
             }
         }
         
-
         store = new Vuex.Store({
             modules: {
                 traction: {
@@ -61,7 +62,14 @@ describe('Run.vue', () => {
             }
         })
 
-        wrapper = shallowMount(PacbioRun, { localVue, store, router })
+        wrapper = shallowMount(PacbioRun, {
+            store, 
+            router,
+            localVue,
+            methods: {
+               provider() { return }
+            }
+        })
         pacbioRun = wrapper.vm
     })  
 
@@ -99,15 +107,19 @@ describe('Run.vue', () => {
         })
     })
 
-    describe('Create button', () => {
-        it('will only show if the record is new', () => {
-            expect(wrapper.find('#create').exists()).toBeFalsy()
+    describe('button', () => {
+        describe('Create button', () => {
+            it('will only show if the record is new', () => {
+                wrapper.setData({ newRecord: true })
+                expect(wrapper.find('#create').exists()).toBeTruthy()
+            })
         })
-    })
 
-    describe('Update button', () => {
-        it('will only show if the record is existing', () => {
-            expect(wrapper.find('#update').exists()).toBeTruthy()
+        describe('Update button', () => {
+            it('will only show if the record is existing', () => {
+                wrapper.setData({ newRecord: false })
+                expect(wrapper.find('#update').exists()).toBeTruthy()
+            })
         })
     })
 
@@ -122,14 +134,14 @@ describe('Run.vue', () => {
         it('calls createRun', async () => {
             pacbioRun.createRun.mockReturnValue([])
 
-            await pacbioRun.create()
+            await pacbioRun.runAction()
             expect(pacbioRun.createRun).toBeCalled()
         })
 
         it('successful', async () => {
             pacbioRun.createRun.mockReturnValue([])
 
-            await pacbioRun.create()
+            await pacbioRun.runAction()
             expect(pacbioRun.createRun).toBeCalled()
             expect(pacbioRun.redirectToRuns).toBeCalled()
         })
@@ -137,7 +149,7 @@ describe('Run.vue', () => {
         it('unsuccessful', async () => {
             pacbioRun.createRun.mockReturnValue(['this is an error'])
 
-            await pacbioRun.create()
+            await pacbioRun.runAction()
             expect(pacbioRun.createRun).toBeCalled()
             expect(pacbioRun.showAlert).toBeCalledWith(['this is an error'], 'danger')
             expect(pacbioRun.redirectToRuns).not.toBeCalled()
@@ -147,6 +159,18 @@ describe('Run.vue', () => {
     describe('#update', () => {
 
         beforeEach(() => {
+             wrapper = shallowMount(PacbioRun, {
+            store, 
+            router,
+            localVue,
+            propsData: { id: 1},
+            methods: {
+               provider() { return }
+               
+            }
+        })
+        pacbioRun = wrapper.vm
+
             pacbioRun.showAlert = jest.fn()
             pacbioRun.updateRun = jest.fn()
             pacbioRun.redirectToRuns = jest.fn()
@@ -155,14 +179,14 @@ describe('Run.vue', () => {
         it('calls updateRun', async () => {
             pacbioRun.updateRun.mockReturnValue([])
 
-            await pacbioRun.update()
+            await pacbioRun.runAction()
             expect(pacbioRun.updateRun).toBeCalled()
         })
 
         it('successful', async () => {
             pacbioRun.updateRun.mockReturnValue([])
 
-            await pacbioRun.update()
+            await pacbioRun.runAction()
             expect(pacbioRun.updateRun).toBeCalled()
             expect(pacbioRun.redirectToRuns).toBeCalled()
         })
@@ -170,7 +194,7 @@ describe('Run.vue', () => {
         it('unsuccessful', async () => {
             pacbioRun.updateRun.mockReturnValue(['this is an error'])
 
-            await pacbioRun.update()
+            await pacbioRun.runAction()
             expect(pacbioRun.updateRun).toBeCalled()
             expect(pacbioRun.showAlert).toBeCalledWith(['this is an error'], 'danger')
             expect(pacbioRun.redirectToRuns).not.toBeCalled()

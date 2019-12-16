@@ -36,15 +36,12 @@
 
       </b-form>
 
-      <template v-slot:modal-footer="{ ok, cancel }">
-        <b-button @click="cancel()">
-          Cancel
-        </b-button>
+     <template v-slot:modal-footer="{ ok }">
+       <b-button variant="success" @click="update()">
+         Update
+       </b-button>
+     </template>
 
-        <b-button variant="success" @click="update()">
-          Update Well
-        </b-button>
-      </template>
     </b-modal>
 </template>
 
