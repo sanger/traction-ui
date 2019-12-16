@@ -11,7 +11,7 @@ describe('Well.vue', () => {
     props = { row: 'A', column: '1',   cx: "60.440327", cy: "75.818642", rx: "10.906492", ry: "11.032985" }
 
     storeWell = Run.buildWell(props.row, props.column)
-    storeWell.libraries = [{ id: 1, barcode: 'TRAC-1'}]
+    storeWell.libraries = [{ id: 1, barcode: 'TRAC-1' }, { id: 2, barcode: 'TRAC-2' }]
 
     run = Run.build()
     run.plate.wells[0] = storeWell
@@ -85,8 +85,8 @@ describe('Well.vue', () => {
   describe('library barcodes', () => {
 
     it('will be present if there are some in the store', () => {
-      expect(well.libraryBarcodes).toEqual(storeWell.libraries[0].barcode)
-     
+      let expected = storeWell.libraries.map((l) => l.barcode).join(',')
+      expect(well.libraryBarcodes).toEqual(expected)
     })
 
     it('will be empty if there are none in the store', () => {

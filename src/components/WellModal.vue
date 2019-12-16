@@ -1,19 +1,12 @@
 <template>
-    <b-modal ref="well-modal" title="Add Library to Well">
-      
+    <b-modal size="lg" ref="well-modal" >
+      <template v-slot:modal-title v-bind:position="this.position">
+        Add Library to Well: {{ position }}
+      </template>
+
       <alert ref='alert'></alert>
 
-      Position: {{ this.position }}
-
       <b-form>
-        <b-form-input
-          ref="libraryBarcode"
-          id="libraryBarcode"
-          :value="libraryBarcode"
-          @change="updateLibraryBarcode"
-          placeholder="Library Barcode">
-        </b-form-input>
-
         <b-form-select ref="movieTime" id="movieTime" :value="movieTime" :options="movieTimeOptions" @change="updateMovieTime"></b-form-select>
 
         <b-form-input
@@ -36,12 +29,31 @@
 
       </b-form>
 
-     <template v-slot:modal-footer="{ ok }">
-       <b-button variant="success" @click="update()">
-         Update
-       </b-button>
-     </template>
+      <b-table stacked :items="wellLibraries" :fields="wellLibrariesFields" id="wellLibraries">
+        <template v-slot:table-caption>Libraries</template>
 
+        <template v-slot:cell(barcode)="row" >
+          <b-form inline>
+            <b-form-input
+              ref="libraryBarcode"
+              id="libraryBarcode"
+              :value="`${row.item.barcode}`"
+              @change="updateLibraryBarcode(row, $event)"
+              placeholder="Library Barcode">
+            </b-form-input>
+
+            <b-button class="button btn-xs btn-danger" @click="removeRow(row)" inline>-</b-button>
+          </b-form>
+        </template>
+      </b-table>
+
+      <b-button class="button btn-xs btn-success" @click="addRow">+</b-button>
+
+      <template v-slot:modal-footer="{ ok }">
+        <b-button variant="success" @click="update()">
+          Update
+        </b-button>
+      </template>
     </b-modal>
 </template>
 
@@ -66,10 +78,20 @@ export default {
     return {
       movieTimeOptions: [ { text: 'Movie Time', value: "" }, '15.0', '20.0', '30.0' ],
       sequencingModeOptions: [ { text: 'Sequencing Mode', value: "" }, 'CLR', 'CCS'],
+      wellLibrariesFields: ['barcode'],
     }
   },
   methods: {
-    showModalForPosition() {    
+    addRow(){
+      this.addEmptyLibraryToWell(this.position)
+    },
+    removeRow(row){
+      this.removeLibraryFromWell({ position: this.position, index: row.index })
+    },
+    showModalForPosition() { 
+      if (!this.well(this.position)) {
+        this.mutateWell({ position: this.position }) // Create well if it doesn't exist
+      }
       this.$refs['well-modal'].show()
     },
     hide() {
@@ -91,14 +113,16 @@ export default {
     updateSequencingMode(seqMode) {
       this.mutateWell({ position: this.position, property: 'sequencing_mode', with: seqMode })
     },
-    async updateLibraryBarcode(barcode) {
+    async updateLibraryBarcode(row, barcode) {
+      let index = row.index
+
       let isValid = await this.isLibraryBarcodeValid(barcode)
 
       if (isValid) {
         let libraryTube = await this.getTubeForBarcode(barcode)
         let library = libraryTube.material
-        let payload = { position: this.position, property: 'libraries', with: [{ id: library.id, barcode: library.barcode }]}
-        this.mutateWell(payload)
+        let payload = { position: this.position, index: index, with: { id: library.id, barcode: library.barcode }}
+        this.addLibraryToWell(payload)
       } else {
         this.showAlert('Library is not valid', 'danger')
       }
@@ -108,7 +132,10 @@ export default {
       'getTubeForBarcode',
     ]),
     ...mapMutations([
-      'mutateWell'
+      'mutateWell',
+      'addEmptyLibraryToWell',
+      'removeLibraryFromWell',
+      'addLibraryToWell'
     ]),
     alert (message, type) {
       this.$emit('alert', message, type)
@@ -129,12 +156,11 @@ export default {
       movieTime () {
         return (this.well(this.position) ? this.well(this.position).movie_time : '')
       },
-      libraryBarcode () {
-        // Assuming there is only one library in a well
-        return (this.well(this.position) ? this.well(this.position).libraries[0].barcode : '')
-      },
       sequencingMode () {
         return (this.well(this.position) ? this.well(this.position).sequencing_mode : '')
+      },
+      wellLibraries () {
+        return (this.well(this.position) ? this.well(this.position).libraries : [])
       }
     })
   },
