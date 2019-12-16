@@ -81,8 +81,6 @@ export default {
       }  
     },
     hasLibraries () {
-      console.log(this.position)
-      console.log(this.libraryBarcodes)
       return this.libraryBarcodes.length > 0
     }
   },
