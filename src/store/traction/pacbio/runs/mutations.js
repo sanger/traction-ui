@@ -25,10 +25,13 @@ const mutations = {
     mutateWell(state, payload) {
         let currentWell = getCurrentWell(state, payload.position)
 
+        // If well does not exist - Build a new well
         if (!currentWell) {
-            // If well does not exist - Build a new well
-            let row = payload.position.split("")[0] // e.g. A
-            let column = payload.position.split("")[1] // e.g. 1
+            let position = payload.position
+            // match() returns [original, row, column] e.g "A10 => ["A10", "A", "10"]
+            let row = position.match(/(\S)(\d+)/)[1]
+            let column = position.match(/(\S)(\d+)/)[2]
+
             currentWell = PacbioRun.buildWell(row, column)
 
             state.currentRun.plate.wells.push(currentWell)
