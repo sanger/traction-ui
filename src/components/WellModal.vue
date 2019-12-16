@@ -49,13 +49,9 @@
 
       <b-button class="button btn-xs btn-success" @click="addRow">+</b-button>
 
-      <template v-slot:modal-footer="{ ok, cancel }">
-        <b-button @click="cancel()">
-          Cancel
-        </b-button>
-
-        <b-button variant="primary" @click="update()">
-          Update Well
+      <template v-slot:modal-footer="{ ok }">
+        <b-button variant="success" @click="update()">
+          Update
         </b-button>
       </template>
     </b-modal>

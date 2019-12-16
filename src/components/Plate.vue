@@ -44,7 +44,6 @@ export default {
     plateMap () {
       return PlateMap
     }
-
   },
   components: {
     Well
