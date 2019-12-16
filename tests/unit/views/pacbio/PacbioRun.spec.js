@@ -134,14 +134,14 @@ describe('Run.vue', () => {
         it('calls createRun', async () => {
             pacbioRun.createRun.mockReturnValue([])
 
-            await pacbioRun.create()
+            await pacbioRun.runAction()
             expect(pacbioRun.createRun).toBeCalled()
         })
 
         it('successful', async () => {
             pacbioRun.createRun.mockReturnValue([])
 
-            await pacbioRun.create()
+            await pacbioRun.runAction()
             expect(pacbioRun.createRun).toBeCalled()
             expect(pacbioRun.redirectToRuns).toBeCalled()
         })
@@ -149,7 +149,7 @@ describe('Run.vue', () => {
         it('unsuccessful', async () => {
             pacbioRun.createRun.mockReturnValue(['this is an error'])
 
-            await pacbioRun.create()
+            await pacbioRun.runAction()
             expect(pacbioRun.createRun).toBeCalled()
             expect(pacbioRun.showAlert).toBeCalledWith(['this is an error'], 'danger')
             expect(pacbioRun.redirectToRuns).not.toBeCalled()
@@ -159,6 +159,18 @@ describe('Run.vue', () => {
     describe('#update', () => {
 
         beforeEach(() => {
+             wrapper = shallowMount(PacbioRun, {
+            store, 
+            router,
+            localVue,
+            propsData: { id: 1},
+            methods: {
+               provider() { return }
+               
+            }
+        })
+        pacbioRun = wrapper.vm
+
             pacbioRun.showAlert = jest.fn()
             pacbioRun.updateRun = jest.fn()
             pacbioRun.redirectToRuns = jest.fn()
@@ -167,14 +179,14 @@ describe('Run.vue', () => {
         it('calls updateRun', async () => {
             pacbioRun.updateRun.mockReturnValue([])
 
-            await pacbioRun.update()
+            await pacbioRun.runAction()
             expect(pacbioRun.updateRun).toBeCalled()
         })
 
         it('successful', async () => {
             pacbioRun.updateRun.mockReturnValue([])
 
-            await pacbioRun.update()
+            await pacbioRun.runAction()
             expect(pacbioRun.updateRun).toBeCalled()
             expect(pacbioRun.redirectToRuns).toBeCalled()
         })
@@ -182,7 +194,7 @@ describe('Run.vue', () => {
         it('unsuccessful', async () => {
             pacbioRun.updateRun.mockReturnValue(['this is an error'])
 
-            await pacbioRun.update()
+            await pacbioRun.runAction()
             expect(pacbioRun.updateRun).toBeCalled()
             expect(pacbioRun.showAlert).toBeCalledWith(['this is an error'], 'danger')
             expect(pacbioRun.redirectToRuns).not.toBeCalled()

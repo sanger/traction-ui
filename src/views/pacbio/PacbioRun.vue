@@ -6,8 +6,7 @@
       <b-button id="backToRunsButton" class="float-right">Back</b-button>
     </router-link>
 
-    <b-button v-if="newRecord" class="float-right" id="create" variant="success" @click="create">Create</b-button>
-    <b-button v-if="!newRecord" class="float-right" id="update" variant="primary" @click="update">Update</b-button>
+    <b-button class="float-right" :id="currentAction.id" :variant="currentAction.variant" @click="runAction">{{ currentAction.label}}</b-button>
 
     <br>
     <br>
@@ -40,29 +39,44 @@ const { mapGetters, mapState, mapActions } = createNamespacedHelpers('traction/p
 export default {
   name: 'Run',
   mixins: [Helper],
-  props: ['id'],
+  props: {
+    id: {
+      type: [String, Number]
+    },
+    actions: {
+      type: Object,
+      default () {
+        return {
+          create: {
+            id: 'create',
+            variant: 'success',
+            label: 'Create',
+            method: 'createRun'
+          },
+          update: {
+            id: 'update',
+            variant: 'primary',
+            label: 'Update',
+            method: 'updateRun'
+          }
+        }
+      }
+    },
+  },
   data () {
     return {
-      newRecord: isNaN(this.$route.params.id)
+      // newRecord: isNaN(this.$route.params.id)
+      newRecord: isNaN(this.id)
     }
   },
   methods: {
-    async create () {
-      let responses = await this.createRun()
+    async runAction () {
+      let responses = await this[this.currentAction.method]()
 
       if (responses.length == 0) {
         this.redirectToRuns()
       } else {
           this.showAlert(responses, 'danger')
-      }
-    },
-    async update () {
-      let responses = await this.updateRun()
-
-      if (responses.length == 0) {
-        this.redirectToRuns()
-      } else {
-        this.showAlert(responses, 'danger')
       }
     },
     ...mapActions([
@@ -78,9 +92,7 @@ export default {
       if (this.newRecord) {
         this.newRun()
       } else {
-        let path = this.$route.params.id 
-        let runId = parseInt(path)
-        await this.editRun(runId)
+        await this.editRun(parseInt(this.$route.params.id))
       }
     }
   },
@@ -91,6 +103,10 @@ export default {
     Plate
   },
   computed: {
+    currentAction () {
+      console.log(this.id)
+      return this.actions[this.newRecord ? 'create' : 'update']
+    },
     ...mapGetters([
       'currentRun'
     ]),
