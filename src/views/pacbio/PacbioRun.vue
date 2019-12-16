@@ -65,7 +65,6 @@ export default {
   },
   data () {
     return {
-      // newRecord: isNaN(this.$route.params.id)
       newRecord: isNaN(this.id)
     }
   },
@@ -104,7 +103,6 @@ export default {
   },
   computed: {
     currentAction () {
-      console.log(this.id)
       return this.actions[this.newRecord ? 'create' : 'update']
     },
     ...mapGetters([
