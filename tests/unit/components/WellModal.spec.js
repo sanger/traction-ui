@@ -62,7 +62,7 @@ describe('PacbioRunInfo', () => {
         expect(modal.insertSize).toBeDefined()
         expect(modal.onPlateLoadingConc).toBeDefined()
         expect(modal.movieTime).toBeDefined()
-        expect(modal.libraryBarcode).toBeDefined()
+        expect(modal.wellLibraries).toBeDefined()
         expect(modal.sequencingMode).toBeDefined()
     })
 
@@ -85,6 +85,9 @@ describe('PacbioRunInfo', () => {
         })
         it('has a Sequencing Mode input', () => {
             expect(wrapper.find('.sequencingMode')).toBeDefined()
+        })
+        it('has a table of well libraries', () => {
+            expect(wrapper.find('#wellLibraries')).toBeDefined()
         })
     })
 
@@ -123,14 +126,16 @@ describe('PacbioRunInfo', () => {
         })
 
         describe('updateLibraryBarcode', () => {
-            let newBarcode
+            let newBarcode, row, anIndex
 
             beforeEach(() => {
                 newBarcode = 'TRAC-1'
+                anIndex = 1
+                row = { index: anIndex}
                 modal.showAlert = jest.fn()
                 modal.isLibraryBarcodeValid = jest.fn()
                 modal.getTubeForBarcode = jest.fn()
-                modal.mutateWell = jest.fn()
+                modal.addLibraryToWell = jest.fn()
             })
 
             it('successful when barcode is valid', async () => {
@@ -141,9 +146,9 @@ describe('PacbioRunInfo', () => {
                 modal.isLibraryBarcodeValid.mockReturnValue(true)
                 modal.getTubeForBarcode.mockReturnValue(tube)
 
-                await modal.updateLibraryBarcode(newBarcode)
+                await modal.updateLibraryBarcode(row, newBarcode)
 
-                expect(modal.mutateWell).toBeCalledWith({ position: props.position, property: 'libraries', with: [{ id: library.id, barcode: library.barcode }] })
+                expect(modal.addLibraryToWell).toBeCalledWith({ index: anIndex, position: props.position, with: { id: library.id, barcode: library.barcode } })
                 expect(modal.showAlert).not.toBeCalled()
             })
 
@@ -151,7 +156,7 @@ describe('PacbioRunInfo', () => {
                 modal.isLibraryBarcodeValid.mockReturnValue(false)
 
                 await modal.updateLibraryBarcode(newBarcode)
-                expect(modal.mutateWell).not.toBeCalled()
+                expect(modal.addLibraryToWell).not.toBeCalled()
                 expect(modal.showAlert).toBeCalledWith('Library is not valid', 'danger')
             })
 
