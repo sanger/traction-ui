@@ -60,6 +60,17 @@ describe('mutateWell', () => {
       expect(well.libraries[0].id).toEqual(123)
       expect(well.libraries[0].barcode).toEqual('TRAC-1')
     })
+
+    it('mutates the well, when the well position has a multidigit eg A10', () => {
+      position = 'A10'
+      let payload = { position: position, property: 'libraries', with: [{ id: 123, barcode: 'TRAC-1' }] }
+      Mutations.default.mutateWell(state, payload)
+
+      let well = state.currentRun.plate.wells.filter(well => well.position === position)[0]
+      expect(well.libraries.length).toEqual(payload.with.length)
+      expect(well.libraries[0].id).toEqual(123)
+      expect(well.libraries[0].barcode).toEqual('TRAC-1')
+    })
   })
 
   describe('when well does not exist', () => {
