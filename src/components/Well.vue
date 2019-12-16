@@ -1,6 +1,6 @@
 <template>
   <g>
-    <ellipse v-bind:class="[{filled: hasLibraries}, position]" :cx="cx" :cy="cy" :rx="rx" :ry="ry" v-on:click="showModal" >
+    <ellipse v-on:drop="drop" v-on:dragover="allowDrop" v-bind:class="[{filled: hasLibraries}, position]" :cx="cx" :cy="cy" :rx="rx" :ry="ry" v-on:click="showModal" >
       <title v-text="tooltip"></title>
     </ellipse>
     <foreignObject>
@@ -53,6 +53,13 @@ export default {
     },
     showModal () {
       this.$refs.modal.showModalForPosition()
+    },
+    allowDrop (event) {
+      event.preventDefault()
+    },
+    drop (event) {
+      event.preventDefault()
+      console.log('dropped')
     }
   },
   computed: {

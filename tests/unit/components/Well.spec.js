@@ -95,6 +95,41 @@ describe('Well.vue', () => {
     })
 
   })
+  // TODO: same as well modal - refactor baby!
+  describe('updateLibraryBarcode', () => {
+    let newBarcode
+
+    beforeEach(() => {
+      newBarcode = 'TRAC-1'
+      well.showAlert = jest.fn()
+      well.isLibraryBarcodeValid = jest.fn()
+      well.getTubeForBarcode = jest.fn()
+      well.mutateWell = jest.fn()
+    })
+
+    it('successful when barcode is valid', async () => {
+      let successfulResponse = new Response(libraryTube)
+      let tube = successfulResponse.deserialize.tubes[0]
+      let library = tube.material
+
+      well.isLibraryBarcodeValid.mockReturnValue(true)
+      well.getTubeForBarcode.mockReturnValue(tube)
+
+      await well.updateLibraryBarcode(newBarcode)
+
+      expect(well.mutateWell).toBeCalledWith({ position: props.position, property: 'libraries', with: [{ id: library.id, barcode: library.barcode }] })
+      expect(well.showAlert).not.toBeCalled()
+    })
+
+    it('is unsuccessful when barcode is not valid', async () => {
+      well.isLibraryBarcodeValid.mockReturnValue(false)
+
+      await well.updateLibraryBarcode(newBarcode)
+      expect(well.mutateWell).not.toBeCalled()
+      expect(well.showAlert).toBeCalledWith('Library is not valid', 'danger')
+    })
+
+  })
 
   describe('tooltip', () => {
 

@@ -1,15 +1,34 @@
 <template>
   <div class="librariesTable">
-    <b-table id="libraries-table"
-             sticky-header
-             show-empty
-             :items="libraries"
-             :fields="fields"
-             hover
-             selectable
-             select-mode="single"
-             @row-selected="onRowSelected">
-    </b-table>
+    <!-- draggable v-model="libraries" draggable="tbody > tr">
+      
+        <b-table id="libraries-table"
+            sticky-header
+            show-empty
+            :items="libraries"
+            :fields="fields"
+            hover
+            selectable
+            select-mode="multi"
+            primary-key="id"
+            @row-selected="onRowSelected">
+        </b-table>
+      
+    </draggable -->
+    <table>
+      <thead>
+        <tr>
+          <th v-for="field in fields" v-bind:key="field.label">{{ field.label }}</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr v-for="library in libraries" draggable="true" v-on:dragstart="drag" v-bind:key="library.id">
+          <td>{{ library.barcode}}</td>
+          <td>{{ library.sample_names}}</td>
+          <td>{{ library.tag_oligos}}</td>
+        </tr>
+      </tbody>
+    </table>
   </div>
 </template>
 
@@ -38,6 +57,9 @@ export default {
     ])
   },
   methods: {
+    drag (event) {
+      console.log('dragging')
+    },
     async provider() {
         try {
         await this.setLibraries()
@@ -47,11 +69,13 @@ export default {
     },
     ...mapActions([
       'setLibraries'
-    ]),
+    ])
   },
   created() {
     this.provider()
   },
+  components: {
+  }
 }
 </script>
 
