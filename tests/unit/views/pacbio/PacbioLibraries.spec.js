@@ -90,7 +90,7 @@ describe('Libraries.vue', () => {
       await libraries.handleLibraryDelete()
 
       expect(libraries.deleteLibraries).toBeCalledWith(mockLibraries.map(s => s.id))
-      expect(libraries.showAlert).toBeCalledWith('Libraries 1, 2 successfully deleted')
+      expect(libraries.showAlert).toBeCalledWith('Libraries 1, 2 successfully deleted', 'success')
     })
 
     it('calls showAlert when there is an error', async () => {
