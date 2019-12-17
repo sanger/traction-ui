@@ -65,7 +65,6 @@ export default {
     },
     libraryBarcodes () {
       let well = this.well(this.position)
-      if (well === undefined) return ''
       let barcodesList = well.libraries.map(l =>  l.barcode)
       if (barcodesList.length > 0) {
         return barcodesList.join(',')
@@ -81,7 +80,9 @@ export default {
       }  
     },
     hasLibraries () {
-      return this.libraryBarcodes.length > 0
+      let well = this.well(this.position)
+      if (well === undefined) return false
+      return well.libraries.length > 0
     }
   },
   mounted() {
