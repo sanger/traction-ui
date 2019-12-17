@@ -146,21 +146,20 @@ describe('#validateLibraryTube', () => {
 })
 
 describe('#editRun', () => {
-  let getters, commit, mockRun, run
+  let getters, commit, mockRun, find
 
   beforeEach(() => {
-    mockRun = new Response(Data.PacbioRuns).deserialize.runs[0]
+    mockRun = new Response(Data.PacbioRun).deserialize.runs[0]
 
-    run = jest.fn()
-    getters = { 'run': run }
+    find = jest.fn()
+    getters = { 'runRequest': { 'find': find } }
     commit = jest.fn()
   })
 
   it('successfully', async () => {
-    run.mockReturnValue(mockRun)
-
-    Actions.editRun({ getters, commit }, mockRun.id)
-    expect(commit).toHaveBeenCalledWith("setCurrentRun", mockRun)
+    find.mockReturnValue(Data.PacbioRun)
+    await Actions.editRun({ commit, getters }, mockRun.id)
+    expect(commit).toHaveBeenCalled() //("setCurrentRun", mockRun)
   })
 })
 

@@ -6,8 +6,7 @@
       <b-button id="backToRunsButton" class="float-right">Back</b-button>
     </router-link>
 
-    <b-button v-if="newRecord" class="float-right" id="create" variant="success" @click="create">Create</b-button>
-    <b-button v-if="!newRecord" class="float-right" id="update" variant="primary" @click="update">Update</b-button>
+    <b-button class="float-right" :id="currentAction.id" :variant="currentAction.variant" @click="runAction">{{ currentAction.label}}</b-button>
 
     <br>
     <br>
@@ -20,7 +19,7 @@
           <pacbioLibrariesTable></pacbioLibrariesTable>
         </b-col>
         <b-col>
-          <Plate @alert="showAlert"></Plate>
+          <Plate v-if="this.currentRun.id" @alert="showAlert"></Plate>
         </b-col>
       </b-row>
     </div>
@@ -40,9 +39,38 @@ const { mapGetters, mapState, mapActions } = createNamespacedHelpers('traction/p
 export default {
   name: 'Run',
   mixins: [Helper],
+  props: {
+    id: {
+      type: [String, Number]
+    },
+    actions: {
+      type: Object,
+      default () {
+        return {
+          create: {
+            id: 'create',
+            variant: 'success',
+            label: 'Create',
+            method: 'createRun'
+          },
+          update: {
+            id: 'update',
+            variant: 'primary',
+            label: 'Update',
+            method: 'updateRun'
+          }
+        }
+      }
+    },
+  },
+  data () {
+    return {
+      newRecord: isNaN(this.id)
+    }
+  },
   methods: {
-    async create () {
-      let responses = await this.createRun()
+    async runAction () {
+      let responses = await this[this.currentAction.method]()
 
       if (responses.length == 0) {
         this.redirectToRuns()
@@ -50,21 +78,21 @@ export default {
           this.showAlert(responses, 'danger')
       }
     },
-    async update () {
-      let responses = await this.updateRun()
-
-      if (responses.length == 0) {
-        this.redirectToRuns()
-      } else {
-        this.showAlert(responses, 'danger')
-      }
-    },
     ...mapActions([
       'createRun',
-      'updateRun'
+      'updateRun',
+      'editRun',
+      'newRun'
     ]),
     redirectToRuns() {
       this.$router.push({ name: 'PacbioRuns' })
+    },
+    async provider () {
+      if (this.newRecord) {
+        this.newRun()
+      } else {
+        await this.editRun(parseInt(this.$route.params.id))
+      }
     }
   },
   components: {
@@ -74,8 +102,8 @@ export default {
     Plate
   },
   computed: {
-    newRecord () {
-      return isNaN(this.currentRun.id)
+    currentAction () {
+      return this.actions[this.newRecord ? 'create' : 'update']
     },
     ...mapGetters([
       'currentRun'
@@ -84,6 +112,9 @@ export default {
       currentRun: state => state.currentRun
     })
   },
+  created() {
+    this.provider()
+  }
 }
 </script>
 

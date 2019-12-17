@@ -45,7 +45,7 @@
           Cancel
         </b-button>
 
-        <b-button :id="generateId('editRun', row.item.id)" variant="outline-info" size="sm" class="mr-1" @click="editRun(row.item.id)">
+        <b-button :id="generateId('editRun', row.item.id)" variant="outline-info" size="sm" class="mr-1" @click="redirectToRun(row.item.id)">
           Edit
         </b-button>
 
@@ -61,7 +61,7 @@
     <div class="clearfix">
       <b-button id="newRun"
                 class="float-left"
-                @click="newRun()"
+                @click="redirectToRun()"
                 variant="success">
         New Run
       </b-button>
@@ -134,11 +134,12 @@ export default {
         this.showAlert("Failed to update run: " + error.message, 'danger')
       }
     },
+    redirectToRun(runId) {
+      this.$router.push({ path: `/pacbio/run/${runId || 'new'}` })
+    },
     ...mapActions('traction/pacbio/runs', [
       'setRuns',
-      'newRun',
       'generateSampleSheet',
-      'editRun'
     ]),
     ...mapActions('traction', [
       'startRun',
