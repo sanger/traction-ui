@@ -78,6 +78,14 @@ describe('Libraries.vue', () => {
     })
   })
 
+  describe('perPage', () => {
+    it('states how many rows the table should contain', () => {
+      let mockLibraries = new Response(Data.TractionPacbioLibraries).deserialize.libraries
+      wrapper.setData({ items: mockLibraries, perPage: 1 })
+      expect(wrapper.find('tbody').findAll('tr').length).toEqual(1)
+    })
+  })
+
   describe('#handleLibraryDelete', () => {
     beforeEach(() => {
       libraries.deleteLibraries = jest.fn()

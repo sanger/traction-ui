@@ -71,6 +71,10 @@
                     aria-controls="libraries-table">
       </b-pagination>
     </div>
+
+    <b-form-group label-cols-lg="1" label="Per Page" label-for="input-default">
+        <b-form-input id="input-default" v-model="perPage" trim  class="w-25"></b-form-input>
+    </b-form-group>
   </div>
 </template>
 
@@ -102,7 +106,7 @@ export default {
       filteredItems: [],
       selected: [],
       filter: null,
-      perPage: 5,
+      perPage: 6,
       currentPage: 1,
       preFilteredMaterials: []
     }
