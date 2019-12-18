@@ -1,20 +1,5 @@
 <template>
   <div class="librariesTable">
-    <!-- draggable v-model="libraries" draggable="tbody > tr">
-      
-        <b-table id="libraries-table"
-            sticky-header
-            show-empty
-            :items="libraries"
-            :fields="fields"
-            hover
-            selectable
-            select-mode="multi"
-            primary-key="id"
-            @row-selected="onRowSelected">
-        </b-table>
-      
-    </draggable -->
     <table>
       <thead>
         <tr>
@@ -22,7 +7,7 @@
         </tr>
       </thead>
       <tbody>
-        <tr v-for="library in libraries" draggable="true" v-on:dragstart="drag" v-bind:key="library.id">
+        <tr v-for="library in libraries" draggable="true" v-on:dragstart="drag(library.barcode, $event)" v-bind:key="library.id">
           <td>{{ library.barcode}}</td>
           <td>{{ library.sample_names}}</td>
           <td>{{ library.tag_oligos}}</td>
@@ -57,8 +42,8 @@ export default {
     ])
   },
   methods: {
-    drag (event) {
-      console.log('dragging')
+    drag (barcode, event) {
+      event.dataTransfer.setData('barcode', barcode)
     },
     async provider() {
         try {

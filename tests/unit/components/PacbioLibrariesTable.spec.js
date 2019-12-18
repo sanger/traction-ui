@@ -63,4 +63,10 @@ describe('PacbioLibrariesTable', () => {
         expect(wrapper.find('tbody').findAll('tr').length).toEqual(5)
     })
 
+    describe('drag and drop', () => {
+      it('will create the data transfer', () => {
+        
+      })
+    })
+
 })

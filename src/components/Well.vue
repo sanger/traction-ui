@@ -1,6 +1,12 @@
 <template>
   <g>
-    <ellipse v-on:drop="drop" v-on:dragover="allowDrop" v-bind:class="[{filled: hasLibraries}, position]" :cx="cx" :cy="cy" :rx="rx" :ry="ry" v-on:click="showModal" >
+    <defs>
+      <!-- filter id="blurFilter" y="-2" height="10" -->
+      <filter id="blurFilter">
+          <feGaussianBlur in="SourceGraphic" stdDeviation="3" />
+      </filter>
+    </defs>
+    <ellipse v-on:drop="drop" v-on:dragover="allowDrop" v-on:dragleave="endDrop" v-bind:class="[{filled: hasLibraries, active: hover}, position]" :cx="cx" :cy="cy" :rx="rx" :ry="ry" v-on:click="showModal" >
       <title v-text="tooltip"></title>
     </ellipse>
     <foreignObject>
@@ -12,7 +18,7 @@
 <script>
 
 import { createNamespacedHelpers } from 'vuex'
-const { mapGetters } = createNamespacedHelpers('traction/pacbio/runs')
+const { mapActions, mapMutations, mapGetters } = createNamespacedHelpers('traction/pacbio/runs')
 import WellModal from '@/components/WellModal'
 
 export default {
@@ -45,9 +51,20 @@ export default {
   },
   data () {
     return {
+      hover: false
     }
   },
   methods: {
+     ...mapActions([
+    'isLibraryBarcodeValid',
+    'getTubeForBarcode',
+  ]),
+  ...mapMutations([
+    'mutateWell',
+    'addEmptyLibraryToWell',
+    'removeLibraryFromWell',
+    'addLibraryToWell'
+  ]),
     alert (message, type) {
       this.$emit('alert', message, type)
     },
@@ -56,10 +73,27 @@ export default {
     },
     allowDrop (event) {
       event.preventDefault()
+      this.hover = true
     },
-    drop (event) {
+    endDrop (event) {
       event.preventDefault()
-      console.log('dropped')
+      this.hover = false
+    },
+    async drop (event) {
+      event.preventDefault()
+      await this.updateLibraryBarcode(event.dataTransfer.getData('barcode'))
+    },
+    async updateLibraryBarcode(barcode) {
+      let isValid = await this.isLibraryBarcodeValid(barcode)
+
+      if (isValid) {
+        let libraryTube = await this.getTubeForBarcode(barcode)
+        let library = libraryTube.material
+        let payload = { position: this.position, with: { id: library.id, barcode: library.barcode }}
+        this.addLibraryToWell(payload)
+      } else {
+        this.showAlert('Library is not valid', 'danger')
+      }
     }
   },
   computed: {
@@ -111,5 +145,9 @@ export default {
   }
   .filled {
     fill: purple;
+  }
+  .active {
+    stroke: #ffffff;
+    filter: url(#blurFilter);
   }
 </style>

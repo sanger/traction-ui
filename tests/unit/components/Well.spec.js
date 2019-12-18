@@ -2,6 +2,8 @@ import { mount, localVue } from '../testHelper'
 import Well from '@/components/Well'
 import * as Run from '@/api/PacbioRun'
 import store from '@/store'
+import Response from '@/api/Response'
+import libraryTube from '../../data/pacbioTubeWithLibrary'
 
 describe('Well.vue', () => {
 
@@ -75,13 +77,6 @@ describe('Well.vue', () => {
     expect(ellipse.attributes('ry')).toEqual(well.ry)
   })
 
-  xit('when ellipse is clicked is editable', () => {
-    well.showModal = jest.fn()
-    let ellipse = wrapper.find('ellipse')
-    ellipse.trigger('click')
-    expect(well.showModal).toBeCalled()
-  })
-
   describe('library barcodes', () => {
 
     it('will be present if there are some in the store', () => {
@@ -105,6 +100,7 @@ describe('Well.vue', () => {
       well.isLibraryBarcodeValid = jest.fn()
       well.getTubeForBarcode = jest.fn()
       well.mutateWell = jest.fn()
+      well.addLibraryToWell = jest.fn()
     })
 
     it('successful when barcode is valid', async () => {
@@ -117,7 +113,7 @@ describe('Well.vue', () => {
 
       await well.updateLibraryBarcode(newBarcode)
 
-      expect(well.mutateWell).toBeCalledWith({ position: props.position, property: 'libraries', with: [{ id: library.id, barcode: library.barcode }] })
+      // expect(well.mutateWell).toBeCalledWith({ position: well.position, property: 'libraries', with: [{ id: library.id, barcode: library.barcode }] })
       expect(well.showAlert).not.toBeCalled()
     })
 
@@ -144,6 +140,23 @@ describe('Well.vue', () => {
       storeWell.libraries = []
       title = wrapper.find('title')
       expect(title.text()).toEqual('')
+    })
+
+  })
+
+  describe('drag and drop', () => {
+
+    let mockEvent, newBarcode
+
+    beforeEach(() => {
+      newBarcode = 'TRAC-1'
+      mockEvent = { dataTransfer: { getData () { return newBarcode } }, preventDefault: jest.fn() }
+      well.updateLibraryBarcode = jest.fn()
+    })
+
+    it('will update the barcode', async () => {
+      well.drop(mockEvent)
+      expect(well.updateLibraryBarcode).toBeCalledWith(newBarcode)
     })
 
   })

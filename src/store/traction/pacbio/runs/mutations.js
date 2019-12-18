@@ -56,7 +56,12 @@ const mutations = {
     addLibraryToWell(state, payload) {
         let index = payload.index
         let currentWell = state.currentRun.plate.wells.filter(well => well.position === payload.position)[0]
-        currentWell.libraries[index] = payload.with
+        if (index !== undefined) {
+            currentWell.libraries[index] = payload.with
+        } else {
+            currentWell.libraries.push(payload.with)
+        }
+       
     }
 }
 
