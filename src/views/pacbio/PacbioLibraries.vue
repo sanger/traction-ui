@@ -127,7 +127,8 @@ export default {
 
         if (responses.every(r => r.successful)) {
           let keyword = selectedIds.length > 1 ? 'Libraries' : 'Library'
-          this.showAlert(`${keyword} ${selectedIds.join(', ')} successfully deleted`)
+          this.showAlert(`${keyword} ${selectedIds.join(', ')} successfully deleted`, 'success')
+          this.provider()
         } else {
           throw Error(responses.map(r => r.errors.message).join(','))
         }
