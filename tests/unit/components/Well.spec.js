@@ -106,7 +106,6 @@ describe('Well.vue', () => {
     it('successful when barcode is valid', async () => {
       let successfulResponse = new Response(libraryTube)
       let tube = successfulResponse.deserialize.tubes[0]
-      let library = tube.material
 
       well.isLibraryBarcodeValid.mockReturnValue(true)
       well.getTubeForBarcode.mockReturnValue(tube)
