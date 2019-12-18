@@ -1,6 +1,7 @@
 import Vue from 'vue'
 import Router from 'vue-router'
 import Dashboard from './views/Dashboard'
+import PageNotFound from './views/PageNotFound'
 import Saphyr from './views/Saphyr'
 import SaphyrReception from './views/saphyr/SaphyrReception'
 import SaphyrSamples from './views/saphyr/SaphyrSamples'
@@ -38,7 +39,7 @@ export default new Router({
         { path: 'libraries', name: 'SaphyrLibraries', component: SaphyrLibraries },
         { path: 'runs', name: 'SaphyrRuns', component: SaphyrRuns },
         { path: 'run', name: 'SaphyrRun', component: SaphyrRun, props: {id: true} },
-        { path: 'run/:id', component: SaphyrRun, props: true }
+        { path: 'run/:id', component: SaphyrRun, props: true },
       ]
     },
     {
@@ -50,8 +51,12 @@ export default new Router({
         { path: 'samples', name: 'PacbioSamples', component: PacbioSamples },
         { path: 'libraries', name: 'PacbioLibraries', component: PacbioLibraries },
         { path: 'runs', name: 'PacbioRuns', component: PacbioRuns },
-        { path: 'run/:id', name: 'PacbioRun', component: PacbioRun, props: true}
+        { path: 'run/:id', name: 'PacbioRun', component: PacbioRun, props: true},
       ]
+    },
+    {
+      path: '*',
+      component: PageNotFound
     }
   ]
 })
