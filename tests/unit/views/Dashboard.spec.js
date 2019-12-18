@@ -9,7 +9,7 @@ describe('Dashboard.vue', () => {
   beforeEach(() => {
    router = new VueRouter({ routes: [
         { path: '/saphyr', name: 'Saphyr', component: require('@/views/Saphyr') },
-        { path: '/pacbio', name: 'Pacbio', component: require('@/views/Pacbio') }
+        { path: '/pacbio', name: 'Pacbio', component: require('@/views/Pacbio') },
       ]
     })
     wrapper = mount(Dashboard, { router, localVue,
@@ -62,5 +62,4 @@ describe('Dashboard.vue', () => {
     })
 
   })
-
 })

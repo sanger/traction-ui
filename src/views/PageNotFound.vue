@@ -1,9 +1,19 @@
 <template>
   <div class="PageNotFound">
+      <br>
       <h2>Page not found</h2>
       <br>
+      <h3>Some useful links:</h3>
       <router-link :to="{name: 'Dashboard'}">
-        <label id="backToDashboard">Return to Dashboard</label>
+        <label id="backToDashboard">Dashboard</label>
+      </router-link>
+      |
+      <router-link :to="{name: 'PacbioRuns'}">
+        <label id="backToPacbioRuns">Pacbio Runs</label>
+      </router-link>
+      |
+      <router-link :to="{name: 'SaphyrRuns'}">
+        <label id="backToSaphyrRuns">Saphyr Runs</label>
       </router-link>
   </div>
 </template>
@@ -17,11 +27,11 @@ export default {
 
 <style>
 
-h2 {
+h3,label{
   font-size: 20px;
 }
 
-label {
-  font-size: 15px;
+h2 {
+  font-size: 30px;
 }
 </style>
