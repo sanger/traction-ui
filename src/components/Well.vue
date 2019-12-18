@@ -82,6 +82,7 @@ export default {
     async drop (event) {
       event.preventDefault()
       await this.updateLibraryBarcode(event.dataTransfer.getData('barcode'))
+      this.hover = false
     },
     async updateLibraryBarcode(barcode) {
       let isValid = await this.isLibraryBarcodeValid(barcode)
@@ -146,8 +147,10 @@ export default {
   .filled {
     fill: purple;
   }
+  // need to sort to add blur
   .active {
-    stroke: #ffffff;
-    filter: url(#blurFilter);
+    fill: yellow;
+    // stroke: #ffffff;
+    // filter: url(#blurFilter);
   }
 </style>
