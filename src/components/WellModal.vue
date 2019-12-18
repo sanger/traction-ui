@@ -82,10 +82,10 @@ export default {
     }
   },
   methods: {
-    addRow(){
+    addRow() {
       this.addEmptyLibraryToWell(this.position)
     },
-    removeRow(row){
+    removeRow(row) {
       this.removeLibraryFromWell({ position: this.position, index: row.index })
     },
     showModalForPosition() { 

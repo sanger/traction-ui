@@ -45,7 +45,9 @@ const mutations = {
     addLibraryToWell(state, payload) {
         let index = payload.index
         let currentWell = getCurrentWell(state, payload.position)
-        currentWell.libraries[index] = payload.with
+
+        currentWell.libraries.splice(index, 1, payload.with)
+        currentWell.libraries = [...currentWell.libraries]
     }
 }
 
