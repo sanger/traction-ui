@@ -55,8 +55,13 @@ export default new Router({
       ]
     },
     {
-      path: '*',
+      path: '/404',
+      name: '404',
       component: PageNotFound
+    },
+    {
+      path: '*',
+      redirect: { name: '404'}
     }
   ]
 })
