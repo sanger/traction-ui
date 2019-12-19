@@ -3,7 +3,7 @@
     <defs>
       <!-- filter id="blurFilter" y="-2" height="10" -->
       <filter id="blurFilter">
-          <feGaussianBlur in="SourceGraphic" stdDeviation="3" />
+          <feGaussianBlur in="SourceGraphic" stdDeviation="1" />
       </filter>
     </defs>
     <ellipse v-on:drop="drop" v-on:dragover="allowDrop" v-on:dragleave="endDrop" v-bind:class="[{filled: hasLibraries, active: hover}, position]" :cx="cx" :cy="cy" :rx="rx" :ry="ry" v-on:click="showModal" >
@@ -149,8 +149,7 @@ export default {
   }
   // need to sort to add blur
   .active {
-    fill: yellow;
-    // stroke: #ffffff;
-    // filter: url(#blurFilter);
+    stroke: #ffffff;
+    filter: url(#blurFilter);
   }
 </style>
