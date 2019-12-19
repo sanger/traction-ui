@@ -82,15 +82,15 @@ export default {
     }
   },
   methods: {
-    addRow(){
+    addRow() {
       this.addEmptyLibraryToWell(this.position)
     },
-    removeRow(row){
+    removeRow(row) {
       this.removeLibraryFromWell({ position: this.position, index: row.index })
     },
     showModalForPosition() { 
       if (!this.well(this.position)) {
-        this.mutateWell({ position: this.position }) // Create well if it doesn't exist
+        this.createWell(this.position)
       }
       this.$refs['well-modal'].show()
     },
@@ -132,6 +132,7 @@ export default {
       'getTubeForBarcode',
     ]),
     ...mapMutations([
+      'createWell',
       'mutateWell',
       'addEmptyLibraryToWell',
       'removeLibraryFromWell',

@@ -82,35 +82,12 @@ describe('Well.vue', () => {
     expect(well.showModal).toBeCalled()
   })
 
-  describe('library barcodes', () => {
-
-    it('will be present if there are some in the store', () => {
-      let expected = storeWell.libraries.map((l) => l.barcode).join(',')
-      expect(well.libraryBarcodes).toEqual(expected)
-    })
-
-    it('will be empty if there are none in the store', () => {
-      storeWell.libraries = []
-      expect(well.libraryBarcodes).toEqual('')
-    })
-
-  })
-
   describe('tooltip', () => {
-
-    let title
-
-    it('will be visible if there are some libraries', () => {
-      title = wrapper.find('title')
-      expect(title.text()).toEqual(well.libraryBarcodes)
+    it('will only be visible if there are some libraries', () => {
+      let title = wrapper.find('title')
+      let expected = storeWell.libraries.map(l => l.barcode).join(',')
+      expect(title.text()).toEqual(expected)
     })
-
-    it('will be absent if there are no libraries', () => {
-      storeWell.libraries = []
-      title = wrapper.find('title')
-      expect(title.text()).toEqual('')
-    })
-
   })
 
 })
