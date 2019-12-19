@@ -64,9 +64,14 @@ describe('Runs.vue', () => {
             expect(wrapper.contains(Alert)).toBe(true)
         })
     })
+    describe('building the table', () => {
+        it('exists', () => {
+            expect(wrapper.contains('table')).toBe(true)
+        })
 
-    it('contains a table', () => {
-        expect(wrapper.contains('table')).toBe(true)
+        it('contains the correct data', async () => {
+            expect(wrapper.find('tbody').findAll('tr').length).toEqual(5)
+        })
     })
 
     describe('new run button', () => {
