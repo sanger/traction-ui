@@ -80,6 +80,46 @@
           }
         }
       }
+    },
+    {
+      "id": "5",
+      "type": "runs",
+      "links": {
+        "self": "/v1/runs/5"
+      },
+      "attributes": {
+        "state": "completed",
+        "chip_barcode": "TRAC-567",
+        "created_at":  "03/21/2019 05:01"
+      },
+      "relationships": {
+        "chip": {
+          "links": {
+            "self": "/v1/runs/5/relationships/chip",
+            "related": "/v1/runs/5/chip"
+          }
+        }
+      }
+    },
+    {
+      "id": "6",
+      "type": "runs",
+      "links": {
+        "self": "/v1/runs/6"
+      },
+      "attributes": {
+        "state": "pending",
+        "chip_barcode": "TRAC-678",
+        "created_at":  "03/21/2019 6:01"
+      },
+      "relationships": {
+        "chip": {
+          "links": {
+            "self": "/v1/runs/6/relationships/chip",
+            "related": "/v1/runs/6/chip"
+          }
+        }
+      }
     }]
   },
   "status": 200,
