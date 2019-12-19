@@ -2,6 +2,17 @@ import PageNotFound from '@/views/PageNotFound'
 import { mount, localVue } from '../testHelper'
 import VueRouter from 'vue-router'
 
+/*
+Add this to router
+If wanting to check redirection to error page is working
+{ path: '*', redirect: { name: '404'} },
+{ path: '/404', name: '404'},
+
+it('will redirect to page not found if invalid path', () => {
+  wrapper.vm.$router.push('/invalidpath')
+  expect(wrapper.vm.$route.path).toBe('/404')
+})
+*/
 describe('PageNotFound.vue', () => {
 
   let wrapper, router
