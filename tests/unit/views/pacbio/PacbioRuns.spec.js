@@ -70,7 +70,7 @@ describe('Runs.vue', () => {
         })
 
         it('contains the correct data', async () => {
-            expect(wrapper.find('tbody').findAll('tr').length).toEqual(5)
+            expect(wrapper.find('tbody').findAll('tr').length).toEqual(6)
         })
     })
 

@@ -71,7 +71,6 @@ describe('Samples.vue', () => {
         })
 
         it('contains the correct data', async () => {
-            wrapper.setData({ items: mockSamples })
             expect(wrapper.find('tbody').findAll('tr').length).toEqual(6)
         })
     })
