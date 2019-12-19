@@ -78,6 +78,14 @@ describe('Libraries.vue', () => {
     })
   })
 
+  describe('perPage', () => {
+    it('states how many rows the table should contain', () => {
+      let mockLibraries = new Response(Data.TractionPacbioLibraries).deserialize.libraries
+      wrapper.setData({ items: mockLibraries, perPage: 1 })
+      expect(wrapper.find('tbody').findAll('tr').length).toEqual(1)
+    })
+  })
+
   describe('#handleLibraryDelete', () => {
     beforeEach(() => {
       libraries.deleteLibraries = jest.fn()
@@ -90,7 +98,7 @@ describe('Libraries.vue', () => {
       await libraries.handleLibraryDelete()
 
       expect(libraries.deleteLibraries).toBeCalledWith(mockLibraries.map(s => s.id))
-      expect(libraries.showAlert).toBeCalledWith('Libraries 1, 2 successfully deleted')
+      expect(libraries.showAlert).toBeCalledWith('Libraries 1, 2 successfully deleted', 'success')
     })
 
     it('calls showAlert when there is an error', async () => {

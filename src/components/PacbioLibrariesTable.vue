@@ -11,6 +11,7 @@
           <td>{{ library.barcode}}</td>
           <td>{{ library.sample_names}}</td>
           <td>{{ library.tag_oligos}}</td>
+          <td><tube></tube></td>
         </tr>
       </tbody>
     </table>
@@ -22,6 +23,7 @@ import Helper from '@/mixins/Helper'
 import TableHelper from '@/mixins/TableHelper'
 import { createNamespacedHelpers } from 'vuex'
 const { mapActions, mapGetters } = createNamespacedHelpers('traction/pacbio/tubes')
+import Tube from '@/components/Tube'
 
 export default {
   name: 'PacbioLibrariesTable',
@@ -60,6 +62,7 @@ export default {
     this.provider()
   },
   components: {
+    Tube
   }
 }
 </script>
