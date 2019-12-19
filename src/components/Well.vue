@@ -1,7 +1,7 @@
 <template>
   <g>
     <ellipse v-bind:class="[{filled: hasLibraries}, position]" :cx="cx" :cy="cy" :rx="rx" :ry="ry" v-on:click="showModal" >
-      <title v-text="tooltip"></title>
+      <title v-if="hasLibraries" v-text="tooltip"></title>
     </ellipse>
     <foreignObject>
       <WellModal ref="modal" class="modal" @alert="alert" :position="position"></WellModal>
@@ -63,25 +63,14 @@ export default {
     position () {
       return `${this.row}${this.column}`
     },
-    libraryBarcodes () {
-      let well = this.well(this.position)
-      if (well === undefined) return ''
-      let barcodesList = well.libraries.map(l =>  l.barcode)
-      if (barcodesList.length > 0) {
-        return barcodesList.join(',')
-      } else {
-        return ''
-      }
-    },
     tooltip () {
-      if (this.hasLibraries) {
-        return this.libraryBarcodes
-      } else {
-        return ''
-      }  
+      let well = this.well(this.position)
+      return well.libraries.map(l =>  l.barcode).join(',')
     },
     hasLibraries () {
-      return this.libraryBarcodes.length > 0
+      let well = this.well(this.position)
+      if (well === undefined) return false
+      return well.libraries.length > 0
     }
   },
   mounted() {
