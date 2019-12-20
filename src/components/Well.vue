@@ -83,6 +83,7 @@ export default {
       await this.updateLibraryBarcode(event.dataTransfer.getData('barcode'))
       this.hover = false
     },
+    // TODO: show alert is not working on error
     async updateLibraryBarcode(barcode) {
       let isValid = await this.isLibraryBarcodeValid(barcode)
 

@@ -4,7 +4,7 @@ import { shallowMount, localVue, Vuex } from '../../testHelper'
 import VueRouter from 'vue-router'
 import Alert from '@/components/Alert'
 import PacbioRunInfo from '@/components/PacbioRunInfo'
-import PacbioLibrariesTable from '@/components/PacbioLibrariesTable'
+import PacbioLibrariesList from '@/components/PacbioLibrariesList'
 import Plate from '@/components/Plate'
 
 describe('Run.vue', () => {
@@ -91,7 +91,7 @@ describe('Run.vue', () => {
 
     describe('Pacbio Libraries Table', () => {
         it('dispays the pacbio library table', () => {
-            expect(wrapper.contains(PacbioLibrariesTable)).toBe(true)
+            expect(wrapper.contains(PacbioLibrariesList)).toBe(true)
         })
     })
 

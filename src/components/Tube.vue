@@ -1,16 +1,11 @@
+<!-- TODO: move inline styles to css -->
 <template>
+  <b-list-group-item draggable="true" v-on:dragstart="drag(barcode, $event)" >
     <svg
-       xmlns:dc="http://purl.org/dc/elements/1.1/"
-       xmlns:cc="http://creativecommons.org/ns#"
-       xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
-       xmlns:svg="http://www.w3.org/2000/svg"
-       xmlns="http://www.w3.org/2000/svg"
-       xmlns:xlink="http://www.w3.org/1999/xlink"
-       version="1.1"
-       width="82"
-       height="64"
-       viewBox="-20 -10 100 170"
-       class="tube"
+      width="82"
+      height="64"
+      viewBox="-20 -10 100 170"
+      class="tube"
     >
       <defs
          id="defs3404">
@@ -441,6 +436,18 @@
            x1="180.8709" />
       </g>
     </svg>
+    <div class="info">
+      <div class="barcode">
+        {{ barcode}}
+      </div>
+       <div class="sample_names">
+        {{ sample_names }}
+      </div>
+       <div class="tag_oligos">
+        {{ tag_oligos}}
+      </div>
+    </div>
+ </b-list-group-item>
 </template>
 
 <script>
@@ -448,15 +455,47 @@
 export default {
   name: 'Tube',
   props: {
+    barcode: {
+      type: String,
+      required: true
+    },
+    sample_names: {
+      type: String,
+      required: true
+    },
+    tag_oligos: {
+      type: String,
+      required: true
+    }
   },
   data () {
     return {
     }
   },
+  // TODO: need to add a atest for drag
   methods: {
+    drag (barcode, event) {
+      event.dataTransfer.setData('barcode', barcode)
+    }
   }
 }
 </script>
 
-<style lang="scss">
+<style scoped lang="scss">
+  svg {
+    float: left;
+  }
+  div {
+    text-align: left;
+  }
+  line {
+    fill: #ff2a2a;
+    stroke: #c30001;
+    stroke: {
+      width: 2;
+      linecap: round;
+      linejoin: round;
+      opacity: 0.45;
+    }
+  }
 </style>
