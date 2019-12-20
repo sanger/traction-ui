@@ -1,6 +1,6 @@
 <!-- TODO: move inline styles to css -->
 <template>
-  <b-list-group-item draggable="true" v-on:dragstart="drag(barcode, $event)" >
+  <b-list-group-item draggable="true" v-on:dragstart="drag(barcode, $event)" v-bind:class="{active: isActive}" v-on:mouseover="isActive = true" v-on:mouseleave="isActive = false">
     <svg>
       <image xlink:href="tube.svg" src="tube.svg" />
     </svg>
@@ -38,6 +38,7 @@ export default {
   },
   data () {
     return {
+      isActive: false
     }
   },
   // TODO: need to add a a test for drag
@@ -64,5 +65,8 @@ export default {
   }
   div {
     text-align: left;
+  }
+  .active {
+    background-color: gray;
   }
 </style>
