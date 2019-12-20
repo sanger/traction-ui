@@ -74,7 +74,7 @@ describe('Libraries.vue', () => {
     it('contains the correct data', async () => {
       let mockLibraries = new Response(Data.TractionSaphyrLibraries).deserialize.libraries
       wrapper.setData({ items: mockLibraries })
-      expect(wrapper.find('tbody').findAll('tr').length).toEqual(5)
+      expect(wrapper.find('tbody').findAll('tr').length).toEqual(6)
     })
   })
 
