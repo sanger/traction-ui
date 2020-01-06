@@ -9,7 +9,19 @@ const mutateRun = key => (state, val) => {
 }
 
 const getCurrentWell = (state, position) => {
-    return state.currentRun.plate.wells.filter(well => well.position === position)[0]
+    let currentWell = state.currentRun.plate.wells.filter(well => well.position === position)[0]
+
+    // If well does not exist - Build a new well
+    if (!currentWell) {
+        // match() returns [original, row, column] e.g "A10 => ["A10", "A", "10"]
+        let row = position.match(/(\S)(\d+)/)[1]
+        let column = position.match(/(\S)(\d+)/)[2]
+
+        currentWell = PacbioRun.buildWell(row, column)
+        state.currentRun.plate.wells.push(currentWell)
+    }
+
+    return currentWell
 }
 
 const mutations = {
@@ -24,29 +36,10 @@ const mutations = {
     setSystemName: mutateRun('system_name'),
     mutateWell(state, payload) {
         let currentWell = getCurrentWell(state, payload.position)
-
-        // If well does not exist - Build a new well
-        if (!currentWell) {
-            let position = payload.position
-            // match() returns [original, row, column] e.g "A10 => ["A10", "A", "10"]
-            let row = position.match(/(\S)(\d+)/)[1]
-            let column = position.match(/(\S)(\d+)/)[2]
-
-            currentWell = PacbioRun.buildWell(row, column)
-
-            state.currentRun.plate.wells.push(currentWell)
-        }
-
         currentWell[payload.property] = payload.with
     },
     addEmptyLibraryToWell(state, position) {
         let currentWell = getCurrentWell(state, position)
-        if (!currentWell) {
-            // If well does not exist - Build a new well
-            let row = position.split("")[0] // e.g. A
-            let column = position.split("")[1] // e.g. 1
-            currentWell = PacbioRun.buildWell(row, column)
-        }
         currentWell.libraries.push({ id: '', barcode: '' })
     },
     removeLibraryFromWell(state, payload) {
@@ -55,7 +48,8 @@ const mutations = {
     },
     addLibraryToWell(state, payload) {
         let index = payload.index
-        let currentWell = state.currentRun.plate.wells.filter(well => well.position === payload.position)[0]
+        let currentWell = getCurrentWell(state, payload.position)
+
         if (index !== undefined) {
             currentWell.libraries[index] = payload.with
         } else {
