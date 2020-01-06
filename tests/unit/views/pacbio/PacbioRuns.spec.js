@@ -1,14 +1,25 @@
 import PacbioRuns from '@/views/pacbio/PacbioRuns'
+import PacbioRun from '@/views/pacbio/PacbioRun'
 import { mount, localVue, Vuex, Data } from '../../testHelper'
 import Response from '@/api/Response'
 import Alert from '@/components/Alert'
+import VueRouter from 'vue-router'
 
 describe('Runs.vue', () => {
 
-    let wrapper, runs, mockRuns, store
+    let wrapper, runs, mockRuns, store, router
 
     beforeEach(() => {
         mockRuns = new Response(Data.PacbioRuns).deserialize.runs
+
+        router = new VueRouter({
+            routes: [{
+                path: '/pacbio/runs/:id',
+                name: 'PacbioRun',
+                component: PacbioRun,
+                props: true
+            }]
+        })
 
         store = new Vuex.Store({
             modules: {
@@ -38,7 +49,7 @@ describe('Runs.vue', () => {
             }
         })
 
-        wrapper = mount(PacbioRuns, { store, localVue, methods: { provider() { return } } })
+        wrapper = mount(PacbioRuns, { store, router, localVue, methods: { provider() { return } } })
         runs = wrapper.vm
     })
 
@@ -53,9 +64,14 @@ describe('Runs.vue', () => {
             expect(wrapper.contains(Alert)).toBe(true)
         })
     })
+    describe('building the table', () => {
+        it('exists', () => {
+            expect(wrapper.contains('table')).toBe(true)
+        })
 
-    it('contains a table', () => {
-        expect(wrapper.contains('table')).toBe(true)
+        it('contains the correct data', async () => {
+            expect(wrapper.find('tbody').findAll('tr').length).toEqual(6)
+        })
     })
 
     describe('new run button', () => {
@@ -65,10 +81,9 @@ describe('Runs.vue', () => {
         })
 
         it('will redirect to the run when newRun is clicked', async () => {
-            runs.newRun = jest.fn()
             let button = wrapper.find('#newRun')
             button.trigger('click')
-            expect(runs.newRun).toBeCalled()
+            expect(runs.$route.path).toEqual('/pacbio/run/new')
         })
     })
 
@@ -331,10 +346,9 @@ describe('Runs.vue', () => {
         })
 
         it('will call editRun when Edit is clicked', async () => {
-            runs.editRun = jest.fn()
             let button = wrapper.find('#editRun-1')
             button.trigger('click')
-            expect(runs.editRun).toBeCalled()
+            expect(runs.$route.path).toEqual('/pacbio/run/1')
         })
     })
 })

@@ -45,7 +45,7 @@
           Cancel
         </b-button>
 
-        <b-button :id="generateId('editRun', row.item.id)" variant="outline-info" size="sm" class="mr-1" @click="editRun(row.item.id)">
+        <b-button :id="generateId('editRun', row.item.id)" variant="outline-info" size="sm" class="mr-1" @click="redirectToRun(row.item.id)">
           Edit
         </b-button>
 
@@ -61,7 +61,7 @@
     <div class="clearfix">
       <b-button id="newRun"
                 class="float-left"
-                @click="newRun()"
+                @click="redirectToRun()"
                 variant="success">
         New Run
       </b-button>
@@ -73,7 +73,9 @@
               aria-controls="libraries-table">
       </b-pagination>
     </div>
-
+    <b-form-group label-cols-lg="1" label="Per Page" label-for="input-per-page">
+      <b-form-input id="input-per-page" v-model="perPage" trim  class="w-25"></b-form-input>
+    </b-form-group>
   </div>
 </template>
 
@@ -105,7 +107,7 @@ export default {
       filter: null,
       sortBy: 'created_at',
       sortDesc: true,
-      perPage: 10,
+      perPage: 6,
       currentPage: 1,
     }
   },
@@ -134,11 +136,12 @@ export default {
         this.showAlert("Failed to update run: " + error.message, 'danger')
       }
     },
+    redirectToRun(runId) {
+      this.$router.push({ path: `/pacbio/run/${runId || 'new'}` })
+    },
     ...mapActions('traction/pacbio/runs', [
       'setRuns',
-      'newRun',
       'generateSampleSheet',
-      'editRun'
     ]),
     ...mapActions('traction', [
       'startRun',

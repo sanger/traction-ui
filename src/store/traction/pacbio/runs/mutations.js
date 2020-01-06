@@ -8,6 +8,10 @@ const mutateRun = key => (state, val) => {
     state.currentRun[key] = val
 }
 
+const getCurrentWell = (state, position) => {
+    return state.currentRun.plate.wells.filter(well => well.position === position)[0]
+}
+
 const mutations = {
     setRuns: mutate('runs'),
     setCurrentRun: mutate('currentRun'),
@@ -18,18 +22,32 @@ const mutations = {
     setDNAControlComplexBoxBarcode: mutateRun('dna_control_complex_box_barcode'),
     setComments: mutateRun('comments'),
     setSystemName: mutateRun('system_name'),
+    createWell(state, position) {
+        // match() returns [original, row, column] e.g "A10 => ["A10", "A", "10"]
+        let row = position.match(/(\S)(\d+)/)[1]
+        let column = position.match(/(\S)(\d+)/)[2]
+
+        let currentWell = PacbioRun.buildWell(row, column)
+        state.currentRun.plate.wells.push(currentWell)
+    },
     mutateWell(state, payload) {
-        let currentWell = state.currentRun.plate.wells.filter(well => well.position === payload.position)[0]
-
-        if (!currentWell) {
-            // If well does not exist - Build a new well
-            let row = payload.position.split("")[0] // e.g. A
-            let column = payload.position.split("")[1] // e.g. 1
-            currentWell = PacbioRun.buildWell(row, column)
-
-            state.currentRun.plate.wells.push(currentWell)
-        }
+        let currentWell = getCurrentWell(state, payload.position)
         currentWell[payload.property] = payload.with
+    },
+    addEmptyLibraryToWell(state, position) {
+        let currentWell = getCurrentWell(state, position)
+        currentWell.libraries.push({ id: '', barcode: '' })
+    },
+    removeLibraryFromWell(state, payload) {
+        let currentWell = getCurrentWell(state, payload.position)
+        currentWell.libraries.splice(payload.index, 1)
+    },
+    addLibraryToWell(state, payload) {
+        let index = payload.index
+        let currentWell = getCurrentWell(state, payload.position)
+
+        currentWell.libraries.splice(index, 1, payload.with)
+        currentWell.libraries = [...currentWell.libraries]
     }
 }
 
