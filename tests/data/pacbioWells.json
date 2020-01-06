@@ -12,11 +12,11 @@
                     "insert_size": 1001,
                     "on_plate_loading_concentration": 10.1,
                     "row": "A",
-                    "column": "01",
+                    "column": "1",
                     "pacbio_plate_id": 1,
                     "comment": "comment1",
                     "sequencing_mode": "CLR",
-                    "position": "A01"
+                    "position": "A1"
                 },
                 "relationships": {
                     "libraries": {
@@ -38,11 +38,11 @@
                     "insert_size": 1001,
                     "on_plate_loading_concentration": 10.1,
                     "row": "A",
-                    "column": "01",
+                    "column": "1",
                     "pacbio_plate_id": 5,
                     "comment": null,
                     "sequencing_mode": "CLR",
-                    "position": "A01"
+                    "position": "A1"
                 },
                 "relationships": {
                     "libraries": {
