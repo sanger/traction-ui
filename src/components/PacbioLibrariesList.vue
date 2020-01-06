@@ -1,6 +1,6 @@
 <template>
   <div class="libraries">
-    <b-list-group>
+    <b-list-group class="list-group">
       <tube v-for="library in libraries" v-bind:key="library.id" v-bind="library">
       </tube>
     </b-list-group>
@@ -52,6 +52,11 @@ export default {
   border: solid;
   border-width: 1px;
   padding: 20px;
+}
+
+.list-group {
+    max-height: 400px;
+    overflow: scroll;
 }
 
 </style>
