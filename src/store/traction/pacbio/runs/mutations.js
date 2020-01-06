@@ -34,6 +34,14 @@ const mutations = {
     setDNAControlComplexBoxBarcode: mutateRun('dna_control_complex_box_barcode'),
     setComments: mutateRun('comments'),
     setSystemName: mutateRun('system_name'),
+    createWell(state, position) {
+        // match() returns [original, row, column] e.g "A10 => ["A10", "A", "10"]
+        let row = position.match(/(\S)(\d+)/)[1]
+        let column = position.match(/(\S)(\d+)/)[2]
+
+        let currentWell = PacbioRun.buildWell(row, column)
+        state.currentRun.plate.wells.push(currentWell)
+    },
     mutateWell(state, payload) {
         let currentWell = getCurrentWell(state, payload.position)
         currentWell[payload.property] = payload.with
@@ -49,13 +57,12 @@ const mutations = {
     addLibraryToWell(state, payload) {
         let index = payload.index
         let currentWell = getCurrentWell(state, payload.position)
-
         if (index !== undefined) {
-            currentWell.libraries[index] = payload.with
+            currentWell.libraries.splice(index, 1, payload.with)
+            currentWell.libraries = [...currentWell.libraries]
         } else {
             currentWell.libraries.push(payload.with)
         }
-       
     }
 }
 

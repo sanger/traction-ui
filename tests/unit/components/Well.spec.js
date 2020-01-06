@@ -77,16 +77,15 @@ describe('Well.vue', () => {
     expect(ellipse.attributes('ry')).toEqual(well.ry)
   })
 
-  describe('library barcodes', () => {
+  describe('hasLibraries', () => {
 
     it('will be present if there are some in the store', () => {
-      let expected = storeWell.libraries.map((l) => l.barcode).join(',')
-      expect(well.libraryBarcodes).toEqual(expected)
+      expect(well.hasLibraries).toBeTruthy()
     })
 
     it('will be empty if there are none in the store', () => {
       storeWell.libraries = []
-      expect(well.libraryBarcodes).toEqual('')
+      expect(well.hasLibraries).toBeFalsy()
     })
 
   })
@@ -99,20 +98,20 @@ describe('Well.vue', () => {
       well.showAlert = jest.fn()
       well.isLibraryBarcodeValid = jest.fn()
       well.getTubeForBarcode = jest.fn()
-      well.mutateWell = jest.fn()
       well.addLibraryToWell = jest.fn()
     })
 
     it('successful when barcode is valid', async () => {
       let successfulResponse = new Response(libraryTube)
       let tube = successfulResponse.deserialize.tubes[0]
+      let library = tube.material
 
       well.isLibraryBarcodeValid.mockReturnValue(true)
       well.getTubeForBarcode.mockReturnValue(tube)
 
       await well.updateLibraryBarcode(newBarcode)
+      expect(well.addLibraryToWell).toBeCalledWith({ position: well.position, with: { id: library.id, barcode: library.barcode } })
 
-      // expect(well.mutateWell).toBeCalledWith({ position: well.position, property: 'libraries', with: [{ id: library.id, barcode: library.barcode }] })
       expect(well.showAlert).not.toBeCalled()
     })
 
@@ -120,27 +119,17 @@ describe('Well.vue', () => {
       well.isLibraryBarcodeValid.mockReturnValue(false)
 
       await well.updateLibraryBarcode(newBarcode)
-      expect(well.mutateWell).not.toBeCalled()
+      expect(well.addLibraryToWell).not.toBeCalled()
       expect(well.showAlert).toBeCalledWith('Library is not valid', 'danger')
     })
-
   })
 
   describe('tooltip', () => {
-
-    let title
-
-    it('will be visible if there are some libraries', () => {
-      title = wrapper.find('title')
-      expect(title.text()).toEqual(well.libraryBarcodes)
+    it('will only be visible if there are some libraries', () => {
+      let title = wrapper.find('title')
+      let expected = storeWell.libraries.map(l => l.barcode).join(',')
+      expect(title.text()).toEqual(expected)
     })
-
-    it('will be absent if there are no libraries', () => {
-      storeWell.libraries = []
-      title = wrapper.find('title')
-      expect(title.text()).toEqual('')
-    })
-
   })
 
   describe('drag and drop', () => {

@@ -72,7 +72,7 @@ describe('Samples.vue', () => {
     it('contains the correct data', async () => {
       let mockSamples = new Response(Data.TractionSaphyrRequests).deserialize.requests
       wrapper.setData({ items: mockSamples })
-      expect(wrapper.find('tbody').findAll('tr').length).toEqual(5)
+      expect(wrapper.find('tbody').findAll('tr').length).toEqual(6)
     })
   })
 

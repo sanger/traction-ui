@@ -1,13 +1,12 @@
 <template>
   <g>
     <defs>
-      <!-- filter id="blurFilter" y="-2" height="10" -->
       <filter id="blurFilter">
-          <feGaussianBlur in="SourceGraphic" stdDeviation="3" />
+          <feGaussianBlur in="SourceGraphic" stdDeviation="1" />
       </filter>
     </defs>
     <ellipse v-on:drop="drop" v-on:dragover="allowDrop" v-on:dragleave="endDrop" v-bind:class="[{filled: hasLibraries, active: hover}, position]" :cx="cx" :cy="cy" :rx="rx" :ry="ry" v-on:click="showModal" >
-      <title v-text="tooltip"></title>
+      <title v-if="hasLibraries" v-text="tooltip"></title>
     </ellipse>
     <foreignObject>
       <WellModal ref="modal" class="modal" @alert="alert" :position="position"></WellModal>
@@ -84,6 +83,7 @@ export default {
       await this.updateLibraryBarcode(event.dataTransfer.getData('barcode'))
       this.hover = false
     },
+    // TODO: show alert is not working on error
     async updateLibraryBarcode(barcode) {
       let isValid = await this.isLibraryBarcodeValid(barcode)
 
@@ -105,25 +105,14 @@ export default {
     position () {
       return `${this.row}${this.column}`
     },
-    libraryBarcodes () {
-      let well = this.well(this.position)
-      if (well === undefined) return ''
-      let barcodesList = well.libraries.map(l =>  l.barcode)
-      if (barcodesList.length > 0) {
-        return barcodesList.join(',')
-      } else {
-        return ''
-      }
-    },
     tooltip () {
-      if (this.hasLibraries) {
-        return this.libraryBarcodes
-      } else {
-        return ''
-      }  
+      let well = this.well(this.position)
+      return well.libraries.map(l =>  l.barcode).join(',')
     },
     hasLibraries () {
-      return this.libraryBarcodes.length > 0
+      let well = this.well(this.position)
+      if (well === undefined) return false
+      return well.libraries.length > 0
     }
   },
   mounted() {
@@ -149,8 +138,7 @@ export default {
   }
   // need to sort to add blur
   .active {
-    fill: yellow;
-    // stroke: #ffffff;
-    // filter: url(#blurFilter);
+    stroke: #ffffff;
+    filter: url(#blurFilter);
   }
 </style>
