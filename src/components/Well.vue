@@ -123,7 +123,7 @@ export default {
 }
 </script>
 
-<style lang="scss">
+<style scoped lang="scss">
   ellipse {
     transform: matrix(0.91863074,0,0,0.92029059,955.85411,1007.3112);
     stroke: #000000;

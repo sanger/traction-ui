@@ -40,7 +40,7 @@ export default {
 }
 </script>
 
-<style lang="scss">
+<style scoped lang="scss">
   .pipeline {
     height: 400px;
     padding: 20px;

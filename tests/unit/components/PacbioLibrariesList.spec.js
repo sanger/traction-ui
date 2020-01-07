@@ -3,7 +3,7 @@ import PacbioLibrariesList from '@/components/PacbioLibrariesList'
 import storeLibraries from '../../data/StoreLibraries'
 import store from '@/store'
 
-describe('PacbioLibrariesTable', () => {
+describe('PacbioLibrariesList', () => {
 
     let wrapper, libraries
 
