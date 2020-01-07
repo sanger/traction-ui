@@ -67,6 +67,5 @@ export default {
   }
   .active {
     background-color: gray;
-    filter: none;
   }
 </style>

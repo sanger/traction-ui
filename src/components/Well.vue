@@ -54,16 +54,13 @@ export default {
     }
   },
   methods: {
-     ...mapActions([
+    ...mapActions([
     'isLibraryBarcodeValid',
     'getTubeForBarcode',
-  ]),
-  ...mapMutations([
-    'mutateWell',
-    'addEmptyLibraryToWell',
-    'removeLibraryFromWell',
-    'addLibraryToWell'
-  ]),
+    ]),
+    ...mapMutations([
+      'addLibraryToWell'
+    ]),
     alert (message, type) {
       this.$emit('alert', message, type)
     },
@@ -99,7 +96,6 @@ export default {
   },
   computed: {
     ...mapGetters([
-      'currentRun',
       'well'
     ]),
     position () {
