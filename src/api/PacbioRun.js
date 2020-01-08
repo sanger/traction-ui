@@ -67,9 +67,7 @@ const create = async (run, request) => {
         responses.push(plateResponse)
         let plateId = plateResponse.deserialize.plates[0].id
 
-        let wellsWithLibraries = run.plate.wells.filter(well => well.libraries.length != 0)
-
-        let wellsPayload = createWellsPayload(wellsWithLibraries, plateId)
+        let wellsPayload = createWellsPayload(run.plate.wells, plateId)
         let wellResponse = await createResource(wellsPayload, request.wells)
         responses.push(wellResponse)
 
@@ -97,9 +95,7 @@ const update = async (run, request) => {
         let runResponse = await updateResource(runPayload, request.runs)
         responses.push(runResponse)
 
-        let wellsWithLibraries = run.plate.wells.filter(well => well.libraries.length != 0)
-
-        for (const well of wellsWithLibraries) {
+        for (const well of run.plate.wells) {
             if (well.id) { // Well exists - Update well
                 let wellPayload = updateWellPayload(well)
                 let wellResponse = await updateResource(wellPayload, request.wells)
