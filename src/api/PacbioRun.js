@@ -67,9 +67,7 @@ const create = async (run, request) => {
         responses.push(plateResponse)
         let plateId = plateResponse.deserialize.plates[0].id
 
-        let wellsWithLibraries = run.plate.wells
-
-        let wellsPayload = createWellsPayload(wellsWithLibraries, plateId)
+        let wellsPayload = createWellsPayload(run.plate.wells, plateId)
         let wellResponse = await createResource(wellsPayload, request.wells)
         responses.push(wellResponse)
 
