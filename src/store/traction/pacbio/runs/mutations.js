@@ -9,7 +9,19 @@ const mutateRun = key => (state, val) => {
 }
 
 const getCurrentWell = (state, position) => {
-    return state.currentRun.plate.wells.filter(well => well.position === position)[0]
+    let currentWell = state.currentRun.plate.wells.filter(well => well.position === position)[0]
+
+    // If well does not exist - Build a new well
+    if (!currentWell) {
+        // match() returns [original, row, column] e.g "A10 => ["A10", "A", "10"]
+        let row = position.match(/(\S)(\d+)/)[1]
+        let column = position.match(/(\S)(\d+)/)[2]
+
+        currentWell = PacbioRun.buildWell(row, column)
+        state.currentRun.plate.wells.push(currentWell)
+    }
+
+    return currentWell
 }
 
 const mutations = {
