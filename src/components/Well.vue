@@ -132,7 +132,6 @@ export default {
   .filled {
     fill: purple;
   }
-  // need to sort to add blur
   .active {
     stroke: #ffffff;
     filter: url(#blurFilter);

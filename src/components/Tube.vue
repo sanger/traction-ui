@@ -1,4 +1,4 @@
-<!-- TODO: move inline styles to css -->
+
 <template>
   <b-list-group-item draggable="true" v-on:dragstart="drag(barcode, $event)" v-bind:class="{active: isActive}" v-on:mouseover="isActive = true" v-on:mouseleave="isActive = false">
     <b-img left src="tube.svg" height="70"></b-img>
