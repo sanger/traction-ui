@@ -194,6 +194,7 @@ describe('Run', () => {
 
     it('returns false if the run cannot be created', async () => {
       api.traction.pacbio.runs.create.mockReturnValue(failedResponse)
+      api.traction.pacbio.runs.destroy.mockResolvedValue(Data.SuccessfulDestroy)
 
       let resp = await Run.create(run, api.traction.pacbio)
 
@@ -341,16 +342,19 @@ describe('Run', () => {
     let api, well1, well2, failedResponse
 
     beforeEach(() => {
-      run = Run.build()
-      run['name'] = 'run1'
-
       well1 = new Response(Data.PacbioWells).deserialize.wells[0]
       well2 = new Response(Data.PacbioWells).deserialize.wells[1]
 
       well1['libraries'] = [{ id: 1 }, { id: 2 }]
       well2['libraries'] = [{ id: 2 }]
-      run.plate.wells[0] = well1
-      run.plate.wells[1] = well2
+
+      run = {
+        id: '1',
+        name: 'run1',
+        plate: {
+          wells: [well1, well2]
+        }
+      }
 
       api = build(Api.Config, process.env)
 

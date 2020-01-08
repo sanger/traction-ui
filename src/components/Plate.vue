@@ -51,7 +51,7 @@ export default {
 }
 </script>
 
-<style lang="scss">
+<style scoped lang="scss">
 
   path {
     fill:#49afcd;
