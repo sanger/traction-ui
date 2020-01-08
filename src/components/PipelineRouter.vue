@@ -64,7 +64,7 @@
   }
 </script>
 
-<style lang="scss">
+<style scoped lang="scss">
   nav {
     a {
       font-weight: bold;

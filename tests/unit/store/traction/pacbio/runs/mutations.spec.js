@@ -135,4 +135,11 @@ describe('addLibraryToWell', () => {
     expect(well.libraries[0]).toEqual(library1)
     expect(well.libraries[1]).toEqual(library2)
   })
+
+  it('can add a library to the given well without an index', () => {
+    payload = { position: position, with: library1 }
+    Mutations.default.addLibraryToWell(state, payload)
+    let well = state.currentRun.plate.wells.filter(well => well.position === position)[0]
+    expect(well.libraries[0]).toEqual(library1)
+  })
 })

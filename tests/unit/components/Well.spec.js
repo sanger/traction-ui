@@ -2,6 +2,8 @@ import { mount, localVue } from '../testHelper'
 import Well from '@/components/Well'
 import * as Run from '@/api/PacbioRun'
 import store from '@/store'
+import Response from '@/api/Response'
+import libraryTube from '../../data/pacbioTubeWithLibrary'
 
 describe('Well.vue', () => {
 
@@ -75,11 +77,51 @@ describe('Well.vue', () => {
     expect(ellipse.attributes('ry')).toEqual(well.ry)
   })
 
-  xit('when ellipse is clicked is editable', () => {
-    well.showModal = jest.fn()
-    let ellipse = wrapper.find('ellipse')
-    ellipse.trigger('click')
-    expect(well.showModal).toBeCalled()
+  describe('hasLibraries', () => {
+
+    it('will be present if there are some in the store', () => {
+      expect(well.hasLibraries).toBeTruthy()
+    })
+
+    it('will be empty if there are none in the store', () => {
+      storeWell.libraries = []
+      expect(well.hasLibraries).toBeFalsy()
+    })
+
+  })
+  // TODO: same as well modal - refactor baby!
+  describe('updateLibraryBarcode', () => {
+    let newBarcode
+
+    beforeEach(() => {
+      newBarcode = 'TRAC-1'
+      well.showAlert = jest.fn()
+      well.isLibraryBarcodeValid = jest.fn()
+      well.getTubeForBarcode = jest.fn()
+      well.addLibraryToWell = jest.fn()
+    })
+
+    it('successful when barcode is valid', async () => {
+      let successfulResponse = new Response(libraryTube)
+      let tube = successfulResponse.deserialize.tubes[0]
+      let library = tube.material
+
+      well.isLibraryBarcodeValid.mockReturnValue(true)
+      well.getTubeForBarcode.mockReturnValue(tube)
+
+      await well.updateLibraryBarcode(newBarcode)
+      expect(well.addLibraryToWell).toBeCalledWith({ position: well.position, with: { id: library.id, barcode: library.barcode } })
+
+      expect(well.showAlert).not.toBeCalled()
+    })
+
+    it('is unsuccessful when barcode is not valid', async () => {
+      well.isLibraryBarcodeValid.mockReturnValue(false)
+
+      await well.updateLibraryBarcode(newBarcode)
+      expect(well.addLibraryToWell).not.toBeCalled()
+      expect(well.showAlert).toBeCalledWith('Library is not valid', 'danger')
+    })
   })
 
   describe('tooltip', () => {
@@ -88,6 +130,23 @@ describe('Well.vue', () => {
       let expected = storeWell.libraries.map(l => l.barcode).join(',')
       expect(title.text()).toEqual(expected)
     })
+  })
+
+  describe('drag and drop', () => {
+
+    let mockEvent, newBarcode
+
+    beforeEach(() => {
+      newBarcode = 'TRAC-1'
+      mockEvent = { dataTransfer: { getData () { return newBarcode } }, preventDefault: jest.fn() }
+      well.updateLibraryBarcode = jest.fn()
+    })
+
+    it('will update the barcode', async () => {
+      well.drop(mockEvent)
+      expect(well.updateLibraryBarcode).toBeCalledWith(newBarcode)
+    })
+
   })
 
 })
