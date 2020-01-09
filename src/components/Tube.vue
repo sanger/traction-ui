@@ -1,7 +1,7 @@
 
 <template>
   <b-list-group-item draggable="true" v-on:dragstart="drag(barcode, $event)" v-bind:class="{active: isActive}" v-on:mouseover="isActive = true" v-on:mouseleave="isActive = false">
-    <b-img left src="tube.svg" height="70"></b-img>
+    <b-img left src="/tube.png" height="70" />
 
     <div class="info">
       <div class="barcode">
@@ -44,7 +44,7 @@ export default {
   methods: {
     drag (barcode, event) {
       const img = new Image()
-      img.src = './tube.svg'
+      img.src = '/tube.png'
       event.dataTransfer.setDragImage(img,120,50)
       event.dataTransfer.setData('barcode', barcode)
     }
