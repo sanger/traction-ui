@@ -1,6 +1,7 @@
 import CreateChip from './createChip'
 import CreateFlowcell from './createFlowcell'
 import CreateRun from './createRun'
+import UpdateRun from './updateRun'
 import Enzymes from './enzymes'
 import Libraries from './libraries'
 import Requests from './requests'
@@ -33,6 +34,7 @@ export default {
   CreateChip,
   CreateFlowcell,
   CreateRun,
+  UpdateRun,
   Enzymes,
   Libraries,
   Requests,

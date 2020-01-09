@@ -290,26 +290,22 @@ describe('Runs.vue', () => {
             runs.startRun = jest.fn()
             runs.completeRun = jest.fn()
             runs.cancelRun = jest.fn()
-            runs.provider = jest.fn()
             runs.showAlert = jest.fn()
         })
 
         it('calls startRun successfully', () => {
             runs.updateRun('start', 1)
             expect(runs.startRun).toBeCalledWith(1)
-            expect(runs.provider).toBeCalled()
         })
 
         it('calls completeRun successfully', () => {
             runs.updateRun('complete', 1)
             expect(runs.completeRun).toBeCalledWith(1)
-            expect(runs.provider).toBeCalled()
         })
 
         it('calls cancelRun successfully', () => {
             runs.updateRun('cancel', 1)
             expect(runs.cancelRun).toBeCalledWith(1)
-            expect(runs.provider).toBeCalled()
         })
 
         it('calls setRuns unsuccessfully', () => {
@@ -317,7 +313,6 @@ describe('Runs.vue', () => {
                 throw Error('Raise this error')
             })
             runs.updateRun('start', 1)
-            expect(runs.provider).not.toBeCalled()
             expect(runs.showAlert).toBeCalled()
         })
     })

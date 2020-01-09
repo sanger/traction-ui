@@ -15,12 +15,17 @@ const cancelRun = async ({ dispatch }, id) => {
     await dispatch('handleRunUpdate', payload)
 }
 
-const handleRunUpdate = async ({ rootGetters, getters }, payload) => {
+const handleRunUpdate = async ({ rootGetters, getters, commit }, payload) => {
     let request = getters[rootGetters.pipeline + "/runs/runRequest"]
 
     let runPayload = runPayloadJson(payload)
     let promises = await request.update(runPayload)
     let response = await handlePromise(promises[0])
+
+    if (response.successful) {
+        let updatedRun = response.deserialize.runs[0]
+        commit('updateRun', updatedRun)
+    }
     return response
 }
 
