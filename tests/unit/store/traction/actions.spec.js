@@ -51,10 +51,11 @@ describe('#cancelRun', () => {
 })
 
 describe('#handleRunUpdate', () => {
-  let update, getters, rootGetters, payload, failedResponse
+  let update, getters, rootGetters, payload, failedResponse, commit
 
   beforeEach(() => {
     update = jest.fn()
+    commit = jest.fn()
     rootGetters = { 'pipeline': 'pacbio' }
     getters = { 'pacbio/runs/runRequest': { 'update': update } }
     payload = { id: 1, attributes: { state: 'a state' } }
@@ -63,30 +64,24 @@ describe('#handleRunUpdate', () => {
   })
 
   it('successfully', async () => {
-    let mockResponse = { data: {}, status: 204, statusText: "OK" }
+    update.mockReturnValue([Data.UpdateRun])
 
-    let promise = new Promise((resolve) => {
-      resolve(mockResponse)
-    })
+    let expectedResponse = new Response(Data.UpdateRun)
+    let expectedRun = expectedResponse.deserialize.runs[0]
 
-    update.mockReturnValue([promise])
+    let response = await Actions.handleRunUpdate({ rootGetters, getters, commit }, payload)
 
-    let expectedResponse = new Response(mockResponse)
-    let response = await Actions.handleRunUpdate({ rootGetters, getters }, payload)
-
+    expect(commit).toHaveBeenCalledWith("updateRun", expectedRun)
     expect(response).toEqual(expectedResponse)
   })
 
   it('unsuccessfully', async () => {
-    let promise = new Promise((reject) => {
-      reject(failedResponse)
-    })
-
-    update.mockReturnValue([promise])
+    update.mockReturnValue([failedResponse])
 
     let expectedResponse = new Response(failedResponse)
-    let response = await Actions.handleRunUpdate({ rootGetters, getters }, payload)
+    let response = await Actions.handleRunUpdate({ rootGetters, getters, commit }, payload)
 
+    expect(commit).not.toHaveBeenCalled()
     expect(response).toEqual(expectedResponse)
   })
 })
