@@ -2,7 +2,7 @@ import Vue from 'vue'
 import { mount, Data } from '../testHelper'
 import Request from '@/api/Request'
 import Response from '@/api/Response'
-import * as Run from '@/api/Run'
+import * as Run from '@/api/SaphyrRun'
 import build from '@/api/ApiBuilder'
 import Api from '@/api'
 
