@@ -1,6 +1,6 @@
 import { mount, localVue, Vuex, Data } from '../testHelper'
 import Flowcell from '@/components/Flowcell'
-import * as Run from '@/api/Run'
+import * as Run from '@/api/SaphyrRun'
 import Response from '@/api/Response'
 
 describe('Flowcell', () => {
