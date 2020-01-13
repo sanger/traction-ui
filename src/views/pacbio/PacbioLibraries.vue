@@ -80,7 +80,6 @@
 
 <script>
 import Helper from '@/mixins/Helper'
-import MatType from '@/mixins/MatType'
 import TableHelper from '@/mixins/TableHelper'
 import Alert from '@/components/Alert'
 import PrinterModal from '@/components/PrinterModal'
@@ -90,7 +89,7 @@ const { mapActions, mapGetters } = createNamespacedHelpers('traction/pacbio/tube
 
 export default {
   name: 'Libraries',
-  mixins: [Helper, MatType, TableHelper],
+  mixins: [Helper, TableHelper],
   data () {
     return {
       fields: [
@@ -143,7 +142,8 @@ export default {
     // Get all the libraries
     // Provider function used by the bootstrap-vue table component
     async provider() {
-      this.items = await this.getMaterial(consts.MAT_TYPE_LIBRARIES)
+      // this.items = await this.getMaterial(consts.MAT_TYPE_LIBRARIES)
+      this.items = await this.setLibraries()
     },
     clearPreFilter() {
       this.log('clearPreFilter()')
@@ -152,13 +152,14 @@ export default {
       this.preFilteredMaterials = []
     },
     ...mapActions([
-      'deleteLibraries'
+      'deleteLibraries',
+      'setLibraries'
     ])
   },
   created() {
     // When this component is created (the 'created' lifecycle hook is called), we need to get the
     // items for the table
     this.provider()
-  },
+  }
 }
 </script>

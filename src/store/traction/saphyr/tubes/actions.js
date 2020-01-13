@@ -71,11 +71,28 @@ const deleteLibraries = async ({ getters }, libraryIds) => {
   return responses
 }
 
+const setLibraries = async ({ commit, getters }) => {
+  let request = getters.libraryRequest
+  let promise = request.get()
+  let response = await handlePromise(promise)
+  let libraries = null
+
+  if (response.successful && !response.empty) {
+    libraries = response.deserialize.libraries
+    
+    commit('setLibraries', libraries)
+  }
+
+  return libraries
+
+}
+
 const actions = {
   getTractionTubesForBarcodes,
   exportSampleExtractionTubesIntoTraction,
   createLibrariesInTraction,
-  deleteLibraries
+  deleteLibraries,
+  setLibraries
 }
 
 export {
@@ -83,7 +100,8 @@ export {
   exportSampleExtractionTubesIntoTraction,
   sampleExtractionTubeJson,
   createLibrariesInTraction,
-  deleteLibraries
+  deleteLibraries,
+  setLibraries
 }
 
 export default actions

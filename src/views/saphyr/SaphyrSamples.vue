@@ -79,17 +79,14 @@
 import EnzymeModal from '@/components/EnzymeModal'
 import PrinterModal from '@/components/PrinterModal'
 import Helper from '@/mixins/Helper'
-import MatType from '@/mixins/MatType'
 import TableHelper from '@/mixins/TableHelper'
 import Alert from '@/components/Alert'
 import * as consts from '@/consts/consts'
-import { createNamespacedHelpers } from 'vuex'
-
-const { mapActions, mapGetters } = createNamespacedHelpers('traction/saphyr/tubes')
+import { mapActions, mapGetters } from 'vuex'
 
 export default {
   name: 'Samples',
-  mixins: [Helper, MatType, TableHelper],
+  mixins: [Helper, TableHelper],
   components: {
     EnzymeModal,
     PrinterModal,
@@ -155,7 +152,8 @@ export default {
     },
     async provider() {
       try {
-        this.items = await this.getMaterial(consts.MAT_TYPE_REQUESTS)
+        await this.setRequests()
+        this.items = this.requests
       } catch (err) {
         this.log(err)
       }
@@ -166,20 +164,26 @@ export default {
         key => this.$store.getters.request(key))
       this.preFilteredMaterials = []
     },
-    ...mapActions([
+    ...mapActions('traction/saphyr/tubes', [
       'createLibrariesInTraction',
       'getTractionTubesForBarcodes'
     ]),
+    ...mapActions('traction/saphyr/requests', [
+      'setRequests'
+    ])
   },
   created() {
     this.provider()
   },
   computed: {
-    ...mapGetters([
+    ...mapGetters('traction/saphyr/tubes', [
       'tractionTubesWithInfo',
       'tractionTubes',
       'requestsRequest',
       'libraryRequest'
+    ]),
+    ...mapGetters('traction/saphyr/requests', [
+      'requests'
     ])
   }
 }
