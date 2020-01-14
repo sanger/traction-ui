@@ -142,7 +142,6 @@ export default {
     // Get all the libraries
     // Provider function used by the bootstrap-vue table component
     async provider() {
-      // this.items = await this.getMaterial(consts.MAT_TYPE_LIBRARIES)
       this.items = await this.setLibraries()
     },
     clearPreFilter() {
