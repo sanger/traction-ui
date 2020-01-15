@@ -16,7 +16,7 @@
       <br>
       <b-row>
         <b-col cols="6">
-          <pacbioLibrariesTable></pacbioLibrariesTable>
+          <pacbioLibrariesList></pacbioLibrariesList>
         </b-col>
         <b-col>
           <Plate v-if="this.currentRun.id" @alert="showAlert"></Plate>
@@ -29,7 +29,7 @@
 
 <script>
 import PacbioRunInfo from '@/components/PacbioRunInfo'
-import PacbioLibrariesTable from '@/components/PacbioLibrariesTable'
+import PacbioLibrariesList from '@/components/PacbioLibrariesList'
 import Plate from '@/components/Plate'
 import Alert from '@/components/Alert'
 import Helper from '@/mixins/Helper'
@@ -98,7 +98,7 @@ export default {
   components: {
     Alert,
     PacbioRunInfo,
-    PacbioLibrariesTable,
+    PacbioLibrariesList,
     Plate
   },
   computed: {

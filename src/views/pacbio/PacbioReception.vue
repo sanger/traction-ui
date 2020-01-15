@@ -150,7 +150,7 @@ export default {
 }
 </script>
 
-<style lang="scss">
+<style scoped lang="scss">
   textarea {
     border: 1px solid;
   }

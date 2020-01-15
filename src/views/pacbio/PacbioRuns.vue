@@ -131,7 +131,6 @@ export default {
     updateRun(status, id) {
       try {
         this[status+"Run"](id)
-        this.provider()
       } catch (error) {
         this.showAlert("Failed to update run: " + error.message, 'danger')
       }

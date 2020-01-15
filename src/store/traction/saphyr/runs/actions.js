@@ -1,6 +1,6 @@
 import handlePromise from '@/api/PromiseHelper'
 import router from '@/router'
-import * as Run from '@/api/Run'
+import * as Run from '@/api/SaphyrRun'
 
 const setRuns = async ({ commit, getters }) => {
     let request = getters.runRequest

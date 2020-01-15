@@ -1,6 +1,6 @@
 import { mount, localVue, Vuex } from '../testHelper'
 import Chip from '@/components/Chip'
-import * as Run from '@/api/Run'
+import * as Run from '@/api/SaphyrRun'
 
 describe('Chip', () => {
 

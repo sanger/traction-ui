@@ -1,15 +1,9 @@
 <template>
-  <div class="librariesTable">
-    <b-table id="libraries-table"
-             sticky-header
-             show-empty
-             :items="libraries"
-             :fields="fields"
-             hover
-             selectable
-             select-mode="single"
-             @row-selected="onRowSelected">
-    </b-table>
+  <div class="libraries">
+    <b-list-group class="list-group">
+      <tube v-for="library in libraries" v-bind:key="library.id" v-bind="library">
+      </tube>
+    </b-list-group>
   </div>
 </template>
 
@@ -18,19 +12,13 @@ import Helper from '@/mixins/Helper'
 import TableHelper from '@/mixins/TableHelper'
 import { createNamespacedHelpers } from 'vuex'
 const { mapActions, mapGetters } = createNamespacedHelpers('traction/pacbio/tubes')
+import Tube from '@/components/Tube'
 
 export default {
-  name: 'PacbioLibrariesTable',
+  name: 'PacbioLibrariesList',
   mixins: [Helper, TableHelper],
   data () {
-    return {
-      fields: [
-        { key: 'barcode', label: 'Barcode', sortable: true},
-        { key: 'sample_names', label: 'Sample Name', sortable: true },
-        { key: 'tag_oligos', label: 'Tags', sortable: true }
-      ],
-      items: []
-    }
+    return {}
   },
   computed: {
     ...mapGetters([
@@ -47,20 +35,28 @@ export default {
     },
     ...mapActions([
       'setLibraries'
-    ]),
+    ])
   },
   created() {
     this.provider()
   },
+  components: {
+    Tube
+  }
 }
 </script>
 
 <style>
 
-.librariesTable {
+.libraries {
   border: solid;
   border-width: 1px;
   padding: 20px;
+}
+
+.list-group {
+    max-height: 400px;
+    overflow: scroll;
 }
 
 </style>
