@@ -221,15 +221,6 @@ describe('#setLibraries', () => {
   })
 })
 
-// name: t.fields.sanger_sample_id,
-//     species: t.fields.sample_common_name,
-//     external_id: t.sample_uuid,
-//     external_study_id: t.study_uuid,
-//     library_type: t.library_type,
-//     estimate_of_gb_required: t.estimate_of_gb_required,
-//     number_of_smrt_cells: t.number_of_smrt_cells,
-//     cost_code: t.cost_code
-
 describe("processCostCode", () => {
 
   let tube
