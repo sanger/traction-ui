@@ -220,3 +220,47 @@ describe('#setLibraries', () => {
     expect(response).toBeNull()
   })
 })
+
+// name: t.fields.sanger_sample_id,
+//     species: t.fields.sample_common_name,
+//     external_id: t.sample_uuid,
+//     external_study_id: t.study_uuid,
+//     library_type: t.library_type,
+//     estimate_of_gb_required: t.estimate_of_gb_required,
+//     number_of_smrt_cells: t.number_of_smrt_cells,
+//     cost_code: t.cost_code
+
+describe("processCostCode", () => {
+
+  let tube
+
+  beforeEach(() => {
+    tube = {
+      fields: {
+        sanger_sample_id: 'Sample1',
+        species: 'human',
+      },
+      sample_uuid: 'abc1234',
+      study_uuid: 'abc2345',
+      library_type: 'library_type_1',
+      estimate_of_gb_required: '10',
+      number_of_smrt_cells: '3',
+      cost_code: 'CC12345'
+    }
+  })
+
+  it("if completed use existing cost code", () => {
+    expect(Actions.processCostCode(tube)).toEqual(tube.cost_code)
+  })
+
+  it("if not completed and DTOL sample use TOL cost code", () => {
+    tube.fields.sanger_sample_id = 'DTOL12345'
+    tube.cost_code = null
+    expect(Actions.processCostCode(tube)).toEqual('S4773')
+  })
+
+  it("if not completed and no DTOL sample leave blank", () => {
+    tube.cost_code = null
+    expect(Actions.processCostCode(tube)).toBeNull()
+  })
+})
