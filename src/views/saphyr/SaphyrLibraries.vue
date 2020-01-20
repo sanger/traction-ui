@@ -2,11 +2,6 @@
   <div>
     <alert ref='alert'></alert>
 
-    <p v-if="this.preFilteredMaterials.length > 0" class="font-weight-bold">
-      Only showing libraries for the following barcodes: {{ this.preFilteredMaterials.map(library => library.barcode).join(', ') }}
-      <b-button @click="clearPreFilter" size="sm" variant="info">Clear pre-filter</b-button>
-    </p>
-
     <b-form-group label="Filter"
                   label-cols-sm="1"
                   label-align-sm="right"
@@ -28,7 +23,7 @@
     <b-table id="libraries-table"
              ref="libraries_table"
              show-empty
-             :items="items"
+             :items="libraries"
              :fields="fields"
              :filter="filter"
              :per-page="perPage"
@@ -124,10 +119,7 @@ export default {
   },
   computed: {
     ...mapGetters([
-      'tractionTubesWithInfo',
-      'tractionTubes',
-      'requestsRequest',
-      'libraryRequest'
+      'libraries'
     ])
   },
   methods: {
@@ -151,13 +143,7 @@ export default {
     // Get all the libraries
     // Provider function used by the bootstrap-vue table component
     async provider() {
-      this.items = await this.setLibraries()
-    },
-    clearPreFilter() {
-      this.log('clearPreFilter()')
-      this.items = Object.keys(this.$store.getters.libraries).map(
-        key => this.$store.getters.library(key))
-      this.preFilteredMaterials = []
+      await this.setLibraries()
     },
     ...mapActions([
       'deleteLibraries',
