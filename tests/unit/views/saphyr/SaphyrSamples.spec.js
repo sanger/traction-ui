@@ -1,41 +1,24 @@
 import Samples from '@/views/saphyr/SaphyrSamples'
 import EnzymeModal from '@/components/EnzymeModal'
 import PrinterModal from '@/components/PrinterModal'
-import { mount, localVue, Vuex, Data } from '../../testHelper'
+import { mount, localVue, Data } from '../../testHelper'
 import Libraries from '@/views/saphyr/SaphyrLibraries'
 import VueRouter from 'vue-router'
 import Alert from '@/components/Alert'
 import * as consts from '@/consts/consts'
 import Response from '@/api/Response'
+import store from '@/store'
 
 describe('Samples.vue', () => {
 
-  let wrapper, samples, router
+  let wrapper, samples, router, mockSamples
 
   beforeEach(() => {
+    mockSamples = new Response(Data.TractionSaphyrRequests).deserialize.requests
+    store.commit('traction/saphyr/requests/setRequests', mockSamples)
+    
     router = new VueRouter({
       routes: [{ path: '/saphyr/libraries', name: 'SaphyrLibraries', component: Libraries, props: true }]
-    })
-
-    let store = new Vuex.Store({
-      modules: {
-        traction: {
-          namespaced: true,
-          modules: {
-            saphyr: {
-              namespaced: true,
-                modules: {
-                tubes: {
-                  namespaced: true,
-                  state: {
-                    tractionTubes: []
-                  }
-                }
-              }
-            }
-          }
-        }
-      }
     })
 
     wrapper = mount(Samples, { localVue,
@@ -171,29 +154,7 @@ describe('Samples.vue', () => {
         { id: 2, type: "tubes", barcode: 'TRAC-2', material: {id: 6, type: 'libraries', state: 'pending', sample_name: 'sample_d', enzyme_name: 'Nb.BsrDI', created_at: '03/12/2019 11:49' }}
       ]
 
-      let store = new Vuex.Store({
-        modules: {
-          traction: {
-            namespaced: true,
-            modules: {
-              saphyr: {
-                namespaced: true,
-                  modules: {
-                  tubes: {
-                    namespaced: true,
-                    state: {
-                      tractionTubes: mockLibrariesTubes
-                    },
-                    getters: {
-                      tractionTubes: state => state.tractionTubes
-                    }
-                  }
-                }
-              }
-            }
-          }
-        }
-      })
+      store.commit('traction/saphyr/tubes/setTubes', mockLibrariesTubes)
 
       wrapper = mount(Samples, { localVue,
         store,

@@ -2,11 +2,6 @@
   <div>
     <alert ref='alert'></alert>
 
-    <p v-if="this.preFilteredMaterials.length > 0" class="font-weight-bold">
-      Only showing samples for the following barcodes: {{ this.preFilteredMaterials.map(sample => sample.barcode).join(', ') }}
-      <b-button @click="clearPreFilter" size="sm" variant="info">Clear pre-filter</b-button>
-    </p>
-
     <b-form-group label="Filter"
                   label-cols-sm="1"
                   label-align-sm="right"
@@ -27,7 +22,7 @@
 
     <b-table id="samples-table"
              show-empty
-             :items="items"
+             :items="requests"
              :fields="fields"
              :filter="filter"
              :per-page="perPage"
@@ -153,16 +148,9 @@ export default {
     async provider() {
       try {
         await this.setRequests()
-        this.items = this.requests
       } catch (err) {
         this.log(err)
       }
-    },
-    clearPreFilter() {
-      this.log('clearPreFilter()')
-      this.items = Object.keys(this.$store.getters.requests).map(
-        key => this.$store.getters.request(key))
-      this.preFilteredMaterials = []
     },
     ...mapActions('traction/saphyr/tubes', [
       'createLibrariesInTraction',
