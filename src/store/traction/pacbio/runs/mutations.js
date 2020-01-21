@@ -1,5 +1,10 @@
 import * as PacbioRun from '@/api/PacbioRun'
 
+const splitPosition = (position) => {
+    // match() returns [original, row, column] e.g "A10 => ["A10", "A", "10"]
+    return position.match(/(\S)(\d+)/).slice(1)
+}
+
 const mutate = key => (state, val) => {
     state[key] = val
 }
@@ -13,11 +18,8 @@ const getCurrentWell = (state, position) => {
 
     // If well does not exist - Build a new well
     if (!currentWell) {
-        // match() returns [original, row, column] e.g "A10 => ["A10", "A", "10"]
-        let row = position.match(/(\S)(\d+)/)[1]
-        let column = position.match(/(\S)(\d+)/)[2]
 
-        currentWell = PacbioRun.buildWell(row, column)
+        currentWell = PacbioRun.buildWell(...splitPosition(position))
         state.currentRun.plate.wells.push(currentWell)
     }
 
@@ -35,11 +37,8 @@ const mutations = {
     setComments: mutateRun('comments'),
     setSystemName: mutateRun('system_name'),
     createWell(state, position) {
-        // match() returns [original, row, column] e.g "A10 => ["A10", "A", "10"]
-        let row = position.match(/(\S)(\d+)/)[1]
-        let column = position.match(/(\S)(\d+)/)[2]
 
-        let currentWell = PacbioRun.buildWell(row, column)
+        let currentWell = PacbioRun.buildWell(...splitPosition(position))
         state.currentRun.plate.wells.push(currentWell)
     },
     mutateWell(state, payload) {

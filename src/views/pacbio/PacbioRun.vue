@@ -88,10 +88,12 @@ export default {
       this.$router.push({ name: 'PacbioRuns' })
     },
     async provider () {
-      if (this.newRecord) {
+      if (this.id === "new") {
         this.newRun()
-      } else {
+      } else if (!this.newRecord){
         await this.editRun(parseInt(this.$route.params.id))
+      } else {
+        this.$router.push({ name: '404' })
       }
     }
   },
