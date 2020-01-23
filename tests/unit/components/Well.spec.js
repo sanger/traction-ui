@@ -85,29 +85,23 @@ describe('Well.vue', () => {
 
     it('will be valid if it is complete', () => {
       let ellipse = wrapper.find('ellipse')
-      expect(ellipse.attributes('class')).toContain("valid")
+      expect(ellipse.attributes('class')).toContain("complete")
     })
 
-    it('will not be valid if it is missing any meta data', () => {
+    it('will not be valid if there is any missing meta data', () => {
       storeWell.movie_time = ""
       let ellipse = wrapper.find('ellipse')
-      expect(ellipse.attributes('class')).toEqual("filled A1")
+      expect(ellipse.attributes('class')).toEqual("partial A1")
     })
 
-  })
-
-  describe('hasLibraries', () => {
-
-    it('will be present if there are some in the store', () => {
-      expect(well.hasLibraries).toBeTruthy()
-    })
-
-    it('will be empty if there are none in the store', () => {
+    it('will be invalid if there are no libraries in the store', () => {
       storeWell.libraries = []
-      expect(well.hasLibraries).toBeFalsy()
+      let ellipse = wrapper.find('ellipse')
+      expect(ellipse.attributes('class')).toEqual("partial A1")
     })
 
   })
+
   // TODO: same as well modal - refactor baby!
   describe('updateLibraryBarcode', () => {
     let newBarcode

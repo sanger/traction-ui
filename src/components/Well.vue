@@ -5,7 +5,7 @@
           <feGaussianBlur in="SourceGraphic" stdDeviation="1" />
       </filter>
     </defs>
-    <ellipse v-on:drop="drop" v-on:dragover="allowDrop" v-on:dragleave="endDrop" v-bind:class="[{filled: hasLibraries, active: hover},{valid: wellIsValid}, position]" :cx="cx" :cy="cy" :rx="rx" :ry="ry" v-on:click="showModal" >
+    <ellipse v-on:drop="drop" v-on:dragover="allowDrop" v-on:dragleave="endDrop" v-bind:class="[{partial: isPartial, active: hover},{complete: isComplete}, position]" :cx="cx" :cy="cy" :rx="rx" :ry="ry" v-on:click="showModal" >
       <title v-if="hasLibraries" v-text="tooltip"></title>
     </ellipse>
     <foreignObject>
@@ -111,7 +111,17 @@ export default {
       if (well === undefined) return false
       return well.libraries.length > 0
     },
-    wellIsValid () {
+    isPartial () {
+      let well = this.well(this.position)
+      if (well === undefined) return false
+      if ((well.movie_time || 
+           well.sequencing_mode || 
+           well.insert_size || 
+           well.on_plate_loading_concentration) !== "" 
+           || well.libraries.length > 0) return true
+      return false
+    },
+    isComplete () {
       let well = this.well(this.position)
       if (well === undefined) return false
       if ((well.movie_time && 
@@ -140,11 +150,11 @@ export default {
       linejoin: round;
     }
   }
-  .valid{
+  .complete{
     fill:green !important;
   }
-  .filled {
-    fill: purple;
+  .partial {
+    fill: red;
   }
   .active {
     stroke: #ffffff;
