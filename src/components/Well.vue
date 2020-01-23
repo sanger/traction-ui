@@ -141,7 +141,7 @@ export default {
     }
   }
   .valid{
-    fill:lightgreen !important;
+    fill:green !important;
   }
   .filled {
     fill: purple;

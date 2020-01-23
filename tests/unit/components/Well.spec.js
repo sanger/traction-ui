@@ -14,6 +14,10 @@ describe('Well.vue', () => {
 
     storeWell = Run.buildWell(props.row, props.column)
     storeWell.libraries = [{ id: 1, barcode: 'TRAC-1' }, { id: 2, barcode: 'TRAC-2' }]
+    storeWell.movie_time = "15"
+    storeWell.insert_size = 123
+    storeWell.on_plate_loading_concentration = 234
+    storeWell.sequencing_mode = "CCS"
 
     run = Run.build()
     run.plate.wells[0] = storeWell
@@ -75,6 +79,21 @@ describe('Well.vue', () => {
     expect(ellipse.attributes('cy')).toEqual(well.cy)
     expect(ellipse.attributes('rx')).toEqual(well.rx)
     expect(ellipse.attributes('ry')).toEqual(well.ry)
+  })
+
+  describe('well validity', () => {
+
+    it('will be valid if it is complete', () => {
+      let ellipse = wrapper.find('ellipse')
+      expect(ellipse.attributes('class')).toContain("valid")
+    })
+
+    it('will not be valid if it is missing any meta data', () => {
+      storeWell.movie_time = ""
+      let ellipse = wrapper.find('ellipse')
+      expect(ellipse.attributes('class')).toEqual("filled A1")
+    })
+
   })
 
   describe('hasLibraries', () => {
