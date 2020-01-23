@@ -1,10 +1,11 @@
 import Libraries from '@/views/saphyr/SaphyrLibraries'
-import { mount, localVue, Vuex, Data } from '../../testHelper'
+import { mount, localVue, Data } from '../../testHelper'
 import Alert from '@/components/Alert'
 import PrinterModal from '@/components/PrinterModal'
 import * as consts from '@/consts/consts'
 import VueRouter from 'vue-router'
 import Response from '@/api/Response'
+import store from '@/store'
 
 describe('Libraries.vue', () => {
   let wrapper, libraries, mockLibraries
@@ -15,6 +16,8 @@ describe('Libraries.vue', () => {
       { id: 2, barcode: 'TRAC-9', material: {id: 6, type: 'libraries', state: 'pending', sample_name: 'sample_d', enzyme_name: 'Nb.BsrDI', created_at: '03/12/2019 11:49' }}
     ]
 
+    store.commit('traction/saphyr/tubes/setLibraries', mockLibraries)
+
     const router = new VueRouter({
       routes: [{
         path: '/libraries',
@@ -22,30 +25,6 @@ describe('Libraries.vue', () => {
         component: Libraries,
         props: true
       }]
-    })
-
-    let store = new Vuex.Store({
-      modules: {
-        traction: {
-          namespaced: true,
-          modules: {
-            saphyr: {
-              namespaced: true,
-                modules: {
-                  tubes: {
-                    namespaced: true,
-                    state: {
-                      tractionTubes: mockLibraries
-                    },
-                    getters: {
-                      tractionTubesWithInfo: state => state.tractionTubes.map(i => Object.assign(i.material, {barcode: i.barcode}))
-                    }
-                  }
-                }
-            }
-          }
-        }
-      }
     })
 
     wrapper = mount(Libraries, {
@@ -72,9 +51,7 @@ describe('Libraries.vue', () => {
     })
 
     it('contains the correct data', async () => {
-      let mockLibraries = new Response(Data.TractionSaphyrLibraries).deserialize.libraries
-      wrapper.setData({ items: mockLibraries })
-      expect(wrapper.find('tbody').findAll('tr').length).toEqual(6)
+      expect(wrapper.find('tbody').findAll('tr').length).toEqual(2)
     })
   })
 

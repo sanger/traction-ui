@@ -1,5 +1,6 @@
 const state = {
-  tractionTubes: []
+  tractionTubes: [],
+  libraries: []
 }
 
 export default state
