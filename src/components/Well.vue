@@ -56,8 +56,7 @@ export default {
   methods: {
     ...mapActions([
     'isLibraryBarcodeValid',
-    'getTubeForBarcode',
-    'validateWell',
+    'getTubeForBarcode'
     ]),
     ...mapMutations([
       'addLibraryToWell'
