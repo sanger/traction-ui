@@ -5,7 +5,7 @@
           <feGaussianBlur in="SourceGraphic" stdDeviation="1" />
       </filter>
     </defs>
-    <ellipse v-on:drop="drop" v-on:dragover="allowDrop" v-on:dragleave="endDrop" v-bind:class="[{partial: isPartial, active: hover},{complete: isComplete}, position]" :cx="cx" :cy="cy" :rx="rx" :ry="ry" v-on:click="showModal" >
+    <ellipse v-on:drop="drop" v-on:dragover="allowDrop" v-on:dragleave="endDrop" v-bind:class="[{active: hover}, status]" :cx="cx" :cy="cy" :rx="rx" :ry="ry" v-on:click="showModal" >
       <title v-if="hasLibraries" v-text="tooltip"></title>
     </ellipse>
     <foreignObject>
@@ -46,6 +46,12 @@ export default {
     ry: {
       type: String,
       required: true
+    },
+    metadata_fields: {
+      type: Array,
+      default () {
+        return ['movie_time', 'insert_size', 'on_plate_loading_concentration']
+      }
     }
   },
   data () {
@@ -92,6 +98,9 @@ export default {
       } else {
         this.showAlert('Library is not valid', 'danger')
       }
+    },
+    hasValidMetadata () {
+      return this.metadata_fields.every(field => this.storeWell[field] !== '')
     }
   },
   computed: {
@@ -102,33 +111,25 @@ export default {
       return `${this.row}${this.column}`
     },
     tooltip () {
-      let well = this.well(this.position)
-      return well.libraries.map(l =>  l.barcode).join(',')
+      return this.storeWell.libraries.map(l =>  l.barcode).join(',')
     },
     hasLibraries () {
-      let well = this.well(this.position)
-      if (well === undefined) return false
-      return well.libraries.length > 0
+      if (this.storeWell === undefined) return false
+      return this.storeWell.libraries.length > 0
     },
-    isPartial () {
-      let well = this.well(this.position)
-      if (well === undefined) return false
-      if ((well.movie_time || 
-           well.sequencing_mode || 
-           well.insert_size || 
-           well.on_plate_loading_concentration) !== "" 
-           || well.libraries.length > 0) return true
-      return false
+    storeWell () {
+      return this.well(this.position)
     },
-    isComplete () {
-      let well = this.well(this.position)
-      if (well === undefined) return false
-      if ((well.movie_time && 
-           well.sequencing_mode && 
-           well.insert_size && 
-           well.on_plate_loading_concentration) !== "" 
-           && well.libraries.length > 0) return true
-      return false
+    status () {
+      if (this.hasLibraries) {
+        if (this.hasValidMetadata()) {
+          return 'complete'
+        } else {
+          return 'filled'
+        }
+      } else {
+        return 'empty'
+      }
     }
   },
   mounted() {
@@ -150,9 +151,9 @@ export default {
     }
   }
   .complete{
-    fill:green !important;
+    fill:green;
   }
-  .partial {
+  .filled {
     fill: red;
   }
   .active {
