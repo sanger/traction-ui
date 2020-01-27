@@ -74,7 +74,6 @@ describe('Well.vue', () => {
   it('will have an ellipse with the correct attributes', () => {
     let ellipse = wrapper.find('ellipse')
     expect(ellipse.exists()).toBeTruthy()
-    expect(ellipse.attributes('class')).toMatch(well.position)
     expect(ellipse.attributes('cx')).toEqual(well.cx)
     expect(ellipse.attributes('cy')).toEqual(well.cy)
     expect(ellipse.attributes('rx')).toEqual(well.rx)
@@ -88,16 +87,16 @@ describe('Well.vue', () => {
       expect(ellipse.attributes('class')).toContain("complete")
     })
 
-    it('will not be valid if there is any missing meta data', () => {
+    it('will be invalid if there is any missing meta data', () => {
       storeWell.movie_time = ""
       let ellipse = wrapper.find('ellipse')
-      expect(ellipse.attributes('class')).toEqual("partial A1")
+      expect(ellipse.attributes('class')).toEqual("filled")
     })
 
     it('will be invalid if there are no libraries in the store', () => {
       storeWell.libraries = []
       let ellipse = wrapper.find('ellipse')
-      expect(ellipse.attributes('class')).toEqual("partial A1")
+      expect(ellipse.attributes('class')).toEqual("empty")
     })
 
   })

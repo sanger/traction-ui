@@ -50,7 +50,7 @@ export default {
     metadata_fields: {
       type: Array,
       default () {
-        return ['movie_time', 'insert_size', 'on_plate_loading_concentration']
+        return ['movie_time', 'insert_size', 'on_plate_loading_concentration', 'sequencing_mode']
       }
     }
   },
