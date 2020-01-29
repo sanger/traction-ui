@@ -100,7 +100,12 @@ export default {
       }
     },
     hasValidMetadata () {
+      if (this.storeWell === undefined) return false
       return this.metadata_fields.every(field => this.storeWell[field] !== '')
+    },
+    hasSomeMetadata () {
+      if (this.storeWell === undefined) return false
+      return this.metadata_fields.some(field => this.storeWell[field] !== '')
     }
   },
   computed: {
@@ -121,12 +126,10 @@ export default {
       return this.well(this.position)
     },
     status () {
-      if (this.hasLibraries) {
-        if (this.hasValidMetadata()) {
-          return 'complete'
-        } else {
-          return 'filled'
-        }
+      if (this.hasLibraries && this.hasValidMetadata()) {
+        return 'complete'
+      } else if (this.hasLibraries || this.hasSomeMetadata()) {
+        return 'filled'
       } else {
         return 'empty'
       }

@@ -96,6 +96,16 @@ describe('Well.vue', () => {
     it('will be invalid if there are no libraries in the store', () => {
       storeWell.libraries = []
       let ellipse = wrapper.find('ellipse')
+      expect(ellipse.attributes('class')).toEqual("filled")
+    })
+
+    it('will be empty if there are no libraries or metadata', () => {
+      storeWell.libraries = []
+      storeWell.movie_time = ""
+      storeWell.sequencing_mode = ""
+      storeWell.on_plate_loading_concentration = ""
+      storeWell.insert_size = ""
+      let ellipse = wrapper.find('ellipse')
       expect(ellipse.attributes('class')).toEqual("empty")
     })
 
