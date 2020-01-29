@@ -46,7 +46,7 @@
       </template>
     </b-table>
 
-    <span class="font-weight-bold">Total records: {{ rows }}</span>
+    <span class="font-weight-bold">Total records: {{ libraries.length }}</span>
 
     <div class="clearfix">
       <printerModal class="float-left"
@@ -64,7 +64,7 @@
 
       <b-pagination class="float-right"
                     v-model="currentPage"
-                    :total-rows="rows"
+                    :total-rows="libraries.length"
                     :per-page="perPage"
                     aria-controls="libraries-table">
       </b-pagination>
