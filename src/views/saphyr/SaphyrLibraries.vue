@@ -28,6 +28,8 @@
              :filter="filter"
              :per-page="perPage"
              :current-page="currentPage"
+             :sort-by.sync="sortBy"
+             :sort-desc.sync="sortDesc"
              hover
              @filtered="onFiltered"
              selectable
@@ -107,6 +109,8 @@ export default {
       filteredItems: [],
       selected: [],
       filter: null,
+      sortBy: 'created_at',
+      sortDesc: true,
       perPage: 6,
       currentPage: 1,
       preFilteredMaterials: [],
