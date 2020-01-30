@@ -58,7 +58,7 @@ describe('Samples.vue', () => {
             }
         })
 
-        wrapper.setData({ items: mockSamples })
+        wrapper.setData({ items: mockSamples, sortDesc: false })
         samples = wrapper.vm
     })
 
