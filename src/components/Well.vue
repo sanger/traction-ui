@@ -5,7 +5,7 @@
           <feGaussianBlur in="SourceGraphic" stdDeviation="1" />
       </filter>
     </defs>
-    <ellipse v-on:drop="drop" v-on:dragover="allowDrop" v-on:dragleave="endDrop" v-bind:class="[{filled: hasLibraries, active: hover}, position]" :cx="cx" :cy="cy" :rx="rx" :ry="ry" v-on:click="showModal" >
+    <ellipse v-on:drop="drop" v-on:dragover="allowDrop" v-on:dragleave="endDrop" v-bind:class="[{active: hover}, status]" :cx="cx" :cy="cy" :rx="rx" :ry="ry" v-on:click="showModal" >
       <title v-if="hasLibraries" v-text="tooltip"></title>
     </ellipse>
     <foreignObject>
@@ -46,6 +46,12 @@ export default {
     ry: {
       type: String,
       required: true
+    },
+    metadata_fields: {
+      type: Array,
+      default () {
+        return ['movie_time', 'insert_size', 'on_plate_loading_concentration', 'sequencing_mode']
+      }
     }
   },
   data () {
@@ -56,7 +62,7 @@ export default {
   methods: {
     ...mapActions([
     'isLibraryBarcodeValid',
-    'getTubeForBarcode',
+    'getTubeForBarcode'
     ]),
     ...mapMutations([
       'addLibraryToWell'
@@ -102,13 +108,31 @@ export default {
       return `${this.row}${this.column}`
     },
     tooltip () {
-      let well = this.well(this.position)
-      return well.libraries.map(l =>  l.barcode).join(',')
+      return this.storeWell.libraries.map(l =>  l.barcode).join(',')
     },
     hasLibraries () {
-      let well = this.well(this.position)
-      if (well === undefined) return false
-      return well.libraries.length > 0
+      if (this.storeWell === undefined) return false
+      return this.storeWell.libraries.length > 0
+    },
+    hasValidMetadata () {
+      if (this.storeWell === undefined) return false
+      return this.metadata_fields.every(field => this.storeWell[field] !== '')
+    },
+    hasSomeMetadata () {
+      if (this.storeWell === undefined) return false
+      return this.metadata_fields.some(field => this.storeWell[field] !== '')
+    },
+    storeWell () {
+      return this.well(this.position)
+    },
+    status () {
+      if (this.hasLibraries && this.hasValidMetadata) {
+        return 'complete'
+      } else if (this.hasLibraries || this.hasSomeMetadata) {
+        return 'filled'
+      } else {
+        return 'empty'
+      }
     }
   },
   mounted() {
@@ -129,8 +153,11 @@ export default {
       linejoin: round;
     }
   }
+  .complete{
+    fill:green;
+  }
   .filled {
-    fill: purple;
+    fill: red;
   }
   .active {
     stroke: #ffffff;
