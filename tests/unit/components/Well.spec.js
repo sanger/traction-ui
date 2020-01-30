@@ -80,7 +80,7 @@ describe('Well.vue', () => {
     expect(ellipse.attributes('ry')).toEqual(well.ry)
   })
 
-  describe('well validity', () => {
+  describe('status', () => {
 
     it('will be valid if it is complete', () => {
       let ellipse = wrapper.find('ellipse')
