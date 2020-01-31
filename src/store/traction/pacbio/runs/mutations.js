@@ -29,7 +29,6 @@ const getCurrentWell = (state, position) => {
 const mutations = {
     setRuns: mutate('runs'),
     setCurrentRun: mutate('currentRun'),
-    setName: mutateRun('name'),
     setTemplatePrepKitBoxBarcode: mutateRun('template_prep_kit_box_barcode'),
     setBindingKitBoxBarcode: mutateRun('binding_kit_box_barcode'),
     setSequencingKitBoxBarcode: mutateRun('sequencing_kit_box_barcode'),

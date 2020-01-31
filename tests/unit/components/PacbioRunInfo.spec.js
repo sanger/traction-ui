@@ -61,8 +61,9 @@ describe('PacbioRunInfo', () => {
     })
 
     describe('form inputs', () => {
-        it('has a Run Name input', () => {
-            expect(wrapper.find('.run_name')).toBeDefined()
+        it('Run name should be read only', () => {
+            let input = wrapper.find('#run_name')
+            expect(input.attributes('readonly')).toBeTruthy()
         })
         it('has a Template Prep Kit Box Barcode input', () => {
             expect(wrapper.find('.template_prep_kit_box_barcode')).toBeDefined()
