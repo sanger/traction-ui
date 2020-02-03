@@ -78,7 +78,6 @@ export default {
   },
   methods: {
     ...mapMutations([
-      'setName',
       'setTemplatePrepKitBoxBarcode',
       'setBindingKitBoxBarcode',
       'setSequencingKitBoxBarcode',
