@@ -43,7 +43,6 @@ describe('PacbioRunInfo', () => {
     })
 
     it('can have mapState', () => {
-        expect(runInfo.runName).toBeDefined()
         expect(runInfo.templatePrepKitBoxBarcode).toBeDefined()
         expect(runInfo.bindingKitBoxBarcode).toBeDefined()
         expect(runInfo.sequencingKitBoxBarcode).toBeDefined()
