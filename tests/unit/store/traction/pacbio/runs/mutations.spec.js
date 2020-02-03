@@ -25,10 +25,9 @@ describe('mutateRun', () => {
     state = { currentRun: run }
   })
 
-  it('can update the mutate the state, e.g setName', () => {
+  it('can update the mutate the state, e.g setSystemName', () => {
     let systemName = 'System 1'
     Mutations.default.setSystemName(state, systemName)
-    console.log(state.currentRun)
     expect(state.currentRun.system_name).toEqual(systemName)
   })
 

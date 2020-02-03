@@ -38,10 +38,6 @@ describe('Run', () => {
         expect(run.id).toEqual('new')
       })
 
-      it('will have a name', () => {
-        expect(run.name).toBeDefined()
-      })
-
       it('will have an template_prep_kit_box_barcode', () => {
         expect(run.template_prep_kit_box_barcode).toBeDefined()
       })
@@ -286,7 +282,6 @@ describe('Run', () => {
       let result = Run.createRunPayload(run)
 
       expect(result.data.type).toEqual("runs")
-      expect(result.data.attributes.name).toEqual(run.name)
       expect(result.data.attributes.template_prep_kit_box_barcode).toEqual(run.template_prep_kit_box_barcode)
       expect(result.data.attributes.binding_kit_box_barcode).toEqual(run.binding_kit_box_barcode)
       expect(result.data.attributes.sequencing_kit_box_barcode).toEqual(run.sequencing_kit_box_barcode)
@@ -430,7 +425,6 @@ describe('Run', () => {
 
       expect(result.data.id).toEqual(run.id)
       expect(result.data.type).toEqual("runs")
-      expect(result.data.attributes.name).toEqual(run.name)
       expect(result.data.attributes.template_prep_kit_box_barcode).toEqual(run.template_prep_kit_box_barcode)
       expect(result.data.attributes.binding_kit_box_barcode).toEqual(run.binding_kit_box_barcode)
       expect(result.data.attributes.sequencing_kit_box_barcode).toEqual(run.sequencing_kit_box_barcode)
