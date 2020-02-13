@@ -125,6 +125,7 @@ export default {
         { key: 'sample_name', label: 'Name', sortable: true },
         { key: 'sample_species', label: 'Species', sortable: true },
         { key: 'barcode', label: 'Barcode', sortable: true },
+        { key: 'source_barcode', label: 'Source barcode', sortable: true},
         { key: 'created_at', label: 'Created at', sortable: true },
         { key: 'actions', label: 'Actions' },
         { key: 'show_details', label: '' }
@@ -134,8 +135,7 @@ export default {
         { label: 'Estimate of GB required', item: 'estimate_of_gb_required'},
         { label: 'Number of SMRT cells', item: 'number_of_smrt_cells'},
         { label: 'Cost code', item: 'cost_code'},
-        { label: 'External study ID', item: 'external_study_id'},
-        { label: 'Source barcode', item: 'source_barcode'}
+        { label: 'External study ID', item: 'external_study_id'}
       ],
       items: [],
       filteredItems: [],
