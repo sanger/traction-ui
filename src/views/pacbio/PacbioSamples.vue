@@ -135,6 +135,7 @@ export default {
         { label: 'Number of SMRT cells', item: 'number_of_smrt_cells'},
         { label: 'Cost code', item: 'cost_code'},
         { label: 'External study ID', item: 'external_study_id'},
+        { label: 'Source barcode', item: 'source_barcode'}
       ],
       items: [],
       filteredItems: [],
