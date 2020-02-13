@@ -106,6 +106,7 @@ describe('#sampleExtractionTubeJson', () => {
     expect(tube.estimate_of_gb_required).toBeDefined()
     expect(tube.number_of_smrt_cells).toBeDefined()
     expect(tube.cost_code).toBeDefined()
+    expect(tube.source_barcode).toBeDefined()
   })
 })
 
