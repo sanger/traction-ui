@@ -14,7 +14,7 @@ Install the required libraries using yarn: `yarn install`
 ## Config using `.dotenv`
 
 To specify the required config, use `.env` files by creating a `.env.<environment>.local` file and
-add the config to it. The esential config required:
+add the config to it. The essential config required:
 
 ```bash
 VUE_APP_TRACTION_BASE_URL=<url>

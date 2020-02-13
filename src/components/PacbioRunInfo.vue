@@ -4,11 +4,11 @@
     <b-row>
       <b-col>
         <b-form-input :value="runName"
-                @change="setName"
                 id="run_name"
                 placeholder="Run name"
                 type="text"
-                width="48"/>
+                width="48"
+                readonly />
       </b-col>
       <b-col>
         <b-form-input :value="templatePrepKitBoxBarcode"
@@ -78,7 +78,6 @@ export default {
   },
   methods: {
     ...mapMutations([
-      'setName',
       'setTemplatePrepKitBoxBarcode',
       'setBindingKitBoxBarcode',
       'setSequencingKitBoxBarcode',
