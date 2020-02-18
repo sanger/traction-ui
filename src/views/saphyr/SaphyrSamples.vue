@@ -27,6 +27,8 @@
              :filter="filter"
              :per-page="perPage"
              :current-page="currentPage"
+             :sort-by.sync="sortBy"
+             :sort-desc.sync="sortDesc"
              hover
              @filtered="onFiltered"
              selectable
@@ -44,7 +46,7 @@
       </template>
     </b-table>
 
-    <span class="font-weight-bold">Total records: {{ rows }}</span>
+    <span class="font-weight-bold">Total records: {{ requests.length }}</span>
 
     <div class="clearfix">
       <printerModal class="float-left"
@@ -59,7 +61,7 @@
 
       <b-pagination class="float-right"
                     v-model="currentPage"
-                    :total-rows="rows"
+                    :total-rows="requests.length"
                     :per-page="perPage"
                     aria-controls="samples-table">
       </b-pagination>
@@ -101,6 +103,8 @@ export default {
       filteredItems: [],
       selected: [],
       filter: null,
+      sortBy: 'created_at',
+      sortDesc: true,
       perPage: 6,
       currentPage: 1,
       preFilteredMaterials: [],

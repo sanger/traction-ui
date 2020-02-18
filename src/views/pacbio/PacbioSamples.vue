@@ -27,6 +27,8 @@
              :filter="filter"
              :per-page="perPage"
              :current-page="currentPage"
+             :sort-by.sync="sortBy"
+             :sort-desc.sync="sortDesc"
              hover
              @filtered="onFiltered"
              selectable
@@ -69,7 +71,7 @@
       </template>
     </b-table>
 
-    <span class="font-weight-bold">Total records: {{ rows }}</span>
+    <span class="font-weight-bold">Total records: {{ requests.length }}</span>
 
     <div class="clearfix">
       <printerModal class="float-left"
@@ -84,7 +86,7 @@
 
       <b-pagination class="float-right"
                     v-model="currentPage"
-                    :total-rows="rows"
+                    :total-rows="requests.length"
                     :per-page="perPage"
                     aria-controls="samples-table">
       </b-pagination>
@@ -123,6 +125,7 @@ export default {
         { key: 'sample_name', label: 'Name', sortable: true },
         { key: 'sample_species', label: 'Species', sortable: true },
         { key: 'barcode', label: 'Barcode', sortable: true },
+        { key: 'source_barcode', label: 'Source barcode', sortable: true},
         { key: 'created_at', label: 'Created at', sortable: true },
         { key: 'actions', label: 'Actions' },
         { key: 'show_details', label: '' }
@@ -132,12 +135,14 @@ export default {
         { label: 'Estimate of GB required', item: 'estimate_of_gb_required'},
         { label: 'Number of SMRT cells', item: 'number_of_smrt_cells'},
         { label: 'Cost code', item: 'cost_code'},
-        { label: 'External study ID', item: 'external_study_id'},
+        { label: 'External study ID', item: 'external_study_id'}
       ],
       items: [],
       filteredItems: [],
       selected: [],
       filter: null,
+      sortBy: 'created_at',
+      sortDesc: true,
       perPage: 6,
       currentPage: 1,
     }

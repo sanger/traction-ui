@@ -14,6 +14,10 @@ describe('Well.vue', () => {
 
     storeWell = Run.buildWell(props.row, props.column)
     storeWell.libraries = [{ id: 1, barcode: 'TRAC-1' }, { id: 2, barcode: 'TRAC-2' }]
+    storeWell.movie_time = "15"
+    storeWell.insert_size = 123
+    storeWell.on_plate_loading_concentration = 234
+    storeWell.sequencing_mode = "CCS"
 
     run = Run.build()
     run.plate.wells[0] = storeWell
@@ -70,25 +74,43 @@ describe('Well.vue', () => {
   it('will have an ellipse with the correct attributes', () => {
     let ellipse = wrapper.find('ellipse')
     expect(ellipse.exists()).toBeTruthy()
-    expect(ellipse.attributes('class')).toMatch(well.position)
     expect(ellipse.attributes('cx')).toEqual(well.cx)
     expect(ellipse.attributes('cy')).toEqual(well.cy)
     expect(ellipse.attributes('rx')).toEqual(well.rx)
     expect(ellipse.attributes('ry')).toEqual(well.ry)
   })
 
-  describe('hasLibraries', () => {
+  describe('status', () => {
 
-    it('will be present if there are some in the store', () => {
-      expect(well.hasLibraries).toBeTruthy()
+    it('will be valid if it is complete', () => {
+      let ellipse = wrapper.find('ellipse')
+      expect(ellipse.attributes('class')).toContain("complete")
     })
 
-    it('will be empty if there are none in the store', () => {
+    it('will be invalid if there is any missing meta data', () => {
+      storeWell.movie_time = ""
+      let ellipse = wrapper.find('ellipse')
+      expect(ellipse.attributes('class')).toEqual("filled")
+    })
+
+    it('will be invalid if there are no libraries in the store', () => {
       storeWell.libraries = []
-      expect(well.hasLibraries).toBeFalsy()
+      let ellipse = wrapper.find('ellipse')
+      expect(ellipse.attributes('class')).toEqual("filled")
+    })
+
+    it('will be empty if there are no libraries or metadata', () => {
+      storeWell.libraries = []
+      storeWell.movie_time = ""
+      storeWell.sequencing_mode = ""
+      storeWell.on_plate_loading_concentration = ""
+      storeWell.insert_size = ""
+      let ellipse = wrapper.find('ellipse')
+      expect(ellipse.attributes('class')).toEqual("empty")
     })
 
   })
+
   // TODO: same as well modal - refactor baby!
   describe('updateLibraryBarcode', () => {
     let newBarcode

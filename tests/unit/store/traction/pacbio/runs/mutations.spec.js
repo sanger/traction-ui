@@ -25,11 +25,12 @@ describe('mutateRun', () => {
     state = { currentRun: run }
   })
 
-  it('can update the mutate the state, e.g setName', () => {
-    let newName = 'a new name'
-    Mutations.default.setName(state, newName)
-    expect(state.currentRun.name).toEqual(newName)
+  it('can update the mutate the state, e.g setSystemName', () => {
+    let systemName = 'System 1'
+    Mutations.default.setSystemName(state, systemName)
+    expect(state.currentRun.system_name).toEqual(systemName)
   })
+
 })
 
 describe('createWell', () => {
