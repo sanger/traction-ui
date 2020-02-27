@@ -6,7 +6,7 @@ describe('Tube.vue', () => {
   let tube, wrapper, props
 
   beforeEach(() => {
-    props = { barcode: 'TRAC-1', sample_names: 'Sample1,Sample2', tag_oligos: 'ATGC,CGAT' }
+    props = { barcode: 'TRAC-1', sample_names: 'Sample1,Sample2', tag_group_ids: '1' }
 
     wrapper = mount(Tube, { 
       localVue, 
@@ -26,9 +26,9 @@ describe('Tube.vue', () => {
     expect(wrapper.find('.sample_names').text()).toEqual(props.sample_names)
   })
 
-  it('must have some tag oligos', () => {
-    expect(tube.tag_oligos).toEqual(props.tag_oligos)
-    expect(wrapper.find('.tag_oligos').text()).toEqual(props.tag_oligos)
+  it('must have some tag group ids', () => {
+    expect(tube.tag_group_ids).toEqual(props.tag_group_ids)
+    expect(wrapper.find('.tag_group_ids').text()).toEqual(props.tag_group_ids)
   })
 
 })
