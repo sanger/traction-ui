@@ -210,6 +210,7 @@ describe('#setLibraries', () => {
     let library = libraries[0]
     expect(library.requests.length).toEqual(2)
     expect(library.tag_oligos).toEqual('ATGC,CGTA')
+    expect(library.sample_with_tags).toEqual('4616STDY7535900,4616STDY7535900 (1,1)')
   })
 
   it('unsuccessfully', async () => {
