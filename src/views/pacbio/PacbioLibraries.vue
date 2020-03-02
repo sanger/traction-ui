@@ -92,7 +92,7 @@ export default {
       fields: [
         { key: 'selected', label: '' },
         { key: 'id', label: 'Library ID', sortable: true },
-        { key: 'sample_names', label: 'Sample Names', sortable: true },
+        { key: 'sample_with_tags', label: 'Sample Names (Tag ID)', sortable: true },
         { key: 'barcode', label: 'Barcode', sortable: true },
         { key: 'volume', label: 'Volume', sortable: true },
         { key: 'concentration', label: 'Concentration', sortable: true },

@@ -121,6 +121,9 @@ const setLibraries = async ({ commit, getters }) => {
       library.tag_oligos = library.requests.map((request) => {
         return request.tag_oligo
       }).join(',')
+      library.sample_with_tags = library.sample_names + " (" + library.requests.map((request) => {
+        return request.tag_group_id
+      }).join(',') + ")"
       return library
     })
     
