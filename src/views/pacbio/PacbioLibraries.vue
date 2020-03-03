@@ -52,16 +52,21 @@
       </template>
 
       <template v-slot:row-details="row">
-        <b-card class="text-left">
-          <template v-for="(field, index) in field_in_details">
-            <span :key="field.label" class="font-weight-bold">{{ field.label }}</span>: {{ row.item[field.item] }}
-            <br :key="field.label">
-          </template>
-
+        <b-table
+             small
+             show-empty
+             v-model="currentItems"
+             :sort-by.sync="sortBy"
+             :sort-desc.sync="sortDesc"
+             :items="libraries"
+             :fields="field_in_details"
+             :filter="filter">
+        </b-table>
+        <template>
           <p class="text-center">
             <b-button size="sm" @click="row.toggleDetails">Hide Details</b-button>
           </p>
-        </b-card>
+        </template>
       </template>
 
 
@@ -124,7 +129,8 @@ export default {
         { key: 'show_details', label: '' }
       ],
       field_in_details: [
-        { item: 'sample_with_tags', label: 'Sample tag ids'}
+        { key: 'sample_names', label: "Sample(s)"},
+        { key: 'sample_tag_name', label: 'Tag(s)'}
       ],
       items: [],
       filteredItems: [],
