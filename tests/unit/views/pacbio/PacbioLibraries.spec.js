@@ -44,7 +44,7 @@ describe('Libraries.vue', () => {
 
   describe('building the table', () => {
     it('contains the correct fields', () => {
-      let headers = wrapper.find('tbody').findAll('th')
+      let headers = wrapper.findAll('th')
       for (let field of libraries.fields) {
         expect(headers.filter(header => header.text() === field.label)).toBeDefined()
       }
