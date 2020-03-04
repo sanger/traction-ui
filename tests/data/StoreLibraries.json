@@ -11,7 +11,6 @@
     "created_at": "09/23/2019 11:18",
     "deactivated_at": null,
     "sample_names": "4616STDY7535900,4616STDY7535900",
-    "tag_oligos": "ATGC,CGTA",
     "tag_group_ids": "1"
   },
   {
@@ -26,7 +25,6 @@
     "created_at": "09/23/2019 11:18",
     "deactivated_at": null,
     "sample_names": "4616STDY7535900",
-    "tag_oligos": "ATGC",
     "tag_group_ids": "1"
   },  
   {
@@ -41,7 +39,6 @@
     "created_at": "09/23/2019 11:18",
     "deactivated_at": null,
     "sample_names": "4642STDY7515249",
-    "tag_oligos": "ATGC",
     "tag_group_ids": "1"
   },
   {
@@ -56,7 +53,6 @@
     "created_at": "09/23/2019 11:18",
     "deactivated_at": null,
     "sample_names": "4616STDY7644356",
-    "tag_oligos": "ATGC",
     "tag_group_ids": "1"
   },
   {
@@ -71,7 +67,6 @@
     "created_at": "09/23/2019 11:18",
     "deactivated_at": null,
     "sample_names": "25G257228308",
-    "tag_oligos": "ATGC",
     "tag_group_ids": "1"
   }
 ]
