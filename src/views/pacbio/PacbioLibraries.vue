@@ -46,19 +46,18 @@
       </template>
 
       <template v-slot:cell(show_details)="row">
-        <b-button size="sm" @click="row.toggleDetails" class="mr-2" variant="outline-info">
+        <b-button :id="'details-btn-'+row.item.id" size="sm" @click="row.toggleDetails" class="mr-2" variant="outline-info">
           {{ row.detailsShowing ? 'Hide' : 'Show'}} Details
         </b-button>
       </template>
 
       <template v-slot:row-details="row">
+        <b-card>
         <b-table
              small
+             bordered
              show-empty
-             v-model="currentItems"
-             :sort-by.sync="sortBy"
-             :sort-desc.sync="sortDesc"
-             :items="libraries"
+             :items= row.item.requests
              :fields="field_in_details"
              :filter="filter">
         </b-table>
@@ -67,6 +66,7 @@
             <b-button size="sm" @click="row.toggleDetails">Hide Details</b-button>
           </p>
         </template>
+        </b-card>
       </template>
 
 
@@ -129,8 +129,8 @@ export default {
         { key: 'show_details', label: '' }
       ],
       field_in_details: [
-        { key: 'sample_names', label: "Sample(s)"},
-        { key: 'sample_tag_name', label: 'Tag(s)'}
+        { key: 'sample_name', label: "Sample(s)"},
+        { key: 'tag_group_id', label: 'Tag(s)'}
       ],
       items: [],
       filteredItems: [],

@@ -44,7 +44,7 @@ describe('Libraries.vue', () => {
 
   describe('building the table', () => {
     it('contains the correct fields', () => {
-      let headers = wrapper.findAll('th')
+      let headers = wrapper.find('tbody').findAll('th')
       for (let field of libraries.fields) {
         expect(headers.filter(header => header.text() === field.label)).toBeDefined()
       }
@@ -114,6 +114,15 @@ describe('Libraries.vue', () => {
   describe('alert', () => {
     it('has a alert', () => {
       expect(wrapper.contains(Alert)).toBe(true)
+    })
+  })
+
+  describe('Details button', () => {
+    let button
+
+    it('is present for each sample', () => {
+      button = wrapper.find('#details-btn-1')
+      expect(button.text()).toEqual('Show Details')
     })
   })
 })

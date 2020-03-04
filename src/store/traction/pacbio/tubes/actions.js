@@ -1,6 +1,4 @@
 import handlePromise  from '@/api/PromiseHelper'
-import { SSL_OP_SSLEAY_080_CLIENT_DH_BUG } from 'constants'
-import { INSPECT_MAX_BYTES } from 'buffer'
 
 const getTractionTubesForBarcodes = async ({ commit, getters }, barcodes)  => {
   let request = getters.tubeRequest
@@ -122,10 +120,6 @@ const setLibraries = async ({ commit, getters }) => {
     libraries = response.deserialize.libraries.map((library) => {
       library.tag_oligos = library.requests.map((request) => {
         return request.tag_oligo
-      }).join(',')
-
-      library.sample_tag_name = library.requests.map((request) => {
-        return request.tag_group_id
       }).join(',')
 
       return library
