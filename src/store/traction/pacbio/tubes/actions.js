@@ -118,8 +118,8 @@ const setLibraries = async ({ commit, getters }) => {
     libraries = response.deserialize.libraries
 
     libraries = response.deserialize.libraries.map((library) => {
-      library.tag_oligos = library.requests.map((request) => {
-        return request.tag_oligo
+      library.tag_group_ids = library.requests.map((request) => {
+        return request.tag_group_id
       }).join(',')
       return library
     })
