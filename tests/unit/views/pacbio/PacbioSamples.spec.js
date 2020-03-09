@@ -110,4 +110,13 @@ describe('Samples.vue', () => {
             expect(button.text()).toEqual('Edit')
         })
     })
+
+    describe('Details button', () => {
+        let button
+    
+        it('is present for each sample', () => {
+          button = wrapper.find('#details-btn-1')
+          expect(button.text()).toEqual('Show Details')
+        })
+      })
 })

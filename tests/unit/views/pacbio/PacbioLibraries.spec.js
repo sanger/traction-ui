@@ -13,7 +13,7 @@ describe('Libraries.vue', () => {
   beforeEach(() => {
     mockLibraries =  [
       { id: 1, barcode: 'TRAC-8', material: {id: 6, type: 'libraries', state: 'pending', sample_names: 'sample_d,sample_e', volume: 1.0, concentration: 1.0, library_kit_barcode: 'LK12345', fragment_size: 100, created_at: '03/12/2019 11:49' }},
-      { id: 2, barcode: 'TRAC-8', material: {id: 6, type: 'libraries', state: 'pending', sample_name: 'sample_d,sample_e', volume: 1.0, concentration: 1.0, library_kit_barcode: 'LK12345', fragment_size: 100, created_at: '03/12/2019 11:49' }}
+      { id: 2, barcode: 'TRAC-8', material: {id: 6, type: 'libraries', state: 'pending', sample_names: 'sample_d,sample_e', volume: 1.0, concentration: 1.0, library_kit_barcode: 'LK12345', fragment_size: 100, created_at: '03/12/2019 11:49' }}
     ]
 
     store.commit('traction/pacbio/tubes/setLibraries', mockLibraries)
@@ -114,6 +114,15 @@ describe('Libraries.vue', () => {
   describe('alert', () => {
     it('has a alert', () => {
       expect(wrapper.contains(Alert)).toBe(true)
+    })
+  })
+
+  describe('Details button', () => {
+    let button
+
+    it('is present for each sample', () => {
+      button = wrapper.find('#details-btn-1')
+      expect(button.text()).toEqual('Show Details')
     })
   })
 })

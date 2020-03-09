@@ -121,6 +121,7 @@ const setLibraries = async ({ commit, getters }) => {
       library.tag_group_ids = library.requests.map((request) => {
         return request.tag_group_id
       }).join(',')
+
       return library
     })
     
