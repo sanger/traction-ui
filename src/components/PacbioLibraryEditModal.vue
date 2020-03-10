@@ -1,6 +1,6 @@
 <template>
   <div>
-    <b-button :id="generateId('editLibrary', this.id)" size="sm" @click="show" variant="outline-primary">Edit</b-button>
+    <b-button :id="generateId('editLibrary', this.lib.id)" size="sm" @click="show" variant="outline-primary">Edit</b-button>
 
     <b-modal
       id="editLibraryModal"
@@ -15,19 +15,17 @@
           <b-form-input
             ref="volume"
             id="volume"
-            v-model="volume"
-            placeholder="1.0">
+            v-model="library.volume">
           </b-form-input>
         </b-form-group>
 
         <b-form-group id="concentration"
                       label="Concentration:"
-                      label-for="concentraion">
+                      label-for="concentration">
           <b-form-input
             ref="concentration"
             id="concentration"
-            v-model="concentration"
-            placeholder="1.0">
+            v-model="library.concentration">
           </b-form-input>
         </b-form-group>
 
@@ -37,8 +35,7 @@
           <b-form-input
             ref="libraryKitBarcode"
             id="libraryKitBarcode"
-            v-model="libraryKitBarcode"
-            placeholder="abc">
+            v-model="library.library_kit_barcode">
           </b-form-input>
         </b-form-group>
 
@@ -48,8 +45,7 @@
           <b-form-input
             ref="fragmentSize"
             id="fragmentSize"
-            v-model="fragmentSize"
-            placeholder="1.0">
+            v-model="library.fragment_size">
           </b-form-input>
         </b-form-group>
       </b-form>
@@ -75,24 +71,25 @@ const { mapActions } = createNamespacedHelpers('traction/pacbio/tubes')
 
 export default {
   name: 'PacbioLibraryEditModal',
-  data () {
+  data() {
     return {
-      volume: "",
-      concentration: "",
-      libraryKitBarcode: "",
-      fragmentSize: ""
+      library: {
+        fragment_size: "",
+        library_kit_barcode: "",
+        concentration: "",
+        volume: ""
+      }
     }
   },
   props: {
-    id: {
-      type: [String, Number]
+    lib: {
+      type: [Object]
     }
   },
   methods: {
     async update() {
       try {
-        this.data["id"] = this.id
-        await this.updateLibrary(this.data)
+        await this.updateLibrary(this.library)
         this.alert('Library updated', 'success')
       } catch (err) {
         this.alert('Failed to update library. ' + err, 'danger')
@@ -115,6 +112,9 @@ export default {
       'updateLibrary',
     ])
   },
+  created() {
+    this.library = this.lib
+  }
 }
 
 </script>

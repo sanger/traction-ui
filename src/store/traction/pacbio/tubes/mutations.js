@@ -1,4 +1,3 @@
-import { id } from "postcss-selector-parser"
 
 const mutations = {
   setTubes (state, tubes) {
@@ -7,10 +6,10 @@ const mutations = {
   setLibraries(state, libraries) {
     state.libraries = libraries
   },
-  setLibrary(state, library) {
-    let lib = state.libraries.find((lib => lib.id === library.id))
-    state.libraries[lib] = library
-    // loop through the libraries, find for id, upadte
+  updateLibrary(state, library) {
+    let index = state.libraries.indexOf(lib => lib.id === library.id)
+    let libraries = state.libraries.splice(index, 1, library)
+    state.libraries = libraries
   }
 }
 

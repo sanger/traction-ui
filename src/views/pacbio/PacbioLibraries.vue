@@ -46,7 +46,7 @@
       </template>
 
       <template v-slot:cell(actions)="row">
-        <PacbioLibraryEditModal :id="row.item.id" @alert="showAlert" >
+        <PacbioLibraryEditModal :lib="row.item" @alert="showAlert" >
         </PacbioLibraryEditModal>
       </template>
 
@@ -179,7 +179,7 @@ export default {
     // Get all the libraries
     // Provider function used by the bootstrap-vue table component
     async provider() {
-      this.items = await this.setLibraries()
+      await this.setLibraries()
     },
     ...mapActions([
       'deleteLibraries',

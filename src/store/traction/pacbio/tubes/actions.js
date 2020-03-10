@@ -132,60 +132,28 @@ const setLibraries = async ({ commit, getters }) => {
 
 }
 
-const updateLibrary= async ({ commit, rootGetters, getters }, payload) => {
-// get payload
-// create data body
-// request.update()
-// responses [].first
-// get library from the response
-// add mutation to uipdate librayr in state
-  let request = getters.libraryRequest
-  let promise = request.update(body)
-  let response = await handlePromise(promise)
-
-  let library = response.deserialize.libraries.find((lib => lib.id === library.id))
-  console.log(library)
-  let tagId = rootGetters['traction/tractionTags'].find(l => l.group_id == library.tag.group_id).id
-  let lib =  {     
-    volume: payload.volume,
-    concentration: payload.concentration,
-    library_kit_barcode: payload.libraryKitBarcode,
-    fragment_size: payload.fragmentSize,
-    relationships: {
-      requests: {
-        data: library.samples.map(sample => { //samples dont exists in this context ?
-          return {
-            id: sample.id,
-            type: 'requests',
-            relationships: {
-              tag: {
-                data: {
-                  id: tagId
-                }
-              }
-            }
-          }
-        })
-      }
-    }
-  }
+const updateLibrary= async ({ commit, getters }, payload) => {
 
   let body = {
     data: {
       id: payload.id,
       type: 'libraries',
       attributes: {
-        lib
+        volume: payload.volume,
+        concentration: payload.concentration,
+        library_kit_barcode: payload.library_kit_barcode,
+        fragment_size: payload.fragment_size
       }
     }
   }
   
-  request = getters.libraryRequest
-  promise = request.update(body)
-  response = await handlePromise(promise)
+  let request = getters.libraryRequest
+  let promise = request.update(body)
+  let response = await handlePromise(promise)
 
   if (response.successful && !response.empty) {
-    commit('setLibrary', library)
+    let library = response.deserialize.libraries[0]
+    commit('updateLibrary', library)
   }
   return response
 }
