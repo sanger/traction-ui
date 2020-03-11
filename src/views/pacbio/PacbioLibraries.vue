@@ -185,7 +185,6 @@ export default {
       'deleteLibraries',
       'setLibraries'
     ])
-    
   },
   created() {
     // When this component is created (the 'created' lifecycle hook is called), we need to get the

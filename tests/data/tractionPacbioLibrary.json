@@ -42,6 +42,17 @@
           "tag_set_name": "pacbio",
           "tag_id": 1
         }
+      },
+      {
+        "id": "6",
+        "type": "request_libraries",
+        "attributes": {
+          "sample_name": "4616STDY7535900",
+          "tag_oligo": "CGTA",
+          "tag_group_id": 1,
+          "tag_set_name": "pacbio",
+          "tag_id": 2
+        }
       }
     ]
   },

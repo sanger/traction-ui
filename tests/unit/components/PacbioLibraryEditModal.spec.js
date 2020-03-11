@@ -1,35 +1,13 @@
 import { mount, localVue, Vuex, Data } from '../testHelper'
 import PacbioLibraryEditModal from '@/components/PacbioLibraryEditModal'
+import Response from '@/api/Response'
 
 describe('PacbioLibraryEditModal.vue', () => {
 
   let wrapper, modal, props, mockLibrary
 
   beforeEach(() => {
-    mockLibrary = { 
-      id: 1, 
-      type: 'libraries',
-      state: 'pending',
-      barcode: 'TRAC-1',
-      volume: 1,
-      concentration: 1,
-      library_kit_barcode: 1,
-      fragment_size: 1,
-      created_at: "03/10/2020 08:00",
-      deactivated_at: null,
-      sample_names: "4616STDY7535900,4616STDY7535900",
-      tag_oligos: "ATGC,CGTA",
-      requests: {
-        0: {
-          type: "request_libraries",
-          id: "6",
-          sample_name: "Sample6",
-          tag_oligo: "AGCT",
-          tag_set_name: "Sequel_16_barcodes_v3",
-          tag_id: "3"
-        }
-      } 
-    },
+    mockLibrary = new Response(Data.TractionPacbioLibrary).deserialize.libraries[0],
     props = { lib: mockLibrary }
 
     let store = new Vuex.Store({
