@@ -179,7 +179,7 @@ export default {
     // Get all the libraries
     // Provider function used by the bootstrap-vue table component
     async provider() {
-      await this.setLibraries()
+      this.items = await this.setLibraries()
     },
     ...mapActions([
       'deleteLibraries',

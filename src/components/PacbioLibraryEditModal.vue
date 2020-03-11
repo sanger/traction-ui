@@ -1,6 +1,6 @@
 <template>
   <div>
-    <b-button :id="generateId('editLibrary', this.lib.id)" size="sm" @click="show" variant="outline-primary">Edit</b-button>
+    <b-button :id="'editLibrary-'+this.lib.id" size="sm" @click="show" variant="outline-primary">Edit</b-button>
 
     <b-modal
       id="editLibraryModal"
@@ -95,9 +95,6 @@ export default {
         this.alert('Failed to update library. ' + err, 'danger')
       }
       this.hide()
-    },
-    generateId(text, id) {
-      return `${text}-${id}`
     },
     show() {
       this.$refs['modal'].show()

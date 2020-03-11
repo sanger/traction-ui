@@ -222,6 +222,35 @@ describe('#setLibraries', () => {
   })
 })
 
+describe('#updateLibrary', () => {
+  let commit, update, getters, failedResponse, library, expectedResponse
+
+  beforeEach(() => {
+    commit = jest.fn()
+    update = jest.fn()
+    getters = { 'libraryRequest': { 'update': update } }
+    expectedResponse = new Response(Data.TractionPacbioLibrary)
+    library = expectedResponse.deserialize.libraries[0]
+
+    failedResponse = { data: { data: [] }, status: 500, statusText: 'Internal Server Error' }
+  })
+
+  it('successfully', async () => {
+    update.mockReturnValue([Data.TractionPacbioLibrary])
+    library.volume = "5"
+    let response = await Actions.updateLibrary({ commit, getters }, library)
+    expect(expectedResponse).toEqual(response)
+  })
+
+  it('unsuccessfully', async () => {
+    update.mockReturnValue([failedResponse])
+    expectedResponse = new Response(failedResponse)
+    let response = await Actions.updateLibrary({ commit, getters }, library)
+    expect(commit).not.toHaveBeenCalled()
+    expect(response).toEqual(expectedResponse)
+  })
+})
+
 describe("processCostCode", () => {
 
   let tube

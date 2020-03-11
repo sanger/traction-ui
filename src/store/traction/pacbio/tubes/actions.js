@@ -148,10 +148,11 @@ const updateLibrary= async ({ commit, getters }, payload) => {
   }
   
   let request = getters.libraryRequest
-  let promise = request.update(body)
-  let response = await handlePromise(promise)
+  let promises = request.update(body)
+  let response = await handlePromise(promises[0])
 
   if (response.successful && !response.empty) {
+console.log('here')
     let library = response.deserialize.libraries[0]
     commit('updateLibrary', library)
   }
