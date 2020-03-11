@@ -1,4 +1,4 @@
-import { mount, localVue, Vuex, Data } from '../testHelper'
+import { mount, localVue, store, Data } from '../testHelper'
 import PacbioLibraryEditModal from '@/components/PacbioLibraryEditModal'
 import Response from '@/api/Response'
 
@@ -9,32 +9,7 @@ describe('PacbioLibraryEditModal.vue', () => {
   beforeEach(() => {
     mockLibrary = new Response(Data.TractionPacbioLibrary).deserialize.libraries[0],
     props = { lib: mockLibrary }
-
-    let store = new Vuex.Store({
-      modules: {
-        traction: {
-          namespaced: true,
-          modules: {
-            pacbio: {
-              namespaced: true,
-              modules: {
-                tubes: {
-                  namespaced: true,
-                  state: {
-                    requests: mockLibrary
-                  },
-                  getters: {
-                    requests: state => state.requests
-                  }
-                }
-              }
-            }
-          }
-        }
-      }
-    })
   
-
     wrapper = mount(PacbioLibraryEditModal, {
       localVue,
       store,
