@@ -25,7 +25,7 @@
           <b-form-input
             id="estimateOfGBRequired"
             v-model="request.estimate_of_gb_required"
-            placeholder="Library Type">
+            placeholder="Estimate of GB required">
           </b-form-input>
         </b-form-group>
 
