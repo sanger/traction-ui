@@ -1,7 +1,9 @@
 <template>
   <b-container id="app">
     <br>
-    <h1 id="traction-header">Traction</h1>
+    <router-link to="/dashboard">
+      <h1 id="traction-header">Traction</h1>
+    </router-link>
     <router-view/>
   </b-container>
 </template>
@@ -25,6 +27,13 @@
     &.router-link-active {
       color: #42b983;
     }
+  }
+}
+a {
+  color: black;
+  &:hover {
+    text-decoration: none;
+    color: black;
   }
 }
 </style>

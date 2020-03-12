@@ -12,17 +12,22 @@ export default new Vuex.Store({
   state: {
     api: build(Api.Config, process.env),
     printers: PrinterList,
-    pipeline: ''
   },
   mutations: {
     setPipeline(state, pipeline) {
-      state.pipeline = pipeline
+      localStorage.setItem("pipeline", pipeline)
     }
   },
   getters: {
     api: state => state.api,
     printers: state => state.printers,
-    pipeline: state => state.pipeline
+    pipeline: state => () => {
+      if (localStorage) {
+        return localStorage.getItem("pipeline");
+      } else {
+        return state.pipeline
+      }
+    }
   },
   modules: {
     traction,

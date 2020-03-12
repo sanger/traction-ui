@@ -1,58 +1,47 @@
 <template>
-  <b-row>
-    <b-col>
-      <div class="pipeline saphyr">
-        <router-link :to="{ path: '/saphyr' }" tag="a">
-          <h4>Saphyr</h4>
+  <div>
+    <b-card-group deck>
+      <b-card v-for="(pipeline, index) in pipelines" v-bind:key="index"
+          :title="pipeline.title"
+          img-src="https://picsum.photos/600/300/?image=25"
+          img-alt="Image"
+          img-top
+          tag="article"
+          style="max-width: 20rem;"
+          class="mb-2"
+      >
+        <b-card-text>
+          {{ pipeline.description }}
+        </b-card-text>
+      
+        <router-link :to="{ path: '/'+pipeline.name }" tag="a">
+          <b-button variant="primary" @click="setPipeline(pipeline.name)">{{ pipeline.title }}</b-button>
         </router-link>
-        <pipeline-router pipeline="saphyr"></pipeline-router>
-      </div>
-    </b-col>
-    <b-col>
-      <div class="pipeline pacbio">
-        <router-link :to="{ path: '/pacbio' }" tag="a">
-          <h4>Pacbio</h4>
-        </router-link>
-        <pipeline-router pipeline="pacbio"></pipeline-router>
-      </div>
-    </b-col>
-  </b-row>
+
+      </b-card>
+    </b-card-group>
+  </div>
 </template>
 
 <script>
 
-import PipelineRouter from '@/components/PipelineRouter'
+import PipelinesConfig from '@/config/PipelinesConfig'
+import { mapMutations } from 'vuex'
 
 export default {
   name: 'Dashboard',
-  props: {
-  },
-  data () {
-    return {}
+  computed: {
+    pipelines () {
+      return PipelinesConfig
+    }
   },
   methods: {
+    ...mapMutations([
+      'setPipeline',
+    ])
   },
-  components: {
-    PipelineRouter
-  },
-  computed: {
-  }
 }
 </script>
 
 <style scoped lang="scss">
-  .pipeline {
-    height: 400px;
-    padding: 20px;
-    border: 2px solid gray;
-    a {
-      color: black;
-      &:hover {
-        text-decoration: none;
-      }
-    }
-  }
-  h4, p {
-    text-align: left;
-  }
 </style>

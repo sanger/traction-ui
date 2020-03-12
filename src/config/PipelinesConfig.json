@@ -1,0 +1,32 @@
+[
+  { 
+    "name": "saphyr",
+    "title": "Saphyr",
+    "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam.",
+    "routes": [
+      "reception",
+      "samples",
+      "libraries",
+      "runs"
+    ]
+  },
+  { 
+    "name": "pacbio",
+    "title": "Pacbio",
+    "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam.",
+    "routes": [
+      "reception",
+      "samples",
+      "libraries",
+      "runs"
+    ]
+  },
+  {
+    "name": "ont",
+    "title": "ONT",
+    "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam.",
+    "routes": [
+      "reception"
+    ]
+  }
+]

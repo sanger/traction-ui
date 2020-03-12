@@ -1,9 +1,11 @@
 <script>
 
-import PipelineView from '@/mixins/PipelineView'
+import PipelineView from '@/views/PipelineView'
 
 export default {
   name: 'Saphyr',
-  mixins: [PipelineView]
+  components: {
+    PipelineView
+  }
 }
 </script>
