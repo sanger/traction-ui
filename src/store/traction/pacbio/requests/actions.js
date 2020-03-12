@@ -11,9 +11,9 @@ const setRequests = async ({ commit, getters }) => {
     }
 }
 
-const updateRequest = async ({ getters }, id) => {
+const updateRequest = async ({ getters }, payload) => {
     let request = getters.requestsRequest
-    let sample = getters.requests.filter(r => r.id == id)[0]
+    let sample = getters.requests.filter(r => r.id == payload.id)[0]
 
     let requestPayload = createRequestPayload(sample)
     let promises = request.update(requestPayload)

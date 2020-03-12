@@ -47,7 +47,7 @@
       </template>
 
       <template v-slot:cell(actions)="row">
-        <PacbioSampleMetadataModal :id="row.item.id" @alert="showAlert" >
+        <PacbioSampleMetadataModal :req="row.item" @alert="showAlert" >
         </PacbioSampleMetadataModal>
       </template>
 
