@@ -8,43 +8,39 @@
       title="Edit Library"      
     >    
 
-      <b-form id="editLibraryForm">
-        <b-form-group id="volume"
+      <b-form id="editLibraryForm" v-on:submit.prevent>
+        <b-form-group id="input-group-1"
                       label="Volume:"
-                      label-for="volume">
+                      label-for="input-1">
           <b-form-input
-            ref="volume"
-            id="volume"
+            id="input-1"
             v-model="library.volume">
           </b-form-input>
         </b-form-group>
 
-        <b-form-group id="concentration"
+        <b-form-group id="input-group-2"
                       label="Concentration:"
-                      label-for="concentration">
+                      label-for="input-2">
           <b-form-input
-            ref="concentration"
-            id="concentration"
+            id="input-2"
             v-model="library.concentration">
           </b-form-input>
         </b-form-group>
 
-        <b-form-group id="libraryKitBarcode"
+        <b-form-group id="input-group-3"
                       label="Library Kit Barcode:"
-                      label-for="libraryKitBarcode">
+                      label-for="input-3">
           <b-form-input
-            ref="libraryKitBarcode"
-            id="libraryKitBarcode"
+            id="input-3"
             v-model="library.library_kit_barcode">
           </b-form-input>
         </b-form-group>
 
-        <b-form-group id="fragmentSize"
+        <b-form-group id="input-group-4"
                       label="Fragment Size:"
-                      label-for="fragmentSize">
+                      label-for="input-4">
           <b-form-input
-            ref="fragmentSize"
-            id="fragmentSize"
+            id="input-4"
             v-model="library.fragment_size">
           </b-form-input>
         </b-form-group>
