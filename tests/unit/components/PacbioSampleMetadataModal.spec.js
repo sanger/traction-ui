@@ -1,6 +1,7 @@
-import { mount, localVue, Vuex, Data } from '../testHelper'
+import { mount, localVue, Data } from '../testHelper'
 import PacbioSampleMetadataModal from '@/components/PacbioSampleMetadataModal'
 import Response from '@/api/Response'
+import store from '@/store'
 
 describe('PacbioSampleMetadataModal.vue', () => {
 
@@ -8,31 +9,9 @@ describe('PacbioSampleMetadataModal.vue', () => {
 
   beforeEach(() => {
     mockSamples = new Response(Data.TractionPacbioSamples).deserialize.requests
-    props = { id: mockSamples[0].id }
+    props = { req: mockSamples[0] }
     
-    let store = new Vuex.Store({
-      modules: {
-        traction: {
-          namespaced: true,
-          modules: {
-            pacbio: {
-              namespaced: true,
-              modules: {
-                requests: {
-                  namespaced: true,
-                  state: {
-                    requests: mockSamples
-                  },
-                  getters: {
-                    requests: state => state.requests
-                  }
-                }
-              }
-            }
-          }
-        }
-      }
-    })
+    store.commit('traction/pacbio/requests/setRequests', mockSamples)
 
     wrapper = mount(PacbioSampleMetadataModal, {
       localVue,
@@ -53,63 +32,6 @@ describe('PacbioSampleMetadataModal.vue', () => {
 
   it('will have a form', () => {
     expect(wrapper.find('#sampleMetaDataForm')).toBeDefined()
-  })
-
-  it('must have a id prop', () => {
-    expect(modal.id).toEqual(props.id)
-  })
-
-  it('must have show data', () => {
-    expect(modal.show).toEqual(false)
-  })
-
-  it('can have mapState', () => {
-    expect(modal.libraryType).toEqual(mockSamples[0].library_type)
-    expect(modal.estimateOfGBRequired).toBeDefined()
-    expect(modal.numberOfSMRTCells).toBeDefined()
-    expect(modal.costCode).toBeDefined()
-  })
-    
-  describe('Edit button', () => {
-    let button
-
-    it('is present for each sample', () => {
-      button = wrapper.find('#editRun-1')
-      expect(button.text()).toEqual('Edit')
-    })
-
-    it('on click show is true', () => {
-      button = wrapper.find('#editRun-1')
-      button.trigger('click')
-      expect(modal.show).toEqual(true)
-    })
-  })
-
-  describe('mutators', () => {
-    it('updateLibraryType', () => {
-      modal.setLibraryType = jest.fn()
-      modal.updateLibraryType('lib type')
-      expect(modal.setLibraryType).toBeCalledWith({ requestId: mockSamples[0].id, libraryType: 'lib type' })
-    })
-
-    it('updateEstimateOfGBRequired', () => {
-      modal.setEstimateOfGBRequired = jest.fn()
-      modal.updateEstimateOfGBRequired("100")
-      expect(modal.setEstimateOfGBRequired).toBeCalledWith({ requestId: mockSamples[0].id, estimateOfGBRequired: "100" })
-    })
-
-    it('updateNumberOfSMRTCells', () => {
-      modal.setNumberOfSMRTCells = jest.fn()
-      modal.updateNumberOfSMRTCells("1")
-      expect(modal.setNumberOfSMRTCells).toBeCalledWith({ requestId: mockSamples[0].id, numberOfSMRTCells: "1" })
-    })
-
-    it('updateCostCode', () => {
-      modal.setCostCode = jest.fn()
-      modal.updateCostCode('ABC123')
-      expect(modal.setCostCode).toBeCalledWith({ requestId: mockSamples[0].id, costCode: 'ABC123' })
-    })
-
   })
 
   describe('update', () => {
@@ -144,6 +66,11 @@ describe('PacbioSampleMetadataModal.vue', () => {
       expect(wrapper.emitted().alert[0][0]).toEqual('emit this message')
       expect(wrapper.emitted().alert[0][1]).toEqual('success')
     })
+  })
+
+  it('contains an edit button', () => {
+    let button = wrapper.find('#editSample-1')
+    expect(button.text()).toEqual('Edit')
   })
 
   it('#generateId', () => {
