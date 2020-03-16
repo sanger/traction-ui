@@ -52,7 +52,7 @@
       </template>
 
       <template v-slot:cell(show_details)="row">
-        <b-button size="sm" @click="row.toggleDetails" class="mr-2" variant="outline-info">
+        <b-button :id="'details-btn-'+row.item.id" size="sm" @click="row.toggleDetails" class="mr-2" variant="outline-info">
           {{ row.detailsShowing ? 'Hide' : 'Show'}} Details
         </b-button>
       </template>

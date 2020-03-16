@@ -31,7 +31,7 @@
              :sort-desc.sync="sortDesc"
              hover
              @filtered="onFiltered"
-               selectable
+             selectable
              select-mode="multi"
              @row-selected="onRowSelected">
       <template v-slot:cell(selected)="{ rowSelected }">
@@ -44,6 +44,32 @@
           <span class="sr-only">Not selected</span>
         </template>
       </template>
+
+      <template v-slot:cell(show_details)="row">
+        <b-button :id="'details-btn-'+row.item.id" size="sm" @click="row.toggleDetails" class="mr-2" variant="outline-info">
+          {{ row.detailsShowing ? 'Hide' : 'Show'}} Details
+        </b-button>
+      </template>
+
+      <template v-slot:row-details="row">
+        <b-card>
+        <b-table
+             small
+             bordered
+             show-empty
+             :items= row.item.requests
+             :fields="field_in_details"
+             :filter="filter">
+        </b-table>
+        <template>
+          <p class="text-center">
+            <b-button size="sm" @click="row.toggleDetails">Hide Details</b-button>
+          </p>
+        </template>
+        </b-card>
+      </template>
+
+
     </b-table>
 
     <span class="font-weight-bold">Total records: {{ rows }}</span>
@@ -99,6 +125,12 @@ export default {
         { key: 'library_kit_barcode', label: 'Library Kit Barcode', sortable: true },
         { key: 'fragment_size', label: 'Fragment Size', sortable: true },
         { key: 'created_at', label: 'Created at', sortable: true },
+        { key: 'actions', label: 'Actions' },
+        { key: 'show_details', label: '' }
+      ],
+      field_in_details: [
+        { key: 'sample_name', label: "Sample(s)"},
+        { key: 'tag_group_id', label: 'Tag(s)'}
       ],
       items: [],
       filteredItems: [],

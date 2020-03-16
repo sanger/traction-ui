@@ -209,7 +209,7 @@ describe('#setLibraries', () => {
     expect(commit).toHaveBeenCalledWith("setLibraries", libraries)
     let library = libraries[0]
     expect(library.requests.length).toEqual(2)
-    expect(library.tag_oligos).toEqual('ATGC,CGTA')
+    expect(library.tag_group_ids).toEqual('1,1')
   })
 
   it('unsuccessfully', async () => {

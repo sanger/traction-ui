@@ -2,16 +2,15 @@
 <template>
   <b-list-group-item draggable="true" v-on:dragstart="drag(barcode, $event)" v-bind:class="{active: isActive}" v-on:mouseover="isActive = true" v-on:mouseleave="isActive = false">
     <b-img left src="/tube.png" height="70" />
-
     <div class="info">
       <div class="barcode">
-        {{ barcode}}
+        {{ barcode }}
       </div>
        <div class="sample_names">
         {{ sample_names }}
       </div>
-       <div class="tag_oligos">
-        {{ tag_oligos}}
+       <div class="tag_group_ids">
+        {{ tag_group_ids }}
       </div>
     </div>
  </b-list-group-item>
@@ -30,7 +29,7 @@ export default {
       type: String,
       required: true
     },
-    tag_oligos: {
+    tag_group_ids: {
       type: String,
       required: true
     }
