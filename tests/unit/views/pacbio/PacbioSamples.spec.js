@@ -84,7 +84,7 @@ describe('Samples.vue', () => {
     })
 
     describe('sample metadata modal', () => {
-        it('contrain sample metadata modal', () => {
+        it('contains sample metadata modal', () => {
             expect(wrapper.contains(PacbioSampleMetadataModal)).toBe(true)
         })
     })
@@ -94,7 +94,6 @@ describe('Samples.vue', () => {
     
         it('is present for each sample', () => {
           button = wrapper.find('#details-btn-1')
-          console.log(button)
           expect(button.text()).toEqual('Show Details')
         })
       })

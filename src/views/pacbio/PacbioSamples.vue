@@ -150,7 +150,7 @@ export default {
   methods: {
     async provider() {
       try {
-        await this.setRequests()
+        this.items = await this.setRequests()
       } catch (error) {
         this.showAlert("Failed to get samples: " + error.message, 'danger')
       }
