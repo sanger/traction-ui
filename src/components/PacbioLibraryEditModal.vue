@@ -94,6 +94,7 @@ export default {
     },
     show() {
       this.$refs['modal'].show()
+      this.library = this.lib
     },
     hide() {
       this.$refs['modal'].hide()
@@ -102,11 +103,8 @@ export default {
       this.$emit('alert', message, type)
     },
     ...mapActions([
-      'updateLibrary',
+      'updateLibrary'
     ])
-  },
-  created() {
-    this.library = this.lib
   }
 }
 
