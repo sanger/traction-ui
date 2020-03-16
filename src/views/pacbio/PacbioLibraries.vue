@@ -77,7 +77,7 @@
 
     </b-table>
 
-    <span class="font-weight-bold">Total records: {{ rows }}</span>
+    <span class="font-weight-bold">Total records: {{ libraries.length }}</span>
 
     <div class="clearfix">
       <b-button variant="danger"
@@ -94,7 +94,7 @@
 
       <b-pagination class="float-right"
                     v-model="currentPage"
-                    :total-rows="rows"
+                    :total-rows="libraries.length"
                     :per-page="perPage"
                     aria-controls="libraries-table">
       </b-pagination>
@@ -119,6 +119,11 @@ const { mapActions, mapGetters } = createNamespacedHelpers('traction/pacbio/tube
 export default {
   name: 'Libraries',
   mixins: [Helper, TableHelper],
+  components: {
+    Alert,
+    PrinterModal,
+    PacbioLibraryEditModal
+  },
   data () {
     return {
       fields: [
@@ -145,19 +150,8 @@ export default {
       sortBy: 'created_at',
       sortDesc: true,
       perPage: 6,
-      currentPage: 1,
-      preFilteredMaterials: []
+      currentPage: 1
     }
-  },
-  components: {
-    Alert,
-    PrinterModal,
-    PacbioLibraryEditModal
-  },
-  computed: {
-    ...mapGetters([
-      'libraries'
-    ])
   },
   methods: {
     async handleLibraryDelete () {
@@ -179,11 +173,20 @@ export default {
     // Get all the libraries
     // Provider function used by the bootstrap-vue table component
     async provider() {
-      this.items = await this.setLibraries()
+      try{
+        await this.setLibraries()
+      } catch (error) {
+        this.showAlert("Failed to get libraries: " + error.message, 'danger')
+      }
     },
     ...mapActions([
       'deleteLibraries',
       'setLibraries'
+    ])
+  },
+  computed: {
+    ...mapGetters([
+      'libraries'
     ])
   },
   created() {
