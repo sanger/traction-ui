@@ -10,6 +10,9 @@ export default {
   name: 'Pacbio',
   components: {
     PipelineView
+  },
+  created () {
+    localStorage.setItem('pipeline', 'pacbio')
   }
 }
 

@@ -1,13 +1,14 @@
 import Vue from 'vue'
 import Router from 'vue-router'
 import Dashboard from './views/Dashboard'
-import PipelineView from './views/PipelineView'
+import Saphyr from './views/Saphyr'
 import PageNotFound from './views/PageNotFound'
 import SaphyrReception from './views/saphyr/SaphyrReception'
 import SaphyrSamples from './views/saphyr/SaphyrSamples'
 import SaphyrLibraries from './views/saphyr/SaphyrLibraries'
 import SaphyrRuns from './views/saphyr/SaphyrRuns'
 import SaphyrRun from './views/saphyr/SaphyrRun'
+import Pacbio from './views/Pacbio'
 import PacbioReception from './views/pacbio/PacbioReception'
 import PacbioSamples from './views/pacbio/PacbioSamples'
 import PacbioLibraries from './views/pacbio/PacbioLibraries'
@@ -30,7 +31,7 @@ export default new Router({
     },
     {
       path: '/saphyr',
-      component: PipelineView,
+      component: Saphyr,
       children: [
         { path: '', redirect: 'reception'},
         { path: 'reception', name: 'SaphyrReception', component: SaphyrReception },
@@ -43,7 +44,7 @@ export default new Router({
     },
     {
       path: '/pacbio',
-      component: PipelineView,
+      component: Pacbio,
       children: [
         { path: '', redirect: 'reception'},
         { path: 'reception', name: 'PacbioReception', component: PacbioReception },
