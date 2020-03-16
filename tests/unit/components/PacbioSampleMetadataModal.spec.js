@@ -16,7 +16,7 @@ describe('PacbioSampleMetadataModal.vue', () => {
     wrapper = mount(PacbioSampleMetadataModal, {
       localVue,
       store,
-      propsData: props,
+      propsData: props
     })
 
     modal = wrapper.vm
@@ -68,9 +68,13 @@ describe('PacbioSampleMetadataModal.vue', () => {
     })
   })
 
-  it('contains an edit button', () => {
-    let button = wrapper.find('#editSample-1')
-    expect(button.text()).toEqual('Edit')
+  describe('Edit button', () => {
+    let button
+
+    it('is present for each sample', () => {
+        button = wrapper.find('#editSample-1')
+        expect(button.text()).toEqual('Edit')
+    })
   })
 
   it('#generateId', () => {

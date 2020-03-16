@@ -1,6 +1,6 @@
 <template>
   <div>
-    <b-button :id="generateId('editSample', request.id)" size="sm" @click="show" variant="outline-primary">Edit</b-button>
+    <b-button :id="generateId('editSample', this.req.id)" size="sm" @click="show" variant="outline-primary">Edit</b-button>
 
     <b-modal
       id="editSampleModal"
@@ -107,13 +107,11 @@ export default {
     },
     show() {
       this.$refs['modal'].show()
+      this.request = this.req
     },
     alert (message, type) {
       this.$emit('alert', message, type)
     },
-  },
-  created() {
-    this.request = this.req
   }
 }
 
