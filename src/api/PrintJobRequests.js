@@ -9,7 +9,7 @@ const printJob = async (printerName, selected) => {
 }
 
 const createPrintJobJson = (printerName, selected) => {
-  let pipeline = localStorage.getItem('pipeline')
+  let pipeline = getPipeline()
   let labelTemplateId = store.getters[`traction/${pipeline}/labelTemplateId`]
   let labels = createLabels(selected)
   return { data: { attributes: { printer_name: printerName, label_template_id: labelTemplateId, labels: labels } } }
@@ -20,7 +20,7 @@ const createLabels = (selected) => {
     body: selected.reduce((result, label) => {
       result.push( {
         main_label: {
-          pipeline: localStorage.getItem('pipeline').toUpperCase(),
+          pipeline: getPipeline().toUpperCase(),
           barcode_text: label.barcode,
           date: moment().format('DD-MMM-YY'),
           text_1: getTextForSelected(label),
@@ -48,13 +48,18 @@ const postPrintJob = async (request, payload) => {
   return await handlePromise(promise)
 }
 
+const getPipeline = () => {
+  return localStorage.getItem('pipeline')
+}
+
 export {
   printJob,
   createPrintJobJson,
   createLabels,
   getTextForSelected,
   printMyBarcodeRequest,
-  postPrintJob
+  postPrintJob,
+  getPipeline
 }
 
 export default printJob

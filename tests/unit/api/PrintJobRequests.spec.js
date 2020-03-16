@@ -270,4 +270,15 @@ describe('PrintJobRequests', () => {
       expect(response.successful).toBeFalsy()
     })
   })
+
+  describe('getPipeline', () => {
+    beforeEach(() => {
+      localStorage.setItem('pipeline', consts.PIPELINE_PACBIO)
+    })
+
+    it('returns the pipeline in local storage', () => {
+      let result = PrintJobRequests.getPipeline()
+      expect(result).toEqual(consts.PIPELINE_PACBIO)
+    })
+  })
 })
