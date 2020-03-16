@@ -5,7 +5,7 @@
           :title="pipeline.title"
           tag="article"
           style="max-width: 20rem;"
-          class="mb-2"
+          :class="pipeline.name"
       >
         <b-card-text>
           {{ pipeline.description }}
@@ -23,7 +23,6 @@
 <script>
 
 import PipelinesConfig from '@/config/PipelinesConfig'
-import { mapMutations } from 'vuex'
 
 export default {
   name: 'Dashboard',
@@ -33,9 +32,9 @@ export default {
     }
   },
   methods: {
-    ...mapMutations([
-      'setPipeline',
-    ])
+    setPipeline(pipeline) {
+      localStorage.setItem('pipeline', pipeline)
+    }
   },
 }
 </script>

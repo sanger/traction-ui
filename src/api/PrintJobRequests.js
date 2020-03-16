@@ -9,7 +9,7 @@ const printJob = async (printerName, selected) => {
 }
 
 const createPrintJobJson = (printerName, selected) => {
-  let pipeline = store.getters.pipeline
+  let pipeline = localStorage.getItem('pipeline')
   let labelTemplateId = store.getters[`traction/${pipeline}/labelTemplateId`]
   let labels = createLabels(selected)
   return { data: { attributes: { printer_name: printerName, label_template_id: labelTemplateId, labels: labels } } }
@@ -20,7 +20,7 @@ const createLabels = (selected) => {
     body: selected.reduce((result, label) => {
       result.push( {
         main_label: {
-          pipeline: store.getters.pipeline.toUpperCase(),
+          pipeline: localStorage.getItem('pipeline').toUpperCase(),
           barcode_text: label.barcode,
           date: moment().format('DD-MMM-YY'),
           text_1: getTextForSelected(label),

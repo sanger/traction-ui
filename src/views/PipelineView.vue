@@ -17,14 +17,9 @@
 <script>
 
 import PipelinesConfig from '@/config/PipelinesConfig'
-import { mapGetters } from 'vuex'
 
 export default {
   name: 'PipelineView',
-  data () {
-    return {
-    }
-  },
   methods: {
     titleise (s) {
       return s.charAt(0).toUpperCase() + s.slice(1)
@@ -32,11 +27,9 @@ export default {
   },
   computed: {
     pipelineInfo () {
-      return PipelinesConfig.find(p => p.name == this.pipeline())
-    },
-    ...mapGetters([
-      'pipeline'
-    ])
+      let pipeline = localStorage.getItem('pipeline')
+      return PipelinesConfig.find(p => p.name == pipeline)
+    }
   }
 }
 

@@ -33,14 +33,6 @@ describe('PageNotFound.vue', () => {
       wrapper.find('#backToDashboard').trigger('click')
       expect(wrapper.vm.$route.path).toBe('/dashboard')
     })
-    it('will redirect to pacbio runs', () => {
-      wrapper.find('#backToPacbioRuns').trigger('click')
-      expect(wrapper.vm.$route.path).toBe('/pacbio/runs')
-    })
-    it('will redirect to saphyr runs', () => {
-      wrapper.find('#backToSaphyrRuns').trigger('click')
-      expect(wrapper.vm.$route.path).toBe('/saphyr/runs')
-    })
   })
   
 })
