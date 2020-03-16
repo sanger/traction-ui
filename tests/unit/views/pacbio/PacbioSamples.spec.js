@@ -94,7 +94,6 @@ describe('Samples.vue', () => {
     
         it('is present for each sample', () => {
           button = wrapper.find('#details-btn-1')
-          console.log(button)
           expect(button.text()).toEqual('Show Details')
         })
       })
