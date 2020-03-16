@@ -45,6 +45,11 @@
         </template>
       </template>
 
+      <template v-slot:cell(actions)="row">
+        <PacbioLibraryEditModal :lib="row.item" @alert="showAlert" >
+        </PacbioLibraryEditModal>
+      </template>
+
       <template v-slot:cell(show_details)="row">
         <b-button :id="'details-btn-'+row.item.id" size="sm" @click="row.toggleDetails" class="mr-2" variant="outline-info">
           {{ row.detailsShowing ? 'Hide' : 'Show'}} Details
@@ -103,6 +108,7 @@
 
 <script>
 import Helper from '@/mixins/Helper'
+import PacbioLibraryEditModal from '@/components/PacbioLibraryEditModal'
 import TableHelper from '@/mixins/TableHelper'
 import Alert from '@/components/Alert'
 import PrinterModal from '@/components/PrinterModal'
@@ -145,7 +151,8 @@ export default {
   },
   components: {
     Alert,
-    PrinterModal
+    PrinterModal,
+    PacbioLibraryEditModal
   },
   computed: {
     ...mapGetters([

@@ -132,12 +132,39 @@ const setLibraries = async ({ commit, getters }) => {
 
 }
 
+const updateLibrary= async ({ commit, getters }, payload) => {
+
+  let body = {
+    data: {
+      id: payload.id,
+      type: 'libraries',
+      attributes: {
+        volume: payload.volume,
+        concentration: payload.concentration,
+        library_kit_barcode: payload.library_kit_barcode,
+        fragment_size: payload.fragment_size
+      }
+    }
+  }
+  
+  let request = getters.libraryRequest
+  let promises = request.update(body)
+  let response = await handlePromise(promises[0])
+  
+  if (response.successful) {
+    let library = response.deserialize.libraries[0]
+    commit('updateLibrary', library)
+  }
+  return response
+}
+
 const actions = {
   getTractionTubesForBarcodes,
   exportSampleExtractionTubesIntoTraction,
   createLibrariesInTraction,
   deleteLibraries,
   setLibraries,
+  updateLibrary
 
 }
 
@@ -148,6 +175,7 @@ export {
   createLibrariesInTraction,
   deleteLibraries,
   setLibraries,
+  updateLibrary,
   processCostCode
 }
 
