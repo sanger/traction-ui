@@ -138,12 +138,6 @@ describe('Dashboard.vue', () => {
     })
 
     describe('route buttons', () => {
-      it('will have a reception button', () => {
-        let receptionButton = box.findAll('button').at(0)
-        expect(receptionButton.text()).toEqual('Reception')
-        receptionButton.trigger('click')
-        expect(wrapper.vm.$route.path).toBe('/ont/reception')
-      })
     })
   })
 })
