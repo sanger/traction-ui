@@ -11,8 +11,8 @@
           {{ pipeline.description }}
         </b-card-text>
       
-        <router-link :to="{ path: '/'+pipeline.name }" tag="a">
-          <b-button variant="primary" @click="setPipeline(pipeline.name)">{{ pipeline.title }}</b-button>
+        <router-link v-for="(route, index) in pipeline.routes" :to="{ path: '/'+pipeline.name+'/'+route }" v-bind:key="index">
+          <b-button variant="outline-primary">{{ capitalizeFirstLetter(route) }}</b-button>
         </router-link>
 
       </b-card>
@@ -23,19 +23,16 @@
 <script>
 
 import PipelinesConfig from '@/config/PipelinesConfig'
+import Helper from '@/mixins/Helper'
 
 export default {
   name: 'Dashboard',
+  mixins: [Helper],
   computed: {
     pipelines () {
       return PipelinesConfig
     }
-  },
-  methods: {
-    setPipeline(pipeline) {
-      localStorage.setItem('pipeline', pipeline)
-    }
-  },
+  }
 }
 </script>
 

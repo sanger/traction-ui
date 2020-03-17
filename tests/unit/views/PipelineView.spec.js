@@ -19,12 +19,6 @@ describe('PipelineView', () => {
     wrapper = mount(PipelineView, { store, localVue, router })
     pipelineView = wrapper.vm
   })
-  
-  describe('#titleise', () => {
-    it('titleise a string', () => {
-      expect(pipelineView.titleise('saphyr')).toEqual('Saphyr')
-    })
-  })
 
   describe('#pipelineInfo', () => {
     it('has config for a pipeline', () => {

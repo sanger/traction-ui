@@ -55,13 +55,31 @@ describe('Dashboard.vue', () => {
       expect(box.find('.card-text').text()).toBeDefined()
     })
 
-    it('will have a button', () => {
-      expect(box.find('button').text()).toEqual('Saphyr')
-    })
-
-    it('will redirect to the namespace', () => {
-      box.find('button').trigger('click')
-      expect(wrapper.vm.$route.path).toBe('/saphyr')
+    describe('route buttons', () => {
+      it('will have a reception button', () => {
+        let receptionButton = box.findAll('button').at(0)
+        expect(receptionButton.text()).toEqual('Reception')
+        receptionButton.trigger('click')
+        expect(wrapper.vm.$route.path).toBe('/saphyr/reception')
+      })
+      it('will have a samples button', () => {
+        let receptionButton = box.findAll('button').at(1)
+        expect(receptionButton.text()).toEqual('Samples')
+        receptionButton.trigger('click')
+        expect(wrapper.vm.$route.path).toBe('/saphyr/samples')
+      })
+      it('will have a libraries button', () => {
+        let receptionButton = box.findAll('button').at(2)
+        expect(receptionButton.text()).toEqual('Libraries')
+        receptionButton.trigger('click')
+        expect(wrapper.vm.$route.path).toBe('/saphyr/libraries')
+      })
+      it('will have a runs button', () => {
+        let receptionButton = box.findAll('button').at(3)
+        expect(receptionButton.text()).toEqual('Runs')
+        receptionButton.trigger('click')
+        expect(wrapper.vm.$route.path).toBe('/saphyr/runs')
+      })
     })
   })
 
@@ -78,13 +96,31 @@ describe('Dashboard.vue', () => {
       expect(box.find('.card-text').text()).toBeDefined()
     })
 
-    it('will have a button', () => {
-      expect(box.find('button').text()).toEqual('Pacbio')
-    })
-
-    it('will redirect to the namespace', () => {
-      box.find('button').trigger('click')
-      expect(wrapper.vm.$route.path).toBe('/pacbio')
+    describe('route buttons', () => {
+      it('will have a reception button', () => {
+        let receptionButton = box.findAll('button').at(0)
+        expect(receptionButton.text()).toEqual('Reception')
+        receptionButton.trigger('click')
+        expect(wrapper.vm.$route.path).toBe('/pacbio/reception')
+      })
+      it('will have a samples button', () => {
+        let receptionButton = box.findAll('button').at(1)
+        expect(receptionButton.text()).toEqual('Samples')
+        receptionButton.trigger('click')
+        expect(wrapper.vm.$route.path).toBe('/pacbio/samples')
+      })
+      it('will have a libraries button', () => {
+        let receptionButton = box.findAll('button').at(2)
+        expect(receptionButton.text()).toEqual('Libraries')
+        receptionButton.trigger('click')
+        expect(wrapper.vm.$route.path).toBe('/pacbio/libraries')
+      })
+      it('will have a runs button', () => {
+        let receptionButton = box.findAll('button').at(3)
+        expect(receptionButton.text()).toEqual('Runs')
+        receptionButton.trigger('click')
+        expect(wrapper.vm.$route.path).toBe('/pacbio/runs')
+      })
     })
   })
 
@@ -101,13 +137,13 @@ describe('Dashboard.vue', () => {
       expect(box.find('.card-text').text()).toBeDefined()
     })
 
-    it('will have a button', () => {
-      expect(box.find('button').text()).toEqual('ONT')
-    })
-
-    it('will redirect to the namespace', () => {
-      box.find('button').trigger('click')
-      expect(wrapper.vm.$route.path).toBe('/ont')
+    describe('route buttons', () => {
+      it('will have a reception button', () => {
+        let receptionButton = box.findAll('button').at(0)
+        expect(receptionButton.text()).toEqual('Reception')
+        receptionButton.trigger('click')
+        expect(wrapper.vm.$route.path).toBe('/ont/reception')
+      })
     })
   })
 })
