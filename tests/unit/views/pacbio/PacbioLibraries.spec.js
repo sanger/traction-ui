@@ -125,4 +125,19 @@ describe('Libraries.vue', () => {
       expect(button.text()).toEqual('Show Details')
     })
   })
+
+  describe('Edit button', () => {
+    let button
+
+    it('is present for each library', () => {
+      button = wrapper.find('#editLibrary-1')
+      expect(button.text()).toEqual('Edit')
+    })
+
+    it('on click show is true', () => {
+      button = wrapper.find('#editLibrary-1')
+      button.trigger('click')
+      expect(wrapper.find('#PacbioEditLibraryModal')).toBeDefined()
+    })
+  })
 })

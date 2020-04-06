@@ -46,6 +46,11 @@
         </template>
       </template>
 
+      <template v-slot:cell(actions)="row">
+        <PacbioLibraryEditModal :lib="row.item" @alert="showAlert" >
+        </PacbioLibraryEditModal>
+      </template>
+
       <template v-slot:cell(show_details)="row">
         <b-button :id="'details-btn-'+row.item.id" size="sm" @click="row.toggleDetails" class="mr-2" variant="outline-info">
           {{ row.detailsShowing ? 'Hide' : 'Show'}} Details
@@ -73,7 +78,7 @@
 
     </b-table>
 
-    <span class="font-weight-bold">Total records: {{ rows }}</span>
+    <span class="font-weight-bold">Total records: {{ libraries.length }}</span>
 
     <div class="clearfix">
       <b-button variant="danger"
@@ -90,7 +95,7 @@
 
       <b-pagination class="float-right"
                     v-model="currentPage"
-                    :total-rows="rows"
+                    :total-rows="libraries.length"
                     :per-page="perPage"
                     aria-controls="libraries-table">
       </b-pagination>
@@ -104,6 +109,7 @@
 
 <script>
 import Helper from '@/mixins/Helper'
+import PacbioLibraryEditModal from '@/components/PacbioLibraryEditModal'
 import TableHelper from '@/mixins/TableHelper'
 import Alert from '@/components/Alert'
 import PrinterModal from '@/components/PrinterModal'
@@ -114,6 +120,11 @@ const { mapActions, mapGetters } = createNamespacedHelpers('traction/pacbio/tube
 export default {
   name: 'Libraries',
   mixins: [Helper, TableHelper],
+  components: {
+    Alert,
+    PrinterModal,
+    PacbioLibraryEditModal
+  },
   data () {
     return {
       fields: [
@@ -139,18 +150,8 @@ export default {
       sortBy: 'created_at',
       sortDesc: true,
       perPage: 6,
-      currentPage: 1,
-      preFilteredMaterials: []
+      currentPage: 1
     }
-  },
-  components: {
-    Alert,
-    PrinterModal
-  },
-  computed: {
-    ...mapGetters([
-      'libraries'
-    ])
   },
   methods: {
     async handleLibraryDelete () {
@@ -172,11 +173,20 @@ export default {
     // Get all the libraries
     // Provider function used by the bootstrap-vue table component
     async provider() {
-      this.items = await this.setLibraries()
+      try{
+        await this.setLibraries()
+      } catch (error) {
+        this.showAlert("Failed to get libraries: " + error.message, 'danger')
+      }
     },
     ...mapActions([
       'deleteLibraries',
       'setLibraries'
+    ])
+  },
+  computed: {
+    ...mapGetters([
+      'libraries'
     ])
   },
   created() {
