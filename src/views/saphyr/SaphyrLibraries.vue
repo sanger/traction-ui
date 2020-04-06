@@ -23,6 +23,7 @@
     <b-table id="libraries-table"
              ref="libraries_table"
              show-empty
+             responsive
              :items="libraries"
              :fields="fields"
              :filter="filter"

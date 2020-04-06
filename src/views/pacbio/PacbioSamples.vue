@@ -22,6 +22,7 @@
 
     <b-table id="samples-table"
              show-empty
+             responsive
              :items="requests"
              :fields="fields"
              :filter="filter"
