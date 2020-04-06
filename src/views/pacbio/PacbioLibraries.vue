@@ -137,6 +137,7 @@ export default {
         { key: 'library_kit_barcode', label: 'Library Kit Barcode', sortable: true },
         { key: 'fragment_size', label: 'Fragment Size', sortable: true },
         { key: 'created_at', label: 'Created at', sortable: true },
+        { key: 'actions', label: 'Actions' },
         { key: 'show_details', label: '' }
       ],
       field_in_details: [
