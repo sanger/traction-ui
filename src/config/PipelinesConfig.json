@@ -2,7 +2,7 @@
   { 
     "name": "saphyr",
     "title": "Saphyr",
-    "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam.",
+    "description": "A LIMS pipeline to support tracking for the Bionano Saphyr instument",
     "routes": [
       "reception",
       "samples",
@@ -13,7 +13,7 @@
   { 
     "name": "pacbio",
     "title": "Pacbio",
-    "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam.",
+    "description": "A LIMS pipeline to support tracking for PacBio Long-Read Sequencing",
     "routes": [
       "reception",
       "samples",
@@ -24,7 +24,7 @@
   {
     "name": "ont",
     "title": "ONT",
-    "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam.",
+    "description": "",
     "routes": [
     ]
   }
