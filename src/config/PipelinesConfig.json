@@ -2,7 +2,7 @@
   { 
     "name": "saphyr",
     "title": "Saphyr",
-    "description": "A LIMS pipeline to support tracking for the Bionano Saphyr instument",
+    "description": "A LIMS pipeline to support tracking for the Bionano Saphyr instrument",
     "routes": [
       "reception",
       "samples",
