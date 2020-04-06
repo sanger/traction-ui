@@ -20,6 +20,12 @@ describe('PipelineView', () => {
     pipelineView = wrapper.vm
   })
 
+  describe('show pipeline', () => {
+    it('shows the current pipeline', () => {
+      expect(wrapper.html()).toContain('Pacbio')
+    })
+  })
+
   describe('#pipelineInfo', () => {
     it('has config for a pipeline', () => {
       let pipelineInfo = pipelineView.pipelineInfo

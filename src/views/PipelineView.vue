@@ -1,5 +1,6 @@
 <template>
   <div>
+    <p> {{ capitalizeFirstLetter(pipelineInfo.name) }} </p>
     <b-card>
       <b-card-header header-tag="nav">
         <b-nav tabs fill>
