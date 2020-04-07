@@ -14,6 +14,7 @@ import PacbioSamples from './views/pacbio/PacbioSamples'
 import PacbioLibraries from './views/pacbio/PacbioLibraries'
 import PacbioRuns from './views/pacbio/PacbioRuns'
 import PacbioRun from './views/pacbio/PacbioRun'
+import ONT from './views/ONT'
 
 Vue.use(Router)
 
@@ -52,6 +53,12 @@ export default new Router({
         { path: 'libraries', name: 'PacbioLibraries', component: PacbioLibraries },
         { path: 'runs', name: 'PacbioRuns', component: PacbioRuns },
         { path: 'run/:id', name: 'PacbioRun', component: PacbioRun, props: true},
+      ]
+    },
+    {
+      path: '/ont',
+      component: ONT,
+      children: [
       ]
     },
     {

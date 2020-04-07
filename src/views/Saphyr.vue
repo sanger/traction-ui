@@ -1,9 +1,19 @@
+<template>
+  <pipeline-view></pipeline-view>
+</template>
+
 <script>
 
-import PipelineView from '@/mixins/PipelineView'
+import PipelineView from '@/views/PipelineView'
 
 export default {
   name: 'Saphyr',
-  mixins: [PipelineView]
+  components: {
+    PipelineView
+  },
+  created () {
+    localStorage.setItem('pipeline', 'saphyr')
+  }
 }
+
 </script>

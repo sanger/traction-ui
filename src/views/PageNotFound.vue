@@ -8,12 +8,12 @@
         <label id="backToDashboard">Dashboard</label>
       </router-link>
       |
-      <router-link :to="{name: 'PacbioRuns'}">
-        <label id="backToPacbioRuns">Pacbio Runs</label>
-      </router-link>
-      |
       <router-link :to="{name: 'SaphyrRuns'}">
         <label id="backToSaphyrRuns">Saphyr Runs</label>
+      </router-link>
+      |
+      <router-link :to="{name: 'PacbioRuns'}">
+        <label id="backToPacbioRuns">Pacbio Runs</label>
       </router-link>
   </div>
 </template>

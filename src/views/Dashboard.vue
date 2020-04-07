@@ -1,58 +1,40 @@
 <template>
-  <b-row>
-    <b-col>
-      <div class="pipeline saphyr">
-        <router-link :to="{ path: '/saphyr' }" tag="a">
-          <h4>Saphyr</h4>
+  <div>
+    <b-card-group deck>
+      <b-card v-for="(pipeline, index) in pipelines" v-bind:key="index"
+          :title="pipeline.title"
+          tag="article"
+          style="max-width: 20rem;"
+          :class="pipeline.name"
+      >
+        <b-card-text>
+          {{ pipeline.description }}
+        </b-card-text>
+      
+        <router-link v-for="(route, index) in pipeline.routes" :to="{ path: '/'+pipeline.name+'/'+route }" v-bind:key="index">
+          <b-button variant="outline-primary">{{ capitalizeFirstLetter(route) }}</b-button>
         </router-link>
-        <pipeline-router pipeline="saphyr"></pipeline-router>
-      </div>
-    </b-col>
-    <b-col>
-      <div class="pipeline pacbio">
-        <router-link :to="{ path: '/pacbio' }" tag="a">
-          <h4>Pacbio</h4>
-        </router-link>
-        <pipeline-router pipeline="pacbio"></pipeline-router>
-      </div>
-    </b-col>
-  </b-row>
+
+      </b-card>
+    </b-card-group>
+  </div>
 </template>
 
 <script>
 
-import PipelineRouter from '@/components/PipelineRouter'
+import PipelinesConfig from '@/config/PipelinesConfig'
+import Helper from '@/mixins/Helper'
 
 export default {
   name: 'Dashboard',
-  props: {
-  },
-  data () {
-    return {}
-  },
-  methods: {
-  },
-  components: {
-    PipelineRouter
-  },
+  mixins: [Helper],
   computed: {
+    pipelines () {
+      return PipelinesConfig
+    }
   }
 }
 </script>
 
 <style scoped lang="scss">
-  .pipeline {
-    height: 400px;
-    padding: 20px;
-    border: 2px solid gray;
-    a {
-      color: black;
-      &:hover {
-        text-decoration: none;
-      }
-    }
-  }
-  h4, p {
-    text-align: left;
-  }
 </style>

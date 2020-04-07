@@ -22,6 +22,7 @@
 
       <b-table id="runs-table"
                hover
+               responsive
                show-empty
                :items="runs"
                :fields="fields"
