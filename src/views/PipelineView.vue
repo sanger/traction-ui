@@ -4,7 +4,7 @@
     <b-card>
       <b-card-header header-tag="nav">
         <b-nav tabs fill>
-          <b-nav-item v-for="(route, index) in pipelineInfo.routes" v-bind:key="index" :to="route">{{ capitalizeFirstLetter(route) }}</b-nav-item>
+          <b-nav-item v-for="(route, index) in pipelineInfo.routes" v-bind:key="index" :to="path(route)">{{ capitalizeFirstLetter(route) }}</b-nav-item>
         </b-nav>
       </b-card-header>
 
@@ -27,6 +27,11 @@ export default {
     pipelineInfo () {
       let pipeline = localStorage.getItem('pipeline')
       return PipelinesConfig.find(p => p.name == pipeline)
+    }
+  },
+  methods: {
+    path(route) {
+      return '/'+this.pipelineInfo.name+'/'+route
     }
   }
 }
