@@ -32,7 +32,7 @@ describe('actions', () => {
 
       update.mockReturnValue([Data.TractionPacbioSamples])
 
-      let resp = await Actions.updateRequest({ getters }, sample.id)
+      let resp = await Actions.updateRequest({ getters }, sample)
 
       let expectedPayload = Actions.createRequestPayload(sample)
       expect(getters.requestsRequest.update).toHaveBeenCalledWith(expectedPayload)
@@ -49,7 +49,7 @@ describe('actions', () => {
       update.mockReturnValue([failedResponse])
 
       let expectedResponse = new Response(failedResponse)
-      await expect(Actions.updateRequest({ getters }, sample.id)).rejects.toEqual(expectedResponse.errors)
+      await expect(Actions.updateRequest({ getters }, sample)).rejects.toEqual(expectedResponse.errors)
 
     })
   })

@@ -1,9 +1,11 @@
 import Samples from '@/views/pacbio/PacbioSamples'
-import { mount, localVue, Vuex, Data } from '../../testHelper'
+import { mount, localVue, Data } from '../../testHelper'
 import Alert from '@/components/Alert'
 import PrinterModal from '@/components/PrinterModal'
+import PacbioSampleMetadataModal from '@/components/PacbioSampleMetadataModal'
 import VueRouter from 'vue-router'
 import Response from '@/api/Response'
+import store from '@/store'
 
 describe('Samples.vue', () => {
     let wrapper, samples, mockSamples
@@ -20,29 +22,7 @@ describe('Samples.vue', () => {
             }]
         })
 
-        let store = new Vuex.Store({
-            modules: {
-                traction: {
-                    namespaced: true,
-                    modules: {
-                        pacbio: {
-                            namespaced: true,
-                            modules: {
-                                requests: {
-                                    namespaced: true,
-                                    state: {
-                                        requests: mockSamples
-                                    },
-                                    getters: {
-                                        requests: state => state.requests
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        })
+        store.commit('traction/pacbio/requests/setRequests', mockSamples)
 
         wrapper = mount(Samples, {
             store,
@@ -51,14 +31,15 @@ describe('Samples.vue', () => {
             stubs: {
                 Alert: Alert,
                 PrinterModal: true,
-                LibraryCreatePacbioModal: true
+                LibraryCreatePacbioModal: true,
+                PacbioSampleMetadataModal: PacbioSampleMetadataModal
             },
             methods: {
                 provider() { return }
             }
         })
 
-        wrapper.setData({ items: mockSamples, sortDesc: false })
+        wrapper.setData({ sortDesc: false })
         samples = wrapper.vm
     })
 
@@ -102,12 +83,9 @@ describe('Samples.vue', () => {
         })
     })
 
-    describe('Edit button', () => {
-        let button
-
-        it('is present for each sample', () => {
-            button = wrapper.find('#editRun-1')
-            expect(button.text()).toEqual('Edit')
+    describe('sample metadata modal', () => {
+        it('contains sample metadata modal', () => {
+            expect(wrapper.contains(PacbioSampleMetadataModal)).toBe(true)
         })
     })
 
@@ -120,3 +98,4 @@ describe('Samples.vue', () => {
         })
       })
 })
+
