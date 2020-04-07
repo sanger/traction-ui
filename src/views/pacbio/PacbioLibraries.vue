@@ -144,7 +144,6 @@ export default {
         { key: 'sample_name', label: "Sample(s)"},
         { key: 'tag_group_id', label: 'Tag(s)'}
       ],
-      items: [],
       filteredItems: [],
       selected: [],
       filter: null,
