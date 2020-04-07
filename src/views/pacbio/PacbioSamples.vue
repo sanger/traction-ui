@@ -137,7 +137,6 @@ export default {
         { label: 'Cost code', item: 'cost_code'},
         { label: 'External study ID', item: 'external_study_id'}
       ],
-      items: [],
       filteredItems: [],
       selected: [],
       filter: null,
@@ -150,7 +149,7 @@ export default {
   methods: {
     async provider() {
       try {
-        this.items = await this.setRequests()
+        await this.setRequests()
       } catch (error) {
         this.showAlert("Failed to get samples: " + error.message, 'danger')
       }
