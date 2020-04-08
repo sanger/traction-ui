@@ -32,4 +32,11 @@ describe('PipelineView', () => {
       expect(Object.keys(pipelineInfo)).toEqual(['name', 'title', 'description', 'routes'])
     })
   })
+
+  describe('#path', () => {
+    it('returns the path for a given route, with the pipeline', () => {
+      let path = pipelineView.path('testroute')
+      expect(path).toEqual('/pacbio/testroute')
+    })
+  })
 })
