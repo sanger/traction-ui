@@ -4,11 +4,11 @@
            :disabled="disabled"
            v-b-modal.pacbioLibraryModal
            variant="success">
-      Create Libraries
+      Create Library
     </b-btn>
     <b-modal id="pacbioLibraryModal"
              size="lg"
-             title="Create Libraries"
+             title="Create Library"
              ref="pacbioLibraryModal"
              :static="isStatic"
              scrollable
