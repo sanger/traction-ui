@@ -125,7 +125,7 @@ export default {
       }
     },
     ...mapActions('traction/pacbio/tubes', [
-      'createLibrariesInTraction',
+      'createLibraryInTraction',
       'getTractionTubesForBarcodes',
     ]),
     ...mapActions('traction', [
@@ -133,16 +133,16 @@ export default {
     ]),
     async handleLibraryCreate () {
       try {
-        await this.createLibraries()
+        await this.createLibrary()
         await this.handleTractionTubes()
       } catch (err) {
         this.showAlert(err, 'danger')
       }
     },
-    async createLibraries () {
+    async createLibrary () {
       this.library.samples = this.selectedSamples
       let payload = { libraries: [this.library] }
-      let response = await this.createLibrariesInTraction(payload)
+      let response = await this.createLibraryInTraction(payload)
 
       if (response.successful || !response.empty ) {
         this.barcodes = response.deserialize.libraries.map(l => l.barcode)

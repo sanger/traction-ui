@@ -54,7 +54,7 @@ const sampleExtractionTubeJson = (tubes) => {
   }))
 }
 
-const createLibrariesInTraction = async ({ rootGetters, getters }, payload) => {
+const createLibraryInTraction = async ({ rootGetters, getters }, payload) => {
 
   let libraries = payload.libraries.map(library => {
     let tagId = rootGetters['traction/tractionTags'].find(l => l.group_id == library.tag.group_id).id
@@ -161,7 +161,7 @@ const updateLibrary= async ({ commit, getters }, payload) => {
 const actions = {
   getTractionTubesForBarcodes,
   exportSampleExtractionTubesIntoTraction,
-  createLibrariesInTraction,
+  createLibraryInTraction,
   deleteLibraries,
   setLibraries,
   updateLibrary
@@ -172,7 +172,7 @@ export {
   getTractionTubesForBarcodes,
   exportSampleExtractionTubesIntoTraction,
   sampleExtractionTubeJson,
-  createLibrariesInTraction,
+  createLibraryInTraction,
   deleteLibraries,
   setLibraries,
   updateLibrary,
