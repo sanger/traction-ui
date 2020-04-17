@@ -92,3 +92,12 @@ Saphyr with minimal information
 1. Create a run
     * add a run name
     * scan in barcodes of library into each flowcell
+
+
+## Releases
+
+#### UAT
+On merging a pull request into develop, a release will be created with the tag/name `<branch>/<timestamp>`
+
+#### PROD
+Update `.release-version` with major/minor/patch. On merging a pull request into master, a release will be created with the release version as the tag/name 
