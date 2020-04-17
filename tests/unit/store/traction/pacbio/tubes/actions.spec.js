@@ -111,7 +111,7 @@ describe('#sampleExtractionTubeJson', () => {
 })
 
 // TODO: we really need factories rather than building payloads manually
-describe('#createLibrariesInTraction', () => {
+describe('#createLibraryInTraction', () => {
   let create, getters, libraries, payload, rootGetters
 
   beforeEach(() => {
@@ -132,7 +132,7 @@ describe('#createLibrariesInTraction', () => {
     let expectedResponse = new Response(Data.PacbioTubeWithLibrary)
     create.mockReturnValue(Data.PacbioTubeWithLibrary)
 
-    let response = await Actions.createLibrariesInTraction({ getters, rootGetters }, libraries)
+    let response = await Actions.createLibraryInTraction({ getters, rootGetters }, libraries)
     expect(response).toEqual(expectedResponse)
     expect(create).toBeCalledWith({data: { type: 'libraries', attributes: { libraries: payload}}})
   })
@@ -143,7 +143,7 @@ describe('#createLibrariesInTraction', () => {
 
     create.mockReturnValue(failedResponse)
 
-    let response = await Actions.createLibrariesInTraction({ getters, rootGetters }, libraries)
+    let response = await Actions.createLibraryInTraction({ getters, rootGetters }, libraries)
     expect(response).toEqual(expectedResponse)
   })
 

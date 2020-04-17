@@ -33,7 +33,7 @@
              hover
              @filtered="onFiltered"
              selectable
-             select-mode="multi"
+             select-mode="single"
              @row-selected="onRowSelected">
 
       <template v-slot:cell(selected)="{ rowSelected }">
