@@ -56,10 +56,10 @@ const sampleExtractionTubeJson = (tubes) => {
 
 const createLibraryInTraction = async ({ rootGetters, getters }, payload) => {
 
-  let libraries = payload.libraries.map(library => {
-    let tagId = rootGetters['traction/tractionTags'].find(l => l.group_id == library.tag.group_id).id
+  let library = payload.library
+  let tagId = rootGetters['traction/tractionTags'].find(l => l.group_id == library.tag.group_id).id
 
-    return {
+  library = {
       volume: library.volume,
       concentration: library.concentration,
       library_kit_barcode: library.libraryKitBarcode,
@@ -82,14 +82,11 @@ const createLibraryInTraction = async ({ rootGetters, getters }, payload) => {
         }
       }
     }
-  })
 
   let body = {
     data: {
-      type: 'libraries',
-      attributes: {
-        libraries
-      }
+      type: 'library',
+      attributes: library
     }
   }
 
