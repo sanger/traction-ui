@@ -22,6 +22,7 @@
 
     <b-table id="samples-table"
              show-empty
+             responsive
              :items="requests"
              :fields="fields"
              :filter="filter"
@@ -47,7 +48,7 @@
       </template>
 
       <template v-slot:cell(actions)="row">
-        <PacbioSampleMetadataModal :id="row.item.id" @alert="showAlert" >
+        <PacbioSampleMetadataModal :req="row.item" @alert="showAlert" >
         </PacbioSampleMetadataModal>
       </template>
 
@@ -137,7 +138,6 @@ export default {
         { label: 'Cost code', item: 'cost_code'},
         { label: 'External study ID', item: 'external_study_id'}
       ],
-      items: [],
       filteredItems: [],
       selected: [],
       filter: null,

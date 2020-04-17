@@ -7,12 +7,12 @@
 import PipelineView from '@/views/PipelineView'
 
 export default {
-  name: 'Pacbio',
+  name: 'ONT',
   components: {
     PipelineView
   },
   created () {
-    localStorage.setItem('pipeline', 'pacbio')
+    localStorage.setItem('pipeline', 'ont')
   }
 }
 

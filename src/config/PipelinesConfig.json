@@ -1,0 +1,31 @@
+[
+  { 
+    "name": "saphyr",
+    "title": "Saphyr",
+    "description": "A LIMS pipeline to support tracking for the Bionano Saphyr instrument",
+    "routes": [
+      "reception",
+      "samples",
+      "libraries",
+      "runs"
+    ]
+  },
+  { 
+    "name": "pacbio",
+    "title": "Pacbio",
+    "description": "A LIMS pipeline to support tracking for PacBio Long-Read Sequencing",
+    "routes": [
+      "reception",
+      "samples",
+      "libraries",
+      "runs"
+    ]
+  },
+  {
+    "name": "ont",
+    "title": "ONT",
+    "description": "",
+    "routes": [
+    ]
+  }
+]

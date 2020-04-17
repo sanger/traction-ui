@@ -22,6 +22,7 @@
 
     <b-table id="libraries-table"
              show-empty
+             responsive
              :items="libraries"
              :fields="fields"
              :filter="filter"
@@ -143,7 +144,6 @@ export default {
         { key: 'sample_name', label: "Sample(s)"},
         { key: 'tag_group_id', label: 'Tag(s)'}
       ],
-      items: [],
       filteredItems: [],
       selected: [],
       filter: null,
