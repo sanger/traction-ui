@@ -1,15 +1,11 @@
 <template>
   <div class="plates">
-    <alert ref='alert'></alert>
-
   </div>
 </template>
 
 <script>
-// import Alert from '@/components/Alert'
-import Helper from '@/mixins/Helper'
-// import * as consts from '@/consts/consts'
 
+import Helper from '@/mixins/Helper'
 
 export default {
   name: 'Plates',
