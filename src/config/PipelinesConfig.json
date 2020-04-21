@@ -26,6 +26,7 @@
     "title": "ONT",
     "description": "",
     "routes": [
+      "plates"
     ]
   }
 ]

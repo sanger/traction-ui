@@ -1,0 +1,3 @@
+describe('Plates.vue', () => {
+
+})
