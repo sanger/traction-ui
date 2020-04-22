@@ -3,13 +3,13 @@
   <ellipse v-bind:class="status" :cx="cx" :cy="cy" :rx="rx" :ry="ry" >
     <title v-if="hasMaterial" v-text="tooltip"></title>
   </ellipse>
-  
+
 </template>
 
 <script>
 
 export default {
-  name: 'Well',
+  name: 'OntWell',
   props: ['row', 'column', 'cx', 'cy', 'rx', 'ry' ,'well_info'],
   computed: {
     hasMaterial () {
@@ -21,9 +21,6 @@ export default {
     tooltip () {
       return this.well_info.material.map(m =>  m.name).join(',')
     },
-  },
-  methods: {
-
   }
 }
 </script>

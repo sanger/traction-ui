@@ -3,7 +3,7 @@
   <b-card>
     <OntPlate v-bind:wells="this.getPlate().wells"></OntPlate>
   </b-card>
-  
+
 </template>
 
 <script>

@@ -2,6 +2,7 @@
 
   <div class="plates">
     <b-table 
+      id="plates-table"
       hover 
       bordered
       responsive
@@ -10,7 +11,7 @@
       sticky-header
     >
       <template v-slot:cell(show_details)="row">
-        <b-button size="sm" @click="row.toggleDetails" class="mr-2">
+        <b-button size="sm" @click="row.toggleDetails" class="mr-2" :id="'details-btn-'+row.item.id">
           {{ row.detailsShowing ? 'Hide' : 'Show'}} Plate
         </b-button>
       </template>
