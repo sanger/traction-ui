@@ -21,7 +21,6 @@
 
     </b-table>
   </div>
-
 </template>
 
 <script>

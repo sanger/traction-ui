@@ -1,21 +1,23 @@
 <template>
-
-  <b-card>
-    <OntPlate v-bind:wells="wells"></OntPlate>
-  </b-card>
-
+  <Plate384SVG v-if="wells">
+    <OntWell v-for="(well, position) in plateMap.wells" v-bind="well" v-bind:key="position" v-bind:well_info="getWellAt(position)">
+    </OntWell>
+  </Plate384SVG>
 </template>
 
 <script>
 
-import OntPlate from '@/components/ont/OntPlate'
+import Plate384SVG from '@/components/svg/Plate384SVG'
+import PlateMap from '@/config/PlateMap'
+import OntWell from '@/components/ont/OntWell'
 import gql from 'graphql-tag'
 
 export default {
   name: 'OntPlateDisplay',
   props: ['plate_id'],
   components: {
-    OntPlate
+    Plate384SVG,
+    OntWell,
   },
   apollo: {
     wells: {
@@ -34,6 +36,21 @@ export default {
         }
       },
     },
+  },
+  methods: {
+    getWellAt(position) {
+      let well = this.wells.filter(well => well.position == position)[0]
+
+      return well ? well : this.createEmptyWell(position)
+    },
+    createEmptyWell(position) {
+      return { position: position, material: {} }
+    }
+  },
+  computed: {
+    plateMap () {
+      return PlateMap
+    }
   }
 }
 

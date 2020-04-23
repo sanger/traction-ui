@@ -1,6 +1,7 @@
-<template>
+<template> 
   <div class="plate">
     <!-- REFACTOR: SVG is copied from Plate.vue -->
+
     <svg
       width="50%"
       height="50%"
@@ -12,8 +13,7 @@
           d="m 983.44263,1045.0229 323.20507,0 c 3.4232,0 6.1984,2.7801 6.1984,6.2095 l 0,210.2411 c 0,3.4294 -2.7752,6.2096 -6.1984,6.2096 l -323.20507,0 c -3.42332,0 -6.19846,-2.7802 -6.19846,-6.2096 0,0 0,0 0,0 l 0,-210.2411 c 0,-3.4294 2.77514,-6.2095 6.19846,-6.2095 0,0 0,0 0,0 z"
           id="path5203" />
 
-        <OntWell v-for="(well, position) in plateMap.wells" v-bind="well" v-bind:key="position" v-bind:well_info="getWellAt(position)">
-        </OntWell>
+        <slot></slot>
 
         <text
           x="995.9538"
@@ -35,37 +35,19 @@
 
 <script>
 
-import OntWell from '@/components/ont/OntWell'
 import PlateMap from '@/config/PlateMap'
 
 export default {
-  name: 'OntPlate',
-  props: ['wells'],
-  methods: {
-    getWellAt(position) {
-      let well = this.wells.filter(well => well.position == position)[0]
-      
-      return well ? well : this.createEmptyWell(position)
-    },
-    createEmptyWell(position) {
-      return { position: position, material: {} }
-    }
-  },
+  name: 'Plate384SVG',
   computed: {
     plateMap () {
       return PlateMap
     }
-  },
-  components: {
-    OntWell
   }
 }
 </script>
 
 <style scoped lang="scss">
-
-// REFACTOR: Styling is copied from Plate.vue 
-
   path {
     fill:#49afcd;
     stroke:#004080;
