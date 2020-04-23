@@ -13,7 +13,7 @@ describe('OntWell.vue', () => {
       cy: "75.818642", 
       rx: "10.906492", 
       ry: "11.032985",
-      well_info: { position: 'A1', material: [ { name: 'SampleName' } ] }
+      well_info: { position: 'A1', material: { sample: { name: 'SampleName' } } }
     }
 
     wrapper = mount(OntWell, {
@@ -69,7 +69,7 @@ describe('OntWell.vue', () => {
     })
 
     it('will be empty the well does not have material', () => {
-      props['well_info'] = { position: 'A1', material: [] }
+      props['well_info'] = { position: 'A1', material: {} }
       
       wrapper = mount(OntWell, {
         propsData: props
@@ -84,7 +84,7 @@ describe('OntWell.vue', () => {
   describe('#tooltip', () => {
     it('will display the materials name', () => {
       let title = wrapper.find('title')
-      let expected = well.well_info.material.map(m => m.name).join(',')
+      let expected = well.well_info.material.sample.name
       expect(title.text()).toEqual(expected)
     })
   })

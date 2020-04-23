@@ -8,6 +8,7 @@
       :items="plates"
       :fields="fields"
       sticky-header
+      show-empty
     >
       <template v-slot:cell(show_details)="row">
         <b-button size="sm" @click="row.toggleDetails" class="mr-2" :id="'details-btn-'+row.item.id">

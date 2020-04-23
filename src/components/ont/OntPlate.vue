@@ -25,9 +25,13 @@ export default {
         wells(plateId: $plateId) {
           id
           position
-          # materials {
-          #   name
-          # }
+          material {
+            ...on Request {
+              sample {
+                name
+              }
+            }
+          }
         }
       }`,
       variables () {
