@@ -81,5 +81,15 @@
         "include": ""
       }
     }
+  },
+  "sequencescape": {
+    "name": "sequencescape",
+    "apiNamespace": "api/v2",
+    "resources": {
+      "plates": {
+        "name": "plates",
+        "include": "wells.samples"
+      }
+    }
   }
 }

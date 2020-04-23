@@ -30,6 +30,7 @@ import PacbioWell from './pacbioWell'
 import PacbioWells from './pacbioWells'
 import PacbioWellLibrary from './pacbioWellLibrary'
 import TractionTags from './tractionTags'
+import sequencescapePlates from './sequencescapePlates'
 
 export default {
   CreateChip,
@@ -63,5 +64,6 @@ export default {
   PacbioWell,
   PacbioWells,
   PacbioWellLibrary,
-  TractionTags
+  TractionTags,
+  sequencescapePlates
 }
