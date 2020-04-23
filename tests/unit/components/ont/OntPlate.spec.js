@@ -1,14 +1,14 @@
-import OntPlateDislay from '@/components/ont/OntPlateDislay'
+import OntPlate from '@/components/ont/OntPlate'
 import Plate384SVG from '@/components/svg/Plate384SVG'
 import OntWell from '@/components/ont/OntWell'
 import PlateMap from '@/config/PlateMap'
 import { localVue, mount } from '../../testHelper'
 
-describe('OntPlateDisplay.vue', () => {
+describe('OntPlate.vue', () => {
   let wrapper, plate, wells
 
   beforeEach(() => {
-    wrapper = mount(OntPlateDislay, { 
+    wrapper = mount(OntPlate, { 
       localVue,
       propsData: { plate_id: 1 },
       stubs: {
@@ -37,7 +37,7 @@ describe('OntPlateDisplay.vue', () => {
   })
 
   it('will have a name', () => {
-    expect(wrapper.name()).toEqual('OntPlateDisplay')
+    expect(wrapper.name()).toEqual('OntPlate')
   })
 
   it('will be passed a plate id as a prop', () => {
@@ -77,7 +77,7 @@ describe('OntPlateDisplay.vue', () => {
       const query = jest.fn()
       query.mockResolvedValue([{id: 1, position: ''}])
 
-      wrapper = mount(OntPlateDislay, {
+      wrapper = mount(OntPlate, {
         localVue,
         stubs: {
           OntPlate: true

@@ -1,5 +1,5 @@
 import OntPlates from '@/views/ont/OntPlates'
-import OntPlateDislay from '@/components/ont/OntPlateDislay'
+import OntPlate from '@/components/ont/OntPlate'
 import { mount, localVue } from '../../testHelper'
 
 describe('OntPlates.vue', () => {
@@ -9,7 +9,7 @@ describe('OntPlates.vue', () => {
     wrapper = mount(OntPlates, {
       localVue,
       stubs: {
-        OntPlateDislay: true
+        OntPlate: true
       }
     })
     plates = wrapper.vm
@@ -24,7 +24,6 @@ describe('OntPlates.vue', () => {
   })
 
   // TODO: Add GraphQL mocks for below
-  
   it.skip('will have a table with plates', () => {
     expect(wrapper.find('tbody').findAll('tr').length).toEqual(4)
   })
@@ -43,10 +42,10 @@ describe('OntPlates.vue', () => {
       expect(button.text()).toEqual('Show Plate')
     })
 
-    it('has a OntPlateDisplay component on button click', () => {
+    it('has a OntPlate component on button click', () => {
       button = wrapper.find('#details-btn-1')
       button.trigger('click')
-      expect(wrapper.contains(OntPlateDislay)).toBe(true)
+      expect(wrapper.contains(OntPlate)).toBe(true)
     })
   })
 

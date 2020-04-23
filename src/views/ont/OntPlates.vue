@@ -16,7 +16,7 @@
       </template>
 
       <template v-slot:row-details="row">
-        <OntPlateDislay v-bind:plate_id="parseInt(row.item.id)"></OntPlateDislay>
+        <OntPlate v-bind:plate_id="parseInt(row.item.id)"></OntPlate>
       </template>
 
     </b-table>
@@ -25,7 +25,7 @@
 
 <script>
 
-import OntPlateDislay from '@/components/ont/OntPlateDislay'
+import OntPlate from '@/components/ont/OntPlate'
 import gql from 'graphql-tag'
 
 export default {
@@ -36,7 +36,7 @@ export default {
     }
   },
   components: {
-    OntPlateDislay
+    OntPlate
   },
   apollo: {
     plates: gql`query {

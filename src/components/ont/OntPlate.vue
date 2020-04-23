@@ -13,7 +13,7 @@ import OntWell from '@/components/ont/OntWell'
 import gql from 'graphql-tag'
 
 export default {
-  name: 'OntPlateDisplay',
+  name: 'OntPlate',
   props: ['plate_id'],
   components: {
     Plate384SVG,
