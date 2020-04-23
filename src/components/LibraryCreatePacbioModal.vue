@@ -141,7 +141,7 @@ export default {
     },
     async createLibrary () {
       this.library.samples = this.selectedSamples
-      let payload = { libraries: [this.library] }
+      let payload = { library: this.library }
       let response = await this.createLibraryInTraction(payload)
 
       if (response.successful || !response.empty ) {
