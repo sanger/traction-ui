@@ -1,5 +1,4 @@
 <template>
-
   <div class="plate">
     <!-- REFACTOR: SVG is copied from Plate.vue -->
     <svg

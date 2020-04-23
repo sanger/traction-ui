@@ -1,12 +1,11 @@
 <template>
-
   <div class="plates">
     <b-table 
       id="plates-table"
       hover 
       bordered
       responsive
-      :items="getPlates"
+      :items="plates"
       :fields="fields"
       sticky-header
     >
@@ -17,7 +16,7 @@
       </template>
 
       <template v-slot:row-details="row">
-        <OntPlateDislay v-bind:plate_id="row.item.id"></OntPlateDislay>
+        <OntPlateDislay v-bind:plate_id="parseInt(row.item.id)"></OntPlateDislay>
       </template>
 
     </b-table>
@@ -28,32 +27,25 @@
 <script>
 
 import OntPlateDislay from '@/components/ont/OntPlateDislay'
+import gql from 'graphql-tag'
 
 export default {
   name: 'OntPlates',
   data () {
     return { 
-      fields: [ 'id', 'barcode', 'show_details' ]
+      fields: [ 'id', 'barcode', 'show_details' ],
     }
   },
   components: {
     OntPlateDislay
   },
-  methods: {
-    getPlates() {
-      // GraphQL request will look something like
-      // plates {
-      //   barcode
-      // }
-
-      // GraphQL response will look something like
-      return [
-        { id: 1, barcode: 'DN-1-1'},
-        { id: 2, barcode: 'DN-1-2'},
-        { id: 3, barcode: 'DN-1-3'},
-        { id: 4, barcode: 'DN-1-4'},
-      ]
-    }
+  apollo: {
+    plates: gql`query {
+      plates: plates {
+        id
+        barcode
+      }
+    }`
   }
 }
 </script>

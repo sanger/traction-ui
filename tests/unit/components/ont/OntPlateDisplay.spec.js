@@ -1,7 +1,7 @@
 import OntPlateDislay from '@/components/ont/OntPlateDislay'
 import OntPlate from '@/components/ont/OntPlate'
 
-import { mount, localVue } from '../../testHelper'
+import { localVue, mount } from '../../testHelper'
 
 describe('OntPlateDisplay.vue', () => {
   let wrapper, plate
@@ -10,6 +10,9 @@ describe('OntPlateDisplay.vue', () => {
     wrapper = mount(OntPlateDislay, { 
       localVue,
       propsData: { plate_id: 1 },
+      stubs: {
+        OntPlate: true
+      }
     })
     plate = wrapper.vm
   })
@@ -22,14 +25,32 @@ describe('OntPlateDisplay.vue', () => {
     expect(plate.plate_id).toBeDefined()
   })
 
-  // This will be updated with GraphQL 
-  describe('#getPlate', () => {
-    it('gets a plate', () => {
-      expect(plate.getPlate()).toBeDefined()
-    })
-  })
-
   it('has a OntPlate component', () => {
     expect(wrapper.contains(OntPlate)).toBe(true)
+  })
+
+  describe.skip('apollo', () => {
+    it('gets the wells for a given plate id', () => {
+      const query = jest.fn()
+      query.mockResolvedValue([{id: 1, position: ''}])
+
+      wrapper = mount(OntPlateDislay, {
+        localVue,
+        stubs: {
+          OntPlate: true
+        },
+        mocks: {
+          $apollo: {
+            queries: {
+              wells: {
+                query
+              }
+            }
+          }
+        },
+      })
+      plate = wrapper.vm
+      expect(plate.$apollo.queries.wells.query).toBeCalled()
+    })
   })
 })

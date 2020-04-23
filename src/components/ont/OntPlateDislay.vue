@@ -1,7 +1,7 @@
 <template>
 
   <b-card>
-    <OntPlate v-bind:wells="this.getPlate().wells"></OntPlate>
+    <OntPlate v-bind:wells="wells"></OntPlate>
   </b-card>
 
 </template>
@@ -9,6 +9,7 @@
 <script>
 
 import OntPlate from '@/components/ont/OntPlate'
+import gql from 'graphql-tag'
 
 export default {
   name: 'OntPlateDisplay',
@@ -16,41 +17,23 @@ export default {
   components: {
     OntPlate
   },
-  methods: {
-    getPlate() {
-      // This will be a GraphQL request to get the plate
-      // returning the plates well information
-      // and the wells material information
-      
-      // GraphQL request will look something like
-      // plate(id: this.plate_id) {
-      //   wells {
-      //     position
-      //     material {
-      //       name
-      //     }
-      //   }
-      // }
-
-      // GraphQL response will look something like
-      return {
-        wells: [
-          { 
-            position: 'A1',
-            material: [
-              { name: 'SampleName1' },
-              { name: 'SampleName12'}
-            ]
-          },
-          { 
-            position: 'A7',
-            material: [{
-              name: 'SampleName2'
-            }]
-          }
-        ]
-      }
-    }
+  apollo: {
+    wells: {
+      query: gql`query wells($plateId: Int!) {
+        wells(plateId: $plateId) {
+          id
+          position
+          # materials {
+          #   name
+          # }
+        }
+      }`,
+      variables () {
+        return {
+          plateId: this.plate_id,
+        }
+      },
+    },
   }
 }
 
