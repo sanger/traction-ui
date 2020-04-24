@@ -2,17 +2,17 @@ import Response from '@/api/Response'
 import { Data } from '../../../testHelper'
 import getters from '@/store/sequencescape/plates/getters'
 
-let sequencescapePlates
+let plates
 
 describe('getters', () => {
     beforeEach(() => {
-      sequencescapePlates = new Response(Data.sequencescapePlates).deserialize.plates
+      plates = new Response(Data.SequencescapePlates).deserialize.plates
     })
 
-    it('"sequencescapePlates" returns "state.sequencescapePlates"', () => {
+    it('"plates" returns "state.plates"', () => {
         const state = {
-          sequencescapePlates: sequencescapePlates
+          plates: plates
         }
-        expect(getters.sequencescapePlates(state)).toBe(sequencescapePlates)
+        expect(getters.plates(state)).toBe(plates)
     })
 })

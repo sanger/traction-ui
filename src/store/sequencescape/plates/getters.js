@@ -1,6 +1,6 @@
 const getters = {
-    sequencescapePlatesRequest: (state, getters, rootState) => rootState.api.sequencescape.plates,
-    sequencescapePlates: state => state.sequencescapePlates
+    platesRequest: (state, getters, rootState) => rootState.api.sequencescape.plates,
+    plates: state => state.plates
 }
 
 export default getters
