@@ -7,9 +7,9 @@
 <script>
 import Alert from '@/components/Alert'
 import Helper from '@/mixins/Helper'
-import * as consts from '@/consts/consts'
+// import * as consts from '@/consts/consts'
 
-import { mapActions, mapState } from 'vuex'
+// import { mapActions, mapState } from 'vuex'
 
 export default {
   name: 'Reception',

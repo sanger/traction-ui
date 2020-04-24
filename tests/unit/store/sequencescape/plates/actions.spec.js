@@ -27,25 +27,25 @@ describe('#getSequencescapePlates', () => {
         expect(response).toEqual(expectedResponse)
     })
 
-    // it('unsuccessfully', async () => {
-    //     get.mockReturnValue(failedResponse)
+    it('unsuccessfully', async () => {
+        get.mockReturnValue(failedResponse)
 
-    //     let expectedResponse = new Response(failedResponse)
+        let expectedResponse = new Response(failedResponse)
 
-    //     let response = await Actions.getSampleExtractionTubesForBarcodes({ commit, getters }, barcodeList)
+        let response = await Actions.getPlates({ commit, getters }, barcodes)
 
-    //     expect(commit).not.toHaveBeenCalled()
-    //     expect(response).toEqual(expectedResponse)
-    // })
+        expect(commit).not.toHaveBeenCalled()
+        expect(response).toEqual(expectedResponse)
+    })
 
-    // it('when no tubes exist', async () => {
-    //     get.mockReturnValue(emptyResponse)
+    it('when no plates exist', async () => {
+        get.mockReturnValue(emptyResponse)
 
-    //     let expectedResponse = new Response(emptyResponse)
+        let expectedResponse = new Response(emptyResponse)
 
-    //     let response = await Actions.getSampleExtractionTubesForBarcodes({ commit, getters }, barcodeList)
+        let response = await Actions.getPlates({ commit, getters }, barcodes)
 
-    //     expect(commit).not.toHaveBeenCalled()
-    //     expect(response).toEqual(expectedResponse)
-    // })
+        expect(commit).not.toHaveBeenCalled()
+        expect(response).toEqual(expectedResponse)
+    })
 })
