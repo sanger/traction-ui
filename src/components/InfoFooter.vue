@@ -8,13 +8,14 @@
             </b-row>
             <b-row> 
               <b-link href="https://www.sanger.ac.uk/science/groups/production-software-development">
-                A tool from LIMS and Informatics
+                LIMS and Informatics team
               </b-link>
             </b-row>
           </b-col>
           <b-col col lg="3">
-            <b-row>Traction [{{ $data.environment }}]</b-row>
-            <b-row>{{ $data.host_name }}</b-row>
+            <b-row>Traction [{{ this.environment }}]</b-row>
+            <b-row>{{ this.release }}</b-row>
+            <b-row>{{ this.repo }}</b-row>
           </b-col>
         </b-row>
     </div>
@@ -26,8 +27,18 @@ export default {
   data() {
     return {
         environment: process.env.NODE_ENV,
-        host_name: location.hostname
+        release: "",
+        repo: ""
       }
+  },
+  async created() {
+    Promise.all([
+      fetch('RELEASE.txt').then(response => response.text()),
+      fetch('REPO.txt').then(response => response.text())
+    ]).then(([response1,response2]) => {
+      this.release = response1;
+      this.repo = response2;
+    }).catch(err => console.error(err));
   }
 }
 </script>
