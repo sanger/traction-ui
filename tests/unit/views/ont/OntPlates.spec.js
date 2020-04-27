@@ -3,13 +3,21 @@ import OntPlate from '@/components/ont/OntPlate'
 import { mount, localVue } from '../../testHelper'
 
 describe('OntPlates.vue', () => {
-  let wrapper, plates
+  let wrapper
 
   beforeEach(() => {
     wrapper = mount(OntPlates, {
       localVue,
       stubs: {
         OntPlate: true
+      },
+      data() {
+        return {
+          plates: [
+            { id: 1, barcode: 'TRAC-1-1' },
+            { id: 2, barcode: 'TRAC-1-2' }
+          ]
+        }
       }
     })
     plates = wrapper.vm
@@ -23,18 +31,11 @@ describe('OntPlates.vue', () => {
     expect(wrapper.contains('table')).toBe(true)
   })
 
-  // TODO: Add GraphQL mocks for below
-  it.skip('will have a table with plates', () => {
-    expect(wrapper.find('tbody').findAll('tr').length).toEqual(4)
+  it('will have a table with plates', () => {
+    expect(wrapper.find('tbody').findAll('tr').length).toEqual(2)
   })
 
-  describe.skip('#getPlates', () => {
-    it('gets the plates', () => {
-      expect(plates.getPlates().length).toEqual(4)
-    })
-  })
-
-  describe.skip('Plate display button', () => {
+  describe('Plate display button', () => {
     let button
 
     it('is present for each plate', () => {
