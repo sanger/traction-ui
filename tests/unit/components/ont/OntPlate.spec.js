@@ -1,14 +1,14 @@
-import OntPlate from '@/components/ont/OntPlate'
 import Plate384SVG from '@/components/svg/Plate384SVG'
+import OntPlate from '@/components/ont/OntPlate'
 import OntWell from '@/components/ont/OntWell'
 import PlateMap from '@/config/PlateMap'
 import { localVue, mount } from '../../testHelper'
 
 describe('OntPlate.vue', () => {
-  let wrapper, plate, wells
+  let wrapper, plate, wellsData
 
   beforeEach(() => {
-    wells = [
+    wellsData = [
       {
         id: 1,
         position: 'A1',
@@ -35,7 +35,7 @@ describe('OntPlate.vue', () => {
       },
       data() {
         return {
-          wells: wells
+          wells: wellsData
         }
       }
     })
@@ -54,14 +54,13 @@ describe('OntPlate.vue', () => {
   describe('methods', () => {
     describe('#getWellAt', () => {
       it('gets the well at the given position', () => {
-        expect(plate.getWellAt('A1')).toEqual(wells[0])
+        let expected = wellsData.filter(w => w.position == 'A1')[0]
+        expect(plate.getWellAt('A1')).toEqual(expected)
       })
-    })
 
-    describe('#createEmptyWell', () => {
       it('creates an empty well for the given position', () => {
-        let expected = { position: 'A1', material: {} }
-        expect(plate.createEmptyWell('A1')).toEqual(expected)
+        let expected = { position: 'A2', material: {} }
+        expect(plate.getWellAt('A2')).toEqual(expected)
       })
     })
   })

@@ -45,10 +45,7 @@ export default {
     getWellAt(position) {
       let well = this.wells.filter(well => well.position == position)[0]
 
-      return well ? well : this.createEmptyWell(position)
-    },
-    createEmptyWell(position) {
-      return { position: position, material: {} }
+      return well ? well : { position: position, material: {} }
     }
   },
   computed: {

@@ -19,7 +19,6 @@
       <template v-slot:row-details="row">
         <OntPlate v-bind:plate_id="parseInt(row.item.id)"></OntPlate>
       </template>
-
     </b-table>
   </div>
 </template>

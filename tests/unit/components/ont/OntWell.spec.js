@@ -78,7 +78,6 @@ describe('OntWell.vue', () => {
       let ellipse = wrapper.find('ellipse')
       expect(ellipse.attributes('class')).toContain("empty")
     })
-
   })
 
   describe('#tooltip', () => {

@@ -3,9 +3,14 @@ import OntPlate from '@/components/ont/OntPlate'
 import { mount, localVue } from '../../testHelper'
 
 describe('OntPlates.vue', () => {
-  let wrapper
+  let wrapper, plates, platesData
 
   beforeEach(() => {
+    platesData = [
+      { id: 1, barcode: 'TRAC-1-1' },
+      { id: 2, barcode: 'TRAC-1-2' }
+    ]
+
     wrapper = mount(OntPlates, {
       localVue,
       stubs: {
@@ -13,10 +18,7 @@ describe('OntPlates.vue', () => {
       },
       data() {
         return {
-          plates: [
-            { id: 1, barcode: 'TRAC-1-1' },
-            { id: 2, barcode: 'TRAC-1-2' }
-          ]
+          plates: platesData
         }
       }
     })
@@ -27,12 +29,16 @@ describe('OntPlates.vue', () => {
     expect(wrapper.name()).toEqual('OntPlates')
   })
 
-  it('will have a table with plates', () => {
+  it('will have fields', () => {
+    expect(plates.fields).toEqual(['id', 'barcode', 'show_details'])
+  })
+
+  it('will have a table', () => {
     expect(wrapper.contains('table')).toBe(true)
   })
 
   it('will have a table with plates', () => {
-    expect(wrapper.find('tbody').findAll('tr').length).toEqual(2)
+    expect(wrapper.find('tbody').findAll('tr').length).toEqual(platesData.length)
   })
 
   describe('Plate display button', () => {
