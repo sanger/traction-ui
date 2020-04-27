@@ -18,8 +18,13 @@ describe('infoFooter.vue', () => {
     expect(wrapper.vm.environment).toBe('development')
   })
 
-  it('has a host name', () => {
-    wrapper.setData({ host_name: 'localhost' })
-    expect(wrapper.vm.host_name).toBe('localhost')
+  it('has a release tag', () => {
+    wrapper.setData({ release: '1' })
+    expect(wrapper.vm.release).toBe('1')
+  })
+
+  it('has a repo data', () => {
+    wrapper.setData({ repo: 'uat' })
+    expect(wrapper.vm.repo).toBe('uat')
   })
 })
