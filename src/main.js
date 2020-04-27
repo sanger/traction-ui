@@ -15,10 +15,8 @@ Vue.use(BootstrapVue)
 Vue.use(Vuex)
 Vue.use(VueApollo)
 
-
 const apolloClient = new ApolloClient({
-  // You should use an absolute URL here
-  uri: 'http://localhost:3100/v2'
+  uri: process.env.VUE_APP_TRACTION_GRAPHQL_URL
 })
 
 const apolloProvider = new VueApollo({
