@@ -8,8 +8,9 @@
                 placeholder="Run name"
                 type="text"
                 width="48"
+                v-b-tooltip.hover 
+                title="Run Name"
                 readonly/>
-                <b-tooltip target="run_name">Run Name</b-tooltip>
       </b-col>
       <b-col>
         <b-form-input :value="templatePrepKitBoxBarcode"
@@ -17,10 +18,9 @@
                   id="template_prep_kit_box_barcode"
                   placeholder="Template Prep Kit Box Barcode"
                   type="text"
-                  width="48"/>
-                  <b-tooltip target="template_prep_kit_box_barcode">
-                    Template Prep Kit Box Barcode
-                  </b-tooltip>
+                  width="48"
+                  v-b-tooltip.hover 
+                  title="Template Prep Kit Box Barcode"/>
       </b-col>
       <b-col>
         <b-form-input :value="bindingKitBoxBarcode"
@@ -28,10 +28,9 @@
                 id="binding_kit_box_barcode"
                 placeholder="Binding Kit Box Barcode"
                 type="text"
-                width="48"/>
-                <b-tooltip target="binding_kit_box_barcode">
-                  Binding Kit Box Barcode
-                </b-tooltip>
+                width="48"
+                v-b-tooltip.hover 
+                title="Binding Kit Box Barcode"/>
       </b-col>
     </b-row>
 
@@ -42,10 +41,9 @@
           id="sequencing_kit_box_barcode"
           placeholder="Sequencing Kit Box Barcode"
           type="text"
-          width="48"/>
-          <b-tooltip target="sequencing_kit_box_barcode">
-            Sequencing Kit Box Barcode
-          </b-tooltip>
+          width="48"
+          v-b-tooltip.hover 
+          title="Sequencing Kit Box Barcode"/>
       </b-col>
       <b-col>
         <b-form-input :value="dnaControlComplexBoxBarcode"
@@ -53,19 +51,18 @@
           id="dna_control_complex_box_barcode"
           placeholder="DNA Control Complex Box Barcode"
           type="text"
-          width="48"/>
-          <b-tooltip target="dna_control_complex_box_barcode">
-            DNA Control Complex Box Barcode
-          </b-tooltip>
+          width="48"
+          v-b-tooltip.hover 
+          title="DNA Control Complex Box Barcode"/>
       </b-col>
       <b-col>
         <b-form-select ref="systemName" 
                        id="systemName" 
                        :value="systemName" 
                        :options="systemNameOptions" 
-                       @change="setSystemName">
-        </b-form-select>
-        <b-tooltip target="systemName">System Name</b-tooltip>
+                       @change="setSystemName"
+                       v-b-tooltip.hover 
+                       title="System Name"/>
       </b-col>
     </b-row>
     
@@ -76,8 +73,9 @@
           id="comments"
           placeholder="Comments"
           type="text"
-          width="48"/>
-        <b-tooltip target="comments">Comments</b-tooltip>
+          width="48"
+          v-b-tooltip.hover 
+          title="Comments"/>
       </b-col>
     </b-row>
   </div>

@@ -34,7 +34,7 @@ describe('PacbioRunInfo', () => {
             }
         })
 
-        wrapper = mount(PacbioRunInfo, { localVue, store, sync: false })
+        wrapper = mount(PacbioRunInfo, { localVue, store, sync: false, attachToDocument: true })
         runInfo = wrapper.vm
     })
 
