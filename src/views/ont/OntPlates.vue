@@ -1,5 +1,5 @@
 <template>
-  <div class="plates">
+  <div class="ont-plates">
     <b-table 
       id="plates-table"
       hover 
