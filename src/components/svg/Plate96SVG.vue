@@ -37,7 +37,7 @@
 import PlateMap from '@/config/PlateMap'
 
 export default {
-  name: 'Plate384SVG',
+  name: 'Plate96SVG',
   computed: {
     plateMap () {
       return PlateMap

@@ -1,13 +1,13 @@
 <template>
-  <Plate384SVG>
+  <Plate96SVG>
     <well v-for="(well, key) in plateMap.wells" v-bind="well" v-bind:key="key">
     </well>
-  </Plate384SVG>
+  </Plate96SVG>
 </template>
 
 <script>
 
-import Plate384SVG from '@/components/svg/Plate384SVG'
+import Plate96SVG from '@/components/svg/Plate96SVG'
 import PlateMap from '@/config/PlateMap'
 import Well from '@/components/Well'
 
@@ -25,7 +25,7 @@ export default {
   },
   components: {
     Well,
-    Plate384SVG
+    Plate96SVG
   }
 }
 </script>

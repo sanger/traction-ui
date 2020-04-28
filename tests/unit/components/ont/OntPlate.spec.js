@@ -1,4 +1,4 @@
-import Plate384SVG from '@/components/svg/Plate384SVG'
+import Plate96SVG from '@/components/svg/Plate96SVG'
 import OntPlate from '@/components/ont/OntPlate'
 import OntWell from '@/components/ont/OntWell'
 import PlateMap from '@/config/PlateMap'
@@ -30,7 +30,7 @@ describe('OntPlate.vue', () => {
       localVue,
       propsData: { plate_id: 1 },
       stubs: {
-        Plate384SVG: true,
+        Plate96SVG: true,
         OntWell: true
       },
       data() {
@@ -70,8 +70,8 @@ describe('OntPlate.vue', () => {
       expect(wrapper.contains(OntWell)).toBe(true)
     })
 
-    it('has a Plate384SVG component', () => {
-      expect(wrapper.contains(Plate384SVG)).toBe(true)
+    it('has a Plate96SVG component', () => {
+      expect(wrapper.contains(Plate96SVG)).toBe(true)
     })  
   })
 

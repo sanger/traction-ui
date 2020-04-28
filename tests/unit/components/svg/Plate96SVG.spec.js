@@ -1,12 +1,12 @@
 import { mount } from '../../testHelper'
-import Plate384SVG from '@/components/svg/Plate384SVG'
+import Plate96SVG from '@/components/svg/Plate96SVG'
 import PlateMap from '@/config/PlateMap'
 
-describe('Plate384SVG.vue', () => {
+describe('Plate96SVG.vue', () => {
   let wrapper
 
   beforeEach(() => {
-    wrapper = mount(Plate384SVG, {
+    wrapper = mount(Plate96SVG, {
     })
   })
 
