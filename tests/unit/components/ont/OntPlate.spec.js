@@ -1,7 +1,7 @@
 import Plate96SVG from '@/components/svg/Plate96SVG'
 import OntPlate from '@/components/ont/OntPlate'
 import OntWell from '@/components/ont/OntWell'
-import PoolSamplesModal from '@/components/PoolSamplesModal'
+import PoolSamplesModal from '@/components/ont/PoolSamplesModal'
 import PlateMap from '@/config/PlateMap'
 import { localVue, mount } from '../../testHelper'
 

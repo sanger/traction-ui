@@ -1,4 +1,4 @@
-import PoolSamplesModal from '@/components/PoolSamplesModal'
+import PoolSamplesModal from '@/components/ont/PoolSamplesModal'
 import { localVue, mount } from '../testHelper'
 
 describe('PoolSamplesModal.vue', () => {
