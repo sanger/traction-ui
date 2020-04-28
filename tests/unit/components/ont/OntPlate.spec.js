@@ -1,6 +1,7 @@
 import Plate96SVG from '@/components/svg/Plate96SVG'
 import OntPlate from '@/components/ont/OntPlate'
 import OntWell from '@/components/ont/OntWell'
+import PoolSamplesModal from '@/components/PoolSamplesModal'
 import PlateMap from '@/config/PlateMap'
 import { localVue, mount } from '../../testHelper'
 
@@ -73,6 +74,11 @@ describe('OntPlate.vue', () => {
     it('has a Plate96SVG component', () => {
       expect(wrapper.contains(Plate96SVG)).toBe(true)
     })  
+
+    it('has a Plate96SVG component', () => {
+      expect(wrapper.contains(PoolSamplesModal
+      )).toBe(true)
+    })
   })
 
   describe('SVG wells', () => {

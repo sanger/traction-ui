@@ -11,7 +11,7 @@
       show-empty
     >
       <template v-slot:cell(show_details)="row">
-        <b-button size="sm" @click="row.toggleDetails" class="mr-2" :id="'details-btn-'+row.item.id">
+        <b-button size="sm" @click="row.toggleDetails" variant="outline-primary" :id="'details-btn-'+row.item.id">
           {{ row.detailsShowing ? 'Hide' : 'Show'}} Plate
         </b-button>
       </template>
@@ -36,7 +36,7 @@ export default {
     }
   },
   components: {
-    OntPlate
+    OntPlate,
   },
   apollo: {
     plates: gql`query {
