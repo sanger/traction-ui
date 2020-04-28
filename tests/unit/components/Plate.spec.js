@@ -57,24 +57,10 @@ describe('Plate.vue', () => {
   })
 
   describe('wells', () => {
-
-    it('has the correct number of columns', () => {
-      for (const column in PlateMap.columns) {
-        expect(wrapper.find(`#column${column}`).exists()).toBeTruthy()
-      }
-    })
-
-    it('has the correct number of rows', () => {
-      for (const row in PlateMap.rows) {
-        expect(wrapper.find(`#row${row}`).exists()).toBeTruthy()
-      }
-    })
-
     it('has the correct number of wells', () => {
       let ellipses = wrapper.findAll('ellipse')
       expect(ellipses.length).toEqual(Object.keys(PlateMap.wells).length)
     })
-
   })
 
 })

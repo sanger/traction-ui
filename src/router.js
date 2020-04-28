@@ -15,6 +15,7 @@ import PacbioLibraries from './views/pacbio/PacbioLibraries'
 import PacbioRuns from './views/pacbio/PacbioRuns'
 import PacbioRun from './views/pacbio/PacbioRun'
 import ONT from './views/ONT'
+import OntPlates from './views/ont/OntPlates'
 
 Vue.use(Router)
 
@@ -59,6 +60,7 @@ export default new Router({
       path: '/ont',
       component: ONT,
       children: [
+        { path: 'plates', name: 'OntPlates', component: OntPlates },
       ]
     },
     {

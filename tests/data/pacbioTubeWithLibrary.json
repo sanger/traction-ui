@@ -17,7 +17,7 @@
               "related": "http://localhost:3000/v1/pacbio/tubes/19/material"
             },
             "data": {
-              "type": "libraries",
+              "type": "library",
               "id": "4"
             }
           }
@@ -27,7 +27,7 @@
     "included": [
       {
         "id": "4",
-        "type": "libraries",
+        "type": "library",
         "attributes": {
           "volume": 1.0,
           "concentration": 1.0,
