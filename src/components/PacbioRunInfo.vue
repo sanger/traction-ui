@@ -8,7 +8,8 @@
                 placeholder="Run name"
                 type="text"
                 width="48"
-                readonly />
+                readonly/>
+                <b-tooltip target="run_name">Run Name</b-tooltip>
       </b-col>
       <b-col>
         <b-form-input :value="templatePrepKitBoxBarcode"
@@ -17,6 +18,9 @@
                   placeholder="Template Prep Kit Box Barcode"
                   type="text"
                   width="48"/>
+                  <b-tooltip target="template_prep_kit_box_barcode">
+                    Template Prep Kit Box Barcode
+                  </b-tooltip>
       </b-col>
       <b-col>
         <b-form-input :value="bindingKitBoxBarcode"
@@ -25,6 +29,9 @@
                 placeholder="Binding Kit Box Barcode"
                 type="text"
                 width="48"/>
+                <b-tooltip target="binding_kit_box_barcode">
+                  Binding Kit Box Barcode
+                </b-tooltip>
       </b-col>
     </b-row>
 
@@ -36,6 +43,9 @@
           placeholder="Sequencing Kit Box Barcode"
           type="text"
           width="48"/>
+          <b-tooltip target="sequencing_kit_box_barcode">
+            Sequencing Kit Box Barcode
+          </b-tooltip>
       </b-col>
       <b-col>
         <b-form-input :value="dnaControlComplexBoxBarcode"
@@ -44,9 +54,18 @@
           placeholder="DNA Control Complex Box Barcode"
           type="text"
           width="48"/>
+          <b-tooltip target="dna_control_complex_box_barcode">
+            DNA Control Complex Box Barcode
+          </b-tooltip>
       </b-col>
       <b-col>
-        <b-form-select ref="systemName" id="systemName" :value="systemName" :options="systemNameOptions" @change="setSystemName"></b-form-select>
+        <b-form-select ref="systemName" 
+                       id="systemName" 
+                       :value="systemName" 
+                       :options="systemNameOptions" 
+                       @change="setSystemName">
+        </b-form-select>
+        <b-tooltip target="systemName">System Name</b-tooltip>
       </b-col>
     </b-row>
     
@@ -58,6 +77,7 @@
           placeholder="Comments"
           type="text"
           width="48"/>
+        <b-tooltip target="comments">Comments</b-tooltip>
       </b-col>
     </b-row>
   </div>

@@ -7,25 +7,51 @@
       <alert ref='alert'></alert>
 
       <b-form>
-        <b-form-select ref="movieTime" id="movieTime" :value="movieTime" :options="movieTimeOptions" @change="updateMovieTime"></b-form-select>
+        <b-form-group id="movieTime-group"
+                      label="Movie time:"
+                      label-for="movieTime">
+          <b-form-select ref="movieTime" 
+                        id="movieTime" 
+                        :value="movieTime" 
+                        :options="movieTimeOptions" 
+                        @change="updateMovieTime">
+          </b-form-select>
+        </b-form-group>
 
-        <b-form-input
-          ref="onPlateLoadingConc"
-          id="onPlateLoadingConc"
-          :value="onPlateLoadingConc"
-          @change="updateOnPlateLoadingConc"
-          placeholder="On Plate Loading Concentration (mP)">
-        </b-form-input>
+        <b-form-group id="plateLoading-group"
+                      label="On Plate Loading Concentration (mP):"
+                      label-for="onPlateLoadingConc">
+          <b-form-input
+            ref="onPlateLoadingConc"
+            id="onPlateLoadingConc"
+            :value="onPlateLoadingConc"
+            @change="updateOnPlateLoadingConc"
+            placeholder="On Plate Loading Concentration (mP)">
+          </b-form-input>
+        </b-form-group>
 
-        <b-form-input
-          ref="insertSize"
-          id="insertSize"
-          :value="insertSize"
-          @change="updateInsertSize"
-          placeholder="Insert Size">
-        </b-form-input>
+        <b-form-group id="insertSize-group"
+                      label="Insert size:"
+                      label-for="insertSize">
+          <b-form-input
+            ref="insertSize"
+            id="insertSize"
+            :value="insertSize"
+            @change="updateInsertSize"
+            placeholder="Insert Size">
+          </b-form-input>
+        </b-form-group>
 
-        <b-form-select ref="sequencingMode" id="sequencingMode" :value="sequencingMode" :options="sequencingModeOptions" @change="updateSequencingMode"></b-form-select>
+        <b-form-group id="sequencingMode-group"
+                      label="Sequencing mode:"
+                      label-for="sequencingMode">
+          <b-form-select ref="sequencingMode" 
+                        id="sequencingMode" 
+                        :value="sequencingMode" 
+                        :options="sequencingModeOptions" 
+                        @change="updateSequencingMode">
+          </b-form-select>
+        </b-form-group>
 
       </b-form>
 
