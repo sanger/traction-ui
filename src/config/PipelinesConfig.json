@@ -26,7 +26,8 @@
     "title": "ONT",
     "description": "",
     "routes": [
-      "plates"
+      "plates",
+      "libraries"
     ]
   }
 ]

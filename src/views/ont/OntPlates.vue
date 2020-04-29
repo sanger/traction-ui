@@ -1,5 +1,5 @@
 <template>
-  <div class="plates">
+  <div class="ont-plates">
     <b-table 
       id="plates-table"
       hover 
@@ -11,7 +11,7 @@
       show-empty
     >
       <template v-slot:cell(show_details)="row">
-        <b-button size="sm" @click="row.toggleDetails" class="mr-2" :id="'details-btn-'+row.item.id">
+        <b-button size="sm" @click="row.toggleDetails" variant="outline-primary" :id="'details-btn-'+row.item.id">
           {{ row.detailsShowing ? 'Hide' : 'Show'}} Plate
         </b-button>
       </template>
@@ -26,7 +26,7 @@
 <script>
 
 import OntPlate from '@/components/ont/OntPlate'
-import gql from 'graphql-tag'
+import PLATES_ALL_QUERY from '@/graphql/queries/PlatesAll.query.gql'
 
 export default {
   name: 'OntPlates',
@@ -36,15 +36,12 @@ export default {
     }
   },
   components: {
-    OntPlate
+    OntPlate,
   },
   apollo: {
-    plates: gql`query {
-      plates: plates {
-        id
-        barcode
-      }
-    }`
+    plates: {
+      query: PLATES_ALL_QUERY
+    }
   }
 }
 </script>
