@@ -44,7 +44,8 @@ export default {
       this.$apollo.mutate({
         mutation: POOL_SAMPLES,
         variables: {
-          plate_id: 1,
+          plate_id: this.plate_id,
+          tag_set: this.selectedTagSet,
         }
       }).then(data => {
         this.$parent.$emit('alert', 'Success ' + data, 'success')

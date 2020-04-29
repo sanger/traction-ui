@@ -1,8 +1,9 @@
-mutation poolSamples($plate_id: Int!) {
+mutation poolSamples($plate_id: Int!, $tag_set: Int!) {
   poolSamples(
     input: {
       arguments: {
         plateId: $plate_id
+        tagSet: $tag_set
       }
     }
   ) {

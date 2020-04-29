@@ -32,7 +32,7 @@ describe('OntLibraries.vue', () => {
   })
 
   it('will have fields', () => {
-    expect(libraries.fields).toEqual(['id', 'tube_barcode', 'plate_barcode', 'pool', 'wells', 'tag_set'])
+    expect(libraries.fields.map(i => i.key)).toEqual(["id", "tubeBarcode", "plateBarcode", "pool", "name", "wells", "tagSet"])
   })
 
   it('will have a table', () => {
