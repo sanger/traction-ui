@@ -1,0 +1,11 @@
+mutation createLibrary($plate_id: Int!) {
+  createLibrary(
+   input: {
+      arguments: {
+        plateId: $plate_id
+      }
+    }
+  ) {
+    errors
+  }
+}

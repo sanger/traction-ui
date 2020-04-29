@@ -1,0 +1,13 @@
+query wells($plateId: Int!) {
+  wells(plateId: $plateId) {
+    id
+    position
+    material {
+      ...on Request {
+        sample {
+          name
+        }
+      }
+    }
+  }
+}

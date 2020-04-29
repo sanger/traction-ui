@@ -1,6 +1,6 @@
 <template>
   <div>
-    <PoolSamplesModal v-bind:plate_id="plate_id"></PoolSamplesModal>
+    <PoolSamplesModal class="float-right" v-bind:plate_id="plate_id"></PoolSamplesModal>
     <Plate96SVG v-if="wells">
       <OntWell v-for="(well, position) in plateMap.wells" v-bind="well" v-bind:key="position" v-bind:well_info="getWellAt(position)">
       </OntWell>
@@ -14,11 +14,16 @@ import Plate96SVG from '@/components/svg/Plate96SVG'
 import PlateMap from '@/config/PlateMap'
 import OntWell from '@/components/ont/OntWell'
 import PoolSamplesModal from '@/components/ont/PoolSamplesModal'
-import gql from 'graphql-tag'
+import WELLS_ALL_FOR_PLATE_QUERY from '@/graphql/queries/WellsAllForPlate.query.gql'
 
 export default {
   name: 'OntPlate',
-  props: ['plate_id'],
+  props: {
+    plate_id: {
+      type: Number,
+      required: true,
+    },
+  },
   components: {
     Plate96SVG,
     OntWell,
@@ -26,30 +31,17 @@ export default {
   },
   apollo: {
     wells: {
-      query: gql`query wells($plateId: Int!) {
-        wells(plateId: $plateId) {
-          id
-          position
-          material {
-            ...on Request {
-              sample {
-                name
-              }
-            }
-          }
-        }
-      }`,
+      query: WELLS_ALL_FOR_PLATE_QUERY,
       variables () {
         return {
           plateId: this.plate_id,
         }
       },
-    },
+    }
   },
   methods: {
     getWellAt(position) {
       let well = this.wells.filter(well => well.position == position)[0]
-
       return well ? well : { position: position, material: {} }
     }
   },

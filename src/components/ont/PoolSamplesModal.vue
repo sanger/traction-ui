@@ -22,9 +22,16 @@
 
 <script>
 
+import LIBRARY_CREATE_MUTATION from '@/graphql/queries/LibraryCreate.mutation.gql'
+
 export default {
   name: 'PoolSamplesModal',
-  props: ['plate_id'],
+  props: {
+    plate_id: {
+      type: Number,
+      required: true,
+    },
+  },
   data() {
     return {
       modalShow: false,
@@ -33,8 +40,17 @@ export default {
     }
   },
   methods: {
-    handleOk() {
-      // GraphQL post
+    handleOk () {
+      this.$apollo.mutate({
+        mutation: LIBRARY_CREATE_MUTATION,
+        variables: {
+          plate_id: 1,
+        }
+      }).then(data => {
+        // Show alert
+        console.log(data)
+        console.log('Success!');
+      })
     }
   },
   computed: {
