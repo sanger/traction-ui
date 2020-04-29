@@ -2,7 +2,7 @@
   <div class="plate">
     <svg width="1158" height="568">
       <g transform="matrix(1,0,0,1,176,95)">
-        <rect width="509" height="307" rx="0" ry="0" x="0" y="0"/>
+        <rect width="509" height="307"/>
       </g>
 
       <!-- Slot for a flowcell component -->

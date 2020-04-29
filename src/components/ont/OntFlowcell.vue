@@ -1,6 +1,6 @@
 <template>
   <g :transform="getMatrix">
-    <rect width="61" height="227" rx="0" ry="0" x="0" y="0" p:name="rrRect"/>
+    <rect width="61" height="227"/>
   </g>
 </template>
 
@@ -15,6 +15,7 @@ export default {
     },
   },
   computed: {
+    // Determines the flowcells x/y coordinates
     getMatrix () {
       return 'matrix(1,0,0,1,'+this.xPos+',135)'
     }
