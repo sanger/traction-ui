@@ -26,7 +26,7 @@
 <script>
 
 import OntPlate from '@/components/ont/OntPlate'
-import gql from 'graphql-tag'
+import PLATES_ALL_QUERY from '@/graphql/queries/PlatesAll.query.gql'
 
 export default {
   name: 'OntPlates',
@@ -39,12 +39,9 @@ export default {
     OntPlate,
   },
   apollo: {
-    plates: gql`query {
-      plates: plates {
-        id
-        barcode
-      }
-    }`
+    plates: {
+      query: PLATES_ALL_QUERY
+    }
   }
 }
 </script>
