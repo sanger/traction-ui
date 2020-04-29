@@ -1,6 +1,6 @@
-mutation createLibrary($plate_id: Int!) {
-  createLibrary(
-   input: {
+mutation poolSamples($plate_id: Int!) {
+  poolSamples(
+    input: {
       arguments: {
         plateId: $plate_id
       }

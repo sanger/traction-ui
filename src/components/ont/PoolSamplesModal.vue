@@ -22,7 +22,7 @@
 
 <script>
 
-import LIBRARY_CREATE_MUTATION from '@/graphql/queries/LibraryCreate.mutation.gql'
+import POOL_SAMPLES from '@/graphql/queries/PoolSamples.mutation.gql'
 
 export default {
   name: 'PoolSamplesModal',
@@ -42,16 +42,17 @@ export default {
   methods: {
     handleOk () {
       this.$apollo.mutate({
-        mutation: LIBRARY_CREATE_MUTATION,
+        mutation: POOL_SAMPLES,
         variables: {
           plate_id: 1,
         }
       }).then(data => {
-        // Show alert
-        console.log(data)
-        console.log('Success!');
+        this.$parent.$emit('alert', 'Success ' + data, 'success')
+      }).catch(data =>{
+        this.$parent.$emit('alert', 'Failure ' + data, 'danger')
       })
-    }
+    },
+
   },
   computed: {
     modalTitle () {

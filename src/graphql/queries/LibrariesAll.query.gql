@@ -1,0 +1,11 @@
+query {
+  libraries: libraries {
+    id
+    tubeBarcode
+    plateBarcode
+    pool
+    name
+    wells
+    tagSet
+  }
+}
