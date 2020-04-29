@@ -1,0 +1,33 @@
+<template>
+  <g :transform="getMatrix">
+    <rect width="61" height="227" rx="0" ry="0" x="0" y="0" p:name="rrRect"/>
+  </g>
+</template>
+
+<script>
+
+export default {
+  name: 'Well',
+  props: {
+    xPos: {
+      type: Number,
+      required: true
+    },
+  },
+  computed: {
+    getMatrix () {
+      return 'matrix(1,0,0,1,'+this.xPos+',135)'
+    }
+  }
+}
+</script>
+
+<style scoped lang="scss">
+  rect {
+    stroke-width: 2;
+    fill: rgb(67, 136, 204);
+    fill-opacity: 0.309804;
+    stroke: rgb(27, 50, 128);
+    stroke-opacity: 1;
+  }
+</style>
