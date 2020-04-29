@@ -7,7 +7,7 @@
 <script>
 
 export default {
-  name: 'Well',
+  name: 'OntFlowcell',
   props: {
     xPos: {
       type: Number,
