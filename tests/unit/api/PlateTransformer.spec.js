@@ -1,4 +1,3 @@
-import * as PromiseHelper from '@/api/PromiseHelper'
 import sequencescapeToTractionPlates from '@/api/PlateTransformer'
 
 const Plates = [{ id: '26473471',

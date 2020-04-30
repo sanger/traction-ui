@@ -1,5 +1,4 @@
-import { mount, Data } from '../testHelper'
-import Response from '@/api/Response'
+import { Data } from '../testHelper'
 
 // mutation {
 //   createPlateWithOntSamples(
@@ -54,6 +53,7 @@ describe('createPlateWithOntSamples.vue', () => {
 
   it('works', () => {
     expect(true).toBeTruthy()
+    expect(plates).toBeDefined()
   })
 
 })

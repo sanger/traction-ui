@@ -1,8 +1,3 @@
-const transformObject = (items, fields, children, fn) => {
-  return items.map(item => {
-    Object.assign(fields, {[children]: fn(item[children])})
-  })
-} 
 
 const transformPlates = (plates) => {
   return plates.map(plate => {
