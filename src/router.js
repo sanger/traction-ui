@@ -16,7 +16,7 @@ import PacbioRuns from './views/pacbio/PacbioRuns'
 import PacbioRun from './views/pacbio/PacbioRun'
 import ONT from './views/ONT'
 import OntPlates from './views/ont/OntPlates'
-import OntRun from './views/ont/OntRun'
+import GridIONRun from './views/ont/GridIONRun'
 
 Vue.use(Router)
 
@@ -62,7 +62,7 @@ export default new Router({
       component: ONT,
       children: [
         { path: 'plates', name: 'OntPlates', component: OntPlates },
-        { path: 'run', name: 'OntRun', component: OntRun },
+        { path: 'run', name: 'GridIONRun', component: GridIONRun },
       ]
     },
     {

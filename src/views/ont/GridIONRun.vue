@@ -1,25 +1,25 @@
 <template>
   <div class="run">
-    <GridionSVG>
+    <ONTSVG>
       <OntFlowcell v-for="(flowcell, key) in flowcells" v-bind="flowcell" v-bind:key="key">
       </OntFlowcell>
-    </GridionSVG>
+    </ONTSVG>
   </div>
 </template>
 
 <script>
-import GridionSVG from '@/components/svg/GridionSVG'
+import ONTSVG from '@/components/svg/ONTSVG'
 import OntFlowcell from '@/components/ont/OntFlowcell'
 
 export default {
-  name: 'OntRun',
+  name: 'GridIONRun',
   data () {
     return {
       flowcells: [ {xPos: 240}, {xPos: 320}, {xPos: 400}, {xPos: 480}, {xPos: 560}]
     }
   },
   components: {
-    GridionSVG,
+    ONTSVG,
     OntFlowcell
   }
 }
