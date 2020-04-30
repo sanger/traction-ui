@@ -7,6 +7,19 @@ describe('Plate96SVG.vue', () => {
 
   beforeEach(() => {
     wrapper = mount(Plate96SVG, {
+      propsData: {
+        height: "100%",
+        width: "100%"
+      },
+    })
+  })
+
+  describe('props', () => {
+    it('has a height property', () => {
+      expect(wrapper.props().height).toBeDefined()
+    })
+    it('has a height property', () => {
+      expect(wrapper.props().width).toBeDefined()
     })
   })
 

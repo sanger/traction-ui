@@ -1,7 +1,7 @@
 <template>
   <div>
     <PoolSamplesModal class="float-right" v-bind:plate_id="plate_id"></PoolSamplesModal>
-    <Plate96SVG v-if="wells">
+    <Plate96SVG v-if="wells" v-bind:height="'30%'" v-bind:width="'30%'">
       <OntWell v-for="(well, position) in plateMap.wells" v-bind="well" v-bind:key="position" v-bind:well_info="getWellAt(position)">
       </OntWell>
     </Plate96SVG>
