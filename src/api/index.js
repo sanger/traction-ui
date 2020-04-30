@@ -3,6 +3,7 @@ import JsonApi from './JsonApi'
 import Request from './Request'
 import Response from './Response'
 import ApiBuilder from './ApiBuilder'
+import PlateTransformer from './PlateTransformer'
 
 export default {
   Config,
@@ -10,4 +11,5 @@ export default {
   Request,
   Response,
   ApiBuilder,
+  PlateTransformer
 }

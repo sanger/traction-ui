@@ -6,6 +6,7 @@ module.exports = {
     'vue'
   ],
   transform: {
+    "\\.(gql|graphql)$": "jest-transform-graphql",
     '^.+\\.vue$': 'vue-jest',
     '.+\\.(css|styl|less|sass|scss|svg|png|jpg|ttf|woff|woff2)$': 'jest-transform-stub',
     '^.+\\.jsx?$': 'babel-jest'

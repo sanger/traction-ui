@@ -1,4 +1,4 @@
-import Reception from '@/views/pacbio/OntReception'
+import Reception from '@/views/ont/OntReception'
 import { mount, localVue } from '../../testHelper'
 import Alert from '@/components/Alert'
 
