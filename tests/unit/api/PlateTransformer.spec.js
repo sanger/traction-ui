@@ -1,6 +1,4 @@
 import sequencescapeToTractionPlates from '@/api/PlateTransformer'
-import Response from '@/api/Response'
-import { Data } from '../testHelper'
 
 const Plates = [
   { id: '23811789',
