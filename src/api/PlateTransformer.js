@@ -7,13 +7,14 @@ const transformPlates = (plates) => {
 
 const transformWells = (wells) => {
   return wells.map(well => {
-    return {position: well.position.name, samples: transformSamples(well.samples) }
+    return {position: well.position.name, samples: transformAliquots(well.aliquots) }
   })
 }
 
-const transformSamples = (samples) => {
-  return samples.map(sample => {
-    return {externalId: sample.uuid, name: sample.sanger_sample_id}
+const transformAliquots = (aliquots) => {
+  return aliquots.map(aliquot => {
+    return {externalId: aliquot.sample.uuid, name: aliquot.sample.sanger_sample_id,
+            tags: [{ oligo: aliquot.tag_oligo, index: aliquot.tag_index }]}
   })
 }
 
