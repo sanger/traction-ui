@@ -6,7 +6,12 @@ describe('infoFooter.vue', () => {
   let wrapper
 
   beforeEach(() => {
-    wrapper = mount(InfoFooter, { localVue })
+    wrapper = mount(InfoFooter, {
+      localVue,
+      methods: {
+        provider() { return }
+      } 
+    })
   })
 
   it('will have a name', () => {
@@ -24,7 +29,7 @@ describe('infoFooter.vue', () => {
   })
 
   it('has a repo data', () => {
-    wrapper.setData({ repo: 'uat' })
-    expect(wrapper.vm.repo).toBe('uat')
+    wrapper.setData({ repo: 'trac-ui' })
+    expect(wrapper.vm.repo).toBe('trac-ui')
   })
 })
