@@ -59,8 +59,7 @@
 
 <script>
 
-import { createNamespacedHelpers } from 'vuex'
-const { mapState, mapActions, mapMutations, mapGetters} = createNamespacedHelpers('traction/pacbio/runs')
+import { mapActions, mapMutations, mapGetters, mapState } from 'vuex'
 
 import Alert from '@/components/Alert'
 import Helper from '@/mixins/Helper'
@@ -127,11 +126,11 @@ export default {
         this.showAlert('Library is not valid', 'danger')
       }
     },
-     ...mapActions([
+     ...mapActions('traction/pacbio/tubes', [
       'isLibraryBarcodeValid',
       'getTubeForBarcode',
     ]),
-    ...mapMutations([
+    ...mapMutations('traction/pacbio/runs', [
       'createWell',
       'mutateWell',
       'addEmptyLibraryToWell',
@@ -143,11 +142,11 @@ export default {
     },
   },
   computed: {
-    ...mapGetters([
+    ...mapGetters('traction/pacbio/runs', [
       'currentRun',
       'well'
     ]),
-    ...mapState({
+    ...mapState('traction/pacbio/runs', {
       insertSize () {
         return (this.well(this.position) ? this.well(this.position).insert_size : '')
       },

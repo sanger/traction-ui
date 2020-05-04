@@ -37,37 +37,6 @@ const createRun = async ({ getters }) => {
     return await PacbioRun.create(run, request)
 }
 
-// TODO: Move to tubes action
-const isLibraryBarcodeValid = async ({ dispatch }, barcode) => {
-    if (!barcode) { return false }
-    let libraryTube = await dispatch('getTubeForBarcode', barcode)
-    return validateLibraryTube(libraryTube)
-}
-
-// TODO: Move to tubes action
-// TODO: Reuse action from tubes module?
-const getTubeForBarcode = async ({ rootGetters }, barcode) => {
-    let request = rootGetters["traction/pacbio/tubes/tubeRequest"]
-    let promise = request.get({ filter: { barcode: barcode } })
-    let response = await handlePromise(promise)
-
-    if (response.successful && !response.empty) {
-        return response.deserialize.tubes[0]
-    }
-}
-
-// TODO: Move to tubes action
-const validateLibraryTube = (tube) => {
-    if (!tube) { return false }
-    if (!tube.materials) { return false }
-    if (!tube.materials.every(m => m.library_kit_barcode)) { return false } 
-    // a way to validation libraries, as type is now container_material
-    // update test l.145
-    // if (tube.material.type != 'libraries') { return false }
-
-    return true
-}
-
 const updateRun = async ({ getters, dispatch }) => {
     let run = getters.currentRun
     let originalRun = await dispatch('getRun', run.id)
@@ -98,8 +67,6 @@ const actions = {
     setRuns,
     newRun,
     createRun,
-    isLibraryBarcodeValid,
-    getTubeForBarcode,
     editRun,
     updateRun,
 }
@@ -108,9 +75,6 @@ export {
     setRuns,
     newRun,
     createRun,
-    isLibraryBarcodeValid,
-    getTubeForBarcode,
-    validateLibraryTube,
     editRun,
     updateRun,
     getRun,

@@ -11,9 +11,8 @@
 import Helper from '@/mixins/Helper'
 import TableHelper from '@/mixins/TableHelper'
 import { createNamespacedHelpers } from 'vuex'
-// TODO: move to pacbio libraries
-const { mapActions, mapGetters } = createNamespacedHelpers('traction/pacbio/libraries')
 import Tube from '@/components/Tube'
+const { mapActions, mapGetters } = createNamespacedHelpers('traction/pacbio/libraries')
 
 export default {
   name: 'PacbioLibrariesList',

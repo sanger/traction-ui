@@ -16,8 +16,7 @@
 
 <script>
 
-import { createNamespacedHelpers } from 'vuex'
-const { mapActions, mapMutations, mapGetters } = createNamespacedHelpers('traction/pacbio/runs')
+import { mapActions, mapMutations, mapGetters } from 'vuex'
 import WellModal from '@/components/WellModal'
 
 export default {
@@ -60,11 +59,11 @@ export default {
     }
   },
   methods: {
-    ...mapActions([
-    'isLibraryBarcodeValid',
-    'getTubeForBarcode'
+    ...mapActions('traction/pacbio/tubes', [
+      'isLibraryBarcodeValid',
+      'getTubeForBarcode'
     ]),
-    ...mapMutations([
+    ...mapMutations('traction/pacbio/runs', [
       'addLibraryToWell'
     ]),
     alert (message, type) {
@@ -88,11 +87,9 @@ export default {
     },
     // TODO: show alert is not working on error
     async updateLibraryBarcode(barcode) {
-      // TODO: move to tube action
       let isValid = await this.isLibraryBarcodeValid(barcode)
 
       if (isValid) {
-        // TODO: move to tube action
         let libraryTube = await this.getTubeForBarcode(barcode)
 
         // for pacbio, only one library can be in each well, so get the first
@@ -105,7 +102,7 @@ export default {
     }
   },
   computed: {
-    ...mapGetters([
+    ...mapGetters('traction/pacbio/runs', [
       'well'
     ]),
     position () {
