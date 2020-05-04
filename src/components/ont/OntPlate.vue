@@ -25,7 +25,7 @@ export default {
         wells(plateId: $plateId) {
           id
           position
-          material {
+          materials {
             ...on Request {
               sample {
                 name
@@ -45,7 +45,7 @@ export default {
     getWellAt(position) {
       let well = this.wells.filter(well => well.position == position)[0]
 
-      return well ? well : { position: position, material: {} }
+      return well ? well : { position: position, materials: [] }
     }
   },
   computed: {
