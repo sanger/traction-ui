@@ -9,7 +9,7 @@
     <b-modal id="pacbioLibraryModal"
              size="lg"
              title="Create Library"
-             ref="pacbioLibraryModal"
+             ref="modal"
              :static="isStatic"
              scrollable
              >
@@ -95,12 +95,13 @@
 import Api from '@/mixins/Api'
 import Alert from '@/components/Alert'
 import Helper from '@/mixins/Helper'
+import ModalHelper from '@/mixins/ModalHelper'
 import * as consts from '@/consts/consts'
 import { mapActions, mapGetters } from 'vuex'
 
 export default {
   name: 'LibraryCreatePacbioModal',
-  mixins: [Api, Helper],
+  mixins: [Api, Helper, ModalHelper],
   data () {
     return {
       library: { tag: {}},
@@ -150,11 +151,7 @@ export default {
       } else {
         throw Error(consts.MESSAGE_ERROR_CREATE_LIBRARY_FAILED + response.errors.message)
       }
-    },
-    // TODO: Move to modal helper or check if other way?
-    hide() {
-      this.$refs['pacbioLibraryModal'].hide()
-    },
+    }
   },
   computed: {
     ...mapGetters('traction', [

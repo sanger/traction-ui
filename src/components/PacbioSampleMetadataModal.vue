@@ -67,10 +67,12 @@
 <script>
 
 import { createNamespacedHelpers } from 'vuex'
+import ModalHelper from '@/mixins/ModalHelper'
 const { mapActions} = createNamespacedHelpers('traction/pacbio/requests')
 
 export default {
   name: 'PacbioSampleMetadataModal',
+  mixins: [ModalHelper],
   data () {
     return {
       request: {
@@ -102,9 +104,6 @@ export default {
     ...mapActions([
       'updateRequest',
     ]),
-    hide() {
-      this.$refs['modal'].hide()
-    },
     show() {
       this.$refs['modal'].show()
       this.request = this.req

@@ -63,10 +63,12 @@
 <script>
 
 import { createNamespacedHelpers } from 'vuex'
+import ModalHelper from '@/mixins/ModalHelper'
 const { mapActions } = createNamespacedHelpers('traction/pacbio/libraries')
 
 export default {
   name: 'PacbioLibraryEditModal',
+  mixins: [ModalHelper],
   data() {
     return {
       library: {
@@ -95,9 +97,6 @@ export default {
     show() {
       this.$refs['modal'].show()
       this.library = this.lib
-    },
-    hide() {
-      this.$refs['modal'].hide()
     },
     alert (message, type) {
       this.$emit('alert', message, type)
