@@ -118,31 +118,21 @@ describe('Well.vue', () => {
     beforeEach(() => {
       newBarcode = 'TRAC-1'
       well.showAlert = jest.fn()
-      well.isLibraryBarcodeValid = jest.fn()
       well.getTubeForBarcode = jest.fn()
       well.addLibraryToWell = jest.fn()
     })
 
-    it('successful when barcode is valid', async () => {
+    it('adds the library to the well', async () => {
       let libraryTube = new Response(Data.TractionTubeWithContainerMaterials).deserialize.tubes[0]
       let libraries = libraryTube.materials
       let library = libraries[0]
 
-      well.isLibraryBarcodeValid.mockReturnValue(true)
       well.getTubeForBarcode.mockReturnValue(libraryTube)
 
       await well.updateLibraryBarcode(newBarcode)
       expect(well.addLibraryToWell).toBeCalledWith({ position: well.position, with: { id: library.id, barcode: library.barcode } })
 
       expect(well.showAlert).not.toBeCalled()
-    })
-
-    it('is unsuccessful when barcode is not valid', async () => {
-      well.isLibraryBarcodeValid.mockReturnValue(false)
-
-      await well.updateLibraryBarcode(newBarcode)
-      expect(well.addLibraryToWell).not.toBeCalled()
-      expect(well.showAlert).toBeCalledWith('Library is not valid', 'danger')
     })
   })
 

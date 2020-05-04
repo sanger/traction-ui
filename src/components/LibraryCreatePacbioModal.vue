@@ -144,7 +144,6 @@ export default {
       let response = await this.createLibraryInTraction(payload)
       
       if (response.successful) {
-        // TODO: change to one library
         let barcodes = response.deserialize.libraries.map(l => l.barcode)
         this.hide()
         this.$emit('alert', 'Created library with barcode ' + barcodes[0], 'success')

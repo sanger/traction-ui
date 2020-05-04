@@ -80,7 +80,6 @@ describe('Reception', () => {
 
       reception.getSampleExtractionTubesForBarcodes = jest.fn()
       reception.exportSampleExtractionTubesIntoTraction = jest.fn()
-      // reception.handleTractionTubes = jest.fn()
       reception.showAlert = jest.fn()
       wrapper.setData({ barcodes: 'TRAC-1\nTRAC-2' })
 
@@ -94,7 +93,7 @@ describe('Reception', () => {
       await reception.handleSampleExtractionTubes()
       expect(reception.getSampleExtractionTubesForBarcodes).toBeCalled()
       expect(reception.exportSampleExtractionTubesIntoTraction).toBeCalled()
-      expect(reception.showAlert).not.toBeCalled()
+      expect(reception.showAlert).toBeCalledWith('Samples have been created with barcodes: TRAC-1, TRAC-2', 'success')
     })
 
     it('is unsuccessful when getSampleExtractionTubesForBarcodes fails', async () => {
@@ -104,10 +103,8 @@ describe('Reception', () => {
       await reception.handleSampleExtractionTubes()
       expect(reception.getSampleExtractionTubesForBarcodes).toBeCalled()
       expect(reception.exportSampleExtractionTubesIntoTraction).toBeCalled()
-      // expect(reception.handleTractionTubes).not.toBeCalled()
-      expect(reception.showAlert).toBeCalled()
+      expect(reception.showAlert).toBeCalledWith('Failed to create samples: title Tube could not be found.', 'danger')
     })
-
   })
 
   describe('#showAlert', () => {

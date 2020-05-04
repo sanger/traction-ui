@@ -1,5 +1,3 @@
-// TODO: move all this to traction/tubes
-
 import handlePromise  from '@/api/PromiseHelper'
 
 const isLibraryBarcodeValid = async ({ dispatch }, barcode) => {
@@ -8,7 +6,7 @@ const isLibraryBarcodeValid = async ({ dispatch }, barcode) => {
   return validateLibraryTube(libraryTube)
 }
 
-// TODO: use libraries resource instead 
+// TODO: Use libraries resource instead 
 const getTubeForBarcode = async ({ rootGetters }, barcode) => {
   let request = rootGetters["traction/pacbio/tubes/tubeRequest"]
   let promise = request.get({ filter: { barcode: barcode } })
@@ -19,13 +17,12 @@ const getTubeForBarcode = async ({ rootGetters }, barcode) => {
   }
 }
 
+// If using library resouce, won't need to validate
+// As we know it will be a library
 const validateLibraryTube = (tube) => {
   if (!tube) { return false }
   if (!tube.materials) { return false }
   if (!tube.materials.every(m => m.library_kit_barcode)) { return false }
-  // a way to validation libraries, as type is now container_material
-  // update test l.145
-  // if (tube.material.type != 'libraries') { return false }
 
   return true
 }

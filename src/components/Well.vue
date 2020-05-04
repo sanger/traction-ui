@@ -60,7 +60,6 @@ export default {
   },
   methods: {
     ...mapActions('traction/pacbio/tubes', [
-      'isLibraryBarcodeValid',
       'getTubeForBarcode'
     ]),
     ...mapMutations('traction/pacbio/runs', [
@@ -85,20 +84,13 @@ export default {
       await this.updateLibraryBarcode(event.dataTransfer.getData('barcode'))
       this.hover = false
     },
-    // TODO: show alert is not working on error
     async updateLibraryBarcode(barcode) {
-      let isValid = await this.isLibraryBarcodeValid(barcode)
+      let libraryTube = await this.getTubeForBarcode(barcode)
 
-      if (isValid) {
-        let libraryTube = await this.getTubeForBarcode(barcode)
-
-        // for pacbio, only one library can be in each well, so get the first
-        let library = libraryTube.materials[0]
-        let payload = { position: this.position, with: { id: library.id, barcode: library.barcode }}
-        this.addLibraryToWell(payload)
-      } else {
-        this.showAlert('Library is not valid', 'danger')
-      }
+      // Assuming Pacbio Libraries only have one material
+      let library = libraryTube.materials[0]
+      let payload = { position: this.position, with: { id: library.id, barcode: library.barcode }}
+      this.addLibraryToWell(payload)
     }
   },
   computed: {
