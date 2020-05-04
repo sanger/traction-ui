@@ -37,12 +37,14 @@ const createRun = async ({ getters }) => {
     return await PacbioRun.create(run, request)
 }
 
+// TODO: Move to tubes action
 const isLibraryBarcodeValid = async ({ dispatch }, barcode) => {
     if (!barcode) { return false }
     let libraryTube = await dispatch('getTubeForBarcode', barcode)
     return validateLibraryTube(libraryTube)
 }
 
+// TODO: Move to tubes action
 // TODO: Reuse action from tubes module?
 const getTubeForBarcode = async ({ rootGetters }, barcode) => {
     let request = rootGetters["traction/pacbio/tubes/tubeRequest"]
@@ -54,10 +56,15 @@ const getTubeForBarcode = async ({ rootGetters }, barcode) => {
     }
 }
 
+// TODO: Move to tubes action
 const validateLibraryTube = (tube) => {
     if (!tube) { return false }
-    if (!tube.material) { return false }
-    if (tube.material.type != 'libraries') { return false }
+    if (!tube.materials) { return false }
+    if (!tube.materials.every(m => m.library_kit_barcode)) { return false } 
+    // a way to validation libraries, as type is now container_material
+    // update test l.145
+    // if (tube.material.type != 'libraries') { return false }
+
     return true
 }
 

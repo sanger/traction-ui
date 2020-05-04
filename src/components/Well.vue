@@ -88,11 +88,15 @@ export default {
     },
     // TODO: show alert is not working on error
     async updateLibraryBarcode(barcode) {
+      // TODO: move to tube action
       let isValid = await this.isLibraryBarcodeValid(barcode)
 
       if (isValid) {
+        // TODO: move to tube action
         let libraryTube = await this.getTubeForBarcode(barcode)
-        let library = libraryTube.material
+
+        // for pacbio, only one library can be in each well, so get the first
+        let library = libraryTube.materials[0]
         let payload = { position: this.position, with: { id: library.id, barcode: library.barcode }}
         this.addLibraryToWell(payload)
       } else {

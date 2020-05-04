@@ -46,7 +46,7 @@
         },
         "tubes": {
           "name": "tubes",
-          "include": "material"
+          "include": "materials"
         },
         "runs": {
           "name": "runs",

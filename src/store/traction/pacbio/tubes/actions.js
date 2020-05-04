@@ -1,17 +1,6 @@
 import handlePromise  from '@/api/PromiseHelper'
 
-const getTractionTubesForBarcodes = async ({ commit, getters }, barcodes)  => {
-  let request = getters.tubeRequest
-  let barcodeString = barcodes.join(',')
-  let promise = request.get({filter: { barcode: barcodeString} })
-  let response = await handlePromise(promise)
-  if (response.successful && !response.empty) {
-    let tubes = response.deserialize.tubes
-    commit('setTubes', tubes)
-  }
-  return response
-}
-
+// TODO: check this still works??
 const exportSampleExtractionTubesIntoTraction = async ({ getters }, tubes)  => {
   let body = {
     data: {
@@ -54,6 +43,7 @@ const sampleExtractionTubeJson = (tubes) => {
   }))
 }
 
+// TODO: move to libraries subfolder, not tubes
 const createLibraryInTraction = async ({ rootGetters, getters }, payload) => {
 
   let library = payload.library
@@ -97,6 +87,7 @@ const createLibraryInTraction = async ({ rootGetters, getters }, payload) => {
   return response
 }
 
+// TODO: move to libraries subfolder, not tubes
 const deleteLibraries = async ({ getters }, libraryIds) => {
   let request = getters.libraryRequest
   let promises = request.destroy(libraryIds)
@@ -105,6 +96,7 @@ const deleteLibraries = async ({ getters }, libraryIds) => {
   return responses
 }
 
+// TODO: move to libraries subfolder, not tubes
 const setLibraries = async ({ commit, getters }) => {
   let request = getters.libraryRequest
   let promise = request.get()
@@ -129,6 +121,7 @@ const setLibraries = async ({ commit, getters }) => {
 
 }
 
+// TODO: move to libraries subfolder, not tubes
 const updateLibrary= async ({ commit, getters }, payload) => {
 
   let body = {
@@ -156,7 +149,6 @@ const updateLibrary= async ({ commit, getters }, payload) => {
 }
 
 const actions = {
-  getTractionTubesForBarcodes,
   exportSampleExtractionTubesIntoTraction,
   createLibraryInTraction,
   deleteLibraries,
@@ -166,7 +158,6 @@ const actions = {
 }
 
 export {
-  getTractionTubesForBarcodes,
   exportSampleExtractionTubesIntoTraction,
   sampleExtractionTubeJson,
   createLibraryInTraction,

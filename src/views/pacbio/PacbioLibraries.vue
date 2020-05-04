@@ -115,6 +115,7 @@ import Alert from '@/components/Alert'
 import PrinterModal from '@/components/PrinterModal'
 import * as consts from '@/consts/consts'
 import { createNamespacedHelpers } from 'vuex'
+// TODO: move to pacbio libaries
 const { mapActions, mapGetters } = createNamespacedHelpers('traction/pacbio/tubes')
 
 export default {

@@ -63,6 +63,7 @@
 <script>
 
 import { createNamespacedHelpers } from 'vuex'
+// TODO: move to pacbio libraries
 const { mapActions } = createNamespacedHelpers('traction/pacbio/tubes')
 
 export default {

@@ -11,15 +11,17 @@
           "barcode": "TRAC-1"
         },
         "relationships": {
-          "material": {
+          "materials": {
             "links": {
               "self": "http://localhost:3000/v1/tubes/1/relationships/material",
               "related": "http://localhost:3000/v1/tubes/1/material"
             },
-            "data": {
-              "type": "samples",
-              "id": "1"
-            }
+            "data": [
+              {
+                "type": "samples",
+                "id": "1"
+              }
+            ]
           }
         }
       }

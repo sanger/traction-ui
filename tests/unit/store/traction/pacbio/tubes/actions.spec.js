@@ -2,66 +2,6 @@ import { Data } from '../../../../testHelper'
 import Response from '@/api/Response'
 import * as Actions from '@/store/traction/pacbio/tubes/actions'
 
-describe('#getTractionTubesForBarcodes', () => {
-  let commit, get, getters, barcodeList, failedResponse, emptyResponse
-
-  beforeEach(() => {
-    commit = jest.fn()
-    get = jest.fn()
-    getters = { 'tubeRequest': { 'get': get } }
-    barcodeList = ["TRAC-1"]
-
-    emptyResponse = { data: { data: [] }, status: 200, statusText: 'Success'}
-    failedResponse = { data: { data: [] }, status: 500, statusText: 'Internal Server Error' }
-  })
-
-  it('successfully for samples', async () => {
-    get.mockReturnValue(Data.TractionPacbioTubesWithRequest)
-
-    let expectedResponse = new Response(Data.TractionPacbioTubesWithRequest)
-    let expectedTubes = expectedResponse.deserialize.tubes
-
-    let response = await Actions.getTractionTubesForBarcodes({ commit, getters }, barcodeList)
-
-    expect(commit).toHaveBeenCalledWith("setTubes", expectedTubes)
-    expect(response).toEqual(expectedResponse)
-  })
-
-  it('successfully for libraries', async () => {
-    get.mockReturnValue(Data.TubeWithLibrary)
-
-    let expectedResponse = new Response(Data.TubeWithLibrary)
-    let expectedTubes = expectedResponse.deserialize.tubes
-
-    let response = await Actions.getTractionTubesForBarcodes({ commit, getters }, barcodeList)
-
-    expect(commit).toHaveBeenCalledWith("setTubes", expectedTubes)
-    expect(response).toEqual(expectedResponse)
-  })
-
-  it('unsuccessfully', async () => {
-    get.mockReturnValue(failedResponse)
-
-    let expectedResponse = new Response(failedResponse)
-
-    let response = await Actions.getTractionTubesForBarcodes({ commit, getters }, barcodeList)
-
-    expect(commit).not.toHaveBeenCalled()
-    expect(response).toEqual(expectedResponse)
-  })
-
-  it('when no tubes exist', async () => {
-    get.mockReturnValue(emptyResponse)
-
-    let expectedResponse = new Response(emptyResponse)
-
-    let response = await Actions.getTractionTubesForBarcodes({ commit, getters }, barcodeList)
-
-    expect(commit).not.toHaveBeenCalled()
-    expect(response).toEqual(expectedResponse)
-  })
-})
-
 describe('#exportSampleExtractionTubesIntoTraction', () => {
   let dispatch, create, getters, tubes
 

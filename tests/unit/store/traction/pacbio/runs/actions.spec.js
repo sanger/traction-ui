@@ -92,7 +92,7 @@ describe('#isLibraryBarcodeValid', () => {
   })
 
   it('will return true if the barcode belongs to a library', async () => {
-    let libraryTube = new Response(Data.TubeWithLibrary).deserialize.tubes[0]
+    let libraryTube = new Response(Data.TractionTubeWithContainerMaterials).deserialize.tubes[0]
     dispatch.mockReturnValue(libraryTube)
     let result = await Actions.isLibraryBarcodeValid({ dispatch }, 'TRAC-1')
     expect(result).toEqual(true)
@@ -111,9 +111,9 @@ describe('#getTubeForBarcode', () => {
   })
 
   it('successfully', async () => {
-    get.mockReturnValue(Data.TubeWithLibrary)
+    get.mockReturnValue(Data.TractionTubeWithContainerMaterials)
 
-    let expectedResponse = new Response(Data.TubeWithLibrary)
+    let expectedResponse = new Response(Data.TractionTubeWithContainerMaterials)
     let response = await Actions.getTubeForBarcode({ rootGetters }, barcode)
 
     expect(response).toEqual(expectedResponse.deserialize.tubes[0])
@@ -137,11 +137,12 @@ describe('#validateLibraryTube', () => {
   })
 
   it('returns false if tube doesnt have material with libraries', () => {
-    expect(Actions.validateLibraryTube( { 'material': { 'notype': '' } } )).toBeFalsy()
+    expect(Actions.validateLibraryTube( { 'materials': [{ 'notype': '' }] } )).toBeFalsy()
   })
 
   it('returns true valid', () => {
-    expect(Actions.validateLibraryTube({ 'material': { 'type': 'libraries'} })).toBeTruthy()
+    // check the validation of a library
+    expect(Actions.validateLibraryTube({ 'materials': [{ 'library_kit_barcode': 'present'}] })).toBeTruthy()
   })
 })
 

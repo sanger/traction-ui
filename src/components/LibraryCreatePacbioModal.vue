@@ -125,8 +125,8 @@ export default {
       }
     },
     ...mapActions('traction/pacbio/tubes', [
+      // TODO: move this to in pacbio/libraries
       'createLibraryInTraction',
-      'getTractionTubesForBarcodes',
     ]),
     ...mapActions('traction', [
       'setTags',
@@ -134,7 +134,8 @@ export default {
     async handleLibraryCreate () {
       try {
         await this.createLibrary()
-        await this.handleTractionTubes()
+        // TODO: redirect to libraries. this.redirectToLibraries()
+        // await this.handleTractionTubes()
       } catch (err) {
         this.showAlert(err, 'danger')
       }
@@ -150,32 +151,12 @@ export default {
         throw Error(consts.MESSAGE_ERROR_CREATE_LIBRARY_FAILED + response.errors.message)
       }
     },
-    async handleTractionTubes () {
-      if (this.barcodes === undefined || !this.barcodes.length) {
-        throw Error(consts.MESSAGE_WARNING_NO_BARCODES)
-      }
-
-      let response = await this.getTractionTubesForBarcodes(this.barcodes)
-      if (response.successful && !response.empty) {
-        let tubes = this.tractionTubes
-        // Surely all these tubes will be libraries since we are creating libraries?
-        if (tubes.every(t => t.material.type === "libraries")) {
-          this.redirectToLibraries(tubes)
-        }
-      } else {
-        throw Error(consts.MESSAGE_ERROR_GET_TRACTION_TUBES)
-      }
-    },
-    redirectToLibraries (tubes) {
-      this.$router.push({name: 'PacbioLibraries', query: { barcode: tubes.map(tube => tube.barcode) }})
-    },
+    // redirectToLibraries () {
+    //   this.$router.push({ name: 'PacbioLibraries' })
+    // },
   },
   computed: {
     ...mapGetters('traction/pacbio/tubes', [
-      'tractionTubesWithInfo',
-      'tractionTubes',
-      'requestsRequest',
-      'libraryRequest',
       'tractionTags'
     ]),
     ...mapGetters('traction', [
