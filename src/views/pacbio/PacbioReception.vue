@@ -65,8 +65,7 @@ export default {
         this.showAlert(error.message, 'danger')
       }
     },
-    // TODO: move to requests
-    ...mapActions('traction/pacbio/tubes', [
+    ...mapActions('traction/pacbio/requests', [
       'exportSampleExtractionTubesIntoTraction'
     ]),
     ...mapActions('sampleExtraction', [
