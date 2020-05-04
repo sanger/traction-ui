@@ -16,7 +16,7 @@ describe('Libraries.vue', () => {
       { id: 2, barcode: 'TRAC-8', material: {id: 6, type: 'libraries', state: 'pending', sample_names: 'sample_d,sample_e', volume: 1.0, concentration: 1.0, library_kit_barcode: 'LK12345', fragment_size: 100, created_at: '03/12/2019 11:49' }}
     ]
 
-    store.commit('traction/pacbio/tubes/setLibraries', mockLibraries)
+    store.commit('traction/pacbio/libraries/setLibraries', mockLibraries)
 
     const router = new VueRouter({
       routes: [{

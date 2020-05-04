@@ -1,6 +1,6 @@
 import Response from '@/api/Response'
 import { Data } from '../../../../testHelper'
-import getters from '@/store/traction/pacbio/tubes/getters'
+import getters from '@/store/traction/pacbio/libraries/getters'
 
 let libraries
 

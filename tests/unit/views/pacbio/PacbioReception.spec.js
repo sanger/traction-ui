@@ -80,7 +80,7 @@ describe('Reception', () => {
 
       reception.getSampleExtractionTubesForBarcodes = jest.fn()
       reception.exportSampleExtractionTubesIntoTraction = jest.fn()
-      reception.handleTractionTubes = jest.fn()
+      // reception.handleTractionTubes = jest.fn()
       reception.showAlert = jest.fn()
       wrapper.setData({ barcodes: 'TRAC-1\nTRAC-2' })
 
@@ -104,7 +104,7 @@ describe('Reception', () => {
       await reception.handleSampleExtractionTubes()
       expect(reception.getSampleExtractionTubesForBarcodes).toBeCalled()
       expect(reception.exportSampleExtractionTubesIntoTraction).toBeCalled()
-      expect(reception.handleTractionTubes).not.toBeCalled()
+      // expect(reception.handleTractionTubes).not.toBeCalled()
       expect(reception.showAlert).toBeCalled()
     })
 

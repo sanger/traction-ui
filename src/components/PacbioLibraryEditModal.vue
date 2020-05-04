@@ -64,7 +64,7 @@
 
 import { createNamespacedHelpers } from 'vuex'
 // TODO: move to pacbio libraries
-const { mapActions } = createNamespacedHelpers('traction/pacbio/tubes')
+const { mapActions } = createNamespacedHelpers('traction/pacbio/libraries')
 
 export default {
   name: 'PacbioLibraryEditModal',

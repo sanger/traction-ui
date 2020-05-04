@@ -116,7 +116,7 @@ import PrinterModal from '@/components/PrinterModal'
 import * as consts from '@/consts/consts'
 import { createNamespacedHelpers } from 'vuex'
 // TODO: move to pacbio libaries
-const { mapActions, mapGetters } = createNamespacedHelpers('traction/pacbio/tubes')
+const { mapActions, mapGetters } = createNamespacedHelpers('traction/pacbio/libraries')
 
 export default {
   name: 'Libraries',
@@ -175,7 +175,7 @@ export default {
     // Provider function used by the bootstrap-vue table component
     async provider() {
       try{
-        await this.setLibraries()
+         await this.setLibraries()
       } catch (error) {
         this.showAlert("Failed to get libraries: " + error.message, 'danger')
       }

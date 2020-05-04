@@ -124,8 +124,7 @@ export default {
         this.showAlert("Failed to get tags: " + error.message, 'danger')
       }
     },
-    ...mapActions('traction/pacbio/tubes', [
-      // TODO: move this to in pacbio/libraries
+    ...mapActions('traction/pacbio/libraries', [
       'createLibraryInTraction',
     ]),
     ...mapActions('traction', [
@@ -156,6 +155,7 @@ export default {
     // },
   },
   computed: {
+    // check why tags are from tubes
     ...mapGetters('traction/pacbio/tubes', [
       'tractionTags'
     ]),

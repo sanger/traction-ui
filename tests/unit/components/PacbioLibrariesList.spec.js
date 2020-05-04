@@ -11,7 +11,7 @@ describe('PacbioLibrariesList', () => {
 
         libraries = storeLibraries
 
-        store.commit('traction/pacbio/tubes/setLibraries', libraries)
+        store.commit('traction/pacbio/libraries/setLibraries', libraries)
 
         wrapper = mount(PacbioLibrariesList, { 
             localVue, 
