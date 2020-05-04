@@ -1,4 +1,6 @@
-import sequencescapeToTractionPlates from '@/api/PlateTransformer'
+import { getPlates, transformPlates } from '@/api/SequencescapePlates'
+import { Data } from '../testHelper'
+import Response from '@/api/Response'
 
 const Plates = [
   { id: '23811789',
@@ -79,15 +81,55 @@ const Plates = [
   }
 ]
 
+describe('SequencescapePlates', () => {
 
-describe('PlateTransformer', () => {
+  describe('#getPlates', () => {
+    let barcodes, failedResponse, emptyResponse, request, expectedResponse, plates
 
-  describe('sequencescape to traction', () => {
+    beforeEach(() => {
+        request = { 'get': jest.fn() }
+        barcodes = "DN1234567"
+
+        emptyResponse = { data: { data: [] }, status: 200, statusText: 'Success' }
+        failedResponse = { data: { data: [] }, status: 500, statusText: 'Internal Server Error' }
+    })
+
+    it('successfully', async () => {
+        request.get.mockReturnValue(Data.SequencescapePlates)
+
+        expectedResponse = new Response(Data.SequencescapePlates)
+        let expectedPlates = expectedResponse.deserialize.plates
+        let plates = await getPlates(request, barcodes)
+
+        expect(request.get).toHaveBeenCalled()
+        expect(plates).toEqual(expectedPlates)
+    })
+
+    it('unsuccessfully', async () => {
+        request.get.mockReturnValue(failedResponse)
+
+        plates = await getPlates(request, barcodes)
+
+        expect(request.get).toHaveBeenCalled()
+        expect(plates).not.toBeDefined()
+    })
+
+    it('when no plates exist', async () => {
+        request.get.mockReturnValue(emptyResponse)
+
+        plates = await getPlates(request, barcodes)
+
+        expect(request.get).toHaveBeenCalled()
+        expect(plates).not.toBeDefined()
+    })
+})
+
+  describe('#transformPlates', () => {
 
     let transformedPlates, transformedPlate
 
     beforeEach(() => {
-      transformedPlates = sequencescapeToTractionPlates(Plates)
+      transformedPlates = transformPlates(Plates)
       transformedPlate = transformedPlates[0]
     })
 

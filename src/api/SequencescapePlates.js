@@ -1,3 +1,15 @@
+import handlePromise from '@/api/PromiseHelper'
+
+const getPlates = async (request, barcodes) => {
+  let plates
+  let promise = request.get({filter: { barcode: barcodes} })
+  let response = await handlePromise(promise)
+
+  if (response.successful && !response.empty) {
+    plates = response.deserialize.plates
+  }
+  return plates
+}
 
 const transformPlates = (plates) => {
   return plates.map(plate => {
@@ -20,4 +32,9 @@ const transformAliquots = (aliquots) => {
 
 export default function sequencescapeToTraction (plate) {
   return transformPlates(plate)
+}
+
+export {
+  transformPlates,
+  getPlates
 }

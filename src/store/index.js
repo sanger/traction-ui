@@ -5,7 +5,6 @@ import build from '@/api/ApiBuilder'
 import PrinterList from '@/config/PrinterList'
 import traction from '@/store/traction'
 import sampleExtraction from '@/store/sampleExtraction'
-import sequencescape from '@/store/sequencescape'
 
 Vue.use(Vuex)
 
@@ -22,7 +21,6 @@ export default new Vuex.Store({
   },
   modules: {
     traction,
-    sampleExtraction,
-    sequencescape
+    sampleExtraction
   }
 })
