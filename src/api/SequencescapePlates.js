@@ -30,10 +30,6 @@ const transformAliquots = (aliquots) => {
   })
 }
 
-export default function sequencescapeToTraction (plate) {
-  return transformPlates(plate)
-}
-
 export {
   transformPlates,
   getPlates
