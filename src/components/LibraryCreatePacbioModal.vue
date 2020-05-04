@@ -133,8 +133,6 @@ export default {
     async handleLibraryCreate () {
       try {
         await this.createLibrary()
-        // TODO: redirect to libraries. this.redirectToLibraries()
-        // await this.handleTractionTubes()
       } catch (err) {
         this.showAlert(err, 'danger')
       }
@@ -143,22 +141,22 @@ export default {
       this.library.samples = this.selectedSamples
       let payload = { library: this.library }
       let response = await this.createLibraryInTraction(payload)
-
-      if (response.successful || !response.empty ) {
-        this.barcodes = response.deserialize.libraries.map(l => l.barcode)
+      
+      if (response.successful) {
+        // TODO: change to one library
+        let barcodes = response.deserialize.libraries.map(l => l.barcode)
+        this.hide()
+        this.$emit('alert', 'Created library with barcode ' + barcodes[0], 'success')
       } else {
         throw Error(consts.MESSAGE_ERROR_CREATE_LIBRARY_FAILED + response.errors.message)
       }
     },
-    // redirectToLibraries () {
-    //   this.$router.push({ name: 'PacbioLibraries' })
-    // },
+    // TODO: Move to modal helper or check if other way?
+    hide() {
+      this.$refs['pacbioLibraryModal'].hide()
+    },
   },
   computed: {
-    // check why tags are from tubes
-    ...mapGetters('traction/pacbio/tubes', [
-      'tractionTags'
-    ]),
     ...mapGetters('traction', [
       'tractionTags'
     ])

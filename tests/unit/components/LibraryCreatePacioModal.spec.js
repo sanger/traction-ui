@@ -55,4 +55,6 @@ describe('LibraryCreatePacbioModal.vue', () => {
     it('must have tagOptions data', () => {
         expect(modal.tagOptions).toEqual([])
     })
+
+    // TODO: add test for create library
 })

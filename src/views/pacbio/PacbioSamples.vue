@@ -82,7 +82,8 @@
 
       <libraryCreatePacbioModal :selectedSamples="selected"
                                 :disabled="this.selected.length === 0"
-                                class="float-left">
+                                class="float-left"
+                                @alert="showAlert">
       </libraryCreatePacbioModal>
 
       <b-pagination class="float-right"

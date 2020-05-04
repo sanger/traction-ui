@@ -8,6 +8,7 @@ const isLibraryBarcodeValid = async ({ dispatch }, barcode) => {
   return validateLibraryTube(libraryTube)
 }
 
+// TODO: use libraries resource instead 
 const getTubeForBarcode = async ({ rootGetters }, barcode) => {
   let request = rootGetters["traction/pacbio/tubes/tubeRequest"]
   let promise = request.get({ filter: { barcode: barcode } })

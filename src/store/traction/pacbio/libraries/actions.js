@@ -1,7 +1,6 @@
 import handlePromise  from '@/api/PromiseHelper'
 
 const createLibraryInTraction = async ({ rootGetters, getters }, payload) => {
-  debugger
   let library = payload.library
   let tagId = rootGetters['traction/tractionTags'].find(l => l.group_id == library.tag.group_id).id
 
