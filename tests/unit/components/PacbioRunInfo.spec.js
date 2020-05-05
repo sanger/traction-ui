@@ -34,7 +34,7 @@ describe('PacbioRunInfo', () => {
             }
         })
 
-        wrapper = mount(PacbioRunInfo, { localVue, store })
+        wrapper = mount(PacbioRunInfo, { localVue, store, sync: false, attachToDocument: true })
         runInfo = wrapper.vm
     })
 
@@ -65,22 +65,22 @@ describe('PacbioRunInfo', () => {
             expect(input.attributes('readonly')).toBeTruthy()
         })
         it('has a Template Prep Kit Box Barcode input', () => {
-            expect(wrapper.find('.template_prep_kit_box_barcode')).toBeDefined()
+            expect(wrapper.find('#template_prep_kit_box_barcode')).toBeDefined()
         })
         it('has a Binding Kit Box Barcode input', () => {
-            expect(wrapper.find('.binding_kit_box_barcode')).toBeDefined()
+            expect(wrapper.find('#binding_kit_box_barcode')).toBeDefined()
         })
         it('has a Sequencing Kit Box Barcode input', () => {
-            expect(wrapper.find('.sequencing_kit_box_barcode')).toBeDefined()
+            expect(wrapper.find('#sequencing_kit_box_barcode')).toBeDefined()
         })
         it('has a DNA Control Complex Box Barcode input', () => {
-            expect(wrapper.find('.dna_control_complex_box_barcode')).toBeDefined()
+            expect(wrapper.find('#dna_control_complex_box_barcode')).toBeDefined()
         })
         it('has a System Name input', () => {
-            expect(wrapper.find('.system_name')).toBeDefined()
+            expect(wrapper.find('#system_name')).toBeDefined()
         })
         it('has a Comments input', () => {
-            expect(wrapper.find('.comments')).toBeDefined()
+            expect(wrapper.find('#comments')).toBeDefined()
         })
     })
 })
