@@ -59,7 +59,6 @@ export default {
         if (!exportSampleTubesResponse.successful || exportSampleTubesResponse.empty) {
           throw exportSampleTubesResponse.errors
         }
-
       } catch (error) {
         this.showAlert(error.message, 'danger')
       }

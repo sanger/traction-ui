@@ -1,9 +1,6 @@
 import Reception from '@/views/saphyr/SaphyrReception'
 import { mount, localVue, Vuex, Data } from '../../testHelper'
 import Response from '@/api/Response'
-import Samples from '@/views/saphyr/SaphyrSamples'
-import Libraries from '@/views/saphyr/SaphyrLibraries'
-import VueRouter from 'vue-router'
 import Alert from '@/components/Alert'
 
 describe('Reception', () => {
@@ -11,12 +8,6 @@ describe('Reception', () => {
   let wrapper, reception, barcodes, barcode, input, router
 
   beforeEach(() => {
-    router = new VueRouter({ routes:
-      [
-        { path: '/saphyr/samples', name: 'SaphyrSamples', component: Samples, props: true },
-        { path: '/saphyr/libraries', name: 'SaphyrLibraries', component: Libraries, props: true }
-      ]
-    })
 
     barcodes = 'TRAC-1\nTRAC-2\nTRAC-3\nTRAC-4\nTRAC-5'
     wrapper = mount(Reception, { localVue, router } )
