@@ -18,7 +18,6 @@ import TractionSaphyrTubesWithRequest from './tractionSaphyrTubesWithRequest'
 import TractionTubesWithSample from './tractionTubesWithSample'
 import TubeWithLibrary from './tubeWithLibrary'
 import TractionPacbioTubesWithRequest from './tractionPacbioTubesWithRequest'
-import PacbioTubeWithLibrary from './pacbioTubeWithLibrary'
 import TractionPacbioLibrary from './tractionPacbioLibrary'
 import TractionPacbioLibraries from './tractionPacbioLibraries'
 import TractionPacbioSamples from './tractionPacbioSamples'
@@ -54,7 +53,6 @@ export default {
   TractionTubesWithSample,
   TubeWithLibrary,
   TractionPacbioTubesWithRequest,
-  PacbioTubeWithLibrary,
   TractionPacbioLibraries,
   TractionPacbioLibrary,
   TractionPacbioSamples,

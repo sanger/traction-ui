@@ -39,7 +39,8 @@
           "deactivated_at": null,
           "sample_names": "Sample7",
           "barcode": "TRAC-2-7",
-          "created_at": "2020/04/28 13:12"
+          "created_at": "2020/04/28 13:12",
+          "material_type": "library"
         }
       }
     ]

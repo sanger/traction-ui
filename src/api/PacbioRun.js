@@ -54,8 +54,6 @@ const build = (object) => {
 const create = async (run, request) => {
     let runId
     let responses = []
-    
-    // could validate before create
 
     try {
         let runPayload = createRunPayload(run)

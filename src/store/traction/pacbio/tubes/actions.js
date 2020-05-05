@@ -22,7 +22,7 @@ const getTubeForBarcode = async ({ rootGetters }, barcode) => {
 const validateLibraryTube = (tube) => {
   if (!tube) { return false }
   if (!tube.materials) { return false }
-  if (!tube.materials.every(m => m.library_kit_barcode)) { return false }
+  if (!tube.materials.every(m => m.material_type === 'library')) { return false }
 
   return true
 }

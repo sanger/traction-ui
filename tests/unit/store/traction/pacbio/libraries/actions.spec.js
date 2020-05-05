@@ -17,8 +17,8 @@ describe('#createLibraryInTraction', () => {
   })
 
   it('successfully', async () => {
-    let expectedResponse = new Response(Data.PacbioTubeWithLibrary)
-    create.mockReturnValue(Data.PacbioTubeWithLibrary)
+    let expectedResponse = new Response(Data.TractionTubeWithContainerMaterials)
+    create.mockReturnValue(Data.TractionTubeWithContainerMaterials)
 
     let response = await Actions.createLibraryInTraction({ getters, rootGetters }, library)
     expect(response).toEqual(expectedResponse)

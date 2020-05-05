@@ -2,7 +2,7 @@ import { mount, localVue, Vuex } from '../testHelper'
 import WellModal from '@/components/WellModal'
 import * as Run from '@/api/PacbioRun'
 import Response from '@/api/Response'
-import libraryTube from '../../data/pacbioTubeWithLibrary'
+import { Data } from '../testHelper'
 import pacbioRunModule from '../../../src/store/traction/pacbio/runs'
 
 describe('PacbioRunInfo', () => {
@@ -139,9 +139,8 @@ describe('PacbioRunInfo', () => {
             })
 
             it('successful when barcode is valid', async () => {
-                let successfulResponse = new Response(libraryTube)
-                let tube = successfulResponse.deserialize.tubes[0]
-                let library = tube.material
+                let tube = new Response(Data.TractionTubeWithContainerMaterials).deserialize.tubes[0]
+                let library = tube.materials[0]
 
                 modal.isLibraryBarcodeValid.mockReturnValue(true)
                 modal.getTubeForBarcode.mockReturnValue(tube)
@@ -149,7 +148,7 @@ describe('PacbioRunInfo', () => {
                 await modal.updateLibraryBarcode(row, newBarcode)
 
                 expect(modal.addLibraryToWell).toBeCalledWith({ index: anIndex, position: props.position, with: { id: library.id, barcode: library.barcode } })
-                expect(modal.showAlert).not.toBeCalled()
+                expect(modal.showAlert).toBeCalledWith('Library is valid', 'success')
             })
 
             it('is unsuccessful when barcode is not valid', async () => {

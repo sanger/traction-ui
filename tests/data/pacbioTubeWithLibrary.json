@@ -11,7 +11,7 @@
           "barcode": "TRAC-19"
         },
         "relationships": {
-          "material": {
+          "materials": {
             "links": {
               "self": "http://localhost:3000/v1/pacbio/tubes/19/relationships/material",
               "related": "http://localhost:3000/v1/pacbio/tubes/19/material"

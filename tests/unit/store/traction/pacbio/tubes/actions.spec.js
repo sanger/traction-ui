@@ -72,7 +72,7 @@ describe('#validateLibraryTube', () => {
 
   it('returns true valid', () => {
     // check the validation of a library
-    expect(Actions.validateLibraryTube({ 'materials': [{ 'library_kit_barcode': 'present' }] })).toBeTruthy()
+    expect(Actions.validateLibraryTube({ 'materials': [{ 'material_type': 'library' }] })).toBeTruthy()
   })
 })
 
