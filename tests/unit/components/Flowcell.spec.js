@@ -76,6 +76,7 @@ describe('Flowcell', () => {
       flowcell.setLibraryBarcode = jest.fn()
     })
 
+    //TODO: this test is not testing the implementation.
     it('successful when barcode is valid', async () => {
       let libraryTube = Data.TubeWithLibrary
       let successfulResponse = new Response(libraryTube)
