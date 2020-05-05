@@ -78,8 +78,8 @@ describe('actions', () => {
     })
 
     it('successfully', async () => {
-      let expectedResponse = new Response(Data.TractionPacbioTubesWithRequest)
-      create.mockReturnValue(Data.TractionPacbioTubesWithRequest)
+      let expectedResponse = new Response(Data.CreatePacbioRequest)
+      create.mockReturnValue(Data.CreatePacbioRequest)
 
       let response = await Actions.exportSampleExtractionTubesIntoTraction({ getters }, tubes)
       expect(response).toEqual(expectedResponse)

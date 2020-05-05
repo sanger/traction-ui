@@ -1,12 +1,10 @@
-import Response from '@/api/Response'
-import { Data } from '../../../../testHelper'
 import mutations from '@/store/traction/pacbio/tubes/mutations'
 
 let tubes, state
 
 describe('mutations', () => {
   beforeEach(() => {
-    tubes = new Response(Data.TractionPacbioTubesWithRequest).deserialize
+    tubes = [{ id: 1 }, { id: 2 }]
   })
 
   it('"setTubes" sets "state.tractionTubes" to the given tubes', () => {
