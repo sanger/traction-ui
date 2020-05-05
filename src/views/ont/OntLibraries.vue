@@ -23,12 +23,12 @@ export default {
     return { 
       fields: [
         { key: 'id', label: 'ID' },
+        { key: 'poolSize', label: 'Pool'},
+        { key: 'wellRange', label: 'Wells'},
+        { key: 'name', label: 'Name'},
+        { key: 'tagSet', label: 'Tag Set'},
         { key: 'tubeBarcode', label: 'Tube Barcode' },
         { key: 'plateBarcode', label: 'Plate Barcode'},
-        { key: 'pool', label: 'Pool'},
-        { key: 'name', label: 'Name'},
-        { key: 'wells', label: 'Wells'},
-        { key: 'tagSet', label: 'Tag Set'},
       ]
     }
   },

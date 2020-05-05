@@ -13,7 +13,7 @@ describe('OntWell.vue', () => {
       cy: "75.818642", 
       rx: "10.906492", 
       ry: "11.032985",
-      well_info: { position: 'A1', material: { sample: { name: 'SampleName' } } }
+      well_info: { position: 'A1', materials: [{ sample: { name: 'SampleName1' } }, { sample: { name: 'SampleName2' } }] }
     }
 
     wrapper = mount(OntWell, {
@@ -63,13 +63,13 @@ describe('OntWell.vue', () => {
   })
 
   describe('#status', () => {
-    it('will be filled if the well has material', () => {
+    it('will be filled if the well has materials', () => {
       let ellipse = wrapper.find('ellipse')
       expect(ellipse.attributes('class')).toContain("filled")
     })
 
-    it('will be empty the well does not have material', () => {
-      props['well_info'] = { position: 'A1', material: {} }
+    it('will be empty the well does not have materials', () => {
+      props['well_info'] = { position: 'A1', materials: [] }
       
       wrapper = mount(OntWell, {
         propsData: props
@@ -83,18 +83,18 @@ describe('OntWell.vue', () => {
   describe('#tooltip', () => {
     it('will display the materials name', () => {
       let title = wrapper.find('title')
-      let expected = well.well_info.material.sample.name
+      let expected = well.well_info.materials.map(m => m.sample.name).join(', ')
       expect(title.text()).toEqual(expected)
     })
   })
 
   describe('#hasMaterial', () => {
-    it('will return true if the well has material', () => {
+    it('will return true if the well has materials', () => {
       expect(well.hasMaterial).toEqual(true)
     })
 
-    it('will return false if the well doesnt not have any material', () => {
-      props['well_info'] = { position: 'A1', material: [] }
+    it('will return false if the well doesnt not have any materials', () => {
+      props['well_info'] = { position: 'A1', materials: [] }
 
       wrapper = mount(OntWell, {
         propsData: props

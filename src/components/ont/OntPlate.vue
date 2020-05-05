@@ -1,6 +1,6 @@
 <template>
   <div>
-    <PoolSamplesModal class="float-right" v-bind:plate_id="plate_id"></PoolSamplesModal>
+    <PoolSamplesModal class="float-right" v-bind:plate_barcode="plate.barcode"></PoolSamplesModal>
     <Plate96SVG v-if="wells" v-bind:height="'30%'" v-bind:width="'30%'">
       <OntWell v-for="(well, position) in plateMap.wells" v-bind="well" v-bind:key="position" v-bind:well_info="getWellAt(position)">
       </OntWell>
@@ -18,12 +18,7 @@ import WELLS_ALL_FOR_PLATE_QUERY from '@/graphql/queries/WellsAllForPlate.query.
 
 export default {
   name: 'OntPlate',
-  props: {
-    plate_id: {
-      type: Number,
-      required: true,
-    },
-  },
+  props: ['plate'],
   components: {
     Plate96SVG,
     OntWell,
@@ -34,7 +29,7 @@ export default {
       query: WELLS_ALL_FOR_PLATE_QUERY,
       variables () {
         return {
-          plateId: this.plate_id,
+          plateId: parseInt(this.plate.id),
         }
       },
     }
@@ -42,7 +37,7 @@ export default {
   methods: {
     getWellAt(position) {
       let well = this.wells.filter(well => well.position == position)[0]
-      return well ? well : { position: position, material: {} }
+      return well ? well : { position: position, materials: [] }
     }
   },
   computed: {

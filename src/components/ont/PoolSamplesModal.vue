@@ -1,6 +1,6 @@
 <template>
   <div>
-    <b-button right size="sm" variant="outline-success" :id="'pool-btn-'+plate_id" @click="modalShow = !modalShow">
+    <b-button right size="sm" variant="outline-success" :id="'pool-btn-'+plate_barcode" @click="modalShow = !modalShow">
       Pool Samples
     </b-button>
 
@@ -8,13 +8,14 @@
       v-model="modalShow" 
       ok-title="Create" 
       @ok="handleOk" 
-      :ok-disabled="!this.selectedTagSet"
+      :ok-disabled="!this.selectedTagSet || !this.groupingDirection"
     > 
       <template v-slot:modal-title>
         {{ modalTitle }}
       </template> 
 
-      <b-form-select v-model="selectedTagSet" :options="options"></b-form-select>
+      <b-form-select v-model="selectedTagSet" :options="tagSetOptions"></b-form-select>
+      <b-form-select v-model="groupingDirection" :options="groupingDirectionOptions"></b-form-select>
     </b-modal>
   </div>
 
@@ -27,8 +28,8 @@ import POOL_SAMPLES from '@/graphql/queries/PoolSamples.mutation.gql'
 export default {
   name: 'PoolSamplesModal',
   props: {
-    plate_id: {
-      type: Number,
+    plate_barcode: {
+      type: String,
       required: true,
     },
   },
@@ -36,7 +37,10 @@ export default {
     return {
       modalShow: false,
       selectedTagSet: null,
-      options: [{ value: null, text: 'Please select a tag set' }, 24, 96]
+      groupingDirection: null,
+      // TODO: How/Do we need to get tag set options/ names?
+      tagSetOptions: [{ value: null, text: 'Please select a tag set' }, 'ONTTagSetTest2Wells', 'OntWell96Samples'],
+      groupingDirectionOptions: [{ value: null, text: 'Please select a grouping option' }, 'horizontal', 'vertical']
     }
   },
   methods: {
@@ -44,18 +48,24 @@ export default {
       this.$apollo.mutate({
         mutation: POOL_SAMPLES,
         variables: {
-          plate_id: this.plate_id,
-          tag_set: this.selectedTagSet,
+          plate_barcode: this.plate_barcode,
+          tag_set_name: this.selectedTagSet,
+          grouping_direction: this.groupingDirection,
         }
       }).then(data => {
-        this.$parent.$emit('alert', 'Success ' + data, 'success')
-      }).catch(data =>{
-        this.$parent.$emit('alert', 'Failure ' + data, 'danger')
+        // TODO: is there a better way to handle mutation errors?
+        let response = data.data.createOntLibraries
+        if (response.errors.length > 0) {
+          this.$parent.$emit('alert', 'Failure: ' + data.data.createOntLibraries.errors.join(', '), 'danger')
+        } else {
+          let libraryBarcodes = response.tubes.map(t => t.barcode).join(', ')
+          this.$parent.$emit('alert', 'Library(s) were created with barcodes: ' + libraryBarcodes, 'success')
+        }
       })
     },
-
   },
   computed: {
+    // TODO: Update once know more about tag set options
     modalTitle () {
       let poolingTitle = { null: '', 24: 'into 4 libraries', 96: 'into 1 library' }
       return 'Pool Samples ' + poolingTitle[this.selectedTagSet]

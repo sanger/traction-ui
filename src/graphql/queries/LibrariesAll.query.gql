@@ -1,11 +1,8 @@
 query {
-  libraries: libraries {
+  libraries: ontLibraries {
     id
-    tubeBarcode
-    plateBarcode
     pool
-    name
-    wells
-    tagSet
+    wellRange
+    poolSize
   }
 }

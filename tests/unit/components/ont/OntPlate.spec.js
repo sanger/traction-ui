@@ -13,7 +13,7 @@ describe('OntPlate.vue', () => {
       {
         id: 1,
         position: 'A1',
-        material: [
+        materials: [
           { name: 'SampleName1' },
           { name: 'SampleName12' }
         ]
@@ -21,7 +21,7 @@ describe('OntPlate.vue', () => {
       {
         id: 2,
         position: 'A7',
-        material: [{
+        materials: [{
           name: 'SampleName2'
         }]
       }
@@ -29,7 +29,7 @@ describe('OntPlate.vue', () => {
 
     wrapper = mount(OntPlate, {
       localVue,
-      propsData: { plate_id: 1 },
+      propsData: { plate: { id: 1, barcode: 'TRAC-1-1' }},
       stubs: {
         Plate96SVG: true,
         OntWell: true
@@ -48,8 +48,9 @@ describe('OntPlate.vue', () => {
     expect(wrapper.name()).toEqual('OntPlate')
   })
 
-  it('will be passed a plate id as a prop', () => {
-    expect(plate.plate_id).toBeDefined()
+  it('will be passed a plate as a prop, with an id and barcode', () => {
+    expect(plate.plate.id).toBeDefined()
+    expect(plate.plate.barcode).toBeDefined()
   })
 
   describe('methods', () => {
@@ -60,7 +61,7 @@ describe('OntPlate.vue', () => {
       })
 
       it('creates an empty well for the given position', () => {
-        let expected = { position: 'A2', material: {} }
+        let expected = { position: 'A2', materials: [] }
         expect(plate.getWellAt('A2')).toEqual(expected)
       })
     })

@@ -19,7 +19,7 @@
       </template>
 
       <template v-slot:row-details="row">
-        <OntPlate v-bind:plate_id="parseInt(row.item.id)" @alert="alert"></OntPlate>
+        <OntPlate v-bind:plate="row.item" @alert="alert"></OntPlate>
       </template>
     </b-table>
   </div>

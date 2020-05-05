@@ -1,12 +1,15 @@
-mutation poolSamples($plate_id: Int!, $tag_set: Int!) {
-  poolSamples(
+mutation poolSamples($plate_barcode: String!, $tag_set_name: String!, $grouping_direction: String! ) {
+  createOntLibraries(
     input: {
       arguments: {
-        plateId: $plate_id
-        tagSet: $tag_set
+        plateBarcode: $plate_barcode
+        tagSetName: $tag_set_name
+        wellPrimaryGroupingDirection: $grouping_direction
       }
     }
-  ) {
+  )
+  {
+    tubes { barcode materials { ... on Library { name pool wellRange poolSize } } }
     errors
   }
 }

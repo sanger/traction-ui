@@ -2,7 +2,7 @@ query wells($plateId: Int!) {
   wells(plateId: $plateId) {
     id
     position
-    material {
+    materials {
       ...on Request {
         sample {
           name

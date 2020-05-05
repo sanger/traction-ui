@@ -11,13 +11,13 @@ export default {
   props: ['row', 'column', 'cx', 'cy', 'rx', 'ry' ,'well_info'],
   computed: {
     hasMaterial () {
-      return !!this.well_info.material.sample
+      return !!this.well_info.materials.some(m => m.sample)
     },
     status () {
       return this.hasMaterial ? 'filled' : 'empty'
     },
     tooltip () {
-      return this.well_info.material.sample.name
+      return this.well_info.materials.map(m => m.sample.name).join(', ')
     },
   }
 }

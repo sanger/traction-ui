@@ -7,12 +7,14 @@ describe('PoolSamplesModal.vue', () => {
   beforeEach(() => {
     wrapper = mount(PoolSamplesModal, {
       localVue,
-      propsData: { plate_id: 1 },
+      propsData: { plate_barcode: 'TRAC-1-1' },
       data() {
         return {
           modalShow: false,
           selectedTagSet: null,
-          options: [{ value: null, text: 'Please select a tag set' }, 24, 96]
+          groupingDirection: null,
+          tagSetOptions: [{ value: null, text: 'Please select a tag set' }, 24, 96],
+          groupingDirectionOptions: [{ value: null, text: 'Please select a grouping option' }, 'horizontal', 'vertical']
         }
       }
     })
@@ -25,12 +27,12 @@ describe('PoolSamplesModal.vue', () => {
   })
 
   it('will be passed a plate id as a prop', () => {
-    expect(modal.plate_id).toBeDefined()
+    expect(modal.plate_barcode).toBeDefined()
   })
 
   describe('Pool Samples button', () => {
     it('is shows button', () => {
-      let button = wrapper.find('#pool-btn-1')
+      let button = wrapper.find('#pool-btn-TRAC-1-1')
       expect(button.text()).toEqual('Pool Samples')
     })
   })
