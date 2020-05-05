@@ -2,8 +2,6 @@ import { mount, localVue } from '../testHelper'
 import Well from '@/components/Well'
 import * as Run from '@/api/PacbioRun'
 import store from '@/store'
-import Response from '@/api/Response'
-import { Data } from '../testHelper'
 
 describe('Well.vue', () => {
 
@@ -25,7 +23,8 @@ describe('Well.vue', () => {
     store.commit('traction/pacbio/runs/setCurrentRun', run)
 
     wrapper = mount(Well, { 
-      localVue, store, 
+      localVue, 
+      store, 
       propsData: props,
       stubs: {
         WellModal: true
@@ -113,26 +112,18 @@ describe('Well.vue', () => {
 
   // TODO: same as well modal - refactor baby!
   describe('updateLibraryBarcode', () => {
-    let newBarcode
+    let newBarcode, library
 
     beforeEach(() => {
       newBarcode = 'TRAC-1'
-      well.showAlert = jest.fn()
-      well.getTubeForBarcode = jest.fn()
       well.addLibraryToWell = jest.fn()
+      library = { id: 1, barcode: newBarcode }
+      store.commit('traction/pacbio/libraries/setLibraries', [library])
     })
 
     it('adds the library to the well', async () => {
-      let libraryTube = new Response(Data.TractionTubeWithContainerMaterials).deserialize.tubes[0]
-      let libraries = libraryTube.materials
-      let library = libraries[0]
-
-      well.getTubeForBarcode.mockReturnValue(libraryTube)
-
       await well.updateLibraryBarcode(newBarcode)
       expect(well.addLibraryToWell).toBeCalledWith({ position: well.position, with: { id: library.id, barcode: library.barcode } })
-
-      expect(well.showAlert).not.toBeCalled()
     })
   })
 

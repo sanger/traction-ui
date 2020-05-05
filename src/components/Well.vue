@@ -85,17 +85,17 @@ export default {
       this.hover = false
     },
     async updateLibraryBarcode(barcode) {
-      let libraryTube = await this.getTubeForBarcode(barcode)
-
-      // Assuming Pacbio Libraries only have one material
-      let library = libraryTube.materials[0]
-      let payload = { position: this.position, with: { id: library.id, barcode: library.barcode }}
+      let libraryId = this.libraryByBarcode(barcode).id
+      let payload = { position: this.position, with: { id: libraryId, barcode: barcode }}
       this.addLibraryToWell(payload)
     }
   },
   computed: {
     ...mapGetters('traction/pacbio/runs', [
       'well'
+    ]),
+    ...mapGetters('traction/pacbio/libraries', [
+      'libraryByBarcode',
     ]),
     position () {
       return `${this.row}${this.column}`

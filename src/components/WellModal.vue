@@ -118,9 +118,8 @@ export default {
       let isValid = await this.isLibraryBarcodeValid(barcode)
 
       if (isValid) {
-        let libraryTube = await this.getTubeForBarcode(barcode)
-        let library = libraryTube.materials[0]
-        let payload = { position: this.position, index: index, with: { id: library.id, barcode: library.barcode }}
+        let libraryId = this.libraryByBarcode(barcode).id
+        let payload = { position: this.position, index: index, with: { id: libraryId, barcode: barcode }}
         this.addLibraryToWell(payload)
         this.showAlert('Library is valid', 'success')
       } else {
@@ -145,7 +144,10 @@ export default {
   computed: {
     ...mapGetters('traction/pacbio/runs', [
       'currentRun',
-      'well'
+      'well',
+    ]),
+    ...mapGetters('traction/pacbio/libraries', [
+      'libraryByBarcode',
     ]),
     ...mapState('traction/pacbio/runs', {
       insertSize () {

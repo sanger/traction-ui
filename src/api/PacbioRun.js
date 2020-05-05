@@ -101,6 +101,7 @@ const update = async (run, request) => {
                 let wellResponse = await updateResource(wellPayload, request.wells)
                 responses.push(wellResponse)
             } else { // Well does not exist - Create well
+                // TODO: why is well being wrapped in an list??
                 let wellPayload = createWellsPayload([well], run.plate.id)
                 let wellResponse = await createResource(wellPayload, request.wells)
                 responses.push(wellResponse)
