@@ -10,15 +10,15 @@
         "barcode": "TRAC-1"
       },
       "relationships": {
-        "material": {
+        "materials": {
           "links": {
             "self": "http://localhost:3100/v1/saphyr/tubes/1/relationships/material",
             "related": "http://localhost:3100/v1/saphyr/tubes/1/material"
           },
-          "data": {
+          "data": [{
             "type": "requests",
             "id": "1"
-          }
+          }]
         }
       }
     }],

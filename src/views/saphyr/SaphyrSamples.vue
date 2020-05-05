@@ -55,7 +55,7 @@
                     :disabled="this.selected.length === 0">
       </printerModal>
 
-      <enzymeModal @selectEnzyme="handleLibraryCreate"
+      <enzymeModal @selectEnzyme="createLibraries"
                    :disabled="this.selected.length === 0"
                    class="float-left">
       </enzymeModal>
@@ -100,7 +100,6 @@ export default {
         { key: 'barcode', label: 'Barcode', sortable: true },
         { key: 'created_at', label: 'Created at', sortable: true }
       ],
-      items: [],
       filteredItems: [],
       selected: [],
       filter: null,
@@ -108,40 +107,18 @@ export default {
       sortDesc: true,
       perPage: 6,
       currentPage: 1,
-      preFilteredMaterials: [],
-      barcodes: []
     }
   },
   methods: {
-    async handleLibraryCreate (selectedEnzymeId) {
-      try {
-        await this.createLibraries(selectedEnzymeId)
-        await this.handleTractionTubes()
-      } catch (err) {
-        this.showAlert(err)
-      }
-    },
     async createLibraries (selectedEnzymeId) {
       let payload = {'samples': this.selected, 'enzymeID': selectedEnzymeId}
       let response = await this.createLibrariesInTraction(payload)
 
       if (response.successful || !response.empty ) {
-        this.barcodes = response.deserialize.libraries.map(l => l.barcode)
+        let barcodes = response.deserialize.libraries.map(l => l.barcode)
+        this.showAlert('Libraries successfully created with barcodes: ' + barcodes, 'success')
       } else {
-        throw Error(consts.MESSAGE_ERROR_CREATE_LIBRARY_FAILED + response.errors.message)
-      }
-    },
-    async handleTractionTubes () {
-      if (this.barcodes === undefined || !this.barcodes.length) {
-        throw Error(consts.MESSAGE_WARNING_NO_BARCODES)
-      }
-
-      let response = await this.getTractionTubesForBarcodes(this.barcodes)
-      if (response.successful && !response.empty) {
-        this.showAlert('Libraries successfully created')
-        // }
-      } else {
-        throw Error(consts.MESSAGE_ERROR_GET_TRACTION_TUBES)
+        this.showAlert(consts.MESSAGE_ERROR_CREATE_LIBRARY_FAILED, 'danger')
       }
     },
     async provider() {
@@ -153,7 +130,6 @@ export default {
     },
     ...mapActions('traction/saphyr/tubes', [
       'createLibrariesInTraction',
-      'getTractionTubesForBarcodes'
     ]),
     ...mapActions('traction/saphyr/requests', [
       'setRequests'
@@ -163,12 +139,6 @@ export default {
     this.provider()
   },
   computed: {
-    ...mapGetters('traction/saphyr/tubes', [
-      'tractionTubesWithInfo',
-      'tractionTubes',
-      'requestsRequest',
-      'libraryRequest'
-    ]),
     ...mapGetters('traction/saphyr/requests', [
       'requests'
     ])

@@ -1,5 +1,7 @@
-import { mount, localVue, store } from '../testHelper'
+import { mount, localVue, store, Data } from '../testHelper'
 import LibraryCreatePacbioModal from '@/components/LibraryCreatePacbioModal'
+import Response from '@/api/Response'
+import * as consts from '@/consts/consts'
 
 describe('LibraryCreatePacbioModal.vue', () => {
 
@@ -9,9 +11,8 @@ describe('LibraryCreatePacbioModal.vue', () => {
         props = {
             disabled: true,
             isStatic: true,
-            selectedSamples: []
+            selectedSamples: [1]
         }
-
 
         wrapper = mount(LibraryCreatePacbioModal, {
             localVue,
@@ -56,5 +57,36 @@ describe('LibraryCreatePacbioModal.vue', () => {
         expect(modal.tagOptions).toEqual([])
     })
 
-    // TODO: add test for create library
+    describe('#createLibrary', () => {
+        let payload
+
+        beforeEach(() => {
+            modal.createLibraryInTraction = jest.fn()
+            modal.showAlert = jest.fn()
+            
+            payload = { 'library': { tag: {}, samples: [1] }}
+        })
+
+        it('is successful', async () => {
+            let expectedResponse = new Response(Data.Libraries)
+            modal.createLibraryInTraction.mockReturnValue(expectedResponse)
+
+            await modal.createLibrary()
+
+            expect(modal.createLibraryInTraction).toBeCalledWith(payload)
+            expect(wrapper.emitted().alert).toBeTruthy()
+        })
+
+        it('shows a error message on failure', async () => {
+            let failedResponse = { status: 422, statusText: 'Unprocessable Entity', data: { data: { errors: { it: ['did not work'] } } } }
+            let expectedResponse = new Response(failedResponse)
+
+            modal.createLibraryInTraction.mockReturnValue(expectedResponse)
+
+            await modal.createLibrary()
+
+            expect(modal.createLibraryInTraction).toBeCalledWith(payload)
+            expect(modal.showAlert).toBeCalledWith(consts.MESSAGE_ERROR_CREATE_LIBRARY_FAILED, 'danger')
+        })
+    })
 })
