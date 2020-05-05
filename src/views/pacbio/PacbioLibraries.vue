@@ -59,22 +59,16 @@
 
       <template v-slot:row-details="row">
         <b-card>
-        <b-table
-             small
-             bordered
-             show-empty
-             :items= row.item.requests
-             :fields="field_in_details"
-             :filter="filter">
-        </b-table>
-        <template>
-          <p class="text-center">
-            <b-button size="sm" @click="row.toggleDetails">Hide Details</b-button>
-          </p>
-        </template>
+          <b-table
+              small
+              bordered
+              show-empty
+              :items= row.item.requests
+              :fields="field_in_details"
+              :filter="filter">
+          </b-table>
         </b-card>
       </template>
-
 
     </b-table>
 

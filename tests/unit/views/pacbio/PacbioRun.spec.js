@@ -151,7 +151,7 @@ describe('Run.vue', () => {
 
             await pacbioRun.runAction()
             expect(pacbioRun.createRun).toBeCalled()
-            expect(pacbioRun.showAlert).toBeCalledWith(['this is an error'], 'danger')
+            expect(pacbioRun.showAlert).toBeCalledWith("Failed to create run in Traction: this is an error", 'danger')
             expect(pacbioRun.redirectToRuns).not.toBeCalled()
         })
     })
@@ -196,7 +196,7 @@ describe('Run.vue', () => {
 
             await pacbioRun.runAction()
             expect(pacbioRun.updateRun).toBeCalled()
-            expect(pacbioRun.showAlert).toBeCalledWith(['this is an error'], 'danger')
+            expect(pacbioRun.showAlert).toBeCalledWith("Failed to create run in Traction: this is an error", 'danger')
             expect(pacbioRun.redirectToRuns).not.toBeCalled()
         })
     })

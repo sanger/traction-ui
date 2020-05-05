@@ -122,7 +122,7 @@ export default {
         await this.setTags()
         this.tagOptions = this.tractionTags.map(tag => tag.group_id)
       } catch (error) {
-        this.showAlert("Failed to get tags: " + error.message, 'danger')
+        this.showAlert(consts.MESSAGE_ERROR_FIND_TAGS_FAILED + error.message, 'danger')
       }
     },
     ...mapActions('traction/pacbio/libraries', [

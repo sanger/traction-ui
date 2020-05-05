@@ -64,10 +64,6 @@
             <span :key="field.label+index" class="font-weight-bold">{{ field.label }}</span>: {{ row.item[field.item] }}
             <br :key="field.label">
           </template>
-
-          <p class="text-center">
-            <b-button size="sm" @click="row.toggleDetails">Hide Details</b-button>
-          </p>
         </b-card>
       </template>
     </b-table>
