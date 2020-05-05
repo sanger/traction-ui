@@ -138,11 +138,8 @@ export default {
 
       let response = await this.getTractionTubesForBarcodes(this.barcodes)
       if (response.successful && !response.empty) {
-        let tubes = this.tractionTubes
-        // Surely all these tubes will be libraries since we are creating libraries?
-        if (tubes.every(t => t.material.type === "libraries")) {
-          this.redirectToLibraries(tubes)
-        }
+        this.redirectToLibraries(this.tractionTubes)
+        // }
       } else {
         throw Error(consts.MESSAGE_ERROR_GET_TRACTION_TUBES)
       }
