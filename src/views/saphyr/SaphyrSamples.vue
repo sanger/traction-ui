@@ -138,14 +138,11 @@ export default {
 
       let response = await this.getTractionTubesForBarcodes(this.barcodes)
       if (response.successful && !response.empty) {
-        this.redirectToLibraries(this.tractionTubes)
+        this.showAlert('Libraries successfully created')
         // }
       } else {
         throw Error(consts.MESSAGE_ERROR_GET_TRACTION_TUBES)
       }
-    },
-    redirectToLibraries (tubes) {
-      this.$router.push({name: 'SaphyrLibraries', query: { barcode: tubes.map(tube => tube.barcode) }})
     },
     async provider() {
       try {

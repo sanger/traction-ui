@@ -59,6 +59,8 @@ export default {
         if (!exportSampleTubesResponse.successful || exportSampleTubesResponse.empty) {
           throw exportSampleTubesResponse.errors
         }
+        let tractionTubesBarcodeList = exportSampleTubesResponse.deserialize.requests.map(r => r.barcode).join(', ')
+        this.showAlert('Samples have been created with barcodes: ' + tractionTubesBarcodeList, 'success')
       } catch (error) {
         this.showAlert(error.message, 'danger')
       }

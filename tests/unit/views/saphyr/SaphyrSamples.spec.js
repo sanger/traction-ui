@@ -161,7 +161,6 @@ describe('Samples.vue', () => {
         store,
         router,
         stubs: {
-          Alert: Alert,
           PrinterModal: true,
           Modal: true,
           EnzymeModal: true
@@ -178,13 +177,14 @@ describe('Samples.vue', () => {
     })
 
     it('successfully for libraries', async () => {
+      samples.showAlert = jest.fn()
       wrapper.setData({ barcodes: ['TRAC-3'] })
 
       let expectedResponse = new Response(Data.TubeWithLibrary)
       samples.getTractionTubesForBarcodes.mockReturnValue(expectedResponse)
 
       await samples.handleTractionTubes()
-      expect(samples.redirectToLibraries).toBeCalled()
+      expect(samples.showAlert).toBeCalled()
     })
 
     it('unsuccessfully', async () => {

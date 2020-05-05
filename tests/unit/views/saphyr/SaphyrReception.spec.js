@@ -84,7 +84,7 @@ describe('Reception', () => {
       await reception.handleSampleExtractionTubes()
       expect(reception.getSampleExtractionTubesForBarcodes).toBeCalled()
       expect(reception.exportSampleExtractionTubesIntoTraction).toBeCalled()
-      expect(reception.showAlert).not.toBeCalled()
+      expect(reception.showAlert).toBeCalled()
     })
 
     it('is unsuccessful when getSampleExtractionTubesForBarcodes fails', async () => {
