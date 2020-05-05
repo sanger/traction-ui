@@ -5,7 +5,6 @@ import Samples from '@/views/saphyr/SaphyrSamples'
 import Libraries from '@/views/saphyr/SaphyrLibraries'
 import VueRouter from 'vue-router'
 import Alert from '@/components/Alert'
-import * as consts from '@/consts/consts'
 
 describe('Reception', () => {
 

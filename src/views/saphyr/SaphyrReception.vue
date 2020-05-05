@@ -27,7 +27,6 @@
 <script>
 import Alert from '@/components/Alert'
 import Helper from '@/mixins/Helper'
-import * as consts from '@/consts/consts'
 
 import { mapActions, mapState } from 'vuex'
 
