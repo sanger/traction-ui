@@ -29,7 +29,7 @@ export default {
 
       if (isValid) {
         let libraryTube = await this.getTubeForBarcode(barcode)
-        let library = libraryTube.material
+        let library = libraryTube.materials[0]
         let payload = { library: library, flowcellIndex: this.index}
 
         this.setLibraryBarcode(payload)

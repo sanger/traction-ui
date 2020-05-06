@@ -137,11 +137,11 @@ describe('#validateLibraryTube', () => {
   })
 
   it('returns false if tube doesnt have material with libraries', () => {
-    expect(Actions.validateLibraryTube( { 'material': { 'notype': '' } } )).toBeFalsy()
+    expect(Actions.validateLibraryTube( { 'materials': [{ 'notype': '' }] } )).toBeFalsy()
   })
 
   it('returns true valid', () => {
-    expect(Actions.validateLibraryTube({ 'material': { 'type': 'libraries'} })).toBeTruthy()
+    expect(Actions.validateLibraryTube({ 'materials': [{ 'material_type': 'library'}] })).toBeTruthy()
   })
 })
 
