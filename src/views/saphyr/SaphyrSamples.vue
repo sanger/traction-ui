@@ -74,7 +74,7 @@
 </template>
 
 <script>
-import EnzymeModal from '@/components/EnzymeModal'
+import EnzymeModal from '@/components/saphyr/SaphyrEnzymeModal'
 import PrinterModal from '@/components/PrinterModal'
 import Helper from '@/mixins/Helper'
 import TableHelper from '@/mixins/TableHelper'
@@ -83,7 +83,7 @@ import * as consts from '@/consts/consts'
 import { mapActions, mapGetters } from 'vuex'
 
 export default {
-  name: 'Samples',
+  name: 'SaphyrSamples',
   mixins: [Helper, TableHelper],
   components: {
     EnzymeModal,

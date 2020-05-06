@@ -1,7 +1,7 @@
-import { mount, localVue, store } from '../testHelper'
-import LibraryCreatePacbioModal from '@/components/LibraryCreatePacbioModal'
+import { mount, localVue, store } from '../../testHelper'
+import PacbioLibraryCreateModal from '@/components/pacbio/PacbioLibraryCreateModal'
 
-describe('LibraryCreatePacbioModal.vue', () => {
+describe('PacbioLibraryCreateModal.vue', () => {
 
     let wrapper, modal, props
 
@@ -13,7 +13,7 @@ describe('LibraryCreatePacbioModal.vue', () => {
         }
 
 
-        wrapper = mount(LibraryCreatePacbioModal, {
+        wrapper = mount(PacbioLibraryCreateModal, {
             localVue,
             store,
             propsData: props,
@@ -25,11 +25,11 @@ describe('LibraryCreatePacbioModal.vue', () => {
     })
 
     it('will have a name', () => {
-        expect(wrapper.name()).toEqual('LibraryCreatePacbioModal')
+        expect(wrapper.name()).toEqual('PacbioLibraryCreateModal')
     })
 
     it('will have an button component', () => {
-        expect(wrapper.contains('#createLibraryPacbioModal')).toBe(true)
+        expect(wrapper.contains('#pacbioLibraryCreateModal')).toBe(true)
     })
 
     it('will have an modal component', () => {

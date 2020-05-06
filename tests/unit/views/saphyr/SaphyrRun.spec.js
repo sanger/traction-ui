@@ -57,7 +57,7 @@ describe('Run.vue', () => {
   })
 
   it('will have a name', () => {
-    expect(wrapper.name()).toEqual('Run')
+    expect(wrapper.name()).toEqual('SaphyrRun')
   })
 
   describe('alert', () => {

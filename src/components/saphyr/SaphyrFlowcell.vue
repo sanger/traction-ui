@@ -14,7 +14,7 @@ import { createNamespacedHelpers } from 'vuex'
 const { mapGetters, mapState, mapActions , mapMutations} = createNamespacedHelpers('traction/saphyr/runs')
 
 export default {
-  name: 'Flowcell',
+  name: 'SaphyrFlowcell',
   props: {
     position: {
       type: [Number]

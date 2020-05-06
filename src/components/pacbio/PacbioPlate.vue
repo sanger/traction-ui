@@ -9,7 +9,7 @@
 
 import Plate96SVG from '@/components/svg/Plate96SVG'
 import PlateMap from '@/config/PlateMap'
-import Well from '@/components/Well'
+import Well from '@/components/pacbio/PacbioWell'
 
 export default {
   name: 'Plate',

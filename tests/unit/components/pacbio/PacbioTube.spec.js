@@ -1,5 +1,5 @@
-import { mount, localVue } from '../testHelper'
-import Tube from '@/components/Tube'
+import { mount, localVue } from '../../testHelper'
+import Tube from '@/components/pacbio/PacbioTube'
 
 describe('Tube.vue', () => {
 

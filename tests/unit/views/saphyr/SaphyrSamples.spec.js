@@ -1,5 +1,5 @@
 import Samples from '@/views/saphyr/SaphyrSamples'
-import EnzymeModal from '@/components/EnzymeModal'
+import EnzymeModal from '@/components/saphyr/SaphyrEnzymeModal'
 import PrinterModal from '@/components/PrinterModal'
 import { mount, localVue, Data } from '../../testHelper'
 import Libraries from '@/views/saphyr/SaphyrLibraries'

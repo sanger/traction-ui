@@ -28,9 +28,9 @@
 </template>
 
 <script>
-import PacbioRunInfo from '@/components/PacbioRunInfo'
-import PacbioLibrariesList from '@/components/PacbioLibrariesList'
-import Plate from '@/components/Plate'
+import PacbioRunInfo from '@/components/pacbio/PacbioRunInfo'
+import PacbioLibrariesList from '@/components/pacbio/PacbioLibrariesList'
+import Plate from '@/components/pacbio/PacbioPlate'
 import Alert from '@/components/Alert'
 import Helper from '@/mixins/Helper'
 import { createNamespacedHelpers } from 'vuex'

@@ -1,5 +1,5 @@
-import { mount, localVue, Vuex } from '../testHelper'
-import PacbioRunInfo from '@/components/PacbioRunInfo'
+import { mount, localVue, Vuex } from '../../testHelper'
+import PacbioRunInfo from '@/components/pacbio/PacbioRunInfo'
 import * as Run from '@/api/PacbioRun'
 
 describe('PacbioRunInfo', () => {

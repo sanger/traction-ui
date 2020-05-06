@@ -1,10 +1,10 @@
-import { mount, localVue, store } from '../testHelper'
-import EnzymeModal from '@/components/EnzymeModal'
+import { mount, localVue, store } from '../../testHelper'
+import EnzymeModal from '@/components/saphyr/SaphyrEnzymeModal'
 import flushPromises from 'flush-promises'
-import EnzymesJson from '../../data/enzymes'
+import EnzymesJson from '../../../data/enzymes'
 import Response from '@/api/Response'
 
-describe('EnzymeModal.vue', () => {
+describe('SaphyrEnzymeModal.vue', () => {
 
   let wrapper, enzymeModal
 
@@ -24,7 +24,7 @@ describe('EnzymeModal.vue', () => {
   })
 
   it('will have a name', () => {
-    expect(wrapper.name()).toEqual('EnzymeModal')
+    expect(wrapper.name()).toEqual('SaphyrEnzymeModal')
   })
 
   it('will have an button component', () => {

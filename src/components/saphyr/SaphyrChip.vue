@@ -9,12 +9,12 @@
 
 <script>
 
-import Flowcell from '@/components/Flowcell'
+import Flowcell from '@/components/saphyr/SaphyrFlowcell'
 import { createNamespacedHelpers } from 'vuex'
 const { mapGetters, mapState, mapMutations } = createNamespacedHelpers('traction/saphyr/runs')
 
 export default {
-  name: 'Chip',
+  name: 'SaphyrChip',
   methods: {
     async setBarcode(barcode) {
       let isValid = this.isChipBarcodeValid(barcode)

@@ -1,9 +1,9 @@
-import { mount, localVue } from '../testHelper'
-import Well from '@/components/Well'
+import { mount, localVue } from '../../testHelper'
+import Well from '@/components/pacbio/PacbioWell'
 import * as Run from '@/api/PacbioRun'
 import store from '@/store'
 import Response from '@/api/Response'
-import libraryTube from '../../data/pacbioTubeWithLibrary'
+import libraryTube from '../../../data/pacbioTubeWithLibrary'
 
 describe('Well.vue', () => {
 
@@ -126,7 +126,7 @@ describe('Well.vue', () => {
     it('successful when barcode is valid', async () => {
       let successfulResponse = new Response(libraryTube)
       let tube = successfulResponse.deserialize.tubes[0]
-      let library = tube.material
+      let library = tube.materials[0]
 
       well.isLibraryBarcodeValid.mockReturnValue(true)
       well.getTubeForBarcode.mockReturnValue(tube)

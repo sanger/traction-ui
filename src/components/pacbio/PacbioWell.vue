@@ -18,7 +18,7 @@
 
 import { createNamespacedHelpers } from 'vuex'
 const { mapActions, mapMutations, mapGetters } = createNamespacedHelpers('traction/pacbio/runs')
-import WellModal from '@/components/WellModal'
+import WellModal from '@/components/pacbio/PacbioWellModal'
 
 export default {
   name: 'Well',
@@ -92,7 +92,7 @@ export default {
 
       if (isValid) {
         let libraryTube = await this.getTubeForBarcode(barcode)
-        let library = libraryTube.materials
+        let library = libraryTube.materials[0]
         let payload = { position: this.position, with: { id: library.id, barcode: library.barcode }}
         this.addLibraryToWell(payload)
       } else {

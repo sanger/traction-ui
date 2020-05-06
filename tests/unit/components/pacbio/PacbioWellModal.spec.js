@@ -1,9 +1,9 @@
-import { mount, localVue, Vuex } from '../testHelper'
-import WellModal from '@/components/WellModal'
+import { mount, localVue, Vuex } from '../../testHelper'
+import WellModal from '@/components/pacbio/PacbioWellModal'
 import * as Run from '@/api/PacbioRun'
 import Response from '@/api/Response'
-import libraryTube from '../../data/pacbioTubeWithLibrary'
-import pacbioRunModule from '../../../src/store/traction/pacbio/runs'
+import libraryTube from '../../../data/pacbioTubeWithLibrary'
+import pacbioRunModule from '@/store/traction/pacbio/runs'
 
 describe('PacbioRunInfo', () => {
 
@@ -141,7 +141,7 @@ describe('PacbioRunInfo', () => {
             it('successful when barcode is valid', async () => {
                 let successfulResponse = new Response(libraryTube)
                 let tube = successfulResponse.deserialize.tubes[0]
-                let library = tube.material
+                let library = tube.materials[0]
 
                 modal.isLibraryBarcodeValid.mockReturnValue(true)
                 modal.getTubeForBarcode.mockReturnValue(tube)

@@ -86,7 +86,7 @@ import truncate from 'lodash-es/truncate'
 import { mapActions, mapGetters } from 'vuex'
 
 export default {
-  name: 'Runs',
+  name: 'SaphyrRuns',
   mixins: [Helper, TableHelper],
   props: {
   },

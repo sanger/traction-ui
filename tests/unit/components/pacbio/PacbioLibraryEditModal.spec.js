@@ -1,5 +1,5 @@
-import { mount, localVue, store, Data } from '../testHelper'
-import PacbioLibraryEditModal from '@/components/PacbioLibraryEditModal'
+import { mount, localVue, store, Data } from '../../testHelper'
+import PacbioLibraryEditModal from '@/components/pacbio/PacbioLibraryEditModal'
 import Response from '@/api/Response'
 
 describe('PacbioLibraryEditModal.vue', () => {
