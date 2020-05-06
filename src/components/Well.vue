@@ -92,7 +92,7 @@ export default {
 
       if (isValid) {
         let libraryTube = await this.getTubeForBarcode(barcode)
-        let library = libraryTube.material
+        let library = libraryTube.materials
         let payload = { position: this.position, with: { id: library.id, barcode: library.barcode }}
         this.addLibraryToWell(payload)
       } else {
