@@ -17,7 +17,7 @@
 <script>
 
 import { mapActions, mapMutations, mapGetters } from 'vuex'
-import WellModal from '@/components/WellModal'
+import WellModal from '@/components/pacbio/PacbioWellModal'
 
 export default {
   name: 'Well',

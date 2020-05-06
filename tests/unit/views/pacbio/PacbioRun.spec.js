@@ -3,9 +3,9 @@ import PacbioRuns from '@/views/pacbio/PacbioRuns'
 import { shallowMount, localVue, Vuex } from '../../testHelper'
 import VueRouter from 'vue-router'
 import Alert from '@/components/Alert'
-import PacbioRunInfo from '@/components/PacbioRunInfo'
-import PacbioLibrariesList from '@/components/PacbioLibrariesList'
-import Plate from '@/components/Plate'
+import PacbioRunInfo from '@/components/pacbio/PacbioRunInfo'
+import PacbioLibrariesList from '@/components/pacbio/PacbioLibrariesList'
+import Plate from '@/components/pacbio/PacbioPlate'
 
 describe('Run.vue', () => {
 

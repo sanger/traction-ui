@@ -1,5 +1,5 @@
-import { mount, localVue, Vuex, Data } from '../testHelper'
-import Flowcell from '@/components/Flowcell'
+import { mount, localVue, Vuex, Data } from '../../testHelper'
+import Flowcell from '@/components/saphyr/SaphyrFlowcell'
 import * as Run from '@/api/SaphyrRun'
 import Response from '@/api/Response'
 
@@ -42,7 +42,7 @@ describe('Flowcell', () => {
   })
 
   it('will have a name', () => {
-    expect(wrapper.name()).toEqual('Flowcell')
+    expect(wrapper.name()).toEqual('SaphyrFlowcell')
   })
 
   it('can have an index', () => {

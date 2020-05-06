@@ -1,5 +1,5 @@
-import { mount, localVue } from '../testHelper'
-import Well from '@/components/Well'
+import { mount, localVue } from '../../testHelper'
+import Well from '@/components/pacbio/PacbioWell'
 import * as Run from '@/api/PacbioRun'
 import store from '@/store'
 

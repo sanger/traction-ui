@@ -1,5 +1,5 @@
-import { mount, localVue, Vuex } from '../testHelper'
-import Plate from '@/components/Plate'
+import { mount, localVue, Vuex } from '../../testHelper'
+import Plate from '@/components/pacbio/PacbioPlate'
 import * as Run from '@/api/PacbioRun'
 import PlateMap from '@/config/PlateMap'
 

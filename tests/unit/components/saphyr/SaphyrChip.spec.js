@@ -1,5 +1,5 @@
-import { mount, localVue, Vuex } from '../testHelper'
-import Chip from '@/components/Chip'
+import { mount, localVue, Vuex } from '../../testHelper'
+import Chip from '@/components/saphyr/SaphyrChip'
 import * as Run from '@/api/SaphyrRun'
 
 describe('Chip', () => {
@@ -44,7 +44,7 @@ describe('Chip', () => {
   })
 
   it('will have a name', () => {
-    expect(wrapper.name()).toEqual('Chip')
+    expect(wrapper.name()).toEqual('SaphyrChip')
   })
 
   it('can have state', () => {

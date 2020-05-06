@@ -76,11 +76,11 @@
                     :disabled="this.selected.length === 0">
       </printerModal>
 
-      <libraryCreatePacbioModal :selectedSamples="selected"
+      <PacbioLibraryCreateModal :selectedSamples="selected"
                                 :disabled="this.selected.length === 0"
                                 class="float-left"
                                 @alert="showAlert">
-      </libraryCreatePacbioModal>
+      </PacbioLibraryCreateModal>
 
       <b-pagination class="float-right"
                     v-model="currentPage"
@@ -96,8 +96,8 @@
 </template>
 
 <script>
-import LibraryCreatePacbioModal from '@/components/LibraryCreatePacbioModal'
-import PacbioSampleMetadataModal from '@/components/PacbioSampleMetadataModal'
+import PacbioLibraryCreateModal from '@/components/pacbio/PacbioLibraryCreateModal'
+import PacbioSampleMetadataModal from '@/components/pacbio/PacbioSampleMetadataModal'
 import PrinterModal from '@/components/PrinterModal'
 import Helper from '@/mixins/Helper'
 import TableHelper from '@/mixins/TableHelper'
@@ -110,7 +110,7 @@ export default {
   name: 'Samples',
   mixins: [Helper, TableHelper],
   components: {
-    LibraryCreatePacbioModal,
+    PacbioLibraryCreateModal,
     PrinterModal,
     Alert,
     PacbioSampleMetadataModal

@@ -23,7 +23,7 @@ import handlePromise from '@/api/PromiseHelper'
 import Api from '@/mixins/Api'
 
 export default {
-  name: 'EnzymeModal',
+  name: 'SaphyrEnzymeModal',
   mixins: [Api],
   data () {
     return {

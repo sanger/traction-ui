@@ -103,7 +103,7 @@
 
 <script>
 import Helper from '@/mixins/Helper'
-import PacbioLibraryEditModal from '@/components/PacbioLibraryEditModal'
+import PacbioLibraryEditModal from '@/components/pacbio/PacbioLibraryEditModal'
 import TableHelper from '@/mixins/TableHelper'
 import Alert from '@/components/Alert'
 import PrinterModal from '@/components/PrinterModal'

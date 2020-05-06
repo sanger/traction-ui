@@ -1,5 +1,5 @@
 <template>
-  <Plate96SVG>
+  <Plate96SVG width="75%" height="75%">
     <well v-for="(well, key) in plateMap.wells" v-bind="well" v-bind:key="key">
     </well>
   </Plate96SVG>
@@ -9,7 +9,7 @@
 
 import Plate96SVG from '@/components/svg/Plate96SVG'
 import PlateMap from '@/config/PlateMap'
-import Well from '@/components/Well'
+import Well from '@/components/pacbio/PacbioWell'
 
 export default {
   name: 'Plate',

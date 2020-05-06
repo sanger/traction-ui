@@ -1,5 +1,5 @@
-import { mount, localVue, Data } from '../testHelper'
-import PacbioSampleMetadataModal from '@/components/PacbioSampleMetadataModal'
+import { mount, localVue, Data } from '../../testHelper'
+import PacbioSampleMetadataModal from '@/components/pacbio/PacbioSampleMetadataModal'
 import Response from '@/api/Response'
 import store from '@/store'
 
