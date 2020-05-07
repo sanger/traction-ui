@@ -66,6 +66,7 @@ export default {
       }
     },
     ...mapActions('traction/saphyr/tubes', [
+      // TODO: Move this saphyr/requests
       'exportSampleExtractionTubesIntoTraction'
     ]),
     ...mapActions('sampleExtraction', [

@@ -83,7 +83,7 @@
           Cancel
         </b-button>
 
-        <b-button variant="success" @click="handleLibraryCreate()">
+        <b-button variant="success" @click="createLibrary()">
           Create
         </b-button>
       </template>
@@ -131,13 +131,6 @@ export default {
     ...mapActions('traction', [
       'setTags',
     ]),
-    async handleLibraryCreate () {
-      try {
-        await this.createLibrary()
-      } catch (err) {
-        this.showAlert(err, 'danger')
-      }
-    },
     async createLibrary () {
       this.library.samples = this.selectedSamples
       let payload = { library: this.library }
@@ -148,7 +141,7 @@ export default {
         this.hide()
         this.$emit('alert', 'Created library with barcode ' + barcodes[0], 'success')
       } else {
-        throw Error(consts.MESSAGE_ERROR_CREATE_LIBRARY_FAILED + response.errors.message)
+        this.showAlert(consts.MESSAGE_ERROR_CREATE_LIBRARY_FAILED, 'danger')
       }
     }
   },

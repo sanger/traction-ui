@@ -41,7 +41,6 @@ const createRequestPayload = (sample) => {
   }
 }
 
-// TODO: check this still works?
 const exportSampleExtractionTubesIntoTraction = async ({ getters }, tubes) => {
   let body = {
     data: {

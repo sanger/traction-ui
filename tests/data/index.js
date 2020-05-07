@@ -16,7 +16,7 @@ import TractionSaphyrLibraries from './tractionSaphyrLibraries'
 import TractionSaphyrRequests from './tractionSaphyrRequests'
 import TractionSaphyrTubesWithRequest from './tractionSaphyrTubesWithRequest'
 import TractionTubesWithSample from './tractionTubesWithSample'
-import TubeWithLibrary from './tubeWithLibrary' //TODO: remove
+import TubeWithLibrary from './tubeWithLibrary'
 import CreatePacbioRequest from './createPacbioRequest'
 import TractionPacbioLibrary from './tractionPacbioLibrary'
 import TractionPacbioLibraries from './tractionPacbioLibraries'
