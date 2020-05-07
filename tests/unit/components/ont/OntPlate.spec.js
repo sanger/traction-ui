@@ -14,15 +14,17 @@ describe('OntPlate.vue', () => {
         id: 1,
         position: 'A1',
         materials: [
-          { name: 'SampleName1' },
-          { name: 'SampleName12' }
+          { sample: { name: 'SampleName1' } },
+          { sample: { name: 'SampleName2' } }
         ]
       },
       {
         id: 2,
         position: 'A7',
         materials: [{
-          name: 'SampleName2'
+          sample: {
+            name: 'SampleName2'
+          }
         }]
       }
     ]

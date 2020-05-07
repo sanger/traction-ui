@@ -1,8 +1,8 @@
 <template> 
   <div class="plate">
     <svg
-      :width=width
-      :height=height
+      :width="width"
+      :height="height"
       viewBox="0 0 350 255"
       preserveAspectRatio="xMidYMin"
       >

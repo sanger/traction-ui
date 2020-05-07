@@ -68,7 +68,7 @@ describe('OntWell.vue', () => {
       expect(ellipse.attributes('class')).toContain("filled")
     })
 
-    it('will be empty the well does not have materials', () => {
+    it('will be empty the well does not have material', () => {
       props['well_info'] = { position: 'A1', materials: [] }
       
       wrapper = mount(OntWell, {
@@ -81,9 +81,21 @@ describe('OntWell.vue', () => {
   })
 
   describe('#tooltip', () => {
-    it('will display the materials name', () => {
+    it('will display the materials sample name', () => {
       let title = wrapper.find('title')
       let expected = well.well_info.materials.map(m => m.sample.name).join(', ')
+      expect(title.text()).toEqual(expected)
+    })
+
+    it('will display the materials samples name', () => {
+      props['well_info'] = { position: 'A1', materials: [{ sample: { name: 'SampleName1' } }, { sample: { name: 'SampleName2' } }] }
+
+      wrapper = mount(OntWell, {
+        propsData: props
+      })
+
+      let title = wrapper.find('title')
+      let expected = 'SampleName1, SampleName2'
       expect(title.text()).toEqual(expected)
     })
   })

@@ -59,22 +59,16 @@
 
       <template v-slot:row-details="row">
         <b-card>
-        <b-table
-             small
-             bordered
-             show-empty
-             :items= row.item.requests
-             :fields="field_in_details"
-             :filter="filter">
-        </b-table>
-        <template>
-          <p class="text-center">
-            <b-button size="sm" @click="row.toggleDetails">Hide Details</b-button>
-          </p>
-        </template>
+          <b-table
+              small
+              bordered
+              show-empty
+              :items= row.item.requests
+              :fields="field_in_details"
+              :filter="filter">
+          </b-table>
         </b-card>
       </template>
-
 
     </b-table>
 
@@ -109,13 +103,13 @@
 
 <script>
 import Helper from '@/mixins/Helper'
-import PacbioLibraryEditModal from '@/components/PacbioLibraryEditModal'
+import PacbioLibraryEditModal from '@/components/pacbio/PacbioLibraryEditModal'
 import TableHelper from '@/mixins/TableHelper'
 import Alert from '@/components/Alert'
 import PrinterModal from '@/components/PrinterModal'
 import * as consts from '@/consts/consts'
 import { createNamespacedHelpers } from 'vuex'
-const { mapActions, mapGetters } = createNamespacedHelpers('traction/pacbio/tubes')
+const { mapActions, mapGetters } = createNamespacedHelpers('traction/pacbio/libraries')
 
 export default {
   name: 'Libraries',
@@ -174,7 +168,7 @@ export default {
     // Provider function used by the bootstrap-vue table component
     async provider() {
       try{
-        await this.setLibraries()
+         await this.setLibraries()
       } catch (error) {
         this.showAlert("Failed to get libraries: " + error.message, 'danger')
       }

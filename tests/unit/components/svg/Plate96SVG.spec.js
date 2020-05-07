@@ -3,23 +3,22 @@ import Plate96SVG from '@/components/svg/Plate96SVG'
 import PlateMap from '@/config/PlateMap'
 
 describe('Plate96SVG.vue', () => {
-  let wrapper
+  let wrapper, plate, props
 
   beforeEach(() => {
+    props = { width: '100%', height: '100%' }
     wrapper = mount(Plate96SVG, {
-      propsData: {
-        height: "100%",
-        width: "100%"
-      },
+      propsData: props
     })
+    plate = wrapper.vm
   })
 
   describe('props', () => {
-    it('has a height property', () => {
-      expect(wrapper.props().height).toBeDefined()
+    it('has a width property', () => {
+      expect(plate.width).toEqual(props.width)
     })
     it('has a height property', () => {
-      expect(wrapper.props().width).toBeDefined()
+      expect(plate.height).toEqual(props.height)
     })
   })
 

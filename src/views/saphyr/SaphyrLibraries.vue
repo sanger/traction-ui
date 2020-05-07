@@ -88,7 +88,7 @@ import { createNamespacedHelpers } from 'vuex'
 const { mapActions, mapGetters } = createNamespacedHelpers('traction/saphyr/tubes')
 
 export default {
-  name: 'Libraries',
+  name: 'SaphyrLibraries',
   mixins: [Helper, TableHelper],
   props: {
     pipeline: {

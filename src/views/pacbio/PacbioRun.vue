@@ -28,13 +28,14 @@
 </template>
 
 <script>
-import PacbioRunInfo from '@/components/PacbioRunInfo'
-import PacbioLibrariesList from '@/components/PacbioLibrariesList'
-import Plate from '@/components/Plate'
+import PacbioRunInfo from '@/components/pacbio/PacbioRunInfo'
+import PacbioLibrariesList from '@/components/pacbio/PacbioLibrariesList'
+import Plate from '@/components/pacbio/PacbioPlate'
 import Alert from '@/components/Alert'
 import Helper from '@/mixins/Helper'
 import { createNamespacedHelpers } from 'vuex'
 const { mapGetters, mapState, mapActions } = createNamespacedHelpers('traction/pacbio/runs')
+import * as consts from '@/consts/consts'
 
 export default {
   name: 'Run',
@@ -75,7 +76,7 @@ export default {
       if (responses.length == 0) {
         this.redirectToRuns()
       } else {
-          this.showAlert(responses, 'danger')
+        this.showAlert(consts.MESSAGE_ERROR_CREATE_RUN_FAILED + responses, 'danger')
       }
     },
     ...mapActions([
