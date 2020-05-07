@@ -9,7 +9,7 @@ describe('PacbioLibraryCreateModal.vue', () => {
         props = {
             disabled: true,
             isStatic: true,
-            selectedSamples: [1]
+            selectedSamples: []
         }
 
 
@@ -54,38 +54,5 @@ describe('PacbioLibraryCreateModal.vue', () => {
 
     it('must have tagOptions data', () => {
         expect(modal.tagOptions).toEqual([])
-    })
-
-    describe('#createLibrary', () => {
-        let payload
-
-        beforeEach(() => {
-            modal.createLibraryInTraction = jest.fn()
-            modal.showAlert = jest.fn()
-            
-            payload = { 'library': { tag: {}, samples: [1] }}
-        })
-
-        it('is successful', async () => {
-            let expectedResponse = new Response(Data.Libraries)
-            modal.createLibraryInTraction.mockReturnValue(expectedResponse)
-
-            await modal.createLibrary()
-
-            expect(modal.createLibraryInTraction).toBeCalledWith(payload)
-            expect(wrapper.emitted().alert).toBeTruthy()
-        })
-
-        it('shows a error message on failure', async () => {
-            let failedResponse = { status: 422, statusText: 'Unprocessable Entity', data: { data: { errors: { it: ['did not work'] } } } }
-            let expectedResponse = new Response(failedResponse)
-
-            modal.createLibraryInTraction.mockReturnValue(expectedResponse)
-
-            await modal.createLibrary()
-
-            expect(modal.createLibraryInTraction).toBeCalledWith(payload)
-            expect(modal.showAlert).toBeCalledWith(consts.MESSAGE_ERROR_CREATE_LIBRARY_FAILED, 'danger')
-        })
     })
 })
