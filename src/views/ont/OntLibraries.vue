@@ -22,13 +22,14 @@ export default {
   data () {
     return { 
       fields: [
-        { key: 'id', label: 'ID' },
-        { key: 'poolSize', label: 'Pool'},
-        { key: 'wellRange', label: 'Wells'},
-        { key: 'name', label: 'Name'},
-        { key: 'tagSet', label: 'Tag Set'},
-        { key: 'tubeBarcode', label: 'Tube Barcode' },
-        { key: 'plateBarcode', label: 'Plate Barcode'},
+        { key: 'id', label: 'ID' , sortable: true},
+        { key: 'name', label: 'Name', sortable: true},
+        { key: 'poolSize', label: 'Pool Size', sortable: true},
+        { key: 'tubeBarcode', label: 'Tube Barcode' , sortable: true},
+        // { key: 'wellRange', label: 'Wells', sortable: true},
+        { key: 'tagSetName', label: 'Tag Set', sortable: true},
+        { key: 'plateBarcode', label: 'Plate Barcode', sortable: true},
+        { key: 'pool', label: 'Pool #', sortable: true},
       ]
     }
   },

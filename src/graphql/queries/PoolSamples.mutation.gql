@@ -9,7 +9,9 @@ mutation poolSamples($plate_barcode: String!, $tag_set_name: String!, $grouping_
     }
   )
   {
-    tubes { barcode materials { ... on Library { name pool wellRange poolSize } } }
+    tubes {
+      barcode
+    }
     errors
   }
 }
