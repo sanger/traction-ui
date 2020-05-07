@@ -12,16 +12,18 @@ describe('OntPlate.vue', () => {
       {
         id: 1,
         position: 'A1',
-        material: [
-          { name: 'SampleName1' },
-          { name: 'SampleName12' }
+        materials: [
+          { sample: { name: 'SampleName1' } },
+          { sample: { name: 'SampleName2' } }
         ]
       },
       {
         id: 2,
         position: 'A7',
-        material: [{
-          name: 'SampleName2'
+        materials: [{
+          sample: {
+            name: 'SampleName2'
+          }
         }]
       }
     ]
@@ -59,7 +61,7 @@ describe('OntPlate.vue', () => {
       })
 
       it('creates an empty well for the given position', () => {
-        let expected = { position: 'A2', material: {} }
+        let expected = { position: 'A2', materials: [] }
         expect(plate.getWellAt('A2')).toEqual(expected)
       })
     })

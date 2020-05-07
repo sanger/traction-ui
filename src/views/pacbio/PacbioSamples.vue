@@ -64,10 +64,6 @@
             <span :key="field.label+index" class="font-weight-bold">{{ field.label }}</span>: {{ row.item[field.item] }}
             <br :key="field.label">
           </template>
-
-          <p class="text-center">
-            <b-button size="sm" @click="row.toggleDetails">Hide Details</b-button>
-          </p>
         </b-card>
       </template>
     </b-table>
@@ -80,10 +76,11 @@
                     :disabled="this.selected.length === 0">
       </printerModal>
 
-      <libraryCreatePacbioModal :selectedSamples="selected"
+      <PacbioLibraryCreateModal :selectedSamples="selected"
                                 :disabled="this.selected.length === 0"
-                                class="float-left">
-      </libraryCreatePacbioModal>
+                                class="float-left"
+                                @alert="showAlert">
+      </PacbioLibraryCreateModal>
 
       <b-pagination class="float-right"
                     v-model="currentPage"
@@ -99,8 +96,8 @@
 </template>
 
 <script>
-import LibraryCreatePacbioModal from '@/components/LibraryCreatePacbioModal'
-import PacbioSampleMetadataModal from '@/components/PacbioSampleMetadataModal'
+import PacbioLibraryCreateModal from '@/components/pacbio/PacbioLibraryCreateModal'
+import PacbioSampleMetadataModal from '@/components/pacbio/PacbioSampleMetadataModal'
 import PrinterModal from '@/components/PrinterModal'
 import Helper from '@/mixins/Helper'
 import TableHelper from '@/mixins/TableHelper'
@@ -113,7 +110,7 @@ export default {
   name: 'Samples',
   mixins: [Helper, TableHelper],
   components: {
-    LibraryCreatePacbioModal,
+    PacbioLibraryCreateModal,
     PrinterModal,
     Alert,
     PacbioSampleMetadataModal

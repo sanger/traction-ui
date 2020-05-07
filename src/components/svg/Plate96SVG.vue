@@ -1,8 +1,8 @@
 <template> 
   <div class="plate">
     <svg
-      width="50%"
-      height="50%"
+      :width="width"
+      :height="height"
       viewBox="0 0 350 255"
       preserveAspectRatio="xMidYMin"
       >
@@ -38,6 +38,16 @@ import PlateMap from '@/config/PlateMap'
 
 export default {
   name: 'Plate96SVG',
+  props: {
+    width: {
+      type: String,
+      default: '50%'
+    },
+    height: {
+      type: String,
+      default: '50%'
+    }
+  },
   computed: {
     plateMap () {
       return PlateMap

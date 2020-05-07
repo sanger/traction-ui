@@ -1,5 +1,5 @@
 <template>
-  <Plate96SVG v-if="wells">
+  <Plate96SVG v-if="wells" width="25%" height="25%">
     <OntWell v-for="(well, position) in plateMap.wells" v-bind="well" v-bind:key="position" v-bind:well_info="getWellAt(position)">
     </OntWell>
   </Plate96SVG>
@@ -25,7 +25,7 @@ export default {
         wells(plateId: $plateId) {
           id
           position
-          material {
+          materials {
             ...on Request {
               sample {
                 name
@@ -45,7 +45,7 @@ export default {
     getWellAt(position) {
       let well = this.wells.filter(well => well.position == position)[0]
 
-      return well ? well : { position: position, material: {} }
+      return well ? well : { position: position, materials: [] }
     }
   },
   computed: {
