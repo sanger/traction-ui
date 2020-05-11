@@ -1,7 +1,5 @@
 <template>
   <g :transform="getMatrix">
-    <text x="25" y="30" class="medium">{{ position }}</text>
-
     <rect width="61" height="227"/>
   </g>
 </template>
@@ -15,10 +13,6 @@ export default {
       type: Number,
       required: true
     },
-    position: {
-      type: Number,
-      required: true
-    }
   },
   computed: {
     // Determines the flowcells x/y coordinates

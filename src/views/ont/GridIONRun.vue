@@ -15,13 +15,7 @@ export default {
   name: 'GridIONRun',
   data () {
     return {
-      flowcells: [
-        { position: 1, xPos: 240 },
-        { position: 2, xPos: 320 },
-        { position: 3, xPos: 400 },
-        { position: 4, xPos: 480 },
-        { position: 5, xPos: 560 }
-      ]
+      flowcells: [ {xPos: 240}, {xPos: 320}, {xPos: 400}, {xPos: 480}, {xPos: 560}]
     }
   },
   components: {
