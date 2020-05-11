@@ -1,5 +1,9 @@
 <template>
   <div class="run">
+    <b-button class="float-right" variant="outline-success" id="create-run" @click="createRun()">
+      Create Run
+    </b-button>
+
     <ONTSVG>
       <OntFlowcell v-for="(flowcell, key) in flowcells" v-bind="flowcell" v-bind:key="key">
       </OntFlowcell>
@@ -12,7 +16,7 @@ import ONTSVG from '@/components/svg/ONTSVG'
 import OntFlowcell from '@/components/ont/OntFlowcell'
 
 export default {
-  name: 'ONTHeronRun',
+  name: 'OntHeronRun',
   data () {
     return {
       flowcells: [
@@ -27,6 +31,10 @@ export default {
   components: {
     ONTSVG,
     OntFlowcell
+  },
+  methods: {
+    createRun () {
+    }
   }
 }
 </script>
