@@ -132,6 +132,11 @@ export default {
       'setTags',
     ]),
     async createLibrary () {
+      if (!this.library.tag.group_id){
+        this.showAlert(consts.MESSAGE_ERROR_CREATE_LIBRARY_FAILED + 'Please select a tag', 'danger')
+        return
+      }
+
       this.library.samples = this.selectedSamples
       let payload = { library: this.library }
       let response = await this.createLibraryInTraction(payload)
@@ -141,7 +146,7 @@ export default {
         this.hide()
         this.$emit('alert', 'Created library with barcode ' + barcodes[0], 'success')
       } else {
-        this.showAlert(consts.MESSAGE_ERROR_CREATE_LIBRARY_FAILED, 'danger')
+        this.showAlert(consts.MESSAGE_ERROR_CREATE_LIBRARY_FAILED + response.errors.message, 'danger')
       }
     }
   },
