@@ -1,5 +1,13 @@
 <template>
   <div class="runs">
+
+    <b-button id="newRun"
+      class="float-right"
+      @click="redirectToRun()"
+      variant="success">
+      New Run
+    </b-button>
+
     <b-table 
       id="runs-table"
       hover 
@@ -30,6 +38,11 @@ export default {
       query: ONT_HERON_RUNS_ALL_QUERY
     }
   },
+  methods: {
+    redirectToRun() {
+      this.$router.push({ path: '/ont/run/new' })
+    },
+  }
 }
 </script>
 

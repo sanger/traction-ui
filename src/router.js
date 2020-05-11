@@ -63,8 +63,8 @@ export default new Router({
       component: ONT,
       children: [
         { path: 'plates', name: 'OntPlates', component: OntPlates },
-        { path: 'run', name: 'ONTHeronRun', component: ONTHeronRun },
         { path: 'runs', name: 'HeronRuns', component: OntHeronRuns },
+        { path: 'run/new', name: 'ONTHeronRun', component: ONTHeronRun },
       ]
     },
     {
