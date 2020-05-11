@@ -1,0 +1,8 @@
+query {
+  runs: ontRuns { 
+    id 
+    instrumentName 
+    state 
+    deactivatedAt
+  } 
+}

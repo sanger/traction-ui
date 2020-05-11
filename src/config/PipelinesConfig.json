@@ -27,7 +27,7 @@
     "description": "",
     "routes": [
       "plates",
-      "run"
+      "runs"
     ]
   }
 ]
