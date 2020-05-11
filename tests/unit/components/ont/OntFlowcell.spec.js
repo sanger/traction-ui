@@ -26,16 +26,6 @@ describe('OntFlowcell.vue', () => {
     it('must have a xPos', () => {
       expect(flowcell.xPos).toEqual(props.xPos)
     })
-
-    it('must have a position', () => {
-      expect(flowcell.position).toEqual(props.position)
-    })
-  })
-
-  it('will have text with the correct position', () => {
-    let ellipse = wrapper.find('text')
-    expect(ellipse.exists()).toBeTruthy()
-    expect(ellipse.text()).toEqual(flowcell.position.toString())
   })
 
   describe('#getMatrix', () => {
