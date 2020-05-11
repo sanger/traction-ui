@@ -3,6 +3,10 @@
     <text x="25" y="30" class="medium">{{ position }}</text>
 
     <rect width="61" height="227"/>
+
+    <foreignObject y="100" width="70" height="227">
+      <b-form-input v-model="libraryBarcode" placeholder="Barcode" id="library_barcode"></b-form-input>
+    </foreignObject>
   </g>
 </template>
 
@@ -18,6 +22,11 @@ export default {
     position: {
       type: Number,
       required: true
+    }
+  },
+  data() {
+    return {
+      libraryBarcode: ''
     }
   },
   computed: {

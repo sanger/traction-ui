@@ -44,4 +44,8 @@ describe('OntFlowcell.vue', () => {
       expect(flowcell.getMatrix).toEqual(expected)
     })
   })
+
+  it('has a Library Barcode input', () => {
+    expect(wrapper.find('#library_barcode')).toBeDefined()
+  })
 })
