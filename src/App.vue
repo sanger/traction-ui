@@ -5,8 +5,18 @@
       <h1 id="traction-header">Traction</h1>
     </router-link>
     <router-view/>
+    <infoFooter></infoFooter>
   </b-container>
 </template>
+
+<script>
+import infoFooter from '@/components/InfoFooter'
+export default {
+  components: {
+    infoFooter
+  }
+}
+</script>
 
 <style lang="scss">
 #app {
