@@ -1,10 +1,8 @@
-mutation poolSamples($plate_barcode: String!, $tag_set_name: String!, $grouping_direction: String! ) {
+mutation poolSamples($plate_barcode: String!) {
   createOntLibraries(
     input: {
       arguments: {
         plateBarcode: $plate_barcode
-        tagSetName: $tag_set_name
-        wellPrimaryGroupingDirection: $grouping_direction
       }
     }
   )
