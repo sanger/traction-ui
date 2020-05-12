@@ -5,7 +5,7 @@ import PlateMap from '@/config/PlateMap'
 import { localVue, mount } from '../../testHelper'
 
 describe('OntPlate.vue', () => {
-  let wrapper, plate, wellsData
+  let wrapper, plate, wellsData, mutate
 
   beforeEach(() => {
     wellsData = [
@@ -28,9 +28,11 @@ describe('OntPlate.vue', () => {
       }
     ]
 
+    mutate = jest.fn()
+
     wrapper = mount(OntPlate, {
       localVue,
-      propsData: { plate_id: 1 },
+      propsData: { plate: { id: 1, barcode: 'TRAC-1-1' }},
       stubs: {
         Plate96SVG: true,
         OntWell: true
@@ -38,6 +40,11 @@ describe('OntPlate.vue', () => {
       data() {
         return {
           wells: wellsData
+        }
+      },
+      mocks: {
+        $apollo: {
+          mutate: mutate
         }
       }
     })
@@ -49,8 +56,9 @@ describe('OntPlate.vue', () => {
     expect(wrapper.name()).toEqual('OntPlate')
   })
 
-  it('will be passed a plate id as a prop', () => {
-    expect(plate.plate_id).toBeDefined()
+  it('will be passed a plate as a prop, with an id and barcode', () => {
+    expect(plate.plate.id).toBeDefined()
+    expect(plate.plate.barcode).toBeDefined()
   })
 
   describe('methods', () => {
@@ -81,6 +89,49 @@ describe('OntPlate.vue', () => {
     it('has the correct number of wells', () => {
       let ellipses = wrapper.findAll(OntWell)
       expect(ellipses.length).toEqual(Object.keys(PlateMap.wells).length)
+    })
+  })
+
+  describe('Pool Samples button', () => {
+    it('is shows button', () => {
+      let button = wrapper.find('#pool-btn-TRAC-1-1')
+      expect(button.text()).toEqual('Pool Samples')
+    })
+
+    it('shows an alert on success', async () => {
+      let mockResponse = { data: { createCovidLibraries: { tubes: [{ barcode: 'TRAC-1-1' }, { barcode: 'TRAC-1-2' } ], errors: []} } }
+
+      let promise = new Promise((resolve) => {
+        resolve(mockResponse)
+      })
+
+      mutate.mockReturnValue(promise)
+
+      let button = wrapper.find('#pool-btn-TRAC-1-1')
+      await button.trigger('click')
+
+      expect(mutate).toBeCalled()
+      expect(wrapper.emitted().alert).toBeTruthy()
+      expect(wrapper.emitted().alert[0][0]).toEqual('Library(s) were created with barcodes: TRAC-1-1, TRAC-1-2')
+      expect(wrapper.emitted().alert[0][1]).toEqual('success')
+    })
+
+    it('shows an alert on failure', async () => {
+      let mockResponse = { data: { createCovidLibraries: { tubes: [], errors: ['this is an error'] } } }
+
+      let promise = new Promise((resolve) => {
+        resolve(mockResponse)
+      })
+
+      mutate.mockReturnValue(promise)
+
+      let button = wrapper.find('#pool-btn-TRAC-1-1')
+      await button.trigger('click')
+
+      expect(mutate).toBeCalled()
+      expect(wrapper.emitted().alert).toBeTruthy()
+      expect(wrapper.emitted().alert[0][0]).toEqual('Failure: this is an error')
+      expect(wrapper.emitted().alert[0][1]).toEqual('danger')
     })
   })
 })

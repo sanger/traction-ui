@@ -41,12 +41,12 @@ export default {
   props: {
     width: {
       type: String,
-      default: '50%'
+      required: true
     },
     height: {
       type: String,
-      default: '50%'
-    }
+      required: true
+    },
   },
   computed: {
     plateMap () {
