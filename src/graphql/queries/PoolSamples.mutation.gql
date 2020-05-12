@@ -1,5 +1,5 @@
 mutation poolSamples($plate_barcode: String!) {
-  createOntLibraries(
+  createCovidLibraries(
     input: {
       arguments: {
         plateBarcode: $plate_barcode
