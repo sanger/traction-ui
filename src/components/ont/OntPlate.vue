@@ -27,9 +27,7 @@ export default {
           position
           materials {
             ...on Request {
-              sample {
-                name
-              }
+              name
             }
           }
         }
