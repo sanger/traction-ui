@@ -4,20 +4,27 @@ import Alert from '@/components/Alert'
 import Response from '@/api/Response'
 import store from '@/store'
 import { transformPlates } from '@/api/SequencescapePlates'
+import flushPromises from 'flush-promises'
 
 describe('Reception', () => {
 
-  let wrapper, reception, barcodes, input, mockPlates
+  let wrapper, reception, barcodes, input, mockPlates, mutate
 
   beforeEach(() => {
     mockPlates = new Response(Data.SequencescapePlates).deserialize.plates
 
     barcodes = 'DN1234567\nDN2345678\nDN5845675\nDN8993423\nDN666666'
+    mutate = jest.fn()
     wrapper = mount(Reception, {
       localVue,
       store,
       stubs: {
         Alert: Alert
+      },
+      mocks: {
+        $apollo: {
+          mutate: mutate
+        }
       }
     })
     reception = wrapper.vm
@@ -60,18 +67,18 @@ describe('Reception', () => {
     })
   })
 
-  describe('findSequencescapePlates button', () => {
+  describe('createTrtactionPlates button', () => {
 
     beforeEach(() => {
-      reception.handleSequencescapePlates = jest.fn()
+      reception.createTractionPlates = jest.fn()
     })
 
     it('calls the right function', () => {
       let input = wrapper.find('textarea')
       input.setValue(barcodes)
-      let button = wrapper.find('#findSequencescapePlates')
+      let button = wrapper.find('#createTractionPlates')
       button.trigger('click')
-      expect(reception.handleSequencescapePlates).toBeCalled()
+      expect(reception.createTractionPlates).toBeCalled()
     })
 
   })
@@ -93,6 +100,58 @@ describe('Reception', () => {
       reception.getSequencescapePlates.mockReturnValue(undefined)
       await reception.handleSequencesapePlates()
       expect(reception.plates).toEqual({})
+    })
+  })
+
+  describe('create sequencescape plates', () => {
+
+   beforeEach(() => {
+    wrapper.setData({ barcodes: 'DN1234567\n', plates: transformPlates(mockPlates) })
+    reception.getSequencescapePlates = jest.fn()
+   })
+
+    it('shows an alert on success', async () => {
+
+      let mockResponse =  { data: 
+                            { createPlateWithCovidSamples: {
+                              plate: {id: "6",barcode: "PLATE-1234",wells: 
+                              [ { plateId: 1},
+                                { plateId: 1},
+                                { plateId: 1}
+                              ]
+                            }, errors: []}}}
+
+      let promise = new Promise((resolve) => {
+        resolve(mockResponse)
+      })
+
+      mutate.mockReturnValue(promise)
+
+      let button = wrapper.find('#createTractionPlates')
+      await button.trigger('click')
+      await flushPromises()
+      expect(reception.getSequencescapePlates).toBeCalledWith(reception.getBarcodes())
+      expect(mutate).toBeCalled()
+      expect(wrapper.emitted().alert).toBeTruthy()
+      expect(wrapper.emitted().alert[0][0]).toEqual('Plate successfully created')
+      expect(wrapper.emitted().alert[0][1]).toEqual('success')
+    })
+
+    it('shows an alert on failure', async () => {
+      let mockResponse = { data: { createPlateWithCovidSamples: { plate: {}, errors: ['this is an error'] } } }
+
+      let promise = new Promise((resolve) => {
+        resolve(mockResponse)
+      })
+
+      mutate.mockReturnValue(promise)
+      let button = wrapper.find('#createTractionPlates')
+      await button.trigger('click')
+      await flushPromises()
+      expect(mutate).toBeCalled()
+      expect(wrapper.emitted().alert).toBeTruthy()
+      expect(wrapper.emitted().alert[0][0]).toEqual('Failure: this is an error')
+      expect(wrapper.emitted().alert[0][1]).toEqual('danger')
     })
   })
 

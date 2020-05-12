@@ -13,9 +13,9 @@
                 id="barcodes"/>
     </div>
     <b-button class="scanButton"
-              id="findSequencescapePlates"
+              id="createTractionPlates"
               variant="success"
-              @click="handleSequencescapePlates"
+              @click="createTractionPlates"
               :disabled="this.barcodes.length === 0">
       Import
     </b-button>
@@ -26,6 +26,7 @@
 import Alert from '@/components/Alert'
 import Helper from '@/mixins/Helper'
 import { getPlates, transformPlates} from '@/api/SequencescapePlates'
+import gql from 'graphql-tag'
 
 export default {
   name: 'Reception',
@@ -53,6 +54,35 @@ export default {
       if (jsonPlates != undefined) {
         this.plates = transformPlates(jsonPlates)
       }
+    },
+    async createTractionPlates () {
+      await this.handleSequencesapePlates()
+      if (this.plates === {}) return
+      this.$apollo.mutate({
+        mutation: gql`mutation {
+            createPlateWithCovidSamples(
+                input: {
+                    arguments: ${this.plates[0]}
+                }
+            ) {
+                plate {
+                    id
+                    barcode
+                    wells {
+                        plateId
+                    }
+                }
+                errors
+            }
+        }`
+      }).then(data => {
+        let response = data.data.createPlateWithCovidSamples
+        if (response.errors.length > 0) {
+          this.$emit('alert', 'Failure: ' + data.data.createPlateWithCovidSamples.errors.join(', '), 'danger')
+        } else {
+          this.$emit('alert', 'Plate successfully created', 'success')
+        }
+      })
     }
   }
 }

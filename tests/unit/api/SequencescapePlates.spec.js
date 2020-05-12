@@ -148,10 +148,10 @@ describe('SequencescapePlates', () => {
 
     it('samples should have an id, name and tag', () => {
       let sample = transformedPlate.wells[0].samples[0]
-      expect(Object.keys(sample)).toEqual(['externalId', 'name', 'tags'])
+      expect(Object.keys(sample)).toEqual(['externalId', 'name', 'tagOligo'])
       expect(sample.externalId).toEqual('03e6d65e-c283-11e9-9453-68b59976a384')
       expect(sample.name).toEqual('4463STDY8091171')
-      expect(sample.tags[0]).toEqual({ oligo: 'GGGATCCT', index: 1})
+      expect(sample.tagOligo).toEqual('GGGATCCT')
     })
 
     it('samples will be empty if there arent any', () => {

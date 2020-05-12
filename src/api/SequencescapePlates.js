@@ -25,8 +25,7 @@ const transformWells = (wells) => {
 
 const transformAliquots = (aliquots) => {
   return aliquots.map(aliquot => {
-    return {externalId: aliquot.sample.uuid, name: aliquot.sample.sanger_sample_id,
-            tags: [{ oligo: aliquot.tag_oligo, index: aliquot.tag_index }]}
+    return {externalId: aliquot.sample.uuid, name: aliquot.sample.sanger_sample_id, tagOligo: aliquot.tag_oligo }
   })
 }
 
