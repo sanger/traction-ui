@@ -5,7 +5,7 @@
     <rect width="61" height="227"/>
 
     <foreignObject y="100" width="70" height="227">
-      <b-form-input v-model="libraryBarcode" placeholder="Barcode" id="library_barcode"></b-form-input>
+      <b-form-input v-model="libraryBarcode" placeholder="Barcode" id="library_barcode" @change="setTextTest"></b-form-input>
     </foreignObject>
   </g>
 </template>
