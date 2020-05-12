@@ -26,10 +26,9 @@ export default {
         { key: 'name', label: 'Name', sortable: true},
         { key: 'poolSize', label: 'Pool Size', sortable: true},
         { key: 'tubeBarcode', label: 'Tube Barcode' , sortable: true},
-        // { key: 'wellRange', label: 'Wells', sortable: true},
-        { key: 'tagSetName', label: 'Tag Set', sortable: true},
         { key: 'plateBarcode', label: 'Plate Barcode', sortable: true},
         { key: 'pool', label: 'Pool #', sortable: true},
+        { key: 'createdAt', label: 'Created at', sortable: true},
       ]
     }
   },

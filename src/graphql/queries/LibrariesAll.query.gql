@@ -4,8 +4,8 @@ query {
     name
     pool
     poolSize
-    tagSetName
     tubeBarcode
     plateBarcode
+    createdAt
   }
 }
