@@ -12,7 +12,10 @@ describe('OntFlowcell.vue', () => {
     }
 
     wrapper = mount(OntFlowcell, {
-      propsData: props
+      propsData: props,
+      stubs: {
+        'b-form-input': true
+      }
     })
 
     flowcell = wrapper.vm

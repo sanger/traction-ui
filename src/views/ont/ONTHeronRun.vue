@@ -14,6 +14,7 @@
 <script>
 import ONTSVG from '@/components/svg/ONTSVG'
 import OntFlowcell from '@/components/ont/OntFlowcell'
+import ONT_HERON_RUN_QUERY from '@/graphql/client/queries/OntHeronRun.query.gql'
 
 export default {
   name: 'OntHeronRun',
@@ -34,6 +35,11 @@ export default {
   },
   methods: {
     createRun () {
+    }
+  },
+  apollo: {
+    run: {
+      query: ONT_HERON_RUN_QUERY
     }
   }
 }

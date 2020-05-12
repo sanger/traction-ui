@@ -11,6 +11,7 @@
 </template>
 
 <script>
+import UPDATE_RUN_TEXT from '@/graphql/client/queries/UpdateRunText.mutation.gql'
 
 export default {
   name: 'OntFlowcell',
@@ -27,6 +28,17 @@ export default {
   data() {
     return {
       libraryBarcode: ''
+    }
+  },
+  methods: {
+    setTextTest(text) {
+      this.$apollo.mutate({
+        mutation: UPDATE_RUN_TEXT,
+        variables: {
+          id: 123,
+          text: text,
+        }
+      })
     }
   },
   computed: {

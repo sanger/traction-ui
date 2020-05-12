@@ -1,0 +1,3 @@
+mutation updateRunText($id: ID!, $text: String!) {
+  updateRunText(id: $id, text: $text) @client
+}
