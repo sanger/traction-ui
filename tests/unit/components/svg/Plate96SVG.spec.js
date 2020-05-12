@@ -6,20 +6,20 @@ describe('Plate96SVG.vue', () => {
   let wrapper, plate, props
 
   beforeEach(() => {
-    props = { width: '100%', height: '100%'}
-    wrapper = mount(Plate96SVG, { 
+    props = { width: '100%', height: '100%' }
+    wrapper = mount(Plate96SVG, {
       propsData: props
     })
-
     plate = wrapper.vm
   })
 
-  it('can have a width', () => {
-    plate.width = props.width
-  })
-
-  it('can have a height', () => {
-    plate.height = props.height
+  describe('props', () => {
+    it('has a width property', () => {
+      expect(plate.width).toEqual(props.width)
+    })
+    it('has a height property', () => {
+      expect(plate.height).toEqual(props.height)
+    })
   })
 
   describe('SVG wells', () => {

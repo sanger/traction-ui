@@ -27,6 +27,7 @@
     "description": "",
     "routes": [
       "plates",
+      "libraries",
       "run"
     ]
   }
