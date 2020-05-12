@@ -35,12 +35,18 @@ export default {
   },
   methods: {
     createRun () {
+      console.log(this.run.flowcells.map(fc => fc.barcode))
     }
   },
   apollo: {
     run: {
       query: ONT_HERON_RUN_QUERY
     }
+  },
+  created() {
+    // if new
+    // write data to cache
+    // from apollo.js
   }
 }
 </script>

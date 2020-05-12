@@ -5,13 +5,13 @@
     <rect width="61" height="227"/>
 
     <foreignObject y="100" width="70" height="227">
-      <b-form-input v-model="libraryBarcode" placeholder="Barcode" id="library_barcode" @change="setTextTest"></b-form-input>
+      <b-form-input placeholder="Barcode" id="library_barcode" @change="setBarcode"></b-form-input>
     </foreignObject>
   </g>
 </template>
 
 <script>
-import UPDATE_RUN_TEXT from '@/graphql/client/queries/UpdateRunText.mutation.gql'
+import UPDATE_FLOWCELL from '@/graphql/client/queries/UpdateFlowcell.mutation.gql'
 
 export default {
   name: 'OntFlowcell',
@@ -25,19 +25,16 @@ export default {
       required: true
     }
   },
-  data() {
-    return {
-      libraryBarcode: ''
-    }
-  },
   methods: {
-    setTextTest(text) {
+    setBarcode(barcode) {
       this.$apollo.mutate({
-        mutation: UPDATE_RUN_TEXT,
+        mutation: UPDATE_FLOWCELL,
         variables: {
           id: 123,
-          text: text,
+          position: this.position,
+          barcode: barcode
         }
+        // add update / move mutation to here
       })
     }
   },

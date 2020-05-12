@@ -1,6 +1,9 @@
 query {
   run: run @client {
     id
-    text
+    flowcells {
+      position
+      barcode
+    }
   }
 }

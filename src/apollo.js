@@ -8,35 +8,56 @@ const cache = new InMemoryCache();
 
 Vue.use(VueApollo)
 
-export const typeDefs = gql`
+const typeDefs = gql`
   type Run {
-    text: String!
+    id: Int!
+    flowcells: [Flowcell]
+  }
+
+  type Flowcell {
+    position: Int
+    barcode: String
   }
 
   type Mutation {
-    updateRunText(text: String!): Run
+    updateFlowcell(position: Int, barcode: String): Flowcell
   }
 `
+
+const flowcells = () => {
+  let flowcells = []
+
+  for (let position of [1,2,3,4,5]) {
+    flowcells.push({
+      __typename: "Flowcell",
+      position: position,
+      barcode: '',
+    })
+  }
+  return flowcells
+}
+
 
 cache.writeData({
   data: {
     run: {
       __typename: 'Run',
-      id: 123,
-      text: 'before',
+      id: 'new',
+      flowcells: flowcells(),
     },
   },
-});
+})
 
 import ONT_HERON_RUN_QUERY from '@/graphql/client/queries/OntHeronRun.query.gql'
 
 const resolvers = {
   Mutation: {
-    updateRunText: (_, { text }, { cache }) => {
+    updateFlowcell: (_, { position, barcode }, { cache }) => {
       const data = cache.readQuery({ query: ONT_HERON_RUN_QUERY })
-      const currentItem = data.run
-      currentItem.text = text
+      const currentFlowcell = data.run.flowcells.find(flowcell => flowcell.position === position)
+      currentFlowcell.barcode = barcode
       cache.writeQuery({ query: ONT_HERON_RUN_QUERY, data })
+      return currentFlowcell
     },
   }
 }

@@ -1,0 +1,3 @@
+mutation ($id: ID, $position: Int, $barcode: String) {
+  updateFlowcell(id: $id, position: $position, barcode: $barcode) @client
+}
