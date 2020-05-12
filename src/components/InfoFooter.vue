@@ -39,8 +39,8 @@ export default {
     provider() {
       if (this.environment != 'development') {
         Promise.all([
-          fetch('RELEASE.txt').then(response => response.text()),
-          fetch('REPO.txt').then(response => response.text())
+          fetch('RELEASE').then(response => response.text()),
+          fetch('REPO').then(response => response.text())
         ]).then(([response1,response2]) => {
           this.release = response1;
           this.repo = response2;
