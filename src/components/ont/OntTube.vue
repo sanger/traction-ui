@@ -17,7 +17,7 @@
 <script>
 
 export default {
-  name: 'Tube',
+  name: 'OntTube',
   props: {
     name: {
       type: String,

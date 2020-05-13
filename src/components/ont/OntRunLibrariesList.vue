@@ -12,7 +12,7 @@ import LIBRARIES_ALL_QUERY from '@/graphql/queries/LibrariesAll.query.gql'
 import OntTube from '@/components/ont/OntTube'
 
 export default {
-  name: 'PacbioLibrariesList',
+  name: 'OntRunLibrariesList',
   components: {
     OntTube
   },
