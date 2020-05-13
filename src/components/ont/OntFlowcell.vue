@@ -34,7 +34,6 @@ export default {
           position: this.position,
           libraryName: libraryName
         }
-        // add update / move mutation to here
       })
     }
   },

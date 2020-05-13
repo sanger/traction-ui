@@ -34,6 +34,7 @@ import ONT_HERON_RUN_QUERY from '@/graphql/client/queries/OntHeronRun.query.gql'
 
 const resolvers = {
   Mutation: {
+    // Timeboxed trying to move this to to component
     updateFlowcell: (_, { position, libraryName }, { cache }) => {
       const data = cache.readQuery({ query: ONT_HERON_RUN_QUERY })
       const currentFlowcell = data.run.flowcells.find(flowcell => flowcell.position === position)

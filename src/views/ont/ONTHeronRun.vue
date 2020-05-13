@@ -47,11 +47,19 @@ export default {
           flowcells: flowcells
         }
       }).then(data => {
-        console.log(data)
-        console.log("HERE")
+        let response = data.data.createCovidRun
+        if (response.errors.length > 0) {
+          this.$emit('alert', 'Failure: ' + data.data.createCovidRun.errors.join(', '), 'danger')
+        } else {
+          this.redirectToRuns()
+          // let runId = response.run.id
+        }
       })
 
-    }
+    },
+    redirectToRuns() {
+      this.$router.push({ name: 'OntHeronRuns' })
+    },
   },
   apollo: {
     run: {
