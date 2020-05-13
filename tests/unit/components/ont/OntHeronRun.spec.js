@@ -1,4 +1,3 @@
-import OntHeronRuns from '@/views/ont/OntHeronRuns'
 import OntHeronRun from '@/views/ont/OntHeronRun'
 import ONTSVG from '@/components/svg/ONTSVG'
 import OntFlowcell from '@/components/ont/OntFlowcell'
