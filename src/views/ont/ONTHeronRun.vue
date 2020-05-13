@@ -1,19 +1,31 @@
 <template>
-  <div class="run">
-    <b-button class="float-right" variant="outline-success" id="create-run" @click="createRun()">
-      Create Run
-    </b-button>
-
-    <ONTSVG>
-      <OntFlowcell v-for="(flowcell, key) in flowcells" v-bind="flowcell" v-bind:key="key">
-      </OntFlowcell>
-    </ONTSVG>
+  <div class="ont-heron-run">
+    <div>
+      <b-row class="create-run-button">
+        <b-button variant="outline-success" id="create-run" @click="createRun()">
+          Create Run
+        </b-button>
+      </b-row>
+      <br>
+      <b-row>
+        <b-col cols="4">
+          <OntRunLibrariesList></OntRunLibrariesList>
+        </b-col>
+        <b-col cols="6">
+          <ONTSVG>
+            <OntFlowcell v-for="(flowcell, key) in flowcells" v-bind="flowcell" v-bind:key="key">
+            </OntFlowcell>
+          </ONTSVG>
+        </b-col>
+      </b-row>
+    </div>
   </div>
 </template>
 
 <script>
 import ONTSVG from '@/components/svg/ONTSVG'
 import OntFlowcell from '@/components/ont/OntFlowcell'
+import OntRunLibrariesList from '@/components/ont/OntRunLibrariesList'
 import ONT_HERON_RUN_QUERY from '@/graphql/client/queries/OntHeronRun.query.gql'
 import CREATE_COVID_RUN from '@/graphql/queries/CreateCovidRun.mutation.gql'
 
@@ -32,7 +44,8 @@ export default {
   },
   components: {
     ONTSVG,
-    OntFlowcell
+    OntFlowcell,
+    OntRunLibrariesList
   },
   methods: {
     createRun () {
@@ -52,7 +65,6 @@ export default {
           this.$emit('alert', 'Failure: ' + data.data.createCovidRun.errors.join(', '), 'danger')
         } else {
           this.redirectToRuns()
-          // let runId = response.run.id
         }
       })
 
@@ -65,14 +77,14 @@ export default {
     run: {
       query: ONT_HERON_RUN_QUERY
     }
-  },
-  created() {
-    // if new
-    // write data to cache
-    // from apollo.js
   }
 }
 </script>
 
 <style>
+
+.create-run-button {
+  float: right;
+}
+
 </style>

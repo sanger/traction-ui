@@ -1,11 +1,11 @@
 <template>
-  <g :transform="getMatrix">
+  <g :transform="getMatrix" v-on:drop="drop" v-on:dragover="allowDrop" >
     <text x="25" y="30" class="medium">{{ position }}</text>
 
-    <rect width="61" height="227"/>
+    <rect width="61" height="227" v-bind:class="status"/>
 
     <foreignObject y="100" width="70" height="227">
-      <b-form-input placeholder="Library Name" id="libraryName" @change="setLibraryName"></b-form-input>
+      <b-form-input v-model="libraryName" placeholder="Name" :id="'libraryNameInput-'+this.position" @change="updateFlowcell"></b-form-input>
     </foreignObject>
   </g>
 </template>
@@ -25,22 +25,40 @@ export default {
       required: true
     }
   },
+  data () {
+    return {
+      libraryName: ''
+    }
+  },
   methods: {
-    setLibraryName(libraryName) {
+    updateFlowcell() {
       this.$apollo.mutate({
         mutation: UPDATE_FLOWCELL,
         variables: {
           id: 123,
           position: this.position,
-          libraryName: libraryName
+          libraryName: this.libraryName
         }
       })
-    }
+    },
+    allowDrop (event) {
+      event.preventDefault()
+    },
+    drop (event) {
+      this.updateFlowcell(event.dataTransfer.getData('name'))
+    },
   },
   computed: {
     // Determines the flowcells x/y coordinates
     getMatrix () {
       return 'matrix(1,0,0,1,'+this.xPos+',135)'
+    },
+    status () {
+      if (this.libraryName) {
+        return 'filled'
+      } else {
+        return 'empty'
+      }
     }
   }
 }
@@ -48,10 +66,14 @@ export default {
 
 <style scoped lang="scss">
   rect {
-    stroke-width: 2;
-    fill: rgb(67, 136, 204);
     fill-opacity: 0.309804;
-    stroke: rgb(27, 50, 128);
-    stroke-opacity: 1;
+    stroke: rgb(0, 0, 0);
+  }
+
+  .filled{
+    fill:green;
+  }
+  .empty {
+    fill: red;
   }
 </style>
