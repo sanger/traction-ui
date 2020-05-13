@@ -8,6 +8,7 @@ const getPlates = async (request, barcodes) => {
   if (response.successful && !response.empty) {
     plates = response.deserialize.plates
   }
+  
   return plates
 }
 
