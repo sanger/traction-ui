@@ -1,17 +1,30 @@
+import OntHeronRuns from '@/views/ont/OntHeronRuns'
 import OntHeronRun from '@/views/ont/OntHeronRun'
 import ONTSVG from '@/components/svg/ONTSVG'
 import OntFlowcell from '@/components/ont/OntFlowcell'
 import { localVue, mount } from '../../testHelper'
 
 describe('OntHeronRun.vue', () => {
-  let wrapper, run
+  let wrapper, run, mutate
 
   beforeEach(() => {
+    mutate = jest.fn()
+
     wrapper = mount(OntHeronRun, {
       localVue,
       stubs: {
         ONTSVG: true,
         OntFlowcell: true
+      },
+      mocks: {
+        $apollo: {
+          mutate: mutate
+        }
+      },
+      data() {
+        return {
+          run: {}
+        }
       }
     })
 
@@ -39,16 +52,59 @@ describe('OntHeronRun.vue', () => {
     })
   })
 
-  describe('Create button', () => {
-    it('has a create button', () => {
-      expect(wrapper.find('#create-run').exists()).toBeTruthy()
+  describe('#createRun', () => {
+    let button
+
+    beforeEach(() => {
+      button = wrapper.find('#create-run')
+
+      let flowcells = [
+        {
+          __typename: 'Flowcell',
+          libraryName: 'TRAC-1-1',
+          position: 1
+        }
+      ]
+      wrapper.setData({ run: { flowcells: flowcells } })
     })
 
-    it('calls createRun on click', () => {
-      run.createRun = jest.fn()
-      let button = wrapper.find('#create-run')
-      button.trigger('click')
-      expect(run.createRun).toBeCalled()
+    it('has a create button', () => {
+      expect(button.text()).toEqual('Create Run')
+    })
+
+    it('redirects on success', async () => {
+      run.redirectToRuns = jest.fn()
+
+      let mockResponse = { data: { createCovidRun: { run: { id: 1 }, errors: [] } } }
+
+      let promise = new Promise((resolve) => {
+        resolve(mockResponse)
+      })
+
+      mutate.mockReturnValue(promise)
+
+      await button.trigger('click')
+
+      expect(mutate).toBeCalled()
+      expect(run.redirectToRuns).toBeCalled()
+
+    })
+
+    it('shows an alert on failure', async () => {
+      let mockResponse = { data: { createCovidRun: { run: {}, errors: ['this is an error'] } } }
+
+      let promise = new Promise((resolve) => {
+        resolve(mockResponse)
+      })
+
+      mutate.mockReturnValue(promise)
+
+      await button.trigger('click')
+
+      expect(mutate).toBeCalled()
+      expect(wrapper.emitted().alert).toBeTruthy()
+      expect(wrapper.emitted().alert[0][0]).toEqual('Failure: this is an error')
+      expect(wrapper.emitted().alert[0][1]).toEqual('danger')
     })
   })
 
