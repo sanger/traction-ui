@@ -35,7 +35,6 @@ export default {
       this.$apollo.mutate({
         mutation: UPDATE_FLOWCELL,
         variables: {
-          id: 123,
           position: this.position,
           libraryName: this.libraryName
         }
