@@ -7,8 +7,8 @@ describe('OntHeronRuns.vue', () => {
 
   beforeEach(() => {
     runsData = [
-      { id: 1, instrumentName: 'GridION', state: 'pending', deactivatedAt: '' },
-      { id: 2, instrumentName: 'GridION', state: 'pending', deactivatedAt: '' },
+      { id: 1, state: 'pending' },
+      { id: 2, state: 'pending' },
     ]
 
     router = new VueRouter({
@@ -36,7 +36,7 @@ describe('OntHeronRuns.vue', () => {
   })
 
   it('will have fields', () => {
-    let expected = ['id', 'instrumentName', 'state', 'deactivatedAt']
+    let expected = ['id', 'state']
     expect(runs.fields).toEqual(expected)
   })
 

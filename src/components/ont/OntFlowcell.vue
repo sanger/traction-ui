@@ -5,7 +5,7 @@
     <rect width="61" height="227"/>
 
     <foreignObject y="100" width="70" height="227">
-      <b-form-input placeholder="Barcode" id="library_barcode" @change="setBarcode"></b-form-input>
+      <b-form-input placeholder="Library Name" id="libraryName" @change="setLibraryName"></b-form-input>
     </foreignObject>
   </g>
 </template>
@@ -26,13 +26,13 @@ export default {
     }
   },
   methods: {
-    setBarcode(barcode) {
+    setLibraryName(libraryName) {
       this.$apollo.mutate({
         mutation: UPDATE_FLOWCELL,
         variables: {
           id: 123,
           position: this.position,
-          barcode: barcode
+          libraryName: libraryName
         }
         // add update / move mutation to here
       })

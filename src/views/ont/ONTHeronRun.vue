@@ -15,6 +15,7 @@
 import ONTSVG from '@/components/svg/ONTSVG'
 import OntFlowcell from '@/components/ont/OntFlowcell'
 import ONT_HERON_RUN_QUERY from '@/graphql/client/queries/OntHeronRun.query.gql'
+import CREATE_COVID_RUN from '@/graphql/queries/CreateCovidRun.mutation.gql'
 
 export default {
   name: 'OntHeronRun',
@@ -35,7 +36,21 @@ export default {
   },
   methods: {
     createRun () {
-      console.log(this.run.flowcells.map(fc => fc.barcode))
+      const flowcells = this.run.flowcells
+        .filter(fc => fc.libraryName)
+        // eslint-disable-next-line
+        .map(({__typename, ...keepAttrs}) => keepAttrs)
+
+      this.$apollo.mutate({
+        mutation: CREATE_COVID_RUN,
+        variables: {
+          flowcells: flowcells
+        }
+      }).then(data => {
+        console.log(data)
+        console.log("HERE")
+      })
+
     }
   },
   apollo: {

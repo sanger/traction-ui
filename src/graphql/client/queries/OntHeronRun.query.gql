@@ -3,7 +3,7 @@ query {
     id
     flowcells {
       position
-      barcode
+      libraryName
     }
   }
 }

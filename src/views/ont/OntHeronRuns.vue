@@ -30,7 +30,7 @@ export default {
   name: 'OntHeronRuns',
   data () {
     return { 
-      fields: [ 'id', 'instrumentName', 'state', 'deactivatedAt' ],
+      fields: [ 'id', 'state'],
     }
   },
   apollo: {
