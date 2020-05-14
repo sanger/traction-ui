@@ -22,6 +22,9 @@ describe('OntLibraries.vue', () => {
         return {
           libraries: librariesData
         }
+      },
+      methods: {
+        refetchLibraries() { return }
       }
     })
     libraries = wrapper.vm

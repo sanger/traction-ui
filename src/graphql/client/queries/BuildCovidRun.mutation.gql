@@ -1,4 +1,4 @@
-mutation ($runId: Int, $flowcells: [Flowcell]) {
+mutation ($runId: Int!, $flowcells: [Flowcell!]!) {
   buildCovidRun (
     runId: $runId
     flowcells: $flowcells

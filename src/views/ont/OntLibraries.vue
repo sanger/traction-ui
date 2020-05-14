@@ -36,6 +36,14 @@ export default {
     libraries: {
       query: LIBRARIES_ALL_QUERY
     }
+  },
+  methods: {
+    refetchLibraries() {
+      this.$apollo.queries.libraries.refetch()
+    }
+  },
+  created () {
+    this.refetchLibraries()
   }
 }
 

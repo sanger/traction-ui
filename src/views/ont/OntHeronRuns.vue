@@ -30,7 +30,11 @@ export default {
   name: 'OntHeronRuns',
   data () {
     return { 
-      fields: [ 'id', 'state'],
+      fields: [
+        { key: 'id', label: 'ID' , sortable: true},
+        { key: 'state', label: 'State', sortable: true},
+        { key: 'createdAt', label: 'Created at', sortable: true},
+      ]
     }
   },
   apollo: {
@@ -42,6 +46,12 @@ export default {
     redirectToRun() {
       this.$router.push({ path: '/ont/run/new' })
     },
+    refetchRuns() {
+      this.$apollo.queries.runs.refetch()
+    }
+  },
+  created () {
+    this.refetchRuns()
   }
 }
 </script>

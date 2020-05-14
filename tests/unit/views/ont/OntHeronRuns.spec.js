@@ -1,9 +1,8 @@
 import OntHeronRuns from '@/views/ont/OntHeronRuns'
-import OntHeronRun from '@/views/ont/OntHeronRun'
-import { mount, localVue, VueRouter } from '../../testHelper'
+import { mount, localVue } from '../../testHelper'
 
 describe('OntHeronRuns.vue', () => {
-  let wrapper, runs, runsData, router
+  let wrapper, runs, runsData
 
   beforeEach(() => {
     runsData = [
@@ -11,21 +10,15 @@ describe('OntHeronRuns.vue', () => {
       { id: 2, state: 'pending' },
     ]
 
-    router = new VueRouter({
-      routes: [{
-        path: '/ont/runs/new',
-        name: 'OntHeronRun',
-        component: OntHeronRun,
-      }]
-    })
-
     wrapper = mount(OntHeronRuns, {
       localVue,
-      router,
       data() {
         return {
           runs: runsData
         }
+      },
+      methods: {
+        refetchRuns() { return }
       }
     })
     runs = wrapper.vm
@@ -36,8 +29,8 @@ describe('OntHeronRuns.vue', () => {
   })
 
   it('will have fields', () => {
-    let expected = ['id', 'state']
-    expect(runs.fields).toEqual(expected)
+    let expected = ['id', 'state', 'createdAt']
+    expect(runs.fields.map(i => i.key)).toEqual(expected)
   })
 
   it('will have a table', () => {
@@ -54,9 +47,10 @@ describe('OntHeronRuns.vue', () => {
     })
 
     it('will redirect to the run when newRun is clicked', async () => {
+      runs.redirectToRun = jest.fn()
       let button = wrapper.find('#newRun')
       button.trigger('click')
-      expect(runs.$route.path).toEqual('/ont/run/new')
+      expect(runs.redirectToRun).toBeCalled()
     })
   })
 
