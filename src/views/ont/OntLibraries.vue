@@ -35,6 +35,7 @@ export default {
   name: 'OntLibraries',
   mixins: [Helper, TableHelper],
   components: {
+    Alert,
     PrinterModal
   },
   data () {
