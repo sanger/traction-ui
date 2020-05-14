@@ -1,4 +1,5 @@
 import OntHeronRun from '@/views/ont/OntHeronRun'
+import OntRunLibrariesList from '@/components/ont/OntRunLibrariesList'
 import ONTSVG from '@/components/svg/ONTSVG'
 import OntFlowcell from '@/components/ont/OntFlowcell'
 import { localVue, mount } from '../../testHelper'
@@ -41,6 +42,10 @@ describe('OntHeronRun.vue', () => {
 
     it('has a ONTSVG component', () => {
       expect(wrapper.contains(ONTSVG)).toBe(true)
+    })
+
+    it('has a ONTSVG component', () => {
+      expect(wrapper.contains(OntRunLibrariesList)).toBe(true)
     })
   })
 
@@ -104,6 +109,19 @@ describe('OntHeronRun.vue', () => {
       expect(wrapper.emitted().alert).toBeTruthy()
       expect(wrapper.emitted().alert[0][0]).toEqual('Failure: this is an error')
       expect(wrapper.emitted().alert[0][1]).toEqual('danger')
+    })
+  })
+
+  describe('#buildFlowcells', () => {
+    it('build the flowcells for a new run', () => {
+      expect(run.buildFlowcells().length).toEqual(5)
+    })
+  })
+
+  describe('#buildRun', () => {
+    it('calls the mutation to build a new run', () => {
+      run.buildRun
+      expect(mutate).toBeCalled()
     })
   })
 
