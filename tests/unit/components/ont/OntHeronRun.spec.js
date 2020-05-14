@@ -2,6 +2,7 @@ import OntHeronRun from '@/views/ont/OntHeronRun'
 import OntRunLibrariesList from '@/components/ont/OntRunLibrariesList'
 import ONTSVG from '@/components/svg/ONTSVG'
 import OntFlowcell from '@/components/ont/OntFlowcell'
+import Alert from '@/components/Alert'
 import { localVue, mount } from '../../testHelper'
 
 describe('OntHeronRun.vue', () => {
@@ -44,8 +45,12 @@ describe('OntHeronRun.vue', () => {
       expect(wrapper.contains(ONTSVG)).toBe(true)
     })
 
-    it('has a ONTSVG component', () => {
+    it('has a OntRunLibrariesList component', () => {
       expect(wrapper.contains(OntRunLibrariesList)).toBe(true)
+    })
+
+    it('has a Alert component', () => {
+      expect(wrapper.contains(Alert)).toBe(true)
     })
   })
 
@@ -70,6 +75,8 @@ describe('OntHeronRun.vue', () => {
         }
       ]
       wrapper.setData({ run: { flowcells: flowcells } })
+
+      run.showAlert = jest.fn()
     })
 
     it('has a create button', () => {
@@ -106,9 +113,7 @@ describe('OntHeronRun.vue', () => {
       await button.trigger('click')
 
       expect(mutate).toBeCalled()
-      expect(wrapper.emitted().alert).toBeTruthy()
-      expect(wrapper.emitted().alert[0][0]).toEqual('Failure: this is an error')
-      expect(wrapper.emitted().alert[0][1]).toEqual('danger')
+      expect(run.showAlert).toBeCalledWith('Failure: this is an error', 'danger')
     })
   })
 

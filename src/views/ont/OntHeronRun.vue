@@ -1,5 +1,7 @@
 <template>
   <div class="ont-heron-run">
+    <alert ref='alert'></alert>
+
     <div>
       <b-row class="create-run-button">
         <b-button variant="outline-success" id="create-run" @click="createRun()">
@@ -29,6 +31,8 @@ import OntRunLibrariesList from '@/components/ont/OntRunLibrariesList'
 import ONT_HERON_RUN_QUERY from '@/graphql/client/queries/OntHeronRun.query.gql'
 import CREATE_COVID_RUN from '@/graphql/queries/CreateCovidRun.mutation.gql'
 import BUILD_COVID_RUN from '@/graphql/client/queries/BuildCovidRun.mutation.gql'
+import Alert from '@/components/Alert'
+import Helper from '@/mixins/Helper'
 
 export default {
   name: 'OntHeronRun',
@@ -46,8 +50,10 @@ export default {
   components: {
     ONTSVG,
     OntFlowcell,
-    OntRunLibrariesList
+    OntRunLibrariesList,
+    Alert
   },
+  mixins: [Helper],
   methods: {
     createRun () {
       const flowcells = this.run.flowcells
@@ -64,7 +70,7 @@ export default {
       }).then(data => {
         let response = data.data.createCovidRun
         if (response.errors.length > 0) {
-          this.$emit('alert', 'Failure: ' + data.data.createCovidRun.errors.join(', '), 'danger')
+          this.showAlert('Failure: ' + data.data.createCovidRun.errors.join(', '), 'danger')
         } else {
           this.redirectToRuns()
         }
@@ -104,7 +110,7 @@ export default {
         })
       }
       return flowcells
-    }
+    },
   },
   apollo: {
     run: {
