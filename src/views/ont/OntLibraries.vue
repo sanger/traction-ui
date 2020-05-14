@@ -9,7 +9,7 @@
       :items="libraries"
       :fields="fields"
       selectable
-      select-mode="multi"
+      select-mode="single"
       @row-selected="onRowSelected"
       sticky-header
       show-empty>
@@ -20,12 +20,21 @@
                     @selectPrinter="handlePrintLabel"
                     :disabled="this.selected.length === 0">
       </printerModal>
+
+      <b-button variant="danger"
+        class="float-left"
+        id="deleteLibrary-btn"
+        @click="handleLibraryDelete"
+        :disabled="this.selected.length === 0">
+        Delete Library
+      </b-button>
     </div>
   </div>
 </template>
 
 <script>
 import LIBRARIES_ALL_QUERY from '@/graphql/queries/LibrariesAll.query.gql'
+import DELETE_LIBRARY from '@/graphql/queries/DeleteLibrary.mutation.gql'
 import PrinterModal from '@/components/PrinterModal'
 import Helper from '@/mixins/Helper'
 import TableHelper from '@/mixins/TableHelper'
@@ -55,6 +64,23 @@ export default {
   apollo: {
     libraries: {
       query: LIBRARIES_ALL_QUERY
+    }
+  },
+  methods: {
+    handleLibraryDelete() {
+      this.$apollo.mutate({
+        mutation: DELETE_LIBRARY,
+        variables: {
+          libraryName: this.selected[0].name
+        }
+      }).then(data => {
+        let response = data.data.deleteCovidLibrary
+        if (response.errors.length > 0) {
+          this.showAlert('Failure: ' + data.data.deleteCovidLibrary.errors.join(', '), 'danger')
+        } else {
+          this.showAlert('Library was successully deleted', 'success')
+        }
+      })
     }
   }
 }
