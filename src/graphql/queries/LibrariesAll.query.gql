@@ -1,5 +1,5 @@
 query {
-  libraries: ontLibraries {
+  libraries: ontLibraries(unassignedToFlowcells: true) {
     id
     name
     pool
