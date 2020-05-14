@@ -25,7 +25,6 @@ describe('OntLibraries.vue', () => {
       data() {
         return {
           libraries: librariesData,
-          // selected: []
         }
       },
       mocks: {
