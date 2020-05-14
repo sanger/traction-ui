@@ -20,6 +20,7 @@ export default {
     libraries: {
       query: LIBRARIES_ALL_QUERY
     }
+    // add unassignedToFlowcells variable when GPL-460 merged
   }
 }
 </script>
