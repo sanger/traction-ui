@@ -1,0 +1,11 @@
+query ($id: ID!) {
+  run(id: $id) {
+    id
+    flowcells {
+      position
+      library {
+        name
+      }
+    }
+  }
+}

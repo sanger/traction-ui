@@ -29,7 +29,7 @@ describe('OntHeronRuns.vue', () => {
   })
 
   it('will have fields', () => {
-    let expected = ['id', 'state', 'createdAt']
+    let expected = ['id', 'createdAt', 'actions']
     expect(runs.fields.map(i => i.key)).toEqual(expected)
   })
 
