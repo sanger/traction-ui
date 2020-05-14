@@ -1,3 +1,6 @@
 mutation ($runId: Int, $flowcells: [Flowcell]) {
-  buildCovidRun(runId: $runId, flowcells: $flowcells) @client
+  buildCovidRun (
+    runId: $runId
+    flowcells: $flowcells
+  ) @client
 }

@@ -1,4 +1,4 @@
-mutation($flowcells: [FlowcellInput!]!) {
+mutation ($flowcells: [FlowcellInput!]!) {
   createCovidRun( 
     input: { 
       flowcells: $flowcells 

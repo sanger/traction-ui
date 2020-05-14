@@ -1,4 +1,4 @@
-query wells($plateId: ID!) {
+query ($plateId: ID!) {
   wells(plateId: $plateId) {
     id
     position
