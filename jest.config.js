@@ -10,7 +10,6 @@ module.exports = {
     '^.+\\.vue$': 'vue-jest',
     '.+\\.(css|styl|less|sass|scss|svg|png|jpg|ttf|woff|woff2)$': 'jest-transform-stub',
     '^.+\\.jsx?$': 'babel-jest',
-    "\\.(gql|graphql)$": "jest-transform-graphql",
   },
   transformIgnorePatterns: [
     "/!node_modules\\/lodash-es/"
