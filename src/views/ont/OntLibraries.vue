@@ -54,7 +54,12 @@ export default {
   },
   apollo: {
     libraries: {
-      query: LIBRARIES_ALL_QUERY
+      query: LIBRARIES_ALL_QUERY,
+      variables () {
+        return {
+          unassignedToFlowcells: false,
+        }
+      },
     }
   }
 }
