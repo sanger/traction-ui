@@ -1,15 +1,10 @@
 <template>
   <div>
-<<<<<<< HEAD
-    <PoolSamplesModal v-bind:plate_id="plate_id"></PoolSamplesModal>
-    <Plate96SVG v-if="wells" width="25%" height="25%">
-=======
     <b-button size="sm" variant="outline-success" :id="'pool-btn-'+plate.barcode" @click="poolSamples">
       Pool Samples
     </b-button>
 
     <Plate96SVG v-if="wells" v-bind:height="'30%'" v-bind:width="'30%'">
->>>>>>> develop
       <OntWell v-for="(well, position) in plateMap.wells" v-bind="well" v-bind:key="position" v-bind:well_info="getWellAt(position)">
       </OntWell>
     </Plate96SVG>
