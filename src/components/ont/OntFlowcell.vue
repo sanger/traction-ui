@@ -2,7 +2,8 @@
   <g :transform="getMatrix" v-on:drop="drop" v-on:dragover="allowDrop" >
     <text x="25" y="30" class="medium">{{ position }}</text>
 
-    <rect width="61" height="227" v-bind:class="status"/>
+    <rect width="70" height="227" v-bind:class="status"/>
+    <title v-text="this.libraryName"></title>
 
     <foreignObject y="100" width="70" height="227">
       <b-form-input v-model="libraryName" placeholder="Name" :id="'libraryNameInput-'+this.position" @change="updateFlowcell"></b-form-input>
