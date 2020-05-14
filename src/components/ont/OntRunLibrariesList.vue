@@ -18,9 +18,13 @@ export default {
   },
   apollo: {
     libraries: {
-      query: LIBRARIES_ALL_QUERY
+      query: LIBRARIES_ALL_QUERY,
+       variables () {
+        return {
+          unassignedToFlowcells: true,
+        }
+      },
     }
-    // add unassignedToFlowcells variable when GPL-460 merged
   }
 }
 </script>

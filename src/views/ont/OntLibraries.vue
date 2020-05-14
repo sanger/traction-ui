@@ -57,7 +57,7 @@ export default {
       query: LIBRARIES_ALL_QUERY,
       variables () {
         return {
-          unassignedToFlowcells: false,
+          unassignedToFlowcells: true,
         }
       },
     }
