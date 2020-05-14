@@ -61,6 +61,14 @@ export default {
         }
       },
     }
+  },
+  methods: {
+    refetchLibraries() {
+      this.$apollo.queries.libraries.refetch()
+    }
+  },
+  created () {
+    this.refetchLibraries()
   }
 }
 

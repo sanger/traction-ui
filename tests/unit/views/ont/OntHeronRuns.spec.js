@@ -6,8 +6,8 @@ describe('OntHeronRuns.vue', () => {
 
   beforeEach(() => {
     runsData = [
-      { id: 1, instrumentName: 'GridION', state: 'pending', deactivatedAt: '' },
-      { id: 2, instrumentName: 'GridION', state: 'pending', deactivatedAt: '' },
+      { id: 1, state: 'pending' },
+      { id: 2, state: 'pending' },
     ]
 
     wrapper = mount(OntHeronRuns, {
@@ -16,6 +16,9 @@ describe('OntHeronRuns.vue', () => {
         return {
           runs: runsData
         }
+      },
+      methods: {
+        refetchRuns() { return }
       }
     })
     runs = wrapper.vm
@@ -26,8 +29,8 @@ describe('OntHeronRuns.vue', () => {
   })
 
   it('will have fields', () => {
-    let expected = ['id', 'instrumentName', 'state', 'deactivatedAt']
-    expect(runs.fields).toEqual(expected)
+    let expected = ['id', 'createdAt', 'actions']
+    expect(runs.fields.map(i => i.key)).toEqual(expected)
   })
 
   it('will have a table', () => {
@@ -36,6 +39,19 @@ describe('OntHeronRuns.vue', () => {
 
   it('will have a table with runs', () => {
     expect(wrapper.find('tbody').findAll('tr').length).toEqual(runsData.length)
+  })
+
+  describe('new run button', () => {
+    it('contains a create new run button', () => {
+      expect(wrapper.contains('button')).toBe(true)
+    })
+
+    it('will redirect to the run when newRun is clicked', async () => {
+      runs.redirectToRun = jest.fn()
+      let button = wrapper.find('#newRun')
+      button.trigger('click')
+      expect(runs.redirectToRun).toBeCalled()
+    })
   })
 
 })

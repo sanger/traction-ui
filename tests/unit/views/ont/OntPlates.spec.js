@@ -1,5 +1,6 @@
 import OntPlates from '@/views/ont/OntPlates'
 import OntPlate from '@/components/ont/OntPlate'
+import Alert from '@/components/Alert'
 import { mount, localVue } from '../../testHelper'
 
 describe('OntPlates.vue', () => {
@@ -33,6 +34,12 @@ describe('OntPlates.vue', () => {
     expect(plates.fields).toEqual(['id', 'barcode', 'show_details'])
   })
 
+  describe('components', () => {
+    it('has a Alert component', () => {
+      expect(wrapper.contains(Alert)).toBe(true)
+    })
+  })
+
   it('will have a table', () => {
     expect(wrapper.contains('table')).toBe(true)
   })
@@ -56,4 +63,11 @@ describe('OntPlates.vue', () => {
     })
   })
 
+  describe('#alert', () => {
+    it('shows an alert', () => {
+      plates.showAlert = jest.fn()
+      plates.alert('message', 'type')
+      expect(plates.showAlert).toBeCalledWith('message', 'type')
+    })
+  })
 })

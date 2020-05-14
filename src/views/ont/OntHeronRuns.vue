@@ -1,5 +1,13 @@
 <template>
   <div class="runs">
+
+    <b-button id="newRun"
+      class="float-right"
+      @click="redirectToRun()"
+      variant="success">
+      New Run
+    </b-button>
+
     <b-table 
       id="runs-table"
       hover 
@@ -10,6 +18,13 @@
       sticky-header
       show-empty
     >
+
+      <template v-slot:cell(actions)="row">
+        <b-button :id="'editRun-'+row.item.id" variant="outline-info" size="sm" class="mr-1" @click="redirectToRun(row.item.id)">
+          Edit
+        </b-button>
+      </template>
+
     </b-table>
   </div>
 </template>
@@ -22,7 +37,11 @@ export default {
   name: 'OntHeronRuns',
   data () {
     return { 
-      fields: [ 'id', 'instrumentName', 'state', 'deactivatedAt' ],
+      fields: [
+        { key: 'id', label: 'ID' , sortable: true},
+        { key: 'createdAt', label: 'Created at', sortable: true},
+        { key: 'actions', label: 'Actions' },
+      ]
     }
   },
   apollo: {
@@ -30,6 +49,17 @@ export default {
       query: ONT_HERON_RUNS_ALL_QUERY
     }
   },
+  methods: {
+    redirectToRun(id) {
+      this.$router.push({ path: `/ont/run/${id || 'new'}` })
+    },
+    refetchRuns() {
+      this.$apollo.queries.runs.refetch()
+    }
+  },
+  created () {
+    this.refetchRuns()
+  }
 }
 </script>
 

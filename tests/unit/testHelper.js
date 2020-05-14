@@ -10,4 +10,4 @@ localVue.use(BootstrapVue)
 localVue.use(VueRouter)
 localVue.use(Vuex)
 
-export { mount, localVue, Vuex, store, Data, shallowMount }
+export { mount, localVue, Vuex, store, Data, shallowMount, VueRouter }

@@ -1,7 +1,7 @@
 <template> 
-  <svg width="1158" height="568">
-    <g transform="matrix(1,0,0,1,176,95)">
-      <rect width="509" height="307"/>
+  <svg width="700" height="450">
+    <g>
+      <rect width="500" height="300"/>
     </g>
 
     <!-- Slot for a flowcell component -->
@@ -19,10 +19,8 @@ export default {
 
 <style scoped lang="scss">
   rect {
-    stroke-width: 2;
+    transform: matrix(1,0,0,1,176,95);
     fill: rgb(255, 255, 255);
-    fill-opacity: 1;
-    stroke: rgb(27, 50, 128);
-    stroke-opacity: 1;
+    stroke: rgb(0, 0, 0);
   }
 </style>
