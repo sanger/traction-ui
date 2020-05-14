@@ -12,17 +12,8 @@
       @row-selected="onRowSelected"
       sticky-header
       show-empty>
-      <template v-slot:cell(selected)="{ rowSelected }">
-        <template v-if="rowSelected">
-          <span>&check;</span>
-          <span class="sr-only">Selected</span>
-        </template>
-        <template v-else>
-          <span>&nbsp;</span>
-          <span class="sr-only">Not selected</span>
-        </template>
-      </template>
     </b-table>
+    
     <div class="clearfix">
       <printerModal class="float-left"
                     @selectPrinter="handlePrintLabel"
