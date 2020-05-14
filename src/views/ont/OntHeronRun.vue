@@ -28,6 +28,7 @@ import OntFlowcell from '@/components/ont/OntFlowcell'
 import OntRunLibrariesList from '@/components/ont/OntRunLibrariesList'
 import ONT_HERON_RUN_QUERY from '@/graphql/client/queries/OntHeronRun.query.gql'
 import CREATE_COVID_RUN from '@/graphql/queries/CreateCovidRun.mutation.gql'
+import BUILD_COVID_RUN from '@/graphql/client/queries/BuildCovidRun.mutation.gql'
 
 export default {
   name: 'OntHeronRun',
@@ -57,6 +58,7 @@ export default {
       this.$apollo.mutate({
         mutation: CREATE_COVID_RUN,
         variables: {
+          runId: this.run.id,
           flowcells: flowcells
         }
       }).then(data => {
@@ -67,16 +69,50 @@ export default {
           this.redirectToRuns()
         }
       })
-
     },
     redirectToRuns() {
       this.$router.push({ name: 'OntHeronRuns' })
     },
+    buildRun () {
+      let flowcells = this.buildFlowcells()
+
+      this.$apollo.mutate({
+        mutation: BUILD_COVID_RUN,
+        variables: {
+          flowcells: flowcells
+        },
+        update: (cache, { data: { buildCovidRun } }) => {
+          cache.writeData({
+            data: {
+              run: {
+                __typename: 'Run',
+                id: 'new',
+                flowcells: buildCovidRun.flowcells,
+              },
+            },
+          })
+        }
+      })
+    },
+    buildFlowcells() {
+      let flowcells = []
+      for (let position of [1,2,3,4,5]) {
+        flowcells.push({
+          __typename: 'Flowcell',
+          position: position,
+          libraryName: '',
+        })
+      }
+      return flowcells
+    }
   },
   apollo: {
     run: {
       query: ONT_HERON_RUN_QUERY
     }
+  },
+  created() {
+    this.buildRun()
   }
 }
 </script>
