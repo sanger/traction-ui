@@ -11,7 +11,12 @@ const printJob = async (printerName, selected) => {
 const createPrintJobJson = (printerName, selected) => {
   let pipeline = getPipeline()
   let labelTemplateId = store.getters[`traction/${pipeline}/labelTemplateId`]
-  let labels = createLabels(selected)
+  let labels
+  if (pipeline != 'ont') {
+    labels = createLabels(selected)
+  } else {
+    labels = createOntLabels(selected)
+  }
   return { data: { attributes: { printer_name: printerName, label_template_id: labelTemplateId, labels: labels } } }
 }
 
@@ -25,6 +30,25 @@ const createLabels = (selected) => {
           date: moment().format('DD-MMM-YY'),
           text_1: getTextForSelected(label),
           barcode: label.barcode,
+          round_label_top_line: '',
+          round_label_bottom_line: ''
+        }
+      })
+      return result
+    },[])
+  }
+}
+
+const createOntLabels = (selected) => {
+  return {
+    body: selected.reduce((result, label) => {
+      result.push( {
+        main_label: {
+          pipeline: getPipeline().toUpperCase(),
+          barcode_text: label.tubeBarcode,
+          date: moment().format('DD-MMM-YY'),
+          text_1: label.name,
+          barcode: label.tubeBarcode,
           round_label_top_line: '',
           round_label_bottom_line: ''
         }

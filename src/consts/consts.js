@@ -3,6 +3,7 @@
 */
 const PIPELINE_SAPHYR = 'saphyr'
 const PIPELINE_PACBIO = 'pacbio'
+const PIPELINE_ONT = 'ont'
 
 const MAT_TYPE_REQUESTS = 'requests'
 const MAT_TYPE_LIBRARIES = 'libraries'
@@ -23,6 +24,7 @@ const MESSAGE_SUCCESS_PRINTER = 'Printed successfully'
 export {
   PIPELINE_SAPHYR,
   PIPELINE_PACBIO,
+  PIPELINE_ONT,
   MAT_TYPE_REQUESTS,
   MAT_TYPE_LIBRARIES,
   MESSAGE_ERROR_GET_TRACTION_TUBES,

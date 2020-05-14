@@ -1,5 +1,6 @@
 import OntLibraries from '@/views/ont/OntLibraries'
 import { mount, localVue } from '../../testHelper'
+import PrinterModal from '@/components/PrinterModal'
 
 describe('OntLibraries.vue', () => {
   let wrapper, libraries, librariesData
@@ -16,7 +17,8 @@ describe('OntLibraries.vue', () => {
     wrapper = mount(OntLibraries, {
       localVue,
       stubs: {
-        OntPlate: true
+        OntPlate: true,
+        PrinterModal: true
       },
       data() {
         return {
@@ -42,6 +44,20 @@ describe('OntLibraries.vue', () => {
 
   it('will have a table with libraries', () => {
     expect(wrapper.find('tbody').findAll('tr').length).toEqual(librariesData.length)
+  })
+
+  describe('printerModal', () => {
+    beforeEach(() => {
+      libraries.handlePrintLabel = jest.fn()
+    })
+
+    it('passes selected printer to function on emit event', () => {
+      libraries.selected = [{id: 1}]
+      let modal = wrapper.find(PrinterModal)
+      modal.vm.$emit('selectPrinter', 'printer1')
+
+      expect(libraries.handlePrintLabel).toBeCalledWith('printer1')
+    })
   })
 
 })
