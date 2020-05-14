@@ -3,6 +3,7 @@
 */
 const PIPELINE_SAPHYR = 'saphyr'
 const PIPELINE_PACBIO = 'pacbio'
+const PIPELINE_ONT = 'ont'
 
 const MAT_TYPE_REQUESTS = 'requests'
 const MAT_TYPE_LIBRARIES = 'libraries'

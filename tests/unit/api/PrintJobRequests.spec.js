@@ -47,6 +47,25 @@ describe('PrintJobRequests', () => {
       expect(response).toEqual(expected)
     })
 
+    it('returns a response on success for ont', async () => {
+      localStorage.setItem('pipeline', consts.PIPELINE_ONT)
+      let mockResponse =  {
+        data: {},
+        status: 201,
+        statusText: "Created"
+      }
+
+      let promise = new Promise((resolve) => {
+        resolve(mockResponse)
+      })
+
+      request.create.mockResolvedValue(promise)
+      let expected = new Response(mockResponse)
+
+      let response = await PrintJobRequests.printJob(printerName, selectedSamples)
+      expect(response).toEqual(expected)
+    })
+
     it('returns a response on failure', async () => {
       let mockResponse =  {
         data: {
