@@ -47,8 +47,14 @@ describe('PrintJobRequests', () => {
       expect(response).toEqual(expected)
     })
 
-    it('returns a response on success for ont', async () => {
+    it('returns a response on success for ont libraries', async () => {
       localStorage.setItem('pipeline', consts.PIPELINE_ONT)
+
+      selectedLibraries = [
+        { id: 1, type: 'libraries', name: 'DEMO-PLATE-1-1', tubeBarcode: 'TRAC-2-20' },
+        { id: 2, type: 'libraries', name: 'DEMO-PLATE-2-1', tubeBarcode: 'TRAC-2-21' }
+      ]
+
       let mockResponse =  {
         data: {},
         status: 201,
@@ -62,7 +68,7 @@ describe('PrintJobRequests', () => {
       request.create.mockResolvedValue(promise)
       let expected = new Response(mockResponse)
 
-      let response = await PrintJobRequests.printJob(printerName, selectedSamples)
+      let response = await PrintJobRequests.printJob(printerName, selectedLibraries)
       expect(response).toEqual(expected)
     })
 
