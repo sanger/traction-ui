@@ -30,17 +30,10 @@ cache.writeData({
   },
 })
 
-import ONT_HERON_RUN_QUERY from '@/graphql/client/queries/OntHeronRun.query.gql'
-
 const resolvers = {
   Mutation: {
-    // Timeboxed trying to move this to to component
-    updateFlowcell: (_, { position, libraryName }, { cache }) => {
-      const data = cache.readQuery({ query: ONT_HERON_RUN_QUERY })
-      const currentFlowcell = data.run.flowcells.find(flowcell => flowcell.position === position)
-      currentFlowcell.libraryName = libraryName
-      cache.writeQuery({ query: ONT_HERON_RUN_QUERY, data })
-      return currentFlowcell
+    updateFlowcell: (_, { position, libraryName }) => {
+      return { position, libraryName }
     }
   }
 }

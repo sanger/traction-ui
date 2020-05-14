@@ -12,6 +12,7 @@
 
 <script>
 import UPDATE_FLOWCELL from '@/graphql/client/queries/UpdateFlowcell.mutation.gql'
+import ONT_HERON_RUN_QUERY from '@/graphql/client/queries/OntHeronRun.query.gql'
 
 export default {
   name: 'OntFlowcell',
@@ -31,12 +32,18 @@ export default {
     }
   },
   methods: {
-    updateFlowcell() {
+    updateFlowcell () {
       this.$apollo.mutate({
         mutation: UPDATE_FLOWCELL,
         variables: {
           position: this.position,
           libraryName: this.libraryName
+        },
+        update: (cache, { data: { updateFlowcell} }) => {
+          const data = cache.readQuery({ query: ONT_HERON_RUN_QUERY })
+          const currentFlowcell = data.run.flowcells.find(flowcell => flowcell.position === updateFlowcell.position)
+          currentFlowcell.libraryName = updateFlowcell.libraryName
+          cache.writeQuery({ query: ONT_HERON_RUN_QUERY, data })
         }
       })
     },
