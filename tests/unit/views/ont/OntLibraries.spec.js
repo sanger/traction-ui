@@ -6,11 +6,11 @@ describe('OntLibraries.vue', () => {
 
   beforeEach(() => {
     librariesData = [
-      { id: 1, tube_barcode: 'TRAC-2-1', plate_barcode: 'TRAC-1-1', pool: 1, wells: 'A1-H3', tag_set: 24 },
-      { id: 2, tube_barcode: 'TRAC-2-2', plate_barcode: 'TRAC-1-1', pool: 2, wells: 'A4-H6', tag_set: 24 },
-      { id: 3, tube_barcode: 'TRAC-2-3', plate_barcode: 'TRAC-1-1', pool: 3, wells: 'A7-H9', tag_set: 24 },
-      { id: 4, tube_barcode: 'TRAC-2-4', plate_barcode: 'TRAC-1-1', pool: 4, wells: 'A10-H12', tag_set: 24 },
-      { id: 5, tube_barcode: 'TRAC-2-5', plate_barcode: 'TRAC-1-2', pool: 1, wells: 'A1-H12', tag_set: 96 },
+      { id: 1, tube_barcode: 'TRAC-2-1', plate_barcode: 'TRAC-1-1', poolSize: 1, wellRange: 'A1-H3', tag_set: 24 },
+      { id: 2, tube_barcode: 'TRAC-2-2', plate_barcode: 'TRAC-1-1', poolSize: 2, wellRange: 'A4-H6', tag_set: 24 },
+      { id: 3, tube_barcode: 'TRAC-2-3', plate_barcode: 'TRAC-1-1', poolSize: 3, wellRange: 'A7-H9', tag_set: 24 },
+      { id: 4, tube_barcode: 'TRAC-2-4', plate_barcode: 'TRAC-1-1', poolSize: 4, wellRange: 'A10-H12', tag_set: 24 },
+      { id: 5, tube_barcode: 'TRAC-2-5', plate_barcode: 'TRAC-1-2', poolSize: 1, wellRange: 'A1-H12', tag_set: 96 },
     ]
 
     wrapper = mount(OntLibraries, {
@@ -32,7 +32,8 @@ describe('OntLibraries.vue', () => {
   })
 
   it('will have fields', () => {
-    expect(libraries.fields).toEqual(['id', 'tube_barcode', 'plate_barcode', 'pool', 'wells', 'tag_set'])
+    let expected = ["id", "name", "poolSize", "tubeBarcode", "plateBarcode", "pool", "createdAt"]
+    expect(libraries.fields.map(i => i.key)).toEqual(expected)
   })
 
   it('will have a table', () => {

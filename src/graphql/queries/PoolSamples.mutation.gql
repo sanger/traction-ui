@@ -1,0 +1,15 @@
+mutation poolSamples($plate_barcode: String!) {
+  createCovidLibraries(
+    input: {
+      arguments: {
+        plateBarcode: $plate_barcode
+      }
+    }
+  )
+  {
+    tubes {
+      barcode
+    }
+    errors
+  }
+}

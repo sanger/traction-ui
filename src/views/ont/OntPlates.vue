@@ -1,5 +1,7 @@
 <template>
   <div class="ont-plates">
+    <alert ref='alert'></alert>
+
     <b-table 
       id="plates-table"
       hover 
@@ -17,7 +19,7 @@
       </template>
 
       <template v-slot:row-details="row">
-        <OntPlate v-bind:plate_id="parseInt(row.item.id)"></OntPlate>
+        <OntPlate v-bind:plate="row.item" @alert="alert"></OntPlate>
       </template>
     </b-table>
   </div>
@@ -25,6 +27,8 @@
 
 <script>
 
+import Alert from '@/components/Alert'
+import Helper from '@/mixins/Helper'
 import OntPlate from '@/components/ont/OntPlate'
 import PLATES_ALL_QUERY from '@/graphql/queries/PlatesAll.query.gql'
 
@@ -37,10 +41,17 @@ export default {
   },
   components: {
     OntPlate,
+    Alert
   },
+  mixins: [Helper],
   apollo: {
     plates: {
       query: PLATES_ALL_QUERY
+    }
+  },
+  methods: {
+    alert(message, type) {
+      this.showAlert(message, type)
     }
   }
 }

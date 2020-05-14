@@ -15,34 +15,28 @@
 </template>
 
 <script>
-// import gql from 'graphql-tag'
+import LIBRARIES_ALL_QUERY from '@/graphql/queries/LibrariesAll.query.gql'
 
 export default {
   name: 'OntLibraries',
   data () {
     return { 
-      fields: [ 'id', 'tube_barcode', 'plate_barcode', 'pool', 'wells', 'tag_set' ],
-      libraries: [
-        { id: 1, tube_barcode: 'TRAC-2-1', plate_barcode: 'TRAC-1-1', pool: 1, name: 'TRAC-1-1-1', wells: 'A1-H3', tag_set: 24 },
-        { id: 2, tube_barcode: 'TRAC-2-2', plate_barcode: 'TRAC-1-1', pool: 2, name: 'TRAC-1-1-2', wells: 'A4-H6', tag_set: 24 },
-        { id: 3, tube_barcode: 'TRAC-2-3', plate_barcode: 'TRAC-1-1', pool: 3, name: 'TRAC-1-1-3', wells: 'A7-H9', tag_set: 24 },
-        { id: 4, tube_barcode: 'TRAC-2-4', plate_barcode: 'TRAC-1-1', pool: 4, name: 'TRAC-1-1-4', wells: 'A10-H12', tag_set: 24 },
-        { id: 5, tube_barcode: 'TRAC-2-5', plate_barcode: 'TRAC-1-2', pool: 1, name: 'TRAC-1-2-1', wells: 'A1-H12', tag_set: 96 },
+      fields: [
+        { key: 'id', label: 'ID' , sortable: true},
+        { key: 'name', label: 'Name', sortable: true},
+        { key: 'poolSize', label: 'Pool Size', sortable: true},
+        { key: 'tubeBarcode', label: 'Tube Barcode' , sortable: true},
+        { key: 'plateBarcode', label: 'Plate Barcode', sortable: true},
+        { key: 'pool', label: 'Pool #', sortable: true},
+        { key: 'createdAt', label: 'Created at', sortable: true},
       ]
     }
   },
-  // apollo: {
-  //   libraries: gql`query {
-  //     libraries: libraries {
-  //       id
-  //       tube_barcode
-  //       plate_barcode
-  //       pool
-  //       wells
-  //       tag_set
-  //     }
-  //   }`
-  // }
+  apollo: {
+    libraries: {
+      query: LIBRARIES_ALL_QUERY
+    }
+  }
 }
 
 </script>

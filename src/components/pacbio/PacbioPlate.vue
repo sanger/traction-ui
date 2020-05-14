@@ -1,5 +1,5 @@
 <template>
-  <Plate96SVG width="75%" height="75%">
+  <Plate96SVG v-bind:height="'100%'" v-bind:width="'100%'">
     <well v-for="(well, key) in plateMap.wells" v-bind="well" v-bind:key="key">
     </well>
   </Plate96SVG>
