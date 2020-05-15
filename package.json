@@ -11,7 +11,7 @@
     "test": "vue-cli-service test:unit && vue-cli-service test:e2e"
   },
   "dependencies": {
-    "apollo-boost": "^0.4.7",
+    "apollo-boost": "^0.4.9",
     "axios": "^0.19.2",
     "bootstrap": "^4.4.1",
     "bootstrap-vue": "^2.0.0-rc.11",
