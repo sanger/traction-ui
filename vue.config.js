@@ -7,4 +7,4 @@ module.exports = {
       .loader('graphql-tag/loader')
       .end();
   }
-};
+}; 

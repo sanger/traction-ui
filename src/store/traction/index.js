@@ -1,5 +1,6 @@
 import saphyrModule from '@/store/traction/saphyr'
 import pacbioModule from '@/store/traction/pacbio'
+import ontModule from '@/store/traction/ont'
 import state from './state'
 import getters from './getters'
 import mutations from './mutations'
@@ -9,7 +10,8 @@ const traction = {
   namespaced: true,
   modules: {
     saphyr: saphyrModule,
-    pacbio: pacbioModule
+    pacbio: pacbioModule,
+    ont: ontModule
   },
   state,
   getters,
