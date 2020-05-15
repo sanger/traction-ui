@@ -31,7 +31,6 @@ import OntRunLibrariesList from '@/components/ont/OntRunLibrariesList'
 import ONT_HERON_RUN_QUERY from '@/graphql/queries/client/OntHeronRun.query.gql'
 import CREATE_COVID_RUN from '@/graphql/queries/CreateCovidRun.mutation.gql'
 import BUILD_COVID_RUN from '@/graphql/queries/client/BuildCovidRun.mutation.gql'
-import GET_COVID_RUN from '@/graphql/queries/GetCovidRun.query.gql'
 
 import Alert from '@/components/Alert'
 import Helper from '@/mixins/Helper'
@@ -47,11 +46,6 @@ export default {
         { position: 4, xPos: 480 },
         { position: 5, xPos: 560 }
       ]
-    }
-  },
-  props: {
-    id: {
-      type: [String, Number]
     }
   },
   components: {
@@ -87,39 +81,24 @@ export default {
       this.$router.push({ name: 'OntHeronRuns' })
     },
     buildRun () {
-      if (this.id === 'new') {
-        let flowcells = this.buildFlowcells()
-
-        this.$apollo.mutate({
-          mutation: BUILD_COVID_RUN,
-          variables: {
-            flowcells: flowcells
-          },
-          update: (cache, { data: { buildCovidRun } }) => {
-            cache.writeData({
-              data: {
-                run: {
-                  __typename: 'Run',
-                  id: 'new',
-                  flowcells: buildCovidRun.flowcells,
-                },
-              },
-            })
-          }
-        })
-      } else {
-        this.$apollo.query({
-          query: GET_COVID_RUN,
-          variables: {
-            id: this.id
-          },
-          update: (data => {
-            console.log('data!')
-            console.log(data)
+      let flowcells = this.buildFlowcells()
+      this.$apollo.mutate({
+        mutation: BUILD_COVID_RUN,
+        variables: {
+          flowcells: flowcells
+        },
+        update: (cache, { data: { buildCovidRun } }) => {
+          cache.writeData({
+            data: {
+              run: {
+                __typename: 'Run',
+                id: 'new',
+                flowcells: buildCovidRun.flowcells,
+              }
+            }
           })
-        })
-      }
-
+        }
+      })
     },
     buildFlowcells() {
       let flowcells = []
