@@ -1,6 +1,5 @@
 import Reception from '@/views/ont/OntReception'
 import { mount, localVue, Data } from '../../testHelper'
-import Alert from '@/components/Alert'
 import Response from '@/api/Response'
 import store from '@/store'
 import { transformPlates } from '@/api/SequencescapePlates'
