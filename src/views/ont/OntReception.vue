@@ -26,7 +26,7 @@
 import Alert from '@/components/Alert'
 import Helper from '@/mixins/Helper'
 import { getPlates, transformPlates} from '@/api/SequencescapePlates'
-import gql from 'graphql-tag'
+import CREATE_PLATE_WITH_COVID_SAMPLES from '@/graphql/queries/CreatePlateWithCovidSamples.mutation.gql'
 
 export default {
   name: 'Reception',
@@ -59,28 +59,17 @@ export default {
       await this.handleSequencesapePlates()
       if (this.plates === {}) return
       this.$apollo.mutate({
-        mutation: gql`mutation {
-            createPlateWithCovidSamples(
-                input: {
-                    arguments: ${this.plates[0]}
-                }
-            ) {
-                plate {
-                    id
-                    barcode
-                    wells {
-                        plateId
-                    }
-                }
-                errors
-            }
-        }`
+        mutation: CREATE_PLATE_WITH_COVID_SAMPLES,
+        variables: {
+          barcode: this.plates[0].barcode,
+          wells: this.plates[0].wells
+        }
       }).then(data => {
         let response = data.data.createPlateWithCovidSamples
         if (response.errors.length > 0) {
-          this.$emit('alert', 'Failure: ' + data.data.createPlateWithCovidSamples.errors.join(', '), 'danger')
+          this.showAlert('Failure: ' + data.data.createPlateWithCovidSamples.errors.join(', '), 'danger')
         } else {
-          this.$emit('alert', 'Plate successfully created', 'success')
+          this.showAlert('Plate successfully created', 'success')
         }
       })
     }

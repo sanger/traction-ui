@@ -1,0 +1,36 @@
+mutation ($barcode: String!, $wells: [WellWithSampleInput!]!) {
+  createPlateWithCovidSamples( 
+    input: { 
+      arguments: {
+        barcode: $barcode
+        wells: $wells
+      }
+    }
+  )
+  {
+    plate {
+      id
+      barcode
+      wells {
+        plateId
+      }
+    }
+    errors
+  }
+}
+
+# type Plate {
+#  barcode: String
+#  wells: [Well]
+# }
+# 
+# type Well {
+#  position: String
+#  sample: Sample
+# }
+#
+# type Sample {
+#  externalId: String
+#  name: String
+#  tagOligo: String 
+# }

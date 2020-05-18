@@ -18,9 +18,6 @@ describe('Reception', () => {
     wrapper = mount(Reception, {
       localVue,
       store,
-      stubs: {
-        Alert: Alert
-      },
       mocks: {
         $apollo: {
           mutate: mutate
@@ -108,6 +105,7 @@ describe('Reception', () => {
    beforeEach(() => {
     wrapper.setData({ barcodes: 'DN1234567\n', plates: transformPlates(mockPlates) })
     reception.getSequencescapePlates = jest.fn()
+    reception.showAlert = jest.fn()
    })
 
     it('shows an alert on success', async () => {
@@ -132,9 +130,7 @@ describe('Reception', () => {
       await flushPromises()
       expect(reception.getSequencescapePlates).toBeCalledWith(reception.getBarcodes())
       expect(mutate).toBeCalled()
-      expect(wrapper.emitted().alert).toBeTruthy()
-      expect(wrapper.emitted().alert[0][0]).toEqual('Plate successfully created')
-      expect(wrapper.emitted().alert[0][1]).toEqual('success')
+      expect(reception.showAlert).toBeCalledWith('Plate successfully created', 'success')
     })
 
     it('shows an alert on failure', async () => {
@@ -149,9 +145,7 @@ describe('Reception', () => {
       await button.trigger('click')
       await flushPromises()
       expect(mutate).toBeCalled()
-      expect(wrapper.emitted().alert).toBeTruthy()
-      expect(wrapper.emitted().alert[0][0]).toEqual('Failure: this is an error')
-      expect(wrapper.emitted().alert[0][1]).toEqual('danger')
+      expect(reception.showAlert).toBeCalledWith('Failure: this is an error', 'danger')
     })
   })
 

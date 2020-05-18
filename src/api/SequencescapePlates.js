@@ -20,14 +20,14 @@ const transformPlates = (plates) => {
 
 const transformWells = (wells) => {
   return wells.map(well => {
-    return {position: well.position.name, samples: transformAliquots(well.aliquots) }
+    return {position: well.position.name, sample: transformAliquots(well.aliquots) }
   })
 }
 
 const transformAliquots = (aliquots) => {
-  return aliquots.map(aliquot => {
-    return {externalId: aliquot.sample.uuid, name: aliquot.sample.sanger_sample_id, tagOligo: aliquot.tag_oligo }
-  })
+  let aliquot = aliquots[0]
+  if (aliquot === undefined) return
+  return {externalId: aliquot.sample.uuid, name: aliquot.sample.name, tagOligo: aliquot.tag_oligo }
 }
 
 export {
