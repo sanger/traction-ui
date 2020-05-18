@@ -26,7 +26,8 @@ describe('OntHeronRun.vue', () => {
         return {
           run: {}
         }
-      }
+      },
+      propsData: { id: 'new' }
     })
 
     run = wrapper.vm

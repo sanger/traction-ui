@@ -7,4 +7,12 @@ module.exports = {
       return { runId, flowcells }
     }
   },
+  Query: {
+    run(root, id, context, info) {
+      console.log(id)
+      console.log(context)
+      console.log(info)
+      return { root }
+    }
+  }
 }
