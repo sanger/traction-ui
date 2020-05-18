@@ -31,6 +31,9 @@ describe('OntLibraries.vue', () => {
         $apollo: {
           mutate: mutate
         }
+      },
+      methods: {
+        refetchLibraries() { return }
       }
     })
     libraries = wrapper.vm

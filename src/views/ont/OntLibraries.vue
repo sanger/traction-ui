@@ -63,7 +63,12 @@ export default {
   },
   apollo: {
     libraries: {
-      query: LIBRARIES_ALL_QUERY
+      query: LIBRARIES_ALL_QUERY,
+      variables () {
+        return {
+          unassignedToFlowcells: true,
+        }
+      },
     }
   },
   methods: {
@@ -81,7 +86,13 @@ export default {
           this.showAlert('Library was successully deleted', 'success')
         }
       })
+    },
+    refetchLibraries() {
+      this.$apollo.queries.libraries.refetch()
     }
+  },
+  created () {
+    this.refetchLibraries()
   }
 }
 
