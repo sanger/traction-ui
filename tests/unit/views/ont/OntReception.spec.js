@@ -128,7 +128,7 @@ describe('Reception', () => {
 
       response = await reception.createTractionPlate(reception.plates[0])
       expect(mutate).toBeCalled()
-      expect(response).toEqual({success: reception.plates[0].barcode})
+      expect(response).toEqual(`Plate ${reception.plates[0].barcode} successfully created`)
     })
 
     it('shows an alert on failure', async () => {
@@ -141,7 +141,7 @@ describe('Reception', () => {
       mutate.mockReturnValue(promise)
       response = await reception.createTractionPlate(reception.plates[0])
       expect(mutate).toBeCalled()
-      expect(response).toEqual({failure: `${reception.plates[0].barcode} - this is an error`})
+      expect(response).toEqual(`Plate ${reception.plates[0].barcode} - this is an error`)
     })
   })
 

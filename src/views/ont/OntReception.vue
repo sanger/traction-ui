@@ -49,6 +49,9 @@ export default {
     getBarcodes () {
       return this.barcodes.split('\n').filter(Boolean).join(',')
     },
+    reduceMessages(messages) {
+      return []
+    },
     async handleSequencesapePlates () {
       let jsonPlates = await this.getSequencescapePlates(this.getBarcodes())
       if (jsonPlates !== undefined) {
@@ -65,7 +68,6 @@ export default {
         })
         .catch(console.error)
       }, Promise.resolve())
-      console.log(message)
     },
     async createTractionPlate ({barcode, wells}) {
       return this.$apollo.mutate({
@@ -77,9 +79,9 @@ export default {
       }).then(data => {
         let response = data.data.createPlateWithCovidSamples
         if (response.errors.length > 0) {
-          return {failure: `${barcode} - ${data.data.createPlateWithCovidSamples.errors.join(', ')}`}
+          return `Plate ${barcode} - ${data.data.createPlateWithCovidSamples.errors.join(', ')}`
         } else {
-          return {success: barcode}
+          return `Plate ${barcode} successfully created`
         }
       })
     }
