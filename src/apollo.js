@@ -3,6 +3,7 @@ import ApolloClient from 'apollo-boost'
 import VueApollo from 'vue-apollo'
 import { InMemoryCache } from 'apollo-cache-inmemory'
 import gql from 'graphql-tag'
+import GET_CLIENT_RUN from '@/graphql/client/queries/GetClientRun.query.gql'
 
 const cache = new InMemoryCache()
 
@@ -20,7 +21,8 @@ let schema = gql`
   }
 
   type Query {
-    run: Run
+    run: Run,
+    libraryName(position: Integer!): String
   }
 
   type Mutation {
@@ -39,6 +41,9 @@ export const resolvers = {
     run() {
       return { id: '', flowcells: [{ position: '', library: { name: '' } }]}
     },
+    libraryName(_, { position }, { cache }) {
+      return "xx"
+    }
   },
   Mutation: {
     setRun(_, { id, flowcells }) {

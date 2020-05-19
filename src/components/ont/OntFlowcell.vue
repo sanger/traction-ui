@@ -14,6 +14,7 @@
 <script>
 import UPDATE_CLIENT_FLOWCELL from '@/graphql/client/queries/UpdateClientFlowcell.mutation.gql'
 import GET_CLIENT_RUN from '@/graphql/client/queries/GetClientRun.query.gql'
+import GET_CLIENT_LIBRARY_NAME from '@/graphql/client/queries/GetClientLibraryName.query.gql'
 
 export default {
   name: 'OntFlowcell',
@@ -25,11 +26,6 @@ export default {
     position: {
       type: Number,
       required: true
-    }
-  },
-  data () {
-    return {
-      libraryName: ''
     }
   },
   methods: {
@@ -68,7 +64,17 @@ export default {
         return 'empty'
       }
     }
-  }
+  },
+  apollo: {
+    libraryName: {
+      query: GET_CLIENT_LIBRARY_NAME,
+      variables () {
+        return {
+          position: this.position
+        }
+      },
+    }
+  },
 }
 </script>
 

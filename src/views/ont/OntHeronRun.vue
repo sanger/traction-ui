@@ -32,6 +32,7 @@ import OntRunLibrariesList from '@/components/ont/OntRunLibrariesList'
 import GET_CLIENT_RUN from '@/graphql/client/queries/GetClientRun.query.gql'
 import SET_CLIENT_RUN from '@/graphql/client/queries/SetClientRun.mutation.gql'
 import CREATE_RUN from '@/graphql/queries/CreateRun.mutation.gql'
+import GET_COVID_RUN from '@/graphql/queries/GetCovidRun.query.gql'
 
 import Alert from '@/components/Alert'
 import Helper from '@/mixins/Helper'
@@ -113,8 +114,36 @@ export default {
         this.showAlert('Failure to build run: ' + error, 'danger')
       })
     },
-    buildExistingRun (){
-      console.log("buildExistingRun")
+    async buildExistingRun (){
+      this.$apollo.query({
+        query: GET_COVID_RUN,
+        variables: {
+          id: this.id
+        },
+      }).then(data => {
+        let existingRun = data.data.ontRun
+
+        this.$apollo.mutate({
+          mutation: SET_CLIENT_RUN,
+          variables: {
+            id: existingRun.id,
+            flowcells: existingRun.flowcells
+          },
+          // Update the cache with the result
+          update: (store, { data: { setRun } }) => {
+            // Read the data from our cache for this query.
+            const data = store.readQuery({ query: GET_CLIENT_RUN })
+            // Update the data with our mutation response
+            data.run = setRun
+            // Write our data back to the cache
+            store.writeQuery({ query: GET_CLIENT_RUN, data })
+          }
+        }).then(() => {
+          this.loadedData = true
+        }).catch(error => {
+          this.showAlert('Failure to build run: ' + error, 'danger')
+        })
+      })
     },
     buildFlowcells() {
       let flowcells = []
