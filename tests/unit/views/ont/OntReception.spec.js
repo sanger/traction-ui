@@ -63,7 +63,7 @@ describe('Reception', () => {
     })
   })
 
-  describe('createTrtactionPlates button', () => {
+  describe('createTractionPlates button', () => {
 
     beforeEach(() => {
       reception.createTractionPlates = jest.fn()
@@ -99,7 +99,7 @@ describe('Reception', () => {
     })
   })
 
-  describe('create sequencescape plates', () => {
+  describe('create sequencescape plate', () => {
 
    beforeEach(() => {
     wrapper.setData({ barcodes: 'DN1234567\n', plates: transformPlates(mockPlates) })
@@ -124,10 +124,7 @@ describe('Reception', () => {
 
       mutate.mockReturnValue(promise)
 
-      let button = wrapper.find('#createTractionPlates')
-      await button.trigger('click')
-      await flushPromises()
-      expect(reception.getSequencescapePlates).toBeCalledWith(reception.getBarcodes())
+      await reception.createTractionPlate(reception.plates[0])
       expect(mutate).toBeCalled()
       expect(reception.showAlert).toBeCalledWith('Plate successfully created', 'success')
     })
@@ -140,12 +137,38 @@ describe('Reception', () => {
       })
 
       mutate.mockReturnValue(promise)
-      let button = wrapper.find('#createTractionPlates')
-      await button.trigger('click')
-      await flushPromises()
+      await reception.createTractionPlate(reception.plates[0])
       expect(mutate).toBeCalled()
       expect(reception.showAlert).toBeCalledWith('Failure: this is an error', 'danger')
     })
+  })
+
+  describe('create sequencescape plates', () => {
+
+    beforeEach(() => {
+      reception.getSequencescapePlates = jest.fn()
+      reception.showAlert = jest.fn()
+      reception.createTractionPlate = jest.fn()
+
+      mockPlates = barcodes.split('\n').map(barcode => ({ barcode: barcode, wells: {} }))
+      wrapper.setData({ barcodes: barcodes, plates: mockPlates })
+    })
+
+    it('will attempt to create all of the plates', async () => {
+
+      let promise = new Promise((resolve) => {
+        resolve('shit storm')
+      })
+
+      reception.createTractionPlate.mockReturnValue(promise)
+
+      let button = wrapper.find('#createTractionPlates')
+      await button.trigger('click')
+      await flushPromises()
+      expect(reception.getSequencescapePlates).toBeCalledWith(reception.getBarcodes())
+      expect(reception.createTractionPlate).toHaveBeenCalledTimes(mockPlates.length)
+    })
+
   })
 
 })

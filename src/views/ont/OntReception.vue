@@ -55,14 +55,17 @@ export default {
         this.plates = transformPlates(jsonPlates)
       }
     },
-    async createTractionPlates () {
+    async createTractionPlates() {
       await this.handleSequencesapePlates()
       if (this.plates === {}) return
+      await Promise.all(this.plates.map(plate => this.createTractionPlate(plate)))
+    },
+    async createTractionPlate ({barcode, wells}) {
       this.$apollo.mutate({
         mutation: CREATE_PLATE_WITH_COVID_SAMPLES,
         variables: {
-          barcode: this.plates[0].barcode,
-          wells: this.plates[0].wells
+          barcode,
+          wells
         }
       }).then(data => {
         let response = data.data.createPlateWithCovidSamples
