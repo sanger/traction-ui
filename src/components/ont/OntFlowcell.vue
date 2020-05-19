@@ -12,8 +12,8 @@
 </template>
 
 <script>
-import UPDATE_FLOWCELL from '@/graphql/client/queries/UpdateFlowcell.mutation.gql'
-import GET_RUN from '@/graphql/client/queries/GetRun.query.gql'
+import UPDATE_CLIENT_FLOWCELL from '@/graphql/client/queries/UpdateClientFlowcell.mutation.gql'
+import GET_CLIENT_RUN from '@/graphql/client/queries/GetClientRun.query.gql'
 
 export default {
   name: 'OntFlowcell',
@@ -35,16 +35,16 @@ export default {
   methods: {
     updateFlowcell () {
       this.$apollo.mutate({
-        mutation: UPDATE_FLOWCELL,
+        mutation: UPDATE_CLIENT_FLOWCELL,
         variables: {
           position: this.position,
           libraryName: this.libraryName
         },
         update: (store, { data: { updateFlowcell} }) => {
-          const data = store.readQuery({ query: GET_RUN })
+          const data = store.readQuery({ query: GET_CLIENT_RUN })
           const currentFlowcell = data.run.flowcells.find(flowcell => flowcell.position === updateFlowcell.position)
           currentFlowcell.libraryName = updateFlowcell.libraryName
-          store.writeQuery({ query: GET_RUN, data })
+          store.writeQuery({ query: GET_CLIENT_RUN, data })
         }
       })
     },

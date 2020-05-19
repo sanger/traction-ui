@@ -29,8 +29,8 @@
 import ONTSVG from '@/components/svg/ONTSVG'
 import OntFlowcell from '@/components/ont/OntFlowcell'
 import OntRunLibrariesList from '@/components/ont/OntRunLibrariesList'
-import GET_RUN from '@/graphql/client/queries/GetRun.query.gql'
-import SET_RUN from '@/graphql/client/queries/SetRun.mutation.gql'
+import GET_CLIENT_RUN from '@/graphql/client/queries/GetClientRun.query.gql'
+import SET_CLIENT_RUN from '@/graphql/client/queries/SetClientRun.mutation.gql'
 import CREATE_RUN from '@/graphql/queries/CreateRun.mutation.gql'
 
 import Alert from '@/components/Alert'
@@ -88,12 +88,12 @@ export default {
       if (this.id === "new") {
         this.buildNewRun()
       } else {
-        // this.buildExistingRun()
+        this.buildExistingRun()
       }
     },
     buildNewRun () {
       this.$apollo.mutate({
-        mutation: SET_RUN,
+        mutation: SET_CLIENT_RUN,
         variables: {
           id: 'new',
           flowcells: this.buildFlowcells()
@@ -101,11 +101,11 @@ export default {
         // Update the cache with the result
         update: (store, { data: { setRun } }) => {
           // Read the data from our cache for this query.
-          const data = store.readQuery({ query: GET_RUN })
+          const data = store.readQuery({ query: GET_CLIENT_RUN })
           // Update the data with our mutation response
           data.run = setRun
           // Write our data back to the cache
-          store.writeQuery({ query: GET_RUN, data })
+          store.writeQuery({ query: GET_CLIENT_RUN, data })
         }
       }).then(() => {
         this.loadedData = true
@@ -132,7 +132,7 @@ export default {
   },
   apollo: {
     run: {
-      query: GET_RUN,
+      query: GET_CLIENT_RUN,
       // Disable the query when run has already been loaded
       skip () {
         return this.loadedData
