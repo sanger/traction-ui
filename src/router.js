@@ -66,7 +66,8 @@ export default new Router({
         { path: 'plates', name: 'OntPlates', component: OntPlates },
         { path: 'libraries', name: 'OntLibraries', component: OntLibraries },
         { path: 'runs', name: 'OntHeronRuns', component: OntHeronRuns },
-        { path: 'run/:id', name: 'OntHeronRun', component: OntHeronRun, props: true }      ]
+        { path: 'run/:id', name: 'OntHeronRun', component: OntHeronRun, props: true }
+      ]
     },
     {
       path: '/404',

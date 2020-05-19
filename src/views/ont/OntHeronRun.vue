@@ -1,5 +1,6 @@
 <template>
   <div class="ont-heron-run">
+    {{ run }}
     <alert ref='alert'></alert>
 
     <div>
@@ -15,7 +16,7 @@
         </b-col>
         <b-col cols="6">
           <ONTSVG>
-            <OntFlowcell v-for="(flowcell, key) in flowcells" v-bind="flowcell" v-bind:key="key">
+            <OntFlowcell v-for="(flowcell, key) in flowcellsData" v-bind="flowcell" v-bind:key="key">
             </OntFlowcell>
           </ONTSVG>
         </b-col>
@@ -28,10 +29,9 @@
 import ONTSVG from '@/components/svg/ONTSVG'
 import OntFlowcell from '@/components/ont/OntFlowcell'
 import OntRunLibrariesList from '@/components/ont/OntRunLibrariesList'
-import ONT_HERON_RUN_QUERY from '@/graphql/client/queries/OntHeronRun.query.gql'
-import CREATE_COVID_RUN from '@/graphql/queries/CreateCovidRun.mutation.gql'
-import BUILD_COVID_RUN from '@/graphql/client/queries/BuildCovidRun.mutation.gql'
-import GET_COVID_RUN from '@/graphql/queries/GetCovidRun.query.gql' 
+import GET_RUN from '@/graphql/client/queries/GetRun.query.gql'
+import SET_RUN from '@/graphql/client/queries/SetRun.mutation.gql'
+import CREATE_RUN from '@/graphql/queries/CreateRun.mutation.gql'
 
 import Alert from '@/components/Alert'
 import Helper from '@/mixins/Helper'
@@ -40,13 +40,14 @@ export default {
   name: 'OntHeronRun',
   data () {
     return {
-      flowcells: [
+      flowcellsData: [
         { position: 1, xPos: 240 },
         { position: 2, xPos: 320 },
         { position: 3, xPos: 400 },
         { position: 4, xPos: 480 },
         { position: 5, xPos: 560 }
-      ]
+      ],
+      loadedData: false
     }
   },
   props: {
@@ -69,7 +70,7 @@ export default {
         .map(({__typename, ...keepAttrs}) => keepAttrs)
 
       this.$apollo.mutate({
-        mutation: CREATE_COVID_RUN,
+        mutation: CREATE_RUN,
         variables: {
           runId: this.run.id,
           flowcells: flowcells
@@ -83,62 +84,64 @@ export default {
         }
       })
     },
-    redirectToRuns() {
-      this.$router.push({ name: 'OntHeronRuns' })
-    },
-    buildRun () {
-      if (this.id === 'new') {
-        let flowcells = this.buildFlowcells()
-        this.$apollo.mutate({
-          mutation: BUILD_COVID_RUN,
-          variables: {
-            flowcells: flowcells
-          },
-          update: (cache, { data: { buildCovidRun } }) => {
-            cache.writeData({
-              data: {
-                run: {
-                  __typename: 'Run',
-                  id: 'new',
-                  flowcells: buildCovidRun.flowcells,
-                },
-              },
-            })
-          }
-        })
+    setRun () {
+      if (this.id === "new") {
+        this.buildNewRun()
       } else {
-        this.$apollo.query({
-          query: GET_COVID_RUN,
-          variables: {
-            id: this.id
-          },
-          update: (data => {
-            console.log('data!')
-            console.log(data)
-          })
-        })
+        // this.buildExistingRun()
       }
+    },
+    buildNewRun () {
+      this.$apollo.mutate({
+        mutation: SET_RUN,
+        variables: {
+          id: 'new',
+          flowcells: this.buildFlowcells()
+        },
+        // Update the cache with the result
+        update: (store, { data: { setRun } }) => {
+          // Read the data from our cache for this query.
+          const data = store.readQuery({ query: GET_RUN })
+          // Update the data with our mutation response
+          data.run = setRun
+          // Write our data back to the cache
+          store.writeQuery({ query: GET_RUN, data })
+        }
+      }).then(() => {
+        this.loadedData = true
+      }).catch(error => {
+        this.showAlert('Failure to build run: ' + error, 'danger')
+      })
+    },
+    buildExistingRun (){
+      console.log("buildExistingRun")
     },
     buildFlowcells() {
       let flowcells = []
       for (let position of [1,2,3,4,5]) {
         flowcells.push({
-          __typename: 'Flowcell',
           position: position,
           libraryName: '',
         })
       }
       return flowcells
     },
+    redirectToRuns() {
+      this.$router.push({ name: 'OntHeronRuns' })
+    }
   },
   apollo: {
     run: {
-      query: ONT_HERON_RUN_QUERY
+      query: GET_RUN,
+      // Disable the query when run has already been loaded
+      skip () {
+        return this.loadedData
+      },
     }
   },
-  created() {
-    this.buildRun()
-  }
+  created () {
+    this.setRun()
+  },
 }
 </script>
 

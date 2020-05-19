@@ -13,7 +13,7 @@
 
 <script>
 import UPDATE_FLOWCELL from '@/graphql/client/queries/UpdateFlowcell.mutation.gql'
-import ONT_HERON_RUN_QUERY from '@/graphql/client/queries/OntHeronRun.query.gql'
+import GET_RUN from '@/graphql/client/queries/GetRun.query.gql'
 
 export default {
   name: 'OntFlowcell',
@@ -40,11 +40,11 @@ export default {
           position: this.position,
           libraryName: this.libraryName
         },
-        update: (cache, { data: { updateFlowcell} }) => {
-          const data = cache.readQuery({ query: ONT_HERON_RUN_QUERY })
+        update: (store, { data: { updateFlowcell} }) => {
+          const data = store.readQuery({ query: GET_RUN })
           const currentFlowcell = data.run.flowcells.find(flowcell => flowcell.position === updateFlowcell.position)
           currentFlowcell.libraryName = updateFlowcell.libraryName
-          cache.writeQuery({ query: ONT_HERON_RUN_QUERY, data })
+          store.writeQuery({ query: GET_RUN, data })
         }
       })
     },
