@@ -1,0 +1,11 @@
+mutation ($libraryName: String!) {
+  deleteCovidLibrary( 
+    input: { 
+      libraryName: $libraryName
+    } 
+  ) 
+  { 
+    success
+    errors 
+  }
+}
