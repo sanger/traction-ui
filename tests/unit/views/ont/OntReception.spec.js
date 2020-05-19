@@ -101,11 +101,13 @@ describe('Reception', () => {
 
   describe('create sequencescape plate', () => {
 
-   beforeEach(() => {
-    wrapper.setData({ barcodes: 'DN1234567\n', plates: transformPlates(mockPlates) })
-    reception.getSequencescapePlates = jest.fn()
-    reception.showAlert = jest.fn()
-   })
+    let response 
+
+    beforeEach(() => {
+      wrapper.setData({ barcodes: 'DN1234567\n', plates: transformPlates(mockPlates) })
+      reception.getSequencescapePlates = jest.fn()
+      reception.showAlert = jest.fn()
+    })
 
     it('shows an alert on success', async () => {
 
@@ -124,9 +126,9 @@ describe('Reception', () => {
 
       mutate.mockReturnValue(promise)
 
-      await reception.createTractionPlate(reception.plates[0])
+      response = await reception.createTractionPlate(reception.plates[0])
       expect(mutate).toBeCalled()
-      expect(reception.showAlert).toBeCalledWith('Plate successfully created', 'success')
+      expect(response).toEqual({success: reception.plates[0].barcode})
     })
 
     it('shows an alert on failure', async () => {
@@ -137,9 +139,9 @@ describe('Reception', () => {
       })
 
       mutate.mockReturnValue(promise)
-      await reception.createTractionPlate(reception.plates[0])
+      response = await reception.createTractionPlate(reception.plates[0])
       expect(mutate).toBeCalled()
-      expect(reception.showAlert).toBeCalledWith('Failure: this is an error', 'danger')
+      expect(response).toEqual({failure: `${reception.plates[0].barcode} - this is an error`})
     })
   })
 

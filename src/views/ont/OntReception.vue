@@ -51,17 +51,24 @@ export default {
     },
     async handleSequencesapePlates () {
       let jsonPlates = await this.getSequencescapePlates(this.getBarcodes())
-      if (jsonPlates != undefined) {
+      if (jsonPlates !== undefined) {
         this.plates = transformPlates(jsonPlates)
       }
     },
     async createTractionPlates() {
       await this.handleSequencesapePlates()
       if (this.plates === {}) return
-      await Promise.all(this.plates.map(plate => this.createTractionPlate(plate)))
+      let message = []
+      this.plates.reduce((promise, plate) => {
+        return promise.then(() => {
+          return this.createTractionPlate(plate).then(result => message.push(result))
+        })
+        .catch(console.error)
+      }, Promise.resolve())
+      console.log(message)
     },
     async createTractionPlate ({barcode, wells}) {
-      this.$apollo.mutate({
+      return this.$apollo.mutate({
         mutation: CREATE_PLATE_WITH_COVID_SAMPLES,
         variables: {
           barcode,
@@ -70,9 +77,9 @@ export default {
       }).then(data => {
         let response = data.data.createPlateWithCovidSamples
         if (response.errors.length > 0) {
-          this.showAlert('Failure: ' + data.data.createPlateWithCovidSamples.errors.join(', '), 'danger')
+          return {failure: `${barcode} - ${data.data.createPlateWithCovidSamples.errors.join(', ')}`}
         } else {
-          this.showAlert('Plate successfully created', 'success')
+          return {success: barcode}
         }
       })
     }
