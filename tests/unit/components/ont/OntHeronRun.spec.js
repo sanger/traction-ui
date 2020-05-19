@@ -73,9 +73,10 @@ describe('OntHeronRun.vue', () => {
 
       let flowcells = [
         {
-          __typename: 'Flowcell',
-          libraryName: 'TRAC-1-1',
-          position: 1
+          position: 1,
+          library: {
+            name: 'TRAC-1-1'
+          }
         }
       ]
       wrapper.setData({ run: { flowcells: flowcells } })

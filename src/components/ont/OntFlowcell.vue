@@ -43,7 +43,7 @@ export default {
         update: (store, { data: { updateFlowcell} }) => {
           const data = store.readQuery({ query: GET_CLIENT_RUN })
           const currentFlowcell = data.run.flowcells.find(flowcell => flowcell.position === updateFlowcell.position)
-          currentFlowcell.libraryName = updateFlowcell.libraryName
+          currentFlowcell.library.name = updateFlowcell.libraryName
           store.writeQuery({ query: GET_CLIENT_RUN, data })
         }
       })

@@ -64,15 +64,15 @@ export default {
   mixins: [Helper],
   methods: {
     createRun () {
-      const flowcells = this.run.flowcells
-        .filter(fc => fc.libraryName)
-        // eslint-disable-next-line
-        .map(({__typename, ...keepAttrs}) => keepAttrs)
+      let flowcells = this.run.flowcells
+        .filter(fc => fc.library.name)
+        .map((fc => {
+          return { position: fc.position, libraryName: fc.library.name }
+        }))
 
       this.$apollo.mutate({
         mutation: CREATE_RUN,
         variables: {
-          runId: this.run.id,
           flowcells: flowcells
         }
       }).then(data => {
@@ -121,7 +121,9 @@ export default {
       for (let position of [1,2,3,4,5]) {
         flowcells.push({
           position: position,
-          libraryName: '',
+          library: {
+            name: '',
+          }
         })
       }
       return flowcells

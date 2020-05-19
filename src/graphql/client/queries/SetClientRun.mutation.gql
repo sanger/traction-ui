@@ -3,7 +3,9 @@ mutation ($id: ID!, $flowcells: [Flowcell!]!) {
     id
     flowcells {
       position
-      libraryName
+      library {
+        name
+      }
     }
   }
 }

@@ -37,7 +37,7 @@ let schema = gql`
 export const resolvers = {
   Query: {
     run() {
-      return { id: '', flowcells: [{ position: '', libraryName: '' }]}
+      return { id: '', flowcells: [{ position: '', library: { name: '' } }]}
     },
   },
   Mutation: {
