@@ -122,12 +122,6 @@ describe('OntHeronRun.vue', () => {
     })
   })
 
-  describe('#buildFlowcells', () => {
-    it('build the flowcells for a new run', () => {
-      expect(run.buildFlowcells().length).toEqual(5)
-    })
-  })
-
   describe('#buildRun', () => {
     it.skip('calls the mutation to build a new run', () => {
       run.buildNewRun

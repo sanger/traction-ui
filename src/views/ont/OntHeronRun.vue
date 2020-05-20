@@ -53,13 +53,15 @@ export default {
           id: 'create-button',
           variant: 'success',
           label: 'Create Run',
-          method: 'createRun'
+          mutation: CREATE_RUN,
+          response: 'createCovidRun'
         },
         update: {
           id: 'update-button',
           variant: 'primary',
           label: 'Update Run',
-          method: 'updateRun'
+          mutation: UPDATE_RUN,
+          response: 'updateCovidRun'
         }
       },
       newRecord: isNaN(this.id)
@@ -79,63 +81,39 @@ export default {
   mixins: [Helper],
   methods: {
     runAction () {
-      this[this.currentAction.method]()
+      this.$apollo.mutate({
+        mutation: this.currentAction.mutation,
+        variables: this.runActionVariables()
+      }).then(data => {
+        let response = data.data[this.currentAction.response]
+        if (response.errors.length > 0) {
+          this.showAlert('Failure: ' + response.errors.join(', '), 'danger')
+        } else {
+          this.redirectToRuns()
+        }
+      })
     },
-    createRun () {
+    runActionVariables () {
       let flowcells = this.run.flowcells
         .filter(fc => fc.library.name)
         .map((fc => {
           return { position: fc.position, libraryName: fc.library.name }
         }))
 
-      this.$apollo.mutate({
-        mutation: CREATE_RUN,
-        variables: {
-          flowcells: flowcells
-        }
-      }).then(data => {
-        let response = data.data.createCovidRun
-        if (response.errors.length > 0) {
-          this.showAlert('Failure: ' + data.data.createCovidRun.errors.join(', '), 'danger')
-        } else {
-          this.redirectToRuns()
-        }
-      })
-    },
-    updateRun () {
-      let flowcells = this.run.flowcells
-        .filter(fc => fc.library.name)
-        .map((fc => {
-          return { position: fc.position, libraryName: fc.library.name }
-        }))
+      let variables = {
+        flowcells: flowcells
+      }
 
-      this.$apollo.mutate({
-        mutation: UPDATE_RUN,
-        variables: {
-          id: this.run.id,
-          flowcells: flowcells
-        }
-      }).then(data => {
-        let response = data.data.updateCovidRun
-        if (response.errors.length > 0) {
-          this.showAlert('Failure: ' + data.data.updateCovidRun.errors.join(', '), 'danger')
-        } else {
-          this.redirectToRuns()
-        }
-      })  
-    },
-    setRun () {
-      this.$apollo.mutate({
-        mutation: SET_CLIENT_RUN,
-        variables: {
-          id: '',
-          flowcells: []
-        }
-      })
+      if (!this.newRecord) {
+        variables.id = this.id
+      }
 
-      if (this.id === "new") {
-        this.buildRun("new", this.buildFlowcells())
-      } else {
+      return variables
+    },
+    buildRun () {
+      this.setRun('', [])
+
+      if (!this.newRecord) {
         this.$apollo.query({
           query: GET_RUN,
           variables: {
@@ -143,11 +121,11 @@ export default {
           },
         }).then(data => {
           let existingRun = data.data.ontRun
-          this.buildRun(existingRun.id, existingRun.flowcells)
+          this.setRun(existingRun.id, existingRun.flowcells)
         })
       }
     },
-    buildRun(id, flowcells) {
+    setRun(id, flowcells) {
       this.$apollo.mutate({
         mutation: SET_CLIENT_RUN,
         variables: {
@@ -158,13 +136,6 @@ export default {
       .catch(error => {
         this.showAlert('Failure to build run: ' + error, 'danger')
       })
-    },
-    buildFlowcells() {
-      let flowcells = []
-      for (let position of [1,2,3,4,5]) {
-        flowcells.push({ position: position, library: { name: '' } })
-      }
-      return flowcells
     },
     redirectToRuns() {
       this.$router.push({ name: 'OntHeronRuns' })
@@ -182,7 +153,7 @@ export default {
     }
   },
   created () {
-    this.setRun()
+    this.buildRun()
   },
 }
 </script>
