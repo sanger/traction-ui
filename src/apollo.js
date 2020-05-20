@@ -16,7 +16,7 @@ cache.writeData({
         flowcells: []
       },
   },
-});
+})
 
 Vue.use(VueApollo)
 

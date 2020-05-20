@@ -125,6 +125,14 @@ export default {
       })  
     },
     setRun () {
+      this.$apollo.mutate({
+        mutation: SET_CLIENT_RUN,
+        variables: {
+          id: '',
+          flowcells: []
+        }
+      })
+
       if (this.id === "new") {
         this.buildRun("new", this.buildFlowcells())
       } else {
@@ -164,7 +172,8 @@ export default {
   },
   apollo: {
     run: {
-      query: GET_CLIENT_RUN
+      query: GET_CLIENT_RUN,
+      pollInterval: 100
     }
   },
   computed: {
