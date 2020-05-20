@@ -18,19 +18,3 @@ mutation ($barcode: String!, $wells: [WellWithSampleInput!]!) {
     errors
   }
 }
-
-# type Plate {
-#  barcode: String
-#  wells: [Well]
-# }
-# 
-# type Well {
-#  position: String
-#  sample: Sample
-# }
-#
-# type Sample {
-#  externalId: String
-#  name: String
-#  tagOligo: String 
-# }
