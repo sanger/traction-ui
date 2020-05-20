@@ -21,6 +21,9 @@ describe('OntPlates.vue', () => {
         return {
           plates: platesData
         }
+      },
+      methods: {
+        refetchPlates() { return }
       }
     })
     plates = wrapper.vm

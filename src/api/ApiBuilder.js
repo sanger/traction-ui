@@ -32,6 +32,7 @@ const buildComponent = (component, props) => {
 
 const apiProps = (api, props, environment) => {
   const baseURL = environment[`VUE_APP_${api.toUpperCase()}_BASE_URL`]
+  if (baseURL === undefined) { console.error(`It looks like you haven't set the environment variable for ${api}. Please set it in the .env file`) }
   return { baseURL: baseURL, ...props}
 }
 
