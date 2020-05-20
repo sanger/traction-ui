@@ -67,7 +67,6 @@ export const resolvers = {
   },
   Mutation: {
     setRun(_, { id, flowcells }, { cache }) {
-      console.log("1")
       const data = cache.readQuery({ query: runQuery })
       data.run.id = id
       data.run.flowcells = flowcells
