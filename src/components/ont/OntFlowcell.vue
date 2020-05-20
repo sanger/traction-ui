@@ -12,8 +12,8 @@
 </template>
 
 <script>
-import UPDATE_FLOWCELL from '@/graphql/client/queries/UpdateFlowcell.mutation.gql'
-import ONT_HERON_RUN_QUERY from '@/graphql/client/queries/OntHeronRun.query.gql'
+import UPDATE_FLOWCELL from '@/graphql/queries/client/UpdateFlowcell.mutation.gql'
+import ONT_HERON_RUN_QUERY from '@/graphql/queries/client/OntHeronRun.query.gql'
 
 export default {
   name: 'OntFlowcell',

@@ -28,9 +28,9 @@
 import ONTSVG from '@/components/svg/ONTSVG'
 import OntFlowcell from '@/components/ont/OntFlowcell'
 import OntRunLibrariesList from '@/components/ont/OntRunLibrariesList'
-import ONT_HERON_RUN_QUERY from '@/graphql/client/queries/OntHeronRun.query.gql'
+import ONT_HERON_RUN_QUERY from '@/graphql/queries/client/OntHeronRun.query.gql'
 import CREATE_COVID_RUN from '@/graphql/queries/CreateCovidRun.mutation.gql'
-import BUILD_COVID_RUN from '@/graphql/client/queries/BuildCovidRun.mutation.gql'
+import BUILD_COVID_RUN from '@/graphql/queries/client/BuildCovidRun.mutation.gql'
 
 import Alert from '@/components/Alert'
 import Helper from '@/mixins/Helper'
