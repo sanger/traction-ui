@@ -1,0 +1,17 @@
+mutation ($id: ID!, $state: RunStateEnum, $flowcells: [FlowcellInput!]) {
+  updateCovidRun( 
+    input: { 
+      id: $id 
+      properties: { 
+        state: $state, 
+        flowcells: $flowcells 
+      } 
+    } 
+  )
+  { 
+    run { 
+      id 
+    } 
+    errors 
+  }
+}

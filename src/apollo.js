@@ -2,7 +2,9 @@ import Vue from 'vue'
 import ApolloClient from 'apollo-boost'
 import VueApollo from 'vue-apollo'
 import { InMemoryCache } from 'apollo-cache-inmemory'
+import GET_CLIENT_RUN from '@/graphql/client/queries/GetClientRun.query.gql'
 import gql from 'graphql-tag'
+
 const cache = new InMemoryCache()
 
 cache.writeData({
@@ -44,19 +46,10 @@ let schema = gql`
   }
 `
 
-const runQuery = gql`
-  {
-    run @client {
-      id
-      flowcells
-    }
-  }
-`;
-
 export const resolvers = {
   Query: {
     flowcell(_, { position }, { cache }) {
-      const data = cache.readQuery({ query: runQuery })
+      const data = cache.readQuery({ query: GET_CLIENT_RUN })
       let fc = data.run.flowcells.filter(fc => fc.position === position)[0]
       let libraryName = ''
       if (fc) {
@@ -67,32 +60,22 @@ export const resolvers = {
   },
   Mutation: {
     setRun(_, { id, flowcells }, { cache }) {
-      const data = cache.readQuery({ query: runQuery })
+      const data = cache.readQuery({ query: GET_CLIENT_RUN })
       data.run.id = id
       data.run.flowcells = flowcells
-      cache.writeQuery({ query: runQuery, data })
-      // return { run: data.run }
+      cache.writeQuery({ query: GET_CLIENT_RUN, data })
     },
     updateFlowcell(_, { position, libraryName }, { cache }) {
-      const data = cache.readQuery({ query: runQuery })
+      const data = cache.readQuery({ query: GET_CLIENT_RUN })
       const currentFlowcell = data.run.flowcells.find(flowcell => flowcell.position === position)
 
       if (currentFlowcell) {
         currentFlowcell.library.name = libraryName
       } else {
-        data.run.flowcells.push(
-          {
-            position: position,
-            library: {
-              name: libraryName
-            }
-          }
-        )
+        data.run.flowcells.push({ position: position, library: { name: libraryName } })
       }
 
-      cache.writeQuery({ query: runQuery, data })
-
-      return { position, libraryName }
+      cache.writeQuery({ query: GET_CLIENT_RUN, data })
     },
   },
 }

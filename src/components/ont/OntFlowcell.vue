@@ -1,9 +1,6 @@
 <template>
   <g :transform="getMatrix" v-on:drop="drop" v-on:dragover="allowDrop" >
     <text x="25" y="30" class="medium">{{ position }}</text>
-    
-    <text x="25" y="10" class="medium">{{ libraryName }}</text>
-
     <rect width="70" height="227" v-bind:class="status"/>
     <title v-text="this.libraryName"></title>
 
@@ -41,10 +38,7 @@ export default {
         variables: {
           position: this.position,
           libraryName: this.libraryName
-        },
-        // update: (store, { data: { updateFlowcell } }) => {
-        //   this.libraryName = updateFlowcell.libraryName
-        // }
+        }
       })
     },
     allowDrop (event) {

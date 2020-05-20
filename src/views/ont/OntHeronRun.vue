@@ -24,16 +24,14 @@
 
 <script>
 
-import gql from 'graphql-tag'
 import ONTSVG from '@/components/svg/ONTSVG'
 import OntFlowcell from '@/components/ont/OntFlowcell'
 import OntRunLibrariesList from '@/components/ont/OntRunLibrariesList'
-// import GET_CLIENT_RUN from '@/graphql/client/queries/GetClientRun.query.gql'
+import GET_CLIENT_RUN from '@/graphql/client/queries/GetClientRun.query.gql'
 import SET_CLIENT_RUN from '@/graphql/client/queries/SetClientRun.mutation.gql'
+import GET_RUN from '@/graphql/queries/GetCovidRun.query.gql'
 import CREATE_RUN from '@/graphql/queries/CreateRun.mutation.gql'
 import UPDATE_RUN from '@/graphql/queries/UpdateRun.mutation.gql'
-
-import GET_RUN from '@/graphql/queries/GetCovidRun.query.gql'
 
 import Alert from '@/components/Alert'
 import Helper from '@/mixins/Helper'
@@ -127,14 +125,6 @@ export default {
       })  
     },
     setRun () {
-      this.$apollo.mutate({
-        mutation: SET_CLIENT_RUN,
-        variables: {
-          id: '',
-          flowcells: []
-        }
-      })
-
       if (this.id === "new") {
         this.buildRun("new", this.buildFlowcells())
       } else {
@@ -173,12 +163,9 @@ export default {
     }
   },
   apollo: {
-    run: gql`query {
-      run @client {
-        id 
-        flowcells
-      }
-    }`
+    run: {
+      query: GET_CLIENT_RUN
+    }
   },
   computed: {
     currentAction () {
