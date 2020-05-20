@@ -49,25 +49,26 @@ export default {
     getBarcodes () {
       return this.barcodes.split('\n').filter(Boolean).join(',')
     },
-    reduceMessages(messages) {
-      return []
-    },
     async handleSequencesapePlates () {
       let jsonPlates = await this.getSequencescapePlates(this.getBarcodes())
       if (jsonPlates !== undefined) {
         this.plates = transformPlates(jsonPlates)
       }
     },
+    // https://decembersoft.com/posts/promises-in-serial-with-array-reduce/
+    // TODO: simplify with await
     async createTractionPlates() {
       await this.handleSequencesapePlates()
       if (this.plates === {}) return
-      let message = []
-      this.plates.reduce((promise, plate) => {
-        return promise.then(() => {
-          return this.createTractionPlate(plate).then(result => message.push(result))
-        })
+      
+      this.plates.reduce((promiseChain, plate) => {
+        return promiseChain.then((chainResults) => 
+          this.createTractionPlate(plate).then(result => [...chainResults, result])
+        )
         .catch(console.error)
-      }, Promise.resolve())
+      }, Promise.resolve([])).then(results => {
+        this.showAlert(results.join(','), 'success')
+      })
     },
     async createTractionPlate ({barcode, wells}) {
       return this.$apollo.mutate({
@@ -79,7 +80,7 @@ export default {
       }).then(data => {
         let response = data.data.createPlateWithCovidSamples
         if (response.errors.length > 0) {
-          return `Plate ${barcode} - ${data.data.createPlateWithCovidSamples.errors.join(', ')}`
+          return `Plate ${barcode} - ${response.errors.join(', ')}`
         } else {
           return `Plate ${barcode} successfully created`
         }

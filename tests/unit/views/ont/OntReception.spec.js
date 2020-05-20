@@ -169,6 +169,7 @@ describe('Reception', () => {
       await flushPromises()
       expect(reception.getSequencescapePlates).toBeCalledWith(reception.getBarcodes())
       expect(reception.createTractionPlate).toHaveBeenCalledTimes(mockPlates.length)
+      expect(reception.showAlert).toBeCalledWith('shit storm,shit storm,shit storm,shit storm,shit storm', 'success')
     })
 
   })

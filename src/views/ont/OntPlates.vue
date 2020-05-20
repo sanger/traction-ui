@@ -52,7 +52,13 @@ export default {
   methods: {
     alert(message, type) {
       this.showAlert(message, type)
+    },
+    refetchPlates() {
+      this.$apollo.queries.plates.refetch()
     }
+  },
+  created () {
+    this.refetchPlates()
   }
 }
 </script>
