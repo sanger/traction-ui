@@ -3,9 +3,18 @@ import ApolloClient from 'apollo-boost'
 import VueApollo from 'vue-apollo'
 import { InMemoryCache } from 'apollo-cache-inmemory'
 import gql from 'graphql-tag'
-import GET_CLIENT_RUN from '@/graphql/client/queries/GetClientRun.query.gql'
-
 const cache = new InMemoryCache()
+
+cache.writeData({
+  data: {
+    run:
+      {
+        __typename: 'Run',
+        id: '',
+        flowcells: []
+      },
+  },
+});
 
 Vue.use(VueApollo)
 
@@ -21,12 +30,11 @@ let schema = gql`
   }
 
   type Query {
-    run: Run,
-    libraryName(position: Integer!): String
+    flowcell(position: Integer!): String
   }
 
   type Mutation {
-    setRun(id: ID!, flowcells: [Flowcell!]!): Run
+    setRun(id: ID!, flowcells: [Flowcell!]!): Run 
     updateFlowcell(position: Integer!, libraryName: String!): Flowcell
   }
 
@@ -36,20 +44,55 @@ let schema = gql`
   }
 `
 
+const runQuery = gql`
+  {
+    run @client {
+      id
+      flowcells
+    }
+  }
+`;
+
 export const resolvers = {
   Query: {
-    run() {
-      return { id: '', flowcells: [{ position: '', library: { name: '' } }]}
-    },
-    libraryName(_, { position }, { cache }) {
-      return "xx"
+    flowcell(_, { position }, { cache }) {
+      const data = cache.readQuery({ query: runQuery })
+      let fc = data.run.flowcells.filter(fc => fc.position === position)[0]
+      let libraryName = ''
+      if (fc) {
+        libraryName = fc.library.name
+      }
+      return libraryName
     }
   },
   Mutation: {
-    setRun(_, { id, flowcells }) {
-      return { id, flowcells }
+    setRun(_, { id, flowcells }, { cache }) {
+      console.log("1")
+      const data = cache.readQuery({ query: runQuery })
+      data.run.id = id
+      data.run.flowcells = flowcells
+      cache.writeQuery({ query: runQuery, data })
+      // return { run: data.run }
     },
-    updateFlowcell(_, { position, libraryName }) {
+    updateFlowcell(_, { position, libraryName }, { cache }) {
+      const data = cache.readQuery({ query: runQuery })
+      const currentFlowcell = data.run.flowcells.find(flowcell => flowcell.position === position)
+
+      if (currentFlowcell) {
+        currentFlowcell.library.name = libraryName
+      } else {
+        data.run.flowcells.push(
+          {
+            position: position,
+            library: {
+              name: libraryName
+            }
+          }
+        )
+      }
+
+      cache.writeQuery({ query: runQuery, data })
+
       return { position, libraryName }
     },
   },

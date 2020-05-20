@@ -26,13 +26,15 @@
 </template>
 
 <script>
+
+import gql from 'graphql-tag'
 import ONTSVG from '@/components/svg/ONTSVG'
 import OntFlowcell from '@/components/ont/OntFlowcell'
 import OntRunLibrariesList from '@/components/ont/OntRunLibrariesList'
-import GET_CLIENT_RUN from '@/graphql/client/queries/GetClientRun.query.gql'
+// import GET_CLIENT_RUN from '@/graphql/client/queries/GetClientRun.query.gql'
 import SET_CLIENT_RUN from '@/graphql/client/queries/SetClientRun.mutation.gql'
 import CREATE_RUN from '@/graphql/queries/CreateRun.mutation.gql'
-import GET_COVID_RUN from '@/graphql/queries/GetCovidRun.query.gql'
+import GET_RUN from '@/graphql/queries/GetCovidRun.query.gql'
 
 import Alert from '@/components/Alert'
 import Helper from '@/mixins/Helper'
@@ -48,7 +50,7 @@ export default {
         { position: 4, xPos: 480 },
         { position: 5, xPos: 560 }
       ],
-      loadedData: false
+      run: {}
     }
   },
   props: {
@@ -86,74 +88,44 @@ export default {
       })
     },
     setRun () {
-      if (this.id === "new") {
-        this.buildNewRun()
-      } else {
-        this.buildExistingRun()
-      }
-    },
-    buildNewRun () {
       this.$apollo.mutate({
         mutation: SET_CLIENT_RUN,
         variables: {
-          id: 'new',
-          flowcells: this.buildFlowcells()
-        },
-        // Update the cache with the result
-        update: (store, { data: { setRun } }) => {
-          // Read the data from our cache for this query.
-          const data = store.readQuery({ query: GET_CLIENT_RUN })
-          // Update the data with our mutation response
-          data.run = setRun
-          // Write our data back to the cache
-          store.writeQuery({ query: GET_CLIENT_RUN, data })
+          id: '',
+          flowcells: []
         }
-      }).then(() => {
-        this.loadedData = true
-      }).catch(error => {
-        this.showAlert('Failure to build run: ' + error, 'danger')
       })
-    },
-    async buildExistingRun (){
-      this.$apollo.query({
-        query: GET_COVID_RUN,
-        variables: {
-          id: this.id
-        },
-      }).then(data => {
-        let existingRun = data.data.ontRun
 
-        this.$apollo.mutate({
-          mutation: SET_CLIENT_RUN,
+      if (this.id === "new") {
+        this.buildRun("new", this.buildFlowcells())
+      } else {
+        this.$apollo.query({
+          query: GET_RUN,
           variables: {
-            id: existingRun.id,
-            flowcells: existingRun.flowcells
+            id: this.id
           },
-          // Update the cache with the result
-          update: (store, { data: { setRun } }) => {
-            // Read the data from our cache for this query.
-            const data = store.readQuery({ query: GET_CLIENT_RUN })
-            // Update the data with our mutation response
-            data.run = setRun
-            // Write our data back to the cache
-            store.writeQuery({ query: GET_CLIENT_RUN, data })
-          }
-        }).then(() => {
-          this.loadedData = true
-        }).catch(error => {
-          this.showAlert('Failure to build run: ' + error, 'danger')
+        }).then(data => {
+          let existingRun = data.data.ontRun
+          this.buildRun(existingRun.id, existingRun.flowcells)
         })
+      }
+    },
+    buildRun(id, flowcells) {
+      this.$apollo.mutate({
+        mutation: SET_CLIENT_RUN,
+        variables: {
+          id: id,
+          flowcells: flowcells
+        }
+      })
+      .catch(error => {
+        this.showAlert('Failure to build run: ' + error, 'danger')
       })
     },
     buildFlowcells() {
       let flowcells = []
       for (let position of [1,2,3,4,5]) {
-        flowcells.push({
-          position: position,
-          library: {
-            name: '',
-          }
-        })
+        flowcells.push({ position: position, library: { name: '' } })
       }
       return flowcells
     },
@@ -162,13 +134,12 @@ export default {
     }
   },
   apollo: {
-    run: {
-      query: GET_CLIENT_RUN,
-      // Disable the query when run has already been loaded
-      skip () {
-        return this.loadedData
-      },
-    }
+    run: gql`query {
+      run @client {
+        id 
+        flowcells
+      }
+    }`
   },
   created () {
     this.setRun()

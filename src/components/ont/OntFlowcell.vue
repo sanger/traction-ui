@@ -1,6 +1,8 @@
 <template>
   <g :transform="getMatrix" v-on:drop="drop" v-on:dragover="allowDrop" >
     <text x="25" y="30" class="medium">{{ position }}</text>
+    
+    <text x="25" y="10" class="medium">{{ libraryName }}</text>
 
     <rect width="70" height="227" v-bind:class="status"/>
     <title v-text="this.libraryName"></title>
@@ -12,9 +14,8 @@
 </template>
 
 <script>
+import GET_CLIENT_FLOWCELL from '@/graphql/client/queries/GetClientFlowcell.query.gql'
 import UPDATE_CLIENT_FLOWCELL from '@/graphql/client/queries/UpdateClientFlowcell.mutation.gql'
-import GET_CLIENT_RUN from '@/graphql/client/queries/GetClientRun.query.gql'
-import GET_CLIENT_LIBRARY_NAME from '@/graphql/client/queries/GetClientLibraryName.query.gql'
 
 export default {
   name: 'OntFlowcell',
@@ -28,6 +29,11 @@ export default {
       required: true
     }
   },
+  data () {
+    return {
+      libraryName: '',
+    }
+  },
   methods: {
     updateFlowcell () {
       this.$apollo.mutate({
@@ -36,12 +42,9 @@ export default {
           position: this.position,
           libraryName: this.libraryName
         },
-        update: (store, { data: { updateFlowcell} }) => {
-          const data = store.readQuery({ query: GET_CLIENT_RUN })
-          const currentFlowcell = data.run.flowcells.find(flowcell => flowcell.position === updateFlowcell.position)
-          currentFlowcell.library.name = updateFlowcell.libraryName
-          store.writeQuery({ query: GET_CLIENT_RUN, data })
-        }
+        // update: (store, { data: { updateFlowcell } }) => {
+        //   this.libraryName = updateFlowcell.libraryName
+        // }
       })
     },
     allowDrop (event) {
@@ -50,7 +53,7 @@ export default {
     drop (event) {
       this.libraryName = event.dataTransfer.getData('name')
       this.updateFlowcell()
-    },
+    }
   },
   computed: {
     // Determines the flowcells x/y coordinates
@@ -67,14 +70,15 @@ export default {
   },
   apollo: {
     libraryName: {
-      query: GET_CLIENT_LIBRARY_NAME,
+      query: GET_CLIENT_FLOWCELL,
       variables () {
         return {
-          position: this.position
+          position: this.position,
         }
       },
+      pollInterval: 100
     }
-  },
+  }
 }
 </script>
 
