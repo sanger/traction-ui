@@ -24,8 +24,9 @@
   {
     "name": "ont",
     "title": "ONT",
-    "description": "",
+    "description": "A LIMS pipeline to support tracking for ONT Long-Read Sequencing",
     "routes": [
+      "reception",
       "plates",
       "libraries",
       "runs"

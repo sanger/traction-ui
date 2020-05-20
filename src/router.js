@@ -15,6 +15,7 @@ import PacbioLibraries from './views/pacbio/PacbioLibraries'
 import PacbioRuns from './views/pacbio/PacbioRuns'
 import PacbioRun from './views/pacbio/PacbioRun'
 import ONT from './views/ONT'
+import OntReception from './views/ont/OntReception'
 import OntPlates from './views/ont/OntPlates'
 import OntLibraries from './views/ont/OntLibraries'
 import OntHeronRun from './views/ont/OntHeronRun'
@@ -63,6 +64,8 @@ export default new Router({
       path: '/ont',
       component: ONT,
       children: [
+        { path: '', redirect: 'reception'},
+        { path: 'reception', name: 'OntReception', component: OntReception },
         { path: 'plates', name: 'OntPlates', component: OntPlates },
         { path: 'libraries', name: 'OntLibraries', component: OntLibraries },
         { path: 'runs', name: 'OntHeronRuns', component: OntHeronRuns },

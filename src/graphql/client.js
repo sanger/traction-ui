@@ -1,8 +1,8 @@
 import Vue from 'vue'
-import ApolloClient from 'apollo-boost'
 import VueApollo from 'vue-apollo'
+import ApolloClient from 'apollo-boost'
 import { InMemoryCache } from 'apollo-cache-inmemory'
-import GET_CLIENT_RUN from '@/graphql/client/queries/GetClientRun.query.gql'
+import GET_CLIENT_RUN from '@/graphql/queries/client/GetClientRun.query.gql'
 import gql from 'graphql-tag'
 
 const cache = new InMemoryCache()
@@ -87,8 +87,6 @@ const apolloClient = new ApolloClient({
   resolvers,
 })
 
-const apolloProvider = new VueApollo({
+export const apolloProvider = new VueApollo({
   defaultClient: apolloClient,
 })
-
-export default apolloProvider

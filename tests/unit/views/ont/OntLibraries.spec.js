@@ -3,9 +3,11 @@ import { mount, localVue } from '../../testHelper'
 import PrinterModal from '@/components/PrinterModal'
 
 describe('OntLibraries.vue', () => {
-  let wrapper, libraries, librariesData
+  let wrapper, libraries, librariesData, mutate
 
   beforeEach(() => {
+    mutate = jest.fn()
+
     librariesData = [
       { id: 1, tube_barcode: 'TRAC-2-1', plate_barcode: 'TRAC-1-1', poolSize: 1, wellRange: 'A1-H3', tag_set: 24 },
       { id: 2, tube_barcode: 'TRAC-2-2', plate_barcode: 'TRAC-1-1', poolSize: 2, wellRange: 'A4-H6', tag_set: 24 },
@@ -22,7 +24,12 @@ describe('OntLibraries.vue', () => {
       },
       data() {
         return {
-          libraries: librariesData
+          libraries: librariesData,
+        }
+      },
+      mocks: {
+        $apollo: {
+          mutate: mutate
         }
       },
       methods: {
@@ -63,4 +70,47 @@ describe('OntLibraries.vue', () => {
     })
   })
 
+  describe('Delete button', () => {
+    let button
+
+    beforeEach(() => {
+      button = wrapper.find('#deleteLibrary-btn')
+      libraries.showAlert = jest.fn()
+      libraries.selected = [{ name: 'aLibraryName' }]
+    })
+
+    it('is shows button', () => {
+      expect(button.text()).toEqual('Delete Library')
+    })
+
+    it('shows an alert on success', async () => {
+      let mockResponse = { data: { deleteCovidLibrary: { success: true, errors: [] } } }
+
+      let promise = new Promise((resolve) => {
+        resolve(mockResponse)
+      })
+
+      mutate.mockReturnValue(promise)
+
+      await button.trigger('click')
+
+      expect(mutate).toBeCalled()
+      expect(libraries.showAlert).toBeCalledWith('Library was successully deleted', 'success')
+    })
+
+    it('shows an alert on failure', async () => {
+      let mockResponse = { data: { deleteCovidLibrary: { success: false, errors: ['this is an error'] } } }
+
+      let promise = new Promise((resolve) => {
+        resolve(mockResponse)
+      })
+
+      mutate.mockReturnValue(promise)
+
+      await button.trigger('click')
+
+      expect(mutate).toBeCalled()
+      expect(libraries.showAlert).toBeCalledWith('Failure: this is an error', 'danger')
+    })
+  })
 })

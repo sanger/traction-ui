@@ -11,8 +11,8 @@
 </template>
 
 <script>
-import GET_CLIENT_FLOWCELL from '@/graphql/client/queries/GetClientFlowcell.query.gql'
-import UPDATE_CLIENT_FLOWCELL from '@/graphql/client/queries/UpdateClientFlowcell.mutation.gql'
+import GET_CLIENT_FLOWCELL from '@/graphql/queries/client/GetClientFlowcell.query.gql'
+import UPDATE_CLIENT_FLOWCELL from '@/graphql/queries/client/UpdateClientFlowcell.mutation.gql'
 
 export default {
   name: 'OntFlowcell',
