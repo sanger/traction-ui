@@ -69,7 +69,7 @@ describe('OntHeronRun.vue', () => {
     let button
 
     beforeEach(() => {
-      button = wrapper.find('#create-run')
+      button = wrapper.find('#create-button')
 
       let flowcells = [
         {

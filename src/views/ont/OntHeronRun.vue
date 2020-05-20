@@ -50,15 +50,15 @@ export default {
       run: {},
       actions: {
         create: {
-          id: 'create',
+          id: 'create-button',
           variant: 'success',
-          label: 'Create',
+          label: 'Create Run',
           method: 'createRun'
         },
         update: {
-          id: 'update',
+          id: 'update-button',
           variant: 'primary',
-          label: 'Update',
+          label: 'Update Run',
           method: 'updateRun'
         }
       },
