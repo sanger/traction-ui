@@ -6,11 +6,13 @@ import Alert from '@/components/Alert'
 import { localVue, mount } from '../../testHelper'
 
 describe('OntHeronRun.vue', () => {
-  let wrapper, run, mutate
+  let wrapper, run, mutate, query, props
 
   beforeEach(() => {
     mutate = jest.fn()
+    query = jest.fn()
 
+    props = { id: 'new' }
     wrapper = mount(OntHeronRun, {
       localVue,
       stubs: {
@@ -19,7 +21,8 @@ describe('OntHeronRun.vue', () => {
       },
       mocks: {
         $apollo: {
-          mutate: mutate
+          mutate: mutate,
+          query: query
         }
       },
       data() {
@@ -28,9 +31,9 @@ describe('OntHeronRun.vue', () => {
         }
       },
       methods: {
-        setRun() { return }
+        provider() { return }
       },
-      propsData: { id: 'new' }
+      propsData: props
     })
 
     run = wrapper.vm
@@ -65,27 +68,53 @@ describe('OntHeronRun.vue', () => {
     })
   })
 
-  describe('#createRun', () => {
-    let button
+  describe('props', () => {
+    it('must have a id', () => {
+      expect(run.id).toEqual(props.id)
+    })
+  })
 
+  describe('#Current action button', () => {
     beforeEach(() => {
-      button = wrapper.find('#create-button')
-
-      let flowcells = [
-        {
-          position: 1,
-          library: {
-            name: 'TRAC-1-1'
-          }
-        }
-      ]
-      wrapper.setData({ run: { flowcells: flowcells } })
-
-      run.showAlert = jest.fn()
+      run.runAction = jest.fn()
     })
 
-    it('has a create button', () => {
-      expect(button.text()).toEqual('Create Run')
+    describe('Create button', () => {
+      beforeEach(() => {
+        wrapper.setData({ newRecord: true })
+      })
+
+      it('will only show if the record is new', () => {
+        expect(wrapper.find('#create-button').text()).toEqual('Create Run')
+      })
+
+      it('calls runAction on click', () => {
+        let button = wrapper.find('#create-button')
+        button.trigger('click')
+        expect(run.runAction).toBeCalled()
+      })
+    })
+
+    describe('Update button', () => {
+      beforeEach(() => {
+        wrapper.setData({ newRecord: false })
+      })
+
+      it('will only show if the record is existing', () => {
+        expect(wrapper.find('#update-button').text()).toEqual('Update Run')
+      })
+
+      it('calls runAction on click', () => {
+        let button = wrapper.find('#update-button')
+        button.trigger('click')
+        expect(run.runAction).toBeCalled()
+      })
+    })
+  })
+  
+  describe('#runAction', () => {
+    beforeEach(() => {
+      run.runActionVariables = jest.fn()
     })
 
     it('redirects on success', async () => {
@@ -99,14 +128,15 @@ describe('OntHeronRun.vue', () => {
 
       mutate.mockReturnValue(promise)
 
-      await button.trigger('click')
+      await run.runAction()
 
       expect(mutate).toBeCalled()
       expect(run.redirectToRuns).toBeCalled()
-
     })
 
     it('shows an alert on failure', async () => {
+      run.showAlert = jest.fn()
+      
       let mockResponse = { data: { createCovidRun: { run: {}, errors: ['this is an error'] } } }
 
       let promise = new Promise((resolve) => {
@@ -115,17 +145,100 @@ describe('OntHeronRun.vue', () => {
 
       mutate.mockReturnValue(promise)
 
-      await button.trigger('click')
+      await run.runAction()
 
       expect(mutate).toBeCalled()
       expect(run.showAlert).toBeCalledWith('Failure: this is an error', 'danger')
     })
   })
 
+  describe('#runActionVariables', () => {
+    beforeEach (() => {
+      let flowcells = [
+        {
+          position: 1,
+          library: {
+            name: 'TRAC-1-1'
+          }
+        }
+      ]
+      wrapper.setData({ run: { flowcells: flowcells } })
+    })
+
+    describe('when it is a newRecord', () => {
+      it('returns the expected variables', () => {
+        wrapper.setData({ newRecord: true })
+        let expected = { flowcells: [{ position: 1, libraryName: 'TRAC-1-1' }]}
+        expect(run.runActionVariables()).toEqual(expected)
+      })
+    })
+
+    describe('when it is not a newRecord', () => {
+      it('returns the expected variables', () => {
+        wrapper.setData({ newRecord: false })
+        wrapper.setProps({ id: 1 })
+        let expected = { id: 1, flowcells: [{ position: 1, libraryName: 'TRAC-1-1' }] }
+        expect(run.runActionVariables()).toEqual(expected)
+      })
+    })
+  })
+
   describe('#buildRun', () => {
-    it.skip('calls the mutation to build a new run', () => {
-      run.buildNewRun
+    beforeEach(() => {
+      run.setRun = jest.fn()
+    })
+
+    describe('when it is a newRecord', () => {
+      it('returns the expected variables', () => {
+        wrapper.setData({ newRecord: true })
+        run.buildRun()
+        expect(run.setRun).toBeCalledWith('', [])
+      })
+    })
+
+    describe('when it is not a newRecord', () => {
+      it('returns the expected variables', async () => {
+        wrapper.setData({ newRecord: false })
+
+        let returnedRun = { id: 1, flowcells: [ { position: 1, library: { name: 'aName' } }]}
+        let mockResponse = { data: { ontRun: returnedRun } } 
+
+        let promise = new Promise((resolve) => {
+          resolve(mockResponse)
+        })
+
+        query.mockReturnValue(promise)
+
+        await run.buildRun()
+        expect(run.setRun).toHaveBeenNthCalledWith(1, "", [])
+        expect(run.setRun).toHaveBeenNthCalledWith(2, returnedRun.id, returnedRun.flowcells)
+      })
+    })
+  })
+
+  describe('#setRun', () => {
+    it('calls the mutation', () => {
+      let mockResponse = { data: {} }
+
+      let promise = new Promise((resolve) => {
+        resolve(mockResponse)
+      })
+
+      mutate.mockReturnValue(promise)
+      
+      run.setRun('', [])
       expect(mutate).toBeCalled()
+    })
+
+    it('shows an error when the mutation fails', async () => {
+      run.showAlert = jest.fn()
+
+      const request = Promise.reject("It failed")
+      mutate.mockReturnValue(request)
+
+      await run.setRun('', [])
+      expect(mutate).toBeCalled()
+      expect(run.showAlert).toBeCalledWith('Failure to build run: It failed', 'danger')
     })
   })
 

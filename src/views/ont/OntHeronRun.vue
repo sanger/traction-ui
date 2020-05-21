@@ -4,7 +4,7 @@
 
     <div>
       <b-row class="create-run-button">
-        <b-button :id="currentAction.id" :variant="currentAction.variant" @click="runAction">{{ currentAction.label}}</b-button>
+        <b-button :id="currentAction.id" :variant="currentAction.variant" @click="runAction()">{{ currentAction.label}}</b-button>
       </b-row>
       <br>
       <b-row>
@@ -80,7 +80,7 @@ export default {
   },
   mixins: [Helper],
   methods: {
-    runAction () {
+    runAction() {
       this.$apollo.mutate({
         mutation: this.currentAction.mutation,
         variables: this.runActionVariables()
@@ -101,7 +101,7 @@ export default {
         }))
 
       return {
-        ...(!this.newRecord)&& { id: this.id},
+        ...(!this.newRecord) && { id: this.id},
         ...({}) && { flowcells: flowcells }
       }
     },
@@ -134,6 +134,9 @@ export default {
     },
     redirectToRuns() {
       this.$router.push({ name: 'OntHeronRuns' })
+    },
+    provider () {
+      this.buildRun()
     }
   },
   apollo: {
@@ -148,7 +151,7 @@ export default {
     }
   },
   created () {
-    this.buildRun()
+    this.provider()
   },
 }
 </script>
