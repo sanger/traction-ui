@@ -1,9 +1,3 @@
 mutation ($id: ID!, $flowcells: [Flowcell!]!) {
-  setRun(id: $id, flowcells: $flowcells) @client {
-    id
-    flowcells {
-      position
-      libraryName
-    }
-  }
+  setRun(id: $id, flowcells: $flowcells) @client
 }
