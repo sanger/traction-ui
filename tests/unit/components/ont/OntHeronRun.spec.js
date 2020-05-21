@@ -6,13 +6,12 @@ import Alert from '@/components/Alert'
 import { localVue, mount } from '../../testHelper'
 
 describe('OntHeronRun.vue', () => {
-  let wrapper, run, mutate, query, props
+  let wrapper, run, mutate, query
 
   beforeEach(() => {
     mutate = jest.fn()
     query = jest.fn()
 
-    props = { id: 'new' }
     wrapper = mount(OntHeronRun, {
       localVue,
       stubs: {
@@ -32,8 +31,7 @@ describe('OntHeronRun.vue', () => {
       },
       methods: {
         provider() { return }
-      },
-      propsData: props
+      }
     })
 
     run = wrapper.vm
@@ -70,7 +68,8 @@ describe('OntHeronRun.vue', () => {
 
   describe('props', () => {
     it('must have a id', () => {
-      expect(run.id).toEqual(props.id)
+      wrapper.setProps({ id: 'new' })
+      expect(run.id).toEqual('new')
     })
   })
 
@@ -82,6 +81,7 @@ describe('OntHeronRun.vue', () => {
     describe('Create button', () => {
       beforeEach(() => {
         wrapper.setData({ newRecord: true })
+        wrapper.setProps({ id: 'new' })
       })
 
       it('will only show if the record is new', () => {
@@ -98,6 +98,7 @@ describe('OntHeronRun.vue', () => {
     describe('Update button', () => {
       beforeEach(() => {
         wrapper.setData({ newRecord: false })
+        wrapper.setProps({ id: 1 })
       })
 
       it('will only show if the record is existing', () => {
@@ -162,6 +163,7 @@ describe('OntHeronRun.vue', () => {
     describe('when it is a newRecord', () => {
       it('returns the expected variables', () => {
         wrapper.setData({ newRecord: true })
+        wrapper.setProps({ id: 'new' })
         let expected = { flowcells: [{ position: 1, libraryName: 'TRAC-1-1' }]}
         expect(run.runActionVariables()).toEqual(expected)
       })
@@ -185,6 +187,7 @@ describe('OntHeronRun.vue', () => {
     describe('when it is a newRecord', () => {
       it('returns the expected variables', () => {
         wrapper.setData({ newRecord: true })
+        wrapper.setProps({ id: 'new' })
         run.buildRun()
         expect(run.setRun).toBeCalledWith('', [])
       })
@@ -193,6 +196,7 @@ describe('OntHeronRun.vue', () => {
     describe('when it is not a newRecord', () => {
       it('returns the expected variables', async () => {
         wrapper.setData({ newRecord: false })
+        wrapper.setProps({ id: 1 })
 
         let returnedRun = { id: 1, flowcells: [ { position: 1, library: { name: 'aName' } }]}
         let mockResponse = { data: { ontRun: returnedRun } } 
