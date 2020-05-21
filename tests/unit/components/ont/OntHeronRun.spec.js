@@ -122,11 +122,8 @@ describe('OntHeronRun.vue', () => {
 
       let mockResponse = { data: { createCovidRun: { run: { id: 1 }, errors: [] } } }
 
-      let promise = new Promise((resolve) => {
-        resolve(mockResponse)
-      })
-
-      mutate.mockReturnValue(promise)
+      const request = Promise.resolve(mockResponse)
+      mutate.mockReturnValue(request)
 
       await run.runAction()
 
@@ -139,11 +136,8 @@ describe('OntHeronRun.vue', () => {
       
       let mockResponse = { data: { createCovidRun: { run: {}, errors: ['this is an error'] } } }
 
-      let promise = new Promise((resolve) => {
-        resolve(mockResponse)
-      })
-
-      mutate.mockReturnValue(promise)
+      const request = Promise.resolve(mockResponse)
+      mutate.mockReturnValue(request)
 
       await run.runAction()
 
@@ -203,11 +197,8 @@ describe('OntHeronRun.vue', () => {
         let returnedRun = { id: 1, flowcells: [ { position: 1, library: { name: 'aName' } }]}
         let mockResponse = { data: { ontRun: returnedRun } } 
 
-        let promise = new Promise((resolve) => {
-          resolve(mockResponse)
-        })
-
-        query.mockReturnValue(promise)
+        const request = Promise.resolve(mockResponse)
+        query.mockReturnValue(request)
 
         await run.buildRun()
         expect(run.setRun).toHaveBeenNthCalledWith(1, "", [])
@@ -220,11 +211,8 @@ describe('OntHeronRun.vue', () => {
     it('calls the mutation', () => {
       let mockResponse = { data: {} }
 
-      let promise = new Promise((resolve) => {
-        resolve(mockResponse)
-      })
-
-      mutate.mockReturnValue(promise)
+      const request = Promise.resolve(mockResponse)
+      mutate.mockReturnValue(request)
       
       run.setRun('', [])
       expect(mutate).toBeCalled()
