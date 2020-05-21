@@ -32,7 +32,7 @@ let schema = gql`
   }
 
   type Query {
-    flowcell(position: Integer!): String
+    libraryName(position: Integer!): String
   }
 
   type Mutation {
@@ -48,7 +48,7 @@ let schema = gql`
 
 export const resolvers = {
   Query: {
-    flowcell(_, { position }, { cache }) {
+    libraryName(_, { position }, { cache }) {
       const data = cache.readQuery({ query: GET_CLIENT_RUN })
       let fc = data.run.flowcells.filter(fc => fc.position === position)[0]
       let libraryName = ''

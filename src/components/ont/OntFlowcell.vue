@@ -11,7 +11,7 @@
 </template>
 
 <script>
-import GET_CLIENT_FLOWCELL from '@/graphql/queries/client/GetClientFlowcell.query.gql'
+import GET_CLIENT_FLOWCELL_LIBRARY_NAME from '@/graphql/queries/client/GetClientFlowcellLibraryName.query.gql'
 import UPDATE_CLIENT_FLOWCELL from '@/graphql/queries/client/UpdateClientFlowcell.mutation.gql'
 
 export default {
@@ -64,7 +64,7 @@ export default {
   },
   apollo: {
     libraryName: {
-      query: GET_CLIENT_FLOWCELL,
+      query: GET_CLIENT_FLOWCELL_LIBRARY_NAME,
       variables () {
         return {
           position: this.position,
