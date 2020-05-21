@@ -22,7 +22,8 @@ describe('OntFlowcell.vue', () => {
         $apollo: {
           mutate: mutate
         }
-      }
+      },
+      
     })
 
     flowcell = wrapper.vm
@@ -42,10 +43,44 @@ describe('OntFlowcell.vue', () => {
     })
   })
 
-  it('will have text with the correct position', () => {
-    let ellipse = wrapper.find('text')
-    expect(ellipse.exists()).toBeTruthy()
-    expect(ellipse.text()).toEqual(flowcell.position.toString())
+  describe('flowcell', () => {
+    it('will have text with the correct position', () => {
+      let positionText = wrapper.find('text')
+      expect(positionText.exists()).toBeTruthy()
+      expect(positionText.text()).toEqual(flowcell.position.toString())
+    })
+
+    describe('with libraryName', () => {
+      beforeEach(() => { 
+        flowcell.libraryName = 'aLibraryName' 
+      })
+
+      it('will will have an filled status', () => {
+        let flowcellRect = wrapper.find('rect')
+        expect(flowcellRect.exists()).toBeTruthy()
+        expect(flowcellRect.attributes('class')).toEqual('filled')
+      })
+
+      it('will have a title with the libraryName', () => {
+        let libraryText = wrapper.find('title')
+        expect(libraryText.exists()).toBeTruthy()
+        expect(libraryText.text()).toEqual(flowcell.libraryName)
+      })
+    })
+
+    describe('without libraryName', () => {
+      it('will will have an empty status', () => {
+        let flowcellRect = wrapper.find('rect')
+        expect(flowcellRect.exists()).toBeTruthy()
+        expect(flowcellRect.attributes('class')).toEqual('empty')
+      })
+
+      it('will have a title with an empty string', () => {
+        let libraryText = wrapper.find('title')
+        expect(libraryText.exists()).toBeTruthy()
+        expect(libraryText.text()).toEqual('')
+      })
+    })
   })
 
   describe('#updateFlowcell', () => {
