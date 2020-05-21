@@ -100,15 +100,10 @@ export default {
           return { position: fc.position, libraryName: fc.library.name }
         }))
 
-      let variables = {
-        flowcells: flowcells
+      return {
+        ...(!this.newRecord)&& { id: this.id},
+        ...({}) && { flowcells: flowcells }
       }
-
-      if (!this.newRecord) {
-        variables.id = this.id
-      }
-
-      return variables
     },
     buildRun () {
       this.setRun('', [])
