@@ -86,7 +86,7 @@ describe('OntHeronRun.vue', () => {
     it('redirects on success', async () => {
       run.redirectToRuns = jest.fn()
 
-      let mockResponse = { data: { createCovidRun: { run: { id: 1 }, errors: [] } } }
+      let mockResponse = { data: { createOntRun: { run: { id: 1 }, errors: [] } } }
 
       let promise = new Promise((resolve) => {
         resolve(mockResponse)
@@ -102,7 +102,7 @@ describe('OntHeronRun.vue', () => {
     })
 
     it('shows an alert on failure', async () => {
-      let mockResponse = { data: { createCovidRun: { run: {}, errors: ['this is an error'] } } }
+      let mockResponse = { data: { createOntRun: { run: {}, errors: ['this is an error'] } } }
 
       let promise = new Promise((resolve) => {
         resolve(mockResponse)

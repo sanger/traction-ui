@@ -29,8 +29,8 @@ import ONTSVG from '@/components/svg/ONTSVG'
 import OntFlowcell from '@/components/ont/OntFlowcell'
 import OntRunLibrariesList from '@/components/ont/OntRunLibrariesList'
 import ONT_HERON_RUN_QUERY from '@/graphql/queries/client/OntHeronRun.query.gql'
-import CREATE_COVID_RUN from '@/graphql/queries/CreateCovidRun.mutation.gql'
-import BUILD_COVID_RUN from '@/graphql/queries/client/BuildCovidRun.mutation.gql'
+import CREATE_ONT_RUN from '@/graphql/queries/CreateOntRun.mutation.gql'
+import BUILD_ONT_RUN from '@/graphql/queries/client/BuildOntRun.mutation.gql'
 
 import Alert from '@/components/Alert'
 import Helper from '@/mixins/Helper'
@@ -63,15 +63,15 @@ export default {
         .map(({__typename, ...keepAttrs}) => keepAttrs)
 
       this.$apollo.mutate({
-        mutation: CREATE_COVID_RUN,
+        mutation: CREATE_ONT_RUN,
         variables: {
           runId: this.run.id,
           flowcells: flowcells
         }
       }).then(data => {
-        let response = data.data.createCovidRun
+        let response = data.data.createOntRun
         if (response.errors.length > 0) {
-          this.showAlert('Failure: ' + data.data.createCovidRun.errors.join(', '), 'danger')
+          this.showAlert('Failure: ' + data.data.createOntRun.errors.join(', '), 'danger')
         } else {
           this.redirectToRuns()
         }
@@ -83,17 +83,17 @@ export default {
     buildRun () {
       let flowcells = this.buildFlowcells()
       this.$apollo.mutate({
-        mutation: BUILD_COVID_RUN,
+        mutation: BUILD_ONT_RUN,
         variables: {
           flowcells: flowcells
         },
-        update: (cache, { data: { buildCovidRun } }) => {
+        update: (cache, { data: { buildOntRun } }) => {
           cache.writeData({
             data: {
               run: {
                 __typename: 'Run',
                 id: 'new',
-                flowcells: buildCovidRun.flowcells,
+                flowcells: buildOntRun.flowcells,
               }
             }
           })

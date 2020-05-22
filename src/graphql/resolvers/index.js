@@ -3,7 +3,7 @@ module.exports = {
     updateFlowcell: (_, { position, libraryName }) => {
       return { position, libraryName }
     },
-    buildCovidRun: (_, { runId, flowcells }) => {
+    buildOntRun: (_, { runId, flowcells }) => {
       return { runId, flowcells }
     }
   },

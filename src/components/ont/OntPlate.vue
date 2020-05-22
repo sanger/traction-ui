@@ -48,9 +48,9 @@ export default {
           plate_barcode: this.plate.barcode
         }
       }).then(data => {
-        let response = data.data.createCovidLibraries
+        let response = data.data.createOntLibraries
         if (response.errors.length > 0) {
-          this.$emit('alert', 'Failure: ' + data.data.createCovidLibraries.errors.join(', '), 'danger')
+          this.$emit('alert', 'Failure: ' + data.data.createOntLibraries.errors.join(', '), 'danger')
         } else {
           let libraryBarcodes = response.tubes.map(t => t.barcode).join(', ')
           this.$emit('alert', 'Library(s) were created with barcodes: ' + libraryBarcodes, 'success')

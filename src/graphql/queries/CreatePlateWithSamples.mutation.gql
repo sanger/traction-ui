@@ -1,5 +1,5 @@
 mutation ($barcode: String!, $wells: [WellWithSampleInput!]!) {
-  createPlateWithCovidSamples( 
+  createPlateWithSamples( 
     input: { 
       arguments: {
         barcode: $barcode

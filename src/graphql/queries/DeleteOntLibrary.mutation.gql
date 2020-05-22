@@ -1,5 +1,5 @@
 mutation ($libraryName: String!) {
-  deleteCovidLibrary( 
+  deleteOntLibrary( 
     input: { 
       libraryName: $libraryName
     } 
