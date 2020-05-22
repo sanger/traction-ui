@@ -29,8 +29,8 @@ describe('OntHeronRuns.vue', () => {
   })
 
   it('will have fields', () => {
-    let expected = ['id', 'createdAt', 'actions']
-    expect(runs.fields.map(i => i.key)).toEqual(expected)
+    let expected = ['experimentNames', 'library_names', 'updatedAt', 'actions']
+    expect(runs.fields.map(i => i.key)).toEqual(expect.arrayContaining(expected))
   })
 
   it('will have a table', () => {

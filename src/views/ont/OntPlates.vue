@@ -9,6 +9,8 @@
       responsive
       :items="plates"
       :fields="fields"
+      :sort-by.sync="sortBy"
+      :sort-desc.sync="sortDesc"
       sticky-header
       show-empty
     >
@@ -36,7 +38,14 @@ export default {
   name: 'OntPlates',
   data () {
     return { 
-      fields: [ 'id', 'barcode', 'show_details' ],
+      fields: [ 
+        {key: 'id', label: 'ID', sortable: true},
+        {key: 'barcode', label: 'Barcode', sortable: true},
+        {key: 'createdAt', label: 'Created at', sortable: true},
+        {key: 'show_details', label: 'Show Details'}
+      ],
+      sortBy: 'createdAt',
+      sortDesc: true,
     }
   },
   components: {

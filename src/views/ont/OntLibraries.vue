@@ -11,6 +11,8 @@
       selectable
       select-mode="single"
       @row-selected="onRowSelected"
+      :sort-by.sync="sortBy"
+      :sort-desc.sync="sortDesc"
       sticky-header
       show-empty>
     </b-table>
@@ -59,6 +61,8 @@ export default {
         { key: 'createdAt', label: 'Created at', sortable: true},
       ],
       selected: [],
+      sortBy: 'createdAt',
+      sortDesc: true,
     }
   },
   apollo: {
