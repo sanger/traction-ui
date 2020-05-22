@@ -18,6 +18,13 @@
       sticky-header
       show-empty
     >
+
+      <template v-slot:cell(actions)="row">
+        <b-button :id="'editRun-'+row.item.id" variant="outline-info" size="sm" class="mr-1" @click="redirectToRun(row.item.id)">
+          Edit
+        </b-button>
+      </template>
+
     </b-table>
   </div>
 </template>
@@ -32,8 +39,8 @@ export default {
     return { 
       fields: [
         { key: 'id', label: 'ID' , sortable: true},
-        { key: 'state', label: 'State', sortable: true},
         { key: 'createdAt', label: 'Created at', sortable: true},
+        { key: 'actions', label: 'Actions' },
       ]
     }
   },
@@ -43,8 +50,8 @@ export default {
     }
   },
   methods: {
-    redirectToRun() {
-      this.$router.push({ path: '/ont/run/new' })
+    redirectToRun(id) {
+      this.$router.push({ path: `/ont/run/${id || 'new'}` })
     },
     refetchRuns() {
       this.$apollo.queries.runs.refetch()

@@ -1,6 +1,0 @@
-mutation ($runId: Int!, $flowcells: [Flowcell!]!) {
-  buildOntRun (
-    runId: $runId
-    flowcells: $flowcells
-  ) @client
-}

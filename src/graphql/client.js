@@ -6,6 +6,17 @@ import resolvers from '@/graphql/resolvers'
 
 const cache = new InMemoryCache()
 
+cache.writeData({
+  data: {
+    run:
+      {
+        __typename: 'Run',
+        id: '',
+        flowcells: []
+      },
+  },
+})
+
 Vue.use(VueApollo)
 
 const apolloClient = new ApolloClient({
