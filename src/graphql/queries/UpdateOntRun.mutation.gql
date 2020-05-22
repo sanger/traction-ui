@@ -1,5 +1,5 @@
 mutation ($id: ID!, $flowcells: [FlowcellInput!]) {
-  updateCovidRun( 
+  updateOntRun( 
     input: { 
       id: $id 
       properties: { 

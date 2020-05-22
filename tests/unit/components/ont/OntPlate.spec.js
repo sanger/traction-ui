@@ -99,7 +99,7 @@ describe('OntPlate.vue', () => {
     })
 
     it('shows an alert on success', async () => {
-      let mockResponse = { data: { createCovidLibraries: { tubes: [{ barcode: 'TRAC-1-1' }, { barcode: 'TRAC-1-2' } ], errors: []} } }
+      let mockResponse = { data: { createOntLibraries: { tubes: [{ barcode: 'TRAC-1-1' }, { barcode: 'TRAC-1-2' } ], errors: []} } }
 
       let promise = new Promise((resolve) => {
         resolve(mockResponse)
@@ -117,7 +117,7 @@ describe('OntPlate.vue', () => {
     })
 
     it('shows an alert on failure', async () => {
-      let mockResponse = { data: { createCovidLibraries: { tubes: [], errors: ['this is an error'] } } }
+      let mockResponse = { data: { createOntLibraries: { tubes: [], errors: ['this is an error'] } } }
 
       let promise = new Promise((resolve) => {
         resolve(mockResponse)

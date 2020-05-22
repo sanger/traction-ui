@@ -26,7 +26,7 @@
 import Alert from '@/components/Alert'
 import Helper from '@/mixins/Helper'
 import { getPlates, transformPlates} from '@/api/SequencescapePlates'
-import CREATE_PLATE_WITH_COVID_SAMPLES from '@/graphql/queries/CreatePlateWithCovidSamples.mutation.gql'
+import CREATE_PLATE_WITH_SAMPLES from '@/graphql/queries/CreatePlateWithSamples.mutation.gql'
 
 export default {
   name: 'Reception',
@@ -72,13 +72,13 @@ export default {
     },
     async createTractionPlate ({barcode, wells}) {
       return this.$apollo.mutate({
-        mutation: CREATE_PLATE_WITH_COVID_SAMPLES,
+        mutation: CREATE_PLATE_WITH_SAMPLES,
         variables: {
           barcode,
           wells
         }
       }).then(data => {
-        let response = data.data.createPlateWithCovidSamples
+        let response = data.data.createPlateWithSamples
         if (response.errors.length > 0) {
           return `Plate ${barcode} - ${response.errors.join(', ')}`
         } else {

@@ -34,7 +34,7 @@
 
 <script>
 import LIBRARIES_ALL_QUERY from '@/graphql/queries/LibrariesAll.query.gql'
-import DELETE_LIBRARY from '@/graphql/queries/DeleteLibrary.mutation.gql'
+import DELETE_ONT_LIBRARY from '@/graphql/queries/DeleteOntLibrary.mutation.gql'
 import PrinterModal from '@/components/PrinterModal'
 import Helper from '@/mixins/Helper'
 import TableHelper from '@/mixins/TableHelper'
@@ -74,14 +74,14 @@ export default {
   methods: {
     handleLibraryDelete() {
       this.$apollo.mutate({
-        mutation: DELETE_LIBRARY,
+        mutation: DELETE_ONT_LIBRARY,
         variables: {
           libraryName: this.selected[0].name
         }
       }).then(data => {
-        let response = data.data.deleteCovidLibrary
+        let response = data.data.deleteOntLibrary
         if (response.errors.length > 0) {
-          this.showAlert('Failure: ' + data.data.deleteCovidLibrary.errors.join(', '), 'danger')
+          this.showAlert('Failure: ' + data.data.deleteOntLibrary.errors.join(', '), 'danger')
         } else {
           this.showAlert('Library was successully deleted', 'success')
         }

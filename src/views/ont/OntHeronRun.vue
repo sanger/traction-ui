@@ -30,8 +30,8 @@ import OntRunLibrariesList from '@/components/ont/OntRunLibrariesList'
 import GET_CLIENT_RUN from '@/graphql/queries/client/GetClientRun.query.gql'
 import SET_CLIENT_RUN from '@/graphql/queries/client/SetClientRun.mutation.gql'
 import GET_RUN from '@/graphql/queries/GetOntRun.query.gql'
-import CREATE_RUN from '@/graphql/queries/CreateCovidRun.mutation.gql'
-import UPDATE_RUN from '@/graphql/queries/UpdateCovidRun.mutation.gql'
+import CREATE_RUN from '@/graphql/queries/CreateOntRun.mutation.gql'
+import UPDATE_RUN from '@/graphql/queries/UpdateOntRun.mutation.gql'
 
 import Alert from '@/components/Alert'
 import Helper from '@/mixins/Helper'
@@ -54,14 +54,14 @@ export default {
           variant: 'success',
           label: 'Create Run',
           mutation: CREATE_RUN,
-          response: 'createCovidRun'
+          response: 'createOntRun'
         },
         update: {
           id: 'update-button',
           variant: 'primary',
           label: 'Update Run',
           mutation: UPDATE_RUN,
-          response: 'updateCovidRun'
+          response: 'updateOntRun'
         }
       },
       newRecord: isNaN(this.id)

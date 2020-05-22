@@ -116,12 +116,13 @@ describe('OntHeronRun.vue', () => {
   describe('#runAction', () => {
     beforeEach(() => {
       run.runActionVariables = jest.fn()
+      run.showAlert = jest.fn()
     })
 
     it('redirects on success', async () => {
       run.redirectToRuns = jest.fn()
 
-      let mockResponse = { data: { createCovidRun: { run: { id: 1 }, errors: [] } } }
+      let mockResponse = { data: { createOntRun: { run: { id: 1 }, errors: [] } } }
 
       const request = Promise.resolve(mockResponse)
       mutate.mockReturnValue(request)
@@ -133,9 +134,7 @@ describe('OntHeronRun.vue', () => {
     })
 
     it('shows an alert on failure', async () => {
-      run.showAlert = jest.fn()
-      
-      let mockResponse = { data: { createCovidRun: { run: {}, errors: ['this is an error'] } } }
+      let mockResponse = { data: { createOntRun: { run: {}, errors: ['this is an error'] } } }
 
       const request = Promise.resolve(mockResponse)
       mutate.mockReturnValue(request)

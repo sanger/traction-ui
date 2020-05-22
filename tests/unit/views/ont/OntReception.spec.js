@@ -112,7 +112,7 @@ describe('Reception', () => {
     it('shows an alert on success', async () => {
 
       let mockResponse =  { data: 
-                            { createPlateWithCovidSamples: {
+                            { createPlateWithSamples: {
                               plate: {id: "6",barcode: "PLATE-1234",wells: 
                               [ { plateId: 1},
                                 { plateId: 1},
@@ -132,7 +132,7 @@ describe('Reception', () => {
     })
 
     it('shows an alert on failure', async () => {
-      let mockResponse = { data: { createPlateWithCovidSamples: { plate: {}, errors: ['this is an error'] } } }
+      let mockResponse = { data: { createPlateWithSamples: { plate: {}, errors: ['this is an error'] } } }
 
       let promise = new Promise((resolve) => {
         resolve(mockResponse)

@@ -84,7 +84,7 @@ describe('OntLibraries.vue', () => {
     })
 
     it('shows an alert on success', async () => {
-      let mockResponse = { data: { deleteCovidLibrary: { success: true, errors: [] } } }
+      let mockResponse = { data: { deleteOntLibrary: { success: true, errors: [] } } }
 
       let promise = new Promise((resolve) => {
         resolve(mockResponse)
@@ -99,7 +99,7 @@ describe('OntLibraries.vue', () => {
     })
 
     it('shows an alert on failure', async () => {
-      let mockResponse = { data: { deleteCovidLibrary: { success: false, errors: ['this is an error'] } } }
+      let mockResponse = { data: { deleteOntLibrary: { success: false, errors: ['this is an error'] } } }
 
       let promise = new Promise((resolve) => {
         resolve(mockResponse)
