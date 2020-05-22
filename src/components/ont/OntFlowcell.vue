@@ -1,7 +1,6 @@
 <template>
   <g :transform="getMatrix" v-on:drop="drop" v-on:dragover="allowDrop" >
     <text x="25" y="30" class="medium">{{ position }}</text>
-
     <rect width="70" height="227" v-bind:class="status"/>
     <title v-text="this.libraryName"></title>
 
@@ -12,8 +11,8 @@
 </template>
 
 <script>
-import UPDATE_FLOWCELL from '@/graphql/queries/client/UpdateFlowcell.mutation.gql'
-import ONT_HERON_RUN_QUERY from '@/graphql/queries/client/OntHeronRun.query.gql'
+import GET_CLIENT_FLOWCELL_LIBRARY_NAME from '@/graphql/queries/client/GetClientFlowcellLibraryName.query.gql'
+import UPDATE_CLIENT_FLOWCELL from '@/graphql/queries/client/UpdateClientFlowcell.mutation.gql'
 
 export default {
   name: 'OntFlowcell',
@@ -29,22 +28,16 @@ export default {
   },
   data () {
     return {
-      libraryName: ''
+      libraryName: '',
     }
   },
   methods: {
     updateFlowcell () {
       this.$apollo.mutate({
-        mutation: UPDATE_FLOWCELL,
+        mutation: UPDATE_CLIENT_FLOWCELL,
         variables: {
           position: this.position,
           libraryName: this.libraryName
-        },
-        update: (cache, { data: { updateFlowcell} }) => {
-          const data = cache.readQuery({ query: ONT_HERON_RUN_QUERY })
-          const currentFlowcell = data.run.flowcells.find(flowcell => flowcell.position === updateFlowcell.position)
-          currentFlowcell.libraryName = updateFlowcell.libraryName
-          cache.writeQuery({ query: ONT_HERON_RUN_QUERY, data })
         }
       })
     },
@@ -54,7 +47,7 @@ export default {
     drop (event) {
       this.libraryName = event.dataTransfer.getData('name')
       this.updateFlowcell()
-    },
+    }
   },
   computed: {
     // Determines the flowcells x/y coordinates
@@ -67,6 +60,17 @@ export default {
       } else {
         return 'empty'
       }
+    }
+  },
+  apollo: {
+    libraryName: {
+      query: GET_CLIENT_FLOWCELL_LIBRARY_NAME,
+      variables () {
+        return {
+          position: this.position,
+        }
+      },
+      pollInterval: 100
     }
   }
 }

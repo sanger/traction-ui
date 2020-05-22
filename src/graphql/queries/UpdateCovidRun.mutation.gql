@@ -1,0 +1,16 @@
+mutation ($id: ID!, $flowcells: [FlowcellInput!]) {
+  updateCovidRun( 
+    input: { 
+      id: $id 
+      properties: { 
+        flowcells: $flowcells 
+      } 
+    } 
+  )
+  { 
+    run { 
+      id 
+    } 
+    errors 
+  }
+}

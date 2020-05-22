@@ -4,9 +4,7 @@
 
     <div>
       <b-row class="create-run-button">
-        <b-button variant="outline-success" id="create-run" @click="createRun()">
-          Create Run
-        </b-button>
+        <b-button :id="currentAction.id" :variant="currentAction.variant" @click="runAction()">{{ currentAction.label}}</b-button>
       </b-row>
       <br>
       <b-row>
@@ -15,7 +13,7 @@
         </b-col>
         <b-col cols="6">
           <ONTSVG>
-            <OntFlowcell v-for="(flowcell, key) in flowcells" v-bind="flowcell" v-bind:key="key">
+            <OntFlowcell v-for="(flowcell, key) in flowcellsData" v-bind="flowcell" v-bind:key="key">
             </OntFlowcell>
           </ONTSVG>
         </b-col>
@@ -25,12 +23,15 @@
 </template>
 
 <script>
+
 import ONTSVG from '@/components/svg/ONTSVG'
 import OntFlowcell from '@/components/ont/OntFlowcell'
 import OntRunLibrariesList from '@/components/ont/OntRunLibrariesList'
-import ONT_HERON_RUN_QUERY from '@/graphql/queries/client/OntHeronRun.query.gql'
-import CREATE_COVID_RUN from '@/graphql/queries/CreateCovidRun.mutation.gql'
-import BUILD_COVID_RUN from '@/graphql/queries/client/BuildCovidRun.mutation.gql'
+import GET_CLIENT_RUN from '@/graphql/queries/client/GetClientRun.query.gql'
+import SET_CLIENT_RUN from '@/graphql/queries/client/SetClientRun.mutation.gql'
+import GET_RUN from '@/graphql/queries/GetOntRun.query.gql'
+import CREATE_RUN from '@/graphql/queries/CreateCovidRun.mutation.gql'
+import UPDATE_RUN from '@/graphql/queries/UpdateCovidRun.mutation.gql'
 
 import Alert from '@/components/Alert'
 import Helper from '@/mixins/Helper'
@@ -39,13 +40,36 @@ export default {
   name: 'OntHeronRun',
   data () {
     return {
-      flowcells: [
+      flowcellsData: [
         { position: 1, xPos: 240 },
         { position: 2, xPos: 320 },
         { position: 3, xPos: 400 },
         { position: 4, xPos: 480 },
         { position: 5, xPos: 560 }
-      ]
+      ],
+      run: {},
+      actions: {
+        create: {
+          id: 'create-button',
+          variant: 'success',
+          label: 'Create Run',
+          mutation: CREATE_RUN,
+          response: 'createCovidRun'
+        },
+        update: {
+          id: 'update-button',
+          variant: 'primary',
+          label: 'Update Run',
+          mutation: UPDATE_RUN,
+          response: 'updateCovidRun'
+        }
+      },
+      newRecord: isNaN(this.id)
+    }
+  },
+  props: {
+    id: {
+      type: [String, Number]
     }
   },
   components: {
@@ -56,70 +80,79 @@ export default {
   },
   mixins: [Helper],
   methods: {
-    createRun () {
-      const flowcells = this.run.flowcells
-        .filter(fc => fc.libraryName)
-        // eslint-disable-next-line
-        .map(({__typename, ...keepAttrs}) => keepAttrs)
-
+    runAction() {
       this.$apollo.mutate({
-        mutation: CREATE_COVID_RUN,
-        variables: {
-          runId: this.run.id,
-          flowcells: flowcells
-        }
+        mutation: this.currentAction.mutation,
+        variables: this.runActionVariables()
       }).then(data => {
-        let response = data.data.createCovidRun
+        let response = data.data[this.currentAction.response]
         if (response.errors.length > 0) {
-          this.showAlert('Failure: ' + data.data.createCovidRun.errors.join(', '), 'danger')
+          this.showAlert('Failure: ' + response.errors.join(', '), 'danger')
         } else {
           this.redirectToRuns()
         }
       })
     },
+    runActionVariables () {
+      let flowcells = this.run.flowcells
+        .filter(fc => fc.library.name)
+        .map((fc => {
+          return { position: fc.position, libraryName: fc.library.name }
+        }))
+
+      return {
+        ...(!this.newRecord) && { id: this.id},
+        ...({}) && { flowcells: flowcells }
+      }
+    },
+    buildRun () {
+      this.setRun('', [])
+
+      if (!this.newRecord) {
+        this.$apollo.query({
+          query: GET_RUN,
+          variables: {
+            id: this.id
+          },
+        }).then(data => {
+          let existingRun = data.data.ontRun
+          this.setRun(existingRun.id, existingRun.flowcells)
+        })
+      }
+    },
+    setRun(id, flowcells) {
+      this.$apollo.mutate({
+        mutation: SET_CLIENT_RUN,
+        variables: {
+          id: id,
+          flowcells: flowcells
+        }
+      })
+      .catch(error => {
+        this.showAlert('Failure to build run: ' + error, 'danger')
+      })
+    },
     redirectToRuns() {
       this.$router.push({ name: 'OntHeronRuns' })
     },
-    buildRun () {
-      let flowcells = this.buildFlowcells()
-      this.$apollo.mutate({
-        mutation: BUILD_COVID_RUN,
-        variables: {
-          flowcells: flowcells
-        },
-        update: (cache, { data: { buildCovidRun } }) => {
-          cache.writeData({
-            data: {
-              run: {
-                __typename: 'Run',
-                id: 'new',
-                flowcells: buildCovidRun.flowcells,
-              }
-            }
-          })
-        }
-      })
-    },
-    buildFlowcells() {
-      let flowcells = []
-      for (let position of [1,2,3,4,5]) {
-        flowcells.push({
-          __typename: 'Flowcell',
-          position: position,
-          libraryName: '',
-        })
-      }
-      return flowcells
-    },
+    provider () {
+      this.buildRun()
+    }
   },
   apollo: {
     run: {
-      query: ONT_HERON_RUN_QUERY
+      query: GET_CLIENT_RUN,
+      pollInterval: 100
     }
   },
-  created() {
-    this.buildRun()
-  }
+  computed: {
+    currentAction () {
+      return this.actions[this.newRecord ? 'create' : 'update']
+    }
+  },
+  created () {
+    this.provider()
+  },
 }
 </script>
 

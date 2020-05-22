@@ -1,4 +1,4 @@
-query ontLibraries($unassignedToFlowcells: Boolean) {
+query ($unassignedToFlowcells: Boolean) {
   libraries: ontLibraries(unassignedToFlowcells: $unassignedToFlowcells) {
     id
     name
