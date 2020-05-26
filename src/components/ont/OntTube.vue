@@ -7,7 +7,7 @@
     v-on:mouseover="isActive = true" 
     v-on:mouseleave="isActive = false"
   >
-    <b-img left src="/tube.png" height="30" />
+    <b-img left src="/tube.png" height="30" draggable="false" />
     <div class="name">
       {{ name }}
     </div>
