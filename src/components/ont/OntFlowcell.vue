@@ -5,7 +5,7 @@
     <title v-text="this.libraryName"></title>
 
     <foreignObject y="100" width="70" height="227">
-      <b-form-input v-model="libraryName" placeholder="Name" :id="'libraryNameInput-'+this.position" @change="updateFlowcell"></b-form-input>
+      <b-form-input placeholder="Name" :id="'libraryNameInput-'+this.position" @change="updateFlowcell" v-bind:value="libraryName"></b-form-input>
     </foreignObject>
   </g>
 </template>
@@ -24,15 +24,20 @@ export default {
     position: {
       type: Number,
       required: true
+    },
+    library: {
+      type: Object,
+      required: true
     }
   },
-  data () {
+  data(){
     return {
-      libraryName: '',
+      libraryName: this.library.name
     }
   },
   methods: {
     updateFlowcell () {
+      console.log("!!! #7 updateFlowcell")
       this.$apollo.mutate({
         mutation: UPDATE_CLIENT_FLOWCELL,
         variables: {
@@ -62,16 +67,19 @@ export default {
       }
     }
   },
-  apollo: {
-    libraryName: {
-      query: GET_CLIENT_FLOWCELL_LIBRARY_NAME,
-      variables () {
-        return {
-          position: this.position,
-        }
-      },
-      pollInterval: 100
-    }
+  // apollo: {
+  //   libraryName: {
+
+  //     query: GET_CLIENT_FLOWCELL_LIBRARY_NAME,
+  //     variables () {
+  //       return {
+  //         position: this.position,
+  //       }
+  //     }
+  //   }
+  // },
+  created () {
+    console.log("!!! #5 flowcell comp created")
   }
 }
 </script>

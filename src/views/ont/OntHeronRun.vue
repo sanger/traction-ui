@@ -13,7 +13,7 @@
         </b-col>
         <b-col cols="6">
           <ONTSVG>
-            <OntFlowcell v-for="(flowcell, key) in flowcellsData" v-bind="flowcell" v-bind:key="key">
+            <OntFlowcell v-for="(flowcellData, key) in flowcellsData" v-bind="flowcellData" v-bind:key="key">
             </OntFlowcell>
           </ONTSVG>
         </b-col>
@@ -41,11 +41,11 @@ export default {
   data () {
     return {
       flowcellsData: [
-        { position: 1, xPos: 240 },
-        { position: 2, xPos: 320 },
-        { position: 3, xPos: 400 },
-        { position: 4, xPos: 480 },
-        { position: 5, xPos: 560 }
+        { position: 1, xPos: 240, library: { name: '' } },
+        { position: 2, xPos: 320, library: { name: '' } },
+        { position: 3, xPos: 400, library: { name: '' } },
+        { position: 4, xPos: 480, library: { name: '' } },
+        { position: 5, xPos: 560, library: { name: '' } }
       ],
       run: {},
       actions: {
@@ -81,6 +81,7 @@ export default {
   mixins: [Helper],
   methods: {
     runAction() {
+      console.log(`!!! runAction: #{this.currentAction.mutation}`)
       this.$apollo.mutate({
         mutation: this.currentAction.mutation,
         variables: this.runActionVariables()
@@ -106,7 +107,7 @@ export default {
       }
     },
     buildRun () {
-      this.setRun('', [])
+      console.log("!!! #3 buildRun")
 
       if (!this.newRecord) {
         this.$apollo.query({
@@ -116,11 +117,16 @@ export default {
           },
         }).then(data => {
           let existingRun = data.data.ontRun
+          // shouldnt need to do this here. 
+          // move to update function
           this.setRun(existingRun.id, existingRun.flowcells)
-        })
+        }) 
+      } else {
+        this.setRun('', [])
       }
     },
     setRun(id, flowcells) {
+      console.log("!!! #4 setRun")
       this.$apollo.mutate({
         mutation: SET_CLIENT_RUN,
         variables: {
@@ -136,13 +142,23 @@ export default {
       this.$router.push({ name: 'OntHeronRuns' })
     },
     provider () {
+      console.log("!!! #2 provide")
       this.buildRun()
+    },
+    updateFlowcell(run){
+      console.log("!x", run)
+      console.log("!x", this.flowcellsData)
     }
   },
   apollo: {
     run: {
       query: GET_CLIENT_RUN,
-      pollInterval: 100
+      result ({ data }) {
+        data.run.flowcells.map(flowcell => {
+          let flowcellData = this.flowcellsData.filter(f => f.position === flowcell.position)[0]
+          flowcellData.library.name = flowcell.library.name
+        })
+      }
     }
   },
   computed: {
@@ -151,6 +167,7 @@ export default {
     }
   },
   created () {
+    console.log("!!! #1 created OntHeronRun")
     this.provider()
   },
 }
