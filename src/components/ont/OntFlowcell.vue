@@ -45,6 +45,7 @@ export default {
       event.preventDefault()
     },
     drop (event) {
+      event.preventDefault()
       this.libraryName = event.dataTransfer.getData('name')
       this.updateFlowcell()
     }
