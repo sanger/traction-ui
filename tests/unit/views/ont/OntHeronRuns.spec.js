@@ -29,7 +29,7 @@ describe('OntHeronRuns.vue', () => {
   })
 
   it('will have fields', () => {
-    let expected = ['experimentNames', 'library_names', 'updatedAt', 'actions']
+    let expected = ['experimentName', 'library_names', 'updatedAt', 'actions']
     expect(runs.fields.map(i => i.key)).toEqual(expect.arrayContaining(expected))
   })
 
