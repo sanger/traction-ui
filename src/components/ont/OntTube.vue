@@ -16,6 +16,9 @@
 
 <script>
 
+const img = new Image()
+img.src = '/tube.png'
+
 export default {
   name: 'OntTube',
   props: {
@@ -31,8 +34,6 @@ export default {
   },
   methods: {
     drag (name, event) {
-      const img = new Image()
-      img.src = '/tube.png'
       event.dataTransfer.setDragImage(img, 80, 0)
       event.dataTransfer.setData('name', name)
     }
