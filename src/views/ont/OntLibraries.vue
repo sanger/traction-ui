@@ -89,6 +89,7 @@ export default {
           this.showAlert(`Failure deleting library '${libraryName}': ` + data.data.deleteOntLibrary.errors.join(', '), 'danger')
         } else {
           this.showAlert(`Library '${libraryName}' was successully deleted`, 'success')
+          this.refetchLibraries()
         }
       })
     },
