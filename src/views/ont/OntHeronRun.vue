@@ -88,7 +88,7 @@ export default {
         if (response.errors.length > 0) {
           this.showAlert('Failure: ' + response.errors.join(', '), 'danger')
         } else {
-          this.redirectToRuns()
+          this.showAlert('Run successfully created', 'success')
         }
       })
     },
@@ -130,9 +130,6 @@ export default {
       .catch(error => {
         this.showAlert('Failure to build run: ' + error, 'danger')
       })
-    },
-    redirectToRuns() {
-      this.$router.push({ name: 'OntHeronRuns' })
     },
     provider () {
       this.buildRun()

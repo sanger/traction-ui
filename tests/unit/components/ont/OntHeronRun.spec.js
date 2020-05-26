@@ -119,7 +119,7 @@ describe('OntHeronRun.vue', () => {
       run.showAlert = jest.fn()
     })
 
-    it('redirects on success', async () => {
+    it('shows an alert on success', async () => {
       run.redirectToRuns = jest.fn()
 
       let mockResponse = { data: { createOntRun: { run: { id: 1 }, errors: [] } } }
@@ -130,7 +130,7 @@ describe('OntHeronRun.vue', () => {
       await run.runAction()
 
       expect(mutate).toBeCalled()
-      expect(run.redirectToRuns).toBeCalled()
+      expect(run.showAlert).toBeCalledWith(`Run successfully created`, 'success')
     })
 
     it('shows an alert on failure', async () => {
@@ -142,6 +142,7 @@ describe('OntHeronRun.vue', () => {
       await run.runAction()
 
       expect(mutate).toBeCalled()
+
       expect(run.showAlert).toBeCalledWith('Failure: this is an error', 'danger')
     })
   })
