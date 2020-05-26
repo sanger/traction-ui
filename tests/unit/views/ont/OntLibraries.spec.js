@@ -72,11 +72,12 @@ describe('OntLibraries.vue', () => {
 
   describe('Delete button', () => {
     let button
+    const libraryName = 'aLibraryName'
 
     beforeEach(() => {
       button = wrapper.find('#deleteLibrary-btn')
       libraries.showAlert = jest.fn()
-      libraries.selected = [{ name: 'aLibraryName' }]
+      libraries.selected = [{ name: libraryName }]
     })
 
     it('is shows button', () => {
@@ -95,7 +96,7 @@ describe('OntLibraries.vue', () => {
       await button.trigger('click')
 
       expect(mutate).toBeCalled()
-      expect(libraries.showAlert).toBeCalledWith('Library was successully deleted', 'success')
+      expect(libraries.showAlert).toBeCalledWith(`Library '${libraryName}' was successully deleted`, 'success')
     })
 
     it('shows an alert on failure', async () => {
@@ -110,7 +111,7 @@ describe('OntLibraries.vue', () => {
       await button.trigger('click')
 
       expect(mutate).toBeCalled()
-      expect(libraries.showAlert).toBeCalledWith('Failure: this is an error', 'danger')
+      expect(libraries.showAlert).toBeCalledWith(`Failure deleting library '${libraryName}': this is an error`, 'danger')
     })
   })
 })
