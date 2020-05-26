@@ -1,0 +1,6 @@
+query {
+  plates: plates {
+    id
+    barcode
+  }
+}

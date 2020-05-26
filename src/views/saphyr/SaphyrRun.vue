@@ -20,14 +20,14 @@
 </template>
 
 <script>
-import Chip from '@/components/Chip'
+import Chip from '@/components/saphyr/SaphyrChip'
 import Alert from '@/components/Alert'
 import Helper from '@/mixins/Helper'
 import { createNamespacedHelpers } from 'vuex'
 const { mapGetters, mapActions, mapState, mapMutations } = createNamespacedHelpers('traction/saphyr/runs')
 
 export default {
-  name: 'Run',
+  name: 'SaphyrRun',
   mixins: [Helper],
   methods: {
     async create () {

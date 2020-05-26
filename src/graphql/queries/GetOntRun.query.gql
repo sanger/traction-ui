@@ -1,0 +1,11 @@
+query ($id: ID!) {
+  ontRun(id: $id) {
+    id
+    flowcells {
+      position
+      library {
+        name
+      }
+    }
+  }
+} 

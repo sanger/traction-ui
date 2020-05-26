@@ -32,7 +32,7 @@
         },
         "tubes": {
           "name": "tubes",
-          "include": "material"
+          "include": "materials"
         }
       },
       "pacbio": {
@@ -46,7 +46,7 @@
         },
         "tubes": {
           "name": "tubes",
-          "include": "material"
+          "include": "materials"
         },
         "runs": {
           "name": "runs",
@@ -79,6 +79,16 @@
       "assets": {
         "name": "assets",
         "include": ""
+      }
+    }
+  },
+  "sequencescape": {
+    "name": "sequencescape",
+    "apiNamespace": "api/v2",
+    "resources": {
+      "plates": {
+        "name": "plates",
+        "include": "wells.aliquots.sample"
       }
     }
   }

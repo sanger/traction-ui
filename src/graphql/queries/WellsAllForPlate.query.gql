@@ -1,0 +1,11 @@
+query ($plateId: ID!) {
+  wells(plateId: $plateId) {
+    id
+    position
+    materials {
+      ...on Request {
+        name
+      }
+    }
+  }
+}

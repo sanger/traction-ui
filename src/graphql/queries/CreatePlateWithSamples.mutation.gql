@@ -1,0 +1,20 @@
+mutation ($barcode: String!, $wells: [WellWithSampleInput!]!) {
+  createPlateWithSamples( 
+    input: { 
+      arguments: {
+        barcode: $barcode
+        wells: $wells
+      }
+    }
+  )
+  {
+    plate {
+      id
+      barcode
+      wells {
+        plateId
+      }
+    }
+    errors
+  }
+}

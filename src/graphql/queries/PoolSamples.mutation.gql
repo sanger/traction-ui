@@ -1,0 +1,15 @@
+mutation ($plate_barcode: String!) {
+  createOntLibraries (
+    input: {
+      arguments: {
+        plateBarcode: $plate_barcode
+      }
+    }
+  )
+  {
+    tubes {
+      barcode
+    }
+    errors
+  }
+}

@@ -17,8 +17,7 @@ import TractionSaphyrRequests from './tractionSaphyrRequests'
 import TractionSaphyrTubesWithRequest from './tractionSaphyrTubesWithRequest'
 import TractionTubesWithSample from './tractionTubesWithSample'
 import TubeWithLibrary from './tubeWithLibrary'
-import TractionPacbioTubesWithRequest from './tractionPacbioTubesWithRequest'
-import PacbioTubeWithLibrary from './pacbioTubeWithLibrary'
+import CreatePacbioRequest from './createPacbioRequest'
 import TractionPacbioLibrary from './tractionPacbioLibrary'
 import TractionPacbioLibraries from './tractionPacbioLibraries'
 import TractionPacbioSamples from './tractionPacbioSamples'
@@ -30,6 +29,8 @@ import PacbioWell from './pacbioWell'
 import PacbioWells from './pacbioWells'
 import PacbioWellLibrary from './pacbioWellLibrary'
 import TractionTags from './tractionTags'
+import SequencescapePlates from './sequencescapePlates'
+import TractionTubeWithContainerMaterials from './tractionTubeWithContainerMaterials'
 
 export default {
   CreateChip,
@@ -52,8 +53,7 @@ export default {
   TractionSaphyrTubesWithRequest,
   TractionTubesWithSample,
   TubeWithLibrary,
-  TractionPacbioTubesWithRequest,
-  PacbioTubeWithLibrary,
+  CreatePacbioRequest,
   TractionPacbioLibraries,
   TractionPacbioLibrary,
   TractionPacbioSamples,
@@ -63,5 +63,7 @@ export default {
   PacbioWell,
   PacbioWells,
   PacbioWellLibrary,
-  TractionTags
+  TractionTags,
+  SequencescapePlates,
+  TractionTubeWithContainerMaterials
 }

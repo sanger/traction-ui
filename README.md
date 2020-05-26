@@ -51,49 +51,6 @@ yarn run test:unit
 yarn run test:e2e
 ```
 
-## Miscellaneous
-
-### Current process
-
-To see how the UI and service work, follow this process to get a run created.
-
-1. Generate manifest in SS (this creates samples in tubes with barcodes and metadata)
-
-    * 6630/sdb/sample_manifests
-    * create manifests for 1D tubes
-    * use Saphyr template
-    * use Saphyr purpose
-    * select study
-    * select supplier
-    * number of tubes required
-
-1. Download sample manifest from SS - manifest looks like exec(?) we've created sample manifest for
-Saphyr with minimal information
-
-1. User adds data into sample manifest:
-    * supplier
-    * sample name
-    * volume
-    * common name (species)
-    * etc.
-
-1. Upload manifest in SS - creates the samples in SS within the tubes copy barcodes from SS
-1. Import SS tubes in Traction UI
-1. Paste barcodes in the text box 'Import Sample Extraction Tubes'
-    * goes gets sample meta data from SS
-    * creates samples in Traction in tubes with Traction barcode
-    * redirected to samples table
-    * shows the recently created sample
-1. Create library from sample
-    * select an enzyme
-    * redirected to created library
-    * creates a library
-1. Print library tube barcode
-1. Create a run
-    * add a run name
-    * scan in barcodes of library into each flowcell
-
-
 ## Releases
 
 #### UAT
@@ -101,3 +58,5 @@ On merging a pull request into develop, a release will be created with the tag/n
 
 #### PROD
 Update `.release-version` with major/minor/patch. On merging a pull request into master, a release will be created with the release version as the tag/name 
+
+See Confluence for further information

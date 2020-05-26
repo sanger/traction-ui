@@ -1,0 +1,13 @@
+mutation ($flowcells: [FlowcellInput!]!) {
+  createOntRun( 
+    input: { 
+      flowcells: $flowcells 
+    } 
+  )
+  { 
+    run {
+      id
+    }
+    errors 
+  }
+}

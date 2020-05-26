@@ -1,0 +1,11 @@
+query ($unassignedToFlowcells: Boolean) {
+  libraries: ontLibraries(unassignedToFlowcells: $unassignedToFlowcells) {
+    id
+    name
+    pool
+    poolSize
+    tubeBarcode
+    plateBarcode
+    createdAt
+  }
+}

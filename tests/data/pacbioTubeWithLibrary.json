@@ -1,43 +1,50 @@
 {
-  "data": {
-    "data": [
-      {
-        "id": "19",
-        "type": "tubes",
-        "links": {
-          "self": "http://localhost:3000/v1/pacbio/tubes/19"
-        },
-        "attributes": {
-          "barcode": "TRAC-19"
-        },
-        "relationships": {
-          "material": {
-            "links": {
-              "self": "http://localhost:3000/v1/pacbio/tubes/19/relationships/material",
-              "related": "http://localhost:3000/v1/pacbio/tubes/19/material"
-            },
-            "data": {
-              "type": "libraries",
-              "id": "4"
+    "data": {
+        "data": [
+            {
+                "id": "6",
+                "type": "tubes",
+                "links": {
+                    "self": "http://localhost:3000/v1/pacbio/tubes/6"
+                },
+                "attributes": {
+                    "barcode": "TRAC-2-6"
+                },
+                "relationships": {
+                    "materials": {
+                        "links": {
+                            "self": "http://localhost:3000/v1/pacbio/tubes/6/relationships/materials",
+                            "related": "http://localhost:3000/v1/pacbio/tubes/6/materials"
+                        },
+                        "data": [
+                            {
+                                "type": "container_materials",
+                                "id": "6"
+                            }
+                        ]
+                    }
+                }
             }
-          }
-        }
-      }
-    ],
-    "included": [
-      {
-        "id": "4",
-        "type": "libraries",
-        "attributes": {
-          "volume": 1.0,
-          "concentration": 1.0,
-          "library_kit_barcode": "LK12345",
-          "fragment_size": 100,
-          "barcode": "TRAC-19"
-        }
-      }
-    ]
-  },
-  "status": 200,
-  "statusText": "Success"
+        ],
+        "included": [
+            {
+                "id": "6",
+                "type": "container_materials",
+                "attributes": {
+                    "state": "pending",
+                    "fragment_size": 100,
+                    "volume": 1,
+                    "concentration": 1,
+                    "library_kit_barcode": "LK12345",
+                    "deactivated_at": null,
+                    "sample_names": "Sample6",
+                    "barcode": "TRAC-2-6",
+                    "created_at": "2020/05/04 12:45",
+                    "material_type": "library"
+                }
+            }
+        ]
+    },
+    "status": 200,
+    "statusText": "Success"
 }
