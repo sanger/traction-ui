@@ -18,6 +18,9 @@
 
 <script>
 
+const img = new Image()
+img.src = '/tube.png'
+
 export default {
   name: 'Tube',
   props: {
@@ -42,8 +45,6 @@ export default {
   // TODO: need to add a a test for drag
   methods: {
     drag (barcode, event) {
-      const img = new Image()
-      img.src = '/tube.png'
       event.dataTransfer.setDragImage(img,120,50)
       event.dataTransfer.setData('barcode', barcode)
     }
