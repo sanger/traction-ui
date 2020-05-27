@@ -13,7 +13,7 @@
         </b-col>
         <b-col cols="6">
           <ONTSVG>
-            <OntFlowcell v-for="(flowcellData, key) in flowcellsData" v-bind="flowcellData" v-bind:key="key">
+            <OntFlowcell v-for="(flowcellData, key) in flowcellsData" v-bind="flowcellData" v-bind:key="key" @updateFlowcell="updateFlowcell">
             </OntFlowcell>
           </ONTSVG>
         </b-col>
@@ -32,6 +32,7 @@ import SET_CLIENT_RUN from '@/graphql/queries/client/SetClientRun.mutation.gql'
 import GET_RUN from '@/graphql/queries/GetOntRun.query.gql'
 import CREATE_RUN from '@/graphql/queries/CreateOntRun.mutation.gql'
 import UPDATE_RUN from '@/graphql/queries/UpdateOntRun.mutation.gql'
+import UPDATE_CLIENT_FLOWCELL from '@/graphql/queries/client/UpdateClientFlowcell.mutation.gql'
 
 import Alert from '@/components/Alert'
 import Helper from '@/mixins/Helper'
@@ -81,7 +82,6 @@ export default {
   mixins: [Helper],
   methods: {
     runAction() {
-      console.log(`!!! runAction: #{this.currentAction.mutation}`)
       this.$apollo.mutate({
         mutation: this.currentAction.mutation,
         variables: this.runActionVariables()
@@ -107,9 +107,9 @@ export default {
       }
     },
     buildRun () {
-      console.log("!!! #3 buildRun")
-
-      if (!this.newRecord) {
+      if (this.newRecord) {
+        this.setRun('', [])
+      } else {
         this.$apollo.query({
           query: GET_RUN,
           variables: {
@@ -121,12 +121,9 @@ export default {
           // move to update function
           this.setRun(existingRun.id, existingRun.flowcells)
         }) 
-      } else {
-        this.setRun('', [])
       }
     },
     setRun(id, flowcells) {
-      console.log("!!! #4 setRun")
       this.$apollo.mutate({
         mutation: SET_CLIENT_RUN,
         variables: {
@@ -142,13 +139,17 @@ export default {
       this.$router.push({ name: 'OntHeronRuns' })
     },
     provider () {
-      console.log("!!! #2 provide")
       this.buildRun()
     },
-    updateFlowcell(run){
-      console.log("!x", run)
-      console.log("!x", this.flowcellsData)
-    }
+    updateFlowcell (position, libraryName) {
+      this.$apollo.mutate({
+        mutation: UPDATE_CLIENT_FLOWCELL,
+        variables: {
+          position: position,
+          libraryName: libraryName
+        }
+      })
+    },
   },
   apollo: {
     run: {
@@ -156,6 +157,9 @@ export default {
       result ({ data }) {
         data.run.flowcells.map(flowcell => {
           let flowcellData = this.flowcellsData.filter(f => f.position === flowcell.position)[0]
+          // Think this is where the data isnt being 
+          // dynamically updated, trigging reload
+          // of the flowcell
           flowcellData.library.name = flowcell.library.name
         })
       }
@@ -167,7 +171,6 @@ export default {
     }
   },
   created () {
-    console.log("!!! #1 created OntHeronRun")
     this.provider()
   },
 }
