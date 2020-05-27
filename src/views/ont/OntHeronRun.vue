@@ -83,7 +83,10 @@ export default {
       this.$apollo.mutate({
         mutation: this.currentAction.mutation,
         variables: this.runActionVariables()
-      }).then(data => {
+        // update here is not required as the cache is already up to date
+        // with the run that we have mutated the server with
+      })
+      .then(data => {
         let response = data.data[this.currentAction.response]
         if (response.errors.length > 0) {
           this.showAlert('Failure: ' + response.errors.join(', '), 'danger')
