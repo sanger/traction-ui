@@ -41,28 +41,12 @@ export default {
   data () {
     return {
       flowcellsData: [
-        { position: 1, xPos: 240, library: { name: '' } },
-        { position: 2, xPos: 320, library: { name: '' } },
-        { position: 3, xPos: 400, library: { name: '' } },
-        { position: 4, xPos: 480, library: { name: '' } },
-        { position: 5, xPos: 560, library: { name: '' } }
+        { position: 1, library: { name: '' } },
+        { position: 2, library: { name: '' } },
+        { position: 3, library: { name: '' } },
+        { position: 4, library: { name: '' } },
+        { position: 5, library: { name: '' } }
       ],
-      actions: {
-        create: {
-          id: 'create-button',
-          variant: 'success',
-          label: 'Create Run',
-          mutation: CREATE_RUN,
-          response: 'createOntRun'
-        },
-        update: {
-          id: 'update-button',
-          variant: 'primary',
-          label: 'Update Run',
-          mutation: UPDATE_RUN,
-          response: 'updateOntRun'
-        }
-      },
       newRecord: isNaN(this.id)
     }
   },
@@ -159,7 +143,21 @@ export default {
   },
   computed: {
     currentAction () {
-      return this.actions[this.newRecord ? 'create' : 'update']
+      let create = {
+        id: 'create-button',
+        variant: 'success',
+        label: 'Create Run',
+        mutation: CREATE_RUN,
+        response: 'createOntRun'
+      }
+      let update= {
+        id: 'update-button',
+        variant: 'primary',
+        label: 'Update Run',
+        mutation: UPDATE_RUN,
+        response: 'updateOntRun'
+      }
+      return this.newRecord ? create : update
     }
   },
   created () {

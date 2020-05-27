@@ -19,10 +19,6 @@
 export default {
   name: 'OntFlowcell',
   props: {
-    xPos: {
-      type: Number,
-      required: true
-    },
     position: {
       type: Number,
       required: true
@@ -46,7 +42,8 @@ export default {
   computed: {
     // Determines the flowcells x/y coordinates
     getMatrix () {
-      return 'matrix(1,0,0,1,'+this.xPos+',135)'
+      let xPos = (this.position - 1) * 80 + 240
+      return 'matrix(1,0,0,1,'+xPos+',135)'
     },
     status () {
       if (this.library.name) {
