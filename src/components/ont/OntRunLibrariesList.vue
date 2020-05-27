@@ -1,6 +1,6 @@
 <template>
-  <div class="ont-run-libraries" v-on:drop="drop" v-on:dragover="allowDrop" v-bind:class="{active: hover}">
-    <b-list-group class="ont-run-libraries-list-group" >
+  <div class="ont-run-libraries">
+    <b-list-group class="ont-run-libraries-list-group" v-on:drop="drop" v-on:dragover="allowDrop" v-bind:class="{active: hover}">
       <OntTube v-for="library in libraries" v-bind:key="library.id" v-bind="library">
       </OntTube>
     </b-list-group>
@@ -42,7 +42,6 @@ export default {
     },
     drop (event) {
       event.preventDefault()
-      console.log('dropping ...')
       const name = event.dataTransfer.getData('name')
       let el = document.getElementById(event.dataTransfer.getData('name'))
       el.parentNode.hidden = false

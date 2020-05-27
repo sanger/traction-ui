@@ -63,6 +63,7 @@ export default {
       this.updateFlowcell()
 
       let el = document.getElementById(this.libraryName)
+      if (el === null) return 
       el.parentNode.hidden = true
 
       const img = document.createElement('img')
@@ -71,7 +72,6 @@ export default {
       img.height = "30"
       img.setAttribute('id', `${this.libraryName}-img`)
 
-      console.log(img)
       el = document.getElementById(this.elementId)
       el.parentNode.appendChild(img)
 
