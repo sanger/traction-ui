@@ -36,6 +36,7 @@ export default {
       event.preventDefault()
     },
     drop (event) {
+      event.preventDefault()
       this.updateFlowcell(event.dataTransfer.getData('name'))
     }
   },
