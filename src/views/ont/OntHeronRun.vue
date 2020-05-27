@@ -27,7 +27,6 @@
 import ONTSVG from '@/components/svg/ONTSVG'
 import OntFlowcell from '@/components/ont/OntFlowcell'
 import OntRunLibrariesList from '@/components/ont/OntRunLibrariesList'
-import GET_CLIENT_RUN from '@/graphql/queries/client/GetClientRun.query.gql'
 import SET_CLIENT_RUN from '@/graphql/queries/client/SetClientRun.mutation.gql'
 import GET_RUN from '@/graphql/queries/GetOntRun.query.gql'
 import CREATE_RUN from '@/graphql/queries/CreateOntRun.mutation.gql'
@@ -48,7 +47,6 @@ export default {
         { position: 4, xPos: 480, library: { name: '' } },
         { position: 5, xPos: 560, library: { name: '' } }
       ],
-      run: {},
       actions: {
         create: {
           id: 'create-button',
@@ -95,7 +93,7 @@ export default {
       })
     },
     runActionVariables () {
-      let flowcells = this.run.flowcells
+      let flowcells = this.flowcellsData
         .filter(fc => fc.library.name)
         .map((fc => {
           return { position: fc.position, libraryName: fc.library.name }
@@ -117,8 +115,6 @@ export default {
           },
         }).then(data => {
           let existingRun = data.data.ontRun
-          // shouldnt need to do this here. 
-          // move to update function
           this.setRun(existingRun.id, existingRun.flowcells)
         }) 
       }
@@ -131,15 +127,18 @@ export default {
           flowcells: flowcells
         }
       })
+      .then( ({ data: { setRun } }) => {
+        setRun.flowcells.map(flowcell => {
+          let index = this.flowcellsData.findIndex(x => x.position === flowcell.position)
+          this.flowcellsData[index].library = flowcell.library
+        })
+      })
       .catch(error => {
         this.showAlert('Failure to build run: ' + error, 'danger')
       })
     },
     redirectToRuns() {
       this.$router.push({ name: 'OntHeronRuns' })
-    },
-    provider () {
-      this.buildRun()
     },
     updateFlowcell (position, libraryName) {
       this.$apollo.mutate({
@@ -149,21 +148,11 @@ export default {
           libraryName: libraryName
         }
       })
+      .then( ({ data: { updateFlowcell } }) => {
+        let index = this.flowcellsData.findIndex(x => x.position === updateFlowcell.position)
+        this.flowcellsData[index].library.name = updateFlowcell.libraryName
+      })
     },
-  },
-  apollo: {
-    run: {
-      query: GET_CLIENT_RUN,
-      result ({ data }) {
-        data.run.flowcells.map(flowcell => {
-          let flowcellData = this.flowcellsData.filter(f => f.position === flowcell.position)[0]
-          // Think this is where the data isnt being 
-          // dynamically updated, trigging reload
-          // of the flowcell
-          flowcellData.library.name = flowcell.library.name
-        })
-      }
-    }
   },
   computed: {
     currentAction () {
@@ -171,7 +160,7 @@ export default {
     }
   },
   created () {
-    this.provider()
+    this.buildRun()
   },
 }
 </script>
