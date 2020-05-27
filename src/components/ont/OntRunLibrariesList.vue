@@ -1,6 +1,6 @@
 <template>
   <div class="ont-run-libraries">
-    <b-list-group class="ont-run-libraries-list-group">
+    <b-list-group class="ont-run-libraries-list-group" v-on:drop="drop" v-on:dragover="allowDrop">
       <OntTube v-for="library in libraries" v-bind:key="library.id" v-bind="library">
       </OntTube>
     </b-list-group>
@@ -25,6 +25,16 @@ export default {
         }
       },
     }
+  },
+  methods: {
+    allowDrop (event) {
+      event.preventDefault()
+    },
+    drop (libraryName, event) {
+      event.preventDefault()
+      let el = document.getElementById(libraryName)
+      el.parentNode.hidden = true
+    },
   }
 }
 </script>

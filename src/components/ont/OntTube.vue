@@ -8,7 +8,7 @@
     v-on:mouseleave="isActive = false"
   >
     <b-img left src="/tube.png" height="30" draggable="false" />
-    <div class="name">
+    <div class="name" :id="name">
       {{ name }}
     </div>
  </b-list-group-item>
