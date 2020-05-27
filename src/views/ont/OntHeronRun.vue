@@ -6,8 +6,7 @@
       <b-row class="create-run-button">
         <b-button :id="currentAction.id" :variant="currentAction.variant" @click="runAction()">{{ currentAction.label}}</b-button>
       </b-row>
-      <br>
-      <b-row>
+      <b-row class="clearboth">
         <b-col cols="4">
           <OntRunLibrariesList></OntRunLibrariesList>
         </b-col>
@@ -160,6 +159,10 @@ export default {
 
 .create-run-button {
   float: right;
+}
+
+.clearboth {
+  clear: both;
 }
 
 </style>

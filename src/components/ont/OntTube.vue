@@ -7,7 +7,7 @@
     v-on:mouseover="isActive = true" 
     v-on:mouseleave="isActive = false"
   >
-    <b-img left src="/tube.png" height="30" />
+    <b-img left src="/tube.png" height="30" draggable="false" />
     <div class="name">
       {{ name }}
     </div>
@@ -15,6 +15,9 @@
 </template>
 
 <script>
+
+const img = new Image()
+img.src = '/tube.png'
 
 export default {
   name: 'OntTube',
@@ -31,8 +34,6 @@ export default {
   },
   methods: {
     drag (name, event) {
-      const img = new Image()
-      img.src = '/tube.png'
       event.dataTransfer.setDragImage(img, 80, 0)
       event.dataTransfer.setData('name', name)
     }
