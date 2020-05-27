@@ -1,5 +1,5 @@
 <template>
-  <g :transform="getMatrix" v-on:drop="drop" v-on:dragover="allowDrop" draggable="true" v-on:dragstart="drag(libraryName, $event)">
+  <g :transform="getMatrix" v-on:drop="drop" v-on:dragover="allowDrop">
     <text x="25" y="30" class="medium">{{ position }}</text>
     <rect width="70" height="227" v-bind:class="status"/>
     <title v-text="this.libraryName"></title>
@@ -53,6 +53,9 @@ export default {
       img.src = '/tube.png'
       event.dataTransfer.setDragImage(img, 80, 0)
       event.dataTransfer.setData('name', this.libraryName)
+
+      // this.libraryName = ''
+      // this.updateFlowcell()
     },
     drop (event) {
       event.preventDefault()
@@ -66,6 +69,7 @@ export default {
       img.src = "/tube.png"
       img.draggable = false
       img.height = "30"
+      img.setAttribute('id', `${this.libraryName}-img`)
 
       console.log(img)
       el = document.getElementById(this.elementId)
