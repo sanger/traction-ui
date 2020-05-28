@@ -1,10 +1,10 @@
 <template>
   <g :transform="getMatrix" v-on:drop="drop" v-on:dragover="allowDrop" >
     <text x="25" y="30" class="medium">{{ position }}</text>
-    <rect width="70" height="227" v-bind:class="status"/>
+    <rect width="70" height="227" v-on:dragleave="endDrop" v-bind:class="[{active: hover}, status]"/>
     <title v-text="this.libraryName"></title>
 
-    <foreignObject y="100" width="70" height="227">
+    <foreignObject>
       <b-form-input v-model="libraryName" placeholder="Name" :id="'libraryNameInput-'+this.position" @change="updateFlowcell"></b-form-input>
     </foreignObject>
   </g>
@@ -29,6 +29,7 @@ export default {
   data () {
     return {
       libraryName: '',
+      hover: false
     }
   },
   methods: {
@@ -43,11 +44,17 @@ export default {
     },
     allowDrop (event) {
       event.preventDefault()
+      this.hover = true
+    },
+    endDrop (event) {
+      event.preventDefault()
+      this.hover = false
     },
     drop (event) {
       event.preventDefault()
       this.libraryName = event.dataTransfer.getData('name')
       this.updateFlowcell()
+      this.hover = false
     }
   },
   computed: {
@@ -88,5 +95,23 @@ export default {
   }
   .empty {
     fill: red;
+  }
+
+  .active {
+    stroke: white;
+    stroke-width: 2px;
+  }
+  foreignObject {
+    overflow: visible;
+  }
+  input{
+    -webkit-transform: rotate(90deg);
+    -moz-transform: rotate(90deg);
+    -ms-transform: rotate(90deg);
+    -o-transform: rotate(90deg);
+    width:170px;
+    position: absolute;
+    left: -50px;
+    top: 100px;
   }
 </style>
