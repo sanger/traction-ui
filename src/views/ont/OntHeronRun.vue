@@ -73,7 +73,9 @@ export default {
         if (response.errors.length > 0) {
           this.showAlert('Failure: ' + response.errors.join(', '), 'danger')
         } else {
-          this.redirectToRuns()
+          let runId = response.run.id
+          this.redirectToRun(runId)
+          this.showAlert(`Successfully ${this.currentAction.pastTense} run with id: ${runId}` , 'success')
         }
       })
     },
@@ -127,8 +129,8 @@ export default {
         this.showAlert('Failure to build run: ' + error, 'danger')
       })
     },
-    redirectToRuns() {
-      this.$router.push({ name: 'OntHeronRuns' })
+    redirectToRun(id) {
+      this.$router.push({ path: `/ont/run/${id}`}, () => {})
     },
     updateFlowcell (position, libraryName) {
       this.$apollo.mutate({
@@ -154,14 +156,16 @@ export default {
         variant: 'success',
         label: 'Create Run',
         mutation: CREATE_RUN,
-        response: 'createOntRun'
+        response: 'createOntRun',
+        pastTense: 'created'
       }
       let update= {
         id: 'update-button',
         variant: 'primary',
         label: 'Update Run',
         mutation: UPDATE_RUN,
-        response: 'updateOntRun'
+        response: 'updateOntRun',
+        pastTense: 'updated'
       }
       return this.newRecord ? create : update
     },

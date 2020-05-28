@@ -111,7 +111,7 @@ describe('OntHeronRun.vue', () => {
     })
 
     it('redirects on success', async () => {
-      run.redirectToRuns = jest.fn()
+      run.redirectToRun = jest.fn()
 
       let mockResponse = { data: { createOntRun: { run: { id: 1 }, errors: [] } } }
 
@@ -121,7 +121,8 @@ describe('OntHeronRun.vue', () => {
       await run.runAction()
 
       expect(mutate).toBeCalled()
-      expect(run.redirectToRuns).toBeCalled()
+      expect(run.redirectToRun).toBeCalledWith(1)
+      expect(run.showAlert).toBeCalledWith('Successfully created run with id: 1', 'success')
     })
 
     it('shows an alert on failure', async () => {
