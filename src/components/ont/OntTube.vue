@@ -1,6 +1,6 @@
 
 <template>
-  <b-list-group-item 
+  <b-list-group-item
     draggable="true" 
     v-on:dragstart="drag(name, $event)" 
     v-bind:class="{active: isActive}" 
@@ -11,7 +11,7 @@
     <div class="name" :id="name">
       {{ name }}
     </div>
- </b-list-group-item>
+  </b-list-group-item>
 </template>
 
 <script>
@@ -42,6 +42,7 @@ export default {
 </script>
 
 <style scoped lang="scss">
+
   .active {
     background-color: gray;
     border: gray;

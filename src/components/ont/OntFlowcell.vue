@@ -1,5 +1,10 @@
 <template>
-  <g :transform="getMatrix" v-on:drop="drop" v-on:dragover="allowDrop">
+  <g :transform="getMatrix" v-on:drop="drop" v-on:dragover="allowDrop" v-on:dragleave="endDrop" v-bind:class="{active: hover}">
+     <defs>
+      <filter id="blurFilter">
+          <feGaussianBlur in="SourceGraphic" stdDeviation="1" />
+      </filter>
+    </defs>
     <text x="25" y="30" class="medium">{{ position }}</text>
     <rect width="70" height="227" v-bind:class="status"/>
     <title v-text="this.libraryName"></title>
@@ -32,6 +37,7 @@ export default {
   data () {
     return {
       libraryName: '',
+      hover: false
     }
   },
   methods: {
@@ -46,6 +52,11 @@ export default {
     },
     allowDrop (event) {
       event.preventDefault()
+      this.hover = true
+    },
+    endDrop (event) {
+      event.preventDefault()
+      this.hover = false
     },
     drag (libraryName, event) {
       if (this.libraryName.length === 0) return
@@ -53,6 +64,8 @@ export default {
       img.src = '/tube.png'
       event.dataTransfer.setDragImage(img, 80, 0)
       event.dataTransfer.setData('name', this.libraryName)
+
+      this.hover = false
 
       // this.libraryName = ''
       // this.updateFlowcell()
@@ -74,6 +87,8 @@ export default {
 
       el = document.getElementById(this.elementId)
       el.parentNode.appendChild(img)
+
+      this.hover = false
 
     }
   },
@@ -118,5 +133,9 @@ export default {
   }
   .empty {
     fill: red;
+  }
+  .active {
+    stroke: #ffffff;
+    filter: url(#blurFilter);
   }
 </style>

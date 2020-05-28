@@ -1,6 +1,7 @@
 <template>
-  <div class="ont-run-libraries">
-    <b-list-group class="ont-run-libraries-list-group" v-on:drop="drop" v-on:dragover="allowDrop" v-bind:class="{active: hover}">
+
+   <div class="ont-run-libraries" v-on:drop="drop" v-on:dragover="allowDrop" v-on:dragleave="endDrop" v-bind:class="{hover: hover}">
+    <b-list-group class="ont-run-libraries-list-group" >
       <OntTube v-for="library in libraries" v-bind:key="library.id" v-bind="library">
       </OntTube>
     </b-list-group>
@@ -56,20 +57,20 @@ export default {
 
 <style scoped lang="scss">
 
-.ont-run-libraries {
-  border: solid;
-  border-width: 1px;
-  padding: 20px;
+  .ont-run-libraries {
+    border: solid;
+    border-width: 1px;
+    padding: 20px;
 
-}
+  }
 
-.active {
-  background-color: gray;
-}
+  .hover {
+    box-shadow: 0px 0px 2px 2px gray;
+  }
 
-.ont-run-libraries-list-group {
-  max-height: 400px;
-  overflow: scroll;
-}
+  .ont-run-libraries-list-group {
+    max-height: 400px;
+    overflow: scroll;
+  }
 
 </style>
