@@ -46,7 +46,6 @@ export default {
         { position: 4, library: { name: '' } },
         { position: 5, library: { name: '' } }
       ],
-      newRecord: isNaN(this.id)
     }
   },
   props: {
@@ -85,9 +84,14 @@ export default {
           return { position: fc.position, libraryName: fc.library.name }
         }))
 
+      // Spread operator and short-circuit evaluation
+      // {
+      //    ...(condition) && { someprop: propvalue },
+      //    ...otherprops
+      // }
       return {
         ...(!this.newRecord) && { id: this.id},
-        ...({}) && { flowcells: flowcells }
+        ...{ flowcells: flowcells }
       }
     },
     buildRun () {
@@ -139,6 +143,9 @@ export default {
         this.flowcellsData[index].library.name = updateFlowcell.libraryName
       })
     },
+    provider () {
+      this.buildRun()
+    }
   },
   computed: {
     currentAction () {
@@ -157,10 +164,13 @@ export default {
         response: 'updateOntRun'
       }
       return this.newRecord ? create : update
+    },
+    newRecord () {
+      return isNaN(this.id)
     }
   },
   created () {
-    this.buildRun()
+    this.provider()
   },
 }
 </script>
