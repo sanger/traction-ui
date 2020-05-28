@@ -1,11 +1,11 @@
 <template>
   <g :transform="getMatrix" v-on:drop="drop" v-on:dragover="allowDrop" >
     <text x="25" y="30" class="medium">{{ position }}</text>
-    <rect width="70" height="227" v-bind:class="status"/>
+    <rect width="70" height="227" :class="status"/>
     <title v-text="this.library.name"></title>
 
     <foreignObject y="100" width="70" height="227">
-      <b-form-input placeholder="Name" :id="'libraryNameInput-'+this.position" @change="updateFlowcell($event)" v-bind:value="library.name"></b-form-input>
+      <b-form-input placeholder="Name" :id="'libraryNameInput-'+this.position" @change="updateFlowcell($event)" :value="library.name"></b-form-input>
     </foreignObject>
   </g>
 </template>

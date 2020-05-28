@@ -106,7 +106,7 @@ export default {
         }).then(data => {
           let existingRun = data.data.ontRun
           this.setRun(existingRun.id, existingRun.flowcells)
-        }) 
+        })
       }
     },
     setRun(id, flowcells) {

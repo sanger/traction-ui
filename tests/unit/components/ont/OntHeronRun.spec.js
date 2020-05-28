@@ -221,13 +221,11 @@ describe('OntHeronRun.vue', () => {
     it('shows an error when the mutation fails', async () => {
       run.showAlert = jest.fn()
 
-      const request = Promise.reject("It failed")
-
-      mutate.mockReturnValue(request)
+      const promise = Promise.reject("It failed")
+      mutate.mockReturnValue(promise)
 
       await run.setRun('', [])
-      await
-      expect(mutate).toBeCalled()
+      await expect(mutate).toBeCalled()
       expect(run.showAlert).toBeCalledWith('Failure to build run: It failed', 'danger')
     })
   })
