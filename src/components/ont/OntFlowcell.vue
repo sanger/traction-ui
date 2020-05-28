@@ -53,8 +53,6 @@ export default {
         return 'empty'
       }
     },
-  },
-  created () {
   }
 }
 </script>
