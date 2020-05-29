@@ -1,78 +1,58 @@
 <template>
   <g :transform="getMatrix" v-on:drop="drop" v-on:dragover="allowDrop" >
     <text x="25" y="30" class="medium">{{ position }}</text>
-    <rect width="70" height="227" v-bind:class="status"/>
-    <title v-text="this.libraryName"></title>
+    <rect width="70" height="227" :class="status"/>
+    <title v-text="this.library.name"></title>
 
     <foreignObject y="100" width="70" height="227">
-      <b-form-input v-model="libraryName" placeholder="Name" :id="'libraryNameInput-'+this.position" @change="updateFlowcell"></b-form-input>
+      <b-form-input placeholder="Name" :id="'libraryNameInput-'+this.position" @change="updateFlowcell($event)" :value="library.name"></b-form-input>
     </foreignObject>
   </g>
 </template>
 
 <script>
-import GET_CLIENT_FLOWCELL_LIBRARY_NAME from '@/graphql/queries/client/GetClientFlowcellLibraryName.query.gql'
-import UPDATE_CLIENT_FLOWCELL from '@/graphql/queries/client/UpdateClientFlowcell.mutation.gql'
+// Flowcell component 
+// is only to display a current value 
+// and to accept drag and drop events, 
+// notifying the parent when they happen.
 
 export default {
   name: 'OntFlowcell',
   props: {
-    xPos: {
-      type: Number,
-      required: true
-    },
     position: {
       type: Number,
       required: true
-    }
-  },
-  data () {
-    return {
-      libraryName: '',
+    },
+    library: {
+      type: Object,
+      required: true
     }
   },
   methods: {
-    updateFlowcell () {
-      this.$apollo.mutate({
-        mutation: UPDATE_CLIENT_FLOWCELL,
-        variables: {
-          position: this.position,
-          libraryName: this.libraryName
-        }
-      })
+    updateFlowcell (libraryName) {
+      this.$emit('updateFlowcell', this.position, libraryName)
     },
     allowDrop (event) {
       event.preventDefault()
     },
     drop (event) {
       event.preventDefault()
-      this.libraryName = event.dataTransfer.getData('name')
-      this.updateFlowcell()
+      this.updateFlowcell(event.dataTransfer.getData('name'))
     }
   },
   computed: {
     // Determines the flowcells x/y coordinates
     getMatrix () {
-      return 'matrix(1,0,0,1,'+this.xPos+',135)'
+      let xPos = (this.position - 1) * 80 + 240
+      return 'matrix(1,0,0,1,'+xPos+',135)'
     },
     status () {
-      if (this.libraryName) {
+      if (this.library.name) {
         return 'filled'
       } else {
         return 'empty'
       }
-    }
-  },
-  apollo: {
-    libraryName: {
-      query: GET_CLIENT_FLOWCELL_LIBRARY_NAME,
-      variables () {
-        return {
-          position: this.position,
-        }
-      },
-      pollInterval: 100
-    }
+    },
   }
 }
 </script>
