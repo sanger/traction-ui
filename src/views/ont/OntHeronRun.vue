@@ -1,14 +1,13 @@
 <template>
   <div class="ont-heron-run">
     <alert ref='alert'></alert>
-
     <div>
       <b-row class="create-run-button">
         <b-button :id="currentAction.id" :variant="currentAction.variant" @click="runAction()">{{ currentAction.label}}</b-button>
       </b-row>
       <b-row class="clearboth">
         <b-col cols="4">
-          <OntRunLibrariesList></OntRunLibrariesList>
+          <OntRunLibrariesList v-bind:selectedLibraryNames="selectedLibraryNames"></OntRunLibrariesList>
         </b-col>
         <b-col cols="6">
           <ONTSVG>
@@ -171,6 +170,9 @@ export default {
     },
     newRecord () {
       return isNaN(this.id)
+    },
+    selectedLibraryNames () {
+      return this.flowcellsData.map(f => f.library.name).filter(Boolean)
     }
   },
   created () {

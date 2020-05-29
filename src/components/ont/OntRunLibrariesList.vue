@@ -1,7 +1,7 @@
 <template>
   <div class="ont-run-libraries">
     <b-list-group class="ont-run-libraries-list-group">
-      <OntTube v-for="library in libraries" v-bind:key="library.id" v-bind="library">
+      <OntTube v-for="library in libraries" v-bind:key="library.id" v-bind="library" v-bind:selected="isLibrarySelected(library)" >
       </OntTube>
     </b-list-group>
   </div>
@@ -16,7 +16,9 @@ export default {
   components: {
     OntTube
   },
+  props: ['selectedLibraryNames'],
   apollo: {
+    // Requires only available flowcells to be shown
     libraries: {
       query: LIBRARIES_ALL_QUERY,
        variables () {
@@ -24,6 +26,11 @@ export default {
           unassignedToFlowcells: true,
         }
       },
+    }
+  },
+  methods: {
+    isLibrarySelected(library) {
+      return this.selectedLibraryNames.includes(library.name)
     }
   }
 }

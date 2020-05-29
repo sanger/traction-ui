@@ -3,7 +3,7 @@
   <b-list-group-item 
     draggable="true" 
     v-on:dragstart="drag(name, $event)" 
-    v-bind:class="{active: isActive}" 
+    v-bind:class="[ {active: isActive}, { selected: selected }]"
     v-on:mouseover="isActive = true" 
     v-on:mouseleave="isActive = false"
   >
@@ -26,6 +26,10 @@ export default {
       type: String,
       required: true
     },
+    selected: {
+      type: Boolean,
+      required: true
+    }
   },
   data () {
     return {
@@ -34,6 +38,11 @@ export default {
   },
   methods: {
     drag (name, event) {
+      if (this.selected) {
+        alert('This library is already selected')
+        return
+      }
+
       event.dataTransfer.setDragImage(img, 80, 0)
       event.dataTransfer.setData('name', name)
     }
@@ -44,6 +53,11 @@ export default {
 <style scoped lang="scss">
   .active {
     background-color: gray;
+    border: gray;
+  }
+
+  .selected {
+    background-color: black;
     border: gray;
   }
 </style>
