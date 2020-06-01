@@ -4,7 +4,7 @@
     <rect width="70" height="227" v-on:dragleave="endDrop" :class="[{active: hover}, status]"/>
     <title v-text="this.library.name"></title>
 
-    <foreignObject>
+    <foreignObject width="70" height="227" v-on:dragleave="endDrop" :class="[{active: hover}, status]">
       <b-form-input placeholder="Name" :id="'libraryNameInput-'+this.position" @change="updateFlowcell($event)" :value="library.name"></b-form-input>
     </foreignObject>
   </g>
@@ -73,7 +73,6 @@ export default {
     fill-opacity: 0.309804;
     stroke: rgb(0, 0, 0);
   }
-
   .filled{
     fill:green;
   }
@@ -83,9 +82,6 @@ export default {
   .active {
     stroke: white;
     stroke-width: 2px;
-  }
-  foreignObject {
-    overflow: visible;
   }
   input{
     transform: rotate(90deg);
