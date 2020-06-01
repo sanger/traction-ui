@@ -1,3 +1,0 @@
-query ($position: Integer) {
-  libraryName: libraryName(position: $position) @client
-}
