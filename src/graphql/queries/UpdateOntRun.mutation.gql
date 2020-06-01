@@ -9,7 +9,13 @@ mutation ($id: ID!, $flowcells: [FlowcellInput!]) {
   )
   { 
     run { 
-      id 
+      id
+      flowcells {
+        position
+        library {
+          name
+        }
+      }
     } 
     errors 
   }

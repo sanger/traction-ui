@@ -7,6 +7,12 @@ mutation ($flowcells: [FlowcellInput!]!) {
   { 
     run {
       id
+      flowcells {
+        position
+        library {
+          name
+        }
+      }
     }
     errors 
   }
