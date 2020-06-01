@@ -35,15 +35,12 @@ export default {
       required: true
     }
   },
-<<<<<<< HEAD
   data () {
     return {
       libraryName: '',
       hover: false
     }
   },
-=======
->>>>>>> develop
   methods: {
     updateFlowcell (libraryName) {
       this.$emit('updateFlowcell', this.position, libraryName)
@@ -70,7 +67,6 @@ export default {
     },
     drop (event) {
       event.preventDefault()
-<<<<<<< HEAD
       this.libraryName = event.dataTransfer.getData('name')
       this.updateFlowcell()
 
@@ -89,9 +85,7 @@ export default {
 
       this.hover = false
 
-=======
       this.updateFlowcell(event.dataTransfer.getData('name'))
->>>>>>> develop
     }
   },
   computed: {
@@ -107,7 +101,6 @@ export default {
         return 'empty'
       }
     },
-<<<<<<< HEAD
     elementId () {
       return `libraryNameInput-${this.position}`
     }
@@ -122,8 +115,6 @@ export default {
       },
       pollInterval: 100
     }
-=======
->>>>>>> develop
   }
 }
 </script>
