@@ -43,7 +43,6 @@ export default {
   },
   methods: {
     updateFlowcell (libraryName) {
-      console.log(libraryName)
       this.$emit('updateFlowcell', this.position, libraryName)
     },
     allowDrop (event) {
@@ -77,6 +76,7 @@ export default {
       img.setAttribute('id', `${this.libraryName}-img`)
 
       let el = document.getElementById(this.elementId)
+      if (el === null ) return
       el.parentNode.appendChild(img)
 
       this.hover = false

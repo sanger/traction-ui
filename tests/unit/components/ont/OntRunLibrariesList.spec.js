@@ -3,9 +3,12 @@ import OntTube from '@/components/ont/OntTube'
 import { mount, localVue } from '../../testHelper'
 
 describe('OntLibraries.vue', () => {
-  let wrapper, librariesData
+  let wrapper, librariesData, props
 
   beforeEach(() => {
+    props = {
+      selectedLibraryNames: []
+    }
     librariesData = [
       { id: 1, name: 'TRAC-2-1', plate_barcode: 'TRAC-1-1', poolSize: 1, wellRange: 'A1-H3', tag_set: 24 },
       { id: 2, name: 'TRAC-2-2', plate_barcode: 'TRAC-1-1', poolSize: 2, wellRange: 'A4-H6', tag_set: 24 },
@@ -16,6 +19,7 @@ describe('OntLibraries.vue', () => {
 
     wrapper = mount(OntRunLibrariesList, {
       localVue,
+      propsData: props,
       data() {
         return {
           libraries: librariesData
