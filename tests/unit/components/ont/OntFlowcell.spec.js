@@ -132,7 +132,6 @@ describe('OntFlowcell.vue', () => {
     it('will set the drag image and set the data', () => {
       flowcell.drag(mockEvent)
       expect(mockEvent.dataTransfer.setDragImage).toBeCalled()
-      expect(mockEvent.dataTransfer.setData).toBeCalledWith('name',flowcell.libraryName)
       expect(mockEvent.dataTransfer.setData).toBeCalledWith('flowcellPosition', flowcell.position)
     })
   })

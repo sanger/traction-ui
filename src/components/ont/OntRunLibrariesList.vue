@@ -47,13 +47,9 @@ export default {
     },
     drop (event) {
       event.preventDefault()
-      const name = event.dataTransfer.getData('name')
-      this.hover = false
       let flowcellPosition = parseInt(event.dataTransfer.getData('flowcellPosition'))
       this.updateFlowcell(flowcellPosition,'')
-
-      let el = document.getElementById(`${name}-img`)
-      el.parentNode.removeChild(el)
+      this.hover = false
     },
     isLibrarySelected(library) {
       return this.selectedLibraryNames.includes(library.name)

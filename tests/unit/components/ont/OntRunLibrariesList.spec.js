@@ -3,7 +3,7 @@ import OntTube from '@/components/ont/OntTube'
 import { mount, localVue } from '../../testHelper'
 
 describe('OntLibraries.vue', () => {
-  let wrapper, librariesData, props
+  let wrapper, librariesData, props, librariesList
 
   beforeEach(() => {
     props = {
@@ -26,6 +26,8 @@ describe('OntLibraries.vue', () => {
         }
       },
     })
+
+    librariesList = wrapper.vm
   })
 
   it('will have a name', () => {
@@ -44,5 +46,21 @@ describe('OntLibraries.vue', () => {
     it('has a OntTube component', () => {
       expect(wrapper.contains(OntTube)).toBe(true)
     })
+  })
+
+  describe('#drop', () => {
+    let mockEvent, flowcellPosition
+
+    beforeEach(() => {
+      librariesList.updateFlowcell = jest.fn()
+      flowcellPosition = 1
+      mockEvent = { dataTransfer: { getData() { return flowcellPosition } }, preventDefault: jest.fn() }
+    })
+
+    it('will update the flowcell', async () => {
+      librariesList.drop(mockEvent)
+      expect(librariesList.updateFlowcell).toBeCalledWith(flowcellPosition, '')
+    })
+
   })
 })
