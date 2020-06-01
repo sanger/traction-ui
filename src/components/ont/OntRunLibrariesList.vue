@@ -2,7 +2,7 @@
 
    <div class="ont-run-libraries" v-on:drop="drop" v-on:dragover="allowDrop" v-on:dragleave="endDrop" v-bind:class="{hover: hover}">
     <b-list-group class="ont-run-libraries-list-group" >
-      <OntTube v-for="library in libraries" v-bind:key="library.id" v-bind="library">
+      <OntTube v-for="library in libraries" v-bind:key="library.id" v-bind="library" v-bind:selected="isLibrarySelected(library)">
       </OntTube>
     </b-list-group>
   </div>
@@ -17,6 +17,7 @@ export default {
   components: {
     OntTube
   },
+  props: ['selectedLibraryNames'],
   data () {
     return {
       hover: false,
@@ -33,6 +34,9 @@ export default {
     }
   },
   methods: {
+    updateFlowcell (flowcellPosition, libraryName) {
+      this.$emit('updateFlowcell', flowcellPosition, libraryName)
+    },
     allowDrop (event) {
       event.preventDefault()
       this.hover = true
@@ -44,13 +48,16 @@ export default {
     drop (event) {
       event.preventDefault()
       const name = event.dataTransfer.getData('name')
-      let el = document.getElementById(event.dataTransfer.getData('name'))
-      el.parentNode.hidden = false
       this.hover = false
+      let flowcellPosition = parseInt(event.dataTransfer.getData('flowcellPosition'))
+      this.updateFlowcell(flowcellPosition,'')
 
-      el = document.getElementById(`${name}-img`)
+      let el = document.getElementById(`${name}-img`)
       el.parentNode.removeChild(el)
     },
+    isLibrarySelected(library) {
+      return this.selectedLibraryNames.includes(library.name)
+    }
   }
 }
 </script>

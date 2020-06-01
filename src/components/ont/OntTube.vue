@@ -3,7 +3,7 @@
   <b-list-group-item
     draggable="true" 
     v-on:dragstart="drag(name, $event)" 
-    v-bind:class="{active: isActive}" 
+    v-bind:class="[{active: isActive}, {selected: selected}]" 
     v-on:mouseover="isActive = true" 
     v-on:mouseleave="isActive = false"
   >
@@ -26,6 +26,10 @@ export default {
       type: String,
       required: true
     },
+    selected: {
+      type: Boolean,
+      required: true
+    }
   },
   data () {
     return {
@@ -42,6 +46,10 @@ export default {
 </script>
 
 <style scoped lang="scss">
+
+  .selected {
+    display: none;
+  }
 
   .active {
     background-color: gray;

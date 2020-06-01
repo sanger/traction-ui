@@ -43,6 +43,7 @@ export default {
   },
   methods: {
     updateFlowcell (libraryName) {
+      console.log(libraryName)
       this.$emit('updateFlowcell', this.position, libraryName)
     },
     allowDrop (event) {
@@ -59,20 +60,15 @@ export default {
       img.src = '/tube.png'
       event.dataTransfer.setDragImage(img, 80, 0)
       event.dataTransfer.setData('name', this.libraryName)
+      event.dataTransfer.setData('flowcellPosition', this.position)
 
       this.hover = false
 
-      // this.libraryName = ''
-      // this.updateFlowcell()
     },
     drop (event) {
       event.preventDefault()
       this.libraryName = event.dataTransfer.getData('name')
       this.updateFlowcell(this.libraryName)
-
-      let el = document.getElementById(this.libraryName)
-      if (el === null) return 
-      el.parentNode.hidden = true
 
       const img = document.createElement('img')
       img.src = "/tube.png"
@@ -80,7 +76,7 @@ export default {
       img.height = "30"
       img.setAttribute('id', `${this.libraryName}-img`)
 
-      el = document.getElementById(this.elementId)
+      let el = document.getElementById(this.elementId)
       el.parentNode.appendChild(img)
 
       this.hover = false
