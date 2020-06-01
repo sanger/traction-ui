@@ -55,7 +55,7 @@ export default {
       event.preventDefault()
       this.hover = false
     },
-    drag (libraryName, event) {
+    drag (event) {
       if (this.libraryName.length === 0) return
       const img = new Image()
       img.src = '/tube.png'

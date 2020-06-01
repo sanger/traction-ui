@@ -121,6 +121,22 @@ describe('OntFlowcell.vue', () => {
     })
   })
 
+  describe('#drag', () => {
+    let mockEvent
+
+    beforeEach(() => {
+      flowcell.libraryName = 'TRAC-1'
+      mockEvent = { dataTransfer: {setData: jest.fn(), setDragImage: jest.fn() }, preventDefault: jest.fn() }
+    })
+
+    it('will set the drag image and set the data', () => {
+      flowcell.drag(mockEvent)
+      expect(mockEvent.dataTransfer.setDragImage).toBeCalled()
+      expect(mockEvent.dataTransfer.setData).toBeCalledWith('name',flowcell.libraryName)
+      expect(mockEvent.dataTransfer.setData).toBeCalledWith('flowcellPosition', flowcell.position)
+    })
+  })
+
   describe('#getMatrix', () => {
     it('will return the flowcells position matrix', () => {
       let xPos = (props.position - 1) * 80 + 240
