@@ -11,7 +11,9 @@
 
     <foreignObject y="100" width="70" height="227">
       <div draggable="true" v-on:dragstart="drag(libraryName, $event)">
+        
         <b-form-input v-model="libraryName" placeholder="Name" :id="elementId"  @change="updateFlowcell($event)" :value="library.name"></b-form-input>
+        <img left src="/tube.png" height="30" draggable="false" :class="status"/>
       </div>
     </foreignObject>
   </g>
@@ -68,20 +70,7 @@ export default {
       event.preventDefault()
       this.libraryName = event.dataTransfer.getData('name')
       this.updateFlowcell(this.libraryName)
-
-      const img = document.createElement('img')
-      img.src = "/tube.png"
-      img.draggable = false
-      img.height = "30"
-      img.setAttribute('id', `${this.libraryName}-img`)
-
-      let el = document.getElementById(this.elementId)
-      if (el === null ) return
-      el.parentNode.appendChild(img)
-
       this.hover = false
-
-     
     }
   },
   computed: {
@@ -108,6 +97,10 @@ export default {
   rect {
     fill-opacity: 0.309804;
     stroke: rgb(0, 0, 0);
+  }
+
+  img.empty {
+    display: none;
   }
 
   .filled{
