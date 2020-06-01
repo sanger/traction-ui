@@ -68,7 +68,7 @@ export default {
     drop (event) {
       event.preventDefault()
       this.libraryName = event.dataTransfer.getData('name')
-      this.updateFlowcell()
+      this.updateFlowcell(this.libraryName)
 
       let el = document.getElementById(this.libraryName)
       if (el === null) return 
@@ -85,7 +85,7 @@ export default {
 
       this.hover = false
 
-      this.updateFlowcell(event.dataTransfer.getData('name'))
+     
     }
   },
   computed: {
@@ -103,17 +103,6 @@ export default {
     },
     elementId () {
       return `libraryNameInput-${this.position}`
-    }
-  },
-  apollo: {
-    libraryName: {
-      query: GET_CLIENT_FLOWCELL_LIBRARY_NAME,
-      variables () {
-        return {
-          position: this.position,
-        }
-      },
-      pollInterval: 100
     }
   }
 }
