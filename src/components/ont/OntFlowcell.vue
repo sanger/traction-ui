@@ -1,18 +1,14 @@
 <template>
-  <g :transform="getMatrix" v-on:drop="drop" v-on:dragover="allowDrop" v-on:dragleave="endDrop" v-bind:class="{active: hover}">
-     <defs>
-      <filter id="blurFilter">
-          <feGaussianBlur in="SourceGraphic" stdDeviation="1" />
-      </filter>
-    </defs>
+  <g :transform="getMatrix" v-on:drop="drop" v-on:dragover="allowDrop" v-on:dragleave="endDrop"
+  >
+
     <text x="25" y="30" class="medium">{{ position }}</text>
-    <rect width="70" height="227" :class="status"/>
+    <rect width="70" height="227" :class="[{active: hover}, status]"/>
     <title v-text="this.library.name"></title>
 
-    <foreignObject y="100" width="70" height="227">
-      <div draggable="true" v-on:dragstart="drag($event)">
-        
-        <b-form-input v-model="libraryName" placeholder="Name" :id="elementId"  @change="updateFlowcell($event)" :value="library.name"></b-form-input>
+    <foreignObject width="70" height="227">
+      <div draggable="true" v-on:dragstart="drag(library.name, $event)">
+        <b-form-input placeholder="Name" :id="elementId"  @change="updateFlowcell($event)" :value="library.name"></b-form-input>
         <img left src="/tube.png" height="30" draggable="false" :class="status"/>
       </div>
     </foreignObject>
@@ -39,7 +35,6 @@ export default {
   },
   data () {
     return {
-      libraryName: '',
       hover: false
     }
   },
@@ -55,20 +50,17 @@ export default {
       event.preventDefault()
       this.hover = false
     },
-    drag (event) {
-      if (this.libraryName.length === 0) return
+    drag (name, event) {
+      if (name === 0) return
       const img = new Image()
       img.src = '/tube.png'
       event.dataTransfer.setDragImage(img, 80, 0)
       event.dataTransfer.setData('flowcellPosition', this.position)
-
       this.hover = false
-
     },
     drop (event) {
       event.preventDefault()
-      this.libraryName = event.dataTransfer.getData('name')
-      this.updateFlowcell(this.libraryName)
+      this.updateFlowcell(event.dataTransfer.getData('name'))
       this.hover = false
     }
   },
@@ -102,14 +94,26 @@ export default {
     display: none;
   }
 
-  .filled{
+  .filled {
     fill:green;
   }
   .empty {
     fill: red;
   }
   .active {
-    stroke: #ffffff;
-    filter: url(#blurFilter);
+    stroke: white;
+    // filter: url(#blurFilter);
   }
+  input {
+    transform: rotate(90deg);
+    -webkit-transform: rotate(90deg);
+    -moz-transform: rotate(90deg);
+    -ms-transform: rotate(90deg);
+    -o-transform: rotate(90deg);
+    width:170px;
+    position: absolute;
+    left: -50px;
+    top: 100px;
+  }
+
 </style>
