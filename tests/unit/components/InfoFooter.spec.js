@@ -23,11 +23,6 @@ describe('infoFooter.vue', () => {
     expect(wrapper.vm.environment).toBe('development')
   })
 
-  it('has a release tag', () => {
-    wrapper.setData({ release: '1' })
-    expect(wrapper.vm.release).toBe('1')
-  })
-
   it('has a repo data', () => {
     wrapper.setData({ repo: 'trac-ui' })
     expect(wrapper.vm.repo).toBe('trac-ui')
