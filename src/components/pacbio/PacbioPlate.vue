@@ -1,6 +1,6 @@
 <template>
   <Plate96SVG v-bind:height="'100%'" v-bind:width="'100%'">
-    <well v-for="(well, key) in plateMap.wells" v-bind="well" v-bind:key="key">
+    <well v-for="(well, key) in plateMap.wells" v-bind="well" v-bind:key="key" @alert="alert">
     </well>
   </Plate96SVG>
 </template>
@@ -26,6 +26,11 @@ export default {
   components: {
     Well,
     Plate96SVG
+  },
+  methods: {
+    alert(message, type) {
+      this.$emit('alert', message, type)
+    }
   }
 }
 </script>

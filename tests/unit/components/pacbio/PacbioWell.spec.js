@@ -98,6 +98,12 @@ describe('Well.vue', () => {
       expect(ellipse.attributes('class')).toEqual("filled")
     })
 
+    it('will be invalid if there is one or more libraries without a barcode', () => {
+      storeWell.libraries[0].barcode = ''
+      let ellipse = wrapper.find('ellipse')
+      expect(ellipse.attributes('class')).toEqual("filled")
+    })
+
     it('will be empty if there are no libraries or metadata', () => {
       storeWell.libraries = []
       storeWell.movie_time = ""
