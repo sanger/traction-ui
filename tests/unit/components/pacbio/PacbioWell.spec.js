@@ -101,7 +101,7 @@ describe('Well.vue', () => {
     it('will be invalid if there is one or more libraries without a barcode', () => {
       storeWell.libraries[0].barcode = ''
       let ellipse = wrapper.find('ellipse')
-      expect(ellipse.attributes('class')).toEqual("filled")
+      expect(ellipse.attributes('class')).toEqual("complete")
     })
 
     it('will be empty if there are no libraries or metadata', () => {
