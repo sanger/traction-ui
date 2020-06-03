@@ -33,6 +33,10 @@ describe('OntFlowcell.vue', () => {
     expect(wrapper.name()).toEqual('OntFlowcell')
   })
 
+  it('will have an element id', () => {
+    expect(flowcell.elementId).toEqual('libraryNameInput-1')
+  })
+
   describe('props', () => {
     it('must have a position', () => {
       expect(flowcell.position).toBeDefined()
@@ -107,6 +111,27 @@ describe('OntFlowcell.vue', () => {
     it('will update the barcode', async () => {
       flowcell.drop(mockEvent)
       expect(flowcell.updateFlowcell).toBeCalledWith(libraryName)
+    })
+
+    it('will change the status and show the image', () => {
+      flowcell.drop(mockEvent)
+      expect(flowcell.status).toEqual('filled')
+      expect(flowcell.hover).toBeFalsy()
+      expect(wrapper.find('img').exists()).toBeTruthy()
+    })
+  })
+
+  describe('#drag', () => {
+    let mockEvent
+
+    beforeEach(() => {
+      mockEvent = { dataTransfer: {setData: jest.fn(), setDragImage: jest.fn() }, preventDefault: jest.fn() }
+    })
+
+    it('will set the drag image and set the data', () => {
+      flowcell.drag('aLibraryName', mockEvent)
+      expect(mockEvent.dataTransfer.setDragImage).toBeCalled()
+      expect(mockEvent.dataTransfer.setData).toBeCalledWith('flowcellPosition', flowcell.position)
     })
   })
 

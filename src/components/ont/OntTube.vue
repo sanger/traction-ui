@@ -1,6 +1,6 @@
 
 <template>
-  <b-list-group-item 
+  <b-list-group-item
     draggable="true" 
     v-on:dragstart="drag(name, $event)" 
     v-bind:class="{active: isActive}" 
@@ -8,10 +8,10 @@
     v-on:mouseleave="isActive = false"
   >
     <b-img left src="/tube.png" height="30" draggable="false" />
-    <div class="name">
+    <div class="name" :id="name">
       {{ name }}
     </div>
- </b-list-group-item>
+  </b-list-group-item>
 </template>
 
 <script>
@@ -25,7 +25,7 @@ export default {
     name: {
       type: String,
       required: true
-    },
+    }
   },
   data () {
     return {
@@ -42,6 +42,7 @@ export default {
 </script>
 
 <style scoped lang="scss">
+
   .active {
     background-color: gray;
     border: gray;

@@ -1,7 +1,9 @@
 <template>
-  <div class="ont-run-libraries">
-    <b-list-group class="ont-run-libraries-list-group">
-      <OntTube v-for="library in libraries" v-bind:key="library.id" v-bind="library">
+
+   <div class="ont-run-libraries" v-on:drop="drop" v-on:dragover="allowDrop" v-on:dragleave="endDrop" v-bind:class="{hover: hover}">
+    
+    <b-list-group class="ont-run-libraries-list-group" >
+      <OntTube v-for="library in unselectedLibraries" v-bind:key="library.id" v-bind="library">
       </OntTube>
     </b-list-group>
   </div>
@@ -16,6 +18,12 @@ export default {
   components: {
     OntTube
   },
+  props: ['selectedLibraryNames'],
+  data () {
+    return {
+      hover: false,
+    }
+  },
   apollo: {
     libraries: {
       query: LIBRARIES_ALL_QUERY,
@@ -25,21 +33,56 @@ export default {
         }
       },
     }
+  },
+  methods: {
+    updateFlowcell (flowcellPosition, libraryName) {
+      this.$emit('updateFlowcell', flowcellPosition, libraryName)
+    },
+    allowDrop (event) {
+      event.preventDefault()
+      this.hover = true
+    },
+    endDrop (event) {
+      event.preventDefault()
+      this.hover = false
+    },
+    drop (event) {
+      event.preventDefault()
+      let flowcellPosition = parseInt(event.dataTransfer.getData('flowcellPosition'))
+      this.updateFlowcell(flowcellPosition, '')
+      this.hover = false
+    },
+    isLibrarySelected(library) {
+      return this.selectedLibraryNames.includes(library.name)
+    },
+  },
+  computed: {
+    unselectedLibraries () {
+      if (this.libraries) {
+        return this.libraries.filter(library => !this.isLibrarySelected(library))
+      }
+      return []
+    }
   }
 }
 </script>
 
-<style>
+<style scoped lang="scss">
 
-.ont-run-libraries {
-  border: solid;
-  border-width: 1px;
-  padding: 20px;
-}
+  .ont-run-libraries {
+    border: solid;
+    border-width: 1px;
+    padding: 20px;
 
-.ont-run-libraries-list-group {
-  max-height: 400px;
-  overflow: scroll;
-}
+  }
+
+  .hover {
+    box-shadow: 0px 0px 2px 2px gray;
+  }
+
+  .ont-run-libraries-list-group {
+    max-height: 400px;
+    overflow: scroll;
+  }
 
 </style>
