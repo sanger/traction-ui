@@ -1,7 +1,9 @@
 <template>
   <div class="reception">
     <alert ref='alert'></alert>
-
+    <b-modal v-model="importing" :hide-footer=true :hide-header=true :no-close-on-backdrop=true>
+      <spinner size="huge" message="Importing plates..."></spinner>
+    </b-modal>
     <div class="form-group">
       <label for="barcodes">Barcodes:</label>
       <textarea type="text"
@@ -16,7 +18,7 @@
               id="createTractionPlates"
               variant="success"
               @click="createTractionPlates"
-              :disabled="this.barcodes.length === 0">
+              :disabled="isDisabled()">
       Import
     </b-button>
   </div>
@@ -27,6 +29,7 @@ import Alert from '@/components/Alert'
 import Helper from '@/mixins/Helper'
 import { getPlates, transformPlates} from '@/api/SequencescapePlates'
 import CREATE_PLATE_WITH_SAMPLES from '@/graphql/queries/CreatePlateWithSamples.mutation.gql'
+import Spinner from 'vue-simple-spinner'
 
 export default {
   name: 'Reception',
@@ -36,13 +39,18 @@ export default {
   data () {
     return {
       barcodes: [],
-      plates: {}
+      plates: {},
+      importing: false
     }
   },
   components: {
-    Alert
+    Alert,
+    Spinner
   },
   methods: {
+    isDisabled () {
+      return this.barcodes.length === 0 || this.importing
+    },
     async getSequencescapePlates (barcodes) {
       return await getPlates(this.$store.getters.api.sequencescape.plates, barcodes)
     },
@@ -58,6 +66,7 @@ export default {
     // https://decembersoft.com/posts/promises-in-serial-with-array-reduce/
     // TODO: simplify with await
     async createTractionPlates() {
+      this.importing = true
       await this.handleSequencesapePlates()
       if (this.plates === {}) return
       
@@ -65,9 +74,13 @@ export default {
         return promiseChain.then((chainResults) => 
           this.createTractionPlate(plate).then(result => [...chainResults, result])
         )
-        .catch(console.error)
+        .catch((error) => {
+          console.log(error)
+          this.importing = false
+        })
       }, Promise.resolve([])).then(results => {
         this.showAlert(results.join(','), 'success')
+        this.importing = false
       })
     },
     async createTractionPlate ({barcode, wells}) {
