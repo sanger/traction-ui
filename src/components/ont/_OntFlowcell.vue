@@ -9,17 +9,8 @@
     <rect width="70" height="227" v-on:dragleave="endDrop" :class="[{active: hover}, status]"/>
     <title v-text="this.library.name"></title>
 
-<<<<<<< HEAD
-    <foreignObject y="100" width="70" height="227">
-      <div draggable="true" v-on:dragstart="drag($event)">
-        
-        <b-form-input v-model="libraryName" placeholder="Name" :id="elementId"  @change="updateFlowcell($event)" :value="library.name"></b-form-input>
-        <img left src="/tube.png" height="30" draggable="false" :class="status"/>
-      </div>
-=======
     <foreignObject width="70" height="227" v-on:dragleave="endDrop" :class="[{active: hover}, status]">
       <b-form-input placeholder="Name" :id="'libraryNameInput-'+this.position" @change="updateFlowcell($event)" :value="library.name"></b-form-input>
->>>>>>> develop
     </foreignObject>
   </g>
 </template>
@@ -44,10 +35,6 @@ export default {
   },
   data () {
     return {
-<<<<<<< HEAD
-      libraryName: '',
-=======
->>>>>>> develop
       hover: false
     }
   },
@@ -62,30 +49,11 @@ export default {
     endDrop (event) {
       event.preventDefault()
       this.hover = false
-<<<<<<< HEAD
-    },
-    drag (event) {
-      if (this.libraryName.length === 0) return
-      const img = new Image()
-      img.src = '/tube.png'
-      event.dataTransfer.setDragImage(img, 80, 0)
-      event.dataTransfer.setData('flowcellPosition', this.position)
-
-      this.hover = false
-
-    },
-    drop (event) {
-      event.preventDefault()
-      this.libraryName = event.dataTransfer.getData('name')
-      this.updateFlowcell(this.libraryName)
-      this.hover = false
-=======
     },
     drop (event) {
       event.preventDefault()
       this.updateFlowcell(event.dataTransfer.getData('name'))
       this.hover=false;
->>>>>>> develop
     }
   },
   computed: {
@@ -113,14 +81,6 @@ export default {
     fill-opacity: 0.309804;
     stroke: rgb(0, 0, 0);
   }
-<<<<<<< HEAD
-
-  img.empty {
-    display: none;
-  }
-
-=======
->>>>>>> develop
   .filled{
     fill:green;
   }
@@ -128,10 +88,6 @@ export default {
     fill: red;
   }
   .active {
-<<<<<<< HEAD
-    stroke: #ffffff;
-    filter: url(#blurFilter);
-=======
     stroke: white;
     stroke-width: 2px;
   }
@@ -145,6 +101,5 @@ export default {
     position: absolute;
     left: -50px;
     top: 100px;
->>>>>>> develop
   }
 </style>
