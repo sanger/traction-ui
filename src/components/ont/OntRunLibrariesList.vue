@@ -1,8 +1,9 @@
 <template>
 
    <div class="ont-run-libraries" v-on:drop="drop" v-on:dragover="allowDrop" v-on:dragleave="endDrop" v-bind:class="{hover: hover}">
+    
     <b-list-group class="ont-run-libraries-list-group" >
-      <OntTube v-for="library in libraries" v-bind:key="library.id" v-bind="library" v-bind:selected="isLibrarySelected(library)">
+      <OntTube v-for="library in unselectedLibraries" v-bind:key="library.id" v-bind="library">
       </OntTube>
     </b-list-group>
   </div>
@@ -48,11 +49,19 @@ export default {
     drop (event) {
       event.preventDefault()
       let flowcellPosition = parseInt(event.dataTransfer.getData('flowcellPosition'))
-      this.updateFlowcell(flowcellPosition,'')
+      this.updateFlowcell(flowcellPosition, '')
       this.hover = false
     },
     isLibrarySelected(library) {
       return this.selectedLibraryNames.includes(library.name)
+    },
+  },
+  computed: {
+    unselectedLibraries () {
+      if (this.libraries) {
+        return this.libraries.filter(library => !this.isLibrarySelected(library))
+      }
+      return []
     }
   }
 }

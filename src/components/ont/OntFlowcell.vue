@@ -1,16 +1,16 @@
 <template>
-  <g :transform="getMatrix" v-on:drop="drop" v-on:dragover="allowDrop" v-on:dragleave="endDrop" v-bind:class="{active: hover}">
-     <defs>
-      <filter id="blurFilter">
-          <feGaussianBlur in="SourceGraphic" stdDeviation="1" />
-      </filter>
-    </defs>
+  <g :transform="getMatrix" v-on:drop="drop" v-on:dragover="allowDrop" v-on:dragleave="endDrop"
+  >
+
     <text x="25" y="30" class="medium">{{ position }}</text>
-    <rect width="70" height="227" v-on:dragleave="endDrop" :class="[{active: hover}, status]"/>
+    <rect width="70" height="227" :class="[{active: hover}, status]"/>
     <title v-text="this.library.name"></title>
 
-    <foreignObject width="70" height="227" v-on:dragleave="endDrop" :class="[{active: hover}, status]">
-      <b-form-input placeholder="Name" :id="'libraryNameInput-'+this.position" @change="updateFlowcell($event)" :value="library.name"></b-form-input>
+    <foreignObject width="70" height="227">
+      <div draggable="true" v-on:dragstart="drag(library.name, $event)">
+        <b-form-input placeholder="Name" :id="elementId"  @change="updateFlowcell($event)" :value="library.name"></b-form-input>
+        <img left src="/tube.png" height="30" draggable="false" :class="status"/>
+      </div>
     </foreignObject>
   </g>
 </template>
@@ -50,10 +50,18 @@ export default {
       event.preventDefault()
       this.hover = false
     },
+    drag (name, event) {
+      if (name === 0) return
+      const img = new Image()
+      img.src = '/tube.png'
+      event.dataTransfer.setDragImage(img, 80, 0)
+      event.dataTransfer.setData('flowcellPosition', this.position)
+      this.hover = false
+    },
     drop (event) {
       event.preventDefault()
       this.updateFlowcell(event.dataTransfer.getData('name'))
-      this.hover=false;
+      this.hover = false
     }
   },
   computed: {
@@ -81,7 +89,12 @@ export default {
     fill-opacity: 0.309804;
     stroke: rgb(0, 0, 0);
   }
-  .filled{
+
+  img.empty {
+    display: none;
+  }
+
+  .filled {
     fill:green;
   }
   .empty {
@@ -89,9 +102,9 @@ export default {
   }
   .active {
     stroke: white;
-    stroke-width: 2px;
+    // filter: url(#blurFilter);
   }
-  input{
+  input {
     transform: rotate(90deg);
     -webkit-transform: rotate(90deg);
     -moz-transform: rotate(90deg);
@@ -102,4 +115,5 @@ export default {
     left: -50px;
     top: 100px;
   }
+
 </style>

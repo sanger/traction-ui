@@ -7,8 +7,7 @@ describe('OntTube.vue', () => {
 
   beforeEach(() => {
     props = { 
-      name: 'TRAC-1-1',
-      selected: false
+      name: 'TRAC-1-1'
      }
 
     wrapper = mount(OntTube, {
