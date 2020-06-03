@@ -49,6 +49,18 @@ describe('Reception', () => {
     })
   })
 
+  describe('#isDisabled', () => {
+    it('true if there are no barcodes', () => {
+      reception.barcodes = ''
+      expect(reception.isDisabled).toBeTruthy()
+    })
+
+    it('true if plates are being exported', () => {
+      reception.importing = true
+      expect(reception.isDisabled).toBeTruthy()
+    })
+  })
+
   describe('#getBarcodes', () => {
     it('single barcode', () => {
       wrapper.setData({ barcodes: 'DN1234567\n' })
@@ -170,6 +182,7 @@ describe('Reception', () => {
       expect(reception.getSequencescapePlates).toBeCalledWith(reception.getBarcodes())
       expect(reception.createTractionPlate).toHaveBeenCalledTimes(mockPlates.length)
       expect(reception.showAlert).toBeCalledWith('shit storm,shit storm,shit storm,shit storm,shit storm', 'success')
+      expect(reception.importing).toBeFalsy()
     })
 
   })

@@ -18,7 +18,7 @@
               id="createTractionPlates"
               variant="success"
               @click="createTractionPlates"
-              :disabled="isDisabled()">
+              :disabled="isDisabled">
       Import
     </b-button>
   </div>
@@ -47,10 +47,12 @@ export default {
     Alert,
     Spinner
   },
-  methods: {
+  computed: {
     isDisabled () {
       return this.barcodes.length === 0 || this.importing
-    },
+    }
+  },
+  methods: {
     async getSequencescapePlates (barcodes) {
       return await getPlates(this.$store.getters.api.sequencescape.plates, barcodes)
     },
