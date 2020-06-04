@@ -7,12 +7,12 @@
       hover 
       bordered
       responsive
-      :items="plates"
+      :items="getPlates"
       :fields="fields"
-      :sort-by.sync="sortBy"
-      :sort-desc.sync="sortDesc"
       sticky-header
       show-empty
+      :per-page="perPage"
+      :current-page="currentPage"
     >
       <template v-slot:cell(show_details)="row">
         <b-button size="sm" @click="row.toggleDetails" variant="outline-primary" :id="'details-btn-'+row.item.id">
@@ -24,6 +24,13 @@
         <OntPlate v-bind:plate="row.item" @alert="alert"></OntPlate>
       </template>
     </b-table>
+
+    <b-pagination
+      v-model="currentPage"
+      :total-rows="totalRows"
+      :per-page="perPage">
+    </b-pagination>
+
   </div>
 </template>
 
@@ -38,14 +45,10 @@ export default {
   name: 'OntPlates',
   data () {
     return { 
-      fields: [ 
-        {key: 'id', label: 'ID', sortable: true},
-        {key: 'barcode', label: 'Barcode', sortable: true},
-        {key: 'createdAt', label: 'Created at', sortable: true},
-        {key: 'show_details', label: 'Show Details'}
-      ],
-      sortBy: 'createdAt',
-      sortDesc: true,
+      fields: [ 'id','barcode','createdAt','show_details'],
+      perPage: 5,
+      currentPage: 1,
+      totalRows: 0
     }
   },
   components: {
@@ -53,22 +56,28 @@ export default {
     Alert
   },
   mixins: [Helper],
-  apollo: {
-    plates: {
-      query: PLATES_ALL_QUERY
-    }
-  },
   methods: {
     alert(message, type) {
       this.showAlert(message, type)
     },
-    refetchPlates() {
-      this.$apollo.queries.plates.refetch()
+    getPlates(ctx, callback) {
+      this.$apollo.query({
+        query: PLATES_ALL_QUERY,
+        variables: {
+          pageNum: ctx.currentPage,
+          pageSize: ctx.perPage
+        },
+      })
+      .then(data => {
+        this.totalRows = data.data.plates.pageInfo.entitiesCount
+        callback(data.data.plates.nodes)
+      })
+      .catch(() => {
+        callback([])
+      })
+      return null
     }
   },
-  created () {
-    this.refetchPlates()
-  }
 }
 </script>
 
