@@ -17,10 +17,6 @@ describe('OntPlates.vue', () => {
       stubs: {
         OntPlate: true
       },
-      data() {
-        return {
-        }
-      },
       methods: {
         getPlates() { return platesData }
       }

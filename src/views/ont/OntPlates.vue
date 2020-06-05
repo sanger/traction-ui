@@ -67,6 +67,7 @@ export default {
           pageNum: ctx.currentPage,
           pageSize: ctx.perPage
         },
+        fetchPolicy: 'no-cache'
       })
       .then(data => {
         this.totalRows = data.data.plates.pageInfo.entitiesCount
