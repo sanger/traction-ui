@@ -18,7 +18,7 @@ describe('OntHeronRuns.vue', () => {
         }
       },
       methods: {
-        refetchRuns() { return }
+        getRuns() { return runsData }
       }
     })
     runs = wrapper.vm
@@ -30,7 +30,7 @@ describe('OntHeronRuns.vue', () => {
 
   it('will have fields', () => {
     let expected = ['experimentName', 'library_names', 'updatedAt', 'actions']
-    expect(runs.fields.map(i => i.key)).toEqual(expect.arrayContaining(expected))
+    expect(runs.fields).toEqual(expected)
   })
 
   it('will have a table', () => {
