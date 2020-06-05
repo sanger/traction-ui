@@ -12,11 +12,6 @@ describe('OntHeronRuns.vue', () => {
 
     wrapper = mount(OntHeronRuns, {
       localVue,
-      data() {
-        return {
-          runs: runsData
-        }
-      },
       methods: {
         getRuns() { return runsData }
       }
