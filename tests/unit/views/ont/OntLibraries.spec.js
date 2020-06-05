@@ -3,11 +3,10 @@ import { mount, localVue } from '../../testHelper'
 import PrinterModal from '@/components/PrinterModal'
 
 describe('OntLibraries.vue', () => {
-  let wrapper, libraries, librariesData, mutate, refetchLibraries
+  let wrapper, libraries, librariesData, mutate
 
   beforeEach(() => {
     mutate = jest.fn()
-    refetchLibraries = jest.fn()
 
     librariesData = [
       { id: 1, tube_barcode: 'TRAC-2-1', plate_barcode: 'TRAC-1-1', poolSize: 1, wellRange: 'A1-H3', tag_set: 24 },
@@ -23,18 +22,13 @@ describe('OntLibraries.vue', () => {
         OntPlate: true,
         PrinterModal: true
       },
-      data() {
-        return {
-          libraries: librariesData,
-        }
-      },
       mocks: {
         $apollo: {
           mutate: mutate
         }
       },
       methods: {
-        refetchLibraries: refetchLibraries
+        getLibraries() { return librariesData }
       }
     })
     libraries = wrapper.vm
@@ -46,7 +40,7 @@ describe('OntLibraries.vue', () => {
 
   it('will have fields', () => {
     let expected = ["id", "name", "poolSize", "tubeBarcode", "plateBarcode", "pool", "createdAt"]
-    expect(libraries.fields.map(i => i.key)).toEqual(expected)
+    expect(libraries.fields).toEqual(expected)
   })
 
   it('will have a table', () => {
@@ -79,6 +73,7 @@ describe('OntLibraries.vue', () => {
       button = wrapper.find('#deleteLibrary-btn')
       libraries.showAlert = jest.fn()
       libraries.selected = [{ name: libraryName }]
+      libraries.refetchLibraries = jest.fn()
     })
 
     it('is shows button', () => {
@@ -101,7 +96,6 @@ describe('OntLibraries.vue', () => {
     })
 
     it('refetches libraries on success', async () => {
-      refetchLibraries.mockClear()
       let mockResponse = { data: { deleteOntLibrary: { success: true, errors: [] } } }
 
       let promise = new Promise((resolve) => {
@@ -112,7 +106,7 @@ describe('OntLibraries.vue', () => {
 
       await button.trigger('click')
 
-      expect(refetchLibraries).toBeCalled()
+      expect(libraries.refetchLibraries).toBeCalled()
     })
 
     it('shows an alert on failure', async () => {

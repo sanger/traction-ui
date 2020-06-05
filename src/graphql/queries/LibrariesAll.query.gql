@@ -1,11 +1,17 @@
-query ($unassignedToFlowcells: Boolean) {
-  libraries: ontLibraries(unassignedToFlowcells: $unassignedToFlowcells) {
-    id
-    name
-    pool
-    poolSize
-    tubeBarcode
-    plateBarcode
-    createdAt
+query ($unassignedToFlowcells: Boolean, $pageNum: Int, $pageSize: Int) {
+  libraries: ontLibraries(unassignedToFlowcells: $unassignedToFlowcells, pageNum: $pageNum, pageSize: $pageSize) {
+    nodes {
+      id
+      name
+      pool
+      poolSize
+      tubeBarcode
+      plateBarcode
+      createdAt
+    }
+    pageInfo {
+      pageCount
+      entitiesCount
+    }
   }
 }
