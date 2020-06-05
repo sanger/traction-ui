@@ -32,6 +32,7 @@ export default {
           unassignedToFlowcells: true,
         }
       },
+      fetchPolicy: 'no-cache'
     }
   },
   methods: {
