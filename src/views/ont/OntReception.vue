@@ -49,7 +49,7 @@ export default {
   },
   methods: {
     async getSequencescapePlates() {
-      await getPlates(this.sequencescapeRequest, this.formattedBarcodes)
+      return await getPlates(this.sequencescapeRequest, this.formattedBarcodes)
     },
     async handleCreateTractionPlates () {
       this.busy = true
