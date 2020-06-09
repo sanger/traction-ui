@@ -20,10 +20,8 @@
         </b-button>
       </template>
 
-      <template v-slot:cell(library_names)="row" >
-        <span v-for="flowcell in row.item.flowcells" :key="flowcell.id">
-          {{flowcell.library.name}} 
-        </span>
+      <template v-slot:cell(libraryNames)="row">
+        {{ row.item.flowcells.map(fc => fc.library.name).join(", ") }}
       </template>
 
     </b-table>
@@ -33,6 +31,8 @@
       :total-rows="totalRows"
       :per-page="perPage">
     </b-pagination>
+
+    <span class="font-weight-bold">Total records: {{ totalRows }}</span>
 
     <div class="clearfix">
       <b-button id="newRun"
@@ -53,7 +53,7 @@ export default {
   name: 'OntHeronRuns',
   data () {
     return { 
-      fields: ['experimentName', 'library_names', 'updatedAt', 'actions'],
+      fields: ['experimentName', 'libraryNames', 'updatedAt', 'actions'],
       perPage: 5,
       currentPage: 1,
       totalRows: 0

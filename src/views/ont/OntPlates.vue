@@ -31,6 +31,8 @@
       :per-page="perPage">
     </b-pagination>
 
+    <span class="font-weight-bold">Total records: {{ totalRows }}</span>
+
   </div>
 </template>
 

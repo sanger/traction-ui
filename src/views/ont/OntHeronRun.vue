@@ -105,6 +105,7 @@ export default {
           variables: {
             id: this.id
           },
+          fetchPolicy: 'no-cache'
         }).then(data => {
           let existingRun = data.data.ontRun
           this.setRun(existingRun.id, existingRun.flowcells)

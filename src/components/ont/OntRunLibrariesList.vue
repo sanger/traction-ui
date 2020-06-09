@@ -1,8 +1,8 @@
 <template>
 
-   <div class="ont-run-libraries" v-on:drop="drop" v-on:dragover="allowDrop" v-on:dragleave="endDrop" v-bind:class="{hover: hover}">
-    
-    <b-list-group class="ont-run-libraries-list-group" >
+  <div class="ont-run-libraries" v-on:drop="drop" v-on:dragover="allowDrop" v-on:dragleave="endDrop" v-bind:class="{hover: hover}" ref="lib">
+   
+    <b-list-group class="ont-run-libraries-list-group" ref='list'>
       <OntTube v-for="library in unselectedLibraries" v-bind:key="library.id" v-bind="library">
       </OntTube>
     </b-list-group>
@@ -27,12 +27,13 @@ export default {
   apollo: {
     libraries: {
       query: LIBRARIES_ALL_QUERY,
-       variables () {
-        return {
-          unassignedToFlowcells: true,
-        }
+      variables: {
+        unassignedToFlowcells: true,
+        pageNum: 1,
+        pageSize: 1000
       },
-      fetchPolicy: 'no-cache'
+      // fetchPolicy: 'network-only',
+      update: data => data.libraries.nodes
     }
   },
   methods: {
@@ -47,10 +48,10 @@ export default {
       event.preventDefault()
       this.hover = false
     },
-    drop (event) {
+    async drop (event) {
       event.preventDefault()
       let flowcellPosition = parseInt(event.dataTransfer.getData('flowcellPosition'))
-      this.updateFlowcell(flowcellPosition, '')
+      await this.updateFlowcell(flowcellPosition, '')
       this.hover = false
     },
     isLibrarySelected(library) {

@@ -25,6 +25,8 @@
       :per-page="perPage">
     </b-pagination>
     
+    <span class="font-weight-bold">Total records: {{ totalRows }}</span>
+    
     <div class="clearfix">
       <printerModal class="float-left"
                     @selectPrinter="handlePrintLabel"

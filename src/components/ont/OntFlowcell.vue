@@ -39,6 +39,7 @@ export default {
     }
   },
   methods: {
+    // Update is being called twice when a library is dragged?
     updateFlowcell (libraryName) {
       this.$emit('updateFlowcell', this.position, libraryName)
     },
