@@ -1,6 +1,5 @@
 <template>
-  <g :transform="getMatrix" v-on:drop="drop" v-on:dragover="allowDrop" v-on:dragleave="endDrop"
-  >
+  <g :transform="getMatrix" v-on:drop="drop" v-on:dragover="allowDrop" v-on:dragleave="endDrop">
 
     <text x="25" y="30" class="medium">{{ position }}</text>
     <rect width="70" height="227" :class="[{active: hover}, status]"/>
@@ -102,7 +101,6 @@ export default {
   }
   .active {
     stroke: white;
-    // filter: url(#blurFilter);
   }
   input {
     transform: rotate(90deg);

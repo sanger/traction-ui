@@ -31,7 +31,8 @@ describe('Reception', () => {
   })
 
   it('will have some barcodes', () => {
-    expect(reception.barcodes.length).toEqual(0)
+    wrapper.setData({ barcodes: barcodes })
+    expect(reception.barcodes.length).toEqual(barcodes.length)
   })
 
   describe('scanning in barcodes', () => {
@@ -49,24 +50,23 @@ describe('Reception', () => {
     })
   })
 
-  describe('#getBarcodes', () => {
+  describe('#formattedBarcodes', () => {
     it('single barcode', () => {
       wrapper.setData({ barcodes: 'DN1234567\n' })
-      let result = reception.getBarcodes()
+      let result = reception.formattedBarcodes
       expect(result).toEqual('DN1234567')
     })
 
     it('multiple barcodes', () => {
       wrapper.setData({ barcodes: barcodes })
-      let result = reception.getBarcodes()
+      let result = reception.formattedBarcodes
       expect(result).toEqual('DN1234567,DN2345678,DN5845675,DN8993423,DN666666')
     })
   })
 
   describe('createTractionPlates button', () => {
-
     beforeEach(() => {
-      reception.createTractionPlates = jest.fn()
+      reception.handleCreateTractionPlates = jest.fn()
     })
 
     it('calls the right function', () => {
@@ -74,61 +74,85 @@ describe('Reception', () => {
       input.setValue(barcodes)
       let button = wrapper.find('#createTractionPlates')
       button.trigger('click')
-      expect(reception.createTractionPlates).toBeCalled()
-    })
-
-  })
-
-  describe('get sequencescape plates', () => {
-
-    beforeEach(() => {
-      reception.getSequencescapePlates = jest.fn()
-      reception.barcodes = barcodes
-    })
-
-    it('successfully', async () => {
-      reception.getSequencescapePlates.mockReturnValue(mockPlates)
-      await reception.handleSequencesapePlates()
-      expect(reception.plates).toEqual(transformPlates(mockPlates))
-    })
-
-    it('unsuccessfully', async () => {
-      reception.getSequencescapePlates.mockReturnValue(undefined)
-      await reception.handleSequencesapePlates()
-      expect(reception.plates).toEqual({})
+      expect(reception.handleCreateTractionPlates).toBeCalled()
     })
   })
 
-  describe('create sequencescape plate', () => {
-
-    let response 
-
+  describe('handleCreateTractionPlates', () => {
     beforeEach(() => {
-      wrapper.setData({ barcodes: 'DN1234567\n', plates: transformPlates(mockPlates) })
+      wrapper.setData({ barcodes: 'DN1234567\n' })
       reception.getSequencescapePlates = jest.fn()
       reception.showAlert = jest.fn()
     })
 
-    it('shows an alert on success', async () => {
+    it('shows an alert when there are no sequencescape plates', async () => {
+      reception.getSequencescapePlates.mockReturnValue([])
+      await reception.handleCreateTractionPlates()
+      expect(reception.showAlert).toBeCalledWith("There is no plate is sequencescape with barcode(s) DN1234567", 'danger')
+    })
 
-      let mockResponse =  { data: 
-                            { createPlateWithSamples: {
-                              plate: {id: "6",barcode: "PLATE-1234",wells: 
-                              [ { plateId: 1},
-                                { plateId: 1},
-                                { plateId: 1}
-                              ]
-                            }, errors: []}}}
+    it('calls createTractionPlates shows an alert with the result', async () => {
+      reception.getSequencescapePlates.mockReturnValue(mockPlates)
 
+      reception.createTractionPlates = jest.fn()
+
+      let mockResponse = 'Plate x message'
       let promise = new Promise((resolve) => {
         resolve(mockResponse)
       })
 
+      reception.createTractionPlates.mockReturnValue(promise)
+      await reception.handleCreateTractionPlates() 
+      expect(reception.createTractionPlates).toBeCalledWith(transformPlates(mockPlates))
+      expect(reception.showAlert).toBeCalledWith(mockResponse, 'primary')
+    })
+  })
+
+  describe('createTractionPlates', () => {
+    beforeEach(() => {
+      reception.createTractionPlate = jest.fn()
+      wrapper.setData({ barcodes: barcodes })
+    })
+
+    it('will call createTractionPlate and return a list of responses', async () => {
+      let mockResponse = 'Plate x message'
+      let promise = new Promise((resolve) => {
+        resolve(mockResponse)
+      })
+      reception.createTractionPlate.mockReturnValue(promise)
+
+      let response = await reception.createTractionPlates(transformPlates(mockPlates))
+      await flushPromises()
+      expect(reception.createTractionPlate).toHaveBeenCalledTimes(mockPlates.length)
+      expect(response).toEqual(["Plate x message", "Plate x message"])
+    })
+  })
+
+  describe('createTractionPlate', () => {
+    let response
+
+    it('returns a message on success', async () => {
+      let mockResponse = {
+        data: {
+          createPlateWithSamples: {
+            plate: {
+              id: "6",
+              barcode: "PLATE-1234",
+              wells: [{ plateId: 1 }, { plateId: 1 }, { plateId: 1 }]
+            },
+            errors: []
+          }
+        }
+      }
+
+      let promise = new Promise((resolve) => {
+        resolve(mockResponse)
+      })
       mutate.mockReturnValue(promise)
 
-      response = await reception.createTractionPlate(reception.plates[0])
+      response = await reception.createTractionPlate(mockPlates[0])
       expect(mutate).toBeCalled()
-      expect(response).toEqual(`Plate ${reception.plates[0].barcode} successfully created`)
+      expect(response).toEqual(`Plate ${mockPlates[0].barcode} successfully created`)
     })
 
     it('shows an alert on failure', async () => {
@@ -137,41 +161,11 @@ describe('Reception', () => {
       let promise = new Promise((resolve) => {
         resolve(mockResponse)
       })
-
       mutate.mockReturnValue(promise)
-      response = await reception.createTractionPlate(reception.plates[0])
+
+      response = await reception.createTractionPlate(mockPlates[0])
       expect(mutate).toBeCalled()
-      expect(response).toEqual(`Plate ${reception.plates[0].barcode} - this is an error`)
+      expect(response).toEqual(`Plate ${mockPlates[0].barcode} - this is an error`)
     })
   })
-
-  describe('create sequencescape plates', () => {
-
-    beforeEach(() => {
-      reception.getSequencescapePlates = jest.fn()
-      reception.showAlert = jest.fn()
-      reception.createTractionPlate = jest.fn()
-
-      mockPlates = barcodes.split('\n').map(barcode => ({ barcode: barcode, wells: {} }))
-      wrapper.setData({ barcodes: barcodes, plates: mockPlates })
-    })
-
-    it('will attempt to create all of the plates', async () => {
-
-      let promise = new Promise((resolve) => {
-        resolve('shit storm')
-      })
-
-      reception.createTractionPlate.mockReturnValue(promise)
-
-      let button = wrapper.find('#createTractionPlates')
-      await button.trigger('click')
-      await flushPromises()
-      expect(reception.getSequencescapePlates).toBeCalledWith(reception.getBarcodes())
-      expect(reception.createTractionPlate).toHaveBeenCalledTimes(mockPlates.length)
-      expect(reception.showAlert).toBeCalledWith('shit storm,shit storm,shit storm,shit storm,shit storm', 'success')
-    })
-
-  })
-
 })

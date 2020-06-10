@@ -111,7 +111,7 @@ describe('SequencescapePlates', () => {
         plates = await getPlates(request, barcodes)
 
         expect(request.get).toHaveBeenCalled()
-        expect(plates).not.toBeDefined()
+        expect(plates).toEqual([])
     })
 
     it('when no plates exist', async () => {
@@ -120,7 +120,7 @@ describe('SequencescapePlates', () => {
         plates = await getPlates(request, barcodes)
 
         expect(request.get).toHaveBeenCalled()
-        expect(plates).not.toBeDefined()
+        expect(plates).toEqual([])
     })
 })
 

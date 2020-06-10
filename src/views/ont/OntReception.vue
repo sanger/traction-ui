@@ -2,6 +2,10 @@
   <div class="reception">
     <alert ref='alert'></alert>
 
+    <b-modal v-model="busy" hide-footer hide-header no-close-on-backdrop>
+      <spinner size="huge" message="Importing plates..."></spinner>
+    </b-modal>
+
     <div class="form-group">
       <label for="barcodes">Barcodes:</label>
       <textarea type="text"
@@ -15,8 +19,8 @@
     <b-button class="scanButton"
               id="createTractionPlates"
               variant="success"
-              @click="createTractionPlates"
-              :disabled="this.barcodes.length === 0">
+              @click="handleCreateTractionPlates"
+              :disabled="isDisabled">
       Import
     </b-button>
   </div>
@@ -27,50 +31,53 @@ import Alert from '@/components/Alert'
 import Helper from '@/mixins/Helper'
 import { getPlates, transformPlates} from '@/api/SequencescapePlates'
 import CREATE_PLATE_WITH_SAMPLES from '@/graphql/queries/CreatePlateWithSamples.mutation.gql'
+import Spinner from 'vue-simple-spinner'
+import Api from '@/mixins/Api'
 
 export default {
   name: 'Reception',
-  mixins: [Helper],
-  props: {
-  },
+  mixins: [Helper, Api],
   data () {
     return {
       barcodes: [],
-      plates: {}
+      busy: false
     }
   },
   components: {
-    Alert
+    Alert,
+    Spinner
   },
   methods: {
-    async getSequencescapePlates (barcodes) {
-      return await getPlates(this.$store.getters.api.sequencescape.plates, barcodes)
+    async getSequencescapePlates() {
+      return await getPlates(this.sequencescapeRequest, this.formattedBarcodes)
     },
-    getBarcodes () {
-      return this.barcodes.split('\n').filter(Boolean).join(',')
-    },
-    async handleSequencesapePlates () {
-      let jsonPlates = await this.getSequencescapePlates(this.getBarcodes())
-      if (jsonPlates !== undefined) {
-        this.plates = transformPlates(jsonPlates)
+    async handleCreateTractionPlates () {
+      this.busy = true
+      let ssPlatesJson = await this.getSequencescapePlates()
+
+      if (ssPlatesJson.length === 0) {
+        this.showAlert(`There is no plate is sequencescape with barcode(s) ${this.formattedBarcodes}`, 'danger')
+        this.busy = false
+        return
       }
+      
+      await this.createTractionPlates(transformPlates(ssPlatesJson))
+        .then(result => {
+          this.busy = false
+          this.showAlert(result, 'primary')
+        })
     },
     // https://decembersoft.com/posts/promises-in-serial-with-array-reduce/
     // TODO: simplify with await
-    async createTractionPlates() {
-      await this.handleSequencesapePlates()
-      if (this.plates === {}) return
-      
-      this.plates.reduce((promiseChain, plate) => {
+    async createTractionPlates(plates) {
+      return plates.reduce((promiseChain, plate) => {
         return promiseChain.then((chainResults) => 
           this.createTractionPlate(plate).then(result => [...chainResults, result])
         )
         .catch(console.error)
-      }, Promise.resolve([])).then(results => {
-        this.showAlert(results.join(','), 'success')
-      })
+      }, Promise.resolve([]))
     },
-    async createTractionPlate ({barcode, wells}) {
+    createTractionPlate ({barcode, wells}) {
       return this.$apollo.mutate({
         mutation: CREATE_PLATE_WITH_SAMPLES,
         variables: {
@@ -85,6 +92,17 @@ export default {
           return `Plate ${barcode} successfully created`
         }
       })
+    }
+  },
+  computed: {
+    formattedBarcodes () {
+      return this.barcodes.split('\n').filter(Boolean).join(',')
+    },
+    isDisabled () {
+      return this.barcodes.length === 0 || this.busy
+    },
+    sequencescapeRequest () {
+      return this.api.sequencescape.plates
     }
   }
 }
