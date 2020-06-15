@@ -1,5 +1,5 @@
 import OntFlowcell from '@/components/ont/OntFlowcell'
-import { mount } from '../../testHelper'
+import { mount, localVue } from '../../testHelper'
 
 describe('OntFlowcell.vue', () => {
 
@@ -14,6 +14,7 @@ describe('OntFlowcell.vue', () => {
     mutate = jest.fn()
 
     wrapper = mount(OntFlowcell, {
+      localVue,
       propsData: props,
       stubs: {
         'b-form-input': true
@@ -117,7 +118,6 @@ describe('OntFlowcell.vue', () => {
       flowcell.drop(mockEvent)
       expect(flowcell.status).toEqual('filled')
       expect(flowcell.hover).toBeFalsy()
-      expect(wrapper.find('img').exists()).toBeTruthy()
     })
   })
 
