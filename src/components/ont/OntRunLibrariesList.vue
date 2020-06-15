@@ -59,7 +59,8 @@ export default {
   computed: {
     unselectedLibraries () {
       if (this.libraries) {
-        return this.libraries.filter(library => !this.isLibrarySelected(library))
+        let libraries = this.libraries.filter(library => !this.isLibrarySelected(library))
+        return libraries.reverse()
       }
       return []
     }
