@@ -121,6 +121,13 @@ describe('Run.vue', () => {
                 expect(wrapper.find('#update').exists()).toBeTruthy()
             })
         })
+
+        describe('Reset button', () => {
+            it('will only show if the record is new', () => {
+                wrapper.setData({ newRecord: true })
+                expect(wrapper.find('#reset').exists()).toBeTruthy()
+            })
+        })
     })
 
     describe('#create', () => {
@@ -201,4 +208,30 @@ describe('Run.vue', () => {
         })
     })
 
+    describe('#reset', () => {
+
+        beforeEach(() => {
+            wrapper = shallowMount(PacbioRun, {
+            store, 
+            router,
+            localVue,
+            propsData: { id: 1},
+            methods: {
+               provider() { return }
+            }
+        })
+        pacbioRun = wrapper.vm
+
+            pacbioRun.showAlert = jest.fn()
+            pacbioRun.newRun = jest.fn()
+            pacbioRun.redirectToRuns = jest.fn()
+        })
+
+        it('calls newRun', async () => {
+            pacbioRun.newRun.mockReturnValue([])
+
+            pacbioRun.resetRun()
+            expect(pacbioRun.newRun).toBeCalled()
+        })
+    })
 })
