@@ -82,6 +82,7 @@ export default {
     },
     resetRun() {
       this.newRun()
+      this.showAlert("Run has been reset", 'success')
     },
     ...mapActions([
       'createRun',
