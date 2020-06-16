@@ -72,6 +72,7 @@ describe('OntHeronRun.vue', () => {
   describe('#Current action button', () => {
     beforeEach(() => {
       run.runAction = jest.fn()
+      run.redirectToRuns = jest.fn()
     })
 
     describe('Create button', () => {
@@ -100,6 +101,23 @@ describe('OntHeronRun.vue', () => {
         let button = wrapper.find('#update-button')
         button.trigger('click')
         expect(run.runAction).toBeCalled()
+      })
+    })
+  })
+
+  describe('#Cancel button', () => {
+    beforeEach(() => {
+      run.redirectToRuns = jest.fn()
+    })
+    describe('Cancel button', () => {
+      it('exists', () => {
+        expect(wrapper.find('#cancel-button').text()).toEqual('Cancel')
+      })
+
+      it('calls runAction on click', () => {
+        let button = wrapper.find('#cancel-button')
+        button.trigger('click')
+        expect(run.redirectToRuns).toBeCalled()
       })
     })
   })

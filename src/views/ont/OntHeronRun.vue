@@ -4,7 +4,7 @@
 
     <div>
       <b-row class="create-run-button">
-        <b-button @click="redirectToRuns()">Cancel</b-button>
+        <b-button id="cancel-button" @click="redirectToRuns()">Cancel</b-button>
         <b-button :id="currentAction.id" :variant="currentAction.variant" @click="runAction()">{{ currentAction.label}}</b-button>
       </b-row>
       <b-row class="clearboth">
