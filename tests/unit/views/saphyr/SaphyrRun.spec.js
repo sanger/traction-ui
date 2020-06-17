@@ -1,11 +1,11 @@
 import SaphyrRun from '@/views/saphyr/SaphyrRun'
 import { mount, localVue, Vuex } from '../../testHelper'
 import VueRouter from 'vue-router'
-import Alert from '@/components/Alert'
+import store from '@/store'
 
 describe('Run.vue', () => {
 
-  let wrapper, mockRun, saphyrRun, router, store
+  let wrapper, mockRun, saphyrRun, router
 
   beforeEach(() => {
     router = new VueRouter({
@@ -27,30 +27,32 @@ describe('Run.vue', () => {
       }
     }
 
-    store = new Vuex.Store({
-      modules: {
-        traction: {
-          namespaced: true,
-          modules: {
-            saphyr: {
-              namespaced: true,
-              modules: {
-                runs: {
-                  namespaced: true,
-                  state: {
-                    currentRun: mockRun,
-                    runName: mockRun.name
-                  },
-                  getters: {
-                    currentRun: state => state.currentRun,
-                  },
-                }
-              }
-            }
-          }
-        }
-      }
-    })
+    store.commit('traction/saphyr/runs/setCurrentRun', mockRun)
+
+    // store = new Vuex.Store({
+    //   modules: {
+    //     traction: {
+    //       namespaced: true,
+    //       modules: {
+    //         saphyr: {
+    //           namespaced: true,
+    //           modules: {
+    //             runs: {
+    //               namespaced: true,
+    //               state: {
+    //                 currentRun: mockRun,
+    //                 runName: mockRun.name
+    //               },
+    //               getters: {
+    //                 currentRun: state => state.currentRun,
+    //               },
+    //             }
+    //           }
+    //         }
+    //       }
+    //     }
+    //   }
+    // })
 
     wrapper = mount(SaphyrRun, { localVue, store, router })
     saphyrRun = wrapper.vm
