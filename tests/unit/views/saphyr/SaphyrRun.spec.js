@@ -56,13 +56,9 @@ describe('Run.vue', () => {
     saphyrRun = wrapper.vm
   })
 
-  it('will have a name', () => {
-    expect(wrapper.name()).toEqual('SaphyrRun')
-  })
-
   describe('alert', () => {
     it('has a alert', () => {
-      expect(wrapper.contains(Alert)).toBe(true)
+      expect(wrapper.findComponent({ref: 'alert'}).element).toBeTruthy()
     })
   })
 
@@ -167,7 +163,7 @@ describe('Run.vue', () => {
   describe('#showAlert', () => {
     it('emits an event with the message', () => {
       saphyrRun.showAlert('show this message', 'success')
-      expect(wrapper.find(Alert).text()).toMatch(/show this message/)
+      expect(wrapper.findComponent({ref: 'alert'}).text()).toMatch(/show this message/)
     })
   })
 
