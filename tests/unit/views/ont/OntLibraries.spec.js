@@ -1,6 +1,5 @@
 import OntLibraries from '@/views/ont/OntLibraries'
 import { mount, localVue } from '../../testHelper'
-import PrinterModal from '@/components/PrinterModal'
 
 describe('OntLibraries.vue', () => {
   let wrapper, libraries, librariesData
@@ -16,6 +15,15 @@ describe('OntLibraries.vue', () => {
 
     wrapper = mount(OntLibraries, {
       localVue,
+      mocks: {
+        $apollo: {
+          queries: {
+            libraries: {
+              refetch: jest.fn()
+            },
+          },
+        },
+      },
       stubs: {
         OntPlate: true,
         PrinterModal: true
@@ -25,15 +33,8 @@ describe('OntLibraries.vue', () => {
           libraries: librariesData
         }
       },
-      methods: {
-        refetchLibraries() { return }
-      }
     })
     libraries = wrapper.vm
-  })
-
-  it('will have a name', () => {
-    expect(wrapper.name()).toEqual('OntLibraries')
   })
 
   it('will have fields', () => {
@@ -42,7 +43,7 @@ describe('OntLibraries.vue', () => {
   })
 
   it('will have a table', () => {
-    expect(wrapper.contains('table')).toBe(true)
+    expect(wrapper.find('table').exists()).toBeTruthy()
   })
 
   it('will have a table with libraries', () => {
@@ -56,7 +57,7 @@ describe('OntLibraries.vue', () => {
 
     it('passes selected printer to function on emit event', () => {
       libraries.selected = [{id: 1}]
-      let modal = wrapper.find(PrinterModal)
+      let modal = wrapper.findComponent({ref: 'printerModal'})
       modal.vm.$emit('selectPrinter', 'printer1')
 
       expect(libraries.handlePrintLabel).toBeCalledWith('printer1')
