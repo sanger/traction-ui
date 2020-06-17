@@ -38,10 +38,6 @@ describe('Well.vue', () => {
     expect(well).toBeDefined()
   })
 
-  it('will have a name', () => {
-    expect(wrapper.name()).toEqual('Well')
-  })
-
   it('must have a row', () => {
     expect(well.row).toEqual(props.row)
   })
@@ -88,12 +84,28 @@ describe('Well.vue', () => {
 
     it('will be invalid if there is any missing meta data', () => {
       storeWell.movie_time = ""
+      wrapper = mount(Well, { 
+        localVue, 
+        store, 
+        propsData: props,
+        stubs: {
+          WellModal: true
+        }
+      })
       let ellipse = wrapper.find('ellipse')
       expect(ellipse.attributes('class')).toEqual("filled")
     })
 
     it('will be invalid if there are no libraries in the store', () => {
       storeWell.libraries = []
+      wrapper = mount(Well, { 
+        localVue, 
+        store, 
+        propsData: props,
+        stubs: {
+          WellModal: true
+        }
+      })
       let ellipse = wrapper.find('ellipse')
       expect(ellipse.attributes('class')).toEqual("filled")
     })
@@ -110,6 +122,16 @@ describe('Well.vue', () => {
       storeWell.sequencing_mode = ""
       storeWell.on_plate_loading_concentration = ""
       storeWell.insert_size = ""
+
+      wrapper = mount(Well, { 
+        localVue, 
+        store, 
+        propsData: props,
+        stubs: {
+          WellModal: true
+        }
+      })
+  
       let ellipse = wrapper.find('ellipse')
       expect(ellipse.attributes('class')).toEqual("empty")
     })
