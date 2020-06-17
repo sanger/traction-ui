@@ -48,7 +48,7 @@
       </template>
 
       <template v-slot:cell(actions)="row">
-        <PacbioSampleMetadataModal :req="row.item" @alert="showAlert" >
+        <PacbioSampleMetadataModal :req="row.item" @alert="showAlert" ref="sampleMetadata">
         </PacbioSampleMetadataModal>
       </template>
 
@@ -73,7 +73,7 @@
     <div class="clearfix">
       <printerModal class="float-left"
                     @selectPrinter="handlePrintLabel"
-                    :disabled="this.selected.length === 0">
+                    :disabled="this.selected.length === 0" ref='print' >
       </printerModal>
 
       <PacbioLibraryCreateModal :selectedSamples="selected"
