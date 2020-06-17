@@ -1,3 +1,6 @@
+// TODO: lets look at this again. We can use more javascripty stuff e.g. first class functions
+// higher order functions, passing functions as arguments
+
 import store from '@/store'
 import moment from 'moment'
 import handlePromise from '@/api/PromiseHelper'

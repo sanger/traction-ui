@@ -20,13 +20,16 @@ describe('OntPlates.vue', () => {
         return {
           plates: platesData
         }
+      },
+      methods: {
+        refetchPlates() { return }
       }
     })
     plates = wrapper.vm
   })
 
   it('will have fields', () => {
-    expect(plates.fields).toEqual(['id', 'barcode', 'show_details'])
+    expect(plates.fields.map(field => field.key)).toEqual(expect.arrayContaining(['id', 'barcode', 'createdAt', 'show_details']))
   })
 
   describe('components', () => {

@@ -99,7 +99,13 @@ describe('OntPlate.vue', () => {
     })
 
     it('shows an alert on success', async () => {
-      let mockResponse = { data: { createCovidLibraries: { tubes: [{ barcode: 'TRAC-1-1' }, { barcode: 'TRAC-1-2' } ], errors: []} } }
+      let mockResponse = { data: { createOntLibraries: {
+        tubes: [
+          { barcode: 'TRAC-1-1', materials: [{ name: 'DEMO-PLATE-1-1' }, { name: 'DEMO-PLATE-3-1' }] },
+          { barcode: 'TRAC-1-2', materials: [{ name: 'DEMO-PLATE-2-1' }] }
+        ],
+        errors: []
+      } } }
 
       let promise = new Promise((resolve) => {
         resolve(mockResponse)
@@ -112,12 +118,12 @@ describe('OntPlate.vue', () => {
 
       expect(mutate).toBeCalled()
       expect(wrapper.emitted().alert).toBeTruthy()
-      expect(wrapper.emitted().alert[0][0]).toEqual('Library(s) were created with barcodes: TRAC-1-1, TRAC-1-2')
+      expect(wrapper.emitted().alert[0][0]).toEqual('Library(s) were created with names: DEMO-PLATE-1-1, DEMO-PLATE-3-1, DEMO-PLATE-2-1')
       expect(wrapper.emitted().alert[0][1]).toEqual('success')
     })
 
     it('shows an alert on failure', async () => {
-      let mockResponse = { data: { createCovidLibraries: { tubes: [], errors: ['this is an error'] } } }
+      let mockResponse = { data: { createOntLibraries: { tubes: [], errors: ['this is an error'] } } }
 
       let promise = new Promise((resolve) => {
         resolve(mockResponse)

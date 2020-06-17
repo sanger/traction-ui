@@ -1,5 +1,5 @@
 mutation ($flowcells: [FlowcellInput!]!) {
-  createCovidRun( 
+  createOntRun( 
     input: { 
       flowcells: $flowcells 
     } 
@@ -7,6 +7,12 @@ mutation ($flowcells: [FlowcellInput!]!) {
   { 
     run {
       id
+      flowcells {
+        position
+        library {
+          name
+        }
+      }
     }
     errors 
   }

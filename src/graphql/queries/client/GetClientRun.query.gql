@@ -1,0 +1,11 @@
+query {
+  run @client {
+    id 
+    flowcells {
+      position
+      library {
+        name
+      }
+    }
+  }
+}

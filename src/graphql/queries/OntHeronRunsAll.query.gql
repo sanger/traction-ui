@@ -1,7 +1,13 @@
 query {
   runs: ontRuns { 
     id
-    state
+    experimentName
     createdAt
+    updatedAt
+    flowcells {
+      library {
+        name
+      }
+    }
   } 
 }

@@ -9,5 +9,5 @@ export default {
   JsonApi,
   Request,
   Response,
-  ApiBuilder,
+  ApiBuilder
 }

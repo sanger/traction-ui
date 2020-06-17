@@ -2,9 +2,20 @@ import OntLibraries from '@/views/ont/OntLibraries'
 import { mount, localVue } from '../../testHelper'
 
 describe('OntLibraries.vue', () => {
-  let wrapper, libraries, librariesData
+  let wrapper, libraries, librariesData, mutate, refetchLibraries, mockApollo
 
   beforeEach(() => {
+    mutate = jest.fn()
+    mockApollo = {
+      mutate: mutate,
+      queries: {
+        libraries: {
+          refetch: jest.fn()
+        }
+      }
+    }
+    refetchLibraries = jest.fn()
+
     librariesData = [
       { id: 1, tube_barcode: 'TRAC-2-1', plate_barcode: 'TRAC-1-1', poolSize: 1, wellRange: 'A1-H3', tag_set: 24 },
       { id: 2, tube_barcode: 'TRAC-2-2', plate_barcode: 'TRAC-1-1', poolSize: 2, wellRange: 'A4-H6', tag_set: 24 },
@@ -16,13 +27,7 @@ describe('OntLibraries.vue', () => {
     wrapper = mount(OntLibraries, {
       localVue,
       mocks: {
-        $apollo: {
-          queries: {
-            libraries: {
-              refetch: jest.fn()
-            },
-          },
-        },
+        $apollo: mockApollo
       },
       stubs: {
         OntPlate: true,
@@ -30,11 +35,13 @@ describe('OntLibraries.vue', () => {
       },
       data() {
         return {
-          libraries: librariesData
+          libraries: librariesData,
         }
       },
     })
+    
     libraries = wrapper.vm
+    refetchLibraries = mockApollo.queries.libraries.refetch
   })
 
   it('will have fields', () => {
@@ -64,4 +71,63 @@ describe('OntLibraries.vue', () => {
     })
   })
 
+  describe('Delete button', () => {
+    let button
+    const libraryName = 'aLibraryName'
+
+    beforeEach(() => {
+      button = wrapper.find('#deleteLibrary-btn')
+      libraries.showAlert = jest.fn()
+      libraries.selected = [{ name: libraryName }]
+    })
+
+    it('is shows button', () => {
+      expect(button.text()).toEqual('Delete Library')
+    })
+
+    it('shows an alert on success', async () => {
+      let mockResponse = { data: { deleteOntLibrary: { success: true, errors: [] } } }
+
+      let promise = new Promise((resolve) => {
+        resolve(mockResponse)
+      })
+
+      mutate.mockReturnValue(promise)
+
+      await button.trigger('click')
+
+      expect(mutate).toBeCalled()
+      expect(libraries.showAlert).toBeCalledWith(`Library '${libraryName}' was successully deleted`, 'success')
+    })
+
+    it('refetches libraries on success', async () => {
+      refetchLibraries.mockClear()
+      let mockResponse = { data: { deleteOntLibrary: { success: true, errors: [] } } }
+
+      let promise = new Promise((resolve) => {
+        resolve(mockResponse)
+      })
+
+      mutate.mockReturnValue(promise)
+
+      await button.trigger('click')
+
+      expect(refetchLibraries).toBeCalled()
+    })
+
+    it('shows an alert on failure', async () => {
+      let mockResponse = { data: { deleteOntLibrary: { success: false, errors: ['this is an error'] } } }
+
+      let promise = new Promise((resolve) => {
+        resolve(mockResponse)
+      })
+
+      mutate.mockReturnValue(promise)
+
+      await button.trigger('click')
+
+      expect(mutate).toBeCalled()
+      expect(libraries.showAlert).toBeCalledWith(`Failure deleting library '${libraryName}': this is an error`, 'danger')
+    })
+  })
 })

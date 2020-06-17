@@ -105,6 +105,7 @@ export default {
     },
     hasLibraries () {
       if (this.storeWell === undefined) return false
+      if (this.storeWell.libraries.every(l => l.barcode == '')) return false
       return this.storeWell.libraries.length > 0
     },
     hasValidMetadata () {

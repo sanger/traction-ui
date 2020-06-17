@@ -1,10 +1,21 @@
 import Vue from 'vue'
-import ApolloClient from 'apollo-boost'
 import VueApollo from 'vue-apollo'
+import ApolloClient from 'apollo-boost'
 import { InMemoryCache } from 'apollo-cache-inmemory'
-import resolvers from '@/graphql/resolvers/resolvers'
+import resolvers from '@/graphql/resolvers'
 
 const cache = new InMemoryCache()
+
+cache.writeData({
+  data: {
+    run:
+      {
+        __typename: 'Run',
+        id: '',
+        flowcells: []
+      },
+  },
+})
 
 Vue.use(VueApollo)
 
@@ -14,8 +25,6 @@ const apolloClient = new ApolloClient({
   resolvers,
 })
 
-const apolloProvider = new VueApollo({
+export const apolloProvider = new VueApollo({
   defaultClient: apolloClient,
 })
-
-export default apolloProvider

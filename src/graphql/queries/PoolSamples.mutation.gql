@@ -1,5 +1,5 @@
 mutation ($plate_barcode: String!) {
-  createCovidLibraries (
+  createOntLibraries (
     input: {
       arguments: {
         plateBarcode: $plate_barcode
@@ -9,6 +9,11 @@ mutation ($plate_barcode: String!) {
   {
     tubes {
       barcode
+      materials {
+        ... on Library {
+          name
+        }
+      }
     }
     errors
   }

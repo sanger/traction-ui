@@ -1,0 +1,22 @@
+mutation ($id: ID!, $flowcells: [FlowcellInput!]) {
+  updateOntRun( 
+    input: { 
+      id: $id 
+      properties: { 
+        flowcells: $flowcells 
+      } 
+    } 
+  )
+  { 
+    run { 
+      id
+      flowcells {
+        position
+        library {
+          name
+        }
+      }
+    } 
+    errors 
+  }
+}
