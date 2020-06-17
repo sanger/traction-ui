@@ -12,20 +12,22 @@ describe('OntHeronRuns.vue', () => {
 
     wrapper = mount(OntHeronRuns, {
       localVue,
+      mocks: {
+        $apollo: {
+          queries: {
+            runs: {
+              refetch: jest.fn()
+            },
+          },
+        },
+      },
       data() {
         return {
           runs: runsData
         }
-      },
-      methods: {
-        refetchRuns() { return }
       }
     })
     runs = wrapper.vm
-  })
-
-  it('will have a name', () => {
-    expect(wrapper.name()).toEqual('OntHeronRuns')
   })
 
   it('will have fields', () => {
@@ -34,7 +36,7 @@ describe('OntHeronRuns.vue', () => {
   })
 
   it('will have a table', () => {
-    expect(wrapper.contains('table')).toBe(true)
+    expect(wrapper.find('table').exists()).toBeTruthy()
   })
 
   it('will have a table with runs', () => {
@@ -43,7 +45,7 @@ describe('OntHeronRuns.vue', () => {
 
   describe('new run button', () => {
     it('contains a create new run button', () => {
-      expect(wrapper.contains('button')).toBe(true)
+      expect(wrapper.find('button').exists()).toBeTruthy()
     })
 
     it('will redirect to the run when newRun is clicked', async () => {
