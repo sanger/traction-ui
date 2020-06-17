@@ -52,10 +52,6 @@ describe('Plate.vue', () => {
     expect(plate).toBeDefined()
   })
 
-  it('will have a name', () => {
-    expect(wrapper.name()).toEqual('Plate')
-  })
-
   describe('wells', () => {
     it('has the correct number of wells', () => {
       let ellipses = wrapper.findAll('ellipse')
