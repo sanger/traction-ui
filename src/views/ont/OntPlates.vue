@@ -19,7 +19,7 @@
       </template>
 
       <template v-slot:row-details="row">
-        <OntPlate v-bind:plate="row.item" @alert="alert"></OntPlate>
+        <OntPlate v-bind:plate="row.item" @alert="alert" ref='ontPlate'></OntPlate>
       </template>
     </b-table>
   </div>
