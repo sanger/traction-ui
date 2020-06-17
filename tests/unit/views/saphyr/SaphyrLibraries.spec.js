@@ -1,7 +1,6 @@
 import Libraries from '@/views/saphyr/SaphyrLibraries'
 import { mount, localVue, Data } from '../../testHelper'
 import Alert from '@/components/Alert'
-import PrinterModal from '@/components/PrinterModal'
 import * as consts from '@/consts/consts'
 import VueRouter from 'vue-router'
 import Response from '@/api/Response'
@@ -34,9 +33,6 @@ describe('Libraries.vue', () => {
       stubs: {
         Alert: Alert,
         PrinterModal: true
-      },
-      methods: {
-        provider () { return }
       }
     })
     libraries = wrapper.vm
@@ -86,7 +82,7 @@ describe('Libraries.vue', () => {
   describe('#showAlert', () => {
     it('passes the message to function on emit event', () => {
       libraries.showAlert('show this message', 'danger')
-      expect(wrapper.find(Alert).html()).toMatch('show this message')
+      expect(wrapper.findComponent({ref: 'alert'}).html()).toMatch('show this message')
     })
   })
 
@@ -97,7 +93,7 @@ describe('Libraries.vue', () => {
 
     it('passes selected printer to function on emit event', () => {
       libraries.selected = [{id: 1}]
-      let modal = wrapper.find(PrinterModal)
+      let modal = wrapper.findComponent({ref: 'printerModal'})
       modal.vm.$emit('selectPrinter', 'printer1')
 
       expect(libraries.handlePrintLabel).toBeCalledWith('printer1')
@@ -106,7 +102,7 @@ describe('Libraries.vue', () => {
 
   describe('alert', () => {
     it('has a alert', () => {
-      expect(wrapper.contains(Alert)).toBe(true)
+      expect(wrapper.findComponent({ref: 'alert'}).exists()).toBeTruthy()
     })
   })
 })
