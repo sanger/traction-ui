@@ -1,44 +1,18 @@
 import Runs from '@/views/saphyr/SaphyrRuns'
-import { mount, localVue, Vuex, Data } from '../../testHelper'
+import { mount, localVue, Data } from '../../testHelper'
 import Response from '@/api/Response'
-import Alert from '@/components/Alert'
+import store from '@/store'
 
 describe('Runs.vue', () => {
 
-  let wrapper, runs, mockRuns, store
+  let wrapper, runs, mockRuns
 
   beforeEach(() => {
     mockRuns = new Response(Data.Runs).deserialize.runs
 
-    store = new Vuex.Store({
-      modules: {
-        traction: {
-          namespaced: true,
-          modules: {
-            saphyr: {
-              namespaced: true,
-              modules: {
-                runs: {
-                  namespaced: true,
-                  state: {
-                    runs: mockRuns
-                  },
-                  getters: {
-                    runs: state => state.runs,
-                  },
-                  actions: {
-                    setRuns: jest.fn()
-                  }
-                }
-              }
+    store.commit('traction/saphyr/runs/setRuns', mockRuns)
 
-            }
-          }
-        }
-      }
-    })
-
-    wrapper = mount(Runs, { store, localVue, methods: { provider() { return } } }) 
+    wrapper = mount(Runs, { store, localVue }) 
     runs = wrapper.vm
   })
 
@@ -50,13 +24,13 @@ describe('Runs.vue', () => {
 
   describe('alert', () => {
     it('has a alert', () => {
-      expect(wrapper.contains(Alert)).toBe(true)
+      expect(wrapper.findComponent({ref: 'alert'})).toBeTruthy()
     })
   })
 
   describe('building the table', () => {
     it('exists', () => {
-        expect(wrapper.contains('table')).toBe(true)
+        expect(wrapper.find('table').element).toBeTruthy()
     })
 
     it('contains the correct data', async () => {
@@ -75,11 +49,6 @@ describe('Runs.vue', () => {
       wrapper = mount(Runs, {
         store,
         localVue,
-        methods: {
-          provider() {
-            return
-          }
-        },
         data() {
           return {
             filter: mockRuns[0].chip_barcode
@@ -204,7 +173,7 @@ describe('Runs.vue', () => {
   describe('new run button', () => {
 
     it('contains a create new run button', () => {
-      expect(wrapper.contains('button')).toBe(true)
+      expect(wrapper.find('button').element).toBeTruthy()
     })
 
     it('will redirect to the run when newRun is clicked', async () => {
@@ -218,7 +187,7 @@ describe('Runs.vue', () => {
   describe('#showAlert', () => {
     it('emits an event with the message', () => {
       runs.showAlert(/show this message/)
-      expect(wrapper.find(Alert).text()).toMatch(/show this message/)
+      expect(wrapper.findComponent({ref: 'alert'}).text()).toMatch(/show this message/)
     })
   })
 
@@ -227,11 +196,6 @@ describe('Runs.vue', () => {
       wrapper = mount(Runs, {
         store,
         localVue,
-        methods: {
-          provider() {
-            return
-          }
-        },
         data() {
           return {
             perPage: 2,
