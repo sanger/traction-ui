@@ -22,10 +22,6 @@ describe('PacbioSampleMetadataModal.vue', () => {
     modal = wrapper.vm
   })
 
-  it('will have a name', () => {
-    expect(wrapper.name()).toEqual('PacbioSampleMetadataModal')
-  })
-
   it('will have a modal', () => {
     expect(wrapper.find('#editSampleModal')).toBeDefined()
   })
