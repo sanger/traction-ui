@@ -18,27 +18,23 @@ describe('PacbioLibraryCreateModal.vue', () => {
             localVue,
             store,
             propsData: props,
-            methods: {
-                provider() { return }
-            }
+            // methods: {
+            //     provider() { return }
+            // }
         })
         modal = wrapper.vm
     })
 
-    it('will have a name', () => {
-        expect(wrapper.name()).toEqual('PacbioLibraryCreateModal')
-    })
-
     it('will have an button component', () => {
-        expect(wrapper.contains('#pacbioLibraryCreateModal')).toBe(true)
+        expect(wrapper.find('#pacbioLibraryCreateModal').element).toBeTruthy()
     })
 
     it('will have an modal component', () => {
-        expect(wrapper.contains('#pacbioLibraryModal')).toBe(true)
+        expect(wrapper.find('#pacbioLibraryModal').element).toBeTruthy()
     })
 
     it('will have an form component', () => {
-        expect(wrapper.contains('#libraryCreateModal')).toBe(true)
+        expect(wrapper.find('#libraryCreateModal').element).toBeTruthy()
     })
 
     it('must have a disabled prop', () => {
