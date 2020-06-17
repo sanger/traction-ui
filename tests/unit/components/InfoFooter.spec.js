@@ -8,23 +8,24 @@ describe('infoFooter.vue', () => {
   beforeEach(() => {
     wrapper = mount(InfoFooter, {
       localVue,
-      methods: {
-        provider() { return }
-      } 
+      data () {
+        return {
+          environment: 'development',
+          repo: 'trac-ui'
+        }
+      }
     })
   })
 
-  it('will have a name', () => {
-    expect(wrapper.name()).toEqual('infoFooter')
+  it.skip('test fetch properly', () => {
+
   })
 
   it('has a environment', () => {
-    wrapper.setData({ environment: 'development' })
     expect(wrapper.vm.environment).toBe('development')
   })
 
   it('has a repo data', () => {
-    wrapper.setData({ repo: 'trac-ui' })
     expect(wrapper.vm.repo).toBe('trac-ui')
   })
 })
