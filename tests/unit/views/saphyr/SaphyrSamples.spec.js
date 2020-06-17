@@ -1,6 +1,4 @@
 import Samples from '@/views/saphyr/SaphyrSamples'
-import EnzymeModal from '@/components/saphyr/SaphyrEnzymeModal'
-import PrinterModal from '@/components/PrinterModal'
 import { mount, localVue, Data } from '../../testHelper'
 import Libraries from '@/views/saphyr/SaphyrLibraries'
 import VueRouter from 'vue-router'
@@ -30,9 +28,6 @@ describe('Samples.vue', () => {
         Modal: true,
         EnzymeModal: true
       },
-      methods: {
-        provider () { return }
-      }
     })
 
     samples = wrapper.vm
@@ -40,7 +35,7 @@ describe('Samples.vue', () => {
 
   describe('alert', () => {
     it('has a alert', () => {
-      expect(wrapper.contains(Alert)).toBe(true)
+      expect(wrapper.findComponent({ref: 'alert'})).toBeTruthy()
     })
   })
 
@@ -108,7 +103,7 @@ describe('Samples.vue', () => {
   describe('#showAlert', () => {
     it('passes the message to function on emit event', () => {
       samples.showAlert('show this message', 'danger')
-      expect(wrapper.find(Alert).html()).toMatch('show this message')
+      expect(wrapper.findComponent({ref: 'alert'}).html()).toMatch('show this message')
     })
   })
 
@@ -119,7 +114,7 @@ describe('Samples.vue', () => {
 
     it('passes selected printer to function on emit event', () => {
       samples.selected = [{id: 1}]
-      let modal = wrapper.find(PrinterModal)
+      let modal = wrapper.findComponent({ref: 'printerModal'})
       modal.vm.$emit('selectPrinter', 'printer1')
 
       expect(samples.handlePrintLabel).toBeCalledWith('printer1')
@@ -133,7 +128,7 @@ describe('Samples.vue', () => {
 
     it('passes selected enzyme id to function on emit event', () => {
       samples.selected = [{id: 1}]
-      let modal = wrapper.find(EnzymeModal)
+      let modal = wrapper.findComponent({ref: 'enzymeModal'})
       modal.vm.$emit('selectEnzyme', 2)
 
       expect(samples.createLibraries).toBeCalledWith(2)
