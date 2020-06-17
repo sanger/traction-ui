@@ -1,14 +1,13 @@
 import handlePromise from '@/api/PromiseHelper'
 
 const getPlates = async (request, barcodes) => {
-  let plates
+  let plates = []
   let promise = request.get({filter: { barcode: barcodes} })
   let response = await handlePromise(promise)
 
   if (response.successful && !response.empty) {
     plates = response.deserialize.plates
   }
-  
   return plates
 }
 
