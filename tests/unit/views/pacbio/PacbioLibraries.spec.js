@@ -90,7 +90,7 @@ describe('Libraries.vue', () => {
   })
 
   describe('#showAlert', () => {
-    it.skip('passes the message to function on emit event', () => {
+    it('passes the message to function on emit event', () => {
       libraries.showAlert('show this message', 'danger')
       expect(wrapper.findComponent({ref: 'alert'}).html()).toMatch('show this message')
     })

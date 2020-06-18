@@ -200,7 +200,7 @@ describe('Runs.vue', () => {
   })
 
   describe('#showAlert', () => {
-    xit('emits an event with the message', () => {
+    it('emits an event with the message', () => {
       runs.showAlert(/show this message/)
       expect(wrapper.findComponent({ref: 'alert'}).text()).toMatch(/show this message/)
     })

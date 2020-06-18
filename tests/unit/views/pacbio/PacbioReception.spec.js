@@ -100,7 +100,7 @@ describe('Reception', () => {
   })
 
   describe('#showAlert', () => {
-    it.skip('passes the message to function on emit event', () => {
+    it('passes the message to function on emit event', () => {
       reception.showAlert('show this message')
       expect(wrapper.findComponent({ref: 'alert'}).html()).toMatch('show this message')
     })
