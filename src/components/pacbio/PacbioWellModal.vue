@@ -76,7 +76,7 @@
       <b-button class="button btn-xs btn-success" @click="addRow">+</b-button>
 
       <template v-slot:modal-footer="{ ok }">
-        <b-button variant="success" @click="update()">
+        <b-button variant="success" @click="update()" id="update-button">
           Update
         </b-button>
       </template>
@@ -123,8 +123,29 @@ export default {
       this.$refs['well-modal'].hide()
     },
     update() {
-      this.alert('Well updated', 'success')
-      this.hide()
+      if (this.currentRun.template_prep_kit_box_barcode !== "") {
+        this.alert('Well updated', 'success')
+        this.hide()
+      } else {
+        if (this.setPrepKitBarcode()) {
+          this.alert('Well updated', 'success')
+          this.hide()
+        }
+        else {
+          this.alert('One or more Template Prep Kit Box Barcodes do not match', 'warning')
+          this.hide()
+        }
+      }
+    },
+    setPrepKitBarcode() {
+      let barcode = this.libraryByBarcode(this.wellLibraries[0].barcode).library_kit_barcode
+      let libraries= this.wellLibraries.map(lib => {return this.libraryByBarcode(lib.barcode)})
+      if (libraries.every(lib => lib.library_kit_barcode === libraries[0].library_kit_barcode)) {
+        this.setTemplatePrepKitBoxBarcode(barcode)
+        return true
+      }
+      this.setTemplatePrepKitBoxBarcode(barcode)
+      return false
     },
     updateInsertSize(insertSize) {
       this.mutateWell({ position: this.position, property: 'insert_size', with: insertSize })
@@ -161,7 +182,8 @@ export default {
       'mutateWell',
       'addEmptyLibraryToWell',
       'removeLibraryFromWell',
-      'addLibraryToWell'
+      'addLibraryToWell',
+      'setTemplatePrepKitBoxBarcode',
     ]),
     alert (message, type) {
       this.$emit('alert', message, type)

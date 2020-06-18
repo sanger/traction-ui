@@ -83,6 +83,21 @@ describe('PacbioRunInfo', () => {
     })
   })
 
+  describe('update button', () => {
+    beforeEach(() => {
+      modal.alert = jest.fn()
+      modal.setPrepKitBarcode = jest.fn()
+    })
+
+    it('has an update button',() => {
+      expect(wrapper.find('#update-button')).toBeDefined()
+    })
+    it('shows an alert when pressed', () => {
+      modal.setPrepKitBarcode.mockReturnValue(true)
+      modal.update()
+      expect(modal.alert).toBeCalledWith('Well updated', 'success')
+    })
+  })
   describe('methods', () => {
     beforeEach(() => {
       modal.mutateWell = jest.fn()
