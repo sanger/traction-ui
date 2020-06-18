@@ -47,7 +47,7 @@ describe('OntTube.vue', () => {
 
     it('will update the barcode', async () => {
       tube.drag(libraryName, mockEvent)
-      expect(setData).toBeCalledWith('name', libraryName)
+      expect(setData).toBeCalledWith('libraryName', libraryName)
     })
   })
 

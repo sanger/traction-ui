@@ -1,7 +1,7 @@
 <template>
 
   <div class="ont-run-libraries" v-on:drop="drop" v-on:dragover="allowDrop" v-on:dragleave="endDrop" v-bind:class="{hover: hover}" ref="lib">
-    
+
     <b-list-group class="ont-run-libraries-list-group" ref='list'>
       <OntTube v-for="library in unselectedLibraries" v-bind:key="library.id" v-bind="library">
       </OntTube>
@@ -20,7 +20,6 @@ export default {
   components: {
     OntTube
   },
-  props: ['selectedLibraryNames'],
   data () {
     return {
       hover: false
@@ -33,9 +32,6 @@ export default {
     }
   },
   methods: {
-    updateFlowcell (flowcellPosition, libraryName) {
-      this.$emit('updateFlowcell', flowcellPosition, libraryName)
-    },
     allowDrop (event) {
       event.preventDefault()
       this.hover = true
@@ -44,22 +40,23 @@ export default {
       event.preventDefault()
       this.hover = false
     },
-    async drop (event) {
+    drop (event) {
       event.preventDefault()
+
       let flowcellPosition = parseInt(event.dataTransfer.getData('flowcellPosition'))
-      await this.updateFlowcell(flowcellPosition, '')
+      this.updateFlowcell(flowcellPosition, '')
       
       let libraryName = event.dataTransfer.getData('libraryName')
       this.updateLibraryList(libraryName)
       
       this.hover = false
     },
+    updateFlowcell (flowcellPosition, libraryName) {
+      this.$emit('updateFlowcell', flowcellPosition, libraryName)
+    },
     updateLibraryList(libraryName) {
       let assignedToFlowcell = false
       this.$emit('updateLibraryList', libraryName, assignedToFlowcell)
-    },
-    isLibrarySelected(library) {
-      return this.selectedLibraryNames.includes(library.name)
     },
     fetchLibraries () { 
       this.$apollo.query({
@@ -81,6 +78,9 @@ export default {
           libraries: libraries
         }
       })
+    },
+    provider () {
+      this.fetchLibraries()
     }
   },
   computed: {
@@ -89,7 +89,7 @@ export default {
     }
   },
   created () {
-    this.fetchLibraries()
+    this.provider()
   }
 }
 </script>

@@ -6,7 +6,7 @@
     <title v-text="this.library.name"></title>
 
     <foreignObject width="70" height="227">
-      <div draggable="true" v-on:dragstart="drag(library.name, $event)">
+      <div draggable="true" v-on:dragstart="drag($event)">
         <b-form-input placeholder="Name" :id="elementId"  @change="updateFlowcell($event)" :value="library.name"></b-form-input>
         <img left src="/tube.png" height="30" draggable="false" :class="status"/>
       </div>
@@ -46,7 +46,7 @@ export default {
       event.preventDefault()
       this.hover = false
     },
-    drag (name, event) {
+    drag (event) {
       if (name === 0) return
       const img = new Image()
       img.src = '/tube.png'

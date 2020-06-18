@@ -9,7 +9,6 @@
       <b-row class="clearboth">
         <b-col cols="4">
           <OntRunLibrariesList 
-            v-bind:selectedLibraryNames="selectedLibraryNames" 
             @updateFlowcell="updateFlowcell" 
             @updateLibraryList="updateLibraryList">
           </OntRunLibrariesList>
@@ -190,9 +189,6 @@ export default {
     newRecord () {
       return isNaN(this.id)
     },
-    selectedLibraryNames () {
-      return this.flowcellsData.map(f => f.library.name).filter(Boolean)
-    }
   },
   created () {
     this.provider()

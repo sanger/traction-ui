@@ -39,7 +39,7 @@ describe('OntLibraries.vue', () => {
   })
 
   it('will have fields', () => {
-    let expected = ["id", "name", "poolSize", "tubeBarcode", "plateBarcode", "pool", "createdAt"]
+    let expected = ["id", "name", "poolSize", "tubeBarcode", "plateBarcode", "pool", "createdAt", "assignedToFlowcell"]
     expect(libraries.fields).toEqual(expected)
   })
 

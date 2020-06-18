@@ -6,8 +6,9 @@ describe('OntHeronRuns.vue', () => {
 
   beforeEach(() => {
     runsData = [
-      { id: 1, createdAt: '2020-05-13 11:00:00 UTC' },
-      { id: 2, createdAt: '2020-05-10 10:00:00 UTC' },
+      { id: 1, experimentName: 'run1', flowcells: [{library: {name: 'libName1'}}], createdAt: '2020-05-13 11:00:00 UTC' },
+      { id: 2, experimentName: 'run2', flowcells: [{library: {name: 'libName2'}}], createdAt: '2020-05-10 10:00:00 UTC' },
+      { id: 3, experimentName: 'run3', flowcells: [{library: {name: 'libName3'}}], createdAt: '2020-05-10 10:00:00 UTC' },
     ]
 
     wrapper = mount(OntHeronRuns, {
@@ -24,7 +25,7 @@ describe('OntHeronRuns.vue', () => {
   })
 
   it('will have fields', () => {
-    let expected = ['experimentName', 'library_names', 'updatedAt', 'actions']
+    let expected = ['experimentName', 'libraryNames', 'updatedAt', 'actions']
     expect(runs.fields).toEqual(expected)
   })
 
