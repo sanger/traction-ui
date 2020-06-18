@@ -1,4 +1,5 @@
 import GET_CLIENT_RUN from '@/graphql/queries/client/GetClientRun.query.gql'
+import GET_CLIENT_LIBRARIES from '@/graphql/queries/client/GetClientLibraries.query.gql'
 
 export default {
   Mutation: {
@@ -30,6 +31,19 @@ export default {
 
       cache.writeQuery({ query: GET_CLIENT_RUN, data })
       return { position, libraryName }
+    },
+    setLibraries(_, { libraries }, { cache }) {
+      const data = cache.readQuery({ query: GET_CLIENT_LIBRARIES })
+      data.libraries = libraries
+      cache.writeQuery({ query: GET_CLIENT_LIBRARIES, data })
+      return { libraries }
+    },
+    updateLibrariesList(_, { assignedToFlowcell, libraryName }, { cache } ) {
+      const data = cache.readQuery({ query: GET_CLIENT_LIBRARIES })
+      let currentLibrary = data.libraries.find(library => library.name == libraryName)
+      currentLibrary.assignedToFlowcell = assignedToFlowcell
+      cache.writeQuery({ query: GET_CLIENT_LIBRARIES, data })
+      return { assignedToFlowcell, libraryName }
     }
   }
 } 

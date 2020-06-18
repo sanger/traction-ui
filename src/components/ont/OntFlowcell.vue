@@ -38,10 +38,6 @@ export default {
     }
   },
   methods: {
-    // Update is being called twice when a library is dragged?
-    updateFlowcell (libraryName) {
-      this.$emit('updateFlowcell', this.position, libraryName)
-    },
     allowDrop (event) {
       event.preventDefault()
       this.hover = true
@@ -56,13 +52,27 @@ export default {
       img.src = '/tube.png'
       event.dataTransfer.setDragImage(img, 80, 0)
       event.dataTransfer.setData('flowcellPosition', this.position)
+      event.dataTransfer.setData('libraryName', this.library.name)
+
       this.hover = false
     },
     drop (event) {
       event.preventDefault()
-      this.updateFlowcell(event.dataTransfer.getData('name'))
+      let libraryName = event.dataTransfer.getData('libraryName')
+
+      this.updateFlowcell(libraryName)
+      this.updateLibraryList(libraryName)
+
       this.hover = false
-    }
+    },
+    // Update is being called twice when a library is dragged?
+    updateFlowcell (libraryName) {
+      this.$emit('updateFlowcell', this.position, libraryName)
+    },
+    updateLibraryList(libraryName) {
+      let assignedToFlowcell = true
+      this.$emit('updateLibraryList', libraryName, assignedToFlowcell)
+    },
   },
   computed: {
     // Determines the flowcells x/y coordinates

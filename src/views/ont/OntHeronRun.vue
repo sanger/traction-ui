@@ -8,11 +8,18 @@
       </b-row>
       <b-row class="clearboth">
         <b-col cols="4">
-          <OntRunLibrariesList v-bind:selectedLibraryNames="selectedLibraryNames" @updateFlowcell="updateFlowcell"></OntRunLibrariesList>
+          <OntRunLibrariesList 
+            v-bind:selectedLibraryNames="selectedLibraryNames" 
+            @updateFlowcell="updateFlowcell" 
+            @updateLibraryList="updateLibraryList">
+          </OntRunLibrariesList>
         </b-col>
         <b-col cols="6">
           <ONTSVG>
-            <OntFlowcell v-for="(flowcellData, key) in flowcellsData" v-bind="flowcellData" v-bind:key="key" @updateFlowcell="updateFlowcell">
+            <OntFlowcell v-for="(flowcellData, key) in flowcellsData" 
+              v-bind="flowcellData" v-bind:key="key" 
+              @updateFlowcell="updateFlowcell" 
+              @updateLibraryList="updateLibraryList">
             </OntFlowcell>
           </ONTSVG>
         </b-col>
@@ -31,6 +38,7 @@ import GET_RUN from '@/graphql/queries/GetOntRun.query.gql'
 import CREATE_RUN from '@/graphql/queries/CreateOntRun.mutation.gql'
 import UPDATE_RUN from '@/graphql/queries/UpdateOntRun.mutation.gql'
 import UPDATE_CLIENT_FLOWCELL from '@/graphql/queries/client/UpdateClientFlowcell.mutation.gql'
+import UPDATE_CLIENT_LIBRARIES_LIST from '@/graphql/queries/client/UpdateClientLibrariesList.mutation.gql'
 
 import Alert from '@/components/Alert'
 import Helper from '@/mixins/Helper'
@@ -144,6 +152,15 @@ export default {
       .then( ({ data: { updateFlowcell } }) => {
         let index = this.flowcellsData.findIndex(x => x.position === updateFlowcell.position)
         this.flowcellsData[index].library.name = updateFlowcell.libraryName
+      })
+    },
+    updateLibraryList (libraryName, assignedToFlowcell) {
+      this.$apollo.mutate({
+        mutation: UPDATE_CLIENT_LIBRARIES_LIST,
+        variables: {
+          assignedToFlowcell: assignedToFlowcell,
+          libraryName: libraryName
+        }
       })
     },
     provider () {

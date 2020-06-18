@@ -61,7 +61,7 @@ export default {
   },
   data () {
     return { 
-      fields: [ 'id', 'name', 'poolSize', 'tubeBarcode', 'plateBarcode', 'pool', 'createdAt'],
+      fields: [ 'id', 'name', 'poolSize', 'tubeBarcode', 'plateBarcode', 'pool', 'createdAt', 'assignedToFlowcell'],
       selected: [],
       perPage: 5,
       currentPage: 1,
@@ -73,7 +73,7 @@ export default {
       this.$apollo.query({
         query: LIBRARIES_ALL_QUERY,
         variables: {
-          unassignedToFlowcells: true,
+          unassignedToFlowcells: false,
           pageNum: ctx.currentPage,
           pageSize: ctx.perPage
         },

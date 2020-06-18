@@ -8,6 +8,7 @@ query ($unassignedToFlowcells: Boolean, $pageNum: Int, $pageSize: Int) {
       tubeBarcode
       plateBarcode
       createdAt
+      assignedToFlowcell
     }
     pageInfo {
       pageCount

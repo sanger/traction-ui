@@ -1,0 +1,3 @@
+mutation ($libraries: [Library]!) {
+  setLibraries(libraries: $libraries) @client
+}

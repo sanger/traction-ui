@@ -1,7 +1,7 @@
 <template>
 
   <div class="ont-run-libraries" v-on:drop="drop" v-on:dragover="allowDrop" v-on:dragleave="endDrop" v-bind:class="{hover: hover}" ref="lib">
-   
+    
     <b-list-group class="ont-run-libraries-list-group" ref='list'>
       <OntTube v-for="library in unselectedLibraries" v-bind:key="library.id" v-bind="library">
       </OntTube>
@@ -12,6 +12,8 @@
 <script>
 import LIBRARIES_ALL_QUERY from '@/graphql/queries/LibrariesAll.query.gql'
 import OntTube from '@/components/ont/OntTube'
+import GET_CLIENT_LIBRARIES from '@/graphql/queries/client/GetClientLibraries.query.gql'
+import SET_CLIENT_LIBRARIES from '@/graphql/queries/client/SetClientLibraries.mutation.gql'
 
 export default {
   name: 'OntRunLibrariesList',
@@ -21,19 +23,13 @@ export default {
   props: ['selectedLibraryNames'],
   data () {
     return {
-      hover: false,
+      hover: false
     }
   },
   apollo: {
     libraries: {
-      query: LIBRARIES_ALL_QUERY,
-      variables: {
-        unassignedToFlowcells: true,
-        pageNum: 1,
-        pageSize: 1000
-      },
-      // fetchPolicy: 'network-only',
-      update: data => data.libraries.nodes
+      query: GET_CLIENT_LIBRARIES,
+      update: data => data.libraries
     }
   },
   methods: {
@@ -52,19 +48,48 @@ export default {
       event.preventDefault()
       let flowcellPosition = parseInt(event.dataTransfer.getData('flowcellPosition'))
       await this.updateFlowcell(flowcellPosition, '')
+      
+      let libraryName = event.dataTransfer.getData('libraryName')
+      this.updateLibraryList(libraryName)
+      
       this.hover = false
+    },
+    updateLibraryList(libraryName) {
+      let assignedToFlowcell = false
+      this.$emit('updateLibraryList', libraryName, assignedToFlowcell)
     },
     isLibrarySelected(library) {
       return this.selectedLibraryNames.includes(library.name)
     },
+    fetchLibraries () { 
+      this.$apollo.query({
+        query: LIBRARIES_ALL_QUERY,
+        variables: {
+          unassignedToFlowcells: false,
+          pageNum: 1,
+          pageSize: 1000
+        },
+        fetchPolicy: 'no-cache'
+      }).then(data => {
+        this.setClientLibraries(data.data.libraries.nodes)
+      })
+    },
+    setClientLibraries(libraries){
+      this.$apollo.mutate({
+        mutation: SET_CLIENT_LIBRARIES,
+        variables: {
+          libraries: libraries
+        }
+      })
+    }
   },
   computed: {
     unselectedLibraries () {
-      if (this.libraries) {
-        return this.libraries.filter(library => !this.isLibrarySelected(library))
-      }
-      return []
+      return this.libraries.filter(library => !library.assignedToFlowcell)
     }
+  },
+  created () {
+    this.fetchLibraries()
   }
 }
 </script>
