@@ -41,13 +41,7 @@ describe('Run.vue', () => {
         store, 
         router,
         localVue,
-        // [vue-test-utils]: overwriting methods via the `methods` property is deprecated and will be removed in the next major version. 
-        // There is no clear migration path for the `methods` property - Vue does not support arbitrarily replacement of methods, nor should VTU. 
-        // To stub a complex method extract it from the component and test it in isolation. Otherwise, the suggestion is to rethink those tests.
-        // TODO: removing this causes all sorts of problems
-        methods: {
-          provider () { return }
-        } 
+        propsData: { id: 'new' }
     })
     pacbioRun = wrapper.vm
   })  

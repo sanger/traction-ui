@@ -1,5 +1,4 @@
 import OntPlates from '@/views/ont/OntPlates'
-import OntPlate from '@/components/ont/OntPlate'
 import { mount, localVue } from '../../testHelper'
 
 describe('OntPlates.vue', () => {
@@ -16,13 +15,19 @@ describe('OntPlates.vue', () => {
       stubs: {
         OntPlate: true
       },
+      mocks: {
+        $apollo: {
+          queries: {
+            plates: {
+              refetch: jest.fn()
+            },
+          },
+        },
+      },
       data() {
         return {
           plates: platesData
         }
-      },
-      methods: {
-        refetchPlates() { return }
       }
     })
     plates = wrapper.vm
@@ -57,7 +62,7 @@ describe('OntPlates.vue', () => {
     it('has a OntPlate component on button click', () => {
       button = wrapper.find('#details-btn-1')
       button.trigger('click')
-      expect(wrapper.findComponent(OntPlate).exists()).toBeTruthy()
+      expect(wrapper.findComponent({ref: 'ontPlate'}).exists()).toBeTruthy()
     })
   })
 
