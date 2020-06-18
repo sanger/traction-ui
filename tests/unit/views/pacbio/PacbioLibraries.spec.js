@@ -1,9 +1,8 @@
 import Libraries from '@/views/pacbio/PacbioLibraries'
-import { mount, localVue, Data } from '../../testHelper'
+import { mount, localVue, Data, store } from '../../testHelper'
 import * as consts from '@/consts/consts'
 import VueRouter from 'vue-router'
 import Response from '@/api/Response'
-import store from '@/store'
 
 describe('Libraries.vue', () => {
   let wrapper, libraries, mockLibraries, router

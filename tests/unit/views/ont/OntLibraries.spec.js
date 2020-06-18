@@ -14,7 +14,6 @@ describe('OntLibraries.vue', () => {
         }
       }
     }
-    refetchLibraries = jest.fn()
 
     librariesData = [
       { id: 1, tube_barcode: 'TRAC-2-1', plate_barcode: 'TRAC-1-1', poolSize: 1, wellRange: 'A1-H3', tag_set: 24 },

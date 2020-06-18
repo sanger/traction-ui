@@ -1,11 +1,9 @@
 import Reception from '@/views/pacbio/PacbioReception'
-import { mount, localVue, Vuex, Data } from '../../testHelper'
+import { mount, localVue, store, Data } from '../../testHelper'
 import Response from '@/api/Response'
 import Samples from '@/views/pacbio/PacbioSamples'
 import Libraries from '@/views/pacbio/PacbioLibraries'
 import VueRouter from 'vue-router'
-import Alert from '@/components/Alert'
-import store from '@/store'
 
 describe('Reception', () => {
 

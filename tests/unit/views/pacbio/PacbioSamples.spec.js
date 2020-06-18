@@ -1,8 +1,7 @@
 import Samples from '@/views/pacbio/PacbioSamples'
-import { mount, localVue, Data } from '../../testHelper'
+import { mount, localVue, store, Data } from '../../testHelper'
 import VueRouter from 'vue-router'
 import Response from '@/api/Response'
-import store from '@/store'
 
 describe('Samples.vue', () => {
   let wrapper, samples, mockSamples

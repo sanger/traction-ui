@@ -1,7 +1,6 @@
 import Runs from '@/views/saphyr/SaphyrRuns'
-import { mount, localVue, Data } from '../../testHelper'
+import { mount, localVue, store, Data } from '../../testHelper'
 import Response from '@/api/Response'
-import store from '@/store'
 
 describe('Runs.vue', () => {
 

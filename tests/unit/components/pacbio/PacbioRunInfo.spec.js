@@ -6,6 +6,10 @@ describe('PacbioRunInfo', () => {
 
     let wrapper, runInfo, run
 
+    // let el = document.createElement('div')
+    // el.setAttribute('id', 'div1')
+    // document.body.appendChild(el)
+
     beforeEach(() => {
         run = Run.build()
 
@@ -34,12 +38,10 @@ describe('PacbioRunInfo', () => {
             }
         })
 
+        // TODO: need to work out how to use attachTo properly.
         wrapper = mount(PacbioRunInfo, { localVue, store, sync: false, attachToDocument: true })
         runInfo = wrapper.vm
-    })
 
-    it('will have a name', () => {
-        expect(wrapper.name()).toEqual('PacbioRunInfo')
     })
 
     it('can have mapState', () => {
@@ -82,5 +84,9 @@ describe('PacbioRunInfo', () => {
         it('has a Comments input', () => {
             expect(wrapper.find('#comments')).toBeDefined()
         })
+    })
+
+    afterEach(() => {
+        wrapper.destroy()
     })
 })

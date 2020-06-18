@@ -1,9 +1,8 @@
 import PacbioRuns from '@/views/pacbio/PacbioRuns'
 import PacbioRun from '@/views/pacbio/PacbioRun'
-import { mount, localVue, Vuex, Data } from '../../testHelper'
+import { mount, localVue, store, Data } from '../../testHelper'
 import Response from '@/api/Response'
 import VueRouter from 'vue-router'
-import store from '@/store'
 
 describe('Runs.vue', () => {
 

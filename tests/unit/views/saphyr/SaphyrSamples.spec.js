@@ -1,11 +1,10 @@
 import Samples from '@/views/saphyr/SaphyrSamples'
-import { mount, localVue, Data } from '../../testHelper'
+import { mount, localVue, store, Data } from '../../testHelper'
 import Libraries from '@/views/saphyr/SaphyrLibraries'
 import VueRouter from 'vue-router'
 import Alert from '@/components/Alert'
 import * as consts from '@/consts/consts'
 import Response from '@/api/Response'
-import store from '@/store'
 
 describe('Samples.vue', () => {
 

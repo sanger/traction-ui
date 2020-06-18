@@ -1,10 +1,9 @@
 import Libraries from '@/views/saphyr/SaphyrLibraries'
-import { mount, localVue, Data } from '../../testHelper'
+import { mount, localVue, store, Data } from '../../testHelper'
 import Alert from '@/components/Alert'
 import * as consts from '@/consts/consts'
 import VueRouter from 'vue-router'
 import Response from '@/api/Response'
-import store from '@/store'
 
 describe('Libraries.vue', () => {
   let wrapper, libraries, mockLibraries

@@ -25,10 +25,6 @@ describe('PacbioRunInfo', () => {
     modal = wrapper.vm
   })
 
-  it('will have a name', () => {
-    expect(wrapper.name()).toEqual('WellModal')
-  })
-
   it('must have a position prop', () => {
     expect(modal.position).toEqual(props.position)
   })
