@@ -14,16 +14,13 @@ import LIBRARIES_ALL_QUERY from '@/graphql/queries/LibrariesAll.query.gql'
 import OntTube from '@/components/ont/OntTube'
 import GET_CLIENT_LIBRARIES from '@/graphql/queries/client/GetClientLibraries.query.gql'
 import SET_CLIENT_LIBRARIES from '@/graphql/queries/client/SetClientLibraries.mutation.gql'
+import DragHelper from '@/mixins/DragHelper'
 
 export default {
   name: 'OntRunLibrariesList',
+  mixins: [ DragHelper ],
   components: {
     OntTube
-  },
-  data () {
-    return {
-      hover: false
-    }
   },
   apollo: {
     libraries: {
@@ -32,31 +29,12 @@ export default {
     }
   },
   methods: {
-    allowDrop (event) {
-      event.preventDefault()
-      this.hover = true
-    },
-    endDrop (event) {
-      event.preventDefault()
-      this.hover = false
-    },
     drop (event) {
       event.preventDefault()
-
+      
       let flowcellPosition = parseInt(event.dataTransfer.getData('flowcellPosition'))
-      this.updateFlowcell(flowcellPosition, '')
-      
       let libraryName = event.dataTransfer.getData('libraryName')
-      this.updateLibraryList(libraryName)
-      
-      this.hover = false
-    },
-    updateFlowcell (flowcellPosition, libraryName) {
-      this.$emit('updateFlowcell', flowcellPosition, libraryName)
-    },
-    updateLibraryList(libraryName) {
-      let assignedToFlowcell = false
-      this.$emit('updateLibraryList', libraryName, assignedToFlowcell)
+      this.handleDropUpdate(flowcellPosition, libraryName, false)
     },
     fetchLibraries () { 
       this.$apollo.query({

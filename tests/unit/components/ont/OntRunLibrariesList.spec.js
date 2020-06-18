@@ -61,25 +61,18 @@ describe('OntLibraries.vue', () => {
   })
 
   describe('#drop', () => {
-    let mockEvent, flowcellPosition //libraryName
+    let mockEvent, flowcellPosition //, libraryName
 
     beforeEach(() => {
-      // libraryName = 'TRAC-1'
       flowcellPosition = 1  
       mockEvent = { dataTransfer: { getData() { return flowcellPosition } }, preventDefault: jest.fn() }
-      librariesList.updateFlowcell = jest.fn()
-      librariesList.updateLibraryList = jest.fn()
+      librariesList.handleDropUpdate = jest.fn()
     })
 
-    it('will call updateFlowcell', () => {
+    it('will call handleDropUpdate', () => {
       librariesList.drop(mockEvent)
-      expect(librariesList.updateFlowcell).toBeCalledWith(flowcellPosition, '')
-    })
-
-    it('will call updateLibraryList and update the library list', () => {
-      librariesList.drop(mockEvent)
-      // TODO: figure out how to return libraryName, not flowcellPosition from getData()
-      expect(librariesList.updateLibraryList).toBeCalledWith(flowcellPosition)
+      // TODO: figure out how to return flowcellPosition and libraryName from getData()
+      expect(librariesList.handleDropUpdate).toBeCalledWith(flowcellPosition, 1, false)
     })
 
     it('will show the image', () => {
@@ -106,7 +99,6 @@ describe('OntLibraries.vue', () => {
     })
   })
 
-
   describe('#setClientLibraries', () => {
     it('calls setClientLibraries to set the libraries in the cache', async () => {
       let libraries = [{ id: 1 }]
@@ -116,24 +108,4 @@ describe('OntLibraries.vue', () => {
     })
   })
 
-  describe('#updateFlowcell', () => {
-    it('emits an event', () => {
-      let updatedLibraryName = 'updatedLibraryName'
-      let flowcellPosition = 1
-      librariesList.updateFlowcell(flowcellPosition, updatedLibraryName)
-      expect(wrapper.emitted().updateFlowcell).toBeTruthy()
-      expect(wrapper.emitted().updateFlowcell[0][0]).toEqual(flowcellPosition)
-      expect(wrapper.emitted().updateFlowcell[0][1]).toEqual(updatedLibraryName)
-    })
-  })
-
-  describe('#updateLibraryList', () => {
-    it('emits an event', () => {
-      let updatedLibraryName = 'updatedLibraryName'
-      librariesList.updateLibraryList(updatedLibraryName)
-      expect(wrapper.emitted().updateLibraryList).toBeTruthy()
-      expect(wrapper.emitted().updateLibraryList[0][0]).toEqual(updatedLibraryName)
-      expect(wrapper.emitted().updateLibraryList[0][1]).toEqual(false)
-    })
-  })
 })

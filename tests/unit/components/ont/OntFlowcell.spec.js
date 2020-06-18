@@ -88,44 +88,18 @@ describe('OntFlowcell.vue', () => {
     })
   })
 
-  describe('#updateFlowcell', () => {
-    it('emits an event', () => {
-      let updatedLibraryName = 'updatedLibraryName'
-      flowcell.updateFlowcell(updatedLibraryName)
-      expect(wrapper.emitted().updateFlowcell).toBeTruthy()
-      expect(wrapper.emitted().updateFlowcell[0][0]).toEqual(props.position)
-      expect(wrapper.emitted().updateFlowcell[0][1]).toEqual(updatedLibraryName)
-    })
-  })
-
-  describe('#updateLibraryList', () => {
-    it('emits an event', () => {
-      let updatedLibraryName = 'updatedLibraryName'
-      flowcell.updateLibraryList(updatedLibraryName)
-      expect(wrapper.emitted().updateLibraryList).toBeTruthy()
-      expect(wrapper.emitted().updateLibraryList[0][0]).toEqual(updatedLibraryName)
-      expect(wrapper.emitted().updateLibraryList[0][1]).toEqual(true)
-    })
-  })
-
   describe('#drop', () => {
     let mockEvent, libraryName
 
     beforeEach(() => {
       libraryName = 'TRAC-1'
       mockEvent = { dataTransfer: { getData() { return libraryName } }, preventDefault: jest.fn() }
-      flowcell.updateFlowcell = jest.fn()
-      flowcell.updateLibraryList = jest.fn()
+      flowcell.handleDropUpdate = jest.fn()
     })
 
-    it('will call updateFlowcell', async () => {
+    it('will call handleDropUpdate', () => {
       flowcell.drop(mockEvent)
-      expect(flowcell.updateFlowcell).toBeCalledWith(libraryName)
-    })
-
-    it('will call updateLibraryList', async () => {
-      flowcell.drop(mockEvent)
-      expect(flowcell.updateLibraryList).toBeCalledWith(libraryName)
+      expect(flowcell.handleDropUpdate).toBeCalledWith(flowcell.position, libraryName, true)
     })
 
     it('will change the status and show the image', () => {

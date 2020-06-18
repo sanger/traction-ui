@@ -7,7 +7,7 @@
 
     <foreignObject width="70" height="227">
       <div draggable="true" v-on:dragstart="drag($event)">
-        <b-form-input placeholder="Name" :id="elementId"  @change="updateFlowcell($event)" :value="library.name"></b-form-input>
+        <b-form-input placeholder="Name" :id="elementId"  @change="updateFlowcell(position, $event)" :value="library.name"></b-form-input>
         <img left src="/tube.png" height="30" draggable="false" :class="status"/>
       </div>
     </foreignObject>
@@ -17,11 +17,13 @@
 <script>
 // Flowcell component 
 // is only to display a current value 
-// and to accept drag and drop events, 
+// and to accept drag and drop events, with the help of DragHelper 
 // notifying the parent when they happen.
+import DragHelper from '@/mixins/DragHelper'
 
 export default {
   name: 'OntFlowcell',
+  mixins: [ DragHelper ],
   props: {
     position: {
       type: Number,
@@ -32,20 +34,7 @@ export default {
       required: true
     }
   },
-  data () {
-    return {
-      hover: false
-    }
-  },
   methods: {
-    allowDrop (event) {
-      event.preventDefault()
-      this.hover = true
-    },
-    endDrop (event) {
-      event.preventDefault()
-      this.hover = false
-    },
     drag (event) {
       if (name === 0) return
       const img = new Image()
@@ -58,20 +47,9 @@ export default {
     },
     drop (event) {
       event.preventDefault()
+
       let libraryName = event.dataTransfer.getData('libraryName')
-
-      this.updateFlowcell(libraryName)
-      this.updateLibraryList(libraryName)
-
-      this.hover = false
-    },
-    // Update is being called twice when a library is dragged?
-    updateFlowcell (libraryName) {
-      this.$emit('updateFlowcell', this.position, libraryName)
-    },
-    updateLibraryList(libraryName) {
-      let assignedToFlowcell = true
-      this.$emit('updateLibraryList', libraryName, assignedToFlowcell)
+      this.handleDropUpdate(this.position, libraryName, true)
     },
   },
   computed: {
