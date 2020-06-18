@@ -18,11 +18,12 @@ export default {
       this.hover = false
     },
     // Update the flowcell with the new library name
-    // Update the cached library list, by updating the library.assignedToFlowcell
-    handleDropUpdate(flowcellPosition, libraryName, assignedToFlowcell) {
+    updateFlowcell(flowcellPosition, libraryName) {
       this.$emit('updateFlowcell', flowcellPosition, libraryName)
+    },
+    // Update the cached library list, by updating the library.assignedToFlowcell
+    updateLibraryList(libraryName, assignedToFlowcell) {
       this.$emit('updateLibraryList', libraryName, assignedToFlowcell)
-      this.hover = false
     }
   }
 }

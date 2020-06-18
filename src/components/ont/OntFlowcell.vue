@@ -47,9 +47,12 @@ export default {
     },
     drop (event) {
       event.preventDefault()
-
       let libraryName = event.dataTransfer.getData('libraryName')
-      this.handleDropUpdate(this.position, libraryName, true)
+
+      this.updateFlowcell(this.position, libraryName)
+      this.updateLibraryList(libraryName, true)
+
+      this.hover = false
     },
   },
   computed: {

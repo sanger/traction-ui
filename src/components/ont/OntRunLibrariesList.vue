@@ -34,7 +34,11 @@ export default {
       
       let flowcellPosition = parseInt(event.dataTransfer.getData('flowcellPosition'))
       let libraryName = event.dataTransfer.getData('libraryName')
-      this.handleDropUpdate(flowcellPosition, libraryName, false)
+
+      this.updateFlowcell(flowcellPosition, '')
+      this.updateLibraryList(libraryName, false)
+
+      this.hover = false
     },
     fetchLibraries () { 
       this.$apollo.query({

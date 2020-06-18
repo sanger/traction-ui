@@ -94,13 +94,20 @@ describe('OntFlowcell.vue', () => {
     beforeEach(() => {
       libraryName = 'TRAC-1'
       mockEvent = { dataTransfer: { getData() { return libraryName } }, preventDefault: jest.fn() }
-      flowcell.handleDropUpdate = jest.fn()
+      flowcell.updateFlowcell = jest.fn()
+      flowcell.updateLibraryList = jest.fn()
     })
 
-    it('will call handleDropUpdate', () => {
+    it('will call updateFlowcell', () => {
       flowcell.drop(mockEvent)
-      expect(flowcell.handleDropUpdate).toBeCalledWith(flowcell.position, libraryName, true)
+      expect(flowcell.updateFlowcell).toBeCalledWith(flowcell.position, libraryName)
     })
+
+    it('will call updateLibraryList', () => {
+      flowcell.drop(mockEvent)
+      expect(flowcell.updateLibraryList).toBeCalledWith(libraryName, true)
+    })
+
 
     it('will change the status and show the image', () => {
       flowcell.drop(mockEvent)

@@ -20,17 +20,25 @@ describe('DragHelper', () => {
     expect(wrapper.name()).toEqual('DragHelper')
   })
 
-  describe('#handleDropUpdate', () => {
-    it('emits an event for updateFlowcell and updateLibraryList', () => {
+  describe('#updateFlowcell', () => {
+    it('emits an event for updateFlowcell', () => {
       let flowcellPosition = 1
       let libraryName = 'aLibraryName'
-      let assignToFlowcell = true
-      
-      dragHelper.handleDropUpdate(flowcellPosition, libraryName, assignToFlowcell)
-      
+
+      dragHelper.updateFlowcell(flowcellPosition, libraryName)
+
       expect(wrapper.emitted().updateFlowcell).toBeTruthy()
       expect(wrapper.emitted().updateFlowcell[0][0]).toEqual(flowcellPosition)
       expect(wrapper.emitted().updateFlowcell[0][1]).toEqual(libraryName)
+    })
+  })
+
+  describe('#updateLibraryList', () => {
+    it('emits an event for updateLibraryList', () => {
+      let libraryName = 'aLibraryName'
+      let assignToFlowcell = true
+      
+      dragHelper.updateLibraryList(libraryName, assignToFlowcell)
 
       expect(wrapper.emitted().updateLibraryList).toBeTruthy()
       expect(wrapper.emitted().updateLibraryList[0][0]).toEqual(libraryName)

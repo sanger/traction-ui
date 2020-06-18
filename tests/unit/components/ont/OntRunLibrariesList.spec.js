@@ -76,13 +76,19 @@ describe('OntLibraries.vue', () => {
     beforeEach(() => {
       flowcellPosition = 1  
       mockEvent = { dataTransfer: { getData() { return flowcellPosition } }, preventDefault: jest.fn() }
-      librariesList.handleDropUpdate = jest.fn()
+      librariesList.updateFlowcell = jest.fn()
+      librariesList.updateLibraryList = jest.fn()
     })
 
-    it('will call handleDropUpdate', () => {
+    it('will call updateFlowcell', () => {
       librariesList.drop(mockEvent)
-      // TODO: figure out how to return flowcellPosition and libraryName from getData()
-      expect(librariesList.handleDropUpdate).toBeCalledWith(flowcellPosition, 1, false)
+      expect(librariesList.updateFlowcell).toBeCalledWith(flowcellPosition, '')
+    })
+
+    it('will call updateLibraryList', () => {
+      librariesList.drop(mockEvent)
+      // TODO: figure out how to get libraryName from getData()
+      expect(librariesList.updateLibraryList).toBeCalledWith(1, false)
     })
 
     it('will show the image', () => {
