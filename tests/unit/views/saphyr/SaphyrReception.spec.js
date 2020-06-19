@@ -93,7 +93,9 @@ describe('Reception', () => {
   describe('#showAlert', () => {
     it('passes the message to function on emit event', () => {
       reception.showAlert('show this message')
-      expect(wrapper.findComponent({ref: 'alert'}).html()).toMatch('show this message')
+      wrapper.vm.$nextTick(() => {
+        expect(wrapper.findComponent({ref: 'alert'}).html()).toMatch('show this message')
+      })
     })
   })
 

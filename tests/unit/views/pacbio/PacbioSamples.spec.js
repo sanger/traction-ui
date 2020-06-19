@@ -3,13 +3,15 @@ import { mount, localVue, store, Data } from '../../testHelper'
 import VueRouter from 'vue-router'
 import Response from '@/api/Response'
 
+// TODO: why do we need to set sortDesc to false? I think we also need to isolate tests
 describe('Samples.vue', () => {
-  let wrapper, samples, mockSamples
+  let wrapper, samples, mockSamples, router
 
   beforeEach(() => {
     mockSamples = new Response(Data.TractionPacbioSamples).deserialize.requests
+    store.commit('traction/pacbio/requests/setRequests', mockSamples)
 
-    const router = new VueRouter({
+    router = new VueRouter({
       routes: [{
         path: '/pacbio/samples',
         name: 'PacbioSamples',
@@ -18,21 +20,18 @@ describe('Samples.vue', () => {
       }]
     })
 
-    store.commit('traction/pacbio/requests/setRequests', mockSamples)
 
     wrapper = mount(Samples, {
       store,
       router,
       localVue
+
     })
 
     // TODO: Vue no longer allows you to override methods in mount. This causes all sorts of issues which we need to fix.
     wrapper.setData({ sortDesc: false })
     samples = wrapper.vm
     samples.provider = jest.fn()
-    // TODO: why do we have to mock method here. 
-    samples.handlePrintLabel = jest.fn()
-
   })
 
   describe('building the table', () => {
@@ -48,14 +47,26 @@ describe('Samples.vue', () => {
     })
   })
 
+  // TODO: this is tested throughout the app and it is exactly the same
   describe('#showAlert', () => {
     it('passes the message to function on emit event', () => {
       samples.showAlert('show this message', 'danger')
-      expect(wrapper.findComponent({ref: 'alert'}).html()).toMatch('show this message')
+      wrapper.vm.$nextTick(() => {
+        expect(wrapper.findComponent({ref: 'alert'}).html()).toMatch('show this message')
+      })
     })
   })
 
   describe('printerModal', () => {
+
+    beforeEach(() => {
+      wrapper = mount(Samples, { store, router, localVue })
+      wrapper.setData({ sortDesc: false })
+
+      samples = wrapper.vm
+      samples.handlePrintLabel = jest.fn()
+        
+    })
 
     it('passes selected printer to function on emit event', () => {
       samples.selected = [{ id: 1 }]

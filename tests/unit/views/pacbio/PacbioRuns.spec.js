@@ -202,7 +202,10 @@ describe('Runs.vue', () => {
   describe('#showAlert', () => {
     it('emits an event with the message', () => {
       runs.showAlert(/show this message/)
-      expect(wrapper.findComponent({ref: 'alert'}).text()).toMatch(/show this message/)
+
+      wrapper.vm.$nextTick(() => {
+        expect(wrapper.findComponent({ref: 'alert'}).text()).toMatch(/show this message/)
+      })
     })
   })
 

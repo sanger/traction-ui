@@ -113,6 +113,7 @@ describe('Run.vue', () => {
     })
   })
 
+  // TODO: remove provider. May need to refactor pacbio run.
   describe('#update', () => {
 
     beforeEach(() => {

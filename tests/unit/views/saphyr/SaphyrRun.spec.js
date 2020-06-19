@@ -139,7 +139,9 @@ describe('Run.vue', () => {
   describe('#showAlert', () => {
     it('emits an event with the message', () => {
       saphyrRun.showAlert('show this message', 'success')
-      expect(wrapper.findComponent({ref: 'alert'}).text()).toMatch(/show this message/)
+      wrapper.vm.$nextTick(() => {
+        expect(wrapper.findComponent({ref: 'alert'}).text()).toMatch(/show this message/)
+      })
     })
   })
 

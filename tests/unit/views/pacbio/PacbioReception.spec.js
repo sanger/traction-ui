@@ -49,7 +49,7 @@ describe('Reception', () => {
       reception.handleSampleExtractionTubes = jest.fn()
     })
 
-    it('calls the right function', () => {
+    it('calls the right function', async () => {
      
       let input = wrapper.find('textarea')
       input.setValue(barcodes)
@@ -102,7 +102,9 @@ describe('Reception', () => {
   describe('#showAlert', () => {
     it('passes the message to function on emit event', () => {
       reception.showAlert('show this message')
-      expect(wrapper.findComponent({ref: 'alert'}).html()).toMatch('show this message')
+      wrapper.vm.$nextTick(() => {
+        expect(wrapper.findComponent({ref: 'alert'}).html()).toMatch('show this message')
+      })
     })
   })
 

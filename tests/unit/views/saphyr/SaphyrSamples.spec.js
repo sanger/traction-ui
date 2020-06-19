@@ -102,7 +102,10 @@ describe('Samples.vue', () => {
   describe('#showAlert', () => {
     it('passes the message to function on emit event', () => {
       samples.showAlert('show this message', 'danger')
-      expect(wrapper.findComponent({ref: 'alert'}).html()).toMatch('show this message')
+      wrapper.vm.$nextTick(() => {
+        expect(wrapper.findComponent({ref: 'alert'}).html()).toMatch('show this message')
+      })
+      
     })
   })
 

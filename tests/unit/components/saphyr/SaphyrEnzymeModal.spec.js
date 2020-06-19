@@ -28,11 +28,11 @@ describe('SaphyrEnzymeModal.vue', () => {
   })
 
   it('will have an button component', () => {
-    expect(wrapper.contains('#createLibrariesWithEnzymeButton')).toBe(true)
+    expect(wrapper.find('#createLibrariesWithEnzymeButton').exists()).toBeTruthy()
   })
 
   it('will have an modal component', () => {
-    expect(wrapper.contains('#enzymeModal')).toBe(true)
+    expect(wrapper.find('#enzymeModal').exists()).toBeTruthy()
   })
 
   describe('data', () => {
@@ -41,7 +41,7 @@ describe('SaphyrEnzymeModal.vue', () => {
       expect(wrapper.vm.selectedEnzymeId).toBe(1)
     })
 
-    it('has enzyme options', () => {
+    it('has enzyme options', async () => {
       let enzymeOptions = { enzymeOptions: [{ value: null, text: 'Please select an option' },
         { value: 1, text: 'enz1' },
         { value: 2, text: 'enz2' }]
@@ -49,6 +49,7 @@ describe('SaphyrEnzymeModal.vue', () => {
 
       wrapper.setData(enzymeOptions)
       expect(enzymeModal.enzymeOptions).toEqual(enzymeOptions.enzymeOptions)
+      await flushPromises()
       expect(wrapper.find('select').findAll('option').length).toEqual(enzymeOptions.enzymeOptions.length)
     })
   })

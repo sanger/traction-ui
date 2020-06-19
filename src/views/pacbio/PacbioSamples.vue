@@ -152,9 +152,6 @@ export default {
         this.showAlert("Failed to get samples: " + error.message, 'danger')
       }
     },
-    showAlert(message, type) {
-      this.$refs.alert.show(message, type)
-    },
     ...mapActions([
       'setRequests'
     ]),
