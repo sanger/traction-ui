@@ -3,10 +3,11 @@ import { mount, localVue } from '../../testHelper'
 import PrinterModal from '@/components/PrinterModal'
 
 describe('OntLibraries.vue', () => {
-  let wrapper, libraries, librariesData, mutate
+  let wrapper, libraries, librariesData, mutate, refetchLibraries
 
   beforeEach(() => {
     mutate = jest.fn()
+    refetchLibraries = jest.fn()
 
     librariesData = [
       { id: 1, tube_barcode: 'TRAC-2-1', plate_barcode: 'TRAC-1-1', poolSize: 1, wellRange: 'A1-H3', tag_set: 24 },
@@ -33,7 +34,7 @@ describe('OntLibraries.vue', () => {
         }
       },
       methods: {
-        refetchLibraries() { return }
+        refetchLibraries: refetchLibraries
       }
     })
     libraries = wrapper.vm
@@ -72,11 +73,12 @@ describe('OntLibraries.vue', () => {
 
   describe('Delete button', () => {
     let button
+    const libraryName = 'aLibraryName'
 
     beforeEach(() => {
       button = wrapper.find('#deleteLibrary-btn')
       libraries.showAlert = jest.fn()
-      libraries.selected = [{ name: 'aLibraryName' }]
+      libraries.selected = [{ name: libraryName }]
     })
 
     it('is shows button', () => {
@@ -95,7 +97,22 @@ describe('OntLibraries.vue', () => {
       await button.trigger('click')
 
       expect(mutate).toBeCalled()
-      expect(libraries.showAlert).toBeCalledWith('Library was successully deleted', 'success')
+      expect(libraries.showAlert).toBeCalledWith(`Library '${libraryName}' was successully deleted`, 'success')
+    })
+
+    it('refetches libraries on success', async () => {
+      refetchLibraries.mockClear()
+      let mockResponse = { data: { deleteOntLibrary: { success: true, errors: [] } } }
+
+      let promise = new Promise((resolve) => {
+        resolve(mockResponse)
+      })
+
+      mutate.mockReturnValue(promise)
+
+      await button.trigger('click')
+
+      expect(refetchLibraries).toBeCalled()
     })
 
     it('shows an alert on failure', async () => {
@@ -110,7 +127,7 @@ describe('OntLibraries.vue', () => {
       await button.trigger('click')
 
       expect(mutate).toBeCalled()
-      expect(libraries.showAlert).toBeCalledWith('Failure: this is an error', 'danger')
+      expect(libraries.showAlert).toBeCalledWith(`Failure deleting library '${libraryName}': this is an error`, 'danger')
     })
   })
 })

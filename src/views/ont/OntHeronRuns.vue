@@ -1,13 +1,6 @@
 <template>
   <div class="runs">
 
-    <b-button id="newRun"
-      class="float-right"
-      @click="redirectToRun()"
-      variant="success">
-      New Run
-    </b-button>
-
     <b-table 
       id="runs-table"
       hover 
@@ -15,6 +8,8 @@
       responsive
       :items="runs"
       :fields="fields"
+      :sort-by.sync="sortBy"
+      :sort-desc.sync="sortDesc"
       sticky-header
       show-empty
     >
@@ -25,7 +20,22 @@
         </b-button>
       </template>
 
+      <template v-slot:cell(library_names)="row" >
+        <span v-for="flowcell in row.item.flowcells" :key="flowcell.id">
+          {{flowcell.library.name}} 
+        </span>
+      </template>
+
     </b-table>
+
+    <div class="clearfix">
+      <b-button id="newRun"
+                class="float-left"
+                @click="redirectToRun()"
+                variant="success">
+        New Run
+      </b-button>
+    </div>
   </div>
 </template>
 
@@ -38,10 +48,13 @@ export default {
   data () {
     return { 
       fields: [
-        { key: 'id', label: 'ID' , sortable: true},
-        { key: 'createdAt', label: 'Created at', sortable: true},
+        { key: 'experimentName', label: 'Experiment Name' , sortable: true},
+        { key: 'library_names', label: 'Libraries', class: 'w-25' },
+        { key: 'updatedAt', label: 'Updated at', sortable: true},
         { key: 'actions', label: 'Actions' },
-      ]
+      ],
+      sortBy: 'updatedAt',
+      sortDesc: true,
     }
   },
   apollo: {
@@ -62,5 +75,3 @@ export default {
   }
 }
 </script>
-
-

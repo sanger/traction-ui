@@ -1,76 +1,83 @@
 <template>
-  <g :transform="getMatrix" v-on:drop="drop" v-on:dragover="allowDrop" >
-    <text x="25" y="30" class="medium">{{ position }}</text>
-    <rect width="70" height="227" v-bind:class="status"/>
-    <title v-text="this.libraryName"></title>
+  <g :transform="getMatrix" v-on:drop="drop" v-on:dragover="allowDrop" v-on:dragleave="endDrop">
 
-    <foreignObject y="100" width="70" height="227">
-      <b-form-input v-model="libraryName" placeholder="Name" :id="'libraryNameInput-'+this.position" @change="updateFlowcell"></b-form-input>
+    <text x="25" y="30" class="medium">{{ position }}</text>
+    <rect width="70" height="227" :class="[{active: hover}, status]"/>
+    <title v-text="this.library.name"></title>
+
+    <foreignObject width="70" height="227">
+      <div draggable="true" v-on:dragstart="drag(library.name, $event)">
+        <b-form-input placeholder="Name" :id="elementId"  @change="updateFlowcell($event)" :value="library.name"></b-form-input>
+        <b-img right src="/tube.png" height="30" draggable="false" :class="status"/>
+      </div>
     </foreignObject>
   </g>
 </template>
 
 <script>
-import GET_CLIENT_FLOWCELL_LIBRARY_NAME from '@/graphql/queries/client/GetClientFlowcellLibraryName.query.gql'
-import UPDATE_CLIENT_FLOWCELL from '@/graphql/queries/client/UpdateClientFlowcell.mutation.gql'
+// Flowcell component 
+// is only to display a current value 
+// and to accept drag and drop events, 
+// notifying the parent when they happen.
 
 export default {
   name: 'OntFlowcell',
   props: {
-    xPos: {
+    position: {
       type: Number,
       required: true
     },
-    position: {
-      type: Number,
+    library: {
+      type: Object,
       required: true
     }
   },
   data () {
     return {
-      libraryName: '',
+      hover: false
     }
   },
   methods: {
-    updateFlowcell () {
-      this.$apollo.mutate({
-        mutation: UPDATE_CLIENT_FLOWCELL,
-        variables: {
-          position: this.position,
-          libraryName: this.libraryName
-        }
-      })
+    updateFlowcell (libraryName) {
+      this.$emit('updateFlowcell', this.position, libraryName)
     },
     allowDrop (event) {
       event.preventDefault()
+      this.hover = true
+    },
+    endDrop (event) {
+      event.preventDefault()
+      this.hover = false
+    },
+    drag (name, event) {
+      if (name === 0) return
+      const img = new Image()
+      img.src = '/tube.png'
+      event.dataTransfer.setDragImage(img, 80, 0)
+      event.dataTransfer.setData('flowcellPosition', this.position)
+      this.hover = false
     },
     drop (event) {
-      this.libraryName = event.dataTransfer.getData('name')
-      this.updateFlowcell()
+      event.preventDefault()
+      this.updateFlowcell(event.dataTransfer.getData('name'))
+      this.hover = false
     }
   },
   computed: {
     // Determines the flowcells x/y coordinates
     getMatrix () {
-      return 'matrix(1,0,0,1,'+this.xPos+',135)'
+      let xPos = (this.position - 1) * 80 + 240
+      return 'matrix(1,0,0,1,'+xPos+',135)'
     },
     status () {
-      if (this.libraryName) {
+      if (this.library.name) {
         return 'filled'
       } else {
         return 'empty'
       }
-    }
-  },
-  apollo: {
-    libraryName: {
-      query: GET_CLIENT_FLOWCELL_LIBRARY_NAME,
-      variables () {
-        return {
-          position: this.position,
-        }
-      },
-      pollInterval: 100
+    },
+    elementId () {
+      return `libraryNameInput-${this.position}`
     }
   }
 }
@@ -82,10 +89,29 @@ export default {
     stroke: rgb(0, 0, 0);
   }
 
-  .filled{
+  img.empty {
+    display: none;
+  }
+
+  .filled {
     fill:green;
   }
   .empty {
     fill: red;
   }
+  .active {
+    stroke: white;
+  }
+  input {
+    transform: rotate(90deg);
+    -webkit-transform: rotate(90deg);
+    -moz-transform: rotate(90deg);
+    -ms-transform: rotate(90deg);
+    -o-transform: rotate(90deg);
+    width:170px;
+    position: absolute;
+    left: -50px;
+    top: 100px;
+  }
+
 </style>

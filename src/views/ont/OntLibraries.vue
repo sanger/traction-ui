@@ -11,6 +11,8 @@
       selectable
       select-mode="single"
       @row-selected="onRowSelected"
+      :sort-by.sync="sortBy"
+      :sort-desc.sync="sortDesc"
       sticky-header
       show-empty>
     </b-table>
@@ -59,6 +61,8 @@ export default {
         { key: 'createdAt', label: 'Created at', sortable: true},
       ],
       selected: [],
+      sortBy: 'createdAt',
+      sortDesc: true,
     }
   },
   apollo: {
@@ -73,17 +77,19 @@ export default {
   },
   methods: {
     handleLibraryDelete() {
+      const libraryName = this.selected[0].name
       this.$apollo.mutate({
         mutation: DELETE_ONT_LIBRARY,
         variables: {
-          libraryName: this.selected[0].name
+          libraryName
         }
       }).then(data => {
         let response = data.data.deleteOntLibrary
         if (response.errors.length > 0) {
-          this.showAlert('Failure: ' + data.data.deleteOntLibrary.errors.join(', '), 'danger')
+          this.showAlert(`Failure deleting library '${libraryName}': ` + data.data.deleteOntLibrary.errors.join(', '), 'danger')
         } else {
-          this.showAlert('Library was successully deleted', 'success')
+          this.showAlert(`Library '${libraryName}' was successully deleted`, 'success')
+          this.refetchLibraries()
         }
       })
     },

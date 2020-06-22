@@ -3,9 +3,12 @@ import OntTube from '@/components/ont/OntTube'
 import { mount, localVue } from '../../testHelper'
 
 describe('OntLibraries.vue', () => {
-  let wrapper, librariesData
+  let wrapper, librariesData, props, librariesList
 
   beforeEach(() => {
+    props = {
+      selectedLibraryNames: []
+    }
     librariesData = [
       { id: 1, name: 'TRAC-2-1', plate_barcode: 'TRAC-1-1', poolSize: 1, wellRange: 'A1-H3', tag_set: 24 },
       { id: 2, name: 'TRAC-2-2', plate_barcode: 'TRAC-1-1', poolSize: 2, wellRange: 'A4-H6', tag_set: 24 },
@@ -16,12 +19,15 @@ describe('OntLibraries.vue', () => {
 
     wrapper = mount(OntRunLibrariesList, {
       localVue,
+      propsData: props,
       data() {
         return {
           libraries: librariesData
         }
       },
     })
+
+    librariesList = wrapper.vm
   })
 
   it('will have a name', () => {
@@ -40,5 +46,21 @@ describe('OntLibraries.vue', () => {
     it('has a OntTube component', () => {
       expect(wrapper.contains(OntTube)).toBe(true)
     })
+  })
+
+  describe('#drop', () => {
+    let mockEvent, flowcellPosition
+
+    beforeEach(() => {
+      librariesList.updateFlowcell = jest.fn()
+      flowcellPosition = 1
+      mockEvent = { dataTransfer: { getData() { return flowcellPosition } }, preventDefault: jest.fn() }
+    })
+
+    it('will update the flowcell', async () => {
+      librariesList.drop(mockEvent)
+      expect(librariesList.updateFlowcell).toBeCalledWith(flowcellPosition, '')
+    })
+
   })
 })

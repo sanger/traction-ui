@@ -52,8 +52,8 @@ export default {
         if (response.errors.length > 0) {
           this.$emit('alert', 'Failure: ' + data.data.createOntLibraries.errors.join(', '), 'danger')
         } else {
-          let libraryBarcodes = response.tubes.map(t => t.barcode).join(', ')
-          this.$emit('alert', 'Library(s) were created with barcodes: ' + libraryBarcodes, 'success')
+          let libraryNames = response.tubes.flatMap(t => t.materials.map(m => m.name)).join(', ')
+          this.$emit('alert', 'Library(s) were created with names: ' + libraryNames, 'success')
         }
       })
     }
@@ -66,3 +66,8 @@ export default {
 }
 
 </script>
+<style>
+.b-table-sticky-header{
+  max-height: 500px;
+}
+</style>

@@ -3,7 +3,8 @@
     <b-btn id="pacbioLibraryCreateModal"
            :disabled="disabled"
            v-b-modal.pacbioLibraryModal
-           variant="success">
+           variant="success"
+           @click="show">
       Create Library
     </b-btn>
     <b-modal id="pacbioLibraryModal"
@@ -29,7 +30,11 @@
         <b-form-group id="tag-select-input"
                           label="Tag:"
                           label-for="tag-input">
-          <b-form-select id="tag-input" v-model="library.tag.group_id" :options="tagOptions" class="mb-3" />
+          <b-form-select 
+            id="tag-input" 
+            v-model="library.tag.group_id" 
+            :options="tagOptions" class="mb-3"
+          />
         </b-form-group>
 
         <b-form-group id="input-group-1"
@@ -148,6 +153,9 @@ export default {
       } else {
         this.showAlert(consts.MESSAGE_ERROR_CREATE_LIBRARY_FAILED + response.errors.message, 'danger')
       }
+    },
+    show() {
+      this.library= { tag: {}};
     }
   },
   computed: {
