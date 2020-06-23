@@ -18,7 +18,8 @@ describe('Samples.vue', () => {
       routes: [{ path: '/saphyr/libraries', name: 'SaphyrLibraries', component: Libraries, props: true }]
     })
 
-    wrapper = mount(Samples, { localVue,
+    wrapper = mount(Samples, { 
+      localVue,
       store,
       router,
       stubs: {
@@ -111,6 +112,7 @@ describe('Samples.vue', () => {
 
   describe('printerModal', () => {
     beforeEach(() => {
+      wrapper.setData({ sortDesc: false })
       samples.handlePrintLabel = jest.fn()
     })
 
@@ -118,13 +120,13 @@ describe('Samples.vue', () => {
       samples.selected = [{id: 1}]
       let modal = wrapper.findComponent({ref: 'printerModal'})
       modal.vm.$emit('selectPrinter', 'printer1')
-
       expect(samples.handlePrintLabel).toBeCalledWith('printer1')
     })
   })
 
   describe('enzymeModal', () => {
     beforeEach(() => {
+      wrapper.setData({ sortDesc: false })
       samples.createLibraries = jest.fn()
     })
 

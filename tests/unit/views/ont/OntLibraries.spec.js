@@ -58,6 +58,7 @@ describe('OntLibraries.vue', () => {
 
   describe('printerModal', () => {
     beforeEach(() => {
+      wrapper.setData({ sortDesc: false })
       libraries.handlePrintLabel = jest.fn()
     })
 

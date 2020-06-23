@@ -101,6 +101,7 @@ describe('Libraries.vue', () => {
   // TODO: Why isnt this working
   describe('printerModal', () => {
     beforeEach(() => {
+      wrapper.setData({ sortDesc: false })
       libraries.handlePrintLabel = jest.fn()
     })
 
