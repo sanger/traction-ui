@@ -37,6 +37,7 @@ describe('Reception', () => {
   describe('findSampleExtractionTubes button', () => {
 
     beforeEach(() => {
+      wrapper.setData({ barcodes: 'TRAC-1\nTRAC-2' })
       reception.handleSampleExtractionTubes = jest.fn()
     })
 

@@ -66,6 +66,7 @@ describe('Reception', () => {
 
   describe('createTractionPlates button', () => {
     beforeEach(() => {
+      wrapper.setData({ barcodes: 'DN1234567\n' })
       reception.handleCreateTractionPlates = jest.fn()
     })
 
