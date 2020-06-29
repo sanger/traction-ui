@@ -36,6 +36,7 @@ export default {
     drag (name, event) {
       event.dataTransfer.setDragImage(img, 80, 0)
       event.dataTransfer.setData('libraryName', name)
+      event.dataTransfer.setData('sourceType', 'LIBRARY_LIST')
     }
   },
 }

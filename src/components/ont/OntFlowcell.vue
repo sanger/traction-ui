@@ -43,15 +43,21 @@ export default {
       event.dataTransfer.setData('flowcellPosition', this.position)
       event.dataTransfer.setData('libraryName', this.library.name)
 
+      event.dataTransfer.setData('sourceType', 'FLOWCELL')
+
       this.hover = false
     },
     drop (event) {
       event.preventDefault()
       let libraryName = event.dataTransfer.getData('libraryName')
-
       this.updateFlowcell(this.position, libraryName)
-      this.updateLibraryList(libraryName, true)
 
+      if (event.dataTransfer.getData('sourceType') === 'FLOWCELL') {
+        let flowcellPosition = parseInt(event.dataTransfer.getData('flowcellPosition'))
+        this.updateFlowcell(flowcellPosition, '')
+      } else if (event.dataTransfer.getData('sourceType') === 'LIBRARY_LIST'){
+        this.updateLibraryList(libraryName, true)
+      }
       this.hover = false
     },
   },

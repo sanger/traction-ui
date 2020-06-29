@@ -64,18 +64,25 @@ describe('OntLibraries.vue', () => {
     })
   })
 
-  describe('components', () => {
+  describe('components', () => {  
     it('has a OntTube component', () => {
       expect(wrapper.contains(OntTube)).toBe(true)
     })
   })
 
   describe('#drop', () => {
-    let mockEvent, flowcellPosition //, libraryName
+    let mockEvent, flowcellPosition, libraryName
 
     beforeEach(() => {
-      flowcellPosition = 1  
-      mockEvent = { dataTransfer: { getData() { return flowcellPosition } }, preventDefault: jest.fn() }
+      libraryName = 'TRAC-1'
+      flowcellPosition = 1
+
+      let getData = jest.fn()
+        .mockImplementationOnce(() => flowcellPosition)
+        .mockImplementation(() => libraryName)
+
+      mockEvent = { dataTransfer: { getData() { return getData() } }, preventDefault: jest.fn() }
+      
       librariesList.updateFlowcell = jest.fn()
       librariesList.updateLibraryList = jest.fn()
     })
@@ -87,8 +94,7 @@ describe('OntLibraries.vue', () => {
 
     it('will call updateLibraryList', () => {
       librariesList.drop(mockEvent)
-      // TODO: figure out how to get libraryName from getData()
-      expect(librariesList.updateLibraryList).toBeCalledWith(1, false)
+      expect(librariesList.updateLibraryList).toBeCalledWith(libraryName, false)
     })
 
     it('will show the image', () => {
@@ -123,5 +129,4 @@ describe('OntLibraries.vue', () => {
       expect(mutate).toBeCalled()
     })
   })
-
 })
