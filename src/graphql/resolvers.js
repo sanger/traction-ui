@@ -5,14 +5,14 @@ export default {
   Mutation: {
     setRun(_, { id, flowcells }, { cache }) {
       const data = cache.readQuery({ query: GET_CLIENT_RUN })
+      let __typename = data.run.__typename
       data.run.id = id
       data.run.flowcells = flowcells
       cache.writeQuery({ query: GET_CLIENT_RUN, data })
-      return { id, flowcells }
+      return { __typename, id, flowcells }
     },
     updateFlowcell(_, { position, libraryName }, { cache }) {
       const data = cache.readQuery({ query: GET_CLIENT_RUN })
-
       const currentFlowcell = data.run.flowcells.find(flowcell => flowcell.position === position)
       if (currentFlowcell) {
         currentFlowcell.library.name = libraryName
@@ -28,9 +28,10 @@ export default {
           }
         )
       }
-
+      let __typename = data.run.__typename
       cache.writeQuery({ query: GET_CLIENT_RUN, data })
-      return { position, libraryName }
+      // return { position, libraryName }
+      return { __typename, position, libraryName }
     },
     setLibraries(_, { libraries }, { cache }) {
       const data = cache.readQuery({ query: GET_CLIENT_LIBRARIES })

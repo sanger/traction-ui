@@ -4,6 +4,7 @@
 
     <div>
       <b-row class="create-run-button">
+        <b-button id="cancel-button" @click="redirectToRuns()">Cancel</b-button>
         <b-button :id="currentAction.id" :variant="currentAction.variant" @click="runAction()">{{ currentAction.label}}</b-button>
       </b-row>
       <b-row class="clearboth">
@@ -139,6 +140,9 @@ export default {
     },
     redirectToRun(id) {
       this.$router.push({ path: `/ont/run/${id}`}, () => {})
+    },
+    redirectToRuns() {
+      this.$router.push({ path: `/ont/runs` })
     },
     updateFlowcell (position, libraryName) {
       this.$apollo.mutate({

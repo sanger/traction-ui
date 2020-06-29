@@ -68,6 +68,11 @@ export default {
   computed: {
     unselectedLibraries () {
       return this.libraries.filter(library => !library.assignedToFlowcell)
+      // if (this.libraries) {
+      //   let libraries = this.libraries.filter(library => !this.isLibrarySelected(library))
+      //   return libraries.reverse()
+      // }
+      // return []
     }
   },
   created () {

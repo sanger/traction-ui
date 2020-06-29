@@ -51,7 +51,7 @@
         </b-button>
 
         <a :id="generateId('generate-sample-sheet', row.item.id)"
-            :href="generateSampleSheetPath(row.item.id)">
+            :href="generateSampleSheetPath(row.item.id)" v-show="row.item.all_wells_have_libraries">
             Generate Sample Sheet
         </a>
       </template>
