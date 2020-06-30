@@ -6,7 +6,7 @@
       <b-button id="backToRunsButton" class="float-right">Back</b-button>
     </router-link>
 
-    <b-button v-if="currentAction.id == 'create'" variant="primary" class="float-right" @click="resetRun()" id="reset">Reset</b-button>
+    <b-button v-if="this.newRecord" variant="primary" class="float-right" @click="resetRun()" id="reset">Reset</b-button>
     <b-button class="float-right" :id="currentAction.id" :variant="currentAction.variant" @click="runAction">{{ currentAction.label}}</b-button>
 
     <br>

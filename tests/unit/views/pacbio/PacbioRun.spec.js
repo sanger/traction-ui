@@ -211,25 +211,12 @@ describe('Run.vue', () => {
     describe('#reset', () => {
 
         beforeEach(() => {
-            wrapper = shallowMount(PacbioRun, {
-            store, 
-            router,
-            localVue,
-            propsData: { id: 1},
-            methods: {
-               provider() { return }
-            }
-        })
-        pacbioRun = wrapper.vm
-
             pacbioRun.showAlert = jest.fn()
             pacbioRun.newRun = jest.fn()
-            pacbioRun.redirectToRuns = jest.fn()
         })
 
         it('calls newRun', async () => {
             pacbioRun.newRun.mockReturnValue([])
-
             pacbioRun.resetRun()
             expect(pacbioRun.newRun).toBeCalled()
         })
