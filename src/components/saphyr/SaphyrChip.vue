@@ -1,8 +1,8 @@
 <template>
   <b-container class="chip">
 
-    <b-form-input :value="chipBarcode" @change="setBarcode" id="barcode" placeholder="Chip barcode" type="text"/>
-    <flowcell v-for="(flowcell, index) in flowcells" v-bind="flowcell" v-bind:key="index" v-bind:index="index" @alert="alert"></flowcell>
+    <b-form-input :value="chip.barcode" @change="setBarcode" id="barcode" placeholder="Chip barcode" type="text"/>
+    <flowcell v-for="(flowcell, index) in chip.flowcells" v-bind="flowcell" v-bind:key="index" v-bind:index="index" @alert="alert"></flowcell>
 
   </b-container>
 </template>
@@ -11,10 +11,15 @@
 
 import Flowcell from '@/components/saphyr/SaphyrFlowcell'
 import { createNamespacedHelpers } from 'vuex'
-const { mapGetters, mapState, mapMutations } = createNamespacedHelpers('traction/saphyr/runs')
+const { mapMutations } = createNamespacedHelpers('traction/saphyr/runs')
 
 export default {
   name: 'SaphyrChip',
+  props: {
+    chip: {
+      type: [Object]
+    }
+  },
   methods: {
     async setBarcode(barcode) {
       let isValid = this.isChipBarcodeValid(barcode)
@@ -30,20 +35,11 @@ export default {
       return true
     },
     ...mapMutations([
-      'setChipBarcode',
+      'setChipBarcode'
     ]),
     alert (message, type) {
       this.$emit('alert', message, type)
     },
-  },
-  computed: {
-    ...mapGetters([
-      'currentRun'
-    ]),
-    ...mapState({
-      chipBarcode: state => state.currentRun.chip.barcode,
-      flowcells: state => state.currentRun.chip.flowcells,
-    })
   },
   components: {
     Flowcell

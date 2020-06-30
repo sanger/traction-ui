@@ -11,7 +11,7 @@
 <script>
 
 import { createNamespacedHelpers } from 'vuex'
-const { mapGetters, mapState, mapActions , mapMutations} = createNamespacedHelpers('traction/saphyr/runs')
+const { mapState, mapActions , mapMutations} = createNamespacedHelpers('traction/saphyr/runs')
 
 export default {
   name: 'SaphyrFlowcell',
@@ -49,9 +49,6 @@ export default {
     },
   },
   computed: {
-    ...mapGetters([
-      'currentRun'
-    ]),
     ...mapState({
       libraryBarcode (state) {
         return state.currentRun.chip.flowcells[this.index].library.barcode
