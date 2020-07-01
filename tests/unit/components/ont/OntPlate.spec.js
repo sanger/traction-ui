@@ -1,6 +1,4 @@
-import Plate96SVG from '@/components/svg/Plate96SVG'
 import OntPlate from '@/components/ont/OntPlate'
-import OntWell from '@/components/ont/OntWell'
 import PlateMap from '@/config/PlateMap'
 import { localVue, mount } from '../../testHelper'
 
@@ -52,10 +50,6 @@ describe('OntPlate.vue', () => {
     plate = wrapper.vm
   })
 
-  it('will have a name', () => {
-    expect(wrapper.name()).toEqual('OntPlate')
-  })
-
   it('will be passed a plate as a prop, with an id and barcode', () => {
     expect(plate.plate.id).toBeDefined()
     expect(plate.plate.barcode).toBeDefined()
@@ -77,17 +71,17 @@ describe('OntPlate.vue', () => {
 
   describe('components', () => {
     it('has a OntWell component', () => {
-      expect(wrapper.contains(OntWell)).toBe(true)
+      expect(wrapper.findComponent({ref: 'ontWell'})).toBeTruthy()
     })
 
     it('has a Plate96SVG component', () => {
-      expect(wrapper.contains(Plate96SVG)).toBe(true)
+      expect(wrapper.findComponent({ref: 'plate96Svg'})).toBeTruthy()
     })  
   })
 
   describe('SVG wells', () => {
     it('has the correct number of wells', () => {
-      let ellipses = wrapper.findAll(OntWell)
+      let ellipses = wrapper.findAllComponents({ref: 'ontWell'})
       expect(ellipses.length).toEqual(Object.keys(PlateMap.wells).length)
     })
   })

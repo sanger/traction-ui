@@ -1,50 +1,18 @@
-import { mount, localVue, Vuex } from '../../testHelper'
+import { mount, localVue, store } from '../../testHelper'
 import Chip from '@/components/saphyr/SaphyrChip'
 import * as Run from '@/api/SaphyrRun'
 
 describe('Chip', () => {
 
-  let wrapper, chip, run, actions
+  let wrapper, chip, run
 
   beforeEach(() => {
     run = Run.build()
-        
-    actions = {
-      updateChipBarcode: jest.fn()
-    }
 
-    let store = new Vuex.Store({
-      modules: {
-        traction: {
-          namespaced: true,
-          modules: {
-            saphyr: {
-              namespaced: true,
-              modules: {
-                runs: {
-                  namespaced: true,
-                  state: {
-                    currentRun: run
-                  },
-                  getters: {
-                    currentRun: state => state.currentRun,
-                  },
-                  actions
-                }
-              }
-
-            }
-          }
-        }
-      }
-    })
+    store.commit('traction/saphyr/runs/setCurrentRun', run)
 
     wrapper = mount(Chip, { localVue, store } )
     chip = wrapper.vm
-  })
-
-  it('will have a name', () => {
-    expect(wrapper.name()).toEqual('SaphyrChip')
   })
 
   it('can have state', () => {

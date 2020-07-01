@@ -1,13 +1,19 @@
 import OntLibraries from '@/views/ont/OntLibraries'
 import { mount, localVue } from '../../testHelper'
-import PrinterModal from '@/components/PrinterModal'
 
 describe('OntLibraries.vue', () => {
-  let wrapper, libraries, librariesData, mutate, refetchLibraries
+  let wrapper, libraries, librariesData, mutate, refetchLibraries, mockApollo
 
   beforeEach(() => {
     mutate = jest.fn()
-    refetchLibraries = jest.fn()
+    mockApollo = {
+      mutate: mutate,
+      queries: {
+        libraries: {
+          refetch: jest.fn()
+        }
+      }
+    }
 
     librariesData = [
       { id: 1, tube_barcode: 'TRAC-2-1', plate_barcode: 'TRAC-1-1', poolSize: 1, wellRange: 'A1-H3', tag_set: 24 },
@@ -19,6 +25,9 @@ describe('OntLibraries.vue', () => {
 
     wrapper = mount(OntLibraries, {
       localVue,
+      mocks: {
+        $apollo: mockApollo
+      },
       stubs: {
         OntPlate: true,
         PrinterModal: true
@@ -28,20 +37,10 @@ describe('OntLibraries.vue', () => {
           libraries: librariesData,
         }
       },
-      mocks: {
-        $apollo: {
-          mutate: mutate
-        }
-      },
-      methods: {
-        refetchLibraries: refetchLibraries
-      }
     })
+    
     libraries = wrapper.vm
-  })
-
-  it('will have a name', () => {
-    expect(wrapper.name()).toEqual('OntLibraries')
+    refetchLibraries = mockApollo.queries.libraries.refetch
   })
 
   it('will have fields', () => {
@@ -50,7 +49,7 @@ describe('OntLibraries.vue', () => {
   })
 
   it('will have a table', () => {
-    expect(wrapper.contains('table')).toBe(true)
+    expect(wrapper.find('table').exists()).toBeTruthy()
   })
 
   it('will have a table with libraries', () => {
@@ -59,12 +58,13 @@ describe('OntLibraries.vue', () => {
 
   describe('printerModal', () => {
     beforeEach(() => {
+      wrapper.setData({ sortDesc: false })
       libraries.handlePrintLabel = jest.fn()
     })
 
     it('passes selected printer to function on emit event', () => {
       libraries.selected = [{id: 1}]
-      let modal = wrapper.find(PrinterModal)
+      let modal = wrapper.findComponent({ref: 'printerModal'})
       modal.vm.$emit('selectPrinter', 'printer1')
 
       expect(libraries.handlePrintLabel).toBeCalledWith('printer1')

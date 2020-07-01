@@ -30,10 +30,6 @@ describe('OntFlowcell.vue', () => {
     flowcell = wrapper.vm
   })
 
-  it('will have a name', () => {
-    expect(wrapper.name()).toEqual('OntFlowcell')
-  })
-
   it('will have an element id', () => {
     expect(flowcell.elementId).toEqual('libraryNameInput-1')
   })

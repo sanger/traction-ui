@@ -1,13 +1,10 @@
 import Samples from '@/views/saphyr/SaphyrSamples'
-import EnzymeModal from '@/components/saphyr/SaphyrEnzymeModal'
-import PrinterModal from '@/components/PrinterModal'
-import { mount, localVue, Data } from '../../testHelper'
+import { mount, localVue, store, Data } from '../../testHelper'
 import Libraries from '@/views/saphyr/SaphyrLibraries'
 import VueRouter from 'vue-router'
 import Alert from '@/components/Alert'
 import * as consts from '@/consts/consts'
 import Response from '@/api/Response'
-import store from '@/store'
 
 describe('Samples.vue', () => {
 
@@ -21,7 +18,8 @@ describe('Samples.vue', () => {
       routes: [{ path: '/saphyr/libraries', name: 'SaphyrLibraries', component: Libraries, props: true }]
     })
 
-    wrapper = mount(Samples, { localVue,
+    wrapper = mount(Samples, { 
+      localVue,
       store,
       router,
       stubs: {
@@ -30,9 +28,6 @@ describe('Samples.vue', () => {
         Modal: true,
         EnzymeModal: true
       },
-      methods: {
-        provider () { return }
-      }
     })
 
     samples = wrapper.vm
@@ -40,7 +35,7 @@ describe('Samples.vue', () => {
 
   describe('alert', () => {
     it('has a alert', () => {
-      expect(wrapper.contains(Alert)).toBe(true)
+      expect(wrapper.findComponent({ref: 'alert'})).toBeTruthy()
     })
   })
 
@@ -108,32 +103,36 @@ describe('Samples.vue', () => {
   describe('#showAlert', () => {
     it('passes the message to function on emit event', () => {
       samples.showAlert('show this message', 'danger')
-      expect(wrapper.find(Alert).html()).toMatch('show this message')
+      wrapper.vm.$nextTick(() => {
+        expect(wrapper.findComponent({ref: 'alert'}).html()).toMatch('show this message')
+      })
+      
     })
   })
 
   describe('printerModal', () => {
     beforeEach(() => {
+      wrapper.setData({ sortDesc: false })
       samples.handlePrintLabel = jest.fn()
     })
 
     it('passes selected printer to function on emit event', () => {
       samples.selected = [{id: 1}]
-      let modal = wrapper.find(PrinterModal)
+      let modal = wrapper.findComponent({ref: 'printerModal'})
       modal.vm.$emit('selectPrinter', 'printer1')
-
       expect(samples.handlePrintLabel).toBeCalledWith('printer1')
     })
   })
 
   describe('enzymeModal', () => {
     beforeEach(() => {
+      wrapper.setData({ sortDesc: false })
       samples.createLibraries = jest.fn()
     })
 
     it('passes selected enzyme id to function on emit event', () => {
       samples.selected = [{id: 1}]
-      let modal = wrapper.find(EnzymeModal)
+      let modal = wrapper.findComponent({ref: 'enzymeModal'})
       modal.vm.$emit('selectEnzyme', 2)
 
       expect(samples.createLibraries).toBeCalledWith(2)

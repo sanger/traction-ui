@@ -3,7 +3,7 @@
    <div class="ont-run-libraries" v-on:drop="drop" v-on:dragover="allowDrop" v-on:dragleave="endDrop" v-bind:class="{hover: hover}">
     
     <b-list-group class="ont-run-libraries-list-group" >
-      <OntTube v-for="library in unselectedLibraries" v-bind:key="library.id" v-bind="library">
+      <OntTube v-for="library in unselectedLibraries" v-bind:key="library.id" v-bind="library" ref='ontTube'>
       </OntTube>
     </b-list-group>
   </div>

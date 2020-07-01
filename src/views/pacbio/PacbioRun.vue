@@ -12,14 +12,14 @@
     <br>
 
     <div>
-      <pacbioRunInfo></pacbioRunInfo>
+      <pacbioRunInfo ref='pacbioRunInfo'></pacbioRunInfo>
       <br>
       <b-row>
         <b-col cols="6">
-          <pacbioLibrariesList></pacbioLibrariesList>
+          <pacbioLibrariesList ref='pacbioLibrariesList'></pacbioLibrariesList>
         </b-col>
         <b-col>
-          <Plate v-if="this.currentRun.id" @alert="showAlert"></Plate>
+          <Plate v-if="this.currentRun.id" @alert="showAlert" ref='plate'></Plate>
         </b-col>
       </b-row>
     </div>

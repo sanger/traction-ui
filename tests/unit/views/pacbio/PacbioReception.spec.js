@@ -1,10 +1,9 @@
 import Reception from '@/views/pacbio/PacbioReception'
-import { mount, localVue, Vuex, Data } from '../../testHelper'
+import { mount, localVue, store, Data } from '../../testHelper'
 import Response from '@/api/Response'
 import Samples from '@/views/pacbio/PacbioSamples'
 import Libraries from '@/views/pacbio/PacbioLibraries'
 import VueRouter from 'vue-router'
-import Alert from '@/components/Alert'
 
 describe('Reception', () => {
 
@@ -25,7 +24,7 @@ describe('Reception', () => {
 
   describe('alert', () => {
     it('has a alert', () => {
-      expect(wrapper.contains(Alert)).toBe(true)
+      expect(wrapper.findComponent({ref: 'alert'})).toBeTruthy()
     })
   })
 
@@ -47,10 +46,12 @@ describe('Reception', () => {
   describe('findSampleExtractionTubes button', () => {
 
     beforeEach(() => {
+      wrapper.setData({ barcodes: 'TRAC-1\nTRAC-2' })
       reception.handleSampleExtractionTubes = jest.fn()
     })
 
-    it('calls the right function', () => {
+    it('calls the right function', async () => {
+     
       let input = wrapper.find('textarea')
       input.setValue(barcodes)
       let button = wrapper.find('#findSampleExtractionTubes')
@@ -64,16 +65,8 @@ describe('Reception', () => {
     let failedResponse
 
     beforeEach(() => {
-      let store = new Vuex.Store({
-        modules: {
-          sampleExtraction: {
-            namespaced: true,
-            state: {
-              sampleExtractionTubes: []
-            }
-          }
-        }
-      })
+   
+      store.commit('sampleExtraction/setSampleExtractionTubes', [])
 
       wrapper = mount(Reception, { localVue, store } )
       reception = wrapper.vm
@@ -110,7 +103,9 @@ describe('Reception', () => {
   describe('#showAlert', () => {
     it('passes the message to function on emit event', () => {
       reception.showAlert('show this message')
-      expect(wrapper.find(Alert).html()).toMatch('show this message')
+      wrapper.vm.$nextTick(() => {
+        expect(wrapper.findComponent({ref: 'alert'}).html()).toMatch('show this message')
+      })
     })
   })
 

@@ -1,6 +1,4 @@
 import OntPlates from '@/views/ont/OntPlates'
-import OntPlate from '@/components/ont/OntPlate'
-import Alert from '@/components/Alert'
 import { mount, localVue } from '../../testHelper'
 
 describe('OntPlates.vue', () => {
@@ -17,20 +15,22 @@ describe('OntPlates.vue', () => {
       stubs: {
         OntPlate: true
       },
+      mocks: {
+        $apollo: {
+          queries: {
+            plates: {
+              refetch: jest.fn()
+            },
+          },
+        },
+      },
       data() {
         return {
           plates: platesData
         }
-      },
-      methods: {
-        refetchPlates() { return }
       }
     })
     plates = wrapper.vm
-  })
-
-  it('will have a name', () => {
-    expect(wrapper.name()).toEqual('OntPlates')
   })
 
   it('will have fields', () => {
@@ -39,12 +39,12 @@ describe('OntPlates.vue', () => {
 
   describe('components', () => {
     it('has a Alert component', () => {
-      expect(wrapper.contains(Alert)).toBe(true)
+      expect(wrapper.findComponent({ref: 'alert'})).toBeTruthy()
     })
   })
 
   it('will have a table', () => {
-    expect(wrapper.contains('table')).toBe(true)
+    expect(wrapper.find('table').exists()).toBeTruthy()
   })
 
   it('will have a table with plates', () => {
@@ -59,10 +59,10 @@ describe('OntPlates.vue', () => {
       expect(button.text()).toEqual('Show Plate')
     })
 
-    it('has a OntPlate component on button click', () => {
+    it('has a OntPlate component on button click', async () => {
       button = wrapper.find('#details-btn-1')
-      button.trigger('click')
-      expect(wrapper.contains(OntPlate)).toBe(true)
+      await button.trigger('click')
+      expect(wrapper.findComponent({ref: 'ontPlate'}).exists()).toBeTruthy()
     })
   })
 

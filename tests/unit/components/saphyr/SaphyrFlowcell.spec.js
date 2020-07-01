@@ -41,10 +41,6 @@ describe('Flowcell', () => {
     flowcell = wrapper.vm
   })
 
-  it('will have a name', () => {
-    expect(wrapper.name()).toEqual('SaphyrFlowcell')
-  })
-
   it('can have an index', () => {
     expect(flowcell.index).toEqual(props.index)
   })
@@ -62,7 +58,7 @@ describe('Flowcell', () => {
   })
 
   it('can have a library', () => {
-    expect(wrapper.contains('#libraryBarcode')).toBeTruthy()
+    expect(wrapper.find('#libraryBarcode').exists()).toBeTruthy()
   })
 
   describe('setBarcode', () => {
