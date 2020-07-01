@@ -4,6 +4,7 @@ import flushPromises from 'flush-promises'
 import EnzymesJson from '../../../data/enzymes'
 import Response from '@/api/Response'
 
+// TODO: Refactor to remove deprecation message.
 describe('SaphyrEnzymeModal.vue', () => {
 
   let wrapper, enzymeModal
