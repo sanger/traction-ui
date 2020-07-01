@@ -1,7 +1,6 @@
-import { mount, localVue } from '../../testHelper'
+import { mount, localVue, store } from '../../testHelper'
 import WellModal from '@/components/pacbio/PacbioWellModal'
 import * as Run from '@/api/PacbioRun'
-import store from '@/store'
 
 describe('PacbioRunInfo', () => {
   let modal, wrapper, props, storeWell, run

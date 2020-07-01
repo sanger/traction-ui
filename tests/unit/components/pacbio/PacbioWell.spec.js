@@ -1,7 +1,6 @@
-import { mount, localVue } from '../../testHelper'
+import { mount, localVue, store } from '../../testHelper'
 import Well from '@/components/pacbio/PacbioWell'
 import * as Run from '@/api/PacbioRun'
-import store from '@/store'
 
 describe('Well.vue', () => {
 

@@ -1,7 +1,6 @@
-import { mount, localVue, Data } from '../../testHelper'
+import { mount, localVue, Data, store } from '../../testHelper'
 import PacbioSampleMetadataModal from '@/components/pacbio/PacbioSampleMetadataModal'
 import Response from '@/api/Response'
-import store from '@/store'
 
 describe('PacbioSampleMetadataModal.vue', () => {
 

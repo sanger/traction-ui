@@ -26,10 +26,6 @@ describe('Reception', () => {
     reception = wrapper.vm
   })
 
-  it('will have a name', () => {
-    expect(wrapper.name()).toEqual('Reception')
-  })
-
   it('will have some barcodes', () => {
     wrapper.setData({ barcodes: barcodes })
     expect(reception.barcodes.length).toEqual(barcodes.length)

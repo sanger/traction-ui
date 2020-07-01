@@ -18,9 +18,6 @@ describe('PacbioLibraryCreateModal.vue', () => {
             localVue,
             store,
             propsData: props,
-            // methods: {
-            //     provider() { return }
-            // }
         })
         modal = wrapper.vm
     })

@@ -1,6 +1,5 @@
 import OntPlates from '@/views/ont/OntPlates'
 import { mount, localVue } from '../../testHelper'
-import flushPromises from 'flush-promises'
 
 describe('OntPlates.vue', () => {
   let wrapper, plates, platesData
@@ -62,8 +61,7 @@ describe('OntPlates.vue', () => {
 
     it('has a OntPlate component on button click', async () => {
       button = wrapper.find('#details-btn-1')
-      button.trigger('click')
-      await flushPromises()
+      await button.trigger('click')
       expect(wrapper.findComponent({ref: 'ontPlate'}).exists()).toBeTruthy()
     })
   })

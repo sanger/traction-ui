@@ -73,7 +73,7 @@
     <div class="clearfix">
       <printerModal class="float-left"
                     @selectPrinter="handlePrintLabel"
-                    :disabled="this.selected.length === 0" ref='print' >
+                    :disabled="this.selected.length === 0" ref='printerModal' >
       </printerModal>
 
       <PacbioLibraryCreateModal :selectedSamples="selected"

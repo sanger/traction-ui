@@ -70,7 +70,7 @@ describe('Samples.vue', () => {
 
     it('passes selected printer to function on emit event', () => {
       samples.selected = [{ id: 1 }]
-      let modal = wrapper.findComponent({ref: 'print'})
+      let modal = wrapper.findComponent({ref: 'printerModal'})
       modal.vm.$emit('selectPrinter', 'printer1')
       expect(samples.handlePrintLabel).toBeCalledWith('printer1')
     })
