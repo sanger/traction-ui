@@ -38,7 +38,7 @@ const validateLibraryTube = (tube) => {
     return true
 }
 
-const editRun = async ({ getters, commit }, runId) => {
+const editRun = async ({ commit, getters }, runId) => {
     let request = getters.runRequest
     let promise = request.find(runId)
     let response = await handlePromise(promise)
