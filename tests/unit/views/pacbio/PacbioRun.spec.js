@@ -123,9 +123,14 @@ describe('Run.vue', () => {
         })
 
         describe('Reset button', () => {
-            it('will only show if the record is new', () => {
+            it('will show if the record is new', () => {
                 wrapper.setData({ newRecord: true })
                 expect(wrapper.find('#reset').exists()).toBeTruthy()
+            })
+
+            it('will not show if the record is existing', () => {
+                wrapper.setData({ newRecord: false })
+                expect(wrapper.find('#reset').exists()).toBeFalsy()
             })
         })
     })
@@ -219,6 +224,7 @@ describe('Run.vue', () => {
             pacbioRun.newRun.mockReturnValue([])
             pacbioRun.resetRun()
             expect(pacbioRun.newRun).toBeCalled()
+            expect(pacbioRun.showAlert).toBeCalledWith("Run has been reset", 'success')
         })
     })
 })
