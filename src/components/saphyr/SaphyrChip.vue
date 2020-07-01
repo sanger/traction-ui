@@ -17,7 +17,8 @@ export default {
   name: 'SaphyrChip',
   props: {
     chip: {
-      type: [Object]
+      type: Object,
+      required: true
     }
   },
   methods: {
