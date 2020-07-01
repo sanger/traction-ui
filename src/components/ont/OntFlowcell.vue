@@ -8,7 +8,7 @@
     <foreignObject width="70" height="227">
       <div draggable="true" v-on:dragstart="drag(library.name, $event)">
         <b-form-input placeholder="Name" :id="elementId"  @change="updateFlowcell($event)" :value="library.name"></b-form-input>
-        <img left src="/tube.png" height="30" draggable="false" :class="status"/>
+        <b-img right src="/tube.png" height="30" draggable="false" :class="status"/>
       </div>
     </foreignObject>
   </g>
