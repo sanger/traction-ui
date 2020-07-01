@@ -13,15 +13,25 @@ describe('OntHeronRuns.vue', () => {
 
     wrapper = mount(OntHeronRuns, {
       localVue,
-      methods: {
-        getRuns() { return runsData }
+      // methods: {
+      //   getRuns() { return runsData }
+      // },
+      mocks: {
+        $apollo: {
+          queries: {
+            runs: {
+              refetch: jest.fn()
+            },
+          },
+        },
+      },
+      data() {
+        return {
+          runs: runsData
+        }
       }
     })
     runs = wrapper.vm
-  })
-
-  it('will have a name', () => {
-    expect(wrapper.name()).toEqual('OntHeronRuns')
   })
 
   it('will have fields', () => {
@@ -30,7 +40,7 @@ describe('OntHeronRuns.vue', () => {
   })
 
   it('will have a table', () => {
-    expect(wrapper.contains('table')).toBe(true)
+    expect(wrapper.find('table').exists()).toBeTruthy()
   })
 
   it('will have a table with runs', () => {

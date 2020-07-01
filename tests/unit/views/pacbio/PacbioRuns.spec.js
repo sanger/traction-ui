@@ -1,10 +1,8 @@
 import PacbioRuns from '@/views/pacbio/PacbioRuns'
 import PacbioRun from '@/views/pacbio/PacbioRun'
-import { mount, localVue, Data } from '../../testHelper'
+import { mount, localVue, store, Data } from '../../testHelper'
 import Response from '@/api/Response'
-import Alert from '@/components/Alert'
 import VueRouter from 'vue-router'
-import store from '@/store'
 
 describe('Runs.vue', () => {
 
@@ -24,8 +22,9 @@ describe('Runs.vue', () => {
 
     store.commit('traction/pacbio/runs/setRuns', mockRuns)
 
-    wrapper = mount(PacbioRuns, { store, router, localVue, methods: { provider() { return } } })
+    wrapper = mount(PacbioRuns, { store, router, localVue })
     runs = wrapper.vm
+    runs.provider = jest.fn()
   })
 
   describe('created hook', () => {
@@ -36,12 +35,12 @@ describe('Runs.vue', () => {
 
   describe('alert', () => {
     it('has a alert', () => {
-      expect(wrapper.contains(Alert)).toBe(true)
+      expect(wrapper.findComponent({ref: 'alert'})).toBeTruthy
     })
   })
   describe('building the table', () => {
     it('exists', () => {
-      expect(wrapper.contains('table')).toBe(true)
+      expect(wrapper.find('table').exists()).toBeTruthy
     })
 
     it('contains the correct data', async () => {
@@ -52,7 +51,7 @@ describe('Runs.vue', () => {
   describe('new run button', () => {
 
     it('contains a create new run button', () => {
-      expect(wrapper.contains('button')).toBe(true)
+      expect(wrapper.find('button').exists()).toBeTruthy()
     })
 
     it('will redirect to the run when newRun is clicked', async () => {
@@ -176,13 +175,22 @@ describe('Runs.vue', () => {
 
   describe('sorting', () => {
     it('will sort the runs by created at', () => {
-      expect(wrapper.find('tbody').findAll('tr').at(0).text()).toMatch(/Sequel II/)
+        expect(wrapper.find('tbody').findAll('tr').at(0).text()).toMatch(/Sequel II/)
     })
   })
 
   describe('filtering runs', () => {
     beforeEach(() => {
-      wrapper.setData({filter: mockRuns[0].name})
+      wrapper = mount(PacbioRuns, {
+        store,
+        localVue,
+        data() {
+          return {
+            filter: mockRuns[0].name
+          }
+        }
+      })
+      wrapper.vm.provider = jest.fn()
     })
 
     it('will filter the runs in the table', () => {
@@ -194,13 +202,26 @@ describe('Runs.vue', () => {
   describe('#showAlert', () => {
     it('emits an event with the message', () => {
       runs.showAlert(/show this message/)
-      expect(wrapper.find(Alert).text()).toMatch(/show this message/)
+
+      wrapper.vm.$nextTick(() => {
+        expect(wrapper.findComponent({ref: 'alert'}).text()).toMatch(/show this message/)
+      })
     })
   })
 
   describe('pagination', () => {
     beforeEach(() => {
-      wrapper.setData({perPage: 2, currentPage: 1})
+      wrapper = mount(PacbioRuns, {
+        store,
+        localVue,
+        data() {
+          return {
+            perPage: 2,
+            currentPage: 1
+          }
+        }
+      })
+      wrapper.vm.provider = jest.fn()
     })
 
     it('will paginate the runs in the table', () => {
@@ -258,7 +279,7 @@ describe('Runs.vue', () => {
 
     it('calls setRuns unsuccessfully', () => {
       runs.startRun.mockImplementation(() => {
-        throw Error('Raise this error')
+          throw Error('Raise this error')
       })
       runs.updateRun('start', 1)
       expect(runs.showAlert).toBeCalled()
@@ -266,34 +287,19 @@ describe('Runs.vue', () => {
   })
 
   describe('generate sample sheet link', () => {
-
     let link, id
 
-    describe('when all of the wells have libraries', () => {
-      beforeEach(() => {
-        id = 1
-        link = wrapper.find('#generate-sample-sheet-' + id)
-      })
-
-      it('exists', () => {
-        expect(link).toBeTruthy()
-      })
-
-      it('has the correct href link', () => {
-        expect(link.attributes("href")).toBe(process.env.VUE_APP_TRACTION_BASE_URL + "/v1/pacbio/runs/" + id + "/sample_sheet")
-      })
+    beforeEach(() => {
+      id = 1
+      link = wrapper.find('#generate-sample-sheet-' + id)
     })
 
-    describe('when some of the wells dont have libraries', () => {
-      beforeEach(() => {
-        id = 6
-        link = wrapper.find('#generate-sample-sheet-' + id)
-      })
+    it('exists', () => {
+      expect(link).toBeTruthy()
+    })
 
-      it('will not be visible', () => {
-        expect(link.isVisible()).toBeFalsy()
-      })
-
+    it('has the correct href link', () => {
+       expect(link.attributes("href")).toBe(process.env.VUE_APP_TRACTION_BASE_URL + "/v1/pacbio/runs/" + id + "/sample_sheet")
     })
   })
 

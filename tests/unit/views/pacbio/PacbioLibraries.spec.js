@@ -1,14 +1,11 @@
 import Libraries from '@/views/pacbio/PacbioLibraries'
-import { mount, localVue, Data } from '../../testHelper'
-import Alert from '@/components/Alert'
-import PrinterModal from '@/components/PrinterModal'
+import { mount, localVue, Data, store } from '../../testHelper'
 import * as consts from '@/consts/consts'
 import VueRouter from 'vue-router'
 import Response from '@/api/Response'
-import store from '@/store'
 
 describe('Libraries.vue', () => {
-  let wrapper, libraries, mockLibraries
+  let wrapper, libraries, mockLibraries, router
 
   beforeEach(() => {
     mockLibraries =  [
@@ -18,7 +15,7 @@ describe('Libraries.vue', () => {
 
     store.commit('traction/pacbio/libraries/setLibraries', mockLibraries)
 
-    const router = new VueRouter({
+    router = new VueRouter({
       routes: [{
         path: '/pacbio/libraries',
         name: 'PacbioLibraries',
@@ -30,14 +27,7 @@ describe('Libraries.vue', () => {
     wrapper = mount(Libraries, {
       store,
       router,
-      localVue,
-      stubs: {
-        Alert: Alert,
-        PrinterModal: true
-      },
-      methods: {
-        provider () { return }
-      }
+      localVue
     })
     libraries = wrapper.vm
   })
@@ -56,8 +46,17 @@ describe('Libraries.vue', () => {
   })
 
   describe('perPage', () => {
+
+    beforeEach(() => {
+      wrapper = mount(Libraries, {
+        store,
+        router,
+        localVue,
+        data () { return { perPage: 1 } }
+      })
+    })
+
     it('states how many rows the table should contain', () => {
-      wrapper.setData({ perPage: 1 })
       expect(wrapper.find('tbody').findAll('tr').length).toEqual(1)
     })
   })
@@ -93,18 +92,22 @@ describe('Libraries.vue', () => {
   describe('#showAlert', () => {
     it('passes the message to function on emit event', () => {
       libraries.showAlert('show this message', 'danger')
-      expect(wrapper.find(Alert).html()).toMatch('show this message')
+      wrapper.vm.$nextTick(() => {
+        expect(wrapper.findComponent({ref: 'alert'}).html()).toMatch('show this message')
+      })
     })
   })
 
+  // TODO: Why isnt this working
   describe('printerModal', () => {
     beforeEach(() => {
+      wrapper.setData({ sortDesc: false })
       libraries.handlePrintLabel = jest.fn()
     })
 
     it('passes selected printer to function on emit event', () => {
       libraries.selected = [{id: 1}]
-      let modal = wrapper.find(PrinterModal)
+      let modal = wrapper.findComponent({ref: 'printerModal'})
       modal.vm.$emit('selectPrinter', 'printer1')
 
       expect(libraries.handlePrintLabel).toBeCalledWith('printer1')
@@ -113,7 +116,7 @@ describe('Libraries.vue', () => {
 
   describe('alert', () => {
     it('has a alert', () => {
-      expect(wrapper.contains(Alert)).toBe(true)
+      expect(wrapper.findComponent({ref: 'alert'})).toBeTruthy()
     })
   })
 

@@ -13,28 +13,20 @@ describe('Modal.vue', () => {
         disabled: true,
         isStatic: true
       },
-      methods: {
-        provider () { return }
-      }
     })
     modal = wrapper.vm
   })
 
-  it('will have a name', () => {
-    expect(wrapper.name()).toEqual('PrinterModal')
-  })
-
   it('will have a printerOptions', () => {
-    modal.setPrinterNames()
     expect(modal.printerOptions.length).not.toBe(0)
   })
 
   it('will have an button component', () => {
-    expect(wrapper.contains('.btn')).toBe(true)
+    expect(wrapper.find('.btn').element).toBeTruthy()
   })
 
   it('will have an modal component', () => {
-    expect(wrapper.contains('.modal')).toBe(true)
+    expect(wrapper.find('.modal')).toBeTruthy()
   })
 
   describe('data', () => {

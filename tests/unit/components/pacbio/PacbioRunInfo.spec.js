@@ -1,4 +1,4 @@
-import { mount, localVue, Vuex } from '../../testHelper'
+import { mount, localVue, store } from '../../testHelper'
 import PacbioRunInfo from '@/components/pacbio/PacbioRunInfo'
 import * as Run from '@/api/PacbioRun'
 
@@ -9,37 +9,13 @@ describe('PacbioRunInfo', () => {
     beforeEach(() => {
         run = Run.build()
 
-        let store = new Vuex.Store({
-            modules: {
-                traction: {
-                    namespaced: true,
-                    modules: {
-                        pacbio: {
-                            namespaced: true,
-                            modules: {
-                                runs: {
-                                    namespaced: true,
-                                    state: {
-                                        currentRun: run
-                                    },
-                                    getters: {
-                                        currentRun: state => state.currentRun,
-                                    },
-                                }
-                            }
+        store.commit('traction/pacbio/runs/setCurrentRun', run)
 
-                        }
-                    }
-                }
-            }
-        })
-
+        // TODO: need to work out how to use attachTo properly.
+        // attachDocument is deprecated.
         wrapper = mount(PacbioRunInfo, { localVue, store, sync: false, attachToDocument: true })
         runInfo = wrapper.vm
-    })
 
-    it('will have a name', () => {
-        expect(wrapper.name()).toEqual('PacbioRunInfo')
     })
 
     it('can have mapState', () => {
@@ -82,5 +58,9 @@ describe('PacbioRunInfo', () => {
         it('has a Comments input', () => {
             expect(wrapper.find('#comments')).toBeDefined()
         })
+    })
+
+    afterEach(() => {
+        wrapper.destroy()
     })
 })

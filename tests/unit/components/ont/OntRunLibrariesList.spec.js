@@ -1,5 +1,4 @@
 import OntRunLibrariesList from '@/components/ont/OntRunLibrariesList'
-import OntTube from '@/components/ont/OntTube'
 import { mount, localVue } from '../../testHelper'
 
 describe('OntLibraries.vue', () => {
@@ -42,10 +41,6 @@ describe('OntLibraries.vue', () => {
     librariesList = wrapper.vm
   })
 
-  it('will have a name', () => {
-    expect(wrapper.name()).toEqual('OntRunLibrariesList')
-  })
-
   it('will have a table', () => {
     expect(wrapper.find('.ont-run-libraries')).toBeDefined()
   })
@@ -66,7 +61,7 @@ describe('OntLibraries.vue', () => {
 
   describe('components', () => {  
     it('has a OntTube component', () => {
-      expect(wrapper.contains(OntTube)).toBe(true)
+      expect(wrapper.findComponent({ref: 'ontTube'})).toBeTruthy()
     })
   })
 

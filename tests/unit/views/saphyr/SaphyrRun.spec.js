@@ -1,11 +1,10 @@
 import SaphyrRun from '@/views/saphyr/SaphyrRun'
-import { mount, localVue, Vuex } from '../../testHelper'
+import { mount, localVue, store } from '../../testHelper'
 import VueRouter from 'vue-router'
-import Alert from '@/components/Alert'
 
 describe('Run.vue', () => {
 
-  let wrapper, mockRun, saphyrRun, router, store
+  let wrapper, mockRun, saphyrRun, router
 
   beforeEach(() => {
     router = new VueRouter({
@@ -27,42 +26,15 @@ describe('Run.vue', () => {
       }
     }
 
-    store = new Vuex.Store({
-      modules: {
-        traction: {
-          namespaced: true,
-          modules: {
-            saphyr: {
-              namespaced: true,
-              modules: {
-                runs: {
-                  namespaced: true,
-                  state: {
-                    currentRun: mockRun,
-                    runName: mockRun.name
-                  },
-                  getters: {
-                    currentRun: state => state.currentRun,
-                  },
-                }
-              }
-            }
-          }
-        }
-      }
-    })
+    store.commit('traction/saphyr/runs/setCurrentRun', mockRun)
 
     wrapper = mount(SaphyrRun, { localVue, store, router })
     saphyrRun = wrapper.vm
   })
 
-  it('will have a name', () => {
-    expect(wrapper.name()).toEqual('SaphyrRun')
-  })
-
   describe('alert', () => {
     it('has a alert', () => {
-      expect(wrapper.contains(Alert)).toBe(true)
+      expect(wrapper.findComponent({ref: 'alert'}).element).toBeTruthy()
     })
   })
 
@@ -167,7 +139,9 @@ describe('Run.vue', () => {
   describe('#showAlert', () => {
     it('emits an event with the message', () => {
       saphyrRun.showAlert('show this message', 'success')
-      expect(wrapper.find(Alert).text()).toMatch(/show this message/)
+      wrapper.vm.$nextTick(() => {
+        expect(wrapper.findComponent({ref: 'alert'}).text()).toMatch(/show this message/)
+      })
     })
   })
 

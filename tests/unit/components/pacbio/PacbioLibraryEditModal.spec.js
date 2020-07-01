@@ -19,10 +19,6 @@ describe('PacbioLibraryEditModal.vue', () => {
     modal = wrapper.vm
   }),
 
-  it('will have a name', () => {
-    expect(wrapper.name()).toEqual('PacbioLibraryEditModal')
-  })
-
   it('will have a modal', () => {
     expect(wrapper.find('#editLibraryModal')).toBeDefined()
   })

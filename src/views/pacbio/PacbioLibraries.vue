@@ -84,7 +84,8 @@
       </b-button>
       <printerModal class="float-left"
                     @selectPrinter="handlePrintLabel"
-                    :disabled="this.selected.length === 0">
+                    :disabled="this.selected.length === 0"
+                    ref='printerModal'>
       </printerModal>
 
       <b-pagination class="float-right"

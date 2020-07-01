@@ -52,12 +52,14 @@
     <div class="clearfix">
       <printerModal class="float-left"
                     @selectPrinter="handlePrintLabel"
-                    :disabled="this.selected.length === 0">
+                    :disabled="this.selected.length === 0"
+                    ref='printerModal' >
       </printerModal>
 
       <enzymeModal @selectEnzyme="createLibraries"
                    :disabled="this.selected.length === 0"
-                   class="float-left">
+                   class="float-left"
+                   ref='enzymeModal' >
       </enzymeModal>
 
       <b-pagination class="float-right"

@@ -18,10 +18,6 @@ describe('OntTube.vue', () => {
     tube = wrapper.vm
   })
 
-  it('will have a name', () => {
-    expect(wrapper.name()).toEqual('OntTube')
-  })
-
   describe('props', () => {
     it('must have a name', () => {
       expect(tube.name).toEqual(props.name)
