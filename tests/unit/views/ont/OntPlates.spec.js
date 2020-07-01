@@ -15,9 +15,10 @@ describe('OntPlates.vue', () => {
       stubs: {
         OntPlate: true,
       },
-      // methods: {
-      //   getPlates() { return platesData }
-      // },
+      // TODO: fix as methods is deprecated
+      methods: {
+        getPlates() { return platesData }
+      },
       mocks: {
         $apollo: {
           queries: {

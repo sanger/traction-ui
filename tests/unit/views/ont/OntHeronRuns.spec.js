@@ -13,9 +13,10 @@ describe('OntHeronRuns.vue', () => {
 
     wrapper = mount(OntHeronRuns, {
       localVue,
-      // methods: {
-      //   getRuns() { return runsData }
-      // },
+      // TODO: fix as methods is deprecated
+      methods: {
+        getRuns() { return runsData }
+      },
       mocks: {
         $apollo: {
           queries: {

@@ -2,7 +2,7 @@ import OntLibraries from '@/views/ont/OntLibraries'
 import { mount, localVue } from '../../testHelper'
 
 describe('OntLibraries.vue', () => {
-  let wrapper, libraries, librariesData, mutate, refetchLibraries, mockApollo
+  let wrapper, libraries, librariesData, mutate, mockApollo //, refetchLibraries
 
   beforeEach(() => {
     mutate = jest.fn()
@@ -32,23 +32,14 @@ describe('OntLibraries.vue', () => {
         OntPlate: true,
         PrinterModal: true
       },
-      // mocks: {
-      //   $apollo: {
-      //     mutate: mutate
-      //   }
-      // },
-      // methods: {
-      //   getLibraries() { return librariesData }
-      // },
-      data() {
-        return {
-          libraries: librariesData,
-        }
+      // TODO: fix as methods is deprecated
+      methods: {
+        getLibraries() { return librariesData }
       },
     })
     
     libraries = wrapper.vm
-    refetchLibraries = mockApollo.queries.libraries.refetch
+    // refetchLibraries = mockApollo.queries.libraries.refetch
   })
 
   it('will have fields', () => {
@@ -66,7 +57,6 @@ describe('OntLibraries.vue', () => {
 
   describe('printerModal', () => {
     beforeEach(() => {
-      wrapper.setData({ sortDesc: false })
       libraries.handlePrintLabel = jest.fn()
     })
 
@@ -75,6 +65,17 @@ describe('OntLibraries.vue', () => {
       let modal = wrapper.findComponent({ref: 'printerModal'})
       modal.vm.$emit('selectPrinter', 'printer1')
 
+      expect(libraries.handlePrintLabel).toBeCalledWith('printer1')
+    })
+  })
+
+  describe('#handlePrint', () => {
+    beforeEach(() => {
+      libraries.handlePrintLabel = jest.fn()
+    })
+
+    it('calls handlePrintLabel', () => {
+      libraries.handlePrint('printer1')
       expect(libraries.handlePrintLabel).toBeCalledWith('printer1')
     })
   })

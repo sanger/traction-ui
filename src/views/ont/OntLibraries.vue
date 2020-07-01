@@ -29,7 +29,7 @@
     
     <div class="clearfix">
       <printerModal class="float-left"
-                    @selectPrinter="handlePrintLabel"
+                    @selectPrinter="handlePrint"
                     :disabled="this.selected.length === 0"
                     ref='printerModal'>
       </printerModal>
@@ -70,6 +70,9 @@ export default {
     }
   },
   methods: {
+    handlePrint(printer) {
+      this.handlePrintLabel(printer)
+    },
     getLibraries(ctx, callback) {
       this.$apollo.query({
         query: LIBRARIES_ALL_QUERY,
