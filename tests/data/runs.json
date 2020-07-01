@@ -5,7 +5,7 @@
       "id": "1",
       "type": "runs",
       "links": {
-        "self": "/v1/runs/1"
+        "self": "http://localhost:3100/v1/saphyr/runs/1"
       },
       "attributes": {
         "state": "pending",
@@ -15,8 +15,8 @@
       "relationships": {
         "chip": {
           "links": {
-            "self": "/v1/runs/1/relationships/chip",
-            "related": "/v1/runs/1/chip"
+            "self": "http://localhost:3100/v1/saphyr/runs/1/relationships/chip",
+            "related": "http://localhost:3100/v1/saphyr/runs/1/chip"
           }
         }
       }
@@ -25,7 +25,7 @@
       "id": "2",
       "type": "runs",
       "links": {
-        "self": "/v1/runs/2"
+        "self": "http://localhost:3100/v1/saphyr/runs/2"
       },
       "attributes": {
         "state": "started",
@@ -35,8 +35,8 @@
       "relationships": {
         "chip": {
           "links": {
-            "self": "/v1/runs/2/relationships/chip",
-            "related": "/v1/runs/2/chip"
+            "self": "http://localhost:3100/v1/saphyr/runs/2/relationships/chip",
+            "related": "http://localhost:3100/v1/saphyr/runs/2/chip"
           }
         }
       }
@@ -45,7 +45,7 @@
       "id": "3",
       "type": "runs",
       "links": {
-        "self": "/v1/runs/3"
+        "self": "http://localhost:3100/v1/saphyr/runs/3"
       },
       "attributes": {
         "state": "completed",
@@ -55,8 +55,8 @@
       "relationships": {
         "chip": {
           "links": {
-            "self": "/v1/runs/3/relationships/chip",
-            "related": "/v1/runs/3/chip"
+            "self": "http://localhost:3100/v1/saphyr/runs/3/relationships/chip",
+            "related": "http://localhost:3100/v1/saphyr/runs/3/chip"
           }
         }
       }
@@ -65,7 +65,7 @@
       "id": "4",
       "type": "runs",
       "links": {
-        "self": "/v1/runs/4"
+        "self": "http://localhost:3100/v1/saphyr/runs/4"
       },
       "attributes": {
         "state": "cancelled",
@@ -75,8 +75,8 @@
       "relationships": {
         "chip": {
           "links": {
-            "self": "/v1/runs/4/relationships/chip",
-            "related": "/v1/runs/4/chip"
+            "self": "http://localhost:3100/v1/saphyr/runs/4/relationships/chip",
+            "related": "http://localhost:3100/v1/saphyr/runs/4/chip"
           }
         }
       }
@@ -85,7 +85,7 @@
       "id": "5",
       "type": "runs",
       "links": {
-        "self": "/v1/runs/5"
+        "self": "http://localhost:3100/v1/saphyr/runs/5"
       },
       "attributes": {
         "state": "completed",
@@ -95,8 +95,8 @@
       "relationships": {
         "chip": {
           "links": {
-            "self": "/v1/runs/5/relationships/chip",
-            "related": "/v1/runs/5/chip"
+            "self": "http://localhost:3100/v1/saphyr/runs/5/relationships/chip",
+            "related": "http://localhost:3100/v1/saphyr/runs/5/chip"
           }
         }
       }
@@ -105,7 +105,7 @@
       "id": "6",
       "type": "runs",
       "links": {
-        "self": "/v1/runs/6"
+        "self": "http://localhost:3100/v1/saphyr/runs/6"
       },
       "attributes": {
         "state": "pending",
@@ -115,8 +115,8 @@
       "relationships": {
         "chip": {
           "links": {
-            "self": "/v1/runs/6/relationships/chip",
-            "related": "/v1/runs/6/chip"
+            "self": "http://localhost:3100/v1/saphyr/runs/6/relationships/chip",
+            "related": "http://localhost:3100/v1/saphyr/runs/6/chip"
           }
         }
       }

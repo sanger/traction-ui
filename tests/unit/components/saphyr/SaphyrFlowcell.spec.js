@@ -53,10 +53,6 @@ describe('Flowcell', () => {
     expect(flowcell.position).toEqual(props.position)
   })
 
-  it('can have state with a current run', () => {
-    expect(flowcell.currentRun).toEqual(run)
-  })
-
   it('will display the position', () => {
     expect(wrapper.find('.position').text()).toMatch(new RegExp(props.position))
   })

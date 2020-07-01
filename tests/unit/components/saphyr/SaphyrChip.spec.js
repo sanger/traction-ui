@@ -4,11 +4,20 @@ import * as Run from '@/api/SaphyrRun'
 
 describe('Chip', () => {
 
-  let wrapper, chip, run, actions
+  let wrapper, chip, run, actions, props
 
   beforeEach(() => {
     run = Run.build()
         
+    props = {
+      chip: {
+        barcode: "BARCODESTRING",
+        flowcells: [{id:"1"},{id:"2"}],
+        id: "1",
+        type: "chips"
+      }
+    }
+
     actions = {
       updateChipBarcode: jest.fn()
     }
@@ -39,21 +48,16 @@ describe('Chip', () => {
       }
     })
 
-    wrapper = mount(Chip, { localVue, store } )
+    wrapper = mount(Chip, { 
+      localVue, 
+      store,
+      propsData: props
+    })
     chip = wrapper.vm
   })
 
   it('will have a name', () => {
     expect(wrapper.name()).toEqual('SaphyrChip')
-  })
-
-  it('can have state', () => {
-    expect(chip.chipBarcode).toEqual(run.chip.barcode)
-    expect(chip.flowcells).toEqual(run.chip.flowcells)
-  })
-
-  it('can have getters', () => {
-    expect(chip.currentRun).toBeDefined()
   })
 
   it('can have some flowcells', () => {

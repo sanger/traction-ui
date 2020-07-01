@@ -52,7 +52,14 @@ describe('Run.vue', () => {
       }
     })
 
-    wrapper = mount(SaphyrRun, { localVue, store, router })
+    wrapper = mount(SaphyrRun, { 
+      localVue, 
+      store, 
+      router, 
+      methods: {
+        provider() { return }
+      }
+    })
     saphyrRun = wrapper.vm
   })
 
@@ -85,21 +92,16 @@ describe('Run.vue', () => {
   })
 
   describe('update button', () => {
-    it('will only show if the record is new', () => {
+    it('will only show if the record is existing', () => {
+      wrapper.setData({ newRecord: false })
       expect(wrapper.find('#update').exists()).toBeTruthy()
     })
   })
 
   describe('create button', () => {
-
     it('will only show if the record is new', () => {
-      expect(wrapper.find('#create').exists()).toBeFalsy()
-    })
-  })
-
-  describe('update button', () => {
-    it('will only show if the record is new', () => {
-      expect(wrapper.find('#update').exists()).toBeTruthy()
+      wrapper.setData({ newRecord: true })
+      expect(wrapper.find('#create').exists()).toBeTruthy()
     })
   })
 
