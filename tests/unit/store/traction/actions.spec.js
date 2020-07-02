@@ -9,7 +9,6 @@ describe('#startRun', () => {
     dispatch = jest.fn()
     id = 123
     payload = { id: id, attributes: { state: 'started' } }
-    localStorage.setItem('pipeline', 'pacbio')
   })
 
   it('successfully', async () => {
@@ -57,7 +56,7 @@ describe('#handleRunUpdate', () => {
   beforeEach(() => {
     update = jest.fn()
     commit = jest.fn()
-    rootGetters = { 'pipeline': 'pacbio' }
+    localStorage.setItem('pipeline', 'pacbio')
     getters = { 'pacbio/runs/runRequest': { 'update': update } }
     payload = { id: 1, attributes: { state: 'a state' } }
 
