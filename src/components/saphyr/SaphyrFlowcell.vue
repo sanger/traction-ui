@@ -3,7 +3,7 @@
     <b-col>
       <div class="position">{{ position }}</div>
 
-      <b-form-input :value="libraryBarcode" @change="setBarcode" id="libraryBarcode" placeholder="Library barcode" type="text" />
+      <b-form-input :value="libraryBarcode" @change="setBarcode" :id='"libraryBarcode-"+this.index' placeholder="Library barcode" type="text" />
     </b-col>
   </b-row>
 </template>

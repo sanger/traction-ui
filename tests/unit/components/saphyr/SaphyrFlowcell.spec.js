@@ -58,7 +58,7 @@ describe('Flowcell', () => {
   })
 
   it('can have a library', () => {
-    expect(wrapper.contains('#libraryBarcode')).toBeTruthy()
+    expect(wrapper.contains('#libraryBarcode-0')).toBeTruthy()
   })
 
   describe('setBarcode', () => {
