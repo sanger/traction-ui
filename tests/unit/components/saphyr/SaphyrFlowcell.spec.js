@@ -82,8 +82,14 @@ describe('Flowcell', () => {
       flowcell.getTubeForBarcode.mockReturnValue(tube)
 
       await flowcell.setBarcode(newBarcode)
-
-      expect(flowcell.setLibraryBarcode).toBeCalled()
+      let expected = {
+        flowcellIndex: 0,
+        library:  {
+          barcode: "TRAC-2-21",
+          id: "1",
+        }
+      }
+      expect(flowcell.setLibraryBarcode).toBeCalledWith(expected)
       expect(flowcell.alert).not.toBeCalled()
     })
 
