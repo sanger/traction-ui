@@ -1,6 +1,6 @@
 import PacbioRun from '@/views/pacbio/PacbioRun'    
 import PacbioRuns from '@/views/pacbio/PacbioRuns'
-import { shallowMount, localVue, Vuex } from '../../testHelper'
+import { mount, localVue, Vuex } from '../../testHelper'
 import VueRouter from 'vue-router'
 import Alert from '@/components/Alert'
 import PacbioRunInfo from '@/components/pacbio/PacbioRunInfo'
@@ -62,10 +62,15 @@ describe('Run.vue', () => {
             }
         })
 
-        wrapper = shallowMount(PacbioRun, {
+        wrapper = mount(PacbioRun, {
             store, 
             router,
             localVue,
+            stubs: {
+                Plate: true,
+                PacbioLibrariesList: true,
+                PacbioRunInfo: true,
+            },
             methods: {
                provider() { return }
             }
@@ -171,11 +176,16 @@ describe('Run.vue', () => {
     describe('#update', () => {
 
         beforeEach(() => {
-             wrapper = shallowMount(PacbioRun, {
+            wrapper = mount(PacbioRun, {
             store, 
             router,
             localVue,
             propsData: { id: 1},
+            stubs: {
+                Plate: true,
+                PacbioLibrariesList: true,
+                PacbioRunInfo: true,
+            },
             methods: {
                provider() { return }
                
