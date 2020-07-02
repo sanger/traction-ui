@@ -9,6 +9,7 @@ describe('#startRun', () => {
     dispatch = jest.fn()
     id = 123
     payload = { id: id, attributes: { state: 'started' } }
+    localStorage.setItem('pipeline', 'pacbio')
   })
 
   it('successfully', async () => {

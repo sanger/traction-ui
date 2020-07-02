@@ -15,9 +15,8 @@ const cancelRun = async ({ dispatch }, id) => {
     await dispatch('handleRunUpdate', payload)
 }
 
-const handleRunUpdate = async ({ rootGetters, getters, commit }, payload) => {
-    let request = getters[rootGetters.pipeline + "/runs/runRequest"]
-
+const handleRunUpdate = async ({ getters, commit }, payload) => {
+    let request = getters[localStorage.pipeline+ "/runs/runRequest"]
     let runPayload = runPayloadJson(payload)
     let promises = await request.update(runPayload)
     let response = await handlePromise(promises[0])
