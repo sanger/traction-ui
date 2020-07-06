@@ -23,10 +23,6 @@ describe('OntWell.vue', () => {
     well = wrapper.vm
   })
 
-  it('will have a name', () => {
-    expect(wrapper.name()).toEqual('OntWell')
-  })
-
   describe('props', () => {
     it('must have a row', () => {
       expect(well.row).toEqual(props.row)

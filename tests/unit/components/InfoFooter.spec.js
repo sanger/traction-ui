@@ -6,16 +6,17 @@ describe('infoFooter.vue', () => {
   let wrapper
 
   beforeEach(() => {
-    wrapper = mount(InfoFooter, {
-      localVue,
-      methods: {
-        provider() { return }
-      } 
-    })
-  })
+    let response = { 
+      status:200, 
+      statusText: 'OK',  
+      data: { errors: {} },
+      text: function text() { return 'text' }
+    }
+    global.fetch = jest.fn(() => Promise.resolve(response));
 
-  it('will have a name', () => {
-    expect(wrapper.name()).toEqual('infoFooter')
+    wrapper = mount(InfoFooter, {
+      localVue
+    })
   })
 
   it('has a environment', () => {

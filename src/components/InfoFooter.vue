@@ -44,11 +44,15 @@ export default {
     },
     async provider() {
       if (this.environment != 'development') {
+      try {
         await fetch('REPO')
         .then(response => response.text())
         .then((response1) => {
           this.repo = response1
-        }).catch(err => console.error(err))
+        })
+      } catch (err) {
+         console.error(err)
+      }
       } else {
         this.repo = "https://github.com/sanger/traction-ui/releases"
       }

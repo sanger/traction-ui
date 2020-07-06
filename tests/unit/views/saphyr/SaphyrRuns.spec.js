@@ -1,10 +1,8 @@
 import Runs from '@/views/saphyr/SaphyrRuns'
-import SaphyrRun from '@/views/saphyr/SaphyrRun'
-import { mount, localVue, Data } from '../../testHelper'
+import { mount, localVue, store, Data } from '../../testHelper'
 import Response from '@/api/Response'
+import SaphyrRun from '@/views/saphyr/SaphyrRun'
 import VueRouter from 'vue-router'
-import Alert from '@/components/Alert'
-import store from '@/store'
 
 describe('Runs.vue', () => {
 
@@ -24,7 +22,7 @@ describe('Runs.vue', () => {
 
     store.commit('traction/saphyr/runs/setRuns', mockRuns)
 
-    wrapper = mount(Runs, { store, router, localVue, methods: { provider() { return } } }) 
+    wrapper = mount(Runs, { store, localVue, router }) 
     runs = wrapper.vm
   })
 
@@ -36,13 +34,13 @@ describe('Runs.vue', () => {
 
   describe('alert', () => {
     it('has a alert', () => {
-      expect(wrapper.contains(Alert)).toBe(true)
+      expect(wrapper.findComponent({ref: 'alert'})).toBeTruthy()
     })
   })
 
   describe('building the table', () => {
     it('exists', () => {
-        expect(wrapper.contains('table')).toBe(true)
+        expect(wrapper.find('table').element).toBeTruthy()
     })
 
     it('contains the correct data', async () => {
@@ -61,11 +59,6 @@ describe('Runs.vue', () => {
       wrapper = mount(Runs, {
         store,
         localVue,
-        methods: {
-          provider() {
-            return
-          }
-        },
         data() {
           return {
             filter: mockRuns[0].chip_barcode
@@ -190,7 +183,8 @@ describe('Runs.vue', () => {
   describe('new run button', () => {
 
     it('contains a create new run button', () => {
-      expect(wrapper.find('#newRun')).toBeDefined()
+      // expect(wrapper.find('#newRun')).toBeDefined()
+      expect(wrapper.find('button').element).toBeTruthy()
     })
 
     it('will redirect to the run when newRun is clicked', async () => {
@@ -216,7 +210,9 @@ describe('Runs.vue', () => {
   describe('#showAlert', () => {
     it('emits an event with the message', () => {
       runs.showAlert(/show this message/)
-      expect(wrapper.find(Alert).text()).toMatch(/show this message/)
+      wrapper.vm.$nextTick(() => {
+        expect(wrapper.findComponent({ref: 'alert'}).text()).toMatch(/show this message/)
+      })
     })
   })
 
@@ -225,11 +221,6 @@ describe('Runs.vue', () => {
       wrapper = mount(Runs, {
         store,
         localVue,
-        methods: {
-          provider() {
-            return
-          }
-        },
         data() {
           return {
             perPage: 2,

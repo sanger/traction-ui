@@ -26,11 +26,11 @@ export default {
   methods: {
     async setBarcode(barcode) {
       let isValid = await this.isLibraryBarcodeValid(barcode)
-
+      
       if (isValid) {
         let libraryTube = await this.getTubeForBarcode(barcode)
-        let library = libraryTube.materials[0]
-        let payload = { library: library, flowcellIndex: this.index}
+        let container_material = libraryTube.materials[0]
+        let payload = { library: { id: container_material.material_id, barcode: container_material.barcode }, flowcellIndex: this.index }
 
         this.setLibraryBarcode(payload)
       } else {

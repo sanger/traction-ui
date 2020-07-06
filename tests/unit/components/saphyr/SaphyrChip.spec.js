@@ -1,52 +1,27 @@
-import { mount, localVue, Vuex } from '../../testHelper'
+import { mount, localVue, store } from '../../testHelper'
 import Chip from '@/components/saphyr/SaphyrChip'
 import * as Run from '@/api/SaphyrRun'
 
 describe('Chip', () => {
 
-  let wrapper, chip, run, actions, props
+  let wrapper, chip, run, props
 
   beforeEach(() => {
     run = Run.build()
-        
+
+    store.commit('traction/saphyr/runs/setCurrentRun', run)
+
     props = {
       chip: {
-        barcode: "BARCODESTRING",
-        flowcells: [{id:"1"},{id:"2"}],
         id: "1",
-        type: "chips"
+        type: "chips",
+        barcode: "BARCODESTRING",
+        flowcells: [
+          { id: "1" },
+          { id: "2" }
+        ],
       }
     }
-
-    actions = {
-      updateChipBarcode: jest.fn()
-    }
-
-    let store = new Vuex.Store({
-      modules: {
-        traction: {
-          namespaced: true,
-          modules: {
-            saphyr: {
-              namespaced: true,
-              modules: {
-                runs: {
-                  namespaced: true,
-                  state: {
-                    currentRun: run
-                  },
-                  getters: {
-                    currentRun: state => state.currentRun,
-                  },
-                  actions
-                }
-              }
-
-            }
-          }
-        }
-      }
-    })
 
     wrapper = mount(Chip, { 
       localVue, 
@@ -56,8 +31,12 @@ describe('Chip', () => {
     chip = wrapper.vm
   })
 
-  it('will have a name', () => {
-    expect(wrapper.name()).toEqual('SaphyrChip')
+  describe('props', () => {
+    it('must have a chip', () => {
+      expect(chip.chip).toEqual(props.chip)
+      // TODO: check below
+      // expect(wrapper.find('#barcode').text()).toEqual(props.chip.barcode)
+    })
   })
 
   it('can have some flowcells', () => {

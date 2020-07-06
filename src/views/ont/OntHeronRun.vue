@@ -12,8 +12,8 @@
           <OntRunLibrariesList v-bind:selectedLibraryNames="selectedLibraryNames" @updateFlowcell="updateFlowcell"></OntRunLibrariesList>
         </b-col>
         <b-col cols="6">
-          <ONTSVG>
-            <OntFlowcell v-for="(flowcellData, key) in flowcellsData" v-bind="flowcellData" v-bind:key="key" @updateFlowcell="updateFlowcell">
+          <ONTSVG ref='ontSvg'>
+            <OntFlowcell v-for="(flowcellData, key) in flowcellsData" v-bind="flowcellData" v-bind:key="key" @updateFlowcell="updateFlowcell" ref="ontFlowcell">
             </OntFlowcell>
           </ONTSVG>
         </b-col>
@@ -163,7 +163,7 @@ export default {
         response: 'createOntRun',
         pastTense: 'created'
       }
-      let update= {
+      let update = {
         id: 'update-button',
         variant: 'primary',
         label: 'Update Run',

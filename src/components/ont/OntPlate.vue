@@ -4,8 +4,8 @@
       Pool Samples
     </b-button>
 
-    <Plate96SVG v-if="wells" v-bind:height="'30%'" v-bind:width="'30%'">
-      <OntWell v-for="(well, position) in plateMap.wells" v-bind="well" v-bind:key="position" v-bind:well_info="getWellAt(position)">
+    <Plate96SVG v-if="wells" v-bind:height="'30%'" v-bind:width="'30%'" ref='plate96Svg'>
+      <OntWell v-for="(well, position) in plateMap.wells" v-bind="well" v-bind:key="position" v-bind:well_info="getWellAt(position)" ref="ontWell">
       </OntWell>
     </Plate96SVG>
   </div>
