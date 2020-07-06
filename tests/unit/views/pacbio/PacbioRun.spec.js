@@ -1,6 +1,6 @@
 import PacbioRun from '@/views/pacbio/PacbioRun'    
 import PacbioRuns from '@/views/pacbio/PacbioRuns'
-import { shallowMount, store, localVue } from '../../testHelper'
+import { mount, store, localVue } from '../../testHelper'
 import VueRouter from 'vue-router'
 
 describe('Run.vue', () => {
@@ -37,10 +37,15 @@ describe('Run.vue', () => {
     store.commit('traction/pacbio/runs/setCurrentRun', mockRun)
 
     // TODO: remove shallowMount
-    wrapper = shallowMount(PacbioRun, {
+    wrapper = mount(PacbioRun, {
         store, 
         router,
         localVue,
+        stubs: {
+          Plate: true,
+          PacbioLibrariesList: true,
+          PacbioRunInfo: true,
+        },
         propsData: { id: 'new' }
     })
     pacbioRun = wrapper.vm
@@ -75,7 +80,13 @@ describe('Run.vue', () => {
       expect(wrapper.find('#backToRunsButton').exists()).toBeTruthy()
     })
   })
-   
+
+  describe('Reset button', () => {
+    it('will show if the record is new', () => {
+      expect(wrapper.find('#reset').exists()).toBeTruthy()
+    })
+  })
+  
   describe('#create', () => {
 
     beforeEach(() => {
@@ -117,11 +128,16 @@ describe('Run.vue', () => {
   describe('#update', () => {
 
     beforeEach(() => {
-      wrapper = shallowMount(PacbioRun, {
+      wrapper = mount(PacbioRun, {
         store, 
         router,
         localVue,
         propsData: { id: 1},
+        stubs: {
+          Plate: true,
+          PacbioLibrariesList: true,
+          PacbioRunInfo: true,
+        },
         methods: {
             provider() { return }
             
@@ -163,4 +179,18 @@ describe('Run.vue', () => {
     })
   })
 
+  describe('#reset', () => {
+
+    beforeEach(() => {
+        pacbioRun.showAlert = jest.fn()
+        pacbioRun.newRun = jest.fn()
+    })
+
+    it('calls newRun', async () => {
+      pacbioRun.newRun.mockReturnValue([])
+      pacbioRun.resetRun()
+      expect(pacbioRun.newRun).toBeCalled()
+      expect(pacbioRun.showAlert).toBeCalledWith("Run has been reset", 'success')
+    })
+  })
 })
