@@ -14,7 +14,7 @@
 
     <b-form-input :value="runName" @change="setRunName" class="runInfo" id="name" placeholder="name" type="text"/>
 
-    <chip v-if="this.currentRun.id" :chip="this.currentRun.chip" @alert="showAlert"></chip>
+    <chip :chip="this.currentRun.chip" @alert="showAlert"></chip>
 
   </div>
 </template>
