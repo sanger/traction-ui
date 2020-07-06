@@ -26,6 +26,7 @@ export default {
       let isValid = this.isChipBarcodeValid(barcode)
 
       if (isValid) {
+        this.alert('Chip barcode is valid', 'success')
         this.setChipBarcode(barcode)
       } else {
         this.alert('Chip barcode is not valid', 'danger')

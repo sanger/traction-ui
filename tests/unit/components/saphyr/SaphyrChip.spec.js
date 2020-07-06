@@ -34,8 +34,7 @@ describe('Chip', () => {
   describe('props', () => {
     it('must have a chip', () => {
       expect(chip.chip).toEqual(props.chip)
-      // TODO: check below
-      // expect(wrapper.find('#barcode').text()).toEqual(props.chip.barcode)
+      expect(wrapper.find('#barcode').element.value).toEqual(props.chip.barcode)
     })
   })
 
@@ -57,14 +56,14 @@ describe('Chip', () => {
       chip.isChipBarcodeValid.mockReturnValue(true)
       chip.setBarcode(newBarcode)
       expect(chip.setChipBarcode).toBeCalledWith(newBarcode)
-      expect(chip.alert).not.toBeCalled()
+      expect(chip.alert).toBeCalledWith('Chip barcode is valid', 'success')
     })
 
     it('is unsuccessful when chip is not valid', () => {
       chip.isChipBarcodeValid.mockReturnValue(false)
       chip.setBarcode(newBarcode)
       expect(chip.setChipBarcode).not.toBeCalled()
-      expect(chip.alert).toBeCalled()
+      expect(chip.alert).toBeCalledWith('Chip barcode is not valid', 'danger')
     })
   })
 
