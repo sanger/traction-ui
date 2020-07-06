@@ -183,8 +183,7 @@ describe('Runs.vue', () => {
   describe('new run button', () => {
 
     it('contains a create new run button', () => {
-      // expect(wrapper.find('#newRun')).toBeDefined()
-      expect(wrapper.find('button').element).toBeTruthy()
+      expect(wrapper.find('#newRun')).toBeDefined() 
     })
 
     it('will redirect to the run when newRun is clicked', async () => {
@@ -197,7 +196,7 @@ describe('Runs.vue', () => {
   describe('edit run button', () => {
 
     it('contains a create new run button', () => {
-      expect(wrapper.contains('#edit-1')).toBeDefined()
+      expect(wrapper.find('#edit-1')).toBeDefined()
     })
 
     it('will redirect to the run when newRun is clicked', async () => {
