@@ -1,5 +1,9 @@
 import handlePromise from '@/api/PromiseHelper'
 
+const getPipeline = () => {
+    return localStorage.getItem('pipeline')
+}
+
 const startRun = async ({ dispatch }, id) => {
     let payload = { id: id, attributes: { state: 'started' } }
     await dispatch('handleRunUpdate', payload)
@@ -15,9 +19,8 @@ const cancelRun = async ({ dispatch }, id) => {
     await dispatch('handleRunUpdate', payload)
 }
 
-const handleRunUpdate = async ({ rootGetters, getters, commit }, payload) => {
-    let request = getters[rootGetters.pipeline + "/runs/runRequest"]
-
+const handleRunUpdate = async ({ getters, commit }, payload) => {
+    let request = getters[getPipeline()+ "/runs/runRequest"]
     let runPayload = runPayloadJson(payload)
     let promises = await request.update(runPayload)
     let response = await handlePromise(promises[0])

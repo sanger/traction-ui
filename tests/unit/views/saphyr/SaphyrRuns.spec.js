@@ -1,17 +1,28 @@
 import Runs from '@/views/saphyr/SaphyrRuns'
 import { mount, localVue, store, Data } from '../../testHelper'
 import Response from '@/api/Response'
+import SaphyrRun from '@/views/saphyr/SaphyrRun'
+import VueRouter from 'vue-router'
 
 describe('Runs.vue', () => {
 
-  let wrapper, runs, mockRuns
+  let wrapper, runs, mockRuns, router
 
   beforeEach(() => {
     mockRuns = new Response(Data.Runs).deserialize.runs
 
+    router = new VueRouter({
+      routes: [{
+        path: '/saphyr/runs/:id',
+        name: 'saphyr',
+        component: SaphyrRun,
+        props: true
+      }]
+    })
+
     store.commit('traction/saphyr/runs/setRuns', mockRuns)
 
-    wrapper = mount(Runs, { store, localVue }) 
+    wrapper = mount(Runs, { store, localVue, router }) 
     runs = wrapper.vm
   })
 
@@ -172,14 +183,26 @@ describe('Runs.vue', () => {
   describe('new run button', () => {
 
     it('contains a create new run button', () => {
-      expect(wrapper.find('button').element).toBeTruthy()
+      expect(wrapper.find('#newRun')).toBeDefined() 
     })
 
     it('will redirect to the run when newRun is clicked', async () => {
-      runs.newRun = jest.fn()
       let button = wrapper.find('#newRun')
       button.trigger('click')
-      expect(runs.newRun).toBeCalled()
+      expect(runs.$route.path).toEqual('/saphyr/run/new')
+    })
+  })
+
+  describe('edit run button', () => {
+
+    it('contains a create new run button', () => {
+      expect(wrapper.find('#edit-1')).toBeDefined()
+    })
+
+    it('will redirect to the run when newRun is clicked', async () => {
+      let button = wrapper.find('#edit-1')
+      button.trigger('click')
+      expect(runs.$route.path).toEqual('/saphyr/run/1')
     })
   })
 

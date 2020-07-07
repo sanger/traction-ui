@@ -4,7 +4,7 @@ import VueRouter from 'vue-router'
 
 describe('Run.vue', () => {
 
-  let wrapper, mockRun, saphyrRun, router
+  let wrapper, mockRun, saphyrRun, router, props
 
   beforeEach(() => {
     router = new VueRouter({
@@ -26,9 +26,22 @@ describe('Run.vue', () => {
       }
     }
 
+    props = {
+      id: '1'
+    }
+
     store.commit('traction/saphyr/runs/setCurrentRun', mockRun)
 
-    wrapper = mount(SaphyrRun, { localVue, store, router })
+    wrapper = mount(SaphyrRun, { 
+      localVue, 
+      store, 
+      router, 
+      // TODO: fix as methods is deprecated
+      methods: {
+        provider() { return }
+      },
+      propsData: props
+    })
     saphyrRun = wrapper.vm
   })
 
@@ -57,21 +70,29 @@ describe('Run.vue', () => {
   })
 
   describe('update button', () => {
-    it('will only show if the record is new', () => {
+    it('will only show if the record is existing', () => {
       expect(wrapper.find('#update').exists()).toBeTruthy()
     })
   })
 
   describe('create button', () => {
-
-    it('will only show if the record is new', () => {
-      expect(wrapper.find('#create').exists()).toBeFalsy()
+    beforeEach(() => {
+      wrapper = mount(SaphyrRun, {
+        localVue,
+        store,
+        router,
+        methods: {
+          provider() { return }
+        },
+        propsData: {
+          id: 'new'
+        }
+      })
+      saphyrRun = wrapper.vm
     })
-  })
 
-  describe('update button', () => {
     it('will only show if the record is new', () => {
-      expect(wrapper.find('#update').exists()).toBeTruthy()
+      expect(wrapper.find('#create').exists()).toBeTruthy()
     })
   })
 

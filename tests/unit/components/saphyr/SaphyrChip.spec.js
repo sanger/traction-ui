@@ -4,24 +4,38 @@ import * as Run from '@/api/SaphyrRun'
 
 describe('Chip', () => {
 
-  let wrapper, chip, run
+  let wrapper, chip, run, props
 
   beforeEach(() => {
     run = Run.build()
 
     store.commit('traction/saphyr/runs/setCurrentRun', run)
 
-    wrapper = mount(Chip, { localVue, store } )
+    props = {
+      chip: {
+        id: "1",
+        type: "chips",
+        barcode: "BARCODESTRING",
+        flowcells: [
+          { id: "1" },
+          { id: "2" }
+        ],
+      }
+    }
+
+    wrapper = mount(Chip, { 
+      localVue, 
+      store,
+      propsData: props
+    })
     chip = wrapper.vm
   })
 
-  it('can have state', () => {
-    expect(chip.chipBarcode).toEqual(run.chip.barcode)
-    expect(chip.flowcells).toEqual(run.chip.flowcells)
-  })
-
-  it('can have getters', () => {
-    expect(chip.currentRun).toBeDefined()
+  describe('props', () => {
+    it('must have a chip', () => {
+      expect(chip.chip).toEqual(props.chip)
+      expect(wrapper.find('#barcode').element.value).toEqual(props.chip.barcode)
+    })
   })
 
   it('can have some flowcells', () => {
@@ -42,14 +56,14 @@ describe('Chip', () => {
       chip.isChipBarcodeValid.mockReturnValue(true)
       chip.setBarcode(newBarcode)
       expect(chip.setChipBarcode).toBeCalledWith(newBarcode)
-      expect(chip.alert).not.toBeCalled()
+      expect(chip.alert).toBeCalledWith('Chip barcode is valid', 'success')
     })
 
     it('is unsuccessful when chip is not valid', () => {
       chip.isChipBarcodeValid.mockReturnValue(false)
       chip.setBarcode(newBarcode)
       expect(chip.setChipBarcode).not.toBeCalled()
-      expect(chip.alert).toBeCalled()
+      expect(chip.alert).toBeCalledWith('Chip barcode is not valid', 'danger')
     })
   })
 

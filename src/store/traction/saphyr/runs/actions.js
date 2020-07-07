@@ -1,5 +1,4 @@
 import handlePromise from '@/api/PromiseHelper'
-import router from '@/router'
 import * as Run from '@/api/SaphyrRun'
 
 const setRuns = async ({ commit, getters }) => {
@@ -39,16 +38,20 @@ const validateLibraryTube = (tube) => {
     return true
 }
 
-const editRun = ({ getters, commit }, runId) => {
-    let run = getters.run(runId)
-    commit('setCurrentRun', run)
-    router.push({ path: `/saphyr/run/${runId}` })
+const editRun = async ({ commit, getters }, runId) => {
+    let request = getters.runRequest
+    let promise = request.find(runId)
+    let response = await handlePromise(promise)
+    
+    if (response.successful) {
+        let run = response.deserialize.runs[0]
+        commit('setCurrentRun', run)
+    }
 }
 
 const newRun = ({ commit }) => {
     let run = Run.build()
     commit('setCurrentRun', run)
-    router.push({ path: `/saphyr/run/new` })
 }
 
 const createRun = async ({ getters }) => {

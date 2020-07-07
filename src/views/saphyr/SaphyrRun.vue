@@ -14,7 +14,7 @@
 
     <b-form-input :value="runName" @change="setRunName" class="runInfo" id="name" placeholder="name" type="text"/>
 
-    <chip @alert="showAlert"></chip>
+    <chip :chip="this.currentRun.chip" @alert="showAlert"></chip>
 
   </div>
 </template>
@@ -29,6 +29,16 @@ const { mapGetters, mapActions, mapState, mapMutations } = createNamespacedHelpe
 export default {
   name: 'SaphyrRun',
   mixins: [Helper],
+  props: {
+    id: {
+      type: [String, Number]
+    }
+  },
+  data () {
+    return {
+      newRecord: isNaN(this.id)
+    }
+  },
   methods: {
     async create () {
       try {
@@ -48,13 +58,24 @@ export default {
     },
     ...mapActions([
       'createRun',
-      'updateRun'
+      'updateRun',
+      'editRun',
+      'newRun',
     ]),
     ...mapMutations([
-      'setRunName',
+      'setRunName'
     ]),
     redirectToRuns() {
       this.$router.push({ name: 'SaphyrRuns' })
+    },
+    async provider() {
+      if (this.id === "new") {
+        this.newRun()
+      } else if (!this.newRecord){
+        await this.editRun(parseInt(this.$route.params.id))
+      } else {
+        this.$router.push({ name: '404' })
+      }
     }
   },
   components: {
@@ -62,9 +83,6 @@ export default {
     Alert
   },
   computed: {
-    newRecord () {
-      return isNaN(this.currentRun.id)
-    },
     ...mapGetters([
       'currentRun'
     ]),
@@ -73,6 +91,9 @@ export default {
       runName: state => state.currentRun.name
     })
   },
+  created() {
+    this.provider()
+  }
 }
 </script>
 
