@@ -2,7 +2,7 @@ import OntLibraries from '@/views/ont/OntLibraries'
 import { mount, localVue } from '../../testHelper'
 
 describe('OntLibraries.vue', () => {
-  let wrapper, libraries, librariesData, mutate, refetchLibraries, mockApollo
+  let wrapper, libraries, librariesData, mutate, mockApollo //, refetchLibraries
 
   beforeEach(() => {
     mutate = jest.fn()
@@ -32,20 +32,19 @@ describe('OntLibraries.vue', () => {
         OntPlate: true,
         PrinterModal: true
       },
-      data() {
-        return {
-          libraries: librariesData,
-        }
+      // TODO: fix as methods is deprecated
+      methods: {
+        getLibraries() { return librariesData }
       },
     })
     
     libraries = wrapper.vm
-    refetchLibraries = mockApollo.queries.libraries.refetch
+    // refetchLibraries = mockApollo.queries.libraries.refetch
   })
 
   it('will have fields', () => {
-    let expected = ["id", "name", "poolSize", "tubeBarcode", "plateBarcode", "pool", "createdAt"]
-    expect(libraries.fields.map(i => i.key)).toEqual(expected)
+    let expected = ["id", "name", "poolSize", "tubeBarcode", "plateBarcode", "pool", "createdAt", "assignedToFlowcell"]
+    expect(libraries.fields).toEqual(expected)
   })
 
   it('will have a table', () => {
@@ -58,7 +57,6 @@ describe('OntLibraries.vue', () => {
 
   describe('printerModal', () => {
     beforeEach(() => {
-      wrapper.setData({ sortDesc: false })
       libraries.handlePrintLabel = jest.fn()
     })
 
@@ -71,6 +69,17 @@ describe('OntLibraries.vue', () => {
     })
   })
 
+  describe('#handlePrint', () => {
+    beforeEach(() => {
+      libraries.handlePrintLabel = jest.fn()
+    })
+
+    it('calls handlePrintLabel', () => {
+      libraries.handlePrint('printer1')
+      expect(libraries.handlePrintLabel).toBeCalledWith('printer1')
+    })
+  })
+
   describe('Delete button', () => {
     let button
     const libraryName = 'aLibraryName'
@@ -79,6 +88,7 @@ describe('OntLibraries.vue', () => {
       button = wrapper.find('#deleteLibrary-btn')
       libraries.showAlert = jest.fn()
       libraries.selected = [{ name: libraryName }]
+      libraries.refetchLibraries = jest.fn()
     })
 
     it('is shows button', () => {
@@ -101,7 +111,6 @@ describe('OntLibraries.vue', () => {
     })
 
     it('refetches libraries on success', async () => {
-      refetchLibraries.mockClear()
       let mockResponse = { data: { deleteOntLibrary: { success: true, errors: [] } } }
 
       let promise = new Promise((resolve) => {
@@ -112,7 +121,7 @@ describe('OntLibraries.vue', () => {
 
       await button.trigger('click')
 
-      expect(refetchLibraries).toBeCalled()
+      expect(libraries.refetchLibraries).toBeCalled()
     })
 
     it('shows an alert on failure', async () => {

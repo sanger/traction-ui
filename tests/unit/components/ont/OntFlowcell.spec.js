@@ -8,7 +8,7 @@ describe('OntFlowcell.vue', () => {
   beforeEach(() => {
     props = {
       position: 1,
-      library: { name: 'aLibraryNamee'}
+      library: { name: 'aLibraryName' }
     }
 
     mutate = jest.fn()
@@ -85,29 +85,59 @@ describe('OntFlowcell.vue', () => {
     })
   })
 
-  describe('#updateFlowcell', () => {
-    it('emits an event', () => {
-      let updatedLibraryName = 'updatedLibraryName'
-      flowcell.updateFlowcell(updatedLibraryName)
-      expect(wrapper.emitted().updateFlowcell).toBeTruthy()
-      expect(wrapper.emitted().updateFlowcell[0][0]).toEqual(props.position)
-      expect(wrapper.emitted().updateFlowcell[0][1]).toEqual(updatedLibraryName)
-
-    })
-  })
-
   describe('#drop', () => {
     let mockEvent, libraryName
 
     beforeEach(() => {
       libraryName = 'TRAC-1'
-      mockEvent = { dataTransfer: { getData() { return libraryName } }, preventDefault: jest.fn() }
+
       flowcell.updateFlowcell = jest.fn()
+      flowcell.updateLibraryList = jest.fn()
     })
 
-    it('will update the barcode', async () => {
-      flowcell.drop(mockEvent)
-      expect(flowcell.updateFlowcell).toBeCalledWith(libraryName)
+    describe('when the sourceType is LIBRARY_LIST', () => {
+      beforeEach(() => {
+        let getData = jest.fn()
+          .mockImplementationOnce(() => libraryName)
+          .mockImplementation(() => 'LIBRARY_LIST')
+
+        mockEvent = { dataTransfer: { getData() { return getData() } }, preventDefault: jest.fn() }
+      })
+
+      it('will call updateFlowcell', () => {
+        flowcell.drop(mockEvent)
+        expect(flowcell.updateFlowcell).toBeCalledWith(flowcell.position, libraryName)
+      })
+
+      it('will call updateLibraryList', () => {
+        flowcell.drop(mockEvent)
+        expect(flowcell.updateLibraryList).toBeCalledWith(libraryName, true)
+      })
+    })
+
+    describe('when the sourceType is FLOWCELL', () => {
+      let flowcellPosition
+
+      beforeEach(() => {
+        flowcellPosition = 1
+
+        let getData = jest.fn()
+          .mockImplementationOnce(() => 'TRAC-1')
+          .mockImplementationOnce(() => 'FLOWCELL')
+          .mockImplementation(() => flowcellPosition)
+
+        mockEvent = { dataTransfer: { getData() { return getData() } }, preventDefault: jest.fn() }
+      })
+
+      it('will call updateFlowcell', () => {
+        flowcell.drop(mockEvent)
+        expect(flowcell.updateFlowcell).toBeCalledWith(flowcell.position, libraryName)
+      })
+
+      it('will call updateFlowcell again', () => {
+        flowcell.drop(mockEvent)
+        expect(flowcell.updateFlowcell).toBeCalledWith(flowcellPosition, '')
+      })
     })
 
     it('will change the status and show the image', () => {
@@ -121,13 +151,20 @@ describe('OntFlowcell.vue', () => {
     let mockEvent
 
     beforeEach(() => {
-      mockEvent = { dataTransfer: {setData: jest.fn(), setDragImage: jest.fn() }, preventDefault: jest.fn() }
+      mockEvent = { dataTransfer: { setData: jest.fn(), setDragImage: jest.fn() }, preventDefault: jest.fn() }
     })
 
     it('will set the drag image and set the data', () => {
-      flowcell.drag('aLibraryName', mockEvent)
+      flowcell.drag(mockEvent)
       expect(mockEvent.dataTransfer.setDragImage).toBeCalled()
       expect(mockEvent.dataTransfer.setData).toBeCalledWith('flowcellPosition', flowcell.position)
+      expect(mockEvent.dataTransfer.setData).toBeCalledWith('libraryName', flowcell.library.name)
+    })
+
+
+    it('will set the sourceType of the drag', () => {
+      flowcell.drag(mockEvent)
+      expect(mockEvent.dataTransfer.setData).toBeCalledWith('sourceType', 'FLOWCELL')
     })
   })
 

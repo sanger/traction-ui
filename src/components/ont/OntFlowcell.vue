@@ -6,9 +6,9 @@
     <title v-text="this.library.name"></title>
 
     <foreignObject width="70" height="227">
-      <div draggable="true" v-on:dragstart="drag(library.name, $event)">
-        <b-form-input placeholder="Name" :id="elementId"  @change="updateFlowcell($event)" :value="library.name"></b-form-input>
-        <b-img right src="/tube.png" height="30" draggable="false" :class="status"/>
+      <div draggable="true" v-on:dragstart="drag($event)">
+        <b-form-input placeholder="Name" :id="elementId"  @change="updateFlowcell(position, $event)" :value="library.name"></b-form-input>
+        <img left src="/tube.png" height="30" draggable="false" :class="status"/>
       </div>
     </foreignObject>
   </g>
@@ -17,11 +17,13 @@
 <script>
 // Flowcell component 
 // is only to display a current value 
-// and to accept drag and drop events, 
+// and to accept drag and drop events, with the help of DragHelper 
 // notifying the parent when they happen.
+import DragHelper from '@/mixins/DragHelper'
 
 export default {
   name: 'OntFlowcell',
+  mixins: [ DragHelper ],
   props: {
     position: {
       type: Number,
@@ -32,36 +34,32 @@ export default {
       required: true
     }
   },
-  data () {
-    return {
-      hover: false
-    }
-  },
   methods: {
-    updateFlowcell (libraryName) {
-      this.$emit('updateFlowcell', this.position, libraryName)
-    },
-    allowDrop (event) {
-      event.preventDefault()
-      this.hover = true
-    },
-    endDrop (event) {
-      event.preventDefault()
-      this.hover = false
-    },
-    drag (name, event) {
+    drag (event) {
       if (name === 0) return
       const img = new Image()
       img.src = '/tube.png'
       event.dataTransfer.setDragImage(img, 80, 0)
       event.dataTransfer.setData('flowcellPosition', this.position)
+      event.dataTransfer.setData('libraryName', this.library.name)
+
+      event.dataTransfer.setData('sourceType', 'FLOWCELL')
+
       this.hover = false
     },
     drop (event) {
       event.preventDefault()
-      this.updateFlowcell(event.dataTransfer.getData('name'))
+      let libraryName = event.dataTransfer.getData('libraryName')
+      this.updateFlowcell(this.position, libraryName)
+
+      if (event.dataTransfer.getData('sourceType') === 'FLOWCELL') {
+        let flowcellPosition = parseInt(event.dataTransfer.getData('flowcellPosition'))
+        this.updateFlowcell(flowcellPosition, '')
+      } else if (event.dataTransfer.getData('sourceType') === 'LIBRARY_LIST'){
+        this.updateLibraryList(libraryName, true)
+      }
       this.hover = false
-    }
+    },
   },
   computed: {
     // Determines the flowcells x/y coordinates

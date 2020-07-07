@@ -13,7 +13,11 @@ describe('OntPlates.vue', () => {
     wrapper = mount(OntPlates, {
       localVue,
       stubs: {
-        OntPlate: true
+        OntPlate: true,
+      },
+      // TODO: fix as methods is deprecated
+      methods: {
+        getPlates() { return platesData }
       },
       mocks: {
         $apollo: {
@@ -23,18 +27,15 @@ describe('OntPlates.vue', () => {
             },
           },
         },
-      },
-      data() {
-        return {
-          plates: platesData
-        }
       }
     })
+
+
     plates = wrapper.vm
   })
 
   it('will have fields', () => {
-    expect(plates.fields.map(field => field.key)).toEqual(expect.arrayContaining(['id', 'barcode', 'createdAt', 'show_details']))
+    expect(plates.fields).toEqual(['id', 'barcode', 'createdAt', 'show_details'])
   })
 
   describe('components', () => {

@@ -6,12 +6,12 @@
       hover 
       bordered
       responsive
-      :items="runs"
+      :items="getRuns"
       :fields="fields"
-      :sort-by.sync="sortBy"
-      :sort-desc.sync="sortDesc"
       sticky-header
       show-empty
+      :per-page="perPage"
+      :current-page="currentPage"
     >
 
       <template v-slot:cell(actions)="row">
@@ -20,13 +20,19 @@
         </b-button>
       </template>
 
-      <template v-slot:cell(library_names)="row" >
-        <span v-for="flowcell in row.item.flowcells" :key="flowcell.id">
-          {{flowcell.library.name}} 
-        </span>
+      <template v-slot:cell(libraryNames)="row">
+        {{ row.item.flowcells.map(fc => fc.library.name).join(", ") }}
       </template>
 
     </b-table>
+
+    <b-pagination
+      v-model="currentPage"
+      :total-rows="totalRows"
+      :per-page="perPage">
+    </b-pagination>
+
+    <span class="font-weight-bold">Total records: {{ totalRows }}</span>
 
     <div class="clearfix">
       <b-button id="newRun"
@@ -47,31 +53,34 @@ export default {
   name: 'OntHeronRuns',
   data () {
     return { 
-      fields: [
-        { key: 'experimentName', label: 'Experiment Name' , sortable: true},
-        { key: 'library_names', label: 'Libraries', class: 'w-25' },
-        { key: 'updatedAt', label: 'Updated at', sortable: true},
-        { key: 'actions', label: 'Actions' },
-      ],
-      sortBy: 'updatedAt',
-      sortDesc: true,
-    }
-  },
-  apollo: {
-    runs: {
-      query: ONT_HERON_RUNS_ALL_QUERY
+      fields: ['experimentName', 'libraryNames', 'updatedAt', 'actions'],
+      perPage: 5,
+      currentPage: 1,
+      totalRows: 0
     }
   },
   methods: {
     redirectToRun(id) {
       this.$router.push({ path: `/ont/run/${id || 'new'}` })
     },
-    refetchRuns() {
-      this.$apollo.queries.runs.refetch()
+    getRuns(ctx, callback) {
+      this.$apollo.query({
+        query: ONT_HERON_RUNS_ALL_QUERY,
+        variables: {
+          pageNum: ctx.currentPage,
+          pageSize: ctx.perPage
+        },
+        fetchPolicy: 'no-cache'
+      })
+      .then(data => {
+        this.totalRows = data.data.runs.pageInfo.entitiesCount
+        callback(data.data.runs.nodes)
+      })
+      .catch(() => {
+        callback([])
+      })
+      return null
     }
-  },
-  created () {
-    this.refetchRuns()
   }
 }
 </script>

@@ -6,12 +6,17 @@ describe('OntHeronRuns.vue', () => {
 
   beforeEach(() => {
     runsData = [
-      { id: 1, createdAt: '2020-05-13 11:00:00 UTC' },
-      { id: 2, createdAt: '2020-05-10 10:00:00 UTC' },
+      { id: 1, experimentName: 'run1', flowcells: [{library: {name: 'libName1'}}], createdAt: '2020-05-13 11:00:00 UTC' },
+      { id: 2, experimentName: 'run2', flowcells: [{library: {name: 'libName2'}}], createdAt: '2020-05-10 10:00:00 UTC' },
+      { id: 3, experimentName: 'run3', flowcells: [{library: {name: 'libName3'}}], createdAt: '2020-05-10 10:00:00 UTC' },
     ]
 
     wrapper = mount(OntHeronRuns, {
       localVue,
+      // TODO: fix as methods is deprecated
+      methods: {
+        getRuns() { return runsData }
+      },
       mocks: {
         $apollo: {
           queries: {
@@ -31,8 +36,8 @@ describe('OntHeronRuns.vue', () => {
   })
 
   it('will have fields', () => {
-    let expected = ['experimentName', 'library_names', 'updatedAt', 'actions']
-    expect(runs.fields.map(i => i.key)).toEqual(expect.arrayContaining(expected))
+    let expected = ['experimentName', 'libraryNames', 'updatedAt', 'actions']
+    expect(runs.fields).toEqual(expected)
   })
 
   it('will have a table', () => {

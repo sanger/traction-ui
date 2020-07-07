@@ -1,7 +1,13 @@
-query {
-  plates: plates {
-    id
-    barcode
-    createdAt
+query ($pageNum: Int, $pageSize: Int) {
+  plates: plates(pageNum: $pageNum, pageSize: $pageSize) {
+    nodes {
+      id
+      barcode
+      createdAt
+    }
+    pageInfo {
+      pageCount
+      entitiesCount
+    }
   }
 }

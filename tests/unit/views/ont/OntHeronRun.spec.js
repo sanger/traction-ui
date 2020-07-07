@@ -16,7 +16,8 @@ describe('OntHeronRun.vue', () => {
       propsData: props,
       stubs: {
         ONTSVG: true,
-        OntFlowcell: true
+        OntFlowcell: true,
+        OntRunLibrariesList: true
       },
       mocks: {
         $apollo: {

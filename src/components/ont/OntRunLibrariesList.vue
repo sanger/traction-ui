@@ -12,58 +12,66 @@
 <script>
 import LIBRARIES_ALL_QUERY from '@/graphql/queries/LibrariesAll.query.gql'
 import OntTube from '@/components/ont/OntTube'
+import GET_CLIENT_LIBRARIES from '@/graphql/queries/client/GetClientLibraries.query.gql'
+import SET_CLIENT_LIBRARIES from '@/graphql/queries/client/SetClientLibraries.mutation.gql'
+import DragHelper from '@/mixins/DragHelper'
 
 export default {
   name: 'OntRunLibrariesList',
+  mixins: [ DragHelper ],
   components: {
     OntTube
   },
-  props: ['selectedLibraryNames'],
-  data () {
-    return {
-      hover: false,
-    }
-  },
   apollo: {
     libraries: {
-      query: LIBRARIES_ALL_QUERY,
-       variables () {
-        return {
-          unassignedToFlowcells: true,
-        }
-      },
+      query: GET_CLIENT_LIBRARIES,
+      update: data => data.libraries
     }
   },
   methods: {
-    updateFlowcell (flowcellPosition, libraryName) {
-      this.$emit('updateFlowcell', flowcellPosition, libraryName)
-    },
-    allowDrop (event) {
-      event.preventDefault()
-      this.hover = true
-    },
-    endDrop (event) {
-      event.preventDefault()
-      this.hover = false
-    },
     drop (event) {
       event.preventDefault()
+      
       let flowcellPosition = parseInt(event.dataTransfer.getData('flowcellPosition'))
+      let libraryName = event.dataTransfer.getData('libraryName')
+
       this.updateFlowcell(flowcellPosition, '')
+      this.updateLibraryList(libraryName, false)
+
       this.hover = false
     },
-    isLibrarySelected(library) {
-      return this.selectedLibraryNames.includes(library.name)
+    fetchLibraries () { 
+      this.$apollo.query({
+        query: LIBRARIES_ALL_QUERY,
+        variables: {
+          unassignedToFlowcells: false,
+          pageNum: 1,
+          pageSize: 1000
+        },
+        fetchPolicy: 'no-cache'
+      }).then(data => {
+        this.setClientLibraries(data.data.libraries.nodes)
+      })
     },
+    setClientLibraries(libraries){
+      this.$apollo.mutate({
+        mutation: SET_CLIENT_LIBRARIES,
+        variables: {
+          libraries: libraries
+        }
+      })
+    },
+    provider () {
+      this.fetchLibraries()
+    }
   },
   computed: {
     unselectedLibraries () {
-      if (this.libraries) {
-        let libraries = this.libraries.filter(library => !this.isLibrarySelected(library))
-        return libraries.reverse()
-      }
-      return []
+      return this.libraries.filter(library => !library.assignedToFlowcell)
     }
+  },
+  created () {
+    this.provider()
   }
 }
 </script>
