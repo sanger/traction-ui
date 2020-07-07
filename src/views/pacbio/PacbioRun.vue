@@ -6,6 +6,7 @@
       <b-button id="backToRunsButton" class="float-right">Back</b-button>
     </router-link>
 
+    <b-button v-if="this.newRecord" variant="primary" class="float-right" @click="resetRun()" id="reset">Reset</b-button>
     <b-button class="float-right" :id="currentAction.id" :variant="currentAction.variant" @click="runAction">{{ currentAction.label}}</b-button>
 
     <br>
@@ -78,6 +79,10 @@ export default {
       } else {
         this.showAlert(consts.MESSAGE_ERROR_CREATE_RUN_FAILED + responses, 'danger')
       }
+    },
+    resetRun() {
+      this.newRun()
+      this.showAlert("Run has been reset", 'success')
     },
     ...mapActions([
       'createRun',
