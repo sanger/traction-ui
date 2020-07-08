@@ -8,7 +8,6 @@
       },
       "attributes": {
         "name": "Run0",
-        "template_prep_kit_box_barcode": "TPK0",
         "binding_kit_box_barcode": "BKB0",
         "sequencing_kit_box_barcode": "SKB0",
         "dna_control_complex_box_barcode": "DCCB0",

@@ -19,7 +19,6 @@ describe('PacbioRunInfo', () => {
     })
 
     it('can have mapState', () => {
-        expect(runInfo.templatePrepKitBoxBarcode).toBeDefined()
         expect(runInfo.bindingKitBoxBarcode).toBeDefined()
         expect(runInfo.sequencingKitBoxBarcode).toBeDefined()
         expect(runInfo.dnaControlComplexBoxBarcode).toBeDefined()
@@ -39,9 +38,6 @@ describe('PacbioRunInfo', () => {
         it('Run name should be read only', () => {
             let input = wrapper.find('#run_name')
             expect(input.attributes('readonly')).toBeTruthy()
-        })
-        it('has a Template Prep Kit Box Barcode input', () => {
-            expect(wrapper.find('#template_prep_kit_box_barcode')).toBeDefined()
         })
         it('has a Binding Kit Box Barcode input', () => {
             expect(wrapper.find('#binding_kit_box_barcode')).toBeDefined()

@@ -10,7 +10,6 @@
                 "attributes": {
                     "name": "aname",
                     "state": "pending",
-                    "template_prep_kit_box_barcode": "DM111710025910011171",
                     "binding_kit_box_barcode": "DM11171008622001111",
                     "sequencing_kit_box_barcode": "DM000110086180012311",
                     "dna_control_complex_box_barcode": "Lxxxxx10171760012311",
@@ -28,7 +27,6 @@
                 "attributes": {
                     "name": "anothername",
                     "state": "started",
-                    "template_prep_kit_box_barcode": "DM111710025910011172",
                     "binding_kit_box_barcode": "DM11171008622001112",
                     "sequencing_kit_box_barcode": "DM000110086180012312",
                     "dna_control_complex_box_barcode": "Lxxxxx10171760012312",
@@ -46,7 +44,6 @@
                 "attributes": {
                     "name": "anothername1",
                     "state": "completed",
-                    "template_prep_kit_box_barcode": "DM111710025910011172",
                     "binding_kit_box_barcode": "DM11171008622001112",
                     "sequencing_kit_box_barcode": "DM000110086180012312",
                     "dna_control_complex_box_barcode": "Lxxxxx10171760012312",
@@ -63,7 +60,6 @@
                 "attributes": {
                     "name": "anothername2",
                     "state": "cancelled",
-                    "template_prep_kit_box_barcode": "DM111710025910011172",
                     "binding_kit_box_barcode": "DM11171008622001112",
                     "sequencing_kit_box_barcode": "DM000110086180012312",
                     "dna_control_complex_box_barcode": "Lxxxxx10171760012312",
@@ -81,7 +77,6 @@
                 "attributes": {
                     "name": "anothername3",
                     "state": "completed",
-                    "template_prep_kit_box_barcode": "DM111710025910011172",
                     "binding_kit_box_barcode": "DM11171008622001112",
                     "sequencing_kit_box_barcode": "DM000110086180012312",
                     "dna_control_complex_box_barcode": "Lxxxxx10171760012312",
@@ -99,7 +94,6 @@
                 "attributes": {
                     "name": "anothername4",
                     "state": "started",
-                    "template_prep_kit_box_barcode": "DM111710025910011172",
                     "binding_kit_box_barcode": "DM11171008622001112",
                     "sequencing_kit_box_barcode": "DM000110086180012312",
                     "dna_control_complex_box_barcode": "Lxxxxx10171760012312",
