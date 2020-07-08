@@ -28,7 +28,7 @@
         </b-form-group>
 
         <b-form-group id="input-group-3"
-                      label="Template Prep Kit Box Barcode:"
+                      label="Template prep kit box barcode:"
                       label-for="input-3">
           <b-form-input
             id="input-3"
