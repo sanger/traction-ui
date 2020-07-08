@@ -7,7 +7,7 @@ const createLibraryInTraction = async ({ rootGetters, getters }, payload) => {
   library = {
       volume: library.volume,
       concentration: library.concentration,
-      library_kit_barcode: library.libraryKitBarcode,
+      template_prep_kit_box_barcode: library.templatePrepKitBoxBarcode,
       fragment_size: library.fragmentSize,
       relationships: {
         requests: {
@@ -83,7 +83,7 @@ const updateLibrary= async ({ commit, getters }, payload) => {
       attributes: {
         volume: payload.volume,
         concentration: payload.concentration,
-        library_kit_barcode: payload.library_kit_barcode,
+        template_prep_kit_box_barcode: payload.template_prep_kit_box_barcode,
         fragment_size: payload.fragment_size
       }
     }

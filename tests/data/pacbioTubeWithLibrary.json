@@ -35,7 +35,7 @@
                     "fragment_size": 100,
                     "volume": 1,
                     "concentration": 1,
-                    "library_kit_barcode": "LK12345",
+                    "template_prep_kit_box_barcode": "LK12345",
                     "deactivated_at": null,
                     "sample_names": "Sample6",
                     "barcode": "TRAC-2-6",

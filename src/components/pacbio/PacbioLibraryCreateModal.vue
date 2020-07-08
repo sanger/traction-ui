@@ -63,7 +63,7 @@
                       label="Library kit barcode:"
                       label-for="input-3">
           <b-form-input id="input-3"
-                        v-model="library.libraryKitBarcode"
+                        v-model="library.templatePrepKitBoxBarcode"
                         type="text"
                         required
                         placeholder="ABC">
