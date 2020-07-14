@@ -28,11 +28,11 @@
         </b-form-group>
 
         <b-form-group id="input-group-3"
-                      label="Library Kit Barcode:"
+                      label="Template prep kit box barcode:"
                       label-for="input-3">
           <b-form-input
             id="input-3"
-            v-model="library.library_kit_barcode">
+            v-model="library.template_prep_kit_box_barcode">
           </b-form-input>
         </b-form-group>
 
@@ -73,7 +73,7 @@ export default {
     return {
       library: {
         fragment_size: "",
-        library_kit_barcode: "",
+        template_prep_kit_box_barcode: "",
         concentration: "",
         volume: ""
       }

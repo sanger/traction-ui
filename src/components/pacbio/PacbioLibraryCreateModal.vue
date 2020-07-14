@@ -60,10 +60,10 @@
         </b-form-group>
 
         <b-form-group id="input-group-2"
-                      label="Library kit barcode:"
+                      label="Template prep kit box barcode:"
                       label-for="input-3">
           <b-form-input id="input-3"
-                        v-model="library.libraryKitBarcode"
+                        v-model="library.templatePrepKitBoxBarcode"
                         type="text"
                         required
                         placeholder="ABC">

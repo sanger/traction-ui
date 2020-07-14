@@ -13,16 +13,6 @@
                 readonly/>
       </b-col>
       <b-col>
-        <b-form-input :value="templatePrepKitBoxBarcode"
-                  @change="setTemplatePrepKitBoxBarcode"
-                  id="template_prep_kit_box_barcode"
-                  placeholder="Template Prep Kit Box Barcode"
-                  type="text"
-                  width="48"
-                  v-b-tooltip.hover 
-                  title="Template Prep Kit Box Barcode"/>
-      </b-col>
-      <b-col>
         <b-form-input :value="bindingKitBoxBarcode"
                 @change="setBindingKitBoxBarcode"
                 id="binding_kit_box_barcode"
@@ -96,7 +86,6 @@ export default {
   },
   methods: {
     ...mapMutations([
-      'setTemplatePrepKitBoxBarcode',
       'setBindingKitBoxBarcode',
       'setSequencingKitBoxBarcode',
       'setDNAControlComplexBoxBarcode',
@@ -111,7 +100,6 @@ export default {
     ]),
     ...mapState({
       runName: state => state.currentRun.name,
-      templatePrepKitBoxBarcode: state => state.currentRun.template_prep_kit_box_barcode,
       bindingKitBoxBarcode: state => state.currentRun.binding_kit_box_barcode,
       sequencingKitBoxBarcode: state => state.currentRun.sequencing_kit_box_barcode,
       dnaControlComplexBoxBarcode: state => state.currentRun.dna_control_complex_box_barcode,

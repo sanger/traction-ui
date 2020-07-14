@@ -129,7 +129,7 @@ export default {
         { key: 'barcode', label: 'Barcode', sortable: true },
         { key: 'volume', label: 'Volume', sortable: true },
         { key: 'concentration', label: 'Concentration', sortable: true },
-        { key: 'library_kit_barcode', label: 'Library Kit Barcode', sortable: true },
+        { key: 'template_prep_kit_box_barcode', label: 'Template Prep Kit Box Barcode', sortable: true },
         { key: 'fragment_size', label: 'Fragment Size', sortable: true },
         { key: 'created_at', label: 'Created at', sortable: true },
         { key: 'actions', label: 'Actions' },

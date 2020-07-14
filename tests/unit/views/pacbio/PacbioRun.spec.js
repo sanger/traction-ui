@@ -18,7 +18,6 @@ describe('Run.vue', () => {
     mockRun = {
       id: '1',
       name: '',
-      template_prep_kit_box_barcode: '',
       binding_kit_box_barcode: '',
       sequencing_kit_box_barcode: '',
       dna_control_complex_box_barcode: '',
