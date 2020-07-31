@@ -1,4 +1,4 @@
-mutation ($barcode: String!, $wells: [WellWithSampleInput!]!) {
+mutation ($barcode: String!, $wells: [WellWithSamplesInput!]!) {
   createPlateWithSamples( 
     input: { 
       arguments: {
