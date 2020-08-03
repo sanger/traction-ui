@@ -139,14 +139,14 @@ describe('SequencescapePlates', () => {
       expect(transformedPlate.wells.length).toEqual(3)
     })
 
-    it('wells should have a position and sample', () => {
+    it('wells should have a position and samples', () => {
       let well = transformedPlate.wells[0]
-      expect(Object.keys(well)).toEqual(['position', 'sample'])
+      expect(Object.keys(well)).toEqual(['position', 'samples'])
       expect(well.position).toEqual('A1')
     })
 
     it('samples should have an id, name and tag', () => {
-      let sample = transformedPlate.wells[0].sample
+      let sample = transformedPlate.wells[0].samples[0]
       expect(Object.keys(sample)).toEqual(['externalId', 'name', 'tagOligo'])
       expect(sample.externalId).toEqual('03e6d65e-c283-11e9-9453-68b59976a384')
       expect(sample.name).toEqual('4463STDY8091171')
@@ -154,8 +154,7 @@ describe('SequencescapePlates', () => {
     })
 
     it('samples will be empty if there arent any', () => {
-      let sample = transformedPlate.wells[2].sample
-      expect(sample).not.toBeDefined()
+      expect(transformedPlate.wells[2].samples).not.toBeDefined()
     })
   })
 

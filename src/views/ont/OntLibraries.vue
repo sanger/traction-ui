@@ -3,24 +3,35 @@
     <alert ref='alert'></alert>
     <b-table 
       id="libraries-table"
+      ref='table'
       hover 
       bordered
       responsive
-      :items="libraries"
+      :items="getLibraries"
       :fields="fields"
       selectable
       select-mode="single"
       @row-selected="onRowSelected"
-      :sort-by.sync="sortBy"
-      :sort-desc.sync="sortDesc"
       sticky-header
-      show-empty>
+      show-empty
+      :per-page="perPage"
+      :current-page="currentPage"
+    >
     </b-table>
+
+    <b-pagination
+      v-model="currentPage"
+      :total-rows="totalRows"
+      :per-page="perPage">
+    </b-pagination>
+    
+    <span class="font-weight-bold">Total records: {{ totalRows }}</span>
     
     <div class="clearfix">
       <printerModal class="float-left"
-                    @selectPrinter="handlePrintLabel"
-                    :disabled="this.selected.length === 0">
+                    @selectPrinter="handlePrint"
+                    :disabled="this.selected.length === 0"
+                    ref='printerModal'>
       </printerModal>
 
       <b-button variant="danger"
@@ -51,31 +62,36 @@ export default {
   },
   data () {
     return { 
-      fields: [
-        { key: 'id', label: 'ID' , sortable: true},
-        { key: 'name', label: 'Name', sortable: true},
-        { key: 'poolSize', label: 'Pool Size', sortable: true},
-        { key: 'tubeBarcode', label: 'Tube Barcode' , sortable: true},
-        { key: 'plateBarcode', label: 'Plate Barcode', sortable: true},
-        { key: 'pool', label: 'Pool #', sortable: true},
-        { key: 'createdAt', label: 'Created at', sortable: true},
-      ],
+      fields: [ 'id', 'name', 'poolSize', 'tubeBarcode', 'plateBarcode', 'pool', 'createdAt', 'assignedToFlowcell'],
       selected: [],
-      sortBy: 'createdAt',
-      sortDesc: true,
-    }
-  },
-  apollo: {
-    libraries: {
-      query: LIBRARIES_ALL_QUERY,
-      variables () {
-        return {
-          unassignedToFlowcells: true,
-        }
-      },
+      perPage: 5,
+      currentPage: 1,
+      totalRows: 0  
     }
   },
   methods: {
+    handlePrint(printer) {
+      this.handlePrintLabel(printer)
+    },
+    getLibraries(ctx, callback) {
+      this.$apollo.query({
+        query: LIBRARIES_ALL_QUERY,
+        variables: {
+          unassignedToFlowcells: false,
+          pageNum: ctx.currentPage,
+          pageSize: ctx.perPage
+        },
+        fetchPolicy: 'no-cache'
+      })
+      .then(data => {
+        this.totalRows = data.data.libraries.pageInfo.entitiesCount
+        callback(data.data.libraries.nodes)
+      })
+      .catch(() => {
+        callback([])
+      })
+      return null
+    },
     handleLibraryDelete() {
       const libraryName = this.selected[0].name
       this.$apollo.mutate({
@@ -94,12 +110,9 @@ export default {
       })
     },
     refetchLibraries() {
-      this.$apollo.queries.libraries.refetch()
+      this.$refs.table.refresh()
     }
   },
-  created () {
-    this.refetchLibraries()
-  }
 }
 
 </script>

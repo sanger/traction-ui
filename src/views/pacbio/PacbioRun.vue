@@ -6,20 +6,21 @@
       <b-button id="backToRunsButton" class="float-right">Back</b-button>
     </router-link>
 
+    <b-button v-if="this.newRecord" variant="primary" class="float-right" @click="resetRun()" id="reset">Reset</b-button>
     <b-button class="float-right" :id="currentAction.id" :variant="currentAction.variant" @click="runAction">{{ currentAction.label}}</b-button>
 
     <br>
     <br>
 
     <div>
-      <pacbioRunInfo></pacbioRunInfo>
+      <pacbioRunInfo ref='pacbioRunInfo'></pacbioRunInfo>
       <br>
       <b-row>
         <b-col cols="6">
-          <pacbioLibrariesList></pacbioLibrariesList>
+          <pacbioLibrariesList ref='pacbioLibrariesList'></pacbioLibrariesList>
         </b-col>
         <b-col>
-          <Plate v-if="this.currentRun.id" @alert="showAlert"></Plate>
+          <Plate v-if="this.currentRun.id" @alert="showAlert" ref='plate'></Plate>
         </b-col>
       </b-row>
     </div>
@@ -78,6 +79,10 @@ export default {
       } else {
         this.showAlert(consts.MESSAGE_ERROR_CREATE_RUN_FAILED + responses, 'danger')
       }
+    },
+    resetRun() {
+      this.newRun()
+      this.showAlert("Run has been reset", 'success')
     },
     ...mapActions([
       'createRun',

@@ -3,47 +3,36 @@ import Alert from '@/components/Alert'
 
 describe('Alert.vue', () => {
 
-  let wrapper, alert
-
-  beforeEach(() => {
-    wrapper = mount(Alert, { localVue })
-    alert = wrapper.vm
-  })
-
-  it('will have a name', () => {
-    expect(wrapper.name()).toEqual('Alert')
-  })
-
-  it('will have an alert component', () => {
-    expect(wrapper.contains(Alert)).toBe(true)
-  })
+  let wrapper
 
   it('has a message', () => {
-    wrapper.setData({ message: 'bar' })
+    wrapper = mount(Alert, { localVue, data () { return { message: 'bar' } } })
     expect(wrapper.vm.message).toBe('bar')
   })
 
   it('has a type', () => {
-    wrapper.setData({ type: 'primary' })
+    wrapper = mount(Alert, { localVue, data () { return { type: 'primary' } } })
     expect(wrapper.vm.type).toBe('primary')
   })
 
   it('is hidden as default', () => {
-    expect(wrapper.vm.showDismissibleAlert).toBe(false)
-    expect(wrapper.contains('#showAlert')).toBe(false)
+    wrapper = mount(Alert, { localVue })
+    expect(wrapper.vm.showDismissibleAlert).toBeFalsy()
+    expect(wrapper.find('#showAlert').element).toBeTruthy()
   })
 
   it('displays the message', () => {
-    wrapper.setData({ message: 'bar', showDismissibleAlert: true })
+    wrapper = mount(Alert, { localVue, data () { return { message: 'bar', showDismissibleAlert: true } } })
     expect(wrapper.html()).toContain('bar')
   })
 
   it('displays the type', () => {
-    wrapper.setData({ type: 'success', showDismissibleAlert: true })
-    expect(wrapper.contains('.alert-success')).toBe(true)
+    wrapper = mount(Alert, { localVue, data () { return { type: 'success', showDismissibleAlert: true } } })
+    expect(wrapper.find('.alert-success').element).toBeTruthy()
   })
 
   it('#show sets the data', () => {
+    let alert = mount(Alert, { localVue }).vm
     alert.show('msg', 'primary')
     expect(alert.message).toBe('msg')
     expect(alert.type).toBe('primary')

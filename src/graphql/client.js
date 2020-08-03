@@ -8,12 +8,12 @@ const cache = new InMemoryCache()
 
 cache.writeData({
   data: {
-    run:
-      {
-        __typename: 'Run',
-        id: '',
-        flowcells: []
-      },
+    run:{
+      __typename: 'Run',
+      id: '',
+      flowcells: []
+    },
+    libraries: []
   },
 })
 

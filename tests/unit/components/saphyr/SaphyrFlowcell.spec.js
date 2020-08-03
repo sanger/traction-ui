@@ -41,10 +41,6 @@ describe('Flowcell', () => {
     flowcell = wrapper.vm
   })
 
-  it('will have a name', () => {
-    expect(wrapper.name()).toEqual('SaphyrFlowcell')
-  })
-
   it('can have an index', () => {
     expect(flowcell.index).toEqual(props.index)
   })
@@ -53,16 +49,12 @@ describe('Flowcell', () => {
     expect(flowcell.position).toEqual(props.position)
   })
 
-  it('can have state with a current run', () => {
-    expect(flowcell.currentRun).toEqual(run)
-  })
-
   it('will display the position', () => {
     expect(wrapper.find('.position').text()).toMatch(new RegExp(props.position))
   })
 
   it('can have a library', () => {
-    expect(wrapper.contains('#libraryBarcode')).toBeTruthy()
+    expect(wrapper.find('#libraryBarcode-0')).toBeTruthy()
   })
 
   describe('setBarcode', () => {
@@ -86,8 +78,14 @@ describe('Flowcell', () => {
       flowcell.getTubeForBarcode.mockReturnValue(tube)
 
       await flowcell.setBarcode(newBarcode)
-
-      expect(flowcell.setLibraryBarcode).toBeCalled()
+      let expected = {
+        flowcellIndex: 0,
+        library:  {
+          barcode: "TRAC-2-21",
+          id: "1",
+        }
+      }
+      expect(flowcell.setLibraryBarcode).toBeCalledWith(expected)
       expect(flowcell.alert).not.toBeCalled()
     })
 

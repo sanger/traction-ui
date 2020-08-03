@@ -1,0 +1,12 @@
+query {
+  libraries @client {
+    id
+    name
+    pool
+    poolSize
+    tubeBarcode
+    plateBarcode
+    createdAt
+    assignedToFlowcell
+  }
+}

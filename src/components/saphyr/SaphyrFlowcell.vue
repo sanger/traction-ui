@@ -3,7 +3,7 @@
     <b-col>
       <div class="position">{{ position }}</div>
 
-      <b-form-input :value="libraryBarcode" @change="setBarcode" id="libraryBarcode" placeholder="Library barcode" type="text" />
+      <b-form-input :value="libraryBarcode" @change="setBarcode" :id='"libraryBarcode-"+this.index' placeholder="Library barcode" type="text" />
     </b-col>
   </b-row>
 </template>
@@ -11,7 +11,7 @@
 <script>
 
 import { createNamespacedHelpers } from 'vuex'
-const { mapGetters, mapState, mapActions , mapMutations} = createNamespacedHelpers('traction/saphyr/runs')
+const { mapState, mapActions , mapMutations} = createNamespacedHelpers('traction/saphyr/runs')
 
 export default {
   name: 'SaphyrFlowcell',
@@ -26,11 +26,11 @@ export default {
   methods: {
     async setBarcode(barcode) {
       let isValid = await this.isLibraryBarcodeValid(barcode)
-
+      
       if (isValid) {
         let libraryTube = await this.getTubeForBarcode(barcode)
-        let library = libraryTube.materials[0]
-        let payload = { library: library, flowcellIndex: this.index}
+        let container_material = libraryTube.materials[0]
+        let payload = { library: { id: container_material.material_id, barcode: container_material.barcode }, flowcellIndex: this.index }
 
         this.setLibraryBarcode(payload)
       } else {
@@ -49,9 +49,6 @@ export default {
     },
   },
   computed: {
-    ...mapGetters([
-      'currentRun'
-    ]),
     ...mapState({
       libraryBarcode (state) {
         return state.currentRun.chip.flowcells[this.index].library.barcode

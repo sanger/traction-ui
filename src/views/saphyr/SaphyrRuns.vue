@@ -38,7 +38,7 @@
         </template>
 
         <template v-slot:cell(actions)="row">
-          <b-button :id="generateId('edit', row.item.id)" variant="outline-dark" size="sm" @click="editRun(row.item.id)" class="mr-1">
+          <b-button :id="generateId('edit', row.item.id)" variant="outline-dark" size="sm" @click="redirectToRun(row.item.id)" class="mr-1">
             Edit
           </b-button>
 
@@ -61,7 +61,7 @@
       <div class="clearfix">
         <b-button id="newRun"
                   class="float-left"
-                  @click="newRun()"
+                  @click="redirectToRun()"
                   variant="success">
           New Run
         </b-button>
@@ -129,6 +129,9 @@ export default {
         this.showAlert("Failed to update run: " + error.message, 'danger')
       }
     },
+    redirectToRun(runId) {
+      this.$router.push({ path: `/saphyr/run/${runId || 'new'}` })
+    },
     async provider() {
       try {
         await this.setRuns()
@@ -138,8 +141,6 @@ export default {
     },
     ...mapActions('traction/saphyr/runs', [
       'setRuns',
-      'editRun',
-      'newRun'
     ]),
     ...mapActions('traction', [
       'startRun',

@@ -16,9 +16,6 @@ describe('PacbioLibrariesList', () => {
         wrapper = mount(PacbioLibrariesList, { 
             localVue, 
             store,
-            methods: {
-                provider() { return }
-            }
         })
     })
 

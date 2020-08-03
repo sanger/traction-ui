@@ -9,7 +9,7 @@
                     "barcode": null,
                     "volume": 1.111,
                     "concentration": 2.222,
-                    "library_kit_barcode": "LK1234567",
+                    "template_prep_kit_box_barcode": "LK1234567",
                     "fragment_size": 100,
                     "created_at": "10/09/2019 10:25",
                     "deactivated_at": null,

@@ -1,6 +1,4 @@
 import OntPlates from '@/views/ont/OntPlates'
-import OntPlate from '@/components/ont/OntPlate'
-import Alert from '@/components/Alert'
 import { mount, localVue } from '../../testHelper'
 
 describe('OntPlates.vue', () => {
@@ -15,36 +13,39 @@ describe('OntPlates.vue', () => {
     wrapper = mount(OntPlates, {
       localVue,
       stubs: {
-        OntPlate: true
+        OntPlate: true,
       },
-      data() {
-        return {
-          plates: platesData
-        }
-      },
+      // TODO: fix as methods is deprecated
       methods: {
-        refetchPlates() { return }
+        getPlates() { return platesData }
+      },
+      mocks: {
+        $apollo: {
+          queries: {
+            plates: {
+              refetch: jest.fn()
+            },
+          },
+        },
       }
     })
+
+
     plates = wrapper.vm
   })
 
-  it('will have a name', () => {
-    expect(wrapper.name()).toEqual('OntPlates')
-  })
-
   it('will have fields', () => {
-    expect(plates.fields.map(field => field.key)).toEqual(expect.arrayContaining(['id', 'barcode', 'createdAt', 'show_details']))
+    expect(plates.fields).toEqual(['id', 'barcode', 'createdAt', 'show_details'])
   })
 
   describe('components', () => {
     it('has a Alert component', () => {
-      expect(wrapper.contains(Alert)).toBe(true)
+      expect(wrapper.findComponent({ref: 'alert'})).toBeTruthy()
     })
   })
 
   it('will have a table', () => {
-    expect(wrapper.contains('table')).toBe(true)
+    expect(wrapper.find('table').exists()).toBeTruthy()
   })
 
   it('will have a table with plates', () => {
@@ -59,10 +60,10 @@ describe('OntPlates.vue', () => {
       expect(button.text()).toEqual('Show Plate')
     })
 
-    it('has a OntPlate component on button click', () => {
+    it('has a OntPlate component on button click', async () => {
       button = wrapper.find('#details-btn-1')
-      button.trigger('click')
-      expect(wrapper.contains(OntPlate)).toBe(true)
+      await button.trigger('click')
+      expect(wrapper.findComponent({ref: 'ontPlate'}).exists()).toBeTruthy()
     })
   })
 

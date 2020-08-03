@@ -1,7 +1,6 @@
-import { mount, localVue } from '../../testHelper'
+import { mount, localVue, store } from '../../testHelper'
 import WellModal from '@/components/pacbio/PacbioWellModal'
 import * as Run from '@/api/PacbioRun'
-import store from '@/store'
 
 describe('PacbioRunInfo', () => {
   let modal, wrapper, props, storeWell, run
@@ -23,10 +22,6 @@ describe('PacbioRunInfo', () => {
       propsData: props 
     })
     modal = wrapper.vm
-  })
-
-  it('will have a name', () => {
-    expect(wrapper.name()).toEqual('WellModal')
   })
 
   it('must have a position prop', () => {

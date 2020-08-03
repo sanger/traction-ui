@@ -1,13 +1,19 @@
 import OntLibraries from '@/views/ont/OntLibraries'
 import { mount, localVue } from '../../testHelper'
-import PrinterModal from '@/components/PrinterModal'
 
 describe('OntLibraries.vue', () => {
-  let wrapper, libraries, librariesData, mutate, refetchLibraries
+  let wrapper, libraries, librariesData, mutate, mockApollo //, refetchLibraries
 
   beforeEach(() => {
     mutate = jest.fn()
-    refetchLibraries = jest.fn()
+    mockApollo = {
+      mutate: mutate,
+      queries: {
+        libraries: {
+          refetch: jest.fn()
+        }
+      }
+    }
 
     librariesData = [
       { id: 1, tube_barcode: 'TRAC-2-1', plate_barcode: 'TRAC-1-1', poolSize: 1, wellRange: 'A1-H3', tag_set: 24 },
@@ -19,38 +25,30 @@ describe('OntLibraries.vue', () => {
 
     wrapper = mount(OntLibraries, {
       localVue,
+      mocks: {
+        $apollo: mockApollo
+      },
       stubs: {
         OntPlate: true,
         PrinterModal: true
       },
-      data() {
-        return {
-          libraries: librariesData,
-        }
-      },
-      mocks: {
-        $apollo: {
-          mutate: mutate
-        }
-      },
+      // TODO: fix as methods is deprecated
       methods: {
-        refetchLibraries: refetchLibraries
-      }
+        getLibraries() { return librariesData }
+      },
     })
+    
     libraries = wrapper.vm
-  })
-
-  it('will have a name', () => {
-    expect(wrapper.name()).toEqual('OntLibraries')
+    // refetchLibraries = mockApollo.queries.libraries.refetch
   })
 
   it('will have fields', () => {
-    let expected = ["id", "name", "poolSize", "tubeBarcode", "plateBarcode", "pool", "createdAt"]
-    expect(libraries.fields.map(i => i.key)).toEqual(expected)
+    let expected = ["id", "name", "poolSize", "tubeBarcode", "plateBarcode", "pool", "createdAt", "assignedToFlowcell"]
+    expect(libraries.fields).toEqual(expected)
   })
 
   it('will have a table', () => {
-    expect(wrapper.contains('table')).toBe(true)
+    expect(wrapper.find('table').exists()).toBeTruthy()
   })
 
   it('will have a table with libraries', () => {
@@ -64,9 +62,20 @@ describe('OntLibraries.vue', () => {
 
     it('passes selected printer to function on emit event', () => {
       libraries.selected = [{id: 1}]
-      let modal = wrapper.find(PrinterModal)
+      let modal = wrapper.findComponent({ref: 'printerModal'})
       modal.vm.$emit('selectPrinter', 'printer1')
 
+      expect(libraries.handlePrintLabel).toBeCalledWith('printer1')
+    })
+  })
+
+  describe('#handlePrint', () => {
+    beforeEach(() => {
+      libraries.handlePrintLabel = jest.fn()
+    })
+
+    it('calls handlePrintLabel', () => {
+      libraries.handlePrint('printer1')
       expect(libraries.handlePrintLabel).toBeCalledWith('printer1')
     })
   })
@@ -79,6 +88,7 @@ describe('OntLibraries.vue', () => {
       button = wrapper.find('#deleteLibrary-btn')
       libraries.showAlert = jest.fn()
       libraries.selected = [{ name: libraryName }]
+      libraries.refetchLibraries = jest.fn()
     })
 
     it('is shows button', () => {
@@ -101,7 +111,6 @@ describe('OntLibraries.vue', () => {
     })
 
     it('refetches libraries on success', async () => {
-      refetchLibraries.mockClear()
       let mockResponse = { data: { deleteOntLibrary: { success: true, errors: [] } } }
 
       let promise = new Promise((resolve) => {
@@ -112,7 +121,7 @@ describe('OntLibraries.vue', () => {
 
       await button.trigger('click')
 
-      expect(refetchLibraries).toBeCalled()
+      expect(libraries.refetchLibraries).toBeCalled()
     })
 
     it('shows an alert on failure', async () => {

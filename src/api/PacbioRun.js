@@ -39,7 +39,6 @@ const buildWells = () => {
 const build = (object) => {
     return object || {
         id: 'new',
-        template_prep_kit_box_barcode: '',
         binding_kit_box_barcode: '',
         sequencing_kit_box_barcode: '',
         dna_control_complex_box_barcode: '',
@@ -128,7 +127,6 @@ const createRunPayload = (run) => {
         data: {
             type: "runs",
             attributes: {
-                template_prep_kit_box_barcode: run.template_prep_kit_box_barcode,
                 binding_kit_box_barcode: run.binding_kit_box_barcode,
                 sequencing_kit_box_barcode: run.sequencing_kit_box_barcode,
                 dna_control_complex_box_barcode: run.dna_control_complex_box_barcode,
@@ -192,7 +190,6 @@ const updateRunPayload = (run) => {
             id: run.id,
             type: "runs",
             attributes: {
-                template_prep_kit_box_barcode: run.template_prep_kit_box_barcode,
                 binding_kit_box_barcode: run.binding_kit_box_barcode,
                 sequencing_kit_box_barcode: run.sequencing_kit_box_barcode,
                 dna_control_complex_box_barcode: run.dna_control_complex_box_barcode,

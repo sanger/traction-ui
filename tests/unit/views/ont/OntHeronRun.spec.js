@@ -1,8 +1,4 @@
 import OntHeronRun from '@/views/ont/OntHeronRun'
-import OntRunLibrariesList from '@/components/ont/OntRunLibrariesList'
-import ONTSVG from '@/components/svg/ONTSVG'
-import OntFlowcell from '@/components/ont/OntFlowcell'
-import Alert from '@/components/Alert'
 import { localVue, mount } from '../../testHelper'
 
 describe('OntHeronRun.vue', () => {
@@ -10,14 +6,18 @@ describe('OntHeronRun.vue', () => {
 
   beforeEach(() => {
     mutate = jest.fn()
+    mutate.mockReturnValue(Promise.resolve({ flowcells: [] }))
+
     query = jest.fn()
     props = { id: 'new' }
 
     wrapper = mount(OntHeronRun, {
       localVue,
+      propsData: props,
       stubs: {
         ONTSVG: true,
-        OntFlowcell: true
+        OntFlowcell: true,
+        OntRunLibrariesList: true
       },
       mocks: {
         $apollo: {
@@ -25,40 +25,32 @@ describe('OntHeronRun.vue', () => {
           query: query
         }
       },
-      methods: {
-        provider() { return }
-      },
-      propsData: props
     })
 
     run = wrapper.vm
   })
 
-  it('will have a name', () => {
-    expect(wrapper.name()).toEqual('OntHeronRun')
-  })
-
   describe('components', () => {
     it('has a OntFlowcell component', () => {
-      expect(wrapper.contains(OntFlowcell)).toBe(true)
+      expect(wrapper.findComponent({ref: 'ontFlowcell'})).toBeTruthy()
     })
 
     it('has a ONTSVG component', () => {
-      expect(wrapper.contains(ONTSVG)).toBe(true)
+      expect(wrapper.findComponent({ref: 'ontSvg'})).toBeTruthy()
     })
 
     it('has a OntRunLibrariesList component', () => {
-      expect(wrapper.contains(OntRunLibrariesList)).toBe(true)
+      expect(wrapper.findComponent({ref: 'ontRunLibrariesList'})).toBeTruthy()
     })
 
     it('has a Alert component', () => {
-      expect(wrapper.contains(Alert)).toBe(true)
+      expect(wrapper.findComponent({ref: 'alert'})).toBeTruthy()
     })
   })
 
   describe('ONT Flowcells', () => {
     it('has the correct number of flowcells', () => {
-      let ellipses = wrapper.findAll(OntFlowcell)
+      let ellipses = wrapper.findAllComponents({ref: 'ontFlowcell'})
       expect(ellipses.length).toEqual(5)
     })
   })

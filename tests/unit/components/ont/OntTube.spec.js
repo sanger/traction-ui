@@ -18,10 +18,6 @@ describe('OntTube.vue', () => {
     tube = wrapper.vm
   })
 
-  it('will have a name', () => {
-    expect(wrapper.name()).toEqual('OntTube')
-  })
-
   describe('props', () => {
     it('must have a name', () => {
       expect(tube.name).toEqual(props.name)
@@ -47,7 +43,8 @@ describe('OntTube.vue', () => {
 
     it('will update the barcode', async () => {
       tube.drag(libraryName, mockEvent)
-      expect(setData).toBeCalledWith('name', libraryName)
+      expect(setData).toBeCalledWith('libraryName', libraryName)
+      expect(setData).toBeCalledWith('sourceType', 'LIBRARY_LIST')
     })
   })
 
