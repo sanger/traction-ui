@@ -53,6 +53,19 @@
           </b-form-select>
         </b-form-group>
 
+        <b-form-group v-if="sequencingMode === 'CCS'"
+                      id="extensionTime-group"
+                      label="Extension Time:"
+                      label-for="extensionTime">
+          <b-form-input
+            ref="extensionTime"
+            id="extensionTime"
+            :value="extensionTime"
+            @change="updateExtensionTime"
+            placeholder="Extension Time">
+          </b-form-input>
+        </b-form-group>
+
       </b-form>
 
       <b-table stacked :items="wellLibraries" :fields="wellLibrariesFields" id="wellLibraries">
@@ -138,6 +151,9 @@ export default {
     updateSequencingMode(seqMode) {
       this.mutateWell({ position: this.position, property: 'sequencing_mode', with: seqMode })
     },
+    updateExtensionTime(extensionTime) {
+      this.mutateWell({ position: this.position, property: 'extension_time', with: extensionTime })
+    },
     async updateLibraryBarcode(row, barcode) {
       let index = row.index
 
@@ -190,7 +206,10 @@ export default {
       },
       wellLibraries () {
         return (this.well(this.position) ? this.well(this.position).libraries : [])
-      }
+      },
+      extensionTime () {
+        return (this.well(this.position) ? this.well(this.position).extension_time : '2')
+      },
     })
   },
   components: {

@@ -122,6 +122,11 @@ describe('Run', () => {
             expect(lastWell.sequencing_mode).toBeDefined()
           })
 
+          it('will have an extension_time', () => {
+            expect(firstWell.extension_time).toEqual('2')
+            expect(lastWell.extension_time).toEqual('2')
+          })
+
           it('will have a library', () => {
             expect(firstWell.libraries).toEqual([])
           })
@@ -148,6 +153,7 @@ describe('Run', () => {
       expect(well.on_plate_loading_concentration).toEqual('')
       expect(well.sequencing_mode).toEqual('')
       expect(well.libraries).toEqual([])
+      expect(well.extension_time).toEqual('2')
     })
   })
 

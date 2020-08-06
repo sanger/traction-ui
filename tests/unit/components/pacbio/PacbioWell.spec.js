@@ -115,6 +115,35 @@ describe('Well.vue', () => {
       expect(ellipse.attributes('class')).toEqual("complete")
     })
 
+    it('will be invalid if sequencing mode is CCS and extension time not present', () => {
+      storeWell.extension_time = ''
+      wrapper = mount(Well, {
+        localVue,
+        store,
+        propsData: props,
+        stubs: {
+          WellModal: true
+        }
+      })
+      let ellipse = wrapper.find('ellipse')
+      expect(ellipse.attributes('class')).toEqual("filled")
+    })
+
+    it('will be valid if sequencing mode is CLR and extension time not present', () => {
+      storeWell.sequencing_mode = 'CLR'
+      storeWell.extension_time = ''
+      wrapper = mount(Well, {
+        localVue,
+        store,
+        propsData: props,
+        stubs: {
+          WellModal: true
+        }
+      })
+      let ellipse = wrapper.find('ellipse')
+      expect(ellipse.attributes('class')).toEqual("complete")
+    })
+
     it('will be empty if there are no libraries or metadata', () => {
       storeWell.libraries = []
       storeWell.movie_time = ""
@@ -179,4 +208,19 @@ describe('Well.vue', () => {
 
   })
 
+  describe('#hasValidExtensionTime', () => {
+    it('returns true if the sequencing_mode is CCS and extension_time exists', () => {
+      expect(well.hasValidExtensionTime).toEqual(true)
+    })
+
+    it('returns false if the sequencing_mode is CCS and extension_time doesnt exist', () => {
+      storeWell.extension_time = ""
+      expect(well.hasValidExtensionTime).toEqual(false)
+    })
+
+    it('returns true if the sequencing_mode is CLR', () => {
+      storeWell.sequencing_mode = "CLR"
+      expect(well.hasValidExtensionTime).toEqual(true)
+    })
+  })
 })

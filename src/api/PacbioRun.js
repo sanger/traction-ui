@@ -20,7 +20,8 @@ const buildWell = (row, column) => {
     insert_size: '',
     on_plate_loading_concentration: '',
     sequencing_mode: '',
-    libraries: []
+    libraries: [],
+    extension_time: '2'
   }
 }
 

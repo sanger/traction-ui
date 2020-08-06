@@ -46,7 +46,8 @@ export default {
       type: String,
       required: true
     },
-    metadata_fields: {
+    // extension_time is only required when sequencing_mode is CSS
+    required_metadata_fields: {
       type: Array,
       default () {
         return ['movie_time', 'insert_size', 'on_plate_loading_concentration', 'sequencing_mode']
@@ -108,13 +109,19 @@ export default {
       if (this.storeWell.libraries.every(l => l.barcode == '')) return false
       return this.storeWell.libraries.length > 0
     },
+    hasValidExtensionTime () {
+      if (this.storeWell.sequencing_mode === 'CCS') {
+        return this.storeWell.extension_time !== ''
+      }
+      return true
+    },
     hasValidMetadata () {
       if (this.storeWell === undefined) return false
-      return this.metadata_fields.every(field => this.storeWell[field] !== '')
+      return this.required_metadata_fields.every(field => this.storeWell[field] !== '') && this.hasValidExtensionTime
     },
     hasSomeMetadata () {
       if (this.storeWell === undefined) return false
-      return this.metadata_fields.some(field => this.storeWell[field] !== '')
+      return this.required_metadata_fields.some(field => this.storeWell[field] !== '')
     },
     storeWell () {
       return this.well(this.position)
