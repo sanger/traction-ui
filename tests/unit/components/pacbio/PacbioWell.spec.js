@@ -117,7 +117,7 @@ describe('Well.vue', () => {
     })
 
     it('will be valid if sequencing mode is CCS and extension time is present', () => {
-      storeWell.pre_extension_time = '1'
+      storeWell.pre_extension_time = '2'
       wrapper = mount(Well, {
         localVue,
         store,

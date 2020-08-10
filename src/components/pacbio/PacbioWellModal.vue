@@ -55,7 +55,7 @@
 
         <b-form-group
                       id="preExtensionTime-group"
-                      label="Pre-extension time:"
+                      label="Pre-extension time (hours):"
                       label-for="preExtensionTime">
           <b-form-input
             ref="preExtensionTime"
@@ -149,13 +149,13 @@ export default {
       this.mutateWell({ position: this.position, property: 'movie_time', with: movieTime })
     },
     updateSequencingMode(seqMode) {
-      this.preExtensionTimeValue(seqMode)
+      this.defaultPreExtensionTime(seqMode)
       this.mutateWell({ position: this.position, property: 'sequencing_mode', with: seqMode })
     },
     updatePreExtensionTime(preExtensionTime) {
       this.mutateWell({ position: this.position, property: 'pre_extension_time', with: preExtensionTime })
     },
-    preExtensionTimeValue(seqMode) {
+    defaultPreExtensionTime(seqMode) {
       if (seqMode === 'CCS') {
         this.updatePreExtensionTime('2')
       } else if (seqMode === 'CLR') {

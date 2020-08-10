@@ -69,8 +69,8 @@ describe('PacbioRunInfo', () => {
     it('has a table of well libraries', () => {
       expect(wrapper.find('#wellLibraries')).toBeDefined()
     })
-    it('has a Extension Time input', () => {
-      expect(wrapper.find('.insertSize')).toBeDefined()
+    it('has a pre-extension time input', () => {
+      expect(wrapper.find('.preExtensionTime')).toBeDefined()
     })
   })
   
@@ -109,14 +109,14 @@ describe('PacbioRunInfo', () => {
     })
 
     it('updatePreExtensionTime', () => {
-      modal.updatePreExtensionTime('1')
-      expect(modal.mutateWell).toBeCalledWith({ position: props.position, property: 'pre_extension_time', with: '1' })
+      modal.updatePreExtensionTime('2')
+      expect(modal.mutateWell).toBeCalledWith({ position: props.position, property: 'pre_extension_time', with: '2' })
     })
 
-    it('PreExtensionTimeValue', () => {
-      modal.preExtensionTimeValue('CCS')
+    it('defaultPreExtensionTime', () => {
+      modal.defaultPreExtensionTime('CCS')
       expect(modal.mutateWell).toBeCalledWith({ position: props.position, property: 'pre_extension_time', with: '2' })
-      modal.preExtensionTimeValue('CLR')
+      modal.defaultPreExtensionTime('CLR')
       expect(modal.mutateWell).toBeCalledWith({ position: props.position, property: 'pre_extension_time', with: '0' })
     })
 
