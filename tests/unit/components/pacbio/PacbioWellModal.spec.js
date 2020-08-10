@@ -42,7 +42,7 @@ describe('PacbioRunInfo', () => {
     expect(modal.movieTime).toBeDefined()
     expect(modal.wellLibraries).toBeDefined()
     expect(modal.sequencingMode).toBeDefined()
-    expect(modal.extensionTime).toBeDefined()
+    expect(modal.preExtensionTime).toBeDefined()
   })
 
   it('can have getters', () => {
@@ -108,9 +108,16 @@ describe('PacbioRunInfo', () => {
       expect(modal.mutateWell).toBeCalledWith({ position: props.position, property: 'sequencing_mode', with: 'CLR' })
     })
 
-    it('updateExtensionTime', () => {
-      modal.updateExtensionTime('1')
-      expect(modal.mutateWell).toBeCalledWith({ position: props.position, property: 'extension_time', with: '1' })
+    it('updatePreExtensionTime', () => {
+      modal.updatePreExtensionTime('1')
+      expect(modal.mutateWell).toBeCalledWith({ position: props.position, property: 'pre_extension_time', with: '1' })
+    })
+
+    it('PreExtensionTimeValue', () => {
+      modal.preExtensionTimeValue('CCS')
+      expect(modal.mutateWell).toBeCalledWith({ position: props.position, property: 'pre_extension_time', with: '2' })
+      modal.preExtensionTimeValue('CLR')
+      expect(modal.mutateWell).toBeCalledWith({ position: props.position, property: 'pre_extension_time', with: '0' })
     })
 
     describe('updateLibraryBarcode', () => {

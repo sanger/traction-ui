@@ -46,7 +46,6 @@ export default {
       type: String,
       required: true
     },
-    // extension_time is only required when sequencing_mode is CSS
     required_metadata_fields: {
       type: Array,
       default () {
@@ -109,15 +108,9 @@ export default {
       if (this.storeWell.libraries.every(l => l.barcode == '')) return false
       return this.storeWell.libraries.length > 0
     },
-    hasValidExtensionTime () {
-      if (this.storeWell.sequencing_mode === 'CCS') {
-        return this.storeWell.extension_time !== ''
-      }
-      return true
-    },
     hasValidMetadata () {
       if (this.storeWell === undefined) return false
-      return this.required_metadata_fields.every(field => this.storeWell[field] !== '') && this.hasValidExtensionTime
+      return this.required_metadata_fields.every(field => this.storeWell[field] !== '')
     },
     hasSomeMetadata () {
       if (this.storeWell === undefined) return false

@@ -15,6 +15,7 @@ describe('Well.vue', () => {
     storeWell.insert_size = 123
     storeWell.on_plate_loading_concentration = 234
     storeWell.sequencing_mode = "CCS"
+    storeWell.pre_extension_time = "2"
 
     run = Run.build()
     run.plate.wells[0] = storeWell
@@ -115,8 +116,8 @@ describe('Well.vue', () => {
       expect(ellipse.attributes('class')).toEqual("complete")
     })
 
-    it('will be invalid if sequencing mode is CCS and extension time not present', () => {
-      storeWell.extension_time = ''
+    it('will be valid if sequencing mode is CCS and extension time is present', () => {
+      storeWell.pre_extension_time = '1'
       wrapper = mount(Well, {
         localVue,
         store,
@@ -126,12 +127,12 @@ describe('Well.vue', () => {
         }
       })
       let ellipse = wrapper.find('ellipse')
-      expect(ellipse.attributes('class')).toEqual("filled")
+      expect(ellipse.attributes('class')).toEqual("complete")
     })
 
-    it('will be valid if sequencing mode is CLR and extension time not present', () => {
+    it('will be valid if sequencing mode is CLR and extension time is empty', () => {
       storeWell.sequencing_mode = 'CLR'
-      storeWell.extension_time = ''
+      storeWell.pre_extension_time = ''
       wrapper = mount(Well, {
         localVue,
         store,
@@ -150,6 +151,7 @@ describe('Well.vue', () => {
       storeWell.sequencing_mode = ""
       storeWell.on_plate_loading_concentration = ""
       storeWell.insert_size = ""
+      storeWell.pre_extension_time = ""
 
       wrapper = mount(Well, { 
         localVue, 
@@ -206,21 +208,5 @@ describe('Well.vue', () => {
       expect(well.updateLibraryBarcode).toBeCalledWith(newBarcode)
     })
 
-  })
-
-  describe('#hasValidExtensionTime', () => {
-    it('returns true if the sequencing_mode is CCS and extension_time exists', () => {
-      expect(well.hasValidExtensionTime).toEqual(true)
-    })
-
-    it('returns false if the sequencing_mode is CCS and extension_time doesnt exist', () => {
-      storeWell.extension_time = ""
-      expect(well.hasValidExtensionTime).toEqual(false)
-    })
-
-    it('returns true if the sequencing_mode is CLR', () => {
-      storeWell.sequencing_mode = "CLR"
-      expect(well.hasValidExtensionTime).toEqual(true)
-    })
   })
 })
