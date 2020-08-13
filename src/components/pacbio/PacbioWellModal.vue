@@ -53,6 +53,19 @@
           </b-form-select>
         </b-form-group>
 
+        <b-form-group
+                      id="preExtensionTime-group"
+                      label="Pre-extension time (hours):"
+                      label-for="preExtensionTime">
+          <b-form-input
+            ref="preExtensionTime"
+            id="preExtensionTime"
+            :value="preExtensionTime"
+            @change="updatePreExtensionTime"
+            placeholder="Pre-extension time">
+          </b-form-input>
+        </b-form-group>
+
       </b-form>
 
       <b-table stacked :items="wellLibraries" :fields="wellLibrariesFields" id="wellLibraries">
@@ -136,7 +149,18 @@ export default {
       this.mutateWell({ position: this.position, property: 'movie_time', with: movieTime })
     },
     updateSequencingMode(seqMode) {
+      this.defaultPreExtensionTime(seqMode)
       this.mutateWell({ position: this.position, property: 'sequencing_mode', with: seqMode })
+    },
+    updatePreExtensionTime(preExtensionTime) {
+      this.mutateWell({ position: this.position, property: 'pre_extension_time', with: preExtensionTime })
+    },
+    defaultPreExtensionTime(seqMode) {
+      if (seqMode === 'CCS') {
+        this.updatePreExtensionTime('2')
+      } else if (seqMode === 'CLR') {
+        this.updatePreExtensionTime('0')
+      }
     },
     async updateLibraryBarcode(row, barcode) {
       let index = row.index
@@ -190,7 +214,10 @@ export default {
       },
       wellLibraries () {
         return (this.well(this.position) ? this.well(this.position).libraries : [])
-      }
+      },
+      preExtensionTime () {
+        return (this.well(this.position) ? this.well(this.position).pre_extension_time : '')
+      },
     })
   },
   components: {

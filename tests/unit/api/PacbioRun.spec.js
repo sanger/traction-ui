@@ -122,6 +122,11 @@ describe('Run', () => {
             expect(lastWell.sequencing_mode).toBeDefined()
           })
 
+          it('will have a pre extension_time', () => {
+            expect(firstWell.pre_extension_time).toBeDefined()
+            expect(lastWell.pre_extension_time).toBeDefined()
+          })
+
           it('will have a library', () => {
             expect(firstWell.libraries).toEqual([])
           })
@@ -148,6 +153,7 @@ describe('Run', () => {
       expect(well.on_plate_loading_concentration).toEqual('')
       expect(well.sequencing_mode).toEqual('')
       expect(well.libraries).toEqual([])
+      expect(well.pre_extension_time).toEqual('')
     })
   })
 
@@ -317,6 +323,7 @@ describe('Run', () => {
       expect(result.data.attributes.wells[0].insert_size).toEqual(wells[0].insert_size)
       expect(result.data.attributes.wells[0].on_plate_loading_concentration).toEqual(wells[0].on_plate_loading_concentration)
       expect(result.data.attributes.wells[0].sequencing_mode).toEqual(wells[0].sequencing_mode)
+      expect(result.data.attributes.wells[0].pre_extension_time).toEqual(wells[0].pre_extension_time)
       expect(result.data.attributes.wells[0].relationships.plate.data.type).toEqual("plates")
       expect(result.data.attributes.wells[0].relationships.plate.data.id).toEqual(plateID)
       expect(result.data.attributes.wells[0].relationships.libraries.data[0].type).toEqual("libraries")
@@ -447,6 +454,7 @@ describe('Run', () => {
       expect(result.data.attributes.insert_size).toEqual(well.insert_size)
       expect(result.data.attributes.on_plate_loading_concentration).toEqual(well.on_plate_loading_concentration)
       expect(result.data.attributes.sequencing_mode).toEqual(well.sequencing_mode)
+      expect(result.data.attributes.pre_extension_time).toEqual(well.pre_extension_time)
       expect(result.data.relationships.libraries.data[0].type).toEqual("libraries")
       expect(result.data.relationships.libraries.data[0].id).toEqual(well.libraries[0].id)
     })

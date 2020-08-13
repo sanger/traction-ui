@@ -46,7 +46,7 @@ export default {
       type: String,
       required: true
     },
-    metadata_fields: {
+    required_metadata_fields: {
       type: Array,
       default () {
         return ['movie_time', 'insert_size', 'on_plate_loading_concentration', 'sequencing_mode']
@@ -110,11 +110,11 @@ export default {
     },
     hasValidMetadata () {
       if (this.storeWell === undefined) return false
-      return this.metadata_fields.every(field => this.storeWell[field] !== '')
+      return this.required_metadata_fields.every(field => this.storeWell[field] !== '')
     },
     hasSomeMetadata () {
       if (this.storeWell === undefined) return false
-      return this.metadata_fields.some(field => this.storeWell[field] !== '')
+      return this.required_metadata_fields.some(field => this.storeWell[field] !== '')
     },
     storeWell () {
       return this.well(this.position)
