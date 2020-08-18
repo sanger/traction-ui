@@ -42,12 +42,14 @@ describe('PacbioRunInfo', () => {
     expect(modal.movieTime).toBeDefined()
     expect(modal.wellLibraries).toBeDefined()
     expect(modal.sequencingMode).toBeDefined()
+    expect(modal.preExtensionTime).toBeDefined()
   })
 
   it('can have getters', () => {
     expect(modal.currentRun).toBeDefined()
   })
 
+  // TODO: check below tests are they are buggy and return ErrorWrapper
   describe('form inputs', () => {
     it('has a Library Barcode input', () => {
       expect(wrapper.find('.libraryBarcode')).toBeDefined()
@@ -67,8 +69,11 @@ describe('PacbioRunInfo', () => {
     it('has a table of well libraries', () => {
       expect(wrapper.find('#wellLibraries')).toBeDefined()
     })
+    it('has a pre-extension time input', () => {
+      expect(wrapper.find('.preExtensionTime')).toBeDefined()
+    })
   })
-
+  
   describe('alert', () => {
     it('emits an event with the message', () => {
         modal.alert('emit this message', 'success')
@@ -101,6 +106,18 @@ describe('PacbioRunInfo', () => {
     it('updateSequencingMode', () => {
       modal.updateSequencingMode('CLR')
       expect(modal.mutateWell).toBeCalledWith({ position: props.position, property: 'sequencing_mode', with: 'CLR' })
+    })
+
+    it('updatePreExtensionTime', () => {
+      modal.updatePreExtensionTime('2')
+      expect(modal.mutateWell).toBeCalledWith({ position: props.position, property: 'pre_extension_time', with: '2' })
+    })
+
+    it('defaultPreExtensionTime', () => {
+      modal.defaultPreExtensionTime('CCS')
+      expect(modal.mutateWell).toBeCalledWith({ position: props.position, property: 'pre_extension_time', with: '2' })
+      modal.defaultPreExtensionTime('CLR')
+      expect(modal.mutateWell).toBeCalledWith({ position: props.position, property: 'pre_extension_time', with: '0' })
     })
 
     describe('updateLibraryBarcode', () => {

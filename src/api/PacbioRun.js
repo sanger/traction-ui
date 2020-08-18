@@ -20,7 +20,8 @@ const buildWell = (row, column) => {
     insert_size: '',
     on_plate_loading_concentration: '',
     sequencing_mode: '',
-    libraries: []
+    libraries: [],
+    pre_extension_time: ''
   }
 }
 
@@ -159,6 +160,7 @@ const createWellsPayload = (wells, plateId) => {
             insert_size: well.insert_size,
             on_plate_loading_concentration: well.on_plate_loading_concentration,
             sequencing_mode: well.sequencing_mode,
+            pre_extension_time: well.pre_extension_time,
             relationships: {
                 plate: {
                     data: {
@@ -214,6 +216,7 @@ const updateWellPayload = (well) => {
                 insert_size: well.insert_size,
                 on_plate_loading_concentration: well.on_plate_loading_concentration,
                 sequencing_mode: well.sequencing_mode,
+                pre_extension_time: well.pre_extension_time
             },
             relationships: {
                 libraries: {
