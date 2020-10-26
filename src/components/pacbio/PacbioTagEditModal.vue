@@ -10,12 +10,12 @@
 
       <b-form id="editTagForm" v-on:submit.prevent>
         <b-form-group id="input-group-1"
-                      :label="'Sample tag: '"
+                      :label="'Sample tag: ' + this.tag.sample_name"
                       label-for="input-1">
           <b-form-select ref="tagSelection" 
                         id="tagSelection" 
-                        :value="123"
-                        :options=[]>
+                        :v-model="selectedTagSampleId"
+                        :options="tags">
           </b-form-select>
         </b-form-group>
       </b-form>
@@ -49,26 +49,36 @@ export default {
     }
   },
   props: {
-    // lib: {
-    //   type: [Object]
-    // }
+    tag: {
+      type: [Object]
+    }
   },
   methods: {
     async update() {
-      try {
-        await this.updateLibrary(this.library)
-        this.alert('Library updated', 'success')
-      } catch (err) {
-        this.alert('Failed to update library. ' + err, 'danger')
-      }
+      console.log('hello')
+      // try {
+      //   await this.updateLibrary(this.library)
+      //   this.alert('Library updated', 'success')
+      // } catch (err) {
+      //   this.alert('Failed to update library. ' + err, 'danger')
+      // }
       this.hide()
     },
     async provider() {
-      console.log('hello')
+      try{
+         await this.setTags()
+         this.tags = this.tractionTags
+            .filter(tag => tag.tag_set_id == 1)
+            .map(tag => tag.group_id)
+      } catch (error) {
+        this.showAlert("Failed to get libraries or tags: " + error.message, 'danger')
+      }
+            console.log(this.tags)
     },
     show() {
       this.$refs['modal'].show()
       this.provider()
+      this.selectedTagSampleId = this.tag.tag_id
     },
     alert (message, type) {
       this.$emit('alert', message, type)
