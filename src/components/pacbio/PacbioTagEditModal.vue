@@ -66,14 +66,14 @@ export default {
     },
     async provider() {
       try{
-         await this.setTags()
-         this.tags = this.tractionTags
-            .filter(tag => tag.tag_set_id == 1)
-            .map(tag => tag.group_id)
+        await this.setTags()
+        this.tags = this.tractionTags
+          .filter(tag => tag.tag_set_id == 1)
+          .map(tag => ({ text: tag.group_id, value: tag.id }))
       } catch (error) {
-        this.showAlert("Failed to get libraries or tags: " + error.message, 'danger')
+        this.alert("Failed to get tags: " + error.message, 'danger')
       }
-            console.log(this.tags)
+      console.log(this.tags)
     },
     show() {
       this.$refs['modal'].show()
