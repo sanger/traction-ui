@@ -40,6 +40,10 @@
           "name": "libraries",
           "include": "requests"
         },
+        "request_library": {
+          "name": "request_library",
+          "include": ""
+        },
         "requests": {
           "name": "requests",
           "include": ""

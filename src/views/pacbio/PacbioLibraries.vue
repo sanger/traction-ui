@@ -144,7 +144,7 @@ export default {
       field_in_details: [
         { key: 'sample_name', label: "Sample(s)"},
         { key: 'tag_group_id', label: 'Tag(s)'},
-        { key: 'edit_tag', label: 'Edit' }
+        { key: 'edit_tag', label: 'Actions' }
       ],
       filteredItems: [],
       selected: [],

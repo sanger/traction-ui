@@ -10,11 +10,12 @@
 
       <b-form id="editTagForm" v-on:submit.prevent>
         <b-form-group id="input-group-1"
-                      :label="'Sample tag: ' + this.tag.sample_name"
+                      label="Sample tag: "
                       label-for="input-1">
+                      <span>{{ this.tag.sample_name }}</span>
           <b-form-select ref="tagSelection" 
                         id="tagSelection" 
-                        :v-model="selectedTagSampleId"
+                        v-model="selectedSampleTagId"
                         :options="tags">
           </b-form-select>
         </b-form-group>
@@ -45,7 +46,7 @@ export default {
   data() {
     return {
       tags: [],
-      selectedTagSampleId: ""
+      selectedSampleTagId: ""
     }
   },
   props: {
@@ -55,13 +56,13 @@ export default {
   },
   methods: {
     async update() {
-      console.log('hello')
-      // try {
-      //   await this.updateLibrary(this.library)
-      //   this.alert('Library updated', 'success')
-      // } catch (err) {
-      //   this.alert('Failed to update library. ' + err, 'danger')
-      // }
+      try {
+        let payload = {selectedSampleTagId: this.selectedSampleTagId, request_library_id: this.tag.id }
+        await this.updateTag(payload)
+        this.alert('Tag updated', 'success')
+      } catch (err) {
+        this.alert('Failed to update tag. ' + err, 'danger')
+      }
       this.hide()
     },
     async provider() {
@@ -73,18 +74,20 @@ export default {
       } catch (error) {
         this.alert("Failed to get tags: " + error.message, 'danger')
       }
-      console.log(this.tags)
     },
     show() {
       this.$refs['modal'].show()
       this.provider()
-      this.selectedTagSampleId = this.tag.tag_id
+      this.selectedSampleTagId = this.tag.tag_id
     },
     alert (message, type) {
       this.$emit('alert', message, type)
     },
-    ...mapActions( 'traction', [
+    ...mapActions('traction', [
       'setTags'
+    ]),
+    ...mapActions('traction/pacbio/libraries', [
+      'updateTag'
     ])
   },
   computed :{
