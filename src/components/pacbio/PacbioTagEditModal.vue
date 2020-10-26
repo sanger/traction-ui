@@ -1,6 +1,6 @@
 <template>
   <div>
-    <b-button :id="'editTag'" size="sm" @click="show" variant="outline-primary">Edit</b-button>
+    <b-button :id="'editTag'+this.tag.id" size="sm" @click="show" variant="outline-primary">Edit</b-button>
 
     <b-modal
       id="editTagModal"
@@ -61,9 +61,10 @@ export default {
         await this.updateTag(payload)
         this.alert('Tag updated', 'success')
       } catch (err) {
-        this.alert('Failed to update tag. ' + err, 'danger')
+        this.alert('Failed to update Tag. ' + err, 'danger')
       }
       this.hide()
+      this.$emit('reloadPage')
     },
     async provider() {
       try{
