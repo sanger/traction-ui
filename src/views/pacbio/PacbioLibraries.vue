@@ -67,7 +67,7 @@
               :fields="field_in_details"
               :filter="filter">
                 <template v-slot:cell(edit_tag)="row">
-                  <PacbioTagEditModal :tag="row.item" @alert="showAlert" @reloadPage="reloadPage" >
+                  <PacbioTagEditModal :tag="row.item" @alert="showAlert" @reloadPage="provider" >
                   </PacbioTagEditModal>
                 </template>
           </b-table>
@@ -171,9 +171,6 @@ export default {
       } catch (error) {
         this.showAlert(consts.MESSAGE_ERROR_DELETION_FAILED + error.message, 'danger')
       }
-    },
-    reloadPage() {
-      this.provider()
     },
     // Get all the libraries
     // Provider function used by the bootstrap-vue table component
