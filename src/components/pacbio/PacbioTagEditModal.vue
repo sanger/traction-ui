@@ -69,7 +69,7 @@ export default {
       try{
         await this.setTags()
         this.tags = this.tractionTags
-          .filter(tag => tag.tag_set_id == 1)
+          .filter(tag => tag.tag_set_id == 1) // tag_set_id == 1 - pacbio tag set
           .map(tag => ({ text: tag.group_id, value: tag.id }))
       } catch (error) {
         this.alert("Failed to get tags: " + error.message, 'danger')
