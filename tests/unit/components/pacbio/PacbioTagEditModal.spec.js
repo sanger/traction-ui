@@ -17,7 +17,7 @@ describe('PacbioTagEditModal.vue', () => {
         "type": "request_libraries",
     },
 
-    props = { tag: mockRequestLibrary },
+    props = { request_library: mockRequestLibrary },
   
     wrapper = mount(PacbioTagEditModal, {
       localVue,
@@ -36,8 +36,8 @@ describe('PacbioTagEditModal.vue', () => {
     expect(wrapper.find('#editTagForm')).toBeDefined()
   })
 
-  it('must have a tag prop', () => {
-    expect(props.tag).toBeDefined()
+  it('must have a request_library prop', () => {
+    expect(props.request_library).toBeDefined()
   })
  
   describe('update', () => {
@@ -48,19 +48,26 @@ describe('PacbioTagEditModal.vue', () => {
     })
 
     it('successful ', async () => {
-      modal.updateTag.mockReturnValue(true)
+      let response = {
+        status: 200,
+        successful: true
+      }
+
+      modal.updateTag.mockReturnValue(response)
       await modal.update()
       expect(modal.alert).toBeCalledWith('Tag updated', 'success')
       expect(modal.hide).toBeCalled()
     })
 
     it('unsuccessful ', async () => {
-      modal.updateTag.mockImplementation(() => {
-        throw Error('Raise this error')
-      })
+      let response = {
+        status: 422,
+        successful: false
+      }
+
+      modal.updateTag.mockReturnValue(response)
       await modal.update()
-      expect(modal.alert).toBeCalledWith('Failed to update Tag. Error: Raise this error', 'danger')
-      expect(modal.hide).toBeCalled()
+      expect(modal.alert).toBeCalledWith('Failed to update Tag', 'danger')
     })
 
   })

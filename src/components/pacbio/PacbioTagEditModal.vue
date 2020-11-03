@@ -1,6 +1,6 @@
 <template>
   <div>
-    <b-button :id="'editTag'+this.tag.id" size="sm" @click="show" variant="outline-primary">Edit</b-button>
+    <b-button :id="'editTag'+this.request_library.id" size="sm" @click="show" variant="outline-primary">Edit</b-button>
 
     <b-modal
       id="editTagModal"
@@ -8,16 +8,15 @@
       title="Edit Tag"      
     >    
 
-      <b-form id="editTagForm" v-on:submit.prevent>
+      <b-form id="editTagForm">
         <b-form-group id="input-group-1"
-                      label="Sample tag: "
+                      :label='"Sample tag: " + this.request_library.sample_name'
                       label-for="input-1">
-                      <span>{{ this.tag.sample_name }}</span>
-          <b-form-select ref="tagSelection" 
-                        id="tagSelection" 
-                        v-model="selectedSampleTagId"
-                        :options="tags">
-          </b-form-select>
+            <b-form-select ref="tagSelection" 
+                          id="tagSelection" 
+                          v-model="selectedSampleTagId"
+                          :options="tags">
+            </b-form-select>
         </b-form-group>
       </b-form>
 
@@ -50,21 +49,21 @@ export default {
     }
   },
   props: {
-    tag: {
+    request_library: {
       type: [Object]
     }
   },
   methods: {
     async update() {
-      try {
-        let payload = {selectedSampleTagId: this.selectedSampleTagId, request_library_id: this.tag.id }
-        await this.updateTag(payload)
+      let payload = { selectedSampleTagId: this.selectedSampleTagId, request_library_id: this.request_library.id }
+      let response = await this.updateTag(payload)
+      if (response.successful) {
         this.alert('Tag updated', 'success')
-      } catch (err) {
-        this.alert('Failed to update Tag. ' + err, 'danger')
+        this.hide()
+        this.$emit('reloadPage')
+      } else {
+        this.alert('Failed to update Tag', 'danger')
       }
-      this.hide()
-      this.$emit('reloadPage')
     },
     async provider() {
       try{
@@ -79,7 +78,7 @@ export default {
     show() {
       this.$refs['modal'].show()
       this.provider()
-      this.selectedSampleTagId = this.tag.tag_id
+      this.selectedSampleTagId = this.request_library.tag_id
     },
     alert (message, type) {
       this.$emit('alert', message, type)

@@ -67,7 +67,7 @@
               :fields="field_in_details"
               :filter="filter">
                 <template v-slot:cell(edit_tag)="row">
-                  <PacbioTagEditModal :tag="row.item" @alert="showAlert" @reloadPage="provider" >
+                  <PacbioTagEditModal :request_library="row.item" @alert="showAlert" @reloadPage="provider" >
                   </PacbioTagEditModal>
                 </template>
           </b-table>
