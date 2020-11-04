@@ -74,7 +74,26 @@ const setLibraries = async ({ commit, getters }) => {
 
 }
 
-const updateLibrary= async ({ commit, getters }, payload) => {
+const updateTag = async ({ getters }, payload) => {
+
+  let body = {
+    data: {
+      id: payload.request_library_id,
+      type: 'tags',
+      attributes: {
+        tag_id: payload.selectedSampleTagId,
+      }
+    }
+  }
+  
+  let request = getters.requestLibraryRequest
+  let promises = request.update(body)
+  let response = await handlePromise(promises[0])
+  
+  return response
+}
+
+const updateLibrary = async ({ commit, getters }, payload) => {
 
   let body = {
     data: {
@@ -104,7 +123,8 @@ const actions = {
   createLibraryInTraction,
   deleteLibraries,
   setLibraries,
-  updateLibrary
+  updateLibrary,
+  updateTag
 
 }
 
@@ -113,6 +133,7 @@ export {
   deleteLibraries,
   setLibraries,
   updateLibrary,
+  updateTag
 }
 
 export default actions
