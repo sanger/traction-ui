@@ -66,6 +66,10 @@
               :items= row.item.requests
               :fields="field_in_details"
               :filter="filter">
+                <template v-slot:cell(edit_tag)="row">
+                  <PacbioTagEditModal :request_library="row.item" @alert="showAlert" @reloadPage="provider" >
+                  </PacbioTagEditModal>
+                </template>
           </b-table>
         </b-card>
       </template>
@@ -105,6 +109,7 @@
 <script>
 import Helper from '@/mixins/Helper'
 import PacbioLibraryEditModal from '@/components/pacbio/PacbioLibraryEditModal'
+import PacbioTagEditModal from '@/components/pacbio/PacbioTagEditModal'
 import TableHelper from '@/mixins/TableHelper'
 import Alert from '@/components/Alert'
 import PrinterModal from '@/components/PrinterModal'
@@ -118,7 +123,8 @@ export default {
   components: {
     Alert,
     PrinterModal,
-    PacbioLibraryEditModal
+    PacbioLibraryEditModal,
+    PacbioTagEditModal
   },
   data () {
     return {
@@ -137,7 +143,8 @@ export default {
       ],
       field_in_details: [
         { key: 'sample_name', label: "Sample(s)"},
-        { key: 'tag_group_id', label: 'Tag(s)'}
+        { key: 'tag_group_id', label: 'Tag(s)'},
+        { key: 'edit_tag', label: 'Actions' }
       ],
       filteredItems: [],
       selected: [],
