@@ -32,16 +32,12 @@ describe('PacbioRunInfo', () => {
     expect(modal.movieTimeOptions).toEqual([{ text: 'Movie Time', value: "" }, "15.0", "20.0", "24.0", "30.0"])
   })
 
-  it('must have sequencingMode data', () => {
-    expect(modal.sequencingModeOptions).toEqual([{ text: 'Sequencing Mode', value: "" }, 'CLR', 'CCS'])
-  })
-
   it('can have mapState', () => {
     expect(modal.insertSize).toBeDefined()
     expect(modal.onPlateLoadingConc).toBeDefined()
     expect(modal.movieTime).toBeDefined()
     expect(modal.wellLibraries).toBeDefined()
-    expect(modal.sequencingMode).toBeDefined()
+    expect(modal.generateHiFi).toBeDefined()
     expect(modal.preExtensionTime).toBeDefined()
   })
 
@@ -63,8 +59,8 @@ describe('PacbioRunInfo', () => {
     it('has a Insert Size input', () => {
       expect(wrapper.find('.insertSize')).toBeDefined()
     })
-    it('has a Sequencing Mode input', () => {
-      expect(wrapper.find('.sequencingMode')).toBeDefined()
+    it('has a pre-extension time input', () => {
+      expect(wrapper.find('.generateHiFi')).toBeDefined()
     })
     it('has a table of well libraries', () => {
       expect(wrapper.find('#wellLibraries')).toBeDefined()
@@ -103,21 +99,14 @@ describe('PacbioRunInfo', () => {
     expect(modal.mutateWell).toBeCalledWith({ position: props.position, property: 'movie_time', with: 123 })
     })
 
-    it('updateSequencingMode', () => {
-      modal.updateSequencingMode('CLR')
-      expect(modal.mutateWell).toBeCalledWith({ position: props.position, property: 'sequencing_mode', with: 'CLR' })
+    it('updateGenerateHiFi', () => {
+      modal.updateGenerateHiFi('In SMRT Link')
+      expect(modal.mutateWell).toBeCalledWith({ position: props.position, property: 'generate_hifi', with: 'In SMRT Link' })
     })
 
     it('updatePreExtensionTime', () => {
       modal.updatePreExtensionTime('2')
       expect(modal.mutateWell).toBeCalledWith({ position: props.position, property: 'pre_extension_time', with: '2' })
-    })
-
-    it('defaultPreExtensionTime', () => {
-      modal.defaultPreExtensionTime('CCS')
-      expect(modal.mutateWell).toBeCalledWith({ position: props.position, property: 'pre_extension_time', with: '2' })
-      modal.defaultPreExtensionTime('CLR')
-      expect(modal.mutateWell).toBeCalledWith({ position: props.position, property: 'pre_extension_time', with: '0' })
     })
 
     describe('updateLibraryBarcode', () => {

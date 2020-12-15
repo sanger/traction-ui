@@ -19,7 +19,7 @@ const buildWell = (row, column) => {
     movie_time: '',
     insert_size: '',
     on_plate_loading_concentration: '',
-    sequencing_mode: '',
+    generate_hifi: '',
     libraries: [],
     pre_extension_time: ''
   }
@@ -159,7 +159,7 @@ const createWellsPayload = (wells, plateId) => {
             movie_time: well.movie_time,
             insert_size: well.insert_size,
             on_plate_loading_concentration: well.on_plate_loading_concentration,
-            sequencing_mode: well.sequencing_mode,
+            generate_hifi: well.generate_hifi,
             pre_extension_time: well.pre_extension_time,
             relationships: {
                 plate: {
@@ -215,7 +215,7 @@ const updateWellPayload = (well) => {
                 movie_time: well.movie_time,
                 insert_size: well.insert_size,
                 on_plate_loading_concentration: well.on_plate_loading_concentration,
-                sequencing_mode: well.sequencing_mode,
+                generate_hifi: well.generate_hifi,
                 pre_extension_time: well.pre_extension_time
             },
             relationships: {

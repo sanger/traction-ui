@@ -44,6 +44,11 @@ yarn run lint
 ```bash
 yarn run test:unit
 ```
+### Run specific unit test files
+
+```bash
+yarn run test:unit <test_file_route> -t "<test_name>"
+```
 
 ### Run your end-to-end tests
 

@@ -49,7 +49,7 @@ export default {
     required_metadata_fields: {
       type: Array,
       default () {
-        return ['movie_time', 'insert_size', 'on_plate_loading_concentration', 'sequencing_mode']
+        return ['movie_time', 'insert_size', 'on_plate_loading_concentration', 'generate_hifi']
       }
     }
   },

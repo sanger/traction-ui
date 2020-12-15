@@ -14,7 +14,7 @@ describe('Well.vue', () => {
     storeWell.movie_time = "15"
     storeWell.insert_size = 123
     storeWell.on_plate_loading_concentration = 234
-    storeWell.sequencing_mode = "CCS"
+    storeWell.generate_hifi = "In SMRT Link"
     storeWell.pre_extension_time = "2"
 
     run = Run.build()
@@ -130,25 +130,10 @@ describe('Well.vue', () => {
       expect(ellipse.attributes('class')).toEqual("complete")
     })
 
-    it('will be valid if sequencing mode is CLR and extension time is empty', () => {
-      storeWell.sequencing_mode = 'CLR'
-      storeWell.pre_extension_time = ''
-      wrapper = mount(Well, {
-        localVue,
-        store,
-        propsData: props,
-        stubs: {
-          WellModal: true
-        }
-      })
-      let ellipse = wrapper.find('ellipse')
-      expect(ellipse.attributes('class')).toEqual("complete")
-    })
-
     it('will be empty if there are no libraries or metadata', () => {
       storeWell.libraries = []
       storeWell.movie_time = ""
-      storeWell.sequencing_mode = ""
+      storeWell.generate_hifi = ""
       storeWell.on_plate_loading_concentration = ""
       storeWell.insert_size = ""
       storeWell.pre_extension_time = ""

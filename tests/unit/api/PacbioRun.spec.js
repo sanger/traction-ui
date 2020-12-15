@@ -117,9 +117,9 @@ describe('Run', () => {
             expect(lastWell.on_plate_loading_concentration).toBeDefined()
           })
 
-          it('will have a sequencing_mode', () => {
-            expect(firstWell.sequencing_mode).toBeDefined()
-            expect(lastWell.sequencing_mode).toBeDefined()
+          it('will have a generate_hifi', () => {
+            expect(firstWell.generate_hifi).toBeDefined()
+            expect(lastWell.generate_hifi).toBeDefined()
           })
 
           it('will have a pre extension_time', () => {
@@ -151,7 +151,7 @@ describe('Run', () => {
       expect(well.movie_time).toEqual('')
       expect(well.insert_size).toEqual('')
       expect(well.on_plate_loading_concentration).toEqual('')
-      expect(well.sequencing_mode).toEqual('')
+      expect(well.generate_hifi).toEqual('')
       expect(well.libraries).toEqual([])
       expect(well.pre_extension_time).toEqual('')
     })
@@ -322,7 +322,7 @@ describe('Run', () => {
       expect(result.data.attributes.wells[0].movie_time).toEqual(wells[0].movie_time)
       expect(result.data.attributes.wells[0].insert_size).toEqual(wells[0].insert_size)
       expect(result.data.attributes.wells[0].on_plate_loading_concentration).toEqual(wells[0].on_plate_loading_concentration)
-      expect(result.data.attributes.wells[0].sequencing_mode).toEqual(wells[0].sequencing_mode)
+      expect(result.data.attributes.wells[0].generate_hifi).toEqual(wells[0].generate_hifi)
       expect(result.data.attributes.wells[0].pre_extension_time).toEqual(wells[0].pre_extension_time)
       expect(result.data.attributes.wells[0].relationships.plate.data.type).toEqual("plates")
       expect(result.data.attributes.wells[0].relationships.plate.data.id).toEqual(plateID)
@@ -453,7 +453,7 @@ describe('Run', () => {
       expect(result.data.attributes.movie_time).toEqual(well.movie_time)
       expect(result.data.attributes.insert_size).toEqual(well.insert_size)
       expect(result.data.attributes.on_plate_loading_concentration).toEqual(well.on_plate_loading_concentration)
-      expect(result.data.attributes.sequencing_mode).toEqual(well.sequencing_mode)
+      expect(result.data.attributes.generate_hifi).toEqual(well.generate_hifi)
       expect(result.data.attributes.pre_extension_time).toEqual(well.pre_extension_time)
       expect(result.data.relationships.libraries.data[0].type).toEqual("libraries")
       expect(result.data.relationships.libraries.data[0].id).toEqual(well.libraries[0].id)

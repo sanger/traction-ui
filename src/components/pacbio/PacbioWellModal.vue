@@ -42,14 +42,17 @@
           </b-form-input>
         </b-form-group>
 
-        <b-form-group id="sequencingMode-group"
-                      label="Sequencing mode:"
-                      label-for="sequencingMode">
-          <b-form-select ref="sequencingMode" 
-                        id="sequencingMode" 
-                        :value="sequencingMode" 
-                        :options="sequencingModeOptions" 
-                        @change="updateSequencingMode">
+        <b-form-group
+                      id="generateHiFi-group"
+                      label="Generate HiFi Reads:"
+                      label-for="generateHiFi">
+          <b-form-select
+            ref="generateHiFi"
+            :value="generateHiFi"
+            id="generateHiFi"
+            :options="systemNameHifiOptions" 
+            @change="updateGenerateHiFi"
+          >
           </b-form-select>
         </b-form-group>
 
@@ -115,7 +118,6 @@ export default {
   data () {
     return {
       movieTimeOptions: [ { text: 'Movie Time', value: "" }, '15.0', '20.0', '24.0', '30.0' ],
-      sequencingModeOptions: [ { text: 'Sequencing Mode', value: "" }, 'CLR', 'CCS'],
       wellLibrariesFields: ['barcode'],
     }
   },
@@ -131,6 +133,19 @@ export default {
         this.createWell(this.position)
       }
       this.$refs['well-modal'].show()
+      this.setDefaults()
+    },
+    setDefaults() {
+      if (this.generateHiFi == null) {
+        if (this.currentRun.system_name == "Sequel I" || this.currentRun.system_name == "Sequel II") {
+          this.updateGenerateHiFi('In SMRT Link')
+        } else {
+          this.updateGenerateHiFi('On Instrument')
+        }
+      }
+      if (this.preExtensionTime == null) {
+        this.updatePreExtensionTime('2')
+      }
     },
     hide() {
       this.$refs['well-modal'].hide()
@@ -148,19 +163,11 @@ export default {
     updateMovieTime(movieTime) {
       this.mutateWell({ position: this.position, property: 'movie_time', with: movieTime })
     },
-    updateSequencingMode(seqMode) {
-      this.defaultPreExtensionTime(seqMode)
-      this.mutateWell({ position: this.position, property: 'sequencing_mode', with: seqMode })
-    },
     updatePreExtensionTime(preExtensionTime) {
       this.mutateWell({ position: this.position, property: 'pre_extension_time', with: preExtensionTime })
     },
-    defaultPreExtensionTime(seqMode) {
-      if (seqMode === 'CCS') {
-        this.updatePreExtensionTime('2')
-      } else if (seqMode === 'CLR') {
-        this.updatePreExtensionTime('0')
-      }
+    updateGenerateHiFi(generateHiFi) {
+      this.mutateWell({ position: this.position, property: 'generate_hifi', with: generateHiFi })
     },
     async updateLibraryBarcode(row, barcode) {
       let index = row.index
@@ -192,6 +199,20 @@ export default {
     },
   },
   computed: {
+    // generateHiFiValue() {
+    //   if (this.currentRun.system_name == "Sequel I" || this.currentRun.system_name == "Sequel II") {
+    //     return 'In SMRT Link'
+    //   } else {
+    //     return 'On Instrument'
+    //   }
+    // },
+    systemNameHifiOptions() {
+      if (this.currentRun.system_name == "Sequel I" || this.currentRun.system_name == "Sequel II") {
+        return ['In SMRT Link', 'Do Not Generate']
+      } else {
+        return ['In SMRT Link', 'Do Not Generate', 'On Instrument']
+      }
+    },
     ...mapGetters('traction/pacbio/runs', [
       'currentRun',
       'well',
@@ -209,14 +230,14 @@ export default {
       movieTime () {
         return (this.well(this.position) ? this.well(this.position).movie_time : '')
       },
-      sequencingMode () {
-        return (this.well(this.position) ? this.well(this.position).sequencing_mode : '')
-      },
       wellLibraries () {
         return (this.well(this.position) ? this.well(this.position).libraries : [])
       },
       preExtensionTime () {
         return (this.well(this.position) ? this.well(this.position).pre_extension_time : '')
+      },
+      generateHiFi () {
+        return (this.well(this.position) ? this.well(this.position).generate_hifi : '')
       },
     })
   },

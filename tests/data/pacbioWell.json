@@ -14,7 +14,8 @@
                 "column": "1",
                 "pacbio_plate_id": 5,
                 "comment": null,
-                "sequencing_mode": "CLR"
+                "generate_hifi": "In SMRT Link",
+                "pre_extension_time": "2"
             }
         }
     },
