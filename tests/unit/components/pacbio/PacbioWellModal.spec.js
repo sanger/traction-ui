@@ -79,6 +79,26 @@ describe('PacbioRunInfo', () => {
     })
   })
 
+  describe('computed', () => {
+    describe('systemNameHifiOptions', () => {
+      it('returns the correct options when System Name is "Sequel I"', () => {
+        run.system_name = "Sequel I"
+        store.commit('traction/pacbio/runs/setCurrentRun', run)
+        expect(modal.systemNameHifiOptions).toEqual([{ text: 'None', value: "" }, 'In SMRT Link', 'Do Not Generate'])
+      })
+      it('returns the correct options when System Name is "Sequel II"', () => {
+        run.system_name = "Sequel II"
+        store.commit('traction/pacbio/runs/setCurrentRun', run)
+        expect(modal.systemNameHifiOptions).toEqual([{ text: 'None', value: "" }, 'In SMRT Link', 'Do Not Generate'])
+      })
+      it('returns the correct options when System Name is "Sequel IIe"', () => {
+        run.system_name = "Sequel IIe"
+        store.commit('traction/pacbio/runs/setCurrentRun', run)
+        expect(modal.systemNameHifiOptions).toEqual([{ text: 'None', value: "" },'In SMRT Link', 'Do Not Generate', 'On Instrument'])  
+      })
+    })
+  })  
+  
   describe('methods', () => {
     beforeEach(() => {
       modal.mutateWell = jest.fn()
@@ -96,11 +116,12 @@ describe('PacbioRunInfo', () => {
 
     it('updateMovieTime', () => {
       modal.updateMovieTime(123)
-    expect(modal.mutateWell).toBeCalledWith({ position: props.position, property: 'movie_time', with: 123 })
+      expect(modal.mutateWell).toBeCalledWith({ position: props.position, property: 'movie_time', with: 123 })
     })
 
     it('updateGenerateHiFi', () => {
-      modal.updateGenerateHiFi('In SMRT Link')
+      modal.generateHiFi = 'In SMRT Link'
+      modal.updateGenerateHiFi()
       expect(modal.mutateWell).toBeCalledWith({ position: props.position, property: 'generate_hifi', with: 'In SMRT Link' })
     })
 
@@ -109,6 +130,62 @@ describe('PacbioRunInfo', () => {
       expect(modal.mutateWell).toBeCalledWith({ position: props.position, property: 'pre_extension_time', with: '2' })
     })
 
+    describe('Default methods', () => {
+
+      describe('#setDefaults',() => {
+        it('calls setGenerateHiFiDefault', () => {
+          const spy = jest.spyOn(modal, 'setGenerateHiFiDefault')
+          modal.setDefaults()
+          expect(spy).toHaveBeenCalled()          
+          spy.mockRestore()
+        })
+      })
+      
+      describe('#setGenerateHiFiDefault', () => {
+        let spy
+
+        beforeEach(() => {
+          spy = jest.spyOn(modal, 'updateGenerateHiFi')
+        })
+
+        describe('when well doesnt exist', () => {
+          it('generateHiFi is correct when system name is "Sequel I"', () => {
+            run.system_name = "Sequel I"
+            store.commit('traction/pacbio/runs/setCurrentRun', run)
+            modal.setGenerateHiFiDefault()
+            expect(modal.generateHiFi).toEqual('In SMRT Link')
+          })
+          it('generateHiFi is correct when system name is "Sequel II"', () => {
+            run.system_name = "Sequel II"
+            store.commit('traction/pacbio/runs/setCurrentRun', run)
+            modal.setGenerateHiFiDefault()
+            expect(modal.generateHiFi).toEqual('In SMRT Link')
+          })
+          it('generateHiFi is correct when system name is "Sequel IIe"', () => {
+            run.system_name = "Sequel IIe"
+            store.commit('traction/pacbio/runs/setCurrentRun', run)
+            modal.setGenerateHiFiDefault()
+            expect(modal.generateHiFi).toEqual('On Instrument')
+          })
+          it('calls updateGenerateHifi mutation',() => {
+            modal.setGenerateHiFiDefault()
+            expect(spy).toHaveBeenCalled()          
+            spy.mockRestore()
+          })
+        })
+        describe('when well does exist', () => {
+          it('generateHiFi is correct when system name is "Sequel I"', () => {
+            storeWell.generate_hifi = 'On Instrument'
+            run.plate.wells[0] = storeWell
+            store.commit('traction/pacbio/runs/setCurrentRun', run)
+            modal.setGenerateHiFiDefault()
+            expect(modal.generateHiFi).toEqual('On Instrument')
+            expect(spy).not.toHaveBeenCalled()          
+            spy.mockRestore()
+          }) 
+        })
+      })
+    })
     describe('updateLibraryBarcode', () => {
       let newBarcode, row, anIndex, library
 

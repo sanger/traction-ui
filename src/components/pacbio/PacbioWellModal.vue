@@ -48,10 +48,10 @@
                       label-for="generateHiFi">
           <b-form-select
             ref="generateHiFi"
-            :value="generateHiFi"
             id="generateHiFi"
             :options="systemNameHifiOptions" 
             @change="updateGenerateHiFi"
+            v-model="generateHiFi"
           >
           </b-form-select>
         </b-form-group>
@@ -119,6 +119,7 @@ export default {
     return {
       movieTimeOptions: [ { text: 'Movie Time', value: "" }, '15.0', '20.0', '24.0', '30.0' ],
       wellLibrariesFields: ['barcode'],
+      generateHiFi: ''
     }
   },
   methods: {
@@ -136,15 +137,18 @@ export default {
       this.setDefaults()
     },
     setDefaults() {
-      if (this.generateHiFi == null) {
+      this.setGenerateHiFiDefault()
+    },
+    setGenerateHiFiDefault() {
+      if (this.well(this.position).generate_hifi == "") {
         if (this.currentRun.system_name == "Sequel I" || this.currentRun.system_name == "Sequel II") {
-          this.updateGenerateHiFi('In SMRT Link')
-        } else {
-          this.updateGenerateHiFi('On Instrument')
+          this.generateHiFi = 'In SMRT Link'
+        } else if (this.currentRun.system_name == "Sequel IIe" ) {
+          this.generateHiFi = 'On Instrument'
         }
-      }
-      if (this.preExtensionTime == null) {
-        this.updatePreExtensionTime('2')
+        this.updateGenerateHiFi()
+      } else {
+        this.generateHiFi = this.well(this.position).generate_hifi
       }
     },
     hide() {
@@ -166,8 +170,8 @@ export default {
     updatePreExtensionTime(preExtensionTime) {
       this.mutateWell({ position: this.position, property: 'pre_extension_time', with: preExtensionTime })
     },
-    updateGenerateHiFi(generateHiFi) {
-      this.mutateWell({ position: this.position, property: 'generate_hifi', with: generateHiFi })
+    updateGenerateHiFi() {
+      this.mutateWell({ position: this.position, property: 'generate_hifi', with: this.generateHiFi })
     },
     async updateLibraryBarcode(row, barcode) {
       let index = row.index
@@ -199,18 +203,11 @@ export default {
     },
   },
   computed: {
-    // generateHiFiValue() {
-    //   if (this.currentRun.system_name == "Sequel I" || this.currentRun.system_name == "Sequel II") {
-    //     return 'In SMRT Link'
-    //   } else {
-    //     return 'On Instrument'
-    //   }
-    // },
     systemNameHifiOptions() {
       if (this.currentRun.system_name == "Sequel I" || this.currentRun.system_name == "Sequel II") {
-        return ['In SMRT Link', 'Do Not Generate']
+        return [{ text: 'None', value: "" }, 'In SMRT Link', 'Do Not Generate']
       } else {
-        return ['In SMRT Link', 'Do Not Generate', 'On Instrument']
+        return [{ text: 'None', value: "" },'In SMRT Link', 'Do Not Generate', 'On Instrument']
       }
     },
     ...mapGetters('traction/pacbio/runs', [
@@ -235,9 +232,6 @@ export default {
       },
       preExtensionTime () {
         return (this.well(this.position) ? this.well(this.position).pre_extension_time : '')
-      },
-      generateHiFi () {
-        return (this.well(this.position) ? this.well(this.position).generate_hifi : '')
       },
     })
   },
