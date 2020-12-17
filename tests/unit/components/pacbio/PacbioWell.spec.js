@@ -22,9 +22,9 @@ describe('Well.vue', () => {
 
     store.commit('traction/pacbio/runs/setCurrentRun', run)
 
-    wrapper = mount(Well, { 
-      localVue, 
-      store, 
+    wrapper = mount(Well, {
+      localVue,
+      store,
       propsData: props,
       stubs: {
         WellModal: true
@@ -66,6 +66,10 @@ describe('Well.vue', () => {
     expect(well.ry).toEqual(props.ry)
   })
 
+  it('must have a ry', () => {
+    expect(well.required_metadata_fields).toEqual(['movie_time', 'insert_size', 'on_plate_loading_concentration'])
+  })
+
   it('will have an ellipse with the correct attributes', () => {
     let ellipse = wrapper.find('ellipse')
     expect(ellipse.exists()).toBeTruthy()
@@ -84,9 +88,9 @@ describe('Well.vue', () => {
 
     it('will be invalid if there is any missing meta data', () => {
       storeWell.movie_time = ""
-      wrapper = mount(Well, { 
-        localVue, 
-        store, 
+      wrapper = mount(Well, {
+        localVue,
+        store,
         propsData: props,
         stubs: {
           WellModal: true
@@ -98,9 +102,9 @@ describe('Well.vue', () => {
 
     it('will be invalid if there are no libraries in the store', () => {
       storeWell.libraries = []
-      wrapper = mount(Well, { 
-        localVue, 
-        store, 
+      wrapper = mount(Well, {
+        localVue,
+        store,
         propsData: props,
         stubs: {
           WellModal: true
@@ -138,15 +142,15 @@ describe('Well.vue', () => {
       storeWell.insert_size = ""
       storeWell.pre_extension_time = ""
 
-      wrapper = mount(Well, { 
-        localVue, 
-        store, 
+      wrapper = mount(Well, {
+        localVue,
+        store,
         propsData: props,
         stubs: {
           WellModal: true
         }
       })
-  
+
       let ellipse = wrapper.find('ellipse')
       expect(ellipse.attributes('class')).toEqual("empty")
     })

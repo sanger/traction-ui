@@ -53,7 +53,7 @@ describe('Run', () => {
       it('will have an comments', () => {
         expect(run.comments).toBeDefined()
       })
-      
+
       it('will have an system_name', () => {
         expect(run.system_name).toBeDefined()
       })
@@ -75,65 +75,10 @@ describe('Run', () => {
         })
 
         it('will create 96 wells', () => {
-          expect(wells.length).toEqual(96)
-        })
-
-        describe('each', () => {
-
-          let firstWell, lastWell
-
-          beforeEach(() => {
-            firstWell = wells[0]
-            lastWell = wells[95]
-          })
-
-          it('will have a row', () => {
-            expect(firstWell.row).toEqual('A')
-            expect(lastWell.row).toEqual('H')
-          })
-
-          it('will have a column', () => {
-            expect(firstWell.column).toEqual('1')
-            expect(lastWell.column).toEqual('12')
-          })
-
-          it('will have a position', () => {
-            expect(firstWell.position).toEqual('A1')
-            expect(lastWell.position).toEqual('H12')
-          })
-
-          it('will have movie_time', () => {
-            expect(firstWell.movie_time).toBeDefined()
-            expect(lastWell.movie_time).toBeDefined()
-          })
-
-          it('will have an insert_size', () => {
-            expect(firstWell.insert_size).toBeDefined()
-            expect(lastWell.insert_size).toBeDefined()
-          })
-
-          it('will have an on_plate_laoding_concentration', () => {
-            expect(firstWell.on_plate_loading_concentration).toBeDefined()
-            expect(lastWell.on_plate_loading_concentration).toBeDefined()
-          })
-
-          it('will have a generate_hifi', () => {
-            expect(firstWell.generate_hifi).toBeDefined()
-            expect(lastWell.generate_hifi).toBeDefined()
-          })
-
-          it('will have a pre extension_time', () => {
-            expect(firstWell.pre_extension_time).toBeDefined()
-            expect(lastWell.pre_extension_time).toBeDefined()
-          })
-
-          it('will have a library', () => {
-            expect(firstWell.libraries).toEqual([])
-          })
+          expect(wells.length).toEqual(0)
+          expect(wells).toEqual([])
         })
       })
-
-      // TODO: add other well metadata
     })
   })
 
@@ -153,12 +98,18 @@ describe('Run', () => {
       expect(well.on_plate_loading_concentration).toEqual('')
       expect(well.generate_hifi).toEqual('')
       expect(well.libraries).toEqual([])
-      expect(well.pre_extension_time).toEqual('')
+      expect(well.pre_extension_time).toEqual('2')
+    })
+
+    it('will have the correct data when passed values', () => {
+      well = Run.buildWell('A', 1, 'Sequel IIe', '1')
+      expect(well.generate_hifi).toEqual('Sequel IIe')
+      expect(well.pre_extension_time).toEqual('1')
     })
   })
 
   describe('create', () => {
-    let api
+    let api, well1, well2
 
     //  add well library
     beforeEach(() => {
@@ -244,6 +195,32 @@ describe('Run', () => {
 
       expect(resp).toEqual("title The record identified by 100 could not be found.")
     })
+
+    describe('when a well has no libraries', () => {
+      beforeEach(() => {
+        well1 = new Response(Data.PacbioWells).deserialize.wells[0]
+        well2 = new Response(Data.PacbioWells).deserialize.wells[1]
+
+        well1['libraries'] = [{ id: 1 }, { id: 2 }]
+        well2['libraries'] = []
+
+        run = {
+          id: '1',
+          name: 'run1',
+          plate: {
+            wells: [well1, well2]
+          }
+        }
+      })
+
+      it('should remove that well from the payload', () => {
+        api.traction.pacbio.runs.create.mockResolvedValue([Data.PacbioRun])
+
+        Run.create(run, api.traction.pacbio)
+        expect(api.traction.pacbio.runs.create).toHaveBeenCalledTimes(1)
+      })
+    })
+
   })
 
   describe('createResource', () => {
@@ -386,6 +363,31 @@ describe('Run', () => {
       expect(api.traction.pacbio.wells.update).not.toHaveBeenCalled()
 
       expect(resp).toEqual(["title The record identified by 100 could not be found."])
+    })
+
+    describe('when a well has no libraries', () => {
+      beforeEach(() => {
+        well1 = new Response(Data.PacbioWells).deserialize.wells[0]
+        well2 = new Response(Data.PacbioWells).deserialize.wells[1]
+
+        well1['libraries'] = [{ id: 1 }, { id: 2 }]
+        well2['libraries'] = []
+
+        run = {
+          id: '1',
+          name: 'run1',
+          plate: {
+            wells: [well1, well2]
+          }
+        }
+      })
+
+      it('should remove that well from the payload', () => {
+        api.traction.pacbio.runs.update.mockResolvedValue([Data.PacbioRun])
+
+        Run.update(run, api.traction.pacbio)
+        expect(api.traction.pacbio.runs.update).toHaveBeenCalledTimes(1)
+      })
     })
   })
 

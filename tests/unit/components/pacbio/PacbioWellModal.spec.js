@@ -16,10 +16,10 @@ describe('PacbioRunInfo', () => {
 
     store.commit('traction/pacbio/runs/setCurrentRun', run)
 
-    wrapper = mount(WellModal, { 
-      localVue, 
-      store, 
-      propsData: props 
+    wrapper = mount(WellModal, {
+      localVue,
+      store,
+      propsData: props
     })
     modal = wrapper.vm
   })
@@ -30,6 +30,20 @@ describe('PacbioRunInfo', () => {
 
   it('must have movieTimeOptions data', () => {
     expect(modal.movieTimeOptions).toEqual([{ text: 'Movie Time', value: "" }, "15.0", "20.0", "24.0", "30.0"])
+  })
+
+  describe('systemNameHifiOptions', () => {
+    it('returns the correct options when System Name is "Sequel I"', () => {
+      expect(modal.systemNameHifiOptions["Sequel I"]).toEqual(['In SMRT Link', 'Do Not Generate'])
+    })
+    it('returns the correct options when System Name is "Sequel II"', () => {
+      expect(modal.systemNameHifiOptions["Sequel II"]).toEqual(['In SMRT Link', 'Do Not Generate'])
+    })
+    it('returns the correct options when System Name is "Sequel IIe"', () => {
+      run.system_name = "Sequel IIe"
+      store.commit('traction/pacbio/runs/setCurrentRun', run)
+      expect(modal.systemNameHifiOptions["Sequel IIe"]).toEqual(['In SMRT Link', 'Do Not Generate', 'On Instrument'])
+    })
   })
 
   it('can have mapState', () => {
@@ -59,7 +73,7 @@ describe('PacbioRunInfo', () => {
     it('has a Insert Size input', () => {
       expect(wrapper.find('.insertSize')).toBeDefined()
     })
-    it('has a pre-extension time input', () => {
+    it('has a Generate HiFi input', () => {
       expect(wrapper.find('.generateHiFi')).toBeDefined()
     })
     it('has a table of well libraries', () => {
@@ -69,7 +83,7 @@ describe('PacbioRunInfo', () => {
       expect(wrapper.find('.preExtensionTime')).toBeDefined()
     })
   })
-  
+
   describe('alert', () => {
     it('emits an event with the message', () => {
         modal.alert('emit this message', 'success')
@@ -79,26 +93,6 @@ describe('PacbioRunInfo', () => {
     })
   })
 
-  describe('computed', () => {
-    describe('systemNameHifiOptions', () => {
-      it('returns the correct options when System Name is "Sequel I"', () => {
-        run.system_name = "Sequel I"
-        store.commit('traction/pacbio/runs/setCurrentRun', run)
-        expect(modal.systemNameHifiOptions).toEqual([{ text: 'None', value: "" }, 'In SMRT Link', 'Do Not Generate'])
-      })
-      it('returns the correct options when System Name is "Sequel II"', () => {
-        run.system_name = "Sequel II"
-        store.commit('traction/pacbio/runs/setCurrentRun', run)
-        expect(modal.systemNameHifiOptions).toEqual([{ text: 'None', value: "" }, 'In SMRT Link', 'Do Not Generate'])
-      })
-      it('returns the correct options when System Name is "Sequel IIe"', () => {
-        run.system_name = "Sequel IIe"
-        store.commit('traction/pacbio/runs/setCurrentRun', run)
-        expect(modal.systemNameHifiOptions).toEqual([{ text: 'None', value: "" },'In SMRT Link', 'Do Not Generate', 'On Instrument'])  
-      })
-    })
-  })  
-  
   describe('methods', () => {
     beforeEach(() => {
       modal.mutateWell = jest.fn()
@@ -120,8 +114,7 @@ describe('PacbioRunInfo', () => {
     })
 
     it('updateGenerateHiFi', () => {
-      modal.generateHiFi = 'In SMRT Link'
-      modal.updateGenerateHiFi()
+      modal.updateGenerateHiFi('In SMRT Link')
       expect(modal.mutateWell).toBeCalledWith({ position: props.position, property: 'generate_hifi', with: 'In SMRT Link' })
     })
 
@@ -130,62 +123,6 @@ describe('PacbioRunInfo', () => {
       expect(modal.mutateWell).toBeCalledWith({ position: props.position, property: 'pre_extension_time', with: '2' })
     })
 
-    describe('Default methods', () => {
-
-      describe('#setDefaults',() => {
-        it('calls setGenerateHiFiDefault', () => {
-          const spy = jest.spyOn(modal, 'setGenerateHiFiDefault')
-          modal.setDefaults()
-          expect(spy).toHaveBeenCalled()          
-          spy.mockRestore()
-        })
-      })
-      
-      describe('#setGenerateHiFiDefault', () => {
-        let spy
-
-        beforeEach(() => {
-          spy = jest.spyOn(modal, 'updateGenerateHiFi')
-        })
-
-        describe('when well doesnt exist', () => {
-          it('generateHiFi is correct when system name is "Sequel I"', () => {
-            run.system_name = "Sequel I"
-            store.commit('traction/pacbio/runs/setCurrentRun', run)
-            modal.setGenerateHiFiDefault()
-            expect(modal.generateHiFi).toEqual('In SMRT Link')
-          })
-          it('generateHiFi is correct when system name is "Sequel II"', () => {
-            run.system_name = "Sequel II"
-            store.commit('traction/pacbio/runs/setCurrentRun', run)
-            modal.setGenerateHiFiDefault()
-            expect(modal.generateHiFi).toEqual('In SMRT Link')
-          })
-          it('generateHiFi is correct when system name is "Sequel IIe"', () => {
-            run.system_name = "Sequel IIe"
-            store.commit('traction/pacbio/runs/setCurrentRun', run)
-            modal.setGenerateHiFiDefault()
-            expect(modal.generateHiFi).toEqual('On Instrument')
-          })
-          it('calls updateGenerateHifi mutation',() => {
-            modal.setGenerateHiFiDefault()
-            expect(spy).toHaveBeenCalled()          
-            spy.mockRestore()
-          })
-        })
-        describe('when well does exist', () => {
-          it('generateHiFi is correct when system name is "Sequel I"', () => {
-            storeWell.generate_hifi = 'On Instrument'
-            run.plate.wells[0] = storeWell
-            store.commit('traction/pacbio/runs/setCurrentRun', run)
-            modal.setGenerateHiFiDefault()
-            expect(modal.generateHiFi).toEqual('On Instrument')
-            expect(spy).not.toHaveBeenCalled()          
-            spy.mockRestore()
-          }) 
-        })
-      })
-    })
     describe('updateLibraryBarcode', () => {
       let newBarcode, row, anIndex, library
 

@@ -10,10 +10,10 @@
         <b-form-group id="movieTime-group"
                       label="Movie time:"
                       label-for="movieTime">
-          <b-form-select ref="movieTime" 
-                        id="movieTime" 
-                        :value="movieTime" 
-                        :options="movieTimeOptions" 
+          <b-form-select ref="movieTime"
+                        id="movieTime"
+                        :value="movieTime"
+                        :options="movieTimeOptions"
                         @change="updateMovieTime">
           </b-form-select>
         </b-form-group>
@@ -49,9 +49,9 @@
           <b-form-select
             ref="generateHiFi"
             id="generateHiFi"
-            :options="systemNameHifiOptions" 
+            :value="generateHiFi"
+            :options="this.systemNameHifiOptions[this.currentRun.system_name]"
             @change="updateGenerateHiFi"
-            v-model="generateHiFi"
           >
           </b-form-select>
         </b-form-group>
@@ -119,7 +119,12 @@ export default {
     return {
       movieTimeOptions: [ { text: 'Movie Time', value: "" }, '15.0', '20.0', '24.0', '30.0' ],
       wellLibrariesFields: ['barcode'],
-      generateHiFi: ''
+      systemNameHifiOptions: {
+        "": [{ text: 'Please select a System Name', value: "", disabled: true }],
+        "Sequel I": ['In SMRT Link', 'Do Not Generate'],
+        "Sequel II": ['In SMRT Link', 'Do Not Generate'],
+        "Sequel IIe": ['In SMRT Link', 'Do Not Generate', 'On Instrument'],
+      }
     }
   },
   methods: {
@@ -129,27 +134,11 @@ export default {
     removeRow(row) {
       this.removeLibraryFromWell({ position: this.position, index: row.index })
     },
-    showModalForPosition() { 
+    showModalForPosition() {
       if (!this.well(this.position)) {
         this.createWell(this.position)
       }
       this.$refs['well-modal'].show()
-      this.setDefaults()
-    },
-    setDefaults() {
-      this.setGenerateHiFiDefault()
-    },
-    setGenerateHiFiDefault() {
-      if (this.well(this.position).generate_hifi == "") {
-        if (this.currentRun.system_name == "Sequel I" || this.currentRun.system_name == "Sequel II") {
-          this.generateHiFi = 'In SMRT Link'
-        } else if (this.currentRun.system_name == "Sequel IIe" ) {
-          this.generateHiFi = 'On Instrument'
-        }
-        this.updateGenerateHiFi()
-      } else {
-        this.generateHiFi = this.well(this.position).generate_hifi
-      }
     },
     hide() {
       this.$refs['well-modal'].hide()
@@ -170,8 +159,8 @@ export default {
     updatePreExtensionTime(preExtensionTime) {
       this.mutateWell({ position: this.position, property: 'pre_extension_time', with: preExtensionTime })
     },
-    updateGenerateHiFi() {
-      this.mutateWell({ position: this.position, property: 'generate_hifi', with: this.generateHiFi })
+    updateGenerateHiFi(generateHiFi) {
+      this.mutateWell({ position: this.position, property: 'generate_hifi', with: generateHiFi })
     },
     async updateLibraryBarcode(row, barcode) {
       let index = row.index
@@ -203,13 +192,6 @@ export default {
     },
   },
   computed: {
-    systemNameHifiOptions() {
-      if (this.currentRun.system_name == "Sequel I" || this.currentRun.system_name == "Sequel II") {
-        return [{ text: 'None', value: "" }, 'In SMRT Link', 'Do Not Generate']
-      } else {
-        return [{ text: 'None', value: "" },'In SMRT Link', 'Do Not Generate', 'On Instrument']
-      }
-    },
     ...mapGetters('traction/pacbio/runs', [
       'currentRun',
       'well',
@@ -232,6 +214,9 @@ export default {
       },
       preExtensionTime () {
         return (this.well(this.position) ? this.well(this.position).pre_extension_time : '')
+      },
+      generateHiFi () {
+        return (this.well(this.position) ? this.well(this.position).generate_hifi : '')
       },
     })
   },

@@ -1,41 +1,19 @@
 import handlePromise from './PromiseHelper'
 
-const NO_OF_COLUMNS = 12
-const NO_OF_ROWS = 8
-
-const columns = () => {
-  return Array.from(Array(NO_OF_COLUMNS), (e, i) => String(i + 1))
-}
-
-const rows = () => {
-  return Array.from(Array(NO_OF_ROWS), (e, i) => String.fromCharCode(65 + i))
-}
-
-const buildWell = (row, column) => {
+const buildWell = (row, column, generateHiFiDefault='', preExtenstionTimeDefault='2') => {
   return  {
-    row: row, 
-    column: column, 
+    row: row,
+    column: column,
     position: `${row}${column}`,
     movie_time: '',
     insert_size: '',
     on_plate_loading_concentration: '',
-    generate_hifi: '',
+    generate_hifi: generateHiFiDefault,
     libraries: [],
-    pre_extension_time: ''
+    pre_extension_time: preExtenstionTimeDefault
   }
 }
 
-const buildWells = () => {
-  let wells = []
-
-  for (const column of columns()) {
-    for (const row of rows()) {
-      wells.push(buildWell(row, column))
-    }
-  }
-
-  return wells
-}
 
 const build = (object) => {
     return object || {
@@ -46,7 +24,7 @@ const build = (object) => {
         comments: '',
         system_name: '',
         plate: {
-            wells: buildWells()
+            wells: []
         }
     }
 }
@@ -94,8 +72,8 @@ const update = async (run, request) => {
         let runPayload = updateRunPayload(run)
         let runResponse = await updateResource(runPayload, request.runs)
         responses.push(runResponse)
-
-        for (const well of run.plate.wells) {
+        let wellsWithLibraries = run.plate.wells.filter(well => well.libraries.length != 0)
+        for (const well of wellsWithLibraries) {
             if (well.id) { // Well exists - Update well
                 let wellPayload = updateWellPayload(well)
                 let wellResponse = await updateResource(wellPayload, request.wells)
