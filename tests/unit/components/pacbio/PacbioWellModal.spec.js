@@ -46,12 +46,17 @@ describe('PacbioRunInfo', () => {
     })
   })
 
+  it('must have cssAnalysisOptions data', () => {
+    expect(modal.ccsAnalysisOptions).toEqual([{ text: 'CCS Analysis Output', value: "" }, 'Yes', 'No'])
+  })
+
   it('can have mapState', () => {
     expect(modal.insertSize).toBeDefined()
     expect(modal.onPlateLoadingConc).toBeDefined()
     expect(modal.movieTime).toBeDefined()
     expect(modal.wellLibraries).toBeDefined()
     expect(modal.generateHiFi).toBeDefined()
+    expect(modal.ccsAnalysisOutput).toBeDefined()
     expect(modal.preExtensionTime).toBeDefined()
   })
 
@@ -75,6 +80,9 @@ describe('PacbioRunInfo', () => {
     })
     it('has a Generate HiFi input', () => {
       expect(wrapper.find('.generateHiFi')).toBeDefined()
+    })
+    it('has a CCS Analysis Output input', () => {
+      expect(wrapper.find('.ccsAnalysisOutput')).toBeDefined()
     })
     it('has a table of well libraries', () => {
       expect(wrapper.find('#wellLibraries')).toBeDefined()
@@ -116,6 +124,12 @@ describe('PacbioRunInfo', () => {
     it('updateGenerateHiFi', () => {
       modal.updateGenerateHiFi('In SMRT Link')
       expect(modal.mutateWell).toBeCalledWith({ position: props.position, property: 'generate_hifi', with: 'In SMRT Link' })
+      expect(modal.mutateWell).toBeCalledWith({ position: props.position, property: 'ccs_analysis_output', with: '' })
+    })
+
+    it('updateCCSAnalysisOuput', () => {
+      modal.updateCCSAnalysisOutput('Yes')
+      expect(modal.mutateWell).toBeCalledWith({ position: props.position, property: 'ccs_analysis_output', with: 'Yes' })
     })
 
     it('updatePreExtensionTime', () => {

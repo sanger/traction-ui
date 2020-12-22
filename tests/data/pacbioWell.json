@@ -15,6 +15,7 @@
                 "pacbio_plate_id": 5,
                 "comment": null,
                 "generate_hifi": "In SMRT Link",
+                "ccs_analysis_output": "",
                 "pre_extension_time": "2"
             }
         }

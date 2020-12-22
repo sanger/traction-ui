@@ -15,6 +15,7 @@ describe('Well.vue', () => {
     storeWell.insert_size = 123
     storeWell.on_plate_loading_concentration = 234
     storeWell.generate_hifi = "In SMRT Link"
+    storeWell.ccs_analysis_output = ""
     storeWell.pre_extension_time = "2"
 
     run = Run.build()
@@ -138,6 +139,7 @@ describe('Well.vue', () => {
       storeWell.libraries = []
       storeWell.movie_time = ""
       storeWell.generate_hifi = ""
+      storeWell.ccs_analysis_output = ""
       storeWell.on_plate_loading_concentration = ""
       storeWell.insert_size = ""
       storeWell.pre_extension_time = ""

@@ -1,18 +1,18 @@
 import handlePromise from './PromiseHelper'
 
-const buildWell = (row, column, generateHiFiDefault='', preExtenstionTimeDefault='2') => {
-  return  {
-    row: row,
-    column: column,
+const buildWell = (row, column, generate_hifi='', pre_extension_time='2') => ({
+    row, 
+    column,
     position: `${row}${column}`,
     movie_time: '',
     insert_size: '',
     on_plate_loading_concentration: '',
-    generate_hifi: generateHiFiDefault,
+    sequencing_mode: '',
+    generate_hifi,
+    ccs_analysis_output: '',
     libraries: [],
-    pre_extension_time: preExtenstionTimeDefault
-  }
-}
+    pre_extension_time
+})
 
 
 const build = (object) => {
@@ -138,6 +138,7 @@ const createWellsPayload = (wells, plateId) => {
             insert_size: well.insert_size,
             on_plate_loading_concentration: well.on_plate_loading_concentration,
             generate_hifi: well.generate_hifi,
+            ccs_analysis_output: well.ccs_analysis_output,
             pre_extension_time: well.pre_extension_time,
             relationships: {
                 plate: {
@@ -194,6 +195,7 @@ const updateWellPayload = (well) => {
                 insert_size: well.insert_size,
                 on_plate_loading_concentration: well.on_plate_loading_concentration,
                 generate_hifi: well.generate_hifi,
+                ccs_analysis_output: well.ccs_analysis_output,
                 pre_extension_time: well.pre_extension_time
             },
             relationships: {
