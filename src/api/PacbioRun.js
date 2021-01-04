@@ -1,7 +1,8 @@
 import handlePromise from './PromiseHelper'
 
+// const buildWell = (row, column, generateHiFiDefault='', preExtenstionTimeDefault
 const buildWell = (row, column, generate_hifi='', pre_extension_time='2') => ({
-    row, 
+    row,
     column,
     position: `${row}${column}`,
     movie_time: '',
@@ -12,8 +13,9 @@ const buildWell = (row, column, generate_hifi='', pre_extension_time='2') => ({
     ccs_analysis_output: '',
     libraries: [],
     pre_extension_time
+    // pre_extension_time: preExtenstionTimeDefault,
+    // ccs_analysis_output: ''
 })
-
 
 const build = (object) => {
     return object || {

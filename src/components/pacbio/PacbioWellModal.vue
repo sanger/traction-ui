@@ -56,7 +56,7 @@
           </b-form-select>
         </b-form-group>
 
-        <b-form-group v-if="showCCSAnalysis"
+        <!-- <b-form-group v-if="showCCSAnalysis"
                       id="ccsAnalysisOutput-group"
                       label="CCS Analysis Output:"
                       label-for="ccsAnalysisOutput">
@@ -65,6 +65,20 @@
             id="ccsAnalysisOutput"
             :value="ccsAnalysisOutput"
             :options="this.ccsAnalysisOptions"
+            @change="updateCCSAnalysisOutput"
+          >
+          </b-form-select>
+        </b-form-group> -->
+
+        <b-form-group v-if="showCcsAnalysisOutput()"
+                      id="ccsAnalysisOutput-group"
+                      label="CCS Analysis Output - Include Kinetics Information:"
+                      label-for="ccsAnalysisOutput">
+          <b-form-select
+            ref="ccsAnalysisOutput"
+            id="ccsAnalysisOutput"
+            :value="ccsAnalysisOutput"
+            :options="this.ccsAnalysisOutputOptions"
             @change="updateCCSAnalysisOutput"
           >
           </b-form-select>
@@ -139,7 +153,8 @@ export default {
         "Sequel II": ['In SMRT Link', 'Do Not Generate'],
         "Sequel IIe": ['In SMRT Link', 'Do Not Generate', 'On Instrument'],
       },
-      ccsAnalysisOptions: [{ text: 'CCS Analysis Output', value: "" }, 'Yes', 'No']
+      // ccsAnalysisOptions: [{ text: 'CCS Analysis Output', value: "" }, 'Yes', 'No']
+      ccsAnalysisOutputOptions: ['Yes', 'No']
     }
   },
   methods: {
@@ -175,7 +190,7 @@ export default {
       this.mutateWell({ position: this.position, property: 'pre_extension_time', with: preExtensionTime })
     },
     updateGenerateHiFi(generateHiFi) {
-      ((generateHiFi !== "On Instrument" ) ? this.updateCCSAnalysisOutput("") : "") //sets CCSAnalysis back to blank if OnInstrument is unselected
+      // ((generateHiFi !== "On Instrument" ) ? this.updateCCSAnalysisOutput("") : "") //sets CCSAnalysis back to blank if OnInstrument is unselected
       this.mutateWell({ position: this.position, property: 'generate_hifi', with: generateHiFi })
     },
     updateCCSAnalysisOutput(ccsAnalysisOutput) {
@@ -195,6 +210,11 @@ export default {
         this.showAlert('Library is not valid', 'danger')
       }
     },
+    showCcsAnalysisOutput() {
+      if (this.well(this.position)) {
+        return this.currentRun.system_name == "Sequel IIe" && this.well(this.position).generate_hifi=="On Instrument"
+      }
+    },
      ...mapActions('traction/pacbio/tubes', [
       'isLibraryBarcodeValid',
       'getTubeForBarcode',
@@ -211,9 +231,9 @@ export default {
     },
   },
   computed: {
-    showCCSAnalysis() {
-      return ((this.currentRun.system_name == "Sequel IIe" && this.generateHiFi == "On Instrument") ? true : false)
-    },
+    // showCCSAnalysis() {
+    //   return ((this.currentRun.system_name == "Sequel IIe" && this.generateHiFi == "On Instrument") ? true : false)
+    // },
     ...mapGetters('traction/pacbio/runs', [
       'currentRun',
       'well',
@@ -240,7 +260,7 @@ export default {
       generateHiFi () {
         return (this.well(this.position) ? this.well(this.position).generate_hifi : '')
       },
-      ccsAnalysisOutput () {
+      ccsAnalysisOutput() {
         return (this.well(this.position) ? this.well(this.position).ccs_analysis_output : '')
       },
     })

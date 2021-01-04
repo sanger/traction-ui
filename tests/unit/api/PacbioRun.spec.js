@@ -100,6 +100,7 @@ describe('Run', () => {
       expect(well.ccs_analysis_output).toEqual('')
       expect(well.libraries).toEqual([])
       expect(well.pre_extension_time).toEqual('2')
+      expect(well.ccs_analysis_output).toEqual('')
     })
 
     it('will have the correct data when passed values', () => {
@@ -303,6 +304,7 @@ describe('Run', () => {
       expect(result.data.attributes.wells[0].generate_hifi).toEqual(wells[0].generate_hifi)
       expect(result.data.attributes.wells[0].ccs_analysis_output).toEqual(wells[0].ccs_analysis_output)
       expect(result.data.attributes.wells[0].pre_extension_time).toEqual(wells[0].pre_extension_time)
+      expect(result.data.attributes.wells[0].ccs_analysis_output).toEqual(wells[0].ccs_analysis_output)
       expect(result.data.attributes.wells[0].relationships.plate.data.type).toEqual("plates")
       expect(result.data.attributes.wells[0].relationships.plate.data.id).toEqual(plateID)
       expect(result.data.attributes.wells[0].relationships.libraries.data[0].type).toEqual("libraries")
@@ -460,6 +462,7 @@ describe('Run', () => {
       expect(result.data.attributes.generate_hifi).toEqual(well.generate_hifi)
       expect(result.data.attributes.ccs_analysis_output).toEqual(well.ccs_analysis_output)
       expect(result.data.attributes.pre_extension_time).toEqual(well.pre_extension_time)
+      expect(result.data.attributes.ccs_analysis_output).toEqual(well.ccs_analysis_output)
       expect(result.data.relationships.libraries.data[0].type).toEqual("libraries")
       expect(result.data.relationships.libraries.data[0].id).toEqual(well.libraries[0].id)
     })

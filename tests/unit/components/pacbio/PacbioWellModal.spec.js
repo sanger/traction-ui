@@ -2,7 +2,7 @@ import { mount, localVue, store } from '../../testHelper'
 import WellModal from '@/components/pacbio/PacbioWellModal'
 import * as Run from '@/api/PacbioRun'
 
-describe('PacbioRunInfo', () => {
+describe('PacbioWellModal', () => {
   let modal, wrapper, props, storeWell, run
 
   beforeEach(() => {
@@ -32,6 +32,14 @@ describe('PacbioRunInfo', () => {
     expect(modal.movieTimeOptions).toEqual([{ text: 'Movie Time', value: "" }, "15.0", "20.0", "24.0", "30.0"])
   })
 
+  it('must have ccsAnalysisOutputOptions data', () => {
+    expect(modal.ccsAnalysisOutputOptions).toEqual(['Yes', 'No'])
+  })
+
+  // it('must have cssAnalysisOptions data', () => {
+  //   expect(modal.ccsAnalysisOptions).toEqual([{ text: 'CCS Analysis Output', value: "" }, 'Yes', 'No'])
+  // })
+
   describe('systemNameHifiOptions', () => {
     it('returns the correct options when System Name is "Sequel I"', () => {
       expect(modal.systemNameHifiOptions["Sequel I"]).toEqual(['In SMRT Link', 'Do Not Generate'])
@@ -46,10 +54,6 @@ describe('PacbioRunInfo', () => {
     })
   })
 
-  it('must have cssAnalysisOptions data', () => {
-    expect(modal.ccsAnalysisOptions).toEqual([{ text: 'CCS Analysis Output', value: "" }, 'Yes', 'No'])
-  })
-
   it('can have mapState', () => {
     expect(modal.insertSize).toBeDefined()
     expect(modal.onPlateLoadingConc).toBeDefined()
@@ -58,6 +62,7 @@ describe('PacbioRunInfo', () => {
     expect(modal.generateHiFi).toBeDefined()
     expect(modal.ccsAnalysisOutput).toBeDefined()
     expect(modal.preExtensionTime).toBeDefined()
+    expect(modal.ccsAnalysisOutput).toBeDefined()
   })
 
   it('can have getters', () => {
@@ -90,11 +95,14 @@ describe('PacbioRunInfo', () => {
     it('has a pre-extension time input', () => {
       expect(wrapper.find('.preExtensionTime')).toBeDefined()
     })
+    it('has a ccsAnalysisOutput', () => {
+      expect(wrapper.find('.ccsAnalysisOutput')).toBeDefined()
+    })
   })
 
   describe('alert', () => {
     it('emits an event with the message', () => {
-        modal.alert('emit this message', 'success')
+      modal.alert('emit this message', 'success')
       expect(wrapper.emitted().alert).toBeTruthy()
       expect(wrapper.emitted().alert[0][0]).toEqual('emit this message')
       expect(wrapper.emitted().alert[0][1]).toEqual('success')
@@ -124,7 +132,7 @@ describe('PacbioRunInfo', () => {
     it('updateGenerateHiFi', () => {
       modal.updateGenerateHiFi('In SMRT Link')
       expect(modal.mutateWell).toBeCalledWith({ position: props.position, property: 'generate_hifi', with: 'In SMRT Link' })
-      expect(modal.mutateWell).toBeCalledWith({ position: props.position, property: 'ccs_analysis_output', with: '' })
+      // expect(modal.mutateWell).toBeCalledWith({ position: props.position, property: 'ccs_analysis_output', with: '' })
     })
 
     it('updateCCSAnalysisOuput', () => {
@@ -166,6 +174,38 @@ describe('PacbioRunInfo', () => {
         await modal.updateLibraryBarcode(newBarcode)
         expect(modal.addLibraryToWell).not.toBeCalled()
         expect(modal.showAlert).toBeCalledWith('Library is not valid', 'danger')
+      })
+    })
+
+    describe('showCcsAnalysisOutput', () => {
+      it('is true when system_name=="Sequel IIe" and generate_hifi_reads==="On Instrument"', () => {
+        storeWell = Run.buildWell(props.row, props.column, 'On Instrument')
+        run = Run.build()
+        run.system_name = "Sequel IIe"
+        run.plate.wells[0] = storeWell
+
+        store.commit('traction/pacbio/runs/setCurrentRun', run)
+        expect(modal.showCcsAnalysisOutput()).toEqual(true)
+      })
+
+      it('is false when system_name=="Sequel IIe" and generate_hifi_reads==="Do Not Generate"', () => {
+        storeWell = Run.buildWell(props.row, props.column, 'Do Not Generate')
+        run = Run.build()
+        run.system_name = "Sequel IIe"
+        run.plate.wells[0] = storeWell
+
+        store.commit('traction/pacbio/runs/setCurrentRun', run)
+        expect(modal.showCcsAnalysisOutput()).toEqual(false)
+      })
+
+      it('is false when system_name=="Sequel I"', () => {
+        storeWell = Run.buildWell(props.row, props.column)
+        run = Run.build()
+        run.system_name = "Sequel I"
+        run.plate.wells[0] = storeWell
+
+        store.commit('traction/pacbio/runs/setCurrentRun', run)
+        expect(modal.showCcsAnalysisOutput()).toEqual(false)
       })
     })
   })

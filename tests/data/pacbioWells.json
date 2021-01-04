@@ -18,7 +18,8 @@
                     "generate_hifi": "In SMRT Link",
                     "ccs_analysis_output": "",
                     "pre_extension_time": "2",
-                    "position": "A1"
+                    "position": "A1",
+                    "ccs_analysis_output": "No"
                 },
                 "relationships": {
                     "libraries": {
@@ -46,7 +47,8 @@
                     "generate_hifi": "In SMRT Link",
                     "ccs_analysis_output": "",
                     "pre_extension_time": "2",
-                    "position": "A1"
+                    "position": "A1",
+                    "ccs_analysis_output": "No"
                 },
                 "relationships": {
                     "libraries": {
