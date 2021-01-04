@@ -13,8 +13,6 @@ const buildWell = (row, column, generate_hifi='', pre_extension_time='2') => ({
     ccs_analysis_output: '',
     libraries: [],
     pre_extension_time
-    // pre_extension_time: preExtenstionTimeDefault,
-    // ccs_analysis_output: ''
 })
 
 const build = (object) => {
