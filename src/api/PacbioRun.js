@@ -1,6 +1,5 @@
 import handlePromise from './PromiseHelper'
 
-// const buildWell = (row, column, generateHiFiDefault='', preExtenstionTimeDefault
 const buildWell = (row, column, generate_hifi='', pre_extension_time='2') => ({
     row,
     column,
