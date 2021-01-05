@@ -81,7 +81,7 @@ export default {
   name: 'PacbioRunInfo',
   data () {
     return {
-      systemNameOptions: [{ text: 'System Name', value: "" }, 'Sequel I', 'Sequel II'],
+      systemNameOptions: [{ text: 'System Name', value: "" }, 'Sequel I', 'Sequel II', 'Sequel IIe'],
     }
   },
   methods: {

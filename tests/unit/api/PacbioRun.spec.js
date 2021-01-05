@@ -53,7 +53,7 @@ describe('Run', () => {
       it('will have an comments', () => {
         expect(run.comments).toBeDefined()
       })
-      
+
       it('will have an system_name', () => {
         expect(run.system_name).toBeDefined()
       })
@@ -75,65 +75,10 @@ describe('Run', () => {
         })
 
         it('will create 96 wells', () => {
-          expect(wells.length).toEqual(96)
-        })
-
-        describe('each', () => {
-
-          let firstWell, lastWell
-
-          beforeEach(() => {
-            firstWell = wells[0]
-            lastWell = wells[95]
-          })
-
-          it('will have a row', () => {
-            expect(firstWell.row).toEqual('A')
-            expect(lastWell.row).toEqual('H')
-          })
-
-          it('will have a column', () => {
-            expect(firstWell.column).toEqual('1')
-            expect(lastWell.column).toEqual('12')
-          })
-
-          it('will have a position', () => {
-            expect(firstWell.position).toEqual('A1')
-            expect(lastWell.position).toEqual('H12')
-          })
-
-          it('will have movie_time', () => {
-            expect(firstWell.movie_time).toBeDefined()
-            expect(lastWell.movie_time).toBeDefined()
-          })
-
-          it('will have an insert_size', () => {
-            expect(firstWell.insert_size).toBeDefined()
-            expect(lastWell.insert_size).toBeDefined()
-          })
-
-          it('will have an on_plate_laoding_concentration', () => {
-            expect(firstWell.on_plate_loading_concentration).toBeDefined()
-            expect(lastWell.on_plate_loading_concentration).toBeDefined()
-          })
-
-          it('will have a sequencing_mode', () => {
-            expect(firstWell.sequencing_mode).toBeDefined()
-            expect(lastWell.sequencing_mode).toBeDefined()
-          })
-
-          it('will have a pre extension_time', () => {
-            expect(firstWell.pre_extension_time).toBeDefined()
-            expect(lastWell.pre_extension_time).toBeDefined()
-          })
-
-          it('will have a library', () => {
-            expect(firstWell.libraries).toEqual([])
-          })
+          expect(wells.length).toEqual(0)
+          expect(wells).toEqual([])
         })
       })
-
-      // TODO: add other well metadata
     })
   })
 
@@ -151,14 +96,22 @@ describe('Run', () => {
       expect(well.movie_time).toEqual('')
       expect(well.insert_size).toEqual('')
       expect(well.on_plate_loading_concentration).toEqual('')
-      expect(well.sequencing_mode).toEqual('')
+      expect(well.generate_hifi).toEqual('')
+      expect(well.ccs_analysis_output).toEqual('')
       expect(well.libraries).toEqual([])
-      expect(well.pre_extension_time).toEqual('')
+      expect(well.pre_extension_time).toEqual('2')
+      expect(well.ccs_analysis_output).toEqual('')
+    })
+
+    it('will have the correct data when passed values', () => {
+      well = Run.buildWell('A', 1, 'Sequel IIe', '1')
+      expect(well.generate_hifi).toEqual('Sequel IIe')
+      expect(well.pre_extension_time).toEqual('1')
     })
   })
 
   describe('create', () => {
-    let api
+    let api, well1, well2
 
     //  add well library
     beforeEach(() => {
@@ -244,6 +197,32 @@ describe('Run', () => {
 
       expect(resp).toEqual("title The record identified by 100 could not be found.")
     })
+
+    describe('when a well has no libraries', () => {
+      beforeEach(() => {
+        well1 = new Response(Data.PacbioWells).deserialize.wells[0]
+        well2 = new Response(Data.PacbioWells).deserialize.wells[1]
+
+        well1['libraries'] = [{ id: 1 }, { id: 2 }]
+        well2['libraries'] = []
+
+        run = {
+          id: '1',
+          name: 'run1',
+          plate: {
+            wells: [well1, well2]
+          }
+        }
+      })
+
+      it('should remove that well from the payload', () => {
+        api.traction.pacbio.runs.create.mockResolvedValue([Data.PacbioRun])
+
+        Run.create(run, api.traction.pacbio)
+        expect(api.traction.pacbio.runs.create).toHaveBeenCalledTimes(1)
+      })
+    })
+
   })
 
   describe('createResource', () => {
@@ -322,8 +301,10 @@ describe('Run', () => {
       expect(result.data.attributes.wells[0].movie_time).toEqual(wells[0].movie_time)
       expect(result.data.attributes.wells[0].insert_size).toEqual(wells[0].insert_size)
       expect(result.data.attributes.wells[0].on_plate_loading_concentration).toEqual(wells[0].on_plate_loading_concentration)
-      expect(result.data.attributes.wells[0].sequencing_mode).toEqual(wells[0].sequencing_mode)
+      expect(result.data.attributes.wells[0].generate_hifi).toEqual(wells[0].generate_hifi)
+      expect(result.data.attributes.wells[0].ccs_analysis_output).toEqual(wells[0].ccs_analysis_output)
       expect(result.data.attributes.wells[0].pre_extension_time).toEqual(wells[0].pre_extension_time)
+      expect(result.data.attributes.wells[0].ccs_analysis_output).toEqual(wells[0].ccs_analysis_output)
       expect(result.data.attributes.wells[0].relationships.plate.data.type).toEqual("plates")
       expect(result.data.attributes.wells[0].relationships.plate.data.id).toEqual(plateID)
       expect(result.data.attributes.wells[0].relationships.libraries.data[0].type).toEqual("libraries")
@@ -386,6 +367,31 @@ describe('Run', () => {
       expect(api.traction.pacbio.wells.update).not.toHaveBeenCalled()
 
       expect(resp).toEqual(["title The record identified by 100 could not be found."])
+    })
+
+    describe('when a well has no libraries', () => {
+      beforeEach(() => {
+        well1 = new Response(Data.PacbioWells).deserialize.wells[0]
+        well2 = new Response(Data.PacbioWells).deserialize.wells[1]
+
+        well1['libraries'] = [{ id: 1 }, { id: 2 }]
+        well2['libraries'] = []
+
+        run = {
+          id: '1',
+          name: 'run1',
+          plate: {
+            wells: [well1, well2]
+          }
+        }
+      })
+
+      it('should remove that well from the payload', () => {
+        api.traction.pacbio.runs.update.mockResolvedValue([Data.PacbioRun])
+
+        Run.update(run, api.traction.pacbio)
+        expect(api.traction.pacbio.runs.update).toHaveBeenCalledTimes(1)
+      })
     })
   })
 
@@ -453,8 +459,10 @@ describe('Run', () => {
       expect(result.data.attributes.movie_time).toEqual(well.movie_time)
       expect(result.data.attributes.insert_size).toEqual(well.insert_size)
       expect(result.data.attributes.on_plate_loading_concentration).toEqual(well.on_plate_loading_concentration)
-      expect(result.data.attributes.sequencing_mode).toEqual(well.sequencing_mode)
+      expect(result.data.attributes.generate_hifi).toEqual(well.generate_hifi)
+      expect(result.data.attributes.ccs_analysis_output).toEqual(well.ccs_analysis_output)
       expect(result.data.attributes.pre_extension_time).toEqual(well.pre_extension_time)
+      expect(result.data.attributes.ccs_analysis_output).toEqual(well.ccs_analysis_output)
       expect(result.data.relationships.libraries.data[0].type).toEqual("libraries")
       expect(result.data.relationships.libraries.data[0].id).toEqual(well.libraries[0].id)
     })
