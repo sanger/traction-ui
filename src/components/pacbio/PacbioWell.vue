@@ -49,7 +49,7 @@ export default {
     required_metadata_fields: {
       type: Array,
       default () {
-        // Below doesn't include 'generate_hifi' and 'pre_extension_time',
+        // Below doesn't include 'generate_hifi', 'pre_extension_time' or 'ccs_analysis_output'
         // as they have deafult values
         return ['movie_time', 'insert_size', 'on_plate_loading_concentration']
       }
