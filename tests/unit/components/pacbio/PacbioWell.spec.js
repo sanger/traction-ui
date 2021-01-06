@@ -9,22 +9,21 @@ describe('Well.vue', () => {
   beforeEach(() => {
     props = { row: 'A', column: '1',   cx: "60.440327", cy: "75.818642", rx: "10.906492", ry: "11.032985" }
 
-    storeWell = Run.buildWell(props.row, props.column)
+    storeWell = Run.buildWell(props.row, props.column, "In SMRT Link", "2", "")
     storeWell.libraries = [{ id: 1, barcode: 'TRAC-1' }, { id: 2, barcode: 'TRAC-2' }]
     storeWell.movie_time = "15"
     storeWell.insert_size = 123
     storeWell.on_plate_loading_concentration = 234
-    storeWell.sequencing_mode = "CCS"
-    storeWell.pre_extension_time = "2"
+    storeWell.generate_hifi = "In SMRT Link"
 
     run = Run.build()
     run.plate.wells[0] = storeWell
 
     store.commit('traction/pacbio/runs/setCurrentRun', run)
 
-    wrapper = mount(Well, { 
-      localVue, 
-      store, 
+    wrapper = mount(Well, {
+      localVue,
+      store,
       propsData: props,
       stubs: {
         WellModal: true
@@ -66,6 +65,10 @@ describe('Well.vue', () => {
     expect(well.ry).toEqual(props.ry)
   })
 
+  it('must have a ry', () => {
+    expect(well.required_metadata_fields).toEqual(['movie_time', 'insert_size', 'on_plate_loading_concentration'])
+  })
+
   it('will have an ellipse with the correct attributes', () => {
     let ellipse = wrapper.find('ellipse')
     expect(ellipse.exists()).toBeTruthy()
@@ -84,9 +87,9 @@ describe('Well.vue', () => {
 
     it('will be invalid if there is any missing meta data', () => {
       storeWell.movie_time = ""
-      wrapper = mount(Well, { 
-        localVue, 
-        store, 
+      wrapper = mount(Well, {
+        localVue,
+        store,
         propsData: props,
         stubs: {
           WellModal: true
@@ -98,9 +101,9 @@ describe('Well.vue', () => {
 
     it('will be invalid if there are no libraries in the store', () => {
       storeWell.libraries = []
-      wrapper = mount(Well, { 
-        localVue, 
-        store, 
+      wrapper = mount(Well, {
+        localVue,
+        store,
         propsData: props,
         stubs: {
           WellModal: true
@@ -116,23 +119,7 @@ describe('Well.vue', () => {
       expect(ellipse.attributes('class')).toEqual("complete")
     })
 
-    it('will be valid if sequencing mode is CCS and extension time is present', () => {
-      storeWell.pre_extension_time = '2'
-      wrapper = mount(Well, {
-        localVue,
-        store,
-        propsData: props,
-        stubs: {
-          WellModal: true
-        }
-      })
-      let ellipse = wrapper.find('ellipse')
-      expect(ellipse.attributes('class')).toEqual("complete")
-    })
-
-    it('will be valid if sequencing mode is CLR and extension time is empty', () => {
-      storeWell.sequencing_mode = 'CLR'
-      storeWell.pre_extension_time = ''
+    it('will be valid if pre extension time is present', () => {
       wrapper = mount(Well, {
         localVue,
         store,
@@ -148,20 +135,21 @@ describe('Well.vue', () => {
     it('will be empty if there are no libraries or metadata', () => {
       storeWell.libraries = []
       storeWell.movie_time = ""
-      storeWell.sequencing_mode = ""
+      storeWell.generate_hifi = ""
+      storeWell.ccs_analysis_output = ""
       storeWell.on_plate_loading_concentration = ""
       storeWell.insert_size = ""
       storeWell.pre_extension_time = ""
 
-      wrapper = mount(Well, { 
-        localVue, 
-        store, 
+      wrapper = mount(Well, {
+        localVue,
+        store,
         propsData: props,
         stubs: {
           WellModal: true
         }
       })
-  
+
       let ellipse = wrapper.find('ellipse')
       expect(ellipse.attributes('class')).toEqual("empty")
     })

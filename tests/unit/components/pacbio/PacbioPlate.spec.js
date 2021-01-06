@@ -11,7 +11,7 @@ describe('Plate.vue', () => {
   beforeEach(() => {
     // TODO: Yuk! Needs to be done elsewhere
     run = Run.build()
-    well = Run.buildWell('A','1')
+    well = Run.buildWell('A','1', 'In SMRT Link')
     well.libraries = [{ id: 1, barcode: 'TRAC-1'}]
     run.plate.wells[0] = well
 

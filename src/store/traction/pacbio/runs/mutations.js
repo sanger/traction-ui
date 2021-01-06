@@ -18,12 +18,23 @@ const getCurrentWell = (state, position) => {
 
     // If well does not exist - Build a new well
     if (!currentWell) {
-
-        currentWell = PacbioRun.buildWell(...splitPosition(position))
+        // Duplication of createWell mutation below
+        let generateHiFiDefault = getGenerateHiFiDefault(state.currentRun.system_name)
+        currentWell = PacbioRun.buildWell(...splitPosition(position), generateHiFiDefault)
         state.currentRun.plate.wells.push(currentWell)
     }
 
     return currentWell
+}
+
+const getGenerateHiFiDefault = (systemName) => {
+    if (systemName == "Sequel I" || systemName == "Sequel II") {
+        return 'In SMRT Link'
+    } else if (systemName == "Sequel IIe" ) {
+        return 'On Instrument'
+    } else {
+        return ''
+    }
 }
 
 const mutations = {
@@ -34,9 +45,10 @@ const mutations = {
     setDNAControlComplexBoxBarcode: mutateRun('dna_control_complex_box_barcode'),
     setComments: mutateRun('comments'),
     setSystemName: mutateRun('system_name'),
-    createWell(state, position) {
 
-        let currentWell = PacbioRun.buildWell(...splitPosition(position))
+    createWell(state, position) {
+        let generateHiFiDefault = getGenerateHiFiDefault(state.currentRun.system_name)
+        let currentWell = PacbioRun.buildWell(...splitPosition(position), generateHiFiDefault)
         state.currentRun.plate.wells.push(currentWell)
     },
     mutateWell(state, payload) {

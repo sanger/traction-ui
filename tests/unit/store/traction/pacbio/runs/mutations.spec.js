@@ -39,6 +39,7 @@ describe('createWell', () => {
   beforeEach(() => {
     run = Run.build()
     run.plate.wells = []
+    run.system_name = "Sequel I"
     state = { currentRun: run }
   })
 
@@ -50,6 +51,7 @@ describe('createWell', () => {
       let well = state.currentRun.plate.wells.filter(well => well.position === position)[0]
       expect(well).toBeDefined()
       expect(well.position).toEqual(position)
+      expect(well.generate_hifi).toEqual('In SMRT Link')
     })
   })
 })
@@ -62,13 +64,13 @@ describe('mutateWell', () => {
     state = { currentRun: run }
   })
 
-  it('mutates the well, e.g. sequencing_mode', () => {
+  it('mutates the well, e.g. generate_hifi', () => {
     position = 'A10'
-    let payload = { position: position, property: 'sequencing_mode', with: 'seqMode' }
+    let payload = { position: position, property: 'generate_hifi', with: 'generateHiFi' }
     Mutations.default.mutateWell(state, payload)
 
     let well = state.currentRun.plate.wells.filter(well => well.position === position)[0]
-    expect(well.sequencing_mode).toEqual('seqMode')
+    expect(well.generate_hifi).toEqual('generateHiFi')
   })
 })
 

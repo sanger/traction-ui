@@ -1,41 +1,19 @@
 import handlePromise from './PromiseHelper'
+const PRE_EXTENSION_TIME_DEFAULT = 2
+const CCS_ANALYSIS_OUTPUT_DEFAULT = 'Yes'
 
-const NO_OF_COLUMNS = 12
-const NO_OF_ROWS = 8
-
-const columns = () => {
-  return Array.from(Array(NO_OF_COLUMNS), (e, i) => String(i + 1))
-}
-
-const rows = () => {
-  return Array.from(Array(NO_OF_ROWS), (e, i) => String.fromCharCode(65 + i))
-}
-
-const buildWell = (row, column) => {
-  return  {
-    row: row, 
-    column: column, 
+const buildWell = (row, column, generate_hifi='', pre_extension_time=PRE_EXTENSION_TIME_DEFAULT, ccs_analysis_output=CCS_ANALYSIS_OUTPUT_DEFAULT) => ({
+    row,
+    column,
     position: `${row}${column}`,
     movie_time: '',
     insert_size: '',
     on_plate_loading_concentration: '',
-    sequencing_mode: '',
+    generate_hifi,
+    ccs_analysis_output,
     libraries: [],
-    pre_extension_time: ''
-  }
-}
-
-const buildWells = () => {
-  let wells = []
-
-  for (const column of columns()) {
-    for (const row of rows()) {
-      wells.push(buildWell(row, column))
-    }
-  }
-
-  return wells
-}
+    pre_extension_time
+})
 
 const build = (object) => {
     return object || {
@@ -46,7 +24,7 @@ const build = (object) => {
         comments: '',
         system_name: '',
         plate: {
-            wells: buildWells()
+            wells: []
         }
     }
 }
@@ -94,8 +72,8 @@ const update = async (run, request) => {
         let runPayload = updateRunPayload(run)
         let runResponse = await updateResource(runPayload, request.runs)
         responses.push(runResponse)
-
-        for (const well of run.plate.wells) {
+        let wellsWithLibraries = run.plate.wells.filter(well => well.libraries.length != 0)
+        for (const well of wellsWithLibraries) {
             if (well.id) { // Well exists - Update well
                 let wellPayload = updateWellPayload(well)
                 let wellResponse = await updateResource(wellPayload, request.wells)
@@ -159,7 +137,8 @@ const createWellsPayload = (wells, plateId) => {
             movie_time: well.movie_time,
             insert_size: well.insert_size,
             on_plate_loading_concentration: well.on_plate_loading_concentration,
-            sequencing_mode: well.sequencing_mode,
+            generate_hifi: well.generate_hifi,
+            ccs_analysis_output: well.ccs_analysis_output,
             pre_extension_time: well.pre_extension_time,
             relationships: {
                 plate: {
@@ -215,7 +194,8 @@ const updateWellPayload = (well) => {
                 movie_time: well.movie_time,
                 insert_size: well.insert_size,
                 on_plate_loading_concentration: well.on_plate_loading_concentration,
-                sequencing_mode: well.sequencing_mode,
+                generate_hifi: well.generate_hifi,
+                ccs_analysis_output: well.ccs_analysis_output,
                 pre_extension_time: well.pre_extension_time
             },
             relationships: {

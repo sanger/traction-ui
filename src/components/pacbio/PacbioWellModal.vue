@@ -10,10 +10,10 @@
         <b-form-group id="movieTime-group"
                       label="Movie time:"
                       label-for="movieTime">
-          <b-form-select ref="movieTime" 
-                        id="movieTime" 
-                        :value="movieTime" 
-                        :options="movieTimeOptions" 
+          <b-form-select ref="movieTime"
+                        id="movieTime"
+                        :value="movieTime"
+                        :options="movieTimeOptions"
                         @change="updateMovieTime">
           </b-form-select>
         </b-form-group>
@@ -42,14 +42,31 @@
           </b-form-input>
         </b-form-group>
 
-        <b-form-group id="sequencingMode-group"
-                      label="Sequencing mode:"
-                      label-for="sequencingMode">
-          <b-form-select ref="sequencingMode" 
-                        id="sequencingMode" 
-                        :value="sequencingMode" 
-                        :options="sequencingModeOptions" 
-                        @change="updateSequencingMode">
+        <b-form-group
+                      id="generateHiFi-group"
+                      label="Generate HiFi Reads:"
+                      label-for="generateHiFi">
+          <b-form-select
+            ref="generateHiFi"
+            id="generateHiFi"
+            :value="generateHiFi"
+            :options="this.generateHifiOptions[this.currentRun.system_name]"
+            @change="updateGenerateHiFi"
+          >
+          </b-form-select>
+        </b-form-group>
+
+        <b-form-group v-if="showCCSAnalysisOutput"
+                      id="ccsAnalysisOutput-group"
+                      label="CCS Analysis Output - Include Kinetics Information:"
+                      label-for="ccsAnalysisOutput">
+          <b-form-select
+            ref="ccsAnalysisOutput"
+            id="ccsAnalysisOutput"
+            :value="ccsAnalysisOutput"
+            :options="this.ccsAnalysisOutputOptions"
+            @change="updateCCSAnalysisOutput"
+          >
           </b-form-select>
         </b-form-group>
 
@@ -115,8 +132,14 @@ export default {
   data () {
     return {
       movieTimeOptions: [ { text: 'Movie Time', value: "" }, '15.0', '20.0', '24.0', '30.0' ],
-      sequencingModeOptions: [ { text: 'Sequencing Mode', value: "" }, 'CLR', 'CCS'],
       wellLibrariesFields: ['barcode'],
+      generateHifiOptions: {
+        "": [{ text: 'Please select a System Name', value: "", disabled: true }],
+        "Sequel I": ['In SMRT Link', 'Do Not Generate'],
+        "Sequel II": ['In SMRT Link', 'Do Not Generate'],
+        "Sequel IIe": ['In SMRT Link', 'Do Not Generate', 'On Instrument'],
+      },
+      ccsAnalysisOutputOptions: ['Yes', 'No']
     }
   },
   methods: {
@@ -126,7 +149,7 @@ export default {
     removeRow(row) {
       this.removeLibraryFromWell({ position: this.position, index: row.index })
     },
-    showModalForPosition() { 
+    showModalForPosition() {
       if (!this.well(this.position)) {
         this.createWell(this.position)
       }
@@ -148,19 +171,16 @@ export default {
     updateMovieTime(movieTime) {
       this.mutateWell({ position: this.position, property: 'movie_time', with: movieTime })
     },
-    updateSequencingMode(seqMode) {
-      this.defaultPreExtensionTime(seqMode)
-      this.mutateWell({ position: this.position, property: 'sequencing_mode', with: seqMode })
-    },
     updatePreExtensionTime(preExtensionTime) {
       this.mutateWell({ position: this.position, property: 'pre_extension_time', with: preExtensionTime })
     },
-    defaultPreExtensionTime(seqMode) {
-      if (seqMode === 'CCS') {
-        this.updatePreExtensionTime('2')
-      } else if (seqMode === 'CLR') {
-        this.updatePreExtensionTime('0')
-      }
+    updateGenerateHiFi(generateHiFi) {
+      // update CCS Analysis Output too, as it is based off Generate Hifi Reads
+      generateHiFi == "Do Not Generate" ? this.updateCCSAnalysisOutput("No") : this.updateCCSAnalysisOutput("Yes")
+      this.mutateWell({ position: this.position, property: 'generate_hifi', with: generateHiFi })
+    },
+    updateCCSAnalysisOutput(ccsAnalysisOutput) {
+      this.mutateWell({ position: this.position, property: 'ccs_analysis_output', with: ccsAnalysisOutput })
     },
     async updateLibraryBarcode(row, barcode) {
       let index = row.index
@@ -192,6 +212,9 @@ export default {
     },
   },
   computed: {
+    showCCSAnalysisOutput() {
+      return ["In SMRT Link", "On Instrument"].includes(this.generateHiFi)
+    },
     ...mapGetters('traction/pacbio/runs', [
       'currentRun',
       'well',
@@ -209,14 +232,17 @@ export default {
       movieTime () {
         return (this.well(this.position) ? this.well(this.position).movie_time : '')
       },
-      sequencingMode () {
-        return (this.well(this.position) ? this.well(this.position).sequencing_mode : '')
-      },
       wellLibraries () {
         return (this.well(this.position) ? this.well(this.position).libraries : [])
       },
       preExtensionTime () {
         return (this.well(this.position) ? this.well(this.position).pre_extension_time : '')
+      },
+      generateHiFi () {
+        return (this.well(this.position) ? this.well(this.position).generate_hifi : '')
+      },
+      ccsAnalysisOutput() {
+        return (this.well(this.position) ? this.well(this.position).ccs_analysis_output : '')
       },
     })
   },

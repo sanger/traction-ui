@@ -7,6 +7,10 @@ A Vue front-end app to interact with the [Traction API](https://github.com/sange
 * Yarn; if using brew: `brew install yarn`
 * Node
 
+If having node version issues, install the specified version,
+and then change the symlink to the correct version
+https://medium.com/@katopz/how-to-install-specific-nodejs-version-c6e1cec8aa11
+
 ## Installation
 
 Install the required libraries using yarn: `yarn install`
@@ -44,6 +48,11 @@ yarn run lint
 ```bash
 yarn run test:unit
 ```
+### Run specific unit test files
+
+```bash
+yarn run test:unit <test_file_route> -t "<test_name>"
+```
 
 ### Run your end-to-end tests
 
@@ -57,6 +66,6 @@ yarn run test:e2e
 On merging a pull request into develop, a release will be created with the tag/name `<branch>/<timestamp>`
 
 #### PROD
-Update `.release-version` with major/minor/patch. On merging a pull request into master, a release will be created with the release version as the tag/name 
+Update `.release-version` with major/minor/patch. On merging a pull request into master, a release will be created with the release version as the tag/name
 
 See Confluence for further information

@@ -11,7 +11,7 @@
     <foreignObject>
       <WellModal ref="modal" class="modal" @alert="alert" :position="position"></WellModal>
     </foreignObject>
-  </g>  
+  </g>
 </template>
 
 <script>
@@ -49,7 +49,9 @@ export default {
     required_metadata_fields: {
       type: Array,
       default () {
-        return ['movie_time', 'insert_size', 'on_plate_loading_concentration', 'sequencing_mode']
+        // Below doesn't include 'generate_hifi' and 'pre_extension_time',
+        // as they have deafult values
+        return ['movie_time', 'insert_size', 'on_plate_loading_concentration']
       }
     }
   },
