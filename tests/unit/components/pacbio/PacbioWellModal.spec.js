@@ -36,17 +36,17 @@ describe('PacbioWellModal', () => {
     expect(modal.ccsAnalysisOutputOptions).toEqual(['Yes', 'No'])
   })
 
-  describe('systemNameHifiOptions', () => {
+  describe('generateHifiOptions', () => {
     it('returns the correct options when System Name is "Sequel I"', () => {
-      expect(modal.systemNameHifiOptions["Sequel I"]).toEqual(['In SMRT Link', 'Do Not Generate'])
+      expect(modal.generateHifiOptions["Sequel I"]).toEqual(['In SMRT Link', 'Do Not Generate'])
     })
     it('returns the correct options when System Name is "Sequel II"', () => {
-      expect(modal.systemNameHifiOptions["Sequel II"]).toEqual(['In SMRT Link', 'Do Not Generate'])
+      expect(modal.generateHifiOptions["Sequel II"]).toEqual(['In SMRT Link', 'Do Not Generate'])
     })
     it('returns the correct options when System Name is "Sequel IIe"', () => {
       run.system_name = "Sequel IIe"
       store.commit('traction/pacbio/runs/setCurrentRun', run)
-      expect(modal.systemNameHifiOptions["Sequel IIe"]).toEqual(['In SMRT Link', 'Do Not Generate', 'On Instrument'])
+      expect(modal.generateHifiOptions["Sequel IIe"]).toEqual(['In SMRT Link', 'Do Not Generate', 'On Instrument'])
     })
   })
 

@@ -50,7 +50,7 @@
             ref="generateHiFi"
             id="generateHiFi"
             :value="generateHiFi"
-            :options="this.systemNameHifiOptions[this.currentRun.system_name]"
+            :options="this.generateHifiOptions[this.currentRun.system_name]"
             @change="updateGenerateHiFi"
           >
           </b-form-select>
@@ -133,7 +133,7 @@ export default {
     return {
       movieTimeOptions: [ { text: 'Movie Time', value: "" }, '15.0', '20.0', '24.0', '30.0' ],
       wellLibrariesFields: ['barcode'],
-      systemNameHifiOptions: {
+      generateHifiOptions: {
         "": [{ text: 'Please select a System Name', value: "", disabled: true }],
         "Sequel I": ['In SMRT Link', 'Do Not Generate'],
         "Sequel II": ['In SMRT Link', 'Do Not Generate'],
@@ -176,11 +176,7 @@ export default {
     },
     updateGenerateHiFi(generateHiFi) {
       // update CCS Analysis Output too, as it is based off Generate Hifi Reads
-      if (generateHiFi == "Do Not Generate") {
-        this.updateCCSAnalysisOutput("No")
-      } else if (["In SMRT Link", "On Instrument"].includes(generateHiFi)) {
-        this.updateCCSAnalysisOutput("Yes")
-      }
+      generateHiFi == "Do Not Generate" ? this.updateCCSAnalysisOutput("No") : this.updateCCSAnalysisOutput("Yes")
       this.mutateWell({ position: this.position, property: 'generate_hifi', with: generateHiFi })
     },
     updateCCSAnalysisOutput(ccsAnalysisOutput) {
