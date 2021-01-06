@@ -86,7 +86,7 @@ describe('Run', () => {
     let well
 
     beforeEach(() => {
-      well = Run.buildWell('A', 1)
+      well = Run.buildWell('A', 1, 'In SMRT Link')
     })
 
     it('will have the correct data', () => {
@@ -96,17 +96,17 @@ describe('Run', () => {
       expect(well.movie_time).toEqual('')
       expect(well.insert_size).toEqual('')
       expect(well.on_plate_loading_concentration).toEqual('')
-      expect(well.generate_hifi).toEqual('')
-      expect(well.ccs_analysis_output).toEqual('')
       expect(well.libraries).toEqual([])
-      expect(well.pre_extension_time).toEqual('2')
-      expect(well.ccs_analysis_output).toEqual('')
+      expect(well.generate_hifi).toEqual('In SMRT Link')
+      expect(well.pre_extension_time).toEqual(2)
+      expect(well.ccs_analysis_output).toEqual('Yes')
     })
 
     it('will have the correct data when passed values', () => {
-      well = Run.buildWell('A', 1, 'Sequel IIe', '1')
-      expect(well.generate_hifi).toEqual('Sequel IIe')
-      expect(well.pre_extension_time).toEqual('1')
+      well = Run.buildWell('A', 1, 'In SMRT Link', 1, 'No')
+      expect(well.generate_hifi).toEqual('In SMRT Link')
+      expect(well.pre_extension_time).toEqual(1)
+      expect(well.ccs_analysis_output).toEqual('No')
     })
   })
 

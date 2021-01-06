@@ -50,7 +50,7 @@
             ref="generateHiFi"
             id="generateHiFi"
             :value="generateHiFi"
-            :options="this.systemNameHifiOptions[this.currentRun.system_name]"
+            :options="this.generateHifiOptions[this.currentRun.system_name]"
             @change="updateGenerateHiFi"
           >
           </b-form-select>
@@ -133,7 +133,7 @@ export default {
     return {
       movieTimeOptions: [ { text: 'Movie Time', value: "" }, '15.0', '20.0', '24.0', '30.0' ],
       wellLibrariesFields: ['barcode'],
-      systemNameHifiOptions: {
+      generateHifiOptions: {
         "": [{ text: 'Please select a System Name', value: "", disabled: true }],
         "Sequel I": ['In SMRT Link', 'Do Not Generate'],
         "Sequel II": ['In SMRT Link', 'Do Not Generate'],
@@ -175,8 +175,8 @@ export default {
       this.mutateWell({ position: this.position, property: 'pre_extension_time', with: preExtensionTime })
     },
     updateGenerateHiFi(generateHiFi) {
-      // if Generate HiFi Reads is unselected, set CCS Analysis Output to blank (which defaults to 'No')
-      generateHiFi !== "On Instrument" ? this.updateCCSAnalysisOutput("") : ""
+      // update CCS Analysis Output too, as it is based off Generate Hifi Reads
+      generateHiFi == "Do Not Generate" ? this.updateCCSAnalysisOutput("No") : this.updateCCSAnalysisOutput("Yes")
       this.mutateWell({ position: this.position, property: 'generate_hifi', with: generateHiFi })
     },
     updateCCSAnalysisOutput(ccsAnalysisOutput) {
@@ -213,7 +213,7 @@ export default {
   },
   computed: {
     showCCSAnalysisOutput() {
-      return this.currentRun.system_name == "Sequel IIe" && this.generateHiFi == "On Instrument"
+      return ["In SMRT Link", "On Instrument"].includes(this.generateHiFi)
     },
     ...mapGetters('traction/pacbio/runs', [
       'currentRun',

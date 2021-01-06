@@ -1,15 +1,16 @@
 import handlePromise from './PromiseHelper'
+const PRE_EXTENSION_TIME_DEFAULT = 2
+const CCS_ANALYSIS_OUTPUT_DEFAULT = 'Yes'
 
-const buildWell = (row, column, generate_hifi='', pre_extension_time='2') => ({
+const buildWell = (row, column, generate_hifi='', pre_extension_time=PRE_EXTENSION_TIME_DEFAULT, ccs_analysis_output=CCS_ANALYSIS_OUTPUT_DEFAULT) => ({
     row,
     column,
     position: `${row}${column}`,
     movie_time: '',
     insert_size: '',
     on_plate_loading_concentration: '',
-    sequencing_mode: '',
     generate_hifi,
-    ccs_analysis_output: '',
+    ccs_analysis_output,
     libraries: [],
     pre_extension_time
 })

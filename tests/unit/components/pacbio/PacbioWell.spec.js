@@ -9,14 +9,12 @@ describe('Well.vue', () => {
   beforeEach(() => {
     props = { row: 'A', column: '1',   cx: "60.440327", cy: "75.818642", rx: "10.906492", ry: "11.032985" }
 
-    storeWell = Run.buildWell(props.row, props.column)
+    storeWell = Run.buildWell(props.row, props.column, "In SMRT Link", "2", "")
     storeWell.libraries = [{ id: 1, barcode: 'TRAC-1' }, { id: 2, barcode: 'TRAC-2' }]
     storeWell.movie_time = "15"
     storeWell.insert_size = 123
     storeWell.on_plate_loading_concentration = 234
     storeWell.generate_hifi = "In SMRT Link"
-    storeWell.ccs_analysis_output = ""
-    storeWell.pre_extension_time = "2"
 
     run = Run.build()
     run.plate.wells[0] = storeWell
@@ -121,8 +119,7 @@ describe('Well.vue', () => {
       expect(ellipse.attributes('class')).toEqual("complete")
     })
 
-    it('will be valid if sequencing mode is CCS and extension time is present', () => {
-      storeWell.pre_extension_time = '2'
+    it('will be valid if pre extension time is present', () => {
       wrapper = mount(Well, {
         localVue,
         store,
