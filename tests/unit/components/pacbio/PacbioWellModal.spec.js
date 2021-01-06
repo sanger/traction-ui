@@ -8,7 +8,7 @@ describe('PacbioWellModal', () => {
   beforeEach(() => {
     props = { row: 'A', column: '1', position: 'A1' }
 
-    storeWell = Run.buildWell(props.row, props.column)
+    storeWell = Run.buildWell(props.row, props.column, 'In SMRT Link')
     storeWell.libraries = [{ barcode: 'TRAC-0' }]
 
     run = Run.build()
@@ -125,10 +125,16 @@ describe('PacbioWellModal', () => {
       expect(modal.mutateWell).toBeCalledWith({ position: props.position, property: 'movie_time', with: 123 })
     })
 
-    it('updateGenerateHiFi', () => {
+    it("updateGenerateHiFi with 'Do Not Generate'", () => {
+      modal.updateGenerateHiFi('Do Not Generate')
+      expect(modal.mutateWell).toBeCalledWith({ position: props.position, property: 'generate_hifi', with: 'Do Not Generate' })
+      expect(modal.mutateWell).toBeCalledWith({ position: props.position, property: 'ccs_analysis_output', with: 'No' })
+    })
+
+    it("updateGenerateHiFi with 'In SMRT Link' or 'On Instrument'", () => {
       modal.updateGenerateHiFi('In SMRT Link')
       expect(modal.mutateWell).toBeCalledWith({ position: props.position, property: 'generate_hifi', with: 'In SMRT Link' })
-      expect(modal.mutateWell).toBeCalledWith({ position: props.position, property: 'ccs_analysis_output', with: '' })
+      expect(modal.mutateWell).toBeCalledWith({ position: props.position, property: 'ccs_analysis_output', with: 'Yes' })
     })
 
     it('updateCCSAnalysisOuput', () => {
@@ -174,30 +180,27 @@ describe('PacbioWellModal', () => {
     })
 
     describe('showCCSAnalysisOutput', () => {
-      it('is true when system_name=="Sequel IIe" and generate_hifi_reads==="On Instrument"', () => {
+      it('is true when generate_hifi_reads==="On Instrument"', () => {
         storeWell = Run.buildWell(props.row, props.column, 'On Instrument')
         run = Run.build()
-        run.system_name = "Sequel IIe"
         run.plate.wells[0] = storeWell
 
         store.commit('traction/pacbio/runs/setCurrentRun', run)
         expect(modal.showCCSAnalysisOutput).toEqual(true)
       })
 
-      it('is false when system_name=="Sequel IIe" and generate_hifi_reads==="Do Not Generate"', () => {
-        storeWell = Run.buildWell(props.row, props.column, 'Do Not Generate')
+      it('is true when generate_hifi_reads==="In SMRT Link"', () => {
+        storeWell = Run.buildWell(props.row, props.column, 'In SMRT Link')
         run = Run.build()
-        run.system_name = "Sequel IIe"
         run.plate.wells[0] = storeWell
 
         store.commit('traction/pacbio/runs/setCurrentRun', run)
-        expect(modal.showCCSAnalysisOutput).toEqual(false)
+        expect(modal.showCCSAnalysisOutput).toEqual(true)
       })
 
-      it('is false when system_name=="Sequel I"', () => {
-        storeWell = Run.buildWell(props.row, props.column)
+      it('is false generate_hifi_reads==="Do Not Generate"', () => {
+        storeWell = Run.buildWell(props.row, props.column, 'Do Not Generate')
         run = Run.build()
-        run.system_name = "Sequel I"
         run.plate.wells[0] = storeWell
 
         store.commit('traction/pacbio/runs/setCurrentRun', run)

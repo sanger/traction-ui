@@ -1,5 +1,4 @@
 import * as PacbioRun from '@/api/PacbioRun'
-const PRE_EXTENSION_TIME_DEFAULT = 2
 
 const splitPosition = (position) => {
     // match() returns [original, row, column] e.g "A10 => ["A10", "A", "10"]
@@ -18,10 +17,10 @@ const getCurrentWell = (state, position) => {
     let currentWell = state.currentRun.plate.wells.filter(well => well.position === position)[0]
 
     // If well does not exist - Build a new well
-    // Duplication of createWell mutation below
     if (!currentWell) {
+        // Duplication of createWell mutation below
         let generateHiFiDefault = getGenerateHiFiDefault(state.currentRun.system_name)
-        currentWell = PacbioRun.buildWell(...splitPosition(position), generateHiFiDefault, PRE_EXTENSION_TIME_DEFAULT)
+        currentWell = PacbioRun.buildWell(...splitPosition(position), generateHiFiDefault)
         state.currentRun.plate.wells.push(currentWell)
     }
 
@@ -49,7 +48,7 @@ const mutations = {
 
     createWell(state, position) {
         let generateHiFiDefault = getGenerateHiFiDefault(state.currentRun.system_name)
-        let currentWell = PacbioRun.buildWell(...splitPosition(position), generateHiFiDefault, PRE_EXTENSION_TIME_DEFAULT)
+        let currentWell = PacbioRun.buildWell(...splitPosition(position), generateHiFiDefault)
         state.currentRun.plate.wells.push(currentWell)
     },
     mutateWell(state, payload) {

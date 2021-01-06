@@ -175,8 +175,12 @@ export default {
       this.mutateWell({ position: this.position, property: 'pre_extension_time', with: preExtensionTime })
     },
     updateGenerateHiFi(generateHiFi) {
-      // if Generate HiFi Reads is unselected, set CCS Analysis Output to blank (which defaults to 'No')
-      generateHiFi !== "On Instrument" ? this.updateCCSAnalysisOutput("") : ""
+      // update CCS Analysis Output too, as it is based off Generate Hifi Reads
+      if (generateHiFi == "Do Not Generate") {
+        this.updateCCSAnalysisOutput("No")
+      } else if (["In SMRT Link", "On Instrument"].includes(generateHiFi)) {
+        this.updateCCSAnalysisOutput("Yes")
+      }
       this.mutateWell({ position: this.position, property: 'generate_hifi', with: generateHiFi })
     },
     updateCCSAnalysisOutput(ccsAnalysisOutput) {
@@ -213,7 +217,7 @@ export default {
   },
   computed: {
     showCCSAnalysisOutput() {
-      return this.currentRun.system_name == "Sequel IIe" && this.generateHiFi == "On Instrument"
+      return ["In SMRT Link", "On Instrument"].includes(this.generateHiFi)
     },
     ...mapGetters('traction/pacbio/runs', [
       'currentRun',

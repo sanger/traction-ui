@@ -39,6 +39,7 @@ describe('createWell', () => {
   beforeEach(() => {
     run = Run.build()
     run.plate.wells = []
+    run.system_name = "Sequel I"
     state = { currentRun: run }
   })
 
@@ -50,6 +51,7 @@ describe('createWell', () => {
       let well = state.currentRun.plate.wells.filter(well => well.position === position)[0]
       expect(well).toBeDefined()
       expect(well.position).toEqual(position)
+      expect(well.generate_hifi).toEqual('In SMRT Link')
     })
   })
 })
