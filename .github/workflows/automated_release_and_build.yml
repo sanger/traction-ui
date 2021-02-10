@@ -38,7 +38,7 @@ jobs:
       run: yarn install
 
     - name: Compile Build
-      run: ./compile-build release.tar.gz dist
+      run: ./compile-build.sh release.tar.gz dist
 
     - name: Upload release.gz
       id: upload-release-gz
