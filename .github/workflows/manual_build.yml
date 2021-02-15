@@ -1,0 +1,33 @@
+# Triggers on *manual* release creation only. Automated releases
+# handle asset creation in automated_release_and_build.yml
+
+name: Build Manual Release
+
+on:
+  release:
+    types: published
+
+jobs:
+  release:
+    name: Build Release
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - name: Setup node
+      uses: actions/setup-node@v2
+      with:
+        node-version: '14'
+    - name: Install
+      run: yarn install
+    - name: Compile build
+      run: ./compile-build.sh release.tar.gz dist
+    - name: Upload release.gz
+      id: upload-release-gz
+      uses: actions/upload-release-asset@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        upload_url: ${{ github.event.release.upload_url }} # Pull the URL from the release step
+        asset_path: ./release.tar.gz
+        asset_name: release.tar.gz
+        asset_content_type: application/gzip
