@@ -21,7 +21,7 @@
     "growl": "^1.10.0",
     "https-proxy-agent": "^2.2.2",
     "jest-transform-graphql": "^2.1.0",
-    "lodash-es": "^4.17.15",
+    "lodash-es": "^4.17.21",
     "moment": "^2.29.1",
     "vue": "^2.6.12",
     "vue-apollo": "^3.0.5",
