@@ -1,5 +1,5 @@
 import OntRunLibrariesList from '@/components/ont/OntRunLibrariesList'
-import { mount, localVue } from '../../testHelper'
+import { localVue, mount } from '../../testHelper'
 
 describe('OntLibraries.vue', () => {
   let wrapper, librariesData, props, librariesList, query, mutate
@@ -19,6 +19,9 @@ describe('OntLibraries.vue', () => {
     query = jest.fn()
     mutate = jest.fn()
 
+    // create the mock of the method before mounting it for testing
+    jest.spyOn(OntRunLibrariesList.methods, 'provider').mockImplementation(() => {})
+
     wrapper = mount(OntRunLibrariesList, {
       localVue,
       propsData: props,
@@ -27,15 +30,12 @@ describe('OntLibraries.vue', () => {
           libraries: librariesData
         }
       },
-      methods: {
-        provider() { return }
-      },
       mocks: {
         $apollo: {
           mutate: mutate,
           query: query
         }
-      },
+      }
     })
 
     librariesList = wrapper.vm
@@ -49,19 +49,23 @@ describe('OntLibraries.vue', () => {
     let expectedUnselectedLibraries
 
     beforeEach(() => {
-      expectedUnselectedLibraries = librariesList.libraries.filter(library => !library.assignedToFlowcell)
+      expectedUnselectedLibraries = librariesList.libraries.filter(
+        (library) => !library.assignedToFlowcell
+      )
     })
     it('returns libraries that are no assigned to flowcells', () => {
       expect(librariesList.unselectedLibraries).toEqual(expectedUnselectedLibraries)
     })
     it('contains the correct data', () => {
-      expect(wrapper.find('.ont-run-libraries-list-group').findAll('.list-group-item').length).toEqual(expectedUnselectedLibraries.length)
+      expect(
+        wrapper.find('.ont-run-libraries-list-group').findAll('.list-group-item').length
+      ).toEqual(expectedUnselectedLibraries.length)
     })
   })
 
-  describe('components', () => {  
+  describe('components', () => {
     it('has a OntTube component', () => {
-      expect(wrapper.findComponent({ref: 'ontTube'})).toBeTruthy()
+      expect(wrapper.findComponent({ ref: 'ontTube' })).toBeTruthy()
     })
   })
 
@@ -72,12 +76,20 @@ describe('OntLibraries.vue', () => {
       libraryName = 'TRAC-1'
       flowcellPosition = 1
 
-      let getData = jest.fn()
+      let getData = jest
+        .fn()
         .mockImplementationOnce(() => flowcellPosition)
         .mockImplementation(() => libraryName)
 
-      mockEvent = { dataTransfer: { getData() { return getData() } }, preventDefault: jest.fn() }
-      
+      mockEvent = {
+        dataTransfer: {
+          getData() {
+            return getData()
+          }
+        },
+        preventDefault: jest.fn()
+      }
+
       librariesList.updateFlowcell = jest.fn()
       librariesList.updateLibraryList = jest.fn()
     })
@@ -105,8 +117,8 @@ describe('OntLibraries.vue', () => {
     })
 
     it('calls LIBRARIES_ALL_QUERY query and setClientLibraries', async () => {
-      let libraries = { nodes: [{ id: 1 }]}
-      let mockResponse = { data: { libraries } } 
+      let libraries = { nodes: [{ id: 1 }] }
+      let mockResponse = { data: { libraries } }
 
       const request = Promise.resolve(mockResponse)
       query.mockReturnValue(request)

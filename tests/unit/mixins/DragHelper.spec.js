@@ -1,5 +1,5 @@
 import DragHelper from '@/mixins/DragHelper'
-import { mount, localVue,  } from '../testHelper'
+import { localVue, mount } from '../testHelper'
 
 describe('DragHelper', () => {
   let dragHelper, wrapper
@@ -8,16 +8,10 @@ describe('DragHelper', () => {
     wrapper = mount(DragHelper, {
       localVue,
       template: '<div />',
-      methods: {
-      },
       render() {}
     })
 
     dragHelper = wrapper.vm
-  })
-
-  it('will have a name', () => {
-    expect(wrapper.name()).toEqual('DragHelper')
   })
 
   describe('#updateFlowcell', () => {
@@ -37,7 +31,7 @@ describe('DragHelper', () => {
     it('emits an event for updateLibraryList', () => {
       let libraryName = 'aLibraryName'
       let assignToFlowcell = true
-      
+
       dragHelper.updateLibraryList(libraryName, assignToFlowcell)
 
       expect(wrapper.emitted().updateLibraryList).toBeTruthy()
@@ -61,5 +55,4 @@ describe('DragHelper', () => {
       expect(dragHelper.hover).toEqual(false)
     })
   })
-
 })

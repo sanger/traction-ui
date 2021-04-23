@@ -1,35 +1,30 @@
 import OntPlates from '@/views/ont/OntPlates'
-import { mount, localVue } from '../../testHelper'
+import { localVue, mount } from '../../testHelper'
 
 describe('OntPlates.vue', () => {
   let wrapper, plates, platesData
 
   beforeEach(() => {
-    platesData = [
-      { id: 1, barcode: 'TRAC-1-1' },
-      { id: 2, barcode: 'TRAC-1-2' }
-    ]
+    platesData = [{ id: 1, barcode: 'TRAC-1-1' }, { id: 2, barcode: 'TRAC-1-2' }]
+
+    // create the mock of the method before mounting it for testing
+    jest.spyOn(OntPlates.methods, 'getPlates').mockImplementation(() => platesData)
 
     wrapper = mount(OntPlates, {
       localVue,
       stubs: {
-        OntPlate: true,
-      },
-      // TODO: fix as methods is deprecated
-      methods: {
-        getPlates() { return platesData }
+        OntPlate: true
       },
       mocks: {
         $apollo: {
           queries: {
             plates: {
               refetch: jest.fn()
-            },
-          },
-        },
+            }
+          }
+        }
       }
     })
-
 
     plates = wrapper.vm
   })
@@ -40,7 +35,7 @@ describe('OntPlates.vue', () => {
 
   describe('components', () => {
     it('has a Alert component', () => {
-      expect(wrapper.findComponent({ref: 'alert'})).toBeTruthy()
+      expect(wrapper.findComponent({ ref: 'alert' })).toBeTruthy()
     })
   })
 
@@ -63,7 +58,7 @@ describe('OntPlates.vue', () => {
     it('has a OntPlate component on button click', async () => {
       button = wrapper.find('#details-btn-1')
       await button.trigger('click')
-      expect(wrapper.findComponent({ref: 'ontPlate'}).exists()).toBeTruthy()
+      expect(wrapper.findComponent({ ref: 'ontPlate' }).exists()).toBeTruthy()
     })
   })
 
