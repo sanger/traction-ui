@@ -1,4 +1,3 @@
-.DS_Store
 node_modules
 /dist
 
@@ -19,7 +18,6 @@ yarn-error.log*
 
 # Editor directories and files
 .idea
-.vscode
 *.suo
 *.ntvs*
 *.njsproj
@@ -29,3 +27,6 @@ yarn-error.log*
 # json-server files
 db.json
 routes.json
+
+# coverage
+coverage
