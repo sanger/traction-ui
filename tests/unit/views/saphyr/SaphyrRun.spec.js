@@ -8,8 +8,8 @@ describe('Run.vue', () => {
   beforeEach(() => {
     router = new VueRouter({
       routes: [
-        { path: '/runs', name: 'SaphyrRuns', component: require('@/views/saphyr/SaphyrRuns') }
-      ]
+        { path: '/runs', name: 'SaphyrRuns', component: require('@/views/saphyr/SaphyrRuns') },
+      ],
     })
 
     mockRun = {
@@ -20,13 +20,13 @@ describe('Run.vue', () => {
         barcode: '',
         flowcells: [
           { position: 1, library: { barcode: '' } },
-          { position: 2, library: { barcode: '' } }
-        ]
-      }
+          { position: 2, library: { barcode: '' } },
+        ],
+      },
     }
 
     props = {
-      id: '1'
+      id: '1',
     }
 
     store.commit('traction/saphyr/runs/setCurrentRun', mockRun)
@@ -38,7 +38,7 @@ describe('Run.vue', () => {
       localVue,
       store,
       router,
-      propsData: props
+      propsData: props,
     })
     saphyrRun = wrapper.vm
   })
@@ -83,8 +83,8 @@ describe('Run.vue', () => {
         store,
         router,
         propsData: {
-          id: 'new'
-        }
+          id: 'new',
+        },
       })
       saphyrRun = wrapper.vm
     })

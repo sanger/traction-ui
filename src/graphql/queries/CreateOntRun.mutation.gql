@@ -1,10 +1,5 @@
-mutation ($flowcells: [FlowcellInput!]!) {
-  createOntRun( 
-    input: { 
-      flowcells: $flowcells 
-    } 
-  )
-  { 
+mutation($flowcells: [FlowcellInput!]!) {
+  createOntRun(input: { flowcells: $flowcells }) {
     run {
       id
       flowcells {
@@ -14,6 +9,6 @@ mutation ($flowcells: [FlowcellInput!]!) {
         }
       }
     }
-    errors 
+    errors
   }
 }

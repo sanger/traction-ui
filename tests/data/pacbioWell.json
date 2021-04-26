@@ -1,25 +1,25 @@
 {
+  "data": {
     "data": {
-        "data": {
-            "id": "5",
-            "type": "wells",
-            "links": {
-                "self": "/v1/pacbio/wells/5"
-            },
-            "attributes": {
-                "movie_time": "10.0",
-                "insert_size": 1001,
-                "on_plate_loading_concentration": 10.1,
-                "row": "A",
-                "column": "1",
-                "pacbio_plate_id": 5,
-                "comment": null,
-                "generate_hifi": "In SMRT Link",
-                "ccs_analysis_output": "",
-                "pre_extension_time": "2"
-            }
-        }
-    },
-    "status": 200,
-    "statusText": "Success"
+      "id": "5",
+      "type": "wells",
+      "links": {
+        "self": "/v1/pacbio/wells/5"
+      },
+      "attributes": {
+        "movie_time": "10.0",
+        "insert_size": 1001,
+        "on_plate_loading_concentration": 10.1,
+        "row": "A",
+        "column": "1",
+        "pacbio_plate_id": 5,
+        "comment": null,
+        "generate_hifi": "In SMRT Link",
+        "ccs_analysis_output": "",
+        "pre_extension_time": "2"
+      }
+    }
+  },
+  "status": 200,
+  "statusText": "Success"
 }

@@ -5,7 +5,10 @@ describe('OntPlates.vue', () => {
   let wrapper, plates, platesData
 
   beforeEach(() => {
-    platesData = [{ id: 1, barcode: 'TRAC-1-1' }, { id: 2, barcode: 'TRAC-1-2' }]
+    platesData = [
+      { id: 1, barcode: 'TRAC-1-1' },
+      { id: 2, barcode: 'TRAC-1-2' },
+    ]
 
     // create the mock of the method before mounting it for testing
     jest.spyOn(OntPlates.methods, 'getPlates').mockImplementation(() => platesData)
@@ -13,17 +16,17 @@ describe('OntPlates.vue', () => {
     wrapper = mount(OntPlates, {
       localVue,
       stubs: {
-        OntPlate: true
+        OntPlate: true,
       },
       mocks: {
         $apollo: {
           queries: {
             plates: {
-              refetch: jest.fn()
-            }
-          }
-        }
-      }
+              refetch: jest.fn(),
+            },
+          },
+        },
+      },
     })
 
     plates = wrapper.vm

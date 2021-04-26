@@ -13,9 +13,8 @@ describe('#startRun', () => {
 
   it('successfully', async () => {
     await Actions.startRun({ dispatch }, id)
-    expect(dispatch).toHaveBeenCalledWith("handleRunUpdate", payload)
+    expect(dispatch).toHaveBeenCalledWith('handleRunUpdate', payload)
   })
-
 })
 
 describe('#completeRun', () => {
@@ -29,9 +28,8 @@ describe('#completeRun', () => {
 
   it('successfully', async () => {
     await Actions.completeRun({ dispatch }, id)
-    expect(dispatch).toHaveBeenCalledWith("handleRunUpdate", payload)
+    expect(dispatch).toHaveBeenCalledWith('handleRunUpdate', payload)
   })
-
 })
 
 describe('#cancelRun', () => {
@@ -45,9 +43,8 @@ describe('#cancelRun', () => {
 
   it('successfully', async () => {
     await Actions.cancelRun({ dispatch }, id)
-    expect(dispatch).toHaveBeenCalledWith("handleRunUpdate", payload)
+    expect(dispatch).toHaveBeenCalledWith('handleRunUpdate', payload)
   })
-
 })
 
 describe('#handleRunUpdate', () => {
@@ -57,7 +54,7 @@ describe('#handleRunUpdate', () => {
     update = jest.fn()
     commit = jest.fn()
     localStorage.setItem('pipeline', 'pacbio')
-    getters = { 'pacbio/runs/runRequest': { 'update': update } }
+    getters = { 'pacbio/runs/runRequest': { update: update } }
     payload = { id: 1, attributes: { state: 'a state' } }
 
     failedResponse = { data: { data: [] }, status: 500, statusText: 'Internal Server Error' }
@@ -71,7 +68,7 @@ describe('#handleRunUpdate', () => {
 
     let response = await Actions.handleRunUpdate({ rootGetters, getters, commit }, payload)
 
-    expect(commit).toHaveBeenCalledWith("updateRun", expectedRun)
+    expect(commit).toHaveBeenCalledWith('updateRun', expectedRun)
     expect(response).toEqual(expectedResponse)
   })
 
@@ -87,7 +84,6 @@ describe('#handleRunUpdate', () => {
 })
 
 describe('#runPayloadJson', () => {
-
   it('will convert a payload to the correct format', () => {
     let payload = { id: 1, attributes: { state: 'a state' } }
     let json = Actions.runPayloadJson(payload)
@@ -104,7 +100,7 @@ describe('#setTags', () => {
   beforeEach(() => {
     commit = jest.fn()
     get = jest.fn()
-    getters = { 'tagsRequest': { 'get': get } }
+    getters = { tagsRequest: { get: get } }
 
     failedResponse = { data: { data: [] }, status: 500, statusText: 'Internal Server Error' }
   })
@@ -117,7 +113,7 @@ describe('#setTags', () => {
 
     let response = await Actions.setTags({ getters, commit })
 
-    expect(commit).toHaveBeenCalledWith("setTags", expectedTags)
+    expect(commit).toHaveBeenCalledWith('setTags', expectedTags)
     expect(response).toEqual(expectedResponse)
   })
 

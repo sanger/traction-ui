@@ -37,7 +37,7 @@ describe('PacbioRunInfo', () => {
       { text: 'System Name', value: '' },
       'Sequel I',
       'Sequel II',
-      'Sequel IIe'
+      'Sequel IIe',
     ])
   })
 

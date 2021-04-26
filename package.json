@@ -5,7 +5,8 @@
   "scripts": {
     "serve": "vue-cli-service serve",
     "build": "vue-cli-service build",
-    "lint": "vue-cli-service lint",
+    "pretty": "prettier --check '**/*'",
+    "lint": "vue-cli-service lint --max-warnings 3",
     "test:unit": "vue-cli-service test:unit",
     "test:e2e": "vue-cli-service test:e2e",
     "test": "vue-cli-service test:unit && vue-cli-service test:e2e"
@@ -40,6 +41,7 @@
     "babel-eslint": "^10.1.0",
     "babel-jest": "^23.6.0",
     "eslint": "^5.16.0",
+    "eslint-config-prettier": "^8.3.0",
     "eslint-plugin-vue": "^5.2.3",
     "json-server": "^0.15.1",
     "node-sass": "^4.14.1",

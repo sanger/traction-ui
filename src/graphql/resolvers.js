@@ -13,20 +13,18 @@ export default {
     },
     updateFlowcell(_, { position, libraryName }, { cache }) {
       const data = cache.readQuery({ query: GET_CLIENT_RUN })
-      const currentFlowcell = data.run.flowcells.find(flowcell => flowcell.position === position)
+      const currentFlowcell = data.run.flowcells.find((flowcell) => flowcell.position === position)
       if (currentFlowcell) {
         currentFlowcell.library.name = libraryName
       } else {
-        data.run.flowcells.push(
-          { 
-            __typename: 'Flowcell', 
-            position: position, 
-            library: { 
-              __typename: 'Library', 
-              name: libraryName 
-            } 
-          }
-        )
+        data.run.flowcells.push({
+          __typename: 'Flowcell',
+          position: position,
+          library: {
+            __typename: 'Library',
+            name: libraryName,
+          },
+        })
       }
       let __typename = data.run.__typename
       cache.writeQuery({ query: GET_CLIENT_RUN, data })
@@ -39,12 +37,12 @@ export default {
       cache.writeQuery({ query: GET_CLIENT_LIBRARIES, data })
       return { libraries }
     },
-    updateLibrariesList(_, { assignedToFlowcell, libraryName }, { cache } ) {
+    updateLibrariesList(_, { assignedToFlowcell, libraryName }, { cache }) {
       const data = cache.readQuery({ query: GET_CLIENT_LIBRARIES })
-      let currentLibrary = data.libraries.find(library => library.name == libraryName)
+      let currentLibrary = data.libraries.find((library) => library.name == libraryName)
       currentLibrary.assignedToFlowcell = assignedToFlowcell
       cache.writeQuery({ query: GET_CLIENT_LIBRARIES, data })
       return { assignedToFlowcell, libraryName }
-    }
-  }
-} 
+    },
+  },
+}

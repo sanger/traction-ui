@@ -1,4 +1,4 @@
-query ($pageNum: Int, $pageSize: Int) {
+query($pageNum: Int, $pageSize: Int) {
   runs: ontRuns(pageNum: $pageNum, pageSize: $pageSize) {
     nodes {
       id
@@ -15,5 +15,5 @@ query ($pageNum: Int, $pageSize: Int) {
       pageCount
       entitiesCount
     }
-  } 
+  }
 }

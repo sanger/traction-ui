@@ -6,14 +6,14 @@ describe('OntLibraries.vue', () => {
 
   beforeEach(() => {
     props = {
-      selectedLibraryNames: []
+      selectedLibraryNames: [],
     }
     librariesData = [
       { id: 1, name: 'TRAC-2-1', assignedToFlowcell: true },
       { id: 2, name: 'TRAC-2-2', assignedToFlowcell: false },
       { id: 3, name: 'TRAC-2-3', assignedToFlowcell: false },
       { id: 4, name: 'TRAC-2-4', assignedToFlowcell: false },
-      { id: 5, name: 'TRAC-2-5', assignedToFlowcell: true }
+      { id: 5, name: 'TRAC-2-5', assignedToFlowcell: true },
     ]
 
     query = jest.fn()
@@ -27,15 +27,15 @@ describe('OntLibraries.vue', () => {
       propsData: props,
       data() {
         return {
-          libraries: librariesData
+          libraries: librariesData,
         }
       },
       mocks: {
         $apollo: {
           mutate: mutate,
-          query: query
-        }
-      }
+          query: query,
+        },
+      },
     })
 
     librariesList = wrapper.vm
@@ -50,7 +50,7 @@ describe('OntLibraries.vue', () => {
 
     beforeEach(() => {
       expectedUnselectedLibraries = librariesList.libraries.filter(
-        (library) => !library.assignedToFlowcell
+        (library) => !library.assignedToFlowcell,
       )
     })
     it('returns libraries that are no assigned to flowcells', () => {
@@ -58,7 +58,7 @@ describe('OntLibraries.vue', () => {
     })
     it('contains the correct data', () => {
       expect(
-        wrapper.find('.ont-run-libraries-list-group').findAll('.list-group-item').length
+        wrapper.find('.ont-run-libraries-list-group').findAll('.list-group-item').length,
       ).toEqual(expectedUnselectedLibraries.length)
     })
   })
@@ -85,9 +85,9 @@ describe('OntLibraries.vue', () => {
         dataTransfer: {
           getData() {
             return getData()
-          }
+          },
         },
-        preventDefault: jest.fn()
+        preventDefault: jest.fn(),
       }
 
       librariesList.updateFlowcell = jest.fn()

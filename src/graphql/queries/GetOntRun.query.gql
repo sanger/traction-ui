@@ -1,4 +1,4 @@
-query ($id: ID!) {
+query($id: ID!) {
   ontRun(id: $id) {
     id
     flowcells {
@@ -8,4 +8,4 @@ query ($id: ID!) {
       }
     }
   }
-} 
+}

@@ -7,18 +7,19 @@ import * as consts from '@/consts/consts'
 import Response from '@/api/Response'
 
 describe('Samples.vue', () => {
-
   let wrapper, samples, router, mockSamples
 
   beforeEach(() => {
     mockSamples = new Response(Data.TractionSaphyrRequests).deserialize.requests
     store.commit('traction/saphyr/requests/setRequests', mockSamples)
-    
+
     router = new VueRouter({
-      routes: [{ path: '/saphyr/libraries', name: 'SaphyrLibraries', component: Libraries, props: true }]
+      routes: [
+        { path: '/saphyr/libraries', name: 'SaphyrLibraries', component: Libraries, props: true },
+      ],
     })
 
-    wrapper = mount(Samples, { 
+    wrapper = mount(Samples, {
       localVue,
       store,
       router,
@@ -26,7 +27,7 @@ describe('Samples.vue', () => {
         Alert: Alert,
         PrinterModal: true,
         Modal: true,
-        EnzymeModal: true
+        EnzymeModal: true,
       },
     })
 
@@ -35,7 +36,7 @@ describe('Samples.vue', () => {
 
   describe('alert', () => {
     it('has a alert', () => {
-      expect(wrapper.findComponent({ref: 'alert'})).toBeTruthy()
+      expect(wrapper.findComponent({ ref: 'alert' })).toBeTruthy()
     })
   })
 
@@ -43,7 +44,7 @@ describe('Samples.vue', () => {
     it('contains the correct fields', () => {
       let headers = wrapper.findAll('th')
       for (let field of samples.fields) {
-        expect(headers.filter(header => header.text() === field.label)).toBeDefined()
+        expect(headers.filter((header) => header.text() === field.label)).toBeDefined()
       }
     })
 
@@ -74,7 +75,7 @@ describe('Samples.vue', () => {
       samples.showAlert = jest.fn()
 
       samples.selected = mockSamples[0]
-      payload = {'samples': samples.selected, 'enzymeID': selectedEnzymeId}
+      payload = { samples: samples.selected, enzymeID: selectedEnzymeId }
     })
 
     it('is successful', async () => {
@@ -84,11 +85,18 @@ describe('Samples.vue', () => {
       await samples.createLibraries(selectedEnzymeId)
 
       expect(samples.createLibrariesInTraction).toBeCalledWith(payload)
-      expect(samples.showAlert).toBeCalledWith('Libraries successfully created with barcodes: TRAC-1,TRAC-2,TRAC-3,TRAC-4,TRAC-5', 'success')
+      expect(samples.showAlert).toBeCalledWith(
+        'Libraries successfully created with barcodes: TRAC-1,TRAC-2,TRAC-3,TRAC-4,TRAC-5',
+        'success',
+      )
     })
 
     it('shows a error message on failure', async () => {
-      let failedResponse = { status: 422, statusText: 'Unprocessable Entity', data: { data: { errors: { it: ['did not work'] }} } }
+      let failedResponse = {
+        status: 422,
+        statusText: 'Unprocessable Entity',
+        data: { data: { errors: { it: ['did not work'] } } },
+      }
       let expectedResponse = new Response(failedResponse)
 
       samples.createLibrariesInTraction.mockReturnValue(expectedResponse)
@@ -104,9 +112,8 @@ describe('Samples.vue', () => {
     it('passes the message to function on emit event', () => {
       samples.showAlert('show this message', 'danger')
       wrapper.vm.$nextTick(() => {
-        expect(wrapper.findComponent({ref: 'alert'}).html()).toMatch('show this message')
+        expect(wrapper.findComponent({ ref: 'alert' }).html()).toMatch('show this message')
       })
-      
     })
   })
 
@@ -117,8 +124,8 @@ describe('Samples.vue', () => {
     })
 
     it('passes selected printer to function on emit event', () => {
-      samples.selected = [{id: 1}]
-      let modal = wrapper.findComponent({ref: 'printerModal'})
+      samples.selected = [{ id: 1 }]
+      let modal = wrapper.findComponent({ ref: 'printerModal' })
       modal.vm.$emit('selectPrinter', 'printer1')
       expect(samples.handlePrintLabel).toBeCalledWith('printer1')
     })
@@ -131,8 +138,8 @@ describe('Samples.vue', () => {
     })
 
     it('passes selected enzyme id to function on emit event', () => {
-      samples.selected = [{id: 1}]
-      let modal = wrapper.findComponent({ref: 'enzymeModal'})
+      samples.selected = [{ id: 1 }]
+      let modal = wrapper.findComponent({ ref: 'enzymeModal' })
       modal.vm.$emit('selectEnzyme', 2)
 
       expect(samples.createLibraries).toBeCalledWith(2)

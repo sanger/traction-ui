@@ -1,34 +1,34 @@
 module.exports = {
   collectCoverage: true,
   collectCoverageFrom: [
-    'src/**/*.{js,vue}' //
+    'src/**/*.{js,vue}', //
   ],
   coverageReporters: [
-    'json' //
+    'json', //
   ],
   moduleFileExtensions: [
-    'js',
+    'js', //
     'jsx',
     'json',
-    'vue' //
+    'vue',
   ],
   transform: {
     '\\.(gql|graphql)$': 'jest-transform-graphql',
     '^.+\\.(vue)$': 'vue-jest',
     '.+\\.(css|styl|less|sass|scss|svg|png|jpg|ttf|woff|woff2)$': 'jest-transform-stub',
-    '^.+\\.(js)$': 'babel-jest'
+    '^.+\\.(js)$': 'babel-jest',
   },
   transformIgnorePatterns: [
-    '/!node_modules\\/lodash-es/' //
+    '/!node_modules\\/lodash-es/', //
   ],
   moduleNameMapper: {
-    '^@/(.*)$': '<rootDir>/src/$1'
+    '^@/(.*)$': '<rootDir>/src/$1',
   },
   snapshotSerializers: [
-    'jest-serializer-vue' //
+    'jest-serializer-vue', //
   ],
   testMatch: [
-    '**/tests/unit/**/*.spec.(js|jsx|ts|tsx)|**/__tests__/*.(js|jsx|ts|tsx)' //
+    '**/tests/unit/**/*.spec.(js|jsx|ts|tsx)|**/__tests__/*.(js|jsx|ts|tsx)', //
   ],
-  testURL: 'http://localhost/'
+  testURL: 'http://localhost/',
 }

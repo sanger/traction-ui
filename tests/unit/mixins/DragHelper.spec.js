@@ -8,7 +8,7 @@ describe('DragHelper', () => {
     wrapper = mount(DragHelper, {
       localVue,
       template: '<div />',
-      render() {}
+      render() {},
     })
 
     dragHelper = wrapper.vm

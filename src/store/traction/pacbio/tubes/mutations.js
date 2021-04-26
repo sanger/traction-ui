@@ -1,7 +1,7 @@
 const mutations = {
-  setTubes (state, tubes) {
+  setTubes(state, tubes) {
     state.tractionTubes = tubes
-  }
+  },
 }
 
 export default mutations

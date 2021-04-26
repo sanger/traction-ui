@@ -4,7 +4,6 @@ import * as Run from '@/api/SaphyrRun'
 import Response from '@/api/Response'
 
 describe('Flowcell', () => {
-
   let wrapper, flowcell, props, run
 
   beforeEach(() => {
@@ -21,21 +20,20 @@ describe('Flowcell', () => {
                 runs: {
                   namespaced: true,
                   state: {
-                    currentRun: run
+                    currentRun: run,
                   },
                   getters: {
-                    currentRun: state => state.currentRun,
-                  }
-                }
-              }
-
-            }
-          }
-        }
-      }
+                    currentRun: (state) => state.currentRun,
+                  },
+                },
+              },
+            },
+          },
+        },
+      },
     })
 
-    props = { index: 0, position: 1}
+    props = { index: 0, position: 1 }
 
     wrapper = mount(Flowcell, { localVue, store, propsData: props })
     flowcell = wrapper.vm
@@ -80,10 +78,10 @@ describe('Flowcell', () => {
       await flowcell.setBarcode(newBarcode)
       let expected = {
         flowcellIndex: 0,
-        library:  {
-          barcode: "TRAC-2-21",
-          id: "1",
-        }
+        library: {
+          barcode: 'TRAC-2-21',
+          id: '1',
+        },
       }
       expect(flowcell.setLibraryBarcode).toBeCalledWith(expected)
       expect(flowcell.alert).not.toBeCalled()
@@ -106,5 +104,4 @@ describe('Flowcell', () => {
       expect(wrapper.emitted().alert[0][1]).toEqual('success')
     })
   })
-
 })

@@ -1,18 +1,17 @@
 <template>
   <div>
-    <b-btn variant="primary"
-           id="printLabels"
-           :disabled="disabled"
-           v-b-modal.printerModal>
+    <b-btn id="printLabels" v-b-modal.printerModal variant="primary" :disabled="disabled">
       Print Labels
     </b-btn>
-    <b-modal id="printerModal"
-             size="sm"
-             title="Print Labels"
-             ref="printerModal"
-             :static="isStatic"
-             @ok="handleOk"
-             @shown="clearSelect">
+    <b-modal
+      id="printerModal"
+      ref="printerModal"
+      size="sm"
+      title="Print Labels"
+      :static="isStatic"
+      @ok="handleOk"
+      @shown="clearSelect"
+    >
       <b-form-select v-model="selectedPrinterId" :options="printerOptions" />
     </b-modal>
   </div>
@@ -22,21 +21,24 @@
 const MESSAGE_PRINTER_SELECT = 'Please select a printer'
 export default {
   name: 'PrinterModal',
-  data () {
-    return {
-      selectedPrinterId: null,
-      printerOptions: []
-    }
-  },
   props: {
     disabled: Boolean,
-    isStatic: Boolean
+    isStatic: Boolean,
+  },
+  data() {
+    return {
+      selectedPrinterId: null,
+      printerOptions: [],
+    }
+  },
+  created() {
+    this.provider()
   },
   methods: {
-    clearSelect () {
+    clearSelect() {
       this.selectedPrinterId = null
     },
-    handleOk (evt) {
+    handleOk(evt) {
       // Prevent modal from closing
       evt.preventDefault()
 
@@ -46,7 +48,7 @@ export default {
         this.handleSubmit()
       }
     },
-    handleSubmit () {
+    handleSubmit() {
       // OR store holds key id and text value - emit id then store handles get name
       let printerName = this.printerOptions[this.selectedPrinterId].text
       this.$emit('selectPrinter', printerName)
@@ -60,19 +62,17 @@ export default {
         this.$refs.printerModal.hide()
       })
     },
-    setPrinterNames () {
-      let printerOptions = this.$store.getters.printers.map(
-        (printer, index) => ({ value: index + 1, text: printer })
-      )
+    setPrinterNames() {
+      let printerOptions = this.$store.getters.printers.map((printer, index) => ({
+        value: index + 1,
+        text: printer,
+      }))
       printerOptions.unshift({ value: null, text: MESSAGE_PRINTER_SELECT })
       this.printerOptions = printerOptions
     },
-    provider () {
+    provider() {
       this.setPrinterNames()
-    }
+    },
   },
-  created () {
-    this.provider()
-  }
 }
 </script>

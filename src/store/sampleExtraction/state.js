@@ -1,5 +1,5 @@
 const state = {
-  sampleExtractionTubes: []
+  sampleExtractionTubes: [],
 }
 
 export default state

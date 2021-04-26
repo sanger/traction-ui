@@ -3,19 +3,17 @@ import { mount, localVue, store, Data } from '../../testHelper'
 import Response from '@/api/Response'
 
 describe('Reception', () => {
-
   let wrapper, reception, barcodes, barcode, input, router
 
   beforeEach(() => {
-
     barcodes = 'TRAC-1\nTRAC-2\nTRAC-3\nTRAC-4\nTRAC-5'
-    wrapper = mount(Reception, { localVue, router } )
+    wrapper = mount(Reception, { localVue, router })
     reception = wrapper.vm
   })
 
   describe('alert', () => {
     it('has a alert', () => {
-      expect(wrapper.findComponent({ref: 'alert'}).exists()).toBeTruthy()
+      expect(wrapper.findComponent({ ref: 'alert' }).exists()).toBeTruthy()
     })
   })
 
@@ -35,7 +33,6 @@ describe('Reception', () => {
   })
 
   describe('findSampleExtractionTubes button', () => {
-
     beforeEach(() => {
       wrapper.setData({ barcodes: 'TRAC-1\nTRAC-2' })
       reception.handleSampleExtractionTubes = jest.fn()
@@ -48,17 +45,15 @@ describe('Reception', () => {
       button.trigger('click')
       expect(reception.handleSampleExtractionTubes).toBeCalled()
     })
-
   })
 
   describe('#handleSampleExtractionTubes', () => {
     let failedResponse
 
     beforeEach(() => {
-    
       store.commit('sampleExtraction/setSampleExtractionTubes', [])
 
-      wrapper = mount(Reception, { localVue, store } )
+      wrapper = mount(Reception, { localVue, store })
       reception = wrapper.vm
 
       reception.getSampleExtractionTubesForBarcodes = jest.fn()
@@ -66,12 +61,20 @@ describe('Reception', () => {
       reception.showAlert = jest.fn()
       wrapper.setData({ barcodes: 'TRAC-1\nTRAC-2' })
 
-      failedResponse = { status: 404, statusText: 'Record not found', data: { errors: { title: ['Tube could not be found.'] }} }
+      failedResponse = {
+        status: 404,
+        statusText: 'Record not found',
+        data: { errors: { title: ['Tube could not be found.'] } },
+      }
     })
 
     it('successfully for samples', async () => {
-      reception.getSampleExtractionTubesForBarcodes.mockResolvedValue(new Response(Data.SampleExtractionTubesWithSample))
-      reception.exportSampleExtractionTubesIntoTraction.mockResolvedValue(new Response(Data.Requests))
+      reception.getSampleExtractionTubesForBarcodes.mockResolvedValue(
+        new Response(Data.SampleExtractionTubesWithSample),
+      )
+      reception.exportSampleExtractionTubesIntoTraction.mockResolvedValue(
+        new Response(Data.Requests),
+      )
 
       await reception.handleSampleExtractionTubes()
       expect(reception.getSampleExtractionTubesForBarcodes).toBeCalled()
@@ -80,22 +83,25 @@ describe('Reception', () => {
     })
 
     it('is unsuccessful when getSampleExtractionTubesForBarcodes fails', async () => {
-      reception.getSampleExtractionTubesForBarcodes.mockResolvedValue(new Response(Data.SampleExtractionTubesWithSample))
-      reception.exportSampleExtractionTubesIntoTraction.mockResolvedValue(new Response(failedResponse))
+      reception.getSampleExtractionTubesForBarcodes.mockResolvedValue(
+        new Response(Data.SampleExtractionTubesWithSample),
+      )
+      reception.exportSampleExtractionTubesIntoTraction.mockResolvedValue(
+        new Response(failedResponse),
+      )
 
       await reception.handleSampleExtractionTubes()
       expect(reception.getSampleExtractionTubesForBarcodes).toBeCalled()
       expect(reception.exportSampleExtractionTubesIntoTraction).toBeCalled()
       expect(reception.showAlert).toBeCalled()
     })
-
   })
 
   describe('#showAlert', () => {
     it('passes the message to function on emit event', () => {
       reception.showAlert('show this message')
       wrapper.vm.$nextTick(() => {
-        expect(wrapper.findComponent({ref: 'alert'}).html()).toMatch('show this message')
+        expect(wrapper.findComponent({ ref: 'alert' }).html()).toMatch('show this message')
       })
     })
   })
@@ -110,8 +116,7 @@ describe('Reception', () => {
     it('multiple barcodes', () => {
       wrapper.setData({ barcodes: 'TRAC-1\nTRAC-2\nTRAC-3\nTRAC-4\nTRAC-5' })
       let result = reception.getBarcodes()
-      expect(result).toEqual(['TRAC-1','TRAC-2','TRAC-3','TRAC-4','TRAC-5'])
+      expect(result).toEqual(['TRAC-1', 'TRAC-2', 'TRAC-3', 'TRAC-4', 'TRAC-5'])
     })
   })
-
 })

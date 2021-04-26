@@ -1,42 +1,43 @@
 <template>
   <div>
-    <alert ref='alert'></alert>
+    <alert ref="alert"></alert>
 
-    <b-form-group label="Filter"
-                  label-cols-sm="1"
-                  label-align-sm="right"
-                  label-for="filterInput"
-                  class="mb-0">
+    <b-form-group
+      label="Filter"
+      label-cols-sm="1"
+      label-align-sm="right"
+      label-for="filterInput"
+      class="mb-0"
+    >
       <b-input-group>
-        <b-form-input v-model="filter"
-                      type="search"
-                      id="filterInput"
-                      placeholder="Type to Search">
+        <b-form-input id="filterInput" v-model="filter" type="search" placeholder="Type to Search">
         </b-form-input>
         <b-input-group-append>
           <b-button :disabled="!filter" @click="filter = ''">Clear</b-button>
         </b-input-group-append>
       </b-input-group>
     </b-form-group>
-    <br>
+    <br />
 
-    <b-table id="libraries-table"
-             ref="libraries_table"
-             show-empty
-             responsive
-             :items="libraries"
-             :fields="fields"
-             :filter="filter"
-             :per-page="perPage"
-             :current-page="currentPage"
-             :sort-by.sync="sortBy"
-             :sort-desc.sync="sortDesc"
-             hover
-             @filtered="onFiltered"
-             selectable
-             select-mode="multi"
-             @row-selected="onRowSelected"
-             :busy.sync="isBusy">
+    <b-table
+      id="libraries-table"
+      ref="libraries_table"
+      show-empty
+      responsive
+      :items="libraries"
+      :fields="fields"
+      :filter="filter"
+      :per-page="perPage"
+      :current-page="currentPage"
+      :sort-by.sync="sortBy"
+      :sort-desc.sync="sortDesc"
+      hover
+      selectable
+      select-mode="multi"
+      :busy.sync="isBusy"
+      @filtered="onFiltered"
+      @row-selected="onRowSelected"
+    >
       <template v-slot:cell(selected)="{ rowSelected }">
         <template v-if="rowSelected">
           <span>&check;</span>
@@ -52,29 +53,35 @@
     <span class="font-weight-bold">Total records: {{ libraries.length }}</span>
 
     <div class="clearfix">
-      <printerModal class="float-left"
-                    @selectPrinter="handlePrintLabel"
-                    :disabled="this.selected.length === 0"
-                    ref='printerModal'>
+      <printerModal
+        ref="printerModal"
+        class="float-left"
+        :disabled="selected.length === 0"
+        @selectPrinter="handlePrintLabel"
+      >
       </printerModal>
 
-      <b-button variant="danger"
-                class="float-left"
-                id="deleteLibraries"
-                @click="handleLibraryDelete"
-                :disabled="this.selected.length === 0">
+      <b-button
+        id="deleteLibraries"
+        variant="danger"
+        class="float-left"
+        :disabled="selected.length === 0"
+        @click="handleLibraryDelete"
+      >
         Delete Libraries
       </b-button>
 
-      <b-pagination class="float-right"
-                    v-model="currentPage"
-                    :total-rows="libraries.length"
-                    :per-page="perPage"
-                    aria-controls="libraries-table">
+      <b-pagination
+        v-model="currentPage"
+        class="float-right"
+        :total-rows="libraries.length"
+        :per-page="perPage"
+        aria-controls="libraries-table"
+      >
       </b-pagination>
     </div>
     <b-form-group label-cols-lg="1" label="Per Page" label-for="input-per-page">
-      <b-form-input id="input-per-page" v-model="perPage" trim  class="w-25"></b-form-input>
+      <b-form-input id="input-per-page" v-model="perPage" trim class="w-25"></b-form-input>
     </b-form-group>
   </div>
 </template>
@@ -90,14 +97,18 @@ const { mapActions, mapGetters } = createNamespacedHelpers('traction/saphyr/tube
 
 export default {
   name: 'SaphyrLibraries',
+  components: {
+    Alert,
+    PrinterModal,
+  },
   mixins: [Helper, TableHelper],
   props: {
     pipeline: {
       type: String,
-      default: 'saphyr'
-    }
+      default: 'saphyr',
+    },
   },
-  data () {
+  data() {
     return {
       fields: [
         { key: 'selected', label: '' },
@@ -116,31 +127,33 @@ export default {
       perPage: 6,
       currentPage: 1,
       preFilteredMaterials: [],
-      isBusy: false
+      isBusy: false,
     }
   },
-  components: {
-    Alert,
-    PrinterModal
-  },
   computed: {
-    ...mapGetters([
-      'libraries'
-    ])
+    ...mapGetters(['libraries']),
+  },
+  created() {
+    // When this component is created (the 'created' lifecycle hook is called), we need to get the
+    // items for the table
+    this.provider()
   },
   methods: {
-    async handleLibraryDelete () {
+    async handleLibraryDelete() {
       try {
-        let selectedIds = this.selected.map(s => s.id)
-        let selectedBarcodes = this.selected.map(s => s.barcode)
+        let selectedIds = this.selected.map((s) => s.id)
+        let selectedBarcodes = this.selected.map((s) => s.barcode)
         let responses = await this.deleteLibraries(selectedIds)
 
-        if (responses.every(r => r.successful)) {
+        if (responses.every((r) => r.successful)) {
           let keyword = selectedIds.length > 1 ? 'Libraries' : 'Library'
-          this.showAlert(`${keyword} ${selectedBarcodes.join(', ')} successfully deleted`, 'success')
+          this.showAlert(
+            `${keyword} ${selectedBarcodes.join(', ')} successfully deleted`,
+            'success',
+          )
           this.provider()
         } else {
-          throw Error(responses.map(r => r.errors.message).join(','))
+          throw Error(responses.map((r) => r.errors.message).join(','))
         }
       } catch (error) {
         this.showAlert(consts.MESSAGE_ERROR_DELETION_FAILED + error.message, 'danger')
@@ -151,15 +164,7 @@ export default {
     async provider() {
       await this.setLibraries()
     },
-    ...mapActions([
-      'deleteLibraries',
-      'setLibraries'
-    ])
-  },
-  created() {
-    // When this component is created (the 'created' lifecycle hook is called), we need to get the
-    // items for the table
-    this.provider()
+    ...mapActions(['deleteLibraries', 'setLibraries']),
   },
 }
 </script>

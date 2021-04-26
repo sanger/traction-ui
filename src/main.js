@@ -5,7 +5,7 @@ import Vue from 'vue'
 import Vuex from 'vuex'
 import App from './App.vue'
 import router from './router'
-import store from './store';
+import store from './store'
 import BootstrapVue from 'bootstrap-vue'
 import { apolloProvider } from './graphql/client'
 
@@ -17,5 +17,5 @@ new Vue({
   store,
   router,
   apolloProvider,
-  render: h => h(App)
+  render: (h) => h(App),
 }).$mount('#app')

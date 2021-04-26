@@ -1,26 +1,29 @@
 <template>
   <div class="reception">
-    <alert ref='alert'></alert>
+    <alert ref="alert"></alert>
 
     <div class="form-group">
       <label for="barcodes">Barcodes:</label>
-      <textarea type="text"
-                v-model="barcodes"
-                class="form-control"
-                rows="10"
-                cols="10"
-                name="barcodes"
-                id="barcodes"/>
+      <textarea
+        id="barcodes"
+        v-model="barcodes"
+        type="text"
+        class="form-control"
+        rows="10"
+        cols="10"
+        name="barcodes"
+      />
     </div>
 
-    <b-button class="scanButton"
-              id="findSampleExtractionTubes"
-              variant="success"
-              @click="handleSampleExtractionTubes"
-              :disabled="this.barcodes.length === 0">
+    <b-button
+      id="findSampleExtractionTubes"
+      class="scanButton"
+      variant="success"
+      :disabled="barcodes.length === 0"
+      @click="handleSampleExtractionTubes"
+    >
       Import Sample Extraction Tubes
     </b-button>
-
   </div>
 </template>
 
@@ -32,61 +35,65 @@ import { mapActions, mapState } from 'vuex'
 
 export default {
   name: 'SaphyrReception',
-  mixins: [Helper],
-  props: {
+  components: {
+    Alert,
   },
-  data () {
+  mixins: [Helper],
+  props: {},
+  data() {
     return {
-      barcodes: []
+      barcodes: [],
     }
   },
-  components: {
-    Alert
+  computed: {
+    ...mapState('sampleExtraction', {
+      sampleExtractionTubes: (state) => state.sampleExtractionTubes,
+    }),
   },
   methods: {
-    getBarcodes () {
+    getBarcodes() {
       return this.barcodes.split('\n').filter(Boolean)
     },
-    async handleSampleExtractionTubes () {
+    async handleSampleExtractionTubes() {
       try {
         let getSETubeResponse = await this.getSampleExtractionTubesForBarcodes(this.getBarcodes())
         if (!getSETubeResponse.successful || getSETubeResponse.empty) {
           throw getSETubeResponse.errors
         }
 
-        let exportSampleTubesResponse = await this.exportSampleExtractionTubesIntoTraction(this.sampleExtractionTubes)
+        let exportSampleTubesResponse = await this.exportSampleExtractionTubesIntoTraction(
+          this.sampleExtractionTubes,
+        )
 
         if (!exportSampleTubesResponse.successful || exportSampleTubesResponse.empty) {
           throw exportSampleTubesResponse.errors
         }
-        let tractionTubesBarcodeList = exportSampleTubesResponse.deserialize.requests.map(r => r.barcode).join(', ')
-        this.showAlert('Samples have been created with barcodes: ' + tractionTubesBarcodeList, 'success')
+        let tractionTubesBarcodeList = exportSampleTubesResponse.deserialize.requests
+          .map((r) => r.barcode)
+          .join(', ')
+        this.showAlert(
+          'Samples have been created with barcodes: ' + tractionTubesBarcodeList,
+          'success',
+        )
       } catch (error) {
         this.showAlert(error.message, 'danger')
       }
     },
     ...mapActions('traction/saphyr/tubes', [
       // TODO: Move this saphyr/requests
-      'exportSampleExtractionTubesIntoTraction'
+      'exportSampleExtractionTubesIntoTraction',
     ]),
-    ...mapActions('sampleExtraction', [
-      'getSampleExtractionTubesForBarcodes'
-    ])
+    ...mapActions('sampleExtraction', ['getSampleExtractionTubesForBarcodes']),
   },
-  computed: {
-    ...mapState('sampleExtraction', {
-      sampleExtractionTubes: state => state.sampleExtractionTubes
-    })
-  }
 }
 </script>
 
 <style scoped lang="scss">
-  textarea {
-    border: 1px solid;
-  }
+textarea {
+  border: 1px solid;
+}
 
-  .scanButton {
-    margin: 0.5rem;
-  }
+.scanButton {
+  margin: 0.5rem;
+}
 </style>

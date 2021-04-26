@@ -16,8 +16,8 @@ describe('SaphyrEnzymeModal.vue', () => {
       store,
       propsData: {
         disabled: true,
-        isStatic: true
-      }
+        isStatic: true,
+      },
     })
     enzymeModal = wrapper.vm
   })
@@ -41,15 +41,15 @@ describe('SaphyrEnzymeModal.vue', () => {
         enzymeOptions: [
           { value: null, text: 'Please select an option' },
           { value: 1, text: 'enz1' },
-          { value: 2, text: 'enz2' }
-        ]
+          { value: 2, text: 'enz2' },
+        ],
       }
 
       wrapper.setData(enzymeOptions)
       expect(enzymeModal.enzymeOptions).toEqual(enzymeOptions.enzymeOptions)
       await flushPromises()
       expect(wrapper.find('select').findAll('option').length).toEqual(
-        enzymeOptions.enzymeOptions.length
+        enzymeOptions.enzymeOptions.length,
       )
     })
   })
@@ -65,7 +65,7 @@ describe('SaphyrEnzymeModal.vue', () => {
       let evt = {
         preventDefault: () => {
           return {}
-        }
+        },
       }
       window.alert = jest.fn()
       wrapper.vm.handleOk(evt)
@@ -77,7 +77,7 @@ describe('SaphyrEnzymeModal.vue', () => {
       let evt = {
         preventDefault: () => {
           return {}
-        }
+        },
       }
       wrapper.vm.handleOk(evt)
       expect(wrapper.emitted().selectEnzyme).toBeTruthy()
@@ -106,7 +106,7 @@ describe('SaphyrEnzymeModal.vue', () => {
 
       let enzymes = new Response(EnzymesJson).deserialize.enzymes
       let enzymeOptions = enzymes.map((enzyme, index) =>
-        Object.assign({ value: index + 1, text: enzyme.name })
+        Object.assign({ value: index + 1, text: enzyme.name }),
       )
       enzymeOptions.unshift({ value: null, text: 'Please select an option' })
 
@@ -117,11 +117,11 @@ describe('SaphyrEnzymeModal.vue', () => {
       let mockResponse = {
         data: {
           errors: {
-            name: ['name error message 1']
-          }
+            name: ['name error message 1'],
+          },
         },
         status: 422,
-        statusText: 'Unprocessible entity'
+        statusText: 'Unprocessible entity',
       }
 
       enzymeModal.enzymeRequest.execute.mockResolvedValue(mockResponse)

@@ -1,18 +1,22 @@
 <template>
   <div>
-    <b-btn id="createLibrariesWithEnzymeButton"
-           :disabled="disabled"
-           v-b-modal.enzymeModal
-           variant="success">
+    <b-btn
+      id="createLibrariesWithEnzymeButton"
+      v-b-modal.enzymeModal
+      :disabled="disabled"
+      variant="success"
+    >
       Create Libraries
     </b-btn>
-    <b-modal id="enzymeModal"
-             size="sm"
-             title="Create Libraries"
-             ref="enzymeModal"
-             :static="isStatic"
-             @ok="handleOk"
-             @shown="clearSelect">
+    <b-modal
+      id="enzymeModal"
+      ref="enzymeModal"
+      size="sm"
+      title="Create Libraries"
+      :static="isStatic"
+      @ok="handleOk"
+      @shown="clearSelect"
+    >
       <b-form-select v-model="selectedEnzymeId" :options="enzymeOptions" class="mb-3" />
     </b-modal>
   </div>
@@ -25,21 +29,29 @@ import Api from '@/mixins/Api'
 export default {
   name: 'SaphyrEnzymeModal',
   mixins: [Api],
-  data () {
-    return {
-      selectedEnzymeId: null,
-      enzymeOptions: []
-    }
-  },
   props: {
     disabled: Boolean,
-    isStatic: Boolean
+    isStatic: Boolean,
+  },
+  data() {
+    return {
+      selectedEnzymeId: null,
+      enzymeOptions: [],
+    }
+  },
+  computed: {
+    enzymeRequest() {
+      return this.api.traction.saphyr.enzymes
+    },
+  },
+  async created() {
+    this.provider()
   },
   methods: {
-    clearSelect () {
+    clearSelect() {
       this.selectedEnzymeId = null
     },
-    handleOk (evt) {
+    handleOk(evt) {
       // Prevent modal from closing
       evt.preventDefault()
 
@@ -49,7 +61,7 @@ export default {
         this.handleSubmit()
       }
     },
-    handleSubmit () {
+    handleSubmit() {
       this.$emit('selectEnzyme', this.selectedEnzymeId)
       this.clearSelect()
       /**
@@ -61,31 +73,24 @@ export default {
         this.$refs.enzymeModal.hide()
       })
     },
-    async getEnzymeOptions () {
+    async getEnzymeOptions() {
       let promise = this.enzymeRequest.get()
       let response = await handlePromise(promise)
 
       if (response.successful) {
         let enzymes = response.deserialize.enzymes
-        let enzymeOptions = enzymes.map(
-          (enzyme) => Object.assign({ value: parseInt(enzyme.id), text: enzyme.name }))
-        enzymeOptions.unshift({ value: null, text: "Please select an option" })
+        let enzymeOptions = enzymes.map((enzyme) =>
+          Object.assign({ value: parseInt(enzyme.id), text: enzyme.name }),
+        )
+        enzymeOptions.unshift({ value: null, text: 'Please select an option' })
         this.enzymeOptions = enzymeOptions
       } else {
         this.message = response.errors.message
       }
     },
-    async provider () {
+    async provider() {
       this.getEnzymeOptions()
-    }
+    },
   },
-  async created() {
-    this.provider()
-  },
-  computed: {
-    enzymeRequest () {
-      return this.api.traction.saphyr.enzymes
-    }
-  }
 }
 </script>

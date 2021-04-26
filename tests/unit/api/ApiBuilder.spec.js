@@ -2,9 +2,7 @@ import * as ApiBuilder from '@/api/ApiBuilder'
 import Request from '@/api/Request'
 
 describe('ApiBuilder', () => {
-
   describe('build', () => {
-
     let api, apis
 
     beforeEach(() => {
@@ -13,51 +11,51 @@ describe('ApiBuilder', () => {
       process.env.VUE_APP_API3_BASE_URL = 'http://api3'
 
       apis = {
-       "api1": {
-         "name": "api1",
-         "apiNamespace": "api/v1",
-         "resources": {
-           "resource1": {
-             "name": "resource1",
-             "filter": {
-               "filter1": "foo",
-               "filter2": "bar"
-             },
-             "include": "users"
-           },
-           "resource2": {}
-         }
-       },
-       "api2": {
-         "name": "api2",
-         "apiNamespace": "v2",
-         "resources": {
-           "resource1": {
-             "name": "resource1"
-           },
-           "resource2": {
-             "name": "resource2"
-           }
-         }
-       },
-       "api3": {
-         "name": "api3",
-         "apiNamespace": "v3",
-         "resources": {
-           "samples": {
-             "name": "samples"
-           },
-           "saphyr": {
-             "libraries": {
-               "name": "libraries"
-             },
-             "flowcells": {
-               "name": "flowcells"
-             }
-           }
-         }
-       },
-     }
+        api1: {
+          name: 'api1',
+          apiNamespace: 'api/v1',
+          resources: {
+            resource1: {
+              name: 'resource1',
+              filter: {
+                filter1: 'foo',
+                filter2: 'bar',
+              },
+              include: 'users',
+            },
+            resource2: {},
+          },
+        },
+        api2: {
+          name: 'api2',
+          apiNamespace: 'v2',
+          resources: {
+            resource1: {
+              name: 'resource1',
+            },
+            resource2: {
+              name: 'resource2',
+            },
+          },
+        },
+        api3: {
+          name: 'api3',
+          apiNamespace: 'v3',
+          resources: {
+            samples: {
+              name: 'samples',
+            },
+            saphyr: {
+              libraries: {
+                name: 'libraries',
+              },
+              flowcells: {
+                name: 'flowcells',
+              },
+            },
+          },
+        },
+      }
       api = ApiBuilder.build(apis, process.env)
     })
 
@@ -126,12 +124,15 @@ describe('ApiBuilder', () => {
       expect(request6.filter).toEqual({})
       expect(request6.include).toEqual('')
     })
-
   })
 
   describe('buildComponent', () => {
     it('creates a new component with given props', () => {
-      let cmp = ApiBuilder.buildComponent(Request, {baseURL: 'aname', apiNamespace: 'abc', resource: 'cats'})
+      let cmp = ApiBuilder.buildComponent(Request, {
+        baseURL: 'aname',
+        apiNamespace: 'abc',
+        resource: 'cats',
+      })
       expect(cmp.baseURL).toEqual('aname')
       expect(cmp.apiNamespace).toEqual('abc')
       expect(cmp.resource).toEqual('cats')

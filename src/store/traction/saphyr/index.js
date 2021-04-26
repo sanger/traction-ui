@@ -7,14 +7,14 @@ const saphyr = {
   modules: {
     tubes: saphyrTubesModule,
     runs: saphyrRunsModule,
-    requests: saphyrRequestsModule
+    requests: saphyrRequestsModule,
   },
   state: {
-    labelTemplateId: process.env.VUE_APP_SAPHYR_LABEL_TEMPLATE_ID
+    labelTemplateId: process.env.VUE_APP_SAPHYR_LABEL_TEMPLATE_ID,
   },
   getters: {
-    labelTemplateId: state => state.labelTemplateId
-  }
+    labelTemplateId: (state) => state.labelTemplateId,
+  },
 }
 
 export default saphyr

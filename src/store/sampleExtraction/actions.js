@@ -1,9 +1,9 @@
 import handlePromise from '@/api/PromiseHelper'
 
-const getSampleExtractionTubesForBarcodes = async ({ commit, getters }, barcodes)  => {
+const getSampleExtractionTubesForBarcodes = async ({ commit, getters }, barcodes) => {
   let barcodeString = barcodes.join(',')
   let request = getters.sampleExtractionTubeRequest
-  let promise = request.get({filter: { barcode: barcodeString} })
+  let promise = request.get({ filter: { barcode: barcodeString } })
   let response = await handlePromise(promise)
 
   if (response.successful && !response.empty) {
@@ -14,11 +14,9 @@ const getSampleExtractionTubesForBarcodes = async ({ commit, getters }, barcodes
 }
 
 const actions = {
-  getSampleExtractionTubesForBarcodes
+  getSampleExtractionTubesForBarcodes,
 }
 
-export {
-  getSampleExtractionTubesForBarcodes
-}
+export { getSampleExtractionTubesForBarcodes }
 
 export default actions

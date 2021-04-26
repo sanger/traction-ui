@@ -10,8 +10,8 @@ describe('Run.vue', () => {
     router = new VueRouter({
       routes: [
         { path: '/run/:id', name: 'PacbioRun', component: PacbioRun },
-        { path: '/runs', name: 'PacbioRuns', component: PacbioRuns }
-      ]
+        { path: '/runs', name: 'PacbioRuns', component: PacbioRuns },
+      ],
     })
 
     mockRun = {
@@ -27,9 +27,9 @@ describe('Run.vue', () => {
           { position: 'A1', library: { barcode: '' } },
           { position: 'A2', library: { barcode: '' } },
           { position: 'B1', library: { barcode: '' } },
-          { position: 'B2', library: { barcode: '' } }
-        ]
-      }
+          { position: 'B2', library: { barcode: '' } },
+        ],
+      },
     }
 
     store.commit('traction/pacbio/runs/setCurrentRun', mockRun)
@@ -41,9 +41,9 @@ describe('Run.vue', () => {
       stubs: {
         Plate: true,
         PacbioLibrariesList: true,
-        PacbioRunInfo: true
+        PacbioRunInfo: true,
       },
-      propsData: { id: 'new' }
+      propsData: { id: 'new' },
     })
     pacbioRun = wrapper.vm
   })
@@ -117,7 +117,7 @@ describe('Run.vue', () => {
       expect(pacbioRun.createRun).toBeCalled()
       expect(pacbioRun.showAlert).toBeCalledWith(
         'Failed to create run in Traction: this is an error',
-        'danger'
+        'danger',
       )
       expect(pacbioRun.redirectToRuns).not.toBeCalled()
     })
@@ -136,8 +136,8 @@ describe('Run.vue', () => {
         stubs: {
           Plate: true,
           PacbioLibrariesList: true,
-          PacbioRunInfo: true
-        }
+          PacbioRunInfo: true,
+        },
       })
       pacbioRun = wrapper.vm
 
@@ -172,7 +172,7 @@ describe('Run.vue', () => {
       expect(pacbioRun.updateRun).toBeCalled()
       expect(pacbioRun.showAlert).toBeCalledWith(
         'Failed to create run in Traction: this is an error',
-        'danger'
+        'danger',
       )
       expect(pacbioRun.redirectToRuns).not.toBeCalled()
     })

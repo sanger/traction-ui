@@ -20,21 +20,25 @@ export default {
      * @param {*} message the message to log
      */
     log(message) {
-      if (process.env.VUE_APP_LOG === 'true') { // https://stackoverflow.com/a/264037
+      // https://stackoverflow.com/a/264037
+      if (process.env.VUE_APP_LOG === 'true') {
         console.log(message)
       }
     },
     async handlePrintLabel(printerName) {
       let response = await printJob(printerName, this.selected)
       let variant = response.successful ? 'success' : 'danger'
-      this.showAlert(response.successful ? consts.MESSAGE_SUCCESS_PRINTER : response.errors.message, variant)
+      this.showAlert(
+        response.successful ? consts.MESSAGE_SUCCESS_PRINTER : response.errors.message,
+        variant,
+      )
     },
     /**
      * https: //stackoverflow.com/a/1026087
      * @param {*} string the string to capitalize
      */
     capitalizeFirstLetter(string) {
-      return string.charAt(0).toUpperCase() + string.slice(1);
-    }
-  }
+      return string.charAt(0).toUpperCase() + string.slice(1)
+    },
+  },
 }

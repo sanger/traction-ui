@@ -1,13 +1,15 @@
-import handlePromise  from '@/api/PromiseHelper'
+import handlePromise from '@/api/PromiseHelper'
 
 const isLibraryBarcodeValid = async ({ dispatch }, barcode) => {
-  if (!barcode) { return false }
+  if (!barcode) {
+    return false
+  }
   let libraryTube = await dispatch('getTubeForBarcode', barcode)
   return validateLibraryTube(libraryTube)
 }
 
 const getTubeForBarcode = async ({ rootGetters }, barcode) => {
-  let request = rootGetters["traction/pacbio/tubes/tubeRequest"]
+  let request = rootGetters['traction/pacbio/tubes/tubeRequest']
   let promise = request.get({ filter: { barcode: barcode } })
   let response = await handlePromise(promise)
 
@@ -17,9 +19,15 @@ const getTubeForBarcode = async ({ rootGetters }, barcode) => {
 }
 
 const validateLibraryTube = (tube) => {
-  if (!tube) { return false }
-  if (!tube.materials) { return false }
-  if (!tube.materials.every(m => m.material_type === 'library')) { return false }
+  if (!tube) {
+    return false
+  }
+  if (!tube.materials) {
+    return false
+  }
+  if (!tube.materials.every((m) => m.material_type === 'library')) {
+    return false
+  }
 
   return true
 }
@@ -29,10 +37,6 @@ const actions = {
   getTubeForBarcode,
 }
 
-export {
-  isLibraryBarcodeValid,
-  getTubeForBarcode,
-  validateLibraryTube,
-}
+export { isLibraryBarcodeValid, getTubeForBarcode, validateLibraryTube }
 
 export default actions

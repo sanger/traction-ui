@@ -1,16 +1,15 @@
-import { mount, localVue } from '../../testHelper'
 import Tube from '@/components/pacbio/PacbioTube'
+import { localVue, mount } from '../../testHelper'
 
 describe('Tube.vue', () => {
-
   let tube, wrapper, props
 
   beforeEach(() => {
     props = { barcode: 'TRAC-1', sample_names: 'Sample1,Sample2', tag_group_ids: '1,2' }
 
-    wrapper = mount(Tube, { 
-      localVue, 
-      propsData: props
+    wrapper = mount(Tube, {
+      localVue,
+      propsData: props,
     })
 
     tube = wrapper.vm
@@ -30,5 +29,4 @@ describe('Tube.vue', () => {
     expect(tube.tag_group_ids).toEqual(props.tag_group_ids)
     expect(wrapper.find('.tag_group_ids').text()).toEqual(props.tag_group_ids)
   })
-
 })

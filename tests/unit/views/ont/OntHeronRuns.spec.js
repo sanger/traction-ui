@@ -10,20 +10,20 @@ describe('OntHeronRuns.vue', () => {
         id: 1,
         experimentName: 'run1',
         flowcells: [{ library: { name: 'libName1' } }],
-        createdAt: '2020-05-13 11:00:00 UTC'
+        createdAt: '2020-05-13 11:00:00 UTC',
       },
       {
         id: 2,
         experimentName: 'run2',
         flowcells: [{ library: { name: 'libName2' } }],
-        createdAt: '2020-05-10 10:00:00 UTC'
+        createdAt: '2020-05-10 10:00:00 UTC',
       },
       {
         id: 3,
         experimentName: 'run3',
         flowcells: [{ library: { name: 'libName3' } }],
-        createdAt: '2020-05-10 10:00:00 UTC'
-      }
+        createdAt: '2020-05-10 10:00:00 UTC',
+      },
     ]
 
     // create the mock of the method before mounting it for testing
@@ -35,16 +35,16 @@ describe('OntHeronRuns.vue', () => {
         $apollo: {
           queries: {
             runs: {
-              refetch: jest.fn()
-            }
-          }
-        }
+              refetch: jest.fn(),
+            },
+          },
+        },
       },
       data() {
         return {
-          runs: runsData
+          runs: runsData,
         }
-      }
+      },
     })
     runs = wrapper.vm
   })

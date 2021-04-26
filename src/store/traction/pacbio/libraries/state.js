@@ -1,5 +1,5 @@
 const state = {
-  libraries: []
+  libraries: [],
 }
 
 export default state

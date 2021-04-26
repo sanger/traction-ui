@@ -10,9 +10,9 @@ describe('OntLibraries.vue', () => {
       mutate: mutate,
       queries: {
         libraries: {
-          refetch: jest.fn()
-        }
-      }
+          refetch: jest.fn(),
+        },
+      },
     }
 
     librariesData = [
@@ -22,7 +22,7 @@ describe('OntLibraries.vue', () => {
         plate_barcode: 'TRAC-1-1',
         poolSize: 1,
         wellRange: 'A1-H3',
-        tag_set: 24
+        tag_set: 24,
       },
       {
         id: 2,
@@ -30,7 +30,7 @@ describe('OntLibraries.vue', () => {
         plate_barcode: 'TRAC-1-1',
         poolSize: 2,
         wellRange: 'A4-H6',
-        tag_set: 24
+        tag_set: 24,
       },
       {
         id: 3,
@@ -38,7 +38,7 @@ describe('OntLibraries.vue', () => {
         plate_barcode: 'TRAC-1-1',
         poolSize: 3,
         wellRange: 'A7-H9',
-        tag_set: 24
+        tag_set: 24,
       },
       {
         id: 4,
@@ -46,7 +46,7 @@ describe('OntLibraries.vue', () => {
         plate_barcode: 'TRAC-1-1',
         poolSize: 4,
         wellRange: 'A10-H12',
-        tag_set: 24
+        tag_set: 24,
       },
       {
         id: 5,
@@ -54,8 +54,8 @@ describe('OntLibraries.vue', () => {
         plate_barcode: 'TRAC-1-2',
         poolSize: 1,
         wellRange: 'A1-H12',
-        tag_set: 96
-      }
+        tag_set: 96,
+      },
     ]
 
     // create the mock of the method before mounting it for testing
@@ -64,12 +64,12 @@ describe('OntLibraries.vue', () => {
     wrapper = mount(OntLibraries, {
       localVue,
       mocks: {
-        $apollo: mockApollo
+        $apollo: mockApollo,
       },
       stubs: {
         OntPlate: true,
-        PrinterModal: true
-      }
+        PrinterModal: true,
+      },
     })
 
     libraries = wrapper.vm
@@ -85,7 +85,7 @@ describe('OntLibraries.vue', () => {
       'plateBarcode',
       'pool',
       'createdAt',
-      'assignedToFlowcell'
+      'assignedToFlowcell',
     ]
     expect(libraries.fields).toEqual(expected)
   })
@@ -152,7 +152,7 @@ describe('OntLibraries.vue', () => {
       expect(mutate).toBeCalled()
       expect(libraries.showAlert).toBeCalledWith(
         `Library '${libraryName}' was successully deleted`,
-        'success'
+        'success',
       )
     })
 
@@ -172,7 +172,7 @@ describe('OntLibraries.vue', () => {
 
     it('shows an alert on failure', async () => {
       let mockResponse = {
-        data: { deleteOntLibrary: { success: false, errors: ['this is an error'] } }
+        data: { deleteOntLibrary: { success: false, errors: ['this is an error'] } },
       }
 
       let promise = new Promise((resolve) => {
@@ -186,7 +186,7 @@ describe('OntLibraries.vue', () => {
       expect(mutate).toBeCalled()
       expect(libraries.showAlert).toBeCalledWith(
         `Failure deleting library '${libraryName}': this is an error`,
-        'danger'
+        'danger',
       )
     })
   })

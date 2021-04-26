@@ -1,21 +1,22 @@
-import { mount, localVue } from '../testHelper'
 import InfoFooter from '@/components/InfoFooter'
+import { localVue, mount } from '../testHelper'
 
-describe('infoFooter.vue', () => {
-
+describe('InfoFooter.vue', () => {
   let wrapper
 
   beforeEach(() => {
-    let response = { 
-      status:200, 
-      statusText: 'OK',  
+    let response = {
+      status: 200,
+      statusText: 'OK',
       data: { errors: {} },
-      text: function text() { return 'text' }
+      text: function text() {
+        return 'text'
+      },
     }
-    global.fetch = jest.fn(() => Promise.resolve(response));
+    global.fetch = jest.fn(() => Promise.resolve(response))
 
     wrapper = mount(InfoFooter, {
-      localVue
+      localVue,
     })
   })
 

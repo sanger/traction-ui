@@ -7,28 +7,30 @@ import build from '@/api/ApiBuilder'
 import Api from '@/api'
 
 describe('Run', () => {
-
   let cmp, props, wrapper, request, run, failedResponse
 
   beforeEach(() => {
     cmp = Vue.extend({
       mixins: [Request],
-      render () { return ''}
+      render() {
+        return ''
+      },
     })
 
-    props = { baseURL: 'http://sequencescape.com',
-              apiNamespace: 'api/v2',
-              resource: 'requests' }
+    props = { baseURL: 'http://sequencescape.com', apiNamespace: 'api/v2', resource: 'requests' }
     wrapper = mount(cmp, { propsData: props })
 
     request = wrapper.vm.api
     request.get = jest.fn()
 
-    failedResponse = { status: 404, statusText: 'Record not found', data: { errors: { title: ['The record identified by 100 could not be found.'] } } }
+    failedResponse = {
+      status: 404,
+      statusText: 'Record not found',
+      data: { errors: { title: ['The record identified by 100 could not be found.'] } },
+    }
   })
 
   describe('build', () => {
-
     describe('new object', () => {
       beforeEach(() => {
         run = Run.build()
@@ -67,7 +69,6 @@ describe('Run', () => {
       })
 
       describe('wells', () => {
-
         let wells
 
         beforeEach(() => {
@@ -153,7 +154,7 @@ describe('Run', () => {
       expect(api.traction.pacbio.plates.create).not.toBeCalled()
       expect(api.traction.pacbio.wells.create).not.toBeCalled()
 
-      expect(resp).toEqual("title The record identified by 100 could not be found.")
+      expect(resp).toEqual('title The record identified by 100 could not be found.')
     })
 
     it('returns false and rollsback if the plate cannot be created', async () => {
@@ -173,7 +174,7 @@ describe('Run', () => {
 
       expect(api.traction.pacbio.runs.destroy).toBeCalledWith(runId)
 
-      expect(resp).toEqual("title The record identified by 100 could not be found.")
+      expect(resp).toEqual('title The record identified by 100 could not be found.')
     })
 
     it('returns false and rollsback if the wells cannot be created', async () => {
@@ -195,7 +196,7 @@ describe('Run', () => {
 
       expect(api.traction.pacbio.runs.destroy).toBeCalledWith(runId)
 
-      expect(resp).toEqual("title The record identified by 100 could not be found.")
+      expect(resp).toEqual('title The record identified by 100 could not be found.')
     })
 
     describe('when a well has no libraries', () => {
@@ -210,8 +211,8 @@ describe('Run', () => {
           id: '1',
           name: 'run1',
           plate: {
-            wells: [well1, well2]
-          }
+            wells: [well1, well2],
+          },
         }
       })
 
@@ -222,7 +223,6 @@ describe('Run', () => {
         expect(api.traction.pacbio.runs.create).toHaveBeenCalledTimes(1)
       })
     })
-
   })
 
   describe('createResource', () => {
@@ -247,9 +247,8 @@ describe('Run', () => {
       } catch (err) {
         message = err.message
       }
-      expect(message).toEqual("title The record identified by 100 could not be found.")
+      expect(message).toEqual('title The record identified by 100 could not be found.')
     })
-
   })
 
   describe('createRunPayload', () => {
@@ -262,10 +261,14 @@ describe('Run', () => {
     it('returns a runs payload', async () => {
       let result = Run.createRunPayload(run)
 
-      expect(result.data.type).toEqual("runs")
+      expect(result.data.type).toEqual('runs')
       expect(result.data.attributes.binding_kit_box_barcode).toEqual(run.binding_kit_box_barcode)
-      expect(result.data.attributes.sequencing_kit_box_barcode).toEqual(run.sequencing_kit_box_barcode)
-      expect(result.data.attributes.dna_control_complex_box_barcode).toEqual(run.dna_control_complex_box_barcode)
+      expect(result.data.attributes.sequencing_kit_box_barcode).toEqual(
+        run.sequencing_kit_box_barcode,
+      )
+      expect(result.data.attributes.dna_control_complex_box_barcode).toEqual(
+        run.dna_control_complex_box_barcode,
+      )
       expect(result.data.attributes.system_name).toEqual(run.system_name)
     })
   })
@@ -274,7 +277,7 @@ describe('Run', () => {
     it('returns a plates payload', async () => {
       let result = Run.createPlatePayload(123)
 
-      expect(result.data.type).toEqual("plates")
+      expect(result.data.type).toEqual('plates')
       expect(result.data.attributes.pacbio_run_id).toEqual(123)
     })
   })
@@ -295,24 +298,44 @@ describe('Run', () => {
     it('returns wells payload', async () => {
       let result = Run.createWellsPayload(wells, plateID)
 
-      expect(result.data.type).toEqual("wells")
+      expect(result.data.type).toEqual('wells')
       expect(result.data.attributes.wells[0].row).toEqual(wells[0].row)
       expect(result.data.attributes.wells[0].column).toEqual(wells[0].column)
       expect(result.data.attributes.wells[0].movie_time).toEqual(wells[0].movie_time)
       expect(result.data.attributes.wells[0].insert_size).toEqual(wells[0].insert_size)
-      expect(result.data.attributes.wells[0].on_plate_loading_concentration).toEqual(wells[0].on_plate_loading_concentration)
+      expect(result.data.attributes.wells[0].on_plate_loading_concentration).toEqual(
+        wells[0].on_plate_loading_concentration,
+      )
       expect(result.data.attributes.wells[0].generate_hifi).toEqual(wells[0].generate_hifi)
-      expect(result.data.attributes.wells[0].ccs_analysis_output).toEqual(wells[0].ccs_analysis_output)
-      expect(result.data.attributes.wells[0].pre_extension_time).toEqual(wells[0].pre_extension_time)
-      expect(result.data.attributes.wells[0].ccs_analysis_output).toEqual(wells[0].ccs_analysis_output)
-      expect(result.data.attributes.wells[0].relationships.plate.data.type).toEqual("plates")
+      expect(result.data.attributes.wells[0].ccs_analysis_output).toEqual(
+        wells[0].ccs_analysis_output,
+      )
+      expect(result.data.attributes.wells[0].pre_extension_time).toEqual(
+        wells[0].pre_extension_time,
+      )
+      expect(result.data.attributes.wells[0].ccs_analysis_output).toEqual(
+        wells[0].ccs_analysis_output,
+      )
+      expect(result.data.attributes.wells[0].relationships.plate.data.type).toEqual('plates')
       expect(result.data.attributes.wells[0].relationships.plate.data.id).toEqual(plateID)
-      expect(result.data.attributes.wells[0].relationships.libraries.data[0].type).toEqual("libraries")
-      expect(result.data.attributes.wells[0].relationships.libraries.data[0].id).toEqual(wells[0].libraries[0].id)
-      expect(result.data.attributes.wells[0].relationships.libraries.data[1].type).toEqual("libraries")
-      expect(result.data.attributes.wells[0].relationships.libraries.data[1].id).toEqual(wells[0].libraries[1].id)
-      expect(result.data.attributes.wells[1].relationships.libraries.data[0].type).toEqual("libraries")
-      expect(result.data.attributes.wells[1].relationships.libraries.data[0].id).toEqual(wells[1].libraries[0].id)
+      expect(result.data.attributes.wells[0].relationships.libraries.data[0].type).toEqual(
+        'libraries',
+      )
+      expect(result.data.attributes.wells[0].relationships.libraries.data[0].id).toEqual(
+        wells[0].libraries[0].id,
+      )
+      expect(result.data.attributes.wells[0].relationships.libraries.data[1].type).toEqual(
+        'libraries',
+      )
+      expect(result.data.attributes.wells[0].relationships.libraries.data[1].id).toEqual(
+        wells[0].libraries[1].id,
+      )
+      expect(result.data.attributes.wells[1].relationships.libraries.data[0].type).toEqual(
+        'libraries',
+      )
+      expect(result.data.attributes.wells[1].relationships.libraries.data[0].id).toEqual(
+        wells[1].libraries[0].id,
+      )
     })
   })
 
@@ -330,8 +353,8 @@ describe('Run', () => {
         id: '1',
         name: 'run1',
         plate: {
-          wells: [well1, well2]
-        }
+          wells: [well1, well2],
+        },
       }
 
       api = build(Api.Config, process.env)
@@ -339,7 +362,11 @@ describe('Run', () => {
       api.traction.pacbio.runs.update = jest.fn()
       api.traction.pacbio.wells.update = jest.fn()
 
-      failedResponse = { status: 404, statusText: 'Record not found', data: { errors: { title: ['The record identified by 100 could not be found.'] } } }
+      failedResponse = {
+        status: 404,
+        statusText: 'Record not found',
+        data: { errors: { title: ['The record identified by 100 could not be found.'] } },
+      }
     })
 
     it('on succuess, it returns an empty list when there are no errors', async () => {
@@ -366,7 +393,7 @@ describe('Run', () => {
       expect(api.traction.pacbio.runs.update).toHaveBeenCalled()
       expect(api.traction.pacbio.wells.update).not.toHaveBeenCalled()
 
-      expect(resp).toEqual(["title The record identified by 100 could not be found."])
+      expect(resp).toEqual(['title The record identified by 100 could not be found.'])
     })
 
     describe('when a well has no libraries', () => {
@@ -381,8 +408,8 @@ describe('Run', () => {
           id: '1',
           name: 'run1',
           plate: {
-            wells: [well1, well2]
-          }
+            wells: [well1, well2],
+          },
         }
       })
 
@@ -417,7 +444,7 @@ describe('Run', () => {
       } catch (err) {
         message = err.message
       }
-      expect(message).toEqual("title The record identified by 100 could not be found.")
+      expect(message).toEqual('title The record identified by 100 could not be found.')
     })
   })
 
@@ -432,10 +459,14 @@ describe('Run', () => {
       let result = Run.updateRunPayload(run)
 
       expect(result.data.id).toEqual(run.id)
-      expect(result.data.type).toEqual("runs")
+      expect(result.data.type).toEqual('runs')
       expect(result.data.attributes.binding_kit_box_barcode).toEqual(run.binding_kit_box_barcode)
-      expect(result.data.attributes.sequencing_kit_box_barcode).toEqual(run.sequencing_kit_box_barcode)
-      expect(result.data.attributes.dna_control_complex_box_barcode).toEqual(run.dna_control_complex_box_barcode)
+      expect(result.data.attributes.sequencing_kit_box_barcode).toEqual(
+        run.sequencing_kit_box_barcode,
+      )
+      expect(result.data.attributes.dna_control_complex_box_barcode).toEqual(
+        run.dna_control_complex_box_barcode,
+      )
       expect(result.data.attributes.system_name).toEqual(run.system_name)
       expect(result.data.attributes.comments).toEqual(run.comments)
     })
@@ -446,24 +477,26 @@ describe('Run', () => {
 
     beforeEach(() => {
       well = new Response(Data.PacbioWell).deserialize.wells[0]
-      well.libraries = [{id: 1}]
+      well.libraries = [{ id: 1 }]
     })
 
     it('return run payload', async () => {
       let result = Run.updateWellPayload(well)
 
       expect(result.data.id).toEqual(well.id)
-      expect(result.data.type).toEqual("wells")
+      expect(result.data.type).toEqual('wells')
       expect(result.data.attributes.row).toEqual(well.row)
       expect(result.data.attributes.column).toEqual(well.column)
       expect(result.data.attributes.movie_time).toEqual(well.movie_time)
       expect(result.data.attributes.insert_size).toEqual(well.insert_size)
-      expect(result.data.attributes.on_plate_loading_concentration).toEqual(well.on_plate_loading_concentration)
+      expect(result.data.attributes.on_plate_loading_concentration).toEqual(
+        well.on_plate_loading_concentration,
+      )
       expect(result.data.attributes.generate_hifi).toEqual(well.generate_hifi)
       expect(result.data.attributes.ccs_analysis_output).toEqual(well.ccs_analysis_output)
       expect(result.data.attributes.pre_extension_time).toEqual(well.pre_extension_time)
       expect(result.data.attributes.ccs_analysis_output).toEqual(well.ccs_analysis_output)
-      expect(result.data.relationships.libraries.data[0].type).toEqual("libraries")
+      expect(result.data.relationships.libraries.data[0].type).toEqual('libraries')
       expect(result.data.relationships.libraries.data[0].id).toEqual(well.libraries[0].id)
     })
   })

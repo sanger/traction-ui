@@ -10,6 +10,10 @@ pre-push:
 pre-commit:
   parallel: true
   commands:
+    prettier:
+      glob: '*.{js,vue}'
+      run: yarn prettier --check {staged_files}
+
     eslint:
       glob: '*.{js,vue}'
       run: yarn lint {staged_files}

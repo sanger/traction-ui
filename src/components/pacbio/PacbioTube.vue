@@ -1,23 +1,27 @@
-
 <template>
-  <b-list-group-item draggable="true" v-on:dragstart="drag(barcode, $event)" v-bind:class="{active: isActive}" v-on:mouseover="isActive = true" v-on:mouseleave="isActive = false">
+  <b-list-group-item
+    draggable="true"
+    :class="{ active: isActive }"
+    @dragstart="drag(barcode, $event)"
+    @mouseover="isActive = true"
+    @mouseleave="isActive = false"
+  >
     <b-img left src="/tube.png" height="70" />
     <div class="info">
       <div class="barcode">
         {{ barcode }}
       </div>
-       <div class="sample_names">
+      <div class="sample_names">
         {{ sample_names }}
       </div>
-       <div class="tag_group_ids">
+      <div class="tag_group_ids">
         {{ tag_group_ids }}
       </div>
     </div>
- </b-list-group-item>
+  </b-list-group-item>
 </template>
 
 <script>
-
 const img = new Image()
 img.src = '/tube.png'
 
@@ -26,47 +30,49 @@ export default {
   props: {
     barcode: {
       type: String,
-      required: true
+      required: true,
     },
+    // eslint-disable-next-line vue/prop-name-casing
     sample_names: {
       type: String,
-      required: true
+      required: true,
     },
+    // eslint-disable-next-line vue/prop-name-casing
     tag_group_ids: {
       type: String,
-      required: true
-    }
+      required: true,
+    },
   },
-  data () {
+  data() {
     return {
-      isActive: false
+      isActive: false,
     }
   },
   // TODO: need to add a a test for drag
   methods: {
-    drag (barcode, event) {
-      event.dataTransfer.setDragImage(img,120,50)
+    drag(barcode, event) {
+      event.dataTransfer.setDragImage(img, 120, 50)
       event.dataTransfer.setData('barcode', barcode)
-    }
-  }
+    },
+  },
 }
 </script>
 
 <style scoped lang="scss">
-  svg {
-    float: left;
-    width: 82px;
-    height: 64px;
-  }
-  image {
-    width: 82px;
-    height: 64px;
-  }
-  div {
-    text-align: left;
-  }
-  .active {
-    background-color: gray;
-    filter: none;
-  }
+svg {
+  float: left;
+  width: 82px;
+  height: 64px;
+}
+image {
+  width: 82px;
+  height: 64px;
+}
+div {
+  text-align: left;
+}
+.active {
+  background-color: gray;
+  filter: none;
+}
 </style>
