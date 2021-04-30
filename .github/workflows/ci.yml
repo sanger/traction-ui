@@ -1,4 +1,4 @@
-name: JS - Check format, lint and test
+name: CI
 
 on:
   push:
