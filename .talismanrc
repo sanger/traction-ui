@@ -1,3 +1,0 @@
-fileignoreconfig:
-- filename: .github/workflows/js_ci.yml
-  checksum: c0c436bd5ab798601e7ae0134156f5521f979710ecb1836d8746b2b9e18dceb1
