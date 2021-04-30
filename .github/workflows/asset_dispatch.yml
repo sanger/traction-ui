@@ -1,0 +1,38 @@
+# Triggered on dispatching the action
+# Automated releases handle asset creation in automated_release.yml
+name: Asset - on dispatch; build and publish
+
+on:
+  workflow_dispatch:
+    inputs:
+      image_tag:
+        description: Asset Name
+        required: true
+        default: x.y.z-uat.1
+
+jobs:
+  build_and_release:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+      - name: Setup node
+        uses: actions/setup-node@v2
+        with:
+          node-version: '14'
+      - name: Install dependencies
+        run: >-
+          yarn install
+      - name: Compile build
+        run: >-
+          ./compile-build.sh release.tar.gz dist
+      - name: Upload release.gz
+        id: upload-release-gz
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ github.event.release.upload_url }} # Pull the URL from the release step
+          asset_path: ./release.tar.gz
+          asset_name: ${{ env.RELEASE_VERSION }}.tar.gz
+          asset_content_type: application/gzip
