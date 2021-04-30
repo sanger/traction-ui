@@ -30,3 +30,6 @@ routes.json
 
 # coverage
 coverage
+
+# talisman
+.talismanrc
