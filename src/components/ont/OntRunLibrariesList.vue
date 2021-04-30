@@ -1,9 +1,18 @@
 <template>
-
-   <div class="ont-run-libraries" v-on:drop="drop" v-on:dragover="allowDrop" v-on:dragleave="endDrop" v-bind:class="{hover: hover}">
-    
-    <b-list-group class="ont-run-libraries-list-group" >
-      <OntTube v-for="library in unselectedLibraries" v-bind:key="library.id" v-bind="library" ref='ontTube'>
+  <div
+    class="ont-run-libraries"
+    :class="{ hover: hover }"
+    @drop="drop"
+    @dragover="allowDrop"
+    @dragleave="endDrop"
+  >
+    <b-list-group class="ont-run-libraries-list-group">
+      <OntTube
+        v-for="library in unselectedLibraries"
+        :key="library.id"
+        ref="ontTube"
+        v-bind="library"
+      >
       </OntTube>
     </b-list-group>
   </div>
@@ -18,20 +27,28 @@ import DragHelper from '@/mixins/DragHelper'
 
 export default {
   name: 'OntRunLibrariesList',
-  mixins: [ DragHelper ],
   components: {
-    OntTube
+    OntTube,
   },
+  mixins: [DragHelper],
   apollo: {
     libraries: {
       query: GET_CLIENT_LIBRARIES,
-      update: data => data.libraries
-    }
+      update: (data) => data.libraries,
+    },
+  },
+  computed: {
+    unselectedLibraries() {
+      return this.libraries.filter((library) => !library.assignedToFlowcell)
+    },
+  },
+  created() {
+    this.provider()
   },
   methods: {
-    drop (event) {
+    drop(event) {
       event.preventDefault()
-      
+
       let flowcellPosition = parseInt(event.dataTransfer.getData('flowcellPosition'))
       let libraryName = event.dataTransfer.getData('libraryName')
 
@@ -40,58 +57,49 @@ export default {
 
       this.hover = false
     },
-    fetchLibraries () { 
-      this.$apollo.query({
-        query: LIBRARIES_ALL_QUERY,
-        variables: {
-          unassignedToFlowcells: false,
-          pageNum: 1,
-          pageSize: 1000
-        },
-        fetchPolicy: 'no-cache'
-      }).then(data => {
-        this.setClientLibraries(data.data.libraries.nodes)
-      })
+    fetchLibraries() {
+      this.$apollo
+        .query({
+          query: LIBRARIES_ALL_QUERY,
+          variables: {
+            unassignedToFlowcells: false,
+            pageNum: 1,
+            pageSize: 1000,
+          },
+          fetchPolicy: 'no-cache',
+        })
+        .then((data) => {
+          this.setClientLibraries(data.data.libraries.nodes)
+        })
     },
-    setClientLibraries(libraries){
+    setClientLibraries(libraries) {
       this.$apollo.mutate({
         mutation: SET_CLIENT_LIBRARIES,
         variables: {
-          libraries: libraries
-        }
+          libraries: libraries,
+        },
       })
     },
-    provider () {
+    provider() {
       this.fetchLibraries()
-    }
+    },
   },
-  computed: {
-    unselectedLibraries () {
-      return this.libraries.filter(library => !library.assignedToFlowcell)
-    }
-  },
-  created () {
-    this.provider()
-  }
 }
 </script>
 
 <style scoped lang="scss">
+.ont-run-libraries {
+  border: solid;
+  border-width: 1px;
+  padding: 20px;
+}
 
-  .ont-run-libraries {
-    border: solid;
-    border-width: 1px;
-    padding: 20px;
+.hover {
+  box-shadow: 0px 0px 2px 2px gray;
+}
 
-  }
-
-  .hover {
-    box-shadow: 0px 0px 2px 2px gray;
-  }
-
-  .ont-run-libraries-list-group {
-    max-height: 400px;
-    overflow: scroll;
-  }
-
+.ont-run-libraries-list-group {
+  max-height: 400px;
+  overflow: scroll;
+}
 </style>

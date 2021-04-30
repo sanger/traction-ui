@@ -5,19 +5,20 @@ import Response from '@/api/Response'
 import VueRouter from 'vue-router'
 
 describe('Runs.vue', () => {
-
   let wrapper, runs, mockRuns, router
 
   beforeEach(() => {
     mockRuns = new Response(Data.PacbioRuns).deserialize.runs
 
     router = new VueRouter({
-      routes: [{
-        path: '/pacbio/runs/:id',
-        name: 'PacbioRun',
-        component: PacbioRun,
-        props: true
-      }]
+      routes: [
+        {
+          path: '/pacbio/runs/:id',
+          name: 'PacbioRun',
+          component: PacbioRun,
+          props: true,
+        },
+      ],
     })
 
     store.commit('traction/pacbio/runs/setRuns', mockRuns)
@@ -35,7 +36,7 @@ describe('Runs.vue', () => {
 
   describe('alert', () => {
     it('has a alert', () => {
-      expect(wrapper.findComponent({ref: 'alert'})).toBeTruthy
+      expect(wrapper.findComponent({ ref: 'alert' })).toBeTruthy
     })
   })
   describe('building the table', () => {
@@ -49,7 +50,6 @@ describe('Runs.vue', () => {
   })
 
   describe('new run button', () => {
-
     it('contains a create new run button', () => {
       expect(wrapper.find('button').exists()).toBeTruthy()
     })
@@ -175,7 +175,13 @@ describe('Runs.vue', () => {
 
   describe('sorting', () => {
     it('will sort the runs by created at', () => {
-        expect(wrapper.find('tbody').findAll('tr').at(0).text()).toMatch(/Sequel II/)
+      expect(
+        wrapper
+          .find('tbody')
+          .findAll('tr')
+          .at(0)
+          .text(),
+      ).toMatch(/Sequel II/)
     })
   })
 
@@ -186,16 +192,22 @@ describe('Runs.vue', () => {
         localVue,
         data() {
           return {
-            filter: mockRuns[0].name
+            filter: mockRuns[0].name,
           }
-        }
+        },
       })
       wrapper.vm.provider = jest.fn()
     })
 
     it('will filter the runs in the table', () => {
       expect(wrapper.find('tbody').findAll('tr').length).toEqual(1)
-      expect(wrapper.find('tbody').findAll('tr').at(0).text()).toMatch(/Sequel I/)
+      expect(
+        wrapper
+          .find('tbody')
+          .findAll('tr')
+          .at(0)
+          .text(),
+      ).toMatch(/Sequel I/)
     })
   })
 
@@ -204,7 +216,7 @@ describe('Runs.vue', () => {
       runs.showAlert(/show this message/)
 
       wrapper.vm.$nextTick(() => {
-        expect(wrapper.findComponent({ref: 'alert'}).text()).toMatch(/show this message/)
+        expect(wrapper.findComponent({ ref: 'alert' }).text()).toMatch(/show this message/)
       })
     })
   })
@@ -217,9 +229,9 @@ describe('Runs.vue', () => {
         data() {
           return {
             perPage: 2,
-            currentPage: 1
+            currentPage: 1,
           }
-        }
+        },
       })
       wrapper.vm.provider = jest.fn()
     })
@@ -227,7 +239,6 @@ describe('Runs.vue', () => {
     it('will paginate the runs in the table', () => {
       expect(wrapper.find('tbody').findAll('tr').length).toEqual(2)
     })
-
   })
 
   describe('#provider', () => {
@@ -251,7 +262,6 @@ describe('Runs.vue', () => {
       runs.provider()
       expect(runs.showAlert).toBeCalled()
     })
-
   })
 
   describe('#updateRun', () => {
@@ -279,7 +289,7 @@ describe('Runs.vue', () => {
 
     it('calls setRuns unsuccessfully', () => {
       runs.startRun.mockImplementation(() => {
-          throw Error('Raise this error')
+        throw Error('Raise this error')
       })
       runs.updateRun('start', 1)
       expect(runs.showAlert).toBeCalled()
@@ -299,12 +309,13 @@ describe('Runs.vue', () => {
     })
 
     it('has the correct href link', () => {
-       expect(link.attributes("href")).toBe(process.env.VUE_APP_TRACTION_BASE_URL + "/v1/pacbio/runs/" + id + "/sample_sheet")
+      expect(link.attributes('href')).toBe(
+        process.env.VUE_APP_TRACTION_BASE_URL + '/v1/pacbio/runs/' + id + '/sample_sheet',
+      )
     })
   })
 
   describe('Edit Run button', () => {
-
     it('contains a Edit Run button', () => {
       expect(wrapper.find('#editRun-1')).toBeDefined()
     })

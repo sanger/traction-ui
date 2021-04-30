@@ -6,7 +6,7 @@ const handlePromise = async (promise) => {
   let rawResponse
   try {
     rawResponse = await promise
-  } catch(resp) {
+  } catch (resp) {
     let responseObject = resp.response
     responseObject['data'] = responseObject['data']['data']
     rawResponse = responseObject
@@ -16,8 +16,6 @@ const handlePromise = async (promise) => {
   return response
 }
 
-export {
-  handlePromise
-}
+export { handlePromise }
 
 export default handlePromise

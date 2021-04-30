@@ -1,111 +1,110 @@
 {
-    "data": {
-        "data": [
-            {
-                "id": "1",
-                "type": "runs",
-                "links": {
-                    "self": "http://localhost:3100/v1/pacbio/runs/1"
-                },
-                "attributes": {
-                    "name": "aname",
-                    "state": "pending",
-                    "binding_kit_box_barcode": "DM11171008622001111",
-                    "sequencing_kit_box_barcode": "DM000110086180012311",
-                    "dna_control_complex_box_barcode": "Lxxxxx10171760012311",
-                    "system_name": "Sequel I",
-                    "created_at": "11/09/2019 01:11",
-                    "all_wells_have_libraries": true
-                }
-            },
-            {
-                "id": "2",
-                "type": "runs",
-                "links": {
-                    "self": "http://localhost:3100/v1/pacbio/runs/2"
-                },
-                "attributes": {
-                    "name": "anothername",
-                    "state": "started",
-                    "binding_kit_box_barcode": "DM11171008622001112",
-                    "sequencing_kit_box_barcode": "DM000110086180012312",
-                    "dna_control_complex_box_barcode": "Lxxxxx10171760012312",
-                    "system_name": "Sequel II",
-                    "created_at": "12/09/2019 02:22",
-                    "all_wells_have_libraries": true
-                }
-            },
-            {
-                "id": "3",
-                "type": "runs",
-                "links": {
-                    "self": "http://localhost:3100/v1/pacbio/runs/3"
-                },
-                "attributes": {
-                    "name": "anothername1",
-                    "state": "completed",
-                    "binding_kit_box_barcode": "DM11171008622001112",
-                    "sequencing_kit_box_barcode": "DM000110086180012312",
-                    "dna_control_complex_box_barcode": "Lxxxxx10171760012312",
-                    "system_name": "Sequel II",
-                    "created_at": "10/09/2019 02:22"
-                }
-            },
-            {
-                "id": "4",
-                "type": "runs",
-                "links": {
-                    "self": "http://localhost:3100/v1/pacbio/runs/4"
-                },
-                "attributes": {
-                    "name": "anothername2",
-                    "state": "cancelled",
-                    "binding_kit_box_barcode": "DM11171008622001112",
-                    "sequencing_kit_box_barcode": "DM000110086180012312",
-                    "dna_control_complex_box_barcode": "Lxxxxx10171760012312",
-                    "system_name": "Sequel II",
-                    "created_at": "10/09/2019 02:22",
-                    "all_wells_have_libraries": true
-                }
-            },
-            {
-                "id": "5",
-                "type": "runs",
-                "links": {
-                    "self": "http://localhost:3100/v1/pacbio/runs/5"
-                },
-                "attributes": {
-                    "name": "anothername3",
-                    "state": "completed",
-                    "binding_kit_box_barcode": "DM11171008622001112",
-                    "sequencing_kit_box_barcode": "DM000110086180012312",
-                    "dna_control_complex_box_barcode": "Lxxxxx10171760012312",
-                    "system_name": "Sequel II",
-                    "created_at": "10/09/2019 02:22",
-                    "all_wells_have_libraries": true
-                }
-            },
-            {
-                "id": "6",
-                "type": "runs",
-                "links": {
-                    "self": "http://localhost:3100/v1/pacbio/runs/6"
-                },
-                "attributes": {
-                    "name": "anothername4",
-                    "state": "started",
-                    "binding_kit_box_barcode": "DM11171008622001112",
-                    "sequencing_kit_box_barcode": "DM000110086180012312",
-                    "dna_control_complex_box_barcode": "Lxxxxx10171760012312",
-                    "system_name": "Sequel II",
-                    "created_at": "10/09/2019 02:22",
-                    "all_wells_have_libraries": false
-                }
-            }
-        ],
-        "included": [
-        ]
-    },
-    "status": 200,
-    "statusText": "Success"
+  "data": {
+    "data": [
+      {
+        "id": "1",
+        "type": "runs",
+        "links": {
+          "self": "http://localhost:3100/v1/pacbio/runs/1"
+        },
+        "attributes": {
+          "name": "aname",
+          "state": "pending",
+          "binding_kit_box_barcode": "DM11171008622001111",
+          "sequencing_kit_box_barcode": "DM000110086180012311",
+          "dna_control_complex_box_barcode": "Lxxxxx10171760012311",
+          "system_name": "Sequel I",
+          "created_at": "11/09/2019 01:11",
+          "all_wells_have_libraries": true
+        }
+      },
+      {
+        "id": "2",
+        "type": "runs",
+        "links": {
+          "self": "http://localhost:3100/v1/pacbio/runs/2"
+        },
+        "attributes": {
+          "name": "anothername",
+          "state": "started",
+          "binding_kit_box_barcode": "DM11171008622001112",
+          "sequencing_kit_box_barcode": "DM000110086180012312",
+          "dna_control_complex_box_barcode": "Lxxxxx10171760012312",
+          "system_name": "Sequel II",
+          "created_at": "12/09/2019 02:22",
+          "all_wells_have_libraries": true
+        }
+      },
+      {
+        "id": "3",
+        "type": "runs",
+        "links": {
+          "self": "http://localhost:3100/v1/pacbio/runs/3"
+        },
+        "attributes": {
+          "name": "anothername1",
+          "state": "completed",
+          "binding_kit_box_barcode": "DM11171008622001112",
+          "sequencing_kit_box_barcode": "DM000110086180012312",
+          "dna_control_complex_box_barcode": "Lxxxxx10171760012312",
+          "system_name": "Sequel II",
+          "created_at": "10/09/2019 02:22"
+        }
+      },
+      {
+        "id": "4",
+        "type": "runs",
+        "links": {
+          "self": "http://localhost:3100/v1/pacbio/runs/4"
+        },
+        "attributes": {
+          "name": "anothername2",
+          "state": "cancelled",
+          "binding_kit_box_barcode": "DM11171008622001112",
+          "sequencing_kit_box_barcode": "DM000110086180012312",
+          "dna_control_complex_box_barcode": "Lxxxxx10171760012312",
+          "system_name": "Sequel II",
+          "created_at": "10/09/2019 02:22",
+          "all_wells_have_libraries": true
+        }
+      },
+      {
+        "id": "5",
+        "type": "runs",
+        "links": {
+          "self": "http://localhost:3100/v1/pacbio/runs/5"
+        },
+        "attributes": {
+          "name": "anothername3",
+          "state": "completed",
+          "binding_kit_box_barcode": "DM11171008622001112",
+          "sequencing_kit_box_barcode": "DM000110086180012312",
+          "dna_control_complex_box_barcode": "Lxxxxx10171760012312",
+          "system_name": "Sequel II",
+          "created_at": "10/09/2019 02:22",
+          "all_wells_have_libraries": true
+        }
+      },
+      {
+        "id": "6",
+        "type": "runs",
+        "links": {
+          "self": "http://localhost:3100/v1/pacbio/runs/6"
+        },
+        "attributes": {
+          "name": "anothername4",
+          "state": "started",
+          "binding_kit_box_barcode": "DM11171008622001112",
+          "sequencing_kit_box_barcode": "DM000110086180012312",
+          "dna_control_complex_box_barcode": "Lxxxxx10171760012312",
+          "system_name": "Sequel II",
+          "created_at": "10/09/2019 02:22",
+          "all_wells_have_libraries": false
+        }
+      }
+    ],
+    "included": []
+  },
+  "status": 200,
+  "statusText": "Success"
 }

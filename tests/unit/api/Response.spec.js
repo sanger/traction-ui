@@ -2,26 +2,25 @@ import Response from '@/api/Response'
 import deserialize from '@/api/JsonApi'
 
 describe('Response', () => {
-
   let mockResponse, response
 
   it('can be empty', () => {
-    expect(new Response({data: { data: [] }, status: 200, statusText: 'OK' }).empty).toBeTruthy()
+    expect(new Response({ data: { data: [] }, status: 200, statusText: 'OK' }).empty).toBeTruthy()
   })
 
   describe('Success', () => {
     beforeEach(() => {
-      mockResponse =  {
+      ;(mockResponse = {
         data: {
           data: [
-             { id: 1, type: "requests", attributes: { name: "testname1", species: "testspecies1" }},
-             { id: 2, type: "requests", attributes: { name: "testname2", species: "testspecies2" }}
-          ]
+            { id: 1, type: 'requests', attributes: { name: 'testname1', species: 'testspecies1' } },
+            { id: 2, type: 'requests', attributes: { name: 'testname2', species: 'testspecies2' } },
+          ],
         },
         status: 200,
-        statusText: "OK"
-      },
-      response = new Response(mockResponse)
+        statusText: 'OK',
+      }),
+        (response = new Response(mockResponse))
     })
 
     it('has a status', () => {
@@ -59,19 +58,18 @@ describe('Response', () => {
   })
 
   describe('Failure', () => {
-
     beforeEach(() => {
-      mockResponse = {
+      ;(mockResponse = {
         data: {
           errors: {
             name: ['name error message 1'],
-            species: ['species error message 2.1', 'species error message 2.2']
-          }
+            species: ['species error message 2.1', 'species error message 2.2'],
+          },
         },
         status: 422,
-        statusText: "Unprocessible entity"
-      },
-      response = new Response(mockResponse, 'requests')
+        statusText: 'Unprocessible entity',
+      }),
+        (response = new Response(mockResponse, 'requests'))
     })
 
     it('has a status', () => {
@@ -79,8 +77,9 @@ describe('Response', () => {
     })
 
     it('has some errors', () => {
-      let message = 'name name error message 1, species species error message 2.1, species species error message 2.2'
-      expect(response.errors).toEqual({ message: message})
+      let message =
+        'name name error message 1, species species error message 2.1, species species error message 2.2'
+      expect(response.errors).toEqual({ message: message })
     })
 
     it('not flagged as successful', () => {
@@ -91,5 +90,4 @@ describe('Response', () => {
       expect(response.deserialize).toEqual({})
     })
   })
-
 })

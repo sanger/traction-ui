@@ -19,7 +19,7 @@ describe('PacbioWellModal', () => {
     wrapper = mount(WellModal, {
       localVue,
       store,
-      propsData: props
+      propsData: props,
     })
     modal = wrapper.vm
   })
@@ -29,7 +29,13 @@ describe('PacbioWellModal', () => {
   })
 
   it('must have movieTimeOptions data', () => {
-    expect(modal.movieTimeOptions).toEqual([{ text: 'Movie Time', value: "" }, "15.0", "20.0", "24.0", "30.0"])
+    expect(modal.movieTimeOptions).toEqual([
+      { text: 'Movie Time', value: '' },
+      '15.0',
+      '20.0',
+      '24.0',
+      '30.0',
+    ])
   })
 
   it('must have ccsAnalysisOutputOptions data', () => {
@@ -38,15 +44,19 @@ describe('PacbioWellModal', () => {
 
   describe('generateHifiOptions', () => {
     it('returns the correct options when System Name is "Sequel I"', () => {
-      expect(modal.generateHifiOptions["Sequel I"]).toEqual(['In SMRT Link', 'Do Not Generate'])
+      expect(modal.generateHifiOptions['Sequel I']).toEqual(['In SMRT Link', 'Do Not Generate'])
     })
     it('returns the correct options when System Name is "Sequel II"', () => {
-      expect(modal.generateHifiOptions["Sequel II"]).toEqual(['In SMRT Link', 'Do Not Generate'])
+      expect(modal.generateHifiOptions['Sequel II']).toEqual(['In SMRT Link', 'Do Not Generate'])
     })
     it('returns the correct options when System Name is "Sequel IIe"', () => {
-      run.system_name = "Sequel IIe"
+      run.system_name = 'Sequel IIe'
       store.commit('traction/pacbio/runs/setCurrentRun', run)
-      expect(modal.generateHifiOptions["Sequel IIe"]).toEqual(['In SMRT Link', 'Do Not Generate', 'On Instrument'])
+      expect(modal.generateHifiOptions['Sequel IIe']).toEqual([
+        'In SMRT Link',
+        'Do Not Generate',
+        'On Instrument',
+      ])
     })
   })
 
@@ -112,39 +122,75 @@ describe('PacbioWellModal', () => {
 
     it('updateInsertSize', () => {
       modal.updateInsertSize(123)
-      expect(modal.mutateWell).toBeCalledWith({ position: props.position, property: 'insert_size', with: 123})
+      expect(modal.mutateWell).toBeCalledWith({
+        position: props.position,
+        property: 'insert_size',
+        with: 123,
+      })
     })
 
     it('updateOnPlateLoadingConc', () => {
       modal.updateOnPlateLoadingConc(123)
-      expect(modal.mutateWell).toBeCalledWith({ position: props.position, property: 'on_plate_loading_concentration', with: 123 })
+      expect(modal.mutateWell).toBeCalledWith({
+        position: props.position,
+        property: 'on_plate_loading_concentration',
+        with: 123,
+      })
     })
 
     it('updateMovieTime', () => {
       modal.updateMovieTime(123)
-      expect(modal.mutateWell).toBeCalledWith({ position: props.position, property: 'movie_time', with: 123 })
+      expect(modal.mutateWell).toBeCalledWith({
+        position: props.position,
+        property: 'movie_time',
+        with: 123,
+      })
     })
 
     it("updateGenerateHiFi with 'Do Not Generate'", () => {
       modal.updateGenerateHiFi('Do Not Generate')
-      expect(modal.mutateWell).toBeCalledWith({ position: props.position, property: 'generate_hifi', with: 'Do Not Generate' })
-      expect(modal.mutateWell).toBeCalledWith({ position: props.position, property: 'ccs_analysis_output', with: 'No' })
+      expect(modal.mutateWell).toBeCalledWith({
+        position: props.position,
+        property: 'generate_hifi',
+        with: 'Do Not Generate',
+      })
+      expect(modal.mutateWell).toBeCalledWith({
+        position: props.position,
+        property: 'ccs_analysis_output',
+        with: 'No',
+      })
     })
 
     it("updateGenerateHiFi with 'In SMRT Link' or 'On Instrument'", () => {
       modal.updateGenerateHiFi('In SMRT Link')
-      expect(modal.mutateWell).toBeCalledWith({ position: props.position, property: 'generate_hifi', with: 'In SMRT Link' })
-      expect(modal.mutateWell).toBeCalledWith({ position: props.position, property: 'ccs_analysis_output', with: 'Yes' })
+      expect(modal.mutateWell).toBeCalledWith({
+        position: props.position,
+        property: 'generate_hifi',
+        with: 'In SMRT Link',
+      })
+      expect(modal.mutateWell).toBeCalledWith({
+        position: props.position,
+        property: 'ccs_analysis_output',
+        with: 'Yes',
+      })
     })
 
     it('updateCCSAnalysisOuput', () => {
       modal.updateCCSAnalysisOutput('Yes')
-      expect(modal.mutateWell).toBeCalledWith({ position: props.position, property: 'ccs_analysis_output', with: 'Yes' })
+      expect(modal.mutateWell).toBeCalledWith({
+        position: props.position,
+        property: 'ccs_analysis_output',
+        with: 'Yes',
+      })
     })
 
     it('updatePreExtensionTime', () => {
       modal.updatePreExtensionTime('2')
-      expect(modal.mutateWell).toBeCalledWith({ position: props.position, property: 'pre_extension_time', with: '2' })
+      expect(modal.mutateWell).toBeCalledWith({
+        position: props.position,
+        property: 'pre_extension_time',
+        with: '2',
+      })
     })
 
     describe('updateLibraryBarcode', () => {
@@ -153,7 +199,7 @@ describe('PacbioWellModal', () => {
       beforeEach(() => {
         newBarcode = 'TRAC-1'
         anIndex = 1
-        row = { index: anIndex}
+        row = { index: anIndex }
         modal.showAlert = jest.fn()
         modal.isLibraryBarcodeValid = jest.fn()
         modal.addLibraryToWell = jest.fn()
@@ -166,7 +212,11 @@ describe('PacbioWellModal', () => {
 
         await modal.updateLibraryBarcode(row, newBarcode)
 
-        expect(modal.addLibraryToWell).toBeCalledWith({ index: anIndex, position: props.position, with: { id: library.id, barcode: library.barcode } })
+        expect(modal.addLibraryToWell).toBeCalledWith({
+          index: anIndex,
+          position: props.position,
+          with: { id: library.id, barcode: library.barcode },
+        })
         expect(modal.showAlert).toBeCalledWith('Library is valid', 'success')
       })
 

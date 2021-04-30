@@ -2,82 +2,75 @@ import handlePromise from '@/api/PromiseHelper'
 import * as PacbioRun from '@/api/PacbioRun'
 
 const setRuns = async ({ commit, getters }) => {
-    let request = getters.runRequest
-    let promise = request.get()
-    let response = await handlePromise(promise)
+  let request = getters.runRequest
+  let promise = request.get()
+  let response = await handlePromise(promise)
 
-    if (response.successful && !response.empty) {
-        let runs = response.deserialize.runs
-        commit('setRuns', runs)
-    }
+  if (response.successful && !response.empty) {
+    let runs = response.deserialize.runs
+    commit('setRuns', runs)
+  }
 
-    return response
+  return response
 }
 
 const newRun = ({ commit }) => {
-    let run = PacbioRun.build()
-    commit('setCurrentRun', run)
+  let run = PacbioRun.build()
+  commit('setCurrentRun', run)
 }
 
 const editRun = async ({ commit, getters }, runId) => {
-    let request = getters.runRequest
-    let promise = request.find(runId)
-    let response = await handlePromise(promise)
-    
-    if (response.successful) {
-        let run = response.deserialize.runs[0]
-        commit('setCurrentRun', run)
-    }
+  let request = getters.runRequest
+  let promise = request.find(runId)
+  let response = await handlePromise(promise)
+
+  if (response.successful) {
+    let run = response.deserialize.runs[0]
+    commit('setCurrentRun', run)
+  }
 }
 
 const createRun = async ({ getters }) => {
-    let run = getters.currentRun
+  let run = getters.currentRun
 
-    let request = getters.pacbioRequests
-    return await PacbioRun.create(run, request)
+  let request = getters.pacbioRequests
+  return await PacbioRun.create(run, request)
 }
 
 const updateRun = async ({ getters, dispatch }) => {
-    let run = getters.currentRun
-    let originalRun = await dispatch('getRun', run.id)
+  let run = getters.currentRun
+  let originalRun = await dispatch('getRun', run.id)
 
-    let request = getters.pacbioRequests
-    let responses = await PacbioRun.update(run, request)
+  let request = getters.pacbioRequests
+  let responses = await PacbioRun.update(run, request)
 
-    if (responses.length != 0) {
-        // Rollback - revert run back to original data
-        await PacbioRun.update(originalRun, request)
-    }
-    return responses
+  if (responses.length != 0) {
+    // Rollback - revert run back to original data
+    await PacbioRun.update(originalRun, request)
+  }
+  return responses
 }
 
 const getRun = async ({ getters }, id) => {
-    let request = getters.runRequest
-    let promise = request.find(id)
-    let response = await handlePromise(promise)
+  let request = getters.runRequest
+  let promise = request.find(id)
+  let response = await handlePromise(promise)
 
-    if (response.successful) {
-        let run = response.deserialize.runs[0]
-        return run
-    }
+  if (response.successful) {
+    let run = response.deserialize.runs[0]
+    return run
+  }
 }
 
 const actions = {
-    getRun,
-    setRuns,
-    newRun,
-    createRun,
-    editRun,
-    updateRun,
+  getRun,
+  setRuns,
+  newRun,
+  createRun,
+  editRun,
+  updateRun,
 }
 
-export {
-    setRuns,
-    newRun,
-    createRun,
-    editRun,
-    updateRun,
-    getRun,
-}
+export { setRuns, newRun, createRun, editRun, updateRun, getRun }
 
 export default actions

@@ -12,46 +12,46 @@ export default {
   props: {
     baseURL: {
       type: String,
-      required: true
+      required: true,
     },
     apiNamespace: {
       type: String,
-      required: true
+      required: true,
     },
     resource: {
       type: String,
-      required: true
+      required: true,
     },
     headers: {
       type: Object,
       default: () => {
         return {
           'Content-Type': 'application/vnd.api+json',
-          'Accept': 'application/vnd.api+json'
+          Accept: 'application/vnd.api+json',
         }
-      }
+      },
     },
     filter: {
       type: Object,
       default: () => {
-        return { }
-      }
+        return {}
+      },
     },
     include: {
       type: String,
-      default: ''
-    }
+      default: '',
+    },
   },
-  data () {
+  data() {
     return {
-      api:  {},
-      loading: false
+      api: {},
+      loading: false,
     }
   },
   computed: {
-    rootURL () {
+    rootURL() {
       return `${this.baseURL}/${this.apiNamespace}`
-    }
+    },
   },
   methods: {
     // returns a Promise object
@@ -60,45 +60,60 @@ export default {
     },
     // build query parameters
     buildQuery(queryParameters = {}) {
-      let queryString = Object.keys(queryParameters).map(parameter => {
-        let queryObject = queryParameters[parameter] || this[parameter]
-        if (this.isObject(queryObject)) {
-          return Object.keys(queryObject).map(key => `${parameter}[${key}]=${queryObject[key]}`).join('&')
-        }
-        if (typeof(queryObject) === 'string' && queryObject.length > 0) {
-          return `${parameter}=${queryObject}`
-        }
-      }).filter(Boolean).join('&')
-      return (queryString ? `?${queryString}` : '')
+      let queryString = Object.keys(queryParameters)
+        .map((parameter) => {
+          let queryObject = queryParameters[parameter] || this[parameter]
+          if (this.isObject(queryObject)) {
+            return Object.keys(queryObject)
+              .map((key) => `${parameter}[${key}]=${queryObject[key]}`)
+              .join('&')
+          }
+          if (typeof queryObject === 'string' && queryObject.length > 0) {
+            return `${parameter}=${queryObject}`
+          }
+        })
+        .filter(Boolean)
+        .join('&')
+      return queryString ? `?${queryString}` : ''
     },
-    isObject (value) {
+    isObject(value) {
       return value && typeof value === 'object' && value.constructor === Object
     },
-    get (queryParameters = {}) {
-      return this.execute('get', `${this.resource}${this.buildQuery(Object.assign({filter: undefined, include: undefined}, queryParameters))}`)
+    get(queryParameters = {}) {
+      return this.execute(
+        'get',
+        `${this.resource}${this.buildQuery(
+          Object.assign({ filter: undefined, include: undefined }, queryParameters),
+        )}`,
+      )
     },
-    find (id, queryParameters = {}) {
-      return this.execute('get', `${this.resource}/${id}${this.buildQuery(Object.assign({include: undefined}, queryParameters))}`)
+    find(id, queryParameters = {}) {
+      return this.execute(
+        'get',
+        `${this.resource}/${id}${this.buildQuery(
+          Object.assign({ include: undefined }, queryParameters),
+        )}`,
+      )
     },
-    create (data) {
+    create(data) {
       return this.execute('post', this.resource, data)
     },
-    update (data) {
+    update(data) {
       let promises = []
-      for (let item of (Array.isArray(data) ? data : [data])) {
+      for (let item of Array.isArray(data) ? data : [data]) {
         promises.push(this.execute('patch', `${this.resource}/${item.data.id}`, item))
       }
       return promises
     },
-    destroy (ids) {
+    destroy(ids) {
       let promises = []
-      for (let item of (Array.isArray(ids) ? ids : [ids])) {
+      for (let item of Array.isArray(ids) ? ids : [ids]) {
         promises.push(this.execute('delete', `${this.resource}/${item}`))
       }
       return promises
-    }
+    },
   },
-  created () {
+  created() {
     this.api = axios.create({ baseURL: this.rootURL, headers: this.headers })
-  }
+  },
 }

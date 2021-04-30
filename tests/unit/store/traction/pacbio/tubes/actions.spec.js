@@ -34,7 +34,7 @@ describe('#getTubeForBarcode', () => {
 
   beforeEach(() => {
     get = jest.fn()
-    rootGetters = { 'traction/pacbio/tubes/tubeRequest': { 'get': get } }
+    rootGetters = { 'traction/pacbio/tubes/tubeRequest': { get: get } }
     barcode = 'TRAC-1'
 
     failedResponse = { data: { data: [] }, status: 500, statusText: 'Internal Server Error' }
@@ -67,12 +67,11 @@ describe('#validateLibraryTube', () => {
   })
 
   it('returns false if tube doesnt have material with libraries', () => {
-    expect(Actions.validateLibraryTube({ 'materials': [{ 'notype': '' }] })).toBeFalsy()
+    expect(Actions.validateLibraryTube({ materials: [{ notype: '' }] })).toBeFalsy()
   })
 
   it('returns true valid', () => {
     // check the validation of a library
-    expect(Actions.validateLibraryTube({ 'materials': [{ 'material_type': 'library' }] })).toBeTruthy()
+    expect(Actions.validateLibraryTube({ materials: [{ material_type: 'library' }] })).toBeTruthy()
   })
 })
-

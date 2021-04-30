@@ -9,7 +9,7 @@ describe('mutations', () => {
 
   it('"setTubes" sets "state.tractionTubes" to the given tubes', () => {
     state = {
-      tubes: []
+      tubes: [],
     }
     mutations.setTubes(state, tubes)
     expect(state.tractionTubes).toEqual(tubes)

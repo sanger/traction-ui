@@ -1,19 +1,17 @@
 export default {
   name: 'Api',
-  props: {
-  },
-  data () {
-    return {
-    }
+  props: {},
+  data() {
+    return {}
   },
   computed: {
-    api () {
+    api() {
       return this.$store.getters.api
-    }
+    },
   },
   methods: {
-    execute () {
+    execute() {
       return
-    }
-  }
+    },
+  },
 }

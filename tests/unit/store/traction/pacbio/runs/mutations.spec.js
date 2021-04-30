@@ -30,7 +30,6 @@ describe('mutateRun', () => {
     Mutations.default.setSystemName(state, systemName)
     expect(state.currentRun.system_name).toEqual(systemName)
   })
-
 })
 
 describe('createWell', () => {
@@ -39,7 +38,7 @@ describe('createWell', () => {
   beforeEach(() => {
     run = Run.build()
     run.plate.wells = []
-    run.system_name = "Sequel I"
+    run.system_name = 'Sequel I'
     state = { currentRun: run }
   })
 
@@ -48,7 +47,7 @@ describe('createWell', () => {
       position = 'A10'
       Mutations.default.createWell(state, position)
 
-      let well = state.currentRun.plate.wells.filter(well => well.position === position)[0]
+      let well = state.currentRun.plate.wells.filter((well) => well.position === position)[0]
       expect(well).toBeDefined()
       expect(well.position).toEqual(position)
       expect(well.generate_hifi).toEqual('In SMRT Link')
@@ -69,7 +68,7 @@ describe('mutateWell', () => {
     let payload = { position: position, property: 'generate_hifi', with: 'generateHiFi' }
     Mutations.default.mutateWell(state, payload)
 
-    let well = state.currentRun.plate.wells.filter(well => well.position === position)[0]
+    let well = state.currentRun.plate.wells.filter((well) => well.position === position)[0]
     expect(well.generate_hifi).toEqual('generateHiFi')
   })
 })
@@ -80,12 +79,12 @@ describe('addEmptyLibraryToWell', () => {
   beforeEach(() => {
     run = Run.build()
     state = { currentRun: run }
-    position = "F1"
+    position = 'F1'
   })
 
   it('adds a library object to the given well', () => {
     Mutations.default.addEmptyLibraryToWell(state, position)
-    let well = state.currentRun.plate.wells.filter(well => well.position === position)[0]
+    let well = state.currentRun.plate.wells.filter((well) => well.position === position)[0]
     expect(well.libraries.length).toEqual(1)
   })
 })
@@ -97,13 +96,13 @@ describe('removeLibraryFromWell', () => {
     run = Run.build()
     state = { currentRun: run }
     position = 'A1'
-    payload = { index: 0, position: position}
+    payload = { index: 0, position: position }
   })
 
   it('adds a library object to the given well', () => {
     Mutations.default.addEmptyLibraryToWell(state, position)
     Mutations.default.removeLibraryFromWell(state, payload)
-    let well = state.currentRun.plate.wells.filter(well => well.position === position)[0]
+    let well = state.currentRun.plate.wells.filter((well) => well.position === position)[0]
     expect(well.libraries.length).toEqual(0)
   })
 })
@@ -115,14 +114,14 @@ describe('addLibraryToWell', () => {
     let run = Run.build()
     state = { currentRun: run }
     position = 'A1'
-    library1 = { id: 1, barcode: 'TRAC-1'}
+    library1 = { id: 1, barcode: 'TRAC-1' }
     payload = { position: position, index: 0, with: library1 }
   })
 
   it('adds a library object to the given well', () => {
     Mutations.default.addEmptyLibraryToWell(state, position)
     Mutations.default.addLibraryToWell(state, payload)
-    let well = state.currentRun.plate.wells.filter(well => well.position === position)[0]
+    let well = state.currentRun.plate.wells.filter((well) => well.position === position)[0]
     expect(well.libraries[0]).toEqual(library1)
   })
 
@@ -133,7 +132,7 @@ describe('addLibraryToWell', () => {
     Mutations.default.addEmptyLibraryToWell(state, position)
     Mutations.default.addLibraryToWell(state, payload)
     Mutations.default.addLibraryToWell(state, payload2)
-    let well = state.currentRun.plate.wells.filter(well => well.position === position)[0]
+    let well = state.currentRun.plate.wells.filter((well) => well.position === position)[0]
     expect(well.libraries.length).toEqual(2)
     expect(well.libraries[0]).toEqual(library1)
     expect(well.libraries[1]).toEqual(library2)
@@ -142,7 +141,7 @@ describe('addLibraryToWell', () => {
   it('can add a library to the given well without an index', () => {
     payload = { position: position, with: library1 }
     Mutations.default.addLibraryToWell(state, payload)
-    let well = state.currentRun.plate.wells.filter(well => well.position === position)[0]
+    let well = state.currentRun.plate.wells.filter((well) => well.position === position)[0]
     expect(well.libraries[0]).toEqual(library1)
   })
 })

@@ -14,19 +14,26 @@ const mapRelationships = (relationships) => {
 
 const extractRelationship = (relationship, included) => {
   if (Array.isArray(relationship)) {
-    return relationship.map(item => spreadIncluded(item, included))
+    return relationship.map((item) => spreadIncluded(item, included))
   } else {
     return spreadIncluded(relationship, included)
   }
 }
 
 const findIncluded = (relationship, included) => {
-  return included.find(item => item.id === relationship.id && item.type === relationship.type) || { attributes: {} }
+  return (
+    included.find((item) => item.id === relationship.id && item.type === relationship.type) || {
+      attributes: {},
+    }
+  )
 }
 
 const spreadIncluded = (relationship, included) => {
   const data = findIncluded(relationship, included)
-  return Object.assign({ ...relationship, ...data.attributes }, extractRelationships(data.relationships, included))
+  return Object.assign(
+    { ...relationship, ...data.attributes },
+    extractRelationships(data.relationships, included),
+  )
 }
 
 const extractRelationships = (relationships, included) => {
@@ -58,7 +65,7 @@ const deserialize = (response) => {
     }, {})
   } else {
     const resourceObject = extractResourceObject(response.data, included)
-    return { [resourceObject.type]: [resourceObject]}
+    return { [resourceObject.type]: [resourceObject] }
   }
 }
 
@@ -70,7 +77,7 @@ export {
   spreadIncluded,
   extractRelationships,
   extractResourceObject,
-  deserialize
+  deserialize,
 }
 
 export default deserialize

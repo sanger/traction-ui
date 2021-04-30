@@ -8,7 +8,7 @@ const tubes = {
   state,
   getters,
   mutations,
-  actions
+  actions,
 }
 
 export default tubes

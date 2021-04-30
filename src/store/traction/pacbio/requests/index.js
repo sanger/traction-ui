@@ -4,11 +4,11 @@ import mutations from './mutations'
 import actions from './actions'
 
 const requests = {
-    namespaced: true,
-    state,
-    getters,
-    mutations,
-    actions
+  namespaced: true,
+  state,
+  getters,
+  mutations,
+  actions,
 }
 
 export default requests

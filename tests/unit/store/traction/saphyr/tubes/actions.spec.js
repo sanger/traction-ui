@@ -8,10 +8,10 @@ describe('#getTractionTubesForBarcodes', () => {
   beforeEach(() => {
     commit = jest.fn()
     get = jest.fn()
-    getters = { 'tubeRequest': { 'get': get } }
-    barcodeList = ["TRAC-1"]
+    getters = { tubeRequest: { get: get } }
+    barcodeList = ['TRAC-1']
 
-    emptyResponse = { data: { data: [] }, status: 200, statusText: 'Success'}
+    emptyResponse = { data: { data: [] }, status: 200, statusText: 'Success' }
     failedResponse = { data: { data: [] }, status: 500, statusText: 'Internal Server Error' }
   })
 
@@ -23,7 +23,7 @@ describe('#getTractionTubesForBarcodes', () => {
 
     let response = await Actions.getTractionTubesForBarcodes({ commit, getters }, barcodeList)
 
-    expect(commit).toHaveBeenCalledWith("setTubes", expectedTubes)
+    expect(commit).toHaveBeenCalledWith('setTubes', expectedTubes)
     expect(response).toEqual(expectedResponse)
   })
 
@@ -35,7 +35,7 @@ describe('#getTractionTubesForBarcodes', () => {
 
     let response = await Actions.getTractionTubesForBarcodes({ commit, getters }, barcodeList)
 
-    expect(commit).toHaveBeenCalledWith("setTubes", expectedTubes)
+    expect(commit).toHaveBeenCalledWith('setTubes', expectedTubes)
     expect(response).toEqual(expectedResponse)
   })
 
@@ -67,7 +67,7 @@ describe('#exportSampleExtractionTubesIntoTraction', () => {
 
   beforeEach(() => {
     create = jest.fn()
-    getters = { 'requestsRequest': { 'create': create } }
+    getters = { requestsRequest: { create: create } }
     tubes = new Response(Data.SampleExtractionTubesWithSample).deserialize.assets
   })
 
@@ -80,18 +80,24 @@ describe('#exportSampleExtractionTubesIntoTraction', () => {
   })
 
   it('unsuccessfully', async () => {
-    let failedResponse = { status: 422, statusText: 'Unprocessable Entity', data: { errors: { name: ['error message'] }} }
+    let failedResponse = {
+      status: 422,
+      statusText: 'Unprocessable Entity',
+      data: { errors: { name: ['error message'] } },
+    }
     let expectedResponse = new Response(failedResponse)
 
     create.mockReturnValue(failedResponse)
 
-    let response = await Actions.exportSampleExtractionTubesIntoTraction({ dispatch, getters }, tubes)
+    let response = await Actions.exportSampleExtractionTubesIntoTraction(
+      { dispatch, getters },
+      tubes,
+    )
     expect(response).toEqual(expectedResponse)
   })
 })
 
 describe('#sampleExtractionTubeJson', () => {
-
   it('will convert a deserialized response to the correct format', () => {
     let tubes = new Response(Data.SampleExtractionTubesWithSample).deserialize.assets
     let json = Actions.sampleExtractionTubeJson(tubes)
@@ -110,13 +116,33 @@ describe('#createLibrariesInTraction', () => {
 
   beforeEach(() => {
     create = jest.fn()
-    getters = { 'libraryRequest': { 'create': create } }
+    getters = { libraryRequest: { create: create } }
     let samples = [
-      { barcode: 'TRAC-1', material: {id: 1, type: 'samples', name: 'sample_d', external_id: 4, species: 'human', created_at: '02/27/2019 04:05' }},
-      { barcode: 'TRAC-1', material: {id: 1, type: 'samples', name: 'sample_d', external_id: 4, species: 'human', created_at: '02/27/2019 04:05' }},
+      {
+        barcode: 'TRAC-1',
+        material: {
+          id: 1,
+          type: 'samples',
+          name: 'sample_d',
+          external_id: 4,
+          species: 'human',
+          created_at: '02/27/2019 04:05',
+        },
+      },
+      {
+        barcode: 'TRAC-1',
+        material: {
+          id: 1,
+          type: 'samples',
+          name: 'sample_d',
+          external_id: 4,
+          species: 'human',
+          created_at: '02/27/2019 04:05',
+        },
+      },
     ]
     let enzymeID = 1
-    payload = {'samples': samples, 'enzymeID': enzymeID}
+    payload = { samples: samples, enzymeID: enzymeID }
   })
 
   it('successfully', async () => {
@@ -128,7 +154,11 @@ describe('#createLibrariesInTraction', () => {
   })
 
   it('unsuccessfully', async () => {
-    let failedResponse = { status: 422, statusText: 'Unprocessable Entity', data: { errors: { name: ['error message'] }} }
+    let failedResponse = {
+      status: 422,
+      statusText: 'Unprocessable Entity',
+      data: { errors: { name: ['error message'] } },
+    }
     let expectedResponse = new Response(failedResponse)
 
     create.mockReturnValue(failedResponse)
@@ -136,7 +166,6 @@ describe('#createLibrariesInTraction', () => {
     let response = await Actions.createLibrariesInTraction({ getters }, payload)
     expect(response).toEqual(expectedResponse)
   })
-
 })
 
 describe('#deleteLibraries', () => {
@@ -144,14 +173,14 @@ describe('#deleteLibraries', () => {
 
   beforeEach(() => {
     destroy = jest.fn()
-    getters = { 'libraryRequest': { 'destroy': destroy } }
-    libraryIds = [1,2]
+    getters = { libraryRequest: { destroy: destroy } }
+    libraryIds = [1, 2]
 
     failedResponse = { data: { data: [] }, status: 500, statusText: 'Internal Server Error' }
   })
 
   it('successfully', async () => {
-    let mockResponse =  { data: {}, status: 204, statusText: "OK" }
+    let mockResponse = { data: {}, status: 204, statusText: 'OK' }
 
     let promise = new Promise((resolve) => {
       resolve(mockResponse)
@@ -177,7 +206,6 @@ describe('#deleteLibraries', () => {
 
     expect(response).toEqual([expectedResponse])
   })
-
 })
 
 describe('#setLibraries', () => {
@@ -186,7 +214,7 @@ describe('#setLibraries', () => {
   beforeEach(() => {
     commit = jest.fn()
     get = jest.fn()
-    getters = { 'libraryRequest': { 'get': get } }
+    getters = { libraryRequest: { get: get } }
 
     failedResponse = { data: { data: [] }, status: 500, statusText: 'Internal Server Error' }
   })
@@ -196,7 +224,7 @@ describe('#setLibraries', () => {
 
     let libraries = await Actions.setLibraries({ commit, getters })
 
-    expect(commit).toHaveBeenCalledWith("setLibraries", libraries)
+    expect(commit).toHaveBeenCalledWith('setLibraries', libraries)
   })
 
   it('unsuccessfully', async () => {

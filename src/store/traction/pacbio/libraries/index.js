@@ -8,7 +8,7 @@ const libraries = {
   state,
   getters,
   mutations,
-  actions
+  actions,
 }
 
 export default libraries

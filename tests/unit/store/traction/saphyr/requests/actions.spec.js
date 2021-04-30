@@ -9,18 +9,17 @@ describe('actions', () => {
     requests = new Response(Data.TractionSaphyrRequests).deserialize.requests
   })
 
-  describe("setRequests", () => {
-    it("fetches the requets from the service, and commits them", async () => {
+  describe('setRequests', () => {
+    it('fetches the requets from the service, and commits them', async () => {
       const commit = jest.fn()
       const get = jest.fn()
-      const getters = { 'requestsRequest': { 'get': get } }
+      const getters = { requestsRequest: { get: get } }
 
       get.mockReturnValue(Data.TractionSaphyrRequests)
 
       await Actions.setRequests({ commit, getters })
 
-      expect(commit).toHaveBeenCalledWith("setRequests", requests)
+      expect(commit).toHaveBeenCalledWith('setRequests', requests)
     })
   })
-
 })

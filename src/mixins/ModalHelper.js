@@ -8,5 +8,5 @@ export default {
     hide() {
       this.$refs['modal'].hide()
     },
-  }
+  },
 }

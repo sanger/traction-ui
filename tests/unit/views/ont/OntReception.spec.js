@@ -6,7 +6,6 @@ import { transformPlates } from '@/api/SequencescapePlates'
 import flushPromises from 'flush-promises'
 
 describe('Reception', () => {
-
   let wrapper, reception, barcodes, input, mockPlates, mutate
 
   beforeEach(() => {
@@ -19,9 +18,9 @@ describe('Reception', () => {
       store,
       mocks: {
         $apollo: {
-          mutate: mutate
-        }
-      }
+          mutate: mutate,
+        },
+      },
     })
     reception = wrapper.vm
   })
@@ -85,7 +84,10 @@ describe('Reception', () => {
     it('shows an alert when there are no sequencescape plates', async () => {
       reception.getSequencescapePlates.mockReturnValue([])
       await reception.handleCreateTractionPlates()
-      expect(reception.showAlert).toBeCalledWith("There is no plate is sequencescape with barcode(s) DN1234567", 'danger')
+      expect(reception.showAlert).toBeCalledWith(
+        'There is no plate is sequencescape with barcode(s) DN1234567',
+        'danger',
+      )
     })
 
     it('calls createTractionPlates shows an alert with the result', async () => {
@@ -99,7 +101,7 @@ describe('Reception', () => {
       })
 
       reception.createTractionPlates.mockReturnValue(promise)
-      await reception.handleCreateTractionPlates() 
+      await reception.handleCreateTractionPlates()
       expect(reception.createTractionPlates).toBeCalledWith(transformPlates(mockPlates))
       expect(reception.showAlert).toBeCalledWith(mockResponse, 'primary')
     })
@@ -121,7 +123,7 @@ describe('Reception', () => {
       let response = await reception.createTractionPlates(transformPlates(mockPlates))
       await flushPromises()
       expect(reception.createTractionPlate).toHaveBeenCalledTimes(mockPlates.length)
-      expect(response).toEqual(["Plate x message", "Plate x message"])
+      expect(response).toEqual(['Plate x message', 'Plate x message'])
     })
   })
 
@@ -133,13 +135,13 @@ describe('Reception', () => {
         data: {
           createPlateWithSamples: {
             plate: {
-              id: "6",
-              barcode: "PLATE-1234",
-              wells: [{ plateId: 1 }, { plateId: 1 }, { plateId: 1 }]
+              id: '6',
+              barcode: 'PLATE-1234',
+              wells: [{ plateId: 1 }, { plateId: 1 }, { plateId: 1 }],
             },
-            errors: []
-          }
-        }
+            errors: [],
+          },
+        },
       }
 
       let promise = new Promise((resolve) => {
@@ -153,7 +155,9 @@ describe('Reception', () => {
     })
 
     it('shows an alert on failure', async () => {
-      let mockResponse = { data: { createPlateWithSamples: { plate: {}, errors: ['this is an error'] } } }
+      let mockResponse = {
+        data: { createPlateWithSamples: { plate: {}, errors: ['this is an error'] } },
+      }
 
       let promise = new Promise((resolve) => {
         resolve(mockResponse)

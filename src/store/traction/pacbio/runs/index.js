@@ -8,7 +8,7 @@ const runs = {
   state,
   getters,
   mutations,
-  actions
+  actions,
 }
 
 export default runs

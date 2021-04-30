@@ -9,7 +9,7 @@ describe('#setRuns', () => {
   beforeEach(() => {
     commit = jest.fn()
     get = jest.fn()
-    getters = { 'runRequest': { 'get': get } }
+    getters = { runRequest: { get: get } }
 
     failedResponse = { data: { data: [] }, status: 500, statusText: 'Internal Server Error' }
   })
@@ -22,7 +22,7 @@ describe('#setRuns', () => {
 
     let response = await Actions.setRuns({ commit, getters })
 
-    expect(commit).toHaveBeenCalledWith("setRuns", expectedRuns)
+    expect(commit).toHaveBeenCalledWith('setRuns', expectedRuns)
     expect(response).toEqual(expectedResponse)
   })
 
@@ -70,7 +70,7 @@ describe('#getTubeForBarcode', () => {
 
   beforeEach(() => {
     get = jest.fn()
-    rootGetters = { 'traction/saphyr/tubes/tubeRequest': { 'get': get } }
+    rootGetters = { 'traction/saphyr/tubes/tubeRequest': { get: get } }
     barcode = 'TRAC-1'
 
     failedResponse = { data: { data: [] }, status: 500, statusText: 'Internal Server Error' }
@@ -94,20 +94,20 @@ describe('#getTubeForBarcode', () => {
 })
 
 describe('#validateLibraryTube', () => {
-  it ('returns false if tube doesnt exist', () => {
+  it('returns false if tube doesnt exist', () => {
     expect(Actions.validateLibraryTube()).toBeFalsy()
   })
 
   it('returns false if tube doesnt have material', () => {
-    expect(Actions.validateLibraryTube( { 'no material': '' } )).toBeFalsy()
+    expect(Actions.validateLibraryTube({ 'no material': '' })).toBeFalsy()
   })
 
   it('returns false if tube doesnt have material with libraries', () => {
-    expect(Actions.validateLibraryTube( { 'materials': [{ 'notype': '' }] } )).toBeFalsy()
+    expect(Actions.validateLibraryTube({ materials: [{ notype: '' }] })).toBeFalsy()
   })
 
   it('returns true valid', () => {
-    expect(Actions.validateLibraryTube({ 'materials': [{ 'material_type': 'library'}] })).toBeTruthy()
+    expect(Actions.validateLibraryTube({ materials: [{ material_type: 'library' }] })).toBeTruthy()
   })
 })
 
@@ -118,14 +118,14 @@ describe('#editRun', () => {
     mockRun = new Response(Data.Runs).deserialize.runs[0]
 
     find = jest.fn()
-    getters = { 'runRequest': { 'find': find } }
+    getters = { runRequest: { find: find } }
     commit = jest.fn()
   })
 
   it('successfully', async () => {
     find.mockReturnValue(Data.Runs)
     await Actions.editRun({ getters, commit }, mockRun.id)
-    expect(commit).toHaveBeenCalledWith("setCurrentRun", mockRun)
+    expect(commit).toHaveBeenCalledWith('setCurrentRun', mockRun)
   })
 })
 
@@ -142,7 +142,7 @@ describe('#newRun', () => {
     Run.build.mockReturnValue(newRun)
 
     Actions.newRun({ commit })
-    expect(commit).toHaveBeenCalledWith("setCurrentRun", newRun)
+    expect(commit).toHaveBeenCalledWith('setCurrentRun', newRun)
   })
 })
 
@@ -152,7 +152,7 @@ describe('#createRun', () => {
   beforeEach(() => {
     mockRun = new Response(Data.Runs).deserialize.runs[0]
     saphyrRequests = jest.fn()
-    getters = { 'currentRun': mockRun, 'saphyrRequests': saphyrRequests }
+    getters = { currentRun: mockRun, saphyrRequests: saphyrRequests }
 
     Run.create = jest.fn()
   })
@@ -169,7 +169,7 @@ describe('#updateRun', () => {
   beforeEach(() => {
     mockRun = new Response(Data.Runs).deserialize.runs[0]
     saphyrRequests = jest.fn()
-    getters = { 'currentRun': mockRun, 'saphyrRequests': saphyrRequests }
+    getters = { currentRun: mockRun, saphyrRequests: saphyrRequests }
 
     Run.update = jest.fn()
   })

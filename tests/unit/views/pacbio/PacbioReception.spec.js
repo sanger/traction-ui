@@ -6,25 +6,24 @@ import Libraries from '@/views/pacbio/PacbioLibraries'
 import VueRouter from 'vue-router'
 
 describe('Reception', () => {
-
   let wrapper, reception, barcodes, barcode, input, router
 
   beforeEach(() => {
-    router = new VueRouter({ routes:
-      [
+    router = new VueRouter({
+      routes: [
         { path: '/pacbio/samples', name: 'PacbioSamples', component: Samples, props: true },
-        { path: '/pacbio/libraries', name: 'PacbioLibraries', component: Libraries, props: true }
-      ]
+        { path: '/pacbio/libraries', name: 'PacbioLibraries', component: Libraries, props: true },
+      ],
     })
 
     barcodes = 'TRAC-1\nTRAC-2\nTRAC-3\nTRAC-4\nTRAC-5'
-    wrapper = mount(Reception, { localVue, router } )
+    wrapper = mount(Reception, { localVue, router })
     reception = wrapper.vm
   })
 
   describe('alert', () => {
     it('has a alert', () => {
-      expect(wrapper.findComponent({ref: 'alert'})).toBeTruthy()
+      expect(wrapper.findComponent({ ref: 'alert' })).toBeTruthy()
     })
   })
 
@@ -44,31 +43,27 @@ describe('Reception', () => {
   })
 
   describe('findSampleExtractionTubes button', () => {
-
     beforeEach(() => {
       wrapper.setData({ barcodes: 'TRAC-1\nTRAC-2' })
       reception.handleSampleExtractionTubes = jest.fn()
     })
 
     it('calls the right function', async () => {
-     
       let input = wrapper.find('textarea')
       input.setValue(barcodes)
       let button = wrapper.find('#findSampleExtractionTubes')
       button.trigger('click')
       expect(reception.handleSampleExtractionTubes).toBeCalled()
     })
-
   })
 
   describe('#handleSampleExtractionTubes', () => {
     let failedResponse
 
     beforeEach(() => {
-   
       store.commit('sampleExtraction/setSampleExtractionTubes', [])
 
-      wrapper = mount(Reception, { localVue, store } )
+      wrapper = mount(Reception, { localVue, store })
       reception = wrapper.vm
 
       reception.getSampleExtractionTubesForBarcodes = jest.fn()
@@ -76,27 +71,45 @@ describe('Reception', () => {
       reception.showAlert = jest.fn()
       wrapper.setData({ barcodes: 'TRAC-1\nTRAC-2' })
 
-      failedResponse = { status: 404, statusText: 'Record not found', data: { errors: { title: ['Tube could not be found.'] }} }
+      failedResponse = {
+        status: 404,
+        statusText: 'Record not found',
+        data: { errors: { title: ['Tube could not be found.'] } },
+      }
     })
 
     it('successfully for samples', async () => {
-      reception.getSampleExtractionTubesForBarcodes.mockResolvedValue(new Response(Data.SampleExtractionTubesWithSample))
-      reception.exportSampleExtractionTubesIntoTraction.mockResolvedValue(new Response(Data.Requests))
+      reception.getSampleExtractionTubesForBarcodes.mockResolvedValue(
+        new Response(Data.SampleExtractionTubesWithSample),
+      )
+      reception.exportSampleExtractionTubesIntoTraction.mockResolvedValue(
+        new Response(Data.Requests),
+      )
 
       await reception.handleSampleExtractionTubes()
       expect(reception.getSampleExtractionTubesForBarcodes).toBeCalled()
       expect(reception.exportSampleExtractionTubesIntoTraction).toBeCalled()
-      expect(reception.showAlert).toBeCalledWith('Samples have been created with barcodes: TRAC-1, TRAC-2', 'success')
+      expect(reception.showAlert).toBeCalledWith(
+        'Samples have been created with barcodes: TRAC-1, TRAC-2',
+        'success',
+      )
     })
 
     it('is unsuccessful when getSampleExtractionTubesForBarcodes fails', async () => {
-      reception.getSampleExtractionTubesForBarcodes.mockResolvedValue(new Response(Data.SampleExtractionTubesWithSample))
-      reception.exportSampleExtractionTubesIntoTraction.mockResolvedValue(new Response(failedResponse))
+      reception.getSampleExtractionTubesForBarcodes.mockResolvedValue(
+        new Response(Data.SampleExtractionTubesWithSample),
+      )
+      reception.exportSampleExtractionTubesIntoTraction.mockResolvedValue(
+        new Response(failedResponse),
+      )
 
       await reception.handleSampleExtractionTubes()
       expect(reception.getSampleExtractionTubesForBarcodes).toBeCalled()
       expect(reception.exportSampleExtractionTubesIntoTraction).toBeCalled()
-      expect(reception.showAlert).toBeCalledWith('Failed to create samples: title Tube could not be found.', 'danger')
+      expect(reception.showAlert).toBeCalledWith(
+        'Failed to create samples: title Tube could not be found.',
+        'danger',
+      )
     })
   })
 
@@ -104,7 +117,7 @@ describe('Reception', () => {
     it('passes the message to function on emit event', () => {
       reception.showAlert('show this message')
       wrapper.vm.$nextTick(() => {
-        expect(wrapper.findComponent({ref: 'alert'}).html()).toMatch('show this message')
+        expect(wrapper.findComponent({ ref: 'alert' }).html()).toMatch('show this message')
       })
     })
   })
@@ -119,7 +132,7 @@ describe('Reception', () => {
     it('multiple barcodes', () => {
       wrapper.setData({ barcodes: 'TRAC-1\nTRAC-2\nTRAC-3\nTRAC-4\nTRAC-5' })
       let result = reception.getBarcodes()
-      expect(result).toEqual(['TRAC-1','TRAC-2','TRAC-3','TRAC-4','TRAC-5'])
+      expect(result).toEqual(['TRAC-1', 'TRAC-2', 'TRAC-3', 'TRAC-4', 'TRAC-5'])
     })
   })
 })

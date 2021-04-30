@@ -12,7 +12,7 @@ describe('mutations', () => {
 
   it('"setLibraries" sets "state.libraries" to the given libraries', () => {
     state = {
-      libraries: []
+      libraries: [],
     }
     mutations.setLibraries(state, libraries)
     expect(state.libraries).toEqual(libraries)

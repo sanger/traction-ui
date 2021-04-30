@@ -12,20 +12,20 @@ describe('Samples.vue', () => {
     store.commit('traction/pacbio/requests/setRequests', mockSamples)
 
     router = new VueRouter({
-      routes: [{
-        path: '/pacbio/samples',
-        name: 'PacbioSamples',
-        component: Samples,
-        props: true
-      }]
+      routes: [
+        {
+          path: '/pacbio/samples',
+          name: 'PacbioSamples',
+          component: Samples,
+          props: true,
+        },
+      ],
     })
-
 
     wrapper = mount(Samples, {
       store,
       router,
-      localVue
-
+      localVue,
     })
 
     // TODO: Vue no longer allows you to override methods in mount. This causes all sorts of issues which we need to fix.
@@ -38,7 +38,7 @@ describe('Samples.vue', () => {
     it('contains the correct fields', () => {
       let headers = wrapper.findAll('th')
       for (let field of samples.fields) {
-          expect(headers.filter(header => header.text() === field.label)).toBeDefined()
+        expect(headers.filter((header) => header.text() === field.label)).toBeDefined()
       }
     })
 
@@ -52,25 +52,23 @@ describe('Samples.vue', () => {
     it('passes the message to function on emit event', () => {
       samples.showAlert('show this message', 'danger')
       wrapper.vm.$nextTick(() => {
-        expect(wrapper.findComponent({ref: 'alert'}).html()).toMatch('show this message')
+        expect(wrapper.findComponent({ ref: 'alert' }).html()).toMatch('show this message')
       })
     })
   })
 
   describe('printerModal', () => {
-
     beforeEach(() => {
       wrapper = mount(Samples, { store, router, localVue })
       wrapper.setData({ sortDesc: false })
 
       samples = wrapper.vm
       samples.handlePrintLabel = jest.fn()
-        
     })
 
     it('passes selected printer to function on emit event', () => {
       samples.selected = [{ id: 1 }]
-      let modal = wrapper.findComponent({ref: 'printerModal'})
+      let modal = wrapper.findComponent({ ref: 'printerModal' })
       modal.vm.$emit('selectPrinter', 'printer1')
       expect(samples.handlePrintLabel).toBeCalledWith('printer1')
     })
@@ -78,13 +76,13 @@ describe('Samples.vue', () => {
 
   describe('alert', () => {
     it('has a alert', () => {
-      expect(wrapper.findComponent({ref: 'alert'}).exists()).toBeTruthy()
+      expect(wrapper.findComponent({ ref: 'alert' }).exists()).toBeTruthy()
     })
   })
 
   describe('sample metadata modal', () => {
     it('contains sample metadata modal', () => {
-      expect(wrapper.findComponent({ref: 'sampleMetadata'}).exists()).toBeTruthy()
+      expect(wrapper.findComponent({ ref: 'sampleMetadata' }).exists()).toBeTruthy()
     })
   })
 
@@ -97,4 +95,3 @@ describe('Samples.vue', () => {
     })
   })
 })
-

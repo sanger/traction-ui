@@ -1,6 +1,5 @@
 {
-  "data":
-  {
+  "data": {
     "data": {
       "id": "14",
       "type": "runs",
@@ -24,66 +23,73 @@
         }
       }
     },
-    "included": [{
-      "id": "14",
-      "type": "chips",
-      "links": {
-        "self": "/v1/chips/14"
+    "included": [
+      {
+        "id": "14",
+        "type": "chips",
+        "links": {
+          "self": "/v1/chips/14"
+        },
+        "attributes": {
+          "barcode": null
+        },
+        "relationships": {
+          "flowcells": {
+            "links": {
+              "self": "/v1/chips/14/relationships/flowcells",
+              "related": "/v1/chips/14/flowcells"
+            },
+            "data": [
+              {
+                "type": "flowcells",
+                "id": "27"
+              },
+              {
+                "type": "flowcells",
+                "id": "28"
+              }
+            ]
+          }
+        }
       },
-      "attributes": {
-        "barcode": null
+      {
+        "id": "27",
+        "type": "flowcells",
+        "links": {
+          "self": "/v1/flowcells/27"
+        },
+        "attributes": {
+          "position": 1
+        },
+        "relationships": {
+          "library": {
+            "links": {
+              "self": "/v1/flowcells/27/relationships/library",
+              "related": "/v1/flowcells/27/library"
+            },
+            "data": null
+          }
+        }
       },
-      "relationships": {
-        "flowcells": {
-          "links": {
-            "self": "/v1/chips/14/relationships/flowcells",
-            "related": "/v1/chips/14/flowcells"
-          },
-          "data": [{
-            "type": "flowcells",
-            "id": "27"
-          }, {
-            "type": "flowcells",
-            "id": "28"
-          }]
+      {
+        "id": "28",
+        "type": "flowcells",
+        "links": {
+          "self": "/v1/flowcells/28"
+        },
+        "attributes": {
+          "position": 2
+        },
+        "relationships": {
+          "library": {
+            "links": {
+              "self": "/v1/flowcells/28/relationships/library",
+              "related": "/v1/flowcells/28/library"
+            },
+            "data": null
+          }
         }
       }
-    }, {
-      "id": "27",
-      "type": "flowcells",
-      "links": {
-        "self": "/v1/flowcells/27"
-      },
-      "attributes": {
-        "position": 1
-      },
-      "relationships": {
-        "library": {
-          "links": {
-            "self": "/v1/flowcells/27/relationships/library",
-            "related": "/v1/flowcells/27/library"
-          },
-          "data": null
-        }
-      }
-    }, {
-      "id": "28",
-      "type": "flowcells",
-      "links": {
-        "self": "/v1/flowcells/28"
-      },
-      "attributes": {
-        "position": 2
-      },
-      "relationships": {
-        "library": {
-          "links": {
-            "self": "/v1/flowcells/28/relationships/library",
-            "related": "/v1/flowcells/28/library"
-          },
-          "data": null
-        }
-      }
-    }]
+    ]
   }
 }

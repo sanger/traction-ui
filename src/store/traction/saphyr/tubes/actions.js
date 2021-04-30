@@ -1,9 +1,9 @@
-import handlePromise  from '@/api/PromiseHelper'
+import handlePromise from '@/api/PromiseHelper'
 
-const getTractionTubesForBarcodes = async ({ commit, getters }, barcodes)  => {
+const getTractionTubesForBarcodes = async ({ commit, getters }, barcodes) => {
   let request = getters.tubeRequest
   let barcodeString = barcodes.join(',')
-  let promise = request.get({filter: { barcode: barcodeString} })
+  let promise = request.get({ filter: { barcode: barcodeString } })
   let response = await handlePromise(promise)
   if (response.successful && !response.empty) {
     let tubes = response.deserialize.tubes
@@ -12,14 +12,14 @@ const getTractionTubesForBarcodes = async ({ commit, getters }, barcodes)  => {
   return response
 }
 
-const exportSampleExtractionTubesIntoTraction = async ({ getters }, tubes)  => {
+const exportSampleExtractionTubesIntoTraction = async ({ getters }, tubes) => {
   let body = {
     data: {
-      type: "requests",
+      type: 'requests',
       attributes: {
-        requests: sampleExtractionTubeJson(tubes)
-      }
-    }
+        requests: sampleExtractionTubeJson(tubes),
+      },
+    },
   }
 
   let request = getters.requestsRequest
@@ -30,20 +30,20 @@ const exportSampleExtractionTubesIntoTraction = async ({ getters }, tubes)  => {
 }
 
 const sampleExtractionTubeJson = (tubes) => {
-  return tubes.map(t => ({
+  return tubes.map((t) => ({
     name: t.fields.sanger_sample_id,
     species: t.fields.sample_common_name,
     external_id: t.sample_uuid,
-    external_study_id: t.study_uuid
+    external_study_id: t.study_uuid,
   }))
 }
 
 const createLibrariesInTraction = async ({ getters }, payload) => {
-  let libraries = payload.samples.map(item => {
+  let libraries = payload.samples.map((item) => {
     return {
       state: 'pending',
       saphyr_request_id: item.id,
-      saphyr_enzyme_id: payload.enzymeID
+      saphyr_enzyme_id: payload.enzymeID,
     }
   })
 
@@ -51,9 +51,9 @@ const createLibrariesInTraction = async ({ getters }, payload) => {
     data: {
       type: 'libraries',
       attributes: {
-        libraries: libraries
-      }
-    }
+        libraries: libraries,
+      },
+    },
   }
 
   let request = getters.libraryRequest
@@ -67,7 +67,7 @@ const deleteLibraries = async ({ getters }, libraryIds) => {
   let request = getters.libraryRequest
   let promises = request.destroy(libraryIds)
 
-  let responses = await Promise.all(promises.map(promise => handlePromise(promise)))
+  let responses = await Promise.all(promises.map((promise) => handlePromise(promise)))
   return responses
 }
 
@@ -79,12 +79,11 @@ const setLibraries = async ({ commit, getters }) => {
 
   if (response.successful && !response.empty) {
     libraries = response.deserialize.libraries
-    
+
     commit('setLibraries', libraries)
   }
 
   return libraries
-
 }
 
 const actions = {
@@ -92,7 +91,7 @@ const actions = {
   exportSampleExtractionTubesIntoTraction,
   createLibrariesInTraction,
   deleteLibraries,
-  setLibraries
+  setLibraries,
 }
 
 export {
@@ -101,7 +100,7 @@ export {
   sampleExtractionTubeJson,
   createLibrariesInTraction,
   deleteLibraries,
-  setLibraries
+  setLibraries,
 }
 
 export default actions

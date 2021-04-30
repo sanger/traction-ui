@@ -1,10 +1,9 @@
-import PacbioRun from '@/views/pacbio/PacbioRun'    
+import PacbioRun from '@/views/pacbio/PacbioRun'
 import PacbioRuns from '@/views/pacbio/PacbioRuns'
-import { mount, store, localVue } from '../../testHelper'
 import VueRouter from 'vue-router'
+import { localVue, mount, store } from '../../testHelper'
 
 describe('Run.vue', () => {
-
   let wrapper, mockRun, router, pacbioRun
 
   beforeEach(() => {
@@ -12,7 +11,7 @@ describe('Run.vue', () => {
       routes: [
         { path: '/run/:id', name: 'PacbioRun', component: PacbioRun },
         { path: '/runs', name: 'PacbioRuns', component: PacbioRuns },
-      ]
+      ],
     })
 
     mockRun = {
@@ -29,48 +28,47 @@ describe('Run.vue', () => {
           { position: 'A2', library: { barcode: '' } },
           { position: 'B1', library: { barcode: '' } },
           { position: 'B2', library: { barcode: '' } },
-        ]
-      }
+        ],
+      },
     }
 
     store.commit('traction/pacbio/runs/setCurrentRun', mockRun)
 
-    // TODO: remove shallowMount
     wrapper = mount(PacbioRun, {
-        store, 
-        router,
-        localVue,
-        stubs: {
-          Plate: true,
-          PacbioLibrariesList: true,
-          PacbioRunInfo: true,
-        },
-        propsData: { id: 'new' }
+      store,
+      router,
+      localVue,
+      stubs: {
+        Plate: true,
+        PacbioLibrariesList: true,
+        PacbioRunInfo: true,
+      },
+      propsData: { id: 'new' },
     })
     pacbioRun = wrapper.vm
-  })  
+  })
 
   describe('Alert', () => {
     it('has a alert', () => {
-      expect(wrapper.findComponent({ref: 'alert'}).exists()).toBeTruthy()
+      expect(wrapper.findComponent({ ref: 'alert' }).exists()).toBeTruthy()
     })
   })
 
   describe('Pacbio Run Info', () => {
     it('dispays the run infomation', () => {
-      expect(wrapper.findComponent({ref: 'PacbioRunInfo'})).toBeTruthy()
+      expect(wrapper.findComponent({ ref: 'PacbioRunInfo' })).toBeTruthy()
     })
   })
 
   describe('Pacbio Libraries Table', () => {
     it('dispays the pacbio library table', () => {
-      expect(wrapper.findComponent({ref: 'PacbioLibrariesList'})).toBeTruthy()
+      expect(wrapper.findComponent({ ref: 'PacbioLibrariesList' })).toBeTruthy()
     })
   })
 
   describe('PacbioPlate', () => {
     it('dispays the pacbio run plate', () => {
-      expect(wrapper.findComponent({ref: 'plate'})).toBeTruthy()
+      expect(wrapper.findComponent({ ref: 'plate' })).toBeTruthy()
     })
   })
 
@@ -85,9 +83,8 @@ describe('Run.vue', () => {
       expect(wrapper.find('#reset').exists()).toBeTruthy()
     })
   })
-  
-  describe('#create', () => {
 
+  describe('#create', () => {
     beforeEach(() => {
       pacbioRun.showAlert = jest.fn()
       pacbioRun.createRun = jest.fn()
@@ -118,29 +115,29 @@ describe('Run.vue', () => {
 
       await pacbioRun.runAction()
       expect(pacbioRun.createRun).toBeCalled()
-      expect(pacbioRun.showAlert).toBeCalledWith("Failed to create run in Traction: this is an error", 'danger')
+      expect(pacbioRun.showAlert).toBeCalledWith(
+        'Failed to create run in Traction: this is an error',
+        'danger',
+      )
       expect(pacbioRun.redirectToRuns).not.toBeCalled()
     })
   })
 
-  // TODO: remove provider. May need to refactor pacbio run.
   describe('#update', () => {
-
     beforeEach(() => {
+      // create the mock of the method before mounting it for testing
+      jest.spyOn(PacbioRun.methods, 'provider').mockImplementation(() => {})
+
       wrapper = mount(PacbioRun, {
-        store, 
+        store,
         router,
         localVue,
-        propsData: { id: 1},
+        propsData: { id: 1 },
         stubs: {
           Plate: true,
           PacbioLibrariesList: true,
           PacbioRunInfo: true,
         },
-        methods: {
-            provider() { return }
-            
-        }
       })
       pacbioRun = wrapper.vm
 
@@ -173,23 +170,25 @@ describe('Run.vue', () => {
 
       await pacbioRun.runAction()
       expect(pacbioRun.updateRun).toBeCalled()
-      expect(pacbioRun.showAlert).toBeCalledWith("Failed to create run in Traction: this is an error", 'danger')
+      expect(pacbioRun.showAlert).toBeCalledWith(
+        'Failed to create run in Traction: this is an error',
+        'danger',
+      )
       expect(pacbioRun.redirectToRuns).not.toBeCalled()
     })
   })
 
   describe('#reset', () => {
-
     beforeEach(() => {
-        pacbioRun.showAlert = jest.fn()
-        pacbioRun.newRun = jest.fn()
+      pacbioRun.showAlert = jest.fn()
+      pacbioRun.newRun = jest.fn()
     })
 
     it('calls newRun', async () => {
       pacbioRun.newRun.mockReturnValue([])
       pacbioRun.resetRun()
       expect(pacbioRun.newRun).toBeCalled()
-      expect(pacbioRun.showAlert).toBeCalledWith("Run has been reset", 'success')
+      expect(pacbioRun.showAlert).toBeCalledWith('Run has been reset', 'success')
     })
   })
 })

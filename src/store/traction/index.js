@@ -11,12 +11,12 @@ const traction = {
   modules: {
     saphyr: saphyrModule,
     pacbio: pacbioModule,
-    ont: ontModule
+    ont: ontModule,
   },
   state,
   getters,
   mutations,
-  actions
+  actions,
 }
 
 export default traction

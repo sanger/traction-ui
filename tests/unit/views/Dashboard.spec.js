@@ -3,17 +3,17 @@ import { mount, localVue, store } from '../testHelper'
 import VueRouter from 'vue-router'
 
 describe('Dashboard.vue', () => {
-
   let wrapper, router, box, dashboard
 
   beforeEach(() => {
-   router = new VueRouter({ routes: [
+    router = new VueRouter({
+      routes: [
         { path: '/saphyr', name: 'Saphyr' },
         { path: '/pacbio', name: 'Pacbio' },
         { path: '/ont', name: 'ONT' },
-      ]
+      ],
     })
-    wrapper = mount(Dashboard, { router, localVue, store } )
+    wrapper = mount(Dashboard, { router, localVue, store })
     dashboard = wrapper.vm
   })
 
@@ -50,7 +50,7 @@ describe('Dashboard.vue', () => {
     it('will have a title', () => {
       expect(box.find('.card-title').text()).toEqual('Saphyr')
     })
-    
+
     it('will have a description', () => {
       expect(box.find('.card-text').text()).toBeDefined()
     })
@@ -137,7 +137,6 @@ describe('Dashboard.vue', () => {
       expect(box.find('.card-text').text()).toBeDefined()
     })
 
-    describe('route buttons', () => {
-    })
+    describe('route buttons', () => {})
   })
 })

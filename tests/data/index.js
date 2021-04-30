@@ -65,5 +65,5 @@ export default {
   PacbioWellLibrary,
   TractionTags,
   SequencescapePlates,
-  TractionTubeWithContainerMaterials
+  TractionTubeWithContainerMaterials,
 }

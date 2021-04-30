@@ -1,20 +1,20 @@
 <template>
   <b-container id="app">
-    <br>
+    <br />
     <router-link to="/dashboard">
       <h1 id="traction-header">Traction</h1>
     </router-link>
-    <router-view/>
-    <infoFooter></infoFooter>
+    <router-view />
+    <InfoFooter></InfoFooter>
   </b-container>
 </template>
 
 <script>
-import infoFooter from '@/components/InfoFooter'
+import InfoFooter from '@/components/InfoFooter'
 export default {
   components: {
-    infoFooter
-  }
+    InfoFooter,
+  },
 }
 </script>
 

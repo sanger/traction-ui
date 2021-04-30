@@ -1,20 +1,29 @@
-import { mount, localVue, store } from '../../testHelper'
-import Well from '@/components/pacbio/PacbioWell'
 import * as Run from '@/api/PacbioRun'
+import Well from '@/components/pacbio/PacbioWell'
+import { localVue, mount, store } from '../../testHelper'
 
 describe('Well.vue', () => {
-
   let well, wrapper, props, storeWell, run
 
   beforeEach(() => {
-    props = { row: 'A', column: '1',   cx: "60.440327", cy: "75.818642", rx: "10.906492", ry: "11.032985" }
+    props = {
+      row: 'A',
+      column: '1',
+      cx: '60.440327',
+      cy: '75.818642',
+      rx: '10.906492',
+      ry: '11.032985',
+    }
 
-    storeWell = Run.buildWell(props.row, props.column, "In SMRT Link", "2", "")
-    storeWell.libraries = [{ id: 1, barcode: 'TRAC-1' }, { id: 2, barcode: 'TRAC-2' }]
-    storeWell.movie_time = "15"
+    storeWell = Run.buildWell(props.row, props.column, 'In SMRT Link', '2', '')
+    storeWell.libraries = [
+      { id: 1, barcode: 'TRAC-1' },
+      { id: 2, barcode: 'TRAC-2' },
+    ]
+    storeWell.movie_time = '15'
     storeWell.insert_size = 123
     storeWell.on_plate_loading_concentration = 234
-    storeWell.generate_hifi = "In SMRT Link"
+    storeWell.generate_hifi = 'In SMRT Link'
 
     run = Run.build()
     run.plate.wells[0] = storeWell
@@ -26,8 +35,8 @@ describe('Well.vue', () => {
       store,
       propsData: props,
       stubs: {
-        WellModal: true
-      }
+        WellModal: true,
+      },
     })
 
     well = wrapper.vm
@@ -66,7 +75,11 @@ describe('Well.vue', () => {
   })
 
   it('must have a ry', () => {
-    expect(well.required_metadata_fields).toEqual(['movie_time', 'insert_size', 'on_plate_loading_concentration'])
+    expect(well.required_metadata_fields).toEqual([
+      'movie_time',
+      'insert_size',
+      'on_plate_loading_concentration',
+    ])
   })
 
   it('will have an ellipse with the correct attributes', () => {
@@ -79,24 +92,23 @@ describe('Well.vue', () => {
   })
 
   describe('status', () => {
-
     it('will be valid if it is complete', () => {
       let ellipse = wrapper.find('ellipse')
-      expect(ellipse.attributes('class')).toContain("complete")
+      expect(ellipse.attributes('class')).toContain('complete')
     })
 
     it('will be invalid if there is any missing meta data', () => {
-      storeWell.movie_time = ""
+      storeWell.movie_time = ''
       wrapper = mount(Well, {
         localVue,
         store,
         propsData: props,
         stubs: {
-          WellModal: true
-        }
+          WellModal: true,
+        },
       })
       let ellipse = wrapper.find('ellipse')
-      expect(ellipse.attributes('class')).toEqual("filled")
+      expect(ellipse.attributes('class')).toEqual('filled')
     })
 
     it('will be invalid if there are no libraries in the store', () => {
@@ -106,17 +118,17 @@ describe('Well.vue', () => {
         store,
         propsData: props,
         stubs: {
-          WellModal: true
-        }
+          WellModal: true,
+        },
       })
       let ellipse = wrapper.find('ellipse')
-      expect(ellipse.attributes('class')).toEqual("filled")
+      expect(ellipse.attributes('class')).toEqual('filled')
     })
 
     it('will be invalid if there is one or more libraries without a barcode', () => {
       storeWell.libraries[0].barcode = ''
       let ellipse = wrapper.find('ellipse')
-      expect(ellipse.attributes('class')).toEqual("complete")
+      expect(ellipse.attributes('class')).toEqual('complete')
     })
 
     it('will be valid if pre extension time is present', () => {
@@ -125,35 +137,34 @@ describe('Well.vue', () => {
         store,
         propsData: props,
         stubs: {
-          WellModal: true
-        }
+          WellModal: true,
+        },
       })
       let ellipse = wrapper.find('ellipse')
-      expect(ellipse.attributes('class')).toEqual("complete")
+      expect(ellipse.attributes('class')).toEqual('complete')
     })
 
     it('will be empty if there are no libraries or metadata', () => {
       storeWell.libraries = []
-      storeWell.movie_time = ""
-      storeWell.generate_hifi = ""
-      storeWell.ccs_analysis_output = ""
-      storeWell.on_plate_loading_concentration = ""
-      storeWell.insert_size = ""
-      storeWell.pre_extension_time = ""
+      storeWell.movie_time = ''
+      storeWell.generate_hifi = ''
+      storeWell.ccs_analysis_output = ''
+      storeWell.on_plate_loading_concentration = ''
+      storeWell.insert_size = ''
+      storeWell.pre_extension_time = ''
 
       wrapper = mount(Well, {
         localVue,
         store,
         propsData: props,
         stubs: {
-          WellModal: true
-        }
+          WellModal: true,
+        },
       })
 
       let ellipse = wrapper.find('ellipse')
-      expect(ellipse.attributes('class')).toEqual("empty")
+      expect(ellipse.attributes('class')).toEqual('empty')
     })
-
   })
 
   // TODO: same as well modal - refactor baby!
@@ -169,25 +180,34 @@ describe('Well.vue', () => {
 
     it('adds the library to the well', async () => {
       await well.updateLibraryBarcode(newBarcode)
-      expect(well.addLibraryToWell).toBeCalledWith({ position: well.position, with: { id: library.id, barcode: library.barcode } })
+      expect(well.addLibraryToWell).toBeCalledWith({
+        position: well.position,
+        with: { id: library.id, barcode: library.barcode },
+      })
     })
   })
 
   describe('tooltip', () => {
     it('will only be visible if there are some libraries', () => {
       let title = wrapper.find('title')
-      let expected = storeWell.libraries.map(l => l.barcode).join(',')
+      let expected = storeWell.libraries.map((l) => l.barcode).join(',')
       expect(title.text()).toEqual(expected)
     })
   })
 
   describe('drag and drop', () => {
-
     let mockEvent, newBarcode
 
     beforeEach(() => {
       newBarcode = 'TRAC-1'
-      mockEvent = { dataTransfer: { getData () { return newBarcode } }, preventDefault: jest.fn() }
+      mockEvent = {
+        dataTransfer: {
+          getData() {
+            return newBarcode
+          },
+        },
+        preventDefault: jest.fn(),
+      }
       well.updateLibraryBarcode = jest.fn()
     })
 
@@ -195,6 +215,5 @@ describe('Well.vue', () => {
       well.drop(mockEvent)
       expect(well.updateLibraryBarcode).toBeCalledWith(newBarcode)
     })
-
   })
 })
