@@ -16,23 +16,27 @@ jobs:
 
     steps:
       - uses: actions/checkout@v2
+
       - name: Setup node
         uses: actions/setup-node@v2
         with:
           node-version: '14'
+
       - name: Install dependencies
         run: >-
           yarn install
+
       - name: Compile build
         run: >-
           ./compile-build.sh release.tar.gz dist
-      - name: Upload release.gz
-        id: upload-release-gz
-        uses: actions/upload-release-asset@v1
+
+      - name: Create release and upload release.tar.gz
+        uses: softprops/action-gh-release@v1
+        with:
+          name: ${{ github.event.inputs.image_tag }}
+          tag_name: v${{ github.event.inputs.image_tag }}
+          prerelease: true
+          files: release.tar.gz
+          fail_on_unmatched_files: true
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          upload_url: ${{ github.event.release.upload_url }} # Pull the URL from the release step
-          asset_path: ./release.tar.gz
-          asset_name: ${{ env.RELEASE_VERSION }}.tar.gz
-          asset_content_type: application/gzip
