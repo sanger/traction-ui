@@ -28,58 +28,58 @@ export default new Router({
     {
       path: '/',
       redirect: { name: 'Dashboard' },
-      component: Dashboard
+      component: Dashboard,
     },
     {
       path: '/dashboard',
       name: 'Dashboard',
-      component: Dashboard
+      component: Dashboard,
     },
     {
       path: '/saphyr',
       component: Saphyr,
       children: [
-        { path: '', redirect: 'reception'},
+        { path: '', redirect: 'reception' },
         { path: 'reception', name: 'SaphyrReception', component: SaphyrReception },
         { path: 'samples', name: 'SaphyrSamples', component: SaphyrSamples },
         { path: 'libraries', name: 'SaphyrLibraries', component: SaphyrLibraries },
         { path: 'runs', name: 'SaphyrRuns', component: SaphyrRuns },
-        { path: 'run', name: 'SaphyrRun', component: SaphyrRun, props: {id: true} },
+        { path: 'run', name: 'SaphyrRun', component: SaphyrRun, props: { id: true } },
         { path: 'run/:id', component: SaphyrRun, props: true },
-      ]
+      ],
     },
     {
       path: '/pacbio',
       component: Pacbio,
       children: [
-        { path: '', redirect: 'reception'},
+        { path: '', redirect: 'reception' },
         { path: 'reception', name: 'PacbioReception', component: PacbioReception },
         { path: 'samples', name: 'PacbioSamples', component: PacbioSamples },
         { path: 'libraries', name: 'PacbioLibraries', component: PacbioLibraries },
         { path: 'runs', name: 'PacbioRuns', component: PacbioRuns },
-        { path: 'run/:id', name: 'PacbioRun', component: PacbioRun, props: true},
-      ]
+        { path: 'run/:id', name: 'PacbioRun', component: PacbioRun, props: true },
+      ],
     },
     {
       path: '/ont',
       component: ONT,
       children: [
-        { path: '', redirect: 'reception'},
+        { path: '', redirect: 'reception' },
         { path: 'reception', name: 'OntReception', component: OntReception },
         { path: 'plates', name: 'OntPlates', component: OntPlates },
         { path: 'libraries', name: 'OntLibraries', component: OntLibraries },
         { path: 'runs', name: 'OntHeronRuns', component: OntHeronRuns },
-        { path: 'run/:id', name: 'OntHeronRun', component: OntHeronRun, props: true }
-      ]
+        { path: 'run/:id', name: 'OntHeronRun', component: OntHeronRun, props: true },
+      ],
     },
     {
       path: '/404',
       name: '404',
-      component: PageNotFound
+      component: PageNotFound,
     },
     {
       path: '*',
-      redirect: { name: '404'}
-    }
-  ]
+      redirect: { name: '404' },
+    },
+  ],
 })

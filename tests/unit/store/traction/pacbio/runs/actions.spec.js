@@ -9,7 +9,7 @@ describe('#setRuns', () => {
   beforeEach(() => {
     commit = jest.fn()
     get = jest.fn()
-    getters = { 'runRequest': { 'get': get } }
+    getters = { runRequest: { get: get } }
 
     failedResponse = { data: { data: [] }, status: 500, statusText: 'Internal Server Error' }
   })
@@ -22,7 +22,7 @@ describe('#setRuns', () => {
 
     let response = await Actions.setRuns({ commit, getters })
 
-    expect(commit).toHaveBeenCalledWith("setRuns", expectedRuns)
+    expect(commit).toHaveBeenCalledWith('setRuns', expectedRuns)
     expect(response).toEqual(expectedResponse)
   })
 
@@ -51,7 +51,7 @@ describe('#newRun', () => {
     Run.build.mockReturnValue(newRun)
 
     Actions.newRun({ commit })
-    expect(commit).toHaveBeenCalledWith("setCurrentRun", newRun)
+    expect(commit).toHaveBeenCalledWith('setCurrentRun', newRun)
   })
 })
 
@@ -61,7 +61,7 @@ describe('#createRun', () => {
   beforeEach(() => {
     mockRun = new Response(Data.PacbioRun).deserialize.runs[0]
     pacbioRequests = jest.fn()
-    getters = { 'currentRun': mockRun, 'pacbioRequests': pacbioRequests }
+    getters = { currentRun: mockRun, pacbioRequests: pacbioRequests }
 
     Run.create = jest.fn()
   })
@@ -79,7 +79,7 @@ describe('#editRun', () => {
     mockRun = new Response(Data.PacbioRun).deserialize.runs[0]
 
     find = jest.fn()
-    getters = { 'runRequest': { 'find': find } }
+    getters = { runRequest: { find: find } }
     commit = jest.fn()
   })
 
@@ -96,7 +96,7 @@ describe('#updateRun', () => {
   beforeEach(() => {
     mockRun = new Response(Data.PacbioRun).deserialize.runs[0]
     pacbioRequests = jest.fn()
-    getters = { 'currentRun': mockRun, 'pacbioRequests': pacbioRequests }
+    getters = { currentRun: mockRun, pacbioRequests: pacbioRequests }
     dispatch = jest.fn()
 
     Run.update = jest.fn()
@@ -112,7 +112,7 @@ describe('#updateRun', () => {
   })
 
   it('when unsuccessful, it does rollback', async () => {
-    Run.update.mockReturnValue([{error: 'this is an error'}])
+    Run.update.mockReturnValue([{ error: 'this is an error' }])
     let resp = await Actions.updateRun({ getters, dispatch })
 
     expect(Run.update).toHaveBeenCalledWith(mockRun, pacbioRequests)
@@ -126,7 +126,7 @@ describe('#getRun', () => {
 
   beforeEach(() => {
     find = jest.fn()
-    getters = { 'runRequest': { 'find': find } }
+    getters = { runRequest: { find: find } }
   })
 
   it('successfully', async () => {

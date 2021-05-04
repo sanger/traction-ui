@@ -8,7 +8,7 @@ describe('Plate96SVG.vue', () => {
   beforeEach(() => {
     props = { width: '100%', height: '100%' }
     wrapper = mount(Plate96SVG, {
-      propsData: props
+      propsData: props,
     })
     plate = wrapper.vm
   })

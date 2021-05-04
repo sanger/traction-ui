@@ -5,13 +5,13 @@ import VueRouter from 'vue-router'
 describe('PipelineView', () => {
   let wrapper, pipelineView, router, store
 
-  beforeEach( () => {
+  beforeEach(() => {
     router = new VueRouter({
       routes: [
         { path: '/dashboard', name: 'Dashboard' },
         { path: '/saphyr/runs', name: 'SaphyrRuns' },
         { path: '/pacbio/runs', name: 'PacbioRuns' },
-      ]
+      ],
     })
 
     localStorage.setItem('pipeline', 'pacbio')

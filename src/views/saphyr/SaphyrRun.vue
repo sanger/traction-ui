@@ -1,21 +1,31 @@
 <template>
   <div class="run">
-    <alert ref='alert'></alert>
+    <alert ref="alert"></alert>
 
-    <router-link :to="{name: 'SaphyrRuns'}">
+    <router-link :to="{ name: 'SaphyrRuns' }">
       <b-button id="backToRunsButton" class="float-right">Back</b-button>
     </router-link>
 
-    <b-button v-if="newRecord" class="float-right" id="create" variant="success" @click="create">Create</b-button>
-    <b-button v-if="!newRecord" class="float-right" id="update" variant="primary" @click="update">Update</b-button>
+    <b-button v-if="newRecord" id="create" class="float-right" variant="success" @click="create"
+      >Create</b-button
+    >
+    <b-button v-if="!newRecord" id="update" class="float-right" variant="primary" @click="update"
+      >Update</b-button
+    >
 
-    <h1 class="runInfo" id="id">Run ID: {{ this.currentRun.id }}</h1>
-    <h2 class="runInfo" id="state">State: {{ this.currentRun.state }}</h2>
+    <h1 id="id" class="runInfo">Run ID: {{ currentRun.id }}</h1>
+    <h2 id="state" class="runInfo">State: {{ currentRun.state }}</h2>
 
-    <b-form-input :value="runName" @change="setRunName" class="runInfo" id="name" placeholder="name" type="text"/>
+    <b-form-input
+      id="name"
+      :value="runName"
+      class="runInfo"
+      placeholder="name"
+      type="text"
+      @change="setRunName"
+    />
 
-    <chip :chip="this.currentRun.chip" @alert="showAlert"></chip>
-
+    <chip :chip="currentRun.chip" @alert="showAlert"></chip>
   </div>
 </template>
 
@@ -24,23 +34,39 @@ import Chip from '@/components/saphyr/SaphyrChip'
 import Alert from '@/components/Alert'
 import Helper from '@/mixins/Helper'
 import { createNamespacedHelpers } from 'vuex'
-const { mapGetters, mapActions, mapState, mapMutations } = createNamespacedHelpers('traction/saphyr/runs')
+const { mapGetters, mapActions, mapState, mapMutations } = createNamespacedHelpers(
+  'traction/saphyr/runs',
+)
 
 export default {
   name: 'SaphyrRun',
+  components: {
+    Chip,
+    Alert,
+  },
   mixins: [Helper],
   props: {
     id: {
-      type: [String, Number]
+      type: [String, Number],
+    },
+  },
+  data() {
+    return {
+      newRecord: isNaN(this.id),
     }
   },
-  data () {
-    return {
-      newRecord: isNaN(this.id)
-    }
+  computed: {
+    ...mapGetters(['currentRun']),
+    ...mapState({
+      currentRun: (state) => state.currentRun,
+      runName: (state) => state.currentRun.name,
+    }),
+  },
+  created() {
+    this.provider()
   },
   methods: {
-    async create () {
+    async create() {
       try {
         await this.createRun()
         this.redirectToRuns()
@@ -48,7 +74,7 @@ export default {
         this.showAlert('Failed to create run', 'danger')
       }
     },
-    async update () {
+    async update() {
       try {
         await this.updateRun()
         this.redirectToRuns()
@@ -56,49 +82,25 @@ export default {
         this.showAlert('Failed to update run', 'danger')
       }
     },
-    ...mapActions([
-      'createRun',
-      'updateRun',
-      'editRun',
-      'newRun',
-    ]),
-    ...mapMutations([
-      'setRunName'
-    ]),
+    ...mapActions(['createRun', 'updateRun', 'editRun', 'newRun']),
+    ...mapMutations(['setRunName']),
     redirectToRuns() {
       this.$router.push({ name: 'SaphyrRuns' })
     },
     async provider() {
-      if (this.id === "new") {
+      if (this.id === 'new') {
         this.newRun()
-      } else if (!this.newRecord){
+      } else if (!this.newRecord) {
         await this.editRun(parseInt(this.$route.params.id))
       } else {
         this.$router.push({ name: '404' })
       }
-    }
+    },
   },
-  components: {
-    Chip,
-    Alert
-  },
-  computed: {
-    ...mapGetters([
-      'currentRun'
-    ]),
-    ...mapState({
-      currentRun: state => state.currentRun,
-      runName: state => state.currentRun.name
-    })
-  },
-  created() {
-    this.provider()
-  }
 }
 </script>
 
 <style>
-
 .runInfo {
   text-align: left;
   margin-top: 5px;
@@ -118,5 +120,4 @@ button {
   margin-right: 0px;
   margin-left: 0px;
 } */
-
 </style>

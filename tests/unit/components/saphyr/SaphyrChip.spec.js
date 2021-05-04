@@ -3,7 +3,6 @@ import Chip from '@/components/saphyr/SaphyrChip'
 import * as Run from '@/api/SaphyrRun'
 
 describe('Chip', () => {
-
   let wrapper, chip, run, props
 
   beforeEach(() => {
@@ -13,20 +12,17 @@ describe('Chip', () => {
 
     props = {
       chip: {
-        id: "1",
-        type: "chips",
-        barcode: "BARCODESTRING",
-        flowcells: [
-          { id: "1" },
-          { id: "2" }
-        ],
-      }
+        id: '1',
+        type: 'chips',
+        barcode: 'BARCODESTRING',
+        flowcells: [{ id: '1' }, { id: '2' }],
+      },
     }
 
-    wrapper = mount(Chip, { 
-      localVue, 
+    wrapper = mount(Chip, {
+      localVue,
       store,
-      propsData: props
+      propsData: props,
     })
     chip = wrapper.vm
   })
@@ -85,5 +81,4 @@ describe('Chip', () => {
       expect(wrapper.emitted().alert[0][1]).toEqual('success')
     })
   })
-
 })

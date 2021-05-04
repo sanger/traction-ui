@@ -8,12 +8,35 @@ describe('#createLibraryInTraction', () => {
 
   beforeEach(() => {
     create = jest.fn()
-    rootGetters = { 'traction/tractionTags': [{ id: 1, group_id: '123abc1' }, { id: 2, group_id: '123abc2' }] }
-    getters = { 'libraryRequest': { 'create': create } }
-    library = { library: { tag: { group_id: '123abc1'}, volume: 1.0, concentration: 1.0, templatePrepKitBoxBarcode: "LK12345", fragmentSize: 100, samples: [{id: 1}] }}
-    
-    payload = {concentration: 1, fragment_size: 100, template_prep_kit_box_barcode: "LK12345", relationships: {requests: {data: [{id: 1, relationships: {tag: { data: {id: 1}}}, type: "requests"}]}}, volume: 1}
-    
+    rootGetters = {
+      'traction/tractionTags': [
+        { id: 1, group_id: '123abc1' },
+        { id: 2, group_id: '123abc2' },
+      ],
+    }
+    getters = { libraryRequest: { create: create } }
+    library = {
+      library: {
+        tag: { group_id: '123abc1' },
+        volume: 1.0,
+        concentration: 1.0,
+        templatePrepKitBoxBarcode: 'LK12345',
+        fragmentSize: 100,
+        samples: [{ id: 1 }],
+      },
+    }
+
+    payload = {
+      concentration: 1,
+      fragment_size: 100,
+      template_prep_kit_box_barcode: 'LK12345',
+      relationships: {
+        requests: {
+          data: [{ id: 1, relationships: { tag: { data: { id: 1 } } }, type: 'requests' }],
+        },
+      },
+      volume: 1,
+    }
   })
 
   it('successfully', async () => {
@@ -22,11 +45,15 @@ describe('#createLibraryInTraction', () => {
 
     let response = await Actions.createLibraryInTraction({ getters, rootGetters }, library)
     expect(response).toEqual(expectedResponse)
-    expect(create).toBeCalledWith({data: { type: 'library', attributes: payload }})
+    expect(create).toBeCalledWith({ data: { type: 'library', attributes: payload } })
   })
 
   it('unsuccessfully', async () => {
-    let failedResponse = { status: 422, statusText: 'Unprocessable Entity', data: { errors: { name: ['error message'] }} }
+    let failedResponse = {
+      status: 422,
+      statusText: 'Unprocessable Entity',
+      data: { errors: { name: ['error message'] } },
+    }
     let expectedResponse = new Response(failedResponse)
 
     create.mockReturnValue(failedResponse)
@@ -34,7 +61,6 @@ describe('#createLibraryInTraction', () => {
     let response = await Actions.createLibraryInTraction({ getters, rootGetters }, library)
     expect(response).toEqual(expectedResponse)
   })
-
 })
 
 describe('#deleteLibraries', () => {
@@ -42,14 +68,14 @@ describe('#deleteLibraries', () => {
 
   beforeEach(() => {
     destroy = jest.fn()
-    getters = { 'libraryRequest': { 'destroy': destroy } }
-    libraryIds = [1,2]
+    getters = { libraryRequest: { destroy: destroy } }
+    libraryIds = [1, 2]
 
     failedResponse = { data: { data: [] }, status: 500, statusText: 'Internal Server Error' }
   })
 
   it('successfully', async () => {
-    let mockResponse =  { data: {}, status: 204, statusText: "OK" }
+    let mockResponse = { data: {}, status: 204, statusText: 'OK' }
 
     let promise = new Promise((resolve) => {
       resolve(mockResponse)
@@ -75,7 +101,6 @@ describe('#deleteLibraries', () => {
 
     expect(response).toEqual([expectedResponse])
   })
-
 })
 
 describe('#setLibraries', () => {
@@ -84,7 +109,7 @@ describe('#setLibraries', () => {
   beforeEach(() => {
     commit = jest.fn()
     get = jest.fn()
-    getters = { 'libraryRequest': { 'get': get } }
+    getters = { libraryRequest: { get: get } }
 
     failedResponse = { data: { data: [] }, status: 500, statusText: 'Internal Server Error' }
   })
@@ -94,7 +119,7 @@ describe('#setLibraries', () => {
 
     let libraries = await Actions.setLibraries({ commit, getters })
 
-    expect(commit).toHaveBeenCalledWith("setLibraries", libraries)
+    expect(commit).toHaveBeenCalledWith('setLibraries', libraries)
     let library = libraries[0]
     expect(library.requests.length).toEqual(2)
     expect(library.tag_group_ids).toEqual('1,1')
@@ -116,7 +141,7 @@ describe('#updateLibrary', () => {
   beforeEach(() => {
     commit = jest.fn()
     update = jest.fn()
-    getters = { 'libraryRequest': { 'update': update } }
+    getters = { libraryRequest: { update: update } }
     expectedResponse = new Response(Data.TractionPacbioLibrary)
     library = expectedResponse.deserialize.libraries[0]
 
@@ -125,7 +150,7 @@ describe('#updateLibrary', () => {
 
   it('successfully', async () => {
     update.mockReturnValue([Data.TractionPacbioLibrary])
-    library.volume = "5"
+    library.volume = '5'
     let response = await Actions.updateLibrary({ commit, getters }, library)
     expect(expectedResponse).toEqual(response)
   })

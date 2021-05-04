@@ -1,5 +1,5 @@
 const state = {
-    requests: []
+  requests: [],
 }
 
 export default state

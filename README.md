@@ -2,70 +2,87 @@
 
 A Vue front-end app to interact with the [Traction API](https://github.com/sanger/traction-service).
 
-## Requirements
+## Requirements for Development
 
-* Yarn; if using brew: `brew install yarn`
-* Node
+The following tools are required for development:
 
-If having node version issues, install the specified version,
-and then change the symlink to the correct version
-https://medium.com/@katopz/how-to-install-specific-nodejs-version-c6e1cec8aa11
+- Yarn; if using brew:
+    brew install yarn
+- Node, install the version matching that in `.nvmrc` file.
 
-## Installation
+[nvm](https://github.com/nvm-sh/nvm) is very helpful when managing multiple versions of node.
 
-Install the required libraries using yarn: `yarn install`
+## Getting Started
 
-## Config using `.dotenv`
+### Configuring Environment
 
-To specify the required config, use `.env` files by creating a `.env.<environment>.local` file and
-add the config to it. The essential config required:
+This project uses dotenv library for environmental config. To specify the required config, use
+`.env` files by creating a `.env.<environment>.local` file and add the config to it. The essential
+config required:
 
-```bash
-VUE_APP_TRACTION_BASE_URL=<url>
-VUE_APP_PRINTMYBARCODE_BASE_URL=<url>
-VUE_APP_SAMPLEEXTRACTION_BASE_URL=<url>
-VUE_APP_LABEL_TEMPLATE_ID=<id>
-VUE_APP_LOG=false
-```
+    VUE_APP_TRACTION_BASE_URL=<url>
+    VUE_APP_PRINTMYBARCODE_BASE_URL=<url>
+    VUE_APP_SAMPLEEXTRACTION_BASE_URL=<url>
+    VUE_APP_LABEL_TEMPLATE_ID=<id>
+    VUE_APP_LOG=false
 
 To enable logging and use the convenience method `this.log()` (from the `Helper.vue` mixin) instead
 of `console.log()`, set `VUE_APP_LOG=true` in `.env.development.local`.
 
+### Setup Steps
+
+Install the require dependencies:
+
+    yarn install
+
 ## Running
 
-To run the app and have hot-reloads for development: `yarn run serve`
+To run the app and have hot-reloads for development:
+
+    yarn run serve
 
 ## Testing
 
-### Lints and fixes files
+### Running Tests
 
-```bash
-yarn run lint
-```
+- Running unit tests:
 
-### Run your unit tests
+      yarn run test:unit
 
-```bash
-yarn run test:unit
-```
-### Run specific unit test files
+- Running specific unit test files:
 
-```bash
-yarn run test:unit <test_file_route> -t "<test_name>"
-```
+      yarn run test:unit <test_file_route> -t "<test_name>"
 
-### Run your end-to-end tests
+- Running end to end tests:
 
-```bash
-yarn run test:e2e
-```
+      yarn run test:e2e
 
-## Releases
+## Formatting and Linting
 
-#### UAT
-On merging a pull request into develop, a release will be created with the tag/name `<branch>/<timestamp>`
+### Formatting
 
-#### PROD
-Update `.release-version` with major/minor/patch. On merging a pull request into master, a release will be created with the release version as the tag/name
+This project is formatted using [Prettier](https://github.com/prettier/prettier). To run formatting
+checks, run:
 
-See Confluence for further information
+    yarn run pretty
+
+### Linting
+
+This project is linted using [ESLint](https://github.com/eslint/eslint). To lint the code,
+run:
+
+    yarn run lint
+
+## Deployment
+
+This project is built into a static archive for deployment. To trigger the creation of a new image, increment the `.release-version` version with the corresponding change according to
+[semver](https://semver.org/).
+
+## Miscellaneous
+
+### Updating the Table of Contents
+
+To update the table of contents after adding things to this README you can use the [markdown-toc](https://github.com/jonschlinkert/markdown-toc)
+node module. To run:
+
+    npx markdown-toc -i README.md

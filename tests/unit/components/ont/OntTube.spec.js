@@ -2,17 +2,16 @@ import { mount, localVue } from '../../testHelper'
 import OntTube from '@/components/ont/OntTube'
 
 describe('OntTube.vue', () => {
-
   let tube, wrapper, props
 
   beforeEach(() => {
-    props = { 
-      name: 'TRAC-1-1'
-     }
+    props = {
+      name: 'TRAC-1-1',
+    }
 
     wrapper = mount(OntTube, {
       localVue,
-      propsData: props
+      propsData: props,
     })
 
     tube = wrapper.vm
@@ -38,7 +37,7 @@ describe('OntTube.vue', () => {
     beforeEach(() => {
       libraryName = 'TRAC-1'
       setData = jest.fn()
-      mockEvent = { dataTransfer: { setDragImage: jest.fn(), setData: setData } } 
+      mockEvent = { dataTransfer: { setDragImage: jest.fn(), setData: setData } }
     })
 
     it('will update the barcode', async () => {
@@ -47,5 +46,4 @@ describe('OntTube.vue', () => {
       expect(setData).toBeCalledWith('sourceType', 'LIBRARY_LIST')
     })
   })
-
 })

@@ -3,17 +3,15 @@
 </template>
 
 <script>
-
 import PipelineView from '@/views/PipelineView'
 
 export default {
   name: 'ONT',
   components: {
-    PipelineView
+    PipelineView,
   },
-  created () {
+  created() {
     localStorage.setItem('pipeline', 'ont')
-  }
+  },
 }
-
 </script>

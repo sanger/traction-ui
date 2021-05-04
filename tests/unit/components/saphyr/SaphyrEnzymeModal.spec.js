@@ -1,31 +1,25 @@
-import { mount, localVue, store } from '../../testHelper'
+import Response from '@/api/Response'
 import EnzymeModal from '@/components/saphyr/SaphyrEnzymeModal'
 import flushPromises from 'flush-promises'
 import EnzymesJson from '../../../data/enzymes'
-import Response from '@/api/Response'
+import { localVue, mount, store } from '../../testHelper'
 
-// TODO: Refactor to remove deprecation message.
 describe('SaphyrEnzymeModal.vue', () => {
-
   let wrapper, enzymeModal
 
   beforeEach(() => {
+    // create the mock of the method before mounting it for testing
+    jest.spyOn(EnzymeModal.methods, 'provider').mockImplementation(() => {})
+
     wrapper = mount(EnzymeModal, {
       localVue,
       store,
       propsData: {
         disabled: true,
-        isStatic: true
+        isStatic: true,
       },
-      methods: {
-        provider () { return }
-      }
     })
     enzymeModal = wrapper.vm
-  })
-
-  it('will have a name', () => {
-    expect(wrapper.name()).toEqual('SaphyrEnzymeModal')
   })
 
   it('will have an button component', () => {
@@ -43,15 +37,20 @@ describe('SaphyrEnzymeModal.vue', () => {
     })
 
     it('has enzyme options', async () => {
-      let enzymeOptions = { enzymeOptions: [{ value: null, text: 'Please select an option' },
-        { value: 1, text: 'enz1' },
-        { value: 2, text: 'enz2' }]
+      let enzymeOptions = {
+        enzymeOptions: [
+          { value: null, text: 'Please select an option' },
+          { value: 1, text: 'enz1' },
+          { value: 2, text: 'enz2' },
+        ],
       }
 
       wrapper.setData(enzymeOptions)
       expect(enzymeModal.enzymeOptions).toEqual(enzymeOptions.enzymeOptions)
       await flushPromises()
-      expect(wrapper.find('select').findAll('option').length).toEqual(enzymeOptions.enzymeOptions.length)
+      expect(wrapper.find('select').findAll('option').length).toEqual(
+        enzymeOptions.enzymeOptions.length,
+      )
     })
   })
 
@@ -63,7 +62,11 @@ describe('SaphyrEnzymeModal.vue', () => {
 
   describe('#handleOk', () => {
     it('without selectedEnzymeId', () => {
-      let evt = { preventDefault: () => { return {} }}
+      let evt = {
+        preventDefault: () => {
+          return {}
+        },
+      }
       window.alert = jest.fn()
       wrapper.vm.handleOk(evt)
       expect(window.alert).toBeCalledWith('Please select an enzyme')
@@ -71,7 +74,11 @@ describe('SaphyrEnzymeModal.vue', () => {
 
     it('with selectedEnzymeId', () => {
       wrapper.setData({ selectedEnzymeId: 1 })
-      let evt = { preventDefault: () => { return {} }}
+      let evt = {
+        preventDefault: () => {
+          return {}
+        },
+      }
       wrapper.vm.handleOk(evt)
       expect(wrapper.emitted().selectEnzyme).toBeTruthy()
       expect(wrapper.emitted().selectEnzyme[0]).toEqual([1])
@@ -88,7 +95,6 @@ describe('SaphyrEnzymeModal.vue', () => {
   })
 
   describe('#getEnzymeOptions', () => {
-
     beforeEach(() => {
       enzymeModal.enzymeRequest.execute = jest.fn()
     })
@@ -99,8 +105,10 @@ describe('SaphyrEnzymeModal.vue', () => {
       await enzymeModal.getEnzymeOptions()
 
       let enzymes = new Response(EnzymesJson).deserialize.enzymes
-      let enzymeOptions = enzymes.map((enzyme, index) => Object.assign({ value: index+1, text: enzyme.name }))
-      enzymeOptions.unshift({ value: null, text: "Please select an option" })
+      let enzymeOptions = enzymes.map((enzyme, index) =>
+        Object.assign({ value: index + 1, text: enzyme.name }),
+      )
+      enzymeOptions.unshift({ value: null, text: 'Please select an option' })
 
       expect(enzymeModal.enzymeOptions).toEqual(enzymeOptions)
     })
@@ -109,19 +117,18 @@ describe('SaphyrEnzymeModal.vue', () => {
       let mockResponse = {
         data: {
           errors: {
-            name: ['name error message 1']
-          }
+            name: ['name error message 1'],
+          },
         },
         status: 422,
-        statusText: "Unprocessible entity"
+        statusText: 'Unprocessible entity',
       }
 
-      enzymeModal.enzymeRequest.execute.mockReturnValue(mockResponse)
-
+      enzymeModal.enzymeRequest.execute.mockResolvedValue(mockResponse)
       await enzymeModal.getEnzymeOptions()
       await flushPromises()
 
-      expect(enzymeModal.message).toEqual("name name error message 1")
+      expect(enzymeModal.message).toEqual('name name error message 1')
     })
   })
 

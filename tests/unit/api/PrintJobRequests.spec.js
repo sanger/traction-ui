@@ -10,11 +10,11 @@ describe('PrintJobRequests', () => {
   beforeEach(() => {
     selectedSamples = [
       { id: 1, type: 'samples', name: 'sample1', barcode: 'TRAC-1' },
-      { id: 2, type: 'samples', name: 'sample2', barcode: 'TRAC-2' }
+      { id: 2, type: 'samples', name: 'sample2', barcode: 'TRAC-2' },
     ]
     selectedLibraries = [
       { id: 1, type: 'libraries', enzyme_name: 'enz1', barcode: 'TRAC-1' },
-      { id: 2, type: 'libraries', enzyme_name: 'enz2', barcode: 'TRAC-2' }
+      { id: 2, type: 'libraries', enzyme_name: 'enz2', barcode: 'TRAC-2' },
     ]
     printerName = 'printer1'
   })
@@ -30,10 +30,10 @@ describe('PrintJobRequests', () => {
     })
 
     it('returns a response on success', async () => {
-      let mockResponse =  {
+      let mockResponse = {
         data: {},
         status: 201,
-        statusText: "Created"
+        statusText: 'Created',
       }
 
       let promise = new Promise((resolve) => {
@@ -52,13 +52,13 @@ describe('PrintJobRequests', () => {
 
       selectedLibraries = [
         { id: 1, type: 'libraries', name: 'DEMO-PLATE-1-1', tubeBarcode: 'TRAC-2-20' },
-        { id: 2, type: 'libraries', name: 'DEMO-PLATE-2-1', tubeBarcode: 'TRAC-2-21' }
+        { id: 2, type: 'libraries', name: 'DEMO-PLATE-2-1', tubeBarcode: 'TRAC-2-21' },
       ]
 
-      let mockResponse =  {
+      let mockResponse = {
         data: {},
         status: 201,
-        statusText: "Created"
+        statusText: 'Created',
       }
 
       let promise = new Promise((resolve) => {
@@ -73,13 +73,13 @@ describe('PrintJobRequests', () => {
     })
 
     it('returns a response on failure', async () => {
-      let mockResponse =  {
+      let mockResponse = {
         data: {
           errors: {
-            it: ['was a bust']
-          }
+            it: ['was a bust'],
+          },
         },
-        status: 422
+        status: 422,
       }
 
       let promise = new Promise((reject) => {
@@ -105,9 +105,9 @@ describe('PrintJobRequests', () => {
           attributes: {
             printer_name: printerName,
             label_template_id: process.env.VUE_APP_SAPHYR_LABEL_TEMPLATE_ID,
-            labels: labels
-          }
-        }
+            labels: labels,
+          },
+        },
       }
       expect(resp).toEqual(expected)
     })
@@ -122,9 +122,9 @@ describe('PrintJobRequests', () => {
           attributes: {
             printer_name: printerName,
             label_template_id: process.env.VUE_APP_PACBIO_LABEL_TEMPLATE_ID,
-            labels: labels
-          }
-        }
+            labels: labels,
+          },
+        },
       }
       expect(resp).toEqual(expected)
     })
@@ -141,20 +141,20 @@ describe('PrintJobRequests', () => {
         let expectedLabel1 = resp.body[0].main_label
         let expectedLabel2 = resp.body[1].main_label
 
-        expect(expectedLabel1.barcode).toEqual("TRAC-1")
-        expect(expectedLabel1.barcode_text).toEqual("TRAC-1")
+        expect(expectedLabel1.barcode).toEqual('TRAC-1')
+        expect(expectedLabel1.barcode_text).toEqual('TRAC-1')
         expect(expectedLabel1.date).toEqual(moment().format('DD-MMM-YY'))
         expect(expectedLabel1.pipeline).toEqual(consts.PIPELINE_SAPHYR.toUpperCase())
-        expect(expectedLabel1.text_1).toEqual("sample1")
-        expect(expectedLabel1.round_label_top_line).toEqual("")
-        expect(expectedLabel1.round_label_bottom_line).toEqual("")
-        expect(expectedLabel2.barcode).toEqual("TRAC-2")
-        expect(expectedLabel2.barcode_text).toEqual("TRAC-2")
+        expect(expectedLabel1.text_1).toEqual('sample1')
+        expect(expectedLabel1.round_label_top_line).toEqual('')
+        expect(expectedLabel1.round_label_bottom_line).toEqual('')
+        expect(expectedLabel2.barcode).toEqual('TRAC-2')
+        expect(expectedLabel2.barcode_text).toEqual('TRAC-2')
         expect(expectedLabel2.date).toEqual(moment().format('DD-MMM-YY'))
         expect(expectedLabel2.pipeline).toEqual(consts.PIPELINE_SAPHYR.toUpperCase())
-        expect(expectedLabel2.text_1).toEqual("sample2")
-        expect(expectedLabel2.round_label_top_line).toEqual("")
-        expect(expectedLabel2.round_label_bottom_line).toEqual("")
+        expect(expectedLabel2.text_1).toEqual('sample2')
+        expect(expectedLabel2.round_label_top_line).toEqual('')
+        expect(expectedLabel2.round_label_bottom_line).toEqual('')
       })
 
       it('returns JSON for saphyr libraries', async () => {
@@ -162,20 +162,20 @@ describe('PrintJobRequests', () => {
         let expectedLabel1 = resp.body[0].main_label
         let expectedLabel2 = resp.body[1].main_label
 
-        expect(expectedLabel1.barcode).toEqual("TRAC-1")
-        expect(expectedLabel1.barcode_text).toEqual("TRAC-1")
+        expect(expectedLabel1.barcode).toEqual('TRAC-1')
+        expect(expectedLabel1.barcode_text).toEqual('TRAC-1')
         expect(expectedLabel1.date).toEqual(moment().format('DD-MMM-YY'))
         expect(expectedLabel1.pipeline).toEqual(consts.PIPELINE_SAPHYR.toUpperCase())
-        expect(expectedLabel1.text_1).toEqual("enz1")
-        expect(expectedLabel1.round_label_top_line).toEqual("")
-        expect(expectedLabel1.round_label_bottom_line).toEqual("")
-        expect(expectedLabel2.barcode).toEqual("TRAC-2")
-        expect(expectedLabel2.barcode_text).toEqual("TRAC-2")
+        expect(expectedLabel1.text_1).toEqual('enz1')
+        expect(expectedLabel1.round_label_top_line).toEqual('')
+        expect(expectedLabel1.round_label_bottom_line).toEqual('')
+        expect(expectedLabel2.barcode).toEqual('TRAC-2')
+        expect(expectedLabel2.barcode_text).toEqual('TRAC-2')
         expect(expectedLabel2.date).toEqual(moment().format('DD-MMM-YY'))
         expect(expectedLabel2.pipeline).toEqual(consts.PIPELINE_SAPHYR.toUpperCase())
-        expect(expectedLabel2.text_1).toEqual("enz2")
-        expect(expectedLabel2.round_label_top_line).toEqual("")
-        expect(expectedLabel2.round_label_bottom_line).toEqual("")
+        expect(expectedLabel2.text_1).toEqual('enz2')
+        expect(expectedLabel2.round_label_top_line).toEqual('')
+        expect(expectedLabel2.round_label_bottom_line).toEqual('')
       })
     })
 
@@ -189,20 +189,20 @@ describe('PrintJobRequests', () => {
         let expectedLabel1 = resp.body[0].main_label
         let expectedLabel2 = resp.body[1].main_label
 
-        expect(expectedLabel1.barcode).toEqual("TRAC-1")
-        expect(expectedLabel1.barcode_text).toEqual("TRAC-1")
+        expect(expectedLabel1.barcode).toEqual('TRAC-1')
+        expect(expectedLabel1.barcode_text).toEqual('TRAC-1')
         expect(expectedLabel1.date).toEqual(moment().format('DD-MMM-YY'))
         expect(expectedLabel1.pipeline).toEqual(consts.PIPELINE_PACBIO.toUpperCase())
-        expect(expectedLabel1.text_1).toEqual("sample1")
-        expect(expectedLabel1.round_label_top_line).toEqual("")
-        expect(expectedLabel1.round_label_bottom_line).toEqual("")
-        expect(expectedLabel2.barcode).toEqual("TRAC-2")
-        expect(expectedLabel2.barcode_text).toEqual("TRAC-2")
+        expect(expectedLabel1.text_1).toEqual('sample1')
+        expect(expectedLabel1.round_label_top_line).toEqual('')
+        expect(expectedLabel1.round_label_bottom_line).toEqual('')
+        expect(expectedLabel2.barcode).toEqual('TRAC-2')
+        expect(expectedLabel2.barcode_text).toEqual('TRAC-2')
         expect(expectedLabel2.date).toEqual(moment().format('DD-MMM-YY'))
         expect(expectedLabel2.pipeline).toEqual(consts.PIPELINE_PACBIO.toUpperCase())
-        expect(expectedLabel2.text_1).toEqual("sample2")
-        expect(expectedLabel2.round_label_top_line).toEqual("")
-        expect(expectedLabel2.round_label_bottom_line).toEqual("")
+        expect(expectedLabel2.text_1).toEqual('sample2')
+        expect(expectedLabel2.round_label_top_line).toEqual('')
+        expect(expectedLabel2.round_label_bottom_line).toEqual('')
       })
 
       it('returns JSON for pacbio libraries', async () => {
@@ -210,20 +210,20 @@ describe('PrintJobRequests', () => {
         let expectedLabel1 = resp.body[0].main_label
         let expectedLabel2 = resp.body[1].main_label
 
-        expect(expectedLabel1.barcode).toEqual("TRAC-1")
-        expect(expectedLabel1.barcode_text).toEqual("TRAC-1")
+        expect(expectedLabel1.barcode).toEqual('TRAC-1')
+        expect(expectedLabel1.barcode_text).toEqual('TRAC-1')
         expect(expectedLabel1.date).toEqual(moment().format('DD-MMM-YY'))
         expect(expectedLabel1.pipeline).toEqual(consts.PIPELINE_PACBIO.toUpperCase())
-        expect(expectedLabel1.text_1).toEqual("enz1")
-        expect(expectedLabel1.round_label_top_line).toEqual("")
-        expect(expectedLabel1.round_label_bottom_line).toEqual("")
-        expect(expectedLabel2.barcode).toEqual("TRAC-2")
-        expect(expectedLabel2.barcode_text).toEqual("TRAC-2")
+        expect(expectedLabel1.text_1).toEqual('enz1')
+        expect(expectedLabel1.round_label_top_line).toEqual('')
+        expect(expectedLabel1.round_label_bottom_line).toEqual('')
+        expect(expectedLabel2.barcode).toEqual('TRAC-2')
+        expect(expectedLabel2.barcode_text).toEqual('TRAC-2')
         expect(expectedLabel2.date).toEqual(moment().format('DD-MMM-YY'))
         expect(expectedLabel2.pipeline).toEqual(consts.PIPELINE_PACBIO.toUpperCase())
-        expect(expectedLabel2.text_1).toEqual("enz2")
-        expect(expectedLabel2.round_label_top_line).toEqual("")
-        expect(expectedLabel2.round_label_bottom_line).toEqual("")
+        expect(expectedLabel2.text_1).toEqual('enz2')
+        expect(expectedLabel2.round_label_top_line).toEqual('')
+        expect(expectedLabel2.round_label_bottom_line).toEqual('')
       })
     })
   })
@@ -243,7 +243,7 @@ describe('PrintJobRequests', () => {
   })
 
   describe('printMyBarcodeRequest', () => {
-    it ('returns a pmb request', () => {
+    it('returns a pmb request', () => {
       let request = PrintJobRequests.printMyBarcodeRequest()
       expect(request.baseURL).toEqual(process.env.VUE_APP_PRINTMYBARCODE_BASE_URL)
       expect(request.apiNamespace).toEqual('v1')
@@ -260,10 +260,10 @@ describe('PrintJobRequests', () => {
     })
 
     it('successfully posts a print job request', async () => {
-      let mockResponse =  {
+      let mockResponse = {
         data: {},
         status: 201,
-        statusText: "OK"
+        statusText: 'OK',
       }
 
       let promise = new Promise((resolve) => {
@@ -277,13 +277,13 @@ describe('PrintJobRequests', () => {
     })
 
     it('unsuccessfully', async () => {
-      let mockResponse =  {
+      let mockResponse = {
         data: {
           errors: {
-            it: ['was a bust']
-          }
+            it: ['was a bust'],
+          },
         },
-        status: 422
+        status: 422,
       }
 
       let promise = new Promise((reject) => {

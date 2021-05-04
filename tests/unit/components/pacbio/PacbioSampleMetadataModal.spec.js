@@ -3,19 +3,18 @@ import PacbioSampleMetadataModal from '@/components/pacbio/PacbioSampleMetadataM
 import Response from '@/api/Response'
 
 describe('PacbioSampleMetadataModal.vue', () => {
-
   let wrapper, modal, props, mockSamples
 
   beforeEach(() => {
     mockSamples = new Response(Data.TractionPacbioSamples).deserialize.requests
     props = { req: mockSamples[0] }
-    
+
     store.commit('traction/pacbio/requests/setRequests', mockSamples)
 
     wrapper = mount(PacbioSampleMetadataModal, {
       localVue,
       store,
-      propsData: props
+      propsData: props,
     })
 
     modal = wrapper.vm
@@ -48,10 +47,12 @@ describe('PacbioSampleMetadataModal.vue', () => {
         throw Error('Raise this error')
       })
       await modal.update()
-      expect(modal.alert).toBeCalledWith('Failed to update sample. Error: Raise this error', 'danger')
+      expect(modal.alert).toBeCalledWith(
+        'Failed to update sample. Error: Raise this error',
+        'danger',
+      )
       expect(modal.hide).toBeCalled()
     })
-
   })
 
   describe('alert', () => {
@@ -67,13 +68,12 @@ describe('PacbioSampleMetadataModal.vue', () => {
     let button
 
     it('is present for each sample', () => {
-        button = wrapper.find('#editSample-1')
-        expect(button.text()).toEqual('Edit')
+      button = wrapper.find('#editSample-1')
+      expect(button.text()).toEqual('Edit')
     })
   })
 
   it('#generateId', () => {
     expect(modal.generateId('edit', 1)).toEqual('edit-1')
   })
-
 })

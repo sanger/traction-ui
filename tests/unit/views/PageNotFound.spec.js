@@ -14,19 +14,18 @@ it('will redirect to page not found if invalid path', () => {
 })
 */
 describe('PageNotFound.vue', () => {
-
   let wrapper, router
 
   beforeEach(() => {
-    router = new VueRouter({ routes: [
-      { path: '/dashboard', name: 'Dashboard' },
-      { path: '/saphyr/runs', name: 'SaphyrRuns'},
-      { path: '/pacbio/runs', name: 'PacbioRuns'},
-      ]
+    router = new VueRouter({
+      routes: [
+        { path: '/dashboard', name: 'Dashboard' },
+        { path: '/saphyr/runs', name: 'SaphyrRuns' },
+        { path: '/pacbio/runs', name: 'PacbioRuns' },
+      ],
     })
     wrapper = mount(PageNotFound, { router, localVue })
   })
-
 
   describe('Links on page ', () => {
     it('will redirect to dashboard', () => {
@@ -42,5 +41,4 @@ describe('PageNotFound.vue', () => {
       expect(wrapper.vm.$route.path).toBe('/saphyr/runs')
     })
   })
-  
 })

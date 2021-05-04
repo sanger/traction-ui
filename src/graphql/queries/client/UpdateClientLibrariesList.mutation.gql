@@ -1,4 +1,4 @@
-mutation ($assignedToFlowcell: Boolean!, $libraryName: String!) {
+mutation($assignedToFlowcell: Boolean!, $libraryName: String!) {
   updateLibrariesList(assignedToFlowcell: $assignedToFlowcell, libraryName: $libraryName) @client {
     assignedToFlowcell
     libraryName

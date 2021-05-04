@@ -5,7 +5,7 @@ export default {
   name: 'DragHelper',
   data() {
     return {
-      hover: false
+      hover: false,
     }
   },
   methods: {
@@ -24,6 +24,6 @@ export default {
     // Update the cached library list, by updating the library.assignedToFlowcell
     updateLibraryList(libraryName, assignedToFlowcell) {
       this.$emit('updateLibraryList', libraryName, assignedToFlowcell)
-    }
-  }
+    },
+  },
 }

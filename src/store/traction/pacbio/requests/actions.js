@@ -13,7 +13,7 @@ const setRequests = async ({ commit, getters }) => {
 
 const updateRequest = async ({ getters }, payload) => {
   let request = getters.requestsRequest
-  let sample = getters.requests.filter(r => r.id == payload.id)[0]
+  let sample = getters.requests.filter((r) => r.id == payload.id)[0]
 
   let requestPayload = createRequestPayload(sample)
   let promises = request.update(requestPayload)
@@ -30,25 +30,25 @@ const createRequestPayload = (sample) => {
   return {
     data: {
       id: sample.id,
-      type: "requests",
+      type: 'requests',
       attributes: {
         library_type: sample.library_type,
         estimate_of_gb_required: sample.estimate_of_gb_required,
         number_of_smrt_cells: sample.number_of_smrt_cells,
-        cost_code: sample.cost_code
-      }
-    }
+        cost_code: sample.cost_code,
+      },
+    },
   }
 }
 
 const exportSampleExtractionTubesIntoTraction = async ({ getters }, tubes) => {
   let body = {
     data: {
-      type: "requests",
+      type: 'requests',
       attributes: {
-        requests: sampleExtractionTubeJson(tubes)
-      }
-    }
+        requests: sampleExtractionTubeJson(tubes),
+      },
+    },
   }
 
   let request = getters.requestsRequest
@@ -70,7 +70,7 @@ const processCostCode = (tube) => {
 }
 
 const sampleExtractionTubeJson = (tubes) => {
-  return tubes.map(t => ({
+  return tubes.map((t) => ({
     name: t.fields.sanger_sample_id,
     species: t.fields.sample_common_name,
     external_id: t.sample_uuid,
@@ -79,8 +79,8 @@ const sampleExtractionTubeJson = (tubes) => {
     estimate_of_gb_required: t.estimate_of_gb_required,
     number_of_smrt_cells: t.number_of_smrt_cells,
     cost_code: processCostCode(t),
-    source_barcode: t.barcode
-    }))
+    source_barcode: t.barcode,
+  }))
 }
 
 const actions = {

@@ -1,50 +1,50 @@
 {
-    "data": {
-        "data": [
-            {
-                "id": "6",
-                "type": "tubes",
-                "links": {
-                    "self": "http://localhost:3000/v1/pacbio/tubes/6"
-                },
-                "attributes": {
-                    "barcode": "TRAC-2-6"
-                },
-                "relationships": {
-                    "materials": {
-                        "links": {
-                            "self": "http://localhost:3000/v1/pacbio/tubes/6/relationships/materials",
-                            "related": "http://localhost:3000/v1/pacbio/tubes/6/materials"
-                        },
-                        "data": [
-                            {
-                                "type": "container_materials",
-                                "id": "6"
-                            }
-                        ]
-                    }
-                }
-            }
-        ],
-        "included": [
-            {
-                "id": "6",
+  "data": {
+    "data": [
+      {
+        "id": "6",
+        "type": "tubes",
+        "links": {
+          "self": "http://localhost:3000/v1/pacbio/tubes/6"
+        },
+        "attributes": {
+          "barcode": "TRAC-2-6"
+        },
+        "relationships": {
+          "materials": {
+            "links": {
+              "self": "http://localhost:3000/v1/pacbio/tubes/6/relationships/materials",
+              "related": "http://localhost:3000/v1/pacbio/tubes/6/materials"
+            },
+            "data": [
+              {
                 "type": "container_materials",
-                "attributes": {
-                    "state": "pending",
-                    "fragment_size": 100,
-                    "volume": 1,
-                    "concentration": 1,
-                    "template_prep_kit_box_barcode": "LK12345",
-                    "deactivated_at": null,
-                    "sample_names": "Sample6",
-                    "barcode": "TRAC-2-6",
-                    "created_at": "2020/05/04 12:45",
-                    "material_type": "library"
-                }
-            }
-        ]
-    },
-    "status": 200,
-    "statusText": "Success"
+                "id": "6"
+              }
+            ]
+          }
+        }
+      }
+    ],
+    "included": [
+      {
+        "id": "6",
+        "type": "container_materials",
+        "attributes": {
+          "state": "pending",
+          "fragment_size": 100,
+          "volume": 1,
+          "concentration": 1,
+          "template_prep_kit_box_barcode": "LK12345",
+          "deactivated_at": null,
+          "sample_names": "Sample6",
+          "barcode": "TRAC-2-6",
+          "created_at": "2020/05/04 12:45",
+          "material_type": "library"
+        }
+      }
+    ]
+  },
+  "status": 200,
+  "statusText": "Success"
 }

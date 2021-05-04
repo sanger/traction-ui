@@ -20,13 +20,17 @@ const createPrintJobJson = (printerName, selected) => {
   } else {
     labels = createOntLabels(selected)
   }
-  return { data: { attributes: { printer_name: printerName, label_template_id: labelTemplateId, labels: labels } } }
+  return {
+    data: {
+      attributes: { printer_name: printerName, label_template_id: labelTemplateId, labels: labels },
+    },
+  }
 }
 
 const createLabels = (selected) => {
   return {
     body: selected.reduce((result, label) => {
-      result.push( {
+      result.push({
         main_label: {
           pipeline: getPipeline().toUpperCase(),
           barcode_text: label.barcode,
@@ -34,18 +38,18 @@ const createLabels = (selected) => {
           text_1: getTextForSelected(label),
           barcode: label.barcode,
           round_label_top_line: '',
-          round_label_bottom_line: ''
-        }
+          round_label_bottom_line: '',
+        },
       })
       return result
-    },[])
+    }, []),
   }
 }
 
 const createOntLabels = (selected) => {
   return {
     body: selected.reduce((result, label) => {
-      result.push( {
+      result.push({
         main_label: {
           pipeline: getPipeline().toUpperCase(),
           barcode_text: label.tubeBarcode,
@@ -53,17 +57,21 @@ const createOntLabels = (selected) => {
           text_1: label.name,
           barcode: label.tubeBarcode,
           round_label_top_line: '',
-          round_label_bottom_line: ''
-        }
+          round_label_bottom_line: '',
+        },
       })
       return result
-    },[])
+    }, []),
   }
 }
 
 const getTextForSelected = (selected) => {
-  if (selected.type == 'samples') { return selected.name}
-  if (selected.type == 'libraries') { return selected.enzyme_name }
+  if (selected.type == 'samples') {
+    return selected.name
+  }
+  if (selected.type == 'libraries') {
+    return selected.enzyme_name
+  }
 }
 
 const printMyBarcodeRequest = () => {
@@ -86,7 +94,7 @@ export {
   getTextForSelected,
   printMyBarcodeRequest,
   postPrintJob,
-  getPipeline
+  getPipeline,
 }
 
 export default printJob

@@ -1,11 +1,6 @@
-mutation ($libraryName: String!) {
-  deleteOntLibrary( 
-    input: { 
-      libraryName: $libraryName
-    } 
-  ) 
-  { 
+mutation($libraryName: String!) {
+  deleteOntLibrary(input: { libraryName: $libraryName }) {
     success
-    errors 
+    errors
   }
 }

@@ -28,6 +28,6 @@ export default {
       }
 
       return this.items.length
-    }
-  }
+    },
+  },
 }

@@ -1,8 +1,7 @@
 <template>
   <div class="libraries">
     <b-list-group class="list-group">
-      <tube v-for="library in libraries" v-bind:key="library.id" v-bind="library">
-      </tube>
+      <tube v-for="library in libraries" :key="library.id" v-bind="library"> </tube>
     </b-list-group>
   </div>
 </template>
@@ -16,38 +15,33 @@ const { mapActions, mapGetters } = createNamespacedHelpers('traction/pacbio/libr
 
 export default {
   name: 'PacbioLibrariesList',
+  components: {
+    Tube,
+  },
   mixins: [Helper, TableHelper],
-  data () {
+  data() {
     return {}
   },
   computed: {
-    ...mapGetters([
-      'libraries'
-    ])
-  },
-  methods: {
-    async provider() {
-        try {
-        await this.setLibraries()
-      } catch (error) {
-        this.showAlert("Failed to get libraries: " + error.message, 'danger')
-      }
-    },
-    ...mapActions([
-      'setLibraries'
-    ])
+    ...mapGetters(['libraries']),
   },
   created() {
     this.provider()
   },
-  components: {
-    Tube
-  }
+  methods: {
+    async provider() {
+      try {
+        await this.setLibraries()
+      } catch (error) {
+        this.showAlert('Failed to get libraries: ' + error.message, 'danger')
+      }
+    },
+    ...mapActions(['setLibraries']),
+  },
 }
 </script>
 
 <style>
-
 .libraries {
   border: solid;
   border-width: 1px;
@@ -55,8 +49,7 @@ export default {
 }
 
 .list-group {
-    max-height: 400px;
-    overflow: scroll;
+  max-height: 400px;
+  overflow: scroll;
 }
-
 </style>

@@ -1,19 +1,18 @@
 import SaphyrRun from '@/views/saphyr/SaphyrRun'
-import { mount, localVue, store } from '../../testHelper'
 import VueRouter from 'vue-router'
+import { localVue, mount, store } from '../../testHelper'
 
 describe('Run.vue', () => {
-
   let wrapper, mockRun, saphyrRun, router, props
 
   beforeEach(() => {
     router = new VueRouter({
       routes: [
         { path: '/runs', name: 'SaphyrRuns', component: require('@/views/saphyr/SaphyrRuns') },
-      ]
+      ],
     })
 
-    mockRun =  {
+    mockRun = {
       id: '1',
       name: '',
       state: 'pending',
@@ -21,33 +20,32 @@ describe('Run.vue', () => {
         barcode: '',
         flowcells: [
           { position: 1, library: { barcode: '' } },
-          { position: 2, library: { barcode: '' } }
-        ]
-      }
+          { position: 2, library: { barcode: '' } },
+        ],
+      },
     }
 
     props = {
-      id: '1'
+      id: '1',
     }
 
     store.commit('traction/saphyr/runs/setCurrentRun', mockRun)
 
-    wrapper = mount(SaphyrRun, { 
-      localVue, 
-      store, 
-      router, 
-      // TODO: fix as methods is deprecated
-      methods: {
-        provider() { return }
-      },
-      propsData: props
+    // create the mock of the method before mounting it for testing
+    jest.spyOn(SaphyrRun.methods, 'provider').mockImplementation(() => {})
+
+    wrapper = mount(SaphyrRun, {
+      localVue,
+      store,
+      router,
+      propsData: props,
     })
     saphyrRun = wrapper.vm
   })
 
   describe('alert', () => {
     it('has a alert', () => {
-      expect(wrapper.findComponent({ref: 'alert'}).element).toBeTruthy()
+      expect(wrapper.findComponent({ ref: 'alert' }).element).toBeTruthy()
     })
   })
 
@@ -77,16 +75,16 @@ describe('Run.vue', () => {
 
   describe('create button', () => {
     beforeEach(() => {
+      // create the mock of the method before mounting it for testing
+      jest.spyOn(SaphyrRun.methods, 'provider').mockImplementation(() => {})
+
       wrapper = mount(SaphyrRun, {
         localVue,
         store,
         router,
-        methods: {
-          provider() { return }
-        },
         propsData: {
-          id: 'new'
-        }
+          id: 'new',
+        },
       })
       saphyrRun = wrapper.vm
     })
@@ -97,14 +95,13 @@ describe('Run.vue', () => {
   })
 
   describe('#create', () => {
-
     beforeEach(() => {
       saphyrRun.showAlert = jest.fn()
       saphyrRun.createRun = jest.fn()
       saphyrRun.redirectToRuns = jest.fn()
     })
 
-    it('calls createRun', async () => { 
+    it('calls createRun', async () => {
       await saphyrRun.create()
       expect(saphyrRun.createRun).toBeCalled()
     })
@@ -127,7 +124,6 @@ describe('Run.vue', () => {
   })
 
   describe('#update', () => {
-
     beforeEach(() => {
       saphyrRun.showAlert = jest.fn()
       saphyrRun.updateRun = jest.fn()
@@ -161,9 +157,8 @@ describe('Run.vue', () => {
     it('emits an event with the message', () => {
       saphyrRun.showAlert('show this message', 'success')
       wrapper.vm.$nextTick(() => {
-        expect(wrapper.findComponent({ref: 'alert'}).text()).toMatch(/show this message/)
+        expect(wrapper.findComponent({ ref: 'alert' }).text()).toMatch(/show this message/)
       })
     })
   })
-
 })

@@ -10,41 +10,40 @@ describe('OntPlate.vue', () => {
       {
         id: 1,
         position: 'A1',
-        materials: [
-          { sample: { name: 'SampleName1' } },
-          { sample: { name: 'SampleName2' } }
-        ]
+        materials: [{ sample: { name: 'SampleName1' } }, { sample: { name: 'SampleName2' } }],
       },
       {
         id: 2,
         position: 'A7',
-        materials: [{
-          sample: {
-            name: 'SampleName2'
-          }
-        }]
-      }
+        materials: [
+          {
+            sample: {
+              name: 'SampleName2',
+            },
+          },
+        ],
+      },
     ]
 
     mutate = jest.fn()
 
     wrapper = mount(OntPlate, {
       localVue,
-      propsData: { plate: { id: 1, barcode: 'TRAC-1-1' }},
+      propsData: { plate: { id: 1, barcode: 'TRAC-1-1' } },
       stubs: {
         Plate96SVG: true,
-        OntWell: true
+        OntWell: true,
       },
       data() {
         return {
-          wells: wellsData
+          wells: wellsData,
         }
       },
       mocks: {
         $apollo: {
-          mutate: mutate
-        }
-      }
+          mutate: mutate,
+        },
+      },
     })
 
     plate = wrapper.vm
@@ -58,7 +57,7 @@ describe('OntPlate.vue', () => {
   describe('methods', () => {
     describe('#getWellAt', () => {
       it('gets the well at the given position', () => {
-        let expected = wellsData.filter(w => w.position == 'A1')[0]
+        let expected = wellsData.filter((w) => w.position == 'A1')[0]
         expect(plate.getWellAt('A1')).toEqual(expected)
       })
 
@@ -71,17 +70,17 @@ describe('OntPlate.vue', () => {
 
   describe('components', () => {
     it('has a OntWell component', () => {
-      expect(wrapper.findComponent({ref: 'ontWell'})).toBeTruthy()
+      expect(wrapper.findComponent({ ref: 'ontWell' })).toBeTruthy()
     })
 
     it('has a Plate96SVG component', () => {
-      expect(wrapper.findComponent({ref: 'plate96Svg'})).toBeTruthy()
-    })  
+      expect(wrapper.findComponent({ ref: 'plate96Svg' })).toBeTruthy()
+    })
   })
 
   describe('SVG wells', () => {
     it('has the correct number of wells', () => {
-      let ellipses = wrapper.findAllComponents({ref: 'ontWell'})
+      let ellipses = wrapper.findAllComponents({ ref: 'ontWell' })
       expect(ellipses.length).toEqual(Object.keys(PlateMap.wells).length)
     })
   })
@@ -93,13 +92,20 @@ describe('OntPlate.vue', () => {
     })
 
     it('shows an alert on success', async () => {
-      let mockResponse = { data: { createOntLibraries: {
-        tubes: [
-          { barcode: 'TRAC-1-1', materials: [{ name: 'DEMO-PLATE-1-1' }, { name: 'DEMO-PLATE-3-1' }] },
-          { barcode: 'TRAC-1-2', materials: [{ name: 'DEMO-PLATE-2-1' }] }
-        ],
-        errors: []
-      } } }
+      let mockResponse = {
+        data: {
+          createOntLibraries: {
+            tubes: [
+              {
+                barcode: 'TRAC-1-1',
+                materials: [{ name: 'DEMO-PLATE-1-1' }, { name: 'DEMO-PLATE-3-1' }],
+              },
+              { barcode: 'TRAC-1-2', materials: [{ name: 'DEMO-PLATE-2-1' }] },
+            ],
+            errors: [],
+          },
+        },
+      }
 
       let promise = new Promise((resolve) => {
         resolve(mockResponse)
@@ -112,12 +118,16 @@ describe('OntPlate.vue', () => {
 
       expect(mutate).toBeCalled()
       expect(wrapper.emitted().alert).toBeTruthy()
-      expect(wrapper.emitted().alert[0][0]).toEqual('Library(s) were created with names: DEMO-PLATE-1-1, DEMO-PLATE-3-1, DEMO-PLATE-2-1')
+      expect(wrapper.emitted().alert[0][0]).toEqual(
+        'Library(s) were created with names: DEMO-PLATE-1-1, DEMO-PLATE-3-1, DEMO-PLATE-2-1',
+      )
       expect(wrapper.emitted().alert[0][1]).toEqual('success')
     })
 
     it('shows an alert on failure', async () => {
-      let mockResponse = { data: { createOntLibraries: { tubes: [], errors: ['this is an error'] } } }
+      let mockResponse = {
+        data: { createOntLibraries: { tubes: [], errors: ['this is an error'] } },
+      }
 
       let promise = new Promise((resolve) => {
         resolve(mockResponse)

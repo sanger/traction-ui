@@ -9,20 +9,44 @@ describe('Libraries.vue', () => {
   let wrapper, libraries, mockLibraries
 
   beforeEach(() => {
-    mockLibraries =  [
-      { id: 1, barcode: 'TRAC-8', material: {id: 6, type: 'libraries', state: 'pending', sample_name: 'sample_d', enzyme_name: 'Nb.BsrDI', created_at: '03/12/2019 11:49' }},
-      { id: 2, barcode: 'TRAC-9', material: {id: 6, type: 'libraries', state: 'pending', sample_name: 'sample_d', enzyme_name: 'Nb.BsrDI', created_at: '03/12/2019 11:49' }}
+    mockLibraries = [
+      {
+        id: 1,
+        barcode: 'TRAC-8',
+        material: {
+          id: 6,
+          type: 'libraries',
+          state: 'pending',
+          sample_name: 'sample_d',
+          enzyme_name: 'Nb.BsrDI',
+          created_at: '03/12/2019 11:49',
+        },
+      },
+      {
+        id: 2,
+        barcode: 'TRAC-9',
+        material: {
+          id: 6,
+          type: 'libraries',
+          state: 'pending',
+          sample_name: 'sample_d',
+          enzyme_name: 'Nb.BsrDI',
+          created_at: '03/12/2019 11:49',
+        },
+      },
     ]
 
     store.commit('traction/saphyr/tubes/setLibraries', mockLibraries)
 
     const router = new VueRouter({
-      routes: [{
-        path: '/libraries',
-        name: 'Libraries',
-        component: Libraries,
-        props: true
-      }]
+      routes: [
+        {
+          path: '/libraries',
+          name: 'Libraries',
+          component: Libraries,
+          props: true,
+        },
+      ],
     })
 
     wrapper = mount(Libraries, {
@@ -31,8 +55,8 @@ describe('Libraries.vue', () => {
       localVue,
       stubs: {
         Alert: Alert,
-        PrinterModal: true
-      }
+        PrinterModal: true,
+      },
     })
     libraries = wrapper.vm
   })
@@ -41,7 +65,7 @@ describe('Libraries.vue', () => {
     it('contains the correct fields', () => {
       let headers = wrapper.findAll('th')
       for (let field of libraries.fields) {
-        expect(headers.filter(header => header.text() === field.label)).toBeDefined()
+        expect(headers.filter((header) => header.text() === field.label)).toBeDefined()
       }
     })
 
@@ -61,12 +85,19 @@ describe('Libraries.vue', () => {
       libraries.deleteLibraries.mockReturnValue([new Response(Data.TractionSaphyrLibraries)])
       await libraries.handleLibraryDelete()
 
-      expect(libraries.deleteLibraries).toBeCalledWith(mockLibraries.map(s => s.id))
-      expect(libraries.showAlert).toBeCalledWith('Libraries TRAC-8, TRAC-9 successfully deleted', 'success')
+      expect(libraries.deleteLibraries).toBeCalledWith(mockLibraries.map((s) => s.id))
+      expect(libraries.showAlert).toBeCalledWith(
+        'Libraries TRAC-8, TRAC-9 successfully deleted',
+        'success',
+      )
     })
 
     it('calls showAlert when there is an error', async () => {
-      let failedResponse = { status: 422, statusText: 'Unprocessable Entity', data: { data: { errors: { it: ['did not work'] }} } }
+      let failedResponse = {
+        status: 422,
+        statusText: 'Unprocessable Entity',
+        data: { data: { errors: { it: ['did not work'] } } },
+      }
       libraries.deleteLibraries.mockReturnValue([new Response(failedResponse)])
 
       await libraries.handleLibraryDelete()
@@ -75,14 +106,13 @@ describe('Libraries.vue', () => {
 
       expect(libraries.showAlert).toBeCalledWith(consts.MESSAGE_ERROR_DELETION_FAILED, 'danger')
     })
-
   })
 
   describe('#showAlert', () => {
     it('passes the message to function on emit event', () => {
       libraries.showAlert('show this message', 'danger')
       wrapper.vm.$nextTick(() => {
-        expect(wrapper.findComponent({ref: 'alert'}).html()).toMatch('show this message')
+        expect(wrapper.findComponent({ ref: 'alert' }).html()).toMatch('show this message')
       })
     })
   })
@@ -94,8 +124,8 @@ describe('Libraries.vue', () => {
     })
 
     it('passes selected printer to function on emit event', () => {
-      libraries.selected = [{id: 1}]
-      let modal = wrapper.findComponent({ref: 'printerModal'})
+      libraries.selected = [{ id: 1 }]
+      let modal = wrapper.findComponent({ ref: 'printerModal' })
       modal.vm.$emit('selectPrinter', 'printer1')
 
       expect(libraries.handlePrintLabel).toBeCalledWith('printer1')
@@ -104,7 +134,7 @@ describe('Libraries.vue', () => {
 
   describe('alert', () => {
     it('has a alert', () => {
-      expect(wrapper.findComponent({ref: 'alert'}).exists()).toBeTruthy()
+      expect(wrapper.findComponent({ ref: 'alert' }).exists()).toBeTruthy()
     })
   })
 })

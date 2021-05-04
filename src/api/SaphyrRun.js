@@ -1,7 +1,7 @@
 import handlePromise from './PromiseHelper'
 
 const isObject = (item) => {
-  return (item !== undefined && item instanceof Object)
+  return item !== undefined && item instanceof Object
 }
 
 const assign = (object, other) => {
@@ -9,12 +9,11 @@ const assign = (object, other) => {
   return Object.keys(object).reduce((result, key) => {
     if (key === otherKey) {
       if (isObject(object[key]) && isObject(other[otherKey])) {
-        result[key] = {...object[key], ...other[otherKey]}
+        result[key] = { ...object[key], ...other[otherKey] }
       } else {
         result[key] = other[otherKey]
       }
-    }
-    else if (isObject(object[key])) {
+    } else if (isObject(object[key])) {
       result[key] = assign(object[key], other)
     } else {
       result[key] = object[key]
@@ -30,12 +29,14 @@ const build = (object) => {
     chip: {
       barcode: '',
       flowcells: [
-        { position: 1, library: { barcode: ''} },
-        { position: 2, library: { barcode: ''} }
-      ]
-    }
+        { position: 1, library: { barcode: '' } },
+        { position: 2, library: { barcode: '' } },
+      ],
+    },
   }
-  run.assign = (object) => { assign(this, object) }
+  run.assign = (object) => {
+    assign(this, object)
+  }
   return run
 }
 
@@ -44,22 +45,32 @@ const create = async (run, request) => {
   let responses = []
 
   try {
-    let runPayload = { data: { type: "runs", attributes: { name: run.name } } }
+    let runPayload = { data: { type: 'runs', attributes: { name: run.name } } }
     let runResponse = await createResource(runPayload, request.runs)
     id = runResponse.deserialize.runs[0].id
     responses.push(runResponse)
 
-    let chipPayload = { data: { type: "chips", attributes: { barcode: run.chip.barcode, saphyr_run_id: id } } }
+    let chipPayload = {
+      data: { type: 'chips', attributes: { barcode: run.chip.barcode, saphyr_run_id: id } },
+    }
     let chipResponse = await createResource(chipPayload, request.chips)
     id = chipResponse.deserialize.chips[0].id
     responses.push(chipResponse)
 
     for (const flowcell of run.chip.flowcells) {
-      let flowcellPayload = { data: { type: "flowcells", attributes: { position: flowcell.position, saphyr_library_id: flowcell.library.id, saphyr_chip_id: id } } }
+      let flowcellPayload = {
+        data: {
+          type: 'flowcells',
+          attributes: {
+            position: flowcell.position,
+            saphyr_library_id: flowcell.library.id,
+            saphyr_chip_id: id,
+          },
+        },
+      }
       let flowcellResponse = await createResource(flowcellPayload, request.flowcells)
       responses.push(flowcellResponse)
     }
-
   } catch (err) {
     rollback(responses, request)
     return false
@@ -81,16 +92,24 @@ const update = async (run, request) => {
   let responses = []
 
   try {
-    let runPayload = { data: { id: run.id, type: "runs", attributes: { name: run.name } } }
+    let runPayload = { data: { id: run.id, type: 'runs', attributes: { name: run.name } } }
     let runResponse = await updateResource(runPayload, request.runs)
     responses.push(runResponse)
 
-    let chipPayload = { data: { id: run.chip.id, type: "chips", attributes: { barcode: run.chip.barcode } } }
+    let chipPayload = {
+      data: { id: run.chip.id, type: 'chips', attributes: { barcode: run.chip.barcode } },
+    }
     let chipResponse = await updateResource(chipPayload, request.chips)
     responses.push(chipResponse)
 
     for (const flowcell of run.chip.flowcells) {
-      let flowcellPayload = { data: { id: flowcell.id, type: "flowcells", attributes: { saphyr_library_id: flowcell.library.id } } }
+      let flowcellPayload = {
+        data: {
+          id: flowcell.id,
+          type: 'flowcells',
+          attributes: { saphyr_library_id: flowcell.library.id },
+        },
+      }
       let flowcellResponse = await updateResource(flowcellPayload, request.flowcells)
       responses.push(flowcellResponse)
     }
@@ -129,13 +148,4 @@ const destroy = async (id, request) => {
   return await handlePromise(promise)
 }
 
-export {
-  build,
-  createResource,
-  create,
-  update,
-  rollback,
-  destroy,
-  assign,
-  updateResource
-}
+export { build, createResource, create, update, rollback, destroy, assign, updateResource }

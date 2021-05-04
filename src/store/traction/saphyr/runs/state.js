@@ -1,6 +1,6 @@
 const state = {
-    runs: [],
-    currentRun: { chip: {} }
+  runs: [],
+  currentRun: { chip: {} },
 }
 
 export default state

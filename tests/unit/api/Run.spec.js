@@ -7,30 +7,32 @@ import build from '@/api/ApiBuilder'
 import Api from '@/api'
 
 describe('Run', () => {
-
   let cmp, props, wrapper, request, failedResponse, chipBarcode, run
 
   beforeEach(() => {
     cmp = Vue.extend({
       mixins: [Request],
-      render () { return ''}
+      render() {
+        return ''
+      },
     })
 
-    props = { baseURL: 'http://traction.com',
-              apiNamespace: 'api/v2',
-              resource: 'requests' }
+    props = { baseURL: 'http://traction.com', apiNamespace: 'api/v2', resource: 'requests' }
     wrapper = mount(cmp, { propsData: props })
 
     request = wrapper.vm.api
     request.get = jest.fn()
 
-    failedResponse = { status: 404, statusText: 'Record not found', data: { errors: { title: ['The record identified by 100 could not be found.'] }} }
+    failedResponse = {
+      status: 404,
+      statusText: 'Record not found',
+      data: { errors: { title: ['The record identified by 100 could not be found.'] } },
+    }
 
     chipBarcode = 'XYZ1234567891012'
   })
 
   describe('build', () => {
-
     describe('new object', () => {
       beforeEach(() => {
         run = Run.build()
@@ -61,12 +63,11 @@ describe('Run', () => {
         expect(flowcells['0'].position).toEqual(1)
         expect(flowcells['1'].position).toEqual(2)
       })
-
     })
 
     describe('existing object', () => {
       beforeEach(() => {
-        run = Run.build({id: 1, name: 'name1'})
+        run = Run.build({ id: 1, name: 'name1' })
       })
 
       it('assigns the object correctly', () => {
@@ -74,9 +75,6 @@ describe('Run', () => {
         expect(run.name).toEqual('name1')
       })
     })
-
-
-
   })
 
   describe('assign', () => {
@@ -87,28 +85,29 @@ describe('Run', () => {
     })
 
     it('if the key exists at the top level', () => {
-      assigned = Run.assign(object, {a: 'why'})
+      assigned = Run.assign(object, { a: 'why' })
       expect(assigned).toEqual({ a: 'why', b: { c: 'c', d: { e: 'e', f: 'f' } } })
     })
 
     it('if the key exists at the second level', () => {
-      assigned = Run.assign(object, {b: {c: 'dont'}})
+      assigned = Run.assign(object, { b: { c: 'dont' } })
       expect(assigned).toEqual({ a: 'a', b: { c: 'dont', d: { e: 'e', f: 'f' } } })
     })
 
     it('if the key exists at the third level', () => {
-      assigned = Run.assign(object, {d: {e: 'dont', g: 'you'}})
+      assigned = Run.assign(object, { d: { e: 'dont', g: 'you' } })
       expect(assigned).toEqual({ a: 'a', b: { c: 'c', d: { e: 'dont', f: 'f', g: 'you' } } })
     })
 
     it('if the key does not exist', () => {
-      assigned = Run.assign(object, {h: 'just turn off your television set and go and do something less boring instead'})
+      assigned = Run.assign(object, {
+        h: 'just turn off your television set and go and do something less boring instead',
+      })
       expect(assigned).toEqual(object)
     })
   })
 
   describe('creating a run', () => {
-
     beforeEach(() => {
       run = Run.build()
       run['name'] = 'run1'
@@ -119,12 +118,14 @@ describe('Run', () => {
     })
 
     describe('createRun', () => {
-
       it('success', async () => {
         request.create.mockResolvedValue(Data.CreateRun)
 
         let mockResponse = new Response(Data.CreateRun)
-        let response = await Run.createResource({ data: { type: "runs", attributes: { name: run.name } } }, request)
+        let response = await Run.createResource(
+          { data: { type: 'runs', attributes: { name: run.name } } },
+          request,
+        )
 
         expect(response).toEqual(mockResponse)
       })
@@ -134,11 +135,14 @@ describe('Run', () => {
 
         let message
         try {
-          await Run.createResource({ data: { type: "runs", attributes: { name: run.name } } }, request)
+          await Run.createResource(
+            { data: { type: 'runs', attributes: { name: run.name } } },
+            request,
+          )
         } catch (err) {
           message = err.message
         }
-        expect(message).toEqual("title The record identified by 100 could not be found.")
+        expect(message).toEqual('title The record identified by 100 could not be found.')
       })
     })
 
@@ -153,7 +157,10 @@ describe('Run', () => {
         request.create.mockResolvedValue(Data.CreateChip)
 
         let mockResponse = new Response(Data.CreateChip)
-        let response = await Run.createResource({ data: { type: "chips", attributes: { barcode: run.chip.barcode, run_id: runId } } }, request)
+        let response = await Run.createResource(
+          { data: { type: 'chips', attributes: { barcode: run.chip.barcode, run_id: runId } } },
+          request,
+        )
         expect(response).toEqual(mockResponse)
       })
 
@@ -162,11 +169,14 @@ describe('Run', () => {
 
         let message
         try {
-          await Run.createResource({ data: { type: "chips", attributes: { barcode: run.chip.barcode, run_id: runId } } }, request)
+          await Run.createResource(
+            { data: { type: 'chips', attributes: { barcode: run.chip.barcode, run_id: runId } } },
+            request,
+          )
         } catch (err) {
           message = err.message
         }
-        expect(message).toEqual("title The record identified by 100 could not be found.")
+        expect(message).toEqual('title The record identified by 100 could not be found.')
       })
     })
 
@@ -182,7 +192,19 @@ describe('Run', () => {
         request.create.mockResolvedValue(Data.CreateFlowcell)
 
         let mockResponse = new Response(Data.CreateFlowcell)
-        let response = await Run.createResource({ data: { type: "flowcells", attributes: { position: flowcell.position, library_id: flowcell.library.id, chip_id: chipId } } }, request)
+        let response = await Run.createResource(
+          {
+            data: {
+              type: 'flowcells',
+              attributes: {
+                position: flowcell.position,
+                library_id: flowcell.library.id,
+                chip_id: chipId,
+              },
+            },
+          },
+          request,
+        )
         expect(response).toEqual(mockResponse)
       })
 
@@ -191,13 +213,24 @@ describe('Run', () => {
 
         let message
         try {
-          await Run.createResource({ data: { type: "flowcells", attributes: { position: flowcell.position, library_id: flowcell.library.id, chip_id: chipId } } }, request)
+          await Run.createResource(
+            {
+              data: {
+                type: 'flowcells',
+                attributes: {
+                  position: flowcell.position,
+                  library_id: flowcell.library.id,
+                  chip_id: chipId,
+                },
+              },
+            },
+            request,
+          )
         } catch (err) {
           message = err.message
         }
-        expect(message).toEqual("title The record identified by 100 could not be found.")
+        expect(message).toEqual('title The record identified by 100 could not be found.')
       })
-
     })
 
     describe('create', () => {
@@ -269,7 +302,7 @@ describe('Run', () => {
     describe('rollback', () => {
       let responses, api, runResponse, chipResponse
 
-      beforeEach(() =>{
+      beforeEach(() => {
         api = build(Api.Config, process.env)
         runResponse = new Response(Data.CreateRun)
         chipResponse = new Response(Data.CreateChip)
@@ -279,20 +312,22 @@ describe('Run', () => {
         api.traction.saphyr.chips.destroy = jest.fn()
       })
 
-      it ('gets a list of responses', () => {
+      it('gets a list of responses', () => {
         api.traction.saphyr.runs.destroy.mockResolvedValue(Data.SuccessfulDestroy)
         api.traction.saphyr.chips.destroy.mockResolvedValue(Data.SuccessfulDestroy)
 
         Run.rollback(responses, api.traction.saphyr)
         expect(api.traction.saphyr.runs.destroy).toBeCalledWith(runResponse.deserialize.runs[0].id)
-        expect(api.traction.saphyr.chips.destroy).toBeCalledWith(chipResponse.deserialize.chips[0].id)
+        expect(api.traction.saphyr.chips.destroy).toBeCalledWith(
+          chipResponse.deserialize.chips[0].id,
+        )
       })
     })
 
-    describe('destroy', () =>{
+    describe('destroy', () => {
       let api
 
-      beforeEach(() =>{
+      beforeEach(() => {
         api = build(Api.Config, process.env)
         api.traction.saphyr.runs.destroy = jest.fn()
       })
@@ -317,7 +352,7 @@ describe('Run', () => {
       request = api.traction.saphyr
       request.update = jest.fn()
 
-      payload = { data: { type: "runs", attributes: { name: run.name } } }
+      payload = { data: { type: 'runs', attributes: { name: run.name } } }
     })
 
     it('successful', async () => {
@@ -329,7 +364,11 @@ describe('Run', () => {
     })
 
     it('unsuccessful', async () => {
-      let failedResponse = { status: 404, statusText: 'Record not found', data: { errors: { run: ['Failed to update.'] } } }
+      let failedResponse = {
+        status: 404,
+        statusText: 'Record not found',
+        data: { errors: { run: ['Failed to update.'] } },
+      }
 
       request.update.mockReturnValue([failedResponse])
       let mockResponse = new Response(failedResponse)
@@ -396,6 +435,5 @@ describe('Run', () => {
 
       expect(await Run.update(run, request)).toBeFalsy()
     })
-
   })
 })

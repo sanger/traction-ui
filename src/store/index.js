@@ -13,14 +13,13 @@ export default new Vuex.Store({
     api: build(Api.Config, process.env),
     printers: PrinterList,
   },
-  mutations: {
-  },
+  mutations: {},
   getters: {
-    api: state => state.api,
-    printers: state => state.printers,
+    api: (state) => state.api,
+    printers: (state) => state.printers,
   },
   modules: {
     traction,
-    sampleExtraction
-  }
+    sampleExtraction,
+  },
 })

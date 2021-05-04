@@ -9,14 +9,14 @@ const pacbio = {
     tubes: pacbioTubesModule,
     runs: pacbioRunsModule,
     requests: pacbioRequestsModule,
-    libraries: pacbioLibrariesModule
+    libraries: pacbioLibrariesModule,
   },
   state: {
     labelTemplateId: process.env.VUE_APP_PACBIO_LABEL_TEMPLATE_ID,
   },
   getters: {
-    labelTemplateId: state => state.labelTemplateId,
-  }
+    labelTemplateId: (state) => state.labelTemplateId,
+  },
 }
 
 export default pacbio

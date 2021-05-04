@@ -1,14 +1,13 @@
 import OntFlowcell from '@/components/ont/OntFlowcell'
-import { mount, localVue } from '../../testHelper'
+import { localVue, mount } from '../../testHelper'
 
 describe('OntFlowcell.vue', () => {
-
   let flowcell, wrapper, props, mutate
 
   beforeEach(() => {
     props = {
       position: 1,
-      library: { name: 'aLibraryName' }
+      library: { name: 'aLibraryName' },
     }
 
     mutate = jest.fn()
@@ -17,14 +16,13 @@ describe('OntFlowcell.vue', () => {
       localVue,
       propsData: props,
       stubs: {
-        'b-form-input': true
+        'b-form-input': true,
       },
       mocks: {
         $apollo: {
-          mutate: mutate
-        }
+          mutate: mutate,
+        },
       },
-      
     })
 
     flowcell = wrapper.vm
@@ -97,11 +95,19 @@ describe('OntFlowcell.vue', () => {
 
     describe('when the sourceType is LIBRARY_LIST', () => {
       beforeEach(() => {
-        let getData = jest.fn()
+        let getData = jest
+          .fn()
           .mockImplementationOnce(() => libraryName)
           .mockImplementation(() => 'LIBRARY_LIST')
 
-        mockEvent = { dataTransfer: { getData() { return getData() } }, preventDefault: jest.fn() }
+        mockEvent = {
+          dataTransfer: {
+            getData() {
+              return getData()
+            },
+          },
+          preventDefault: jest.fn(),
+        }
       })
 
       it('will call updateFlowcell', () => {
@@ -121,12 +127,20 @@ describe('OntFlowcell.vue', () => {
       beforeEach(() => {
         flowcellPosition = 1
 
-        let getData = jest.fn()
+        let getData = jest
+          .fn()
           .mockImplementationOnce(() => 'TRAC-1')
           .mockImplementationOnce(() => 'FLOWCELL')
           .mockImplementation(() => flowcellPosition)
 
-        mockEvent = { dataTransfer: { getData() { return getData() } }, preventDefault: jest.fn() }
+        mockEvent = {
+          dataTransfer: {
+            getData() {
+              return getData()
+            },
+          },
+          preventDefault: jest.fn(),
+        }
       })
 
       it('will call updateFlowcell', () => {
@@ -151,7 +165,10 @@ describe('OntFlowcell.vue', () => {
     let mockEvent
 
     beforeEach(() => {
-      mockEvent = { dataTransfer: { setData: jest.fn(), setDragImage: jest.fn() }, preventDefault: jest.fn() }
+      mockEvent = {
+        dataTransfer: { setData: jest.fn(), setDragImage: jest.fn() },
+        preventDefault: jest.fn(),
+      }
     })
 
     it('will set the drag image and set the data', () => {
@@ -160,7 +177,6 @@ describe('OntFlowcell.vue', () => {
       expect(mockEvent.dataTransfer.setData).toBeCalledWith('flowcellPosition', flowcell.position)
       expect(mockEvent.dataTransfer.setData).toBeCalledWith('libraryName', flowcell.library.name)
     })
-
 
     it('will set the sourceType of the drag', () => {
       flowcell.drag(mockEvent)
@@ -177,12 +193,12 @@ describe('OntFlowcell.vue', () => {
   })
 
   describe('#status', () => {
-    it('will return filled when flowcell has a libraryName', () => {
+    it('will return "filled" when flowcell has a libraryName', () => {
       expect(flowcell.status).toEqual('filled')
     })
 
-    it('will return filled when flowcell has a libraryName', () => {
-      wrapper.setProps({ library: {} })
+    it('will return "empty" when flowcell has no library', async () => {
+      await wrapper.setProps({ library: {} })
       expect(flowcell.status).toEqual('empty')
     })
   })

@@ -1,14 +1,6 @@
-mutation ($id: ID!, $flowcells: [FlowcellInput!]) {
-  updateOntRun( 
-    input: { 
-      id: $id 
-      properties: { 
-        flowcells: $flowcells 
-      } 
-    } 
-  )
-  { 
-    run { 
+mutation($id: ID!, $flowcells: [FlowcellInput!]) {
+  updateOntRun(input: { id: $id, properties: { flowcells: $flowcells } }) {
+    run {
       id
       flowcells {
         position
@@ -16,7 +8,7 @@ mutation ($id: ID!, $flowcells: [FlowcellInput!]) {
           name
         }
       }
-    } 
-    errors 
+    }
+    errors
   }
 }

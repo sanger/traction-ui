@@ -2,7 +2,6 @@ import { mount, localVue, store } from '../testHelper'
 import PrinterModal from '@/components/PrinterModal'
 
 describe('Modal.vue', () => {
-
   let wrapper, modal
 
   beforeEach(() => {
@@ -11,7 +10,7 @@ describe('Modal.vue', () => {
       store,
       propsData: {
         disabled: true,
-        isStatic: true
+        isStatic: true,
       },
     })
     modal = wrapper.vm
@@ -36,9 +35,11 @@ describe('Modal.vue', () => {
     })
 
     it('has printer options', () => {
-      let printerOptions = [{ value: null, text: 'Please select a printer' },
+      let printerOptions = [
+        { value: null, text: 'Please select a printer' },
         { value: 1, text: 'print1' },
-        { value: 2, text: 'printer2' }]
+        { value: 2, text: 'printer2' },
+      ]
 
       wrapper.setData({ printerOptions: printerOptions })
       expect(modal.printerOptions).toEqual(printerOptions)
@@ -47,9 +48,11 @@ describe('Modal.vue', () => {
 
   describe('modal', () => {
     it('has printer select form', () => {
-      let printerOptions = [{ value: null, text: 'Please select a printer' },
+      let printerOptions = [
+        { value: null, text: 'Please select a printer' },
         { value: 1, text: 'printer1' },
-        { value: 2, text: 'printer2' }]
+        { value: 2, text: 'printer2' },
+      ]
 
       wrapper.setData({ printerOptions: printerOptions })
       expect(wrapper.find('select').findAll('option').length).toEqual(printerOptions.length)
@@ -63,13 +66,16 @@ describe('Modal.vue', () => {
   })
 
   describe('#handleOk', () => {
-
     beforeEach(() => {
       modal.handleSubmit = jest.fn()
     })
 
     it('without selectedPrinterId', () => {
-      let evt = { preventDefault: () => { return {} }}
+      let evt = {
+        preventDefault: () => {
+          return {}
+        },
+      }
       window.alert = jest.fn()
       modal.handleOk(evt)
       expect(window.alert).toBeCalledWith('Please select a printer')
@@ -78,7 +84,11 @@ describe('Modal.vue', () => {
 
     it('with selectedEnzymeId', () => {
       wrapper.setData({ selectedPrinterId: 1 })
-      let evt = { preventDefault: () => { return {} }}
+      let evt = {
+        preventDefault: () => {
+          return {}
+        },
+      }
       modal.handleOk(evt)
       expect(modal.handleSubmit).toBeCalled()
     })
@@ -88,9 +98,11 @@ describe('Modal.vue', () => {
     it('#handleSubmit', () => {
       wrapper.setData({ selectedPrinterId: 1 })
 
-      let printerOptions = [{ value: null, text: 'Please select a printer' },
+      let printerOptions = [
+        { value: null, text: 'Please select a printer' },
         { value: 1, text: 'printer1' },
-        { value: 2, text: 'printer2' }]
+        { value: 2, text: 'printer2' },
+      ]
 
       wrapper.setData({ printerOptions: printerOptions })
 
@@ -102,11 +114,10 @@ describe('Modal.vue', () => {
   })
 
   describe('#setPrinterNames', () => {
-
     it('sets printerOptions data', async () => {
       modal.setPrinterNames()
 
-      expect(modal.printerOptions[0]).toEqual({ value: null, text: "Please select a printer" })
+      expect(modal.printerOptions[0]).toEqual({ value: null, text: 'Please select a printer' })
       expect(modal.printerOptions[1]).toBeDefined()
       expect(modal.printerOptions[2]).toBeDefined()
     })

@@ -8,7 +8,7 @@ const sampleExtraction = {
   state,
   getters,
   mutations,
-  actions
+  actions,
 }
 
 export default sampleExtraction

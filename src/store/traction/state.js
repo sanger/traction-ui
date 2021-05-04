@@ -1,5 +1,5 @@
 const state = {
-    tractionTags: [],
+  tractionTags: [],
 }
 
 export default state

@@ -1,7 +1,7 @@
 const mutations = {
-  setSampleExtractionTubes (state, sampleExtractionTubes) {
+  setSampleExtractionTubes(state, sampleExtractionTubes) {
     state.sampleExtractionTubes = sampleExtractionTubes
-  }
+  },
 }
 
 export default mutations
