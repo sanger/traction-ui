@@ -1,0 +1,42 @@
+# Triggered on dispatching the action
+# Automated releases handle asset creation in automated_release.yml
+name: Asset - on dispatch; build and publish
+
+on:
+  workflow_dispatch:
+    inputs:
+      image_tag:
+        description: Asset Name
+        required: true
+        default: x.y.z-uat.1
+
+jobs:
+  build_and_release:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Setup node
+        uses: actions/setup-node@v2
+        with:
+          node-version: '14'
+
+      - name: Install dependencies
+        run: >-
+          yarn install
+
+      - name: Compile build
+        run: >-
+          ./compile-build.sh release.tar.gz dist
+
+      - name: Create release and upload release.tar.gz
+        uses: softprops/action-gh-release@v1
+        with:
+          name: ${{ github.event.inputs.image_tag }}
+          tag_name: v${{ github.event.inputs.image_tag }}
+          prerelease: true
+          files: release.tar.gz
+          fail_on_unmatched_files: true
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
