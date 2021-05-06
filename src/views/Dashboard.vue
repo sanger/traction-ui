@@ -6,7 +6,7 @@
         :key="index"
         :title="pipeline.title"
         tag="article"
-        style="max-width: 20rem"
+        style="margin: auto 10"
         :class="pipeline.name"
       >
         <b-card-text>
