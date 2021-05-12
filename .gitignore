@@ -33,3 +33,5 @@ coverage
 
 # talisman
 .talismanrc
+
+.DS_Store
