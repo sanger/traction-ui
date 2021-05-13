@@ -57,6 +57,7 @@ export default {
   props: {
     id: {
       type: [String, Number],
+      default: 0
     },
     actions: {
       type: Object,
