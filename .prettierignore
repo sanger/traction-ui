@@ -11,3 +11,7 @@ compile-build.sh
 coverage
 README.md
 yarn.lock
+public
+.DS_Store
+dist
+node_modules
