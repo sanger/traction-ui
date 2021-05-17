@@ -106,6 +106,12 @@ jobs:
     - name: Install dependencides
       run: >-
         yarn install
-    - name: Run Cypress tests
-      run: >-
-        yarn test:e2e
+    - name: Cypress run
+      uses: cypress-io/github-action@v1
+      with:
+        start: yarn serve
+        wait-on: http://localhost:8080/
+        config_file: cypress.json
+        spec: "tests/e2e/**/*"
+      env:
+        CYPRESS_baseUrl: http://localhost:8080/
