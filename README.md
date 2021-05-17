@@ -58,12 +58,9 @@ To run the app and have hot-reloads for development:
         yarn run test:e2e
 
     You will need to make the following changes to get it working:
-        - if you don't already have one create `.env.production.local` in the root folder as a copy of `.env.production`
-        - change `VUE_APP_TRACTION_BASE_URL=REPLACE_VUE_APP_TRACTION_BASE_URL to VUE_APP_TRACTION_BASE_URL=http://traction`
-        - change `VUE_APP_SAMPLEEXTRACTION_BASE_URL=REPLACE_VUE_APP_SAMPLEEXTRACTION_BASE_URL to VUE_APP_TRACTION_BASE_URL=http://samples-extraction`
-
-
-
+    - if you don't already have one create `.env.production.local` in the root folder as a copy of `.env.production`
+    - change `VUE_APP_TRACTION_BASE_URL=REPLACE_VUE_APP_TRACTION_BASE_URL to VUE_APP_TRACTION_BASE_URL=http://traction`
+    - change `VUE_APP_SAMPLEEXTRACTION_BASE_URL=REPLACE_VUE_APP_SAMPLEEXTRACTION_BASE_URL to VUE_APP_SAMPLEEXTRACTION_BASE_URL=http://samples-extraction`
 
 ## Formatting and Linting
 
