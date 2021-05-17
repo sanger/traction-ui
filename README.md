@@ -74,6 +74,10 @@ checks, run:
 
     yarn run pretty
 
+To fix errors locally run:
+
+    yarn pretty --write
+
 ### Linting
 
 This project is linted using [ESLint](https://github.com/eslint/eslint). To lint the code,
