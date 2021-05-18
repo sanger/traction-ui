@@ -87,3 +87,31 @@ jobs:
         yarn test:unit
     - name: Upload coverage to Codecov
       uses: codecov/codecov-action@v1
+
+  cypress:
+    name: Run Cypress tests
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - name: Get yarn cache directory path
+      id: yarn-cache-dir-path
+      run: echo "::set-output name=dir::$(yarn cache dir)"
+    - uses: actions/cache@v2
+      id: yarn-cache # use this to check for `cache-hit` (`steps.yarn-cache.outputs.cache-hit != 'true'`)
+      with:
+        path: ${{ steps.yarn-cache-dir-path.outputs.dir }}
+        key: ${{ runner.os }}-yarn-${{ hashFiles('**/yarn.lock') }}
+        restore-keys: |
+          ${{ runner.os }}-yarn-
+    - name: Install dependencides
+      run: >-
+        yarn install
+    - name: Cypress run
+      uses: cypress-io/github-action@v2
+      with:
+        start: yarn serve
+        wait-on: http://localhost:8080/
+        config_file: cypress.json
+        spec: "tests/e2e/**/*"
+      env:
+        CYPRESS_baseUrl: http://localhost:8080/

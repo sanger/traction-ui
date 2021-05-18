@@ -5,10 +5,10 @@
   "scripts": {
     "serve": "vue-cli-service serve",
     "build": "vue-cli-service build",
-    "pretty": "prettier --check '**/*'",
-    "lint": "vue-cli-service lint --max-warnings 3",
     "test:unit": "vue-cli-service test:unit",
     "test:e2e": "vue-cli-service test:e2e",
+    "lint": "vue-cli-service lint --max-warnings 3",
+    "pretty": "prettier --check '**/*'",
     "test": "vue-cli-service test:unit && vue-cli-service test:e2e"
   },
   "dependencies": {
@@ -32,7 +32,7 @@
   },
   "devDependencies": {
     "@vue/cli-plugin-babel": "^3.9.2",
-    "@vue/cli-plugin-e2e-nightwatch": "^3.9.2",
+    "@vue/cli-plugin-e2e-cypress": "~4.5.0",
     "@vue/cli-plugin-eslint": "^3.9.2",
     "@vue/cli-plugin-unit-jest": "^3.9.0",
     "@vue/cli-service": "^3.11.0",
@@ -47,5 +47,8 @@
     "node-sass": "^4.14.1",
     "sass-loader": "^7.3.1",
     "vue-template-compiler": "^2.6.12"
+  },
+  "resolutions": {
+    "cypress": "^7.3.0"
   }
 }

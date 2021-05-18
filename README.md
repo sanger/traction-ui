@@ -47,15 +47,20 @@ To run the app and have hot-reloads for development:
 
 - Running unit tests:
 
-      yarn run test:unit
+        yarn run test:unit
 
 - Running specific unit test files:
 
-      yarn run test:unit <test_file_route> -t "<test_name>"
+        yarn run test:unit <test_file_route> -t "<test_name>"
 
 - Running end to end tests:
 
-      yarn run test:e2e
+        yarn run test:e2e
+
+    You will need to make the following changes to get it working:
+    - if you don't already have one create `.env.production.local` in the root folder as a copy of `.env.production`
+    - change `VUE_APP_TRACTION_BASE_URL=REPLACE_VUE_APP_TRACTION_BASE_URL to VUE_APP_TRACTION_BASE_URL=http://traction`
+    - change `VUE_APP_SAMPLEEXTRACTION_BASE_URL=REPLACE_VUE_APP_SAMPLEEXTRACTION_BASE_URL to VUE_APP_SAMPLEEXTRACTION_BASE_URL=http://samples-extraction`
 
 ## Formatting and Linting
 
@@ -65,6 +70,10 @@ This project is formatted using [Prettier](https://github.com/prettier/prettier)
 checks, run:
 
     yarn run pretty
+
+To fix errors locally run:
+
+    yarn pretty --write
 
 ### Linting
 
