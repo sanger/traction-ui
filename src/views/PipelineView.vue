@@ -1,13 +1,14 @@
 <template>
   <div>
     <p>{{ pipelineInfo.title }}</p>
-    <b-card>
+    <b-card no-body>
       <b-card-header header-tag="nav">
-        <b-nav tabs fill>
+        <b-nav tabs fill card-header>
           <b-nav-item
             v-for="(route, index) in pipelineInfo.routes"
             :key="index"
             :to="path(route)"
+            exact exact-active-class="active"
             >{{ capitalizeFirstLetter(route) }}</b-nav-item
           >
         </b-nav>
