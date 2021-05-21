@@ -33,7 +33,7 @@
 <script>
 import Alert from '@/components/Alert'
 import Helper from '@/mixins/Helper'
-import { getPlates, transformPlates } from '@/api/SequencescapePlates'
+import { getPlates, transformPlates } from '@/services/Sequencescape'
 import CREATE_PLATE_WITH_SAMPLES from '@/graphql/queries/CreatePlateWithSamples.mutation.gql'
 import Spinner from 'vue-simple-spinner'
 import Api from '@/mixins/Api'

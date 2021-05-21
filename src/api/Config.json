@@ -54,11 +54,19 @@
         },
         "runs": {
           "name": "runs",
-          "include": "plate.wells.libraries"
+          "include": "plate.wells.libraries",
+          "plates": {
+            "name": "plates",
+            "include": ""
+          },
+          "wells": {
+            "name": "wells",
+            "include": ""
+          }
         },
         "plates": {
           "name": "plates",
-          "include": ""
+          "include": "plates.wells.materials"
         },
         "wells": {
           "name": "wells",
@@ -92,7 +100,7 @@
     "resources": {
       "plates": {
         "name": "plates",
-        "include": "wells.aliquots.sample"
+        "include": "wells.aliquots.sample.sample_metadata,wells.aliquots.study"
       }
     }
   }

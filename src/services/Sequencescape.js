@@ -27,8 +27,20 @@ const transformAliquots = (aliquots) => {
   let aliquot = aliquots[0]
   if (aliquot === undefined) return
   return [
-    { externalId: aliquot.sample.uuid, name: aliquot.sample.name, tagOligo: aliquot.tag_oligo },
+    {
+      externalId: aliquot.sample.uuid,
+      name: aliquot.sample.name,
+      tagOligo: aliquot.tag_oligo,
+      externalStudyId: aliquot.study.uuid,
+    },
   ]
 }
 
+const Sequencescape = {
+  transformPlates,
+  getPlates,
+}
+
 export { transformPlates, getPlates }
+
+export default Sequencescape
