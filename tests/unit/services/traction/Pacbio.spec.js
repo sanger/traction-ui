@@ -1,6 +1,5 @@
 import { createPlates } from '@/services/traction/Pacbio'
 import { Data } from '../../testHelper'
-import deserialize from '@/api/JsonApi'
 
 const failedResponse = {
   status: 422,
