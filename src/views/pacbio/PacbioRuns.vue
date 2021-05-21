@@ -24,6 +24,7 @@
       hover
       responsive
       show-empty
+      small
       :items="runs"
       :fields="fields"
       :filter="filter"
@@ -81,6 +82,7 @@
           v-show="row.item.all_wells_have_libraries"
           :id="generateId('generate-sample-sheet', row.item.id)"
           :href="generateSampleSheetPath(row.item.id)"
+          class="text-primary"
         >
           Generate Sample Sheet
         </a>
