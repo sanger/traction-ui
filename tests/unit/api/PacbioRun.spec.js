@@ -132,7 +132,7 @@ describe('Run', () => {
 
     it('returns true', async () => {
       api.traction.pacbio.runs.create.mockResolvedValue(Data.PacbioRun)
-      api.traction.pacbio.plates.create.mockResolvedValue(Data.PacbioPlate)
+      api.traction.pacbio.plates.create.mockResolvedValue(Data.PacbioSequencingPlate)
       api.traction.pacbio.wells.create.mockResolvedValue(Data.PacbioWell)
 
       let resp = await Run.create(run, api.traction.pacbio)
@@ -179,7 +179,7 @@ describe('Run', () => {
 
     it('returns false and rollsback if the wells cannot be created', async () => {
       api.traction.pacbio.runs.create.mockResolvedValue(Data.PacbioRun)
-      api.traction.pacbio.plates.create.mockResolvedValue(Data.PacbioPlate)
+      api.traction.pacbio.plates.create.mockResolvedValue(Data.PacbioSequencingPlate)
       api.traction.pacbio.wells.create.mockResolvedValue(failedResponse)
 
       api.traction.pacbio.runs.destroy.mockResolvedValue(Data.SuccessfulDestroy)

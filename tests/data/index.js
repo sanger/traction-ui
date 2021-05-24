@@ -25,6 +25,7 @@ import SampleExtractionTubesWithSample from './sampleExtractionTubesWithSample'
 import PacbioRuns from './pacbioRuns'
 import PacbioRun from './pacbioRun'
 import PacbioPlate from './pacbioPlate'
+import PacbioSequencingPlate from './pacbioSequencingPlate'
 import PacbioWell from './pacbioWell'
 import PacbioWells from './pacbioWells'
 import PacbioWellLibrary from './pacbioWellLibrary'
@@ -60,6 +61,7 @@ export default {
   PacbioRuns,
   PacbioRun,
   PacbioPlate,
+  PacbioSequencingPlate,
   PacbioWell,
   PacbioWells,
   PacbioWellLibrary,

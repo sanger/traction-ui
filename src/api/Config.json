@@ -58,7 +58,7 @@
         },
         "plates": {
           "name": "plates",
-          "include": ""
+          "include": "wells.materials"
         },
         "wells": {
           "name": "wells",

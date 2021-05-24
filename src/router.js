@@ -10,6 +10,7 @@ import SaphyrRuns from './views/saphyr/SaphyrRuns'
 import SaphyrRun from './views/saphyr/SaphyrRun'
 import Pacbio from './views/Pacbio'
 import PacbioReception from './views/pacbio/PacbioReception'
+import PacbioPlates from './views/pacbio/PacbioPlates'
 import PacbioSamples from './views/pacbio/PacbioSamples'
 import PacbioLibraries from './views/pacbio/PacbioLibraries'
 import PacbioRuns from './views/pacbio/PacbioRuns'
@@ -55,6 +56,7 @@ export default new Router({
         { path: '', redirect: 'reception' },
         { path: 'reception', name: 'PacbioReception', component: PacbioReception },
         { path: 'samples', name: 'PacbioSamples', component: PacbioSamples },
+        { path: 'plates', name: 'PacbioPlates', component: PacbioPlates },
         { path: 'libraries', name: 'PacbioLibraries', component: PacbioLibraries },
         { path: 'runs', name: 'PacbioRuns', component: PacbioRuns },
         { path: 'run/:id', name: 'PacbioRun', component: PacbioRun, props: true },
