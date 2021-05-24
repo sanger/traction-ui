@@ -48,6 +48,15 @@ describe('PacbioPlates.vue', () => {
     })
   })
 
+  describe('Info button', () => {
+    let button
+
+    it('is present for each plate', () => {
+      button = wrapper.find('#infoPlateBtn-1')
+      expect(button.text()).toEqual('+')
+    })
+  })
+
   describe('#alert', () => {
     it('shows an alert', () => {
       plates.showAlert = jest.fn()

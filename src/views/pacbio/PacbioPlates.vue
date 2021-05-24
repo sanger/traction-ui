@@ -33,15 +33,8 @@
       hover
       @filtered="onFiltered"
     >
-      <template v-slot:cell(show_details)="row">
-        <b-button
-          :id="'details-btn-' + row.item.id"
-          size="sm"
-          variant="outline-primary"
-          @click="row.toggleDetails"
-        >
-          {{ row.detailsShowing ? 'Hide' : 'Show' }} Plate
-        </b-button>
+      <template v-slot:cell(info)="row">
+        <PacbioPlateInfoModal :plate="row.item" @alert="alert"></PacbioPlateInfoModal>
       </template>
     </b-table>
 
@@ -64,6 +57,7 @@
 import Alert from '@/components/Alert'
 import Helper from '@/mixins/Helper'
 import TableHelper from '@/mixins/TableHelper'
+import PacbioPlateInfoModal from '@/components/pacbio/PacbioPlateInfoModal'
 import { createNamespacedHelpers } from 'vuex'
 const { mapActions, mapGetters } = createNamespacedHelpers('traction/pacbio/plates')
 
@@ -71,6 +65,7 @@ export default {
   name: 'PacbioPlates',
   components: {
     Alert,
+    PacbioPlateInfoModal,
   },
   mixins: [Helper, TableHelper],
   data() {
@@ -79,7 +74,7 @@ export default {
         { key: 'id', label: 'Plate ID', sortable: true },
         { key: 'barcode', label: 'Plate Barcode', sortable: true },
         { key: 'created_at', label: 'Created at', sortable: true },
-        { key: 'show_details', label: '' },
+        { key: 'info', label: '' },
       ],
       filteredItems: [],
       filter: null,
