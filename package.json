@@ -31,6 +31,7 @@
     "vuex": "^3.6.2"
   },
   "devDependencies": {
+    "@cypress/code-coverage": "^3.9.5",
     "@vue/cli-plugin-babel": "^3.9.2",
     "@vue/cli-plugin-e2e-cypress": "~4.5.0",
     "@vue/cli-plugin-eslint": "^3.9.2",

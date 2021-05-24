@@ -14,6 +14,7 @@ module.exports = (on, config) => {
   //  webpackOptions: require('@vue/cli-service/webpack.config'),
   //  watchOptions: {}
   // }))
+  require('@cypress/code-coverage/task')(on, config)
 
   return Object.assign({}, config, {
     fixturesFolder: 'tests/e2e/fixtures',
