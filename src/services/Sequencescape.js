@@ -59,7 +59,7 @@ const OntSample = (aliquot) => ({
 })
 
 /*
-  This is in camel case as the end point is JSON API
+  This is in snake case as the end point is JSON API
   A Pacbio sample needs:
   * external id - the sample uuid
   * name - the sample name
