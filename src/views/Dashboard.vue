@@ -25,7 +25,9 @@
   </div>
 </template>
 
+
 <script>
+// TODO: modify Helper to be more descriptive and change it so that we can transform routes correctly.
 import PipelinesConfig from '@/config/PipelinesConfig'
 import Helper from '@/mixins/Helper'
 
