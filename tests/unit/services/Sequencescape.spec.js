@@ -1,8 +1,8 @@
-import { getPlates, transformPlates } from '@/services/Sequencescape'
+import { getPlates, transformPlates, OntSample, PacbioSample } from '@/services/Sequencescape'
 import { Data } from '../testHelper'
 import Response from '@/api/Response'
 
-const Plates = [
+const plates = [
   {
     id: '27210587',
     type: 'plates',
@@ -173,34 +173,50 @@ describe('SequencescapePlates', () => {
   describe('#transformPlates', () => {
     let transformedPlates, transformedPlate
 
-    beforeEach(() => {
-      transformedPlates = transformPlates(Plates)
+    describe('for any type of plate', () => {
+      beforeEach(() => {
+        transformedPlates = transformPlates({ plates })
+        transformedPlate = transformedPlates[0]
+      })
+
+      it('plate should only have a barcode and wells', () => {
+        expect(Object.keys(transformedPlate)).toEqual(['barcode', 'wells'])
+        expect(transformedPlate.barcode).toEqual('DN803958S')
+        expect(transformedPlate.wells.length).toEqual(3)
+      })
+
+      it('wells should have a position and samples', () => {
+        let well = transformedPlate.wells[0]
+        expect(Object.keys(well)).toEqual(['position', 'samples'])
+        expect(well.position).toEqual('A1')
+      })
+
+      it('samples will be empty if there arent any', () => {
+        expect(transformedPlate.wells[2].samples).not.toBeDefined()
+      })
+    })
+
+    describe('for an ont plate', () => {
+      it('samples should have an id, name and tag', () => {
+        transformedPlates = transformPlates({ plates, sampleType: OntSample })
+        transformedPlate = transformedPlates[0]
+        let sample = transformedPlate.wells[0].samples[0]
+        expect(Object.keys(sample)).toEqual(['externalId', 'name', 'tagOligo', 'externalStudyId'])
+        expect(sample.externalId).toEqual('64e065a4-a9b0-11eb-991b-fa163eac3af7')
+        expect(sample.name).toEqual('DTOL10233354')
+        expect(sample.externalStudyId).toEqual('cf04ea86-ac82-11e9-8998-68b599768938')
+      })
+    })
+
+    describe('for a pacbio plate', () => {
+      transformedPlates = transformPlates({ plates, sampleType: PacbioSample })
       transformedPlate = transformedPlates[0]
-    })
-
-    it('plate should only have a barcode and wells', () => {
-      expect(Object.keys(transformedPlate)).toEqual(['barcode', 'wells'])
-      expect(transformedPlate.barcode).toEqual('DN803958S')
-      expect(transformedPlate.wells.length).toEqual(3)
-    })
-
-    it('wells should have a position and samples', () => {
-      let well = transformedPlate.wells[0]
-      expect(Object.keys(well)).toEqual(['position', 'samples'])
-      expect(well.position).toEqual('A1')
-    })
-
-    it('samples should have an id, name and tag', () => {
       let sample = transformedPlate.wells[0].samples[0]
-      expect(Object.keys(sample)).toEqual(['externalId', 'name', 'tagOligo', 'externalStudyId'])
-      expect(sample.externalId).toEqual('64e065a4-a9b0-11eb-991b-fa163eac3af7')
+      expect(Object.keys(sample)).toEqual(['external_id', 'name', 'external_study_id', 'species'])
+      expect(sample.external_id).toEqual('64e065a4-a9b0-11eb-991b-fa163eac3af7')
       expect(sample.name).toEqual('DTOL10233354')
-      expect(sample.tagOligo).toEqual('GGGATCCT')
-      expect(sample.externalStudyId).toEqual('cf04ea86-ac82-11e9-8998-68b599768938')
-    })
-
-    it('samples will be empty if there arent any', () => {
-      expect(transformedPlate.wells[2].samples).not.toBeDefined()
+      expect(sample.external_study_id).toEqual('cf04ea86-ac82-11e9-8998-68b599768938')
+      expect(sample.species).toEqual('Orgyia antiqua')
     })
   })
 })

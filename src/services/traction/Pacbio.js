@@ -1,5 +1,5 @@
 import handlePromise from '@/api/PromiseHelper'
-import { getPlates, transformPlates } from '@/services/Sequencescape'
+import { getPlates, transformPlates, PacbioSample } from '@/services/Sequencescape'
 
 /*  
   retrieve the plates from Sequencescape.
@@ -16,7 +16,16 @@ const createPlates = async ({ requests, barcodes }) => {
   }
 
   const response = await handlePromise(
-    requests.traction.create({ data: { attributes: { plates: transformPlates(plates) } } }),
+    requests.traction.create({
+      data: {
+        attributes: {
+          plates: transformPlates({
+            plates,
+            sampleType: PacbioSample,
+          }),
+        },
+      },
+    }),
   )
 
   if (response.successful) {
