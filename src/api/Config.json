@@ -54,7 +54,15 @@
         },
         "runs": {
           "name": "runs",
-          "include": "plate.wells.libraries"
+          "include": "plate.wells.libraries",
+          "resources": {
+            "plates": {
+              "name": "plates"
+            },
+            "wells": {
+              "name": "wells"
+            }
+          }
         },
         "plates": {
           "name": "plates",

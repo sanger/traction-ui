@@ -32,8 +32,13 @@ const buildResources = (resources, props) => {
 }
 
 const buildComponent = (component, props) => {
-  let cmp = Vue.extend(component)
-  return new cmp({ propsData: props })
+  const cmp = Vue.extend(component)
+  const vm = new cmp({ propsData: props })
+  for (const key in props['resources']) {
+    const request = new cmp({ propsData: { ...props, resource: `${vm.resource}/${key}` } })
+    vm[key] = request
+  }
+  return vm
 }
 
 const apiProps = (api, props, environment) => {

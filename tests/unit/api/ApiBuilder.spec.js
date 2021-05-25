@@ -1,15 +1,15 @@
 import * as ApiBuilder from '@/api/ApiBuilder'
 import Request from '@/api/Request'
 
+process.env.VUE_APP_API1_BASE_URL = 'http://api1'
+process.env.VUE_APP_API2_BASE_URL = 'http://api2'
+process.env.VUE_APP_API3_BASE_URL = 'http://api3'
+
 describe('ApiBuilder', () => {
   describe('build', () => {
     let api, apis
 
     beforeEach(() => {
-      process.env.VUE_APP_API1_BASE_URL = 'http://api1'
-      process.env.VUE_APP_API2_BASE_URL = 'http://api2'
-      process.env.VUE_APP_API3_BASE_URL = 'http://api3'
-
       apis = {
         api1: {
           name: 'api1',
@@ -51,6 +51,17 @@ describe('ApiBuilder', () => {
               },
               flowcells: {
                 name: 'flowcells',
+              },
+              runs: {
+                name: 'runs',
+                resources: {
+                  plates: {
+                    name: 'plates',
+                  },
+                  wells: {
+                    name: 'wells',
+                  },
+                },
               },
             },
           },
@@ -123,6 +134,23 @@ describe('ApiBuilder', () => {
       expect(request6.headers).toBeDefined()
       expect(request6.filter).toEqual({})
       expect(request6.include).toEqual('')
+    })
+
+    it('will create nested resources if they exist', () => {
+      const runs = api.api3.saphyr.runs
+
+      expect(runs.plates).toBeDefined()
+      expect(runs.wells).toBeDefined()
+
+      const plates = runs.plates
+      expect(plates.baseURL).toEqual(process.env.VUE_APP_API3_BASE_URL)
+      expect(plates.apiNamespace).toEqual(apis.api3.apiNamespace)
+      expect(plates.resource).toEqual('saphyr/runs/plates')
+
+      const wells = runs.wells
+      expect(wells.baseURL).toEqual(process.env.VUE_APP_API3_BASE_URL)
+      expect(wells.apiNamespace).toEqual(apis.api3.apiNamespace)
+      expect(wells.resource).toEqual('saphyr/runs/wells')
     })
   })
 
