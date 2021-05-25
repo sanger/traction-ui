@@ -8,7 +8,7 @@
             v-for="(route, index) in pipelineInfo.routes"
             :key="index"
             :to="path(route)"
-            >{{ capitalizeFirstLetter(route) }}</b-nav-item
+            >{{ humanise(route) }}</b-nav-item
           >
         </b-nav>
       </b-card-header>

@@ -18,7 +18,7 @@
           :key="inner_index"
           :to="{ path: '/' + pipeline.name + '/' + route }"
         >
-          <b-button variant="outline-primary">{{ capitalizeFirstLetter(route) }}</b-button>
+          <b-button variant="outline-primary">{{ humanise(route) }}</b-button>
         </router-link>
       </b-card>
     </b-card-group>
