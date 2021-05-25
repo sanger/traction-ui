@@ -105,7 +105,7 @@ describe('Dashboard.vue', () => {
       })
       it('will have a plate reception button', () => {
         let receptionButton = box.findAll('button').at(1)
-        expect(receptionButton.text()).toEqual('Plate-reception')
+        expect(receptionButton.text()).toEqual('Plate reception')
         receptionButton.trigger('click')
         expect(wrapper.vm.$route.path).toBe('/pacbio/plate-reception')
       })
