@@ -57,6 +57,21 @@ describe('PacbioPlates.vue', () => {
     })
   })
 
+  describe('perPage', () => {
+    beforeEach(() => {
+      wrapper = mount(PacbioPlates, {
+        store,
+        router,
+        localVue,
+      })
+      wrapper.setData({ perPage: 1 })
+    })
+
+    it('states how many rows the table should contain', () => {
+      expect(wrapper.find('tbody').findAll('tr').length).toEqual(1)
+    })
+  })
+
   describe('#alert', () => {
     it('shows an alert', () => {
       plates.showAlert = jest.fn()

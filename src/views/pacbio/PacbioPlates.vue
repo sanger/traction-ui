@@ -49,6 +49,9 @@
         aria-controls="plates-table"
       >
       </b-pagination>
+      <b-form-group label-cols-lg="1" label="Per Page" label-for="input-per-page">
+        <b-form-input id="input-per-page" v-model="perPage" trim class="w-25"></b-form-input>
+      </b-form-group>
     </div>
   </div>
 </template>
