@@ -1,6 +1,6 @@
 import ApiMixin from '@/mixins/Api'
 import build from '@/api/ApiBuilder'
-import Config from '@/api/Config'
+import config from '@/api/Config'
 import { mount, localVue, store } from '../testHelper'
 
 const Cmp = {
@@ -15,7 +15,7 @@ describe('Api', () => {
   let wrapper, cmp, api
 
   beforeEach(() => {
-    api = build(Config, process.env)
+    api = build({ config, environment: process.env })
     wrapper = mount(Cmp, { store, localVue })
     cmp = wrapper.vm
   })

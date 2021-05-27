@@ -123,7 +123,7 @@ describe('Run', () => {
       run.plate.wells[0] = { position: 'A1', libraries: [{ id: 1 }] }
       run.plate.wells[1] = { position: 'A2', libraries: [{ id: 2 }] }
 
-      api = build(Api.Config, process.env)
+      api = build({ config: Api.Config, environment: process.env })
       pacbioRequest = api.traction.pacbio
       pacbioRequest.runs.create = jest.fn()
       pacbioRequest.runs.plates.create = jest.fn()
@@ -360,7 +360,7 @@ describe('Run', () => {
         },
       }
 
-      api = build(Api.Config, process.env)
+      api = build({ config: Api.Config, environment: process.env })
       pacbioRequest = api.traction.pacbio
       pacbioRequest.runs.update = jest.fn()
       pacbioRequest.runs.wells.update = jest.fn()
@@ -508,7 +508,7 @@ describe('Run', () => {
     let api, pacbioRequest
 
     beforeEach(() => {
-      api = build(Api.Config, process.env)
+      api = build({ config: Api.Config, environment: process.env })
       pacbioRequest = api.traction.pacbio
       pacbioRequest.runs.destroy = jest.fn()
     })
