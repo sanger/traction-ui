@@ -13,7 +13,7 @@
         <b-form-select id="input" v-model="selected" :options="options" class="mb-3" />
       </b-form-group>
       <template v-slot:modal-footer="{ cancel }">
-        <b-button variant="primary" @click="cancel()"> Close </b-button>
+        <b-button id="closeBtn" variant="primary" @click="cancel()"> Close </b-button>
       </template>
     </b-modal>
   </div>
