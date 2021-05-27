@@ -76,7 +76,6 @@ const buildResources = ({ apiNamespace, baseURL, resources, pipeline = null }) =
   * @returns - Request (Vue Component) - this would be better as a POJO
 */
 const buildRequest = ({ apiNamespace, baseURL, resource, filter, include, resources }) => {
-
   const request = new cmp({
     propsData: { apiNamespace, baseURL, resource, filter, include },
   })
