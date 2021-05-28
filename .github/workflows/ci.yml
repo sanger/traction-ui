@@ -85,8 +85,6 @@ jobs:
     - name: Run unit tests
       run: >-
         yarn test:unit
-    - name: Upload coverage to Codecov
-      uses: codecov/codecov-action@v1
 
   cypress:
     name: Run Cypress tests
