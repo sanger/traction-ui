@@ -1,8 +1,8 @@
 import { mount, localVue, Data, store } from '../../testHelper'
-import PacbioSampleMetadataModal from '@/components/pacbio/PacbioSampleMetadataModal'
+import PacbioSampleMetadataEdit from '@/components/pacbio/PacbioSampleMetadataEdit'
 import Response from '@/api/Response'
 
-describe('PacbioSampleMetadataModal.vue', () => {
+describe('PacbioSampleMetadataEdit.vue', () => {
   let wrapper, modal, props, mockSamples
 
   beforeEach(() => {
@@ -11,7 +11,7 @@ describe('PacbioSampleMetadataModal.vue', () => {
 
     store.commit('traction/pacbio/requests/setRequests', mockSamples)
 
-    wrapper = mount(PacbioSampleMetadataModal, {
+    wrapper = mount(PacbioSampleMetadataEdit, {
       localVue,
       store,
       propsData: props,

@@ -1,7 +1,7 @@
 import { mount, localVue, store } from '../../testHelper'
-import PacbioTagEditModal from '@/components/pacbio/PacbioTagEditModal'
+import PacbioLibraryTagEdit from '@/components/pacbio/PacbioLibraryTagEdit'
 
-describe('PacbioTagEditModal.vue', () => {
+describe('PacbioLibraryTagEdit.vue', () => {
   let wrapper, modal, props, mockRequestLibrary
 
   beforeEach(() => {
@@ -16,7 +16,7 @@ describe('PacbioTagEditModal.vue', () => {
       type: 'request_libraries',
     }),
       (props = { request_library: mockRequestLibrary }),
-      (wrapper = mount(PacbioTagEditModal, {
+      (wrapper = mount(PacbioLibraryTagEdit, {
         localVue,
         store,
         propsData: props,

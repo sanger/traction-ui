@@ -1,7 +1,7 @@
-import Tube from '@/components/pacbio/PacbioTube'
+import Tube from '@/components/pacbio/PacbioLibraryTubeItem'
 import { localVue, mount } from '../../testHelper'
 
-describe('Tube.vue', () => {
+describe('LibraryTubeItem.vue', () => {
   let tube, wrapper, props
 
   beforeEach(() => {

@@ -1,8 +1,8 @@
 import * as Run from '@/api/PacbioRun'
-import PacbioRunInfo from '@/components/pacbio/PacbioRunInfo'
+import PacbioRunInfoEdit from '@/components/pacbio/PacbioRunInfoEdit'
 import { localVue, mount, store } from '../../testHelper'
 
-describe('PacbioRunInfo', () => {
+describe('PacbioRunInfoEdit', () => {
   let wrapper, runInfo, run
 
   beforeEach(() => {
@@ -16,7 +16,7 @@ describe('PacbioRunInfo', () => {
     if (document.body) {
       document.body.appendChild(elem)
     }
-    wrapper = mount(PacbioRunInfo, { localVue, store, sync: false, attachTo: elem })
+    wrapper = mount(PacbioRunInfoEdit, { localVue, store, sync: false, attachTo: elem })
     runInfo = wrapper.vm
   })
 

@@ -1,5 +1,5 @@
 import { mount, localVue, store } from '../../testHelper'
-import WellModal from '@/components/pacbio/PacbioWellModal'
+import WellEdit from '@/components/pacbio/PacbioRunWellEdit'
 import * as Run from '@/api/PacbioRun'
 
 describe('PacbioWellModal', () => {
@@ -16,7 +16,7 @@ describe('PacbioWellModal', () => {
 
     store.commit('traction/pacbio/runs/setCurrentRun', run)
 
-    wrapper = mount(WellModal, {
+    wrapper = mount(WellEdit, {
       localVue,
       store,
       propsData: props,

@@ -1,4 +1,4 @@
-import Libraries from '@/views/pacbio/PacbioLibraries'
+import Libraries from '@/views/pacbio/PacbioLibraryIndex'
 import { mount, localVue, Data, store } from '../../testHelper'
 import * as consts from '@/consts/consts'
 import VueRouter from 'vue-router'

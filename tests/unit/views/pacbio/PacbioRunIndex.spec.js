@@ -1,5 +1,5 @@
-import PacbioRuns from '@/views/pacbio/PacbioRuns'
-import PacbioRun from '@/views/pacbio/PacbioRun'
+import PacbioRuns from '@/views/pacbio/PacbioRunIndex'
+import PacbioRun from '@/views/pacbio/PacbioRunShow'
 import { mount, localVue, store, Data } from '../../testHelper'
 import Response from '@/api/Response'
 import VueRouter from 'vue-router'

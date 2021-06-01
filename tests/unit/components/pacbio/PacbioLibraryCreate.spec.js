@@ -1,9 +1,9 @@
 import { mount, localVue, store, Data } from '../../testHelper'
-import PacbioLibraryCreateModal from '@/components/pacbio/PacbioLibraryCreateModal'
+import PacbioLibraryCreate from '@/components/pacbio/PacbioLibraryCreate'
 import Response from '@/api/Response'
 import * as consts from '@/consts/consts'
 
-describe('PacbioLibraryCreateModal.vue', () => {
+describe('PacbioLibraryCreate.vue', () => {
   let wrapper, modal, props
 
   beforeEach(() => {
@@ -13,7 +13,7 @@ describe('PacbioLibraryCreateModal.vue', () => {
       selectedSamples: [1],
     }
 
-    wrapper = mount(PacbioLibraryCreateModal, {
+    wrapper = mount(PacbioLibraryCreate, {
       localVue,
       store,
       propsData: props,
@@ -22,7 +22,7 @@ describe('PacbioLibraryCreateModal.vue', () => {
   })
 
   it('will have an button component', () => {
-    expect(wrapper.find('#pacbioLibraryCreateModal').element).toBeTruthy()
+    expect(wrapper.find('#pacbioLibraryCreate').element).toBeTruthy()
   })
 
   it('will have an modal component', () => {

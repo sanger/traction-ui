@@ -1,5 +1,5 @@
 <template>
-  <div class="pacbioRunInfo">
+  <div class="pacbioRunInfoEdit">
     <b-row>
       <b-col>
         <b-form-input
@@ -87,7 +87,7 @@ import { createNamespacedHelpers } from 'vuex'
 const { mapGetters, mapState, mapMutations } = createNamespacedHelpers('traction/pacbio/runs')
 
 export default {
-  name: 'PacbioRunInfo',
+  name: 'PacbioRunInfoEdit',
   data() {
     return {
       systemNameOptions: [
@@ -124,7 +124,7 @@ export default {
 </script>
 
 <style>
-.pacbioRunInfo {
+.pacbioRunInfoEdit {
   border: solid;
   border-width: 1px;
   padding: 10px;

@@ -1,8 +1,8 @@
-import Reception from '@/views/pacbio/PacbioReception'
+import Reception from '@/views/pacbio/PacbioReceptionTube'
 import { mount, localVue, store, Data } from '../../testHelper'
 import Response from '@/api/Response'
-import Samples from '@/views/pacbio/PacbioSamples'
-import Libraries from '@/views/pacbio/PacbioLibraries'
+import Samples from '@/views/pacbio/PacbioSampleIndex'
+import Libraries from '@/views/pacbio/PacbioLibraryIndex'
 import VueRouter from 'vue-router'
 
 describe('Reception', () => {

@@ -2,7 +2,7 @@
   <g>
     <defs>
       <filter id="blurFilter">
-        <feGaussianBlur in="SourceGraphic" stdDeviation="1" />
+        <feGaussianBlur in="SourceGraphic" std-deviation="1" />
       </filter>
     </defs>
     <ellipse
@@ -19,19 +19,19 @@
       <title v-if="hasLibraries" v-text="tooltip"></title>
     </ellipse>
     <foreignObject>
-      <WellModal ref="modal" class="modal" :position="position" @alert="alert"></WellModal>
+      <WellEdit ref="modal" class="modal" :position="position" @alert="alert"></WellEdit>
     </foreignObject>
   </g>
 </template>
 
 <script>
 import { mapActions, mapMutations, mapGetters } from 'vuex'
-import WellModal from '@/components/pacbio/PacbioWellModal'
+import WellEdit from '@/components/pacbio/PacbioRunWellEdit'
 
 export default {
-  name: 'Well',
+  name: 'PacbioRunWellEdit',
   components: {
-    WellModal,
+    WellEdit,
   },
   props: {
     row: {

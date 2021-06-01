@@ -21,11 +21,11 @@
     <br />
 
     <div>
-      <pacbioRunInfo ref="pacbioRunInfo"></pacbioRunInfo>
+      <pacbioRunInfoEdit ref="pacbioRunInfoEdit"></pacbioRunInfoEdit>
       <br />
       <b-row>
         <b-col cols="6">
-          <pacbioLibrariesList ref="pacbioLibrariesList"></pacbioLibrariesList>
+          <pacbioLibraryList ref="pacbioLibraryList"></pacbioLibraryList>
         </b-col>
         <b-col>
           <Plate v-if="currentRun.id" ref="plate" @alert="showAlert"></Plate>
@@ -36,9 +36,9 @@
 </template>
 
 <script>
-import PacbioRunInfo from '@/components/pacbio/PacbioRunInfo'
-import PacbioLibrariesList from '@/components/pacbio/PacbioLibrariesList'
-import Plate from '@/components/pacbio/PacbioPlate'
+import PacbioRunInfoEdit from '@/components/pacbio/PacbioRunInfoEdit'
+import PacbioLibraryList from '@/components/pacbio/PacbioLibraryList'
+import Plate from '@/components/pacbio/PacbioRunPlateItem'
 import Alert from '@/components/Alert'
 import Helper from '@/mixins/Helper'
 import { createNamespacedHelpers } from 'vuex'
@@ -49,8 +49,8 @@ export default {
   name: 'Run',
   components: {
     Alert,
-    PacbioRunInfo,
-    PacbioLibrariesList,
+    PacbioRunInfoEdit,
+    PacbioLibraryList,
     Plate,
   },
   mixins: [Helper],

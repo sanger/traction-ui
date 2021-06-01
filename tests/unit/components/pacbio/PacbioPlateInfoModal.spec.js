@@ -1,7 +1,7 @@
 import { mount, localVue, store } from '../../testHelper'
 import PacbioPlateInfoModal from '@/components/pacbio/PacbioPlateInfoModal'
 
-describe('PacbioTagEditModal.vue', () => {
+describe('PacbioTagEdit.vue', () => {
   let wrapper, modal, props, mockPlate
 
   beforeEach(() => {

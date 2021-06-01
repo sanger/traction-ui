@@ -1,5 +1,5 @@
 import * as Run from '@/api/PacbioRun'
-import Well from '@/components/pacbio/PacbioWell'
+import Well from '@/components/pacbio/PacbioRunWellItem'
 import { localVue, mount, store } from '../../testHelper'
 
 describe('Well.vue', () => {

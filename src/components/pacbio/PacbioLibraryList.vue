@@ -10,11 +10,11 @@
 import Helper from '@/mixins/Helper'
 import TableHelper from '@/mixins/TableHelper'
 import { createNamespacedHelpers } from 'vuex'
-import Tube from '@/components/pacbio/PacbioTube'
+import Tube from '@/components/pacbio/PacbioLibraryTubeItem'
 const { mapActions, mapGetters } = createNamespacedHelpers('traction/pacbio/libraries')
 
 export default {
-  name: 'PacbioLibrariesList',
+  name: 'PacbioLibraryList',
   components: {
     Tube,
   },

@@ -7,10 +7,10 @@
 <script>
 import Plate96SVG from '@/components/svg/Plate96SVG'
 import PlateMap from '@/config/PlateMap'
-import Well from '@/components/pacbio/PacbioWell'
+import Well from '@/components/pacbio/PacbioRunWellItem'
 
 export default {
-  name: 'Plate',
+  name: 'PacbioRunPlateItem',
   components: {
     Well,
     Plate96SVG,

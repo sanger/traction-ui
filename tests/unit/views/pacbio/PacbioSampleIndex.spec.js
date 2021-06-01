@@ -1,4 +1,4 @@
-import Samples from '@/views/pacbio/PacbioSamples'
+import Samples from '@/views/pacbio/PacbioSampleIndex'
 import { mount, localVue, store, Data } from '../../testHelper'
 import VueRouter from 'vue-router'
 import Response from '@/api/Response'

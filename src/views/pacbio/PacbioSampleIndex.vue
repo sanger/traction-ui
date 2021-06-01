@@ -20,10 +20,10 @@
     <br />
 
     <b-table
-      id="libraries-table"
+      id="samples-table"
       show-empty
       responsive
-      :items="libraries"
+      :items="requests"
       :fields="fields"
       :filter="filter"
       :per-page="perPage"
@@ -32,7 +32,7 @@
       :sort-desc.sync="sortDesc"
       hover
       selectable
-      select-mode="multi"
+      select-mode="single"
       @filtered="onFiltered"
       @row-selected="onRowSelected"
     >
@@ -48,7 +48,8 @@
       </template>
 
       <template v-slot:cell(actions)="row">
-        <PacbioLibraryEditModal :lib="row.item" @alert="showAlert"> </PacbioLibraryEditModal>
+        <PacbioSampleMetadataEdit ref="sampleMetadata" :req="row.item" @alert="showAlert">
+        </PacbioSampleMetadataEdit>
       </template>
 
       <template v-slot:cell(show_details)="row">
@@ -64,40 +65,19 @@
       </template>
 
       <template v-slot:row-details="row">
-        <b-card>
-          <b-table
-            small
-            bordered
-            show-empty
-            :items="row.item.requests"
-            :fields="field_in_details"
-            :filter="filter"
-          >
-            <template v-slot:cell(edit_tag)="row">
-              <PacbioTagEditModal
-                :request_library="row.item"
-                @alert="showAlert"
-                @reloadPage="provider"
-              >
-              </PacbioTagEditModal>
-            </template>
-          </b-table>
+        <b-card class="text-left">
+          <template v-for="(field, index) in field_in_details">
+            <span :key="field.label + index" class="font-weight-bold">{{ field.label }}</span
+            >: {{ row.item[field.item] }}
+            <br :key="field.label" />
+          </template>
         </b-card>
       </template>
     </b-table>
 
-    <span class="font-weight-bold">Total records: {{ libraries.length }}</span>
+    <span class="font-weight-bold">Total records: {{ requests.length }}</span>
 
     <div class="clearfix">
-      <b-button
-        id="deleteLibraries"
-        variant="danger"
-        class="float-left"
-        :disabled="selected.length === 0"
-        @click="handleLibraryDelete"
-      >
-        Delete Libraries
-      </b-button>
       <printerModal
         ref="printerModal"
         class="float-left"
@@ -106,16 +86,23 @@
       >
       </printerModal>
 
+      <PacbioLibraryCreate
+        :selected-samples="selected"
+        :disabled="selected.length === 0"
+        class="float-left"
+        @alert="showAlert"
+      >
+      </PacbioLibraryCreate>
+
       <b-pagination
         v-model="currentPage"
         class="float-right"
-        :total-rows="libraries.length"
+        :total-rows="requests.length"
         :per-page="perPage"
-        aria-controls="libraries-table"
+        aria-controls="samples-table"
       >
       </b-pagination>
     </div>
-
     <b-form-group label-cols-lg="1" label="Per Page" label-for="input-per-page">
       <b-form-input id="input-per-page" v-model="perPage" trim class="w-25"></b-form-input>
     </b-form-group>
@@ -123,48 +110,44 @@
 </template>
 
 <script>
+import PacbioLibraryCreate from '@/components/pacbio/PacbioLibraryCreate'
+import PacbioSampleMetadataEdit from '@/components/pacbio/PacbioSampleMetadataEdit'
+import PrinterModal from '@/components/PrinterModal'
 import Helper from '@/mixins/Helper'
-import PacbioLibraryEditModal from '@/components/pacbio/PacbioLibraryEditModal'
-import PacbioTagEditModal from '@/components/pacbio/PacbioTagEditModal'
 import TableHelper from '@/mixins/TableHelper'
 import Alert from '@/components/Alert'
-import PrinterModal from '@/components/PrinterModal'
-import * as consts from '@/consts/consts'
+
 import { createNamespacedHelpers } from 'vuex'
-const { mapActions, mapGetters } = createNamespacedHelpers('traction/pacbio/libraries')
+const { mapActions, mapGetters } = createNamespacedHelpers('traction/pacbio/requests')
 
 export default {
-  name: 'Libraries',
+  name: 'Samples',
   components: {
-    Alert,
+    PacbioLibraryCreate,
     PrinterModal,
-    PacbioLibraryEditModal,
-    PacbioTagEditModal,
+    Alert,
+    PacbioSampleMetadataEdit,
   },
   mixins: [Helper, TableHelper],
   data() {
     return {
       fields: [
         { key: 'selected', label: '' },
-        { key: 'id', label: 'Library ID', sortable: true },
-        { key: 'sample_names', label: 'Sample Names', sortable: true },
+        { key: 'id', label: 'Sample ID (Request)', sortable: true },
+        { key: 'sample_name', label: 'Name', sortable: true },
+        { key: 'sample_species', label: 'Species', sortable: true },
         { key: 'barcode', label: 'Barcode', sortable: true },
-        { key: 'volume', label: 'Volume', sortable: true },
-        { key: 'concentration', label: 'Concentration', sortable: true },
-        {
-          key: 'template_prep_kit_box_barcode',
-          label: 'Template Prep Kit Box Barcode',
-          sortable: true,
-        },
-        { key: 'fragment_size', label: 'Fragment Size', sortable: true },
+        { key: 'source_barcode', label: 'Source barcode', sortable: true },
         { key: 'created_at', label: 'Created at', sortable: true },
         { key: 'actions', label: 'Actions' },
         { key: 'show_details', label: '' },
       ],
       field_in_details: [
-        { key: 'sample_name', label: 'Sample(s)' },
-        { key: 'tag_group_id', label: 'Tag(s)' },
-        { key: 'edit_tag', label: 'Actions' },
+        { label: 'Library type', item: 'library_type' },
+        { label: 'Estimate of GB required', item: 'estimate_of_gb_required' },
+        { label: 'Number of SMRT cells', item: 'number_of_smrt_cells' },
+        { label: 'Cost code', item: 'cost_code' },
+        { label: 'External study ID', item: 'external_study_id' },
       ],
       filteredItems: [],
       selected: [],
@@ -176,40 +159,20 @@ export default {
     }
   },
   computed: {
-    ...mapGetters(['libraries']),
+    ...mapGetters(['requests']),
   },
   created() {
-    // When this component is created (the 'created' lifecycle hook is called), we need to get the
-    // items for the table
     this.provider()
   },
   methods: {
-    async handleLibraryDelete() {
-      try {
-        let selectedIds = this.selected.map((s) => s.id)
-        let responses = await this.deleteLibraries(selectedIds)
-
-        if (responses.every((r) => r.successful)) {
-          let keyword = selectedIds.length > 1 ? 'Libraries' : 'Library'
-          this.showAlert(`${keyword} ${selectedIds.join(', ')} successfully deleted`, 'success')
-          this.provider()
-        } else {
-          throw Error(responses.map((r) => r.errors.message).join(','))
-        }
-      } catch (error) {
-        this.showAlert(consts.MESSAGE_ERROR_DELETION_FAILED + error.message, 'danger')
-      }
-    },
-    // Get all the libraries
-    // Provider function used by the bootstrap-vue table component
     async provider() {
       try {
-        await this.setLibraries()
+        await this.setRequests()
       } catch (error) {
-        this.showAlert('Failed to get libraries: ' + error.message, 'danger')
+        this.showAlert('Failed to get samples: ' + error.message, 'danger')
       }
     },
-    ...mapActions(['deleteLibraries', 'setLibraries']),
+    ...mapActions(['setRequests']),
   },
 }
 </script>

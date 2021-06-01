@@ -1,14 +1,14 @@
 import Response from '@/api/Response'
-import PacbioLibraryEditModal from '@/components/pacbio/PacbioLibraryEditModal'
+import PacbioLibraryEdit from '@/components/pacbio/PacbioLibraryEdit'
 import { Data, localVue, mount, store } from '../../testHelper'
 
-describe('PacbioLibraryEditModal.vue', () => {
+describe('PacbioLibraryEdit.vue', () => {
   let wrapper, modal, props, mockLibrary
 
   beforeEach(() => {
     mockLibrary = new Response(Data.TractionPacbioLibrary).deserialize.libraries[0]
     props = { lib: mockLibrary }
-    wrapper = mount(PacbioLibraryEditModal, {
+    wrapper = mount(PacbioLibraryEdit, {
       localVue,
       store,
       propsData: props,

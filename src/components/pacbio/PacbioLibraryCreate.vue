@@ -1,7 +1,7 @@
 <template>
   <div>
     <b-btn
-      id="pacbioLibraryCreateModal"
+      id="pacbioLibraryCreate"
       v-b-modal.pacbioLibraryModal
       :disabled="disabled"
       variant="success"
@@ -100,7 +100,7 @@ import * as consts from '@/consts/consts'
 import { mapActions, mapGetters } from 'vuex'
 
 export default {
-  name: 'PacbioLibraryCreateModal',
+  name: 'PacbioLibraryCreate',
   components: {
     Alert,
   },

@@ -62,7 +62,7 @@ import ModalHelper from '@/mixins/ModalHelper'
 const { mapActions } = createNamespacedHelpers('traction/pacbio/requests')
 
 export default {
-  name: 'PacbioSampleMetadataModal',
+  name: 'PacbioSampleMetadataEdit',
   mixins: [ModalHelper],
   props: {
     req: {

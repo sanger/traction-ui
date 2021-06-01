@@ -1,4 +1,4 @@
-import PacbioPlates from '@/views/pacbio/PacbioPlates'
+import PacbioPlates from '@/views/pacbio/PacbioPlateIndex'
 import { mount, localVue, store, Data } from '../../testHelper'
 import Response from '@/api/Response'
 import VueRouter from 'vue-router'

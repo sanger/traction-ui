@@ -1,5 +1,5 @@
-import PacbioRun from '@/views/pacbio/PacbioRun'
-import PacbioRuns from '@/views/pacbio/PacbioRuns'
+import PacbioRun from '@/views/pacbio/PacbioRunShow'
+import PacbioRuns from '@/views/pacbio/PacbioRunIndex'
 import VueRouter from 'vue-router'
 import { localVue, mount, store } from '../../testHelper'
 
@@ -40,8 +40,8 @@ describe('Run.vue', () => {
       localVue,
       stubs: {
         Plate: true,
-        PacbioLibrariesList: true,
-        PacbioRunInfo: true,
+        PacbioLibraryList: true,
+        PacbioRunInfoEdit: true,
       },
       propsData: { id: 'new' },
     })
@@ -56,13 +56,13 @@ describe('Run.vue', () => {
 
   describe('Pacbio Run Info', () => {
     it('dispays the run infomation', () => {
-      expect(wrapper.findComponent({ ref: 'PacbioRunInfo' })).toBeTruthy()
+      expect(wrapper.findComponent({ ref: 'PacbioRunInfoEdit' })).toBeTruthy()
     })
   })
 
   describe('Pacbio Libraries Table', () => {
     it('dispays the pacbio library table', () => {
-      expect(wrapper.findComponent({ ref: 'PacbioLibrariesList' })).toBeTruthy()
+      expect(wrapper.findComponent({ ref: 'PacbioLibraryList' })).toBeTruthy()
     })
   })
 
@@ -135,8 +135,8 @@ describe('Run.vue', () => {
         propsData: { id: 1 },
         stubs: {
           Plate: true,
-          PacbioLibrariesList: true,
-          PacbioRunInfo: true,
+          PacbioLibraryList: true,
+          PacbioRunInfoEdit: true,
         },
       })
       pacbioRun = wrapper.vm
