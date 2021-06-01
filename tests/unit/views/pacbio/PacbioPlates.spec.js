@@ -7,7 +7,7 @@ describe('PacbioPlates.vue', () => {
   let wrapper, plates, mockPlates, router
 
   beforeEach(() => {
-    mockPlates = new Response(Data.PacbioPlate).deserialize.plates
+    mockPlates = new Response(Data.PacbioPlates).deserialize.plates
     store.commit('traction/pacbio/plates/setPlates', mockPlates)
 
     router = new VueRouter({
@@ -24,6 +24,9 @@ describe('PacbioPlates.vue', () => {
       store,
       router,
       localVue,
+      stubs: {
+        Plate: true, // Stubbed to prevent unnecessarily loading the plate SVG
+      },
     })
 
     wrapper.setData({ sortDesc: false })
@@ -48,12 +51,19 @@ describe('PacbioPlates.vue', () => {
     })
   })
 
-  describe('Info button', () => {
+  describe('Plate display button', () => {
     let button
 
     it('is present for each plate', () => {
-      button = wrapper.find('#infoPlateBtn-1')
-      expect(button.text()).toEqual('+')
+      button = wrapper.find('#details-btn-1')
+      expect(button.text()).toEqual('Show Plate')
+    })
+
+    it('has a plate component on button click', async () => {
+      button = wrapper.find('#details-btn-1')
+      await button.trigger('click')
+      expect(wrapper.findComponent({ ref: 'plate' }).exists()).toBeTruthy()
+      expect(button.text()).toEqual('Hide Plate')
     })
   })
 

@@ -6,7 +6,7 @@ let plates
 
 describe('mutations', () => {
   beforeEach(() => {
-    plates = new Response(Data.PacbioPlate).deserialize.plates
+    plates = new Response(Data.PacbioPlates).deserialize.plates
   })
 
   it('"setPlates" sets "state.plates" to the given plates', () => {
