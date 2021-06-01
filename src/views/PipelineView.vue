@@ -8,7 +8,8 @@
             v-for="(route, index) in pipelineInfo.routes"
             :key="index"
             :to="path(route)"
-            exact exact-active-class="active"
+            exact
+            exact-active-class="active"
             >{{ capitalizeFirstLetter(route) }}</b-nav-item
           >
         </b-nav>
