@@ -26,7 +26,7 @@ const build = ({ config, environment }) => {
     return {
       ...result,
       // each api will be a property and we need to extract the baseURL from the environment
-      [api.name]: buildApi({ ...api, baseURL: environment[`${api.baseURL}`] }),
+      [api.name]: buildApi({ ...api, baseURL: environment[api.baseURL] }),
     }
   }, {})
 }
