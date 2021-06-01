@@ -10,7 +10,7 @@ Vue.use(Vuex)
 
 export default new Vuex.Store({
   state: {
-    api: build(Api.Config, process.env),
+    api: build({ config: Api.Config, environment: process.env }),
     printers: PrinterList,
   },
   mutations: {},
