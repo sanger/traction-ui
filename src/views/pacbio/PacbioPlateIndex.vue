@@ -33,8 +33,19 @@
       hover
       @filtered="onFiltered"
     >
-      <template v-slot:cell(info)="row">
-        <PacbioPlateInfoModal :plate="row.item" @alert="alert"></PacbioPlateInfoModal>
+      <template v-slot:cell(show_details)="row">
+        <b-button
+          :id="'details-btn-' + row.item.id"
+          size="sm"
+          variant="outline-primary"
+          @click="row.toggleDetails"
+        >
+          {{ row.detailsShowing ? 'Hide' : 'Show' }} Plate
+        </b-button>
+      </template>
+
+      <template v-slot:row-details="row">
+        <Plate ref="plate" :plate="row.item" @alert="alert"></Plate>
       </template>
     </b-table>
 
@@ -60,7 +71,7 @@
 import Alert from '@/components/Alert'
 import Helper from '@/mixins/Helper'
 import TableHelper from '@/mixins/TableHelper'
-import PacbioPlateInfoModal from '@/components/pacbio/PacbioPlateInfoModal'
+import Plate from '@/components/plates/PlateItem'
 import { createNamespacedHelpers } from 'vuex'
 const { mapActions, mapGetters } = createNamespacedHelpers('traction/pacbio/plates')
 
@@ -68,7 +79,7 @@ export default {
   name: 'PacbioPlates',
   components: {
     Alert,
-    PacbioPlateInfoModal,
+    Plate,
   },
   mixins: [Helper, TableHelper],
   data() {
@@ -77,7 +88,7 @@ export default {
         { key: 'id', label: 'Plate ID', sortable: true },
         { key: 'barcode', label: 'Plate Barcode', sortable: true },
         { key: 'created_at', label: 'Created at', sortable: true },
-        { key: 'info', label: '' },
+        { key: 'show_details', label: 'Show Details' },
       ],
       filteredItems: [],
       filter: null,

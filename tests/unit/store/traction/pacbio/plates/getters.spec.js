@@ -6,7 +6,7 @@ let plates
 
 describe('getters', () => {
   beforeEach(() => {
-    plates = new Response(Data.PacbioPlate).deserialize.plates
+    plates = new Response(Data.PacbioPlates).deserialize.plates
   })
 
   it('"plates" returns "state.plates"', () => {

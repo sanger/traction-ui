@@ -15,7 +15,8 @@
             "data": [
               {
                 "type": "wells",
-                "id": "1"
+                "id": "1",
+                "position": "A1"
               }
             ],
             "links": {
@@ -39,7 +40,8 @@
             "data": [
               {
                 "type": "wells",
-                "id": "2"
+                "id": "2",
+                "position": "A2"
               }
             ],
             "links": {
