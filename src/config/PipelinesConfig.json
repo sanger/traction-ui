@@ -9,7 +9,7 @@
     "name": "pacbio",
     "title": "Pacbio",
     "description": "A LIMS pipeline to support tracking for PacBio Long-Read Sequencing",
-    "routes": ["reception", "plate-reception", "samples", "libraries", "runs"]
+    "routes": ["reception", "plate-reception", "plates", "samples", "libraries", "runs"]
   },
   {
     "name": "ont",

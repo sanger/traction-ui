@@ -21,7 +21,7 @@ describe('PageNotFound.vue', () => {
       routes: [
         { path: '/dashboard', name: 'Dashboard' },
         { path: '/saphyr/runs', name: 'SaphyrRuns' },
-        { path: '/pacbio/runs', name: 'PacbioRuns' },
+        { path: '/pacbio/runs', name: 'PacbioRunIndex' },
       ],
     })
     wrapper = mount(PageNotFound, { router, localVue })

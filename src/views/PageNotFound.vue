@@ -12,7 +12,7 @@
       <label id="backToSaphyrRuns">Saphyr Runs</label>
     </router-link>
     |
-    <router-link :to="{ name: 'PacbioRuns' }">
+    <router-link :to="{ name: 'PacbioRunIndex' }">
       <label id="backToPacbioRuns">Pacbio Runs</label>
     </router-link>
   </div>

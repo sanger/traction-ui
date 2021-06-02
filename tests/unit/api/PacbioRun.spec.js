@@ -135,7 +135,7 @@ describe('Run', () => {
 
     it('returns true', async () => {
       pacbioRequest.runs.create.mockResolvedValue(Data.PacbioRun)
-      pacbioRequest.runs.plates.create.mockResolvedValue(Data.PacbioPlate)
+      pacbioRequest.runs.plates.create.mockResolvedValue(Data.PacbioSequencingPlate)
       pacbioRequest.runs.wells.create.mockResolvedValue(Data.PacbioWell)
 
       let resp = await Run.create(run, pacbioRequest)
@@ -182,11 +182,8 @@ describe('Run', () => {
 
     it('returns false and rollsback if the wells cannot be created', async () => {
       pacbioRequest.runs.create.mockResolvedValue(Data.PacbioRun)
-      pacbioRequest.runs.plates.create.mockResolvedValue(Data.PacbioPlate)
+      pacbioRequest.runs.plates.create.mockResolvedValue(Data.PacbioSequencingPlate)
       pacbioRequest.runs.wells.create.mockResolvedValue(failedResponse)
-
-      pacbioRequest.runs.destroy.mockResolvedValue(Data.SuccessfulDestroy)
-      pacbioRequest.runs.plates.destroy.mockResolvedValue(Data.SuccessfulDestroy)
 
       let runResponse = new Response(Data.PacbioRun)
       let runId = runResponse.deserialize.runs[0].id
