@@ -40,5 +40,9 @@ export default {
     capitalizeFirstLetter(string) {
       return string.charAt(0).toUpperCase() + string.slice(1)
     },
+    // capitalise first letter and remove dashes (can add more when need be)
+    humanise(string) {
+      return this.capitalizeFirstLetter(string).replace(/-/g, ' ')
+    },
   },
 }

@@ -1,5 +1,5 @@
 /*
-  TODO: separate out into reusable functional methods - currying and recursion.
+  TODO: separate out into reusable functional methods
 */
 import deserialize from '@/api/JsonApi'
 
@@ -28,7 +28,6 @@ class Response {
     if (this._errors === undefined) return {}
 
     let self = this
-
     return Object.assign({
       message: Object.keys(self._errors)
         .map((key) => {
