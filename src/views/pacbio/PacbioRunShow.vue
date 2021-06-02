@@ -2,7 +2,7 @@
   <div class="run">
     <alert ref="alert"></alert>
 
-    <router-link :to="{ name: 'PacbioRuns' }">
+    <router-link :to="{ name: 'PacbioRunIndex' }">
       <b-button id="backToRunsButton" class="float-right">Back</b-button>
     </router-link>
 
@@ -112,7 +112,7 @@ export default {
     },
     ...mapActions(['createRun', 'updateRun', 'editRun', 'newRun']),
     redirectToRuns() {
-      this.$router.push({ name: 'PacbioRuns' })
+      this.$router.push({ name: 'PacbioRunIndex' })
     },
     async provider() {
       if (this.id === 'new') {

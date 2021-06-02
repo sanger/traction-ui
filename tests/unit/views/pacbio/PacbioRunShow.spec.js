@@ -9,8 +9,8 @@ describe('Run.vue', () => {
   beforeEach(() => {
     router = new VueRouter({
       routes: [
-        { path: '/run/:id', name: 'PacbioRun', component: PacbioRun },
-        { path: '/runs', name: 'PacbioRuns', component: PacbioRuns },
+        { path: '/run/:id', name: 'PacbioRunShow', component: PacbioRun },
+        { path: '/runs', name: 'PacbioRunIndex', component: PacbioRuns },
       ],
     })
 
@@ -75,6 +75,8 @@ describe('Run.vue', () => {
   describe('Back button', () => {
     it('will always show', () => {
       expect(wrapper.find('#backToRunsButton').exists()).toBeTruthy()
+      wrapper.find('#backToRunsButton').trigger('click')
+      expect(wrapper.vm.$route.path).toBe('/runs')
     })
   })
 
