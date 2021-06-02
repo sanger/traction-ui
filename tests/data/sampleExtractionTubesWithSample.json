@@ -5,7 +5,7 @@
         "id": "58a33358-e8f4-11e9-9231-68b59977951e",
         "type": "assets",
         "links": {
-          "self": "https://uat.samples-extraction.psd.sanger.ac.uk/api/v1/assets/58a33358-e8f4-11e9-9231-68b59977951e"
+          "self": "https://samples-extraction/api/v1/assets/58a33358-e8f4-11e9-9231-68b59977951e"
         },
         "attributes": {
           "uuid": "58a33358-e8f4-11e9-9231-68b59977951e",

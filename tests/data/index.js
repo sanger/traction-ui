@@ -32,6 +32,7 @@ import PacbioWellLibrary from './pacbioWellLibrary'
 import TractionTags from './tractionTags'
 import SequencescapePlates from './sequencescapePlates'
 import TractionTubeWithContainerMaterials from './tractionTubeWithContainerMaterials'
+import TractionPlates from './tractionPlates'
 
 export default {
   CreateChip,
@@ -68,4 +69,5 @@ export default {
   TractionTags,
   SequencescapePlates,
   TractionTubeWithContainerMaterials,
+  TractionPlates,
 }

@@ -65,10 +65,12 @@
             "include": "plate.wells.libraries",
             "resources": [
               {
-                "name": "plates"
+                "name": "plates",
+                "include": ""
               },
               {
-                "name": "wells"
+                "name": "wells",
+                "include": ""
               }
             ]
           },
@@ -112,7 +114,7 @@
     "resources": [
       {
         "name": "plates",
-        "include": "wells.aliquots.sample"
+        "include": "wells.aliquots.sample.sample_metadata,wells.aliquots.study"
       }
     ]
   }

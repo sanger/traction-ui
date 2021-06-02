@@ -149,6 +149,7 @@ export default {
         { key: 'id', label: 'Library ID', sortable: true },
         { key: 'sample_names', label: 'Sample Names', sortable: true },
         { key: 'barcode', label: 'Barcode', sortable: true },
+        { key: 'source_identifier', label: 'Source', sortable: true },
         { key: 'volume', label: 'Volume', sortable: true },
         { key: 'concentration', label: 'Concentration', sortable: true },
         {

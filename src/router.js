@@ -22,6 +22,7 @@ import OntPlates from './views/ont/OntPlates'
 import OntLibraries from './views/ont/OntLibraries'
 import OntHeronRun from './views/ont/OntHeronRun'
 import OntHeronRuns from './views/ont/OntHeronRuns'
+import PacbioReceptionPlate from './views/pacbio/PacbioReceptionPlate'
 
 Vue.use(Router)
 
@@ -61,6 +62,7 @@ export default new Router({
         { path: 'libraries', name: 'PacbioLibraryIndex', component: PacbioLibraryIndex },
         { path: 'runs', name: 'PacbioRunIndex', component: PacbioRunIndex },
         { path: 'run/:id', name: 'PacbioRunShow', component: PacbioRunShow, props: true },
+        { path: 'plate-reception', name: 'PacbioPlateReception', component: PacbioReceptionPlate },
       ],
     },
     {

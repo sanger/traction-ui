@@ -18,7 +18,7 @@
           :key="inner_index"
           :to="{ path: '/' + pipeline.name + '/' + route }"
         >
-          <b-button variant="outline-primary">{{ capitalizeFirstLetter(route) }}</b-button>
+          <b-button variant="outline-primary">{{ humanise(route) }}</b-button>
         </router-link>
       </b-card>
     </b-card-group>
@@ -26,6 +26,7 @@
 </template>
 
 <script>
+// TODO: modify Helper to be more descriptive and change it so that we can transform routes correctly.
 import PipelinesConfig from '@/config/PipelinesConfig'
 import Helper from '@/mixins/Helper'
 
