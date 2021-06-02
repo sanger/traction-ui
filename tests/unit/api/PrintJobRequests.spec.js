@@ -26,6 +26,7 @@ describe('PrintJobRequests', () => {
       localStorage.setItem('pipeline', consts.PIPELINE_SAPHYR)
 
       request = store.getters.api.printMyBarcode.print_jobs
+
       request.create = jest.fn()
     })
 

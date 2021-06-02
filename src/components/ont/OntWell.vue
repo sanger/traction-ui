@@ -42,7 +42,7 @@ export default {
   },
   computed: {
     hasMaterial() {
-      return !!this.well_info.materials.some((m) => m.name)
+      return this.well_info.materials.some((m) => m.name)
     },
     status() {
       return this.hasMaterial ? 'filled' : 'empty'

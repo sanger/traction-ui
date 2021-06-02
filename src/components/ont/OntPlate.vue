@@ -15,7 +15,7 @@
         :key="position"
         ref="ontWell"
         v-bind="well"
-        :well-info="getWellAt(position)"
+        :well_info="getWellAt(position)"
       >
       </OntWell>
     </Plate96SVG>
