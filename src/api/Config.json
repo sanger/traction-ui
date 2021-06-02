@@ -1,121 +1,121 @@
 [
-    {
-        "name": "traction",
-        "apiNamespace": "v1",
-        "baseURL": "VUE_APP_TRACTION_BASE_URL",
+  {
+    "name": "traction",
+    "apiNamespace": "v1",
+    "baseURL": "VUE_APP_TRACTION_BASE_URL",
+    "resources": [
+      {
+        "name": "samples"
+      },
+      {
+        "name": "tags"
+      }
+    ],
+    "pipelines": [
+      {
+        "name": "saphyr",
         "resources": [
-            {
-                "name": "samples"
-            },
-            {
-                "name": "tags"
-            }
-        ],
-        "pipelines": [
-            {
-                "name": "saphyr",
-                "resources": [
-                    {
-                        "name": "libraries"
-                    },
-                    {
-                        "name": "enzymes"
-                    },
-                    {
-                        "name": "runs",
-                        "include": "chip.flowcells.library"
-                    },
-                    {
-                        "name": "chips"
-                    },
-                    {
-                        "name": "flowcells"
-                    },
-                    {
-                        "name": "requests",
-                        "include": ""
-                    },
-                    {
-                        "name": "tubes",
-                        "include": "materials"
-                    }
-                ]
-            },
-            {
-                "name": "pacbio",
-                "resources": [
-                    {
-                        "name": "libraries",
-                        "include": "requests"
-                    },
-                    {
-                        "name": "request_library",
-                        "include": ""
-                    },
-                    {
-                        "name": "requests",
-                        "include": ""
-                    },
-                    {
-                        "name": "tubes",
-                        "include": "materials"
-                    },
-                    {
-                        "name": "runs",
-                        "include": "plate.wells.libraries",
-                        "resources": [
-                            {
-                                "name": "plates",
-                                "include": ""
-                            },
-                            {
-                                "name": "wells",
-                                "include": ""
-                            }
-                        ]
-                    },
-                    {
-                        "name": "plates",
-                        "include": "plates.wells.materials"
-                    },
-                    {
-                        "name": "wells",
-                        "include": ""
-                    }
-                ]
-            }
+          {
+            "name": "libraries"
+          },
+          {
+            "name": "enzymes"
+          },
+          {
+            "name": "runs",
+            "include": "chip.flowcells.library"
+          },
+          {
+            "name": "chips"
+          },
+          {
+            "name": "flowcells"
+          },
+          {
+            "name": "requests",
+            "include": ""
+          },
+          {
+            "name": "tubes",
+            "include": "materials"
+          }
         ]
-    },
-    {
-        "name": "printMyBarcode",
-        "apiNamespace": "v1",
-        "baseURL": "VUE_APP_PRINTMYBARCODE_BASE_URL",
+      },
+      {
+        "name": "pacbio",
         "resources": [
-            {
-                "name": "print_jobs"
-            }
-        ]
-    },
-    {
-        "name": "sampleExtraction",
-        "apiNamespace": "api/v1",
-        "baseURL": "VUE_APP_SAMPLEEXTRACTION_BASE_URL",
-        "resources": [
-            {
-                "name": "assets",
-                "include": ""
-            }
-        ]
-    },
-    {
-        "name": "sequencescape",
-        "apiNamespace": "api/v2",
-        "baseURL": "VUE_APP_SEQUENCESCAPE_BASE_URL",
-        "resources": [
-            {
+          {
+            "name": "libraries",
+            "include": "requests"
+          },
+          {
+            "name": "request_library",
+            "include": ""
+          },
+          {
+            "name": "requests",
+            "include": ""
+          },
+          {
+            "name": "tubes",
+            "include": "materials"
+          },
+          {
+            "name": "runs",
+            "include": "plate.wells.libraries",
+            "resources": [
+              {
                 "name": "plates",
-                "include": "wells.aliquots.sample.sample_metadata,wells.aliquots.study"
-            }
+                "include": ""
+              },
+              {
+                "name": "wells",
+                "include": ""
+              }
+            ]
+          },
+          {
+            "name": "plates",
+            "include": "plates.wells.materials"
+          },
+          {
+            "name": "wells",
+            "include": ""
+          }
         ]
-    }
+      }
+    ]
+  },
+  {
+    "name": "printMyBarcode",
+    "apiNamespace": "v1",
+    "baseURL": "VUE_APP_PRINTMYBARCODE_BASE_URL",
+    "resources": [
+      {
+        "name": "print_jobs"
+      }
+    ]
+  },
+  {
+    "name": "sampleExtraction",
+    "apiNamespace": "api/v1",
+    "baseURL": "VUE_APP_SAMPLEEXTRACTION_BASE_URL",
+    "resources": [
+      {
+        "name": "assets",
+        "include": ""
+      }
+    ]
+  },
+  {
+    "name": "sequencescape",
+    "apiNamespace": "api/v2",
+    "baseURL": "VUE_APP_SEQUENCESCAPE_BASE_URL",
+    "resources": [
+      {
+        "name": "plates",
+        "include": "wells.aliquots.sample.sample_metadata,wells.aliquots.study"
+      }
+    ]
+  }
 ]

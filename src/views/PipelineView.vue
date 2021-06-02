@@ -10,7 +10,8 @@
             :to="path(route)"
             exact
             exact-active-class="active"
-            >{{ humanise(route) }}</b-nav-item>
+            >{{ humanise(route) }}</b-nav-item
+          >
         </b-nav>
       </b-card-header>
 
