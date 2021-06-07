@@ -23,6 +23,11 @@
                     "type": "container_materials"
                   }
                 ]
+              },
+              {
+                "type": "wells",
+                "id": "2",
+                "position": "A2"
               }
             ],
             "links": {
@@ -46,8 +51,14 @@
             "data": [
               {
                 "type": "wells",
-                "id": "2",
-                "position": "A2"
+                "id": "5",
+                "position": "A1",
+                "materials": [
+                  {
+                    "id": "1",
+                    "type": "container_materials"
+                  }
+                ]
               }
             ],
             "links": {
