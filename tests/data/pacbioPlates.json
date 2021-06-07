@@ -16,7 +16,13 @@
               {
                 "type": "wells",
                 "id": "1",
-                "position": "A1"
+                "position": "A1",
+                "materials": [
+                  {
+                    "id": "1",
+                    "type": "container_materials"
+                  }
+                ]
               }
             ],
             "links": {
