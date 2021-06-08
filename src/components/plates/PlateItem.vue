@@ -53,7 +53,7 @@ export default {
   methods: {
     getWellAt(position) {
       let well = this.wells.filter((well) => well.position == position)[0]
-      return well && well.materials !== undefined ? well : { position: position, materials: [] }
+      return well && well.materials ? well : { position, materials: [] }
     },
     poolSamples() {
       return ''
