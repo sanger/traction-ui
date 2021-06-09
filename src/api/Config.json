@@ -1,99 +1,121 @@
-{
-  "traction": {
+[
+  {
     "name": "traction",
     "apiNamespace": "v1",
-    "resources": {
-      "samples": {
+    "baseURL": "VUE_APP_TRACTION_BASE_URL",
+    "resources": [
+      {
         "name": "samples"
       },
-      "tags": {
+      {
         "name": "tags"
-      },
-      "saphyr": {
-        "libraries": {
-          "name": "libraries"
-        },
-        "enzymes": {
-          "name": "enzymes"
-        },
-        "runs": {
-          "name": "runs",
-          "include": "chip.flowcells.library"
-        },
-        "chips": {
-          "name": "chips"
-        },
-        "flowcells": {
-          "name": "flowcells"
-        },
-        "requests": {
-          "name": "requests",
-          "include": ""
-        },
-        "tubes": {
-          "name": "tubes",
-          "include": "materials"
-        }
-      },
-      "pacbio": {
-        "libraries": {
-          "name": "libraries",
-          "include": "requests"
-        },
-        "request_library": {
-          "name": "request_library",
-          "include": ""
-        },
-        "requests": {
-          "name": "requests",
-          "include": ""
-        },
-        "tubes": {
-          "name": "tubes",
-          "include": "materials"
-        },
-        "runs": {
-          "name": "runs",
-          "include": "plate.wells.libraries"
-        },
-        "plates": {
-          "name": "plates",
-          "include": ""
-        },
-        "wells": {
-          "name": "wells",
-          "include": ""
-        }
       }
-    }
+    ],
+    "pipelines": [
+      {
+        "name": "saphyr",
+        "resources": [
+          {
+            "name": "libraries"
+          },
+          {
+            "name": "enzymes"
+          },
+          {
+            "name": "runs",
+            "include": "chip.flowcells.library"
+          },
+          {
+            "name": "chips"
+          },
+          {
+            "name": "flowcells"
+          },
+          {
+            "name": "requests",
+            "include": ""
+          },
+          {
+            "name": "tubes",
+            "include": "materials"
+          }
+        ]
+      },
+      {
+        "name": "pacbio",
+        "resources": [
+          {
+            "name": "libraries",
+            "include": "requests"
+          },
+          {
+            "name": "request_library",
+            "include": ""
+          },
+          {
+            "name": "requests",
+            "include": ""
+          },
+          {
+            "name": "tubes",
+            "include": "materials"
+          },
+          {
+            "name": "runs",
+            "include": "plate.wells.libraries",
+            "resources": [
+              {
+                "name": "plates",
+                "include": ""
+              },
+              {
+                "name": "wells",
+                "include": ""
+              }
+            ]
+          },
+          {
+            "name": "plates",
+            "include": "wells.materials"
+          },
+          {
+            "name": "wells",
+            "include": ""
+          }
+        ]
+      }
+    ]
   },
-  "printMyBarcode": {
+  {
     "name": "printMyBarcode",
     "apiNamespace": "v1",
-    "resources": {
-      "print_jobs": {
-        "name": "printJobs"
+    "baseURL": "VUE_APP_PRINTMYBARCODE_BASE_URL",
+    "resources": [
+      {
+        "name": "print_jobs"
       }
-    }
+    ]
   },
-  "sampleExtraction": {
+  {
     "name": "sampleExtraction",
     "apiNamespace": "api/v1",
-    "resources": {
-      "assets": {
+    "baseURL": "VUE_APP_SAMPLEEXTRACTION_BASE_URL",
+    "resources": [
+      {
         "name": "assets",
         "include": ""
       }
-    }
+    ]
   },
-  "sequencescape": {
+  {
     "name": "sequencescape",
     "apiNamespace": "api/v2",
-    "resources": {
-      "plates": {
+    "baseURL": "VUE_APP_SEQUENCESCAPE_BASE_URL",
+    "resources": [
+      {
         "name": "plates",
-        "include": "wells.aliquots.sample"
+        "include": "wells.aliquots.sample.sample_metadata,wells.aliquots.study"
       }
-    }
+    ]
   }
-}
+]

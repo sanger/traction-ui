@@ -40,7 +40,7 @@
 import Alert from '@/components/Alert'
 import Helper from '@/mixins/Helper'
 import OntPlate from '@/components/ont/OntPlate'
-import PLATES_ALL_QUERY from '@/graphql/queries/PlatesAll.query.gql'
+import ONT_PLATES_QUERY from '@/graphql/queries/OntPlates.query.gql'
 
 export default {
   name: 'OntPlates',
@@ -64,7 +64,7 @@ export default {
     getPlates(ctx, callback) {
       this.$apollo
         .query({
-          query: PLATES_ALL_QUERY,
+          query: ONT_PLATES_QUERY,
           variables: {
             pageNum: ctx.currentPage,
             pageSize: ctx.perPage,

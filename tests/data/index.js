@@ -24,13 +24,15 @@ import TractionPacbioSamples from './tractionPacbioSamples'
 import SampleExtractionTubesWithSample from './sampleExtractionTubesWithSample'
 import PacbioRuns from './pacbioRuns'
 import PacbioRun from './pacbioRun'
-import PacbioPlate from './pacbioPlate'
+import PacbioPlates from './pacbioPlates'
+import PacbioSequencingPlate from './pacbioSequencingPlate'
 import PacbioWell from './pacbioWell'
 import PacbioWells from './pacbioWells'
 import PacbioWellLibrary from './pacbioWellLibrary'
 import TractionTags from './tractionTags'
 import SequencescapePlates from './sequencescapePlates'
 import TractionTubeWithContainerMaterials from './tractionTubeWithContainerMaterials'
+import TractionPlates from './tractionPlates'
 
 export default {
   CreateChip,
@@ -59,11 +61,13 @@ export default {
   TractionPacbioSamples,
   PacbioRuns,
   PacbioRun,
-  PacbioPlate,
+  PacbioPlates,
+  PacbioSequencingPlate,
   PacbioWell,
   PacbioWells,
   PacbioWellLibrary,
   TractionTags,
   SequencescapePlates,
   TractionTubeWithContainerMaterials,
+  TractionPlates,
 }

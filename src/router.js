@@ -1,3 +1,4 @@
+// TODO: routes are not tested so cause errors on start
 import Vue from 'vue'
 import Router from 'vue-router'
 import Dashboard from './views/Dashboard'
@@ -9,17 +10,19 @@ import SaphyrLibraries from './views/saphyr/SaphyrLibraries'
 import SaphyrRuns from './views/saphyr/SaphyrRuns'
 import SaphyrRun from './views/saphyr/SaphyrRun'
 import Pacbio from './views/Pacbio'
-import PacbioReception from './views/pacbio/PacbioReception'
-import PacbioSamples from './views/pacbio/PacbioSamples'
-import PacbioLibraries from './views/pacbio/PacbioLibraries'
-import PacbioRuns from './views/pacbio/PacbioRuns'
-import PacbioRun from './views/pacbio/PacbioRun'
+import PacbioReceptionTube from './views/pacbio/PacbioReceptionTube'
+import PacbioPlateIndex from './views/pacbio/PacbioPlateIndex'
+import PacbioSampleIndex from './views/pacbio/PacbioSampleIndex'
+import PacbioLibraryIndex from './views/pacbio/PacbioLibraryIndex'
+import PacbioRunIndex from './views/pacbio/PacbioRunIndex'
+import PacbioRunShow from './views/pacbio/PacbioRunShow'
 import ONT from './views/ONT'
 import OntReception from './views/ont/OntReception'
 import OntPlates from './views/ont/OntPlates'
 import OntLibraries from './views/ont/OntLibraries'
 import OntHeronRun from './views/ont/OntHeronRun'
 import OntHeronRuns from './views/ont/OntHeronRuns'
+import PacbioReceptionPlate from './views/pacbio/PacbioReceptionPlate'
 
 Vue.use(Router)
 
@@ -53,11 +56,13 @@ export default new Router({
       component: Pacbio,
       children: [
         { path: '', redirect: 'reception' },
-        { path: 'reception', name: 'PacbioReception', component: PacbioReception },
-        { path: 'samples', name: 'PacbioSamples', component: PacbioSamples },
-        { path: 'libraries', name: 'PacbioLibraries', component: PacbioLibraries },
-        { path: 'runs', name: 'PacbioRuns', component: PacbioRuns },
-        { path: 'run/:id', name: 'PacbioRun', component: PacbioRun, props: true },
+        { path: 'reception', name: 'PacbioReceptionTube', component: PacbioReceptionTube },
+        { path: 'samples', name: 'PacbioSampleIndex', component: PacbioSampleIndex },
+        { path: 'plates', name: 'PacbioPlateIndex', component: PacbioPlateIndex },
+        { path: 'libraries', name: 'PacbioLibraryIndex', component: PacbioLibraryIndex },
+        { path: 'runs', name: 'PacbioRunIndex', component: PacbioRunIndex },
+        { path: 'run/:id', name: 'PacbioRunShow', component: PacbioRunShow, props: true },
+        { path: 'plate-reception', name: 'PacbioPlateReception', component: PacbioReceptionPlate },
       ],
     },
     {
