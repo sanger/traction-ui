@@ -2,6 +2,8 @@ import handlePromise from './PromiseHelper'
 const PRE_EXTENSION_TIME_DEFAULT = 2
 const CCS_ANALYSIS_OUTPUT_DEFAULT = 'Yes'
 
+// TODO: fix requests here for DPL-022
+
 const buildWell = (
   row,
   column,
@@ -48,13 +50,13 @@ const create = async (run, request) => {
     runId = runResponse.deserialize.runs[0].id
 
     let platePayload = createPlatePayload(runId)
-    let plateResponse = await createResource(platePayload, request.plates)
+    let plateResponse = await createResource(platePayload, request.runs.plates)
     responses.push(plateResponse)
     let plateId = plateResponse.deserialize.plates[0].id
 
     let wellsWithLibraries = run.plate.wells.filter((well) => well.libraries.length != 0)
     let wellsPayload = createWellsPayload(wellsWithLibraries, plateId)
-    let wellResponse = await createResource(wellsPayload, request.wells)
+    let wellResponse = await createResource(wellsPayload, request.runs.wells)
     responses.push(wellResponse)
   } catch (err) {
     destroy(runId, request.runs)
@@ -84,12 +86,12 @@ const update = async (run, request) => {
       if (well.id) {
         // Well exists - Update well
         let wellPayload = updateWellPayload(well)
-        let wellResponse = await updateResource(wellPayload, request.wells)
+        let wellResponse = await updateResource(wellPayload, request.runs.wells)
         responses.push(wellResponse)
       } else {
         // Well does not exist - Create well
         let wellPayload = createWellsPayload([well], run.plate.id)
-        let wellResponse = await createResource(wellPayload, request.wells)
+        let wellResponse = await createResource(wellPayload, request.runs.wells)
         responses.push(wellResponse)
       }
     }

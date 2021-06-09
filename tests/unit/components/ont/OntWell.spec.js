@@ -46,6 +46,10 @@ describe('OntWell.vue', () => {
     it('must have a ry', () => {
       expect(well.ry).toEqual(props.ry)
     })
+
+    it('will have well info', () => {
+      expect(well.well_info).toEqual(props.well_info)
+    })
   })
 
   it('will have an ellipse with the correct attributes', () => {

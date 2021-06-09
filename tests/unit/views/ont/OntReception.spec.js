@@ -2,7 +2,7 @@ import Reception from '@/views/ont/OntReception'
 import { mount, localVue, Data } from '../../testHelper'
 import Response from '@/api/Response'
 import store from '@/store'
-import { transformPlates } from '@/api/SequencescapePlates'
+import { transformPlates, OntSample } from '@/services/Sequencescape'
 import flushPromises from 'flush-promises'
 
 describe('Reception', () => {
@@ -102,7 +102,12 @@ describe('Reception', () => {
 
       reception.createTractionPlates.mockReturnValue(promise)
       await reception.handleCreateTractionPlates()
-      expect(reception.createTractionPlates).toBeCalledWith(transformPlates(mockPlates))
+      expect(reception.createTractionPlates).toBeCalledWith(
+        transformPlates({
+          plates: mockPlates,
+          sampleType: OntSample,
+        }),
+      )
       expect(reception.showAlert).toBeCalledWith(mockResponse, 'primary')
     })
   })
@@ -120,7 +125,12 @@ describe('Reception', () => {
       })
       reception.createTractionPlate.mockReturnValue(promise)
 
-      let response = await reception.createTractionPlates(transformPlates(mockPlates))
+      let response = await reception.createTractionPlates(
+        transformPlates({
+          plates: mockPlates,
+          sampleType: OntSample,
+        }),
+      )
       await flushPromises()
       expect(reception.createTractionPlate).toHaveBeenCalledTimes(mockPlates.length)
       expect(response).toEqual(['Plate x message', 'Plate x message'])

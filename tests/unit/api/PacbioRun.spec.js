@@ -6,6 +6,8 @@ import * as Run from '@/api/PacbioRun'
 import build from '@/api/ApiBuilder'
 import Api from '@/api'
 
+// TODO: fix requests here for DPL-022
+
 describe('Run', () => {
   let cmp, props, wrapper, request, run, failedResponse
 
@@ -112,7 +114,7 @@ describe('Run', () => {
   })
 
   describe('create', () => {
-    let api, well1, well2
+    let api, well1, well2, pacbioRequest
 
     //  add well library
     beforeEach(() => {
@@ -121,80 +123,78 @@ describe('Run', () => {
       run.plate.wells[0] = { position: 'A1', libraries: [{ id: 1 }] }
       run.plate.wells[1] = { position: 'A2', libraries: [{ id: 2 }] }
 
-      api = build(Api.Config, process.env)
-      api.traction.pacbio.runs.create = jest.fn()
-      api.traction.pacbio.plates.create = jest.fn()
-      api.traction.pacbio.wells.create = jest.fn()
-      api.traction.pacbio.runs.destroy = jest.fn()
-      api.traction.pacbio.plates.destroy = jest.fn()
-      api.traction.pacbio.wells.destroy = jest.fn()
+      api = build({ config: Api.Config, environment: process.env })
+      pacbioRequest = api.traction.pacbio
+      pacbioRequest.runs.create = jest.fn()
+      pacbioRequest.runs.plates.create = jest.fn()
+      pacbioRequest.runs.wells.create = jest.fn()
+      pacbioRequest.runs.destroy = jest.fn()
+      pacbioRequest.runs.plates.destroy = jest.fn()
+      pacbioRequest.runs.wells.destroy = jest.fn()
     })
 
     it('returns true', async () => {
-      api.traction.pacbio.runs.create.mockResolvedValue(Data.PacbioRun)
-      api.traction.pacbio.plates.create.mockResolvedValue(Data.PacbioPlate)
-      api.traction.pacbio.wells.create.mockResolvedValue(Data.PacbioWell)
+      pacbioRequest.runs.create.mockResolvedValue(Data.PacbioRun)
+      pacbioRequest.runs.plates.create.mockResolvedValue(Data.PacbioSequencingPlate)
+      pacbioRequest.runs.wells.create.mockResolvedValue(Data.PacbioWell)
 
-      let resp = await Run.create(run, api.traction.pacbio)
+      let resp = await Run.create(run, pacbioRequest)
 
-      expect(api.traction.pacbio.runs.create).toBeCalled()
-      expect(api.traction.pacbio.plates.create).toBeCalled()
-      expect(api.traction.pacbio.wells.create).toBeCalled()
+      expect(pacbioRequest.runs.create).toBeCalled()
+      expect(pacbioRequest.runs.plates.create).toBeCalled()
+      expect(pacbioRequest.runs.wells.create).toBeCalled()
 
       expect(resp).toEqual([])
     })
 
     it('returns false if the run cannot be created', async () => {
-      api.traction.pacbio.runs.create.mockReturnValue(failedResponse)
-      api.traction.pacbio.runs.destroy.mockResolvedValue(Data.SuccessfulDestroy)
+      pacbioRequest.runs.create.mockReturnValue(failedResponse)
+      pacbioRequest.runs.destroy.mockResolvedValue(Data.SuccessfulDestroy)
 
-      let resp = await Run.create(run, api.traction.pacbio)
+      let resp = await Run.create(run, pacbioRequest)
 
-      expect(api.traction.pacbio.runs.create).toBeCalled()
-      expect(api.traction.pacbio.plates.create).not.toBeCalled()
-      expect(api.traction.pacbio.wells.create).not.toBeCalled()
+      expect(pacbioRequest.runs.create).toBeCalled()
+      expect(pacbioRequest.runs.plates.create).not.toBeCalled()
+      expect(pacbioRequest.runs.wells.create).not.toBeCalled()
 
       expect(resp).toEqual('title The record identified by 100 could not be found.')
     })
 
     it('returns false and rollsback if the plate cannot be created', async () => {
-      api.traction.pacbio.runs.create.mockReturnValue(Data.PacbioRun)
-      api.traction.pacbio.plates.create.mockResolvedValue(failedResponse)
+      pacbioRequest.runs.create.mockReturnValue(Data.PacbioRun)
+      pacbioRequest.runs.plates.create.mockResolvedValue(failedResponse)
 
-      api.traction.pacbio.runs.destroy.mockResolvedValue(Data.SuccessfulDestroy)
+      pacbioRequest.runs.destroy.mockResolvedValue(Data.SuccessfulDestroy)
 
       let runResponse = new Response(Data.PacbioRun)
       let runId = runResponse.deserialize.runs[0].id
 
-      let resp = await Run.create(run, api.traction.pacbio)
+      let resp = await Run.create(run, pacbioRequest)
 
-      expect(api.traction.pacbio.runs.create).toBeCalled()
-      expect(api.traction.pacbio.plates.create).toBeCalled()
-      expect(api.traction.pacbio.wells.create).not.toBeCalled()
+      expect(pacbioRequest.runs.create).toBeCalled()
+      expect(pacbioRequest.runs.plates.create).toBeCalled()
+      expect(pacbioRequest.runs.wells.create).not.toBeCalled()
 
-      expect(api.traction.pacbio.runs.destroy).toBeCalledWith(runId)
+      expect(pacbioRequest.runs.destroy).toBeCalledWith(runId)
 
       expect(resp).toEqual('title The record identified by 100 could not be found.')
     })
 
     it('returns false and rollsback if the wells cannot be created', async () => {
-      api.traction.pacbio.runs.create.mockResolvedValue(Data.PacbioRun)
-      api.traction.pacbio.plates.create.mockResolvedValue(Data.PacbioPlate)
-      api.traction.pacbio.wells.create.mockResolvedValue(failedResponse)
-
-      api.traction.pacbio.runs.destroy.mockResolvedValue(Data.SuccessfulDestroy)
-      api.traction.pacbio.plates.destroy.mockResolvedValue(Data.SuccessfulDestroy)
+      pacbioRequest.runs.create.mockResolvedValue(Data.PacbioRun)
+      pacbioRequest.runs.plates.create.mockResolvedValue(Data.PacbioSequencingPlate)
+      pacbioRequest.runs.wells.create.mockResolvedValue(failedResponse)
 
       let runResponse = new Response(Data.PacbioRun)
       let runId = runResponse.deserialize.runs[0].id
 
-      let resp = await Run.create(run, api.traction.pacbio)
+      let resp = await Run.create(run, pacbioRequest)
 
-      expect(api.traction.pacbio.runs.create).toBeCalled()
-      expect(api.traction.pacbio.plates.create).toBeCalled()
-      expect(api.traction.pacbio.wells.create).toBeCalled()
+      expect(pacbioRequest.runs.create).toBeCalled()
+      expect(pacbioRequest.runs.plates.create).toBeCalled()
+      expect(pacbioRequest.runs.wells.create).toBeCalled()
 
-      expect(api.traction.pacbio.runs.destroy).toBeCalledWith(runId)
+      expect(pacbioRequest.runs.destroy).toBeCalledWith(runId)
 
       expect(resp).toEqual('title The record identified by 100 could not be found.')
     })
@@ -217,10 +217,10 @@ describe('Run', () => {
       })
 
       it('should remove that well from the payload', () => {
-        api.traction.pacbio.runs.create.mockResolvedValue([Data.PacbioRun])
+        pacbioRequest.runs.create.mockResolvedValue([Data.PacbioRun])
 
-        Run.create(run, api.traction.pacbio)
-        expect(api.traction.pacbio.runs.create).toHaveBeenCalledTimes(1)
+        Run.create(run, pacbioRequest)
+        expect(pacbioRequest.runs.create).toHaveBeenCalledTimes(1)
       })
     })
   })
@@ -340,7 +340,7 @@ describe('Run', () => {
   })
 
   describe('update', () => {
-    let api, well1, well2, failedResponse
+    let api, well1, well2, failedResponse, pacbioRequest
 
     beforeEach(() => {
       well1 = new Response(Data.PacbioWells).deserialize.wells[0]
@@ -357,10 +357,10 @@ describe('Run', () => {
         },
       }
 
-      api = build(Api.Config, process.env)
-
-      api.traction.pacbio.runs.update = jest.fn()
-      api.traction.pacbio.wells.update = jest.fn()
+      api = build({ config: Api.Config, environment: process.env })
+      pacbioRequest = api.traction.pacbio
+      pacbioRequest.runs.update = jest.fn()
+      pacbioRequest.runs.wells.update = jest.fn()
 
       failedResponse = {
         status: 404,
@@ -370,28 +370,28 @@ describe('Run', () => {
     })
 
     it('on succuess, it returns an empty list when there are no errors', async () => {
-      api.traction.pacbio.runs.update.mockResolvedValue([Data.PacbioRun])
-      api.traction.pacbio.wells.update.mockResolvedValue([Data.PacbioWell])
+      pacbioRequest.runs.update.mockResolvedValue([Data.PacbioRun])
+      pacbioRequest.runs.wells.update.mockResolvedValue([Data.PacbioWell])
 
-      let resp = await Run.update(run, api.traction.pacbio)
+      let resp = await Run.update(run, pacbioRequest)
 
       let expectedRunPayload = Run.updateRunPayload(run)
       let expectedWell1Payload = Run.updateWellPayload(well1)
       let expectedWell2Payload = Run.updateWellPayload(well2)
 
-      expect(api.traction.pacbio.runs.update).toBeCalledWith(expectedRunPayload)
-      expect(api.traction.pacbio.wells.update).toHaveBeenNthCalledWith(1, expectedWell1Payload)
-      expect(api.traction.pacbio.wells.update).toHaveBeenNthCalledWith(2, expectedWell2Payload)
+      expect(pacbioRequest.runs.update).toBeCalledWith(expectedRunPayload)
+      expect(pacbioRequest.runs.wells.update).toHaveBeenNthCalledWith(1, expectedWell1Payload)
+      expect(pacbioRequest.runs.wells.update).toHaveBeenNthCalledWith(2, expectedWell2Payload)
 
       expect(resp).toEqual([])
     })
 
     it('on failure, it returns a list of errors', async () => {
-      api.traction.pacbio.runs.update.mockResolvedValue([failedResponse])
-      let resp = await Run.update(run, api.traction.pacbio)
+      pacbioRequest.runs.update.mockResolvedValue([failedResponse])
+      let resp = await Run.update(run, pacbioRequest)
 
-      expect(api.traction.pacbio.runs.update).toHaveBeenCalled()
-      expect(api.traction.pacbio.wells.update).not.toHaveBeenCalled()
+      expect(pacbioRequest.runs.update).toHaveBeenCalled()
+      expect(pacbioRequest.runs.wells.update).not.toHaveBeenCalled()
 
       expect(resp).toEqual(['title The record identified by 100 could not be found.'])
     })
@@ -414,10 +414,10 @@ describe('Run', () => {
       })
 
       it('should remove that well from the payload', () => {
-        api.traction.pacbio.runs.update.mockResolvedValue([Data.PacbioRun])
+        pacbioRequest.runs.update.mockResolvedValue([Data.PacbioRun])
 
-        Run.update(run, api.traction.pacbio)
-        expect(api.traction.pacbio.runs.update).toHaveBeenCalledTimes(1)
+        Run.update(run, pacbioRequest)
+        expect(pacbioRequest.runs.update).toHaveBeenCalledTimes(1)
       })
     })
   })
@@ -502,18 +502,19 @@ describe('Run', () => {
   })
 
   describe('destroy', () => {
-    let api
+    let api, pacbioRequest
 
     beforeEach(() => {
-      api = build(Api.Config, process.env)
-      api.traction.pacbio.runs.destroy = jest.fn()
+      api = build({ config: Api.Config, environment: process.env })
+      pacbioRequest = api.traction.pacbio
+      pacbioRequest.runs.destroy = jest.fn()
     })
 
     it('rolls back the request', async () => {
-      api.traction.pacbio.runs.destroy.mockResolvedValue(Data.SuccessfulDestroy)
+      pacbioRequest.runs.destroy.mockResolvedValue(Data.SuccessfulDestroy)
       let expected = new Response(Data.SuccessfulDestroy)
 
-      let response = await Run.destroy(1, api.traction.pacbio.runs)
+      let response = await Run.destroy(1, pacbioRequest.runs)
       expect(response).toEqual(expected)
     })
   })

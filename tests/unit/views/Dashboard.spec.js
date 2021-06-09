@@ -103,20 +103,32 @@ describe('Dashboard.vue', () => {
         receptionButton.trigger('click')
         expect(wrapper.vm.$route.path).toBe('/pacbio/reception')
       })
-      it('will have a samples button', () => {
+      it('will have a plate reception button', () => {
         let receptionButton = box.findAll('button').at(1)
+        expect(receptionButton.text()).toEqual('Plate reception')
+        receptionButton.trigger('click')
+        expect(wrapper.vm.$route.path).toBe('/pacbio/plate-reception')
+      })
+      it('will have a plates button', () => {
+        let platesButton = box.findAll('button').at(2)
+        expect(platesButton.text()).toEqual('Plates')
+        platesButton.trigger('click')
+        expect(wrapper.vm.$route.path).toBe('/pacbio/plates')
+      })
+      it('will have a samples button', () => {
+        let receptionButton = box.findAll('button').at(3)
         expect(receptionButton.text()).toEqual('Samples')
         receptionButton.trigger('click')
         expect(wrapper.vm.$route.path).toBe('/pacbio/samples')
       })
       it('will have a libraries button', () => {
-        let receptionButton = box.findAll('button').at(2)
+        let receptionButton = box.findAll('button').at(4)
         expect(receptionButton.text()).toEqual('Libraries')
         receptionButton.trigger('click')
         expect(wrapper.vm.$route.path).toBe('/pacbio/libraries')
       })
       it('will have a runs button', () => {
-        let receptionButton = box.findAll('button').at(3)
+        let receptionButton = box.findAll('button').at(5)
         expect(receptionButton.text()).toEqual('Runs')
         receptionButton.trigger('click')
         expect(wrapper.vm.$route.path).toBe('/pacbio/runs')

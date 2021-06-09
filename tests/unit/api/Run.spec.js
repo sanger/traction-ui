@@ -237,7 +237,7 @@ describe('Run', () => {
       let api
 
       beforeEach(() => {
-        api = build(Api.Config, process.env)
+        api = build({ config: Api.Config, environment: process.env })
         api.traction.saphyr.runs.create = jest.fn()
         api.traction.saphyr.chips.create = jest.fn()
         api.traction.saphyr.flowcells.create = jest.fn()
@@ -303,7 +303,7 @@ describe('Run', () => {
       let responses, api, runResponse, chipResponse
 
       beforeEach(() => {
-        api = build(Api.Config, process.env)
+        api = build({ config: Api.Config, environment: process.env })
         runResponse = new Response(Data.CreateRun)
         chipResponse = new Response(Data.CreateChip)
         responses = [runResponse, chipResponse]
@@ -328,7 +328,7 @@ describe('Run', () => {
       let api
 
       beforeEach(() => {
-        api = build(Api.Config, process.env)
+        api = build({ config: Api.Config, environment: process.env })
         api.traction.saphyr.runs.destroy = jest.fn()
       })
 
@@ -348,7 +348,7 @@ describe('Run', () => {
     let request, payload
 
     beforeEach(() => {
-      let api = build(Api.Config, process.env)
+      let api = build({ config: Api.Config, environment: process.env })
       request = api.traction.saphyr
       request.update = jest.fn()
 
@@ -387,7 +387,7 @@ describe('Run', () => {
       run.chip.flowcells[0] = { position: 1, library: { baroce: 'TRAC-1' } }
       run.chip.flowcells[1] = { position: 2, library: { baroce: 'TRAC-2' } }
 
-      let api = build(Api.Config, process.env)
+      let api = build({ config: Api.Config, environment: process.env })
       request = api.traction.saphyr
 
       request.runs.update = jest.fn()
