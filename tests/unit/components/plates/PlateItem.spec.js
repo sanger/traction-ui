@@ -28,12 +28,17 @@ describe('Plate.vue', () => {
 
   describe('methods', () => {
     describe('#getWellAt', () => {
-      it('gets the well at the given position', () => {
+      it('gets the well at the given position when it exists and has material', () => {
         let expected = plate.wells.filter((w) => w.position == 'A1')[0]
         expect(plate.getWellAt('A1')).toEqual(expected)
       })
 
-      it('creates an empty well for the given position', () => {
+      it('creates an empty well for the given position when a well exists but has no material', () => {
+        let expected = { position: 'A2', materials: [] }
+        expect(plate.getWellAt('A2')).toEqual(expected)
+      })
+
+      it('creates an empty well for the given position when a well does not exist', () => {
         let expected = { position: 'A3', materials: [] }
         expect(plate.getWellAt('A3')).toEqual(expected)
       })
