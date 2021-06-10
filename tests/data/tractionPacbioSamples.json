@@ -13,7 +13,7 @@
           "sample_name": "mockName3",
           "barcode": "TRAC-82",
           "sample_species": "mockSpecies",
-          "source_barcode": "NT127Q",
+          "source_identifier": "NT127Q",
           "created_at": "10/14/2019 10:56"
         }
       },
@@ -29,7 +29,7 @@
           "sample_name": "mockName3",
           "barcode": "TRAC-83",
           "sample_species": "mockSpecies",
-          "source_barcode": "NT127Q",
+          "source_identifier": "NT127Q",
           "created_at": "10/14/2019 10:56"
         }
       },
@@ -45,7 +45,7 @@
           "sample_name": "mockName3",
           "barcode": "TRAC-84",
           "sample_species": "mockSpecies",
-          "source_barcode": "NT127Q",
+          "source_identifier": "NT127Q",
           "created_at": "10/14/2019 11:01"
         }
       },
@@ -61,7 +61,7 @@
           "sample_name": "5200STDY7322947mock1",
           "barcode": "TRAC-85",
           "sample_species": "mock sample_common_name",
-          "source_barcode": "NT127Q",
+          "source_identifier": "NT127Q",
           "created_at": "10/14/2019 11:06"
         }
       },
@@ -77,7 +77,7 @@
           "sample_name": "5200STDY7322947mock11",
           "barcode": "TRAC-87",
           "sample_species": "mock sample_common_name",
-          "source_barcode": "NT127Q",
+          "source_identifier": "NT127Q",
           "created_at": "10/14/2019 02:24"
         }
       },
@@ -93,7 +93,7 @@
           "sample_name": "5200STDY7323048mock",
           "barcode": "TRAC-89",
           "sample_species": "mock sample_common_name",
-          "source_barcode": "NT127Q",
+          "source_identifier": "NT127Q",
           "created_at": "10/16/2019 09:38"
         }
       },
@@ -109,7 +109,7 @@
           "sample_name": "5200STDY7323048mock",
           "barcode": "TRAC-91",
           "sample_species": "mock sample_common_name",
-          "source_barcode": "NT127Q",
+          "source_identifier": "NT127Q",
           "created_at": "10/16/2019 10:00"
         }
       },
@@ -125,7 +125,7 @@
           "sample_name": "5200STDY7323048mock",
           "barcode": "TRAC-92",
           "sample_species": "mock sample_common_name",
-          "source_barcode": "NT127Q",
+          "source_identifier": "NT127Q",
           "created_at": "10/16/2019 10:00"
         }
       },
@@ -141,7 +141,7 @@
           "sample_name": "5200STDY7323048mock",
           "barcode": "TRAC-93",
           "sample_species": "mock sample_common_name",
-          "source_barcode": "NT127Q",
+          "source_identifier": "NT127Q",
           "created_at": "10/16/2019 10:01"
         }
       },
@@ -157,7 +157,7 @@
           "sample_name": "5200STDY7323048mock",
           "barcode": "TRAC-94",
           "sample_species": "mock sample_common_name",
-          "source_barcode": "NT127Q",
+          "source_identifier": "NT127Q",
           "created_at": "10/16/2019 10:03"
         }
       },
@@ -174,7 +174,7 @@
           "sample_name": "5200STDY7323048mock",
           "barcode": "TRAC-95",
           "sample_species": "mock sample_common_name",
-          "source_barcode": "NT127Q",
+          "source_identifier": "NT127Q",
           "created_at": "10/16/2019 10:04"
         }
       },
@@ -191,7 +191,7 @@
           "sample_name": "5200STDY73230482x",
           "barcode": "TRAC-96",
           "sample_species": "Homo sapiens",
-          "source_barcode": "NT127Q",
+          "source_identifier": "NT127Q",
           "created_at": "10/16/2019 10:10"
         }
       }

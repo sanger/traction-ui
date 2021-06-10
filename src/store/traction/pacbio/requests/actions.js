@@ -79,7 +79,7 @@ const sampleExtractionTubeJson = (tubes) => {
     estimate_of_gb_required: t.estimate_of_gb_required,
     number_of_smrt_cells: t.number_of_smrt_cells,
     cost_code: processCostCode(t),
-    source_barcode: t.barcode,
+    barcode: t.barcode,
   }))
 }
 

@@ -13,9 +13,9 @@
           "number_of_smrt_cells": 1,
           "cost_code": "S1234",
           "external_study_id": "123456-e8f3-11e9-9231-68b59977951e",
-          "source_barcode": "SE108532I",
           "sample_name": "5200STDY7323048",
-          "barcode": "TRAC-2-54",
+          "barcode": "SE108532I",
+          "source_identifier": "SE108532I",
           "sample_species": "Homo sapiens",
           "created_at": "2020/05/05 12:14"
         }
