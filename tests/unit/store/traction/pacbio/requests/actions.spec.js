@@ -110,20 +110,22 @@ describe('actions', () => {
 
   describe('#sampleExtractionTubeJson', () => {
     it('will convert a deserialized response to the correct format for a pacbio request', () => {
-      let tubes = new Response(Data.SampleExtractionTubesWithSample).deserialize.assets
-      let json = Actions.sampleExtractionTubeJson(tubes)
-      let tube = json[0]
-      expect(tube.external_id).toBeDefined()
-      expect(tube.external_id.includes('-')).toBeTruthy()
-      expect(tube.external_study_id).toBeDefined()
-      expect(tube.external_study_id.includes('-')).toBeTruthy()
-      expect(tube.name).toBeDefined()
-      expect(tube.species).toBeDefined()
-      expect(tube.library_type).toBeDefined()
-      expect(tube.estimate_of_gb_required).toBeDefined()
-      expect(tube.number_of_smrt_cells).toBeDefined()
-      expect(tube.cost_code).toBeDefined()
-      expect(tube.source_barcode).toBeDefined()
+      const tubes = new Response(Data.SampleExtractionTubesWithSample).deserialize.assets
+      const [{ tube, sample, request }] = Actions.sampleExtractionTubeJson(tubes)
+      // sample
+      expect(sample.name).toBeDefined()
+      expect(sample.species).toBeDefined()
+      expect(sample.external_id).toBeDefined()
+      expect(sample.external_id.includes('-')).toBeTruthy()
+      // request
+      expect(request.external_study_id).toBeDefined()
+      expect(request.external_study_id.includes('-')).toBeTruthy()
+      expect(request.library_type).toBeDefined()
+      expect(request.estimate_of_gb_required).toBeDefined()
+      expect(request.number_of_smrt_cells).toBeDefined()
+      expect(request.cost_code).toBeDefined()
+      // tube
+      expect(tube.barcode).toBeDefined()
     })
   })
 
