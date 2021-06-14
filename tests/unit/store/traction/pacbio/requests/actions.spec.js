@@ -125,39 +125,13 @@ describe('actions', () => {
       expect(tube.cost_code).toBeDefined()
       expect(tube.source_barcode).toBeDefined()
     })
-  })
 
-  describe('processCostCode', () => {
-    let tube
-
-    beforeEach(() => {
-      tube = {
-        fields: {
-          sanger_sample_id: 'Sample1',
-          species: 'human',
-        },
-        sample_uuid: 'abc1234',
-        study_uuid: 'abc2345',
-        library_type: 'library_type_1',
-        estimate_of_gb_required: '10',
-        number_of_smrt_cells: '3',
-        cost_code: 'CC12345',
-      }
-    })
-
-    it('if completed use existing cost code', () => {
-      expect(Actions.processCostCode(tube)).toEqual(tube.cost_code)
-    })
-
-    it('if not completed and DTOL sample use TOL cost code', () => {
-      tube.fields.sanger_sample_id = 'DTOL12345'
-      tube.cost_code = null
-      expect(Actions.processCostCode(tube)).toEqual('S4773')
-    })
-
-    it('if not completed and no DTOL sample leave blank', () => {
-      tube.cost_code = null
-      expect(Actions.processCostCode(tube)).toBeNull()
+    it('if cost code is null do not include cost code in request', () => {
+      let tubes = new Response(Data.SampleExtractionTubesWithSample).deserialize.assets
+      tubes[0].cost_code = null
+      let json = Actions.sampleExtractionTubeJson(tubes)
+      let tube = json[0]
+      expect(tube.cost_code).not.toBeDefined()
     })
   })
 })
