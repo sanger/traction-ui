@@ -59,17 +59,28 @@ const exportSampleExtractionTubesIntoTraction = async ({ getters }, tubes) => {
 }
 
 const sampleExtractionTubeJson = (tubes) => {
-  return tubes.map((t) => ({
-    name: t.fields.sanger_sample_id,
-    species: t.fields.sample_common_name,
-    external_id: t.sample_uuid,
-    external_study_id: t.study_uuid,
-    library_type: t.library_type,
-    estimate_of_gb_required: t.estimate_of_gb_required,
-    number_of_smrt_cells: t.number_of_smrt_cells,
-    source_barcode: t.barcode,
-    ...(t.cost_code === null ? null : { cost_code: t.cost_code }),
-  }))
+  return tubes.map(
+    ({
+      library_type,
+      estimate_of_gb_required,
+      number_of_smrt_cells,
+      barcode,
+      study_uuid: external_study_id,
+      sample_uuid: external_id,
+      fields: { sanger_sample_id: name, sample_common_name: species },
+      ...t
+    }) => ({
+      sample: { name, species, external_id },
+      request: {
+        external_study_id,
+        library_type,
+        estimate_of_gb_required,
+        number_of_smrt_cells,
+        ...(t.cost_code === null ? null : { cost_code: t.cost_code }),
+      },
+      tube: { barcode },
+    }),
+  )
 }
 
 const actions = {
