@@ -68,7 +68,7 @@ const sampleExtractionTubeJson = (tubes) => {
       study_uuid: external_study_id,
       sample_uuid: external_id,
       cost_code,
-      fields: { sanger_sample_id: name, sample_common_name: species }
+      fields: { sanger_sample_id: name, sample_common_name: species },
     }) => ({
       sample: { name, species, external_id },
       request: {
