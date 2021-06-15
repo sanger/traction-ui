@@ -58,17 +58,6 @@ const exportSampleExtractionTubesIntoTraction = async ({ getters }, tubes) => {
   return response
 }
 
-const processCostCode = ({ cost_code, fields }) => {
-  if (cost_code !== null) {
-    return cost_code
-  }
-  if (/\bDTOL/.test(fields.sanger_sample_id)) {
-    return 'S4773'
-  } else {
-    return cost_code
-  }
-}
-
 const sampleExtractionTubeJson = (tubes) => {
   return tubes.map(
     ({
@@ -78,8 +67,8 @@ const sampleExtractionTubeJson = (tubes) => {
       barcode,
       study_uuid: external_study_id,
       sample_uuid: external_id,
+      cost_code,
       fields: { sanger_sample_id: name, sample_common_name: species },
-      ...t
     }) => ({
       sample: { name, species, external_id },
       request: {
@@ -87,7 +76,7 @@ const sampleExtractionTubeJson = (tubes) => {
         library_type,
         estimate_of_gb_required,
         number_of_smrt_cells,
-        cost_code: processCostCode(t),
+        ...(cost_code ? { cost_code } : null),
       },
       tube: { barcode },
     }),
@@ -106,7 +95,6 @@ export {
   createRequestPayload,
   exportSampleExtractionTubesIntoTraction,
   sampleExtractionTubeJson,
-  processCostCode,
 }
 
 export default actions
