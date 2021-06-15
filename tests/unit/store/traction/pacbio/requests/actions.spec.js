@@ -131,9 +131,8 @@ describe('actions', () => {
     it('if cost code is null do not include cost code in request', () => {
       let tubes = new Response(Data.SampleExtractionTubesWithSample).deserialize.assets
       tubes[0].cost_code = null
-      let json = Actions.sampleExtractionTubeJson(tubes)
-      let tube = json[0]
-      expect(tube.cost_code).not.toBeDefined()
+      let [{ request }] = Actions.sampleExtractionTubeJson(tubes)
+      expect(request.cost_code).not.toBeDefined()
     })
   })
 })
