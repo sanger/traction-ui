@@ -20,13 +20,9 @@
       <alert ref="alert"></alert>
 
       <b-form id="libraryCreateModal">
-        <p>The following samples are used to create this library:</p>
-
-        <ul>
-          <template v-for="sample in selectedSamples">
-            <li :key="sample.id">{{ sample.sample_name }} ({{ sample.barcode }})</li>
-          </template>
-        </ul>
+        <b-form-group id="selected-sample" label="The sample selected for this library is:">
+          {{ selectedSample.sample_name }} ({{ selectedSample.source_identifier }})
+        </b-form-group>
 
         <b-form-group id="tag-select-input" label="Tag:" label-for="tag-input">
           <b-form-select
@@ -108,16 +104,16 @@ export default {
   props: {
     disabled: Boolean,
     isStatic: Boolean,
-    selectedSamples: {
-      type: Array,
+    selectedSample: {
+      type: Object,
       default() {
-        return []
+        return {}
       },
     },
   },
   data() {
     return {
-      library: { tag: {} },
+      library: { tag: {}, sample: {} },
       tagOptions: [],
     }
   },
@@ -136,18 +132,13 @@ export default {
         this.showAlert(consts.MESSAGE_ERROR_FIND_TAGS_FAILED + error.message, 'danger')
       }
     },
-    ...mapActions('traction/pacbio/libraries', ['createLibraryInTraction']),
-    ...mapActions('traction', ['setTags']),
     async createLibrary() {
       if (!this.library.tag.group_id) {
         this.showAlert(consts.MESSAGE_ERROR_CREATE_LIBRARY_FAILED + 'Please select a tag', 'danger')
         return
       }
 
-      this.library.samples = this.selectedSamples
-      let payload = { library: this.library }
-      let response = await this.createLibraryInTraction(payload)
-
+      let response = await this.createLibraryInTraction(this.library)
       if (response.successful) {
         let barcodes = response.deserialize.libraries.map((l) => l.barcode)
         this.hide()
@@ -160,8 +151,10 @@ export default {
       }
     },
     show() {
-      this.library = { tag: {} }
+      this.library = { tag: {}, sample: this.selectedSample }
     },
+    ...mapActions('traction/pacbio/libraries', ['createLibraryInTraction']),
+    ...mapActions('traction', ['setTags']),
   },
 }
 </script>

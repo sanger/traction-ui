@@ -4,7 +4,7 @@ import * as Actions from '@/store/traction/pacbio/libraries/actions'
 
 // TODO: we really need factories rather than building payloads manually
 describe('#createLibraryInTraction', () => {
-  let create, getters, library, payload, rootGetters
+  let create, getters, library, body, rootGetters
 
   beforeEach(() => {
     create = jest.fn()
@@ -16,26 +16,28 @@ describe('#createLibraryInTraction', () => {
     }
     getters = { libraryRequest: { create: create } }
     library = {
-      library: {
-        tag: { group_id: '123abc1' },
-        volume: 1.0,
-        concentration: 1.0,
-        templatePrepKitBoxBarcode: 'LK12345',
-        fragmentSize: 100,
-        samples: [{ id: 1 }],
-      },
+      tag: { group_id: '123abc1' },
+      volume: 1.0,
+      concentration: 1.0,
+      templatePrepKitBoxBarcode: 'LK12345',
+      fragmentSize: 100,
+      sample: { id: 1 },
     }
 
-    payload = {
-      concentration: 1,
-      fragment_size: 100,
-      template_prep_kit_box_barcode: 'LK12345',
-      relationships: {
-        requests: {
-          data: [{ id: 1, relationships: { tag: { data: { id: 1 } } }, type: 'requests' }],
+    body = {
+      data: {
+        type: 'library',
+        attributes: {
+          volume: 1,
+          concentration: 1,
+          template_prep_kit_box_barcode: 'LK12345',
+          fragment_size: 100,
+        },
+        relationships: {
+          request: { data: { type: 'requests', id: 1 } },
+          tag: { data: { type: 'tags', id: 1 } },
         },
       },
-      volume: 1,
     }
   })
 
@@ -45,7 +47,7 @@ describe('#createLibraryInTraction', () => {
 
     let response = await Actions.createLibraryInTraction({ getters, rootGetters }, library)
     expect(response).toEqual(expectedResponse)
-    expect(create).toBeCalledWith({ data: { type: 'library', attributes: payload } })
+    expect(create).toBeCalledWith(body)
   })
 
   it('unsuccessfully', async () => {

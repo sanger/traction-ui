@@ -94,4 +94,23 @@ describe('Samples.vue', () => {
       expect(button.text()).toEqual('Show Details')
     })
   })
+
+  describe('Create library button', () => {
+    let button
+    beforeEach(() => {
+      button = wrapper.findComponent({ ref: 'libraryCreateBtn' })
+    })
+
+    it('create library button is disabled when no sample are selected', () => {
+      samples.selected = []
+      expect(button.props('disabled')).toBe(true)
+    })
+
+    it('create library button is disabled when no sample are selected', () => {
+      samples.selected = [{ id: 1 }]
+      samples.$nextTick(() => {
+        expect(button.props('disabled')).toBe(false)
+      })
+    })
+  })
 })
