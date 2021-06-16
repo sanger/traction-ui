@@ -3,6 +3,7 @@ import Response from '@/api/Response'
 import * as Actions from '@/store/traction/pacbio/libraries/actions'
 
 // TODO: we really need factories rather than building payloads manually
+// This is quite complex and I don't quite understand what is going on. Needs simplification
 describe('#createLibraryInTraction', () => {
   let create, getters, library, payload, rootGetters
 
@@ -121,8 +122,8 @@ describe('#setLibraries', () => {
 
     expect(commit).toHaveBeenCalledWith('setLibraries', libraries)
     let library = libraries[0]
-    expect(library.requests.length).toEqual(2)
-    expect(library.tag_group_ids).toEqual('1,1')
+    expect(library.request).toBeDefined()
+    expect(library.tag_group_ids.length).toEqual(1)
   })
 
   it('unsuccessfully', async () => {

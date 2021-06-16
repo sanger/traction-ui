@@ -1,3 +1,4 @@
+// TODO: This needs a refactor with some documentation
 const extractAttributes = (data) => {
   return { id: data.id, type: data.type, ...data.attributes }
 }
