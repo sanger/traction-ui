@@ -81,7 +81,7 @@
       <template v-slot:modal-footer="{ ok, cancel }">
         <b-button @click="cancel()"> Cancel </b-button>
 
-        <b-button variant="success" @click="createLibrary()"> Create </b-button>
+        <b-button id="create-btn" variant="success" @click="createLibrary()"> Create </b-button>
       </template>
     </b-modal>
   </div>
