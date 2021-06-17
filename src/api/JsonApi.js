@@ -15,9 +15,9 @@ const mapRelationships = (relationships) => {
 
 const extractRelationship = (relationship, included, includeStore = {}) => {
   if (Array.isArray(relationship)) {
-    return relationship.map((item) => spreadIncluded(item, included, includeStore))
+    return relationship.map((item) => deserializeIncluded(item, included, includeStore))
   } else {
-    return spreadIncluded(relationship, included, includeStore)
+    return deserializeIncluded(relationship, included, includeStore)
   }
 }
 
@@ -29,20 +29,25 @@ const findIncluded = (relationship, included) => {
   )
 }
 
-const spreadIncluded = (relationship, included, includeStore = {}) => {
+const deserializeIncluded = (relationship, included, includeStore = {}) => {
   const cacheKey = `${relationship.type}:${relationship.id}`
 
   if (includeStore[cacheKey]) {
     return includeStore[cacheKey]
   }
 
-  const data = findIncluded(relationship, included)
-  const serialized = { ...relationship, ...data.attributes }
+  const { attributes, relationships } = findIncluded(relationship, included)
+
+  const serialized = { ...relationship, ...attributes }
+  // We add the object to the store before extracting relationships, as otherwise
+  // circular relationships will attempt to find the as yet uncached object and
+  // we'll end up in a loop. Instead they point to the as yet incomplete object,
+  // which will later be mutated to a full representation as we unroll the stack.
   includeStore[cacheKey] = serialized
-  return (includeStore[cacheKey] = Object.assign(
+  return Object.assign(
     serialized,
-    extractRelationships(data.relationships, included, includeStore),
-  ))
+    extractRelationships(relationships, included, includeStore),
+  )
 }
 
 const extractRelationships = (relationships, included, includeStore = {}) => {
@@ -62,14 +67,12 @@ const extractResourceObject = (data, included, includeStore = {}) => {
 }
 
 /*
-  Deserialize a json-api object to bring included relationships inline.
+  Deserialize a json-api object to bring included relationships, ids and types inline.
   @param response: {data: Object, included: Object} the object to deserialize
 */
-const deserialize = (response, includeStore = {}) => {
-  const included = response.included
-
-  if (Array.isArray(response.data)) {
-    return response.data.reduce((result, item) => {
+const deserialize = ({ data, included }, includeStore = {}) => {
+  if (Array.isArray(data)) {
+    return data.reduce((result, item) => {
       const resourceObject = extractResourceObject(item, included, includeStore)
       const type = resourceObject.type
       if (result.hasOwnProperty(type)) {
@@ -80,7 +83,7 @@ const deserialize = (response, includeStore = {}) => {
       return result
     }, {})
   } else {
-    const resourceObject = extractResourceObject(response.data, included, includeStore)
+    const resourceObject = extractResourceObject(data, included, includeStore)
     return { [resourceObject.type]: [resourceObject] }
   }
 }
@@ -90,7 +93,7 @@ export {
   mapRelationships,
   extractRelationship,
   findIncluded,
-  spreadIncluded,
+  deserializeIncluded,
   extractRelationships,
   extractResourceObject,
   deserialize,

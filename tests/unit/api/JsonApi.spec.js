@@ -59,7 +59,7 @@ describe('JsonApi', () => {
       })
 
       it('can spread the included', () => {
-        expect(JsonApi.spreadIncluded({ id: '2', type: 'pickles' }, included)).toEqual({
+        expect(JsonApi.deserializeIncluded({ id: '2', type: 'pickles' }, included)).toEqual({
           id: '2',
           type: 'pickles',
           attrI: 'I just keep',
