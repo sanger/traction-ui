@@ -65,8 +65,10 @@ const setLibraries = async ({ commit, getters }) => {
         tag: {
           group_id: [tag_group_ids],
         },
+        request: { sample_name },
+        tube: { barcode },
       } = library
-      return { ...library, tag_group_ids }
+      return { ...library, tag_group_ids, sample_name, barcode }
     })
 
     commit('setLibraries', libraries)

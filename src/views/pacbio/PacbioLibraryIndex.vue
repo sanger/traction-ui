@@ -20,7 +20,7 @@
     <br />
 
     <b-table
-      id="libraries-table"
+      id="libraries"
       show-empty
       responsive
       :items="libraries"
@@ -33,6 +33,7 @@
       hover
       selectable
       select-mode="multi"
+      tbody-tr-class="library"
       @filtered="onFiltered"
       @row-selected="onRowSelected"
     >
@@ -146,19 +147,20 @@ export default {
     return {
       fields: [
         { key: 'selected', label: '' },
-        { key: 'id', label: 'Library ID', sortable: true },
-        { key: 'sample_names', label: 'Sample Names', sortable: true },
-        { key: 'barcode', label: 'Barcode', sortable: true },
-        { key: 'source_identifier', label: 'Source', sortable: true },
-        { key: 'volume', label: 'Volume', sortable: true },
-        { key: 'concentration', label: 'Concentration', sortable: true },
+        { key: 'id', label: 'Library ID', sortable: true, class: 'library-id' },
+        { key: 'sample_name', label: 'Sample Name', sortable: true, class: 'sample-name' },
+        { key: 'barcode', label: 'Barcode', sortable: true, class: 'barcode' },
+        { key: 'source_identifier', label: 'Source', sortable: true, class: 'source_identifier' },
+        { key: 'volume', label: 'Volume', sortable: true, class: 'volume' },
+        { key: 'concentration', label: 'Concentration', sortable: true, class: 'concentration' },
         {
           key: 'template_prep_kit_box_barcode',
           label: 'Template Prep Kit Box Barcode',
           sortable: true,
+          class: 'template-prep-kit-box-barcode',
         },
-        { key: 'fragment_size', label: 'Fragment Size', sortable: true },
-        { key: 'created_at', label: 'Created at', sortable: true },
+        { key: 'fragment_size', label: 'Fragment Size', sortable: true, class: 'fragment-size' },
+        { key: 'created_at', label: 'Created at', sortable: true, class: 'created-at' },
         { key: 'actions', label: 'Actions' },
         { key: 'show_details', label: '' },
       ],
