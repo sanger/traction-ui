@@ -122,7 +122,7 @@ describe('JsonApi', () => {
             fragment_size: 100,
             created_at: '2021/06/17 09:43',
             deactivated_at: null,
-            source_identifier: "DN1:A1",
+            source_identifier: 'DN1:A1',
             tag: {
               id: '13',
               oligo: 'ACACACTCTATCAGATT',

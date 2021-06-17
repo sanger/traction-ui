@@ -32,15 +32,17 @@ const findIncluded = (relationship, included) => {
 const spreadIncluded = (relationship, included, includeStore = {}) => {
   const cacheKey = `${relationship.type}:${relationship.id}`
 
-  if (includeStore[cacheKey]) { return includeStore[cacheKey] }
+  if (includeStore[cacheKey]) {
+    return includeStore[cacheKey]
+  }
 
   const data = findIncluded(relationship, included)
   const serialized = { ...relationship, ...data.attributes }
   includeStore[cacheKey] = serialized
-  return includeStore[cacheKey] = Object.assign(
+  return (includeStore[cacheKey] = Object.assign(
     serialized,
     extractRelationships(data.relationships, included, includeStore),
-  )
+  ))
 }
 
 const extractRelationships = (relationships, included, includeStore = {}) => {
@@ -53,7 +55,10 @@ const extractRelationships = (relationships, included, includeStore = {}) => {
 }
 
 const extractResourceObject = (data, included, includeStore = {}) => {
-  return Object.assign(extractAttributes(data), extractRelationships(data.relationships, included, includeStore))
+  return Object.assign(
+    extractAttributes(data),
+    extractRelationships(data.relationships, included, includeStore),
+  )
 }
 
 /*
