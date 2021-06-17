@@ -65,6 +65,7 @@ const setLibraries = async ({ commit, getters }) => {
         tag: {
           group_id: [tag_group_ids],
         },
+        // should be request: { sample: { name } }
         request: { sample_name },
         tube: { barcode },
       } = library
