@@ -33,9 +33,9 @@
           />
         </b-form-group>
 
-        <b-form-group id="input-group-1" label="Volume:" label-for="input-1">
+        <b-form-group id="input-group-1" label="Volume:" label-for="library-volume">
           <b-form-input
-            id="input-1"
+            id="library-volume"
             v-model="library.volume"
             type="number"
             required
@@ -44,9 +44,9 @@
           </b-form-input>
         </b-form-group>
 
-        <b-form-group id="input-group-2" label="Concentration:" label-for="input-2">
+        <b-form-group id="input-group-2" label="Concentration:" label-for="library-concentration">
           <b-form-input
-            id="input-2"
+            id="library-concentration"
             v-model="library.concentration"
             type="number"
             required
@@ -55,9 +55,13 @@
           </b-form-input>
         </b-form-group>
 
-        <b-form-group id="input-group-2" label="Template prep kit box barcode:" label-for="input-3">
+        <b-form-group
+          id="input-group-2"
+          label="Template prep kit box barcode:"
+          label-for="library-templatePrepKitBoxBarcode"
+        >
           <b-form-input
-            id="input-3"
+            id="library-templatePrepKitBoxBarcode"
             v-model="library.templatePrepKitBoxBarcode"
             type="text"
             required
@@ -66,9 +70,9 @@
           </b-form-input>
         </b-form-group>
 
-        <b-form-group id="input-group-2" label="Fragment size" label-for="input-4">
+        <b-form-group id="input-group-2" label="Fragment size" label-for="library-fragmentSize">
           <b-form-input
-            id="input-4"
+            id="library-fragmentSize"
             v-model="library.fragmentSize"
             type="number"
             required
