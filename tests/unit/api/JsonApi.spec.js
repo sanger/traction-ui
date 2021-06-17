@@ -122,8 +122,13 @@ describe('JsonApi', () => {
             fragment_size: 100,
             created_at: '2021/06/17 09:43',
             deactivated_at: null,
+<<<<<<< HEAD
             source_identifier: 'DN1:A1',
             tags: {
+=======
+            source_identifier: "DN1:A1",
+            tag: {
+>>>>>>> 625c85a (Cache deserialized objects)
               id: '13',
               oligo: 'ACACACTCTATCAGATT',
               group_id: 'bc1019_BAK8B_OA',

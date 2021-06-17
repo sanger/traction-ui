@@ -13,11 +13,11 @@ const mapRelationships = (relationships) => {
   }, {})
 }
 
-const extractRelationship = (relationship, included) => {
+const extractRelationship = (relationship, included, includeStore = {}) => {
   if (Array.isArray(relationship)) {
-    return relationship.map((item) => spreadIncluded(item, included))
+    return relationship.map((item) => spreadIncluded(item, included, includeStore))
   } else {
-    return spreadIncluded(relationship, included)
+    return spreadIncluded(relationship, included, includeStore)
   }
 }
 
@@ -29,33 +29,43 @@ const findIncluded = (relationship, included) => {
   )
 }
 
-const spreadIncluded = (relationship, included) => {
+const spreadIncluded = (relationship, included, includeStore = {}) => {
+  const cacheKey = `${relationship.type}:${relationship.id}`
+
+  if (includeStore[cacheKey]) { return includeStore[cacheKey] }
+
   const data = findIncluded(relationship, included)
-  return Object.assign(
-    { ...relationship, ...data.attributes },
-    extractRelationships(data.relationships, included),
+  const serialized = { ...relationship, ...data.attributes }
+  includeStore[cacheKey] = serialized
+  return includeStore[cacheKey] = Object.assign(
+    serialized,
+    extractRelationships(data.relationships, included, includeStore),
   )
 }
 
-const extractRelationships = (relationships, included) => {
+const extractRelationships = (relationships, included, includeStore = {}) => {
   if (relationships === undefined || included === undefined) return {}
   const mapped = mapRelationships(relationships)
   return Object.keys(mapped).reduce((result, name) => {
-    result[name] = extractRelationship(mapped[name], included)
+    result[name] = extractRelationship(mapped[name], included, includeStore)
     return result
   }, {})
 }
 
-const extractResourceObject = (data, included) => {
-  return Object.assign(extractAttributes(data), extractRelationships(data.relationships, included))
+const extractResourceObject = (data, included, includeStore = {}) => {
+  return Object.assign(extractAttributes(data), extractRelationships(data.relationships, included, includeStore))
 }
 
-const deserialize = (response) => {
+/*
+  Deserialize a json-api object to bring included relationships inline.
+  @param response: {data: Object, included: Object} the object to deserialize
+*/
+const deserialize = (response, includeStore = {}) => {
   const included = response.included
 
   if (Array.isArray(response.data)) {
     return response.data.reduce((result, item) => {
-      const resourceObject = extractResourceObject(item, included)
+      const resourceObject = extractResourceObject(item, included, includeStore)
       const type = resourceObject.type
       if (result.hasOwnProperty(type)) {
         result[type].push(resourceObject)
@@ -65,7 +75,7 @@ const deserialize = (response) => {
       return result
     }, {})
   } else {
-    const resourceObject = extractResourceObject(response.data, included)
+    const resourceObject = extractResourceObject(response.data, included, includeStore)
     return { [resourceObject.type]: [resourceObject] }
   }
 }
