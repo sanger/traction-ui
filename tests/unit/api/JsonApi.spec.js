@@ -105,7 +105,7 @@ describe('JsonApi', () => {
         })
       })
 
-      describe('with circular relationships', ()=>{
+      describe('with circular relationships', () => {
         beforeEach(() => {
           data = CircularResponse.data
           included = CircularResponse.data.included
@@ -115,24 +115,24 @@ describe('JsonApi', () => {
         it('can extract a resource object', () => {
           expect(JsonApi.extractResourceObject(dataItem, included)).toMatchObject({
             id: '1',
-            state: "pending",
+            state: 'pending',
             volume: 1.0,
             concentration: 1.0,
-            template_prep_kit_box_barcode: "LK12345",
+            template_prep_kit_box_barcode: 'LK12345',
             fragment_size: 100,
-            created_at: "2021/06/17 09:43",
+            created_at: '2021/06/17 09:43',
             deactivated_at: null,
-            source_identifier: "DN1:A1",
+            source_identifier: 'DN1:A1',
             tags: {
               id: '13',
-              oligo: "ACACACTCTATCAGATT",
-              group_id: "bc1019_BAK8B_OA",
+              oligo: 'ACACACTCTATCAGATT',
+              group_id: 'bc1019_BAK8B_OA',
               tag_set: {
                 id: '1',
-                name: "Sequel_16_barcodes_v3",
-                uuid: "4d87a8ab-4d16-f0b0-77e5-0f467dba442e"
-              }
-            }
+                name: 'Sequel_16_barcodes_v3',
+                uuid: '4d87a8ab-4d16-f0b0-77e5-0f467dba442e',
+              },
+            },
           })
         })
       })
