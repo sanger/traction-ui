@@ -44,10 +44,7 @@ const deserializeIncluded = (relationship, included, includeStore = {}) => {
   // we'll end up in a loop. Instead they point to the as yet incomplete object,
   // which will later be mutated to a full representation as we unroll the stack.
   includeStore[cacheKey] = serialized
-  return Object.assign(
-    serialized,
-    extractRelationships(relationships, included, includeStore),
-  )
+  return Object.assign(serialized, extractRelationships(relationships, included, includeStore))
 }
 
 const extractRelationships = (relationships, included, includeStore = {}) => {
