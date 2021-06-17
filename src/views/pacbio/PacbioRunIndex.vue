@@ -20,7 +20,7 @@
     <br />
 
     <b-table
-      id="runs-table"
+      id="runs"
       hover
       responsive
       show-empty
@@ -32,6 +32,7 @@
       :sort-desc.sync="sortDesc"
       :per-page="perPage"
       :current-page="currentPage"
+      tbody-tr-class="run"
       @filtered="onFiltered"
     >
       <template v-slot:cell(actions)="row">
@@ -101,7 +102,7 @@
         class="float-right"
         :total-rows="runs.length"
         :per-page="perPage"
-        aria-controls="libraries-table"
+        aria-controls="run"
       >
       </b-pagination>
     </div>
@@ -126,13 +127,28 @@ export default {
   data() {
     return {
       fields: [
-        { key: 'id', label: 'Run ID', sortable: true },
-        { key: 'name', label: 'Name', sortable: true },
-        { key: 'state', label: 'State', sortable: true },
-        { key: 'binding_kit_box_barcode', label: 'Binding Kit BB', sortable: true },
-        { key: 'sequencing_kit_box_barcode', label: 'Sequencing Kit BB', sortable: true },
-        { key: 'dna_control_complex_box_barcode', label: 'DNA Control Complex BB', sortable: true },
-        { key: 'system_name', label: 'System Name', sortable: true },
+        { key: 'id', label: 'Run ID', sortable: true, tdClass: 'run-id' },
+        { key: 'name', label: 'Name', sortable: true, tdClass: 'name' },
+        { key: 'state', label: 'State', sortable: true, tdClass: 'state' },
+        {
+          key: 'binding_kit_box_barcode',
+          label: 'Binding Kit BB',
+          sortable: true,
+          tdClass: 'binding-kit-box-barcode',
+        },
+        {
+          key: 'sequencing_kit_box_barcode',
+          label: 'Sequencing Kit BB',
+          sortable: true,
+          tdClass: 'sequencing-kit-box-barcode',
+        },
+        {
+          key: 'dna_control_complex_box_barcode',
+          label: 'DNA Control Complex BB',
+          sortable: true,
+          tdClass: 'dna-control-complex-box-barcode',
+        },
+        { key: 'system_name', label: 'System Name', sortable: true, tdClass: 'system-name' },
         { key: 'created_at', label: 'Created at', sortable: true },
         { key: 'actions', label: 'Actions' },
       ],
