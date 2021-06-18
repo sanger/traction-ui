@@ -62,14 +62,12 @@ const setLibraries = async ({ commit, getters }) => {
     // for a library so we should just have a single group_id
     libraries = response.deserialize.libraries.map((library) => {
       const {
-        tag: {
-          group_id: [tag_group_ids],
-        },
+        tag: { group_id: tag_group_id },
         // should be request: { sample: { name } }
         request: { sample_name },
         tube: { barcode },
       } = library
-      return { ...library, tag_group_ids, sample_name, barcode }
+      return { ...library, tag_group_id, sample_name, barcode }
     })
 
     commit('setLibraries', libraries)

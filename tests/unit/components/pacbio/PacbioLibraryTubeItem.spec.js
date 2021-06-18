@@ -5,7 +5,7 @@ describe('LibraryTubeItem.vue', () => {
   let tube, wrapper, props
 
   beforeEach(() => {
-    props = { barcode: 'TRAC-1', sample_names: 'Sample1,Sample2', tag_group_ids: '1,2' }
+    props = { barcode: 'TRAC-1', sample_name: 'Sample1,Sample2', tag_group_id: '1' }
 
     wrapper = mount(Tube, {
       localVue,
@@ -21,12 +21,12 @@ describe('LibraryTubeItem.vue', () => {
   })
 
   it('must have some sample names', () => {
-    expect(tube.sample_names).toEqual(props.sample_names)
-    expect(wrapper.find('.sample_names').text()).toEqual(props.sample_names)
+    expect(tube.sample_name).toEqual(props.sample_name)
+    expect(wrapper.find('.sample_name').text()).toEqual(props.sample_name)
   })
 
   it('must have some tag group ids', () => {
-    expect(tube.tag_group_ids).toEqual(props.tag_group_ids)
-    expect(wrapper.find('.tag_group_ids').text()).toEqual(props.tag_group_ids)
+    expect(tube.tag_group_id).toEqual(props.tag_group_id)
+    expect(wrapper.find('.tag_group_id').text()).toEqual(props.tag_group_id)
   })
 })

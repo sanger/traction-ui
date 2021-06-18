@@ -123,7 +123,7 @@ describe('#setLibraries', () => {
     expect(commit).toHaveBeenCalledWith('setLibraries', libraries)
     let library = libraries[0]
     expect(library.request).toBeDefined()
-    expect(library.tag_group_ids.length).toEqual(1)
+    expect(library.tag_group_id).toBeDefined()
   })
 
   it('unsuccessfully', async () => {

@@ -10,8 +10,8 @@
     "fragment_size": 100,
     "created_at": "09/23/2019 11:18",
     "deactivated_at": null,
-    "sample_names": "4616STDY7535900,4616STDY7535900",
-    "tag_group_ids": "1,2"
+    "sample_name": "4616STDY7535900",
+    "tag_group_id": "1"
   },
   {
     "id": "2",
@@ -24,8 +24,8 @@
     "fragment_size": 100,
     "created_at": "09/23/2019 11:18",
     "deactivated_at": null,
-    "sample_names": "4616STDY7535900",
-    "tag_group_ids": "1"
+    "sample_name": "4616STDY7535900",
+    "tag_group_id": "1"
   },
   {
     "id": "3",
@@ -38,8 +38,8 @@
     "fragment_size": 100,
     "created_at": "09/23/2019 11:18",
     "deactivated_at": null,
-    "sample_names": "4642STDY7515249",
-    "tag_group_ids": "1"
+    "sample_name": "4642STDY7515249",
+    "tag_group_id": "1"
   },
   {
     "id": "4",
@@ -52,8 +52,8 @@
     "fragment_size": 100,
     "created_at": "09/23/2019 11:18",
     "deactivated_at": null,
-    "sample_names": "4616STDY7644356",
-    "tag_group_ids": "1"
+    "sample_name": "4616STDY7644356",
+    "tag_group_id": "1"
   },
   {
     "id": "5",
@@ -66,7 +66,7 @@
     "fragment_size": 100,
     "created_at": "09/23/2019 11:18",
     "deactivated_at": null,
-    "sample_names": "25G257228308",
-    "tag_group_ids": "1"
+    "sample_name": "25G257228308",
+    "tag_group_id": "1"
   }
 ]

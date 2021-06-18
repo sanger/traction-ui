@@ -1,5 +1,5 @@
-describe('Pacbio Libraries view', () => {
-  it('Visits the pacbio libraries url', () => {
+describe('Pacbio Runs view', () => {
+  it('Visits the pacbio runs url', () => {
     cy.intercept('/v1/pacbio/runs?include=plate.wells.libraries', {
       fixture: 'tractionPacbioRuns.json',
     })
