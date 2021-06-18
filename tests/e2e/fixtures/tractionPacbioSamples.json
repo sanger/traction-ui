@@ -10,9 +10,8 @@
         "cost_code": "PSD1234",
         "external_study_id": "mockStudy-ID",
         "sample_name": "mockName3",
-        "barcode": "TRAC-1",
+        "barcode": "SE108532I",
         "sample_species": "mockSpecies",
-        "source_barcode": "DE1",
         "created_at": "10/14/2019 10:56"
       }
     }

@@ -59,8 +59,9 @@ To run the app and have hot-reloads for development:
 
     You will need to make the following changes to get it working:
     - if you don't already have one create `.env.production.local` in the root folder as a copy of `.env.production`
-    - change `VUE_APP_TRACTION_BASE_URL=REPLACE_VUE_APP_TRACTION_BASE_URL to VUE_APP_TRACTION_BASE_URL=http://traction`
-    - change `VUE_APP_SAMPLEEXTRACTION_BASE_URL=REPLACE_VUE_APP_SAMPLEEXTRACTION_BASE_URL to VUE_APP_SAMPLEEXTRACTION_BASE_URL=http://samples-extraction`
+    - change `VUE_APP_TRACTION_BASE_URL=REPLACE_VUE_APP_TRACTION_BASE_URL` to `VUE_APP_TRACTION_BASE_URL=http://traction`
+    - change `VUE_APP_SAMPLEEXTRACTION_BASE_URL=REPLACE_VUE_APP_SAMPLEEXTRACTION_BASE_URL` to `VUE_APP_SAMPLEEXTRACTION_BASE_URL=http://samples-extraction`
+    - change to `VUE_APP_SEQUENCESCAPE_BASE_URL=REPLACE_VUE_APP_SEQUENCESCAPE_BASE_URL` to `VUE_APP_SEQUENCESCAPE_BASE_URL=http://sequencescape`
 
 ## Formatting and Linting
 

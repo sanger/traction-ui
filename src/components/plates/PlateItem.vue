@@ -1,13 +1,5 @@
 <template>
   <div>
-    <b-button
-      :id="'pool-btn-' + plate.barcode"
-      size="sm"
-      variant="outline-success"
-      @click="poolSamples"
-    >
-      Pool Samples
-    </b-button>
     <Plate96SVG v-if="wells" ref="plate96Svg" :height="'30%'" :width="'30%'">
       <Well
         v-for="(well, position) in plateMap.wells"
@@ -53,10 +45,7 @@ export default {
   methods: {
     getWellAt(position) {
       let well = this.wells.filter((well) => well.position == position)[0]
-      return well ? well : { position: position, materials: [] }
-    },
-    poolSamples() {
-      return ''
+      return well && well.materials ? well : { position, materials: [] }
     },
   },
 }
