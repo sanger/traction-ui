@@ -4,7 +4,7 @@ describe('Pacbio Runs view', () => {
       fixture: 'tractionPacbioRuns.json',
     })
     cy.visit('#/pacbio/runs')
-    cy.get('#runs').contains('tr', '5')
+    cy.get('#run-index').contains('tr', '5')
     cy.get('.run')
       .first()
       .within(() => {
