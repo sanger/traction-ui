@@ -87,7 +87,8 @@
       </printerModal>
 
       <PacbioLibraryCreate
-        :selected-samples="selected"
+        ref="libraryCreateBtn"
+        :selected-sample="selected[0]"
         :disabled="selected.length === 0"
         class="float-left"
         @alert="showAlert"

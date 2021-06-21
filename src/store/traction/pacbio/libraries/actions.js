@@ -1,38 +1,21 @@
 import handlePromise from '@/api/PromiseHelper'
 
-const createLibraryInTraction = async ({ rootGetters, getters }, payload) => {
-  let library = payload.library
-  let tagId = rootGetters['traction/tractionTags'].find((l) => l.group_id == library.tag.group_id)
+const createLibraryInTraction = async ({ rootGetters, getters }, library) => {
+  let tag_id = rootGetters['traction/tractionTags'].find((l) => l.group_id == library.tag.group_id)
     .id
-
-  library = {
-    volume: library.volume,
-    concentration: library.concentration,
-    template_prep_kit_box_barcode: library.templatePrepKitBoxBarcode,
-    fragment_size: library.fragmentSize,
-    relationships: {
-      requests: {
-        data: library.samples.map((sample) => {
-          return {
-            id: sample.id,
-            type: 'requests',
-            relationships: {
-              tag: {
-                data: {
-                  id: tagId,
-                },
-              },
-            },
-          }
-        }),
-      },
-    },
-  }
-
   let body = {
     data: {
       type: 'library',
-      attributes: library,
+      attributes: {
+        volume: library.volume,
+        concentration: library.concentration,
+        template_prep_kit_box_barcode: library.templatePrepKitBoxBarcode,
+        fragment_size: library.fragmentSize,
+      },
+      relationships: {
+        request: { data: { type: 'requests', id: library.sample.id } },
+        tag: { data: { type: 'tags', id: tag_id } },
+      },
     },
   }
 

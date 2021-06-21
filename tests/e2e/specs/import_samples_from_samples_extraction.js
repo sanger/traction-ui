@@ -8,7 +8,7 @@ describe('Import samples from Samples extraction', () => {
     cy.intercept('/api/v1/assets?filter[barcode]=SE108532I', {
       fixture: 'sampleExtractionTubesWithSample.json',
     })
-    cy.intercept('/v1/pacbio/requests', { fixture: 'tractionPacbioSamples.json' })
+    cy.intercept('/v1/pacbio/requests', { fixture: 'tractionPacbioSample.json' })
     cy.get('#findSampleExtractionTubes').click()
     cy.contains('Samples have been created with barcodes: SE108532I')
   })
