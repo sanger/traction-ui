@@ -44,11 +44,14 @@ const setLibraries = async ({ commit, getters }) => {
     // TODO: this is a hack. We are no longer returning multiple tags
     // for a library so we should just have a single group_id
     libraries = response.deserialize.libraries.map((library) => {
+      // This is getting more complicated
+      // I think this needs to be done in one go when we deserialize
+      // the libraries
       const {
-        tag: { group_id: tag_group_id },
+        tag: { group_id: tag_group_id } = { group_id: null },
         // should be request: { sample: { name } }
-        request: { sample_name },
-        tube: { barcode },
+        request: { sample_name } = { sample_name: null },
+        tube: { barcode } = { barcode: null },
       } = library
       return { ...library, tag_group_id, sample_name, barcode }
     })

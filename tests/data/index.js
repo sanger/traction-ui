@@ -20,6 +20,7 @@ import TubeWithLibrary from './tubeWithLibrary'
 import CreatePacbioRequest from './createPacbioRequest'
 import TractionPacbioLibrary from './tractionPacbioLibrary'
 import TractionPacbioLibraries from './tractionPacbioLibraries'
+import TractionPacbioLibrariesNoRelationships from './tractionPacbioLibrariesNoRelationships'
 import TractionPacbioSamples from './tractionPacbioSamples'
 import SampleExtractionTubesWithSample from './sampleExtractionTubesWithSample'
 import PacbioRuns from './pacbioRuns'
@@ -57,6 +58,7 @@ export default {
   TubeWithLibrary,
   CreatePacbioRequest,
   TractionPacbioLibraries,
+  TractionPacbioLibrariesNoRelationships,
   TractionPacbioLibrary,
   TractionPacbioSamples,
   PacbioRuns,
