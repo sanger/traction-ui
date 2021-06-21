@@ -20,7 +20,7 @@
     <br />
 
     <b-table
-      id="libraries"
+      id="library-index"
       show-empty
       responsive
       :items="libraries"
@@ -112,7 +112,7 @@
         class="float-right"
         :total-rows="libraries.length"
         :per-page="perPage"
-        aria-controls="libraries"
+        aria-controls="library-index"
       >
       </b-pagination>
     </div>

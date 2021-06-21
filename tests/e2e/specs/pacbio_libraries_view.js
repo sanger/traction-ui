@@ -4,7 +4,7 @@ describe('Pacbio Libraries view', () => {
       fixture: 'tractionPacbioLibraries.json',
     })
     cy.visit('#/pacbio/libraries')
-    cy.get('#libraries').contains('tr', '5')
+    cy.get('#library-index').contains('tr', '5')
     cy.get('.library')
       .first()
       .within(() => {

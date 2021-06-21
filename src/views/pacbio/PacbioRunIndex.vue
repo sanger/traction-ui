@@ -20,7 +20,7 @@
     <br />
 
     <b-table
-      id="runs"
+      id="run-index"
       hover
       responsive
       show-empty
@@ -102,7 +102,7 @@
         class="float-right"
         :total-rows="runs.length"
         :per-page="perPage"
-        aria-controls="run"
+        aria-controls="run-index"
       >
       </b-pagination>
     </div>
