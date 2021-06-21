@@ -157,7 +157,7 @@ export default {
           key: 'template_prep_kit_box_barcode',
           label: 'Template Prep Kit Box Barcode',
           sortable: true,
-          class: 'template-prep-kit-box-barcode',
+          tdClass: 'template-prep-kit-box-barcode',
         },
         { key: 'fragment_size', label: 'Fragment Size', sortable: true, tdClass: 'fragment-size' },
         { key: 'created_at', label: 'Created at', sortable: true, tdClass: 'created-at' },

@@ -5,7 +5,7 @@ describe('LibraryTubeItem.vue', () => {
   let tube, wrapper, props
 
   beforeEach(() => {
-    props = { barcode: 'TRAC-1', sample_name: 'Sample1,Sample2', tag_group_id: '1' }
+    props = { barcode: 'TRAC-1', sample_name: 'Sample1', tag_group_id: '1' }
 
     wrapper = mount(Tube, {
       localVue,
