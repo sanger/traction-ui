@@ -4,7 +4,7 @@ describe('Pacbio plates view', () => {
       fixture: 'pacbioPlates.json',
     })
     cy.visit('#/pacbio/plates')
-    cy.get('#plates-table').contains('td', '1')
+    cy.get('#plate-index').contains('td', '1')
     cy.get('#filterInput')
       .clear()
       .type('1')

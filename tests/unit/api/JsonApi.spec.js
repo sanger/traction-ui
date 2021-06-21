@@ -1,5 +1,6 @@
 import * as JsonApi from '@/api/JsonApi'
 import TestResponse from '../../data/testResponse'
+import CircularResponse from '../../data/circularResponse'
 
 // TODO: create a factory which will build a JSON api response. Doing this manually is crushing me.
 describe('JsonApi', () => {
@@ -58,7 +59,7 @@ describe('JsonApi', () => {
       })
 
       it('can spread the included', () => {
-        expect(JsonApi.spreadIncluded({ id: '2', type: 'pickles' }, included)).toEqual({
+        expect(JsonApi.deserializeIncluded({ id: '2', type: 'pickles' }, included)).toEqual({
           id: '2',
           type: 'pickles',
           attrI: 'I just keep',
@@ -101,6 +102,38 @@ describe('JsonApi', () => {
               crisps: { type: 'crisps', id: '100', attrE: 'Cyber Insekt' },
             },
           ],
+        })
+      })
+
+      describe('with circular relationships', () => {
+        beforeEach(() => {
+          data = CircularResponse.data
+          included = CircularResponse.data.included
+          dataItem = data.data[0]
+        })
+
+        it('can extract a resource object', () => {
+          expect(JsonApi.extractResourceObject(dataItem, included)).toMatchObject({
+            id: '1',
+            state: 'pending',
+            volume: 1.0,
+            concentration: 1.0,
+            template_prep_kit_box_barcode: 'LK12345',
+            fragment_size: 100,
+            created_at: '2021/06/17 09:43',
+            deactivated_at: null,
+            source_identifier: 'DN1:A1',
+            tag: {
+              id: '13',
+              oligo: 'ACACACTCTATCAGATT',
+              group_id: 'bc1019_BAK8B_OA',
+              tag_set: {
+                id: '1',
+                name: 'Sequel_16_barcodes_v3',
+                uuid: '4d87a8ab-4d16-f0b0-77e5-0f467dba442e',
+              },
+            },
+          })
         })
       })
 

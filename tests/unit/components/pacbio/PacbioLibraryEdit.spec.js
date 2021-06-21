@@ -6,6 +6,7 @@ describe('PacbioLibraryEdit.vue', () => {
   let wrapper, modal, props, mockLibrary
 
   beforeEach(() => {
+    // TODO: The TractionPacbioLibrary needs to be updated to reflect the current structure
     mockLibrary = new Response(Data.TractionPacbioLibrary).deserialize.libraries[0]
     props = { lib: mockLibrary }
     wrapper = mount(PacbioLibraryEdit, {

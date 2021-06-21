@@ -4,7 +4,7 @@
       "id": "721",
       "type": "libraries",
       "links": {
-        "self": "http://localhost:3100/v1/pacbio/libraries/721"
+        "self": "http://traction/v1/pacbio/libraries/721"
       },
       "attributes": {
         "state": "pending",
@@ -19,8 +19,8 @@
       "relationships": {
         "request": {
           "links": {
-            "self": "http://localhost:3100/v1/pacbio/libraries/721/relationships/request",
-            "related": "http://localhost:3100/v1/pacbio/libraries/721/request"
+            "self": "http://traction/v1/pacbio/libraries/721/relationships/request",
+            "related": "http://traction/v1/pacbio/libraries/721/request"
           },
           "data": {
             "type": "requests",
@@ -29,8 +29,8 @@
         },
         "tube": {
           "links": {
-            "self": "http://localhost:3100/v1/pacbio/libraries/721/relationships/tube",
-            "related": "http://localhost:3100/v1/pacbio/libraries/721/tube"
+            "self": "http://traction/v1/pacbio/libraries/721/relationships/tube",
+            "related": "http://traction/v1/pacbio/libraries/721/tube"
           },
           "data": {
             "type": "tubes",
@@ -39,8 +39,8 @@
         },
         "tag": {
           "links": {
-            "self": "http://localhost:3100/v1/pacbio/libraries/721/relationships/tag",
-            "related": "http://localhost:3100/v1/pacbio/libraries/721/tag"
+            "self": "http://traction/v1/pacbio/libraries/721/relationships/tag",
+            "related": "http://traction/v1/pacbio/libraries/721/tag"
           },
           "data": {
             "type": "tags",
@@ -53,7 +53,7 @@
       "id": "722",
       "type": "libraries",
       "links": {
-        "self": "http://localhost:3100/v1/pacbio/libraries/722"
+        "self": "http://traction/v1/pacbio/libraries/722"
       },
       "attributes": {
         "state": "pending",
@@ -68,8 +68,8 @@
       "relationships": {
         "request": {
           "links": {
-            "self": "http://localhost:3100/v1/pacbio/libraries/722/relationships/request",
-            "related": "http://localhost:3100/v1/pacbio/libraries/722/request"
+            "self": "http://traction/v1/pacbio/libraries/722/relationships/request",
+            "related": "http://traction/v1/pacbio/libraries/722/request"
           },
           "data": {
             "type": "requests",
@@ -78,8 +78,8 @@
         },
         "tube": {
           "links": {
-            "self": "http://localhost:3100/v1/pacbio/libraries/722/relationships/tube",
-            "related": "http://localhost:3100/v1/pacbio/libraries/722/tube"
+            "self": "http://traction/v1/pacbio/libraries/722/relationships/tube",
+            "related": "http://traction/v1/pacbio/libraries/722/tube"
           },
           "data": {
             "type": "tubes",
@@ -88,8 +88,8 @@
         },
         "tag": {
           "links": {
-            "self": "http://localhost:3100/v1/pacbio/libraries/722/relationships/tag",
-            "related": "http://localhost:3100/v1/pacbio/libraries/722/tag"
+            "self": "http://traction/v1/pacbio/libraries/722/relationships/tag",
+            "related": "http://traction/v1/pacbio/libraries/722/tag"
           },
           "data": {
             "type": "tags",
@@ -102,7 +102,7 @@
       "id": "723",
       "type": "libraries",
       "links": {
-        "self": "http://localhost:3100/v1/pacbio/libraries/723"
+        "self": "http://traction/v1/pacbio/libraries/723"
       },
       "attributes": {
         "state": "pending",
@@ -117,8 +117,8 @@
       "relationships": {
         "request": {
           "links": {
-            "self": "http://localhost:3100/v1/pacbio/libraries/723/relationships/request",
-            "related": "http://localhost:3100/v1/pacbio/libraries/723/request"
+            "self": "http://traction/v1/pacbio/libraries/723/relationships/request",
+            "related": "http://traction/v1/pacbio/libraries/723/request"
           },
           "data": {
             "type": "requests",
@@ -127,8 +127,8 @@
         },
         "tube": {
           "links": {
-            "self": "http://localhost:3100/v1/pacbio/libraries/723/relationships/tube",
-            "related": "http://localhost:3100/v1/pacbio/libraries/723/tube"
+            "self": "http://traction/v1/pacbio/libraries/723/relationships/tube",
+            "related": "http://traction/v1/pacbio/libraries/723/tube"
           },
           "data": {
             "type": "tubes",
@@ -137,8 +137,8 @@
         },
         "tag": {
           "links": {
-            "self": "http://localhost:3100/v1/pacbio/libraries/723/relationships/tag",
-            "related": "http://localhost:3100/v1/pacbio/libraries/723/tag"
+            "self": "http://traction/v1/pacbio/libraries/723/relationships/tag",
+            "related": "http://traction/v1/pacbio/libraries/723/tag"
           },
           "data": {
             "type": "tags",
@@ -151,7 +151,7 @@
       "id": "724",
       "type": "libraries",
       "links": {
-        "self": "http://localhost:3100/v1/pacbio/libraries/724"
+        "self": "http://traction/v1/pacbio/libraries/724"
       },
       "attributes": {
         "state": "pending",
@@ -166,8 +166,8 @@
       "relationships": {
         "request": {
           "links": {
-            "self": "http://localhost:3100/v1/pacbio/libraries/724/relationships/request",
-            "related": "http://localhost:3100/v1/pacbio/libraries/724/request"
+            "self": "http://traction/v1/pacbio/libraries/724/relationships/request",
+            "related": "http://traction/v1/pacbio/libraries/724/request"
           },
           "data": {
             "type": "requests",
@@ -176,8 +176,8 @@
         },
         "tube": {
           "links": {
-            "self": "http://localhost:3100/v1/pacbio/libraries/724/relationships/tube",
-            "related": "http://localhost:3100/v1/pacbio/libraries/724/tube"
+            "self": "http://traction/v1/pacbio/libraries/724/relationships/tube",
+            "related": "http://traction/v1/pacbio/libraries/724/tube"
           },
           "data": {
             "type": "tubes",
@@ -186,8 +186,8 @@
         },
         "tag": {
           "links": {
-            "self": "http://localhost:3100/v1/pacbio/libraries/724/relationships/tag",
-            "related": "http://localhost:3100/v1/pacbio/libraries/724/tag"
+            "self": "http://traction/v1/pacbio/libraries/724/relationships/tag",
+            "related": "http://traction/v1/pacbio/libraries/724/tag"
           },
           "data": {
             "type": "tags",
@@ -200,7 +200,7 @@
       "id": "725",
       "type": "libraries",
       "links": {
-        "self": "http://localhost:3100/v1/pacbio/libraries/725"
+        "self": "http://traction/v1/pacbio/libraries/725"
       },
       "attributes": {
         "state": "pending",
@@ -215,8 +215,8 @@
       "relationships": {
         "request": {
           "links": {
-            "self": "http://localhost:3100/v1/pacbio/libraries/725/relationships/request",
-            "related": "http://localhost:3100/v1/pacbio/libraries/725/request"
+            "self": "http://traction/v1/pacbio/libraries/725/relationships/request",
+            "related": "http://traction/v1/pacbio/libraries/725/request"
           },
           "data": {
             "type": "requests",
@@ -225,8 +225,8 @@
         },
         "tube": {
           "links": {
-            "self": "http://localhost:3100/v1/pacbio/libraries/725/relationships/tube",
-            "related": "http://localhost:3100/v1/pacbio/libraries/725/tube"
+            "self": "http://traction/v1/pacbio/libraries/725/relationships/tube",
+            "related": "http://traction/v1/pacbio/libraries/725/tube"
           },
           "data": {
             "type": "tubes",
@@ -235,8 +235,8 @@
         },
         "tag": {
           "links": {
-            "self": "http://localhost:3100/v1/pacbio/libraries/725/relationships/tag",
-            "related": "http://localhost:3100/v1/pacbio/libraries/725/tag"
+            "self": "http://traction/v1/pacbio/libraries/725/relationships/tag",
+            "related": "http://traction/v1/pacbio/libraries/725/tag"
           },
           "data": {
             "type": "tags",
@@ -251,7 +251,7 @@
       "id": "481",
       "type": "requests",
       "links": {
-        "self": "http://localhost:3100/v1/pacbio/requests/481"
+        "self": "http://traction/v1/pacbio/requests/481"
       },
       "attributes": {
         "library_type": "library_type_1",
@@ -270,7 +270,7 @@
       "id": "482",
       "type": "requests",
       "links": {
-        "self": "http://localhost:3100/v1/pacbio/requests/482"
+        "self": "http://traction/v1/pacbio/requests/482"
       },
       "attributes": {
         "library_type": "library_type_1",
@@ -289,7 +289,7 @@
       "id": "483",
       "type": "requests",
       "links": {
-        "self": "http://localhost:3100/v1/pacbio/requests/483"
+        "self": "http://traction/v1/pacbio/requests/483"
       },
       "attributes": {
         "library_type": "library_type_1",
@@ -308,7 +308,7 @@
       "id": "484",
       "type": "requests",
       "links": {
-        "self": "http://localhost:3100/v1/pacbio/requests/484"
+        "self": "http://traction/v1/pacbio/requests/484"
       },
       "attributes": {
         "library_type": "library_type_1",
@@ -327,7 +327,7 @@
       "id": "485",
       "type": "requests",
       "links": {
-        "self": "http://localhost:3100/v1/pacbio/requests/485"
+        "self": "http://traction/v1/pacbio/requests/485"
       },
       "attributes": {
         "library_type": "library_type_1",
@@ -434,7 +434,7 @@
       "id": "721",
       "type": "tubes",
       "links": {
-        "self": "http://localhost:3100/v1/pacbio/tubes/721"
+        "self": "http://traction/v1/pacbio/tubes/721"
       },
       "attributes": {
         "barcode": "TRAC-2-721"
@@ -442,8 +442,8 @@
       "relationships": {
         "materials": {
           "links": {
-            "self": "http://localhost:3100/v1/pacbio/tubes/721/relationships/materials",
-            "related": "http://localhost:3100/v1/pacbio/tubes/721/materials"
+            "self": "http://traction/v1/pacbio/tubes/721/relationships/materials",
+            "related": "http://traction/v1/pacbio/tubes/721/materials"
           }
         }
       }
@@ -452,7 +452,7 @@
       "id": "722",
       "type": "tubes",
       "links": {
-        "self": "http://localhost:3100/v1/pacbio/tubes/722"
+        "self": "http://traction/v1/pacbio/tubes/722"
       },
       "attributes": {
         "barcode": "TRAC-2-722"
@@ -460,8 +460,8 @@
       "relationships": {
         "materials": {
           "links": {
-            "self": "http://localhost:3100/v1/pacbio/tubes/722/relationships/materials",
-            "related": "http://localhost:3100/v1/pacbio/tubes/722/materials"
+            "self": "http://traction/v1/pacbio/tubes/722/relationships/materials",
+            "related": "http://traction/v1/pacbio/tubes/722/materials"
           }
         }
       }
@@ -470,7 +470,7 @@
       "id": "723",
       "type": "tubes",
       "links": {
-        "self": "http://localhost:3100/v1/pacbio/tubes/723"
+        "self": "http://traction/v1/pacbio/tubes/723"
       },
       "attributes": {
         "barcode": "TRAC-2-723"
@@ -478,8 +478,8 @@
       "relationships": {
         "materials": {
           "links": {
-            "self": "http://localhost:3100/v1/pacbio/tubes/723/relationships/materials",
-            "related": "http://localhost:3100/v1/pacbio/tubes/723/materials"
+            "self": "http://traction/v1/pacbio/tubes/723/relationships/materials",
+            "related": "http://traction/v1/pacbio/tubes/723/materials"
           }
         }
       }
@@ -488,7 +488,7 @@
       "id": "724",
       "type": "tubes",
       "links": {
-        "self": "http://localhost:3100/v1/pacbio/tubes/724"
+        "self": "http://traction/v1/pacbio/tubes/724"
       },
       "attributes": {
         "barcode": "TRAC-2-724"
@@ -496,8 +496,8 @@
       "relationships": {
         "materials": {
           "links": {
-            "self": "http://localhost:3100/v1/pacbio/tubes/724/relationships/materials",
-            "related": "http://localhost:3100/v1/pacbio/tubes/724/materials"
+            "self": "http://traction/v1/pacbio/tubes/724/relationships/materials",
+            "related": "http://traction/v1/pacbio/tubes/724/materials"
           }
         }
       }
@@ -506,7 +506,7 @@
       "id": "725",
       "type": "tubes",
       "links": {
-        "self": "http://localhost:3100/v1/pacbio/tubes/725"
+        "self": "http://traction/v1/pacbio/tubes/725"
       },
       "attributes": {
         "barcode": "TRAC-2-725"
@@ -514,8 +514,8 @@
       "relationships": {
         "materials": {
           "links": {
-            "self": "http://localhost:3100/v1/pacbio/tubes/725/relationships/materials",
-            "related": "http://localhost:3100/v1/pacbio/tubes/725/materials"
+            "self": "http://traction/v1/pacbio/tubes/725/relationships/materials",
+            "related": "http://traction/v1/pacbio/tubes/725/materials"
           }
         }
       }

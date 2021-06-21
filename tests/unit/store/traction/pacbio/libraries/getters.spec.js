@@ -21,7 +21,7 @@ describe('getters', () => {
     const state = {
       libraries: libraries,
     }
-    const actual = getters.libraryByBarcode(state)(libraries[0].barcode)
+    const actual = getters.libraryByBarcode(state)(libraries[0].tube.barcode)
     expect(actual).toEqual(libraries[0])
   })
 })

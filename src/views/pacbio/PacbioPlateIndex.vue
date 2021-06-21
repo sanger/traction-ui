@@ -20,7 +20,7 @@
     <br />
 
     <b-table
-      id="plates-table"
+      id="plate-index"
       show-empty
       responsive
       :items="plates"
@@ -57,7 +57,7 @@
         class="float-right"
         :total-rows="plates.length"
         :per-page="perPage"
-        aria-controls="plates-table"
+        aria-controls="plate-index"
       >
       </b-pagination>
       <b-form-group label-cols-lg="1" label="Per Page" label-for="input-per-page">

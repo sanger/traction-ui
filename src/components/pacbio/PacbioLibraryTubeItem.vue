@@ -11,11 +11,11 @@
       <div class="barcode">
         {{ barcode }}
       </div>
-      <div class="sample_names">
-        {{ sample_names }}
+      <div class="sample_name">
+        {{ sample_name }}
       </div>
-      <div class="tag_group_ids">
-        {{ tag_group_ids }}
+      <div class="tag_group_id">
+        {{ tag_group_id }}
       </div>
     </div>
   </b-list-group-item>
@@ -33,12 +33,12 @@ export default {
       required: true,
     },
     // eslint-disable-next-line vue/prop-name-casing
-    sample_names: {
+    sample_name: {
       type: String,
       required: true,
     },
     // eslint-disable-next-line vue/prop-name-casing
-    tag_group_ids: {
+    tag_group_id: {
       type: String,
       required: true,
     },

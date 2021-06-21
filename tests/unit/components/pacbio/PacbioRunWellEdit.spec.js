@@ -9,7 +9,7 @@ describe('PacbioWellModal', () => {
     props = { row: 'A', column: '1', position: 'A1' }
 
     storeWell = Run.buildWell(props.row, props.column, 'In SMRT Link')
-    storeWell.libraries = [{ barcode: 'TRAC-0' }]
+    storeWell.libraries = [{ tube: { barcode: 'TRAC-0' } }]
 
     run = Run.build()
     run.plate.wells[0] = storeWell
@@ -203,7 +203,7 @@ describe('PacbioWellModal', () => {
         modal.showAlert = jest.fn()
         modal.isLibraryBarcodeValid = jest.fn()
         modal.addLibraryToWell = jest.fn()
-        library = { id: 1, barcode: newBarcode }
+        library = { id: 1, tube: { barcode: newBarcode } }
         store.commit('traction/pacbio/libraries/setLibraries', [library])
       })
 
@@ -215,7 +215,7 @@ describe('PacbioWellModal', () => {
         expect(modal.addLibraryToWell).toBeCalledWith({
           index: anIndex,
           position: props.position,
-          with: { id: library.id, barcode: library.barcode },
+          with: { id: library.id, barcode: library.tube.barcode },
         })
         expect(modal.showAlert).toBeCalledWith('Library is valid', 'success')
       })
