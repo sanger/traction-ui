@@ -128,6 +128,17 @@ describe('#setLibraries', () => {
     expect(library.tag_group_id).toBeDefined()
   })
 
+  it('when the library has no request, tube or tag', async () => {
+    get.mockReturnValue(Data.TractionPacbioLibrariesNoRelationships)
+
+    let libraries = await Actions.setLibraries({ commit, getters })
+
+    expect(commit).toHaveBeenCalledWith('setLibraries', libraries)
+    let library = libraries[0]
+    expect(library.request).not.toBeDefined()
+    expect(library.tag_group_id).toBeNull()
+  })
+
   it('unsuccessfully', async () => {
     get.mockReturnValue(failedResponse)
 
