@@ -3,7 +3,7 @@
     <b-row>
       <b-col>
         <b-form-input
-          id="run_name"
+          id="run-name"
           v-b-tooltip.hover
           :value="runName"
           placeholder="Run name"
@@ -15,7 +15,7 @@
       </b-col>
       <b-col>
         <b-form-input
-          id="binding_kit_box_barcode"
+          id="binding-kit-box-barcode"
           v-b-tooltip.hover
           :value="bindingKitBoxBarcode"
           placeholder="Binding Kit Box Barcode"
@@ -30,7 +30,7 @@
     <b-row>
       <b-col>
         <b-form-input
-          id="sequencing_kit_box_barcode"
+          id="sequencing-kit-box-barcode"
           v-b-tooltip.hover
           :value="sequencingKitBoxBarcode"
           placeholder="Sequencing Kit Box Barcode"
@@ -42,7 +42,7 @@
       </b-col>
       <b-col>
         <b-form-input
-          id="dna_control_complex_box_barcode"
+          id="dna-control-complex-box-barcode"
           v-b-tooltip.hover
           :value="dnaControlComplexBoxBarcode"
           placeholder="DNA Control Complex Box Barcode"
@@ -54,7 +54,7 @@
       </b-col>
       <b-col>
         <b-form-select
-          id="systemName"
+          id="system-name"
           ref="systemName"
           v-b-tooltip.hover
           :value="systemName"

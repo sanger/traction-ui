@@ -185,6 +185,8 @@ describe('Run', () => {
       pacbioRequest.runs.plates.create.mockResolvedValue(Data.PacbioSequencingPlate)
       pacbioRequest.runs.wells.create.mockResolvedValue(failedResponse)
 
+      pacbioRequest.runs.destroy.mockResolvedValue(Data.SuccessfulDestroy)
+
       let runResponse = new Response(Data.PacbioRun)
       let runId = runResponse.deserialize.runs[0].id
 
@@ -218,6 +220,8 @@ describe('Run', () => {
 
       it('should remove that well from the payload', () => {
         pacbioRequest.runs.create.mockResolvedValue([Data.PacbioRun])
+
+        pacbioRequest.runs.destroy.mockResolvedValue(Data.SuccessfulDestroy)
 
         Run.create(run, pacbioRequest)
         expect(pacbioRequest.runs.create).toHaveBeenCalledTimes(1)

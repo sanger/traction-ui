@@ -17,8 +17,8 @@ describe('Well.vue', () => {
 
     storeWell = Run.buildWell(props.row, props.column, 'In SMRT Link', '2', '')
     storeWell.libraries = [
-      { id: 1, barcode: 'TRAC-1' },
-      { id: 2, barcode: 'TRAC-2' },
+      { id: 1, tube: { barcode: 'TRAC-1' } },
+      { id: 2, tube: { barcode: 'TRAC-2' } },
     ]
     storeWell.movie_time = '15'
     storeWell.insert_size = 123
@@ -174,7 +174,7 @@ describe('Well.vue', () => {
     beforeEach(() => {
       newBarcode = 'TRAC-1'
       well.addLibraryToWell = jest.fn()
-      library = { id: 1, barcode: newBarcode }
+      library = { id: 1, tube: { barcode: newBarcode } }
       store.commit('traction/pacbio/libraries/setLibraries', [library])
     })
 
@@ -182,7 +182,7 @@ describe('Well.vue', () => {
       await well.updateLibraryBarcode(newBarcode)
       expect(well.addLibraryToWell).toBeCalledWith({
         position: well.position,
-        with: { id: library.id, barcode: library.barcode },
+        with: { id: library.id, barcode: library.tube.barcode },
       })
     })
   })
