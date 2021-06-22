@@ -10,7 +10,7 @@ describe('PacbioLibraryCreate.vue', () => {
     props = {
       disabled: true,
       isStatic: true,
-      selectedSamples: [1],
+      selectedSample: { id: 1 },
     }
 
     wrapper = mount(PacbioLibraryCreate, {
@@ -41,8 +41,8 @@ describe('PacbioLibraryCreate.vue', () => {
     expect(modal.isStatic).toEqual(props.isStatic)
   })
 
-  it('must have a selectedSamples prop', () => {
-    expect(modal.selectedSamples).toEqual(props.selectedSamples)
+  it('must have a selectedSample prop', () => {
+    expect(modal.selectedSample).toEqual(props.selectedSample)
   })
 
   it('must have tagOptions data', () => {
@@ -55,11 +55,11 @@ describe('PacbioLibraryCreate.vue', () => {
     beforeEach(() => {
       modal.createLibraryInTraction = jest.fn()
       modal.showAlert = jest.fn()
-      payload = { library: { tag: { group_id: 1 }, samples: [1] } }
+      payload = { tag: { group_id: 1 }, sample: { id: 1 } }
     })
 
     it('is successful', async () => {
-      wrapper.setData({ library: { tag: { group_id: 1 } } })
+      wrapper.setData({ library: { tag: { group_id: 1 }, sample: { id: 1 } } })
       let expectedResponse = new Response(Data.Libraries)
       modal.createLibraryInTraction.mockReturnValue(expectedResponse)
 
@@ -80,7 +80,7 @@ describe('PacbioLibraryCreate.vue', () => {
     })
 
     it('shows a error message on failure', async () => {
-      wrapper.setData({ library: { tag: { group_id: 1 } } })
+      wrapper.setData({ library: { tag: { group_id: 1 }, sample: { id: 1 } } })
 
       let failedResponse = {
         status: 422,

@@ -4,7 +4,7 @@ const getters = {
     rootState.api.traction.pacbio.request_library,
   libraries: (state) => state.libraries,
   libraryByBarcode: (state) => (barcode) => {
-    return state.libraries.find((library) => library.barcode === barcode)
+    return state.libraries.find((library) => library.tube.barcode === barcode)
   },
 }
 

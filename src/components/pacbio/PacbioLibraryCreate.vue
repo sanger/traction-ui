@@ -20,13 +20,9 @@
       <alert ref="alert"></alert>
 
       <b-form id="libraryCreateModal">
-        <p>The following samples are used to create this library:</p>
-
-        <ul>
-          <template v-for="sample in selectedSamples">
-            <li :key="sample.id">{{ sample.sample_name }} ({{ sample.barcode }})</li>
-          </template>
-        </ul>
+        <b-form-group id="selected-sample" label="The sample selected for this library is:">
+          {{ selectedSample.sample_name }} ({{ selectedSample.source_identifier }})
+        </b-form-group>
 
         <b-form-group id="tag-select-input" label="Tag:" label-for="tag-input">
           <b-form-select
@@ -37,9 +33,9 @@
           />
         </b-form-group>
 
-        <b-form-group id="input-group-1" label="Volume:" label-for="input-1">
+        <b-form-group id="input-group-1" label="Volume:" label-for="library-volume">
           <b-form-input
-            id="input-1"
+            id="library-volume"
             v-model="library.volume"
             type="number"
             required
@@ -48,9 +44,9 @@
           </b-form-input>
         </b-form-group>
 
-        <b-form-group id="input-group-2" label="Concentration:" label-for="input-2">
+        <b-form-group id="input-group-2" label="Concentration:" label-for="library-concentration">
           <b-form-input
-            id="input-2"
+            id="library-concentration"
             v-model="library.concentration"
             type="number"
             required
@@ -59,9 +55,13 @@
           </b-form-input>
         </b-form-group>
 
-        <b-form-group id="input-group-2" label="Template prep kit box barcode:" label-for="input-3">
+        <b-form-group
+          id="input-group-2"
+          label="Template prep kit box barcode:"
+          label-for="library-templatePrepKitBoxBarcode"
+        >
           <b-form-input
-            id="input-3"
+            id="library-templatePrepKitBoxBarcode"
             v-model="library.templatePrepKitBoxBarcode"
             type="text"
             required
@@ -70,9 +70,9 @@
           </b-form-input>
         </b-form-group>
 
-        <b-form-group id="input-group-2" label="Fragment size" label-for="input-4">
+        <b-form-group id="input-group-2" label="Fragment size" label-for="library-fragmentSize">
           <b-form-input
-            id="input-4"
+            id="library-fragmentSize"
             v-model="library.fragmentSize"
             type="number"
             required
@@ -85,7 +85,7 @@
       <template v-slot:modal-footer="{ ok, cancel }">
         <b-button @click="cancel()"> Cancel </b-button>
 
-        <b-button variant="success" @click="createLibrary()"> Create </b-button>
+        <b-button id="create-btn" variant="success" @click="createLibrary()"> Create </b-button>
       </template>
     </b-modal>
   </div>
@@ -108,16 +108,16 @@ export default {
   props: {
     disabled: Boolean,
     isStatic: Boolean,
-    selectedSamples: {
-      type: Array,
+    selectedSample: {
+      type: Object,
       default() {
-        return []
+        return {}
       },
     },
   },
   data() {
     return {
-      library: { tag: {} },
+      library: { tag: {}, sample: {} },
       tagOptions: [],
     }
   },
@@ -136,18 +136,13 @@ export default {
         this.showAlert(consts.MESSAGE_ERROR_FIND_TAGS_FAILED + error.message, 'danger')
       }
     },
-    ...mapActions('traction/pacbio/libraries', ['createLibraryInTraction']),
-    ...mapActions('traction', ['setTags']),
     async createLibrary() {
       if (!this.library.tag.group_id) {
         this.showAlert(consts.MESSAGE_ERROR_CREATE_LIBRARY_FAILED + 'Please select a tag', 'danger')
         return
       }
 
-      this.library.samples = this.selectedSamples
-      let payload = { library: this.library }
-      let response = await this.createLibraryInTraction(payload)
-
+      let response = await this.createLibraryInTraction(this.library)
       if (response.successful) {
         let barcodes = response.deserialize.libraries.map((l) => l.barcode)
         this.hide()
@@ -160,8 +155,10 @@ export default {
       }
     },
     show() {
-      this.library = { tag: {} }
+      this.library = { tag: {}, sample: this.selectedSample }
     },
+    ...mapActions('traction/pacbio/libraries', ['createLibraryInTraction']),
+    ...mapActions('traction', ['setTags']),
   },
 }
 </script>

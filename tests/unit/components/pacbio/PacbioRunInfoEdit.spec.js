@@ -43,20 +43,20 @@ describe('PacbioRunInfoEdit', () => {
 
   describe('form inputs', () => {
     it('Run name should be read only', () => {
-      let input = wrapper.find('#run_name')
+      let input = wrapper.find('#run-name')
       expect(input.attributes('readonly')).toBeTruthy()
     })
     it('has a Binding Kit Box Barcode input', () => {
-      expect(wrapper.find('#binding_kit_box_barcode')).toBeDefined()
+      expect(wrapper.find('#binding-kit-box-barcode')).toBeDefined()
     })
     it('has a Sequencing Kit Box Barcode input', () => {
-      expect(wrapper.find('#sequencing_kit_box_barcode')).toBeDefined()
+      expect(wrapper.find('#sequencing-kit-box-barcode')).toBeDefined()
     })
     it('has a DNA Control Complex Box Barcode input', () => {
-      expect(wrapper.find('#dna_control_complex_box_barcode')).toBeDefined()
+      expect(wrapper.find('#dna-control-complex-box-barcode')).toBeDefined()
     })
     it('has a System Name input', () => {
-      expect(wrapper.find('#system_name')).toBeDefined()
+      expect(wrapper.find('#system-name')).toBeDefined()
     })
     it('has a Comments input', () => {
       expect(wrapper.find('#comments')).toBeDefined()

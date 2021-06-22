@@ -1,38 +1,21 @@
 import handlePromise from '@/api/PromiseHelper'
 
-const createLibraryInTraction = async ({ rootGetters, getters }, payload) => {
-  let library = payload.library
-  let tagId = rootGetters['traction/tractionTags'].find((l) => l.group_id == library.tag.group_id)
+const createLibraryInTraction = async ({ rootGetters, getters }, library) => {
+  let tag_id = rootGetters['traction/tractionTags'].find((l) => l.group_id == library.tag.group_id)
     .id
-
-  library = {
-    volume: library.volume,
-    concentration: library.concentration,
-    template_prep_kit_box_barcode: library.templatePrepKitBoxBarcode,
-    fragment_size: library.fragmentSize,
-    relationships: {
-      requests: {
-        data: library.samples.map((sample) => {
-          return {
-            id: sample.id,
-            type: 'requests',
-            relationships: {
-              tag: {
-                data: {
-                  id: tagId,
-                },
-              },
-            },
-          }
-        }),
-      },
-    },
-  }
-
   let body = {
     data: {
       type: 'library',
-      attributes: library,
+      attributes: {
+        volume: library.volume,
+        concentration: library.concentration,
+        template_prep_kit_box_barcode: library.templatePrepKitBoxBarcode,
+        fragment_size: library.fragmentSize,
+      },
+      relationships: {
+        request: { data: { type: 'requests', id: library.sample.id } },
+        tag: { data: { type: 'tags', id: tag_id } },
+      },
     },
   }
 
@@ -58,16 +41,19 @@ const setLibraries = async ({ commit, getters }) => {
   let libraries = null
 
   if (response.successful && !response.empty) {
-    libraries = response.deserialize.libraries
-
+    // TODO: this is a hack. We are no longer returning multiple tags
+    // for a library so we should just have a single group_id
     libraries = response.deserialize.libraries.map((library) => {
-      library.tag_group_ids = library.requests
-        .map((request) => {
-          return request.tag_group_id
-        })
-        .join(',')
-
-      return library
+      // This is getting more complicated
+      // I think this needs to be done in one go when we deserialize
+      // the libraries
+      const {
+        tag: { group_id: tag_group_id } = { group_id: null },
+        // should be request: { sample: { name } }
+        request: { sample_name } = { sample_name: null },
+        tube: { barcode } = { barcode: null },
+      } = library
+      return { ...library, tag_group_id, sample_name, barcode }
     })
 
     commit('setLibraries', libraries)
