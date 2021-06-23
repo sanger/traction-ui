@@ -1,7 +1,7 @@
 
 describe('Pacbio Pool Create', () => {
   it('Creates a pool successfully', () => {
-    cy.visit('#/pacbio/pool-create')
+    cy.visit('#/pacbio/pool/new')
     cy.contains('Pool')
     // visit the pooling page
     // select a plate(s)
