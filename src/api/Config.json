@@ -81,6 +81,10 @@
           {
             "name": "wells",
             "include": ""
+          },
+          {
+            "name": "tag_sets",
+            "include": "tags"
           }
         ]
       }

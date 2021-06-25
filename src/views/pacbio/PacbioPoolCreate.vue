@@ -2,7 +2,7 @@
   <div>
 
     Pool
-    <b-container fluid id="pool">
+    <b-container id="pool" fluid>
       <b-row id="row1">
         <b-col data-type="plate-find" class="border">
           Find plates
