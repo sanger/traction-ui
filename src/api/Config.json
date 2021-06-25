@@ -46,7 +46,7 @@
         "resources": [
           {
             "name": "libraries",
-            "include": "request,tag.tag_set,tube"
+            "include": "request,tag,tube"
           },
           {
             "name": "request_library",
