@@ -79,6 +79,10 @@
             "include": "wells.materials"
           },
           {
+            "name": "tag_sets",
+            "include": "tags"
+          },
+          {
             "name": "wells",
             "include": ""
           },
