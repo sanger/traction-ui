@@ -2,6 +2,7 @@ import mutations from '@/store/traction/pacbio/poolCreate/mutations'
 import defaultState from "@/store/traction/pacbio/poolCreate/state"
 import { Data } from '../../../../testHelper'
 import { dataToObjectById } from '@/api/JsonApi'
+import { eq } from 'lodash-es'
 
 describe('mutations.js', () => {
   const {
@@ -44,9 +45,10 @@ describe('mutations.js', () => {
         // mock state
         const state = defaultState()
         // apply mutation
-        selectTagSet(state, {})
+        selectTagSet(state, 1)
         // assert result
         // expect(state, value).toEqual(new_value)
+        expect(state.selected.tagSet).toEqual(1)
     })
   })
   describe("selectRequest", () => {

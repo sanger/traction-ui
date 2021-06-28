@@ -21,7 +21,9 @@ export default {
    * @param {Object} state The Vuex state object
    * @param {String} id The id of the plate
    */
-  selectTagSet: (state, { id }) => { },
+  selectTagSet: (state, id) => { 
+    state.selected.tagSet = id
+  },
   /**
    * Flags request with `id` as selected. (Or unselected if selected is false)
    * @param {Object} state The Vuex state object
