@@ -13,6 +13,18 @@ const mapRelationships = (relationships) => {
   }, {})
 }
 
+/**
+* Groups resources by their resource type
+* @param {Array} included Array of JSON API resources
+*/
+const groupIncludedByResource = (included) => {
+  return included.reduce((group, resource) => {
+    if (group[resource.type] === undefined) { group[resource.type] = [] }
+    group[resource.type].push(resource)
+    return group
+  }, {})
+}
+
 const extractRelationship = (relationship, included, includeStore = {}) => {
   if (Array.isArray(relationship)) {
     return relationship.map((item) => deserializeIncluded(item, included, includeStore))
@@ -88,6 +100,7 @@ const deserialize = ({ data, included }, includeStore = {}) => {
 export {
   extractAttributes,
   mapRelationships,
+  groupIncludedByResource,
   extractRelationship,
   findIncluded,
   deserializeIncluded,

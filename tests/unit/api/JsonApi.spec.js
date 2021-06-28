@@ -161,4 +161,17 @@ describe('JsonApi', () => {
       })
     })
   })
+
+  describe('groupIncludedByResource', () => {
+    it('groups resources from an included array', ()=>{
+      const included = TestResponse.data.included
+      expect(
+        JsonApi.groupIncludedByResource(included)
+      ).toEqual({
+        pickles: included.slice(0,1),
+        chocolates: included.slice(1,3),
+        crisps: included.slice(3,5),
+      })
+    })
+  })
 })
