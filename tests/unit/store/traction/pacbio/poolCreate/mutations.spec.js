@@ -1,5 +1,7 @@
 import mutations from '@/store/traction/pacbio/poolCreate/mutations'
 import defaultState from "@/store/traction/pacbio/poolCreate/state"
+import { Data } from '../../../../testHelper'
+import { dataToObjectById } from '@/api/JsonApi'
 
 describe('mutations.js', () => {
   const {
@@ -105,11 +107,12 @@ describe('mutations.js', () => {
   describe("populateTagSets", () => {
     it('updates the state', () => {
         // mock state
+        const tagSets = Data.PacbioTagSets.data.data
         const state = defaultState()
         // apply mutation
-        populateTagSets(state, {})
+        populateTagSets(state, tagSets)
         // assert result
-        // expect(state, value).toEqual(new_value)
+        expect(state.resources.tagSets).toEqual(dataToObjectById(tagSets))
     })
   })
 

@@ -14,5 +14,10 @@ export default {
       tagSets: []
     }
   },
+  mounted() {
+    this.tagSets = this.$store.getters['traction/pacbio/tagSetList'].map(({id: value, name: text}) => {
+      return {value, text}
+    })
+  }
 }
 </script>

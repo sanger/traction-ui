@@ -1,3 +1,5 @@
+import { dataToObjectById } from '@/api/JsonApi'
+
 // Mutations handle synchronous update of state.
 export default {
   /**
@@ -57,7 +59,9 @@ export default {
    * @param {Object} state The VueXState object
    * @param {Array.{}} tagSets The tagSet resources to populate the store
    */
-  populateTagSets: (state, tagSets) => {},
+  populateTagSets: (state, tagSets) => {
+    state.resources.tagSets = dataToObjectById(tagSets)
+  },
   /**
    * Populated with resources via APi calls from the actions
    * @param {Object} state The VueXState object

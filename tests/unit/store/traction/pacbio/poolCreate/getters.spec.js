@@ -19,7 +19,22 @@ describe("getters.js", () => {
 
   describe('tagSetList', () => {
     it('returns what it does', () => {
-      expect(tagSetList(state)).toEqual(undefined)
+      const tagSets = {
+        "1": {
+          "id:" : "1",
+          "name": "tagSet1",
+          "uuid": "uuid1",
+          "pipeline": "pipeline1"
+        },
+        '2': {
+          "id:" : "2",
+          "name": "tagSet2",
+          "uuid": "uuid2",
+          "pipeline": "pipeline1"
+        },
+      }
+      state.resources.tagSets = tagSets
+      expect(tagSetList(state)).toEqual(Object.values(tagSets))
     })
   })
 

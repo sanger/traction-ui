@@ -25,6 +25,22 @@ const groupIncludedByResource = (included) => {
   }, {})
 }
 
+/**
+* TODO: This will need to be extended to extract relationships?
+* Groups resources by their resource type
+* @param {Array} data Array of JSON API data
+* @returns {Object} keys will be the id of the data 
+*/
+const dataToObjectById = (data) => {
+  return data.reduce((result, {id, attributes}) => {
+    return {
+      // we still keep the id as it will be needed
+      [id]: {id, ...attributes},
+      ...result
+    }
+  }, {})
+}
+
 const extractRelationship = (relationship, included, includeStore = {}) => {
   if (Array.isArray(relationship)) {
     return relationship.map((item) => deserializeIncluded(item, included, includeStore))
@@ -107,6 +123,7 @@ export {
   extractRelationships,
   extractResourceObject,
   deserialize,
+  dataToObjectById,
 }
 
 export default deserialize

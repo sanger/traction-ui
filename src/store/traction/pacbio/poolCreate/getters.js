@@ -9,7 +9,9 @@ export default {
    * Returns a list of all fetched tagSet
    * @param {Object} state The Vuex state object
    */
-  tagSetList: (state) => {},
+  tagSetList: (state) => {
+    return Object.values(state.resources.tagSets)
+  },
   /**
    * Returns the selected tag set
    * @param {Object} state The Vuex state object

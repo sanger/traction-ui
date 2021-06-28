@@ -1,6 +1,7 @@
 import * as JsonApi from '@/api/JsonApi'
 import TestResponse from '../../data/testResponse'
 import CircularResponse from '../../data/circularResponse'
+import { eq } from 'lodash-es'
 
 // TODO: create a factory which will build a JSON api response. Doing this manually is crushing me.
 describe('JsonApi', () => {
@@ -173,5 +174,17 @@ describe('JsonApi', () => {
         crisps: included.slice(3,5),
       })
     })
+  })
+
+  describe('dataToObjectById', () => {
+
+    it('creates an object with the id as key', () => {
+      const data = TestResponse.data.data
+      const object = JsonApi.dataToObjectById(data)
+      const keys = Object.keys(object)
+      expect(keys.length).toEqual(data.length)
+      expect(object[keys[0]]).toEqual({ id: data[0].id, ...data[0].attributes})
+    })
+
   })
 })
