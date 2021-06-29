@@ -8,20 +8,20 @@ export default {
    * @param {String} id The id of the plate
    * @param {Boolean} selected Whether the plate is selected (defaults to true)
    */
-  selectPlate: (state, { id, selected = true}) => {},
+  selectPlate: (state, { id, selected = true }) => {},
   /**
    * Flags plates in the array as selected. (Or unselected if selected is false)
    * @param {Object} state The Vuex state object
    * @param {Array.<{id: String, selected: Boolean}>} plates An array of plate id objects to be selected
    * @param {Boolean} selected Whether the plate is selected (defaults to true)
    */
-  selectPlates: (state, plates) => { },
+  selectPlates: (state, plates) => {},
   /**
    * Flags tagSet with `id` as selected.
    * @param {Object} state The Vuex state object
    * @param {String} id The id of the plate
    */
-  selectTagSet: (state, id) => { 
+  selectTagSet: (state, id) => {
     state.selected.tagSet = id
   },
   /**
@@ -29,14 +29,14 @@ export default {
    * @param {Object} state The Vuex state object
    * @param {String} id The id of the plate
    */
-  selectRequest: (state, { id }) => { },
-   /**
+  selectRequest: (state, { id }) => {},
+  /**
    * Flags requests in the Array as selected. (Or unselected if selected is false)
    * @param {Object} state The Vuex state object
    * @param {Array.<{id: String, selected: Boolean}>} requests An array of plate id objects to be selected
    * @param {Boolean} selected Whether the plate is selected (defaults to true)
    */
-  selectRequests: (state, requests) => { },
+  selectRequests: (state, requests) => {},
 
   /**
    * Populated with resources via APi calls from the actions
@@ -62,7 +62,7 @@ export default {
    * @param {Array.{}} tagSets The tagSet resources to populate the store
    */
   populateTagSets: (state, tagSets) => {
-    state.resources.tagSets = dataToObjectById(tagSets)
+    state.resources.tagSets = dataToObjectById({data: tagSets, includeRelationships: true})
   },
   /**
    * Populated with resources via APi calls from the actions

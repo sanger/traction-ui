@@ -16,7 +16,9 @@ export default {
    * Returns the selected tag set
    * @param {Object} state The Vuex state object
    */
-  selectedTagSet: (state) => {},
+  selectedTagSet: (state) => {
+    return state.selected.tagSet
+  },
   /**
    * Returns a list of selected plates
    * @param {Object} state The Vuex state object
@@ -27,4 +29,4 @@ export default {
    * @param {Object} state The Vuex state object
    */
   selectedRequests: (state) => {},
-};
+}

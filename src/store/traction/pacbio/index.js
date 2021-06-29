@@ -13,7 +13,7 @@ const pacbio = {
     requests: pacbioRequestsModule,
     libraries: pacbioLibrariesModule,
     plates: pacbioPlatesModule,
-    poolCreate: poolCreate
+    poolCreate: poolCreate,
   },
   state: {
     labelTemplateId: process.env.VUE_APP_PACBIO_LABEL_TEMPLATE_ID,

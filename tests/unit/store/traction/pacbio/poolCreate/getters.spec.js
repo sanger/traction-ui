@@ -1,15 +1,9 @@
-import getters from "@/store/traction/pacbio/poolCreate/getters"
-import defaultState from "@/store/traction/pacbio/poolCreate/state"
+import getters from '@/store/traction/pacbio/poolCreate/getters'
+import defaultState from '@/store/traction/pacbio/poolCreate/state'
 
-describe("getters.js", () => {
+describe('getters.js', () => {
   const state = defaultState()
-  const {
-    labwareList,
-    tagSetList,
-    selectedTagSet,
-    selectedPlates,
-    selectedRequests,
-  } = getters;
+  const { labwareList, tagSetList, selectedTagSet, selectedPlates, selectedRequests } = getters
 
   describe('labwareList', () => {
     it('returns what it does', () => {
@@ -20,17 +14,17 @@ describe("getters.js", () => {
   describe('tagSetList', () => {
     it('returns what it does', () => {
       const tagSets = {
-        "1": {
-          "id:" : "1",
-          "name": "tagSet1",
-          "uuid": "uuid1",
-          "pipeline": "pipeline1"
+        '1': {
+          'id:': '1',
+          name: 'tagSet1',
+          uuid: 'uuid1',
+          pipeline: 'pipeline1',
         },
         '2': {
-          "id:" : "2",
-          "name": "tagSet2",
-          "uuid": "uuid2",
-          "pipeline": "pipeline1"
+          'id:': '2',
+          name: 'tagSet2',
+          uuid: 'uuid2',
+          pipeline: 'pipeline1',
         },
       }
       state.resources.tagSets = tagSets
@@ -40,7 +34,8 @@ describe("getters.js", () => {
 
   describe('selectedTagSet', () => {
     it('returns what it does', () => {
-      expect(selectedTagSet(state)).toEqual(undefined)
+      state.selected.tagSet = "1"
+      expect(selectedTagSet(state)).toEqual("1")
     })
   })
 
@@ -55,6 +50,4 @@ describe("getters.js", () => {
       expect(selectedRequests(state)).toEqual(undefined)
     })
   })
-
-
 })
