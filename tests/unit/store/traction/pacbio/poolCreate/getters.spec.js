@@ -44,13 +44,13 @@ describe('getters.js', () => {
 
     it('returns what it does', () => {
       state.resources.tags = tags
-      expect(tagList(state)).toEqual(tags.values)
+      expect(tagList(state)()).toEqual(tags.values)
     })
 
     it('when ids are included', () => {
       state.resources.tags = tags
       const ids = ["1","2","3"]
-      expect(tagList(state, ids).length).toEqual(ids.length)
+      expect(tagList(state)(ids).length).toEqual(ids.length)
     })
   })
 
