@@ -2,7 +2,6 @@ import mutations from '@/store/traction/pacbio/poolCreate/mutations'
 import defaultState from '@/store/traction/pacbio/poolCreate/state'
 import { Data } from '../../../../testHelper'
 import { dataToObjectById } from '@/api/JsonApi'
-import { eq } from 'lodash-es'
 
 describe('mutations.js', () => {
   const {
@@ -42,13 +41,24 @@ describe('mutations.js', () => {
 
   describe('selectTagSet', () => {
     it('updates the state', () => {
+      const tagSets = {
+        '1': {
+          'id:': '1',
+          name: 'tagSet1',
+        },
+        '2': {
+          'id:': '2',
+          name: 'tagSet2',
+        },
+      }
       // mock state
       const state = defaultState()
+      state.resources.tagSets = tagSets
       // apply mutation
-      selectTagSet(state, 1)
+      selectTagSet(state, { id: '1'} )
       // assert result
       // expect(state, value).toEqual(new_value)
-      expect(state.selected.tagSet).toEqual(1)
+      expect(state.selected.tagSet).toEqual(tagSets['1'])
     })
   })
   describe('selectRequest', () => {
@@ -121,11 +131,12 @@ describe('mutations.js', () => {
   describe('populateTags', () => {
     it('updates the state', () => {
       // mock state
+      const tags = Data.PacbioTagSets.data.included
       const state = defaultState()
       // apply mutation
-      populateTags(state, {})
+      populateTags(state, tags)
       // assert result
-      // expect(state, value).toEqual(new_value)
+      expect(state.resources.tags).toEqual(dataToObjectById({data: tags, includeRelationships: false}))
     })
   })
 })

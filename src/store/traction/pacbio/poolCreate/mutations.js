@@ -21,8 +21,8 @@ export default {
    * @param {Object} state The Vuex state object
    * @param {String} id The id of the plate
    */
-  selectTagSet: (state, id) => {
-    state.selected.tagSet = id
+  selectTagSet: (state, { id }) => {
+    state.selected.tagSet = state.resources.tagSets[id]
   },
   /**
    * Flags request with `id` as selected. (Or unselected if selected is false)
@@ -69,5 +69,7 @@ export default {
    * @param {Object} state The VueXState object
    * @param {Array.{}} tags The tag resources to populate the store
    */
-  populateTags: (state, tags) => {},
+  populateTags: (state, tags) => {
+    state.resources.tags = dataToObjectById({data: tags, includeRelationships: false})
+  },
 }

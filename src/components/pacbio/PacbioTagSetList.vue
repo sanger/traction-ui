@@ -22,7 +22,7 @@ export default {
   },
   methods: {
     updateSelected() {
-      this.$store.commit('traction/pacbio/poolCreate/selectTagSet', this.selected)
+      this.$store.commit('traction/pacbio/poolCreate/selectTagSet', { id: this.selected })
     },
   },
 }

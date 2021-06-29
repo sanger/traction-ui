@@ -13,6 +13,18 @@ export default {
     return Object.values(state.resources.tagSets)
   },
   /**
+   * Returns a list of all fetched tagSet
+   * @param {Object} state The Vuex state object
+   */
+   tagList: (state) => ids => {
+    const tags = state.resources.tags
+    if (ids) {
+      return ids.map(id => tags[id])
+    } else {
+      return tags.values
+    }
+  },
+  /**
    * Returns the selected tag set
    * @param {Object} state The Vuex state object
    */

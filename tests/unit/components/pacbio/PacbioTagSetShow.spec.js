@@ -9,7 +9,7 @@ const tagSets = {
 
 // is this the best way to do this??
 store.state.traction.pacbio.poolCreate.resources.tagSets = tagSets
-store.state.traction.pacbio.poolCreate.selected.tagSet = '1'
+store.state.traction.pacbio.poolCreate.selected.tagSet = tagSets['1']
 
 const tags = {
   '1': { id: '1', groupId: 'Tag1' },
@@ -45,12 +45,12 @@ describe('PacbioTagSetSHow', () => {
   it('shows a list of tags', () => {
     expect(
       wrapper.find('[data-type=tag-list]').findAll('[data-attribute=group-id]').length,
-    ).toEqual(tags.length)
+    ).toEqual(tagSets['1'].tags.length)
   })
 
   it('shows the group id', () => {
     const groupIds = wrapper.findAll('[data-attribute=group-id]')
-    expect(groupIds.at(0).text()).toEqual(tags[0].groupId)
+    expect(groupIds.at(0).text()).toEqual(tags['1'].groupId)
   })
 
   it('click on tag selects it', async () => {
