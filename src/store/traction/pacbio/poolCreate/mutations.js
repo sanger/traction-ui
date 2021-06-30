@@ -1,3 +1,5 @@
+import { dataToObjectById } from '@/api/JsonApi'
+
 // Mutations handle synchronous update of state.
 export default {
   /**
@@ -6,25 +8,7 @@ export default {
    * @param {String} id The id of the plate
    * @param {Boolean} selected Whether the plate is selected (defaults to true)
    */
-  selectPlate: (state, { id, selected = true }) => {
-    let plate = state.selected.plates.find((p) => p.id === id)
-    plate.selected = selected
-  },
-  /**
-   * Flags requests from a plate as selected. (Or unselected if selected is false)
-   * @param {Object} state The Vuex state object
-   * @param {String} barcode The plate barcode
-   */
-  selectPlateRequests: (state, { barcode, selected = true }) => {
-    let requests = state.resources.requests.filter((req) =>
-      req.attributes.source_identifier.includes(`${barcode}:`),
-    )
-    state.selected.requests.map((request) => {
-      if (requests.find((req) => req.id === request.id)) {
-        request.selected = selected
-      }
-    })
-  },
+  selectPlate: (state, { id, selected = true }) => {},
   /**
    * Flags plates in the array as selected. (Or unselected if selected is false)
    * @param {Object} state The Vuex state object
@@ -37,7 +21,9 @@ export default {
    * @param {Object} state The Vuex state object
    * @param {String} id The id of the plate
    */
-  selectTagSet: (state, { id }) => {},
+  selectTagSet: (state, { id }) => {
+    state.selected.tagSet = state.resources.tagSets[id]
+  },
   /**
    * Flags request with `id` as selected. (Or unselected if selected is false)
    * @param {Object} state The Vuex state object
@@ -81,11 +67,15 @@ export default {
    * @param {Object} state The VueXState object
    * @param {Array.{}} tagSets The tagSet resources to populate the store
    */
-  populateTagSets: (state, tagSets) => {},
+  populateTagSets: (state, tagSets) => {
+    state.resources.tagSets = dataToObjectById({data: tagSets, includeRelationships: true})
+  },
   /**
    * Populated with resources via APi calls from the actions
    * @param {Object} state The VueXState object
    * @param {Array.{}} tags The tag resources to populate the store
    */
-  populateTags: (state, tags) => {},
+  populateTags: (state, tags) => {
+    state.resources.tags = dataToObjectById({data: tags, includeRelationships: false})
+  },
 }

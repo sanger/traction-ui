@@ -3,7 +3,7 @@ import pacbioRunsModule from '@/store/traction/pacbio/runs'
 import pacbioRequestsModule from '@/store/traction/pacbio/requests'
 import pacbioLibrariesModule from '@/store/traction/pacbio/libraries'
 import pacbioPlatesModule from '@/store/traction/pacbio/plates'
-import pacbioPoolCreateModule from '@/store/traction/pacbio/poolCreate'
+import poolCreate from '@/store/traction/pacbio/poolCreate'
 
 const pacbio = {
   namespaced: true,
@@ -13,7 +13,7 @@ const pacbio = {
     requests: pacbioRequestsModule,
     libraries: pacbioLibrariesModule,
     plates: pacbioPlatesModule,
-    poolCreate: pacbioPoolCreateModule,
+    poolCreate: poolCreate,
   },
   state: {
     labelTemplateId: process.env.VUE_APP_PACBIO_LABEL_TEMPLATE_ID,

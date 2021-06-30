@@ -17,9 +17,14 @@ export default {
   name: 'PacbioTagSetShow',
   data() {
     return {
+      tagSet: {},
       selected: [],
-      tags: [],
+      tags: {},
     }
+  },
+  mounted() {
+    this.tagSet = this.$store.getters['traction/pacbio/poolCreate/selectedTagSet']
+    this.tags = this.$store.getters['traction/pacbio/poolCreate/tagList'](this.tagSet.tags)
   },
   methods: {
     setSelected(id) {

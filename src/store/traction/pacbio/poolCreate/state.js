@@ -33,7 +33,7 @@ export default () => {
       // Object representing all selected requests. Selected requests are indexed by
       // id. Each request is represented by an object with an id and a selected
       // attribute { id: 'request_id', selected: true }
-      requests: [],
+      requests: {},
     },
     // Libraries. Indexed by an internally generated id.
     libraries: {},

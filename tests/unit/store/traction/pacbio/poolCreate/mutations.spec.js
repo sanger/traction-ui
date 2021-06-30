@@ -1,5 +1,7 @@
 import mutations from '@/store/traction/pacbio/poolCreate/mutations'
 import defaultState from '@/store/traction/pacbio/poolCreate/state'
+import { Data } from '../../../../testHelper'
+import { dataToObjectById } from '@/api/JsonApi'
 
 describe('mutations.js', () => {
   const {
@@ -39,12 +41,24 @@ describe('mutations.js', () => {
 
   describe('selectTagSet', () => {
     it('updates the state', () => {
+      const tagSets = {
+        '1': {
+          'id:': '1',
+          name: 'tagSet1',
+        },
+        '2': {
+          'id:': '2',
+          name: 'tagSet2',
+        },
+      }
       // mock state
       const state = defaultState()
+      state.resources.tagSets = tagSets
       // apply mutation
-      selectTagSet(state, {})
+      selectTagSet(state, { id: '1'} )
       // assert result
       // expect(state, value).toEqual(new_value)
+      expect(state.selected.tagSet).toEqual(tagSets['1'])
     })
   })
   describe('selectRequest', () => {
@@ -105,22 +119,24 @@ describe('mutations.js', () => {
   describe('populateTagSets', () => {
     it('updates the state', () => {
       // mock state
+      const tagSets = Data.PacbioTagSets.data.data
       const state = defaultState()
       // apply mutation
-      populateTagSets(state, {})
+      populateTagSets(state, tagSets)
       // assert result
-      // expect(state, value).toEqual(new_value)
+      expect(state.resources.tagSets).toEqual(dataToObjectById({data: tagSets, includeRelationships: true}))
     })
   })
 
   describe('populateTags', () => {
     it('updates the state', () => {
       // mock state
+      const tags = Data.PacbioTagSets.data.included
       const state = defaultState()
       // apply mutation
-      populateTags(state, {})
+      populateTags(state, tags)
       // assert result
-      // expect(state, value).toEqual(new_value)
+      expect(state.resources.tags).toEqual(dataToObjectById({data: tags, includeRelationships: false}))
     })
   })
 })

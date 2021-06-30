@@ -27,6 +27,52 @@ const groupIncludedByResource = (included) => {
   }, {})
 }
 
+/**
+ * Groups resources by their resource type
+ * @param {Object} relationships Object of JSON API resources
+ * @returns {Object} each key will be the relationships grouped by type with an array of ids
+ */
+const extractRelationshipsAndGroupById = (relationships) => {
+  return Object.keys(relationships).reduce((result, type) => {
+
+    // it could be undefined, it could be null or it could be an object
+    // lets just make it all the same
+    const data = relationships[type].data || []
+    const dataArray = data instanceof Array ? data : [data]
+
+    dataArray.forEach((element) => {
+      // if the key does not exist create it
+      result[element.type] = result[element.type] || []
+      result[element.type].push(element.id)
+    })
+    return result
+  }, {})
+}
+
+/**
+ * TODO: This will need to be extended to extract relationships?
+ * Groups resources by their resource type
+ * @param {Array} data Array of JSON API data
+ * @returns {Object} keys will be the id of the data
+ */
+const dataToObjectById = ({ data, includeRelationships = false }) => {
+  return data.reduce((result, { id, type, attributes, relationships }) => {
+    return {
+      
+      [id]: {
+        // we still keep the id as it will be needed
+        id,
+        // the type can be useful for components
+        type,
+        ...attributes,
+        // we might not want to use the relationships
+        ...(includeRelationships ? extractRelationshipsAndGroupById(relationships) : {}),
+      },
+      ...result,
+    }
+  }, {})
+}
+
 const extractRelationship = (relationship, included, includeStore = {}) => {
   if (Array.isArray(relationship)) {
     return relationship.map((item) => deserializeIncluded(item, included, includeStore))
@@ -109,6 +155,8 @@ export {
   extractRelationships,
   extractResourceObject,
   deserialize,
+  dataToObjectById,
+  extractRelationshipsAndGroupById,
 }
 
 export default deserialize
