@@ -1,4 +1,3 @@
-
 /*
   Vuex Store configuration
   Usage:
@@ -12,16 +11,17 @@
       store
     })
 */
-import actions from "./actions"
-import mutations from "./mutations"
-import getters from "./getters"
-import state from "./state"
+import actions from './actions'
+import mutations from './mutations'
+import getters from './getters'
+import state from './state'
 
-const store = {
+const poolCreate = {
+  namespaced: true,
   state,
   mutations,
   actions,
   getters,
-};
+}
 
-export default store;
+export default poolCreate

@@ -1,15 +1,9 @@
-import getters from "@/store/traction/pacbio/poolCreate/getters"
-import defaultState from "@/store/traction/pacbio/poolCreate/state"
+import getters from '@/store/traction/pacbio/poolCreate/getters'
+import defaultState from '@/store/traction/pacbio/poolCreate/state'
 
-describe("getters.js", () => {
+describe('getters.js', () => {
   const state = defaultState()
-  const {
-    labwareList,
-    tagSetList,
-    selectedTagSet,
-    selectedPlates,
-    selectedRequests,
-  } = getters;
+  const { labwareList, tagSetList, selectedTagSet, selectedPlates, selectedRequests } = getters
 
   describe('labwareList', () => {
     it('returns what it does', () => {
@@ -40,6 +34,4 @@ describe("getters.js", () => {
       expect(selectedRequests(state)).toEqual(undefined)
     })
   })
-
-
 })

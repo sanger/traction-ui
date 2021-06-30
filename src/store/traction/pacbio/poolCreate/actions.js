@@ -8,8 +8,10 @@ import { groupIncludedByResource } from '@/api/JsonApi'
 export default {
   fetchPacbioPlates: async ({ commit, rootState }) => {
     const request = rootState.api.traction.pacbio.plates
-    const promise = request.get({include: 'wells.requests'})
-    const {_body: { data, included }} = await handlePromise(promise)
+    const promise = request.get({ include: 'wells.requests' })
+    const {
+      _body: { data, included },
+    } = await handlePromise(promise)
     const { wells, requests } = groupIncludedByResource(included)
     commit('populatePlates', data)
     commit('populateWells', wells)
@@ -19,10 +21,12 @@ export default {
     const request = rootState.api.traction.pacbio.tag_sets
     /* I've been explicit about the includes here as we make an assumption
        below that only tags are included. */
-    const promise = request.get({include: 'tags'})
-    const {_body: { data, included }} = await handlePromise(promise)
-   commit('populateTagSets', data)
-   /* We are currently only including tags. So this is really simple */
-   commit('populateTags', included)
-  }
+    const promise = request.get({ include: 'tags' })
+    const {
+      _body: { data, included },
+    } = await handlePromise(promise)
+    commit('populateTagSets', data)
+    /* We are currently only including tags. So this is really simple */
+    commit('populateTags', included)
+  },
 }

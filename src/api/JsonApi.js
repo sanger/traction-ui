@@ -14,12 +14,14 @@ const mapRelationships = (relationships) => {
 }
 
 /**
-* Groups resources by their resource type
-* @param {Array} included Array of JSON API resources
-*/
+ * Groups resources by their resource type
+ * @param {Array} included Array of JSON API resources
+ */
 const groupIncludedByResource = (included) => {
   return included.reduce((group, resource) => {
-    if (group[resource.type] === undefined) { group[resource.type] = [] }
+    if (group[resource.type] === undefined) {
+      group[resource.type] = []
+    }
     group[resource.type].push(resource)
     return group
   }, {})

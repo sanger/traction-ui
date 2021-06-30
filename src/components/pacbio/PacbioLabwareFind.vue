@@ -1,20 +1,19 @@
 <template>
-  <b-form class="labware-list" @submit="handleSumbit()">
-    <h3>Find labware</h3>
+  <b-form @submit="handleSumbit()">
     <b-form-input
       v-model="enteredLabware"
       autocomplete="off"
       placeholder="Search or scan for labware by barcode"
     >
     </b-form-input>
-    <b-list-group>
+    <b-list-group class="find-list-group">
       <b-list-group-item
         v-for="item in getFilteredList"
         :key="item.id"
         button
-        @click="selectLabware(item)"
+        @click="setSelected(item)"
       >
-        Plate: {{ item.barcode }}
+        Plate: {{ item.attributes.barcode }}
       </b-list-group-item>
     </b-list-group>
   </b-form>
@@ -23,7 +22,9 @@
 <script>
 import Helper from '@/mixins/Helper'
 import { createNamespacedHelpers } from 'vuex'
-const { mapGetters, mapActions } = createNamespacedHelpers('traction/pacbio/poolCreate')
+const { mapGetters, mapActions, mapMutations } = createNamespacedHelpers(
+  'traction/pacbio/poolCreate',
+)
 
 export default {
   name: 'PacbioLabwareFind',
@@ -38,7 +39,9 @@ export default {
     getFilteredList() {
       // Conditional needed to make sure list has been pulled back before filter
       return this.labwareList.length
-        ? this.labwareList.filter((labware) => labware.barcode.includes(this.enteredLabware))
+        ? this.labwareList.filter((labware) =>
+            labware.attributes.barcode.includes(this.enteredLabware),
+          )
         : []
     },
   },
@@ -51,26 +54,29 @@ export default {
   },
   methods: {
     handleSumbit() {
-      let labware = this.labwareList.find((labware) => labware.barcode === this.enteredLabware)
-      labware ? this.selectLabware(labware) : console.log('Emits alert?')
+      let labware = this.labwareList.find(
+        (labware) => labware.attributes.barcode === this.enteredLabware,
+      )
+      if (labware) {
+        this.setSelected(labware)
+      } else {
+        console.log('Emits alert?')
+      }
       this.enteredLabware = ''
     },
-    selectLabware(labware) {
-      //perfom action to add labware as selected
-      console.log(labware)
+    setSelected(labware) {
+      this.selectPlate(labware)
+      this.selectPlateRequests({ barcode: labware.attributes.barcode, selected: true })
     },
     ...mapActions(['fetchPacbioPlates']),
+    ...mapMutations(['selectPlate', 'selectPlateRequests']),
   },
 }
 </script>
 
 <style>
-.labware-list {
-  max-width: 400px;
-}
-
-.list-group {
-  max-height: 200px;
+.find-list-group {
+  max-height: 150px;
   overflow: scroll;
 }
 

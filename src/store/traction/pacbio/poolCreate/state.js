@@ -29,14 +29,13 @@ export default () => {
       // Object representing all selected plates. Selected plates are indexed by
       // id. Each plate is represented by an object with an id and a selected
       // attribute { id: 'plate_id', selected: true }
-      plates: {},
+      plates: [],
       // Object representing all selected requests. Selected requests are indexed by
       // id. Each request is represented by an object with an id and a selected
       // attribute { id: 'request_id', selected: true }
-      requests: {}
-
+      requests: [],
     },
     // Libraries. Indexed by an internally generated id.
-    libraries: {}
-  };
-};
+    libraries: {},
+  }
+}

@@ -1,4 +1,3 @@
-
 describe('Pacbio Pool Create', () => {
   it('Creates a pool successfully', () => {
     cy.visit('#/pacbio/pool/new')

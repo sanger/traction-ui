@@ -26,6 +26,11 @@ describe('Plate.vue', () => {
     expect(plate.plate.barcode).toBeDefined()
   })
 
+  it('will have a default width and height prop', () => {
+    expect(plate.height).toEqual('30%')
+    expect(plate.width).toEqual('30%')
+  })
+
   describe('methods', () => {
     describe('#getWellAt', () => {
       it('gets the well at the given position when it exists and has material', () => {

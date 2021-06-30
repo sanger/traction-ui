@@ -1,6 +1,6 @@
 <template>
   <div>
-    <Plate96SVG v-if="wells" ref="plate96Svg" :height="'30%'" :width="'30%'">
+    <Plate96SVG v-if="wells" ref="plate96Svg" :height="height" :width="width">
       <Well
         v-for="(well, position) in plateMap.wells"
         :key="position"
@@ -31,6 +31,16 @@ export default {
         return {}
       },
     },
+    height: {
+      type: String,
+      required: false,
+      default: '30%',
+    },
+    width: {
+      type: String,
+      required: false,
+      default: '30%',
+    },
   },
   data() {
     return {
@@ -50,8 +60,3 @@ export default {
   },
 }
 </script>
-<style>
-.b-table-sticky-header {
-  max-height: 500px;
-}
-</style>
