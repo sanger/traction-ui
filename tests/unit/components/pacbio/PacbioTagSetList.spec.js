@@ -7,30 +7,55 @@ const tagSets = {
   '3': { id: '3', name: 'TagSet3' },
 }
 
-// is this the best way to do this??
-store.state.traction.pacbio.poolCreate.resources.tagSets = tagSets
-
 describe('PacbioTagSetList', () => {
   let wrapper
 
-  beforeEach(() => {
-    wrapper = mount(PacbioTagSetList, {
-      localVue,
-      store,
+  describe('when there are some tag sets to show', () => {
+
+    beforeEach(() => {
+
+      store.state.traction.pacbio.poolCreate.resources.tagSets = tagSets
+
+      wrapper = mount(PacbioTagSetList, {
+        localVue,
+        store,
+      })
+    })
+  
+    it('shows a list of tag sets', () => {
+      expect(wrapper.find('[data-type=tag-set-list]').findAll('option').length).toEqual(
+        Object.keys(tagSets).length,
+      )
+    })
+  
+    it('allows the user to select a tag set', async () => {
+      const options = wrapper.find('[data-type=tag-set-list]').findAll('option')
+      // bizarrely if you try to select the first option it returns null
+      await options.at(1).setSelected()
+      expect(wrapper.vm.selected).toEqual('2')
+      expect(store.state.traction.pacbio.poolCreate.selected.tagSet).toEqual(tagSets['2'])
     })
   })
 
-  it('shows a list of tag sets', () => {
-    expect(wrapper.find('[data-type=tag-set-list]').findAll('option').length).toEqual(
-      Object.keys(tagSets).length,
-    )
-  })
+  describe('when there are no tag sets to show', () => {
 
-  it('allows the user to select a tag set', async () => {
-    const options = wrapper.find('[data-type=tag-set-list]').findAll('option')
-    // bizarrely if you try to select the first option it returns null
-    await options.at(1).setSelected()
-    expect(wrapper.vm.selected).toEqual('2')
-    expect(store.state.traction.pacbio.poolCreate.selected.tagSet).toEqual(tagSets['2'])
+    beforeEach(() => {
+
+      store.state.traction.pacbio.poolCreate.resources.tagSets = {}
+
+      wrapper = mount(PacbioTagSetList, {
+        localVue,
+        store,
+      })
+    })
+
+    it('wont show the list', () => {
+      expect(wrapper.find('[data-type=tag-set-list]').exists()).toBeFalsy()
+    })
+    it('should show an appropriate message', () => {
+      const errorMessage = wrapper.find('[data-type=error-message]')
+      expect(errorMessage.text()).toMatch('There was a problem retrieving the tag sets')
+    })
   })
+  
 })

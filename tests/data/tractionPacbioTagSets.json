@@ -5,7 +5,7 @@
         "id": "3",
         "type": "tag_sets",
         "links": {
-          "self": "http://traction/v1/pacbio/tag_sets/3"
+          "self": "/v1/pacbio/tag_sets/3"
         },
         "attributes": {
           "name": "Sequel_16_barcodes_v3",
@@ -15,8 +15,8 @@
         "relationships": {
           "tags": {
             "links": {
-              "self": "http://traction/v1/pacbio/tag_sets/3/relationships/tags",
-              "related": "http://traction/v1/pacbio/tag_sets/3/tags"
+              "self": "/v1/pacbio/tag_sets/3/relationships/tags",
+              "related": "/v1/pacbio/tag_sets/3/tags"
             },
             "data": [
               {
@@ -91,7 +91,7 @@
         "id": "4",
         "type": "tag_sets",
         "links": {
-          "self": "http://traction/v1/pacbio/tag_sets/4"
+          "self": "/v1/pacbio/tag_sets/4"
         },
         "attributes": {
           "name": "IsoSeq_v1",
@@ -101,8 +101,8 @@
         "relationships": {
           "tags": {
             "links": {
-              "self": "http://traction/v1/pacbio/tag_sets/4/relationships/tags",
-              "related": "http://traction/v1/pacbio/tag_sets/4/tags"
+              "self": "/v1/pacbio/tag_sets/4/relationships/tags",
+              "related": "/v1/pacbio/tag_sets/4/tags"
             },
             "data": [
               {

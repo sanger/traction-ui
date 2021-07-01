@@ -1,15 +1,20 @@
+
 describe('Pacbio Pool Create', () => {
   it('Creates a pool successfully', () => {
+    cy.intercept('/v1/pacbio/tag_sets?include=tags', {
+      fixture: 'tractionPacbioTagSets.json',
+    })
+
     cy.visit('#/pacbio/pool/new')
     cy.contains('Pool')
-    // visit the pooling page
     // select a plate(s)
     // scan a plate(s)
     // plates should appear in the plates views
     // select the samples from the plate for the pool
     // samples should appear in the pool
     // and samples that have failed qc should not be selectable
-    // select the tag set
+    // TODO: Is this brittle? Need to know the data.
+    cy.get('[data-type=tag-set-list]').select('IsoSeq_v1')
     // the tags should appear underneath the tag set name
     // add the tags to the samples in the pool
     // add the template prep kit box barcode to all of the samples

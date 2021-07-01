@@ -8,15 +8,15 @@
         </b-col>
         <b-col>
           <b-row>
-            <b-col data-type="tag-group-list" class="border tag-group-list">
+            <b-col class="border tag-set-list">
               Find tag groups
               <PacbioTagSetList></PacbioTagSetList>
             </b-col>
           </b-row>
           <b-row>
-            <b-col data-type="tag-group" class="border tag-group">
+            <b-col class="border tag-set-item">
               Tag group
-              <PacbioTagSetShow></PacbioTagSetShow>
+              <PacbioTagSetItem></PacbioTagSetItem>
             </b-col>
           </b-row>
         </b-col>
@@ -35,17 +35,20 @@
 
 <script>
 import PacbioTagSetList from '@/components/pacbio/PacbioTagSetList'
-import PacbioTagSetShow from '@/components/pacbio/PacbioTagSetShow'
+import PacbioTagSetItem from '@/components/pacbio/PacbioTagSetItem'
 
 export default {
   name: 'PacbioPoolCreate',
   components: {
     PacbioTagSetList,
-    PacbioTagSetShow,
+    PacbioTagSetItem,
   },
   data() {
     return {}
   },
+  async created() {
+    await this.$store.dispatch('traction/pacbio/poolCreate/fetchPacbioTagSets')
+  }
 }
 </script>
 
@@ -56,10 +59,10 @@ export default {
 #row2 {
   height: 750px;
 }
-.tag-group-list {
+.tag-set-list {
   height: 75px;
 }
-.tag-group {
+.tag-set-item {
   height: 175px;
 }
 </style>
