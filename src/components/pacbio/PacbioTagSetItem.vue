@@ -65,6 +65,6 @@ export default {
   padding-bottom: 10px;
 }
 .tag-set-name {
-  text-align:left;
+  text-align: left;
 }
 </style>
