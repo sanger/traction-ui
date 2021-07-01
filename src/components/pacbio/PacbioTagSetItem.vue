@@ -57,7 +57,8 @@ export default {
   display: flex;
 }
 .wrapper > div {
-  width: 100px;
+  padding: 5px;
+  min-width: 100px;
   height: 50px;
   vertical-align: middle;
 }
