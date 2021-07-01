@@ -68,4 +68,7 @@ export default {
 .tag-set-name {
   text-align: left;
 }
+.col {
+  padding-right: 0;
+}
 </style>

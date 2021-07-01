@@ -1,13 +1,12 @@
 <template>
-  <b-col class="border tag-set-list">
-    <div v-if="!isEmpty">
-      <b-form-select
-        v-model="selected"
-        data-type="tag-set-list"
-        :options="options"
-        @change="updateSelected"
-      ></b-form-select>
-    </div>
+  <b-col class="tag-set-list">
+    <b-form-select
+      v-if="!isEmpty"
+      v-model="selected"
+      data-type="tag-set-list"
+      :options="options"
+      @change="updateSelected"
+    ></b-form-select>
     <div>
       <b-alert :show="isEmpty" data-type="error-message" dismissible variant="danger">
         There was a problem retrieving the tag sets
@@ -47,6 +46,6 @@ export default {
 
 <style scoped lang="scss">
 .tag-set-list {
-  padding-bottom: 10px;
+  padding: 0;
 }
 </style>

@@ -55,10 +55,7 @@ export default {
 #row2 {
   min-height: 750px;
 }
-/* .tag-set-list {
-  height: 75px;
+.col {
+  padding-right: 0;
 }
-.tag-set-item {
-  height: 175px;
-} */
 </style>
