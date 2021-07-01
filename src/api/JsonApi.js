@@ -34,7 +34,6 @@ const groupIncludedByResource = (included) => {
  */
 const extractRelationshipsAndGroupById = (relationships) => {
   return Object.keys(relationships).reduce((result, type) => {
-
     // it could be undefined, it could be null or it could be an object
     // lets just make it all the same
     const data = relationships[type].data || []
@@ -58,7 +57,6 @@ const extractRelationshipsAndGroupById = (relationships) => {
 const dataToObjectById = ({ data, includeRelationships = false }) => {
   return data.reduce((result, { id, type, attributes, relationships }) => {
     return {
-      
       [id]: {
         // we still keep the id as it will be needed
         id,

@@ -55,7 +55,7 @@ describe('mutations.js', () => {
       const state = defaultState()
       state.resources.tagSets = tagSets
       // apply mutation
-      selectTagSet(state, { id: '1'} )
+      selectTagSet(state, { id: '1' })
       // assert result
       // expect(state, value).toEqual(new_value)
       expect(state.selected.tagSet).toEqual(tagSets['1'])
@@ -124,7 +124,9 @@ describe('mutations.js', () => {
       // apply mutation
       populateTagSets(state, tagSets)
       // assert result
-      expect(state.resources.tagSets).toEqual(dataToObjectById({data: tagSets, includeRelationships: true}))
+      expect(state.resources.tagSets).toEqual(
+        dataToObjectById({ data: tagSets, includeRelationships: true }),
+      )
     })
   })
 
@@ -136,7 +138,9 @@ describe('mutations.js', () => {
       // apply mutation
       populateTags(state, tags)
       // assert result
-      expect(state.resources.tags).toEqual(dataToObjectById({data: tags, includeRelationships: false}))
+      expect(state.resources.tags).toEqual(
+        dataToObjectById({ data: tags, includeRelationships: false }),
+      )
     })
   })
 })

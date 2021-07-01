@@ -1,4 +1,3 @@
-
 describe('Pacbio Pool Create', () => {
   it('Creates a pool successfully', () => {
     cy.intercept('/v1/pacbio/tag_sets?include=tags', {
@@ -15,6 +14,7 @@ describe('Pacbio Pool Create', () => {
     // and samples that have failed qc should not be selectable
     // TODO: Is this brittle? Need to know the data.
     cy.get('[data-type=tag-set-list]').select('IsoSeq_v1')
+    cy.get('[data-attribute=group-id]').should('have.length', 24)
     // the tags should appear underneath the tag set name
     // add the tags to the samples in the pool
     // add the template prep kit box barcode to all of the samples

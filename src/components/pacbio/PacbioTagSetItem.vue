@@ -1,23 +1,20 @@
 <template>
-<div>
-  <div v-if="!isEmpty" data-type="tag-set-item" class="wrapper flex-wrap">
-    <div
-      v-for="tag in tags"
-      :key="tag.id"
-      data-attribute="group-id"
-      class="border rounded"
-      @click="setSelected(tag.id)"
-    >
-      {{ tag.group_id }}
+  <b-col class="border tag-set-item">
+    <div data-attribute="tag-set-name" class="tag-set-name">
+      {{ tagSetName }}
     </div>
-  </div>
-   <div>
-      <b-alert :show="isEmpty" data-type="warning-message" dismissible variant="danger">
-        There is no tag set selected
-      </b-alert>
+    <div v-if="!isEmpty" data-type="tag-set-item" class="wrapper flex-wrap">
+      <div
+        v-for="tag in tags"
+        :key="tag.id"
+        data-attribute="group-id"
+        class="border rounded"
+        @click="setSelected(tag.id)"
+      >
+        {{ tag.group_id }}
+      </div>
     </div>
-</div>
-  
+  </b-col>
 </template>
 
 <script>
@@ -36,11 +33,11 @@ export default {
       return this.$store.getters['traction/pacbio/poolCreate/selectedTagSet']
     },
     tags() {
-      const tags = this.$store.getters['traction/pacbio/poolCreate/tagList'](this.tagSet.tags)
-      console.log(tags)
-      return tags
-      // return this.$store.getters['traction/pacbio/poolCreate/tagList'](this.tagSet.tags)
-    }
+      return this.$store.getters['traction/pacbio/poolCreate/tagList'](this.tagSet.tags)
+    },
+    tagSetName() {
+      return this.tagSet.name || 'No tag set selected'
+    },
   },
   methods: {
     setSelected(id) {
@@ -63,5 +60,11 @@ export default {
   width: 100px;
   height: 50px;
   vertical-align: middle;
+}
+.tag-set-item {
+  padding-bottom: 10px;
+}
+.tag-set-name {
+  text-align:left;
 }
 </style>

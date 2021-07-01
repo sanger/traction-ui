@@ -4,7 +4,7 @@ import * as consts from '@/consts/consts'
 import Response from '@/api/Response'
 
 describe('Libraries.vue', () => {
-  let wrapper, libraries, mockLibraries, router
+  let wrapper, libraries, mockLibraries
 
   beforeEach(() => {
     mockLibraries = [

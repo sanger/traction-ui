@@ -11,30 +11,27 @@ const tagSets = {
 store.state.traction.pacbio.poolCreate.resources.tagSets = tagSets
 
 const tags = {
-  '1': { id: '1', groupId: 'Tag1' },
-  '2': { id: '2', groupId: 'Tag2' },
-  '3': { id: '3', groupId: 'Tag3' },
-  '4': { id: '4', groupId: 'Tag4' },
-  '5': { id: '5', groupId: 'Tag5' },
-  '6': { id: '6', groupId: 'Tag6' },
-  '7': { id: '7', groupId: 'Tag7' },
-  '8': { id: '8', groupId: 'Tag8' },
-  '9': { id: '9', groupId: 'Tag9' },
-  '10': { id: '10', groupId: 'Tag10' },
-  '11': { id: '11', groupId: 'Tag11' },
-  '12': { id: '12', groupId: 'Tag12' },
+  '1': { id: '1', group_id: 'Tag1' },
+  '2': { id: '2', group_id: 'Tag2' },
+  '3': { id: '3', group_id: 'Tag3' },
+  '4': { id: '4', group_id: 'Tag4' },
+  '5': { id: '5', group_id: 'Tag5' },
+  '6': { id: '6', group_id: 'Tag6' },
+  '7': { id: '7', group_id: 'Tag7' },
+  '8': { id: '8', group_id: 'Tag8' },
+  '9': { id: '9', group_id: 'Tag9' },
+  '10': { id: '10', group_id: 'Tag10' },
+  '11': { id: '11', group_id: 'Tag11' },
+  '12': { id: '12', group_id: 'Tag12' },
 }
 
 store.state.traction.pacbio.poolCreate.resources.tags = tags
 
-describe('PacbioTagSetSHow', () => {
-
+describe('PacbioTagSetItem', () => {
   let wrapper
 
   describe('when there is a selected tag list', () => {
-
     beforeEach(() => {
-
       store.state.traction.pacbio.poolCreate.selected.tagSet = tagSets['1']
 
       wrapper = mount(PacbioTagSetItem, {
@@ -42,36 +39,39 @@ describe('PacbioTagSetSHow', () => {
         store,
       })
     })
-  
+
     it('has the selected tag set', () => {
       expect(wrapper.vm.tagSet).toEqual(tagSets['1'])
     })
-  
+
+    it('shows the tag set name', () => {
+      const name = wrapper.find('[data-attribute=tag-set-name]')
+      expect(name.text()).toMatch(tagSets['1'].name)
+    })
+
     it('shows a list of tags', () => {
       expect(
         wrapper.find('[data-type=tag-set-item]').findAll('[data-attribute=group-id]').length,
       ).toEqual(tagSets['1'].tags.length)
     })
-  
+
     it('shows the group id', () => {
       const groupIds = wrapper.findAll('[data-attribute=group-id]')
-      expect(groupIds.at(0).text()).toEqual(tags['1'].groupId)
+      expect(groupIds.at(0).text()).toEqual(tags['1'].group_id)
     })
-  
+
     it('click on tag selects it', async () => {
       const groupIds = wrapper.findAll('[data-attribute=group-id]')
       await groupIds.at(0).trigger('click')
       await groupIds.at(1).trigger('click')
-  
+
       const selected = wrapper.vm.selected
       expect(selected).toEqual(['1', '2'])
     })
   })
 
   describe('when there is no selected tag list', () => {
-
     beforeEach(() => {
-
       store.state.traction.pacbio.poolCreate.selected.tagSet = {}
 
       wrapper = mount(PacbioTagSetItem, {
@@ -84,10 +84,8 @@ describe('PacbioTagSetSHow', () => {
       expect(wrapper.find('[data-type=tag-set-item]').exists()).toBeFalsy()
     })
     it('should show an appropriate message', () => {
-      const errorMessage = wrapper.find('[data-type=warning-message]')
-      expect(errorMessage.text()).toMatch('There is no tag set selected')
+      const message = wrapper.find('[data-attribute=tag-set-name]')
+      expect(message.text()).toMatch('No tag set selected')
     })
-    
   })
-  
 })

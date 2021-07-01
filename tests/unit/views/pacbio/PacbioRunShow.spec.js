@@ -5,7 +5,6 @@ describe('Run.vue', () => {
   let wrapper, mockRun, pacbioRun
 
   beforeEach(() => {
-   
     mockRun = {
       id: '1',
       name: '',

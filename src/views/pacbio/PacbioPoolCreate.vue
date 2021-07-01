@@ -9,15 +9,11 @@
         <b-col>
           <b-row>
             <b-col class="border tag-set-list">
-              Find tag groups
               <PacbioTagSetList></PacbioTagSetList>
             </b-col>
           </b-row>
           <b-row>
-            <b-col class="border tag-set-item">
-              Tag group
-              <PacbioTagSetItem></PacbioTagSetItem>
-            </b-col>
+            <PacbioTagSetItem></PacbioTagSetItem>
           </b-row>
         </b-col>
       </b-row>
@@ -48,21 +44,21 @@ export default {
   },
   async created() {
     await this.$store.dispatch('traction/pacbio/poolCreate/fetchPacbioTagSets')
-  }
+  },
 }
 </script>
 
 <style scoped>
 #row1 {
-  height: 250px;
+  min-height: 250px;
 }
 #row2 {
-  height: 750px;
+  min-height: 750px;
 }
-.tag-set-list {
+/* .tag-set-list {
   height: 75px;
 }
 .tag-set-item {
   height: 175px;
-}
+} */
 </style>

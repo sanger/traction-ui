@@ -4,7 +4,7 @@ import Response from '@/api/Response'
 
 // TODO: why do we need to set sortDesc to false? I think we also need to isolate tests
 describe('Samples.vue', () => {
-  let wrapper, samples, mockSamples, router
+  let wrapper, samples, mockSamples
 
   beforeEach(() => {
     mockSamples = new Response(Data.TractionPacbioSamples).deserialize.requests

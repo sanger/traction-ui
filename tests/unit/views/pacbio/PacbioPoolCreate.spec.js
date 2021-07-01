@@ -4,24 +4,40 @@ import flushPromises from 'flush-promises'
 
 describe('PacbioPoolCreate', () => {
   it('will fetch all of the data', async () => {
-
-    const { state: { api: { traction: { pacbio: { plates: platesRequest, tag_sets: tagSetsRequest} }}}} = store
+    const {
+      state: {
+        api: {
+          traction: {
+            pacbio: { plates: platesRequest, tag_sets: tagSetsRequest },
+          },
+        },
+      },
+    } = store
 
     platesRequest.get = jest.fn(() => Data.PacbioPlatesRequest)
     tagSetsRequest.get = jest.fn(() => Data.PacbioTagSets)
 
     mount(PacbioPoolCreate, {
       localVue,
-      store
+      store,
     })
 
     await flushPromises()
 
-    const { state: { traction: { pacbio: { poolCreate: {resources: { plates, tagSets }}}}}} = store
+    const {
+      state: {
+        traction: {
+          pacbio: {
+            poolCreate: {
+              resources: { plates, tagSets },
+            },
+          },
+        },
+      },
+    } = store
 
     // TODO: implement fetchPacbioPlates
     expect(Object.keys(plates).length).toEqual(0)
     expect(Object.keys(tagSets).length).toBeGreaterThan(0)
-
   })
 })

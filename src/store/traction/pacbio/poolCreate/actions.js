@@ -18,7 +18,6 @@ export default {
     commit('populateRequests', requests)
   },
   fetchPacbioTagSets: async ({ commit, rootState }) => {
-
     const request = rootState.api.traction.pacbio.tag_sets
     /* I've been explicit about the includes here as we make an assumption
        below that only tags are included. */

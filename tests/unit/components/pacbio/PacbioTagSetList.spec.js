@@ -11,9 +11,7 @@ describe('PacbioTagSetList', () => {
   let wrapper
 
   describe('when there are some tag sets to show', () => {
-
     beforeEach(() => {
-
       store.state.traction.pacbio.poolCreate.resources.tagSets = tagSets
 
       wrapper = mount(PacbioTagSetList, {
@@ -21,26 +19,25 @@ describe('PacbioTagSetList', () => {
         store,
       })
     })
-  
+
     it('shows a list of tag sets', () => {
       expect(wrapper.find('[data-type=tag-set-list]').findAll('option').length).toEqual(
-        Object.keys(tagSets).length,
+        // will also include null value
+        Object.keys(tagSets).length + 1,
       )
     })
-  
+
     it('allows the user to select a tag set', async () => {
       const options = wrapper.find('[data-type=tag-set-list]').findAll('option')
       // bizarrely if you try to select the first option it returns null
       await options.at(1).setSelected()
-      expect(wrapper.vm.selected).toEqual('2')
-      expect(store.state.traction.pacbio.poolCreate.selected.tagSet).toEqual(tagSets['2'])
+      expect(wrapper.vm.selected).toEqual('1')
+      expect(store.state.traction.pacbio.poolCreate.selected.tagSet).toEqual(tagSets['1'])
     })
   })
 
   describe('when there are no tag sets to show', () => {
-
     beforeEach(() => {
-
       store.state.traction.pacbio.poolCreate.resources.tagSets = {}
 
       wrapper = mount(PacbioTagSetList, {
@@ -57,5 +54,4 @@ describe('PacbioTagSetList', () => {
       expect(errorMessage.text()).toMatch('There was a problem retrieving the tag sets')
     })
   })
-  
 })
