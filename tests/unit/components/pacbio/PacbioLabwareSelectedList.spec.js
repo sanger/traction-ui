@@ -3,15 +3,22 @@ import PacbioLabwareSelectedList from '@/components/pacbio/PacbioLabwareSelected
 import Response from '@/api/Response'
 
 describe('PacbioLabwareSelectedList', () => {
-  let wrapper, mockPlates
+  let wrapper, mockPlates, plateStub
 
   beforeEach(() => {
     mockPlates = new Response(Data.PacbioPlates)._body.data
     store.commit('traction/pacbio/poolCreate/populatePlates', mockPlates)
 
+    plateStub = {
+      template: '<div class="plate"></div>'
+    }
+
     wrapper = mount(PacbioLabwareSelectedList, {
       localVue,
       store,
+      stubs: {
+        Plate: plateStub
+      },
     })
   })
 

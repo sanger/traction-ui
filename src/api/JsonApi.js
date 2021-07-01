@@ -66,7 +66,7 @@ const dataToObjectById = ({ data, includeRelationships = false }) => {
         type,
         ...attributes,
         // we might not want to use the relationships
-        ...(includeRelationships ? extractRelationshipsAndGroupById(relationships) : {}),
+        ...(includeRelationships && relationships ? extractRelationshipsAndGroupById(relationships) : {}),
       },
       ...result,
     }

@@ -13,7 +13,7 @@
         button
         @click="setSelected(item)"
       >
-        Plate: {{ item.attributes.barcode }}
+        Plate: {{ item.barcode }}
       </b-list-group-item>
     </b-list-group>
   </b-form>
@@ -22,54 +22,38 @@
 <script>
 import Helper from '@/mixins/Helper'
 import { createNamespacedHelpers } from 'vuex'
-const { mapGetters, mapActions, mapMutations } = createNamespacedHelpers(
-  'traction/pacbio/poolCreate',
-)
+const { mapMutations } = createNamespacedHelpers('traction/pacbio/poolCreate')
 
 export default {
   name: 'PacbioLabwareFind',
   mixins: [Helper],
   data() {
     return {
-      enteredLabware: '',
+      enteredLabware: ''
     }
   },
   computed: {
-    ...mapGetters(['labwareList']),
     getFilteredList() {
-      // Conditional needed to make sure list has been pulled back before filter
-      return this.labwareList.length
-        ? this.labwareList.filter((labware) =>
-            labware.attributes.barcode.includes(this.enteredLabware),
-          )
-        : []
+      return this.labList.filter((labware) =>
+        labware.barcode.includes(this.enteredLabware),
+      )
     },
-  },
-  async mounted() {
-    try {
-      await this.fetchPacbioPlates()
-    } catch (error) {
-      console.log(error)
+    labList() {
+      return this.$store.getters['traction/pacbio/poolCreate/labwareList']
     }
   },
   methods: {
     handleSumbit() {
-      let labware = this.labwareList.find(
-        (labware) => labware.attributes.barcode === this.enteredLabware,
+      let labware = this.labList.find(
+        (labware) => labware.barcode === this.enteredLabware,
       )
-      if (labware) {
-        this.setSelected(labware)
-      } else {
-        console.log('Emits alert?')
-      }
+      labware ? this.setSelected(labware) : console.log('Emits alert?')
       this.enteredLabware = ''
     },
     setSelected(labware) {
       this.selectPlate(labware)
-      this.selectPlateRequests({ barcode: labware.attributes.barcode, selected: true })
     },
-    ...mapActions(['fetchPacbioPlates']),
-    ...mapMutations(['selectPlate', 'selectPlateRequests']),
+    ...mapMutations(['selectPlate']),
   },
 }
 </script>

@@ -52,6 +52,9 @@ export default {
   data() {
     return {}
   },
+  async created() {
+    await this.$store.dispatch('traction/pacbio/poolCreate/fetchPacbioPlates')
+  },
 }
 </script>
 
