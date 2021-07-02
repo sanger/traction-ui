@@ -1,11 +1,9 @@
 import Reception from '@/views/pacbio/PacbioReceptionTube'
-import { mount, localVue, store, Data, router } from '../../testHelper'
+import { mount, localVue, store, Data, router } from 'testHelper'
 import Response from '@/api/Response'
-import Samples from '@/views/pacbio/PacbioSampleIndex'
-import Libraries from '@/views/pacbio/PacbioLibraryIndex'
 
 describe('Reception', () => {
-  let wrapper, reception, barcodes, barcode, input, router
+  let wrapper, reception, barcodes, barcode, input
 
   beforeEach(() => {
     barcodes = 'TRAC-1\nTRAC-2\nTRAC-3\nTRAC-4\nTRAC-5'

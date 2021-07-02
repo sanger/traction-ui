@@ -25,6 +25,7 @@ export default {
     const {
       _body: { data, included },
     } = await handlePromise(promise)
+
     commit('populateTagSets', data)
     /* We are currently only including tags. So this is really simple */
     commit('populateTags', included)

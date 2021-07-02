@@ -1,5 +1,5 @@
 import Well from '@/components/pacbio/PacbioSelectedWellItem'
-import { mount, store } from '../../testHelper'
+import { mount, store } from 'testHelper'
 
 describe('Well.vue', () => {
   let well, wrapper, props, mockWells, mockRequests

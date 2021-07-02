@@ -1,9 +1,9 @@
 import PacbioPlates from '@/views/pacbio/PacbioPlateIndex'
-import { mount, localVue, store, Data, router } from '../../testHelper'
+import { mount, localVue, store, Data, router } from 'testHelper'
 import Response from '@/api/Response'
 
 describe('PacbioPlates.vue', () => {
-  let wrapper, plates, mockPlates, router
+  let wrapper, plates, mockPlates
 
   beforeEach(() => {
     mockPlates = new Response(Data.PacbioPlates).deserialize.plates

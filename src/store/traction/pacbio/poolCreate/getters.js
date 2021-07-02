@@ -44,6 +44,9 @@ export default {
    * Returns a list of selected requests
    * @param {Object} state The Vuex state object
    */
+
+  // TODO: add getter
+  // eslint-disable-next-line no-unused-vars
   selectedRequests: (state) => {},
   /**
    * Returns a list of all fetched tagSet

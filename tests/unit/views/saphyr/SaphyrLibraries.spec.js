@@ -1,5 +1,5 @@
 import Libraries from '@/views/saphyr/SaphyrLibraries'
-import { mount, localVue, store, Data } from '../../testHelper'
+import { mount, localVue, store, Data } from 'testHelper'
 import Alert from '@/components/Alert'
 import * as consts from '@/consts/consts'
 import VueRouter from 'vue-router'

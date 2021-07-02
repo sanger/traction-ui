@@ -1,6 +1,5 @@
 import PacbioRuns from '@/views/pacbio/PacbioRunIndex'
-import PacbioRun from '@/views/pacbio/PacbioRunShow'
-import { mount, localVue, store, Data, router } from '../../testHelper'
+import { mount, localVue, store, Data, router } from 'testHelper'
 import Response from '@/api/Response'
 
 describe('Runs.vue', () => {

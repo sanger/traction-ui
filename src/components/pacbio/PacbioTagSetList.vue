@@ -1,7 +1,18 @@
 <template>
-  <div data-type="tag-set-list">
-    <b-form-select v-model="selected" :options="tagSets" @change="updateSelected"></b-form-select>
-  </div>
+  <b-col class="tag-set-list">
+    <b-form-select
+      v-if="!isEmpty"
+      v-model="selected"
+      data-type="tag-set-list"
+      :options="options"
+      @change="updateSelected"
+    ></b-form-select>
+    <div>
+      <b-alert :show="isEmpty" data-type="error-message" dismissible variant="danger">
+        There was a problem retrieving the tag sets
+      </b-alert>
+    </div>
+  </b-col>
 </template>
 
 <script>
@@ -10,15 +21,20 @@ export default {
   data() {
     return {
       selected: null,
-      tagSets: [],
     }
   },
-  mounted() {
-    this.tagSets = this.$store.getters['traction/pacbio/poolCreate/tagSetList'].map(
-      ({ id: value, name: text }) => {
-        return { value, text }
-      },
-    )
+  computed: {
+    isEmpty() {
+      return this.tagSets.length === 0
+    },
+    tagSets() {
+      return this.$store.getters[
+        'traction/pacbio/poolCreate/tagSetList'
+      ].map(({ id: value, name: text }) => ({ value, text }))
+    },
+    options() {
+      return [{ value: null, text: 'Please select a tag set' }, ...this.tagSets]
+    },
   },
   methods: {
     updateSelected() {
@@ -27,3 +43,9 @@ export default {
   },
 }
 </script>
+
+<style scoped lang="scss">
+.tag-set-list {
+  padding: 0;
+}
+</style>

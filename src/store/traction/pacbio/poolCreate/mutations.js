@@ -22,6 +22,8 @@ export default {
    * @param {Array.<{id: String, selected: Boolean}>} plates An array of plate id objects to be selected
    * @param {Boolean} selected Whether the plate is selected (defaults to true)
    */
+  // TODO: add mutation
+  // eslint-disable-next-line no-unused-vars
   selectPlates: (state, plates) => {},
   /**
    * Flags tagSet with `id` as selected.
@@ -36,6 +38,8 @@ export default {
    * @param {Object} state The Vuex state object
    * @param {String} id The id of the plate
    */
+  // TODO: add mutation
+  // eslint-disable-next-line no-unused-vars
   selectRequest: (state, { id }) => {},
   /**
    * Flags requests in the Array as selected. (Or unselected if selected is false)
@@ -43,6 +47,8 @@ export default {
    * @param {Array.<{id: String, selected: Boolean}>} requests An array of plate id objects to be selected
    * @param {Boolean} selected Whether the plate is selected (defaults to true)
    */
+  // TODO: add mutation
+  // eslint-disable-next-line no-unused-vars
   selectRequests: (state, requests) => {},
 
   /**

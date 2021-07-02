@@ -25,7 +25,7 @@ export default () => {
       // Object reflecting the id of the selected tag set and a selected
       // attribute.
       // eg { id: '1' }
-      tagSet: null,
+      tagSet: {},
       // Object representing all selected plates. Selected plates are indexed by
       // id. Each plate is represented by an object with an id and a selected
       // attribute { id: 'plate_id', selected: true }

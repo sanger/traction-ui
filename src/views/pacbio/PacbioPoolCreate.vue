@@ -9,16 +9,12 @@
         </b-col>
         <b-col>
           <b-row>
-            <b-col data-type="tag-group-list" class="border tag-group-list">
-              Find tag groups
+            <b-col class="border tag-set-list">
               <PacbioTagSetList></PacbioTagSetList>
             </b-col>
           </b-row>
           <b-row>
-            <b-col data-type="tag-group" class="border tag-group">
-              Tag group
-              <PacbioTagSetShow></PacbioTagSetShow>
-            </b-col>
+            <PacbioTagSetItem></PacbioTagSetItem>
           </b-row>
         </b-col>
       </b-row>
@@ -37,38 +33,36 @@
 
 <script>
 import PacbioTagSetList from '@/components/pacbio/PacbioTagSetList'
-import PacbioTagSetShow from '@/components/pacbio/PacbioTagSetShow'
 import PacbioLabwareFind from '@/components/pacbio/PacbioLabwareFind'
 import PacbioLabwareSelectedList from '@/components/pacbio/PacbioLabwareSelectedList'
+import PacbioTagSetItem from '@/components/pacbio/PacbioTagSetItem'
 
 export default {
   name: 'PacbioPoolCreate',
   components: {
     PacbioTagSetList,
-    PacbioTagSetShow,
     PacbioLabwareFind,
     PacbioLabwareSelectedList,
+    PacbioTagSetItem,
   },
   data() {
     return {}
   },
   async created() {
     await this.$store.dispatch('traction/pacbio/poolCreate/fetchPacbioPlates')
+    await this.$store.dispatch('traction/pacbio/poolCreate/fetchPacbioTagSets')
   },
 }
 </script>
 
 <style scoped>
 #row1 {
-  height: 250px;
+  min-height: 250px;
 }
 #row2 {
-  height: 750px;
+  min-height: 750px;
 }
-.tag-group-list {
-  height: 75px;
-}
-.tag-group {
-  height: 175px;
+.col {
+  padding-right: 0;
 }
 </style>

@@ -1,7 +1,6 @@
 import * as JsonApi from '@/api/JsonApi'
 import TestResponse from '../../data/testResponse'
 import CircularResponse from '../../data/circularResponse'
-import { eq } from 'lodash-es'
 
 // TODO: create a factory which will build a JSON api response. Doing this manually is crushing me.
 describe('JsonApi', () => {

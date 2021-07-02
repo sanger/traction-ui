@@ -1,25 +1,12 @@
 import Runs from '@/views/saphyr/SaphyrRuns'
-import { mount, localVue, store, Data } from '../../testHelper'
+import { mount, localVue, store, Data, router } from 'testHelper'
 import Response from '@/api/Response'
-import SaphyrRun from '@/views/saphyr/SaphyrRun'
-import VueRouter from 'vue-router'
 
 describe('Runs.vue', () => {
-  let wrapper, runs, mockRuns, router
+  let wrapper, runs, mockRuns
 
   beforeEach(() => {
     mockRuns = new Response(Data.Runs).deserialize.runs
-
-    router = new VueRouter({
-      routes: [
-        {
-          path: '/saphyr/runs/:id',
-          name: 'saphyr',
-          component: SaphyrRun,
-          props: true,
-        },
-      ],
-    })
 
     store.commit('traction/saphyr/runs/setRuns', mockRuns)
 

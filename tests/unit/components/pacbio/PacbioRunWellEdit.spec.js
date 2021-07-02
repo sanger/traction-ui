@@ -1,4 +1,4 @@
-import { mount, localVue, store } from '../../testHelper'
+import { mount, localVue, store } from 'testHelper'
 import WellEdit from '@/components/pacbio/PacbioRunWellEdit'
 import * as Run from '@/api/PacbioRun'
 

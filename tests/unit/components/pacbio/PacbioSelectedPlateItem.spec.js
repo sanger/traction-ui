@@ -1,7 +1,7 @@
 import Plate from '@/components/pacbio/PacbioSelectedPlateItem'
 import PlateMap from '@/config/PlateMap'
 import Response from '@/api/Response'
-import { localVue, mount, Data, store } from '../../testHelper'
+import { localVue, mount, Data, store } from 'testHelper'
 
 describe('Plate.vue', () => {
   let wrapper, plate, mockPlates, mockWells

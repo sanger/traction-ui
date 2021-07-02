@@ -1,6 +1,5 @@
 import PageNotFound from '@/views/PageNotFound'
-import { mount, localVue } from '../testHelper'
-import VueRouter from 'vue-router'
+import { mount, localVue, router } from 'testHelper'
 
 /*
 Add this to router
@@ -14,16 +13,9 @@ it('will redirect to page not found if invalid path', () => {
 })
 */
 describe('PageNotFound.vue', () => {
-  let wrapper, router
+  let wrapper
 
   beforeEach(() => {
-    router = new VueRouter({
-      routes: [
-        { path: '/dashboard', name: 'Dashboard' },
-        { path: '/saphyr/runs', name: 'SaphyrRuns' },
-        { path: '/pacbio/runs', name: 'PacbioRunIndex' },
-      ],
-    })
     wrapper = mount(PageNotFound, { router, localVue })
   })
 
