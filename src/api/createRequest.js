@@ -10,14 +10,19 @@ const createRequest = ({
     apiNamespace,
     resource,
     headers = defaultHeaders
-  }) => ({
-   rootURL,
-   apiNamespace,
-   resource,
-   headers,
-   baseURL: `${rootURL}/${apiNamespace}`,
-   api: axios.create({baseURL: `${rootURL}/${apiNamespace}`, headers})
-})
+  }) => {
+   const baseURL = `${rootURL}/${apiNamespace}`
+   const api = axios.create({baseURL, headers})
+
+   return {
+    rootURL,
+    apiNamespace,
+    resource,
+    headers,
+    baseURL,
+    api,
+   }
+}
 
 export {
   defaultHeaders,
