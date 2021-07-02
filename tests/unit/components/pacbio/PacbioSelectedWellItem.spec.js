@@ -16,42 +16,42 @@ describe('Well.vue', () => {
     }
 
     mockWells = [
-        {
-            attributes: {
-                position: "A1",
-            },
-            id: "1",
-            relationships: {
-                requests: {
-                    data: [
-                        {
-                            type: "requests",
-                            id: "1"
-                        }
-                    ]
-                }
-            },
-            type: "wells"
+      {
+        attributes: {
+          position: 'A1',
         },
-        {
-            attributes: {
-                position: "A2",
-            },
-            id: "2",
-            type: "wells"
-        }
+        id: '1',
+        relationships: {
+          requests: {
+            data: [
+              {
+                type: 'requests',
+                id: '1',
+              },
+            ],
+          },
+        },
+        type: 'wells',
+      },
+      {
+        attributes: {
+          position: 'A2',
+        },
+        id: '2',
+        type: 'wells',
+      },
     ]
     mockRequests = [
-        {
-            attributes: {
-                sample_name: "Sample1",
-                cost_code: "12345",
-                source_identifier: "DN1:A1",
-                external_study_id: "1"
-            },
-            id: "1",
-            type: "requests"
-        }
+      {
+        attributes: {
+          sample_name: 'Sample1',
+          cost_code: '12345',
+          source_identifier: 'DN1:A1',
+          external_study_id: '1',
+        },
+        id: '1',
+        type: 'requests',
+      },
     ]
 
     store.commit('traction/pacbio/poolCreate/populateWells', mockWells)
@@ -126,7 +126,7 @@ describe('Well.vue', () => {
   describe('#tooltip', () => {
     it('will display the materials requests name', () => {
       let title = wrapper.find('title')
-      let expected = "Sample1"
+      let expected = 'Sample1'
       expect(title.text()).toEqual(expected)
     })
   })

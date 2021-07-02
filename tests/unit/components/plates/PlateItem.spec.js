@@ -12,10 +12,6 @@ describe('Plate.vue', () => {
     wrapper = mount(Plate, {
       localVue,
       propsData: { plate: mockPlate },
-      stubs: {
-        Plate96SVG: true,
-        Well: true,
-      },
     })
 
     plate = wrapper.vm
@@ -24,11 +20,6 @@ describe('Plate.vue', () => {
   it('will be passed a plate as a prop', () => {
     expect(plate.plate.id).toBeDefined()
     expect(plate.plate.barcode).toBeDefined()
-  })
-
-  it('will have a default width and height prop', () => {
-    expect(plate.height).toEqual('30%')
-    expect(plate.width).toEqual('30%')
   })
 
   describe('methods', () => {

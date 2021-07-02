@@ -51,7 +51,7 @@ export default {
    * @param {Array.{}} plates The plate resources to populate the store
    */
   populatePlates: (state, plates) => {
-    state.resources.plates = dataToObjectById({data: plates, includeRelationships: true})
+    state.resources.plates = dataToObjectById({ data: plates, includeRelationships: true })
   },
   /**
    * Populated with resources via APi calls from the actions
@@ -59,7 +59,7 @@ export default {
    * @param {Array.{}} wells The well resources to populate the store
    */
   populateWells: (state, wells) => {
-    state.resources.wells = dataToObjectById({data: wells, includeRelationships: true})
+    state.resources.wells = dataToObjectById({ data: wells, includeRelationships: true })
   },
   /**
    * Populated with resources via APi calls from the actions
@@ -67,7 +67,7 @@ export default {
    * @param {Array.{}} requests The request resources to populate the store
    */
   populateRequests: (state, requests) => {
-    state.resources.requests = dataToObjectById({data: requests, includeRelationships: false})
+    state.resources.requests = dataToObjectById({ data: requests, includeRelationships: false })
   },
   /**
    * Populated with resources via APi calls from the actions
@@ -75,7 +75,7 @@ export default {
    * @param {Array.{}} tagSets The tagSet resources to populate the store
    */
   populateTagSets: (state, tagSets) => {
-    state.resources.tagSets = dataToObjectById({data: tagSets, includeRelationships: true})
+    state.resources.tagSets = dataToObjectById({ data: tagSets, includeRelationships: true })
   },
   /**
    * Populated with resources via APi calls from the actions
@@ -83,6 +83,6 @@ export default {
    * @param {Array.{}} tags The tag resources to populate the store
    */
   populateTags: (state, tags) => {
-    state.resources.tags = dataToObjectById({data: tags, includeRelationships: false})
+    state.resources.tags = dataToObjectById({ data: tags, includeRelationships: false })
   },
 }

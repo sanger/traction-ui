@@ -8,7 +8,6 @@ describe('Reception', () => {
   let wrapper, reception, barcodes, barcode, input, router
 
   beforeEach(() => {
-
     barcodes = 'TRAC-1\nTRAC-2\nTRAC-3\nTRAC-4\nTRAC-5'
     wrapper = mount(Reception, { localVue, router })
     reception = wrapper.vm

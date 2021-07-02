@@ -1,14 +1,14 @@
 <template>
   <div>
     <Plate96SVG v-if="wells" ref="plate96Svg" height="75%" width="75%">
-        <Well
-            v-for="(well, position) in plateMap.wells"
-            :key="position"
-            ref="well"
-            v-bind="well"
-            :well-id="getWellAt(position)"
-        >
-        </Well>
+      <Well
+        v-for="(well, position) in plateMap.wells"
+        :key="position"
+        ref="well"
+        v-bind="well"
+        :well-id="getWellAt(position)"
+      >
+      </Well>
     </Plate96SVG>
   </div>
 </template>
@@ -28,13 +28,13 @@ export default {
     plateId: {
       type: String,
       default() {
-        return ""
+        return ''
       },
-    }
+    },
   },
   data() {
     return {
-        wells: []
+      wells: [],
     }
   },
   computed: {
@@ -47,9 +47,9 @@ export default {
   },
   methods: {
     getWellAt(position) {
-        let well = this.wells.find((well) => well.position == position)
-        return well ? well.id : ""
+      let well = this.wells.find((well) => well.position == position)
+      return well ? well.id : ''
     },
-  }
+  },
 }
 </script>

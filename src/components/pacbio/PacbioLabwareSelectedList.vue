@@ -14,8 +14,7 @@
         </b-list-group-item>
       </b-list-group>
     </b-tab>
-    <b-tab title="Requests">
-    </b-tab>
+    <b-tab title="Requests"> </b-tab>
   </b-tabs>
 </template>
 

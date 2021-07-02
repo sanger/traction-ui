@@ -35,21 +35,21 @@ export default {
     wellId: {
       type: String,
       default() {
-        return ""
+        return ''
       },
     },
   },
   computed: {
     checkRequest() {
-       return this.getRequest ? "filled" : "empty"
+      return this.getRequest ? 'filled' : 'empty'
     },
     getRequest() {
       if (this.wellId) {
         return this.$store.getters['traction/pacbio/poolCreate/wellRequest'](this.wellId)
       }
-      return ""
-    }
-  }
+      return ''
+    },
+  },
 }
 </script>
 
@@ -59,6 +59,6 @@ ellipse {
   stroke: #000000;
 }
 .filled {
-    fill: green;
+  fill: green;
 }
 </style>

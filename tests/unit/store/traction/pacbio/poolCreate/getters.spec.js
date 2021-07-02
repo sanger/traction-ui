@@ -3,7 +3,18 @@ import defaultState from '@/store/traction/pacbio/poolCreate/state'
 
 describe('getters.js', () => {
   const state = defaultState()
-  const { labwareList, tagSetList, selectedTagSet, selectedPlates, selectedRequests, tagList, plateWells, wellRequest } = getters
+  const {
+    labwareList,
+    tagSetList,
+    selectedTagSet,
+    selectedPlates,
+    selectedRequests,
+    tagList,
+    plateWells,
+    wellRequest,
+    wellList,
+    requestList,
+  } = getters
 
   describe('labwareList', () => {
     it('returns what it does', () => {
@@ -12,14 +23,14 @@ describe('getters.js', () => {
           barcode: 'DN1',
           id: '1',
           type: 'plates',
-          wells: []
+          wells: [],
         },
         '2': {
           barcode: 'DN2',
           id: '2',
           type: 'plates',
-          wells: []
-        }
+          wells: [],
+        },
       }
       state.resources.plates = plates
       expect(labwareList(state)).toEqual(Object.values(plates))
@@ -48,13 +59,12 @@ describe('getters.js', () => {
   })
 
   describe('tagList', () => {
-
     const tags = {
-      "1": { "id": "1", "name": "tag1"},
-      "2": { "id": "2", "name": "tag2"},
-      "3": { "id": "3", "name": "tag3"},
-      "4": { "id": "4", "name": "tag4"},
-      "5": { "id": "5", "name": "tag5"},
+      '1': { id: '1', name: 'tag1' },
+      '2': { id: '2', name: 'tag2' },
+      '3': { id: '3', name: 'tag3' },
+      '4': { id: '4', name: 'tag4' },
+      '5': { id: '5', name: 'tag5' },
     }
 
     it('returns what it does', () => {
@@ -64,14 +74,14 @@ describe('getters.js', () => {
 
     it('when ids are included', () => {
       state.resources.tags = tags
-      const ids = ["1","2","3"]
+      const ids = ['1', '2', '3']
       expect(tagList(state)(ids).length).toEqual(ids.length)
     })
   })
 
   describe('selectedTagSet', () => {
     it('returns what it does', () => {
-      const tagSet = { id: "1", name: "TagSet1"}
+      const tagSet = { id: '1', name: 'TagSet1' }
       state.selected.tagSet = tagSet
       expect(selectedTagSet(state)).toEqual(tagSet)
     })
@@ -84,7 +94,7 @@ describe('getters.js', () => {
           barcode: 'DN1',
           id: '1',
           type: 'plates',
-          wells: []
+          wells: [],
         },
       }
       state.selected.plates = plates
@@ -98,21 +108,63 @@ describe('getters.js', () => {
     })
   })
 
+  describe('wellList', () => {
+    const wells = {
+      '1': { id: '1', position: 'A1' },
+      '2': { id: '2', position: 'B1' },
+      '3': { id: '3', position: 'C1' },
+      '4': { id: '4', position: 'D1' },
+      '5': { id: '5', position: 'E1' },
+    }
+
+    it('returns what it does', () => {
+      state.resources.wells = wells
+      expect(wellList(state)()).toEqual(wells.values)
+    })
+
+    it('when ids are included', () => {
+      state.resources.wells = wells
+      const ids = ['1', '2', '3']
+      expect(wellList(state)(ids).length).toEqual(ids.length)
+    })
+  })
+
+  describe('requestList', () => {
+    const requests = {
+      '1': { id: '1', name: 'request1' },
+      '2': { id: '2', name: 'request2' },
+      '3': { id: '3', name: 'request3' },
+      '4': { id: '4', name: 'request4' },
+      '5': { id: '5', name: 'request5' },
+    }
+
+    it('returns what it does', () => {
+      state.resources.requests = requests
+      expect(requestList(state)()).toEqual(requests.values)
+    })
+
+    it('when ids are included', () => {
+      state.resources.requests = requests
+      const ids = ['1', '2', '3']
+      expect(requestList(state)(ids).length).toEqual(ids.length)
+    })
+  })
+
   describe('plateWells', () => {
     const wells = {
       '1': {
-        position: "A1",
-        id: "1",
-        type: "wells"
-      }
+        position: 'A1',
+        id: '1',
+        type: 'wells',
+      },
     }
-    
+
     const plates = {
       '1': {
         barcode: 'DN1',
         id: '1',
         type: 'plates',
-        wells: [ "1" ]
+        wells: ['1'],
       },
     }
 
@@ -126,27 +178,27 @@ describe('getters.js', () => {
   describe('wellRequest', () => {
     const wells = {
       '1': {
-        position: "A1",
-        id: "1",
-        requests: ["1"],
-        type: "wells"
+        position: 'A1',
+        id: '1',
+        requests: ['1'],
+        type: 'wells',
       },
       '2': {
-        position: "A2",
-        id: "2",
-        type: "wells"
-      }
+        position: 'A2',
+        id: '2',
+        type: 'wells',
+      },
     }
-    
+
     const requests = {
       '1': {
-        sample_name: "Sample1",
-        cost_code: "12345",
-        source_identifier: "DN1:A1",
-        external_study_id: "1",
-        id: "1",
-        type: "requests"
-      }
+        sample_name: 'Sample1',
+        cost_code: '12345',
+        source_identifier: 'DN1:A1',
+        external_study_id: '1',
+        id: '1',
+        type: 'requests',
+      },
     }
 
     it('returns the request associated with the well', () => {
@@ -161,5 +213,4 @@ describe('getters.js', () => {
       expect(wellRequest(state)('2')).toEqual()
     })
   })
-
 })

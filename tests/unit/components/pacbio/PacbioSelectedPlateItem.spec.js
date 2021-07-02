@@ -9,30 +9,30 @@ describe('Plate.vue', () => {
   beforeEach(() => {
     mockPlates = new Response(Data.PacbioPlates)._body.data
     mockWells = [
-        {
-            attributes: {
-                position: "A1",
-            },
-            id: "1",
-            relationships: {
-                requests: {
-                    data: [
-                        {
-                            type: "requests",
-                            id: "1"
-                        }
-                    ]
-                }
-            },
-            type: "wells"
+      {
+        attributes: {
+          position: 'A1',
         },
-        {
-            attributes: {
-                position: "A2",
-            },
-            id: "2",
-            type: "wells"
-        }
+        id: '1',
+        relationships: {
+          requests: {
+            data: [
+              {
+                type: 'requests',
+                id: '1',
+              },
+            ],
+          },
+        },
+        type: 'wells',
+      },
+      {
+        attributes: {
+          position: 'A2',
+        },
+        id: '2',
+        type: 'wells',
+      },
     ]
 
     store.commit('traction/pacbio/poolCreate/populatePlates', mockPlates)

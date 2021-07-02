@@ -55,7 +55,7 @@ describe('mutations.js', () => {
       const state = defaultState()
       state.resources.tagSets = tagSets
       // apply mutation
-      selectTagSet(state, { id: '1'} )
+      selectTagSet(state, { id: '1' })
       // assert result
       // expect(state, value).toEqual(new_value)
       expect(state.selected.tagSet).toEqual(tagSets['1'])
@@ -86,33 +86,43 @@ describe('mutations.js', () => {
   describe('populatePlates', () => {
     it('updates the state', () => {
       // mock state
+      const plates = Data.PacbioPlatesRequest.data.data
       const state = defaultState()
       // apply mutation
-      populatePlates(state, {})
+      populatePlates(state, plates)
       // assert result
-      // expect(state, value).toEqual(new_value)
+      expect(state.resources.plates).toEqual(
+        dataToObjectById({ data: plates, includeRelationships: true }),
+      )
     })
   })
 
   describe('populateWells', () => {
     it('updates the state', () => {
       // mock state
+      const wells = Data.PacbioPlatesRequest.data.included.slice(0, 4)
       const state = defaultState()
       // apply mutation
-      populateWells(state, {})
+      populateWells(state, wells)
       // assert result
-      // expect(state, value).toEqual(new_value)
+      expect(state.resources.wells).toEqual(
+        dataToObjectById({ data: wells, includeRelationships: true }),
+      )
     })
   })
 
   describe('populateRequests', () => {
     it('updates the state', () => {
       // mock state
+      const requests = Data.PacbioPlatesRequest.data.included.slice(4, 8)
+
       const state = defaultState()
       // apply mutation
-      populateRequests(state, {})
+      populateRequests(state, requests)
       // assert result
-      // expect(state, value).toEqual(new_value)
+      expect(state.resources.requests).toEqual(
+        dataToObjectById({ data: requests, includeRelationships: false }),
+      )
     })
   })
 
@@ -124,7 +134,9 @@ describe('mutations.js', () => {
       // apply mutation
       populateTagSets(state, tagSets)
       // assert result
-      expect(state.resources.tagSets).toEqual(dataToObjectById({data: tagSets, includeRelationships: true}))
+      expect(state.resources.tagSets).toEqual(
+        dataToObjectById({ data: tagSets, includeRelationships: true }),
+      )
     })
   })
 
@@ -136,7 +148,9 @@ describe('mutations.js', () => {
       // apply mutation
       populateTags(state, tags)
       // assert result
-      expect(state.resources.tags).toEqual(dataToObjectById({data: tags, includeRelationships: false}))
+      expect(state.resources.tags).toEqual(
+        dataToObjectById({ data: tags, includeRelationships: false }),
+      )
     })
   })
 })

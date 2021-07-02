@@ -10,14 +10,14 @@ describe('PacbioLabwareSelectedList', () => {
     store.commit('traction/pacbio/poolCreate/populatePlates', mockPlates)
 
     plateStub = {
-      template: '<div class="plate"></div>'
+      template: '<div class="plate"></div>',
     }
 
     wrapper = mount(PacbioLabwareSelectedList, {
       localVue,
       store,
       stubs: {
-        Plate: plateStub
+        Plate: plateStub,
       },
     })
   })

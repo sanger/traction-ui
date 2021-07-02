@@ -29,24 +29,20 @@ export default {
   mixins: [Helper],
   data() {
     return {
-      enteredLabware: ''
+      enteredLabware: '',
     }
   },
   computed: {
     getFilteredList() {
-      return this.labList.filter((labware) =>
-        labware.barcode.includes(this.enteredLabware),
-      )
+      return this.labList.filter((labware) => labware.barcode.includes(this.enteredLabware))
     },
     labList() {
       return this.$store.getters['traction/pacbio/poolCreate/labwareList']
-    }
+    },
   },
   methods: {
     handleSumbit() {
-      let labware = this.labList.find(
-        (labware) => labware.barcode === this.enteredLabware,
-      )
+      let labware = this.labList.find((labware) => labware.barcode === this.enteredLabware)
       labware ? this.setSelected(labware) : console.log('Emits alert?')
       this.enteredLabware = ''
     },

@@ -18,10 +18,10 @@ export default {
    * Returns a list of all fetched tagSet
    * @param {Object} state The Vuex state object
    */
-  tagList: (state) => ids => {
+  tagList: (state) => (ids) => {
     const tags = state.resources.tags
     if (ids) {
-      return ids.map(id => tags[id])
+      return ids.map((id) => tags[id])
     } else {
       return tags.values
     }
@@ -46,18 +46,45 @@ export default {
    */
   selectedRequests: (state) => {},
   /**
+   * Returns a list of all fetched tagSet
+   * @param {Object} state The Vuex state object
+   */
+  wellList: (state) => (ids) => {
+    const wells = state.resources.wells
+    if (ids) {
+      return ids.map((id) => wells[id])
+    } else {
+      return wells.values
+    }
+  },
+  /**
+   * Returns a list of all fetched tagSet
+   * @param {Object} state The Vuex state object
+   */
+  requestList: (state) => (ids) => {
+    const requests = state.resources.requests
+    if (ids) {
+      return ids.map((id) => requests[id])
+    } else {
+      return requests.values
+    }
+  },
+  /**
    * Returns a list of wells for the plate given
    * @param {Object} state The Vuex state object
    */
-  plateWells: (state) => id => {
+  // TODO: we should just return the ids by their wells.
+  // no need to pass plate
+  plateWells: (state) => (id) => {
     let well_ids = state.resources.plates[id].wells
-    return well_ids.map(id => state.resources.wells[id])
+    return well_ids.map((id) => state.resources.wells[id])
   },
   /**
    * Returns the relate request for the well given
    * @param {Object} state The Vuex state object
    */
-  wellRequest: (state) => id => {
+  // TODO: just return the requests. No need to pass well
+  wellRequest: (state) => (id) => {
     let request_id = state.resources.wells[id].requests
     if (request_id) {
       return state.resources.requests[request_id[0]]
