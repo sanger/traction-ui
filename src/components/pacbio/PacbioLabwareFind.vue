@@ -2,11 +2,12 @@
   <b-form @submit="handleSumbit()">
     <b-form-input
       v-model="enteredLabware"
+      data-input="labware-find"
       autocomplete="off"
       placeholder="Search or scan for labware by barcode"
     >
     </b-form-input>
-    <b-list-group class="find-list-group">
+    <b-list-group data-type="labware-list" class="find-list-group">
       <b-list-group-item
         v-for="item in getFilteredList"
         :key="item.id"

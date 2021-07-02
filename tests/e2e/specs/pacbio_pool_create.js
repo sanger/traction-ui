@@ -10,8 +10,13 @@ describe('Pacbio Pool Create', () => {
 
     cy.visit('#/pacbio/pool/new')
     cy.contains('Pool')
-    // select a plate(s)
-    // scan a plate(s)
+    cy.get('[data-input=labware-find]')
+      .type('DN814327C')
+      .trigger('input')
+    cy.get('[data-type=labware-list]')
+      .get('button')
+      .last()
+      .click()
     // plates should appear in the plates views
     // select the samples from the plate for the pool
     // samples should appear in the pool
