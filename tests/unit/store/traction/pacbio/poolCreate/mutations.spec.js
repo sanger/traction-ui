@@ -1,6 +1,6 @@
 import mutations from '@/store/traction/pacbio/poolCreate/mutations'
 import defaultState from '@/store/traction/pacbio/poolCreate/state'
-import { Data } from '../../../../testHelper'
+import { Data } from 'testHelper'
 import { dataToObjectById } from '@/api/JsonApi'
 
 describe('mutations.js', () => {

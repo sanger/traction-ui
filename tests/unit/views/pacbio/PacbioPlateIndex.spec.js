@@ -1,5 +1,5 @@
 import PacbioPlates from '@/views/pacbio/PacbioPlateIndex'
-import { mount, localVue, store, Data, router } from '../../testHelper'
+import { mount, localVue, store, Data, router } from 'testHelper'
 import Response from '@/api/Response'
 
 describe('PacbioPlates.vue', () => {

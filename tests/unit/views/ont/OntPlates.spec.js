@@ -1,5 +1,5 @@
 import OntPlates from '@/views/ont/OntPlates'
-import { localVue, mount } from '../../testHelper'
+import { localVue, mount } from 'testHelper'
 
 describe('OntPlates.vue', () => {
   let wrapper, plates, platesData

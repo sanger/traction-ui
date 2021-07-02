@@ -1,5 +1,5 @@
 import Samples from '@/views/pacbio/PacbioSampleIndex'
-import { mount, localVue, store, Data, router } from '../../testHelper'
+import { mount, localVue, store, Data, router } from 'testHelper'
 import Response from '@/api/Response'
 
 // TODO: why do we need to set sortDesc to false? I think we also need to isolate tests

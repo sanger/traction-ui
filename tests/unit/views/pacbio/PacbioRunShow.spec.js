@@ -1,5 +1,5 @@
 import PacbioRun from '@/views/pacbio/PacbioRunShow'
-import { localVue, mount, store, router } from '../../testHelper'
+import { localVue, mount, store, router } from 'testHelper'
 
 describe('Run.vue', () => {
   let wrapper, mockRun, pacbioRun

@@ -1,4 +1,4 @@
-import { mount, localVue, store } from '../../testHelper'
+import { mount, localVue, store } from 'testHelper'
 import PacbioLibraryTagEdit from '@/components/pacbio/PacbioLibraryTagEdit'
 
 describe('PacbioLibraryTagEdit.vue', () => {

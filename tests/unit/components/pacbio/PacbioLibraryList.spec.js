@@ -1,7 +1,6 @@
-import { mount, localVue } from '../../testHelper'
+import { mount, localVue, store } from 'testHelper'
 import PacbioLibraryList from '@/components/pacbio/PacbioLibraryList'
 import storeLibraries from '../../../data/StoreLibraries'
-import store from '@/store'
 
 describe('PacbioLibraryList', () => {
   let wrapper, libraries

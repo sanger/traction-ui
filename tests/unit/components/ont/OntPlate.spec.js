@@ -1,6 +1,6 @@
 import OntPlate from '@/components/ont/OntPlate'
 import PlateMap from '@/config/PlateMap'
-import { localVue, mount } from '../../testHelper'
+import { localVue, mount } from 'testHelper'
 
 describe('OntPlate.vue', () => {
   let wrapper, plate, wellsData, mutate

@@ -1,4 +1,4 @@
-import { Data } from '../../../../testHelper'
+import { Data } from 'testHelper'
 import actions from '@/store/traction/pacbio/poolCreate/actions'
 
 describe('actions.js', () => {

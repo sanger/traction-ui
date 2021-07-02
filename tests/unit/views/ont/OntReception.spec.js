@@ -1,7 +1,6 @@
 import Reception from '@/views/ont/OntReception'
-import { mount, localVue, Data } from '../../testHelper'
+import { mount, localVue, Data, store } from 'testHelper'
 import Response from '@/api/Response'
-import store from '@/store'
 import { transformPlates, OntSample } from '@/services/Sequencescape'
 import flushPromises from 'flush-promises'
 
