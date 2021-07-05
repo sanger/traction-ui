@@ -40,15 +40,15 @@ export default {
   },
   computed: {
     getFilteredList() {
-      return this.labList.filter((labware) => labware.barcode.includes(this.enteredLabware))
+      return this.labwareList.filter((labware) => labware.barcode.includes(this.enteredLabware))
     },
-    labList() {
+    labwareList() {
       return this.$store.getters['traction/pacbio/poolCreate/labwareList']
     },
   },
   methods: {
     handleSubmit() {
-      let labware = this.labList.find((labware) => labware.barcode === this.enteredLabware)
+      let labware = this.labwareList.find((labware) => labware.barcode === this.enteredLabware)
       labware
         ? this.setSelected(labware)
         : this.showAlert(

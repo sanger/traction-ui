@@ -1,7 +1,7 @@
 <template>
   <b-tabs content-class="mt-3" fill>
     <b-tab title="Plates">
-      <b-list-group class="selected-list-group">
+      <b-list-group class="selected-list-group" >
         <b-list-group-item v-if="selectedPlates.length === 0">
           No plates selected
         </b-list-group-item>

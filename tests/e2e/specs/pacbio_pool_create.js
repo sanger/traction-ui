@@ -10,14 +10,14 @@ describe('Pacbio Pool Create', () => {
 
     cy.visit('#/pacbio/pool/new')
     cy.contains('Pool')
-    cy.get('[data-input=labware-find]')
-      .type('DN814327C')
-      .trigger('input')
     cy.get('[data-type=labware-list]')
-      .get('button')
-      .last()
-      .click()
-    // plates should appear in the plates views
+    .get('button')
+    .first()
+    .click()
+    cy.get('[data-input=labware-find]')
+      .type('DN814567Q{enter}')
+   
+    cy.get('[data-type=plate-item').should('have.length',2)
     // select the samples from the plate for the pool
     // samples should appear in the pool
     // and samples that have failed qc should not be selectable

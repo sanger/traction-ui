@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div data-type="plate-item">
     <Plate96SVG v-if="wells" ref="plate96Svg" height="75%" width="75%">
       <!-- should be v-bind(getWellAt(well) which should return the well and well from plate map combined ) -->
       <Well
