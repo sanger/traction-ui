@@ -10,6 +10,14 @@ describe('index', () => {
       expect(Store.state.printers).toBeDefined()
     })
 
+    it('has a plate map', () => {
+      const plateMap = Store.state.plateMap
+      expect(plateMap).toBeDefined()
+      expect(plateMap.rows).toBeDefined()
+      expect(plateMap.columns).toBeDefined()
+      expect(plateMap.wells).toBeDefined()
+    })
+
     describe('api', () => {
       it('contains multiple resources', () => {
         expect(Store.state.api.traction).toBeDefined()
