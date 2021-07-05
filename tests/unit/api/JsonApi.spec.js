@@ -182,6 +182,11 @@ describe('JsonApi', () => {
       expect(extractedRelationships.pickles).toEqual(['2'])
       expect(extractedRelationships.chocolates).toEqual(['3'])
     })
+
+    it('returns an empty object if the relationships are undefined', () => {
+      const extractedRelationships = JsonApi.extractRelationshipsAndGroupById()
+      expect(extractedRelationships).toEqual({})
+    })
   })
 
   describe('dataToObjectById', () => {

@@ -37,7 +37,7 @@ describe('PacbioPoolCreate', () => {
     } = store
 
     // TODO: implement fetchPacbioPlates
-    expect(Object.keys(plates).length).toEqual(0)
+    expect(Object.keys(plates).length).toBeGreaterThan(0)
     expect(Object.keys(tagSets).length).toBeGreaterThan(0)
   })
 })

@@ -16,7 +16,7 @@ import mutations from './mutations'
 import getters from './getters'
 import state from './state'
 
-const store = {
+const poolCreate = {
   namespaced: true,
   state,
   mutations,
@@ -24,4 +24,4 @@ const store = {
   getters,
 }
 
-export default store
+export default poolCreate

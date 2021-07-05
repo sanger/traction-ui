@@ -5,6 +5,7 @@
       <b-row id="row1">
         <b-col data-type="plate-find" class="border">
           Find plates
+          <PacbioLabwareFind />
         </b-col>
         <b-col>
           <b-row>
@@ -20,6 +21,7 @@
       <b-row id="row2">
         <b-col data-type="selected-plate-list" class="border">
           Selected plates
+          <PacbioLabwareSelectedList />
         </b-col>
         <b-col data-type="library-list" class="border">
           Libraries
@@ -31,18 +33,23 @@
 
 <script>
 import PacbioTagSetList from '@/components/pacbio/PacbioTagSetList'
+import PacbioLabwareFind from '@/components/pacbio/PacbioLabwareFind'
+import PacbioLabwareSelectedList from '@/components/pacbio/PacbioLabwareSelectedList'
 import PacbioTagSetItem from '@/components/pacbio/PacbioTagSetItem'
 
 export default {
   name: 'PacbioPoolCreate',
   components: {
     PacbioTagSetList,
+    PacbioLabwareFind,
+    PacbioLabwareSelectedList,
     PacbioTagSetItem,
   },
   data() {
     return {}
   },
   async created() {
+    await this.$store.dispatch('traction/pacbio/poolCreate/fetchPacbioPlates')
     await this.$store.dispatch('traction/pacbio/poolCreate/fetchPacbioTagSets')
   },
 }

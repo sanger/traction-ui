@@ -1,12 +1,12 @@
 <template>
   <div>
-    <Plate96SVG v-if="wells" ref="plate96Svg" :height="'30%'" :width="'30%'">
+    <Plate96SVG v-if="wells" ref="plate96Svg" height="75%" width="75%">
       <Well
         v-for="(well, position) in plateMap.wells"
         :key="position"
         ref="well"
         v-bind="well"
-        :well_info="getWellAt(position)"
+        :well-id="getWellAt(position)"
       >
       </Well>
     </Plate96SVG>
@@ -16,7 +16,7 @@
 <script>
 import Plate96SVG from '@/components/svg/Plate96SVG'
 import PlateMap from '@/config/PlateMap'
-import Well from '@/components/plates/WellItem'
+import Well from '@/components/pacbio/PacbioSelectedWellItem'
 
 export default {
   name: 'Plate',
@@ -25,16 +25,16 @@ export default {
     Well,
   },
   props: {
-    plate: {
-      type: Object,
+    plateId: {
+      type: String,
       default() {
-        return {}
+        return ''
       },
     },
   },
   data() {
     return {
-      wells: this.plate.wells,
+      wells: [],
     }
   },
   computed: {
@@ -42,10 +42,13 @@ export default {
       return PlateMap
     },
   },
+  mounted() {
+    this.wells = this.$store.getters['traction/pacbio/poolCreate/plateWells'](this.plateId)
+  },
   methods: {
     getWellAt(position) {
-      let well = this.wells.filter((well) => well.position == position)[0]
-      return well && well.materials ? well : { position, materials: [] }
+      let well = this.wells.find((well) => well.position == position)
+      return well ? well.id : ''
     },
   },
 }
