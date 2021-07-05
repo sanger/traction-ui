@@ -1,23 +1,19 @@
 import Well from '@/components/pacbio/PacbioWellItem'
 import { mount, store } from 'testHelper'
 
+const requests = {
+  '1': {
+    sample_name: 'Sample1',
+    cost_code: '12345',
+    source_identifier: 'DN1:A1',
+    external_study_id: '1',
+  },
+}
+
 describe('Well.vue', () => {
-  let well, wrapper, props, mockWells, mockRequests
+  let well, wrapper, props
 
   beforeEach(() => {
-    mockRequests = [
-      {
-        attributes: {
-          sample_name: 'Sample1',
-          cost_code: '12345',
-          source_identifier: 'DN1:A1',
-          external_study_id: '1',
-        },
-        id: '1',
-        type: 'requests',
-      },
-    ]
-
     props = {
       row: 'A',
       column: '1',
@@ -28,7 +24,7 @@ describe('Well.vue', () => {
       requests: ['1'],
     }
 
-    store.commit('traction/pacbio/poolCreate/populateRequests', mockRequests)
+    store.state.traction.pacbio.poolCreate.resources.requests = requests
 
     wrapper = mount(Well, {
       propsData: props,

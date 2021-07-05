@@ -53,14 +53,12 @@ describe('Plate.vue', () => {
   describe('methods', () => {
     describe('#getWellAt', () => {
       it('merges mapWell and well at the given position ', () => {
-        let mapWell = plate.plateMap.wells['A1']
-        let well = plate.wellData.find((w) => w.position == 'A1')
-        let expected = { ...mapWell, ...well }
-        expect(plate.getWellAt(mapWell, 'A1')).toEqual(expected)
+        const mapWell = plate.plateMap.wells['A1']
+        expect(plate.getWellAt(mapWell, 'A1').id).toEqual('1')
       })
 
       it('returns just the mapWell if no well has the positiion', () => {
-        let mapWell = plate.plateMap.wells['A10']
+        const mapWell = plate.plateMap.wells['A10']
         expect(plate.getWellAt(mapWell, 'A10')).toEqual(mapWell)
       })
     })
