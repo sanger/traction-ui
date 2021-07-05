@@ -72,27 +72,4 @@ export default {
       return requests.values
     }
   },
-  /**
-   * Returns a list of wells for the plate given
-   * @param {Object} state The Vuex state object
-   */
-  // TODO: we should just return the ids by their wells.
-  // no need to pass plate
-  plateWells: (state) => (id) => {
-    let well_ids = state.resources.plates[id].wells
-    return well_ids.map((id) => state.resources.wells[id])
-  },
-  /**
-   * Returns the relate request for the well given
-   * @param {Object} state The Vuex state object
-   */
-  // TODO: just return the requests. No need to pass well
-  wellRequest: (state) => (id) => {
-    let request_id = state.resources.wells[id].requests
-    if (request_id) {
-      return state.resources.requests[request_id[0]]
-    } else {
-      return
-    }
-  },
 }

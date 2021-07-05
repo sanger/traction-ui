@@ -29,4 +29,25 @@ describe('PacbioLabwareFind', () => {
       expect(wrapper.find('.list-group').findAll('.list-group-item').length).toEqual(1)
     })
   })
+
+  describe('Handle submit', () => {
+    it('handleSubmit calls mutation when enteredLabware is an existing plate barcode', () => {
+      wrapper.vm.setSelected = jest.fn()
+      wrapper.setData({ enteredLabware: 'DN1' })
+      wrapper.vm.handleSubmit()
+      expect(wrapper.vm.setSelected).toBeCalled()
+    })
+
+    it('handleSubmit calls mutation when enteredLabware is an existing plate barcode', () => {
+      wrapper.vm.setSelected = jest.fn()
+      wrapper.vm.showAlert = jest.fn()
+      wrapper.setData({ enteredLabware: 'Not a plate Barcode' })
+      wrapper.vm.handleSubmit()
+      expect(wrapper.vm.setSelected).not.toBeCalled()
+      expect(wrapper.vm.showAlert).toBeCalledWith(
+        'Unable to find a plate with the barcode: Not a plate Barcode',
+        'danger',
+      )
+    })
+  })
 })

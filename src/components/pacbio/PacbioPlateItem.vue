@@ -2,7 +2,12 @@
   <div>
     <Plate96SVG v-if="wells" ref="plate96Svg" height="75%" width="75%">
       <!-- should be v-bind(getWellAt(well) which should return the well and well from plate map combined ) -->
-      <Well v-for="(well, position) in plateMap.wells" :key="position" ref="well" v-bind="well">
+      <Well
+        v-for="(well, position) in plateMap.wells"
+        :key="position"
+        ref="well"
+        v-bind="getWellAt(well, position)"
+      >
       </Well>
     </Plate96SVG>
   </div>
@@ -11,7 +16,6 @@
 <script>
 import Plate96SVG from '@/components/svg/Plate96SVG'
 import Well from '@/components/pacbio/PacbioWellItem'
-import PlateMap from '@/config/PlateMap'
 
 export default {
   name: 'Plate',
@@ -39,21 +43,20 @@ export default {
       },
     },
   },
-  computed: {
-    plateMap() {
-      return PlateMap
-    },
+  data() {
+    return {
+      plateMap: {},
+      wellData: [],
+    }
   },
   mounted() {
-    // get the plateMap from the store using a getter
-    // get the wells for the plate using wellList getter
-    // this.wells = this.$store.getters['traction/pacbio/poolCreate/plateWells'](this.plateId)
+    this.plateMap = this.$store.getters['plateMap']
+    this.wellData = this.$store.getters['traction/pacbio/poolCreate/wellList'](this.wells)
   },
   methods: {
-    // this should be pretty much the same. Only difference is we will be using the wells from the store
-    getWellAt(position) {
-      let well = this.wells.find((well) => well.position == position)
-      return well ? well.id : ''
+    getWellAt(mapWell, position) {
+      let well = this.wellData.find((well) => well.position == position)
+      return well ? { ...mapWell, ...well } : mapWell
     },
   },
 }

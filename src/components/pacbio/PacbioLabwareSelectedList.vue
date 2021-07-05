@@ -5,10 +5,14 @@
         <b-list-group-item v-if="selectedPlates.length === 0">
           No plates selected
         </b-list-group-item>
-        <b-list-group-item v-for="item in selectedPlates" :key="item.id" class="selected-list-item">
-          {{ item.barcode }}
-          <Plate ref="plate" :plate-id="item.id"></Plate>
-          <b-button id="unselect-btn" variant="danger" size="sm" @click="setSelected(item)"
+        <b-list-group-item
+          v-for="plate in selectedPlates"
+          :key="plate.id"
+          class="selected-list-item"
+        >
+          {{ plate.barcode }}
+          <Plate ref="plate" v-bind="plate"></Plate>
+          <b-button id="unselect-btn" variant="danger" size="sm" @click="setSelected(plate)"
             >Deselect</b-button
           >
         </b-list-group-item>

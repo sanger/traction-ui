@@ -5,42 +5,6 @@ describe('Well.vue', () => {
   let well, wrapper, props, mockWells, mockRequests
 
   beforeEach(() => {
-    props = {
-      row: 'A',
-      column: '1',
-      cx: '60.440327',
-      cy: '75.818642',
-      rx: '10.906492',
-      ry: '11.032985',
-      wellId: '1',
-    }
-
-    mockWells = [
-      {
-        attributes: {
-          position: 'A1',
-        },
-        id: '1',
-        relationships: {
-          requests: {
-            data: [
-              {
-                type: 'requests',
-                id: '1',
-              },
-            ],
-          },
-        },
-        type: 'wells',
-      },
-      {
-        attributes: {
-          position: 'A2',
-        },
-        id: '2',
-        type: 'wells',
-      },
-    ]
     mockRequests = [
       {
         attributes: {
@@ -54,7 +18,16 @@ describe('Well.vue', () => {
       },
     ]
 
-    store.commit('traction/pacbio/poolCreate/populateWells', mockWells)
+    props = {
+      row: 'A',
+      column: '1',
+      cx: '60.440327',
+      cy: '75.818642',
+      rx: '10.906492',
+      ry: '11.032985',
+      requests: ['1'],
+    }
+
     store.commit('traction/pacbio/poolCreate/populateRequests', mockRequests)
 
     wrapper = mount(Well, {
@@ -90,8 +63,8 @@ describe('Well.vue', () => {
       expect(well.ry).toEqual(props.ry)
     })
 
-    it('will have a wellId', () => {
-      expect(well.wellId).toEqual(props.wellId)
+    it('will have requests', () => {
+      expect(well.requests).toEqual(props.requests)
     })
   })
 
@@ -111,7 +84,7 @@ describe('Well.vue', () => {
     })
 
     it('will be empty when the well does not have a request', () => {
-      props['wellId'] = '2'
+      props['requests'] = []
 
       wrapper = mount(Well, {
         propsData: props,

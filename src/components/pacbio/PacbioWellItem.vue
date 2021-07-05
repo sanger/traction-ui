@@ -32,10 +32,10 @@ export default {
       type: String,
       default: '',
     },
-    wellId: {
-      type: String,
+    requests: {
+      type: Array,
       default() {
-        return ''
+        return []
       },
     },
   },
@@ -44,10 +44,9 @@ export default {
       return this.getRequest ? 'filled' : 'empty'
     },
     getRequest() {
-      if (this.wellId) {
-        return this.$store.getters['traction/pacbio/poolCreate/wellRequest'](this.wellId)
-      }
-      return ''
+      return this.requests
+        ? this.$store.getters['traction/pacbio/poolCreate/requestList'](this.requests)[0]
+        : ''
     },
   },
 }

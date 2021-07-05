@@ -10,8 +10,6 @@ describe('getters.js', () => {
     selectedPlates,
     selectedRequests,
     tagList,
-    plateWells,
-    wellRequest,
     wellList,
     requestList,
   } = getters
@@ -147,70 +145,6 @@ describe('getters.js', () => {
       state.resources.requests = requests
       const ids = ['1', '2', '3']
       expect(requestList(state)(ids).length).toEqual(ids.length)
-    })
-  })
-
-  describe('plateWells', () => {
-    const wells = {
-      '1': {
-        position: 'A1',
-        id: '1',
-        type: 'wells',
-      },
-    }
-
-    const plates = {
-      '1': {
-        barcode: 'DN1',
-        id: '1',
-        type: 'plates',
-        wells: ['1'],
-      },
-    }
-
-    it('returns all wells associated in plate', () => {
-      state.resources.plates = plates
-      state.resources.wells = wells
-      expect(plateWells(state)('1')).toEqual([wells[1]])
-    })
-  })
-
-  describe('wellRequest', () => {
-    const wells = {
-      '1': {
-        position: 'A1',
-        id: '1',
-        requests: ['1'],
-        type: 'wells',
-      },
-      '2': {
-        position: 'A2',
-        id: '2',
-        type: 'wells',
-      },
-    }
-
-    const requests = {
-      '1': {
-        sample_name: 'Sample1',
-        cost_code: '12345',
-        source_identifier: 'DN1:A1',
-        external_study_id: '1',
-        id: '1',
-        type: 'requests',
-      },
-    }
-
-    it('returns the request associated with the well', () => {
-      state.resources.wells = wells
-      state.resources.requests = requests
-      expect(wellRequest(state)('1')).toEqual(requests[1])
-    })
-
-    it('returns nothing if no requests are associated with the well', () => {
-      state.resources.wells = wells
-      state.resources.requests = requests
-      expect(wellRequest(state)('2')).toEqual()
     })
   })
 })

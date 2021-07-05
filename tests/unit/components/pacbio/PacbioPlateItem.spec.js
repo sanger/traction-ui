@@ -42,11 +42,26 @@ describe('Plate.vue', () => {
     expect(plate.id).toBeDefined()
   })
 
-  describe.skip('methods', () => {
+  it('will have a plate map', () => {
+    expect(plate.plateMap).toBeDefined()
+  })
+
+  it('will have some well data', () => {
+    expect(plate.wellData).toEqual([wells[1], wells[2], wells[3]])
+  })
+
+  describe('methods', () => {
     describe('#getWellAt', () => {
-      it('gets the well id at the given position ', () => {
-        let expected = wells.find((w) => w.attributes.position == 'A1').id
-        expect(plate.getWellAt('A1')).toEqual(expected)
+      it('merges mapWell and well at the given position ', () => {
+        let mapWell = plate.plateMap.wells['A1']
+        let well = plate.wellData.find((w) => w.position == 'A1')
+        let expected = { ...mapWell, ...well }
+        expect(plate.getWellAt(mapWell, 'A1')).toEqual(expected)
+      })
+
+      it('returns just the mapWell if no well has the positiion', () => {
+        let mapWell = plate.plateMap.wells['A10']
+        expect(plate.getWellAt(mapWell, 'A10')).toEqual(mapWell)
       })
     })
   })

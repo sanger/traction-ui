@@ -1,5 +1,6 @@
 <template>
-  <b-form @submit="handleSumbit()">
+  <b-form @submit.prevent="handleSubmit()">
+    <Alert ref="alert"></Alert>
     <b-form-input
       v-model="enteredLabware"
       data-input="labware-find"
@@ -22,11 +23,15 @@
 
 <script>
 import Helper from '@/mixins/Helper'
+import Alert from '@/components/Alert'
 import { createNamespacedHelpers } from 'vuex'
 const { mapMutations } = createNamespacedHelpers('traction/pacbio/poolCreate')
 
 export default {
   name: 'PacbioLabwareFind',
+  components: {
+    Alert,
+  },
   mixins: [Helper],
   data() {
     return {
@@ -42,9 +47,14 @@ export default {
     },
   },
   methods: {
-    handleSumbit() {
+    handleSubmit() {
       let labware = this.labList.find((labware) => labware.barcode === this.enteredLabware)
-      labware ? this.setSelected(labware) : console.log('Emits alert?')
+      labware
+        ? this.setSelected(labware)
+        : this.showAlert(
+            'Unable to find a plate with the barcode: ' + this.enteredLabware,
+            'danger',
+          )
       this.enteredLabware = ''
     },
     setSelected(labware) {
