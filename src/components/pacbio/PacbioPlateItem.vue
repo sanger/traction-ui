@@ -11,7 +11,6 @@
 <script>
 import Plate96SVG from '@/components/svg/Plate96SVG'
 import Well from '@/components/pacbio/PacbioWellItem'
-import PlateMap from '@/config/PlateMap'
 
 export default {
   name: 'Plate',
@@ -39,15 +38,18 @@ export default {
       },
     },
   },
+  data() {
+    return {
+      wellData: [],
+    }
+  },
   computed: {
     plateMap() {
-      return PlateMap
+      return this.$store.getters['plateMap']
     },
   },
   mounted() {
-    // get the plateMap from the store using a getter
     // get the wells for the plate using wellList getter
-    // this.wells = this.$store.getters['traction/pacbio/poolCreate/plateWells'](this.plateId)
   },
   methods: {
     // this should be pretty much the same. Only difference is we will be using the wells from the store

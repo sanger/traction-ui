@@ -1,4 +1,5 @@
 import Store from '@/store/index'
+import PlateMap from '@/config/PlateMap'
 
 describe('index', () => {
   describe('state', () => {
@@ -33,6 +34,10 @@ describe('index', () => {
 
     it('printers', () => {
       expect(Store.getters.printers).toBeDefined()
+    })
+
+    it('PlateMap', () => {
+      expect(Store.getters.plateMap).toEqual(PlateMap)
     })
   })
 })

@@ -42,6 +42,15 @@ describe('Plate.vue', () => {
     expect(plate.id).toBeDefined()
   })
 
+  it('will have a plate map', () => {
+    expect(plate.plateMap).toBeDefined()
+  })
+
+  it.skip('will have some well data', () => {
+    // well data should be keys 1,2 and 3 from wells
+    expect(plate.wellData).toEqual([])
+  })
+
   describe.skip('methods', () => {
     describe('#getWellAt', () => {
       it('gets the well id at the given position ', () => {

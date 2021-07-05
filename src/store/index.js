@@ -19,6 +19,7 @@ export default new Vuex.Store({
   getters: {
     api: (state) => state.api,
     printers: (state) => state.printers,
+    plateMap: (state) => state.plateMap,
   },
   modules: {
     traction,
