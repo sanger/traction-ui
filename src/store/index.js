@@ -13,7 +13,7 @@ export default new Vuex.Store({
   state: {
     api: build({ config: Api.Config, environment: process.env }),
     printers: PrinterList,
-    plateMap: PlateMap
+    plateMap: PlateMap,
   },
   mutations: {},
   getters: {
