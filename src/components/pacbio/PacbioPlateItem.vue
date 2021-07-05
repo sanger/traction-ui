@@ -2,12 +2,7 @@
   <div>
     <Plate96SVG v-if="wells" ref="plate96Svg" height="75%" width="75%">
       <!-- should be v-bind(getWellAt(well) which should return the well and well from plate map combined ) -->
-      <Well
-        v-for="(well, position) in plateMap.wells"
-        :key="position"
-        ref="well"
-        v-bind="well"
-      >
+      <Well v-for="(well, position) in plateMap.wells" :key="position" ref="well" v-bind="well">
       </Well>
     </Plate96SVG>
   </div>
@@ -33,7 +28,7 @@ export default {
     },
     barcode: {
       type: String,
-       default() {
+      default() {
         return ''
       },
     },
@@ -41,8 +36,8 @@ export default {
       type: Array,
       default() {
         return []
-      }
-    }
+      },
+    },
   },
   computed: {
     plateMap() {

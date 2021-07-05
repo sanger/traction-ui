@@ -1,13 +1,13 @@
 import Plate from '@/components/pacbio/PacbioPlateItem'
-import { localVue, mount, Data, store } from 'testHelper'
+import { localVue, mount, store } from 'testHelper'
 
 const plates = {
   '1': {
     barcode: 'DN1',
     id: '1',
     type: 'plates',
-    wells: ["1", "2", "3"],
-  }
+    wells: ['1', '2', '3'],
+  },
 }
 
 const wells = {
@@ -24,7 +24,7 @@ describe('Plate.vue', () => {
   beforeEach(() => {
     store.state.traction.pacbio.poolCreate.resources.plates = plates
     store.state.traction.pacbio.poolCreate.resources.wells = wells
-   
+
     wrapper = mount(Plate, {
       localVue,
       propsData: { ...plates['1'] },
@@ -45,7 +45,7 @@ describe('Plate.vue', () => {
   describe.skip('methods', () => {
     describe('#getWellAt', () => {
       it('gets the well id at the given position ', () => {
-        let expected = mockWells.find((w) => w.attributes.position == 'A1').id
+        let expected = wells.find((w) => w.attributes.position == 'A1').id
         expect(plate.getWellAt('A1')).toEqual(expected)
       })
     })
