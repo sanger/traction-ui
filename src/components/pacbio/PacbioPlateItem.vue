@@ -16,7 +16,7 @@
 <script>
 import Plate96SVG from '@/components/svg/Plate96SVG'
 import PlateMap from '@/config/PlateMap'
-import Well from '@/components/pacbio/PacbioSelectedWellItem'
+import Well from '@/components/pacbio/PacbioWellItem'
 
 export default {
   name: 'Plate',

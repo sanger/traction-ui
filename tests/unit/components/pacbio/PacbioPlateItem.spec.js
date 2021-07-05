@@ -1,4 +1,4 @@
-import Plate from '@/components/pacbio/PacbioSelectedPlateItem'
+import Plate from '@/components/pacbio/PacbioPlateItem'
 import PlateMap from '@/config/PlateMap'
 import Response from '@/api/Response'
 import { localVue, mount, Data, store } from 'testHelper'

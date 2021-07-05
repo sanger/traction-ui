@@ -1,4 +1,4 @@
-import Well from '@/components/pacbio/PacbioSelectedWellItem'
+import Well from '@/components/pacbio/PacbioWellItem'
 import { mount, store } from 'testHelper'
 
 describe('Well.vue', () => {

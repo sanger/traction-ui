@@ -20,7 +20,7 @@
 
 <script>
 import Helper from '@/mixins/Helper'
-import Plate from '@/components/pacbio/PacbioSelectedPlateItem'
+import Plate from '@/components/pacbio/PacbioPlateItem'
 import { createNamespacedHelpers } from 'vuex'
 const { mapGetters, mapMutations } = createNamespacedHelpers('traction/pacbio/poolCreate')
 
