@@ -9,7 +9,6 @@ describe('mutations.js', () => {
     selectPlates,
     selectTagSet,
     selectRequest,
-    selectRequests,
     populatePlates,
     populateWells,
     populateRequests,
@@ -83,24 +82,50 @@ describe('mutations.js', () => {
     })
   })
   describe('selectRequest', () => {
-    it('updates the state', () => {
+    it('sets a request as selected by default', () => {
       // mock state
-      const state = defaultState()
+      const defaultStateObject = defaultState()
+      const state = {
+        ...defaultStateObject,
+        selected: {
+          ...defaultStateObject.selected,
+          requests: {
+            _2: { id: '2', selected: true },
+          },
+        },
+      }
       // apply mutation
-      selectRequest(state, {})
-      // assert result
-      // expect(state, value).toEqual(new_value)
+      selectRequest(state, { id: '1' })
+      // We expect the request to be recorded in the selected requests it should:
+      // - Prefix the key with an _ to maintain insert order
+      // - Not disrupt other requests in the store
+      expect(state.selected.requests).toEqual({
+        _2: { id: '2', selected: true },
+        _1: { id: '1', selected: true },
+      })
     })
-  })
 
-  describe('selectRequests', () => {
-    it('updates the state', () => {
+    it('can deselect a request', () => {
       // mock state
-      const state = defaultState()
+      const defaultStateObject = defaultState()
+      const state = {
+        ...defaultStateObject,
+        selected: {
+          ...defaultStateObject.selected,
+          requests: {
+            _2: { id: '2', selected: true },
+            _1: { id: '1', selected: true },
+          },
+        },
+      }
       // apply mutation
-      selectRequests(state, {})
-      // assert result
-      // expect(state, value).toEqual(new_value)
+      selectRequest(state, { id: '1', selected: false })
+      // We expect the request to be recorded in the selected requests it should:
+      // - Prefix the key with an _ to maintain insert order
+      // - Not disrupt other equests in the store
+      expect(state.selected.requests).toEqual({
+        _2: { id: '2', selected: true },
+      })
     })
   })
 

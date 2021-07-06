@@ -1,5 +1,7 @@
 import getters from '@/store/traction/pacbio/poolCreate/getters'
 import defaultState from '@/store/traction/pacbio/poolCreate/state'
+import { Data } from 'testHelper'
+import { dataToObjectById } from '@/api/JsonApi'
 
 describe('getters.js', () => {
   const state = defaultState()
@@ -101,8 +103,29 @@ describe('getters.js', () => {
   })
 
   describe('selectedRequests', () => {
-    it('returns what it does', () => {
-      expect(selectedRequests(state)).toEqual(undefined)
+    const defaultStateObject = defaultState()
+    const requestResources = Data.PacbioPlatesRequest.data.included.slice(4, 8)
+    const requests = dataToObjectById({ data: requestResources, includeRelationships: false })
+
+    // When selecting a request with append the id with an underscore. This ensures
+    // keys are maintained in insertion order, not numeric order. This allow our requests
+    // to maintain the order in which they were selected
+    const selected = {
+      _136: { id: '136', selected: true }, // A selected request
+      _40: { id: '40', selected: true }, // A selected request
+    }
+
+    const state = {
+      ...defaultStateObject,
+      resources: { ...defaultStateObject.resources, requests },
+      selected: { ...defaultStateObject.selected, requests: selected },
+    }
+
+    it('returns an array of request resources that have been selected', () => {
+      expect(selectedRequests(state)).toEqual([
+        { ...requests['136'], selected: true },
+        { ...requests['40'], selected: true },
+      ])
     })
   })
 

@@ -33,6 +33,7 @@ export default {
   selectedTagSet: (state) => {
     return state.selected.tagSet
   },
+
   /**
    * Returns a list of selected plates
    * @param {Object} state The Vuex state object
@@ -40,14 +41,22 @@ export default {
   selectedPlates: (state) => {
     return Object.values(state.selected.plates)
   },
+
   /**
    * Returns a list of selected requests
+   *
+   * Note: Ordering depends on selectRequest prefixing ids with underscore, as javascript objects
+   * sort most keys in insertion order, but numeric keys in numeric order.
    * @param {Object} state The Vuex state object
+   * @return {Array} An array of selected requests in the order in which they were selected
    */
+  selectedRequests: ({ selected, resources }) => {
+    const requests = resources.requests
+    return Object.values(selected.requests).map((selectedRequest) => {
+      return { ...requests[selectedRequest.id], ...selectedRequest }
+    })
+  },
 
-  // TODO: add getter
-  // eslint-disable-next-line no-unused-vars
-  selectedRequests: (state) => {},
   /**
    * Returns a list of all fetched tagSet
    * @param {Object} state The Vuex state object
