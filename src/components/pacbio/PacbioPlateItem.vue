@@ -1,7 +1,14 @@
 <template>
   <div data-type="plate-item">
     <Plate96SVG v-if="wells" ref="plate96Svg" height="75%" width="75%">
-      <Well v-for="well in mappedWells" :key="well.position" ref="well" v-bind="well"> </Well>
+      <Well
+        v-for="well in mappedWells"
+        :key="well.position"
+        ref="well"
+        v-bind="well"
+        @click="clickWell(well.id)"
+      >
+      </Well>
     </Plate96SVG>
   </div>
 </template>
@@ -58,6 +65,9 @@ export default {
     getWellAt(mapWell, position) {
       let well = this.wellData.find((well) => well.position == position)
       return well ? { ...mapWell, ...well } : mapWell
+    },
+    clickWell(id) {
+      this.$emit('clickWell', id)
     },
   },
 }
