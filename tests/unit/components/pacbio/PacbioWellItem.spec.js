@@ -99,4 +99,13 @@ describe('Well.vue', () => {
       expect(title.text()).toEqual(expected)
     })
   })
+
+  describe('@click', () => {
+    it('emits a click event', async () => {
+      const ellipse = wrapper.find('ellipse')
+      await ellipse.trigger('click')
+      expect(wrapper.emitted().click).toBeTruthy()
+      console.log(wrapper.emitted().click)
+    })
+  })
 })

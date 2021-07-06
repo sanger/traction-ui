@@ -1,5 +1,5 @@
 <template>
-  <ellipse :class="checkRequest" :cx="cx" :cy="cy" :rx="rx" :ry="ry">
+  <ellipse :class="checkRequest" :cx="cx" :cy="cy" :rx="rx" :ry="ry" @click="click">
     <title v-if="getRequest" v-text="getRequest.sample_name"></title>
   </ellipse>
 </template>
@@ -82,6 +82,11 @@ export default {
       return this.requests
         ? this.$store.getters['traction/pacbio/poolCreate/requestList'](this.requests)[0]
         : ''
+    },
+  },
+  methods: {
+    click() {
+      this.$emit('click')
     },
   },
 }
