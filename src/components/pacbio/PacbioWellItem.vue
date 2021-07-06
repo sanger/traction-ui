@@ -8,30 +8,65 @@
 export default {
   name: 'Well',
   props: {
+    /**
+     * The name of the row with which the well is associated
+     * @example 'A'
+     */
     row: {
       type: String,
       default: '',
     },
+    /**
+     * The name of the column with which the well is associated
+     * @example '1'
+     */
     column: {
       type: String,
       default: '',
     },
+    /**
+     * The x-coordinate of the ellipse used to render the well. These values
+     * are usually pre-caluated, and are extracted from '@/config/PlateMap'
+     * by the plate SVG element
+     * @example 60.440327
+     */
     cx: {
       type: String,
       default: '',
     },
+    /**
+     * The x-coordinate of the ellipse used to render the well. These values
+     * are usually pre-caluated, and are extracted from '@/config/PlateMap'
+     * by the plate SVG element
+     * @example 75.818642
+     */
     cy: {
       type: String,
       default: '',
     },
+    /**
+     * The x-radius of the ellipse used to render the well. These values
+     * are usually pre-caluated, and are extracted from '@/config/PlateMap'
+     * by the plate SVG element
+     * @example 10.906492
+     */
     rx: {
       type: String,
       default: '',
     },
+    /**
+     * The y-radius of the ellipse used to render the well. These values
+     * are usually pre-caluated, and are extracted from '@/config/PlateMap'
+     * by the plate SVG element
+     * @example 11.032985
+     */
     ry: {
       type: String,
       default: '',
     },
+    /**
+     * An array of requests associated with the well
+     */
     requests: {
       type: Array,
       default() {
