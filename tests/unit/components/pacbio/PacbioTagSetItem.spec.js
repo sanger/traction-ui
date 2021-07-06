@@ -32,7 +32,7 @@ describe('PacbioTagSetItem', () => {
 
   describe('when there is a selected tag list', () => {
     beforeEach(() => {
-      store.state.traction.pacbio.poolCreate.selected.tagSet = tagSets['1']
+      store.commit('traction/pacbio/poolCreate/selectTagSet', { id: '1' })
 
       wrapper = mount(PacbioTagSetItem, {
         localVue,
@@ -41,7 +41,18 @@ describe('PacbioTagSetItem', () => {
     })
 
     it('has the selected tag set', () => {
-      expect(wrapper.vm.tagSet).toEqual(tagSets['1'])
+      const {
+        state: {
+          traction: {
+            pacbio: {
+              poolCreate: {
+                selected: { tagSet },
+              },
+            },
+          },
+        },
+      } = store
+      expect(wrapper.vm.tagSet).toEqual(tagSet)
     })
 
     it('shows the tag set name', () => {

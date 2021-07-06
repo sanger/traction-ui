@@ -5,7 +5,7 @@
     </div>
     <div v-if="!isEmpty" data-type="tag-set-item" class="wrapper flex-wrap">
       <div
-        v-for="tag in tags"
+        v-for="tag in tagSet.tags"
         :key="tag.id"
         data-attribute="group-id"
         class="border rounded"
@@ -31,9 +31,6 @@ export default {
     },
     tagSet() {
       return this.$store.getters['traction/pacbio/poolCreate/selectedTagSet']
-    },
-    tags() {
-      return this.$store.getters['traction/pacbio/poolCreate/tagList'](this.tagSet.tags)
     },
     tagSetName() {
       return this.tagSet.name || 'No tag set selected'

@@ -32,7 +32,7 @@ describe('PacbioTagSetList', () => {
       // bizarrely if you try to select the first option it returns null
       await options.at(1).setSelected()
       expect(wrapper.vm.selected).toEqual('1')
-      expect(store.state.traction.pacbio.poolCreate.selected.tagSet).toEqual(tagSets['1'])
+      expect(store.state.traction.pacbio.poolCreate.selected.tagSet.id).toEqual(tagSets['1'].id)
     })
   })
 

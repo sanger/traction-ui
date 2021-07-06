@@ -31,7 +31,9 @@ export default {
    * @param {String} id The id of the plate
    */
   selectTagSet: (state, { id }) => {
-    state.selected.tagSet = state.resources.tagSets[id]
+    const tagSet = state.resources.tagSets[id]
+    const tags = (tagSet.tags || []).map((tag) => state.resources.tags[tag])
+    state.selected.tagSet = { ...tagSet, tags }
   },
   /**
    * Flags request with `id` as selected. (Or unselected if selected is false)
