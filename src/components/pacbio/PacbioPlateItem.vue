@@ -44,7 +44,6 @@ export default {
   },
   data() {
     return {
-      plateMap: {},
       wellData: [],
     }
   },
@@ -54,10 +53,11 @@ export default {
         return this.getWellAt(mapWell, position)
       })
     },
-    plateMap() { return this.$store.getters.plateMap }
+    plateMap() {
+      return this.$store.getters.plateMap
+    },
   },
   mounted() {
-    this.plateMap = this.$store.getters['plateMap']
     this.wellData = this.$store.getters['traction/pacbio/poolCreate/wellList'](this.wells)
   },
   methods: {
