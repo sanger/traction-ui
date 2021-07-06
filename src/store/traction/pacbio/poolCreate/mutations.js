@@ -36,20 +36,16 @@ export default {
   /**
    * Flags request with `id` as selected. (Or unselected if selected is false)
    * @param {Object} state The Vuex state object
-   * @param {String} id The id of the plate
+   * @param {String} id The id of the request
+   * @param {Boolean} selected Set to false to de-select the request. [Optional] true by default
    */
-  // TODO: add mutation
-  // eslint-disable-next-line no-unused-vars
-  selectRequest: (state, { id }) => {},
-  /**
-   * Flags requests in the Array as selected. (Or unselected if selected is false)
-   * @param {Object} state The Vuex state object
-   * @param {Array.<{id: String, selected: Boolean}>} requests An array of plate id objects to be selected
-   * @param {Boolean} selected Whether the plate is selected (defaults to true)
-   */
-  // TODO: add mutation
-  // eslint-disable-next-line no-unused-vars
-  selectRequests: (state, requests) => {},
+  selectRequest: ({ selected: { requests } }, { id, selected = true }) => {
+    if (selected) {
+      Vue.set(requests, `_${id}`, { id: id, selected: true })
+    } else {
+      Vue.delete(requests, `_${id}`)
+    }
+  },
 
   /**
    * Populated with resources via APi calls from the actions
