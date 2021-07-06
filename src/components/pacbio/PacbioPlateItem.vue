@@ -1,12 +1,11 @@
 <template>
   <div data-type="plate-item">
     <Plate96SVG v-if="wells" ref="plate96Svg" height="75%" width="75%">
-      <!-- should be v-bind(getWellAt(well) which should return the well and well from plate map combined ) -->
       <Well
-        v-for="(well, position) in plateMap.wells"
-        :key="position"
+        v-for="well in mappedWells"
+        :key="well.position"
         ref="well"
-        v-bind="getWellAt(well, position)"
+        v-bind="well"
       >
       </Well>
     </Plate96SVG>
@@ -48,6 +47,14 @@ export default {
       plateMap: {},
       wellData: [],
     }
+  },
+  computed: {
+    mappedWells() {
+      return Object.entries(this.plateMap.wells).map(([position, mapWell]) => {
+        return this.getWellAt(mapWell, position)
+      })
+    },
+    plateMap() { return this.$store.getters.plateMap }
   },
   mounted() {
     this.plateMap = this.$store.getters['plateMap']
