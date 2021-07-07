@@ -6,8 +6,11 @@ export default () => {
       // The main plate store. Represents the authoritative source of plate
       // information. Plates are indexed by id.
       plates: {},
-      // The main source of well information. Wells are indexed by id.
-      // Populated by the wells included in the request for plates.
+      /**
+       * The main source of well information. Wells are indexed by id.
+       * Populated by the wells included in the request for plates.
+       * @example {"id":"1","type":"wells","position":"A1","requests":["1"]}
+       */
       wells: {},
       // The main source of request information. Requests are indexed by id.
       // Populated by the requests included in the request for plates.
