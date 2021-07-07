@@ -24,7 +24,7 @@
           <PacbioLabwareSelectedList />
         </b-col>
         <b-col data-type="library-list" class="border">
-          Libraries
+          <PacbioPoolLibraryList />
         </b-col>
       </b-row>
     </b-container>
@@ -36,6 +36,7 @@ import PacbioTagSetList from '@/components/pacbio/PacbioTagSetList'
 import PacbioLabwareFind from '@/components/pacbio/PacbioLabwareFind'
 import PacbioLabwareSelectedList from '@/components/pacbio/PacbioLabwareSelectedList'
 import PacbioTagSetItem from '@/components/pacbio/PacbioTagSetItem'
+import PacbioPoolLibraryList from '@/components/pacbio/PacbioPoolLibraryList'
 
 export default {
   name: 'PacbioPoolCreate',
@@ -44,6 +45,7 @@ export default {
     PacbioLabwareFind,
     PacbioLabwareSelectedList,
     PacbioTagSetItem,
+    PacbioPoolLibraryList,
   },
   data() {
     return {}
