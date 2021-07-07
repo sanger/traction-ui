@@ -1,4 +1,20 @@
 // Getters are like computed properties
+
+/**
+ * Merge together two representations of the same object.
+ * The parent object will be mapped over, and equivalent items from the
+ * child object will be merged in. keyFuntion allwos for cases where there
+ * is not a 1:1 mapping between ids.
+ * @param {Object} parent the parent object, only resources in here will be present in the output.
+ * @param {Object} child resources with a matching id will be merged into the parent
+ * @param {fn} keyFunction convert id to the key format in the child
+ * @example mergeRepresentations(requests,selectedRequests, id => `_${id}`)
+ */
+const mergeRepresentations = (parent, child, keyFunction = (id) => id) => {
+  return Object.values(parent).map((parentRecord) => {
+    return { ...child[keyFunction(parentRecord.id)], ...parentRecord }
+  })
+}
 export default {
   /**
    * Returns a list of all fetched labware
@@ -51,10 +67,7 @@ export default {
    * @return {Array} An array of selected requests in the order in which they were selected
    */
   selectedRequests: ({ selected, resources }) => {
-    const requests = resources.requests
-    return Object.values(selected.requests).map((selectedRequest) => {
-      return { ...requests[selectedRequest.id], ...selectedRequest }
-    })
+    return mergeRepresentations(selected.requests, resources.requests)
   },
 
   /**
@@ -75,10 +88,13 @@ export default {
    */
   requestList: (state) => (ids) => {
     const requests = state.resources.requests
+    const selectedRequests = state.selected.requests
     if (ids) {
-      return ids.map((id) => requests[id])
+      return ids.map((id) => {
+        return { ...requests[id], ...selectedRequests[`_${id}`] }
+      })
     } else {
-      return requests.values
+      return mergeRepresentations(requests, selectedRequests, (id) => `_${id}`)
     }
   },
 }

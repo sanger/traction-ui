@@ -158,14 +158,27 @@ describe('getters.js', () => {
       '4': { id: '4', name: 'request4' },
       '5': { id: '5', name: 'request5' },
     }
+    const selectedRequests = {
+      _3: { id: '3', selected: true },
+      _4: { id: '4', selected: true },
+    }
+    const mergedRequests = [
+      { id: '1', name: 'request1' },
+      { id: '2', name: 'request2' },
+      { id: '3', name: 'request3', selected: true },
+      { id: '4', name: 'request4', selected: true },
+      { id: '5', name: 'request5' },
+    ]
 
     it('returns what it does', () => {
       state.resources.requests = requests
-      expect(requestList(state)()).toEqual(requests.values)
+      state.selected.requests = selectedRequests
+      expect(requestList(state)()).toEqual(mergedRequests)
     })
 
     it('when ids are included', () => {
       state.resources.requests = requests
+      state.selected.requests = selectedRequests
       const ids = ['1', '2', '3']
       expect(requestList(state)(ids).length).toEqual(ids.length)
     })

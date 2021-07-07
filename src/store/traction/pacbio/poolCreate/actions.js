@@ -41,7 +41,7 @@ export default {
     const { requests } = state.resources.wells[well_id]
     const selectedRequests = state.selected.requests
     for (let id of requests) {
-      const { selected } = selectedRequests[id] || {}
+      const { selected } = selectedRequests[`_${id}`] || {}
       commit('selectRequest', { id, selected: !selected })
     }
   },

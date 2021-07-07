@@ -1,5 +1,5 @@
 <template>
-  <ellipse :class="checkRequest" :cx="cx" :cy="cy" :rx="rx" :ry="ry" @click="click">
+  <ellipse :class="[checkRequest, selected]" :cx="cx" :cy="cy" :rx="rx" :ry="ry" @click="click">
     <title v-if="getRequest" v-text="getRequest.sample_name"></title>
   </ellipse>
 </template>
@@ -65,7 +65,7 @@ export default {
       default: '',
     },
     /**
-     * An array of requests associated with the well
+     * An array of request ids associated with the well
      */
     requests: {
       type: Array,
@@ -77,6 +77,13 @@ export default {
   computed: {
     checkRequest() {
       return this.getRequest ? 'filled' : 'empty'
+    },
+    selected() {
+      if (this.getRequest) {
+        return this.getRequest.selected ? 'selected' : 'unselected'
+      } else {
+        return 'unselected'
+      }
     },
     getRequest() {
       return this.requests
@@ -99,5 +106,8 @@ ellipse {
 }
 .filled {
   fill: green;
+}
+.selected {
+  stroke: yellow;
 }
 </style>
