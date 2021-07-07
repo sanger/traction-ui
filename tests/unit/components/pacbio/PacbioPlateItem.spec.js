@@ -80,4 +80,13 @@ describe('Plate.vue', () => {
       expect(ellipses.length).toEqual(Object.keys(store.state.plateMap.wells).length)
     })
   })
+
+  describe('well@click', () => {
+    it('emits a clickWell event with the well id', async () => {
+      const well = wrapper.find('well-stub')
+      await well.vm.$emit('click')
+      expect(wrapper.emitted().clickWell.length).toBe(1)
+      expect(wrapper.emitted().clickWell[0]).toEqual(['1'])
+    })
+  })
 })
