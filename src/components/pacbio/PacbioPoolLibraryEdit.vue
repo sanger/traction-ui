@@ -46,14 +46,7 @@ export default {
   display: flex;
   padding: 5px;
 }
-.wrapper > div {
-  // padding: 5px;
-  // min-width: 100px;
-  // height: 50px;
-  // vertical-align: middle;
-}
-.custom-select,
-.sample-name {
+.custom-select, .sample-name {
   width: 50%;
 }
 .sample-name {
