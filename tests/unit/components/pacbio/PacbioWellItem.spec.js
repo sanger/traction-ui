@@ -105,7 +105,6 @@ describe('Well.vue', () => {
       const ellipse = wrapper.find('ellipse')
       await ellipse.trigger('click')
       expect(wrapper.emitted().click).toBeTruthy()
-      console.log(wrapper.emitted().click)
     })
   })
 })
