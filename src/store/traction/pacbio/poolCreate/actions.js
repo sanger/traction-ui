@@ -30,4 +30,19 @@ export default {
     /* We are currently only including tags. So this is really simple */
     commit('populateTags', included)
   },
+  /**
+   * Inverts the selected state of all requests associated with a
+   * well. We May need to iterate on this if we have multiple requests
+   * per well.
+   * @param state the vuex state object. Provides access to current state
+   * @param commit the vuex commit object. Provides access to mutations
+   */
+  selectWellRequests: ({ commit, state }, well_id) => {
+    const { requests } = state.resources.wells[well_id]
+    const selectedRequests = state.selected.requests
+    for (let id of requests) {
+      const { selected } = selectedRequests[id] || {}
+      commit('selectRequest', { id, selected: !selected })
+    }
+  },
 }
