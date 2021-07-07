@@ -1,8 +1,9 @@
 import { Data } from 'testHelper'
 import actions from '@/store/traction/pacbio/poolCreate/actions'
+import defaultState from '@/store/traction/pacbio/poolCreate/state'
 
 describe('actions.js', () => {
-  const { fetchPacbioPlates, fetchPacbioTagSets } = actions
+  const { fetchPacbioPlates, fetchPacbioTagSets, selectWellRequests } = actions
 
   it('fetchPacbioPlates', async () => {
     // mock commit
@@ -37,5 +38,53 @@ describe('actions.js', () => {
     // assert result
     expect(commit).toHaveBeenCalledWith('populateTagSets', Data.PacbioTagSets.data.data)
     expect(commit).toHaveBeenCalledWith('populateTags', Data.PacbioTagSets.data.included)
+  })
+
+  describe('selectWellRequests', () => {
+    it('selects requests if unselected', async () => {
+      // mock commit
+      const commit = jest.fn()
+      // mock dependencies
+      const defaultStateObject = defaultState()
+      const state = {
+        ...defaultStateObject,
+        resources: {
+          ...defaultStateObject.resources,
+          wells: {
+            1: { id: '1', type: 'wells', position: 'A1', requests: ['2'] },
+          },
+        },
+      }
+      // apply action
+      await selectWellRequests({ commit, state }, '1')
+      // assert result
+      expect(commit).toHaveBeenCalledWith('selectRequest', { id: '2', selected: true })
+    })
+
+    it('deselects requests if selected', async () => {
+      // mock commit
+      const commit = jest.fn()
+      // mock dependencies
+      const defaultStateObject = defaultState()
+      const state = {
+        ...defaultStateObject,
+        resources: {
+          ...defaultStateObject.resources,
+          wells: {
+            1: { id: '1', type: 'wells', position: 'A1', requests: ['2'] },
+          },
+        },
+        selected: {
+          ...defaultStateObject.selected,
+          requests: {
+            2: { id: '2', selected: true },
+          },
+        },
+      }
+      // apply action
+      await selectWellRequests({ commit, state }, '1')
+      // assert result
+      expect(commit).toHaveBeenCalledWith('selectRequest', { id: '2', selected: false })
+    })
   })
 })

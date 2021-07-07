@@ -11,7 +11,7 @@
           class="selected-list-item"
         >
           {{ plate.barcode }}
-          <Plate ref="plate" v-bind="plate"></Plate>
+          <Plate ref="plate" v-bind="plate" @clickWell="selectWellRequests"></Plate>
           <b-button id="unselect-btn" variant="danger" size="sm" @click="setSelected(plate)"
             >Deselect</b-button
           >
@@ -26,7 +26,9 @@
 import Helper from '@/mixins/Helper'
 import Plate from '@/components/pacbio/PacbioPlateItem'
 import { createNamespacedHelpers } from 'vuex'
-const { mapGetters, mapMutations } = createNamespacedHelpers('traction/pacbio/poolCreate')
+const { mapGetters, mapMutations, mapActions } = createNamespacedHelpers(
+  'traction/pacbio/poolCreate',
+)
 
 export default {
   name: 'PacbioLabwareSelectedList',
@@ -42,6 +44,7 @@ export default {
       this.selectPlate({ id: labware.id, selected: false })
     },
     ...mapMutations(['selectPlate']),
+    ...mapActions(['selectWellRequests']),
   },
 }
 </script>

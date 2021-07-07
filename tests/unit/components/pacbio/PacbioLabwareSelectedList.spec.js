@@ -3,21 +3,17 @@ import PacbioLabwareSelectedList from '@/components/pacbio/PacbioLabwareSelected
 import Response from '@/api/Response'
 
 describe('PacbioLabwareSelectedList', () => {
-  let wrapper, mockPlates, plateStub
+  let wrapper, mockPlates
 
   beforeEach(() => {
     mockPlates = new Response(Data.PacbioPlates)._body.data
     store.commit('traction/pacbio/poolCreate/populatePlates', mockPlates)
 
-    plateStub = {
-      template: '<div class="plate"></div>',
-    }
-
     wrapper = mount(PacbioLabwareSelectedList, {
       localVue,
       store,
       stubs: {
-        Plate: plateStub,
+        Plate: true,
       },
     })
   })
@@ -39,7 +35,7 @@ describe('PacbioLabwareSelectedList', () => {
 
     it('contains the selected plate', () => {
       expect(wrapper.find('.list-group-item').text()).toContain('DN1')
-      expect(wrapper.findAll('.plate').length).toEqual(1)
+      expect(wrapper.findAll('plate-stub').length).toEqual(1)
     })
 
     it('unselects a selected plate when unselect button is pressed', () => {
@@ -50,6 +46,22 @@ describe('PacbioLabwareSelectedList', () => {
         expect(wrapper.findAll('.plate').length).toEqual(0)
         expect(wrapper.findAll('.list-group-item').length).toEqual(1)
       })
+    })
+  })
+
+  describe('Plate@clickWell', () => {
+    beforeEach(() => {
+      let selectPlate = { id: '1', selected: true }
+      store.commit('traction/pacbio/poolCreate/selectPlate', selectPlate)
+    })
+
+    it('selects the requests associated with the well', async () => {
+      const dispatch = jest.fn()
+      store.dispatch = dispatch
+      const plate = wrapper.find('plate-stub')
+      await plate.vm.$emit('clickWell', '1')
+
+      expect(dispatch).toHaveBeenCalledWith('traction/pacbio/poolCreate/selectWellRequests', '1')
     })
   })
 })
