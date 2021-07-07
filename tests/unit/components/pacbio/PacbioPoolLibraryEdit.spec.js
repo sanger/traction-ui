@@ -3,25 +3,23 @@ import { mount, store, localVue } from 'testHelper'
 
 const request = {
   id: '1',
-  sample_name: "Sample1",
+  sample_name: 'Sample1',
 }
 
 const tagSet = {
   id: '1',
   name: 'TagSet1',
   tags: [
-    { id: '1', name: 'tag1'},
-    { id: '2', name: 'tag2'},
-    { id: '3', name: 'tag3'},
-  ]
+    { id: '1', name: 'tag1' },
+    { id: '2', name: 'tag2' },
+    { id: '3', name: 'tag3' },
+  ],
 }
 
 describe('PacbioPoolLibraryEdit.vue', () => {
-
   let wrapper
 
   beforeEach(() => {
-
     // TODO: This would probably better done using a separate component and an emit
     // but that is a bigger job
     store.state.traction.pacbio.poolCreate.selected.tagSet = tagSet
@@ -30,8 +28,8 @@ describe('PacbioPoolLibraryEdit.vue', () => {
       store,
       localVue,
       propsData: {
-        request
-      }
+        request,
+      },
     })
   })
 
@@ -44,7 +42,6 @@ describe('PacbioPoolLibraryEdit.vue', () => {
   })
 
   it('will have a list of tags', () => {
-    console.log(wrapper.vm.options)
     expect(wrapper.find('[data-type=tag-list]').findAll('option').length).toEqual(
       // will also include null value
       tagSet.tags.length + 1,
@@ -52,14 +49,10 @@ describe('PacbioPoolLibraryEdit.vue', () => {
   })
 
   describe('when the user selects a tag', () => {
-
-
-    it('will updated the tag_id', async () => {
+    it.only('will updated the tag_id', async () => {
       const options = wrapper.find('[data-type=tag-list]').findAll('option')
       await options.at(1).setSelected()
       expect(wrapper.vm.tag_id).toEqual('1')
     })
-
   })
-
 })
