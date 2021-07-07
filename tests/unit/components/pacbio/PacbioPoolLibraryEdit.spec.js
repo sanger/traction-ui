@@ -10,18 +10,18 @@ const tagSet = {
   id: '1',
   name: 'TagSet1',
   tags: [
-    { id: '1', name: 'tag1' },
-    { id: '2', name: 'tag2' },
-    { id: '3', name: 'tag3' },
+    { id: '1', group_id: 'tag1' },
+    { id: '2', group_id: 'tag1' },
+    { id: '3', group_id: 'tag1' },
   ],
 }
 
+// TODO: The tag list would probably better done using a separate component and an emit
+// but that is a bigger job
 describe('PacbioPoolLibraryEdit.vue', () => {
   let wrapper
 
   beforeEach(() => {
-    // TODO: This would probably better done using a separate component and an emit
-    // but that is a bigger job
     store.state.traction.pacbio.poolCreate.selected.tagSet = tagSet
 
     wrapper = mount(PacbioPoolLibraryEdit, {
@@ -48,8 +48,12 @@ describe('PacbioPoolLibraryEdit.vue', () => {
     )
   })
 
+  it('each tag option will have some text', () => {
+    expect(wrapper.vm.tagListOptions[1].text).not.toBeNull()
+  })
+
   describe('when the user selects a tag', () => {
-    it.only('will updated the tag_id', async () => {
+    it('will updated the tag_id', async () => {
       const options = wrapper.find('[data-type=tag-list]').findAll('option')
       await options.at(1).setSelected()
       expect(wrapper.vm.tag_id).toEqual('1')

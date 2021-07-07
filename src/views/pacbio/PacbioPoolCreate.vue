@@ -23,9 +23,7 @@
           Selected plates
           <PacbioLabwareSelectedList />
         </b-col>
-        <b-col data-type="library-list" class="border">
-          <PacbioPoolLibraryList />
-        </b-col>
+        <PacbioPoolLibraryList />
       </b-row>
     </b-container>
   </div>

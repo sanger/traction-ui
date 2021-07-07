@@ -1,11 +1,11 @@
 <template>
-  <div v-if="requests" data-type="pool-library-list">
+  <b-col v-if="requests" data-type="pool-library-list" class="border">
     <PacbioPoolLibraryEdit
       v-for="request in requests"
       :key="request.id"
       :request="request"
     ></PacbioPoolLibraryEdit>
-  </div>
+  </b-col>
 </template>
 
 <script>
