@@ -77,7 +77,7 @@ describe('actions.js', () => {
         selected: {
           ...defaultStateObject.selected,
           requests: {
-            2: { id: '2', selected: true },
+            _2: { id: '2', selected: true },
           },
         },
       }
