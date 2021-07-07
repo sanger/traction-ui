@@ -74,7 +74,7 @@ export default {
   },
 
   /**
-   * Returns a list of all fetched tagSet
+   * Returns a list of all fetched wells
    * @param {Object} state The Vuex state object
    */
   wellList: (state) => (ids) => {
@@ -86,7 +86,7 @@ export default {
     }
   },
   /**
-   * Returns a list of all fetched tagSet
+   * Returns a list of all fetched requests
    * @param {Object} state The Vuex state object
    */
   requestList: (state) => (ids) => {
