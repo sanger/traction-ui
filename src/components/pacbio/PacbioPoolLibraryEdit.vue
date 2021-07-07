@@ -46,7 +46,8 @@ export default {
   display: flex;
   padding: 5px;
 }
-.custom-select, .sample-name {
+.custom-select,
+.sample-name {
   width: 50%;
 }
 .sample-name {
