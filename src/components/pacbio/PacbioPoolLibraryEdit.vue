@@ -1,3 +1,4 @@
+
 <template>
   <div data-type="pool-library-edit" class="wrapper flex-wrap">
     <div data-attribute="sample-name" class="sample-name">
@@ -19,7 +20,7 @@ export default {
     request: {
       type: Object,
       default() {
-        return ''
+        return {}
       },
     },
   },

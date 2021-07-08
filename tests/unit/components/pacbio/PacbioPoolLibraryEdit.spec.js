@@ -41,6 +41,10 @@ describe('PacbioPoolLibraryEdit.vue', () => {
     expect(wrapper.find('[data-attribute=sample-name]').text()).toEqual('Sample1')
   })
 
+  it.skip('will have a source identifier', () => {
+    expect(wrapper.find('[data-attribute=source-identifier]').text()).toEqual('DN1:A1')
+  })
+
   it('will have a list of tags', () => {
     expect(wrapper.find('[data-type=tag-list]').findAll('option').length).toEqual(
       // will also include null value
