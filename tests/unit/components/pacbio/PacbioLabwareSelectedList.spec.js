@@ -6,11 +6,15 @@ describe('PacbioLabwareSelectedList', () => {
   let wrapper, mockPlates
 
   beforeEach(() => {
-    mockPlates = new Response(Data.PacbioPlates)._body.data
+    const responseBody = new Response(Data.PacbioPlatesRequest)._body
+    mockPlates = responseBody.data
+    const mockWells = responseBody.included.slice(0, 4)
     store.commit('traction/pacbio/poolCreate/populatePlates', mockPlates)
+    store.commit('traction/pacbio/poolCreate/populateWells', mockWells)
 
     wrapper = mount(PacbioLabwareSelectedList, {
       localVue,
+
       store,
       stubs: {
         Plate: true,
@@ -29,12 +33,12 @@ describe('PacbioLabwareSelectedList', () => {
 
   describe('Plate selection', () => {
     beforeEach(() => {
-      let selectPlate = { id: '1', selected: true }
+      let selectPlate = { id: '61', selected: true }
       store.commit('traction/pacbio/poolCreate/selectPlate', selectPlate)
     })
 
     it('contains the selected plate', () => {
-      expect(wrapper.find('.list-group-item').text()).toContain('DN1')
+      expect(wrapper.find('.list-group-item').text()).toContain('DN814327C')
       expect(wrapper.findAll('plate-stub').length).toEqual(1)
     })
 
@@ -51,7 +55,7 @@ describe('PacbioLabwareSelectedList', () => {
 
   describe('Plate@clickWell', () => {
     beforeEach(() => {
-      let selectPlate = { id: '1', selected: true }
+      let selectPlate = { id: '61', selected: true }
       store.commit('traction/pacbio/poolCreate/selectPlate', selectPlate)
     })
 

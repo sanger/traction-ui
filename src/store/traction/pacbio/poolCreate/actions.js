@@ -45,4 +45,17 @@ export default {
       commit('selectRequest', { id, selected: !selected })
     }
   },
+  /**
+   * When a plate is deselected, we need to also remove all its requests
+   */
+  deselectPlateAndContents: ({ commit, state }, plateId) => {
+    commit('selectPlate', { id: plateId, selected: false })
+    const { wells } = state.resources.plates[plateId]
+    for (let wellId of wells) {
+      const { requests } = state.resources.wells[wellId]
+      for (let requestId of requests) {
+        commit('selectRequest', { id: requestId, selected: false })
+      }
+    }
+  },
 }
