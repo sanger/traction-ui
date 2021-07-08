@@ -1,8 +1,10 @@
-
 <template>
   <div data-type="pool-library-edit" class="wrapper flex-wrap">
-    <div data-attribute="sample-name" class="sample-name">
+    <div data-attribute="request-sample-name">
       {{ request.sample_name }}
+    </div>
+    <div data-attribute="request-source-identifier">
+      {{ request.source_identifier }}
     </div>
     <b-form-select
       v-if="tagList.length > 0"
@@ -45,14 +47,18 @@ export default {
 <style scoped lang="scss">
 .wrapper {
   display: flex;
+  justify-content: space-evenly;
+  align-items: stretch;
   padding: 5px;
 }
-.custom-select,
-.sample-name {
-  width: 50%;
+.wrapper:not(:last-child) {
+  border-bottom: 1px dashed;
 }
-.sample-name {
+.wrapper > div {
   text-align: left;
+}
+.custom-select {
+  width: auto;
 }
 .col {
   padding-right: 0;

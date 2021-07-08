@@ -4,6 +4,7 @@ import { mount, store, localVue } from 'testHelper'
 const request = {
   id: '1',
   sample_name: 'Sample1',
+  source_identifier: 'DN1:A1',
 }
 
 const tagSet = {
@@ -38,11 +39,11 @@ describe('PacbioPoolLibraryEdit.vue', () => {
   })
 
   it('will have a sample name', () => {
-    expect(wrapper.find('[data-attribute=sample-name]').text()).toEqual('Sample1')
+    expect(wrapper.find('[data-attribute=request-sample-name]').text()).toEqual('Sample1')
   })
 
-  it.skip('will have a source identifier', () => {
-    expect(wrapper.find('[data-attribute=source-identifier]').text()).toEqual('DN1:A1')
+  it('will have a source identifier', () => {
+    expect(wrapper.find('[data-attribute=request-source-identifier]').text()).toEqual('DN1:A1')
   })
 
   it('will have a list of tags', () => {

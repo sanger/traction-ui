@@ -1,5 +1,6 @@
 <template>
   <b-col v-if="requests" data-type="pool-library-list" class="border">
+    <h3>Pooled Samples</h3>
     <PacbioPoolLibraryEdit
       v-for="request in requests"
       :key="request.id"
@@ -26,3 +27,11 @@ export default {
   },
 }
 </script>
+
+<style scoped lang="scss">
+h3 {
+  text-align: left;
+  border-bottom: 1px solid;
+  padding: 5px;
+}
+</style>
