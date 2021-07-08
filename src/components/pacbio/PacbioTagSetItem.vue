@@ -1,5 +1,5 @@
 <template>
-  <b-col class="border tag-set-item">
+  <b-col class="tag-set-item">
     <div data-attribute="tag-set-name" class="tag-set-name">
       {{ tagSetName }}
     </div>
