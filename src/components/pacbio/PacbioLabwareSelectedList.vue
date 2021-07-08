@@ -12,7 +12,11 @@
         >
           {{ plate.barcode }}
           <Plate ref="plate" v-bind="plate" @clickWell="selectWellRequests"></Plate>
-          <b-button id="unselect-btn" variant="danger" size="sm" @click="setSelected(plate)"
+          <b-button
+            id="unselect-btn"
+            variant="danger"
+            size="sm"
+            @click="deselectPlateAndContents(plate.id)"
             >Deselect</b-button
           >
         </b-list-group-item>
@@ -40,11 +44,8 @@ export default {
     ...mapGetters(['selectedPlates']),
   },
   methods: {
-    setSelected(labware) {
-      this.selectPlate({ id: labware.id, selected: false })
-    },
     ...mapMutations(['selectPlate']),
-    ...mapActions(['selectWellRequests']),
+    ...mapActions(['selectWellRequests', 'deselectPlateAndContents']),
   },
 }
 </script>
