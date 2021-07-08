@@ -1,6 +1,5 @@
 <template>
   <div>
-    Pool
     <b-container id="pool" fluid>
       <b-row>
         <b-col data-type="plate-find">
