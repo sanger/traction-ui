@@ -1,5 +1,6 @@
 <template>
   <b-form @submit.prevent="handleSubmit()">
+    <h3>Find plates</h3>
     <Alert ref="alert"></Alert>
     <b-form-input
       v-model="enteredLabware"
@@ -65,7 +66,8 @@ export default {
 }
 </script>
 
-<style>
+<style scoped lang="scss">
+@import 'src/styles/components.scss';
 .find-list-group {
   max-height: 150px;
   overflow: scroll;

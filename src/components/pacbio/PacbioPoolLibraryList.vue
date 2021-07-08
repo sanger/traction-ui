@@ -29,9 +29,5 @@ export default {
 </script>
 
 <style scoped lang="scss">
-h3 {
-  text-align: left;
-  border-bottom: 1px solid;
-  padding: 5px;
-}
+@import 'src/styles/components.scss';
 </style>

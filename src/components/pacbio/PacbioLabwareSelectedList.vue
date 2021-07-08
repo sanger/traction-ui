@@ -1,29 +1,32 @@
-<template>
-  <b-tabs content-class="mt-3" fill>
-    <b-tab title="Plates">
-      <b-list-group class="selected-list-group">
-        <b-list-group-item v-if="selectedPlates.length === 0">
-          No plates selected
-        </b-list-group-item>
-        <b-list-group-item
-          v-for="plate in selectedPlates"
-          :key="plate.id"
-          class="selected-list-item"
-        >
-          {{ plate.barcode }}
-          <Plate ref="plate" v-bind="plate" @clickWell="selectWellRequests"></Plate>
-          <b-button
-            id="unselect-btn"
-            variant="danger"
-            size="sm"
-            @click="deselectPlateAndContents(plate.id)"
-            >Deselect</b-button
+<template>  
+  <div>
+    <h3>Selected plates</h3>
+    <b-tabs content-class="mt-3" fill>
+      <b-tab title="Plates">
+        <b-list-group class="selected-list-group">
+          <b-list-group-item v-if="selectedPlates.length === 0">
+            No plates selected
+          </b-list-group-item>
+          <b-list-group-item
+            v-for="plate in selectedPlates"
+            :key="plate.id"
+            class="selected-list-item"
           >
-        </b-list-group-item>
-      </b-list-group>
-    </b-tab>
-    <b-tab title="Requests"> </b-tab>
-  </b-tabs>
+            {{ plate.barcode }}
+            <Plate ref="plate" v-bind="plate" @clickWell="selectWellRequests"></Plate>
+            <b-button
+              id="unselect-btn"
+              variant="danger"
+              size="sm"
+              @click="deselectPlateAndContents(plate.id)"
+              >Deselect</b-button
+            >
+          </b-list-group-item>
+        </b-list-group>
+      </b-tab>
+      <b-tab title="Requests"> </b-tab>
+    </b-tabs>
+  </div>
 </template>
 
 <script>
@@ -50,8 +53,10 @@ export default {
 }
 </script>
 
-<style>
+<style scoped lang="scss">
+@import 'src/styles/components.scss';
 .selected-list-group {
+
   overflow: scroll;
   max-height: 700px;
 }

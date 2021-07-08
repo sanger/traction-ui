@@ -1,5 +1,6 @@
 <template>
   <b-col class="tag-set-list">
+    <h3>Select tag set</h3>
     <b-form-select
       v-if="!isEmpty"
       v-model="selected"
@@ -45,6 +46,7 @@ export default {
 </script>
 
 <style scoped lang="scss">
+@import 'src/styles/components.scss';
 .tag-set-list {
   padding: 0;
 }

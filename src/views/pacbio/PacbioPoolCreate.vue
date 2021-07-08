@@ -2,9 +2,8 @@
   <div>
     Pool
     <b-container id="pool" fluid>
-      <b-row id="row1">
+      <b-row>
         <b-col data-type="plate-find" class="border">
-          Find plates
           <PacbioLabwareFind />
         </b-col>
         <b-col>
@@ -18,9 +17,8 @@
           </b-row>
         </b-col>
       </b-row>
-      <b-row id="row2">
+      <b-row>
         <b-col data-type="selected-plate-list" class="border">
-          Selected plates
           <PacbioLabwareSelectedList />
         </b-col>
         <PacbioPoolLibraryList />
@@ -56,12 +54,6 @@ export default {
 </script>
 
 <style scoped>
-#row1 {
-  min-height: 250px;
-}
-#row2 {
-  min-height: 750px;
-}
 .col {
   padding-right: 0;
 }

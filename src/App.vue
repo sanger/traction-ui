@@ -1,5 +1,5 @@
 <template>
-  <b-container id="app">
+  <b-container id="app" fluid>
     <br />
     <router-link to="/dashboard">
       <h1 id="traction-header">Traction</h1>
