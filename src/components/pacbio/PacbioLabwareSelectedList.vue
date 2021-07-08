@@ -1,4 +1,4 @@
-<template>  
+<template>
   <div>
     <h3>Selected plates</h3>
     <b-tabs content-class="mt-3" fill>
@@ -56,7 +56,6 @@ export default {
 <style scoped lang="scss">
 @import 'src/styles/components.scss';
 .selected-list-group {
-
   overflow: scroll;
   max-height: 700px;
 }

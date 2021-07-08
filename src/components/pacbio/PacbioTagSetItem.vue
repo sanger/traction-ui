@@ -1,7 +1,7 @@
 <template>
   <b-col class="tag-set-item">
     <div data-attribute="tag-set-name" class="tag-set-name">
-      {{ tagSetName }}
+      <h3>{{ tagSetName }}</h3>
     </div>
     <div v-if="!isEmpty" data-type="tag-set-item" class="wrapper flex-wrap">
       <div
@@ -50,6 +50,7 @@ export default {
 </script>
 
 <style scoped lang="scss">
+@import 'src/styles/components.scss';
 .wrapper {
   display: flex;
 }
