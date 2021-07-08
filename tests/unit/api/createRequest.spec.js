@@ -131,12 +131,8 @@ describe('createRequest', () => {
       expect(response).toEqual(mockResponse)
     })
 
-    describe.skip('update', () => {
+    describe.skip('update', () => {})
 
-    })
-
-    describe.skip('delete', () => {
-      
-    })
+    describe.skip('delete', () => {})
   })
 })
