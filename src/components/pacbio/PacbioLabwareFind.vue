@@ -14,7 +14,8 @@
         v-for="item in getFilteredList"
         :key="item.id"
         button
-        @click="setSelected(item)"
+        :active="item.selected"
+        @click="toggleSelected(item)"
       >
         Plate: {{ item.barcode }}
       </b-list-group-item>
@@ -26,7 +27,7 @@
 import Helper from '@/mixins/Helper'
 import Alert from '@/components/Alert'
 import { createNamespacedHelpers } from 'vuex'
-const { mapMutations } = createNamespacedHelpers('traction/pacbio/poolCreate')
+const { mapMutations, mapActions } = createNamespacedHelpers('traction/pacbio/poolCreate')
 
 export default {
   name: 'PacbioLabwareFind',
@@ -51,17 +52,22 @@ export default {
     handleSubmit() {
       let labware = this.labwareList.find((labware) => labware.barcode === this.enteredLabware)
       labware
-        ? this.setSelected(labware)
+        ? this.toggleSelected(labware)
         : this.showAlert(
             'Unable to find a plate with the barcode: ' + this.enteredLabware,
             'danger',
           )
       this.enteredLabware = ''
     },
-    setSelected(labware) {
-      this.selectPlate(labware)
+    toggleSelected({ id, selected }) {
+      if (selected) {
+        this.deselectPlateAndContents(id)
+      } else {
+        this.selectPlate({ id })
+      }
     },
     ...mapMutations(['selectPlate']),
+    ...mapActions(['deselectPlateAndContents']),
   },
 }
 </script>

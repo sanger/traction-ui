@@ -41,16 +41,6 @@ describe('PacbioLabwareSelectedList', () => {
       expect(wrapper.find('.list-group-item').text()).toContain('DN814327C')
       expect(wrapper.findAll('plate-stub').length).toEqual(1)
     })
-
-    it('unselects a selected plate when unselect button is pressed', () => {
-      let button = wrapper.find('#unselect-btn')
-      button.trigger('click')
-      wrapper.vm.$nextTick(() => {
-        expect(wrapper.find('.list-group-item').text()).toEqual('No plates selected')
-        expect(wrapper.findAll('.plate').length).toEqual(0)
-        expect(wrapper.findAll('.list-group-item').length).toEqual(1)
-      })
-    })
   })
 
   describe('Plate@clickWell', () => {

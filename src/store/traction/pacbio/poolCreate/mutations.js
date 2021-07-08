@@ -11,20 +11,11 @@ export default {
    */
   selectPlate: (state, { id, selected = true }) => {
     if (selected) {
-      Vue.set(state.selected.plates, id, state.resources.plates[id])
+      Vue.set(state.selected.plates, `_${id}`, { id: id, selected: true })
     } else {
-      Vue.delete(state.selected.plates, id)
+      Vue.delete(state.selected.plates, `_${id}`)
     }
   },
-  /**
-   * Flags plates in the array as selected. (Or unselected if selected is false)
-   * @param {Object} state The Vuex state object
-   * @param {Array.<{id: String, selected: Boolean}>} plates An array of plate id objects to be selected
-   * @param {Boolean} selected Whether the plate is selected (defaults to true)
-   */
-  // TODO: add mutation
-  // eslint-disable-next-line no-unused-vars
-  selectPlates: (state, plates) => {},
   /**
    * Flags tagSet with `id` as selected.
    * @param {Object} state The Vuex state object

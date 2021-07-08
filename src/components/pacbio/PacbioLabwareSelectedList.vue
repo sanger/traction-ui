@@ -14,13 +14,6 @@
           >
             {{ plate.barcode }}
             <Plate ref="plate" v-bind="plate" @clickWell="selectWellRequests"></Plate>
-            <b-button
-              id="unselect-btn"
-              variant="danger"
-              size="sm"
-              @click="deselectPlateAndContents(plate.id)"
-              >Deselect</b-button
-            >
           </b-list-group-item>
         </b-list-group>
       </b-tab>
@@ -48,7 +41,7 @@ export default {
   },
   methods: {
     ...mapMutations(['selectPlate']),
-    ...mapActions(['selectWellRequests', 'deselectPlateAndContents']),
+    ...mapActions(['selectWellRequests']),
   },
 }
 </script>

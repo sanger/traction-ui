@@ -52,7 +52,7 @@ export default {
     commit('selectPlate', { id: plateId, selected: false })
     const { wells } = state.resources.plates[plateId]
     for (let wellId of wells) {
-      const { requests } = state.resources.wells[wellId]
+      const { requests = [] } = state.resources.wells[wellId]
       for (let requestId of requests) {
         commit('selectRequest', { id: requestId, selected: false })
       }

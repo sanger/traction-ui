@@ -6,7 +6,6 @@ import { dataToObjectById } from '@/api/JsonApi'
 describe('mutations.js', () => {
   const {
     selectPlate,
-    selectPlates,
     selectTagSet,
     selectRequest,
     populatePlates,
@@ -17,24 +16,28 @@ describe('mutations.js', () => {
   } = mutations
 
   describe('selectPlate', () => {
-    it('updates the state', () => {
+    it('selects a plate by default', () => {
       // mock state
-      const state = defaultState()
+      const defaultStateObject = defaultState()
+      const state = {
+        ...defaultStateObject,
+        selected: {
+          ...defaultStateObject.selected,
+          plates: {
+            _2: { id: '2', selected: true },
+          },
+        },
+      }
       // apply mutation
-      selectPlate(state, {})
+      selectPlate(state, { id: '1' })
       // assert result
-      //expect(state, value).toEqual(new_value)
-    })
-  })
-
-  describe('selectPlates', () => {
-    it('updates the state', () => {
-      // mock state
-      const state = defaultState()
-      // apply mutation
-      selectPlates(state, {})
-      // assert result
-      //expect(state, value).toEqual(new_value)
+      // We expect the plate to be recorded in the selected plates it should:
+      // - Prefix the key with an _ to maintain insert order
+      // - Not disrupt other plates in the store
+      expect(state.selected.plates).toEqual({
+        _2: { id: '2', selected: true },
+        _1: { id: '1', selected: true },
+      })
     })
   })
 

@@ -17,7 +17,7 @@ describe('getters.js', () => {
   } = getters
 
   describe('labwareList', () => {
-    it('returns what it does', () => {
+    it('returns a list of labware resources', () => {
       const plates = {
         '1': {
           barcode: 'DN1',
@@ -32,8 +32,24 @@ describe('getters.js', () => {
           wells: [],
         },
       }
+      const expected = [
+        {
+          barcode: 'DN1',
+          id: '1',
+          type: 'plates',
+          wells: [],
+          selected: true,
+        },
+        {
+          barcode: 'DN2',
+          id: '2',
+          type: 'plates',
+          wells: [],
+        },
+      ]
       state.resources.plates = plates
-      expect(labwareList(state)).toEqual(Object.values(plates))
+      state.selected.plates = { _1: { id: '1', selected: true } }
+      expect(labwareList(state)).toEqual(expected)
     })
   })
 

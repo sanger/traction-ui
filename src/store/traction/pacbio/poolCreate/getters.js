@@ -15,13 +15,16 @@ const mergeRepresentations = (parent, child, keyFunction = (id) => id) => {
     return { ...child[keyFunction(parentRecord.id)], ...parentRecord }
   })
 }
+
+const prefixWithUnderscore = (id) => `_${id}`
+
 export default {
   /**
    * Returns a list of all fetched labware
    * @param {Object} state The Vuex state object
    */
-  labwareList: (state) => {
-    return Object.values(state.resources.plates)
+  labwareList: ({ selected, resources }) => {
+    return mergeRepresentations(resources.plates, selected.plates, prefixWithUnderscore)
   },
   /**
    * Returns a list of all fetched tagSet
@@ -54,8 +57,8 @@ export default {
    * Returns a list of selected plates
    * @param {Object} state The Vuex state object
    */
-  selectedPlates: (state) => {
-    return Object.values(state.selected.plates)
+  selectedPlates: ({ selected, resources }) => {
+    return mergeRepresentations(selected.plates, resources.plates)
   },
 
   /**
@@ -94,7 +97,7 @@ export default {
         return { ...requests[id], ...selectedRequests[`_${id}`] }
       })
     } else {
-      return mergeRepresentations(requests, selectedRequests, (id) => `_${id}`)
+      return mergeRepresentations(requests, selectedRequests, prefixWithUnderscore)
     }
   },
 }
