@@ -1,9 +1,9 @@
 <template>
   <b-container id="app" fluid>
     <br />
-    <router-link to="/dashboard">
-      <h1 id="traction-header">Traction</h1>
-    </router-link>
+    <b-navbar ref="navbar" toggleable="md" type="dark" variant="info">
+      <b-navbar-brand id="traction-header" to="/dashboard" >Traction</b-navbar-brand>
+    </b-navbar>
     <router-view />
     <InfoFooter></InfoFooter>
   </b-container>
@@ -25,7 +25,6 @@ export default {
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
   color: #2c3e50;
-  max-width: 80rem;
 }
 #nav {
   padding-bottom: 20px;
