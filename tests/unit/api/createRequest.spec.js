@@ -130,5 +130,13 @@ describe('createRequest', () => {
       expect(mockAxios.post).toBeCalledWith(request.resource, data)
       expect(response).toEqual(mockResponse)
     })
+
+    describe.skip('update', () => {
+
+    })
+
+    describe.skip('delete', () => {
+      
+    })
   })
 })
