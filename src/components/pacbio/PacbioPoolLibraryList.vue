@@ -1,5 +1,5 @@
 <template>
-  <b-col v-if="requests" data-type="pool-library-list" class="border">
+  <b-col v-if="requests" data-type="pool-library-list">
     <h3>Pooled Samples</h3>
     <PacbioPoolLibraryEdit
       v-for="request in requests"

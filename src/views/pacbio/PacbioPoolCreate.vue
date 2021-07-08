@@ -3,22 +3,24 @@
     Pool
     <b-container id="pool" fluid>
       <b-row>
-        <b-col data-type="plate-find" class="border">
+        <b-col data-type="plate-find">
           <PacbioLabwareFind />
         </b-col>
         <b-col>
           <b-row>
-            <b-col class="border tag-set-list">
+            <b-col class="tag-set-list">
               <PacbioTagSetList></PacbioTagSetList>
             </b-col>
           </b-row>
           <b-row>
-            <PacbioTagSetItem></PacbioTagSetItem>
+            <b-col>
+              <PacbioTagSetItem></PacbioTagSetItem>
+            </b-col>
           </b-row>
         </b-col>
       </b-row>
       <b-row>
-        <b-col data-type="selected-plate-list" class="border">
+        <b-col data-type="selected-plate-list">
           <PacbioLabwareSelectedList />
         </b-col>
         <PacbioPoolLibraryList />
@@ -53,8 +55,4 @@ export default {
 }
 </script>
 
-<style scoped>
-.col {
-  padding-right: 0;
-}
-</style>
+<style scoped></style>

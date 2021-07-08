@@ -47,7 +47,4 @@ export default {
 
 <style scoped lang="scss">
 @import 'src/styles/components.scss';
-.tag-set-list {
-  padding: 0;
-}
 </style>
