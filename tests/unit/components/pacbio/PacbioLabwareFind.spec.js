@@ -32,10 +32,10 @@ describe('PacbioLabwareFind', () => {
 
   describe('Handle submit', () => {
     it('handleSubmit calls mutation when enteredLabware is an existing plate barcode', () => {
-      wrapper.vm.setSelected = jest.fn()
+      wrapper.vm.toggleSelected = jest.fn()
       wrapper.setData({ enteredLabware: 'DN1' })
       wrapper.vm.handleSubmit()
-      expect(wrapper.vm.setSelected).toBeCalled()
+      expect(wrapper.vm.toggleSelected).toBeCalled()
     })
 
     it('handleSubmit calls mutation when enteredLabware is an existing plate barcode', () => {
