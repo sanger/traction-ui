@@ -1,4 +1,3 @@
-
 describe('Pacbio Pool Create', () => {
   it('Creates a pool successfully', () => {
     cy.intercept('/v1/pacbio/tag_sets?include=tags', {
@@ -24,12 +23,14 @@ describe('Pacbio Pool Create', () => {
 
     cy.get('[data-type=selected-plate-list]').within(() => {
       cy.get('[data-type=plate-item]').first()
-      cy.get('ellipse').first().click()
+      cy.get('ellipse')
+        .first()
+        .click()
     })
     cy.get('[data-type=pool-library-edit]').should('have.length', 1)
     // and samples that have failed qc should not be selectable
     // TODO: Is this brittle? Need to know the data.
-   
+
     // add the tags to the samples in the pool
     // add the template prep kit box barcode to all of the samples
     // Add the volume for each sample in the pool
