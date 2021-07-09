@@ -16,7 +16,19 @@
           </b-list-group-item>
         </b-list-group>
       </b-tab>
-      <b-tab title="Requests"> </b-tab>
+      <b-tab title="Requests">
+        <b-list-group class="selected-list-group">
+          <b-table
+            :items="selectedPlateRequests"
+            show-empty
+            small
+            :fields="requestFields"
+            :tbody-tr-class="rowClass"
+            empty-text="No plates selected"
+            @row-clicked="requestClicked"
+          ></b-table>
+        </b-list-group>
+      </b-tab>
     </b-tabs>
   </b-col>
 </template>
@@ -35,12 +47,40 @@ export default {
     Plate,
   },
   mixins: [Helper],
+  data() {
+    return {
+      requestFields: [
+        'source_identifier',
+        'sample_species',
+        'library_type',
+        'number_of_smrt_cells',
+        'estimate_of_gb_required',
+      ],
+    }
+  },
   computed: {
-    ...mapGetters(['selectedPlates']),
+    ...mapGetters(['selectedPlates', 'wellList', 'requestList']),
+    selectedPlateRequests() {
+      // Not really sure this belongs here, and I'd prefer to see this handled
+      // in the getters.
+      return this.selectedPlates.flatMap((plate) => {
+        return this.wellList(plate.wells).flatMap((well) => {
+          return this.requestList(well.requests || [])
+        })
+      })
+    },
   },
   methods: {
-    ...mapMutations(['selectPlate']),
+    ...mapMutations(['selectPlate', 'selectRequest']),
     ...mapActions(['selectWellRequests']),
+    requestClicked({ id, selected }) {
+      this.selectRequest({ id, selected: !selected })
+    },
+    rowClass(item) {
+      if (item && item.selected) {
+        return 'table-primary'
+      }
+    },
   },
 }
 </script>
