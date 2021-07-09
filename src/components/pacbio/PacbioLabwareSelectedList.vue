@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <b-col data-type="selected-plate-list">
     <h3>Selected plates</h3>
     <b-tabs content-class="mt-3" fill>
       <b-tab title="Plates">
@@ -19,7 +19,7 @@
       </b-tab>
       <b-tab title="Requests"> </b-tab>
     </b-tabs>
-  </div>
+  </b-col>
 </template>
 
 <script>

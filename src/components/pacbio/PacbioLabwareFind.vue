@@ -1,26 +1,28 @@
 <template>
-  <b-form @submit.prevent="handleSubmit()">
-    <h3>Find plates</h3>
-    <Alert ref="alert"></Alert>
-    <b-form-input
-      v-model="enteredLabware"
-      data-input="labware-find"
-      autocomplete="off"
-      placeholder="Search or scan for labware by barcode"
-    >
-    </b-form-input>
-    <b-list-group data-type="labware-list" class="find-list-group">
-      <b-list-group-item
-        v-for="item in getFilteredList"
-        :key="item.id"
-        button
-        :active="item.selected"
-        @click="toggleSelected(item)"
+  <b-col>
+    <b-form @submit.prevent="handleSubmit()">
+      <h3>Find plates</h3>
+      <Alert ref="alert"></Alert>
+      <b-form-input
+        v-model="enteredLabware"
+        data-input="labware-find"
+        autocomplete="off"
+        placeholder="Search or scan for labware by barcode"
       >
-        Plate: {{ item.barcode }}
-      </b-list-group-item>
-    </b-list-group>
-  </b-form>
+      </b-form-input>
+      <b-list-group data-type="labware-list" class="find-list-group">
+        <b-list-group-item
+          v-for="item in getFilteredList"
+          :key="item.id"
+          button
+          :active="item.selected"
+          @click="toggleSelected(item)"
+        >
+          Plate: {{ item.barcode }}
+        </b-list-group-item>
+      </b-list-group>
+    </b-form>
+  </b-col>
 </template>
 
 <script>

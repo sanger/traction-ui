@@ -57,6 +57,7 @@ export default {
 .wrapper > div {
   padding: 5px;
   min-width: 100px;
+  margin: 2px;
   height: 50px;
   vertical-align: middle;
 }
@@ -65,8 +66,5 @@ export default {
 }
 .tag-set-name {
   text-align: left;
-}
-.col {
-  padding-right: 0;
 }
 </style>

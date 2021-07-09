@@ -2,26 +2,18 @@
   <div>
     <b-container id="pool" fluid>
       <b-row>
-        <b-col data-type="plate-find">
-          <PacbioLabwareFind />
-        </b-col>
+        <PacbioLabwareFind />
         <b-col>
           <b-row>
-            <b-col class="tag-set-list">
-              <PacbioTagSetList></PacbioTagSetList>
-            </b-col>
+            <PacbioTagSetList></PacbioTagSetList>
           </b-row>
           <b-row>
-            <b-col>
-              <PacbioTagSetItem></PacbioTagSetItem>
-            </b-col>
+            <PacbioTagSetItem></PacbioTagSetItem>
           </b-row>
         </b-col>
       </b-row>
       <b-row>
-        <b-col data-type="selected-plate-list">
-          <PacbioLabwareSelectedList />
-        </b-col>
+        <PacbioLabwareSelectedList />
         <PacbioPoolLibraryList />
       </b-row>
     </b-container>
