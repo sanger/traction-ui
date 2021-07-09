@@ -15,8 +15,8 @@ const tagSet = {
 
 const tags = {
   1: { id: '1', group_id: 'tag1' },
-  2: { id: '2', group_id: 'tag1' },
-  3: { id: '3', group_id: 'tag1' },
+  2: { id: '2', group_id: 'tag2' },
+  3: { id: '3', group_id: 'tag3' },
 }
 
 // TODO: The tag list would probably better done using a separate component and an emit
@@ -38,7 +38,7 @@ describe('PacbioPoolLibraryEdit.vue', () => {
     })
   })
 
-  it('will have an id', () => {
+  it('will have a request', () => {
     expect(wrapper.vm.request).toEqual(request)
   })
 
@@ -66,6 +66,32 @@ describe('PacbioPoolLibraryEdit.vue', () => {
       const options = wrapper.find('[data-type=tag-list]').findAll('option')
       await options.at(1).setSelected()
       expect(wrapper.vm.tag_id).toEqual('1')
+    })
+  })
+
+  describe('input', () => {
+    it('template prep kit box barcode id', async () => {
+      const input = wrapper.find('[data-attribute=template-prep-kit-box-barcode]')
+      await input.setValue('017865101789500022821')
+      expect(wrapper.vm.template_prep_kit_box_barcode).toEqual('017865101789500022821')
+    })
+
+    it('volume', async () => {
+      const input = wrapper.find('[data-attribute=volume]')
+      await input.setValue('10.0')
+      expect(wrapper.vm.volume).toEqual('10.0')
+    })
+
+    it('concentration', async () => {
+      const input = wrapper.find('[data-attribute=concentration]')
+      await input.setValue('2.4')
+      expect(wrapper.vm.concentration).toEqual('2.4')
+    })
+
+    it('fragment size', async () => {
+      const input = wrapper.find('[data-attribute=fragment_size]')
+      await input.setValue('100')
+      expect(wrapper.vm.fragment_size).toEqual('100')
     })
   })
 })

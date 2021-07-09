@@ -12,6 +12,39 @@
       data-type="tag-list"
       :options="tagListOptions"
     ></b-form-select>
+    <b-form-input
+      v-model="template_prep_kit_box_barcode"
+      data-attribute="template-prep-kit-box-barcode"
+      :value="template_prep_kit_box_barcode"
+      placeholder="Template Prep Kit Box Barcode"
+      type="text"
+      title="Template Prep Kit Box Barcode"
+      class="template-prep-kit-box-barcode"
+    />
+    <b-form-input
+      v-model="volume"
+      data-attribute="volume"
+      :value="volume"
+      placeholder="Volume"
+      type="text"
+      title="Volume"
+    />
+    <b-form-input
+      v-model="concentration"
+      data-attribute="concentration"
+      :value="concentration"
+      placeholder="Concentration"
+      type="text"
+      title="Concentration"
+    />
+     <b-form-input
+      v-model="fragment_size"
+      data-attribute="fragment_size"
+      :value="fragment_size"
+      placeholder="Fragment Size"
+      type="text"
+      title="Fragment Size"
+    />
   </div>
 </template>
 
@@ -29,6 +62,10 @@ export default {
   data() {
     return {
       tag_id: null,
+      template_prep_kit_box_barcode: null,
+      volume: null,
+      concentration: null,
+      fragment_size: null
     }
   },
   computed: {
@@ -48,7 +85,6 @@ export default {
 .wrapper {
   display: flex;
   justify-content: space-evenly;
-  align-items: stretch;
   padding: 5px;
 }
 .wrapper:not(:last-child) {
@@ -59,7 +95,14 @@ export default {
 }
 .custom-select {
   width: auto;
+} 
+.form-control {
+  width: 100px;
 }
+.template-prep-kit-box-barcode {
+  width: 125px;
+}
+
 .col {
   padding-right: 0;
 }
