@@ -1,6 +1,6 @@
 <template>
   <div data-type="plate-item">
-    <Plate96SVG v-if="wells" ref="plate96Svg" height="75%" width="75%">
+    <Plate96SVG v-if="wells" ref="plate96Svg" >
       <Well
         v-for="well in mappedWells"
         :key="well.position"
