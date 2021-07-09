@@ -3,18 +3,18 @@
     <h3>Selected plates</h3>
     <b-tabs content-class="mt-3" fill>
       <b-tab title="Plates">
-        <b-list-group class="selected-list-group wrapper">
-          <b-list-group-item v-if="selectedPlates.length === 0">
+        <div class="wrapper">
+          <div v-if="selectedPlates.length === 0">
             No plates selected
-          </b-list-group-item>
-          <b-list-group-item
+          </div>
+          <div
             v-for="plate in selectedPlates"
             :key="plate.id"
           >
             {{ plate.barcode }}
             <Plate ref="plate" v-bind="plate" @clickWell="selectWellRequests"></Plate>
-          </b-list-group-item>
-        </b-list-group>
+          </div>
+        </div>
       </b-tab>
       <b-tab title="Requests">
         <b-list-group class="selected-list-group">
@@ -88,11 +88,11 @@ export default {
 <style scoped lang="scss">
 @import 'src/styles/components.scss';
 .wrapper {
-  display: flex;
-  flex-flow: row nowrap;
+  overflow: scroll;
+  display: flex; 
+  flex-wrap: wrap;
 }
-.list-group-item {
-  padding: 0;
-  border: none;
+.wrapper > div {
+  width: 50%;
 }
 </style>
