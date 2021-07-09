@@ -10,11 +10,13 @@ const request = {
 const tagSet = {
   id: '1',
   name: 'TagSet1',
-  tags: [
-    { id: '1', group_id: 'tag1' },
-    { id: '2', group_id: 'tag1' },
-    { id: '3', group_id: 'tag1' },
-  ],
+  tags: ['1', '2', '3'],
+}
+
+const tags = {
+  1: { id: '1', group_id: 'tag1' },
+  2: { id: '2', group_id: 'tag1' },
+  3: { id: '3', group_id: 'tag1' },
 }
 
 // TODO: The tag list would probably better done using a separate component and an emit
@@ -23,7 +25,9 @@ describe('PacbioPoolLibraryEdit.vue', () => {
   let wrapper
 
   beforeEach(() => {
-    store.state.traction.pacbio.poolCreate.selected.tagSet = tagSet
+    store.state.traction.pacbio.poolCreate.resources.tagSets = { 1: tagSet }
+    store.state.traction.pacbio.poolCreate.resources.tags = tags
+    store.state.traction.pacbio.poolCreate.selected.tagSet = { id: tagSet.id }
 
     wrapper = mount(PacbioPoolLibraryEdit, {
       store,

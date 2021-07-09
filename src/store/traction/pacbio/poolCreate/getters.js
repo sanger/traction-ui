@@ -49,8 +49,14 @@ export default {
    * Returns the selected tag set
    * @param {Object} state The Vuex state object
    */
-  selectedTagSet: (state) => {
-    return state.selected.tagSet
+  selectedTagSet: ({ resources, selected }) => {
+    if (selected.tagSet.id) {
+      const tagSet = resources.tagSets[selected.tagSet.id]
+      const tags = tagSet.tags.map((tag) => resources.tags[tag])
+      return { ...tagSet, tags }
+    } else {
+      return { id: null, tags: [] }
+    }
   },
 
   /**

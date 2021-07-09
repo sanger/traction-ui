@@ -16,6 +16,23 @@ describe('getters.js', () => {
     requestList,
   } = getters
 
+  const tagSets = {
+    '1': {
+      id: '1',
+      name: 'tagSet1',
+      uuid: 'uuid1',
+      pipeline: 'pipeline1',
+      tags: [],
+    },
+    '2': {
+      id: '2',
+      name: 'tagSet2',
+      uuid: 'uuid2',
+      pipeline: 'pipeline1',
+      tags: [],
+    },
+  }
+
   describe('labwareList', () => {
     it('returns a list of labware resources', () => {
       const plates = {
@@ -55,20 +72,6 @@ describe('getters.js', () => {
 
   describe('tagSetList', () => {
     it('returns what it does', () => {
-      const tagSets = {
-        '1': {
-          'id:': '1',
-          name: 'tagSet1',
-          uuid: 'uuid1',
-          pipeline: 'pipeline1',
-        },
-        '2': {
-          'id:': '2',
-          name: 'tagSet2',
-          uuid: 'uuid2',
-          pipeline: 'pipeline1',
-        },
-      }
       state.resources.tagSets = tagSets
       expect(tagSetList(state)).toEqual(Object.values(tagSets))
     })
@@ -96,10 +99,11 @@ describe('getters.js', () => {
   })
 
   describe('selectedTagSet', () => {
-    it('returns what it does', () => {
-      const tagSet = { id: '1', name: 'TagSet1' }
+    it('returns the selected tag set', () => {
+      const tagSet = { id: '1' }
       state.selected.tagSet = tagSet
-      expect(selectedTagSet(state)).toEqual(tagSet)
+      state.resources.tagSets = tagSets
+      expect(selectedTagSet(state)).toEqual(tagSets['1'])
     })
   })
 

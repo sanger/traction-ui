@@ -5,7 +5,7 @@
     </div>
     <div v-if="!isEmpty" data-type="tag-set-item" class="wrapper flex-wrap">
       <div
-        v-for="tag in tagSet.tags"
+        v-for="tag in selectedTagSet.tags"
         :key="tag.id"
         data-attribute="group-id"
         class="border rounded"
@@ -18,6 +18,9 @@
 </template>
 
 <script>
+import { createNamespacedHelpers } from 'vuex'
+const { mapGetters } = createNamespacedHelpers('traction/pacbio/poolCreate')
+
 export default {
   name: 'PacbioTagSetShow',
   data() {
@@ -26,14 +29,12 @@ export default {
     }
   },
   computed: {
+    ...mapGetters(['selectedTagSet']),
     isEmpty() {
-      return Object.keys(this.tagSet).length === 0
-    },
-    tagSet() {
-      return this.$store.getters['traction/pacbio/poolCreate/selectedTagSet']
+      return this.selectedTagSet.tags.length === 0
     },
     tagSetName() {
-      return this.tagSet.name || 'No tag set selected'
+      return this.selectedTagSet.name || 'No tag set selected'
     },
   },
   methods: {

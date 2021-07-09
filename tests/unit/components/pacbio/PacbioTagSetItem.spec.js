@@ -25,6 +25,8 @@ const tags = {
   '12': { id: '12', group_id: 'Tag12' },
 }
 
+const expectedTagSet = { ...tagSets['1'], tags: Object.values(tags).slice(0, 6) }
+
 store.state.traction.pacbio.poolCreate.resources.tags = tags
 
 describe('PacbioTagSetItem', () => {
@@ -41,18 +43,7 @@ describe('PacbioTagSetItem', () => {
     })
 
     it('has the selected tag set', () => {
-      const {
-        state: {
-          traction: {
-            pacbio: {
-              poolCreate: {
-                selected: { tagSet },
-              },
-            },
-          },
-        },
-      } = store
-      expect(wrapper.vm.tagSet).toEqual(tagSet)
+      expect(wrapper.vm.selectedTagSet).toEqual(expectedTagSet)
     })
 
     it('shows the tag set name', () => {

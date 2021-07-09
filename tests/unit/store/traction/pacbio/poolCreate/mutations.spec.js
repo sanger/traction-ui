@@ -80,8 +80,7 @@ describe('mutations.js', () => {
       // apply mutation
       selectTagSet(state, { id: '1' })
       // assert result
-      // expect(state, value).toEqual(new_value)
-      expect(state.selected.tagSet).toEqual({ ...tagSets['1'], tags: [tags['1'], tags['2']] })
+      expect(state.selected.tagSet).toEqual({ id: '1' })
     })
   })
   describe('selectRequest', () => {
