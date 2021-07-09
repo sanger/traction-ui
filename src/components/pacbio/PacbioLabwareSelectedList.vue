@@ -4,13 +4,10 @@
     <b-tabs content-class="mt-3" fill>
       <b-tab title="Plates">
         <div class="wrapper">
-          <div v-if="selectedPlates.length === 0">
+          <div v-if="selectedPlates.length === 0" data-type="warning-message">
             No plates selected
           </div>
-          <div
-            v-for="plate in selectedPlates"
-            :key="plate.id"
-          >
+          <div v-for="plate in selectedPlates" :key="plate.id" data-type="selected-plate-item">
             {{ plate.barcode }}
             <Plate ref="plate" v-bind="plate" @clickWell="selectWellRequests"></Plate>
           </div>
@@ -89,7 +86,7 @@ export default {
 @import 'src/styles/components.scss';
 .wrapper {
   overflow: scroll;
-  display: flex; 
+  display: flex;
   flex-wrap: wrap;
 }
 .wrapper > div {

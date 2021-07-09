@@ -27,8 +27,8 @@ describe('PacbioLabwareSelectedList', () => {
   })
 
   it('contains only a no plates selected item when no plates have been selected', () => {
-    expect(wrapper.find('.list-group-item').text()).toEqual('No plates selected')
-    expect(wrapper.findAll('.list-group-item').length).toEqual(1)
+    expect(wrapper.find('[data-type=warning-message]').text()).toEqual('No plates selected')
+    expect(wrapper.findAll('[data-type=warning-message]').length).toEqual(1)
   })
 
   describe('Plate selection', () => {
@@ -38,7 +38,7 @@ describe('PacbioLabwareSelectedList', () => {
     })
 
     it('contains the selected plate', () => {
-      expect(wrapper.find('.list-group-item').text()).toContain('DN814327C')
+      expect(wrapper.find('[data-type=selected-plate-item]').text()).toContain('DN814327C')
       expect(wrapper.findAll('plate-stub').length).toEqual(1)
     })
   })
