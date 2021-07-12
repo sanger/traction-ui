@@ -117,7 +117,9 @@ export default {
 .template-prep-kit-box-barcode {
   width: 150px;
 }
-
+td, .custom-select, .form-control {
+  font-size: 0.9em;
+}
 .col {
   padding-right: 0;
 }
