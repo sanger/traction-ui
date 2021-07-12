@@ -78,4 +78,16 @@ export default {
   populateTags: (state, tags) => {
     state.resources.tags = dataToObjectById({ data: tags, includeRelationships: false })
   },
+
+  /**
+   * Update an existing library in its store
+   * @param {Object} state The VueXState object
+   * @param {String} id The id of the library to be updated
+   * @param {Object} attributes The attributes of the library to be updated
+   **/
+  updateLibrary: ({ libraries }, { id, attributes }) => {
+    const library = libraries[id]
+    if (library === undefined) return
+    Vue.set(libraries, id, { ...library, ...attributes })
+  },
 }

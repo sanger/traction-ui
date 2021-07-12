@@ -1,20 +1,40 @@
 <template>
   <b-col v-if="requests" data-type="pool-library-list">
     <h3>Pooled Samples</h3>
-    <div class="wrapper">
-      <div>Sample Name</div>
-      <div>Source</div>
-      <div>Tag</div>
-      <div>Template prep kit box barcode</div>
-      <div>Volume</div>
-      <div>Concentration</div>
-      <div>Fragment Size</div>
-    </div>
-    <PacbioPoolLibraryEdit
-      v-for="request in requests"
-      :key="request.id"
-      :request="request"
-    ></PacbioPoolLibraryEdit>
+     <b-table-simple>
+      <b-thead>
+        <b-tr>
+          <b-th>
+            Sample Name
+          </b-th>
+          <b-th>
+            Source
+          </b-th>
+          <b-th>
+            Tag
+          </b-th>
+          <b-th>
+            Template prep kit box barcode
+          </b-th>
+          <b-th>
+            Volume
+          </b-th>
+          <b-th>
+            Concentration
+          </b-th>
+          <b-th>
+            Fragment Size
+          </b-th>
+        </b-tr>
+      </b-thead>
+      <b-tbody>
+        <PacbioPoolLibraryEdit
+          v-for="request in requests"
+          :key="request.id"
+          :request="request"
+        ></PacbioPoolLibraryEdit>
+      </b-tbody>
+    </b-table-simple>
   </b-col>
 </template>
 
@@ -39,13 +59,7 @@ export default {
 
 <style scoped lang="scss">
 @import 'src/styles/components.scss';
-.wrapper {
-  display: flex;
-  justify-content: space-evenly;
-  padding: 5px;
-  border-bottom: 1px dashed;
-}
-.wrapper > div {
+th {
   font-size: 0.9em;
 }
 </style>

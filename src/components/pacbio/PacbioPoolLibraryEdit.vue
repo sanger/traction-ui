@@ -1,57 +1,78 @@
 <template>
-  <div data-type="pool-library-edit" class="wrapper flex-wrap">
-    <div data-attribute="request-sample-name">
+  <b-tr data-type="pool-library-edit">
+    <b-td data-attribute="request-sample-name">
       {{ request.sample_name }}
-    </div>
-    <div data-attribute="request-source-identifier">
+    </b-td>
+    <b-td data-attribute="request-source-identifier">
       {{ request.source_identifier }}
-    </div>
-    <b-form-select
-      v-if="tagList.length > 0"
-      v-model="tag_id"
-      data-type="tag-list"
-      :options="tagListOptions"
-    ></b-form-select>
-    <b-form-input
-      v-model="template_prep_kit_box_barcode"
-      data-attribute="template-prep-kit-box-barcode"
-      :value="template_prep_kit_box_barcode"
-      placeholder="Template Prep Kit Box Barcode"
-      type="text"
-      title="Template Prep Kit Box Barcode"
-      class="template-prep-kit-box-barcode"
-    />
-    <b-form-input
-      v-model="volume"
-      data-attribute="volume"
-      :value="volume"
-      placeholder="Volume"
-      type="text"
-      title="Volume"
-    />
-    <b-form-input
-      v-model="concentration"
-      data-attribute="concentration"
-      :value="concentration"
-      placeholder="Concentration"
-      type="text"
-      title="Concentration"
-    />
-     <b-form-input
-      v-model="fragment_size"
-      data-attribute="fragment_size"
-      :value="fragment_size"
-      placeholder="Fragment Size"
-      type="text"
-      title="Fragment Size"
-    />
-  </div>
+    </b-td>
+    <b-td>
+      <b-form-select
+        v-if="tagList.length > 0"
+        v-model="tag_id"
+        data-type="tag-list"
+        :options="tagListOptions"
+        @change="update('tag_id')"
+      ></b-form-select>
+    </b-td>
+    <b-td>
+      <b-form-input
+        v-model="template_prep_kit_box_barcode"
+        data-attribute="template-prep-kit-box-barcode"
+        :value="template_prep_kit_box_barcode"
+        placeholder="Template Prep Kit Box Barcode"
+        type="text"
+        title="Template Prep Kit Box Barcode"
+        class="template-prep-kit-box-barcode"
+        @update="update('template_prep_kit_box_barcode')"
+      />
+    </b-td>
+    <b-td>
+      <b-form-input
+        v-model="volume"
+        data-attribute="volume"
+        :value="volume"
+        placeholder="Volume"
+        type="text"
+        title="Volume"
+        @update="update('volume')"
+      />
+    </b-td>
+    <b-td>
+      <b-form-input
+        v-model="concentration"
+        data-attribute="concentration"
+        :value="concentration"
+        placeholder="Concentration"
+        type="text"
+        title="Concentration"
+        @update="update('concentration')"
+      />
+    </b-td>
+    <b-td>
+      <b-form-input
+        v-model="fragment_size"
+        data-attribute="fragment_size"
+        :value="fragment_size"
+        placeholder="Fragment Size"
+        type="text"
+        title="Fragment Size"
+        @update="update('fragment_size')"
+      />
+    </b-td>
+  </b-tr>
 </template>
 
 <script>
+import { createNamespacedHelpers } from 'vuex'
+const { mapGetters, mapMutations } = createNamespacedHelpers('traction/pacbio/poolCreate')
 export default {
   name: 'PacbioPoolLibraryEdit',
   props: {
+    id: {
+      type: [String, Number],
+      default: '',
+    },
     request: {
       type: Object,
       default() {
@@ -65,42 +86,36 @@ export default {
       template_prep_kit_box_barcode: null,
       volume: null,
       concentration: null,
-      fragment_size: null
+      fragment_size: null,
     }
   },
   computed: {
+    ...mapGetters(['selectedTagSet']),
     tagList() {
-      return this.$store.getters[
-        'traction/pacbio/poolCreate/selectedTagSet'
-      ].tags.map(({ id: value, group_id: text }) => ({ value, text }))
+      return this.selectedTagSet.tags.map(({ id: value, group_id: text }) => ({ value, text }))
     },
     tagListOptions() {
       return [{ value: null, text: 'Please select a tag' }, ...this.tagList]
+    },
+  },
+  methods: {
+    ...mapMutations(['updateLibrary']),
+    update(attribute) {
+      this.updateLibrary({ id: this.id, attributes: { [attribute]: this[attribute] } })
     },
   },
 }
 </script>
 
 <style scoped lang="scss">
-.wrapper {
-  display: flex;
-  justify-content: space-evenly;
-  padding: 5px;
-}
-.wrapper:not(:last-child) {
-  border-bottom: 1px dashed;
-}
-.wrapper > div {
-  text-align: left;
-}
 .custom-select {
   width: auto;
-} 
+}
 .form-control {
   width: 100px;
 }
 .template-prep-kit-box-barcode {
-  width: 125px;
+  width: 150px;
 }
 
 .col {
