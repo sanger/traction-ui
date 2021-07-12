@@ -1,7 +1,7 @@
 <template>
   <b-col v-if="requests" data-type="pool-library-list">
     <h3>Pooled Samples</h3>
-     <b-table-simple>
+    <b-table-simple>
       <b-thead>
         <b-tr>
           <b-th>
