@@ -1,5 +1,5 @@
 <template>
-  <b-col v-if="requests" data-type="pool-library-list">
+  <b-col v-if="selectedRequests" data-type="pool-library-list">
     <h3>Pooled Samples</h3>
     <b-table-simple>
       <b-thead>
@@ -29,7 +29,7 @@
       </b-thead>
       <b-tbody>
         <PacbioPoolLibraryEdit
-          v-for="request in requests"
+          v-for="request in selectedRequests"
           :key="request.id"
           :request="request"
         ></PacbioPoolLibraryEdit>
@@ -40,6 +40,8 @@
 
 <script>
 import PacbioPoolLibraryEdit from '@/components/pacbio/PacbioPoolLibraryEdit'
+import { createNamespacedHelpers } from 'vuex'
+const { mapGetters } = createNamespacedHelpers('traction/pacbio/poolCreate')
 
 export default {
   name: 'PacbioPoolLibraryList',
@@ -50,9 +52,7 @@ export default {
     return {}
   },
   computed: {
-    requests() {
-      return this.$store.getters['traction/pacbio/poolCreate/selectedRequests']
-    },
+    ...mapGetters(['selectedRequests']),
   },
 }
 </script>

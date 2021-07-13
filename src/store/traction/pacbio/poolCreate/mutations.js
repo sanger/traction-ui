@@ -91,4 +91,37 @@ export default {
     if (library === undefined) return
     Vue.set(libraries, id, { ...library, ...attributes })
   },
+
+  /**
+   * Update an existing library in its store
+   * @param {Object} state The VueXState object
+   * This method will check each library to ensure that:
+   *  * required fields are present
+   *  * tags are unique
+   **/
+  validateLibraries: ({ libraries }) => {
+    const requiredFields = [
+      'tag_id',
+      'template_prep_kit_box_barcode',
+      'concentration',
+      'volume',
+      'fragment_size',
+    ]
+
+    for (const [key, library] of Object.entries(libraries)) {
+      console.log
+      const errors = {}
+      requiredFields.forEach((field) => {
+        if (!library[field]) {
+          errors[field] = 'must be present'
+        }
+      })
+
+      if (Object.entries(libraries).some(([k, e]) => e.tag_id === library.tag_id && k !== key)) {
+        errors['tag_id'] = 'duplicated'
+      }
+
+      Vue.set(libraries, key, { ...library, errors })
+    }
+  },
 }
