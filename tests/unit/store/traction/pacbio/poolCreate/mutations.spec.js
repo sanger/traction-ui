@@ -85,15 +85,19 @@ describe('mutations.js', () => {
     })
   })
   describe('selectRequest', () => {
-    it('sets a request as selected by default', () => {
+    it('sets a library with the selected request by default', () => {
       // mock state
       const defaultStateObject = defaultState()
       const state = {
         ...defaultStateObject,
-        selected: {
-          ...defaultStateObject.selected,
-          requests: {
-            _2: { id: '2', selected: true },
+        libraries: {
+          _2: {
+            pacbio_request_id: '2',
+            tag_id: null,
+            volume: null,
+            concentration: null,
+            fragment_size: null,
+            template_prep_kit_box_barcode: null,
           },
         },
       }
@@ -102,9 +106,23 @@ describe('mutations.js', () => {
       // We expect the request to be recorded in the selected requests it should:
       // - Prefix the key with an _ to maintain insert order
       // - Not disrupt other requests in the store
-      expect(state.selected.requests).toEqual({
-        _2: { id: '2', selected: true },
-        _1: { id: '1', selected: true },
+      expect(state.libraries).toEqual({
+        _2: {
+          pacbio_request_id: '2',
+          tag_id: null,
+          volume: null,
+          concentration: null,
+          fragment_size: null,
+          template_prep_kit_box_barcode: null,
+        },
+        _1: {
+          pacbio_request_id: '1',
+          tag_id: null,
+          volume: null,
+          concentration: null,
+          fragment_size: null,
+          template_prep_kit_box_barcode: null,
+        },
       })
     })
 
@@ -113,11 +131,20 @@ describe('mutations.js', () => {
       const defaultStateObject = defaultState()
       const state = {
         ...defaultStateObject,
-        selected: {
-          ...defaultStateObject.selected,
-          requests: {
-            _2: { id: '2', selected: true },
-            _1: { id: '1', selected: true },
+        libraries: {
+          _2: {
+            pacbio_request_id: '2',
+            tag_id: null,
+            volume: null,
+            concentration: null,
+            fragment_size: null,
+          },
+          _1: {
+            pacbio_request_id: '1',
+            tag_id: null,
+            volume: null,
+            concentration: null,
+            fragment_size: null,
           },
         },
       }
@@ -125,9 +152,15 @@ describe('mutations.js', () => {
       selectRequest(state, { id: '1', selected: false })
       // We expect the request to be recorded in the selected requests it should:
       // - Prefix the key with an _ to maintain insert order
-      // - Not disrupt other equests in the store
-      expect(state.selected.requests).toEqual({
-        _2: { id: '2', selected: true },
+      // - Not disrupt other requests in the store
+      expect(state.libraries).toEqual({
+        _2: {
+          pacbio_request_id: '2',
+          tag_id: null,
+          volume: null,
+          concentration: null,
+          fragment_size: null,
+        },
       })
     })
   })

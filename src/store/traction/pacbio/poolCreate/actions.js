@@ -39,9 +39,9 @@ export default {
    */
   selectWellRequests: ({ commit, state }, well_id) => {
     const { requests } = state.resources.wells[well_id]
-    const selectedRequests = state.selected.requests
+    const selectedRequests = state.libraries
     for (let id of requests) {
-      const { selected } = selectedRequests[`_${id}`] || {}
+      const selected = !!selectedRequests[`_${id}`]
       commit('selectRequest', { id, selected: !selected })
     }
   },

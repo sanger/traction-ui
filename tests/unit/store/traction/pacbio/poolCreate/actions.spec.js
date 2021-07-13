@@ -79,11 +79,8 @@ describe('actions.js', () => {
             1: { id: '1', type: 'wells', position: 'A1', requests: ['2'] },
           },
         },
-        selected: {
-          ...defaultStateObject.selected,
-          requests: {
-            _2: { id: '2', selected: true },
-          },
+        libraries: {
+          _2: { pacbio_request_id: '2' },
         },
       }
       // apply action
