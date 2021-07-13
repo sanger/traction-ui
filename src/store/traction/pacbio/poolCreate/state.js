@@ -1,3 +1,22 @@
+/**
+ * Generates an object describing a new library for population `store.libraries`
+ * @param {Object} attributes any attributes of the object to pre-populate
+ * @example newLibrary({pacbio_request_id: '1'})
+ */
+const newLibrary = (attributes) => {
+  return {
+    pacbio_request_id: null,
+    template_prep_kit_box_barcode: null,
+    tag_id: null,
+    volume: null,
+    concentration: null,
+    fragment_size: null,
+    ...attributes,
+  }
+}
+
+export { newLibrary }
+
 export default () => {
   return {
     // Resources returned by the server, each key represents a resource type.
@@ -33,10 +52,6 @@ export default () => {
       // id. Each plate is represented by an object with an id and a selected
       // attribute { id: 'plate_id', selected: true }
       plates: {},
-      // Object representing all selected requests. Selected requests are indexed by
-      // id. Each request is represented by an object with an id and a selected
-      // attribute { id: 'request_id', selected: true }
-      requests: {},
     },
     // Libraries. Indexed by an internally generated id.
     libraries: {},

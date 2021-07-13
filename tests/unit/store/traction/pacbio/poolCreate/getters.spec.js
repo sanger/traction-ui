@@ -130,15 +130,27 @@ describe('getters.js', () => {
     // When selecting a request with append the id with an underscore. This ensures
     // keys are maintained in insertion order, not numeric order. This allow our requests
     // to maintain the order in which they were selected
-    const selected = {
-      _136: { id: '136', selected: true }, // A selected request
-      _40: { id: '40', selected: true }, // A selected request
+    const libraries = {
+      _136: {
+        pacbio_request_id: '136',
+        tagId: null,
+        volume: null,
+        concentration: null,
+        fragmentSize: null,
+      }, // A selected request
+      _40: {
+        pacbio_request_id: '40',
+        tagId: null,
+        volume: null,
+        concentration: null,
+        fragmentSize: null,
+      }, // A selected request
     }
 
     const state = {
       ...defaultStateObject,
       resources: { ...defaultStateObject.resources, requests },
-      selected: { ...defaultStateObject.selected, requests: selected },
+      libraries,
     }
 
     it('returns an array of request resources that have been selected', () => {
@@ -178,27 +190,39 @@ describe('getters.js', () => {
       '4': { id: '4', name: 'request4' },
       '5': { id: '5', name: 'request5' },
     }
-    const selectedRequests = {
-      _3: { id: '3', selected: true },
-      _4: { id: '4', selected: true },
+    const libraries = {
+      _3: {
+        pacbio_request_id: '3',
+        tagId: null,
+        volume: null,
+        concentration: null,
+        fragmentSize: null,
+      },
+      _4: {
+        pacbio_request_id: '4',
+        tagId: null,
+        volume: null,
+        concentration: null,
+        fragmentSize: null,
+      },
     }
     const mergedRequests = [
-      { id: '1', name: 'request1' },
-      { id: '2', name: 'request2' },
+      { id: '1', name: 'request1', selected: false },
+      { id: '2', name: 'request2', selected: false },
       { id: '3', name: 'request3', selected: true },
       { id: '4', name: 'request4', selected: true },
-      { id: '5', name: 'request5' },
+      { id: '5', name: 'request5', selected: false },
     ]
 
     it('returns what it does', () => {
       state.resources.requests = requests
-      state.selected.requests = selectedRequests
+      state.libraries = libraries
       expect(requestList(state)()).toEqual(mergedRequests)
     })
 
     it('when ids are included', () => {
       state.resources.requests = requests
-      state.selected.requests = selectedRequests
+      state.libraries = libraries
       const ids = ['1', '2', '3']
       expect(requestList(state)(ids).length).toEqual(ids.length)
     })

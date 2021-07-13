@@ -75,8 +75,10 @@ export default {
    * @param {Object} state The Vuex state object
    * @return {Array} An array of selected requests in the order in which they were selected
    */
-  selectedRequests: ({ selected, resources }) => {
-    return mergeRepresentations(selected.requests, resources.requests)
+  selectedRequests: ({ libraries, resources }) => {
+    return Object.values(libraries).map(({ pacbio_request_id }) => {
+      return { ...resources.requests[pacbio_request_id], selected: true }
+    })
   },
 
   /**
@@ -97,13 +99,15 @@ export default {
    */
   requestList: (state) => (ids) => {
     const requests = state.resources.requests
-    const selectedRequests = state.selected.requests
+    const selectedRequests = state.libraries
     if (ids) {
       return ids.map((id) => {
-        return { ...requests[id], ...selectedRequests[`_${id}`] }
+        return { ...requests[id], selected: !!selectedRequests[`_${id}`] }
       })
     } else {
-      return mergeRepresentations(requests, selectedRequests, prefixWithUnderscore)
+      return Object.values(requests).map((request) => {
+        return { ...request, selected: !!selectedRequests[`_${request.id}`] }
+      })
     }
   },
 }

@@ -1,23 +1,11 @@
 import PacbioPoolLibraryList from '@/components/pacbio/PacbioPoolLibraryList'
 import { mount, store, localVue } from 'testHelper'
 
-const requests = [
-  {
-    id: '1',
-    sample_name: 'Sample1',
-    selected: true,
-  },
-  {
-    id: '2',
-    sample_name: 'Sample2',
-    selected: true,
-  },
-  {
-    id: '3',
-    sample_name: 'Sample3',
-    selected: true,
-  },
-]
+const libraries = {
+  _1: { pacbio_request_id: '1' },
+  _2: { pacbio_request_id: '2' },
+  _3: { pacbio_request_id: '3' },
+}
 
 // TODO: This is a definite smell. We should not need this here.
 const tagSet = {
@@ -32,7 +20,7 @@ const tags = {
   3: { id: '3', name: 'tag3' },
 }
 
-store.state.traction.pacbio.poolCreate.selected.requests = requests
+store.state.traction.pacbio.poolCreate.libraries = libraries
 store.state.traction.pacbio.poolCreate.selected.tagSet = tagSet
 store.state.traction.pacbio.poolCreate.resources.tagSets = { 1: tagSet }
 store.state.traction.pacbio.poolCreate.resources.tags = tags
@@ -48,6 +36,8 @@ describe('PacbioPoolLibraryList.vue', () => {
   })
 
   it('should have a list of libraries', () => {
-    expect(wrapper.findAll('[data-type=pool-library-edit]').length).toEqual(requests.length)
+    expect(wrapper.findAll('[data-type=pool-library-edit]').length).toEqual(
+      Object.values(libraries).length,
+    )
   })
 })

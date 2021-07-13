@@ -1,5 +1,6 @@
 import { dataToObjectById } from '@/api/JsonApi'
 import Vue from 'vue'
+import { newLibrary } from '@/store/traction/pacbio/poolCreate/state.js'
 
 // Mutations handle synchronous update of state.
 export default {
@@ -30,11 +31,11 @@ export default {
    * @param {String} id The id of the request
    * @param {Boolean} selected Set to false to de-select the request. [Optional] true by default
    */
-  selectRequest: ({ selected: { requests } }, { id, selected = true }) => {
+  selectRequest: ({ libraries }, { id, selected = true }) => {
     if (selected) {
-      Vue.set(requests, `_${id}`, { id: id, selected: true })
+      Vue.set(libraries, `_${id}`, newLibrary({ pacbio_request_id: id }))
     } else {
-      Vue.delete(requests, `_${id}`)
+      Vue.delete(libraries, `_${id}`)
     }
   },
 
