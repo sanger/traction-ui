@@ -9,55 +9,53 @@
     <b-td>
       <b-form-select
         v-if="tagList.length > 0"
-        v-model="tag_id"
+        v-model="library.tag_id"
         data-type="tag-list"
         :options="tagListOptions"
-        @change="update('tag_id')"
       ></b-form-select>
+      <b-form-invalid-feedback :state="!!library.errors.tag_id" data-attribute="tag-id-error">
+        {{ library.errors.tag_id }}
+      </b-form-invalid-feedback>
     </b-td>
     <b-td>
       <b-form-input
-        v-model="template_prep_kit_box_barcode"
+        v-model="library.template_prep_kit_box_barcode"
         data-attribute="template-prep-kit-box-barcode"
         :value="template_prep_kit_box_barcode"
         placeholder="Template Prep Kit Box Barcode"
         type="text"
         title="Template Prep Kit Box Barcode"
         class="template-prep-kit-box-barcode"
-        @update="update('template_prep_kit_box_barcode')"
       />
     </b-td>
     <b-td>
       <b-form-input
-        v-model="volume"
+        v-model="library.volume"
         data-attribute="volume"
         :value="volume"
         placeholder="Volume"
         type="text"
         title="Volume"
-        @update="update('volume')"
       />
     </b-td>
     <b-td>
       <b-form-input
-        v-model="concentration"
+        v-model="library.concentration"
         data-attribute="concentration"
         :value="concentration"
         placeholder="Concentration"
         type="text"
         title="Concentration"
-        @update="update('concentration')"
       />
     </b-td>
     <b-td>
       <b-form-input
-        v-model="fragment_size"
-        data-attribute="fragment_size"
+        v-model="library.fragment_size"
+        data-attribute="fragment-size"
         :value="fragment_size"
         placeholder="Fragment Size"
         type="text"
         title="Fragment Size"
-        @update="update('fragment_size')"
       />
     </b-td>
   </b-tr>
@@ -65,7 +63,7 @@
 
 <script>
 import { createNamespacedHelpers } from 'vuex'
-const { mapGetters, mapMutations } = createNamespacedHelpers('traction/pacbio/poolCreate')
+const { mapGetters } = createNamespacedHelpers('traction/pacbio/poolCreate')
 export default {
   name: 'PacbioPoolLibraryEdit',
   props: {
@@ -76,7 +74,7 @@ export default {
     request: {
       type: Object,
       default() {
-        return {}
+        return { id: null }
       },
     },
   },
@@ -90,18 +88,15 @@ export default {
     }
   },
   computed: {
-    ...mapGetters(['selectedTagSet']),
+    ...mapGetters(['selectedTagSet', 'libraryItem']),
     tagList() {
       return this.selectedTagSet.tags.map(({ id: value, group_id: text }) => ({ value, text }))
     },
     tagListOptions() {
       return [{ value: null, text: 'Please select a tag' }, ...this.tagList]
     },
-  },
-  methods: {
-    ...mapMutations(['updateLibrary']),
-    update(attribute) {
-      this.updateLibrary({ id: this.id, attributes: { [attribute]: this[attribute] } })
+    library() {
+      return this.libraryItem(this.request.id)
     },
   },
 }

@@ -14,6 +14,7 @@ describe('getters.js', () => {
     tagList,
     wellList,
     requestList,
+    libraryItem,
   } = getters
 
   const tagSets = {
@@ -225,6 +226,29 @@ describe('getters.js', () => {
       state.libraries = libraries
       const ids = ['1', '2', '3']
       expect(requestList(state)(ids).length).toEqual(ids.length)
+    })
+  })
+
+  describe('getLibrary', () => {
+    const libraries = {
+      _3: {
+        pacbio_request_id: '3',
+        tagId: null,
+        volume: null,
+        concentration: null,
+        fragmentSize: null,
+      },
+      _4: {
+        pacbio_request_id: '4',
+        tagId: null,
+        volume: null,
+        concentration: null,
+        fragmentSize: null,
+      },
+    }
+    it('will return the correct library', () => {
+      state.libraries = libraries
+      expect(libraryItem(state)('3')).toEqual(libraries['_3'])
     })
   })
 })

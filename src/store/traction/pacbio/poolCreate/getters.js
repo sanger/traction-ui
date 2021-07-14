@@ -110,4 +110,11 @@ export default {
       })
     }
   },
+  /**
+   * Returns a library
+   * @param {Object} state The Vuex state object
+   */
+  libraryItem: ({ libraries }) => (id) => {
+    return libraries[`_${id}`]
+  },
 }

@@ -83,18 +83,6 @@ export default {
   /**
    * Update an existing library in its store
    * @param {Object} state The VueXState object
-   * @param {String} id The id of the library to be updated
-   * @param {Object} attributes The attributes of the library to be updated
-   **/
-  updateLibrary: ({ libraries }, { id, attributes }) => {
-    const library = libraries[id]
-    if (library === undefined) return
-    Vue.set(libraries, id, { ...library, ...attributes })
-  },
-
-  /**
-   * Update an existing library in its store
-   * @param {Object} state The VueXState object
    * This method will check each library to ensure that:
    *  * required fields are present
    *  * tags are unique

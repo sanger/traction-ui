@@ -13,7 +13,6 @@ describe('mutations.js', () => {
     populateRequests,
     populateTagSets,
     populateTags,
-    updateLibrary,
     validateLibraries,
   } = mutations
 
@@ -117,6 +116,7 @@ describe('mutations.js', () => {
           template_prep_kit_box_barcode: null,
         },
         _1: {
+          errors: {},
           pacbio_request_id: '1',
           tag_id: null,
           volume: null,
@@ -234,53 +234,6 @@ describe('mutations.js', () => {
       expect(state.resources.tags).toEqual(
         dataToObjectById({ data: tags, includeRelationships: false }),
       )
-    })
-  })
-
-  describe('updateLibrary', () => {
-    const libraries = {
-      _1: {
-        pacbio_request_id: '1',
-      },
-      _2: {
-        pacbio_request_id: '2',
-        tag_id: '1',
-        template_prep_kit_box_barcode: 'ABC1',
-        volume: 1,
-        concentration: 1,
-        fragment_size: 100,
-      },
-    }
-
-    it('single attribute', () => {
-      const state = defaultState()
-      state.libraries = { ...libraries }
-      updateLibrary(state, { id: '_1', attributes: { template_prep_kit_box_barcode: 'BCD2' } })
-      const library = state.libraries['_1']
-      expect(library.template_prep_kit_box_barcode).toEqual('BCD2')
-    })
-
-    it('multiple attributes', () => {
-      const attributes = { template_prep_kit_box_barcode: 'BCD2', volume: 10, concentration: 5 }
-      const state = defaultState()
-      state.libraries = { ...libraries }
-      updateLibrary(state, { id: '_1', attributes })
-      expect(state.libraries['_1']).toEqual({ ...state.libraries['_1'], ...attributes })
-    })
-
-    it('existing attributes', () => {
-      const attributes = { template_prep_kit_box_barcode: 'EFG3', fragment_size: 10 }
-      const state = defaultState()
-      state.libraries = { ...libraries }
-      updateLibrary(state, { id: '_2', attributes })
-      expect(state.libraries['_2']).toEqual({ ...state.libraries['_2'], ...attributes })
-    })
-
-    it('fails silently if library does not exist', () => {
-      const state = defaultState()
-      state.libraries = { ...libraries }
-      updateLibrary(state, { id: '_3', attributes: { pacbio_request_id: 10 } })
-      expect(state.libraries).toEqual(libraries)
     })
   })
 

@@ -1,10 +1,16 @@
 import PacbioPoolLibraryList from '@/components/pacbio/PacbioPoolLibraryList'
 import { mount, store, localVue } from 'testHelper'
+import { newLibrary } from '@/store/traction/pacbio/poolCreate/state.js'
 
+const requests = {
+  '1': { id: 1 },
+  '2': { id: 2 },
+  '3': { id: 3 },
+}
 const libraries = {
-  _1: { pacbio_request_id: '1' },
-  _2: { pacbio_request_id: '2' },
-  _3: { pacbio_request_id: '3' },
+  _1: newLibrary({ pacbio_request_id: '1' }),
+  _2: newLibrary({ pacbio_request_id: '2' }),
+  _3: newLibrary({ pacbio_request_id: '3' }),
 }
 
 // TODO: This is a definite smell. We should not need this here.
@@ -24,6 +30,7 @@ store.state.traction.pacbio.poolCreate.libraries = libraries
 store.state.traction.pacbio.poolCreate.selected.tagSet = tagSet
 store.state.traction.pacbio.poolCreate.resources.tagSets = { 1: tagSet }
 store.state.traction.pacbio.poolCreate.resources.tags = tags
+store.state.traction.pacbio.poolCreate.resources.requests = requests
 
 describe('PacbioPoolLibraryList.vue', () => {
   let wrapper

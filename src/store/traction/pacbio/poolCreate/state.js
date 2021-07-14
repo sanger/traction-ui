@@ -5,6 +5,7 @@
  */
 const newLibrary = (attributes) => {
   return {
+    errors: {},
     pacbio_request_id: null,
     template_prep_kit_box_barcode: null,
     tag_id: null,
