@@ -22,6 +22,10 @@ describe('Libraries.vue', () => {
           fragment_size: 100,
           created_at: '03/12/2019 11:49',
         },
+        pool: {
+          id: '1',
+          type: 'pools',
+        },
       },
       {
         id: 2,
@@ -36,6 +40,10 @@ describe('Libraries.vue', () => {
           template_prep_kit_box_barcode: 'LK12345',
           fragment_size: 100,
           created_at: '03/12/2019 11:49',
+        },
+        pool: {
+          id: '1',
+          type: 'pools',
         },
       },
     ]
