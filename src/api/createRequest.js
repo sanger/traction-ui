@@ -22,22 +22,38 @@ const createRequest = ({ rootURL, apiNamespace, resource, headers = defaultHeade
     const queryString = [filterString, includeString].filter(Boolean).join('&')
 
     if (queryString.length > 0) {
-      return `${resource}?${queryString}`
+      return `/?${queryString}`
     } else {
-      return resource
+      return ''
     }
   }
 
-  const execute = async (type, ...params) => {
+  const execute = (type, ...params) => {
     return api[type](...params)
   }
 
-  const get = async ({ filters, include } = {}) => {
-    return execute('get', buildQuery({ filters, include }))
+  const get = ({ filters, include } = {}) => {
+    return execute('get', `${resource}${buildQuery({ filters, include })}`)
   }
 
-  const create = async ({ data }) => {
+  const find = ({ id, include } = {}) => {
+    return execute('get', `${resource}/${id}${buildQuery({ include })}`)
+  }
+
+  const create = ({ data }) => {
     return execute('post', resource, data)
+  }
+
+  const destroy = (...ids) => {
+    const promises = ids.map((id) => execute('delete', `${resource}/${id}`))
+    return promises.length === 1 ? promises[0] : promises
+  }
+
+  const update = (data) => {
+    const promises = (Array.isArray(data) ? data : [data]).map((item) =>
+      execute('patch', `${resource}/${item.id}`, item),
+    )
+    return promises.length === 1 ? promises[0] : promises
   }
 
   return {
@@ -51,6 +67,9 @@ const createRequest = ({ rootURL, apiNamespace, resource, headers = defaultHeade
     buildQuery,
     get,
     create,
+    find,
+    destroy,
+    update,
   }
 }
 
