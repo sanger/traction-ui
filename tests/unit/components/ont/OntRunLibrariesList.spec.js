@@ -1,5 +1,5 @@
 import OntRunLibrariesList from '@/components/ont/OntRunLibrariesList'
-import { localVue, mount } from '../../testHelper'
+import { localVue, mount } from 'testHelper'
 
 describe('OntLibraries.vue', () => {
   let wrapper, librariesData, props, librariesList, query, mutate

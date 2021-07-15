@@ -1,6 +1,6 @@
 import Response from '@/api/Response'
 import * as Actions from '@/store/traction/saphyr/runs/actions'
-import { Data } from '../../../../testHelper'
+import { Data } from 'testHelper'
 import * as Run from '@/api/SaphyrRun'
 
 describe('#setRuns', () => {

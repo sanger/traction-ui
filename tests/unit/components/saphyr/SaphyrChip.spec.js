@@ -1,4 +1,4 @@
-import { mount, localVue, store } from '../../testHelper'
+import { mount, localVue, store } from 'testHelper'
 import Chip from '@/components/saphyr/SaphyrChip'
 import * as Run from '@/api/SaphyrRun'
 

@@ -1,5 +1,5 @@
 import { createPlates } from '@/services/traction/Pacbio'
-import { Data } from '../../testHelper'
+import { Data } from 'testHelper'
 
 const failedResponse = {
   status: 422,

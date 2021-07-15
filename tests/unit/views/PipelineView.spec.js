@@ -1,19 +1,10 @@
-import { mount, localVue } from '../testHelper'
+import { mount, localVue, router } from 'testHelper'
 import PipelineView from '@/views/PipelineView'
-import VueRouter from 'vue-router'
 
 describe('PipelineView', () => {
-  let wrapper, pipelineView, router, store
+  let wrapper, pipelineView, store
 
   beforeEach(() => {
-    router = new VueRouter({
-      routes: [
-        { path: '/dashboard', name: 'Dashboard' },
-        { path: '/saphyr/runs', name: 'SaphyrRuns' },
-        { path: '/pacbio/runs', name: 'PacbioRuns' },
-      ],
-    })
-
     localStorage.setItem('pipeline', 'pacbio')
 
     wrapper = mount(PipelineView, { store, localVue, router })

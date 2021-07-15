@@ -1,5 +1,5 @@
 import Helper from '@/mixins/Helper'
-import { localVue, mount } from '../testHelper'
+import { localVue, mount } from 'testHelper'
 
 // TODO: added tests as a mimimum but these functions
 // should be available anywhere not via a mixin

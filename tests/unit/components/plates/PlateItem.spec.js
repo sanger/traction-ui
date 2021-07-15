@@ -1,7 +1,7 @@
 import Plate from '@/components/plates/PlateItem'
 import PlateMap from '@/config/PlateMap'
 import Response from '@/api/Response'
-import { localVue, mount, Data } from '../../testHelper'
+import { localVue, mount, Data } from 'testHelper'
 
 describe('Plate.vue', () => {
   let wrapper, plate, mockPlate
@@ -12,10 +12,6 @@ describe('Plate.vue', () => {
     wrapper = mount(Plate, {
       localVue,
       propsData: { plate: mockPlate },
-      stubs: {
-        Plate96SVG: true,
-        Well: true,
-      },
     })
 
     plate = wrapper.vm

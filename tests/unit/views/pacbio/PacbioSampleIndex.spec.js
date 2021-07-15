@@ -1,26 +1,14 @@
 import Samples from '@/views/pacbio/PacbioSampleIndex'
-import { mount, localVue, store, Data } from '../../testHelper'
-import VueRouter from 'vue-router'
+import { mount, localVue, store, Data, router } from 'testHelper'
 import Response from '@/api/Response'
 
 // TODO: why do we need to set sortDesc to false? I think we also need to isolate tests
 describe('Samples.vue', () => {
-  let wrapper, samples, mockSamples, router
+  let wrapper, samples, mockSamples
 
   beforeEach(() => {
     mockSamples = new Response(Data.TractionPacbioSamples).deserialize.requests
     store.commit('traction/pacbio/requests/setRequests', mockSamples)
-
-    router = new VueRouter({
-      routes: [
-        {
-          path: '/pacbio/samples',
-          name: 'PacbioSamples',
-          component: Samples,
-          props: true,
-        },
-      ],
-    })
 
     wrapper = mount(Samples, {
       store,

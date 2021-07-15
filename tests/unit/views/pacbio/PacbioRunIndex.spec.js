@@ -1,25 +1,12 @@
 import PacbioRuns from '@/views/pacbio/PacbioRunIndex'
-import PacbioRun from '@/views/pacbio/PacbioRunShow'
-import { mount, localVue, store, Data } from '../../testHelper'
+import { mount, localVue, store, Data, router } from 'testHelper'
 import Response from '@/api/Response'
-import VueRouter from 'vue-router'
 
 describe('Runs.vue', () => {
-  let wrapper, runs, mockRuns, router
+  let wrapper, runs, mockRuns
 
   beforeEach(() => {
     mockRuns = new Response(Data.PacbioRuns).deserialize.runs
-
-    router = new VueRouter({
-      routes: [
-        {
-          path: '/pacbio/runs/:id',
-          name: 'PacbioRun',
-          component: PacbioRun,
-          props: true,
-        },
-      ],
-    })
 
     store.commit('traction/pacbio/runs/setRuns', mockRuns)
 

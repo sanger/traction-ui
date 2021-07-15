@@ -1,5 +1,5 @@
 import * as Actions from '@/store/sampleExtraction/actions'
-import { Data } from '../../testHelper'
+import { Data } from 'testHelper'
 import Response from '@/api/Response'
 
 describe('#getSampleExtractionTubesForBarcodes', () => {

@@ -1,5 +1,5 @@
 import OntHeronRuns from '@/views/ont/OntHeronRuns'
-import { localVue, mount } from '../../testHelper'
+import { localVue, mount } from 'testHelper'
 
 describe('OntHeronRuns.vue', () => {
   let wrapper, runs, runsData

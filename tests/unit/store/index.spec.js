@@ -1,4 +1,5 @@
 import Store from '@/store/index'
+import PlateMap from '@/config/PlateMap'
 
 describe('index', () => {
   describe('state', () => {
@@ -16,6 +17,14 @@ describe('index', () => {
         expect(Store.state.api.printMyBarcode).toBeDefined()
       })
     })
+
+    it('has a plate map', () => {
+      const plateMap = Store.state.plateMap
+      expect(plateMap).toBeDefined()
+      expect(plateMap.rows).toBeDefined()
+      expect(plateMap.columns).toBeDefined()
+      expect(plateMap.wells).toBeDefined()
+    })
   })
 
   describe('getters', () => {
@@ -25,6 +34,10 @@ describe('index', () => {
 
     it('printers', () => {
       expect(Store.getters.printers).toBeDefined()
+    })
+
+    it('PlateMap', () => {
+      expect(Store.getters.plateMap).toEqual(PlateMap)
     })
   })
 })

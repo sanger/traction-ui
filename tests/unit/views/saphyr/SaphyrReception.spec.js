@@ -1,5 +1,5 @@
 import Reception from '@/views/saphyr/SaphyrReception'
-import { mount, localVue, store, Data } from '../../testHelper'
+import { mount, localVue, store, Data } from 'testHelper'
 import Response from '@/api/Response'
 
 describe('Reception', () => {

@@ -1,4 +1,4 @@
-import { mount } from '../../testHelper'
+import { mount } from 'testHelper'
 import Plate96SVG from '@/components/svg/Plate96SVG'
 import PlateMap from '@/config/PlateMap'
 

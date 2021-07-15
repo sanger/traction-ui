@@ -1,37 +1,21 @@
-import { mount, localVue, Vuex, Data } from '../../testHelper'
+import { mount, localVue, Data, store } from 'testHelper'
 import Flowcell from '@/components/saphyr/SaphyrFlowcell'
 import * as Run from '@/api/SaphyrRun'
 import Response from '@/api/Response'
 
 describe('Flowcell', () => {
-  let wrapper, flowcell, props, run
+  let wrapper, flowcell, props
 
   beforeEach(() => {
-    run = Run.build()
-
-    let store = new Vuex.Store({
-      modules: {
+    const {
+      state: {
         traction: {
-          namespaced: true,
-          modules: {
-            saphyr: {
-              namespaced: true,
-              modules: {
-                runs: {
-                  namespaced: true,
-                  state: {
-                    currentRun: run,
-                  },
-                  getters: {
-                    currentRun: (state) => state.currentRun,
-                  },
-                },
-              },
-            },
-          },
+          saphyr: { runs: saphyrRuns },
         },
       },
-    })
+    } = store
+
+    saphyrRuns.currentRun = Run.build()
 
     props = { index: 0, position: 1 }
 

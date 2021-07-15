@@ -1,5 +1,5 @@
 import { getPlates, transformPlates, OntSample, PacbioSample } from '@/services/Sequencescape'
-import { Data } from '../testHelper'
+import { Data } from 'testHelper'
 import Response from '@/api/Response'
 
 const plates = [

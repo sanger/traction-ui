@@ -1,9 +1,13 @@
 <template>
-  <b-container id="app">
+  <b-container id="app" fluid>
     <br />
-    <router-link to="/dashboard">
-      <h1 id="traction-header">Traction</h1>
-    </router-link>
+    <!-- TODO: move this into a header component and add pipeline to store -->
+    <b-navbar ref="navbar" toggleable="md" type="dark" variant="info">
+      <b-navbar-brand id="traction-header" to="/dashboard"><h2>Traction</h2></b-navbar-brand>
+      <b-nav-text
+        ><h2>{{ pipeline }}</h2></b-nav-text
+      >
+    </b-navbar>
     <router-view />
     <InfoFooter></InfoFooter>
   </b-container>
@@ -15,6 +19,11 @@ export default {
   components: {
     InfoFooter,
   },
+  computed: {
+    pipeline() {
+      return localStorage.getItem('pipeline')
+    },
+  },
 }
 </script>
 
@@ -25,10 +34,12 @@ export default {
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
   color: #2c3e50;
-  max-width: 80rem;
+}
+nav {
+  margin-bottom: 5px;
 }
 #nav {
-  padding-bottom: 20px;
+  margin-bottom: 5px;
   a {
     font-weight: bold;
     color: #2c3e50;

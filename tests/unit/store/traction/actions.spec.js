@@ -1,6 +1,6 @@
 import Response from '@/api/Response'
 import * as Actions from '@/store/traction/actions'
-import { Data } from '../../testHelper'
+import { Data } from 'testHelper'
 
 describe('#startRun', () => {
   let dispatch, id, payload

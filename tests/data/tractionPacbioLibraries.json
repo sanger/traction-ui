@@ -47,6 +47,16 @@
               "type": "tags",
               "id": "5"
             }
+          },
+          "pool": {
+            "links": {
+              "self": "http://localhost:3100/v1/pacbio/libraries/721/relationships/pool",
+              "related": "http://localhost:3100/v1/pacbio/libraries/721/pool"
+            },
+            "data": {
+              "type": "pools",
+              "id": "1"
+            }
           }
         }
       },
@@ -96,6 +106,16 @@
               "type": "tags",
               "id": "4"
             }
+          },
+          "pool": {
+            "links": {
+              "self": "http://localhost:3100/v1/pacbio/libraries/721/relationships/pool",
+              "related": "http://localhost:3100/v1/pacbio/libraries/721/pool"
+            },
+            "data": {
+              "type": "pools",
+              "id": "2"
+            }
           }
         }
       },
@@ -143,6 +163,16 @@
             },
             "data": {
               "type": "tags",
+              "id": "3"
+            }
+          },
+          "pool": {
+            "links": {
+              "self": "http://localhost:3100/v1/pacbio/libraries/721/relationships/pool",
+              "related": "http://localhost:3100/v1/pacbio/libraries/721/pool"
+            },
+            "data": {
+              "type": "pools",
               "id": "3"
             }
           }
@@ -194,6 +224,16 @@
               "type": "tags",
               "id": "11"
             }
+          },
+          "pool": {
+            "links": {
+              "self": "http://localhost:3100/v1/pacbio/libraries/721/relationships/pool",
+              "related": "http://localhost:3100/v1/pacbio/libraries/721/pool"
+            },
+            "data": {
+              "type": "pools",
+              "id": "4"
+            }
           }
         }
       },
@@ -242,6 +282,16 @@
             "data": {
               "type": "tags",
               "id": "2"
+            }
+          },
+          "pool": {
+            "links": {
+              "self": "http://localhost:3100/v1/pacbio/libraries/721/relationships/pool",
+              "related": "http://localhost:3100/v1/pacbio/libraries/721/pool"
+            },
+            "data": {
+              "type": "pools",
+              "id": "6"
             }
           }
         }

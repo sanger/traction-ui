@@ -1,6 +1,6 @@
 import * as PrintJobRequests from '@/api/PrintJobRequests'
 import moment from 'moment'
-import { store } from '../testHelper'
+import { store } from 'testHelper'
 import Response from '@/api/Response'
 import * as consts from '@/consts/consts'
 

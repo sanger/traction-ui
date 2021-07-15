@@ -1,6 +1,6 @@
 import Response from '@/api/Response'
 import * as Actions from '@/store/traction/pacbio/requests/actions'
-import { Data } from '../../../../testHelper'
+import { Data } from 'testHelper'
 
 let requests, failedResponse
 

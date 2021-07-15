@@ -1,6 +1,6 @@
 import SaphyrRun from '@/views/saphyr/SaphyrRun'
 import VueRouter from 'vue-router'
-import { localVue, mount, store } from '../../testHelper'
+import { localVue, mount, store } from 'testHelper'
 
 describe('Run.vue', () => {
   let wrapper, mockRun, saphyrRun, router, props

@@ -1,6 +1,6 @@
 import * as Run from '@/api/PacbioRun'
 import Well from '@/components/pacbio/PacbioRunWellItem'
-import { localVue, mount, store } from '../../testHelper'
+import { localVue, mount, store } from 'testHelper'
 
 describe('Well.vue', () => {
   let well, wrapper, props, storeWell, run

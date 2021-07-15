@@ -1,6 +1,6 @@
 import Response from '@/api/Response'
 import PacbioLibraryEdit from '@/components/pacbio/PacbioLibraryEdit'
-import { Data, localVue, mount, store } from '../../testHelper'
+import { Data, localVue, mount, store } from 'testHelper'
 
 describe('PacbioLibraryEdit.vue', () => {
   let wrapper, modal, props, mockLibrary

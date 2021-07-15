@@ -1,5 +1,5 @@
 import InfoFooter from '@/components/InfoFooter'
-import { localVue, mount } from '../testHelper'
+import { localVue, mount } from 'testHelper'
 
 describe('InfoFooter.vue', () => {
   let wrapper

@@ -1,4 +1,4 @@
-import { mount, localVue, store } from '../testHelper'
+import { mount, localVue, store } from 'testHelper'
 import PrinterModal from '@/components/PrinterModal'
 
 describe('Modal.vue', () => {

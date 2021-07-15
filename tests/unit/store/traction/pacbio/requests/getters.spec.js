@@ -1,5 +1,5 @@
 import Response from '@/api/Response'
-import { Data } from '../../../../testHelper'
+import { Data } from 'testHelper'
 import getters from '@/store/traction/pacbio/requests/getters'
 
 let requests

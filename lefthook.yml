@@ -17,3 +17,14 @@ pre-commit:
     eslint:
       glob: '*.{js,vue}'
       run: yarn lint {staged_files}
+
+fix:
+  parallel: false
+  commands:
+    prettier:
+      glob: '*.{js,vue}'
+      run: yarn prettier -write {staged_files} --ignore-unknown
+
+    eslint:
+      glob: '*.{js,vue}'
+      run: yarn lint {staged_files}

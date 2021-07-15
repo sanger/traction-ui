@@ -1,11 +1,10 @@
 import Libraries from '@/views/pacbio/PacbioLibraryIndex'
-import { mount, localVue, Data, store } from '../../testHelper'
+import { mount, localVue, Data, store, router } from 'testHelper'
 import * as consts from '@/consts/consts'
-import VueRouter from 'vue-router'
 import Response from '@/api/Response'
 
 describe('Libraries.vue', () => {
-  let wrapper, libraries, mockLibraries, router
+  let wrapper, libraries, mockLibraries
 
   beforeEach(() => {
     mockLibraries = [
@@ -23,6 +22,10 @@ describe('Libraries.vue', () => {
           fragment_size: 100,
           created_at: '03/12/2019 11:49',
         },
+        pool: {
+          id: '1',
+          type: 'pools',
+        },
       },
       {
         id: 2,
@@ -38,21 +41,14 @@ describe('Libraries.vue', () => {
           fragment_size: 100,
           created_at: '03/12/2019 11:49',
         },
+        pool: {
+          id: '1',
+          type: 'pools',
+        },
       },
     ]
 
     store.commit('traction/pacbio/libraries/setLibraries', mockLibraries)
-
-    router = new VueRouter({
-      routes: [
-        {
-          path: '/pacbio/libraries',
-          name: 'PacbioLibraries',
-          component: Libraries,
-          props: true,
-        },
-      ],
-    })
 
     wrapper = mount(Libraries, {
       store,
