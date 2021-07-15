@@ -349,15 +349,12 @@ describe('mutations.js', () => {
       expect(state.libraries['_3'].errors).toEqual({ tag_id: 'duplicated' })
     })
 
-    // TODO: Is this necessary or do we just check whether there are any errors
-    // adding a key valid causes all sorts of issues.
-    // would it be better to have a libraries POJO? which would mean it would be better
+    // not sure of the best way to do this
     it.skip('when all of the libraries are valid', () => {
-      const libraries = { _1: library1, _2: library2, _3: library3, valid: undefined }
+      const libraries = { _1: library1, _2: library2, _3: library3 }
       const state = defaultState()
       state.libraries = { ...libraries }
       validateLibraries(state)
-      expect(libraries.valid).toBeTruthy()
     })
   })
 })

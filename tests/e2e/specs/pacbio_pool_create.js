@@ -19,8 +19,9 @@ describe('Pacbio Pool Create', () => {
     cy.get('[data-type=plate-item]').should('have.length', 2)
 
     cy.get('[data-type=tag-set-list]').select('IsoSeq_v1')
-    cy.get('[data-attribute=group-id]').should('have.length', 24)
+    cy.get('[data-attribute=group-id]').should('have.length', 12)
 
+    //TODO: add at least one more sample
     cy.get('[data-type=selected-plate-list]').within(() => {
       cy.get('[data-type=plate-item]').first()
       cy.get('ellipse')
@@ -30,12 +31,13 @@ describe('Pacbio Pool Create', () => {
     cy.get('[data-type=pool-library-edit]').should('have.length', 1)
     // and samples that have failed qc should not be selectable
     // TODO: Is this brittle? Need to know the data.
-
-    // add the tags to the samples in the pool
-    // add the template prep kit box barcode to all of the samples
-    // Add the volume for each sample in the pool
-    // Add the concentration for each sample in the pool
-    // Add the fragment size for each sample in the pool
+    cy.get('[data-type=pool-library-edit]').within(() => {
+      cy.get('[data-type=tag-list]').select('bc1001')
+      cy.get('[data-attribute=template-prep-kit-box-barcode]').type('ABC1')
+      cy.get('[data-attribute=volume]').type('1')
+      cy.get('[data-attribute=concentration]').type('10.0')
+      cy.get('[data-attribute=fragment-size]').type('100')
+    })
     // Click the create library button
     // Should see a message 'library successfully created'
   })

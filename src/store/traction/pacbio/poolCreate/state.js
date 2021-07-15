@@ -3,20 +3,25 @@
  * @param {Object} attributes any attributes of the object to pre-populate
  * @example newLibrary({pacbio_request_id: '1'})
  */
+
+const libraryAttributes = {
+  pacbio_request_id: null,
+  template_prep_kit_box_barcode: null,
+  tag_id: null,
+  volume: null,
+  concentration: null,
+  fragment_size: null,
+}
+
 const newLibrary = (attributes) => {
   return {
     errors: {},
-    pacbio_request_id: null,
-    template_prep_kit_box_barcode: null,
-    tag_id: null,
-    volume: null,
-    concentration: null,
-    fragment_size: null,
+    ...libraryAttributes,
     ...attributes,
   }
 }
 
-export { newLibrary }
+export { newLibrary, libraryAttributes }
 
 export default () => {
   return {

@@ -35,8 +35,8 @@
         ></PacbioPoolLibraryEdit>
       </b-tbody>
     </b-table-simple>
-    <div>
-      <b-button variant="success" @click="validateLibraries()"> Create </b-button>
+    <div class="text-right">
+      <b-button variant="success" @click="validateLibraries()"> Create Pool</b-button>
     </div>
   </b-col>
 </template>

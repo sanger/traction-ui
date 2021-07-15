@@ -1,6 +1,6 @@
 import { dataToObjectById } from '@/api/JsonApi'
 import Vue from 'vue'
-import { newLibrary } from '@/store/traction/pacbio/poolCreate/state.js'
+import { newLibrary, libraryAttributes } from '@/store/traction/pacbio/poolCreate/state.js'
 
 // Mutations handle synchronous update of state.
 export default {
@@ -88,18 +88,9 @@ export default {
    *  * tags are unique
    **/
   validateLibraries: ({ libraries }) => {
-    const requiredFields = [
-      'tag_id',
-      'template_prep_kit_box_barcode',
-      'concentration',
-      'volume',
-      'fragment_size',
-    ]
-
     for (const [key, library] of Object.entries(libraries)) {
-      console.log
       const errors = {}
-      requiredFields.forEach((field) => {
+      Object.keys(libraryAttributes).forEach((field) => {
         if (!library[field]) {
           errors[field] = 'must be present'
         }
