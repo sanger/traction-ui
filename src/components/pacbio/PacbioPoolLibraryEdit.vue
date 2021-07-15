@@ -12,8 +12,9 @@
         v-model="library.tag_id"
         data-type="tag-list"
         :options="tagListOptions"
+        :state="!library.errors.tag_id"
       ></b-form-select>
-      <b-form-invalid-feedback :state="!!library.errors.tag_id" data-attribute="tag-id-error">
+      <b-form-invalid-feedback data-attribute="tag-id-error">
         {{ library.errors.tag_id }}
       </b-form-invalid-feedback>
     </b-td>
@@ -21,42 +22,58 @@
       <b-form-input
         v-model="library.template_prep_kit_box_barcode"
         data-attribute="template-prep-kit-box-barcode"
-        :value="template_prep_kit_box_barcode"
+        :value="library.template_prep_kit_box_barcode"
         placeholder="Template Prep Kit Box Barcode"
         type="text"
         title="Template Prep Kit Box Barcode"
         class="template-prep-kit-box-barcode"
+        :state="!library.errors.template_prep_kit_box_barcode"
       />
+      <b-form-invalid-feedback data-attribute="template-prep-kit-box-barcode-error">
+        {{ library.errors.template_prep_kit_box_barcode }}
+      </b-form-invalid-feedback>
     </b-td>
     <b-td>
       <b-form-input
         v-model="library.volume"
         data-attribute="volume"
-        :value="volume"
+        :value="library.volume"
         placeholder="Volume"
         type="text"
         title="Volume"
+        :state="!library.errors.volume"
       />
+      <b-form-invalid-feedback data-attribute="volume-error">
+        {{ library.errors.volume }}
+      </b-form-invalid-feedback>
     </b-td>
     <b-td>
       <b-form-input
         v-model="library.concentration"
         data-attribute="concentration"
-        :value="concentration"
+        :value="library.concentration"
         placeholder="Concentration"
         type="text"
         title="Concentration"
+        :state="!library.errors.concentration"
       />
+      <b-form-invalid-feedback data-attribute="concentration-error">
+        {{ library.errors.concentration }}
+      </b-form-invalid-feedback>
     </b-td>
     <b-td>
       <b-form-input
         v-model="library.fragment_size"
         data-attribute="fragment-size"
-        :value="fragment_size"
+        :value="library.fragment_size"
         placeholder="Fragment Size"
         type="text"
         title="Fragment Size"
+        :state="!library.errors.fragment_size"
       />
+      <b-form-invalid-feedback data-attribute="fragment-size-error">
+        {{ library.errors.fragment_size }}
+      </b-form-invalid-feedback>
     </b-td>
   </b-tr>
 </template>
@@ -79,13 +96,7 @@ export default {
     },
   },
   data() {
-    return {
-      tag_id: null,
-      template_prep_kit_box_barcode: null,
-      volume: null,
-      concentration: null,
-      fragment_size: null,
-    }
+    return {}
   },
   computed: {
     ...mapGetters(['selectedTagSet', 'libraryItem']),

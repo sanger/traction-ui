@@ -35,13 +35,16 @@
         ></PacbioPoolLibraryEdit>
       </b-tbody>
     </b-table-simple>
+    <div>
+      <b-button variant="success" @click="validateLibraries()"> Create </b-button>
+    </div>
   </b-col>
 </template>
 
 <script>
 import PacbioPoolLibraryEdit from '@/components/pacbio/PacbioPoolLibraryEdit'
 import { createNamespacedHelpers } from 'vuex'
-const { mapGetters } = createNamespacedHelpers('traction/pacbio/poolCreate')
+const { mapGetters, mapMutations } = createNamespacedHelpers('traction/pacbio/poolCreate')
 
 export default {
   name: 'PacbioPoolLibraryList',
@@ -53,6 +56,9 @@ export default {
   },
   computed: {
     ...mapGetters(['selectedRequests']),
+  },
+  methods: {
+    ...mapMutations(['validateLibraries']),
   },
 }
 </script>

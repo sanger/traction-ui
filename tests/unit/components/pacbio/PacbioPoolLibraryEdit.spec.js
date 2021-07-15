@@ -117,6 +117,11 @@ describe('PacbioPoolLibraryEdit.vue', () => {
   })
 
   describe('invalid', () => {
+    const propsData = {
+      id: 1,
+      request,
+    }
+
     it('tag id', () => {
       store.state.traction.pacbio.poolCreate.libraries = {
         _1: { ...library, errors: { tag_id: 'must be present' } },
@@ -125,21 +130,68 @@ describe('PacbioPoolLibraryEdit.vue', () => {
       wrapper = mount(PacbioPoolLibraryEdit, {
         store,
         localVue,
-        propsData: {
-          id: 1,
-          request,
-        },
+        propsData,
       })
 
       expect(wrapper.find('[data-attribute=tag-id-error]').text()).toEqual('must be present')
     })
 
-    it('template prep kit box barcode id', () => {})
+    it('template prep kit box barcode id', () => {
+      store.state.traction.pacbio.poolCreate.libraries = {
+        _1: { ...library, errors: { template_prep_kit_box_barcode: 'must be present' } },
+      }
 
-    it('volume', () => {})
+      wrapper = mount(PacbioPoolLibraryEdit, {
+        store,
+        localVue,
+        propsData,
+      })
 
-    it('concentration', () => {})
+      expect(wrapper.find('[data-attribute=template-prep-kit-box-barcode-error]').text()).toEqual(
+        'must be present',
+      )
+    })
 
-    it('fragment size', () => {})
+    it('volume', () => {
+      store.state.traction.pacbio.poolCreate.libraries = {
+        _1: { ...library, errors: { volume: 'must be present' } },
+      }
+
+      wrapper = mount(PacbioPoolLibraryEdit, {
+        store,
+        localVue,
+        propsData,
+      })
+
+      expect(wrapper.find('[data-attribute=volume-error]').text()).toEqual('must be present')
+    })
+
+    it('concentration', () => {
+      store.state.traction.pacbio.poolCreate.libraries = {
+        _1: { ...library, errors: { concentration: 'must be present' } },
+      }
+
+      wrapper = mount(PacbioPoolLibraryEdit, {
+        store,
+        localVue,
+        propsData,
+      })
+
+      expect(wrapper.find('[data-attribute=concentration-error]').text()).toEqual('must be present')
+    })
+
+    it('fragment size', () => {
+      store.state.traction.pacbio.poolCreate.libraries = {
+        _1: { ...library, errors: { fragment_size: 'must be present' } },
+      }
+
+      wrapper = mount(PacbioPoolLibraryEdit, {
+        store,
+        localVue,
+        propsData,
+      })
+
+      expect(wrapper.find('[data-attribute=fragment-size-error]').text()).toEqual('must be present')
+    })
   })
 })
