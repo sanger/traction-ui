@@ -1,6 +1,6 @@
 import PacbioPoolLibraryList from '@/components/pacbio/PacbioPoolLibraryList'
 import { mount, store, localVue } from 'testHelper'
-import { newLibrary } from '@/store/traction/pacbio/poolCreate/state.js'
+import { newLibrary } from '@/store/traction/pacbio/poolCreate/libraries.js'
 
 const requests = {
   '1': { id: 1 },

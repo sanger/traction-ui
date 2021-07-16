@@ -4,24 +4,6 @@
  * @example newLibrary({pacbio_request_id: '1'})
  */
 
-const libraryAttributes = {
-  pacbio_request_id: null,
-  template_prep_kit_box_barcode: null,
-  tag_id: null,
-  volume: null,
-  concentration: null,
-  fragment_size: null,
-}
-
-const newLibrary = (attributes) => {
-  return {
-    ...libraryAttributes,
-    ...attributes,
-  }
-}
-
-export { newLibrary, libraryAttributes }
-
 export default () => {
   return {
     // Resources returned by the server, each key represents a resource type.
