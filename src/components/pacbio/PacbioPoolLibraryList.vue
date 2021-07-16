@@ -66,6 +66,6 @@ export default {
 <style scoped lang="scss">
 @import 'src/styles/components.scss';
 th {
-  font-size: 0.9em;
+  font-size: 0.8em;
 }
 </style>

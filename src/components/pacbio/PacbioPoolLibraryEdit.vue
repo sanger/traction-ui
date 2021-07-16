@@ -26,7 +26,6 @@
         placeholder="Template Prep Kit Box Barcode"
         type="text"
         title="Template Prep Kit Box Barcode"
-        class="template-prep-kit-box-barcode"
         :state="hasErrors('template_prep_kit_box_barcode')"
       />
       <b-form-invalid-feedback data-attribute="template-prep-kit-box-barcode-error">
@@ -125,21 +124,9 @@ export default {
 </script>
 
 <style scoped lang="scss">
-.custom-select {
-  width: auto;
-}
-.form-control {
-  width: 100px;
-}
-.template-prep-kit-box-barcode {
-  width: 150px;
-}
 td,
 .custom-select,
 .form-control {
-  font-size: 0.9em;
-}
-.col {
-  padding-right: 0;
+  font-size: 0.8em;
 }
 </style>
