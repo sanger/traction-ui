@@ -116,7 +116,6 @@ describe('mutations.js', () => {
           template_prep_kit_box_barcode: null,
         },
         _1: {
-          errors: {},
           pacbio_request_id: '1',
           tag_id: null,
           volume: null,
@@ -349,12 +348,14 @@ describe('mutations.js', () => {
       expect(state.libraries['_3'].errors).toEqual({ tag_id: 'duplicated' })
     })
 
-    // not sure of the best way to do this
-    it.skip('when all of the libraries are valid', () => {
+    it('when all of the libraries are valid', () => {
       const libraries = { _1: library1, _2: library2, _3: library3 }
       const state = defaultState()
       state.libraries = { ...libraries }
       validateLibraries(state)
+      expect(
+        Object.values(state.libraries).every((library) => Object.keys(library.errors).length === 0),
+      ).toBeTruthy()
     })
   })
 })

@@ -12,10 +12,10 @@
         v-model="library.tag_id"
         data-type="tag-list"
         :options="tagListOptions"
-        :state="!library.errors.tag_id"
+        :state="hasErrors('tag_id')"
       ></b-form-select>
       <b-form-invalid-feedback data-attribute="tag-id-error">
-        {{ library.errors.tag_id }}
+        {{ errorsFor('tag_id') }}
       </b-form-invalid-feedback>
     </b-td>
     <b-td>
@@ -27,10 +27,10 @@
         type="text"
         title="Template Prep Kit Box Barcode"
         class="template-prep-kit-box-barcode"
-        :state="!library.errors.template_prep_kit_box_barcode"
+        :state="hasErrors('template_prep_kit_box_barcode')"
       />
       <b-form-invalid-feedback data-attribute="template-prep-kit-box-barcode-error">
-        {{ library.errors.template_prep_kit_box_barcode }}
+        {{ errorsFor('template_prep_kit_box_barcode') }}
       </b-form-invalid-feedback>
     </b-td>
     <b-td>
@@ -41,10 +41,10 @@
         placeholder="Volume"
         type="text"
         title="Volume"
-        :state="!library.errors.volume"
+        :state="hasErrors('volume')"
       />
       <b-form-invalid-feedback data-attribute="volume-error">
-        {{ library.errors.volume }}
+        {{ errorsFor('volume') }}
       </b-form-invalid-feedback>
     </b-td>
     <b-td>
@@ -55,10 +55,10 @@
         placeholder="Concentration"
         type="text"
         title="Concentration"
-        :state="!library.errors.concentration"
+        :state="hasErrors('concentration')"
       />
       <b-form-invalid-feedback data-attribute="concentration-error">
-        {{ library.errors.concentration }}
+        {{ errorsFor('concentration') }}
       </b-form-invalid-feedback>
     </b-td>
     <b-td>
@@ -69,10 +69,10 @@
         placeholder="Fragment Size"
         type="text"
         title="Fragment Size"
-        :state="!library.errors.fragment_size"
+        :state="hasErrors('fragment_size')"
       />
       <b-form-invalid-feedback data-attribute="fragment-size-error">
-        {{ library.errors.fragment_size }}
+        {{ errorsFor('fragment_size') }}
       </b-form-invalid-feedback>
     </b-td>
   </b-tr>
@@ -108,6 +108,17 @@ export default {
     },
     library() {
       return this.libraryItem(this.request.id)
+    },
+  },
+  methods: {
+    hasErrors(attribute) {
+      if (!this.library.errors) {
+        return null
+      }
+      return !this.library.errors[attribute]
+    },
+    errorsFor(attribute) {
+      return this.library.errors && this.library.errors[attribute]
     },
   },
 }

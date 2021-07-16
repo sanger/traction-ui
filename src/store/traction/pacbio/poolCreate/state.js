@@ -15,7 +15,6 @@ const libraryAttributes = {
 
 const newLibrary = (attributes) => {
   return {
-    errors: {},
     ...libraryAttributes,
     ...attributes,
   }
