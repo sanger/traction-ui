@@ -24,8 +24,30 @@ describe('PacbioSampleMetadataEdit.vue', () => {
     expect(wrapper.find('#editSampleModal')).toBeDefined()
   })
 
-  it('will have a form', () => {
-    expect(wrapper.find('#sampleMetaDataForm')).toBeDefined()
+  describe('form group', () => {
+    it('will have a form', () => {
+      expect(wrapper.find('#sampleMetaDataForm')).toBeDefined()
+    })
+
+    it('will have a libraryType input field', () => {
+      expect(wrapper.find('#libraryType')).toBeDefined()
+    })
+
+    it('will have a estimateOfGBRequired input field', () => {
+      expect(wrapper.find('#estimateOfGBRequired')).toBeDefined()
+    })
+
+    it('will have a numberOfSMRTCells input field', () => {
+      expect(wrapper.find('#numberOfSMRTCells')).toBeDefined()
+    })
+
+    it('will have a costCode input field', () => {
+      expect(wrapper.find('#costCode')).toBeDefined()
+    })
+
+    it('will have a qcStatus selection field', () => {
+      expect(wrapper.find('#qcStatus')).toBeDefined()
+    })
   })
 
   describe('update', () => {

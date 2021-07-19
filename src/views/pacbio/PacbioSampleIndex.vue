@@ -138,6 +138,7 @@ export default {
         { key: 'sample_name', label: 'Name', sortable: true },
         { key: 'sample_species', label: 'Species', sortable: true },
         { key: 'source_identifier', label: 'Source', sortable: true },
+        { key: 'qc_status', label: 'QC Status', sortable: true },
         { key: 'created_at', label: 'Created at', sortable: true },
         { key: 'actions', label: 'Actions' },
         { key: 'show_details', label: '' },

@@ -17,6 +17,7 @@
           "barcode": "SE108532I",
           "source_identifier": "SE108532I",
           "sample_species": "Homo sapiens",
+          "qc_status": "Passed",
           "created_at": "2020/05/05 12:14"
         }
       }

@@ -12,6 +12,7 @@
         "sample_name": "mockName3",
         "barcode": "SE108532I",
         "sample_species": "mockSpecies",
+        "qc_status": "Passed",
         "created_at": "10/14/2019 10:56"
       }
     }

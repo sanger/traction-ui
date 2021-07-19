@@ -36,6 +36,7 @@ const createRequestPayload = (sample) => {
         estimate_of_gb_required: sample.estimate_of_gb_required,
         number_of_smrt_cells: sample.number_of_smrt_cells,
         cost_code: sample.cost_code,
+        qc_status: sample.qc_status,
       },
     },
   }

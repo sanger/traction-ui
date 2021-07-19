@@ -45,6 +45,10 @@
           <b-form-input id="costCode" v-model="request.cost_code" placeholder="Cost Code">
           </b-form-input>
         </b-form-group>
+
+        <b-form-group id="qcStatus" label="QC Status" label-for="qcStatus">
+          <b-form-select v-model="request.qc_status" :options="qc_options"></b-form-select>
+        </b-form-group>
       </b-form>
 
       <template v-slot:modal-footer="{ ok, cancel }">
@@ -74,11 +78,16 @@ export default {
   },
   data() {
     return {
+      qc_options: [
+        { value: 'Passed', text: 'Passed' },
+        { value: 'Failed', text: 'Failed' },
+      ],
       request: {
         library_type: '',
         estimate_of_gb_required: '',
         number_of_smrt_cells: '',
         cost_code: '',
+        qc_status: '',
       },
     }
   },
