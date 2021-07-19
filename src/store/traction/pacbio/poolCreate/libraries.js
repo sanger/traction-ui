@@ -43,6 +43,24 @@ const valid = ({ libraries }) => {
   return Object.values(libraries).every((library) => Object.keys(library.errors || {}).length === 0)
 }
 
+const extractLibraryAttributes = ({
+  pacbio_request_id,
+  template_prep_kit_box_barcode,
+  tag_id,
+  volume,
+  concentration,
+  fragment_size,
+}) => {
+  return {
+    pacbio_request_id,
+    template_prep_kit_box_barcode,
+    tag_id,
+    volume,
+    concentration,
+    fragment_size,
+  }
+}
+
 /* 
   produce a json api compliant (sort of) payload
   e.g. { data: attributes: { libraries: [ library1, library2 ... ]}}
@@ -51,26 +69,7 @@ const payload = ({ libraries }) => {
   return {
     data: {
       attributes: {
-        // couldnt find any other way than explicity stating each attributes. I am sure there is a better way.
-        libraries: Object.values(libraries).map(
-          ({
-            pacbio_request_id,
-            template_prep_kit_box_barcode,
-            tag_id,
-            volume,
-            concentration,
-            fragment_size,
-          }) => {
-            return {
-              pacbio_request_id,
-              template_prep_kit_box_barcode,
-              tag_id,
-              volume,
-              concentration,
-              fragment_size,
-            }
-          },
-        ),
+        libraries: Object.values(libraries).map((library) => extractLibraryAttributes(library)),
       },
     },
   }
