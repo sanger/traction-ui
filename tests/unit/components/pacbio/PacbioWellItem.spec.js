@@ -7,6 +7,7 @@ const requests = {
     cost_code: '12345',
     source_identifier: 'DN1:A1',
     external_study_id: '1',
+    qc_status: 'Passed',
   },
 }
 
@@ -74,9 +75,22 @@ describe('Well.vue', () => {
   })
 
   describe('#status', () => {
-    it('will be filled if the well has a request', () => {
+    it('will be passed if the well has a request and its qc_status is passing', () => {
       let ellipse = wrapper.find('ellipse')
-      expect(ellipse.attributes('class')).toContain('filled')
+      expect(ellipse.attributes('class')).toContain('passed')
+    })
+
+    it('will be failed if the well has a request and its qc_status is passing', () => {
+      requests[1].qc_status = 'Failed'
+      store.state.traction.pacbio.poolCreate.resources.requests = requests
+
+      wrapper = mount(Well, {
+        propsData: props,
+        store,
+      })
+
+      let ellipse = wrapper.find('ellipse')
+      expect(ellipse.attributes('class')).toContain('failed')
     })
 
     it('will be empty when the well does not have a request', () => {
@@ -102,6 +116,15 @@ describe('Well.vue', () => {
 
   describe('@click', () => {
     it('emits a click event', async () => {
+      // For some reason the store isnt being updated from a previous test
+      requests[1].qc_status = 'Passed'
+      store.state.traction.pacbio.poolCreate.resources.requests = requests
+
+      wrapper = mount(Well, {
+        propsData: props,
+        store,
+      })
+
       const ellipse = wrapper.find('ellipse')
       await ellipse.trigger('click')
       expect(wrapper.emitted().click).toBeTruthy()
