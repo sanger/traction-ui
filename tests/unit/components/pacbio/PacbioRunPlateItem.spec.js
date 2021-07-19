@@ -1,4 +1,4 @@
-import { mount, localVue, store } from '../../testHelper'
+import { mount, localVue, store } from 'testHelper'
 import Plate from '@/components/pacbio/PacbioRunPlateItem'
 import * as Run from '@/api/PacbioRun'
 import PlateMap from '@/config/PlateMap'

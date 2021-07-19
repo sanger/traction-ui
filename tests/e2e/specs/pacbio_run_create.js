@@ -6,7 +6,7 @@ describe('Pacbio Run Create view', () => {
       fixture: 'tractionPacbioRuns.json',
     })
     cy.visit('#/pacbio/runs')
-    cy.intercept('/v1/pacbio/libraries?include=request,tag.tag_set,tube', {
+    cy.intercept('/v1/pacbio/libraries?include=request,tag,tube', {
       fixture: 'tractionPacbioLibraries.json',
     })
     cy.get('button')

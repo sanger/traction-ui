@@ -50,8 +50,3 @@ export default {
   },
 }
 </script>
-<style>
-.b-table-sticky-header {
-  max-height: 500px;
-}
-</style>

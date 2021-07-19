@@ -1,18 +1,10 @@
 import Dashboard from '@/views/Dashboard'
-import { mount, localVue, store } from '../testHelper'
-import VueRouter from 'vue-router'
+import { mount, localVue, store, router } from 'testHelper'
 
 describe('Dashboard.vue', () => {
-  let wrapper, router, box, dashboard
+  let wrapper, box, dashboard
 
   beforeEach(() => {
-    router = new VueRouter({
-      routes: [
-        { path: '/saphyr', name: 'Saphyr' },
-        { path: '/pacbio', name: 'Pacbio' },
-        { path: '/ont', name: 'ONT' },
-      ],
-    })
     wrapper = mount(Dashboard, { router, localVue, store })
     dashboard = wrapper.vm
   })

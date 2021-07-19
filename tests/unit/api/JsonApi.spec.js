@@ -161,4 +161,51 @@ describe('JsonApi', () => {
       })
     })
   })
+
+  describe('groupIncludedByResource', () => {
+    it('groups resources from an included array', () => {
+      const included = TestResponse.data.included
+      expect(JsonApi.groupIncludedByResource(included)).toEqual({
+        pickles: included.slice(0, 1),
+        chocolates: included.slice(1, 3),
+        crisps: included.slice(3, 5),
+      })
+    })
+  })
+
+  describe('extractRelationshipsAndGroupById', () => {
+    it('creates a list of relationships by id', () => {
+      const relationships = TestResponse.data.data[0].relationships
+      const extractedRelationships = JsonApi.extractRelationshipsAndGroupById(relationships)
+      expect(Object.keys(extractedRelationships)).toEqual(['beans', 'pickles', 'chocolates'])
+      expect(extractedRelationships.beans).toEqual(['1'])
+      expect(extractedRelationships.pickles).toEqual(['2'])
+      expect(extractedRelationships.chocolates).toEqual(['3'])
+    })
+
+    it('returns an empty object if the relationships are undefined', () => {
+      const extractedRelationships = JsonApi.extractRelationshipsAndGroupById()
+      expect(extractedRelationships).toEqual({})
+    })
+  })
+
+  describe('dataToObjectById', () => {
+    it('creates an object with the id as key', () => {
+      const data = TestResponse.data.data
+      const object = JsonApi.dataToObjectById({ data })
+      const keys = Object.keys(object)
+      expect(keys.length).toEqual(data.length)
+      expect(object[keys[0]]).toEqual({ id: data[0].id, type: data[0].type, ...data[0].attributes })
+    })
+
+    it('adds the relationships if requested', () => {
+      const data = TestResponse.data.data
+      const object = JsonApi.dataToObjectById({ data, includeRelationships: true })
+      const item = object['1']
+      const keys = Object.keys(item)
+      expect(keys.includes('beans')).toBeTruthy()
+      expect(keys.includes('pickles')).toBeTruthy()
+      expect(keys.includes('chocolates')).toBeTruthy()
+    })
+  })
 })

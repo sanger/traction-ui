@@ -1,23 +1,15 @@
 import Samples from '@/views/saphyr/SaphyrSamples'
-import { mount, localVue, store, Data } from '../../testHelper'
-import Libraries from '@/views/saphyr/SaphyrLibraries'
-import VueRouter from 'vue-router'
+import { mount, localVue, store, Data, router } from 'testHelper'
 import Alert from '@/components/Alert'
 import * as consts from '@/consts/consts'
 import Response from '@/api/Response'
 
 describe('Samples.vue', () => {
-  let wrapper, samples, router, mockSamples
+  let wrapper, samples, mockSamples
 
   beforeEach(() => {
     mockSamples = new Response(Data.TractionSaphyrRequests).deserialize.requests
     store.commit('traction/saphyr/requests/setRequests', mockSamples)
-
-    router = new VueRouter({
-      routes: [
-        { path: '/saphyr/libraries', name: 'SaphyrLibraries', component: Libraries, props: true },
-      ],
-    })
 
     wrapper = mount(Samples, {
       localVue,
