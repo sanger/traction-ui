@@ -1,6 +1,7 @@
 import { Data } from 'testHelper'
 import actions from '@/store/traction/pacbio/poolCreate/actions'
 import defaultState from '@/store/traction/pacbio/poolCreate/state'
+import Response from '@/api/Response'
 
 describe('actions.js', () => {
   const {
@@ -8,6 +9,7 @@ describe('actions.js', () => {
     fetchPacbioTagSets,
     selectWellRequests,
     deselectPlateAndContents,
+    createPool,
   } = actions
 
   it('fetchPacbioPlates', async () => {
@@ -124,6 +126,52 @@ describe('actions.js', () => {
       expect(commit).toHaveBeenCalledWith('selectRequest', { id: '300', selected: false })
       // We don't want to select any unselected requests
       expect(commit).not.toHaveBeenCalledWith('selectRequest', { id: '200', selected: true })
+    })
+  })
+
+  describe('createPool', async () => {
+    const library1 = {
+      pacbio_request_id: '1',
+      tag_id: '1',
+      template_prep_kit_box_barcode: 'ABC1',
+      volume: 1,
+      concentration: 1,
+      fragment_size: 100,
+    }
+
+    const library2 = {
+      pacbio_request_id: '2',
+      tag_id: '2',
+      template_prep_kit_box_barcode: 'ABC1',
+      volume: 1,
+      concentration: 1,
+      fragment_size: 100,
+    }
+
+    // pool should be successfully created
+    // for now: create a pool state with a simple success message
+    it('when the pool is valid', async () => {
+      const mockResponse = { status: '201', data: { data: { id: 1 } } }
+      const commit = jest.fn()
+      const create = jest.fn()
+      const rootState = { api: { traction: { pacbio: { pools: { create } } } } }
+      const libraries = { _1: library1, _2: library2 }
+      create.mockReturnValue(mockResponse)
+      const response = new Response(mockResponse)
+      await createPool({ commit, rootState, libraries })
+      expect(commit).toHaveBeenCalledWith('populateResult', response)
+    })
+
+    // validate libraries fails
+    // request is not sent
+    // commit is not called
+    it('when the pool is invalid', async () => {
+      const commit = jest.fn()
+      const create = jest.fn()
+      const rootState = { api: { traction: { pacbio: { pools: { create } } } } }
+      const libraries = { _1: library1, _2: { ...library2, tag_id: '' } }
+      await createPool({ commit, rootState, libraries })
+      expect(commit).not.toHaveBeenCalledWith('populateResult')
     })
   })
 })

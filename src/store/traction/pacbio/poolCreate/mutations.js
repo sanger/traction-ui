@@ -86,8 +86,23 @@ export default {
    * This method will check each library to ensure that:
    *  * required fields are present
    *  * tags are unique
+   * temporary until use create pool
    **/
   validateLibraries: ({ libraries }) => {
     validate({ libraries })
+  },
+
+  /**
+   * Populated the result with the response
+   * @param {Object} state The VueXState object
+   * @param {Object} Response A response object
+   **/
+  populateResult: (state, response) => {
+    const result = response.successful()
+      ? // if the response is successful return an appropriate state and message
+        { status: 'success', message: 'Pool successfully created' }
+      : // if the response is a failure return an appropriate state and the errors
+        { status: 'failure', ...response.errors() }
+    state.result = result
   },
 }

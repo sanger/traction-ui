@@ -89,6 +89,10 @@
           {
             "name": "tag_sets",
             "include": "tags"
+          },
+          {
+            "name": "pools",
+            "include": ""
           }
         ]
       }

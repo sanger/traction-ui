@@ -42,5 +42,8 @@ export default () => {
     },
     // Libraries. Indexed by an internally generated id.
     libraries: {},
+
+    // Result: The result of the pool create call i.e. response with message and status
+    result: {},
   }
 }
