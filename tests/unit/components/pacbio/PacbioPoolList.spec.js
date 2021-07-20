@@ -6,12 +6,11 @@ describe('pacbioPoolList', () => {
   let wrapper
 
   beforeEach(() => {
+    store.state.traction.pacbio.pools = storePools
+
     wrapper = mount(pacbioPoolList, {
       localVue,
-      store: {
-        ...store,
-        state: storePools,
-      },
+      store,
     })
   })
 
