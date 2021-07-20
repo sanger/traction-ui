@@ -158,7 +158,7 @@ describe('actions.js', () => {
       const libraries = { _1: library1, _2: library2 }
       create.mockReturnValue(mockResponse)
       const response = new Response(mockResponse)
-      await createPool({ commit, rootState, libraries })
+      await createPool({ commit, rootState, state: { libraries } })
       expect(commit).toHaveBeenCalledWith('populateResult', response)
     })
 
@@ -170,7 +170,7 @@ describe('actions.js', () => {
       const create = jest.fn()
       const rootState = { api: { traction: { pacbio: { pools: { create } } } } }
       const libraries = { _1: library1, _2: { ...library2, tag_id: '' } }
-      await createPool({ commit, rootState, libraries })
+      await createPool({ commit, rootState, state: { libraries } })
       expect(commit).not.toHaveBeenCalledWith('populateResult')
     })
   })

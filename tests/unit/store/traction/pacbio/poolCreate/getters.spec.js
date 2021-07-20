@@ -15,6 +15,7 @@ describe('getters.js', () => {
     wellList,
     requestList,
     libraryItem,
+    result,
   } = getters
 
   const tagSets = {
@@ -229,7 +230,7 @@ describe('getters.js', () => {
     })
   })
 
-  describe('getLibrary', () => {
+  describe('libraryItem', () => {
     const libraries = {
       _3: {
         pacbio_request_id: '3',
@@ -249,6 +250,14 @@ describe('getters.js', () => {
     it('will return the correct library', () => {
       state.libraries = libraries
       expect(libraryItem(state)('3')).toEqual(libraries['_3'])
+    })
+  })
+
+  describe('resultItem', () => {
+    it('returns what it does', () => {
+      const newResult = { state: 'success', message: 'help' }
+      state.result = newResult
+      expect(result(state)).toEqual(newResult)
     })
   })
 })

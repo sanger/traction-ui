@@ -117,4 +117,12 @@ export default {
   libraryItem: ({ libraries }) => (id) => {
     return libraries[`_${id}`]
   },
+
+  /**
+   * Returns the result of the pool creation
+   * @param {Object} state The Vuex state object
+   */
+  result: (state) => {
+    return state.result
+  },
 }

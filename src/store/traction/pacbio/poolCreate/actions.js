@@ -63,8 +63,11 @@ export default {
 
   /*
    * Creates a pool from the libraries
+   * First check that the pool is valid
+   * If it is not stop otherwise retrieve the libraries and
+   * send the request
    */
-  createPool: async ({ commit, rootState, libraries }) => {
+  createPool: async ({ commit, rootState, state: { libraries } }) => {
     validate({ libraries })
     if (!valid({ libraries })) return
     const request = rootState.api.traction.pacbio.pools

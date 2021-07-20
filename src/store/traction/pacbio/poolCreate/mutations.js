@@ -1,6 +1,6 @@
 import { dataToObjectById } from '@/api/JsonApi'
 import Vue from 'vue'
-import { newLibrary, validate } from '@/store/traction/pacbio/poolCreate/libraries.js'
+import { newLibrary } from '@/store/traction/pacbio/poolCreate/libraries.js'
 
 // Mutations handle synchronous update of state.
 export default {
@@ -81,28 +81,16 @@ export default {
   },
 
   /**
-   * Update an existing library in its store
-   * @param {Object} state The VueXState object
-   * This method will check each library to ensure that:
-   *  * required fields are present
-   *  * tags are unique
-   * temporary until use create pool
-   **/
-  validateLibraries: ({ libraries }) => {
-    validate({ libraries })
-  },
-
-  /**
    * Populated the result with the response
    * @param {Object} state The VueXState object
    * @param {Object} Response A response object
    **/
   populateResult: (state, response) => {
-    const result = response.successful()
+    const result = response.successful
       ? // if the response is successful return an appropriate state and message
-        { status: 'success', message: 'Pool successfully created' }
+        { success: true, message: 'Pool successfully created' }
       : // if the response is a failure return an appropriate state and the errors
-        { status: 'failure', ...response.errors() }
+        { success: false, ...response.errors }
     state.result = result
   },
 }

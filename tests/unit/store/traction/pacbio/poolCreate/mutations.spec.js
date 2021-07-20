@@ -239,27 +239,21 @@ describe('mutations.js', () => {
   describe('populateResult', () => {
     it('with a successful response', () => {
       const response = {
-        successful: () => {
-          return true
-        },
+        successful: true,
       }
       const state = defaultState()
       populateResult(state, response)
-      expect(state.result).toEqual({ status: 'success', message: 'Pool successfully created' })
+      expect(state.result).toEqual({ success: true, message: 'Pool successfully created' })
     })
 
     it('with an unsuccessful response', () => {
       const response = {
-        successful: () => {
-          return false
-        },
-        errors: () => {
-          return { message: 'error1: error1, error2: error2' }
-        },
+        successful: false,
+        errors: { message: 'error1: error1, error2: error2' },
       }
       const state = defaultState()
       populateResult(state, response)
-      expect(state.result).toEqual({ status: 'failure', message: 'error1: error1, error2: error2' })
+      expect(state.result).toEqual({ success: false, message: 'error1: error1, error2: error2' })
     })
   })
 })
