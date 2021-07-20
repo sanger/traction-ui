@@ -100,45 +100,4 @@ describe('PacbioPoolLibraryList.vue', () => {
       })
     })
   })
-
-  // seems to be a problem when updating the store
-  // not reflected in the component
-  // e2e test?
-  describe.skip('creating a pool', () => {
-    // create a mock success response
-    // mock the pools create request
-    // press the create pool button
-    // expect to see a success message
-    it('successfully', async () => {
-      store.state.traction.pacbio.poolCreate.libraries = libraries
-      const {
-        state: {
-          api: {
-            traction: {
-              pacbio: { pools },
-            },
-          },
-        },
-      } = store
-      pools.create = jest.fn(() => ({ status: 201, data: { data: { id: 1 } } }))
-      const wrapper = mount(PacbioPoolLibraryList, {
-        store,
-        localVue,
-      })
-      const button = wrapper.find('[data-action=create-pool]')
-      await button.trigger('click')
-    })
-
-    // create a mock failure response
-    // mock the pools create request
-    // press the create pool button
-    // expect to see a failure message
-    it('unsuccessfully', () => {})
-
-    // create an invalid library
-    // press the create pool button
-    // there should be no message
-    // but there should be some validation errors
-    it('when the libraries are not valid', () => {})
-  })
 })

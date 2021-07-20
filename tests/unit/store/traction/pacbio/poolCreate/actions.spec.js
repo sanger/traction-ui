@@ -162,6 +162,8 @@ describe('actions.js', () => {
       expect(commit).toHaveBeenCalledWith('populateResult', response)
     })
 
+    it.skip('when there is an error', () => {})
+
     // validate libraries fails
     // request is not sent
     // commit is not called
