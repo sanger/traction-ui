@@ -38,36 +38,8 @@ describe('mutations', () => {
     }
     mutations.setLibraries(state, libraries)
     expect(state.libraries).toEqual({
-      '1': {
-        concentration: 1,
-        created_at: '2021/07/15 15:26',
-        deactivated_at: null,
-        fragment_size: 100,
-        id: '1',
-        pools: ['1'],
-        requests: ['1'],
-        source_identifier: 'DN1:A1',
-        state: 'pending',
-        tags: ['26'],
-        template_prep_kit_box_barcode: 'LK12345',
-        type: 'libraries',
-        volume: 1,
-      },
-      '2': {
-        concentration: 1,
-        created_at: '2021/07/15 15:26',
-        deactivated_at: null,
-        fragment_size: 100,
-        id: '2',
-        pools: ['2'],
-        requests: ['2'],
-        source_identifier: 'DN1:A2',
-        state: 'pending',
-        tags: ['7'],
-        template_prep_kit_box_barcode: 'LK12345',
-        type: 'libraries',
-        volume: 1,
-      },
+      '1': { id: '1', requests: ['1'], tags: ['26'], type: 'libraries' },
+      '2': { id: '2', requests: ['2'], tags: ['7'], type: 'libraries' },
     })
   })
 
@@ -77,8 +49,8 @@ describe('mutations', () => {
     }
     mutations.setTags(state, tags)
     expect(state.tags).toEqual({
-      '26': { group_id: 'bc1019', id: '26', oligo: 'ACACACTCTATCAGAT', type: 'tags' },
-      '7': { group_id: 'bc1011_BAK8A_OA', id: '7', oligo: 'CTATACGTATATCTATT', type: 'tags' },
+      '26': { group_id: 'bc1019', id: '26', type: 'tags' },
+      '7': { group_id: 'bc1011_BAK8A_OA', id: '7', type: 'tags' },
     })
   })
 
@@ -88,34 +60,8 @@ describe('mutations', () => {
     }
     mutations.setRequests(state, requests)
     expect(state.requests).toEqual({
-      '1': {
-        barcode: null,
-        cost_code: 'PSD1234',
-        created_at: '2021/07/15 15:26',
-        estimate_of_gb_required: 100,
-        external_study_id: '1',
-        id: '1',
-        library_type: 'library_type_1',
-        number_of_smrt_cells: 3,
-        sample_name: 'Sample48',
-        sample_species: 'human',
-        source_identifier: 'DN1:A1',
-        type: 'requests',
-      },
-      '2': {
-        barcode: null,
-        cost_code: 'PSD1234',
-        created_at: '2021/07/15 15:26',
-        estimate_of_gb_required: 100,
-        external_study_id: '1',
-        id: '2',
-        library_type: 'library_type_1',
-        number_of_smrt_cells: 3,
-        sample_name: 'Sample47',
-        sample_species: 'human',
-        source_identifier: 'DN1:A2',
-        type: 'requests',
-      },
+      '1': { id: '1', sample_name: 'Sample48', type: 'requests' },
+      '2': { id: '2', sample_name: 'Sample47', type: 'requests' },
     })
   })
 })
