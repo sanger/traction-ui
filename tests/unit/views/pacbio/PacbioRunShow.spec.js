@@ -31,7 +31,7 @@ describe('Run.vue', () => {
       localVue,
       stubs: {
         Plate: true,
-        PacbioLibraryList: true,
+        pacbioPoolList: true,
         PacbioRunInfoEdit: true,
       },
       propsData: { id: 'new' },
@@ -53,7 +53,7 @@ describe('Run.vue', () => {
 
   describe('Pacbio Libraries Table', () => {
     it('dispays the pacbio library table', () => {
-      expect(wrapper.findComponent({ ref: 'PacbioLibraryList' })).toBeTruthy()
+      expect(wrapper.findComponent({ ref: 'pacbioPoolList' })).toBeTruthy()
     })
   })
 
@@ -129,7 +129,7 @@ describe('Run.vue', () => {
         propsData: { id: 1 },
         stubs: {
           Plate: true,
-          PacbioLibraryList: true,
+          pacbioPoolList: true,
           PacbioRunInfoEdit: true,
         },
       })

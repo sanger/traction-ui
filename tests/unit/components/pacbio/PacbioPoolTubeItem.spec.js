@@ -1,4 +1,4 @@
-import Tube from '@/components/pacbio/PacbioLibraryTubeItem'
+import Tube from '@/components/pacbio/PacbioPoolTubeItem'
 import { localVue, mount } from 'testHelper'
 
 describe('LibraryTubeItem.vue', () => {

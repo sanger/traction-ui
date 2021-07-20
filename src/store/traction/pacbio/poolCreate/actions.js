@@ -10,7 +10,15 @@ import { valid } from './libraries'
 export default {
   fetchPacbioPlates: async ({ commit, rootState }) => {
     const request = rootState.api.traction.pacbio.plates
-    const promise = request.get({ include: 'wells.requests' })
+    const promise = request.get({
+      include: 'wells.requests',
+      fields: {
+        requests: 'sample_name',
+        tubes: 'barcode',
+        tags: 'tag_group_id',
+        libraries: 'request,tag',
+      },
+    })
     const {
       _body: { data, included },
     } = await handlePromise(promise)

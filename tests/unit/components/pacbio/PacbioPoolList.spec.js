@@ -1,8 +1,8 @@
 import { mount, localVue, store } from 'testHelper'
-import PacbioLibraryList from '@/components/pacbio/PacbioLibraryList'
+import pacbioPoolList from '@/components/pacbio/PacbioPoolList'
 import storeLibraries from '../../../data/StoreLibraries'
 
-describe('PacbioLibraryList', () => {
+describe('pacbioPoolList', () => {
   let wrapper, libraries
 
   beforeEach(() => {
@@ -10,7 +10,7 @@ describe('PacbioLibraryList', () => {
 
     store.commit('traction/pacbio/libraries/setLibraries', libraries)
 
-    wrapper = mount(PacbioLibraryList, {
+    wrapper = mount(pacbioPoolList, {
       localVue,
       store,
     })
