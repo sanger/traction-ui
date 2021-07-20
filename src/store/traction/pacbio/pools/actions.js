@@ -3,7 +3,15 @@ import { groupIncludedByResource } from '@/api/JsonApi'
 
 const setPools = async ({ commit, getters }) => {
   let request = getters.poolRequest
-  let promise = request.get()
+  let promise = request.get({
+    include: 'tube,libraries.tag,libraries.request',
+    fields: {
+      requests: 'sample_name',
+      tubes: 'barcode',
+      tags: 'group_id',
+      libraries: 'request,tag',
+    },
+  })
   let response = await handlePromise(promise)
 
   const {

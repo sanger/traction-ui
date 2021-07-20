@@ -10,15 +10,7 @@ import { valid } from './libraries'
 export default {
   fetchPacbioPlates: async ({ commit, rootState }) => {
     const request = rootState.api.traction.pacbio.plates
-    const promise = request.get({
-      include: 'wells.requests',
-      fields: {
-        requests: 'sample_name',
-        tubes: 'barcode',
-        tags: 'tag_group_id',
-        libraries: 'request,tag',
-      },
-    })
+    const promise = request.get({ include: 'wells.requests' })
     const {
       _body: { data, included },
     } = await handlePromise(promise)
@@ -71,11 +63,8 @@ export default {
 
   /*
    * Creates a pool from the libraries
-   * First check that the pool is valid
-   * If it is not stop otherwise retrieve the libraries and
-   * send the request
    */
-  createPool: async ({ commit, rootState, state: { libraries } }) => {
+  createPool: async ({ commit, rootState, libraries }) => {
     validate({ libraries })
     if (!valid({ libraries })) return
     const request = rootState.api.traction.pacbio.pools

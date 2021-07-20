@@ -1,4 +1,5 @@
 const getters = {
+  poolRequest: (state, getters, rootState) => rootState.api.traction.pacbio.pools,
   pools: (state) => {
     return Object.values(state.pools).map((pool) => {
       const libraries = pool.libraries.map((libraryId) => {

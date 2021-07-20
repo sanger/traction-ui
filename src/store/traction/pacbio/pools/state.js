@@ -1,5 +1,9 @@
 const state = {
-  pools: [],
+  pools: {},
+  tubes: {},
+  libraries: {},
+  requests: {},
+  tags: {},
 }
 
 export default state
