@@ -34,6 +34,7 @@ const validateLibraryTube = (tube) => {
 
 const actions = {
   isLibraryBarcodeValid,
+  isPoolBarcodeValid: isLibraryBarcodeValid,
   getTubeForBarcode,
 }
 
