@@ -16,9 +16,9 @@ describe('Well.vue', () => {
     }
 
     storeWell = Run.buildWell(props.row, props.column, 'In SMRT Link', '2', '')
-    storeWell.libraries = [
-      { id: 1, tube: { barcode: 'TRAC-1' } },
-      { id: 2, tube: { barcode: 'TRAC-2' } },
+    storeWell.pools = [
+      { id: 1, barcode: 'TRAC-1' },
+      { id: 2, barcode: 'TRAC-2' },
     ]
     storeWell.movie_time = '15'
     storeWell.insert_size = 123
@@ -111,8 +111,8 @@ describe('Well.vue', () => {
       expect(ellipse.attributes('class')).toEqual('filled')
     })
 
-    it('will be invalid if there are no libraries in the store', () => {
-      storeWell.libraries = []
+    it('will be invalid if there are no pools in the store', () => {
+      storeWell.pools = []
       wrapper = mount(Well, {
         localVue,
         store,
@@ -123,12 +123,6 @@ describe('Well.vue', () => {
       })
       let ellipse = wrapper.find('ellipse')
       expect(ellipse.attributes('class')).toEqual('filled')
-    })
-
-    it('will be invalid if there is one or more libraries without a barcode', () => {
-      storeWell.libraries[0].barcode = ''
-      let ellipse = wrapper.find('ellipse')
-      expect(ellipse.attributes('class')).toEqual('complete')
     })
 
     it('will be valid if pre extension time is present', () => {
@@ -144,8 +138,8 @@ describe('Well.vue', () => {
       expect(ellipse.attributes('class')).toEqual('complete')
     })
 
-    it('will be empty if there are no libraries or metadata', () => {
-      storeWell.libraries = []
+    it('will be empty if there are no pools or metadata', () => {
+      storeWell.pools = []
       storeWell.movie_time = ''
       storeWell.generate_hifi = ''
       storeWell.ccs_analysis_output = ''
@@ -195,9 +189,9 @@ describe('Well.vue', () => {
   })
 
   describe('tooltip', () => {
-    it('will only be visible if there are some libraries', () => {
+    it('will only be visible if there are some pools', () => {
       let title = wrapper.find('title')
-      let expected = storeWell.libraries.map((l) => l.barcode).join(',')
+      let expected = storeWell.pools.map((p) => p.barcode).join(',')
       expect(title.text()).toEqual(expected)
     })
   })

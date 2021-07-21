@@ -85,8 +85,8 @@
       </b-form-group>
     </b-form>
 
-    <b-table id="wellLibraries" stacked :items="wellLibraries" :fields="wellLibrariesFields">
-      <template v-slot:table-caption>Libraries</template>
+    <b-table id="wellPools" stacked :items="wellPools" :fields="wellPoolsFields">
+      <template v-slot:table-caption>Pools</template>
 
       <template v-slot:cell(barcode)="row">
         <b-form inline>
@@ -133,7 +133,7 @@ export default {
   data() {
     return {
       movieTimeOptions: [{ text: 'Movie Time', value: '' }, '15.0', '20.0', '24.0', '30.0'],
-      wellLibrariesFields: ['barcode'],
+      wellPoolsFields: ['barcode'],
       generateHifiOptions: {
         '': [{ text: 'Please select a System Name', value: '', disabled: true }],
         'Sequel I': ['In SMRT Link', 'Do Not Generate'],
@@ -161,8 +161,8 @@ export default {
       movieTime() {
         return this.well(this.position) ? this.well(this.position).movie_time : ''
       },
-      wellLibraries() {
-        return this.well(this.position) ? this.well(this.position).libraries : []
+      wellPools() {
+        return this.well(this.position) ? this.well(this.position).pools : []
       },
       preExtensionTime() {
         return this.well(this.position) ? this.well(this.position).pre_extension_time : ''

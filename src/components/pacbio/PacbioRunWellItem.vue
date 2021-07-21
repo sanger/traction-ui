@@ -16,7 +16,7 @@
       @dragleave="endDrop"
       @click="showModal"
     >
-      <title v-if="hasLibraries" v-text="tooltip"></title>
+      <title v-if="hasPools" v-text="tooltip"></title>
     </ellipse>
     <foreignObject>
       <WellEdit ref="modal" class="modal" :position="position" @alert="alert"></WellEdit>
@@ -63,7 +63,7 @@ export default {
       type: Array,
       default() {
         // Below doesn't include 'generate_hifi', 'pre_extension_time' or 'ccs_analysis_output'
-        // as they have deafult values
+        // as they have default values
         return ['movie_time', 'insert_size', 'on_plate_loading_concentration']
       },
     },
@@ -80,12 +80,12 @@ export default {
       return `${this.row}${this.column}`
     },
     tooltip() {
-      return this.storeWell.libraries.map((l) => l.barcode).join(',')
+      return this.storeWell.pools.map((p) => p.barcode).join(',')
     },
-    hasLibraries() {
+    hasPools() {
       if (this.storeWell === undefined) return false
-      if (this.storeWell.libraries.every((l) => l.barcode == '')) return false
-      return this.storeWell.libraries.length > 0
+      if (this.storeWell.pools.every((p) => p.barcode == '')) return false
+      return this.storeWell.pools.length > 0
     },
     hasValidMetadata() {
       if (this.storeWell === undefined) return false
@@ -99,9 +99,9 @@ export default {
       return this.well(this.position)
     },
     status() {
-      if (this.hasLibraries && this.hasValidMetadata) {
+      if (this.hasPools && this.hasValidMetadata) {
         return 'complete'
-      } else if (this.hasLibraries || this.hasSomeMetadata) {
+      } else if (this.hasPools || this.hasSomeMetadata) {
         return 'filled'
       } else {
         return 'empty'

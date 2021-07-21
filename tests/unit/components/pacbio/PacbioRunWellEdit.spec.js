@@ -10,7 +10,7 @@ describe('PacbioWellModal', () => {
     props = { row: 'A', column: '1', position: 'A1' }
 
     storeWell = Run.buildWell(props.row, props.column, 'In SMRT Link')
-    storeWell.libraries = [{ tube: { barcode: 'TRAC-0' } }]
+    storeWell.pools = [{ id: 1, barcode: 'TRAC-0' }]
 
     run = Run.build()
     run.plate.wells[0] = storeWell
@@ -65,7 +65,7 @@ describe('PacbioWellModal', () => {
     expect(modal.insertSize).toBeDefined()
     expect(modal.onPlateLoadingConc).toBeDefined()
     expect(modal.movieTime).toBeDefined()
-    expect(modal.wellLibraries).toBeDefined()
+    expect(modal.wellPools).toBeDefined()
     expect(modal.generateHiFi).toBeDefined()
     expect(modal.ccsAnalysisOutput).toBeDefined()
     expect(modal.preExtensionTime).toBeDefined()
