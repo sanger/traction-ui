@@ -1,5 +1,6 @@
 import { Data } from 'testHelper'
 import mutations from '@/store/traction/pacbio/pools/mutations'
+import storePools from '@tests/data/StorePools'
 
 let state
 
@@ -15,10 +16,7 @@ describe('mutations', () => {
       pools: {},
     }
     mutations.setPools(state, pools)
-    expect(state.pools).toEqual({
-      '1': { id: '1', libraries: ['1'], tubes: ['1'], type: 'pools' },
-      '2': { id: '2', libraries: ['2'], tubes: ['2'], type: 'pools' },
-    })
+    expect(state.pools).toEqual(storePools.pools)
   })
 
   it('"setTubes" sets "state.tubes" to the given tubes', () => {
@@ -26,10 +24,7 @@ describe('mutations', () => {
       tubes: {},
     }
     mutations.setTubes(state, tubes)
-    expect(state.tubes).toEqual({
-      '1': { barcode: 'TRAC-2-1', id: '1', type: 'tubes' },
-      '2': { barcode: 'TRAC-2-2', id: '2', type: 'tubes' },
-    })
+    expect(state.tubes).toEqual(storePools.tubes)
   })
 
   it('"setLibraries" sets "state.libraries" to the given libraries', () => {
@@ -37,10 +32,7 @@ describe('mutations', () => {
       libraries: {},
     }
     mutations.setLibraries(state, libraries)
-    expect(state.libraries).toEqual({
-      '1': { id: '1', requests: ['1'], tags: ['26'], type: 'libraries' },
-      '2': { id: '2', requests: ['2'], tags: ['7'], type: 'libraries' },
-    })
+    expect(state.libraries).toEqual(storePools.libraries)
   })
 
   it('"setTags" sets "state.tags" to the given tags', () => {
@@ -48,10 +40,7 @@ describe('mutations', () => {
       tags: {},
     }
     mutations.setTags(state, tags)
-    expect(state.tags).toEqual({
-      '26': { group_id: 'bc1019', id: '26', type: 'tags' },
-      '7': { group_id: 'bc1011_BAK8A_OA', id: '7', type: 'tags' },
-    })
+    expect(state.tags).toEqual(storePools.tags)
   })
 
   it('"setRequests" sets "state.requests" to the given requests', () => {
@@ -59,9 +48,6 @@ describe('mutations', () => {
       requests: {},
     }
     mutations.setRequests(state, requests)
-    expect(state.requests).toEqual({
-      '1': { id: '1', sample_name: 'Sample48', type: 'requests' },
-      '2': { id: '2', sample_name: 'Sample47', type: 'requests' },
-    })
+    expect(state.requests).toEqual(storePools.requests)
   })
 })

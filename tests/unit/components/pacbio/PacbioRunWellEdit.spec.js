@@ -1,6 +1,6 @@
 import { mount, localVue, store } from 'testHelper'
 import WellEdit from '@/components/pacbio/PacbioRunWellEdit'
-import storePools from '../../../data/StorePools'
+import storePools from '@tests/data/StorePools'
 import * as Run from '@/api/PacbioRun'
 
 describe('PacbioWellModal', () => {

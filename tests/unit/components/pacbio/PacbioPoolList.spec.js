@@ -1,6 +1,6 @@
 import { mount, localVue, store } from 'testHelper'
 import pacbioPoolList from '@/components/pacbio/PacbioPoolList'
-import storePools from '../../../data/StorePools'
+import storePools from '@tests/data/StorePools'
 
 describe('pacbioPoolList', () => {
   let wrapper

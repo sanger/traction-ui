@@ -1,27 +1,7 @@
 import getters from '@/store/traction/pacbio/pools/getters'
+import storePools from '@tests/data/StorePools'
 
-const state = {
-  pools: {
-    '1': { id: '1', libraries: ['1'], tubes: ['1'], type: 'pools' },
-    '2': { id: '2', libraries: ['2'], tubes: ['2'], type: 'pools' },
-  },
-  tubes: {
-    '1': { barcode: 'TRAC-2-1', id: '1', type: 'tubes' },
-    '2': { barcode: 'TRAC-2-2', id: '2', type: 'tubes' },
-  },
-  libraries: {
-    '1': { id: '1', requests: ['1'], tags: ['26'], type: 'libraries' },
-    '2': { id: '2', requests: ['2'], tags: ['7'], type: 'libraries' },
-  },
-  tags: {
-    '26': { group_id: 'bc1019', id: '26', type: 'tags' },
-    '7': { group_id: 'bc1011_BAK8A_OA', id: '7', type: 'tags' },
-  },
-  requests: {
-    '1': { id: '1', sample_name: 'Sample48', type: 'requests' },
-    '2': { id: '2', sample_name: 'Sample47', type: 'requests' },
-  },
-}
+const state = storePools
 
 const pools = [
   {

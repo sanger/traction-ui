@@ -1,6 +1,6 @@
 import * as Run from '@/api/PacbioRun'
 import Well from '@/components/pacbio/PacbioRunWellItem'
-import { localVue, mount, store, Data } from 'testHelper'
+import { localVue, mount, store } from 'testHelper'
 
 describe('Well.vue', () => {
   let well, wrapper, props, storeWell, run
@@ -174,14 +174,14 @@ describe('Well.vue', () => {
     beforeEach(() => {
       newBarcode = 'TRAC-1'
       well.addPoolToWell = jest.fn()
-      pool1 = { id: '1', libraries: [], tubes: ['1'], barcode: 'TRAC-1', type: 'pools' }
-      pool2 = { id: '2', libraries: [], tubes: ['2'], barcode: 'TRAC-2', type: 'pools' }
+      pool1 = { id: '1', libraries: [], tube: '1', barcode: 'TRAC-1', type: 'pools' }
+      pool2 = { id: '2', libraries: [], tube: '2', barcode: 'TRAC-2', type: 'pools' }
       tubes = {
-        '1': { barcode: 'TRAC-1', id: '1', type: 'tubes' }, 
-        '2': { barcode: 'TRAC-2', id: '2', type: 'tubes' }
+        '1': { barcode: 'TRAC-1', id: '1', type: 'tubes' },
+        '2': { barcode: 'TRAC-2', id: '2', type: 'tubes' },
       }
 
-      store.state.traction.pacbio.pools.pools = { '1': pool1, '2': pool2 } 
+      store.state.traction.pacbio.pools.pools = { '1': pool1, '2': pool2 }
       store.state.traction.pacbio.pools.tubes = tubes
     })
 
