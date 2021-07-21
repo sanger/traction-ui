@@ -37,7 +37,7 @@ describe('updateRun', () => {
 
   it('updates the given run in the states runs', () => {
     mutations.updateRun(state, updatedRun)
-    let recievedRun = state.pacbio.runs.runs.filter((r) => r.id === updatedRun.id)[0]
+    let recievedRun = state.pacbio.runs.runs.find((r) => r.id === updatedRun.id)
     expect(recievedRun.state).toEqual(updatedRun.state)
   })
 })

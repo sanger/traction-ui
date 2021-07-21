@@ -57,7 +57,7 @@ describe('OntPlate.vue', () => {
   describe('methods', () => {
     describe('#getWellAt', () => {
       it('gets the well at the given position', () => {
-        let expected = wellsData.filter((w) => w.position == 'A1')[0]
+        let expected = wellsData.find((w) => w.position == 'A1')
         expect(plate.getWellAt('A1')).toEqual(expected)
       })
 

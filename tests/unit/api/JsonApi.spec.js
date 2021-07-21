@@ -1,6 +1,6 @@
 import * as JsonApi from '@/api/JsonApi'
-import TestResponse from '../../data/testResponse'
-import CircularResponse from '../../data/circularResponse'
+import TestResponse from '@tests/data/testResponse'
+import CircularResponse from '@tests/data/circularResponse'
 
 // TODO: create a factory which will build a JSON api response. Doing this manually is crushing me.
 describe('JsonApi', () => {
@@ -177,10 +177,20 @@ describe('JsonApi', () => {
     it('creates a list of relationships by id', () => {
       const relationships = TestResponse.data.data[0].relationships
       const extractedRelationships = JsonApi.extractRelationshipsAndGroupById(relationships)
-      expect(Object.keys(extractedRelationships)).toEqual(['beans', 'pickles', 'chocolates'])
-      expect(extractedRelationships.beans).toEqual(['1'])
-      expect(extractedRelationships.pickles).toEqual(['2'])
+      expect(Object.keys(extractedRelationships)).toEqual([
+        'bean',
+        'pickle',
+        'chocolates',
+        'peaches',
+        'mojitos',
+      ])
+      expect(extractedRelationships.bean).toEqual('1')
+      expect(extractedRelationships.pickle).toEqual('2')
       expect(extractedRelationships.chocolates).toEqual(['3'])
+      // If we don't have relationship information, we're undefined
+      expect(extractedRelationships.peaches).toEqual(undefined)
+      // But if we explicitly know whe have no relationship, we're null
+      expect(extractedRelationships.mojitos).toEqual(null)
     })
 
     it('returns an empty object if the relationships are undefined', () => {
@@ -203,8 +213,8 @@ describe('JsonApi', () => {
       const object = JsonApi.dataToObjectById({ data, includeRelationships: true })
       const item = object['1']
       const keys = Object.keys(item)
-      expect(keys.includes('beans')).toBeTruthy()
-      expect(keys.includes('pickles')).toBeTruthy()
+      expect(keys.includes('bean')).toBeTruthy()
+      expect(keys.includes('pickle')).toBeTruthy()
       expect(keys.includes('chocolates')).toBeTruthy()
     })
   })

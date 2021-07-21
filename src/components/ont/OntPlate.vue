@@ -60,7 +60,7 @@ export default {
   },
   methods: {
     getWellAt(position) {
-      let well = this.wells.filter((well) => well.position == position)[0]
+      let well = this.wells.find((well) => well.position == position)
       return well ? well : { position: position, materials: [] }
     },
     poolSamples() {

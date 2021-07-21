@@ -1,10 +1,13 @@
-// TODO: This needs a refactor with some documentation
-const extractAttributes = (data) => {
-  return { id: data.id, type: data.type, ...data.attributes }
-}
+/**
+ * Extract the attributes from a JSON API resource object, merge them with the id
+ * and type attributes
+ * @param {String} id The id of the jsonapi resource
+ * @param {String} type The type of the jsonapi resource
+ * @param {Object} attributes The attributes object of a JSON API resource
+ */
+const extractAttributes = ({ id, type, attributes }) => ({ id, type, ...attributes })
 
-const mapRelationships = (relationships) => {
-  if (relationships === undefined) return {}
+const mapRelationships = (relationships = {}) => {
   return Object.keys(relationships).reduce((result, name) => {
     if (relationships[name].data) {
       result[name] = relationships[name].data
@@ -32,22 +35,17 @@ const groupIncludedByResource = (included) => {
  * @param {Object} relationships Object of JSON API resources
  * @returns {Object} each key will be the relationships grouped by type with an array of ids
  */
-const extractRelationshipsAndGroupById = (relationships) => {
-  if (!relationships) {
-    return {}
-  }
-
+const extractRelationshipsAndGroupById = (relationships = {}) => {
   return Object.keys(relationships).reduce((result, type) => {
-    // it could be undefined, it could be null or it could be an object
-    // lets just make it all the same
-    const data = relationships[type].data || []
-    const dataArray = data instanceof Array ? data : [data]
-
-    dataArray.forEach((element) => {
-      // if the key does not exist create it
-      result[element.type] = result[element.type] || []
-      result[element.type].push(element.id)
-    })
+    const data = relationships[type].data
+    if (data instanceof Array) {
+      // We have multiple entries
+      result[type] = data.map(({ id }) => id)
+    } else {
+      // Add the id data is present, otherwise add the value of data itself
+      // this may be null (No relation) or undefined (relationship not loaded)
+      result[type] = data ? data.id : data
+    }
     return result
   }, {})
 }
@@ -58,10 +56,7 @@ const extractRelationshipsAndGroupById = (relationships) => {
  * @param {Array} data Array of JSON API data
  * @returns {Object} keys will be the id of the data
  */
-const dataToObjectById = ({ data, includeRelationships = false }) => {
-  if (!data) {
-    return {}
-  }
+const dataToObjectById = ({ data = [], includeRelationships = false }) => {
   return data.reduce((result, { id, type, attributes, relationships }) => {
     return {
       [id]: {

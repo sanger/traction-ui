@@ -19,7 +19,9 @@ const buildWell = (
   on_plate_loading_concentration: '',
   generate_hifi,
   ccs_analysis_output,
+  // TODO remove
   libraries: [],
+  pools: [],
   pre_extension_time,
 })
 
