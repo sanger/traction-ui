@@ -25,7 +25,7 @@
       <br />
       <b-row>
         <b-col cols="6">
-          <pacbioLibraryList ref="pacbioLibraryList"></pacbioLibraryList>
+          <pacbioPoolList ref="pacbioPoolList"></pacbioPoolList>
         </b-col>
         <b-col>
           <Plate v-if="currentRun.id" ref="plate" @alert="showAlert"></Plate>
@@ -37,7 +37,7 @@
 
 <script>
 import PacbioRunInfoEdit from '@/components/pacbio/PacbioRunInfoEdit'
-import PacbioLibraryList from '@/components/pacbio/PacbioLibraryList'
+import pacbioPoolList from '@/components/pacbio/PacbioPoolList'
 import Plate from '@/components/pacbio/PacbioRunPlateItem'
 import Alert from '@/components/Alert'
 import Helper from '@/mixins/Helper'
@@ -50,7 +50,7 @@ export default {
   components: {
     Alert,
     PacbioRunInfoEdit,
-    PacbioLibraryList,
+    pacbioPoolList,
     Plate,
   },
   mixins: [Helper],

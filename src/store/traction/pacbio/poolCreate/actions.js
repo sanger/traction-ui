@@ -63,9 +63,6 @@ export default {
 
   /*
    * Creates a pool from the libraries
-   * First check that the pool is valid
-   * If it is not stop otherwise retrieve the libraries and
-   * send the request
    */
   createPool: async ({ commit, rootState, state: { libraries } }) => {
     validate({ libraries })
