@@ -37,12 +37,13 @@ const groupIncludedByResource = (included) => {
  */
 const extractRelationshipsAndGroupById = (relationships = {}) => {
   return Object.keys(relationships).reduce((result, type) => {
-    // it could be undefined, it could be null or it could be an object
-    // lets just make it all the same
     const data = relationships[type].data
     if (data instanceof Array) {
+      // We have multiple entries
       result[type] = data.map(({ id }) => id)
     } else {
+      // Add the id data is present, otherwise add the value of data itself
+      // this may be null (No relation) or undefined (relationship not loaded)
       result[type] = data ? data.id : data
     }
     return result
