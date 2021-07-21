@@ -1,6 +1,6 @@
 import * as Run from '@/api/PacbioRun'
 import Well from '@/components/pacbio/PacbioRunWellItem'
-import { localVue, mount, store } from 'testHelper'
+import { localVue, mount, store, Data } from 'testHelper'
 
 describe('Well.vue', () => {
   let well, wrapper, props, storeWell, run
@@ -168,21 +168,28 @@ describe('Well.vue', () => {
   })
 
   // TODO: same as well modal - refactor baby!
-  describe('updateLibraryBarcode', () => {
-    let newBarcode, library
+  describe('updatePoolBarcode', () => {
+    let newBarcode, pool1, pool2, tubes
 
     beforeEach(() => {
       newBarcode = 'TRAC-1'
-      well.addLibraryToWell = jest.fn()
-      library = { id: 1, tube: { barcode: newBarcode } }
-      store.commit('traction/pacbio/libraries/setLibraries', [library])
+      well.addPoolToWell = jest.fn()
+      pool1 = { id: '1', libraries: [], tubes: ['1'], barcode: 'TRAC-1', type: 'pools' }
+      pool2 = { id: '2', libraries: [], tubes: ['2'], barcode: 'TRAC-2', type: 'pools' }
+      tubes = {
+        '1': { barcode: 'TRAC-1', id: '1', type: 'tubes' }, 
+        '2': { barcode: 'TRAC-2', id: '2', type: 'tubes' }
+      }
+
+      store.state.traction.pacbio.pools.pools = { '1': pool1, '2': pool2 } 
+      store.state.traction.pacbio.pools.tubes = tubes
     })
 
-    it('adds the library to the well', async () => {
-      await well.updateLibraryBarcode(newBarcode)
-      expect(well.addLibraryToWell).toBeCalledWith({
+    it('adds the pool to the well', async () => {
+      await well.updatePoolBarcode(newBarcode)
+      expect(well.addPoolToWell).toBeCalledWith({
         position: well.position,
-        with: { id: library.id, barcode: library.tube.barcode },
+        with: { id: pool1.id, barcode: pool1.barcode },
       })
     })
   })
@@ -208,12 +215,12 @@ describe('Well.vue', () => {
         },
         preventDefault: jest.fn(),
       }
-      well.updateLibraryBarcode = jest.fn()
+      well.updatePoolBarcode = jest.fn()
     })
 
     it('will update the barcode', async () => {
       well.drop(mockEvent)
-      expect(well.updateLibraryBarcode).toBeCalledWith(newBarcode)
+      expect(well.updatePoolBarcode).toBeCalledWith(newBarcode)
     })
   })
 })

@@ -75,7 +75,7 @@ export default {
   },
   computed: {
     ...mapGetters('traction/pacbio/runs', ['well']),
-    ...mapGetters('traction/pacbio/libraries', ['libraryByBarcode']),
+    ...mapGetters('traction/pacbio/pools', ['poolByBarcode']),
     position() {
       return `${this.row}${this.column}`
     },
@@ -110,7 +110,7 @@ export default {
   },
   methods: {
     ...mapActions('traction/pacbio/tubes', ['getTubeForBarcode']),
-    ...mapMutations('traction/pacbio/runs', ['addLibraryToWell']),
+    ...mapMutations('traction/pacbio/runs', ['addPoolToWell']),
     alert(message, type) {
       this.$emit('alert', message, type)
     },
@@ -127,13 +127,13 @@ export default {
     },
     async drop(event) {
       event.preventDefault()
-      await this.updateLibraryBarcode(event.dataTransfer.getData('barcode'))
+      await this.updatePoolBarcode(event.dataTransfer.getData('barcode'))
       this.hover = false
     },
-    async updateLibraryBarcode(barcode) {
-      let libraryId = this.libraryByBarcode(barcode).id
-      let payload = { position: this.position, with: { id: libraryId, barcode: barcode } }
-      this.addLibraryToWell(payload)
+    async updatePoolBarcode(barcode) {
+      let poolId = this.poolByBarcode(barcode).id
+      let payload = { position: this.position, with: { id: poolId, barcode: barcode } }
+      this.addPoolToWell(payload)
     },
   },
 }
