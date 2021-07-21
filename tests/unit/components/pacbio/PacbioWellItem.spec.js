@@ -77,7 +77,7 @@ describe('Well.vue', () => {
   describe('#status', () => {
     it('will be passed if the well has a request and its qc_status is passing', () => {
       let ellipse = wrapper.find('ellipse')
-      expect(ellipse.attributes('class')).toContain('passed')
+      expect(ellipse.attributes('class')).toContain('Passed')
     })
 
     it('will be failed if the well has a request and its qc_status is passing', () => {
@@ -90,7 +90,7 @@ describe('Well.vue', () => {
       })
 
       let ellipse = wrapper.find('ellipse')
-      expect(ellipse.attributes('class')).toContain('failed')
+      expect(ellipse.attributes('class')).toContain('Failed')
     })
 
     it('will be empty when the well does not have a request', () => {
@@ -128,6 +128,20 @@ describe('Well.vue', () => {
       const ellipse = wrapper.find('ellipse')
       await ellipse.trigger('click')
       expect(wrapper.emitted().click).toBeTruthy()
+    })
+
+    it('does not emit a click event when the qc_status is failed', async () => {
+      requests[1].qc_status = 'Failed'
+      store.state.traction.pacbio.poolCreate.resources.requests = requests
+
+      wrapper = mount(Well, {
+        propsData: props,
+        store,
+      })
+
+      const ellipse = wrapper.find('ellipse')
+      await ellipse.trigger('click')
+      expect(wrapper.emitted().click).toBeFalsy()
     })
   })
 })
