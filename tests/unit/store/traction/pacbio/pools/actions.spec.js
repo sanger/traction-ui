@@ -37,7 +37,7 @@ describe('#setPools', () => {
   })
 
   it('unsuccessfully', async () => {
-    get.mockReturnValue(failedResponse)
+    get.mockRejectedValue(failedResponse)
 
     await Actions.setPools({ commit, getters })
 

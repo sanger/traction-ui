@@ -2,7 +2,7 @@
  * @param {Object} errors
  * @param {Object} error
  * @returns {String or Object}
- * TODO: Still wondering if there is more to do to maske this more robust
+ * TODO: Still wondering if there is more to do to make this more robust
  * but probably better to find out with a bit of testing
  */
 const parseErrors = ({ data, error }) => {

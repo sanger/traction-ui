@@ -1,4 +1,4 @@
-import handlePromise from '@/api/PromiseHelper'
+import handleResponse from '@/api/ResponseHelper'
 import { groupIncludedByResource } from '@/api/JsonApi'
 
 const setPools = async ({ commit, getters }) => {
@@ -12,13 +12,11 @@ const setPools = async ({ commit, getters }) => {
       libraries: 'request,tag',
     },
   })
-  let response = await handlePromise(promise)
+  let response = await handleResponse(promise)
 
-  const {
-    _body: { data, included = [] },
-  } = response
+  const { success, data: { data, included = [] } = {} } = response
 
-  if (response.successful && !response.empty) {
+  if (success) {
     const { tubes, libraries, tags, requests } = groupIncludedByResource(included)
     commit('setPools', data)
     commit('setTubes', tubes)

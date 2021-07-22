@@ -1,4 +1,3 @@
-import handlePromise from '@/api/PromiseHelper'
 import { groupIncludedByResource } from '@/api/JsonApi'
 import { validate, payload, valid } from '@/store/traction/pacbio/poolCreate/libraries'
 import { handleResponse } from '@/api/ResponseHelper'
@@ -11,26 +10,31 @@ export default {
   fetchPacbioPlates: async ({ commit, rootState }) => {
     const request = rootState.api.traction.pacbio.plates
     const promise = request.get({ include: 'wells.requests' })
-    const {
-      _body: { data, included },
-    } = await handlePromise(promise)
-    const { wells, requests } = groupIncludedByResource(included)
-    commit('populatePlates', data)
-    commit('populateWells', wells)
-    commit('populateRequests', requests)
+    const response = await handleResponse(promise)
+
+    const { success, data: { data, included = [] } = {} } = response
+
+    if (success) {
+      const { wells, requests } = groupIncludedByResource(included)
+      commit('populatePlates', data)
+      commit('populateWells', wells)
+      commit('populateRequests', requests)
+    }
   },
   fetchPacbioTagSets: async ({ commit, rootState }) => {
     const request = rootState.api.traction.pacbio.tag_sets
     /* I've been explicit about the includes here as we make an assumption
        below that only tags are included. */
     const promise = request.get({ include: 'tags' })
-    const {
-      _body: { data, included },
-    } = await handlePromise(promise)
+    const response = await handleResponse(promise)
 
-    commit('populateTagSets', data)
-    /* We are currently only including tags. So this is really simple */
-    commit('populateTags', included)
+    const { success, data: { data, included = [] } = {} } = response
+
+    if (success) {
+      commit('populateTagSets', data)
+      /* We are currently only including tags. So this is really simple */
+      commit('populateTags', included)
+    }
   },
   /**
    * Inverts the selected state of all requests associated with a
