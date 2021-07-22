@@ -53,7 +53,7 @@ describe('Pacbio Pool Create', () => {
   })
 
   // TODO: we have a problem with handling api calls that cause errors.
-  it.skip('Will not create a pool if there is an error', () => {
+  it('Will not create a pool if there is an error', () => {
     cy.visit('#/pacbio/pool/new')
     cy.contains('Pool')
     cy.get('[data-type=labware-list]')
@@ -85,11 +85,11 @@ describe('Pacbio Pool Create', () => {
       statusCode: 422,
       body: {
         errors: {
-          error1: 'There was a problem',
+          error1: ['There was a problem'],
         },
       },
     })
     cy.get('[data-action=create-pool').click()
-    cy.contains('[data-type=pool-create-message]', 'error1: There was a problem')
+    cy.contains('[data-type=pool-create-message]', 'error1 There was a problem')
   })
 })

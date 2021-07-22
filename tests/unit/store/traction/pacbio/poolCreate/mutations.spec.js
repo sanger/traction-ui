@@ -239,7 +239,7 @@ describe('mutations.js', () => {
   describe('populateResult', () => {
     it('with a successful response', () => {
       const response = {
-        successful: true,
+        success: true,
       }
       const state = defaultState()
       populateResult(state, response)
@@ -248,8 +248,8 @@ describe('mutations.js', () => {
 
     it('with an unsuccessful response', () => {
       const response = {
-        successful: false,
-        errors: { message: 'error1: error1, error2: error2' },
+        success: false,
+        errors: 'error1: error1, error2: error2',
       }
       const state = defaultState()
       populateResult(state, response)

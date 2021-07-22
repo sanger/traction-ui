@@ -80,11 +80,14 @@ export default {
    * @param {Object} Response A response object
    **/
   populateResult: (state, response) => {
-    const result = response.successful
-      ? // if the response is successful return an appropriate state and message
-        { success: true, message: 'Pool successfully created' }
-      : // if the response is a failure return an appropriate state and the errors
-        { success: false, ...response.errors }
-    state.result = result
+    const { success, errors: message } = response
+    state.result = {
+      success,
+      message: success
+        ? // if the response is successful return an appropriate message
+          'Pool successfully created'
+        : // if the response is a failure return the errors
+          message,
+    }
   },
 }

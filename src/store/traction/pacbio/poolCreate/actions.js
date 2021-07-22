@@ -1,7 +1,7 @@
 import handlePromise from '@/api/PromiseHelper'
 import { groupIncludedByResource } from '@/api/JsonApi'
-import { validate, payload } from '@/store/traction/pacbio/poolCreate/libraries'
-import { valid } from './libraries'
+import { validate, payload, valid } from '@/store/traction/pacbio/poolCreate/libraries'
+import { handleResponse } from '@/api/ResponseHelper'
 
 // Actions handle asynchronous update of state, via mutations.
 // Note: The { commit } in the given example is destucturing
@@ -69,7 +69,7 @@ export default {
     if (!valid({ libraries })) return
     const request = rootState.api.traction.pacbio.pools
     const promise = request.create(payload({ libraries }))
-    const response = await handlePromise(promise)
+    const response = await handleResponse(promise)
     commit('populateResult', response)
   },
 }

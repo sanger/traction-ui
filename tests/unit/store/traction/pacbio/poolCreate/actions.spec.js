@@ -1,7 +1,7 @@
 import { Data } from 'testHelper'
 import actions from '@/store/traction/pacbio/poolCreate/actions'
 import defaultState from '@/store/traction/pacbio/poolCreate/state'
-import Response from '@/api/Response'
+import { newResponse } from '@/api/ResponseHelper'
 
 describe('actions.js', () => {
   const {
@@ -157,12 +157,12 @@ describe('actions.js', () => {
       const rootState = { api: { traction: { pacbio: { pools: { create } } } } }
       const libraries = { _1: library1, _2: library2 }
       create.mockReturnValue(mockResponse)
-      const response = new Response(mockResponse)
+      const response = newResponse({ ...mockResponse, success: true })
       await createPool({ commit, rootState, state: { libraries } })
       expect(commit).toHaveBeenCalledWith('populateResult', response)
     })
 
-    it.skip('when there is an error', () => {})
+    it('when there is an error', () => {})
 
     // validate libraries fails
     // request is not sent
