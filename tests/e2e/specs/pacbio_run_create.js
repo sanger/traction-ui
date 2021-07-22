@@ -6,9 +6,12 @@ describe('Pacbio Run Create view', () => {
       fixture: 'tractionPacbioRuns.json',
     })
     cy.visit('#/pacbio/runs')
-    cy.intercept('/v1/pacbio/pools?include=tube,libraries.tag,libraries.request&fields[requests]=sample_name&fields[tubes]=barcode&fields[tags]=group_id&fields[libraries]=request,tag', {
-      fixture: 'tractionPacbioPools.json',
-    })
+    cy.intercept(
+      '/v1/pacbio/pools?include=tube,libraries.tag,libraries.request&fields[requests]=sample_name&fields[tubes]=barcode&fields[tags]=group_id&fields[libraries]=request,tag',
+      {
+        fixture: 'tractionPacbioPools.json',
+      },
+    )
     cy.get('button')
       .contains('New Run')
       .click()
