@@ -32,7 +32,7 @@ const newResponse = ({ success, data, error }) => ({
   success,
   data,
   // we need to parse the errors into something viewable
-  errors: !success? parseErrors({ data, error }) : undefined
+  errors: !success ? parseErrors({ data, error }) : undefined,
 })
 
 /*

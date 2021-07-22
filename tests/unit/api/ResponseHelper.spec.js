@@ -63,7 +63,7 @@ describe('ResponseHelper', () => {
     describe('failure with response and no errors - 400-500', () => {
       const rawResponse = {
         success: false,
-        data: "There was a serious problem",
+        data: 'There was a serious problem',
         status: 500,
         statusText: 'Internal Server Error',
       }
@@ -139,5 +139,4 @@ describe('ResponseHelper', () => {
       expect(response.errors).toEqual(error)
     })
   })
-
 })
