@@ -2,19 +2,24 @@
  * @param {Object} errors
  * @param {Object} error
  * @returns {String or Object}
+ * TODO: Still wondering if there is more to do to maske this more robust
+ * but probably better to find out with a bit of testing
  */
-const parseErrors = ({ errors, error }) => {
+const parseErrors = ({ data, error }) => {
   // if its stand alone return it
   if (error) {
     return error
   }
-  // turn it into something nice i.e. a readable string
-  if (errors) {
+  // turn it into something nice i.e. a readable string if it is a 422
+  if (data.errors) {
+    const errors = data.errors
     return Object.keys(errors)
       .map((key) => {
         return errors[key].map((item) => `${key} ${item}`).join(', ')
       })
       .join(', ')
+  } else {
+    return data
   }
 }
 
@@ -23,19 +28,12 @@ const parseErrors = ({ errors, error }) => {
  * @param {Object} data e.g. { data: { id: 1}}
  * @returns { Boolean, {Object}, String} { success, data, errors } e.g. { success: true, data: {id: 1}} or {success: false, errors: 'there was an error'}
  */
-const newResponse = ({ success, data, error }) => {
-  success
-  data
-  error
+const newResponse = ({ success, data, error }) => ({
+  success,
+  data,
   // we need to parse the errors into something viewable
-  const errors = parseErrors({ ...data, error })
-
-  return {
-    success,
-    data,
-    errors,
-  }
-}
+  errors: !success? parseErrors({ data, error }) : undefined
+})
 
 /*
  * @param {AxiosPromise} promise
@@ -47,6 +45,13 @@ const handleResponse = async (promise) => {
     const rawResponse = await promise
     return newResponse({ success: true, ...rawResponse })
   } catch (error) {
+    // we only want this to output during development or production
+    // eslint has got this wrong as it is always a string
+    // eslint-disable-next-line no-extra-boolean-cast
+    if (!!+process.env.VUE_APP_LOG) {
+      console.error(error)
+    }
+
     // 400-500 range will throw an error with a response
     if (error.response) {
       return newResponse({ success: false, ...error.response })
