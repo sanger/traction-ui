@@ -63,55 +63,51 @@ describe('createRequest', () => {
     })
   })
 
-  describe('build filters', () => {
-    it('singular', () => {
-      const request = createRequest({ ...attributes })
-      const filters = request.buildFilters({ a: '1' })
-      expect(filters).toEqual('filter[a]=1')
-    })
-
-    it('multiple', () => {
-      const request = createRequest({ ...attributes })
-      const filters = request.buildFilters({ a: '1', b: '2' })
-      expect(filters).toEqual('filter[a]=1&filter[b]=2')
-    })
-
-    it('empty', () => {
-      const request = createRequest({ ...attributes })
-      const filters = request.buildFilters()
-      expect(filters).toEqual('')
-    })
-  })
-
   describe('build query', () => {
-    it('no filters or includes', () => {
+    it('no filters, includes or fields', () => {
       const request = createRequest({ ...attributes })
       const query = request.buildQuery()
       expect(query).toEqual('')
     })
 
-    it('filters no includes', () => {
+    it('filter', () => {
       const request = createRequest({ ...attributes })
-      const query = request.buildQuery({ filters: { a: '1', b: '2' } })
+      const query = request.buildQuery({ filter: { a: '1', b: '2' } })
       expect(query).toEqual('/?filter[a]=1&filter[b]=2')
     })
 
-    it('includes no filters', () => {
+    it('include', () => {
       const request = createRequest({ ...attributes })
       const query = request.buildQuery({ include: 'sample.tube' })
       expect(query).toEqual('/?include=sample.tube')
     })
 
-    it('filters and includes', () => {
+    it('fields', () => {
       const request = createRequest({ ...attributes })
-      const query = request.buildQuery({ filters: { a: '1', b: '2' }, include: 'sample.tube' })
-      expect(query).toEqual('/?filter[a]=1&filter[b]=2&include=sample.tube')
+      const query = request.buildQuery({ fields: { resource1: 'field1', resource2: 'field2' } })
+      expect(query).toEqual('/?fields[resource1]=field1&fields[resource2]=field2')
+    })
+
+    it('filter, include and fields', () => {
+      const request = createRequest({ ...attributes })
+      const query = request.buildQuery({
+        filter: { a: '1', b: '2' },
+        include: 'sample.tube',
+        fields: { resource1: 'field1', resource2: 'field2' },
+      })
+      expect(query).toEqual(
+        '/?filter[a]=1&filter[b]=2&include=sample.tube&fields[resource1]=field1&fields[resource2]=field2',
+      )
     })
   })
 
   describe('api calls', () => {
     beforeEach(() => {
       axios.create = jest.fn(() => mockAxios)
+    })
+
+    afterEach(() => {
+      jest.clearAllMocks()
     })
 
     describe('get', () => {
@@ -124,11 +120,13 @@ describe('createRequest', () => {
       })
 
       it('with a query', async () => {
-        const query = { filters: { a: '1', b: '2' }, include: 'sample.tube' }
+        const query = { filter: { a: '1', b: '2' }, include: 'sample.tube' }
         mockAxios.get.mockReturnValue(mockResponse)
         const request = createRequest({ ...attributes })
         const response = await request.get(query)
-        expect(mockAxios.get).toBeCalledWith(`${request.resource}${request.buildQuery(query)}`)
+        expect(mockAxios.get).toBeCalledWith(
+          'requests/?filter[a]=1&filter[b]=2&include=sample.tube',
+        )
         expect(response).toEqual(mockResponse)
       })
     })
@@ -148,7 +146,7 @@ describe('createRequest', () => {
         mockAxios.get.mockReturnValue(mockResponse)
         const request = createRequest({ ...attributes })
         const response = await request.find({ id: 1 })
-        expect(mockAxios.get).toBeCalledWith(`${request.resource}/1`)
+        expect(mockAxios.get).toBeCalledWith('requests/1')
         expect(response).toEqual(mockResponse)
       })
 
@@ -156,9 +154,7 @@ describe('createRequest', () => {
         mockAxios.get.mockReturnValue(mockResponse)
         const request = createRequest({ ...attributes })
         const response = await request.find({ id: 1, include: 'sample' })
-        expect(mockAxios.get).toBeCalledWith(
-          `${request.resource}/1${request.buildQuery({ include: 'sample' })}`,
-        )
+        expect(mockAxios.get).toBeCalledWith('requests/1/?include=sample')
         expect(response).toEqual(mockResponse)
       })
     })
@@ -208,36 +204,3 @@ describe('createRequest', () => {
     })
   })
 })
-
-// describe('update', () => {
-//   beforeEach(() => {
-//     data = [
-//       { data: { type: 'requests', id: 1, attributes: { state: 'started' } } },
-//       { data: { type: 'requests', id: 2, attributes: { state: 'started' } } },
-//       { data: { type: 'requests', id: 3, attributes: { state: 'started' } } },
-//       { data: { type: 'requests', id: 4, attributes: { state: 'started' } } },
-//       { data: { type: 'requests', id: 5, attributes: { state: 'started' } } },
-//     ]
-//     request.api.patch = jest.fn()
-//   })
-
-//   it('single', () => {
-//     let promise = new Promise(() => {})
-//     request.api.patch.mockReturnValue(promise)
-
-//     let promises = request.update(data[0])
-
-//     expect(request.api.patch).toBeCalledWith(`${request.resource}/1`, data[0])
-//     expect(promises).toEqual([promise])
-//   })
-
-//   it('multiple', () => {
-//     let promise = new Promise(() => {})
-//     request.api.patch.mockReturnValue(promise)
-
-//     let promises = request.update(data)
-
-//     expect(request.api.patch).toBeCalledTimes(data.length)
-//     expect(promises).toEqual([promise, promise, promise, promise, promise])
-//   })
-// })

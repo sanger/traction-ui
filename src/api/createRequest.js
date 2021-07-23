@@ -1,5 +1,6 @@
 import axios from 'axios'
 
+// default headers are for json api
 const defaultHeaders = {
   'Content-Type': 'application/vnd.api+json',
   Accept: 'application/vnd.api+json',
@@ -9,31 +10,49 @@ const createRequest = ({ rootURL, apiNamespace, resource, headers = defaultHeade
   const baseURL = `${rootURL}/${apiNamespace}`
   const api = axios.create({ baseURL, headers })
 
-  const buildFilters = ({ ...filters } = {}) => {
-    return Object.keys(filters)
-      .map((key) => `filter[${key}]=${filters[key]}`)
+  const isObject = (value) => {
+    return value && typeof value === 'object' && value.constructor === Object
+  }
+
+  const isString = (value) => {
+    return typeof value === 'string' || value instanceof String
+  }
+
+  const buildParameter = (attributes) => (parameter) => {
+    return Object.keys(attributes)
+      .map((key) => `${parameter}[${key}]=${attributes[key]}`)
       .join('&')
   }
-  // TODO: I think you can use higher order functions maybe? to improve syntax but again
-  // this is a massive improvement on the previous incarnation and easier to understand
-  const buildQuery = ({ filters, include } = {}) => {
-    const filterString = buildFilters(filters)
-    const includeString = include ? `include=${include}` : ''
-    const queryString = [filterString, includeString].filter(Boolean).join('&')
 
-    if (queryString.length > 0) {
-      return `/?${queryString}`
-    } else {
-      return ''
-    }
+  const buildParameterList = (parameters) => {
+    return Object.keys(parameters).map((key) => {
+      if (isObject(parameters[key])) {
+        return buildParameter(parameters[key])(key)
+      }
+
+      if (isString(parameters[key])) {
+        return `${key}=${parameters[key]}`
+      }
+    })
+  }
+
+  const buildQueryString = (parameters) => {
+    const queryString = buildParameterList(parameters)
+      .filter(Boolean)
+      .join('&')
+    return queryString.length > 0 ? `/?${queryString}` : ''
+  }
+
+  const buildQuery = ({ filter, include, fields } = {}) => {
+    return buildQueryString({ filter, include, fields })
   }
 
   const execute = (type, ...params) => {
     return api[type](...params)
   }
 
-  const get = ({ filters, include } = {}) => {
-    return execute('get', `${resource}${buildQuery({ filters, include })}`)
+  const get = ({ filter, include } = {}) => {
+    return execute('get', `${resource}${buildQuery({ filter, include })}`)
   }
 
   const find = ({ id, include } = {}) => {
@@ -44,16 +63,20 @@ const createRequest = ({ rootURL, apiNamespace, resource, headers = defaultHeade
     return execute('post', resource, data)
   }
 
+  const convertArray = (arr) => {
+    return arr.length === 1 ? arr[0] : arr
+  }
+
   const destroy = (...ids) => {
-    const promises = ids.map((id) => execute('delete', `${resource}/${id}`))
-    return promises.length === 1 ? promises[0] : promises
+    return convertArray(ids.map((id) => execute('delete', `${resource}/${id}`)))
   }
 
   const update = (data) => {
-    const promises = (Array.isArray(data) ? data : [data]).map((item) =>
-      execute('patch', `${resource}/${item.id}`, item),
+    return convertArray(
+      (Array.isArray(data) ? data : [data]).map((item) =>
+        execute('patch', `${resource}/${item.id}`, item),
+      ),
     )
-    return promises.length === 1 ? promises[0] : promises
   }
 
   return {
@@ -63,7 +86,6 @@ const createRequest = ({ rootURL, apiNamespace, resource, headers = defaultHeade
     headers,
     baseURL,
     api,
-    buildFilters,
     buildQuery,
     get,
     create,
