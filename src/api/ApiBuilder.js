@@ -65,15 +65,19 @@ const buildResources = ({ apiNamespace, rootURL, resources, pipeline = null }) =
 }
 
 /*
-  * @param [*] - resources. A list of resources that belong to the request. e.g. runs can have plates and wells.
-  * @returns {Request} - a request
-*/
+ * @param [*] - resources. A list of resources that belong to the request. e.g. runs can have plates and wells.
+ * @returns {Request} - a request
+ */
 const buildRequest = ({ apiNamespace, rootURL, resource, resources }) => {
   const request = createRequest({ apiNamespace, rootURL, resource })
 
   resources.forEach(({ name }) => {
     // the resources path will be a combination of the parent resource and the child resource e.g. runs/plates
-    request[name] = createRequest({ apiNamespace, rootURL, resource: `${request.resource}/${name}`})
+    request[name] = createRequest({
+      apiNamespace,
+      rootURL,
+      resource: `${request.resource}/${name}`,
+    })
   })
 
   return request
