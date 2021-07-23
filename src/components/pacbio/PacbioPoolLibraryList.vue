@@ -44,9 +44,10 @@
       </b-tbody>
     </b-table-simple>
     <div class="text-right">
-      <b-button data-action="create-pool" variant="success" @click="createPool()">
-        Create Pool</b-button
-      >
+      <b-button data-action="create-pool" variant="success" :disabled="busy" @click="create()">
+        <span class="button-text">Create Pool </span>
+        <b-spinner v-show="busy" small></b-spinner>
+      </b-button>
     </div>
   </b-col>
 </template>
@@ -62,7 +63,9 @@ export default {
     PacbioPoolLibraryEdit,
   },
   data() {
-    return {}
+    return {
+      busy: false,
+    }
   },
   computed: {
     ...mapGetters(['selectedRequests', 'result']),
@@ -73,6 +76,11 @@ export default {
 
   methods: {
     ...mapActions(['createPool']),
+    create() {
+      this.busy = true
+      this.createPool()
+      this.busy = false
+    },
   },
 }
 </script>
@@ -81,5 +89,10 @@ export default {
 @import 'src/styles/components.scss';
 th {
   font-size: 0.8em;
+}
+.button-text {
+  padding-right: 2px;
+  position: relative;
+  top: 2px;
 }
 </style>
