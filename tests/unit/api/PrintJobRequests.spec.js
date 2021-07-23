@@ -246,7 +246,7 @@ describe('PrintJobRequests', () => {
   describe('printMyBarcodeRequest', () => {
     it('returns a pmb request', () => {
       let request = PrintJobRequests.printMyBarcodeRequest()
-      expect(request.baseURL).toEqual(process.env.VUE_APP_PRINTMYBARCODE_BASE_URL)
+      expect(request.rootURL).toEqual(process.env.VUE_APP_PRINTMYBARCODE_BASE_URL)
       expect(request.apiNamespace).toEqual('v1')
     })
   })

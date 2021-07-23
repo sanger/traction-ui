@@ -1,11 +1,20 @@
 import axios from 'axios'
 
+// TODO: Add documentation requirement for merge
+
 // default headers are for json api
 const defaultHeaders = {
   'Content-Type': 'application/vnd.api+json',
   Accept: 'application/vnd.api+json',
 }
 
+/*
+ * @param {String} rootURL
+ * @param {String} apiNamespace
+ * @param {String} resource
+ * @param {Object} headers - these will default to json api headers
+ * @returns {Object} instance of request
+ */
 const createRequest = ({ rootURL, apiNamespace, resource, headers = defaultHeaders }) => {
   const baseURL = `${rootURL}/${apiNamespace}`
   const api = axios.create({ baseURL, headers })
