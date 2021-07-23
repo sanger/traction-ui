@@ -38,8 +38,10 @@
             id="library-volume"
             v-model="library.volume"
             type="number"
+            min="0"
+            step="any"
             required
-            placeholder="1.0"
+            placeholder="Example: 1.0"
           >
           </b-form-input>
         </b-form-group>
@@ -49,8 +51,10 @@
             id="library-concentration"
             v-model="library.concentration"
             type="number"
+            min="0"
+            step="any"
             required
-            placeholder="1.0"
+            placeholder="Example: 1.0"
           >
           </b-form-input>
         </b-form-group>
@@ -65,7 +69,7 @@
             v-model="library.templatePrepKitBoxBarcode"
             type="text"
             required
-            placeholder="ABC"
+            placeholder="Example: 012345678901234567890"
           >
           </b-form-input>
         </b-form-group>
@@ -76,7 +80,9 @@
             v-model="library.fragmentSize"
             type="number"
             required
-            placeholder="100"
+            step="1"
+            min="0"
+            placeholder="Example: 100"
           >
           </b-form-input>
         </b-form-group>
