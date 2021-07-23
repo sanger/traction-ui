@@ -49,9 +49,23 @@ describe('PacbioTagSetList', () => {
     it('wont show the list', () => {
       expect(wrapper.find('[data-type=tag-set-list]').exists()).toBeFalsy()
     })
+  })
+
+  describe('when there is an error', () => {
+    beforeEach(() => {
+      store.state.traction.pacbio.poolCreate.resources.tagSets = {}
+
+      wrapper = mount(PacbioTagSetList, {
+        localVue,
+        store,
+      })
+
+      wrapper.vm.showAlert('Bad stuff happened', 'danger')
+    })
+
     it('should show an appropriate message', () => {
       const errorMessage = wrapper.find('[data-type=error-message]')
-      expect(errorMessage.text()).toMatch('There was a problem retrieving the tag sets')
+      expect(errorMessage.text()).toMatch('Bad stuff happened')
     })
   })
 })

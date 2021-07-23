@@ -9,16 +9,19 @@
       @change="updateSelected"
     ></b-form-select>
     <div>
-      <b-alert :show="isEmpty" data-type="error-message" dismissible variant="danger">
-        There was a problem retrieving the tag sets
-      </b-alert>
+      <alert ref="alert"></alert>
     </div>
   </b-col>
 </template>
 
 <script>
+import Helper from '@/mixins/Helper'
+import Alert from '@/components/Alert'
+
 export default {
   name: 'PacbioTagSetList',
+  components: { Alert },
+  mixins: [Helper],
   data() {
     return {
       selected: null,

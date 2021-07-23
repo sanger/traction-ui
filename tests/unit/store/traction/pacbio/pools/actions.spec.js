@@ -15,7 +15,7 @@ describe('#setPools', () => {
   it('successfully', async () => {
     const response = Data.TractionPacbioPools
     const { data: pools, included } = response.data
-    get.mockReturnValue(response)
+    get.mockResolvedValue(response)
 
     await Actions.setPools({ commit, getters })
 
@@ -29,7 +29,7 @@ describe('#setPools', () => {
   it('when the pool has no libraries', async () => {
     const response = Data.TractionPacbioPoolsNoRelationships
     const { data: pools } = response.data
-    get.mockReturnValue(response)
+    get.mockResolvedValue(response)
 
     await Actions.setPools({ commit, getters })
 

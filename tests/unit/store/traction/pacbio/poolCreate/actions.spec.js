@@ -12,39 +12,81 @@ describe('actions.js', () => {
     createPool,
   } = actions
 
-  it('fetchPacbioPlates', async () => {
-    // mock commit
-    const commit = jest.fn()
-    // mock dependencies
-    const get = jest.fn()
-    const rootState = { api: { traction: { pacbio: { plates: { get } } } } }
-    get.mockReturnValue(Data.PacbioPlatesRequest)
-    // apply action
-    await fetchPacbioPlates({ commit, rootState })
-    // assert result (Might make sense to pull these into separate tests)
-    expect(commit).toHaveBeenCalledWith('populatePlates', Data.PacbioPlatesRequest.data.data)
-    expect(commit).toHaveBeenCalledWith(
-      'populateWells',
-      Data.PacbioPlatesRequest.data.included.slice(0, 4),
-    )
-    expect(commit).toHaveBeenCalledWith(
-      'populateRequests',
-      Data.PacbioPlatesRequest.data.included.slice(4, 8),
-    )
+  describe('fetchPacbioPlates', () => {
+    it('handles success', async () => {
+      // mock commit
+      const commit = jest.fn()
+      // mock dependencies
+      const get = jest.fn()
+      const rootState = { api: { traction: { pacbio: { plates: { get } } } } }
+      get.mockResolvedValue(Data.PacbioPlatesRequest)
+      // apply action
+      const { success } = await fetchPacbioPlates({ commit, rootState })
+      // assert result (Might make sense to pull these into separate tests)
+      expect(commit).toHaveBeenCalledWith('populatePlates', Data.PacbioPlatesRequest.data.data)
+      expect(commit).toHaveBeenCalledWith(
+        'populateWells',
+        Data.PacbioPlatesRequest.data.included.slice(0, 4),
+      )
+      expect(commit).toHaveBeenCalledWith(
+        'populateRequests',
+        Data.PacbioPlatesRequest.data.included.slice(4, 8),
+      )
+      expect(success).toEqual(true)
+    })
+
+    it('handles failure', async () => {
+      // mock commit
+      const commit = jest.fn()
+      // mock dependencies
+      const get = jest.fn()
+      const rootState = { api: { traction: { pacbio: { plates: { get } } } } }
+      get.mockRejectedValue({
+        data: { data: [] },
+        status: 500,
+        statusText: 'Internal Server Error',
+      })
+      // apply action
+      const { success } = await fetchPacbioPlates({ commit, rootState })
+      // assert result (Might make sense to pull these into separate tests)
+      expect(commit).not.toHaveBeenCalled()
+      expect(success).toEqual(false)
+    })
   })
 
-  it('fetchPacbioTagSets', async () => {
-    // mock commit
-    const commit = jest.fn()
-    // mock dependencies
-    const get = jest.fn()
-    const rootState = { api: { traction: { pacbio: { tag_sets: { get } } } } }
-    get.mockReturnValue(Data.PacbioTagSets)
-    // apply action
-    await fetchPacbioTagSets({ commit, rootState })
-    // assert result
-    expect(commit).toHaveBeenCalledWith('populateTagSets', Data.PacbioTagSets.data.data)
-    expect(commit).toHaveBeenCalledWith('populateTags', Data.PacbioTagSets.data.included)
+  describe('fetchPacbioTagSets', () => {
+    it('handles success', async () => {
+      // mock commit
+      const commit = jest.fn()
+      // mock dependencies
+      const get = jest.fn()
+      const rootState = { api: { traction: { pacbio: { tag_sets: { get } } } } }
+      get.mockRejectedValue({
+        data: { data: [] },
+        status: 500,
+        statusText: 'Internal Server Error',
+      })
+      // apply action
+      const { success } = await fetchPacbioTagSets({ commit, rootState })
+      // assert result
+      expect(commit).not.toHaveBeenCalled()
+      expect(success).toEqual(false)
+    })
+
+    it('handles failure', async () => {
+      // mock commit
+      const commit = jest.fn()
+      // mock dependencies
+      const get = jest.fn()
+      const rootState = { api: { traction: { pacbio: { tag_sets: { get } } } } }
+      get.mockResolvedValue(Data.PacbioTagSets)
+      // apply action
+      const { success } = await fetchPacbioTagSets({ commit, rootState })
+      // assert result
+      expect(commit).toHaveBeenCalledWith('populateTagSets', Data.PacbioTagSets.data.data)
+      expect(commit).toHaveBeenCalledWith('populateTags', Data.PacbioTagSets.data.included)
+      expect(success).toEqual(true)
+    })
   })
 
   describe('selectWellRequests', () => {
@@ -156,7 +198,7 @@ describe('actions.js', () => {
       const create = jest.fn()
       const rootState = { api: { traction: { pacbio: { pools: { create } } } } }
       const libraries = { _1: library1, _2: library2 }
-      create.mockReturnValue(mockResponse)
+      create.mockResolvedValue(mockResponse)
       const response = newResponse({ ...mockResponse, success: true })
       await createPool({ commit, rootState, state: { libraries } })
       expect(commit).toHaveBeenCalledWith('populateResult', response)

@@ -12,7 +12,7 @@ export default {
     const promise = request.get({ include: 'wells.requests' })
     const response = await handleResponse(promise)
 
-    const { success, data: { data, included = [] } = {} } = response
+    const { success, data: { data, included = [] } = {}, errors = [] } = response
 
     if (success) {
       const { wells, requests } = groupIncludedByResource(included)
@@ -20,6 +20,8 @@ export default {
       commit('populateWells', wells)
       commit('populateRequests', requests)
     }
+
+    return { success, errors }
   },
   fetchPacbioTagSets: async ({ commit, rootState }) => {
     const request = rootState.api.traction.pacbio.tag_sets
@@ -28,13 +30,15 @@ export default {
     const promise = request.get({ include: 'tags' })
     const response = await handleResponse(promise)
 
-    const { success, data: { data, included = [] } = {} } = response
+    const { success, data: { data, included = [] } = {}, errors = [] } = response
 
     if (success) {
       commit('populateTagSets', data)
       /* We are currently only including tags. So this is really simple */
       commit('populateTags', included)
     }
+
+    return { success, errors, response }
   },
   /**
    * Inverts the selected state of all requests associated with a
