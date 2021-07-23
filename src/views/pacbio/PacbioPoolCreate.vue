@@ -2,10 +2,10 @@
   <div>
     <b-container id="pool" fluid>
       <b-row>
-        <PacbioLabwareFind />
+        <PacbioLabwareFind ref="labwareFind" />
         <b-col>
           <b-row>
-            <PacbioTagSetList></PacbioTagSetList>
+            <PacbioTagSetList ref="tagSetList"></PacbioTagSetList>
           </b-row>
           <b-row>
             <PacbioTagSetItem></PacbioTagSetItem>
@@ -43,10 +43,24 @@ export default {
     return {}
   },
   created() {
-    this.fetchPacbioPlates()
-    this.fetchPacbioTagSets()
+    const plates = this.fetchPacbioPlates()
+    const tagSets = this.fetchPacbioTagSets()
+    // We don't use await here as otherwise the handling of one response will be blocked
+    // by the other
+    plates.then(this.plateAlert)
+    tagSets.then(this.tagSetAlert)
   },
   methods: {
+    plateAlert({ success, errors }) {
+      if (!success) {
+        this.$refs['labwareFind'].showAlert(errors, 'danger')
+      }
+    },
+    tagSetAlert({ success, errors }) {
+      if (!success) {
+        this.$refs['tagSetList'].showAlert(errors, 'danger')
+      }
+    },
     ...mapActions(['fetchPacbioPlates', 'fetchPacbioTagSets']),
   },
 }

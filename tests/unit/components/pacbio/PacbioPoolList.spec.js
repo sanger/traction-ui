@@ -21,4 +21,15 @@ describe('pacbioPoolList', () => {
   it('contains the correct data', () => {
     expect(wrapper.find('.list-group').findAll('.list-group-item').length).toEqual(2)
   })
+
+  describe('when there is an error', () => {
+    beforeEach(() => {
+      wrapper.vm.showAlert('Bad stuff happened', 'danger')
+    })
+
+    it('should show an appropriate message', () => {
+      const errorMessage = wrapper.find('[data-type=error-message]')
+      expect(errorMessage.text()).toMatch('Bad stuff happened')
+    })
+  })
 })
