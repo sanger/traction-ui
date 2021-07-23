@@ -27,6 +27,9 @@ import PacbioLabwareSelectedList from '@/components/pacbio/PacbioLabwareSelected
 import PacbioTagSetItem from '@/components/pacbio/PacbioTagSetItem'
 import PacbioPoolLibraryList from '@/components/pacbio/PacbioPoolLibraryList'
 
+import { createNamespacedHelpers } from 'vuex'
+const { mapActions } = createNamespacedHelpers('traction/pacbio/poolCreate')
+
 export default {
   name: 'PacbioPoolCreate',
   components: {
@@ -39,9 +42,12 @@ export default {
   data() {
     return {}
   },
-  async created() {
-    await this.$store.dispatch('traction/pacbio/poolCreate/fetchPacbioPlates')
-    await this.$store.dispatch('traction/pacbio/poolCreate/fetchPacbioTagSets')
+  created() {
+    this.fetchPacbioPlates()
+    this.fetchPacbioTagSets()
+  },
+  methods: {
+    ...mapActions(['fetchPacbioPlates', 'fetchPacbioTagSets']),
   },
 }
 </script>
