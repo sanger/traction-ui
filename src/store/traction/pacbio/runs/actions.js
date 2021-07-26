@@ -3,7 +3,7 @@ import * as PacbioRun from '@/api/PacbioRun'
 
 const setRuns = async ({ commit, getters }) => {
   let request = getters.runRequest
-  let promise = request.get()
+  let promise = request.get({ include: 'plate.wells.libraries' })
   let response = await handlePromise(promise)
 
   if (response.successful && !response.empty) {
@@ -21,7 +21,7 @@ const newRun = ({ commit }) => {
 
 const editRun = async ({ commit, getters }, runId) => {
   let request = getters.runRequest
-  let promise = request.find(runId)
+  let promise = request.find(runId, { include: 'plate.wells.libraries' })
   let response = await handlePromise(promise)
 
   if (response.successful) {
@@ -53,7 +53,7 @@ const updateRun = async ({ getters, dispatch }) => {
 
 const getRun = async ({ getters }, id) => {
   let request = getters.runRequest
-  let promise = request.find(id)
+  let promise = request.find({ id, include: 'plate.wells.libraries' })
   let response = await handlePromise(promise)
 
   if (response.successful) {

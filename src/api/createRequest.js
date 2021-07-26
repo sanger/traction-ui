@@ -24,23 +24,23 @@ const createRequest = ({ rootURL, apiNamespace, resource, headers = defaultHeade
   }
 
   const isString = (value) => {
-    return typeof value === 'string' || value instanceof String
+    return (typeof value === 'string' || value instanceof String) && value.length > 0
   }
 
   const buildParameter = (attributes) => (parameter) => {
-    return Object.keys(attributes)
-      .map((key) => `${parameter}[${key}]=${attributes[key]}`)
+    return Object.entries(attributes)
+      .map(([key, value]) => `${parameter}[${key}]=${value}`)
       .join('&')
   }
 
   const buildParameterList = (parameters) => {
-    return Object.keys(parameters).map((key) => {
-      if (isObject(parameters[key])) {
-        return buildParameter(parameters[key])(key)
+    return Object.entries(parameters).map(([key, value]) => {
+      if (isObject(value)) {
+        return buildParameter(value)(key)
       }
 
-      if (isString(parameters[key])) {
-        return `${key}=${parameters[key]}`
+      if (isString(value)) {
+        return `${key}=${value}`
       }
     })
   }
@@ -52,7 +52,7 @@ const createRequest = ({ rootURL, apiNamespace, resource, headers = defaultHeade
     return queryString.length > 0 ? `/?${queryString}` : ''
   }
 
-  const buildQuery = ({ filter, include, fields } = {}) => {
+  const buildQuery = ({ filter = {}, include = '', fields = {} } = {}) => {
     return buildQueryString({ filter, include, fields })
   }
 
@@ -60,11 +60,11 @@ const createRequest = ({ rootURL, apiNamespace, resource, headers = defaultHeade
     return api[type](...params)
   }
 
-  const get = ({ filter, include } = {}) => {
+  const get = ({ filter = {}, include = '' } = {}) => {
     return execute('get', `${resource}${buildQuery({ filter, include })}`)
   }
 
-  const find = ({ id, include } = {}) => {
+  const find = ({ id = '', include = '' } = {}) => {
     return execute('get', `${resource}/${id}${buildQuery({ include })}`)
   }
 
@@ -72,16 +72,16 @@ const createRequest = ({ rootURL, apiNamespace, resource, headers = defaultHeade
     return execute('post', resource, data)
   }
 
-  const convertArray = (arr) => {
+  const reArray = (arr) => {
     return arr.length === 1 ? arr[0] : arr
   }
 
   const destroy = (...ids) => {
-    return convertArray(ids.map((id) => execute('delete', `${resource}/${id}`)))
+    return reArray(ids.map((id) => execute('delete', `${resource}/${id}`)))
   }
 
   const update = (data) => {
-    return convertArray(
+    return reArray(
       (Array.isArray(data) ? data : [data]).map((item) =>
         execute('patch', `${resource}/${item.id}`, item),
       ),

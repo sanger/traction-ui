@@ -147,7 +147,10 @@ describe('SequencescapePlates', () => {
       let expectedPlates = expectedResponse.deserialize.plates
       let plates = await getPlates(request, barcodes)
 
-      expect(request.get).toHaveBeenCalled()
+      expect(request.get).toHaveBeenCalledWith({
+        filter: { barcode: barcodes },
+        include: 'wells.aliquots.sample.sample_metadata,wells.aliquots.study',
+      })
       expect(plates).toEqual(expectedPlates)
     })
 
