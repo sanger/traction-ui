@@ -167,18 +167,6 @@ describe('createRequest', () => {
         expect(mockAxios.patch).toBeCalled()
         expect(response).toEqual(mockResponse)
       })
-
-      // not sure we need this
-      it.skip('multiple', async () => {
-        mockAxios.patch.mockReturnValue(mockResponse)
-        const request = createRequest({ ...attributes })
-        const promises = await request.update([data, data, data])
-        for (const promise of promises) {
-          const response = await promise
-          expect(mockAxios.patch).toBeCalled()
-          expect(response).toEqual(mockResponse)
-        }
-      })
     })
 
     describe('delete', () => {
