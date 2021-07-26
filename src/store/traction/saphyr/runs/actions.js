@@ -25,7 +25,7 @@ const isLibraryBarcodeValid = async ({ dispatch }, barcode) => {
 // TODO: Reuse action from tubes module?
 const getTubeForBarcode = async ({ rootGetters }, barcode) => {
   let request = rootGetters['traction/saphyr/tubes/tubeRequest']
-  let promise = request.get({ filter: { barcode } })
+  let promise = request.get({ filter: { barcode }, include: 'materials' })
   let response = await handlePromise(promise)
 
   if (response.successful && !response.empty) {

@@ -22,7 +22,8 @@
             "name": "enzymes"
           },
           {
-            "name": "runs"
+            "name": "runs",
+            "include": "chip.flowcells.library"
           },
           {
             "name": "chips"
@@ -31,10 +32,12 @@
             "name": "flowcells"
           },
           {
-            "name": "requests"
+            "name": "requests",
+            "include": ""
           },
           {
-            "name": "tubes"
+            "name": "tubes",
+            "include": "materials"
           }
         ]
       },
@@ -42,33 +45,42 @@
         "name": "pacbio",
         "resources": [
           {
-            "name": "libraries"
+            "name": "libraries",
+            "include": "request,tag.tag_set,tube"
           },
           {
-            "name": "request_library"
+            "name": "request_library",
+            "include": ""
           },
           {
-            "name": "requests"
+            "name": "requests",
+            "include": ""
           },
           {
-            "name": "tubes"
+            "name": "tubes",
+            "include": "materials"
           },
           {
             "name": "runs",
+            "include": "plate.wells.libraries",
             "resources": [
               {
-                "name": "plates"
+                "name": "plates",
+                "include": ""
               },
               {
-                "name": "wells"
+                "name": "wells",
+                "include": ""
               }
             ]
           },
           {
-            "name": "plates"
+            "name": "plates",
+            "include": "wells.materials"
           },
           {
-            "name": "wells"
+            "name": "wells",
+            "include": ""
           }
         ]
       }
@@ -101,7 +113,8 @@
     "baseURL": "VUE_APP_SEQUENCESCAPE_BASE_URL",
     "resources": [
       {
-        "name": "plates"
+        "name": "plates",
+        "include": "wells.aliquots.sample.sample_metadata,wells.aliquots.study"
       }
     ]
   }
