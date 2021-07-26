@@ -163,14 +163,14 @@ describe('#updateLibrary', () => {
   })
 
   it('successfully', async () => {
-    update.mockReturnValue([Data.TractionPacbioLibrary])
+    update.mockReturnValue(Data.TractionPacbioLibrary)
     library.volume = '5'
     let response = await Actions.updateLibrary({ commit, getters }, library)
     expect(expectedResponse).toEqual(response)
   })
 
   it('unsuccessfully', async () => {
-    update.mockReturnValue([failedResponse])
+    update.mockReturnValue(failedResponse)
     expectedResponse = new Response(failedResponse)
     let response = await Actions.updateLibrary({ commit, getters }, library)
     expect(commit).not.toHaveBeenCalled()

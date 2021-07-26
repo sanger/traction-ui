@@ -61,7 +61,7 @@ describe('#handleRunUpdate', () => {
   })
 
   it('successfully', async () => {
-    update.mockReturnValue([Data.UpdateRun])
+    update.mockReturnValue(Data.UpdateRun)
 
     let expectedResponse = new Response(Data.UpdateRun)
     let expectedRun = expectedResponse.deserialize.runs[0]
@@ -73,7 +73,7 @@ describe('#handleRunUpdate', () => {
   })
 
   it('unsuccessfully', async () => {
-    update.mockReturnValue([failedResponse])
+    update.mockReturnValue(failedResponse)
 
     let expectedResponse = new Response(failedResponse)
     let response = await Actions.handleRunUpdate({ rootGetters, getters, commit }, payload)

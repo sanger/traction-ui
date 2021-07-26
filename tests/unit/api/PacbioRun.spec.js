@@ -374,8 +374,8 @@ describe('Run', () => {
     })
 
     it('on succuess, it returns an empty list when there are no errors', async () => {
-      pacbioRequest.runs.update.mockResolvedValue([Data.PacbioRun])
-      pacbioRequest.runs.wells.update.mockResolvedValue([Data.PacbioWell])
+      pacbioRequest.runs.update.mockResolvedValue(Data.PacbioRun)
+      pacbioRequest.runs.wells.update.mockResolvedValue(Data.PacbioWell)
 
       let resp = await Run.update(run, pacbioRequest)
 
@@ -391,7 +391,7 @@ describe('Run', () => {
     })
 
     it('on failure, it returns a list of errors', async () => {
-      pacbioRequest.runs.update.mockResolvedValue([failedResponse])
+      pacbioRequest.runs.update.mockResolvedValue(failedResponse)
       let resp = await Run.update(run, pacbioRequest)
 
       expect(pacbioRequest.runs.update).toHaveBeenCalled()
@@ -418,7 +418,7 @@ describe('Run', () => {
       })
 
       it('should remove that well from the payload', () => {
-        pacbioRequest.runs.update.mockResolvedValue([Data.PacbioRun])
+        pacbioRequest.runs.update.mockResolvedValue(Data.PacbioRun)
 
         Run.update(run, pacbioRequest)
         expect(pacbioRequest.runs.update).toHaveBeenCalledTimes(1)
@@ -432,7 +432,7 @@ describe('Run', () => {
     })
 
     it('success', async () => {
-      request.update.mockResolvedValue([Data.PacbioRun])
+      request.update.mockResolvedValue(Data.PacbioRun)
       let mockResponse = new Response(Data.PacbioRun)
 
       let response = await Run.updateResource({}, request)
@@ -440,7 +440,7 @@ describe('Run', () => {
     })
 
     it('failure', async () => {
-      request.update.mockReturnValue([failedResponse])
+      request.update.mockReturnValue(failedResponse)
 
       let message
       try {

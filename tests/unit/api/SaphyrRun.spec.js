@@ -356,7 +356,7 @@ describe('Run', () => {
     })
 
     it('successful', async () => {
-      request.update.mockResolvedValue([Data.CreateRun])
+      request.update.mockResolvedValue(Data.CreateRun)
       let mockResponse = new Response(Data.CreateRun)
 
       let response = await Run.updateResource(payload, request)
@@ -370,7 +370,7 @@ describe('Run', () => {
         data: { errors: { run: ['Failed to update.'] } },
       }
 
-      request.update.mockReturnValue([failedResponse])
+      request.update.mockReturnValue(failedResponse)
       let mockResponse = new Response(failedResponse)
 
       await expect(Run.updateResource(payload, request)).rejects.toEqual(mockResponse.errors)
@@ -400,23 +400,23 @@ describe('Run', () => {
     })
 
     it('returns true', async () => {
-      request.runs.update.mockResolvedValue([Data.CreateRun])
-      request.chips.update.mockResolvedValue([Data.CreateChip])
-      request.flowcells.update.mockResolvedValue([Data.CreateFlowcell])
+      request.runs.update.mockResolvedValue(Data.CreateRun)
+      request.chips.update.mockResolvedValue(Data.CreateChip)
+      request.flowcells.update.mockResolvedValue(Data.CreateFlowcell)
 
       expect(await Run.update(run, request)).toBeTruthy()
     })
 
     it('returns false if the run cannot be created', async () => {
-      request.runs.update.mockReturnValue([failedResponse])
+      request.runs.update.mockReturnValue(failedResponse)
       request.runs.destroy.mockReturnValue(Data.SuccessfulDestroy)
 
       expect(await Run.update(run, request)).toBeFalsy()
     })
 
     it('returns false and rollsback if the chip cannot be created', async () => {
-      request.runs.update.mockResolvedValue([Data.CreateRun])
-      request.chips.update.mockReturnValue([failedResponse])
+      request.runs.update.mockResolvedValue(Data.CreateRun)
+      request.chips.update.mockReturnValue(failedResponse)
 
       request.runs.destroy.mockReturnValue(Data.SuccessfulDestroy)
       request.chips.destroy.mockReturnValue(Data.SuccessfulDestroy)
@@ -425,9 +425,9 @@ describe('Run', () => {
     })
 
     it('returns false and rollsback if the flowcells cannot be created', async () => {
-      request.runs.update.mockResolvedValue([Data.CreateRun])
-      request.chips.update.mockResolvedValue([Data.CreateRun])
-      request.flowcells.update.mockReturnValue([failedResponse])
+      request.runs.update.mockResolvedValue(Data.CreateRun)
+      request.chips.update.mockResolvedValue(Data.CreateRun)
+      request.flowcells.update.mockReturnValue(failedResponse)
 
       request.runs.destroy.mockReturnValue(Data.SuccessfulDestroy)
       request.chips.destroy.mockReturnValue(Data.SuccessfulDestroy)
