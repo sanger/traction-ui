@@ -30,6 +30,7 @@ const deleteLibraries = async ({ getters }, libraryIds) => {
   let request = getters.libraryRequest
   let promises = request.destroy(libraryIds)
 
+  //TODO: Is this ever returning a single promise
   let responses = await Promise.all(promises.map((promise) => handlePromise(promise)))
   return responses
 }
