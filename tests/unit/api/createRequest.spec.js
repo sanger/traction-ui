@@ -124,9 +124,7 @@ describe('createRequest', () => {
         mockAxios.get.mockReturnValue(mockResponse)
         const request = createRequest({ ...attributes })
         const response = await request.get(query)
-        expect(mockAxios.get).toBeCalledWith(
-          'requests?filter[a]=1&filter[b]=2&include=sample.tube',
-        )
+        expect(mockAxios.get).toBeCalledWith('requests?filter[a]=1&filter[b]=2&include=sample.tube')
         expect(response).toEqual(mockResponse)
       })
     })
