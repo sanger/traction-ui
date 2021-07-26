@@ -49,7 +49,7 @@ const createRequest = ({ rootURL, apiNamespace, resource, headers = defaultHeade
     const queryString = buildParameterList(parameters)
       .filter(Boolean)
       .join('&')
-    return queryString.length > 0 ? `/?${queryString}` : ''
+    return queryString.length > 0 ? `?${queryString}` : ''
   }
 
   const buildQuery = ({ filter = {}, include = '', fields = {} } = {}) => {

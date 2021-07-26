@@ -73,19 +73,19 @@ describe('createRequest', () => {
     it('filter', () => {
       const request = createRequest({ ...attributes })
       const query = request.buildQuery({ filter: { a: '1', b: '2' } })
-      expect(query).toEqual('/?filter[a]=1&filter[b]=2')
+      expect(query).toEqual('?filter[a]=1&filter[b]=2')
     })
 
     it('include', () => {
       const request = createRequest({ ...attributes })
       const query = request.buildQuery({ include: 'sample.tube' })
-      expect(query).toEqual('/?include=sample.tube')
+      expect(query).toEqual('?include=sample.tube')
     })
 
     it('fields', () => {
       const request = createRequest({ ...attributes })
       const query = request.buildQuery({ fields: { resource1: 'field1', resource2: 'field2' } })
-      expect(query).toEqual('/?fields[resource1]=field1&fields[resource2]=field2')
+      expect(query).toEqual('?fields[resource1]=field1&fields[resource2]=field2')
     })
 
     it('filter, include and fields', () => {
@@ -96,7 +96,7 @@ describe('createRequest', () => {
         fields: { resource1: 'field1', resource2: 'field2' },
       })
       expect(query).toEqual(
-        '/?filter[a]=1&filter[b]=2&include=sample.tube&fields[resource1]=field1&fields[resource2]=field2',
+        '?filter[a]=1&filter[b]=2&include=sample.tube&fields[resource1]=field1&fields[resource2]=field2',
       )
     })
   })
@@ -125,7 +125,7 @@ describe('createRequest', () => {
         const request = createRequest({ ...attributes })
         const response = await request.get(query)
         expect(mockAxios.get).toBeCalledWith(
-          'requests/?filter[a]=1&filter[b]=2&include=sample.tube',
+          'requests?filter[a]=1&filter[b]=2&include=sample.tube',
         )
         expect(response).toEqual(mockResponse)
       })
@@ -154,7 +154,7 @@ describe('createRequest', () => {
         mockAxios.get.mockReturnValue(mockResponse)
         const request = createRequest({ ...attributes })
         const response = await request.find({ id: 1, include: 'sample' })
-        expect(mockAxios.get).toBeCalledWith('requests/1/?include=sample')
+        expect(mockAxios.get).toBeCalledWith('requests/1?include=sample')
         expect(response).toEqual(mockResponse)
       })
     })
