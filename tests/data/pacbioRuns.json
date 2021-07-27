@@ -15,7 +15,7 @@
           "dna_control_complex_box_barcode": "Lxxxxx10171760012311",
           "system_name": "Sequel I",
           "created_at": "11/09/2019 01:11",
-          "all_wells_have_libraries": true
+          "all_wells_have_pools": true
         }
       },
       {
@@ -32,7 +32,7 @@
           "dna_control_complex_box_barcode": "Lxxxxx10171760012312",
           "system_name": "Sequel II",
           "created_at": "12/09/2019 02:22",
-          "all_wells_have_libraries": true
+          "all_wells_have_pools": true
         }
       },
       {
@@ -65,7 +65,7 @@
           "dna_control_complex_box_barcode": "Lxxxxx10171760012312",
           "system_name": "Sequel II",
           "created_at": "10/09/2019 02:22",
-          "all_wells_have_libraries": true
+          "all_wells_have_pools": true
         }
       },
       {
@@ -82,7 +82,7 @@
           "dna_control_complex_box_barcode": "Lxxxxx10171760012312",
           "system_name": "Sequel II",
           "created_at": "10/09/2019 02:22",
-          "all_wells_have_libraries": true
+          "all_wells_have_pools": true
         }
       },
       {
@@ -99,7 +99,7 @@
           "dna_control_complex_box_barcode": "Lxxxxx10171760012312",
           "system_name": "Sequel II",
           "created_at": "10/09/2019 02:22",
-          "all_wells_have_libraries": false
+          "all_wells_have_pools": false
         }
       }
     ],
