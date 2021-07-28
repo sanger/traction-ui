@@ -83,10 +83,10 @@ describe('PacbioPoolIndex.vue', () => {
       expect(button.text()).toEqual('Edit')
     })
 
-    it('on click show is true', () => {
+    it('on click show it shows the pool edit page', () => {
       button = wrapper.find('#editPool-1')
       button.trigger('click')
-      expect(wrapper.find('#PacbioEditLibraryModal')).toBeDefined()
+      expect(wrapper.vm.$route.path).toBe('/pacbio/pool/1')
     })
   })
 })

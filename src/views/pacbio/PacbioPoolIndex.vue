@@ -49,7 +49,11 @@
       </template>
 
       <template v-slot:cell(actions)="row">
-        <b-button :id="'editPool-' + row.item.id" size="sm" variant="outline-primary"
+        <b-button
+          :id="'editPool-' + row.item.id"
+          size="sm"
+          variant="outline-primary"
+          :to="{ name: 'PacbioPoolCreate', params: { id: row.item.id } }"
           >Edit</b-button
         >
       </template>
