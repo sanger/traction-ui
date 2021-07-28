@@ -169,7 +169,7 @@ describe('Request', () => {
         mockResponse = { data: { status: 201 } }
         request.api.post.mockReturnValue(mockResponse)
 
-        let promise = request.create(data, {include: 'tube'})
+        let promise = request.create(data, { include: 'tube' })
         expect(request.api.post).toBeCalledWith('requests?include=tube', data)
         expect(promise).resolves.toEqual(mockResponse)
       })

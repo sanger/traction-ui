@@ -97,11 +97,11 @@ export default {
     },
     create(data, queryParameters = {}) {
       return this.execute(
-        'post', 
+        'post',
         `${this.resource}${this.buildQuery(
           Object.assign({ include: undefined }, queryParameters),
         )}`,
-        data
+        data,
       )
     },
     update(data) {

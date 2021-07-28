@@ -76,7 +76,7 @@ export default {
     validate({ libraries })
     if (!valid({ libraries })) return
     const request = rootState.api.traction.pacbio.pools
-    const promise = request.create(payload({ libraries }), {include: 'tube'})
+    const promise = request.create(payload({ libraries }), { include: 'tube' })
     const { success, data, errors } = await handleResponse(promise)
     return { success, data, errors }
   },
