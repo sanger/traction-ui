@@ -53,6 +53,32 @@
           >Edit</b-button
         >
       </template>
+
+      <template v-slot:cell(show_details)="row">
+        <b-button
+          :id="'details-btn-' + row.item.id"
+          size="sm"
+          class="mr-2"
+          variant="outline-info"
+          @click="row.toggleDetails"
+        >
+          {{ row.detailsShowing ? 'Hide' : 'Show' }} Details
+        </b-button>
+      </template>
+
+      <template v-slot:row-details="row">
+        <b-card>
+          <b-table
+            small
+            bordered
+            show-empty
+            :items="row.item.libraries"
+            :fields="field_in_details"
+            :filter="filter"
+          >
+          </b-table>
+        </b-card>
+      </template>
     </b-table>
 
     <span class="font-weight-bold">Total records: {{ pools.length }}</span>
@@ -115,6 +141,11 @@ export default {
         { key: 'fragment_size', label: 'Fragment Size', sortable: true, tdClass: 'fragment-size' },
         { key: 'created_at', label: 'Created at', sortable: true, tdClass: 'created-at' },
         { key: 'actions', label: 'Actions' },
+        { key: 'show_details', label: '' },
+      ],
+      field_in_details: [
+        { key: 'sample_name', label: 'Sample(s)' },
+        { key: 'group_id', label: 'Tag(s)' },
       ],
       primary_key: 'id',
       filteredItems: [],
