@@ -35,9 +35,11 @@ describe('ResponseHelper', () => {
       const rawResponse = {
         success: false,
         data: {
-          errors: {
-            error1: ['nasty'],
-            error2: ['broken', 'crushed'],
+          data: {
+            errors: {
+              error1: ['nasty'],
+              error2: ['broken', 'crushed'],
+            },
           },
           status: 422,
           statusText: 'Unprocessible entity',
@@ -63,7 +65,7 @@ describe('ResponseHelper', () => {
     describe('failure with response and no errors - 400-500', () => {
       const rawResponse = {
         success: false,
-        data: 'There was a serious problem',
+        data: { data: 'There was a serious problem' },
         status: 500,
         statusText: 'Internal Server Error',
       }

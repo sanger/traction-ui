@@ -44,7 +44,12 @@ describe('Pacbio Pool Create', () => {
       statusCode: 201,
       body: {
         data: {
-          id: '1',
+          pool: {
+            id: '1',
+            tube: {
+              barcode: 'TRAC-1',
+            },
+          },
         },
       },
     })
@@ -84,8 +89,10 @@ describe('Pacbio Pool Create', () => {
     cy.intercept('/v1/pacbio/pools', {
       statusCode: 422,
       body: {
-        errors: {
-          error1: ['There was a problem'],
+        data: {
+          errors: {
+            error1: ['There was a problem'],
+          },
         },
       },
     })

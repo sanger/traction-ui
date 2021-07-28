@@ -193,18 +193,33 @@ describe('actions.js', () => {
     // pool should be successfully created
     // for now: create a pool state with a simple success message
     it('when the pool is valid', async () => {
-      const mockResponse = { status: '201', data: { data: { id: 1 } } }
-      const commit = jest.fn()
+      const mockResponse = {
+        status: '201',
+        data: { data: { pool: { id: 1, tube: { barcode: 'TRAC-1' } } } },
+      }
       const create = jest.fn()
       const rootState = { api: { traction: { pacbio: { pools: { create } } } } }
       const libraries = { _1: library1, _2: library2 }
       create.mockResolvedValue(mockResponse)
-      const response = newResponse({ ...mockResponse, success: true })
-      await createPool({ commit, rootState, state: { libraries } })
-      expect(commit).toHaveBeenCalledWith('populateResult', response)
+      const { success, data } = await createPool({ rootState, state: { libraries } })
+      expect(success).toBeTruthy()
+      expect(data).toEqual(mockResponse.data)
     })
 
-    it('when there is an error', () => {})
+    it('when there is an error', async () => {
+      const mockResponse = {
+        status: '422',
+        data: { data: { errors: { error1: ['There was an error'] } } },
+      }
+      const create = jest.fn()
+      const rootState = { api: { traction: { pacbio: { pools: { create } } } } }
+      const libraries = { _1: library1, _2: library2 }
+      create.mockRejectedValue({ response: mockResponse })
+      const expectedResponse = newResponse({ ...mockResponse, success: false })
+      const { success, errors } = await createPool({ rootState, state: { libraries } })
+      expect(success).toBeFalsy()
+      expect(errors).toEqual(expectedResponse.errors)
+    })
 
     // validate libraries fails
     // request is not sent
@@ -215,7 +230,7 @@ describe('actions.js', () => {
       const rootState = { api: { traction: { pacbio: { pools: { create } } } } }
       const libraries = { _1: library1, _2: { ...library2, tag_id: '' } }
       await createPool({ commit, rootState, state: { libraries } })
-      expect(commit).not.toHaveBeenCalledWith('populateResult')
+      expect(create).not.toHaveBeenCalled()
     })
   })
 })

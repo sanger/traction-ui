@@ -72,12 +72,12 @@ export default {
   /*
    * Creates a pool from the libraries
    */
-  createPool: async ({ commit, rootState, state: { libraries } }) => {
+  createPool: async ({ rootState, state: { libraries } }) => {
     validate({ libraries })
     if (!valid({ libraries })) return
     const request = rootState.api.traction.pacbio.pools
     const promise = request.create(payload({ libraries }))
-    const response = await handleResponse(promise)
-    commit('populateResult', response)
+    const { success, data, errors } = await handleResponse(promise)
+    return { success, data, errors }
   },
 }
