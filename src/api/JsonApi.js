@@ -1,15 +1,75 @@
-// TODO: This needs a refactor with some documentation
-const extractAttributes = (data) => {
-  return { id: data.id, type: data.type, ...data.attributes }
-}
+/**
+ * Extract the attributes from a JSON API resource object, merge them with the id
+ * and type attributes
+ * @param {String} id The id of the jsonapi resource
+ * @param {String} type The type of the jsonapi resource
+ * @param {Object} attributes The attributes object of a JSON API resource
+ */
+const extractAttributes = ({ id, type, attributes }) => ({ id, type, ...attributes })
 
-const mapRelationships = (relationships) => {
-  if (relationships === undefined) return {}
+const mapRelationships = (relationships = {}) => {
   return Object.keys(relationships).reduce((result, name) => {
     if (relationships[name].data) {
       result[name] = relationships[name].data
     }
     return result
+  }, {})
+}
+
+/**
+ * Groups resources by their resource type
+ * @param {Array} included Array of JSON API resources
+ */
+const groupIncludedByResource = (included) => {
+  return included.reduce((group, resource) => {
+    if (group[resource.type] === undefined) {
+      group[resource.type] = []
+    }
+    group[resource.type].push(resource)
+    return group
+  }, {})
+}
+
+/**
+ * Groups resources by their resource type
+ * @param {Object} relationships Object of JSON API resources
+ * @returns {Object} each key will be the relationships grouped by type with an array of ids
+ */
+const extractRelationshipsAndGroupById = (relationships = {}) => {
+  return Object.keys(relationships).reduce((result, type) => {
+    const data = relationships[type].data
+    if (data instanceof Array) {
+      // We have multiple entries
+      result[type] = data.map(({ id }) => id)
+    } else {
+      // Add the id data is present, otherwise add the value of data itself
+      // this may be null (No relation) or undefined (relationship not loaded)
+      result[type] = data ? data.id : data
+    }
+    return result
+  }, {})
+}
+
+/**
+ * TODO: This will need to be extended to extract relationships?
+ * Groups resources by their resource type
+ * @param {Array} data Array of JSON API data
+ * @returns {Object} keys will be the id of the data
+ */
+const dataToObjectById = ({ data = [], includeRelationships = false }) => {
+  return data.reduce((result, { id, type, attributes, relationships }) => {
+    return {
+      [id]: {
+        // we still keep the id as it will be needed
+        id,
+        // the type can be useful for components
+        type,
+        ...attributes,
+        // we might not want to use the relationships
+        ...(includeRelationships ? extractRelationshipsAndGroupById(relationships) : {}),
+      },
+      ...result,
+    }
   }, {})
 }
 
@@ -88,12 +148,15 @@ const deserialize = ({ data, included }, includeStore = {}) => {
 export {
   extractAttributes,
   mapRelationships,
+  groupIncludedByResource,
   extractRelationship,
   findIncluded,
   deserializeIncluded,
   extractRelationships,
   extractResourceObject,
   deserialize,
+  dataToObjectById,
+  extractRelationshipsAndGroupById,
 }
 
 export default deserialize

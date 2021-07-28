@@ -6,18 +6,22 @@
     @mouseover="isActive = true"
     @mouseleave="isActive = false"
   >
-    <b-img left src="/tube.png" height="70" />
-    <div class="info">
-      <div class="barcode">
-        {{ barcode }}
-      </div>
-      <div class="sample_name">
-        {{ sample_name }}
-      </div>
-      <div class="tag_group_id">
-        {{ tag_group_id }}
-      </div>
-    </div>
+    <b-row>
+      <b-col cols="3">
+        <b-img src="/tube.png" />
+      </b-col>
+      <b-col cols="9">
+        <div class="barcode"><b>Barcode:</b> {{ barcode }}</div>
+        <b>Libraries:</b>
+        <ul>
+          <li v-for="library in libraries" :key="library.id">
+            {{ library.sample_name }}
+            <br />
+            {{ library.group_id }}
+          </li>
+        </ul>
+      </b-col>
+    </b-row>
   </b-list-group-item>
 </template>
 
@@ -32,14 +36,8 @@ export default {
       type: String,
       required: true,
     },
-    // eslint-disable-next-line vue/prop-name-casing
-    sample_name: {
-      type: String,
-      required: true,
-    },
-    // eslint-disable-next-line vue/prop-name-casing
-    tag_group_id: {
-      type: String,
+    libraries: {
+      type: Array,
       required: true,
     },
   },
@@ -59,14 +57,8 @@ export default {
 </script>
 
 <style scoped lang="scss">
-svg {
-  float: left;
-  width: 82px;
-  height: 64px;
-}
-image {
-  width: 82px;
-  height: 64px;
+img {
+  max-width: 100%;
 }
 div {
   text-align: left;

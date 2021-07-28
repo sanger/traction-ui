@@ -80,7 +80,7 @@
         </b-button>
 
         <a
-          v-show="row.item.all_wells_have_libraries"
+          v-show="row.item.all_wells_have_pools"
           :id="generateId('generate-sample-sheet', row.item.id)"
           :href="generateSampleSheetPath(row.item.id)"
           class="text-primary"

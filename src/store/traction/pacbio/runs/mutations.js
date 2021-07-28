@@ -14,7 +14,7 @@ const mutateRun = (key) => (state, val) => {
 }
 
 const getCurrentWell = (state, position) => {
-  let currentWell = state.currentRun.plate.wells.filter((well) => well.position === position)[0]
+  let currentWell = state.currentRun.plate.wells.find((well) => well.position === position)
 
   // If well does not exist - Build a new well
   if (!currentWell) {
@@ -55,6 +55,7 @@ const mutations = {
     let currentWell = getCurrentWell(state, payload.position)
     currentWell[payload.property] = payload.with
   },
+  // TODO Remove these library methods
   addEmptyLibraryToWell(state, position) {
     let currentWell = getCurrentWell(state, position)
     currentWell.libraries.push({ id: '', barcode: '' })
@@ -71,6 +72,22 @@ const mutations = {
       currentWell.libraries = [...currentWell.libraries]
     } else {
       currentWell.libraries.push(payload.with)
+    }
+  },
+  addEmptyPoolToWell(state, position) {
+    let currentWell = getCurrentWell(state, position)
+    currentWell.pools.push({ id: '', barcode: '' })
+  },
+  removePoolFromWell(state, { index, position }) {
+    let currentWell = getCurrentWell(state, position)
+    currentWell.pools.splice(index, 1)
+  },
+  addPoolToWell(state, { index, position, with: pool }) {
+    let currentWell = getCurrentWell(state, position)
+    if (index !== undefined) {
+      currentWell.pools.splice(index, 1, pool)
+    } else {
+      currentWell.pools.push(pool)
     }
   },
 }

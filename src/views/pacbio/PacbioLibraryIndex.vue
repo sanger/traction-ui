@@ -51,40 +51,6 @@
       <template v-slot:cell(actions)="row">
         <PacbioLibraryEdit :lib="row.item" @alert="showAlert"> </PacbioLibraryEdit>
       </template>
-
-      <template v-slot:cell(show_details)="row">
-        <b-button
-          :id="'details-btn-' + row.item.id"
-          size="sm"
-          class="mr-2"
-          variant="outline-info"
-          @click="row.toggleDetails"
-        >
-          {{ row.detailsShowing ? 'Hide' : 'Show' }} Details
-        </b-button>
-      </template>
-
-      <template v-slot:row-details="row">
-        <b-card>
-          <b-table
-            small
-            bordered
-            show-empty
-            :items="row.item.requests"
-            :fields="field_in_details"
-            :filter="filter"
-          >
-            <template v-slot:cell(edit_tag)="row">
-              <PacbioLibraryTagEdit
-                :request_library="row.item"
-                @alert="showAlert"
-                @reloadPage="provider"
-              >
-              </PacbioLibraryTagEdit>
-            </template>
-          </b-table>
-        </b-card>
-      </template>
     </b-table>
 
     <span class="font-weight-bold">Total records: {{ libraries.length }}</span>
@@ -126,7 +92,6 @@
 <script>
 import Helper from '@/mixins/Helper'
 import PacbioLibraryEdit from '@/components/pacbio/PacbioLibraryEdit'
-import PacbioLibraryTagEdit from '@/components/pacbio/PacbioLibraryTagEdit'
 import TableHelper from '@/mixins/TableHelper'
 import Alert from '@/components/Alert'
 import PrinterModal from '@/components/PrinterModal'
@@ -140,13 +105,13 @@ export default {
     Alert,
     PrinterModal,
     PacbioLibraryEdit,
-    PacbioLibraryTagEdit,
   },
   mixins: [Helper, TableHelper],
   data() {
     return {
       fields: [
         { key: 'selected', label: '' },
+        { key: 'pool.id', label: 'pool ID', sortable: true, tdClass: 'pool-id' },
         { key: 'id', label: 'Library ID', sortable: true, tdClass: 'library-id' },
         { key: 'sample_name', label: 'Sample Name', sortable: true, tdClass: 'sample-name' },
         { key: 'barcode', label: 'Barcode', sortable: true, tdClass: 'barcode' },
@@ -160,15 +125,11 @@ export default {
           tdClass: 'template-prep-kit-box-barcode',
         },
         { key: 'fragment_size', label: 'Fragment Size', sortable: true, tdClass: 'fragment-size' },
+        { key: 'tag_group_id', label: 'Tag', sortable: true, tdClass: 'tag-group-id' },
         { key: 'created_at', label: 'Created at', sortable: true, tdClass: 'created-at' },
         { key: 'actions', label: 'Actions' },
-        { key: 'show_details', label: '' },
       ],
-      field_in_details: [
-        { key: 'sample_name', label: 'Sample(s)' },
-        { key: 'tag_group_id', label: 'Tag(s)' },
-        { key: 'edit_tag', label: 'Actions' },
-      ],
+      primary_key: 'id',
       filteredItems: [],
       selected: [],
       filter: null,

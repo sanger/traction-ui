@@ -1,4 +1,4 @@
-import { mount, localVue } from '../../testHelper'
+import { mount, localVue } from 'testHelper'
 import OntTube from '@/components/ont/OntTube'
 
 describe('OntTube.vue', () => {

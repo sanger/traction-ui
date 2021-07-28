@@ -1,5 +1,5 @@
 import Vue from 'vue'
-import { mount } from '../testHelper'
+import { mount } from 'testHelper'
 import Request from '@/api/Request'
 
 const cmp = Vue.extend({

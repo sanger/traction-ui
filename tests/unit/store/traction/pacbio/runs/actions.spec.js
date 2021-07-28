@@ -1,6 +1,6 @@
 import Response from '@/api/Response'
 import * as Actions from '@/store/traction/pacbio/runs/actions'
-import { Data } from '../../../../testHelper'
+import { Data } from 'testHelper'
 import * as Run from '@/api/PacbioRun'
 
 describe('#setRuns', () => {
@@ -81,6 +81,15 @@ describe('#editRun', () => {
     find = jest.fn()
     getters = { runRequest: { find: find } }
     commit = jest.fn()
+  })
+
+  it('sets the well pools to have a barcode attribute', async () => {
+    mockRun.plate.wells.forEach((well) => {
+      well.pools.forEach((pool) => (pool.barcode = pool.tube.barcode))
+    })
+    find.mockReturnValue(Data.PacbioRun)
+    await Actions.editRun({ commit, getters }, mockRun.id)
+    expect(commit).toHaveBeenCalledWith('setCurrentRun', mockRun)
   })
 
   it('successfully', async () => {

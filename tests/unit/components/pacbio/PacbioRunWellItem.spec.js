@@ -1,6 +1,6 @@
 import * as Run from '@/api/PacbioRun'
 import Well from '@/components/pacbio/PacbioRunWellItem'
-import { localVue, mount, store } from '../../testHelper'
+import { localVue, mount, store } from 'testHelper'
 
 describe('Well.vue', () => {
   let well, wrapper, props, storeWell, run
@@ -16,9 +16,9 @@ describe('Well.vue', () => {
     }
 
     storeWell = Run.buildWell(props.row, props.column, 'In SMRT Link', '2', '')
-    storeWell.libraries = [
-      { id: 1, tube: { barcode: 'TRAC-1' } },
-      { id: 2, tube: { barcode: 'TRAC-2' } },
+    storeWell.pools = [
+      { id: 1, barcode: 'TRAC-1' },
+      { id: 2, barcode: 'TRAC-2' },
     ]
     storeWell.movie_time = '15'
     storeWell.insert_size = 123
@@ -111,8 +111,8 @@ describe('Well.vue', () => {
       expect(ellipse.attributes('class')).toEqual('filled')
     })
 
-    it('will be invalid if there are no libraries in the store', () => {
-      storeWell.libraries = []
+    it('will be invalid if there are no pools in the store', () => {
+      storeWell.pools = []
       wrapper = mount(Well, {
         localVue,
         store,
@@ -123,12 +123,6 @@ describe('Well.vue', () => {
       })
       let ellipse = wrapper.find('ellipse')
       expect(ellipse.attributes('class')).toEqual('filled')
-    })
-
-    it('will be invalid if there is one or more libraries without a barcode', () => {
-      storeWell.libraries[0].barcode = ''
-      let ellipse = wrapper.find('ellipse')
-      expect(ellipse.attributes('class')).toEqual('complete')
     })
 
     it('will be valid if pre extension time is present', () => {
@@ -144,8 +138,8 @@ describe('Well.vue', () => {
       expect(ellipse.attributes('class')).toEqual('complete')
     })
 
-    it('will be empty if there are no libraries or metadata', () => {
-      storeWell.libraries = []
+    it('will be empty if there are no pools or metadata', () => {
+      storeWell.pools = []
       storeWell.movie_time = ''
       storeWell.generate_hifi = ''
       storeWell.ccs_analysis_output = ''
@@ -168,29 +162,36 @@ describe('Well.vue', () => {
   })
 
   // TODO: same as well modal - refactor baby!
-  describe('updateLibraryBarcode', () => {
-    let newBarcode, library
+  describe('updatePoolBarcode', () => {
+    let newBarcode, pool1, pool2, tubes
 
     beforeEach(() => {
       newBarcode = 'TRAC-1'
-      well.addLibraryToWell = jest.fn()
-      library = { id: 1, tube: { barcode: newBarcode } }
-      store.commit('traction/pacbio/libraries/setLibraries', [library])
+      well.addPoolToWell = jest.fn()
+      pool1 = { id: '1', libraries: [], tube: '1', barcode: 'TRAC-1', type: 'pools' }
+      pool2 = { id: '2', libraries: [], tube: '2', barcode: 'TRAC-2', type: 'pools' }
+      tubes = {
+        '1': { barcode: 'TRAC-1', id: '1', type: 'tubes' },
+        '2': { barcode: 'TRAC-2', id: '2', type: 'tubes' },
+      }
+
+      store.state.traction.pacbio.pools.pools = { '1': pool1, '2': pool2 }
+      store.state.traction.pacbio.pools.tubes = tubes
     })
 
-    it('adds the library to the well', async () => {
-      await well.updateLibraryBarcode(newBarcode)
-      expect(well.addLibraryToWell).toBeCalledWith({
+    it('adds the pool to the well', async () => {
+      await well.updatePoolBarcode(newBarcode)
+      expect(well.addPoolToWell).toBeCalledWith({
         position: well.position,
-        with: { id: library.id, barcode: library.tube.barcode },
+        with: { id: pool1.id, barcode: pool1.barcode },
       })
     })
   })
 
   describe('tooltip', () => {
-    it('will only be visible if there are some libraries', () => {
+    it('will only be visible if there are some pools', () => {
       let title = wrapper.find('title')
-      let expected = storeWell.libraries.map((l) => l.barcode).join(',')
+      let expected = storeWell.pools.map((p) => p.barcode).join(',')
       expect(title.text()).toEqual(expected)
     })
   })
@@ -208,12 +209,12 @@ describe('Well.vue', () => {
         },
         preventDefault: jest.fn(),
       }
-      well.updateLibraryBarcode = jest.fn()
+      well.updatePoolBarcode = jest.fn()
     })
 
     it('will update the barcode', async () => {
       well.drop(mockEvent)
-      expect(well.updateLibraryBarcode).toBeCalledWith(newBarcode)
+      expect(well.updatePoolBarcode).toBeCalledWith(newBarcode)
     })
   })
 })

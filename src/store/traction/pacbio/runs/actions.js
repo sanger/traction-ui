@@ -25,7 +25,11 @@ const editRun = async ({ commit, getters }, runId) => {
   let response = await handlePromise(promise)
 
   if (response.successful) {
-    let run = response.deserialize.runs[0]
+    const run = response.deserialize.runs[0]
+    run.plate.wells.forEach((well) => {
+      // Needed for well edit pool barcodes
+      well.pools.forEach((pool) => (pool.barcode = pool.tube.barcode))
+    })
     commit('setCurrentRun', run)
   }
 }

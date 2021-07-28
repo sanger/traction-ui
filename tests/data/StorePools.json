@@ -1,0 +1,22 @@
+{
+  "pools": {
+    "1": { "id": "1", "libraries": ["1"], "tube": "1", "type": "pools" },
+    "2": { "id": "2", "libraries": ["2"], "tube": "2", "type": "pools" }
+  },
+  "tubes": {
+    "1": { "barcode": "TRAC-2-1", "id": "1", "type": "tubes" },
+    "2": { "barcode": "TRAC-2-2", "id": "2", "type": "tubes" }
+  },
+  "libraries": {
+    "1": { "id": "1", "request": "1", "tag": "26", "type": "libraries" },
+    "2": { "id": "2", "request": "2", "tag": "7", "type": "libraries" }
+  },
+  "tags": {
+    "26": { "group_id": "bc1019", "id": "26", "type": "tags" },
+    "7": { "group_id": "bc1011_BAK8A_OA", "id": "7", "type": "tags" }
+  },
+  "requests": {
+    "1": { "id": "1", "sample_name": "Sample48", "type": "requests" },
+    "2": { "id": "2", "sample_name": "Sample47", "type": "requests" }
+  }
+}

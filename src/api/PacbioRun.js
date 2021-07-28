@@ -19,7 +19,9 @@ const buildWell = (
   on_plate_loading_concentration: '',
   generate_hifi,
   ccs_analysis_output,
+  // TODO remove
   libraries: [],
+  pools: [],
   pre_extension_time,
 })
 
@@ -54,8 +56,8 @@ const create = async (run, request) => {
     responses.push(plateResponse)
     let plateId = plateResponse.deserialize.plates[0].id
 
-    let wellsWithLibraries = run.plate.wells.filter((well) => well.libraries.length != 0)
-    let wellsPayload = createWellsPayload(wellsWithLibraries, plateId)
+    let wellsWithPools = run.plate.wells.filter((well) => well.pools.length != 0)
+    let wellsPayload = createWellsPayload(wellsWithPools, plateId)
     let wellResponse = await createResource(wellsPayload, request.runs.wells)
     responses.push(wellResponse)
   } catch (err) {
@@ -81,8 +83,8 @@ const update = async (run, request) => {
     let runPayload = updateRunPayload(run)
     let runResponse = await updateResource(runPayload, request.runs)
     responses.push(runResponse)
-    let wellsWithLibraries = run.plate.wells.filter((well) => well.libraries.length != 0)
-    for (const well of wellsWithLibraries) {
+    let wellsWithPools = run.plate.wells.filter((well) => well.pools.length != 0)
+    for (const well of wellsWithPools) {
       if (well.id) {
         // Well exists - Update well
         let wellPayload = updateWellPayload(well)
@@ -140,8 +142,8 @@ const createPlatePayload = (runId) => {
 
 const createWellsPayload = (wells, plateId) => {
   let wellsAttributes = wells.reduce((accumulator, well) => {
-    let librariesAttributes = well.libraries.map((l) => {
-      return { type: 'libraries', id: l.id }
+    let poolsAttributes = well.pools.map((l) => {
+      return { type: 'pools', id: l.id }
     })
 
     accumulator.push({
@@ -160,8 +162,8 @@ const createWellsPayload = (wells, plateId) => {
             id: plateId,
           },
         },
-        libraries: {
-          data: librariesAttributes,
+        pools: {
+          data: poolsAttributes,
         },
       },
     })
@@ -195,8 +197,8 @@ const updateRunPayload = (run) => {
 }
 
 const updateWellPayload = (well) => {
-  let librariesAttributes = well.libraries.map((l) => {
-    return { type: 'libraries', id: l.id }
+  let poolsAttributes = well.pools.map((l) => {
+    return { type: 'pools', id: l.id }
   })
 
   return {
@@ -214,8 +216,8 @@ const updateWellPayload = (well) => {
         pre_extension_time: well.pre_extension_time,
       },
       relationships: {
-        libraries: {
-          data: librariesAttributes,
+        pools: {
+          data: poolsAttributes,
         },
       },
     },
