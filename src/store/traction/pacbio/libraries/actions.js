@@ -36,7 +36,7 @@ const deleteLibraries = async ({ getters }, libraryIds) => {
 
 const setLibraries = async ({ commit, getters }) => {
   let request = getters.libraryRequest
-  let promise = request.get()
+  let promise = request.get({ include: 'request,tag,tube' })
   let response = await handlePromise(promise)
   let libraries = null
 
