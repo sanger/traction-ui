@@ -201,9 +201,9 @@ describe('actions.js', () => {
       const rootState = { api: { traction: { pacbio: { pools: { create } } } } }
       const libraries = { _1: library1, _2: library2 }
       create.mockResolvedValue(mockResponse)
-      const { success, data } = await createPool({ rootState, state: { libraries } })
+      const { success, barcode } = await createPool({ rootState, state: { libraries } })
       expect(success).toBeTruthy()
-      expect(data).toEqual(mockResponse.data)
+      expect(barcode).toEqual('TRAC-1')
     })
 
     it('when there is an error', async () => {

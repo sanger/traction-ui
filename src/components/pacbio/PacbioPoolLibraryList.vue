@@ -69,17 +69,11 @@ export default {
     ...mapActions(['createPool']),
     create() {
       this.busy = true
-      this.createPool().then(
-        ({
-          success,
-          data: { data: { pool: { tube: { barcode = '' } = {} } = {} } = {} } = {},
-          errors,
-        }) => {
-          success
-            ? this.$refs.alert.show(`Pool successfully created with barcode ${barcode}`, 'success')
-            : this.$refs.alert.show(errors, 'danger')
-        },
-      )
+      this.createPool().then(({ success, barcode, errors }) => {
+        success
+          ? this.$refs.alert.show(`Pool successfully created with barcode ${barcode}`, 'success')
+          : this.$refs.alert.show(errors, 'danger')
+      })
       this.busy = false
     },
   },
