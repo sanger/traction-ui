@@ -83,6 +83,21 @@
         >
         </b-form-input>
       </b-form-group>
+
+      <b-form-group
+        id="bindingKitBoxBarcode-group"
+        label="Binding Kit Box Barcode: "
+        label-for="bindingKitBoxBarcode"
+      >
+        <b-form-input
+          id="bindingKitBoxBarcode"
+          ref="bindingKitBoxBarcode"
+          :value="bindingKitBoxBarcode"
+          placeholder="Binding Kit Box Barcode"
+          @change="updateBindingKitBoxBarcode"
+        >
+        </b-form-input>
+      </b-form-group>
     </b-form>
 
     <b-table id="wellPools" stacked :items="wellPools" :fields="wellPoolsFields">
@@ -173,6 +188,9 @@ export default {
       ccsAnalysisOutput() {
         return this.well(this.position) ? this.well(this.position).ccs_analysis_output : ''
       },
+      bindingKitBoxBarcode() {
+        return this.well(this.position) ? this.well(this.position).binding_kit_box_barcode : ''
+      },
     }),
   },
   methods: {
@@ -227,6 +245,13 @@ export default {
         position: this.position,
         property: 'ccs_analysis_output',
         with: ccsAnalysisOutput,
+      })
+    },
+    updateBindingKitBoxBarcode(bindingKitBoxBarcode) {
+      this.mutateWell({
+        position: this.position,
+        property: 'binding_kit_box_barcode',
+        with: bindingKitBoxBarcode,
       })
     },
     async updatePoolBarcode(row, barcode) {

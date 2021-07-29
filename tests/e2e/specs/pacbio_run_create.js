@@ -15,7 +15,6 @@ describe('Pacbio Run Create view', () => {
     cy.get('button')
       .contains('New Run')
       .click()
-    cy.get('#binding-kit-box-barcode').type('Lxxxxx101789500123199')
     cy.get('#sequencing-kit-box-barcode').type('Lxxxxx101826100123199')
     cy.get('#dna-control-complex-box-barcode').type('Lxxxxx101717600123199')
     cy.get('#system-name').select('Sequel IIe')

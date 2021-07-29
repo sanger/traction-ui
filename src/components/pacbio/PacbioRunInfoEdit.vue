@@ -13,18 +13,6 @@
           readonly
         />
       </b-col>
-      <b-col>
-        <b-form-input
-          id="binding-kit-box-barcode"
-          v-b-tooltip.hover
-          :value="bindingKitBoxBarcode"
-          placeholder="Binding Kit Box Barcode"
-          type="text"
-          width="48"
-          title="Binding Kit Box Barcode"
-          @change="setBindingKitBoxBarcode"
-        />
-      </b-col>
     </b-row>
 
     <b-row>
@@ -102,7 +90,6 @@ export default {
     ...mapGetters(['currentRun']),
     ...mapState({
       runName: (state) => state.currentRun.name,
-      bindingKitBoxBarcode: (state) => state.currentRun.binding_kit_box_barcode,
       sequencingKitBoxBarcode: (state) => state.currentRun.sequencing_kit_box_barcode,
       dnaControlComplexBoxBarcode: (state) => state.currentRun.dna_control_complex_box_barcode,
       comments: (state) => state.currentRun.comments,
@@ -112,7 +99,6 @@ export default {
   },
   methods: {
     ...mapMutations([
-      'setBindingKitBoxBarcode',
       'setSequencingKitBoxBarcode',
       'setDNAControlComplexBoxBarcode',
       'setComments',

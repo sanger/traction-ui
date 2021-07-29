@@ -64,7 +64,12 @@ export default {
       default() {
         // Below doesn't include 'generate_hifi', 'pre_extension_time' or 'ccs_analysis_output'
         // as they have default values
-        return ['movie_time', 'insert_size', 'on_plate_loading_concentration']
+        return [
+          'movie_time',
+          'insert_size',
+          'on_plate_loading_concentration',
+          'binding_kit_box_barcode',
+        ]
       },
     },
   },

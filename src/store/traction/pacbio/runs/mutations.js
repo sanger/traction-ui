@@ -40,7 +40,6 @@ const getGenerateHiFiDefault = (systemName) => {
 const mutations = {
   setRuns: mutate('runs'),
   setCurrentRun: mutate('currentRun'),
-  setBindingKitBoxBarcode: mutateRun('binding_kit_box_barcode'),
   setSequencingKitBoxBarcode: mutateRun('sequencing_kit_box_barcode'),
   setDNAControlComplexBoxBarcode: mutateRun('dna_control_complex_box_barcode'),
   setComments: mutateRun('comments'),

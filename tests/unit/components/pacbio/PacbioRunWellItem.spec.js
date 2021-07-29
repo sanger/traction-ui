@@ -24,6 +24,7 @@ describe('Well.vue', () => {
     storeWell.insert_size = 123
     storeWell.on_plate_loading_concentration = 234
     storeWell.generate_hifi = 'In SMRT Link'
+    storeWell.binding_kit_box_barcode = '12345'
 
     run = Run.build()
     run.plate.wells[0] = storeWell
@@ -79,6 +80,7 @@ describe('Well.vue', () => {
       'movie_time',
       'insert_size',
       'on_plate_loading_concentration',
+      'binding_kit_box_barcode',
     ])
   })
 
@@ -146,6 +148,7 @@ describe('Well.vue', () => {
       storeWell.on_plate_loading_concentration = ''
       storeWell.insert_size = ''
       storeWell.pre_extension_time = ''
+      storeWell.binding_kit_box_barcode = ''
 
       wrapper = mount(Well, {
         localVue,

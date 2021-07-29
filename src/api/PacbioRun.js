@@ -19,6 +19,7 @@ const buildWell = (
   on_plate_loading_concentration: '',
   generate_hifi,
   ccs_analysis_output,
+  binding_kit_box_barcode: '',
   // TODO remove
   libraries: [],
   pools: [],
@@ -29,7 +30,6 @@ const build = (object) => {
   return (
     object || {
       id: 'new',
-      binding_kit_box_barcode: '',
       sequencing_kit_box_barcode: '',
       dna_control_complex_box_barcode: '',
       comments: '',
@@ -119,7 +119,6 @@ const createRunPayload = (run) => {
     data: {
       type: 'runs',
       attributes: {
-        binding_kit_box_barcode: run.binding_kit_box_barcode,
         sequencing_kit_box_barcode: run.sequencing_kit_box_barcode,
         dna_control_complex_box_barcode: run.dna_control_complex_box_barcode,
         system_name: run.system_name,
@@ -155,6 +154,7 @@ const createWellsPayload = (wells, plateId) => {
       generate_hifi: well.generate_hifi,
       ccs_analysis_output: well.ccs_analysis_output,
       pre_extension_time: well.pre_extension_time,
+      binding_kit_box_barcode: well.binding_kit_box_barcode,
       relationships: {
         plate: {
           data: {
@@ -186,7 +186,6 @@ const updateRunPayload = (run) => {
       id: run.id,
       type: 'runs',
       attributes: {
-        binding_kit_box_barcode: run.binding_kit_box_barcode,
         sequencing_kit_box_barcode: run.sequencing_kit_box_barcode,
         dna_control_complex_box_barcode: run.dna_control_complex_box_barcode,
         system_name: run.system_name,
@@ -214,6 +213,7 @@ const updateWellPayload = (well) => {
         generate_hifi: well.generate_hifi,
         ccs_analysis_output: well.ccs_analysis_output,
         pre_extension_time: well.pre_extension_time,
+        binding_kit_box_barcode: well.binding_kit_box_barcode,
       },
       relationships: {
         pools: {

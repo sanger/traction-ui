@@ -42,10 +42,6 @@ describe('Run', () => {
         expect(run.id).toEqual('new')
       })
 
-      it('will have an binding_kit_box_barcode', () => {
-        expect(run.binding_kit_box_barcode).toBeDefined()
-      })
-
       it('will have an sequencing_kit_box_barcode', () => {
         expect(run.sequencing_kit_box_barcode).toBeDefined()
       })
@@ -104,6 +100,7 @@ describe('Run', () => {
       expect(well.generate_hifi).toEqual('In SMRT Link')
       expect(well.pre_extension_time).toEqual(2)
       expect(well.ccs_analysis_output).toEqual('Yes')
+      expect(well.binding_kit_box_barcode).toEqual('')
     })
 
     it('will have the correct data when passed values', () => {
@@ -267,7 +264,6 @@ describe('Run', () => {
       let result = Run.createRunPayload(run)
 
       expect(result.data.type).toEqual('runs')
-      expect(result.data.attributes.binding_kit_box_barcode).toEqual(run.binding_kit_box_barcode)
       expect(result.data.attributes.sequencing_kit_box_barcode).toEqual(
         run.sequencing_kit_box_barcode,
       )
@@ -320,6 +316,9 @@ describe('Run', () => {
       )
       expect(result.data.attributes.wells[0].ccs_analysis_output).toEqual(
         wells[0].ccs_analysis_output,
+      )
+      expect(result.data.attributes.wells[0].binding_kit_box_barcode).toEqual(
+        wells[0].binding_kit_box_barcode,
       )
       expect(result.data.attributes.wells[0].relationships.plate.data.type).toEqual('plates')
       expect(result.data.attributes.wells[0].relationships.plate.data.id).toEqual(plateID)
@@ -459,7 +458,6 @@ describe('Run', () => {
 
       expect(result.data.id).toEqual(run.id)
       expect(result.data.type).toEqual('runs')
-      expect(result.data.attributes.binding_kit_box_barcode).toEqual(run.binding_kit_box_barcode)
       expect(result.data.attributes.sequencing_kit_box_barcode).toEqual(
         run.sequencing_kit_box_barcode,
       )
@@ -494,7 +492,7 @@ describe('Run', () => {
       expect(result.data.attributes.generate_hifi).toEqual(well.generate_hifi)
       expect(result.data.attributes.ccs_analysis_output).toEqual(well.ccs_analysis_output)
       expect(result.data.attributes.pre_extension_time).toEqual(well.pre_extension_time)
-      expect(result.data.attributes.ccs_analysis_output).toEqual(well.ccs_analysis_output)
+      expect(result.data.attributes.binding_kit_box_barcode).toEqual(well.binding_kit_box_barcode)
       expect(result.data.relationships.pools.data[0].type).toEqual('pools')
       expect(result.data.relationships.pools.data[0].id).toEqual(well.pools[0].id)
     })

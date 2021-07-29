@@ -21,7 +21,6 @@ describe('PacbioRunInfoEdit', () => {
   })
 
   it('can have mapState', () => {
-    expect(runInfo.bindingKitBoxBarcode).toBeDefined()
     expect(runInfo.sequencingKitBoxBarcode).toBeDefined()
     expect(runInfo.dnaControlComplexBoxBarcode).toBeDefined()
     expect(runInfo.comments).toBeDefined()
@@ -45,9 +44,6 @@ describe('PacbioRunInfoEdit', () => {
     it('Run name should be read only', () => {
       let input = wrapper.find('#run-name')
       expect(input.attributes('readonly')).toBeTruthy()
-    })
-    it('has a Binding Kit Box Barcode input', () => {
-      expect(wrapper.find('#binding-kit-box-barcode')).toBeDefined()
     })
     it('has a Sequencing Kit Box Barcode input', () => {
       expect(wrapper.find('#sequencing-kit-box-barcode')).toBeDefined()
