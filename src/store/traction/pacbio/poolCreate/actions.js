@@ -77,11 +77,11 @@ export default {
     if (!valid({ libraries })) return
     const request = rootState.api.traction.pacbio.pools
     const promise = request.create(payload({ libraries }), { include: 'tube' })
-    const {
-      success,
-      data: { data: { pool: { tube: { barcode = '' } = {} } = {} } = {} } = {},
-      errors,
-    } = await handleResponse(promise)
+    // TODO: I think this is the best I can do here but it may be an idea to extract this into a method
+    // if we have to do it more often
+    const { success, data: { included = [] } = {}, errors } = await handleResponse(promise)
+    const { tubes: [tube = {}] = [] } = groupIncludedByResource(included)
+    const { attributes: { barcode = '' } = {} } = tube
     return { success, barcode, errors }
   },
 }

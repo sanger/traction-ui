@@ -62,14 +62,17 @@ const extractLibraryAttributes = ({
 }
 
 /* 
-  produce a json api compliant (sort of) payload
-  e.g. { data: attributes: { libraries: [ library1, library2 ... ]}}
+  produce a json api compliant payload
+  e.g. { data: { type: 'pools', attributes: { library_attributes: [ library1, library2 ... ]}}}
 */
 const payload = ({ libraries }) => {
   return {
     data: {
+      type: 'pools',
       attributes: {
-        libraries: Object.values(libraries).map((library) => extractLibraryAttributes(library)),
+        library_attributes: Object.values(libraries).map((library) =>
+          extractLibraryAttributes(library),
+        ),
       },
     },
   }

@@ -144,7 +144,7 @@ describe('libraries.js', () => {
   it('payload', () => {
     const libraries = { _1: library1, _2: library2, _3: library3 }
     expect(payload({ libraries })).toEqual({
-      data: { attributes: { libraries: [library1, library2, library3] } },
+      data: { type: 'pools', attributes: { library_attributes: [library1, library2, library3] } },
     })
   })
 })

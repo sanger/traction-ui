@@ -195,7 +195,7 @@ describe('actions.js', () => {
     it('when the pool is valid', async () => {
       const mockResponse = {
         status: '201',
-        data: { data: { pool: { id: 1, tube: { barcode: 'TRAC-1' } } } },
+        data: { data: {}, included: [{ type: 'tubes', attributes: { barcode: 'TRAC-1' } }] },
       }
       const create = jest.fn()
       const rootState = { api: { traction: { pacbio: { pools: { create } } } } }
