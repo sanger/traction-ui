@@ -95,7 +95,7 @@ export default {
       commit('populateLibraries', libraries)
       commit('populatePoolAttributes', data.attributes)
       commit('selectTagSet', tag_set)
-      commit('selectPlate', {})
+      //commit('selectPlate', {})
     }
 
     return { success, errors }
