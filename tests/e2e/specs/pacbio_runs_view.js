@@ -1,10 +1,15 @@
 describe('Pacbio Runs view', () => {
   it('Visits the pacbio runs url', () => {
-    cy.intercept('/v1/pacbio/runs?include=plate.wells.libraries', {
+    cy.intercept('/v1/pacbio/runs?include=plate.wells.pools.tube', {
       fixture: 'tractionPacbioRuns.json',
     })
     cy.visit('#/pacbio/runs')
     cy.get('#run-index').contains('tr', '5')
+    cy.get('#startRun-7')
+    cy.get('#completeRun-7')
+    cy.get('#editRun-7')
+    cy.get('#cancelRun-7')
+    cy.get('#generate-sample-sheet-7')
     cy.get('.run')
       .first()
       .within(() => {

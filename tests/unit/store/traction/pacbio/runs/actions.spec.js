@@ -83,6 +83,15 @@ describe('#editRun', () => {
     commit = jest.fn()
   })
 
+  it('sets the well pools to have a barcode attribute', async () => {
+    mockRun.plate.wells.forEach((well) => {
+      well.pools.forEach((pool) => (pool.barcode = pool.tube.barcode))
+    })
+    find.mockReturnValue(Data.PacbioRun)
+    await Actions.editRun({ commit, getters }, mockRun.id)
+    expect(commit).toHaveBeenCalledWith('setCurrentRun', mockRun)
+  })
+
   it('successfully', async () => {
     find.mockReturnValue(Data.PacbioRun)
     await Actions.editRun({ commit, getters }, mockRun.id)

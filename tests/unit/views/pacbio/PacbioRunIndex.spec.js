@@ -160,6 +160,30 @@ describe('Runs.vue', () => {
     })
   })
 
+  describe('generate sample sheet button', () => {
+    let button
+
+    it('it exists when the run has wells with pools', () => {
+      button = wrapper.find('#generate-sample-sheet-1')
+      expect(button.isVisible()).toBe(true) // button is shown
+    })
+
+    it('it does not exist when the run has wells without pools', () => {
+      mockRuns[0].all_wells_have_pools = false
+      store.commit('traction/pacbio/runs/setRuns', mockRuns)
+      wrapper = mount(PacbioRuns, { store, router, localVue })
+
+      button = wrapper.find('#generate-sample-sheet-1')
+      expect(button.isVisible()).toBe(false) // button is hidden
+    })
+
+    it('on click generateSampleSheetPath is called', () => {
+      button = wrapper.find('#generate-sample-sheet-1')
+
+      expect(button.attributes('href')).toEqual(runs.generateSampleSheetPath(1))
+    })
+  })
+
   describe('sorting', () => {
     it('will sort the runs by created at', () => {
       expect(

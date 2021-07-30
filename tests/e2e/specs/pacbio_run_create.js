@@ -2,7 +2,7 @@ describe('Pacbio Run Create view', () => {
   it('Creates a run successfully', () => {
     const dataTransfer = new DataTransfer()
 
-    cy.intercept('/v1/pacbio/runs?include=plate.wells.libraries', {
+    cy.intercept('/v1/pacbio/runs?include=plate.wells.pools.tube', {
       fixture: 'tractionPacbioRuns.json',
     })
     cy.visit('#/pacbio/runs')
