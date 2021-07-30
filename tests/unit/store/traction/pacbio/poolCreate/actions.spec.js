@@ -111,15 +111,15 @@ describe('actions.js', () => {
       )
       expect(commit).toHaveBeenCalledWith(
         'populateRequests',
-        Data.TractionPacbioPool.data.included.slice(3, 51),
+        Data.TractionPacbioPool.data.included.slice(100, 148),
       )
       expect(commit).toHaveBeenCalledWith(
         'populateWells',
-        Data.TractionPacbioPool.data.included.slice(52, 148),
+        Data.TractionPacbioPool.data.included.slice(4, 100),
       )
       expect(commit).toHaveBeenCalledWith(
         'populatePlates',
-        Data.TractionPacbioPool.data.included.slice(51, 52),
+        Data.TractionPacbioPool.data.included.slice(3, 4),
       )
       expect(commit).toHaveBeenCalledWith('selectTagSet', expect.objectContaining({ id: '1' }))
 
