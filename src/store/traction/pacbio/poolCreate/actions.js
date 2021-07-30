@@ -82,7 +82,7 @@ export default {
   },
   populateLibrariesFromPool: async ({ commit, rootState }, poolId) => {
     const request = rootState.api.traction.pacbio.pools
-    const promise = request.find(poolId, { include: 'libraries.tag.tag_set' })
+    const promise = request.find(poolId, { include: 'libraries.tag.tag_set,libraries.request' })
     const response = await handleResponse(promise)
 
     const { success, data: { data, included = [] } = {}, errors = [] } = response
@@ -90,9 +90,11 @@ export default {
     if (success) {
       const {
         libraries,
+        requests,
         tag_sets: [tag_set],
       } = groupIncludedByResource(included)
       commit('populateLibraries', libraries)
+      commit('populateRequests', requests)
       commit('populatePoolAttributes', data.attributes)
       commit('selectTagSet', tag_set)
       //commit('selectPlate', {})

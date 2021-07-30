@@ -200,13 +200,24 @@ describe('mutations.js', () => {
       // mock state
       const requests = Data.PacbioPlatesRequest.data.included.slice(4, 8)
 
-      const state = defaultState()
+      const initialState = defaultState()
+      const state = {
+        ...initialState,
+        resources: {
+          ...initialState.resources,
+          requests: {
+            '1': {},
+            '136': {},
+          },
+        },
+      }
       // apply mutation
       populateRequests(state, requests)
       // assert result
-      expect(state.resources.requests).toEqual(
-        dataToObjectById({ data: requests, includeRelationships: false }),
-      )
+      expect(state.resources.requests).toEqual({
+        '1': {},
+        ...dataToObjectById({ data: requests, includeRelationships: false }),
+      })
     })
   })
 

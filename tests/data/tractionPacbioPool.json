@@ -1,0 +1,123 @@
+{
+  "data": {
+    "data": {
+      "id": "242",
+      "type": "pools",
+      "links": { "self": "http://localhost:3100/v1/pacbio/pools/242" },
+      "attributes": {
+        "volume": 1.0,
+        "concentration": 1.0,
+        "template_prep_kit_box_barcode": "2424",
+        "fragment_size": 1,
+        "source_identifier": "DN1:A4",
+        "created_at": "2021-07-23T10:15:37.000Z",
+        "updated_at": "2021-07-23T10:15:37.000Z"
+      },
+      "relationships": {
+        "tube": {
+          "links": {
+            "self": "http://localhost:3100/v1/pacbio/pools/242/relationships/tube",
+            "related": "http://localhost:3100/v1/pacbio/pools/242/tube"
+          }
+        },
+        "libraries": {
+          "links": {
+            "self": "http://localhost:3100/v1/pacbio/pools/242/relationships/libraries",
+            "related": "http://localhost:3100/v1/pacbio/pools/242/libraries"
+          },
+          "data": [{ "type": "libraries", "id": "242" }]
+        }
+      }
+    },
+    "included": [
+      {
+        "id": "242",
+        "type": "libraries",
+        "links": { "self": "http://localhost:3100/v1/pacbio/libraries/242" },
+        "attributes": {
+          "state": "pending",
+          "volume": 1.0,
+          "concentration": 1.0,
+          "template_prep_kit_box_barcode": "2424",
+          "fragment_size": 1,
+          "created_at": "2021/07/23 10:15",
+          "deactivated_at": null,
+          "source_identifier": "DN1:A4"
+        },
+        "relationships": {
+          "request": {
+            "links": {
+              "self": "http://localhost:3100/v1/pacbio/libraries/242/relationships/request",
+              "related": "http://localhost:3100/v1/pacbio/libraries/242/request"
+            },
+            "data": { "type": "requests", "id": "4" }
+          },
+          "tube": {
+            "links": {
+              "self": "http://localhost:3100/v1/pacbio/libraries/242/relationships/tube",
+              "related": "http://localhost:3100/v1/pacbio/libraries/242/tube"
+            }
+          },
+          "tag": {
+            "links": {
+              "self": "http://localhost:3100/v1/pacbio/libraries/242/relationships/tag",
+              "related": "http://localhost:3100/v1/pacbio/libraries/242/tag"
+            },
+            "data": { "type": "tags", "id": "3" }
+          },
+          "pool": {
+            "links": {
+              "self": "http://localhost:3100/v1/pacbio/libraries/242/relationships/pool",
+              "related": "http://localhost:3100/v1/pacbio/libraries/242/pool"
+            },
+            "data": { "type": "pools", "id": "242" }
+          }
+        }
+      },
+      {
+        "id": "3",
+        "type": "tags",
+        "attributes": { "oligo": "ACACATCTCGTGAGAGT", "group_id": "bc1003_BAK8A_OA" },
+        "relationships": { "tag_set": { "data": { "type": "tag_sets", "id": "1" } } }
+      },
+      {
+        "id": "1",
+        "type": "tag_sets",
+        "links": { "self": "http://localhost:3100/v1/pacbio/tag_sets/1" },
+        "attributes": {
+          "name": "Sequel_16_barcodes_v3",
+          "uuid": "4d87a8ab-4d16-f0b0-77e5-0f467dba442e",
+          "pipeline": "pacbio"
+        },
+        "relationships": {
+          "tags": {
+            "links": {
+              "self": "http://localhost:3100/v1/pacbio/tag_sets/1/relationships/tags",
+              "related": "http://localhost:3100/v1/pacbio/tag_sets/1/tags"
+            },
+            "data": [{ "type": "tags", "id": "3" }]
+          }
+        }
+      },
+      {
+        "id": "4",
+        "type": "requests",
+        "links": { "self": "http://localhost:3100/v1/pacbio/requests/4" },
+        "attributes": {
+          "library_type": "library_type_1",
+          "estimate_of_gb_required": 100,
+          "number_of_smrt_cells": 3,
+          "cost_code": "PSD1234",
+          "external_study_id": "1",
+          "sample_name": "Sample45",
+          "barcode": null,
+          "sample_species": "human",
+          "created_at": "2021/07/15 15:26",
+          "source_identifier": "DN1:A4"
+        }
+      }
+    ]
+  },
+  "status": 200,
+  "statusText": "Success"
+}

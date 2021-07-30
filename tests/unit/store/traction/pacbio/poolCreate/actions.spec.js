@@ -109,6 +109,10 @@ describe('actions.js', () => {
         'populatePoolAttributes',
         Data.TractionPacbioPool.data.data.attributes,
       )
+      expect(commit).toHaveBeenCalledWith(
+        'populateRequests',
+        Data.TractionPacbioPool.data.included.slice(3, 4),
+      )
       expect(commit).toHaveBeenCalledWith('selectTagSet', expect.objectContaining({ id: '1' }))
 
       // TODO: We'll need to include plates, but that's not possible ATM

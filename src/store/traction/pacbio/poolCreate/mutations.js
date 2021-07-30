@@ -3,7 +3,11 @@ import Vue from 'vue'
 import { newLibrary } from '@/store/traction/pacbio/poolCreate/libraries.js'
 
 const populateById = (resource, { includeRelationships = false } = {}) => (state, data) => {
-  Vue.set(state.resources, resource, dataToObjectById({ data, includeRelationships }))
+  const before = state.resources[resource]
+  Vue.set(state.resources, resource, {
+    ...before, // Merge in the existing state
+    ...dataToObjectById({ data, includeRelationships }),
+  })
 }
 
 // Mutations handle synchronous update of state.
