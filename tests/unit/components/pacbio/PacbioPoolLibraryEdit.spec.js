@@ -78,13 +78,8 @@ describe('PacbioPoolLibraryEdit.vue', () => {
       it('will updated the tag_id', async () => {
         const options = wrapper.find('[data-type=tag-list]').findAll('option')
         await options.at(1).setSelected()
-        // expect(wrapper.vm.tag_id).toEqual('1')
         expect(store.state.traction.pacbio.poolCreate.libraries['_1'].tag_id).toEqual('1')
       })
-    })
-
-    describe('update', () => {
-      it('will update the library', () => {})
     })
 
     describe('input', () => {
