@@ -10,6 +10,7 @@ describe('actions.js', () => {
     selectWellRequests,
     deselectPlateAndContents,
     createPool,
+    populateLibrariesFromPool,
   } = actions
 
   describe('fetchPacbioPlates', () => {
@@ -86,6 +87,51 @@ describe('actions.js', () => {
       expect(commit).toHaveBeenCalledWith('populateTagSets', Data.PacbioTagSets.data.data)
       expect(commit).toHaveBeenCalledWith('populateTags', Data.PacbioTagSets.data.included)
       expect(success).toEqual(true)
+    })
+  })
+
+  describe('populateLibrariesFromPool', () => {
+    it('handles success', async () => {
+      // mock commit
+      const commit = jest.fn()
+      // mock dependencies
+      const find = jest.fn()
+      const rootState = { api: { traction: { pacbio: { pools: { find } } } } }
+      find.mockResolvedValue(Data.TractionPacbioPool)
+      // apply action
+      const { success } = await populateLibrariesFromPool({ commit, rootState })
+      // assert result (Might make sense to pull these into separate tests)
+      expect(commit).toHaveBeenCalledWith(
+        'populateLibraries',
+        Data.TractionPacbioPool.data.included.slice(0, 1),
+      )
+      expect(commit).toHaveBeenCalledWith(
+        'populatePoolAttributes',
+        Data.TractionPacbioPool.data.data.attributes,
+      )
+      expect(commit).toHaveBeenCalledWith('selectTagSet', expect.objectContaining({ id: '1' }))
+      // TODO: We'll need to include plates, but that's not possible ATM
+      expect(commit).toHaveBeenCalledWith('selectPlate', {})
+
+      expect(success).toEqual(true)
+    })
+
+    it('handles failure', async () => {
+      // mock commit
+      const commit = jest.fn()
+      // mock dependencies
+      const find = jest.fn()
+      const rootState = { api: { traction: { pacbio: { pools: { find } } } } }
+      find.mockRejectedValue({
+        data: { data: [] },
+        status: 500,
+        statusText: 'Internal Server Error',
+      })
+      // apply action
+      const { success } = await populateLibrariesFromPool({ commit, rootState })
+      // assert result (Might make sense to pull these into separate tests)
+      expect(commit).not.toHaveBeenCalled()
+      expect(success).toEqual(false)
     })
   })
 

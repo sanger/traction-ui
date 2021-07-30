@@ -45,6 +45,11 @@ export default {
   created() {
     const plates = this.fetchPacbioPlates()
     const tagSets = this.fetchPacbioTagSets()
+
+    if (this.$route.params.id !== 'new') {
+      const libraries = this.populateLibrariesFromPool(this.$route.params.id)
+      libraries.then(this.plateAlert)
+    }
     // We don't use await here as otherwise the handling of one response will be blocked
     // by the other
     plates.then(this.plateAlert)
@@ -61,7 +66,7 @@ export default {
         this.$refs['tagSetList'].showAlert(errors, 'danger')
       }
     },
-    ...mapActions(['fetchPacbioPlates', 'fetchPacbioTagSets']),
+    ...mapActions(['fetchPacbioPlates', 'fetchPacbioTagSets', 'populateLibrariesFromPool']),
   },
 }
 </script>
