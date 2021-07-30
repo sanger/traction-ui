@@ -82,7 +82,16 @@ export default {
   },
   populateLibrariesFromPool: async ({ commit, rootState }, poolId) => {
     const request = rootState.api.traction.pacbio.pools
-    const promise = request.find(poolId, { include: 'libraries.tag.tag_set,libraries.request' })
+    const promise = request.find(poolId, {
+      // We want to load *all* associated records, as otherwise we might be referencing them
+      // before they are loaded. Furthermore, if we start filtering the plates list at all,
+      // we may *never* load the relevant records.
+      // We load the other wells associated with the plate too, to ensure the remaining plate
+      // doesn't appear empty. This is especially important if the pool request finishes
+      // after the request for all plates, as otherwise the partial record will over-write
+      // the full one.
+      include: 'libraries.tag.tag_set,libraries.request.plate.wells.requests',
+    })
     const response = await handleResponse(promise)
 
     const { success, data: { data, included = [] } = {}, errors = [] } = response
@@ -91,13 +100,17 @@ export default {
       const {
         libraries,
         requests,
+        wells,
+        plates,
         tag_sets: [tag_set],
       } = groupIncludedByResource(included)
+      commit('populatePoolAttributes', data.attributes)
       commit('populateLibraries', libraries)
       commit('populateRequests', requests)
-      commit('populatePoolAttributes', data.attributes)
+      commit('populateWells', wells)
+      commit('populatePlates', plates)
       commit('selectTagSet', tag_set)
-      //commit('selectPlate', {})
+      plates.forEach(({ id }) => commit('selectPlate', { id, selected: true }))
     }
 
     return { success, errors }

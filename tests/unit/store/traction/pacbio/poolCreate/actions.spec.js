@@ -102,21 +102,31 @@ describe('actions.js', () => {
       const { success } = await populateLibrariesFromPool({ commit, rootState })
       // assert result (Might make sense to pull these into separate tests)
       expect(commit).toHaveBeenCalledWith(
-        'populateLibraries',
-        Data.TractionPacbioPool.data.included.slice(0, 1),
-      )
-      expect(commit).toHaveBeenCalledWith(
         'populatePoolAttributes',
         Data.TractionPacbioPool.data.data.attributes,
       )
       expect(commit).toHaveBeenCalledWith(
+        'populateLibraries',
+        Data.TractionPacbioPool.data.included.slice(0, 1),
+      )
+      expect(commit).toHaveBeenCalledWith(
         'populateRequests',
-        Data.TractionPacbioPool.data.included.slice(3, 4),
+        Data.TractionPacbioPool.data.included.slice(3, 51),
+      )
+      expect(commit).toHaveBeenCalledWith(
+        'populateWells',
+        Data.TractionPacbioPool.data.included.slice(52, 148),
+      )
+      expect(commit).toHaveBeenCalledWith(
+        'populatePlates',
+        Data.TractionPacbioPool.data.included.slice(51, 52),
       )
       expect(commit).toHaveBeenCalledWith('selectTagSet', expect.objectContaining({ id: '1' }))
 
-      // TODO: We'll need to include plates, but that's not possible ATM
-      // expect(commit).toHaveBeenCalledWith('selectPlate', {})
+      expect(commit).toHaveBeenCalledWith(
+        'selectPlate',
+        expect.objectContaining({ id: '1', selected: true }),
+      )
 
       expect(success).toEqual(true)
     })
