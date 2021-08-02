@@ -13,7 +13,6 @@ describe('mutations.js', () => {
     populateRequests,
     populateTagSets,
     populateTags,
-    populateResult,
   } = mutations
 
   describe('selectPlate', () => {
@@ -233,27 +232,6 @@ describe('mutations.js', () => {
       expect(state.resources.tags).toEqual(
         dataToObjectById({ data: tags, includeRelationships: false }),
       )
-    })
-  })
-
-  describe('populateResult', () => {
-    it('with a successful response', () => {
-      const response = {
-        success: true,
-      }
-      const state = defaultState()
-      populateResult(state, response)
-      expect(state.result).toEqual({ success: true, message: 'Pool successfully created' })
-    })
-
-    it('with an unsuccessful response', () => {
-      const response = {
-        success: false,
-        errors: 'error1: error1, error2: error2',
-      }
-      const state = defaultState()
-      populateResult(state, response)
-      expect(state.result).toEqual({ success: false, message: 'error1: error1, error2: error2' })
     })
   })
 })

@@ -5,16 +5,16 @@
         <PacbioLabwareFind ref="labwareFind" />
         <b-col>
           <b-row>
-            <PacbioTagSetList ref="tagSetList"></PacbioTagSetList>
+            <PacbioTagSetList ref="tagSetList" />
           </b-row>
           <b-row>
-            <PacbioTagSetItem></PacbioTagSetItem>
+            <PacbioTagSetItem />
           </b-row>
         </b-col>
       </b-row>
       <b-row>
         <PacbioLabwareSelectedList />
-        <PacbioPoolLibraryList />
+        <PacbioPoolEdit />
       </b-row>
     </b-container>
   </div>
@@ -25,7 +25,7 @@ import PacbioTagSetList from '@/components/pacbio/PacbioTagSetList'
 import PacbioLabwareFind from '@/components/pacbio/PacbioLabwareFind'
 import PacbioLabwareSelectedList from '@/components/pacbio/PacbioLabwareSelectedList'
 import PacbioTagSetItem from '@/components/pacbio/PacbioTagSetItem'
-import PacbioPoolLibraryList from '@/components/pacbio/PacbioPoolLibraryList'
+import PacbioPoolEdit from '@/components/pacbio/PacbioPoolEdit'
 
 import { createNamespacedHelpers } from 'vuex'
 const { mapActions } = createNamespacedHelpers('traction/pacbio/poolCreate')
@@ -37,7 +37,7 @@ export default {
     PacbioLabwareFind,
     PacbioLabwareSelectedList,
     PacbioTagSetItem,
-    PacbioPoolLibraryList,
+    PacbioPoolEdit,
   },
   data() {
     return {}

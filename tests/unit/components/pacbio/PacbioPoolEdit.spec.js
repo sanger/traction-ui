@@ -6,7 +6,7 @@ const pool = {
   template_prep_kit_box_barcode: null,
   volume: null,
   concentration: null,
-  fragment_size: null
+  fragment_size: null,
 }
 
 store.state.traction.pacbio.poolCreate.pool = pool
@@ -15,24 +15,19 @@ describe('pacbioPoolEdit', () => {
   let wrapper
 
   beforeEach(() => {
-
     wrapper = mount(PacbioPoolEdit, {
       localVue,
       store,
     })
   })
 
-  it('works', () => {
-    expect(wrapper.find('[data-type=pool-edit]')).toBeDefined()
-  })
-
   describe('input', () => {
     it('template prep kit box barcode', async () => {
       const input = wrapper.find('[data-attribute=template-prep-kit-box-barcode]')
       await input.setValue('017865101789500022821')
-      expect(
-        store.state.traction.pacbio.poolCreate.pool.template_prep_kit_box_barcode,
-      ).toEqual('017865101789500022821')
+      expect(store.state.traction.pacbio.poolCreate.pool.template_prep_kit_box_barcode).toEqual(
+        '017865101789500022821',
+      )
     })
 
     it('volume', async () => {
@@ -53,5 +48,4 @@ describe('pacbioPoolEdit', () => {
       expect(store.state.traction.pacbio.poolCreate.pool.fragment_size).toEqual('100')
     })
   })
-
 })

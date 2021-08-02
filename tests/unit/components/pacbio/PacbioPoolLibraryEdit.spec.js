@@ -1,6 +1,6 @@
 import PacbioPoolLibraryEdit from '@/components/pacbio/PacbioPoolLibraryEdit'
 import { mount, store, localVue } from 'testHelper'
-import { newLibrary } from '@/store/traction/pacbio/poolCreate/libraries.js'
+import { newLibrary } from '@/store/traction/pacbio/poolCreate/pool.js'
 
 const request = {
   id: '1',
@@ -129,22 +129,6 @@ describe('PacbioPoolLibraryEdit.vue', () => {
       })
 
       expect(wrapper.find('[data-attribute=tag-id-error]').text()).toEqual('must be present')
-    })
-
-    it('template prep kit box barcode id', () => {
-      store.state.traction.pacbio.poolCreate.libraries = {
-        _1: { ...library, errors: { template_prep_kit_box_barcode: 'must be present' } },
-      }
-
-      wrapper = mount(PacbioPoolLibraryEdit, {
-        store,
-        localVue,
-        propsData,
-      })
-
-      expect(wrapper.find('[data-attribute=template-prep-kit-box-barcode-error]').text()).toEqual(
-        'must be present',
-      )
     })
 
     it('volume', () => {

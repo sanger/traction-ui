@@ -15,7 +15,6 @@ describe('getters.js', () => {
     wellList,
     requestList,
     libraryItem,
-    result,
     poolItem,
   } = getters
 
@@ -255,13 +254,12 @@ describe('getters.js', () => {
   })
 
   describe('poolItem', () => {
-
     const pool = {
       id: 1,
       template_prep_kit_box_barcode: 'ABC1',
       volume: '1',
       concentration: '1',
-      fragment_size: '100'
+      fragment_size: '100',
     }
 
     it('returns the correct data', () => {

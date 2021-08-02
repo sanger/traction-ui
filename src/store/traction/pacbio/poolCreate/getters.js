@@ -122,7 +122,7 @@ export default {
    * Returns the pool
    * @param {Object} state The Vuex state object
    */
-   poolItem: (state) => {
+  poolItem: (state) => {
     return state.pool
   },
 }

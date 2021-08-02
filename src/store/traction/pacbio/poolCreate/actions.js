@@ -1,5 +1,5 @@
 import { groupIncludedByResource } from '@/api/JsonApi'
-import { validate, payload, valid } from '@/store/traction/pacbio/poolCreate/libraries'
+import { validate, payload, valid } from '@/store/traction/pacbio/poolCreate/pool'
 import { handleResponse } from '@/api/ResponseHelper'
 
 // Actions handle asynchronous update of state, via mutations.
@@ -72,11 +72,11 @@ export default {
   /*
    * Creates a pool from the libraries
    */
-  createPool: async ({ rootState, state: { libraries } }) => {
+  createPool: async ({ rootState, state: { libraries, pool } }) => {
     validate({ libraries })
     if (!valid({ libraries })) return
     const request = rootState.api.traction.pacbio.pools
-    const promise = request.create(payload({ libraries }), { include: 'tube' })
+    const promise = request.create(payload({ libraries, pool }), { include: 'tube' })
     // TODO: I think this is the best I can do here but it may be an idea to extract this into a method
     // if we have to do it more often
     const { success, data: { included = [] } = {}, errors } = await handleResponse(promise)
