@@ -104,7 +104,7 @@ describe('actions.js', () => {
       // assert result (Might make sense to pull these into separate tests)
       expect(commit).toHaveBeenCalledWith(
         'populatePoolAttributes',
-        Data.TractionPacbioPool.data.data.attributes,
+        Data.TractionPacbioPool.data.data,
       )
       expect(commit).toHaveBeenCalledWith(
         'populateLibraries',

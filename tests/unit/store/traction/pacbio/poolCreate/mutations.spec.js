@@ -296,7 +296,16 @@ describe('mutations.js', () => {
   describe('populatePoolAttributes', () => {
     const state = defaultState()
     // apply mutation
-    populatePoolAttributes(state, Data.TractionPacbioPool.data.data.attributes)
-    // TODO Assertions
+    populatePoolAttributes(state, Data.TractionPacbioPool.data.data)
+    expect(state.pool).toEqual(
+      expect.objectContaining({
+        id: '242',
+        volume: 1.0,
+        concentration: 1.0,
+        template_prep_kit_box_barcode: '2424',
+        fragment_size: 1,
+        source_identifier: 'DN1:A4',
+      }),
+    )
   })
 })

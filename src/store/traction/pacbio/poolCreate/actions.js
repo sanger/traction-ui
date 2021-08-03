@@ -108,7 +108,7 @@ export default {
         plates,
         tag_sets: [tag_set],
       } = groupIncludedByResource(included)
-      commit('populatePoolAttributes', data.attributes)
+      commit('populatePoolAttributes', data)
       commit('populateLibraries', libraries)
       commit('populateRequests', requests)
       commit('populateWells', wells)

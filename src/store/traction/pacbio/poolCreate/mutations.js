@@ -103,9 +103,11 @@ export default {
       )
     })
   },
-  populatePoolAttributes: (store, attributes) => {
+  populatePoolAttributes: (store, { id, attributes }) => {
     // Nothing
-    console.log(store)
-    console.log(attributes)
+    store.pool = {
+      id,
+      ...attributes,
+    }
   },
 }
