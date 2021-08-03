@@ -13,7 +13,7 @@ describe('Pacbio Pool Create', () => {
     cy.visit('#/pacbio/pool/new')
     cy.contains('Pool')
     cy.get('[data-type=labware-list]')
-      .get('button')
+      .get('[data-action=select-labware]')
       .first()
       .click()
     cy.get('[data-input=labware-find]').type('DN814567Q{enter}')
