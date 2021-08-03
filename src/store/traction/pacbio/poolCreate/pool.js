@@ -69,7 +69,7 @@ const extractLibraryAttributes = ({
   }
 }
 
-/* 
+/*
   produce a json api compliant payload
   e.g. { data: { type: 'pools', attributes: { library_attributes: [ library1, library2 ... ], template_prep_kit_box_barcode, volume, concentration, fragment_size}}}
 */

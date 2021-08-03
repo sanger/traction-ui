@@ -13,6 +13,9 @@ describe('mutations.js', () => {
     populateRequests,
     populateTagSets,
     populateTags,
+    populateResult,
+    populateLibraries,
+    populatePoolAttributes,
   } = mutations
 
   describe('selectPlate', () => {
@@ -197,13 +200,24 @@ describe('mutations.js', () => {
       // mock state
       const requests = Data.PacbioPlatesRequest.data.included.slice(4, 8)
 
-      const state = defaultState()
+      const initialState = defaultState()
+      const state = {
+        ...initialState,
+        resources: {
+          ...initialState.resources,
+          requests: {
+            '1': {},
+            '136': {},
+          },
+        },
+      }
       // apply mutation
       populateRequests(state, requests)
       // assert result
-      expect(state.resources.requests).toEqual(
-        dataToObjectById({ data: requests, includeRelationships: false }),
-      )
+      expect(state.resources.requests).toEqual({
+        '1': {},
+        ...dataToObjectById({ data: requests, includeRelationships: false }),
+      })
     })
   })
 
@@ -233,5 +247,56 @@ describe('mutations.js', () => {
         dataToObjectById({ data: tags, includeRelationships: false }),
       )
     })
+  })
+
+  describe('populateResult', () => {
+    it('with a successful response', () => {
+      const response = {
+        success: true,
+      }
+      const state = defaultState()
+      populateResult(state, response)
+      expect(state.result).toEqual({ success: true, message: 'Pool successfully created' })
+    })
+
+    it('with an unsuccessful response', () => {
+      const response = {
+        success: false,
+        errors: 'error1: error1, error2: error2',
+      }
+      const state = defaultState()
+      populateResult(state, response)
+      expect(state.result).toEqual({ success: false, message: 'error1: error1, error2: error2' })
+    })
+  })
+
+  describe('populateLibraries', () => {
+    it('sets a library with the correct data', () => {
+      // mock state
+      const state = defaultState()
+      // apply mutation
+      populateLibraries(state, Data.TractionPacbioPool.data.included.slice(0, 1))
+      // We expect the request to be recorded in the selected requests it should:
+      // - Prefix the key with an _ to maintain insert order
+      // - Not disrupt other requests in the store
+      expect(state.libraries).toEqual({
+        _4: expect.objectContaining({
+          id: '242',
+          pacbio_request_id: '4',
+          tag_id: '3',
+          volume: 1.0,
+          concentration: 1.0,
+          template_prep_kit_box_barcode: '2424',
+          fragment_size: 1,
+        }),
+      })
+    })
+  })
+
+  describe('populatePoolAttributes', () => {
+    const state = defaultState()
+    // apply mutation
+    populatePoolAttributes(state, Data.TractionPacbioPool.data.data.attributes)
+    // TODO Assertions
   })
 })

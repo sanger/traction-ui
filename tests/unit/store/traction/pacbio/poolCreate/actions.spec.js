@@ -11,6 +11,7 @@ describe('actions.js', () => {
     selectWellRequests,
     deselectPlateAndContents,
     createPool,
+    populateLibrariesFromPool,
   } = actions
 
   describe('fetchPacbioPlates', () => {
@@ -87,6 +88,66 @@ describe('actions.js', () => {
       expect(commit).toHaveBeenCalledWith('populateTagSets', Data.PacbioTagSets.data.data)
       expect(commit).toHaveBeenCalledWith('populateTags', Data.PacbioTagSets.data.included)
       expect(success).toEqual(true)
+    })
+  })
+
+  describe('populateLibrariesFromPool', () => {
+    it('handles success', async () => {
+      // mock commit
+      const commit = jest.fn()
+      // mock dependencies
+      const find = jest.fn()
+      const rootState = { api: { traction: { pacbio: { pools: { find } } } } }
+      find.mockResolvedValue(Data.TractionPacbioPool)
+      // apply action
+      const { success } = await populateLibrariesFromPool({ commit, rootState })
+      // assert result (Might make sense to pull these into separate tests)
+      expect(commit).toHaveBeenCalledWith(
+        'populatePoolAttributes',
+        Data.TractionPacbioPool.data.data.attributes,
+      )
+      expect(commit).toHaveBeenCalledWith(
+        'populateLibraries',
+        Data.TractionPacbioPool.data.included.slice(0, 1),
+      )
+      expect(commit).toHaveBeenCalledWith(
+        'populateRequests',
+        Data.TractionPacbioPool.data.included.slice(100, 148),
+      )
+      expect(commit).toHaveBeenCalledWith(
+        'populateWells',
+        Data.TractionPacbioPool.data.included.slice(4, 100),
+      )
+      expect(commit).toHaveBeenCalledWith(
+        'populatePlates',
+        Data.TractionPacbioPool.data.included.slice(3, 4),
+      )
+      expect(commit).toHaveBeenCalledWith('selectTagSet', expect.objectContaining({ id: '1' }))
+
+      expect(commit).toHaveBeenCalledWith(
+        'selectPlate',
+        expect.objectContaining({ id: '1', selected: true }),
+      )
+
+      expect(success).toEqual(true)
+    })
+
+    it('handles failure', async () => {
+      // mock commit
+      const commit = jest.fn()
+      // mock dependencies
+      const find = jest.fn()
+      const rootState = { api: { traction: { pacbio: { pools: { find } } } } }
+      find.mockRejectedValue({
+        data: { data: [] },
+        status: 500,
+        statusText: 'Internal Server Error',
+      })
+      // apply action
+      const { success } = await populateLibrariesFromPool({ commit, rootState })
+      // assert result (Might make sense to pull these into separate tests)
+      expect(commit).not.toHaveBeenCalled()
+      expect(success).toEqual(false)
     })
   })
 

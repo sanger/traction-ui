@@ -62,6 +62,41 @@ describe('ResponseHelper', () => {
       })
     })
 
+    describe('failure with response and error objects - 400', () => {
+      const rawResponse = {
+        success: false,
+        data: {
+          errors: [
+            {
+              title: 'Invalid field',
+              detail: 'tag_group is not a valid includable relationship of tags',
+              code: '112',
+              status: '400',
+            },
+          ],
+        },
+        status: 400,
+        statusText: 'Bad Request',
+      }
+
+      it('success', () => {
+        const response = newResponse(rawResponse)
+        expect(response.success).toBeFalsy()
+      })
+
+      it('data', () => {
+        const response = newResponse(rawResponse)
+        expect(response.data).toEqual(rawResponse.data)
+      })
+
+      it('errors', () => {
+        const response = newResponse(rawResponse)
+        expect(response.errors).toEqual(
+          'Invalid field tag_group is not a valid includable relationship of tags',
+        )
+      })
+    })
+
     describe('failure with response and no errors - 400-500', () => {
       const rawResponse = {
         success: false,

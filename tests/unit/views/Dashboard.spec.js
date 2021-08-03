@@ -119,8 +119,14 @@ describe('Dashboard.vue', () => {
         receptionButton.trigger('click')
         expect(wrapper.vm.$route.path).toBe('/pacbio/libraries')
       })
-      it('will have a runs button', () => {
+      it('will have a pools button', () => {
         let receptionButton = box.findAll('button').at(5)
+        expect(receptionButton.text()).toEqual('Pools')
+        receptionButton.trigger('click')
+        expect(wrapper.vm.$route.path).toBe('/pacbio/pools')
+      })
+      it('will have a runs button', () => {
+        let receptionButton = box.findAll('button').at(6)
         expect(receptionButton.text()).toEqual('Runs')
         receptionButton.trigger('click')
         expect(wrapper.vm.$route.path).toBe('/pacbio/runs')
