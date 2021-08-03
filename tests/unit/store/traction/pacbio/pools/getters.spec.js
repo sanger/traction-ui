@@ -9,6 +9,14 @@ const pools = [
     type: 'pools',
     barcode: 'TRAC-2-1',
     libraries: [{ id: '1', sample_name: 'Sample48', group_id: 'bc1019', type: 'libraries' }],
+    tube: '1',
+    volume: 1.0,
+    concentration: 1.0,
+    template_prep_kit_box_barcode: 'LK12345',
+    fragment_size: 100,
+    source_identifier: 'DN1:A1',
+    created_at: '2021-07-15T15:26:29.000Z',
+    updated_at: '2021-07-15T15:26:29.000Z',
   },
   {
     id: '2',
@@ -17,6 +25,14 @@ const pools = [
     libraries: [
       { id: '2', sample_name: 'Sample47', group_id: 'bc1011_BAK8A_OA', type: 'libraries' },
     ],
+    tube: '2',
+    volume: 1.0,
+    concentration: 1.0,
+    template_prep_kit_box_barcode: 'LK12345',
+    fragment_size: 100,
+    source_identifier: 'DN1:B1',
+    created_at: '2021-07-15T15:26:29.000Z',
+    updated_at: '2021-07-15T15:26:29.000Z',
   },
 ]
 

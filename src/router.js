@@ -14,6 +14,7 @@ import PacbioReceptionTube from './views/pacbio/PacbioReceptionTube'
 import PacbioPlateIndex from './views/pacbio/PacbioPlateIndex'
 import PacbioSampleIndex from './views/pacbio/PacbioSampleIndex'
 import PacbioLibraryIndex from './views/pacbio/PacbioLibraryIndex'
+import PacbioPoolIndex from './views/pacbio/PacbioPoolIndex'
 import PacbioRunIndex from './views/pacbio/PacbioRunIndex'
 import PacbioRunShow from './views/pacbio/PacbioRunShow'
 import ONT from './views/ONT'
@@ -61,6 +62,7 @@ export default new Router({
         { path: 'samples', name: 'PacbioSampleIndex', component: PacbioSampleIndex },
         { path: 'plates', name: 'PacbioPlateIndex', component: PacbioPlateIndex },
         { path: 'libraries', name: 'PacbioLibraryIndex', component: PacbioLibraryIndex },
+        { path: 'pools', name: 'PacbioPoolIndex', component: PacbioPoolIndex },
         { path: 'runs', name: 'PacbioRunIndex', component: PacbioRunIndex },
         { path: 'run/:id', name: 'PacbioRunShow', component: PacbioRunShow, props: true },
         { path: 'plate-reception', name: 'PacbioPlateReception', component: PacbioReceptionPlate },

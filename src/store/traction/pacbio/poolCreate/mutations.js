@@ -3,7 +3,11 @@ import Vue from 'vue'
 import { newLibrary } from '@/store/traction/pacbio/poolCreate/libraries.js'
 
 const populateById = (resource, { includeRelationships = false } = {}) => (state, data) => {
-  Vue.set(state.resources, resource, dataToObjectById({ data, includeRelationships }))
+  const before = state.resources[resource]
+  Vue.set(state.resources, resource, {
+    ...before, // Merge in the existing state
+    ...dataToObjectById({ data, includeRelationships }),
+  })
 }
 
 // Mutations handle synchronous update of state.
@@ -42,7 +46,6 @@ export default {
       Vue.delete(libraries, `_${id}`)
     }
   },
-
   /**
    * Populated with resources via APi calls from the actions
    * @param {Object} state The VueXState object
@@ -73,7 +76,6 @@ export default {
    * @param {Array.{}} tags The tag resources to populate the store
    */
   populateTags: populateById('tags'),
-
   /**
    * Populated the result with the response
    * @param {Object} state The VueXState object
@@ -89,5 +91,21 @@ export default {
         : // if the response is a failure return the errors
           message,
     }
+  },
+  populateLibraries: ({ libraries }, data) => {
+    const newLibraries = dataToObjectById({ data, includeRelationships: true })
+    Object.values(newLibraries).forEach((library) => {
+      const key = `_${library.request}`
+      Vue.set(
+        libraries,
+        key,
+        newLibrary({ ...library, pacbio_request_id: library.request, tag_id: library.tag }),
+      )
+    })
+  },
+  populatePoolAttributes: (store, attributes) => {
+    // Nothing
+    console.log(store)
+    console.log(attributes)
   },
 }
