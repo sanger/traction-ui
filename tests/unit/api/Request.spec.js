@@ -154,6 +154,26 @@ describe('Request', () => {
         expect(promise).resolves.toEqual(mockResponse)
       })
 
+      it('create with include', () => {
+        request.api.post = jest.fn()
+        data = {
+          data: {
+            attributes: {
+              samples: [
+                { name: 'sample1', species: 'dog' },
+                { name: 'sample2', species: 'cat' },
+              ],
+            },
+          },
+        }
+        mockResponse = { data: { status: 201 } }
+        request.api.post.mockReturnValue(mockResponse)
+
+        let promise = request.create(data, { include: 'tube' })
+        expect(request.api.post).toBeCalledWith('requests?include=tube', data)
+        expect(promise).resolves.toEqual(mockResponse)
+      })
+
       describe('update', () => {
         beforeEach(() => {
           data = [

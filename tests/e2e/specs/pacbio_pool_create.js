@@ -40,11 +40,16 @@ describe('Pacbio Pool Create', () => {
       cy.get('[data-attribute=concentration]').type('10.0')
       cy.get('[data-attribute=fragment-size]').type('100')
     })
-    cy.intercept('/v1/pacbio/pools', {
+    cy.intercept('/v1/pacbio/pools?include=tube', {
       statusCode: 201,
       body: {
         data: {
-          id: '1',
+          pool: {
+            id: '1',
+            tube: {
+              barcode: 'TRAC-1',
+            },
+          },
         },
       },
     })
@@ -81,11 +86,13 @@ describe('Pacbio Pool Create', () => {
       cy.get('[data-attribute=concentration]').type('10.0')
       cy.get('[data-attribute=fragment-size]').type('100')
     })
-    cy.intercept('/v1/pacbio/pools', {
+    cy.intercept('/v1/pacbio/pools?include=tube', {
       statusCode: 422,
       body: {
-        errors: {
-          error1: ['There was a problem'],
+        data: {
+          errors: {
+            error1: ['There was a problem'],
+          },
         },
       },
     })

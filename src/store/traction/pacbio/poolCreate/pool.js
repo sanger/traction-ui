@@ -9,6 +9,14 @@ const libraryAttributes = {
   fragment_size: null,
 }
 
+const requiredAttributes = [
+  'pacbio_request_id',
+  'tag_id',
+  'volume',
+  'concentration',
+  'fragment_size',
+]
+
 const newLibrary = (attributes) => {
   return {
     ...libraryAttributes,
@@ -24,7 +32,7 @@ const newLibrary = (attributes) => {
 const validate = ({ libraries }) => {
   for (const [key, library] of Object.entries(libraries)) {
     const errors = {}
-    Object.keys(libraryAttributes).forEach((field) => {
+    requiredAttributes.forEach((field) => {
       if (!library[field]) {
         errors[field] = 'must be present'
       }
@@ -62,16 +70,18 @@ const extractLibraryAttributes = ({
 }
 
 /*
-  produce a json api compliant (sort of) payload
-  e.g. { data: attributes: { library_attributes: [ library1, library2 ... ]}}
+  produce a json api compliant payload
+  e.g. { data: { type: 'pools', attributes: { library_attributes: [ library1, library2 ... ], template_prep_kit_box_barcode, volume, concentration, fragment_size}}}
 */
-const payload = ({ libraries }) => {
+const payload = ({ libraries, pool }) => {
   return {
     data: {
+      type: 'pools',
       attributes: {
         library_attributes: Object.values(libraries).map((library) =>
           extractLibraryAttributes(library),
         ),
+        ...pool,
       },
     },
   }

@@ -1,6 +1,6 @@
 import { dataToObjectById } from '@/api/JsonApi'
 import Vue from 'vue'
-import { newLibrary } from '@/store/traction/pacbio/poolCreate/libraries.js'
+import { newLibrary } from '@/store/traction/pacbio/poolCreate/pool.js'
 
 const populateById = (resource, { includeRelationships = false } = {}) => (state, data) => {
   const before = state.resources[resource]

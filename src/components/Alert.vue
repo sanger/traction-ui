@@ -3,7 +3,7 @@
     <b-alert
       id="showAlert"
       :variant="type"
-      data-type="error-message"
+      :data-type="dataType"
       dismissible
       :show="showDismissibleAlert"
       @dismissed="showDismissibleAlert = false"
@@ -16,6 +16,14 @@
 <script>
 export default {
   name: 'Alert',
+  props: {
+    dataType: {
+      type: String,
+      default() {
+        return 'error-message'
+      },
+    },
+  },
   data() {
     return {
       message: '',

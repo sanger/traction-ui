@@ -1,5 +1,5 @@
 import defaultState from '@/store/traction/pacbio/poolCreate/state'
-import { validate, valid, payload } from '@/store/traction/pacbio/poolCreate/libraries'
+import { validate, valid, payload } from '@/store/traction/pacbio/poolCreate/pool'
 
 const library1 = {
   pacbio_request_id: '1',
@@ -47,9 +47,7 @@ describe('libraries.js', () => {
       const state = defaultState()
       state.libraries = { ...libraries }
       validate(state)
-      expect(state.libraries['_3'].errors).toEqual({
-        template_prep_kit_box_barcode: 'must be present',
-      })
+      expect(valid({ libraries: state.libraries })).toBeTruthy()
     })
 
     it('when the volume is not present', () => {
@@ -143,8 +141,18 @@ describe('libraries.js', () => {
 
   it('payload', () => {
     const libraries = { _1: library1, _2: library2, _3: library3 }
-    expect(payload({ libraries })).toEqual({
-      data: { attributes: { library_attributes: [library1, library2, library3] } },
+    const pool = {
+      template_prep_kit_box_barcode: 'ABC1',
+      volume: '10',
+      concentration: '10',
+      fragment_size: 100,
+    }
+
+    expect(payload({ libraries, pool })).toEqual({
+      data: {
+        type: 'pools',
+        attributes: { library_attributes: [library1, library2, library3], ...pool },
+      },
     })
   })
 })

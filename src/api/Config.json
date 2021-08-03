@@ -46,7 +46,7 @@
         "resources": [
           {
             "name": "libraries",
-            "include": "request,tag,tube"
+            "include": ""
           },
           {
             "name": "request_library",
@@ -76,7 +76,7 @@
           },
           {
             "name": "plates",
-            "include": "wells.materials"
+            "include": ""
           },
           {
             "name": "tag_sets",

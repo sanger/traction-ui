@@ -95,8 +95,14 @@ export default {
         )}`,
       )
     },
-    create(data) {
-      return this.execute('post', this.resource, data)
+    create(data, queryParameters = {}) {
+      return this.execute(
+        'post',
+        `${this.resource}${this.buildQuery(
+          Object.assign({ include: undefined }, queryParameters),
+        )}`,
+        data,
+      )
     },
     update(data) {
       let promises = []

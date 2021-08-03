@@ -2,6 +2,7 @@ import { Data } from 'testHelper'
 import actions from '@/store/traction/pacbio/poolCreate/actions'
 import defaultState from '@/store/traction/pacbio/poolCreate/state'
 import { newResponse } from '@/api/ResponseHelper'
+import { payload } from '@/store/traction/pacbio/poolCreate/pool'
 
 describe('actions.js', () => {
   const {
@@ -251,21 +252,44 @@ describe('actions.js', () => {
       fragment_size: 100,
     }
 
+    const pool = {
+      template_prep_kit_box_barcode: 'ABC1',
+      volume: 1,
+      concentration: 1,
+      fragment_size: 100,
+    }
+
     // pool should be successfully created
     // for now: create a pool state with a simple success message
     it('when the pool is valid', async () => {
-      const mockResponse = { status: '201', data: { data: { id: 1 } } }
-      const commit = jest.fn()
+      const mockResponse = {
+        status: '201',
+        data: { data: {}, included: [{ type: 'tubes', attributes: { barcode: 'TRAC-1' } }] },
+      }
       const create = jest.fn()
       const rootState = { api: { traction: { pacbio: { pools: { create } } } } }
       const libraries = { _1: library1, _2: library2 }
       create.mockResolvedValue(mockResponse)
-      const response = newResponse({ ...mockResponse, success: true })
-      await createPool({ commit, rootState, state: { libraries } })
-      expect(commit).toHaveBeenCalledWith('populateResult', response)
+      const { success, barcode } = await createPool({ rootState, state: { libraries, pool } })
+      expect(create).toHaveBeenCalledWith(payload({ libraries, pool }), expect.anything())
+      expect(success).toBeTruthy()
+      expect(barcode).toEqual('TRAC-1')
     })
 
-    it('when there is an error', () => {})
+    it('when there is an error', async () => {
+      const mockResponse = {
+        status: '422',
+        data: { data: { errors: { error1: ['There was an error'] } } },
+      }
+      const create = jest.fn()
+      const rootState = { api: { traction: { pacbio: { pools: { create } } } } }
+      const libraries = { _1: library1, _2: library2 }
+      create.mockRejectedValue({ response: mockResponse })
+      const expectedResponse = newResponse({ ...mockResponse, success: false })
+      const { success, errors } = await createPool({ rootState, state: { libraries, pool } })
+      expect(success).toBeFalsy()
+      expect(errors).toEqual(expectedResponse.errors)
+    })
 
     // validate libraries fails
     // request is not sent
@@ -275,8 +299,8 @@ describe('actions.js', () => {
       const create = jest.fn()
       const rootState = { api: { traction: { pacbio: { pools: { create } } } } }
       const libraries = { _1: library1, _2: { ...library2, tag_id: '' } }
-      await createPool({ commit, rootState, state: { libraries } })
-      expect(commit).not.toHaveBeenCalledWith('populateResult')
+      await createPool({ commit, rootState, state: { libraries, pool } })
+      expect(create).not.toHaveBeenCalled()
     })
   })
 })

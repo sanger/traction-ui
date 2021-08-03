@@ -5,7 +5,7 @@
  * TODO: Still wondering if there is more to do to make this more robust
  * but probably better to find out with a bit of testing
  */
-const parseErrors = ({ data, error }) => {
+const parseErrors = ({ data: { data = { errors: null } } = {}, error }) => {
   // if its stand alone return it
   if (error) {
     return error
@@ -24,8 +24,10 @@ const parseErrors = ({ data, error }) => {
 }
 
 const parseErrorObject = (errors) =>
-  Object.keys(errors)
-    .map((key) => errors[key].map((item) => `${key} ${item}`).join(', '))
+  Object.entries(errors)
+    .map(([key, value]) => {
+      return value.map((item) => `${key} ${item}`).join(', ')
+    })
     .join(', ')
 
 const parseErrorArray = (errors) =>
@@ -59,7 +61,6 @@ const handleResponse = async (promise) => {
     if (!!+process.env.VUE_APP_LOG) {
       console.error(error)
     }
-
     // 400-500 range will throw an error with a response
     if (error.response) {
       return newResponse({ success: false, ...error.response })
