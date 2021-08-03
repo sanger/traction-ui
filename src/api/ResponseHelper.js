@@ -5,19 +5,19 @@
  * TODO: Still wondering if there is more to do to make this more robust
  * but probably better to find out with a bit of testing
  */
-const parseErrors = ({ data: { data = { errors: null } } = {}, error }) => {
+const parseErrors = ({ data: rawData, error }) => {
   // if its stand alone return it
   if (error) {
     return error
   }
+
+  const { errors, data = { errors: null } } = rawData
+
   // turn it into something nice i.e. a readable string if it is a 422
-  if (data.errors) {
-    const errors = data.errors
-    if (Array.isArray(errors)) {
-      return parseErrorArray(errors)
-    } else {
-      return parseErrorObject(errors)
-    }
+  if (Array.isArray(errors)) {
+    return parseErrorArray(errors)
+  } else if (data.errors) {
+    return parseErrorObject(data.errors)
   } else {
     return data
   }
