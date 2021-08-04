@@ -1,24 +1,13 @@
 import PacbioPlates from '@/views/pacbio/PacbioPlateIndex'
-import { mount, localVue, store, Data } from '../../testHelper'
+import { mount, localVue, store, Data, router } from 'testHelper'
 import Response from '@/api/Response'
-import VueRouter from 'vue-router'
 
 describe('PacbioPlates.vue', () => {
-  let wrapper, plates, mockPlates, router
+  let wrapper, plates, mockPlates
 
   beforeEach(() => {
     mockPlates = new Response(Data.PacbioPlates).deserialize.plates
     store.commit('traction/pacbio/plates/setPlates', mockPlates)
-
-    router = new VueRouter({
-      routes: [
-        {
-          path: '/pacbio/plates',
-          name: 'PacbioPlates',
-          component: PacbioPlates,
-        },
-      ],
-    })
 
     wrapper = mount(PacbioPlates, {
       store,

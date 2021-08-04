@@ -1,7 +1,7 @@
 import Plate from '@/components/plates/PlateItem'
 import PlateMap from '@/config/PlateMap'
 import Response from '@/api/Response'
-import { localVue, mount, Data } from '../../testHelper'
+import { localVue, mount, Data } from 'testHelper'
 
 describe('Plate.vue', () => {
   let wrapper, plate, mockPlate
@@ -12,10 +12,6 @@ describe('Plate.vue', () => {
     wrapper = mount(Plate, {
       localVue,
       propsData: { plate: mockPlate },
-      stubs: {
-        Plate96SVG: true,
-        Well: true,
-      },
     })
 
     plate = wrapper.vm
@@ -29,7 +25,7 @@ describe('Plate.vue', () => {
   describe('methods', () => {
     describe('#getWellAt', () => {
       it('gets the well at the given position when it exists and has material', () => {
-        let expected = plate.wells.filter((w) => w.position == 'A1')[0]
+        let expected = plate.wells.find((w) => w.position == 'A1')
         expect(plate.getWellAt('A1')).toEqual(expected)
       })
 

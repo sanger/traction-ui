@@ -1,6 +1,5 @@
 <template>
   <div>
-    <p>{{ pipelineInfo.title }}</p>
     <b-card no-body>
       <b-card-header header-tag="nav">
         <b-nav tabs fill card-header>

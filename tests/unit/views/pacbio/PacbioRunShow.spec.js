@@ -1,19 +1,10 @@
 import PacbioRun from '@/views/pacbio/PacbioRunShow'
-import PacbioRuns from '@/views/pacbio/PacbioRunIndex'
-import VueRouter from 'vue-router'
-import { localVue, mount, store } from '../../testHelper'
+import { localVue, mount, store, router } from 'testHelper'
 
 describe('Run.vue', () => {
-  let wrapper, mockRun, router, pacbioRun
+  let wrapper, mockRun, pacbioRun
 
   beforeEach(() => {
-    router = new VueRouter({
-      routes: [
-        { path: '/run/:id', name: 'PacbioRunShow', component: PacbioRun },
-        { path: '/runs', name: 'PacbioRunIndex', component: PacbioRuns },
-      ],
-    })
-
     mockRun = {
       id: '1',
       name: '',
@@ -40,7 +31,7 @@ describe('Run.vue', () => {
       localVue,
       stubs: {
         Plate: true,
-        PacbioLibraryList: true,
+        pacbioPoolList: true,
         PacbioRunInfoEdit: true,
       },
       propsData: { id: 'new' },
@@ -62,7 +53,7 @@ describe('Run.vue', () => {
 
   describe('Pacbio Libraries Table', () => {
     it('dispays the pacbio library table', () => {
-      expect(wrapper.findComponent({ ref: 'PacbioLibraryList' })).toBeTruthy()
+      expect(wrapper.findComponent({ ref: 'pacbioPoolList' })).toBeTruthy()
     })
   })
 
@@ -73,10 +64,11 @@ describe('Run.vue', () => {
   })
 
   describe('Back button', () => {
+    // TODO: not sure this is needed anymore?
     it('will always show', () => {
       expect(wrapper.find('#backToRunsButton').exists()).toBeTruthy()
       wrapper.find('#backToRunsButton').trigger('click')
-      expect(wrapper.vm.$route.path).toBe('/runs')
+      expect(wrapper.vm.$route.path).toBe('/pacbio/runs')
     })
   })
 
@@ -137,7 +129,7 @@ describe('Run.vue', () => {
         propsData: { id: 1 },
         stubs: {
           Plate: true,
-          PacbioLibraryList: true,
+          pacbioPoolList: true,
           PacbioRunInfoEdit: true,
         },
       })

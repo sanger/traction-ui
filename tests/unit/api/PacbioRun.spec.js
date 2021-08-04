@@ -1,5 +1,5 @@
 import Vue from 'vue'
-import { mount, Data } from '../testHelper'
+import { mount, Data } from 'testHelper'
 import Request from '@/api/Request'
 import Response from '@/api/Response'
 import * as Run from '@/api/PacbioRun'
@@ -100,6 +100,7 @@ describe('Run', () => {
       expect(well.insert_size).toEqual('')
       expect(well.on_plate_loading_concentration).toEqual('')
       expect(well.libraries).toEqual([])
+      expect(well.pools).toEqual([])
       expect(well.generate_hifi).toEqual('In SMRT Link')
       expect(well.pre_extension_time).toEqual(2)
       expect(well.ccs_analysis_output).toEqual('Yes')
@@ -120,8 +121,8 @@ describe('Run', () => {
     beforeEach(() => {
       run = Run.build()
       run['name'] = 'run1'
-      run.plate.wells[0] = { position: 'A1', libraries: [{ id: 1 }] }
-      run.plate.wells[1] = { position: 'A2', libraries: [{ id: 2 }] }
+      run.plate.wells[0] = { position: 'A1', pools: [{ id: 1 }] }
+      run.plate.wells[1] = { position: 'A2', pools: [{ id: 2 }] }
 
       api = build({ config: Api.Config, environment: process.env })
       pacbioRequest = api.traction.pacbio
@@ -201,13 +202,13 @@ describe('Run', () => {
       expect(resp).toEqual('title The record identified by 100 could not be found.')
     })
 
-    describe('when a well has no libraries', () => {
+    describe('when a well has no pools', () => {
       beforeEach(() => {
         well1 = new Response(Data.PacbioWells).deserialize.wells[0]
         well2 = new Response(Data.PacbioWells).deserialize.wells[1]
 
-        well1['libraries'] = [{ id: 1 }, { id: 2 }]
-        well2['libraries'] = []
+        well1['pools'] = [{ id: 1 }, { id: 2 }]
+        well2['pools'] = []
 
         run = {
           id: '1',
@@ -292,8 +293,8 @@ describe('Run', () => {
     beforeEach(() => {
       run = Run.build()
 
-      run.plate.wells[0] = { position: 'A1', libraries: [{ id: 1 }, { id: 2 }] }
-      run.plate.wells[1] = { position: 'A2', libraries: [{ id: 2 }] }
+      run.plate.wells[0] = { position: 'A1', pools: [{ id: 1 }, { id: 2 }] }
+      run.plate.wells[1] = { position: 'A2', pools: [{ id: 2 }] }
 
       wells = run.plate.wells
       plateID = 1
@@ -322,23 +323,17 @@ describe('Run', () => {
       )
       expect(result.data.attributes.wells[0].relationships.plate.data.type).toEqual('plates')
       expect(result.data.attributes.wells[0].relationships.plate.data.id).toEqual(plateID)
-      expect(result.data.attributes.wells[0].relationships.libraries.data[0].type).toEqual(
-        'libraries',
+      expect(result.data.attributes.wells[0].relationships.pools.data[0].type).toEqual('pools')
+      expect(result.data.attributes.wells[0].relationships.pools.data[0].id).toEqual(
+        wells[0].pools[0].id,
       )
-      expect(result.data.attributes.wells[0].relationships.libraries.data[0].id).toEqual(
-        wells[0].libraries[0].id,
+      expect(result.data.attributes.wells[0].relationships.pools.data[1].type).toEqual('pools')
+      expect(result.data.attributes.wells[0].relationships.pools.data[1].id).toEqual(
+        wells[0].pools[1].id,
       )
-      expect(result.data.attributes.wells[0].relationships.libraries.data[1].type).toEqual(
-        'libraries',
-      )
-      expect(result.data.attributes.wells[0].relationships.libraries.data[1].id).toEqual(
-        wells[0].libraries[1].id,
-      )
-      expect(result.data.attributes.wells[1].relationships.libraries.data[0].type).toEqual(
-        'libraries',
-      )
-      expect(result.data.attributes.wells[1].relationships.libraries.data[0].id).toEqual(
-        wells[1].libraries[0].id,
+      expect(result.data.attributes.wells[1].relationships.pools.data[0].type).toEqual('pools')
+      expect(result.data.attributes.wells[1].relationships.pools.data[0].id).toEqual(
+        wells[1].pools[0].id,
       )
     })
   })
@@ -350,8 +345,8 @@ describe('Run', () => {
       well1 = new Response(Data.PacbioWells).deserialize.wells[0]
       well2 = new Response(Data.PacbioWells).deserialize.wells[1]
 
-      well1['libraries'] = [{ id: 1 }, { id: 2 }]
-      well2['libraries'] = [{ id: 2 }]
+      well1['pools'] = [{ id: 1 }, { id: 2 }]
+      well2['pools'] = [{ id: 2 }]
 
       run = {
         id: '1',
@@ -400,13 +395,13 @@ describe('Run', () => {
       expect(resp).toEqual(['title The record identified by 100 could not be found.'])
     })
 
-    describe('when a well has no libraries', () => {
+    describe('when a well has no pools', () => {
       beforeEach(() => {
         well1 = new Response(Data.PacbioWells).deserialize.wells[0]
         well2 = new Response(Data.PacbioWells).deserialize.wells[1]
 
-        well1['libraries'] = [{ id: 1 }, { id: 2 }]
-        well2['libraries'] = []
+        well1['pools'] = [{ id: 1 }, { id: 2 }]
+        well2['pools'] = []
 
         run = {
           id: '1',
@@ -481,7 +476,7 @@ describe('Run', () => {
 
     beforeEach(() => {
       well = new Response(Data.PacbioWell).deserialize.wells[0]
-      well.libraries = [{ id: 1 }]
+      well.pools = [{ id: 1 }]
     })
 
     it('return run payload', async () => {
@@ -500,8 +495,8 @@ describe('Run', () => {
       expect(result.data.attributes.ccs_analysis_output).toEqual(well.ccs_analysis_output)
       expect(result.data.attributes.pre_extension_time).toEqual(well.pre_extension_time)
       expect(result.data.attributes.ccs_analysis_output).toEqual(well.ccs_analysis_output)
-      expect(result.data.relationships.libraries.data[0].type).toEqual('libraries')
-      expect(result.data.relationships.libraries.data[0].id).toEqual(well.libraries[0].id)
+      expect(result.data.relationships.pools.data[0].type).toEqual('pools')
+      expect(result.data.relationships.pools.data[0].id).toEqual(well.pools[0].id)
     })
   })
 

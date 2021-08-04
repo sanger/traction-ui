@@ -1,5 +1,5 @@
 import OntLibraries from '@/views/ont/OntLibraries'
-import { localVue, mount } from '../../testHelper'
+import { localVue, mount } from 'testHelper'
 
 describe('OntLibraries.vue', () => {
   let wrapper, libraries, librariesData, mutate, mockApollo //, refetchLibraries

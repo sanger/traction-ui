@@ -1,8 +1,6 @@
 <template>
   <b-modal ref="well-modal" size="lg">
-    <template v-slot:modal-title :position="position">
-      Add Library to Well: {{ position }}
-    </template>
+    <template v-slot:modal-title :position="position"> Add Pool to Well: {{ position }} </template>
 
     <alert ref="alert"></alert>
 
@@ -87,17 +85,17 @@
       </b-form-group>
     </b-form>
 
-    <b-table id="wellLibraries" stacked :items="wellLibraries" :fields="wellLibrariesFields">
-      <template v-slot:table-caption>Libraries</template>
+    <b-table id="wellPools" stacked :items="wellPools" :fields="wellPoolsFields">
+      <template v-slot:table-caption>Pools</template>
 
       <template v-slot:cell(barcode)="row">
         <b-form inline>
           <b-form-input
-            id="libraryBarcode"
-            ref="libraryBarcode"
+            id="poolBarcode"
+            ref="poolBarcode"
             :value="`${row.item.barcode}`"
-            placeholder="Library Barcode"
-            @change="updateLibraryBarcode(row, $event)"
+            placeholder="Pool Barcode"
+            @change="updatePoolBarcode(row, $event)"
           >
           </b-form-input>
 
@@ -135,7 +133,7 @@ export default {
   data() {
     return {
       movieTimeOptions: [{ text: 'Movie Time', value: '' }, '15.0', '20.0', '24.0', '30.0'],
-      wellLibrariesFields: ['barcode'],
+      wellPoolsFields: ['barcode'],
       generateHifiOptions: {
         '': [{ text: 'Please select a System Name', value: '', disabled: true }],
         'Sequel I': ['In SMRT Link', 'Do Not Generate'],
@@ -150,7 +148,7 @@ export default {
       return ['In SMRT Link', 'On Instrument'].includes(this.generateHiFi)
     },
     ...mapGetters('traction/pacbio/runs', ['currentRun', 'well']),
-    ...mapGetters('traction/pacbio/libraries', ['libraryByBarcode']),
+    ...mapGetters('traction/pacbio/pools', ['poolByBarcode']),
     ...mapState('traction/pacbio/runs', {
       insertSize() {
         return this.well(this.position) ? this.well(this.position).insert_size : ''
@@ -163,8 +161,8 @@ export default {
       movieTime() {
         return this.well(this.position) ? this.well(this.position).movie_time : ''
       },
-      wellLibraries() {
-        return this.well(this.position) ? this.well(this.position).libraries : []
+      wellPools() {
+        return this.well(this.position) ? this.well(this.position).pools : []
       },
       preExtensionTime() {
         return this.well(this.position) ? this.well(this.position).pre_extension_time : ''
@@ -179,10 +177,10 @@ export default {
   },
   methods: {
     addRow() {
-      this.addEmptyLibraryToWell(this.position)
+      this.addEmptyPoolToWell(this.position)
     },
     removeRow(row) {
-      this.removeLibraryFromWell({ position: this.position, index: row.index })
+      this.removePoolFromWell({ position: this.position, index: row.index })
     },
     showModalForPosition() {
       if (!this.well(this.position)) {
@@ -231,31 +229,31 @@ export default {
         with: ccsAnalysisOutput,
       })
     },
-    async updateLibraryBarcode(row, barcode) {
+    async updatePoolBarcode(row, barcode) {
       let index = row.index
 
-      let isValid = await this.isLibraryBarcodeValid(barcode)
+      let isValid = await this.isPoolBarcodeValid(barcode)
 
       if (isValid) {
-        let libraryId = this.libraryByBarcode(barcode).id
+        let { id } = this.poolByBarcode(barcode)
         let payload = {
           position: this.position,
-          index: index,
-          with: { id: libraryId, barcode: barcode },
+          index,
+          with: { id, barcode },
         }
-        this.addLibraryToWell(payload)
-        this.showAlert('Library is valid', 'success')
+        this.addPoolToWell(payload)
+        this.showAlert('Pool is valid', 'success')
       } else {
-        this.showAlert('Library is not valid', 'danger')
+        this.showAlert('Pool is not valid', 'danger')
       }
     },
-    ...mapActions('traction/pacbio/tubes', ['isLibraryBarcodeValid', 'getTubeForBarcode']),
+    ...mapActions('traction/pacbio/tubes', ['isPoolBarcodeValid', 'getTubeForBarcode']),
     ...mapMutations('traction/pacbio/runs', [
       'createWell',
       'mutateWell',
-      'addEmptyLibraryToWell',
-      'removeLibraryFromWell',
-      'addLibraryToWell',
+      'addEmptyPoolToWell',
+      'removePoolFromWell',
+      'addPoolToWell',
     ]),
     alert(message, type) {
       this.$emit('alert', message, type)

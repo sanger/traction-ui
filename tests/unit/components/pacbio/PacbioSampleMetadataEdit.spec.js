@@ -1,4 +1,4 @@
-import { mount, localVue, Data, store } from '../../testHelper'
+import { mount, localVue, Data, store } from 'testHelper'
 import PacbioSampleMetadataEdit from '@/components/pacbio/PacbioSampleMetadataEdit'
 import Response from '@/api/Response'
 

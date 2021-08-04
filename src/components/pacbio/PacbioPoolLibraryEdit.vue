@@ -1,0 +1,132 @@
+<template>
+  <b-tr data-type="pool-library-edit">
+    <b-td data-attribute="request-sample-name">
+      {{ request.sample_name }}
+    </b-td>
+    <b-td data-attribute="request-source-identifier">
+      {{ request.source_identifier }}
+    </b-td>
+    <b-td>
+      <b-form-select
+        v-if="tagList.length > 0"
+        v-model="library.tag_id"
+        data-type="tag-list"
+        :options="tagListOptions"
+        :state="hasErrors('tag_id')"
+      ></b-form-select>
+      <b-form-invalid-feedback data-attribute="tag-id-error">
+        {{ errorsFor('tag_id') }}
+      </b-form-invalid-feedback>
+    </b-td>
+    <b-td>
+      <b-form-input
+        v-model="library.template_prep_kit_box_barcode"
+        data-attribute="template-prep-kit-box-barcode"
+        :value="library.template_prep_kit_box_barcode"
+        placeholder="Template Prep Kit Box Barcode"
+        type="text"
+        title="Template Prep Kit Box Barcode"
+        :state="hasErrors('template_prep_kit_box_barcode')"
+      />
+      <b-form-invalid-feedback data-attribute="template-prep-kit-box-barcode-error">
+        {{ errorsFor('template_prep_kit_box_barcode') }}
+      </b-form-invalid-feedback>
+    </b-td>
+    <b-td>
+      <b-form-input
+        v-model="library.volume"
+        data-attribute="volume"
+        :value="library.volume"
+        placeholder="Volume"
+        type="text"
+        title="Volume"
+        :state="hasErrors('volume')"
+      />
+      <b-form-invalid-feedback data-attribute="volume-error">
+        {{ errorsFor('volume') }}
+      </b-form-invalid-feedback>
+    </b-td>
+    <b-td>
+      <b-form-input
+        v-model="library.concentration"
+        data-attribute="concentration"
+        :value="library.concentration"
+        placeholder="Concentration"
+        type="text"
+        title="Concentration"
+        :state="hasErrors('concentration')"
+      />
+      <b-form-invalid-feedback data-attribute="concentration-error">
+        {{ errorsFor('concentration') }}
+      </b-form-invalid-feedback>
+    </b-td>
+    <b-td>
+      <b-form-input
+        v-model="library.fragment_size"
+        data-attribute="fragment-size"
+        :value="library.fragment_size"
+        placeholder="Fragment Size"
+        type="text"
+        title="Fragment Size"
+        :state="hasErrors('fragment_size')"
+      />
+      <b-form-invalid-feedback data-attribute="fragment-size-error">
+        {{ errorsFor('fragment_size') }}
+      </b-form-invalid-feedback>
+    </b-td>
+  </b-tr>
+</template>
+
+<script>
+import { createNamespacedHelpers } from 'vuex'
+const { mapGetters } = createNamespacedHelpers('traction/pacbio/poolCreate')
+export default {
+  name: 'PacbioPoolLibraryEdit',
+  props: {
+    id: {
+      type: [String, Number],
+      default: '',
+    },
+    request: {
+      type: Object,
+      default() {
+        return { id: null }
+      },
+    },
+  },
+  data() {
+    return {}
+  },
+  computed: {
+    ...mapGetters(['selectedTagSet', 'libraryItem']),
+    tagList() {
+      return this.selectedTagSet.tags.map(({ id: value, group_id: text }) => ({ value, text }))
+    },
+    tagListOptions() {
+      return [{ value: null, text: 'Please select a tag' }, ...this.tagList]
+    },
+    library() {
+      return this.libraryItem(this.request.id)
+    },
+  },
+  methods: {
+    hasErrors(attribute) {
+      if (!this.library.errors) {
+        return null
+      }
+      return !this.library.errors[attribute]
+    },
+    errorsFor(attribute) {
+      return this.library.errors && this.library.errors[attribute]
+    },
+  },
+}
+</script>
+
+<style scoped lang="scss">
+td,
+.custom-select,
+.form-control {
+  font-size: 0.8em;
+}
+</style>

@@ -1,25 +1,12 @@
 import PacbioRuns from '@/views/pacbio/PacbioRunIndex'
-import PacbioRun from '@/views/pacbio/PacbioRunShow'
-import { mount, localVue, store, Data } from '../../testHelper'
+import { mount, localVue, store, Data, router } from 'testHelper'
 import Response from '@/api/Response'
-import VueRouter from 'vue-router'
 
 describe('Runs.vue', () => {
-  let wrapper, runs, mockRuns, router
+  let wrapper, runs, mockRuns
 
   beforeEach(() => {
     mockRuns = new Response(Data.PacbioRuns).deserialize.runs
-
-    router = new VueRouter({
-      routes: [
-        {
-          path: '/pacbio/runs/:id',
-          name: 'PacbioRun',
-          component: PacbioRun,
-          props: true,
-        },
-      ],
-    })
 
     store.commit('traction/pacbio/runs/setRuns', mockRuns)
 
@@ -170,6 +157,30 @@ describe('Runs.vue', () => {
       button.trigger('click')
 
       expect(runs.cancelRun).toBeCalledWith(mockRuns[1].id)
+    })
+  })
+
+  describe('generate sample sheet button', () => {
+    let button
+
+    it('it exists when the run has wells with pools', () => {
+      button = wrapper.find('#generate-sample-sheet-1')
+      expect(button.isVisible()).toBe(true) // button is shown
+    })
+
+    it('it does not exist when the run has wells without pools', () => {
+      mockRuns[0].all_wells_have_pools = false
+      store.commit('traction/pacbio/runs/setRuns', mockRuns)
+      wrapper = mount(PacbioRuns, { store, router, localVue })
+
+      button = wrapper.find('#generate-sample-sheet-1')
+      expect(button.isVisible()).toBe(false) // button is hidden
+    })
+
+    it('on click generateSampleSheetPath is called', () => {
+      button = wrapper.find('#generate-sample-sheet-1')
+
+      expect(button.attributes('href')).toEqual(runs.generateSampleSheetPath(1))
     })
   })
 

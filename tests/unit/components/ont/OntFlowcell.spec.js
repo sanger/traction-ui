@@ -1,5 +1,5 @@
 import OntFlowcell from '@/components/ont/OntFlowcell'
-import { localVue, mount } from '../../testHelper'
+import { localVue, mount } from 'testHelper'
 
 describe('OntFlowcell.vue', () => {
   let flowcell, wrapper, props, mutate

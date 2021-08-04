@@ -1,5 +1,5 @@
 import Response from '@/api/Response'
-import { Data } from '../../../../testHelper'
+import { Data } from 'testHelper'
 import mutations from '@/store/traction/pacbio/requests/mutations'
 
 let requests

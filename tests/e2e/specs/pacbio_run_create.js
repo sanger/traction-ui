@@ -2,13 +2,16 @@ describe('Pacbio Run Create view', () => {
   it('Creates a run successfully', () => {
     const dataTransfer = new DataTransfer()
 
-    cy.intercept('/v1/pacbio/runs?include=plate.wells.libraries', {
+    cy.intercept('/v1/pacbio/runs?include=plate.wells.pools.tube', {
       fixture: 'tractionPacbioRuns.json',
     })
     cy.visit('#/pacbio/runs')
-    cy.intercept('/v1/pacbio/libraries?include=request,tag.tag_set,tube', {
-      fixture: 'tractionPacbioLibraries.json',
-    })
+    cy.intercept(
+      '/v1/pacbio/pools?include=tube,libraries.tag,libraries.request&fields[requests]=sample_name&fields[tubes]=barcode&fields[tags]=group_id&fields[libraries]=request,tag',
+      {
+        fixture: 'tractionPacbioPools.json',
+      },
+    )
     cy.get('button')
       .contains('New Run')
       .click()

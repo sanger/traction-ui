@@ -44,14 +44,9 @@ export default {
   },
   methods: {
     getWellAt(position) {
-      let well = this.wells.filter((well) => well.position == position)[0]
+      let well = this.wells.find((well) => well.position == position)
       return well && well.materials ? well : { position, materials: [] }
     },
   },
 }
 </script>
-<style>
-.b-table-sticky-header {
-  max-height: 500px;
-}
-</style>
