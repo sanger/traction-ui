@@ -5,7 +5,7 @@ const getters = {
       const libraries = libraryIds.map((libraryId) => {
         const { id, type, request, tag } = state.libraries[libraryId]
         const { sample_name } = state.requests[request]
-        const { group_id } = state.tags[tag]
+        const { group_id } = state.tags[tag] || ''
         return { id, type, sample_name, group_id }
       })
       const { barcode } = state.tubes[tube]
