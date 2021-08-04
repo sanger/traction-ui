@@ -52,6 +52,11 @@ describe('pacbioPoolEdit#new', () => {
       const button = wrapper.find('[data-action=create-pool]')
       expect(button.text()).toContain('Create Pool')
     })
+
+    it('does not have an update pool button', () => {
+      const button = wrapper.find('[data-action=update-pool]')
+      expect(button.exists()).toBe(false)
+    })
   })
 })
 
@@ -98,8 +103,13 @@ describe('pacbioPoolEdit#edit', () => {
 
   describe('submit button', () => {
     it('says Update pool', () => {
+      const button = wrapper.find('[data-action=update-pool]')
+      expect(button.text()).toContain('Update Pool')
+    })
+
+    it('does not have a create pool button', () => {
       const button = wrapper.find('[data-action=create-pool]')
-      expect(button.text()).toContain('Create Pool')
+      expect(button.exists()).toBe(false)
     })
   })
 })

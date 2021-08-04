@@ -53,8 +53,24 @@
       </b-table-simple>
     </div>
     <div class="text-right">
-      <b-button data-action="create-pool" variant="success" :disabled="busy" @click="create()">
+      <b-button
+        v-if="!persisted"
+        data-action="create-pool"
+        variant="success"
+        :disabled="busy"
+        @click="create()"
+      >
         <span class="button-text">Create Pool </span>
+        <b-spinner v-show="busy" small></b-spinner>
+      </b-button>
+      <b-button
+        v-if="persisted"
+        data-action="update-pool"
+        variant="success"
+        :disabled="busy"
+        @click="update()"
+      >
+        <span class="button-text">Update Pool </span>
         <b-spinner v-show="busy" small></b-spinner>
       </b-button>
     </div>
@@ -80,6 +96,9 @@ export default {
   },
   computed: {
     ...mapGetters(['poolItem']),
+    persisted() {
+      return !!this.poolItem.id
+    },
   },
   mounted() {},
   methods: {
