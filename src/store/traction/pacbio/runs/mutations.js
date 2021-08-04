@@ -20,7 +20,12 @@ const getCurrentWell = (state, position) => {
   if (!currentWell) {
     // Duplication of createWell mutation below
     let generateHiFiDefault = getGenerateHiFiDefault(state.currentRun.system_name)
-    currentWell = PacbioRun.buildWell(...splitPosition(position), generateHiFiDefault)
+    let defaultBindingKitBoxBarcode = state.currentRun.default_binding_kit_box_barcode
+    currentWell = PacbioRun.buildWell(
+      ...splitPosition(position),
+      generateHiFiDefault,
+      defaultBindingKitBoxBarcode,
+    )
     state.currentRun.plate.wells.push(currentWell)
   }
 
@@ -44,10 +49,16 @@ const mutations = {
   setDNAControlComplexBoxBarcode: mutateRun('dna_control_complex_box_barcode'),
   setComments: mutateRun('comments'),
   setSystemName: mutateRun('system_name'),
+  setDefaultBindingKitBoxBarcode: mutateRun('default_binding_kit_box_barcode'),
 
   createWell(state, position) {
+    let defaultBindingKitBoxBarcode = state.currentRun.default_binding_kit_box_barcode
     let generateHiFiDefault = getGenerateHiFiDefault(state.currentRun.system_name)
-    let currentWell = PacbioRun.buildWell(...splitPosition(position), generateHiFiDefault)
+    let currentWell = PacbioRun.buildWell(
+      ...splitPosition(position),
+      generateHiFiDefault,
+      defaultBindingKitBoxBarcode,
+    )
     state.currentRun.plate.wells.push(currentWell)
   },
   mutateWell(state, payload) {

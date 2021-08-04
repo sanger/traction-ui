@@ -8,6 +8,7 @@ const buildWell = (
   row,
   column,
   generate_hifi = '',
+  binding_kit_box_barcode = '',
   pre_extension_time = PRE_EXTENSION_TIME_DEFAULT,
   ccs_analysis_output = CCS_ANALYSIS_OUTPUT_DEFAULT,
 ) => ({
@@ -19,7 +20,7 @@ const buildWell = (
   on_plate_loading_concentration: '',
   generate_hifi,
   ccs_analysis_output,
-  binding_kit_box_barcode: '',
+  binding_kit_box_barcode,
   // TODO remove
   libraries: [],
   pools: [],

@@ -57,6 +57,9 @@ describe('PacbioRunInfoEdit', () => {
     it('has a Comments input', () => {
       expect(wrapper.find('#comments')).toBeDefined()
     })
+    it('has a Default Binding Kit Box Barcode input', () => {
+      expect(wrapper.find('#default-binding-kit-box-barcode')).toBeDefined()
+    })
   })
 
   afterEach(() => {

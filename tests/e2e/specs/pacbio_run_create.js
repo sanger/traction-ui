@@ -37,6 +37,8 @@ describe('Pacbio Run Create view', () => {
       .type('10')
       .get('#generateHiFi')
       .select('Do Not Generate')
+      .get('#bindingKitBoxBarcode')
+      .type('12345')
       .get('button')
       .contains('Update')
       .click()

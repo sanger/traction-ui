@@ -85,7 +85,7 @@ describe('Run', () => {
     let well
 
     beforeEach(() => {
-      well = Run.buildWell('A', 1, 'In SMRT Link')
+      well = Run.buildWell('A', 1, 'In SMRT Link', '12345')
     })
 
     it('will have the correct data', () => {
@@ -100,12 +100,13 @@ describe('Run', () => {
       expect(well.generate_hifi).toEqual('In SMRT Link')
       expect(well.pre_extension_time).toEqual(2)
       expect(well.ccs_analysis_output).toEqual('Yes')
-      expect(well.binding_kit_box_barcode).toEqual('')
+      expect(well.binding_kit_box_barcode).toEqual('12345')
     })
 
     it('will have the correct data when passed values', () => {
-      well = Run.buildWell('A', 1, 'In SMRT Link', 1, 'No')
+      well = Run.buildWell('A', 1, 'In SMRT Link', '12345', 1, 'No')
       expect(well.generate_hifi).toEqual('In SMRT Link')
+      expect(well.binding_kit_box_barcode).toEqual('12345')
       expect(well.pre_extension_time).toEqual(1)
       expect(well.ccs_analysis_output).toEqual('No')
     })
