@@ -79,6 +79,9 @@
           title="Default Binding Kit Box Barcode for new wells"
           @change="setDefaultBindingKitBoxBarcode"
         />
+        <p style="float: left; font-size:12px;">
+          * Non-submitted field, used for providing new wells with a default binding kit box barcode
+        </p>
       </b-col>
     </b-row>
   </div>
@@ -112,7 +115,7 @@ export default {
       defaultBindingKitBoxBarcode: (state) => state.currentRun.default_binding_kit_box_barcode,
       /* 
         Default binding kit box barcode is not a run attribute and it is not sent on update/create
-        It exists as a default value when creating wells to autofill the well binding kit box barcode
+        It exists to provide a default value when creating wells to autofill the well binding kit box barcode
       */
     }),
   },
