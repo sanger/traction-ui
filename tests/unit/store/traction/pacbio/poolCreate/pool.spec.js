@@ -139,20 +139,44 @@ describe('libraries.js', () => {
     })
   })
 
-  it('payload', () => {
-    const libraries = { _1: library1, _2: library2, _3: library3 }
-    const pool = {
-      template_prep_kit_box_barcode: 'ABC1',
-      volume: '10',
-      concentration: '10',
-      fragment_size: 100,
-    }
+  describe('payload', () => {
+    it('handles unpersisted data', () => {
+      const libraries = { _1: library1, _2: library2, _3: library3 }
+      const pool = {
+        template_prep_kit_box_barcode: 'ABC1',
+        volume: '10',
+        concentration: '10',
+        fragment_size: 100,
+      }
 
-    expect(payload({ libraries, pool })).toEqual({
-      data: {
-        type: 'pools',
-        attributes: { library_attributes: [library1, library2, library3], ...pool },
-      },
+      expect(payload({ libraries, pool })).toEqual({
+        data: {
+          type: 'pools',
+          attributes: { library_attributes: [library1, library2, library3], ...pool },
+        },
+      })
+    })
+
+    it('handles persisted data', () => {
+      const libraries = {
+        _1: { id: '10', ...library1 },
+        _2: { id: '20', ...library2 },
+        _3: library3,
+      }
+      const pool = {
+        template_prep_kit_box_barcode: 'ABC1',
+        volume: '10',
+        concentration: '10',
+        fragment_size: 100,
+      }
+
+      expect(payload({ libraries, pool: { id: '1', ...pool } })).toEqual({
+        data: {
+          type: 'pools',
+          id: '1',
+          attributes: { library_attributes: [libraries['_1'], libraries['_2'], library3], ...pool },
+        },
+      })
     })
   })
 })

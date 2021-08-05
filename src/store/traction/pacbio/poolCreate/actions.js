@@ -84,6 +84,19 @@ export default {
     const { attributes: { barcode = '' } = {} } = tube
     return { success, barcode, errors }
   },
+  /*
+   * Update a pool and libraries
+   */
+  updatePool: async ({ rootState, state: { libraries, pool } }) => {
+    validate({ libraries })
+    if (!valid({ libraries })) return
+    const request = rootState.api.traction.pacbio.pools
+    const promise = request.update(payload({ libraries, pool }), { include: 'tube' })
+    // TODO: I think this is the best I can do here but it may be an idea to extract this into a method
+    // if we have to do it more often
+    const { success, errors } = await handleResponse(promise)
+    return { success, errors }
+  },
   populateLibrariesFromPool: async ({ commit, rootState }, poolId) => {
     const request = rootState.api.traction.pacbio.pools
     const promise = request.find(poolId, {

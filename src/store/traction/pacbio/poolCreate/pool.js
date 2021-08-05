@@ -52,6 +52,7 @@ const valid = ({ libraries }) => {
 }
 
 const extractLibraryAttributes = ({
+  id,
   pacbio_request_id,
   template_prep_kit_box_barcode,
   tag_id,
@@ -60,6 +61,7 @@ const extractLibraryAttributes = ({
   fragment_size,
 }) => {
   return {
+    id,
     pacbio_request_id,
     template_prep_kit_box_barcode,
     tag_id,
@@ -77,11 +79,13 @@ const payload = ({ libraries, pool }) => {
   return {
     data: {
       type: 'pools',
+      id: pool.id,
       attributes: {
         library_attributes: Object.values(libraries).map((library) =>
           extractLibraryAttributes(library),
         ),
         ...pool,
+        id: undefined,
       },
     },
   }
