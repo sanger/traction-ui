@@ -107,7 +107,7 @@ export default {
       // doesn't appear empty. This is especially important if the pool request finishes
       // after the request for all plates, as otherwise the partial record will over-write
       // the full one.
-      include: 'libraries.tag.tag_set,libraries.source_plate.wells.requests',
+      include: 'libraries.tag.tag_set,libraries.source_plate.wells.requests,libraries.request',
     })
     const response = await handleResponse(promise)
 
@@ -118,7 +118,7 @@ export default {
         libraries,
         requests,
         wells,
-        plates,
+        plates = [],
         tag_sets: [tag_set],
       } = groupIncludedByResource(included)
       commit('populatePoolAttributes', data)
