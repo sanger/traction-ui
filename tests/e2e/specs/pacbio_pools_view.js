@@ -12,7 +12,6 @@ describe('Pacbio Pools view', () => {
       .first()
       .within(() => {
         // is there a better way? don't want to tie values to fixtures
-        console.log(cy.get('.pool-id'))
         cy.get('.pool-id')
           .invoke('text')
           .should('match', /\d+/)

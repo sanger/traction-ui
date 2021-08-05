@@ -8,7 +8,6 @@
       },
       "attributes": {
         "name": "Run1",
-        "binding_kit_box_barcode": "BKB1",
         "sequencing_kit_box_barcode": "SKB1",
         "dna_control_complex_box_barcode": "DCCB1",
         "system_name": "Sequel II",
@@ -34,7 +33,6 @@
       },
       "attributes": {
         "name": "Run2",
-        "binding_kit_box_barcode": "BKB2",
         "sequencing_kit_box_barcode": "SKB2",
         "dna_control_complex_box_barcode": "DCCB2",
         "system_name": "Sequel II",
@@ -60,7 +58,6 @@
       },
       "attributes": {
         "name": "Run3",
-        "binding_kit_box_barcode": "BKB3",
         "sequencing_kit_box_barcode": "SKB3",
         "dna_control_complex_box_barcode": "DCCB3",
         "system_name": "Sequel II",
@@ -86,7 +83,6 @@
       },
       "attributes": {
         "name": "Run4",
-        "binding_kit_box_barcode": "BKB4",
         "sequencing_kit_box_barcode": "SKB4",
         "dna_control_complex_box_barcode": "DCCB4",
         "system_name": "Sequel II",
@@ -112,7 +108,6 @@
       },
       "attributes": {
         "name": "Run5",
-        "binding_kit_box_barcode": "BKB5",
         "sequencing_kit_box_barcode": "SKB5",
         "dna_control_complex_box_barcode": "DCCB5",
         "system_name": "Sequel II",

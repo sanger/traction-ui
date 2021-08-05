@@ -102,15 +102,24 @@ export default {
   },
   mounted() {},
   methods: {
-    ...mapActions(['createPool']),
+    ...mapActions(['createPool', 'updatePool']),
     create() {
       this.busy = true
       this.createPool().then(({ success, barcode, errors }) => {
         success
           ? this.$refs.alert.show(`Pool successfully created with barcode ${barcode}`, 'success')
           : this.$refs.alert.show(errors, 'danger')
+        this.busy = false
       })
-      this.busy = false
+    },
+    update() {
+      this.busy = true
+      this.updatePool().then(({ success, errors }) => {
+        success
+          ? this.$refs.alert.show(`Pool successfully updated`, 'success')
+          : this.$refs.alert.show(errors, 'danger')
+        this.busy = false
+      })
     },
   },
 }

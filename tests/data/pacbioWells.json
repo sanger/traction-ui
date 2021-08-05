@@ -17,7 +17,8 @@
           "generate_hifi": "In SMRT Link",
           "pre_extension_time": "2",
           "position": "A1",
-          "ccs_analysis_output": "No"
+          "ccs_analysis_output": "No",
+          "bindng_kit_box_barcode": "BKB1"
         },
         "relationships": {
           "pools": {
@@ -44,7 +45,8 @@
           "generate_hifi": "In SMRT Link",
           "pre_extension_time": "2",
           "position": "A1",
-          "ccs_analysis_output": "No"
+          "ccs_analysis_output": "No",
+          "bindng_kit_box_barcode": "BKB1"
         },
         "relationships": {
           "pools": {

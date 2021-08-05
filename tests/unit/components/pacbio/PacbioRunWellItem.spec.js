@@ -23,6 +23,7 @@ describe('Well.vue', () => {
     storeWell.movie_time = '15'
     storeWell.on_plate_loading_concentration = 234
     storeWell.generate_hifi = 'In SMRT Link'
+    storeWell.binding_kit_box_barcode = '12345'
 
     run = Run.build()
     run.plate.wells[0] = storeWell
@@ -74,7 +75,12 @@ describe('Well.vue', () => {
   })
 
   it('must have a ry', () => {
-    expect(well.required_metadata_fields).toEqual(['movie_time', 'on_plate_loading_concentration'])
+    expect(well.required_metadata_fields).toEqual([
+      'movie_time',
+      'on_plate_loading_concentration',
+      'binding_kit_box_barcode',
+      'generate_hifi',
+    ])
   })
 
   it('will have an ellipse with the correct attributes', () => {
@@ -140,6 +146,7 @@ describe('Well.vue', () => {
       storeWell.ccs_analysis_output = ''
       storeWell.on_plate_loading_concentration = ''
       storeWell.pre_extension_time = ''
+      storeWell.binding_kit_box_barcode = ''
 
       wrapper = mount(Well, {
         localVue,

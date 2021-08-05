@@ -84,6 +84,19 @@ export default {
     const { attributes: { barcode = '' } = {} } = tube
     return { success, barcode, errors }
   },
+  /*
+   * Update a pool and libraries
+   */
+  updatePool: async ({ rootState, state: { libraries, pool } }) => {
+    validate({ libraries })
+    if (!valid({ libraries })) return
+    const request = rootState.api.traction.pacbio.pools
+    const promise = request.update(payload({ libraries, pool }), { include: 'tube' })
+    // TODO: I think this is the best I can do here but it may be an idea to extract this into a method
+    // if we have to do it more often
+    const { success, errors } = await handleResponse(promise[0])
+    return { success, errors }
+  },
   populateLibrariesFromPool: async ({ commit, rootState }, poolId) => {
     const request = rootState.api.traction.pacbio.pools
     const promise = request.find(poolId, {
@@ -94,7 +107,7 @@ export default {
       // doesn't appear empty. This is especially important if the pool request finishes
       // after the request for all plates, as otherwise the partial record will over-write
       // the full one.
-      include: 'libraries.tag.tag_set,libraries.source_plate.wells.requests',
+      include: 'libraries.tag.tag_set,libraries.source_plate.wells.requests,libraries.request',
     })
     const response = await handleResponse(promise)
 
@@ -105,7 +118,7 @@ export default {
         libraries,
         requests,
         wells,
-        plates,
+        plates = [],
         tag_sets: [tag_set],
       } = groupIncludedByResource(included)
       commit('populatePoolAttributes', data)

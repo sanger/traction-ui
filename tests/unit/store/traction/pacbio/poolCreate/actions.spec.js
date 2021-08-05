@@ -11,6 +11,7 @@ describe('actions.js', () => {
     selectWellRequests,
     deselectPlateAndContents,
     createPool,
+    updatePool,
     populateLibrariesFromPool,
   } = actions
 
@@ -301,6 +302,78 @@ describe('actions.js', () => {
       const libraries = { _1: library1, _2: { ...library2, tag_id: '' } }
       await createPool({ commit, rootState, state: { libraries, pool } })
       expect(create).not.toHaveBeenCalled()
+    })
+  })
+
+  describe('updatePool', async () => {
+    const library1 = {
+      id: '10',
+      pacbio_request_id: '1',
+      tag_id: '1',
+      template_prep_kit_box_barcode: 'ABC1',
+      volume: 1,
+      concentration: 1,
+      fragment_size: 100,
+    }
+
+    const library2 = {
+      id: '20',
+      pacbio_request_id: '2',
+      tag_id: '2',
+      template_prep_kit_box_barcode: 'ABC1',
+      volume: 1,
+      concentration: 1,
+      fragment_size: 100,
+    }
+
+    const pool = {
+      id: '1',
+      template_prep_kit_box_barcode: 'ABC1',
+      volume: 1,
+      concentration: 1,
+      fragment_size: 100,
+    }
+
+    // pool should be successfully created
+    // for now: create a pool state with a simple success message
+    it('when the pool is valid', async () => {
+      const mockResponse = {
+        status: '201',
+        data: { data: {}, included: [{ type: 'tubes', attributes: { barcode: 'TRAC-1' } }] },
+      }
+      const update = jest.fn()
+      const rootState = { api: { traction: { pacbio: { pools: { update } } } } }
+      const libraries = { _1: library1, _2: library2 }
+      update.mockResolvedValue(mockResponse)
+      const { success } = await updatePool({ rootState, state: { libraries, pool } })
+      expect(update).toHaveBeenCalledWith(payload({ libraries, pool }), expect.anything())
+      expect(success).toBeTruthy()
+    })
+
+    it('when there is an error', async () => {
+      const mockResponse = {
+        status: '422',
+        data: { data: { errors: { error1: ['There was an error'] } } },
+      }
+      const update = jest.fn(() => [Promise.reject({ response: mockResponse })])
+      const rootState = { api: { traction: { pacbio: { pools: { update } } } } }
+      const libraries = { _1: library1, _2: library2 }
+      const expectedResponse = newResponse({ ...mockResponse, success: false })
+      const { success, errors } = await updatePool({ rootState, state: { libraries, pool } })
+      expect(success).toBeFalsy()
+      expect(errors).toEqual(expectedResponse.errors)
+    })
+
+    // validate libraries fails
+    // request is not sent
+    // commit is not called
+    it('when the pool is invalid', async () => {
+      const commit = jest.fn()
+      const update = jest.fn()
+      const rootState = { api: { traction: { pacbio: { pools: { update } } } } }
+      const libraries = { _1: library1, _2: { ...library2, tag_id: '' } }
+      await updatePool({ commit, rootState, state: { libraries, pool } })
+      expect(update).not.toHaveBeenCalled()
     })
   })
 })

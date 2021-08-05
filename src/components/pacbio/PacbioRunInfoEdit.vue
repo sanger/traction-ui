@@ -13,18 +13,6 @@
           readonly
         />
       </b-col>
-      <b-col>
-        <b-form-input
-          id="binding-kit-box-barcode"
-          v-b-tooltip.hover
-          :value="bindingKitBoxBarcode"
-          placeholder="Binding Kit Box Barcode"
-          type="text"
-          width="48"
-          title="Binding Kit Box Barcode"
-          @change="setBindingKitBoxBarcode"
-        />
-      </b-col>
     </b-row>
 
     <b-row>
@@ -79,6 +67,23 @@
         />
       </b-col>
     </b-row>
+    <b-row>
+      <b-col>
+        <b-form-input
+          id="default-binding-kit-box-barcode"
+          v-b-tooltip.hover
+          style="max-width: 50%;"
+          :value="defaultBindingKitBoxBarcode"
+          placeholder="Default Binding Kit Box Barcode for new wells"
+          type="text"
+          title="Default Binding Kit Box Barcode for new wells"
+          @change="setDefaultBindingKitBoxBarcode"
+        />
+        <p style="float: left; font-size:12px;">
+          * Non-submitted field, used for providing new wells with a default binding kit box barcode
+        </p>
+      </b-col>
+    </b-row>
   </div>
 </template>
 
@@ -102,22 +107,26 @@ export default {
     ...mapGetters(['currentRun']),
     ...mapState({
       runName: (state) => state.currentRun.name,
-      bindingKitBoxBarcode: (state) => state.currentRun.binding_kit_box_barcode,
       sequencingKitBoxBarcode: (state) => state.currentRun.sequencing_kit_box_barcode,
       dnaControlComplexBoxBarcode: (state) => state.currentRun.dna_control_complex_box_barcode,
       comments: (state) => state.currentRun.comments,
       uuid: (state) => state.currentRun.uuid,
       systemName: (state) => state.currentRun.system_name,
+      defaultBindingKitBoxBarcode: (state) => state.currentRun.default_binding_kit_box_barcode,
+      /* 
+        Default binding kit box barcode is not a run attribute and it is not sent on update/create
+        It exists to provide a default value when creating wells to autofill the well binding kit box barcode
+      */
     }),
   },
   methods: {
     ...mapMutations([
-      'setBindingKitBoxBarcode',
       'setSequencingKitBoxBarcode',
       'setDNAControlComplexBoxBarcode',
       'setComments',
       'setUuid',
       'setSystemName',
+      'setDefaultBindingKitBoxBarcode',
     ]),
   },
 }
