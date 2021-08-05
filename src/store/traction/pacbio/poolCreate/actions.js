@@ -94,7 +94,7 @@ export default {
     const promise = request.update(payload({ libraries, pool }), { include: 'tube' })
     // TODO: I think this is the best I can do here but it may be an idea to extract this into a method
     // if we have to do it more often
-    const { success, errors } = await handleResponse(promise)
+    const { success, errors } = await handleResponse(promise[0])
     return { success, errors }
   },
   populateLibrariesFromPool: async ({ commit, rootState }, poolId) => {

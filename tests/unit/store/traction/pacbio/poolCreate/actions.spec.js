@@ -355,10 +355,9 @@ describe('actions.js', () => {
         status: '422',
         data: { data: { errors: { error1: ['There was an error'] } } },
       }
-      const update = jest.fn()
+      const update = jest.fn(() => [Promise.reject({ response: mockResponse })])
       const rootState = { api: { traction: { pacbio: { pools: { update } } } } }
       const libraries = { _1: library1, _2: library2 }
-      update.mockRejectedValue({ response: mockResponse })
       const expectedResponse = newResponse({ ...mockResponse, success: false })
       const { success, errors } = await updatePool({ rootState, state: { libraries, pool } })
       expect(success).toBeFalsy()

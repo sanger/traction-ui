@@ -114,10 +114,9 @@ export default {
     },
     update() {
       this.busy = true
-      this.updatePool().then(({ success, barcode, errors }) => {
-        console.log(success, errors)
+      this.updatePool().then(({ success, errors }) => {
         success
-          ? this.$refs.alert.show(`Pool successfully created with barcode ${barcode}`, 'success')
+          ? this.$refs.alert.show(`Pool successfully updated`, 'success')
           : this.$refs.alert.show(errors, 'danger')
         this.busy = false
       })
