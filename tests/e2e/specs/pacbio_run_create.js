@@ -34,8 +34,6 @@ describe('Pacbio Run Create view', () => {
       .select('15.0')
       .get('#onPlateLoadingConc')
       .type('2')
-      .get('#insertSize')
-      .type('10')
       .get('#generateHiFi')
       .select('Do Not Generate')
       .get('button')

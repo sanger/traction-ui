@@ -9,7 +9,6 @@
         },
         "attributes": {
           "movie_time": "10.0",
-          "insert_size": 1001,
           "on_plate_loading_concentration": 10.1,
           "row": "A",
           "column": "1",
@@ -37,7 +36,6 @@
         },
         "attributes": {
           "movie_time": "10.0",
-          "insert_size": 1001,
           "on_plate_loading_concentration": 10.1,
           "row": "A",
           "column": "1",

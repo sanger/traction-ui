@@ -31,17 +31,6 @@
         </b-form-input>
       </b-form-group>
 
-      <b-form-group id="insertSize-group" label="Insert size:" label-for="insertSize">
-        <b-form-input
-          id="insertSize"
-          ref="insertSize"
-          :value="insertSize"
-          placeholder="Insert Size"
-          @change="updateInsertSize"
-        >
-        </b-form-input>
-      </b-form-group>
-
       <b-form-group id="generateHiFi-group" label="Generate HiFi Reads:" label-for="generateHiFi">
         <b-form-select
           id="generateHiFi"
@@ -150,9 +139,6 @@ export default {
     ...mapGetters('traction/pacbio/runs', ['currentRun', 'well']),
     ...mapGetters('traction/pacbio/pools', ['poolByBarcode']),
     ...mapState('traction/pacbio/runs', {
-      insertSize() {
-        return this.well(this.position) ? this.well(this.position).insert_size : ''
-      },
       onPlateLoadingConc() {
         return this.well(this.position)
           ? this.well(this.position).on_plate_loading_concentration
@@ -194,9 +180,6 @@ export default {
     update() {
       this.alert('Well updated', 'success')
       this.hide()
-    },
-    updateInsertSize(insertSize) {
-      this.mutateWell({ position: this.position, property: 'insert_size', with: insertSize })
     },
     updateOnPlateLoadingConc(conc) {
       this.mutateWell({

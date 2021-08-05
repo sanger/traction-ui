@@ -97,7 +97,6 @@ describe('Run', () => {
       expect(well.column).toEqual(1)
       expect(well.position).toEqual('A1')
       expect(well.movie_time).toEqual('')
-      expect(well.insert_size).toEqual('')
       expect(well.on_plate_loading_concentration).toEqual('')
       expect(well.libraries).toEqual([])
       expect(well.pools).toEqual([])
@@ -307,7 +306,6 @@ describe('Run', () => {
       expect(result.data.attributes.wells[0].row).toEqual(wells[0].row)
       expect(result.data.attributes.wells[0].column).toEqual(wells[0].column)
       expect(result.data.attributes.wells[0].movie_time).toEqual(wells[0].movie_time)
-      expect(result.data.attributes.wells[0].insert_size).toEqual(wells[0].insert_size)
       expect(result.data.attributes.wells[0].on_plate_loading_concentration).toEqual(
         wells[0].on_plate_loading_concentration,
       )
@@ -487,7 +485,6 @@ describe('Run', () => {
       expect(result.data.attributes.row).toEqual(well.row)
       expect(result.data.attributes.column).toEqual(well.column)
       expect(result.data.attributes.movie_time).toEqual(well.movie_time)
-      expect(result.data.attributes.insert_size).toEqual(well.insert_size)
       expect(result.data.attributes.on_plate_loading_concentration).toEqual(
         well.on_plate_loading_concentration,
       )

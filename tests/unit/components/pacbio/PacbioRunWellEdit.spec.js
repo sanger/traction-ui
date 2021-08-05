@@ -62,7 +62,6 @@ describe('PacbioWellModal', () => {
   })
 
   it('can have mapState', () => {
-    expect(modal.insertSize).toBeDefined()
     expect(modal.onPlateLoadingConc).toBeDefined()
     expect(modal.movieTime).toBeDefined()
     expect(modal.wellPools).toBeDefined()
@@ -86,9 +85,6 @@ describe('PacbioWellModal', () => {
     })
     it('has a On Plate Loading Concentration input', () => {
       expect(wrapper.find('.onPlateLoadingConc')).toBeDefined()
-    })
-    it('has a Insert Size input', () => {
-      expect(wrapper.find('.insertSize')).toBeDefined()
     })
     it('has a Generate HiFi input', () => {
       expect(wrapper.find('.generateHiFi')).toBeDefined()
@@ -119,15 +115,6 @@ describe('PacbioWellModal', () => {
   describe('methods', () => {
     beforeEach(() => {
       modal.mutateWell = jest.fn()
-    })
-
-    it('updateInsertSize', () => {
-      modal.updateInsertSize(123)
-      expect(modal.mutateWell).toBeCalledWith({
-        position: props.position,
-        property: 'insert_size',
-        with: 123,
-      })
     })
 
     it('updateOnPlateLoadingConc', () => {
