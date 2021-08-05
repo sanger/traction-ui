@@ -16,7 +16,6 @@ describe('Pacbio Runs view', () => {
         cy.get('.run-id').should('have.length.greaterThan', 0)
         cy.get('.name').should('have.length.greaterThan', 0)
         cy.get('.state').should('have.length.greaterThan', 0)
-        cy.get('.binding-kit-box-barcode').should('have.length.greaterThan', 0)
         cy.get('.sequencing-kit-box-barcode').should('have.length.greaterThan', 0)
         cy.get('.dna-control-complex-box-barcode').should('have.length.greaterThan', 0)
         cy.get('.system-name').should('have.length.greaterThan', 0)
