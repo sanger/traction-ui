@@ -1,6 +1,6 @@
 import * as JsonApi from '@/api/JsonApi'
-import TestResponse from '../../data/testResponse'
-import CircularResponse from '../../data/circularResponse'
+import TestResponse from '@tests/data/testResponse'
+import CircularResponse from '@tests/data/circularResponse'
 
 // TODO: create a factory which will build a JSON api response. Doing this manually is crushing me.
 describe('JsonApi', () => {
@@ -159,6 +159,63 @@ describe('JsonApi', () => {
         let item = JsonApi.extractResourceObject(dataItem, included)
         expect(deserialized.cheeses[0]).toEqual(item)
       })
+    })
+  })
+
+  describe('groupIncludedByResource', () => {
+    it('groups resources from an included array', () => {
+      const included = TestResponse.data.included
+      expect(JsonApi.groupIncludedByResource(included)).toEqual({
+        pickles: included.slice(0, 1),
+        chocolates: included.slice(1, 3),
+        crisps: included.slice(3, 5),
+      })
+    })
+  })
+
+  describe('extractRelationshipsAndGroupById', () => {
+    it('creates a list of relationships by id', () => {
+      const relationships = TestResponse.data.data[0].relationships
+      const extractedRelationships = JsonApi.extractRelationshipsAndGroupById(relationships)
+      expect(Object.keys(extractedRelationships)).toEqual([
+        'bean',
+        'pickle',
+        'chocolates',
+        'peaches',
+        'mojitos',
+      ])
+      expect(extractedRelationships.bean).toEqual('1')
+      expect(extractedRelationships.pickle).toEqual('2')
+      expect(extractedRelationships.chocolates).toEqual(['3'])
+      // If we don't have relationship information, we're undefined
+      expect(extractedRelationships.peaches).toEqual(undefined)
+      // But if we explicitly know whe have no relationship, we're null
+      expect(extractedRelationships.mojitos).toEqual(null)
+    })
+
+    it('returns an empty object if the relationships are undefined', () => {
+      const extractedRelationships = JsonApi.extractRelationshipsAndGroupById()
+      expect(extractedRelationships).toEqual({})
+    })
+  })
+
+  describe('dataToObjectById', () => {
+    it('creates an object with the id as key', () => {
+      const data = TestResponse.data.data
+      const object = JsonApi.dataToObjectById({ data })
+      const keys = Object.keys(object)
+      expect(keys.length).toEqual(data.length)
+      expect(object[keys[0]]).toEqual({ id: data[0].id, type: data[0].type, ...data[0].attributes })
+    })
+
+    it('adds the relationships if requested', () => {
+      const data = TestResponse.data.data
+      const object = JsonApi.dataToObjectById({ data, includeRelationships: true })
+      const item = object['1']
+      const keys = Object.keys(item)
+      expect(keys.includes('bean')).toBeTruthy()
+      expect(keys.includes('pickle')).toBeTruthy()
+      expect(keys.includes('chocolates')).toBeTruthy()
     })
   })
 })

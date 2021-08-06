@@ -30,14 +30,13 @@ const deleteLibraries = async ({ getters }, libraryIds) => {
   let request = getters.libraryRequest
   let promises = request.destroy(libraryIds)
 
-  //TODO: Is this ever returning a single promise
   let responses = await Promise.all(promises.map((promise) => handlePromise(promise)))
   return responses
 }
 
 const setLibraries = async ({ commit, getters }) => {
   let request = getters.libraryRequest
-  let promise = request.get({ include: 'request,tag.tag_set,tube' })
+  let promise = request.get({ include: 'request,tag,tube' })
   let response = await handlePromise(promise)
   let libraries = null
 

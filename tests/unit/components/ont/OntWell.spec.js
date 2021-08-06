@@ -1,5 +1,5 @@
 import OntWell from '@/components/ont/OntWell'
-import { mount } from '../../testHelper'
+import { mount } from 'testHelper'
 
 describe('OntWell.vue', () => {
   let well, wrapper, props

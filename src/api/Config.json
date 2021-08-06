@@ -69,6 +69,12 @@
           },
           {
             "name": "wells"
+          },
+          {
+            "name": "tag_sets"
+          },
+          {
+            "name": "pools"
           }
         ]
       }

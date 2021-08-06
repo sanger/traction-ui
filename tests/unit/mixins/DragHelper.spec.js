@@ -1,5 +1,5 @@
 import DragHelper from '@/mixins/DragHelper'
-import { localVue, mount } from '../testHelper'
+import { localVue, mount } from 'testHelper'
 
 describe('DragHelper', () => {
   let dragHelper, wrapper

@@ -1,6 +1,6 @@
 import OntPlate from '@/components/ont/OntPlate'
 import PlateMap from '@/config/PlateMap'
-import { localVue, mount } from '../../testHelper'
+import { localVue, mount } from 'testHelper'
 
 describe('OntPlate.vue', () => {
   let wrapper, plate, wellsData, mutate
@@ -57,7 +57,7 @@ describe('OntPlate.vue', () => {
   describe('methods', () => {
     describe('#getWellAt', () => {
       it('gets the well at the given position', () => {
-        let expected = wellsData.filter((w) => w.position == 'A1')[0]
+        let expected = wellsData.find((w) => w.position == 'A1')
         expect(plate.getWellAt('A1')).toEqual(expected)
       })
 

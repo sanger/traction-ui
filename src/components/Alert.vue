@@ -3,6 +3,7 @@
     <b-alert
       id="showAlert"
       :variant="type"
+      data-type="error-message"
       dismissible
       :show="showDismissibleAlert"
       @dismissed="showDismissibleAlert = false"
