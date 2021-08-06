@@ -71,6 +71,20 @@ const extractLibraryAttributes = ({
   }
 }
 
+const extractPoolAttributes = ({
+  template_prep_kit_box_barcode,
+  volume,
+  concentration,
+  fragment_size,
+}) => {
+  return {
+    template_prep_kit_box_barcode,
+    volume,
+    concentration,
+    fragment_size,
+  }
+}
+
 /*
   produce a json api compliant payload
   e.g. { data: { type: 'pools', attributes: { library_attributes: [ library1, library2 ... ], template_prep_kit_box_barcode, volume, concentration, fragment_size}}}
@@ -84,8 +98,7 @@ const payload = ({ libraries, pool }) => {
         library_attributes: Object.values(libraries).map((library) =>
           extractLibraryAttributes(library),
         ),
-        ...pool,
-        id: undefined,
+        ...extractPoolAttributes(pool),
       },
     },
   }

@@ -168,13 +168,20 @@ describe('libraries.js', () => {
         volume: '10',
         concentration: '10',
         fragment_size: 100,
+        source_identifier: 'Should not post back',
       }
 
       expect(payload({ libraries, pool: { id: '1', ...pool } })).toEqual({
         data: {
           type: 'pools',
           id: '1',
-          attributes: { library_attributes: [libraries['_1'], libraries['_2'], library3], ...pool },
+          attributes: {
+            library_attributes: [libraries['_1'], libraries['_2'], library3],
+            template_prep_kit_box_barcode: 'ABC1',
+            volume: '10',
+            concentration: '10',
+            fragment_size: 100,
+          },
         },
       })
     })
