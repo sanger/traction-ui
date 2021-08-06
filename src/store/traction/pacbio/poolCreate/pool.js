@@ -6,7 +6,7 @@ const libraryAttributes = {
   tag_id: null,
   volume: null,
   concentration: null,
-  fragment_size: null,
+  insert_size: null,
 }
 
 const requiredAttributes = [
@@ -14,7 +14,7 @@ const requiredAttributes = [
   'tag_id',
   'volume',
   'concentration',
-  'fragment_size',
+  'insert_size',
 ]
 
 const newLibrary = (attributes) => {
@@ -58,7 +58,7 @@ const extractLibraryAttributes = ({
   tag_id,
   volume,
   concentration,
-  fragment_size,
+  insert_size,
 }) => {
   return {
     id,
@@ -67,7 +67,7 @@ const extractLibraryAttributes = ({
     tag_id,
     volume,
     concentration,
-    fragment_size,
+    insert_size,
   }
 }
 
@@ -75,19 +75,19 @@ const extractPoolAttributes = ({
   template_prep_kit_box_barcode,
   volume,
   concentration,
-  fragment_size,
+  insert_size,
 }) => {
   return {
     template_prep_kit_box_barcode,
     volume,
     concentration,
-    fragment_size,
+    insert_size,
   }
 }
 
 /*
   produce a json api compliant payload
-  e.g. { data: { type: 'pools', attributes: { library_attributes: [ library1, library2 ... ], template_prep_kit_box_barcode, volume, concentration, fragment_size}}}
+  e.g. { data: { type: 'pools', attributes: { library_attributes: [ library1, library2 ... ], template_prep_kit_box_barcode, volume, concentration, insert_size}}}
 */
 const payload = ({ libraries, pool }) => {
   return {

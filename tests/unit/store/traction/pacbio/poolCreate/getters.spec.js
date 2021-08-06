@@ -138,14 +138,14 @@ describe('getters.js', () => {
         tag_id: null,
         volume: null,
         concentration: null,
-        fragment_size: null,
+        insert_size: null,
       }, // A selected request
       _40: {
         pacbio_request_id: '40',
         tag_id: null,
         volume: null,
         concentration: null,
-        fragment_size: null,
+        insert_size: null,
       }, // A selected request
     }
 
@@ -198,14 +198,14 @@ describe('getters.js', () => {
         tag_id: null,
         volume: null,
         concentration: null,
-        fragment_size: null,
+        insert_size: null,
       },
       _4: {
         pacbio_request_id: '4',
         tag_id: null,
         volume: null,
         concentration: null,
-        fragment_size: null,
+        insert_size: null,
       },
     }
     const mergedRequests = [
@@ -237,14 +237,14 @@ describe('getters.js', () => {
         tag_id: null,
         volume: null,
         concentration: null,
-        fragment_size: null,
+        insert_size: null,
       },
       _4: {
         pacbio_request_id: '4',
         tag_id: null,
         volume: null,
         concentration: null,
-        fragment_size: null,
+        insert_size: null,
       },
     }
     it('will return the correct library', () => {
@@ -259,7 +259,7 @@ describe('getters.js', () => {
       template_prep_kit_box_barcode: 'ABC1',
       volume: '1',
       concentration: '1',
-      fragment_size: '100',
+      insert_size: '100',
     }
 
     it('returns the correct data', () => {

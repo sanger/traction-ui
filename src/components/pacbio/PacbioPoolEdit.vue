@@ -41,12 +41,12 @@
           </td>
           <td>
             <b-form-input
-              v-model="poolItem.fragment_size"
-              data-attribute="fragment-size"
-              :value="poolItem.fragment_size"
-              placeholder="Fragment Size"
+              v-model="poolItem.insert_size"
+              data-attribute="insert-size"
+              :value="poolItem.insert_size"
+              placeholder="Insert Size"
               type="text"
-              title="Fragment Size"
+              title="Insert Size"
             />
           </td>
         </b-tr>

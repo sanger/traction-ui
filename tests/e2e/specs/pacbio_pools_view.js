@@ -30,7 +30,7 @@ describe('Pacbio Pools view', () => {
         cy.get('.template-prep-kit-box-barcode')
           .invoke('text')
           .should('match', /\w+/)
-        cy.get('.fragment-size')
+        cy.get('.insert-size')
           .invoke('text')
           .should('match', /\d+/)
       })

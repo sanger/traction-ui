@@ -98,7 +98,7 @@ describe('mutations.js', () => {
             tag_id: null,
             volume: null,
             concentration: null,
-            fragment_size: null,
+            insert_size: null,
             template_prep_kit_box_barcode: null,
           },
         },
@@ -114,7 +114,7 @@ describe('mutations.js', () => {
           tag_id: null,
           volume: null,
           concentration: null,
-          fragment_size: null,
+          insert_size: null,
           template_prep_kit_box_barcode: null,
         },
         _1: {
@@ -122,7 +122,7 @@ describe('mutations.js', () => {
           tag_id: null,
           volume: null,
           concentration: null,
-          fragment_size: null,
+          insert_size: null,
           template_prep_kit_box_barcode: null,
         },
       })
@@ -139,14 +139,14 @@ describe('mutations.js', () => {
             tag_id: null,
             volume: null,
             concentration: null,
-            fragment_size: null,
+            insert_size: null,
           },
           _1: {
             pacbio_request_id: '1',
             tag_id: null,
             volume: null,
             concentration: null,
-            fragment_size: null,
+            insert_size: null,
           },
         },
       }
@@ -161,7 +161,7 @@ describe('mutations.js', () => {
           tag_id: null,
           volume: null,
           concentration: null,
-          fragment_size: null,
+          insert_size: null,
         },
       })
     })
@@ -287,7 +287,7 @@ describe('mutations.js', () => {
           volume: 1.0,
           concentration: 1.0,
           template_prep_kit_box_barcode: '2424',
-          fragment_size: 1,
+          insert_size: 1,
         }),
       })
     })
@@ -303,7 +303,7 @@ describe('mutations.js', () => {
         volume: 1.0,
         concentration: 1.0,
         template_prep_kit_box_barcode: '2424',
-        fragment_size: 1,
+        insert_size: 1,
         source_identifier: 'DN1:A4',
       }),
     )

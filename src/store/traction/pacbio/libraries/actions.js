@@ -10,7 +10,7 @@ const createLibraryInTraction = async ({ rootGetters, getters }, library) => {
         volume: library.volume,
         concentration: library.concentration,
         template_prep_kit_box_barcode: library.templatePrepKitBoxBarcode,
-        fragment_size: library.fragmentSize,
+        insert_size: library.insertSize,
       },
       relationships: {
         request: { data: { type: 'requests', id: library.sample.id } },

@@ -124,7 +124,7 @@ export default {
           sortable: true,
           tdClass: 'template-prep-kit-box-barcode',
         },
-        { key: 'fragment_size', label: 'Fragment Size', sortable: true, tdClass: 'fragment-size' },
+        { key: 'insert_size', label: 'Insert Size', sortable: true, tdClass: 'insert-size' },
         { key: 'tag_group_id', label: 'Tag', sortable: true, tdClass: 'tag-group-id' },
         { key: 'created_at', label: 'Created at', sortable: true, tdClass: 'created-at' },
         { key: 'actions', label: 'Actions' },

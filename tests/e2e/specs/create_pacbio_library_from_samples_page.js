@@ -19,7 +19,7 @@ describe('Pacbio library creation from sample', () => {
     cy.get('#library-volume').type(1)
     cy.get('#library-concentration').type(1)
     cy.get('#library-templatePrepKitBoxBarcode').type('barcode')
-    cy.get('#library-fragmentSize').type(1)
+    cy.get('#library-insertSize').type(1)
     cy.get('#create-btn').click()
     cy.contains('Created library with barcode')
   })

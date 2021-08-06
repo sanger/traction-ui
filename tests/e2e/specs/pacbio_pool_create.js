@@ -38,7 +38,7 @@ describe('Pacbio Pool Create', () => {
       cy.get('[data-attribute=template-prep-kit-box-barcode]').type('ABC1')
       cy.get('[data-attribute=volume]').type('1')
       cy.get('[data-attribute=concentration]').type('10.0')
-      cy.get('[data-attribute=fragment-size]').type('100')
+      cy.get('[data-attribute=insert-size]').type('100')
     })
     cy.intercept('/v1/pacbio/pools?include=tube', {
       statusCode: 201,
@@ -84,7 +84,7 @@ describe('Pacbio Pool Create', () => {
       cy.get('[data-attribute=template-prep-kit-box-barcode]').type('ABC1')
       cy.get('[data-attribute=volume]').type('1')
       cy.get('[data-attribute=concentration]').type('10.0')
-      cy.get('[data-attribute=fragment-size]').type('100')
+      cy.get('[data-attribute=insert-size]').type('100')
     })
     cy.intercept('/v1/pacbio/pools?include=tube', {
       statusCode: 422,

@@ -103,10 +103,10 @@ describe('PacbioPoolLibraryEdit.vue', () => {
         expect(store.state.traction.pacbio.poolCreate.libraries['_1'].concentration).toEqual('2.4')
       })
 
-      it('fragment size', async () => {
-        const input = wrapper.find('[data-attribute=fragment-size]')
+      it('insert size', async () => {
+        const input = wrapper.find('[data-attribute=insert-size]')
         await input.setValue('100')
-        expect(store.state.traction.pacbio.poolCreate.libraries['_1'].fragment_size).toEqual('100')
+        expect(store.state.traction.pacbio.poolCreate.libraries['_1'].insert_size).toEqual('100')
       })
     })
   })
@@ -159,9 +159,9 @@ describe('PacbioPoolLibraryEdit.vue', () => {
       expect(wrapper.find('[data-attribute=concentration-error]').text()).toEqual('must be present')
     })
 
-    it('fragment size', () => {
+    it('insert size', () => {
       store.state.traction.pacbio.poolCreate.libraries = {
-        _1: { ...library, errors: { fragment_size: 'must be present' } },
+        _1: { ...library, errors: { insert_size: 'must be present' } },
       }
 
       wrapper = mount(PacbioPoolLibraryEdit, {
@@ -170,7 +170,7 @@ describe('PacbioPoolLibraryEdit.vue', () => {
         propsData,
       })
 
-      expect(wrapper.find('[data-attribute=fragment-size-error]').text()).toEqual('must be present')
+      expect(wrapper.find('[data-attribute=insert-size-error]').text()).toEqual('must be present')
     })
   })
 })

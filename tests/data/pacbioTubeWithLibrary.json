@@ -32,7 +32,7 @@
         "type": "container_materials",
         "attributes": {
           "state": "pending",
-          "fragment_size": 100,
+          "insert_size": 100,
           "volume": 1,
           "concentration": 1,
           "template_prep_kit_box_barcode": "LK12345",

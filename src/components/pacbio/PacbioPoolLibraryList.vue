@@ -22,7 +22,7 @@
             Concentration
           </b-th>
           <b-th>
-            Fragment Size
+            Insert Size
           </b-th>
         </b-tr>
       </b-thead>

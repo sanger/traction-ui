@@ -241,7 +241,7 @@ describe('actions.js', () => {
       template_prep_kit_box_barcode: 'ABC1',
       volume: 1,
       concentration: 1,
-      fragment_size: 100,
+      insert_size: 100,
     }
 
     const library2 = {
@@ -250,14 +250,14 @@ describe('actions.js', () => {
       template_prep_kit_box_barcode: 'ABC1',
       volume: 1,
       concentration: 1,
-      fragment_size: 100,
+      insert_size: 100,
     }
 
     const pool = {
       template_prep_kit_box_barcode: 'ABC1',
       volume: 1,
       concentration: 1,
-      fragment_size: 100,
+      insert_size: 100,
     }
 
     // pool should be successfully created
@@ -313,7 +313,7 @@ describe('actions.js', () => {
       template_prep_kit_box_barcode: 'ABC1',
       volume: 1,
       concentration: 1,
-      fragment_size: 100,
+      insert_size: 100,
     }
 
     const library2 = {
@@ -323,7 +323,7 @@ describe('actions.js', () => {
       template_prep_kit_box_barcode: 'ABC1',
       volume: 1,
       concentration: 1,
-      fragment_size: 100,
+      insert_size: 100,
     }
 
     const pool = {
@@ -331,7 +331,7 @@ describe('actions.js', () => {
       template_prep_kit_box_barcode: 'ABC1',
       volume: 1,
       concentration: 1,
-      fragment_size: 100,
+      insert_size: 100,
     }
 
     // pool should be successfully created

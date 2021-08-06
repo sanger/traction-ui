@@ -7,7 +7,7 @@ describe('pacbioPoolEdit#new', () => {
     template_prep_kit_box_barcode: null,
     volume: null,
     concentration: null,
-    fragment_size: null,
+    insert_size: null,
   }
 
   let wrapper
@@ -40,10 +40,10 @@ describe('pacbioPoolEdit#new', () => {
       expect(store.state.traction.pacbio.poolCreate.pool.concentration).toEqual('2.4')
     })
 
-    it('fragment size', async () => {
-      const input = wrapper.find('[data-attribute=fragment-size]')
+    it('insert size', async () => {
+      const input = wrapper.find('[data-attribute=insert-size]')
       await input.setValue('100')
-      expect(store.state.traction.pacbio.poolCreate.pool.fragment_size).toEqual('100')
+      expect(store.state.traction.pacbio.poolCreate.pool.insert_size).toEqual('100')
     })
   })
 
@@ -66,7 +66,7 @@ describe('pacbioPoolEdit#edit', () => {
     template_prep_kit_box_barcode: '017865101789500022821',
     volume: 10,
     concentration: 2.4,
-    fragment_size: 100,
+    insert_size: 100,
   }
 
   let wrapper
@@ -95,8 +95,8 @@ describe('pacbioPoolEdit#edit', () => {
       expect(input.element.value).toEqual('2.4')
     })
 
-    it('fragment size', async () => {
-      const input = wrapper.find('[data-attribute=fragment-size]')
+    it('insert size', async () => {
+      const input = wrapper.find('[data-attribute=insert-size]')
       expect(input.element.value).toEqual('100')
     })
   })

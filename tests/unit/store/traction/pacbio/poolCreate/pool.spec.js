@@ -7,7 +7,7 @@ const library1 = {
   template_prep_kit_box_barcode: 'ABC1',
   volume: 1,
   concentration: 1,
-  fragment_size: 100,
+  insert_size: 100,
 }
 
 const library2 = {
@@ -16,7 +16,7 @@ const library2 = {
   template_prep_kit_box_barcode: 'ABC1',
   volume: 1,
   concentration: 1,
-  fragment_size: 100,
+  insert_size: 100,
 }
 
 const library3 = {
@@ -25,7 +25,7 @@ const library3 = {
   template_prep_kit_box_barcode: 'ABC1',
   volume: 1,
   concentration: 1,
-  fragment_size: 100,
+  insert_size: 100,
 }
 
 describe('libraries.js', () => {
@@ -66,25 +66,25 @@ describe('libraries.js', () => {
       expect(state.libraries['_3'].errors).toEqual({ concentration: 'must be present' })
     })
 
-    it('when the fragment size is not present', () => {
-      const libraries = { _1: library1, _2: library2, _3: { ...library3, fragment_size: '' } }
+    it('when the insert size is not present', () => {
+      const libraries = { _1: library1, _2: library2, _3: { ...library3, insert_size: '' } }
       const state = defaultState()
       state.libraries = { ...libraries }
       validate(state)
-      expect(state.libraries['_3'].errors).toEqual({ fragment_size: 'must be present' })
+      expect(state.libraries['_3'].errors).toEqual({ insert_size: 'must be present' })
     })
 
     it('when multiple fields are not valid', () => {
       const libraries = {
         _1: library1,
         _2: library2,
-        _3: { ...library3, fragment_size: '', concentration: '', volume: '' },
+        _3: { ...library3, insert_size: '', concentration: '', volume: '' },
       }
       const state = defaultState()
       state.libraries = { ...libraries }
       validate(state)
       expect(state.libraries['_3'].errors).toEqual({
-        fragment_size: 'must be present',
+        insert_size: 'must be present',
         concentration: 'must be present',
         volume: 'must be present',
       })
@@ -94,12 +94,12 @@ describe('libraries.js', () => {
       const libraries = {
         _1: library1,
         _2: { ...library2, concentration: '' },
-        _3: { ...library3, fragment_size: '' },
+        _3: { ...library3, insert_size: '' },
       }
       const state = defaultState()
       state.libraries = { ...libraries }
       validate(state)
-      expect(state.libraries['_3'].errors).toEqual({ fragment_size: 'must be present' })
+      expect(state.libraries['_3'].errors).toEqual({ insert_size: 'must be present' })
       expect(state.libraries['_2'].errors).toEqual({ concentration: 'must be present' })
     })
 
@@ -146,7 +146,7 @@ describe('libraries.js', () => {
         template_prep_kit_box_barcode: 'ABC1',
         volume: '10',
         concentration: '10',
-        fragment_size: 100,
+        insert_size: 100,
       }
 
       expect(payload({ libraries, pool })).toEqual({
@@ -167,7 +167,7 @@ describe('libraries.js', () => {
         template_prep_kit_box_barcode: 'ABC1',
         volume: '10',
         concentration: '10',
-        fragment_size: 100,
+        insert_size: 100,
         source_identifier: 'Should not post back',
       }
 
@@ -180,7 +180,7 @@ describe('libraries.js', () => {
             template_prep_kit_box_barcode: 'ABC1',
             volume: '10',
             concentration: '10',
-            fragment_size: 100,
+            insert_size: 100,
           },
         },
       })
