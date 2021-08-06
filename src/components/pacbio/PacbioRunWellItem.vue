@@ -66,7 +66,6 @@ export default {
         // as they have default values
         return [
           'movie_time',
-          'insert_size',
           'on_plate_loading_concentration',
           'binding_kit_box_barcode',
           'generate_hifi',

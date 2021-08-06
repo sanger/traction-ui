@@ -255,7 +255,6 @@
       },
       "attributes": {
         "movie_time": "20.0",
-        "insert_size": 10,
         "on_plate_loading_concentration": 1,
         "row": "A",
         "column": "2",
@@ -289,7 +288,6 @@
       },
       "attributes": {
         "movie_time": "20.0",
-        "insert_size": 10,
         "on_plate_loading_concentration": 1,
         "row": "A",
         "column": "3",
@@ -323,7 +321,6 @@
       },
       "attributes": {
         "movie_time": "20.0",
-        "insert_size": 10,
         "on_plate_loading_concentration": 1,
         "row": "A",
         "column": "4",
@@ -357,7 +354,6 @@
       },
       "attributes": {
         "movie_time": "20.0",
-        "insert_size": 10,
         "on_plate_loading_concentration": 1,
         "row": "A",
         "column": "5",
@@ -391,7 +387,6 @@
       },
       "attributes": {
         "movie_time": "20.0",
-        "insert_size": 10,
         "on_plate_loading_concentration": 1,
         "row": "A",
         "column": "6",
