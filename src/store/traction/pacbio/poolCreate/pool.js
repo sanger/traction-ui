@@ -9,13 +9,7 @@ const libraryAttributes = {
   insert_size: null,
 }
 
-const requiredAttributes = [
-  'pacbio_request_id',
-  'tag_id',
-  'volume',
-  'concentration',
-  'insert_size',
-]
+const requiredAttributes = ['pacbio_request_id', 'tag_id', 'volume', 'concentration', 'insert_size']
 
 const newLibrary = (attributes) => {
   return {
