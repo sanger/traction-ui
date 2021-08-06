@@ -99,7 +99,6 @@ describe('createRequest', () => {
         '?filter[a]=1&filter[b]=2&include=sample.tube&fields[resource1]=field1&fields[resource2]=field2',
       )
     })
-
   })
 
   describe('api calls', () => {
@@ -121,11 +120,17 @@ describe('createRequest', () => {
       })
 
       it('with a query', async () => {
-        const query = { filter: { a: '1', b: '2' }, include: 'sample.tube', fields: { resource1: 'field1', resource2: 'field2' }  }
+        const query = {
+          filter: { a: '1', b: '2' },
+          include: 'sample.tube',
+          fields: { resource1: 'field1', resource2: 'field2' },
+        }
         mockAxios.get.mockReturnValue(mockResponse)
         const request = createRequest({ ...attributes })
         const response = await request.get(query)
-        expect(mockAxios.get).toBeCalledWith('requests?filter[a]=1&filter[b]=2&include=sample.tube&fields[resource1]=field1&fields[resource2]=field2')
+        expect(mockAxios.get).toBeCalledWith(
+          'requests?filter[a]=1&filter[b]=2&include=sample.tube&fields[resource1]=field1&fields[resource2]=field2',
+        )
         expect(response).toEqual(mockResponse)
       })
     })
