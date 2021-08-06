@@ -19,6 +19,13 @@ describe('#setPools', () => {
 
     await Actions.setPools({ commit, getters })
 
+    expect(get).toHaveBeenCalledWith( {include: 'tube,libraries.tag,libraries.request',
+    fields: {
+      requests: 'sample_name',
+      tubes: 'barcode',
+      tags: 'group_id',
+      libraries: 'request,tag',
+    }})
     expect(commit).toHaveBeenCalledWith('setPools', pools)
     expect(commit).toHaveBeenCalledWith('setTubes', included.slice(0, 2))
     expect(commit).toHaveBeenCalledWith('setLibraries', included.slice(2, 4))
