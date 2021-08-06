@@ -34,45 +34,26 @@ const createRequest = ({ rootURL, apiNamespace, resource, headers = defaultHeade
   }
 
   /*
-   * @param {Object} attributes e.g. { parameter1: { key1: value1, key2: value2}, parameter2: { key1: value1, key2: value2 }}
-   * @return String e.g. 'parameter1[key1]=value1&parameter1[key2]=value2&parameter2[key1]=value1&parameter2[key2]=value2
+   * @param {Object} attributes e.g. { parameter1: { key1: value1, key2: value2}, parameter2: { key1: value1, key2: value2 }, parameter3: value3}
+   * @return String e.g. 'parameter1[key1]=value1&parameter1[key2]=value2&parameter2[key1]=value1&parameter2[key2]=value2&parameter3=value3
    */
-  const buildParameter = (attributes) => (parameter) => {
+  const parametersToString = (attributes, parameter = undefined) => {
     return Object.entries(attributes)
-      .map(([key, value]) => `${parameter}[${key}]=${value}`)
-      .join('&')
-  }
+      .flatMap(([key, value]) => {
+        // if the value is an object needs to be converted into a string
+        // we also pass the key as the parameter
+        if (isObject(value)) {
+          return parametersToString(value, key)
+        }
 
-  /*
-   * @param {Object} parameters
-   * @return String
-   * Turns a list of parameters into a string
-   */
-  const buildParameterList = (parameters) => {
-    return Object.entries(parameters).map(([key, value]) => {
-      // if the value is an object needs to be converted into a string
-      if (isObject(value)) {
-        return buildParameter(value)(key)
-      }
-
-      // if it is a string turn it into a parameter e.g. 'a.b.c' will become 'key=a.b.c'
-      if (isString(value)) {
-        return `${key}=${value}`
-      }
-    })
-  }
-
-  /*
-   * @param {Object} parameters
-   * @return String
-   * Turns a list of parameters into a string of the format e.g. ?filter[barcode]=DN1
-   * If parameters ends up being empty an empty string is returned
-   */
-  const buildQueryString = (parameters) => {
-    const queryString = buildParameterList(parameters)
+        // if it is a string turn it into a parameter e.g. 'a.b.c' will become 'key=a.b.c'
+        // if parameter is defined it will be 'parameter[key]=value'
+        if (isString(value)) {
+          return parameter ? `${parameter}[${key}]=${value}` : `${key}=${value}`
+        }
+      })
       .filter(Boolean)
       .join('&')
-    return queryString.length > 0 ? `?${queryString}` : ''
   }
 
   /*
@@ -83,7 +64,11 @@ const createRequest = ({ rootURL, apiNamespace, resource, headers = defaultHeade
    * Turns a list of parameters into a query string
    */
   const buildQuery = ({ filter = {}, include = '', fields = {} } = {}) => {
-    return buildQueryString({ filter, include, fields })
+    const queryString = parametersToString({ filter, include, fields })
+
+    // if the query string has any length then put a ? in front
+    // otherwise just return an empty string
+    return queryString.length > 0 ? `?${queryString}` : ''
   }
 
   /*
@@ -121,8 +106,8 @@ const createRequest = ({ rootURL, apiNamespace, resource, headers = defaultHeade
    * @return AxiosPromise
    * Execute a create
    */
-  const create = ({ data }) => {
-    return execute('post', resource, data)
+  const create = ({ data, include = '' }) => {
+    return execute('post', `${resource}${buildQuery({ include })}`, data)
   }
 
   /*

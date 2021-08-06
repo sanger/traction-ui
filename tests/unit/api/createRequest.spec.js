@@ -129,14 +129,25 @@ describe('createRequest', () => {
       })
     })
 
-    it('create', async () => {
+    describe('create', () => {
       const data = { id: 1 }
       const mockCreate = { data: { status: 201 } }
-      mockAxios.post.mockReturnValue(mockCreate)
-      const request = createRequest({ ...attributes })
-      const response = await request.create({ data })
-      expect(mockAxios.post).toBeCalledWith(request.resource, data)
-      expect(response).toEqual(mockCreate)
+
+      it('basic', async () => {
+        mockAxios.post.mockReturnValue(mockCreate)
+        const request = createRequest({ ...attributes })
+        const response = await request.create({ data })
+        expect(mockAxios.post).toBeCalledWith('requests', data)
+        expect(response).toEqual(mockCreate)
+      })
+
+      it('with include', async () => {
+        mockAxios.post.mockReturnValue(mockCreate)
+        const request = createRequest({ ...attributes })
+        const response = await request.create({ data, include: 'tube' })
+        expect(mockAxios.post).toBeCalledWith('requests?include=tube', data)
+        expect(response).toEqual(mockCreate)
+      })
     })
 
     describe('find', () => {
