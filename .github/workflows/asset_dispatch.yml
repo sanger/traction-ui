@@ -31,7 +31,7 @@ jobs:
           ./compile-build.sh release.tar.gz dist
 
       - name: Create release and upload release.tar.gz
-        uses: softprops/action-gh-release@v1
+        uses: softprops/action-gh-release@v0.1.7
         with:
           name: ${{ github.event.inputs.image_tag }}
           tag_name: v${{ github.event.inputs.image_tag }}
