@@ -81,17 +81,6 @@ export default {
    * @param {Object} state The VueXState object
    * @param {Object} Response A response object
    **/
-  populateResult: (state, response) => {
-    const { success, errors: message } = response
-    state.result = {
-      success,
-      message: success
-        ? // if the response is successful return an appropriate message
-          'Pool successfully created'
-        : // if the response is a failure return the errors
-          message,
-    }
-  },
   populateLibraries: ({ libraries }, data) => {
     const newLibraries = dataToObjectById({ data, includeRelationships: true })
     Object.values(newLibraries).forEach((library) => {
@@ -106,6 +95,17 @@ export default {
   populatePoolAttributes: (store, { id, attributes }) => {
     // Nothing
     store.pool = {
+      id,
+      ...attributes,
+    }
+  },
+  /**
+   * Populated with resources via APi calls from the actions
+   * @param {Object} state The VueXState object
+   * @param {Object.{}} tube The tube resource to populate the store
+   */
+  populateTube: (store, { id, attributes }) => {
+    store.tube = {
       id,
       ...attributes,
     }

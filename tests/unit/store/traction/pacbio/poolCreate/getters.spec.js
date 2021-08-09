@@ -16,6 +16,7 @@ describe('getters.js', () => {
     requestList,
     libraryItem,
     poolItem,
+    tubeItem,
   } = getters
 
   const tagSets = {
@@ -265,6 +266,18 @@ describe('getters.js', () => {
     it('returns the correct data', () => {
       state.pool = pool
       expect(poolItem(state)).toEqual(pool)
+    })
+  })
+
+  describe('tubeItem', () => {
+    const tube = {
+      id: 1,
+      barcode: 'TRAC-1',
+    }
+
+    it('returns the correct data', () => {
+      state.tube = tube
+      expect(tubeItem(state)).toEqual(tube)
     })
   })
 })

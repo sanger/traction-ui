@@ -13,9 +13,9 @@ describe('mutations.js', () => {
     populateRequests,
     populateTagSets,
     populateTags,
-    populateResult,
     populateLibraries,
     populatePoolAttributes,
+    populateTube,
   } = mutations
 
   describe('selectPlate', () => {
@@ -249,27 +249,6 @@ describe('mutations.js', () => {
     })
   })
 
-  describe('populateResult', () => {
-    it('with a successful response', () => {
-      const response = {
-        success: true,
-      }
-      const state = defaultState()
-      populateResult(state, response)
-      expect(state.result).toEqual({ success: true, message: 'Pool successfully created' })
-    })
-
-    it('with an unsuccessful response', () => {
-      const response = {
-        success: false,
-        errors: 'error1: error1, error2: error2',
-      }
-      const state = defaultState()
-      populateResult(state, response)
-      expect(state.result).toEqual({ success: false, message: 'error1: error1, error2: error2' })
-    })
-  })
-
   describe('populateLibraries', () => {
     it('sets a library with the correct data', () => {
       // mock state
@@ -307,5 +286,16 @@ describe('mutations.js', () => {
         source_identifier: 'DN1:A4',
       }),
     )
+  })
+
+  it('populateTube', () => {
+    const tube = { id: 1, attributes: { barcode: 'TRAC-1' } }
+    const state = defaultState()
+    //apply mutation
+    populateTube(state, tube)
+    expect(state.tube).toEqual({
+      id: 1,
+      barcode: 'TRAC-1',
+    })
   })
 })

@@ -107,7 +107,7 @@ export default {
       // doesn't appear empty. This is especially important if the pool request finishes
       // after the request for all plates, as otherwise the partial record will over-write
       // the full one.
-      include: 'libraries.tag.tag_set,libraries.source_plate.wells.requests,libraries.request',
+      include: 'libraries.tag.tag_set,libraries.source_plate.wells.requests,libraries.request,tube',
     })
     const response = await handleResponse(promise)
 
@@ -120,6 +120,7 @@ export default {
         wells,
         plates = [],
         tag_sets: [tag_set],
+        tubes: [tube],
       } = groupIncludedByResource(included)
       commit('populatePoolAttributes', data)
       commit('populateLibraries', libraries)
@@ -127,6 +128,7 @@ export default {
       commit('populateWells', wells)
       commit('populatePlates', plates)
       commit('selectTagSet', tag_set)
+      commit('populateTube', tube)
       plates.forEach(({ id }) => commit('selectPlate', { id, selected: true }))
     }
 

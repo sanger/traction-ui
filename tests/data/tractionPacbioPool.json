@@ -20,6 +20,10 @@
           "links": {
             "self": "http://localhost:3100/v1/pacbio/pools/242/relationships/tube",
             "related": "http://localhost:3100/v1/pacbio/pools/242/tube"
+          },
+          "data": {
+            "type": "tubes",
+            "id": "1465"
           }
         },
         "libraries": {
@@ -4151,6 +4155,24 @@
             "links": {
               "self": "http://localhost:3100/v1/pacbio/requests/48/relationships/plate",
               "related": "http://localhost:3100/v1/pacbio/requests/48/plate"
+            }
+          }
+        }
+      },
+      {
+        "id": "1465",
+        "type": "tubes",
+        "links": {
+          "self": "/v1/pacbio/tubes/1465"
+        },
+        "attributes": {
+          "barcode": "TRAC-2-1465"
+        },
+        "relationships": {
+          "materials": {
+            "links": {
+              "self": "/v1/pacbio/tubes/1465/relationships/materials",
+              "related": "/v1/pacbio/tubes/1465/materials"
             }
           }
         }

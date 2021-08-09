@@ -45,5 +45,8 @@ export default () => {
 
     // Pool: The current pool being edited or created
     pool: {},
+
+    // Tube: The tube for the current pool
+    tube: {},
   }
 }

@@ -69,6 +69,11 @@ describe('pacbioPoolEdit#edit', () => {
     insert_size: 100,
   }
 
+  const tube = {
+    id: '1',
+    barcode: 'TRAC-1',
+  }
+
   let wrapper
 
   beforeEach(() => {
@@ -77,6 +82,7 @@ describe('pacbioPoolEdit#edit', () => {
       store,
     })
     store.state.traction.pacbio.poolCreate.pool = pool
+    store.state.traction.pacbio.poolCreate.tube = tube
   })
 
   describe('input', () => {
@@ -98,6 +104,13 @@ describe('pacbioPoolEdit#edit', () => {
     it('insert size', async () => {
       const input = wrapper.find('[data-attribute=insert-size]')
       expect(input.element.value).toEqual('100')
+    })
+  })
+
+  describe('tube', () => {
+    it('barcode', async () => {
+      const barcode = wrapper.find('[data-attribute=barcode]')
+      expect(barcode.text()).toContain('TRAC-1')
     })
   })
 

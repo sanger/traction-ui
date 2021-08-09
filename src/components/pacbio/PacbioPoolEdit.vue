@@ -6,10 +6,11 @@
     <div class="pool-edit" data-type="pool-edit">
       <b-table-simple>
         <b-tr>
-          <td class="td-empty">&nbsp;</td>
-          <td class="td-empty">&nbsp;</td>
-          <td class="td-empty">&nbsp;</td>
-          <td>
+          <b-td v-if="!!tubeItem.barcode" class="barcode" data-attribute="barcode">
+            pool barcode: {{ tubeItem.barcode }}
+          </b-td>
+          <b-td v-else>&nbsp;</b-td>
+          <b-td class="template-prep-kit-box-barcode">
             <b-form-input
               v-model="poolItem.template_prep_kit_box_barcode"
               data-attribute="template-prep-kit-box-barcode"
@@ -18,8 +19,8 @@
               type="text"
               title="Template Prep Kit Box Barcode"
             />
-          </td>
-          <td>
+          </b-td>
+          <b-td class="pool-attribute">
             <b-form-input
               v-model="poolItem.volume"
               data-attribute="volume"
@@ -28,8 +29,8 @@
               type="text"
               title="Volume"
             />
-          </td>
-          <td>
+          </b-td>
+          <b-td class="pool-attribute">
             <b-form-input
               v-model="poolItem.concentration"
               data-attribute="concentration"
@@ -38,8 +39,8 @@
               type="text"
               title="Concentration"
             />
-          </td>
-          <td>
+          </b-td>
+          <b-td class="pool-attribute">
             <b-form-input
               v-model="poolItem.insert_size"
               data-attribute="insert-size"
@@ -48,7 +49,7 @@
               type="text"
               title="Insert Size"
             />
-          </td>
+          </b-td>
         </b-tr>
       </b-table-simple>
     </div>
@@ -95,7 +96,7 @@ export default {
     }
   },
   computed: {
-    ...mapGetters(['poolItem']),
+    ...mapGetters(['poolItem', 'tubeItem']),
     persisted() {
       return !!this.poolItem.id
     },
@@ -133,6 +134,7 @@ export default {
   position: relative;
   top: 2px;
 }
+.custom-select,
 .form-control {
   font-size: 0.8em;
 }
@@ -142,5 +144,17 @@ export default {
 }
 .td-empty {
   width: 110px;
+}
+.barcode {
+  width: 250px;
+  font-size: 0.8em;
+  font-weight: bold;
+  text-align: right;
+}
+.pool-attribute {
+  width: 90px;
+}
+.template-prep-kit-box-barcode {
+  width: 120px;
 }
 </style>

@@ -125,4 +125,12 @@ export default {
   poolItem: (state) => {
     return state.pool
   },
+
+  /**
+   * Returns the tube
+   * @param {Object} state The Vuex state object
+   */
+  tubeItem: (state) => {
+    return state.tube
+  },
 }

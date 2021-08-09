@@ -130,6 +130,11 @@ describe('actions.js', () => {
         expect.objectContaining({ id: '1', selected: true }),
       )
 
+      expect(commit).toHaveBeenCalledWith(
+        'populateTube',
+        Data.TractionPacbioPool.data.included.slice(-1)[0],
+      )
+
       expect(success).toEqual(true)
     })
 
