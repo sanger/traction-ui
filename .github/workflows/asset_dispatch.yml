@@ -31,12 +31,11 @@ jobs:
           ./compile-build.sh release.tar.gz dist
 
       - name: Create release and upload release.tar.gz
-        uses: softprops/action-gh-release@v0.1.7
+        uses: ncipollo/release-action@v1.8.8
         with:
           name: ${{ github.event.inputs.image_tag }}
-          tag_name: v${{ github.event.inputs.image_tag }}
+          tag: v${{ github.event.inputs.image_tag }}
           prerelease: true
-          files: release.tar.gz
-          fail_on_unmatched_files: true
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          commit: ${{ github.sha }}
+          artifacts: release.tar.gz
+          artifactErrorsFailBuild: true
