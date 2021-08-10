@@ -101,15 +101,26 @@ describe('createRequest', () => {
     })
 
     describe('if any arguments are not a string or an object', () => {
-
       it('when one of the values is not a string', () => {
-
+        const request = createRequest({ ...attributes })
+        expect(() => {
+          request.buildQuery({ filter: { a: 1, b: 2 } })
+        }).toThrowError(new TypeError('query arguments are not of the correct type'))
       })
 
       it('when one of the arguments is not an object', () => {
-        
+        const request = createRequest({ ...attributes })
+        expect(() => {
+          request.buildQuery({ filter: [1, 2] })
+        }).toThrowError(new TypeError('query arguments are not of the correct type'))
       })
 
+      it('when one of the arguments is undefined', () => {
+        const request = createRequest({ ...attributes })
+        expect(() => {
+          request.buildQuery({ filter: { a: undefined } })
+        }).toThrowError(new TypeError('query arguments are not of the correct type'))
+      })
     })
   })
 

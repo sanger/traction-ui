@@ -19,7 +19,15 @@ const isObject = (value) => {
  * @returns boolean
  */
 const isString = (value) => {
-  return (typeof value === 'string' || value instanceof String) && value.length > 0
+  return typeof value === 'string' || value instanceof String
+}
+
+const isEmptyString = (value) => {
+  return isString(value) && value.length < 1
+}
+
+const isLengthString = (value) => {
+  return isString(value) && value.length > 0
 }
 
 /*
@@ -37,8 +45,15 @@ const parametersToString = (attributes, parameter = undefined) => {
 
       // if it is a string turn it into a parameter e.g. 'a.b.c' will become 'key=a.b.c'
       // if parameter is defined it will be 'parameter[key]=value'
-      if (isString(value)) {
+      // we only want to do this if the string has some characters
+      if (isLengthString(value)) {
         return parameter ? `${parameter}[${key}]=${value}` : `${key}=${value}`
+      }
+
+      // if we get here something is wrong. String can be empty but if there is e.g. an array or undefined
+      // then it needs to be fixed.
+      if (!isEmptyString(value)) {
+        throw new TypeError('query arguments are not of the correct type')
       }
     })
     .filter(Boolean)
