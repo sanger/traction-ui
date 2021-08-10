@@ -74,7 +74,7 @@ export default {
    */
   createPool: async ({ rootState, state: { libraries, pool } }) => {
     validate({ libraries })
-    if (!valid({ libraries })) return
+    if (!valid({ libraries })) return { success: false, errors: 'The pool is invalid' }
     const request = rootState.api.traction.pacbio.pools
     const promise = request.create(payload({ libraries, pool }), { include: 'tube' })
     // TODO: I think this is the best I can do here but it may be an idea to extract this into a method
@@ -89,7 +89,7 @@ export default {
    */
   updatePool: async ({ rootState, state: { libraries, pool } }) => {
     validate({ libraries })
-    if (!valid({ libraries })) return
+    if (!valid({ libraries })) return { success: false, errors: 'The pool is invalid' }
     const request = rootState.api.traction.pacbio.pools
     const promise = request.update(payload({ libraries, pool }), { include: 'tube' })
     // TODO: I think this is the best I can do here but it may be an idea to extract this into a method

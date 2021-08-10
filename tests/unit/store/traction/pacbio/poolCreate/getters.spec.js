@@ -267,6 +267,11 @@ describe('getters.js', () => {
       state.pool = pool
       expect(poolItem(state)).toEqual(pool)
     })
+
+    it('when the pool does not exist', () => {
+      state.pool = undefined
+      expect(poolItem(state)).toEqual({})
+    })
   })
 
   describe('tubeItem', () => {
@@ -278,6 +283,11 @@ describe('getters.js', () => {
     it('returns the correct data', () => {
       state.tube = tube
       expect(tubeItem(state)).toEqual(tube)
+    })
+
+    it('when the tube does not exist', () => {
+      state.tube = undefined
+      expect(tubeItem(state)).toEqual({})
     })
   })
 })

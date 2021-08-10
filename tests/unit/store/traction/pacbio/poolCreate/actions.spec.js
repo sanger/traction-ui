@@ -305,8 +305,14 @@ describe('actions.js', () => {
       const create = jest.fn()
       const rootState = { api: { traction: { pacbio: { pools: { create } } } } }
       const libraries = { _1: library1, _2: { ...library2, tag_id: '' } }
-      await createPool({ commit, rootState, state: { libraries, pool } })
+      const { success, errors } = await createPool({
+        commit,
+        rootState,
+        state: { libraries, pool },
+      })
       expect(create).not.toHaveBeenCalled()
+      expect(success).toBeFalsy()
+      expect(errors).toEqual('The pool is invalid')
     })
   })
 
@@ -377,8 +383,14 @@ describe('actions.js', () => {
       const update = jest.fn()
       const rootState = { api: { traction: { pacbio: { pools: { update } } } } }
       const libraries = { _1: library1, _2: { ...library2, tag_id: '' } }
-      await updatePool({ commit, rootState, state: { libraries, pool } })
+      const { success, errors } = await updatePool({
+        commit,
+        rootState,
+        state: { libraries, pool },
+      })
       expect(update).not.toHaveBeenCalled()
+      expect(success).toBeFalsy()
+      expect(errors).toEqual('The pool is invalid')
     })
   })
 })

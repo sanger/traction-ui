@@ -123,7 +123,7 @@ export default {
    * @param {Object} state The Vuex state object
    */
   poolItem: (state) => {
-    return state.pool
+    return state.pool || {}
   },
 
   /**
@@ -131,6 +131,6 @@ export default {
    * @param {Object} state The Vuex state object
    */
   tubeItem: (state) => {
-    return state.tube
+    return state.tube || {}
   },
 }
