@@ -1,25 +1,43 @@
 <template>
   <b-list-group-item
-    draggable="true"
-    :class="{ active: isActive }"
+    :draggable="!!valid"
+    :variant="valid ? 'default' : 'danger'"
+    button
     @dragstart="drag(barcode, $event)"
-    @mouseover="isActive = true"
-    @mouseleave="isActive = false"
+    @click="expanded = !expanded"
   >
     <b-row>
       <b-col cols="3">
-        <b-img src="/tube.png" />
+        <b-img src="/tube.png" :draggable="!!valid" />
       </b-col>
       <b-col cols="9">
-        <div class="barcode"><b>Barcode:</b> {{ barcode }}</div>
-        <b>Libraries:</b>
-        <ul>
-          <li v-for="library in libraries" :key="library.id">
-            {{ library.sample_name }}
-            <br />
-            {{ library.group_id }}
-          </li>
-        </ul>
+        <dl class="row">
+          <dt>Barcode</dt>
+          <dd data-attribute="barcode">{{ barcode }}</dd>
+        </dl>
+        <dl v-if="showInfo" class="row">
+          <dt>Source</dt>
+          <dd data-attribute="source-identifier">{{ source_identifier }}</dd>
+          <dt>Volume</dt>
+          <dd data-attribute="volume">{{ volume || 'Unknown' }}</dd>
+          <dt>Concentration</dt>
+          <dd data-attribute="concentration">{{ concentration || 'Unknown' }}</dd>
+          <dt>Template prep kit box barcode</dt>
+          <dd data-attribute="template-prep-kit-box-barcode">
+            {{ template_prep_kit_box_barcode || 'Unknown' }}
+          </dd>
+          <dt>Fragment size</dt>
+          <dd data-attribute="fragment-size">{{ fragment_size || 'Unknown' }}</dd>
+          <dt>Libraries</dt>
+          <dd>
+            <ul>
+              <li v-for="library in libraries" :key="library.id">
+                {{ library.sample_name }} : {{ library.group_id }}
+              </li>
+            </ul>
+          </dd>
+        </dl>
+        <div v-else>Pool invalid. Click for more information</div>
       </b-col>
     </b-row>
   </b-list-group-item>
@@ -40,11 +58,53 @@ export default {
       type: Array,
       required: true,
     },
+    volume: {
+      type: Number,
+      required: false,
+      default: null,
+    },
+    concentration: {
+      type: Number,
+      required: false,
+      default: null,
+    },
+    /* eslint-disable vue/prop-name-casing */
+    template_prep_kit_box_barcode: {
+      type: String,
+      required: false,
+      default: null,
+    },
+    fragment_size: {
+      type: Number,
+      required: false,
+      default: null,
+    },
+    source_identifier: {
+      type: String,
+      required: false,
+      default: 'Unknown',
+    },
+    /* eslint-enable vue/prop-name-casing */
   },
   data() {
     return {
-      isActive: false,
+      expanded: false,
     }
+  },
+  computed: {
+    valid() {
+      return (
+        this.libraries.length > 0 &&
+        this.volume &&
+        this.concentration &&
+        this.template_prep_kit_box_barcode &&
+        this.fragment_size &&
+        true
+      )
+    },
+    showInfo() {
+      return this.valid || this.expanded
+    },
   },
   // TODO: need to add a a test for drag
   methods: {
@@ -63,6 +123,14 @@ img {
 div {
   text-align: left;
 }
+
+dt {
+  width: 30%;
+}
+dd {
+  width: 70%;
+}
+
 .active {
   background-color: gray;
   filter: none;
