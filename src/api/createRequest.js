@@ -7,6 +7,60 @@ const defaultHeaders = {
 }
 
 /*
+ * @param {Any} value
+ * @returns boolean
+ */
+const isObject = (value) => {
+  return value && typeof value === 'object' && value.constructor === Object
+}
+
+/*
+ * @param {Any} value
+ * @returns boolean
+ */
+const isString = (value) => {
+  return (typeof value === 'string' || value instanceof String) && value.length > 0
+}
+
+/*
+ * @param {Object} attributes e.g. { parameter1: { key1: value1, key2: value2}, parameter2: { key1: value1, key2: value2 }, parameter3: value3}
+ * @return String e.g. 'parameter1[key1]=value1&parameter1[key2]=value2&parameter2[key1]=value1&parameter2[key2]=value2&parameter3=value3
+ */
+const parametersToString = (attributes, parameter = undefined) => {
+  return Object.entries(attributes)
+    .flatMap(([key, value]) => {
+      // if the value is an object needs to be converted into a string
+      // we also pass the key as the parameter
+      if (isObject(value)) {
+        return parametersToString(value, key)
+      }
+
+      // if it is a string turn it into a parameter e.g. 'a.b.c' will become 'key=a.b.c'
+      // if parameter is defined it will be 'parameter[key]=value'
+      if (isString(value)) {
+        return parameter ? `${parameter}[${key}]=${value}` : `${key}=${value}`
+      }
+    })
+    .filter(Boolean)
+    .join('&')
+}
+
+/*
+ * @param {Object} filter - query filters
+ * @param String include - query include
+ * @param {Object} fields - query fields
+ * @return String
+ * Turns a list of parameters into a query string
+ */
+const buildQuery = ({ filter = {}, include = '', fields = {} } = {}) => {
+  const queryString = parametersToString({ filter, include, fields })
+
+  // if the query string has any length then put a ? in front
+  // otherwise just return an empty string
+  return queryString.length > 0 ? `?${queryString}` : ''
+}
+
+/*
  * @param {String} rootURL
  * @param {String} apiNamespace
  * @param {String} resource
@@ -16,60 +70,6 @@ const defaultHeaders = {
 const createRequest = ({ rootURL, apiNamespace, resource, headers = defaultHeaders }) => {
   const baseURL = `${rootURL}/${apiNamespace}`
   const api = axios.create({ baseURL, headers })
-
-  /*
-   * @param {Any} value
-   * @returns boolean
-   */
-  const isObject = (value) => {
-    return value && typeof value === 'object' && value.constructor === Object
-  }
-
-  /*
-   * @param {Any} value
-   * @returns boolean
-   */
-  const isString = (value) => {
-    return (typeof value === 'string' || value instanceof String) && value.length > 0
-  }
-
-  /*
-   * @param {Object} attributes e.g. { parameter1: { key1: value1, key2: value2}, parameter2: { key1: value1, key2: value2 }, parameter3: value3}
-   * @return String e.g. 'parameter1[key1]=value1&parameter1[key2]=value2&parameter2[key1]=value1&parameter2[key2]=value2&parameter3=value3
-   */
-  const parametersToString = (attributes, parameter = undefined) => {
-    return Object.entries(attributes)
-      .flatMap(([key, value]) => {
-        // if the value is an object needs to be converted into a string
-        // we also pass the key as the parameter
-        if (isObject(value)) {
-          return parametersToString(value, key)
-        }
-
-        // if it is a string turn it into a parameter e.g. 'a.b.c' will become 'key=a.b.c'
-        // if parameter is defined it will be 'parameter[key]=value'
-        if (isString(value)) {
-          return parameter ? `${parameter}[${key}]=${value}` : `${key}=${value}`
-        }
-      })
-      .filter(Boolean)
-      .join('&')
-  }
-
-  /*
-   * @param {Object} filter - query filters
-   * @param String include - query include
-   * @param {Object} fields - query fields
-   * @return String
-   * Turns a list of parameters into a query string
-   */
-  const buildQuery = ({ filter = {}, include = '', fields = {} } = {}) => {
-    const queryString = parametersToString({ filter, include, fields })
-
-    // if the query string has any length then put a ? in front
-    // otherwise just return an empty string
-    return queryString.length > 0 ? `?${queryString}` : ''
-  }
 
   /*
    * @param String type - request type e.g. 'get', 'create'

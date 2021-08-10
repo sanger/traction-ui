@@ -1,28 +1,13 @@
-import Vue from 'vue'
-import { mount, Data } from 'testHelper'
-import Request from '@/api/Request'
+import { Data } from 'testHelper'
 import Response from '@/api/Response'
 import * as Run from '@/api/SaphyrRun'
 import build from '@/api/ApiBuilder'
 import Api from '@/api'
 
 describe('Run', () => {
-  let cmp, props, wrapper, request, failedResponse, chipBarcode, run
+  let failedResponse, chipBarcode, run
 
   beforeEach(() => {
-    cmp = Vue.extend({
-      mixins: [Request],
-      render() {
-        return ''
-      },
-    })
-
-    props = { baseURL: 'http://traction.com', apiNamespace: 'api/v2', resource: 'requests' }
-    wrapper = mount(cmp, { propsData: props })
-
-    request = wrapper.vm.api
-    request.get = jest.fn()
-
     failedResponse = {
       status: 404,
       statusText: 'Record not found',
@@ -114,11 +99,11 @@ describe('Run', () => {
       run.chip['barcode'] = chipBarcode
       run.chip.flowcells[0] = { position: 1, library: { id: 1 } }
       run.chip.flowcells[1] = { position: 2, library: { id: 2 } }
-      request.create = jest.fn()
     })
 
     describe('createRun', () => {
       it('success', async () => {
+        const request = { create: jest.fn() }
         request.create.mockResolvedValue(Data.CreateRun)
 
         let mockResponse = new Response(Data.CreateRun)
@@ -131,6 +116,7 @@ describe('Run', () => {
       })
 
       it('failure', async () => {
+        const request = { create: jest.fn() }
         request.create.mockReturnValue(failedResponse)
 
         let message
@@ -154,6 +140,7 @@ describe('Run', () => {
       })
 
       it('will create a chip and return a response', async () => {
+        const request = { create: jest.fn() }
         request.create.mockResolvedValue(Data.CreateChip)
 
         let mockResponse = new Response(Data.CreateChip)
@@ -165,6 +152,7 @@ describe('Run', () => {
       })
 
       it('failure', async () => {
+        const request = { create: jest.fn() }
         request.create.mockReturnValue(failedResponse)
 
         let message
@@ -189,6 +177,7 @@ describe('Run', () => {
       })
 
       it('will create a flowcell and return a response', async () => {
+        const request = { create: jest.fn() }
         request.create.mockResolvedValue(Data.CreateFlowcell)
 
         let mockResponse = new Response(Data.CreateFlowcell)
@@ -209,6 +198,7 @@ describe('Run', () => {
       })
 
       it('failure', async () => {
+        const request = { create: jest.fn() }
         request.create.mockReturnValue(failedResponse)
 
         let message

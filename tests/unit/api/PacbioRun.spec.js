@@ -1,30 +1,13 @@
-import Vue from 'vue'
-import { mount, Data } from 'testHelper'
-import Request from '@/api/Request'
+import { Data } from 'testHelper'
 import Response from '@/api/Response'
 import * as Run from '@/api/PacbioRun'
 import build from '@/api/ApiBuilder'
 import Api from '@/api'
 
-// TODO: fix requests here for DPL-022
-
 describe('Run', () => {
-  let cmp, props, wrapper, request, run, failedResponse
+  let run, failedResponse
 
   beforeEach(() => {
-    cmp = Vue.extend({
-      mixins: [Request],
-      render() {
-        return ''
-      },
-    })
-
-    props = { baseURL: 'http://sequencescape.com', apiNamespace: 'api/v2', resource: 'requests' }
-    wrapper = mount(cmp, { propsData: props })
-
-    request = wrapper.vm.api
-    request.get = jest.fn()
-
     failedResponse = {
       status: 404,
       statusText: 'Record not found',
@@ -231,11 +214,8 @@ describe('Run', () => {
   })
 
   describe('createResource', () => {
-    beforeEach(() => {
-      request.create = jest.fn()
-    })
-
     it('success', async () => {
+      const request = { create: jest.fn() }
       request.create.mockResolvedValue(Data.PacbioRun)
       let mockResponse = new Response(Data.PacbioRun)
 
@@ -244,6 +224,7 @@ describe('Run', () => {
     })
 
     it('failure', async () => {
+      const request = { create: jest.fn() }
       request.create.mockReturnValue(failedResponse)
 
       let message
@@ -422,11 +403,8 @@ describe('Run', () => {
   })
 
   describe('updateResource', () => {
-    beforeEach(() => {
-      request.update = jest.fn()
-    })
-
     it('success', async () => {
+      const request = { update: jest.fn() }
       request.update.mockResolvedValue(Data.PacbioRun)
       let mockResponse = new Response(Data.PacbioRun)
 
@@ -435,6 +413,7 @@ describe('Run', () => {
     })
 
     it('failure', async () => {
+      const request = { update: jest.fn() }
       request.update.mockReturnValue(failedResponse)
 
       let message

@@ -99,6 +99,18 @@ describe('createRequest', () => {
         '?filter[a]=1&filter[b]=2&include=sample.tube&fields[resource1]=field1&fields[resource2]=field2',
       )
     })
+
+    describe('if any arguments are not a string or an object', () => {
+
+      it('when one of the values is not a string', () => {
+
+      })
+
+      it('when one of the arguments is not an object', () => {
+        
+      })
+
+    })
   })
 
   describe('api calls', () => {
