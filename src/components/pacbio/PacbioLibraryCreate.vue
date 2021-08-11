@@ -79,13 +79,13 @@
         </b-form-group>
 
         <b-form-group
-          id="input-group-fragmentSize"
-          label="Fragment size"
-          label-for="library-fragmentSize"
+          id="input-group-insertSize"
+          label="Insert size"
+          label-for="library-insertSize"
         >
           <b-form-input
-            id="library-fragmentSize"
-            v-model="library.fragmentSize"
+            id="library-insertSize"
+            v-model="library.insertSize"
             type="number"
             required
             step="1"

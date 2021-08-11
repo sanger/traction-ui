@@ -62,7 +62,6 @@ describe('PacbioWellModal', () => {
   })
 
   it('can have mapState', () => {
-    expect(modal.insertSize).toBeDefined()
     expect(modal.onPlateLoadingConc).toBeDefined()
     expect(modal.movieTime).toBeDefined()
     expect(modal.wellPools).toBeDefined()
@@ -70,6 +69,7 @@ describe('PacbioWellModal', () => {
     expect(modal.ccsAnalysisOutput).toBeDefined()
     expect(modal.preExtensionTime).toBeDefined()
     expect(modal.ccsAnalysisOutput).toBeDefined()
+    expect(modal.bindingKitBoxBarcode).toBeDefined()
   })
 
   it('can have getters', () => {
@@ -87,9 +87,6 @@ describe('PacbioWellModal', () => {
     it('has a On Plate Loading Concentration input', () => {
       expect(wrapper.find('.onPlateLoadingConc')).toBeDefined()
     })
-    it('has a Insert Size input', () => {
-      expect(wrapper.find('.insertSize')).toBeDefined()
-    })
     it('has a Generate HiFi input', () => {
       expect(wrapper.find('.generateHiFi')).toBeDefined()
     })
@@ -102,8 +99,8 @@ describe('PacbioWellModal', () => {
     it('has a pre-extension time input', () => {
       expect(wrapper.find('.preExtensionTime')).toBeDefined()
     })
-    it('has a ccsAnalysisOutput', () => {
-      expect(wrapper.find('.ccsAnalysisOutput')).toBeDefined()
+    it('has a bindingKitBoxBarcode', () => {
+      expect(wrapper.find('.bindingKitBoxBarcode')).toBeDefined()
     })
   })
 
@@ -119,15 +116,6 @@ describe('PacbioWellModal', () => {
   describe('methods', () => {
     beforeEach(() => {
       modal.mutateWell = jest.fn()
-    })
-
-    it('updateInsertSize', () => {
-      modal.updateInsertSize(123)
-      expect(modal.mutateWell).toBeCalledWith({
-        position: props.position,
-        property: 'insert_size',
-        with: 123,
-      })
     })
 
     it('updateOnPlateLoadingConc', () => {
@@ -191,6 +179,15 @@ describe('PacbioWellModal', () => {
         position: props.position,
         property: 'pre_extension_time',
         with: '2',
+      })
+    })
+
+    it('updateBindingKitBoxBarcode', () => {
+      modal.updateBindingKitBoxBarcode('12345')
+      expect(modal.mutateWell).toBeCalledWith({
+        position: props.position,
+        property: 'binding_kit_box_barcode',
+        with: '12345',
       })
     })
 

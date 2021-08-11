@@ -8,7 +8,10 @@ import handlePromise from '@/api/PromiseHelper'
 */
 const getPlates = async (request, barcodes) => {
   let plates = []
-  let promise = request.get({ filter: { barcode: barcodes } })
+  let promise = request.get({
+    filter: { barcode: barcodes },
+    include: 'wells.aliquots.sample.sample_metadata,wells.aliquots.study',
+  })
   let response = await handlePromise(promise)
 
   if (response.successful && !response.empty) {

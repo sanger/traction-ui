@@ -1,5 +1,5 @@
 import defaultState from '@/store/traction/pacbio/poolCreate/state'
-import { validate, valid, payload } from '@/store/traction/pacbio/poolCreate/libraries'
+import { validate, valid, payload } from '@/store/traction/pacbio/poolCreate/pool'
 
 const library1 = {
   pacbio_request_id: '1',
@@ -7,7 +7,7 @@ const library1 = {
   template_prep_kit_box_barcode: 'ABC1',
   volume: 1,
   concentration: 1,
-  fragment_size: 100,
+  insert_size: 100,
 }
 
 const library2 = {
@@ -16,7 +16,7 @@ const library2 = {
   template_prep_kit_box_barcode: 'ABC1',
   volume: 1,
   concentration: 1,
-  fragment_size: 100,
+  insert_size: 100,
 }
 
 const library3 = {
@@ -25,7 +25,7 @@ const library3 = {
   template_prep_kit_box_barcode: 'ABC1',
   volume: 1,
   concentration: 1,
-  fragment_size: 100,
+  insert_size: 100,
 }
 
 describe('libraries.js', () => {
@@ -47,9 +47,7 @@ describe('libraries.js', () => {
       const state = defaultState()
       state.libraries = { ...libraries }
       validate(state)
-      expect(state.libraries['_3'].errors).toEqual({
-        template_prep_kit_box_barcode: 'must be present',
-      })
+      expect(valid({ libraries: state.libraries })).toBeTruthy()
     })
 
     it('when the volume is not present', () => {
@@ -68,25 +66,25 @@ describe('libraries.js', () => {
       expect(state.libraries['_3'].errors).toEqual({ concentration: 'must be present' })
     })
 
-    it('when the fragment size is not present', () => {
-      const libraries = { _1: library1, _2: library2, _3: { ...library3, fragment_size: '' } }
+    it('when the insert size is not present', () => {
+      const libraries = { _1: library1, _2: library2, _3: { ...library3, insert_size: '' } }
       const state = defaultState()
       state.libraries = { ...libraries }
       validate(state)
-      expect(state.libraries['_3'].errors).toEqual({ fragment_size: 'must be present' })
+      expect(state.libraries['_3'].errors).toEqual({ insert_size: 'must be present' })
     })
 
     it('when multiple fields are not valid', () => {
       const libraries = {
         _1: library1,
         _2: library2,
-        _3: { ...library3, fragment_size: '', concentration: '', volume: '' },
+        _3: { ...library3, insert_size: '', concentration: '', volume: '' },
       }
       const state = defaultState()
       state.libraries = { ...libraries }
       validate(state)
       expect(state.libraries['_3'].errors).toEqual({
-        fragment_size: 'must be present',
+        insert_size: 'must be present',
         concentration: 'must be present',
         volume: 'must be present',
       })
@@ -96,12 +94,12 @@ describe('libraries.js', () => {
       const libraries = {
         _1: library1,
         _2: { ...library2, concentration: '' },
-        _3: { ...library3, fragment_size: '' },
+        _3: { ...library3, insert_size: '' },
       }
       const state = defaultState()
       state.libraries = { ...libraries }
       validate(state)
-      expect(state.libraries['_3'].errors).toEqual({ fragment_size: 'must be present' })
+      expect(state.libraries['_3'].errors).toEqual({ insert_size: 'must be present' })
       expect(state.libraries['_2'].errors).toEqual({ concentration: 'must be present' })
     })
 
@@ -141,10 +139,51 @@ describe('libraries.js', () => {
     })
   })
 
-  it('payload', () => {
-    const libraries = { _1: library1, _2: library2, _3: library3 }
-    expect(payload({ libraries })).toEqual({
-      data: { attributes: { libraries: [library1, library2, library3] } },
+  describe('payload', () => {
+    it('handles unpersisted data', () => {
+      const libraries = { _1: library1, _2: library2, _3: library3 }
+      const pool = {
+        template_prep_kit_box_barcode: 'ABC1',
+        volume: '10',
+        concentration: '10',
+        insert_size: 100,
+      }
+
+      expect(payload({ libraries, pool })).toEqual({
+        data: {
+          type: 'pools',
+          attributes: { library_attributes: [library1, library2, library3], ...pool },
+        },
+      })
+    })
+
+    it('handles persisted data', () => {
+      const libraries = {
+        _1: { id: '10', ...library1 },
+        _2: { id: '20', ...library2 },
+        _3: library3,
+      }
+      const pool = {
+        template_prep_kit_box_barcode: 'ABC1',
+        volume: '10',
+        concentration: '10',
+        insert_size: 100,
+        source_identifier: 'Should not post back',
+      }
+
+      expect(payload({ libraries, pool: { id: '1', ...pool } })).toEqual({
+        data: {
+          type: 'pools',
+          id: '1',
+          attributes: {
+            library_attributes: [libraries['_1'], libraries['_2'], library3],
+            template_prep_kit_box_barcode: 'ABC1',
+            volume: '10',
+            concentration: '10',
+            insert_size: 100,
+          },
+        },
+      })
     })
   })
 })

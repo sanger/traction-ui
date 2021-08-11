@@ -20,10 +20,10 @@
     <br />
 
     <b-table
-      id="library-index"
+      id="pool-index"
       show-empty
       responsive
-      :items="libraries"
+      :items="pools"
       :fields="fields"
       :filter="filter"
       :per-page="perPage"
@@ -33,7 +33,7 @@
       hover
       selectable
       select-mode="multi"
-      tbody-tr-class="library"
+      tbody-tr-class="pool"
       @filtered="onFiltered"
       @row-selected="onRowSelected"
     >
@@ -49,22 +49,45 @@
       </template>
 
       <template v-slot:cell(actions)="row">
-        <PacbioLibraryEdit :lib="row.item" @alert="showAlert"> </PacbioLibraryEdit>
+        <b-button
+          :id="'editPool-' + row.item.id"
+          size="sm"
+          variant="outline-primary"
+          :to="{ name: 'PacbioPoolCreate', params: { id: row.item.id } }"
+          >Edit</b-button
+        >
+      </template>
+
+      <template v-slot:cell(show_details)="row">
+        <b-button
+          :id="'details-btn-' + row.item.id"
+          size="sm"
+          class="mr-2"
+          variant="outline-info"
+          @click="row.toggleDetails"
+        >
+          {{ row.detailsShowing ? 'Hide' : 'Show' }} Details
+        </b-button>
+      </template>
+
+      <template v-slot:row-details="row">
+        <b-card>
+          <b-table
+            small
+            bordered
+            show-empty
+            :items="row.item.libraries"
+            :fields="field_in_details"
+            :filter="filter"
+          >
+          </b-table>
+        </b-card>
       </template>
     </b-table>
 
-    <span class="font-weight-bold">Total records: {{ libraries.length }}</span>
+    <span class="font-weight-bold">Total records: {{ pools.length }}</span>
 
     <div class="clearfix">
-      <b-button
-        id="deleteLibraries"
-        variant="danger"
-        class="float-left"
-        :disabled="selected.length === 0"
-        @click="handleLibraryDelete"
-      >
-        Delete Libraries
-      </b-button>
       <printerModal
         ref="printerModal"
         class="float-left"
@@ -76,9 +99,9 @@
       <b-pagination
         v-model="currentPage"
         class="float-right"
-        :total-rows="libraries.length"
+        :total-rows="pools.length"
         :per-page="perPage"
-        aria-controls="library-index"
+        aria-controls="pool-index"
       >
       </b-pagination>
     </div>
@@ -91,30 +114,25 @@
 
 <script>
 import Helper from '@/mixins/Helper'
-import PacbioLibraryEdit from '@/components/pacbio/PacbioLibraryEdit'
 import TableHelper from '@/mixins/TableHelper'
 import Alert from '@/components/Alert'
 import PrinterModal from '@/components/PrinterModal'
-import * as consts from '@/consts/consts'
 import { createNamespacedHelpers } from 'vuex'
-const { mapActions, mapGetters } = createNamespacedHelpers('traction/pacbio/libraries')
+const { mapActions, mapGetters } = createNamespacedHelpers('traction/pacbio/pools')
 
 export default {
-  name: 'Libraries',
+  name: 'PacbioPoolIndex',
   components: {
     Alert,
     PrinterModal,
-    PacbioLibraryEdit,
   },
   mixins: [Helper, TableHelper],
   data() {
     return {
       fields: [
         { key: 'selected', label: '' },
-        { key: 'pool.id', label: 'pool ID', sortable: true, tdClass: 'pool-id' },
-        { key: 'id', label: 'Library ID', sortable: true, tdClass: 'library-id' },
-        { key: 'sample_name', label: 'Sample Name', sortable: true, tdClass: 'sample-name' },
-        { key: 'barcode', label: 'Barcode', sortable: true, tdClass: 'barcode' },
+        { key: 'id', label: 'Pool ID', sortable: true, tdClass: 'pool-id' },
+        { key: 'barcode', label: 'Pool Barcode', sortable: true, tdClass: 'barcode' },
         { key: 'source_identifier', label: 'Source', sortable: true, tdClass: 'source-identifier' },
         { key: 'volume', label: 'Volume', sortable: true, tdClass: 'volume' },
         { key: 'concentration', label: 'Concentration', sortable: true, tdClass: 'concentration' },
@@ -125,9 +143,13 @@ export default {
           tdClass: 'template-prep-kit-box-barcode',
         },
         { key: 'insert_size', label: 'Insert Size', sortable: true, tdClass: 'insert-size' },
-        { key: 'tag_group_id', label: 'Tag', sortable: true, tdClass: 'tag-group-id' },
         { key: 'created_at', label: 'Created at', sortable: true, tdClass: 'created-at' },
         { key: 'actions', label: 'Actions' },
+        { key: 'show_details', label: '' },
+      ],
+      field_in_details: [
+        { key: 'sample_name', label: 'Sample(s)' },
+        { key: 'group_id', label: 'Tag(s)' },
       ],
       primary_key: 'id',
       filteredItems: [],
@@ -140,7 +162,7 @@ export default {
     }
   },
   computed: {
-    ...mapGetters(['libraries']),
+    ...mapGetters(['pools']),
   },
   created() {
     // When this component is created (the 'created' lifecycle hook is called), we need to get the
@@ -148,32 +170,19 @@ export default {
     this.provider()
   },
   methods: {
-    async handleLibraryDelete() {
-      try {
-        let selectedIds = this.selected.map((s) => s.id)
-        let responses = await this.deleteLibraries(selectedIds)
-
-        if (responses.every((r) => r.successful)) {
-          let keyword = selectedIds.length > 1 ? 'Libraries' : 'Library'
-          this.showAlert(`${keyword} ${selectedIds.join(', ')} successfully deleted`, 'success')
-          this.provider()
-        } else {
-          throw Error(responses.map((r) => r.errors.message).join(','))
-        }
-      } catch (error) {
-        this.showAlert(consts.MESSAGE_ERROR_DELETION_FAILED + error.message, 'danger')
-      }
-    },
     // Get all the libraries
     // Provider function used by the bootstrap-vue table component
     async provider() {
       try {
-        await this.setLibraries()
+        const { success, errors } = await this.setPools()
+        if (!success) {
+          throw errors
+        }
       } catch (error) {
-        this.showAlert('Failed to get libraries: ' + error.message, 'danger')
+        this.showAlert('Failed to get pools: ' + error.message, 'danger')
       }
     },
-    ...mapActions(['deleteLibraries', 'setLibraries']),
+    ...mapActions(['setPools']),
   },
 }
 </script>

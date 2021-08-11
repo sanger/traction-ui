@@ -15,7 +15,8 @@ describe('getters.js', () => {
     wellList,
     requestList,
     libraryItem,
-    result,
+    poolItem,
+    tubeItem,
   } = getters
 
   const tagSets = {
@@ -135,17 +136,17 @@ describe('getters.js', () => {
     const libraries = {
       _136: {
         pacbio_request_id: '136',
-        tagId: null,
+        tag_id: null,
         volume: null,
         concentration: null,
-        fragmentSize: null,
+        insert_size: null,
       }, // A selected request
       _40: {
         pacbio_request_id: '40',
-        tagId: null,
+        tag_id: null,
         volume: null,
         concentration: null,
-        fragmentSize: null,
+        insert_size: null,
       }, // A selected request
     }
 
@@ -195,17 +196,17 @@ describe('getters.js', () => {
     const libraries = {
       _3: {
         pacbio_request_id: '3',
-        tagId: null,
+        tag_id: null,
         volume: null,
         concentration: null,
-        fragmentSize: null,
+        insert_size: null,
       },
       _4: {
         pacbio_request_id: '4',
-        tagId: null,
+        tag_id: null,
         volume: null,
         concentration: null,
-        fragmentSize: null,
+        insert_size: null,
       },
     }
     const mergedRequests = [
@@ -234,17 +235,17 @@ describe('getters.js', () => {
     const libraries = {
       _3: {
         pacbio_request_id: '3',
-        tagId: null,
+        tag_id: null,
         volume: null,
         concentration: null,
-        fragmentSize: null,
+        insert_size: null,
       },
       _4: {
         pacbio_request_id: '4',
-        tagId: null,
+        tag_id: null,
         volume: null,
         concentration: null,
-        fragmentSize: null,
+        insert_size: null,
       },
     }
     it('will return the correct library', () => {
@@ -253,11 +254,40 @@ describe('getters.js', () => {
     })
   })
 
-  describe('resultItem', () => {
-    it('returns what it does', () => {
-      const newResult = { state: 'success', message: 'help' }
-      state.result = newResult
-      expect(result(state)).toEqual(newResult)
+  describe('poolItem', () => {
+    const pool = {
+      id: 1,
+      template_prep_kit_box_barcode: 'ABC1',
+      volume: '1',
+      concentration: '1',
+      insert_size: '100',
+    }
+
+    it('returns the correct data', () => {
+      state.pool = pool
+      expect(poolItem(state)).toEqual(pool)
+    })
+
+    it('when the pool does not exist', () => {
+      state.pool = undefined
+      expect(poolItem(state)).toEqual({})
+    })
+  })
+
+  describe('tubeItem', () => {
+    const tube = {
+      id: 1,
+      barcode: 'TRAC-1',
+    }
+
+    it('returns the correct data', () => {
+      state.tube = tube
+      expect(tubeItem(state)).toEqual(tube)
+    })
+
+    it('when the tube does not exist', () => {
+      state.tube = undefined
+      expect(tubeItem(state)).toEqual({})
     })
   })
 })

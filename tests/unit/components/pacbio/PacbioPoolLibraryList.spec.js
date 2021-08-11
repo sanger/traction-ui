@@ -6,7 +6,7 @@ const libraryAttributes = {
   tag_id: '1',
   volume: '1.0',
   concentration: '10.0',
-  fragment_size: '100',
+  insert_size: '100',
 }
 
 const requests = {
@@ -49,55 +49,5 @@ describe('PacbioPoolLibraryList.vue', () => {
     expect(wrapper.findAll('[data-type=pool-library-edit]').length).toEqual(
       Object.values(libraries).length,
     )
-  })
-
-  describe('pooling message', () => {
-    describe('when pool creation is successful', () => {
-      const result = { success: true, message: 'Pool successfully created' }
-
-      it('message', () => {
-        store.state.traction.pacbio.poolCreate.result = result
-        const wrapper = mount(PacbioPoolLibraryList, {
-          store,
-          localVue,
-        })
-        const message = wrapper.find('[data-type=pool-create-message]')
-        expect(message.text()).toMatch('Pool successfully created')
-      })
-
-      it('alert variant', () => {
-        store.state.traction.pacbio.poolCreate.result = result
-        const wrapper = mount(PacbioPoolLibraryList, {
-          store,
-          localVue,
-        })
-        const message = wrapper.find('[data-type=pool-create-message]')
-        expect(message.html()).toMatch('alert-success')
-      })
-    })
-
-    describe('when pool creation fails', () => {
-      const result = { success: false, message: 'There was a problem' }
-
-      it('message', () => {
-        store.state.traction.pacbio.poolCreate.result = result
-        const wrapper = mount(PacbioPoolLibraryList, {
-          store,
-          localVue,
-        })
-        const message = wrapper.find('[data-type=pool-create-message]')
-        expect(message.text()).toMatch('There was a problem')
-      })
-
-      it('alert variant', () => {
-        store.state.traction.pacbio.poolCreate.result = result
-        const wrapper = mount(PacbioPoolLibraryList, {
-          store,
-          localVue,
-        })
-        const message = wrapper.find('[data-type=pool-create-message]')
-        expect(message.html()).toMatch('alert-danger')
-      })
-    })
   })
 })

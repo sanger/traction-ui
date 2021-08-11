@@ -6,8 +6,10 @@ const libraryAttributes = {
   tag_id: null,
   volume: null,
   concentration: null,
-  fragment_size: null,
+  insert_size: null,
 }
+
+const requiredAttributes = ['pacbio_request_id', 'tag_id', 'volume', 'concentration', 'insert_size']
 
 const newLibrary = (attributes) => {
   return {
@@ -24,7 +26,7 @@ const newLibrary = (attributes) => {
 const validate = ({ libraries }) => {
   for (const [key, library] of Object.entries(libraries)) {
     const errors = {}
-    Object.keys(libraryAttributes).forEach((field) => {
+    requiredAttributes.forEach((field) => {
       if (!library[field]) {
         errors[field] = 'must be present'
       }
@@ -44,32 +46,53 @@ const valid = ({ libraries }) => {
 }
 
 const extractLibraryAttributes = ({
+  id,
   pacbio_request_id,
   template_prep_kit_box_barcode,
   tag_id,
   volume,
   concentration,
-  fragment_size,
+  insert_size,
 }) => {
   return {
+    id,
     pacbio_request_id,
     template_prep_kit_box_barcode,
     tag_id,
     volume,
     concentration,
-    fragment_size,
+    insert_size,
   }
 }
 
-/* 
-  produce a json api compliant (sort of) payload
-  e.g. { data: attributes: { libraries: [ library1, library2 ... ]}}
+const extractPoolAttributes = ({
+  template_prep_kit_box_barcode,
+  volume,
+  concentration,
+  insert_size,
+}) => {
+  return {
+    template_prep_kit_box_barcode,
+    volume,
+    concentration,
+    insert_size,
+  }
+}
+
+/*
+  produce a json api compliant payload
+  e.g. { data: { type: 'pools', attributes: { library_attributes: [ library1, library2 ... ], template_prep_kit_box_barcode, volume, concentration, insert_size}}}
 */
-const payload = ({ libraries }) => {
+const payload = ({ libraries, pool }) => {
   return {
     data: {
+      type: 'pools',
+      id: pool.id,
       attributes: {
-        libraries: Object.values(libraries).map((library) => extractLibraryAttributes(library)),
+        library_attributes: Object.values(libraries).map((library) =>
+          extractLibraryAttributes(library),
+        ),
+        ...extractPoolAttributes(pool),
       },
     },
   }

@@ -3,7 +3,7 @@ import * as Run from '@/api/SaphyrRun'
 
 const setRuns = async ({ commit, getters }) => {
   let request = getters.runRequest
-  let promise = request.get()
+  let promise = request.get({ include: 'chip.flowcells.library' })
   let response = await handlePromise(promise)
 
   if (response.successful && !response.empty) {
@@ -25,7 +25,7 @@ const isLibraryBarcodeValid = async ({ dispatch }, barcode) => {
 // TODO: Reuse action from tubes module?
 const getTubeForBarcode = async ({ rootGetters }, barcode) => {
   let request = rootGetters['traction/saphyr/tubes/tubeRequest']
-  let promise = request.get({ filter: { barcode: barcode } })
+  let promise = request.get({ filter: { barcode }, include: 'materials' })
   let response = await handlePromise(promise)
 
   if (response.successful && !response.empty) {
@@ -48,7 +48,7 @@ const validateLibraryTube = (tube) => {
 
 const editRun = async ({ commit, getters }, runId) => {
   let request = getters.runRequest
-  let promise = request.find(runId)
+  let promise = request.find({ id: runId, include: 'chip.flowcells.library' })
   let response = await handlePromise(promise)
 
   if (response.successful) {

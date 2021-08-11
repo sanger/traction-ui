@@ -19,8 +19,8 @@
           </b-form-input>
         </b-form-group>
 
-        <b-form-group id="input-group-4" label="Fragment Size:" label-for="input-4">
-          <b-form-input id="input-4" v-model="library.fragment_size"> </b-form-input>
+        <b-form-group id="input-group-4" label="Insert Size:" label-for="input-4">
+          <b-form-input id="input-4" v-model="library.insert_size"> </b-form-input>
         </b-form-group>
       </b-form>
 
@@ -52,7 +52,7 @@ export default {
   data() {
     return {
       library: {
-        fragment_size: '',
+        insert_size: '',
         template_prep_kit_box_barcode: '',
         concentration: '',
         volume: '',

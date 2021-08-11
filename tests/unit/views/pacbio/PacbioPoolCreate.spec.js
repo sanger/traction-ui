@@ -1,5 +1,5 @@
 import PacbioPoolCreate from '@/views/pacbio/PacbioPoolCreate'
-import { mount, localVue, store, Data } from 'testHelper'
+import { mount, localVue, store, Data, router } from 'testHelper'
 import flushPromises from 'flush-promises'
 
 describe('PacbioPoolCreate', () => {
@@ -20,6 +20,7 @@ describe('PacbioPoolCreate', () => {
     mount(PacbioPoolCreate, {
       localVue,
       store,
+      router,
     })
 
     await flushPromises()
@@ -36,7 +37,6 @@ describe('PacbioPoolCreate', () => {
       },
     } = store
 
-    // TODO: implement fetchPacbioPlates
     expect(Object.keys(plates).length).toBeGreaterThan(0)
     expect(Object.keys(tagSets).length).toBeGreaterThan(0)
   })

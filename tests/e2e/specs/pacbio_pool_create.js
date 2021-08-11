@@ -13,7 +13,7 @@ describe('Pacbio Pool Create', () => {
     cy.visit('#/pacbio/pool/new')
     cy.contains('Pool')
     cy.get('[data-type=labware-list]')
-      .get('button')
+      .find('[data-action=select-labware]')
       .first()
       .click()
     cy.get('[data-input=labware-find]').type('DN814567Q{enter}')
@@ -38,13 +38,18 @@ describe('Pacbio Pool Create', () => {
       cy.get('[data-attribute=template-prep-kit-box-barcode]').type('ABC1')
       cy.get('[data-attribute=volume]').type('1')
       cy.get('[data-attribute=concentration]').type('10.0')
-      cy.get('[data-attribute=fragment-size]').type('100')
+      cy.get('[data-attribute=insert-size]').type('100')
     })
-    cy.intercept('/v1/pacbio/pools', {
+    cy.intercept('/v1/pacbio/pools?include=tube', {
       statusCode: 201,
       body: {
         data: {
-          id: '1',
+          pool: {
+            id: '1',
+            tube: {
+              barcode: 'TRAC-1',
+            },
+          },
         },
       },
     })
@@ -57,7 +62,7 @@ describe('Pacbio Pool Create', () => {
     cy.visit('#/pacbio/pool/new')
     cy.contains('Pool')
     cy.get('[data-type=labware-list]')
-      .get('button')
+      .find('button')
       .first()
       .click()
     cy.get('[data-input=labware-find]').type('DN814567Q{enter}')
@@ -79,13 +84,15 @@ describe('Pacbio Pool Create', () => {
       cy.get('[data-attribute=template-prep-kit-box-barcode]').type('ABC1')
       cy.get('[data-attribute=volume]').type('1')
       cy.get('[data-attribute=concentration]').type('10.0')
-      cy.get('[data-attribute=fragment-size]').type('100')
+      cy.get('[data-attribute=insert-size]').type('100')
     })
-    cy.intercept('/v1/pacbio/pools', {
+    cy.intercept('/v1/pacbio/pools?include=tube', {
       statusCode: 422,
       body: {
-        errors: {
-          error1: ['There was a problem'],
+        data: {
+          errors: {
+            error1: ['There was a problem'],
+          },
         },
       },
     })

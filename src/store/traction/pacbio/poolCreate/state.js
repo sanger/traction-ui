@@ -43,7 +43,10 @@ export default () => {
     // Libraries. Indexed by an internally generated id.
     libraries: {},
 
-    // Result: The result of the pool create call i.e. response with message and status
-    result: {},
+    // Pool: The current pool being edited or created
+    pool: {},
+
+    // Tube: The tube for the current pool
+    tube: {},
   }
 }

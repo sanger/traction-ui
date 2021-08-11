@@ -14,7 +14,7 @@ const setPools = async ({ commit, getters }) => {
   })
   let response = await handleResponse(promise)
 
-  const { success, data: { data, included = [] } = {} } = response
+  const { success, data: { data, included = [] } = {}, errors = [] } = response
 
   if (success) {
     const { tubes, libraries, tags, requests } = groupIncludedByResource(included)
@@ -24,6 +24,8 @@ const setPools = async ({ commit, getters }) => {
     commit('setTags', tags)
     commit('setRequests', requests)
   }
+
+  return { success, errors }
 }
 
 const actions = { setPools }
