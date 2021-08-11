@@ -97,7 +97,8 @@ export default {
   },
   populateLibrariesFromPool: async ({ commit, rootState }, poolId) => {
     const request = rootState.api.traction.pacbio.pools
-    const promise = request.find(poolId, {
+    const promise = request.find({
+      id: poolId,
       // We want to load *all* associated records, as otherwise we might be referencing them
       // before they are loaded. Furthermore, if we start filtering the plates list at all,
       // we may *never* load the relevant records.

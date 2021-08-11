@@ -198,12 +198,12 @@ describe('createRequest', () => {
     })
 
     describe('update', () => {
-      const data = { id: '1', attribute: 'boo' }
+      const payload = { data: { id: '1', attribute: 'boo' } }
 
       it('single', async () => {
         mockAxios.patch.mockReturnValue(mockResponse)
         const request = createRequest({ ...attributes })
-        const response = await request.update(data)
+        const response = await request.update(payload)
         expect(mockAxios.patch).toBeCalled()
         expect(response).toEqual(mockResponse)
       })

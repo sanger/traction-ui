@@ -21,7 +21,7 @@ const newRun = ({ commit }) => {
 
 const editRun = async ({ commit, getters }, runId) => {
   let request = getters.runRequest
-  let promise = request.find(runId, { include: 'plate.wells.pools.tube' })
+  let promise = request.find({ id: runId, include: 'plate.wells.pools.tube' })
   let response = await handlePromise(promise)
 
   if (response.successful) {
@@ -57,7 +57,7 @@ const updateRun = async ({ getters, dispatch }) => {
 
 const getRun = async ({ getters }, id) => {
   let request = getters.runRequest
-  let promise = request.find({ id, include: 'plate.wells.libraries' })
+  let promise = request.find({ id, include: 'plate.wells.pools.libraries' })
   let response = await handlePromise(promise)
 
   if (response.successful) {
