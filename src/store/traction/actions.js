@@ -22,8 +22,8 @@ const cancelRun = async ({ dispatch }, id) => {
 const handleRunUpdate = async ({ getters, commit }, payload) => {
   let request = getters[getPipeline() + '/runs/runRequest']
   let runPayload = runPayloadJson(payload)
-  let promises = await request.update(runPayload)
-  let response = await handlePromise(promises[0])
+  const promise = await request.update(runPayload)
+  const response = await handlePromise(promise)
 
   if (response.successful) {
     let updatedRun = response.deserialize.runs[0]

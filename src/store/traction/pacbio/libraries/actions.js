@@ -73,9 +73,9 @@ const updateTag = async ({ getters }, payload) => {
     },
   }
 
-  let request = getters.requestLibraryRequest
-  let promises = request.update(body)
-  let response = await handlePromise(promises[0])
+  const request = getters.requestLibraryRequest
+  const promise = request.update(body)
+  const response = await handlePromise(promise)
 
   return response
 }
@@ -94,9 +94,9 @@ const updateLibrary = async ({ commit, getters }, payload) => {
     },
   }
 
-  let request = getters.libraryRequest
-  let promises = request.update(body)
-  let response = await handlePromise(promises[0])
+  const request = getters.libraryRequest
+  const promise = request.update(body)
+  const response = await handlePromise(promise)
 
   if (response.successful) {
     let library = response.deserialize.libraries[0]

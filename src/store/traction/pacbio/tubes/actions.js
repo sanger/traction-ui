@@ -10,7 +10,7 @@ const isLibraryBarcodeValid = async ({ dispatch }, barcode) => {
 
 const getTubeForBarcode = async ({ rootGetters }, barcode) => {
   let request = rootGetters['traction/pacbio/tubes/tubeRequest']
-  let promise = request.get({ filter: { barcode: barcode } })
+  let promise = request.get({ filter: { barcode: barcode }, include: 'materials' })
   let response = await handlePromise(promise)
 
   if (response.successful && !response.empty) {

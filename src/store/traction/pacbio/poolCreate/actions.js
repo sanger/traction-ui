@@ -76,7 +76,7 @@ export default {
     validate({ libraries })
     if (!valid({ libraries })) return { success: false, errors: 'The pool is invalid' }
     const request = rootState.api.traction.pacbio.pools
-    const promise = request.create(payload({ libraries, pool }), { include: 'tube' })
+    const promise = request.create({ data: payload({ libraries, pool }), include: 'tube' })
     // TODO: I think this is the best I can do here but it may be an idea to extract this into a method
     // if we have to do it more often
     const { success, data: { included = [] } = {}, errors } = await handleResponse(promise)
@@ -91,9 +91,7 @@ export default {
     validate({ libraries })
     if (!valid({ libraries })) return { success: false, errors: 'The pool is invalid' }
     const request = rootState.api.traction.pacbio.pools
-    const promise = request.update(payload({ libraries, pool }), { include: 'tube' })
-    // TODO: I think this is the best I can do here but it may be an idea to extract this into a method
-    // if we have to do it more often
+    const promise = request.update(payload({ libraries, pool }))
     const { success, errors } = await handleResponse(promise[0])
     return { success, errors }
   },

@@ -34,7 +34,7 @@ describe('actions', () => {
       const update = jest.fn()
       const getters = { requestsRequest: { update: update }, requests: requests }
 
-      update.mockReturnValue([Data.TractionPacbioSamples])
+      update.mockReturnValue(Data.TractionPacbioSamples)
 
       let resp = await Actions.updateRequest({ getters }, sample)
 
@@ -50,7 +50,7 @@ describe('actions', () => {
       const update = jest.fn()
       const getters = { requestsRequest: { update: update }, requests: requests }
 
-      update.mockReturnValue([failedResponse])
+      update.mockReturnValue(failedResponse)
 
       let expectedResponse = new Response(failedResponse)
       await expect(Actions.updateRequest({ getters }, sample)).rejects.toEqual(

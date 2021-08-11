@@ -18,7 +18,6 @@ describe('#setPools', () => {
     get.mockResolvedValue(response)
 
     await Actions.setPools({ commit, getters })
-
     expect(commit).toHaveBeenCalledWith('setPools', pools)
     expect(commit).toHaveBeenCalledWith('setTubes', included.slice(0, 2))
     expect(commit).toHaveBeenCalledWith('setLibraries', included.slice(2, 4))

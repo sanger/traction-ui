@@ -277,7 +277,10 @@ describe('actions.js', () => {
       const libraries = { _1: library1, _2: library2 }
       create.mockResolvedValue(mockResponse)
       const { success, barcode } = await createPool({ rootState, state: { libraries, pool } })
-      expect(create).toHaveBeenCalledWith(payload({ libraries, pool }), expect.anything())
+      expect(create).toHaveBeenCalledWith({
+        data: payload({ libraries, pool }),
+        include: expect.anything(),
+      })
       expect(success).toBeTruthy()
       expect(barcode).toEqual('TRAC-1')
     })
@@ -357,7 +360,7 @@ describe('actions.js', () => {
       const libraries = { _1: library1, _2: library2 }
       update.mockResolvedValue(mockResponse)
       const { success } = await updatePool({ rootState, state: { libraries, pool } })
-      expect(update).toHaveBeenCalledWith(payload({ libraries, pool }), expect.anything())
+      expect(update).toHaveBeenCalledWith(payload({ libraries, pool }))
       expect(success).toBeTruthy()
     })
 
