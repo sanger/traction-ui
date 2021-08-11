@@ -28,15 +28,12 @@ const validForRunCreation = (pool) => {
   )
 }
 
-const validateLibraryTube = (tube) => {
-  if (!tube) {
-    return false
-  }
-  if (!tube.pools?.length > 0) {
+const validateLibraryTube = ({ pools = [] } = {}) => {
+  if (pools.length < 1) {
     return false
   }
 
-  return tube.pools.every(validForRunCreation)
+  return pools.every(validForRunCreation)
 }
 
 const actions = {
