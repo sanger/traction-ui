@@ -38,6 +38,7 @@ import PacbioWellLibrary from './pacbioWellLibrary'
 import TractionTags from './tractionTags'
 import SequencescapePlates from './sequencescapePlates'
 import TractionTubeWithContainerMaterials from './tractionTubeWithContainerMaterials'
+import TractionTubesWithPacbioPools from './tractionTubesWithPacbioPools'
 import TractionPlates from './tractionPlates'
 
 export default {
@@ -81,5 +82,6 @@ export default {
   TractionTags,
   SequencescapePlates,
   TractionTubeWithContainerMaterials,
+  TractionTubesWithPacbioPools,
   TractionPlates,
 }

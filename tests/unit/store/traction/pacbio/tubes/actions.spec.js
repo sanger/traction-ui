@@ -14,27 +14,34 @@ describe('#isLibraryBarcodeValid', () => {
     expect(result).toEqual(false)
   })
 
-  it('will return false if the barcode belongs to a sample', async () => {
-    let sampleTube = new Response(Data.TractionTubesWithSample).deserialize.tubes[0]
+  it('will return false if there is no pool', async () => {
+    let sampleTube = new Response(Data.TractionTubesWithPacbioPools).deserialize.tubes[0]
     dispatch.mockReturnValue(sampleTube)
     let result = await Actions.isLibraryBarcodeValid({ dispatch }, 'TRAC-1')
     expect(result).toEqual(false)
   })
 
-  it('will return true if the barcode belongs to a library', async () => {
-    let libraryTube = new Response(Data.TractionTubeWithContainerMaterials).deserialize.tubes[0]
+  it('will return false if the pool is not ready', async () => {
+    let sampleTube = new Response(Data.TractionTubesWithPacbioPools).deserialize.tubes[1]
+    dispatch.mockReturnValue(sampleTube)
+    let result = await Actions.isLibraryBarcodeValid({ dispatch }, 'TRAC-2')
+    expect(result).toEqual(false)
+  })
+
+  it('will return true if the pool is ready', async () => {
+    let libraryTube = new Response(Data.TractionTubesWithPacbioPools).deserialize.tubes[2]
     dispatch.mockReturnValue(libraryTube)
-    let result = await Actions.isLibraryBarcodeValid({ dispatch }, 'TRAC-1')
+    let result = await Actions.isLibraryBarcodeValid({ dispatch }, 'TRAC-3')
     expect(result).toEqual(true)
   })
 })
 
 describe('#getTubeForBarcode', () => {
-  let get, rootGetters, barcode, failedResponse
+  let get, getters, barcode, failedResponse
 
   beforeEach(() => {
     get = jest.fn()
-    rootGetters = { 'traction/pacbio/tubes/tubeRequest': { get: get } }
+    getters = { tubeRequest: { get: get } }
     barcode = 'TRAC-1'
 
     failedResponse = { data: { data: [] }, status: 500, statusText: 'Internal Server Error' }
@@ -44,7 +51,7 @@ describe('#getTubeForBarcode', () => {
     get.mockReturnValue(Data.TractionTubeWithContainerMaterials)
 
     let expectedResponse = new Response(Data.TractionTubeWithContainerMaterials)
-    let response = await Actions.getTubeForBarcode({ rootGetters }, barcode)
+    let response = await Actions.getTubeForBarcode({ getters }, barcode)
 
     expect(response).toEqual(expectedResponse.deserialize.tubes[0])
   })
@@ -52,26 +59,37 @@ describe('#getTubeForBarcode', () => {
   it('unsuccessfully', async () => {
     get.mockReturnValue(failedResponse)
 
-    let response = await Actions.getTubeForBarcode({ rootGetters }, barcode)
+    let response = await Actions.getTubeForBarcode({ getters }, barcode)
     expect(response).toEqual()
   })
 })
 
 describe('#validateLibraryTube', () => {
-  it('returns false if tube doesnt exist', () => {
+  it("returns false if tube doesn't exist", () => {
     expect(Actions.validateLibraryTube()).toBeFalsy()
   })
 
-  it('returns false if tube doesnt have material', () => {
-    expect(Actions.validateLibraryTube({ 'no material': '' })).toBeFalsy()
+  it("returns false if tube doesn't have pools", () => {
+    expect(Actions.validateLibraryTube({ 'no pools': '' })).toBeFalsy()
   })
 
-  it('returns false if tube doesnt have material with libraries', () => {
-    expect(Actions.validateLibraryTube({ materials: [{ notype: '' }] })).toBeFalsy()
+  it('returns false if the pool is not complete', () => {
+    expect(Actions.validateLibraryTube({ pools: [{}] })).toBeFalsy()
   })
 
-  it('returns true valid', () => {
+  it('returns true if valid', () => {
     // check the validation of a library
-    expect(Actions.validateLibraryTube({ materials: [{ material_type: 'library' }] })).toBeTruthy()
+    expect(
+      Actions.validateLibraryTube({
+        pools: [
+          {
+            volume: 100,
+            concentration: 200,
+            template_prep_kit_box_barcode: 'barcode',
+            fragment_size: 122,
+          },
+        ],
+      }),
+    ).toBeTruthy()
   })
 })
