@@ -98,7 +98,7 @@
           "volume": null,
           "concentration": null,
           "template_prep_kit_box_barcode": null,
-          "fragment_size": null,
+          "insert_size": null,
           "created_at": "2021-08-04T14:35:44.190Z",
           "updated_at": "2021-08-04T14:35:44.190Z",
           "source_identifier": "DN1:A3"
@@ -132,7 +132,7 @@
           "volume": 100,
           "concentration": 200,
           "template_prep_kit_box_barcode": "barcode",
-          "fragment_size": 122,
+          "insert_size": 122,
           "created_at": "2021-08-04T14:35:44.190Z",
           "updated_at": "2021-08-04T14:35:44.190Z",
           "source_identifier": "DN1:A3"

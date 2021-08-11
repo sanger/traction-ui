@@ -14,7 +14,7 @@ describe('LibraryTubeItem.vue', () => {
         volume: 10.2,
         concentration: 13.1,
         template_prep_kit_box_barcode: 'BB1',
-        fragment_size: 100,
+        insert_size: 100,
         source_identifier: 'DN1S:A1',
       }
 
@@ -47,8 +47,8 @@ describe('LibraryTubeItem.vue', () => {
       expect(wrapper.find('[data-attribute=template-prep-kit-box-barcode]').text()).toContain('BB1')
     })
 
-    it('must have a fragment-size', () => {
-      expect(wrapper.find('[data-attribute=fragment-size]').text()).toContain('100')
+    it('must have a insert-size', () => {
+      expect(wrapper.find('[data-attribute=insert-size]').text()).toContain('100')
     })
 
     it('must have some libraries', () => {

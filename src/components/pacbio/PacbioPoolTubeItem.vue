@@ -27,7 +27,7 @@
             {{ template_prep_kit_box_barcode || 'Unknown' }}
           </dd>
           <dt>Fragment size</dt>
-          <dd data-attribute="fragment-size">{{ fragment_size || 'Unknown' }}</dd>
+          <dd data-attribute="insert-size">{{ insert_size || 'Unknown' }}</dd>
           <dt>Libraries</dt>
           <dd>
             <ul>
@@ -74,7 +74,7 @@ export default {
       required: false,
       default: null,
     },
-    fragment_size: {
+    insert_size: {
       type: Number,
       required: false,
       default: null,
@@ -98,7 +98,7 @@ export default {
         this.volume &&
         this.concentration &&
         this.template_prep_kit_box_barcode &&
-        this.fragment_size &&
+        this.insert_size &&
         true
       )
     },

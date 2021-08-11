@@ -86,7 +86,7 @@ describe('#validateLibraryTube', () => {
             volume: 100,
             concentration: 200,
             template_prep_kit_box_barcode: 'barcode',
-            fragment_size: 122,
+            insert_size: 122,
           },
         ],
       }),

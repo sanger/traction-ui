@@ -23,7 +23,7 @@ const validForRunCreation = (pool) => {
     pool.volume &&
     pool.concentration &&
     pool.template_prep_kit_box_barcode &&
-    pool.fragment_size &&
+    pool.insert_size &&
     true
   )
 }

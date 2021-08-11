@@ -89,7 +89,7 @@ const updateLibrary = async ({ commit, getters }, payload) => {
         volume: payload.volume,
         concentration: payload.concentration,
         template_prep_kit_box_barcode: payload.template_prep_kit_box_barcode,
-        fragment_size: payload.fragment_size,
+        insert_size: payload.insert_size,
       },
     },
   }
