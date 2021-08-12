@@ -57,7 +57,6 @@ describe('Pacbio Pool Create', () => {
     cy.contains('[data-type=pool-create-message]', 'Pool successfully created')
   })
 
-  // TODO: we have a problem with handling api calls that cause errors.
   it('Will not create a pool if there is an error', () => {
     cy.visit('#/pacbio/pool/new')
     cy.contains('Pool')

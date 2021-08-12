@@ -75,4 +75,15 @@ describe('Pacbio Run Create view', () => {
 
     // TODO: we need a success message.
   })
+
+  it('creates a run unsuccessfully', () => {
+    // visit the runs page
+    // click new run
+    // fill in the sequencing kit box barcode
+    // fill in the dna control complex box barcode
+    // fill in the system name
+    // drag a pool
+    // click create
+    // I should see a message e.g. well information needs to be filled in
+  })
 })
