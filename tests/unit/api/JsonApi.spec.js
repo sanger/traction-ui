@@ -119,7 +119,7 @@ describe('JsonApi', () => {
             volume: 1.0,
             concentration: 1.0,
             template_prep_kit_box_barcode: 'LK12345',
-            fragment_size: 100,
+            insert_size: 100,
             created_at: '2021/06/17 09:43',
             deactivated_at: null,
             source_identifier: 'DN1:A1',

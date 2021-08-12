@@ -10,7 +10,7 @@ const createLibraryInTraction = async ({ rootGetters, getters }, library) => {
         volume: library.volume,
         concentration: library.concentration,
         template_prep_kit_box_barcode: library.templatePrepKitBoxBarcode,
-        fragment_size: library.fragmentSize,
+        insert_size: library.insertSize,
       },
       relationships: {
         request: { data: { type: 'requests', id: library.sample.id } },
@@ -36,7 +36,7 @@ const deleteLibraries = async ({ getters }, libraryIds) => {
 
 const setLibraries = async ({ commit, getters }) => {
   let request = getters.libraryRequest
-  let promise = request.get()
+  let promise = request.get({ include: 'request,tag,tube' })
   let response = await handlePromise(promise)
   let libraries = null
 
@@ -73,9 +73,9 @@ const updateTag = async ({ getters }, payload) => {
     },
   }
 
-  let request = getters.requestLibraryRequest
-  let promises = request.update(body)
-  let response = await handlePromise(promises[0])
+  const request = getters.requestLibraryRequest
+  const promise = request.update(body)
+  const response = await handlePromise(promise)
 
   return response
 }
@@ -89,14 +89,14 @@ const updateLibrary = async ({ commit, getters }, payload) => {
         volume: payload.volume,
         concentration: payload.concentration,
         template_prep_kit_box_barcode: payload.template_prep_kit_box_barcode,
-        fragment_size: payload.fragment_size,
+        insert_size: payload.insert_size,
       },
     },
   }
 
-  let request = getters.libraryRequest
-  let promises = request.update(body)
-  let response = await handlePromise(promises[0])
+  const request = getters.libraryRequest
+  const promise = request.update(body)
+  const response = await handlePromise(promise)
 
   if (response.successful) {
     let library = response.deserialize.libraries[0]

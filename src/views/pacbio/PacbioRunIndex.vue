@@ -131,12 +131,6 @@ export default {
         { key: 'name', label: 'Name', sortable: true, tdClass: 'name' },
         { key: 'state', label: 'State', sortable: true, tdClass: 'state' },
         {
-          key: 'binding_kit_box_barcode',
-          label: 'Binding Kit BB',
-          sortable: true,
-          tdClass: 'binding-kit-box-barcode',
-        },
-        {
           key: 'sequencing_kit_box_barcode',
           label: 'Sequencing Kit BB',
           sortable: true,

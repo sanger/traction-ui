@@ -119,10 +119,18 @@ export default {
   },
 
   /**
-   * Returns the result of the pool creation
+   * Returns the pool
    * @param {Object} state The Vuex state object
    */
-  result: (state) => {
-    return state.result
+  poolItem: (state) => {
+    return state.pool || {}
+  },
+
+  /**
+   * Returns the tube
+   * @param {Object} state The Vuex state object
+   */
+  tubeItem: (state) => {
+    return state.tube || {}
   },
 }

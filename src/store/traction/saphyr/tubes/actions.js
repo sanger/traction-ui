@@ -3,7 +3,7 @@ import handlePromise from '@/api/PromiseHelper'
 const getTractionTubesForBarcodes = async ({ commit, getters }, barcodes) => {
   let request = getters.tubeRequest
   let barcodeString = barcodes.join(',')
-  let promise = request.get({ filter: { barcode: barcodeString } })
+  let promise = request.get({ filter: { barcode: barcodeString }, include: 'materials' })
   let response = await handlePromise(promise)
   if (response.successful && !response.empty) {
     let tubes = response.deserialize.tubes

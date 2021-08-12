@@ -1,14 +1,5 @@
 <template>
-  <b-col v-if="selectedRequests" data-type="pool-library-list">
-    <b-alert
-      :show="!!result.message"
-      data-type="pool-create-message"
-      dismissible
-      :variant="alertVariant"
-    >
-      {{ result.message }}
-    </b-alert>
-    <h3>Pooled Samples</h3>
+  <b-tr v-if="selectedRequests" data-type="pool-library-list">
     <b-table-simple>
       <b-thead>
         <b-tr>
@@ -31,7 +22,7 @@
             Concentration
           </b-th>
           <b-th>
-            Fragment Size
+            Insert Size
           </b-th>
         </b-tr>
       </b-thead>
@@ -43,56 +34,27 @@
         ></PacbioPoolLibraryEdit>
       </b-tbody>
     </b-table-simple>
-    <div class="text-right">
-      <b-button data-action="create-pool" variant="success" :disabled="busy" @click="create()">
-        <span class="button-text">Create Pool </span>
-        <b-spinner v-show="busy" small></b-spinner>
-      </b-button>
-    </div>
-  </b-col>
+  </b-tr>
 </template>
 
 <script>
 import PacbioPoolLibraryEdit from '@/components/pacbio/PacbioPoolLibraryEdit'
 import { createNamespacedHelpers } from 'vuex'
-const { mapGetters, mapActions } = createNamespacedHelpers('traction/pacbio/poolCreate')
+const { mapGetters } = createNamespacedHelpers('traction/pacbio/poolCreate')
 
 export default {
   name: 'PacbioPoolLibraryList',
   components: {
     PacbioPoolLibraryEdit,
   },
-  data() {
-    return {
-      busy: false,
-    }
-  },
   computed: {
-    ...mapGetters(['selectedRequests', 'result']),
-    alertVariant() {
-      return this.result.success ? 'success' : 'danger'
-    },
-  },
-
-  methods: {
-    ...mapActions(['createPool']),
-    create() {
-      this.busy = true
-      this.createPool()
-      this.busy = false
-    },
+    ...mapGetters(['selectedRequests']),
   },
 }
 </script>
 
 <style scoped lang="scss">
-@import 'src/styles/components.scss';
 th {
   font-size: 0.8em;
-}
-.button-text {
-  padding-right: 2px;
-  position: relative;
-  top: 2px;
 }
 </style>

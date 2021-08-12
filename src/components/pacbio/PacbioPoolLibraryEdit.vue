@@ -62,16 +62,16 @@
     </b-td>
     <b-td>
       <b-form-input
-        v-model="library.fragment_size"
-        data-attribute="fragment-size"
-        :value="library.fragment_size"
-        placeholder="Fragment Size"
+        v-model="library.insert_size"
+        data-attribute="insert-size"
+        :value="library.insert_size"
+        placeholder="Insert Size"
         type="text"
-        title="Fragment Size"
-        :state="hasErrors('fragment_size')"
+        title="Insert Size"
+        :state="hasErrors('insert_size')"
       />
-      <b-form-invalid-feedback data-attribute="fragment-size-error">
-        {{ errorsFor('fragment_size') }}
+      <b-form-invalid-feedback data-attribute="insert-size-error">
+        {{ errorsFor('insert_size') }}
       </b-form-invalid-feedback>
     </b-td>
   </b-tr>

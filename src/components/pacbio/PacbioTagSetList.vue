@@ -3,7 +3,7 @@
     <h3>Select tag set</h3>
     <b-form-select
       v-if="!isEmpty"
-      v-model="selected"
+      :value="selected"
       data-type="tag-set-list"
       :options="options"
       @change="updateSelected"
@@ -22,11 +22,6 @@ export default {
   name: 'PacbioTagSetList',
   components: { Alert },
   mixins: [Helper],
-  data() {
-    return {
-      selected: null,
-    }
-  },
   computed: {
     isEmpty() {
       return this.tagSets.length === 0
@@ -39,10 +34,14 @@ export default {
     options() {
       return [{ value: null, text: 'Please select a tag set' }, ...this.tagSets]
     },
+    selected() {
+      const { id = null } = this.$store.getters['traction/pacbio/poolCreate/selectedTagSet']
+      return id
+    },
   },
   methods: {
-    updateSelected() {
-      this.$store.commit('traction/pacbio/poolCreate/selectTagSet', { id: this.selected })
+    updateSelected(id) {
+      this.$store.commit('traction/pacbio/poolCreate/selectTagSet', { id })
     },
   },
 }

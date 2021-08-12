@@ -31,17 +31,6 @@
         </b-form-input>
       </b-form-group>
 
-      <b-form-group id="insertSize-group" label="Insert size:" label-for="insertSize">
-        <b-form-input
-          id="insertSize"
-          ref="insertSize"
-          :value="insertSize"
-          placeholder="Insert Size"
-          @change="updateInsertSize"
-        >
-        </b-form-input>
-      </b-form-group>
-
       <b-form-group id="generateHiFi-group" label="Generate HiFi Reads:" label-for="generateHiFi">
         <b-form-select
           id="generateHiFi"
@@ -80,6 +69,21 @@
           :value="preExtensionTime"
           placeholder="Pre-extension time"
           @change="updatePreExtensionTime"
+        >
+        </b-form-input>
+      </b-form-group>
+
+      <b-form-group
+        id="bindingKitBoxBarcode-group"
+        label="Binding Kit Box Barcode: "
+        label-for="bindingKitBoxBarcode"
+      >
+        <b-form-input
+          id="bindingKitBoxBarcode"
+          ref="bindingKitBoxBarcode"
+          :value="bindingKitBoxBarcode"
+          placeholder="Binding Kit Box Barcode"
+          @change="updateBindingKitBoxBarcode"
         >
         </b-form-input>
       </b-form-group>
@@ -150,9 +154,6 @@ export default {
     ...mapGetters('traction/pacbio/runs', ['currentRun', 'well']),
     ...mapGetters('traction/pacbio/pools', ['poolByBarcode']),
     ...mapState('traction/pacbio/runs', {
-      insertSize() {
-        return this.well(this.position) ? this.well(this.position).insert_size : ''
-      },
       onPlateLoadingConc() {
         return this.well(this.position)
           ? this.well(this.position).on_plate_loading_concentration
@@ -172,6 +173,9 @@ export default {
       },
       ccsAnalysisOutput() {
         return this.well(this.position) ? this.well(this.position).ccs_analysis_output : ''
+      },
+      bindingKitBoxBarcode() {
+        return this.well(this.position) ? this.well(this.position).binding_kit_box_barcode : ''
       },
     }),
   },
@@ -194,9 +198,6 @@ export default {
     update() {
       this.alert('Well updated', 'success')
       this.hide()
-    },
-    updateInsertSize(insertSize) {
-      this.mutateWell({ position: this.position, property: 'insert_size', with: insertSize })
     },
     updateOnPlateLoadingConc(conc) {
       this.mutateWell({
@@ -227,6 +228,13 @@ export default {
         position: this.position,
         property: 'ccs_analysis_output',
         with: ccsAnalysisOutput,
+      })
+    },
+    updateBindingKitBoxBarcode(bindingKitBoxBarcode) {
+      this.mutateWell({
+        position: this.position,
+        property: 'binding_kit_box_barcode',
+        with: bindingKitBoxBarcode,
       })
     },
     async updatePoolBarcode(row, barcode) {

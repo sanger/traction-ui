@@ -1,5 +1,4 @@
-import Vue from 'vue'
-import Request from '@/api/Request'
+import createRequest from '@/api/createRequest'
 
 /*
   This will construct the api based on any config that has been passed
@@ -13,9 +12,6 @@ import Request from '@/api/Request'
   It would also be better to have pipelines as nested resources and use recursion for better flexibility
 */
 
-// we need to create a sub class of Vue and return the constructor
-const cmp = Vue.extend(Request)
-
 /*
  * @param {*} config - A piece of json containing all the apis, resources and pipeline
  * @param {*} environment - The current node environment which should contain the variables for the base URLs which are sensitive
@@ -26,24 +22,24 @@ const build = ({ config, environment }) => {
     return {
       ...result,
       // each api will be a property and we need to extract the baseURL from the environment
-      [api.name]: buildApi({ ...api, baseURL: environment[api.baseURL] }),
+      [api.name]: buildApi({ ...api, rootURL: environment[api.baseURL] }),
     }
   }, {})
 }
 
 /*
  * @param {String} apiNamespace - the namespace of the API e.g. v1
- * @param {String} baseURL -  the base URL of the API
+ * @param {String} rootURL -  the base URL of the API
  * @param [*] resources - a list of end points
  * @param [*] pipelines - each api may have a set of pipelines e.g. traction has Saphyr, Pacbio and ONT
  * @returns {*} an object which is a set of nested resources
  *
  */
-const buildApi = ({ apiNamespace, baseURL, resources, pipelines = [] }) => {
-  const apiResources = buildResources({ apiNamespace, baseURL, resources })
+const buildApi = ({ apiNamespace, rootURL, resources, pipelines = [] }) => {
+  const apiResources = buildResources({ apiNamespace, rootURL, resources })
 
   pipelines.forEach(({ name, resources }) => {
-    apiResources[name] = buildResources({ apiNamespace, baseURL, resources, pipeline: name })
+    apiResources[name] = buildResources({ apiNamespace, rootURL, resources, pipeline: name })
   })
 
   return apiResources
@@ -53,17 +49,15 @@ const buildApi = ({ apiNamespace, baseURL, resources, pipelines = [] }) => {
  * @param {String} pipeline - e.g. Pacbio. Useful for nesting. e.g. traction.pacbio.requests
  * @returns {*} - an object which is a set of resources. Each resource will be a callabke request
  */
-const buildResources = ({ apiNamespace, baseURL, resources, pipeline = null }) => {
-  return resources.reduce((result, { name, filter, include, resources = [] }) => {
+const buildResources = ({ apiNamespace, rootURL, resources, pipeline = null }) => {
+  return resources.reduce((result, { name, resources = [] }) => {
     return {
       ...result,
       // if the resource is part of a pipeline create the relevant path e.g. saphyr/requests otherwise just the resource
       [name]: buildRequest({
         apiNamespace,
-        baseURL,
+        rootURL,
         resource: pipeline ? `${pipeline}/${name}` : name,
-        filter,
-        include,
         resources,
       }),
     }
@@ -71,25 +65,18 @@ const buildResources = ({ apiNamespace, baseURL, resources, pipeline = null }) =
 }
 
 /*
-  for filter, include see the Request object
-  * @param [*] - resources. A list of resources that belong to the request. e.g. runs can have plates and wells.
-  * @returns - Request (Vue Component) - this would be better as a POJO
-*/
-const buildRequest = ({ apiNamespace, baseURL, resource, filter, include, resources }) => {
-  const request = new cmp({
-    propsData: { apiNamespace, baseURL, resource, filter, include },
-  })
+ * @param [*] - resources. A list of resources that belong to the request. e.g. runs can have plates and wells.
+ * @returns {Request} - a request
+ */
+const buildRequest = ({ apiNamespace, rootURL, resource, resources }) => {
+  const request = createRequest({ apiNamespace, rootURL, resource })
 
-  resources.forEach(({ name, filter, include }) => {
+  resources.forEach(({ name }) => {
     // the resources path will be a combination of the parent resource and the child resource e.g. runs/plates
-    request[name] = new cmp({
-      propsData: {
-        apiNamespace,
-        baseURL,
-        resource: `${request.resource}/${name}`,
-        filter,
-        include,
-      },
+    request[name] = createRequest({
+      apiNamespace,
+      rootURL,
+      resource: `${request.resource}/${name}`,
     })
   })
 

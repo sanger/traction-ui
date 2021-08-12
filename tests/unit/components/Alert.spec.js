@@ -56,4 +56,16 @@ describe('Alert.vue', () => {
     expect(alert.message).toBe('msg')
     expect(alert.type).toBe('primary')
   })
+
+  describe('data-attribute', () => {
+    it('default', () => {
+      const wrapper = mount(Alert, { localVue })
+      expect(wrapper.find('[data-type=error-message]').exists()).toBeTruthy()
+    })
+
+    it('passed as prop', () => {
+      const wrapper = mount(Alert, { localVue, propsData: { dataType: 'darkstar' } })
+      expect(wrapper.find('[data-type=darkstar]').exists()).toBeTruthy()
+    })
+  })
 })

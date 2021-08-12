@@ -19,7 +19,7 @@ describe('Libraries.vue', () => {
           volume: 1.0,
           concentration: 1.0,
           template_prep_kit_box_barcode: 'LK12345',
-          fragment_size: 100,
+          insert_size: 100,
           created_at: '03/12/2019 11:49',
         },
         pool: {
@@ -38,7 +38,7 @@ describe('Libraries.vue', () => {
           volume: 1.0,
           concentration: 1.0,
           template_prep_kit_box_barcode: 'LK12345',
-          fragment_size: 100,
+          insert_size: 100,
           created_at: '03/12/2019 11:49',
         },
         pool: {
