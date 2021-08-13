@@ -24,8 +24,8 @@ describe('Pacbio Pool Edit', () => {
   it('Updates a pool successfully', () => {
     cy.visit('#/pacbio/pools')
     cy.get('.pool')
+      .get('[data-action=edit-pool]')
       .first()
-      .find('[data-action=edit-pool]')
       .click()
     cy.get('[data-type=plate-item]').should('be.visible')
     cy.get('[data-type=tag-set-item]').should('be.visible')
