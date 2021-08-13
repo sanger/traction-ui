@@ -10,7 +10,7 @@ describe('Pacbio Run Edit view', () => {
   })
 
   it('will not create a run if there is an error', () => {
-   // visit the runs page
+    // visit the runs page
     // click edit existing run
     // click on well
     // remove on plate loading concentration

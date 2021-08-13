@@ -1,4 +1,3 @@
-
 describe('Pacbio Pool Edit', () => {
   beforeEach(() => {
     cy.intercept(
@@ -10,8 +9,8 @@ describe('Pacbio Pool Edit', () => {
     cy.intercept(
       'v1/pacbio/pools/1?include=libraries.tag.tag_set,libraries.source_plate.wells.requests,libraries.request,tube',
       {
-        fixture: 'tractionPacbioPool.json'
-      }
+        fixture: 'tractionPacbioPool.json',
+      },
     )
     cy.intercept('/v1/pacbio/tag_sets?include=tags', {
       fixture: 'tractionPacbioTagSets.json',
@@ -40,11 +39,10 @@ describe('Pacbio Pool Edit', () => {
     cy.get('[data-action=update-pool]').click()
     // TODO: need to give this a better name
     cy.contains('[data-type=pool-create-message]', 'Pool successfully updated')
-   
   })
 
   it('Will not update a pool if there is an error', () => {
-  // when I visit the pools page
+    // when I visit the pools page
     // and I click on edit pool
     // I should see the pool barcode
     // and the plate
