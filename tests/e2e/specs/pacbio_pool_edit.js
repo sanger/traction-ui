@@ -37,7 +37,7 @@ describe('Pacbio Pool Edit', () => {
       cy.get('[data-attribute=insert-size]').type('100')
     })
     cy.intercept('/v1/pacbio/pools/242', {
-      statusCode: 200
+      statusCode: 200,
     })
     cy.get('[data-action=update-pool]').click()
     // TODO: need to give this a better name
