@@ -92,7 +92,7 @@ export default {
     if (!valid({ libraries })) return { success: false, errors: 'The pool is invalid' }
     const request = rootState.api.traction.pacbio.pools
     const promise = request.update(payload({ libraries, pool }))
-    const { success, errors } = await handleResponse(promise[0])
+    const { success, errors } = await handleResponse(promise)
     return { success, errors }
   },
   populateLibrariesFromPool: async ({ commit, rootState }, poolId) => {
