@@ -8,6 +8,7 @@ const buildWell = (
   row,
   column,
   generate_hifi = '',
+  binding_kit_box_barcode = '',
   pre_extension_time = PRE_EXTENSION_TIME_DEFAULT,
   ccs_analysis_output = CCS_ANALYSIS_OUTPUT_DEFAULT,
 ) => ({
@@ -15,11 +16,13 @@ const buildWell = (
   column,
   position: `${row}${column}`,
   movie_time: '',
-  insert_size: '',
   on_plate_loading_concentration: '',
   generate_hifi,
   ccs_analysis_output,
+  binding_kit_box_barcode,
+  // TODO remove
   libraries: [],
+  pools: [],
   pre_extension_time,
 })
 
@@ -27,7 +30,6 @@ const build = (object) => {
   return (
     object || {
       id: 'new',
-      binding_kit_box_barcode: '',
       sequencing_kit_box_barcode: '',
       dna_control_complex_box_barcode: '',
       comments: '',
@@ -54,8 +56,8 @@ const create = async (run, request) => {
     responses.push(plateResponse)
     let plateId = plateResponse.deserialize.plates[0].id
 
-    let wellsWithLibraries = run.plate.wells.filter((well) => well.libraries.length != 0)
-    let wellsPayload = createWellsPayload(wellsWithLibraries, plateId)
+    let wellsWithPools = run.plate.wells.filter((well) => well.pools.length != 0)
+    let wellsPayload = createWellsPayload(wellsWithPools, plateId)
     let wellResponse = await createResource(wellsPayload, request.runs.wells)
     responses.push(wellResponse)
   } catch (err) {
@@ -66,7 +68,7 @@ const create = async (run, request) => {
 }
 
 const createResource = async (payload, request) => {
-  let response = await handlePromise(request.create(payload))
+  let response = await handlePromise(request.create({ data: payload }))
   if (response.successful) {
     return response
   } else {
@@ -81,8 +83,8 @@ const update = async (run, request) => {
     let runPayload = updateRunPayload(run)
     let runResponse = await updateResource(runPayload, request.runs)
     responses.push(runResponse)
-    let wellsWithLibraries = run.plate.wells.filter((well) => well.libraries.length != 0)
-    for (const well of wellsWithLibraries) {
+    let wellsWithPools = run.plate.wells.filter((well) => well.pools.length != 0)
+    for (const well of wellsWithPools) {
       if (well.id) {
         // Well exists - Update well
         let wellPayload = updateWellPayload(well)
@@ -102,8 +104,8 @@ const update = async (run, request) => {
 }
 
 const updateResource = async (payload, request) => {
-  let promises = await request.update(payload)
-  let response = await handlePromise(promises[0])
+  const promise = await request.update(payload)
+  const response = await handlePromise(promise)
 
   if (response.successful) {
     return response
@@ -117,7 +119,6 @@ const createRunPayload = (run) => {
     data: {
       type: 'runs',
       attributes: {
-        binding_kit_box_barcode: run.binding_kit_box_barcode,
         sequencing_kit_box_barcode: run.sequencing_kit_box_barcode,
         dna_control_complex_box_barcode: run.dna_control_complex_box_barcode,
         system_name: run.system_name,
@@ -140,19 +141,19 @@ const createPlatePayload = (runId) => {
 
 const createWellsPayload = (wells, plateId) => {
   let wellsAttributes = wells.reduce((accumulator, well) => {
-    let librariesAttributes = well.libraries.map((l) => {
-      return { type: 'libraries', id: l.id }
+    let poolsAttributes = well.pools.map((l) => {
+      return { type: 'pools', id: l.id }
     })
 
     accumulator.push({
       row: well.row,
       column: well.column,
       movie_time: well.movie_time,
-      insert_size: well.insert_size,
       on_plate_loading_concentration: well.on_plate_loading_concentration,
       generate_hifi: well.generate_hifi,
       ccs_analysis_output: well.ccs_analysis_output,
       pre_extension_time: well.pre_extension_time,
+      binding_kit_box_barcode: well.binding_kit_box_barcode,
       relationships: {
         plate: {
           data: {
@@ -160,8 +161,8 @@ const createWellsPayload = (wells, plateId) => {
             id: plateId,
           },
         },
-        libraries: {
-          data: librariesAttributes,
+        pools: {
+          data: poolsAttributes,
         },
       },
     })
@@ -184,7 +185,6 @@ const updateRunPayload = (run) => {
       id: run.id,
       type: 'runs',
       attributes: {
-        binding_kit_box_barcode: run.binding_kit_box_barcode,
         sequencing_kit_box_barcode: run.sequencing_kit_box_barcode,
         dna_control_complex_box_barcode: run.dna_control_complex_box_barcode,
         system_name: run.system_name,
@@ -195,8 +195,8 @@ const updateRunPayload = (run) => {
 }
 
 const updateWellPayload = (well) => {
-  let librariesAttributes = well.libraries.map((l) => {
-    return { type: 'libraries', id: l.id }
+  let poolsAttributes = well.pools.map((l) => {
+    return { type: 'pools', id: l.id }
   })
 
   return {
@@ -207,15 +207,15 @@ const updateWellPayload = (well) => {
         row: well.row,
         column: well.column,
         movie_time: well.movie_time,
-        insert_size: well.insert_size,
         on_plate_loading_concentration: well.on_plate_loading_concentration,
         generate_hifi: well.generate_hifi,
         ccs_analysis_output: well.ccs_analysis_output,
         pre_extension_time: well.pre_extension_time,
+        binding_kit_box_barcode: well.binding_kit_box_barcode,
       },
       relationships: {
-        libraries: {
-          data: librariesAttributes,
+        pools: {
+          data: poolsAttributes,
         },
       },
     },

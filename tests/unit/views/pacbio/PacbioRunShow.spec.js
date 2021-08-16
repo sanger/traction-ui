@@ -8,7 +8,6 @@ describe('Run.vue', () => {
     mockRun = {
       id: '1',
       name: '',
-      binding_kit_box_barcode: '',
       sequencing_kit_box_barcode: '',
       dna_control_complex_box_barcode: '',
       comments: '',
@@ -31,7 +30,7 @@ describe('Run.vue', () => {
       localVue,
       stubs: {
         Plate: true,
-        PacbioLibraryList: true,
+        pacbioPoolList: true,
         PacbioRunInfoEdit: true,
       },
       propsData: { id: 'new' },
@@ -53,7 +52,7 @@ describe('Run.vue', () => {
 
   describe('Pacbio Libraries Table', () => {
     it('dispays the pacbio library table', () => {
-      expect(wrapper.findComponent({ ref: 'PacbioLibraryList' })).toBeTruthy()
+      expect(wrapper.findComponent({ ref: 'pacbioPoolList' })).toBeTruthy()
     })
   })
 
@@ -129,7 +128,7 @@ describe('Run.vue', () => {
         propsData: { id: 1 },
         stubs: {
           Plate: true,
-          PacbioLibraryList: true,
+          pacbioPoolList: true,
           PacbioRunInfoEdit: true,
         },
       })

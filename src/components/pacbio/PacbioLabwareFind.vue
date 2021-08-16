@@ -16,6 +16,7 @@
           :key="item.id"
           button
           :active="item.selected"
+          data-action="select-labware"
           @click="toggleSelected(item)"
         >
           Plate: {{ item.barcode }}

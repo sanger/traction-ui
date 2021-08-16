@@ -1,30 +1,13 @@
-import Vue from 'vue'
-import { mount, Data } from 'testHelper'
-import Request from '@/api/Request'
+import { Data } from 'testHelper'
 import Response from '@/api/Response'
 import * as Run from '@/api/PacbioRun'
 import build from '@/api/ApiBuilder'
 import Api from '@/api'
 
-// TODO: fix requests here for DPL-022
-
 describe('Run', () => {
-  let cmp, props, wrapper, request, run, failedResponse
+  let run, failedResponse
 
   beforeEach(() => {
-    cmp = Vue.extend({
-      mixins: [Request],
-      render() {
-        return ''
-      },
-    })
-
-    props = { baseURL: 'http://sequencescape.com', apiNamespace: 'api/v2', resource: 'requests' }
-    wrapper = mount(cmp, { propsData: props })
-
-    request = wrapper.vm.api
-    request.get = jest.fn()
-
     failedResponse = {
       status: 404,
       statusText: 'Record not found',
@@ -40,10 +23,6 @@ describe('Run', () => {
 
       it('will have a temporary id', () => {
         expect(run.id).toEqual('new')
-      })
-
-      it('will have an binding_kit_box_barcode', () => {
-        expect(run.binding_kit_box_barcode).toBeDefined()
       })
 
       it('will have an sequencing_kit_box_barcode', () => {
@@ -89,7 +68,7 @@ describe('Run', () => {
     let well
 
     beforeEach(() => {
-      well = Run.buildWell('A', 1, 'In SMRT Link')
+      well = Run.buildWell('A', 1, 'In SMRT Link', '12345')
     })
 
     it('will have the correct data', () => {
@@ -97,17 +76,19 @@ describe('Run', () => {
       expect(well.column).toEqual(1)
       expect(well.position).toEqual('A1')
       expect(well.movie_time).toEqual('')
-      expect(well.insert_size).toEqual('')
       expect(well.on_plate_loading_concentration).toEqual('')
       expect(well.libraries).toEqual([])
+      expect(well.pools).toEqual([])
       expect(well.generate_hifi).toEqual('In SMRT Link')
       expect(well.pre_extension_time).toEqual(2)
       expect(well.ccs_analysis_output).toEqual('Yes')
+      expect(well.binding_kit_box_barcode).toEqual('12345')
     })
 
     it('will have the correct data when passed values', () => {
-      well = Run.buildWell('A', 1, 'In SMRT Link', 1, 'No')
+      well = Run.buildWell('A', 1, 'In SMRT Link', '12345', 1, 'No')
       expect(well.generate_hifi).toEqual('In SMRT Link')
+      expect(well.binding_kit_box_barcode).toEqual('12345')
       expect(well.pre_extension_time).toEqual(1)
       expect(well.ccs_analysis_output).toEqual('No')
     })
@@ -120,8 +101,8 @@ describe('Run', () => {
     beforeEach(() => {
       run = Run.build()
       run['name'] = 'run1'
-      run.plate.wells[0] = { position: 'A1', libraries: [{ id: 1 }] }
-      run.plate.wells[1] = { position: 'A2', libraries: [{ id: 2 }] }
+      run.plate.wells[0] = { position: 'A1', pools: [{ id: 1 }] }
+      run.plate.wells[1] = { position: 'A2', pools: [{ id: 2 }] }
 
       api = build({ config: Api.Config, environment: process.env })
       pacbioRequest = api.traction.pacbio
@@ -201,13 +182,13 @@ describe('Run', () => {
       expect(resp).toEqual('title The record identified by 100 could not be found.')
     })
 
-    describe('when a well has no libraries', () => {
+    describe('when a well has no pools', () => {
       beforeEach(() => {
         well1 = new Response(Data.PacbioWells).deserialize.wells[0]
         well2 = new Response(Data.PacbioWells).deserialize.wells[1]
 
-        well1['libraries'] = [{ id: 1 }, { id: 2 }]
-        well2['libraries'] = []
+        well1['pools'] = [{ id: 1 }, { id: 2 }]
+        well2['pools'] = []
 
         run = {
           id: '1',
@@ -230,11 +211,8 @@ describe('Run', () => {
   })
 
   describe('createResource', () => {
-    beforeEach(() => {
-      request.create = jest.fn()
-    })
-
     it('success', async () => {
+      const request = { create: jest.fn() }
       request.create.mockResolvedValue(Data.PacbioRun)
       let mockResponse = new Response(Data.PacbioRun)
 
@@ -243,6 +221,7 @@ describe('Run', () => {
     })
 
     it('failure', async () => {
+      const request = { create: jest.fn() }
       request.create.mockReturnValue(failedResponse)
 
       let message
@@ -266,7 +245,6 @@ describe('Run', () => {
       let result = Run.createRunPayload(run)
 
       expect(result.data.type).toEqual('runs')
-      expect(result.data.attributes.binding_kit_box_barcode).toEqual(run.binding_kit_box_barcode)
       expect(result.data.attributes.sequencing_kit_box_barcode).toEqual(
         run.sequencing_kit_box_barcode,
       )
@@ -292,8 +270,8 @@ describe('Run', () => {
     beforeEach(() => {
       run = Run.build()
 
-      run.plate.wells[0] = { position: 'A1', libraries: [{ id: 1 }, { id: 2 }] }
-      run.plate.wells[1] = { position: 'A2', libraries: [{ id: 2 }] }
+      run.plate.wells[0] = { position: 'A1', pools: [{ id: 1 }, { id: 2 }] }
+      run.plate.wells[1] = { position: 'A2', pools: [{ id: 2 }] }
 
       wells = run.plate.wells
       plateID = 1
@@ -306,7 +284,6 @@ describe('Run', () => {
       expect(result.data.attributes.wells[0].row).toEqual(wells[0].row)
       expect(result.data.attributes.wells[0].column).toEqual(wells[0].column)
       expect(result.data.attributes.wells[0].movie_time).toEqual(wells[0].movie_time)
-      expect(result.data.attributes.wells[0].insert_size).toEqual(wells[0].insert_size)
       expect(result.data.attributes.wells[0].on_plate_loading_concentration).toEqual(
         wells[0].on_plate_loading_concentration,
       )
@@ -320,25 +297,22 @@ describe('Run', () => {
       expect(result.data.attributes.wells[0].ccs_analysis_output).toEqual(
         wells[0].ccs_analysis_output,
       )
+      expect(result.data.attributes.wells[0].binding_kit_box_barcode).toEqual(
+        wells[0].binding_kit_box_barcode,
+      )
       expect(result.data.attributes.wells[0].relationships.plate.data.type).toEqual('plates')
       expect(result.data.attributes.wells[0].relationships.plate.data.id).toEqual(plateID)
-      expect(result.data.attributes.wells[0].relationships.libraries.data[0].type).toEqual(
-        'libraries',
+      expect(result.data.attributes.wells[0].relationships.pools.data[0].type).toEqual('pools')
+      expect(result.data.attributes.wells[0].relationships.pools.data[0].id).toEqual(
+        wells[0].pools[0].id,
       )
-      expect(result.data.attributes.wells[0].relationships.libraries.data[0].id).toEqual(
-        wells[0].libraries[0].id,
+      expect(result.data.attributes.wells[0].relationships.pools.data[1].type).toEqual('pools')
+      expect(result.data.attributes.wells[0].relationships.pools.data[1].id).toEqual(
+        wells[0].pools[1].id,
       )
-      expect(result.data.attributes.wells[0].relationships.libraries.data[1].type).toEqual(
-        'libraries',
-      )
-      expect(result.data.attributes.wells[0].relationships.libraries.data[1].id).toEqual(
-        wells[0].libraries[1].id,
-      )
-      expect(result.data.attributes.wells[1].relationships.libraries.data[0].type).toEqual(
-        'libraries',
-      )
-      expect(result.data.attributes.wells[1].relationships.libraries.data[0].id).toEqual(
-        wells[1].libraries[0].id,
+      expect(result.data.attributes.wells[1].relationships.pools.data[0].type).toEqual('pools')
+      expect(result.data.attributes.wells[1].relationships.pools.data[0].id).toEqual(
+        wells[1].pools[0].id,
       )
     })
   })
@@ -350,8 +324,8 @@ describe('Run', () => {
       well1 = new Response(Data.PacbioWells).deserialize.wells[0]
       well2 = new Response(Data.PacbioWells).deserialize.wells[1]
 
-      well1['libraries'] = [{ id: 1 }, { id: 2 }]
-      well2['libraries'] = [{ id: 2 }]
+      well1['pools'] = [{ id: 1 }, { id: 2 }]
+      well2['pools'] = [{ id: 2 }]
 
       run = {
         id: '1',
@@ -374,8 +348,8 @@ describe('Run', () => {
     })
 
     it('on succuess, it returns an empty list when there are no errors', async () => {
-      pacbioRequest.runs.update.mockResolvedValue([Data.PacbioRun])
-      pacbioRequest.runs.wells.update.mockResolvedValue([Data.PacbioWell])
+      pacbioRequest.runs.update.mockResolvedValue(Data.PacbioRun)
+      pacbioRequest.runs.wells.update.mockResolvedValue(Data.PacbioWell)
 
       let resp = await Run.update(run, pacbioRequest)
 
@@ -391,7 +365,7 @@ describe('Run', () => {
     })
 
     it('on failure, it returns a list of errors', async () => {
-      pacbioRequest.runs.update.mockResolvedValue([failedResponse])
+      pacbioRequest.runs.update.mockResolvedValue(failedResponse)
       let resp = await Run.update(run, pacbioRequest)
 
       expect(pacbioRequest.runs.update).toHaveBeenCalled()
@@ -400,13 +374,13 @@ describe('Run', () => {
       expect(resp).toEqual(['title The record identified by 100 could not be found.'])
     })
 
-    describe('when a well has no libraries', () => {
+    describe('when a well has no pools', () => {
       beforeEach(() => {
         well1 = new Response(Data.PacbioWells).deserialize.wells[0]
         well2 = new Response(Data.PacbioWells).deserialize.wells[1]
 
-        well1['libraries'] = [{ id: 1 }, { id: 2 }]
-        well2['libraries'] = []
+        well1['pools'] = [{ id: 1 }, { id: 2 }]
+        well2['pools'] = []
 
         run = {
           id: '1',
@@ -418,7 +392,7 @@ describe('Run', () => {
       })
 
       it('should remove that well from the payload', () => {
-        pacbioRequest.runs.update.mockResolvedValue([Data.PacbioRun])
+        pacbioRequest.runs.update.mockResolvedValue(Data.PacbioRun)
 
         Run.update(run, pacbioRequest)
         expect(pacbioRequest.runs.update).toHaveBeenCalledTimes(1)
@@ -427,12 +401,9 @@ describe('Run', () => {
   })
 
   describe('updateResource', () => {
-    beforeEach(() => {
-      request.update = jest.fn()
-    })
-
     it('success', async () => {
-      request.update.mockResolvedValue([Data.PacbioRun])
+      const request = { update: jest.fn() }
+      request.update.mockResolvedValue(Data.PacbioRun)
       let mockResponse = new Response(Data.PacbioRun)
 
       let response = await Run.updateResource({}, request)
@@ -440,7 +411,8 @@ describe('Run', () => {
     })
 
     it('failure', async () => {
-      request.update.mockReturnValue([failedResponse])
+      const request = { update: jest.fn() }
+      request.update.mockReturnValue(failedResponse)
 
       let message
       try {
@@ -464,7 +436,6 @@ describe('Run', () => {
 
       expect(result.data.id).toEqual(run.id)
       expect(result.data.type).toEqual('runs')
-      expect(result.data.attributes.binding_kit_box_barcode).toEqual(run.binding_kit_box_barcode)
       expect(result.data.attributes.sequencing_kit_box_barcode).toEqual(
         run.sequencing_kit_box_barcode,
       )
@@ -481,7 +452,7 @@ describe('Run', () => {
 
     beforeEach(() => {
       well = new Response(Data.PacbioWell).deserialize.wells[0]
-      well.libraries = [{ id: 1 }]
+      well.pools = [{ id: 1 }]
     })
 
     it('return run payload', async () => {
@@ -492,16 +463,15 @@ describe('Run', () => {
       expect(result.data.attributes.row).toEqual(well.row)
       expect(result.data.attributes.column).toEqual(well.column)
       expect(result.data.attributes.movie_time).toEqual(well.movie_time)
-      expect(result.data.attributes.insert_size).toEqual(well.insert_size)
       expect(result.data.attributes.on_plate_loading_concentration).toEqual(
         well.on_plate_loading_concentration,
       )
       expect(result.data.attributes.generate_hifi).toEqual(well.generate_hifi)
       expect(result.data.attributes.ccs_analysis_output).toEqual(well.ccs_analysis_output)
       expect(result.data.attributes.pre_extension_time).toEqual(well.pre_extension_time)
-      expect(result.data.attributes.ccs_analysis_output).toEqual(well.ccs_analysis_output)
-      expect(result.data.relationships.libraries.data[0].type).toEqual('libraries')
-      expect(result.data.relationships.libraries.data[0].id).toEqual(well.libraries[0].id)
+      expect(result.data.attributes.binding_kit_box_barcode).toEqual(well.binding_kit_box_barcode)
+      expect(result.data.relationships.pools.data[0].type).toEqual('pools')
+      expect(result.data.relationships.pools.data[0].id).toEqual(well.pools[0].id)
     })
   })
 

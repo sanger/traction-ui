@@ -16,7 +16,7 @@ describe('Pacbio Libraries view', () => {
         cy.get('.volume').should('have.length.greaterThan', 0)
         cy.get('.concentration').should('have.length.greaterThan', 0)
         cy.get('.template-prep-kit-box-barcode').should('have.length.greaterThan', 0)
-        cy.get('.fragment-size').should('have.length.greaterThan', 0)
+        cy.get('.insert-size').should('have.length.greaterThan', 0)
       })
   })
 })

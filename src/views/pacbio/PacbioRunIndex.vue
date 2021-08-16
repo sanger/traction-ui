@@ -80,7 +80,7 @@
         </b-button>
 
         <a
-          v-show="row.item.all_wells_have_libraries"
+          v-show="row.item.all_wells_have_pools"
           :id="generateId('generate-sample-sheet', row.item.id)"
           :href="generateSampleSheetPath(row.item.id)"
           class="text-primary"
@@ -130,12 +130,6 @@ export default {
         { key: 'id', label: 'Run ID', sortable: true, tdClass: 'run-id' },
         { key: 'name', label: 'Name', sortable: true, tdClass: 'name' },
         { key: 'state', label: 'State', sortable: true, tdClass: 'state' },
-        {
-          key: 'binding_kit_box_barcode',
-          label: 'Binding Kit BB',
-          sortable: true,
-          tdClass: 'binding-kit-box-barcode',
-        },
         {
           key: 'sequencing_kit_box_barcode',
           label: 'Sequencing Kit BB',

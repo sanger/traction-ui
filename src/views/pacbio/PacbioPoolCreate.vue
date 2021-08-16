@@ -2,19 +2,19 @@
   <div>
     <b-container id="pool" fluid>
       <b-row>
-        <PacbioLabwareFind />
+        <PacbioLabwareFind ref="labwareFind" />
         <b-col>
           <b-row>
-            <PacbioTagSetList></PacbioTagSetList>
+            <PacbioTagSetList ref="tagSetList" />
           </b-row>
           <b-row>
-            <PacbioTagSetItem></PacbioTagSetItem>
+            <PacbioTagSetItem />
           </b-row>
         </b-col>
       </b-row>
       <b-row>
         <PacbioLabwareSelectedList />
-        <PacbioPoolLibraryList />
+        <PacbioPoolEdit />
       </b-row>
     </b-container>
   </div>
@@ -25,7 +25,10 @@ import PacbioTagSetList from '@/components/pacbio/PacbioTagSetList'
 import PacbioLabwareFind from '@/components/pacbio/PacbioLabwareFind'
 import PacbioLabwareSelectedList from '@/components/pacbio/PacbioLabwareSelectedList'
 import PacbioTagSetItem from '@/components/pacbio/PacbioTagSetItem'
-import PacbioPoolLibraryList from '@/components/pacbio/PacbioPoolLibraryList'
+import PacbioPoolEdit from '@/components/pacbio/PacbioPoolEdit'
+
+import { createNamespacedHelpers } from 'vuex'
+const { mapActions } = createNamespacedHelpers('traction/pacbio/poolCreate')
 
 export default {
   name: 'PacbioPoolCreate',
@@ -34,14 +37,36 @@ export default {
     PacbioLabwareFind,
     PacbioLabwareSelectedList,
     PacbioTagSetItem,
-    PacbioPoolLibraryList,
+    PacbioPoolEdit,
   },
   data() {
     return {}
   },
-  async created() {
-    await this.$store.dispatch('traction/pacbio/poolCreate/fetchPacbioPlates')
-    await this.$store.dispatch('traction/pacbio/poolCreate/fetchPacbioTagSets')
+  created() {
+    const plates = this.fetchPacbioPlates()
+    const tagSets = this.fetchPacbioTagSets()
+
+    if (this.$route.params.id !== 'new') {
+      const libraries = this.populateLibrariesFromPool(this.$route.params.id)
+      libraries.then(this.plateAlert)
+    }
+    // We don't use await here as otherwise the handling of one response will be blocked
+    // by the other
+    plates.then(this.plateAlert)
+    tagSets.then(this.tagSetAlert)
+  },
+  methods: {
+    plateAlert({ success, errors }) {
+      if (!success) {
+        this.$refs['labwareFind'].showAlert(errors, 'danger')
+      }
+    },
+    tagSetAlert({ success, errors }) {
+      if (!success) {
+        this.$refs['tagSetList'].showAlert(errors, 'danger')
+      }
+    },
+    ...mapActions(['fetchPacbioPlates', 'fetchPacbioTagSets', 'populateLibrariesFromPool']),
   },
 }
 </script>

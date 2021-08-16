@@ -1,5 +1,6 @@
 import { mount, localVue, store } from 'testHelper'
 import WellEdit from '@/components/pacbio/PacbioRunWellEdit'
+import storePools from '@tests/data/StorePools'
 import * as Run from '@/api/PacbioRun'
 
 describe('PacbioWellModal', () => {
@@ -9,7 +10,7 @@ describe('PacbioWellModal', () => {
     props = { row: 'A', column: '1', position: 'A1' }
 
     storeWell = Run.buildWell(props.row, props.column, 'In SMRT Link')
-    storeWell.libraries = [{ tube: { barcode: 'TRAC-0' } }]
+    storeWell.pools = [{ id: 1, barcode: 'TRAC-0' }]
 
     run = Run.build()
     run.plate.wells[0] = storeWell
@@ -61,14 +62,14 @@ describe('PacbioWellModal', () => {
   })
 
   it('can have mapState', () => {
-    expect(modal.insertSize).toBeDefined()
     expect(modal.onPlateLoadingConc).toBeDefined()
     expect(modal.movieTime).toBeDefined()
-    expect(modal.wellLibraries).toBeDefined()
+    expect(modal.wellPools).toBeDefined()
     expect(modal.generateHiFi).toBeDefined()
     expect(modal.ccsAnalysisOutput).toBeDefined()
     expect(modal.preExtensionTime).toBeDefined()
     expect(modal.ccsAnalysisOutput).toBeDefined()
+    expect(modal.bindingKitBoxBarcode).toBeDefined()
   })
 
   it('can have getters', () => {
@@ -77,8 +78,8 @@ describe('PacbioWellModal', () => {
 
   // TODO: check below tests are they are buggy and return ErrorWrapper
   describe('form inputs', () => {
-    it('has a Library Barcode input', () => {
-      expect(wrapper.find('.libraryBarcode')).toBeDefined()
+    it('has a Pool Barcode input', () => {
+      expect(wrapper.find('.poolBarcode')).toBeDefined()
     })
     it('has a Movie Time input', () => {
       expect(wrapper.find('.movieTime')).toBeDefined()
@@ -86,23 +87,20 @@ describe('PacbioWellModal', () => {
     it('has a On Plate Loading Concentration input', () => {
       expect(wrapper.find('.onPlateLoadingConc')).toBeDefined()
     })
-    it('has a Insert Size input', () => {
-      expect(wrapper.find('.insertSize')).toBeDefined()
-    })
     it('has a Generate HiFi input', () => {
       expect(wrapper.find('.generateHiFi')).toBeDefined()
     })
     it('has a CCS Analysis Output input', () => {
       expect(wrapper.find('.ccsAnalysisOutput')).toBeDefined()
     })
-    it('has a table of well libraries', () => {
-      expect(wrapper.find('#wellLibraries')).toBeDefined()
+    it('has a table of well pools', () => {
+      expect(wrapper.find('#wellPools')).toBeDefined()
     })
     it('has a pre-extension time input', () => {
       expect(wrapper.find('.preExtensionTime')).toBeDefined()
     })
-    it('has a ccsAnalysisOutput', () => {
-      expect(wrapper.find('.ccsAnalysisOutput')).toBeDefined()
+    it('has a bindingKitBoxBarcode', () => {
+      expect(wrapper.find('.bindingKitBoxBarcode')).toBeDefined()
     })
   })
 
@@ -118,15 +116,6 @@ describe('PacbioWellModal', () => {
   describe('methods', () => {
     beforeEach(() => {
       modal.mutateWell = jest.fn()
-    })
-
-    it('updateInsertSize', () => {
-      modal.updateInsertSize(123)
-      expect(modal.mutateWell).toBeCalledWith({
-        position: props.position,
-        property: 'insert_size',
-        with: 123,
-      })
     })
 
     it('updateOnPlateLoadingConc', () => {
@@ -193,39 +182,48 @@ describe('PacbioWellModal', () => {
       })
     })
 
-    describe('updateLibraryBarcode', () => {
-      let newBarcode, row, anIndex, library
+    it('updateBindingKitBoxBarcode', () => {
+      modal.updateBindingKitBoxBarcode('12345')
+      expect(modal.mutateWell).toBeCalledWith({
+        position: props.position,
+        property: 'binding_kit_box_barcode',
+        with: '12345',
+      })
+    })
+
+    describe('updatePoolBarcode', () => {
+      let newBarcode, row, anIndex, poolId
 
       beforeEach(() => {
-        newBarcode = 'TRAC-1'
+        newBarcode = 'TRAC-2-1'
         anIndex = 1
         row = { index: anIndex }
         modal.showAlert = jest.fn()
-        modal.isLibraryBarcodeValid = jest.fn()
-        modal.addLibraryToWell = jest.fn()
-        library = { id: 1, tube: { barcode: newBarcode } }
-        store.commit('traction/pacbio/libraries/setLibraries', [library])
+        modal.isPoolBarcodeValid = jest.fn()
+        modal.addPoolToWell = jest.fn()
+        poolId = '1'
+        store.state.traction.pacbio.pools = storePools
       })
 
       it('successful when barcode is valid', async () => {
-        modal.isLibraryBarcodeValid.mockReturnValue(true)
+        modal.isPoolBarcodeValid.mockReturnValue(true)
 
-        await modal.updateLibraryBarcode(row, newBarcode)
+        await modal.updatePoolBarcode(row, newBarcode)
 
-        expect(modal.addLibraryToWell).toBeCalledWith({
+        expect(modal.addPoolToWell).toBeCalledWith({
           index: anIndex,
           position: props.position,
-          with: { id: library.id, barcode: library.tube.barcode },
+          with: { id: poolId, barcode: newBarcode },
         })
-        expect(modal.showAlert).toBeCalledWith('Library is valid', 'success')
+        expect(modal.showAlert).toBeCalledWith('Pool is valid', 'success')
       })
 
       it('is unsuccessful when barcode is not valid', async () => {
-        modal.isLibraryBarcodeValid.mockReturnValue(false)
+        modal.isPoolBarcodeValid.mockReturnValue(false)
 
-        await modal.updateLibraryBarcode(newBarcode)
-        expect(modal.addLibraryToWell).not.toBeCalled()
-        expect(modal.showAlert).toBeCalledWith('Library is not valid', 'danger')
+        await modal.updatePoolBarcode(newBarcode)
+        expect(modal.addPoolToWell).not.toBeCalled()
+        expect(modal.showAlert).toBeCalledWith('Pool is not valid', 'danger')
       })
     })
 

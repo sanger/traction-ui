@@ -22,8 +22,7 @@
             "name": "enzymes"
           },
           {
-            "name": "runs",
-            "include": "chip.flowcells.library"
+            "name": "runs"
           },
           {
             "name": "chips"
@@ -32,12 +31,10 @@
             "name": "flowcells"
           },
           {
-            "name": "requests",
-            "include": ""
+            "name": "requests"
           },
           {
-            "name": "tubes",
-            "include": "materials"
+            "name": "tubes"
           }
         ]
       },
@@ -45,50 +42,39 @@
         "name": "pacbio",
         "resources": [
           {
-            "name": "libraries",
-            "include": "request,tag,tube"
+            "name": "libraries"
           },
           {
-            "name": "request_library",
-            "include": ""
+            "name": "request_library"
           },
           {
-            "name": "requests",
-            "include": ""
+            "name": "requests"
           },
           {
-            "name": "tubes",
-            "include": "materials"
+            "name": "tubes"
           },
           {
             "name": "runs",
-            "include": "plate.wells.libraries",
             "resources": [
               {
-                "name": "plates",
-                "include": ""
+                "name": "plates"
               },
               {
-                "name": "wells",
-                "include": ""
+                "name": "wells"
               }
             ]
           },
           {
-            "name": "plates",
-            "include": "wells.materials"
+            "name": "plates"
           },
           {
-            "name": "tag_sets",
-            "include": "tags"
+            "name": "wells"
           },
           {
-            "name": "wells",
-            "include": ""
+            "name": "tag_sets"
           },
           {
-            "name": "tag_sets",
-            "include": "tags"
+            "name": "pools"
           }
         ]
       }
@@ -121,8 +107,7 @@
     "baseURL": "VUE_APP_SEQUENCESCAPE_BASE_URL",
     "resources": [
       {
-        "name": "plates",
-        "include": "wells.aliquots.sample.sample_metadata,wells.aliquots.study"
+        "name": "plates"
       }
     ]
   }

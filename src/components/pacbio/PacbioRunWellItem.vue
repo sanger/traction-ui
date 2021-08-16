@@ -16,7 +16,7 @@
       @dragleave="endDrop"
       @click="showModal"
     >
-      <title v-if="hasLibraries" v-text="tooltip"></title>
+      <title v-if="hasPools" v-text="tooltip"></title>
     </ellipse>
     <foreignObject>
       <WellEdit ref="modal" class="modal" :position="position" @alert="alert"></WellEdit>
@@ -62,9 +62,14 @@ export default {
     required_metadata_fields: {
       type: Array,
       default() {
-        // Below doesn't include 'generate_hifi', 'pre_extension_time' or 'ccs_analysis_output'
-        // as they have deafult values
-        return ['movie_time', 'insert_size', 'on_plate_loading_concentration']
+        // Below doesn't include 'pre_extension_time' or 'ccs_analysis_output'
+        // as they have default values
+        return [
+          'movie_time',
+          'on_plate_loading_concentration',
+          'binding_kit_box_barcode',
+          'generate_hifi',
+        ]
       },
     },
   },
@@ -75,17 +80,17 @@ export default {
   },
   computed: {
     ...mapGetters('traction/pacbio/runs', ['well']),
-    ...mapGetters('traction/pacbio/libraries', ['libraryByBarcode']),
+    ...mapGetters('traction/pacbio/pools', ['poolByBarcode']),
     position() {
       return `${this.row}${this.column}`
     },
     tooltip() {
-      return this.storeWell.libraries.map((l) => l.barcode).join(',')
+      return this.storeWell.pools.map((p) => p.barcode).join(',')
     },
-    hasLibraries() {
+    hasPools() {
       if (this.storeWell === undefined) return false
-      if (this.storeWell.libraries.every((l) => l.barcode == '')) return false
-      return this.storeWell.libraries.length > 0
+      if (this.storeWell.pools.every((p) => p.barcode == '')) return false
+      return this.storeWell.pools.length > 0
     },
     hasValidMetadata() {
       if (this.storeWell === undefined) return false
@@ -99,9 +104,9 @@ export default {
       return this.well(this.position)
     },
     status() {
-      if (this.hasLibraries && this.hasValidMetadata) {
+      if (this.hasPools && this.hasValidMetadata) {
         return 'complete'
-      } else if (this.hasLibraries || this.hasSomeMetadata) {
+      } else if (this.hasPools || this.hasSomeMetadata) {
         return 'filled'
       } else {
         return 'empty'
@@ -110,7 +115,7 @@ export default {
   },
   methods: {
     ...mapActions('traction/pacbio/tubes', ['getTubeForBarcode']),
-    ...mapMutations('traction/pacbio/runs', ['addLibraryToWell']),
+    ...mapMutations('traction/pacbio/runs', ['addPoolToWell']),
     alert(message, type) {
       this.$emit('alert', message, type)
     },
@@ -127,13 +132,13 @@ export default {
     },
     async drop(event) {
       event.preventDefault()
-      await this.updateLibraryBarcode(event.dataTransfer.getData('barcode'))
+      await this.updatePoolBarcode(event.dataTransfer.getData('barcode'))
       this.hover = false
     },
-    async updateLibraryBarcode(barcode) {
-      let libraryId = this.libraryByBarcode(barcode).id
-      let payload = { position: this.position, with: { id: libraryId, barcode: barcode } }
-      this.addLibraryToWell(payload)
+    async updatePoolBarcode(barcode) {
+      let poolId = this.poolByBarcode(barcode).id
+      let payload = { position: this.position, with: { id: poolId, barcode: barcode } }
+      this.addPoolToWell(payload)
     },
   },
 }

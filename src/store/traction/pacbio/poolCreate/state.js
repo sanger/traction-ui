@@ -42,5 +42,11 @@ export default () => {
     },
     // Libraries. Indexed by an internally generated id.
     libraries: {},
+
+    // Pool: The current pool being edited or created
+    pool: {},
+
+    // Tube: The tube for the current pool
+    tube: {},
   }
 }

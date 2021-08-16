@@ -1,7 +1,7 @@
 import Response from '@/api/Response'
 import EnzymeModal from '@/components/saphyr/SaphyrEnzymeModal'
 import flushPromises from 'flush-promises'
-import EnzymesJson from '../../../data/enzymes'
+import EnzymesJson from '@tests/data/enzymes'
 import { localVue, mount, store } from 'testHelper'
 
 describe('SaphyrEnzymeModal.vue', () => {
@@ -96,11 +96,11 @@ describe('SaphyrEnzymeModal.vue', () => {
 
   describe('#getEnzymeOptions', () => {
     beforeEach(() => {
-      enzymeModal.enzymeRequest.execute = jest.fn()
+      enzymeModal.enzymeRequest.get = jest.fn()
     })
 
     it('success', async () => {
-      enzymeModal.enzymeRequest.execute.mockResolvedValue(EnzymesJson)
+      enzymeModal.enzymeRequest.get.mockResolvedValue(EnzymesJson)
 
       await enzymeModal.getEnzymeOptions()
 
@@ -124,7 +124,7 @@ describe('SaphyrEnzymeModal.vue', () => {
         statusText: 'Unprocessible entity',
       }
 
-      enzymeModal.enzymeRequest.execute.mockResolvedValue(mockResponse)
+      enzymeModal.enzymeRequest.get.mockResolvedValue(mockResponse)
       await enzymeModal.getEnzymeOptions()
       await flushPromises()
 

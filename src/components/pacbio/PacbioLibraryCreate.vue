@@ -33,30 +33,38 @@
           />
         </b-form-group>
 
-        <b-form-group id="input-group-1" label="Volume:" label-for="library-volume">
+        <b-form-group id="input-group-volume" label="Volume:" label-for="library-volume">
           <b-form-input
             id="library-volume"
             v-model="library.volume"
             type="number"
+            min="0"
+            step="any"
             required
-            placeholder="1.0"
-          >
-          </b-form-input>
-        </b-form-group>
-
-        <b-form-group id="input-group-2" label="Concentration:" label-for="library-concentration">
-          <b-form-input
-            id="library-concentration"
-            v-model="library.concentration"
-            type="number"
-            required
-            placeholder="1.0"
+            placeholder="Example: 1.0"
           >
           </b-form-input>
         </b-form-group>
 
         <b-form-group
-          id="input-group-2"
+          id="input-group-concentration"
+          label="Concentration:"
+          label-for="library-concentration"
+        >
+          <b-form-input
+            id="library-concentration"
+            v-model="library.concentration"
+            type="number"
+            min="0"
+            step="any"
+            required
+            placeholder="Example: 1.0"
+          >
+          </b-form-input>
+        </b-form-group>
+
+        <b-form-group
+          id="input-group-templatePrepKitBoxBarcode"
           label="Template prep kit box barcode:"
           label-for="library-templatePrepKitBoxBarcode"
         >
@@ -65,18 +73,24 @@
             v-model="library.templatePrepKitBoxBarcode"
             type="text"
             required
-            placeholder="ABC"
+            placeholder="Example: 012345678901234567890"
           >
           </b-form-input>
         </b-form-group>
 
-        <b-form-group id="input-group-2" label="Fragment size" label-for="library-fragmentSize">
+        <b-form-group
+          id="input-group-insertSize"
+          label="Insert size"
+          label-for="library-insertSize"
+        >
           <b-form-input
-            id="library-fragmentSize"
-            v-model="library.fragmentSize"
+            id="library-insertSize"
+            v-model="library.insertSize"
             type="number"
             required
-            placeholder="100"
+            step="1"
+            min="0"
+            placeholder="Example: 100"
           >
           </b-form-input>
         </b-form-group>

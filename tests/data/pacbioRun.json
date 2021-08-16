@@ -8,13 +8,66 @@
       },
       "attributes": {
         "name": "aname",
-        "binding_kit_box_barcode": "DM11171008622001117",
         "sequencing_kit_box_barcode": "DM000110086180012312",
         "dna_control_complex_box_barcode": "Lxxxxx10171760012319",
         "system_name": "Sequel II",
         "created_at": "10/17/2019 12:56"
+      },
+      "relationships": {
+        "plate": {
+          "links": {
+            "self": "http://localhost:3100/v1/pacbio/runs/plates/1",
+            "related": "http://localhost:3100/v1/pacbio/runs/plates/1"
+          },
+          "data": {
+            "type": "plates",
+            "id": "1"
+          }
+        }
       }
-    }
+    },
+    "included": [
+      {
+        "id": "1",
+        "type": "plates",
+        "attributes": {
+          "pacbio_run_id": "1"
+        },
+        "relationships": {
+          "wells": {
+            "links": {
+              "self": "http://localhost:3100/v1/pacbio/runs/wells/4",
+              "related": "http://localhost:3100/v1/pacbio/runs/wells/4"
+            },
+            "data": [
+              {
+                "id": "4",
+                "type": "wells",
+                "movie_time": "10.0",
+                "on_plate_loading_concentration": 10.1,
+                "row": "A",
+                "column": "1",
+                "pacbio_plate_id": 5,
+                "comment": null,
+                "generate_hifi": "In SMRT Link",
+                "ccs_analysis_output": "",
+                "pre_extension_time": "2",
+                "pools": [
+                  {
+                    "id": "1",
+                    "tube": {
+                      "barcode": "1234",
+                      "type": "tube"
+                    },
+                    "type": "pools"
+                  }
+                ]
+              }
+            ]
+          }
+        }
+      }
+    ]
   },
   "status": 200,
   "statusText": "Success"

@@ -21,7 +21,7 @@ describe('#createLibraryInTraction', () => {
       volume: 1.0,
       concentration: 1.0,
       templatePrepKitBoxBarcode: 'LK12345',
-      fragmentSize: 100,
+      insertSize: 100,
       sample: { id: 1 },
     }
 
@@ -32,7 +32,7 @@ describe('#createLibraryInTraction', () => {
           volume: 1,
           concentration: 1,
           template_prep_kit_box_barcode: 'LK12345',
-          fragment_size: 100,
+          insert_size: 100,
         },
         relationships: {
           request: { data: { type: 'requests', id: 1 } },
@@ -163,14 +163,14 @@ describe('#updateLibrary', () => {
   })
 
   it('successfully', async () => {
-    update.mockReturnValue([Data.TractionPacbioLibrary])
+    update.mockReturnValue(Data.TractionPacbioLibrary)
     library.volume = '5'
     let response = await Actions.updateLibrary({ commit, getters }, library)
     expect(expectedResponse).toEqual(response)
   })
 
   it('unsuccessfully', async () => {
-    update.mockReturnValue([failedResponse])
+    update.mockReturnValue(failedResponse)
     expectedResponse = new Response(failedResponse)
     let response = await Actions.updateLibrary({ commit, getters }, library)
     expect(commit).not.toHaveBeenCalled()

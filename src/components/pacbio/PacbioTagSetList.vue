@@ -3,27 +3,25 @@
     <h3>Select tag set</h3>
     <b-form-select
       v-if="!isEmpty"
-      v-model="selected"
+      :value="selected"
       data-type="tag-set-list"
       :options="options"
       @change="updateSelected"
     ></b-form-select>
     <div>
-      <b-alert :show="isEmpty" data-type="error-message" dismissible variant="danger">
-        There was a problem retrieving the tag sets
-      </b-alert>
+      <alert ref="alert"></alert>
     </div>
   </b-col>
 </template>
 
 <script>
+import Helper from '@/mixins/Helper'
+import Alert from '@/components/Alert'
+
 export default {
   name: 'PacbioTagSetList',
-  data() {
-    return {
-      selected: null,
-    }
-  },
+  components: { Alert },
+  mixins: [Helper],
   computed: {
     isEmpty() {
       return this.tagSets.length === 0
@@ -36,10 +34,14 @@ export default {
     options() {
       return [{ value: null, text: 'Please select a tag set' }, ...this.tagSets]
     },
+    selected() {
+      const { id = null } = this.$store.getters['traction/pacbio/poolCreate/selectedTagSet']
+      return id
+    },
   },
   methods: {
-    updateSelected() {
-      this.$store.commit('traction/pacbio/poolCreate/selectTagSet', { id: this.selected })
+    updateSelected(id) {
+      this.$store.commit('traction/pacbio/poolCreate/selectTagSet', { id })
     },
   },
 }

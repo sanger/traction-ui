@@ -13,11 +13,11 @@ const setRequests = async ({ commit, getters }) => {
 
 const updateRequest = async ({ getters }, payload) => {
   let request = getters.requestsRequest
-  let sample = getters.requests.filter((r) => r.id == payload.id)[0]
+  let sample = getters.requests.find((r) => r.id == payload.id)
 
-  let requestPayload = createRequestPayload(sample)
-  let promises = request.update(requestPayload)
-  let response = await handlePromise(promises[0])
+  const requestPayload = createRequestPayload(sample)
+  const promise = request.update(requestPayload)
+  const response = await handlePromise(promise)
 
   if (response.successful) {
     return response

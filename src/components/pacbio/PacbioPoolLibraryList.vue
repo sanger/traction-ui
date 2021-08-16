@@ -1,6 +1,5 @@
 <template>
-  <b-col v-if="selectedRequests" data-type="pool-library-list">
-    <h3>Pooled Samples</h3>
+  <b-tr v-if="selectedRequests" data-type="pool-library-list">
     <b-table-simple>
       <b-thead>
         <b-tr>
@@ -23,7 +22,7 @@
             Concentration
           </b-th>
           <b-th>
-            Fragment Size
+            Insert Size
           </b-th>
         </b-tr>
       </b-thead>
@@ -35,36 +34,26 @@
         ></PacbioPoolLibraryEdit>
       </b-tbody>
     </b-table-simple>
-    <div class="text-right">
-      <b-button variant="success" @click="validateLibraries()"> Create Pool</b-button>
-    </div>
-  </b-col>
+  </b-tr>
 </template>
 
 <script>
 import PacbioPoolLibraryEdit from '@/components/pacbio/PacbioPoolLibraryEdit'
 import { createNamespacedHelpers } from 'vuex'
-const { mapGetters, mapMutations } = createNamespacedHelpers('traction/pacbio/poolCreate')
+const { mapGetters } = createNamespacedHelpers('traction/pacbio/poolCreate')
 
 export default {
   name: 'PacbioPoolLibraryList',
   components: {
     PacbioPoolLibraryEdit,
   },
-  data() {
-    return {}
-  },
   computed: {
     ...mapGetters(['selectedRequests']),
-  },
-  methods: {
-    ...mapMutations(['validateLibraries']),
   },
 }
 </script>
 
 <style scoped lang="scss">
-@import 'src/styles/components.scss';
 th {
   font-size: 0.8em;
 }

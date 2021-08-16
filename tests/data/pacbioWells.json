@@ -9,23 +9,22 @@
         },
         "attributes": {
           "movie_time": "10.0",
-          "insert_size": 1001,
           "on_plate_loading_concentration": 10.1,
           "row": "A",
           "column": "1",
           "pacbio_plate_id": 1,
           "comment": "comment1",
           "generate_hifi": "In SMRT Link",
-          "ccs_analysis_output": "",
           "pre_extension_time": "2",
           "position": "A1",
-          "ccs_analysis_output": "No"
+          "ccs_analysis_output": "No",
+          "bindng_kit_box_barcode": "BKB1"
         },
         "relationships": {
-          "libraries": {
+          "pools": {
             "links": {
-              "self": "http://localhost:3100/v1/pacbio/wells/1/relationships/libraries",
-              "related": "http://localhost:3100/v1/pacbio/wells/1/libraries"
+              "self": "http://localhost:3100/v1/pacbio/wells/1/relationships/pools",
+              "related": "http://localhost:3100/v1/pacbio/wells/1/pools"
             }
           }
         }
@@ -38,23 +37,22 @@
         },
         "attributes": {
           "movie_time": "10.0",
-          "insert_size": 1001,
           "on_plate_loading_concentration": 10.1,
           "row": "A",
           "column": "1",
           "pacbio_plate_id": 5,
           "comment": null,
           "generate_hifi": "In SMRT Link",
-          "ccs_analysis_output": "",
           "pre_extension_time": "2",
           "position": "A1",
-          "ccs_analysis_output": "No"
+          "ccs_analysis_output": "No",
+          "bindng_kit_box_barcode": "BKB1"
         },
         "relationships": {
-          "libraries": {
+          "pools": {
             "links": {
-              "self": "http://localhost:3100/v1/pacbio/wells/4/relationships/libraries",
-              "related": "http://localhost:3100/v1/pacbio/wells/4/libraries"
+              "self": "http://localhost:3100/v1/pacbio/wells/4/relationships/pools",
+              "related": "http://localhost:3100/v1/pacbio/wells/4/pools"
             }
           }
         }

@@ -2,17 +2,19 @@ describe('Pacbio Run Create view', () => {
   it('Creates a run successfully', () => {
     const dataTransfer = new DataTransfer()
 
-    cy.intercept('/v1/pacbio/runs?include=plate.wells.libraries', {
+    cy.intercept('/v1/pacbio/runs?include=plate.wells.pools.tube', {
       fixture: 'tractionPacbioRuns.json',
     })
     cy.visit('#/pacbio/runs')
-    cy.intercept('/v1/pacbio/libraries?include=request,tag,tube', {
-      fixture: 'tractionPacbioLibraries.json',
-    })
+    cy.intercept(
+      '/v1/pacbio/pools?include=tube,libraries.tag,libraries.request&fields[requests]=sample_name&fields[tubes]=barcode&fields[tags]=group_id&fields[libraries]=request,tag',
+      {
+        fixture: 'tractionPacbioPools.json',
+      },
+    )
     cy.get('button')
       .contains('New Run')
       .click()
-    cy.get('#binding-kit-box-barcode').type('Lxxxxx101789500123199')
     cy.get('#sequencing-kit-box-barcode').type('Lxxxxx101826100123199')
     cy.get('#dna-control-complex-box-barcode').type('Lxxxxx101717600123199')
     cy.get('#system-name').select('Sequel IIe')
@@ -31,10 +33,10 @@ describe('Pacbio Run Create view', () => {
       .select('15.0')
       .get('#onPlateLoadingConc')
       .type('2')
-      .get('#insertSize')
-      .type('10')
       .get('#generateHiFi')
       .select('Do Not Generate')
+      .get('#bindingKitBoxBarcode')
+      .type('12345')
       .get('button')
       .contains('Update')
       .click()

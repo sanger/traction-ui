@@ -1,6 +1,14 @@
 import { dataToObjectById } from '@/api/JsonApi'
 import Vue from 'vue'
-import { newLibrary, validate } from '@/store/traction/pacbio/poolCreate/libraries.js'
+import { newLibrary } from '@/store/traction/pacbio/poolCreate/pool.js'
+
+const populateById = (resource, { includeRelationships = false } = {}) => (state, data) => {
+  const before = state.resources[resource]
+  Vue.set(state.resources, resource, {
+    ...before, // Merge in the existing state
+    ...dataToObjectById({ data, includeRelationships }),
+  })
+}
 
 // Mutations handle synchronous update of state.
 export default {
@@ -38,56 +46,68 @@ export default {
       Vue.delete(libraries, `_${id}`)
     }
   },
-
   /**
    * Populated with resources via APi calls from the actions
    * @param {Object} state The VueXState object
    * @param {Array.{}} plates The plate resources to populate the store
    */
-  populatePlates: (state, plates) => {
-    state.resources.plates = dataToObjectById({ data: plates, includeRelationships: true })
-  },
+  populatePlates: populateById('plates', { includeRelationships: true }),
   /**
    * Populated with resources via APi calls from the actions
    * @param {Object} state The VueXState object
    * @param {Array.{}} wells The well resources to populate the store
    */
-  populateWells: (state, wells) => {
-    state.resources.wells = dataToObjectById({ data: wells, includeRelationships: true })
-  },
+  populateWells: populateById('wells', { includeRelationships: true }),
   /**
    * Populated with resources via APi calls from the actions
    * @param {Object} state The VueXState object
    * @param {Array.{}} requests The request resources to populate the store
    */
-  populateRequests: (state, requests) => {
-    state.resources.requests = dataToObjectById({ data: requests, includeRelationships: false })
-  },
+  populateRequests: populateById('requests'),
   /**
    * Populated with resources via APi calls from the actions
    * @param {Object} state The VueXState object
    * @param {Array.{}} tagSets The tagSet resources to populate the store
    */
-  populateTagSets: (state, tagSets) => {
-    state.resources.tagSets = dataToObjectById({ data: tagSets, includeRelationships: true })
-  },
+  populateTagSets: populateById('tagSets', { includeRelationships: true }),
   /**
    * Populated with resources via APi calls from the actions
    * @param {Object} state The VueXState object
    * @param {Array.{}} tags The tag resources to populate the store
    */
-  populateTags: (state, tags) => {
-    state.resources.tags = dataToObjectById({ data: tags, includeRelationships: false })
-  },
-
+  populateTags: populateById('tags'),
   /**
-   * Update an existing library in its store
+   * Populated the result with the response
    * @param {Object} state The VueXState object
-   * This method will check each library to ensure that:
-   *  * required fields are present
-   *  * tags are unique
+   * @param {Object} Response A response object
    **/
-  validateLibraries: ({ libraries }) => {
-    validate({ libraries })
+  populateLibraries: ({ libraries }, data) => {
+    const newLibraries = dataToObjectById({ data, includeRelationships: true })
+    Object.values(newLibraries).forEach((library) => {
+      const key = `_${library.request}`
+      Vue.set(
+        libraries,
+        key,
+        newLibrary({ ...library, pacbio_request_id: library.request, tag_id: library.tag }),
+      )
+    })
+  },
+  populatePoolAttributes: (store, { id, attributes }) => {
+    // Nothing
+    store.pool = {
+      id,
+      ...attributes,
+    }
+  },
+  /**
+   * Populated with resources via APi calls from the actions
+   * @param {Object} state The VueXState object
+   * @param {Object.{}} tube The tube resource to populate the store
+   */
+  populateTube: (store, { id, attributes }) => {
+    store.tube = {
+      id,
+      ...attributes,
+    }
   },
 }

@@ -25,7 +25,7 @@ describe('Plate.vue', () => {
   describe('methods', () => {
     describe('#getWellAt', () => {
       it('gets the well at the given position when it exists and has material', () => {
-        let expected = plate.wells.filter((w) => w.position == 'A1')[0]
+        let expected = plate.wells.find((w) => w.position == 'A1')
         expect(plate.getWellAt('A1')).toEqual(expected)
       })
 

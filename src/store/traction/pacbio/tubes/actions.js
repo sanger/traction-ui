@@ -8,9 +8,9 @@ const isLibraryBarcodeValid = async ({ dispatch }, barcode) => {
   return validateLibraryTube(libraryTube)
 }
 
-const getTubeForBarcode = async ({ rootGetters }, barcode) => {
-  let request = rootGetters['traction/pacbio/tubes/tubeRequest']
-  let promise = request.get({ filter: { barcode: barcode } })
+const getTubeForBarcode = async ({ getters }, barcode) => {
+  let request = getters.tubeRequest
+  let promise = request.get({ filter: { barcode: barcode }, include: 'pools' })
   let response = await handlePromise(promise)
 
   if (response.successful && !response.empty) {
@@ -18,22 +18,27 @@ const getTubeForBarcode = async ({ rootGetters }, barcode) => {
   }
 }
 
-const validateLibraryTube = (tube) => {
-  if (!tube) {
-    return false
-  }
-  if (!tube.materials) {
-    return false
-  }
-  if (!tube.materials.every((m) => m.material_type === 'library')) {
+const validForRunCreation = (pool) => {
+  return (
+    pool.volume &&
+    pool.concentration &&
+    pool.template_prep_kit_box_barcode &&
+    pool.insert_size &&
+    true
+  )
+}
+
+const validateLibraryTube = ({ pools = [] } = {}) => {
+  if (pools.length < 1) {
     return false
   }
 
-  return true
+  return pools.every(validForRunCreation)
 }
 
 const actions = {
   isLibraryBarcodeValid,
+  isPoolBarcodeValid: isLibraryBarcodeValid,
   getTubeForBarcode,
 }
 
