@@ -111,7 +111,7 @@
     <b-button class="button btn-xs btn-success" @click="addRow">+</b-button>
 
     <template v-slot:modal-footer="{ ok }">
-      <b-button variant="success" @click="update()"> Update </b-button>
+      <b-button id="updateWellBtn" variant="success" @click="update()"> Update </b-button>
     </template>
   </b-modal>
 </template>
