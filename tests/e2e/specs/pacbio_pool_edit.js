@@ -23,8 +23,7 @@ describe('Pacbio Pool Edit', () => {
 
   it('Updates a pool successfully', () => {
     cy.visit('#/pacbio/pools')
-    cy.get('.pool')
-      .get('[data-action=edit-pool]')
+    cy.get('.pool [data-action=edit-pool]')
       .first()
       .click()
     cy.get('[data-type=plate-item]').should('be.visible')
@@ -46,8 +45,7 @@ describe('Pacbio Pool Edit', () => {
 
   it('Will not update a pool if there is an error', () => {
     cy.visit('#/pacbio/pools')
-    cy.get('.pool')
-      .get('[data-action=edit-pool]')
+    cy.get('.pool [data-action=edit-pool]')
       .first()
       .click()
     cy.get('[data-type=plate-item]').should('be.visible')
