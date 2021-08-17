@@ -1,16 +1,90 @@
 {
   "data": {
-    "id": "1",
+    "id": "7",
     "type": "runs",
     "links": {
-      "self": "/v1/pacbio/runs/1"
+      "self": "http://traction/v1/pacbio/runs/7"
     },
     "attributes": {
-      "name": "run1",
-      "sequencing_kit_box_barcode": "DM000110086180012312",
-      "dna_control_complex_box_barcode": "Lxxxxx10171760012319",
+      "name": "Run1",
+      "sequencing_kit_box_barcode": "SKB1",
+      "dna_control_complex_box_barcode": "DCCB1",
       "system_name": "Sequel II",
-      "created_at": "10/17/2019 12:56"
+      "created_at": "2021/06/15 10:25",
+      "state": "pending",
+      "comments": "Sample207",
+      "all_wells_have_pools": true
+    },
+    "relationships": {
+      "plate": {
+        "data": {
+          "type": "plates",
+          "id": "7"
+        }
+      }
     }
-  }
+  },
+  "included": [
+    {
+      "id": "7",
+      "type": "plates",
+      "links": {
+        "self": "http://traction/v1/pacbio/runs/plates/7"
+      },
+      "attributes": {
+        "pacbio_run_id": 7
+      },
+      "relationships": {
+        "wells": {
+          "links": {
+            "self": "http://traction/v1/pacbio/runs/plates/7/relationships/wells",
+            "related": "http://traction/v1/pacbio/runs/plates/7/wells"
+          },
+          "data": [
+            {
+              "type": "wells",
+              "id": "6"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "6",
+      "type": "wells",
+      "links": {
+        "self": "http://traction/v1/pacbio/runs/wells/6"
+      },
+      "attributes": {
+        "movie_time": "20.0",
+        "on_plate_loading_concentration": 1,
+        "row": "A",
+        "column": "1",
+        "pacbio_plate_id": 7,
+        "comment": null,
+        "generate_hifi": "In SMRT Link",
+        "position": "A1",
+        "pre_extension_time": null,
+        "ccs_analysis_output": "No",
+        "pools": [
+          {
+            "id": "8",
+            "type": "pools",
+            "volume": 1.0,
+            "concentration": 1.0,
+            "template_prep_kit_box_barcode": "2424",
+            "insert_size": 1,
+            "source_identifier": "DN1:A4",
+            "created_at": "2021-07-23T10:15:37.000Z",
+            "updated_at": "2021-07-23T10:15:37.000Z",
+            "tube": {
+              "id": "1",
+              "type": "tube",
+              "barcode": "TRAC-2-1"
+            }
+          }
+        ]
+      }
+    }
+  ]
 }

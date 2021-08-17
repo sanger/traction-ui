@@ -1,6 +1,6 @@
 <template>
   <div class="run">
-    <alert ref="alert"></alert>
+    <alert ref="alert" data-type="run-validation-message"></alert>
 
     <router-link :to="{ name: 'PacbioRunIndex' }">
       <b-button id="backToRunsButton" class="float-right">Back</b-button>

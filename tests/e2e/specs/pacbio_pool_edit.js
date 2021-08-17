@@ -45,13 +45,17 @@ describe('Pacbio Pool Edit', () => {
   })
 
   it('Will not update a pool if there is an error', () => {
-    // when I visit the pools page
-    // and I click on edit pool
-    // I should see the pool barcode
-    // and the plate
-    // and the correct tag set
-    // and I remove the insert size
-    // and I click on update pool
-    // I should see pool not valid
+    cy.visit('#/pacbio/pools')
+    cy.get('.pool')
+      .get('[data-action=edit-pool]')
+      .first()
+      .click()
+    cy.get('[data-type=plate-item]').should('be.visible')
+    cy.get('[data-type=tag-set-item]').should('be.visible')
+    cy.get('[data-type=pool-library-edit]').within(() => {
+      cy.get('[data-attribute=insert-size]').clear()
+    })
+    cy.get('[data-action=update-pool]').click()
+    cy.contains('[data-type=pool-create-message]', 'The pool is invalid')
   })
 })

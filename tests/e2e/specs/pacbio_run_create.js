@@ -1,17 +1,48 @@
 describe('Pacbio Run Create view', () => {
-  it('Creates a run successfully', () => {
-    const dataTransfer = new DataTransfer()
-
-    cy.intercept('/v1/pacbio/runs?include=plate.wells.pools.tube', {
-      fixture: 'tractionPacbioRuns.json',
+  beforeEach(() => {
+    cy.intercept('/v1/pacbio/runs', {
+      statusCode: 201,
+      body: {
+        data: {
+          id: '1',
+          type: 'runs',
+          links: {
+            self: '/v1/pacbio/runs/1',
+          },
+        },
+      },
     })
-    cy.visit('#/pacbio/runs')
+    cy.intercept('/v1/pacbio/runs/plates', {
+      statusCode: 201,
+      body: {
+        data: {
+          id: 1,
+          type: 'plates',
+          links: {
+            self: '/v1/pacbio/runs/plates/1',
+          },
+        },
+      },
+    })
     cy.intercept(
       '/v1/pacbio/pools?include=tube,libraries.tag,libraries.request&fields[requests]=sample_name&fields[tubes]=barcode&fields[tags]=group_id&fields[libraries]=request,tag',
       {
         fixture: 'tractionPacbioPools.json',
       },
     )
+    cy.intercept('/v1/pacbio/runs?include=plate.wells.pools.tube', {
+      fixture: 'tractionPacbioRuns.json',
+    })
+  })
+
+  it('Creates a run successfully', () => {
+    cy.intercept('/v1/pacbio/runs/wells', {
+      statusCode: 201,
+      body: { data: {} },
+    })
+    const dataTransfer = new DataTransfer()
+
+    cy.visit('#/pacbio/runs')
     cy.get('button')
       .contains('New Run')
       .click()
@@ -37,53 +68,48 @@ describe('Pacbio Run Create view', () => {
       .select('Do Not Generate')
       .get('#bindingKitBoxBarcode')
       .type('12345')
-      .get('button')
-      .contains('Update')
+      .get('#updateWellBtn')
       .click()
-    // lots of complex calls. Maybe we only need one.
-    cy.intercept('/v1/pacbio/runs', {
-      statusCode: 201,
-      body: {
-        data: {
-          id: '1',
-          type: 'runs',
-          links: {
-            self: '/v1/pacbio/runs/1',
-          },
-        },
-      },
-    })
-    cy.intercept('/v1/pacbio/runs/plates', {
-      statusCode: 201,
-      body: {
-        data: {
-          id: 1,
-          type: 'plates',
-          links: {
-            self: '/v1/pacbio/runs/plates/1',
-          },
-        },
-      },
-    })
-    cy.intercept('/v1/pacbio/runs/wells', {
-      statusCode: 201,
-      body: { data: {} },
-    })
     cy.get('button')
       .contains('Create')
       .click()
-
     // TODO: we need a success message.
   })
 
   it('creates a run unsuccessfully', () => {
-    // visit the runs page
-    // click new run
-    // fill in the sequencing kit box barcode
-    // fill in the dna control complex box barcode
-    // fill in the system name
-    // drag a pool
-    // click create
-    // I should see a message e.g. well information needs to be filled in
+    cy.intercept('/v1/pacbio/runs/wells', {
+      statusCode: 422,
+      body: {
+        data: {
+          errors: {
+            error1: ['some error'],
+          },
+        },
+      },
+    })
+    cy.intercept('/v1/pacbio/runs/1', {})
+    const dataTransfer = new DataTransfer()
+
+    cy.visit('#/pacbio/runs')
+    cy.get('button')
+      .contains('New Run')
+      .click()
+    cy.get('#sequencing-kit-box-barcode').type('Lxxxxx101826100123199')
+    cy.get('#dna-control-complex-box-barcode').type('Lxxxxx101717600123199')
+    cy.get('#system-name').select('Sequel IIe')
+    cy.get('.list-group-item')
+      .first()
+      .trigger('dragstart', { dataTransfer: dataTransfer, force: true })
+      .trigger('drag', { dataTransfer: dataTransfer, force: true })
+    cy.get('ellipse')
+      .first()
+      .trigger('drop', { dataTransfer: dataTransfer, force: true })
+    cy.get('button')
+      .contains('Create')
+      .click()
+    cy.contains(
+      '[data-type=run-validation-message]',
+      'Failed to create run in Traction: error1 some error',
+    )
   })
 })
