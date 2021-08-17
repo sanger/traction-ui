@@ -1,0 +1,351 @@
+{
+  "data": {
+    "data": {
+      "attributes": {
+        "plates": [
+          {
+            "barcode": "DN804974W",
+            "wells": [
+              {
+                "position": "A1",
+                "samples": [
+                  {
+                    "external_id": "d5bbd9f8-adba-11eb-ac23-fa163eac3af7",
+                    "name": "DTOL10239359",
+                    "external_study_id": "cf04ea86-ac82-11e9-8998-68b599768938",
+                    "species": "Apamea scolopacina"
+                  }
+                ]
+              },
+              {
+                "position": "B1",
+                "samples": [
+                  {
+                    "external_id": "d5c6414a-adba-11eb-ac23-fa163eac3af7",
+                    "name": "DTOL10239360",
+                    "external_study_id": "cf04ea86-ac82-11e9-8998-68b599768938",
+                    "species": "Attelabus nitens"
+                  }
+                ]
+              },
+              {
+                "position": "C1",
+                "samples": [
+                  {
+                    "external_id": "d5cd7ea6-adba-11eb-ac23-fa163eac3af7",
+                    "name": "DTOL10239361",
+                    "external_study_id": "cf04ea86-ac82-11e9-8998-68b599768938",
+                    "species": "Linnaemya tessellans"
+                  }
+                ]
+              },
+              {
+                "position": "D1",
+                "samples": [
+                  {
+                    "external_id": "d5d4f49c-adba-11eb-ac23-fa163eac3af7",
+                    "name": "DTOL10239362",
+                    "external_study_id": "cf04ea86-ac82-11e9-8998-68b599768938",
+                    "species": "Physocephala rufipes"
+                  }
+                ]
+              },
+              {
+                "position": "E1",
+                "samples": [
+                  {
+                    "external_id": "d5dc5e3a-adba-11eb-ac23-fa163eac3af7",
+                    "name": "DTOL10239363",
+                    "external_study_id": "cf04ea86-ac82-11e9-8998-68b599768938",
+                    "species": "Pollenia angustigena"
+                  }
+                ]
+              },
+              {
+                "position": "F1",
+                "samples": [
+                  {
+                    "external_id": "d5e3641e-adba-11eb-ac23-fa163eac3af7",
+                    "name": "DTOL10239364",
+                    "external_study_id": "cf04ea86-ac82-11e9-8998-68b599768938",
+                    "species": "Sarcophaga rosellei"
+                  }
+                ]
+              },
+              {
+                "position": "G1",
+                "samples": [
+                  {
+                    "external_id": "d5eab85e-adba-11eb-ac23-fa163eac3af7",
+                    "name": "DTOL10239365",
+                    "external_study_id": "cf04ea86-ac82-11e9-8998-68b599768938",
+                    "species": "Spilarctia lutea"
+                  }
+                ]
+              },
+              {
+                "position": "H1",
+                "samples": [
+                  {
+                    "external_id": "d5f2448e-adba-11eb-ac23-fa163eac3af7",
+                    "name": "DTOL10239366",
+                    "external_study_id": "cf04ea86-ac82-11e9-8998-68b599768938",
+                    "species": "Dolichovespula sylvestris"
+                  }
+                ]
+              },
+              {
+                "position": "A2",
+                "samples": [
+                  {
+                    "external_id": "d5f977fe-adba-11eb-ac23-fa163eac3af7",
+                    "name": "DTOL10239367",
+                    "external_study_id": "cf04ea86-ac82-11e9-8998-68b599768938",
+                    "species": "Macropis europaea"
+                  }
+                ]
+              },
+              {
+                "position": "B2",
+                "samples": [
+                  {
+                    "external_id": "d6011b76-adba-11eb-ac23-fa163eac3af7",
+                    "name": "DTOL10239368",
+                    "external_study_id": "cf04ea86-ac82-11e9-8998-68b599768938",
+                    "species": "Tenthredo notha"
+                  }
+                ]
+              },
+              {
+                "position": "C2",
+                "samples": [
+                  {
+                    "external_id": "d6084e46-adba-11eb-ac23-fa163eac3af7",
+                    "name": "DTOL10239369",
+                    "external_study_id": "cf04ea86-ac82-11e9-8998-68b599768938",
+                    "species": "Anatis ocellata"
+                  }
+                ]
+              },
+              {
+                "position": "D2",
+                "samples": [
+                  {
+                    "external_id": "d60f95b6-adba-11eb-ac23-fa163eac3af7",
+                    "name": "DTOL10239370",
+                    "external_study_id": "cf04ea86-ac82-11e9-8998-68b599768938",
+                    "species": "Dolomedes fimbriatus"
+                  }
+                ]
+              },
+              {
+                "position": "E2",
+                "samples": [
+                  {
+                    "external_id": "d619a01a-adba-11eb-ac23-fa163eac3af7",
+                    "name": "DTOL10239371",
+                    "external_study_id": "cf04ea86-ac82-11e9-8998-68b599768938",
+                    "species": "Zoropsis spinimana"
+                  }
+                ]
+              },
+              {
+                "position": "F2",
+                "samples": [
+                  {
+                    "external_id": "d62391f6-adba-11eb-ac23-fa163eac3af7",
+                    "name": "DTOL10239372",
+                    "external_study_id": "cf04ea86-ac82-11e9-8998-68b599768938",
+                    "species": "Alitta virens"
+                  }
+                ]
+              },
+              {
+                "position": "G2",
+                "samples": [
+                  {
+                    "external_id": "d62b59ae-adba-11eb-ac23-fa163eac3af7",
+                    "name": "DTOL10239373",
+                    "external_study_id": "cf04ea86-ac82-11e9-8998-68b599768938",
+                    "species": "Cornu aspersum"
+                  }
+                ]
+              },
+              {
+                "position": "H2",
+                "samples": [
+                  {
+                    "external_id": "d636b92a-adba-11eb-ac23-fa163eac3af7",
+                    "name": "DTOL10239374",
+                    "external_study_id": "cf04ea86-ac82-11e9-8998-68b599768938",
+                    "species": "Nemurella pictetii"
+                  }
+                ]
+              },
+              {
+                "position": "A3",
+                "samples": [
+                  {
+                    "external_id": "d63e83c6-adba-11eb-ac23-fa163eac3af7",
+                    "name": "DTOL10239375",
+                    "external_study_id": "cf04ea86-ac82-11e9-8998-68b599768938",
+                    "species": "Mimachlamys varia"
+                  }
+                ]
+              },
+              {
+                "position": "B3",
+                "samples": [
+                  {
+                    "external_id": "d645ea44-adba-11eb-ac23-fa163eac3af7",
+                    "name": "DTOL10239376",
+                    "external_study_id": "cf04ea86-ac82-11e9-8998-68b599768938",
+                    "species": "Xeroplexa intersecta"
+                  }
+                ]
+              },
+              {
+                "position": "C3",
+                "samples": [
+                  {
+                    "external_id": "d658326c-adba-11eb-ac23-fa163eac3af7",
+                    "name": "DTOL10239377",
+                    "external_study_id": "cf04ea86-ac82-11e9-8998-68b599768938",
+                    "species": "Epistrophe grossulariae"
+                  }
+                ]
+              },
+              {
+                "position": "D3",
+                "samples": [
+                  {
+                    "external_id": "d667e91e-adba-11eb-ac23-fa163eac3af7",
+                    "name": "DTOL10239378",
+                    "external_study_id": "cf04ea86-ac82-11e9-8998-68b599768938",
+                    "species": "Helina quadrum"
+                  }
+                ]
+              },
+              {
+                "position": "E3",
+                "samples": [
+                  {
+                    "external_id": "d6782842-adba-11eb-ac23-fa163eac3af7",
+                    "name": "DTOL10239379",
+                    "external_study_id": "cf04ea86-ac82-11e9-8998-68b599768938",
+                    "species": "Hylemya vagans"
+                  }
+                ]
+              },
+              {
+                "position": "F3",
+                "samples": [
+                  {
+                    "external_id": "d68017c8-adba-11eb-ac23-fa163eac3af7",
+                    "name": "DTOL10239380",
+                    "external_study_id": "cf04ea86-ac82-11e9-8998-68b599768938",
+                    "species": "Lucilia richardsi"
+                  }
+                ]
+              },
+              {
+                "position": "G3",
+                "samples": [
+                  {
+                    "external_id": "d6900bce-adba-11eb-ac23-fa163eac3af7",
+                    "name": "DTOL10239381",
+                    "external_study_id": "cf04ea86-ac82-11e9-8998-68b599768938",
+                    "species": "Agrochola circellaris"
+                  }
+                ]
+              },
+              {
+                "position": "H3",
+                "samples": [
+                  {
+                    "external_id": "d69ac6e0-adba-11eb-ac23-fa163eac3af7",
+                    "name": "DTOL10239382",
+                    "external_study_id": "cf04ea86-ac82-11e9-8998-68b599768938",
+                    "species": "Agriphila tristella"
+                  }
+                ]
+              },
+              { "position": "A4" },
+              { "position": "B4" },
+              { "position": "C4" },
+              { "position": "D4" },
+              { "position": "E4" },
+              { "position": "F4" },
+              { "position": "G4" },
+              { "position": "H4" },
+              { "position": "A5" },
+              { "position": "B5" },
+              { "position": "C5" },
+              { "position": "D5" },
+              { "position": "E5" },
+              { "position": "F5" },
+              { "position": "G5" },
+              { "position": "H5" },
+              { "position": "A6" },
+              { "position": "B6" },
+              { "position": "C6" },
+              { "position": "D6" },
+              { "position": "E6" },
+              { "position": "F6" },
+              { "position": "G6" },
+              { "position": "H6" },
+              { "position": "A7" },
+              { "position": "B7" },
+              { "position": "C7" },
+              { "position": "D7" },
+              { "position": "E7" },
+              { "position": "F7" },
+              { "position": "G7" },
+              { "position": "H7" },
+              { "position": "A8" },
+              { "position": "B8" },
+              { "position": "C8" },
+              { "position": "D8" },
+              { "position": "E8" },
+              { "position": "F8" },
+              { "position": "G8" },
+              { "position": "H8" },
+              { "position": "A9" },
+              { "position": "B9" },
+              { "position": "C9" },
+              { "position": "D9" },
+              { "position": "E9" },
+              { "position": "F9" },
+              { "position": "G9" },
+              { "position": "H9" },
+              { "position": "A10" },
+              { "position": "B10" },
+              { "position": "C10" },
+              { "position": "D10" },
+              { "position": "E10" },
+              { "position": "F10" },
+              { "position": "G10" },
+              { "position": "H10" },
+              { "position": "A11" },
+              { "position": "B11" },
+              { "position": "C11" },
+              { "position": "D11" },
+              { "position": "E11" },
+              { "position": "F11" },
+              { "position": "G11" },
+              { "position": "H11" },
+              { "position": "A12" },
+              { "position": "B12" },
+              { "position": "C12" },
+              { "position": "D12" },
+              { "position": "E12" },
+              { "position": "F12" },
+              { "position": "G12" },
+              { "position": "H12" }
+            ]
+          }
+        ]
+      }
+    }
+  }
+}

@@ -18,11 +18,13 @@ const createPlates = async ({ requests, barcodes }) => {
   const response = await handlePromise(
     requests.traction.create({
       data: {
-        attributes: {
-          plates: transformPlates({
-            plates,
-            sampleType: PacbioSample,
-          }),
+        data: {
+          attributes: {
+            plates: transformPlates({
+              plates,
+              sampleType: PacbioSample,
+            }),
+          },
         },
       },
     }),
