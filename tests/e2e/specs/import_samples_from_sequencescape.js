@@ -9,8 +9,15 @@ describe('Import samples from Sequencescape', () => {
         fixture: 'sequencescapePlates.json',
       },
     )
-    cy.intercept('/v1/pacbio/plates', { fixture: 'tractionPlates.json' })
+    cy.intercept('POST', '/v1/pacbio/plates', { fixture: 'tractionPlates.json' }).as('postPayload')
+
     cy.get('#createTractionPlates').click()
+    cy.fixture('tractionPacbioPlateCreate').then(({ data }) => {
+      cy.wait('@postPayload')
+        .its('request.body')
+        .should('deep.equal', data)
+    })
+
     cy.contains('Plates created with barcodes DN804974W')
   })
 
