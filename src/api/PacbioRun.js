@@ -223,7 +223,8 @@ const updateWellPayload = (well) => {
 
 const destroy = async (id, request) => {
   let promise = request.destroy(id)
-  return await handlePromise(promise)
+  // needs to be promise[0] as destroy return an array
+  return await handlePromise(promise[0])
 }
 
 export {

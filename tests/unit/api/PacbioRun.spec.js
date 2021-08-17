@@ -130,7 +130,11 @@ describe('Run', () => {
 
     it('returns false if the run cannot be created', async () => {
       pacbioRequest.runs.create.mockReturnValue(failedResponse)
-      pacbioRequest.runs.destroy.mockResolvedValue(Data.SuccessfulDestroy)
+
+      let promise = new Promise((resolve) => {
+        resolve(Data.SuccessfulDestroy)
+      })
+      pacbioRequest.runs.destroy.mockReturnValue([promise])
 
       let resp = await Run.create(run, pacbioRequest)
 
@@ -145,7 +149,10 @@ describe('Run', () => {
       pacbioRequest.runs.create.mockReturnValue(Data.PacbioRun)
       pacbioRequest.runs.plates.create.mockResolvedValue(failedResponse)
 
-      pacbioRequest.runs.destroy.mockResolvedValue(Data.SuccessfulDestroy)
+      let promise = new Promise((resolve) => {
+        resolve(Data.SuccessfulDestroy)
+      })
+      pacbioRequest.runs.destroy.mockReturnValue([promise])
 
       let runResponse = new Response(Data.PacbioRun)
       let runId = runResponse.deserialize.runs[0].id
@@ -166,7 +173,10 @@ describe('Run', () => {
       pacbioRequest.runs.plates.create.mockResolvedValue(Data.PacbioSequencingPlate)
       pacbioRequest.runs.wells.create.mockResolvedValue(failedResponse)
 
-      pacbioRequest.runs.destroy.mockResolvedValue(Data.SuccessfulDestroy)
+      let promise = new Promise((resolve) => {
+        resolve(Data.SuccessfulDestroy)
+      })
+      pacbioRequest.runs.destroy.mockReturnValue([promise])
 
       let runResponse = new Response(Data.PacbioRun)
       let runId = runResponse.deserialize.runs[0].id
@@ -202,7 +212,10 @@ describe('Run', () => {
       it('should remove that well from the payload', () => {
         pacbioRequest.runs.create.mockResolvedValue([Data.PacbioRun])
 
-        pacbioRequest.runs.destroy.mockResolvedValue(Data.SuccessfulDestroy)
+        let promise = new Promise((resolve) => {
+          resolve(Data.SuccessfulDestroy)
+        })
+        pacbioRequest.runs.destroy.mockReturnValue([promise])
 
         Run.create(run, pacbioRequest)
         expect(pacbioRequest.runs.create).toHaveBeenCalledTimes(1)
@@ -485,7 +498,11 @@ describe('Run', () => {
     })
 
     it('rolls back the request', async () => {
-      pacbioRequest.runs.destroy.mockResolvedValue(Data.SuccessfulDestroy)
+      let promise = new Promise((resolve) => {
+        resolve(Data.SuccessfulDestroy)
+      })
+
+      pacbioRequest.runs.destroy.mockReturnValue([promise])
       let expected = new Response(Data.SuccessfulDestroy)
 
       let response = await Run.destroy(1, pacbioRequest.runs)
