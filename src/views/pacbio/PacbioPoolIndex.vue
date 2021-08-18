@@ -51,6 +51,7 @@
       <template v-slot:cell(actions)="row">
         <b-button
           :id="'editPool-' + row.item.id"
+          data-action="edit-pool"
           size="sm"
           variant="outline-primary"
           :to="{ name: 'PacbioPoolCreate', params: { id: row.item.id } }"

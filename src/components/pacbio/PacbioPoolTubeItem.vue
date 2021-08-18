@@ -26,7 +26,7 @@
           <dd data-attribute="template-prep-kit-box-barcode">
             {{ template_prep_kit_box_barcode || 'Unknown' }}
           </dd>
-          <dt>Fragment size</dt>
+          <dt>Insert size</dt>
           <dd data-attribute="insert-size">{{ insert_size || 'Unknown' }}</dd>
           <dt>Libraries</dt>
           <dd>

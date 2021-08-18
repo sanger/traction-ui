@@ -104,8 +104,7 @@ const update = async (run, request) => {
 }
 
 const updateResource = async (payload, request) => {
-  const promise = await request.update(payload)
-  const response = await handlePromise(promise)
+  const response = await handlePromise(request.update(payload))
 
   if (response.successful) {
     return response
@@ -224,7 +223,8 @@ const updateWellPayload = (well) => {
 
 const destroy = async (id, request) => {
   let promise = request.destroy(id)
-  return await handlePromise(promise)
+  // needs to be promise[0] as destroy return an array
+  return await handlePromise(promise[0])
 }
 
 export {
