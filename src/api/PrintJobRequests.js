@@ -79,7 +79,7 @@ const printMyBarcodeRequest = () => {
 }
 
 const postPrintJob = async (request, payload) => {
-  let promise = request.create(payload)
+  let promise = request.create({ data: payload})
   return await handlePromise(promise)
 }
 

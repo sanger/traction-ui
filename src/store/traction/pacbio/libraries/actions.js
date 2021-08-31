@@ -4,23 +4,21 @@ const createLibraryInTraction = async ({ rootGetters, getters }, library) => {
   let tag_id = rootGetters['traction/tractionTags'].find((l) => l.group_id == library.tag.group_id)
     .id
   let body = {
-    data: {
-      type: 'library',
-      attributes: {
-        volume: library.volume,
-        concentration: library.concentration,
-        template_prep_kit_box_barcode: library.templatePrepKitBoxBarcode,
-        insert_size: library.insertSize,
-      },
-      relationships: {
-        request: { data: { type: 'requests', id: library.sample.id } },
-        tag: { data: { type: 'tags', id: tag_id } },
-      },
+    type: 'library',
+    attributes: {
+      volume: library.volume,
+      concentration: library.concentration,
+      template_prep_kit_box_barcode: library.templatePrepKitBoxBarcode,
+      insert_size: library.insertSize,
+    },
+    relationships: {
+      request: { data: { type: 'requests', id: library.sample.id } },
+      tag: { data: { type: 'tags', id: tag_id } },
     },
   }
 
   let request = getters.libraryRequest
-  let promise = request.create(body)
+  let promise = request.create({ data: body})
   let response = await handlePromise(promise)
 
   return response

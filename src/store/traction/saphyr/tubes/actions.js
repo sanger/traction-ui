@@ -23,7 +23,7 @@ const exportSampleExtractionTubesIntoTraction = async ({ getters }, tubes) => {
   }
 
   let request = getters.requestsRequest
-  let promise = request.create(body)
+  let promise = request.create({ data: body})
   let response = await handlePromise(promise)
 
   return response
@@ -57,7 +57,7 @@ const createLibrariesInTraction = async ({ getters }, payload) => {
   }
 
   let request = getters.libraryRequest
-  let promise = request.create(body)
+  let promise = request.create({ data: body})
   let response = await handlePromise(promise)
 
   return response
