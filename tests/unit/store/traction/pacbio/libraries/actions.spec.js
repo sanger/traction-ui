@@ -48,7 +48,7 @@ describe('#createLibraryInTraction', () => {
 
     let response = await Actions.createLibraryInTraction({ getters, rootGetters }, library)
     expect(response).toEqual(expectedResponse)
-    expect(create).toBeCalledWith(body)
+    expect(create).toBeCalledWith({ data: body })
   })
 
   it('unsuccessfully', async () => {
