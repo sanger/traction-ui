@@ -52,7 +52,7 @@ const exportSampleExtractionTubesIntoTraction = async ({ getters }, tubes) => {
   }
 
   let request = getters.requestsRequest
-  let promise = request.create({ data: body})
+  let promise = request.create({ data: body })
   let response = await handlePromise(promise)
 
   return response

@@ -18,7 +18,7 @@ const createLibraryInTraction = async ({ rootGetters, getters }, library) => {
   }
 
   let request = getters.libraryRequest
-  let promise = request.create({ data: body})
+  let promise = request.create({ data: body })
   let response = await handlePromise(promise)
 
   return response

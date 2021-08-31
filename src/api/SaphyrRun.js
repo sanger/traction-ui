@@ -79,7 +79,7 @@ const create = async (run, request) => {
 }
 
 const createResource = async (payload, request) => {
-  let response = await handlePromise(request.create({ data: payload}))
+  let response = await handlePromise(request.create({ data: payload }))
 
   if (response.successful) {
     return response
