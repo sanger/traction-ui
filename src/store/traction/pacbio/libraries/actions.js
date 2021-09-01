@@ -1,29 +1,40 @@
 import handlePromise from '@/api/PromiseHelper'
+import { groupIncludedByResource } from '@/api/JsonApi'
+import { handleResponse } from '@/api/ResponseHelper'
 
-const createLibraryInTraction = async ({ rootGetters, getters }, library) => {
+const createLibraryInTraction = async ({ rootState, rootGetters }, library) => {
+  // Some duplication of code from createPool but this is for single library pool
   let tag_id = rootGetters['traction/tractionTags'].find((l) => l.group_id == library.tag.group_id)
     .id
+
   let body = {
     data: {
-      type: 'library',
+      type: 'pools',
       attributes: {
+        library_attributes: [
+          {
+            pacbio_request_id: library.sample.id,
+            template_prep_kit_box_barcode: library.templatePrepKitBoxBarcode,
+            tag_id,
+            volume: library.volume,
+            concentration: library.concentration,
+            insert_size: library.insertSize,
+          },
+        ],
+        template_prep_kit_box_barcode: library.templatePrepKitBoxBarcode,
         volume: library.volume,
         concentration: library.concentration,
-        template_prep_kit_box_barcode: library.templatePrepKitBoxBarcode,
         insert_size: library.insertSize,
-      },
-      relationships: {
-        request: { data: { type: 'requests', id: library.sample.id } },
-        tag: { data: { type: 'tags', id: tag_id } },
       },
     },
   }
 
-  let request = getters.libraryRequest
-  let promise = request.create({ data: body })
-  let response = await handlePromise(promise)
-
-  return response
+  const request = rootState.api.traction.pacbio.pools
+  const promise = request.create({ data: body, include: 'tube' })
+  const { success, data: { included = [] } = {}, errors } = await handleResponse(promise)
+  const { tubes: [tube = {}] = [] } = groupIncludedByResource(included)
+  const { attributes: { barcode = '' } = {} } = tube
+  return { success, barcode, errors }
 }
 
 const deleteLibraries = async ({ getters }, libraryIds) => {

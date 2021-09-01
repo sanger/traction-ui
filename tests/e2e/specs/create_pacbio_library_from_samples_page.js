@@ -6,8 +6,8 @@ describe('Pacbio library creation from sample', () => {
     cy.intercept('/v1/tags', {
       fixture: 'tractionTags.json',
     })
-    cy.intercept('/v1/pacbio/libraries', {
-      fixture: 'tractionPacbioLibraries.json',
+    cy.intercept('/v1/pacbio/pools?include=tube', {
+      fixture: 'tractionPacbioPool.json',
     })
     cy.visit('#/pacbio/samples')
     cy.get('#samples-table').contains('td', '5')
@@ -21,6 +21,6 @@ describe('Pacbio library creation from sample', () => {
     cy.get('#library-templatePrepKitBoxBarcode').type('barcode')
     cy.get('#library-insertSize').type(1)
     cy.get('#create-btn').click()
-    cy.contains('Created library with barcode')
+    cy.contains('Created library with barcode TRAC-2-1465')
   })
 })

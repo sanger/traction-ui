@@ -156,16 +156,12 @@ export default {
         return
       }
 
-      let response = await this.createLibraryInTraction(this.library)
-      if (response.successful) {
-        let barcodes = response.deserialize.libraries.map((l) => l.barcode)
+      const { success, barcode, errors } = await this.createLibraryInTraction(this.library)
+      if (success) {
         this.hide()
-        this.$emit('alert', 'Created library with barcode ' + barcodes[0], 'success')
+        this.$emit('alert', 'Created library with barcode ' + barcode, 'success')
       } else {
-        this.showAlert(
-          consts.MESSAGE_ERROR_CREATE_LIBRARY_FAILED + response.errors.message,
-          'danger',
-        )
+        this.showAlert(consts.MESSAGE_ERROR_CREATE_LIBRARY_FAILED + errors, 'danger')
       }
     },
     show() {

@@ -1,11 +1,12 @@
 import { Data } from 'testHelper'
 import Response from '@/api/Response'
 import * as Actions from '@/store/traction/pacbio/libraries/actions'
+import { newResponse } from '@/api/ResponseHelper'
 
 // TODO: we really need factories rather than building payloads manually
 // This is quite complex and I don't quite understand what is going on. Needs simplification
 describe('#createLibraryInTraction', () => {
-  let create, getters, library, body, rootGetters
+  let create, library, body, rootGetters, rootState
 
   beforeEach(() => {
     create = jest.fn()
@@ -15,7 +16,7 @@ describe('#createLibraryInTraction', () => {
         { id: 2, group_id: '123abc2' },
       ],
     }
-    getters = { libraryRequest: { create: create } }
+    rootState = { api: { traction: { pacbio: { pools: { create } } } } }
     library = {
       tag: { group_id: '123abc1' },
       volume: 1.0,
@@ -27,42 +28,63 @@ describe('#createLibraryInTraction', () => {
 
     body = {
       data: {
-        type: 'library',
+        type: 'pools',
         attributes: {
-          volume: 1,
-          concentration: 1,
-          template_prep_kit_box_barcode: 'LK12345',
-          insert_size: 100,
-        },
-        relationships: {
-          request: { data: { type: 'requests', id: 1 } },
-          tag: { data: { type: 'tags', id: 1 } },
+          library_attributes: [
+            {
+              pacbio_request_id: library.sample.id,
+              template_prep_kit_box_barcode: library.templatePrepKitBoxBarcode,
+              tag_id: 1,
+              volume: library.volume,
+              concentration: library.concentration,
+              insert_size: library.insertSize,
+            },
+          ],
+          template_prep_kit_box_barcode: library.templatePrepKitBoxBarcode,
+          volume: library.volume,
+          concentration: library.concentration,
+          insert_size: library.insertSize,
         },
       },
     }
   })
 
   it('successfully', async () => {
-    let expectedResponse = new Response(Data.TractionTubeWithContainerMaterials)
-    create.mockReturnValue(Data.TractionTubeWithContainerMaterials)
+    const mockResponse = {
+      status: '201',
+      data: { data: {}, included: [{ type: 'tubes', attributes: { barcode: 'TRAC-1' } }] },
+    }
+    create.mockResolvedValue(mockResponse)
 
-    let response = await Actions.createLibraryInTraction({ getters, rootGetters }, library)
-    expect(response).toEqual(expectedResponse)
-    expect(create).toBeCalledWith({ data: body })
+    const { success, barcode } = await Actions.createLibraryInTraction(
+      { rootState, rootGetters },
+      library,
+    )
+
+    expect(create).toBeCalledWith({
+      data: body,
+      include: 'tube',
+    })
+    expect(success).toBeTruthy()
+    expect(barcode).toEqual('TRAC-1')
   })
 
   it('unsuccessfully', async () => {
-    let failedResponse = {
-      status: 422,
-      statusText: 'Unprocessable Entity',
-      data: { errors: { name: ['error message'] } },
+    const mockResponse = {
+      status: '422',
+      data: { data: { errors: { error1: ['There was an error'] } } },
     }
-    let expectedResponse = new Response(failedResponse)
 
-    create.mockReturnValue(failedResponse)
+    create.mockRejectedValue({ response: mockResponse })
 
-    let response = await Actions.createLibraryInTraction({ getters, rootGetters }, library)
-    expect(response).toEqual(expectedResponse)
+    const expectedResponse = newResponse({ ...mockResponse, success: false })
+    const { success, errors } = await Actions.createLibraryInTraction(
+      { rootState, rootGetters },
+      library,
+    )
+
+    expect(success).toBeFalsy()
+    expect(errors).toEqual(expectedResponse.errors)
   })
 })
 
