@@ -21,8 +21,8 @@ describe('#createLibraryInTraction', () => {
       tag: { group_id: '123abc1' },
       volume: 1.0,
       concentration: 1.0,
-      templatePrepKitBoxBarcode: 'LK12345',
-      insertSize: 100,
+      template_prep_kit_box_barcode: 'LK12345',
+      insert_size: 100,
       sample: { id: 1 },
     }
 
@@ -33,17 +33,17 @@ describe('#createLibraryInTraction', () => {
           library_attributes: [
             {
               pacbio_request_id: library.sample.id,
-              template_prep_kit_box_barcode: library.templatePrepKitBoxBarcode,
+              template_prep_kit_box_barcode: library.template_prep_kit_box_barcode,
               tag_id: 1,
               volume: library.volume,
               concentration: library.concentration,
-              insert_size: library.insertSize,
+              insert_size: library.insert_size,
             },
           ],
-          template_prep_kit_box_barcode: library.templatePrepKitBoxBarcode,
+          template_prep_kit_box_barcode: library.template_prep_kit_box_barcode,
           volume: library.volume,
           concentration: library.concentration,
-          insert_size: library.insertSize,
+          insert_size: library.insert_size,
         },
       },
     }
@@ -172,30 +172,60 @@ describe('#setLibraries', () => {
 })
 
 describe('#updateLibrary', () => {
-  let commit, update, getters, failedResponse, library, expectedResponse
+  let commit, update, getters, failedResponse, library, successfulResponse, body
 
   beforeEach(() => {
     commit = jest.fn()
     update = jest.fn()
     getters = { libraryRequest: { update: update } }
-    expectedResponse = new Response(Data.TractionPacbioLibrary)
-    library = expectedResponse.deserialize.libraries[0]
+    library = {
+      id: 1,
+      tag: { group_id: '123abc1' },
+      volume: 1.0,
+      concentration: 1.0,
+      template_prep_kit_box_barcode: 'LK12345',
+      insert_size: 100,
+      sample: { id: 1 },
+    }
+    body = {
+      id: library.id,
+      type: 'libraries',
+      attributes: {
+        template_prep_kit_box_barcode: library.template_prep_kit_box_barcode,
+        volume: library.volume,
+        concentration: library.concentration,
+        insert_size: library.insert_size,
+      },
+    }
 
-    failedResponse = { data: { data: [] }, status: 500, statusText: 'Internal Server Error' }
+    successfulResponse = { status: '200', data: Data.TractionPacbioLibrary.data }
+    failedResponse = {
+      status: '422',
+      data: { data: { errors: { error1: ['There was an error'] } } },
+    }
   })
 
   it('successfully', async () => {
-    update.mockReturnValue(Data.TractionPacbioLibrary)
-    library.volume = '5'
-    let response = await Actions.updateLibrary({ commit, getters }, library)
-    expect(expectedResponse).toEqual(response)
+    update.mockResolvedValue(successfulResponse)
+
+    const { success, errors } = await Actions.updateLibrary({ commit, getters }, library)
+
+    expect(update).toBeCalledWith({
+      data: body,
+      include: 'request,tag,tube,pool',
+    })
+    expect(success).toBeTruthy()
+    expect(errors).toBeUndefined()
   })
 
   it('unsuccessfully', async () => {
-    update.mockReturnValue(failedResponse)
-    expectedResponse = new Response(failedResponse)
-    let response = await Actions.updateLibrary({ commit, getters }, library)
+    update.mockRejectedValue({ response: failedResponse })
+
+    const expectedResponse = newResponse({ ...failedResponse, success: false })
+    const { success, errors } = await Actions.updateLibrary({ commit, getters }, library)
+
     expect(commit).not.toHaveBeenCalled()
-    expect(response).toEqual(expectedResponse)
+    expect(success).toBeFalsy()
+    expect(errors).toEqual(expectedResponse.errors)
   })
 })

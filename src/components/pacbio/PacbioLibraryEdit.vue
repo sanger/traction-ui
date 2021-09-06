@@ -61,11 +61,11 @@ export default {
   },
   methods: {
     async update() {
-      try {
-        await this.updateLibrary(this.library)
+      const { success, errors } = await this.updateLibrary(this.library)
+      if (success) {
         this.alert('Library updated', 'success')
-      } catch (err) {
-        this.alert('Failed to update library. ' + err, 'danger')
+      } else {
+        this.alert('Failed to update library. ' + errors, 'danger')
       }
       this.hide()
     },

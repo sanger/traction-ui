@@ -70,7 +70,7 @@
         >
           <b-form-input
             id="library-templatePrepKitBoxBarcode"
-            v-model="library.templatePrepKitBoxBarcode"
+            v-model="library.template_prep_kit_box_barcode"
             type="text"
             required
             placeholder="Example: 012345678901234567890"
@@ -85,7 +85,7 @@
         >
           <b-form-input
             id="library-insertSize"
-            v-model="library.insertSize"
+            v-model="library.insert_size"
             type="number"
             required
             step="1"
