@@ -1,11 +1,12 @@
 import { Data } from 'testHelper'
 import Response from '@/api/Response'
 import * as Actions from '@/store/traction/pacbio/libraries/actions'
+import { newResponse } from '@/api/ResponseHelper'
 
 // TODO: we really need factories rather than building payloads manually
 // This is quite complex and I don't quite understand what is going on. Needs simplification
 describe('#createLibraryInTraction', () => {
-  let create, getters, library, body, rootGetters
+  let create, library, body, rootGetters, rootState
 
   beforeEach(() => {
     create = jest.fn()
@@ -15,54 +16,75 @@ describe('#createLibraryInTraction', () => {
         { id: 2, group_id: '123abc2' },
       ],
     }
-    getters = { libraryRequest: { create: create } }
+    rootState = { api: { traction: { pacbio: { pools: { create } } } } }
     library = {
       tag: { group_id: '123abc1' },
       volume: 1.0,
       concentration: 1.0,
-      templatePrepKitBoxBarcode: 'LK12345',
-      insertSize: 100,
+      template_prep_kit_box_barcode: 'LK12345',
+      insert_size: 100,
       sample: { id: 1 },
     }
 
     body = {
       data: {
-        type: 'library',
+        type: 'pools',
         attributes: {
-          volume: 1,
-          concentration: 1,
-          template_prep_kit_box_barcode: 'LK12345',
-          insert_size: 100,
-        },
-        relationships: {
-          request: { data: { type: 'requests', id: 1 } },
-          tag: { data: { type: 'tags', id: 1 } },
+          library_attributes: [
+            {
+              pacbio_request_id: library.sample.id,
+              template_prep_kit_box_barcode: library.template_prep_kit_box_barcode,
+              tag_id: 1,
+              volume: library.volume,
+              concentration: library.concentration,
+              insert_size: library.insert_size,
+            },
+          ],
+          template_prep_kit_box_barcode: library.template_prep_kit_box_barcode,
+          volume: library.volume,
+          concentration: library.concentration,
+          insert_size: library.insert_size,
         },
       },
     }
   })
 
   it('successfully', async () => {
-    let expectedResponse = new Response(Data.TractionTubeWithContainerMaterials)
-    create.mockReturnValue(Data.TractionTubeWithContainerMaterials)
+    const mockResponse = {
+      status: '201',
+      data: { data: {}, included: [{ type: 'tubes', attributes: { barcode: 'TRAC-1' } }] },
+    }
+    create.mockResolvedValue(mockResponse)
 
-    let response = await Actions.createLibraryInTraction({ getters, rootGetters }, library)
-    expect(response).toEqual(expectedResponse)
-    expect(create).toBeCalledWith({ data: body })
+    const { success, barcode } = await Actions.createLibraryInTraction(
+      { rootState, rootGetters },
+      library,
+    )
+
+    expect(create).toBeCalledWith({
+      data: body,
+      include: 'tube',
+    })
+    expect(success).toBeTruthy()
+    expect(barcode).toEqual('TRAC-1')
   })
 
   it('unsuccessfully', async () => {
-    let failedResponse = {
-      status: 422,
-      statusText: 'Unprocessable Entity',
-      data: { errors: { name: ['error message'] } },
+    const mockResponse = {
+      status: '422',
+      data: { data: { errors: { error1: ['There was an error'] } } },
     }
-    let expectedResponse = new Response(failedResponse)
 
-    create.mockReturnValue(failedResponse)
+    create.mockRejectedValue({ response: mockResponse })
 
-    let response = await Actions.createLibraryInTraction({ getters, rootGetters }, library)
-    expect(response).toEqual(expectedResponse)
+    const expectedResponse = newResponse({ ...mockResponse, success: false })
+    const { success, errors } = await Actions.createLibraryInTraction(
+      { rootState, rootGetters },
+      library,
+    )
+
+    expect(success).toBeFalsy()
+    expect(errors).toEqual(expectedResponse.errors)
   })
 })
 
@@ -150,30 +172,60 @@ describe('#setLibraries', () => {
 })
 
 describe('#updateLibrary', () => {
-  let commit, update, getters, failedResponse, library, expectedResponse
+  let commit, update, getters, failedResponse, library, successfulResponse, body
 
   beforeEach(() => {
     commit = jest.fn()
     update = jest.fn()
     getters = { libraryRequest: { update: update } }
-    expectedResponse = new Response(Data.TractionPacbioLibrary)
-    library = expectedResponse.deserialize.libraries[0]
+    library = {
+      id: 1,
+      tag: { group_id: '123abc1' },
+      volume: 1.0,
+      concentration: 1.0,
+      template_prep_kit_box_barcode: 'LK12345',
+      insert_size: 100,
+      sample: { id: 1 },
+    }
+    body = {
+      id: library.id,
+      type: 'libraries',
+      attributes: {
+        template_prep_kit_box_barcode: library.template_prep_kit_box_barcode,
+        volume: library.volume,
+        concentration: library.concentration,
+        insert_size: library.insert_size,
+      },
+    }
 
-    failedResponse = { data: { data: [] }, status: 500, statusText: 'Internal Server Error' }
+    successfulResponse = { status: '200', data: Data.TractionPacbioLibrary.data }
+    failedResponse = {
+      status: '422',
+      data: { data: { errors: { error1: ['There was an error'] } } },
+    }
   })
 
   it('successfully', async () => {
-    update.mockReturnValue(Data.TractionPacbioLibrary)
-    library.volume = '5'
-    let response = await Actions.updateLibrary({ commit, getters }, library)
-    expect(expectedResponse).toEqual(response)
+    update.mockResolvedValue(successfulResponse)
+
+    const { success, errors } = await Actions.updateLibrary({ commit, getters }, library)
+
+    expect(update).toBeCalledWith({
+      data: body,
+      include: 'request,tag,tube,pool',
+    })
+    expect(success).toBeTruthy()
+    expect(errors).toBeUndefined()
   })
 
   it('unsuccessfully', async () => {
-    update.mockReturnValue(failedResponse)
-    expectedResponse = new Response(failedResponse)
-    let response = await Actions.updateLibrary({ commit, getters }, library)
+    update.mockRejectedValue({ response: failedResponse })
+
+    const expectedResponse = newResponse({ ...failedResponse, success: false })
+    const { success, errors } = await Actions.updateLibrary({ commit, getters }, library)
+
     expect(commit).not.toHaveBeenCalled()
-    expect(response).toEqual(expectedResponse)
+    expect(success).toBeFalsy()
+    expect(errors).toEqual(expectedResponse.errors)
   })
 })

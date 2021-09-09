@@ -6,27 +6,38 @@
         "type": "libraries",
         "attributes": {
           "state": "pending",
-          "barcode": "TRAC-16",
           "volume": 1.0,
           "concentration": 1.0,
           "template_prep_kit_box_barcode": "LK12345",
           "insert_size": 100,
           "created_at": "09/23/2019 11:18",
           "deactivated_at": null,
-          "sample_names": "4616STDY7535900,4616STDY7535900"
+          "source_identifier": "DN1:A1"
         },
         "relationships": {
-          "requests": {
-            "data": [
-              {
-                "type": "request_libraries",
-                "id": "1"
-              },
-              {
-                "type": "request_libraries",
-                "id": "6"
-              }
-            ]
+          "request": {
+            "data": {
+              "type": "requests",
+              "id": "1"
+            }
+          },
+          "pool": {
+            "data": {
+              "type": "pools",
+              "id": "2"
+            }
+          },
+          "tag": {
+            "data": {
+              "type": "tags",
+              "id": "3"
+            }
+          },
+          "tube": {
+            "data": {
+              "type": "tubes",
+              "id": "4"
+            }
           }
         }
       }
@@ -34,24 +45,33 @@
     "included": [
       {
         "id": "1",
-        "type": "request_libraries",
+        "type": "requests",
         "attributes": {
-          "sample_name": "4616STDY7535900",
-          "tag_oligo": "ATGC",
-          "tag_group_id": 1,
-          "tag_set_name": "pacbio",
-          "tag_id": 1
+          "sample_name": "4616STDY7535900"
         }
       },
       {
-        "id": "6",
-        "type": "request_libraries",
+        "id": "2",
+        "type": "pools",
         "attributes": {
-          "sample_name": "4616STDY7535900",
-          "tag_oligo": "CGTA",
-          "tag_group_id": 1,
-          "tag_set_name": "pacbio",
-          "tag_id": 2
+          "volume": 1.0,
+          "concentration": 1.0,
+          "template_prep_kit_box_barcode": "LK12345",
+          "insert_size": 100
+        }
+      },
+      {
+        "id": "3",
+        "type": "tags",
+        "attributes": {
+          "group_id": "1234"
+        }
+      },
+      {
+        "id": "4",
+        "type": "tubes",
+        "attributes": {
+          "sample_name": "TRAC-16"
         }
       }
     ]

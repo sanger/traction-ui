@@ -1,6 +1,5 @@
-import { mount, localVue, store, Data } from 'testHelper'
+import { mount, localVue, store } from 'testHelper'
 import PacbioLibraryCreate from '@/components/pacbio/PacbioLibraryCreate'
-import Response from '@/api/Response'
 import * as consts from '@/consts/consts'
 
 describe('PacbioLibraryCreate.vue', () => {
@@ -60,7 +59,7 @@ describe('PacbioLibraryCreate.vue', () => {
 
     it('is successful', async () => {
       wrapper.setData({ library: { tag: { group_id: 1 }, sample: { id: 1 } } })
-      let expectedResponse = new Response(Data.Libraries)
+      let expectedResponse = { success: true, barcode: 'TRAC-1', errors: [] }
       modal.createLibraryInTraction.mockReturnValue(expectedResponse)
 
       await modal.createLibrary()
@@ -82,13 +81,7 @@ describe('PacbioLibraryCreate.vue', () => {
     it('shows a error message on failure', async () => {
       wrapper.setData({ library: { tag: { group_id: 1 }, sample: { id: 1 } } })
 
-      let failedResponse = {
-        status: 422,
-        statusText: 'Unprocessable Entity',
-        data: { errors: { it: ['did not work'] } },
-      }
-      let expectedResponse = new Response(failedResponse)
-
+      let expectedResponse = { success: false, barcode: '', errors: ['it did not work'] }
       modal.createLibraryInTraction.mockReturnValue(expectedResponse)
 
       await modal.createLibrary()
