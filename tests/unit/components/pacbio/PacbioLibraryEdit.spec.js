@@ -37,21 +37,16 @@ describe('PacbioLibraryEdit.vue', () => {
     })
 
     it('successful ', async () => {
-      modal.updateLibrary.mockReturnValue(true)
+      modal.updateLibrary.mockReturnValue({ success: true, errors: [] })
       await modal.update()
       expect(modal.alert).toBeCalledWith('Library updated', 'success')
       expect(modal.hide).toBeCalled()
     })
 
     it('unsuccessful ', async () => {
-      modal.updateLibrary.mockImplementation(() => {
-        throw Error('Raise this error')
-      })
+      modal.updateLibrary.mockReturnValue({ success: false, errors: ['Raise this error'] })
       await modal.update()
-      expect(modal.alert).toBeCalledWith(
-        'Failed to update library. Error: Raise this error',
-        'danger',
-      )
+      expect(modal.alert).toBeCalledWith('Failed to update library. Raise this error', 'danger')
       expect(modal.hide).toBeCalled()
     })
   })

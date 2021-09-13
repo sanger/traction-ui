@@ -70,7 +70,7 @@
         >
           <b-form-input
             id="library-templatePrepKitBoxBarcode"
-            v-model="library.templatePrepKitBoxBarcode"
+            v-model="library.template_prep_kit_box_barcode"
             type="text"
             required
             placeholder="Example: 012345678901234567890"
@@ -85,7 +85,7 @@
         >
           <b-form-input
             id="library-insertSize"
-            v-model="library.insertSize"
+            v-model="library.insert_size"
             type="number"
             required
             step="1"
@@ -156,16 +156,12 @@ export default {
         return
       }
 
-      let response = await this.createLibraryInTraction(this.library)
-      if (response.successful) {
-        let barcodes = response.deserialize.libraries.map((l) => l.barcode)
+      const { success, barcode, errors } = await this.createLibraryInTraction(this.library)
+      if (success) {
         this.hide()
-        this.$emit('alert', 'Created library with barcode ' + barcodes[0], 'success')
+        this.$emit('alert', 'Created library with barcode ' + barcode, 'success')
       } else {
-        this.showAlert(
-          consts.MESSAGE_ERROR_CREATE_LIBRARY_FAILED + response.errors.message,
-          'danger',
-        )
+        this.showAlert(consts.MESSAGE_ERROR_CREATE_LIBRARY_FAILED + errors, 'danger')
       }
     },
     show() {
