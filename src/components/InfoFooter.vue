@@ -32,6 +32,7 @@ export default {
       environment: process.env.NODE_ENV,
       repo: '',
       linkSlice: 51, //length needed for to slice github URL down to release name
+      defaultRelease: 'https://github.com/sanger/traction-ui/releases',
     }
   },
   created() {
@@ -39,25 +40,24 @@ export default {
   },
   methods: {
     getRelease() {
-      if (this.environment != 'development') {
+      if (this.repo != this.defaultRelease) {
         return this.repo.slice(this.linkSlice, this.repo.length)
       } else {
         return 'Releases'
       }
     },
     async provider() {
-      if (this.environment != 'development') {
-        try {
-          await fetch('REPO')
-            .then((response) => response.text())
-            .then((response1) => {
-              this.repo = response1
-            })
-        } catch (err) {
-          console.error(err)
-        }
-      } else {
-        this.repo = 'https://github.com/sanger/traction-ui/releases'
+      try {
+        await fetch('REPO')
+          .then((response) => response.text())
+          .then((response1) => {
+            // Checks returned text contains REPO text as fetch returns index.html if REPO doesn't exist
+            response1.includes('github.com/sanger/traction-ui/releases')
+              ? (this.repo = response1)
+              : (this.repo = this.defaultRelease)
+          })
+      } catch (err) {
+        console.error(err)
       }
     },
   },

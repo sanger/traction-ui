@@ -29,4 +29,18 @@ describe('InfoFooter.vue', () => {
     wrapper.setData({ repo: 'trac-ui' })
     expect(wrapper.vm.repo).toBe('trac-ui')
   })
+
+  describe('getRelease method', () => {
+    it('returns "Releases" when repo equals default release', () => {
+      let defaultRelease = 'https://github.com/sanger/traction-ui/releases'
+      wrapper.setData({ repo: defaultRelease })
+      expect(wrapper.vm.getRelease()).toEqual('Releases')
+    })
+
+    it('returns a sliced version of repo when repo doesnt equal default release', () => {
+      let exampleRelease = 'https://github.com/sanger/traction-ui/releases/tag/12345'
+      wrapper.setData({ repo: exampleRelease })
+      expect(wrapper.vm.getRelease()).toEqual('12345')
+    })
+  })
 })
