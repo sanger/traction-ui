@@ -110,4 +110,14 @@ export default {
       ...attributes,
     }
   },
+  // This method clears the editable data in the pool/new page
+  clearPoolData: (state) => {
+    ;(state.libraries = {}),
+      (state.pool = {}),
+      (state.tube = {}),
+      (state.selected = {
+        tagSet: {},
+        plates: {},
+      })
+  },
 }

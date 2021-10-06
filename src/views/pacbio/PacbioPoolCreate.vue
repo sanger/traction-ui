@@ -45,6 +45,8 @@ export default {
   created() {
     const plates = this.fetchPacbioPlates()
     const tagSets = this.fetchPacbioTagSets()
+    // Needed due to left over pool data from previously edited pools
+    this.$store.commit('traction/pacbio/poolCreate/clearPoolData')
 
     if (this.$route.params.id !== 'new') {
       const libraries = this.populateLibrariesFromPool(this.$route.params.id)
