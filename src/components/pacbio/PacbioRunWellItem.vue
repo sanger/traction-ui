@@ -114,8 +114,8 @@ export default {
     },
   },
   methods: {
-    ...mapActions('traction/pacbio/tubes', ['getTubeForBarcode']),
-    ...mapMutations('traction/pacbio/runs', ['addPoolToWell']),
+    ...mapActions('traction/pacbio/runs', ['buildWell']),
+    ...mapMutations('traction/pacbio/runs', ['updateWell', 'createWell']),
     alert(message, type) {
       this.$emit('alert', message, type)
     },
@@ -136,9 +136,18 @@ export default {
       this.hover = false
     },
     async updatePoolBarcode(barcode) {
-      let poolId = this.poolByBarcode(barcode).id
-      let payload = { position: this.position, with: { id: poolId, barcode: barcode } }
-      this.addPoolToWell(payload)
+      let well = this.well(this.position)
+      let pool = this.poolByBarcode(barcode)
+      if (well) {
+        // if well exists, push pool into well
+        well.pools.push(pool)
+        this.updateWell(well)
+      } else {
+        // if well does not exist create well and give it a pool
+        well = await this.buildWell(this.position)
+        well.pools.push(pool)
+        this.createWell(well)
+      }
     },
   },
 }

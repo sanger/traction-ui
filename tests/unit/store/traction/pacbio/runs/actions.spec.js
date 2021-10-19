@@ -149,3 +149,56 @@ describe('#getRun', () => {
     expect(response).toEqual(expectedRun)
   })
 })
+
+describe('#buildWell', () => {
+  let run, state
+
+  beforeEach(() => {
+    run = Run.build()
+    run.plate.wells = []
+    run.system_name = 'Sequel I'
+    run.default_binding_kit_box_barcode = 'default'
+    state = { currentRun: run }
+  })
+
+  it('builds a wellObject as expected', async () => {
+    let position = 'A10'
+    let expectedWellObject = {
+      row: 'A',
+      column: '10',
+      movie_time: '',
+      position,
+      on_plate_loading_concentration: '',
+      generate_hifi: 'In SMRT Link',
+      ccs_analysis_output: 'Yes',
+      binding_kit_box_barcode: 'default',
+      pools: [],
+      pre_extension_time: 2,
+    }
+
+    let wellObject = await Actions.buildWell({ state }, position)
+
+    expect(wellObject).toEqual(expectedWellObject)
+  })
+
+  it('sets binding kit box barcode to "" if no default value is given', async () => {
+    let position = 'A10'
+    let expectedWellObject = {
+      row: 'A',
+      column: '10',
+      movie_time: '',
+      position,
+      on_plate_loading_concentration: '',
+      generate_hifi: 'In SMRT Link',
+      ccs_analysis_output: 'Yes',
+      binding_kit_box_barcode: '',
+      pools: [],
+      pre_extension_time: 2,
+    }
+
+    delete state.currentRun.default_binding_kit_box_barcode
+    let wellObject = await Actions.buildWell({ state }, position)
+
+    expect(wellObject).toEqual(expectedWellObject)
+  })
+})
