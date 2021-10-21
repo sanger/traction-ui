@@ -2,19 +2,19 @@ import { mount, localVue, store } from 'testHelper'
 import WellEdit from '@/components/pacbio/PacbioRunWellEdit'
 import storePools from '@tests/data/StorePools'
 import * as Run from '@/api/PacbioRun'
+import * as Actions from '@/store/traction/pacbio/runs/actions'
 
 describe('PacbioWellModal', () => {
-  let modal, wrapper, props, storeWell, run
+  let modal, wrapper, props, storeWell, run, state
 
   beforeEach(() => {
-    props = { row: 'A', column: '1', position: 'A1' }
-
-    storeWell = Run.buildWell(props.row, props.column, 'In SMRT Link')
-    storeWell.pools = [{ id: 1, barcode: 'TRAC-0' }]
+    props = { position: 'A1' }
 
     run = Run.build()
+    state = { currentRun: run }
+    storeWell = Actions.buildWell({ state }, props.position)
+    storeWell.pools = [{ id: 1, barcode: 'TRAC-0' }]
     run.plate.wells[0] = storeWell
-
     store.commit('traction/pacbio/runs/setCurrentRun', run)
 
     wrapper = mount(WellEdit, {
@@ -22,7 +22,9 @@ describe('PacbioWellModal', () => {
       store,
       propsData: props,
     })
+
     modal = wrapper.vm
+    modal.currentWell = storeWell
   })
 
   it('must have a position prop', () => {
@@ -40,20 +42,33 @@ describe('PacbioWellModal', () => {
   })
 
   it('must have ccsAnalysisOutputOptions data', () => {
-    expect(modal.ccsAnalysisOutputOptions).toEqual(['Yes', 'No'])
+    expect(modal.ccsAnalysisOutputOptions).toEqual([
+      { text: 'Please select a CCS Analysis Output', value: '', disabled: true },
+      'Yes',
+      'No',
+    ])
   })
 
   describe('generateHifiOptions', () => {
     it('returns the correct options when System Name is "Sequel I"', () => {
-      expect(modal.generateHifiOptions['Sequel I']).toEqual(['In SMRT Link', 'Do Not Generate'])
+      expect(modal.generateHifiOptions['Sequel I']).toEqual([
+        { text: 'Please select a value', value: '', disabled: true },
+        'In SMRT Link',
+        'Do Not Generate',
+      ])
     })
     it('returns the correct options when System Name is "Sequel II"', () => {
-      expect(modal.generateHifiOptions['Sequel II']).toEqual(['In SMRT Link', 'Do Not Generate'])
+      expect(modal.generateHifiOptions['Sequel II']).toEqual([
+        { text: 'Please select a value', value: '', disabled: true },
+        'In SMRT Link',
+        'Do Not Generate',
+      ])
     })
     it('returns the correct options when System Name is "Sequel IIe"', () => {
       run.system_name = 'Sequel IIe'
       store.commit('traction/pacbio/runs/setCurrentRun', run)
       expect(modal.generateHifiOptions['Sequel IIe']).toEqual([
+        { text: 'Please select a value', value: '', disabled: true },
         'In SMRT Link',
         'Do Not Generate',
         'On Instrument',
@@ -61,22 +76,12 @@ describe('PacbioWellModal', () => {
     })
   })
 
-  it('can have mapState', () => {
-    expect(modal.onPlateLoadingConc).toBeDefined()
-    expect(modal.movieTime).toBeDefined()
-    expect(modal.wellPools).toBeDefined()
-    expect(modal.generateHiFi).toBeDefined()
-    expect(modal.ccsAnalysisOutput).toBeDefined()
-    expect(modal.preExtensionTime).toBeDefined()
-    expect(modal.ccsAnalysisOutput).toBeDefined()
-    expect(modal.bindingKitBoxBarcode).toBeDefined()
-  })
-
   it('can have getters', () => {
     expect(modal.currentRun).toBeDefined()
+    expect(modal.well).toBeDefined()
+    expect(modal.poolByBarcode).toBeDefined()
   })
 
-  // TODO: check below tests are they are buggy and return ErrorWrapper
   describe('form inputs', () => {
     it('has a Pool Barcode input', () => {
       expect(wrapper.find('.poolBarcode')).toBeDefined()
@@ -104,155 +109,178 @@ describe('PacbioWellModal', () => {
     })
   })
 
-  describe('alert', () => {
-    it('emits an event with the message', () => {
-      modal.alert('emit this message', 'success')
-      expect(wrapper.emitted().alert).toBeTruthy()
-      expect(wrapper.emitted().alert[0][0]).toEqual('emit this message')
-      expect(wrapper.emitted().alert[0][1]).toEqual('success')
-    })
-  })
-
   describe('methods', () => {
-    beforeEach(() => {
-      modal.mutateWell = jest.fn()
-    })
-
-    it('updateOnPlateLoadingConc', () => {
-      modal.updateOnPlateLoadingConc(123)
-      expect(modal.mutateWell).toBeCalledWith({
-        position: props.position,
-        property: 'on_plate_loading_concentration',
-        with: 123,
-      })
-    })
-
-    it('updateMovieTime', () => {
-      modal.updateMovieTime(123)
-      expect(modal.mutateWell).toBeCalledWith({
-        position: props.position,
-        property: 'movie_time',
-        with: 123,
-      })
-    })
-
-    it("updateGenerateHiFi with 'Do Not Generate'", () => {
-      modal.updateGenerateHiFi('Do Not Generate')
-      expect(modal.mutateWell).toBeCalledWith({
-        position: props.position,
-        property: 'generate_hifi',
-        with: 'Do Not Generate',
-      })
-      expect(modal.mutateWell).toBeCalledWith({
-        position: props.position,
-        property: 'ccs_analysis_output',
-        with: 'No',
-      })
-    })
-
-    it("updateGenerateHiFi with 'In SMRT Link' or 'On Instrument'", () => {
-      modal.updateGenerateHiFi('In SMRT Link')
-      expect(modal.mutateWell).toBeCalledWith({
-        position: props.position,
-        property: 'generate_hifi',
-        with: 'In SMRT Link',
-      })
-      expect(modal.mutateWell).toBeCalledWith({
-        position: props.position,
-        property: 'ccs_analysis_output',
-        with: 'Yes',
-      })
-    })
-
-    it('updateCCSAnalysisOuput', () => {
-      modal.updateCCSAnalysisOutput('Yes')
-      expect(modal.mutateWell).toBeCalledWith({
-        position: props.position,
-        property: 'ccs_analysis_output',
-        with: 'Yes',
-      })
-    })
-
-    it('updatePreExtensionTime', () => {
-      modal.updatePreExtensionTime('2')
-      expect(modal.mutateWell).toBeCalledWith({
-        position: props.position,
-        property: 'pre_extension_time',
-        with: '2',
-      })
-    })
-
-    it('updateBindingKitBoxBarcode', () => {
-      modal.updateBindingKitBoxBarcode('12345')
-      expect(modal.mutateWell).toBeCalledWith({
-        position: props.position,
-        property: 'binding_kit_box_barcode',
-        with: '12345',
-      })
-    })
-
     describe('updatePoolBarcode', () => {
-      let newBarcode, row, anIndex, poolId
+      let newBarcode, row, poolId, poolObject
 
       beforeEach(() => {
         newBarcode = 'TRAC-2-1'
-        anIndex = 1
-        row = { index: anIndex }
-        modal.showAlert = jest.fn()
-        modal.isPoolBarcodeValid = jest.fn()
-        modal.addPoolToWell = jest.fn()
         poolId = '1'
+        row = { index: 0 }
+        poolObject = { id: 10, barcode: 'oldBarcode' }
+        modal.currentWell.pools[0] = poolObject
+        modal.showAlert = jest.fn()
         store.state.traction.pacbio.pools = storePools
       })
 
       it('successful when barcode is valid', async () => {
-        modal.isPoolBarcodeValid.mockReturnValue(true)
-
         await modal.updatePoolBarcode(row, newBarcode)
 
-        expect(modal.addPoolToWell).toBeCalledWith({
-          index: anIndex,
-          position: props.position,
-          with: { id: poolId, barcode: newBarcode },
-        })
-        expect(modal.showAlert).toBeCalledWith('Pool is valid', 'success')
+        expect(modal.currentWell.pools[0]).toEqual({ id: poolId, barcode: newBarcode })
       })
 
       it('is unsuccessful when barcode is not valid', async () => {
-        modal.isPoolBarcodeValid.mockReturnValue(false)
+        await modal.updatePoolBarcode(row, 'invalidBarcode')
 
-        await modal.updatePoolBarcode(newBarcode)
-        expect(modal.addPoolToWell).not.toBeCalled()
+        expect(modal.currentWell.pools[0]).toEqual(poolObject) // Make sure the targeted row has not changed
         expect(modal.showAlert).toBeCalledWith('Pool is not valid', 'danger')
       })
     })
 
     describe('showCCSAnalysisOutput', () => {
       it('is true when generate_hifi_reads==="On Instrument"', () => {
-        storeWell = Run.buildWell(props.row, props.column, 'On Instrument')
-        run = Run.build()
-        run.plate.wells[0] = storeWell
+        storeWell.generate_hifi = 'On Instrument'
+        wrapper.setData({ currentWell: storeWell })
 
-        store.commit('traction/pacbio/runs/setCurrentRun', run)
         expect(modal.showCCSAnalysisOutput).toEqual(true)
       })
 
       it('is true when generate_hifi_reads==="In SMRT Link"', () => {
-        storeWell = Run.buildWell(props.row, props.column, 'In SMRT Link')
-        run = Run.build()
-        run.plate.wells[0] = storeWell
+        storeWell.generate_hifi = 'In SMRT Link'
+        wrapper.setData({ currentWell: storeWell })
 
-        store.commit('traction/pacbio/runs/setCurrentRun', run)
         expect(modal.showCCSAnalysisOutput).toEqual(true)
       })
 
       it('is false generate_hifi_reads==="Do Not Generate"', () => {
-        storeWell = Run.buildWell(props.row, props.column, 'Do Not Generate')
-        run = Run.build()
-        run.plate.wells[0] = storeWell
+        storeWell.generate_hifi = 'Do Not Generate'
+        wrapper.setData({ currentWell: storeWell })
 
-        store.commit('traction/pacbio/runs/setCurrentRun', run)
         expect(modal.showCCSAnalysisOutput).toEqual(false)
+      })
+    })
+
+    describe('addRow', () => {
+      it('adds an empty pool to the currentWell', () => {
+        let expectedPools = [...modal.currentWell.pools, { id: '', barcode: '' }]
+        modal.addRow()
+        expect(modal.currentWell.pools).toEqual(expectedPools)
+      })
+    })
+
+    describe('removeRow', () => {
+      it('removes an pool from the currentWell', () => {
+        storeWell.pools = [
+          { id: '1', barcode: 'TRAC-1' },
+          { id: '2', barcode: 'TRAC-2' },
+          { id: '3', barcode: 'TRAC-3' },
+        ]
+        wrapper.setData({ currentWell: storeWell })
+        modal.removeRow(0)
+        expect(modal.currentWell.pools).toEqual([
+          { id: '2', barcode: 'TRAC-2' },
+          { id: '3', barcode: 'TRAC-3' },
+        ])
+      })
+    })
+
+    describe('showModalForPosition', async () => {
+      it('creates a well object if its a new well', () => {
+        props = { position: 'H12' }
+        wrapper = mount(WellEdit, {
+          localVue,
+          store,
+          propsData: props,
+        })
+        modal = wrapper.vm
+        modal.buildWell = jest.fn()
+        modal.buildWell.mockReturnValue({})
+
+        modal.showModalForPosition()
+
+        expect(modal.buildWell).toBeCalled()
+      })
+
+      it('gets the well if its an existing well', () => {
+        let well = modal.well(props.position)
+
+        modal.showModalForPosition()
+
+        expect(modal.currentWell).toEqual(well)
+      })
+    })
+
+    describe('update', async () => {
+      beforeEach(() => {
+        modal.checkPools = jest.fn()
+        modal.createWell = jest.fn()
+        modal.updateWell = jest.fn()
+        modal.showAlert = jest.fn()
+      })
+
+      it('calls createWell when and shows success alert when action is create', async () => {
+        wrapper.setData({ action: { id: 'create', variant: 'success', label: 'Create' } })
+        modal.checkPools.mockReturnValue(true)
+
+        await modal.update()
+
+        expect(modal.createWell).toBeCalled()
+        expect(modal.showAlert).toBeCalledWith('Well created', 'success')
+      })
+
+      it('calls updateWell when and shows success alert when action is update', async () => {
+        wrapper.setData({ action: { id: 'update', variant: 'success', label: 'Update' } })
+        modal.checkPools.mockReturnValue(true)
+
+        await modal.update()
+
+        expect(modal.updateWell).toBeCalled()
+        expect(modal.showAlert).toBeCalledWith('Well updated', 'success')
+      })
+
+      it('shows failure alert when pools are not valid', async () => {
+        wrapper.setData({ action: { id: 'update', variant: 'success', label: 'Update' } })
+        modal.checkPools.mockReturnValue(false)
+
+        await modal.update()
+
+        expect(modal.showAlert).toBeCalledWith('Pool is not valid', 'danger')
+      })
+    })
+
+    describe('removeWell', () => {
+      it('deletes the well at the given position', () => {
+        modal.deleteWell = jest.fn()
+        modal.showAlert = jest.fn()
+
+        modal.removeWell()
+
+        expect(modal.deleteWell).toBeCalledWith(props.position)
+        expect(modal.showAlert).toBeCalledWith('Well successfully deleted', 'success')
+      })
+    })
+
+    describe('checkPools', () => {
+      it('returns true if all the pools exist', async () => {
+        store.state.traction.pacbio.pools = storePools
+        storeWell.pools = [
+          { id: '1', barcode: 'TRAC-2-1' },
+          { id: '2', barcode: 'TRAC-2-2' },
+        ]
+        wrapper.setData({ currentWell: storeWell })
+
+        expect(await modal.checkPools()).toEqual(true)
+      })
+
+      it('returns false if one or more pools do not exist', async () => {
+        store.state.traction.pacbio.pools = storePools
+        storeWell.pools = [
+          { id: '1', barcode: 'TRAC-2-0' },
+          { id: '2', barcode: 'TRAC-2-2' },
+        ]
+        wrapper.setData({ currentWell: storeWell })
+
+        expect(await modal.checkPools()).toEqual(false)
       })
     })
   })

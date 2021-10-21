@@ -113,7 +113,7 @@
       >
         Delete well
       </b-button>
-      <b-button :id="action.id" :variant="action.variant" @click="checkAction()">
+      <b-button :id="action.id" :variant="action.variant" @click="update()">
         {{ action.label }}
       </b-button>
     </template>
@@ -140,6 +140,7 @@ export default {
   data() {
     return {
       currentWell: {},
+      action: {},
       movieTimeOptions: [{ text: 'Movie Time', value: '' }, '15.0', '20.0', '24.0', '30.0'],
       wellPoolsFields: ['barcode'],
       generateHifiOptions: {
@@ -166,12 +167,11 @@ export default {
         'Yes',
         'No',
       ],
-      action: {},
     }
   },
   computed: {
     showCCSAnalysisOutput() {
-      return this.currentWell.generate_hifi == ('In SMRT Link' || 'On Instrument')
+      return ['In SMRT Link', 'On Instrument'].includes(this.currentWell.generate_hifi)
     },
     ...mapGetters('traction/pacbio/runs', ['currentRun', 'well']),
     ...mapGetters('traction/pacbio/pools', ['poolByBarcode']),
@@ -201,34 +201,23 @@ export default {
       }
       this.$refs['well-modal'].show()
     },
-    checkAction() {
-      this.action.id == 'create' ? this.createAndFormatWell() : this.update()
-    },
     async checkPools() {
-      return await this.currentWell.pools.every(
-        (pool) => this.poolByBarcode(pool.barcode) !== undefined,
-      )
+      return await this.currentWell.pools.every((pool) => this.poolByBarcode(pool.barcode))
     },
     hide() {
       this.$refs['well-modal'].hide()
     },
-    async createAndFormatWell() {
+    async update() {
       this.currentWell.ccs_analysis_output =
         this.currentWell.generate_hifi == 'Do Not Generate' ? 'No' : 'Yes'
       let validPools = await this.checkPools()
-      if (validPools) {
+      if (validPools && this.action.id == 'create') {
         this.createWell(this.currentWell)
-        this.alert('Well created', 'success')
+        this.showAlert('Well created', 'success')
         this.hide()
-      } else {
-        this.showAlert('Pool is not valid', 'danger')
-      }
-    },
-    async update() {
-      let validPools = await this.checkPools()
-      if (validPools) {
+      } else if (validPools && this.action.id == 'update') {
         this.updateWell(this.currentWell)
-        this.alert('Well updated', 'success')
+        this.showAlert('Well updated', 'success')
         this.hide()
       } else {
         this.showAlert('Pool is not valid', 'danger')
@@ -236,7 +225,7 @@ export default {
     },
     removeWell() {
       this.deleteWell(this.position)
-      this.alert('Well successfully deleted', 'success')
+      this.showAlert('Well successfully deleted', 'success')
       this.hide()
     },
     async updatePoolBarcode(row, barcode) {
@@ -250,9 +239,6 @@ export default {
     },
     ...mapActions('traction/pacbio/runs', ['buildWell']),
     ...mapMutations('traction/pacbio/runs', ['createWell', 'updateWell', 'deleteWell']),
-    alert(message, type) {
-      this.$emit('alert', message, type)
-    },
   },
 }
 </script>

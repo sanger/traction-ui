@@ -136,17 +136,17 @@ export default {
       this.hover = false
     },
     async updatePoolBarcode(barcode) {
-      let well = this.well(this.position)
-      let pool = this.poolByBarcode(barcode)
-      if (well) {
+      let existingWell = this.well(this.position)
+      let { id } = this.poolByBarcode(barcode)
+      if (existingWell) {
         // if well exists, push pool into well
-        well.pools.push(pool)
-        this.updateWell(well)
+        existingWell.pools.push({ id, barcode })
+        this.updateWell(existingWell)
       } else {
         // if well does not exist create well and give it a pool
-        well = await this.buildWell(this.position)
-        well.pools.push(pool)
-        this.createWell(well)
+        let newWell = await this.buildWell(this.position)
+        newWell.pools.push({ id, barcode })
+        this.createWell(newWell)
       }
     },
   },
