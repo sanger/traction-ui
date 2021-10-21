@@ -64,7 +64,7 @@ describe('Pacbio Run Create view', () => {
     cy.get('#onPlateLoadingConc').type('2')
     cy.get('#generateHiFi').select('Do Not Generate')
     cy.get('#bindingKitBoxBarcode').type('12345')
-    cy.get('#updateWellBtn').click()
+    cy.get('#updateBtn').click()
     cy.get('button')
       .contains('Create')
       .click()

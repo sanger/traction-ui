@@ -33,7 +33,7 @@ describe('PacbioWellModal', () => {
 
   it('must have movieTimeOptions data', () => {
     expect(modal.movieTimeOptions).toEqual([
-      { text: 'Movie Time', value: '' },
+      { text: 'Movie Time', value: '', disabled: true },
       '15.0',
       '20.0',
       '24.0',
@@ -82,7 +82,7 @@ describe('PacbioWellModal', () => {
     expect(modal.poolByBarcode).toBeDefined()
   })
 
-  describe('form inputs', () => {
+  describe('form elements', () => {
     it('has a Pool Barcode input', () => {
       expect(wrapper.find('.poolBarcode')).toBeDefined()
     })
@@ -106,6 +106,21 @@ describe('PacbioWellModal', () => {
     })
     it('has a bindingKitBoxBarcode', () => {
       expect(wrapper.find('.bindingKitBoxBarcode')).toBeDefined()
+    })
+    it('has a updateBtn', () => {
+      expect(wrapper.find('#updateBtn')).toBeDefined()
+    })
+    it('has a removeWellBtn', () => {
+      expect(wrapper.find('#removeWellBtn')).toBeDefined()
+    })
+  })
+
+  describe('alert', () => {
+    it('emits an event with the message', () => {
+      modal.alert('emit this message', 'success')
+      expect(wrapper.emitted().alert).toBeTruthy()
+      expect(wrapper.emitted().alert[0][0]).toEqual('emit this message')
+      expect(wrapper.emitted().alert[0][1]).toEqual('success')
     })
   })
 
@@ -216,30 +231,31 @@ describe('PacbioWellModal', () => {
         modal.createWell = jest.fn()
         modal.updateWell = jest.fn()
         modal.showAlert = jest.fn()
+        modal.alert = jest.fn()
       })
 
       it('calls createWell when and shows success alert when action is create', async () => {
-        wrapper.setData({ action: { id: 'create', variant: 'success', label: 'Create' } })
+        wrapper.setData({ action: { id: 'createBtn', variant: 'success', label: 'Create' } })
         modal.checkPools.mockReturnValue(true)
 
         await modal.update()
 
         expect(modal.createWell).toBeCalled()
-        expect(modal.showAlert).toBeCalledWith('Well created', 'success')
+        expect(modal.alert).toBeCalledWith('Well created', 'success')
       })
 
       it('calls updateWell when and shows success alert when action is update', async () => {
-        wrapper.setData({ action: { id: 'update', variant: 'success', label: 'Update' } })
+        wrapper.setData({ action: { id: 'updateBtn', variant: 'success', label: 'Update' } })
         modal.checkPools.mockReturnValue(true)
 
         await modal.update()
 
         expect(modal.updateWell).toBeCalled()
-        expect(modal.showAlert).toBeCalledWith('Well updated', 'success')
+        expect(modal.alert).toBeCalledWith('Well updated', 'success')
       })
 
       it('shows failure alert when pools are not valid', async () => {
-        wrapper.setData({ action: { id: 'update', variant: 'success', label: 'Update' } })
+        wrapper.setData({ action: { id: 'updateBtn', variant: 'success', label: 'Update' } })
         modal.checkPools.mockReturnValue(false)
 
         await modal.update()
@@ -251,12 +267,12 @@ describe('PacbioWellModal', () => {
     describe('removeWell', () => {
       it('deletes the well at the given position', () => {
         modal.deleteWell = jest.fn()
-        modal.showAlert = jest.fn()
+        modal.alert = jest.fn()
 
         modal.removeWell()
 
         expect(modal.deleteWell).toBeCalledWith(props.position)
-        expect(modal.showAlert).toBeCalledWith('Well successfully deleted', 'success')
+        expect(modal.alert).toBeCalledWith('Well successfully deleted', 'success')
       })
     })
 

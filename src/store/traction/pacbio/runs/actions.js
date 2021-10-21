@@ -67,6 +67,8 @@ const editRun = async ({ commit, getters }, runId) => {
       // Needed for well edit pool barcodes
       well.pools.forEach((pool) => (pool.barcode = pool.tube.barcode))
     })
+    // Needed for deleting existing wells
+    run.plate.wellsToDelete = []
     commit('setCurrentRun', run)
   }
 }

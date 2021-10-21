@@ -12,6 +12,7 @@ const build = (object) => {
       system_name: '',
       plate: {
         wells: [],
+        wellsToDelete: [], // Needed so we know the ID of wells that should be deleted
       },
     }
   )
@@ -73,6 +74,10 @@ const update = async (run, request) => {
         responses.push(wellResponse)
       }
     }
+    run.plate.wellsToDelete.forEach(async (wellId) => {
+      let wellResponse = await destroy(wellId, request.runs.wells)
+      responses.push(wellResponse)
+    })
   } catch (err) {
     return [err.message]
   }

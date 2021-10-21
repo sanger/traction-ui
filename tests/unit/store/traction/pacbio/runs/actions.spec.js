@@ -87,15 +87,16 @@ describe('#editRun', () => {
     mockRun.plate.wells.forEach((well) => {
       well.pools.forEach((pool) => (pool.barcode = pool.tube.barcode))
     })
+    mockRun.plate.wellsToDelete = []
     find.mockReturnValue(Data.PacbioRun)
     await Actions.editRun({ commit, getters }, mockRun.id)
     expect(commit).toHaveBeenCalledWith('setCurrentRun', mockRun)
   })
 
-  it('successfully', async () => {
+  it('successfully creates and adds wellsToDelete attribute', async () => {
     find.mockReturnValue(Data.PacbioRun)
     await Actions.editRun({ commit, getters }, mockRun.id)
-    expect(commit).toHaveBeenCalled() //("setCurrentRun", mockRun)
+    expect(commit).toHaveBeenCalled()
   })
 })
 

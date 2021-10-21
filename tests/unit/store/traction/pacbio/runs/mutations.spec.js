@@ -83,7 +83,7 @@ describe('updateWell', () => {
 })
 
 describe('deleteWell', () => {
-  let run, position, state
+  let run, state
 
   beforeEach(() => {
     run = Run.build()
@@ -94,7 +94,7 @@ describe('deleteWell', () => {
   })
 
   it('removes well from currentRun state', async () => {
-    position = 'A10'
+    let position = 'A10'
     let wellObject = await Actions.buildWell({ state }, position)
     Mutations.createWell(state, wellObject)
     let well = state.currentRun.plate.wells.find((well) => well.position === position)
@@ -102,5 +102,19 @@ describe('deleteWell', () => {
     Mutations.deleteWell(state, position)
 
     expect(state.currentRun.plate.wells.indexOf(well)).toBe(-1)
+    expect(state.currentRun.plate.wellsToDelete).toEqual([])
+  })
+
+  it('removes well from currentRun state and adds to wellsToDelete state if well has an ID', async () => {
+    let position = 'A10'
+    let wellObject = await Actions.buildWell({ state }, position)
+    wellObject.id = '1' // Has an ID to show it exists in DB
+    Mutations.createWell(state, wellObject)
+    let well = state.currentRun.plate.wells.find((well) => well.position === position)
+
+    Mutations.deleteWell(state, position)
+
+    expect(state.currentRun.plate.wells.indexOf(well)).toBe(-1)
+    expect(state.currentRun.plate.wellsToDelete).toEqual([wellObject.id])
   })
 })

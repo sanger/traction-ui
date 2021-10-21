@@ -49,17 +49,8 @@ describe('Run', () => {
         expect(run.plate.wells).toBeDefined()
       })
 
-      describe('wells', () => {
-        let wells
-
-        beforeEach(() => {
-          wells = run.plate.wells
-        })
-
-        it('will create 96 wells', () => {
-          expect(wells.length).toEqual(0)
-          expect(wells).toEqual([])
-        })
+      it('will have a plate with wellsToDelete', () => {
+        expect(run.plate.wellsToDelete).toBeDefined()
       })
     })
   })
@@ -315,6 +306,7 @@ describe('Run', () => {
         name: 'run1',
         plate: {
           wells: [well1, well2],
+          wellsToDelete: [],
         },
       }
 
@@ -379,6 +371,33 @@ describe('Run', () => {
 
         Run.update(run, pacbioRequest)
         expect(pacbioRequest.runs.update).toHaveBeenCalledTimes(1)
+      })
+    })
+
+    describe('wellsToDelete', () => {
+      beforeEach(() => {
+        run = {
+          id: '1',
+          name: 'run1',
+          plate: {
+            wells: [],
+            wellsToDelete: ['1', '2'],
+          },
+        }
+        pacbioRequest.runs.wells.destroy = jest.fn()
+      })
+
+      it('should call destroy method for each id in wellsToDelete', async () => {
+        let promise = new Promise((resolve) => {
+          resolve(Data.SuccessfulDestroy)
+        })
+        pacbioRequest.runs.update.mockResolvedValue(Data.PacbioRun)
+        pacbioRequest.runs.wells.destroy.mockResolvedValue([promise])
+        await Run.update(run, pacbioRequest)
+
+        expect(pacbioRequest.runs.wells.destroy).toHaveBeenCalledTimes(2)
+        expect(pacbioRequest.runs.wells.destroy).toHaveBeenCalledWith('1')
+        expect(pacbioRequest.runs.wells.destroy).toHaveBeenCalledWith('2')
       })
     })
   })

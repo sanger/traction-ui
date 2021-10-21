@@ -141,7 +141,13 @@ export default {
     return {
       currentWell: {},
       action: {},
-      movieTimeOptions: [{ text: 'Movie Time', value: '' }, '15.0', '20.0', '24.0', '30.0'],
+      movieTimeOptions: [
+        { text: 'Movie Time', value: '', disabled: true },
+        '15.0',
+        '20.0',
+        '24.0',
+        '30.0',
+      ],
       wellPoolsFields: ['barcode'],
       generateHifiOptions: {
         '': [{ text: 'Please select a System Name', value: '', disabled: true }],
@@ -187,14 +193,14 @@ export default {
       if (!this.well(this.position)) {
         this.currentWell = await this.buildWell(this.position)
         this.action = {
-          id: 'create',
+          id: 'createBtn',
           variant: 'success',
           label: 'Create',
         }
       } else {
         this.currentWell = { ...this.well(this.position) }
         this.action = {
-          id: 'update',
+          id: 'updateBtn',
           variant: 'primary',
           label: 'Update',
         }
@@ -211,13 +217,13 @@ export default {
       this.currentWell.ccs_analysis_output =
         this.currentWell.generate_hifi == 'Do Not Generate' ? 'No' : 'Yes'
       let validPools = await this.checkPools()
-      if (validPools && this.action.id == 'create') {
+      if (validPools && this.action.label == 'Create') {
         this.createWell(this.currentWell)
-        this.showAlert('Well created', 'success')
+        this.alert('Well created', 'success')
         this.hide()
-      } else if (validPools && this.action.id == 'update') {
+      } else if (validPools && this.action.label == 'Update') {
         this.updateWell(this.currentWell)
-        this.showAlert('Well updated', 'success')
+        this.alert('Well updated', 'success')
         this.hide()
       } else {
         this.showAlert('Pool is not valid', 'danger')
@@ -225,7 +231,7 @@ export default {
     },
     removeWell() {
       this.deleteWell(this.position)
-      this.showAlert('Well successfully deleted', 'success')
+      this.alert('Well successfully deleted', 'success')
       this.hide()
     },
     async updatePoolBarcode(row, barcode) {
@@ -236,6 +242,9 @@ export default {
       } else {
         this.showAlert('Pool is not valid', 'danger')
       }
+    },
+    alert(message, type) {
+      this.$emit('alert', message, type)
     },
     ...mapActions('traction/pacbio/runs', ['buildWell']),
     ...mapMutations('traction/pacbio/runs', ['createWell', 'updateWell', 'deleteWell']),
