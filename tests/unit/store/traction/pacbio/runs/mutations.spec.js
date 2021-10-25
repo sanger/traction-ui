@@ -99,7 +99,7 @@ describe('deleteWell', () => {
     Mutations.createWell(state, wellObject)
     let well = state.currentRun.plate.wells.find((well) => well.position === position)
 
-    Mutations.deleteWell(state, position)
+    Mutations.deleteWell(state, well)
 
     expect(state.currentRun.plate.wells.indexOf(well)).toBe(-1)
     expect(state.currentRun.plate.wellsToDelete).toEqual([])
@@ -112,7 +112,7 @@ describe('deleteWell', () => {
     Mutations.createWell(state, wellObject)
     let well = state.currentRun.plate.wells.find((well) => well.position === position)
 
-    Mutations.deleteWell(state, position)
+    Mutations.deleteWell(state, well)
 
     expect(state.currentRun.plate.wells.indexOf(well)).toBe(-1)
     expect(state.currentRun.plate.wellsToDelete).toEqual([wellObject.id])

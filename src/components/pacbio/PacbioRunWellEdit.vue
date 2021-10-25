@@ -40,21 +40,6 @@
       </b-form-group>
 
       <b-form-group
-        v-if="showCCSAnalysisOutput"
-        id="ccsAnalysisOutput-group"
-        label="CCS Analysis Output - Include Kinetics Information:"
-        label-for="ccsAnalysisOutput"
-      >
-        <b-form-select
-          id="ccsAnalysisOutput"
-          ref="ccsAnalysisOutput"
-          v-model="currentWell.ccs_analysis_output"
-          :options="ccsAnalysisOutputOptions"
-        >
-        </b-form-select>
-      </b-form-group>
-
-      <b-form-group
         id="preExtensionTime-group"
         label="Pre-extension time (hours):"
         label-for="preExtensionTime"
@@ -168,17 +153,9 @@ export default {
           'On Instrument',
         ],
       },
-      ccsAnalysisOutputOptions: [
-        { text: 'Please select a CCS Analysis Output', value: '', disabled: true },
-        'Yes',
-        'No',
-      ],
     }
   },
   computed: {
-    showCCSAnalysisOutput() {
-      return ['In SMRT Link', 'On Instrument'].includes(this.currentWell.generate_hifi)
-    },
     ...mapGetters('traction/pacbio/runs', ['currentRun', 'well']),
     ...mapGetters('traction/pacbio/pools', ['poolByBarcode']),
   },
@@ -214,6 +191,7 @@ export default {
       this.$refs['well-modal'].hide()
     },
     async update() {
+      // ccs_analysis_output is calculated here, doesn't need its own input field
       this.currentWell.ccs_analysis_output =
         this.currentWell.generate_hifi == 'Do Not Generate' ? 'No' : 'Yes'
       let validPools = await this.checkPools()
@@ -230,7 +208,7 @@ export default {
       }
     },
     removeWell() {
-      this.deleteWell(this.position)
+      this.deleteWell(this.currentWell)
       this.alert('Well successfully deleted', 'success')
       this.hide()
     },

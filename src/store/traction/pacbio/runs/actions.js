@@ -1,7 +1,7 @@
 import handlePromise from '@/api/PromiseHelper'
 import * as PacbioRun from '@/api/PacbioRun'
-const PRE_EXTENSION_TIME_DEFAULT = 2
-const CCS_ANALYSIS_OUTPUT_DEFAULT = 'Yes'
+const pre_extension_time = 2
+const ccs_analysis_output = 'Yes'
 
 const generateHiFiDefault = (systemName) => {
   switch (systemName) {
@@ -31,10 +31,10 @@ const buildWell = ({ state }, position) => {
     position,
     on_plate_loading_concentration: '',
     generate_hifi,
-    ccs_analysis_output: CCS_ANALYSIS_OUTPUT_DEFAULT,
+    ccs_analysis_output,
     binding_kit_box_barcode,
     pools: [],
-    pre_extension_time: PRE_EXTENSION_TIME_DEFAULT,
+    pre_extension_time,
   }
 }
 

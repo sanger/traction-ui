@@ -41,14 +41,6 @@ describe('PacbioWellModal', () => {
     ])
   })
 
-  it('must have ccsAnalysisOutputOptions data', () => {
-    expect(modal.ccsAnalysisOutputOptions).toEqual([
-      { text: 'Please select a CCS Analysis Output', value: '', disabled: true },
-      'Yes',
-      'No',
-    ])
-  })
-
   describe('generateHifiOptions', () => {
     it('returns the correct options when System Name is "Sequel I"', () => {
       expect(modal.generateHifiOptions['Sequel I']).toEqual([
@@ -94,9 +86,6 @@ describe('PacbioWellModal', () => {
     })
     it('has a Generate HiFi input', () => {
       expect(wrapper.find('.generateHiFi')).toBeDefined()
-    })
-    it('has a CCS Analysis Output input', () => {
-      expect(wrapper.find('.ccsAnalysisOutput')).toBeDefined()
     })
     it('has a table of well pools', () => {
       expect(wrapper.find('#wellPools')).toBeDefined()
@@ -149,29 +138,6 @@ describe('PacbioWellModal', () => {
 
         expect(modal.currentWell.pools[0]).toEqual(poolObject) // Make sure the targeted row has not changed
         expect(modal.showAlert).toBeCalledWith('Pool is not valid', 'danger')
-      })
-    })
-
-    describe('showCCSAnalysisOutput', () => {
-      it('is true when generate_hifi_reads==="On Instrument"', () => {
-        storeWell.generate_hifi = 'On Instrument'
-        wrapper.setData({ currentWell: storeWell })
-
-        expect(modal.showCCSAnalysisOutput).toEqual(true)
-      })
-
-      it('is true when generate_hifi_reads==="In SMRT Link"', () => {
-        storeWell.generate_hifi = 'In SMRT Link'
-        wrapper.setData({ currentWell: storeWell })
-
-        expect(modal.showCCSAnalysisOutput).toEqual(true)
-      })
-
-      it('is false generate_hifi_reads==="Do Not Generate"', () => {
-        storeWell.generate_hifi = 'Do Not Generate'
-        wrapper.setData({ currentWell: storeWell })
-
-        expect(modal.showCCSAnalysisOutput).toEqual(false)
       })
     })
 
@@ -234,6 +200,19 @@ describe('PacbioWellModal', () => {
         modal.alert = jest.fn()
       })
 
+      it('sets ccs_analysis output to the correct default', async () => {
+        storeWell.generate_hifi = 'Do Not Generate'
+        wrapper.setData({ currentWell: storeWell })
+        wrapper.setData({ action: { id: 'createBtn', variant: 'success', label: 'Create' } })
+        modal.checkPools.mockReturnValue(true)
+
+        await modal.update()
+
+        expect(modal.currentWell.ccs_analysis_output).toEqual('No')
+        expect(modal.createWell).toBeCalled()
+        expect(modal.alert).toBeCalledWith('Well created', 'success')
+      })
+
       it('calls createWell when and shows success alert when action is create', async () => {
         wrapper.setData({ action: { id: 'createBtn', variant: 'success', label: 'Create' } })
         modal.checkPools.mockReturnValue(true)
@@ -271,7 +250,7 @@ describe('PacbioWellModal', () => {
 
         modal.removeWell()
 
-        expect(modal.deleteWell).toBeCalledWith(props.position)
+        expect(modal.deleteWell).toBeCalledWith(modal.currentWell)
         expect(modal.alert).toBeCalledWith('Well successfully deleted', 'success')
       })
     })
