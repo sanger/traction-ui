@@ -1,5 +1,42 @@
 import handlePromise from '@/api/PromiseHelper'
 import * as PacbioRun from '@/api/PacbioRun'
+const pre_extension_time = 2
+const ccs_analysis_output = 'Yes'
+
+const generateHiFiDefault = (systemName) => {
+  switch (systemName) {
+    case 'Sequel I':
+    case 'Sequel II':
+      return 'In SMRT Link'
+    case 'Sequel IIe':
+      return 'On Instrument'
+    default:
+      return ''
+  }
+}
+
+const splitPosition = (position) => {
+  // match() returns [original, row, column] e.g "A10 => ["A10", "A", "10"]
+  return position.match(/(\S)(\d+)/).slice(1)
+}
+
+const buildWell = ({ state }, position) => {
+  let generate_hifi = generateHiFiDefault(state.currentRun.system_name)
+  let binding_kit_box_barcode = state.currentRun.default_binding_kit_box_barcode || ''
+  let [row, column] = splitPosition(position)
+  return {
+    row,
+    column,
+    movie_time: '',
+    position,
+    on_plate_loading_concentration: '',
+    generate_hifi,
+    ccs_analysis_output,
+    binding_kit_box_barcode,
+    pools: [],
+    pre_extension_time,
+  }
+}
 
 const setRuns = async ({ commit, getters }) => {
   let request = getters.runRequest
@@ -30,6 +67,8 @@ const editRun = async ({ commit, getters }, runId) => {
       // Needed for well edit pool barcodes
       well.pools.forEach((pool) => (pool.barcode = pool.tube.barcode))
     })
+    // Needed for deleting existing wells
+    run.plate.wellsToDelete = []
     commit('setCurrentRun', run)
   }
 }
@@ -73,8 +112,9 @@ const actions = {
   createRun,
   editRun,
   updateRun,
+  buildWell,
 }
 
-export { setRuns, newRun, createRun, editRun, updateRun, getRun }
+export { setRuns, newRun, createRun, editRun, updateRun, getRun, buildWell }
 
 export default actions

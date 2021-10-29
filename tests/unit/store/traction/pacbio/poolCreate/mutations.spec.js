@@ -16,6 +16,7 @@ describe('mutations.js', () => {
     populateLibraries,
     populatePoolAttributes,
     populateTube,
+    clearPoolData,
   } = mutations
 
   describe('selectPlate', () => {
@@ -273,29 +274,49 @@ describe('mutations.js', () => {
   })
 
   describe('populatePoolAttributes', () => {
-    const state = defaultState()
-    // apply mutation
-    populatePoolAttributes(state, Data.TractionPacbioPool.data.data)
-    expect(state.pool).toEqual(
-      expect.objectContaining({
-        id: '242',
-        volume: 1.0,
-        concentration: 1.0,
-        template_prep_kit_box_barcode: '2424',
-        insert_size: 1,
-        source_identifier: 'DN1:A4',
-      }),
-    )
+    it('sets the pool with the correct data', () => {
+      const state = defaultState()
+      // apply mutation
+      populatePoolAttributes(state, Data.TractionPacbioPool.data.data)
+      expect(state.pool).toEqual(
+        expect.objectContaining({
+          id: '242',
+          volume: 1.0,
+          concentration: 1.0,
+          template_prep_kit_box_barcode: '2424',
+          insert_size: 1,
+          source_identifier: 'DN1:A4',
+        }),
+      )
+    })
   })
 
-  it('populateTube', () => {
-    const tube = { id: 1, attributes: { barcode: 'TRAC-1' } }
-    const state = defaultState()
-    //apply mutation
-    populateTube(state, tube)
-    expect(state.tube).toEqual({
-      id: 1,
-      barcode: 'TRAC-1',
+  describe('populateTube', () => {
+    it('sets the tube with the correct data', () => {
+      const tube = { id: 1, attributes: { barcode: 'TRAC-1' } }
+      const state = defaultState()
+      //apply mutation
+      populateTube(state, tube)
+      expect(state.tube).toEqual({
+        id: 1,
+        barcode: 'TRAC-1',
+      })
+    })
+  })
+
+  describe('clearPoolData', () => {
+    it('clears existing pool data', () => {
+      const state = defaultState()
+      // populates an existing pool into state
+      populatePoolAttributes(state, Data.TractionPacbioPool.data.data)
+      clearPoolData(state)
+      expect(state.selected).toEqual({
+        tagSet: {},
+        plates: {},
+      })
+      expect(state.libraries).toEqual({})
+      expect(state.pool).toEqual({})
+      expect(state.tube).toEqual({})
     })
   })
 })

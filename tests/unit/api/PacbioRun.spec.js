@@ -49,48 +49,9 @@ describe('Run', () => {
         expect(run.plate.wells).toBeDefined()
       })
 
-      describe('wells', () => {
-        let wells
-
-        beforeEach(() => {
-          wells = run.plate.wells
-        })
-
-        it('will create 96 wells', () => {
-          expect(wells.length).toEqual(0)
-          expect(wells).toEqual([])
-        })
+      it('will have a plate with wellsToDelete', () => {
+        expect(run.plate.wellsToDelete).toBeDefined()
       })
-    })
-  })
-
-  describe('buildWell', () => {
-    let well
-
-    beforeEach(() => {
-      well = Run.buildWell('A', 1, 'In SMRT Link', '12345')
-    })
-
-    it('will have the correct data', () => {
-      expect(well.row).toEqual('A')
-      expect(well.column).toEqual(1)
-      expect(well.position).toEqual('A1')
-      expect(well.movie_time).toEqual('')
-      expect(well.on_plate_loading_concentration).toEqual('')
-      expect(well.libraries).toEqual([])
-      expect(well.pools).toEqual([])
-      expect(well.generate_hifi).toEqual('In SMRT Link')
-      expect(well.pre_extension_time).toEqual(2)
-      expect(well.ccs_analysis_output).toEqual('Yes')
-      expect(well.binding_kit_box_barcode).toEqual('12345')
-    })
-
-    it('will have the correct data when passed values', () => {
-      well = Run.buildWell('A', 1, 'In SMRT Link', '12345', 1, 'No')
-      expect(well.generate_hifi).toEqual('In SMRT Link')
-      expect(well.binding_kit_box_barcode).toEqual('12345')
-      expect(well.pre_extension_time).toEqual(1)
-      expect(well.ccs_analysis_output).toEqual('No')
     })
   })
 
@@ -345,6 +306,7 @@ describe('Run', () => {
         name: 'run1',
         plate: {
           wells: [well1, well2],
+          wellsToDelete: [],
         },
       }
 
@@ -409,6 +371,33 @@ describe('Run', () => {
 
         Run.update(run, pacbioRequest)
         expect(pacbioRequest.runs.update).toHaveBeenCalledTimes(1)
+      })
+    })
+
+    describe('wellsToDelete', () => {
+      beforeEach(() => {
+        run = {
+          id: '1',
+          name: 'run1',
+          plate: {
+            wells: [],
+            wellsToDelete: ['1', '2'],
+          },
+        }
+        pacbioRequest.runs.wells.destroy = jest.fn()
+      })
+
+      it('should call destroy method for each id in wellsToDelete', async () => {
+        let promise = new Promise((resolve) => {
+          resolve(Data.SuccessfulDestroy)
+        })
+        pacbioRequest.runs.update.mockResolvedValue(Data.PacbioRun)
+        pacbioRequest.runs.wells.destroy.mockResolvedValue([promise])
+        await Run.update(run, pacbioRequest)
+
+        expect(pacbioRequest.runs.wells.destroy).toHaveBeenCalledTimes(2)
+        expect(pacbioRequest.runs.wells.destroy).toHaveBeenCalledWith('1')
+        expect(pacbioRequest.runs.wells.destroy).toHaveBeenCalledWith('2')
       })
     })
   })

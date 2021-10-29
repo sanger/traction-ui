@@ -1,30 +1,6 @@
 import handlePromise from './PromiseHelper'
-const PRE_EXTENSION_TIME_DEFAULT = 2
-const CCS_ANALYSIS_OUTPUT_DEFAULT = 'Yes'
 
 // TODO: fix requests here for DPL-022
-
-const buildWell = (
-  row,
-  column,
-  generate_hifi = '',
-  binding_kit_box_barcode = '',
-  pre_extension_time = PRE_EXTENSION_TIME_DEFAULT,
-  ccs_analysis_output = CCS_ANALYSIS_OUTPUT_DEFAULT,
-) => ({
-  row,
-  column,
-  position: `${row}${column}`,
-  movie_time: '',
-  on_plate_loading_concentration: '',
-  generate_hifi,
-  ccs_analysis_output,
-  binding_kit_box_barcode,
-  // TODO remove
-  libraries: [],
-  pools: [],
-  pre_extension_time,
-})
 
 const build = (object) => {
   return (
@@ -36,6 +12,7 @@ const build = (object) => {
       system_name: '',
       plate: {
         wells: [],
+        wellsToDelete: [], // Needed so we know the ID of wells that should be deleted
       },
     }
   )
@@ -97,6 +74,10 @@ const update = async (run, request) => {
         responses.push(wellResponse)
       }
     }
+    run.plate.wellsToDelete.forEach(async (wellId) => {
+      let wellResponse = await destroy(wellId, request.runs.wells)
+      responses.push(wellResponse)
+    })
   } catch (err) {
     return [err.message]
   }
@@ -229,7 +210,6 @@ const destroy = async (id, request) => {
 
 export {
   build,
-  buildWell,
   create,
   createResource,
   createRunPayload,
