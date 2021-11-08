@@ -19,12 +19,11 @@ const mutations = {
     state.currentRun.plate.wells.push(well)
   },
   updateWell(state, well) {
-    const existingWell = state.currentRun.plate.wells.find((w) => w.position === well.position)
-    const wellIndex = state.currentRun.plate.wells.indexOf(existingWell)
+    const wellIndex = state.currentRun.plate.wells.findIndex((w) => w.position === well.position)
     state.currentRun.plate.wells.splice(wellIndex, 1, well)
   },
   deleteWell(state, well) {
-    const wellIndex = state.currentRun.plate.wells.indexOf((w) => w.position === well.position)
+    const wellIndex = state.currentRun.plate.wells.findIndex((w) => w.position === well.position)
 
     // If well exists in DB we want to delete it from db when run is updated
     well.id ? state.currentRun.plate.wellsToDelete.push(well.id) : ''
