@@ -41,6 +41,10 @@ describe('PacbioWellModal', () => {
     ])
   })
 
+  it('must have ccsAnalysisOutputOptions data', () => {
+    expect(modal.ccsAnalysisOutputOptions).toEqual(['Yes', 'No'])
+  })
+
   describe('generateHifiOptions', () => {
     it('returns the correct options when System Name is "Sequel I"', () => {
       expect(modal.generateHifiOptions['Sequel I']).toEqual([
@@ -86,6 +90,9 @@ describe('PacbioWellModal', () => {
     })
     it('has a Generate HiFi input', () => {
       expect(wrapper.find('.generateHiFi')).toBeDefined()
+    })
+    it('has a CCS Analysis Output input', () => {
+      expect(wrapper.find('.ccsAnalysisOutput')).toBeDefined()
     })
     it('has a table of well pools', () => {
       expect(wrapper.find('#wellPools')).toBeDefined()
@@ -200,19 +207,6 @@ describe('PacbioWellModal', () => {
         modal.alert = jest.fn()
       })
 
-      it('sets ccs_analysis output to the correct default', async () => {
-        storeWell.generate_hifi = 'Do Not Generate'
-        wrapper.setData({ currentWell: storeWell })
-        wrapper.setData({ action: { id: 'createBtn', variant: 'success', label: 'Create' } })
-        modal.checkPools.mockReturnValue(true)
-
-        await modal.update()
-
-        expect(modal.currentWell.ccs_analysis_output).toEqual('No')
-        expect(modal.createWell).toBeCalled()
-        expect(modal.alert).toBeCalledWith('Well created', 'success')
-      })
-
       it('calls createWell when and shows success alert when action is create', async () => {
         wrapper.setData({ action: { id: 'createBtn', variant: 'success', label: 'Create' } })
         modal.checkPools.mockReturnValue(true)
@@ -276,6 +270,28 @@ describe('PacbioWellModal', () => {
         wrapper.setData({ currentWell: storeWell })
 
         expect(await modal.checkPools()).toEqual(false)
+      })
+    })
+
+    describe('updateCCSAnalysisOutput', () => {
+      it('sets ccs_analysis_ouput to "No" when generate_hifi is set to "Do Not Generate"', () => {
+        storeWell.generate_hifi = 'Do Not Generate'
+        storeWell.ccs_analysis_output = 'Yes'
+        wrapper.setData({ currentWell: storeWell })
+
+        modal.updateCCSAnalysisOutput()
+
+        expect(modal.currentWell.ccs_analysis_output).toEqual('No')
+      })
+
+      it('does not change ccs_analysis_ouput when generate_hifi is set to other values', () => {
+        storeWell.generate_hifi = 'On Instrument'
+        storeWell.ccs_analysis_output = 'Yes'
+        wrapper.setData({ currentWell: storeWell })
+
+        modal.updateCCSAnalysisOutput()
+
+        expect(modal.currentWell.ccs_analysis_output).toEqual('Yes')
       })
     })
   })

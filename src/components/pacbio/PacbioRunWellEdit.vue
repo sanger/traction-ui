@@ -35,6 +35,21 @@
           ref="generateHiFi"
           v-model="currentWell.generate_hifi"
           :options="generateHifiOptions[currentRun.system_name]"
+          @change="updateCCSAnalysisOutput"
+        >
+        </b-form-select>
+      </b-form-group>
+
+      <b-form-group
+        id="ccsAnalysisOutput-group"
+        label="CCS Analysis Output - Include Kinetics Information:"
+        label-for="ccsAnalysisOutput"
+      >
+        <b-form-select
+          id="ccsAnalysisOutput"
+          ref="ccsAnalysisOutput"
+          v-model="currentWell.ccs_analysis_output"
+          :options="ccsAnalysisOutputOptions"
         >
         </b-form-select>
       </b-form-group>
@@ -153,6 +168,7 @@ export default {
           'On Instrument',
         ],
       },
+      ccsAnalysisOutputOptions: ['Yes', 'No'],
     }
   },
   computed: {
@@ -165,6 +181,11 @@ export default {
     },
     removeRow(row) {
       this.currentWell.pools.splice(row.index, 1)
+    },
+    updateCCSAnalysisOutput() {
+      if (this.currentWell.generate_hifi === 'Do Not Generate') {
+        this.currentWell.ccs_analysis_output = 'No'
+      }
     },
     async showModalForPosition() {
       if (!this.well(this.position)) {
@@ -191,9 +212,6 @@ export default {
       this.$refs['well-modal'].hide()
     },
     async update() {
-      // ccs_analysis_output is calculated here, doesn't need its own input field
-      this.currentWell.ccs_analysis_output =
-        this.currentWell.generate_hifi == 'Do Not Generate' ? 'No' : 'Yes'
       let validPools = await this.checkPools()
       if (validPools && this.action.label == 'Create') {
         this.createWell(this.currentWell)
