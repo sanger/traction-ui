@@ -45,20 +45,21 @@ describe('PacbioLibraryCreate.vue', () => {
   })
 
   it('must have tagOptions data', () => {
-    expect(modal.tagOptions).toEqual([])
+    expect(modal.tagOptions).toEqual([{value: '', text: 'No tag'}])
   })
 
   describe('#createLibrary', () => {
-    let payload
+    let payload, payload_no_tag
 
     beforeEach(() => {
       modal.createLibraryInTraction = jest.fn()
       modal.showAlert = jest.fn()
       payload = { tag: { group_id: 1 }, sample: { id: 1 } }
+      payload_no_tag = { tag: { group_id: '' }, sample: { id: 1 } }
     })
 
     it('is successful', async () => {
-      wrapper.setData({ library: { tag: { group_id: 1 }, sample: { id: 1 } } })
+      wrapper.setData({ library: payload })
       let expectedResponse = { success: true, barcode: 'TRAC-1', errors: [] }
       modal.createLibraryInTraction.mockReturnValue(expectedResponse)
 
@@ -68,14 +69,15 @@ describe('PacbioLibraryCreate.vue', () => {
       expect(wrapper.emitted().alert).toBeTruthy()
     })
 
-    it('shows a error message on when there isnt a tag', async () => {
+    it('does not error when there is no tag', async () => {
+      wrapper.setData({ library: payload_no_tag })
+      let expectedResponse = { success: true, barcode: 'TRAC-1', errors: [] }
+      modal.createLibraryInTraction.mockReturnValue(expectedResponse)
+
       await modal.createLibrary()
 
-      expect(modal.createLibraryInTraction).not.toBeCalledWith(payload)
-      expect(modal.showAlert).toBeCalledWith(
-        consts.MESSAGE_ERROR_CREATE_LIBRARY_FAILED + 'Please select a tag',
-        'danger',
-      )
+      expect(modal.createLibraryInTraction).toBeCalledWith(payload_no_tag)
+      expect(wrapper.emitted().alert).toBeTruthy()
     })
 
     it('shows a error message on failure', async () => {
