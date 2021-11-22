@@ -5,7 +5,7 @@ import { handleResponse } from '@/api/ResponseHelper'
 const createLibraryInTraction = async ({ rootState, rootGetters }, library) => {
   // Some duplication of code from createPool but this is for single library pool
   let tag = rootGetters['traction/tractionTags'].find((l) => l.group_id == library.tag.group_id)
-  let tag_id = tag ? tag.id : ""
+  let tag_id = tag ? tag.id : ''
 
   let body = {
     data: {

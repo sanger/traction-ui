@@ -45,7 +45,7 @@ describe('PacbioLibraryCreate.vue', () => {
   })
 
   it('must have tagOptions data', () => {
-    expect(modal.tagOptions).toEqual([{value: '', text: 'No tag'}])
+    expect(modal.tagOptions).toEqual([{ value: '', text: 'No tag' }])
   })
 
   describe('#createLibrary', () => {
