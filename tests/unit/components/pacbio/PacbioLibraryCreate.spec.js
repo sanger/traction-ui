@@ -49,13 +49,12 @@ describe('PacbioLibraryCreate.vue', () => {
   })
 
   describe('#createLibrary', () => {
-    let payload, payload_no_tag
+    let payload
 
     beforeEach(() => {
       modal.createLibraryInTraction = jest.fn()
       modal.showAlert = jest.fn()
       payload = { tag: { group_id: 1 }, sample: { id: 1 } }
-      payload_no_tag = { tag: { group_id: '' }, sample: { id: 1 } }
     })
 
     it('is successful', async () => {
@@ -70,13 +69,14 @@ describe('PacbioLibraryCreate.vue', () => {
     })
 
     it('does not error when there is no tag', async () => {
-      wrapper.setData({ library: payload_no_tag })
+      const payloadNoTag = { tag: { group_id: '' }, sample: { id: 1 } }
+      wrapper.setData({ library: payloadNoTag })
       let expectedResponse = { success: true, barcode: 'TRAC-1', errors: [] }
       modal.createLibraryInTraction.mockReturnValue(expectedResponse)
 
       await modal.createLibrary()
 
-      expect(modal.createLibraryInTraction).toBeCalledWith(payload_no_tag)
+      expect(modal.createLibraryInTraction).toBeCalledWith(payloadNoTag)
       expect(wrapper.emitted().alert).toBeTruthy()
     })
 
