@@ -1,18 +1,14 @@
 import { mount, localVue, store } from 'testHelper'
 import Plate from '@/components/pacbio/PacbioRunPlateItem'
-import * as Run from '@/api/PacbioRun'
 import PlateMap from '@/config/PlateMap'
+import { Data } from 'testHelper'
+import Response from '@/api/Response'
 
 describe('Plate.vue', () => {
-  let plate, wrapper, run, well
+  let plate, wrapper
 
   beforeEach(() => {
-    // TODO: Yuk! Needs to be done elsewhere
-    run = Run.build()
-    well = Run.buildWell('A', '1', 'In SMRT Link')
-    well.libraries = [{ id: 1, barcode: 'TRAC-1' }]
-    run.plate.wells[0] = well
-
+    let run = new Response(Data.PacbioRun).deserialize.runs[0]
     store.commit('traction/pacbio/runs/setCurrentRun', run)
 
     wrapper = mount(Plate, { localVue, store })

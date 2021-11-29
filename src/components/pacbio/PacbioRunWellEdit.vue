@@ -9,9 +9,8 @@
         <b-form-select
           id="movieTime"
           ref="movieTime"
-          :value="movieTime"
+          v-model="currentWell.movie_time"
           :options="movieTimeOptions"
-          @change="updateMovieTime"
         >
         </b-form-select>
       </b-form-group>
@@ -24,9 +23,8 @@
         <b-form-input
           id="onPlateLoadingConc"
           ref="onPlateLoadingConc"
-          :value="onPlateLoadingConc"
+          v-model="currentWell.on_plate_loading_concentration"
           placeholder="On Plate Loading Concentration (mP)"
-          @change="updateOnPlateLoadingConc"
         >
         </b-form-input>
       </b-form-group>
@@ -35,15 +33,14 @@
         <b-form-select
           id="generateHiFi"
           ref="generateHiFi"
-          :value="generateHiFi"
+          v-model="currentWell.generate_hifi"
           :options="generateHifiOptions[currentRun.system_name]"
-          @change="updateGenerateHiFi"
+          @change="updateCCSAnalysisOutput"
         >
         </b-form-select>
       </b-form-group>
 
       <b-form-group
-        v-if="showCCSAnalysisOutput"
         id="ccsAnalysisOutput-group"
         label="CCS Analysis Output - Include Kinetics Information:"
         label-for="ccsAnalysisOutput"
@@ -51,9 +48,8 @@
         <b-form-select
           id="ccsAnalysisOutput"
           ref="ccsAnalysisOutput"
-          :value="ccsAnalysisOutput"
+          v-model="currentWell.ccs_analysis_output"
           :options="ccsAnalysisOutputOptions"
-          @change="updateCCSAnalysisOutput"
         >
         </b-form-select>
       </b-form-group>
@@ -66,9 +62,8 @@
         <b-form-input
           id="preExtensionTime"
           ref="preExtensionTime"
-          :value="preExtensionTime"
+          v-model="currentWell.pre_extension_time"
           placeholder="Pre-extension time"
-          @change="updatePreExtensionTime"
         >
         </b-form-input>
       </b-form-group>
@@ -81,15 +76,14 @@
         <b-form-input
           id="bindingKitBoxBarcode"
           ref="bindingKitBoxBarcode"
-          :value="bindingKitBoxBarcode"
+          v-model="currentWell.binding_kit_box_barcode"
           placeholder="Binding Kit Box Barcode"
-          @change="updateBindingKitBoxBarcode"
         >
         </b-form-input>
       </b-form-group>
     </b-form>
 
-    <b-table id="wellPools" stacked :items="wellPools" :fields="wellPoolsFields">
+    <b-table id="wellPools" stacked :items="currentWell.pools" :fields="wellPoolsFields">
       <template v-slot:table-caption>Pools</template>
 
       <template v-slot:cell(barcode)="row">
@@ -111,14 +105,23 @@
     <b-button class="button btn-xs btn-success" @click="addRow">+</b-button>
 
     <template v-slot:modal-footer="{ ok }">
-      <b-button id="updateWellBtn" variant="success" @click="update()"> Update </b-button>
+      <b-button
+        v-if="action.label == 'Update'"
+        id="deleteWellBtn"
+        variant="danger"
+        @click="removeWell()"
+      >
+        Delete well
+      </b-button>
+      <b-button :id="action.id" :variant="action.variant" @click="update()">
+        {{ action.label }}
+      </b-button>
     </template>
   </b-modal>
 </template>
 
 <script>
-import { mapActions, mapMutations, mapGetters, mapState } from 'vuex'
-
+import { mapMutations, mapGetters, mapActions } from 'vuex'
 import Alert from '@/components/Alert'
 import Helper from '@/mixins/Helper'
 
@@ -136,136 +139,111 @@ export default {
   },
   data() {
     return {
-      movieTimeOptions: [{ text: 'Movie Time', value: '' }, '15.0', '20.0', '24.0', '30.0'],
+      currentWell: {},
+      action: {},
+      movieTimeOptions: [
+        { text: 'Movie Time', value: '', disabled: true },
+        '15.0',
+        '20.0',
+        '24.0',
+        '30.0',
+      ],
       wellPoolsFields: ['barcode'],
       generateHifiOptions: {
         '': [{ text: 'Please select a System Name', value: '', disabled: true }],
-        'Sequel I': ['In SMRT Link', 'Do Not Generate'],
-        'Sequel II': ['In SMRT Link', 'Do Not Generate'],
-        'Sequel IIe': ['In SMRT Link', 'Do Not Generate', 'On Instrument'],
+        'Sequel I': [
+          { text: 'Please select a value', value: '', disabled: true },
+          'In SMRT Link',
+          'Do Not Generate',
+        ],
+        'Sequel II': [
+          { text: 'Please select a value', value: '', disabled: true },
+          'In SMRT Link',
+          'Do Not Generate',
+        ],
+        'Sequel IIe': [
+          { text: 'Please select a value', value: '', disabled: true },
+          'In SMRT Link',
+          'Do Not Generate',
+          'On Instrument',
+        ],
       },
       ccsAnalysisOutputOptions: ['Yes', 'No'],
     }
   },
   computed: {
-    showCCSAnalysisOutput() {
-      return ['In SMRT Link', 'On Instrument'].includes(this.generateHiFi)
-    },
     ...mapGetters('traction/pacbio/runs', ['currentRun', 'well']),
     ...mapGetters('traction/pacbio/pools', ['poolByBarcode']),
-    ...mapState('traction/pacbio/runs', {
-      onPlateLoadingConc() {
-        return this.well(this.position)
-          ? this.well(this.position).on_plate_loading_concentration
-          : ''
-      },
-      movieTime() {
-        return this.well(this.position) ? this.well(this.position).movie_time : ''
-      },
-      wellPools() {
-        return this.well(this.position) ? this.well(this.position).pools : []
-      },
-      preExtensionTime() {
-        return this.well(this.position) ? this.well(this.position).pre_extension_time : ''
-      },
-      generateHiFi() {
-        return this.well(this.position) ? this.well(this.position).generate_hifi : ''
-      },
-      ccsAnalysisOutput() {
-        return this.well(this.position) ? this.well(this.position).ccs_analysis_output : ''
-      },
-      bindingKitBoxBarcode() {
-        return this.well(this.position) ? this.well(this.position).binding_kit_box_barcode : ''
-      },
-    }),
   },
   methods: {
     addRow() {
-      this.addEmptyPoolToWell(this.position)
+      this.currentWell.pools.push({ id: '', barcode: '' })
     },
     removeRow(row) {
-      this.removePoolFromWell({ position: this.position, index: row.index })
+      this.currentWell.pools.splice(row.index, 1)
     },
-    showModalForPosition() {
+    updateCCSAnalysisOutput() {
+      if (this.currentWell.generate_hifi === 'Do Not Generate') {
+        this.currentWell.ccs_analysis_output = 'No'
+      }
+    },
+    async showModalForPosition() {
       if (!this.well(this.position)) {
-        this.createWell(this.position)
+        this.currentWell = await this.buildWell(this.position)
+        this.action = {
+          id: 'createBtn',
+          variant: 'success',
+          label: 'Create',
+        }
+      } else {
+        this.currentWell = { ...this.well(this.position) }
+        this.action = {
+          id: 'updateBtn',
+          variant: 'primary',
+          label: 'Update',
+        }
       }
       this.$refs['well-modal'].show()
+    },
+    async checkPools() {
+      return await this.currentWell.pools.every((pool) => this.poolByBarcode(pool.barcode))
     },
     hide() {
       this.$refs['well-modal'].hide()
     },
-    update() {
-      this.alert('Well updated', 'success')
-      this.hide()
-    },
-    updateOnPlateLoadingConc(conc) {
-      this.mutateWell({
-        position: this.position,
-        property: 'on_plate_loading_concentration',
-        with: conc,
-      })
-    },
-    updateMovieTime(movieTime) {
-      this.mutateWell({ position: this.position, property: 'movie_time', with: movieTime })
-    },
-    updatePreExtensionTime(preExtensionTime) {
-      this.mutateWell({
-        position: this.position,
-        property: 'pre_extension_time',
-        with: preExtensionTime,
-      })
-    },
-    updateGenerateHiFi(generateHiFi) {
-      // update CCS Analysis Output too, as it is based off Generate Hifi Reads
-      generateHiFi == 'Do Not Generate'
-        ? this.updateCCSAnalysisOutput('No')
-        : this.updateCCSAnalysisOutput('Yes')
-      this.mutateWell({ position: this.position, property: 'generate_hifi', with: generateHiFi })
-    },
-    updateCCSAnalysisOutput(ccsAnalysisOutput) {
-      this.mutateWell({
-        position: this.position,
-        property: 'ccs_analysis_output',
-        with: ccsAnalysisOutput,
-      })
-    },
-    updateBindingKitBoxBarcode(bindingKitBoxBarcode) {
-      this.mutateWell({
-        position: this.position,
-        property: 'binding_kit_box_barcode',
-        with: bindingKitBoxBarcode,
-      })
-    },
-    async updatePoolBarcode(row, barcode) {
-      let index = row.index
-
-      let isValid = await this.isPoolBarcodeValid(barcode)
-
-      if (isValid) {
-        let { id } = this.poolByBarcode(barcode)
-        let payload = {
-          position: this.position,
-          index,
-          with: { id, barcode },
-        }
-        this.addPoolToWell(payload)
-        this.showAlert('Pool is valid', 'success')
+    async update() {
+      let validPools = await this.checkPools()
+      if (validPools && this.action.label == 'Create') {
+        this.createWell(this.currentWell)
+        this.alert('Well created', 'success')
+        this.hide()
+      } else if (validPools && this.action.label == 'Update') {
+        this.updateWell(this.currentWell)
+        this.alert('Well updated', 'success')
+        this.hide()
       } else {
         this.showAlert('Pool is not valid', 'danger')
       }
     },
-    ...mapActions('traction/pacbio/tubes', ['isPoolBarcodeValid', 'getTubeForBarcode']),
-    ...mapMutations('traction/pacbio/runs', [
-      'createWell',
-      'mutateWell',
-      'addEmptyPoolToWell',
-      'removePoolFromWell',
-      'addPoolToWell',
-    ]),
+    removeWell() {
+      this.deleteWell(this.currentWell)
+      this.alert('Well successfully deleted', 'success')
+      this.hide()
+    },
+    async updatePoolBarcode(row, barcode) {
+      let index = row.index
+      let pool = await this.poolByBarcode(barcode)
+      if (pool) {
+        this.currentWell.pools[index] = { id: pool.id, barcode }
+      } else {
+        this.showAlert('Pool is not valid', 'danger')
+      }
+    },
     alert(message, type) {
       this.$emit('alert', message, type)
     },
+    ...mapActions('traction/pacbio/runs', ['buildWell']),
+    ...mapMutations('traction/pacbio/runs', ['createWell', 'updateWell', 'deleteWell']),
   },
 }
 </script>

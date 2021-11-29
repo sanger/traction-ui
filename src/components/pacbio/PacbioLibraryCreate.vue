@@ -131,8 +131,8 @@ export default {
   },
   data() {
     return {
-      library: { tag: {}, sample: {} },
-      tagOptions: [],
+      library: { tag: { group_id: '' }, sample: {} },
+      tagOptions: [{ value: '', text: 'No tag' }],
     }
   },
   computed: {
@@ -145,17 +145,12 @@ export default {
     async provider() {
       try {
         await this.setTags()
-        this.tagOptions = this.tractionTags.map((tag) => tag.group_id)
+        this.tractionTags.forEach((tag) => this.tagOptions.push(tag.group_id))
       } catch (error) {
         this.showAlert(consts.MESSAGE_ERROR_FIND_TAGS_FAILED + error.message, 'danger')
       }
     },
     async createLibrary() {
-      if (!this.library.tag.group_id) {
-        this.showAlert(consts.MESSAGE_ERROR_CREATE_LIBRARY_FAILED + 'Please select a tag', 'danger')
-        return
-      }
-
       const { success, barcode, errors } = await this.createLibraryInTraction(this.library)
       if (success) {
         this.hide()
@@ -165,7 +160,7 @@ export default {
       }
     },
     show() {
-      this.library = { tag: {}, sample: this.selectedSample }
+      this.library = { tag: { group_id: '' }, sample: this.selectedSample }
     },
     ...mapActions('traction/pacbio/libraries', ['createLibraryInTraction']),
     ...mapActions('traction', ['setTags']),
