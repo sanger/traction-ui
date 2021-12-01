@@ -1,5 +1,8 @@
 <template>
-  <b-tr v-if="selectedRequests" data-type="pool-library-list">
+  <div v-if="selectedRequests" data-type="pool-library-list">
+    <b-form-checkbox v-model="autoTag" name="check-button" switch data-attribute="auto-tagging">
+      Autotagging
+    </b-form-checkbox>
     <b-table-simple>
       <b-thead>
         <b-tr>
@@ -34,7 +37,7 @@
         ></PacbioPoolLibraryEdit>
       </b-tbody>
     </b-table-simple>
-  </b-tr>
+  </div>
 </template>
 
 <script>
@@ -46,6 +49,11 @@ export default {
   name: 'PacbioPoolLibraryList',
   components: {
     PacbioPoolLibraryEdit,
+  },
+  data() {
+    return {
+      autoTag: false,
+    }
   },
   computed: {
     ...mapGetters(['selectedRequests']),
