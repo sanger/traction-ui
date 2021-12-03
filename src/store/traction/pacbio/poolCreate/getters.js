@@ -73,19 +73,18 @@ export default {
   /**
    * Returns a list of selected requests
    *
-   * Note: Ordering depends on selectRequest prefixing ids with underscore, as javascript objects
-   * sort most keys in insertion order, but numeric keys in numeric order.
+   * Note: Ordering is grouped by plate (in id order) and sorted in column order
    * @param {Object} state The Vuex state object
    * @return {Array} An array of selected requests in the order in which they were selected
    */
-  selectedRequests: ({ libraries, resources }) => {
-    return Object.values(libraries)
-      .map(({ pacbio_request_id }) => {
-        return { ...resources.requests[pacbio_request_id], selected: true }
-      })
+  selectedRequests: ({ libraries, resources }) =>
+    Object.values(libraries)
+      .map(({ pacbio_request_id }) => ({
+        ...resources.requests[pacbio_request_id],
+        selected: true,
+      }))
       .sort(sortRequestByWellColumnIndex(resources))
-      .sort(sortRequestByPlate(resources))
-  },
+      .sort(sortRequestByPlate(resources)),
 
   /**
    * Returns a list of all fetched wells
@@ -120,23 +119,17 @@ export default {
    * Returns a library
    * @param {Object} state The Vuex state object
    */
-  libraryItem: ({ libraries }) => (id) => {
-    return libraries[`_${id}`]
-  },
+  libraryItem: ({ libraries }) => (id) => libraries[`_${id}`],
 
   /**
    * Returns the pool
    * @param {Object} state The Vuex state object
    */
-  poolItem: (state) => {
-    return state.pool || {}
-  },
+  poolItem: (state) => state.pool || {},
 
   /**
    * Returns the tube
    * @param {Object} state The Vuex state object
    */
-  tubeItem: (state) => {
-    return state.tube || {}
-  },
+  tubeItem: (state) => state.tube || {},
 }
