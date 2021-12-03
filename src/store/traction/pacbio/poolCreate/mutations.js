@@ -20,9 +20,9 @@ export default {
    */
   selectPlate: (state, { id, selected = true }) => {
     if (selected) {
-      Vue.set(state.selected.plates, `_${id}`, { id: id, selected: true })
+      Vue.set(state.selected.plates, `${id}`, { id: id, selected: true })
     } else {
-      Vue.delete(state.selected.plates, `_${id}`)
+      Vue.delete(state.selected.plates, `${id}`)
     }
   },
   /**

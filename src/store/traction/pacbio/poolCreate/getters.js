@@ -1,4 +1,5 @@
 // Getters are like computed properties
+import { wellToIndex } from './wellHelpers'
 
 /**
  * Merge together two representations of the same object.
@@ -16,7 +17,10 @@ const mergeRepresentations = (parent, child, keyFunction = (id) => id) => {
   })
 }
 
-const prefixWithUnderscore = (id) => `_${id}`
+const sortRequestByWellColumnIndex = (resources) => (a, b) =>
+  wellToIndex(resources.wells[a.well]) - wellToIndex(resources.wells[b.well])
+const sortRequestByPlate = (resources) => (a, b) =>
+  parseInt(resources.wells[a.well].plate) - parseInt(resources.wells[b.well].plate)
 
 export default {
   /**
@@ -24,7 +28,7 @@ export default {
    * @param {Object} state The Vuex state object
    */
   labwareList: ({ selected, resources }) => {
-    return mergeRepresentations(resources.plates, selected.plates, prefixWithUnderscore)
+    return mergeRepresentations(resources.plates, selected.plates)
   },
   /**
    * Returns a list of all fetched tagSet
@@ -63,9 +67,8 @@ export default {
    * Returns a list of selected plates
    * @param {Object} state The Vuex state object
    */
-  selectedPlates: ({ selected, resources }) => {
-    return mergeRepresentations(selected.plates, resources.plates)
-  },
+  selectedPlates: ({ selected, resources }) =>
+    mergeRepresentations(selected.plates, resources.plates),
 
   /**
    * Returns a list of selected requests
@@ -76,9 +79,12 @@ export default {
    * @return {Array} An array of selected requests in the order in which they were selected
    */
   selectedRequests: ({ libraries, resources }) => {
-    return Object.values(libraries).map(({ pacbio_request_id }) => {
-      return { ...resources.requests[pacbio_request_id], selected: true }
-    })
+    return Object.values(libraries)
+      .map(({ pacbio_request_id }) => {
+        return { ...resources.requests[pacbio_request_id], selected: true }
+      })
+      .sort(sortRequestByWellColumnIndex(resources))
+      .sort(sortRequestByPlate(resources))
   },
 
   /**

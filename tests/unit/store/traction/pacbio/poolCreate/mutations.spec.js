@@ -29,7 +29,7 @@ describe('mutations.js', () => {
         selected: {
           ...defaultStateObject.selected,
           plates: {
-            _2: { id: '2', selected: true },
+            2: { id: '2', selected: true },
           },
         },
       }
@@ -40,8 +40,8 @@ describe('mutations.js', () => {
       // - Prefix the key with an _ to maintain insert order
       // - Not disrupt other plates in the store
       expect(state.selected.plates).toEqual({
-        _2: { id: '2', selected: true },
-        _1: { id: '1', selected: true },
+        1: { id: '1', selected: true },
+        2: { id: '2', selected: true },
       })
     })
   })
@@ -218,7 +218,7 @@ describe('mutations.js', () => {
       // assert result
       expect(state.resources.requests).toEqual({
         '1': {},
-        ...dataToObjectById({ data: requests, includeRelationships: false }),
+        ...dataToObjectById({ data: requests, includeRelationships: true }),
       })
     })
   })

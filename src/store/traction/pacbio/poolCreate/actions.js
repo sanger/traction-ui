@@ -1,20 +1,7 @@
 import { groupIncludedByResource } from '@/api/JsonApi'
 import { validate, payload, valid } from '@/store/traction/pacbio/poolCreate/pool'
 import { handleResponse } from '@/api/ResponseHelper'
-
-const wellFor = ({ resources }, { pacbio_request_id }) =>
-  resources.wells[resources.requests[pacbio_request_id].well]
-
-// Calculate well index, enumerating by column. (A1 => 0, B1 => 1...)
-const wellToIndex = ({ position }, numberOfRows = 8) => {
-  const [col, row] = wellNameToCoordinate(position)
-  return col * numberOfRows + row
-}
-// Calculate well coordinates (starting at [0, 0] <= A1) from position.
-const wellNameToCoordinate = (position) => [
-  Number.parseInt(position.substring(1)) - 1,
-  position.toUpperCase().charCodeAt(0) - 65,
-]
+import { wellFor, wellToIndex } from './wellHelpers'
 
 // Actions handle asynchronous update of state, via mutations.
 // Note: The { commit } in the given example is destucturing
