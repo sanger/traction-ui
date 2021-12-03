@@ -16,6 +16,7 @@ describe('mutations.js', () => {
     populateLibraries,
     populatePoolAttributes,
     populateTube,
+    updateLibrary,
     clearPoolData,
   } = mutations
 
@@ -300,6 +301,31 @@ describe('mutations.js', () => {
       expect(state.tube).toEqual({
         id: 1,
         barcode: 'TRAC-1',
+      })
+    })
+  })
+
+  describe('updateLibrary', () => {
+    it('sets a library with the correct data', () => {
+      // mock state
+      const state = defaultState()
+      // Prepopulate with some dummy data
+      populateLibraries(state, Data.TractionPacbioPool.data.included.slice(0, 1))
+      // apply mutation
+      updateLibrary(state, { pacbio_request_id: '4', insert_size: 4 })
+      // We expect the request to be recorded in the selected requests it should:
+      // - Prefix the key with an _ to maintain insert order
+      // - Not disrupt other requests in the store
+      expect(state.libraries).toEqual({
+        _4: expect.objectContaining({
+          id: '242',
+          pacbio_request_id: '4',
+          tag_id: '3',
+          volume: 1.0,
+          concentration: 1.0,
+          template_prep_kit_box_barcode: '2424',
+          insert_size: 4,
+        }),
       })
     })
   })

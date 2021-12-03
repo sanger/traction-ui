@@ -52,9 +52,14 @@ describe('Pacbio Pool Create', () => {
           },
         },
       },
-    })
+    }).as('postPayload')
     cy.get('[data-action=create-pool').click()
     cy.contains('[data-type=pool-create-message]', 'Pool successfully created')
+    cy.fixture('tractionPacbioSinglePoolCreate').then(({ data }) => {
+      cy.wait('@postPayload')
+        .its('request.body')
+        .should('deep.equal', data)
+    })
   })
 
   it('Will not create a pool if there is an error', () => {

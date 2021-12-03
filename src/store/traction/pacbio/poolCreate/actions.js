@@ -2,6 +2,20 @@ import { groupIncludedByResource } from '@/api/JsonApi'
 import { validate, payload, valid } from '@/store/traction/pacbio/poolCreate/pool'
 import { handleResponse } from '@/api/ResponseHelper'
 
+const wellFor = ({ resources }, { pacbio_request_id }) =>
+  resources.wells[resources.requests[pacbio_request_id].well]
+
+// Calculate well index, enumerating by column. (A1 => 0, B1 => 1...)
+const wellToIndex = ({ position }, numberOfRows = 8) => {
+  const [col, row] = wellNameToCoordinate(position)
+  return col * numberOfRows + row
+}
+// Calculate well coordinates (starting at [0, 0] <= A1) from position.
+const wellNameToCoordinate = (position) => [
+  Number.parseInt(position.substring(1)) - 1,
+  position.toUpperCase().charCodeAt(0) - 65,
+]
+
 // Actions handle asynchronous update of state, via mutations.
 // Note: The { commit } in the given example is destucturing
 // the store context
@@ -132,5 +146,40 @@ export default {
     }
 
     return { success, errors }
+  },
+  /*
+   * Given a tag change to library_a, will automatically apply tags to the remaining wells
+   * on the plate with the following  rules:
+   * - Only apply additional tags is autoTag is true
+   * - Tags applied in column order based on the source well
+   * - Do not apply tags that appear earlier on the plate
+   * - Do not apply tags to request originating from other plates
+   * - Offset tags based on well position, ignoring occupancy. For example
+   *   if tag 2 was applied to A1, then C1 would receive tag 4 regardless of
+   *   the state of B1.
+   */
+  applyTags: ({ state, commit }, { library, autoTag }) => {
+    // We always apply the first tag
+    commit('updateLibrary', library)
+    if (autoTag) {
+      const initialWell = wellFor(state, library)
+      const initialIndex = wellToIndex(initialWell)
+      const tags = state.resources.tagSets[state.selected.tagSet.id].tags
+      const initialTagIndex = tags.indexOf(library.tag_id)
+      const plate = initialWell.plate
+
+      Object.values(state.libraries).forEach(({ pacbio_request_id }) => {
+        const otherWell = wellFor(state, { pacbio_request_id })
+
+        if (otherWell.plate !== plate) return
+
+        const offset = wellToIndex(otherWell) - initialIndex
+
+        if (offset < 1) return
+
+        const newTag = (initialTagIndex + offset) % tags.length
+        commit('updateLibrary', { pacbio_request_id, tag_id: tags[newTag] })
+      })
+    }
   },
 }
