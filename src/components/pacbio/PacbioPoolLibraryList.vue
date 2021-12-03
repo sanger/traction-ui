@@ -34,6 +34,7 @@
           v-for="request in selectedRequests"
           :key="request.id"
           :request="request"
+          :auto-tag="autoTag"
         ></PacbioPoolLibraryEdit>
       </b-tbody>
     </b-table-simple>

@@ -104,7 +104,7 @@ describe('Pacbio Pool Create', () => {
     cy.contains('[data-type=pool-create-message]', 'error1 There was a problem')
   })
 
-  it.skip('can automate creation of large pools', () => {
+  it('can automate creation of large pools', () => {
     cy.visit('#/pacbio/pool/new')
     cy.contains('Pool')
     cy.get('[data-type=labware-list]')
@@ -173,7 +173,7 @@ describe('Pacbio Pool Create', () => {
     cy.get('[data-type=pool-library-edit]')
       .filter(':contains("DN814327C:A2")')
       .find('[data-type=tag-list]')
-      .should('have.value', 'bc1010')
+      .should('have.value', '258')
 
     // We don't want to flow beyond the first plate
     cy.get('[data-type=pool-library-edit]')
@@ -193,7 +193,7 @@ describe('Pacbio Pool Create', () => {
     cy.get('[data-type=pool-library-edit]')
       .filter(':contains("DN814567Q:B1")')
       .find('[data-type=tag-list]')
-      .should('have.value', 'bc1004')
+      .should('have.value', '252')
 
     cy.intercept('/v1/pacbio/pools?include=tube', {
       statusCode: 201,

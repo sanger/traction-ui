@@ -105,6 +105,10 @@ export default {
         return { id: null }
       },
     },
+    autoTag: {
+      type: Boolean,
+      default: false,
+    },
   },
   data() {
     return {}
@@ -128,8 +132,11 @@ export default {
       get() {
         return this.library.tag_id
       },
-      set(newId) {
-        this.library.tag_id = newId
+      set(tag_id) {
+        this.applyTags({
+          library: { tag_id, pacbio_request_id: this.library.pacbio_request_id },
+          autoTag: this.autoTag,
+        })
       },
     },
   },
