@@ -10,9 +10,9 @@ const libraryAttributes = {
 }
 
 const requests = {
-  '1': { id: 1 },
-  '2': { id: 2 },
-  '3': { id: 3 },
+  '1': { id: 1, well: '1', plate: '1' },
+  '2': { id: 2, well: '2', plate: '1' },
+  '3': { id: 3, well: '3', plate: '1' },
 }
 
 const libraries = {
@@ -34,10 +34,17 @@ const tags = {
   3: { id: '3', name: 'tag3' },
 }
 
+const wells = {
+  1: { id: 1, position: 'A1' },
+  2: { id: 2, position: 'B1' },
+  3: { id: 3, position: 'C1' },
+}
+
 store.state.traction.pacbio.poolCreate.selected.tagSet = tagSet
 store.state.traction.pacbio.poolCreate.resources.tagSets = { 1: tagSet }
 store.state.traction.pacbio.poolCreate.resources.tags = tags
 store.state.traction.pacbio.poolCreate.resources.requests = requests
+store.state.traction.pacbio.poolCreate.resources.wells = wells
 
 describe('PacbioPoolLibraryList.vue', () => {
   it('should have a list of libraries', () => {

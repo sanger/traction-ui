@@ -20,9 +20,9 @@ export default {
    */
   selectPlate: (state, { id, selected = true }) => {
     if (selected) {
-      Vue.set(state.selected.plates, `_${id}`, { id: id, selected: true })
+      Vue.set(state.selected.plates, `${id}`, { id: id, selected: true })
     } else {
-      Vue.delete(state.selected.plates, `_${id}`)
+      Vue.delete(state.selected.plates, `${id}`)
     }
   },
   /**
@@ -63,7 +63,7 @@ export default {
    * @param {Object} state The VueXState object
    * @param {Array.{}} requests The request resources to populate the store
    */
-  populateRequests: populateById('requests'),
+  populateRequests: populateById('requests', { includeRelationships: true }),
   /**
    * Populated with resources via APi calls from the actions
    * @param {Object} state The VueXState object
@@ -109,6 +109,15 @@ export default {
       id,
       ...attributes,
     }
+  },
+  /**
+   * Updates the library with the corresponding data
+   * @param {Object} state The VueXState object
+   * @param {Object.{}} library The library data to update
+   */
+  updateLibrary: ({ libraries }, { pacbio_request_id, ...attributes }) => {
+    const key = `_${pacbio_request_id}`
+    Vue.set(libraries, key, Object.assign({}, libraries[key], attributes))
   },
   // This method clears the editable data in the pool/new page
   clearPoolData: (state) => {

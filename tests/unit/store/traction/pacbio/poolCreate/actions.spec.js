@@ -13,6 +13,7 @@ describe('actions.js', () => {
     createPool,
     updatePool,
     populateLibrariesFromPool,
+    applyTags,
   } = actions
 
   describe('fetchPacbioPlates', () => {
@@ -394,6 +395,102 @@ describe('actions.js', () => {
       expect(update).not.toHaveBeenCalled()
       expect(success).toBeFalsy()
       expect(errors).toEqual('The pool is invalid')
+    })
+  })
+
+  describe('applyTags', () => {
+    const state = Data.AutoTagStore
+    // Starting in B1
+    const library = { pacbio_request_id: '13', tag_id: '130' }
+
+    it('applies a single tag when autoTag is false', async () => {
+      const commit = jest.fn()
+      // Starting in B1
+      const autoTag = false
+
+      await applyTags({ commit, state }, { library, autoTag })
+      // We update the changed well
+      expect(commit).toHaveBeenCalledWith('updateLibrary', {
+        pacbio_request_id: '13',
+        tag_id: '130',
+      })
+      // But nothing else
+      expect(commit).toHaveBeenCalledTimes(1)
+
+      // We don't update earlier wells
+      expect(commit).not.toHaveBeenCalledWith(
+        'updateLibrary',
+        expect.objectContaining({ pacbio_request_id: '1' }),
+      )
+    })
+
+    it('applies tags to wells on the same plate with a higher column index when autoTag is true', async () => {
+      const commit = jest.fn()
+      const autoTag = true
+
+      await applyTags(
+        {
+          commit,
+          state,
+        },
+        {
+          library,
+          autoTag,
+        },
+      )
+
+      // We update the changed well
+      expect(commit).toHaveBeenCalledWith('updateLibrary', {
+        pacbio_request_id: '13',
+        tag_id: '130',
+      })
+
+      // We don't update earlier wells
+      expect(commit).not.toHaveBeenCalledWith(
+        'updateLibrary',
+        expect.objectContaining({
+          pacbio_request_id: '1',
+        }),
+      )
+      // We don't update unselected wells
+      expect(commit).not.toHaveBeenCalledWith(
+        'updateLibrary',
+        expect.objectContaining({
+          pacbio_request_id: '25', // C1
+        }),
+      )
+      // We do update wells further down the plate
+      expect(commit).toHaveBeenCalledWith(
+        'updateLibrary',
+        expect.objectContaining({
+          pacbio_request_id: '37', // D1
+          tag_id: '132',
+        }),
+      )
+      // Including the next column
+      expect(commit).toHaveBeenCalledWith(
+        'updateLibrary',
+        expect.objectContaining({
+          pacbio_request_id: '2', // A2
+          tag_id: '137',
+        }),
+      )
+      // But not another plate
+      expect(commit).not.toHaveBeenCalledWith(
+        'updateLibrary',
+        expect.objectContaining({
+          pacbio_request_id: '61', // B1
+        }),
+      )
+      expect(commit).not.toHaveBeenCalledWith(
+        'updateLibrary',
+        expect.objectContaining({
+          pacbio_request_id: '73', // C1
+        }),
+      )
+
+      // In total we expect ot update8 wells in this case
+      expect(commit).toHaveBeenCalledTimes(6)
     })
   })
 })

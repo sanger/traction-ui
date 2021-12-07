@@ -68,7 +68,7 @@ describe('getters.js', () => {
         },
       ]
       state.resources.plates = plates
-      state.selected.plates = { _1: { id: '1', selected: true } }
+      state.selected.plates = { 1: { id: '1', selected: true } }
       expect(labwareList(state)).toEqual(expected)
     })
   })
@@ -128,7 +128,9 @@ describe('getters.js', () => {
   describe('selectedRequests', () => {
     const defaultStateObject = defaultState()
     const requestResources = Data.PacbioPlatesRequest.data.included.slice(4, 8)
-    const requests = dataToObjectById({ data: requestResources, includeRelationships: false })
+    const wellResources = Data.PacbioPlatesRequest.data.included.slice(0, 4)
+    const requests = dataToObjectById({ data: requestResources, includeRelationships: true })
+    const wells = dataToObjectById({ data: wellResources, includeRelationships: true })
 
     // When selecting a request with append the id with an underscore. This ensures
     // keys are maintained in insertion order, not numeric order. This allow our requests
@@ -152,14 +154,14 @@ describe('getters.js', () => {
 
     const state = {
       ...defaultStateObject,
-      resources: { ...defaultStateObject.resources, requests },
+      resources: { ...defaultStateObject.resources, requests, wells },
       libraries,
     }
 
     it('returns an array of request resources that have been selected', () => {
       expect(selectedRequests(state)).toEqual([
-        { ...requests['136'], selected: true },
         { ...requests['40'], selected: true },
+        { ...requests['136'], selected: true },
       ])
     })
   })

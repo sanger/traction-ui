@@ -40,6 +40,7 @@ import SequencescapePlates from './sequencescapePlates'
 import TractionTubeWithContainerMaterials from './tractionTubeWithContainerMaterials'
 import TractionTubesWithPacbioPools from './tractionTubesWithPacbioPools'
 import TractionPlates from './tractionPlates'
+import AutoTagStore from './autoTagStore'
 
 export default {
   CreateChip,
@@ -84,4 +85,5 @@ export default {
   TractionTubeWithContainerMaterials,
   TractionTubesWithPacbioPools,
   TractionPlates,
+  AutoTagStore,
 }

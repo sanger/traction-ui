@@ -1,0 +1,19 @@
+{
+  "data": {
+    "data": {
+      "type": "pools",
+      "attributes": {
+        "library_attributes": [
+          {
+            "pacbio_request_id": "40",
+            "template_prep_kit_box_barcode": "ABC1",
+            "tag_id": "249",
+            "volume": "1",
+            "concentration": "10.0",
+            "insert_size": "100"
+          }
+        ]
+      }
+    }
+  }
+}
