@@ -3,6 +3,8 @@ import { validate, payload, valid } from '@/store/traction/pacbio/poolCreate/poo
 import { handleResponse } from '@/api/ResponseHelper'
 import { wellFor, wellToIndex } from './wellHelpers'
 
+const sourceRegex = /^(?<barcode>\w+)-(?<well>\w[0-9]{1,2})$/
+
 // Actions handle asynchronous update of state, via mutations.
 // Note: The { commit } in the given example is destucturing
 // the store context
@@ -168,5 +170,24 @@ export default {
         commit('updateLibrary', { pacbio_request_id, tag_id: tags[newTag] })
       })
     }
+  },
+  /**
+   * Given a record extracted from a csv file, will update the corresponding library
+   * Each library is identified by the key 'source' which consists of a string identifying
+   * the source plate barcode and its well. eg. DN814597W-A10
+   * @param state the vuex state object. Provides access to current state
+   * @param commit the vuex commit object. Provides access to mutations
+   */
+  updateLibraryFromCsvRecord: ({ state, commit, getters }, { source, tag, ...attributes }) => {
+    const {
+      groups: { barcode, well },
+    } = source.match(sourceRegex)
+    const tag_id = getters.selectedTagSet.tags.find(({ group_id }) => group_id === tag).id
+    const wellIds = Object.values(state.resources.plates).find((plate) => plate.barcode == barcode)
+      .wells
+    const selectedWell = wellIds.find((well_id) => state.resources.wells[well_id].position == well)
+    state.resources.wells[selectedWell].requests.forEach((pacbio_request_id) => {
+      commit('updateLibrary', { pacbio_request_id, tag_id, ...attributes })
+    })
   },
 }

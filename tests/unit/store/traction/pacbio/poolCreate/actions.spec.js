@@ -14,6 +14,7 @@ describe('actions.js', () => {
     updatePool,
     populateLibrariesFromPool,
     applyTags,
+    updateLibraryFromCsvRecord,
   } = actions
 
   describe('fetchPacbioPlates', () => {
@@ -491,6 +492,52 @@ describe('actions.js', () => {
 
       // In total we expect ot update8 wells in this case
       expect(commit).toHaveBeenCalledTimes(6)
+    })
+  })
+
+  describe('updateLibraryFromCsvRecord', () => {
+    const state = Data.AutoTagStore
+
+    it('updates the corresponding library', async () => {
+      const commit = jest.fn()
+      const record = {
+        source: 'DN1-A10',
+        tag: 'bc1024T',
+        genome_size: 6.3,
+        insert_size: 15230,
+        concentration: 13,
+        volume: 15,
+      }
+      const getters = {
+        selectedTagSet: {
+          id: '3',
+          type: 'tag_sets',
+          name: 'Sequel_48_Microbial_Barcoded_OHA_v1',
+          uuid: 'c808dbb2-a26b-cfae-0a16-c3e7c3b8d7fe',
+          pipeline: 'pacbio',
+          tags: [
+            { id: '129', type: 'tags', oligo: 'TCTGTATCTCTATGTGT', group_id: 'bc1007T' },
+            { id: '130', type: 'tags', oligo: 'CAGAGAGATATCTCTGT', group_id: 'bc1023T' },
+            { id: '131', type: 'tags', oligo: 'CATGTAGAGCAGAGAGT', group_id: 'bc1024T' },
+            { id: '132', type: 'tags', oligo: 'CACAGAGACACGCACAT', group_id: 'bc1026T' },
+            { id: '133', type: 'tags', oligo: 'CTCACACTCTCTCACAT', group_id: 'bc1027T' },
+            { id: '134', type: 'tags', oligo: 'CTCTGCTCTGACTCTCT', group_id: 'bc1028T' },
+          ],
+        },
+      }
+
+      updateLibraryFromCsvRecord({ state, commit, getters }, record)
+
+      expect(commit).toHaveBeenCalledWith(
+        'updateLibrary',
+        expect.objectContaining({
+          pacbio_request_id: '10',
+          tag_id: '131',
+          insert_size: 15230,
+          concentration: 13,
+          volume: 15,
+        }),
+      )
     })
   })
 })
