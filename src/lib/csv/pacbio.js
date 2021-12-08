@@ -23,9 +23,20 @@ const normaliseHeaders = (headers) => headers.map(normaliseHeader)
 
 const cast = (value, context) => {
   if (context.header) return value
-
+  if (value === '') return undefined
   return isFloat(context.column) ? Number(value) : String(value)
 }
+
+/**
+ * When given an object where some keys have a value of undefined, returns
+ * a new object where those keys are missing
+ * Eg. filterUndefinedValues({a: 1, b: undefined)}) // => { a: 1 }
+ * @param {Object} record the object to filter
+ * @return {Object} Object with no undefined values
+ */
+const filterUndefinedValues = (record) =>
+  Object.fromEntries(Object.entries(record).filter(([, value]) => value !== undefined))
+
 /**
  * Parses the provides CSV contents and passes each record to the callback
  */
@@ -34,9 +45,11 @@ const eachRecord = (csv, callback) => {
     bom: true, // Strip any byte-order-markers
     delimiter: ',',
     columns: normaliseHeaders,
+    skip_records_with_empty_values: true,
     skip_empty_lines: true,
     trim: true,
     cast,
+    onRecord: filterUndefinedValues,
   })
   records.forEach(callback)
 }
