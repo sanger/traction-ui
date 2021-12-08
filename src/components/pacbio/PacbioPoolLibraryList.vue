@@ -1,23 +1,5 @@
 <template>
   <div v-if="selectedRequests" data-type="pool-library-list">
-    <b-row>
-      <b-col>
-        <b-form-checkbox v-model="autoTag" name="check-button" switch data-attribute="auto-tagging">
-          Autotagging
-        </b-form-checkbox>
-      </b-col>
-      <b-col>
-        <b-form-file
-          id="qcFileInput"
-          v-model="uploadedFile"
-          :state="Boolean(uploadedFile)"
-          placeholder="Choose a file or drop it here..."
-          drop-placeholder="Drop file here..."
-          accept="text/csv, .csv"
-          size="sm"
-        ></b-form-file>
-      </b-col>
-    </b-row>
     <b-table-simple>
       <b-thead>
         <b-tr>
@@ -59,32 +41,22 @@
 <script>
 import PacbioPoolLibraryEdit from '@/components/pacbio/PacbioPoolLibraryEdit'
 import { createNamespacedHelpers } from 'vuex'
-import { eachRecord } from '@/lib/csv/pacbio'
 
-const { mapGetters, mapActions } = createNamespacedHelpers('traction/pacbio/poolCreate')
+const { mapGetters } = createNamespacedHelpers('traction/pacbio/poolCreate')
 
 export default {
   name: 'PacbioPoolLibraryList',
   components: {
     PacbioPoolLibraryEdit,
   },
-  data() {
-    return {
-      autoTag: false,
-      uploadedFile: null,
-    }
+  props: {
+    autoTag: {
+      type: Boolean,
+      default: false,
+    },
   },
   computed: {
     ...mapGetters(['selectedRequests']),
-  },
-  watch: {
-    async uploadedFile(newFile) {
-      const csv = await newFile.text()
-      eachRecord(csv, (record) => this.updateLibraryFromCsvRecord(record))
-    },
-  },
-  methods: {
-    ...mapActions(['updateLibraryFromCsvRecord']),
   },
 }
 </script>
