@@ -3,7 +3,7 @@ import { validate, payload, valid } from '@/store/traction/pacbio/poolCreate/poo
 import { handleResponse } from '@/api/ResponseHelper'
 import { wellFor, wellToIndex } from './wellHelpers'
 
-const sourceRegex = /^(?<barcode>\w+)-(?<well>\w[0-9]{1,2})$/
+const sourceRegex = /^(?<barcode>\w+)-(?<wellName>\w[0-9]{1,2})$/
 
 // Actions handle asynchronous update of state, via mutations.
 // Note: The { commit } in the given example is destucturing
@@ -180,14 +180,21 @@ export default {
    */
   updateLibraryFromCsvRecord: ({ state, commit, getters }, { source, tag, ...attributes }) => {
     const {
-      groups: { barcode, well },
+      resources: { plates, wells },
+    } = state
+    const {
+      groups: { barcode, wellName },
     } = source.match(sourceRegex)
-    const tag_id = getters.selectedTagSet.tags.find(({ group_id }) => group_id === tag).id
-    const wellIds = Object.values(state.resources.plates).find((plate) => plate.barcode == barcode)
-      .wells
-    const selectedWell = wellIds.find((well_id) => state.resources.wells[well_id].position == well)
-    state.resources.wells[selectedWell].requests.forEach((pacbio_request_id) => {
-      commit('updateLibrary', { pacbio_request_id, tag_id, ...attributes })
+
+    const tagAttributes = tag
+      ? { tag_id: getters.selectedTagSet.tags.find(({ group_id }) => group_id === tag).id }
+      : {}
+
+    const plate = Object.values(plates).find((plate) => plate.barcode == barcode)
+    const wellId = plate.wells.find((well_id) => wells[well_id].position == wellName)
+
+    wells[wellId].requests.forEach((pacbio_request_id) => {
+      commit('updateLibrary', { pacbio_request_id, ...tagAttributes, ...attributes })
     })
   },
 }

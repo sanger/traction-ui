@@ -149,16 +149,11 @@ describe('Pacbio Pool Create', () => {
 
     const orderedElements = ['DN814327C:A1', 'DN814327C:A2', 'DN814567Q:A1', 'DN814567Q:B1']
 
-    // Fill in the rest
-    // Note: The repeated use of cy.get('[data-type=pool-library-edit]') is necessary
-    // here as the elements are getting redrawn as tags are selected
+    cy.get('#qcFileInput').attachFile('pacbio.csv')
+    // Validate the order
     cy.get('[data-type=pool-library-edit]').each((el, index) => {
       cy.wrap(el).within(() => {
         const expectedElement = orderedElements[index]
-        cy.get('[data-attribute=template-prep-kit-box-barcode]').type('ABC1')
-        cy.get('[data-attribute=volume]').type('1')
-        cy.get('[data-attribute=concentration]').type('10.0')
-        cy.get('[data-attribute=insert-size]').type('100')
         cy.get('[data-attribute=request-source-identifier]').contains(expectedElement)
       })
     })
@@ -194,6 +189,97 @@ describe('Pacbio Pool Create', () => {
       .filter(':contains("DN814567Q:B1")')
       .find('[data-type=tag-list]')
       .should('have.value', '252')
+
+    cy.intercept('/v1/pacbio/pools?include=tube', {
+      statusCode: 201,
+      body: {
+        data: {
+          pool: {
+            id: '1',
+            tube: {
+              barcode: 'TRAC-1',
+            },
+          },
+        },
+      },
+    })
+    cy.get('[data-action=create-pool').click()
+    cy.contains('[data-type=pool-create-message]', 'Pool successfully created')
+  })
+
+  it('can populate tags from csv', () => {
+    cy.visit('#/pacbio/pool/new')
+    cy.contains('Pool')
+    cy.get('[data-type=labware-list]')
+      .find('[data-action=select-labware]')
+      .first()
+      .click()
+    cy.get('[data-input=labware-find]').type('DN814567Q{enter}')
+
+    cy.get('[data-type=plate-item]').should('have.length', 2)
+
+    cy.get('[data-type=tag-set-list]').select('IsoSeq_v1')
+    cy.get('[data-attribute=group-id]').should('have.length', 12)
+
+    // Bulk sample addition
+    cy.get('[data-type=selected-plate-list]').within(() => {
+      cy.get('[data-type=plate-item]')
+        .first()
+        .trigger('mousedown', {
+          position: 'topLeft',
+        })
+        .trigger('mousemove', {
+          position: 'bottomRight',
+        })
+        .trigger('mouseup', {
+          position: 'bottomRight',
+        })
+      // We select in two separate steps as it lets us validate that selection
+      // is 'sticky'.
+      cy.get('[data-type=plate-item]')
+        .last()
+        .trigger('mousedown', {
+          position: 'topLeft',
+        })
+        .trigger('mousemove', {
+          position: 'bottomRight',
+        })
+        .trigger('mouseup', {
+          position: 'bottomRight',
+        })
+    })
+    cy.get('[data-type=pool-library-edit]').should('have.length', 4)
+
+    const orderedElements = ['DN814327C:A1', 'DN814327C:A2', 'DN814567Q:A1', 'DN814567Q:B1']
+
+    cy.get('#qcFileInput').attachFile('pacbioAndTags.csv')
+    // Validate the order
+    cy.get('[data-type=pool-library-edit]').each((el, index) => {
+      cy.wrap(el).within(() => {
+        const expectedElement = orderedElements[index]
+        cy.get('[data-attribute=request-source-identifier]').contains(expectedElement)
+      })
+    })
+
+    cy.get('[data-type=pool-library-edit]')
+      .filter(':contains("DN814327C:A1")')
+      .find('[data-type=tag-list]')
+      .should('have.value', '250')
+
+    cy.get('[data-type=pool-library-edit]')
+      .filter(':contains("DN814327C:A2")')
+      .find('[data-type=tag-list]')
+      .should('have.value', '251')
+
+    // We can then select the second plate independently
+    cy.get('[data-type=pool-library-edit]')
+      .filter(':contains("DN814567Q:A1")')
+      .find('[data-type=tag-list]')
+      .should('have.value', '252')
+    cy.get('[data-type=pool-library-edit]')
+      .filter(':contains("DN814567Q:B1")')
+      .find('[data-type=tag-list]')
+      .should('have.value', '253')
 
     cy.intercept('/v1/pacbio/pools?include=tube', {
       statusCode: 201,

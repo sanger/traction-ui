@@ -42,6 +42,7 @@
     "babel-core": "7.0.0-bridge.0",
     "babel-eslint": "^10.1.0",
     "babel-jest": "^23.6.0",
+    "cypress-file-upload": "^5.0.8",
     "eslint": "^5.16.0",
     "eslint-config-prettier": "^8.3.0",
     "eslint-plugin-vue": "^5.2.3",
