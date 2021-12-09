@@ -26,12 +26,10 @@
 </template>
 
 <script>
-import Helper from '@/mixins/Helper'
 import { mapActions, mapState } from 'vuex'
 
 export default {
   name: 'Reception',
-  mixins: [Helper],
   props: {},
   data() {
     return {

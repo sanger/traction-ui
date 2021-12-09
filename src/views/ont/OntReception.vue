@@ -29,7 +29,6 @@
 </template>
 
 <script>
-import Helper from '@/mixins/Helper'
 import { getPlates, transformPlates, OntSample } from '@/services/Sequencescape'
 import CREATE_PLATE_WITH_SAMPLES from '@/graphql/queries/CreatePlateWithSamples.mutation.gql'
 import Spinner from 'vue-simple-spinner'
@@ -40,7 +39,7 @@ export default {
   components: {
     Spinner,
   },
-  mixins: [Helper, Api],
+  mixins: [Api],
   data() {
     return {
       barcodes: [],

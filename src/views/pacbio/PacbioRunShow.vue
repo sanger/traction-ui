@@ -37,7 +37,7 @@
 import PacbioRunInfoEdit from '@/components/pacbio/PacbioRunInfoEdit'
 import pacbioPoolList from '@/components/pacbio/PacbioPoolList'
 import Plate from '@/components/pacbio/PacbioRunPlateItem'
-import Helper from '@/mixins/Helper'
+
 import { createNamespacedHelpers } from 'vuex'
 const { mapGetters, mapState, mapActions } = createNamespacedHelpers('traction/pacbio/runs')
 import * as consts from '@/consts/consts'
@@ -49,7 +49,6 @@ export default {
     pacbioPoolList,
     Plate,
   },
-  mixins: [Helper],
   props: {
     id: {
       type: [String, Number],

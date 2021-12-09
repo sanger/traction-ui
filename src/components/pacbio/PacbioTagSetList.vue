@@ -12,10 +12,8 @@
 </template>
 
 <script>
-import Helper from '@/mixins/Helper'
 export default {
   name: 'PacbioTagSetList',
-  mixins: [Helper],
   computed: {
     isEmpty() {
       return this.tagSets.length === 0

@@ -26,13 +26,11 @@
 </template>
 
 <script>
-import Helper from '@/mixins/Helper'
 import { createNamespacedHelpers } from 'vuex'
 const { mapMutations, mapActions } = createNamespacedHelpers('traction/pacbio/poolCreate')
 
 export default {
   name: 'PacbioLabwareFind',
-  mixins: [Helper],
   data() {
     return {
       enteredLabware: '',

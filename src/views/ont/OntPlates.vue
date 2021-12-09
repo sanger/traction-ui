@@ -35,7 +35,6 @@
 </template>
 
 <script>
-import Helper from '@/mixins/Helper'
 import OntPlate from '@/components/ont/OntPlate'
 import ONT_PLATES_QUERY from '@/graphql/queries/OntPlates.query.gql'
 
@@ -44,7 +43,6 @@ export default {
   components: {
     OntPlate,
   },
-  mixins: [Helper],
   data() {
     return {
       fields: ['id', 'barcode', 'createdAt', 'show_details'],

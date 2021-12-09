@@ -111,13 +111,12 @@
 </template>
 
 <script>
-import Helper from '@/mixins/Helper'
 import TableHelper from '@/mixins/TableHelper'
 import { mapActions, mapGetters } from 'vuex'
 
 export default {
   name: 'PacbioRuns',
-  mixins: [Helper, TableHelper],
+  mixins: [TableHelper],
   data() {
     return {
       fields: [

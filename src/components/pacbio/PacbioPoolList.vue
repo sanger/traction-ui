@@ -7,7 +7,6 @@
 </template>
 
 <script>
-import Helper from '@/mixins/Helper'
 import TableHelper from '@/mixins/TableHelper'
 import { createNamespacedHelpers } from 'vuex'
 import Tube from '@/components/pacbio/PacbioPoolTubeItem'
@@ -18,7 +17,7 @@ export default {
   components: {
     Tube,
   },
-  mixins: [Helper, TableHelper],
+  mixins: [TableHelper],
   data() {
     return {}
   },

@@ -44,8 +44,6 @@ import UPDATE_RUN from '@/graphql/queries/UpdateOntRun.mutation.gql'
 import UPDATE_CLIENT_FLOWCELL from '@/graphql/queries/client/UpdateClientFlowcell.mutation.gql'
 import UPDATE_CLIENT_LIBRARIES_LIST from '@/graphql/queries/client/UpdateClientLibrariesList.mutation.gql'
 
-import Helper from '@/mixins/Helper'
-
 export default {
   name: 'OntHeronRun',
   components: {
@@ -53,7 +51,6 @@ export default {
     OntFlowcell,
     OntRunLibrariesList,
   },
-  mixins: [Helper],
   props: {
     id: {
       type: [String, Number],

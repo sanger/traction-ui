@@ -105,14 +105,13 @@
 
 <script>
 import Api from '@/mixins/Api'
-import Helper from '@/mixins/Helper'
 import ModalHelper from '@/mixins/ModalHelper'
 import * as consts from '@/consts/consts'
 import { mapActions, mapGetters } from 'vuex'
 
 export default {
   name: 'PacbioLibraryCreate',
-  mixins: [Api, Helper, ModalHelper],
+  mixins: [Api, ModalHelper],
   props: {
     disabled: Boolean,
     isStatic: Boolean,

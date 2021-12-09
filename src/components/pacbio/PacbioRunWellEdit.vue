@@ -120,11 +120,9 @@
 
 <script>
 import { mapMutations, mapGetters, mapActions } from 'vuex'
-import Helper from '@/mixins/Helper'
 
 export default {
   name: 'WellModal',
-  mixins: [Helper],
   props: {
     position: {
       type: [String],
