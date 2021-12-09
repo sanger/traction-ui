@@ -1,7 +1,5 @@
 <template>
   <div class="run">
-    <alert ref="alert" data-type="run-validation-message"></alert>
-
     <router-link :to="{ name: 'PacbioRunIndex' }">
       <b-button id="backToRunsButton" class="float-right">Back</b-button>
     </router-link>
@@ -39,7 +37,6 @@
 import PacbioRunInfoEdit from '@/components/pacbio/PacbioRunInfoEdit'
 import pacbioPoolList from '@/components/pacbio/PacbioPoolList'
 import Plate from '@/components/pacbio/PacbioRunPlateItem'
-import Alert from '@/components/Alert'
 import Helper from '@/mixins/Helper'
 import { createNamespacedHelpers } from 'vuex'
 const { mapGetters, mapState, mapActions } = createNamespacedHelpers('traction/pacbio/runs')
@@ -48,7 +45,6 @@ import * as consts from '@/consts/consts'
 export default {
   name: 'Run',
   components: {
-    Alert,
     PacbioRunInfoEdit,
     pacbioPoolList,
     Plate,
@@ -103,12 +99,16 @@ export default {
       if (responses.length == 0) {
         this.redirectToRuns()
       } else {
-        this.showAlert(consts.MESSAGE_ERROR_CREATE_RUN_FAILED + responses, 'danger')
+        this.showAlert(
+          consts.MESSAGE_ERROR_CREATE_RUN_FAILED + responses,
+          'danger',
+          'run-validation-message',
+        )
       }
     },
     resetRun() {
       this.newRun()
-      this.showAlert('Run has been reset', 'success')
+      this.showAlert('Run has been reset', 'success', 'run-validation-message')
     },
     ...mapActions(['createRun', 'updateRun', 'editRun', 'newRun']),
     redirectToRuns() {

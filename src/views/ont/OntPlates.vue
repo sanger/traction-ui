@@ -1,7 +1,5 @@
 <template>
   <div class="ont-plates">
-    <alert ref="alert"></alert>
-
     <b-table
       id="plates-table"
       hover
@@ -37,7 +35,6 @@
 </template>
 
 <script>
-import Alert from '@/components/Alert'
 import Helper from '@/mixins/Helper'
 import OntPlate from '@/components/ont/OntPlate'
 import ONT_PLATES_QUERY from '@/graphql/queries/OntPlates.query.gql'
@@ -46,7 +43,6 @@ export default {
   name: 'OntPlates',
   components: {
     OntPlate,
-    Alert,
   },
   mixins: [Helper],
   data() {

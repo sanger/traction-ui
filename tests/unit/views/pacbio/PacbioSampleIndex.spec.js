@@ -39,8 +39,9 @@ describe('Samples.vue', () => {
   describe('#showAlert', () => {
     it('passes the message to function on emit event', () => {
       samples.showAlert('show this message', 'danger')
-      wrapper.vm.$nextTick(() => {
-        expect(wrapper.findComponent({ ref: 'alert' }).html()).toMatch('show this message')
+      expect(store.state.traction.messages).toContainEqual({
+        type: 'danger',
+        message: 'show this message',
       })
     })
   })
@@ -59,12 +60,6 @@ describe('Samples.vue', () => {
       let modal = wrapper.findComponent({ ref: 'printerModal' })
       modal.vm.$emit('selectPrinter', 'printer1')
       expect(samples.handlePrintLabel).toBeCalledWith('printer1')
-    })
-  })
-
-  describe('alert', () => {
-    it('has a alert', () => {
-      expect(wrapper.findComponent({ ref: 'alert' }).exists()).toBeTruthy()
     })
   })
 

@@ -1,7 +1,5 @@
 <template>
   <div>
-    <alert ref="alert"></alert>
-
     <b-form-group
       label="Filter"
       label-cols-sm="1"
@@ -116,7 +114,6 @@
 <script>
 import Helper from '@/mixins/Helper'
 import TableHelper from '@/mixins/TableHelper'
-import Alert from '@/components/Alert'
 import PrinterModal from '@/components/PrinterModal'
 import { createNamespacedHelpers } from 'vuex'
 const { mapActions, mapGetters } = createNamespacedHelpers('traction/pacbio/pools')
@@ -124,7 +121,6 @@ const { mapActions, mapGetters } = createNamespacedHelpers('traction/pacbio/pool
 export default {
   name: 'PacbioPoolIndex',
   components: {
-    Alert,
     PrinterModal,
   },
   mixins: [Helper, TableHelper],

@@ -8,6 +8,9 @@ const mutations = {
     state.pacbio.runs.runs.splice(runIndex, 1, run)
     state.pacbio.runs.runs = [...state.pacbio.runs.runs]
   },
+  addMessage(state, message) {
+    state.messages.push(message)
+  },
 }
 
 export default mutations

@@ -20,12 +20,6 @@ describe('Runs.vue', () => {
     })
   })
 
-  describe('alert', () => {
-    it('has a alert', () => {
-      expect(wrapper.findComponent({ ref: 'alert' })).toBeTruthy()
-    })
-  })
-
   describe('building the table', () => {
     it('exists', () => {
       expect(wrapper.find('table').element).toBeTruthy()
@@ -224,9 +218,10 @@ describe('Runs.vue', () => {
 
   describe('#showAlert', () => {
     it('emits an event with the message', () => {
-      runs.showAlert(/show this message/)
-      wrapper.vm.$nextTick(() => {
-        expect(wrapper.findComponent({ ref: 'alert' }).text()).toMatch(/show this message/)
+      runs.showAlert('show this message', 'danger')
+      expect(store.state.traction.messages).toContainEqual({
+        type: 'danger',
+        message: 'show this message',
       })
     })
   })

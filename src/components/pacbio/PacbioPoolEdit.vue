@@ -97,7 +97,6 @@
 </template>
 
 <script>
-import Alert from '@/components/Alert'
 import PacbioPoolLibraryList from '@/components/pacbio/PacbioPoolLibraryList'
 import { createNamespacedHelpers } from 'vuex'
 import { eachRecord } from '@/lib/csv/pacbio'
@@ -108,7 +107,6 @@ export default {
   name: 'PoolEdit',
   components: {
     PacbioPoolLibraryList,
-    Alert,
   },
   data() {
     return {
@@ -136,8 +134,8 @@ export default {
       this.busy = true
       this.createPool().then(({ success, barcode, errors }) => {
         success
-          ? this.$refs.alert.show(`Pool successfully created with barcode ${barcode}`, 'success')
-          : this.$refs.alert.show(errors, 'danger')
+          ? this.showAlert(`Pool successfully created with barcode ${barcode}`, 'success')
+          : this.showAlert(errors, 'danger')
         this.busy = false
       })
     },
@@ -145,10 +143,13 @@ export default {
       this.busy = true
       this.updatePool().then(({ success, errors }) => {
         success
-          ? this.$refs.alert.show(`Pool successfully updated`, 'success')
-          : this.$refs.alert.show(errors, 'danger')
+          ? this.showAlert(`Pool successfully updated`, 'success')
+          : this.showAlert(errors, 'danger')
         this.busy = false
       })
+    },
+    showAlert(message, type) {
+      this.$store.commit('traction/addMessage', { type, message, dataType: 'pool-create-message' })
     },
   },
 }

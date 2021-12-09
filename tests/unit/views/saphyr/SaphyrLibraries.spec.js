@@ -1,6 +1,5 @@
 import Libraries from '@/views/saphyr/SaphyrLibraries'
 import { mount, localVue, store, Data } from 'testHelper'
-import Alert from '@/components/Alert'
 import * as consts from '@/consts/consts'
 import VueRouter from 'vue-router'
 import Response from '@/api/Response'
@@ -54,7 +53,6 @@ describe('Libraries.vue', () => {
       router,
       localVue,
       stubs: {
-        Alert: Alert,
         PrinterModal: true,
       },
     })
@@ -111,8 +109,9 @@ describe('Libraries.vue', () => {
   describe('#showAlert', () => {
     it('passes the message to function on emit event', () => {
       libraries.showAlert('show this message', 'danger')
-      wrapper.vm.$nextTick(() => {
-        expect(wrapper.findComponent({ ref: 'alert' }).html()).toMatch('show this message')
+      expect(store.state.traction.messages).toContainEqual({
+        type: 'danger',
+        message: 'show this message',
       })
     })
   })
@@ -129,12 +128,6 @@ describe('Libraries.vue', () => {
       modal.vm.$emit('selectPrinter', 'printer1')
 
       expect(libraries.handlePrintLabel).toBeCalledWith('printer1')
-    })
-  })
-
-  describe('alert', () => {
-    it('has a alert', () => {
-      expect(wrapper.findComponent({ ref: 'alert' }).exists()).toBeTruthy()
     })
   })
 })

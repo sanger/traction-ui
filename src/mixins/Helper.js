@@ -8,14 +8,6 @@ export default {
   name: 'Helper',
   methods: {
     /**
-     * Toggle the alert (of type provided) on the page with the provided message
-     * @param {*} message the message to show in the alert box
-     * @param {string} type the variant (colour) of the alert
-     */
-    showAlert(message, type) {
-      return this.$refs.alert.show(message, type)
-    },
-    /**
      * Send message to the console - only when not in production
      * @param {*} message the message to log
      */

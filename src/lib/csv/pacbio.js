@@ -1,7 +1,18 @@
 import { parse } from 'csv-parse/lib/sync'
 
-const isFloat = (column) =>
-  ['volume', 'concentration', 'insert_size', 'genome_size'].includes(column)
+const castFloat = (value) => Number(value)
+const castString = (value) => String(value)
+
+// Handles the casting of columns. By default, unless specified here, a column
+// will be cast to a String
+const columnCasting = {
+  volume: castFloat,
+  concentration: castFloat,
+  insert_size: castFloat,
+  genome_size: castFloat,
+}
+
+const castFor = (column) => columnCasting[column] || castString
 
 /**
  * Converts each header to match the parameter name in the store
@@ -24,7 +35,7 @@ const normaliseHeaders = (headers) => headers.map(normaliseHeader)
 const cast = (value, context) => {
   if (context.header) return value
   if (value === '') return undefined
-  return isFloat(context.column) ? Number(value) : String(value)
+  return castFor(context.column)(value)
 }
 
 /**
@@ -39,9 +50,11 @@ const filterUndefinedValues = (record) =>
 
 /**
  * Parses the provides CSV contents and passes each record to the callback
+ * Column headers are assumed to be provided in the first row
+ * Each record will have keys corresponding to each
  */
-const eachRecord = (csv, callback) => {
-  const records = parse(csv, {
+const eachRecord = (csv, callback) =>
+  parse(csv, {
     bom: true, // Strip any byte-order-markers
     delimiter: ',',
     columns: normaliseHeaders,
@@ -50,8 +63,6 @@ const eachRecord = (csv, callback) => {
     trim: true,
     cast,
     onRecord: filterUndefinedValues,
-  })
-  records.forEach(callback)
-}
+  }).forEach(callback)
 
 export { eachRecord }

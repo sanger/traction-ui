@@ -1,7 +1,5 @@
 <template>
   <div class="ont-heron-run">
-    <alert ref="alert"></alert>
-
     <div>
       <b-row class="create-run-button">
         <b-button id="cancel-button" @click="redirectToRuns()">Cancel</b-button>
@@ -46,7 +44,6 @@ import UPDATE_RUN from '@/graphql/queries/UpdateOntRun.mutation.gql'
 import UPDATE_CLIENT_FLOWCELL from '@/graphql/queries/client/UpdateClientFlowcell.mutation.gql'
 import UPDATE_CLIENT_LIBRARIES_LIST from '@/graphql/queries/client/UpdateClientLibrariesList.mutation.gql'
 
-import Alert from '@/components/Alert'
 import Helper from '@/mixins/Helper'
 
 export default {
@@ -55,7 +52,6 @@ export default {
     ONTSVG,
     OntFlowcell,
     OntRunLibrariesList,
-    Alert,
   },
   mixins: [Helper],
   props: {

@@ -43,12 +43,6 @@ describe('Run.vue', () => {
     saphyrRun = wrapper.vm
   })
 
-  describe('alert', () => {
-    it('has a alert', () => {
-      expect(wrapper.findComponent({ ref: 'alert' }).element).toBeTruthy()
-    })
-  })
-
   describe('displaying the data', () => {
     it('shows the current id of the run', () => {
       let id = wrapper.find('#id').text()
@@ -156,8 +150,9 @@ describe('Run.vue', () => {
   describe('#showAlert', () => {
     it('emits an event with the message', () => {
       saphyrRun.showAlert('show this message', 'success')
-      wrapper.vm.$nextTick(() => {
-        expect(wrapper.findComponent({ ref: 'alert' }).text()).toMatch(/show this message/)
+      expect(store.state.traction.messages).toContainEqual({
+        type: 'success',
+        message: 'show this message',
       })
     })
   })

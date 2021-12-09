@@ -7,14 +7,8 @@ describe('Reception', () => {
 
   beforeEach(() => {
     barcodes = 'TRAC-1\nTRAC-2\nTRAC-3\nTRAC-4\nTRAC-5'
-    wrapper = mount(Reception, { localVue, router })
+    wrapper = mount(Reception, { localVue, router, store })
     reception = wrapper.vm
-  })
-
-  describe('alert', () => {
-    it('has a alert', () => {
-      expect(wrapper.findComponent({ ref: 'alert' }).exists()).toBeTruthy()
-    })
   })
 
   describe('scanning in barcodes', () => {
@@ -99,9 +93,10 @@ describe('Reception', () => {
 
   describe('#showAlert', () => {
     it('passes the message to function on emit event', () => {
-      reception.showAlert('show this message')
-      wrapper.vm.$nextTick(() => {
-        expect(wrapper.findComponent({ ref: 'alert' }).html()).toMatch('show this message')
+      reception.showAlert('show this message', 'danger')
+      expect(store.state.traction.messages).toContainEqual({
+        type: 'danger',
+        message: 'show this message',
       })
     })
   })

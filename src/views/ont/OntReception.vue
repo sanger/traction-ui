@@ -1,7 +1,5 @@
 <template>
   <div class="reception">
-    <alert ref="alert"></alert>
-
     <b-modal v-model="busy" hide-footer hide-header no-close-on-backdrop>
       <spinner size="huge" message="Importing plates..."></spinner>
     </b-modal>
@@ -31,7 +29,6 @@
 </template>
 
 <script>
-import Alert from '@/components/Alert'
 import Helper from '@/mixins/Helper'
 import { getPlates, transformPlates, OntSample } from '@/services/Sequencescape'
 import CREATE_PLATE_WITH_SAMPLES from '@/graphql/queries/CreatePlateWithSamples.mutation.gql'
@@ -41,7 +38,6 @@ import Api from '@/mixins/Api'
 export default {
   name: 'Reception',
   components: {
-    Alert,
     Spinner,
   },
   mixins: [Helper, Api],

@@ -1,7 +1,5 @@
 <template>
   <div>
-    <alert ref="alert"></alert>
-
     <b-form-group
       label="Filter"
       label-cols-sm="1"
@@ -105,7 +103,6 @@
 </template>
 
 <script>
-import Alert from '@/components/Alert'
 import Helper from '@/mixins/Helper'
 import TableHelper from '@/mixins/TableHelper'
 import truncate from 'lodash-es/truncate'
@@ -113,9 +110,6 @@ import { mapActions, mapGetters } from 'vuex'
 
 export default {
   name: 'SaphyrRuns',
-  components: {
-    Alert,
-  },
   mixins: [Helper, TableHelper],
   props: {},
   data() {

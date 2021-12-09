@@ -17,8 +17,6 @@
       :static="isStatic"
       scrollable
     >
-      <alert ref="alert"></alert>
-
       <b-form id="libraryCreateModal">
         <b-form-group id="selected-sample" label="The sample selected for this library is:">
           {{ selectedSample.sample_name }} ({{ selectedSample.source_identifier }})
@@ -107,7 +105,6 @@
 
 <script>
 import Api from '@/mixins/Api'
-import Alert from '@/components/Alert'
 import Helper from '@/mixins/Helper'
 import ModalHelper from '@/mixins/ModalHelper'
 import * as consts from '@/consts/consts'
@@ -115,9 +112,6 @@ import { mapActions, mapGetters } from 'vuex'
 
 export default {
   name: 'PacbioLibraryCreate',
-  components: {
-    Alert,
-  },
   mixins: [Api, Helper, ModalHelper],
   props: {
     disabled: Boolean,

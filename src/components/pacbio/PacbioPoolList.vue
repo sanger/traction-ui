@@ -1,6 +1,5 @@
 <template>
   <div class="pools">
-    <alert ref="alert"></alert>
     <b-list-group class="list-group">
       <tube v-for="pool in pools" :key="pool.id" v-bind="pool"> </tube>
     </b-list-group>
@@ -12,14 +11,12 @@ import Helper from '@/mixins/Helper'
 import TableHelper from '@/mixins/TableHelper'
 import { createNamespacedHelpers } from 'vuex'
 import Tube from '@/components/pacbio/PacbioPoolTubeItem'
-import Alert from '@/components/Alert'
 const { mapActions, mapGetters } = createNamespacedHelpers('traction/pacbio/pools')
 
 export default {
   name: 'PacbioPoolList',
   components: {
     Tube,
-    Alert,
   },
   mixins: [Helper, TableHelper],
   data() {

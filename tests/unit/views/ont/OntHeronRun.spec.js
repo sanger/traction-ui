@@ -42,10 +42,6 @@ describe('OntHeronRun.vue', () => {
     it('has a OntRunLibrariesList component', () => {
       expect(wrapper.findComponent({ ref: 'ontRunLibrariesList' })).toBeTruthy()
     })
-
-    it('has a Alert component', () => {
-      expect(wrapper.findComponent({ ref: 'alert' })).toBeTruthy()
-    })
   })
 
   describe('ONT Flowcells', () => {

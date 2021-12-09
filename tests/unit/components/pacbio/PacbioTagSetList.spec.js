@@ -63,8 +63,10 @@ describe('PacbioTagSetList', () => {
     })
 
     it('should show an appropriate message', () => {
-      const errorMessage = wrapper.find('[data-type=error-message]')
-      expect(errorMessage.text()).toMatch('Bad stuff happened')
+      expect(store.state.traction.messages).toContainEqual({
+        type: 'danger',
+        message: 'Bad stuff happened',
+      })
     })
   })
 })

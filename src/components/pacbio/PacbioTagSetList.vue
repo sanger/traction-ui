@@ -8,19 +8,13 @@
       :options="options"
       @change="updateSelected"
     ></b-form-select>
-    <div>
-      <alert ref="alert"></alert>
-    </div>
   </b-col>
 </template>
 
 <script>
 import Helper from '@/mixins/Helper'
-import Alert from '@/components/Alert'
-
 export default {
   name: 'PacbioTagSetList',
-  components: { Alert },
   mixins: [Helper],
   computed: {
     isEmpty() {

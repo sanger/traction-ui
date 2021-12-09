@@ -1,7 +1,5 @@
 <template>
   <div>
-    <alert ref="alert"></alert>
-
     <b-form-group
       label="Filter"
       label-cols-sm="1"
@@ -89,7 +87,6 @@
 <script>
 import Helper from '@/mixins/Helper'
 import TableHelper from '@/mixins/TableHelper'
-import Alert from '@/components/Alert'
 import PrinterModal from '@/components/PrinterModal'
 import * as consts from '@/consts/consts'
 import { createNamespacedHelpers } from 'vuex'
@@ -98,7 +95,6 @@ const { mapActions, mapGetters } = createNamespacedHelpers('traction/saphyr/tube
 export default {
   name: 'SaphyrLibraries',
   components: {
-    Alert,
     PrinterModal,
   },
   mixins: [Helper, TableHelper],

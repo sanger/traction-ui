@@ -2,8 +2,6 @@
   <b-modal ref="well-modal" size="lg">
     <template v-slot:modal-title :position="position"> Add Pool to Well: {{ position }} </template>
 
-    <alert ref="alert"></alert>
-
     <b-form>
       <b-form-group id="movieTime-group" label="Movie time:" label-for="movieTime">
         <b-form-select
@@ -122,14 +120,10 @@
 
 <script>
 import { mapMutations, mapGetters, mapActions } from 'vuex'
-import Alert from '@/components/Alert'
 import Helper from '@/mixins/Helper'
 
 export default {
   name: 'WellModal',
-  components: {
-    Alert,
-  },
   mixins: [Helper],
   props: {
     position: {

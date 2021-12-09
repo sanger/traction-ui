@@ -1,7 +1,5 @@
 <template>
   <div>
-    <alert ref="alert"></alert>
-
     <b-form-group
       label="Filter"
       label-cols-sm="1"
@@ -113,16 +111,12 @@
 </template>
 
 <script>
-import Alert from '@/components/Alert'
 import Helper from '@/mixins/Helper'
 import TableHelper from '@/mixins/TableHelper'
 import { mapActions, mapGetters } from 'vuex'
 
 export default {
   name: 'PacbioRuns',
-  components: {
-    Alert,
-  },
   mixins: [Helper, TableHelper],
   data() {
     return {
