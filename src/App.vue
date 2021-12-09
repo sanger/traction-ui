@@ -13,6 +13,7 @@
       ref="alert"
       :key="index"
       v-bind="message"
+      @dismissed="dismiss(index)"
     ></Message>
     <router-view />
     <InfoFooter></InfoFooter>
@@ -34,6 +35,11 @@ export default {
     },
     messages() {
       return this.$store.getters['traction/messages']
+    },
+  },
+  methods: {
+    dismiss(messageIndex) {
+      this.$store.commit('traction/removeMessage', messageIndex)
     },
   },
 }

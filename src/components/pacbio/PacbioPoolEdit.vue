@@ -1,6 +1,5 @@
 <template>
   <b-col data-type="pool">
-    <alert ref="alert" data-type="pool-create-message"></alert>
     <h3>Pooled Samples</h3>
     <b-row>
       <b-col>

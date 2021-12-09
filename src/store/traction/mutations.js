@@ -11,6 +11,9 @@ const mutations = {
   addMessage(state, message) {
     state.messages.push(message)
   },
+  removeMessage(state, messageIndex) {
+    state.messages.splice(messageIndex, 1)
+  },
 }
 
 export default mutations

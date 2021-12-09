@@ -1,6 +1,6 @@
 <template>
   <div>
-    <b-alert :variant="type" :data-type="dataType" dismissible show @dismissed="dismiss">
+    <b-alert :variant="type" :data-type="dataType" dismissible show @dismissed="dismiss()">
       {{ message }}
     </b-alert>
   </div>
@@ -27,7 +27,9 @@ export default {
     },
   },
   methods: {
-    dismiss() {},
+    dismiss() {
+      this.$emit('dismissed')
+    },
   },
 }
 </script>

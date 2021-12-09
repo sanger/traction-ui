@@ -7,7 +7,7 @@ export default {
      * @param {string} type the variant (colour) of the alert
      */
     showAlert(message, type, dataType) {
-      this.$store.commit('traction/addMessage', { type, message, dataType })
+      this.$store.commit('traction/addMessage', { type, message: String(message), dataType })
     },
   },
 }
