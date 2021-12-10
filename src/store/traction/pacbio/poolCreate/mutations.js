@@ -115,9 +115,9 @@ export default {
    * @param {Object} state The VueXState object
    * @param {Object.{}} library The library data to update
    */
-  updateLibrary: ({ libraries }, { pacbio_request_id, ...attributes }) => {
-    const key = `_${pacbio_request_id}`
-    Vue.set(libraries, key, Object.assign({}, libraries[key], attributes))
+  updateLibrary: ({ libraries }, library) => {
+    const key = `_${library.pacbio_request_id}`
+    Vue.set(libraries, key, Object.assign({}, libraries[key], library))
   },
   // This method clears the editable data in the pool/new page
   clearPoolData: (state) => {

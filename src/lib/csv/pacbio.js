@@ -65,7 +65,7 @@ const filterUndefinedValues = (record) =>
  * Column headers are assumed to be provided in the first row
  * Each record will have keys corresponding to each
  */
-const eachRecord = (csv, callback) =>
+const eachRecord = (csv, callback) => {
   parse(csv, {
     bom: true, // Strip any byte-order-markers
     delimiter: ',',
@@ -73,8 +73,10 @@ const eachRecord = (csv, callback) =>
     skip_records_with_empty_values: true,
     skip_empty_lines: true,
     trim: true,
+    info: true,
     cast,
     onRecord: filterUndefinedValues,
   }).forEach(callback)
+}
 
 export { eachRecord }

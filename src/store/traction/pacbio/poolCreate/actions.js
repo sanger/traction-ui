@@ -4,6 +4,16 @@ import { handleResponse } from '@/api/ResponseHelper'
 import { wellFor, wellToIndex } from './wellHelpers'
 
 const sourceRegex = /^(?<barcode>\w+)-(?<wellName>\w[0-9]{1,2})$/
+const errorFor = ({ lines, records }, message) => `Library ${records} on line ${lines}: ${message}`
+const csvLogger = (commit, info, level) => (message) =>
+  commit(
+    'traction/addMessage',
+    {
+      type: level,
+      message: errorFor(info, message),
+    },
+    { root: true },
+  )
 
 // Actions handle asynchronous update of state, via mutations.
 // Note: The { commit } in the given example is destucturing
@@ -178,22 +188,47 @@ export default {
    * @param state the vuex state object. Provides access to current state
    * @param commit the vuex commit object. Provides access to mutations
    */
-  updateLibraryFromCsvRecord: ({ state, commit, getters }, { source, tag, ...attributes }) => {
-    const {
-      resources: { plates, wells },
-    } = state
-    const {
-      groups: { barcode, wellName },
-    } = source.match(sourceRegex)
+  updateLibraryFromCsvRecord: (
+    {
+      state: {
+        resources: { plates, wells },
+        libraries,
+      },
+      commit,
+      getters,
+    },
+    { record: { source, tag, ...attributes }, info },
+  ) => {
+    const error = csvLogger(commit, info, 'danger')
+    if (!source) return error('has no source')
 
-    const tagAttributes = tag
-      ? { tag_id: getters.selectedTagSet.tags.find(({ group_id }) => group_id === tag).id }
-      : {}
+    const match = source.match(sourceRegex)
+
+    if (!match) return error(`${source} should be in the format barcode-well. Eg. DN123S-A1`)
+
+    const { barcode, wellName } = match.groups
 
     const plate = Object.values(plates).find((plate) => plate.barcode == barcode)
+    if (!plate) return error(`${barcode} could not be found`)
+    // Ensure the plate is registered as selected
+    commit('selectPlate', { id: plate.id, selected: true })
+
     const wellId = plate.wells.find((well_id) => wells[well_id].position == wellName)
+    if (!wellId) return error(`A well named ${wellName} could not be found on ${barcode}`)
+
+    const tagAttributes = {}
+    if (tag) {
+      const matchedTag = getters.selectedTagSet.tags.find(({ group_id }) => group_id === tag)
+      if (!matchedTag) return error(`Could not find a tag named ${tag} in selected tag group`)
+
+      tagAttributes.tag_id = matchedTag.id
+    }
 
     wells[wellId].requests.forEach((pacbio_request_id) => {
+      if (!libraries[`_${pacbio_request_id}`]) {
+        // We're adding a library
+        csvLogger(commit, info, 'info')(`Added ${source} to pool`)
+      }
       commit('updateLibrary', { pacbio_request_id, ...tagAttributes, ...attributes })
     })
   },

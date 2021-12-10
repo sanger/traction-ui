@@ -141,9 +141,6 @@ export default {
         this.busy = false
       })
     },
-    showAlert(message, type) {
-      this.$store.commit('traction/addMessage', { type, message, dataType: 'pool-create-message' })
-    },
     async uploadFile(newFile) {
       if (newFile === null) {
         this.parsedFile = null
@@ -152,10 +149,11 @@ export default {
 
       try {
         const csv = await newFile.text()
-        eachRecord(csv, (record) => this.updateLibraryFromCsvRecord(record))
+        eachRecord(csv, this.updateLibraryFromCsvRecord)
         this.parsedFile = true
       } catch (error) {
-        this.showAlert(error, 'danger')
+        console.error(error)
+        this.showAlert(error, 'danger', 'pool-create-message')
         this.parsedFile = false
       }
     },
