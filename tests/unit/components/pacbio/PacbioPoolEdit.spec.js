@@ -1,5 +1,6 @@
 import { mount, localVue, store } from 'testHelper'
 import PacbioPoolEdit from '@/components/pacbio/PacbioPoolEdit'
+import * as pacbio from '@/lib/csv/pacbio'
 
 describe('pacbioPoolEdit#new', () => {
   const pool = {
@@ -123,6 +124,36 @@ describe('pacbioPoolEdit#edit', () => {
     it('does not have a create pool button', () => {
       const button = wrapper.find('[data-action=create-pool]')
       expect(button.exists()).toBe(false)
+    })
+  })
+
+  describe('uploadFile', () => {
+    const spy = jest.spyOn(pacbio, 'eachRecord')
+    const mockFile = {
+      async text() {},
+    }
+    it('supports no files being selected', async () => {
+      await wrapper.vm.uploadFile(null)
+      const formField = wrapper.findComponent({ ref: 'qc-file-form-field' })
+      expect(formField.props().state).toEqual(null)
+    })
+
+    it('highlights a valid file', async () => {
+      spy.mockImplementation(() => {})
+      await wrapper.vm.uploadFile(mockFile)
+      const formField = wrapper.findComponent({ ref: 'qc-file-form-field' })
+      expect(formField.props().state).toEqual(true)
+    })
+
+    it('highlights a invalid file', async () => {
+      spy.mockImplementation(() => {
+        throw 'Toys'
+      })
+      await wrapper.vm.uploadFile(mockFile)
+      const formField = wrapper.findComponent({
+        ref: 'qc-file-form-field',
+      })
+      expect(formField.props().state).toEqual(false)
     })
   })
 })

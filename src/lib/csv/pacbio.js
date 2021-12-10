@@ -28,9 +28,21 @@ const normaliseHeader = (header) =>
 /**
  * Converts an array of headers to match parameter names in the store
  * @param {Array<String>} headers the headers to convert
- * @return {String} the converted headers
+ * @return {Array<String>} the converted headers
  */
 const normaliseHeaders = (headers) => headers.map(normaliseHeader)
+
+/**
+ * Validate Headers
+ * @param {Array<String>} headers the headers to convert
+ * @return {Array<String>} the converted headers
+ */
+const validateHeaders = (normaliser) => (unormalizedHeaders) => {
+  const headers = normaliser(unormalizedHeaders)
+  if (headers.includes('source')) return headers
+
+  throw `Could not find a 'source' header in ${headers}`
+}
 
 const cast = (value, context) => {
   if (context.header) return value
@@ -57,7 +69,7 @@ const eachRecord = (csv, callback) =>
   parse(csv, {
     bom: true, // Strip any byte-order-markers
     delimiter: ',',
-    columns: normaliseHeaders,
+    columns: validateHeaders(normaliseHeaders),
     skip_records_with_empty_values: true,
     skip_empty_lines: true,
     trim: true,

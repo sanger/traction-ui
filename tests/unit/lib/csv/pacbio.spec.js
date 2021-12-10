@@ -62,4 +62,19 @@ describe('eachRecord', () => {
       expect.anything(),
     )
   })
+
+  it('throws an exception if source column is missing', () => {
+    const csv = fs.readFileSync('./tests/data/csv/pacbio-missing-source.csv', 'utf8')
+    const callback = jest.fn()
+    let thrownErrorMessage
+    try {
+      eachRecord(csv, callback)
+    } catch (error) {
+      thrownErrorMessage = String(error)
+    }
+    expect(callback).not.toHaveBeenCalled()
+    expect(thrownErrorMessage).toEqual(
+      "Could not find a 'source' header in tag,genome_size,insert_size,concentration,volume",
+    )
+  })
 })

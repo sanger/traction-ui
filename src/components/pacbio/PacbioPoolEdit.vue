@@ -10,12 +10,13 @@
       <b-col>
         <b-form-file
           id="qcFileInput"
-          v-model="uploadedFile"
-          :state="Boolean(uploadedFile)"
+          ref="qc-file-form-field"
+          :state="parsedFile"
           placeholder="Choose a file or drop it here..."
           drop-placeholder="Drop file here..."
           accept="text/csv, .csv"
           size="sm"
+          @input="uploadFile"
         ></b-form-file>
       </b-col>
     </b-row>
@@ -111,7 +112,7 @@ export default {
     return {
       busy: false,
       autoTag: false,
-      uploadedFile: null,
+      parsedFile: null,
     }
   },
   computed: {
@@ -120,13 +121,6 @@ export default {
       return !!this.poolItem.id
     },
   },
-  watch: {
-    async uploadedFile(newFile) {
-      const csv = await newFile.text()
-      eachRecord(csv, (record) => this.updateLibraryFromCsvRecord(record))
-    },
-  },
-  mounted() {},
   methods: {
     ...mapActions(['createPool', 'updatePool', 'updateLibraryFromCsvRecord']),
     create() {
@@ -149,6 +143,21 @@ export default {
     },
     showAlert(message, type) {
       this.$store.commit('traction/addMessage', { type, message, dataType: 'pool-create-message' })
+    },
+    async uploadFile(newFile) {
+      if (newFile === null) {
+        this.parsedFile = null
+        return
+      }
+
+      try {
+        const csv = await newFile.text()
+        eachRecord(csv, (record) => this.updateLibraryFromCsvRecord(record))
+        this.parsedFile = true
+      } catch (error) {
+        this.showAlert(error, 'danger')
+        this.parsedFile = false
+      }
     },
   },
 }
