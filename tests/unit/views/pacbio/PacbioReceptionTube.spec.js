@@ -100,7 +100,7 @@ describe('Reception', () => {
   describe('#showAlert', () => {
     it('passes the message to function on emit event', () => {
       reception.showAlert('show this message', 'danger')
-      expect(store.state.traction.messages).toContainEqual({
+      expect(Object.values(store.state.traction.messages)).toContainEqual({
         type: 'danger',
         message: 'show this message',
       })

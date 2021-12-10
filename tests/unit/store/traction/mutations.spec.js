@@ -44,11 +44,11 @@ describe('updateRun', () => {
 
 describe('addMessage', () => {
   it('adds a message', () => {
-    const state = { messages: [{ type: 'Alert', message: 'Existing' }] }
+    const state = { messages: { 1: { type: 'Alert', message: 'Existing' } } }
 
     mutations.addMessage(state, { type: 'info', message: 'New message' })
 
-    expect(state.messages).toEqual([
+    expect(Object.values(state.messages)).toEqual([
       { type: 'Alert', message: 'Existing' },
       { type: 'info', message: 'New message' },
     ])

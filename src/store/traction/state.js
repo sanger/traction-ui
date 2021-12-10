@@ -1,6 +1,6 @@
 const state = {
   tractionTags: [],
-  messages: [],
+  messages: {},
 }
 
 export default state

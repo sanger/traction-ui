@@ -219,7 +219,7 @@ describe('Runs.vue', () => {
   describe('#showAlert', () => {
     it('emits an event with the message', () => {
       runs.showAlert('show this message', 'danger')
-      expect(store.state.traction.messages).toContainEqual({
+      expect(Object.values(store.state.traction.messages)).toContainEqual({
         type: 'danger',
         message: 'show this message',
       })

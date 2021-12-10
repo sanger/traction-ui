@@ -63,7 +63,7 @@ describe('PacbioTagSetList', () => {
     })
 
     it('should show an appropriate message', () => {
-      expect(store.state.traction.messages).toContainEqual({
+      expect(Object.values(store.state.traction.messages)).toContainEqual({
         type: 'danger',
         message: 'Bad stuff happened',
       })

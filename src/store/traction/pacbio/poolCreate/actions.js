@@ -219,9 +219,11 @@ export default {
     const tagAttributes = {}
     if (tag) {
       const matchedTag = getters.selectedTagSet.tags.find(({ group_id }) => group_id === tag)
-      if (!matchedTag) return error(`Could not find a tag named ${tag} in selected tag group`)
-
-      tagAttributes.tag_id = matchedTag.id
+      if (matchedTag) {
+        tagAttributes.tag_id = matchedTag.id
+      } else {
+        error(`Could not find a tag named ${tag} in selected tag group`)
+      }
     }
 
     wells[wellId].requests.forEach((pacbio_request_id) => {

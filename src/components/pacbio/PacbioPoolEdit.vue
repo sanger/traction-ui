@@ -127,8 +127,12 @@ export default {
       this.busy = true
       this.createPool().then(({ success, barcode, errors }) => {
         success
-          ? this.showAlert(`Pool successfully created with barcode ${barcode}`, 'success')
-          : this.showAlert(errors, 'danger')
+          ? this.showAlert(
+              `Pool successfully created with barcode ${barcode}`,
+              'success',
+              'pool-create-message',
+            )
+          : this.showAlert(errors, 'danger', 'pool-create-message')
         this.busy = false
       })
     },
@@ -136,8 +140,8 @@ export default {
       this.busy = true
       this.updatePool().then(({ success, errors }) => {
         success
-          ? this.showAlert(`Pool successfully updated`, 'success')
-          : this.showAlert(errors, 'danger')
+          ? this.showAlert(`Pool successfully updated`, 'success', 'pool-create-message')
+          : this.showAlert(errors, 'danger', 'pool-create-message')
         this.busy = false
       })
     },

@@ -150,7 +150,7 @@ describe('Run.vue', () => {
   describe('#showAlert', () => {
     it('emits an event with the message', () => {
       saphyrRun.showAlert('show this message', 'success')
-      expect(store.state.traction.messages).toContainEqual({
+      expect(Object.values(store.state.traction.messages)).toContainEqual({
         type: 'success',
         message: 'show this message',
       })
