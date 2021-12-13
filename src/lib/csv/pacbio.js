@@ -19,11 +19,7 @@ const castFor = (column) => columnCasting[column] || castString
  * @param {String} header the header to convert
  * @return {String} the converted header
  */
-const normaliseHeader = (header) =>
-  header
-    .trim()
-    .toLocaleLowerCase()
-    .replace(/\s+/g, '_')
+const normaliseHeader = (header) => header.trim().toLocaleLowerCase().replace(/\s+/g, '_')
 
 /**
  * Converts an array of headers to match parameter names in the store

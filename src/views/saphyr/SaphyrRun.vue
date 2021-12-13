@@ -31,9 +31,8 @@
 import Chip from '@/components/saphyr/SaphyrChip'
 import Helper from '@/mixins/Helper'
 import { createNamespacedHelpers } from 'vuex'
-const { mapGetters, mapActions, mapState, mapMutations } = createNamespacedHelpers(
-  'traction/saphyr/runs',
-)
+const { mapGetters, mapActions, mapState, mapMutations } =
+  createNamespacedHelpers('traction/saphyr/runs')
 
 export default {
   name: 'SaphyrRun',

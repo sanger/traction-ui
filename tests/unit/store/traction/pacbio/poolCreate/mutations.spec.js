@@ -49,31 +49,31 @@ describe('mutations.js', () => {
   describe('selectTagSet', () => {
     it('updates the state', () => {
       const tagSets = {
-        '1': {
+        1: {
           'id:': '1',
           name: 'tagSet1',
           tags: ['1', '2'],
         },
-        '2': {
+        2: {
           'id:': '2',
           name: 'tagSet2',
         },
       }
 
       const tags = {
-        '1': {
+        1: {
           id: '1',
           name: 'tag1',
         },
-        '2': {
+        2: {
           id: '2',
           name: 'tag2',
         },
-        '3': {
+        3: {
           id: '3',
           name: 'tag3',
         },
-        '4': {
+        4: {
           id: '4',
           name: 'tag4',
         },
@@ -208,8 +208,8 @@ describe('mutations.js', () => {
         resources: {
           ...initialState.resources,
           requests: {
-            '1': {},
-            '136': {},
+            1: {},
+            136: {},
           },
         },
       }
@@ -217,7 +217,7 @@ describe('mutations.js', () => {
       populateRequests(state, requests)
       // assert result
       expect(state.resources.requests).toEqual({
-        '1': {},
+        1: {},
         ...dataToObjectById({ data: requests, includeRelationships: true }),
       })
     })

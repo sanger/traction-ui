@@ -12,10 +12,7 @@ describe('Pacbio Pool Create', () => {
   it('Creates a pool successfully', () => {
     cy.visit('#/pacbio/pool/new')
     cy.contains('Pool')
-    cy.get('[data-type=labware-list]')
-      .find('[data-action=select-labware]')
-      .first()
-      .click()
+    cy.get('[data-type=labware-list]').find('[data-action=select-labware]').first().click()
     cy.get('[data-input=labware-find]').type('DN814567Q{enter}')
 
     cy.get('[data-type=plate-item]').should('have.length', 2)
@@ -26,9 +23,7 @@ describe('Pacbio Pool Create', () => {
     //TODO: add at least one more sample
     cy.get('[data-type=selected-plate-list]').within(() => {
       cy.get('[data-type=plate-item]').first()
-      cy.get('ellipse')
-        .first()
-        .click()
+      cy.get('ellipse').first().click()
     })
     cy.get('[data-type=pool-library-edit]').should('have.length', 1)
     // and samples that have failed qc should not be selectable
@@ -56,19 +51,14 @@ describe('Pacbio Pool Create', () => {
     cy.get('[data-action=create-pool').click()
     cy.contains('[data-type=pool-create-message]', 'Pool successfully created')
     cy.fixture('tractionPacbioSinglePoolCreate').then(({ data }) => {
-      cy.wait('@postPayload')
-        .its('request.body')
-        .should('deep.equal', data)
+      cy.wait('@postPayload').its('request.body').should('deep.equal', data)
     })
   })
 
   it('Will not create a pool if there is an error', () => {
     cy.visit('#/pacbio/pool/new')
     cy.contains('Pool')
-    cy.get('[data-type=labware-list]')
-      .find('button')
-      .first()
-      .click()
+    cy.get('[data-type=labware-list]').find('button').first().click()
     cy.get('[data-input=labware-find]').type('DN814567Q{enter}')
 
     cy.get('[data-type=plate-item]').should('have.length', 2)
@@ -78,9 +68,7 @@ describe('Pacbio Pool Create', () => {
 
     cy.get('[data-type=selected-plate-list]').within(() => {
       cy.get('[data-type=plate-item]').first()
-      cy.get('ellipse')
-        .first()
-        .click()
+      cy.get('ellipse').first().click()
     })
     cy.get('[data-type=pool-library-edit]').should('have.length', 1)
     cy.get('[data-type=pool-library-edit]').within(() => {
@@ -107,10 +95,7 @@ describe('Pacbio Pool Create', () => {
   it('can automate creation of large pools', () => {
     cy.visit('#/pacbio/pool/new')
     cy.contains('Pool')
-    cy.get('[data-type=labware-list]')
-      .find('[data-action=select-labware]')
-      .first()
-      .click()
+    cy.get('[data-type=labware-list]').find('[data-action=select-labware]').first().click()
     cy.get('[data-input=labware-find]').type('DN814567Q{enter}')
 
     cy.get('[data-type=plate-item]').should('have.length', 2)
@@ -210,10 +195,7 @@ describe('Pacbio Pool Create', () => {
   it('can populate tags from csv', () => {
     cy.visit('#/pacbio/pool/new')
     cy.contains('Pool')
-    cy.get('[data-type=labware-list]')
-      .find('[data-action=select-labware]')
-      .first()
-      .click()
+    cy.get('[data-type=labware-list]').find('[data-action=select-labware]').first().click()
     cy.get('[data-input=labware-find]').type('DN814567Q{enter}')
 
     cy.get('[data-type=plate-item]').should('have.length', 2)

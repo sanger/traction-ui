@@ -3,27 +3,13 @@
     <b-table-simple>
       <b-thead>
         <b-tr>
-          <b-th>
-            Sample Name
-          </b-th>
-          <b-th>
-            Source
-          </b-th>
-          <b-th>
-            Tag
-          </b-th>
-          <b-th>
-            Template prep kit box barcode
-          </b-th>
-          <b-th>
-            Volume
-          </b-th>
-          <b-th>
-            Concentration
-          </b-th>
-          <b-th>
-            Insert Size
-          </b-th>
+          <b-th> Sample Name </b-th>
+          <b-th> Source </b-th>
+          <b-th> Tag </b-th>
+          <b-th> Template prep kit box barcode </b-th>
+          <b-th> Volume </b-th>
+          <b-th> Concentration </b-th>
+          <b-th> Insert Size </b-th>
         </b-tr>
       </b-thead>
       <b-tbody>

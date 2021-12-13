@@ -20,14 +20,14 @@ describe('getters.js', () => {
   } = getters
 
   const tagSets = {
-    '1': {
+    1: {
       id: '1',
       name: 'tagSet1',
       uuid: 'uuid1',
       pipeline: 'pipeline1',
       tags: [],
     },
-    '2': {
+    2: {
       id: '2',
       name: 'tagSet2',
       uuid: 'uuid2',
@@ -39,13 +39,13 @@ describe('getters.js', () => {
   describe('labwareList', () => {
     it('returns a list of labware resources', () => {
       const plates = {
-        '1': {
+        1: {
           barcode: 'DN1',
           id: '1',
           type: 'plates',
           wells: [],
         },
-        '2': {
+        2: {
           barcode: 'DN2',
           id: '2',
           type: 'plates',
@@ -82,11 +82,11 @@ describe('getters.js', () => {
 
   describe('tagList', () => {
     const tags = {
-      '1': { id: '1', name: 'tag1' },
-      '2': { id: '2', name: 'tag2' },
-      '3': { id: '3', name: 'tag3' },
-      '4': { id: '4', name: 'tag4' },
-      '5': { id: '5', name: 'tag5' },
+      1: { id: '1', name: 'tag1' },
+      2: { id: '2', name: 'tag2' },
+      3: { id: '3', name: 'tag3' },
+      4: { id: '4', name: 'tag4' },
+      5: { id: '5', name: 'tag5' },
     }
 
     it('returns what it does', () => {
@@ -113,7 +113,7 @@ describe('getters.js', () => {
   describe('selectedPlates', () => {
     it('returns what it does', () => {
       const plates = {
-        '1': {
+        1: {
           barcode: 'DN1',
           id: '1',
           type: 'plates',
@@ -168,11 +168,11 @@ describe('getters.js', () => {
 
   describe('wellList', () => {
     const wells = {
-      '1': { id: '1', position: 'A1' },
-      '2': { id: '2', position: 'B1' },
-      '3': { id: '3', position: 'C1' },
-      '4': { id: '4', position: 'D1' },
-      '5': { id: '5', position: 'E1' },
+      1: { id: '1', position: 'A1' },
+      2: { id: '2', position: 'B1' },
+      3: { id: '3', position: 'C1' },
+      4: { id: '4', position: 'D1' },
+      5: { id: '5', position: 'E1' },
     }
 
     it('returns what it does', () => {
@@ -189,11 +189,11 @@ describe('getters.js', () => {
 
   describe('requestList', () => {
     const requests = {
-      '1': { id: '1', name: 'request1' },
-      '2': { id: '2', name: 'request2' },
-      '3': { id: '3', name: 'request3' },
-      '4': { id: '4', name: 'request4' },
-      '5': { id: '5', name: 'request5' },
+      1: { id: '1', name: 'request1' },
+      2: { id: '2', name: 'request2' },
+      3: { id: '3', name: 'request3' },
+      4: { id: '4', name: 'request4' },
+      5: { id: '5', name: 'request5' },
     }
     const libraries = {
       _3: {

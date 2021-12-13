@@ -1,4 +1,4 @@
-mutation($id: ID!, $flowcells: [FlowcellInput!]) {
+mutation ($id: ID!, $flowcells: [FlowcellInput!]) {
   updateOntRun(input: { id: $id, properties: { flowcells: $flowcells } }) {
     run {
       id

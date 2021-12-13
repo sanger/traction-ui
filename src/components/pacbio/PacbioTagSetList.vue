@@ -19,9 +19,9 @@ export default {
       return this.tagSets.length === 0
     },
     tagSets() {
-      return this.$store.getters[
-        'traction/pacbio/poolCreate/tagSetList'
-      ].map(({ id: value, name: text }) => ({ value, text }))
+      return this.$store.getters['traction/pacbio/poolCreate/tagSetList'].map(
+        ({ id: value, name: text }) => ({ value, text }),
+      )
     },
     options() {
       return [{ value: null, text: 'Please select a tag set' }, ...this.tagSets]

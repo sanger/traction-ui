@@ -10,9 +10,9 @@ const libraryAttributes = {
 }
 
 const requests = {
-  '1': { id: 1, well: '1', plate: '1' },
-  '2': { id: 2, well: '2', plate: '1' },
-  '3': { id: 3, well: '3', plate: '1' },
+  1: { id: 1, well: '1', plate: '1' },
+  2: { id: 2, well: '2', plate: '1' },
+  3: { id: 3, well: '3', plate: '1' },
 }
 
 const libraries = {

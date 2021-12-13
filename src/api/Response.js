@@ -33,7 +33,7 @@ class Response {
         .map((key) => {
           return self._errors[key].map((error) => key.concat(' ', error))
         })
-        .reduce(function(a, b) {
+        .reduce(function (a, b) {
           return a.concat(b)
         }, [])
         .join(', '),

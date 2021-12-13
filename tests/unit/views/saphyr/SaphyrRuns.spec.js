@@ -32,13 +32,7 @@ describe('Runs.vue', () => {
 
   describe('sorting', () => {
     it('will sort the runs by created at', () => {
-      expect(
-        wrapper
-          .find('tbody')
-          .findAll('tr')
-          .at(0)
-          .text(),
-      ).toMatch(/TRAC-678/)
+      expect(wrapper.find('tbody').findAll('tr').at(0).text()).toMatch(/TRAC-678/)
     })
   })
 
@@ -57,13 +51,7 @@ describe('Runs.vue', () => {
 
     it('will filter the runs in the table', () => {
       expect(wrapper.find('tbody').findAll('tr').length).toEqual(1)
-      expect(
-        wrapper
-          .find('tbody')
-          .findAll('tr')
-          .at(0)
-          .text(),
-      ).toMatch(/TRAC-123/)
+      expect(wrapper.find('tbody').findAll('tr').at(0).text()).toMatch(/TRAC-123/)
     })
   })
 
@@ -91,13 +79,7 @@ describe('Runs.vue', () => {
       button = wrapper.find('#startRun-6')
       button.trigger('click')
 
-      let runId = wrapper
-        .find('tbody')
-        .findAll('tr')
-        .at(0)
-        .findAll('td')
-        .at(0)
-        .text()
+      let runId = wrapper.find('tbody').findAll('tr').at(0).findAll('td').at(0).text()
       expect(runs.startRun).toBeCalledWith(runId)
     })
   })
@@ -136,13 +118,7 @@ describe('Runs.vue', () => {
       button = wrapper.find('#completeRun-2')
       button.trigger('click')
 
-      let runId = wrapper
-        .find('tbody')
-        .findAll('tr')
-        .at(4)
-        .findAll('td')
-        .at(0)
-        .text()
+      let runId = wrapper.find('tbody').findAll('tr').at(4).findAll('td').at(0).text()
       expect(runs.completeRun).toBeCalledWith(runId)
     })
   })
@@ -181,13 +157,7 @@ describe('Runs.vue', () => {
       button = wrapper.find('#cancelRun-2')
       button.trigger('click')
 
-      let runId = wrapper
-        .find('tbody')
-        .findAll('tr')
-        .at(4)
-        .findAll('td')
-        .at(0)
-        .text()
+      let runId = wrapper.find('tbody').findAll('tr').at(4).findAll('td').at(0).text()
       expect(runs.cancelRun).toBeCalledWith(runId)
     })
   })

@@ -181,13 +181,7 @@ describe('Runs.vue', () => {
 
   describe('sorting', () => {
     it('will sort the runs by created at', () => {
-      expect(
-        wrapper
-          .find('tbody')
-          .findAll('tr')
-          .at(0)
-          .text(),
-      ).toMatch(/Sequel II/)
+      expect(wrapper.find('tbody').findAll('tr').at(0).text()).toMatch(/Sequel II/)
     })
   })
 
@@ -207,13 +201,7 @@ describe('Runs.vue', () => {
 
     it('will filter the runs in the table', () => {
       expect(wrapper.find('tbody').findAll('tr').length).toEqual(1)
-      expect(
-        wrapper
-          .find('tbody')
-          .findAll('tr')
-          .at(0)
-          .text(),
-      ).toMatch(/Sequel I/)
+      expect(wrapper.find('tbody').findAll('tr').at(0).text()).toMatch(/Sequel I/)
     })
   })
 

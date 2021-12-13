@@ -2,7 +2,7 @@ import Well from '@/components/pacbio/PacbioWellItem'
 import { mount, store } from 'testHelper'
 
 const requests = {
-  '1': {
+  1: {
     sample_name: 'Sample1',
     cost_code: '12345',
     source_identifier: 'DN1:A1',

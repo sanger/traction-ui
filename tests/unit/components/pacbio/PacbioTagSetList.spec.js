@@ -2,9 +2,9 @@ import PacbioTagSetList from '@/components/pacbio/PacbioTagSetList'
 import { localVue, mount, store } from 'testHelper'
 
 const tagSets = {
-  '1': { id: '1', name: 'TagSet1', tags: [] },
-  '2': { id: '2', name: 'TagSet2', tags: [] },
-  '3': { id: '3', name: 'TagSet3', tags: [] },
+  1: { id: '1', name: 'TagSet1', tags: [] },
+  2: { id: '2', name: 'TagSet2', tags: [] },
+  3: { id: '3', name: 'TagSet3', tags: [] },
 }
 
 describe('PacbioTagSetList', () => {
