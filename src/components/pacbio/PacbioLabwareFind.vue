@@ -2,7 +2,6 @@
   <b-col>
     <b-form @submit.prevent="handleSubmit()">
       <h3>Find plates</h3>
-      <Alert ref="alert"></Alert>
       <b-form-input
         v-model="enteredLabware"
         data-input="labware-find"
@@ -27,17 +26,11 @@
 </template>
 
 <script>
-import Helper from '@/mixins/Helper'
-import Alert from '@/components/Alert'
 import { createNamespacedHelpers } from 'vuex'
 const { mapMutations, mapActions } = createNamespacedHelpers('traction/pacbio/poolCreate')
 
 export default {
   name: 'PacbioLabwareFind',
-  components: {
-    Alert,
-  },
-  mixins: [Helper],
   data() {
     return {
       enteredLabware: '',

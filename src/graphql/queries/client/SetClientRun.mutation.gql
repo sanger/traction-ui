@@ -1,4 +1,4 @@
-mutation($id: ID!, $flowcells: [Flowcell!]!) {
+mutation ($id: ID!, $flowcells: [Flowcell!]!) {
   setRun(id: $id, flowcells: $flowcells) @client {
     id
     flowcells {

@@ -1,8 +1,26 @@
 <template>
   <b-col data-type="pool">
-    <alert ref="alert" data-type="pool-create-message"></alert>
     <h3>Pooled Samples</h3>
-    <PacbioPoolLibraryList />
+    <b-row>
+      <b-col>
+        <b-form-checkbox v-model="autoTag" name="check-button" switch data-attribute="auto-tagging">
+          Autotagging
+        </b-form-checkbox>
+      </b-col>
+      <b-col>
+        <b-form-file
+          id="qcFileInput"
+          ref="qc-file-form-field"
+          :state="parsedFile"
+          placeholder="Choose a file or drop it here..."
+          drop-placeholder="Drop file here..."
+          accept="text/csv, .csv"
+          size="sm"
+          @input="uploadFile"
+        ></b-form-file>
+      </b-col>
+    </b-row>
+    <PacbioPoolLibraryList :auto-tag="autoTag" />
     <div class="pool-edit" data-type="pool-edit">
       <b-table-simple>
         <b-tr>
@@ -79,20 +97,22 @@
 </template>
 
 <script>
-import Alert from '@/components/Alert'
 import PacbioPoolLibraryList from '@/components/pacbio/PacbioPoolLibraryList'
 import { createNamespacedHelpers } from 'vuex'
+import { eachRecord } from '@/lib/csv/pacbio'
+
 const { mapGetters, mapActions } = createNamespacedHelpers('traction/pacbio/poolCreate')
 
 export default {
   name: 'PoolEdit',
   components: {
     PacbioPoolLibraryList,
-    Alert,
   },
   data() {
     return {
       busy: false,
+      autoTag: false,
+      parsedFile: null,
     }
   },
   computed: {
@@ -101,15 +121,18 @@ export default {
       return !!this.poolItem.id
     },
   },
-  mounted() {},
   methods: {
-    ...mapActions(['createPool', 'updatePool']),
+    ...mapActions(['createPool', 'updatePool', 'updateLibraryFromCsvRecord']),
     create() {
       this.busy = true
       this.createPool().then(({ success, barcode, errors }) => {
         success
-          ? this.$refs.alert.show(`Pool successfully created with barcode ${barcode}`, 'success')
-          : this.$refs.alert.show(errors, 'danger')
+          ? this.showAlert(
+              `Pool successfully created with barcode ${barcode}`,
+              'success',
+              'pool-create-message',
+            )
+          : this.showAlert(errors, 'danger', 'pool-create-message')
         this.busy = false
       })
     },
@@ -117,10 +140,26 @@ export default {
       this.busy = true
       this.updatePool().then(({ success, errors }) => {
         success
-          ? this.$refs.alert.show(`Pool successfully updated`, 'success')
-          : this.$refs.alert.show(errors, 'danger')
+          ? this.showAlert(`Pool successfully updated`, 'success', 'pool-create-message')
+          : this.showAlert(errors, 'danger', 'pool-create-message')
         this.busy = false
       })
+    },
+    async uploadFile(newFile) {
+      if (newFile === null) {
+        this.parsedFile = null
+        return
+      }
+
+      try {
+        const csv = await newFile.text()
+        eachRecord(csv, this.updateLibraryFromCsvRecord)
+        this.parsedFile = true
+      } catch (error) {
+        console.error(error)
+        this.showAlert(error, 'danger', 'pool-create-message')
+        this.parsedFile = false
+      }
     },
   },
 }

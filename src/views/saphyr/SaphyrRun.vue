@@ -1,7 +1,5 @@
 <template>
   <div class="run">
-    <alert ref="alert"></alert>
-
     <router-link :to="{ name: 'SaphyrRuns' }">
       <b-button id="backToRunsButton" class="float-right">Back</b-button>
     </router-link>
@@ -31,20 +29,17 @@
 
 <script>
 import Chip from '@/components/saphyr/SaphyrChip'
-import Alert from '@/components/Alert'
-import Helper from '@/mixins/Helper'
+import PrintHelper from '@/mixins/PrintHelper'
 import { createNamespacedHelpers } from 'vuex'
-const { mapGetters, mapActions, mapState, mapMutations } = createNamespacedHelpers(
-  'traction/saphyr/runs',
-)
+const { mapGetters, mapActions, mapState, mapMutations } =
+  createNamespacedHelpers('traction/saphyr/runs')
 
 export default {
   name: 'SaphyrRun',
   components: {
     Chip,
-    Alert,
   },
-  mixins: [Helper],
+  mixins: [PrintHelper],
   props: {
     id: {
       type: [String, Number],

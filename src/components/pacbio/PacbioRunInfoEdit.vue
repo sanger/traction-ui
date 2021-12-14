@@ -72,14 +72,14 @@
         <b-form-input
           id="default-binding-kit-box-barcode"
           v-b-tooltip.hover
-          style="max-width: 50%;"
+          style="max-width: 50%"
           :value="defaultBindingKitBoxBarcode"
           placeholder="Default Binding Kit Box Barcode for new wells"
           type="text"
           title="Default Binding Kit Box Barcode for new wells"
           @change="setDefaultBindingKitBoxBarcode"
         />
-        <p style="float: left; font-size:12px;">
+        <p style="float: left; font-size: 12px">
           * Non-submitted field, used for providing new wells with a default binding kit box barcode
         </p>
       </b-col>

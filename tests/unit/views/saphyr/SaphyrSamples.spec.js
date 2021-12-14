@@ -1,6 +1,5 @@
 import Samples from '@/views/saphyr/SaphyrSamples'
 import { mount, localVue, store, Data, router } from 'testHelper'
-import Alert from '@/components/Alert'
 import * as consts from '@/consts/consts'
 import Response from '@/api/Response'
 
@@ -16,7 +15,6 @@ describe('Samples.vue', () => {
       store,
       router,
       stubs: {
-        Alert: Alert,
         PrinterModal: true,
         Modal: true,
         EnzymeModal: true,
@@ -24,12 +22,6 @@ describe('Samples.vue', () => {
     })
 
     samples = wrapper.vm
-  })
-
-  describe('alert', () => {
-    it('has a alert', () => {
-      expect(wrapper.findComponent({ ref: 'alert' })).toBeTruthy()
-    })
   })
 
   describe('building the table', () => {
@@ -103,8 +95,9 @@ describe('Samples.vue', () => {
   describe('#showAlert', () => {
     it('passes the message to function on emit event', () => {
       samples.showAlert('show this message', 'danger')
-      wrapper.vm.$nextTick(() => {
-        expect(wrapper.findComponent({ ref: 'alert' }).html()).toMatch('show this message')
+      expect(Object.values(store.state.traction.messages)).toContainEqual({
+        type: 'danger',
+        message: 'show this message',
       })
     })
   })

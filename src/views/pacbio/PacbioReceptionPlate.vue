@@ -56,10 +56,7 @@ export default {
   },
   computed: {
     formattedBarcodes() {
-      return this.barcodes
-        .split('\n')
-        .filter(Boolean)
-        .join(',')
+      return this.barcodes.split('\n').filter(Boolean).join(',')
     },
     isDisabled() {
       return this.barcodes.length === 0 || this.busy

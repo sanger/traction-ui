@@ -2,7 +2,7 @@ import Plate from '@/components/pacbio/PacbioPlateItem'
 import { localVue, mount, store } from 'testHelper'
 
 const plates = {
-  '1': {
+  1: {
     barcode: 'DN1',
     id: '1',
     type: 'plates',
@@ -11,11 +11,11 @@ const plates = {
 }
 
 const wells = {
-  '1': { id: '1', position: 'A1' },
-  '2': { id: '2', position: 'B1' },
-  '3': { id: '3', position: 'C1' },
-  '4': { id: '4', position: 'D1' },
-  '5': { id: '5', position: 'E1' },
+  1: { id: '1', position: 'A1' },
+  2: { id: '2', position: 'B1' },
+  3: { id: '3', position: 'C1' },
+  4: { id: '4', position: 'D1' },
+  5: { id: '5', position: 'E1' },
 }
 
 describe('Plate.vue', () => {

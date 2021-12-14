@@ -16,7 +16,7 @@
         <router-link
           v-for="(route, inner_index) in pipeline.routes"
           :key="inner_index"
-          :to="{ path: '/' + pipeline.name + '/' + route }"
+          :to="{ path: `/${pipeline.name}/${route}` }"
         >
           <b-button variant="outline-primary">{{ humanise(route) }}</b-button>
         </router-link>
@@ -26,17 +26,18 @@
 </template>
 
 <script>
-// TODO: modify Helper to be more descriptive and change it so that we can transform routes correctly.
 import PipelinesConfig from '@/config/PipelinesConfig'
-import Helper from '@/mixins/Helper'
+import { humanise } from '@/lib/stringHumanisation'
 
 export default {
   name: 'Dashboard',
-  mixins: [Helper],
   computed: {
     pipelines() {
       return PipelinesConfig
     },
+  },
+  methods: {
+    humanise,
   },
 }
 </script>

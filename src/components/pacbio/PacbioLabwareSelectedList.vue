@@ -40,7 +40,6 @@
 </template>
 
 <script>
-import Helper from '@/mixins/Helper'
 import Plate from '@/components/pacbio/PacbioPlateItem'
 import { createNamespacedHelpers } from 'vuex'
 import { VueSelecto } from 'vue-selecto'
@@ -55,7 +54,6 @@ export default {
     Plate,
     VueSelecto,
   },
-  mixins: [Helper],
   data() {
     return {
       requestFields: [

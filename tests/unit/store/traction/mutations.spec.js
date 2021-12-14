@@ -41,3 +41,16 @@ describe('updateRun', () => {
     expect(recievedRun.state).toEqual(updatedRun.state)
   })
 })
+
+describe('addMessage', () => {
+  it('adds a message', () => {
+    const state = { messages: { 1: { type: 'Alert', message: 'Existing' } } }
+
+    mutations.addMessage(state, { type: 'info', message: 'New message' })
+
+    expect(Object.values(state.messages)).toEqual([
+      { type: 'Alert', message: 'Existing' },
+      { type: 'info', message: 'New message' },
+    ])
+  })
+})

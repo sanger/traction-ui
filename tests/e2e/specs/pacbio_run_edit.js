@@ -28,14 +28,10 @@ describe('Pacbio Run Edit view', () => {
 
     cy.visit('#/pacbio/runs')
     cy.get('#editRun-7').click()
-    cy.get('ellipse')
-      .first()
-      .click()
+    cy.get('ellipse').first().click()
     cy.get('#movieTime').select('15.0')
     cy.get('#updateBtn').click()
-    cy.get('button')
-      .contains('Update')
-      .click()
+    cy.get('button').contains('Update').click()
   })
 
   it('will not create a run if there is an error', () => {
@@ -52,17 +48,11 @@ describe('Pacbio Run Edit view', () => {
 
     cy.visit('#/pacbio/runs')
     cy.get('#editRun-7').click()
-    cy.get('ellipse')
-      .first()
-      .click()
+    cy.get('ellipse').first().click()
     cy.get('#onPlateLoadingConc').clear()
     cy.get('#updateBtn').click()
-    cy.get('ellipse')
-      .first()
-      .should('have.class', 'filled')
-    cy.get('button')
-      .contains('Update')
-      .click()
+    cy.get('ellipse').first().should('have.class', 'filled')
+    cy.get('button').contains('Update').click()
     cy.contains(
       '[data-type=run-validation-message]',
       "Failed to create run in Traction: on_plate_loading_concentration can't be blank",

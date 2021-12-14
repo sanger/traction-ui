@@ -1,7 +1,5 @@
 <template>
   <div class="pacbio-plates">
-    <alert ref="alert"></alert>
-
     <b-form-group
       label="Filter"
       label-cols-sm="1"
@@ -68,8 +66,6 @@
 </template>
 
 <script>
-import Alert from '@/components/Alert'
-import Helper from '@/mixins/Helper'
 import TableHelper from '@/mixins/TableHelper'
 import Plate from '@/components/plates/PlateItem'
 import { createNamespacedHelpers } from 'vuex'
@@ -78,10 +74,9 @@ const { mapActions, mapGetters } = createNamespacedHelpers('traction/pacbio/plat
 export default {
   name: 'PacbioPlates',
   components: {
-    Alert,
     Plate,
   },
-  mixins: [Helper, TableHelper],
+  mixins: [TableHelper],
   data() {
     return {
       fields: [

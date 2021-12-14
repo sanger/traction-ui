@@ -43,9 +43,7 @@ describe('Pacbio Run Create view', () => {
     const dataTransfer = new DataTransfer()
 
     cy.visit('#/pacbio/runs')
-    cy.get('button')
-      .contains('New Run')
-      .click()
+    cy.get('button').contains('New Run').click()
     cy.get('#sequencing-kit-box-barcode').type('Lxxxxx101826100123199')
     cy.get('#dna-control-complex-box-barcode').type('Lxxxxx101717600123199')
     cy.get('#system-name').select('Sequel IIe')
@@ -65,9 +63,7 @@ describe('Pacbio Run Create view', () => {
     cy.get('#generateHiFi').select('Do Not Generate')
     cy.get('#bindingKitBoxBarcode').type('12345')
     cy.get('#updateBtn').click()
-    cy.get('button')
-      .contains('Create')
-      .click()
+    cy.get('button').contains('Create').click()
     // TODO: we need a success message.
   })
 
@@ -86,9 +82,7 @@ describe('Pacbio Run Create view', () => {
     const dataTransfer = new DataTransfer()
 
     cy.visit('#/pacbio/runs')
-    cy.get('button')
-      .contains('New Run')
-      .click()
+    cy.get('button').contains('New Run').click()
     cy.get('#sequencing-kit-box-barcode').type('Lxxxxx101826100123199')
     cy.get('#dna-control-complex-box-barcode').type('Lxxxxx101717600123199')
     cy.get('#system-name').select('Sequel IIe')
@@ -96,12 +90,8 @@ describe('Pacbio Run Create view', () => {
       .first()
       .trigger('dragstart', { dataTransfer: dataTransfer, force: true })
       .trigger('drag', { dataTransfer: dataTransfer, force: true })
-    cy.get('ellipse')
-      .first()
-      .trigger('drop', { dataTransfer: dataTransfer, force: true })
-    cy.get('button')
-      .contains('Create')
-      .click()
+    cy.get('ellipse').first().trigger('drop', { dataTransfer: dataTransfer, force: true })
+    cy.get('button').contains('Create').click()
     cy.contains(
       '[data-type=run-validation-message]',
       'Failed to create run in Traction: error1 some error',

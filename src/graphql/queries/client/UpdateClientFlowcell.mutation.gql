@@ -1,4 +1,4 @@
-mutation($position: Integer!, $libraryName: String!) {
+mutation ($position: Integer!, $libraryName: String!) {
   updateFlowcell(position: $position, libraryName: $libraryName) @client {
     position
     libraryName
