@@ -112,7 +112,7 @@
 </template>
 
 <script>
-import Helper from '@/mixins/Helper'
+import PrintHelper from '@/mixins/PrintHelper'
 import TableHelper from '@/mixins/TableHelper'
 import PrinterModal from '@/components/PrinterModal'
 import { createNamespacedHelpers } from 'vuex'
@@ -123,7 +123,7 @@ export default {
   components: {
     PrinterModal,
   },
-  mixins: [Helper, TableHelper],
+  mixins: [PrintHelper, TableHelper],
   data() {
     return {
       fields: [

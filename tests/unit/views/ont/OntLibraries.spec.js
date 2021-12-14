@@ -112,17 +112,6 @@ describe('OntLibraries.vue', () => {
     })
   })
 
-  describe('#handlePrint', () => {
-    beforeEach(() => {
-      libraries.handlePrintLabel = jest.fn()
-    })
-
-    it('calls handlePrintLabel', () => {
-      libraries.handlePrint('printer1')
-      expect(libraries.handlePrintLabel).toBeCalledWith('printer1')
-    })
-  })
-
   describe('Delete button', () => {
     let button
     const libraryName = 'aLibraryName'

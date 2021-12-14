@@ -23,11 +23,10 @@
 
 <script>
 import PipelinesConfig from '@/config/PipelinesConfig'
-import Helper from '@/mixins/Helper'
+import { humanise } from '@/lib/stringHumanisation'
 
 export default {
   name: 'PipelineView',
-  mixins: [Helper],
   computed: {
     pipelineInfo() {
       let pipeline = localStorage.getItem('pipeline')
@@ -38,6 +37,7 @@ export default {
     path(route) {
       return '/' + this.pipelineInfo.name + '/' + route
     },
+    humanise,
   },
 }
 </script>

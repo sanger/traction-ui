@@ -112,7 +112,7 @@
 import PacbioLibraryCreate from '@/components/pacbio/PacbioLibraryCreate'
 import PacbioSampleMetadataEdit from '@/components/pacbio/PacbioSampleMetadataEdit'
 import PrinterModal from '@/components/PrinterModal'
-import Helper from '@/mixins/Helper'
+import PrintHelper from '@/mixins/PrintHelper'
 import TableHelper from '@/mixins/TableHelper'
 
 import { createNamespacedHelpers } from 'vuex'
@@ -125,7 +125,7 @@ export default {
     PrinterModal,
     PacbioSampleMetadataEdit,
   },
-  mixins: [Helper, TableHelper],
+  mixins: [PrintHelper, TableHelper],
   data() {
     return {
       fields: [

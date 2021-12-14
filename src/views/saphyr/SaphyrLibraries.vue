@@ -85,7 +85,7 @@
 </template>
 
 <script>
-import Helper from '@/mixins/Helper'
+import PrintHelper from '@/mixins/PrintHelper'
 import TableHelper from '@/mixins/TableHelper'
 import PrinterModal from '@/components/PrinterModal'
 import * as consts from '@/consts/consts'
@@ -97,7 +97,7 @@ export default {
   components: {
     PrinterModal,
   },
-  mixins: [Helper, TableHelper],
+  mixins: [PrintHelper, TableHelper],
   props: {
     pipeline: {
       type: String,
