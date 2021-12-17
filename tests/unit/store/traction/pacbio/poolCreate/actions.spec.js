@@ -309,7 +309,7 @@ describe('actions.js', () => {
       const commit = jest.fn()
       const create = jest.fn()
       const rootState = { api: { traction: { pacbio: { pools: { create } } } } }
-      const libraries = { _1: library1, _2: { ...library2, tag_id: '' } }
+      const libraries = { _1: library1, _2: { ...library2, concentration: '' } }
       const { success, errors } = await createPool({
         commit,
         rootState,
@@ -387,7 +387,7 @@ describe('actions.js', () => {
       const commit = jest.fn()
       const update = jest.fn()
       const rootState = { api: { traction: { pacbio: { pools: { update } } } } }
-      const libraries = { _1: library1, _2: { ...library2, tag_id: '' } }
+      const libraries = { _1: library1, _2: { ...library2, concentration: '' } }
       const { success, errors } = await updatePool({
         commit,
         rootState,

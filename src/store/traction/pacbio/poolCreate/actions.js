@@ -131,7 +131,7 @@ export default {
         requests,
         wells,
         plates = [],
-        tag_sets: [tag_set],
+        tag_sets: [tag_set] = [{}],
         tubes: [tube],
       } = groupIncludedByResource(included)
       commit('populatePoolAttributes', data)
