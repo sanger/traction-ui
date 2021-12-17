@@ -241,7 +241,7 @@ describe('actions.js', () => {
     })
   })
 
-  describe('createPool', async () => {
+  describe('createPool', () => {
     const library1 = {
       pacbio_request_id: '1',
       tag_id: '1',
@@ -321,7 +321,7 @@ describe('actions.js', () => {
     })
   })
 
-  describe('updatePool', async () => {
+  describe('updatePool', () => {
     const library1 = {
       id: '10',
       pacbio_request_id: '1',
