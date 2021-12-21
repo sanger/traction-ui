@@ -152,6 +152,7 @@ describe('pacbioPoolEdit#edit', () => {
     })
 
     it('highlights a invalid file', async () => {
+      jest.spyOn(console, 'error').mockImplementation(() => {})
       spy.mockImplementation(() => {
         throw 'Toys'
       })
