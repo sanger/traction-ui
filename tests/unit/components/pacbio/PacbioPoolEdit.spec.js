@@ -1,6 +1,17 @@
 import { mount, localVue, store } from 'testHelper'
 import PacbioPoolEdit from '@/components/pacbio/PacbioPoolEdit'
+import { newLibrary } from '@/store/traction/pacbio/poolCreate/pool.js'
+import { Data } from 'testHelper'
 import * as pacbio from '@/lib/csv/pacbio'
+
+const buildWrapper = () =>
+  mount(PacbioPoolEdit, {
+    localVue,
+    stubs: {
+      PacbioPoolLibraryList: true,
+    },
+    store,
+  })
 
 describe('pacbioPoolEdit#new', () => {
   const pool = {
@@ -13,10 +24,7 @@ describe('pacbioPoolEdit#new', () => {
 
   let wrapper
   beforeEach(() => {
-    wrapper = mount(PacbioPoolEdit, {
-      localVue,
-      store,
-    })
+    wrapper = buildWrapper()
     store.state.traction.pacbio.poolCreate.pool = pool
   })
 
@@ -78,10 +86,8 @@ describe('pacbioPoolEdit#edit', () => {
   let wrapper
 
   beforeEach(() => {
-    wrapper = mount(PacbioPoolEdit, {
-      localVue,
-      store,
-    })
+    wrapper = buildWrapper()
+    store.state.traction.pacbio.poolCreate.libraries = {}
     store.state.traction.pacbio.poolCreate.pool = pool
     store.state.traction.pacbio.poolCreate.tube = tube
   })
@@ -154,6 +160,32 @@ describe('pacbioPoolEdit#edit', () => {
         ref: 'qc-file-form-field',
       })
       expect(formField.props().state).toEqual(false)
+    })
+  })
+
+  describe('pool type', () => {
+    it('says empty when there are no libraries', async () => {
+      const poolCreateStore = Object.assign({}, Data.AutoTagStore, {
+        libraries: {},
+      })
+      store.state.traction.pacbio.poolCreate = poolCreateStore
+      await localVue.nextTick()
+      expect(wrapper.find('[data-attribute=pool-type]').text()).toContain('Empty')
+    })
+
+    it('says library when there is one library', async () => {
+      const poolCreateStore = Object.assign({}, Data.AutoTagStore, {
+        libraries: { _1: newLibrary({ pacbio_request_id: '1' }) },
+      })
+      store.state.traction.pacbio.poolCreate = poolCreateStore
+      await localVue.nextTick()
+      expect(wrapper.find('[data-attribute=pool-type]').text()).toContain('Library')
+    })
+
+    it('says pool when there are multiple libraries', async () => {
+      store.state.traction.pacbio.poolCreate = Data.AutoTagStore
+      await localVue.nextTick()
+      expect(wrapper.find('[data-attribute=pool-type]').text()).toContain('Pool')
     })
   })
 })

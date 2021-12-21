@@ -1,6 +1,8 @@
 <template>
   <b-col data-type="pool">
-    <h3>Pooled Samples</h3>
+    <h3>
+      Pooled Samples <b-badge data-attribute="pool-type">{{ poolType }}</b-badge>
+    </h3>
     <b-row>
       <b-col>
         <b-form-checkbox v-model="autoTag" name="check-button" switch data-attribute="auto-tagging">
@@ -116,9 +118,19 @@ export default {
     }
   },
   computed: {
-    ...mapGetters(['poolItem', 'tubeItem']),
+    ...mapGetters(['poolItem', 'tubeItem', 'selectedRequests']),
     persisted() {
       return !!this.poolItem.id
+    },
+    poolType() {
+      switch (this.selectedRequests.length) {
+        case 0:
+          return 'Empty'
+        case 1:
+          return 'Library'
+        default:
+          return 'Pool'
+      }
     },
   },
   methods: {
