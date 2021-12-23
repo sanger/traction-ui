@@ -4,29 +4,37 @@
 import store from '@/store'
 import handlePromise from '@/api/PromiseHelper'
 
-const printJob = async (printerName, selected) => {
+const printJob = async (printerName, selected, pipeline) => {
   let request = printMyBarcodeRequest()
-  let payload = createPrintJobJson(printerName, selected)
+  let payload = createPrintJobJson(printerName, selected, pipeline)
   return await postPrintJob(request, payload)
 }
 
+const labelsFor = (pipeline) => (pipeline != 'ont' ? createLabels : createOntLabels)
+const templateIdFor = (pipeline) => store.getters[`traction/${pipeline}/labelTemplateId`]
 const formatDate = () => {
   const [, mmm, dd, yyyy] = new Date().toDateString().split(' ')
   return `${dd}-${mmm}-${yyyy.slice(2)}`
 }
+
+const createPrintJobJson = (printer_name, selected, pipeline) => {
+  let label_template_id = templateIdFor(pipeline)
+  let labels = labelsFor(pipeline)(selected, pipeline)
+
   return {
     data: {
-      attributes: { printer_name: printerName, label_template_id: labelTemplateId, labels: labels },
+      attributes: { printer_name, label_template_id, labels },
     },
   }
 }
 
+const createLabels = (selected, pipeline) => {
   const date = formatDate()
   return {
     body: selected.reduce((result, label) => {
       result.push({
         main_label: {
-          pipeline: getPipeline().toUpperCase(),
+          pipeline: pipeline.toUpperCase(),
           barcode_text: label.barcode,
           date,
           text_1: getTextForSelected(label),
@@ -40,12 +48,13 @@ const formatDate = () => {
   }
 }
 
+const createOntLabels = (selected, pipeline) => {
   const date = formatDate()
   return {
     body: selected.reduce((result, label) => {
       result.push({
         main_label: {
-          pipeline: getPipeline().toUpperCase(),
+          pipeline: pipeline.toUpperCase(),
           barcode_text: label.tubeBarcode,
           date,
           text_1: label.name,
@@ -77,10 +86,6 @@ const postPrintJob = async (request, payload) => {
   return await handlePromise(promise)
 }
 
-const getPipeline = () => {
-  return localStorage.getItem('pipeline')
-}
-
 export {
   printJob,
   createPrintJobJson,
@@ -88,7 +93,6 @@ export {
   getTextForSelected,
   printMyBarcodeRequest,
   postPrintJob,
-  getPipeline,
 }
 
 export default printJob

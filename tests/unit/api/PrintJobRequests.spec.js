@@ -47,7 +47,11 @@ describe('PrintJobRequests', () => {
       request.create.mockResolvedValue(promise)
       let expected = new Response(mockResponse)
 
-      let response = await PrintJobRequests.printJob(printerName, selectedSamples)
+      let response = await PrintJobRequests.printJob(
+        printerName,
+        selectedSamples,
+        consts.PIPELINE_SAPHYR,
+      )
       expect(response).toEqual(expected)
     })
 
@@ -72,7 +76,11 @@ describe('PrintJobRequests', () => {
       request.create.mockResolvedValue(promise)
       let expected = new Response(mockResponse)
 
-      let response = await PrintJobRequests.printJob(printerName, selectedLibraries)
+      let response = await PrintJobRequests.printJob(
+        printerName,
+        selectedLibraries,
+        consts.PIPELINE_ONT,
+      )
       expect(response).toEqual(expected)
     })
 
@@ -93,17 +101,23 @@ describe('PrintJobRequests', () => {
       request.create.mockReturnValue(promise)
       let expected = new Response(mockResponse)
 
-      let response = await PrintJobRequests.printJob(printerName, selectedSamples)
+      let response = await PrintJobRequests.printJob(
+        printerName,
+        selectedSamples,
+        consts.PIPELINE_ONT,
+      )
       expect(response).toEqual(expected)
     })
   })
 
   describe('createPrintJobJson', () => {
     it('return JSON for saphyr pipeline', async () => {
-      localStorage.setItem('pipeline', consts.PIPELINE_SAPHYR)
-
-      let resp = PrintJobRequests.createPrintJobJson(printerName, selectedSamples)
-      let labels = PrintJobRequests.createLabels(selectedSamples)
+      let resp = PrintJobRequests.createPrintJobJson(
+        printerName,
+        selectedSamples,
+        consts.PIPELINE_SAPHYR,
+      )
+      let labels = PrintJobRequests.createLabels(selectedSamples, consts.PIPELINE_SAPHYR)
       let expected = {
         data: {
           attributes: {
@@ -117,10 +131,12 @@ describe('PrintJobRequests', () => {
     })
 
     it('return JSON for pacbio pipeline', async () => {
-      localStorage.setItem('pipeline', consts.PIPELINE_PACBIO)
-
-      let resp = PrintJobRequests.createPrintJobJson(printerName, selectedSamples)
-      let labels = PrintJobRequests.createLabels(selectedSamples)
+      let resp = PrintJobRequests.createPrintJobJson(
+        printerName,
+        selectedSamples,
+        consts.PIPELINE_PACBIO,
+      )
+      let labels = PrintJobRequests.createLabels(selectedSamples, consts.PIPELINE_PACBIO)
       let expected = {
         data: {
           attributes: {
@@ -141,7 +157,7 @@ describe('PrintJobRequests', () => {
       })
 
       it('returns JSON for saphyr samples', async () => {
-        let resp = PrintJobRequests.createLabels(selectedSamples)
+        let resp = PrintJobRequests.createLabels(selectedSamples, consts.PIPELINE_SAPHYR)
         let expectedLabel1 = resp.body[0].main_label
         let expectedLabel2 = resp.body[1].main_label
 
@@ -162,7 +178,7 @@ describe('PrintJobRequests', () => {
       })
 
       it('returns JSON for saphyr libraries', async () => {
-        let resp = PrintJobRequests.createLabels(selectedLibraries)
+        let resp = PrintJobRequests.createLabels(selectedLibraries, consts.PIPELINE_SAPHYR)
         let expectedLabel1 = resp.body[0].main_label
         let expectedLabel2 = resp.body[1].main_label
 
@@ -189,7 +205,7 @@ describe('PrintJobRequests', () => {
       })
 
       it('returns JSON for pacbio samples', async () => {
-        let resp = PrintJobRequests.createLabels(selectedSamples)
+        let resp = PrintJobRequests.createLabels(selectedSamples, consts.PIPELINE_PACBIO)
         let expectedLabel1 = resp.body[0].main_label
         let expectedLabel2 = resp.body[1].main_label
 
@@ -210,7 +226,7 @@ describe('PrintJobRequests', () => {
       })
 
       it('returns JSON for pacbio libraries', async () => {
-        let resp = PrintJobRequests.createLabels(selectedLibraries)
+        let resp = PrintJobRequests.createLabels(selectedLibraries, consts.PIPELINE_PACBIO)
         let expectedLabel1 = resp.body[0].main_label
         let expectedLabel2 = resp.body[1].main_label
 
@@ -259,7 +275,11 @@ describe('PrintJobRequests', () => {
 
     beforeEach(() => {
       request = store.getters.api.printMyBarcode.print_jobs
-      payload = PrintJobRequests.createPrintJobJson(printerName, selectedSamples)
+      payload = PrintJobRequests.createPrintJobJson(
+        printerName,
+        selectedSamples,
+        consts.PIPELINE_PACBIO,
+      )
       request.create = jest.fn()
     })
 
@@ -297,17 +317,6 @@ describe('PrintJobRequests', () => {
       request.create.mockReturnValue(promise)
       let response = await PrintJobRequests.postPrintJob(request, payload)
       expect(response.successful).toBeFalsy()
-    })
-  })
-
-  describe('getPipeline', () => {
-    beforeEach(() => {
-      localStorage.setItem('pipeline', consts.PIPELINE_PACBIO)
-    })
-
-    it('returns the pipeline in local storage', () => {
-      let result = PrintJobRequests.getPipeline()
-      expect(result).toEqual(consts.PIPELINE_PACBIO)
     })
   })
 })

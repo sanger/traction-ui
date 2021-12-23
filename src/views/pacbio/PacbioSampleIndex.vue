@@ -80,7 +80,7 @@
         ref="printerModal"
         class="float-left"
         :disabled="selected.length === 0"
-        @selectPrinter="handlePrintLabel"
+        @selectPrinter="handlePrintLabel('pacbio', $event)"
       >
       </printerModal>
 
