@@ -31,7 +31,8 @@ export default {
   },
   computed: {
     pipeline() {
-      return localStorage.getItem('pipeline')
+      // Merge the route meta attributes and pull out the pipeline
+      return Object.assign({}, ...this.$route.matched.map(({ meta }) => meta)).pipeline
     },
     messages() {
       return this.$store.getters['traction/messages']
