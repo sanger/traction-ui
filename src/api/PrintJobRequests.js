@@ -10,7 +10,7 @@ const printJob = async (printerName, selected, pipeline) => {
   return await postPrintJob(request, payload)
 }
 
-const labelsFor = (pipeline) => (pipeline != 'ont' ? createLabels : createOntLabels)
+const labelsFor = (pipeline) => (pipeline != 'ont' ? baseLabel : ontLabel)
 const templateIdFor = (pipeline) => store.getters[`traction/${pipeline}/labelTemplateId`]
 const formatDate = () => {
   const [, mmm, dd, yyyy] = new Date().toDateString().split(' ')
@@ -19,7 +19,7 @@ const formatDate = () => {
 
 const createPrintJobJson = (printer_name, selected, pipeline) => {
   let label_template_id = templateIdFor(pipeline)
-  let labels = labelsFor(pipeline)(selected, pipeline)
+  let labels = createLabels(selected, pipeline)
 
   return {
     data: {
@@ -28,37 +28,31 @@ const createPrintJobJson = (printer_name, selected, pipeline) => {
   }
 }
 
+const baseLabel = (label) => ({
+  barcode_text: label.barcode,
+  text_1: getTextForSelected(label),
+  barcode: label.barcode,
+})
+
+const ontLabel = (label) => ({
+  barcode_text: label.tubeBarcode,
+  text_1: label.name,
+  barcode: label.tubeBarcode,
+})
+
 const createLabels = (selected, pipelineLower) => {
   const date = formatDate()
   const pipeline = pipelineLower.toUpperCase()
-  return {
-    body: selected.map((label) => ({
-      main_label: {
-        pipeline,
-        barcode_text: label.barcode,
-        date,
-        text_1: getTextForSelected(label),
-        barcode: label.barcode,
-        round_label_top_line: '',
-        round_label_bottom_line: '',
-      },
-    })),
-  }
-}
+  const labelContent = labelsFor(pipelineLower)
 
-const createOntLabels = (selected, pipelineLower) => {
-  const date = formatDate()
-  const pipeline = pipelineLower.toUpperCase()
   return {
     body: selected.map((label) => ({
       main_label: {
         pipeline,
-        barcode_text: label.tubeBarcode,
         date,
-        text_1: label.name,
-        barcode: label.tubeBarcode,
         round_label_top_line: '',
         round_label_bottom_line: '',
+        ...labelContent(label),
       },
     })),
   }
