@@ -29,6 +29,10 @@ export default {
       type: String,
       default: undefined,
     },
+    importText: {
+      type: String,
+      default: 'Import from Sequencescape (where available)',
+    },
   },
   computed: {
     libraryType() {
@@ -39,7 +43,7 @@ export default {
         ...this.$store.state.traction[this.pipeline].libraryTypes,
         {
           value: '_undefined', // undefined gets coerced into null, so we need some magic
-          text: 'Import from Sequencescape (where available)',
+          text: this.importText,
         },
         { value: null, text: 'None' },
       ]

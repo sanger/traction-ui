@@ -13,7 +13,8 @@
                     "external_id": "d5bbd9f8-adba-11eb-ac23-fa163eac3af7",
                     "name": "DTOL10239359",
                     "external_study_id": "cf04ea86-ac82-11e9-8998-68b599768938",
-                    "species": "Apamea scolopacina"
+                    "species": "Apamea scolopacina",
+                    "library_type": null
                   }
                 ]
               },
@@ -24,7 +25,8 @@
                     "external_id": "d5c6414a-adba-11eb-ac23-fa163eac3af7",
                     "name": "DTOL10239360",
                     "external_study_id": "cf04ea86-ac82-11e9-8998-68b599768938",
-                    "species": "Attelabus nitens"
+                    "species": "Attelabus nitens",
+                    "library_type": null
                   }
                 ]
               },
@@ -35,7 +37,8 @@
                     "external_id": "d5cd7ea6-adba-11eb-ac23-fa163eac3af7",
                     "name": "DTOL10239361",
                     "external_study_id": "cf04ea86-ac82-11e9-8998-68b599768938",
-                    "species": "Linnaemya tessellans"
+                    "species": "Linnaemya tessellans",
+                    "library_type": null
                   }
                 ]
               },
@@ -46,7 +49,8 @@
                     "external_id": "d5d4f49c-adba-11eb-ac23-fa163eac3af7",
                     "name": "DTOL10239362",
                     "external_study_id": "cf04ea86-ac82-11e9-8998-68b599768938",
-                    "species": "Physocephala rufipes"
+                    "species": "Physocephala rufipes",
+                    "library_type": null
                   }
                 ]
               },
@@ -57,7 +61,8 @@
                     "external_id": "d5dc5e3a-adba-11eb-ac23-fa163eac3af7",
                     "name": "DTOL10239363",
                     "external_study_id": "cf04ea86-ac82-11e9-8998-68b599768938",
-                    "species": "Pollenia angustigena"
+                    "species": "Pollenia angustigena",
+                    "library_type": null
                   }
                 ]
               },
@@ -68,7 +73,8 @@
                     "external_id": "d5e3641e-adba-11eb-ac23-fa163eac3af7",
                     "name": "DTOL10239364",
                     "external_study_id": "cf04ea86-ac82-11e9-8998-68b599768938",
-                    "species": "Sarcophaga rosellei"
+                    "species": "Sarcophaga rosellei",
+                    "library_type": null
                   }
                 ]
               },
@@ -79,7 +85,8 @@
                     "external_id": "d5eab85e-adba-11eb-ac23-fa163eac3af7",
                     "name": "DTOL10239365",
                     "external_study_id": "cf04ea86-ac82-11e9-8998-68b599768938",
-                    "species": "Spilarctia lutea"
+                    "species": "Spilarctia lutea",
+                    "library_type": null
                   }
                 ]
               },
@@ -90,7 +97,8 @@
                     "external_id": "d5f2448e-adba-11eb-ac23-fa163eac3af7",
                     "name": "DTOL10239366",
                     "external_study_id": "cf04ea86-ac82-11e9-8998-68b599768938",
-                    "species": "Dolichovespula sylvestris"
+                    "species": "Dolichovespula sylvestris",
+                    "library_type": null
                   }
                 ]
               },
@@ -101,7 +109,8 @@
                     "external_id": "d5f977fe-adba-11eb-ac23-fa163eac3af7",
                     "name": "DTOL10239367",
                     "external_study_id": "cf04ea86-ac82-11e9-8998-68b599768938",
-                    "species": "Macropis europaea"
+                    "species": "Macropis europaea",
+                    "library_type": null
                   }
                 ]
               },
@@ -112,7 +121,8 @@
                     "external_id": "d6011b76-adba-11eb-ac23-fa163eac3af7",
                     "name": "DTOL10239368",
                     "external_study_id": "cf04ea86-ac82-11e9-8998-68b599768938",
-                    "species": "Tenthredo notha"
+                    "species": "Tenthredo notha",
+                    "library_type": null
                   }
                 ]
               },
@@ -123,7 +133,8 @@
                     "external_id": "d6084e46-adba-11eb-ac23-fa163eac3af7",
                     "name": "DTOL10239369",
                     "external_study_id": "cf04ea86-ac82-11e9-8998-68b599768938",
-                    "species": "Anatis ocellata"
+                    "species": "Anatis ocellata",
+                    "library_type": null
                   }
                 ]
               },
@@ -134,7 +145,8 @@
                     "external_id": "d60f95b6-adba-11eb-ac23-fa163eac3af7",
                     "name": "DTOL10239370",
                     "external_study_id": "cf04ea86-ac82-11e9-8998-68b599768938",
-                    "species": "Dolomedes fimbriatus"
+                    "species": "Dolomedes fimbriatus",
+                    "library_type": null
                   }
                 ]
               },
@@ -145,7 +157,8 @@
                     "external_id": "d619a01a-adba-11eb-ac23-fa163eac3af7",
                     "name": "DTOL10239371",
                     "external_study_id": "cf04ea86-ac82-11e9-8998-68b599768938",
-                    "species": "Zoropsis spinimana"
+                    "species": "Zoropsis spinimana",
+                    "library_type": null
                   }
                 ]
               },
@@ -156,7 +169,8 @@
                     "external_id": "d62391f6-adba-11eb-ac23-fa163eac3af7",
                     "name": "DTOL10239372",
                     "external_study_id": "cf04ea86-ac82-11e9-8998-68b599768938",
-                    "species": "Alitta virens"
+                    "species": "Alitta virens",
+                    "library_type": null
                   }
                 ]
               },
@@ -167,7 +181,8 @@
                     "external_id": "d62b59ae-adba-11eb-ac23-fa163eac3af7",
                     "name": "DTOL10239373",
                     "external_study_id": "cf04ea86-ac82-11e9-8998-68b599768938",
-                    "species": "Cornu aspersum"
+                    "species": "Cornu aspersum",
+                    "library_type": null
                   }
                 ]
               },
@@ -178,7 +193,8 @@
                     "external_id": "d636b92a-adba-11eb-ac23-fa163eac3af7",
                     "name": "DTOL10239374",
                     "external_study_id": "cf04ea86-ac82-11e9-8998-68b599768938",
-                    "species": "Nemurella pictetii"
+                    "species": "Nemurella pictetii",
+                    "library_type": null
                   }
                 ]
               },
@@ -189,7 +205,8 @@
                     "external_id": "d63e83c6-adba-11eb-ac23-fa163eac3af7",
                     "name": "DTOL10239375",
                     "external_study_id": "cf04ea86-ac82-11e9-8998-68b599768938",
-                    "species": "Mimachlamys varia"
+                    "species": "Mimachlamys varia",
+                    "library_type": null
                   }
                 ]
               },
@@ -200,7 +217,8 @@
                     "external_id": "d645ea44-adba-11eb-ac23-fa163eac3af7",
                     "name": "DTOL10239376",
                     "external_study_id": "cf04ea86-ac82-11e9-8998-68b599768938",
-                    "species": "Xeroplexa intersecta"
+                    "species": "Xeroplexa intersecta",
+                    "library_type": null
                   }
                 ]
               },
@@ -211,7 +229,8 @@
                     "external_id": "d658326c-adba-11eb-ac23-fa163eac3af7",
                     "name": "DTOL10239377",
                     "external_study_id": "cf04ea86-ac82-11e9-8998-68b599768938",
-                    "species": "Epistrophe grossulariae"
+                    "species": "Epistrophe grossulariae",
+                    "library_type": null
                   }
                 ]
               },
@@ -222,7 +241,8 @@
                     "external_id": "d667e91e-adba-11eb-ac23-fa163eac3af7",
                     "name": "DTOL10239378",
                     "external_study_id": "cf04ea86-ac82-11e9-8998-68b599768938",
-                    "species": "Helina quadrum"
+                    "species": "Helina quadrum",
+                    "library_type": null
                   }
                 ]
               },
@@ -233,7 +253,8 @@
                     "external_id": "d6782842-adba-11eb-ac23-fa163eac3af7",
                     "name": "DTOL10239379",
                     "external_study_id": "cf04ea86-ac82-11e9-8998-68b599768938",
-                    "species": "Hylemya vagans"
+                    "species": "Hylemya vagans",
+                    "library_type": null
                   }
                 ]
               },
@@ -244,7 +265,8 @@
                     "external_id": "d68017c8-adba-11eb-ac23-fa163eac3af7",
                     "name": "DTOL10239380",
                     "external_study_id": "cf04ea86-ac82-11e9-8998-68b599768938",
-                    "species": "Lucilia richardsi"
+                    "species": "Lucilia richardsi",
+                    "library_type": null
                   }
                 ]
               },
@@ -255,7 +277,8 @@
                     "external_id": "d6900bce-adba-11eb-ac23-fa163eac3af7",
                     "name": "DTOL10239381",
                     "external_study_id": "cf04ea86-ac82-11e9-8998-68b599768938",
-                    "species": "Agrochola circellaris"
+                    "species": "Agrochola circellaris",
+                    "library_type": null
                   }
                 ]
               },
@@ -266,7 +289,8 @@
                     "external_id": "d69ac6e0-adba-11eb-ac23-fa163eac3af7",
                     "name": "DTOL10239382",
                     "external_study_id": "cf04ea86-ac82-11e9-8998-68b599768938",
-                    "species": "Agriphila tristella"
+                    "species": "Agriphila tristella",
+                    "library_type": null
                   }
                 ]
               },

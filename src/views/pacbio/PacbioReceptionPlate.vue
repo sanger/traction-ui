@@ -11,14 +11,11 @@
         placeholder="Scan barcodes to import..."
         rows="4"
         max-rows="10"
-        cols="10"
         name="barcodes"
       />
     </div>
     <b-row>
-      <b-col>
-        <LibraryTypeSelect v-model="libraryType" pipeline="pacbio" />
-      </b-col>
+      <b-col><LibraryTypeSelect v-model="libraryType" pipeline="pacbio" /></b-col>
       <b-col>
         <b-button
           id="createTractionPlates"
@@ -65,7 +62,7 @@ export default {
       return this.barcodeArray.join(',')
     },
     isDisabled() {
-      return this.barcodes.length === 0 || this.busy
+      return this.barcodeArray.length === 0 || this.busy
     },
     sequencescapeRequest() {
       return this.api.sequencescape.plates
