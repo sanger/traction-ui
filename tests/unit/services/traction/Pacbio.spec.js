@@ -35,7 +35,7 @@ describe('Pacbio', () => {
     it('generates a valid payload', async () => {
       requests.sequencescape.get.mockReturnValue(Data.SequencescapePlates)
       requests.traction.create.mockReturnValue(createdResponse)
-      await createPlates({ requests, barcodes: ['DN1', 'DN2'] })
+      await createPlates({ requests, barcodes: ['DN1', 'DN2'], libraryType: 'Example' })
 
       expect(requests.traction.create).toHaveBeenCalledWith({
         data: {
@@ -53,6 +53,7 @@ describe('Pacbio', () => {
                           external_study_id: 'cf04ea86-ac82-11e9-8998-68b599768938',
                           name: 'DTOL10233354',
                           species: 'Orgyia antiqua',
+                          library_type: 'Example',
                         },
                       ],
                     },
@@ -64,6 +65,7 @@ describe('Pacbio', () => {
                           external_study_id: 'cf04ea86-ac82-11e9-8998-68b599768938',
                           name: 'DTOL10233355',
                           species: 'Chelidonium majus',
+                          library_type: 'Example',
                         },
                       ],
                     },

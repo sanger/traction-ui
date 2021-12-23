@@ -3,35 +3,35 @@
     <b-modal v-model="busy" hide-footer hide-header no-close-on-backdrop>
       <spinner size="huge" message="Importing plates..."></spinner>
     </b-modal>
-    <p>
-      <b-alert :show="isError" dismissible variant="danger">
-        {{ alertMessage }}
-      </b-alert>
-      <b-alert :show="isSuccess" dismissible variant="success">
-        {{ alertMessage }}
-      </b-alert>
-    </p>
     <div class="form-group">
       <label for="barcodes">Barcodes:</label>
-      <textarea
+      <b-form-textarea
         id="barcodes"
         v-model="barcodes"
-        type="text"
-        class="form-control"
-        rows="10"
+        placeholder="Scan barcodes to import..."
+        rows="4"
+        max-rows="10"
         cols="10"
         name="barcodes"
       />
     </div>
-    <b-button
-      id="createTractionPlates"
-      class="scanButton"
-      variant="success"
-      :disabled="isDisabled"
-      @click="createTractionPlates"
-    >
-      Import
-    </b-button>
+    <b-row>
+      <b-col>
+        <LibraryTypeSelect v-model="libraryType" pipeline="pacbio" />
+      </b-col>
+      <b-col>
+        <b-button
+          id="createTractionPlates"
+          class="scanButton"
+          variant="success"
+          block
+          :disabled="isDisabled"
+          @click="createTractionPlates"
+        >
+          Import {{ plateCount }}
+        </b-button>
+      </b-col>
+    </b-row>
   </div>
 </template>
 
@@ -39,33 +39,33 @@
 import Spinner from 'vue-simple-spinner'
 import Api from '@/mixins/Api'
 import { createPlates } from '@/services/traction/Pacbio'
+import LibraryTypeSelect from '@/components/shared/LibraryTypeSelect'
 
 export default {
   name: 'Reception',
   components: {
     Spinner,
+    LibraryTypeSelect,
   },
   mixins: [Api],
   data() {
     return {
-      barcodes: [],
+      barcodes: '',
       busy: false,
       alertMessage: '',
       status: '',
+      libraryType: undefined,
     }
   },
   computed: {
+    barcodeArray() {
+      return this.barcodes.split('\n').filter(Boolean)
+    },
     formattedBarcodes() {
-      return this.barcodes.split('\n').filter(Boolean).join(',')
+      return this.barcodeArray.join(',')
     },
     isDisabled() {
       return this.barcodes.length === 0 || this.busy
-    },
-    isSuccess() {
-      return this.status === 'success'
-    },
-    isError() {
-      return this.status === 'error'
     },
     sequencescapeRequest() {
       return this.api.sequencescape.plates
@@ -79,6 +79,13 @@ export default {
         sequencescape: this.sequencescapeRequest,
       }
     },
+    plateCount() {
+      if (this.barcodeArray.length == 1) {
+        return '1 plate'
+      } else {
+        return `${this.barcodeArray.length} plates`
+      }
+    },
   },
   methods: {
     async createTractionPlates() {
@@ -86,24 +93,13 @@ export default {
       const response = await createPlates({
         requests: this.requests,
         barcodes: this.formattedBarcodes,
+        libraryType: this.libraryType,
       })
-      this.setStatus(response)
+      this.showAlert(response.message, response.status)
       this.busy = false
-    },
-    setStatus({ status, message }) {
-      this.status = status
-      this.alertMessage = message
     },
   },
 }
 </script>
 
-<style scoped lang="scss">
-textarea {
-  border: 1px solid;
-}
-
-.scanButton {
-  margin: 0.5rem;
-}
-</style>
+<style scoped lang="scss"></style>
