@@ -27,10 +27,16 @@ import { humanise } from '@/lib/stringHumanisation'
 
 export default {
   name: 'PipelineView',
+  props: {
+    pipeline: {
+      type: String,
+      required: true,
+      validator: (value) => PipelinesConfig.find((p) => p.name == value),
+    },
+  },
   computed: {
     pipelineInfo() {
-      let pipeline = localStorage.getItem('pipeline')
-      return PipelinesConfig.find((p) => p.name == pipeline)
+      return PipelinesConfig.find((p) => p.name == this.pipeline)
     },
   },
   methods: {

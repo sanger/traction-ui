@@ -7,7 +7,7 @@
   },
   {
     "name": "pacbio",
-    "title": "Pacbio",
+    "title": "PacBio",
     "description": "A LIMS pipeline to support tracking for PacBio Long-Read Sequencing",
     "routes": [
       "reception",

@@ -56,7 +56,6 @@ describe('#handleRunUpdate', () => {
   beforeEach(() => {
     update = jest.fn()
     commit = jest.fn()
-    localStorage.setItem('pipeline', 'pacbio')
     getters = { 'pacbio/runs/runRequest': { update: update } }
     payload = { id: 1, attributes: { state: 'a state' } }
     pipeline = 'pacbio'

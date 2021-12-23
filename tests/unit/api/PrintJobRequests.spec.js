@@ -26,8 +26,6 @@ describe('PrintJobRequests', () => {
     let request
 
     beforeEach(() => {
-      localStorage.setItem('pipeline', consts.PIPELINE_SAPHYR)
-
       request = store.getters.api.printMyBarcode.print_jobs
 
       request.create = jest.fn()
@@ -56,8 +54,6 @@ describe('PrintJobRequests', () => {
     })
 
     it('returns a response on success for ont libraries', async () => {
-      localStorage.setItem('pipeline', consts.PIPELINE_ONT)
-
       selectedLibraries = [
         { id: 1, type: 'libraries', name: 'DEMO-PLATE-1-1', tubeBarcode: 'TRAC-2-20' },
         { id: 2, type: 'libraries', name: 'DEMO-PLATE-2-1', tubeBarcode: 'TRAC-2-21' },
@@ -152,10 +148,6 @@ describe('PrintJobRequests', () => {
 
   describe('createLabels', () => {
     describe('saphyr', () => {
-      beforeEach(() => {
-        localStorage.setItem('pipeline', consts.PIPELINE_SAPHYR)
-      })
-
       it('returns JSON for saphyr samples', async () => {
         let resp = PrintJobRequests.createLabels(selectedSamples, consts.PIPELINE_SAPHYR)
         let expectedLabel1 = resp.body[0].main_label
@@ -200,10 +192,6 @@ describe('PrintJobRequests', () => {
     })
 
     describe('pacbio', () => {
-      beforeEach(() => {
-        localStorage.setItem('pipeline', consts.PIPELINE_PACBIO)
-      })
-
       it('returns JSON for pacbio samples', async () => {
         let resp = PrintJobRequests.createLabels(selectedSamples, consts.PIPELINE_PACBIO)
         let expectedLabel1 = resp.body[0].main_label

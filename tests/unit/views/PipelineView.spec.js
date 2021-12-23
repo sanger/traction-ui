@@ -5,15 +5,13 @@ describe('PipelineView', () => {
   let wrapper, pipelineView, store
 
   beforeEach(() => {
-    localStorage.setItem('pipeline', 'pacbio')
-
-    wrapper = mount(PipelineView, { store, localVue, router })
+    wrapper = mount(PipelineView, { store, localVue, router, propsData: { pipeline: 'pacbio' } })
     pipelineView = wrapper.vm
   })
 
   describe('show pipeline', () => {
     it('shows the current pipeline', () => {
-      expect(wrapper.html()).toContain('Pacbio')
+      expect(wrapper.html()).toContain('PacBio')
     })
   })
 
