@@ -2,7 +2,6 @@
 // higher order functions, passing functions as arguments
 
 import store from '@/store'
-import moment from 'moment'
 import handlePromise from '@/api/PromiseHelper'
 
 const printJob = async (printerName, selected) => {
@@ -11,15 +10,10 @@ const printJob = async (printerName, selected) => {
   return await postPrintJob(request, payload)
 }
 
-const createPrintJobJson = (printerName, selected) => {
-  let pipeline = getPipeline()
-  let labelTemplateId = store.getters[`traction/${pipeline}/labelTemplateId`]
-  let labels
-  if (pipeline != 'ont') {
-    labels = createLabels(selected)
-  } else {
-    labels = createOntLabels(selected)
-  }
+const formatDate = () => {
+  const [, mmm, dd, yyyy] = new Date().toDateString().split(' ')
+  return `${dd}-${mmm}-${yyyy.slice(2)}`
+}
   return {
     data: {
       attributes: { printer_name: printerName, label_template_id: labelTemplateId, labels: labels },
@@ -27,14 +21,14 @@ const createPrintJobJson = (printerName, selected) => {
   }
 }
 
-const createLabels = (selected) => {
+  const date = formatDate()
   return {
     body: selected.reduce((result, label) => {
       result.push({
         main_label: {
           pipeline: getPipeline().toUpperCase(),
           barcode_text: label.barcode,
-          date: moment().format('DD-MMM-YY'),
+          date,
           text_1: getTextForSelected(label),
           barcode: label.barcode,
           round_label_top_line: '',
@@ -46,14 +40,14 @@ const createLabels = (selected) => {
   }
 }
 
-const createOntLabels = (selected) => {
+  const date = formatDate()
   return {
     body: selected.reduce((result, label) => {
       result.push({
         main_label: {
           pipeline: getPipeline().toUpperCase(),
           barcode_text: label.tubeBarcode,
-          date: moment().format('DD-MMM-YY'),
+          date,
           text_1: label.name,
           barcode: label.tubeBarcode,
           round_label_top_line: '',

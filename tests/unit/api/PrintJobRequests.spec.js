@@ -1,13 +1,16 @@
 import * as PrintJobRequests from '@/api/PrintJobRequests'
-import moment from 'moment'
 import { store } from 'testHelper'
 import Response from '@/api/Response'
 import * as consts from '@/consts/consts'
 
 describe('PrintJobRequests', () => {
   let selectedSamples, selectedLibraries, printerName
+  const formattedDate = '25-Dec-21'
+  const mockDate = new Date(1640390400000)
 
   beforeEach(() => {
+    jest.spyOn(global, 'Date').mockImplementation(() => mockDate)
+
     selectedSamples = [
       { id: 1, type: 'samples', name: 'sample1', barcode: 'TRAC-1' },
       { id: 2, type: 'samples', name: 'sample2', barcode: 'TRAC-2' },
@@ -144,14 +147,14 @@ describe('PrintJobRequests', () => {
 
         expect(expectedLabel1.barcode).toEqual('TRAC-1')
         expect(expectedLabel1.barcode_text).toEqual('TRAC-1')
-        expect(expectedLabel1.date).toEqual(moment().format('DD-MMM-YY'))
+        expect(expectedLabel1.date).toEqual(formattedDate)
         expect(expectedLabel1.pipeline).toEqual(consts.PIPELINE_SAPHYR.toUpperCase())
         expect(expectedLabel1.text_1).toEqual('sample1')
         expect(expectedLabel1.round_label_top_line).toEqual('')
         expect(expectedLabel1.round_label_bottom_line).toEqual('')
         expect(expectedLabel2.barcode).toEqual('TRAC-2')
         expect(expectedLabel2.barcode_text).toEqual('TRAC-2')
-        expect(expectedLabel2.date).toEqual(moment().format('DD-MMM-YY'))
+        expect(expectedLabel2.date).toEqual(formattedDate)
         expect(expectedLabel2.pipeline).toEqual(consts.PIPELINE_SAPHYR.toUpperCase())
         expect(expectedLabel2.text_1).toEqual('sample2')
         expect(expectedLabel2.round_label_top_line).toEqual('')
@@ -165,14 +168,14 @@ describe('PrintJobRequests', () => {
 
         expect(expectedLabel1.barcode).toEqual('TRAC-1')
         expect(expectedLabel1.barcode_text).toEqual('TRAC-1')
-        expect(expectedLabel1.date).toEqual(moment().format('DD-MMM-YY'))
+        expect(expectedLabel1.date).toEqual(formattedDate)
         expect(expectedLabel1.pipeline).toEqual(consts.PIPELINE_SAPHYR.toUpperCase())
         expect(expectedLabel1.text_1).toEqual('enz1')
         expect(expectedLabel1.round_label_top_line).toEqual('')
         expect(expectedLabel1.round_label_bottom_line).toEqual('')
         expect(expectedLabel2.barcode).toEqual('TRAC-2')
         expect(expectedLabel2.barcode_text).toEqual('TRAC-2')
-        expect(expectedLabel2.date).toEqual(moment().format('DD-MMM-YY'))
+        expect(expectedLabel2.date).toEqual(formattedDate)
         expect(expectedLabel2.pipeline).toEqual(consts.PIPELINE_SAPHYR.toUpperCase())
         expect(expectedLabel2.text_1).toEqual('enz2')
         expect(expectedLabel2.round_label_top_line).toEqual('')
@@ -192,14 +195,14 @@ describe('PrintJobRequests', () => {
 
         expect(expectedLabel1.barcode).toEqual('TRAC-1')
         expect(expectedLabel1.barcode_text).toEqual('TRAC-1')
-        expect(expectedLabel1.date).toEqual(moment().format('DD-MMM-YY'))
+        expect(expectedLabel1.date).toEqual(formattedDate)
         expect(expectedLabel1.pipeline).toEqual(consts.PIPELINE_PACBIO.toUpperCase())
         expect(expectedLabel1.text_1).toEqual('sample1')
         expect(expectedLabel1.round_label_top_line).toEqual('')
         expect(expectedLabel1.round_label_bottom_line).toEqual('')
         expect(expectedLabel2.barcode).toEqual('TRAC-2')
         expect(expectedLabel2.barcode_text).toEqual('TRAC-2')
-        expect(expectedLabel2.date).toEqual(moment().format('DD-MMM-YY'))
+        expect(expectedLabel2.date).toEqual(formattedDate)
         expect(expectedLabel2.pipeline).toEqual(consts.PIPELINE_PACBIO.toUpperCase())
         expect(expectedLabel2.text_1).toEqual('sample2')
         expect(expectedLabel2.round_label_top_line).toEqual('')
@@ -213,14 +216,14 @@ describe('PrintJobRequests', () => {
 
         expect(expectedLabel1.barcode).toEqual('TRAC-1')
         expect(expectedLabel1.barcode_text).toEqual('TRAC-1')
-        expect(expectedLabel1.date).toEqual(moment().format('DD-MMM-YY'))
+        expect(expectedLabel1.date).toEqual(formattedDate)
         expect(expectedLabel1.pipeline).toEqual(consts.PIPELINE_PACBIO.toUpperCase())
         expect(expectedLabel1.text_1).toEqual('enz1')
         expect(expectedLabel1.round_label_top_line).toEqual('')
         expect(expectedLabel1.round_label_bottom_line).toEqual('')
         expect(expectedLabel2.barcode).toEqual('TRAC-2')
         expect(expectedLabel2.barcode_text).toEqual('TRAC-2')
-        expect(expectedLabel2.date).toEqual(moment().format('DD-MMM-YY'))
+        expect(expectedLabel2.date).toEqual(formattedDate)
         expect(expectedLabel2.pipeline).toEqual(consts.PIPELINE_PACBIO.toUpperCase())
         expect(expectedLabel2.text_1).toEqual('enz2')
         expect(expectedLabel2.round_label_top_line).toEqual('')
