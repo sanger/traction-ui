@@ -28,43 +28,39 @@ const createPrintJobJson = (printer_name, selected, pipeline) => {
   }
 }
 
-const createLabels = (selected, pipeline) => {
+const createLabels = (selected, pipelineLower) => {
   const date = formatDate()
+  const pipeline = pipelineLower.toUpperCase()
   return {
-    body: selected.reduce((result, label) => {
-      result.push({
-        main_label: {
-          pipeline: pipeline.toUpperCase(),
-          barcode_text: label.barcode,
-          date,
-          text_1: getTextForSelected(label),
-          barcode: label.barcode,
-          round_label_top_line: '',
-          round_label_bottom_line: '',
-        },
-      })
-      return result
-    }, []),
+    body: selected.map((label) => ({
+      main_label: {
+        pipeline,
+        barcode_text: label.barcode,
+        date,
+        text_1: getTextForSelected(label),
+        barcode: label.barcode,
+        round_label_top_line: '',
+        round_label_bottom_line: '',
+      },
+    })),
   }
 }
 
-const createOntLabels = (selected, pipeline) => {
+const createOntLabels = (selected, pipelineLower) => {
   const date = formatDate()
+  const pipeline = pipelineLower.toUpperCase()
   return {
-    body: selected.reduce((result, label) => {
-      result.push({
-        main_label: {
-          pipeline: pipeline.toUpperCase(),
-          barcode_text: label.tubeBarcode,
-          date,
-          text_1: label.name,
-          barcode: label.tubeBarcode,
-          round_label_top_line: '',
-          round_label_bottom_line: '',
-        },
-      })
-      return result
-    }, []),
+    body: selected.map((label) => ({
+      main_label: {
+        pipeline,
+        barcode_text: label.tubeBarcode,
+        date,
+        text_1: label.name,
+        barcode: label.tubeBarcode,
+        round_label_top_line: '',
+        round_label_bottom_line: '',
+      },
+    })),
   }
 }
 
