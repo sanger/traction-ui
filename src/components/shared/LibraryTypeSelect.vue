@@ -1,5 +1,5 @@
 <template>
-  <b-form-group label="Library Type" label-for="library-type" label-cols="2">
+  <b-form-group label="Library Type" label-for="library-type" :label-cols="labelCols">
     <b-select
       id="library-type"
       :value="libraryType"
@@ -33,18 +33,32 @@ export default {
       type: String,
       default: 'Import from Sequencescape (where available)',
     },
+    import: {
+      // Whether to show the import option
+      type: Boolean,
+      default: true,
+    },
+    labelCols: {
+      type: Number,
+      default: 2,
+    },
   },
   computed: {
     libraryType() {
       return encode(this.value)
     },
+    importOption() {
+      if (this.import) {
+        // undefined gets coerced into null, so we need some magic
+        return [{ value: UNDEFINED, text: this.importText }]
+      } else {
+        return []
+      }
+    },
     libraryTypes() {
       return [
         ...this.$store.state.traction[this.pipeline].libraryTypes,
-        {
-          value: '_undefined', // undefined gets coerced into null, so we need some magic
-          text: this.importText,
-        },
+        ...this.importOption,
         { value: null, text: 'None' },
       ]
     },

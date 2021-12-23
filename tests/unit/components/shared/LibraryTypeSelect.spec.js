@@ -47,5 +47,14 @@ describe('LibraryTypeSelect.vue', () => {
       }).setSelected()
       expect(wrapper.emitted('input')).toEqual([[undefined]])
     })
+
+    it('only shows the import option when enabled', () => {
+      const wrapper = buildWrapper({ pipeline: 'pacbio', import: false })
+      const select = wrapper.find('select')
+
+      expect(findOption('Import from Sequencescape (where available)', { from: select })).toBe(
+        undefined,
+      )
+    })
   })
 })
