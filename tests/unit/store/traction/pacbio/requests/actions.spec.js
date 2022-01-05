@@ -86,7 +86,7 @@ describe('actions', () => {
       let expectedResponse = new Response(Data.CreatePacbioRequest)
       create.mockReturnValue(Data.CreatePacbioRequest)
 
-      let response = await Actions.exportSampleExtractionTubesIntoTraction({ getters }, tubes)
+      let response = await Actions.exportSampleExtractionTubesIntoTraction({ getters }, { tubes })
       expect(response).toEqual(expectedResponse)
     })
 
@@ -102,7 +102,7 @@ describe('actions', () => {
 
       let response = await Actions.exportSampleExtractionTubesIntoTraction(
         { dispatch, getters },
-        tubes,
+        { tubes },
       )
       expect(response).toEqual(expectedResponse)
     })
@@ -111,7 +111,7 @@ describe('actions', () => {
   describe('#sampleExtractionTubeJson', () => {
     it('will convert a deserialized response to the correct format for a pacbio request', () => {
       const tubes = new Response(Data.SampleExtractionTubesWithSample).deserialize.assets
-      const [{ tube, sample, request }] = Actions.sampleExtractionTubeJson(tubes)
+      const [{ tube, sample, request }] = Actions.sampleExtractionTubeJson(tubes, undefined)
       // sample
       expect(sample.name).toBeDefined()
       expect(sample.species).toBeDefined()
@@ -126,6 +126,24 @@ describe('actions', () => {
       expect(request.cost_code).toBeDefined()
       // tube
       expect(tube.barcode).toBeDefined()
+    })
+
+    it('will import library_type when undefined', () => {
+      const tubes = new Response(Data.SampleExtractionTubesWithSample).deserialize.assets
+      const [{ request }] = Actions.sampleExtractionTubeJson(tubes, undefined)
+      expect(request.library_type).toEqual('type')
+    })
+
+    it('will remove library_type when null', () => {
+      const tubes = new Response(Data.SampleExtractionTubesWithSample).deserialize.assets
+      const [{ request }] = Actions.sampleExtractionTubeJson(tubes, null)
+      expect(request.library_type).toEqual(null)
+    })
+
+    it('will set library_type when specified', () => {
+      const tubes = new Response(Data.SampleExtractionTubesWithSample).deserialize.assets
+      const [{ request }] = Actions.sampleExtractionTubeJson(tubes, 'custom')
+      expect(request.library_type).toEqual('custom')
     })
 
     it('if cost code is null do not include cost code in request', () => {

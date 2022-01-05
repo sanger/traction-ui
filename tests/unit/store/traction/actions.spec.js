@@ -4,6 +4,7 @@ import { Data } from 'testHelper'
 
 describe('#startRun', () => {
   let dispatch, id, payload
+  const pipeline = 'pacbio'
 
   beforeEach(() => {
     dispatch = jest.fn()
@@ -12,13 +13,14 @@ describe('#startRun', () => {
   })
 
   it('successfully', async () => {
-    await Actions.startRun({ dispatch }, id)
-    expect(dispatch).toHaveBeenCalledWith('handleRunUpdate', payload)
+    await Actions.startRun({ dispatch }, { id, pipeline })
+    expect(dispatch).toHaveBeenCalledWith('handleRunUpdate', { payload, pipeline })
   })
 })
 
 describe('#completeRun', () => {
   let dispatch, id, payload
+  const pipeline = 'pacbio'
 
   beforeEach(() => {
     dispatch = jest.fn()
@@ -27,13 +29,14 @@ describe('#completeRun', () => {
   })
 
   it('successfully', async () => {
-    await Actions.completeRun({ dispatch }, id)
-    expect(dispatch).toHaveBeenCalledWith('handleRunUpdate', payload)
+    await Actions.completeRun({ dispatch }, { id, pipeline })
+    expect(dispatch).toHaveBeenCalledWith('handleRunUpdate', { payload, pipeline })
   })
 })
 
 describe('#cancelRun', () => {
   let dispatch, id, payload
+  const pipeline = 'pacbio'
 
   beforeEach(() => {
     dispatch = jest.fn()
@@ -42,20 +45,20 @@ describe('#cancelRun', () => {
   })
 
   it('successfully', async () => {
-    await Actions.cancelRun({ dispatch }, id)
-    expect(dispatch).toHaveBeenCalledWith('handleRunUpdate', payload)
+    await Actions.cancelRun({ dispatch }, { id, pipeline })
+    expect(dispatch).toHaveBeenCalledWith('handleRunUpdate', { payload, pipeline })
   })
 })
 
 describe('#handleRunUpdate', () => {
-  let update, getters, rootGetters, payload, failedResponse, commit
+  let update, getters, rootGetters, payload, failedResponse, commit, pipeline
 
   beforeEach(() => {
     update = jest.fn()
     commit = jest.fn()
-    localStorage.setItem('pipeline', 'pacbio')
     getters = { 'pacbio/runs/runRequest': { update: update } }
     payload = { id: 1, attributes: { state: 'a state' } }
+    pipeline = 'pacbio'
 
     failedResponse = { data: { data: [] }, status: 500, statusText: 'Internal Server Error' }
   })
@@ -66,7 +69,10 @@ describe('#handleRunUpdate', () => {
     let expectedResponse = new Response(Data.UpdateRun)
     let expectedRun = expectedResponse.deserialize.runs[0]
 
-    let response = await Actions.handleRunUpdate({ rootGetters, getters, commit }, payload)
+    let response = await Actions.handleRunUpdate(
+      { rootGetters, getters, commit },
+      { payload, pipeline },
+    )
 
     expect(commit).toHaveBeenCalledWith('updateRun', expectedRun)
     expect(response).toEqual(expectedResponse)
@@ -76,7 +82,10 @@ describe('#handleRunUpdate', () => {
     update.mockReturnValue(failedResponse)
 
     let expectedResponse = new Response(failedResponse)
-    let response = await Actions.handleRunUpdate({ rootGetters, getters, commit }, payload)
+    let response = await Actions.handleRunUpdate(
+      { rootGetters, getters, commit },
+      { payload, pipeline },
+    )
 
     expect(commit).not.toHaveBeenCalled()
     expect(response).toEqual(expectedResponse)

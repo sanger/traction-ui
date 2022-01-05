@@ -1,5 +1,5 @@
 <template>
-  <pipeline-view></pipeline-view>
+  <pipeline-view pipeline="ont"></pipeline-view>
 </template>
 
 <script>
@@ -9,9 +9,6 @@ export default {
   name: 'ONT',
   components: {
     PipelineView,
-  },
-  created() {
-    localStorage.setItem('pipeline', 'ont')
   },
 }
 </script>

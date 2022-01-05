@@ -38,11 +38,13 @@ export default new Router({
     {
       path: '/dashboard',
       name: 'Dashboard',
+      meta: { pipeline: 'Dashboard' },
       component: Dashboard,
     },
     {
       path: '/saphyr',
       component: Saphyr,
+      meta: { pipeline: 'Saphyr' },
       children: [
         { path: '', redirect: 'reception' },
         { path: 'reception', name: 'SaphyrReception', component: SaphyrReception },
@@ -56,6 +58,7 @@ export default new Router({
     {
       path: '/pacbio',
       component: Pacbio,
+      meta: { pipeline: 'PacBio' },
       children: [
         { path: '', redirect: 'reception' },
         { path: 'reception', name: 'PacbioReceptionTube', component: PacbioReceptionTube },
@@ -72,6 +75,7 @@ export default new Router({
     {
       path: '/ont',
       component: ONT,
+      meta: { pipeline: 'ONT' },
       children: [
         { path: '', redirect: 'reception' },
         { path: 'reception', name: 'OntReception', component: OntReception },

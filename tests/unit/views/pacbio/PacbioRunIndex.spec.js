@@ -3,6 +3,7 @@ import { mount, localVue, store, Data, router } from 'testHelper'
 import Response from '@/api/Response'
 
 describe('Runs.vue', () => {
+  const pipeline = 'pacbio'
   let wrapper, runs, mockRuns
 
   beforeEach(() => {
@@ -75,7 +76,7 @@ describe('Runs.vue', () => {
 
       button = wrapper.find('#startRun-1')
       button.trigger('click')
-      expect(runs.startRun).toBeCalledWith(mockRuns[0].id)
+      expect(runs.startRun).toBeCalledWith({ id: mockRuns[0].id, pipeline })
     })
   })
 
@@ -113,7 +114,7 @@ describe('Runs.vue', () => {
       button = wrapper.find('#completeRun-2')
       button.trigger('click')
 
-      expect(runs.completeRun).toBeCalledWith(mockRuns[1].id)
+      expect(runs.completeRun).toBeCalledWith({ id: mockRuns[1].id, pipeline })
     })
   })
 
@@ -151,7 +152,7 @@ describe('Runs.vue', () => {
       button = wrapper.find('#cancelRun-2')
       button.trigger('click')
 
-      expect(runs.cancelRun).toBeCalledWith(mockRuns[1].id)
+      expect(runs.cancelRun).toBeCalledWith({ id: mockRuns[1].id, pipeline })
     })
   })
 
@@ -260,6 +261,7 @@ describe('Runs.vue', () => {
   })
 
   describe('#updateRun', () => {
+    let id = 1
     beforeEach(() => {
       runs.startRun = jest.fn()
       runs.completeRun = jest.fn()
@@ -268,18 +270,19 @@ describe('Runs.vue', () => {
     })
 
     it('calls startRun successfully', () => {
-      runs.updateRun('start', 1)
-      expect(runs.startRun).toBeCalledWith(1)
+      runs.updateRun('start', id)
+      expect(runs.startRun).toBeCalledWith({ id, pipeline })
     })
 
     it('calls completeRun successfully', () => {
-      runs.updateRun('complete', 1)
-      expect(runs.completeRun).toBeCalledWith(1)
+      runs.updateRun('complete', id)
+      expect(runs.completeRun).toBeCalledWith({ id, pipeline })
     })
 
     it('calls cancelRun successfully', () => {
-      runs.updateRun('cancel', 1)
-      expect(runs.cancelRun).toBeCalledWith(1)
+      let id = 1
+      runs.updateRun('cancel', id)
+      expect(runs.cancelRun).toBeCalledWith({ id, pipeline })
     })
 
     it('calls setRuns unsuccessfully', () => {

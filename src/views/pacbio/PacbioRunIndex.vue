@@ -172,7 +172,7 @@ export default {
     },
     updateRun(status, id) {
       try {
-        this[status + 'Run'](id)
+        this[status + 'Run']({ id, pipeline: 'pacbio' })
       } catch (error) {
         this.showAlert('Failed to update run: ' + error.message, 'danger')
       }

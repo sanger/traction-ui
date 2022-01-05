@@ -172,7 +172,7 @@ describe('PacbioWellModal', () => {
       })
     })
 
-    describe('showModalForPosition', async () => {
+    describe('showModalForPosition', () => {
       it('creates a well object if its a new well', () => {
         props = { position: 'H12' }
         wrapper = mount(WellEdit, {
@@ -198,7 +198,7 @@ describe('PacbioWellModal', () => {
       })
     })
 
-    describe('update', async () => {
+    describe('update', () => {
       beforeEach(() => {
         modal.checkPools = jest.fn()
         modal.createWell = jest.fn()

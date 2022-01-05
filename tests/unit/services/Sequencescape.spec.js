@@ -173,6 +173,35 @@ describe('SequencescapePlates', () => {
     })
   })
 
+  describe('PacbioSample', () => {
+    const aliquot = {
+      sample: {
+        uuid: 'sample-uuid',
+        name: 'sample-name',
+        sample_metadata: {
+          sample_common_name: 'species',
+        },
+      },
+      study: { uuid: 'study-uuid', name: 'sample-name' },
+      library_type: 'imported',
+    }
+    it('allows libraryType to be specified', () => {
+      expect(PacbioSample(aliquot, 'selected')).toEqual(
+        expect.objectContaining({ library_type: 'selected' }),
+      )
+    })
+
+    it('allows libraryType to be imported', () => {
+      expect(PacbioSample(aliquot, undefined)).toEqual(
+        expect.objectContaining({ library_type: 'imported' }),
+      )
+    })
+
+    it('allows libraryType to be removed', () => {
+      expect(PacbioSample(aliquot, null)).toEqual(expect.objectContaining({ library_type: null }))
+    })
+  })
+
   describe('#transformPlates', () => {
     let transformedPlates, transformedPlate
 
@@ -212,14 +241,45 @@ describe('SequencescapePlates', () => {
     })
 
     describe('for a pacbio plate', () => {
-      transformedPlates = transformPlates({ plates, sampleType: PacbioSample })
-      transformedPlate = transformedPlates[0]
-      let sample = transformedPlate.wells[0].samples[0]
-      expect(Object.keys(sample)).toEqual(['external_id', 'name', 'external_study_id', 'species'])
-      expect(sample.external_id).toEqual('64e065a4-a9b0-11eb-991b-fa163eac3af7')
-      expect(sample.name).toEqual('DTOL10233354')
-      expect(sample.external_study_id).toEqual('cf04ea86-ac82-11e9-8998-68b599768938')
-      expect(sample.species).toEqual('Orgyia antiqua')
+      it('has no library type by default', () => {
+        transformedPlates = transformPlates({ plates, sampleType: PacbioSample })
+        transformedPlate = transformedPlates[0]
+        let sample = transformedPlate.wells[0].samples[0]
+        expect(Object.keys(sample)).toEqual([
+          'external_id',
+          'name',
+          'external_study_id',
+          'species',
+          'library_type',
+        ])
+        expect(sample.external_id).toEqual('64e065a4-a9b0-11eb-991b-fa163eac3af7')
+        expect(sample.name).toEqual('DTOL10233354')
+        expect(sample.external_study_id).toEqual('cf04ea86-ac82-11e9-8998-68b599768938')
+        expect(sample.species).toEqual('Orgyia antiqua')
+        expect(sample.library_type).toEqual(null)
+      })
+
+      it('can specify a library type', () => {
+        transformedPlates = transformPlates({
+          plates,
+          sampleType: PacbioSample,
+          libraryType: 'Example',
+        })
+        transformedPlate = transformedPlates[0]
+        let sample = transformedPlate.wells[0].samples[0]
+        expect(Object.keys(sample)).toEqual([
+          'external_id',
+          'name',
+          'external_study_id',
+          'species',
+          'library_type',
+        ])
+        expect(sample.external_id).toEqual('64e065a4-a9b0-11eb-991b-fa163eac3af7')
+        expect(sample.name).toEqual('DTOL10233354')
+        expect(sample.external_study_id).toEqual('cf04ea86-ac82-11e9-8998-68b599768938')
+        expect(sample.species).toEqual('Orgyia antiqua')
+        expect(sample.library_type).toEqual('Example')
+      })
     })
   })
 })

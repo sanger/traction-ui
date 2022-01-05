@@ -41,12 +41,15 @@ const createRequestPayload = (sample) => {
   }
 }
 
-const exportSampleExtractionTubesIntoTraction = async ({ getters }, tubes) => {
+const exportSampleExtractionTubesIntoTraction = async (
+  { getters },
+  { tubes, libraryType = undefined },
+) => {
   let body = {
     data: {
       type: 'requests',
       attributes: {
-        requests: sampleExtractionTubeJson(tubes),
+        requests: sampleExtractionTubeJson(tubes, libraryType),
       },
     },
   }
@@ -58,7 +61,7 @@ const exportSampleExtractionTubesIntoTraction = async ({ getters }, tubes) => {
   return response
 }
 
-const sampleExtractionTubeJson = (tubes) => {
+const sampleExtractionTubeJson = (tubes, libraryType) => {
   return tubes.map(
     ({
       library_type,
@@ -73,7 +76,7 @@ const sampleExtractionTubeJson = (tubes) => {
       sample: { name, species, external_id },
       request: {
         external_study_id,
-        library_type,
+        library_type: libraryType === undefined ? library_type : libraryType,
         estimate_of_gb_required,
         number_of_smrt_cells,
         ...(cost_code ? { cost_code } : null),

@@ -24,7 +24,7 @@ describe('Dashboard.vue', () => {
     it('will have pacbio config', () => {
       let config = dashboard.pipelines
       expect(config[1]['name']).toEqual('pacbio')
-      expect(config[1]['title']).toEqual('Pacbio')
+      expect(config[1]['title']).toEqual('PacBio')
     })
 
     it('will have ont config', () => {
@@ -81,7 +81,7 @@ describe('Dashboard.vue', () => {
     })
 
     it('will have a title', () => {
-      expect(box.find('.card-title').text()).toEqual('Pacbio')
+      expect(box.find('.card-title').text()).toEqual('PacBio')
     })
 
     it('will have a description', () => {

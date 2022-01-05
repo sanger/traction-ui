@@ -1,5 +1,5 @@
 <template>
-  <pipeline-view></pipeline-view>
+  <pipeline-view pipeline="saphyr"></pipeline-view>
 </template>
 
 <script>
@@ -9,9 +9,6 @@ export default {
   name: 'Saphyr',
   components: {
     PipelineView,
-  },
-  created() {
-    localStorage.setItem('pipeline', 'saphyr')
   },
 }
 </script>

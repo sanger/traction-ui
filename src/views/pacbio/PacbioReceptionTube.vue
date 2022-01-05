@@ -1,60 +1,94 @@
 <template>
   <div class="reception">
+    <b-modal v-model="busy" hide-footer hide-header no-close-on-backdrop>
+      <spinner size="huge" message="Importing tubes..."></spinner>
+    </b-modal>
     <div class="form-group">
       <label for="barcodes">Barcodes:</label>
-      <textarea
+      <b-form-textarea
         id="barcodes"
         v-model="barcodes"
-        type="text"
-        class="form-control"
-        rows="10"
-        cols="10"
+        placeholder="Scan barcodes to import..."
+        rows="4"
+        max-rows="10"
         name="barcodes"
       />
     </div>
-
-    <b-button
-      id="findSampleExtractionTubes"
-      class="scanButton"
-      variant="success"
-      :disabled="barcodes.length === 0"
-      @click="handleSampleExtractionTubes"
-    >
-      Import Sample Extraction Tubes
-    </b-button>
+    <b-row>
+      <b-col
+        ><LibraryTypeSelect
+          v-model="libraryType"
+          pipeline="pacbio"
+          import-text="Import from Samples Extraction (where available)"
+      /></b-col>
+      <b-col>
+        <b-button
+          id="findSampleExtractionTubes"
+          class="scanButton"
+          block
+          variant="success"
+          :disabled="isDisabled"
+          @click="handleSampleExtractionTubes"
+        >
+          Import {{ tubeCount }}
+        </b-button>
+      </b-col>
+    </b-row>
   </div>
 </template>
 
 <script>
+import Spinner from 'vue-simple-spinner'
 import { mapActions, mapState } from 'vuex'
+import LibraryTypeSelect from '@/components/shared/LibraryTypeSelect'
 
 export default {
   name: 'Reception',
+  components: {
+    LibraryTypeSelect,
+    Spinner,
+  },
   props: {},
   data() {
     return {
-      barcodes: [],
+      busy: false,
+      barcodes: '',
+      libraryType: undefined,
     }
   },
   computed: {
     ...mapState('sampleExtraction', {
       sampleExtractionTubes: (state) => state.sampleExtractionTubes,
     }),
-  },
-  methods: {
-    getBarcodes() {
+    isDisabled() {
+      return this.barcodeArray.length === 0 || this.busy
+    },
+    barcodeArray() {
       return this.barcodes.split('\n').filter(Boolean)
     },
+    tubeCount() {
+      if (this.barcodeArray.length == 1) {
+        return '1 Sample Extraction Tube'
+      } else {
+        return `${this.barcodeArray.length} Sample Extraction Tubes`
+      }
+    },
+  },
+  methods: {
+    ...mapActions('traction/pacbio/requests', ['exportSampleExtractionTubesIntoTraction']),
+    ...mapActions('sampleExtraction', ['getSampleExtractionTubesForBarcodes']),
     async handleSampleExtractionTubes() {
+      this.busy = true
       try {
-        let getSETubeResponse = await this.getSampleExtractionTubesForBarcodes(this.getBarcodes())
+        let getSETubeResponse = await this.getSampleExtractionTubesForBarcodes(this.barcodeArray)
         if (!getSETubeResponse.successful || getSETubeResponse.empty) {
           throw getSETubeResponse.errors
         }
 
-        let exportSampleTubesResponse = await this.exportSampleExtractionTubesIntoTraction(
-          this.sampleExtractionTubes,
-        )
+        let exportSampleTubesResponse = await this.exportSampleExtractionTubesIntoTraction({
+          tubes: this.sampleExtractionTubes,
+          libraryType: this.libraryType,
+        })
         if (!exportSampleTubesResponse.successful || exportSampleTubesResponse.empty) {
           throw exportSampleTubesResponse.errors
         }
@@ -68,19 +102,10 @@ export default {
       } catch (error) {
         this.showAlert('Failed to create samples: ' + error.message, 'danger')
       }
+      this.busy = false
     },
-    ...mapActions('traction/pacbio/requests', ['exportSampleExtractionTubesIntoTraction']),
-    ...mapActions('sampleExtraction', ['getSampleExtractionTubesForBarcodes']),
   },
 }
 </script>
 
-<style scoped lang="scss">
-textarea {
-  border: 1px solid;
-}
-
-.scanButton {
-  margin: 0.5rem;
-}
-</style>
+<style scoped lang="scss"></style>

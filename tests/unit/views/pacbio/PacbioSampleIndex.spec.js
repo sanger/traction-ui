@@ -59,7 +59,7 @@ describe('Samples.vue', () => {
       samples.selected = [{ id: 1 }]
       let modal = wrapper.findComponent({ ref: 'printerModal' })
       modal.vm.$emit('selectPrinter', 'printer1')
-      expect(samples.handlePrintLabel).toBeCalledWith('printer1')
+      expect(samples.handlePrintLabel).toBeCalledWith('pacbio', 'printer1')
     })
   })
 
