@@ -77,15 +77,15 @@ export default {
    * @param {Object} state The Vuex state object
    * @return {Array} An array of selected requests in the order in which they were selected
    */
-  selectedRequests: ({ libraries, resources }) =>
-    Object.values(libraries)
+  selectedRequests: ({ libraries, resources }) => {
+    return Object.values(libraries)
       .map(({ pacbio_request_id }) => ({
         ...resources.requests[pacbio_request_id],
         selected: true,
       }))
       .sort(sortRequestByWellColumnIndex(resources))
-      .sort(sortRequestByPlate(resources)),
-
+      .sort(sortRequestByPlate(resources))
+  },
   /**
    * Returns a list of all fetched wells
    * @param {Object} state The Vuex state object

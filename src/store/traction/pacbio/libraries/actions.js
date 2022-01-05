@@ -108,7 +108,7 @@ const updateLibrary = async ({ commit, getters }, payload) => {
   const {
     tubes: [tube = {}] = [],
     requests: [request = {}] = [],
-    tags: [tag = {}] = [],
+    tags: [tag = { attributes: { group_id: null } }] = [],
     pools: [pool = {}] = [],
   } = groupIncludedByResource(included)
 

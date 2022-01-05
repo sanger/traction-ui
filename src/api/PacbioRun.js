@@ -75,8 +75,12 @@ const update = async (run, request) => {
       }
     }
     run.plate.wellsToDelete.forEach(async (wellId) => {
-      let wellResponse = await destroy(wellId, request.runs.wells)
-      responses.push(wellResponse)
+      try {
+        const wellResponse = await destroy(wellId, request.runs.wells)
+        responses.push(wellResponse)
+      } catch (e) {
+        console.error(e)
+      }
     })
   } catch (err) {
     return [err.message]

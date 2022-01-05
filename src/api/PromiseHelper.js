@@ -11,7 +11,6 @@ const handlePromise = async (promise) => {
     responseObject['data'] = responseObject['data']['data']
     rawResponse = responseObject
   }
-
   let response = new Api.Response(rawResponse)
   return response
 }

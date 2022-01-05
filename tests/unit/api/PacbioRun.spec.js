@@ -392,7 +392,8 @@ describe('Run', () => {
           resolve(Data.SuccessfulDestroy)
         })
         pacbioRequest.runs.update.mockResolvedValue(Data.PacbioRun)
-        pacbioRequest.runs.wells.destroy.mockResolvedValue([promise])
+        pacbioRequest.runs.wells.destroy.mockReturnValue([promise])
+
         await Run.update(run, pacbioRequest)
 
         expect(pacbioRequest.runs.wells.destroy).toHaveBeenCalledTimes(2)

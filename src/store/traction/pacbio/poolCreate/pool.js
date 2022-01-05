@@ -9,7 +9,13 @@ const libraryAttributes = {
   insert_size: null,
 }
 
-const requiredAttributes = ['pacbio_request_id', 'tag_id', 'volume', 'concentration', 'insert_size']
+const requiredAttributes = (isPool) => [
+  'pacbio_request_id',
+  'volume',
+  'concentration',
+  'insert_size',
+  ...(isPool ? ['tag_id'] : []),
+]
 
 const newLibrary = (attributes) => {
   return {
@@ -24,19 +30,18 @@ const newLibrary = (attributes) => {
  *  * tags are unique
  **/
 const validate = ({ libraries }) => {
+  const pooled = Object.keys(libraries).length > 1
+
   for (const [key, library] of Object.entries(libraries)) {
     const errors = {}
-    requiredAttributes.forEach((field) => {
-      if (!library[field]) {
-        errors[field] = 'must be present'
-      }
+    requiredAttributes(pooled).forEach((field) => {
+      if (!library[field]) errors[field] = 'must be present'
     })
 
     if (Object.entries(libraries).some(([k, e]) => e.tag_id === library.tag_id && k !== key)) {
       errors['tag_id'] = 'duplicated'
     }
-
-    Vue.set(libraries, key, { ...library, errors })
+    Vue.set(library, 'errors', errors)
   }
 }
 
