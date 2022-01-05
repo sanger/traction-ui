@@ -26,9 +26,6 @@ config required:
     VUE_APP_LABEL_TEMPLATE_ID=<id>
     VUE_APP_LOG=false
 
-To enable logging and use the convenience method `this.log()` (from the `Helper.vue` mixin) instead
-of `console.log()`, set `VUE_APP_LOG=true` in `.env.development.local`.
-
 ### Setup Steps
 
 Install the require dependencies:

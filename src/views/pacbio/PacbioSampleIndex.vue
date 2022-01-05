@@ -1,7 +1,5 @@
 <template>
   <div>
-    <alert ref="alert"></alert>
-
     <b-form-group
       label="Filter"
       label-cols-sm="1"
@@ -114,9 +112,8 @@
 import PacbioLibraryCreate from '@/components/pacbio/PacbioLibraryCreate'
 import PacbioSampleMetadataEdit from '@/components/pacbio/PacbioSampleMetadataEdit'
 import PrinterModal from '@/components/PrinterModal'
-import Helper from '@/mixins/Helper'
+import PrintHelper from '@/mixins/PrintHelper'
 import TableHelper from '@/mixins/TableHelper'
-import Alert from '@/components/Alert'
 
 import { createNamespacedHelpers } from 'vuex'
 const { mapActions, mapGetters } = createNamespacedHelpers('traction/pacbio/requests')
@@ -126,10 +123,9 @@ export default {
   components: {
     PacbioLibraryCreate,
     PrinterModal,
-    Alert,
     PacbioSampleMetadataEdit,
   },
-  mixins: [Helper, TableHelper],
+  mixins: [PrintHelper, TableHelper],
   data() {
     return {
       fields: [

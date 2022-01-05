@@ -36,12 +36,6 @@ describe('OntPlates.vue', () => {
     expect(plates.fields).toEqual(['id', 'barcode', 'createdAt', 'show_details'])
   })
 
-  describe('components', () => {
-    it('has a Alert component', () => {
-      expect(wrapper.findComponent({ ref: 'alert' })).toBeTruthy()
-    })
-  })
-
   it('will have a table', () => {
     expect(wrapper.find('table').exists()).toBeTruthy()
   })

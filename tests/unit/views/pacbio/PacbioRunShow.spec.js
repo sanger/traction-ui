@@ -38,12 +38,6 @@ describe('Run.vue', () => {
     pacbioRun = wrapper.vm
   })
 
-  describe('Alert', () => {
-    it('has a alert', () => {
-      expect(wrapper.findComponent({ ref: 'alert' }).exists()).toBeTruthy()
-    })
-  })
-
   describe('Pacbio Run Info', () => {
     it('dispays the run infomation', () => {
       expect(wrapper.findComponent({ ref: 'PacbioRunInfoEdit' })).toBeTruthy()
@@ -111,6 +105,7 @@ describe('Run.vue', () => {
       expect(pacbioRun.showAlert).toBeCalledWith(
         'Failed to create run in Traction: this is an error',
         'danger',
+        'run-validation-message',
       )
       expect(pacbioRun.redirectToRuns).not.toBeCalled()
     })
@@ -166,6 +161,7 @@ describe('Run.vue', () => {
       expect(pacbioRun.showAlert).toBeCalledWith(
         'Failed to create run in Traction: this is an error',
         'danger',
+        'run-validation-message',
       )
       expect(pacbioRun.redirectToRuns).not.toBeCalled()
     })
@@ -181,7 +177,11 @@ describe('Run.vue', () => {
       pacbioRun.newRun.mockReturnValue([])
       pacbioRun.resetRun()
       expect(pacbioRun.newRun).toBeCalled()
-      expect(pacbioRun.showAlert).toBeCalledWith('Run has been reset', 'success')
+      expect(pacbioRun.showAlert).toBeCalledWith(
+        'Run has been reset',
+        'success',
+        'run-validation-message',
+      )
     })
   })
 })

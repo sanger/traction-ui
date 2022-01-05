@@ -8,6 +8,13 @@
         ><h2>{{ pipeline }}</h2></b-nav-text
       >
     </b-navbar>
+    <Message
+      v-for="(message, index) in messages"
+      ref="alert"
+      :key="index"
+      v-bind="message"
+      @dismissed="dismiss(index)"
+    ></Message>
     <router-view />
     <InfoFooter></InfoFooter>
   </b-container>
@@ -15,13 +22,24 @@
 
 <script>
 import InfoFooter from '@/components/InfoFooter'
+import Message from '@/components/Message'
+
 export default {
   components: {
     InfoFooter,
+    Message,
   },
   computed: {
     pipeline() {
       return localStorage.getItem('pipeline')
+    },
+    messages() {
+      return this.$store.getters['traction/messages']
+    },
+  },
+  methods: {
+    dismiss(messageIndex) {
+      this.$store.commit('traction/removeMessage', messageIndex)
     },
   },
 }

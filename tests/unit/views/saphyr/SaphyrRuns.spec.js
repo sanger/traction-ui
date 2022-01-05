@@ -20,12 +20,6 @@ describe('Runs.vue', () => {
     })
   })
 
-  describe('alert', () => {
-    it('has a alert', () => {
-      expect(wrapper.findComponent({ ref: 'alert' })).toBeTruthy()
-    })
-  })
-
   describe('building the table', () => {
     it('exists', () => {
       expect(wrapper.find('table').element).toBeTruthy()
@@ -38,13 +32,7 @@ describe('Runs.vue', () => {
 
   describe('sorting', () => {
     it('will sort the runs by created at', () => {
-      expect(
-        wrapper
-          .find('tbody')
-          .findAll('tr')
-          .at(0)
-          .text(),
-      ).toMatch(/TRAC-678/)
+      expect(wrapper.find('tbody').findAll('tr').at(0).text()).toMatch(/TRAC-678/)
     })
   })
 
@@ -63,13 +51,7 @@ describe('Runs.vue', () => {
 
     it('will filter the runs in the table', () => {
       expect(wrapper.find('tbody').findAll('tr').length).toEqual(1)
-      expect(
-        wrapper
-          .find('tbody')
-          .findAll('tr')
-          .at(0)
-          .text(),
-      ).toMatch(/TRAC-123/)
+      expect(wrapper.find('tbody').findAll('tr').at(0).text()).toMatch(/TRAC-123/)
     })
   })
 
@@ -97,13 +79,7 @@ describe('Runs.vue', () => {
       button = wrapper.find('#startRun-6')
       button.trigger('click')
 
-      let runId = wrapper
-        .find('tbody')
-        .findAll('tr')
-        .at(0)
-        .findAll('td')
-        .at(0)
-        .text()
+      let runId = wrapper.find('tbody').findAll('tr').at(0).findAll('td').at(0).text()
       expect(runs.startRun).toBeCalledWith(runId)
     })
   })
@@ -142,13 +118,7 @@ describe('Runs.vue', () => {
       button = wrapper.find('#completeRun-2')
       button.trigger('click')
 
-      let runId = wrapper
-        .find('tbody')
-        .findAll('tr')
-        .at(4)
-        .findAll('td')
-        .at(0)
-        .text()
+      let runId = wrapper.find('tbody').findAll('tr').at(4).findAll('td').at(0).text()
       expect(runs.completeRun).toBeCalledWith(runId)
     })
   })
@@ -187,13 +157,7 @@ describe('Runs.vue', () => {
       button = wrapper.find('#cancelRun-2')
       button.trigger('click')
 
-      let runId = wrapper
-        .find('tbody')
-        .findAll('tr')
-        .at(4)
-        .findAll('td')
-        .at(0)
-        .text()
+      let runId = wrapper.find('tbody').findAll('tr').at(4).findAll('td').at(0).text()
       expect(runs.cancelRun).toBeCalledWith(runId)
     })
   })
@@ -224,9 +188,10 @@ describe('Runs.vue', () => {
 
   describe('#showAlert', () => {
     it('emits an event with the message', () => {
-      runs.showAlert(/show this message/)
-      wrapper.vm.$nextTick(() => {
-        expect(wrapper.findComponent({ ref: 'alert' }).text()).toMatch(/show this message/)
+      runs.showAlert('show this message', 'danger')
+      expect(Object.values(store.state.traction.messages)).toContainEqual({
+        type: 'danger',
+        message: 'show this message',
       })
     })
   })

@@ -1,4 +1,4 @@
-mutation($libraryName: String!) {
+mutation ($libraryName: String!) {
   deleteOntLibrary(input: { libraryName: $libraryName }) {
     success
     errors

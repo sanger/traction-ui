@@ -13,6 +13,8 @@ describe('actions.js', () => {
     createPool,
     updatePool,
     populateLibrariesFromPool,
+    applyTags,
+    updateLibraryFromCsvRecord,
   } = actions
 
   describe('fetchPacbioPlates', () => {
@@ -394,6 +396,309 @@ describe('actions.js', () => {
       expect(update).not.toHaveBeenCalled()
       expect(success).toBeFalsy()
       expect(errors).toEqual('The pool is invalid')
+    })
+  })
+
+  describe('applyTags', () => {
+    const state = Data.AutoTagStore
+    // Starting in B1
+    const library = { pacbio_request_id: '13', tag_id: '130' }
+
+    it('applies a single tag when autoTag is false', async () => {
+      const commit = jest.fn()
+      // Starting in B1
+      const autoTag = false
+
+      await applyTags({ commit, state }, { library, autoTag })
+      // We update the changed well
+      expect(commit).toHaveBeenCalledWith('updateLibrary', {
+        pacbio_request_id: '13',
+        tag_id: '130',
+      })
+      // But nothing else
+      expect(commit).toHaveBeenCalledTimes(1)
+
+      // We don't update earlier wells
+      expect(commit).not.toHaveBeenCalledWith(
+        'updateLibrary',
+        expect.objectContaining({ pacbio_request_id: '1' }),
+      )
+    })
+
+    it('applies tags to wells on the same plate with a higher column index when autoTag is true', async () => {
+      const commit = jest.fn()
+      const autoTag = true
+
+      await applyTags(
+        {
+          commit,
+          state,
+        },
+        {
+          library,
+          autoTag,
+        },
+      )
+
+      // We update the changed well
+      expect(commit).toHaveBeenCalledWith('updateLibrary', {
+        pacbio_request_id: '13',
+        tag_id: '130',
+      })
+
+      // We don't update earlier wells
+      expect(commit).not.toHaveBeenCalledWith(
+        'updateLibrary',
+        expect.objectContaining({
+          pacbio_request_id: '1',
+        }),
+      )
+      // We don't update unselected wells
+      expect(commit).not.toHaveBeenCalledWith(
+        'updateLibrary',
+        expect.objectContaining({
+          pacbio_request_id: '25', // C1
+        }),
+      )
+      // We do update wells further down the plate
+      expect(commit).toHaveBeenCalledWith(
+        'updateLibrary',
+        expect.objectContaining({
+          pacbio_request_id: '37', // D1
+          tag_id: '132',
+        }),
+      )
+      // Including the next column
+      expect(commit).toHaveBeenCalledWith(
+        'updateLibrary',
+        expect.objectContaining({
+          pacbio_request_id: '2', // A2
+          tag_id: '137',
+        }),
+      )
+      // But not another plate
+      expect(commit).not.toHaveBeenCalledWith(
+        'updateLibrary',
+        expect.objectContaining({
+          pacbio_request_id: '61', // B1
+        }),
+      )
+      expect(commit).not.toHaveBeenCalledWith(
+        'updateLibrary',
+        expect.objectContaining({
+          pacbio_request_id: '73', // C1
+        }),
+      )
+
+      // In total we expect ot update8 wells in this case
+      expect(commit).toHaveBeenCalledTimes(6)
+    })
+  })
+
+  describe('updateLibraryFromCsvRecord', () => {
+    const state = Data.AutoTagStore
+    const info = {
+      lines: 3,
+      records: 2,
+    }
+    const getters = {
+      selectedTagSet: {
+        id: '3',
+        type: 'tag_sets',
+        name: 'Sequel_48_Microbial_Barcoded_OHA_v1',
+        uuid: 'c808dbb2-a26b-cfae-0a16-c3e7c3b8d7fe',
+        pipeline: 'pacbio',
+        tags: [
+          { id: '129', type: 'tags', oligo: 'TCTGTATCTCTATGTGT', group_id: 'bc1007T' },
+          { id: '130', type: 'tags', oligo: 'CAGAGAGATATCTCTGT', group_id: 'bc1023T' },
+          { id: '131', type: 'tags', oligo: 'CATGTAGAGCAGAGAGT', group_id: 'bc1024T' },
+          { id: '132', type: 'tags', oligo: 'CACAGAGACACGCACAT', group_id: 'bc1026T' },
+          { id: '133', type: 'tags', oligo: 'CTCACACTCTCTCACAT', group_id: 'bc1027T' },
+          { id: '134', type: 'tags', oligo: 'CTCTGCTCTGACTCTCT', group_id: 'bc1028T' },
+        ],
+      },
+    }
+
+    it('updates the corresponding library', async () => {
+      const commit = jest.fn()
+      const record = {
+        source: 'DN1-A10',
+        tag: 'bc1024T',
+        genome_size: 6.3,
+        insert_size: 15230,
+        concentration: 13,
+        volume: 15,
+      }
+
+      updateLibraryFromCsvRecord({ state, commit, getters }, { record, info })
+
+      expect(commit).toHaveBeenCalledWith(
+        'updateLibrary',
+        expect.objectContaining({
+          pacbio_request_id: '10',
+          tag_id: '131',
+          insert_size: 15230,
+          concentration: 13,
+          volume: 15,
+        }),
+      )
+    })
+
+    it('records an error when source is missing', async () => {
+      const commit = jest.fn()
+      const record = {
+        tag: 'bc1024T',
+        genome_size: 6.3,
+        insert_size: 15230,
+        concentration: 13,
+        volume: 15,
+      }
+
+      updateLibraryFromCsvRecord({ state, commit, getters }, { record, info })
+
+      expect(commit).toHaveBeenCalledWith(
+        'traction/addMessage',
+        {
+          type: 'danger',
+          message: 'Library 2 on line 3: has no source',
+        },
+        { root: true },
+      )
+    })
+
+    it('records an error when source is invalid', async () => {
+      const commit = jest.fn()
+      const record = {
+        source: 'DN1A10',
+      }
+
+      updateLibraryFromCsvRecord({ state, commit, getters }, { record, info })
+
+      expect(commit).toHaveBeenCalledWith(
+        'traction/addMessage',
+        {
+          type: 'danger',
+          message:
+            'Library 2 on line 3: DN1A10 should be in the format barcode-well. Eg. DN123S-A1',
+        },
+        { root: true },
+      )
+    })
+
+    it('records an error when the plate cant be found', async () => {
+      const commit = jest.fn()
+      const record = {
+        source: 'DN34-A10',
+      }
+
+      updateLibraryFromCsvRecord({ state, commit, getters }, { record, info })
+
+      expect(commit).toHaveBeenCalledWith(
+        'traction/addMessage',
+        {
+          type: 'danger',
+          message: 'Library 2 on line 3: DN34 could not be found',
+        },
+        { root: true },
+      )
+    })
+
+    it('records an error when the well cant be found', async () => {
+      const commit = jest.fn()
+      const record = {
+        source: 'DN1-X13',
+      }
+
+      updateLibraryFromCsvRecord({ state, commit, getters }, { record, info })
+
+      expect(commit).toHaveBeenCalledWith(
+        'traction/addMessage',
+        {
+          type: 'danger',
+          message: 'Library 2 on line 3: A well named X13 could not be found on DN1',
+        },
+        { root: true },
+      )
+    })
+
+    it('records an error when the tag cant be found', async () => {
+      const commit = jest.fn()
+      const record = {
+        source: 'DN1-A1',
+        tag: 'bc1001_BAK8A_OA',
+      }
+
+      updateLibraryFromCsvRecord({ state, commit, getters }, { record, info })
+
+      expect(commit).toHaveBeenCalledWith(
+        'traction/addMessage',
+        {
+          type: 'danger',
+          message:
+            'Library 2 on line 3: Could not find a tag named bc1001_BAK8A_OA in selected tag group',
+        },
+        { root: true },
+      )
+    })
+
+    it('flags the plate as selected', async () => {
+      const commit = jest.fn()
+      const record = {
+        source: 'DN1-A1',
+        tag: 'bc1001_BAK8A_OA',
+      }
+
+      updateLibraryFromCsvRecord({ state, commit, getters }, { record, info })
+
+      expect(commit).toHaveBeenCalledWith('selectPlate', {
+        id: '1',
+        selected: true,
+      })
+    })
+
+    it('notifies of request addition', async () => {
+      const commit = jest.fn()
+      const record = {
+        source: 'DN1-A3',
+        tag: 'bc1024T',
+        genome_size: 6.3,
+        insert_size: 15230,
+        concentration: 13,
+        volume: 15,
+      }
+
+      updateLibraryFromCsvRecord({ state, commit, getters }, { record, info })
+
+      expect(commit).toHaveBeenCalledWith(
+        'traction/addMessage',
+        {
+          type: 'info',
+          message: 'Library 2 on line 3: Added DN1-A3 to pool',
+        },
+        { root: true },
+      )
+    })
+
+    it('does not notifies of request update', async () => {
+      const commit = jest.fn()
+      const record = {
+        source: 'DN1-A1',
+        genome_size: 6.3,
+        insert_size: 15230,
+        concentration: 13,
+        volume: 15,
+      }
+
+      updateLibraryFromCsvRecord({ state, commit, getters }, { record, info })
+
+      expect(commit).not.toHaveBeenCalledWith(
+        'traction/addMessage',
+        {
+          type: 'info',
+          message: 'Library 2 on line 3: Added DN1-A1 to pool',
+        },
+        { root: true },
+      )
     })
   })
 })

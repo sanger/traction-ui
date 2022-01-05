@@ -1,7 +1,5 @@
 <template>
   <div>
-    <alert ref="alert"></alert>
-
     <b-form-group
       label="Filter"
       label-cols-sm="1"
@@ -90,10 +88,9 @@
 </template>
 
 <script>
-import Helper from '@/mixins/Helper'
+import PrintHelper from '@/mixins/PrintHelper'
 import PacbioLibraryEdit from '@/components/pacbio/PacbioLibraryEdit'
 import TableHelper from '@/mixins/TableHelper'
-import Alert from '@/components/Alert'
 import PrinterModal from '@/components/PrinterModal'
 import * as consts from '@/consts/consts'
 import { createNamespacedHelpers } from 'vuex'
@@ -102,11 +99,10 @@ const { mapActions, mapGetters } = createNamespacedHelpers('traction/pacbio/libr
 export default {
   name: 'Libraries',
   components: {
-    Alert,
     PrinterModal,
     PacbioLibraryEdit,
   },
-  mixins: [Helper, TableHelper],
+  mixins: [PrintHelper, TableHelper],
   data() {
     return {
       fields: [

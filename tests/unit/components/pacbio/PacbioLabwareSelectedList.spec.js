@@ -18,6 +18,7 @@ describe('PacbioLabwareSelectedList', () => {
       store,
       stubs: {
         Plate: true,
+        VueSelecto: true,
       },
     })
   })
@@ -43,7 +44,7 @@ describe('PacbioLabwareSelectedList', () => {
     })
   })
 
-  describe('Plate@clickWell', () => {
+  describe('Plate@onSelect', () => {
     beforeEach(() => {
       let selectPlate = { id: '61', selected: true }
       store.commit('traction/pacbio/poolCreate/selectPlate', selectPlate)
@@ -52,10 +53,17 @@ describe('PacbioLabwareSelectedList', () => {
     it('selects the requests associated with the well', async () => {
       const dispatch = jest.fn()
       store.dispatch = dispatch
-      const plate = wrapper.find('plate-stub')
-      await plate.vm.$emit('clickWell', '1')
+      const selecto = wrapper.find('vueselecto-stub')
+      await selecto.vm.$emit('select', {
+        // I'm not particularly happy with this, and would prefer to test with
+        // something a little more realistic. TBH, I'd be happier if we were
+        // emitting a vue component.
+        added: [{ __vue__: { $attrs: { id: '1' } } }],
+        removed: [{ __vue__: { $attrs: { id: '2' } } }],
+      })
 
       expect(dispatch).toHaveBeenCalledWith('traction/pacbio/poolCreate/selectWellRequests', '1')
+      expect(dispatch).toHaveBeenCalledWith('traction/pacbio/poolCreate/selectWellRequests', '2')
     })
   })
 })

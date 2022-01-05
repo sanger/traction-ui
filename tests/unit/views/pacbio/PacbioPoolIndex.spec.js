@@ -48,8 +48,9 @@ describe('PacbioPoolIndex.vue', () => {
   describe('#showAlert', () => {
     it('passes the message to function on emit event', () => {
       poolsVm.showAlert('show this message', 'danger')
-      wrapper.vm.$nextTick(() => {
-        expect(wrapper.findComponent({ ref: 'alert' }).html()).toMatch('show this message')
+      expect(Object.values(store.state.traction.messages)).toContainEqual({
+        type: 'danger',
+        message: 'show this message',
       })
     })
   })
@@ -66,12 +67,6 @@ describe('PacbioPoolIndex.vue', () => {
       modal.vm.$emit('selectPrinter', 'printer1')
 
       expect(poolsVm.handlePrintLabel).toBeCalledWith('printer1')
-    })
-  })
-
-  describe('alert', () => {
-    it('has a alert', () => {
-      expect(wrapper.findComponent({ ref: 'alert' })).toBeTruthy()
     })
   })
 

@@ -1,6 +1,5 @@
 <template>
   <div class="ont-libraries">
-    <alert ref="alert"></alert>
     <b-table
       id="libraries-table"
       ref="table"
@@ -49,17 +48,15 @@
 import LIBRARIES_ALL_QUERY from '@/graphql/queries/LibrariesAll.query.gql'
 import DELETE_ONT_LIBRARY from '@/graphql/queries/DeleteOntLibrary.mutation.gql'
 import PrinterModal from '@/components/PrinterModal'
-import Helper from '@/mixins/Helper'
+import PrintHelper from '@/mixins/PrintHelper'
 import TableHelper from '@/mixins/TableHelper'
-import Alert from '@/components/Alert'
 
 export default {
   name: 'OntLibraries',
   components: {
-    Alert,
     PrinterModal,
   },
-  mixins: [Helper, TableHelper],
+  mixins: [PrintHelper, TableHelper],
   data() {
     return {
       fields: [
@@ -79,8 +76,8 @@ export default {
     }
   },
   methods: {
-    handlePrint(printer) {
-      this.handlePrintLabel(printer)
+    async handlePrint(printer) {
+      await this.handlePrintLabel(printer)
     },
     getLibraries(ctx, callback) {
       this.$apollo

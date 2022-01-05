@@ -35,7 +35,7 @@ export default {
     // eslint-disable-next-line vue/prop-name-casing
     well_info: {
       type: Object,
-      default: function() {
+      default: function () {
         return {}
       },
     },

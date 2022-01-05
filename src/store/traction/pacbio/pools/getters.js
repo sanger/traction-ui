@@ -13,9 +13,11 @@ const getters = {
       return { ...pool, libraries, barcode }
     })
   },
-  poolByBarcode: (state, { pools }) => (barcode) => {
-    return pools.find((pool) => pool.barcode === barcode)
-  },
+  poolByBarcode:
+    (state, { pools }) =>
+    (barcode) => {
+      return pools.find((pool) => pool.barcode === barcode)
+    },
 }
 
 export default getters

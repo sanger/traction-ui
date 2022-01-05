@@ -1,4 +1,5 @@
 // Getters are like computed properties
+import { wellToIndex } from './wellHelpers'
 
 /**
  * Merge together two representations of the same object.
@@ -16,7 +17,10 @@ const mergeRepresentations = (parent, child, keyFunction = (id) => id) => {
   })
 }
 
-const prefixWithUnderscore = (id) => `_${id}`
+const sortRequestByWellColumnIndex = (resources) => (a, b) =>
+  wellToIndex(resources.wells[a.well]) - wellToIndex(resources.wells[b.well])
+const sortRequestByPlate = (resources) => (a, b) =>
+  parseInt(resources.wells[a.well].plate) - parseInt(resources.wells[b.well].plate)
 
 export default {
   /**
@@ -24,7 +28,7 @@ export default {
    * @param {Object} state The Vuex state object
    */
   labwareList: ({ selected, resources }) => {
-    return mergeRepresentations(resources.plates, selected.plates, prefixWithUnderscore)
+    return mergeRepresentations(resources.plates, selected.plates)
   },
   /**
    * Returns a list of all fetched tagSet
@@ -63,23 +67,24 @@ export default {
    * Returns a list of selected plates
    * @param {Object} state The Vuex state object
    */
-  selectedPlates: ({ selected, resources }) => {
-    return mergeRepresentations(selected.plates, resources.plates)
-  },
+  selectedPlates: ({ selected, resources }) =>
+    mergeRepresentations(selected.plates, resources.plates),
 
   /**
    * Returns a list of selected requests
    *
-   * Note: Ordering depends on selectRequest prefixing ids with underscore, as javascript objects
-   * sort most keys in insertion order, but numeric keys in numeric order.
+   * Note: Ordering is grouped by plate (in id order) and sorted in column order
    * @param {Object} state The Vuex state object
    * @return {Array} An array of selected requests in the order in which they were selected
    */
-  selectedRequests: ({ libraries, resources }) => {
-    return Object.values(libraries).map(({ pacbio_request_id }) => {
-      return { ...resources.requests[pacbio_request_id], selected: true }
-    })
-  },
+  selectedRequests: ({ libraries, resources }) =>
+    Object.values(libraries)
+      .map(({ pacbio_request_id }) => ({
+        ...resources.requests[pacbio_request_id],
+        selected: true,
+      }))
+      .sort(sortRequestByWellColumnIndex(resources))
+      .sort(sortRequestByPlate(resources)),
 
   /**
    * Returns a list of all fetched wells
@@ -114,23 +119,20 @@ export default {
    * Returns a library
    * @param {Object} state The Vuex state object
    */
-  libraryItem: ({ libraries }) => (id) => {
-    return libraries[`_${id}`]
-  },
+  libraryItem:
+    ({ libraries }) =>
+    (id) =>
+      libraries[`_${id}`],
 
   /**
    * Returns the pool
    * @param {Object} state The Vuex state object
    */
-  poolItem: (state) => {
-    return state.pool || {}
-  },
+  poolItem: (state) => state.pool || {},
 
   /**
    * Returns the tube
    * @param {Object} state The Vuex state object
    */
-  tubeItem: (state) => {
-    return state.tube || {}
-  },
+  tubeItem: (state) => state.tube || {},
 }

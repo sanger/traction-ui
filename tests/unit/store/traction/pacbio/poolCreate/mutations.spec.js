@@ -16,6 +16,7 @@ describe('mutations.js', () => {
     populateLibraries,
     populatePoolAttributes,
     populateTube,
+    updateLibrary,
     clearPoolData,
   } = mutations
 
@@ -28,7 +29,7 @@ describe('mutations.js', () => {
         selected: {
           ...defaultStateObject.selected,
           plates: {
-            _2: { id: '2', selected: true },
+            2: { id: '2', selected: true },
           },
         },
       }
@@ -39,8 +40,8 @@ describe('mutations.js', () => {
       // - Prefix the key with an _ to maintain insert order
       // - Not disrupt other plates in the store
       expect(state.selected.plates).toEqual({
-        _2: { id: '2', selected: true },
-        _1: { id: '1', selected: true },
+        1: { id: '1', selected: true },
+        2: { id: '2', selected: true },
       })
     })
   })
@@ -48,31 +49,31 @@ describe('mutations.js', () => {
   describe('selectTagSet', () => {
     it('updates the state', () => {
       const tagSets = {
-        '1': {
+        1: {
           'id:': '1',
           name: 'tagSet1',
           tags: ['1', '2'],
         },
-        '2': {
+        2: {
           'id:': '2',
           name: 'tagSet2',
         },
       }
 
       const tags = {
-        '1': {
+        1: {
           id: '1',
           name: 'tag1',
         },
-        '2': {
+        2: {
           id: '2',
           name: 'tag2',
         },
-        '3': {
+        3: {
           id: '3',
           name: 'tag3',
         },
-        '4': {
+        4: {
           id: '4',
           name: 'tag4',
         },
@@ -207,8 +208,8 @@ describe('mutations.js', () => {
         resources: {
           ...initialState.resources,
           requests: {
-            '1': {},
-            '136': {},
+            1: {},
+            136: {},
           },
         },
       }
@@ -216,8 +217,8 @@ describe('mutations.js', () => {
       populateRequests(state, requests)
       // assert result
       expect(state.resources.requests).toEqual({
-        '1': {},
-        ...dataToObjectById({ data: requests, includeRelationships: false }),
+        1: {},
+        ...dataToObjectById({ data: requests, includeRelationships: true }),
       })
     })
   })
@@ -300,6 +301,31 @@ describe('mutations.js', () => {
       expect(state.tube).toEqual({
         id: 1,
         barcode: 'TRAC-1',
+      })
+    })
+  })
+
+  describe('updateLibrary', () => {
+    it('sets a library with the correct data', () => {
+      // mock state
+      const state = defaultState()
+      // Prepopulate with some dummy data
+      populateLibraries(state, Data.TractionPacbioPool.data.included.slice(0, 1))
+      // apply mutation
+      updateLibrary(state, { pacbio_request_id: '4', insert_size: 4 })
+      // We expect the request to be recorded in the selected requests it should:
+      // - Prefix the key with an _ to maintain insert order
+      // - Not disrupt other requests in the store
+      expect(state.libraries).toEqual({
+        _4: expect.objectContaining({
+          id: '242',
+          pacbio_request_id: '4',
+          tag_id: '3',
+          volume: 1.0,
+          concentration: 1.0,
+          template_prep_kit_box_barcode: '2424',
+          insert_size: 4,
+        }),
       })
     })
   })

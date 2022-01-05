@@ -8,10 +8,12 @@ import router from './router'
 import store from './store'
 import BootstrapVue from 'bootstrap-vue'
 import { apolloProvider } from './graphql/client'
+import globalAlert from '@/mixins/globalAlert'
 
 Vue.config.productionTip = false
 Vue.use(BootstrapVue)
 Vue.use(Vuex)
+Vue.mixin(globalAlert)
 
 new Vue({
   store,

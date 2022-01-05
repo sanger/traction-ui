@@ -1,6 +1,19 @@
 import { groupIncludedByResource } from '@/api/JsonApi'
 import { validate, payload, valid } from '@/store/traction/pacbio/poolCreate/pool'
 import { handleResponse } from '@/api/ResponseHelper'
+import { wellFor, wellToIndex } from './wellHelpers'
+
+const sourceRegex = /^(?<barcode>\w+)-(?<wellName>\w[0-9]{1,2})$/
+const errorFor = ({ lines, records }, message) => `Library ${records} on line ${lines}: ${message}`
+const csvLogger = (commit, info, level) => (message) =>
+  commit(
+    'traction/addMessage',
+    {
+      type: level,
+      message: errorFor(info, message),
+    },
+    { root: true },
+  )
 
 // Actions handle asynchronous update of state, via mutations.
 // Note: The { commit } in the given example is destucturing
@@ -132,5 +145,93 @@ export default {
     }
 
     return { success, errors }
+  },
+  /*
+   * Given a tag change to library_a, will automatically apply tags to the remaining wells
+   * on the plate with the following  rules:
+   * - Only apply additional tags is autoTag is true
+   * - Tags applied in column order based on the source well
+   * - Do not apply tags that appear earlier on the plate
+   * - Do not apply tags to request originating from other plates
+   * - Offset tags based on well position, ignoring occupancy. For example
+   *   if tag 2 was applied to A1, then C1 would receive tag 4 regardless of
+   *   the state of B1.
+   */
+  applyTags: ({ state, commit }, { library, autoTag }) => {
+    // We always apply the first tag
+    commit('updateLibrary', library)
+    if (autoTag) {
+      const initialWell = wellFor(state, library)
+      const initialIndex = wellToIndex(initialWell)
+      const tags = state.resources.tagSets[state.selected.tagSet.id].tags
+      const initialTagIndex = tags.indexOf(library.tag_id)
+      const plate = initialWell.plate
+
+      Object.values(state.libraries).forEach(({ pacbio_request_id }) => {
+        const otherWell = wellFor(state, { pacbio_request_id })
+
+        if (otherWell.plate !== plate) return
+
+        const offset = wellToIndex(otherWell) - initialIndex
+
+        if (offset < 1) return
+
+        const newTag = (initialTagIndex + offset) % tags.length
+        commit('updateLibrary', { pacbio_request_id, tag_id: tags[newTag] })
+      })
+    }
+  },
+  /**
+   * Given a record extracted from a csv file, will update the corresponding library
+   * Each library is identified by the key 'source' which consists of a string identifying
+   * the source plate barcode and its well. eg. DN814597W-A10
+   * @param state the vuex state object. Provides access to current state
+   * @param commit the vuex commit object. Provides access to mutations
+   */
+  updateLibraryFromCsvRecord: (
+    {
+      state: {
+        resources: { plates, wells },
+        libraries,
+      },
+      commit,
+      getters,
+    },
+    { record: { source, tag, ...attributes }, info },
+  ) => {
+    const error = csvLogger(commit, info, 'danger')
+    if (!source) return error('has no source')
+
+    const match = source.match(sourceRegex)
+
+    if (!match) return error(`${source} should be in the format barcode-well. Eg. DN123S-A1`)
+
+    const { barcode, wellName } = match.groups
+
+    const plate = Object.values(plates).find((plate) => plate.barcode == barcode)
+    if (!plate) return error(`${barcode} could not be found`)
+    // Ensure the plate is registered as selected
+    commit('selectPlate', { id: plate.id, selected: true })
+
+    const wellId = plate.wells.find((well_id) => wells[well_id].position == wellName)
+    if (!wellId) return error(`A well named ${wellName} could not be found on ${barcode}`)
+
+    const tagAttributes = {}
+    if (tag) {
+      const matchedTag = getters.selectedTagSet.tags.find(({ group_id }) => group_id === tag)
+      if (matchedTag) {
+        tagAttributes.tag_id = matchedTag.id
+      } else {
+        error(`Could not find a tag named ${tag} in selected tag group`)
+      }
+    }
+
+    wells[wellId].requests.forEach((pacbio_request_id) => {
+      if (!libraries[`_${pacbio_request_id}`]) {
+        // We're adding a library
+        csvLogger(commit, info, 'info')(`Added ${source} to pool`)
+      }
+      commit('updateLibrary', { pacbio_request_id, ...tagAttributes, ...attributes })
+    })
   },
 }

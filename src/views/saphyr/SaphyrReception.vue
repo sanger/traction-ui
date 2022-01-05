@@ -1,7 +1,5 @@
 <template>
   <div class="reception">
-    <alert ref="alert"></alert>
-
     <div class="form-group">
       <label for="barcodes">Barcodes:</label>
       <textarea
@@ -28,17 +26,10 @@
 </template>
 
 <script>
-import Alert from '@/components/Alert'
-import Helper from '@/mixins/Helper'
-
 import { mapActions, mapState } from 'vuex'
 
 export default {
   name: 'SaphyrReception',
-  components: {
-    Alert,
-  },
-  mixins: [Helper],
   props: {},
   data() {
     return {

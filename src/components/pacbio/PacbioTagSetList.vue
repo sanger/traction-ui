@@ -8,28 +8,20 @@
       :options="options"
       @change="updateSelected"
     ></b-form-select>
-    <div>
-      <alert ref="alert"></alert>
-    </div>
   </b-col>
 </template>
 
 <script>
-import Helper from '@/mixins/Helper'
-import Alert from '@/components/Alert'
-
 export default {
   name: 'PacbioTagSetList',
-  components: { Alert },
-  mixins: [Helper],
   computed: {
     isEmpty() {
       return this.tagSets.length === 0
     },
     tagSets() {
-      return this.$store.getters[
-        'traction/pacbio/poolCreate/tagSetList'
-      ].map(({ id: value, name: text }) => ({ value, text }))
+      return this.$store.getters['traction/pacbio/poolCreate/tagSetList'].map(
+        ({ id: value, name: text }) => ({ value, text }),
+      )
     },
     options() {
       return [{ value: null, text: 'Please select a tag set' }, ...this.tagSets]

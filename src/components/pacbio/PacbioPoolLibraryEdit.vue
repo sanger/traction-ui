@@ -9,7 +9,7 @@
     <b-td>
       <b-form-select
         v-if="tagList.length > 0"
-        v-model="library.tag_id"
+        v-model="tag_id"
         data-type="tag-list"
         :options="tagListOptions"
         :state="hasErrors('tag_id')"
@@ -20,9 +20,9 @@
     </b-td>
     <b-td>
       <b-form-input
-        v-model="library.template_prep_kit_box_barcode"
+        v-model="template_prep_kit_box_barcode"
         data-attribute="template-prep-kit-box-barcode"
-        :value="library.template_prep_kit_box_barcode"
+        :value="template_prep_kit_box_barcode"
         placeholder="Template Prep Kit Box Barcode"
         type="text"
         title="Template Prep Kit Box Barcode"
@@ -34,9 +34,9 @@
     </b-td>
     <b-td>
       <b-form-input
-        v-model="library.volume"
+        v-model="volume"
         data-attribute="volume"
-        :value="library.volume"
+        :value="volume"
         placeholder="Volume"
         type="text"
         title="Volume"
@@ -48,9 +48,9 @@
     </b-td>
     <b-td>
       <b-form-input
-        v-model="library.concentration"
+        v-model="concentration"
         data-attribute="concentration"
-        :value="library.concentration"
+        :value="concentration"
         placeholder="Concentration"
         type="text"
         title="Concentration"
@@ -62,9 +62,9 @@
     </b-td>
     <b-td>
       <b-form-input
-        v-model="library.insert_size"
+        v-model="insert_size"
         data-attribute="insert-size"
-        :value="library.insert_size"
+        :value="insert_size"
         placeholder="Insert Size"
         type="text"
         title="Insert Size"
@@ -79,7 +79,19 @@
 
 <script>
 import { createNamespacedHelpers } from 'vuex'
-const { mapGetters } = createNamespacedHelpers('traction/pacbio/poolCreate')
+const { mapGetters, mapMutations, mapActions } = createNamespacedHelpers(
+  'traction/pacbio/poolCreate',
+)
+const librarySetter = (attr) => {
+  return {
+    get() {
+      return this.library[attr]
+    },
+    set(newValue) {
+      this.updateLibrary({ pacbio_request_id: this.library.pacbio_request_id, [attr]: newValue })
+    },
+  }
+}
 export default {
   name: 'PacbioPoolLibraryEdit',
   props: {
@@ -92,6 +104,10 @@ export default {
       default() {
         return { id: null }
       },
+    },
+    autoTag: {
+      type: Boolean,
+      default: false,
     },
   },
   data() {
@@ -108,8 +124,25 @@ export default {
     library() {
       return this.libraryItem(this.request.id)
     },
+    volume: librarySetter('volume'),
+    insert_size: librarySetter('insert_size'),
+    concentration: librarySetter('concentration'),
+    template_prep_kit_box_barcode: librarySetter('template_prep_kit_box_barcode'),
+    tag_id: {
+      get() {
+        return this.library.tag_id
+      },
+      set(tag_id) {
+        this.applyTags({
+          library: { tag_id, pacbio_request_id: this.library.pacbio_request_id },
+          autoTag: this.autoTag,
+        })
+      },
+    },
   },
   methods: {
+    ...mapMutations(['updateLibrary']),
+    ...mapActions(['applyTags']),
     hasErrors(attribute) {
       if (!this.library.errors) {
         return null

@@ -1,4 +1,4 @@
-query($unassignedToFlowcells: Boolean, $pageNum: Int, $pageSize: Int) {
+query ($unassignedToFlowcells: Boolean, $pageNum: Int, $pageSize: Int) {
   libraries: ontLibraries(
     unassignedToFlowcells: $unassignedToFlowcells
     pageNum: $pageNum

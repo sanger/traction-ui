@@ -23,3 +23,7 @@
 //
 // -- This is will overwrite an existing command --
 // Cypress.Commands.overwrite("visit", (originalFn, url, options) => { ... })
+
+// Add an ability to easily manipulate file fields
+// https://github.com/abramenal/cypress-file-upload
+import 'cypress-file-upload'

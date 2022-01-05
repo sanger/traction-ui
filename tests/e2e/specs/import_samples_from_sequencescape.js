@@ -13,9 +13,7 @@ describe('Import samples from Sequencescape', () => {
 
     cy.get('#createTractionPlates').click()
     cy.fixture('tractionPacbioPlateCreate').then(({ data }) => {
-      cy.wait('@postPayload')
-        .its('request.body')
-        .should('deep.equal', data)
+      cy.wait('@postPayload').its('request.body').should('deep.equal', data)
     })
 
     cy.contains('Plates created with barcodes DN804974W')
