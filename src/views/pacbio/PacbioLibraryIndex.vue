@@ -47,7 +47,13 @@
       </template>
 
       <template v-slot:cell(actions)="row">
-        <PacbioLibraryEdit :lib="row.item" @alert="showAlert"> </PacbioLibraryEdit>
+        <b-button
+          :id="`editPool-${row.item.pool.id}`"
+          size="sm"
+          variant="outline-primary"
+          :to="{ name: 'PacbioPoolCreate', params: { id: row.item.pool.id } }"
+          >Edit</b-button
+        >
       </template>
     </b-table>
 
@@ -89,7 +95,6 @@
 
 <script>
 import PrintHelper from '@/mixins/PrintHelper'
-import PacbioLibraryEdit from '@/components/pacbio/PacbioLibraryEdit'
 import TableHelper from '@/mixins/TableHelper'
 import PrinterModal from '@/components/PrinterModal'
 import * as consts from '@/consts/consts'
@@ -100,7 +105,6 @@ export default {
   name: 'Libraries',
   components: {
     PrinterModal,
-    PacbioLibraryEdit,
   },
   mixins: [PrintHelper, TableHelper],
   data() {
