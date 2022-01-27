@@ -20,7 +20,15 @@ const pacbio = {
   state: {
     labelTemplateId: process.env.VUE_APP_PACBIO_LABEL_TEMPLATE_ID,
     // We may decide to pull this from traction-service
-    libraryTypes: ['Sequel-v1', 'IsoSeq-v1'],
+    libraryTypes: [
+      'Pacbio_HiFi',
+      'Pacbio_HiFi_mplx',
+      'Pacbio_Microbial_mplx',
+      'Pacbio_IsoSeq',
+      'PacBio_IsoSeq_mplx',
+      'PacBio_Ultra_Low_Input',
+      'PacBio_Ultra_Low_Input_mplx',
+    ],
   },
   getters: {
     labelTemplateId: (state) => state.labelTemplateId,

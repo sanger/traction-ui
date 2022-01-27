@@ -2,6 +2,8 @@ import handlePromise from './PromiseHelper'
 
 // TODO: fix requests here for DPL-022
 
+const DefaultSystemName = 'Sequel IIe'
+
 const build = (object) => {
   return (
     object || {
@@ -9,7 +11,7 @@ const build = (object) => {
       sequencing_kit_box_barcode: '',
       dna_control_complex_box_barcode: '',
       comments: '',
-      system_name: '',
+      system_name: DefaultSystemName,
       plate: {
         wells: [],
         wellsToDelete: [], // Needed so we know the ID of wells that should be deleted
@@ -124,12 +126,10 @@ const createPlatePayload = (runId) => {
 }
 
 const createWellsPayload = (wells, plateId) => {
-  let wellsAttributes = wells.reduce((accumulator, well) => {
-    let poolsAttributes = well.pools.map((l) => {
-      return { type: 'pools', id: l.id }
-    })
+  let wellsAttributes = wells.map((well) => {
+    let poolsAttributes = well.pools.map(({ id }) => ({ type: 'pools', id }))
 
-    accumulator.push({
+    return {
       row: well.row,
       column: well.column,
       movie_time: well.movie_time,
@@ -149,9 +149,8 @@ const createWellsPayload = (wells, plateId) => {
           data: poolsAttributes,
         },
       },
-    })
-    return accumulator
-  }, [])
+    }
+  })
 
   return {
     data: {

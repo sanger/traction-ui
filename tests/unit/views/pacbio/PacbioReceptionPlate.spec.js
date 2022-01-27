@@ -14,8 +14,8 @@ describe('Reception', () => {
   describe('libraryType', () => {
     it('lists the expected options', () => {
       const select = wrapper.find('select')
-      expect(select.find('option[value="Sequel-v1"]').exists()).toBe(true)
-      expect(select.find('option[value="IsoSeq-v1"]').exists()).toBe(true)
+      expect(select.find('option[value="Pacbio_HiFi"]').exists()).toBe(true)
+      expect(select.find('option[value="Pacbio_IsoSeq"]').exists()).toBe(true)
       expect(select.find('option[value=""]').exists()).toBe(true)
       expect(select.find('option[value="_undefined"]').exists()).toBe(true)
     })

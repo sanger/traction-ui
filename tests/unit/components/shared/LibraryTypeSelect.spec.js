@@ -17,8 +17,8 @@ describe('LibraryTypeSelect.vue', () => {
     it('lists the expected options', () => {
       const wrapper = buildWrapper()
       const select = wrapper.find('select')
-      expect(findOption('Sequel-v1', { from: select }).exists()).toBe(true)
-      expect(findOption('IsoSeq-v1', { from: select }).exists()).toBe(true)
+      expect(findOption('Pacbio_HiFi', { from: select }).exists()).toBe(true)
+      expect(findOption('Pacbio_IsoSeq', { from: select }).exists()).toBe(true)
       expect(findOption('None', { from: select }).exists()).toBe(true)
       expect(
         findOption('Import from Sequencescape (where available)', { from: select }).exists(),
@@ -28,8 +28,8 @@ describe('LibraryTypeSelect.vue', () => {
     it('can emit a library type', async () => {
       const wrapper = buildWrapper()
       const select = wrapper.find('select')
-      await findOption('Sequel-v1', { from: select }).setSelected()
-      expect(wrapper.emitted('input')).toEqual([['Sequel-v1']])
+      await findOption('Pacbio_HiFi', { from: select }).setSelected()
+      expect(wrapper.emitted('input')).toEqual([['Pacbio_HiFi']])
     })
 
     it('can emit no library type', async () => {
@@ -40,7 +40,7 @@ describe('LibraryTypeSelect.vue', () => {
     })
 
     it('can emit undefined library type', async () => {
-      const wrapper = buildWrapper({ pipeline: 'pacbio', value: 'Sequel-v1' })
+      const wrapper = buildWrapper({ pipeline: 'pacbio', value: 'Pacbio_HiFi' })
       const select = wrapper.find('select')
       await findOption('Import from Sequencescape (where available)', {
         from: select,
