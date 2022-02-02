@@ -3,6 +3,7 @@ import { mount, localVue, store, Data, router } from 'testHelper'
 import Response from '@/api/Response'
 
 describe('Runs.vue', () => {
+  const pipeline = 'saphyr'
   let wrapper, runs, mockRuns
 
   beforeEach(() => {
@@ -58,17 +59,15 @@ describe('Runs.vue', () => {
   // TODO: Move data creation into factories as we are having to reference data that is
   // outside of the tests.
   describe('start button', () => {
-    let button
-
     it('is enabled when the run state is pending', () => {
       // run at(0) is in state pending
-      button = wrapper.find('#startRun-6')
+      const button = wrapper.find('#startRun-6')
       expect(button.attributes('disabled')).toBeFalsy()
     })
 
     it('is disabled is the run state is not pending', () => {
       // run at(4) is in state started
-      button = wrapper.find('#startRun-2')
+      const button = wrapper.find('#startRun-2')
       expect(button.attributes('disabled')).toBeTruthy()
     })
 
@@ -76,38 +75,36 @@ describe('Runs.vue', () => {
       // run at(0) is in state pending
       runs.startRun = jest.fn()
 
-      button = wrapper.find('#startRun-6')
+      const button = wrapper.find('#startRun-6')
       button.trigger('click')
 
-      let runId = wrapper.find('tbody').findAll('tr').at(0).findAll('td').at(0).text()
-      expect(runs.startRun).toBeCalledWith(runId)
+      const id = wrapper.find('tbody').findAll('tr').at(0).findAll('td').at(0).text()
+      expect(runs.startRun).toBeCalledWith({ id, pipeline })
     })
   })
 
   describe('complete button', () => {
-    let button
-
     it('is is enabled when the run state is pending', () => {
       // run at(0) is in state pending
-      button = wrapper.find('#completeRun-6')
+      const button = wrapper.find('#completeRun-6')
       expect(button.attributes('disabled')).toBeFalsy()
     })
 
     it('is is enabled when the run state is started', () => {
       // run at(4) is in state started
-      button = wrapper.find('#completeRun-2')
+      const button = wrapper.find('#completeRun-2')
       expect(button.attributes('disabled')).toBeFalsy()
     })
 
     it('is disabled if the run state is completed', () => {
       // run at(3) is in state completed
-      button = wrapper.find('#completeRun-3')
+      const button = wrapper.find('#completeRun-3')
       expect(button.attributes('disabled')).toBeTruthy()
     })
 
     it('is disabled is the run state is cancelled', () => {
       // run at(2) is in state cancelled
-      button = wrapper.find('#completeRun-4')
+      const button = wrapper.find('#completeRun-4')
       expect(button.attributes('disabled')).toBeTruthy()
     })
 
@@ -115,38 +112,36 @@ describe('Runs.vue', () => {
       // run at(4) is in state started
       runs.completeRun = jest.fn()
 
-      button = wrapper.find('#completeRun-2')
+      const button = wrapper.find('#completeRun-2')
       button.trigger('click')
 
-      let runId = wrapper.find('tbody').findAll('tr').at(4).findAll('td').at(0).text()
-      expect(runs.completeRun).toBeCalledWith(runId)
+      const id = wrapper.find('tbody').findAll('tr').at(4).findAll('td').at(0).text()
+      expect(runs.completeRun).toBeCalledWith({ id, pipeline })
     })
   })
 
   describe('cancel button', () => {
-    let button
-
     it('is is enabled when the run state is pending', () => {
       // run at(0) is in state pending
-      button = wrapper.find('#cancelRun-6')
+      const button = wrapper.find('#cancelRun-6')
       expect(button.attributes('disabled')).toBeFalsy()
     })
 
     it('is is enabled when the run state is started', () => {
       // run at(4) is in state started
-      button = wrapper.find('#cancelRun-2')
+      const button = wrapper.find('#cancelRun-2')
       expect(button.attributes('disabled')).toBeFalsy()
     })
 
     it('is disabled if the run state is completed', () => {
       // run at(3) is in state completed
-      button = wrapper.find('#cancelRun-3')
+      const button = wrapper.find('#cancelRun-3')
       expect(button.attributes('disabled')).toBeTruthy()
     })
 
     it('is disabled is the run state is cancelled', () => {
       // run at(2) is in state cancelled
-      button = wrapper.find('#cancelRun-4')
+      const button = wrapper.find('#cancelRun-4')
       expect(button.attributes('disabled')).toBeTruthy()
     })
 
@@ -154,11 +149,11 @@ describe('Runs.vue', () => {
       // run at(4) is in state started
       runs.cancelRun = jest.fn()
 
-      button = wrapper.find('#cancelRun-2')
+      const button = wrapper.find('#cancelRun-2')
       button.trigger('click')
 
-      let runId = wrapper.find('tbody').findAll('tr').at(4).findAll('td').at(0).text()
-      expect(runs.cancelRun).toBeCalledWith(runId)
+      let id = wrapper.find('tbody').findAll('tr').at(4).findAll('td').at(0).text()
+      expect(runs.cancelRun).toBeCalledWith({ id, pipeline })
     })
   })
 
@@ -168,7 +163,7 @@ describe('Runs.vue', () => {
     })
 
     it('will redirect to the run when newRun is clicked', async () => {
-      let button = wrapper.find('#newRun')
+      const button = wrapper.find('#newRun')
       button.trigger('click')
       expect(runs.$route.path).toEqual('/saphyr/run/new')
     })
@@ -180,7 +175,7 @@ describe('Runs.vue', () => {
     })
 
     it('will redirect to the run when newRun is clicked', async () => {
-      let button = wrapper.find('#edit-1')
+      const button = wrapper.find('#edit-1')
       button.trigger('click')
       expect(runs.$route.path).toEqual('/saphyr/run/1')
     })
@@ -239,6 +234,8 @@ describe('Runs.vue', () => {
   })
 
   describe('#updateRun', () => {
+    const id = 1
+
     beforeEach(() => {
       runs.startRun = jest.fn()
       runs.completeRun = jest.fn()
@@ -248,20 +245,20 @@ describe('Runs.vue', () => {
     })
 
     it('calls startRun successfully', () => {
-      runs.updateRun('start', 1)
-      expect(runs.startRun).toBeCalledWith(1)
+      runs.updateRun('start', id)
+      expect(runs.startRun).toBeCalledWith({ id, pipeline })
       expect(runs.provider).toBeCalled()
     })
 
     it('calls completeRun successfully', () => {
-      runs.updateRun('complete', 1)
-      expect(runs.completeRun).toBeCalledWith(1)
+      runs.updateRun('complete', id)
+      expect(runs.completeRun).toBeCalledWith({ id, pipeline })
       expect(runs.provider).toBeCalled()
     })
 
     it('calls cancelRun successfully', () => {
-      runs.updateRun('cancel', 1)
-      expect(runs.cancelRun).toBeCalledWith(1)
+      runs.updateRun('cancel', id)
+      expect(runs.cancelRun).toBeCalledWith({ id, pipeline })
       expect(runs.provider).toBeCalled()
     })
 
@@ -269,7 +266,7 @@ describe('Runs.vue', () => {
       runs.startRun.mockImplementation(() => {
         throw Error('Raise this error')
       })
-      runs.updateRun('start', 1)
+      runs.updateRun('start', id)
       expect(runs.provider).not.toBeCalled()
       expect(runs.showAlert).toBeCalled()
     })

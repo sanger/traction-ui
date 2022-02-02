@@ -1,6 +1,6 @@
 import handlePromise from '@/api/PromiseHelper'
 
-/* 
+/*
   return a set of plates by their barcodes
   the request is an executable api call
   the plates will be converted from json api to nested structure plates: { wells: ... }
@@ -20,20 +20,24 @@ const getPlates = async (request, barcodes) => {
   return plates
 }
 
-/* 
+/*
   this function would be better inside something that pertains to traction
   convert plates into the correct structure form importing into traction
   the sampleType is an object type so that the correct attributes are passed
 */
-const transformPlates = ({ plates = [], sampleType = OntSample } = {}) => {
-  return plates.map((plate) => transformPlate({ ...plate, sampleType }))
-}
+const transformPlates = ({ plates = [], sampleType = OntSample, libraryType = null } = {}) =>
+  plates.map((plate) => transformPlate({ ...plate, sampleType, libraryType }))
 
 /*
   extract the barcode and wells by destructuring
   then transform the wells into the correct format
 */
-const transformPlate = ({ labware_barcode: { human_barcode: barcode }, wells, sampleType }) => ({
+const transformPlate = ({
+  labware_barcode: { human_barcode: barcode },
+  wells,
+  sampleType,
+  libraryType,
+}) => ({
   barcode,
   //destructure the wells to get the position and the first aliquot
   wells: wells.map(({ position: { name: position }, aliquots: [aliquot] }) => {
@@ -41,7 +45,7 @@ const transformPlate = ({ labware_barcode: { human_barcode: barcode }, wells, sa
       position,
       // we only want to transform the aliquot if it has got something in it
       // the sample type will determine the attributes of the sample
-      samples: aliquot ? [sampleType(aliquot)] : undefined,
+      samples: aliquot ? [sampleType(aliquot, libraryType)] : undefined,
     }
   }),
 })
@@ -69,11 +73,12 @@ const OntSample = (aliquot) => ({
   * tagOligo - the oligo of the aliquot
   * external study id - the study uuid of the sample
 */
-const PacbioSample = (aliquot) => ({
+const PacbioSample = (aliquot, libraryType) => ({
   external_id: aliquot.sample.uuid,
   name: aliquot.sample.name,
   external_study_id: aliquot.study.uuid,
   species: aliquot.sample.sample_metadata.sample_common_name,
+  library_type: libraryType === undefined ? aliquot.library_type : libraryType,
 })
 
 const Sequencescape = {

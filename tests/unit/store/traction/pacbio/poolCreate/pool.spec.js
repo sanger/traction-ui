@@ -1,37 +1,45 @@
 import defaultState from '@/store/traction/pacbio/poolCreate/state'
 import { validate, valid, payload } from '@/store/traction/pacbio/poolCreate/pool'
 
-const library1 = {
+const library1 = () => ({
   pacbio_request_id: '1',
   tag_id: '1',
   template_prep_kit_box_barcode: 'ABC1',
   volume: 1,
   concentration: 1,
   insert_size: 100,
-}
+})
 
-const library2 = {
+const library2 = () => ({
   pacbio_request_id: '2',
   tag_id: '2',
   template_prep_kit_box_barcode: 'ABC1',
   volume: 1,
   concentration: 1,
   insert_size: 100,
-}
+})
 
-const library3 = {
+const library3 = () => ({
   pacbio_request_id: '3',
   tag_id: '3',
   template_prep_kit_box_barcode: 'ABC1',
   volume: 1,
   concentration: 1,
   insert_size: 100,
-}
+})
 
 describe('libraries.js', () => {
   describe('validate', () => {
-    it('when the tag id is not present', () => {
-      const libraries = { _1: library1, _2: library2, _3: { ...library3, tag_id: '' } }
+    it('when the tag id is not present and there is one library', () => {
+      const libraries = { _1: { ...library1(), tag_id: '' } }
+      const state = defaultState()
+      state.libraries = { ...libraries }
+      validate(state)
+      expect(state.libraries['_1'].errors).toEqual({})
+    })
+
+    it('when the tag id is not present and there are multiple libraries', () => {
+      const libraries = { _1: library1(), _2: library2(), _3: { ...library3(), tag_id: '' } }
       const state = defaultState()
       state.libraries = { ...libraries }
       validate(state)
@@ -40,9 +48,9 @@ describe('libraries.js', () => {
 
     it('when the template prep kit box barcode is not present', () => {
       const libraries = {
-        _1: library1,
-        _2: library2,
-        _3: { ...library3, template_prep_kit_box_barcode: '' },
+        _1: library1(),
+        _2: library2(),
+        _3: { ...library3(), template_prep_kit_box_barcode: '' },
       }
       const state = defaultState()
       state.libraries = { ...libraries }
@@ -51,7 +59,7 @@ describe('libraries.js', () => {
     })
 
     it('when the volume is not present', () => {
-      const libraries = { _1: library1, _2: library2, _3: { ...library3, volume: '' } }
+      const libraries = { _1: library1(), _2: library2(), _3: { ...library3(), volume: '' } }
       const state = defaultState()
       state.libraries = { ...libraries }
       validate(state)
@@ -59,7 +67,7 @@ describe('libraries.js', () => {
     })
 
     it('when the concentration is not present', () => {
-      const libraries = { _1: library1, _2: library2, _3: { ...library3, concentration: '' } }
+      const libraries = { _1: library1(), _2: library2(), _3: { ...library3(), concentration: '' } }
       const state = defaultState()
       state.libraries = { ...libraries }
       validate(state)
@@ -67,7 +75,7 @@ describe('libraries.js', () => {
     })
 
     it('when the insert size is not present', () => {
-      const libraries = { _1: library1, _2: library2, _3: { ...library3, insert_size: '' } }
+      const libraries = { _1: library1(), _2: library2(), _3: { ...library3(), insert_size: '' } }
       const state = defaultState()
       state.libraries = { ...libraries }
       validate(state)
@@ -76,9 +84,9 @@ describe('libraries.js', () => {
 
     it('when multiple fields are not valid', () => {
       const libraries = {
-        _1: library1,
-        _2: library2,
-        _3: { ...library3, insert_size: '', concentration: '', volume: '' },
+        _1: library1(),
+        _2: library2(),
+        _3: { ...library3(), insert_size: '', concentration: '', volume: '' },
       }
       const state = defaultState()
       state.libraries = { ...libraries }
@@ -92,9 +100,9 @@ describe('libraries.js', () => {
 
     it('when multiple records are not valid', () => {
       const libraries = {
-        _1: library1,
-        _2: { ...library2, concentration: '' },
-        _3: { ...library3, insert_size: '' },
+        _1: library1(),
+        _2: { ...library2(), concentration: '' },
+        _3: { ...library3(), insert_size: '' },
       }
       const state = defaultState()
       state.libraries = { ...libraries }
@@ -104,7 +112,11 @@ describe('libraries.js', () => {
     })
 
     it('tag clashes', () => {
-      const libraries = { _1: library1, _2: library2, _3: { ...library3, tag_id: library1.tag_id } }
+      const libraries = {
+        _1: library1(),
+        _2: library2(),
+        _3: { ...library3(), tag_id: library1().tag_id },
+      }
       const state = defaultState()
       state.libraries = { ...libraries }
       validate(state)
@@ -113,7 +125,7 @@ describe('libraries.js', () => {
     })
 
     it('when all of the libraries are valid', () => {
-      const libraries = { _1: library1, _2: library2, _3: library3 }
+      const libraries = { _1: library1(), _2: library2(), _3: library3() }
       const state = defaultState()
       state.libraries = { ...libraries }
       validate(state)
@@ -125,15 +137,15 @@ describe('libraries.js', () => {
 
   describe('valid', () => {
     it('no errors', () => {
-      const libraries = { _1: library1, _2: library2, _3: library3 }
+      const libraries = { _1: library1(), _2: library2(), _3: library3() }
       expect(valid({ libraries })).toBeTruthy()
     })
 
     it('with errors', () => {
       const libraries = {
-        _1: library1,
-        _2: library2,
-        _3: { ...library3, errors: { a: 'error', b: 'error' } },
+        _1: library1(),
+        _2: library2(),
+        _3: { ...library3(), errors: { a: 'error', b: 'error' } },
       }
       expect(valid({ libraries })).toBeFalsy()
     })
@@ -141,7 +153,7 @@ describe('libraries.js', () => {
 
   describe('payload', () => {
     it('handles unpersisted data', () => {
-      const libraries = { _1: library1, _2: library2, _3: library3 }
+      const libraries = { _1: library1(), _2: library2(), _3: library3() }
       const pool = {
         template_prep_kit_box_barcode: 'ABC1',
         volume: '10',
@@ -152,16 +164,16 @@ describe('libraries.js', () => {
       expect(payload({ libraries, pool })).toEqual({
         data: {
           type: 'pools',
-          attributes: { library_attributes: [library1, library2, library3], ...pool },
+          attributes: { library_attributes: [library1(), library2(), library3()], ...pool },
         },
       })
     })
 
     it('handles persisted data', () => {
       const libraries = {
-        _1: { id: '10', ...library1 },
-        _2: { id: '20', ...library2 },
-        _3: library3,
+        _1: { id: '10', ...library1() },
+        _2: { id: '20', ...library2() },
+        _3: library3(),
       }
       const pool = {
         template_prep_kit_box_barcode: 'ABC1',
@@ -176,7 +188,7 @@ describe('libraries.js', () => {
           type: 'pools',
           id: '1',
           attributes: {
-            library_attributes: [libraries['_1'], libraries['_2'], library3],
+            library_attributes: [libraries['_1'], libraries['_2'], library3()],
             template_prep_kit_box_barcode: 'ABC1',
             volume: '10',
             concentration: '10',

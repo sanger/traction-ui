@@ -1,5 +1,5 @@
 <template>
-  <pipeline-view></pipeline-view>
+  <pipeline-view pipeline="pacbio"></pipeline-view>
 </template>
 
 <script>
@@ -9,9 +9,6 @@ export default {
   name: 'Pacbio',
   components: {
     PipelineView,
-  },
-  created() {
-    localStorage.setItem('pipeline', 'pacbio')
   },
 }
 </script>

@@ -10,7 +10,7 @@ module.exports = {
     'prettier', // make sure this plugin is last since it turns conflicting rules off
   ],
   rules: {
-    'no-console': process.env.NODE_ENV === 'production' ? 'error' : 'off',
+    'no-console': 'off', // It may be worth re-enabling this is we add proper error logging
     'no-debugger': process.env.NODE_ENV === 'production' ? 'error' : 'off',
   },
   overrides: [

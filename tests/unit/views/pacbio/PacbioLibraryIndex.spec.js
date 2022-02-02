@@ -141,22 +141,17 @@ describe('Libraries.vue', () => {
       let modal = wrapper.findComponent({ ref: 'printerModal' })
       modal.vm.$emit('selectPrinter', 'printer1')
 
-      expect(libraries.handlePrintLabel).toBeCalledWith('printer1')
+      expect(libraries.handlePrintLabel).toBeCalledWith('pacbio', 'printer1')
     })
   })
 
   describe('Edit button', () => {
     let button
 
-    it('is present for each library', () => {
-      button = wrapper.find('#editLibrary-1')
+    it('is present for each library', async () => {
+      button = wrapper.find('#editPool-1')
       expect(button.text()).toEqual('Edit')
-    })
-
-    it('on click show is true', () => {
-      button = wrapper.find('#editLibrary-1')
-      button.trigger('click')
-      expect(wrapper.find('#PacbioEditLibraryModal')).toBeDefined()
+      expect(button.props('to')).toStrictEqual({ name: 'PacbioPoolCreate', params: { id: '1' } })
     })
   })
 })

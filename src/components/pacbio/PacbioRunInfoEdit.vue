@@ -95,12 +95,7 @@ export default {
   name: 'PacbioRunInfoEdit',
   data() {
     return {
-      systemNameOptions: [
-        { text: 'System Name', value: '' },
-        'Sequel I',
-        'Sequel II',
-        'Sequel IIe',
-      ],
+      systemNameOptions: ['Sequel I', 'Sequel II', 'Sequel IIe'],
     }
   },
   computed: {
@@ -113,7 +108,7 @@ export default {
       uuid: (state) => state.currentRun.uuid,
       systemName: (state) => state.currentRun.system_name,
       defaultBindingKitBoxBarcode: (state) => state.currentRun.default_binding_kit_box_barcode,
-      /* 
+      /*
         Default binding kit box barcode is not a run attribute and it is not sent on update/create
         It exists to provide a default value when creating wells to autofill the well binding kit box barcode
       */

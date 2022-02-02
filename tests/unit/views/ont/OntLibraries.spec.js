@@ -108,7 +108,7 @@ describe('OntLibraries.vue', () => {
       let modal = wrapper.findComponent({ ref: 'printerModal' })
       modal.vm.$emit('selectPrinter', 'printer1')
 
-      expect(libraries.handlePrintLabel).toBeCalledWith('printer1')
+      expect(libraries.handlePrintLabel).toBeCalledWith('ont', 'printer1')
     })
   })
 

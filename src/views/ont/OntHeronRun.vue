@@ -151,6 +151,7 @@ export default {
             let existingRun = data.data.ontRun
             this.setRun(existingRun.id, existingRun.flowcells)
           })
+          .catch(console.error)
       }
     },
     setRun(id, flowcells) {
@@ -191,15 +192,18 @@ export default {
           let index = this.flowcellsData.findIndex((x) => x.position === updateFlowcell.position)
           this.flowcellsData[index].library.name = updateFlowcell.libraryName
         })
+        .catch(console.error)
     },
     updateLibraryList(libraryName, assignedToFlowcell) {
-      this.$apollo.mutate({
-        mutation: UPDATE_CLIENT_LIBRARIES_LIST,
-        variables: {
-          assignedToFlowcell: assignedToFlowcell,
-          libraryName: libraryName,
-        },
-      })
+      this.$apollo
+        .mutate({
+          mutation: UPDATE_CLIENT_LIBRARIES_LIST,
+          variables: {
+            assignedToFlowcell: assignedToFlowcell,
+            libraryName: libraryName,
+          },
+        })
+        .catch(console.error)
     },
     provider() {
       this.buildRun()

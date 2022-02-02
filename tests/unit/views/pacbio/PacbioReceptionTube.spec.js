@@ -72,11 +72,31 @@ describe('Reception', () => {
 
       await reception.handleSampleExtractionTubes()
       expect(reception.getSampleExtractionTubesForBarcodes).toBeCalled()
-      expect(reception.exportSampleExtractionTubesIntoTraction).toBeCalled()
+      expect(reception.exportSampleExtractionTubesIntoTraction).toBeCalledWith({
+        tubes: [],
+        libraryType: undefined,
+      })
       expect(reception.showAlert).toBeCalledWith(
         'Samples have been created with barcodes: TRAC-1, TRAC-2',
         'success',
       )
+    })
+
+    it('passes library type when selected', async () => {
+      reception.getSampleExtractionTubesForBarcodes.mockResolvedValue(
+        new Response(Data.SampleExtractionTubesWithSample),
+      )
+      reception.exportSampleExtractionTubesIntoTraction.mockResolvedValue(
+        new Response(Data.Requests),
+      )
+
+      await wrapper.setData({ libraryType: 'Example' })
+      await reception.handleSampleExtractionTubes()
+
+      expect(reception.exportSampleExtractionTubesIntoTraction).toBeCalledWith({
+        tubes: [],
+        libraryType: 'Example',
+      })
     })
 
     it('is unsuccessful when getSampleExtractionTubesForBarcodes fails', async () => {
@@ -107,16 +127,16 @@ describe('Reception', () => {
     })
   })
 
-  describe('#getBarcodes', () => {
+  describe('#barcodeArray', () => {
     it('single barcode', () => {
       wrapper.setData({ barcodes: 'TRAC-1\n' })
-      let result = reception.getBarcodes()
+      let result = reception.barcodeArray
       expect(result).toEqual(['TRAC-1'])
     })
 
     it('multiple barcodes', () => {
       wrapper.setData({ barcodes: 'TRAC-1\nTRAC-2\nTRAC-3\nTRAC-4\nTRAC-5' })
-      let result = reception.getBarcodes()
+      let result = reception.barcodeArray
       expect(result).toEqual(['TRAC-1', 'TRAC-2', 'TRAC-3', 'TRAC-4', 'TRAC-5'])
     })
   })

@@ -66,7 +66,7 @@ describe('PacbioPoolIndex.vue', () => {
       let modal = wrapper.findComponent({ ref: 'printerModal' })
       modal.vm.$emit('selectPrinter', 'printer1')
 
-      expect(poolsVm.handlePrintLabel).toBeCalledWith('printer1')
+      expect(poolsVm.handlePrintLabel).toBeCalledWith('pacbio', 'printer1')
     })
   })
 

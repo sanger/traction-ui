@@ -77,7 +77,7 @@ export default {
   },
   methods: {
     async handlePrint(printer) {
-      await this.handlePrintLabel(printer)
+      await this.handlePrintLabel('ont', printer)
     },
     getLibraries(ctx, callback) {
       this.$apollo

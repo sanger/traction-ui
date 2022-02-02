@@ -47,14 +47,14 @@
       </template>
 
       <template v-slot:cell(actions)="row">
-        <b-button
-          :id="'editPool-' + row.item.id"
+        <router-link
           data-action="edit-pool"
-          size="sm"
-          variant="outline-primary"
           :to="{ name: 'PacbioPoolCreate', params: { id: row.item.id } }"
-          >Edit</b-button
         >
+          <b-button :id="'editPool-' + row.item.id" size="sm" variant="outline-primary"
+            >Edit</b-button
+          >
+        </router-link>
       </template>
 
       <template v-slot:cell(show_details)="row">
@@ -91,7 +91,7 @@
         ref="printerModal"
         class="float-left"
         :disabled="selected.length === 0"
-        @selectPrinter="handlePrintLabel"
+        @selectPrinter="handlePrintLabel('pacbio', $event)"
       >
       </printerModal>
 

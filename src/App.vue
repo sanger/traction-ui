@@ -1,12 +1,14 @@
 <template>
   <b-container id="app" fluid>
     <br />
-    <!-- TODO: move this into a header component and add pipeline to store -->
+    <!-- TODO: move this into a header component -->
     <b-navbar ref="navbar" toggleable="md" type="dark" variant="info">
       <b-navbar-brand id="traction-header" to="/dashboard"><h2>Traction</h2></b-navbar-brand>
-      <b-nav-text
-        ><h2>{{ pipeline }}</h2></b-nav-text
-      >
+      <b-navbar-nav>
+        <b-nav-text
+          ><h2>{{ pipeline }} {{ page }}</h2></b-nav-text
+        >
+      </b-navbar-nav>
     </b-navbar>
     <Message
       v-for="(message, index) in messages"
@@ -30,8 +32,15 @@ export default {
     Message,
   },
   computed: {
+    mergedRoute() {
+      return Object.assign({}, ...this.$route.matched.map(({ meta }) => meta))
+    },
     pipeline() {
-      return localStorage.getItem('pipeline')
+      // Merge the route meta attributes and pull out the pipeline
+      return this.mergedRoute.pipeline
+    },
+    page() {
+      return this.mergedRoute.page
     },
     messages() {
       return this.$store.getters['traction/messages']

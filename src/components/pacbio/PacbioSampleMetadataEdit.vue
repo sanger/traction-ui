@@ -10,10 +10,12 @@
 
     <b-modal id="editSampleModal" ref="modal" title="Edit Sample">
       <b-form id="sampleMetaDataForm">
-        <b-form-group id="libraryType" label="Library Type:" label-for="libraryType">
-          <b-form-input id="libraryType" v-model="request.library_type" placeholder="Library Type">
-          </b-form-input>
-        </b-form-group>
+        <LibraryTypeSelect
+          v-model="request.library_type"
+          pipeline="pacbio"
+          :import="false"
+          :label-cols="null"
+        />
 
         <b-form-group
           id="estimateOfGBRequired"
@@ -59,10 +61,14 @@
 <script>
 import { createNamespacedHelpers } from 'vuex'
 import ModalHelper from '@/mixins/ModalHelper'
+import LibraryTypeSelect from '@/components/shared/LibraryTypeSelect'
 const { mapActions } = createNamespacedHelpers('traction/pacbio/requests')
 
 export default {
   name: 'PacbioSampleMetadataEdit',
+  components: {
+    LibraryTypeSelect,
+  },
   mixins: [ModalHelper],
   props: {
     req: {
