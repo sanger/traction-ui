@@ -39,7 +39,7 @@ import { createPlates } from '@/services/traction/Pacbio'
 import LibraryTypeSelect from '@/components/shared/LibraryTypeSelect'
 
 export default {
-  name: 'Reception',
+  name: 'PacbioReceptionSequencescape',
   components: {
     Spinner,
     LibraryTypeSelect,

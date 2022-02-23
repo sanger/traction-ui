@@ -1,6 +1,6 @@
 describe('Import samples from Sequencescape', () => {
   it('Successfully', () => {
-    cy.visit('#/pacbio/plate-reception')
+    cy.visit('#/pacbio/sequencescape-reception')
     cy.contains('Barcodes:')
     cy.get('#barcodes').type('DN804974W')
     cy.intercept(
@@ -20,7 +20,7 @@ describe('Import samples from Sequencescape', () => {
   })
 
   it('Unsuccessfully - when the plates do not exist', () => {
-    cy.visit('#/pacbio/plate-reception')
+    cy.visit('#/pacbio/sequencescape-reception')
     cy.contains('Barcodes:')
     cy.get('#barcodes').type('DN804974W')
     cy.intercept(
@@ -35,7 +35,7 @@ describe('Import samples from Sequencescape', () => {
   })
 
   it('Unsuccessfully - when there is an error from traction', () => {
-    cy.visit('#/pacbio/plate-reception')
+    cy.visit('#/pacbio/sequencescape-reception')
     cy.contains('Barcodes:')
     cy.get('#barcodes').type('DN804974W')
     cy.intercept(

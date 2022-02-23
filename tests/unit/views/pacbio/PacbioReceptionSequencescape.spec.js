@@ -1,8 +1,8 @@
-import Reception from '@/views/pacbio/PacbioReceptionPlate'
+import Reception from '@/views/pacbio/PacbioReceptionSequencescape'
 import { mount, localVue, store, router } from 'testHelper'
 import * as pacbio from '@/services/traction/Pacbio'
 
-describe('Reception', () => {
+describe('PacbioReceptionSequencescape', () => {
   let wrapper, reception, barcodes, barcode, input
 
   beforeEach(() => {

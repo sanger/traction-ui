@@ -1,8 +1,8 @@
-import Reception from '@/views/pacbio/PacbioReceptionTube'
+import Reception from '@/views/pacbio/PacbioReceptionSamplesExtraction'
 import { mount, localVue, store, Data, router } from 'testHelper'
 import Response from '@/api/Response'
 
-describe('Reception', () => {
+describe('PacbioReceptionSamplesExtraction', () => {
   let wrapper, reception, barcodes, barcode, input
 
   beforeEach(() => {
