@@ -1,7 +1,7 @@
 <template>
   <div class="reception">
     <b-modal v-model="busy" hide-footer hide-header no-close-on-backdrop>
-      <spinner size="huge" message="Importing plates..."></spinner>
+      <spinner size="huge" message="Importing labware..."></spinner>
     </b-modal>
     <div class="form-group">
       <label for="barcodes">Barcodes:</label>
@@ -25,7 +25,7 @@
           :disabled="isDisabled"
           @click="createTractionPlates"
         >
-          Import {{ plateCount }}
+          Import {{ barcodeCount }}
         </b-button>
       </b-col>
     </b-row>
@@ -76,12 +76,8 @@ export default {
         sequencescape: this.sequencescapeRequest,
       }
     },
-    plateCount() {
-      if (this.barcodeArray.length == 1) {
-        return '1 plate'
-      } else {
-        return `${this.barcodeArray.length} plates`
-      }
+    barcodeCount() {
+      return `${this.barcodeArray.length} labware`
     },
   },
   methods: {

@@ -27,14 +27,14 @@ describe('PacbioReceptionSequencescape', () => {
       input = wrapper.find('textarea')
       await input.setValue(barcode)
       expect(reception.barcodes).toEqual(barcode)
-      expect(wrapper.find('#createTractionPlates').text()).toEqual('Import 1 plate')
+      expect(wrapper.find('#createTractionPlates').text()).toEqual('Import 1 labware')
     })
 
     it('multiple barcodes', async () => {
       input = wrapper.find('textarea')
       await input.setValue(barcodes)
       expect(reception.barcodes).toEqual(barcodes)
-      expect(wrapper.find('#createTractionPlates').text()).toEqual('Import 5 plates')
+      expect(wrapper.find('#createTractionPlates').text()).toEqual('Import 5 labware')
     })
   })
 
