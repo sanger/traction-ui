@@ -12,6 +12,7 @@
     "test": "vue-cli-service test:unit && vue-cli-service test:e2e"
   },
   "dependencies": {
+    "@vitejs/plugin-vue": "^2.2.2",
     "apollo-boost": "^0.4.9",
     "axios": "^0.21.2",
     "bootstrap-vue": "^2.21.2",
@@ -23,6 +24,8 @@
     "https-proxy-agent": "^2.2.2",
     "jest-transform-graphql": "^2.1.0",
     "lodash-es": "^4.17.21",
+    "vite": "^2.8.4",
+    "vite-plugin-vue2": "^1.9.3",
     "vue": "^2.6.12",
     "vue-apollo": "^3.0.5",
     "vue-router": "^3.5.1",
