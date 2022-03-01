@@ -38,11 +38,11 @@ const parseErrorArray = (errors) =>
  * @param {Object} data e.g. { data: { id: 1}}
  * @returns { Boolean, {Object}, String} { success, data, errors } e.g. { success: true, data: {id: 1}} or {success: false, errors: 'there was an error'}
  */
-const newResponse = ({ success, data, error }) => ({
+const newResponse = ({ success, data, error, errors }) => ({
   success,
   data,
   // we need to parse the errors into something viewable
-  errors: !success ? parseErrors({ data, error }) : undefined,
+  errors: !success ? parseErrors({ data, error, errors }) : undefined,
 })
 
 /*
@@ -61,6 +61,7 @@ const handleResponse = async (promise) => {
     if (!!+process.env.VUE_APP_LOG) {
       console.error(error)
     }
+
     // 400-500 range will throw an error with a response
     if (error.response) {
       return newResponse({ success: false, ...error.response })

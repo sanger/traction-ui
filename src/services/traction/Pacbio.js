@@ -1,5 +1,15 @@
-import handlePromise from '@/api/PromiseHelper'
-import { getPlates, transformPlates, PacbioSample } from '@/services/Sequencescape'
+import { handleResponse } from '@/api/ResponseHelper'
+
+import {
+  getLabware,
+  transformPlates,
+  PacbioSample,
+  extractBarcodes,
+  transformTubes,
+} from '@/services/Sequencescape'
+
+const checkBarcodes = (barcodes, foundBarcodes) =>
+  barcodes.filter((barcode) => !foundBarcodes.includes(barcode))
 
 /*
   retrieve the plates from Sequencescape.
@@ -8,34 +18,54 @@ import { getPlates, transformPlates, PacbioSample } from '@/services/Sequencesca
   @param requests: {sequencescape: Request, traction: Request} the request that will be called
   @param barcodes: {string} list of barcodes e.g DN1,DN2,DN3
 */
-const createPlates = async ({ requests, barcodes, libraryType }) => {
-  const plates = await getPlates(requests.sequencescape, barcodes)
+const createLabware = async ({ requests, barcodes, libraryType }) => {
+  const { plates, tubes } = await getLabware(requests.sequencescape, barcodes.join(','))
+  const platesPayload = transformPlates({ plates, sampleType: PacbioSample, libraryType })
+  const tubesPayload = transformTubes({ tubes, sampleType: PacbioSample, libraryType })
 
-  if (plates.length === 0) {
-    return { status: 'error', message: 'Plates could not be retrieved from Sequencescape' }
+  const foundBarcodes = extractBarcodes({ plates, tubes })
+
+  const missingBarcodes = checkBarcodes(barcodes, foundBarcodes)
+  if (missingBarcodes.length > 0) {
+    return {
+      status: 'error',
+      message: `Labware could not be retrieved from Sequencescape: ${missingBarcodes}`,
+    }
   }
 
-  const response = await handlePromise(
-    requests.traction.create({
+  const plateResponse = await handleResponse(
+    requests.traction.plates.create({
       data: {
         data: {
           attributes: {
-            plates: transformPlates({
-              plates,
-              sampleType: PacbioSample,
-              libraryType,
-            }),
+            plates: platesPayload,
           },
         },
       },
     }),
   )
 
-  if (response.successful) {
-    return { status: 'success', message: `Plates created with barcodes ${barcodes}` }
+  const tubeResponse = await handleResponse(
+    requests.traction.requests.create({
+      data: {
+        data: {
+          attributes: {
+            requests: tubesPayload,
+          },
+          type: 'requests',
+        },
+      },
+    }),
+  )
+
+  if (plateResponse.success && tubeResponse.success) {
+    return { status: 'success', message: `Labware created with barcodes ${barcodes}` }
   } else {
-    return { status: 'error', ...response.errors }
+    return {
+      status: 'error',
+      message: [plateResponse.errors, tubeResponse.errors].filter((a) => a).join(', '),
+    }
   }
 }
 
-export { createPlates }
+export { createLabware }

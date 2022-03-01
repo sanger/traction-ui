@@ -35,7 +35,7 @@
 <script>
 import Spinner from 'vue-simple-spinner'
 import Api from '@/mixins/Api'
-import { createPlates } from '@/services/traction/Pacbio'
+import { createLabware } from '@/services/traction/Pacbio'
 import LibraryTypeSelect from '@/components/shared/LibraryTypeSelect'
 
 export default {
@@ -49,8 +49,6 @@ export default {
     return {
       barcodes: '',
       busy: false,
-      alertMessage: '',
-      status: '',
       libraryType: undefined,
     }
   },
@@ -58,17 +56,14 @@ export default {
     barcodeArray() {
       return this.barcodes.split('\n').filter(Boolean)
     },
-    formattedBarcodes() {
-      return this.barcodeArray.join(',')
-    },
     isDisabled() {
       return this.barcodeArray.length === 0 || this.busy
     },
     sequencescapeRequest() {
-      return this.api.sequencescape.plates
+      return this.api.sequencescape.labware
     },
     tractionRequest() {
-      return this.api.traction.pacbio.plates
+      return this.api.traction.pacbio
     },
     requests() {
       return {
@@ -83,9 +78,9 @@ export default {
   methods: {
     async createTractionPlates() {
       this.busy = true
-      const response = await createPlates({
+      const response = await createLabware({
         requests: this.requests,
-        barcodes: this.formattedBarcodes,
+        barcodes: this.barcodeArray,
         libraryType: this.libraryType,
       })
       this.showAlert(response.message, response.status)

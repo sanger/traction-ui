@@ -37,6 +37,14 @@ describe('Message.vue', () => {
     expect(wrapper.find('.alert-success').element).toBeTruthy()
   })
 
+  it('converts types to boottrap styles', () => {
+    wrapper = mount(Message, {
+      localVue,
+      propsData: { ...requiredProps, type: 'error' },
+    })
+    expect(wrapper.find('.alert-danger').element).toBeTruthy()
+  })
+
   describe('data-attribute', () => {
     it('default', () => {
       const wrapper = mount(Message, { localVue, propsData: requiredProps })

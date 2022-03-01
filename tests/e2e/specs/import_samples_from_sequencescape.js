@@ -1,54 +1,72 @@
+const sequencescapeRequest =
+  '/api/v2/labware?filter[barcode]=DN9000002A,NT1O&include=receptacles.aliquots.sample.sample_metadata,receptacles.aliquots.study&fields[plates]=labware_barcode,receptacles&fields[tubes]=labware_barcode,receptacles&fields[wells]=position,aliquots&fields[receptacles]=aliquots&fields[samples]=sample_metadata,name,uuid&fields[sample_metadata]=sample_common_name&fields[studies]=uuid&fields[aliquots]=study,library_type,sample'
+
 describe('Import samples from Sequencescape', () => {
   it('Successfully', () => {
     cy.visit('#/pacbio/sequencescape-reception')
     cy.contains('Barcodes:')
-    cy.get('#barcodes').type('DN804974W')
+    cy.get('#barcodes').type('DN9000002A\nNT1O')
     cy.intercept(
-      '/api/v2/plates?filter[barcode]=DN804974W&include=wells.aliquots.sample.sample_metadata,wells.aliquots.study',
       {
-        fixture: 'sequencescapePlates.json',
+        url: '/api/v2/labware*',
+        query: {
+          'filter[barcode]': 'DN9000002A,NT1O',
+          include: 'receptacles.aliquots.sample.sample_metadata,receptacles.aliquots.study',
+          'fields[plates]': 'labware_barcode,receptacles',
+          'fields[tubes]': 'labware_barcode,receptacles',
+          'fields[aliquots]': 'study,library_type,sample',
+          'fields[receptacles]': 'aliquots',
+          'fields[sample_metadata]': 'sample_common_name',
+          'fields[samples]': 'sample_metadata,name,uuid',
+          'fields[studies]': 'uuid',
+          'fields[wells]': 'position,aliquots',
+        },
+      },
+      {
+        fixture: 'sequencescapeLabware.json',
       },
     )
     cy.intercept('POST', '/v1/pacbio/plates', { fixture: 'tractionPlates.json' }).as('postPayload')
+    cy.intercept('POST', '/v1/pacbio/requests', { fixture: 'tractionPacbioRequest.json' }).as(
+      'postPayload',
+    )
 
     cy.get('#createTractionPlates').click()
+    cy.contains('Labware created with barcodes DN9000002A,NT1O')
+
     cy.fixture('tractionPacbioPlateCreate').then(({ data }) => {
       cy.wait('@postPayload').its('request.body').should('deep.equal', data)
     })
-
-    cy.contains('Plates created with barcodes DN804974W')
   })
 
   it('Unsuccessfully - when the plates do not exist', () => {
     cy.visit('#/pacbio/sequencescape-reception')
     cy.contains('Barcodes:')
-    cy.get('#barcodes').type('DN804974W')
-    cy.intercept(
-      '/api/v2/plates?filter[barcode]=DN804974W&include=wells.aliquots.sample.sample_metadata,wells.aliquots.study',
-      {
-        statusCode: 200,
-        body: { data: [] },
-      },
-    )
+    cy.get('#barcodes').type('DN9000002A\nNT1O')
+    cy.intercept(sequencescapeRequest, {
+      statusCode: 200,
+      body: { data: [] },
+    })
     cy.get('#createTractionPlates').click()
-    cy.contains('Plates could not be retrieved from Sequencescape')
+    cy.contains('Labware could not be retrieved from Sequencescape')
   })
 
   it('Unsuccessfully - when there is an error from traction', () => {
     cy.visit('#/pacbio/sequencescape-reception')
     cy.contains('Barcodes:')
-    cy.get('#barcodes').type('DN804974W')
-    cy.intercept(
-      '/api/v2/plates?filter[barcode]=DN804974W&include=wells.aliquots.sample.sample_metadata,wells.aliquots.study',
-      {
-        fixture: 'sequencescapePlates.json',
-      },
-    )
+    cy.get('#barcodes').type('DN9000002A\nNT1O')
+    cy.intercept(sequencescapeRequest, {
+      fixture: 'sequencescapeLabware.json',
+    })
     cy.intercept('/v1/pacbio/plates', {
       statusCode: 422,
-      body: { data: { errors: { error1: ['There was an error.'] } } },
+      body: { errors: [{ title: 'plates', detail: 'There was an error.' }] },
+    })
+    cy.intercept('/v1/pacbio/requests', {
+      statusCode: 422,
+      body: { errors: [{ title: 'tubes', detail: 'There was an error.' }] },
     })
     cy.get('#createTractionPlates').click()
-    cy.contains('error1 There was an error.')
+    cy.contains('plates There was an error., tubes There was an error.')
   })
 })
