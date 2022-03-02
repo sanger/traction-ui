@@ -1,12 +1,5 @@
 import { handleResponse } from '@/api/ResponseHelper'
-
-import {
-  getLabware,
-  transformPlates,
-  PacbioSample,
-  extractBarcodes,
-  transformTubes,
-} from '@/services/Sequencescape'
+import { PacbioSample, labwareForImport } from '@/services/Sequencescape'
 
 const checkBarcodes = (barcodes, foundBarcodes) =>
   barcodes.filter((barcode) => !foundBarcodes.includes(barcode))
@@ -19,11 +12,12 @@ const checkBarcodes = (barcodes, foundBarcodes) =>
   @param barcodes: {string} list of barcodes e.g DN1,DN2,DN3
 */
 const createLabware = async ({ requests, barcodes, libraryType }) => {
-  const { plates, tubes } = await getLabware(requests.sequencescape, barcodes.join(','))
-  const platesPayload = transformPlates({ plates, sampleType: PacbioSample, libraryType })
-  const tubesPayload = transformTubes({ tubes, sampleType: PacbioSample, libraryType })
-
-  const foundBarcodes = extractBarcodes({ plates, tubes })
+  const { plates, tubes, foundBarcodes } = await labwareForImport({
+    request: requests.sequencescape,
+    barcodes,
+    sampleType: PacbioSample,
+    libraryType,
+  })
 
   const missingBarcodes = checkBarcodes(barcodes, foundBarcodes)
   if (missingBarcodes.length > 0) {
@@ -33,30 +27,29 @@ const createLabware = async ({ requests, barcodes, libraryType }) => {
     }
   }
 
-  const plateResponse = await handleResponse(
-    requests.traction.plates.create({
+  const plateRequest = requests.traction.plates.create({
+    data: {
       data: {
-        data: {
-          attributes: {
-            plates: platesPayload,
-          },
+        attributes: {
+          plates,
         },
       },
-    }),
-  )
+    },
+  })
 
-  const tubeResponse = await handleResponse(
-    requests.traction.requests.create({
+  const tubeRequest = requests.traction.requests.create({
+    data: {
       data: {
-        data: {
-          attributes: {
-            requests: tubesPayload,
-          },
-          type: 'requests',
+        attributes: {
+          requests: tubes,
         },
+        type: 'requests',
       },
-    }),
-  )
+    },
+  })
+
+  const plateResponse = await handleResponse(plateRequest)
+  const tubeResponse = await handleResponse(tubeRequest)
 
   if (plateResponse.success && tubeResponse.success) {
     return { status: 'success', message: `Labware created with barcodes ${barcodes}` }

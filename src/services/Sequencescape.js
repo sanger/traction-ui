@@ -1,6 +1,19 @@
-import handlePromise from '@/api/PromiseHelper'
 import { handleResponse } from '@/api/ResponseHelper'
 import deserialize from '@/api/JsonApi'
+
+const labwareRequestConfig = {
+  include: 'receptacles.aliquots.sample.sample_metadata,receptacles.aliquots.study',
+  fields: {
+    plates: 'labware_barcode,receptacles',
+    tubes: 'labware_barcode,receptacles',
+    wells: 'position,aliquots',
+    receptacles: 'aliquots',
+    samples: 'sample_metadata,name,uuid',
+    sample_metadata: 'sample_common_name',
+    studies: 'uuid',
+    aliquots: 'study,library_type,sample',
+  },
+}
 
 /*
   return a set of plates by their barcodes
@@ -9,18 +22,18 @@ import deserialize from '@/api/JsonApi'
   an array will always be returned.
 */
 const getPlates = async (request, barcodes) => {
-  let plates = []
   let promise = request.get({
     filter: { barcode: barcodes },
     include: 'wells.aliquots.sample.sample_metadata,wells.aliquots.study',
   })
 
-  let response = await handlePromise(promise)
+  let { success, data } = await handleResponse(promise)
 
-  if (response.successful && !response.empty) {
-    plates = response.deserialize.plates
+  if (success) {
+    return deserialize(data).plates || []
+  } else {
+    return []
   }
-  return plates
 }
 
 const extractBarcodes = ({ plates, tubes }) =>
@@ -33,20 +46,7 @@ const extractBarcodes = ({ plates, tubes }) =>
   an array will always be returned.
 */
 const getLabware = async (request, barcodes) => {
-  const promise = request.get({
-    filter: { barcode: barcodes },
-    include: 'receptacles.aliquots.sample.sample_metadata,receptacles.aliquots.study',
-    fields: {
-      plates: 'labware_barcode,receptacles',
-      tubes: 'labware_barcode,receptacles',
-      wells: 'position,aliquots',
-      receptacles: 'aliquots',
-      samples: 'sample_metadata,name,uuid',
-      sample_metadata: 'sample_common_name',
-      studies: 'uuid',
-      aliquots: 'study,library_type,sample',
-    },
-  })
+  const promise = request.get({ filter: { barcode: barcodes }, ...labwareRequestConfig })
 
   const { success, data } = await handleResponse(promise)
 
@@ -57,6 +57,19 @@ const getLabware = async (request, barcodes) => {
     return { plates: [], tubes: [], ...deserialize(data) }
   } else {
     return { plates: [], tubes: [] }
+  }
+}
+
+const labwareForImport = async ({ request, barcodes, sampleType, libraryType }) => {
+  const { plates, tubes } = await getLabware(request, barcodes.join(','))
+  const platesPayload = transformPlates({ plates, sampleType, libraryType })
+  const tubesPayload = transformTubes({ tubes, sampleType, libraryType })
+  const foundBarcodes = extractBarcodes({ plates, tubes })
+
+  return {
+    plates: platesPayload,
+    tubes: tubesPayload,
+    foundBarcodes,
   }
 }
 
@@ -153,10 +166,10 @@ const Sequencescape = {
   transformPlates,
   transformTubes,
   getPlates,
-  getLabware,
   OntSample,
   PacbioSample,
   extractBarcodes,
+  labwareForImport,
 }
 
 export {
@@ -164,9 +177,9 @@ export {
   getPlates,
   OntSample,
   PacbioSample,
-  getLabware,
   extractBarcodes,
   transformTubes,
+  labwareForImport,
 }
 
 export default Sequencescape
