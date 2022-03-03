@@ -2,19 +2,15 @@
   <div>
     <b-container id="pool" fluid>
       <b-row>
-        <PacbioLabwareFind ref="labwareFind" />
-        <b-col>
-          <b-row>
-            <PacbioTagSetList ref="tagSetList" />
-          </b-row>
-          <b-row>
-            <PacbioTagSetItem />
-          </b-row>
+        <b-col md="12" lg="6">
+          <PacbioLabwareFind ref="labwareFind" />
+          <PacbioLabwareSelectedList />
         </b-col>
-      </b-row>
-      <b-row>
-        <PacbioLabwareSelectedList />
-        <PacbioPoolEdit />
+        <b-col md="12" lg="6">
+          <PacbioTagSetList ref="tagSetList" />
+          <PacbioTagSetItem />
+          <PacbioPoolEdit />
+        </b-col>
       </b-row>
     </b-container>
   </div>
@@ -43,32 +39,27 @@ export default {
     return {}
   },
   created() {
-    const plates = this.fetchPacbioPlates()
+    const requests = this.fetchPacbioRequests()
     const tagSets = this.fetchPacbioTagSets()
     // Needed due to left over pool data from previously edited pools
     this.$store.commit('traction/pacbio/poolCreate/clearPoolData')
 
     if (this.$route.params.id !== 'new') {
       const libraries = this.populateLibrariesFromPool(this.$route.params.id)
-      libraries.then(this.plateAlert)
+      libraries.then(this.alertOnFail)
     }
     // We don't use await here as otherwise the handling of one response will be blocked
     // by the other
-    plates.then(this.plateAlert)
-    tagSets.then(this.tagSetAlert)
+    requests.then(this.alertOnFail)
+    tagSets.then(this.alertOnFail)
   },
   methods: {
-    plateAlert({ success, errors }) {
+    alertOnFail({ success, errors }) {
       if (!success) {
-        this.$refs['labwareFind'].showAlert(errors, 'danger')
+        this.showAlert(errors, 'danger')
       }
     },
-    tagSetAlert({ success, errors }) {
-      if (!success) {
-        this.$refs['tagSetList'].showAlert(errors, 'danger')
-      }
-    },
-    ...mapActions(['fetchPacbioPlates', 'fetchPacbioTagSets', 'populateLibrariesFromPool']),
+    ...mapActions(['fetchPacbioRequests', 'fetchPacbioTagSets', 'populateLibrariesFromPool']),
   },
 }
 </script>

@@ -20,18 +20,24 @@ const csvLogger = (commit, info, level) => (message) =>
 // the store context
 // see https://vuex.vuejs.org/guide/actions.html
 export default {
-  fetchPacbioPlates: async ({ commit, rootState }) => {
-    const request = rootState.api.traction.pacbio.plates
-    const promise = request.get({ include: 'wells.requests' })
+  /**
+   * Retrieves a list of pacbio request from traction-service and populates the store
+   * with associated plates, wells and tubes
+   * @param rootState the vuex rootState object. Provides access to current state
+   * @param commit the vuex commit object. Provides access to mutations
+   */
+  fetchPacbioRequests: async ({ commit, rootState }) => {
+    const request = rootState.api.traction.pacbio.requests
+    const promise = request.get({ include: 'well.plate' })
     const response = await handleResponse(promise)
 
     const { success, data: { data, included = [] } = {}, errors = [] } = response
 
     if (success) {
-      const { wells, requests } = groupIncludedByResource(included)
-      commit('populatePlates', data)
+      const { wells, plates } = groupIncludedByResource(included)
+      commit('populateRequests', data)
+      commit('populatePlates', plates)
       commit('populateWells', wells)
-      commit('populateRequests', requests)
     }
 
     return { success, errors }

@@ -5,6 +5,7 @@
       :container="$el"
       :selectableTargets="['ellipse.filled']"
       :continueSelect="true"
+      :keyContainer="$el"
       hitRate="20"
       @select="onSelect"
     />

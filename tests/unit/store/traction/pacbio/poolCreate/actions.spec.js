@@ -6,7 +6,7 @@ import { payload } from '@/store/traction/pacbio/poolCreate/pool'
 
 describe('actions.js', () => {
   const {
-    fetchPacbioPlates,
+    fetchPacbioRequests,
     fetchPacbioTagSets,
     selectWellRequests,
     deselectPlateAndContents,
@@ -17,25 +17,25 @@ describe('actions.js', () => {
     updateLibraryFromCsvRecord,
   } = actions
 
-  describe('fetchPacbioPlates', () => {
+  describe('fetchPacbioRequests', () => {
     it('handles success', async () => {
       // mock commit
       const commit = jest.fn()
       // mock dependencies
       const get = jest.fn()
-      const rootState = { api: { traction: { pacbio: { plates: { get } } } } }
-      get.mockResolvedValue(Data.PacbioPlatesRequest)
+      const rootState = { api: { traction: { pacbio: { requests: { get } } } } }
+      get.mockResolvedValue(Data.PacbioRequestsRequest)
       // apply action
-      const { success } = await fetchPacbioPlates({ commit, rootState })
+      const { success } = await fetchPacbioRequests({ commit, rootState })
       // assert result (Might make sense to pull these into separate tests)
-      expect(commit).toHaveBeenCalledWith('populatePlates', Data.PacbioPlatesRequest.data.data)
+      expect(commit).toHaveBeenCalledWith('populateRequests', Data.PacbioRequestsRequest.data.data)
       expect(commit).toHaveBeenCalledWith(
-        'populateWells',
-        Data.PacbioPlatesRequest.data.included.slice(0, 4),
+        'populatePlates',
+        Data.PacbioRequestsRequest.data.included.slice(0, 2),
       )
       expect(commit).toHaveBeenCalledWith(
-        'populateRequests',
-        Data.PacbioPlatesRequest.data.included.slice(4, 8),
+        'populateWells',
+        Data.PacbioRequestsRequest.data.included.slice(2, 6),
       )
       expect(success).toEqual(true)
     })
@@ -45,14 +45,14 @@ describe('actions.js', () => {
       const commit = jest.fn()
       // mock dependencies
       const get = jest.fn()
-      const rootState = { api: { traction: { pacbio: { plates: { get } } } } }
+      const rootState = { api: { traction: { pacbio: { requests: { get } } } } }
       get.mockRejectedValue({
         data: { data: [] },
         status: 500,
         statusText: 'Internal Server Error',
       })
       // apply action
-      const { success } = await fetchPacbioPlates({ commit, rootState })
+      const { success } = await fetchPacbioRequests({ commit, rootState })
       // assert result (Might make sense to pull these into separate tests)
       expect(commit).not.toHaveBeenCalled()
       expect(success).toEqual(false)

@@ -8,13 +8,13 @@ describe('PacbioPoolCreate', () => {
       state: {
         api: {
           traction: {
-            pacbio: { plates: platesRequest, tag_sets: tagSetsRequest },
+            pacbio: { requests: requestsRequest, tag_sets: tagSetsRequest },
           },
         },
       },
     } = store
 
-    platesRequest.get = jest.fn(() => Data.PacbioPlatesRequest)
+    requestsRequest.get = jest.fn(() => Data.PacbioRequestsRequest)
     tagSetsRequest.get = jest.fn(() => Data.PacbioTagSets)
 
     mount(PacbioPoolCreate, {

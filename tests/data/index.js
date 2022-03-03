@@ -30,6 +30,7 @@ import PacbioRuns from './pacbioRuns'
 import PacbioRun from './pacbioRun'
 import PacbioPlates from './pacbioPlates'
 import PacbioPlatesRequest from './pacbioPlatesRequest'
+import PacbioRequestsRequest from './pacbioRequestsRequest'
 import PacbioTagSets from './pacbioTagSets'
 import PacbioSequencingPlate from './pacbioSequencingPlate'
 import PacbioWell from './pacbioWell'
@@ -76,6 +77,7 @@ export default {
   PacbioRun,
   PacbioPlates,
   PacbioPlatesRequest,
+  PacbioRequestsRequest,
   PacbioTagSets,
   PacbioSequencingPlate,
   PacbioWell,

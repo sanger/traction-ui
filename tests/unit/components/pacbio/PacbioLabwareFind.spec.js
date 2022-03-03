@@ -45,7 +45,7 @@ describe('PacbioLabwareFind', () => {
       wrapper.vm.handleSubmit()
       expect(wrapper.vm.setSelected).not.toBeCalled()
       expect(wrapper.vm.showAlert).toBeCalledWith(
-        'Unable to find a plate with the barcode: Not a plate Barcode',
+        'Unable to find labware with the barcode: Not a plate Barcode',
         'danger',
       )
     })

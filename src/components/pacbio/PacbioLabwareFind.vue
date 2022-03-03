@@ -1,7 +1,7 @@
 <template>
   <b-col>
     <b-form @submit.prevent="handleSubmit()">
-      <h3>Find plates</h3>
+      <h3>Find Labware</h3>
       <b-form-input
         v-model="enteredLabware"
         data-input="labware-find"
@@ -27,7 +27,9 @@
 
 <script>
 import { createNamespacedHelpers } from 'vuex'
-const { mapMutations, mapActions } = createNamespacedHelpers('traction/pacbio/poolCreate')
+const { mapMutations, mapActions, mapGetters } = createNamespacedHelpers(
+  'traction/pacbio/poolCreate',
+)
 
 export default {
   name: 'PacbioLabwareFind',
@@ -40,9 +42,7 @@ export default {
     getFilteredList() {
       return this.labwareList.filter((labware) => labware.barcode.includes(this.enteredLabware))
     },
-    labwareList() {
-      return this.$store.getters['traction/pacbio/poolCreate/labwareList']
-    },
+    ...mapGetters(['labwareList']),
   },
   methods: {
     handleSubmit() {
@@ -50,7 +50,7 @@ export default {
       labware
         ? this.toggleSelected(labware)
         : this.showAlert(
-            'Unable to find a plate with the barcode: ' + this.enteredLabware,
+            `Unable to find labware with the barcode: ${this.enteredLabware}`,
             'danger',
           )
       this.enteredLabware = ''
@@ -72,7 +72,7 @@ export default {
 @import 'src/styles/components.scss';
 .find-list-group {
   max-height: 150px;
-  overflow: scroll;
+  overflow-y: auto;
 }
 
 .list-group-item {
