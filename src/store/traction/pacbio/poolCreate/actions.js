@@ -177,7 +177,7 @@ export default {
   /*
    * Given a tag change to library_a, will automatically apply tags to the remaining wells
    * on the plate with the following  rules:
-   * - Only apply additional tags is autoTag is true
+   * - Only apply additional tags if autoTag is true
    * - Tags applied in column order based on the source well
    * - Do not apply tags that appear earlier on the plate
    * - Do not apply tags to request originating from other plates
