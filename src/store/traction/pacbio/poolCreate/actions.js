@@ -14,6 +14,50 @@ const csvLogger = (commit, info, level) => (message) =>
     },
     { root: true },
   )
+/**
+ *
+ * Finds the tube associated with a pacbio_request
+ * @param {Object} resources PacbioVueX store resources object
+ * @returns {Object} the matching tube from the store
+ */
+const tubeFor = ({ resources }, { pacbio_request_id }) =>
+  resources.tubes[resources.requests[pacbio_request_id]?.tube]
+
+const autoTagPlate = ({ state, commit }, { library }) => {
+  const initialWell = wellFor(state, library)
+  const initialIndex = wellToIndex(initialWell)
+  const tags = state.resources.tagSets[state.selected.tagSet.id].tags
+  const initialTagIndex = tags.indexOf(library.tag_id)
+  const plate = initialWell.plate
+
+  Object.values(state.libraries).forEach(({ pacbio_request_id }) => {
+    const otherWell = wellFor(state, { pacbio_request_id })
+
+    if (otherWell?.plate !== plate) return
+
+    const offset = wellToIndex(otherWell) - initialIndex
+
+    if (offset < 1) return
+
+    const newTag = (initialTagIndex + offset) % tags.length
+    commit('updateLibrary', { pacbio_request_id, tag_id: tags[newTag] })
+  })
+}
+
+const autoTagTube = ({ state, commit, getters }, { library }) => {
+  const initialTube = tubeFor(state, library)
+  const tags = state.resources.tagSets[state.selected.tagSet.id].tags
+  const initialTagIndex = tags.indexOf(library.tag_id)
+
+  Object.values(getters.selectedRequests)
+    .filter((request) => {
+      return request.tube && parseInt(request.tube) > parseInt(initialTube.id)
+    })
+    .forEach((req, offset) => {
+      const newTag = (initialTagIndex + offset + 1) % tags.length
+      commit('updateLibrary', { pacbio_request_id: req.id, tag_id: tags[newTag] })
+    })
+}
 
 // Actions handle asynchronous update of state, via mutations.
 // see https://vuex.vuejs.org/guide/actions.html
@@ -185,28 +229,16 @@ export default {
    *   if tag 2 was applied to A1, then C1 would receive tag 4 regardless of
    *   the state of B1.
    */
-  applyTags: ({ state, commit }, { library, autoTag }) => {
+  applyTags: ({ state, commit, getters }, { library, autoTag }) => {
     // We always apply the first tag
     commit('updateLibrary', library)
     if (autoTag) {
-      const initialWell = wellFor(state, library)
-      const initialIndex = wellToIndex(initialWell)
-      const tags = state.resources.tagSets[state.selected.tagSet.id].tags
-      const initialTagIndex = tags.indexOf(library.tag_id)
-      const plate = initialWell.plate
-
-      Object.values(state.libraries).forEach(({ pacbio_request_id }) => {
-        const otherWell = wellFor(state, { pacbio_request_id })
-
-        if (otherWell.plate !== plate) return
-
-        const offset = wellToIndex(otherWell) - initialIndex
-
-        if (offset < 1) return
-
-        const newTag = (initialTagIndex + offset) % tags.length
-        commit('updateLibrary', { pacbio_request_id, tag_id: tags[newTag] })
-      })
+      const request = state.resources.requests[library.pacbio_request_id]
+      if (request.well) {
+        autoTagPlate({ state, commit }, { library })
+      } else {
+        autoTagTube({ state, commit, getters }, { library })
+      }
     }
   },
   /**

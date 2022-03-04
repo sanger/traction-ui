@@ -210,6 +210,26 @@
         ]
       }
     },
+    "tubes": {
+      "1": {
+        "id": "1",
+        "type": "tubes",
+        "barcode": "3980000001795",
+        "requests": ["97"]
+      },
+      "2": {
+        "id": "2",
+        "type": "tubes",
+        "barcode": "TRAC-2-2",
+        "requests": ["98"]
+      },
+      "3": {
+        "id": "3",
+        "type": "tubes",
+        "barcode": "TRAC-2-4",
+        "requests": ["99"]
+      }
+    },
     "wells": {
       "1": { "id": "1", "type": "wells", "position": "A1", "requests": ["1"], "plate": "1" },
       "2": { "id": "2", "type": "wells", "position": "A2", "requests": ["2"], "plate": "1" },
@@ -2011,6 +2031,57 @@
         "source_identifier": "DN2:D12",
         "well": "144",
         "plate": "2"
+      },
+      "97": {
+        "id": "97",
+        "type": "requests",
+        "library_type": "library_type_1",
+        "estimate_of_gb_required": 100,
+        "number_of_smrt_cells": 3,
+        "cost_code": "PSD1234",
+        "external_study_id": "1",
+        "sample_name": "Sample49",
+        "barcode": null,
+        "sample_species": "human",
+        "created_at": "2021/11/30 13:57",
+        "source_identifier": "DN2:D12",
+        "well": null,
+        "plate": null,
+        "tube": "1"
+      },
+      "98": {
+        "id": "98",
+        "type": "requests",
+        "library_type": "library_type_1",
+        "estimate_of_gb_required": 100,
+        "number_of_smrt_cells": 3,
+        "cost_code": "PSD1234",
+        "external_study_id": "1",
+        "sample_name": "Sample49",
+        "barcode": null,
+        "sample_species": "human",
+        "created_at": "2021/11/30 13:57",
+        "source_identifier": "DN2:D12",
+        "well": null,
+        "plate": null,
+        "tube": "2"
+      },
+      "99": {
+        "id": "99",
+        "type": "requests",
+        "library_type": "library_type_1",
+        "estimate_of_gb_required": 100,
+        "number_of_smrt_cells": 3,
+        "cost_code": "PSD1234",
+        "external_study_id": "1",
+        "sample_name": "Sample49",
+        "barcode": null,
+        "sample_species": "human",
+        "created_at": "2021/11/30 13:57",
+        "source_identifier": "DN2:D12",
+        "well": null,
+        "plate": null,
+        "tube": "3"
       }
     },
     "tagSets": {
@@ -2298,6 +2369,18 @@
     },
     "_62": {
       "pacbio_request_id": "62",
+      "tag_id": null
+    },
+    "_97": {
+      "pacbio_request_id": "97",
+      "tag_id": null
+    },
+    "_98": {
+      "pacbio_request_id": "98",
+      "tag_id": null
+    },
+    "_99": {
+      "pacbio_request_id": "99",
       "tag_id": null
     }
   },

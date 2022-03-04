@@ -559,9 +559,85 @@ describe('actions.js', () => {
           pacbio_request_id: '73', // C1
         }),
       )
+      // or a tube
+      expect(commit).not.toHaveBeenCalledWith(
+        'updateLibrary',
+        expect.objectContaining({
+          pacbio_request_id: '96',
+        }),
+      )
+      expect(commit).not.toHaveBeenCalledWith(
+        'updateLibrary',
+        expect.objectContaining({
+          pacbio_request_id: '97',
+        }),
+      )
 
       // In total we expect ot update8 wells in this case
       expect(commit).toHaveBeenCalledTimes(6)
+    })
+
+    it('applies tags to tubes with a higher index when autoTag is true', async () => {
+      const commit = jest.fn()
+      const autoTag = true
+      const library = { pacbio_request_id: '98', tag_id: '130' }
+
+      const selectedRequests = Object.values(state.libraries).map(
+        ({ pacbio_request_id }) => state.resources.requests[pacbio_request_id],
+      )
+      await applyTags(
+        {
+          commit,
+          state,
+          getters: {
+            selectedRequests,
+          },
+        },
+        {
+          library,
+          autoTag,
+        },
+      )
+
+      // We update the changed well
+      expect(commit).toHaveBeenCalledWith('updateLibrary', {
+        pacbio_request_id: '98',
+        tag_id: '130',
+      })
+
+      // We don't update earlier wells
+      expect(commit).not.toHaveBeenCalledWith(
+        'updateLibrary',
+        expect.objectContaining({
+          pacbio_request_id: '1',
+        }),
+      )
+
+      // We don't update earlier tubes
+      expect(commit).not.toHaveBeenCalledWith(
+        'updateLibrary',
+        expect.objectContaining({
+          pacbio_request_id: '97',
+        }),
+      )
+      // We don't update unselected wells
+      expect(commit).not.toHaveBeenCalledWith(
+        'updateLibrary',
+        expect.objectContaining({
+          pacbio_request_id: '25', // C1
+        }),
+      )
+      // We do update tubes with higher ids
+      expect(commit).toHaveBeenCalledWith(
+        'updateLibrary',
+        expect.objectContaining({
+          pacbio_request_id: '99', // D1
+          tag_id: '131',
+        }),
+      )
+
+      // In total we expect ot update 2 tubes in this case
+      expect(commit).toHaveBeenCalledTimes(2)
     })
   })
 
