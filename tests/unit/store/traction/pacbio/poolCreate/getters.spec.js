@@ -1,7 +1,7 @@
 import getters from '@/store/traction/pacbio/poolCreate/getters'
 import defaultState from '@/store/traction/pacbio/poolCreate/state'
 import { Data } from 'testHelper'
-import { dataToObjectById } from '@/api/JsonApi'
+import { dataToObjectById, groupIncludedByResource } from '@/api/JsonApi'
 
 describe('getters.js', () => {
   const state = defaultState()
@@ -127,11 +127,13 @@ describe('getters.js', () => {
   })
 
   describe('selectedRequests', () => {
+    const payload = Data.PacbioRequestsRequest.data
     const defaultStateObject = defaultState()
-    const requestResources = Data.PacbioPlatesRequest.data.included.slice(4, 8)
-    const wellResources = Data.PacbioPlatesRequest.data.included.slice(0, 4)
+    const requestResources = payload.data
+    const { wells: wellResources, tubes: tubeResources } = groupIncludedByResource(payload.included)
     const requests = dataToObjectById({ data: requestResources, includeRelationships: true })
     const wells = dataToObjectById({ data: wellResources, includeRelationships: true })
+    const tubes = dataToObjectById({ data: tubeResources, includeRelationships: true })
 
     // When selecting a request with append the id with an underscore. This ensures
     // keys are maintained in insertion order, not numeric order. This allow our requests
@@ -139,6 +141,13 @@ describe('getters.js', () => {
     const libraries = {
       _136: {
         pacbio_request_id: '136',
+        tag_id: null,
+        volume: null,
+        concentration: null,
+        insert_size: null,
+      }, // A selected request
+      _3: {
+        pacbio_request_id: '3',
         tag_id: null,
         volume: null,
         concentration: null,
@@ -155,7 +164,7 @@ describe('getters.js', () => {
 
     const state = {
       ...defaultStateObject,
-      resources: { ...defaultStateObject.resources, requests, wells },
+      resources: { ...defaultStateObject.resources, requests, wells, tubes },
       libraries,
     }
 

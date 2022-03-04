@@ -18,9 +18,25 @@ const mergeRepresentations = (parent, child, keyFunction = (id) => id) => {
 }
 
 const sortRequestByWellColumnIndex = (resources) => (a, b) =>
-  wellToIndex(resources.wells[a.well]) - wellToIndex(resources.wells[b.well])
-const sortRequestByPlate = (resources) => (a, b) =>
-  parseInt(resources.wells[a.well].plate) - parseInt(resources.wells[b.well].plate)
+  wellToIndex(resources.wells[a.well] || { position: 'A1' }) -
+  wellToIndex(resources.wells[b.well] || { position: 'A1' })
+
+/**
+ * Sort the requests based on their labware. Tubes will be sorted after plates,
+ * and then each labware is sorted in id order
+ */
+const sortRequestByLabware = (resources) => (a, b) => {
+  if (a.tube && b.tube) {
+    // Both our tubes
+    return parseInt(a.tube) - parseInt(b.tube)
+  } else if (a.well && b.well) {
+    // Both are plates
+    return parseInt(resources.wells[a.well].plate) - parseInt(resources.wells[b.well].plate)
+  } else {
+    // A plate and a tube
+    return parseInt(a.tube || 0) - parseInt(b.tube || 0)
+  }
+}
 
 export default {
   /**
@@ -97,7 +113,7 @@ export default {
         selected: true,
       }))
       .sort(sortRequestByWellColumnIndex(resources))
-      .sort(sortRequestByPlate(resources))
+      .sort(sortRequestByLabware(resources))
   },
   /**
    * Returns a list of all fetched wells
