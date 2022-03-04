@@ -74,6 +74,43 @@ describe('getters.js', () => {
     })
   })
 
+  describe('tubeList', () => {
+    it('returns a list of labware resources', () => {
+      const tubes = {
+        1: {
+          barcode: 'NT1',
+          id: '1',
+          type: 'tubes',
+          wells: [],
+        },
+        2: {
+          barcode: 'NT2',
+          id: '2',
+          type: 'tubes',
+          wells: [],
+        },
+      }
+      const expected = [
+        {
+          barcode: 'NT1',
+          id: '1',
+          type: 'tubes',
+          wells: [],
+          selected: true,
+        },
+        {
+          barcode: 'NT2',
+          id: '2',
+          type: 'tubes',
+          wells: [],
+        },
+      ]
+      state.resources.tubes = tubes
+      state.selected.tubes = { 1: { id: '1', selected: true } }
+      expect(tubeList(state)).toEqual(expected)
+    })
+  })
+
   describe('tagSetList', () => {
     it('returns what it does', () => {
       state.resources.tagSets = tagSets
