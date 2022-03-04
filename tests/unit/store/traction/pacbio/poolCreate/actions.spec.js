@@ -10,6 +10,8 @@ describe('actions.js', () => {
     fetchPacbioTagSets,
     selectWellRequests,
     deselectPlateAndContents,
+    deselectTubeAndContents,
+    selectTubeAndContents,
     createPool,
     updatePool,
     populateLibrariesFromPool,
@@ -236,6 +238,74 @@ describe('actions.js', () => {
       expect(commit).toHaveBeenCalledWith('selectPlate', { id: '1', selected: false })
       expect(commit).toHaveBeenCalledWith('selectRequest', { id: '100', selected: false })
       expect(commit).toHaveBeenCalledWith('selectRequest', { id: '300', selected: false })
+      // We don't want to select any unselected requests
+      expect(commit).not.toHaveBeenCalledWith('selectRequest', { id: '200', selected: true })
+    })
+  })
+
+  describe('deselectTubeAndContents', () => {
+    it('deselects requests if unselected', async () => {
+      // mock commit
+      const commit = jest.fn()
+      // mock dependencies
+      const defaultStateObject = defaultState()
+      const state = {
+        ...defaultStateObject,
+        resources: {
+          ...defaultStateObject.resources,
+          tubes: {
+            1: { id: 1, requests: ['100', '300'] },
+            2: { id: 2, requests: ['200', '400'] },
+          },
+        },
+        selected: {
+          ...defaultStateObject.selected,
+          requests: {
+            _100: { id: '100', selected: true },
+            _300: { id: '300', selected: true },
+          },
+        },
+      }
+      // apply action
+      await deselectTubeAndContents({ commit, state }, '1')
+      // assert result
+      expect(commit).toHaveBeenCalledWith('selectTube', { id: '1', selected: false })
+      expect(commit).toHaveBeenCalledWith('selectRequest', { id: '100', selected: false })
+      expect(commit).toHaveBeenCalledWith('selectRequest', { id: '300', selected: false })
+      // We don't want to select any unselected requests
+      expect(commit).not.toHaveBeenCalledWith('selectRequest', { id: '200', selected: true })
+    })
+  })
+
+  describe('selectTubeAndContents', () => {
+    it('selects requests if unselected', async () => {
+      // mock commit
+      const commit = jest.fn()
+      // mock dependencies
+      const defaultStateObject = defaultState()
+      const state = {
+        ...defaultStateObject,
+        resources: {
+          ...defaultStateObject.resources,
+          tubes: {
+            1: { id: 1, requests: ['100', '300'] },
+            2: { id: 2, requests: ['200', '400'] },
+          },
+        },
+        selected: {
+          ...defaultStateObject.selected,
+          requests: {
+            _100: { id: '100', selected: true },
+            _300: { id: '300', selected: true },
+          },
+        },
+      }
+      // apply action
+      await selectTubeAndContents({ commit, state }, '1')
+      // assert result
+      expect(commit).toHaveBeenCalledWith('selectTube', { id: '1', selected: true })
+      expect(commit).toHaveBeenCalledWith('selectRequest', { id: '100', selected: true })
+      expect(commit).toHaveBeenCalledWith('selectRequest', { id: '300', selected: true })
       // We don't want to select any unselected requests
       expect(commit).not.toHaveBeenCalledWith('selectRequest', { id: '200', selected: true })
     })

@@ -85,6 +85,29 @@ export default {
       }
     }
   },
+  /**
+   * When a tube is deselected, we need to also remove all its requests
+   */
+  deselectTubeAndContents: ({ commit, state }, tubeId) => {
+    commit('selectTube', { id: tubeId, selected: false })
+    const { requests } = state.resources.tubes[tubeId]
+
+    for (let requestId of requests) {
+      commit('selectRequest', { id: requestId, selected: false })
+    }
+  },
+  /**
+   * When a tube is deselected, we need to also remove all its requests
+   */
+  selectTubeAndContents: ({ commit, state }, tubeId) => {
+    commit('selectTube', { id: tubeId, selected: true })
+
+    const { requests } = state.resources.tubes[tubeId]
+
+    for (let requestId of requests) {
+      commit('selectRequest', { id: requestId, selected: true })
+    }
+  },
 
   /*
    * Creates a pool from the libraries
