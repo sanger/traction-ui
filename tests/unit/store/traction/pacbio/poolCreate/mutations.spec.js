@@ -9,6 +9,7 @@ describe('mutations.js', () => {
     selectTagSet,
     selectRequest,
     populatePlates,
+    populateTubes,
     populateWells,
     populateRequests,
     populateTagSets,
@@ -183,6 +184,20 @@ describe('mutations.js', () => {
     })
   })
 
+  describe('populateTubes', () => {
+    it('updates the state', () => {
+      // mock state
+      const tubes = Data.TractionTubesWithPacbioPools.data.data
+      const state = defaultState()
+      // apply mutation
+      populateTubes(state, tubes)
+      // assert result
+      expect(state.resources.tubes).toEqual(
+        dataToObjectById({ data: tubes, includeRelationships: true }),
+      )
+    })
+  })
+
   describe('populateWells', () => {
     it('updates the state', () => {
       // mock state
@@ -339,6 +354,7 @@ describe('mutations.js', () => {
       expect(state.selected).toEqual({
         tagSet: {},
         plates: {},
+        tubes: {},
       })
       expect(state.libraries).toEqual({})
       expect(state.pool).toEqual({})
