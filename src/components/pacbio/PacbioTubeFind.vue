@@ -1,24 +1,25 @@
 <template>
   <b-col>
     <b-form @submit.prevent="handleSubmit()">
-      <h3>Find Labware</h3>
+      <h3>Find Tube</h3>
       <b-form-input
         v-model="enteredLabware"
-        data-input="labware-find"
+        data-input="tube-find"
         autocomplete="off"
-        placeholder="Search or scan for labware by barcode"
+        placeholder="Search or scan for tube by barcode"
+        class="mb-2"
       >
       </b-form-input>
-      <b-list-group data-type="labware-list" class="find-list-group">
+      <b-list-group data-type="tube-list" class="find-list-group">
         <b-list-group-item
           v-for="item in getFilteredList"
           :key="item.id"
           button
           :active="item.selected"
-          data-action="select-labware"
+          data-action="select-tube"
           @click="toggleSelected(item)"
         >
-          Plate: {{ item.barcode }}
+          Tube: {{ item.barcode }}
         </b-list-group-item>
       </b-list-group>
     </b-form>
@@ -27,9 +28,7 @@
 
 <script>
 import { createNamespacedHelpers } from 'vuex'
-const { mapMutations, mapActions, mapGetters } = createNamespacedHelpers(
-  'traction/pacbio/poolCreate',
-)
+const { mapActions, mapGetters } = createNamespacedHelpers('traction/pacbio/poolCreate')
 
 export default {
   name: 'PacbioLabwareFind',
@@ -40,13 +39,13 @@ export default {
   },
   computed: {
     getFilteredList() {
-      return this.labwareList.filter((labware) => labware.barcode.includes(this.enteredLabware))
+      return this.tubeList.filter((labware) => labware.barcode.includes(this.enteredLabware))
     },
-    ...mapGetters(['labwareList']),
+    ...mapGetters(['tubeList']),
   },
   methods: {
     handleSubmit() {
-      let labware = this.labwareList.find((labware) => labware.barcode === this.enteredLabware)
+      let labware = this.tubeList.find((labware) => labware.barcode === this.enteredLabware)
       labware
         ? this.toggleSelected(labware)
         : this.showAlert(
@@ -57,13 +56,12 @@ export default {
     },
     toggleSelected({ id, selected }) {
       if (selected) {
-        this.deselectPlateAndContents(id)
+        this.deselectTubeAndContents(id)
       } else {
-        this.selectPlate({ id })
+        this.selectTubeAndContents(id)
       }
     },
-    ...mapMutations(['selectPlate']),
-    ...mapActions(['deselectPlateAndContents']),
+    ...mapActions(['deselectTubeAndContents', 'selectTubeAndContents']),
   },
 }
 </script>

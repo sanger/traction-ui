@@ -1,22 +1,22 @@
 import { mount, localVue, store, Data } from 'testHelper'
-import PacbioLabwareFind from '@/components/pacbio/PacbioLabwareFind'
+import PacbioPlateFind from '@/components/pacbio/PacbioPlateFind'
 import Response from '@/api/Response'
 
-describe('PacbioLabwareFind', () => {
+describe('PacbioPlateFind', () => {
   let wrapper, mockPlates
 
   beforeEach(() => {
     mockPlates = new Response(Data.PacbioPlates)._body.data
     store.commit('traction/pacbio/poolCreate/populatePlates', mockPlates)
 
-    wrapper = mount(PacbioLabwareFind, {
+    wrapper = mount(PacbioPlateFind, {
       localVue,
       store,
     })
   })
 
   it('will have a form', () => {
-    expect(wrapper.find('.labware-list')).toBeDefined()
+    expect(wrapper.find('.plate-list')).toBeDefined()
   })
 
   it('contains the correct data', () => {

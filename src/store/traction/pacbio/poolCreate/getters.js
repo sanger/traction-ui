@@ -4,7 +4,7 @@ import { wellToIndex } from './wellHelpers'
 /**
  * Merge together two representations of the same object.
  * The parent object will be mapped over, and equivalent items from the
- * child object will be merged in. keyFuntion allwos for cases where there
+ * child object will be merged in. keyFunction allows for cases where there
  * is not a 1:1 mapping between ids.
  * @param {Object} parent the parent object, only resources in here will be present in the output.
  * @param {Object} child resources with a matching id will be merged into the parent
@@ -40,10 +40,10 @@ const sortRequestByLabware = (resources) => (a, b) => {
 
 export default {
   /**
-   * Returns a list of all fetched labware
+   * Returns a list of all fetched plates
    * @param {Object} state The Vuex state object
    */
-  labwareList: ({ selected, resources }) => {
+  plateList: ({ selected, resources }) => {
     return mergeRepresentations(resources.plates, selected.plates)
   },
   /**

@@ -3,8 +3,16 @@
     <b-container id="pool" fluid>
       <b-row>
         <b-col md="12" lg="6">
-          <PacbioLabwareFind ref="labwareFind" />
-          <PacbioLabwareSelectedList />
+          <b-tabs content-class="mt-3" fill no-fade>
+            <b-tab title="Add Plates">
+              <PacbioPlateFind ref="labwareFind" />
+              <PacbioPlateSelectedList />
+            </b-tab>
+            <b-tab title="Add Tubes">
+              <PacbioTubeFind ref="labwareFind" />
+              <PacbioTubeSelectedList
+            /></b-tab>
+          </b-tabs>
         </b-col>
         <b-col md="12" lg="6">
           <PacbioTagSetList ref="tagSetList" />
@@ -18,8 +26,10 @@
 
 <script>
 import PacbioTagSetList from '@/components/pacbio/PacbioTagSetList'
-import PacbioLabwareFind from '@/components/pacbio/PacbioLabwareFind'
-import PacbioLabwareSelectedList from '@/components/pacbio/PacbioLabwareSelectedList'
+import PacbioPlateFind from '@/components/pacbio/PacbioPlateFind'
+import PacbioPlateSelectedList from '@/components/pacbio/PacbioPlateSelectedList'
+import PacbioTubeFind from '@/components/pacbio/PacbioTubeFind'
+import PacbioTubeSelectedList from '@/components/pacbio/PacbioTubeSelectedList'
 import PacbioTagSetItem from '@/components/pacbio/PacbioTagSetItem'
 import PacbioPoolEdit from '@/components/pacbio/PacbioPoolEdit'
 
@@ -30,8 +40,10 @@ export default {
   name: 'PacbioPoolCreate',
   components: {
     PacbioTagSetList,
-    PacbioLabwareFind,
-    PacbioLabwareSelectedList,
+    PacbioPlateFind,
+    PacbioPlateSelectedList,
+    PacbioTubeFind,
+    PacbioTubeSelectedList,
     PacbioTagSetItem,
     PacbioPoolEdit,
   },

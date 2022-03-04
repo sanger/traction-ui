@@ -6,7 +6,7 @@ import { dataToObjectById, groupIncludedByResource } from '@/api/JsonApi'
 describe('getters.js', () => {
   const state = defaultState()
   const {
-    labwareList,
+    plateList,
     tubeList,
     tagSetList,
     selectedTagSet,
@@ -37,7 +37,7 @@ describe('getters.js', () => {
     },
   }
 
-  describe('labwareList', () => {
+  describe('plateList', () => {
     it('returns a list of labware resources', () => {
       const plates = {
         1: {
@@ -70,7 +70,7 @@ describe('getters.js', () => {
       ]
       state.resources.plates = plates
       state.selected.plates = { 1: { id: '1', selected: true } }
-      expect(labwareList(state)).toEqual(expected)
+      expect(plateList(state)).toEqual(expected)
     })
   })
 
@@ -209,6 +209,7 @@ describe('getters.js', () => {
       expect(selectedRequests(state)).toEqual([
         { ...requests['40'], selected: true },
         { ...requests['136'], selected: true },
+        { ...requests['3'], selected: true },
       ])
     })
   })

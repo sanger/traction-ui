@@ -12,8 +12,8 @@ describe('Pacbio Pool Create', () => {
   it('Creates a pool successfully', () => {
     cy.visit('#/pacbio/pool/new')
     cy.contains('Pool')
-    cy.get('[data-type=labware-list]').find('[data-action=select-labware]').first().click()
-    cy.get('[data-input=labware-find]').type('DN814567Q{enter}')
+    cy.get('[data-type=plate-list]').find('[data-action=select-plate]').first().click()
+    cy.get('[data-input=plate-find]').type('DN814567Q{enter}')
 
     cy.get('[data-type=plate-item]').should('have.length', 2)
 
@@ -58,8 +58,8 @@ describe('Pacbio Pool Create', () => {
   it('Will not create a pool if there is an error', () => {
     cy.visit('#/pacbio/pool/new')
     cy.contains('Pool')
-    cy.get('[data-type=labware-list]').find('button').first().click()
-    cy.get('[data-input=labware-find]').type('DN814567Q{enter}')
+    cy.get('[data-type=plate-list]').find('button').first().click()
+    cy.get('[data-input=plate-find]').type('DN814567Q{enter}')
 
     cy.get('[data-type=plate-item]').should('have.length', 2)
 
@@ -95,8 +95,8 @@ describe('Pacbio Pool Create', () => {
   it('can automate creation of large pools', () => {
     cy.visit('#/pacbio/pool/new')
     cy.contains('Pool')
-    cy.get('[data-type=labware-list]').find('[data-action=select-labware]').first().click()
-    cy.get('[data-input=labware-find]').type('DN814567Q{enter}')
+    cy.get('[data-type=plate-list]').find('[data-action=select-plate]').first().click()
+    cy.get('[data-input=plate-find]').type('DN814567Q{enter}')
 
     cy.get('[data-type=plate-item]').should('have.length', 2)
 
@@ -195,8 +195,8 @@ describe('Pacbio Pool Create', () => {
   it('can populate tags from csv', () => {
     cy.visit('#/pacbio/pool/new')
     cy.contains('Pool')
-    cy.get('[data-type=labware-list]').find('[data-action=select-labware]').first().click()
-    cy.get('[data-input=labware-find]').type('DN814567Q{enter}')
+    cy.get('[data-type=plate-list]').find('[data-action=select-plate]').first().click()
+    cy.get('[data-input=plate-find]').type('DN814567Q{enter}')
 
     cy.get('[data-type=plate-item]').should('have.length', 2)
 

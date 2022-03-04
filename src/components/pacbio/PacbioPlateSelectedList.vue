@@ -104,7 +104,7 @@ export default {
 <style scoped lang="scss">
 @import 'src/styles/components.scss';
 .wrapper {
-  overflow: scroll;
+  overflow: auto;
   display: flex;
   flex-wrap: wrap;
 }
