@@ -26,16 +26,17 @@ export default {
    */
   fetchPacbioRequests: async ({ commit, rootState }) => {
     const request = rootState.api.traction.pacbio.requests
-    const promise = request.get({ include: 'well.plate' })
+    const promise = request.get({ include: 'well.plate,tube' })
     const response = await handleResponse(promise)
 
     const { success, data: { data, included = [] } = {}, errors = [] } = response
 
     if (success) {
-      const { wells, plates } = groupIncludedByResource(included)
+      const { wells, plates, tubes } = groupIncludedByResource(included)
       commit('populateRequests', data)
       commit('populatePlates', plates)
       commit('populateWells', wells)
+      commit('populateTubes', tubes)
     }
 
     return { success, errors }

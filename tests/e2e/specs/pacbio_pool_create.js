@@ -4,8 +4,8 @@ describe('Pacbio Pool Create', () => {
       fixture: 'tractionPacbioTagSets.json',
     })
 
-    cy.intercept('/v1/pacbio/plates?include=wells.requests', {
-      fixture: 'pacbioPlatesRequest.json',
+    cy.intercept('/v1/pacbio/requests?include=well.plate,tube', {
+      fixture: 'pacbioRequestsRequest.json',
     })
   })
 
