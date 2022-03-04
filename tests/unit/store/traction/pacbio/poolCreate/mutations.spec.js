@@ -6,6 +6,7 @@ import { dataToObjectById } from '@/api/JsonApi'
 describe('mutations.js', () => {
   const {
     selectPlate,
+    selectTube,
     selectTagSet,
     selectRequest,
     populatePlates,
@@ -41,6 +42,32 @@ describe('mutations.js', () => {
       // - Prefix the key with an _ to maintain insert order
       // - Not disrupt other plates in the store
       expect(state.selected.plates).toEqual({
+        1: { id: '1', selected: true },
+        2: { id: '2', selected: true },
+      })
+    })
+  })
+
+  describe('selectTube', () => {
+    it('selects a tube by default', () => {
+      // mock state
+      const defaultStateObject = defaultState()
+      const state = {
+        ...defaultStateObject,
+        selected: {
+          ...defaultStateObject.selected,
+          tubes: {
+            2: { id: '2', selected: true },
+          },
+        },
+      }
+      // apply mutation
+      selectTube(state, { id: '1' })
+      // assert result
+      // We expect the tube to be recorded in the selected tubes it should:
+      // - Prefix the key with an _ to maintain insert order
+      // - Not disrupt other tubes in the store
+      expect(state.selected.tubes).toEqual({
         1: { id: '1', selected: true },
         2: { id: '2', selected: true },
       })

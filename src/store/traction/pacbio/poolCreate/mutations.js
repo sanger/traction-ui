@@ -29,6 +29,19 @@ export default {
     }
   },
   /**
+   * Flags tube with `id` as selected. (Or unselected if selected is false)
+   * @param {Object} state The Vuex state object
+   * @param {String} id The id of the tube
+   * @param {Boolean} selected Whether the tube is selected (defaults to true)
+   */
+  selectTube: (state, { id, selected = true }) => {
+    if (selected) {
+      Vue.set(state.selected.tubes, `${id}`, { id: id, selected: true })
+    } else {
+      Vue.delete(state.selected.tubes, `${id}`)
+    }
+  },
+  /**
    * Flags tagSet with `id` as selected.
    * @param {Object} state The Vuex state object
    * @param {String} id The id of the plate
