@@ -31,6 +31,13 @@ export default {
     return mergeRepresentations(resources.plates, selected.plates)
   },
   /**
+   * Returns a list of all fetched tubes
+   * @param {Object} state The Vuex state object
+   */
+  tubeList: ({ selected, resources }) => {
+    return mergeRepresentations(resources.tubes, selected.tubes)
+  },
+  /**
    * Returns a list of all fetched tagSet
    * @param {Object} state The Vuex state object
    */
@@ -69,6 +76,12 @@ export default {
    */
   selectedPlates: ({ selected, resources }) =>
     mergeRepresentations(selected.plates, resources.plates),
+
+  /**
+   * Returns a list of selected tubes
+   * @param {Object} state The Vuex state object
+   */
+  selectedTubes: ({ selected, resources }) => mergeRepresentations(selected.tubes, resources.tubes),
 
   /**
    * Returns a list of selected requests

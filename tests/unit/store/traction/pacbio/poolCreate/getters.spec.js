@@ -7,6 +7,7 @@ describe('getters.js', () => {
   const state = defaultState()
   const {
     labwareList,
+    tubeList,
     tagSetList,
     selectedTagSet,
     selectedPlates,
