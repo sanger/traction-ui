@@ -1,30 +1,30 @@
 // TODO: routes are not tested so cause errors on start
 import Vue from 'vue'
 import Router from 'vue-router'
-import Dashboard from './views/Dashboard'
-import PageNotFound from './views/PageNotFound'
-import Saphyr from './views/Saphyr'
-import SaphyrReception from './views/saphyr/SaphyrReception'
-import SaphyrSamples from './views/saphyr/SaphyrSamples'
-import SaphyrLibraries from './views/saphyr/SaphyrLibraries'
-import SaphyrRuns from './views/saphyr/SaphyrRuns'
-import SaphyrRun from './views/saphyr/SaphyrRun'
-import Pacbio from './views/Pacbio'
-import PacbioReceptionTube from './views/pacbio/PacbioReceptionTube'
-import PacbioPlateIndex from './views/pacbio/PacbioPlateIndex'
-import PacbioSampleIndex from './views/pacbio/PacbioSampleIndex'
-import PacbioLibraryIndex from './views/pacbio/PacbioLibraryIndex'
-import PacbioPoolIndex from './views/pacbio/PacbioPoolIndex'
-import PacbioRunIndex from './views/pacbio/PacbioRunIndex'
-import PacbioRunShow from './views/pacbio/PacbioRunShow'
-import ONT from './views/ONT'
-import OntReception from './views/ont/OntReception'
-import OntPlates from './views/ont/OntPlates'
-import OntLibraries from './views/ont/OntLibraries'
-import OntHeronRun from './views/ont/OntHeronRun'
-import OntHeronRuns from './views/ont/OntHeronRuns'
-import PacbioReceptionPlate from './views/pacbio/PacbioReceptionPlate'
-import PacbioPoolCreate from './views/pacbio/PacbioPoolCreate'
+import Dashboard from '@/views/Dashboard'
+import PageNotFound from '@/views/PageNotFound'
+import Saphyr from '@/views/Saphyr'
+import SaphyrReception from '@/views/saphyr/SaphyrReception'
+import SaphyrSamples from '@/views/saphyr/SaphyrSamples'
+import SaphyrLibraries from '@/views/saphyr/SaphyrLibraries'
+import SaphyrRuns from '@/views/saphyr/SaphyrRuns'
+import SaphyrRun from '@/views/saphyr/SaphyrRun'
+import Pacbio from '@/views/Pacbio'
+import PacbioReceptionSamplesExtraction from '@/views/pacbio/PacbioReceptionSamplesExtraction'
+import PacbioPlateIndex from '@/views/pacbio/PacbioPlateIndex'
+import PacbioSampleIndex from '@/views/pacbio/PacbioSampleIndex'
+import PacbioLibraryIndex from '@/views/pacbio/PacbioLibraryIndex'
+import PacbioPoolIndex from '@/views/pacbio/PacbioPoolIndex'
+import PacbioRunIndex from '@/views/pacbio/PacbioRunIndex'
+import PacbioRunShow from '@/views/pacbio/PacbioRunShow'
+import ONT from '@/views/ONT'
+import OntReception from '@/views/ont/OntReception'
+import OntPlates from '@/views/ont/OntPlates'
+import OntLibraries from '@/views/ont/OntLibraries'
+import OntHeronRun from '@/views/ont/OntHeronRun'
+import OntHeronRuns from '@/views/ont/OntHeronRuns'
+import PacbioReceptionSequencescape from '@/views/pacbio/PacbioReceptionSequencescape'
+import PacbioPoolCreate from '@/views/pacbio/PacbioPoolCreate'
 
 Vue.use(Router)
 
@@ -83,10 +83,10 @@ export default new Router({
       children: [
         { path: '', redirect: 'reception' },
         {
-          path: 'reception',
-          name: 'PacbioReceptionTube',
-          component: PacbioReceptionTube,
-          meta: { page: 'Tube Reception' },
+          path: 'samples-extraction-reception',
+          name: 'PacbioReceptionSamplesExtraction',
+          component: PacbioReceptionSamplesExtraction,
+          meta: { page: 'Samples Extraction Reception' },
         },
         {
           path: 'samples',
@@ -126,10 +126,10 @@ export default new Router({
           meta: { page: 'Run' },
         },
         {
-          path: 'plate-reception',
-          name: 'PacbioPlateReception',
-          component: PacbioReceptionPlate,
-          meta: { page: 'Plate Reception' },
+          path: 'sequencescape-reception',
+          name: 'PacbioReceptionSequencescape',
+          component: PacbioReceptionSequencescape,
+          meta: { page: 'Sequencescape Reception' },
         },
         {
           path: 'pool/:id',

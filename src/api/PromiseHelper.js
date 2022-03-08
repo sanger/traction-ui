@@ -1,5 +1,11 @@
 import Api from '@/api'
 
+/*
+ * Note: Please see handleResponse for updated handling of responses,
+ * this is a little more robust and handling the various server responses,
+ * and is less opinionated about how the returned data is handled.
+ */
+
 // promise - a promise object
 // return - a Api.Response object
 const handlePromise = async (promise) => {

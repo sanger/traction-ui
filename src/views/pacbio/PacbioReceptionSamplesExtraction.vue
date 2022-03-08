@@ -43,7 +43,7 @@ import { mapActions, mapState } from 'vuex'
 import LibraryTypeSelect from '@/components/shared/LibraryTypeSelect'
 
 export default {
-  name: 'Reception',
+  name: 'PacbioReceptionSamplesExtraction',
   components: {
     LibraryTypeSelect,
     Spinner,

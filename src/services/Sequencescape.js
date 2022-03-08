@@ -1,4 +1,19 @@
-import handlePromise from '@/api/PromiseHelper'
+import { handleResponse } from '@/api/ResponseHelper'
+import deserialize from '@/api/JsonApi'
+
+const labwareRequestConfig = {
+  include: 'receptacles.aliquots.sample.sample_metadata,receptacles.aliquots.study',
+  fields: {
+    plates: 'labware_barcode,receptacles',
+    tubes: 'labware_barcode,receptacles',
+    wells: 'position,aliquots',
+    receptacles: 'aliquots',
+    samples: 'sample_metadata,name,uuid',
+    sample_metadata: 'sample_common_name',
+    studies: 'uuid',
+    aliquots: 'study,library_type,sample',
+  },
+}
 
 /*
   return a set of plates by their barcodes
@@ -7,17 +22,55 @@ import handlePromise from '@/api/PromiseHelper'
   an array will always be returned.
 */
 const getPlates = async (request, barcodes) => {
-  let plates = []
   let promise = request.get({
     filter: { barcode: barcodes },
     include: 'wells.aliquots.sample.sample_metadata,wells.aliquots.study',
   })
-  let response = await handlePromise(promise)
 
-  if (response.successful && !response.empty) {
-    plates = response.deserialize.plates
+  let { success, data } = await handleResponse(promise)
+
+  if (success) {
+    return deserialize(data).plates || []
+  } else {
+    return []
   }
-  return plates
+}
+
+const extractBarcodes = ({ plates, tubes }) =>
+  [...plates, ...tubes].flatMap((labware) => Object.values(labware.labware_barcode))
+
+/*
+  return a set of labware by their barcodes
+  the request is an executable api call
+  the labware will be converted from json api to nested structure labware: { receptacles: ... }
+  an array will always be returned.
+*/
+const getLabware = async (request, barcodes) => {
+  const promise = request.get({ filter: { barcode: barcodes }, ...labwareRequestConfig })
+
+  const { success, data } = await handleResponse(promise)
+
+  if (success) {
+    // If the response contains no plates or tubes, then the corresponding key
+    // will be missing. Here we provide a default of an empty array so that we
+    // may handle it downstream
+    return { plates: [], tubes: [], ...deserialize(data) }
+  } else {
+    return { plates: [], tubes: [] }
+  }
+}
+
+const labwareForImport = async ({ request, barcodes, sampleType, libraryType }) => {
+  const { plates, tubes } = await getLabware(request, barcodes.join(','))
+  const platesPayload = transformPlates({ plates, sampleType, libraryType })
+  const tubesPayload = transformTubes({ tubes, sampleType, libraryType })
+  const foundBarcodes = extractBarcodes({ plates, tubes })
+
+  return {
+    plates: platesPayload,
+    tubes: tubesPayload,
+    foundBarcodes,
+  }
 }
 
 /*
@@ -28,6 +81,9 @@ const getPlates = async (request, barcodes) => {
 const transformPlates = ({ plates = [], sampleType = OntSample, libraryType = null } = {}) =>
   plates.map((plate) => transformPlate({ ...plate, sampleType, libraryType }))
 
+const transformTubes = ({ tubes = [], sampleType, libraryType } = {}) =>
+  tubes.map((tube) => transformTube({ ...tube, sampleType, libraryType }))
+
 /*
   extract the barcode and wells by destructuring
   then transform the wells into the correct format
@@ -35,12 +91,13 @@ const transformPlates = ({ plates = [], sampleType = OntSample, libraryType = nu
 const transformPlate = ({
   labware_barcode: { human_barcode: barcode },
   wells,
+  receptacles,
   sampleType,
   libraryType,
 }) => ({
   barcode,
   //destructure the wells to get the position and the first aliquot
-  wells: wells.map(({ position: { name: position }, aliquots: [aliquot] }) => {
+  wells: (wells || receptacles).map(({ position: { name: position }, aliquots: [aliquot] }) => {
     return {
       position,
       // we only want to transform the aliquot if it has got something in it
@@ -48,6 +105,30 @@ const transformPlate = ({
       samples: aliquot ? [sampleType(aliquot, libraryType)] : undefined,
     }
   }),
+})
+
+/*
+  Convert a tube to a traction request
+*/
+const transformTube = ({
+  labware_barcode: { machine_barcode: barcode },
+  receptacles: [
+    {
+      aliquots: [aliquot],
+    },
+  ],
+  libraryType,
+}) => ({
+  request: {
+    external_study_id: aliquot.study.uuid,
+    library_type: libraryType,
+  },
+  sample: {
+    name: aliquot.sample.name,
+    external_id: aliquot.sample.uuid,
+    species: aliquot.sample.sample_metadata.sample_common_name,
+  },
+  tube: { barcode },
 })
 
 /*
@@ -83,11 +164,22 @@ const PacbioSample = (aliquot, libraryType) => ({
 
 const Sequencescape = {
   transformPlates,
+  transformTubes,
   getPlates,
   OntSample,
   PacbioSample,
+  extractBarcodes,
+  labwareForImport,
 }
 
-export { transformPlates, getPlates, OntSample, PacbioSample }
+export {
+  transformPlates,
+  getPlates,
+  OntSample,
+  PacbioSample,
+  extractBarcodes,
+  transformTubes,
+  labwareForImport,
+}
 
 export default Sequencescape

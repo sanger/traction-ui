@@ -91,15 +91,15 @@ describe('Dashboard.vue', () => {
     describe('route buttons', () => {
       it('will have a reception button', () => {
         let receptionButton = box.findAll('button').at(0)
-        expect(receptionButton.text()).toEqual('Reception')
+        expect(receptionButton.text()).toEqual('Samples extraction reception')
         receptionButton.trigger('click')
-        expect(wrapper.vm.$route.path).toBe('/pacbio/reception')
+        expect(wrapper.vm.$route.path).toBe('/pacbio/samples-extraction-reception')
       })
       it('will have a plate reception button', () => {
         let receptionButton = box.findAll('button').at(1)
-        expect(receptionButton.text()).toEqual('Plate reception')
+        expect(receptionButton.text()).toEqual('Sequencescape reception')
         receptionButton.trigger('click')
-        expect(wrapper.vm.$route.path).toBe('/pacbio/plate-reception')
+        expect(wrapper.vm.$route.path).toBe('/pacbio/sequencescape-reception')
       })
       it('will have a plates button', () => {
         let platesButton = box.findAll('button').at(2)

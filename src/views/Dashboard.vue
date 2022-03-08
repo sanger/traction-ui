@@ -32,9 +32,7 @@ import { humanise } from '@/lib/stringHumanisation'
 export default {
   name: 'Dashboard',
   computed: {
-    pipelines() {
-      return PipelinesConfig
-    },
+    pipelines: () => PipelinesConfig,
   },
   methods: {
     humanise,

@@ -1,7 +1,7 @@
 <template>
   <div class="reception">
     <b-modal v-model="busy" hide-footer hide-header no-close-on-backdrop>
-      <spinner size="huge" message="Importing plates..."></spinner>
+      <spinner size="huge" message="Importing labware..."></spinner>
     </b-modal>
     <div class="form-group">
       <label for="barcodes">Barcodes:</label>
@@ -25,7 +25,7 @@
           :disabled="isDisabled"
           @click="createTractionPlates"
         >
-          Import {{ plateCount }}
+          Import {{ barcodeCount }}
         </b-button>
       </b-col>
     </b-row>
@@ -35,11 +35,11 @@
 <script>
 import Spinner from 'vue-simple-spinner'
 import Api from '@/mixins/Api'
-import { createPlates } from '@/services/traction/Pacbio'
+import { createLabware } from '@/services/traction/Pacbio'
 import LibraryTypeSelect from '@/components/shared/LibraryTypeSelect'
 
 export default {
-  name: 'Reception',
+  name: 'PacbioReceptionSequencescape',
   components: {
     Spinner,
     LibraryTypeSelect,
@@ -49,8 +49,6 @@ export default {
     return {
       barcodes: '',
       busy: false,
-      alertMessage: '',
-      status: '',
       libraryType: undefined,
     }
   },
@@ -58,17 +56,14 @@ export default {
     barcodeArray() {
       return this.barcodes.split('\n').filter(Boolean)
     },
-    formattedBarcodes() {
-      return this.barcodeArray.join(',')
-    },
     isDisabled() {
       return this.barcodeArray.length === 0 || this.busy
     },
     sequencescapeRequest() {
-      return this.api.sequencescape.plates
+      return this.api.sequencescape.labware
     },
     tractionRequest() {
-      return this.api.traction.pacbio.plates
+      return this.api.traction.pacbio
     },
     requests() {
       return {
@@ -76,20 +71,16 @@ export default {
         sequencescape: this.sequencescapeRequest,
       }
     },
-    plateCount() {
-      if (this.barcodeArray.length == 1) {
-        return '1 plate'
-      } else {
-        return `${this.barcodeArray.length} plates`
-      }
+    barcodeCount() {
+      return `${this.barcodeArray.length} labware`
     },
   },
   methods: {
     async createTractionPlates() {
       this.busy = true
-      const response = await createPlates({
+      const response = await createLabware({
         requests: this.requests,
-        barcodes: this.formattedBarcodes,
+        barcodes: this.barcodeArray,
         libraryType: this.libraryType,
       })
       this.showAlert(response.message, response.status)

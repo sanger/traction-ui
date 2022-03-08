@@ -1,6 +1,6 @@
 <template>
   <div>
-    <b-alert :variant="type" :data-type="dataType" dismissible show @dismissed="dismiss()">
+    <b-alert :variant="variant" :data-type="dataType" dismissible show @dismissed="dismiss()">
       {{ message }}
     </b-alert>
   </div>
@@ -24,6 +24,15 @@ export default {
     message: {
       type: String,
       required: true,
+    },
+  },
+  computed: {
+    variant() {
+      return (
+        {
+          error: 'danger',
+        }[this.type] || this.type
+      )
     },
   },
   methods: {

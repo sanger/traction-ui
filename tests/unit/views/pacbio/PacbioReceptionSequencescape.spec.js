@@ -1,8 +1,8 @@
-import Reception from '@/views/pacbio/PacbioReceptionPlate'
+import Reception from '@/views/pacbio/PacbioReceptionSequencescape'
 import { mount, localVue, store, router } from 'testHelper'
 import * as pacbio from '@/services/traction/Pacbio'
 
-describe('Reception', () => {
+describe('PacbioReceptionSequencescape', () => {
   let wrapper, reception, barcodes, barcode, input
 
   beforeEach(() => {
@@ -27,14 +27,14 @@ describe('Reception', () => {
       input = wrapper.find('textarea')
       await input.setValue(barcode)
       expect(reception.barcodes).toEqual(barcode)
-      expect(wrapper.find('#createTractionPlates').text()).toEqual('Import 1 plate')
+      expect(wrapper.find('#createTractionPlates').text()).toEqual('Import 1 labware')
     })
 
     it('multiple barcodes', async () => {
       input = wrapper.find('textarea')
       await input.setValue(barcodes)
       expect(reception.barcodes).toEqual(barcodes)
-      expect(wrapper.find('#createTractionPlates').text()).toEqual('Import 5 plates')
+      expect(wrapper.find('#createTractionPlates').text()).toEqual('Import 5 labware')
     })
   })
 
@@ -61,22 +61,22 @@ describe('Reception', () => {
       wrapper.setData({ barcodes: 'DN1\nDN2' })
     })
 
-    it('reports success when createPlates works', async () => {
-      const mockedcreatePlates = jest.spyOn(pacbio, 'createPlates').mockImplementation(() => {})
+    it('reports success when createLabware works', async () => {
+      const mockedcreateLabware = jest.spyOn(pacbio, 'createLabware').mockImplementation(() => {})
 
-      mockedcreatePlates.mockResolvedValue({
+      mockedcreateLabware.mockResolvedValue({
         status: 'success',
         message: 'Samples have been created with barcodes: DN1, DN2',
       })
 
       await reception.createTractionPlates()
 
-      expect(mockedcreatePlates).toBeCalledWith({
+      expect(mockedcreateLabware).toBeCalledWith({
         requests: expect.objectContaining({
           sequencescape: expect.anything(),
           traction: expect.anything(),
         }),
-        barcodes: 'DN1,DN2',
+        barcodes: ['DN1', 'DN2'],
         libraryType: undefined,
       })
       expect(reception.showAlert).toBeCalledWith(
@@ -86,9 +86,9 @@ describe('Reception', () => {
     })
 
     it('passes library type when selected', async () => {
-      const mockedcreatePlates = jest.spyOn(pacbio, 'createPlates').mockImplementation(() => {})
+      const mockedcreateLabware = jest.spyOn(pacbio, 'createLabware').mockImplementation(() => {})
 
-      mockedcreatePlates.mockResolvedValue({
+      mockedcreateLabware.mockResolvedValue({
         status: 'success',
         message: 'Samples have been created with barcodes: DN1, DN2',
       })
@@ -96,27 +96,27 @@ describe('Reception', () => {
       await wrapper.setData({ libraryType: 'Example' })
       await reception.createTractionPlates()
 
-      expect(mockedcreatePlates).toBeCalledWith({
+      expect(mockedcreateLabware).toBeCalledWith({
         requests: expect.objectContaining({
           sequencescape: expect.anything(),
           traction: expect.anything(),
         }),
-        barcodes: 'DN1,DN2',
+        barcodes: ['DN1', 'DN2'],
         libraryType: 'Example',
       })
     })
 
     it('is unsuccessful when getSampleExtractionPlatesForBarcodes fails', async () => {
-      const mockedcreatePlates = jest.spyOn(pacbio, 'createPlates').mockImplementation(() => {})
+      const mockedcreateLabware = jest.spyOn(pacbio, 'createLabware').mockImplementation(() => {})
 
-      mockedcreatePlates.mockResolvedValue({
+      mockedcreateLabware.mockResolvedValue({
         status: 'danger',
         message: 'Failed to create samples: title Plate could not be found.',
       })
 
       await reception.createTractionPlates()
 
-      expect(mockedcreatePlates).toBeCalled()
+      expect(mockedcreateLabware).toBeCalled()
 
       expect(reception.showAlert).toBeCalledWith(
         'Failed to create samples: title Plate could not be found.',

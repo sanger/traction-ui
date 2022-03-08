@@ -108,6 +108,9 @@
     "resources": [
       {
         "name": "plates"
+      },
+      {
+        "name": "labware"
       }
     ]
   }
