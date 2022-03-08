@@ -3,17 +3,11 @@ import { validate, payload, valid } from '@/store/traction/pacbio/poolCreate/poo
 import { handleResponse } from '@/api/ResponseHelper'
 import { wellFor, wellToIndex } from './wellHelpers'
 
-const sourceRegex = /^(?<barcode>\w+)-(?<wellName>\w[0-9]{1,2})$/
+const sourceRegex = /^(?<barcode>\w+)(-(?<wellName>\w[0-9]{1,2})){0,1}$/
+
 const errorFor = ({ lines, records }, message) => `Library ${records} on line ${lines}: ${message}`
 const csvLogger = (commit, info, level) => (message) =>
-  commit(
-    'traction/addMessage',
-    {
-      type: level,
-      message: errorFor(info, message),
-    },
-    { root: true },
-  )
+  commit('traction/addMessage', { type: level, message: errorFor(info, message) }, { root: true })
 /**
  *
  * Finds the tube associated with a pacbio_request
@@ -59,6 +53,64 @@ const autoTagTube = ({ state, commit, getters }, { library }) => {
     })
 }
 
+/**
+ *
+ * Finds the tag id for the tag specified by tag, within the current tag group
+ * @param {Object} options - An options object
+ * @param {Object} options.getters PacbioVueX store getters object
+ * @param {String} options.tag Tag group_id to find
+ * @param {Function} options.error Error function for user feedback
+ * @returns {Object} Object containing the matching tag_id
+ */
+const buildTagAttributes = ({ getters, tag, error }) => {
+  if (tag) {
+    const matchedTag = getters.selectedTagSet.tags.find(({ group_id }) => group_id === tag)
+    if (matchedTag) {
+      return { tag_id: matchedTag.id }
+    } else {
+      error(`Could not find a tag named ${tag} in selected tag group`)
+    }
+  }
+  return {}
+}
+
+const barcodeNotFound = (barcode) =>
+  `${barcode} could not be found. Barcode should be in the format barcode-well for plates (eg. DN123S-A1) or just barcode for tubes.`
+
+const requestsForPlate = ({ barcode, wellName, plates, commit, wells }) => {
+  const plate = Object.values(plates).find((plate) => plate.barcode == barcode)
+  if (!plate) return { success: false, errors: barcodeNotFound(barcode) }
+
+  // Ensure the plate is registered as selected
+  commit('selectPlate', { id: plate.id, selected: true })
+  const wellId = plate.wells.find((well_id) => wells[well_id].position == wellName)
+  if (!wellId)
+    return {
+      success: false,
+      errors: `A well named ${wellName} could not be found on ${barcode}`,
+    }
+  return { success: true, requestIds: wells[wellId].requests }
+}
+
+const requestsForTube = ({ barcode, tubes, commit }) => {
+  const tube = Object.values(tubes).find((tube) => tube.barcode == barcode)
+  if (!tube) return { success: false, errors: barcodeNotFound(barcode) }
+  // Ensure the tube is registered as selected
+  commit('selectTube', { id: tube.id, selected: true })
+  return { success: true, requestIds: tube.requests }
+}
+
+const findRequestsForSource = ({
+  sourceData: { barcode, wellName },
+  commit,
+  resources: { plates, wells, tubes },
+}) => {
+  if (wellName) {
+    return requestsForPlate({ barcode, wellName, plates, commit, wells })
+  } else {
+    return requestsForTube({ barcode, tubes, commit })
+  }
+}
 // Actions handle asynchronous update of state, via mutations.
 // see https://vuex.vuejs.org/guide/actions.html
 export default {
@@ -249,44 +301,23 @@ export default {
    * @param commit the vuex commit object. Provides access to mutations
    */
   updateLibraryFromCsvRecord: (
-    {
-      state: {
-        resources: { plates, wells },
-        libraries,
-      },
-      commit,
-      getters,
-    },
+    { state: { resources, libraries }, commit, getters },
     { record: { source, tag, ...attributes }, info },
   ) => {
     const error = csvLogger(commit, info, 'danger')
     if (!source) return error('has no source')
 
     const match = source.match(sourceRegex)
+    const sourceData = match?.groups || { barcode: source }
 
-    if (!match) return error(`${source} should be in the format barcode-well. Eg. DN123S-A1`)
+    const { success, errors, requestIds } = findRequestsForSource({ sourceData, resources, commit })
 
-    const { barcode, wellName } = match.groups
+    if (!success) return error(errors)
+    if (requestIds.length === 0) return error(`no requests associated with ${source}`)
 
-    const plate = Object.values(plates).find((plate) => plate.barcode == barcode)
-    if (!plate) return error(`${barcode} could not be found`)
-    // Ensure the plate is registered as selected
-    commit('selectPlate', { id: plate.id, selected: true })
+    const tagAttributes = buildTagAttributes({ getters, tag, error })
 
-    const wellId = plate.wells.find((well_id) => wells[well_id].position == wellName)
-    if (!wellId) return error(`A well named ${wellName} could not be found on ${barcode}`)
-
-    const tagAttributes = {}
-    if (tag) {
-      const matchedTag = getters.selectedTagSet.tags.find(({ group_id }) => group_id === tag)
-      if (matchedTag) {
-        tagAttributes.tag_id = matchedTag.id
-      } else {
-        error(`Could not find a tag named ${tag} in selected tag group`)
-      }
-    }
-
-    wells[wellId].requests.forEach((pacbio_request_id) => {
+    requestIds.forEach((pacbio_request_id) => {
       if (!libraries[`_${pacbio_request_id}`]) {
         // We're adding a library
         csvLogger(commit, info, 'info')(`Added ${source} to pool`)

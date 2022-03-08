@@ -690,6 +690,31 @@ describe('actions.js', () => {
       )
     })
 
+    it('updates the corresponding library for tubes', async () => {
+      const commit = jest.fn()
+      const record = {
+        source: 'TRAC-2-2',
+        tag: 'bc1024T',
+        genome_size: 6.3,
+        insert_size: 15230,
+        concentration: 13,
+        volume: 15,
+      }
+
+      updateLibraryFromCsvRecord({ state, commit, getters }, { record, info })
+
+      expect(commit).toHaveBeenCalledWith(
+        'updateLibrary',
+        expect.objectContaining({
+          pacbio_request_id: '98',
+          tag_id: '131',
+          insert_size: 15230,
+          concentration: 13,
+          volume: 15,
+        }),
+      )
+    })
+
     it('records an error when source is missing', async () => {
       const commit = jest.fn()
       const record = {
@@ -712,25 +737,6 @@ describe('actions.js', () => {
       )
     })
 
-    it('records an error when source is invalid', async () => {
-      const commit = jest.fn()
-      const record = {
-        source: 'DN1A10',
-      }
-
-      updateLibraryFromCsvRecord({ state, commit, getters }, { record, info })
-
-      expect(commit).toHaveBeenCalledWith(
-        'traction/addMessage',
-        {
-          type: 'danger',
-          message:
-            'Library 2 on line 3: DN1A10 should be in the format barcode-well. Eg. DN123S-A1',
-        },
-        { root: true },
-      )
-    })
-
     it('records an error when the plate cant be found', async () => {
       const commit = jest.fn()
       const record = {
@@ -743,7 +749,8 @@ describe('actions.js', () => {
         'traction/addMessage',
         {
           type: 'danger',
-          message: 'Library 2 on line 3: DN34 could not be found',
+          message:
+            'Library 2 on line 3: DN34 could not be found. Barcode should be in the format barcode-well for plates (eg. DN123S-A1) or just barcode for tubes.',
         },
         { root: true },
       )
