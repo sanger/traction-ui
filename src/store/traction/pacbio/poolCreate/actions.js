@@ -278,7 +278,7 @@ export default {
    * - Do not apply tags that appear earlier on the plate
    * - Do not apply tags to request originating from other plates
    * - Offset tags based on well position, ignoring occupancy. For example
-   *   if tag 2 was applied to A1, then C1 would receive tag 4 regardless of
+   *   if tag 2 was applied to A1, then C1 would receive tag 4 regardless
    *   the state of B1.
    */
   applyTags: ({ state, commit, getters }, { library, autoTag }) => {

@@ -25,7 +25,7 @@ describe('Pacbio Pool Edit', () => {
     cy.visit('#/pacbio/pools')
     cy.get('.pool [data-action=edit-pool]').first().click()
     cy.get('[data-type=plate-item]').should('be.visible')
-    cy.get('[data-type=tag-set-item]').should('be.visible')
+    cy.get('[data-attribute=tag-set-name]').should('be.visible')
     cy.get('[data-type=pool-edit]').within(() => {
       cy.get('[data-attribute=barcode]').should('have.length.greaterThan', 0)
       cy.get('[data-attribute=template-prep-kit-box-barcode]').type('ABC1')
@@ -45,7 +45,7 @@ describe('Pacbio Pool Edit', () => {
     cy.visit('#/pacbio/pools')
     cy.get('.pool [data-action=edit-pool]').first().click()
     cy.get('[data-type=plate-item]').should('be.visible')
-    cy.get('[data-type=tag-set-item]').should('be.visible')
+    cy.get('[data-type=tag-set-name]').should('be.visible')
     cy.get('[data-type=pool-library-edit]').within(() => {
       cy.get('[data-attribute=insert-size]').clear()
     })

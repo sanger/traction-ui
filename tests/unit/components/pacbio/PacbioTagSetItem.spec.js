@@ -61,15 +61,6 @@ describe('PacbioTagSetItem', () => {
       const groupIds = wrapper.findAll('[data-attribute=group-id]')
       expect(groupIds.at(0).text()).toEqual(tags['1'].group_id)
     })
-
-    it('click on tag selects it', async () => {
-      const groupIds = wrapper.findAll('[data-attribute=group-id]')
-      await groupIds.at(0).trigger('click')
-      await groupIds.at(1).trigger('click')
-
-      const selected = wrapper.vm.selected
-      expect(selected).toEqual(['1', '2'])
-    })
   })
 
   describe('when there is no selected tag list', () => {

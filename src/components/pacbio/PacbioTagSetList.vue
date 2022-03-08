@@ -1,5 +1,5 @@
 <template>
-  <b-col class="tag-set-list">
+  <div class="tag-set-list">
     <h3>Select tag set</h3>
     <b-form-select
       v-if="!isEmpty"
@@ -8,7 +8,7 @@
       :options="options"
       @change="updateSelected"
     ></b-form-select>
-  </b-col>
+  </div>
 </template>
 
 <script>

@@ -18,6 +18,7 @@ describe('Pacbio Pool Create', () => {
     cy.get('[data-type=plate-item]').should('have.length', 2)
 
     cy.get('[data-type=tag-set-list]').select('IsoSeq_v1')
+    cy.get('[data-attribute=tag-set-name]').click()
     cy.get('[data-attribute=group-id]').should('have.length', 12)
 
     //TODO: add at least one more sample
