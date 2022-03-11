@@ -45,7 +45,7 @@ describe('Pacbio Pool Edit', () => {
     cy.visit('#/pacbio/pools')
     cy.get('.pool [data-action=edit-pool]').first().click()
     cy.get('[data-type=plate-item]').should('be.visible')
-    cy.get('[data-type=tag-set-name]').should('be.visible')
+    cy.get('[data-attribute=tag-set-name]').should('be.visible')
     cy.get('[data-type=pool-library-edit]').within(() => {
       cy.get('[data-attribute=insert-size]').clear()
     })

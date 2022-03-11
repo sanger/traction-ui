@@ -15,7 +15,7 @@
     </div>
   </details>
   <div v-else class="tag-set-item">
-    <div class="tag-set-name">No tag set selected</div>
+    <div data-attribute="tag-set-name-placeholder" class="tag-set-name">No tag set selected</div>
   </div>
 </template>
 

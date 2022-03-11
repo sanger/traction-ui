@@ -77,7 +77,7 @@ describe('PacbioTagSetItem', () => {
       expect(wrapper.find('[data-type=tag-set-item]').exists()).toBeFalsy()
     })
     it('should show an appropriate message', () => {
-      const message = wrapper.find('[data-attribute=tag-set-name]')
+      const message = wrapper.find('[data-attribute=tag-set-name-placeholder]')
       expect(message.text()).toMatch('No tag set selected')
     })
   })
