@@ -1,35 +1,47 @@
 <template>
-  <b-container id="app" fluid>
-    <br />
+  <div class="w-full mx-auto max-w-screen">
     <!-- TODO: move this into a header component -->
-    <b-navbar ref="navbar" toggleable="md" type="dark" variant="info">
-      <b-navbar-brand id="traction-header" to="/dashboard"><h2>Traction</h2></b-navbar-brand>
-      <b-navbar-nav>
-        <b-nav-text
-          ><h2>{{ pipeline }} {{ page }}</h2></b-nav-text
-        >
-      </b-navbar-nav>
-    </b-navbar>
-    <Message
-      v-for="(message, index) in messages"
-      ref="alert"
-      :key="index"
-      v-bind="message"
-      @dismissed="dismiss(index)"
-    ></Message>
-    <router-view />
-    <InfoFooter></InfoFooter>
-  </b-container>
+
+    <div class="flex flex-col">
+      <div class="relative bg-gradient-to-tr from-sdb to-sdb-400">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6">
+          <div class="flex justify-between items-center py-4 md:justify-start md:space-x-10">
+            <div class="flex w-full justify-start min-w-screen">
+              <TractionLink name="Traction" link="/dashboard"></TractionLink>
+            </div>
+          </div>
+        </div>
+      </div>
+      <Header>{{ pipeline }} {{ page }}</Header>
+      <Message
+        v-for="(message, index) in messages"
+        ref="alert"
+        :key="index"
+        v-bind="message"
+        @dismissed="dismiss(index)"
+      ></Message>
+      <div class="flex flex-grow-1 mt-8">
+        <router-view class="text-center"/>
+      </div>
+      <InfoFooter></InfoFooter>
+    </div>
+
+    
+  </div>
 </template>
 
 <script>
 import InfoFooter from '@/components/InfoFooter'
 import Message from '@/components/Message'
+import TractionLink from '@/components/TractionLink'
+import Header from '@/components/Header'
 
 export default {
   components: {
     InfoFooter,
     Message,
+    TractionLink,
+    Header,
   },
   computed: {
     mergedRoute() {
