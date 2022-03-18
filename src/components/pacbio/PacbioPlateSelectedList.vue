@@ -5,6 +5,7 @@
       :container="$el"
       :selectableTargets="['ellipse.filled']"
       :continueSelect="true"
+      :keyContainer="$el"
       hitRate="20"
       @select="onSelect"
     />
@@ -103,7 +104,7 @@ export default {
 <style scoped lang="scss">
 @import 'src/styles/components.scss';
 .wrapper {
-  overflow: scroll;
+  overflow: auto;
   display: flex;
   flex-wrap: wrap;
 }
