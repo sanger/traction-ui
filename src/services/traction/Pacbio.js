@@ -4,6 +4,16 @@ import { PacbioSample, labwareForImport } from '@/services/Sequencescape'
 const checkBarcodes = (barcodes, foundBarcodes) =>
   barcodes.filter((barcode) => !foundBarcodes.includes(barcode))
 
+const makePlateRequest = (request, plates) =>
+  plates.length > 0
+    ? request.create({ data: { data: { attributes: { plates } } } })
+    : { success: true, data: [] }
+
+const makeTubeRequest = (request, tubes) =>
+  tubes.length > 0
+    ? request.create({ data: { data: { attributes: { requests: tubes }, type: 'requests' } } })
+    : { success: true, data: [] }
+
 /*
   retrieve the plates from Sequencescape.
   if that is successful transform the plates into the correct format.
@@ -27,26 +37,8 @@ const createLabware = async ({ requests, barcodes, libraryType }) => {
     }
   }
 
-  const plateRequest = requests.traction.plates.create({
-    data: {
-      data: {
-        attributes: {
-          plates,
-        },
-      },
-    },
-  })
-
-  const tubeRequest = requests.traction.requests.create({
-    data: {
-      data: {
-        attributes: {
-          requests: tubes,
-        },
-        type: 'requests',
-      },
-    },
-  })
+  const plateRequest = makePlateRequest(requests.traction.plates, plates)
+  const tubeRequest = makeTubeRequest(requests.traction.requests, tubes)
 
   const plateResponse = await handleResponse(plateRequest)
   const tubeResponse = await handleResponse(tubeRequest)

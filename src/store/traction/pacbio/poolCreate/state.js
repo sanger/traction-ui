@@ -12,6 +12,9 @@ export default () => {
       // The main plate store. Represents the authoritative source of plate
       // information. Plates are indexed by id.
       plates: {},
+      // The main tube store. Represents the authoritative source of tube
+      // information. Plates are indexed by id.
+      tubes: {},
       /**
        * The main source of well information. Wells are indexed by id.
        * Populated by the wells included in the request for plates.
@@ -39,6 +42,10 @@ export default () => {
       // id. Each plate is represented by an object with an id and a selected
       // attribute { id: 'plate_id', selected: true }
       plates: {},
+      // Object representing all selected tubes. Selected tubes are indexed by
+      // id. Each tube is represented by an object with an id and a selected
+      // attribute { id: 'tube_id', selected: true }
+      tubes: {},
     },
     // Libraries. Indexed by an internally generated id.
     libraries: {},

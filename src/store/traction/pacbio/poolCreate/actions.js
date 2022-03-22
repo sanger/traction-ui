@@ -3,35 +3,136 @@ import { validate, payload, valid } from '@/store/traction/pacbio/poolCreate/poo
 import { handleResponse } from '@/api/ResponseHelper'
 import { wellFor, wellToIndex } from './wellHelpers'
 
-const sourceRegex = /^(?<barcode>\w+)-(?<wellName>\w[0-9]{1,2})$/
+const sourceRegex = /^(?<barcode>\w+)(-(?<wellName>\w[0-9]{1,2})){0,1}$/
+
 const errorFor = ({ lines, records }, message) => `Library ${records} on line ${lines}: ${message}`
 const csvLogger = (commit, info, level) => (message) =>
-  commit(
-    'traction/addMessage',
-    {
-      type: level,
-      message: errorFor(info, message),
-    },
-    { root: true },
-  )
+  commit('traction/addMessage', { type: level, message: errorFor(info, message) }, { root: true })
+/**
+ *
+ * Finds the tube associated with a pacbio_request
+ * @param {Object} resources PacbioVueX store resources object
+ * @returns {Object} the matching tube from the store
+ */
+const tubeFor = ({ resources }, { pacbio_request_id }) =>
+  resources.tubes[resources.requests[pacbio_request_id]?.tube]
 
+const autoTagPlate = ({ state, commit }, { library }) => {
+  const initialWell = wellFor(state, library)
+  const initialIndex = wellToIndex(initialWell)
+  const tags = state.resources.tagSets[state.selected.tagSet.id].tags
+  const initialTagIndex = tags.indexOf(library.tag_id)
+  const plate = initialWell.plate
+
+  Object.values(state.libraries).forEach(({ pacbio_request_id }) => {
+    const otherWell = wellFor(state, { pacbio_request_id })
+
+    if (otherWell?.plate !== plate) return
+
+    const offset = wellToIndex(otherWell) - initialIndex
+
+    if (offset < 1) return
+
+    const newTag = (initialTagIndex + offset) % tags.length
+    commit('updateLibrary', { pacbio_request_id, tag_id: tags[newTag] })
+  })
+}
+
+const autoTagTube = ({ state, commit, getters }, { library }) => {
+  const initialTube = tubeFor(state, library)
+  const tags = state.resources.tagSets[state.selected.tagSet.id].tags
+  const initialTagIndex = tags.indexOf(library.tag_id)
+
+  Object.values(getters.selectedRequests)
+    .filter((request) => {
+      return request.tube && parseInt(request.tube) > parseInt(initialTube.id)
+    })
+    .forEach((req, offset) => {
+      const newTag = (initialTagIndex + offset + 1) % tags.length
+      commit('updateLibrary', { pacbio_request_id: req.id, tag_id: tags[newTag] })
+    })
+}
+
+/**
+ *
+ * Finds the tag id for the tag specified by tag, within the current tag group
+ * @param {Object} options - An options object
+ * @param {Object} options.getters PacbioVueX store getters object
+ * @param {String} options.tag Tag group_id to find
+ * @param {Function} options.error Error function for user feedback
+ * @returns {Object} Object containing the matching tag_id
+ */
+const buildTagAttributes = ({ getters, tag, error }) => {
+  if (tag) {
+    const matchedTag = getters.selectedTagSet.tags.find(({ group_id }) => group_id === tag)
+    if (matchedTag) {
+      return { tag_id: matchedTag.id }
+    } else {
+      error(`Could not find a tag named ${tag} in selected tag group`)
+    }
+  }
+  return {}
+}
+
+const barcodeNotFound = (barcode) =>
+  `${barcode} could not be found. Barcode should be in the format barcode-well for plates (eg. DN123S-A1) or just barcode for tubes.`
+
+const requestsForPlate = ({ barcode, wellName, plates, commit, wells }) => {
+  const plate = Object.values(plates).find((plate) => plate.barcode == barcode)
+  if (!plate) return { success: false, errors: barcodeNotFound(barcode) }
+
+  // Ensure the plate is registered as selected
+  commit('selectPlate', { id: plate.id, selected: true })
+  const wellId = plate.wells.find((well_id) => wells[well_id].position == wellName)
+  if (!wellId)
+    return {
+      success: false,
+      errors: `A well named ${wellName} could not be found on ${barcode}`,
+    }
+  return { success: true, requestIds: wells[wellId].requests }
+}
+
+const requestsForTube = ({ barcode, tubes, commit }) => {
+  const tube = Object.values(tubes).find((tube) => tube.barcode == barcode)
+  if (!tube) return { success: false, errors: barcodeNotFound(barcode) }
+  // Ensure the tube is registered as selected
+  commit('selectTube', { id: tube.id, selected: true })
+  return { success: true, requestIds: tube.requests }
+}
+
+const findRequestsForSource = ({
+  sourceData: { barcode, wellName },
+  commit,
+  resources: { plates, wells, tubes },
+}) => {
+  if (wellName) {
+    return requestsForPlate({ barcode, wellName, plates, commit, wells })
+  } else {
+    return requestsForTube({ barcode, tubes, commit })
+  }
+}
 // Actions handle asynchronous update of state, via mutations.
-// Note: The { commit } in the given example is destucturing
-// the store context
 // see https://vuex.vuejs.org/guide/actions.html
 export default {
-  fetchPacbioPlates: async ({ commit, rootState }) => {
-    const request = rootState.api.traction.pacbio.plates
-    const promise = request.get({ include: 'wells.requests' })
+  /**
+   * Retrieves a list of pacbio request from traction-service and populates the store
+   * with associated plates, wells and tubes
+   * @param rootState the vuex rootState object. Provides access to current state
+   * @param commit the vuex commit object. Provides access to mutations
+   */
+  fetchPacbioRequests: async ({ commit, rootState }) => {
+    const request = rootState.api.traction.pacbio.requests
+    const promise = request.get({ include: 'well.plate,tube' })
     const response = await handleResponse(promise)
 
     const { success, data: { data, included = [] } = {}, errors = [] } = response
 
     if (success) {
-      const { wells, requests } = groupIncludedByResource(included)
-      commit('populatePlates', data)
+      const { wells, plates, tubes } = groupIncludedByResource(included)
+      commit('populateRequests', data)
+      commit('populatePlates', plates)
       commit('populateWells', wells)
-      commit('populateRequests', requests)
+      commit('populateTubes', tubes)
     }
 
     return { success, errors }
@@ -79,6 +180,29 @@ export default {
       for (let requestId of requests) {
         commit('selectRequest', { id: requestId, selected: false })
       }
+    }
+  },
+  /**
+   * When a tube is deselected, we need to also remove all its requests
+   */
+  deselectTubeAndContents: ({ commit, state }, tubeId) => {
+    commit('selectTube', { id: tubeId, selected: false })
+    const { requests } = state.resources.tubes[tubeId]
+
+    for (let requestId of requests) {
+      commit('selectRequest', { id: requestId, selected: false })
+    }
+  },
+  /**
+   * When a tube is deselected, we need to also remove all its requests
+   */
+  selectTubeAndContents: ({ commit, state }, tubeId) => {
+    commit('selectTube', { id: tubeId, selected: true })
+
+    const { requests } = state.resources.tubes[tubeId]
+
+    for (let requestId of requests) {
+      commit('selectRequest', { id: requestId, selected: true })
     }
   },
 
@@ -149,36 +273,24 @@ export default {
   /*
    * Given a tag change to library_a, will automatically apply tags to the remaining wells
    * on the plate with the following  rules:
-   * - Only apply additional tags is autoTag is true
+   * - Only apply additional tags if autoTag is true
    * - Tags applied in column order based on the source well
    * - Do not apply tags that appear earlier on the plate
    * - Do not apply tags to request originating from other plates
    * - Offset tags based on well position, ignoring occupancy. For example
-   *   if tag 2 was applied to A1, then C1 would receive tag 4 regardless of
+   *   if tag 2 was applied to A1, then C1 would receive tag 4 regardless
    *   the state of B1.
    */
-  applyTags: ({ state, commit }, { library, autoTag }) => {
+  applyTags: ({ state, commit, getters }, { library, autoTag }) => {
     // We always apply the first tag
     commit('updateLibrary', library)
     if (autoTag) {
-      const initialWell = wellFor(state, library)
-      const initialIndex = wellToIndex(initialWell)
-      const tags = state.resources.tagSets[state.selected.tagSet.id].tags
-      const initialTagIndex = tags.indexOf(library.tag_id)
-      const plate = initialWell.plate
-
-      Object.values(state.libraries).forEach(({ pacbio_request_id }) => {
-        const otherWell = wellFor(state, { pacbio_request_id })
-
-        if (otherWell.plate !== plate) return
-
-        const offset = wellToIndex(otherWell) - initialIndex
-
-        if (offset < 1) return
-
-        const newTag = (initialTagIndex + offset) % tags.length
-        commit('updateLibrary', { pacbio_request_id, tag_id: tags[newTag] })
-      })
+      const request = state.resources.requests[library.pacbio_request_id]
+      if (request.well) {
+        autoTagPlate({ state, commit }, { library })
+      } else {
+        autoTagTube({ state, commit, getters }, { library })
+      }
     }
   },
   /**
@@ -189,44 +301,23 @@ export default {
    * @param commit the vuex commit object. Provides access to mutations
    */
   updateLibraryFromCsvRecord: (
-    {
-      state: {
-        resources: { plates, wells },
-        libraries,
-      },
-      commit,
-      getters,
-    },
+    { state: { resources, libraries }, commit, getters },
     { record: { source, tag, ...attributes }, info },
   ) => {
     const error = csvLogger(commit, info, 'danger')
     if (!source) return error('has no source')
 
     const match = source.match(sourceRegex)
+    const sourceData = match?.groups || { barcode: source }
 
-    if (!match) return error(`${source} should be in the format barcode-well. Eg. DN123S-A1`)
+    const { success, errors, requestIds } = findRequestsForSource({ sourceData, resources, commit })
 
-    const { barcode, wellName } = match.groups
+    if (!success) return error(errors)
+    if (requestIds.length === 0) return error(`no requests associated with ${source}`)
 
-    const plate = Object.values(plates).find((plate) => plate.barcode == barcode)
-    if (!plate) return error(`${barcode} could not be found`)
-    // Ensure the plate is registered as selected
-    commit('selectPlate', { id: plate.id, selected: true })
+    const tagAttributes = buildTagAttributes({ getters, tag, error })
 
-    const wellId = plate.wells.find((well_id) => wells[well_id].position == wellName)
-    if (!wellId) return error(`A well named ${wellName} could not be found on ${barcode}`)
-
-    const tagAttributes = {}
-    if (tag) {
-      const matchedTag = getters.selectedTagSet.tags.find(({ group_id }) => group_id === tag)
-      if (matchedTag) {
-        tagAttributes.tag_id = matchedTag.id
-      } else {
-        error(`Could not find a tag named ${tag} in selected tag group`)
-      }
-    }
-
-    wells[wellId].requests.forEach((pacbio_request_id) => {
+    requestIds.forEach((pacbio_request_id) => {
       if (!libraries[`_${pacbio_request_id}`]) {
         // We're adding a library
         csvLogger(commit, info, 'info')(`Added ${source} to pool`)

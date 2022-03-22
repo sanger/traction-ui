@@ -2,19 +2,23 @@
   <div>
     <b-container id="pool" fluid>
       <b-row>
-        <PacbioLabwareFind ref="labwareFind" />
-        <b-col>
-          <b-row>
-            <PacbioTagSetList ref="tagSetList" />
-          </b-row>
-          <b-row>
-            <PacbioTagSetItem />
-          </b-row>
+        <b-col md="12" lg="6">
+          <b-tabs content-class="mt-3" fill no-fade>
+            <b-tab title="Add Plates">
+              <PacbioPlateFind ref="labwareFind" />
+              <PacbioPlateSelectedList />
+            </b-tab>
+            <b-tab title="Add Tubes">
+              <PacbioTubeFind ref="labwareFind" />
+              <PacbioTubeSelectedList
+            /></b-tab>
+          </b-tabs>
         </b-col>
-      </b-row>
-      <b-row>
-        <PacbioLabwareSelectedList />
-        <PacbioPoolEdit />
+        <b-col md="12" lg="6">
+          <PacbioTagSetList ref="tagSetList" />
+          <PacbioTagSetItem />
+          <PacbioPoolEdit />
+        </b-col>
       </b-row>
     </b-container>
   </div>
@@ -22,8 +26,10 @@
 
 <script>
 import PacbioTagSetList from '@/components/pacbio/PacbioTagSetList'
-import PacbioLabwareFind from '@/components/pacbio/PacbioLabwareFind'
-import PacbioLabwareSelectedList from '@/components/pacbio/PacbioLabwareSelectedList'
+import PacbioPlateFind from '@/components/pacbio/PacbioPlateFind'
+import PacbioPlateSelectedList from '@/components/pacbio/PacbioPlateSelectedList'
+import PacbioTubeFind from '@/components/pacbio/PacbioTubeFind'
+import PacbioTubeSelectedList from '@/components/pacbio/PacbioTubeSelectedList'
 import PacbioTagSetItem from '@/components/pacbio/PacbioTagSetItem'
 import PacbioPoolEdit from '@/components/pacbio/PacbioPoolEdit'
 
@@ -34,8 +40,10 @@ export default {
   name: 'PacbioPoolCreate',
   components: {
     PacbioTagSetList,
-    PacbioLabwareFind,
-    PacbioLabwareSelectedList,
+    PacbioPlateFind,
+    PacbioPlateSelectedList,
+    PacbioTubeFind,
+    PacbioTubeSelectedList,
     PacbioTagSetItem,
     PacbioPoolEdit,
   },
@@ -43,32 +51,27 @@ export default {
     return {}
   },
   created() {
-    const plates = this.fetchPacbioPlates()
+    const requests = this.fetchPacbioRequests()
     const tagSets = this.fetchPacbioTagSets()
     // Needed due to left over pool data from previously edited pools
     this.$store.commit('traction/pacbio/poolCreate/clearPoolData')
 
     if (this.$route.params.id !== 'new') {
       const libraries = this.populateLibrariesFromPool(this.$route.params.id)
-      libraries.then(this.plateAlert)
+      libraries.then(this.alertOnFail)
     }
     // We don't use await here as otherwise the handling of one response will be blocked
     // by the other
-    plates.then(this.plateAlert)
-    tagSets.then(this.tagSetAlert)
+    requests.then(this.alertOnFail)
+    tagSets.then(this.alertOnFail)
   },
   methods: {
-    plateAlert({ success, errors }) {
+    alertOnFail({ success, errors }) {
       if (!success) {
-        this.$refs['labwareFind'].showAlert(errors, 'danger')
+        this.showAlert(errors, 'danger')
       }
     },
-    tagSetAlert({ success, errors }) {
-      if (!success) {
-        this.$refs['tagSetList'].showAlert(errors, 'danger')
-      }
-    },
-    ...mapActions(['fetchPacbioPlates', 'fetchPacbioTagSets', 'populateLibrariesFromPool']),
+    ...mapActions(['fetchPacbioRequests', 'fetchPacbioTagSets', 'populateLibrariesFromPool']),
   },
 }
 </script>
