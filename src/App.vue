@@ -1,32 +1,29 @@
 <template>
-  <div class="w-full mx-auto max-w-screen">
+  <div class="flex flex-col min-h-screen">
     <!-- TODO: move this into a header component -->
-
-    <div class="flex flex-col">
-      <div class="relative bg-gradient-to-tr from-sdb to-sdb-400">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6">
-          <div class="flex justify-between items-center py-4 md:justify-start md:space-x-10">
-            <div class="flex w-full justify-start min-w-screen">
-              <TractionLink name="Traction" link="/dashboard"></TractionLink>
-            </div>
+    <div class="relative bg-gradient-to-tr from-sdb to-sdb-400">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6">
+        <div class="flex justify-between items-center py-4 md:justify-start md:space-x-10">
+          <img  class="w-8 h-8" src="./images/wsi-icon-16.png" alt="Traction logo" />
+          <div class="flex justify-start">
+            <TractionLink name="Traction" link="/dashboard"></TractionLink>
           </div>
         </div>
       </div>
-      <Header>{{ pipeline }} {{ page }}</Header>
-      <Message
-        v-for="(message, index) in messages"
-        ref="alert"
-        :key="index"
-        v-bind="message"
-        @dismissed="dismiss(index)"
-      ></Message>
-      <div class="flex flex-grow-1 mt-8">
-        <router-view class="text-center"/>
-      </div>
-      <InfoFooter></InfoFooter>
     </div>
-
-    
+    <Header>{{ pipeline }} {{ page }}</Header>
+    <Message
+      v-for="(message, index) in messages"
+      ref="alert"
+      :key="index"
+      v-bind="message"
+      @dismissed="dismiss(index)"
+    ></Message>
+   
+    <div class="flex flex-col mb-auto px-4 py-10 ">
+      <router-view class="text-center"/>
+    </div>
+    <InfoFooter></InfoFooter>
   </div>
 </template>
 
