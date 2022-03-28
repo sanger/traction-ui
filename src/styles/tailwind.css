@@ -1,34 +1,34 @@
 @tailwind base;
 
 svg.logo {
-    width: 300px;
-    height: 300px;
+  width: 300px;
+  height: 300px;
 }
 
 /* Animations */
 svg.logo.loading rect {
-    animation: sm-pulse;
-    animation-timing-function: ease-in-out;
-    animation-iteration-count: infinite;
-    animation-direction: alternate;
-    animation-duration: 0.6s;
+  animation: sm-pulse;
+  animation-timing-function: ease-in-out;
+  animation-iteration-count: infinite;
+  animation-direction: alternate;
+  animation-duration: 0.6s;
 }
 
 svg.logo.loading rect:nth-child(odd) {
-    animation-delay: 0.6s;
+  animation-delay: 0.6s;
 }
 
-svg.logo.loading rect:nth-child(3n+1) {
-    animation-delay: 0.3s;
+svg.logo.loading rect:nth-child(3n + 1) {
+  animation-delay: 0.3s;
 }
 
 @keyframes sm-pulse {
-    from {
-        opacity: 1
-    }
-    to {
-        opacity: 0.5;
-    }
+  from {
+    opacity: 1;
+  }
+  to {
+    opacity: 0.5;
+  }
 }
 
 @tailwind components;
