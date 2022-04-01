@@ -1,16 +1,17 @@
 <template>
   <div class="flex flex-col min-h-screen">
+    <!-- TODO: move this into a header component -->
     <div class="relative bg-gradient-to-tr from-sdb to-sdb-400">
       <div class="max-w-7xl mx-auto px-4 sm:px-6">
         <div class="flex justify-between items-center py-4 md:justify-start md:space-x-10">
-          <img class="w-8 h-8" src="./images/wsi-icon-16.png" alt="Traction logo" />
+          <img  class="w-8 h-8" src="./images/wsi-icon-16.png" alt="Traction logo" />
           <div class="flex justify-start">
             <TractionLink name="Home" link="/dashboard"></TractionLink>
           </div>
         </div>
       </div>
     </div>
-    <Header>{{ pipeline }} {{ page }}</Header>
+    <Heading>{{ pipeline }} {{ page }}</Heading>
     <Message
       v-for="(message, index) in messages"
       ref="alert"
@@ -18,9 +19,9 @@
       v-bind="message"
       @dismissed="dismiss(index)"
     ></Message>
-
-    <div class="flex flex-col mb-auto px-4 py-10">
-      <router-view class="text-center" />
+   
+    <div class="flex flex-col mb-auto px-4 py-10 ">
+      <router-view class="text-center"/>
     </div>
     <InfoFooter></InfoFooter>
   </div>
@@ -30,14 +31,14 @@
 import InfoFooter from '@/components/InfoFooter'
 import Message from '@/components/Message'
 import TractionLink from '@/components/TractionLink'
-import Header from '@/components/Header'
+import Heading from '@/components/Heading'
 
 export default {
   components: {
     InfoFooter,
     Message,
     TractionLink,
-    Header,
+    Heading,
   },
   computed: {
     mergedRoute() {
