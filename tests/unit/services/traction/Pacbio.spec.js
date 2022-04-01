@@ -144,6 +144,42 @@ describe('Pacbio', () => {
       })
     })
 
+    it('generates a valid tube payload with a passed through library type', async () => {
+      fetchLabware.mockResolvedValue(Data.SequencescapeLabware)
+      createPlate.mockResolvedValue(createdPlateResponse)
+      createTube.mockResolvedValue(createdRequestResponse)
+
+      await createLabware({
+        requests,
+        barcodes: ['DN9000002A', 'NT1O'],
+        libraryType: undefined,
+      })
+
+      expect(createTube).toHaveBeenCalledWith({
+        data: {
+          data: {
+            type: 'requests',
+            attributes: {
+              requests: [
+                {
+                  sample: {
+                    name: '2STDY97',
+                    species: 'Gryphon',
+                    external_id: '0db37dd8-94ca-11ec-a9e3-acde48001122',
+                  },
+                  request: {
+                    external_study_id: '5b173660-94c9-11ec-8c89-acde48001122',
+                    library_type: 'Pacbio_IsoSeq',
+                  },
+                  tube: { barcode: '3980000001795' },
+                },
+              ],
+            },
+          },
+        },
+      })
+    })
+
     describe('unsuccessfully', () => {
       it('when the labware could not be retrievied', async () => {
         fetchLabware.mockRejectedValue({ response: failedResponse })

@@ -121,7 +121,7 @@ const transformTube = ({
 }) => ({
   request: {
     external_study_id: aliquot.study.uuid,
-    library_type: libraryType,
+    library_type: libraryType === undefined ? aliquot.library_type : libraryType,
   },
   sample: {
     name: aliquot.sample.name,
