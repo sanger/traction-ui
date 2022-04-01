@@ -1,6 +1,5 @@
 module.exports = {
   content: ["./src/**/*.{html,vue}"],
-  // Used in the Labware component for slots, but colour is built dynamically so we need to make sure it's not purged
   options: {
     safelist: [
       "bg-red-200",

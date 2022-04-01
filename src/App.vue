@@ -1,6 +1,5 @@
 <template>
   <div class="flex flex-col min-h-screen">
-    <!-- TODO: move this into a header component -->
     <div class="relative bg-gradient-to-tr from-sdb to-sdb-400">
       <div class="max-w-7xl mx-auto px-4 sm:px-6">
         <div class="flex justify-between items-center py-4 md:justify-start md:space-x-10">
