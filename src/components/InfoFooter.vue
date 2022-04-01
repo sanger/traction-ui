@@ -24,8 +24,6 @@
             class="flex flex-row items-center justify-start gap-1"
             href="https://www.sanger.ac.uk/science/groups/production-software-development"
           >
-            
-           
             <svg
               xmlns="http://www.w3.org/2000/svg"
               enable-background="new 0 0 24 24"

@@ -3,7 +3,7 @@
     <div class="relative bg-gradient-to-tr from-sdb to-sdb-400">
       <div class="max-w-7xl mx-auto px-4 sm:px-6">
         <div class="flex justify-between items-center py-4 md:justify-start md:space-x-10">
-          <img  class="w-8 h-8" src="./images/wsi-icon-16.png" alt="Traction logo" />
+          <img class="w-8 h-8" src="./images/wsi-icon-16.png" alt="Traction logo" />
           <div class="flex justify-start">
             <TractionLink name="Home" link="/dashboard"></TractionLink>
           </div>
@@ -18,9 +18,9 @@
       v-bind="message"
       @dismissed="dismiss(index)"
     ></Message>
-   
-    <div class="flex flex-col mb-auto px-4 py-10 ">
-      <router-view class="text-center"/>
+
+    <div class="flex flex-col mb-auto px-4 py-10">
+      <router-view class="text-center" />
     </div>
     <InfoFooter></InfoFooter>
   </div>
