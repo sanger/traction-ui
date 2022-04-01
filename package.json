@@ -3,15 +3,17 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "start": "npm-run-all -p serve serve:css",
+    "start": "npm-run-all -p serve:css serve",
     "serve": "vue-cli-service serve",
-    "build": "vue-cli-service build",
+    "build": "npm-run-all build:css build:js",
+    "build-js": "vue-cli-service build",
     "test:unit": "vue-cli-service test:unit",
     "test:e2e": "vue-cli-service test:e2e",
     "lint": "vue-cli-service lint --max-warnings 3",
     "pretty": "prettier --check '**/*'",
     "test": "vue-cli-service test:unit && vue-cli-service test:e2e",
-    "serve:css": "postcss src/styles/tailwind.css -o src/styles/index.css"
+    "serve:css": "postcss src/styles/tailwind.css -o src/styles/index.css",
+    "build:css": "postcss src/styles/tailwind.css -o src/styles/index.css --env production"
   },
   "dependencies": {
     "apollo-boost": "^0.4.9",

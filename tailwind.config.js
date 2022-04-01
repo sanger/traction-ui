@@ -1,4 +1,5 @@
 module.exports = {
+  purge: {
   content: ['./src/**/*.{html,vue}'],
   options: {
     safelist: [
@@ -89,6 +90,7 @@ module.exports = {
       'grid-rows-50',
     ],
   },
+},
 
   prefix: '',
   important: true,
