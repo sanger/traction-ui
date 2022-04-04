@@ -1,15 +1,17 @@
 <template>
-  <b-container id="app" fluid>
-    <br />
+  <div class="flex flex-col min-h-screen">
     <!-- TODO: move this into a header component -->
-    <b-navbar ref="navbar" toggleable="md" type="dark" variant="info">
-      <b-navbar-brand id="traction-header" to="/dashboard"><h2>Traction</h2></b-navbar-brand>
-      <b-navbar-nav>
-        <b-nav-text
-          ><h2>{{ pipeline }} {{ page }}</h2></b-nav-text
-        >
-      </b-navbar-nav>
-    </b-navbar>
+    <div class="relative bg-gradient-to-tr from-sdb to-sdb-400">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6">
+        <div class="flex justify-between items-center py-4 md:justify-start md:space-x-10">
+          <img class="w-8 h-8" src="./images/wsi-icon-16.png" alt="Traction logo" />
+          <div class="flex justify-start">
+            <TractionLink name="Home" link="/dashboard"></TractionLink>
+          </div>
+        </div>
+      </div>
+    </div>
+    <Heading>{{ pipeline }} {{ page }}</Heading>
     <Message
       v-for="(message, index) in messages"
       ref="alert"
@@ -17,19 +19,26 @@
       v-bind="message"
       @dismissed="dismiss(index)"
     ></Message>
-    <router-view />
+
+    <div class="flex flex-col mb-auto px-4 py-10">
+      <router-view class="text-center" />
+    </div>
     <InfoFooter></InfoFooter>
-  </b-container>
+  </div>
 </template>
 
 <script>
 import InfoFooter from '@/components/InfoFooter'
 import Message from '@/components/Message'
+import TractionLink from '@/components/TractionLink'
+import Heading from '@/components/Heading'
 
 export default {
   components: {
     InfoFooter,
     Message,
+    TractionLink,
+    Heading,
   },
   computed: {
     mergedRoute() {
