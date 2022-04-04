@@ -30,6 +30,7 @@ import PacbioRuns from './pacbioRuns'
 import PacbioRun from './pacbioRun'
 import PacbioPlates from './pacbioPlates'
 import PacbioPlatesRequest from './pacbioPlatesRequest'
+import PacbioRequestsRequest from './pacbioRequestsRequest'
 import PacbioTagSets from './pacbioTagSets'
 import PacbioSequencingPlate from './pacbioSequencingPlate'
 import PacbioWell from './pacbioWell'
@@ -37,6 +38,8 @@ import PacbioWells from './pacbioWells'
 import PacbioWellLibrary from './pacbioWellLibrary'
 import TractionTags from './tractionTags'
 import SequencescapeLabware from './sequencescapeLabware'
+import SequencescapeLabwareTubeOnly from './sequencescapeLabwareTubeOnly'
+import SequencescapeLabwarePlateOnly from './sequencescapeLabwarePlateOnly'
 import SequencescapePlates from './sequencescapePlates'
 import TractionTubeWithContainerMaterials from './tractionTubeWithContainerMaterials'
 import TractionTubesWithPacbioPools from './tractionTubesWithPacbioPools'
@@ -76,6 +79,7 @@ export default {
   PacbioRun,
   PacbioPlates,
   PacbioPlatesRequest,
+  PacbioRequestsRequest,
   PacbioTagSets,
   PacbioSequencingPlate,
   PacbioWell,
@@ -83,6 +87,8 @@ export default {
   PacbioWellLibrary,
   TractionTags,
   SequencescapeLabware,
+  SequencescapeLabwarePlateOnly,
+  SequencescapeLabwareTubeOnly,
   SequencescapePlates,
   TractionTubeWithContainerMaterials,
   TractionTubesWithPacbioPools,

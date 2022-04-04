@@ -4,20 +4,21 @@ describe('Pacbio Pool Create', () => {
       fixture: 'tractionPacbioTagSets.json',
     })
 
-    cy.intercept('/v1/pacbio/plates?include=wells.requests', {
-      fixture: 'pacbioPlatesRequest.json',
+    cy.intercept('/v1/pacbio/requests?include=well.plate,tube', {
+      fixture: 'pacbioRequestsRequest.json',
     })
   })
 
   it('Creates a pool successfully', () => {
     cy.visit('#/pacbio/pool/new')
     cy.contains('Pool')
-    cy.get('[data-type=labware-list]').find('[data-action=select-labware]').first().click()
-    cy.get('[data-input=labware-find]').type('DN814567Q{enter}')
+    cy.get('[data-type=plate-list]').find('[data-action=select-plate]').first().click()
+    cy.get('[data-input=plate-find]').type('DN814567Q{enter}')
 
     cy.get('[data-type=plate-item]').should('have.length', 2)
 
     cy.get('[data-type=tag-set-list]').select('IsoSeq_v1')
+    cy.get('[data-attribute=tag-set-name]').click()
     cy.get('[data-attribute=group-id]').should('have.length', 12)
 
     //TODO: add at least one more sample
@@ -58,8 +59,8 @@ describe('Pacbio Pool Create', () => {
   it('Will not create a pool if there is an error', () => {
     cy.visit('#/pacbio/pool/new')
     cy.contains('Pool')
-    cy.get('[data-type=labware-list]').find('button').first().click()
-    cy.get('[data-input=labware-find]').type('DN814567Q{enter}')
+    cy.get('[data-type=plate-list]').find('button').first().click()
+    cy.get('[data-input=plate-find]').type('DN814567Q{enter}')
 
     cy.get('[data-type=plate-item]').should('have.length', 2)
 
@@ -95,8 +96,8 @@ describe('Pacbio Pool Create', () => {
   it('can automate creation of large pools', () => {
     cy.visit('#/pacbio/pool/new')
     cy.contains('Pool')
-    cy.get('[data-type=labware-list]').find('[data-action=select-labware]').first().click()
-    cy.get('[data-input=labware-find]').type('DN814567Q{enter}')
+    cy.get('[data-type=plate-list]').find('[data-action=select-plate]').first().click()
+    cy.get('[data-input=plate-find]').type('DN814567Q{enter}')
 
     cy.get('[data-type=plate-item]').should('have.length', 2)
 
@@ -195,8 +196,8 @@ describe('Pacbio Pool Create', () => {
   it('can populate tags from csv', () => {
     cy.visit('#/pacbio/pool/new')
     cy.contains('Pool')
-    cy.get('[data-type=labware-list]').find('[data-action=select-labware]').first().click()
-    cy.get('[data-input=labware-find]').type('DN814567Q{enter}')
+    cy.get('[data-type=plate-list]').find('[data-action=select-plate]').first().click()
+    cy.get('[data-input=plate-find]').type('DN814567Q{enter}')
 
     cy.get('[data-type=plate-item]').should('have.length', 2)
 

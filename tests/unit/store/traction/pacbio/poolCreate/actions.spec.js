@@ -6,10 +6,12 @@ import { payload } from '@/store/traction/pacbio/poolCreate/pool'
 
 describe('actions.js', () => {
   const {
-    fetchPacbioPlates,
+    fetchPacbioRequests,
     fetchPacbioTagSets,
     selectWellRequests,
     deselectPlateAndContents,
+    deselectTubeAndContents,
+    selectTubeAndContents,
     createPool,
     updatePool,
     populateLibrariesFromPool,
@@ -17,25 +19,25 @@ describe('actions.js', () => {
     updateLibraryFromCsvRecord,
   } = actions
 
-  describe('fetchPacbioPlates', () => {
+  describe('fetchPacbioRequests', () => {
     it('handles success', async () => {
       // mock commit
       const commit = jest.fn()
       // mock dependencies
       const get = jest.fn()
-      const rootState = { api: { traction: { pacbio: { plates: { get } } } } }
-      get.mockResolvedValue(Data.PacbioPlatesRequest)
+      const rootState = { api: { traction: { pacbio: { requests: { get } } } } }
+      get.mockResolvedValue(Data.PacbioRequestsRequest)
       // apply action
-      const { success } = await fetchPacbioPlates({ commit, rootState })
+      const { success } = await fetchPacbioRequests({ commit, rootState })
       // assert result (Might make sense to pull these into separate tests)
-      expect(commit).toHaveBeenCalledWith('populatePlates', Data.PacbioPlatesRequest.data.data)
+      expect(commit).toHaveBeenCalledWith('populateRequests', Data.PacbioRequestsRequest.data.data)
       expect(commit).toHaveBeenCalledWith(
-        'populateWells',
-        Data.PacbioPlatesRequest.data.included.slice(0, 4),
+        'populatePlates',
+        Data.PacbioRequestsRequest.data.included.slice(0, 2),
       )
       expect(commit).toHaveBeenCalledWith(
-        'populateRequests',
-        Data.PacbioPlatesRequest.data.included.slice(4, 8),
+        'populateWells',
+        Data.PacbioRequestsRequest.data.included.slice(2, 6),
       )
       expect(success).toEqual(true)
     })
@@ -45,14 +47,14 @@ describe('actions.js', () => {
       const commit = jest.fn()
       // mock dependencies
       const get = jest.fn()
-      const rootState = { api: { traction: { pacbio: { plates: { get } } } } }
+      const rootState = { api: { traction: { pacbio: { requests: { get } } } } }
       get.mockRejectedValue({
         data: { data: [] },
         status: 500,
         statusText: 'Internal Server Error',
       })
       // apply action
-      const { success } = await fetchPacbioPlates({ commit, rootState })
+      const { success } = await fetchPacbioRequests({ commit, rootState })
       // assert result (Might make sense to pull these into separate tests)
       expect(commit).not.toHaveBeenCalled()
       expect(success).toEqual(false)
@@ -236,6 +238,74 @@ describe('actions.js', () => {
       expect(commit).toHaveBeenCalledWith('selectPlate', { id: '1', selected: false })
       expect(commit).toHaveBeenCalledWith('selectRequest', { id: '100', selected: false })
       expect(commit).toHaveBeenCalledWith('selectRequest', { id: '300', selected: false })
+      // We don't want to select any unselected requests
+      expect(commit).not.toHaveBeenCalledWith('selectRequest', { id: '200', selected: true })
+    })
+  })
+
+  describe('deselectTubeAndContents', () => {
+    it('deselects requests if unselected', async () => {
+      // mock commit
+      const commit = jest.fn()
+      // mock dependencies
+      const defaultStateObject = defaultState()
+      const state = {
+        ...defaultStateObject,
+        resources: {
+          ...defaultStateObject.resources,
+          tubes: {
+            1: { id: 1, requests: ['100', '300'] },
+            2: { id: 2, requests: ['200', '400'] },
+          },
+        },
+        selected: {
+          ...defaultStateObject.selected,
+          requests: {
+            _100: { id: '100', selected: true },
+            _300: { id: '300', selected: true },
+          },
+        },
+      }
+      // apply action
+      await deselectTubeAndContents({ commit, state }, '1')
+      // assert result
+      expect(commit).toHaveBeenCalledWith('selectTube', { id: '1', selected: false })
+      expect(commit).toHaveBeenCalledWith('selectRequest', { id: '100', selected: false })
+      expect(commit).toHaveBeenCalledWith('selectRequest', { id: '300', selected: false })
+      // We don't want to select any unselected requests
+      expect(commit).not.toHaveBeenCalledWith('selectRequest', { id: '200', selected: true })
+    })
+  })
+
+  describe('selectTubeAndContents', () => {
+    it('selects requests if unselected', async () => {
+      // mock commit
+      const commit = jest.fn()
+      // mock dependencies
+      const defaultStateObject = defaultState()
+      const state = {
+        ...defaultStateObject,
+        resources: {
+          ...defaultStateObject.resources,
+          tubes: {
+            1: { id: 1, requests: ['100', '300'] },
+            2: { id: 2, requests: ['200', '400'] },
+          },
+        },
+        selected: {
+          ...defaultStateObject.selected,
+          requests: {
+            _100: { id: '100', selected: true },
+            _300: { id: '300', selected: true },
+          },
+        },
+      }
+      // apply action
+      await selectTubeAndContents({ commit, state }, '1')
+      // assert result
+      expect(commit).toHaveBeenCalledWith('selectTube', { id: '1', selected: true })
+      expect(commit).toHaveBeenCalledWith('selectRequest', { id: '100', selected: true })
+      expect(commit).toHaveBeenCalledWith('selectRequest', { id: '300', selected: true })
       // We don't want to select any unselected requests
       expect(commit).not.toHaveBeenCalledWith('selectRequest', { id: '200', selected: true })
     })
@@ -489,9 +559,85 @@ describe('actions.js', () => {
           pacbio_request_id: '73', // C1
         }),
       )
+      // or a tube
+      expect(commit).not.toHaveBeenCalledWith(
+        'updateLibrary',
+        expect.objectContaining({
+          pacbio_request_id: '96',
+        }),
+      )
+      expect(commit).not.toHaveBeenCalledWith(
+        'updateLibrary',
+        expect.objectContaining({
+          pacbio_request_id: '97',
+        }),
+      )
 
       // In total we expect ot update8 wells in this case
       expect(commit).toHaveBeenCalledTimes(6)
+    })
+
+    it('applies tags to tubes with a higher index when autoTag is true', async () => {
+      const commit = jest.fn()
+      const autoTag = true
+      const library = { pacbio_request_id: '98', tag_id: '130' }
+
+      const selectedRequests = Object.values(state.libraries).map(
+        ({ pacbio_request_id }) => state.resources.requests[pacbio_request_id],
+      )
+      await applyTags(
+        {
+          commit,
+          state,
+          getters: {
+            selectedRequests,
+          },
+        },
+        {
+          library,
+          autoTag,
+        },
+      )
+
+      // We update the changed well
+      expect(commit).toHaveBeenCalledWith('updateLibrary', {
+        pacbio_request_id: '98',
+        tag_id: '130',
+      })
+
+      // We don't update earlier wells
+      expect(commit).not.toHaveBeenCalledWith(
+        'updateLibrary',
+        expect.objectContaining({
+          pacbio_request_id: '1',
+        }),
+      )
+
+      // We don't update earlier tubes
+      expect(commit).not.toHaveBeenCalledWith(
+        'updateLibrary',
+        expect.objectContaining({
+          pacbio_request_id: '97',
+        }),
+      )
+      // We don't update unselected wells
+      expect(commit).not.toHaveBeenCalledWith(
+        'updateLibrary',
+        expect.objectContaining({
+          pacbio_request_id: '25', // C1
+        }),
+      )
+      // We do update tubes with higher ids
+      expect(commit).toHaveBeenCalledWith(
+        'updateLibrary',
+        expect.objectContaining({
+          pacbio_request_id: '99', // D1
+          tag_id: '131',
+        }),
+      )
+
+      // In total we expect ot update 2 tubes in this case
+      expect(commit).toHaveBeenCalledTimes(2)
     })
   })
 
@@ -544,6 +690,31 @@ describe('actions.js', () => {
       )
     })
 
+    it('updates the corresponding library for tubes', async () => {
+      const commit = jest.fn()
+      const record = {
+        source: 'TRAC-2-2',
+        tag: 'bc1024T',
+        genome_size: 6.3,
+        insert_size: 15230,
+        concentration: 13,
+        volume: 15,
+      }
+
+      updateLibraryFromCsvRecord({ state, commit, getters }, { record, info })
+
+      expect(commit).toHaveBeenCalledWith(
+        'updateLibrary',
+        expect.objectContaining({
+          pacbio_request_id: '98',
+          tag_id: '131',
+          insert_size: 15230,
+          concentration: 13,
+          volume: 15,
+        }),
+      )
+    })
+
     it('records an error when source is missing', async () => {
       const commit = jest.fn()
       const record = {
@@ -566,25 +737,6 @@ describe('actions.js', () => {
       )
     })
 
-    it('records an error when source is invalid', async () => {
-      const commit = jest.fn()
-      const record = {
-        source: 'DN1A10',
-      }
-
-      updateLibraryFromCsvRecord({ state, commit, getters }, { record, info })
-
-      expect(commit).toHaveBeenCalledWith(
-        'traction/addMessage',
-        {
-          type: 'danger',
-          message:
-            'Library 2 on line 3: DN1A10 should be in the format barcode-well. Eg. DN123S-A1',
-        },
-        { root: true },
-      )
-    })
-
     it('records an error when the plate cant be found', async () => {
       const commit = jest.fn()
       const record = {
@@ -597,7 +749,8 @@ describe('actions.js', () => {
         'traction/addMessage',
         {
           type: 'danger',
-          message: 'Library 2 on line 3: DN34 could not be found',
+          message:
+            'Library 2 on line 3: DN34 could not be found. Barcode should be in the format barcode-well for plates (eg. DN123S-A1) or just barcode for tubes.',
         },
         { root: true },
       )

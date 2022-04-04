@@ -56,6 +56,40 @@ describe('Pacbio', () => {
       expect(response.message).toEqual('Labware created with barcodes DN9000002A,NT1O')
     })
 
+    it('does not create plates if none are present', async () => {
+      fetchLabware.mockResolvedValue(Data.SequencescapeLabwareTubeOnly)
+      createTube.mockResolvedValue(createdRequestResponse)
+
+      try {
+        await createLabware({
+          requests,
+          barcodes: ['NT1O'],
+          libraryType: 'Example',
+        })
+      } catch (error) {
+        fail('createLabware threw an error')
+      }
+
+      expect(createPlate).not.toHaveBeenCalled()
+    })
+
+    it('does not create tubes if none are present', async () => {
+      fetchLabware.mockResolvedValue(Data.SequencescapeLabwarePlateOnly)
+      createPlate.mockResolvedValue(createdPlateResponse)
+
+      try {
+        await createLabware({
+          requests,
+          barcodes: ['DN9000002A'],
+          libraryType: 'Example',
+        })
+      } catch (error) {
+        fail('createLabware threw an error')
+      }
+
+      expect(createTube).not.toHaveBeenCalled()
+    })
+
     it('generates a valid plate payload', async () => {
       fetchLabware.mockResolvedValue(Data.SequencescapeLabware)
       createPlate.mockResolvedValue(createdPlateResponse)
