@@ -14,7 +14,8 @@
                     "name": "2STDY1",
                     "external_study_id": "5b173660-94c9-11ec-8c89-acde48001122",
                     "species": "Dragon",
-                    "library_type": null
+                    "library_type": null,
+                    "cost_code": "aCostCodeExample"
                   }
                 ]
               },
@@ -26,7 +27,8 @@
                     "name": "2STDY2",
                     "external_study_id": "5b173660-94c9-11ec-8c89-acde48001122",
                     "species": "Unicorn",
-                    "library_type": null
+                    "library_type": null,
+                    "cost_code": "aCostCodeExample"
                   }
                 ]
               },

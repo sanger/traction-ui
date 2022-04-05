@@ -60,10 +60,10 @@ const getLabware = async (request, barcodes) => {
   }
 }
 
-const labwareForImport = async ({ request, barcodes, sampleType, libraryType }) => {
+const labwareForImport = async ({ request, barcodes, sampleType, libraryType, costCode }) => {
   const { plates, tubes } = await getLabware(request, barcodes.join(','))
-  const platesPayload = transformPlates({ plates, sampleType, libraryType })
-  const tubesPayload = transformTubes({ tubes, sampleType, libraryType })
+  const platesPayload = transformPlates({ plates, sampleType, libraryType, costCode })
+  const tubesPayload = transformTubes({ tubes, sampleType, libraryType, costCode })
   const foundBarcodes = extractBarcodes({ plates, tubes })
 
   return {
@@ -78,11 +78,15 @@ const labwareForImport = async ({ request, barcodes, sampleType, libraryType }) 
   convert plates into the correct structure form importing into traction
   the sampleType is an object type so that the correct attributes are passed
 */
-const transformPlates = ({ plates = [], sampleType = OntSample, libraryType = null } = {}) =>
-  plates.map((plate) => transformPlate({ ...plate, sampleType, libraryType }))
+const transformPlates = ({
+  plates = [],
+  sampleType = OntSample,
+  libraryType = null,
+  costCode,
+} = {}) => plates.map((plate) => transformPlate({ ...plate, sampleType, libraryType, costCode }))
 
-const transformTubes = ({ tubes = [], sampleType, libraryType } = {}) =>
-  tubes.map((tube) => transformTube({ ...tube, sampleType, libraryType }))
+const transformTubes = ({ tubes = [], sampleType, libraryType, costCode } = {}) =>
+  tubes.map((tube) => transformTube({ ...tube, sampleType, libraryType, costCode }))
 
 /*
   extract the barcode and wells by destructuring
@@ -94,6 +98,7 @@ const transformPlate = ({
   receptacles,
   sampleType,
   libraryType,
+  costCode,
 }) => ({
   barcode,
   //destructure the wells to get the position and the first aliquot
@@ -102,7 +107,7 @@ const transformPlate = ({
       position,
       // we only want to transform the aliquot if it has got something in it
       // the sample type will determine the attributes of the sample
-      samples: aliquot ? [sampleType(aliquot, libraryType)] : undefined,
+      samples: aliquot ? [sampleType(aliquot, libraryType, costCode)] : undefined,
     }
   }),
 })
@@ -118,10 +123,12 @@ const transformTube = ({
     },
   ],
   libraryType,
+  costCode,
 }) => ({
   request: {
     external_study_id: aliquot.study.uuid,
     library_type: libraryType,
+    cost_code: costCode,
   },
   sample: {
     name: aliquot.sample.name,
@@ -154,12 +161,13 @@ const OntSample = (aliquot) => ({
   * tagOligo - the oligo of the aliquot
   * external study id - the study uuid of the sample
 */
-const PacbioSample = (aliquot, libraryType) => ({
+const PacbioSample = (aliquot, libraryType, costCode) => ({
   external_id: aliquot.sample.uuid,
   name: aliquot.sample.name,
   external_study_id: aliquot.study.uuid,
   species: aliquot.sample.sample_metadata.sample_common_name,
   library_type: libraryType === undefined ? aliquot.library_type : libraryType,
+  cost_code: costCode,
 })
 
 const Sequencescape = {

@@ -15,7 +15,20 @@
       />
     </div>
     <b-row>
-      <b-col><LibraryTypeSelect v-model="libraryType" pipeline="pacbio" /></b-col>
+      <b-col>
+        <LibraryTypeSelect v-model="libraryType" pipeline="pacbio" />
+
+        <b-form-group
+          label-cols="4"
+          label-cols-lg="2"
+          description="When not provided default is ToL (S4773)"
+          label="Cost Code"
+          label-for="cost-code"
+        >
+          <b-form-input id="cost-code" v-model="costCode"></b-form-input>
+        </b-form-group>
+      </b-col>
+
       <b-col>
         <b-button
           id="createTractionPlates"
@@ -24,9 +37,7 @@
           block
           :disabled="isDisabled"
           @click="createTractionPlates"
-        >
-          Import {{ barcodeCount }}
-        </b-button>
+        >Import {{ barcodeCount }}</b-button>
       </b-col>
     </b-row>
   </div>
@@ -50,6 +61,7 @@ export default {
       barcodes: '',
       busy: false,
       libraryType: undefined,
+      costCode: undefined,
     }
   },
   computed: {
@@ -82,6 +94,7 @@ export default {
         requests: this.requests,
         barcodes: this.barcodeArray,
         libraryType: this.libraryType,
+        costCode: this.costCode,
       })
       this.showAlert(response.message, response.status)
       this.busy = false

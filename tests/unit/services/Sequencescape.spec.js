@@ -1,6 +1,7 @@
 import {
   getPlates,
   transformPlates,
+  transformTubes,
   OntSample,
   PacbioSample,
   labwareForImport,
@@ -87,6 +88,7 @@ describe('SequencescapePlates', () => {
                   external_study_id: '5b173660-94c9-11ec-8c89-acde48001122',
                   species: 'Dragon',
                   library_type: 'Example',
+                  cost_code: 'aCostCodeExample',
                 },
               ],
             },
@@ -99,6 +101,7 @@ describe('SequencescapePlates', () => {
                   external_study_id: '5b173660-94c9-11ec-8c89-acde48001122',
                   species: 'Unicorn',
                   library_type: 'Example',
+                  cost_code: 'aCostCodeExample',
                 },
               ],
             },
@@ -110,6 +113,7 @@ describe('SequencescapePlates', () => {
           request: {
             external_study_id: '5b173660-94c9-11ec-8c89-acde48001122',
             library_type: 'Example',
+            cost_code: 'aCostCodeExample',
           },
           sample: {
             name: '2STDY97',
@@ -124,6 +128,7 @@ describe('SequencescapePlates', () => {
         barcodes,
         sampleType: PacbioSample,
         libraryType: 'Example',
+        costCode: 'aCostCodeExample',
       })
 
       expect(request.get).toHaveBeenCalledWith({
@@ -377,19 +382,22 @@ describe('SequencescapePlates', () => {
           'external_study_id',
           'species',
           'library_type',
+          'cost_code',
         ])
         expect(sample.external_id).toEqual('64e065a4-a9b0-11eb-991b-fa163eac3af7')
         expect(sample.name).toEqual('DTOL10233354')
         expect(sample.external_study_id).toEqual('cf04ea86-ac82-11e9-8998-68b599768938')
         expect(sample.species).toEqual('Orgyia antiqua')
         expect(sample.library_type).toEqual(null)
+        expect(sample.library_type).toEqual(null)
       })
 
-      it('can specify a library type', () => {
+      it('can specify a library type and a cost code', () => {
         transformedPlates = transformPlates({
           plates,
           sampleType: PacbioSample,
           libraryType: 'Example',
+          costCode: 'aCostCodeExample',
         })
         transformedPlate = transformedPlates[0]
         let sample = transformedPlate.wells[0].samples[0]
@@ -399,12 +407,103 @@ describe('SequencescapePlates', () => {
           'external_study_id',
           'species',
           'library_type',
+          'cost_code',
         ])
         expect(sample.external_id).toEqual('64e065a4-a9b0-11eb-991b-fa163eac3af7')
         expect(sample.name).toEqual('DTOL10233354')
         expect(sample.external_study_id).toEqual('cf04ea86-ac82-11e9-8998-68b599768938')
         expect(sample.species).toEqual('Orgyia antiqua')
         expect(sample.library_type).toEqual('Example')
+        expect(sample.cost_code).toEqual('aCostCodeExample')
+      })
+    })
+  })
+
+  describe('#transformTubes', () => {
+    let transformedTubes, transformedTube
+
+    const tubes = [
+      {
+        labware_barcode: {
+          machine_barcode: 'a_machine_barcode',
+        },
+        receptacles: [
+          {
+            aliquots: [
+              {
+                study: {
+                  uuid: 'aexternal_study_id',
+                },
+                sample: {
+                  name: 'a_sample_name',
+                  uuid: 'a_sample_external_id',
+                  sample_metadata: {
+                    sample_common_name: 'a_species',
+                  },
+                },
+              },
+            ],
+          },
+        ],
+      },
+    ]
+
+    beforeEach(() => {
+      transformedTubes = transformTubes({ tubes })
+      transformedTube = transformedTubes[0]
+    })
+
+    it('tube should only have a request, sample and tube', () => {
+      expect(Object.keys(transformedTube)).toEqual(['request', 'sample', 'tube'])
+    })
+
+    it('request should have external_study_id and library_type', () => {
+      let request = transformedTube.request
+      expect(Object.keys(request)).toEqual(['external_study_id', 'library_type', 'cost_code'])
+      expect(request.external_study_id).toEqual('aexternal_study_id')
+    })
+
+    it('sample should have name, external_id and species', () => {
+      let sample = transformedTube.sample
+      expect(Object.keys(sample)).toEqual(['name', 'external_id', 'species'])
+      expect(sample.name).toEqual('a_sample_name')
+      expect(sample.external_id).toEqual('a_sample_external_id')
+      expect(sample.species).toEqual('a_species')
+    })
+
+    it('tube should have a barcode', () => {
+      let tube = transformedTube.tube
+      expect(Object.keys(tube)).toEqual(['barcode'])
+      expect(tube.barcode).toEqual('a_machine_barcode')
+    })
+
+    describe('libraryType', () => {
+      it('allows libraryType to be specified', () => {
+        transformedTubes = transformTubes({ tubes, libraryType: 'alibrary_type' })
+        transformedTube = transformedTubes[0]
+
+        let request = transformedTube.request
+        expect(request.library_type).toEqual('alibrary_type')
+      })
+
+      it('libraryType defaults to null', () => {
+        let request = transformedTube.request
+        expect(request.library_type).not.toBeDefined()
+      })
+    })
+
+    describe('costCode', () => {
+      it('allows costCode to be specified', () => {
+        transformedTubes = transformTubes({ tubes, costCode: 'acost_code' })
+        transformedTube = transformedTubes[0]
+
+        let request = transformedTube.request
+        expect(request.cost_code).toEqual('acost_code')
+      })
+
+      it('costCode defaults to null', () => {
+        let request = transformedTube.request
+        expect(request.cost_code).not.toBeDefined()
       })
     })
   })

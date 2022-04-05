@@ -6,6 +6,7 @@ describe('Import samples from Sequencescape', () => {
     cy.visit('#/pacbio/sequencescape-reception')
     cy.contains('Barcodes:')
     cy.get('#barcodes').type('DN9000002A\nNT1O')
+    cy.get('#cost_code').type('aCostCodeExample')
     cy.intercept(
       {
         url: '/api/v2/labware*',
