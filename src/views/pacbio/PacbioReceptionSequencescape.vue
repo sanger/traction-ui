@@ -23,7 +23,7 @@
           label-cols-lg="2"
           description="When not provided default is ToL (S4773)"
           label="Cost Code"
-          label-for="cost-code"
+          label-for="cost_code"
         >
           <b-form-input id="cost_code" v-model="costCode"></b-form-input>
         </b-form-group>
