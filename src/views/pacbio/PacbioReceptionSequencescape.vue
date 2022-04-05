@@ -25,7 +25,7 @@
           label="Cost Code"
           label-for="cost-code"
         >
-          <b-form-input id="cost-code" v-model="costCode"></b-form-input>
+          <b-form-input id="cost_code" v-model="costCode"></b-form-input>
         </b-form-group>
       </b-col>
 
