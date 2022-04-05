@@ -66,7 +66,7 @@ export default {
   },
   computed: {
     barcodeArray() {
-      return this.barcodes.split('\n').filter(Boolean)
+      return this.barcodes.split(/\s/).filter(Boolean)
     },
     isDisabled() {
       return this.barcodeArray.length === 0 || this.busy
