@@ -37,7 +37,8 @@
           block
           :disabled="isDisabled"
           @click="createTractionPlates"
-        >Import {{ barcodeCount }}</b-button>
+          >Import {{ barcodeCount }}</b-button
+        >
       </b-col>
     </b-row>
   </div>
