@@ -21,12 +21,13 @@ const makeTubeRequest = (request, tubes) =>
   @param requests: {sequencescape: Request, traction: Request} the request that will be called
   @param barcodes: {string} list of barcodes e.g DN1,DN2,DN3
 */
-const createLabware = async ({ requests, barcodes, libraryType }) => {
+const createLabware = async ({ requests, barcodes, libraryType, costCode }) => {
   const { plates, tubes, foundBarcodes } = await labwareForImport({
     request: requests.sequencescape,
     barcodes,
     sampleType: PacbioSample,
     libraryType,
+    costCode,
   })
 
   const missingBarcodes = checkBarcodes(barcodes, foundBarcodes)

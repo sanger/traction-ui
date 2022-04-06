@@ -99,6 +99,7 @@ describe('Pacbio', () => {
         requests,
         barcodes: ['DN9000002A', 'NT1O'],
         libraryType: 'Example',
+        costCode: 'aCostCodeExample',
       })
 
       expect(createPlate).toHaveBeenCalledWith({
@@ -118,6 +119,7 @@ describe('Pacbio', () => {
                           name: '2STDY1',
                           species: 'Dragon',
                           library_type: 'Example',
+                          cost_code: 'aCostCodeExample',
                         },
                       ],
                     },
@@ -130,6 +132,7 @@ describe('Pacbio', () => {
                           name: '2STDY2',
                           species: 'Unicorn',
                           library_type: 'Example',
+                          cost_code: 'aCostCodeExample',
                         },
                       ],
                     },
@@ -151,6 +154,7 @@ describe('Pacbio', () => {
         requests,
         barcodes: ['DN9000002A', 'NT1O'],
         libraryType: 'Example',
+        costCode: 'aCostCodeExample',
       })
 
       expect(createTube).toHaveBeenCalledWith({
@@ -168,6 +172,7 @@ describe('Pacbio', () => {
                   request: {
                     external_study_id: '5b173660-94c9-11ec-8c89-acde48001122',
                     library_type: 'Example',
+                    cost_code: 'aCostCodeExample',
                   },
                   tube: { barcode: '3980000001795' },
                 },
