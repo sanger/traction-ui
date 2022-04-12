@@ -70,10 +70,7 @@ export default {
         this.showAlert(error.message, 'danger')
       }
     },
-    ...mapActions('traction/saphyr/tubes', [
-      // TODO: Move this saphyr/requests
-      'exportSampleExtractionTubesIntoTraction',
-    ]),
+    ...mapActions('traction/saphyr/requests', ['exportSampleExtractionTubesIntoTraction']),
     ...mapActions('sampleExtraction', ['getSampleExtractionTubesForBarcodes']),
   },
 }
