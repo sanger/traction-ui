@@ -67,11 +67,6 @@ const actions = {
   setLibraries,
 }
 
-export {
-  getTractionTubesForBarcodes,
-  createLibrariesInTraction,
-  deleteLibraries,
-  setLibraries,
-}
+export { getTractionTubesForBarcodes, createLibrariesInTraction, deleteLibraries, setLibraries }
 
 export default actions
