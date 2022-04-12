@@ -76,6 +76,20 @@ describe('#exportSampleExtractionTubesIntoTraction', () => {
     create.mockReturnValue(Data.TractionSaphyrTubesWithRequest)
 
     let response = await Actions.exportSampleExtractionTubesIntoTraction({ getters }, tubes)
+
+    let sampleExtractionTubeJson = Actions.sampleExtractionTubeJson(tubes)
+
+    let expectedPayload = {
+      data: {
+        data: {
+          type: 'requests',
+          attributes: {
+            requests: sampleExtractionTubeJson,
+          },
+        },
+      },
+    }
+    expect(create).toBeCalledWith(expectedPayload)
     expect(response).toEqual(expectedResponse)
   })
 
@@ -98,16 +112,19 @@ describe('#exportSampleExtractionTubesIntoTraction', () => {
 })
 
 describe('#sampleExtractionTubeJson', () => {
-  it('will convert a deserialized response to the correct format', () => {
-    let tubes = new Response(Data.SampleExtractionTubesWithSample).deserialize.assets
-    let json = Actions.sampleExtractionTubeJson(tubes)
-    let tube = json[0]
-    expect(tube.external_id).toBeDefined()
-    expect(tube.external_id.includes('-')).toBeTruthy()
-    expect(tube.external_study_id).toBeDefined()
-    expect(tube.external_study_id.includes('-')).toBeTruthy()
-    expect(tube.name).toBeDefined()
-    expect(tube.species).toBeDefined()
+  it('will convert a deserialized response to the correct format for a pacbio request', () => {
+    const tubes = new Response(Data.SampleExtractionTubesWithSample).deserialize.assets
+    const [{ tube, sample, request }] = Actions.sampleExtractionTubeJson(tubes, undefined)
+    // sample
+    expect(sample.name).toBeDefined()
+    expect(sample.species).toBeDefined()
+    expect(sample.external_id).toBeDefined()
+    expect(sample.external_id.includes('-')).toBeTruthy()
+    // request
+    expect(request.external_study_id).toBeDefined()
+    expect(request.external_study_id.includes('-')).toBeTruthy()
+    // tube
+    expect(tube.barcode).toBeDefined()
   })
 })
 

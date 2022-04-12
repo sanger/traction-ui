@@ -30,12 +30,20 @@ const exportSampleExtractionTubesIntoTraction = async ({ getters }, tubes) => {
 }
 
 const sampleExtractionTubeJson = (tubes) => {
-  return tubes.map((t) => ({
-    name: t.fields.sanger_sample_id,
-    species: t.fields.sample_common_name,
-    external_id: t.sample_uuid,
-    external_study_id: t.study_uuid,
-  }))
+  return tubes.map(
+    ({
+      barcode,
+      study_uuid: external_study_id,
+      sample_uuid: external_id,
+      fields: { sanger_sample_id: name, sample_common_name: species },
+    }) => ({
+      sample: { name, species, external_id },
+      request: {
+        external_study_id,
+      },
+      tube: { barcode },
+    }),
+  )
 }
 
 const createLibrariesInTraction = async ({ getters }, payload) => {
