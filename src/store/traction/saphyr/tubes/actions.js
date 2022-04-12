@@ -30,7 +30,6 @@ const exportSampleExtractionTubesIntoTraction = async ({ getters }, tubes) => {
   return response
 }
 
-// TODO: This is where the payload is created
 const sampleExtractionTubeJson = (tubes) => {
   return tubes.map(
     ({
