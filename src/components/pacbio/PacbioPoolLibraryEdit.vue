@@ -13,6 +13,7 @@
         data-type="tag-list"
         :options="tagListOptions"
         :state="hasErrors('tag_id')"
+        class="tag-id"
       ></b-form-select>
       <b-form-invalid-feedback data-attribute="tag-id-error">
         {{ errorsFor('tag_id') }}
@@ -161,5 +162,8 @@ td,
 .custom-select,
 .form-control {
   font-size: 0.8em;
+}
+.tag-id {
+  width: 110px;
 }
 </style>

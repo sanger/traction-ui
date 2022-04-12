@@ -1253,10 +1253,10 @@
   dependencies:
     any-observable "^0.3.0"
 
-"@scena/dragscroll@^1.0.2":
-  version "1.0.3"
-  resolved "https://registry.yarnpkg.com/@scena/dragscroll/-/dragscroll-1.0.3.tgz#9671188ea6c37fb35c5d56185d9c6c729de19678"
-  integrity sha512-jkQ6i9+a4mNBQRQUPtagyV5/P2NauHKp5on4pcnHIRLFG25sPFy3h/VwwgNXwtQFRS1S6taBpnA5Nk87zwg42w==
+"@scena/dragscroll@^1.1.1":
+  version "1.1.1"
+  resolved "https://registry.yarnpkg.com/@scena/dragscroll/-/dragscroll-1.1.1.tgz#43e57bcc0133d51e9927ba5dc0c41bbbb78bbc21"
+  integrity sha512-RnoGpQC0aJ5Z+glLzQAAAf1jmRac1yRuil4zi4HQ8GhzoxTqlgplAOGkFF/IRnUMK1uc5S6R/MEEybfyDGlEcQ==
   dependencies:
     "@daybrush/utils" "1.6.0"
     "@scena/event-emitter" "^1.0.2"
@@ -5817,10 +5817,10 @@ gensync@^1.0.0-beta.2:
   resolved "https://registry.yarnpkg.com/gensync/-/gensync-1.0.0-beta.2.tgz#32a6ee76c3d7f52d46b2b1ae5d93fea8580a25e0"
   integrity sha512-3hN7NaskYvMDLQY55gnW3NQ+mesEAepTqlg+VEbj7zzqEMBVNhzcGYYeqFo/TlYz6eQiFcp1HcsCZO+nGgS8zg==
 
-gesto@^1.5.0:
-  version "1.5.0"
-  resolved "https://registry.yarnpkg.com/gesto/-/gesto-1.5.0.tgz#21b737a40ecc8864d2e3136d36094142959efe0a"
-  integrity sha512-1spR2y85HCNol4i8J5CXOI0BtQYzpgCq7PRCcdlieUw80wfl7dFc7K/Zy5ocKZRomV9yFLCEBndwDGFLpucFOA==
+gesto@^1.7.0:
+  version "1.7.0"
+  resolved "https://registry.yarnpkg.com/gesto/-/gesto-1.7.0.tgz#ae165605e1b6430ed3a79f04f94df7aa4721d3f6"
+  integrity sha512-gPwWUYVPlYATOL59Gl1g2pPtCvbYJIU2kaj85lGvGCde1jgWAh5QI/rwlLgTWpH+Nl53pmPGFmp/oGqJ9d7grw==
   dependencies:
     "@daybrush/utils" "^1.0.0"
     "@scena/event-emitter" "^1.0.2"
@@ -10869,19 +10869,19 @@ select-hose@^2.0.0:
   resolved "https://registry.yarnpkg.com/select-hose/-/select-hose-2.0.0.tgz#625d8658f865af43ec962bfc376a37359a4994ca"
   integrity sha1-Yl2GWPhlr0Psliv8N2o3NZpJlMo=
 
-selecto@~1.13.2:
-  version "1.13.2"
-  resolved "https://registry.yarnpkg.com/selecto/-/selecto-1.13.2.tgz#590eee981808583d2ed8e121429c8bbbb66352e9"
-  integrity sha512-wRRLXGuzHxDqxzdconjS0WwqW8QAcuZg2pxYZiRZloQP8sWyWvIwAJko+mAS+N0Nb8D3ut24J4fo0gGTN1ppQw==
+selecto@~1.15.1:
+  version "1.15.1"
+  resolved "https://registry.yarnpkg.com/selecto/-/selecto-1.15.1.tgz#64771df6ecd0ac360374d1d87f4e65a6ed5076da"
+  integrity sha512-FaDhWCUa2LDTXz2n2Rn4q8iXsudEbI4RffppX3rZMezsLQPtR0TQEcT8GlzaezFd83uE8Fb8xMdZ1FETC0vOyg==
   dependencies:
     "@daybrush/utils" "^1.4.0"
     "@egjs/children-differ" "^1.0.1"
-    "@scena/dragscroll" "^1.0.2"
+    "@scena/dragscroll" "^1.1.1"
     "@scena/event-emitter" "^1.0.5"
     css-styled "^1.0.0"
     css-to-mat "^1.0.3"
     framework-utils "^1.1.0"
-    gesto "^1.5.0"
+    gesto "^1.7.0"
     keycon "^1.1.2"
     overlap-area "^1.0.0"
 
@@ -12400,12 +12400,12 @@ vue-router@^3.5.3:
   resolved "https://registry.yarnpkg.com/vue-router/-/vue-router-3.5.3.tgz#041048053e336829d05dafacf6a8fb669a2e7999"
   integrity sha512-FUlILrW3DGitS2h+Xaw8aRNvGTwtuaxrRkNSHWTizOfLUie7wuYwezeZ50iflRn8YPV5kxmU2LQuu3nM/b3Zsg==
 
-vue-selecto@^1.13.3:
-  version "1.13.3"
-  resolved "https://registry.yarnpkg.com/vue-selecto/-/vue-selecto-1.13.3.tgz#54582383fb7bcaade466b9ef77fb68856ad046ac"
-  integrity sha512-N1nD7vkrUpJof+Xa0bM8uFbpWJrLxwH2eNpdPrk9hEp0JCkYOopiFGzF4XNvd5kId8NLCr+Q9dcbFCr88xX/8w==
+vue-selecto@^1.15.1:
+  version "1.15.1"
+  resolved "https://registry.yarnpkg.com/vue-selecto/-/vue-selecto-1.15.1.tgz#8a5486ddbe6a111b989429535b408737be2c1e92"
+  integrity sha512-vqYvDpym5OHNrxw8Z0GJEpv/IqmK13+cwEjpyyj3pUI5u1i0hSHtbLrIsf9j5E+qXS4beX5n2D1g84UVEVdlQQ==
   dependencies:
-    selecto "~1.13.2"
+    selecto "~1.15.1"
 
 vue-simple-spinner@^1.2.10:
   version "1.2.10"
