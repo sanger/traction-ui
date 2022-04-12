@@ -24,11 +24,13 @@ const exportSampleExtractionTubesIntoTraction = async ({ getters }, tubes) => {
 
   let request = getters.requestsRequest
   let promise = request.create({ data: body })
+  //TODO: change this to use responseHelper which gives better error handling
   let response = await handlePromise(promise)
 
   return response
 }
 
+// TODO: This is where the payload is created
 const sampleExtractionTubeJson = (tubes) => {
   return tubes.map((t) => ({
     name: t.fields.sanger_sample_id,
