@@ -19,9 +19,8 @@
       variant="success"
       :disabled="barcodes.length === 0"
       @click="handleSampleExtractionTubes"
+      >Import Sample Extraction Tubes</b-button
     >
-      Import Sample Extraction Tubes
-    </b-button>
   </div>
 </template>
 
@@ -48,15 +47,25 @@ export default {
     async handleSampleExtractionTubes() {
       try {
         let getSETubeResponse = await this.getSampleExtractionTubesForBarcodes(this.getBarcodes())
-        if (!getSETubeResponse.successful || getSETubeResponse.empty) {
-          throw getSETubeResponse.errors
+
+        if (!getSETubeResponse.success || getSETubeResponse.data.data.length === 0) {
+          let errorMessage = 'Sample Extraction tubes failed to be imported'
+
+          // Is this just for supporting the tests??
+          if (getSETubeResponse.errors && getSETubeResponse.errors.length > 0) {
+            errorMessage = getSETubeResponse.errors
+          }
+          throw { message: errorMessage }
         }
 
         let exportSampleTubesResponse = await this.exportSampleExtractionTubesIntoTraction(
           this.sampleExtractionTubes,
         )
 
-        if (!exportSampleTubesResponse.successful || exportSampleTubesResponse.empty) {
+        if (
+          !exportSampleTubesResponse.success ||
+          exportSampleTubesResponse.data.data.length === 0
+        ) {
           throw exportSampleTubesResponse.errors
         }
         let tractionTubesBarcodeList = exportSampleTubesResponse.deserialize.requests

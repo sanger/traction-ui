@@ -1,6 +1,6 @@
 import Reception from '@/views/saphyr/SaphyrReception'
 import { mount, localVue, store, Data } from 'testHelper'
-import Response from '@/api/Response'
+import { newResponse } from '@/api/ResponseHelper'
 
 describe('Reception', () => {
   let wrapper, reception, barcodes, barcode, input, router
@@ -42,8 +42,6 @@ describe('Reception', () => {
   })
 
   describe('#handleSampleExtractionTubes', () => {
-    let failedResponse
-
     beforeEach(() => {
       store.commit('sampleExtraction/setSampleExtractionTubes', [])
 
@@ -54,21 +52,22 @@ describe('Reception', () => {
       reception.exportSampleExtractionTubesIntoTraction = jest.fn()
       reception.showAlert = jest.fn()
       wrapper.setData({ barcodes: 'TRAC-1\nTRAC-2' })
-
-      failedResponse = {
-        status: 404,
-        statusText: 'Record not found',
-        data: { errors: { title: ['Tube could not be found.'] } },
-      }
     })
 
     it('successfully for samples', async () => {
-      reception.getSampleExtractionTubesForBarcodes.mockResolvedValue(
-        new Response(Data.SampleExtractionTubesWithSample),
-      )
-      reception.exportSampleExtractionTubesIntoTraction.mockResolvedValue(
-        new Response(Data.Requests),
-      )
+      const mockSamplesExtractionResponse = newResponse({
+        success: true,
+        ...Data.SampleExtractionTubesWithSample,
+      })
+
+      reception.getSampleExtractionTubesForBarcodes.mockResolvedValue(mockSamplesExtractionResponse)
+
+      const mockTractionResponse = newResponse({
+        success: true,
+        ...Data.Requests,
+      })
+
+      reception.exportSampleExtractionTubesIntoTraction.mockResolvedValue(mockTractionResponse)
 
       await reception.handleSampleExtractionTubes()
       expect(reception.getSampleExtractionTubesForBarcodes).toBeCalled()
@@ -77,18 +76,55 @@ describe('Reception', () => {
     })
 
     it('is unsuccessful when getSampleExtractionTubesForBarcodes fails', async () => {
-      reception.getSampleExtractionTubesForBarcodes.mockResolvedValue(
-        new Response(Data.SampleExtractionTubesWithSample),
-      )
-      reception.exportSampleExtractionTubesIntoTraction.mockResolvedValue(
-        new Response(failedResponse),
-      )
+      const failedResponse = {
+        success: false,
+        data: { data: [] },
+        status: 500,
+        statusText: 'Internal Server Error',
+      }
+
+      const expectedResponse = newResponse({
+        ...failedResponse,
+        success: false,
+      })
+
+      reception.getSampleExtractionTubesForBarcodes.mockResolvedValue(expectedResponse)
 
       await reception.handleSampleExtractionTubes()
       expect(reception.getSampleExtractionTubesForBarcodes).toBeCalled()
-      expect(reception.exportSampleExtractionTubesIntoTraction).toBeCalled()
-      expect(reception.showAlert).toBeCalled()
+      expect(reception.exportSampleExtractionTubesIntoTraction).not.toBeCalled()
+      expect(reception.showAlert).toBeCalledWith(
+        'Sample Extraction tubes failed to be imported',
+        'danger',
+      )
     })
+
+    it('is unsuccessful when getSampleExtractionTubesForBarcodes is empty', async () => {
+      const emptyResponse = {
+        success: true,
+        data: { data: [] },
+        status: 200,
+        statusText: 'Success',
+      }
+
+      const expectedResponse = newResponse({
+        ...emptyResponse,
+        success: true,
+      })
+
+      reception.getSampleExtractionTubesForBarcodes.mockResolvedValue(expectedResponse)
+
+      await reception.handleSampleExtractionTubes()
+      expect(reception.getSampleExtractionTubesForBarcodes).toBeCalled()
+      expect(reception.exportSampleExtractionTubesIntoTraction).not.toBeCalled()
+      expect(reception.showAlert).toBeCalledWith(
+        'Sample Extraction tubes failed to be imported',
+        'danger',
+      )
+    })
+
+    it('is unsuccessful when exportSampleExtractionTubesIntoTraction fails', async () => {})
+    it('is unsuccessful when exportSampleExtractionTubesIntoTraction is empty', async () => {})
   })
 
   describe('#showAlert', () => {
