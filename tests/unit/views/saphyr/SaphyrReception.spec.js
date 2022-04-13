@@ -123,8 +123,33 @@ describe('Reception', () => {
       )
     })
 
-    it('is unsuccessful when exportSampleExtractionTubesIntoTraction fails', async () => {})
-    it('is unsuccessful when exportSampleExtractionTubesIntoTraction is empty', async () => {})
+    it('is unsuccessful when exportSampleExtractionTubesIntoTraction fails', async () => {
+      const mockSamplesExtractionResponse = newResponse({
+        success: true,
+        ...Data.SampleExtractionTubesWithSample,
+      })
+
+      reception.getSampleExtractionTubesForBarcodes.mockResolvedValue(mockSamplesExtractionResponse)
+
+      let failedResponse = {
+        success: false,
+        status: 422,
+        statusText: 'Unprocessable Entity',
+        data: { errors: { name: ['error message'] } },
+      }
+
+      const mockTractionResponse = newResponse({
+        success: false,
+        ...failedResponse,
+      })
+
+      reception.exportSampleExtractionTubesIntoTraction.mockResolvedValue(mockTractionResponse)
+
+      await reception.handleSampleExtractionTubes()
+      expect(reception.getSampleExtractionTubesForBarcodes).toBeCalled()
+      expect(reception.exportSampleExtractionTubesIntoTraction).toBeCalled()
+      expect(reception.showAlert).toBeCalled()
+    })
   })
 
   describe('#showAlert', () => {

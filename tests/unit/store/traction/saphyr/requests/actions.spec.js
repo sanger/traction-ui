@@ -1,6 +1,8 @@
 import Response from '@/api/Response'
 import * as Actions from '@/store/traction/saphyr/requests/actions'
 import { Data } from 'testHelper'
+import { newResponse } from '@/api/ResponseHelper'
+import deserialize from '@/api/JsonApi'
 
 let requests
 
@@ -29,23 +31,31 @@ describe('actions', () => {
     beforeEach(() => {
       create = jest.fn()
       getters = { requestsRequest: { create: create } }
-      tubes = new Response(Data.SampleExtractionTubesWithSample).deserialize.assets
+
+      const expectedResponse = newResponse({
+        ...Data.SampleExtractionTubesWithSample,
+        success: true,
+      })
+
+      tubes = deserialize(expectedResponse.data).assets
     })
 
     it('successfully', async () => {
-      let expectedResponse = new Response(Data.TractionSaphyrTubesWithRequest)
+      const expectedResponse = newResponse({
+        success: true,
+        ...Data.TractionSaphyrTubesWithRequest,
+      })
+
       create.mockReturnValue(Data.TractionSaphyrTubesWithRequest)
 
       let response = await Actions.exportSampleExtractionTubesIntoTraction({ getters }, tubes)
-
-      let sampleExtractionTubeJson = Actions.sampleExtractionTubeJson(tubes)
 
       let expectedPayload = {
         data: {
           data: {
             type: 'requests',
             attributes: {
-              requests: sampleExtractionTubeJson,
+              requests: Actions.sampleExtractionTubeJson(tubes),
             },
           },
         },
@@ -56,11 +66,16 @@ describe('actions', () => {
 
     it('unsuccessfully', async () => {
       let failedResponse = {
+        success: false,
         status: 422,
         statusText: 'Unprocessable Entity',
         data: { errors: { name: ['error message'] } },
       }
-      let expectedResponse = new Response(failedResponse)
+
+      const expectedResponse = newResponse({
+        success: false,
+        ...failedResponse,
+      })
 
       create.mockReturnValue(failedResponse)
 
@@ -68,6 +83,7 @@ describe('actions', () => {
         { dispatch, getters },
         tubes,
       )
+
       expect(response).toEqual(expectedResponse)
     })
   })

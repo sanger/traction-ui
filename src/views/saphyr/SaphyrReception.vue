@@ -26,6 +26,7 @@
 
 <script>
 import { mapActions, mapState } from 'vuex'
+import deserialize from '@/api/JsonApi'
 
 export default {
   name: 'SaphyrReception',
@@ -68,9 +69,11 @@ export default {
         ) {
           throw exportSampleTubesResponse.errors
         }
-        let tractionTubesBarcodeList = exportSampleTubesResponse.deserialize.requests
-          .map((r) => r.barcode)
+
+        let tractionTubesBarcodeList = deserialize(exportSampleTubesResponse.data)
+          .requests.map((r) => r.barcode)
           .join(', ')
+
         this.showAlert(
           'Samples have been created with barcodes: ' + tractionTubesBarcodeList,
           'success',
