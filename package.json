@@ -20,7 +20,7 @@
     "autoprefixer": "^9",
     "axios": "^0.21.4",
     "bootstrap-vue": "^2.21.2",
-    "core-js": "^3.6.5",
+    "core-js": "^3.22.0",
     "csv-parse": "^5.0.4",
     "flush-promises": "^1.0.2",
     "global": "^4.4.0",
