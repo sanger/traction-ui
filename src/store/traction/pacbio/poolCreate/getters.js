@@ -4,7 +4,7 @@ import { wellToIndex } from './wellHelpers'
 /**
  * Merge together two representations of the same object.
  * The parent object will be mapped over, and equivalent items from the
- * child object will be merged in. keyFuntion allwos for cases where there
+ * child object will be merged in. keyFunction allows for cases where there
  * is not a 1:1 mapping between ids.
  * @param {Object} parent the parent object, only resources in here will be present in the output.
  * @param {Object} child resources with a matching id will be merged into the parent
@@ -18,17 +18,40 @@ const mergeRepresentations = (parent, child, keyFunction = (id) => id) => {
 }
 
 const sortRequestByWellColumnIndex = (resources) => (a, b) =>
-  wellToIndex(resources.wells[a.well]) - wellToIndex(resources.wells[b.well])
-const sortRequestByPlate = (resources) => (a, b) =>
-  parseInt(resources.wells[a.well].plate) - parseInt(resources.wells[b.well].plate)
+  wellToIndex(resources.wells[a.well] || { position: 'A1' }) -
+  wellToIndex(resources.wells[b.well] || { position: 'A1' })
+
+/**
+ * Sort the requests based on their labware. Tubes will be sorted after plates,
+ * and then each labware is sorted in id order
+ */
+const sortRequestByLabware = (resources) => (a, b) => {
+  if (a.tube && b.tube) {
+    // Both our tubes
+    return parseInt(a.tube) - parseInt(b.tube)
+  } else if (a.well && b.well) {
+    // Both are plates
+    return parseInt(resources.wells[a.well].plate) - parseInt(resources.wells[b.well].plate)
+  } else {
+    // A plate and a tube
+    return parseInt(a.tube || 0) - parseInt(b.tube || 0)
+  }
+}
 
 export default {
   /**
-   * Returns a list of all fetched labware
+   * Returns a list of all fetched plates
    * @param {Object} state The Vuex state object
    */
-  labwareList: ({ selected, resources }) => {
+  plateList: ({ selected, resources }) => {
     return mergeRepresentations(resources.plates, selected.plates)
+  },
+  /**
+   * Returns a list of all fetched tubes
+   * @param {Object} state The Vuex state object
+   */
+  tubeList: ({ selected, resources }) => {
+    return mergeRepresentations(resources.tubes, selected.tubes)
   },
   /**
    * Returns a list of all fetched tagSet
@@ -71,6 +94,12 @@ export default {
     mergeRepresentations(selected.plates, resources.plates),
 
   /**
+   * Returns a list of selected tubes
+   * @param {Object} state The Vuex state object
+   */
+  selectedTubes: ({ selected, resources }) => mergeRepresentations(selected.tubes, resources.tubes),
+
+  /**
    * Returns a list of selected requests
    *
    * Note: Ordering is grouped by plate (in id order) and sorted in column order
@@ -84,7 +113,7 @@ export default {
         selected: true,
       }))
       .sort(sortRequestByWellColumnIndex(resources))
-      .sort(sortRequestByPlate(resources))
+      .sort(sortRequestByLabware(resources))
   },
   /**
    * Returns a list of all fetched wells

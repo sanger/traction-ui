@@ -2,7 +2,7 @@
 
 describe('Import samples from Samples extraction', () => {
   it('Successfully', () => {
-    cy.visit('#/pacbio/reception')
+    cy.visit('#/pacbio/samples-extraction-reception')
     cy.contains('Barcodes:')
     cy.get('#barcodes').type('SE108532I')
     cy.intercept('/api/v1/assets?filter[barcode]=SE108532I', {
@@ -14,7 +14,7 @@ describe('Import samples from Samples extraction', () => {
   })
 
   it('Unsuccessfully', () => {
-    cy.visit('#/pacbio/reception')
+    cy.visit('#/pacbio/samples-extraction-reception')
     cy.contains('Barcodes:')
     cy.get('#barcodes').type('SE108532I')
     cy.intercept('/api/v1/assets?filter[barcode]=SE108532I', {

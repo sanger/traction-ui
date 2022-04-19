@@ -1,9 +1,9 @@
 <template>
-  <b-col data-type="pool">
+  <div data-type="pool">
     <h3>
       Pooled Samples <b-badge data-attribute="pool-type">{{ poolType }}</b-badge>
     </h3>
-    <b-row>
+    <b-row class="mb-1">
       <b-col>
         <b-form-checkbox v-model="autoTag" name="check-button" switch data-attribute="auto-tagging">
           Autotagging
@@ -95,7 +95,7 @@
         <b-spinner v-show="busy" small></b-spinner>
       </b-button>
     </div>
-  </b-col>
+  </div>
 </template>
 
 <script>

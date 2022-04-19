@@ -10,8 +10,8 @@
     "title": "PacBio",
     "description": "A LIMS pipeline to support tracking for PacBio Long-Read Sequencing",
     "routes": [
-      "reception",
-      "plate-reception",
+      "samples-extraction-reception",
+      "sequencescape-reception",
       "plates",
       "samples",
       "libraries",
