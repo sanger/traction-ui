@@ -24,7 +24,6 @@ const exportSampleExtractionTubesIntoTraction = async ({ getters }, tubes) => {
 
   let request = getters.requestsRequest
   let promise = request.create({ data: body })
-  //TODO: change this to use responseHelper which gives better error handling
   let response = await handleResponse(promise)
   return response
 }
