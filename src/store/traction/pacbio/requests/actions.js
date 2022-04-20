@@ -1,4 +1,5 @@
 import handlePromise from '@/api/PromiseHelper'
+import { handleResponse } from '@/api/ResponseHelper'
 
 const setRequests = async ({ commit, getters }) => {
   let request = getters.requestsRequest
@@ -56,8 +57,7 @@ const exportSampleExtractionTubesIntoTraction = async (
 
   let request = getters.requestsRequest
   let promise = request.create({ data: body })
-  let response = await handlePromise(promise)
-
+  let response = await handleResponse(promise)
   return response
 }
 
