@@ -82,14 +82,14 @@
 
       <b-form-group
         id="loadingTarget-group"
-        label="Loading Target (P1+ P2): (0 to 1) "
+        label="Loading Target (P1 + P2): (0 to 1) "
         label-for="loadingTarget"
       >
         <b-form-input
           id="loadingTarget"
           ref="loadingTarget"
           v-model="currentWell.loading_target"
-          placeholder="Loading Target (P1+ P2)"
+          placeholder="Loading Target (P1 + P2)"
           type="number"
           :step="0.05"
           :formatter="formatLoadingTargetValue"
@@ -194,7 +194,7 @@ export default {
         ],
       },
       ccsAnalysisOutputOptions: ['Yes', 'No'],
-      regexToMatch: /(\d{0}\.\d{1,2})$/,
+      decimalPercentageRegex: /^(?:1(?:\.0{0,2})?|0?(?:\.\d{0,2})?)$/,
       loadingTargetValue: 0,
     }
   },
@@ -223,7 +223,7 @@ export default {
     },
     formatLoadingTargetValue(val) {
       if (val) {
-        if (this.regexToMatch.test(val)) {
+        if (this.decimalPercentageRegex.test(val)) {
           return val
         } else {
           this.loadingTargetValue = parseFloat(val / 100).toFixed(2)
