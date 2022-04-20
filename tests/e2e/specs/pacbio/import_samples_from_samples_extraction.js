@@ -1,6 +1,6 @@
 // https://docs.cypress.io/api/introduction/api.html
 
-describe('Import samples from Samples extraction', () => {
+describe('Import samples from Samples extraction, for Pacbio', () => {
   it('Successfully', () => {
     cy.visit('#/pacbio/samples-extraction-reception')
     cy.contains('Barcodes:')
