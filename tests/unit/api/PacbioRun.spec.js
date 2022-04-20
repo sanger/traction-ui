@@ -274,6 +274,7 @@ describe('Run', () => {
       expect(result.data.attributes.wells[0].binding_kit_box_barcode).toEqual(
         wells[0].binding_kit_box_barcode,
       )
+      expect(result.data.attributes.wells[0].loading_target).toEqual(wells[0].loading_target)
       expect(result.data.attributes.wells[0].relationships.plate.data.type).toEqual('plates')
       expect(result.data.attributes.wells[0].relationships.plate.data.id).toEqual(plateID)
       expect(result.data.attributes.wells[0].relationships.pools.data[0].type).toEqual('pools')
@@ -473,6 +474,7 @@ describe('Run', () => {
       expect(result.data.attributes.ccs_analysis_output).toEqual(well.ccs_analysis_output)
       expect(result.data.attributes.pre_extension_time).toEqual(well.pre_extension_time)
       expect(result.data.attributes.binding_kit_box_barcode).toEqual(well.binding_kit_box_barcode)
+      expect(result.data.attributes.loading_target).toEqual(well.loading_target)
       expect(result.data.relationships.pools.data[0].type).toEqual('pools')
       expect(result.data.relationships.pools.data[0].id).toEqual(well.pools[0].id)
     })

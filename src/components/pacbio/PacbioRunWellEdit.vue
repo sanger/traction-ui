@@ -79,6 +79,39 @@
         >
         </b-form-input>
       </b-form-group>
+
+      <b-form-group
+        id="loadingTarget-group"
+        label="Loading Target (P1 + P2): (0 to 1) "
+        label-for="loadingTarget"
+      >
+        <b-form-input
+          id="loadingTarget"
+          ref="loadingTarget"
+          v-model="currentWell.loading_target"
+          placeholder="Loading Target (P1 + P2)"
+          type="number"
+          :step="0.05"
+          :formatter="formatLoadingTargetValue"
+          @input="updateAdaptiveLoading"
+        >
+        </b-form-input>
+      </b-form-group>
+
+      <b-form-group
+        id="useAdaptiveLoading-group"
+        label="Use Adaptive Loading"
+        label-for="useAdaptiveLoading"
+      >
+        <b-form-input
+          id="useAdaptiveLoading"
+          ref="useAdaptiveLoading"
+          v-model="currentWell.use_adaptive_loading"
+          placeholder="False"
+          readonly
+        >
+        </b-form-input>
+      </b-form-group>
     </b-form>
 
     <b-table id="wellPools" stacked :items="currentWell.pools" :fields="wellPoolsFields">
@@ -161,6 +194,8 @@ export default {
         ],
       },
       ccsAnalysisOutputOptions: ['Yes', 'No'],
+      decimalPercentageRegex: /^(?:1(?:\.0{0,2})?|0?(?:\.\d{0,2})?)$/,
+      loadingTargetValue: 0,
     }
   },
   computed: {
@@ -177,6 +212,23 @@ export default {
     updateCCSAnalysisOutput() {
       if (this.currentWell.generate_hifi === 'Do Not Generate') {
         this.currentWell.ccs_analysis_output = 'No'
+      }
+    },
+    updateAdaptiveLoading() {
+      if (this.currentWell.loading_target) {
+        this.currentWell.use_adaptive_loading = 'True'
+      } else {
+        this.currentWell.use_adaptive_loading = 'False'
+      }
+    },
+    formatLoadingTargetValue(val) {
+      if (val) {
+        if (this.decimalPercentageRegex.test(val)) {
+          return val
+        } else {
+          this.loadingTargetValue = parseFloat(val / 100).toFixed(2)
+          return isNaN(this.loadingTargetValue) ? 0 : this.loadingTargetValue
+        }
       }
     },
     async showModalForPosition() {
