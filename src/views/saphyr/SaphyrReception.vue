@@ -67,7 +67,7 @@ export default {
           !exportSampleTubesResponse.success ||
           exportSampleTubesResponse.data.data.length === 0
         ) {
-          throw exportSampleTubesResponse.errors
+          throw { message: exportSampleTubesResponse.errors }
         }
 
         let tractionTubesBarcodeList = deserialize(exportSampleTubesResponse.data)
