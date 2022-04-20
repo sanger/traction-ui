@@ -103,6 +103,12 @@ describe('PacbioWellModal', () => {
     it('has a bindingKitBoxBarcode', () => {
       expect(wrapper.find('.bindingKitBoxBarcode')).toBeDefined()
     })
+    it('has a loadingTarget', () => {
+      expect(wrapper.find('.loadingTarget')).toBeDefined()
+    })
+    it('has a useAdaptiveLoading', () => {
+      expect(wrapper.find('.useAdaptiveLoading')).toBeDefined()
+    })
     it('has a updateBtn', () => {
       expect(wrapper.find('#updateBtn')).toBeDefined()
     })
@@ -292,6 +298,28 @@ describe('PacbioWellModal', () => {
         modal.updateCCSAnalysisOutput()
 
         expect(modal.currentWell.ccs_analysis_output).toEqual('Yes')
+      })
+    })
+
+    describe('useAdaptiveLoading', () => {
+      it('sets useAdaptiveLoading to "False" when LoadingTarget has no value"', () => {
+        storeWell.loading_target = ''
+        storeWell.use_adaptive_loading = 'True'
+        wrapper.setData({ currentWell: storeWell })
+
+        modal.updateAdaptiveLoading()
+
+        expect(modal.currentWell.use_adaptive_loading).toEqual('False')
+      })
+
+      it('sets useAdaptiveLoading to "True" when LoadingTarget has a value', () => {
+        storeWell.loading_target = '0.75'
+        storeWell.use_adaptive_loading = 'True'
+        wrapper.setData({ currentWell: storeWell })
+
+        modal.updateAdaptiveLoading()
+
+        expect(modal.currentWell.use_adaptive_loading).toEqual('True')
       })
     })
   })

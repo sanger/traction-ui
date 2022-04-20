@@ -30,6 +30,7 @@ describe('Pacbio Run Edit view', () => {
     cy.get('#editRun-7').click()
     cy.get('ellipse').first().click()
     cy.get('#movieTime').select('15.0')
+    cy.get('#loadingTarget').invoke('val')
     cy.get('#updateBtn').click()
     cy.get('button').contains('Update').click()
   })

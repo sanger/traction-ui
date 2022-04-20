@@ -90,12 +90,15 @@
           ref="loadingTarget"
           v-model="currentWell.loading_target"
           placeholder="Loading Target (P1+ P2)"
+          type="number"
+          :step="0.05"
+          :formatter="formatLoadingTargetValue"
           @input="updateAdaptiveLoading"
         >
         </b-form-input>
       </b-form-group>
 
-    <b-form-group
+      <b-form-group
         id="useAdaptiveLoading-group"
         label="Use Adaptive Loading"
         label-for="useAdaptiveLoading"
@@ -104,11 +107,11 @@
           id="useAdaptiveLoading"
           ref="useAdaptiveLoading"
           v-model="currentWell.use_adaptive_loading"
-          placeholder="False" readonly
+          placeholder="False"
+          readonly
         >
         </b-form-input>
       </b-form-group>
-
     </b-form>
 
     <b-table id="wellPools" stacked :items="currentWell.pools" :fields="wellPoolsFields">
@@ -191,6 +194,8 @@ export default {
         ],
       },
       ccsAnalysisOutputOptions: ['Yes', 'No'],
+      regexToMatch: /(\d{0}\.\d{1,2})$/,
+      loadingTargetValue: 0,
     }
   },
   computed: {
@@ -210,11 +215,20 @@ export default {
       }
     },
     updateAdaptiveLoading() {
-      if (this.currentWell.loading_target) {  
+      if (this.currentWell.loading_target) {
         this.currentWell.use_adaptive_loading = 'True'
-      }
-      else{
+      } else {
         this.currentWell.use_adaptive_loading = 'False'
+      }
+    },
+    formatLoadingTargetValue(val) {
+      if (val) {
+        if (this.regexToMatch.test(val)) {
+          return val
+        } else {
+          this.loadingTargetValue = parseFloat(val / 100).toFixed(2)
+          return isNaN(this.loadingTargetValue) ? 0 : this.loadingTargetValue
+        }
       }
     },
     async showModalForPosition() {
