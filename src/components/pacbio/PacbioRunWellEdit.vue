@@ -153,6 +153,7 @@
 
 <script>
 import { mapMutations, mapGetters, mapActions } from 'vuex'
+import _ from 'lodash'
 
 export default {
   name: 'WellModal',
@@ -241,9 +242,9 @@ export default {
         }
       } else {
         this.currentWell = { ...this.well(this.position) }
-        this.currentWell.use_adaptive_loading = this.currentWell.loading_target_p1_plus_p2
-          ? 'True'
-          : 'False'
+        this.currentWell.use_adaptive_loading = _.capitalize(
+          this.currentWell.loading_target_p1_plus_p2 !== '',
+        )
         this.action = {
           id: 'updateBtn',
           variant: 'primary',
