@@ -24,9 +24,9 @@ export default {
         'text-2xl font-bold tracking-tight leading-relaxed': this.level == 2,
         'text-xl font-bold tracking-tight leading-relaxed': this.level == 3,
         'text-lg font-bold tracking-tight leading-relaxed': this.level == 4,
-        'text-base font-bold tracking-tight leading-relaxed': this.level ==5,
-        'text-sm font-bold tracking-tight leading-relaxed': this.level ==6,
-         'text-xs font-bold tracking-tight leading-relaxed': this.level ==7,
+        'text-base font-bold tracking-tight leading-relaxed': this.level == 5,
+        'text-sm font-bold tracking-tight leading-relaxed': this.level == 6,
+        'text-xs font-bold tracking-tight leading-relaxed': this.level == 7,
         'border-b-2 border-sp': this.showBorder,
       }
     },
