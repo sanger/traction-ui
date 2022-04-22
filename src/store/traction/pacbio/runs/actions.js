@@ -24,6 +24,8 @@ const buildWell = ({ state }, position) => {
   let generate_hifi = generateHiFiDefault(state.currentRun.system_name)
   let binding_kit_box_barcode = state.currentRun.default_binding_kit_box_barcode || ''
   let [row, column] = splitPosition(position)
+  let loading_target_p1_plus_p2 = state.currentRun.loading_target_p1_plus_p2 || ''
+  let use_adaptive_loading = loading_target_p1_plus_p2 ? 'True' : 'False'
   return {
     row,
     column,
@@ -35,6 +37,8 @@ const buildWell = ({ state }, position) => {
     binding_kit_box_barcode,
     pools: [],
     pre_extension_time,
+    loading_target_p1_plus_p2,
+    use_adaptive_loading,
   }
 }
 

@@ -88,7 +88,7 @@
         <b-form-input
           id="loadingTarget"
           ref="loadingTarget"
-          v-model="currentWell.loading_target"
+          v-model="currentWell.loading_target_p1_plus_p2"
           placeholder="Loading Target (P1 + P2)"
           type="number"
           :step="0.05"
@@ -215,7 +215,7 @@ export default {
       }
     },
     updateAdaptiveLoading() {
-      if (this.currentWell.loading_target) {
+      if (this.currentWell.loading_target_p1_plus_p2) {
         this.currentWell.use_adaptive_loading = 'True'
       } else {
         this.currentWell.use_adaptive_loading = 'False'
@@ -241,6 +241,9 @@ export default {
         }
       } else {
         this.currentWell = { ...this.well(this.position) }
+        this.currentWell.use_adaptive_loading = this.currentWell.loading_target_p1_plus_p2
+          ? 'True'
+          : 'False'
         this.action = {
           id: 'updateBtn',
           variant: 'primary',

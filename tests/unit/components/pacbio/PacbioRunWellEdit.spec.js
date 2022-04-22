@@ -303,7 +303,7 @@ describe('PacbioWellModal', () => {
 
     describe('useAdaptiveLoading', () => {
       it('sets useAdaptiveLoading to "False" when LoadingTarget has no value"', () => {
-        storeWell.loading_target = ''
+        storeWell.loading_target_p1_plus_p2 = ''
         storeWell.use_adaptive_loading = 'True'
         wrapper.setData({ currentWell: storeWell })
 
@@ -313,7 +313,7 @@ describe('PacbioWellModal', () => {
       })
 
       it('sets useAdaptiveLoading to "True" when LoadingTarget has a value', () => {
-        storeWell.loading_target = '0.75'
+        storeWell.loading_target_p1_plus_p2 = '0.75'
         storeWell.use_adaptive_loading = 'True'
         wrapper.setData({ currentWell: storeWell })
 
