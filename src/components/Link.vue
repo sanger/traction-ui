@@ -8,7 +8,7 @@
 
 <script>
 export const ViewType = {
-  Button: 1, //Display as dashborad button
+  Button: 1, //Display as dashboard button
   MenuItem: 2, // Display as menu item
 }
 
@@ -38,10 +38,10 @@ export default {
       }
     },
     /* 
-      without catching an error all router errors will log to the console silently
+      without catching an error all router errors will log to the console
       The NavigationDuplicated error only appears in the tests for some reason
       but is nothing to worry about. We still need to ensure that all other errors
-      are visible.
+      are caught.
     */
     routerError(error) {
       if (
