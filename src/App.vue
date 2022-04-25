@@ -7,6 +7,7 @@
           <img class="w-8 h-8" src="./images/wsi-icon-16.png" alt="Traction logo" />
           <div class="flex justify-start">
             <TractionLink name="Home" link="/dashboard"></TractionLink>
+            <TractionLink name="Label Printing" link="/labelPrinting"></TractionLink>
           </div>
         </div>
       </div>
