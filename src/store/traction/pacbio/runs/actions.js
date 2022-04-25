@@ -1,5 +1,6 @@
 import handlePromise from '@/api/PromiseHelper'
 import * as PacbioRun from '@/api/PacbioRun'
+import _ from 'lodash'
 const pre_extension_time = 2
 const ccs_analysis_output = 'Yes'
 
@@ -25,7 +26,7 @@ const buildWell = ({ state }, position) => {
   let binding_kit_box_barcode = state.currentRun.default_binding_kit_box_barcode || ''
   let [row, column] = splitPosition(position)
   let loading_target_p1_plus_p2 = state.currentRun.loading_target_p1_plus_p2 || ''
-  let use_adaptive_loading = loading_target_p1_plus_p2 ? 'True' : 'False'
+  let use_adaptive_loading = _.capitalize(loading_target_p1_plus_p2 !== '')
   return {
     row,
     column,
