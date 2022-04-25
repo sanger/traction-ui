@@ -4,8 +4,11 @@
     <div class="relative bg-gradient-to-tr from-sdb to-sdb-400">
       <div class="max-w-7xl mx-auto px-4 sm:px-6">
         <div class="flex justify-between items-center py-4 md:justify-start md:space-x-10">
-          <img class="w-8 h-8" src="./images/wsi-icon-16.png" alt="Traction logo" />
-          <div class="flex justify-start">
+          <div class="flex flex-row gap-x-2">
+            <img class="w-8 h-8" src="./images/wsi-icon-16.png" alt="Traction logo" />
+            <div class="text-sdb-100 text-xl">Traction</div>
+          </div>
+          <div class="flex justify-center">
             <Link name="Home" link="/dashboard" view-type="2" />
           </div>
         </div>
