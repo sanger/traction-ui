@@ -2,6 +2,7 @@
 import Vue from 'vue'
 import Router from 'vue-router'
 import Dashboard from '@/views/Dashboard'
+import LabelPrinting from '@/views/LabelPrinting'
 import PageNotFound from '@/views/PageNotFound'
 import Saphyr from '@/views/Saphyr'
 import SaphyrReception from '@/views/saphyr/SaphyrReception'
@@ -40,6 +41,12 @@ export default new Router({
       name: 'Dashboard',
       meta: { pipeline: 'Dashboard' },
       component: Dashboard,
+    },
+    {
+      path: '/labelPrinting',
+      name: 'LabelPrinting',
+      meta: {},
+      component: LabelPrinting,
     },
     {
       path: '/saphyr',
