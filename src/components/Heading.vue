@@ -12,7 +12,7 @@ export default {
   name: 'Heading',
   props: {
     level: {
-      type: Number,
+      type: [Number, String],
       default: 1,
     },
     showBorder: Boolean,

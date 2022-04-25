@@ -1,5 +1,5 @@
 <template>
-  <div :class="getClass()" @click="$router.push(`${link}`)">
+  <div :class="getClass()" @click="$router.push(`${link}`).catch((error) => routerError(error))">
     <router-link :to="`${link}`">
       {{ name }}
     </router-link>
@@ -24,8 +24,8 @@ export default {
       required: true,
     },
     viewType: {
-      type: ViewType,
-      default: ViewType.Button,
+      type: [Number, String],
+      default: () => ViewType.Button,
     },
   },
   methods: {
@@ -35,6 +35,20 @@ export default {
           this.viewType == ViewType.Button,
         'px-3 py-2 rounded-md text-sm font-medium focus:outline-none focus:text-white focus:bg-gray-700 text-gray-100 hover:text-white hover:bg-gray-700':
           this.viewType == ViewType.MenuItem,
+      }
+    },
+    /* 
+      without catching an error all router errors will log to the console silently
+      The NavigationDuplicated error only appears in the tests for some reason
+      but is nothing to worry about. We still need to ensure that all other errors
+      are visible.
+    */
+    routerError(error) {
+      if (
+        error.name !== 'NavigationDuplicated' &&
+        !error.message.includes('Avoided redundant navigation to current location')
+      ) {
+        console.log(error)
       }
     },
   },

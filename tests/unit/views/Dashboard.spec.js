@@ -36,38 +36,38 @@ describe('Dashboard.vue', () => {
 
   describe('for saphyr', () => {
     beforeEach(() => {
-      box = wrapper.find('.card.saphyr')
+      box = wrapper.find('[data-pipeline=Saphyr]')
     })
 
     it('will have a title', () => {
-      expect(box.find('.card-title').text()).toEqual('Saphyr')
+      expect(box.find('[data-attribute=title]').text()).toEqual('Saphyr')
     })
 
     it('will have a description', () => {
-      expect(box.find('.card-text').text()).toBeDefined()
+      expect(box.find('[data-attribute=description]').text()).toBeDefined()
     })
 
     describe('route buttons', () => {
       it('will have a reception button', () => {
-        let receptionButton = box.findAll('button').at(0)
+        let receptionButton = box.findAll('a').at(0)
         expect(receptionButton.text()).toEqual('Reception')
         receptionButton.trigger('click')
         expect(wrapper.vm.$route.path).toBe('/saphyr/reception')
       })
       it('will have a samples button', () => {
-        let receptionButton = box.findAll('button').at(1)
+        let receptionButton = box.findAll('a').at(1)
         expect(receptionButton.text()).toEqual('Samples')
         receptionButton.trigger('click')
         expect(wrapper.vm.$route.path).toBe('/saphyr/samples')
       })
       it('will have a libraries button', () => {
-        let receptionButton = box.findAll('button').at(2)
+        let receptionButton = box.findAll('a').at(2)
         expect(receptionButton.text()).toEqual('Libraries')
         receptionButton.trigger('click')
         expect(wrapper.vm.$route.path).toBe('/saphyr/libraries')
       })
       it('will have a runs button', () => {
-        let receptionButton = box.findAll('button').at(3)
+        let receptionButton = box.findAll('a').at(3)
         expect(receptionButton.text()).toEqual('Runs')
         receptionButton.trigger('click')
         expect(wrapper.vm.$route.path).toBe('/saphyr/runs')
@@ -77,56 +77,56 @@ describe('Dashboard.vue', () => {
 
   describe('for pacbio', () => {
     beforeEach(() => {
-      box = wrapper.find('.card.pacbio')
+      box = wrapper.find('[data-pipeline=PacBio]')
     })
 
     it('will have a title', () => {
-      expect(box.find('.card-title').text()).toEqual('PacBio')
+      expect(box.find('[data-attribute=title]').text()).toEqual('PacBio')
     })
 
     it('will have a description', () => {
-      expect(box.find('.card-text').text()).toBeDefined()
+      expect(box.find('[data-attribute=description]').text()).toBeDefined()
     })
 
     describe('route buttons', () => {
       it('will have a reception button', () => {
-        let receptionButton = box.findAll('button').at(0)
+        let receptionButton = box.findAll('a').at(0)
         expect(receptionButton.text()).toEqual('Samples extraction reception')
         receptionButton.trigger('click')
         expect(wrapper.vm.$route.path).toBe('/pacbio/samples-extraction-reception')
       })
       it('will have a plate reception button', () => {
-        let receptionButton = box.findAll('button').at(1)
+        let receptionButton = box.findAll('a').at(1)
         expect(receptionButton.text()).toEqual('Sequencescape reception')
         receptionButton.trigger('click')
         expect(wrapper.vm.$route.path).toBe('/pacbio/sequencescape-reception')
       })
       it('will have a plates button', () => {
-        let platesButton = box.findAll('button').at(2)
+        let platesButton = box.findAll('a').at(2)
         expect(platesButton.text()).toEqual('Plates')
         platesButton.trigger('click')
         expect(wrapper.vm.$route.path).toBe('/pacbio/plates')
       })
       it('will have a samples button', () => {
-        let receptionButton = box.findAll('button').at(3)
+        let receptionButton = box.findAll('a').at(3)
         expect(receptionButton.text()).toEqual('Samples')
         receptionButton.trigger('click')
         expect(wrapper.vm.$route.path).toBe('/pacbio/samples')
       })
       it('will have a libraries button', () => {
-        let receptionButton = box.findAll('button').at(4)
+        let receptionButton = box.findAll('a').at(4)
         expect(receptionButton.text()).toEqual('Libraries')
         receptionButton.trigger('click')
         expect(wrapper.vm.$route.path).toBe('/pacbio/libraries')
       })
       it('will have a pools button', () => {
-        let receptionButton = box.findAll('button').at(5)
+        let receptionButton = box.findAll('a').at(5)
         expect(receptionButton.text()).toEqual('Pools')
         receptionButton.trigger('click')
         expect(wrapper.vm.$route.path).toBe('/pacbio/pools')
       })
       it('will have a runs button', () => {
-        let receptionButton = box.findAll('button').at(6)
+        let receptionButton = box.findAll('a').at(6)
         expect(receptionButton.text()).toEqual('Runs')
         receptionButton.trigger('click')
         expect(wrapper.vm.$route.path).toBe('/pacbio/runs')
@@ -136,15 +136,15 @@ describe('Dashboard.vue', () => {
 
   describe('for ont', () => {
     beforeEach(() => {
-      box = wrapper.find('.card.ont')
+      box = wrapper.find('[data-pipeline=ONT]')
     })
 
     it('will have a title', () => {
-      expect(box.find('.card-title').text()).toEqual('ONT')
+      expect(box.find('[data-attribute=title]').text()).toEqual('ONT')
     })
 
     it('will have a description', () => {
-      expect(box.find('.card-text').text()).toBeDefined()
+      expect(box.find('[data-attribute=description]').text()).toBeDefined()
     })
 
     describe('route buttons', () => {})
