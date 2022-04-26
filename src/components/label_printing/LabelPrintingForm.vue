@@ -1,17 +1,13 @@
 <template>
   <div>
-    <b-form @submit="onSubmit">
+    <b-form v-if="show" @submit="onSubmit" @reset="onReset">
       <b-form-group
           id="barcode_input_group"
           label="Barcode:"
           label-for="barcode_input"
           description="Please scan the barcode you wish to create labels for."
         >
-        <b-form-input
-          id="barcode_input"
-          placeholder="Scan barcode"
-          required
-        ></b-form-input>
+        <b-form-input id="barcode_input" v-model="form.barcode" placeholder="Please scan the barcode" required></b-form-input>
       </b-form-group>
 
       <b-form-group
@@ -20,7 +16,13 @@
           label-for="suffix_selection"
           description="Please select the suffix you want to use from the list."
         >
-        <b-form-select id="suffix_selection" v-model="selected_suffix" :options="suffix_options" required></b-form-select>
+        <b-form-select
+          id="suffix_selection"
+          v-model="form.selected_suffix"
+          :options="suffix_options"
+          placeholder="Please select a suffix"
+          required>
+        </b-form-select>
       </b-form-group>
 
       <b-form-group
@@ -29,7 +31,13 @@
           label-for="number_of_labels"
           description="Please enter the number of labels to make (with incrementing suffixes)."
         >
-        <b-form-input v-model="selected_number_of_labels_to_print" type="number" min="1" max="9" required></b-form-input>
+        <b-form-input
+          id="number_of_labels_input"
+          v-model="form.selected_number_of_labels"
+          type="number" min="1" max="9"
+          placeholder="Please enter a number"
+          required>
+        </b-form-input>
       </b-form-group>
 
       <b-form-group
@@ -38,9 +46,16 @@
           label-for="printer_choice"
           description="Please select which printer you wish to use to print the labels."
         >
-        <b-form-select v-model="selected_printer" :options="printer_options" required></b-form-select>
+        <b-form-select
+          id="printer_of_choice_input"
+          v-model="form.selected_printer"
+          :options="printer_options"
+          placeholder="Please select a printer"
+          required>
+        </b-form-select>
       </b-form-group>
 
+      <b-button type="reset" variant="danger">Reset</b-button>
       <b-button type="submit" variant="primary">Print</b-button>
     </b-form>
   </div>
@@ -51,34 +66,48 @@
     name: "LabelPrintingForm",
     data() {
       return {
-        selected_suffix: null,
-        suffix_options: [
-          { value: null, text: 'Please select a suffix' },
-          { value: 'AA', text: 'AA suffix desc' },
-          { value: 'BB', text: 'BB suffix desc' },
-        ],
-        selected_number_of_labels_to_print: null,
-        selected_printer: null,
-        printer_options: [
-          { value: null, text: 'Please select a printer' },
-          { value: 'ab1234', text: 'Toshiba printer 1' },
-          { value: 'cd5678', text: 'Toshiba printer 2' },
-        ],
+        form: {
+          barcode: null,
+          selected_suffix: null,
+          selected_number_of_labels: null,
+          selected_printer: null,
+        },
+        suffix_options: [{ text: 'Please select a suffix', value: null }, 'AA', 'BB'],
+        printer_options: [{ text: 'Please select a printer', value: null }, 'ab1234', 'cd5678'],
+        show: true
       }
     },
     computed: {
       suffixedBarcodes() {
-        if(this.barcode_input === null || this.selected_suffix === null || this.selected_number_of_labels_to_print === null) {
+        if(this.form.barcode === null || this.form.selected_suffix === null || this.form.selected_number_of_labels === null) {
           return null
         }
         var listSuffixedBarcodes = []
-        for (let step = 0; step < this.selected_number_of_labels_to_print; step++) {
-          listSuffixedBarcodes << this.barcode_input.concat("-", step.toString);
+        for (let i = 0; i < this.form.selected_number_of_labels; i++) {
+          listSuffixedBarcodes.push(this.form.barcode.concat("-", this.form.selected_suffix, (i + 1)))
         }
         return listSuffixedBarcodes
       },
     },
+    methods: {
+      onSubmit(event) {
+        event.preventDefault()
+        alert(JSON.stringify(this.suffixedBarcodes))
+        alert(JSON.stringify(this.form))
+      },
+      onReset(event) {
+        event.preventDefault()
+        // Reset our form values
+        this.form.barcode = null
+        this.form.selected_suffix = null
+        this.form.selected_number_of_labels = null
+        this.form.selected_printer = null
+        // Trick to reset/clear native browser form validation state
+        this.show = false
+        this.$nextTick(() => {
+          this.show = true
+        })
+      }
+    }
   }
 </script>
-
-//  To the form component, add a Print button which has a stub function
