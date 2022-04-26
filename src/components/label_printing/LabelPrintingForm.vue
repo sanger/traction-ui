@@ -1,6 +1,6 @@
 <template>
   <div>
-    <b-form v-if="show" @submit="onSubmit" @reset="onReset">
+    <b-form v-if="show" @reset="onReset">
       <b-form-group
           id="barcode_input_group"
           label="Barcode:"
@@ -55,15 +55,27 @@
         </b-form-select>
       </b-form-group>
 
-      <b-button type="reset" variant="danger">Reset</b-button>
-      <b-button type="submit" variant="primary">Print</b-button>
+      <b-button type="reset" variant="danger" class="float-left">Reset</b-button>
+      <labelPrintingModal
+          ref="labelPrintingModal"
+          class="float-right"
+          :disabled="suffixedBarcodes.length === 0"
+          @listBarcodes="suffixedBarcodes"
+      >
+      </labelPrintingModal>
     </b-form>
+
   </div>
 </template>
 
 <script>
+  import LabelPrintingModal from '@/components/label_printing/LabelPrintingModal'
+
   export default {
     name: "LabelPrintingForm",
+    components: {
+      LabelPrintingModal,
+    },
     data() {
       return {
         form: {
@@ -80,21 +92,22 @@
     computed: {
       suffixedBarcodes() {
         if(this.form.barcode === null || this.form.selected_suffix === null || this.form.selected_number_of_labels === null) {
-          return null
+          return []
         }
         var listSuffixedBarcodes = []
         for (let i = 0; i < this.form.selected_number_of_labels; i++) {
           listSuffixedBarcodes.push(this.form.barcode.concat("-", this.form.selected_suffix, (i + 1)))
         }
+        alert(JSON.stringify(listSuffixedBarcodes))
         return listSuffixedBarcodes
       },
     },
     methods: {
-      onSubmit(event) {
-        event.preventDefault()
-        alert(JSON.stringify(this.suffixedBarcodes))
-        alert(JSON.stringify(this.form))
-      },
+      // onSubmit(event) {
+      //   event.preventDefault()
+      //   alert(JSON.stringify(this.suffixedBarcodes))
+      //   alert(JSON.stringify(this.form))
+      // },
       onReset(event) {
         event.preventDefault()
         // Reset our form values
