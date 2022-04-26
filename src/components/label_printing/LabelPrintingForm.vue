@@ -60,7 +60,8 @@
           ref="labelPrintingModal"
           class="float-right"
           :disabled="suffixedBarcodes.length === 0"
-          @listBarcodes="suffixedBarcodes"
+          :list-barcodes="suffixedBarcodes"
+          :printer-name="form.selected_printer"
       >
       </labelPrintingModal>
     </b-form>
@@ -98,16 +99,10 @@
         for (let i = 0; i < this.form.selected_number_of_labels; i++) {
           listSuffixedBarcodes.push(this.form.barcode.concat("-", this.form.selected_suffix, (i + 1)))
         }
-        alert(JSON.stringify(listSuffixedBarcodes))
         return listSuffixedBarcodes
       },
     },
     methods: {
-      // onSubmit(event) {
-      //   event.preventDefault()
-      //   alert(JSON.stringify(this.suffixedBarcodes))
-      //   alert(JSON.stringify(this.form))
-      // },
       onReset(event) {
         event.preventDefault()
         // Reset our form values

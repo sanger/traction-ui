@@ -1,5 +1,9 @@
 <template>
   <div>
+    <b-btn id="printLabels" v-b-modal.labelPrintingModal variant="primary" :disabled="disabled">
+      Print Labels
+    </b-btn>
+
     <b-modal
       id="labelPrintingModal"
       ref="labelPrintingModal"
@@ -9,19 +13,18 @@
       @ok="handleOk"
       @shown="clearSelect"
     >
-      <b-list-group>
-        <b-list-group-item>Barcodes:</b-list-group-item>
-        <b-list-group-item v-for="(item, index) in listBarcodes" :key="index + 1">{{ item }}</b-list-group-item>
-      </b-list-group>
+      <h3>List of barcodes to be printed:</h3>
+      <hr>
+      <ul id="list-barcodes-to-print">
+        <li v-for="(item, index) in listBarcodes" :key="index + 1">{{ item }}</li>
+      </ul>
+      <hr>
+      <h3>Printer: {{ printerName }}</h3>
     </b-modal>
-    <b-btn id="printLabels" v-b-modal.labelPrintingModal variant="primary" :disabled="disabled">
-        Print Labels
-      </b-btn>
   </div>
 </template>
 
 <script>
-// const MESSAGE_PRINTER_SELECT = 'Please select a printer'
 export default {
   name: 'LabelPrintingModal',
   props: {
@@ -33,34 +36,28 @@ export default {
         return []
       },
     },
+    printerName: {
+      type: String,
+      default() {
+        return ''
+      },
+    },
   },
-  data() {
-    return {
-      // selectedPrinterId: null,
-      // printerOptions: [],
-    }
-  },
-  // created() {
-  //   this.provider()
+  // TODO: any data?
+  // data() {
+  //   return {
+  //   }
   // },
   methods: {
-    clearSelect() {
-      // this.selectedPrinterId = null
-    },
-    handleOk(evt) {
+    handleOk(event) {
       // Prevent modal from closing
-      evt.preventDefault()
+      event.preventDefault()
 
-      // if (!this.selectedPrinterId) {
-      //   alert(MESSAGE_PRINTER_SELECT)
-      // } else {
-      //   this.handleSubmit()
-      // }
+      // TODO: validate and trigger printing
     },
     handleSubmit() {
-      // OR store holds key id and text value - emit id then store handles get name
-      let printerName = this.printerOptions[this.selectedPrinterId].text
-      this.$emit('selectPrinter', printerName)
+      // TODO: how to do the printing?
+      // this.$emit('selectPrinter', this.printerName)
       this.clearSelect()
       /**
        * Hide the modal manually
@@ -71,17 +68,6 @@ export default {
         this.$refs.labelPrinterModal.hide()
       })
     },
-    // setPrinterNames() {
-    //   let printerOptions = this.$store.getters.printers.map((printer, index) => ({
-    //     value: index + 1,
-    //     text: printer,
-    //   }))
-    //   printerOptions.unshift({ value: null, text: MESSAGE_PRINTER_SELECT })
-    //   this.printerOptions = printerOptions
-    // },
-    // provider() {
-    //   this.setPrinterNames()
-    // },
   },
 }
 </script>
