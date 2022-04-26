@@ -83,13 +83,8 @@ export default {
       try {
         let getSETubeResponse = await this.getSampleExtractionTubesForBarcodes(this.barcodeArray)
 
-        if (!getSETubeResponse.success || getSETubeResponse.data.data.length === 0) {
-          let errorMessage = 'Sample Extraction tubes failed to be imported'
-          // Is this just for supporting the tests??
-          if (getSETubeResponse.errors && getSETubeResponse.errors.length > 0) {
-            errorMessage = getSETubeResponse.errors
-          }
-          throw { message: errorMessage }
+        if (!getSETubeResponse.success) {
+          throw { message: getSETubeResponse.errors }
         }
 
         let exportSampleTubesResponse = await this.exportSampleExtractionTubesIntoTraction({

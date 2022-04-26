@@ -108,17 +108,10 @@ describe('PacbioReceptionSamplesExtraction', () => {
     it('is unsuccessful when getSampleExtractionTubesForBarcodes fails', async () => {
       const failedResponse = {
         success: false,
-        data: { data: [] },
-        status: 500,
-        statusText: 'Internal Server Error',
+        errors: 'Sample Extraction tubes failed to be imported',
       }
 
-      const expectedResponse = newResponse({
-        ...failedResponse,
-        success: false,
-      })
-
-      reception.getSampleExtractionTubesForBarcodes.mockResolvedValue(expectedResponse)
+      reception.getSampleExtractionTubesForBarcodes.mockResolvedValue(failedResponse)
 
       await reception.handleSampleExtractionTubes()
       expect(reception.getSampleExtractionTubesForBarcodes).toBeCalled()

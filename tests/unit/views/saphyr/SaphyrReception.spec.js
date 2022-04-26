@@ -42,6 +42,8 @@ describe('Reception', () => {
   })
 
   describe('#handleSampleExtractionTubes', () => {
+    let failedResponse
+
     beforeEach(() => {
       store.commit('sampleExtraction/setSampleExtractionTubes', [])
 
@@ -52,6 +54,11 @@ describe('Reception', () => {
       reception.exportSampleExtractionTubesIntoTraction = jest.fn()
       reception.showAlert = jest.fn()
       wrapper.setData({ barcodes: 'TRAC-1\nTRAC-2' })
+
+      failedResponse = {
+        success: false,
+        errors: 'Sample Extraction tubes failed to be imported',
+      }
     })
 
     it('successfully for samples', async () => {
@@ -76,19 +83,7 @@ describe('Reception', () => {
     })
 
     it('is unsuccessful when getSampleExtractionTubesForBarcodes fails', async () => {
-      const failedResponse = {
-        success: false,
-        data: { data: [] },
-        status: 500,
-        statusText: 'Internal Server Error',
-      }
-
-      const expectedResponse = newResponse({
-        ...failedResponse,
-        success: false,
-      })
-
-      reception.getSampleExtractionTubesForBarcodes.mockResolvedValue(expectedResponse)
+      reception.getSampleExtractionTubesForBarcodes.mockResolvedValue(failedResponse)
 
       await reception.handleSampleExtractionTubes()
       expect(reception.getSampleExtractionTubesForBarcodes).toBeCalled()
@@ -100,19 +95,7 @@ describe('Reception', () => {
     })
 
     it('is unsuccessful when getSampleExtractionTubesForBarcodes is empty', async () => {
-      const emptyResponse = {
-        success: true,
-        data: { data: [] },
-        status: 200,
-        statusText: 'Success',
-      }
-
-      const expectedResponse = newResponse({
-        ...emptyResponse,
-        success: true,
-      })
-
-      reception.getSampleExtractionTubesForBarcodes.mockResolvedValue(expectedResponse)
+      reception.getSampleExtractionTubesForBarcodes.mockResolvedValue(failedResponse)
 
       await reception.handleSampleExtractionTubes()
       expect(reception.getSampleExtractionTubesForBarcodes).toBeCalled()

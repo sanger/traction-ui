@@ -43,10 +43,10 @@ describe('#getSampleExtractionTubesForBarcodes', () => {
   it('unsuccessfully', async () => {
     get.mockReturnValue(failedResponse)
 
-    const expectedResponse = newResponse({
-      ...failedResponse,
+    const expectedResponse = {
       success: false,
-    })
+      errors: 'Sample Extraction tubes failed to be imported',
+    }
 
     let response = await Actions.getSampleExtractionTubesForBarcodes(
       { commit, getters },
@@ -60,10 +60,10 @@ describe('#getSampleExtractionTubesForBarcodes', () => {
   it('when no tubes exist', async () => {
     get.mockReturnValue(emptyResponse)
 
-    const expectedResponse = newResponse({
-      ...emptyResponse,
-      success: true,
-    })
+    const expectedResponse = {
+      success: false,
+      errors: 'Sample Extraction tubes failed to be imported',
+    }
 
     let response = await Actions.getSampleExtractionTubesForBarcodes(
       { commit, getters },

@@ -46,7 +46,7 @@ const exportSampleExtractionTubesIntoTraction = async (
   { getters },
   { tubes, libraryType = undefined },
 ) => {
-  let body = {
+  const body = {
     data: {
       type: 'requests',
       attributes: {
@@ -55,9 +55,9 @@ const exportSampleExtractionTubesIntoTraction = async (
     },
   }
 
-  let request = getters.requestsRequest
-  let promise = request.create({ data: body })
-  let response = await handleResponse(promise)
+  const request = getters.requestsRequest
+  const promise = request.create({ data: body })
+  const response = await handleResponse(promise)
   return response
 }
 

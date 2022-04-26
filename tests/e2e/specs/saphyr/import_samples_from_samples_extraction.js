@@ -28,6 +28,21 @@ describe('Import samples from Samples extraction, for Saphyr', () => {
     cy.contains('Sample Extraction tubes failed to be imported')
   })
 
+  it('Failed on empty Samples extraction request', () => {
+    cy.visit('#/saphyr/reception')
+    cy.contains('Barcodes:')
+    cy.get('#barcodes').type('SE108532I')
+    cy.intercept('/api/v1/assets?filter[barcode]=SE108532I', {
+      fixture: 'sampleExtractionTubesWithSample.json',
+    })
+    cy.intercept('/api/v1/assets?filter[barcode]=SE108532I', {
+      statusCode: 200,
+      body: { data: [] },
+    })
+    cy.get('#findSampleExtractionTubes').click()
+    cy.contains('Sample Extraction tubes failed to be imported')
+  })
+
   it('Failed on Traction requests creation', () => {
     cy.visit('#/saphyr/reception')
     cy.contains('Barcodes:')

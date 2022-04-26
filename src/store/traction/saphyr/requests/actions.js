@@ -13,7 +13,7 @@ const setRequests = async ({ commit, getters }) => {
 }
 
 const exportSampleExtractionTubesIntoTraction = async ({ getters }, tubes) => {
-  let body = {
+  const body = {
     data: {
       type: 'requests',
       attributes: {
@@ -22,9 +22,9 @@ const exportSampleExtractionTubesIntoTraction = async ({ getters }, tubes) => {
     },
   }
 
-  let request = getters.requestsRequest
-  let promise = request.create({ data: body })
-  let response = await handleResponse(promise)
+  const request = getters.requestsRequest
+  const promise = request.create({ data: body })
+  const response = await handleResponse(promise)
   return response
 }
 
