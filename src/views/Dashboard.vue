@@ -1,36 +1,35 @@
 <template>
   <div>
-    <b-card-group deck>
-      <b-card
+    <div class="grid grid-cols-3 p-4 gap-x-8">
+      <LabelledCard
         v-for="(pipeline, index) in pipelines"
         :key="index"
         :title="pipeline.title"
-        tag="article"
-        style="margin: auto 10"
-        :class="pipeline.name"
+        :description="pipeline.description"
       >
-        <b-card-text>
-          {{ pipeline.description }}
-        </b-card-text>
-
-        <router-link
+        <Link
           v-for="(route, inner_index) in pipeline.routes"
           :key="inner_index"
-          :to="{ path: `/${pipeline.name}/${route}` }"
-        >
-          <b-button variant="outline-primary">{{ humanise(route) }}</b-button>
-        </router-link>
-      </b-card>
-    </b-card-group>
+          :name="humanise(route)"
+          :link="`/${pipeline.name}/${route}`"
+        />
+      </LabelledCard>
+    </div>
   </div>
 </template>
 
 <script>
 import PipelinesConfig from '@/config/PipelinesConfig'
 import { humanise } from '@/lib/stringHumanisation'
+import LabelledCard from '@/components/LabelledCard'
+import Link from '@/components/Link'
 
 export default {
   name: 'Dashboard',
+  components: {
+    LabelledCard,
+    Link,
+  },
   computed: {
     pipelines: () => PipelinesConfig,
   },
