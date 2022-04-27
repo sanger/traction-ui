@@ -10,7 +10,7 @@
           </div>
           <div class="flex justify-center">
             <Link name="Home" link="/dashboard" view-type="2" />
-            <Link name="Label Printing" link="/labelPrinting" />
+            <Link name="Label Printing" link="/label-printing" view-type="2" />
           </div>
         </div>
       </div>

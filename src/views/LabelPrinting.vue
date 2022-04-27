@@ -1,9 +1,9 @@
 <template>
-  <label-printing-form></label-printing-form>
+  <LabelPrintingForm></LabelPrintingForm>
 </template>
 
 <script>
-import LabelPrintingForm from '@/components/label_printing/LabelPrintingForm'
+import LabelPrintingForm from '@/components/labelPrinting/LabelPrintingForm'
 
 export default {
   name: 'LabelPrinting',

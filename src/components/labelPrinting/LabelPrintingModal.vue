@@ -1,8 +1,8 @@
 <template>
   <div>
-    <b-btn id="printLabels" v-b-modal.labelPrintingModal variant="primary" :disabled="disabled">
-      Print Labels
-    </b-btn>
+    <b-btn id="printLabels" v-b-modal.labelPrintingModal variant="primary" :disabled="disabled"
+      >Print Labels</b-btn
+    >
 
     <b-modal
       id="labelPrintingModal"
@@ -11,14 +11,13 @@
       title="Print Labels"
       :static="isStatic"
       @ok="handleOk"
-      @shown="clearSelect"
     >
       <h3>List of barcodes to be printed:</h3>
-      <hr>
+      <hr />
       <ul id="list-barcodes-to-print">
         <li v-for="(item, index) in listBarcodes" :key="index + 1">{{ item }}</li>
       </ul>
-      <hr>
+      <hr />
       <h3>Printer: {{ printerName }}</h3>
     </b-modal>
   </div>
@@ -43,11 +42,6 @@ export default {
       },
     },
   },
-  // TODO: any data?
-  // data() {
-  //   return {
-  //   }
-  // },
   methods: {
     handleOk(event) {
       // Prevent modal from closing
@@ -58,7 +52,7 @@ export default {
     handleSubmit() {
       // TODO: how to do the printing?
       // this.$emit('selectPrinter', this.printerName)
-      this.clearSelect()
+      // this.clearSelect()
       /**
        * Hide the modal manually
        * https://vuejsdevelopers.com/2019/01/22/vue-what-is-next-tick/

@@ -43,7 +43,7 @@ export default new Router({
       component: Dashboard,
     },
     {
-      path: '/labelPrinting',
+      path: '/label-printing',
       name: 'LabelPrinting',
       meta: { page: 'Label Printing' },
       component: LabelPrinting,
