@@ -1,6 +1,8 @@
 import Response from '@/api/Response'
 import * as Actions from '@/store/traction/pacbio/requests/actions'
 import { Data } from 'testHelper'
+import { newResponse } from '@/api/ResponseHelper'
+import deserialize from '@/api/JsonApi'
 
 let requests, failedResponse
 
@@ -79,24 +81,51 @@ describe('actions', () => {
     beforeEach(() => {
       create = jest.fn()
       getters = { requestsRequest: { create: create } }
-      tubes = new Response(Data.SampleExtractionTubesWithSample).deserialize.assets
+
+      const expectedResponse = newResponse({
+        ...Data.SampleExtractionTubesWithSample,
+        success: true,
+      })
+
+      tubes = deserialize(expectedResponse.data).assets
     })
 
     it('successfully', async () => {
-      let expectedResponse = new Response(Data.CreatePacbioRequest)
+      const expectedResponse = newResponse({
+        success: true,
+        ...Data.CreatePacbioRequest,
+      })
       create.mockReturnValue(Data.CreatePacbioRequest)
 
       let response = await Actions.exportSampleExtractionTubesIntoTraction({ getters }, { tubes })
+
+      let expectedPayload = {
+        data: {
+          data: {
+            type: 'requests',
+            attributes: {
+              requests: Actions.sampleExtractionTubeJson(tubes),
+            },
+          },
+        },
+      }
+      expect(create).toBeCalledWith(expectedPayload)
+
       expect(response).toEqual(expectedResponse)
     })
 
     it('unsuccessfully', async () => {
       let failedResponse = {
+        success: false,
         status: 422,
         statusText: 'Unprocessable Entity',
         data: { errors: { name: ['error message'] } },
       }
-      let expectedResponse = new Response(failedResponse)
+
+      const expectedResponse = newResponse({
+        success: false,
+        ...failedResponse,
+      })
 
       create.mockReturnValue(failedResponse)
 

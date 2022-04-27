@@ -12,32 +12,6 @@ const getTractionTubesForBarcodes = async ({ commit, getters }, barcodes) => {
   return response
 }
 
-const exportSampleExtractionTubesIntoTraction = async ({ getters }, tubes) => {
-  let body = {
-    data: {
-      type: 'requests',
-      attributes: {
-        requests: sampleExtractionTubeJson(tubes),
-      },
-    },
-  }
-
-  let request = getters.requestsRequest
-  let promise = request.create({ data: body })
-  let response = await handlePromise(promise)
-
-  return response
-}
-
-const sampleExtractionTubeJson = (tubes) => {
-  return tubes.map((t) => ({
-    name: t.fields.sanger_sample_id,
-    species: t.fields.sample_common_name,
-    external_id: t.sample_uuid,
-    external_study_id: t.study_uuid,
-  }))
-}
-
 const createLibrariesInTraction = async ({ getters }, payload) => {
   let libraries = payload.samples.map((item) => {
     return {
@@ -88,19 +62,11 @@ const setLibraries = async ({ commit, getters }) => {
 
 const actions = {
   getTractionTubesForBarcodes,
-  exportSampleExtractionTubesIntoTraction,
   createLibrariesInTraction,
   deleteLibraries,
   setLibraries,
 }
 
-export {
-  getTractionTubesForBarcodes,
-  exportSampleExtractionTubesIntoTraction,
-  sampleExtractionTubeJson,
-  createLibrariesInTraction,
-  deleteLibraries,
-  setLibraries,
-}
+export { getTractionTubesForBarcodes, createLibrariesInTraction, deleteLibraries, setLibraries }
 
 export default actions
