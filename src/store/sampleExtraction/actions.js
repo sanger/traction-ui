@@ -1,15 +1,22 @@
-import handlePromise from '@/api/PromiseHelper'
+import { handleResponse } from '@/api/ResponseHelper'
+import deserialize from '@/api/JsonApi'
 
 const getSampleExtractionTubesForBarcodes = async ({ commit, getters }, barcodes) => {
-  let barcodeString = barcodes.join(',')
-  let request = getters.sampleExtractionTubeRequest
-  let promise = request.get({ filter: { barcode: barcodeString } })
-  let response = await handlePromise(promise)
+  const barcodeString = barcodes.join(',')
+  const request = getters.sampleExtractionTubeRequest
+  const promise = request.get({ filter: { barcode: barcodeString } })
 
-  if (response.successful && !response.empty) {
-    let assets = response.deserialize.assets
-    commit('setSampleExtractionTubes', assets)
+  const response = await handleResponse(promise)
+
+  if (!response.success || response.data.data.length === 0) {
+    return {
+      success: false,
+      errors: 'Sample Extraction tubes failed to be imported',
+    }
   }
+  const assets = deserialize(response.data).assets
+  commit('setSampleExtractionTubes', assets)
+
   return response
 }
 
