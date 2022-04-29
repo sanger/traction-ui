@@ -140,9 +140,10 @@ export default {
       this.suffixOptions = suffixOptions
     },
     setPrinterNames() {
-      let printerOptions = this.$store.getters.printers.map((printer, index) => ({
+      let printerOptions = this.$store.getters.printersWithType.map((obj, index) => ({
         value: index + 1,
-        text: printer,
+        text: obj.printerName,
+        type: obj.printerType
       }))
       printerOptions.unshift({ value: null, text: MESSAGE_SELECT })
       this.printerOptions = printerOptions
@@ -152,7 +153,7 @@ export default {
 
       if (this.formValid) {
         props.barcodesList = this.suffixedBarcodes()
-        props.printerName = this.printerName()
+        props.printer = this.printer()
         props.copies = this.form.copies
       }
 
@@ -167,8 +168,8 @@ export default {
       }
       return listSuffixedBarcodes
     },
-    printerName() {
-      return this.printerOptions[this.form.selectedPrinterId].text
+    printer() {
+      return this.printerOptions[this.form.selectedPrinterId]
     },
     onReset(event) {
       event.preventDefault()

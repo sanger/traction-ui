@@ -21,7 +21,8 @@ export default new Vuex.Store({
   mutations: {},
   getters: {
     api: (state) => state.api,
-    printers: (state) => state.printers,
+    printers: (state) => state.printers.map((obj) => obj.printerName),
+    printersWithType: (state) => state.printers,
     plateMap: (state) => state.plateMap,
     suffixes: (state) => state.suffixes,
   },

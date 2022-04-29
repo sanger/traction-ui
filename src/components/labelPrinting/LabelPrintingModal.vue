@@ -21,7 +21,7 @@
         <li v-for="(item, index) in barcodesList" :key="index + 1">{{ item }}</li>
       </ul>
       <hr />
-      <h3>Printer: {{ printerName }}</h3>
+      <h3>Printer: {{ printer.text }}</h3>
       <h3>Copies: {{ copies }}</h3>
     </b-modal>
   </div>
@@ -41,10 +41,10 @@ export default {
         return []
       },
     },
-    printerName: {
-      type: String,
+    printer: {
+      type: Object,
       default() {
-        return ''
+        return {}
       },
     },
     copies: {
@@ -57,7 +57,7 @@ export default {
   methods: {
     async sendPrintRequest() {
       try {
-        const params = { printerName: this.printerName, barcodesList: this.barcodesList, copies: this.copies }
+        const params = { printer: this.printer, barcodesList: this.barcodesList, copies: this.copies }
         let printJobV2Response = await this.printJobV2(params)
 
         if (!printJobV2Response.success) {
@@ -65,11 +65,11 @@ export default {
         }
 
         this.showAlert(
-          'Successful print request: ',
+          'Successful print request: ' + printJobV2Response.data.message,
           'success',
         )
       } catch (error) {
-        this.showAlert(error.message, 'danger')
+        this.showAlert('Print request failed: ' + error.message, 'danger')
       }
     },
     ...mapActions('printMyBarcode', ['printJobV2']),

@@ -1,1 +1,6 @@
-["g216bc", "h105bc", "stub"]
+[
+  { "printerName": "g216bc", "printerType": "toshiba" },
+  { "printerName": "h105bc", "printerType": "toshiba" },
+  { "printerName": "stub", "printerType": "squix" },
+  { "printerName": "heron-bc7", "printerType": "squix" }
+]
