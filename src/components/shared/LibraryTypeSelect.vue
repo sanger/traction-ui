@@ -1,12 +1,14 @@
 <template>
-  <b-form-group label="Library Type" label-for="library-type" :label-cols="labelCols">
-    <b-select
-      id="library-type"
-      :value="libraryType"
-      :options="libraryTypes"
-      @input="handleInput"
-    ></b-select>
-  </b-form-group>
+  <div :class="getClass()">
+    <label class="whitespace-nowrap justify-center item-center  text-left  text-lg mt-2">Library Type</label>
+      <b-select
+        id="library-type"
+        :value="libraryType"
+        :options="libraryTypes"
+        class="item-center justify-center text-lg "
+        @input="handleInput"
+      ></b-select>
+  </div>
 </template>
 
 <script>
@@ -16,6 +18,11 @@ const UNDEFINED = '_undefined'
 
 const encode = (value) => (value === undefined ? UNDEFINED : value)
 const decode = (value) => (value === UNDEFINED ? undefined : value)
+
+export const POSITION = {
+  Left: 1, //Position on left
+  Top: 2, // Position on top
+}
 
 export default {
   name: 'LibraryTypeSelect',
@@ -42,6 +49,10 @@ export default {
       type: Number,
       default: 2,
     },
+    labelPosition: {
+      type: Number,
+      default: POSITION.Top,
+    },
   },
   computed: {
     libraryType() {
@@ -66,6 +77,12 @@ export default {
   methods: {
     handleInput(input) {
       this.$emit('input', decode(input))
+    },
+    getClass() {
+      return {
+        'flex flex-row gap-x-4': this.labelPosition == POSITION.Left,
+        'flex flex-col': this.labelPosition == POSITION.Top,
+      }
     },
   },
 }

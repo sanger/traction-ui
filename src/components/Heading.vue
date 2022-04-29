@@ -1,6 +1,6 @@
 <template>
-  <header class="bg-white shadow">
-    <div class="max-w-7xl mx-auto py-2 px-4 sm:px-6 lg:px-8 text-black">
+  <header class="bg-white">
+    <div class="max-w-7xl mx-auto py-2 px-4 sm:px-6 lg:px-8 text-black text-left">
       <h1 :class="getClass()">
         <slot />
       </h1>
@@ -16,6 +16,7 @@ export default {
       default: 1,
     },
     showBorder: Boolean,
+    shadow:Boolean
   },
   methods: {
     getClass() {
@@ -28,6 +29,7 @@ export default {
         'text-sm font-bold tracking-tight leading-relaxed': this.level == 6,
         'text-xs font-bold tracking-tight leading-relaxed': this.level == 7,
         'border-b-2 border-sp': this.showBorder,
+        'shadow':this.shadow
       }
     },
   },
