@@ -34,14 +34,14 @@
         id="number_of_labels_group"
         label="Number of labels:"
         label-for="number_of_labels"
-        description="Please enter the number of labels to make (with incrementing suffixes)."
+        description="Please enter the number of labels to make (with incrementing suffixes). Up to 9 to ensure printing"
       >
         <b-form-input
-          id="number_of_labels_input"
+          id="number_of_labels"
           v-model="form.selectedNumberOfLabels"
           type="number"
-          min="1"
-          max="9"
+          :min="1"
+          :max="9"
           placeholder="Please enter a number"
           required
         ></b-form-input>
@@ -54,12 +54,29 @@
         description="Please select which printer you wish to use to print the labels."
       >
         <b-form-select
-          id="printer_of_choice_input"
+          id="printer_choice"
           v-model="form.selectedPrinterId"
           :options="printerOptions"
           placeholder="Please select a printer"
           required
         ></b-form-select>
+      </b-form-group>
+
+      <b-form-group
+        id="copies_group"
+        label="Number of copies per label:"
+        label-for="copies"
+        description="Please select how many copies of each label you would like printing."
+      >
+        <b-form-input
+          id="copies"
+          v-model="form.copies"
+          type="number"
+          :min="1"
+          :max="10"
+          placeholder="Please select a number"
+          required
+        ></b-form-input>
       </b-form-group>
 
       <b-button id="resetButton" type="reset" variant="danger" class="float-left">Reset</b-button>
@@ -68,9 +85,8 @@
         id="labelPrintingModal"
         ref="labelPrintingModal"
         class="float-right"
-        :disabled="suffixedBarcodes.length === 0"
-        :list-barcodes="suffixedBarcodes"
-        :printer-name="printerName"
+        :disabled="!formValid"
+        v-bind="propsToPass()"
       ></labelPrintingModal>
     </b-form>
   </div>
@@ -88,10 +104,11 @@ export default {
   data() {
     return {
       form: {
-        barcode: null,
-        selectedSuffixId: null,
-        selectedNumberOfLabels: null,
-        selectedPrinterId: null,
+        barcode: "barcode", // null,
+        selectedSuffixId: 1, // null,
+        selectedNumberOfLabels: 2, // null,
+        selectedPrinterId: 3, // null,
+        copies: "1" // null,
       },
       suffixOptions: [],
       printerOptions: [],
@@ -99,27 +116,13 @@ export default {
     }
   },
   computed: {
-    suffixedBarcodes() {
-      if (
-        this.form.barcode === null ||
-        this.form.selectedSuffixId === null ||
-        this.form.selectedNumberOfLabels === null
-      ) {
-        return []
-      }
-      var listSuffixedBarcodes = []
-      let suffixString = this.suffixOptions[this.form.selectedSuffixId].char
-
-      for (let i = 0; i < this.form.selectedNumberOfLabels; i++) {
-        listSuffixedBarcodes.push(this.form.barcode.concat('-', suffixString, i + 1))
-      }
-      return listSuffixedBarcodes
-    },
-    printerName() {
-      if (this.form.selectedPrinterId === null) {
-        return ''
-      }
-      return this.printerOptions[this.form.selectedPrinterId].text
+    formValid() {
+      return (
+        this.form.barcode &&
+        this.form.selectedSuffixId &&
+        this.form.selectedNumberOfLabels &&
+        this.form.selectedPrinterId
+      )
     },
   },
   created() {
@@ -144,6 +147,29 @@ export default {
       printerOptions.unshift({ value: null, text: MESSAGE_SELECT })
       this.printerOptions = printerOptions
     },
+    propsToPass() {
+      const props = {}
+
+      if (this.formValid) {
+        props.barcodesList = this.suffixedBarcodes()
+        props.printerName = this.printerName()
+        props.copies = this.form.copies
+      }
+
+      return props
+    },
+    suffixedBarcodes() {
+      var listSuffixedBarcodes = []
+      let suffixString = this.suffixOptions[this.form.selectedSuffixId].char
+
+      for (let i = 0; i < this.form.selectedNumberOfLabels; i++) {
+        listSuffixedBarcodes.push(this.form.barcode.concat('-', suffixString, i + 1))
+      }
+      return listSuffixedBarcodes
+    },
+    printerName() {
+      return this.printerOptions[this.form.selectedPrinterId].text
+    },
     onReset(event) {
       event.preventDefault()
       // Reset our form values
@@ -151,6 +177,7 @@ export default {
       this.form.selectedSuffixId = null
       this.form.selectedNumberOfLabels = null
       this.form.selectedPrinterId = null
+      this.form.copies = null
       // Trick to reset/clear native browser form validation state
       this.show = false
       this.$nextTick(() => {
