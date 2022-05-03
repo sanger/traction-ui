@@ -104,11 +104,11 @@ export default {
   data() {
     return {
       form: {
-        barcode: "barcode", // null,
-        selectedSuffixId: 1, // null,
-        selectedNumberOfLabels: 2, // null,
-        selectedPrinterId: 3, // null,
-        copies: "1" // null,
+        barcode: null, // 'barcode',
+        selectedSuffixId: null, // 1,
+        selectedNumberOfLabels: null, // 2,
+        selectedPrinterId: null, // 3,
+        copies: null, // '1',
       },
       suffixOptions: [],
       printerOptions: [],
@@ -143,7 +143,7 @@ export default {
       let printerOptions = this.$store.getters.printersWithType.map((obj, index) => ({
         value: index + 1,
         text: obj.printerName,
-        type: obj.printerType
+        type: obj.printerType,
       }))
       printerOptions.unshift({ value: null, text: MESSAGE_SELECT })
       this.printerOptions = printerOptions
