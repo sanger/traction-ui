@@ -52,6 +52,8 @@ describe('Modal.vue', () => {
         { value: null, text: 'Please select a printer' },
         { value: 1, text: 'printer1' },
         { value: 2, text: 'printer2' },
+        { value: 2, text: 'printer3' },
+        { value: 2, text: 'printer4' },
       ]
 
       wrapper.setData({ printerOptions: printerOptions })

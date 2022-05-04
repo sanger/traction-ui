@@ -18,8 +18,8 @@
         <li v-for="(item, index) in barcodesList" :key="index + 1">{{ item }}</li>
       </ul>
       <hr />
-      <h3>Printer: {{ printer.text }}</h3>
-      <h3>Copies: {{ copies }}</h3>
+      <h3 id="title">Printer: {{ printer.text }}</h3>
+      <h3 id="copies">Copies: {{ copies }}</h3>
     </b-modal>
   </div>
 </template>
@@ -30,8 +30,6 @@ import { mapActions } from 'vuex'
 export default {
   name: 'LabelPrintingModal',
   props: {
-    disabled: Boolean,
-    isStatic: Boolean,
     barcodesList: {
       type: Array,
       default() {
@@ -50,6 +48,12 @@ export default {
         return ''
       },
     },
+  },
+  data() {
+    return {
+      disabled: Boolean,
+      isStatic: Boolean,
+    }
   },
   methods: {
     async sendPrintRequest() {

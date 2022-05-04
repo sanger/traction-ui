@@ -7,6 +7,9 @@ describe('LabelPrintingForm.vue', () => {
   beforeEach(() => {
     wrapper = mount(LabelPrintingForm, {
       localVue,
+      stubs: {
+        LabelPrintingModal: true,
+      },
       store,
       propsData: {},
     })
@@ -41,36 +44,20 @@ describe('LabelPrintingForm.vue', () => {
   })
 
   describe('computed', () => {
-    describe('suffixedBarcodes', () => {
-      it('created the list of suffixed barcodes when form data is present', () => {
-        wrapper.setData({
-          form: { barcode: 'aBarcode', selectedSuffixId: 1, selectedNumberOfLabels: 2 },
-        })
-        expect(labelPrintingForm.suffixedBarcodes).toEqual(['aBarcode-L1', 'aBarcode-L2'])
+    describe('formValid', () => {
+      it('returns false when the form is invalid', () => {
+        expect(labelPrintingForm.formValid).toEqual(false)
       })
-
-      it('returns an empty list when form data is not present', () => {
-        wrapper.setData({
-          form: { selectedSuffixId: 1, selectedNumberOfLabels: 2 },
-        })
-        expect(labelPrintingForm.suffixedBarcodes).toEqual([])
-      })
-    })
-    describe('printerName', () => {
-      it('returns the printer name when selectedPrinterId is present', () => {
+      it('returns false when the form is invalid', () => {
         wrapper.setData({
           form: {
             barcode: 'aBarcode',
             selectedSuffixId: 1,
             selectedNumberOfLabels: 2,
-            selectedPrinterId: 1,
+            selectedPrinterId: 2,
           },
         })
-        expect(labelPrintingForm.printerName).toEqual('g216bc')
-      })
-
-      it('returns an empty string when selectedPrinterId is not present', () => {
-        expect(labelPrintingForm.printerName).toEqual('')
+        expect(labelPrintingForm.formValid).toEqual(true)
       })
     })
   })

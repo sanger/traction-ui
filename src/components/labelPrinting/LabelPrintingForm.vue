@@ -117,7 +117,7 @@ export default {
   },
   computed: {
     formValid() {
-      return (
+      return !!(
         this.form.barcode &&
         this.form.selectedSuffixId &&
         this.form.selectedNumberOfLabels &&
