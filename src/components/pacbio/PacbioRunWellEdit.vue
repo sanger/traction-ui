@@ -81,6 +81,22 @@
       </b-form-group>
 
       <b-form-group
+        id="useAdaptiveLoading-group"
+        label="Use Adaptive Loading"
+        label-for="useAdaptiveLoading"
+      >
+        <b-form-select
+          id="useAdaptiveLoading"
+          ref="useAdaptiveLoading"
+          v-model="currentWell.use_adaptive_loading"
+          :options="useAdaptiveLoadingOptions"
+          @change="updateLoadingTarget"
+        >
+        </b-form-select>
+      </b-form-group>
+
+      <b-form-group
+        v-if="loadingTargetToggle === 'True'"
         id="loadingTarget-group"
         label="Loading Target (P1 + P2): (0 to 1) "
         label-for="loadingTarget"
@@ -93,22 +109,6 @@
           type="number"
           :step="0.05"
           :formatter="formatLoadingTargetValue"
-          @input="updateAdaptiveLoading"
-        >
-        </b-form-input>
-      </b-form-group>
-
-      <b-form-group
-        id="useAdaptiveLoading-group"
-        label="Use Adaptive Loading"
-        label-for="useAdaptiveLoading"
-      >
-        <b-form-input
-          id="useAdaptiveLoading"
-          ref="useAdaptiveLoading"
-          v-model="currentWell.use_adaptive_loading"
-          placeholder="False"
-          readonly
         >
         </b-form-input>
       </b-form-group>
@@ -197,6 +197,12 @@ export default {
       ccsAnalysisOutputOptions: ['Yes', 'No'],
       decimalPercentageRegex: /^(?:1(?:\.0{0,2})?|0?(?:\.\d{0,2})?)$/,
       loadingTargetValue: 0,
+      useAdaptiveLoadingOptions: [
+        { text: 'Please select a value', value: '', disabled: true },
+        'True',
+        'False',
+      ],
+      loadingTargetToggle: 'True',
     }
   },
   computed: {
@@ -215,12 +221,11 @@ export default {
         this.currentWell.ccs_analysis_output = 'No'
       }
     },
-    updateAdaptiveLoading() {
-      if (this.currentWell.loading_target_p1_plus_p2) {
-        this.currentWell.use_adaptive_loading = 'True'
-      } else {
-        this.currentWell.use_adaptive_loading = 'False'
+    updateLoadingTarget(val) {
+      if (this.currentWell.use_adaptive_loading !== 'True') {
+        this.currentWell.loading_target_p1_plus_p2 = ''
       }
+      this.loadingTargetToggle = val
     },
     formatLoadingTargetValue(val) {
       if (val) {
@@ -243,8 +248,10 @@ export default {
       } else {
         this.currentWell = { ...this.well(this.position) }
         this.currentWell.use_adaptive_loading = _.capitalize(
-          this.currentWell.loading_target_p1_plus_p2 !== '',
+          this.currentWell.loading_target_p1_plus_p2 !== '' &&
+            this.currentWell.loading_target_p1_plus_p2 !== null,
         )
+        this.loadingTargetToggle = this.currentWell.use_adaptive_loading
         this.action = {
           id: 'updateBtn',
           variant: 'primary',

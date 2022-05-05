@@ -139,6 +139,7 @@ const createWellsPayload = (wells, plateId) => {
       pre_extension_time: well.pre_extension_time,
       binding_kit_box_barcode: well.binding_kit_box_barcode,
       loading_target_p1_plus_p2: well.loading_target_p1_plus_p2,
+      use_adaptive_loading: well.use_adaptive_loading,
       relationships: {
         plate: {
           data: {
