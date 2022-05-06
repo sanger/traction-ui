@@ -1,11 +1,11 @@
 <template>
   <div>
-    <b-form v-if="show" @reset="onReset">
+    <b-form v-if="show" style="width: 50%" @reset="onReset">
       <b-form-group
         id="barcode_input_group"
         label="Barcode:"
         label-for="barcode_input"
-        description="Please scan the barcode you wish to create labels for."
+        description="Please scan the single barcode you wish to create labels for."
       >
         <b-form-input
           id="barcode_input"
