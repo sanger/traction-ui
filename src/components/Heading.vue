@@ -1,9 +1,9 @@
 <template>
   <header class="bg-white">
     <div class="max-w-7xl mx-auto py-2 sm:px-6 lg:px-8 text-black text-left">
-      <div :class="getClass()">
+      <h1 :class="getClass()">
         <slot />
-      </div>
+      </h1>
     </div>
   </header>
 </template>
