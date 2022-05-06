@@ -4,7 +4,7 @@ const sequencescapeRequest =
 describe('Import samples from Sequencescape', () => {
   it('Successfully', () => {
     cy.visit('#/pacbio/sequencescape-reception')
-    cy.contains('Barcodes:')
+    cy.contains('Scan Barcodes')
     cy.get('#barcodes').type('DN9000002A\nNT1O')
     cy.get('#cost_code').type('aCostCodeExample')
     cy.intercept(
@@ -42,7 +42,7 @@ describe('Import samples from Sequencescape', () => {
 
   it('Unsuccessfully - when the plates do not exist', () => {
     cy.visit('#/pacbio/sequencescape-reception')
-    cy.contains('Barcodes:')
+    cy.contains('Scan Barcodes')
     cy.get('#barcodes').type('DN9000002A\nNT1O')
     cy.intercept(sequencescapeRequest, {
       statusCode: 200,
@@ -54,7 +54,7 @@ describe('Import samples from Sequencescape', () => {
 
   it('Unsuccessfully - when there is an error from traction', () => {
     cy.visit('#/pacbio/sequencescape-reception')
-    cy.contains('Barcodes:')
+    cy.contains('Scan Barcodes')
     cy.get('#barcodes').type('DN9000002A\nNT1O')
     cy.intercept(sequencescapeRequest, {
       fixture: 'sequencescapeLabware.json',
