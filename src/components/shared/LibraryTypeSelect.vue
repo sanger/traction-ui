@@ -1,14 +1,21 @@
 <template>
-  <div :class="getClass()">
-    <label class="whitespace-nowrap justify-center item-center  text-left  text-lg mt-2">Library Type</label>
-      <b-select
-        id="library-type"
-        :value="libraryType"
-        :options="libraryTypes"
-        class="item-center justify-center text-lg "
-        @input="handleInput"
-      ></b-select>
-  </div>
+<div>
+  <b-form-group
+    label="Library Type"
+    label-for="library-type"
+    :label-cols="labelCols"
+    :label-align="labelAlign"
+     label-size="sm"
+  >
+    <b-select
+      id="library-type"
+      :class="getClass()"
+      :value="libraryType"
+      :options="libraryTypes"
+      @input="handleInput"
+    ></b-select>
+  </b-form-group>
+</div>
 </template>
 
 <script>
@@ -49,9 +56,13 @@ export default {
       type: Number,
       default: 2,
     },
+    labelAlign: {
+      type: String,
+      default: 'left',
+    },
     labelPosition: {
-      type: Number,
-      default: POSITION.Top,
+      type: [Number, String],
+      default: () => POSITION.Left,
     },
   },
   computed: {
@@ -80,8 +91,7 @@ export default {
     },
     getClass() {
       return {
-        'flex flex-row gap-x-4': this.labelPosition == POSITION.Left,
-        'flex flex-col': this.labelPosition == POSITION.Top,
+        'text-sm': this.labelCols == 0,
       }
     },
   },

@@ -34,6 +34,8 @@ import InfoFooter from '@/components/InfoFooter'
 import Message from '@/components/Message'
 import Link from '@/components/Link'
 import Heading from '@/components/Heading'
+
+import PipelinesConfig from '@/config/PipelinesConfig'
 export default {
   components: {
     InfoFooter,
@@ -45,6 +47,7 @@ export default {
     mergedRoute() {
       return Object.assign({}, ...this.$route.matched.map(({ meta }) => meta))
     },
+    pipelines: () => PipelinesConfig,
     pipeline() {
       // Merge the route meta attributes and pull out the pipeline
       return this.mergedRoute.pipeline
