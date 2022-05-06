@@ -23,7 +23,7 @@
         </div>
       </div>
       <div class="flex flex-col gap-y-4 mt-10">
-        <Heading level="4" show-border="true">Attach to Labware</Heading>
+        <Heading level="4" show-border="true">Request Options</Heading>
         <div class="flex grid grid-cols-2 sm:px-6 lg:px-8 gap-x-8 justify-left contents-centre">
           <LibraryTypeSelect v-model="libraryType" pipeline="pacbio" label-cols="0" />
           <b-form-group

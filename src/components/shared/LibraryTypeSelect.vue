@@ -1,21 +1,21 @@
 <template>
-<div>
-  <b-form-group
-    label="Library Type"
-    label-for="library-type"
-    :label-cols="labelCols"
-    :label-align="labelAlign"
-     label-size="sm"
-  >
-    <b-select
-      id="library-type"
-      :class="getClass()"
-      :value="libraryType"
-      :options="libraryTypes"
-      @input="handleInput"
-    ></b-select>
-  </b-form-group>
-</div>
+  <div>
+    <b-form-group
+      label="Library Type"
+      label-for="library-type"
+      :label-cols="labelCols"
+      :label-align="labelAlign"
+      label-size="sm"
+    >
+      <b-select
+        id="library-type"
+        :class="getClass()"
+        :value="libraryType"
+        :options="libraryTypes"
+        @input="handleInput"
+      ></b-select>
+    </b-form-group>
+  </div>
 </template>
 
 <script>

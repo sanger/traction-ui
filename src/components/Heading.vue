@@ -16,7 +16,7 @@ export default {
       default: 1,
     },
     showBorder: Boolean,
-    shadow:Boolean
+    shadow: Boolean,
   },
   methods: {
     getClass() {
@@ -29,7 +29,7 @@ export default {
         'text-sm font-bold tracking-tight leading-relaxed': this.level == 6,
         'text-xs font-bold tracking-tight leading-relaxed': this.level == 7,
         'border-b-2 border-sp': this.showBorder,
-        'shadow':this.shadow
+        shadow: this.shadow,
       }
     },
   },
