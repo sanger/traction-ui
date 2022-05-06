@@ -1,48 +1,19 @@
 import * as Actions from '@/store/printMyBarcode/actions'
 import { newResponse } from '@/api/ResponseHelper'
 
-describe('#printJobV2', () => {
-  let expectedPayload,
-    params,
-    create,
-    getters,
-    printerName,
-    barcodesList,
-    copies,
-    labelTemplateName,
-    failedResponse,
-    emptyResponse
+describe('actions', () => {
+  let printerName, barcodesList, copies, squixLabelTemplateName, createPrintJobJsonV2
 
   beforeEach(() => {
     printerName = 'aPrinterName'
     barcodesList = ['aBarcode-A1', 'aBarcode-A2']
     copies = '2'
-    labelTemplateName = 'aLabelTemplateName'
+    squixLabelTemplateName = 'asquixLabelTemplateName'
 
-    params = {
-      printer: {
-        text: printerName,
-      },
-      barcodesList: barcodesList,
-      copies: copies,
-      labelTemplateName: labelTemplateName,
-    }
-    create = jest.fn()
-    getters = { printJobV2Request: { create: create } }
-
-    failedResponse = {
-      success: false,
-      data: {
-        errors: [{ source: { pointer: 'api/labels' }, detail: 'failed' }],
-      },
-    }
-
-    emptyResponse = { success: false, data: { errors: [] } }
-
-    expectedPayload = {
+    createPrintJobJsonV2 = {
       print_job: {
         printer_name: printerName,
-        label_template_name: 'x',
+        label_template_name: 'asquixLabelTemplateName',
         labels: [
           {
             first_line: 'DATE',
@@ -64,86 +35,89 @@ describe('#printJobV2', () => {
     }
   })
 
-  it('successfully', async () => {
-    create.mockReturnValue({})
+  describe('#printJobV2', () => {
+    let params, create, getters
 
-    const expectedResponse = newResponse({
-      success: true,
+    beforeEach(() => {
+      create = jest.fn()
+
+      getters = {
+        printJobV2Request: { create: create },
+        squixLabelTemplateName: squixLabelTemplateName,
+        toshibaLabelTemplateName: 'atoshibaLabelTemplateName',
+      }
+
+      params = {
+        printer: {
+          text: printerName,
+          type: 'squix',
+        },
+        barcodesList: barcodesList,
+        copies: copies,
+      }
     })
 
-    let response = await Actions.printJobV2({ getters }, params)
+    it('successfully', async () => {
+      create.mockReturnValue({})
 
-    expect(create).toHaveBeenCalledWith({ data: expectedPayload })
-    expect(response).toEqual(expectedResponse)
+      const expectedResponse = newResponse({
+        success: true,
+      })
+
+      let response = await Actions.printJobV2({ getters }, params)
+
+      expect(create).toHaveBeenCalledWith({ data: createPrintJobJsonV2 })
+      expect(response).toEqual(expectedResponse)
+    })
+
+    it('unsuccessfully failed', async () => {
+      let failedResponse = {
+        success: false,
+        data: {
+          errors: [{ source: { pointer: 'api/labels' }, detail: 'failed' }],
+        },
+      }
+      create.mockReturnValue(failedResponse)
+
+      const expectedResponse = {
+        success: false,
+        errors: 'api/labels failed',
+      }
+
+      let response = await Actions.printJobV2({ getters }, params)
+
+      expect(create).toHaveBeenCalledWith({ data: createPrintJobJsonV2 })
+      expect(response).toEqual(expectedResponse)
+    })
+
+    it('unsuccessfully empty data', async () => {
+      let emptyResponse = { success: false, data: { errors: [] } }
+
+      create.mockReturnValue(emptyResponse)
+      let response = await Actions.printJobV2({ getters }, params)
+
+      const expectedResponse = {
+        success: false,
+        errors: '',
+        data: {
+          errors: [],
+        },
+      }
+
+      expect(create).toHaveBeenCalledWith({ data: createPrintJobJsonV2 })
+      expect(response).toEqual(expectedResponse)
+    })
   })
 
-  it('unsuccessfully failed', async () => {
-    create.mockReturnValue(failedResponse)
-
-    const expectedResponse = {
-      success: false,
-      errors: 'api/labels failed',
-    }
-
-    let response = await Actions.printJobV2({ getters }, params)
-
-    expect(create).toHaveBeenCalledWith({ data: expectedPayload })
-    expect(response).toEqual(expectedResponse)
-  })
-
-  it('unsuccessfully empty data', async () => {
-    create.mockReturnValue(emptyResponse)
-    let response = await Actions.printJobV2({ getters }, params)
-
-    const expectedResponse = {
-      success: false,
-      errors: '',
-      data: {
-        errors: [],
-      },
-    }
-
-    expect(create).toHaveBeenCalledWith({ data: expectedPayload })
-    expect(response).toEqual(expectedResponse)
-  })
-})
-
-describe('#createPrintJobJsonV2', () => {
-  let printerName, barcodesList, copies, labelTemplateName
-
-  beforeEach(() => {
-    printerName = 'aPrinterName'
-    barcodesList = ['aBarcode-A1', 'aBarcode-A2']
-    copies = '2'
-    labelTemplateName = 'aLabelTemplateName'
-  })
-
-  it('returns the correct json', () => {
-    let expected = {
-      print_job: {
-        printer_name: printerName,
-        label_template_name: labelTemplateName,
-        labels: [
-          {
-            first_line: 'DATE',
-            second_line: 'aBarcode-A1',
-            third_line: 'third line',
-            barcode: 'aBarcode-A1',
-            label_name: 'main_label',
-          },
-          {
-            first_line: 'DATE',
-            second_line: 'aBarcode-A2',
-            third_line: 'third line',
-            barcode: 'aBarcode-A2',
-            label_name: 'main_label',
-          },
-        ],
-        copies: copies,
-      },
-    }
-
-    let result = Actions.createPrintJobJsonV2(printerName, barcodesList, copies, labelTemplateName)
-    expect(result).toEqual(expected)
+  describe('#createPrintJobJsonV2', () => {
+    it('returns the correct json', () => {
+      let result = Actions.createPrintJobJsonV2(
+        printerName,
+        barcodesList,
+        copies,
+        squixLabelTemplateName,
+      )
+      expect(result).toEqual(createPrintJobJsonV2)
+    })
   })
 })

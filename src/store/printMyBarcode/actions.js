@@ -3,8 +3,7 @@ import { handleResponse } from '@/api/ResponseHelper'
 const printJobV2 = async ({ getters }, params) => {
   const request = getters.printJobV2Request
 
-  // const labelTemplateName = getLabelTemplateName(params.printer, getters)
-  const labelTemplateName = 'x'
+  const labelTemplateName = getLabelTemplateName(params.printer, getters)
 
   const payload = createPrintJobJsonV2(
     params.printer.text,
@@ -37,7 +36,7 @@ const createPrintJobJsonV2 = (printerName, barcodesList, copies, labelTemplateNa
   return {
     print_job: {
       printer_name: printerName,
-      label_template_name: labelTemplateName, // 'traction_tube_label_template',
+      label_template_name: labelTemplateName,
       labels: labels,
       copies: copies,
     },
@@ -46,13 +45,11 @@ const createPrintJobJsonV2 = (printerName, barcodesList, copies, labelTemplateNa
 
 const createLabelsV2 = (barcodesList) => {
   // {
-  //   top_line: top_line(tube),
-  //   middle_line: middle_line(tube),
-  //   bottom_line: bottom_line(tube),
-  //   round_label_top_line: round_label_top_line(tube),
-  //   round_label_bottom_line: round_label_bottom_line(tube),
-  //   barcode: barcode(tube),
-  //   label_name: 'main_label'
+  // "barcode": "TRAC-1-1234",
+  // "first_line": "PACBIO",
+  // "second_line": "TRAC-2-636",
+  // "third_line": "04-MAY-22",
+  // "label_name": "main_label"
   // }
 
   return barcodesList.map((barcode) => {
@@ -66,14 +63,13 @@ const createLabelsV2 = (barcodesList) => {
   })
 }
 
-// to remove
-// const getLabelTemplateName = (printer, getters) => {
-//   if (printer.type === 'squix') {
-//     return getters.squixLabelTemplateName
-//   } else if (printer.type === 'toshiba') {
-//     return getters.toshibaLabelTemplateName
-//   }
-// }
+const getLabelTemplateName = (printer, getters) => {
+  if (printer.type === 'squix') {
+    return getters.squixLabelTemplateName
+  } else if (printer.type === 'toshiba') {
+    return getters.toshibaLabelTemplateName
+  }
+}
 
 const actions = {
   printJobV2,
