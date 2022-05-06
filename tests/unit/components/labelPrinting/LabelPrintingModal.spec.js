@@ -12,12 +12,8 @@ describe('Modal.vue', () => {
         barcodesList: ['aBarcode-L1', 'aBarcode-L2'],
         printer: { value: 1, text: 'stub', type: 'squix' },
         copies: '3',
-      },
-      data() {
-        return {
-          disabled: true,
-          isStatic: true,
-        }
+        disabled: true,
+        isStatic: true,
       },
     })
     modal = wrapper.vm
@@ -30,20 +26,6 @@ describe('Modal.vue', () => {
   it('will have an button component', () => {
     expect(wrapper.find('.btn').element).toBeTruthy()
     expect(wrapper.find('.btn').text()).toEqual('Print Labels')
-  })
-
-  describe('data', () => {
-    it('has an disabled data attribute', () => {
-      expect(modal.disabled).toBe(true)
-      wrapper.setData({ disabled: false })
-      expect(modal.disabled).toBe(false)
-    })
-
-    it('has an isStatic data attribute', () => {
-      expect(modal.isStatic).toBe(true)
-      wrapper.setData({ isStatic: false })
-      expect(modal.isStatic).toBe(false)
-    })
   })
 
   describe('modal', () => {

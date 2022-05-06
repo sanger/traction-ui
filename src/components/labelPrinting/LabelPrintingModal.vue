@@ -30,6 +30,8 @@ import { mapActions } from 'vuex'
 export default {
   name: 'LabelPrintingModal',
   props: {
+    disabled: Boolean,
+    isStatic: Boolean,
     barcodesList: {
       type: Array,
       default() {
@@ -48,12 +50,6 @@ export default {
         return ''
       },
     },
-  },
-  data() {
-    return {
-      disabled: Boolean,
-      isStatic: Boolean,
-    }
   },
   methods: {
     async sendPrintRequest() {

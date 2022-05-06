@@ -104,11 +104,11 @@ export default {
   data() {
     return {
       form: {
-        barcode: null, // 'barcode',
-        selectedSuffixId: null, // 1,
-        selectedNumberOfLabels: null, // 2,
-        selectedPrinterId: null, // 3,
-        copies: null, // '1',
+        barcode: null,
+        selectedSuffixId: null,
+        selectedNumberOfLabels: null,
+        selectedPrinterId: null,
+        copies: null,
       },
       suffixOptions: [],
       printerOptions: [],
@@ -121,7 +121,8 @@ export default {
         this.form.barcode &&
         this.form.selectedSuffixId &&
         this.form.selectedNumberOfLabels &&
-        this.form.selectedPrinterId
+        this.form.selectedPrinterId &&
+        this.form.copies
       )
     },
   },
@@ -161,10 +162,13 @@ export default {
     },
     suffixedBarcodes() {
       var listSuffixedBarcodes = []
-      let suffixString = this.suffixOptions[this.form.selectedSuffixId].char
 
-      for (let i = 0; i < this.form.selectedNumberOfLabels; i++) {
-        listSuffixedBarcodes.push(this.form.barcode.concat('-', suffixString, i + 1))
+      if (this.formValid) {
+        let suffixString = this.suffixOptions[this.form.selectedSuffixId].char
+
+        for (let i = 0; i < this.form.selectedNumberOfLabels; i++) {
+          listSuffixedBarcodes.push(this.form.barcode.concat('-', suffixString, i + 1))
+        }
       }
       return listSuffixedBarcodes
     },

@@ -2,5 +2,6 @@
   { "printerName": "g216bc", "printerType": "toshiba" },
   { "printerName": "h105bc", "printerType": "toshiba" },
   { "printerName": "stub", "printerType": "squix" },
-  { "printerName": "heron-bc7", "printerType": "squix" }
+  { "printerName": "heron-bc7", "printerType": "squix" },
+  { "printerName": "ssrtubebc-sq1", "printerType": "squix" }
 ]
