@@ -10869,10 +10869,10 @@ select-hose@^2.0.0:
   resolved "https://registry.yarnpkg.com/select-hose/-/select-hose-2.0.0.tgz#625d8658f865af43ec962bfc376a37359a4994ca"
   integrity sha1-Yl2GWPhlr0Psliv8N2o3NZpJlMo=
 
-selecto@~1.15.1:
-  version "1.15.1"
-  resolved "https://registry.yarnpkg.com/selecto/-/selecto-1.15.1.tgz#64771df6ecd0ac360374d1d87f4e65a6ed5076da"
-  integrity sha512-FaDhWCUa2LDTXz2n2Rn4q8iXsudEbI4RffppX3rZMezsLQPtR0TQEcT8GlzaezFd83uE8Fb8xMdZ1FETC0vOyg==
+selecto@~1.16.0:
+  version "1.16.0"
+  resolved "https://registry.yarnpkg.com/selecto/-/selecto-1.16.0.tgz#030880790f10ce90e06bfbd065e472060d225608"
+  integrity sha512-sImQiAnOwajVX5Qu0Tbi9moYpz5cFlQs6oepaKOUMwEodbPk12UwuUPFXh+sua2IKuMgwb1FF76iNuhf7m09YA==
   dependencies:
     "@daybrush/utils" "^1.4.0"
     "@egjs/children-differ" "^1.0.1"
@@ -12400,12 +12400,12 @@ vue-router@^3.5.3:
   resolved "https://registry.yarnpkg.com/vue-router/-/vue-router-3.5.3.tgz#041048053e336829d05dafacf6a8fb669a2e7999"
   integrity sha512-FUlILrW3DGitS2h+Xaw8aRNvGTwtuaxrRkNSHWTizOfLUie7wuYwezeZ50iflRn8YPV5kxmU2LQuu3nM/b3Zsg==
 
-vue-selecto@^1.15.1:
-  version "1.15.1"
-  resolved "https://registry.yarnpkg.com/vue-selecto/-/vue-selecto-1.15.1.tgz#8a5486ddbe6a111b989429535b408737be2c1e92"
-  integrity sha512-vqYvDpym5OHNrxw8Z0GJEpv/IqmK13+cwEjpyyj3pUI5u1i0hSHtbLrIsf9j5E+qXS4beX5n2D1g84UVEVdlQQ==
+vue-selecto@^1.16.0:
+  version "1.16.0"
+  resolved "https://registry.yarnpkg.com/vue-selecto/-/vue-selecto-1.16.0.tgz#3271fe1fd9627f67c86b2f9a058060066f6fd252"
+  integrity sha512-oYanxNfwAi34nm4biAGgJaThlekkXv6SCcVv56cnVHTKp3D4+9fb4ELUszELU3gnLo2Wl2po3I+oOT/J8Wsbmw==
   dependencies:
-    selecto "~1.15.1"
+    selecto "~1.16.0"
 
 vue-simple-spinner@^1.2.10:
   version "1.2.10"

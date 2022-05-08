@@ -33,7 +33,7 @@
     "vue": "^2.6.12",
     "vue-apollo": "^3.0.5",
     "vue-router": "^3.5.3",
-    "vue-selecto": "^1.15.1",
+    "vue-selecto": "^1.16.0",
     "vue-simple-spinner": "^1.2.10",
     "vuex": "^3.6.2"
   },
