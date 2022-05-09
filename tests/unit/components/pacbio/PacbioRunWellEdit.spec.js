@@ -301,15 +301,22 @@ describe('PacbioWellModal', () => {
       })
     })
 
-    describe('updateLoadingTarget', () => {
-      it('sets Loading Target value to "" when useAdaptiveLoading is False"', () => {
-        storeWell.loading_target_p1_plus_p2 = '0.77'
-        storeWell.use_adaptive_loading = 'False'
+    describe('useAdaptiveLoading', () => {
+      it('sets useAdaptiveLoading to "False" when LoadingTarget has no value"', () => {
+        storeWell.loading_target_p1_plus_p2 = ''
+        storeWell.use_adaptive_loading = 'True'
         wrapper.setData({ currentWell: storeWell })
+        modal.disableAdaptiveLoadingInput()
 
-        modal.updateLoadingTarget()
+        expect(modal.use_adaptive_loading).toEqual('False')
+      })
 
-        expect(modal.currentWell.loading_target_p1_plus_p2).toEqual('')
+      it('sets useAdaptiveLoading to "True" when LoadingTarget has a value', () => {
+        storeWell.loading_target_p1_plus_p2 = '0.75'
+        wrapper.setData({ currentWell: storeWell })
+        modal.enableAdaptiveLoadingInput()
+
+        expect(modal.use_adaptive_loading).toEqual('True')
       })
     })
   })

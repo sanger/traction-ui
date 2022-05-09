@@ -85,18 +85,16 @@
         label="Use Adaptive Loading"
         label-for="useAdaptiveLoading"
       >
-        <b-form-select
+        <b-form-input
           id="useAdaptiveLoading"
           ref="useAdaptiveLoading"
-          v-model="currentWell.use_adaptive_loading"
-          :options="useAdaptiveLoadingOptions"
-          @change="updateLoadingTarget"
+          v-model="use_adaptive_loading"
+          :disabled="disableAdaptiveLoading"
         >
-        </b-form-select>
+        </b-form-input>
       </b-form-group>
 
       <b-form-group
-        v-if="loadingTargetToggle === 'True'"
         id="loadingTarget-group"
         label="Loading Target (P1 + P2): (0 to 1) "
         label-for="loadingTarget"
@@ -105,14 +103,28 @@
           id="loadingTarget"
           ref="loadingTarget"
           v-model="currentWell.loading_target_p1_plus_p2"
-          placeholder="Loading Target (P1 + P2)"
+          :placeholder="loadingTargetText"
           type="number"
+          :min="0"
+          :max="1"
           :step="0.05"
+          lazy-formatter
           :formatter="formatLoadingTargetValue"
+          @change="enableAdaptiveLoadingInput()"
         >
         </b-form-input>
       </b-form-group>
     </b-form>
+
+    <template>
+      <b-button
+        id="disableAdaptiveLoadingBtn"
+        variant="primary"
+        @click="disableAdaptiveLoadingInput()"
+      >
+        Disable Adaptive Loading
+      </b-button>
+    </template>
 
     <b-table id="wellPools" stacked :items="currentWell.pools" :fields="wellPoolsFields">
       <template v-slot:table-caption>Pools</template>
@@ -197,17 +209,24 @@ export default {
       ccsAnalysisOutputOptions: ['Yes', 'No'],
       decimalPercentageRegex: /^(?:1(?:\.0{0,2})?|0?(?:\.\d{0,2})?)$/,
       loadingTargetValue: 0,
-      useAdaptiveLoadingOptions: [
-        { text: 'Please select a value', value: '', disabled: true },
-        'True',
-        'False',
-      ],
-      loadingTargetToggle: 'True',
+      disableAdaptiveLoading: false,
+      loadingTargetText: 'Loading Target (P1 + P2)',
     }
   },
   computed: {
     ...mapGetters('traction/pacbio/runs', ['currentRun', 'well']),
     ...mapGetters('traction/pacbio/pools', ['poolByBarcode']),
+    use_adaptive_loading: {
+      get() {
+        return _.capitalize(
+          this.currentWell.loading_target_p1_plus_p2 !== '' &&
+            this.currentWell.loading_target_p1_plus_p2 !== null,
+        )
+      },
+      set(newVal) {
+        return newVal
+      },
+    },
   },
   methods: {
     addRow() {
@@ -221,21 +240,24 @@ export default {
         this.currentWell.ccs_analysis_output = 'No'
       }
     },
-    updateLoadingTarget(val) {
-      if (this.currentWell.use_adaptive_loading !== 'True') {
-        this.currentWell.loading_target_p1_plus_p2 = ''
-      }
-      this.loadingTargetToggle = val
-    },
     formatLoadingTargetValue(val) {
       if (val) {
         if (this.decimalPercentageRegex.test(val)) {
           return val
         } else {
-          this.loadingTargetValue = parseFloat(val / 100).toFixed(2)
           return isNaN(this.loadingTargetValue) ? 0 : this.loadingTargetValue
         }
       }
+    },
+    disableAdaptiveLoadingInput() {
+      this.disableAdaptiveLoading = true
+      this.currentWell.loading_target_p1_plus_p2 = ''
+      this.use_adaptive_loading = 'False'
+      this.loadingTargetText = 'Adaptive loading disabled - Add loading target to enable'
+    },
+    enableAdaptiveLoadingInput() {
+      this.disableAdaptiveLoading = false
+      this.use_adaptive_loading = 'True'
     },
     async showModalForPosition() {
       if (!this.well(this.position)) {
@@ -247,11 +269,6 @@ export default {
         }
       } else {
         this.currentWell = { ...this.well(this.position) }
-        this.currentWell.use_adaptive_loading = _.capitalize(
-          this.currentWell.loading_target_p1_plus_p2 !== '' &&
-            this.currentWell.loading_target_p1_plus_p2 !== null,
-        )
-        this.loadingTargetToggle = this.currentWell.use_adaptive_loading
         this.action = {
           id: 'updateBtn',
           variant: 'primary',
