@@ -300,24 +300,5 @@ describe('PacbioWellModal', () => {
         expect(modal.currentWell.ccs_analysis_output).toEqual('Yes')
       })
     })
-
-    describe('useAdaptiveLoading', () => {
-      it('sets useAdaptiveLoading to "False" when LoadingTarget has no value"', () => {
-        storeWell.loading_target_p1_plus_p2 = ''
-        storeWell.use_adaptive_loading = 'True'
-        wrapper.setData({ currentWell: storeWell })
-        modal.disableAdaptiveLoadingInput()
-
-        expect(modal.use_adaptive_loading).toEqual('False')
-      })
-
-      it('sets useAdaptiveLoading to "True" when LoadingTarget has a value', () => {
-        storeWell.loading_target_p1_plus_p2 = '0.75'
-        wrapper.setData({ currentWell: storeWell })
-        modal.enableAdaptiveLoadingInput()
-
-        expect(modal.use_adaptive_loading).toEqual('True')
-      })
-    })
   })
 })

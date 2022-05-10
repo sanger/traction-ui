@@ -79,21 +79,6 @@
         >
         </b-form-input>
       </b-form-group>
-
-      <b-form-group
-        id="useAdaptiveLoading-group"
-        label="Use Adaptive Loading"
-        label-for="useAdaptiveLoading"
-      >
-        <b-form-input
-          id="useAdaptiveLoading"
-          ref="useAdaptiveLoading"
-          v-model="use_adaptive_loading"
-          :disabled="disableAdaptiveLoading"
-        >
-        </b-form-input>
-      </b-form-group>
-
       <b-form-group
         id="loadingTarget-group"
         label="Loading Target (P1 + P2): (0 to 1) "
@@ -110,7 +95,6 @@
           :step="0.05"
           lazy-formatter
           :formatter="formatLoadingTargetValue"
-          @change="enableAdaptiveLoadingInput()"
         >
         </b-form-input>
       </b-form-group>
@@ -247,14 +231,9 @@ export default {
       }
     },
     disableAdaptiveLoadingInput() {
-      this.disableAdaptiveLoading = true
       this.currentWell.loading_target_p1_plus_p2 = ''
       this.use_adaptive_loading = 'False'
       this.loadingTargetText = 'Adaptive loading disabled - Add loading target to enable'
-    },
-    enableAdaptiveLoadingInput() {
-      this.disableAdaptiveLoading = false
-      this.use_adaptive_loading = 'True'
     },
     async showModalForPosition() {
       if (!this.well(this.position)) {
