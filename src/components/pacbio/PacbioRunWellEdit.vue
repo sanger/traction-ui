@@ -149,7 +149,6 @@
 
 <script>
 import { mapMutations, mapGetters, mapActions } from 'vuex'
-import _ from 'lodash'
 
 export default {
   name: 'WellModal',
@@ -200,14 +199,6 @@ export default {
   computed: {
     ...mapGetters('traction/pacbio/runs', ['currentRun', 'well']),
     ...mapGetters('traction/pacbio/pools', ['poolByBarcode']),
-    use_adaptive_loading: {
-      get() {
-        return _.capitalize(!!this.currentWell.loading_target_p1_plus_p2)
-      },
-      set(newVal) {
-        return newVal
-      },
-    },
   },
   methods: {
     addRow() {
