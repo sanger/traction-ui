@@ -1,11 +1,8 @@
 <template>
   <div>
-    <b-btn
-      id="printLabels"
-      v-b-modal.labelPrintingModal
-      variant="primary"
-      :disabled="disabled"
-    >Print Labels</b-btn>
+    <b-btn id="printLabels" v-b-modal.labelPrintingModal variant="primary" :disabled="disabled"
+      >Print Labels</b-btn
+    >
 
     <b-modal
       id="labelPrintingModal"
@@ -64,7 +61,7 @@ export default {
         }
         let printJobV2Response = await this.printJobV2(params)
         if (!printJobV2Response.success) {
-          throw { message: printJobV2Response.errors || "Unknown" }
+          throw { message: printJobV2Response.errors || 'Unknown' }
         }
 
         this.showAlert('Response: ' + printJobV2Response.data.message, 'success')

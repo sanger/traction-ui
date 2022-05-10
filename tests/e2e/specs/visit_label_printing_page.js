@@ -1,14 +1,8 @@
 // https://docs.cypress.io/api/introduction/api.html
 
 describe('Label Printing page', () => {
-  it('Visits the app url', () => {
+  beforeEach(() => {
     cy.visit('#/label-printing')
-    cy.contains('Barcode:')
-    cy.contains('Suffix:')
-    cy.contains('Number of labels:')
-    cy.contains('Choice of Printer:')
-    cy.contains('Reset')
-    cy.contains('Print Labels')
 
     cy.get('#printLabels').should('be.disabled')
 
@@ -17,6 +11,15 @@ describe('Label Printing page', () => {
     cy.get('#number_of_labels').type(3)
     cy.get('#printer_choice').select('stub')
     cy.get('#copies').type(2)
+  })
+
+  it('Shows the correct information', () => {
+    cy.contains('Barcode:')
+    cy.contains('Suffix:')
+    cy.contains('Number of labels:')
+    cy.contains('Choice of Printer:')
+    cy.contains('Reset')
+    cy.contains('Print Labels')
 
     cy.get('#printLabels').should('not.be.disabled')
     cy.get('#printLabels').click()
@@ -31,15 +34,51 @@ describe('Label Printing page', () => {
     cy.contains('Copies: 2')
 
     cy.contains('OK').should('not.be.disabled')
-    cy.contains('OK').click()
+  })
 
-    cy.intercept('POST', '/v2/print_jobs', {
+  it('PMB request is successful', () => {
+    cy.get('#printLabels').click()
+
+    cy.intercept('/v2/print_jobs', {
       statusCode: 200,
-      body: 'x',
-    }).as('someRoute')
-
-    cy.wait('@someRoute').then((v) => {
-      expect(v.response.body).to.eq('x')
+      body: {
+        message: 'Successful',
+      },
     })
+    cy.contains('OK').click()
+    cy.contains('Response: Successful')
+  })
+
+  it('PMB request is unsuccessful, failed response', () => {
+    cy.get('#printLabels').click()
+
+    cy.intercept('/v2/print_jobs', {
+      statusCode: 422,
+      body: {
+        errors: [
+          {
+            source: {
+              pointer: 'api/label',
+            },
+            detail: 'is invalid',
+          },
+        ],
+      },
+    })
+    cy.contains('OK').click()
+    cy.contains('Print request failed: api/label is invalid')
+  })
+
+  it('PMB request is unsuccessful, empty response', () => {
+    cy.get('#printLabels').click()
+
+    cy.intercept('/v2/print_jobs', {
+      statusCode: 422,
+      body: {
+        errors: [],
+      },
+    })
+    cy.contains('OK').click()
+    cy.contains('Print request failed: Unknown')
   })
 })
