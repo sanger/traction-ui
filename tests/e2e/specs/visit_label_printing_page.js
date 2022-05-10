@@ -31,5 +31,15 @@ describe('Label Printing page', () => {
     cy.contains('Copies: 2')
 
     cy.contains('OK').should('not.be.disabled')
+    cy.contains('OK').click()
+
+    cy.intercept('POST', '/v2/print_jobs', {
+      statusCode: 200,
+      body: 'x',
+    }).as('someRoute')
+
+    cy.wait('@someRoute').then((v) => {
+      expect(v.response.body).to.eq('x')
+    })
   })
 })

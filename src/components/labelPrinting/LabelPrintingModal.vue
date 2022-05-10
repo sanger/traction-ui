@@ -1,8 +1,11 @@
 <template>
   <div>
-    <b-btn id="printLabels" v-b-modal.labelPrintingModal variant="primary" :disabled="disabled"
-      >Print Labels</b-btn
-    >
+    <b-btn
+      id="printLabels"
+      v-b-modal.labelPrintingModal
+      variant="primary"
+      :disabled="disabled"
+    >Print Labels</b-btn>
 
     <b-modal
       id="labelPrintingModal"
@@ -60,12 +63,11 @@ export default {
           copies: this.copies,
         }
         let printJobV2Response = await this.printJobV2(params)
-
         if (!printJobV2Response.success) {
-          throw { message: printJobV2Response.errors }
+          throw { message: printJobV2Response.errors || "Unknown" }
         }
 
-        this.showAlert('Successful print request: ' + printJobV2Response.data.message, 'success')
+        this.showAlert('Response: ' + printJobV2Response.data.message, 'success')
       } catch (error) {
         this.showAlert('Print request failed: ' + error.message, 'danger')
       }

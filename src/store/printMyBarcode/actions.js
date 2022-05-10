@@ -18,7 +18,7 @@ const printJobV2 = async ({ getters }, params) => {
   // response = { success: false, data: { errors: [] }, errors: '' }
 
   if (!response.success) {
-    if (response.data.errors.length != 0) {
+    if (response.data.errors && response.data.errors.length != 0) {
       let errors = response.data.errors.map((e) => e.source.pointer + ' ' + e.detail).join(', ')
       return {
         success: false,
