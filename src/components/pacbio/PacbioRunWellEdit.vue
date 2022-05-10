@@ -218,10 +218,7 @@ export default {
     ...mapGetters('traction/pacbio/pools', ['poolByBarcode']),
     use_adaptive_loading: {
       get() {
-        return _.capitalize(
-          this.currentWell.loading_target_p1_plus_p2 !== '' &&
-            this.currentWell.loading_target_p1_plus_p2 !== null,
-        )
+        return _.capitalize(!!this.currentWell.loading_target_p1_plus_p2)
       },
       set(newVal) {
         return newVal

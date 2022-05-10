@@ -26,8 +26,8 @@ const buildWell = ({ state }, position) => {
   let generate_hifi = generateHiFiDefault(state.currentRun.system_name)
   let binding_kit_box_barcode = state.currentRun.default_binding_kit_box_barcode || ''
   let [row, column] = splitPosition(position)
-  let use_adaptive_loading = state.currentRun.use_adaptive_loading || use_adaptive_loading_default
-  let loading_target_p1_plus_p2 =
+  const use_adaptive_loading = state.currentRun.use_adaptive_loading || use_adaptive_loading_default
+  const loading_target_p1_plus_p2 =
     state.currentRun.loading_target_p1_plus_p2 || loading_target_p1_plus_p2_default
   return {
     row,
