@@ -176,7 +176,6 @@ describe('#buildWell', () => {
       pools: [],
       pre_extension_time: 2,
       loading_target_p1_plus_p2: 0.85,
-      use_adaptive_loading: 'True',
     }
 
     let wellObject = await Actions.buildWell({ state }, position)
@@ -198,7 +197,6 @@ describe('#buildWell', () => {
       pools: [],
       pre_extension_time: 2,
       loading_target_p1_plus_p2: 0.85,
-      use_adaptive_loading: 'True',
     }
 
     delete state.currentRun.default_binding_kit_box_barcode
