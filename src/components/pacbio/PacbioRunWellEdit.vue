@@ -79,7 +79,6 @@
         >
         </b-form-input>
       </b-form-group>
-
       <b-form-group
         id="loadingTarget-group"
         label="Loading Target (P1 + P2): (0 to 1) "
@@ -89,30 +88,27 @@
           id="loadingTarget"
           ref="loadingTarget"
           v-model="currentWell.loading_target_p1_plus_p2"
-          placeholder="Loading Target (P1 + P2)"
+          placeholder="Adaptive loading disabled - Add loading target to enable"
           type="number"
+          :min="0"
+          :max="1"
           :step="0.05"
+          lazy-formatter
           :formatter="formatLoadingTargetValue"
-          @input="updateAdaptiveLoading"
-        >
-        </b-form-input>
-      </b-form-group>
-
-      <b-form-group
-        id="useAdaptiveLoading-group"
-        label="Use Adaptive Loading"
-        label-for="useAdaptiveLoading"
-      >
-        <b-form-input
-          id="useAdaptiveLoading"
-          ref="useAdaptiveLoading"
-          v-model="currentWell.use_adaptive_loading"
-          placeholder="False"
-          readonly
         >
         </b-form-input>
       </b-form-group>
     </b-form>
+
+    <template>
+      <b-button
+        id="disableAdaptiveLoadingBtn"
+        variant="primary"
+        @click="disableAdaptiveLoadingInput()"
+      >
+        Disable Adaptive Loading
+      </b-button>
+    </template>
 
     <b-table id="wellPools" stacked :items="currentWell.pools" :fields="wellPoolsFields">
       <template v-slot:table-caption>Pools</template>
@@ -153,7 +149,6 @@
 
 <script>
 import { mapMutations, mapGetters, mapActions } from 'vuex'
-import _ from 'lodash'
 
 export default {
   name: 'WellModal',
@@ -196,7 +191,6 @@ export default {
       },
       ccsAnalysisOutputOptions: ['Yes', 'No'],
       decimalPercentageRegex: /^(?:1(?:\.0{0,2})?|0?(?:\.\d{0,2})?)$/,
-      loadingTargetValue: 0,
     }
   },
   computed: {
@@ -215,22 +209,17 @@ export default {
         this.currentWell.ccs_analysis_output = 'No'
       }
     },
-    updateAdaptiveLoading() {
-      if (this.currentWell.loading_target_p1_plus_p2) {
-        this.currentWell.use_adaptive_loading = 'True'
-      } else {
-        this.currentWell.use_adaptive_loading = 'False'
-      }
-    },
     formatLoadingTargetValue(val) {
       if (val) {
         if (this.decimalPercentageRegex.test(val)) {
           return val
         } else {
-          this.loadingTargetValue = parseFloat(val / 100).toFixed(2)
           return isNaN(this.loadingTargetValue) ? 0 : this.loadingTargetValue
         }
       }
+    },
+    disableAdaptiveLoadingInput() {
+      this.currentWell.loading_target_p1_plus_p2 = ''
     },
     async showModalForPosition() {
       if (!this.well(this.position)) {
@@ -242,9 +231,6 @@ export default {
         }
       } else {
         this.currentWell = { ...this.well(this.position) }
-        this.currentWell.use_adaptive_loading = _.capitalize(
-          this.currentWell.loading_target_p1_plus_p2 !== '',
-        )
         this.action = {
           id: 'updateBtn',
           variant: 'primary',
