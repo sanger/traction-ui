@@ -2,18 +2,18 @@ import * as Actions from '@/store/printMyBarcode/actions'
 import { newResponse } from '@/api/ResponseHelper'
 
 describe('actions', () => {
-  let printerName, barcodesList, copies, squixLabelTemplateName, createPrintJobJsonV2
+  let printerName, barcodesList, copies, tubeLabelTemplateName, createPrintJobJsonV2
 
   beforeEach(() => {
     printerName = 'aPrinterName'
     barcodesList = ['aBarcode-A1', 'aBarcode-A2']
     copies = '2'
-    squixLabelTemplateName = 'asquixLabelTemplateName'
+    tubeLabelTemplateName = 'traction_tube_label_template_v2'
 
     createPrintJobJsonV2 = {
       print_job: {
         printer_name: printerName,
-        label_template_name: 'asquixLabelTemplateName',
+        label_template_name: 'traction_tube_label_template_v2',
         labels: [
           {
             first_line: 'DATE',
@@ -43,8 +43,7 @@ describe('actions', () => {
 
       getters = {
         printJobV2Request: { create: create },
-        squixLabelTemplateName: squixLabelTemplateName,
-        toshibaLabelTemplateName: 'atoshibaLabelTemplateName',
+        tubeLabelTemplateName: tubeLabelTemplateName,
       }
 
       params = {
@@ -115,7 +114,7 @@ describe('actions', () => {
         printerName,
         barcodesList,
         copies,
-        squixLabelTemplateName,
+        tubeLabelTemplateName,
       )
       expect(result).toEqual(createPrintJobJsonV2)
     })

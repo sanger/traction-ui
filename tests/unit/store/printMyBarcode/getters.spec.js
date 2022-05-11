@@ -23,17 +23,10 @@ describe('getters', () => {
     expect(getters.printJobV2Request({}, {}, rootState)).toBe('aPrintJobsRequestURL')
   })
 
-  it('"squixLabelTemplateName" returns "state.squixLabelTemplateName"', () => {
+  it('"tubeLabelTemplateName" returns "state.tubeLabelTemplateName"', () => {
     const state = {
-      squixLabelTemplateName: 'aSquixLabelTemplateName',
+      tubeLabelTemplateName: 'atubeLabelTemplateName',
     }
-    expect(getters.squixLabelTemplateName(state)).toBe(state.squixLabelTemplateName)
-  })
-
-  it('"toshibaLabelTemplateName" returns "state.toshibaLabelTemplateName"', () => {
-    const state = {
-      toshibaLabelTemplateName: 'atoshibaLabelTemplateName',
-    }
-    expect(getters.toshibaLabelTemplateName(state)).toBe(state.toshibaLabelTemplateName)
+    expect(getters.tubeLabelTemplateName(state)).toBe(state.tubeLabelTemplateName)
   })
 })

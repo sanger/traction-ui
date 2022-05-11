@@ -3,7 +3,7 @@ import { handleResponse } from '@/api/ResponseHelper'
 const printJobV2 = async ({ getters }, params) => {
   const request = getters.printJobV2Request
 
-  const labelTemplateName = getLabelTemplateName(params.printer, getters)
+  const labelTemplateName = getLabelTemplateName(getters)
 
   const payload = createPrintJobJsonV2(
     params.printer.text,
@@ -15,7 +15,6 @@ const printJobV2 = async ({ getters }, params) => {
   const promise = request.create({ data: payload })
 
   const response = await handleResponse(promise)
-  // response = { success: false, data: { errors: [] }, errors: '' }
 
   if (!response.success) {
     if (response.data.errors && response.data.errors.length != 0) {
@@ -63,12 +62,8 @@ const createLabelsV2 = (barcodesList) => {
   })
 }
 
-const getLabelTemplateName = (printer, getters) => {
-  if (printer.type === 'squix') {
-    return getters.squixLabelTemplateName
-  } else if (printer.type === 'toshiba') {
-    return getters.toshibaLabelTemplateName
-  }
+const getLabelTemplateName = (getters) => {
+  return getters.tubeLabelTemplateName
 }
 
 const actions = {
