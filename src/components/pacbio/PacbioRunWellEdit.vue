@@ -88,7 +88,7 @@
           id="loadingTarget"
           ref="loadingTarget"
           v-model="currentWell.loading_target_p1_plus_p2"
-          :placeholder="loadingTargetText"
+          placeholder="Adaptive loading disabled - Add loading target to enable"
           type="number"
           :min="0"
           :max="1"
@@ -191,9 +191,6 @@ export default {
       },
       ccsAnalysisOutputOptions: ['Yes', 'No'],
       decimalPercentageRegex: /^(?:1(?:\.0{0,2})?|0?(?:\.\d{0,2})?)$/,
-      loadingTargetValue: 0,
-      disableAdaptiveLoading: false,
-      loadingTargetText: 'Loading Target (P1 + P2)',
     }
   },
   computed: {
@@ -223,8 +220,6 @@ export default {
     },
     disableAdaptiveLoadingInput() {
       this.currentWell.loading_target_p1_plus_p2 = ''
-      this.use_adaptive_loading = 'False'
-      this.loadingTargetText = 'Adaptive loading disabled - Add loading target to enable'
     },
     async showModalForPosition() {
       if (!this.well(this.position)) {
