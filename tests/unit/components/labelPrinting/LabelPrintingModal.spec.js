@@ -67,7 +67,7 @@ describe('Modal.vue', () => {
         copies: wrapper.props().copies,
       }
       expect(modal.printJobV2).toBeCalledWith(params)
-      expect(modal.showAlert).toBeCalledWith('Successful print request: a msg', 'success')
+      expect(modal.showAlert).toBeCalledWith('Response: a msg', 'success')
     })
 
     it('calls printJobV2 successfully', async () => {
