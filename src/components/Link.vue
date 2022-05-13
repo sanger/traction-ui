@@ -1,6 +1,6 @@
 <template>
-  <div :class="getClass()" @click="$router.push(`${link}`).catch((error) => routerError(error))">
-    <router-link :to="`${link}`">
+  <div @click="$router.push(`${link}`).catch((error) => routerError(error))">
+    <router-link :to="`${link}`" :class="getClass()">
       {{ name }}
     </router-link>
   </div>
@@ -31,9 +31,9 @@ export default {
   methods: {
     getClass() {
       return {
-        'flex w-32 h-24 whitespace-normal justify-center items-center rounded-md border border-transparent text-base font-medium focus:outline-none focus:ring-2 focus:ring-offset-2 sm:mt-0 text-white bg-sp hover:bg-sp-600 shadow-sm focus:border-sp-700 focus:shadow-outline-sp active:bg-sp-700':
+        'flex w-32 h-20 whitespace-normal justify-center items-center rounded-md border border-transparent text-sm font-medium focus:outline-none focus:ring-2 focus:ring-offset-2 sm:mt-0 text-black bg-gray-300 hover:bg-gray-100 shadow-sm focus:border-gray-100 focus:shadow-outline-gray active:bg-gray-100':
           this.viewType == ViewType.Button,
-        'px-3 py-2 rounded-md text-sm font-medium focus:outline-none focus:text-white focus:bg-gray-700 text-gray-100 hover:text-white hover:bg-gray-700':
+        'px-3 py-2 rounded-md text-base font-medium focus:outline-none focus:text-white focus:bg-gray-700 text-gray-400 hover:text-white hover:bg-gray-700':
           this.viewType == ViewType.MenuItem,
       }
     },

@@ -6,7 +6,7 @@
         <div class="flex justify-between items-center py-4 md:justify-start md:space-x-10">
           <div class="flex flex-row gap-x-2">
             <img class="w-8 h-8" src="./images/wsi-icon-16.png" alt="Traction logo" />
-            <div class="text-sdb-100 text-xl">Traction</div>
+            <div class="text-white text-2xl">Traction</div>
           </div>
           <div class="flex justify-center">
             <Link name="Home" link="/dashboard" view-type="2" />

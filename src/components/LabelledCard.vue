@@ -4,11 +4,9 @@
     :data-pipeline="title"
   >
     <div class="text-center text-2xl" data-attribute="title">{{ title }}</div>
-    <div class="px-4 sm:px-2 lg:px-4">
-      <div class="text-center text-xs italic" data-attribute="description">{{ description }}</div>
-      <div class="py-2">
-        <h1 class="border-b-2 border-sp" />
-      </div>
+    <div class="text-center text-xs italic" data-attribute="description">{{ description }}</div>
+    <div class="py-2">
+      <h1 class="border-b-2 border-sp" />
     </div>
     <div class="flex flex-row flex-wrap gap-y-8 gap-x-3 mt-2 px-3 py-4">
       <slot />
