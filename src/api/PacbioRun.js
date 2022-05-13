@@ -195,7 +195,7 @@ const updateWellPayload = (well) => {
         generate_hifi: well.generate_hifi,
         ccs_analysis_output: well.ccs_analysis_output,
         pre_extension_time: well.pre_extension_time,
-        binding_kit_box_barcode: well.binding_kit_box_barcode
+        binding_kit_box_barcode: well.binding_kit_box_barcode,
       },
       relationships: {
         pools: {
