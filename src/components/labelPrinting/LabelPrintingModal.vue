@@ -1,9 +1,5 @@
 <template>
   <div>
-    <b-btn id="printLabels" v-b-modal.labelPrintingModal variant="primary" :disabled="disabled"
-      >Print Labels</b-btn
-    >
-
     <b-modal
       id="labelPrintingModal"
       ref="labelPrintingModal"
@@ -13,12 +9,10 @@
       @ok="sendPrintRequest"
     >
       <h3>List of barcodes to be printed:</h3>
-      <hr />
       <ul id="list-barcodes-to-print">
         <li v-for="(item, index) in barcodesList" :key="index + 1">{{ item }}</li>
       </ul>
-      <hr />
-      <h3 id="title">Printer: {{ printer.text }}</h3>
+      <h3 id="title">Printer: {{ printerName }}</h3>
       <h3 id="copies">Copies: {{ copies }}</h3>
     </b-modal>
   </div>
@@ -38,10 +32,10 @@ export default {
         return []
       },
     },
-    printer: {
-      type: Object,
+    printerName: {
+      type: String,
       default() {
-        return {}
+        return ''
       },
     },
     copies: {
@@ -55,7 +49,7 @@ export default {
     async sendPrintRequest() {
       try {
         const params = {
-          printer: this.printer,
+          printerName: this.printerName,
           barcodesList: this.barcodesList,
           copies: this.copies,
         }

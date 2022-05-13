@@ -1,32 +1,22 @@
 [
   {
     "tube": "Lysis tubes",
-    "potential_label_name": "Lysed",
-    "shorter_name": "Lyse",
     "one_character_name": "L"
   },
   {
     "tube": "Post extraction normalised tube for shear",
-    "potential_label_name": "Norm",
-    "shorter_name": "Norm",
     "one_character_name": "N"
   },
   {
     "tube": "Megaruptor tube",
-    "potential_label_name": "megaR",
-    "shorter_name": "megR",
     "one_character_name": "M"
   },
   {
     "tube": "Post megaruptor tube",
-    "potential_label_name": "Sheared",
-    "shorter_name": "Frag",
     "one_character_name": "F"
   },
   {
     "tube": "Post SPRI tube",
-    "potential_label_name": "SPRIed",
-    "shorter_name": "SPRI",
     "one_character_name": "S"
   }
 ]

@@ -3,14 +3,9 @@ import { handleResponse } from '@/api/ResponseHelper'
 const printJobV2 = async ({ getters }, params) => {
   const request = getters.printJobV2Request
 
-  const labelTemplateName = getLabelTemplateName(getters)
+  const labelTemplateName = getters.tubeLabelTemplateName
 
-  const payload = createPrintJobJsonV2(
-    params.printer.text,
-    params.barcodesList,
-    params.copies,
-    labelTemplateName,
-  )
+  const payload = createPrintJobJsonV2(params, labelTemplateName)
 
   const promise = request.create({ data: payload })
 
@@ -18,7 +13,7 @@ const printJobV2 = async ({ getters }, params) => {
 
   if (!response.success) {
     if (response.data.errors && response.data.errors.length != 0) {
-      let errors = response.data.errors.map((e) => e.source.pointer + ' ' + e.detail).join(', ')
+      const errors = response.data.errors.map((e) => e.source.pointer + ' ' + e.detail).join(', ')
       return {
         success: false,
         errors: errors,
@@ -29,15 +24,15 @@ const printJobV2 = async ({ getters }, params) => {
   return response
 }
 
-const createPrintJobJsonV2 = (printerName, barcodesList, copies, labelTemplateName) => {
-  const labels = createLabelsV2(barcodesList)
+const createPrintJobJsonV2 = (params, labelTemplateName) => {
+  const labels = createLabelsV2(params.barcodesList)
 
   return {
     print_job: {
-      printer_name: printerName,
+      printer_name: params.printerName,
       label_template_name: labelTemplateName,
       labels: labels,
-      copies: copies,
+      copies: params.copies,
     },
   }
 }
@@ -60,10 +55,6 @@ const createLabelsV2 = (barcodesList) => {
       label_name: 'main_label',
     }
   })
-}
-
-const getLabelTemplateName = (getters) => {
-  return getters.tubeLabelTemplateName
 }
 
 const actions = {
