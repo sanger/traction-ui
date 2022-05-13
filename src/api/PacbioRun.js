@@ -91,7 +91,7 @@ const update = async (run, request) => {
 }
 
 const updateResource = async (payload, request) => {
-  const response = await handlePromise(request.update({ data: payload }))
+  const response = await handlePromise(request.update(payload))
 
   if (response.successful) {
     return response
