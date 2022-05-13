@@ -188,7 +188,15 @@ const updateWellPayload = (well) => {
       id: well.id,
       type: 'wells',
       attributes: {
-        ...well,
+        row: well.row,
+        column: well.column,
+        movie_time: well.movie_time,
+        on_plate_loading_concentration: well.on_plate_loading_concentration,
+        generate_hifi: well.generate_hifi,
+        ccs_analysis_output: well.ccs_analysis_output,
+        pre_extension_time: well.pre_extension_time,
+        binding_kit_box_barcode: well.binding_kit_box_barcode,
+        loading_target_p1_plus_p2: well.loading_target_p1_plus_p2,
       },
       relationships: {
         pools: {
