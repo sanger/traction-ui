@@ -150,7 +150,7 @@ export default {
     suffixedBarcodes() {
       var listSuffixedBarcodes = []
 
-      if (this.form.barcode && this.form.selectedSuffix && this.form.selectedNumberOfLabels) {
+      if (this.form.barcode && this.form.selectedSuffix && this.form.selectedNumberOfLabels <= 9) {
         for (let i = 0; i < this.form.selectedNumberOfLabels; i++) {
           listSuffixedBarcodes.push(this.form.barcode.concat('-', this.form.selectedSuffix, i + 1))
         }

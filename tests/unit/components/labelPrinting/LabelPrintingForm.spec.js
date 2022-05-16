@@ -87,13 +87,10 @@ describe('LabelPrintingForm.vue', () => {
             barcode: 'aBarcode',
             selectedSuffix: 'L',
             selectedNumberOfLabels: 2,
-            selectedPrinterName: 'stub',
-            copies: '1',
           },
         })
         expect(labelPrintingForm.suffixedBarcodes()).toEqual(['aBarcode-L1', 'aBarcode-L2'])
       })
-
       it('returns an empty list when barcode is not present', () => {
         wrapper.setData({
           form: { selectedSuffix: 'L', selectedNumberOfLabels: 2 },
@@ -109,6 +106,16 @@ describe('LabelPrintingForm.vue', () => {
       it('returns an empty list when selectedSuffix is not present', () => {
         wrapper.setData({
           form: { barcode: 'aBarcode', selectedNumberOfLabels: 2 },
+        })
+        expect(labelPrintingForm.suffixedBarcodes()).toEqual([])
+      })
+      it('created the list of selectedNumberOfLabels is greater than 9', () => {
+        wrapper.setData({
+          form: {
+            barcode: 'aBarcode',
+            selectedSuffix: 'L',
+            selectedNumberOfLabels: 10,
+          },
         })
         expect(labelPrintingForm.suffixedBarcodes()).toEqual([])
       })
