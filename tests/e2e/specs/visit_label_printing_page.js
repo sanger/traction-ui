@@ -4,10 +4,8 @@ describe('Label Printing page', () => {
   beforeEach(() => {
     cy.visit('#/label-printing')
 
-    cy.get('#printLabels').should('be.disabled')
-
     cy.get('#barcode_input').type('aBarcode')
-    cy.get('#suffix_selection').select('L (Lysed)')
+    cy.get('#suffix_selection').select('L')
     cy.get('#number_of_labels').type(3)
     cy.get('#printer_choice').select('stub')
     cy.get('#copies').type(2)
@@ -21,8 +19,8 @@ describe('Label Printing page', () => {
     cy.contains('Reset')
     cy.contains('Print Labels')
 
-    cy.get('#printLabels').should('not.be.disabled')
-    cy.get('#printLabels').click()
+    cy.get('#submitButton').should('not.be.disabled')
+    cy.get('#submitButton').click()
 
     cy.contains('Print Labels')
     cy.contains('List of barcodes to be printed:')
@@ -37,7 +35,7 @@ describe('Label Printing page', () => {
   })
 
   it('PMB request is successful', () => {
-    cy.get('#printLabels').click()
+    cy.get('#submitButton').click()
 
     cy.intercept('/v2/print_jobs', {
       statusCode: 200,
@@ -50,7 +48,7 @@ describe('Label Printing page', () => {
   })
 
   it('PMB request is unsuccessful, failed response', () => {
-    cy.get('#printLabels').click()
+    cy.get('#submitButton').click()
 
     cy.intercept('/v2/print_jobs', {
       statusCode: 422,
@@ -70,7 +68,7 @@ describe('Label Printing page', () => {
   })
 
   it('PMB request is unsuccessful, empty response', () => {
-    cy.get('#printLabels').click()
+    cy.get('#submitButton').click()
 
     cy.intercept('/v2/print_jobs', {
       statusCode: 422,
