@@ -44,7 +44,7 @@ describe('Label Printing page', () => {
       },
     })
     cy.contains('OK').click()
-    cy.contains('Response: Successful')
+    cy.contains('Successful')
   })
 
   it('PMB request is unsuccessful, failed response', () => {
@@ -64,7 +64,7 @@ describe('Label Printing page', () => {
       },
     })
     cy.contains('OK').click()
-    cy.contains('Print request failed: api/label is invalid')
+    cy.contains('api/label is invalid')
   })
 
   it('PMB request is unsuccessful, empty response', () => {
@@ -77,6 +77,6 @@ describe('Label Printing page', () => {
       },
     })
     cy.contains('OK').click()
-    cy.contains('Print request failed: Unknown')
+    cy.contains('Unknown')
   })
 })

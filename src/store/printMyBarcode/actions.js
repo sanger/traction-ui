@@ -16,12 +16,16 @@ const printJobV2 = async ({ getters }, params) => {
   const response = await handleResponse(promise)
 
   if (!response.success) {
+    let errors = 'Unknown'
     if (response.data.errors && response.data.errors.length != 0) {
-      const errors = response.data.errors.map((e) => e.source.pointer + ' ' + e.detail).join(', ')
-      return {
-        success: false,
-        errors: errors,
-      }
+      errors =
+        response.data.errors.map((e) => e.source.pointer + ' ' + e.detail).join(', ') || 'Unknown'
+    }
+    return {
+      success: false,
+      data: {
+        message: errors,
+      },
     }
   }
 
