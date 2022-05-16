@@ -1,6 +1,5 @@
 import * as Actions from '@/store/printMyBarcode/actions'
 import { newResponse } from '@/api/ResponseHelper'
-import { getDate } from 'date-fns'
 
 const formatDate = () => {
   const [, mmm, dd, yyyy] = new Date().toDateString().split(' ')
