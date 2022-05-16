@@ -137,6 +137,7 @@ export default {
       this.printerOptions = printerOptions
     },
     propsToPass() {
+      // Assume all data is valid by this point
       const props = {}
 
       props.barcodesList = this.suffixedBarcodes()

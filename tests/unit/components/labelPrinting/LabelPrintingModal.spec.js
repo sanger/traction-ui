@@ -10,7 +10,7 @@ describe('Modal.vue', () => {
       store,
       propsData: {
         barcodesList: ['aBarcode-L1', 'aBarcode-L2'],
-        printer: { value: 1, text: 'stub', type: 'squix' },
+        printerName: 'stub',
         copies: '3',
         disabled: true,
         isStatic: true,
@@ -25,7 +25,7 @@ describe('Modal.vue', () => {
 
   it('will have an button component', () => {
     expect(wrapper.find('.btn').element).toBeTruthy()
-    expect(wrapper.find('.btn').text()).toEqual('Print Labels')
+    expect(wrapper.find('.btn').text()).toEqual('Cancel')
   })
 
   describe('modal', () => {
@@ -41,7 +41,7 @@ describe('Modal.vue', () => {
 
     it('displays the printer name', () => {
       expect(wrapper.find('#title').element).toBeTruthy()
-      expect(wrapper.find('#title').text()).toEqual('Printer: ' + wrapper.props().printer.text)
+      expect(wrapper.find('#title').text()).toEqual('Printer: ' + wrapper.props().printerName)
     })
 
     it('displays the number of copies', () => {
@@ -62,7 +62,7 @@ describe('Modal.vue', () => {
 
       await modal.sendPrintRequest()
       const params = {
-        printer: wrapper.props().printer,
+        printerName: wrapper.props().printerName,
         barcodesList: wrapper.props().barcodesList,
         copies: wrapper.props().copies,
       }
@@ -76,7 +76,7 @@ describe('Modal.vue', () => {
 
       await modal.sendPrintRequest()
       const params = {
-        printer: wrapper.props().printer,
+        printerName: wrapper.props().printerName,
         barcodesList: wrapper.props().barcodesList,
         copies: wrapper.props().copies,
       }

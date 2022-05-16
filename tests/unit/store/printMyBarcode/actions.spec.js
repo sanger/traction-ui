@@ -1,5 +1,11 @@
 import * as Actions from '@/store/printMyBarcode/actions'
 import { newResponse } from '@/api/ResponseHelper'
+import { getDate } from 'date-fns'
+
+const formatDate = () => {
+  const [, mmm, dd, yyyy] = new Date().toDateString().split(' ')
+  return `${dd}-${mmm}-${yyyy.slice(2)}`
+}
 
 describe('actions', () => {
   let printerName, barcodesList, copies, tubeLabelTemplateName, createPrintJobJsonV2
@@ -16,16 +22,16 @@ describe('actions', () => {
         label_template_name: 'traction_tube_label_template_v2',
         labels: [
           {
-            first_line: 'DATE',
+            first_line: formatDate(),
             second_line: barcodesList[0],
-            third_line: 'third line',
+            third_line: '',
             barcode: barcodesList[0],
             label_name: 'main_label',
           },
           {
-            first_line: 'DATE',
+            first_line: formatDate(),
             second_line: barcodesList[1],
-            third_line: 'third line',
+            third_line: '',
             barcode: barcodesList[1],
             label_name: 'main_label',
           },
@@ -47,10 +53,7 @@ describe('actions', () => {
       }
 
       params = {
-        printer: {
-          text: printerName,
-          type: 'squix',
-        },
+        printerName: printerName,
         barcodesList: barcodesList,
         copies: copies,
       }
@@ -110,12 +113,13 @@ describe('actions', () => {
 
   describe('#createPrintJobJsonV2', () => {
     it('returns the correct json', () => {
-      let result = Actions.createPrintJobJsonV2(
-        printerName,
-        barcodesList,
-        copies,
-        tubeLabelTemplateName,
-      )
+      let params = {
+        printerName: printerName,
+        barcodesList: barcodesList,
+        copies: copies,
+      }
+
+      let result = Actions.createPrintJobJsonV2(params, tubeLabelTemplateName)
       expect(result).toEqual(createPrintJobJsonV2)
     })
   })
