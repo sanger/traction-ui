@@ -67,11 +67,11 @@ describe('Modal.vue', () => {
         copies: wrapper.props().copies,
       }
       expect(modal.printJobV2).toBeCalledWith(params)
-      expect(modal.showAlert).toBeCalledWith('Response: a msg', 'success')
+      expect(modal.showAlert).toBeCalledWith('a msg', 'success')
     })
 
-    it('calls printJobV2 successfully', async () => {
-      const response = { success: false, errors: 'an error msg' }
+    it('calls printJobV2 unsuccessfully', async () => {
+      const response = { success: false, data: { message: 'an error msg' } }
       modal.printJobV2.mockImplementation(() => response)
 
       await modal.sendPrintRequest()
@@ -81,7 +81,7 @@ describe('Modal.vue', () => {
         copies: wrapper.props().copies,
       }
       expect(modal.printJobV2).toBeCalledWith(params)
-      expect(modal.showAlert).toBeCalledWith('Print request failed: an error msg', 'danger')
+      expect(modal.showAlert).toBeCalledWith('an error msg', 'danger')
     })
   })
 })

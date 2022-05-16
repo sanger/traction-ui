@@ -82,7 +82,9 @@ describe('actions', () => {
 
       const expectedResponse = {
         success: false,
-        errors: 'api/labels failed',
+        data: {
+          message: 'api/labels failed',
+        },
       }
 
       let response = await Actions.printJobV2({ getters }, params)
@@ -99,9 +101,8 @@ describe('actions', () => {
 
       const expectedResponse = {
         success: false,
-        errors: '',
         data: {
-          errors: [],
+          message: 'Unknown',
         },
       }
 

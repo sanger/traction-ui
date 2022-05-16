@@ -47,21 +47,16 @@ export default {
   },
   methods: {
     async sendPrintRequest() {
-      try {
-        const params = {
-          printerName: this.printerName,
-          barcodesList: this.barcodesList,
-          copies: this.copies,
-        }
-        let printJobV2Response = await this.printJobV2(params)
-        if (!printJobV2Response.success) {
-          throw { message: printJobV2Response.errors || 'Unknown' }
-        }
-
-        this.showAlert('Response: ' + printJobV2Response.data.message, 'success')
-      } catch (error) {
-        this.showAlert('Print request failed: ' + error.message, 'danger')
+      const params = {
+        printerName: this.printerName,
+        barcodesList: this.barcodesList,
+        copies: this.copies,
       }
+      let printJobV2Response = await this.printJobV2(params)
+      this.showAlert(
+        printJobV2Response.data.message,
+        printJobV2Response.success ? 'success' : 'danger',
+      )
     },
     ...mapActions('printMyBarcode', ['printJobV2']),
   },
