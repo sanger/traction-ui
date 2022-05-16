@@ -80,7 +80,7 @@ describe('LabelPrintingForm.vue', () => {
       expect(labelPrintingForm.printerOptions.length).toEqual(store.getters.printers.length)
     })
 
-    describe('suffixedBarcodes', () => {
+    describe('suffixedBarcodes', (k) => {
       it('created the list of suffixed barcodes when all form data is present', () => {
         wrapper.setData({
           form: {

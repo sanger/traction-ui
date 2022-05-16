@@ -182,7 +182,7 @@ export default {
         barcodesList: this.suffixedBarcodes(),
         copies: this.form.copies,
       }
-      let printJobV2Response = await this.printJobV2(params)
+      const printJobV2Response = await this.printJobV2(params)
       this.showAlert(
         printJobV2Response.data.message,
         printJobV2Response.success ? 'success' : 'danger',

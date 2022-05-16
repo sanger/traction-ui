@@ -65,14 +65,14 @@ describe('actions', () => {
         success: true,
       })
 
-      let response = await Actions.printJobV2({ getters }, params)
+      const response = await Actions.printJobV2({ getters }, params)
 
       expect(create).toHaveBeenCalledWith({ data: createPrintJobJsonV2 })
       expect(response).toEqual(expectedResponse)
     })
 
     it('unsuccessfully failed', async () => {
-      let failedResponse = {
+      const failedResponse = {
         success: false,
         data: {
           errors: [{ source: { pointer: 'api/labels' }, detail: 'failed' }],
@@ -87,17 +87,17 @@ describe('actions', () => {
         },
       }
 
-      let response = await Actions.printJobV2({ getters }, params)
+      const response = await Actions.printJobV2({ getters }, params)
 
       expect(create).toHaveBeenCalledWith({ data: createPrintJobJsonV2 })
       expect(response).toEqual(expectedResponse)
     })
 
     it('unsuccessfully empty data', async () => {
-      let emptyResponse = { success: false, data: { errors: [] } }
+      const emptyResponse = { success: false, data: { errors: [] } }
 
       create.mockReturnValue(emptyResponse)
-      let response = await Actions.printJobV2({ getters }, params)
+      const response = await Actions.printJobV2({ getters }, params)
 
       const expectedResponse = {
         success: false,
@@ -113,13 +113,13 @@ describe('actions', () => {
 
   describe('#createPrintJobJsonV2', () => {
     it('returns the correct json', () => {
-      let params = {
+      const params = {
         printerName: printerName,
         barcodesList: barcodesList,
         copies: copies,
       }
 
-      let result = Actions.createPrintJobJsonV2(params, tubeLabelTemplateName)
+      const result = Actions.createPrintJobJsonV2(params, tubeLabelTemplateName)
       expect(result).toEqual(createPrintJobJsonV2)
     })
   })
