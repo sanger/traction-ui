@@ -98,12 +98,12 @@
 import LabelPrintingModal from '@/components/labelPrinting/LabelPrintingModal'
 import SuffixList from '@/config/SuffixList'
 
-const defaultForm = () =>({
+const defaultForm = () => ({
   barcode: null,
   selectedSuffix: null,
   selectedNumberOfLabels: null,
   selectedPrinterName: null,
-  copies: null
+  copies: null,
 })
 
 export default {
@@ -126,7 +126,7 @@ export default {
   methods: {
     setSuffixOptions() {
       let suffixOptions = SuffixList.map((obj) => ({
-        text: obj.one_character_name
+        text: obj.one_character_name,
       }))
       this.suffixOptions = suffixOptions
     },

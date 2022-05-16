@@ -29,7 +29,7 @@ describe('Modal.vue', () => {
   })
 
   describe('modal', () => {
-    it('displays the barcodes to be printed name', () => {
+    it('displays the barcodes to be printed', () => {
       expect(wrapper.find('#list-barcodes-to-print').element).toBeTruthy()
       expect(wrapper.find('#list-barcodes-to-print').text()).toMatch(
         wrapper.props().barcodesList[0],
