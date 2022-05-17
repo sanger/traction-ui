@@ -19,14 +19,14 @@
       variant="success"
       :disabled="barcodes.length === 0"
       @click="handleSampleExtractionTubes"
+      >Import Sample Extraction Tubes</b-button
     >
-      Import Sample Extraction Tubes
-    </b-button>
   </div>
 </template>
 
 <script>
 import { mapActions, mapState } from 'vuex'
+import deserialize from '@/api/JsonApi'
 
 export default {
   name: 'SaphyrReception',
@@ -48,20 +48,26 @@ export default {
     async handleSampleExtractionTubes() {
       try {
         let getSETubeResponse = await this.getSampleExtractionTubesForBarcodes(this.getBarcodes())
-        if (!getSETubeResponse.successful || getSETubeResponse.empty) {
-          throw getSETubeResponse.errors
+
+        if (!getSETubeResponse.success) {
+          throw { message: getSETubeResponse.errors }
         }
 
         let exportSampleTubesResponse = await this.exportSampleExtractionTubesIntoTraction(
           this.sampleExtractionTubes,
         )
 
-        if (!exportSampleTubesResponse.successful || exportSampleTubesResponse.empty) {
-          throw exportSampleTubesResponse.errors
+        if (
+          !exportSampleTubesResponse.success ||
+          exportSampleTubesResponse.data.data.length === 0
+        ) {
+          throw { message: exportSampleTubesResponse.errors }
         }
-        let tractionTubesBarcodeList = exportSampleTubesResponse.deserialize.requests
-          .map((r) => r.barcode)
+
+        let tractionTubesBarcodeList = deserialize(exportSampleTubesResponse.data)
+          .requests.map((r) => r.barcode)
           .join(', ')
+
         this.showAlert(
           'Samples have been created with barcodes: ' + tractionTubesBarcodeList,
           'success',
@@ -70,10 +76,7 @@ export default {
         this.showAlert(error.message, 'danger')
       }
     },
-    ...mapActions('traction/saphyr/tubes', [
-      // TODO: Move this saphyr/requests
-      'exportSampleExtractionTubesIntoTraction',
-    ]),
+    ...mapActions('traction/saphyr/requests', ['exportSampleExtractionTubesIntoTraction']),
     ...mapActions('sampleExtraction', ['getSampleExtractionTubesForBarcodes']),
   },
 }

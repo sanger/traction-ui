@@ -15,12 +15,13 @@
       />
     </div>
     <b-row>
-      <b-col
-        ><LibraryTypeSelect
+      <b-col>
+        <LibraryTypeSelect
           v-model="libraryType"
           pipeline="pacbio"
           import-text="Import from Samples Extraction (where available)"
-      /></b-col>
+        />
+      </b-col>
       <b-col>
         <b-button
           id="findSampleExtractionTubes"
@@ -29,9 +30,8 @@
           variant="success"
           :disabled="isDisabled"
           @click="handleSampleExtractionTubes"
+          >Import {{ tubeCount }}</b-button
         >
-          Import {{ tubeCount }}
-        </b-button>
       </b-col>
     </b-row>
   </div>
@@ -41,6 +41,7 @@
 import Spinner from 'vue-simple-spinner'
 import { mapActions, mapState } from 'vuex'
 import LibraryTypeSelect from '@/components/shared/LibraryTypeSelect'
+import deserialize from '@/api/JsonApi'
 
 export default {
   name: 'PacbioReceptionSamplesExtraction',
@@ -81,19 +82,24 @@ export default {
       this.busy = true
       try {
         let getSETubeResponse = await this.getSampleExtractionTubesForBarcodes(this.barcodeArray)
-        if (!getSETubeResponse.successful || getSETubeResponse.empty) {
-          throw getSETubeResponse.errors
+
+        if (!getSETubeResponse.success) {
+          throw { message: getSETubeResponse.errors }
         }
 
         let exportSampleTubesResponse = await this.exportSampleExtractionTubesIntoTraction({
           tubes: this.sampleExtractionTubes,
           libraryType: this.libraryType,
         })
-        if (!exportSampleTubesResponse.successful || exportSampleTubesResponse.empty) {
-          throw exportSampleTubesResponse.errors
+        if (
+          !exportSampleTubesResponse.success ||
+          exportSampleTubesResponse.data.data.length === 0
+        ) {
+          throw { message: exportSampleTubesResponse.errors }
         }
-        let tractionTubesBarcodeList = exportSampleTubesResponse.deserialize.requests
-          .map((r) => r.barcode)
+
+        let tractionTubesBarcodeList = deserialize(exportSampleTubesResponse.data)
+          .requests.map((r) => r.barcode)
           .join(', ')
         this.showAlert(
           'Samples have been created with barcodes: ' + tractionTubesBarcodeList,

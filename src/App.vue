@@ -4,14 +4,20 @@
     <div class="relative bg-gradient-to-tr from-sdb to-sdb-400">
       <div class="max-w-7xl mx-auto px-4 sm:px-6">
         <div class="flex justify-between items-center py-4 md:justify-start md:space-x-10">
-          <img class="w-8 h-8" src="./images/wsi-icon-16.png" alt="Traction logo" />
-          <div class="flex justify-start">
-            <TractionLink name="Home" link="/dashboard"></TractionLink>
+          <div class="flex flex-row gap-x-2">
+            <img class="w-8 h-8" src="./images/wsi-icon-16.png" alt="Traction logo" />
+            <div class="text-white text-2xl">Traction</div>
+          </div>
+          <div class="flex justify-center">
+            <Link name="Home" link="/dashboard" view-type="2" />
           </div>
         </div>
       </div>
     </div>
-    <Heading>{{ pipeline }} {{ page }}</Heading>
+    <Heading level="1">{{ pipeline }} {{ page }}</Heading>
+    <div class="flex flex-col mb-auto px-4 py-10">
+      <router-view class="text-center" />
+    </div>
     <Message
       v-for="(message, index) in messages"
       ref="alert"
@@ -19,10 +25,6 @@
       v-bind="message"
       @dismissed="dismiss(index)"
     ></Message>
-
-    <div class="flex flex-col mb-auto px-4 py-10">
-      <router-view class="text-center" />
-    </div>
     <InfoFooter></InfoFooter>
   </div>
 </template>
@@ -30,14 +32,13 @@
 <script>
 import InfoFooter from '@/components/InfoFooter'
 import Message from '@/components/Message'
-import TractionLink from '@/components/TractionLink'
+import Link from '@/components/Link'
 import Heading from '@/components/Heading'
-
 export default {
   components: {
     InfoFooter,
     Message,
-    TractionLink,
+    Link,
     Heading,
   },
   computed: {

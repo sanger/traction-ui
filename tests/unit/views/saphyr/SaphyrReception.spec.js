@@ -1,6 +1,6 @@
 import Reception from '@/views/saphyr/SaphyrReception'
 import { mount, localVue, store, Data } from 'testHelper'
-import Response from '@/api/Response'
+import { newResponse } from '@/api/ResponseHelper'
 
 describe('Reception', () => {
   let wrapper, reception, barcodes, barcode, input, router
@@ -56,19 +56,25 @@ describe('Reception', () => {
       wrapper.setData({ barcodes: 'TRAC-1\nTRAC-2' })
 
       failedResponse = {
-        status: 404,
-        statusText: 'Record not found',
-        data: { errors: { title: ['Tube could not be found.'] } },
+        success: false,
+        errors: 'Sample Extraction tubes failed to be imported',
       }
     })
 
     it('successfully for samples', async () => {
-      reception.getSampleExtractionTubesForBarcodes.mockResolvedValue(
-        new Response(Data.SampleExtractionTubesWithSample),
-      )
-      reception.exportSampleExtractionTubesIntoTraction.mockResolvedValue(
-        new Response(Data.Requests),
-      )
+      const mockSamplesExtractionResponse = newResponse({
+        success: true,
+        ...Data.SampleExtractionTubesWithSample,
+      })
+
+      reception.getSampleExtractionTubesForBarcodes.mockResolvedValue(mockSamplesExtractionResponse)
+
+      const mockTractionResponse = newResponse({
+        success: true,
+        ...Data.Requests,
+      })
+
+      reception.exportSampleExtractionTubesIntoTraction.mockResolvedValue(mockTractionResponse)
 
       await reception.handleSampleExtractionTubes()
       expect(reception.getSampleExtractionTubesForBarcodes).toBeCalled()
@@ -77,12 +83,50 @@ describe('Reception', () => {
     })
 
     it('is unsuccessful when getSampleExtractionTubesForBarcodes fails', async () => {
-      reception.getSampleExtractionTubesForBarcodes.mockResolvedValue(
-        new Response(Data.SampleExtractionTubesWithSample),
+      reception.getSampleExtractionTubesForBarcodes.mockResolvedValue(failedResponse)
+
+      await reception.handleSampleExtractionTubes()
+      expect(reception.getSampleExtractionTubesForBarcodes).toBeCalled()
+      expect(reception.exportSampleExtractionTubesIntoTraction).not.toBeCalled()
+      expect(reception.showAlert).toBeCalledWith(
+        'Sample Extraction tubes failed to be imported',
+        'danger',
       )
-      reception.exportSampleExtractionTubesIntoTraction.mockResolvedValue(
-        new Response(failedResponse),
+    })
+
+    it('is unsuccessful when getSampleExtractionTubesForBarcodes is empty', async () => {
+      reception.getSampleExtractionTubesForBarcodes.mockResolvedValue(failedResponse)
+
+      await reception.handleSampleExtractionTubes()
+      expect(reception.getSampleExtractionTubesForBarcodes).toBeCalled()
+      expect(reception.exportSampleExtractionTubesIntoTraction).not.toBeCalled()
+      expect(reception.showAlert).toBeCalledWith(
+        'Sample Extraction tubes failed to be imported',
+        'danger',
       )
+    })
+
+    it('is unsuccessful when exportSampleExtractionTubesIntoTraction fails', async () => {
+      const mockSamplesExtractionResponse = newResponse({
+        success: true,
+        ...Data.SampleExtractionTubesWithSample,
+      })
+
+      reception.getSampleExtractionTubesForBarcodes.mockResolvedValue(mockSamplesExtractionResponse)
+
+      let failedResponse = {
+        success: false,
+        status: 422,
+        statusText: 'Unprocessable Entity',
+        data: { errors: { name: ['error message'] } },
+      }
+
+      const mockTractionResponse = newResponse({
+        success: false,
+        ...failedResponse,
+      })
+
+      reception.exportSampleExtractionTubesIntoTraction.mockResolvedValue(mockTractionResponse)
 
       await reception.handleSampleExtractionTubes()
       expect(reception.getSampleExtractionTubesForBarcodes).toBeCalled()

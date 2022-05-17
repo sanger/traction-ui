@@ -37,6 +37,7 @@ const parseErrorArray = (errors) =>
  * @param Boolean success
  * @param {Object} data e.g. { data: { id: 1}}
  * @returns { Boolean, {Object}, String} { success, data, errors } e.g. { success: true, data: {id: 1}} or {success: false, errors: 'there was an error'}
+ * TODO: some confusion on what the arguments are and what is returned. Need to review and update documentation.
  */
 const newResponse = ({ success, data, error, errors }) => ({
   success,
