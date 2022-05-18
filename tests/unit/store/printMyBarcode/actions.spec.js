@@ -13,12 +13,12 @@ describe('actions', () => {
     printerName = 'aPrinterName'
     barcodesList = ['aBarcode-A1', 'aBarcode-A2']
     copies = '2'
-    tubeLabelTemplateName = 'traction_tube_label_template_v2'
+    tubeLabelTemplateName = 'traction_tube_label_template'
 
     createPrintJobJsonV2 = {
       print_job: {
         printer_name: printerName,
-        label_template_name: 'traction_tube_label_template_v2',
+        label_template_name: 'traction_tube_label_template',
         labels: [
           {
             first_line: formatDate(),
