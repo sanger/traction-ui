@@ -4,10 +4,10 @@ describe('Label Printing page', () => {
   beforeEach(() => {
     cy.visit('#/label-printing')
 
-    cy.get('#barcode_input').type('aBarcode')
-    cy.get('#suffix_selection').select('L')
-    cy.get('#number_of_labels').type(3)
-    cy.get('#printer_choice').select('stub')
+    cy.get('#barcode-input').type('aBarcode')
+    cy.get('#suffix-selection').select('L')
+    cy.get('#number-of-labels').type(3)
+    cy.get('#printer-choice').select('stub')
     cy.get('#copies').type(2)
   })
 
@@ -20,7 +20,7 @@ describe('Label Printing page', () => {
     cy.contains('Reset')
     cy.contains('Print Labels')
 
-    cy.get('#submitButton').click()
+    cy.get('#submit-button').click()
 
     cy.contains('List of barcodes to be printed:')
     cy.contains('aBarcode-L1')
@@ -29,7 +29,7 @@ describe('Label Printing page', () => {
   })
 
   it('PMB request is successful', () => {
-    cy.get('#submitButton').click()
+    cy.get('#submit-button').click()
 
     cy.intercept('/v2/print_jobs', {
       statusCode: 200,
@@ -37,7 +37,7 @@ describe('Label Printing page', () => {
         message: 'Successful',
       },
     })
-    cy.get('#submitButton').click()
+    cy.get('#submit-button').click()
     cy.contains('Successful')
   })
 
@@ -55,7 +55,7 @@ describe('Label Printing page', () => {
         ],
       },
     })
-    cy.get('#submitButton').click()
+    cy.get('#submit-button').click()
     cy.contains('api/label is invalid')
   })
 
@@ -66,7 +66,7 @@ describe('Label Printing page', () => {
         errors: [],
       },
     })
-    cy.get('#submitButton').click()
+    cy.get('#submit-button').click()
     cy.contains('Unknown')
   })
 })

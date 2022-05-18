@@ -4,13 +4,13 @@
       <b-col>
         <b-form v-if="show" class="text-left" @submit="onSubmit" @reset="onReset">
           <b-form-group
-            id="barcode_input_group"
+            id="barcode-input-group"
             label="Barcode:"
-            label-for="barcode_input"
+            label-for="barcode-input"
             description="A single barcode to create labels for."
           >
             <b-form-input
-              id="barcode_input"
+              id="barcode-input"
               v-model="form.barcode"
               placeholder="Please scan the barcode"
               required
@@ -18,13 +18,13 @@
           </b-form-group>
 
           <b-form-group
-            id="suffix_selection_group"
+            id="suffix-selection-group"
             label="Suffix:"
-            label-for="suffix_selection"
+            label-for="suffix-selection"
             description="The suffix used to increment the barcode."
           >
             <b-form-select
-              id="suffix_selection"
+              id="suffix-selection"
               v-model="form.selectedSuffix"
               :options="suffixOptions"
               value-field="text"
@@ -34,13 +34,13 @@
           </b-form-group>
 
           <b-form-group
-            id="number_of_labels_group"
+            id="number-of-labels-group"
             label="Number of labels:"
-            label-for="number_of_labels"
+            label-for="number-of-labels"
             description="Number of labels to print (max 9)"
           >
             <b-form-input
-              id="number_of_labels"
+              id="number-of-labels"
               v-model="form.selectedNumberOfLabels"
               type="number"
               :min="1"
@@ -51,13 +51,13 @@
           </b-form-group>
 
           <b-form-group
-            id="printer_choice_group"
+            id="printer-choice-group"
             label="Choice of Printer:"
-            label-for="printer_choice"
+            label-for="printer-choice"
             description="The printer to print the labels."
           >
             <b-form-select
-              id="printer_choice"
+              id="printer-choice"
               v-model="form.selectedPrinterName"
               :options="printerOptions"
               value-field="text"
@@ -66,7 +66,7 @@
           </b-form-group>
 
           <b-form-group
-            id="copies_group"
+            id="copies-group"
             label="Number of copies per label:"
             label-for="copies"
             description="Number of copies of each label you would like to print."
@@ -82,8 +82,8 @@
             ></b-form-input>
           </b-form-group>
 
-          <b-button id="submitButton" type="submit" variant="primary">Print Labels</b-button>
-          <b-button id="resetButton" type="reset" variant="danger" class="float-left"
+          <b-button id="submit-button" type="submit" variant="primary">Print Labels</b-button>
+          <b-button id="reset-button" type="reset" variant="danger" class="float-left"
             >Reset</b-button
           >
         </b-form>

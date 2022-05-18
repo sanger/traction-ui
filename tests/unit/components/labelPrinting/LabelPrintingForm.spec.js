@@ -15,37 +15,7 @@ describe('LabelPrintingForm.vue', () => {
   })
 
   it('will have an reset button', () => {
-    expect(wrapper.find('#resetButton').exists()).toBeTruthy()
-  })
-
-  describe('form', () => {
-    it('will have barcode_input_group', () => {
-      expect(wrapper.find('#barcode_input_group').exists()).toBeTruthy()
-    })
-
-    it('will have barcode_input', () => {
-      expect(wrapper.find('#barcode_input').exists()).toBeTruthy()
-    })
-
-    it('will have suffix_selection_group', () => {
-      expect(wrapper.find('#suffix_selection_group').exists()).toBeTruthy()
-    })
-
-    it('will have number_of_labels_group', () => {
-      expect(wrapper.find('#number_of_labels_group').exists()).toBeTruthy()
-    })
-
-    it('will have number_of_labels', () => {
-      expect(wrapper.find('#number_of_labels').exists()).toBeTruthy()
-    })
-
-    it('will have printer_choice_group', () => {
-      expect(wrapper.find('#printer_choice_group').exists()).toBeTruthy()
-    })
-
-    it('will have copies component', () => {
-      expect(wrapper.find('#copies_group').exists()).toBeTruthy()
-    })
+    expect(wrapper.find('#reset-button').exists()).toBeTruthy()
   })
 
   describe('data', () => {
