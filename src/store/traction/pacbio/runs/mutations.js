@@ -14,6 +14,11 @@ const mutations = {
   setComments: mutateRun('comments'),
   setSystemName: mutateRun('system_name'),
   setDefaultBindingKitBoxBarcode: mutateRun('default_binding_kit_box_barcode'),
+  setDefaultMovieTime: mutateRun('default_movie_time'),
+  setDefaultGenerateHifi: mutateRun('default_generate_hifi'),
+  setDefaultCcsAnalysisOutput: mutateRun('default_ccs_analysis_output'),
+  setDefaultPreExtensionTime: mutateRun('default_pre_extension_time'),
+  setDefaultLoadingTarget: mutateRun('default_loading_target'),
 
   createWell(state, well) {
     state.currentRun.plate.wells.push(well)

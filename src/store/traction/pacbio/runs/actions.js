@@ -1,8 +1,8 @@
 import handlePromise from '@/api/PromiseHelper'
 import * as PacbioRun from '@/api/PacbioRun'
-const pre_extension_time = 2
-const ccs_analysis_output = 'Yes'
-const loading_target_p1_plus_p2_default = 0.85
+const pre_extension_time_default = 2
+const ccs_analysis_output_default = 'Yes'
+const loading_target_default = 0.85
 
 const generateHiFiDefault = (systemName) => {
   switch (systemName) {
@@ -22,15 +22,21 @@ const splitPosition = (position) => {
 }
 
 const buildWell = ({ state }, position) => {
-  let generate_hifi = generateHiFiDefault(state.currentRun.system_name)
   let binding_kit_box_barcode = state.currentRun.default_binding_kit_box_barcode || ''
   let [row, column] = splitPosition(position)
+  const movie_time = state.currentRun.default_movie_time || ''
+  const generate_hifi =
+    state.currentRun.default_generate_hifi || generateHiFiDefault(state.currentRun.system_name)
+  const ccs_analysis_output =
+    state.currentRun.default_ccs_analysis_output || ccs_analysis_output_default
+  const pre_extension_time =
+    state.currentRun.default_pre_extension_time || pre_extension_time_default
   const loading_target_p1_plus_p2 =
-    state.currentRun.loading_target_p1_plus_p2 || loading_target_p1_plus_p2_default
+    state.currentRun.default_loading_target || loading_target_default
   return {
     row,
     column,
-    movie_time: '',
+    movie_time,
     position,
     on_plate_loading_concentration: '',
     generate_hifi,
