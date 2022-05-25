@@ -69,7 +69,7 @@
             id="copies-group"
             label="Number of copies per label:"
             label-for="copies"
-            description="Number of copies of each label you would like to print."
+            description="Number of copies of each label you would like to print. (Only supported by Squix printers)"
           >
             <b-form-input
               id="copies"
