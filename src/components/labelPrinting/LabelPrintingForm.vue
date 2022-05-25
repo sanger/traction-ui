@@ -83,7 +83,9 @@
           </b-form-group>
 
           <b-button id="submit-button" type="submit" variant="primary">Print Labels</b-button>
-          <b-button id="reset-button" type="reset" variant="danger" class="float-left">Reset</b-button>
+          <b-button id="reset-button" type="reset" variant="danger" class="float-left"
+            >Reset</b-button
+          >
         </b-form>
       </b-col>
       <b-col>
