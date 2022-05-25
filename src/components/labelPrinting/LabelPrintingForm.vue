@@ -69,7 +69,7 @@
             id="copies-group"
             label="Number of copies per label:"
             label-for="copies"
-            description="Number of copies of each label you would like to print."
+            description="Number of copies of each label you would like to print. (Only supported by Squix printers)"
           >
             <b-form-input
               id="copies"
@@ -83,9 +83,7 @@
           </b-form-group>
 
           <b-button id="submit-button" type="submit" variant="primary">Print Labels</b-button>
-          <b-button id="reset-button" type="reset" variant="danger" class="float-left"
-            >Reset</b-button
-          >
+          <b-button id="reset-button" type="reset" variant="danger" class="float-left">Reset</b-button>
         </b-form>
       </b-col>
       <b-col>
