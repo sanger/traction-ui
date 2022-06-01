@@ -8,7 +8,18 @@ const pools = [
     id: '1',
     type: 'pools',
     barcode: 'TRAC-2-1',
-    libraries: [{ id: '1', sample_name: 'Sample48', group_id: 'bc1019', type: 'libraries' }],
+    libraries: [
+      {
+        id: '1',
+        sample_name: 'Sample48',
+        group_id: 'bc1019',
+        type: 'libraries',
+        run_suitability: {
+          ready_for_run: true,
+          errors: [],
+        },
+      },
+    ],
     tube: '1',
     volume: 1.0,
     concentration: 1.0,
@@ -17,22 +28,65 @@ const pools = [
     source_identifier: 'DN1:A1',
     created_at: '2021-07-15T15:26:29.000Z',
     updated_at: '2021-07-15T15:26:29.000Z',
+    run_suitability: {
+      ready_for_run: true,
+      errors: [],
+    },
   },
   {
     id: '2',
     type: 'pools',
     barcode: 'TRAC-2-2',
     libraries: [
-      { id: '2', sample_name: 'Sample47', group_id: 'bc1011_BAK8A_OA', type: 'libraries' },
+      {
+        id: '2',
+        sample_name: 'Sample47',
+        group_id: 'bc1011_BAK8A_OA',
+        type: 'libraries',
+        run_suitability: {
+          ready_for_run: false,
+          errors: [
+            {
+              title: "can't be blank",
+              detail: "insert_size - can't be blank",
+              code: '100',
+              source: {
+                pointer: '/data/attributes/insert_size',
+              },
+            },
+          ],
+        },
+      },
     ],
     tube: '2',
     volume: 1.0,
     concentration: 1.0,
     template_prep_kit_box_barcode: 'LK12345',
-    insert_size: 100,
+    insert_size: null,
     source_identifier: 'DN1:B1',
     created_at: '2021-07-15T15:26:29.000Z',
     updated_at: '2021-07-15T15:26:29.000Z',
+    run_suitability: {
+      ready_for_run: false,
+      errors: [
+        {
+          title: "can't be blank",
+          detail: "insert_size - can't be blank",
+          code: '100',
+          source: {
+            pointer: '/data/attributes/insert_size',
+          },
+        },
+        {
+          title: 'is invalid',
+          detail: 'libraries - is invalid',
+          code: '100',
+          source: {
+            pointer: '/data/relationships/libraries',
+          },
+        },
+      ],
+    },
   },
 ]
 

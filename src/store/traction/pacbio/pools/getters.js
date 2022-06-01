@@ -3,10 +3,10 @@ const getters = {
   pools: (state) => {
     return Object.values(state.pools).map((pool) => {
       const libraries = pool.libraries.map((libraryId) => {
-        const { id, type, request, tag } = state.libraries[libraryId]
+        const { id, type, request, tag, run_suitability } = state.libraries[libraryId]
         const { sample_name } = state.requests[request]
         const { group_id } = state.tags[tag] || {}
-        return { id, type, sample_name, group_id }
+        return { id, type, sample_name, group_id, run_suitability }
       })
       const { barcode } = state.tubes[pool.tube]
 

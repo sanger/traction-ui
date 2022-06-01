@@ -9,7 +9,7 @@ const setPools = async ({ commit, getters }) => {
       requests: 'sample_name',
       tubes: 'barcode',
       tags: 'group_id',
-      libraries: 'request,tag',
+      libraries: 'request,tag,run_suitability',
     },
   })
   let response = await handleResponse(promise)
