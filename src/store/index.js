@@ -5,6 +5,7 @@ import build from '@/api/ApiBuilder'
 import PrinterList from '@/config/PrinterList'
 import traction from '@/store/traction'
 import sampleExtraction from '@/store/sampleExtraction'
+import printMyBarcode from '@/store/printMyBarcode'
 import PlateMap from '@/config/PlateMap'
 
 Vue.use(Vuex)
@@ -18,11 +19,12 @@ export default new Vuex.Store({
   mutations: {},
   getters: {
     api: (state) => state.api,
-    printers: (state) => state.printers,
+    printers: (state) => state.printers.map((obj) => obj.printerName),
     plateMap: (state) => state.plateMap,
   },
   modules: {
     traction,
     sampleExtraction,
+    printMyBarcode,
   },
 })

@@ -2,6 +2,7 @@
 import Vue from 'vue'
 import Router from 'vue-router'
 import Dashboard from '@/views/Dashboard'
+import LabelPrinting from '@/views/LabelPrinting'
 import PageNotFound from '@/views/PageNotFound'
 import Saphyr from '@/views/Saphyr'
 import SaphyrReception from '@/views/saphyr/SaphyrReception'
@@ -18,11 +19,6 @@ import PacbioPoolIndex from '@/views/pacbio/PacbioPoolIndex'
 import PacbioRunIndex from '@/views/pacbio/PacbioRunIndex'
 import PacbioRunShow from '@/views/pacbio/PacbioRunShow'
 import ONT from '@/views/ONT'
-import OntReception from '@/views/ont/OntReception'
-import OntPlates from '@/views/ont/OntPlates'
-import OntLibraries from '@/views/ont/OntLibraries'
-import OntHeronRun from '@/views/ont/OntHeronRun'
-import OntHeronRuns from '@/views/ont/OntHeronRuns'
 import PacbioReceptionSequencescape from '@/views/pacbio/PacbioReceptionSequencescape'
 import PacbioPoolCreate from '@/views/pacbio/PacbioPoolCreate'
 
@@ -40,6 +36,12 @@ export default new Router({
       name: 'Dashboard',
       meta: { pipeline: 'Dashboard' },
       component: Dashboard,
+    },
+    {
+      path: '/label-printing',
+      name: 'LabelPrinting',
+      meta: { page: 'Label Printing' },
+      component: LabelPrinting,
     },
     {
       path: '/saphyr',
@@ -144,35 +146,6 @@ export default new Router({
       path: '/ont',
       component: ONT,
       meta: { pipeline: 'ONT' },
-      children: [
-        { path: '', redirect: 'reception', meta: { page: 'Reception' } },
-        {
-          path: 'reception',
-          name: 'OntReception',
-          component: OntReception,
-          meta: { page: 'Reception' },
-        },
-        { path: 'plates', name: 'OntPlates', component: OntPlates, meta: { page: 'Plates' } },
-        {
-          path: 'libraries',
-          name: 'OntLibraries',
-          component: OntLibraries,
-          meta: { page: 'Libraries' },
-        },
-        {
-          path: 'runs',
-          name: 'OntHeronRuns',
-          component: OntHeronRuns,
-          meta: { page: 'Runs' },
-        },
-        {
-          path: 'run/:id',
-          name: 'OntHeronRun',
-          component: OntHeronRun,
-          props: true,
-          meta: { page: 'Run' },
-        },
-      ],
     },
     {
       path: '/404',
