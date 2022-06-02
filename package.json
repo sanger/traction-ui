@@ -20,7 +20,7 @@
     "axios": "^0.21.4",
     "bootstrap-vue": "^2.22.0",
     "csv-parse": "^5.1.0",
-    "core-js": "^3.22.7",
+    "core-js": "^3.22.8",
     "flush-promises": "^1.0.2",
     "global": "^4.4.0",
     "https-proxy-agent": "^2.2.2",
