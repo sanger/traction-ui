@@ -19,13 +19,15 @@
     <div class="flex flex-col mb-auto px-4 py-10">
       <router-view class="text-center" />
     </div>
-    <Message
-      v-for="(message, index) in messages"
-      ref="alert"
-      :key="index"
-      v-bind="message"
-      @dismissed="dismiss(index)"
-    ></Message>
+    <div class="message-container">
+      <Message
+        v-for="(message, index) in messages"
+        ref="alert"
+        :key="index"
+        v-bind="message"
+        @dismissed="dismiss(index)"
+      ></Message>
+    </div>
     <InfoFooter></InfoFooter>
   </div>
 </template>
@@ -95,5 +97,13 @@ a {
     text-decoration: none;
     color: black;
   }
+}
+.message-container {
+  position: fixed;
+  bottom: 0;
+  right: 1em;
+  width: 30em;
+  z-index: 1051;
+  word-break: break-word;
 }
 </style>

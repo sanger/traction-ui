@@ -60,8 +60,48 @@ describe('LibraryTubeItem.vue', () => {
     beforeEach(() => {
       props = {
         barcode: 'TRAC-1',
-        libraries: [{ id: '1', sample_name: 'Sample1', group_id: 'TAG_1' }],
+        libraries: [
+          {
+            id: '1',
+            sample_name: 'Sample1',
+            group_id: 'TAG_1',
+            run_suitability: {
+              ready_for_run: false,
+              errors: [
+                {
+                  title: "can't be blank",
+                  detail: "insert_size - can't be blank",
+                  code: '100',
+                  source: {
+                    pointer: '/data/attributes/insert_size',
+                  },
+                },
+              ],
+            },
+          },
+        ],
         source_identifier: 'DN1S:A1',
+        run_suitability: {
+          ready_for_run: false,
+          errors: [
+            {
+              title: "can't be blank",
+              detail: "insert_size - can't be blank",
+              code: '100',
+              source: {
+                pointer: '/data/attributes/insert_size',
+              },
+            },
+            {
+              title: 'is invalid',
+              detail: 'libraries - is invalid',
+              code: '100',
+              source: {
+                pointer: '/data/relationships/libraries',
+              },
+            },
+          ],
+        },
       }
 
       wrapper = mount(Tube, {
