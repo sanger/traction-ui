@@ -49,6 +49,6 @@ export default {
 
 .list-group {
   max-height: 400px;
-  overflow: scroll;
+  overflow-y: auto;
 }
 </style>
