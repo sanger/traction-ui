@@ -9,6 +9,7 @@ describe('LibraryTubeItem.vue', () => {
   describe('when valid', () => {
     beforeEach(() => {
       props = {
+        id: '1',
         barcode: 'TRAC-1',
         libraries: [
           {
@@ -73,6 +74,7 @@ describe('LibraryTubeItem.vue', () => {
   describe('when invalid', () => {
     beforeEach(() => {
       props = {
+        id: '1',
         barcode: 'TRAC-1',
         libraries: [
           {
@@ -135,6 +137,15 @@ describe('LibraryTubeItem.vue', () => {
       expect(wrapper.find('[data-attribute=volume]').text()).toContain(unknownField)
       expect(wrapper.text()).toContain("Pool insert_size - can't be blank")
       expect(wrapper.text()).toContain("Library 1 (Sample1) insert_size - can't be blank")
+    })
+
+    it('has an edit button per library', () => {
+      const button = wrapper.find('#editPool-1')
+      expect(button.text()).toEqual('Edit')
+      expect(button.props('to')).toStrictEqual({
+        name: 'PacbioPoolCreate',
+        params: { id: '1' },
+      })
     })
   })
 })

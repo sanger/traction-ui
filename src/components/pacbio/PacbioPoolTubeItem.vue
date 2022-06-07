@@ -9,6 +9,14 @@
     <b-row>
       <b-col cols="3">
         <b-img src="/tube.png" />
+        <b-button
+          :id="`editPool-${id}`"
+          size="sm"
+          variant="outline-primary"
+          class="btn-block"
+          :to="{ name: 'PacbioPoolCreate', params: { id: id } }"
+          >Edit</b-button
+        >
       </b-col>
       <b-col cols="9">
         <dl class="row">
@@ -58,6 +66,10 @@ img.src = '/tube.png'
 export default {
   name: 'PacbioPoolTubeItem',
   props: {
+    id: {
+      type: String,
+      required: true,
+    },
     barcode: {
       type: String,
       required: true,
