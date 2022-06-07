@@ -7,6 +7,10 @@ const libraryAttributes = {
   volume: '1.0',
   concentration: '10.0',
   insert_size: '100',
+  run_suitability: {
+    ready_for_run: true,
+    errors: [],
+  },
 }
 
 const requests = {

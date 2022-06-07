@@ -99,6 +99,10 @@ describe('LibraryTubeItem.vue', () => {
         source_identifier: 'DN1S:A1',
         run_suitability: {
           ready_for_run: false,
+          formattedErrors: [
+            "Pool insert_size - can't be blank",
+            "Library 1 (Sample1) insert_size - can't be blank",
+          ],
           errors: [
             {
               title: "can't be blank",

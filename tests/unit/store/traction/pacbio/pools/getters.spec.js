@@ -31,6 +31,7 @@ const pools = [
     run_suitability: {
       ready_for_run: true,
       errors: [],
+      formattedErrors: [],
     },
   },
   {
@@ -68,6 +69,11 @@ const pools = [
     updated_at: '2021-07-15T15:26:29.000Z',
     run_suitability: {
       ready_for_run: false,
+      formattedErrors: [
+        "Pool insert_size - can't be blank",
+        'Pool libraries - is invalid',
+        "Library 2 (Sample47) insert_size - can't be blank",
+      ],
       errors: [
         {
           title: "can't be blank",
@@ -102,7 +108,13 @@ describe('getters', () => {
   })
 
   it('"pools" returns pools successfully and with an empty library group_id if that library has no tag', () => {
-    state.libraries[1] = { id: '1', request: '1', tag: '', type: 'libraries' }
+    state.libraries[1] = {
+      id: '1',
+      request: '1',
+      tag: '',
+      type: 'libraries',
+      run_suitability: { ready_for_run: true, errors: [] },
+    }
     const pools = getters.pools(state)
     expect(pools[0].libraries[0].group_id).toEqual(undefined)
   })

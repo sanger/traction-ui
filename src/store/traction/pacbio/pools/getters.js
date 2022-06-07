@@ -1,3 +1,11 @@
+const buildRunSuitabilityErrors = ({ pool, libraries }) => [
+  ...pool.run_suitability.errors.map(({ detail }) => `Pool ${detail}`),
+  ...libraries.flatMap((library) => {
+    const libraryName = `Library ${library.id} (${library.sample_name})`
+    return library.run_suitability.errors.map(({ detail }) => `${libraryName} ${detail}`)
+  }),
+]
+
 const getters = {
   poolRequest: (state, getters, rootState) => rootState.api.traction.pacbio.pools,
   pools: (state) => {
@@ -10,7 +18,15 @@ const getters = {
       })
       const { barcode } = state.tubes[pool.tube]
 
-      return { ...pool, libraries, barcode }
+      return {
+        ...pool,
+        libraries,
+        barcode,
+        run_suitability: {
+          ...pool.run_suitability,
+          formattedErrors: buildRunSuitabilityErrors({ libraries, pool }),
+        },
+      }
     })
   },
   poolByBarcode:

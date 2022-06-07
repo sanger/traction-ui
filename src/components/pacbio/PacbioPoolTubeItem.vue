@@ -123,13 +123,7 @@ export default {
       return this.valid || this.expanded
     },
     errors() {
-      return [
-        ...this.run_suitability.errors.map(({ detail }) => `Pool ${detail}`),
-        ...this.libraries.flatMap((library) => {
-          const libraryName = `Library ${library.id} (${library.sample_name})`
-          return library.run_suitability.errors.map(({ detail }) => `${libraryName} ${detail}`)
-        }),
-      ]
+      return this.run_suitability.formattedErrors
     },
   },
   // TODO: need to add a a test for drag
