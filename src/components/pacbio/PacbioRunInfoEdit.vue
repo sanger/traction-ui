@@ -1,72 +1,73 @@
 <template>
   <div class="pacbioRunInfoEdit">
-    <b-row>
-      <b-col>
-        <b-form-input
-          id="run-name"
-          v-b-tooltip.hover
-          :value="runName"
-          placeholder="Run name"
-          type="text"
-          width="48"
-          title="Run Name"
-          readonly
-        />
-      </b-col>
-    </b-row>
-
-    <b-row>
-      <b-col>
-        <b-form-input
-          id="sequencing-kit-box-barcode"
-          v-b-tooltip.hover
-          :value="sequencingKitBoxBarcode"
-          placeholder="Sequencing Kit Box Barcode"
-          type="text"
-          width="48"
-          title="Sequencing Kit Box Barcode"
-          @change="setSequencingKitBoxBarcode"
-        />
-      </b-col>
-      <b-col>
-        <b-form-input
-          id="dna-control-complex-box-barcode"
-          v-b-tooltip.hover
-          :value="dnaControlComplexBoxBarcode"
-          placeholder="DNA Control Complex Box Barcode"
-          type="text"
-          width="48"
-          title="DNA Control Complex Box Barcode"
-          @change="setDNAControlComplexBoxBarcode"
-        />
-      </b-col>
-      <b-col>
-        <b-form-select
-          id="system-name"
-          ref="systemName"
-          v-b-tooltip.hover
-          :value="systemName"
-          :options="systemNameOptions"
-          title="System Name"
-          @change="setSystemName"
-        />
-      </b-col>
-    </b-row>
-
-    <b-row>
-      <b-col>
-        <b-form-input
-          id="comments"
-          v-b-tooltip.hover
-          :value="comments"
-          placeholder="Comments"
-          type="text"
-          width="48"
-          title="Comments"
-          @change="setComments"
-        />
-      </b-col>
-    </b-row>
+    <fieldset>
+      <legend class="form-control legend">{{ currentRun.name }}</legend>
+      <b-row>
+        <b-col>
+          <label for="default-sequencing-kit-box-barcode">Sequencing Kit Box Barcode:</label>
+        </b-col>
+        <b-col>
+          <b-form-input
+            id="sequencing-kit-box-barcode"
+            :value="sequencingKitBoxBarcode"
+            placeholder="Sequencing Kit Box Barcode"
+            type="text"
+            width="48"
+            title="Sequencing Kit Box Barcode"
+            @change="setSequencingKitBoxBarcode"
+          />
+        </b-col>
+      </b-row>
+      <b-row>
+        <b-col>
+          <label for="default-dna-control-complex-box-barcode"
+            >DNA Control Complex Box Barcode:</label
+          >
+        </b-col>
+        <b-col>
+          <b-form-input
+            id="dna-control-complex-box-barcode"
+            :value="dnaControlComplexBoxBarcode"
+            placeholder="DNA Control Complex Box Barcode"
+            type="text"
+            width="48"
+            title="DNA Control Complex Box Barcode"
+            @change="setDNAControlComplexBoxBarcode"
+          />
+        </b-col>
+      </b-row>
+      <b-row>
+        <b-col>
+          <label for="default-system-name">System Name:</label>
+        </b-col>
+        <b-col>
+          <b-form-select
+            id="system-name"
+            ref="systemName"
+            :value="systemName"
+            :options="systemNameOptions"
+            title="System Name"
+            @change="setSystemName"
+          />
+        </b-col>
+      </b-row>
+      <b-row>
+        <b-col>
+          <label for="default-comments">Comments:</label>
+        </b-col>
+        <b-col>
+          <b-form-input
+            id="comments"
+            :value="comments"
+            placeholder="Comments"
+            type="text"
+            width="48"
+            title="Comments"
+            @change="setComments"
+          />
+        </b-col>
+      </b-row>
+    </fieldset>
   </div>
 </template>
 
@@ -109,5 +110,11 @@ export default {
   border: solid;
   border-width: 1px;
   padding: 10px;
+}
+.legend {
+  background-color: #d3d3d3;
+}
+label {
+  font-size: 1em;
 }
 </style>

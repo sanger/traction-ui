@@ -36,10 +36,6 @@ describe('PacbioRunInfoEdit', () => {
   })
 
   describe('form inputs', () => {
-    it('Run name should be read only', () => {
-      let input = wrapper.find('#run-name')
-      expect(input.attributes('readonly')).toBeTruthy()
-    })
     it('has a Sequencing Kit Box Barcode input', () => {
       expect(wrapper.find('#sequencing-kit-box-barcode')).toBeDefined()
     })

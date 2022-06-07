@@ -1,120 +1,117 @@
 <template>
   <div class="pacbioRunWellDefaultEdit">
-    <b-row>
-      <b-col>
-        <b-form-input
-          id="run-name"
-          v-b-tooltip.hover
-          placeholder="Well metrics - to provide default values for new well"
-          type="text"
-          width="48"
-          title="Well metrics"
-          readonly
-        >
-        </b-form-input>
-      </b-col>
-    </b-row>
-
-    <b-row>
-      <b-col>
-        <b-form-select
-          id="default-movie-time"
-          v-b-tooltip.hover
-          :value="defaultMovieTime"
-          :options="movieTimeOptions"
-          placeholder="Movie Time"
-          title="Movie Time"
-          @change="setDefaultMovieTime"
-        >
-        </b-form-select>
-      </b-col>
-      <b-col>
-        <b-form-select
-          id="default-generate-hiFi"
-          v-b-tooltip.hover
-          :value="defaultGenerateHifi"
-          placeholder="Generate HiFi"
-          title="Generate HiFi"
-          :options="generateHifiOptions[currentRun.system_name]"
-          @change="setDefaultGenerateHifi"
-        >
-        </b-form-select>
-      </b-col>
-      <b-col>
-        <b-form-select
-          id="default-ccs-analysis-output"
-          v-b-tooltip.hover
-          :value="defaultCcsAnalysisOutput"
-          placeholder="Ccs Analysis Output"
-          title="Ccs Analysis Output"
-          :options="ccsAnalysisOutputOptions"
-          @change="setDefaultCcsAnalysisOutput"
-        >
-        </b-form-select>
-      </b-col>
-    </b-row>
-    <b-row>
-      <b-col>
-        <b-form-input
-          id="default-pre-extension-time"
-          v-b-tooltip.hover
-          :value="defaultPreExtensionTime"
-          title="Pre-extension Time"
-          placeholder="Pre-extension time"
-          @change="setDefaultPreExtensionTime"
-        >
-        </b-form-input>
-      </b-col>
-      <b-col>
-        <b-form-input
-          id="default-loading-target"
-          v-b-tooltip.hover
-          :value="defaultLoadingTarget"
-          title="Loading Target (P1 + P2)"
-          placeholder="Loading Target (P1 + P2)"
-          type="number"
-          :step="0.05"
-          @change="setDefaultLoadingTarget"
-        >
-        </b-form-input>
-      </b-col>
-      <b-col>
-        <b-form-input
-          id="default-binding-kit-box-barcode"
-          v-b-tooltip.hover
-          :value="defaultBindingKitBoxBarcode"
-          placeholder="Default Binding Kit Box Barcode for new wells"
-          type="text"
-          title="Default Binding Kit Box Barcode for new wells"
-          @change="setDefaultBindingKitBoxBarcode"
-        >
-        </b-form-input>
-      </b-col>
-    </b-row>
-    <p style="float: left; font-size: 12px">
-      * Non-submitted fields, used for providing new wells with a default values
-    </p>
-    <br />
+    <fieldset>
+      <legend class="form-control legend">
+        Well metrics - to provide default values for new well
+      </legend>
+      <b-row>
+        <b-col>
+          <label for="default-movie-time">Movie Time:</label>
+        </b-col>
+        <b-col>
+          <b-form-select
+            id="default-movie-time"
+            :value="defaultMovieTime"
+            :options="movieTimeOptions"
+            title="Movie Time"
+            @change="setDefaultMovieTime"
+          >
+          </b-form-select>
+        </b-col>
+      </b-row>
+      <b-row>
+        <b-col>
+          <label for="default-generate-hifi">Generate HiFi:</label>
+        </b-col>
+        <b-col>
+          <b-form-select
+            id="default-generate-hifi"
+            :value="defaultGenerateHifi"
+            title="Generate HiFi"
+            :options="generateHifiOptions[currentRun.system_name]"
+            @change="setDefaultGenerateHifi"
+          >
+          </b-form-select>
+        </b-col>
+      </b-row>
+      <b-row>
+        <b-col>
+          <label for="default-ccs-analysis-output">Ccs Analysis Output:</label>
+        </b-col>
+        <b-col>
+          <b-form-select
+            id="default-ccs-analysis-output"
+            :value="defaultCcsAnalysisOutput"
+            title="Ccs Analysis Output"
+            :options="ccsAnalysisOutputOptions"
+            @change="setDefaultCcsAnalysisOutput"
+          >
+          </b-form-select>
+        </b-col>
+      </b-row>
+      <b-row>
+        <b-col>
+          <label for="default-pre-extension-time">Pre-extension time:</label>
+        </b-col>
+        <b-col>
+          <b-form-input
+            id="default-pre-extension-time"
+            :value="defaultPreExtensionTime"
+            title="Pre-extension Time"
+            placeholder="Pre-extension time"
+            @change="setDefaultPreExtensionTime"
+          >
+          </b-form-input>
+        </b-col>
+      </b-row>
+      <b-row>
+        <b-col>
+          <label for="default-loading-target">Loading Target (P1 + P2):</label>
+        </b-col>
+        <b-col>
+          <b-form-input
+            id="default-loading-target"
+            :value="defaultLoadingTarget"
+            title="Loading Target (P1 + P2)"
+            placeholder="Loading Target (P1 + P2)"
+            type="number"
+            :step="0.05"
+            @change="setDefaultLoadingTarget"
+          >
+          </b-form-input>
+        </b-col>
+      </b-row>
+      <b-row>
+        <b-col>
+          <label for="default-binding-kit-box-barcode">Default Binding Kit Box Barcode:</label>
+        </b-col>
+        <b-col>
+          <b-form-input
+            id="default-binding-kit-box-barcode"
+            :value="defaultBindingKitBoxBarcode"
+            placeholder="Default Binding Kit Box Barcode for new wells"
+            type="text"
+            title="Default Binding Kit Box Barcode for new wells"
+            @change="setDefaultBindingKitBoxBarcode"
+          >
+          </b-form-input>
+        </b-col>
+      </b-row>
+      <b-row>
+        <b-col>
+          <p style="float: left; font-size: 12px">
+            * Non-submitted fields, used for providing new wells with a default values
+          </p>
+          <br />
+        </b-col>
+      </b-row>
+    </fieldset>
   </div>
 </template>
 
 <script>
 import { createNamespacedHelpers } from 'vuex'
 const { mapGetters, mapState, mapMutations } = createNamespacedHelpers('traction/pacbio/runs')
-const pre_extension_time = 2
-const ccs_analysis_output = 'Yes'
-const loading_target = 0.85
-const generateHiFiDefault = (systemName) => {
-  switch (systemName) {
-    case 'Sequel I':
-    case 'Sequel II':
-      return 'In SMRT Link'
-    case 'Sequel IIe':
-      return 'On Instrument'
-    default:
-      return ''
-  }
-}
 
 export default {
   name: 'PacbioRunWellDefaultEdit',
@@ -152,31 +149,17 @@ export default {
   computed: {
     ...mapGetters(['currentRun']),
     ...mapState({
-      defaultMovieTime: (state) => state.currentRun.default_movie_time,
-      defaultGenerateHifi: (state) =>
-        state.currentRun.default_generate_hifi || generateHiFiDefault(state.currentRun.system_name),
-      defaultCcsAnalysisOutput: (state) =>
-        state.currentRun.default_ccs_analysis_output || ccs_analysis_output,
-      defaultPreExtensionTime: (state) =>
-        state.currentRun.default_pre_extension_time || pre_extension_time,
-      defaultLoadingTarget: (state) => state.currentRun.default_loading_target || loading_target,
-      defaultBindingKitBoxBarcode: (state) => state.currentRun.default_binding_kit_box_barcode,
       /*
           It provides default values when creating wells to autofill the well attributes
           and it is not sent on update/create.
         */
+      defaultMovieTime: (state) => state.currentRun.default_movie_time,
+      defaultGenerateHifi: (state) => state.currentRun.default_generate_hifi,
+      defaultCcsAnalysisOutput: (state) => state.currentRun.default_ccs_analysis_output,
+      defaultPreExtensionTime: (state) => state.currentRun.default_pre_extension_time,
+      defaultLoadingTarget: (state) => state.currentRun.default_loading_target,
+      defaultBindingKitBoxBarcode: (state) => state.currentRun.default_binding_kit_box_barcode,
     }),
-  },
-  updated() {
-    this.$store.commit(
-      'traction/pacbio/runs/setDefaultCcsAnalysisOutput',
-      this.defaultCcsAnalysisOutput,
-    )
-    this.$store.commit(
-      'traction/pacbio/runs/setDefaultPreExtensionTime',
-      this.defaultPreExtensionTime,
-    )
-    this.$store.commit('traction/pacbio/runs/setDefaultLoadingTarget', this.defaultLoadingTarget)
   },
   methods: {
     ...mapMutations([
@@ -196,5 +179,11 @@ export default {
   border: solid;
   border-width: 1px;
   padding: 10px;
+}
+.legend {
+  background-color: #d3d3d3;
+}
+label {
+  font-size: 1em;
 }
 </style>

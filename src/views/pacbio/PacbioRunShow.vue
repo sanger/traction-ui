@@ -19,10 +19,16 @@
     <br />
 
     <div>
-      <pacbioRunInfoEdit ref="pacbioRunInfoEdit"></pacbioRunInfoEdit>
-      <br />
-      <pacbioRunWellDefaultEdit ref="pacbioRunWellDefaultEdit"></pacbioRunWellDefaultEdit>
-      <br />
+      <b-row>
+        <b-col cols="6">
+          <pacbioRunInfoEdit ref="pacbioRunInfoEdit"></pacbioRunInfoEdit>
+          <br />
+        </b-col>
+        <b-col>
+          <pacbioRunWellDefaultEdit ref="pacbioRunWellDefaultEdit"></pacbioRunWellDefaultEdit>
+          <br />
+        </b-col>
+      </b-row>
       <b-row>
         <b-col cols="6">
           <pacbioPoolList ref="pacbioPoolList"></pacbioPoolList>
