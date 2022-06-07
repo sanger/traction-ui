@@ -8,35 +8,43 @@
   >
     <b-row>
       <b-col cols="3">
-        <b-img src="/tube.png" :draggable="!!valid" />
+        <b-img src="/tube.png" />
       </b-col>
       <b-col cols="9">
         <dl class="row">
           <dt>Barcode</dt>
           <dd data-attribute="barcode">{{ barcode }}</dd>
         </dl>
-        <dl v-if="showInfo" class="row">
-          <dt>Source</dt>
-          <dd data-attribute="source-identifier">{{ source_identifier }}</dd>
-          <dt>Volume</dt>
-          <dd data-attribute="volume">{{ volume || 'Unknown' }}</dd>
-          <dt>Concentration</dt>
-          <dd data-attribute="concentration">{{ concentration || 'Unknown' }}</dd>
-          <dt>Template prep kit box barcode</dt>
-          <dd data-attribute="template-prep-kit-box-barcode">
-            {{ template_prep_kit_box_barcode || 'Unknown' }}
-          </dd>
-          <dt>Insert size</dt>
-          <dd data-attribute="insert-size">{{ insert_size || 'Unknown' }}</dd>
-          <dt>Libraries</dt>
-          <dd>
-            <ul>
-              <li v-for="library in libraries" :key="library.id">
-                {{ library.sample_name }} : {{ library.group_id }}
-              </li>
-            </ul>
-          </dd>
-        </dl>
+        <div v-if="showInfo">
+          <dl class="row">
+            <dt>Source</dt>
+            <dd data-attribute="source-identifier">{{ source_identifier }}</dd>
+            <dt>Volume</dt>
+            <dd data-attribute="volume">{{ volume || 'Unknown' }}</dd>
+            <dt>Concentration</dt>
+            <dd data-attribute="concentration">{{ concentration || 'Unknown' }}</dd>
+            <dt>Template prep kit box barcode</dt>
+            <dd data-attribute="template-prep-kit-box-barcode">
+              {{ template_prep_kit_box_barcode || 'Unknown' }}
+            </dd>
+            <dt>Insert size</dt>
+            <dd data-attribute="insert-size">{{ insert_size || 'Unknown' }}</dd>
+            <dt>Libraries</dt>
+            <dd>
+              <ul>
+                <li v-for="library in libraries" :key="library.id">
+                  {{ library.sample_name }} : {{ library.group_id }}
+                </li>
+              </ul>
+            </dd>
+            <dt v-if="!valid">Errors</dt>
+            <dd v-if="!valid">
+              <ul>
+                <li v-for="(error, index) in errors" :key="index">{{ error }}</li>
+              </ul>
+            </dd>
+          </dl>
+        </div>
         <div v-else>Pool invalid. Click for more information</div>
       </b-col>
     </b-row>
@@ -48,7 +56,7 @@ const img = new Image()
 img.src = '/tube.png'
 
 export default {
-  name: 'Tube',
+  name: 'PacbioPoolTubeItem',
   props: {
     barcode: {
       type: String,
@@ -84,6 +92,10 @@ export default {
       required: false,
       default: 'Unknown',
     },
+    run_suitability: {
+      type: Object,
+      required: true,
+    },
     /* eslint-enable vue/prop-name-casing */
   },
   data() {
@@ -93,17 +105,19 @@ export default {
   },
   computed: {
     valid() {
-      return (
-        this.libraries.length > 0 &&
-        this.volume &&
-        this.concentration &&
-        this.template_prep_kit_box_barcode &&
-        this.insert_size &&
-        true
-      )
+      return this.run_suitability.ready_for_run
     },
     showInfo() {
       return this.valid || this.expanded
+    },
+    errors() {
+      return [
+        ...this.run_suitability.errors.map(({ detail }) => `Pool ${detail}`),
+        ...this.libraries.flatMap((library) => {
+          const libraryName = `Library ${library.id} (${library.sample_name})`
+          return library.run_suitability.errors.map(({ detail }) => `${libraryName} ${detail}`)
+        }),
+      ]
     },
   },
   // TODO: need to add a a test for drag
