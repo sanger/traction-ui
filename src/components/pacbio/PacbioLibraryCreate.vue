@@ -17,7 +17,7 @@
       :static="isStatic"
       scrollable
     >
-      <b-form id="libraryCreateModal" @submit="createLibrary">
+      <b-form id="libraryCreateModal" @submit.prevent="createLibrary">
         <b-form-group id="selected-sample" label="The sample selected for this library is:">
           {{ selectedSample.sample_name }} ({{ selectedSample.source_identifier }})
         </b-form-group>
