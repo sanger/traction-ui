@@ -1253,10 +1253,10 @@
   dependencies:
     any-observable "^0.3.0"
 
-"@sanger/ui-styling@^2.0.0":
-  version "2.0.0"
-  resolved "https://registry.yarnpkg.com/@sanger/ui-styling/-/ui-styling-2.0.0.tgz#7d9b65a45c969e40092918f358042b1112eb3fb9"
-  integrity sha512-+EPGL80O2Z1d4vLH5hd1o+IddPokLGZrPVqqioqVUCFMk1/QvUOTaazqX+NLuzE40oki8OjSXEcjvMjLDtgHWg==
+"@sanger/ui-styling@^1.0.0":
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/@sanger/ui-styling/-/ui-styling-1.0.0.tgz#ba605f3fbcb8c9ca315b1b7bf76ae1155a8c385f"
+  integrity sha512-IEN0P/MPs0qthw/M7jEIp9q2+ioIEDMfOkGG440pAQEj7EqOsbYdhEDiwYaKbTNKkYdsw3VrIhKoR2d5rSbIhQ==
 
 "@scena/dragscroll@^1.1.1":
   version "1.1.1"
