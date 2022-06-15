@@ -113,6 +113,12 @@ export default {
         { key: 'selected', label: '' },
         { key: 'pool.id', label: 'pool ID', sortable: true, tdClass: 'pool-id' },
         { key: 'id', label: 'Library ID', sortable: true, tdClass: 'library-id' },
+        {
+          key: 'run_suitability',
+          label: 'Ready',
+          formatter: ({ ready_for_run }) => (ready_for_run ? '✓' : ''),
+          sortable: true,
+        },
         { key: 'sample_name', label: 'Sample Name', sortable: true, tdClass: 'sample-name' },
         { key: 'barcode', label: 'Barcode', sortable: true, tdClass: 'barcode' },
         { key: 'source_identifier', label: 'Source', sortable: true, tdClass: 'source-identifier' },
