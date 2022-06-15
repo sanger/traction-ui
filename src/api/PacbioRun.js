@@ -23,8 +23,9 @@ const wellDefaults = (systemName) => {
     movie_time: '',
     ccs_analysis_output: DefaultCcsAnalysisOutput,
     pre_extension_time: DefaultPreExtensionTime,
-    loading_target: DefaultLoadingTarget,
+    loading_target_p1_plus_p2: DefaultLoadingTarget,
     generate_hifi: DefaultGenerateHiFi(systemName),
+    binding_kit_box_barcode: '',
   }
 }
 
@@ -36,7 +37,7 @@ const build = (object) => {
       dna_control_complex_box_barcode: '',
       comments: '',
       system_name: DefaultSystemName,
-      wellDefault: wellDefaults(DefaultSystemName),
+      wellDefaults: wellDefaults(DefaultSystemName),
       plate: {
         wells: [],
         wellsToDelete: [], // Needed so we know the ID of wells that should be deleted

@@ -1,7 +1,22 @@
 <template>
   <div class="pacbioRunInfoEdit">
     <fieldset>
-      <legend class="form-control legend">{{ currentRun.name }}</legend>
+      <b-row>
+        <b-col>
+          <label for="run-name">Run name:</label>
+        </b-col>
+        <b-col>
+          <b-form-input
+            id="run-name"
+            :value="runName"
+            placeholder="Run name"
+            type="text"
+            width="48"
+            title="Run Name"
+            readonly
+          />
+        </b-col>
+      </b-row>
       <b-row>
         <b-col>
           <label for="default-sequencing-kit-box-barcode">Sequencing Kit Box Barcode:</label>
@@ -110,9 +125,6 @@ export default {
   border: solid;
   border-width: 1px;
   padding: 10px;
-}
-.legend {
-  background-color: #d3d3d3;
 }
 label {
   font-size: 1em;

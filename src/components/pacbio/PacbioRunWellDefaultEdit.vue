@@ -1,9 +1,6 @@
 <template>
   <div class="pacbioRunWellDefaultEdit">
     <fieldset>
-      <legend class="form-control legend">
-        Well metrics - to provide default values for new well
-      </legend>
       <b-row>
         <b-col>
           <label for="default-movie-time">Movie Time:</label>
@@ -11,7 +8,6 @@
         <b-col>
           <b-form-select
             id="default-movie-time"
-            :value="defaultMovieTime"
             :options="movieTimeOptions"
             title="Movie Time"
             @change="setDefaultMovieTime"
@@ -26,7 +22,6 @@
         <b-col>
           <b-form-select
             id="default-generate-hifi"
-            :value="defaultGenerateHifi"
             title="Generate HiFi"
             :options="generateHifiOptions[currentRun.system_name]"
             @change="setDefaultGenerateHifi"
@@ -41,7 +36,6 @@
         <b-col>
           <b-form-select
             id="default-ccs-analysis-output"
-            :value="defaultCcsAnalysisOutput"
             title="Ccs Analysis Output"
             :options="ccsAnalysisOutputOptions"
             @change="setDefaultCcsAnalysisOutput"
@@ -56,7 +50,6 @@
         <b-col>
           <b-form-input
             id="default-pre-extension-time"
-            :value="defaultPreExtensionTime"
             title="Pre-extension Time"
             placeholder="Pre-extension time"
             @change="setDefaultPreExtensionTime"
@@ -71,7 +64,6 @@
         <b-col>
           <b-form-input
             id="default-loading-target"
-            :value="defaultLoadingTarget"
             title="Loading Target (P1 + P2)"
             placeholder="Loading Target (P1 + P2)"
             type="number"
@@ -88,7 +80,6 @@
         <b-col>
           <b-form-input
             id="default-binding-kit-box-barcode"
-            :value="defaultBindingKitBoxBarcode"
             placeholder="Default Binding Kit Box Barcode for new wells"
             type="text"
             title="Default Binding Kit Box Barcode for new wells"
@@ -100,7 +91,7 @@
       <b-row>
         <b-col>
           <p style="float: left; font-size: 12px">
-            * Non-submitted fields, used for providing new wells with a default values
+            * Non-submitted fields, used for providing new wells with default values
           </p>
           <br />
         </b-col>
@@ -111,7 +102,7 @@
 
 <script>
 import { createNamespacedHelpers } from 'vuex'
-const { mapGetters, mapState, mapMutations } = createNamespacedHelpers('traction/pacbio/runs')
+const { mapGetters, mapMutations } = createNamespacedHelpers('traction/pacbio/runs')
 
 export default {
   name: 'PacbioRunWellDefaultEdit',
@@ -148,18 +139,6 @@ export default {
   },
   computed: {
     ...mapGetters(['currentRun']),
-    ...mapState({
-      /*
-          It provides default values when creating wells to autofill the well attributes
-          and it is not sent on update/create.
-        */
-      defaultMovieTime: (state) => state.currentRun.default_movie_time,
-      defaultGenerateHifi: (state) => state.currentRun.default_generate_hifi,
-      defaultCcsAnalysisOutput: (state) => state.currentRun.default_ccs_analysis_output,
-      defaultPreExtensionTime: (state) => state.currentRun.default_pre_extension_time,
-      defaultLoadingTarget: (state) => state.currentRun.default_loading_target,
-      defaultBindingKitBoxBarcode: (state) => state.currentRun.default_binding_kit_box_barcode,
-    }),
   },
   methods: {
     ...mapMutations([
@@ -179,9 +158,6 @@ export default {
   border: solid;
   border-width: 1px;
   padding: 10px;
-}
-.legend {
-  background-color: #d3d3d3;
 }
 label {
   font-size: 1em;

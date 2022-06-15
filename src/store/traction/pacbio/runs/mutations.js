@@ -6,6 +6,10 @@ const mutateRun = (key) => (state, val) => {
   state.currentRun[key] = val
 }
 
+const mutateWellDefaults = (key) => (state, val) => {
+  state.currentRun.wellDefaults[key] = val
+}
+
 const mutations = {
   setRuns: mutate('runs'),
   setCurrentRun: mutate('currentRun'),
@@ -13,12 +17,12 @@ const mutations = {
   setDNAControlComplexBoxBarcode: mutateRun('dna_control_complex_box_barcode'),
   setComments: mutateRun('comments'),
   setSystemName: mutateRun('system_name'),
-  setDefaultBindingKitBoxBarcode: mutateRun('default_binding_kit_box_barcode'),
-  setDefaultMovieTime: mutateRun('default_movie_time'),
-  setDefaultGenerateHifi: mutateRun('default_generate_hifi'),
-  setDefaultCcsAnalysisOutput: mutateRun('default_ccs_analysis_output'),
-  setDefaultPreExtensionTime: mutateRun('default_pre_extension_time'),
-  setDefaultLoadingTarget: mutateRun('default_loading_target'),
+  setDefaultBindingKitBoxBarcode: mutateWellDefaults('binding_kit_box_barcode'),
+  setDefaultMovieTime: mutateWellDefaults('movie_time'),
+  setDefaultGenerateHifi: mutateWellDefaults('generate_hifi'),
+  setDefaultCcsAnalysisOutput: mutateWellDefaults('ccs_analysis_output'),
+  setDefaultPreExtensionTime: mutateWellDefaults('pre_extension_time'),
+  setDefaultLoadingTarget: mutateWellDefaults('loading_target_p1_plus_p2'),
 
   createWell(state, well) {
     state.currentRun.plate.wells.push(well)

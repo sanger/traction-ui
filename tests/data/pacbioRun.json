@@ -12,10 +12,11 @@
         "dna_control_complex_box_barcode": "Lxxxxx10171760012319",
         "system_name": "Sequel II",
         "created_at": "10/17/2019 12:56",
-        "wellDefault": {
+        "wellDefaults": {
+          "binding_kit_box_barcode": "",
           "ccs_analysis_output": "Yes",
           "generate_hifi": "In SMRT Link",
-          "loading_target": 0.85,
+          "loading_target_p1_plus_p2": 0.85,
           "movie_time": "",
           "pre_extension_time": 2
         }

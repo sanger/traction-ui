@@ -7,32 +7,14 @@ const splitPosition = (position) => {
 }
 
 const buildWell = ({ state }, position) => {
-  let binding_kit_box_barcode = state.currentRun.default_binding_kit_box_barcode || ''
   let [row, column] = splitPosition(position)
-  state.currentRun.wellDefault.generate_hifi = PacbioRun.wellDefaults(
-    state.currentRun.system_name,
-  ).generate_hifi
-  const movie_time = state.currentRun.default_movie_time || state.currentRun.wellDefault.movie_time
-  const generate_hifi =
-    state.currentRun.default_generate_hifi || state.currentRun.wellDefault.generate_hifi
-  const ccs_analysis_output =
-    state.currentRun.default_ccs_analysis_output || state.currentRun.wellDefault.ccs_analysis_output
-  const pre_extension_time =
-    state.currentRun.default_pre_extension_time || state.currentRun.wellDefault.pre_extension_time
-  const loading_target_p1_plus_p2 =
-    state.currentRun.default_loading_target || state.currentRun.wellDefault.loading_target
   return {
     row,
     column,
-    movie_time,
     position,
     on_plate_loading_concentration: '',
-    generate_hifi,
-    ccs_analysis_output,
-    binding_kit_box_barcode,
     pools: [],
-    pre_extension_time,
-    loading_target_p1_plus_p2,
+    ...state.currentRun.wellDefaults,
   }
 }
 
@@ -61,7 +43,7 @@ const editRun = async ({ commit, getters }, runId) => {
 
   if (response.successful) {
     const run = response.deserialize.runs[0]
-    run.wellDefault = PacbioRun.wellDefaults(run.system_name)
+    run.wellDefaults = PacbioRun.wellDefaults(run.system_name)
     run.plate.wells.forEach((well) => {
       // Needed for well edit pool barcodes
       well.pools.forEach((pool) => (pool.barcode = pool.tube.barcode))
