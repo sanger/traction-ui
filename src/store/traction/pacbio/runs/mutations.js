@@ -1,3 +1,5 @@
+import Vue from 'vue'
+
 const mutate = (key) => (state, val) => {
   state[key] = val
 }
@@ -7,7 +9,7 @@ const mutateRun = (key) => (state, val) => {
 }
 
 const mutateWellDefaults = (key) => (state, val) => {
-  state.currentRun.wellDefaults[key] = val
+  Vue.set(state.currentRun.wellDefaults, key, val)
 }
 
 const mutations = {

@@ -40,6 +40,7 @@
             id="default-ccs-analysis-output"
             title="Ccs Analysis Output"
             :options="ccsAnalysisOutputOptions"
+            :value="currentRun.wellDefaults.ccs_analysis_output"
             @change="setDefaultCcsAnalysisOutput"
           >
           </b-form-select>
@@ -53,6 +54,7 @@
           <b-form-input
             id="default-pre-extension-time"
             title="Pre-extension Time"
+            :value="currentRun.wellDefaults.pre_extension_time"
             placeholder="Pre-extension time"
             @change="setDefaultPreExtensionTime"
           >
@@ -67,6 +69,7 @@
           <b-form-input
             id="default-loading-target"
             title="Loading Target (P1 + P2)"
+            :value="currentRun.wellDefaults.loading_target_p1_plus_p2"
             placeholder="Loading Target (P1 + P2)"
             type="number"
             :step="0.05"
@@ -82,6 +85,7 @@
         <b-col>
           <b-form-input
             id="default-binding-kit-box-barcode"
+            :value="currentRun.wellDefaults.binding_kit_box_barcode"
             placeholder="Default Binding Kit Box Barcode for new wells"
             type="text"
             title="Default Binding Kit Box Barcode for new wells"
