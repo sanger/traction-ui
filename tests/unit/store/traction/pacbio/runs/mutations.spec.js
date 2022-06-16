@@ -39,8 +39,7 @@ describe('createWell', () => {
   beforeEach(() => {
     run = Run.build()
     run.plate.wells = []
-    run.system_name = 'Sequel I'
-    run.default_binding_kit_box_barcode = 'default'
+    run.system_name = 'Sequel IIe'
     state = { currentRun: run }
   })
 
@@ -53,8 +52,7 @@ describe('createWell', () => {
     let well = state.currentRun.plate.wells.find((well) => well.position === position)
     expect(well).toBeDefined()
     expect(well.position).toEqual(position)
-    expect(well.generate_hifi).toEqual('In SMRT Link')
-    expect(well.binding_kit_box_barcode).toEqual('default')
+    expect(well.generate_hifi).toEqual('On Instrument')
   })
 })
 
@@ -65,7 +63,6 @@ describe('updateWell', () => {
     run = Run.build()
     run.plate.wells = []
     run.system_name = 'Sequel I'
-    run.default_binding_kit_box_barcode = 'default'
     state = { currentRun: run }
   })
 
@@ -89,7 +86,6 @@ describe('deleteWell', () => {
     run = Run.build()
     run.plate.wells = []
     run.system_name = 'Sequel I'
-    run.default_binding_kit_box_barcode = 'default'
     state = { currentRun: run }
   })
 

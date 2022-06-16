@@ -12,6 +12,14 @@ describe('Run.vue', () => {
       dna_control_complex_box_barcode: '',
       comments: '',
       system_name: '',
+      wellDefaults: {
+        binding_kit_box_barcode: '',
+        ccs_analysis_output: 'Yes',
+        generate_hifi: 'On Instrument',
+        loading_target_p1_plus_p2: 0.85,
+        movie_time: '',
+        pre_extension_time: 2,
+      },
       plate: {
         wells: [
           { position: 'A1', library: { barcode: '' } },
