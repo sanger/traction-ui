@@ -1,0 +1,22 @@
+[
+  {
+    "tube": "Lysis tubes",
+    "one_character_name": "L"
+  },
+  {
+    "tube": "Post extraction normalised tube for shear",
+    "one_character_name": "N"
+  },
+  {
+    "tube": "Megaruptor tube",
+    "one_character_name": "M"
+  },
+  {
+    "tube": "Post megaruptor tube",
+    "one_character_name": "F"
+  },
+  {
+    "tube": "Post SPRI tube",
+    "one_character_name": "S"
+  }
+]

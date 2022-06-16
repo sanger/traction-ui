@@ -1,40 +1,56 @@
 <template>
-  <b-container id="app" fluid>
-    <br />
+  <div class="flex flex-col min-h-screen">
     <!-- TODO: move this into a header component -->
-    <b-navbar ref="navbar" toggleable="md" type="dark" variant="info">
-      <b-navbar-brand id="traction-header" to="/dashboard"><h2>Traction</h2></b-navbar-brand>
-      <b-navbar-nav>
-        <b-nav-text
-          ><h2>{{ pipeline }} {{ page }}</h2></b-nav-text
-        >
-      </b-navbar-nav>
-    </b-navbar>
-    <Message
-      v-for="(message, index) in messages"
-      ref="alert"
-      :key="index"
-      v-bind="message"
-      @dismissed="dismiss(index)"
-    ></Message>
-    <router-view />
+    <div class="relative bg-gradient-to-tr from-sdb to-sdb-400">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6">
+        <div class="flex justify-between items-center py-4 md:justify-start md:space-x-10">
+          <div class="flex flex-row gap-x-2">
+            <img class="w-8 h-8" src="./images/wsi-icon-16.png" alt="Traction logo" />
+            <div class="text-white text-2xl">Traction</div>
+          </div>
+          <div class="flex justify-center">
+            <Link name="Home" link="/dashboard" view-type="2" />
+            <Link name="Label Printing" link="/label-printing" view-type="2" />
+          </div>
+        </div>
+      </div>
+    </div>
+    <Heading level="1">{{ pipeline }} {{ page }}</Heading>
+    <div class="flex flex-col mb-auto px-4 py-10">
+      <router-view class="text-center" />
+    </div>
+    <div class="message-container">
+      <Message
+        v-for="(message, index) in messages"
+        ref="alert"
+        :key="index"
+        v-bind="message"
+        @dismissed="dismiss(index)"
+      ></Message>
+    </div>
     <InfoFooter></InfoFooter>
-  </b-container>
+  </div>
 </template>
 
 <script>
 import InfoFooter from '@/components/InfoFooter'
 import Message from '@/components/Message'
+import Link from '@/components/Link'
+import Heading from '@/components/Heading'
 
+import PipelinesConfig from '@/config/PipelinesConfig'
 export default {
   components: {
     InfoFooter,
     Message,
+    Link,
+    Heading,
   },
   computed: {
     mergedRoute() {
       return Object.assign({}, ...this.$route.matched.map(({ meta }) => meta))
     },
+    pipelines: () => PipelinesConfig,
     pipeline() {
       // Merge the route meta attributes and pull out the pipeline
       return this.mergedRoute.pipeline
@@ -84,5 +100,13 @@ a {
     text-decoration: none;
     color: black;
   }
+}
+.message-container {
+  position: fixed;
+  bottom: 0;
+  right: 1em;
+  width: 30em;
+  z-index: 1051;
+  word-break: break-word;
 }
 </style>

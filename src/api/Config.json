@@ -91,6 +91,16 @@
     ]
   },
   {
+    "name": "printMyBarcodeV2",
+    "apiNamespace": "v2",
+    "baseURL": "VUE_APP_PRINTMYBARCODE_BASE_URL",
+    "resources": [
+      {
+        "name": "print_jobs"
+      }
+    ]
+  },
+  {
     "name": "sampleExtraction",
     "apiNamespace": "api/v1",
     "baseURL": "VUE_APP_SAMPLEEXTRACTION_BASE_URL",
@@ -108,6 +118,9 @@
     "resources": [
       {
         "name": "plates"
+      },
+      {
+        "name": "labware"
       }
     ]
   }

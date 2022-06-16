@@ -1,6 +1,7 @@
 import * as Actions from '@/store/sampleExtraction/actions'
 import { Data } from 'testHelper'
-import Response from '@/api/Response'
+import { newResponse } from '@/api/ResponseHelper'
+import deserialize from '@/api/JsonApi'
 
 describe('#getSampleExtractionTubesForBarcodes', () => {
   let commit, get, getters, barcodeList, failedResponse, emptyResponse
@@ -11,15 +12,24 @@ describe('#getSampleExtractionTubesForBarcodes', () => {
     getters = { sampleExtractionTubeRequest: { get: get } }
     barcodeList = ['NT4R']
 
-    emptyResponse = { data: { data: [] }, status: 200, statusText: 'Success' }
-    failedResponse = { data: { data: [] }, status: 500, statusText: 'Internal Server Error' }
+    emptyResponse = { success: true, data: { data: [] }, status: 200, statusText: 'Success' }
+    failedResponse = {
+      success: false,
+      data: { data: [] },
+      status: 500,
+      statusText: 'Internal Server Error',
+    }
   })
 
   it('successfully for samples', async () => {
     get.mockReturnValue(Data.SampleExtractionTubesWithSample)
 
-    let expectedResponse = new Response(Data.SampleExtractionTubesWithSample)
-    let expectedTubes = expectedResponse.deserialize.assets
+    const expectedResponse = newResponse({
+      ...Data.SampleExtractionTubesWithSample,
+      success: true,
+    })
+
+    let expectedTubes = deserialize(expectedResponse.data).assets
 
     let response = await Actions.getSampleExtractionTubesForBarcodes(
       { commit, getters },
@@ -33,7 +43,10 @@ describe('#getSampleExtractionTubesForBarcodes', () => {
   it('unsuccessfully', async () => {
     get.mockReturnValue(failedResponse)
 
-    let expectedResponse = new Response(failedResponse)
+    const expectedResponse = {
+      success: false,
+      errors: 'Sample Extraction tubes failed to be imported',
+    }
 
     let response = await Actions.getSampleExtractionTubesForBarcodes(
       { commit, getters },
@@ -47,7 +60,10 @@ describe('#getSampleExtractionTubesForBarcodes', () => {
   it('when no tubes exist', async () => {
     get.mockReturnValue(emptyResponse)
 
-    let expectedResponse = new Response(emptyResponse)
+    const expectedResponse = {
+      success: false,
+      errors: 'Sample Extraction tubes failed to be imported',
+    }
 
     let response = await Actions.getSampleExtractionTubesForBarcodes(
       { commit, getters },

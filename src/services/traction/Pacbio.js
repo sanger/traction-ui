@@ -1,5 +1,18 @@
-import handlePromise from '@/api/PromiseHelper'
-import { getPlates, transformPlates, PacbioSample } from '@/services/Sequencescape'
+import { handleResponse } from '@/api/ResponseHelper'
+import { PacbioSample, labwareForImport } from '@/services/Sequencescape'
+
+const checkBarcodes = (barcodes, foundBarcodes) =>
+  barcodes.filter((barcode) => !foundBarcodes.includes(barcode))
+
+const makePlateRequest = (request, plates) =>
+  plates.length > 0
+    ? request.create({ data: { data: { attributes: { plates } } } })
+    : { success: true, data: [] }
+
+const makeTubeRequest = (request, tubes) =>
+  tubes.length > 0
+    ? request.create({ data: { data: { attributes: { requests: tubes }, type: 'requests' } } })
+    : { success: true, data: [] }
 
 /*
   retrieve the plates from Sequencescape.
@@ -8,34 +21,37 @@ import { getPlates, transformPlates, PacbioSample } from '@/services/Sequencesca
   @param requests: {sequencescape: Request, traction: Request} the request that will be called
   @param barcodes: {string} list of barcodes e.g DN1,DN2,DN3
 */
-const createPlates = async ({ requests, barcodes, libraryType }) => {
-  const plates = await getPlates(requests.sequencescape, barcodes)
+const createLabware = async ({ requests, barcodes, libraryType, costCode }) => {
+  const { plates, tubes, foundBarcodes } = await labwareForImport({
+    request: requests.sequencescape,
+    barcodes,
+    sampleType: PacbioSample,
+    libraryType,
+    costCode,
+  })
 
-  if (plates.length === 0) {
-    return { status: 'error', message: 'Plates could not be retrieved from Sequencescape' }
+  const missingBarcodes = checkBarcodes(barcodes, foundBarcodes)
+  if (missingBarcodes.length > 0) {
+    return {
+      status: 'error',
+      message: `Labware could not be retrieved from Sequencescape: ${missingBarcodes}`,
+    }
   }
 
-  const response = await handlePromise(
-    requests.traction.create({
-      data: {
-        data: {
-          attributes: {
-            plates: transformPlates({
-              plates,
-              sampleType: PacbioSample,
-              libraryType,
-            }),
-          },
-        },
-      },
-    }),
-  )
+  const plateRequest = makePlateRequest(requests.traction.plates, plates)
+  const tubeRequest = makeTubeRequest(requests.traction.requests, tubes)
 
-  if (response.successful) {
-    return { status: 'success', message: `Plates created with barcodes ${barcodes}` }
+  const plateResponse = await handleResponse(plateRequest)
+  const tubeResponse = await handleResponse(tubeRequest)
+
+  if (plateResponse.success && tubeResponse.success) {
+    return { status: 'success', message: `Labware created with barcodes ${barcodes}` }
   } else {
-    return { status: 'error', ...response.errors }
+    return {
+      status: 'error',
+      message: [plateResponse.errors, tubeResponse.errors].filter((a) => a).join(', '),
+    }
   }
 }
 
-export { createPlates }
+export { createLabware }

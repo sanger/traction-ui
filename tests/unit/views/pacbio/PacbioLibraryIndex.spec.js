@@ -26,6 +26,10 @@ describe('Libraries.vue', () => {
           id: '1',
           type: 'pools',
         },
+        run_suitability: {
+          ready_for_run: true,
+          errors: [],
+        },
       },
       {
         id: 2,
@@ -44,6 +48,10 @@ describe('Libraries.vue', () => {
         pool: {
           id: '1',
           type: 'pools',
+        },
+        run_suitability: {
+          ready_for_run: true,
+          errors: [],
         },
       },
     ]

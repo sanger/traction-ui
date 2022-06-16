@@ -79,7 +79,36 @@
         >
         </b-form-input>
       </b-form-group>
+      <b-form-group
+        id="loadingTarget-group"
+        label="Loading Target (P1 + P2): (0 to 1) "
+        label-for="loadingTarget"
+      >
+        <b-form-input
+          id="loadingTarget"
+          ref="loadingTarget"
+          v-model="currentWell.loading_target_p1_plus_p2"
+          placeholder="Adaptive loading disabled - Add loading target to enable"
+          type="number"
+          :min="0"
+          :max="1"
+          :step="0.05"
+          lazy-formatter
+          :formatter="formatLoadingTargetValue"
+        >
+        </b-form-input>
+      </b-form-group>
     </b-form>
+
+    <template>
+      <b-button
+        id="disableAdaptiveLoadingBtn"
+        variant="primary"
+        @click="disableAdaptiveLoadingInput()"
+      >
+        Disable Adaptive Loading
+      </b-button>
+    </template>
 
     <b-table id="wellPools" stacked :items="currentWell.pools" :fields="wellPoolsFields">
       <template v-slot:table-caption>Pools</template>
@@ -161,6 +190,7 @@ export default {
         ],
       },
       ccsAnalysisOutputOptions: ['Yes', 'No'],
+      decimalPercentageRegex: /^(?:1(?:\.0{0,2})?|0?(?:\.\d{0,2})?)$/,
     }
   },
   computed: {
@@ -178,6 +208,18 @@ export default {
       if (this.currentWell.generate_hifi === 'Do Not Generate') {
         this.currentWell.ccs_analysis_output = 'No'
       }
+    },
+    formatLoadingTargetValue(val) {
+      if (val) {
+        if (this.decimalPercentageRegex.test(val)) {
+          return val
+        } else {
+          return isNaN(this.loadingTargetValue) ? 0 : this.loadingTargetValue
+        }
+      }
+    },
+    disableAdaptiveLoadingInput() {
+      this.currentWell.loading_target_p1_plus_p2 = ''
     },
     async showModalForPosition() {
       if (!this.well(this.position)) {

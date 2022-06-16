@@ -1,1 +1,7 @@
-["g216bc", "h105bc"]
+[
+  { "printerName": "g216bc" },
+  { "printerName": "h105bc" },
+  { "printerName": "stub" },
+  { "printerName": "aPrinterName" },
+  { "printerName": "ssrtubebc-sq1" }
+]

@@ -1,6 +1,7 @@
 import { dataToObjectById } from '@/api/JsonApi'
 import Vue from 'vue'
 import { newLibrary } from '@/store/traction/pacbio/poolCreate/pool.js'
+import defaultState from './state'
 
 const populateById =
   (resource, { includeRelationships = false } = {}) =>
@@ -25,6 +26,19 @@ export default {
       Vue.set(state.selected.plates, `${id}`, { id: id, selected: true })
     } else {
       Vue.delete(state.selected.plates, `${id}`)
+    }
+  },
+  /**
+   * Flags tube with `id` as selected. (Or unselected if selected is false)
+   * @param {Object} state The Vuex state object
+   * @param {String} id The id of the tube
+   * @param {Boolean} selected Whether the tube is selected (defaults to true)
+   */
+  selectTube: (state, { id, selected = true }) => {
+    if (selected) {
+      Vue.set(state.selected.tubes, `${id}`, { id: id, selected: true })
+    } else {
+      Vue.delete(state.selected.tubes, `${id}`)
     }
   },
   /**
@@ -54,6 +68,12 @@ export default {
    * @param {Array.{}} plates The plate resources to populate the store
    */
   populatePlates: populateById('plates', { includeRelationships: true }),
+  /**
+   * Populated with resources via APi calls from the actions
+   * @param {Object} state The VueXState object
+   * @param {Array.{}} tubes The tube resources to populate the store
+   */
+  populateTubes: populateById('tubes', { includeRelationships: true }),
   /**
    * Populated with resources via APi calls from the actions
    * @param {Object} state The VueXState object
@@ -122,13 +142,9 @@ export default {
     Vue.set(libraries, key, Object.assign({}, libraries[key], library))
   },
   // This method clears the editable data in the pool/new page
+  // We keep the resources though
   clearPoolData: (state) => {
-    state.libraries = {}
-    state.pool = {}
-    state.tube = {}
-    state.selected = {
-      tagSet: {},
-      plates: {},
-    }
+    const new_state = defaultState()
+    Object.assign(state, new_state, { resources: state.resources })
   },
 }

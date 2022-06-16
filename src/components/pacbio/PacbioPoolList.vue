@@ -40,7 +40,7 @@ export default {
 }
 </script>
 
-<style>
+<style scoped>
 .pools {
   border: solid;
   border-width: 1px;
@@ -49,6 +49,6 @@ export default {
 
 .list-group {
   max-height: 400px;
-  overflow: scroll;
+  overflow-y: auto;
 }
 </style>

@@ -2,6 +2,7 @@ import handlePromise from '@/api/PromiseHelper'
 import * as PacbioRun from '@/api/PacbioRun'
 const pre_extension_time = 2
 const ccs_analysis_output = 'Yes'
+const loading_target_p1_plus_p2_default = 0.85
 
 const generateHiFiDefault = (systemName) => {
   switch (systemName) {
@@ -24,6 +25,8 @@ const buildWell = ({ state }, position) => {
   let generate_hifi = generateHiFiDefault(state.currentRun.system_name)
   let binding_kit_box_barcode = state.currentRun.default_binding_kit_box_barcode || ''
   let [row, column] = splitPosition(position)
+  const loading_target_p1_plus_p2 =
+    state.currentRun.loading_target_p1_plus_p2 || loading_target_p1_plus_p2_default
   return {
     row,
     column,
@@ -35,6 +38,7 @@ const buildWell = ({ state }, position) => {
     binding_kit_box_barcode,
     pools: [],
     pre_extension_time,
+    loading_target_p1_plus_p2,
   }
 }
 

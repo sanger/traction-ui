@@ -103,6 +103,12 @@ describe('PacbioWellModal', () => {
     it('has a bindingKitBoxBarcode', () => {
       expect(wrapper.find('.bindingKitBoxBarcode')).toBeDefined()
     })
+    it('has a loadingTarget', () => {
+      expect(wrapper.find('.loadingTarget')).toBeDefined()
+    })
+    it('has a useAdaptiveLoading', () => {
+      expect(wrapper.find('.useAdaptiveLoading')).toBeDefined()
+    })
     it('has a updateBtn', () => {
       expect(wrapper.find('#updateBtn')).toBeDefined()
     })
