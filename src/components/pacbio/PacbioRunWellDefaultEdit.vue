@@ -9,6 +9,7 @@
           <b-form-select
             id="default-movie-time"
             :options="movieTimeOptions"
+            :value="currentRun.wellDefaults.movie_time"
             title="Movie Time"
             @change="setDefaultMovieTime"
           >
@@ -24,6 +25,7 @@
             id="default-generate-hifi"
             title="Generate HiFi"
             :options="generateHifiOptions[currentRun.system_name]"
+            :value="currentRun.wellDefaults.generate_hifi"
             @change="setDefaultGenerateHifi"
           >
           </b-form-select>
