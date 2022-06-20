@@ -1,20 +1,5 @@
 import handlePromise from '@/api/PromiseHelper'
 import * as PacbioRun from '@/api/PacbioRun'
-const pre_extension_time = 2
-const ccs_analysis_output = 'Yes'
-const loading_target_p1_plus_p2_default = 0.85
-
-const generateHiFiDefault = (systemName) => {
-  switch (systemName) {
-    case 'Sequel I':
-    case 'Sequel II':
-      return 'In SMRT Link'
-    case 'Sequel IIe':
-      return 'On Instrument'
-    default:
-      return ''
-  }
-}
 
 const splitPosition = (position) => {
   // match() returns [original, row, column] e.g "A10 => ["A10", "A", "10"]
@@ -22,23 +7,14 @@ const splitPosition = (position) => {
 }
 
 const buildWell = ({ state }, position) => {
-  let generate_hifi = generateHiFiDefault(state.currentRun.system_name)
-  let binding_kit_box_barcode = state.currentRun.default_binding_kit_box_barcode || ''
   let [row, column] = splitPosition(position)
-  const loading_target_p1_plus_p2 =
-    state.currentRun.loading_target_p1_plus_p2 || loading_target_p1_plus_p2_default
   return {
     row,
     column,
-    movie_time: '',
     position,
     on_plate_loading_concentration: '',
-    generate_hifi,
-    ccs_analysis_output,
-    binding_kit_box_barcode,
     pools: [],
-    pre_extension_time,
-    loading_target_p1_plus_p2,
+    ...state.currentRun.wellDefaults,
   }
 }
 
@@ -67,6 +43,7 @@ const editRun = async ({ commit, getters }, runId) => {
 
   if (response.successful) {
     const run = response.deserialize.runs[0]
+    run.wellDefaults = PacbioRun.wellDefaults(run.system_name)
     run.plate.wells.forEach((well) => {
       // Needed for well edit pool barcodes
       well.pools.forEach((pool) => (pool.barcode = pool.tube.barcode))
