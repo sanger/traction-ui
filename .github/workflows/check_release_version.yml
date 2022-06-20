@@ -20,7 +20,7 @@ jobs:
             .release-version
           
       - name: Run step looking for change in the release version
-        if: !github.event.pull_request.draft
+        if: ${{ !github.event.pull_request.draft }}
         run: >-
           if [ "${{ steps.changed-files-specific.outputs.any_changed }}" ==  'false' ]; then
             echo "Please change the release version number"
