@@ -20,7 +20,9 @@ jobs:
             .release-version
           
       - name: Run step looking for changes in the above listed file
-        if: steps.changed-files-specific.outputs.any_changed == 'false'
         run: >-
-          echo "Please change the release version number"
-          exit 1;
+          if [ "${{ steps.changed-files-specific.outputs.any_changed }}" ==  'false' ]; then
+            echo "Please change the release version number"
+            exit 1;
+          fi
+          
