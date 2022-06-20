@@ -16,6 +16,9 @@ jobs:
         id: changed-files-specific
         uses: tj-actions/changed-files@v23
         with:
+          owner: Sanger
+          repo: Traction-UI
+          excludes: prerelease, draft
           files: |
             .release-version
           
