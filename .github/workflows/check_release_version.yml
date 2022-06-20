@@ -4,7 +4,7 @@ name: Check release version
 on:
   pull_request:
     branches:
-      - master
+      - dpl-338
 
 jobs:
   check:
