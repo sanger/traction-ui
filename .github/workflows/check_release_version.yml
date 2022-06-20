@@ -16,13 +16,11 @@ jobs:
         id: changed-files-specific
         uses: tj-actions/changed-files@v23
         with:
-          owner: Sanger
-          repo: Traction-UI
-          excludes: prerelease, draft
           files: |
             .release-version
           
       - name: Run step looking for change in the release version
+        if: ${{ !(github.event.pull_request.draft || github.event.release.prerelease)}}
         run: >-
           if [ "${{ steps.changed-files-specific.outputs.any_changed }}" ==  'false' ]; then
             echo "Please change the release version number"
