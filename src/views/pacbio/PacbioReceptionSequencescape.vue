@@ -1,46 +1,51 @@
 <template>
-  <div class="reception">
+  <div>
     <b-modal v-model="busy" hide-footer hide-header no-close-on-backdrop>
       <spinner size="huge" message="Importing labware..."></spinner>
     </b-modal>
     <div class="form-group">
-      <label for="barcodes">Barcodes:</label>
-      <b-form-textarea
-        id="barcodes"
-        v-model="barcodes"
-        placeholder="Scan barcodes to import..."
-        rows="4"
-        max-rows="10"
-        name="barcodes"
-      />
-    </div>
-    <b-row>
-      <b-col>
-        <LibraryTypeSelect v-model="libraryType" pipeline="pacbio" />
-
-        <b-form-group
-          label-cols="4"
-          label-cols-lg="2"
-          description="When not provided default is ToL (S4773)"
-          label="Cost Code"
-          label-for="cost_code"
+      <div class="flex flex-col gap-y-4">
+        <Heading level="4" :show-border="true">
+          <div class="flex flex-row gap-x-2"><BarcodeIcon />Scan Barcodes</div></Heading
         >
-          <b-form-input id="cost_code" v-model="costCode"></b-form-input>
-        </b-form-group>
-      </b-col>
-
-      <b-col>
+        <div class="sm:px-6 lg:px-8">
+          <b-form-textarea
+            id="barcodes"
+            v-model="barcodes"
+            placeholder="Scan barcodes to import..."
+            rows="4"
+            max-rows="10"
+            name="barcodes"
+            class="text-base"
+          />
+        </div>
+      </div>
+      <div class="flex flex-col gap-y-4 mt-10">
+        <Heading level="4" :show-border="true">Request Options</Heading>
+        <div class="flex grid grid-cols-2 sm:px-6 lg:px-8 gap-x-8 justify-left contents-centre">
+          <LibraryTypeSelect v-model="libraryType" pipeline="pacbio" :label-cols="0" />
+          <b-form-group
+            label-cols="0"
+            description="When not provided default is ToL (S4773)"
+            label="Cost Code"
+            label-for="cost_code"
+            label-align="left"
+            label-size="sm"
+            class="text-base"
+          >
+            <b-form-input id="cost_code" v-model="costCode"></b-form-input>
+          </b-form-group>
+        </div>
         <b-button
           id="createTractionPlates"
-          class="scanButton"
+          class="text-sm ml-8 mr-8 text-white border-sdb-400 bg-sdb-400 shadow-sm hover:bg-sdb focus:border-sdb focus:shadow-outline-sdb active:bg-sdb-600"
           variant="success"
-          block
           :disabled="isDisabled"
           @click="createTractionPlates"
           >Import {{ barcodeCount }}</b-button
         >
-      </b-col>
-    </b-row>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -49,12 +54,16 @@ import Spinner from 'vue-simple-spinner'
 import Api from '@/mixins/Api'
 import { createLabware } from '@/services/traction/Pacbio'
 import LibraryTypeSelect from '@/components/shared/LibraryTypeSelect'
+import Heading from '@/components/Heading'
+import BarcodeIcon from '../../icons/BarcodeIcon.vue'
 
 export default {
   name: 'PacbioReceptionSequencescape',
   components: {
     Spinner,
     LibraryTypeSelect,
+    Heading,
+    BarcodeIcon,
   },
   mixins: [Api],
   data() {

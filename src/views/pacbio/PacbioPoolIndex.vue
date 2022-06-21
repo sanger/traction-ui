@@ -80,6 +80,11 @@
             :filter="filter"
           >
           </b-table>
+          <ul v-if="!row.item.run_suitability.valid">
+            <li v-for="(error, index) in row.item.run_suitability.formattedErrors" :key="index">
+              {{ error }}
+            </li>
+          </ul>
         </b-card>
       </template>
     </b-table>
@@ -129,6 +134,12 @@ export default {
       fields: [
         { key: 'selected', label: '' },
         { key: 'id', label: 'Pool ID', sortable: true, tdClass: 'pool-id' },
+        {
+          key: 'run_suitability',
+          label: 'Ready',
+          formatter: ({ ready_for_run }) => (ready_for_run ? '✓' : ''),
+          sortable: true,
+        },
         { key: 'barcode', label: 'Pool Barcode', sortable: true, tdClass: 'barcode' },
         { key: 'source_identifier', label: 'Source', sortable: true, tdClass: 'source-identifier' },
         { key: 'volume', label: 'Volume', sortable: true, tdClass: 'volume' },
