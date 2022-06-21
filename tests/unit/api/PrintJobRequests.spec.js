@@ -118,7 +118,7 @@ describe('PrintJobRequests', () => {
         data: {
           attributes: {
             printer_name: printerName,
-            label_template_id: process.env.VUE_APP_SAPHYR_LABEL_TEMPLATE_ID,
+            label_template_id: import.meta.env.VITE_SAPHYR_LABEL_TEMPLATE_ID,
             labels: labels,
           },
         },
@@ -137,7 +137,7 @@ describe('PrintJobRequests', () => {
         data: {
           attributes: {
             printer_name: printerName,
-            label_template_id: process.env.VUE_APP_PACBIO_LABEL_TEMPLATE_ID,
+            label_template_id: import.meta.env.VITE_PACBIO_LABEL_TEMPLATE_ID,
             labels: labels,
           },
         },
@@ -253,7 +253,7 @@ describe('PrintJobRequests', () => {
   describe('printMyBarcodeRequest', () => {
     it('returns a pmb request', () => {
       let request = PrintJobRequests.printMyBarcodeRequest()
-      expect(request.rootURL).toEqual(process.env.VUE_APP_PRINTMYBARCODE_BASE_URL)
+      expect(request.rootURL).toEqual(import.meta.env.VITE_PRINTMYBARCODE_BASE_URL)
       expect(request.apiNamespace).toEqual('v1')
     })
   })

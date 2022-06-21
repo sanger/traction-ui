@@ -168,7 +168,7 @@ export default {
       return `${text}-${id}`
     },
     generateSampleSheetPath(id) {
-      return process.env.VUE_APP_TRACTION_BASE_URL + '/v1/pacbio/runs/' + id + '/sample_sheet'
+      return import.meta.env.VITE_TRACTION_BASE_URL + '/v1/pacbio/runs/' + id + '/sample_sheet'
     },
     updateRun(status, id) {
       try {

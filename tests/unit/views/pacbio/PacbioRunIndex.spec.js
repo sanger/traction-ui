@@ -308,7 +308,7 @@ describe('Runs.vue', () => {
 
     it('has the correct href link', () => {
       expect(link.attributes('href')).toBe(
-        process.env.VUE_APP_TRACTION_BASE_URL + '/v1/pacbio/runs/' + id + '/sample_sheet',
+        import.meta.env.VITE_TRACTION_BASE_URL + '/v1/pacbio/runs/' + id + '/sample_sheet',
       )
     })
   })

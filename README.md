@@ -20,11 +20,11 @@ This project uses dotenv library for environmental config. To specify the requir
 `.env` files by creating a `.env.<environment>.local` file and add the config to it. The essential
 config required:
 
-    VUE_APP_TRACTION_BASE_URL=<url>
-    VUE_APP_PRINTMYBARCODE_BASE_URL=<url>
-    VUE_APP_SAMPLEEXTRACTION_BASE_URL=<url>
-    VUE_APP_LABEL_TEMPLATE_ID=<id>
-    VUE_APP_LOG=false
+    VITE_TRACTION_BASE_URL=<url>
+    VITE_PRINTMYBARCODE_BASE_URL=<url>
+    VITE_SAMPLEEXTRACTION_BASE_URL=<url>
+    VITE_LABEL_TEMPLATE_ID=<id>
+    VITE_LOG=false
 
 ### Setup Steps
 
@@ -59,9 +59,9 @@ To run the app and have hot-reloads for development:
 
     You will need to make the following changes to get it working:
     - if you don't already have one create `.env.production.local` in the root folder as a copy of `.env.production`
-    - change `VUE_APP_TRACTION_BASE_URL=REPLACE_VUE_APP_TRACTION_BASE_URL` to `VUE_APP_TRACTION_BASE_URL=http://traction`
-    - change `VUE_APP_SAMPLEEXTRACTION_BASE_URL=REPLACE_VUE_APP_SAMPLEEXTRACTION_BASE_URL` to `VUE_APP_SAMPLEEXTRACTION_BASE_URL=http://samples-extraction`
-    - change to `VUE_APP_SEQUENCESCAPE_BASE_URL=REPLACE_VUE_APP_SEQUENCESCAPE_BASE_URL` to `VUE_APP_SEQUENCESCAPE_BASE_URL=http://sequencescape`
+    - change `VITE_TRACTION_BASE_URL=REPLACE_VITE_TRACTION_BASE_URL` to `VITE_TRACTION_BASE_URL=http://traction`
+    - change `VITE_SAMPLEEXTRACTION_BASE_URL=REPLACE_VITE_SAMPLEEXTRACTION_BASE_URL` to `VITE_SAMPLEEXTRACTION_BASE_URL=http://samples-extraction`
+    - change to `VITE_SEQUENCESCAPE_BASE_URL=REPLACE_VITE_SEQUENCESCAPE_BASE_URL` to `VITE_SEQUENCESCAPE_BASE_URL=http://sequencescape`
 
 ## CSS
 - To generate Tailwind css independently you can run:

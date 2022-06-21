@@ -2,7 +2,7 @@
   {
     "name": "traction",
     "apiNamespace": "v1",
-    "baseURL": "VUE_APP_TRACTION_BASE_URL",
+    "baseURL": "VITE_TRACTION_BASE_URL",
     "resources": [
       {
         "name": "samples"
@@ -83,7 +83,7 @@
   {
     "name": "printMyBarcode",
     "apiNamespace": "v1",
-    "baseURL": "VUE_APP_PRINTMYBARCODE_BASE_URL",
+    "baseURL": "VITE_PRINTMYBARCODE_BASE_URL",
     "resources": [
       {
         "name": "print_jobs"
@@ -93,7 +93,7 @@
   {
     "name": "printMyBarcodeV2",
     "apiNamespace": "v2",
-    "baseURL": "VUE_APP_PRINTMYBARCODE_BASE_URL",
+    "baseURL": "VITE_PRINTMYBARCODE_BASE_URL",
     "resources": [
       {
         "name": "print_jobs"
@@ -103,7 +103,7 @@
   {
     "name": "sampleExtraction",
     "apiNamespace": "api/v1",
-    "baseURL": "VUE_APP_SAMPLEEXTRACTION_BASE_URL",
+    "baseURL": "VITE_SAMPLEEXTRACTION_BASE_URL",
     "resources": [
       {
         "name": "assets",
@@ -114,7 +114,7 @@
   {
     "name": "sequencescape",
     "apiNamespace": "api/v2",
-    "baseURL": "VUE_APP_SEQUENCESCAPE_BASE_URL",
+    "baseURL": "VITE_SEQUENCESCAPE_BASE_URL",
     "resources": [
       {
         "name": "plates"

@@ -59,7 +59,7 @@ const handleResponse = async (promise) => {
     // we only want this to output during development or production
     // eslint has got this wrong as it is always a string
     // eslint-disable-next-line no-extra-boolean-cast
-    if (!!+process.env.VUE_APP_LOG) {
+    if (!!+import.meta.env.VITE_LOG) {
       console.error(error)
     }
 

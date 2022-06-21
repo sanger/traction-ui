@@ -15,7 +15,7 @@ describe('Api', () => {
   let wrapper, cmp, api
 
   beforeEach(() => {
-    api = build({ config, environment: process.env })
+    api = build({ config, environment: import.meta.env })
     wrapper = mount(Cmp, { store, localVue })
     cmp = wrapper.vm
   })

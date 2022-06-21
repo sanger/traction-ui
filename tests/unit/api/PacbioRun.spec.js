@@ -65,7 +65,7 @@ describe('Run', () => {
       run.plate.wells[0] = { position: 'A1', pools: [{ id: 1 }] }
       run.plate.wells[1] = { position: 'A2', pools: [{ id: 2 }] }
 
-      api = build({ config: Api.Config, environment: process.env })
+      api = build({ config: Api.Config, environment: import.meta.env })
       pacbioRequest = api.traction.pacbio
       pacbioRequest.runs.create = jest.fn()
       pacbioRequest.runs.plates.create = jest.fn()
@@ -311,7 +311,7 @@ describe('Run', () => {
         },
       }
 
-      api = build({ config: Api.Config, environment: process.env })
+      api = build({ config: Api.Config, environment: import.meta.env })
       pacbioRequest = api.traction.pacbio
       pacbioRequest.runs.update = jest.fn()
       pacbioRequest.runs.wells.update = jest.fn()
@@ -484,7 +484,7 @@ describe('Run', () => {
     let api, pacbioRequest
 
     beforeEach(() => {
-      api = build({ config: Api.Config, environment: process.env })
+      api = build({ config: Api.Config, environment: import.meta.env })
       pacbioRequest = api.traction.pacbio
       pacbioRequest.runs.destroy = jest.fn()
     })
