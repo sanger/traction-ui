@@ -13,6 +13,7 @@ module.exports = {
     'no-console': 'off', // It may be worth re-enabling this is we add proper error logging
     'no-debugger': process.env.NODE_ENV === 'production' ? 'error' : 'warn',
   },
+  ignorePatterns: ['dist/**/*.js'],
   overrides: [
     {
       // this override is for the SVG tag which is found in the parent component
