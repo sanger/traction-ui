@@ -47,7 +47,7 @@ describe('#newRun', () => {
 
   it('successfully', async () => {
     let newRun = Run.build()
-    Run.build = jest.fn()
+    jest.spyOn(Run, 'build')
     Run.build.mockReturnValue(newRun)
 
     Actions.newRun({ commit })
@@ -62,8 +62,7 @@ describe('#createRun', () => {
     mockRun = new Response(Data.PacbioRun).deserialize.runs[0]
     pacbioRequests = jest.fn()
     getters = { currentRun: mockRun, pacbioRequests: pacbioRequests }
-
-    Run.create = jest.fn()
+    jest.spyOn(Run, 'create').mockImplementation(() => {})
   })
 
   it('successfully', async () => {
@@ -101,7 +100,7 @@ describe('#editRun', () => {
 })
 
 describe('#updateRun', () => {
-  let getters, pacbioRequests, mockRun, dispatch
+  let getters, pacbioRequests, mockRun, dispatch, update
 
   beforeEach(() => {
     mockRun = new Response(Data.PacbioRun).deserialize.runs[0]
@@ -109,24 +108,28 @@ describe('#updateRun', () => {
     getters = { currentRun: mockRun, pacbioRequests: pacbioRequests }
     dispatch = jest.fn()
 
-    Run.update = jest.fn()
+    update = jest.spyOn(Run, 'update')
+  })
+
+  afterEach(() => {
+    update.mockRestore()
   })
 
   it('when successful, it doesnt rollback', async () => {
-    Run.update.mockReturnValue([])
+    update.mockResolvedValue([])
     let resp = await Actions.updateRun({ getters, dispatch })
 
-    expect(Run.update).toHaveBeenCalledWith(mockRun, pacbioRequests)
-    expect(Run.update).toHaveBeenCalledTimes(1)
+    expect(update).toHaveBeenCalledWith(mockRun, pacbioRequests)
+    expect(update).toHaveBeenCalledTimes(1)
     expect(resp).toEqual([])
   })
 
   it('when unsuccessful, it does rollback', async () => {
-    Run.update.mockReturnValue([{ error: 'this is an error' }])
+    update.mockResolvedValue([{ error: 'this is an error' }])
     let resp = await Actions.updateRun({ getters, dispatch })
 
-    expect(Run.update).toHaveBeenCalledWith(mockRun, pacbioRequests)
-    expect(Run.update).toHaveBeenCalledTimes(2)
+    expect(update).toHaveBeenCalledWith(mockRun, pacbioRequests)
+    expect(update).toHaveBeenCalledTimes(2)
     expect(resp).toEqual([{ error: 'this is an error' }])
   })
 })

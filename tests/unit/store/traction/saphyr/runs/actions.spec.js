@@ -138,8 +138,7 @@ describe('#newRun', () => {
 
   it('successfully', async () => {
     let newRun = Run.build()
-    Run.build = jest.fn()
-    Run.build.mockReturnValue(newRun)
+    jest.spyOn(Run, 'build').mockImplementation(() => newRun)
 
     Actions.newRun({ commit })
     expect(commit).toHaveBeenCalledWith('setCurrentRun', newRun)
@@ -153,8 +152,7 @@ describe('#createRun', () => {
     mockRun = new Response(Data.Runs).deserialize.runs[0]
     saphyrRequests = jest.fn()
     getters = { currentRun: mockRun, saphyrRequests: saphyrRequests }
-
-    Run.create = jest.fn()
+    jest.spyOn(Run, 'create').mockImplementation(() => {})
   })
 
   it('successfully', async () => {
@@ -170,8 +168,7 @@ describe('#updateRun', () => {
     mockRun = new Response(Data.Runs).deserialize.runs[0]
     saphyrRequests = jest.fn()
     getters = { currentRun: mockRun, saphyrRequests: saphyrRequests }
-
-    Run.update = jest.fn()
+    jest.spyOn(Run, 'update').mockImplementation(() => {})
   })
 
   it('successfully', async () => {

@@ -11,7 +11,7 @@ module.exports = {
   ],
   rules: {
     'no-console': 'off', // It may be worth re-enabling this is we add proper error logging
-    'no-debugger': import.meta.env.NODE_ENV === 'production' ? 'error' : 'off',
+    'no-debugger': process.env.NODE_ENV === 'production' ? 'error' : 'warn',
   },
   overrides: [
     {
@@ -22,7 +22,4 @@ module.exports = {
       },
     },
   ],
-  parserOptions: {
-    parser: 'babel-eslint',
-  },
 }
