@@ -9,10 +9,11 @@
     "build": "npm-run-all build:css build:js",
     "build:js": "vite build",
     "test:unit": "jest",
-    "test:e2e": "vue-cli-service test:e2e",
+    "test:e2e": "npm-run-all -p start test:cypress",
+    "test:cypress": "cypress open",
     "lint": "eslint .",
     "pretty": "prettier --check '**/*'",
-    "test": "jest && vue-cli-service test:e2e",
+    "test": "test:unit && test:e2e",
     "serve:css": "postcss src/styles/tailwind.css -o src/styles/index.css",
     "build:css": "postcss src/styles/tailwind.css -o src/styles/index.css --env production"
   },
