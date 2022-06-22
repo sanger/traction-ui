@@ -4,7 +4,7 @@ name: Check release version
 on:
   workflow_dispatch:
     branches:
-      - dpl-338
+      - dpl-338-testing
 
 jobs:
   check:
