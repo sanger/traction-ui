@@ -5,6 +5,7 @@ on:
   pull_request:
     branches:
       - dpl-338
+      - dpl-338-testing
 
 jobs:
   check:
@@ -21,13 +22,10 @@ jobs:
           
       - name: Run step looking for change in the release version
         run: >-
-          echo "${{github.event.pull_request}}"
-          echo "${{github.event.pull_request.draft}}"
-          # echo "${{github.event.pull_request.prerelease}}"
-          # if [ ("${{ github.event.pull_request.draft}}" == 'true') || ("${{ github.event.pull_request.prerelease }}" == 'true') ] == 'false'; then
-          #   if [ "${{ steps.changed-files-specific.outputs.any_changed }}" ==  'false' ]; then
-          #     echo "Please change the release version number"
-          #     exit 1;
-          #   fi
-          # fi
+          if [ ("${{ github.event.pull_request.draft}}" == 'true') || ("${{ github.event.pull_request.prerelease }}" == 'true') ] == 'false'; then
+            if [ "${{ steps.changed-files-specific.outputs.any_changed }}" ==  'false' ]; then
+              echo "Please change the release version number"
+              exit 1;
+            fi
+          fi
           
