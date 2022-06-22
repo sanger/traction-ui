@@ -3,6 +3,31 @@ import handlePromise from './PromiseHelper'
 // TODO: fix requests here for DPL-022
 
 const DefaultSystemName = 'Sequel IIe'
+const DefaultPreExtensionTime = 2
+const DefaultCcsAnalysisOutput = 'Yes'
+const DefaultLoadingTarget = 0.85
+const DefaultGenerateHiFi = (systemName) => {
+  switch (systemName) {
+    case 'Sequel I':
+    case 'Sequel II':
+      return 'In SMRT Link'
+    case 'Sequel IIe':
+      return 'On Instrument'
+    default:
+      return ''
+  }
+}
+
+const wellDefaults = (systemName) => {
+  return {
+    movie_time: '',
+    ccs_analysis_output: DefaultCcsAnalysisOutput,
+    pre_extension_time: DefaultPreExtensionTime,
+    loading_target_p1_plus_p2: DefaultLoadingTarget,
+    generate_hifi: DefaultGenerateHiFi(systemName),
+    binding_kit_box_barcode: '',
+  }
+}
 
 const build = (object) => {
   return (
@@ -12,6 +37,7 @@ const build = (object) => {
       dna_control_complex_box_barcode: '',
       comments: '',
       system_name: DefaultSystemName,
+      wellDefaults: wellDefaults(DefaultSystemName),
       plate: {
         wells: [],
         wellsToDelete: [], // Needed so we know the ID of wells that should be deleted
@@ -225,4 +251,5 @@ export {
   updateRunPayload,
   updateWellPayload,
   destroy,
+  wellDefaults,
 }

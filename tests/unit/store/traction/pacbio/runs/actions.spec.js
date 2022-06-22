@@ -160,8 +160,7 @@ describe('#buildWell', () => {
   beforeEach(() => {
     run = Run.build()
     run.plate.wells = []
-    run.system_name = 'Sequel I'
-    run.default_binding_kit_box_barcode = 'default'
+    run.system_name = 'Sequel IIe'
     state = { currentRun: run }
   })
 
@@ -173,9 +172,9 @@ describe('#buildWell', () => {
       movie_time: '',
       position,
       on_plate_loading_concentration: '',
-      generate_hifi: 'In SMRT Link',
+      generate_hifi: 'On Instrument',
       ccs_analysis_output: 'Yes',
-      binding_kit_box_barcode: 'default',
+      binding_kit_box_barcode: '',
       pools: [],
       pre_extension_time: 2,
       loading_target_p1_plus_p2: 0.85,
@@ -194,7 +193,7 @@ describe('#buildWell', () => {
       movie_time: '',
       position,
       on_plate_loading_concentration: '',
-      generate_hifi: 'In SMRT Link',
+      generate_hifi: 'On Instrument',
       ccs_analysis_output: 'Yes',
       binding_kit_box_barcode: '',
       pools: [],
