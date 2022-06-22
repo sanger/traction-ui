@@ -100,15 +100,13 @@
       </b-form-group>
     </b-form>
 
-    <template>
-      <b-button
-        id="disableAdaptiveLoadingBtn"
-        variant="primary"
-        @click="disableAdaptiveLoadingInput()"
-      >
-        Disable Adaptive Loading
-      </b-button>
-    </template>
+    <b-button
+      id="disableAdaptiveLoadingBtn"
+      variant="primary"
+      @click="disableAdaptiveLoadingInput()"
+    >
+      Disable Adaptive Loading
+    </b-button>
 
     <b-table id="wellPools" stacked :items="currentWell.pools" :fields="wellPoolsFields">
       <template #table-caption>Pools</template>
