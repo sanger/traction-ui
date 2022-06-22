@@ -1,6 +1,6 @@
 import * as Run from '@/api/PacbioRun'
 import PacbioRunWellDefaultEdit from '@/components/pacbio/PacbioRunWellDefaultEdit'
-import { localVue, mount, store } from 'testHelper'
+import { localVue, mount, store } from '@support/testHelper'
 
 describe('PacbioRunWellDefaultEdit', () => {
   let wrapper, runInfo, run

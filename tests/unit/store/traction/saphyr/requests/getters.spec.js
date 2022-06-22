@@ -1,5 +1,5 @@
 import Response from '@/api/Response'
-import { Data } from 'testHelper'
+import { Data } from '@support/testHelper'
 import getters from '@/store/traction/saphyr/requests/getters'
 
 let requests

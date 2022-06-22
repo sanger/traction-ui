@@ -1,6 +1,6 @@
 import * as Run from '@/api/PacbioRun'
 import Well from '@/components/pacbio/PacbioRunWellItem'
-import { localVue, mount, store } from 'testHelper'
+import { localVue, mount, store } from '@support/testHelper'
 import * as Actions from '@/store/traction/pacbio/runs/actions'
 import storePools from '@tests/data/StorePools'
 
@@ -174,7 +174,7 @@ describe('Well.vue', () => {
     })
 
     it('adds the pool to the well if the well exists', async () => {
-      wrapper.vm.updateWell = jest.fn()
+      wrapper.vm.updateWell = vi.fn()
       expectedWell = storeWell
       expectedWell.pools.push({ id: '1', barcode: 'TRAC-2-1' })
 
@@ -197,7 +197,7 @@ describe('Well.vue', () => {
         store,
         propsData: props,
       })
-      wrapper.vm.createWell = jest.fn()
+      wrapper.vm.createWell = vi.fn()
       expectedWell = Actions.buildWell({ state }, 'H12')
       expectedWell.pools.push({ id: '1', barcode: 'TRAC-2-1' })
 
@@ -226,9 +226,9 @@ describe('Well.vue', () => {
             return newBarcode
           },
         },
-        preventDefault: jest.fn(),
+        preventDefault: vi.fn(),
       }
-      well.updatePoolBarcode = jest.fn()
+      well.updatePoolBarcode = vi.fn()
     })
 
     it('will update the barcode', async () => {

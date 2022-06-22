@@ -1,5 +1,5 @@
 import * as PrintJobRequests from '@/api/PrintJobRequests'
-import { store } from 'testHelper'
+import { store } from '@support/testHelper'
 import Response from '@/api/Response'
 import * as consts from '@/consts/consts'
 
@@ -9,7 +9,7 @@ describe('PrintJobRequests', () => {
   const mockDate = new Date(1640390400000)
 
   beforeEach(() => {
-    jest.spyOn(global, 'Date').mockImplementation(() => mockDate)
+    vi.spyOn(global, 'Date').mockImplementation(() => mockDate)
 
     selectedSamples = [
       { id: 1, type: 'samples', name: 'sample1', barcode: 'TRAC-1' },
@@ -28,7 +28,7 @@ describe('PrintJobRequests', () => {
     beforeEach(() => {
       request = store.getters.api.printMyBarcode.print_jobs
 
-      request.create = jest.fn()
+      request.create = vi.fn()
     })
 
     it('returns a response on success', async () => {
@@ -268,7 +268,7 @@ describe('PrintJobRequests', () => {
         selectedSamples,
         consts.PIPELINE_PACBIO,
       )
-      request.create = jest.fn()
+      request.create = vi.fn()
     })
 
     it('successfully posts a print job request', async () => {

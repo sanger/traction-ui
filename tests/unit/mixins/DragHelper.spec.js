@@ -1,5 +1,5 @@
 import DragHelper from '@/mixins/DragHelper'
-import { localVue, mount } from 'testHelper'
+import { localVue, mount } from '@support/testHelper'
 
 describe('DragHelper', () => {
   let dragHelper, wrapper
@@ -42,7 +42,7 @@ describe('DragHelper', () => {
 
   describe('#allowDrop', () => {
     it('sets hover to true', () => {
-      let mockEvent = { preventDefault: jest.fn() }
+      let mockEvent = { preventDefault: vi.fn() }
       dragHelper.allowDrop(mockEvent)
       expect(dragHelper.hover).toEqual(true)
     })
@@ -50,7 +50,7 @@ describe('DragHelper', () => {
 
   describe('#endDrop', () => {
     it('sets hover to false', () => {
-      let mockEvent = { preventDefault: jest.fn() }
+      let mockEvent = { preventDefault: vi.fn() }
       dragHelper.endDrop(mockEvent)
       expect(dragHelper.hover).toEqual(false)
     })

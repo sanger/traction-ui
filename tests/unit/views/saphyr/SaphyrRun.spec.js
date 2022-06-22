@@ -1,15 +1,14 @@
 import SaphyrRun from '@/views/saphyr/SaphyrRun'
 import VueRouter from 'vue-router'
-import { localVue, mount, store } from 'testHelper'
+import { localVue, mount, store } from '@support/testHelper'
+import SaphyrRuns from '@/views/saphyr/SaphyrRuns'
 
 describe('Run.vue', () => {
   let wrapper, mockRun, saphyrRun, router, props
 
   beforeEach(() => {
     router = new VueRouter({
-      routes: [
-        { path: '/runs', name: 'SaphyrRuns', component: require('@/views/saphyr/SaphyrRuns') },
-      ],
+      routes: [{ path: '/runs', name: 'SaphyrRuns', component: SaphyrRuns }],
     })
 
     mockRun = {
@@ -32,7 +31,7 @@ describe('Run.vue', () => {
     store.commit('traction/saphyr/runs/setCurrentRun', mockRun)
 
     // create the mock of the method before mounting it for testing
-    jest.spyOn(SaphyrRun.methods, 'provider').mockImplementation(() => {})
+    vi.spyOn(SaphyrRun.methods, 'provider').mockImplementation(() => {})
 
     wrapper = mount(SaphyrRun, {
       localVue,
@@ -70,7 +69,7 @@ describe('Run.vue', () => {
   describe('create button', () => {
     beforeEach(() => {
       // create the mock of the method before mounting it for testing
-      jest.spyOn(SaphyrRun.methods, 'provider').mockImplementation(() => {})
+      vi.spyOn(SaphyrRun.methods, 'provider').mockImplementation(() => {})
 
       wrapper = mount(SaphyrRun, {
         localVue,
@@ -90,9 +89,9 @@ describe('Run.vue', () => {
 
   describe('#create', () => {
     beforeEach(() => {
-      saphyrRun.showAlert = jest.fn()
-      saphyrRun.createRun = jest.fn()
-      saphyrRun.redirectToRuns = jest.fn()
+      saphyrRun.showAlert = vi.fn()
+      saphyrRun.createRun = vi.fn()
+      saphyrRun.redirectToRuns = vi.fn()
     })
 
     it('calls createRun', async () => {
@@ -119,9 +118,9 @@ describe('Run.vue', () => {
 
   describe('#update', () => {
     beforeEach(() => {
-      saphyrRun.showAlert = jest.fn()
-      saphyrRun.updateRun = jest.fn()
-      saphyrRun.redirectToRuns = jest.fn()
+      saphyrRun.showAlert = vi.fn()
+      saphyrRun.updateRun = vi.fn()
+      saphyrRun.redirectToRuns = vi.fn()
     })
 
     it('calls updateRun', async () => {

@@ -8,7 +8,13 @@ export default defineConfig({
   resolve: {
     alias: {
       '@': path.resolve(__dirname, './src'),
+      '@tests': path.resolve(__dirname, './tests'),
+      '@support': path.resolve(__dirname, './tests/support'),
     },
     extensions: ['.mjs', '.js', '.ts', '.jsx', '.tsx', '.json', '.vue'],
+  },
+  test: {
+    globals: true,
+    environment: 'jsdom',
   },
 })

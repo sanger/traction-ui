@@ -1,5 +1,5 @@
 import LibraryTypeSelect from '@/components/shared/LibraryTypeSelect'
-import { localVue, mount, store } from 'testHelper'
+import { localVue, mount, store } from '@support/testHelper'
 
 describe('LibraryTypeSelect.vue', () => {
   const buildWrapper = (props = { pipeline: 'pacbio' }) => {

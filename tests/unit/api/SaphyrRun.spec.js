@@ -1,4 +1,4 @@
-import { Data } from 'testHelper'
+import { Data } from '@support/testHelper'
 import Response from '@/api/Response'
 import * as Run from '@/api/SaphyrRun'
 import build from '@/api/ApiBuilder'
@@ -103,7 +103,7 @@ describe('Run', () => {
 
     describe('createRun', () => {
       it('success', async () => {
-        const request = { create: jest.fn() }
+        const request = { create: vi.fn() }
         request.create.mockResolvedValue(Data.CreateRun)
 
         let mockResponse = new Response(Data.CreateRun)
@@ -116,7 +116,7 @@ describe('Run', () => {
       })
 
       it('failure', async () => {
-        const request = { create: jest.fn() }
+        const request = { create: vi.fn() }
         request.create.mockReturnValue(failedResponse)
 
         let message
@@ -140,7 +140,7 @@ describe('Run', () => {
       })
 
       it('will create a chip and return a response', async () => {
-        const request = { create: jest.fn() }
+        const request = { create: vi.fn() }
         request.create.mockResolvedValue(Data.CreateChip)
 
         let mockResponse = new Response(Data.CreateChip)
@@ -152,7 +152,7 @@ describe('Run', () => {
       })
 
       it('failure', async () => {
-        const request = { create: jest.fn() }
+        const request = { create: vi.fn() }
         request.create.mockReturnValue(failedResponse)
 
         let message
@@ -177,7 +177,7 @@ describe('Run', () => {
       })
 
       it('will create a flowcell and return a response', async () => {
-        const request = { create: jest.fn() }
+        const request = { create: vi.fn() }
         request.create.mockResolvedValue(Data.CreateFlowcell)
 
         let mockResponse = new Response(Data.CreateFlowcell)
@@ -198,7 +198,7 @@ describe('Run', () => {
       })
 
       it('failure', async () => {
-        const request = { create: jest.fn() }
+        const request = { create: vi.fn() }
         request.create.mockReturnValue(failedResponse)
 
         let message
@@ -228,11 +228,11 @@ describe('Run', () => {
 
       beforeEach(() => {
         api = build({ config: Api.Config, environment: import.meta.env })
-        api.traction.saphyr.runs.create = jest.fn()
-        api.traction.saphyr.chips.create = jest.fn()
-        api.traction.saphyr.flowcells.create = jest.fn()
-        api.traction.saphyr.runs.destroy = jest.fn()
-        api.traction.saphyr.chips.destroy = jest.fn()
+        api.traction.saphyr.runs.create = vi.fn()
+        api.traction.saphyr.chips.create = vi.fn()
+        api.traction.saphyr.flowcells.create = vi.fn()
+        api.traction.saphyr.runs.destroy = vi.fn()
+        api.traction.saphyr.chips.destroy = vi.fn()
       })
 
       it('returns true', async () => {
@@ -298,8 +298,8 @@ describe('Run', () => {
         chipResponse = new Response(Data.CreateChip)
         responses = [runResponse, chipResponse]
 
-        api.traction.saphyr.runs.destroy = jest.fn()
-        api.traction.saphyr.chips.destroy = jest.fn()
+        api.traction.saphyr.runs.destroy = vi.fn()
+        api.traction.saphyr.chips.destroy = vi.fn()
       })
 
       it('gets a list of responses', () => {
@@ -319,7 +319,7 @@ describe('Run', () => {
 
       beforeEach(() => {
         api = build({ config: Api.Config, environment: import.meta.env })
-        api.traction.saphyr.runs.destroy = jest.fn()
+        api.traction.saphyr.runs.destroy = vi.fn()
       })
 
       it('rolls back the request', async () => {
@@ -340,7 +340,7 @@ describe('Run', () => {
     beforeEach(() => {
       let api = build({ config: Api.Config, environment: import.meta.env })
       request = api.traction.saphyr
-      request.update = jest.fn()
+      request.update = vi.fn()
 
       payload = { data: { type: 'runs', attributes: { name: run.name } } }
     })
@@ -380,13 +380,13 @@ describe('Run', () => {
       let api = build({ config: Api.Config, environment: import.meta.env })
       request = api.traction.saphyr
 
-      request.runs.update = jest.fn()
-      request.chips.update = jest.fn()
-      request.flowcells.update = jest.fn()
+      request.runs.update = vi.fn()
+      request.chips.update = vi.fn()
+      request.flowcells.update = vi.fn()
 
-      request.runs.destroy = jest.fn()
-      request.chips.destroy = jest.fn()
-      request.flowcells.destroy = jest.fn()
+      request.runs.destroy = vi.fn()
+      request.chips.destroy = vi.fn()
+      request.flowcells.destroy = vi.fn()
     })
 
     it('returns true', async () => {

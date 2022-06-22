@@ -1,7 +1,7 @@
 import ApiMixin from '@/mixins/Api'
 import build from '@/api/ApiBuilder'
 import config from '@/api/Config'
-import { mount, localVue, store } from 'testHelper'
+import { mount, localVue, store } from '@support/testHelper'
 
 const Cmp = {
   template: '<div class="say-my-name"></div>',

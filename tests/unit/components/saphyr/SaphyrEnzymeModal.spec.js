@@ -2,14 +2,14 @@ import Response from '@/api/Response'
 import EnzymeModal from '@/components/saphyr/SaphyrEnzymeModal'
 import flushPromises from 'flush-promises'
 import EnzymesJson from '@tests/data/enzymes'
-import { localVue, mount, store } from 'testHelper'
+import { localVue, mount, store } from '@support/testHelper'
 
 describe('SaphyrEnzymeModal.vue', () => {
   let wrapper, enzymeModal
 
   beforeEach(() => {
     // create the mock of the method before mounting it for testing
-    jest.spyOn(EnzymeModal.methods, 'provider').mockImplementation(() => {})
+    vi.spyOn(EnzymeModal.methods, 'provider').mockImplementation(() => {})
 
     wrapper = mount(EnzymeModal, {
       localVue,
@@ -67,7 +67,7 @@ describe('SaphyrEnzymeModal.vue', () => {
           return {}
         },
       }
-      window.alert = jest.fn()
+      window.alert = vi.fn()
       wrapper.vm.handleOk(evt)
       expect(window.alert).toBeCalledWith('Please select an enzyme')
     })
@@ -96,7 +96,7 @@ describe('SaphyrEnzymeModal.vue', () => {
 
   describe('#getEnzymeOptions', () => {
     beforeEach(() => {
-      enzymeModal.enzymeRequest.get = jest.fn()
+      enzymeModal.enzymeRequest.get = vi.fn()
     })
 
     it('success', async () => {

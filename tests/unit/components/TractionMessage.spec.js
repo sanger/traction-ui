@@ -1,4 +1,4 @@
-import { mount, localVue } from 'testHelper'
+import { mount, localVue } from '@support/testHelper'
 import TractionMessage from '@/components/TractionMessage'
 
 describe('TractionMessage.vue', () => {

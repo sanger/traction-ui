@@ -1,7 +1,7 @@
 import Plate from '@/components/plates/PlateItem'
 import PlateMap from '@/config/PlateMap'
 import Response from '@/api/Response'
-import { localVue, mount, Data } from 'testHelper'
+import { localVue, mount, Data } from '@support/testHelper'
 
 describe('Plate.vue', () => {
   let wrapper, plate, mockPlate

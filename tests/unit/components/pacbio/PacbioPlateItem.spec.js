@@ -1,5 +1,5 @@
 import Plate from '@/components/pacbio/PacbioPlateItem'
-import { localVue, mount, store } from 'testHelper'
+import { localVue, mount, store } from '@support/testHelper'
 
 const plates = {
   1: {

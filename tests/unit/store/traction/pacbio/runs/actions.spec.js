@@ -1,14 +1,14 @@
 import Response from '@/api/Response'
 import * as Actions from '@/store/traction/pacbio/runs/actions'
-import { Data } from 'testHelper'
+import { Data } from '@support/testHelper'
 import * as Run from '@/api/PacbioRun'
 
 describe('#setRuns', () => {
   let commit, get, getters, failedResponse
 
   beforeEach(() => {
-    commit = jest.fn()
-    get = jest.fn()
+    commit = vi.fn()
+    get = vi.fn()
     getters = { runRequest: { get: get } }
 
     failedResponse = { data: { data: [] }, status: 500, statusText: 'Internal Server Error' }
@@ -42,12 +42,12 @@ describe('#newRun', () => {
   let commit
 
   beforeEach(() => {
-    commit = jest.fn()
+    commit = vi.fn()
   })
 
   it('successfully', async () => {
     let newRun = Run.build()
-    jest.spyOn(Run, 'build')
+    vi.spyOn(Run, 'build')
     Run.build.mockReturnValue(newRun)
 
     Actions.newRun({ commit })
@@ -60,9 +60,9 @@ describe('#createRun', () => {
 
   beforeEach(() => {
     mockRun = new Response(Data.PacbioRun).deserialize.runs[0]
-    pacbioRequests = jest.fn()
+    pacbioRequests = vi.fn()
     getters = { currentRun: mockRun, pacbioRequests: pacbioRequests }
-    jest.spyOn(Run, 'create').mockImplementation(() => {})
+    vi.spyOn(Run, 'create').mockImplementation(() => {})
   })
 
   it('successfully', async () => {
@@ -77,9 +77,9 @@ describe('#editRun', () => {
   beforeEach(() => {
     mockRun = new Response(Data.PacbioRun).deserialize.runs[0]
 
-    find = jest.fn()
+    find = vi.fn()
     getters = { runRequest: { find: find } }
-    commit = jest.fn()
+    commit = vi.fn()
   })
 
   it('sets the well pools to have a barcode attribute', async () => {
@@ -104,11 +104,11 @@ describe('#updateRun', () => {
 
   beforeEach(() => {
     mockRun = new Response(Data.PacbioRun).deserialize.runs[0]
-    pacbioRequests = jest.fn()
+    pacbioRequests = vi.fn()
     getters = { currentRun: mockRun, pacbioRequests: pacbioRequests }
-    dispatch = jest.fn()
+    dispatch = vi.fn()
 
-    update = jest.spyOn(Run, 'update')
+    update = vi.spyOn(Run, 'update')
   })
 
   afterEach(() => {
@@ -138,7 +138,7 @@ describe('#getRun', () => {
   let find, getters
 
   beforeEach(() => {
-    find = jest.fn()
+    find = vi.fn()
     getters = { runRequest: { find: find } }
   })
 

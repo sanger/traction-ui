@@ -1,5 +1,5 @@
 import Well from '@/components/pacbio/PacbioWellItem'
-import { mount, store } from 'testHelper'
+import { mount, store } from '@support/testHelper'
 
 const requests = {
   1: {

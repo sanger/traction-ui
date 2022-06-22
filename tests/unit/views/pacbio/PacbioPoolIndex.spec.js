@@ -1,5 +1,5 @@
 import PacbioPoolIndex from '@/views/pacbio/PacbioPoolIndex'
-import { mount, localVue, store, router } from 'testHelper'
+import { mount, localVue, store, router } from '@support/testHelper'
 import storePools from '@tests/data/StorePools'
 
 describe('PacbioPoolIndex.vue', () => {
@@ -58,7 +58,7 @@ describe('PacbioPoolIndex.vue', () => {
   describe('printerModal', () => {
     beforeEach(() => {
       wrapper.setData({ sortDesc: false })
-      poolsVm.handlePrintLabel = jest.fn()
+      poolsVm.handlePrintLabel = vi.fn()
     })
 
     it('passes selected printer to function on emit event', () => {

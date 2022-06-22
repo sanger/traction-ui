@@ -1,24 +1,28 @@
+vi.mock('axios')
+
 import { defaultHeaders, createRequest } from '@/api/createRequest'
 import axios from 'axios'
 
-const attributes = {
-  rootURL: 'http://traction',
-  apiNamespace: 'v1',
-  resource: 'requests',
-  headers: {
-    header1: 'header1',
-    header2: 'header2',
-  },
-}
-
-const mockResponse = {
-  status: 200,
-  data: { data: [{ id: 1 }] },
-}
-
-const mockAxios = jest.genMockFromModule('axios')
-
 describe('createRequest', () => {
+  const attributes = {
+    rootURL: 'http://traction',
+    apiNamespace: 'v1',
+    resource: 'requests',
+    headers: {
+      header1: 'header1',
+      header2: 'header2',
+    },
+  }
+
+  const mockResponse = {
+    status: 200,
+    data: { data: [{ id: 1 }] },
+  }
+
+  afterEach(() => {
+    vi.clearAllMocks()
+  })
+
   describe('basic attributes', () => {
     it('will have a rootURL', () => {
       const request = createRequest({ ...attributes })
@@ -126,19 +130,17 @@ describe('createRequest', () => {
 
   describe('api calls', () => {
     beforeEach(() => {
-      axios.create = jest.fn(() => mockAxios)
+      vi.spyOn(axios, 'get')
+      vi.spyOn(axios, 'delete')
+      vi.spyOn(axios, 'patch')
+      vi.spyOn(axios, 'update')
+      vi.spyOn(axios, 'post')
     })
-
-    afterEach(() => {
-      jest.clearAllMocks()
-    })
-
     describe('get', () => {
       it('basic', async () => {
-        mockAxios.get.mockReturnValue(mockResponse)
         const request = createRequest({ ...attributes })
         const response = await request.get()
-        expect(mockAxios.get).toBeCalledWith(request.resource)
+        expect(axios.get).toBeCalledWith(request.resource)
         expect(response).toEqual(mockResponse)
       })
 
@@ -148,10 +150,9 @@ describe('createRequest', () => {
           include: 'sample.tube',
           fields: { resource1: 'field1', resource2: 'field2' },
         }
-        mockAxios.get.mockReturnValue(mockResponse)
         const request = createRequest({ ...attributes })
         const response = await request.get(query)
-        expect(mockAxios.get).toBeCalledWith(
+        expect(axios.get).toBeCalledWith(
           'requests?filter[a]=1&filter[b]=2&include=sample.tube&fields[resource1]=field1&fields[resource2]=field2',
         )
         expect(response).toEqual(mockResponse)
@@ -163,36 +164,33 @@ describe('createRequest', () => {
       const mockCreate = { data: { status: 201 } }
 
       it('basic', async () => {
-        mockAxios.post.mockReturnValue(mockCreate)
         const request = createRequest({ ...attributes })
         const response = await request.create({ data })
-        expect(mockAxios.post).toBeCalledWith('requests', data)
+        expect(axios.post).toBeCalledWith('requests', data)
         expect(response).toEqual(mockCreate)
       })
 
       it('with include', async () => {
-        mockAxios.post.mockReturnValue(mockCreate)
+        axios.post.mockReturnValue(mockCreate)
         const request = createRequest({ ...attributes })
         const response = await request.create({ data, include: 'tube' })
-        expect(mockAxios.post).toBeCalledWith('requests?include=tube', data)
+        expect(axios.post).toBeCalledWith('requests?include=tube', data)
         expect(response).toEqual(mockCreate)
       })
     })
 
     describe('find', () => {
       it('basic', async () => {
-        mockAxios.get.mockReturnValue(mockResponse)
         const request = createRequest({ ...attributes })
         const response = await request.find({ id: 1 })
-        expect(mockAxios.get).toBeCalledWith('requests/1')
+        expect(axios.get).toBeCalledWith('requests/1')
         expect(response).toEqual(mockResponse)
       })
 
       it('with includes', async () => {
-        mockAxios.get.mockReturnValue(mockResponse)
         const request = createRequest({ ...attributes })
         const response = await request.find({ id: 1, include: 'sample' })
-        expect(mockAxios.get).toBeCalledWith('requests/1?include=sample')
+        expect(axios.get).toBeCalledWith('requests/1?include=sample')
         expect(response).toEqual(mockResponse)
       })
     })
@@ -201,30 +199,27 @@ describe('createRequest', () => {
       const payload = { data: { id: '1', attribute: 'boo' } }
 
       it('single', async () => {
-        mockAxios.patch.mockReturnValue(mockResponse)
         const request = createRequest({ ...attributes })
         const response = await request.update(payload)
-        expect(mockAxios.patch).toBeCalled()
+        expect(axios.patch).toBeCalled()
         expect(response).toEqual(mockResponse)
       })
     })
 
     describe('delete', () => {
       it('single', async () => {
-        mockAxios.delete.mockReturnValue(mockResponse)
         const request = createRequest({ ...attributes })
         const response = await request.destroy(1)
-        expect(mockAxios.delete).toBeCalled()
+        expect(axios.delete).toBeCalled()
         expect(response).toEqual([mockResponse])
       })
 
       it('multiple', async () => {
-        mockAxios.delete.mockReturnValue(mockResponse)
         const request = createRequest({ ...attributes })
         const promises = await request.destroy(1, 2, 3, 4, 5)
         for (const promise of promises) {
           const response = await promise
-          expect(mockAxios.delete).toBeCalled()
+          expect(axios.delete).toBeCalled()
           expect(response).toEqual(mockResponse)
         }
       })

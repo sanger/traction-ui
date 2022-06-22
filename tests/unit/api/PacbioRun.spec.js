@@ -1,4 +1,4 @@
-import { Data } from 'testHelper'
+import { Data } from '@support/testHelper'
 import Response from '@/api/Response'
 import * as Run from '@/api/PacbioRun'
 import build from '@/api/ApiBuilder'
@@ -67,12 +67,12 @@ describe('Run', () => {
 
       api = build({ config: Api.Config, environment: import.meta.env })
       pacbioRequest = api.traction.pacbio
-      pacbioRequest.runs.create = jest.fn()
-      pacbioRequest.runs.plates.create = jest.fn()
-      pacbioRequest.runs.wells.create = jest.fn()
-      pacbioRequest.runs.destroy = jest.fn()
-      pacbioRequest.runs.plates.destroy = jest.fn()
-      pacbioRequest.runs.wells.destroy = jest.fn()
+      pacbioRequest.runs.create = vi.fn()
+      pacbioRequest.runs.plates.create = vi.fn()
+      pacbioRequest.runs.wells.create = vi.fn()
+      pacbioRequest.runs.destroy = vi.fn()
+      pacbioRequest.runs.plates.destroy = vi.fn()
+      pacbioRequest.runs.wells.destroy = vi.fn()
     })
 
     it('returns true', async () => {
@@ -186,7 +186,7 @@ describe('Run', () => {
 
   describe('createResource', () => {
     it('success', async () => {
-      const request = { create: jest.fn() }
+      const request = { create: vi.fn() }
       request.create.mockResolvedValue(Data.PacbioRun)
       let mockResponse = new Response(Data.PacbioRun)
 
@@ -195,7 +195,7 @@ describe('Run', () => {
     })
 
     it('failure', async () => {
-      const request = { create: jest.fn() }
+      const request = { create: vi.fn() }
       request.create.mockReturnValue(failedResponse)
 
       let message
@@ -313,8 +313,8 @@ describe('Run', () => {
 
       api = build({ config: Api.Config, environment: import.meta.env })
       pacbioRequest = api.traction.pacbio
-      pacbioRequest.runs.update = jest.fn()
-      pacbioRequest.runs.wells.update = jest.fn()
+      pacbioRequest.runs.update = vi.fn()
+      pacbioRequest.runs.wells.update = vi.fn()
 
       failedResponse = {
         status: 404,
@@ -385,7 +385,7 @@ describe('Run', () => {
             wellsToDelete: ['1', '2'],
           },
         }
-        pacbioRequest.runs.wells.destroy = jest.fn()
+        pacbioRequest.runs.wells.destroy = vi.fn()
       })
 
       it('should call destroy method for each id in wellsToDelete', async () => {
@@ -406,7 +406,7 @@ describe('Run', () => {
 
   describe('updateResource', () => {
     it('success', async () => {
-      const request = { update: jest.fn() }
+      const request = { update: vi.fn() }
       request.update.mockResolvedValue(Data.PacbioRun)
       let mockResponse = new Response(Data.PacbioRun)
 
@@ -415,7 +415,7 @@ describe('Run', () => {
     })
 
     it('failure', async () => {
-      const request = { update: jest.fn() }
+      const request = { update: vi.fn() }
       request.update.mockReturnValue(failedResponse)
 
       let message
@@ -486,7 +486,7 @@ describe('Run', () => {
     beforeEach(() => {
       api = build({ config: Api.Config, environment: import.meta.env })
       pacbioRequest = api.traction.pacbio
-      pacbioRequest.runs.destroy = jest.fn()
+      pacbioRequest.runs.destroy = vi.fn()
     })
 
     it('rolls back the request', async () => {

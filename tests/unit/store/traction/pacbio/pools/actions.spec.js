@@ -1,12 +1,12 @@
-import { Data } from 'testHelper'
+import { Data } from '@support/testHelper'
 import * as Actions from '@/store/traction/pacbio/pools/actions'
 
 describe('#setPools', () => {
   let commit, get, getters, failedResponse
 
   beforeEach(() => {
-    commit = jest.fn()
-    get = jest.fn()
+    commit = vi.fn()
+    get = vi.fn()
     getters = { poolRequest: { get: get } }
 
     failedResponse = { data: { data: [] }, status: 500, statusText: 'Internal Server Error' }

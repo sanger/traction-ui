@@ -1,5 +1,5 @@
 import Runs from '@/views/saphyr/SaphyrRuns'
-import { mount, localVue, store, Data, router } from 'testHelper'
+import { mount, localVue, store, Data, router } from '@support/testHelper'
 import Response from '@/api/Response'
 
 describe('Runs.vue', () => {
@@ -73,7 +73,7 @@ describe('Runs.vue', () => {
 
     it('on click startRun is called', () => {
       // run at(0) is in state pending
-      runs.startRun = jest.fn()
+      runs.startRun = vi.fn()
 
       const button = wrapper.find('#startRun-6')
       button.trigger('click')
@@ -110,7 +110,7 @@ describe('Runs.vue', () => {
 
     it('on click completeRun is called', () => {
       // run at(4) is in state started
-      runs.completeRun = jest.fn()
+      runs.completeRun = vi.fn()
 
       const button = wrapper.find('#completeRun-2')
       button.trigger('click')
@@ -147,7 +147,7 @@ describe('Runs.vue', () => {
 
     it('on click completeRun is called', () => {
       // run at(4) is in state started
-      runs.cancelRun = jest.fn()
+      runs.cancelRun = vi.fn()
 
       const button = wrapper.find('#cancelRun-2')
       button.trigger('click')
@@ -215,8 +215,8 @@ describe('Runs.vue', () => {
       wrapper = mount(Runs, { store, localVue })
       runs = wrapper.vm
 
-      runs.setRuns = jest.fn()
-      runs.showAlert = jest.fn()
+      runs.setRuns = vi.fn()
+      runs.showAlert = vi.fn()
     })
 
     it('calls setRuns successfully', () => {
@@ -237,11 +237,11 @@ describe('Runs.vue', () => {
     const id = 1
 
     beforeEach(() => {
-      runs.startRun = jest.fn()
-      runs.completeRun = jest.fn()
-      runs.cancelRun = jest.fn()
-      runs.provider = jest.fn()
-      runs.showAlert = jest.fn()
+      runs.startRun = vi.fn()
+      runs.completeRun = vi.fn()
+      runs.cancelRun = vi.fn()
+      runs.provider = vi.fn()
+      runs.showAlert = vi.fn()
     })
 
     it('calls startRun successfully', () => {

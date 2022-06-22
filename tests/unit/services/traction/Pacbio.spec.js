@@ -1,5 +1,5 @@
 import { createLabware } from '@/services/traction/Pacbio'
-import { Data } from 'testHelper'
+import { Data } from '@support/testHelper'
 
 const failedResponse = {
   status: 422,
@@ -23,9 +23,9 @@ const createdRequestResponse = {
 
 describe('Pacbio', () => {
   describe('#createLabware', () => {
-    const fetchLabware = jest.fn()
-    const createPlate = jest.fn()
-    const createTube = jest.fn()
+    const fetchLabware = vi.fn()
+    const createPlate = vi.fn()
+    const createTube = vi.fn()
 
     afterEach(() => {
       fetchLabware.mockRestore()

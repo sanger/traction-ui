@@ -1,5 +1,5 @@
 import LabelPrinting from '@/views/LabelPrinting'
-import { localVue, mount } from 'testHelper'
+import { localVue, mount } from '@support/testHelper'
 
 describe('LabelPrinting.vue', () => {
   let wrapper

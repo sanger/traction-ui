@@ -1,14 +1,14 @@
 import Response from '@/api/Response'
 import * as Actions from '@/store/traction/saphyr/runs/actions'
-import { Data } from 'testHelper'
+import { Data } from '@support/testHelper'
 import * as Run from '@/api/SaphyrRun'
 
 describe('#setRuns', () => {
   let commit, get, getters, failedResponse
 
   beforeEach(() => {
-    commit = jest.fn()
-    get = jest.fn()
+    commit = vi.fn()
+    get = vi.fn()
     getters = { runRequest: { get: get } }
 
     failedResponse = { data: { data: [] }, status: 500, statusText: 'Internal Server Error' }
@@ -42,7 +42,7 @@ describe('#isLibraryBarcodeValid', () => {
   let dispatch
 
   beforeEach(() => {
-    dispatch = jest.fn()
+    dispatch = vi.fn()
   })
 
   it('will return false when barcode is null', async () => {
@@ -69,7 +69,7 @@ describe('#getTubeForBarcode', () => {
   let get, rootGetters, barcode, failedResponse
 
   beforeEach(() => {
-    get = jest.fn()
+    get = vi.fn()
     rootGetters = { 'traction/saphyr/tubes/tubeRequest': { get: get } }
     barcode = 'TRAC-1'
 
@@ -117,9 +117,9 @@ describe('#editRun', () => {
   beforeEach(() => {
     mockRun = new Response(Data.Runs).deserialize.runs[0]
 
-    find = jest.fn()
+    find = vi.fn()
     getters = { runRequest: { find: find } }
-    commit = jest.fn()
+    commit = vi.fn()
   })
 
   it('successfully', async () => {
@@ -133,12 +133,12 @@ describe('#newRun', () => {
   let commit
 
   beforeEach(() => {
-    commit = jest.fn()
+    commit = vi.fn()
   })
 
   it('successfully', async () => {
     let newRun = Run.build()
-    jest.spyOn(Run, 'build').mockImplementation(() => newRun)
+    vi.spyOn(Run, 'build').mockImplementation(() => newRun)
 
     Actions.newRun({ commit })
     expect(commit).toHaveBeenCalledWith('setCurrentRun', newRun)
@@ -150,9 +150,9 @@ describe('#createRun', () => {
 
   beforeEach(() => {
     mockRun = new Response(Data.Runs).deserialize.runs[0]
-    saphyrRequests = jest.fn()
+    saphyrRequests = vi.fn()
     getters = { currentRun: mockRun, saphyrRequests: saphyrRequests }
-    jest.spyOn(Run, 'create').mockImplementation(() => {})
+    vi.spyOn(Run, 'create').mockImplementation(() => {})
   })
 
   it('successfully', async () => {
@@ -166,9 +166,9 @@ describe('#updateRun', () => {
 
   beforeEach(() => {
     mockRun = new Response(Data.Runs).deserialize.runs[0]
-    saphyrRequests = jest.fn()
+    saphyrRequests = vi.fn()
     getters = { currentRun: mockRun, saphyrRequests: saphyrRequests }
-    jest.spyOn(Run, 'update').mockImplementation(() => {})
+    vi.spyOn(Run, 'update').mockImplementation(() => {})
   })
 
   it('successfully', async () => {

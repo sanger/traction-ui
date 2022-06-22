@@ -20,7 +20,7 @@
 
 <script>
 // We want undefined (I've not specified a library) and null (I want NO library)
-// jest select elements can't handle the former. So we encode it
+// select elements can't handle the former. So we encode it
 const UNDEFINED = '_undefined'
 
 const encode = (value) => (value === undefined ? UNDEFINED : value)

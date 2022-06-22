@@ -71,10 +71,12 @@ const api = ApiBuilder.build({ config, environment: import.meta.env })
 
 describe('ApiBuilder', () => {
   describe('build', () => {
-    expect(Object.keys(api)).toEqual(['api1', 'api2', 'api3'])
-    expect(api.api1).toBeDefined()
-    expect(api.api2).toBeDefined()
-    expect(api.api3).toBeDefined()
+    it('defines keys for each api', () => {
+      expect(Object.keys(api)).toEqual(['api1', 'api2', 'api3'])
+      expect(api.api1).toBeDefined()
+      expect(api.api2).toBeDefined()
+      expect(api.api3).toBeDefined()
+    })
   })
 
   it('will create an item for each resource of the api', () => {

@@ -1,5 +1,5 @@
 import Response from '@/api/Response'
-import { Data } from 'testHelper'
+import { Data } from '@support/testHelper'
 import mutations from '@/store/traction/pacbio/libraries/mutations'
 
 let library, libraries, state

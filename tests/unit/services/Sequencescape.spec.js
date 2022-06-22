@@ -6,7 +6,7 @@ import {
   PacbioSample,
   labwareForImport,
 } from '@/services/Sequencescape'
-import { Data } from 'testHelper'
+import { Data } from '@support/testHelper'
 import Response from '@/api/Response'
 
 describe('SequencescapePlates', () => {
@@ -14,7 +14,7 @@ describe('SequencescapePlates', () => {
     let barcodes, failedResponse, emptyResponse, request, expectedResponse, plates
 
     beforeEach(() => {
-      request = { get: jest.fn() }
+      request = { get: vi.fn() }
       barcodes = 'DN1234567'
 
       emptyResponse = { data: { data: [] }, status: 200, statusText: 'Success' }
@@ -69,7 +69,7 @@ describe('SequencescapePlates', () => {
     let request
 
     beforeEach(() => {
-      request = { get: jest.fn() }
+      request = { get: vi.fn() }
     })
 
     it('successfully', async () => {

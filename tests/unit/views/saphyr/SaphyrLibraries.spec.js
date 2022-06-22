@@ -1,5 +1,5 @@
 import Libraries from '@/views/saphyr/SaphyrLibraries'
-import { mount, localVue, store, Data } from 'testHelper'
+import { mount, localVue, store, Data } from '@support/testHelper'
 import * as consts from '@/consts/consts'
 import VueRouter from 'vue-router'
 import Response from '@/api/Response'
@@ -40,9 +40,9 @@ describe('Libraries.vue', () => {
     // that gets surprisingly tricky as the store gets heavily modularised.
     // Before we used to inject the state directly, but that caused issues
     // when the component triggered the set requests action itself.
-    jest
-      .spyOn(store.getters['traction/saphyr/tubes/libraryRequest'], 'get')
-      .mockResolvedValue(Data.TractionSaphyrLibraries)
+    vi.spyOn(store.getters['traction/saphyr/tubes/libraryRequest'], 'get').mockResolvedValue(
+      Data.TractionSaphyrLibraries,
+    )
 
     const router = new VueRouter({
       routes: [
@@ -81,8 +81,8 @@ describe('Libraries.vue', () => {
 
   describe('#handleLibraryDelete', () => {
     beforeEach(() => {
-      libraries.deleteLibraries = jest.fn()
-      libraries.showAlert = jest.fn()
+      libraries.deleteLibraries = vi.fn()
+      libraries.showAlert = vi.fn()
       wrapper.setData({ selected: mockLibraries })
     })
 
@@ -126,7 +126,7 @@ describe('Libraries.vue', () => {
   describe('printerModal', () => {
     beforeEach(() => {
       wrapper.setData({ sortDesc: false })
-      libraries.handlePrintLabel = jest.fn()
+      libraries.handlePrintLabel = vi.fn()
     })
 
     it('passes selected printer to function on emit event', () => {

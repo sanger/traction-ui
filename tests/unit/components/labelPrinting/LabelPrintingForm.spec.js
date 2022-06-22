@@ -1,6 +1,6 @@
 import LabelPrintingForm from '@/components/labelPrinting/LabelPrintingForm'
 import SuffixList from '@/config/SuffixList'
-import { localVue, mount, store } from 'testHelper'
+import { localVue, mount, store } from '@support/testHelper'
 
 describe('LabelPrintingForm.vue', () => {
   let wrapper, labelPrintingForm
@@ -129,8 +129,8 @@ describe('LabelPrintingForm.vue', () => {
           },
         })
 
-        labelPrintingForm.printJobV2 = jest.fn()
-        labelPrintingForm.showAlert = jest.fn()
+        labelPrintingForm.printJobV2 = vi.fn()
+        labelPrintingForm.showAlert = vi.fn()
       })
 
       it('calls printJobV2 successfully', async () => {

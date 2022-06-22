@@ -1,7 +1,7 @@
-import { mount, localVue, store } from 'testHelper'
+import { mount, localVue, store } from '@support/testHelper'
 import Plate from '@/components/pacbio/PacbioRunPlateItem'
 import PlateMap from '@/config/PlateMap'
-import { Data } from 'testHelper'
+import { Data } from '@support/testHelper'
 import Response from '@/api/Response'
 
 describe('Plate.vue', () => {

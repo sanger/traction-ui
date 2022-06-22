@@ -1,4 +1,4 @@
-import { Data } from 'testHelper'
+import { Data } from '@support/testHelper'
 import Response from '@/api/Response'
 import * as Actions from '@/store/traction/pacbio/libraries/actions'
 import { newResponse } from '@/api/ResponseHelper'
@@ -9,7 +9,7 @@ describe('#createLibraryInTraction', () => {
   let create, library, body, rootGetters, rootState
 
   beforeEach(() => {
-    create = jest.fn()
+    create = vi.fn()
     rootGetters = {
       'traction/tractionTags': [
         { id: 1, group_id: '123abc1' },
@@ -92,7 +92,7 @@ describe('#deleteLibraries', () => {
   let destroy, getters, libraryIds, failedResponse
 
   beforeEach(() => {
-    destroy = jest.fn()
+    destroy = vi.fn()
     getters = { libraryRequest: { destroy: destroy } }
     libraryIds = [1, 2]
 
@@ -132,8 +132,8 @@ describe('#setLibraries', () => {
   let commit, get, getters, failedResponse
 
   beforeEach(() => {
-    commit = jest.fn()
-    get = jest.fn()
+    commit = vi.fn()
+    get = vi.fn()
     getters = { libraryRequest: { get: get } }
 
     failedResponse = { data: { data: [] }, status: 500, statusText: 'Internal Server Error' }
@@ -175,8 +175,8 @@ describe('#updateLibrary', () => {
   let commit, update, getters, failedResponse, library, successfulResponse, body
 
   beforeEach(() => {
-    commit = jest.fn()
-    update = jest.fn()
+    commit = vi.fn()
+    update = vi.fn()
     getters = { libraryRequest: { update: update } }
     library = {
       id: 1,

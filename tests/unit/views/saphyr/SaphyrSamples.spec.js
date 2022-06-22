@@ -1,5 +1,5 @@
 import Samples from '@/views/saphyr/SaphyrSamples'
-import { mount, localVue, store, Data, router } from 'testHelper'
+import { mount, localVue, store, Data, router } from '@support/testHelper'
 import * as consts from '@/consts/consts'
 import Response from '@/api/Response'
 
@@ -12,9 +12,9 @@ describe('Samples.vue', () => {
     // that gets surprisingly tricky as the store gets heavily modularised.
     // Before we used to inject the state directly, but that caused issues
     // when the component triggered the set requests action itself.
-    jest
-      .spyOn(store.getters['traction/saphyr/requests/requestsRequest'], 'get')
-      .mockResolvedValue(Data.TractionSaphyrRequests)
+    vi.spyOn(store.getters['traction/saphyr/requests/requestsRequest'], 'get').mockResolvedValue(
+      Data.TractionSaphyrRequests,
+    )
     wrapper = mount(Samples, {
       localVue,
       store,
@@ -60,8 +60,8 @@ describe('Samples.vue', () => {
       mockSamples = new Response(Data.TractionSaphyrRequests).deserialize.requests
 
       selectedEnzymeId = 123
-      samples.createLibrariesInTraction = jest.fn()
-      samples.showAlert = jest.fn()
+      samples.createLibrariesInTraction = vi.fn()
+      samples.showAlert = vi.fn()
 
       samples.selected = mockSamples[0]
       payload = { samples: samples.selected, enzymeID: selectedEnzymeId }
@@ -110,7 +110,7 @@ describe('Samples.vue', () => {
   describe('printerModal', () => {
     beforeEach(() => {
       wrapper.setData({ sortDesc: false })
-      samples.handlePrintLabel = jest.fn()
+      samples.handlePrintLabel = vi.fn()
     })
 
     it('passes selected printer to function on emit event', () => {
@@ -124,7 +124,7 @@ describe('Samples.vue', () => {
   describe('enzymeModal', () => {
     beforeEach(() => {
       wrapper.setData({ sortDesc: false })
-      samples.createLibraries = jest.fn()
+      samples.createLibraries = vi.fn()
     })
 
     it('passes selected enzyme id to function on emit event', () => {

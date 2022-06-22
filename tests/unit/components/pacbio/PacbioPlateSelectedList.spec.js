@@ -1,4 +1,4 @@
-import { mount, localVue, store, Data } from 'testHelper'
+import { mount, localVue, store, Data } from '@support/testHelper'
 import PacbioPlateSelectedList from '@/components/pacbio/PacbioPlateSelectedList'
 import Response from '@/api/Response'
 
@@ -51,7 +51,7 @@ describe('PacbioPlateSelectedList', () => {
     })
 
     it('selects the requests associated with the well', async () => {
-      const dispatch = jest.fn()
+      const dispatch = vi.fn()
       store.dispatch = dispatch
       const selecto = wrapper.find('vueselecto-stub')
       await selecto.vm.$emit('select', {

@@ -1,5 +1,5 @@
 import Well from '@/components/plates/WellItem'
-import { mount } from 'testHelper'
+import { mount } from '@support/testHelper'
 
 describe('Well.vue', () => {
   let well, wrapper, props
