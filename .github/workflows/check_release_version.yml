@@ -1,11 +1,11 @@
 # Checks that the .release-version file has been updated
+# Testing
 name: Check release version
 
 on:
   workflow_dispatch:
     branches:
       - dpl-338-testing
-
 jobs:
   check:
     runs-on: ubuntu-latest
