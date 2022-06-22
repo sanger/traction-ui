@@ -71,7 +71,7 @@ jobs:
         yarn lint
 
   test:
-    name: Run unit tests using Vue Test Utils
+    name: Run unit tests using Vitest
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
@@ -125,12 +125,12 @@ jobs:
       run: >-
         yarn install
     - name: Cypress run
-      uses: cypress-io/github-action@v2
+      uses: cypress-io/github-action@v4
       with:
         start: yarn start
         wait-on: http://localhost:3000/
-        config-file: cypress.json
         spec: "tests/e2e/**/*"
+        config-file: cypress.config.js
         config: video=false
       env:
         CYPRESS_baseUrl: http://localhost:3000/
