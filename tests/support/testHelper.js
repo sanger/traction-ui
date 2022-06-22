@@ -6,6 +6,7 @@ import router from '@/router'
 import globalAlert from '@/mixins/globalAlert'
 
 const localVue = createLocalVue()
+
 localVue.use(BootstrapVue)
 localVue.mixin(globalAlert)
 
