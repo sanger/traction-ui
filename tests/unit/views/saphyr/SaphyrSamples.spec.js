@@ -4,12 +4,17 @@ import * as consts from '@/consts/consts'
 import Response from '@/api/Response'
 
 describe('Samples.vue', () => {
-  let wrapper, samples, mockSamples
+  let wrapper, samples
 
   beforeEach(() => {
-    mockSamples = new Response(Data.TractionSaphyrRequests).deserialize.requests
-    store.commit('traction/saphyr/requests/setRequests', mockSamples)
-
+    // We mock the request response, to allow the provider to trigger our
+    // behaviour for us. We might be better of mocking the action itself, but
+    // that gets surprisingly tricky as the store gets heavily modularised.
+    // Before we used to inject the state directly, but that caused issues
+    // when the component triggered the set requests action itself.
+    jest
+      .spyOn(store.getters['traction/saphyr/requests/requestsRequest'], 'get')
+      .mockResolvedValue(Data.TractionSaphyrRequests)
     wrapper = mount(Samples, {
       localVue,
       store,

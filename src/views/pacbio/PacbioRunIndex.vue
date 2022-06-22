@@ -33,7 +33,7 @@
       tbody-tr-class="run"
       @filtered="onFiltered"
     >
-      <template v-slot:cell(actions)="row">
+      <template #cell(actions)="row">
         <b-button
           :id="generateId('startRun', row.item.id)"
           variant="outline-success"

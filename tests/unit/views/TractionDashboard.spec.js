@@ -1,11 +1,11 @@
-import Dashboard from '@/views/Dashboard'
+import TractionDashboard from '@/views/TractionDashboard'
 import { mount, localVue, store, router } from 'testHelper'
 
-describe('Dashboard.vue', () => {
+describe('TractionDashboard.vue', () => {
   let wrapper, box, dashboard
 
   beforeEach(() => {
-    wrapper = mount(Dashboard, { router, localVue, store })
+    wrapper = mount(TractionDashboard, { router, localVue, store })
     dashboard = wrapper.vm
   })
 

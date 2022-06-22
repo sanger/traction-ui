@@ -1,12 +1,12 @@
 <template>
-  <pipeline-view pipeline="saphyr"></pipeline-view>
+  <pipeline-view pipeline="pacbio"></pipeline-view>
 </template>
 
 <script>
 import PipelineView from '@/views/PipelineView'
 
 export default {
-  name: 'Saphyr',
+  name: 'PacbioView',
   components: {
     PipelineView,
   },

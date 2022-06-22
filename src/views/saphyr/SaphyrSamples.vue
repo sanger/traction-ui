@@ -34,7 +34,7 @@
       @filtered="onFiltered"
       @row-selected="onRowSelected"
     >
-      <template v-slot:cell(selected)="{ rowSelected }">
+      <template #cell(selected)="{ rowSelected }">
         <template v-if="rowSelected">
           <span>&check;</span>
           <span class="sr-only">Selected</span>

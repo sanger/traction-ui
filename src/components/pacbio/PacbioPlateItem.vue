@@ -18,7 +18,7 @@ import Plate96SVG from '@/components/svg/Plate96SVG'
 import Well from '@/components/pacbio/PacbioWellItem'
 
 export default {
-  name: 'Plate',
+  name: 'PacbioPlateItem',
   components: {
     Plate96SVG,
     Well,

@@ -49,7 +49,7 @@
         </b-form-group>
       </b-form>
 
-      <template v-slot:modal-footer="{ ok, cancel }">
+      <template #modal-footer="{ cancel }">
         <b-button @click="cancel()"> Cancel </b-button>
 
         <b-button variant="success" @click="update()"> Update Sample </b-button>

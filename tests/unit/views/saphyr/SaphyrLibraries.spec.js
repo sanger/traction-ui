@@ -35,7 +35,14 @@ describe('Libraries.vue', () => {
       },
     ]
 
-    store.commit('traction/saphyr/tubes/setLibraries', mockLibraries)
+    // We mock the request response, to allow the provider to trigger our
+    // behaviour for us. We might be better of mocking the action itself, but
+    // that gets surprisingly tricky as the store gets heavily modularised.
+    // Before we used to inject the state directly, but that caused issues
+    // when the component triggered the set requests action itself.
+    jest
+      .spyOn(store.getters['traction/saphyr/tubes/libraryRequest'], 'get')
+      .mockResolvedValue(Data.TractionSaphyrLibraries)
 
     const router = new VueRouter({
       routes: [
@@ -68,7 +75,7 @@ describe('Libraries.vue', () => {
     })
 
     it('contains the correct data', async () => {
-      expect(wrapper.find('tbody').findAll('tr').length).toEqual(2)
+      expect(wrapper.find('tbody').findAll('tr').length).toEqual(6)
     })
   })
 

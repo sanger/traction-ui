@@ -11,9 +11,9 @@
     "test:unit": "jest",
     "test:e2e": "npm-run-all -p start test:cypress",
     "test:cypress": "cypress open",
-    "lint": "eslint .",
+    "lint": "eslint . --ext .js,.vue,.cjs",
     "pretty": "prettier --check '**/*'",
-    "test": "test:unit && test:e2e",
+    "test": "npm-run-all test:unit test:e2e",
     "serve:css": "postcss src/styles/tailwind.css -o src/styles/index.css",
     "build:css": "postcss src/styles/tailwind.css -o src/styles/index.css --env production"
   },

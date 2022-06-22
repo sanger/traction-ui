@@ -94,7 +94,7 @@
         </b-form-group>
       </b-form>
 
-      <template v-slot:modal-footer="{ cancel }">
+      <template #modal-footer="{ cancel }">
         <b-button @click="cancel()"> Cancel </b-button>
 
         <b-button id="create-btn" variant="success" type="submit" form="libraryCreateModal">

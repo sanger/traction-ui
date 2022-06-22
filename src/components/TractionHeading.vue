@@ -9,7 +9,7 @@
 </template>
 <script>
 export default {
-  name: 'Heading',
+  name: 'TractionHeading',
   props: {
     /**
      * Level specifies the size of the heading text displayed.

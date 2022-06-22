@@ -43,7 +43,7 @@ const { mapGetters, mapState, mapActions } = createNamespacedHelpers('traction/p
 import * as consts from '@/consts/consts'
 
 export default {
-  name: 'Run',
+  name: 'PacbioRunShow',
   components: {
     PacbioRunInfoEdit,
     pacbioPoolList,

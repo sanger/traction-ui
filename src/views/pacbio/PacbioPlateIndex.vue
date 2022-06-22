@@ -31,7 +31,7 @@
       hover
       @filtered="onFiltered"
     >
-      <template v-slot:cell(show_details)="row">
+      <template #cell(show_details)="row">
         <b-button
           :id="'details-btn-' + row.item.id"
           size="sm"
@@ -42,7 +42,7 @@
         </b-button>
       </template>
 
-      <template v-slot:row-details="row">
+      <template #row-details="row">
         <Plate ref="plate" :plate="row.item" @alert="alert"></Plate>
       </template>
     </b-table>
