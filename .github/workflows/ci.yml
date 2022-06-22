@@ -127,12 +127,13 @@ jobs:
     - name: Cypress run
       uses: cypress-io/github-action@v2
       with:
-        start: yarn serve
-        wait-on: http://localhost:8080/
+        start: yarn start
+        wait-on: http://localhost:3000/
         config-file: cypress.json
         spec: "tests/e2e/**/*"
+        config: video=false
       env:
-        CYPRESS_baseUrl: http://localhost:8080/
+        CYPRESS_baseUrl: http://localhost:3000/
     # after the test run completes
     # store any screenshots
     # NOTE: screenshots will be generated only if E2E test failed
