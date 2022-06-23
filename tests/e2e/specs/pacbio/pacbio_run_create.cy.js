@@ -81,7 +81,7 @@ describe('Pacbio Run Create view', () => {
         },
       },
     })
-    cy.intercept('/v1/pacbio/runs/1', {})
+    cy.intercept('/v1/pacbio/runs/1', { statusCode: 200 })
     const dataTransfer = new DataTransfer()
 
     cy.visit('#/pacbio/runs')
