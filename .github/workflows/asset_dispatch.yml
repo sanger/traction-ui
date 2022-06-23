@@ -20,9 +20,9 @@ jobs:
         id: node_version
         run: echo ::set-output name=NODE_VERSION::$(cat .nvmrc)
       - name: Setup node
-        uses: actions/setup-node@v2
+        uses: actions/setup-node@v3
         with:
-          node-version: ${{ steps.node_version.outputs.NODE_VERSION }}
+          node-version-file: '.nvmrc'
           cache: 'npm'
 
       - name: Install dependencies

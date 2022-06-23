@@ -16,18 +16,15 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
-    - name: Export node version
-      id: node_version
-      run: echo ::set-output name=NODE_VERSION::$(cat .nvmrc)
     - name: Setup node
-      uses: actions/setup-node@v2
+      uses: actions/setup-node@v3
       with:
-        node-version: ${{ steps.node_version.outputs.NODE_VERSION }}
+        node-version-file: '.nvmrc'
         cache: 'npm'
     - name: Install dependencides
       run: >-
         npm ci
-    - name: Run yarn pretty
+    - name: Run npm pretty
       run: >-
         npm run pretty
 
@@ -36,13 +33,10 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
-    - name: Export node version
-      id: node_version
-      run: echo ::set-output name=NODE_VERSION::$(cat .nvmrc)
     - name: Setup node
-      uses: actions/setup-node@v2
+      uses: actions/setup-node@v3
       with:
-        node-version: ${{ steps.node_version.outputs.NODE_VERSION }}
+        node-version-file: '.nvmrc'
         cache: 'npm'
     - name: Install dependencides
       run: >-
@@ -56,13 +50,10 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
-    - name: Export node version
-      id: node_version
-      run: echo ::set-output name=NODE_VERSION::$(cat .nvmrc)
     - name: Setup node
-      uses: actions/setup-node@v2
+      uses: actions/setup-node@v3
       with:
-        node-version: ${{ steps.node_version.outputs.NODE_VERSION }}
+        node-version-file: '.nvmrc'
         cache: 'npm'
     - name: Install dependencides
       run: >-
@@ -76,13 +67,11 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
-    - name: Export node version
-      id: node_version
-      run: echo ::set-output name=NODE_VERSION::$(cat .nvmrc)
     - name: Setup node
-      uses: actions/setup-node@v2
+      uses: actions/setup-node@v3
       with:
-        node-version: ${{ steps.node_version.outputs.NODE_VERSION }}
+        node-version-file: '.nvmrc'
+        cache: 'npm'
     - name: Cypress run
       uses: cypress-io/github-action@v4
       with:
