@@ -29,7 +29,7 @@ config required:
 
 Install the require dependencies:
 
-    npm install
+    npm install --include=dev
 
 ## Running
 
