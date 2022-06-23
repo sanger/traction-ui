@@ -10,7 +10,7 @@
 compile-build.sh
 coverage
 README.md
-yarn.lock
+package-lock.json
 public
 dist
 node_modules
