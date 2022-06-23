@@ -36,3 +36,7 @@ coverage
 
 # talisman
 .talismanrc
+
+# We build the style programatically, so we'll add it to th .gitignore to
+# avoid uneccessary noise
+/src/styles/index.css
