@@ -1,2 +1,2 @@
 ignore:
-  - 'sr@/views/pacbio/PacbioPlateReception.vue'
+  - 'src/views/pacbio/PacbioPlateReception.vue'
