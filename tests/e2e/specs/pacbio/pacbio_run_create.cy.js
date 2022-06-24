@@ -81,7 +81,7 @@ describe('Pacbio Run Create view', () => {
         },
       },
     })
-    cy.intercept('/v1/pacbio/runs/1', { statusCode: 200 })
+    cy.intercept('DELETE', '/v1/pacbio/runs/1', { statusCode: 200 }).as('deleteRun')
     const dataTransfer = new DataTransfer()
 
     cy.visit('#/pacbio/runs')
@@ -99,5 +99,7 @@ describe('Pacbio Run Create view', () => {
       '[data-type=run-validation-message]',
       'Failed to create run in Traction: error1 some error',
     )
+    // Ensure we made the request
+    cy.wait('@deleteRun')
   })
 })
