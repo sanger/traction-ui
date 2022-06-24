@@ -36,8 +36,9 @@ Install the require dependencies:
 
 In the project directory, you can run:
 
-   ## 'yarn run start'
-   To run the app and have hot-reloads for development:
+    yarn run start
+
+To run the app and have hot-reloads for development:
 *This internally run  serve and serve:css commands*
 
 ## Testing
@@ -66,7 +67,7 @@ In the project directory, you can run:
 - To generate Tailwind css independently you can run:
 *This is not required mostly, as this will be run as part of 'yarn run start'*
 
-yarn run serve:css   
+yarn run serve:css
 
 ## Formatting and Linting
 

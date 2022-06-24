@@ -16,7 +16,7 @@ describe('Pacbio library creation from sample', () => {
     cy.get('#tag-input').select('bc1001_BAK8A_OA')
     cy.get('#library-volume').type(1)
     cy.get('#library-concentration').type(1)
-    cy.get('#library-templatePrepKitBoxBarcode').type('barcode')
+    cy.get('#library-templatePrepKitBoxBarcode').type('012345678901234567890')
     cy.get('#library-insertSize').type(1)
     cy.get('#create-btn').click()
     cy.contains('Created library with barcode TRAC-2-1465')
