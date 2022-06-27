@@ -5,9 +5,6 @@ on:
   pull_request:
     branches:
       - master
-  push:
-    branches:
-      - dpl-338
 jobs:
   check:
     runs-on: ubuntu-latest
