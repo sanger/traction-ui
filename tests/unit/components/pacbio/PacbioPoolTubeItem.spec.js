@@ -9,13 +9,28 @@ describe('LibraryTubeItem.vue', () => {
   describe('when valid', () => {
     beforeEach(() => {
       props = {
+        id: '1',
         barcode: 'TRAC-1',
-        libraries: [{ id: '1', sample_name: 'Sample1', group_id: 'TAG_1' }],
+        libraries: [
+          {
+            id: '1',
+            sample_name: 'Sample1',
+            group_id: 'TAG_1',
+            run_suitability: {
+              ready_for_run: true,
+              errors: [],
+            },
+          },
+        ],
         volume: 10.2,
         concentration: 13.1,
         template_prep_kit_box_barcode: 'BB1',
         insert_size: 100,
         source_identifier: 'DN1S:A1',
+        run_suitability: {
+          ready_for_run: true,
+          errors: [],
+        },
       }
 
       wrapper = mount(Tube, {
@@ -59,9 +74,54 @@ describe('LibraryTubeItem.vue', () => {
   describe('when invalid', () => {
     beforeEach(() => {
       props = {
+        id: '1',
         barcode: 'TRAC-1',
-        libraries: [{ id: '1', sample_name: 'Sample1', group_id: 'TAG_1' }],
+        libraries: [
+          {
+            id: '1',
+            sample_name: 'Sample1',
+            group_id: 'TAG_1',
+            run_suitability: {
+              ready_for_run: false,
+              errors: [
+                {
+                  title: "can't be blank",
+                  detail: "insert_size - can't be blank",
+                  code: '100',
+                  source: {
+                    pointer: '/data/attributes/insert_size',
+                  },
+                },
+              ],
+            },
+          },
+        ],
         source_identifier: 'DN1S:A1',
+        run_suitability: {
+          ready_for_run: false,
+          formattedErrors: [
+            "Pool insert_size - can't be blank",
+            "Library 1 (Sample1) insert_size - can't be blank",
+          ],
+          errors: [
+            {
+              title: "can't be blank",
+              detail: "insert_size - can't be blank",
+              code: '100',
+              source: {
+                pointer: '/data/attributes/insert_size',
+              },
+            },
+            {
+              title: 'is invalid',
+              detail: 'libraries - is invalid',
+              code: '100',
+              source: {
+                pointer: '/data/relationships/libraries',
+              },
+            },
+          ],
+        },
       }
 
       wrapper = mount(Tube, {
@@ -79,6 +139,17 @@ describe('LibraryTubeItem.vue', () => {
     it('reports more information when clicked', async () => {
       await wrapper.trigger('click')
       expect(wrapper.find('[data-attribute=volume]').text()).toContain(unknownField)
+      expect(wrapper.text()).toContain("Pool insert_size - can't be blank")
+      expect(wrapper.text()).toContain("Library 1 (Sample1) insert_size - can't be blank")
+    })
+
+    it('has an edit button per library', () => {
+      const button = wrapper.find('#editPool-1')
+      expect(button.text()).toEqual('Edit')
+      expect(button.props('to')).toStrictEqual({
+        name: 'PacbioPoolCreate',
+        params: { id: '1' },
+      })
     })
   })
 })

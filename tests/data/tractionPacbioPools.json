@@ -14,7 +14,11 @@
           "insert_size": 100,
           "source_identifier": "DN1:A1",
           "created_at": "2021-07-15T15:26:29.000Z",
-          "updated_at": "2021-07-15T15:26:29.000Z"
+          "updated_at": "2021-07-15T15:26:29.000Z",
+          "run_suitability": {
+            "ready_for_run": true,
+            "errors": []
+          }
         },
         "relationships": {
           "tube": {
@@ -51,10 +55,31 @@
           "volume": 1.0,
           "concentration": 1.0,
           "template_prep_kit_box_barcode": "LK12345",
-          "insert_size": 100,
+          "insert_size": null,
           "source_identifier": "DN1:B1",
           "created_at": "2021-07-15T15:26:29.000Z",
-          "updated_at": "2021-07-15T15:26:29.000Z"
+          "updated_at": "2021-07-15T15:26:29.000Z",
+          "run_suitability": {
+            "ready_for_run": false,
+            "errors": [
+              {
+                "title": "can't be blank",
+                "detail": "insert_size - can't be blank",
+                "code": "100",
+                "source": {
+                  "pointer": "/data/attributes/insert_size"
+                }
+              },
+              {
+                "title": "is invalid",
+                "detail": "libraries - is invalid",
+                "code": "100",
+                "source": {
+                  "pointer": "/data/relationships/libraries"
+                }
+              }
+            ]
+          }
         },
         "relationships": {
           "tube": {
@@ -109,6 +134,12 @@
         "links": {
           "self": "http://localhost:3100/v1/pacbio/libraries/1"
         },
+        "attributes": {
+          "run_suitability": {
+            "ready_for_run": true,
+            "errors": []
+          }
+        },
         "relationships": {
           "request": {
             "links": {
@@ -137,6 +168,21 @@
         "type": "libraries",
         "links": {
           "self": "http://localhost:3100/v1/pacbio/libraries/2"
+        },
+        "attributes": {
+          "run_suitability": {
+            "ready_for_run": false,
+            "errors": [
+              {
+                "title": "can't be blank",
+                "detail": "insert_size - can't be blank",
+                "code": "100",
+                "source": {
+                  "pointer": "/data/attributes/insert_size"
+                }
+              }
+            ]
+          }
         },
         "relationships": {
           "request": {

@@ -25,7 +25,7 @@ describe('Pacbio Run Create view', () => {
       },
     })
     cy.intercept(
-      '/v1/pacbio/pools?include=tube,libraries.tag,libraries.request&fields[requests]=sample_name&fields[tubes]=barcode&fields[tags]=group_id&fields[libraries]=request,tag',
+      '/v1/pacbio/pools?include=tube,libraries.tag,libraries.request&fields[requests]=sample_name&fields[tubes]=barcode&fields[tags]=group_id&fields[libraries]=request,tag,run_suitability',
       {
         fixture: 'tractionPacbioPools.json',
       },
@@ -45,7 +45,9 @@ describe('Pacbio Run Create view', () => {
     cy.visit('#/pacbio/runs')
     cy.get('button').contains('New Run').click()
     cy.get('#sequencing-kit-box-barcode').type('Lxxxxx101826100123199')
-    cy.get('#dna-control-complex-box-barcode').type('Lxxxxx101717600123199')
+    cy.get('.pacbioRunInfoEdit')
+      .get('#dna-control-complex-box-barcode')
+      .type('Lxxxxx101717600123199')
     cy.get('#system-name').select('Sequel IIe')
     // TODO: calling it  list group item is not specific enough
     cy.get('.list-group-item')
@@ -58,11 +60,11 @@ describe('Pacbio Run Create view', () => {
       .first()
       .trigger('drop', { dataTransfer: dataTransfer, force: true })
       .trigger('click')
-    cy.get('#movieTime').select('15.0')
-    cy.get('#onPlateLoadingConc').type('2')
-    cy.get('#generateHiFi').select('Do Not Generate')
-    cy.get('#bindingKitBoxBarcode').type('12345')
-    cy.get('#loadingTarget').type('0.75')
+    // cy.get('#movieTime').select('15.0')
+    // cy.get('#onPlateLoadingConc').type('2')
+    // cy.get('#generateHiFi').select('Do Not Generate')
+    // cy.get('#bindingKitBoxBarcode').type('12345')
+    // cy.get('#loadingTarget').type('0.75')
     cy.get('#updateBtn').click()
     cy.get('button').contains('Create').click()
     // TODO: we need a success message.
