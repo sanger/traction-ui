@@ -2,12 +2,9 @@
 name: Check release version
 
 on:
-  # pull_request:
-  #   branches:
-  #     - master
-  push:
+  pull_request:
     branches:
-      - dpl-338
+      - master
 
 jobs:
   check:
@@ -24,7 +21,7 @@ jobs:
           
       - name: Run step looking for change in the release version
         run: >-
-          echo "${{ steps.changed-files-specific.outputs.any_changed }}";
           if ! "${{ steps.changed-files-specific.outputs.any_changed }}"; then
             echo "Please change the release version number"
+            exit 1;
           fi
