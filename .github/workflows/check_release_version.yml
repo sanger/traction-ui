@@ -24,6 +24,7 @@ jobs:
           
       - name: Run step looking for change in the release version
         run: >-
+          echo $steps.changed-files-specific.outputs.any_changed
           if [ !$steps.changed-files-specific.outputs.any_changed ]; then
             echo "Please change the release version number"
             # exit 1;
