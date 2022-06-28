@@ -21,6 +21,7 @@
     "build:css": "postcss src/styles/tailwind.css -o src/styles/index.css --env production"
   },
   "dependencies": {
+    "@vue/composition-api": "^1.6.3",
     "autoprefixer": "^10.4.7",
     "axios": "^0.21.4",
     "bootstrap-vue": "^2.22.0",
@@ -30,6 +31,7 @@
     "global": "^4.4.0",
     "lodash-es": "^4.17.21",
     "postcss": "^8.4.14",
+    "swrv": "^0.9.6",
     "tailwindcss": "2.2.19",
     "vite": "^2.9.12",
     "vite-plugin-vue2": "^2.0.1",
