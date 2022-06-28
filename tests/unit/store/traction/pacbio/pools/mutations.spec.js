@@ -1,4 +1,4 @@
-import { Data } from 'testHelper'
+import { Data } from '@support/testHelper'
 import mutations from '@/store/traction/pacbio/pools/mutations'
 import storePools from '@tests/data/StorePools'
 

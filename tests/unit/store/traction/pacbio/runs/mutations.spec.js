@@ -1,7 +1,7 @@
 import Mutations from '@/store/traction/pacbio/runs/mutations'
 import Actions from '@/store/traction/pacbio/runs/actions'
 import * as Run from '@/api/PacbioRun'
-import { Data } from 'testHelper'
+import { Data } from '@support/testHelper'
 import Response from '@/api/Response'
 
 describe('mutate', () => {

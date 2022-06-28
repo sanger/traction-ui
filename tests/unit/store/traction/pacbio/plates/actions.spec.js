@@ -1,4 +1,4 @@
-import { Data } from 'testHelper'
+import { Data } from '@support/testHelper'
 import Response from '@/api/Response'
 import * as Actions from '@/store/traction/pacbio/plates/actions'
 
@@ -6,8 +6,8 @@ describe('#createPlateInTraction', () => {
   let commit, get, getters, failedResponse, plates
 
   beforeEach(() => {
-    commit = jest.fn()
-    get = jest.fn()
+    commit = vi.fn()
+    get = vi.fn()
     getters = { getPlates: { get: get } }
     plates = new Response(Data.PacbioPlates).deserialize.plates
     failedResponse = { data: { data: [] }, status: 500, statusText: 'Internal Server Error' }

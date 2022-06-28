@@ -1,4 +1,4 @@
-import { mount, localVue, Data, store } from 'testHelper'
+import { mount, localVue, Data, store } from '@support/testHelper'
 import PacbioSampleMetadataEdit from '@/components/pacbio/PacbioSampleMetadataEdit'
 import Response from '@/api/Response'
 
@@ -30,9 +30,9 @@ describe('PacbioSampleMetadataEdit.vue', () => {
 
   describe('update', () => {
     beforeEach(() => {
-      modal.alert = jest.fn()
-      modal.hide = jest.fn()
-      modal.updateRequest = jest.fn()
+      modal.alert = vi.fn()
+      modal.hide = vi.fn()
+      modal.updateRequest = vi.fn()
     })
 
     it('successful ', async () => {

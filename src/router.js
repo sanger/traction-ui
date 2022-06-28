@@ -1,16 +1,16 @@
 // TODO: routes are not tested so cause errors on start
 import Vue from 'vue'
 import Router from 'vue-router'
-import Dashboard from '@/views/Dashboard'
+import TractionDashboard from '@/views/TractionDashboard'
 import LabelPrinting from '@/views/LabelPrinting'
 import PageNotFound from '@/views/PageNotFound'
-import Saphyr from '@/views/Saphyr'
+import SaphyrView from '@/views/SaphyrView'
 import SaphyrReception from '@/views/saphyr/SaphyrReception'
 import SaphyrSamples from '@/views/saphyr/SaphyrSamples'
 import SaphyrLibraries from '@/views/saphyr/SaphyrLibraries'
 import SaphyrRuns from '@/views/saphyr/SaphyrRuns'
 import SaphyrRun from '@/views/saphyr/SaphyrRun'
-import Pacbio from '@/views/Pacbio'
+import PacbioView from '@/views/PacbioView'
 import PacbioReceptionSamplesExtraction from '@/views/pacbio/PacbioReceptionSamplesExtraction'
 import PacbioPlateIndex from '@/views/pacbio/PacbioPlateIndex'
 import PacbioSampleIndex from '@/views/pacbio/PacbioSampleIndex'
@@ -29,13 +29,13 @@ export default new Router({
     {
       path: '/',
       redirect: { name: 'Dashboard' },
-      component: Dashboard,
+      component: TractionDashboard,
     },
     {
       path: '/dashboard',
       name: 'Dashboard',
       meta: { pipeline: 'Dashboard' },
-      component: Dashboard,
+      component: TractionDashboard,
     },
     {
       path: '/label-printing',
@@ -45,7 +45,7 @@ export default new Router({
     },
     {
       path: '/saphyr',
-      component: Saphyr,
+      component: SaphyrView,
       meta: { pipeline: 'Saphyr' },
       children: [
         { path: '', redirect: 'reception', meta: { page: 'Reception' } },
@@ -80,7 +80,7 @@ export default new Router({
     },
     {
       path: '/pacbio',
-      component: Pacbio,
+      component: PacbioView,
       meta: { pipeline: 'PacBio' },
       children: [
         { path: '', redirect: 'reception' },

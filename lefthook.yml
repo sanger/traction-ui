@@ -5,26 +5,26 @@ pre-push:
   commands:
     packages-audit:
       tags: security
-      run: yarn audit
+      run: npm audit --audit-level=high
 
 pre-commit:
   parallel: true
   commands:
     prettier:
       glob: '*.{js,vue}'
-      run: yarn prettier --check {staged_files}
+      run: npx prettier --check {staged_files}
 
     eslint:
       glob: '*.{js,vue}'
-      run: yarn lint {staged_files}
+      run: npm run lint {staged_files}
 
 fix:
   parallel: false
   commands:
     prettier:
       glob: '*.{js,vue}'
-      run: yarn prettier -write {staged_files} --ignore-unknown
+      run: npx prettier -write {staged_files} --ignore-unknown
 
     eslint:
       glob: '*.{js,vue}'
-      run: yarn lint {staged_files}
+      run: npm run lint {staged_files}

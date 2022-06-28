@@ -1,4 +1,4 @@
-import { mount, localVue, store, Data } from 'testHelper'
+import { mount, localVue, store, Data } from '@support/testHelper'
 import PacbioPlateFind from '@/components/pacbio/PacbioPlateFind'
 import Response from '@/api/Response'
 
@@ -32,15 +32,15 @@ describe('PacbioPlateFind', () => {
 
   describe('Handle submit', () => {
     it('handleSubmit calls mutation when enteredLabware is an existing plate barcode', () => {
-      wrapper.vm.toggleSelected = jest.fn()
+      wrapper.vm.toggleSelected = vi.fn()
       wrapper.setData({ enteredLabware: 'DN1' })
       wrapper.vm.handleSubmit()
       expect(wrapper.vm.toggleSelected).toBeCalled()
     })
 
     it('handleSubmit calls mutation when enteredLabware is an existing plate barcode', () => {
-      wrapper.vm.setSelected = jest.fn()
-      wrapper.vm.showAlert = jest.fn()
+      wrapper.vm.setSelected = vi.fn()
+      wrapper.vm.showAlert = vi.fn()
       wrapper.setData({ enteredLabware: 'Not a plate Barcode' })
       wrapper.vm.handleSubmit()
       expect(wrapper.vm.setSelected).not.toBeCalled()

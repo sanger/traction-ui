@@ -1,5 +1,5 @@
 import * as PrintJobRequests from '@/api/PrintJobRequests'
-import { store } from 'testHelper'
+import { store } from '@support/testHelper'
 import Response from '@/api/Response'
 import * as consts from '@/consts/consts'
 
@@ -9,7 +9,7 @@ describe('PrintJobRequests', () => {
   const mockDate = new Date(1640390400000)
 
   beforeEach(() => {
-    jest.spyOn(global, 'Date').mockImplementation(() => mockDate)
+    vi.spyOn(global, 'Date').mockImplementation(() => mockDate)
 
     selectedSamples = [
       { id: 1, type: 'samples', name: 'sample1', barcode: 'TRAC-1' },
@@ -28,7 +28,7 @@ describe('PrintJobRequests', () => {
     beforeEach(() => {
       request = store.getters.api.printMyBarcode.print_jobs
 
-      request.create = jest.fn()
+      request.create = vi.fn()
     })
 
     it('returns a response on success', async () => {
@@ -118,7 +118,7 @@ describe('PrintJobRequests', () => {
         data: {
           attributes: {
             printer_name: printerName,
-            label_template_id: process.env.VUE_APP_SAPHYR_LABEL_TEMPLATE_ID,
+            label_template_id: import.meta.env.VITE_SAPHYR_LABEL_TEMPLATE_ID,
             labels: labels,
           },
         },
@@ -137,7 +137,7 @@ describe('PrintJobRequests', () => {
         data: {
           attributes: {
             printer_name: printerName,
-            label_template_id: process.env.VUE_APP_PACBIO_LABEL_TEMPLATE_ID,
+            label_template_id: import.meta.env.VITE_PACBIO_LABEL_TEMPLATE_ID,
             labels: labels,
           },
         },
@@ -253,7 +253,7 @@ describe('PrintJobRequests', () => {
   describe('printMyBarcodeRequest', () => {
     it('returns a pmb request', () => {
       let request = PrintJobRequests.printMyBarcodeRequest()
-      expect(request.rootURL).toEqual(process.env.VUE_APP_PRINTMYBARCODE_BASE_URL)
+      expect(request.rootURL).toEqual(import.meta.env.VITE_PRINTMYBARCODE_BASE_URL)
       expect(request.apiNamespace).toEqual('v1')
     })
   })
@@ -268,7 +268,7 @@ describe('PrintJobRequests', () => {
         selectedSamples,
         consts.PIPELINE_PACBIO,
       )
-      request.create = jest.fn()
+      request.create = vi.fn()
     })
 
     it('successfully posts a print job request', async () => {

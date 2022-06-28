@@ -5,8 +5,8 @@
     </b-modal>
     <div class="form-group">
       <div class="flex flex-col gap-y-4">
-        <Heading level="4" :show-border="true">
-          <div class="flex flex-row gap-x-2"><BarcodeIcon />Scan Barcodes</div></Heading
+        <TractionHeading level="4" :show-border="true">
+          <div class="flex flex-row gap-x-2"><BarcodeIcon />Scan Barcodes</div></TractionHeading
         >
         <div class="sm:px-6 lg:px-8">
           <b-form-textarea
@@ -21,7 +21,7 @@
         </div>
       </div>
       <div class="flex flex-col gap-y-4 mt-10">
-        <Heading level="4" :show-border="true">Request Options</Heading>
+        <TractionHeading level="4" :show-border="true">Request Options</TractionHeading>
         <div class="flex grid grid-cols-2 sm:px-6 lg:px-8 gap-x-8 justify-left contents-centre">
           <LibraryTypeSelect v-model="libraryType" pipeline="pacbio" :label-cols="0" />
           <b-form-group
@@ -54,7 +54,7 @@ import Spinner from 'vue-simple-spinner'
 import Api from '@/mixins/Api'
 import { createLabware } from '@/services/traction/Pacbio'
 import LibraryTypeSelect from '@/components/shared/LibraryTypeSelect'
-import Heading from '@/components/Heading'
+import TractionHeading from '@/components/TractionHeading'
 import BarcodeIcon from '../../icons/BarcodeIcon.vue'
 
 export default {
@@ -62,7 +62,7 @@ export default {
   components: {
     Spinner,
     LibraryTypeSelect,
-    Heading,
+    TractionHeading,
     BarcodeIcon,
   },
   mixins: [Api],

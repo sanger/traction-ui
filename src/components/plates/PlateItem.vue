@@ -19,7 +19,7 @@ import PlateMap from '@/config/PlateMap'
 import Well from '@/components/plates/WellItem'
 
 export default {
-  name: 'Plate',
+  name: 'PlateItem',
   components: {
     Plate96SVG,
     Well,

@@ -1,4 +1,4 @@
-import { mount, localVue, router } from 'testHelper'
+import { mount, localVue, router } from '@support/testHelper'
 import PipelineView from '@/views/PipelineView'
 
 describe('PipelineView', () => {

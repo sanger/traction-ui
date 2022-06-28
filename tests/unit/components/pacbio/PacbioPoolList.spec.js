@@ -1,4 +1,4 @@
-import { mount, localVue, store } from 'testHelper'
+import { mount, localVue, store } from '@support/testHelper'
 import pacbioPoolList from '@/components/pacbio/PacbioPoolList'
 import storePools from '@tests/data/StorePools'
 

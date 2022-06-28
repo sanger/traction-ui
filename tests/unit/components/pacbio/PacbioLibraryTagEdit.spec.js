@@ -1,4 +1,4 @@
-import { mount, localVue, store } from 'testHelper'
+import { mount, localVue, store } from '@support/testHelper'
 import PacbioLibraryTagEdit from '@/components/pacbio/PacbioLibraryTagEdit'
 
 describe('PacbioLibraryTagEdit.vue', () => {
@@ -37,9 +37,9 @@ describe('PacbioLibraryTagEdit.vue', () => {
 
   describe('update', () => {
     beforeEach(() => {
-      modal.alert = jest.fn()
-      modal.hide = jest.fn()
-      modal.updateTag = jest.fn()
+      modal.alert = vi.fn()
+      modal.hide = vi.fn()
+      modal.updateTag = vi.fn()
     })
 
     it('successful ', async () => {

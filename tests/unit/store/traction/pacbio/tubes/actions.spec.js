@@ -1,4 +1,4 @@
-import { Data } from 'testHelper'
+import { Data } from '@support/testHelper'
 import Response from '@/api/Response'
 import * as Actions from '@/store/traction/pacbio/tubes/actions'
 
@@ -6,7 +6,7 @@ describe('#isLibraryBarcodeValid', () => {
   let dispatch
 
   beforeEach(() => {
-    dispatch = jest.fn()
+    dispatch = vi.fn()
   })
 
   it('will return false when barcode is null', async () => {
@@ -40,7 +40,7 @@ describe('#getTubeForBarcode', () => {
   let get, getters, barcode, failedResponse
 
   beforeEach(() => {
-    get = jest.fn()
+    get = vi.fn()
     getters = { tubeRequest: { get: get } }
     barcode = 'TRAC-1'
 
