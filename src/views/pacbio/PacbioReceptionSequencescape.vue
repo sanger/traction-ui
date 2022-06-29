@@ -1,8 +1,9 @@
 <template>
   <div>
-    <b-modal v-model="busy" hide-footer hide-header no-close-on-backdrop>
-      <spinner size="huge" message="Importing labware..."></spinner>
-    </b-modal>
+    <loading-full-screen-modal
+      :visible="busy"
+      message="Importing labware..."
+    ></loading-full-screen-modal>
     <div class="form-group">
       <div class="flex flex-col gap-y-4">
         <TractionHeading level="4" :show-border="true">
@@ -50,17 +51,15 @@
 </template>
 
 <script>
-import Spinner from 'vue-simple-spinner'
 import Api from '@/mixins/Api'
 import { createLabware } from '@/services/traction/Pacbio'
 import LibraryTypeSelect from '@/components/shared/LibraryTypeSelect'
 import TractionHeading from '@/components/TractionHeading'
-import BarcodeIcon from '../../icons/BarcodeIcon.vue'
+import BarcodeIcon from '@/icons/BarcodeIcon.vue'
 
 export default {
   name: 'PacbioReceptionSequencescape',
   components: {
-    Spinner,
     LibraryTypeSelect,
     TractionHeading,
     BarcodeIcon,

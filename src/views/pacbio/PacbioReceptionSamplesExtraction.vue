@@ -1,8 +1,9 @@
 <template>
   <div class="reception">
-    <b-modal v-model="busy" hide-footer hide-header no-close-on-backdrop>
-      <spinner size="huge" message="Importing tubes..."></spinner>
-    </b-modal>
+    <loading-full-screen-modal
+      :visible="busy"
+      message="Importing labware..."
+    ></loading-full-screen-modal>
     <div class="form-group">
       <label for="barcodes">Barcodes:</label>
       <b-form-textarea
@@ -38,7 +39,6 @@
 </template>
 
 <script>
-import Spinner from 'vue-simple-spinner'
 import { mapActions, mapState } from 'vuex'
 import LibraryTypeSelect from '@/components/shared/LibraryTypeSelect'
 import deserialize from '@/api/JsonApi'
@@ -47,7 +47,6 @@ export default {
   name: 'PacbioReceptionSamplesExtraction',
   components: {
     LibraryTypeSelect,
-    Spinner,
   },
   props: {},
   data() {
