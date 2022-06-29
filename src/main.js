@@ -8,10 +8,11 @@ import router from './router'
 import store from './store'
 import BootstrapVue from 'bootstrap-vue'
 import globalAlert from '@/mixins/globalAlert'
-import FlaggedFeature from '@/components/shared/FlaggedFeature'
 // Vue 2.7 (and 3) includes the composition API, so can remove this shortly.
 import VueCompositionAPI from '@vue/composition-api'
 import './styles/index.css'
+
+import { registerGlobal } from '@/components/shared'
 
 Vue.config.productionTip = false
 Vue.use(BootstrapVue)
@@ -20,7 +21,7 @@ Vue.mixin(globalAlert)
 // Vue 2.7 (and 3) includes the composition API, so can remove this shortly.
 Vue.use(VueCompositionAPI)
 
-Vue.component('FlaggedFeature', FlaggedFeature)
+registerGlobal(Vue)
 
 new Vue({
   store,
