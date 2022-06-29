@@ -2,6 +2,7 @@
 import Vue from 'vue'
 import Router from 'vue-router'
 import TractionDashboard from '@/views/TractionDashboard'
+import GeneralReception from '@/views/GeneralReception'
 import LabelPrinting from '@/views/LabelPrinting'
 import PageNotFound from '@/views/PageNotFound'
 import SaphyrView from '@/views/SaphyrView'
@@ -36,6 +37,12 @@ export default new Router({
       name: 'Dashboard',
       meta: { pipeline: 'Dashboard' },
       component: TractionDashboard,
+    },
+    {
+      path: '/reception',
+      name: 'Reception',
+      meta: { pipeline: 'Reception' },
+      component: GeneralReception,
     },
     {
       path: '/label-printing',
