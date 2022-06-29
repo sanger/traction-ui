@@ -7,7 +7,6 @@
 
 <script>
 import useSWRV from 'swrv'
-
 const DEFAULT_FEATURE = { enabled: false }
 
 /**
@@ -46,11 +45,7 @@ export default {
   },
   computed: {
     feature() {
-      if (this.data) {
-        return this.data.features[this.name] || DEFAULT_FEATURE
-      } else {
-        return DEFAULT_FEATURE
-      }
+      return this.data?.features[this.name] || DEFAULT_FEATURE
     },
     enabled() {
       return this.feature.enabled
