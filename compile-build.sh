@@ -6,7 +6,7 @@ set -ev
 
 # Building assets
 npm run build:css
-npm run build-js --dest $2/public --report
+npm run build:js --dest $2/public --report
 
 # Storing revision hash
 git rev-parse HEAD > $2/REVISION
