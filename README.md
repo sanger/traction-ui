@@ -83,7 +83,7 @@ checks, run:
 
 To fix errors locally run:
 
-    npm pretty --write
+    npx prettier --write .
 
 ### Linting
 
