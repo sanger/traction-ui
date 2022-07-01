@@ -18,4 +18,7 @@ export default defineConfig({
     environment: 'jsdom',
     setupFiles: './tests/support/setup',
   },
+  build: {
+    outDir: 'dist/public'
+  }
 })
