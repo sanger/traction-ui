@@ -16,11 +16,12 @@
     "test:cypress:one": "cypress open",
     "lint": "eslint . --ext .js,.vue,.cjs",
     "pretty": "prettier --check '**/*'",
-    "test": "npm-run-all test:unit test:e2e:all",
-    "serve:css": "postcss src/styles/tailwind.css -o src/styles/index.css",
-    "build:css": "postcss src/styles/tailwind.css -o src/styles/index.css --env production"
+    "test": "vue-cli-service test:unit && vue-cli-service test:e2e",
+    "serve:css": "postcss node_modules/@sanger/ui-styling/tailwind.css -o src/styles/index.css",
+    "build:css": "postcss node_modules/@sanger/ui-styling/tailwind.css -o src/styles/index.css --env production"
   },
   "dependencies": {
+    "@sanger/ui-styling": "^4.0.0",
     "autoprefixer": "^10.4.7",
     "axios": "^0.21.4",
     "bootstrap-vue": "^2.22.0",
