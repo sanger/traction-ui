@@ -19,6 +19,6 @@ export default defineConfig({
     setupFiles: './tests/support/setup',
   },
   build: {
-    outDir: 'dist/public'
-  }
+    outDir: 'dist/public',
+  },
 })
