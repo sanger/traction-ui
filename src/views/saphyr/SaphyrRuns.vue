@@ -31,11 +31,11 @@
       :current-page="currentPage"
       @filtered="onFiltered"
     >
-      <template v-slot:cell(chip_barcode)="data">
+      <template #cell(chip_barcode)="data">
         {{ truncateText(data.value, 40) }}
       </template>
 
-      <template v-slot:cell(actions)="row">
+      <template #cell(actions)="row">
         <b-button
           :id="generateId('edit', row.item.id)"
           variant="outline-dark"

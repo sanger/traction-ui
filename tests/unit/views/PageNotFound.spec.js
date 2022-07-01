@@ -1,5 +1,5 @@
 import PageNotFound from '@/views/PageNotFound'
-import { mount, localVue, router } from 'testHelper'
+import { mount, localVue, router } from '@support/testHelper'
 
 /*
 Add this to router

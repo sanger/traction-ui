@@ -44,7 +44,7 @@ describe('actions', () => {
     let params, create, getters
 
     beforeEach(() => {
-      create = jest.fn()
+      create = vi.fn()
 
       getters = {
         printJobV2Request: { create: create },

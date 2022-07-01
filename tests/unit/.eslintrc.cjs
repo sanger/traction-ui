@@ -1,6 +1,8 @@
 module.exports = {
   env: {
-    jest: true,
     jasmine: true,
+  },
+  globals: {
+    vi: 'readonly',
   },
 }

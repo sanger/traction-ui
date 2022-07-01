@@ -1,5 +1,5 @@
 import PacbioRuns from '@/views/pacbio/PacbioRunIndex'
-import { mount, localVue, store, Data, router } from 'testHelper'
+import { mount, localVue, store, Data, router } from '@support/testHelper'
 import Response from '@/api/Response'
 
 describe('Runs.vue', () => {
@@ -13,7 +13,7 @@ describe('Runs.vue', () => {
 
     wrapper = mount(PacbioRuns, { store, router, localVue })
     runs = wrapper.vm
-    runs.provider = jest.fn()
+    runs.provider = vi.fn()
   })
 
   describe('created hook', () => {
@@ -72,7 +72,7 @@ describe('Runs.vue', () => {
     })
 
     it('on click startRun is called', () => {
-      runs.startRun = jest.fn()
+      runs.startRun = vi.fn()
 
       button = wrapper.find('#startRun-1')
       button.trigger('click')
@@ -109,7 +109,7 @@ describe('Runs.vue', () => {
 
     it('on click completeRun is called', () => {
       // run at(2) is in state started
-      runs.completeRun = jest.fn()
+      runs.completeRun = vi.fn()
 
       button = wrapper.find('#completeRun-2')
       button.trigger('click')
@@ -147,7 +147,7 @@ describe('Runs.vue', () => {
 
     it('on click cancelRun is called', () => {
       // run at(2) is in state started
-      runs.cancelRun = jest.fn()
+      runs.cancelRun = vi.fn()
 
       button = wrapper.find('#cancelRun-2')
       button.trigger('click')
@@ -197,7 +197,7 @@ describe('Runs.vue', () => {
           }
         },
       })
-      wrapper.vm.provider = jest.fn()
+      wrapper.vm.provider = vi.fn()
     })
 
     it('will filter the runs in the table', () => {
@@ -229,7 +229,7 @@ describe('Runs.vue', () => {
           }
         },
       })
-      wrapper.vm.provider = jest.fn()
+      wrapper.vm.provider = vi.fn()
     })
 
     it('will paginate the runs in the table', () => {
@@ -242,8 +242,8 @@ describe('Runs.vue', () => {
       wrapper = mount(PacbioRuns, { store, localVue })
       runs = wrapper.vm
 
-      runs.setRuns = jest.fn()
-      runs.showAlert = jest.fn()
+      runs.setRuns = vi.fn()
+      runs.showAlert = vi.fn()
     })
 
     it('calls setRuns successfully', () => {
@@ -263,10 +263,10 @@ describe('Runs.vue', () => {
   describe('#updateRun', () => {
     let id = 1
     beforeEach(() => {
-      runs.startRun = jest.fn()
-      runs.completeRun = jest.fn()
-      runs.cancelRun = jest.fn()
-      runs.showAlert = jest.fn()
+      runs.startRun = vi.fn()
+      runs.completeRun = vi.fn()
+      runs.cancelRun = vi.fn()
+      runs.showAlert = vi.fn()
     })
 
     it('calls startRun successfully', () => {
@@ -308,7 +308,7 @@ describe('Runs.vue', () => {
 
     it('has the correct href link', () => {
       expect(link.attributes('href')).toBe(
-        process.env.VUE_APP_TRACTION_BASE_URL + '/v1/pacbio/runs/' + id + '/sample_sheet',
+        import.meta.env.VITE_TRACTION_BASE_URL + '/v1/pacbio/runs/' + id + '/sample_sheet',
       )
     })
   })

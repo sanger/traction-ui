@@ -1,7 +1,7 @@
-import { mount, localVue, store } from 'testHelper'
+import { mount, localVue, store } from '@support/testHelper'
 import PacbioPoolEdit from '@/components/pacbio/PacbioPoolEdit'
 import { newLibrary } from '@/store/traction/pacbio/poolCreate/pool.js'
-import { Data } from 'testHelper'
+import { Data } from '@support/testHelper'
 import * as pacbio from '@/lib/csv/pacbio'
 
 const buildWrapper = () =>
@@ -134,7 +134,7 @@ describe('pacbioPoolEdit#edit', () => {
   })
 
   describe('uploadFile', () => {
-    const spy = jest.spyOn(pacbio, 'eachRecord')
+    const spy = vi.spyOn(pacbio, 'eachRecord')
     const mockFile = {
       async text() {},
     }
@@ -152,7 +152,7 @@ describe('pacbioPoolEdit#edit', () => {
     })
 
     it('highlights a invalid file', async () => {
-      jest.spyOn(console, 'error').mockImplementation(() => {})
+      vi.spyOn(console, 'error').mockImplementation(() => {})
       spy.mockImplementation(() => {
         throw 'Toys'
       })

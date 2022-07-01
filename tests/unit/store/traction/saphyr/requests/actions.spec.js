@@ -1,6 +1,6 @@
 import Response from '@/api/Response'
 import * as Actions from '@/store/traction/saphyr/requests/actions'
-import { Data } from 'testHelper'
+import { Data } from '@support/testHelper'
 import { newResponse } from '@/api/ResponseHelper'
 import deserialize from '@/api/JsonApi'
 
@@ -13,8 +13,8 @@ describe('actions', () => {
 
   describe('setRequests', () => {
     it('fetches the requets from the service, and commits them', async () => {
-      const commit = jest.fn()
-      const get = jest.fn()
+      const commit = vi.fn()
+      const get = vi.fn()
       const getters = { requestsRequest: { get: get } }
 
       get.mockReturnValue(Data.TractionSaphyrRequests)
@@ -29,7 +29,7 @@ describe('actions', () => {
     let dispatch, create, getters, tubes
 
     beforeEach(() => {
-      create = jest.fn()
+      create = vi.fn()
       getters = { requestsRequest: { create: create } }
 
       const expectedResponse = newResponse({

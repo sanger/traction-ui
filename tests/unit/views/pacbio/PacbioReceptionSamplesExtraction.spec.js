@@ -1,5 +1,5 @@
 import Reception from '@/views/pacbio/PacbioReceptionSamplesExtraction'
-import { mount, localVue, store, Data, router } from 'testHelper'
+import { mount, localVue, store, Data, router } from '@support/testHelper'
 import { newResponse } from '@/api/ResponseHelper'
 
 describe('PacbioReceptionSamplesExtraction', () => {
@@ -29,7 +29,7 @@ describe('PacbioReceptionSamplesExtraction', () => {
   describe('findSampleExtractionTubes button', () => {
     beforeEach(() => {
       wrapper.setData({ barcodes: 'TRAC-1\nTRAC-2' })
-      reception.handleSampleExtractionTubes = jest.fn()
+      reception.handleSampleExtractionTubes = vi.fn()
     })
 
     it('calls the right function', async () => {
@@ -48,9 +48,9 @@ describe('PacbioReceptionSamplesExtraction', () => {
       wrapper = mount(Reception, { localVue, store })
       reception = wrapper.vm
 
-      reception.getSampleExtractionTubesForBarcodes = jest.fn()
-      reception.exportSampleExtractionTubesIntoTraction = jest.fn()
-      reception.showAlert = jest.fn()
+      reception.getSampleExtractionTubesForBarcodes = vi.fn()
+      reception.exportSampleExtractionTubesIntoTraction = vi.fn()
+      reception.showAlert = vi.fn()
       wrapper.setData({ barcodes: 'TRAC-1\nTRAC-2' })
     })
 

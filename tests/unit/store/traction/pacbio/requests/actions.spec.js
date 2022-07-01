@@ -1,6 +1,6 @@
 import Response from '@/api/Response'
 import * as Actions from '@/store/traction/pacbio/requests/actions'
-import { Data } from 'testHelper'
+import { Data } from '@support/testHelper'
 import { newResponse } from '@/api/ResponseHelper'
 import deserialize from '@/api/JsonApi'
 
@@ -18,8 +18,8 @@ describe('actions', () => {
 
   describe('setRequests', () => {
     it('fetches the requets from the service, and commits them', async () => {
-      const commit = jest.fn()
-      const get = jest.fn()
+      const commit = vi.fn()
+      const get = vi.fn()
       const getters = { requestsRequest: { get: get } }
 
       get.mockReturnValue(Data.TractionPacbioSamples)
@@ -33,7 +33,7 @@ describe('actions', () => {
   describe('updateRequest', () => {
     it('successful', async () => {
       let sample = requests[0]
-      const update = jest.fn()
+      const update = vi.fn()
       const getters = { requestsRequest: { update: update }, requests: requests }
 
       update.mockReturnValue(Data.TractionPacbioSamples)
@@ -49,7 +49,7 @@ describe('actions', () => {
 
     it('unsuccessful', async () => {
       let sample = requests[0]
-      const update = jest.fn()
+      const update = vi.fn()
       const getters = { requestsRequest: { update: update }, requests: requests }
 
       update.mockReturnValue(failedResponse)
@@ -79,7 +79,7 @@ describe('actions', () => {
     let dispatch, create, getters, tubes
 
     beforeEach(() => {
-      create = jest.fn()
+      create = vi.fn()
       getters = { requestsRequest: { create: create } }
 
       const expectedResponse = newResponse({

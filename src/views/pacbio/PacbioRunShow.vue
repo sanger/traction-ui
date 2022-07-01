@@ -19,8 +19,16 @@
     <br />
 
     <div>
-      <pacbioRunInfoEdit ref="pacbioRunInfoEdit"></pacbioRunInfoEdit>
-      <br />
+      <b-row>
+        <b-col cols="6">
+          <pacbioRunInfoEdit ref="pacbioRunInfoEdit"></pacbioRunInfoEdit>
+          <br />
+        </b-col>
+        <b-col>
+          <pacbioRunWellDefaultEdit ref="pacbioRunWellDefaultEdit"></pacbioRunWellDefaultEdit>
+          <br />
+        </b-col>
+      </b-row>
       <b-row>
         <b-col cols="6">
           <pacbioPoolList ref="pacbioPoolList"></pacbioPoolList>
@@ -35,6 +43,7 @@
 
 <script>
 import PacbioRunInfoEdit from '@/components/pacbio/PacbioRunInfoEdit'
+import PacbioRunWellDefaultEdit from '@/components/pacbio/PacbioRunWellDefaultEdit'
 import pacbioPoolList from '@/components/pacbio/PacbioPoolList'
 import Plate from '@/components/pacbio/PacbioRunPlateItem'
 
@@ -43,9 +52,10 @@ const { mapGetters, mapState, mapActions } = createNamespacedHelpers('traction/p
 import * as consts from '@/consts/consts'
 
 export default {
-  name: 'Run',
+  name: 'PacbioRunShow',
   components: {
     PacbioRunInfoEdit,
+    PacbioRunWellDefaultEdit,
     pacbioPoolList,
     Plate,
   },

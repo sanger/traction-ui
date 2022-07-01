@@ -8,7 +8,7 @@
 
 <script>
 export default {
-  name: 'Message',
+  name: 'TractionMessage',
   props: {
     dataType: {
       // Used primarily by the e2e tests to identify the correct error message

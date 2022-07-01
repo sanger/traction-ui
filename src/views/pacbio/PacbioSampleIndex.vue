@@ -34,7 +34,7 @@
       @filtered="onFiltered"
       @row-selected="onRowSelected"
     >
-      <template v-slot:cell(selected)="{ rowSelected }">
+      <template #cell(selected)="{ rowSelected }">
         <template v-if="rowSelected">
           <span>&check;</span>
           <span class="sr-only">Selected</span>
@@ -45,12 +45,12 @@
         </template>
       </template>
 
-      <template v-slot:cell(actions)="row">
+      <template #cell(actions)="row">
         <PacbioSampleMetadataEdit ref="sampleMetadata" :req="row.item" @alert="showAlert">
         </PacbioSampleMetadataEdit>
       </template>
 
-      <template v-slot:cell(show_details)="row">
+      <template #cell(show_details)="row">
         <b-button
           :id="'details-btn-' + row.item.id"
           size="sm"
@@ -62,7 +62,7 @@
         </b-button>
       </template>
 
-      <template v-slot:row-details="row">
+      <template #row-details="row">
         <b-card class="text-left">
           <template v-for="(field, index) in field_in_details">
             <span :key="field.label + index" class="font-weight-bold">{{ field.label }}</span
@@ -119,7 +119,7 @@ import { createNamespacedHelpers } from 'vuex'
 const { mapActions, mapGetters } = createNamespacedHelpers('traction/pacbio/requests')
 
 export default {
-  name: 'Samples',
+  name: 'PacbioSampleIndex',
   components: {
     PacbioLibraryCreate,
     PrinterModal,

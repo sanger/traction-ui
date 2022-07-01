@@ -1,4 +1,4 @@
-import { mount, localVue, store } from 'testHelper'
+import { mount, localVue, store } from '@support/testHelper'
 import PacbioLibraryCreate from '@/components/pacbio/PacbioLibraryCreate'
 import * as consts from '@/consts/consts'
 
@@ -52,8 +52,8 @@ describe('PacbioLibraryCreate.vue', () => {
     let payload
 
     beforeEach(() => {
-      modal.createLibraryInTraction = jest.fn()
-      modal.showAlert = jest.fn()
+      modal.createLibraryInTraction = vi.fn()
+      modal.showAlert = vi.fn()
       payload = { tag: { group_id: 1 }, sample: { id: 1 } }
     })
 

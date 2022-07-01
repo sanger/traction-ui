@@ -1,14 +1,14 @@
 import Response from '@/api/Response'
 import * as Actions from '@/store/traction/pacbio/runs/actions'
-import { Data } from 'testHelper'
+import { Data } from '@support/testHelper'
 import * as Run from '@/api/PacbioRun'
 
 describe('#setRuns', () => {
   let commit, get, getters, failedResponse
 
   beforeEach(() => {
-    commit = jest.fn()
-    get = jest.fn()
+    commit = vi.fn()
+    get = vi.fn()
     getters = { runRequest: { get: get } }
 
     failedResponse = { data: { data: [] }, status: 500, statusText: 'Internal Server Error' }
@@ -42,12 +42,12 @@ describe('#newRun', () => {
   let commit
 
   beforeEach(() => {
-    commit = jest.fn()
+    commit = vi.fn()
   })
 
   it('successfully', async () => {
     let newRun = Run.build()
-    Run.build = jest.fn()
+    vi.spyOn(Run, 'build')
     Run.build.mockReturnValue(newRun)
 
     Actions.newRun({ commit })
@@ -60,10 +60,9 @@ describe('#createRun', () => {
 
   beforeEach(() => {
     mockRun = new Response(Data.PacbioRun).deserialize.runs[0]
-    pacbioRequests = jest.fn()
+    pacbioRequests = vi.fn()
     getters = { currentRun: mockRun, pacbioRequests: pacbioRequests }
-
-    Run.create = jest.fn()
+    vi.spyOn(Run, 'create').mockImplementation(() => {})
   })
 
   it('successfully', async () => {
@@ -78,9 +77,9 @@ describe('#editRun', () => {
   beforeEach(() => {
     mockRun = new Response(Data.PacbioRun).deserialize.runs[0]
 
-    find = jest.fn()
+    find = vi.fn()
     getters = { runRequest: { find: find } }
-    commit = jest.fn()
+    commit = vi.fn()
   })
 
   it('sets the well pools to have a barcode attribute', async () => {
@@ -101,32 +100,36 @@ describe('#editRun', () => {
 })
 
 describe('#updateRun', () => {
-  let getters, pacbioRequests, mockRun, dispatch
+  let getters, pacbioRequests, mockRun, dispatch, update
 
   beforeEach(() => {
     mockRun = new Response(Data.PacbioRun).deserialize.runs[0]
-    pacbioRequests = jest.fn()
+    pacbioRequests = vi.fn()
     getters = { currentRun: mockRun, pacbioRequests: pacbioRequests }
-    dispatch = jest.fn()
+    dispatch = vi.fn()
 
-    Run.update = jest.fn()
+    update = vi.spyOn(Run, 'update')
+  })
+
+  afterEach(() => {
+    update.mockRestore()
   })
 
   it('when successful, it doesnt rollback', async () => {
-    Run.update.mockReturnValue([])
+    update.mockResolvedValue([])
     let resp = await Actions.updateRun({ getters, dispatch })
 
-    expect(Run.update).toHaveBeenCalledWith(mockRun, pacbioRequests)
-    expect(Run.update).toHaveBeenCalledTimes(1)
+    expect(update).toHaveBeenCalledWith(mockRun, pacbioRequests)
+    expect(update).toHaveBeenCalledTimes(1)
     expect(resp).toEqual([])
   })
 
   it('when unsuccessful, it does rollback', async () => {
-    Run.update.mockReturnValue([{ error: 'this is an error' }])
+    update.mockResolvedValue([{ error: 'this is an error' }])
     let resp = await Actions.updateRun({ getters, dispatch })
 
-    expect(Run.update).toHaveBeenCalledWith(mockRun, pacbioRequests)
-    expect(Run.update).toHaveBeenCalledTimes(2)
+    expect(update).toHaveBeenCalledWith(mockRun, pacbioRequests)
+    expect(update).toHaveBeenCalledTimes(2)
     expect(resp).toEqual([{ error: 'this is an error' }])
   })
 })
@@ -135,7 +138,7 @@ describe('#getRun', () => {
   let find, getters
 
   beforeEach(() => {
-    find = jest.fn()
+    find = vi.fn()
     getters = { runRequest: { find: find } }
   })
 
@@ -157,8 +160,7 @@ describe('#buildWell', () => {
   beforeEach(() => {
     run = Run.build()
     run.plate.wells = []
-    run.system_name = 'Sequel I'
-    run.default_binding_kit_box_barcode = 'default'
+    run.system_name = 'Sequel IIe'
     state = { currentRun: run }
   })
 
@@ -170,9 +172,9 @@ describe('#buildWell', () => {
       movie_time: '',
       position,
       on_plate_loading_concentration: '',
-      generate_hifi: 'In SMRT Link',
+      generate_hifi: 'On Instrument',
       ccs_analysis_output: 'Yes',
-      binding_kit_box_barcode: 'default',
+      binding_kit_box_barcode: '',
       pools: [],
       pre_extension_time: 2,
       loading_target_p1_plus_p2: 0.85,
@@ -191,7 +193,7 @@ describe('#buildWell', () => {
       movie_time: '',
       position,
       on_plate_loading_concentration: '',
-      generate_hifi: 'In SMRT Link',
+      generate_hifi: 'On Instrument',
       ccs_analysis_output: 'Yes',
       binding_kit_box_barcode: '',
       pools: [],

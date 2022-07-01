@@ -6,7 +6,7 @@
 
 <script>
 export default {
-  name: 'Well',
+  name: 'WellItem',
   props: {
     row: {
       type: String,

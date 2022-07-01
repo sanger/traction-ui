@@ -7,7 +7,7 @@
         :title="pipeline.title"
         :description="pipeline.description"
       >
-        <Link
+        <TractionLink
           v-for="(route, inner_index) in pipeline.routes"
           :key="inner_index"
           :name="humanise(route)"
@@ -22,13 +22,13 @@
 import PipelinesConfig from '@/config/PipelinesConfig'
 import { humanise } from '@/lib/stringHumanisation'
 import LabelledCard from '@/components/LabelledCard'
-import Link from '@/components/Link'
+import TractionLink from '@/components/TractionLink'
 
 export default {
-  name: 'Dashboard',
+  name: 'TractionDashboard',
   components: {
     LabelledCard,
-    Link,
+    TractionLink,
   },
   computed: {
     pipelines: () => PipelinesConfig,

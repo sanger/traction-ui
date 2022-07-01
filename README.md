@@ -6,9 +6,8 @@ A Vue front-end app to interact with the [Traction API](https://github.com/sange
 
 The following tools are required for development:
 
-- Yarn; if using brew:
-    brew install yarn
 - Node, install the version matching that in `.nvmrc` file.
+- npm, should be installed with node
 
 [nvm](https://github.com/nvm-sh/nvm) is very helpful when managing multiple versions of node.
 
@@ -20,26 +19,26 @@ This project uses dotenv library for environmental config. To specify the requir
 `.env` files by creating a `.env.<environment>.local` file and add the config to it. The essential
 config required:
 
-    VUE_APP_TRACTION_BASE_URL=<url>
-    VUE_APP_PRINTMYBARCODE_BASE_URL=<url>
-    VUE_APP_SAMPLEEXTRACTION_BASE_URL=<url>
-    VUE_APP_LABEL_TEMPLATE_ID=<id>
-    VUE_APP_LOG=false
+    VITE_TRACTION_BASE_URL=<url>
+    VITE_PRINTMYBARCODE_BASE_URL=<url>
+    VITE_SAMPLEEXTRACTION_BASE_URL=<url>
+    VITE_LABEL_TEMPLATE_ID=<id>
+    VITE_LOG=false
 
 ### Setup Steps
 
 Install the require dependencies:
 
-    yarn install
+    npm install --include=dev
 
 ## Running
 
 In the project directory, you can run:
 
-    yarn run start
+    npm run start
 
 To run the app and have hot-reloads for development:
-*This internally run  serve and serve:css commands*
+*This internally run serve and serve:css commands*
 
 ## Testing
 
@@ -47,30 +46,34 @@ To run the app and have hot-reloads for development:
 
 - Running unit tests:
 
-        yarn run test:unit
+        npm run test:unit
 
 - Running specific unit test files:
 
-        yarn run test:unit <test_file_route> -t "<test_name>"
+        npm run test:unit <test_file_route> -t "<test_name>"
 
 - Running end to end tests:
 
-        yarn run test:e2e
+        npm run test:e2e
+
+- Running individual end to end tests, this will spawn an interactive cypress session:
+
+        npm run test:e2e:one
 
     You will need to make the following changes to get it working:
     - if you don't already have one create `.env.production.local` in the root folder as a copy of `.env.production`
-    - change `VUE_APP_TRACTION_BASE_URL=REPLACE_VUE_APP_TRACTION_BASE_URL` to `VUE_APP_TRACTION_BASE_URL=http://traction`
-    - change `VUE_APP_SAMPLEEXTRACTION_BASE_URL=REPLACE_VUE_APP_SAMPLEEXTRACTION_BASE_URL` to `VUE_APP_SAMPLEEXTRACTION_BASE_URL=http://samples-extraction`
-    - change to `VUE_APP_SEQUENCESCAPE_BASE_URL=REPLACE_VUE_APP_SEQUENCESCAPE_BASE_URL` to `VUE_APP_SEQUENCESCAPE_BASE_URL=http://sequencescape`
+    - change `VITE_TRACTION_BASE_URL=REPLACE_VITE_TRACTION_BASE_URL` to `VITE_TRACTION_BASE_URL=http://traction`
+    - change `VITE_SAMPLEEXTRACTION_BASE_URL=REPLACE_VITE_SAMPLEEXTRACTION_BASE_URL` to `VITE_SAMPLEEXTRACTION_BASE_URL=http://samples-extraction`
+    - change to `VITE_SEQUENCESCAPE_BASE_URL=REPLACE_VITE_SEQUENCESCAPE_BASE_URL` to `VITE_SEQUENCESCAPE_BASE_URL=http://sequencescape`
 
 ## CSS
 - To modify Tailwind configuration
  Tailwind styles used in this project is from `@sanger/ui-styling` npm module. Any further modifications required for the project can be done in `tailwind.config.js` file in root directory.
 
 - To generate Tailwind css independently you can run:
-*This is not required mostly, as this will be run as part of 'yarn run start'*
+*This is not required mostly, as this will be run as part of 'npm run start'*
 
-yarn run serve:css
+npm run serve:css
 
 
 ## Formatting and Linting
@@ -80,18 +83,18 @@ yarn run serve:css
 This project is formatted using [Prettier](https://github.com/prettier/prettier). To run formatting
 checks, run:
 
-    yarn run pretty
+    npm run pretty
 
 To fix errors locally run:
 
-    yarn pretty --write
+    npx prettier --write .
 
 ### Linting
 
 This project is linted using [ESLint](https://github.com/eslint/eslint). To lint the code,
 run:
 
-    yarn run lint
+    npm run lint
 
 ## Deployment
 

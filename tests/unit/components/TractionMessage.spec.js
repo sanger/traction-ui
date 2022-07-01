@@ -1,12 +1,12 @@
-import { mount, localVue } from 'testHelper'
-import Message from '@/components/Message'
+import { mount, localVue } from '@support/testHelper'
+import TractionMessage from '@/components/TractionMessage'
 
-describe('Message.vue', () => {
+describe('TractionMessage.vue', () => {
   let wrapper
   const requiredProps = { message: 'bar' }
 
   it('has a message', () => {
-    wrapper = mount(Message, {
+    wrapper = mount(TractionMessage, {
       localVue,
       propsData: { ...requiredProps, message: 'bar' },
     })
@@ -14,7 +14,7 @@ describe('Message.vue', () => {
   })
 
   it('has a type', () => {
-    wrapper = mount(Message, {
+    wrapper = mount(TractionMessage, {
       localVue,
       propsData: { ...requiredProps, type: 'primary' },
     })
@@ -22,7 +22,7 @@ describe('Message.vue', () => {
   })
 
   it('displays the message', () => {
-    wrapper = mount(Message, {
+    wrapper = mount(TractionMessage, {
       localVue,
       propsData: { ...requiredProps, message: 'bar' },
     })
@@ -30,7 +30,7 @@ describe('Message.vue', () => {
   })
 
   it('displays the type', () => {
-    wrapper = mount(Message, {
+    wrapper = mount(TractionMessage, {
       localVue,
       propsData: { ...requiredProps, type: 'success' },
     })
@@ -38,7 +38,7 @@ describe('Message.vue', () => {
   })
 
   it('converts types to boottrap styles', () => {
-    wrapper = mount(Message, {
+    wrapper = mount(TractionMessage, {
       localVue,
       propsData: { ...requiredProps, type: 'error' },
     })
@@ -47,12 +47,12 @@ describe('Message.vue', () => {
 
   describe('data-attribute', () => {
     it('default', () => {
-      const wrapper = mount(Message, { localVue, propsData: requiredProps })
+      const wrapper = mount(TractionMessage, { localVue, propsData: requiredProps })
       expect(wrapper.find('[data-type=error-message]').exists()).toBeTruthy()
     })
 
     it('passed as prop', () => {
-      const wrapper = mount(Message, {
+      const wrapper = mount(TractionMessage, {
         localVue,
         propsData: { ...requiredProps, dataType: 'darkstar' },
       })

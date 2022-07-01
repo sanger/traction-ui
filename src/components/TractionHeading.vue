@@ -1,23 +1,28 @@
 <template>
-  <header class="bg-white shadow">
-    <div class="max-w-7xl mx-auto py-2 px-4 sm:px-6 lg:px-8 text-black">
-      <h1 :class="getClass()">
+  <header class="bg-white">
+    <div class="max-w-7xl mx-auto py-2 sm:px-6 lg:px-8 text-black text-left">
+      <div :class="getClass">
         <slot />
-      </h1>
+      </div>
     </div>
   </header>
 </template>
 <script>
 export default {
-  name: 'Heading',
+  name: 'TractionHeading',
   props: {
+    /**
+     * Level specifies the size of the heading text displayed.
+     * level = 1' is the largest size and text size decreases as level values increses
+     */
     level: {
       type: [Number, String],
       default: 1,
     },
     showBorder: Boolean,
+    shadow: Boolean,
   },
-  methods: {
+  computed: {
     getClass() {
       return {
         'text-3xl font-bold tracking-tight leading-loose': this.level == 1,
@@ -28,6 +33,7 @@ export default {
         'text-sm font-bold tracking-tight leading-relaxed': this.level == 6,
         'text-xs font-bold tracking-tight leading-relaxed': this.level == 7,
         'border-b-2 border-sp': this.showBorder,
+        shadow: this.shadow,
       }
     },
   },

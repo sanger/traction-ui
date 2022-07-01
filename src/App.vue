@@ -9,43 +9,48 @@
             <div class="text-white text-2xl">Traction</div>
           </div>
           <div class="flex justify-center">
-            <Link name="Home" link="/dashboard" view-type="2" />
-            <Link name="Label Printing" link="/label-printing" view-type="2" />
+            <TractionLink name="Home" link="/dashboard" view-type="2" />
+            <TractionLink name="Label Printing" link="/label-printing" view-type="2" />
           </div>
         </div>
       </div>
     </div>
-    <Heading level="1">{{ pipeline }} {{ page }}</Heading>
+    <TractionHeading level="1">{{ pipeline }} {{ page }}</TractionHeading>
     <div class="flex flex-col mb-auto px-4 py-10">
       <router-view class="text-center" />
     </div>
-    <Message
-      v-for="(message, index) in messages"
-      ref="alert"
-      :key="index"
-      v-bind="message"
-      @dismissed="dismiss(index)"
-    ></Message>
+    <div class="message-container">
+      <TractionMessage
+        v-for="(message, index) in messages"
+        ref="alert"
+        :key="index"
+        v-bind="message"
+        @dismissed="dismiss(index)"
+      ></TractionMessage>
+    </div>
     <InfoFooter></InfoFooter>
   </div>
 </template>
 
 <script>
 import InfoFooter from '@/components/InfoFooter'
-import Message from '@/components/Message'
-import Link from '@/components/Link'
-import Heading from '@/components/Heading'
+import TractionMessage from '@/components/TractionMessage'
+import TractionLink from '@/components/TractionLink'
+import TractionHeading from '@/components/TractionHeading'
+
+import PipelinesConfig from '@/config/PipelinesConfig'
 export default {
   components: {
     InfoFooter,
-    Message,
-    Link,
-    Heading,
+    TractionMessage,
+    TractionLink,
+    TractionHeading,
   },
   computed: {
     mergedRoute() {
       return Object.assign({}, ...this.$route.matched.map(({ meta }) => meta))
     },
+    pipelines: () => PipelinesConfig,
     pipeline() {
       // Merge the route meta attributes and pull out the pipeline
       return this.mergedRoute.pipeline
@@ -95,5 +100,13 @@ a {
     text-decoration: none;
     color: black;
   }
+}
+.message-container {
+  position: fixed;
+  bottom: 0;
+  right: 1em;
+  width: 30em;
+  z-index: 1051;
+  word-break: break-word;
 }
 </style>

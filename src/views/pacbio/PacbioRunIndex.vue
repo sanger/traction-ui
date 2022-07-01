@@ -33,7 +33,7 @@
       tbody-tr-class="run"
       @filtered="onFiltered"
     >
-      <template v-slot:cell(actions)="row">
+      <template #cell(actions)="row">
         <b-button
           :id="generateId('startRun', row.item.id)"
           variant="outline-success"
@@ -168,7 +168,7 @@ export default {
       return `${text}-${id}`
     },
     generateSampleSheetPath(id) {
-      return process.env.VUE_APP_TRACTION_BASE_URL + '/v1/pacbio/runs/' + id + '/sample_sheet'
+      return import.meta.env.VITE_TRACTION_BASE_URL + '/v1/pacbio/runs/' + id + '/sample_sheet'
     },
     updateRun(status, id) {
       try {

@@ -1,5 +1,5 @@
 import PacbioPoolLibraryList from '@/components/pacbio/PacbioPoolLibraryList'
-import { mount, store, localVue } from 'testHelper'
+import { mount, store, localVue } from '@support/testHelper'
 
 const libraryAttributes = {
   template_prep_kit_box_barcode: 'ABC1',
@@ -7,6 +7,10 @@ const libraryAttributes = {
   volume: '1.0',
   concentration: '10.0',
   insert_size: '100',
+  run_suitability: {
+    ready_for_run: true,
+    errors: [],
+  },
 }
 
 const requests = {

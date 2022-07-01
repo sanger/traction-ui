@@ -17,7 +17,7 @@
       :static="isStatic"
       scrollable
     >
-      <b-form id="libraryCreateModal">
+      <b-form id="libraryCreateModal" @submit.prevent="createLibrary">
         <b-form-group id="selected-sample" label="The sample selected for this library is:">
           {{ selectedSample.sample_name }} ({{ selectedSample.source_identifier }})
         </b-form-group>
@@ -38,7 +38,6 @@
             type="number"
             min="0"
             step="any"
-            required
             placeholder="Example: 1.0"
           >
           </b-form-input>
@@ -55,7 +54,6 @@
             type="number"
             min="0"
             step="any"
-            required
             placeholder="Example: 1.0"
           >
           </b-form-input>
@@ -70,8 +68,11 @@
             id="library-templatePrepKitBoxBarcode"
             v-model="library.template_prep_kit_box_barcode"
             type="text"
-            required
+            minlength="21"
+            maxlength="21"
             placeholder="Example: 012345678901234567890"
+            pattern="\d*"
+            inputmode="numeric"
           >
           </b-form-input>
         </b-form-group>
@@ -85,7 +86,6 @@
             id="library-insertSize"
             v-model="library.insert_size"
             type="number"
-            required
             step="1"
             min="0"
             placeholder="Example: 100"
@@ -94,10 +94,12 @@
         </b-form-group>
       </b-form>
 
-      <template v-slot:modal-footer="{ ok, cancel }">
+      <template #modal-footer="{ cancel }">
         <b-button @click="cancel()"> Cancel </b-button>
 
-        <b-button id="create-btn" variant="success" @click="createLibrary()"> Create </b-button>
+        <b-button id="create-btn" variant="success" type="submit" form="libraryCreateModal">
+          Create
+        </b-button>
       </template>
     </b-modal>
   </div>

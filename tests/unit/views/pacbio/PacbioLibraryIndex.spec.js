@@ -1,5 +1,5 @@
 import Libraries from '@/views/pacbio/PacbioLibraryIndex'
-import { mount, localVue, Data, store, router } from 'testHelper'
+import { mount, localVue, Data, store, router } from '@support/testHelper'
 import * as consts from '@/consts/consts'
 import Response from '@/api/Response'
 
@@ -26,6 +26,10 @@ describe('Libraries.vue', () => {
           id: '1',
           type: 'pools',
         },
+        run_suitability: {
+          ready_for_run: true,
+          errors: [],
+        },
       },
       {
         id: 2,
@@ -44,6 +48,10 @@ describe('Libraries.vue', () => {
         pool: {
           id: '1',
           type: 'pools',
+        },
+        run_suitability: {
+          ready_for_run: true,
+          errors: [],
         },
       },
     ]
@@ -90,8 +98,8 @@ describe('Libraries.vue', () => {
 
   describe('#handleLibraryDelete', () => {
     beforeEach(() => {
-      libraries.deleteLibraries = jest.fn()
-      libraries.showAlert = jest.fn()
+      libraries.deleteLibraries = vi.fn()
+      libraries.showAlert = vi.fn()
       wrapper.setData({ selected: mockLibraries })
     })
 
@@ -133,7 +141,7 @@ describe('Libraries.vue', () => {
   describe('printerModal', () => {
     beforeEach(() => {
       wrapper.setData({ sortDesc: false })
-      libraries.handlePrintLabel = jest.fn()
+      libraries.handlePrintLabel = vi.fn()
     })
 
     it('passes selected printer to function on emit event', () => {

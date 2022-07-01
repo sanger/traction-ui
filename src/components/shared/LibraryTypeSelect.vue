@@ -1,21 +1,35 @@
 <template>
-  <b-form-group label="Library Type" label-for="library-type" :label-cols="labelCols">
-    <b-select
-      id="library-type"
-      :value="libraryType"
-      :options="libraryTypes"
-      @input="handleInput"
-    ></b-select>
-  </b-form-group>
+  <div>
+    <b-form-group
+      label="Library Type"
+      label-for="library-type"
+      :label-cols="labelCols"
+      :label-align="labelAlign"
+      label-size="sm"
+    >
+      <b-select
+        id="library-type"
+        :class="getClass()"
+        :value="libraryType"
+        :options="libraryTypes"
+        @input="handleInput"
+      ></b-select>
+    </b-form-group>
+  </div>
 </template>
 
 <script>
 // We want undefined (I've not specified a library) and null (I want NO library)
-// jest select elements can't handle the former. So we encode it
+// select elements can't handle the former. So we encode it
 const UNDEFINED = '_undefined'
 
 const encode = (value) => (value === undefined ? UNDEFINED : value)
 const decode = (value) => (value === UNDEFINED ? undefined : value)
+
+export const POSITION = {
+  Left: 1, //Position on left
+  Top: 2, // Position on top
+}
 
 export default {
   name: 'LibraryTypeSelect',
@@ -42,6 +56,14 @@ export default {
       type: Number,
       default: 2,
     },
+    labelAlign: {
+      type: String,
+      default: 'left',
+    },
+    labelPosition: {
+      type: [Number, String],
+      default: () => POSITION.Left,
+    },
   },
   computed: {
     libraryType() {
@@ -66,6 +88,11 @@ export default {
   methods: {
     handleInput(input) {
       this.$emit('input', decode(input))
+    },
+    getClass() {
+      return {
+        'text-sm': this.labelCols == 0,
+      }
     },
   },
 }

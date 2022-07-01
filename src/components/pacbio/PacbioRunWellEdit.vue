@@ -1,6 +1,6 @@
 <template>
   <b-modal ref="well-modal" size="lg">
-    <template v-slot:modal-title :position="position"> Add Pool to Well: {{ position }} </template>
+    <template #modal-title> Add Pool to Well: {{ position }} </template>
 
     <b-form>
       <b-form-group id="movieTime-group" label="Movie time:" label-for="movieTime">
@@ -100,20 +100,18 @@
       </b-form-group>
     </b-form>
 
-    <template>
-      <b-button
-        id="disableAdaptiveLoadingBtn"
-        variant="primary"
-        @click="disableAdaptiveLoadingInput()"
-      >
-        Disable Adaptive Loading
-      </b-button>
-    </template>
+    <b-button
+      id="disableAdaptiveLoadingBtn"
+      variant="primary"
+      @click="disableAdaptiveLoadingInput()"
+    >
+      Disable Adaptive Loading
+    </b-button>
 
     <b-table id="wellPools" stacked :items="currentWell.pools" :fields="wellPoolsFields">
-      <template v-slot:table-caption>Pools</template>
+      <template #table-caption>Pools</template>
 
-      <template v-slot:cell(barcode)="row">
+      <template #cell(barcode)="row">
         <b-form inline>
           <b-form-input
             id="poolBarcode"
@@ -131,7 +129,7 @@
 
     <b-button class="button btn-xs btn-success" @click="addRow">+</b-button>
 
-    <template v-slot:modal-footer="{ ok }">
+    <template #modal-footer="{}">
       <b-button
         v-if="action.label == 'Update'"
         id="deleteWellBtn"

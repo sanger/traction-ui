@@ -35,7 +35,7 @@
       @filtered="onFiltered"
       @row-selected="onRowSelected"
     >
-      <template v-slot:cell(selected)="{ rowSelected }">
+      <template #cell(selected)="{ rowSelected }">
         <template v-if="rowSelected">
           <span>&check;</span>
           <span class="sr-only">Selected</span>
@@ -46,7 +46,7 @@
         </template>
       </template>
 
-      <template v-slot:cell(actions)="row">
+      <template #cell(actions)="row">
         <router-link
           data-action="edit-pool"
           :to="{ name: 'PacbioPoolCreate', params: { id: row.item.id } }"
@@ -57,7 +57,7 @@
         </router-link>
       </template>
 
-      <template v-slot:cell(show_details)="row">
+      <template #cell(show_details)="row">
         <b-button
           :id="'details-btn-' + row.item.id"
           size="sm"
@@ -69,7 +69,7 @@
         </b-button>
       </template>
 
-      <template v-slot:row-details="row">
+      <template #row-details="row">
         <b-card>
           <b-table
             small
@@ -80,6 +80,11 @@
             :filter="filter"
           >
           </b-table>
+          <ul v-if="!row.item.run_suitability.valid">
+            <li v-for="(error, index) in row.item.run_suitability.formattedErrors" :key="index">
+              {{ error }}
+            </li>
+          </ul>
         </b-card>
       </template>
     </b-table>
@@ -129,6 +134,12 @@ export default {
       fields: [
         { key: 'selected', label: '' },
         { key: 'id', label: 'Pool ID', sortable: true, tdClass: 'pool-id' },
+        {
+          key: 'run_suitability',
+          label: 'Ready',
+          formatter: ({ ready_for_run }) => (ready_for_run ? '✓' : ''),
+          sortable: true,
+        },
         { key: 'barcode', label: 'Pool Barcode', sortable: true, tdClass: 'barcode' },
         { key: 'source_identifier', label: 'Source', sortable: true, tdClass: 'source-identifier' },
         { key: 'volume', label: 'Volume', sortable: true, tdClass: 'volume' },

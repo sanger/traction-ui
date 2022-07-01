@@ -1,4 +1,4 @@
-import { mount, localVue, Data, store } from 'testHelper'
+import { mount, localVue, Data, store } from '@support/testHelper'
 import Flowcell from '@/components/saphyr/SaphyrFlowcell'
 import * as Run from '@/api/SaphyrRun'
 import Response from '@/api/Response'
@@ -44,10 +44,10 @@ describe('Flowcell', () => {
 
     beforeEach(() => {
       newBarcode = 'TRAC-1'
-      flowcell.alert = jest.fn()
-      flowcell.isLibraryBarcodeValid = jest.fn()
-      flowcell.getTubeForBarcode = jest.fn()
-      flowcell.setLibraryBarcode = jest.fn()
+      flowcell.alert = vi.fn()
+      flowcell.isLibraryBarcodeValid = vi.fn()
+      flowcell.getTubeForBarcode = vi.fn()
+      flowcell.setLibraryBarcode = vi.fn()
     })
 
     //TODO: this test is not testing the implementation.

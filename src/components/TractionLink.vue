@@ -13,7 +13,7 @@ export const ViewType = {
 }
 
 export default {
-  name: 'Link',
+  name: 'TractionLink',
   props: {
     name: {
       type: String,
@@ -37,7 +37,7 @@ export default {
           this.viewType == ViewType.MenuItem,
       }
     },
-    /* 
+    /*
       without catching an error all router errors will log to the console
       The NavigationDuplicated error only appears in the tests for some reason
       but is nothing to worry about. We still need to ensure that all other errors

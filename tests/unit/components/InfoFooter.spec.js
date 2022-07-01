@@ -1,5 +1,5 @@
 import InfoFooter from '@/components/InfoFooter'
-import { localVue, mount } from 'testHelper'
+import { localVue, mount } from '@support/testHelper'
 
 describe('InfoFooter.vue', () => {
   let wrapper
@@ -13,7 +13,7 @@ describe('InfoFooter.vue', () => {
         return 'text'
       },
     }
-    global.fetch = jest.fn(() => Promise.resolve(response))
+    global.fetch = vi.fn(() => Promise.resolve(response))
 
     wrapper = mount(InfoFooter, {
       localVue,

@@ -35,7 +35,7 @@
       @filtered="onFiltered"
       @row-selected="onRowSelected"
     >
-      <template v-slot:cell(selected)="{ rowSelected }">
+      <template #cell(selected)="{ rowSelected }">
         <template v-if="rowSelected">
           <span>&check;</span>
           <span class="sr-only">Selected</span>
@@ -46,7 +46,7 @@
         </template>
       </template>
 
-      <template v-slot:cell(actions)="row">
+      <template #cell(actions)="row">
         <b-button
           :id="`editPool-${row.item.pool.id}`"
           size="sm"
@@ -102,7 +102,7 @@ import { createNamespacedHelpers } from 'vuex'
 const { mapActions, mapGetters } = createNamespacedHelpers('traction/pacbio/libraries')
 
 export default {
-  name: 'Libraries',
+  name: 'PacbioLibraryIndex',
   components: {
     PrinterModal,
   },
@@ -113,6 +113,12 @@ export default {
         { key: 'selected', label: '' },
         { key: 'pool.id', label: 'pool ID', sortable: true, tdClass: 'pool-id' },
         { key: 'id', label: 'Library ID', sortable: true, tdClass: 'library-id' },
+        {
+          key: 'run_suitability',
+          label: 'Ready',
+          formatter: ({ ready_for_run }) => (ready_for_run ? '✓' : ''),
+          sortable: true,
+        },
         { key: 'sample_name', label: 'Sample Name', sortable: true, tdClass: 'sample-name' },
         { key: 'barcode', label: 'Barcode', sortable: true, tdClass: 'barcode' },
         { key: 'source_identifier', label: 'Source', sortable: true, tdClass: 'source-identifier' },

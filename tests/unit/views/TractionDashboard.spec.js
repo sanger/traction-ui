@@ -1,11 +1,11 @@
-import Dashboard from '@/views/Dashboard'
-import { mount, localVue, store, router } from 'testHelper'
+import TractionDashboard from '@/views/TractionDashboard'
+import { mount, localVue, store, router } from '@support/testHelper'
 
-describe('Dashboard.vue', () => {
+describe('TractionDashboard.vue', () => {
   let wrapper, box, dashboard
 
   beforeEach(() => {
-    wrapper = mount(Dashboard, { router, localVue, store })
+    wrapper = mount(TractionDashboard, { router, localVue, store })
     dashboard = wrapper.vm
   })
 
@@ -146,7 +146,5 @@ describe('Dashboard.vue', () => {
     it('will have a description', () => {
       expect(box.find('[data-attribute=description]').text()).toBeDefined()
     })
-
-    describe('route buttons', () => {})
   })
 })
