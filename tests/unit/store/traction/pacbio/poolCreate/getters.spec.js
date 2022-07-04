@@ -1,6 +1,6 @@
 import getters from '@/store/traction/pacbio/poolCreate/getters'
 import defaultState from '@/store/traction/pacbio/poolCreate/state'
-import { Data } from 'testHelper'
+import { Data } from '@support/testHelper'
 import { dataToObjectById, groupIncludedByResource } from '@/api/JsonApi'
 
 describe('getters.js', () => {

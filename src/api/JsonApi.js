@@ -132,7 +132,7 @@ const deserialize = ({ data, included }, includeStore = {}) => {
     return data.reduce((result, item) => {
       const resourceObject = extractResourceObject(item, included, includeStore)
       const type = resourceObject.type
-      if (result.hasOwnProperty(type)) {
+      if (Array.isArray(result[type])) {
         result[type].push(resourceObject)
       } else {
         result[type] = [resourceObject]

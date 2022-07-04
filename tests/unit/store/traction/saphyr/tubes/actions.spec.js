@@ -1,4 +1,4 @@
-import { Data } from 'testHelper'
+import { Data } from '@support/testHelper'
 import Response from '@/api/Response'
 import * as Actions from '@/store/traction/saphyr/tubes/actions'
 
@@ -6,8 +6,8 @@ describe('#getTractionTubesForBarcodes', () => {
   let commit, get, getters, barcodeList, failedResponse, emptyResponse
 
   beforeEach(() => {
-    commit = jest.fn()
-    get = jest.fn()
+    commit = vi.fn()
+    get = vi.fn()
     getters = { tubeRequest: { get: get } }
     barcodeList = ['TRAC-1']
 
@@ -66,7 +66,7 @@ describe('#createLibrariesInTraction', () => {
   let create, getters, payload
 
   beforeEach(() => {
-    create = jest.fn()
+    create = vi.fn()
     getters = { libraryRequest: { create: create } }
     let samples = [
       {
@@ -123,7 +123,7 @@ describe('#deleteLibraries', () => {
   let destroy, getters, libraryIds, failedResponse
 
   beforeEach(() => {
-    destroy = jest.fn()
+    destroy = vi.fn()
     getters = { libraryRequest: { destroy: destroy } }
     libraryIds = [1, 2]
 
@@ -163,8 +163,8 @@ describe('#setLibraries', () => {
   let commit, get, getters, failedResponse
 
   beforeEach(() => {
-    commit = jest.fn()
-    get = jest.fn()
+    commit = vi.fn()
+    get = vi.fn()
     getters = { libraryRequest: { get: get } }
 
     failedResponse = { data: { data: [] }, status: 500, statusText: 'Internal Server Error' }

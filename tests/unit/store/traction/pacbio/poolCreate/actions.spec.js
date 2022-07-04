@@ -1,4 +1,4 @@
-import { Data } from 'testHelper'
+import { Data } from '@support/testHelper'
 import actions from '@/store/traction/pacbio/poolCreate/actions'
 import defaultState from '@/store/traction/pacbio/poolCreate/state'
 import { newResponse } from '@/api/ResponseHelper'
@@ -22,9 +22,9 @@ describe('actions.js', () => {
   describe('fetchPacbioRequests', () => {
     it('handles success', async () => {
       // mock commit
-      const commit = jest.fn()
+      const commit = vi.fn()
       // mock dependencies
-      const get = jest.fn()
+      const get = vi.fn()
       const rootState = { api: { traction: { pacbio: { requests: { get } } } } }
       get.mockResolvedValue(Data.PacbioRequestsRequest)
       // apply action
@@ -44,9 +44,9 @@ describe('actions.js', () => {
 
     it('handles failure', async () => {
       // mock commit
-      const commit = jest.fn()
+      const commit = vi.fn()
       // mock dependencies
-      const get = jest.fn()
+      const get = vi.fn()
       const rootState = { api: { traction: { pacbio: { requests: { get } } } } }
       get.mockRejectedValue({
         data: { data: [] },
@@ -64,9 +64,9 @@ describe('actions.js', () => {
   describe('fetchPacbioTagSets', () => {
     it('handles success', async () => {
       // mock commit
-      const commit = jest.fn()
+      const commit = vi.fn()
       // mock dependencies
-      const get = jest.fn()
+      const get = vi.fn()
       const rootState = { api: { traction: { pacbio: { tag_sets: { get } } } } }
       get.mockRejectedValue({
         data: { data: [] },
@@ -82,9 +82,9 @@ describe('actions.js', () => {
 
     it('handles failure', async () => {
       // mock commit
-      const commit = jest.fn()
+      const commit = vi.fn()
       // mock dependencies
-      const get = jest.fn()
+      const get = vi.fn()
       const rootState = { api: { traction: { pacbio: { tag_sets: { get } } } } }
       get.mockResolvedValue(Data.PacbioTagSets)
       // apply action
@@ -99,9 +99,9 @@ describe('actions.js', () => {
   describe('populateLibrariesFromPool', () => {
     it('handles success', async () => {
       // mock commit
-      const commit = jest.fn()
+      const commit = vi.fn()
       // mock dependencies
-      const find = jest.fn()
+      const find = vi.fn()
       const rootState = { api: { traction: { pacbio: { pools: { find } } } } }
       find.mockResolvedValue(Data.TractionPacbioPool)
       // apply action
@@ -144,9 +144,9 @@ describe('actions.js', () => {
 
     it('handles failure', async () => {
       // mock commit
-      const commit = jest.fn()
+      const commit = vi.fn()
       // mock dependencies
-      const find = jest.fn()
+      const find = vi.fn()
       const rootState = { api: { traction: { pacbio: { pools: { find } } } } }
       find.mockRejectedValue({
         data: { data: [] },
@@ -164,7 +164,7 @@ describe('actions.js', () => {
   describe('selectWellRequests', () => {
     it('selects requests if unselected', async () => {
       // mock commit
-      const commit = jest.fn()
+      const commit = vi.fn()
       // mock dependencies
       const defaultStateObject = defaultState()
       const state = {
@@ -184,7 +184,7 @@ describe('actions.js', () => {
 
     it('deselects requests if selected', async () => {
       // mock commit
-      const commit = jest.fn()
+      const commit = vi.fn()
       // mock dependencies
       const defaultStateObject = defaultState()
       const state = {
@@ -209,7 +209,7 @@ describe('actions.js', () => {
   describe('deselectPlateAndContents', () => {
     it('selects requests if unselected', async () => {
       // mock commit
-      const commit = jest.fn()
+      const commit = vi.fn()
       // mock dependencies
       const defaultStateObject = defaultState()
       const state = {
@@ -246,7 +246,7 @@ describe('actions.js', () => {
   describe('deselectTubeAndContents', () => {
     it('deselects requests if unselected', async () => {
       // mock commit
-      const commit = jest.fn()
+      const commit = vi.fn()
       // mock dependencies
       const defaultStateObject = defaultState()
       const state = {
@@ -280,7 +280,7 @@ describe('actions.js', () => {
   describe('selectTubeAndContents', () => {
     it('selects requests if unselected', async () => {
       // mock commit
-      const commit = jest.fn()
+      const commit = vi.fn()
       // mock dependencies
       const defaultStateObject = defaultState()
       const state = {
@@ -344,7 +344,7 @@ describe('actions.js', () => {
         status: '201',
         data: { data: {}, included: [{ type: 'tubes', attributes: { barcode: 'TRAC-1' } }] },
       }
-      const create = jest.fn()
+      const create = vi.fn()
       const rootState = { api: { traction: { pacbio: { pools: { create } } } } }
       const libraries = { _1: library1, _2: library2 }
       create.mockResolvedValue(mockResponse)
@@ -362,7 +362,7 @@ describe('actions.js', () => {
         status: '422',
         data: { data: { errors: { error1: ['There was an error'] } } },
       }
-      const create = jest.fn()
+      const create = vi.fn()
       const rootState = { api: { traction: { pacbio: { pools: { create } } } } }
       const libraries = { _1: library1, _2: library2 }
       create.mockRejectedValue({ response: mockResponse })
@@ -376,8 +376,8 @@ describe('actions.js', () => {
     // request is not sent
     // commit is not called
     it('when the pool is invalid', async () => {
-      const commit = jest.fn()
-      const create = jest.fn()
+      const commit = vi.fn()
+      const create = vi.fn()
       const rootState = { api: { traction: { pacbio: { pools: { create } } } } }
       const libraries = { _1: library1, _2: { ...library2, concentration: '' } }
       const { success, errors } = await createPool({
@@ -427,7 +427,7 @@ describe('actions.js', () => {
         status: '201',
         data: { data: {}, included: [{ type: 'tubes', attributes: { barcode: 'TRAC-1' } }] },
       }
-      const update = jest.fn()
+      const update = vi.fn()
       const rootState = { api: { traction: { pacbio: { pools: { update } } } } }
       const libraries = { _1: library1, _2: library2 }
       update.mockResolvedValue(mockResponse)
@@ -441,7 +441,7 @@ describe('actions.js', () => {
         status: '422',
         data: { data: { errors: { error1: ['There was an error'] } } },
       }
-      const update = jest.fn(() => Promise.reject({ response: mockResponse }))
+      const update = vi.fn(() => Promise.reject({ response: mockResponse }))
       const rootState = { api: { traction: { pacbio: { pools: { update } } } } }
       const libraries = { _1: library1, _2: library2 }
       const expectedResponse = newResponse({ ...mockResponse, success: false })
@@ -454,8 +454,8 @@ describe('actions.js', () => {
     // request is not sent
     // commit is not called
     it('when the pool is invalid', async () => {
-      const commit = jest.fn()
-      const update = jest.fn()
+      const commit = vi.fn()
+      const update = vi.fn()
       const rootState = { api: { traction: { pacbio: { pools: { update } } } } }
       const libraries = { _1: library1, _2: { ...library2, concentration: '' } }
       const { success, errors } = await updatePool({
@@ -475,7 +475,7 @@ describe('actions.js', () => {
     const library = { pacbio_request_id: '13', tag_id: '130' }
 
     it('applies a single tag when autoTag is false', async () => {
-      const commit = jest.fn()
+      const commit = vi.fn()
       // Starting in B1
       const autoTag = false
 
@@ -496,7 +496,7 @@ describe('actions.js', () => {
     })
 
     it('applies tags to wells on the same plate with a higher column index when autoTag is true', async () => {
-      const commit = jest.fn()
+      const commit = vi.fn()
       const autoTag = true
 
       await applyTags(
@@ -578,7 +578,7 @@ describe('actions.js', () => {
     })
 
     it('applies tags to tubes with a higher index when autoTag is true', async () => {
-      const commit = jest.fn()
+      const commit = vi.fn()
       const autoTag = true
       const library = { pacbio_request_id: '98', tag_id: '130' }
 
@@ -666,7 +666,7 @@ describe('actions.js', () => {
     }
 
     it('updates the corresponding library', async () => {
-      const commit = jest.fn()
+      const commit = vi.fn()
       const record = {
         source: 'DN1-A10',
         tag: 'bc1024T',
@@ -691,7 +691,7 @@ describe('actions.js', () => {
     })
 
     it('updates the corresponding library for tubes', async () => {
-      const commit = jest.fn()
+      const commit = vi.fn()
       const record = {
         source: 'TRAC-2-2',
         tag: 'bc1024T',
@@ -716,7 +716,7 @@ describe('actions.js', () => {
     })
 
     it('records an error when source is missing', async () => {
-      const commit = jest.fn()
+      const commit = vi.fn()
       const record = {
         tag: 'bc1024T',
         genome_size: 6.3,
@@ -738,7 +738,7 @@ describe('actions.js', () => {
     })
 
     it('records an error when the plate cant be found', async () => {
-      const commit = jest.fn()
+      const commit = vi.fn()
       const record = {
         source: 'DN34-A10',
       }
@@ -757,7 +757,7 @@ describe('actions.js', () => {
     })
 
     it('records an error when the well cant be found', async () => {
-      const commit = jest.fn()
+      const commit = vi.fn()
       const record = {
         source: 'DN1-X13',
       }
@@ -775,7 +775,7 @@ describe('actions.js', () => {
     })
 
     it('records an error when the tag cant be found', async () => {
-      const commit = jest.fn()
+      const commit = vi.fn()
       const record = {
         source: 'DN1-A1',
         tag: 'bc1001_BAK8A_OA',
@@ -795,7 +795,7 @@ describe('actions.js', () => {
     })
 
     it('flags the plate as selected', async () => {
-      const commit = jest.fn()
+      const commit = vi.fn()
       const record = {
         source: 'DN1-A1',
         tag: 'bc1001_BAK8A_OA',
@@ -810,7 +810,7 @@ describe('actions.js', () => {
     })
 
     it('notifies of request addition', async () => {
-      const commit = jest.fn()
+      const commit = vi.fn()
       const record = {
         source: 'DN1-A3',
         tag: 'bc1024T',
@@ -833,7 +833,7 @@ describe('actions.js', () => {
     })
 
     it('does not notifies of request update', async () => {
-      const commit = jest.fn()
+      const commit = vi.fn()
       const record = {
         source: 'DN1-A1',
         genome_size: 6.3,

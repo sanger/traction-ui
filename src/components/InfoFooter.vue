@@ -60,7 +60,7 @@ export default {
   name: 'InfoFooter',
   data() {
     return {
-      environment: process.env.NODE_ENV,
+      environment: import.meta.env.MODE,
       repo: '',
       linkSlice: 51, //length needed for to slice github URL down to release name
       defaultRelease: 'https://github.com/sanger/traction-ui/releases',

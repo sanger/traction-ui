@@ -6,7 +6,7 @@
 
 <script>
 export default {
-  name: 'Well',
+  name: 'PacbioWellItem',
   props: {
     /**
      * The name of the row with which the well is associated

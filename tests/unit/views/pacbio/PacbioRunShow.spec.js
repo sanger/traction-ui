@@ -1,5 +1,5 @@
 import PacbioRun from '@/views/pacbio/PacbioRunShow'
-import { localVue, mount, store, router } from 'testHelper'
+import { localVue, mount, store, router } from '@support/testHelper'
 
 describe('Run.vue', () => {
   let wrapper, mockRun, pacbioRun
@@ -81,9 +81,9 @@ describe('Run.vue', () => {
 
   describe('#create', () => {
     beforeEach(() => {
-      pacbioRun.showAlert = jest.fn()
-      pacbioRun.createRun = jest.fn()
-      pacbioRun.redirectToRuns = jest.fn()
+      pacbioRun.showAlert = vi.fn()
+      pacbioRun.createRun = vi.fn()
+      pacbioRun.redirectToRuns = vi.fn()
     })
 
     it('will show the create button', () => {
@@ -122,7 +122,7 @@ describe('Run.vue', () => {
   describe('#update', () => {
     beforeEach(() => {
       // create the mock of the method before mounting it for testing
-      jest.spyOn(PacbioRun.methods, 'provider').mockImplementation(() => {})
+      vi.spyOn(PacbioRun.methods, 'provider').mockImplementation(() => {})
 
       wrapper = mount(PacbioRun, {
         store,
@@ -137,9 +137,9 @@ describe('Run.vue', () => {
       })
       pacbioRun = wrapper.vm
 
-      pacbioRun.showAlert = jest.fn()
-      pacbioRun.updateRun = jest.fn()
-      pacbioRun.redirectToRuns = jest.fn()
+      pacbioRun.showAlert = vi.fn()
+      pacbioRun.updateRun = vi.fn()
+      pacbioRun.redirectToRuns = vi.fn()
     })
 
     it('will show the update button', () => {
@@ -177,8 +177,8 @@ describe('Run.vue', () => {
 
   describe('#reset', () => {
     beforeEach(() => {
-      pacbioRun.showAlert = jest.fn()
-      pacbioRun.newRun = jest.fn()
+      pacbioRun.showAlert = vi.fn()
+      pacbioRun.newRun = vi.fn()
     })
 
     it('calls newRun', async () => {

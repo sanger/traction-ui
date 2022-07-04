@@ -1,4 +1,4 @@
-import { mount, localVue, store } from 'testHelper'
+import { mount, localVue, store } from '@support/testHelper'
 import Chip from '@/components/saphyr/SaphyrChip'
 import * as Run from '@/api/SaphyrRun'
 
@@ -43,9 +43,9 @@ describe('Chip', () => {
 
     beforeEach(() => {
       newBarcode = 'FLEVEAOLPTOWPNWU20319131581014320190911XXXXXXXXXXXXX'
-      chip.alert = jest.fn()
-      chip.isChipBarcodeValid = jest.fn()
-      chip.setChipBarcode = jest.fn()
+      chip.alert = vi.fn()
+      chip.isChipBarcodeValid = vi.fn()
+      chip.setChipBarcode = vi.fn()
     })
 
     it('successful when chip is valid', () => {

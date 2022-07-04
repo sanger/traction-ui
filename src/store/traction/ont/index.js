@@ -1,7 +1,7 @@
 const ont = {
   namespaced: true,
   state: {
-    labelTemplateId: process.env.VUE_APP_ONT_LABEL_TEMPLATE_ID,
+    labelTemplateId: import.meta.env.VITE_ONT_LABEL_TEMPLATE_ID,
   },
   getters: {
     labelTemplateId: (state) => state.labelTemplateId,

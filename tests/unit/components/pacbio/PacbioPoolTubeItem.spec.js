@@ -1,5 +1,5 @@
 import Tube from '@/components/pacbio/PacbioPoolTubeItem'
-import { localVue, mount } from 'testHelper'
+import { localVue, mount } from '@support/testHelper'
 
 describe('LibraryTubeItem.vue', () => {
   let tube, wrapper, props

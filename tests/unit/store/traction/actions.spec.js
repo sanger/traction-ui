@@ -1,13 +1,13 @@
 import Response from '@/api/Response'
 import * as Actions from '@/store/traction/actions'
-import { Data } from 'testHelper'
+import { Data } from '@support/testHelper'
 
 describe('#startRun', () => {
   let dispatch, id, payload
   const pipeline = 'pacbio'
 
   beforeEach(() => {
-    dispatch = jest.fn()
+    dispatch = vi.fn()
     id = 123
     payload = { id: id, attributes: { state: 'started' } }
   })
@@ -23,7 +23,7 @@ describe('#completeRun', () => {
   const pipeline = 'pacbio'
 
   beforeEach(() => {
-    dispatch = jest.fn()
+    dispatch = vi.fn()
     id = 123
     payload = { id: id, attributes: { state: 'completed' } }
   })
@@ -39,7 +39,7 @@ describe('#cancelRun', () => {
   const pipeline = 'pacbio'
 
   beforeEach(() => {
-    dispatch = jest.fn()
+    dispatch = vi.fn()
     id = 123
     payload = { id: id, attributes: { state: 'cancelled' } }
   })
@@ -54,8 +54,8 @@ describe('#handleRunUpdate', () => {
   let update, getters, rootGetters, payload, failedResponse, commit, pipeline
 
   beforeEach(() => {
-    update = jest.fn()
-    commit = jest.fn()
+    update = vi.fn()
+    commit = vi.fn()
     getters = { 'pacbio/runs/runRequest': { update: update } }
     payload = { id: 1, attributes: { state: 'a state' } }
     pipeline = 'pacbio'
@@ -107,8 +107,8 @@ describe('#setTags', () => {
   let commit, get, getters, failedResponse
 
   beforeEach(() => {
-    commit = jest.fn()
-    get = jest.fn()
+    commit = vi.fn()
+    get = vi.fn()
     getters = { tagsRequest: { get: get } }
 
     failedResponse = { data: { data: [] }, status: 500, statusText: 'Internal Server Error' }

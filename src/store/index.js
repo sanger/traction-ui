@@ -12,7 +12,7 @@ Vue.use(Vuex)
 
 export default new Vuex.Store({
   state: {
-    api: build({ config: Api.Config, environment: process.env }),
+    api: build({ config: Api.Config, environment: import.meta.env }),
     printers: PrinterList,
     plateMap: PlateMap,
   },

@@ -1,5 +1,5 @@
 import * as Actions from '@/store/sampleExtraction/actions'
-import { Data } from 'testHelper'
+import { Data } from '@support/testHelper'
 import { newResponse } from '@/api/ResponseHelper'
 import deserialize from '@/api/JsonApi'
 
@@ -7,8 +7,8 @@ describe('#getSampleExtractionTubesForBarcodes', () => {
   let commit, get, getters, barcodeList, failedResponse, emptyResponse
 
   beforeEach(() => {
-    commit = jest.fn()
-    get = jest.fn()
+    commit = vi.fn()
+    get = vi.fn()
     getters = { sampleExtractionTubeRequest: { get: get } }
     barcodeList = ['NT4R']
 

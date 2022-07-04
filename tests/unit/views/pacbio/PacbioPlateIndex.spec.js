@@ -1,5 +1,5 @@
 import PacbioPlates from '@/views/pacbio/PacbioPlateIndex'
-import { mount, localVue, store, Data, router } from 'testHelper'
+import { mount, localVue, store, Data, router } from '@support/testHelper'
 import Response from '@/api/Response'
 
 describe('PacbioPlates.vue', () => {
@@ -20,7 +20,7 @@ describe('PacbioPlates.vue', () => {
 
     wrapper.setData({ sortDesc: false })
     plates = wrapper.vm
-    plates.provider = jest.fn()
+    plates.provider = vi.fn()
   })
 
   describe('building the table', () => {
@@ -73,7 +73,7 @@ describe('PacbioPlates.vue', () => {
 
   describe('#alert', () => {
     it('shows an alert', () => {
-      plates.showAlert = jest.fn()
+      plates.showAlert = vi.fn()
       plates.alert('message', 'type')
       expect(plates.showAlert).toBeCalledWith('message', 'type')
     })

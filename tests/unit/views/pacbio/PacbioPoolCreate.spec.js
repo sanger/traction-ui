@@ -1,5 +1,5 @@
 import PacbioPoolCreate from '@/views/pacbio/PacbioPoolCreate'
-import { mount, localVue, store, Data, router } from 'testHelper'
+import { mount, localVue, store, Data, router } from '@support/testHelper'
 import flushPromises from 'flush-promises'
 
 describe('PacbioPoolCreate', () => {
@@ -14,8 +14,8 @@ describe('PacbioPoolCreate', () => {
       },
     } = store
 
-    requestsRequest.get = jest.fn(() => Data.PacbioRequestsRequest)
-    tagSetsRequest.get = jest.fn(() => Data.PacbioTagSets)
+    requestsRequest.get = vi.fn(() => Data.PacbioRequestsRequest)
+    tagSetsRequest.get = vi.fn(() => Data.PacbioTagSets)
 
     mount(PacbioPoolCreate, {
       localVue,

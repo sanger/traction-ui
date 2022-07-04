@@ -1,5 +1,5 @@
 import Samples from '@/views/pacbio/PacbioSampleIndex'
-import { mount, localVue, store, Data, router } from 'testHelper'
+import { mount, localVue, store, Data, router } from '@support/testHelper'
 import Response from '@/api/Response'
 
 // TODO: why do we need to set sortDesc to false? I think we also need to isolate tests
@@ -19,7 +19,7 @@ describe('Samples.vue', () => {
     // TODO: Vue no longer allows you to override methods in mount. This causes all sorts of issues which we need to fix.
     wrapper.setData({ sortDesc: false })
     samples = wrapper.vm
-    samples.provider = jest.fn()
+    samples.provider = vi.fn()
   })
 
   describe('building the table', () => {
@@ -52,7 +52,7 @@ describe('Samples.vue', () => {
       wrapper.setData({ sortDesc: false })
 
       samples = wrapper.vm
-      samples.handlePrintLabel = jest.fn()
+      samples.handlePrintLabel = vi.fn()
     })
 
     it('passes selected printer to function on emit event', () => {

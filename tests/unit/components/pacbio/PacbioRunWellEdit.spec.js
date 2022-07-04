@@ -1,4 +1,4 @@
-import { mount, localVue, store } from 'testHelper'
+import { mount, localVue, store } from '@support/testHelper'
 import WellEdit from '@/components/pacbio/PacbioRunWellEdit'
 import storePools from '@tests/data/StorePools'
 import * as Run from '@/api/PacbioRun'
@@ -136,7 +136,7 @@ describe('PacbioWellModal', () => {
         row = { index: 0 }
         poolObject = { id: 10, barcode: 'oldBarcode' }
         modal.currentWell.pools[0] = poolObject
-        modal.showAlert = jest.fn()
+        modal.showAlert = vi.fn()
         store.state.traction.pacbio.pools = storePools
       })
 
@@ -187,7 +187,7 @@ describe('PacbioWellModal', () => {
           propsData: props,
         })
         modal = wrapper.vm
-        modal.buildWell = jest.fn()
+        modal.buildWell = vi.fn()
         modal.buildWell.mockReturnValue({})
 
         modal.showModalForPosition()
@@ -206,11 +206,11 @@ describe('PacbioWellModal', () => {
 
     describe('update', () => {
       beforeEach(() => {
-        modal.checkPools = jest.fn()
-        modal.createWell = jest.fn()
-        modal.updateWell = jest.fn()
-        modal.showAlert = jest.fn()
-        modal.alert = jest.fn()
+        modal.checkPools = vi.fn()
+        modal.createWell = vi.fn()
+        modal.updateWell = vi.fn()
+        modal.showAlert = vi.fn()
+        modal.alert = vi.fn()
       })
 
       it('calls createWell when and shows success alert when action is create', async () => {
@@ -245,8 +245,8 @@ describe('PacbioWellModal', () => {
 
     describe('removeWell', () => {
       it('deletes the well at the given position', () => {
-        modal.deleteWell = jest.fn()
-        modal.alert = jest.fn()
+        modal.deleteWell = vi.fn()
+        modal.alert = vi.fn()
 
         modal.removeWell()
 

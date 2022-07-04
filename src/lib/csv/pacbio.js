@@ -1,4 +1,4 @@
-import { parse } from 'csv-parse/lib/sync'
+import { parse } from 'csv-parse/browser/esm/sync'
 
 const castFloat = (value) => Number(value)
 const castString = (value) => String(value)

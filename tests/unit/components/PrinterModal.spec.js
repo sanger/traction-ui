@@ -1,4 +1,4 @@
-import { mount, localVue, store } from 'testHelper'
+import { mount, localVue, store } from '@support/testHelper'
 import PrinterModal from '@/components/PrinterModal'
 
 describe('Modal.vue', () => {
@@ -70,7 +70,7 @@ describe('Modal.vue', () => {
 
   describe('#handleOk', () => {
     beforeEach(() => {
-      modal.handleSubmit = jest.fn()
+      modal.handleSubmit = vi.fn()
     })
 
     it('without selectedPrinterId', () => {
@@ -79,7 +79,7 @@ describe('Modal.vue', () => {
           return {}
         },
       }
-      window.alert = jest.fn()
+      window.alert = vi.fn()
       modal.handleOk(evt)
       expect(window.alert).toBeCalledWith('Please select a printer')
       expect(modal.handleSubmit).not.toBeCalled()

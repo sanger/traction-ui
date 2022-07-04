@@ -1,8 +1,8 @@
 import PrintHelper from '@/mixins/PrintHelper'
-import { localVue, mount } from 'testHelper'
+import { localVue, mount } from '@support/testHelper'
 import * as printJobRequests from '@/api/PrintJobRequests'
 
-jest.mock('@/api/PrintJobRequests')
+vi.mock('@/api/PrintJobRequests')
 
 describe('PrintHelper', () => {
   let helper, wrapper
@@ -25,8 +25,8 @@ describe('PrintHelper', () => {
 
   describe('#handlePrintLabel', () => {
     it('handles success', async () => {
-      const printJob = jest.spyOn(printJobRequests, 'printJob')
-      const showAlert = jest.spyOn(helper, 'showAlert')
+      const printJob = vi.spyOn(printJobRequests, 'printJob')
+      const showAlert = vi.spyOn(helper, 'showAlert')
 
       printJob.mockImplementation(() => {})
       showAlert.mockImplementation(() => {})
@@ -37,8 +37,8 @@ describe('PrintHelper', () => {
     })
 
     it('handles failure', async () => {
-      const printJob = jest.spyOn(printJobRequests, 'printJob')
-      const showAlert = jest.spyOn(helper, 'showAlert')
+      const printJob = vi.spyOn(printJobRequests, 'printJob')
+      const showAlert = vi.spyOn(helper, 'showAlert')
 
       printJob.mockImplementation(() => {})
       showAlert.mockImplementation(() => {})

@@ -9,24 +9,24 @@
             <div class="text-white text-2xl">Traction</div>
           </div>
           <div class="flex justify-center">
-            <Link name="Home" link="/dashboard" view-type="2" />
-            <Link name="Label Printing" link="/label-printing" view-type="2" />
+            <TractionLink name="Home" link="/dashboard" view-type="2" />
+            <TractionLink name="Label Printing" link="/label-printing" view-type="2" />
           </div>
         </div>
       </div>
     </div>
-    <Heading level="1">{{ pipeline }} {{ page }}</Heading>
+    <TractionHeading level="1">{{ pipeline }} {{ page }}</TractionHeading>
     <div class="flex flex-col mb-auto px-4 py-10">
       <router-view class="text-center" />
     </div>
     <div class="message-container">
-      <Message
+      <TractionMessage
         v-for="(message, index) in messages"
         ref="alert"
         :key="index"
         v-bind="message"
         @dismissed="dismiss(index)"
-      ></Message>
+      ></TractionMessage>
     </div>
     <InfoFooter></InfoFooter>
   </div>
@@ -34,17 +34,17 @@
 
 <script>
 import InfoFooter from '@/components/InfoFooter'
-import Message from '@/components/Message'
-import Link from '@/components/Link'
-import Heading from '@/components/Heading'
+import TractionMessage from '@/components/TractionMessage'
+import TractionLink from '@/components/TractionLink'
+import TractionHeading from '@/components/TractionHeading'
 
 import PipelinesConfig from '@/config/PipelinesConfig'
 export default {
   components: {
     InfoFooter,
-    Message,
-    Link,
-    Heading,
+    TractionMessage,
+    TractionLink,
+    TractionHeading,
   },
   computed: {
     mergedRoute() {

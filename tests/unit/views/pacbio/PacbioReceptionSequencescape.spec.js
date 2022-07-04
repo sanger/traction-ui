@@ -1,5 +1,5 @@
 import Reception from '@/views/pacbio/PacbioReceptionSequencescape'
-import { mount, localVue, store, router } from 'testHelper'
+import { mount, localVue, store, router } from '@support/testHelper'
 import * as pacbio from '@/services/traction/Pacbio'
 
 describe('PacbioReceptionSequencescape', () => {
@@ -41,7 +41,7 @@ describe('PacbioReceptionSequencescape', () => {
   describe('createTractionPlates button', () => {
     beforeEach(() => {
       wrapper.setData({ barcodes: 'DN1\nDN2' })
-      reception.createTractionPlates = jest.fn()
+      reception.createTractionPlates = vi.fn()
     })
 
     it('calls the right function', async () => {
@@ -57,12 +57,12 @@ describe('PacbioReceptionSequencescape', () => {
     beforeEach(() => {
       wrapper = mount(Reception, { localVue, store })
       reception = wrapper.vm
-      reception.showAlert = jest.fn()
+      reception.showAlert = vi.fn()
       wrapper.setData({ barcodes: 'DN1\nDN2' })
     })
 
     it('reports success when createLabware works', async () => {
-      const mockedcreateLabware = jest.spyOn(pacbio, 'createLabware').mockImplementation(() => {})
+      const mockedcreateLabware = vi.spyOn(pacbio, 'createLabware').mockImplementation(() => {})
 
       mockedcreateLabware.mockResolvedValue({
         status: 'success',
@@ -86,7 +86,7 @@ describe('PacbioReceptionSequencescape', () => {
     })
 
     it('passes library type when selected', async () => {
-      const mockedcreateLabware = jest.spyOn(pacbio, 'createLabware').mockImplementation(() => {})
+      const mockedcreateLabware = vi.spyOn(pacbio, 'createLabware').mockImplementation(() => {})
 
       mockedcreateLabware.mockResolvedValue({
         status: 'success',
@@ -107,7 +107,7 @@ describe('PacbioReceptionSequencescape', () => {
     })
 
     it('is unsuccessful when getSampleExtractionPlatesForBarcodes fails', async () => {
-      const mockedcreateLabware = jest.spyOn(pacbio, 'createLabware').mockImplementation(() => {})
+      const mockedcreateLabware = vi.spyOn(pacbio, 'createLabware').mockImplementation(() => {})
 
       mockedcreateLabware.mockResolvedValue({
         status: 'danger',
