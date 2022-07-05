@@ -15,27 +15,6 @@ const labwareRequestConfig = {
   },
 }
 
-/*
-  return a set of plates by their barcodes
-  the request is an executable api call
-  the plates will be converted from json api to nested structure plates: { wells: ... }
-  an array will always be returned.
-*/
-const getPlates = async (request, barcodes) => {
-  let promise = request.get({
-    filter: { barcode: barcodes },
-    include: 'wells.aliquots.sample.sample_metadata,wells.aliquots.study',
-  })
-
-  let { success, data } = await handleResponse(promise)
-
-  if (success) {
-    return deserialize(data).plates || []
-  } else {
-    return []
-  }
-}
-
 const extractBarcodes = ({ plates, tubes }) =>
   [...plates, ...tubes].flatMap((labware) => Object.values(labware.labware_barcode))
 
@@ -173,7 +152,6 @@ const PacbioSample = (aliquot, libraryType, costCode) => ({
 const Sequencescape = {
   transformPlates,
   transformTubes,
-  getPlates,
   OntSample,
   PacbioSample,
   extractBarcodes,
@@ -182,7 +160,6 @@ const Sequencescape = {
 
 export {
   transformPlates,
-  getPlates,
   OntSample,
   PacbioSample,
   extractBarcodes,

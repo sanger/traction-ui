@@ -1,5 +1,4 @@
 import {
-  getPlates,
   transformPlates,
   transformTubes,
   OntSample,
@@ -7,57 +6,8 @@ import {
   labwareForImport,
 } from '@/services/Sequencescape'
 import { Data } from '@support/testHelper'
-import Response from '@/api/Response'
 
 describe('SequencescapePlates', () => {
-  describe('#getPlates', () => {
-    let barcodes, failedResponse, emptyResponse, request, expectedResponse, plates
-
-    beforeEach(() => {
-      request = { get: vi.fn() }
-      barcodes = 'DN1234567'
-
-      emptyResponse = { data: { data: [] }, status: 200, statusText: 'Success' }
-      failedResponse = {
-        data: { errors: [{ title: 'error1', detail: 'There was an error.' }] },
-        status: 500,
-        statusText: 'Internal Server Error',
-      }
-    })
-
-    it('successfully', async () => {
-      request.get.mockResolvedValue(Data.SequencescapePlates)
-
-      expectedResponse = new Response(Data.SequencescapePlates)
-      let expectedPlates = expectedResponse.deserialize.plates
-      let plates = await getPlates(request, barcodes)
-
-      expect(request.get).toHaveBeenCalledWith({
-        filter: { barcode: barcodes },
-        include: 'wells.aliquots.sample.sample_metadata,wells.aliquots.study',
-      })
-      expect(plates).toEqual(expectedPlates)
-    })
-
-    it('unsuccessfully', async () => {
-      request.get.mockRejectedValue(failedResponse)
-
-      plates = await getPlates(request, barcodes)
-
-      expect(request.get).toHaveBeenCalled()
-      expect(plates).toEqual([])
-    })
-
-    it('when no plates exist', async () => {
-      request.get.mockResolvedValue(emptyResponse)
-
-      plates = await getPlates(request, barcodes)
-
-      expect(request.get).toHaveBeenCalled()
-      expect(plates).toEqual([])
-    })
-  })
-
   describe('#labwareForImport', () => {
     const barcodes = ['DN1234567']
     const emptyResponse = { data: { data: [] }, status: 200, statusText: 'Success' }
