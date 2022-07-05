@@ -1,0 +1,3 @@
+const createReception = () => {}
+
+export { createReception }

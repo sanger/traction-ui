@@ -30,17 +30,18 @@
       </div>
     </traction-section>
     <b-button
-      id="createTractionPlates"
+      id="importLabware"
       class="text-sm ml-8 mr-8 text-white border-sdb-400 bg-sdb-400 shadow-sm hover:bg-sdb focus:border-sdb focus:shadow-outline-sdb active:bg-sdb-600"
       variant="success"
       :disabled="isDisabled"
-      @click="createTractionPlates"
+      @click="importLabware"
       >Import {{ barcodeCount }} labware from {{ title }}</b-button
     >
   </div>
 </template>
 
 <script>
+import Api from '@/mixins/Api'
 import LibraryTypeSelect from '@/components/shared/LibraryTypeSelect'
 import BarcodeIcon from '@/icons/BarcodeIcon.vue'
 
@@ -50,6 +51,7 @@ export default {
     LibraryTypeSelect,
     BarcodeIcon,
   },
+  mixins: [Api],
   props: {
     title: { type: String, required: true },
     source: { type: String, required: true },
@@ -75,13 +77,13 @@ export default {
     },
   },
   methods: {
-    async createTractionPlates() {
+    async importLabware() {
       this.$emit('importStarted', {
         message: `Fetching ${this.barcodeCount} items from ${this.title}`,
       })
       try {
         const response = await this.importFunction({
-          requests: this.requests,
+          requests: this.api,
           barcodes: this.barcodeArray,
           libraryType: this.libraryType,
           costCode: this.costCode,

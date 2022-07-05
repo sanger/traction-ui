@@ -13,7 +13,7 @@ describe('ByBarcode', () => {
 
   beforeEach(() => {
     barcodes = 'DN1\nDN2\nDN3\nDN4\nDN5'
-    importFunction = vi.fn()
+    importFunction = vi.fn(() => ({ source: 'test', requestAttributes: [] }))
     let propsData = {
       importFunction,
       source,
@@ -63,6 +63,7 @@ describe('ByBarcode', () => {
       })
       await wrapper.get('#createTractionPlates').trigger('click')
       expect(importFunction).toBeCalledWith({
+        requests: store.getters.api.requests,
         barcodes: ['DN1', 'DN2', 'DN3', 'DN4', 'DN5'],
         libraryType: 'Pacbio_HiFi',
         costCode: '235',

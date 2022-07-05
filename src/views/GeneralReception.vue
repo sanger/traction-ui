@@ -31,8 +31,10 @@
 
 <script>
 import Api from '@/mixins/Api'
-import { createLabware } from '@/services/traction/Pacbio'
+import { createReception } from '@/services/traction/Reception'
 import Receptions from '@/lib/receptions'
+
+const numberRequests = (i) => (i === 1 ? '1 request' : `${i} requests`)
 
 // We don't expect the modal to display without a message. If we end up in this
 // state then something has gone horribly wrong.
@@ -60,37 +62,36 @@ export default {
   },
   methods: {
     importStarted({ message }) {
-      this.modalState = {
-        visible: true,
-        message,
-      }
+      this.showModal(message)
     },
     clearModal() {
       this.modalState = defaultModal()
+    },
+    showModal(message) {
+      this.modalState = { visible: true, message }
     },
     importFailed({ message }) {
       this.clearModal()
       this.showAlert(message, 'danger')
     },
-    importLoaded({ requestAttributes, source }) {
-      this.clearModal()
-      {
-        requestAttributes, source
+    async importLoaded({ requestAttributes, source }) {
+      this.showModal(`Creating ${numberRequests(requestAttributes.length)} for ${source}`)
+
+      try {
+        await createReception({ source: `traction-ui.${source}`, requestAttributes })
+
+        this.showAlert(
+          `Imported ${numberRequests(requestAttributes.length)} from ${this.reception.name}`,
+          'success',
+        )
+      } catch (e) {
+        console.error(e)
+        this.showAlert(e, 'danger')
       }
+      this.clearModal()
     },
     setSource(reception) {
       this.sourceIndex = reception
-    },
-    async createTractionPlates() {
-      this.busy = true
-      const response = await createLabware({
-        requests: this.requests,
-        barcodes: this.barcodeArray,
-        libraryType: this.libraryType,
-        costCode: this.costCode,
-      })
-      this.showAlert(response.message, response.status)
-      this.busy = false
     },
   },
 }

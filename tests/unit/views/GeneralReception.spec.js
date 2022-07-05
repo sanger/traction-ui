@@ -1,6 +1,6 @@
 import { mount, localVue, store } from '@support/testHelper'
 import GeneralReception from '@/views/GeneralReception.vue'
-import { expect } from 'vitest'
+import * as Reception from '@/services/traction/Reception'
 
 const receptionComponent = {
   name: 'ExampleComponent',
@@ -67,7 +67,7 @@ describe('GeneralReception', () => {
     expect(wrapper.text()).toContain('Starting import')
   })
 
-  it('handles a failed import', async () => {
+  it('handles a failed import - load', async () => {
     vi.spyOn(console, 'error').mockImplementation(() => {})
     const wrapper = buildWrapper()
     // We've begun the import
@@ -87,16 +87,56 @@ describe('GeneralReception', () => {
   })
 
   it('handles a successful import', async () => {
+    store.state.traction.messages = []
+    const mockedcreateReception = vi
+      .spyOn(Reception, 'createReception')
+      .mockImplementation(() => {})
     const wrapper = buildWrapper()
     // We've begun the import
     await wrapper
       .findComponent(receptionComponent)
       .vm.$emit('importStarted', { message: 'Starting import' })
-    // But it fails
+
+    await wrapper
+      .findComponent(receptionComponent)
+      .vm.$emit('importLoaded', { requestAttributes: [{}], source: 'sequencescape' })
+
+    await mockedcreateReception
+    expect(wrapper.text()).not.toContain('Starting import')
+    expect(mockedcreateReception).toBeCalledWith({
+      source: 'traction-ui.sequencescape',
+      requestAttributes: [{}],
+    })
+
+    expect(Object.values(store.state.traction.messages)).toContainEqual({
+      type: 'success',
+      message: 'Imported 1 request from Sequencescape',
+    })
+  })
+
+  it('handles a failed import - save', async () => {
+    vi.spyOn(console, 'error').mockImplementation(() => {})
+    store.state.traction.messages = []
+    const message = 'The princess is in another castle'
+
+    vi.spyOn(Reception, 'createReception').mockRejectedValue(new Error(message))
+    const wrapper = buildWrapper()
+    // We've begun the import
+    await wrapper
+      .findComponent(receptionComponent)
+      .vm.$emit('importStarted', { message: 'Starting import' })
+
     await wrapper
       .findComponent(receptionComponent)
       .vm.$emit('importLoaded', { requestAttributes: [], source: 'sequencescape' })
 
     expect(wrapper.text()).not.toContain('Starting import')
+
+    await localVue.nextTick()
+
+    expect(Object.values(store.state.traction.messages)).toContainEqual({
+      type: 'danger',
+      message: `Error: ${message}`,
+    })
   })
 })
