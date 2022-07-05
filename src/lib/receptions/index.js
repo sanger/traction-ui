@@ -1,11 +1,12 @@
 import ByBarcode from '@/components/receptions/ByBarcode.vue'
+import { labwareForReception } from '@/services/SequencescapeReception'
 
 const Receptions = [
   {
     name: 'Sequencescape',
     component: ByBarcode,
     props: {
-      importFunction: () => {},
+      importFunction: labwareForReception,
       source: 'sequencescape',
       title: 'Sequencescape',
     },

@@ -1,7 +1,7 @@
 import { createReception } from '@/services/traction/Reception'
 // import { Data } from '@support/testHelper'
 
-// Setup some of the parameters we'll be testig with
+// Setup some of the parameters we'll be testing with
 const source = 'traction-ui.sequencescape'
 const requestAttributes = [
   {

@@ -1,5 +1,12 @@
+// This module has been superseded by SequencescapeReception and can be removed
+// when the pipeline-specific receptions are retired. While this change results
+// in temporary code duplication, it allows for complete decoupling of old and
+// new paths, greatly simplifying the removal.
 import { handleResponse } from '@/api/ResponseHelper'
 import deserialize from '@/api/JsonApi'
+
+const extractBarcodes = ({ plates, tubes }) =>
+  [...plates, ...tubes].flatMap((labware) => Object.values(labware.labware_barcode))
 
 const labwareRequestConfig = {
   include: 'receptacles.aliquots.sample.sample_metadata,receptacles.aliquots.study',
@@ -14,9 +21,6 @@ const labwareRequestConfig = {
     aliquots: 'study,library_type,sample',
   },
 }
-
-const extractBarcodes = ({ plates, tubes }) =>
-  [...plates, ...tubes].flatMap((labware) => Object.values(labware.labware_barcode))
 
 /*
   return a set of labware by their barcodes

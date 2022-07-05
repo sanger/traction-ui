@@ -7,7 +7,7 @@ import {
 } from '@/services/Sequencescape'
 import { Data } from '@support/testHelper'
 
-describe('SequencescapePlates', () => {
+describe('Sequencescape', () => {
   describe('#labwareForImport', () => {
     const barcodes = ['DN1234567']
     const emptyResponse = { data: { data: [] }, status: 200, statusText: 'Success' }
