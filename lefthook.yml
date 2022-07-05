@@ -23,7 +23,7 @@ fix:
   commands:
     prettier:
       glob: '*.{js,vue}'
-      run: npx prettier -write {staged_files} --ignore-unknown
+      run: npx prettier --write {staged_files} --ignore-unknown
 
     eslint:
       glob: '*.{js,vue}'
