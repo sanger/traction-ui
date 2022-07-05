@@ -10,6 +10,8 @@ const receptionComponent = {
   },
 }
 
+const tractionReceptionsCreate = store.getters.api.traction.receptions.create
+
 const Receptions = [
   {
     name: 'Sequencescape',
@@ -52,7 +54,7 @@ describe('GeneralReception', () => {
     expect(wrapper.text()).toContain('Rendering Sequencescape Component')
   })
 
-  it('lets you switch betweeen components', async () => {
+  it('lets you switch between components', async () => {
     const wrapper = buildWrapper()
     await wrapper.get('menu').findAll('li').at(1).trigger('click')
     expect(wrapper.text()).toContain('Rendering Samples Extraction Component')
@@ -103,7 +105,7 @@ describe('GeneralReception', () => {
 
     await mockedcreateReception
     expect(wrapper.text()).not.toContain('Starting import')
-    expect(mockedcreateReception).toBeCalledWith({
+    expect(mockedcreateReception).toBeCalledWith(tractionReceptionsCreate, {
       source: 'traction-ui.sequencescape',
       requestAttributes: [{}],
     })

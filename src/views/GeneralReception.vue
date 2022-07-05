@@ -59,6 +59,7 @@ export default {
     reception: ({ receptions, sourceIndex }) => receptions[sourceIndex],
     receptionComponent: ({ reception }) => reception.component,
     receptionOptions: ({ reception }) => reception.props,
+    receptionRequest: ({ api }) => api.traction.receptions.create,
   },
   methods: {
     importStarted({ message }) {
@@ -78,7 +79,10 @@ export default {
       this.showModal(`Creating ${numberRequests(requestAttributes.length)} for ${source}`)
 
       try {
-        await createReception({ source: `traction-ui.${source}`, requestAttributes })
+        await createReception(this.receptionRequest, {
+          source: `traction-ui.${source}`,
+          requestAttributes,
+        })
 
         this.showAlert(
           `Imported ${numberRequests(requestAttributes.length)} from ${this.reception.name}`,
