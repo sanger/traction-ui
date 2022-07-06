@@ -32,7 +32,7 @@
     "lodash-es": "^4.17.21",
     "postcss": "^8.4.14",
     "tailwindcss": "2.2.19",
-    "vite": "^2.9.12",
+    "vite": "^2.9.13",
     "vite-plugin-vue2": "^2.0.1",
     "vue": "^2.6.12",
     "vue-router": "^3.5.3",
