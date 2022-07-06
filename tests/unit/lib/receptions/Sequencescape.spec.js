@@ -1,7 +1,7 @@
-import { labwareForReception } from '@/services/SequencescapeReception'
+import { labwareForReception } from '@/lib/receptions/Sequencescape'
 import { Data, store } from '@support/testHelper'
 
-describe('SequencescapeReception', () => {
+describe('Sequencescape', () => {
   describe('#labwareForReception', () => {
     const barcodes = ['DN9000002A', '3980000001795']
     const emptyResponse = { data: { data: [] }, status: 200, statusText: 'Success' }

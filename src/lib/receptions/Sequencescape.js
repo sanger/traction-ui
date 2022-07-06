@@ -64,10 +64,8 @@ const labwareForReception = async ({ requests, barcodes, libraryType, costCode }
   }
 }
 
-const transformLabwareList = ({ labwareList, sampleType, libraryType, costCode } = {}) =>
-  labwareList.flatMap((labware) =>
-    transformLabware({ ...labware, sampleType, libraryType, costCode }),
-  )
+const transformLabwareList = ({ labwareList, libraryType, costCode } = {}) =>
+  labwareList.flatMap((labware) => transformLabware({ ...labware, libraryType, costCode }))
 
 // Transform a container to the correct format: for a well outputs
 // eg. { type: 'wells', barcode: 'plate_barcode', position: 'A1' }

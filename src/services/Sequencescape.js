@@ -1,4 +1,4 @@
-// This module has been superseded by SequencescapeReception and can be removed
+// This module has been superseded by Receptions/Sequencescape and can be removed
 // when the pipeline-specific receptions are retired. While this change results
 // in temporary code duplication, it allows for complete decoupling of old and
 // new paths, greatly simplifying the removal.
