@@ -36,7 +36,7 @@
     "vite-plugin-vue2": "^2.0.1",
     "vue": "^2.6.12",
     "vue-router": "^3.5.3",
-    "vue-selecto": "^1.16.2",
+    "vue-selecto": "^1.17.0",
     "vue-simple-spinner": "^1.2.10",
     "vuex": "^3.6.2"
   },
