@@ -1,5 +1,5 @@
-import 'bootstrap/dist/css/bootstrap.css'
-import 'bootstrap-vue/dist/bootstrap-vue.css'
+import './styles/legacy_bootstrap.scss'
+import './styles/index.css'
 
 import Vue from 'vue'
 import Vuex from 'vuex'
@@ -10,7 +10,6 @@ import BootstrapVue from 'bootstrap-vue'
 import globalAlert from '@/mixins/globalAlert'
 // Vue 2.7 (and 3) includes the composition API, so can remove this shortly.
 import VueCompositionAPI from '@vue/composition-api'
-import './styles/index.css'
 
 import { registerGlobal } from '@/components/shared'
 

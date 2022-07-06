@@ -1,0 +1,93 @@
+// The variables in here are intended to unify the
+// bootstrap defaults with those of tailwind.
+// Tailwind offers some more fine-grained options in
+// some cases, but I have not extended bootstrap to match.
+// Unify colours with tailwind
+$sp: #e91e63;
+$sdb: #232643;
+
+$white: #fff;
+$gray-50: #f9fafb;
+$gray-100: #f7fafc;
+$gray-200: #edf2f7;
+$gray-300: #e2e8f0;
+$gray-400: #cbd5e0;
+$gray-500: #a0aec0;
+$gray-600: #718096;
+$gray-700: #4a5568;
+$gray-800: #2d3748;
+$gray-900: #1a202c;
+$black: #000;
+
+$blue: #4299e1;
+$indigo: #667eea;
+$purple: #9f7aea;
+$pink: #ed64a6;
+$red: #f56565;
+$orange: #ed8936;
+$yellow: #ecc94b;
+$green: #48bb78;
+$teal: #38b2ac;
+
+$primary: $sp;
+$secondary: $sdb;
+
+// Map spaces to tailwind defaults. Mostly an adjustment
+// of spacing 4
+$spacer: 1rem;
+$spacers: () !default;
+$spacers: map-merge(
+  (
+    0: 0,
+    1: (
+      $spacer * 0.25,
+    ),
+    2: (
+      $spacer * 0.5,
+    ),
+    3: (
+      $spacer * 0.75,
+    ),
+    4: $spacer,
+    5: (
+      $spacer * 1.25,
+    ),
+  ),
+  $spacers
+);
+
+// Unify breakpoints with tailwind
+// For consistent behaviour we want both styles updating at
+// the same thresholds
+$grid-breakpoints: (
+  xs: 0,
+  sm: 640px,
+  md: 768px,
+  lg: 1024px,
+  xl: 1280px,
+) !default;
+
+$border-width: 1px;
+$border-color: $gray-300;
+
+$border-radius: 0.25rem;
+$border-radius-lg: 0.5rem;
+$border-radius-sm: 0.125rem;
+
+$box-shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+$box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
+$box-shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+
+// // stylelint-disable value-keyword-case
+$font-family-sans-serif: 'Helvetica Neue', Arial, system-ui, -apple-system, BlinkMacSystemFont,
+  'Segoe UI', Roboto, 'Noto Sans', sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji',
+  'Segoe UI Symbol', 'Noto Color Emoji';
+$font-family-monospace: Menlo, Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace;
+
+$font-size-base: 1rem;
+$font-size-lg: $font-size-base * 1.125;
+$font-size-sm: $font-size-base * 0.875;
+
+@import '../node_modules/bootstrap/scss/bootstrap';
+// BootstrapVue and its default variables
+@import '../node_modules/bootstrap-vue/src/index.scss';
