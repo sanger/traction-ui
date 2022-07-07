@@ -29,14 +29,15 @@
         </b-form-group>
       </div>
     </traction-section>
-    <b-button
+    <traction-button
       id="importLabware"
-      class="text-sm ml-8 mr-8 text-white border-sdb-400 bg-sdb-400 shadow-sm hover:bg-sdb focus:border-sdb focus:shadow-outline-sdb active:bg-sdb-600"
-      variant="success"
       :disabled="isDisabled"
+      class="ml-8 mr-8"
+      theme="create"
       @click="importLabware"
-      >Import {{ barcodeCount }} labware from {{ title }}</b-button
     >
+      Import {{ barcodeCount }} labware from {{ title }}
+    </traction-button>
   </div>
 </template>
 

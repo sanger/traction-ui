@@ -39,31 +39,27 @@ describe('ByBarcode', () => {
       input = wrapper.find('textarea')
       await input.setValue(barcode)
       expect(reception.barcodes).toEqual(barcode)
-      expect(wrapper.find('#createTractionPlates').text()).toEqual(
-        'Import 1 labware from Sequencescape',
-      )
+      expect(wrapper.find('#importLabware').text()).toEqual('Import 1 labware from Sequencescape')
     })
 
     it('multiple barcodes', async () => {
       input = wrapper.find('textarea')
       await input.setValue(barcodes)
       expect(reception.barcodes).toEqual(barcodes)
-      expect(wrapper.find('#createTractionPlates').text()).toEqual(
-        'Import 5 labware from Sequencescape',
-      )
+      expect(wrapper.find('#importLabware').text()).toEqual('Import 5 labware from Sequencescape')
     })
   })
 
-  describe('createTractionPlates button', () => {
+  describe('importLabware button', () => {
     it('calls the import function', async () => {
       await wrapper.setData({
         barcodes,
         libraryType: 'Pacbio_HiFi',
         costCode: '235',
       })
-      await wrapper.get('#createTractionPlates').trigger('click')
+      await wrapper.get('#importLabware').trigger('click')
       expect(importFunction).toBeCalledWith({
-        requests: store.getters.api.requests,
+        requests: store.getters.api,
         barcodes: ['DN1', 'DN2', 'DN3', 'DN4', 'DN5'],
         libraryType: 'Pacbio_HiFi',
         costCode: '235',
@@ -77,7 +73,7 @@ describe('ByBarcode', () => {
         libraryType: 'Pacbio_HiFi',
         costCode: '235',
       })
-      await wrapper.get('#createTractionPlates').trigger('click')
+      await wrapper.get('#importLabware').trigger('click')
       const { importStarted } = wrapper.emitted()
       expect(importStarted.length).toEqual(1)
       expect(importStarted[0][0]).toEqual({ message: 'Fetching 5 items from Sequencescape' })
@@ -97,7 +93,7 @@ describe('ByBarcode', () => {
         libraryType: 'Pacbio_HiFi',
         costCode: '235',
       })
-      await wrapper.get('#createTractionPlates').trigger('click')
+      await wrapper.get('#importLabware').trigger('click')
       const { importStarted } = wrapper.emitted()
       expect(importStarted.length).toEqual(1)
       expect(importStarted[0][0]).toEqual({ message: 'Fetching 5 items from Sequencescape' })
