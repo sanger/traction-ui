@@ -39,6 +39,12 @@ describe('LibraryTypeSelect.vue', () => {
       expect(wrapper.emitted('input')).toEqual([[null]])
     })
 
+    it('can have no library type disabled', async () => {
+      const wrapper = buildWrapper({ pipeline: 'pacbio', allowNone: false })
+      const select = wrapper.find('select')
+      expect(findOption('None', { from: select })).toBe(undefined)
+    })
+
     it('can emit undefined library type', async () => {
       const wrapper = buildWrapper({ pipeline: 'pacbio', value: 'Pacbio_HiFi' })
       const select = wrapper.find('select')

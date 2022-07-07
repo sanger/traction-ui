@@ -15,7 +15,13 @@
 
     <traction-section title="Request Options">
       <div class="flex grid grid-cols-2 sm:px-6 lg:px-8 gap-x-8 justify-left contents-centre">
-        <LibraryTypeSelect v-model="libraryType" pipeline="pacbio" :label-cols="0" />
+        <LibraryTypeSelect
+          v-model="libraryType"
+          pipeline="pacbio"
+          :label-cols="0"
+          :allow-none="false"
+          :import-text="`Import from ${title} (where available)`"
+        />
         <b-form-group
           label-cols="0"
           description="When not provided default is ToL (S4773)"

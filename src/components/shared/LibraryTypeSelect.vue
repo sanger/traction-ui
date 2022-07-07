@@ -64,6 +64,10 @@ export default {
       type: [Number, String],
       default: () => POSITION.Left,
     },
+    allowNone: {
+      type: Boolean,
+      default: true,
+    },
   },
   computed: {
     libraryType() {
@@ -77,11 +81,14 @@ export default {
         return []
       }
     },
+    nullOption() {
+      return this.allowNone ? [{ value: null, text: 'None' }] : []
+    },
     libraryTypes() {
       return [
         ...this.$store.state.traction[this.pipeline].libraryTypes,
         ...this.importOption,
-        { value: null, text: 'None' },
+        ...this.nullOption,
       ]
     },
   },

@@ -28,7 +28,6 @@ describe('ByBarcode', () => {
       const select = wrapper.find('select')
       expect(select.find('option[value="Pacbio_HiFi"]').exists()).toBe(true)
       expect(select.find('option[value="Pacbio_IsoSeq"]').exists()).toBe(true)
-      expect(select.find('option[value=""]').exists()).toBe(true)
       expect(select.find('option[value="_undefined"]').exists()).toBe(true)
     })
   })
