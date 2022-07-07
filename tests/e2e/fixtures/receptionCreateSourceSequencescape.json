@@ -1,0 +1,61 @@
+{
+  "data": {
+    "data": {
+      "attributes": {
+        "source": "traction-ui.sequencescape",
+        "requestAttributes": [
+          {
+            "request": {
+              "external_study_id": "5b173660-94c9-11ec-8c89-acde48001122",
+              "library_type": "Pacbio_HiFi",
+              "cost_code": "aCostCodeExample"
+            },
+            "sample": {
+              "name": "2STDY1",
+              "external_id": "d5008026-94c9-11ec-a9e3-acde48001122",
+              "species": "Dragon"
+            },
+            "container": {
+              "type": "wells",
+              "barcode": "DN9000002A",
+              "position": "A1"
+            }
+          },
+          {
+            "request": {
+              "external_study_id": "5b173660-94c9-11ec-8c89-acde48001122",
+              "library_type": "Pacbio_HiFi",
+              "cost_code": "aCostCodeExample"
+            },
+            "sample": {
+              "name": "2STDY2",
+              "external_id": "d50bad48-94c9-11ec-a9e3-acde48001122",
+              "species": "Unicorn"
+            },
+            "container": {
+              "type": "wells",
+              "barcode": "DN9000002A",
+              "position": "B1"
+            }
+          },
+          {
+            "request": {
+              "external_study_id": "5b173660-94c9-11ec-8c89-acde48001122",
+              "library_type": "Pacbio_IsoSeq",
+              "cost_code": "aCostCodeExample"
+            },
+            "sample": {
+              "name": "2STDY97",
+              "external_id": "0db37dd8-94ca-11ec-a9e3-acde48001122",
+              "species": "Gryphon"
+            },
+            "container": {
+              "type": "tubes",
+              "barcode": "3980000001795"
+            }
+          }
+        ]
+      }
+    }
+  }
+}
