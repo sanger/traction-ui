@@ -8,7 +8,7 @@
   >
     <b-row>
       <b-col cols="3">
-        <b-img src="/tube.png" />
+        <img src="/tube.png" />
         <b-button
           :id="`editPool-${id}`"
           size="sm"

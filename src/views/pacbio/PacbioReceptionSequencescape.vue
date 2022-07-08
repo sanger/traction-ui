@@ -37,13 +37,13 @@
             <b-form-input id="cost_code" v-model="costCode"></b-form-input>
           </b-form-group>
         </div>
-        <b-button
+        <traction-button
           id="createTractionPlates"
           class="text-sm ml-8 mr-8 text-white border-sdb-400 bg-sdb-400 shadow-sm hover:bg-sdb focus:border-sdb focus:shadow-outline-sdb active:bg-sdb-600"
           variant="success"
           :disabled="isDisabled"
           @click="createTractionPlates"
-          >Import {{ barcodeCount }}</b-button
+          >Import {{ barcodeCount }}</traction-button
         >
       </div>
     </div>
