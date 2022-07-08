@@ -16,7 +16,7 @@
     "test:cypress:one": "cypress open",
     "lint": "eslint . --ext .js,.vue,.cjs",
     "pretty": "prettier --check '**/*'",
-    "test": "vue-cli-service test:unit && vue-cli-service test:e2e",
+    "test": "npm-run-all test:unit test:e2e:all",
     "serve:css": "postcss node_modules/@sanger/ui-styling/tailwind.css -o src/styles/index.css",
     "build:css": "postcss node_modules/@sanger/ui-styling/tailwind.css -o src/styles/index.css --env production"
   },
