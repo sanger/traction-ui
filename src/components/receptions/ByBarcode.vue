@@ -14,24 +14,34 @@
     </traction-section>
 
     <traction-section title="Request Options">
-      <div class="flex grid grid-cols-2 sm:px-6 lg:px-8 gap-x-8 justify-left contents-centre">
-        <LibraryTypeSelect
-          v-model="libraryType"
-          :label-cols="0"
-          :allow-none="false"
-          :import-text="`Import from ${title} (where available)`"
-        />
-        <b-form-group
-          label-cols="0"
-          description="When not provided default is ToL (S4773)"
-          label="Cost Code"
-          label-for="cost_code"
-          label-align="left"
-          label-size="sm"
-          class="text-base"
-        >
-          <b-form-input id="cost_code" v-model="costCode"></b-form-input>
-        </b-form-group>
+      <div class="grid grid-cols-2">
+        <traction-fieldset title="Shared Options">
+          <LibraryTypeSelect
+            v-model="libraryType"
+            :label-cols="0"
+            :allow-none="false"
+            :import-text="`Import from ${title} (where available)`"
+          />
+          <b-form-group
+            label-cols="0"
+            description="When not provided default is ToL (S4773)"
+            label="Cost Code"
+            label-for="cost_code"
+            label-align="left"
+            label-size="sm"
+            class="text-base"
+          >
+            <b-form-input id="cost_code" v-model="costCode"></b-form-input>
+          </b-form-group>
+        </traction-fieldset>
+        <div>
+          <traction-fieldset title="PacBio Options">
+            <p>PacBio specific library options</p>
+          </traction-fieldset>
+          <traction-fieldset title="ONT Options">
+            <p>ONT specific library options</p>
+          </traction-fieldset>
+        </div>
       </div>
     </traction-section>
     <traction-button
