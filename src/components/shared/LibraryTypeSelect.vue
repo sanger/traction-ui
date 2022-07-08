@@ -19,6 +19,9 @@
 </template>
 
 <script>
+import useSWRV from 'swrv'
+import { filterByAttribute, mapAttribute } from '@/api/JsonApi'
+
 // We want undefined (I've not specified a library) and null (I want NO library)
 // select elements can't handle the former. So we encode it
 const UNDEFINED = '_undefined'
@@ -35,8 +38,11 @@ export default {
   name: 'LibraryTypeSelect',
   props: {
     pipeline: {
+      // Filter to only list library_types for a given pipeline, leave null
+      // to apply no filters
       type: String,
-      required: true,
+      required: false,
+      default: null,
     },
     value: {
       // The library type, we use value to allow us to simply bind it with v-model
@@ -69,6 +75,13 @@ export default {
       default: true,
     },
   },
+  setup() {
+    const baseURL = import.meta.env.VITE_TRACTION_BASE_URL
+    const { data: remoteLibraryTypes } = useSWRV(
+      `${baseURL}/v1/library_types?fields[library_types]=name,pipeline`,
+    )
+    return { remoteLibraryTypes }
+  },
   computed: {
     libraryType() {
       return encode(this.value)
@@ -81,12 +94,14 @@ export default {
         return []
       }
     },
-    nullOption() {
-      return this.allowNone ? [{ value: null, text: 'None' }] : []
+    nullOption: ({ allowNone }) => (allowNone ? [{ value: null, text: 'None' }] : []),
+    filters: ({ pipeline }) => (pipeline ? { pipeline } : {}),
+    filteredLibraryTypes() {
+      return filterByAttribute(this.remoteLibraryTypes?.data || [], this.filters)
     },
     libraryTypes() {
       return [
-        ...this.$store.state.traction[this.pipeline].libraryTypes,
+        ...mapAttribute(this.filteredLibraryTypes, 'name'),
         ...this.importOption,
         ...this.nullOption,
       ]

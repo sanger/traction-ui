@@ -1,6 +1,7 @@
 import * as JsonApi from '@/api/JsonApi'
 import TestResponse from '@tests/data/testResponse'
 import CircularResponse from '@tests/data/circularResponse'
+import { describe, expect } from 'vitest'
 
 // TODO: create a factory which will build a JSON api response. Doing this manually is crushing me.
 describe('JsonApi', () => {
@@ -216,6 +217,30 @@ describe('JsonApi', () => {
       expect(keys.includes('bean')).toBeTruthy()
       expect(keys.includes('pickle')).toBeTruthy()
       expect(keys.includes('chocolates')).toBeTruthy()
+    })
+  })
+
+  describe('filterByAttribute', () => {
+    it('filters objects by attribute value', () => {
+      const data = TestResponse.data.data
+      const filtered = JsonApi.filterByAttribute(data, { attrA: 'wild horses' })
+      expect(filtered.length).toEqual(1)
+      expect(filtered[0]).toEqual(data[1])
+    })
+
+    it('filters nothing if an empty object is provided', () => {
+      const data = TestResponse.data.data
+      const filtered = JsonApi.filterByAttribute(data, {})
+      expect(filtered.length).toEqual(2)
+      expect(filtered[0]).toEqual(data[0])
+      expect(filtered[1]).toEqual(data[1])
+    })
+  })
+  describe('mapAttribute', () => {
+    it('extract the given attribute into an array', () => {
+      const data = TestResponse.data.data
+      const filtered = JsonApi.mapAttribute(data, 'attrA')
+      expect(filtered).toEqual(['you caught me', 'wild horses'])
     })
   })
 })
