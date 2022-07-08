@@ -13,7 +13,7 @@
 
 <script>
 export default {
-  name: 'TractionMenu',
+  name: 'TractionMenuItem',
   props: {
     active: {
       type: Boolean,
