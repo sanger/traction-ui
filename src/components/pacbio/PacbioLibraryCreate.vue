@@ -1,6 +1,6 @@
 <template>
   <div>
-    <b-btn
+    <traction-button
       id="pacbioLibraryCreate"
       v-b-modal.pacbioLibraryModal
       :disabled="disabled"
@@ -8,8 +8,8 @@
       @click="show"
     >
       Create Library
-    </b-btn>
-    <b-modal
+    </traction-button>
+    <traction-modal
       id="pacbioLibraryModal"
       ref="modal"
       size="lg"
@@ -101,7 +101,7 @@
           Create
         </traction-button>
       </template>
-    </b-modal>
+    </traction-modal>
   </div>
 </template>
 
