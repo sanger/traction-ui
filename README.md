@@ -67,6 +67,7 @@ To run the app and have hot-reloads for development:
     - change to `VITE_SEQUENCESCAPE_BASE_URL=REPLACE_VITE_SEQUENCESCAPE_BASE_URL` to `VITE_SEQUENCESCAPE_BASE_URL=http://sequencescape`
 
 ## CSS
+
 - To modify Tailwind configuration
  Tailwind styles used in this project is from `@sanger/ui-styling` npm module. Any further modifications required for the project can be done in `tailwind.config.js` file in root directory.
 
@@ -74,7 +75,6 @@ To run the app and have hot-reloads for development:
 *This is not required mostly, as this will be run as part of 'npm run start'*
 
 npm run serve:css
-
 
 ## Formatting and Linting
 
