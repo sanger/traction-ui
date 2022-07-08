@@ -1,7 +1,11 @@
 <template>
   <div>
-    <b-button :id="'editTag' + request_library.id" size="sm" variant="outline-primary" @click="show"
-      >Edit</b-button
+    <traction-button
+      :id="'editTag' + request_library.id"
+      size="sm"
+      variant="outline-primary"
+      @click="show"
+      >Edit</traction-button
     >
 
     <b-modal id="editTagModal" ref="modal" title="Edit Tag">
@@ -22,9 +26,9 @@
       </b-form>
 
       <template #modal-footer="{ cancel }">
-        <b-button @click="cancel()"> Cancel </b-button>
+        <traction-button @click="cancel()"> Cancel </traction-button>
 
-        <b-button variant="success" @click="update()"> Update Tag </b-button>
+        <traction-button variant="success" @click="update()"> Update Tag </traction-button>
       </template>
     </b-modal>
   </div>

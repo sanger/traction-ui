@@ -11,7 +11,7 @@
         <b-form-input id="filterInput" v-model="filter" type="search" placeholder="Type to Search">
         </b-form-input>
         <b-input-group-append>
-          <b-button :disabled="!filter" @click="filter = ''">Clear</b-button>
+          <traction-button :disabled="!filter" @click="filter = ''">Clear</traction-button>
         </b-input-group-append>
       </b-input-group>
     </b-form-group>
@@ -51,14 +51,14 @@
           data-action="edit-pool"
           :to="{ name: 'PacbioPoolCreate', params: { id: row.item.id } }"
         >
-          <b-button :id="'editPool-' + row.item.id" size="sm" variant="outline-primary"
-            >Edit</b-button
+          <traction-button :id="'editPool-' + row.item.id" size="sm" variant="outline-primary"
+            >Edit</traction-button
           >
         </router-link>
       </template>
 
       <template #cell(show_details)="row">
-        <b-button
+        <traction-button
           :id="'details-btn-' + row.item.id"
           size="sm"
           class="mr-2"
@@ -66,7 +66,7 @@
           @click="row.toggleDetails"
         >
           {{ row.detailsShowing ? 'Hide' : 'Show' }} Details
-        </b-button>
+        </traction-button>
       </template>
 
       <template #row-details="row">

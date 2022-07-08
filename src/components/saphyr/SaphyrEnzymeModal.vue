@@ -1,13 +1,13 @@
 <template>
   <div>
-    <b-btn
+    <traction-button
       id="createLibrariesWithEnzymeButton"
       v-b-modal.enzymeModal
       :disabled="disabled"
       variant="success"
     >
       Create Libraries
-    </b-btn>
+    </traction-button>
     <b-modal
       id="enzymeModal"
       ref="enzymeModal"

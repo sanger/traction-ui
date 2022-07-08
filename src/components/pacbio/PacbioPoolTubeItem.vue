@@ -9,13 +9,13 @@
     <b-row>
       <b-col cols="3">
         <img src="/tube.png" />
-        <b-button
+        <traction-button
           :id="`editPool-${id}`"
           size="sm"
           variant="outline-primary"
           class="btn-block"
           :to="{ name: 'PacbioPoolCreate', params: { id: id } }"
-          >Edit</b-button
+          >Edit</traction-button
         >
       </b-col>
       <b-col cols="9">

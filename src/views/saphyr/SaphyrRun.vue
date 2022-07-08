@@ -1,14 +1,24 @@
 <template>
   <div class="run">
     <router-link :to="{ name: 'SaphyrRuns' }">
-      <b-button id="backToRunsButton" class="float-right">Back</b-button>
+      <traction-button id="backToRunsButton" class="float-right">Back</traction-button>
     </router-link>
 
-    <b-button v-if="newRecord" id="create" class="float-right" variant="success" @click="create"
-      >Create</b-button
+    <traction-button
+      v-if="newRecord"
+      id="create"
+      class="float-right"
+      variant="success"
+      @click="create"
+      >Create</traction-button
     >
-    <b-button v-if="!newRecord" id="update" class="float-right" variant="primary" @click="update"
-      >Update</b-button
+    <traction-button
+      v-if="!newRecord"
+      id="update"
+      class="float-right"
+      variant="primary"
+      @click="update"
+      >Update</traction-button
     >
 
     <h1 id="id" class="runInfo">Run ID: {{ currentRun.id }}</h1>

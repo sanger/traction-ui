@@ -11,7 +11,7 @@
         <b-form-input id="filterInput" v-model="filter" type="search" placeholder="Type to Search">
         </b-form-input>
         <b-input-group-append>
-          <b-button :disabled="!filter" @click="filter = ''">Clear</b-button>
+          <traction-button :disabled="!filter" @click="filter = ''">Clear</traction-button>
         </b-input-group-append>
       </b-input-group>
     </b-form-group>
@@ -47,12 +47,12 @@
       </template>
 
       <template #cell(actions)="row">
-        <b-button
+        <traction-button
           :id="`editPool-${row.item.pool.id}`"
           size="sm"
           variant="outline-primary"
           :to="{ name: 'PacbioPoolCreate', params: { id: row.item.pool.id } }"
-          >Edit</b-button
+          >Edit</traction-button
         >
       </template>
     </b-table>
@@ -60,7 +60,7 @@
     <span class="font-weight-bold">Total records: {{ libraries.length }}</span>
 
     <div class="clearfix">
-      <b-button
+      <traction-button
         id="deleteLibraries"
         variant="danger"
         class="float-left"
@@ -68,7 +68,7 @@
         @click="handleLibraryDelete"
       >
         Delete Libraries
-      </b-button>
+      </traction-button>
       <printerModal
         ref="printerModal"
         class="float-left"

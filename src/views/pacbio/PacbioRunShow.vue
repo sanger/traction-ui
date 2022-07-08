@@ -1,18 +1,23 @@
 <template>
   <div class="run">
     <router-link :to="{ name: 'PacbioRunIndex' }">
-      <b-button id="backToRunsButton" class="float-right">Back</b-button>
+      <traction-button id="backToRunsButton" class="float-right">Back</traction-button>
     </router-link>
 
-    <b-button v-if="newRecord" id="reset" variant="primary" class="float-right" @click="resetRun()"
-      >Reset</b-button
+    <traction-button
+      v-if="newRecord"
+      id="reset"
+      variant="primary"
+      class="float-right"
+      @click="resetRun()"
+      >Reset</traction-button
     >
-    <b-button
+    <traction-button
       :id="currentAction.id"
       class="float-right"
       :variant="currentAction.variant"
       @click="runAction"
-      >{{ currentAction.label }}</b-button
+      >{{ currentAction.label }}</traction-button
     >
 
     <br />

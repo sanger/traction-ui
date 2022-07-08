@@ -1,11 +1,11 @@
 <template>
   <div>
-    <b-button
+    <traction-button
       :id="generateId('editSample', req.id)"
       size="sm"
       variant="outline-primary"
       @click="show"
-      >Edit</b-button
+      >Edit</traction-button
     >
 
     <b-modal id="editSampleModal" ref="modal" title="Edit Sample">
@@ -50,9 +50,9 @@
       </b-form>
 
       <template #modal-footer="{ cancel }">
-        <b-button @click="cancel()"> Cancel </b-button>
+        <traction-button @click="cancel()"> Cancel </traction-button>
 
-        <b-button variant="success" @click="update()"> Update Sample </b-button>
+        <traction-button variant="success" @click="update()"> Update Sample </traction-button>
       </template>
     </b-modal>
   </div>

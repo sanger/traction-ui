@@ -40,7 +40,7 @@ import {
   BCardBody,
   BInputGroup,
   BInputGroupAppend,
-  BPagination
+  BPagination,
 } from 'bootstrap-vue'
 
 const registerBootstrapComponents = (vue) => {
@@ -56,7 +56,6 @@ const registerGlobal = (vue) => {
   vue.component('TractionMenuItem', TractionMenuItem)
 
   registerBootstrapComponents(vue)
-
 }
 
 export { registerGlobal }

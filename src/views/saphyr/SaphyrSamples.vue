@@ -11,7 +11,7 @@
         <b-form-input id="filterInput" v-model="filter" type="search" placeholder="Type to Search">
         </b-form-input>
         <b-input-group-append>
-          <b-button :disabled="!filter" @click="filter = ''">Clear</b-button>
+          <traction-button :disabled="!filter" @click="filter = ''">Clear</traction-button>
         </b-input-group-append>
       </b-input-group>
     </b-form-group>

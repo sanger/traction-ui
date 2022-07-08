@@ -100,13 +100,13 @@
       </b-form-group>
     </b-form>
 
-    <b-button
+    <traction-button
       id="disableAdaptiveLoadingBtn"
       variant="primary"
       @click="disableAdaptiveLoadingInput()"
     >
       Disable Adaptive Loading
-    </b-button>
+    </traction-button>
 
     <b-table id="wellPools" stacked :items="currentWell.pools" :fields="wellPoolsFields">
       <template #table-caption>Pools</template>
@@ -122,25 +122,27 @@
           >
           </b-form-input>
 
-          <b-button class="button btn-xs btn-danger" inline @click="removeRow(row)">-</b-button>
+          <traction-button class="button btn-xs btn-danger" inline @click="removeRow(row)"
+            >-</traction-button
+          >
         </b-form>
       </template>
     </b-table>
 
-    <b-button class="button btn-xs btn-success" @click="addRow">+</b-button>
+    <traction-button class="button btn-xs btn-success" @click="addRow">+</traction-button>
 
     <template #modal-footer="{}">
-      <b-button
+      <traction-button
         v-if="action.label == 'Update'"
         id="deleteWellBtn"
         variant="danger"
         @click="removeWell()"
       >
         Delete well
-      </b-button>
-      <b-button :id="action.id" :variant="action.variant" @click="update()">
+      </traction-button>
+      <traction-button :id="action.id" :variant="action.variant" @click="update()">
         {{ action.label }}
-      </b-button>
+      </traction-button>
     </template>
   </b-modal>
 </template>

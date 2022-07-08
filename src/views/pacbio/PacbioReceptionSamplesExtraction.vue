@@ -24,14 +24,14 @@
         />
       </b-col>
       <b-col>
-        <b-button
+        <traction-button
           id="findSampleExtractionTubes"
           class="scanButton"
           block
           variant="success"
           :disabled="isDisabled"
           @click="handleSampleExtractionTubes"
-          >Import {{ tubeCount }}</b-button
+          >Import {{ tubeCount }}</traction-button
         >
       </b-col>
     </b-row>

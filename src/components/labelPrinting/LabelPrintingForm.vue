@@ -82,9 +82,11 @@
             ></b-form-input>
           </b-form-group>
 
-          <b-button id="submit-button" type="submit" variant="primary">Print Labels</b-button>
-          <b-button id="reset-button" type="reset" variant="danger" class="float-left"
-            >Reset</b-button
+          <traction-button id="submit-button" type="submit" variant="primary"
+            >Print Labels</traction-button
+          >
+          <traction-button id="reset-button" type="reset" variant="danger" class="float-left"
+            >Reset</traction-button
           >
         </b-form>
       </b-col>

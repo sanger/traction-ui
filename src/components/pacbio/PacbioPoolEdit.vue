@@ -74,7 +74,7 @@
       </b-table-simple>
     </div>
     <div class="text-right">
-      <b-button
+      <traction-button
         v-if="!persisted"
         data-action="create-pool"
         variant="success"
@@ -83,8 +83,8 @@
       >
         <span class="button-text">Create Pool </span>
         <b-spinner v-show="busy" small></b-spinner>
-      </b-button>
-      <b-button
+      </traction-button>
+      <traction-button
         v-if="persisted"
         data-action="update-pool"
         variant="success"
@@ -93,7 +93,7 @@
       >
         <span class="button-text">Update Pool </span>
         <b-spinner v-show="busy" small></b-spinner>
-      </b-button>
+      </traction-button>
     </div>
   </div>
 </template>

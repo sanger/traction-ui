@@ -13,13 +13,13 @@
       />
     </div>
 
-    <b-button
+    <traction-button
       id="findSampleExtractionTubes"
       class="scanButton"
       variant="success"
       :disabled="barcodes.length === 0"
       @click="handleSampleExtractionTubes"
-      >Import Sample Extraction Tubes</b-button
+      >Import Sample Extraction Tubes</traction-button
     >
   </div>
 </template>

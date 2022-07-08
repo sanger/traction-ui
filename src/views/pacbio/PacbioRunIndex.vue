@@ -11,7 +11,7 @@
         <b-form-input id="filterInput" v-model="filter" type="search" placeholder="Type to Search">
         </b-form-input>
         <b-input-group-append>
-          <b-button :disabled="!filter" @click="filter = ''">Clear</b-button>
+          <traction-button :disabled="!filter" @click="filter = ''">Clear</traction-button>
         </b-input-group-append>
       </b-input-group>
     </b-form-group>
@@ -34,7 +34,7 @@
       @filtered="onFiltered"
     >
       <template #cell(actions)="row">
-        <b-button
+        <traction-button
           :id="generateId('startRun', row.item.id)"
           variant="outline-success"
           size="sm"
@@ -43,9 +43,9 @@
           @click="updateRun('start', row.item.id)"
         >
           Start
-        </b-button>
+        </traction-button>
 
-        <b-button
+        <traction-button
           :id="generateId('completeRun', row.item.id)"
           variant="outline-primary"
           size="sm"
@@ -54,9 +54,9 @@
           @click="updateRun('complete', row.item.id)"
         >
           Complete
-        </b-button>
+        </traction-button>
 
-        <b-button
+        <traction-button
           :id="generateId('cancelRun', row.item.id)"
           variant="outline-danger"
           size="sm"
@@ -65,9 +65,9 @@
           @click="updateRun('cancel', row.item.id)"
         >
           Cancel
-        </b-button>
+        </traction-button>
 
-        <b-button
+        <traction-button
           :id="generateId('editRun', row.item.id)"
           variant="outline-info"
           size="sm"
@@ -75,7 +75,7 @@
           @click="redirectToRun(row.item.id)"
         >
           Edit
-        </b-button>
+        </traction-button>
 
         <a
           v-show="row.item.all_wells_have_pools"
@@ -91,9 +91,9 @@
     <span class="font-weight-bold">Total records: {{ runs.length }}</span>
 
     <div class="clearfix">
-      <b-button id="newRun" class="float-left" variant="success" @click="redirectToRun()">
+      <traction-button id="newRun" class="float-left" variant="success" @click="redirectToRun()">
         New Run
-      </b-button>
+      </traction-button>
 
       <b-pagination
         v-model="currentPage"

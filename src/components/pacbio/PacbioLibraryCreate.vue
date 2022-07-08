@@ -95,11 +95,11 @@
       </b-form>
 
       <template #modal-footer="{ cancel }">
-        <b-button @click="cancel()"> Cancel </b-button>
+        <traction-button @click="cancel()"> Cancel </traction-button>
 
-        <b-button id="create-btn" variant="success" type="submit" form="libraryCreateModal">
+        <traction-button id="create-btn" variant="success" type="submit" form="libraryCreateModal">
           Create
-        </b-button>
+        </traction-button>
       </template>
     </b-modal>
   </div>
