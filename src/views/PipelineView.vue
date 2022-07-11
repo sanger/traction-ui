@@ -1,23 +1,17 @@
 <template>
-  <div>
-    <traction-card no-body>
-      <traction-card-header header-tag="nav">
-        <traction-nav tabs fill card-header>
-          <traction-nav-item
-            v-for="(route, index) in pipelineInfo.routes"
-            :key="index"
-            :to="path(route)"
-            exact
-            exact-active-class="active"
-            >{{ humanise(route) }}</traction-nav-item
-          >
-        </traction-nav>
-      </traction-card-header>
-
-      <traction-card-body>
-        <router-view></router-view>
-      </traction-card-body>
-    </traction-card>
+  <div class="flex flex-col justify-start ">
+    <traction-menu
+      ><traction-menu-item
+        v-for="(pipelineRoute, index) in pipelineInfo.routes"
+        :key="index"
+        :active="index == sourceIndex"
+        @click.native="setSource(index)"
+        >{{ humanise(pipelineRoute) }}</traction-menu-item
+      >
+    </traction-menu>
+    <b-card-body>
+      <router-view></router-view>
+    </b-card-body>
   </div>
 </template>
 
@@ -34,6 +28,9 @@ export default {
       validator: (value) => PipelinesConfig.find((p) => p.name == value),
     },
   },
+  data: () => ({
+    sourceIndex: 0,
+  }),
   computed: {
     pipelineInfo() {
       return PipelinesConfig.find((p) => p.name == this.pipeline)
@@ -42,6 +39,10 @@ export default {
   methods: {
     path(route) {
       return '/' + this.pipelineInfo.name + '/' + route
+    },
+    setSource(indx) {
+      this.sourceIndex = indx
+      this.$router.push({ path: this.path(this.pipelineInfo.routes[indx]) })
     },
     humanise,
   },
