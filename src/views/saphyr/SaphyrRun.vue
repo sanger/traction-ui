@@ -24,7 +24,7 @@
     <h1 id="id" class="runInfo">Run ID: {{ currentRun.id }}</h1>
     <h2 id="state" class="runInfo">State: {{ currentRun.state }}</h2>
 
-    <b-form-input
+    <traction-input
       id="name"
       :value="runName"
       class="runInfo"

@@ -9,8 +9,8 @@
     >
 
     <traction-modal id="editTagModal" ref="modal" title="Edit Tag">
-      <b-form id="editTagForm">
-        <b-form-group
+      <traction-form id="editTagForm">
+        <traction-form-group
           id="input-group-1"
           :label="'Sample tag: ' + request_library.sample_name"
           label-for="input-1"
@@ -22,8 +22,8 @@
             :options="tags"
           >
           </traction-select>
-        </b-form-group>
-      </b-form>
+        </traction-form-group>
+      </traction-form>
 
       <template #modal-footer="{ cancel }">
         <traction-button @click="cancel()"> Cancel </traction-button>

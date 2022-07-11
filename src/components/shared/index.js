@@ -15,6 +15,7 @@ import {
   BRow,
   BCol,
   BForm,
+  BFormGroup,
   BFormInput,
   BCard,
   BCardText,
@@ -49,26 +50,25 @@ const registerBootstrapComponents = (vue) => {
   vue.component('traction-button', BButton)
   vue.component('traction-modal', BModal)
   vue.component('traction-select', BFormSelect)
-
-  /* TODO: components below in src to be renamed from <b-
-   <traction- */
   vue.component('traction-alert', BAlert)
   vue.component('traction-container', BContainer)
   vue.component('traction-row', BRow)
   vue.component('traction-col', BCol)
   vue.component('traction-form', BForm)
+  vue.component('traction-form-group', BFormGroup)
   vue.component('traction-input', BFormInput)
   vue.component('traction-card', BCard)
+  vue.component('traction-card-body', BCardBody)
   vue.component('traction-card-text', BCardText)
   vue.component('traction-list-group', BListGroup)
   vue.component('traction-list-group-item', BListGroupItem)
   vue.component('traction-tabs', BTabs)
-  vue.component('traction-tabs', BTab)
+  vue.component('traction-tab', BTab)
   vue.component('traction-table', BTable)
+  vue.component('traction-table-simple', BTableSimple)
   vue.component('traction-badge', BBadge)
   vue.component('traction-checkbox', BFormCheckbox)
   vue.component('traction-file', BFormFile)
-  vue.component('traction-table-simple', BTableSimple)
   vue.component('traction-tr', BTr)
   vue.component('traction-td', BTd)
   vue.component('traction-spinner', BSpinner)
@@ -78,16 +78,18 @@ const registerBootstrapComponents = (vue) => {
   vue.component('traction-tbody', BTbody)
   vue.component('traction-textarea', BFormTextarea)
   vue.component('traction-card-header', BCardHeader)
-  vue.component('traction-nav', BNav)
   vue.component('traction-nav-item', BNavItem)
-  vue.component('traction-card-body', BCardBody)
+  vue.component('traction-nav', BNav)
   vue.component('traction-input-group', BInputGroup)
   vue.component('traction-input-group-append', BInputGroupAppend)
   vue.component('traction-pagination', BPagination)
 
-  /*  There is a problem with this one
-      Not entirely sure how it should be setup */
-  vue.directive('traction-v-modal', VBModal)
+  /* 
+    directive is marked wth a v in front
+    so it will be used as 'v-traction-modal'
+  */
+  vue.directive('traction-modal', VBModal)
+
   /* eslint-enable vue/component-definition-name-casing */
 }
 

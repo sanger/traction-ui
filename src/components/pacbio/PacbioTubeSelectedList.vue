@@ -1,8 +1,8 @@
 <template>
-  <b-col data-type="selected-tube-list" class="selected-tube-list">
+  <traction-col data-type="selected-tube-list" class="selected-tube-list">
     <h3>Selected Tube Requests</h3>
-    <b-list-group class="selected-list-group">
-      <b-table
+    <traction-list-group class="selected-list-group">
+      <traction-table
         :items="selectedTubeRequests"
         show-empty
         small
@@ -10,9 +10,9 @@
         :tbody-tr-class="rowClass"
         empty-text="No tubes selected"
         @row-clicked="requestClicked"
-      ></b-table>
-    </b-list-group>
-  </b-col>
+      ></traction-table>
+    </traction-list-group>
+  </traction-col>
 </template>
 
 <script>

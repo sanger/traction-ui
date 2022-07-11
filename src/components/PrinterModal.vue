@@ -1,6 +1,11 @@
 <template>
   <div>
-    <traction-button id="printLabels" v-b-modal.printerModal variant="primary" :disabled="disabled">
+    <traction-button
+      id="printLabels"
+      v-traction-modal.printerModal
+      variant="primary"
+      :disabled="disabled"
+    >
       Print Labels
     </traction-button>
     <traction-modal

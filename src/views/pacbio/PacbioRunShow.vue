@@ -24,24 +24,24 @@
     <br />
 
     <div>
-      <b-row>
-        <b-col cols="6">
+      <traction-row>
+        <traction-col cols="6">
           <pacbioRunInfoEdit ref="pacbioRunInfoEdit"></pacbioRunInfoEdit>
           <br />
-        </b-col>
-        <b-col>
+        </traction-col>
+        <traction-col>
           <pacbioRunWellDefaultEdit ref="pacbioRunWellDefaultEdit"></pacbioRunWellDefaultEdit>
           <br />
-        </b-col>
-      </b-row>
-      <b-row>
-        <b-col cols="6">
+        </traction-col>
+      </traction-row>
+      <traction-row>
+        <traction-col cols="6">
           <pacbioPoolList ref="pacbioPoolList"></pacbioPoolList>
-        </b-col>
-        <b-col>
+        </traction-col>
+        <traction-col>
           <Plate v-if="currentRun.id" ref="plate" @alert="showAlert"></Plate>
-        </b-col>
-      </b-row>
+        </traction-col>
+      </traction-row>
     </div>
   </div>
 </template>

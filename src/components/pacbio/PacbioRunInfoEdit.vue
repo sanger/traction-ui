@@ -1,12 +1,12 @@
 <template>
   <div class="pacbioRunInfoEdit">
     <fieldset>
-      <b-row>
-        <b-col>
+      <traction-row>
+        <traction-col>
           <label for="run-name">Run name:</label>
-        </b-col>
-        <b-col>
-          <b-form-input
+        </traction-col>
+        <traction-col>
+          <traction-input
             id="run-name"
             :value="runName"
             placeholder="Run name"
@@ -15,14 +15,14 @@
             title="Run Name"
             readonly
           />
-        </b-col>
-      </b-row>
-      <b-row>
-        <b-col>
+        </traction-col>
+      </traction-row>
+      <traction-row>
+        <traction-col>
           <label for="default-sequencing-kit-box-barcode">Sequencing Kit Box Barcode:</label>
-        </b-col>
-        <b-col>
-          <b-form-input
+        </traction-col>
+        <traction-col>
+          <traction-input
             id="sequencing-kit-box-barcode"
             :value="sequencingKitBoxBarcode"
             placeholder="Sequencing Kit Box Barcode"
@@ -31,16 +31,16 @@
             title="Sequencing Kit Box Barcode"
             @change="setSequencingKitBoxBarcode"
           />
-        </b-col>
-      </b-row>
-      <b-row>
-        <b-col>
+        </traction-col>
+      </traction-row>
+      <traction-row>
+        <traction-col>
           <label for="default-dna-control-complex-box-barcode"
             >DNA Control Complex Box Barcode:</label
           >
-        </b-col>
-        <b-col>
-          <b-form-input
+        </traction-col>
+        <traction-col>
+          <traction-input
             id="dna-control-complex-box-barcode"
             :value="dnaControlComplexBoxBarcode"
             placeholder="DNA Control Complex Box Barcode"
@@ -49,13 +49,13 @@
             title="DNA Control Complex Box Barcode"
             @change="setDNAControlComplexBoxBarcode"
           />
-        </b-col>
-      </b-row>
-      <b-row>
-        <b-col>
+        </traction-col>
+      </traction-row>
+      <traction-row>
+        <traction-col>
           <label for="default-system-name">System Name:</label>
-        </b-col>
-        <b-col>
+        </traction-col>
+        <traction-col>
           <traction-select
             id="system-name"
             ref="systemName"
@@ -64,14 +64,14 @@
             title="System Name"
             @change="setSystemName"
           />
-        </b-col>
-      </b-row>
-      <b-row>
-        <b-col>
+        </traction-col>
+      </traction-row>
+      <traction-row>
+        <traction-col>
           <label for="default-comments">Comments:</label>
-        </b-col>
-        <b-col>
-          <b-form-input
+        </traction-col>
+        <traction-col>
+          <traction-input
             id="comments"
             :value="comments"
             placeholder="Comments"
@@ -80,8 +80,8 @@
             title="Comments"
             @change="setComments"
           />
-        </b-col>
-      </b-row>
+        </traction-col>
+      </traction-row>
     </fieldset>
   </div>
 </template>

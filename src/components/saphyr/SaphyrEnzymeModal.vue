@@ -2,7 +2,7 @@
   <div>
     <traction-button
       id="createLibrariesWithEnzymeButton"
-      v-b-modal.enzymeModal
+      v-traction-modal.enzymeModal
       :disabled="disabled"
       variant="success"
     >

@@ -1,8 +1,14 @@
 <template>
   <div>
-    <b-alert :variant="variant" :data-type="dataType" dismissible show @dismissed="dismiss()">
+    <traction-alert
+      :variant="variant"
+      :data-type="dataType"
+      dismissible
+      show
+      @dismissed="dismiss()"
+    >
       {{ message }}
-    </b-alert>
+    </traction-alert>
   </div>
 </template>
 

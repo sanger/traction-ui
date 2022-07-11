@@ -6,7 +6,7 @@
     ></loading-full-screen-modal>
     <div class="form-group">
       <label for="barcodes">Barcodes:</label>
-      <b-form-textarea
+      <traction-textarea
         id="barcodes"
         v-model="barcodes"
         placeholder="Scan barcodes to import..."
@@ -15,15 +15,15 @@
         name="barcodes"
       />
     </div>
-    <b-row>
-      <b-col>
+    <traction-row>
+      <traction-col>
         <LibraryTypeSelect
           v-model="libraryType"
           pipeline="pacbio"
           import-text="Import from Samples Extraction (where available)"
         />
-      </b-col>
-      <b-col>
+      </traction-col>
+      <traction-col>
         <traction-button
           id="findSampleExtractionTubes"
           class="scanButton"
@@ -33,8 +33,8 @@
           @click="handleSampleExtractionTubes"
           >Import {{ tubeCount }}</traction-button
         >
-      </b-col>
-    </b-row>
+      </traction-col>
+    </traction-row>
   </div>
 </template>
 

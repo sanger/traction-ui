@@ -1,12 +1,12 @@
 <template>
-  <b-tr data-type="pool-library-edit">
-    <b-td data-attribute="request-sample-name">
+  <traction-tr data-type="pool-library-edit">
+    <traction-td data-attribute="request-sample-name">
       {{ request.sample_name }}
-    </b-td>
-    <b-td data-attribute="request-source-identifier">
+    </traction-td>
+    <traction-td data-attribute="request-source-identifier">
       {{ request.source_identifier }}
-    </b-td>
-    <b-td>
+    </traction-td>
+    <traction-td>
       <traction-select
         v-if="tagList.length > 0"
         v-model="tag_id"
@@ -15,12 +15,12 @@
         :state="hasErrors('tag_id')"
         class="tag-id"
       ></traction-select>
-      <b-form-invalid-feedback data-attribute="tag-id-error">
+      <traction-invalid-feedback data-attribute="tag-id-error">
         {{ errorsFor('tag_id') }}
-      </b-form-invalid-feedback>
-    </b-td>
-    <b-td>
-      <b-form-input
+      </traction-invalid-feedback>
+    </traction-td>
+    <traction-td>
+      <traction-input
         v-model="template_prep_kit_box_barcode"
         data-attribute="template-prep-kit-box-barcode"
         :value="template_prep_kit_box_barcode"
@@ -29,12 +29,12 @@
         title="Template Prep Kit Box Barcode"
         :state="hasErrors('template_prep_kit_box_barcode')"
       />
-      <b-form-invalid-feedback data-attribute="template-prep-kit-box-barcode-error">
+      <traction-invalid-feedback data-attribute="template-prep-kit-box-barcode-error">
         {{ errorsFor('template_prep_kit_box_barcode') }}
-      </b-form-invalid-feedback>
-    </b-td>
-    <b-td>
-      <b-form-input
+      </traction-invalid-feedback>
+    </traction-td>
+    <traction-td>
+      <traction-input
         v-model="volume"
         data-attribute="volume"
         :value="volume"
@@ -43,12 +43,12 @@
         title="Volume"
         :state="hasErrors('volume')"
       />
-      <b-form-invalid-feedback data-attribute="volume-error">
+      <traction-invalid-feedback data-attribute="volume-error">
         {{ errorsFor('volume') }}
-      </b-form-invalid-feedback>
-    </b-td>
-    <b-td>
-      <b-form-input
+      </traction-invalid-feedback>
+    </traction-td>
+    <traction-td>
+      <traction-input
         v-model="concentration"
         data-attribute="concentration"
         :value="concentration"
@@ -57,12 +57,12 @@
         title="Concentration"
         :state="hasErrors('concentration')"
       />
-      <b-form-invalid-feedback data-attribute="concentration-error">
+      <traction-invalid-feedback data-attribute="concentration-error">
         {{ errorsFor('concentration') }}
-      </b-form-invalid-feedback>
-    </b-td>
-    <b-td>
-      <b-form-input
+      </traction-invalid-feedback>
+    </traction-td>
+    <traction-td>
+      <traction-input
         v-model="insert_size"
         data-attribute="insert-size"
         :value="insert_size"
@@ -71,11 +71,11 @@
         title="Insert Size"
         :state="hasErrors('insert_size')"
       />
-      <b-form-invalid-feedback data-attribute="insert-size-error">
+      <traction-invalid-feedback data-attribute="insert-size-error">
         {{ errorsFor('insert_size') }}
-      </b-form-invalid-feedback>
-    </b-td>
-  </b-tr>
+      </traction-invalid-feedback>
+    </traction-td>
+  </traction-tr>
 </template>
 
 <script>

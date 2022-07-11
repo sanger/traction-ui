@@ -1,6 +1,6 @@
 <template>
   <div>
-    <b-form-group
+    <traction-form-group
       label="Library Type"
       label-for="library-type"
       :label-cols="labelCols"
@@ -14,7 +14,7 @@
         :options="libraryTypes"
         @input="handleInput"
       ></traction-select>
-    </b-form-group>
+    </traction-form-group>
   </div>
 </template>
 

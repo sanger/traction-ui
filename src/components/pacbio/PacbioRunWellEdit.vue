@@ -2,8 +2,8 @@
   <traction-modal ref="well-modal" size="lg">
     <template #modal-title> Add Pool to Well: {{ position }} </template>
 
-    <b-form>
-      <b-form-group id="movieTime-group" label="Movie time:" label-for="movieTime">
+    <traction-form>
+      <traction-form-group id="movieTime-group" label="Movie time:" label-for="movieTime">
         <traction-select
           id="movieTime"
           ref="movieTime"
@@ -11,23 +11,27 @@
           :options="movieTimeOptions"
         >
         </traction-select>
-      </b-form-group>
+      </traction-form-group>
 
-      <b-form-group
+      <traction-form-group
         id="plateLoading-group"
         label="On Plate Loading Concentration (mP):"
         label-for="onPlateLoadingConc"
       >
-        <b-form-input
+        <traction-input
           id="onPlateLoadingConc"
           ref="onPlateLoadingConc"
           v-model="currentWell.on_plate_loading_concentration"
           placeholder="On Plate Loading Concentration (mP)"
         >
-        </b-form-input>
-      </b-form-group>
+        </traction-input>
+      </traction-form-group>
 
-      <b-form-group id="generateHiFi-group" label="Generate HiFi Reads:" label-for="generateHiFi">
+      <traction-form-group
+        id="generateHiFi-group"
+        label="Generate HiFi Reads:"
+        label-for="generateHiFi"
+      >
         <traction-select
           id="generateHiFi"
           ref="generateHiFi"
@@ -36,9 +40,9 @@
           @change="updateCCSAnalysisOutput"
         >
         </traction-select>
-      </b-form-group>
+      </traction-form-group>
 
-      <b-form-group
+      <traction-form-group
         id="ccsAnalysisOutput-group"
         label="CCS Analysis Output - Include Kinetics Information:"
         label-for="ccsAnalysisOutput"
@@ -50,41 +54,41 @@
           :options="ccsAnalysisOutputOptions"
         >
         </traction-select>
-      </b-form-group>
+      </traction-form-group>
 
-      <b-form-group
+      <traction-form-group
         id="preExtensionTime-group"
         label="Pre-extension time (hours):"
         label-for="preExtensionTime"
       >
-        <b-form-input
+        <traction-input
           id="preExtensionTime"
           ref="preExtensionTime"
           v-model="currentWell.pre_extension_time"
           placeholder="Pre-extension time"
         >
-        </b-form-input>
-      </b-form-group>
+        </traction-input>
+      </traction-form-group>
 
-      <b-form-group
+      <traction-form-group
         id="bindingKitBoxBarcode-group"
         label="Binding Kit Box Barcode: "
         label-for="bindingKitBoxBarcode"
       >
-        <b-form-input
+        <traction-input
           id="bindingKitBoxBarcode"
           ref="bindingKitBoxBarcode"
           v-model="currentWell.binding_kit_box_barcode"
           placeholder="Binding Kit Box Barcode"
         >
-        </b-form-input>
-      </b-form-group>
-      <b-form-group
+        </traction-input>
+      </traction-form-group>
+      <traction-form-group
         id="loadingTarget-group"
         label="Loading Target (P1 + P2): (0 to 1) "
         label-for="loadingTarget"
       >
-        <b-form-input
+        <traction-input
           id="loadingTarget"
           ref="loadingTarget"
           v-model="currentWell.loading_target_p1_plus_p2"
@@ -96,9 +100,9 @@
           lazy-formatter
           :formatter="formatLoadingTargetValue"
         >
-        </b-form-input>
-      </b-form-group>
-    </b-form>
+        </traction-input>
+      </traction-form-group>
+    </traction-form>
 
     <traction-button
       id="disableAdaptiveLoadingBtn"
@@ -108,26 +112,26 @@
       Disable Adaptive Loading
     </traction-button>
 
-    <b-table id="wellPools" stacked :items="currentWell.pools" :fields="wellPoolsFields">
+    <traction-table id="wellPools" stacked :items="currentWell.pools" :fields="wellPoolsFields">
       <template #table-caption>Pools</template>
 
       <template #cell(barcode)="row">
-        <b-form inline>
-          <b-form-input
+        <traction-form inline>
+          <traction-input
             id="poolBarcode"
             ref="poolBarcode"
             :value="`${row.item.barcode}`"
             placeholder="Pool Barcode"
             @change="updatePoolBarcode(row, $event)"
           >
-          </b-form-input>
+          </traction-input>
 
           <traction-button class="button btn-xs btn-danger" inline @click="removeRow(row)"
             >-</traction-button
           >
-        </b-form>
+        </traction-form>
       </template>
-    </b-table>
+    </traction-table>
 
     <traction-button class="button btn-xs btn-success" @click="addRow">+</traction-button>
 
