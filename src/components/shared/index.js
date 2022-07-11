@@ -48,8 +48,10 @@ const registerBootstrapComponents = (vue) => {
   /* eslint-disable vue/component-definition-name-casing */
   vue.component('traction-button', BButton)
   vue.component('traction-modal', BModal)
-  vue.directive('traction-v-modal', VBModal)
   vue.component('traction-select', BFormSelect)
+
+  /* TODO: components below in src to be renamed from <b-
+   <traction- */
   vue.component('traction-alert', BAlert)
   vue.component('traction-container', BContainer)
   vue.component('traction-row', BRow)
@@ -82,6 +84,10 @@ const registerBootstrapComponents = (vue) => {
   vue.component('traction-input-group', BInputGroup)
   vue.component('traction-input-group-append', BInputGroupAppend)
   vue.component('traction-pagination', BPagination)
+
+  /*  There is a problem with this one
+      Not entirely sure how it should be setup */
+  vue.directive('traction-v-modal', VBModal)
   /* eslint-enable vue/component-definition-name-casing */
 }
 

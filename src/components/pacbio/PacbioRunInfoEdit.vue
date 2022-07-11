@@ -56,7 +56,7 @@
           <label for="default-system-name">System Name:</label>
         </b-col>
         <b-col>
-          <b-form-select
+          <traction-select
             id="system-name"
             ref="systemName"
             :value="systemName"

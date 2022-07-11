@@ -7,13 +7,13 @@
       :label-align="labelAlign"
       label-size="sm"
     >
-      <b-select
+      <traction-select
         id="library-type"
         :class="getClass()"
         :value="libraryType"
         :options="libraryTypes"
         @input="handleInput"
-      ></b-select>
+      ></traction-select>
     </b-form-group>
   </div>
 </template>

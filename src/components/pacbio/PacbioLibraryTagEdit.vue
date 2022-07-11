@@ -8,20 +8,20 @@
       >Edit</traction-button
     >
 
-    <b-modal id="editTagModal" ref="modal" title="Edit Tag">
+    <traction-modal id="editTagModal" ref="modal" title="Edit Tag">
       <b-form id="editTagForm">
         <b-form-group
           id="input-group-1"
           :label="'Sample tag: ' + request_library.sample_name"
           label-for="input-1"
         >
-          <b-form-select
+          <traction-select
             id="tagSelection"
             ref="tagSelection"
             v-model="selectedSampleTagId"
             :options="tags"
           >
-          </b-form-select>
+          </traction-select>
         </b-form-group>
       </b-form>
 
@@ -30,7 +30,7 @@
 
         <traction-button variant="success" @click="update()"> Update Tag </traction-button>
       </template>
-    </b-modal>
+    </traction-modal>
   </div>
 </template>
 

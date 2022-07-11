@@ -8,7 +8,7 @@
     >
       Create Libraries
     </traction-button>
-    <b-modal
+    <traction-modal
       id="enzymeModal"
       ref="enzymeModal"
       size="sm"
@@ -17,8 +17,8 @@
       @ok="handleOk"
       @shown="clearSelect"
     >
-      <b-form-select v-model="selectedEnzymeId" :options="enzymeOptions" class="mb-3" />
-    </b-modal>
+      <traction-select v-model="selectedEnzymeId" :options="enzymeOptions" class="mb-3" />
+    </traction-modal>
   </div>
 </template>
 

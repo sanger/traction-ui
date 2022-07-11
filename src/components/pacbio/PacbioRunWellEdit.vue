@@ -1,16 +1,16 @@
 <template>
-  <b-modal ref="well-modal" size="lg">
+  <traction-modal ref="well-modal" size="lg">
     <template #modal-title> Add Pool to Well: {{ position }} </template>
 
     <b-form>
       <b-form-group id="movieTime-group" label="Movie time:" label-for="movieTime">
-        <b-form-select
+        <traction-select
           id="movieTime"
           ref="movieTime"
           v-model="currentWell.movie_time"
           :options="movieTimeOptions"
         >
-        </b-form-select>
+        </traction-select>
       </b-form-group>
 
       <b-form-group
@@ -28,14 +28,14 @@
       </b-form-group>
 
       <b-form-group id="generateHiFi-group" label="Generate HiFi Reads:" label-for="generateHiFi">
-        <b-form-select
+        <traction-select
           id="generateHiFi"
           ref="generateHiFi"
           v-model="currentWell.generate_hifi"
           :options="generateHifiOptions[currentRun.system_name]"
           @change="updateCCSAnalysisOutput"
         >
-        </b-form-select>
+        </traction-select>
       </b-form-group>
 
       <b-form-group
@@ -43,13 +43,13 @@
         label="CCS Analysis Output - Include Kinetics Information:"
         label-for="ccsAnalysisOutput"
       >
-        <b-form-select
+        <traction-select
           id="ccsAnalysisOutput"
           ref="ccsAnalysisOutput"
           v-model="currentWell.ccs_analysis_output"
           :options="ccsAnalysisOutputOptions"
         >
-        </b-form-select>
+        </traction-select>
       </b-form-group>
 
       <b-form-group
@@ -144,7 +144,7 @@
         {{ action.label }}
       </traction-button>
     </template>
-  </b-modal>
+  </traction-modal>
 </template>
 
 <script>

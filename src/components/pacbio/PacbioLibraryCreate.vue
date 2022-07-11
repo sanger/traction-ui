@@ -23,7 +23,7 @@
         </b-form-group>
 
         <b-form-group id="tag-select-input" label="Tag:" label-for="tag-input">
-          <b-form-select
+          <traction-select
             id="tag-input"
             v-model="library.tag.group_id"
             :options="tagOptions"

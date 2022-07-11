@@ -6,14 +6,14 @@
           <label for="default-movie-time">Movie Time:</label>
         </b-col>
         <b-col>
-          <b-form-select
+          <traction-select
             id="default-movie-time"
             :options="movieTimeOptions"
             :value="currentRun.wellDefaults.movie_time"
             title="Movie Time"
             @change="setDefaultMovieTime"
           >
-          </b-form-select>
+          </traction-select>
         </b-col>
       </b-row>
       <b-row>
@@ -21,14 +21,14 @@
           <label for="default-generate-hifi">Generate HiFi:</label>
         </b-col>
         <b-col>
-          <b-form-select
+          <traction-select
             id="default-generate-hifi"
             title="Generate HiFi"
             :options="generateHifiOptions[currentRun.system_name]"
             :value="currentRun.wellDefaults.generate_hifi"
             @change="setDefaultGenerateHifi"
           >
-          </b-form-select>
+          </traction-select>
         </b-col>
       </b-row>
       <b-row>
@@ -36,14 +36,14 @@
           <label for="default-ccs-analysis-output">Ccs Analysis Output:</label>
         </b-col>
         <b-col>
-          <b-form-select
+          <traction-select
             id="default-ccs-analysis-output"
             title="Ccs Analysis Output"
             :options="ccsAnalysisOutputOptions"
             :value="currentRun.wellDefaults.ccs_analysis_output"
             @change="setDefaultCcsAnalysisOutput"
           >
-          </b-form-select>
+          </traction-select>
         </b-col>
       </b-row>
       <b-row>

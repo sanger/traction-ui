@@ -7,14 +7,14 @@
       {{ request.source_identifier }}
     </b-td>
     <b-td>
-      <b-form-select
+      <traction-select
         v-if="tagList.length > 0"
         v-model="tag_id"
         data-type="tag-list"
         :options="tagListOptions"
         :state="hasErrors('tag_id')"
         class="tag-id"
-      ></b-form-select>
+      ></traction-select>
       <b-form-invalid-feedback data-attribute="tag-id-error">
         {{ errorsFor('tag_id') }}
       </b-form-invalid-feedback>

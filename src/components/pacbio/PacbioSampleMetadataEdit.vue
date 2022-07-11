@@ -8,7 +8,7 @@
       >Edit</traction-button
     >
 
-    <b-modal id="editSampleModal" ref="modal" title="Edit Sample">
+    <traction-modal id="editSampleModal" ref="modal" title="Edit Sample">
       <b-form id="sampleMetaDataForm">
         <LibraryTypeSelect
           v-model="request.library_type"
@@ -54,7 +54,7 @@
 
         <traction-button variant="success" @click="update()"> Update Sample </traction-button>
       </template>
-    </b-modal>
+    </traction-modal>
   </div>
 </template>
 

@@ -1,13 +1,13 @@
 <template>
   <div class="tag-set-list">
     <h3>Select tag set</h3>
-    <b-form-select
+    <traction-select
       v-if="!isEmpty"
       :value="selected"
       data-type="tag-set-list"
       :options="options"
       @change="updateSelected"
-    ></b-form-select>
+    ></traction-select>
   </div>
 </template>
 

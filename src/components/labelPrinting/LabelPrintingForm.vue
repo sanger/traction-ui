@@ -23,14 +23,14 @@
             label-for="suffix-selection"
             description="The suffix used to increment the barcode."
           >
-            <b-form-select
+            <traction-select
               id="suffix-selection"
               v-model="form.selectedSuffix"
               :options="suffixOptions"
               value-field="text"
               placeholder="Please select a suffix"
               required
-            ></b-form-select>
+            ></traction-select>
           </b-form-group>
 
           <b-form-group
@@ -56,13 +56,13 @@
             label-for="printer-choice"
             description="The printer to print the labels."
           >
-            <b-form-select
+            <traction-select
               id="printer-choice"
               v-model="form.selectedPrinterName"
               :options="printerOptions"
               value-field="text"
               required
-            ></b-form-select>
+            ></traction-select>
           </b-form-group>
 
           <b-form-group
