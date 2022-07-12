@@ -14,6 +14,7 @@ describe('Import samples from Sequencescape', () => {
     cy.contains('Scan Barcodes')
     cy.get('#barcodes').type('DN9000002A\nNT1O')
     cy.get('#cost_code').type('aCostCodeExample')
+    cy.get('[data-attribute=estimate_of_gb_required]').type('3')
     cy.intercept(
       {
         url: '/api/v2/labware*',

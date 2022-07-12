@@ -17,7 +17,7 @@
       <div class="grid grid-cols-2">
         <traction-fieldset title="Shared Options">
           <LibraryTypeSelect
-            v-model="libraryType"
+            v-model="requestOptions.library_type"
             :label-cols="0"
             :allow-none="false"
             :import-text="`Import from ${title} (where available)`"
@@ -31,16 +31,17 @@
             label-size="sm"
             class="text-base"
           >
-            <traction-input id="cost_code" v-model="costCode"></traction-input>
+            <traction-input id="cost_code" v-model="requestOptions.cost_code"></traction-input>
           </traction-form-group>
         </traction-fieldset>
         <div>
-          <traction-fieldset title="PacBio Options">
-            <p>PacBio specific library options</p>
-          </traction-fieldset>
-          <traction-fieldset title="ONT Options">
-            <p>ONT specific library options</p>
-          </traction-fieldset>
+          <traction-fieldset
+            v-for="optionForm in requestOptionForms"
+            :key="optionForm.title"
+            v-bind="optionForm"
+            v-model="requestOptions"
+            >{{ optionForm.description }}</traction-fieldset
+          >
         </div>
       </div>
     </traction-section>
@@ -60,6 +61,7 @@
 import Api from '@/mixins/Api'
 import LibraryTypeSelect from '@/components/shared/LibraryTypeSelect'
 import BarcodeIcon from '@/icons/BarcodeIcon.vue'
+import { ReceptionForms, defaultRequestOptions } from '@/lib/receptions'
 
 export default {
   name: 'ReceptionByBarcode',
@@ -72,13 +74,17 @@ export default {
     title: { type: String, required: true },
     source: { type: String, required: true },
     importFunction: { type: Function, required: true },
+    requestOptionForms: {
+      type: Array,
+      required: false,
+      default: () => ReceptionForms,
+    },
   },
   data() {
     return {
       barcodes: '',
       busy: false,
-      libraryType: undefined,
-      costCode: undefined,
+      requestOptions: defaultRequestOptions(),
     }
   },
   computed: {
@@ -91,6 +97,9 @@ export default {
     barcodeCount() {
       return this.barcodeArray.length
     },
+    presentRequestOptions() {
+      return Object.fromEntries(Object.entries(this.requestOptions).filter(([, v]) => v))
+    },
   },
   methods: {
     async importLabware() {
@@ -101,8 +110,7 @@ export default {
         const response = await this.importFunction({
           requests: this.api,
           barcodes: this.barcodeArray,
-          libraryType: this.libraryType,
-          costCode: this.costCode,
+          requestOptions: this.presentRequestOptions,
         })
 
         this.$emit('importLoaded', {

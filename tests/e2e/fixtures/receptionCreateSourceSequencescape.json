@@ -8,7 +8,8 @@
             "request": {
               "external_study_id": "5b173660-94c9-11ec-8c89-acde48001122",
               "library_type": "Pacbio_HiFi",
-              "cost_code": "aCostCodeExample"
+              "cost_code": "aCostCodeExample",
+              "estimate_of_gb_required": "3"
             },
             "sample": {
               "name": "2STDY1",
@@ -25,7 +26,8 @@
             "request": {
               "external_study_id": "5b173660-94c9-11ec-8c89-acde48001122",
               "library_type": "Pacbio_HiFi",
-              "cost_code": "aCostCodeExample"
+              "cost_code": "aCostCodeExample",
+              "estimate_of_gb_required": "3"
             },
             "sample": {
               "name": "2STDY2",
@@ -42,7 +44,8 @@
             "request": {
               "external_study_id": "5b173660-94c9-11ec-8c89-acde48001122",
               "library_type": "Pacbio_IsoSeq",
-              "cost_code": "aCostCodeExample"
+              "cost_code": "aCostCodeExample",
+              "estimate_of_gb_required": "3"
             },
             "sample": {
               "name": "2STDY97",

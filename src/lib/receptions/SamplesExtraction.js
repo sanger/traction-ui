@@ -23,12 +23,11 @@ const getLabware = async (request, barcodes) => {
   }
 }
 
-const labwareForReception = async ({ requests, barcodes, libraryType, costCode }) => {
+const labwareForReception = async ({ requests, barcodes, requestOptions }) => {
   const { assets = [] } = await getLabware(requests.sampleExtraction.assets, barcodes.join(','))
   const requestAttributes = transformLabwareList({
     labwareList: assets,
-    libraryType,
-    costCode,
+    requestOptions,
   })
 
   const foundBarcodes = extractBarcodes(assets)
@@ -44,14 +43,14 @@ const labwareForReception = async ({ requests, barcodes, libraryType, costCode }
   }
 }
 
-const transformLabwareList = ({ labwareList, libraryType, costCode } = {}) =>
-  labwareList.flatMap((labware) => transformLabware({ labware, libraryType, costCode }))
+const transformLabwareList = ({ labwareList, requestOptions } = {}) =>
+  labwareList.flatMap((labware) => transformLabware({ labware, requestOptions }))
 
-const transformLabware = ({ labware, libraryType, costCode }) => ({
+const transformLabware = ({ labware, requestOptions }) => ({
   request: {
     external_study_id: labware.study_uuid,
-    library_type: libraryType === undefined ? labware.library_type : libraryType,
-    cost_code: costCode,
+    library_type: labware.library_type,
+    ...requestOptions,
   },
   sample: {
     name: labware.fields.sanger_sample_id,

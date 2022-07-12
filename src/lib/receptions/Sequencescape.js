@@ -42,13 +42,12 @@ const getLabware = async (request, barcodes) => {
   }
 }
 
-const labwareForReception = async ({ requests, barcodes, libraryType, costCode }) => {
+const labwareForReception = async ({ requests, barcodes, requestOptions }) => {
   let request = requests.sequencescape.labware
   const { plates = [], tubes = [] } = await getLabware(request, barcodes.join(','))
   const requestAttributes = transformLabwareList({
     labwareList: [...plates, ...tubes],
-    libraryType,
-    costCode,
+    requestOptions,
   })
   const foundBarcodes = extractBarcodes({ plates, tubes })
 
@@ -64,8 +63,8 @@ const labwareForReception = async ({ requests, barcodes, libraryType, costCode }
   }
 }
 
-const transformLabwareList = ({ labwareList, libraryType, costCode } = {}) =>
-  labwareList.flatMap((labware) => transformLabware({ ...labware, libraryType, costCode }))
+const transformLabwareList = ({ labwareList, requestOptions } = {}) =>
+  labwareList.flatMap((labware) => transformLabware({ ...labware, requestOptions }))
 
 // Transform a container to the correct format: for a well outputs
 // eg. { type: 'wells', barcode: 'plate_barcode', position: 'A1' }
@@ -77,15 +76,14 @@ const container = ({ type, barcode, position }) =>
 const transformLabware = ({
   labware_barcode: { machine_barcode: barcode },
   receptacles,
-  libraryType,
-  costCode,
+  requestOptions,
 }) =>
   receptacles.flatMap(({ aliquots, position, type }) =>
     aliquots.flatMap((aliquot) => ({
       request: {
         external_study_id: aliquot.study.uuid,
-        library_type: libraryType === undefined ? aliquot.library_type : libraryType,
-        cost_code: costCode,
+        library_type: aliquot.library_type,
+        ...requestOptions,
       },
       sample: {
         name: aliquot.sample.name,

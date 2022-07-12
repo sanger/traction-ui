@@ -24,8 +24,10 @@ describe('SamplesExtraction', () => {
       const { source, requestAttributes } = await labwareForReception({
         requests,
         barcodes,
-        libraryType: 'Example',
-        costCode: 'aCostCodeExample',
+        requestOptions: {
+          library_type: 'Example',
+          cost_code: 'aCostCodeExample',
+        },
       })
 
       expect(request).toHaveBeenCalledWith({

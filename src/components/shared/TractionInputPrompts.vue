@@ -14,6 +14,7 @@
       :is="component"
       v-if="component"
       :value="value"
+      :data-attribute="attribute"
       v-bind="componentProps"
       @input="input"
     ></component>
@@ -32,6 +33,7 @@ export default {
   name: 'TractionInputGroup',
   props: {
     label: { type: String, required: true },
+    attribute: { type: String, required: false, default: null },
     description: { type: String, required: false, default: null },
     component: { type: [String, Object], required: false, default: null },
     componentProps: { type: Object, required: false, default: () => ({}) },

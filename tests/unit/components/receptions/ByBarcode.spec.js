@@ -54,15 +54,19 @@ describe('ByBarcode', () => {
     it('calls the import function', async () => {
       await wrapper.setData({
         barcodes,
-        libraryType: 'Pacbio_HiFi',
-        costCode: '235',
+        requestOptions: {
+          library_type: 'Pacbio_HiFi',
+          cost_code: '235',
+        },
       })
       await wrapper.get('#importLabware').trigger('click')
       expect(importFunction).toBeCalledWith({
         requests: store.getters.api,
         barcodes: ['DN1', 'DN2', 'DN3', 'DN4', 'DN5'],
-        libraryType: 'Pacbio_HiFi',
-        costCode: '235',
+        requestOptions: {
+          library_type: 'Pacbio_HiFi',
+          cost_code: '235',
+        },
       })
     })
 
@@ -70,7 +74,7 @@ describe('ByBarcode', () => {
       const importResultion = importFunction.mockResolvedValue({ requestAttributes })
       await wrapper.setData({
         barcodes,
-        libraryType: 'Pacbio_HiFi',
+        library_type: 'Pacbio_HiFi',
         costCode: '235',
       })
       await wrapper.get('#importLabware').trigger('click')
@@ -90,7 +94,7 @@ describe('ByBarcode', () => {
 
       await wrapper.setData({
         barcodes,
-        libraryType: 'Pacbio_HiFi',
+        library_type: 'Pacbio_HiFi',
         costCode: '235',
       })
       await wrapper.get('#importLabware').trigger('click')
