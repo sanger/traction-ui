@@ -1,17 +1,17 @@
 <template>
-  <b-row class="flowcell">
-    <b-col>
+  <traction-row class="flowcell">
+    <traction-col>
       <div class="position">{{ position }}</div>
 
-      <b-form-input
+      <traction-input
         :id="'libraryBarcode-' + index"
         :value="libraryBarcode"
         placeholder="Library barcode"
         type="text"
         @change="setBarcode"
       />
-    </b-col>
-  </b-row>
+    </traction-col>
+  </traction-row>
 </template>
 
 <script>

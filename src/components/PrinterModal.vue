@@ -1,9 +1,14 @@
 <template>
   <div>
-    <b-btn id="printLabels" v-b-modal.printerModal variant="primary" :disabled="disabled">
+    <traction-button
+      id="printLabels"
+      v-traction-modal.printerModal
+      variant="primary"
+      :disabled="disabled"
+    >
       Print Labels
-    </b-btn>
-    <b-modal
+    </traction-button>
+    <traction-modal
       id="printerModal"
       ref="printerModal"
       size="sm"
@@ -12,8 +17,8 @@
       @ok="handleOk"
       @shown="clearSelect"
     >
-      <b-form-select v-model="selectedPrinterId" :options="printerOptions" />
-    </b-modal>
+      <traction-select v-model="selectedPrinterId" :options="printerOptions" />
+    </traction-modal>
   </div>
 </template>
 

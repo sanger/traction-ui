@@ -1,23 +1,28 @@
 <template>
   <div>
-    <b-form-group
+    <traction-form-group
       label="Filter"
       label-cols-sm="1"
       label-align-sm="right"
       label-for="filterInput"
       class="mb-0"
     >
-      <b-input-group>
-        <b-form-input id="filterInput" v-model="filter" type="search" placeholder="Type to Search">
-        </b-form-input>
-        <b-input-group-append>
-          <b-button :disabled="!filter" @click="filter = ''">Clear</b-button>
-        </b-input-group-append>
-      </b-input-group>
-    </b-form-group>
+      <traction-input-group>
+        <traction-input
+          id="filterInput"
+          v-model="filter"
+          type="search"
+          placeholder="Type to Search"
+        >
+        </traction-input>
+        <traction-input-group-append>
+          <traction-button :disabled="!filter" @click="filter = ''">Clear</traction-button>
+        </traction-input-group-append>
+      </traction-input-group>
+    </traction-form-group>
     <br />
 
-    <b-table
+    <traction-table
       id="pool-index"
       show-empty
       responsive
@@ -51,14 +56,14 @@
           data-action="edit-pool"
           :to="{ name: 'PacbioPoolCreate', params: { id: row.item.id } }"
         >
-          <b-button :id="'editPool-' + row.item.id" size="sm" variant="outline-primary"
-            >Edit</b-button
+          <traction-button :id="'editPool-' + row.item.id" size="sm" variant="outline-primary"
+            >Edit</traction-button
           >
         </router-link>
       </template>
 
       <template #cell(show_details)="row">
-        <b-button
+        <traction-button
           :id="'details-btn-' + row.item.id"
           size="sm"
           class="mr-2"
@@ -66,12 +71,12 @@
           @click="row.toggleDetails"
         >
           {{ row.detailsShowing ? 'Hide' : 'Show' }} Details
-        </b-button>
+        </traction-button>
       </template>
 
       <template #row-details="row">
-        <b-card>
-          <b-table
+        <traction-card>
+          <traction-table
             small
             bordered
             show-empty
@@ -79,15 +84,15 @@
             :fields="field_in_details"
             :filter="filter"
           >
-          </b-table>
+          </traction-table>
           <ul v-if="!row.item.run_suitability.valid">
             <li v-for="(error, index) in row.item.run_suitability.formattedErrors" :key="index">
               {{ error }}
             </li>
           </ul>
-        </b-card>
+        </traction-card>
       </template>
-    </b-table>
+    </traction-table>
 
     <span class="font-weight-bold">Total records: {{ pools.length }}</span>
 
@@ -100,19 +105,19 @@
       >
       </printerModal>
 
-      <b-pagination
+      <traction-pagination
         v-model="currentPage"
         class="float-right"
         :total-rows="pools.length"
         :per-page="perPage"
         aria-controls="pool-index"
       >
-      </b-pagination>
+      </traction-pagination>
     </div>
 
-    <b-form-group label-cols-lg="1" label="Per Page" label-for="input-per-page">
-      <b-form-input id="input-per-page" v-model="perPage" trim class="w-25"></b-form-input>
-    </b-form-group>
+    <traction-form-group label-cols-lg="1" label="Per Page" label-for="input-per-page">
+      <traction-input id="input-per-page" v-model="perPage" trim class="w-25"></traction-input>
+    </traction-form-group>
   </div>
 </template>
 

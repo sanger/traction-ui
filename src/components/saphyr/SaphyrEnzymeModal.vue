@@ -1,14 +1,14 @@
 <template>
   <div>
-    <b-btn
+    <traction-button
       id="createLibrariesWithEnzymeButton"
-      v-b-modal.enzymeModal
+      v-traction-modal.enzymeModal
       :disabled="disabled"
       variant="success"
     >
       Create Libraries
-    </b-btn>
-    <b-modal
+    </traction-button>
+    <traction-modal
       id="enzymeModal"
       ref="enzymeModal"
       size="sm"
@@ -17,8 +17,8 @@
       @ok="handleOk"
       @shown="clearSelect"
     >
-      <b-form-select v-model="selectedEnzymeId" :options="enzymeOptions" class="mb-3" />
-    </b-modal>
+      <traction-select v-model="selectedEnzymeId" :options="enzymeOptions" class="mb-3" />
+    </traction-modal>
   </div>
 </template>
 

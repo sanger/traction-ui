@@ -1,17 +1,17 @@
 <template>
-  <b-col>
-    <b-form @submit.prevent="handleSubmit()">
+  <traction-col>
+    <traction-form @submit.prevent="handleSubmit()">
       <h3>Find Plate</h3>
-      <b-form-input
+      <traction-input
         v-model="enteredLabware"
         data-input="plate-find"
         autocomplete="off"
         placeholder="Search or scan for plate by barcode"
         class="mb-2"
       >
-      </b-form-input>
-      <b-list-group data-type="plate-list" class="find-list-group">
-        <b-list-group-item
+      </traction-input>
+      <traction-list-group data-type="plate-list" class="find-list-group">
+        <traction-list-group-item
           v-for="item in getFilteredList"
           :key="item.id"
           button
@@ -20,10 +20,10 @@
           @click="toggleSelected(item)"
         >
           Plate: {{ item.barcode }}
-        </b-list-group-item>
-      </b-list-group>
-    </b-form>
-  </b-col>
+        </traction-list-group-item>
+      </traction-list-group>
+    </traction-form>
+  </traction-col>
 </template>
 
 <script>

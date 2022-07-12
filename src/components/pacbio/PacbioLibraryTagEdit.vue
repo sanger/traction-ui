@@ -1,32 +1,36 @@
 <template>
   <div>
-    <b-button :id="'editTag' + request_library.id" size="sm" variant="outline-primary" @click="show"
-      >Edit</b-button
+    <traction-button
+      :id="'editTag' + request_library.id"
+      size="sm"
+      variant="outline-primary"
+      @click="show"
+      >Edit</traction-button
     >
 
-    <b-modal id="editTagModal" ref="modal" title="Edit Tag">
-      <b-form id="editTagForm">
-        <b-form-group
+    <traction-modal id="editTagModal" ref="modal" title="Edit Tag">
+      <traction-form id="editTagForm">
+        <traction-form-group
           id="input-group-1"
           :label="'Sample tag: ' + request_library.sample_name"
           label-for="input-1"
         >
-          <b-form-select
+          <traction-select
             id="tagSelection"
             ref="tagSelection"
             v-model="selectedSampleTagId"
             :options="tags"
           >
-          </b-form-select>
-        </b-form-group>
-      </b-form>
+          </traction-select>
+        </traction-form-group>
+      </traction-form>
 
       <template #modal-footer="{ cancel }">
-        <b-button @click="cancel()"> Cancel </b-button>
+        <traction-button @click="cancel()"> Cancel </traction-button>
 
-        <b-button variant="success" @click="update()"> Update Tag </b-button>
+        <traction-button variant="success" @click="update()"> Update Tag </traction-button>
       </template>
-    </b-modal>
+    </traction-modal>
   </div>
 </template>
 

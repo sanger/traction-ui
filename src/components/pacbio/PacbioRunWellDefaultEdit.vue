@@ -1,72 +1,72 @@
 <template>
   <div class="pacbioRunWellDefaultEdit">
     <fieldset>
-      <b-row>
-        <b-col>
+      <traction-row>
+        <traction-col>
           <label for="default-movie-time">Movie Time:</label>
-        </b-col>
-        <b-col>
-          <b-form-select
+        </traction-col>
+        <traction-col>
+          <traction-select
             id="default-movie-time"
             :options="movieTimeOptions"
             :value="currentRun.wellDefaults.movie_time"
             title="Movie Time"
             @change="setDefaultMovieTime"
           >
-          </b-form-select>
-        </b-col>
-      </b-row>
-      <b-row>
-        <b-col>
+          </traction-select>
+        </traction-col>
+      </traction-row>
+      <traction-row>
+        <traction-col>
           <label for="default-generate-hifi">Generate HiFi:</label>
-        </b-col>
-        <b-col>
-          <b-form-select
+        </traction-col>
+        <traction-col>
+          <traction-select
             id="default-generate-hifi"
             title="Generate HiFi"
             :options="generateHifiOptions[currentRun.system_name]"
             :value="currentRun.wellDefaults.generate_hifi"
             @change="setDefaultGenerateHifi"
           >
-          </b-form-select>
-        </b-col>
-      </b-row>
-      <b-row>
-        <b-col>
+          </traction-select>
+        </traction-col>
+      </traction-row>
+      <traction-row>
+        <traction-col>
           <label for="default-ccs-analysis-output">Ccs Analysis Output:</label>
-        </b-col>
-        <b-col>
-          <b-form-select
+        </traction-col>
+        <traction-col>
+          <traction-select
             id="default-ccs-analysis-output"
             title="Ccs Analysis Output"
             :options="ccsAnalysisOutputOptions"
             :value="currentRun.wellDefaults.ccs_analysis_output"
             @change="setDefaultCcsAnalysisOutput"
           >
-          </b-form-select>
-        </b-col>
-      </b-row>
-      <b-row>
-        <b-col>
+          </traction-select>
+        </traction-col>
+      </traction-row>
+      <traction-row>
+        <traction-col>
           <label for="default-pre-extension-time">Pre-extension time:</label>
-        </b-col>
-        <b-col>
-          <b-form-input
+        </traction-col>
+        <traction-col>
+          <traction-input
             id="default-pre-extension-time"
             title="Pre-extension Time"
             :value="currentRun.wellDefaults.pre_extension_time"
             placeholder="Pre-extension time"
             @change="setDefaultPreExtensionTime"
           >
-          </b-form-input>
-        </b-col>
-      </b-row>
-      <b-row>
-        <b-col>
+          </traction-input>
+        </traction-col>
+      </traction-row>
+      <traction-row>
+        <traction-col>
           <label for="default-loading-target">Loading Target (P1 + P2):</label>
-        </b-col>
-        <b-col>
-          <b-form-input
+        </traction-col>
+        <traction-col>
+          <traction-input
             id="default-loading-target"
             title="Loading Target (P1 + P2)"
             :value="currentRun.wellDefaults.loading_target_p1_plus_p2"
@@ -75,15 +75,15 @@
             :step="0.05"
             @change="setDefaultLoadingTarget"
           >
-          </b-form-input>
-        </b-col>
-      </b-row>
-      <b-row>
-        <b-col>
+          </traction-input>
+        </traction-col>
+      </traction-row>
+      <traction-row>
+        <traction-col>
           <label for="default-binding-kit-box-barcode">Default Binding Kit Box Barcode:</label>
-        </b-col>
-        <b-col>
-          <b-form-input
+        </traction-col>
+        <traction-col>
+          <traction-input
             id="default-binding-kit-box-barcode"
             :value="currentRun.wellDefaults.binding_kit_box_barcode"
             placeholder="Default Binding Kit Box Barcode for new wells"
@@ -91,17 +91,17 @@
             title="Default Binding Kit Box Barcode for new wells"
             @change="setDefaultBindingKitBoxBarcode"
           >
-          </b-form-input>
-        </b-col>
-      </b-row>
-      <b-row>
-        <b-col>
+          </traction-input>
+        </traction-col>
+      </traction-row>
+      <traction-row>
+        <traction-col>
           <p style="float: left; font-size: 12px">
             * Non-submitted fields, used for providing new wells with default values
           </p>
           <br />
-        </b-col>
-      </b-row>
+        </traction-col>
+      </traction-row>
     </fieldset>
   </div>
 </template>
