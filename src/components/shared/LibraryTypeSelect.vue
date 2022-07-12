@@ -9,7 +9,7 @@
     >
       <traction-select
         id="library-type"
-        :class="getClass()"
+        :class="cssClass"
         :value="libraryType"
         :options="libraryTypes"
         @input="handleInput"
@@ -106,15 +106,15 @@ export default {
         ...this.nullOption,
       ]
     },
+    cssClass() {
+      return {
+        'text-sm': this.labelCols == 0,
+      }
+    },
   },
   methods: {
     handleInput(input) {
       this.$emit('input', decode(input))
-    },
-    getClass() {
-      return {
-        'text-sm': this.labelCols == 0,
-      }
     },
   },
 }
