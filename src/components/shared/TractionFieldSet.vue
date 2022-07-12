@@ -5,6 +5,7 @@
   - Title provides a legend for the fieldset
   - Optional default slot allows addition of custom content above the fields
   - Option bottom slot allows addition of custom content below the fields
+  - Can automatically render supplied fields
 -->
 <template>
   <fieldset>
@@ -15,6 +16,14 @@
       <legend>{{ title }}</legend>
     </TractionHeading>
     <slot />
+    <traction-input-group
+      v-for="field in fields"
+      :key="field.attribute"
+      v-bind="field"
+      :value="value[field.attribute]"
+      @input="input(field.attribute, $event)"
+    >
+    </traction-input-group>
     <slot name="bottom" />
   </fieldset>
 </template>
@@ -30,6 +39,30 @@ export default {
       type: String,
       required: false,
       default: null,
+    },
+    fields: {
+      type: Array,
+      required: false,
+      default: () => [],
+    },
+    value: {
+      // Value should be an object where each attribute in the
+      // fields section has a corresponding key.
+      type: Object,
+      required: false,
+      default() {
+        // By default we return an object containing each attribute, with the
+        // value null
+        return Object.fromEntries(this.fields.map(({ attribute }) => [attribute, null]))
+      },
+    },
+  },
+  methods: {
+    input(attribute, value) {
+      this.$emit('input', {
+        ...this.value,
+        [attribute]: value,
+      })
     },
   },
 }
