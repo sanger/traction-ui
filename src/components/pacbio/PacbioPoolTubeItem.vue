@@ -1,24 +1,24 @@
 <template>
-  <b-list-group-item
+  <traction-list-group-item
     :draggable="!!valid"
     :variant="valid ? 'default' : 'danger'"
     button
     @dragstart="drag(barcode, $event)"
     @click="expanded = !expanded"
   >
-    <b-row>
-      <b-col cols="3">
-        <b-img src="/tube.png" />
-        <b-button
+    <traction-row>
+      <traction-col cols="3">
+        <img src="/tube.png" />
+        <traction-button
           :id="`editPool-${id}`"
           size="sm"
           variant="outline-primary"
           class="btn-block"
           :to="{ name: 'PacbioPoolCreate', params: { id: id } }"
-          >Edit</b-button
+          >Edit</traction-button
         >
-      </b-col>
-      <b-col cols="9">
+      </traction-col>
+      <traction-col cols="9">
         <dl class="row">
           <dt>Barcode</dt>
           <dd data-attribute="barcode">{{ barcode }}</dd>
@@ -54,9 +54,9 @@
           </dl>
         </div>
         <div v-else>Pool invalid. Click for more information</div>
-      </b-col>
-    </b-row>
-  </b-list-group-item>
+      </traction-col>
+    </traction-row>
+  </traction-list-group-item>
 </template>
 
 <script>

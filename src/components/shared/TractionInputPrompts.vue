@@ -1,7 +1,7 @@
 <!--
   TractionInputGroup
 
-  Renders an input group
+  Renders a group of tags for collecting input
   - label: The label to apply
   - description: Longer text providing more help
   - component: the type of component to render (if not handled in the slot)

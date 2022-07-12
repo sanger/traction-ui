@@ -2,7 +2,7 @@
   <div class="display-contents">
     <traction-section title="Scan Barcodes">
       <template #icon><BarcodeIcon /></template>
-      <b-form-textarea
+      <traction-textarea
         id="barcodes"
         v-model="barcodes"
         placeholder="Scan barcodes to import..."
@@ -22,7 +22,7 @@
             :allow-none="false"
             :import-text="`Import from ${title} (where available)`"
           />
-          <b-form-group
+          <traction-form-group
             label-cols="0"
             description="When not provided default is ToL (S4773)"
             label="Cost Code"
@@ -31,8 +31,8 @@
             label-size="sm"
             class="text-base"
           >
-            <b-form-input id="cost_code" v-model="costCode"></b-form-input>
-          </b-form-group>
+            <traction-input id="cost_code" v-model="costCode"></traction-input>
+          </traction-form-group>
         </traction-fieldset>
         <div>
           <traction-fieldset title="PacBio Options">

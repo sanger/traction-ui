@@ -1,20 +1,20 @@
 <template>
   <div>
-    <b-form-group
+    <traction-form-group
       label="Library Type"
       label-for="library-type"
       :label-cols="labelCols"
       :label-align="labelAlign"
       label-size="sm"
     >
-      <b-select
+      <traction-select
         id="library-type"
         :class="getClass()"
         :value="libraryType"
         :options="libraryTypes"
         @input="handleInput"
-      ></b-select>
-    </b-form-group>
+      ></traction-select>
+    </traction-form-group>
   </div>
 </template>
 

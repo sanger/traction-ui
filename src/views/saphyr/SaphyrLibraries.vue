@@ -1,23 +1,28 @@
 <template>
   <div>
-    <b-form-group
+    <traction-form-group
       label="Filter"
       label-cols-sm="1"
       label-align-sm="right"
       label-for="filterInput"
       class="mb-0"
     >
-      <b-input-group>
-        <b-form-input id="filterInput" v-model="filter" type="search" placeholder="Type to Search">
-        </b-form-input>
-        <b-input-group-append>
-          <b-button :disabled="!filter" @click="filter = ''">Clear</b-button>
-        </b-input-group-append>
-      </b-input-group>
-    </b-form-group>
+      <traction-input-group>
+        <traction-input
+          id="filterInput"
+          v-model="filter"
+          type="search"
+          placeholder="Type to Search"
+        >
+        </traction-input>
+        <traction-input-group-append>
+          <traction-button :disabled="!filter" @click="filter = ''">Clear</traction-button>
+        </traction-input-group-append>
+      </traction-input-group>
+    </traction-form-group>
     <br />
 
-    <b-table
+    <traction-table
       id="libraries-table"
       ref="libraries_table"
       show-empty
@@ -46,7 +51,7 @@
           <span class="sr-only">Not selected</span>
         </template>
       </template>
-    </b-table>
+    </traction-table>
 
     <span class="font-weight-bold">Total records: {{ libraries.length }}</span>
 
@@ -59,7 +64,7 @@
       >
       </printerModal>
 
-      <b-button
+      <traction-button
         id="deleteLibraries"
         variant="danger"
         class="float-left"
@@ -67,20 +72,20 @@
         @click="handleLibraryDelete"
       >
         Delete Libraries
-      </b-button>
+      </traction-button>
 
-      <b-pagination
+      <traction-pagination
         v-model="currentPage"
         class="float-right"
         :total-rows="libraries.length"
         :per-page="perPage"
         aria-controls="libraries-table"
       >
-      </b-pagination>
+      </traction-pagination>
     </div>
-    <b-form-group label-cols-lg="1" label="Per Page" label-for="input-per-page">
-      <b-form-input id="input-per-page" v-model="perPage" trim class="w-25"></b-form-input>
-    </b-form-group>
+    <traction-form-group label-cols-lg="1" label="Per Page" label-for="input-per-page">
+      <traction-input id="input-per-page" v-model="perPage" trim class="w-25"></traction-input>
+    </traction-form-group>
   </div>
 </template>
 

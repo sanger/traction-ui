@@ -1,6 +1,6 @@
 <template>
-  <b-container class="chip">
-    <b-form-input
+  <traction-container class="chip">
+    <traction-input
       id="barcode"
       :value="chip.barcode"
       placeholder="Chip barcode"
@@ -14,7 +14,7 @@
       :index="index"
       @alert="alert"
     ></flowcell>
-  </b-container>
+  </traction-container>
 </template>
 
 <script>

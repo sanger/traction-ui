@@ -1,7 +1,7 @@
 <template>
   <details v-if="selectedTagSet.id" class="tag-set-item">
     <summary data-attribute="tag-set-name" class="tag-set-name">
-      {{ tagSetName }} <b-badge>{{ tagCount }} tags</b-badge>
+      {{ tagSetName }} <traction-badge>{{ tagCount }} tags</traction-badge>
     </summary>
     <div data-type="tag-set-item" class="wrapper flex-wrap">
       <div

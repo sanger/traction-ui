@@ -1,23 +1,28 @@
 <template>
   <div>
-    <b-form-group
+    <traction-form-group
       label="Filter"
       label-cols-sm="1"
       label-align-sm="right"
       label-for="filterInput"
       class="mb-0"
     >
-      <b-input-group>
-        <b-form-input id="filterInput" v-model="filter" type="search" placeholder="Type to Search">
-        </b-form-input>
-        <b-input-group-append>
-          <b-button :disabled="!filter" @click="filter = ''">Clear</b-button>
-        </b-input-group-append>
-      </b-input-group>
-    </b-form-group>
+      <traction-input-group>
+        <traction-input
+          id="filterInput"
+          v-model="filter"
+          type="search"
+          placeholder="Type to Search"
+        >
+        </traction-input>
+        <traction-input-group-append>
+          <traction-button :disabled="!filter" @click="filter = ''">Clear</traction-button>
+        </traction-input-group-append>
+      </traction-input-group>
+    </traction-form-group>
     <br />
 
-    <b-table
+    <traction-table
       id="library-index"
       show-empty
       responsive
@@ -47,20 +52,20 @@
       </template>
 
       <template #cell(actions)="row">
-        <b-button
+        <traction-button
           :id="`editPool-${row.item.pool.id}`"
           size="sm"
           variant="outline-primary"
           :to="{ name: 'PacbioPoolCreate', params: { id: row.item.pool.id } }"
-          >Edit</b-button
+          >Edit</traction-button
         >
       </template>
-    </b-table>
+    </traction-table>
 
     <span class="font-weight-bold">Total records: {{ libraries.length }}</span>
 
     <div class="clearfix">
-      <b-button
+      <traction-button
         id="deleteLibraries"
         variant="danger"
         class="float-left"
@@ -68,7 +73,7 @@
         @click="handleLibraryDelete"
       >
         Delete Libraries
-      </b-button>
+      </traction-button>
       <printerModal
         ref="printerModal"
         class="float-left"
@@ -77,19 +82,19 @@
       >
       </printerModal>
 
-      <b-pagination
+      <traction-pagination
         v-model="currentPage"
         class="float-right"
         :total-rows="libraries.length"
         :per-page="perPage"
         aria-controls="library-index"
       >
-      </b-pagination>
+      </traction-pagination>
     </div>
 
-    <b-form-group label-cols-lg="1" label="Per Page" label-for="input-per-page">
-      <b-form-input id="input-per-page" v-model="perPage" trim class="w-25"></b-form-input>
-    </b-form-group>
+    <traction-form-group label-cols-lg="1" label="Per Page" label-for="input-per-page">
+      <traction-input id="input-per-page" v-model="perPage" trim class="w-25"></traction-input>
+    </traction-form-group>
   </div>
 </template>
 

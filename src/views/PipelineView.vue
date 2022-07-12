@@ -1,23 +1,23 @@
 <template>
   <div>
-    <b-card no-body>
-      <b-card-header header-tag="nav">
-        <b-nav tabs fill card-header>
-          <b-nav-item
+    <traction-card no-body>
+      <traction-card-header header-tag="nav">
+        <traction-nav tabs fill card-header>
+          <traction-nav-item
             v-for="(route, index) in pipelineInfo.routes"
             :key="index"
             :to="path(route)"
             exact
             exact-active-class="active"
-            >{{ humanise(route) }}</b-nav-item
+            >{{ humanise(route) }}</traction-nav-item
           >
-        </b-nav>
-      </b-card-header>
+        </traction-nav>
+      </traction-card-header>
 
-      <b-card-body>
+      <traction-card-body>
         <router-view></router-view>
-      </b-card-body>
-    </b-card>
+      </traction-card-body>
+    </traction-card>
   </div>
 </template>
 

@@ -16,21 +16,19 @@
       <legend>{{ title }}</legend>
     </TractionHeading>
     <slot />
-    <traction-input-group
+    <traction-input-prompts
       v-for="field in fields"
       :key="field.attribute"
       v-bind="field"
       :value="value[field.attribute]"
       @input="input(field.attribute, $event)"
     >
-    </traction-input-group>
+    </traction-input-prompts>
     <slot name="bottom" />
   </fieldset>
 </template>
 
 <script>
-// Imports
-
 // Component
 export default {
   name: 'TractionFieldSet',

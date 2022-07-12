@@ -1,23 +1,28 @@
 <template>
   <div class="pacbio-plates">
-    <b-form-group
+    <traction-form-group
       label="Filter"
       label-cols-sm="1"
       label-align-sm="right"
       label-for="filterInput"
       class="mb-0"
     >
-      <b-input-group>
-        <b-form-input id="filterInput" v-model="filter" type="search" placeholder="Type to Search">
-        </b-form-input>
-        <b-input-group-append>
-          <b-button :disabled="!filter" @click="filter = ''">Clear</b-button>
-        </b-input-group-append>
-      </b-input-group>
-    </b-form-group>
+      <traction-input-group>
+        <traction-input
+          id="filterInput"
+          v-model="filter"
+          type="search"
+          placeholder="Type to Search"
+        >
+        </traction-input>
+        <traction-input-group-append>
+          <traction-button :disabled="!filter" @click="filter = ''">Clear</traction-button>
+        </traction-input-group-append>
+      </traction-input-group>
+    </traction-form-group>
     <br />
 
-    <b-table
+    <traction-table
       id="plate-index"
       show-empty
       responsive
@@ -32,35 +37,35 @@
       @filtered="onFiltered"
     >
       <template #cell(show_details)="row">
-        <b-button
+        <traction-button
           :id="'details-btn-' + row.item.id"
           size="sm"
           variant="outline-primary"
           @click="row.toggleDetails"
         >
           {{ row.detailsShowing ? 'Hide' : 'Show' }} Plate
-        </b-button>
+        </traction-button>
       </template>
 
       <template #row-details="row">
         <Plate ref="plate" :plate="row.item" @alert="alert"></Plate>
       </template>
-    </b-table>
+    </traction-table>
 
     <span class="font-weight-bold">Total records: {{ plates.length }}</span>
 
     <div class="clearfix">
-      <b-pagination
+      <traction-pagination
         v-model="currentPage"
         class="float-right"
         :total-rows="plates.length"
         :per-page="perPage"
         aria-controls="plate-index"
       >
-      </b-pagination>
-      <b-form-group label-cols-lg="1" label="Per Page" label-for="input-per-page">
-        <b-form-input id="input-per-page" v-model="perPage" trim class="w-25"></b-form-input>
-      </b-form-group>
+      </traction-pagination>
+      <traction-form-group label-cols-lg="1" label="Per Page" label-for="input-per-page">
+        <traction-input id="input-per-page" v-model="perPage" trim class="w-25"></traction-input>
+      </traction-form-group>
     </div>
   </div>
 </template>

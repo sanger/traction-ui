@@ -1,15 +1,15 @@
 <template>
   <div>
-    <b-button
+    <traction-button
       :id="generateId('editSample', req.id)"
       size="sm"
       variant="outline-primary"
       @click="show"
-      >Edit</b-button
+      >Edit</traction-button
     >
 
-    <b-modal id="editSampleModal" ref="modal" title="Edit Sample">
-      <b-form id="sampleMetaDataForm">
+    <traction-modal id="editSampleModal" ref="modal" title="Edit Sample">
+      <traction-form id="sampleMetaDataForm">
         <LibraryTypeSelect
           v-model="request.library_type"
           pipeline="pacbio"
@@ -17,44 +17,44 @@
           :label-cols="null"
         />
 
-        <b-form-group
+        <traction-form-group
           id="estimateOfGBRequired"
           label="Estimate of GB required:"
           label-for="estimateOfGBRequired"
         >
-          <b-form-input
+          <traction-input
             id="estimateOfGBRequired"
             v-model="request.estimate_of_gb_required"
             placeholder="Estimate of GB required"
           >
-          </b-form-input>
-        </b-form-group>
+          </traction-input>
+        </traction-form-group>
 
-        <b-form-group
+        <traction-form-group
           id="numberOfSMRTCells"
           label="Number of SMRT Cells:"
           label-for="numberOfSMRTCells"
         >
-          <b-form-input
+          <traction-input
             id="numberOfSMRTCells"
             v-model="request.number_of_smrt_cells"
             placeholder="Number of SMRT Cells"
           >
-          </b-form-input>
-        </b-form-group>
+          </traction-input>
+        </traction-form-group>
 
-        <b-form-group id="costCode" label="Cost Code:" label-for="costCode">
-          <b-form-input id="costCode" v-model="request.cost_code" placeholder="Cost Code">
-          </b-form-input>
-        </b-form-group>
-      </b-form>
+        <traction-form-group id="costCode" label="Cost Code:" label-for="costCode">
+          <traction-input id="costCode" v-model="request.cost_code" placeholder="Cost Code">
+          </traction-input>
+        </traction-form-group>
+      </traction-form>
 
       <template #modal-footer="{ cancel }">
-        <b-button @click="cancel()"> Cancel </b-button>
+        <traction-button @click="cancel()"> Cancel </traction-button>
 
-        <b-button variant="success" @click="update()"> Update Sample </b-button>
+        <traction-button variant="success" @click="update()"> Update Sample </traction-button>
       </template>
-    </b-modal>
+    </traction-modal>
   </div>
 </template>
 

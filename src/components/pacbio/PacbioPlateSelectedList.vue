@@ -1,5 +1,5 @@
 <template>
-  <b-col data-type="selected-plate-list" class="selected-plate-list">
+  <traction-col data-type="selected-plate-list" class="selected-plate-list">
     <!-- eslint-disable vue/attribute-hyphenation-->
     <VueSelecto
       :container="$el"
@@ -11,8 +11,8 @@
     />
     <!-- eslint-enable vue/attribute-hyphenation -->
     <h3>Selected plates</h3>
-    <b-tabs content-class="mt-3" fill>
-      <b-tab title="Plates">
+    <traction-tabs content-class="mt-3" fill>
+      <traction-tab title="Plates">
         <div class="wrapper">
           <div v-if="selectedPlates.length === 0" data-type="warning-message">
             No plates selected
@@ -22,10 +22,10 @@
             <Plate ref="plate" v-bind="plate"></Plate>
           </div>
         </div>
-      </b-tab>
-      <b-tab title="Requests">
-        <b-list-group class="selected-list-group">
-          <b-table
+      </traction-tab>
+      <traction-tab title="Requests">
+        <traction-list-group class="selected-list-group">
+          <traction-table
             :items="selectedPlateRequests"
             show-empty
             small
@@ -33,11 +33,11 @@
             :tbody-tr-class="rowClass"
             empty-text="No plates selected"
             @row-clicked="requestClicked"
-          ></b-table>
-        </b-list-group>
-      </b-tab>
-    </b-tabs>
-  </b-col>
+          ></traction-table>
+        </traction-list-group>
+      </traction-tab>
+    </traction-tabs>
+  </traction-col>
 </template>
 
 <script>

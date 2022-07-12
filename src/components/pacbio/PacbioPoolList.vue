@@ -1,8 +1,8 @@
 <template>
   <div class="pools">
-    <b-list-group class="list-group">
+    <traction-list-group class="list-group">
       <tube v-for="pool in pools" :key="pool.id" v-bind="pool"> </tube>
-    </b-list-group>
+    </traction-list-group>
   </div>
 </template>
 

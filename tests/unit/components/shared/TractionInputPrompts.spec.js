@@ -1,7 +1,7 @@
 import { localVue, mount } from '@support/testHelper'
-import TractionInputGroup from '@/components/shared/TractionInputGroup.vue'
+import TractionInputPrompts from '@/components/shared/TractionInputPrompts.vue'
 
-describe('TractionInputGroup.vue', () => {
+describe('TractionInputPrompts.vue', () => {
   const defaultProps = {
     label: 'Number of Gigabases required',
     component: 'input',
@@ -15,7 +15,7 @@ describe('TractionInputGroup.vue', () => {
   }
 
   const buildWrapper = (props = {}) => {
-    return mount(TractionInputGroup, {
+    return mount(TractionInputPrompts, {
       localVue,
       propsData: { ...defaultProps, ...props },
       slots: {
