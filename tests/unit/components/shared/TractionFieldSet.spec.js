@@ -55,7 +55,6 @@ describe('TractionFieldset.vue', () => {
 
   it('can render provided fields', () => {
     const wrapper = buildWrapper({ fields })
-    console.log(wrapper.html())
     expect(wrapper.find('input').exists()).toBeTruthy()
     expect(wrapper.find('label').text()).toContain('Number of Gigabases required')
   })
