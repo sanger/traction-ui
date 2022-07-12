@@ -1,6 +1,7 @@
 import ByBarcode from '@/components/receptions/ByBarcode.vue'
 import * as Sequencescape from './Sequencescape'
 import * as SamplesExtraction from './SamplesExtraction'
+import DataTypeSelect from '@/components/shared/DataTypeSelect'
 
 const ReceptionForms = [
   {
@@ -9,7 +10,7 @@ const ReceptionForms = [
     fields: [
       {
         label: 'Number of Gigabases required',
-        component: 'input',
+        component: 'traction-input',
         attribute: 'estimate_of_gb_required',
         description: 'Some additional text',
         componentProps: {
@@ -20,7 +21,7 @@ const ReceptionForms = [
       },
       {
         label: 'Number of SMRT cells',
-        component: 'input',
+        component: 'traction-input',
         attribute: 'number_of_smrt_cells',
         description: 'Some additional text',
         componentProps: {
@@ -37,14 +38,16 @@ const ReceptionForms = [
     fields: [
       {
         label: 'Data Type',
-        component: 'select',
+        component: DataTypeSelect,
         attribute: 'data_type',
         description: 'Some additional text',
-        componentProps: {},
+        componentProps: {
+          pipeline: 'ont',
+        },
       },
       {
         label: 'Number of Flowcells',
-        component: 'input',
+        component: 'traction-input',
         attribute: 'number_of_flowcells',
         description: 'Some additional text',
         componentProps: {

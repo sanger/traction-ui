@@ -89,9 +89,33 @@ const libraryTypes = {
     },
   ],
 }
+
+const dataTypes = {
+  data: [
+    {
+      id: '1',
+      type: 'data_types',
+      links: { self: 'http://localhost:3100/v1/data_types/1' },
+      attributes: { name: 'basecalls', pipeline: 'ont' },
+    },
+    {
+      id: '2',
+      type: 'data_types',
+      links: { self: 'http://localhost:3100/v1/data_types/2' },
+      attributes: { name: 'basecalls and raw data', pipeline: 'ont' },
+    },
+    {
+      id: '23',
+      type: 'data_types',
+      links: { self: 'http://localhost:3100/v1/data_types/3' },
+      attributes: { name: 'dummy type', pipeline: 'dummy_for_testing_filters' },
+    },
+  ],
+}
 const mockStores = {
   [`${baseURL}/flipper/api/actors/User`]: flags,
   [`${baseURL}/v1/library_types?fields[library_types]=name,pipeline`]: libraryTypes,
+  [`${baseURL}/v1/data_types?fields[data_types]=name,pipeline`]: dataTypes,
 }
 const swrv = (f) => ({ data: mockStores[f] })
 
