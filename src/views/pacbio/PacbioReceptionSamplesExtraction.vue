@@ -27,7 +27,7 @@
         <traction-button
           id="findSampleExtractionTubes"
           class="scanButton"
-          block
+          full-width
           variant="success"
           :disabled="isDisabled"
           @click="handleSampleExtractionTubes"

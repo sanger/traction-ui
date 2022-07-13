@@ -13,7 +13,7 @@
           :id="`editPool-${id}`"
           size="sm"
           variant="outline-primary"
-          class="btn-block"
+          :full-width="true"
           :to="{ name: 'PacbioPoolCreate', params: { id: id } }"
           >Edit</traction-button
         >

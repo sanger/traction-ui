@@ -9,7 +9,6 @@ import TractionMenu from '@/components/shared/TractionMenu'
 import TractionMenuItem from '@/components/shared/TractionMenuItem'
 
 import {
-  BButton,
   BModal,
   VBModal,
   BFormSelect,
@@ -50,7 +49,6 @@ import {
 
 const registerBootstrapComponents = (vue) => {
   /* eslint-disable vue/component-definition-name-casing */
-  vue.component('traction-button', BButton)
   vue.component('traction-modal', BModal)
   vue.component('traction-select', BFormSelect)
   vue.component('traction-alert', BAlert)
