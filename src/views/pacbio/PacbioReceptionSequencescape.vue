@@ -1,15 +1,16 @@
 <template>
   <div>
-    <b-modal v-model="busy" hide-footer hide-header no-close-on-backdrop>
-      <spinner size="huge" message="Importing labware..."></spinner>
-    </b-modal>
+    <loading-full-screen-modal
+      :visible="busy"
+      message="Importing labware..."
+    ></loading-full-screen-modal>
     <div class="form-group">
       <div class="flex flex-col gap-y-4">
         <TractionHeading level="4" :show-border="true">
           <div class="flex flex-row gap-x-2"><BarcodeIcon />Scan Barcodes</div></TractionHeading
         >
         <div class="sm:px-6 lg:px-8">
-          <b-form-textarea
+          <traction-textarea
             id="barcodes"
             v-model="barcodes"
             placeholder="Scan barcodes to import..."
@@ -24,7 +25,7 @@
         <TractionHeading level="4" :show-border="true">Request Options</TractionHeading>
         <div class="flex grid grid-cols-2 sm:px-6 lg:px-8 gap-x-8 justify-left contents-centre">
           <LibraryTypeSelect v-model="libraryType" pipeline="pacbio" :label-cols="0" />
-          <b-form-group
+          <traction-form-group
             label-cols="0"
             description="When not provided default is ToL (S4773)"
             label="Cost Code"
@@ -33,16 +34,16 @@
             label-size="sm"
             class="text-base"
           >
-            <b-form-input id="cost_code" v-model="costCode"></b-form-input>
-          </b-form-group>
+            <traction-input id="cost_code" v-model="costCode"></traction-input>
+          </traction-form-group>
         </div>
-        <b-button
+        <traction-button
           id="createTractionPlates"
           class="text-sm ml-8 mr-8 text-white border-sdb-400 bg-sdb-400 shadow-sm hover:bg-sdb focus:border-sdb focus:shadow-outline-sdb active:bg-sdb-600"
           variant="success"
           :disabled="isDisabled"
           @click="createTractionPlates"
-          >Import {{ barcodeCount }}</b-button
+          >Import {{ barcodeCount }}</traction-button
         >
       </div>
     </div>
@@ -50,17 +51,15 @@
 </template>
 
 <script>
-import Spinner from 'vue-simple-spinner'
 import Api from '@/mixins/Api'
 import { createLabware } from '@/services/traction/Pacbio'
 import LibraryTypeSelect from '@/components/shared/LibraryTypeSelect'
 import TractionHeading from '@/components/TractionHeading'
-import BarcodeIcon from '../../icons/BarcodeIcon.vue'
+import BarcodeIcon from '@/icons/BarcodeIcon.vue'
 
 export default {
   name: 'PacbioReceptionSequencescape',
   components: {
-    Spinner,
     LibraryTypeSelect,
     TractionHeading,
     BarcodeIcon,

@@ -1,26 +1,26 @@
 <template>
   <div>
-    <b-container id="pool" fluid>
-      <b-row>
-        <b-col md="12" lg="6">
-          <b-tabs content-class="mt-3" fill no-fade>
-            <b-tab title="Add Plates">
+    <traction-container id="pool" fluid>
+      <traction-row>
+        <traction-col md="12" lg="6">
+          <traction-tabs content-class="mt-3" fill no-fade>
+            <traction-tab title="Add Plates">
               <PacbioPlateFind ref="labwareFind" />
               <PacbioPlateSelectedList />
-            </b-tab>
-            <b-tab title="Add Tubes">
+            </traction-tab>
+            <traction-tab title="Add Tubes">
               <PacbioTubeFind ref="labwareFind" />
               <PacbioTubeSelectedList
-            /></b-tab>
-          </b-tabs>
-        </b-col>
-        <b-col md="12" lg="6">
+            /></traction-tab>
+          </traction-tabs>
+        </traction-col>
+        <traction-col md="12" lg="6">
           <PacbioTagSetList ref="tagSetList" />
           <PacbioTagSetItem />
           <PacbioPoolEdit />
-        </b-col>
-      </b-row>
-    </b-container>
+        </traction-col>
+      </traction-row>
+    </traction-container>
   </div>
 </template>
 

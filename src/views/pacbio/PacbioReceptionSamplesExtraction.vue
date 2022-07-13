@@ -1,11 +1,12 @@
 <template>
   <div class="reception">
-    <b-modal v-model="busy" hide-footer hide-header no-close-on-backdrop>
-      <spinner size="huge" message="Importing tubes..."></spinner>
-    </b-modal>
+    <loading-full-screen-modal
+      :visible="busy"
+      message="Importing labware..."
+    ></loading-full-screen-modal>
     <div class="form-group">
       <label for="barcodes">Barcodes:</label>
-      <b-form-textarea
+      <traction-textarea
         id="barcodes"
         v-model="barcodes"
         placeholder="Scan barcodes to import..."
@@ -14,31 +15,30 @@
         name="barcodes"
       />
     </div>
-    <b-row>
-      <b-col>
+    <traction-row>
+      <traction-col>
         <LibraryTypeSelect
           v-model="libraryType"
           pipeline="pacbio"
           import-text="Import from Samples Extraction (where available)"
         />
-      </b-col>
-      <b-col>
-        <b-button
+      </traction-col>
+      <traction-col>
+        <traction-button
           id="findSampleExtractionTubes"
           class="scanButton"
           block
           variant="success"
           :disabled="isDisabled"
           @click="handleSampleExtractionTubes"
-          >Import {{ tubeCount }}</b-button
+          >Import {{ tubeCount }}</traction-button
         >
-      </b-col>
-    </b-row>
+      </traction-col>
+    </traction-row>
   </div>
 </template>
 
 <script>
-import Spinner from 'vue-simple-spinner'
 import { mapActions, mapState } from 'vuex'
 import LibraryTypeSelect from '@/components/shared/LibraryTypeSelect'
 import deserialize from '@/api/JsonApi'
@@ -47,7 +47,6 @@ export default {
   name: 'PacbioReceptionSamplesExtraction',
   components: {
     LibraryTypeSelect,
-    Spinner,
   },
   props: {},
   data() {

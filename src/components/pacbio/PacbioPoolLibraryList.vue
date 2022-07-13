@@ -1,26 +1,26 @@
 <template>
   <div v-if="selectedRequests" data-type="pool-library-list">
-    <b-table-simple>
-      <b-thead>
-        <b-tr>
-          <b-th> Sample Name </b-th>
-          <b-th> Source </b-th>
-          <b-th> Tag </b-th>
-          <b-th> Template prep kit box barcode </b-th>
-          <b-th> Volume </b-th>
-          <b-th> Concentration </b-th>
-          <b-th> Insert Size </b-th>
-        </b-tr>
-      </b-thead>
-      <b-tbody>
+    <traction-table-simple>
+      <traction-thead>
+        <traction-tr>
+          <traction-th> Sample Name </traction-th>
+          <traction-th> Source </traction-th>
+          <traction-th> Tag </traction-th>
+          <traction-th> Template prep kit box barcode </traction-th>
+          <traction-th> Volume </traction-th>
+          <traction-th> Concentration </traction-th>
+          <traction-th> Insert Size </traction-th>
+        </traction-tr>
+      </traction-thead>
+      <traction-tbody>
         <PacbioPoolLibraryEdit
           v-for="request in selectedRequests"
           :key="request.id"
           :request="request"
           :auto-tag="autoTag"
         ></PacbioPoolLibraryEdit>
-      </b-tbody>
-    </b-table-simple>
+      </traction-tbody>
+    </traction-table-simple>
   </div>
 </template>
 

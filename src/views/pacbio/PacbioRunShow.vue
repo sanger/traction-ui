@@ -1,42 +1,47 @@
 <template>
   <div class="run">
     <router-link :to="{ name: 'PacbioRunIndex' }">
-      <b-button id="backToRunsButton" class="float-right">Back</b-button>
+      <traction-button id="backToRunsButton" class="float-right">Back</traction-button>
     </router-link>
 
-    <b-button v-if="newRecord" id="reset" variant="primary" class="float-right" @click="resetRun()"
-      >Reset</b-button
+    <traction-button
+      v-if="newRecord"
+      id="reset"
+      variant="primary"
+      class="float-right"
+      @click="resetRun()"
+      >Reset</traction-button
     >
-    <b-button
+    <traction-button
       :id="currentAction.id"
       class="float-right"
       :variant="currentAction.variant"
       @click="runAction"
-      >{{ currentAction.label }}</b-button
+      >{{ currentAction.label }}</traction-button
     >
 
     <br />
     <br />
 
     <div>
-      <b-row>
-        <b-col cols="6">
+      <traction-row>
+        <traction-col cols="6">
           <pacbioRunInfoEdit ref="pacbioRunInfoEdit"></pacbioRunInfoEdit>
           <br />
-        </b-col>
-        <b-col>
+        </traction-col>
+        <traction-col>
           <pacbioRunWellDefaultEdit ref="pacbioRunWellDefaultEdit"></pacbioRunWellDefaultEdit>
           <br />
-        </b-col>
-      </b-row>
-      <b-row>
-        <b-col cols="6">
+        </traction-col>
+      </traction-row>
+      <traction-row>
+        <traction-col cols="6">
           <pacbioPoolList ref="pacbioPoolList"></pacbioPoolList>
-        </b-col>
-        <b-col>
+        </traction-col>
+        <traction-col>
           <Plate v-if="currentRun.id" ref="plate" @alert="showAlert"></Plate>
-        </b-col>
-      </b-row>
+        </traction-col>
+      </traction-row>
     </div>
   </div>
 </template>

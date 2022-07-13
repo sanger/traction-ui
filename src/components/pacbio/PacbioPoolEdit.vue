@@ -1,16 +1,21 @@
 <template>
   <div data-type="pool">
     <h3>
-      Pooled Samples <b-badge data-attribute="pool-type">{{ poolType }}</b-badge>
+      Pooled Samples <traction-badge data-attribute="pool-type">{{ poolType }}</traction-badge>
     </h3>
-    <b-row class="mb-1">
-      <b-col>
-        <b-form-checkbox v-model="autoTag" name="check-button" switch data-attribute="auto-tagging">
+    <traction-row class="mb-1">
+      <traction-col>
+        <traction-checkbox
+          v-model="autoTag"
+          name="check-button"
+          switch
+          data-attribute="auto-tagging"
+        >
           Autotagging
-        </b-form-checkbox>
-      </b-col>
-      <b-col>
-        <b-form-file
+        </traction-checkbox>
+      </traction-col>
+      <traction-col>
+        <traction-file
           id="qcFileInput"
           ref="qc-file-form-field"
           :state="parsedFile"
@@ -19,19 +24,19 @@
           accept="text/csv, .csv"
           size="sm"
           @input="uploadFile"
-        ></b-form-file>
-      </b-col>
-    </b-row>
+        ></traction-file>
+      </traction-col>
+    </traction-row>
     <PacbioPoolLibraryList :auto-tag="autoTag" />
     <div class="pool-edit" data-type="pool-edit">
-      <b-table-simple>
-        <b-tr>
-          <b-td v-if="!!tubeItem.barcode" class="barcode" data-attribute="barcode">
+      <traction-table-simple>
+        <traction-tr>
+          <traction-td v-if="!!tubeItem.barcode" class="barcode" data-attribute="barcode">
             pool barcode: {{ tubeItem.barcode }}
-          </b-td>
-          <b-td v-else>&nbsp;</b-td>
-          <b-td class="template-prep-kit-box-barcode">
-            <b-form-input
+          </traction-td>
+          <traction-td v-else>&nbsp;</traction-td>
+          <traction-td class="template-prep-kit-box-barcode">
+            <traction-input
               v-model="poolItem.template_prep_kit_box_barcode"
               data-attribute="template-prep-kit-box-barcode"
               :value="poolItem.template_prep_kit_box_barcode"
@@ -39,9 +44,9 @@
               type="text"
               title="Template Prep Kit Box Barcode"
             />
-          </b-td>
-          <b-td class="pool-attribute">
-            <b-form-input
+          </traction-td>
+          <traction-td class="pool-attribute">
+            <traction-input
               v-model="poolItem.volume"
               data-attribute="volume"
               :value="poolItem.volume"
@@ -49,9 +54,9 @@
               type="text"
               title="Volume"
             />
-          </b-td>
-          <b-td class="pool-attribute">
-            <b-form-input
+          </traction-td>
+          <traction-td class="pool-attribute">
+            <traction-input
               v-model="poolItem.concentration"
               data-attribute="concentration"
               :value="poolItem.concentration"
@@ -59,9 +64,9 @@
               type="text"
               title="Concentration"
             />
-          </b-td>
-          <b-td class="pool-attribute">
-            <b-form-input
+          </traction-td>
+          <traction-td class="pool-attribute">
+            <traction-input
               v-model="poolItem.insert_size"
               data-attribute="insert-size"
               :value="poolItem.insert_size"
@@ -69,12 +74,12 @@
               type="text"
               title="Insert Size"
             />
-          </b-td>
-        </b-tr>
-      </b-table-simple>
+          </traction-td>
+        </traction-tr>
+      </traction-table-simple>
     </div>
     <div class="text-right">
-      <b-button
+      <traction-button
         v-if="!persisted"
         data-action="create-pool"
         variant="success"
@@ -82,9 +87,9 @@
         @click="create()"
       >
         <span class="button-text">Create Pool </span>
-        <b-spinner v-show="busy" small></b-spinner>
-      </b-button>
-      <b-button
+        <traction-spinner v-show="busy" small></traction-spinner>
+      </traction-button>
+      <traction-button
         v-if="persisted"
         data-action="update-pool"
         variant="success"
@@ -92,8 +97,8 @@
         @click="update()"
       >
         <span class="button-text">Update Pool </span>
-        <b-spinner v-show="busy" small></b-spinner>
-      </b-button>
+        <traction-spinner v-show="busy" small></traction-spinner>
+      </traction-button>
     </div>
   </div>
 </template>
