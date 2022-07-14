@@ -1,5 +1,4 @@
 // TODO: routes are not tested so cause errors on start
-import Vue from 'vue'
 import Router from 'vue-router'
 import TractionDashboard from '@/views/TractionDashboard'
 import GeneralReception from '@/views/GeneralReception'
@@ -22,8 +21,6 @@ import PacbioRunShow from '@/views/pacbio/PacbioRunShow'
 import ONT from '@/views/ONT'
 import PacbioReceptionSequencescape from '@/views/pacbio/PacbioReceptionSequencescape'
 import PacbioPoolCreate from '@/views/pacbio/PacbioPoolCreate'
-
-Vue.use(Router)
 
 export default new Router({
   routes: [

@@ -1,4 +1,4 @@
-import BootstrapVue from 'bootstrap-vue'
+import VueRouter from 'vue-router'
 import { mount, createLocalVue, shallowMount } from '@vue/test-utils'
 import store from '@/store'
 import Data from '@tests/data'
@@ -9,7 +9,7 @@ import { registerGlobal } from '@/components/shared'
 
 const localVue = createLocalVue()
 
-localVue.use(BootstrapVue)
+localVue.use(VueRouter)
 localVue.mixin(globalAlert)
 localVue.use(VueCompositionAPI)
 
