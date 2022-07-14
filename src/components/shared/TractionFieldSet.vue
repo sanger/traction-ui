@@ -8,7 +8,7 @@
   - Can automatically render supplied fields
 -->
 <template>
-  <fieldset>
+  <fieldset class="text-left">
     <!-- These margins probably aren't set-up on the right components, as it
     results in subheadings becoming progressively nested. But I'm reluctant to
     touch too much when this is being actively worked on -->

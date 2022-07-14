@@ -15,24 +15,17 @@
 
     <traction-section title="Request Options">
       <div class="grid grid-cols-2">
-        <traction-fieldset title="Shared Options">
+        <!-- Temporarily add padding -->
+        <traction-fieldset title="Shared Options" class="pr-8">
           <LibraryTypeSelect
             v-model="requestOptions.library_type"
             :label-cols="0"
             :allow-none="false"
             :import-text="`Import from ${title} (where available)`"
           />
-          <traction-form-group
-            label-cols="0"
-            description="When not provided default is ToL (S4773)"
-            label="Cost Code"
-            label-for="cost_code"
-            label-align="left"
-            label-size="sm"
-            class="text-base"
-          >
+          <traction-field-group label="Cost Code" attribute="cost_code" for="cost_code">
             <traction-input id="cost_code" v-model="requestOptions.cost_code"></traction-input>
-          </traction-form-group>
+          </traction-field-group>
         </traction-fieldset>
         <div>
           <traction-fieldset
@@ -40,8 +33,7 @@
             :key="optionForm.title"
             v-bind="optionForm"
             v-model="requestOptions"
-            >{{ optionForm.description }}</traction-fieldset
-          >
+          ></traction-fieldset>
         </div>
       </div>
     </traction-section>

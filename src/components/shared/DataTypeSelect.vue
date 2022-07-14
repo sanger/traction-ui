@@ -1,31 +1,15 @@
 <template>
-  <div>
-    <traction-form-group
-      label="Data Type"
-      label-for="data-type"
-      :label-cols="labelCols"
-      :label-align="labelAlign"
-      label-size="sm"
-    >
-      <traction-select
-        id="data-type"
-        :class="cssClass"
-        :value="value"
-        :options="dataTypes"
-        @input="handleInput"
-      ></traction-select>
-    </traction-form-group>
-  </div>
+  <traction-select
+    id="data-type"
+    :value="value"
+    :options="dataTypes"
+    @input="handleInput"
+  ></traction-select>
 </template>
 
 <script>
 import useSWRV from 'swrv'
 import { filterByAttribute, mapAttribute } from '@/api/JsonApi'
-
-export const POSITION = {
-  Left: 1, //Position on left
-  Top: 2, // Position on top
-}
 
 export default {
   name: 'DataTypeSelect',
@@ -42,18 +26,6 @@ export default {
       type: String,
       default: undefined,
     },
-    labelCols: {
-      type: Number,
-      default: 2,
-    },
-    labelAlign: {
-      type: String,
-      default: 'left',
-    },
-    labelPosition: {
-      type: [Number, String],
-      default: () => POSITION.Left,
-    },
   },
   setup() {
     const baseURL = import.meta.env.VITE_TRACTION_BASE_URL
@@ -69,11 +41,6 @@ export default {
     },
     dataTypes() {
       return mapAttribute(this.filteredDataTypes, 'name')
-    },
-    cssClass() {
-      return {
-        'text-sm': this.labelCols == 0,
-      }
     },
   },
   methods: {

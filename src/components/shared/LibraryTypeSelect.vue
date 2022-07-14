@@ -1,24 +1,18 @@
 <template>
-  <div>
-    <traction-form-group
-      label="Library Type"
-      label-for="library-type"
-      :label-cols="labelCols"
-      :label-align="labelAlign"
-      label-size="sm"
-    >
-      <traction-select
-        id="library-type"
-        :class="cssClass"
-        :value="libraryType"
-        :options="libraryTypes"
-        @input="handleInput"
-      ></traction-select>
-    </traction-form-group>
-  </div>
+  <traction-field-group label="Library Type" label-for="library-type">
+    <traction-select
+      id="library-type"
+      :value="libraryType"
+      :options="libraryTypes"
+      @input="handleInput"
+    ></traction-select>
+  </traction-field-group>
 </template>
 
 <script>
+/*
+ * This field probably *shouldn't* render its own labels.
+ */
 import useSWRV from 'swrv'
 import { filterByAttribute, mapAttribute } from '@/api/JsonApi'
 
@@ -28,11 +22,6 @@ const UNDEFINED = '_undefined'
 
 const encode = (value) => (value === undefined ? UNDEFINED : value)
 const decode = (value) => (value === UNDEFINED ? undefined : value)
-
-export const POSITION = {
-  Left: 1, //Position on left
-  Top: 2, // Position on top
-}
 
 export default {
   name: 'LibraryTypeSelect',
@@ -57,18 +46,6 @@ export default {
       // Whether to show the import option
       type: Boolean,
       default: true,
-    },
-    labelCols: {
-      type: Number,
-      default: 2,
-    },
-    labelAlign: {
-      type: String,
-      default: 'left',
-    },
-    labelPosition: {
-      type: [Number, String],
-      default: () => POSITION.Left,
     },
     allowNone: {
       type: Boolean,
@@ -105,11 +82,6 @@ export default {
         ...this.importOption,
         ...this.nullOption,
       ]
-    },
-    cssClass() {
-      return {
-        'text-sm': this.labelCols == 0,
-      }
     },
   },
   methods: {

@@ -6,13 +6,11 @@ import DataTypeSelect from '@/components/shared/DataTypeSelect'
 const ReceptionForms = [
   {
     title: 'PacBio Options',
-    description: 'PacBio Specific Request Options',
     fields: [
       {
         label: 'Number of Gigabases required',
         component: 'traction-input',
         attribute: 'estimate_of_gb_required',
-        description: 'Some additional text',
         componentProps: {
           type: 'number',
           step: 1,
@@ -23,7 +21,6 @@ const ReceptionForms = [
         label: 'Number of SMRT cells',
         component: 'traction-input',
         attribute: 'number_of_smrt_cells',
-        description: 'Some additional text',
         componentProps: {
           type: 'number',
           step: 1,
@@ -34,13 +31,11 @@ const ReceptionForms = [
   },
   {
     title: 'ONT Options',
-    description: 'ONT Specific Request Options',
     fields: [
       {
         label: 'Data Type',
         component: DataTypeSelect,
         attribute: 'data_type',
-        description: 'Some additional text',
         componentProps: {
           pipeline: 'ont',
         },
@@ -49,7 +44,6 @@ const ReceptionForms = [
         label: 'Number of Flowcells',
         component: 'traction-input',
         attribute: 'number_of_flowcells',
-        description: 'Some additional text',
         componentProps: {
           type: 'number',
           step: 1,
