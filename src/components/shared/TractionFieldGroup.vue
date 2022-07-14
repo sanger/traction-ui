@@ -1,5 +1,5 @@
 <!--
-  TractionInputGroup
+  TractionFieldGroup
 
   Renders a group of tags for collecting input
   - label: The label to apply
@@ -30,7 +30,7 @@
 // See https://vuejs.org/v2/style-guide/#Component-instance-options-order-recommended
 // for order of other options
 export default {
-  name: 'TractionInputGroup',
+  name: 'TractionFieldGroup',
   props: {
     label: { type: String, required: true },
     attribute: { type: String, required: false, default: null },
@@ -42,8 +42,14 @@ export default {
     value: { type: [String, Number, Object, Array], required: false, default: null },
   },
   methods: {
-    input(event) {
-      this.$emit('input', event.target.value)
+    input(value) {
+      // Support either native components emiting events, or components
+      // emitting just the value
+      if (value instanceof Event) {
+        this.$emit('input', value.target.value)
+      } else {
+        this.$emit('input', value)
+      }
     },
   },
 }
