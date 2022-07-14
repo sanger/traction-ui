@@ -4,7 +4,7 @@
       id="createLibrariesWithEnzymeButton"
       v-traction-modal.enzymeModal
       :disabled="disabled"
-      variant="success"
+      theme="create"
     >
       Create Libraries
     </traction-button>

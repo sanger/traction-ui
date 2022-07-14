@@ -16,7 +16,7 @@
     <traction-button
       id="findSampleExtractionTubes"
       class="scanButton"
-      variant="success"
+      theme="create"
       :disabled="barcodes.length === 0"
       @click="handleSampleExtractionTubes"
       >Import Sample Extraction Tubes</traction-button

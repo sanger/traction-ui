@@ -56,7 +56,7 @@
           data-action="edit-pool"
           :to="{ name: 'PacbioPoolCreate', params: { id: row.item.id } }"
         >
-          <traction-button :id="'editPool-' + row.item.id" size="sm" variant="outline-primary"
+          <traction-button :id="'editPool-' + row.item.id" size="sm" theme="edit"
             >Edit</traction-button
           >
         </router-link>
@@ -67,7 +67,7 @@
           :id="'details-btn-' + row.item.id"
           size="sm"
           class="mr-2"
-          variant="outline-info"
+          theme="default"
           @click="row.toggleDetails"
         >
           {{ row.detailsShowing ? 'Hide' : 'Show' }} Details

@@ -4,19 +4,14 @@
       <traction-button id="backToRunsButton" class="float-right">Back</traction-button>
     </router-link>
 
-    <traction-button
-      v-if="newRecord"
-      id="create"
-      class="float-right"
-      variant="success"
-      @click="create"
+    <traction-button v-if="newRecord" id="create" class="float-right" theme="create" @click="create"
       >Create</traction-button
     >
     <traction-button
       v-if="!newRecord"
       id="update"
       class="float-right"
-      variant="primary"
+      theme="update"
       @click="update"
       >Update</traction-button
     >

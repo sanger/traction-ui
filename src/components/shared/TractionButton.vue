@@ -9,7 +9,7 @@
       sizeStyle,
       widthStyle,
     ]"
-    @click="$emit('click')"
+    @click="click"
   >
     <slot />
   </button>
@@ -19,21 +19,38 @@
 /**
  * Provides a simple themed button.
  *
+ * Theme: Specifies the role of the button, and thus the styling that will be applied.
+ *
+ *   default: Uses the secondary colour, good fallback when the role isn't clear
+ *   accent: Uses the accent colour (Bright pink at time of writing) Makes no
+ *   assumption about the role of the button. Be cautious with use, as could be
+ *   confused with red.
+ *   create: Green, used when the action will create something.
+ *   edit: As default, for buttons that take you to an edit page, but don't
+ *   themselves result in any chanhges
+ *   update: Orange: Used for actions that mutate a resource
+ *   delete: Red, used for destructive events
+ *   print: Blue, used for any actions that will send something to the printer.
+ *   reset: As default, Resets the current form
+ *   cancel: As default, Cancels the current action (without side-effects)
+ *   *SHOULD* not be used for cancel actions with side effects. (Like cancelling
+ *   a run)
+ *
  */
 import { within } from '@/lib/propValidations'
 
-// Provides legacy support for old b-button 'variants'
-const boostrapToTheme = (bootstrap) =>
-  ({
-    primary: 'primary',
-    danger: 'delete',
-    success: 'create',
-    'outline-primary': 'primary', // This is definitely not an equivalent mapping
-    'outline-success': 'create',
-    'outline-danger': 'delete',
-    'outline-info': 'default',
-    'outline-dark': 'default',
-  }[bootstrap])
+const themes = {
+  default: 'text-white bg-sdb-400 hover:bg-sdb active:bg-sdb-600',
+  accent: 'text-white bg-sp hover:bg-sp-400 active:bg-sp-600',
+  create: 'text-white bg-green-500 hover:bg-green-400 active:bg-green-600',
+  update: 'text-white bg-orange-500 hover:bg-orange-400 active:bg-orange-600',
+  delete: 'text-white bg-red-500 hover:bg-red-400 active:bg-red-600',
+  print: 'text-white bg-blue-500 hover:bg-blue-400 active:bg-blue-600',
+  // Currently same as default
+  edit: 'text-white bg-sdb-400 hover:bg-sdb active:bg-sdb-600',
+  reset: 'text-white bg-sdb-400 hover:bg-sdb active:bg-sdb-600',
+  cancel: 'text-white bg-sdb-400 hover:bg-sdb active:bg-sdb-600',
+}
 
 export default {
   name: 'TractionButton',
@@ -42,23 +59,7 @@ export default {
       type: String,
       default: 'default',
       required: false,
-      validator: within('default', 'create', 'primary', 'default', 'print'),
-    },
-    variant: {
-      // Legacy support for bootstrap colour styles
-      type: String,
-      required: false,
-      default: null,
-      validator: within(
-        'primary',
-        'danger',
-        'success',
-        'outline-primary',
-        'outline-success',
-        'outline-danger',
-        'outline-info',
-        'outline-dark',
-      ),
+      validator: within(...Object.keys(themes)),
     },
     size: {
       type: String,
@@ -72,16 +73,15 @@ export default {
       required: false,
       default: false,
     },
+    to: {
+      // Optional prop that causes the button to have navigation properties
+      type: [String, Object],
+      required: false,
+      default: null,
+    },
   },
   computed: {
-    _theme: ({ theme, variant }) => (variant ? boostrapToTheme(variant) : theme),
-    themeStyle: ({ _theme }) => ({
-      'text-white bg-sdb-400 hover:bg-sdb active:bg-sdb-600': _theme === 'default',
-      'text-white bg-green-500 hover:bg-green-400 active:bg-green-600': _theme === 'create',
-      'text-white bg-sp hover:bg-sp-400 active:bg-sp-600': _theme === 'primary',
-      'text-white bg-red-500 hover:bg-red-400 active:bg-red-600': _theme === 'delete',
-      'text-white bg-blue-500 hover:bg-blue-400 active:bg-blue-600': _theme === 'print',
-    }),
+    themeStyle: ({ theme }) => themes[theme],
     sizeStyle: ({ size }) => ({
       'text-sm': size === 'sm',
       'text-base': size === 'md',
@@ -91,6 +91,15 @@ export default {
       'sm:w-auto': !fullWidth,
       'w-full': fullWidth,
     }),
+  },
+  methods: {
+    click() {
+      if (this.to) {
+        this.$router.push(this.to)
+      } else {
+        this.$emit('click')
+      }
+    },
   },
 }
 </script>

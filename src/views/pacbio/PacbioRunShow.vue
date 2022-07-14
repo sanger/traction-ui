@@ -7,7 +7,7 @@
     <traction-button
       v-if="newRecord"
       id="reset"
-      variant="primary"
+      theme="reset"
       class="float-right"
       @click="resetRun()"
       >Reset</traction-button
@@ -15,7 +15,7 @@
     <traction-button
       :id="currentAction.id"
       class="float-right"
-      :variant="currentAction.variant"
+      :theme="currentAction.theme"
       @click="runAction"
       >{{ currentAction.label }}</traction-button
     >
@@ -75,13 +75,13 @@ export default {
         return {
           create: {
             id: 'create',
-            variant: 'success',
+            theme: 'create',
             label: 'Create',
             method: 'createRun',
           },
           update: {
             id: 'update',
-            variant: 'primary',
+            theme: 'update',
             label: 'Update',
             method: 'updateRun',
           },

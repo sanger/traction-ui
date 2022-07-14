@@ -60,7 +60,7 @@
           :id="'details-btn-' + row.item.id"
           size="sm"
           class="mr-2"
-          variant="outline-info"
+          theme="default"
           @click="row.toggleDetails"
         >
           {{ row.detailsShowing ? 'Hide' : 'Show' }} Details

@@ -28,7 +28,7 @@
           id="findSampleExtractionTubes"
           class="scanButton"
           full-width
-          variant="success"
+          theme="create"
           :disabled="isDisabled"
           @click="handleSampleExtractionTubes"
           >Import {{ tubeCount }}</traction-button
