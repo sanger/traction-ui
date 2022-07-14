@@ -5,6 +5,7 @@ import TractionFieldset from '@/components/shared/TractionFieldset'
 import TractionFieldGroup from '@/components/shared/TractionFieldGroup'
 import TractionSection from '@/components/shared/TractionSection'
 import TractionHeading from '@/components/TractionHeading'
+import TractionLabel from '@/components/shared/TractionLabel'
 import TractionMenu from '@/components/shared/TractionMenu'
 import TractionMenuItem from '@/components/shared/TractionMenuItem'
 
@@ -98,8 +99,9 @@ const registerGlobal = (vue) => {
   vue.component('FlaggedFeature', FlaggedFeature)
   vue.component('LoadingFullScreenModal', LoadingFullScreenModal)
   vue.component('TractionButton', TractionButton)
-  vue.component('TractionFieldset', TractionFieldset)
   vue.component('TractionFieldGroup', TractionFieldGroup)
+  vue.component('TractionFieldset', TractionFieldset)
+  vue.component('TractionLabel', TractionLabel)
   vue.component('TractionSection', TractionSection)
   vue.component('TractionHeading', TractionHeading)
   vue.component('TractionMenu', TractionMenu)

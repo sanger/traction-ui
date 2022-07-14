@@ -9,7 +9,7 @@
 -->
 <template>
   <div class="text-left mb-5">
-    <label :for="fieldId" class="w-full font-sans font-medium text-gray-700">{{ label }}</label>
+    <traction-label :for="fieldId">{{ label }}</traction-label>
     <component
       :is="component"
       v-if="component"
