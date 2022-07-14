@@ -74,8 +74,10 @@ describe('ByBarcode', () => {
       const importResultion = importFunction.mockResolvedValue({ requestAttributes })
       await wrapper.setData({
         barcodes,
-        library_type: 'Pacbio_HiFi',
-        costCode: '235',
+        requestOptions: {
+          library_type: 'Pacbio_HiFi',
+          costCode: '235',
+        },
       })
       await wrapper.get('#importLabware').trigger('click')
       const { importStarted } = wrapper.emitted()

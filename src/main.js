@@ -8,8 +8,6 @@ import VueRouter from 'vue-router'
 import router from './router'
 import store from './store'
 import globalAlert from '@/mixins/globalAlert'
-// Vue 2.7 (and 3) includes the composition API, so can remove this shortly.
-import VueCompositionAPI from '@vue/composition-api'
 
 import { registerGlobal } from '@/components/shared'
 
@@ -17,8 +15,6 @@ Vue.config.productionTip = false
 Vue.use(Vuex)
 Vue.use(VueRouter)
 Vue.mixin(globalAlert)
-// Vue 2.7 (and 3) includes the composition API, so can remove this shortly.
-Vue.use(VueCompositionAPI)
 
 registerGlobal(Vue)
 
