@@ -1,10 +1,15 @@
 import { defineConfig } from 'vite'
 import vue from '@vitejs/plugin-vue2'
 import path from 'path'
+// Help us keep track of what we import, and the size effect it has on the bundle
+import { visualizer } from 'rollup-plugin-visualizer'
 
 // https://vitejs.dev/config/
 export default defineConfig({
-  plugins: [vue()],
+  plugins: [
+    vue(),
+    visualizer(), // The docs recommend this one goes last
+  ],
   resolve: {
     alias: {
       '@': path.resolve('./src'),
