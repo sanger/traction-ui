@@ -36,8 +36,8 @@ import deserialize from '@/api/JsonApi'
 import FlaggedFeature from '../../components/shared/FlaggedFeature.vue'
 
 export default {
-  components: { FlaggedFeature },
   name: 'SaphyrReception',
+  components: { FlaggedFeature },
   props: {},
   data() {
     return {
