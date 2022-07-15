@@ -1,41 +1,47 @@
 <template>
-  <div class="reception">
-    <loading-full-screen-modal
-      :visible="busy"
-      message="Importing labware..."
-    ></loading-full-screen-modal>
-    <div class="form-group">
-      <label for="barcodes">Barcodes:</label>
-      <traction-textarea
-        id="barcodes"
-        v-model="barcodes"
-        placeholder="Scan barcodes to import..."
-        rows="4"
-        max-rows="10"
-        name="barcodes"
-      />
-    </div>
-    <traction-row>
-      <traction-col>
-        <LibraryTypeSelect
-          v-model="libraryType"
-          pipeline="pacbio"
-          import-text="Import from Samples Extraction (where available)"
-        />
-      </traction-col>
-      <traction-col>
-        <traction-button
-          id="findSampleExtractionTubes"
-          class="scanButton"
-          full-width
-          theme="create"
-          :disabled="isDisabled"
-          @click="handleSampleExtractionTubes"
-          >Import {{ tubeCount }}</traction-button
-        >
-      </traction-col>
-    </traction-row>
-  </div>
+  <flagged-feature name="dpl_277_disable_pacbio_specific_reception">
+    <template #disabled>
+      <div class="reception">
+        <loading-full-screen-modal
+          :visible="busy"
+          message="Importing labware..."
+        ></loading-full-screen-modal>
+        <div class="form-group">
+          <label for="barcodes">Barcodes:</label>
+          <traction-textarea
+            id="barcodes"
+            v-model="barcodes"
+            placeholder="Scan barcodes to import..."
+            rows="4"
+            max-rows="10"
+            name="barcodes"
+          />
+        </div>
+        <traction-row>
+          <traction-col>
+            <LibraryTypeSelect
+              v-model="libraryType"
+              pipeline="pacbio"
+              import-text="Import from Samples Extraction (where available)"
+            />
+          </traction-col>
+          <traction-col>
+            <traction-button
+              id="findSampleExtractionTubes"
+              class="scanButton"
+              full-width
+              theme="create"
+              :disabled="isDisabled"
+              @click="handleSampleExtractionTubes"
+              >Import {{ tubeCount }}</traction-button
+            >
+          </traction-col>
+        </traction-row>
+      </div>
+    </template>
+    Pacbio receptions are disabled, please use the general reception. Link in the menu bar at the
+    top
+  </flagged-feature>
 </template>
 
 <script>

@@ -1,53 +1,57 @@
 <template>
-  <div>
-    <loading-full-screen-modal
-      :visible="busy"
-      message="Importing labware..."
-    ></loading-full-screen-modal>
-    <div class="form-group">
-      <div class="flex flex-col gap-y-4">
-        <TractionHeading level="4" :show-border="true">
-          <div class="flex flex-row gap-x-2"><BarcodeIcon />Scan Barcodes</div></TractionHeading
-        >
-        <div class="sm:px-6 lg:px-8">
-          <traction-textarea
-            id="barcodes"
-            v-model="barcodes"
-            placeholder="Scan barcodes to import..."
-            rows="4"
-            max-rows="10"
-            name="barcodes"
-            class="text-base"
-          />
-        </div>
-      </div>
-      <div class="flex flex-col gap-y-4 mt-10">
-        <TractionHeading level="4" :show-border="true">Request Options</TractionHeading>
-        <div class="flex grid grid-cols-2 sm:px-6 lg:px-8 gap-x-8 justify-left contents-centre">
-          <LibraryTypeSelect v-model="libraryType" pipeline="pacbio" :label-cols="0" />
-          <traction-form-group
-            label-cols="0"
-            description="When not provided default is ToL (S4773)"
-            label="Cost Code"
-            label-for="cost_code"
-            label-align="left"
-            label-size="sm"
-            class="text-base"
+  <flagged-feature name="dpl_277_disable_pacbio_specific_reception">
+    <template #disabled>
+      <loading-full-screen-modal
+        :visible="busy"
+        message="Importing labware..."
+      ></loading-full-screen-modal>
+      <div class="form-group">
+        <div class="flex flex-col gap-y-4">
+          <TractionHeading level="4" :show-border="true">
+            <div class="flex flex-row gap-x-2"><BarcodeIcon />Scan Barcodes</div></TractionHeading
           >
-            <traction-input id="cost_code" v-model="costCode"></traction-input>
-          </traction-form-group>
+          <div class="sm:px-6 lg:px-8">
+            <traction-textarea
+              id="barcodes"
+              v-model="barcodes"
+              placeholder="Scan barcodes to import..."
+              rows="4"
+              max-rows="10"
+              name="barcodes"
+              class="text-base"
+            />
+          </div>
         </div>
-        <traction-button
-          id="createTractionPlates"
-          class="text-sm ml-8 mr-8 text-white border-sdb-400 bg-sdb-400 shadow-sm hover:bg-sdb focus:border-sdb focus:shadow-outline-sdb active:bg-sdb-600"
-          theme="create"
-          :disabled="isDisabled"
-          @click="createTractionPlates"
-          >Import {{ barcodeCount }}</traction-button
-        >
+        <div class="flex flex-col gap-y-4 mt-10">
+          <TractionHeading level="4" :show-border="true">Request Options</TractionHeading>
+          <div class="flex grid grid-cols-2 sm:px-6 lg:px-8 gap-x-8 justify-left contents-centre">
+            <LibraryTypeSelect v-model="libraryType" pipeline="pacbio" :label-cols="0" />
+            <traction-form-group
+              label-cols="0"
+              description="When not provided default is ToL (S4773)"
+              label="Cost Code"
+              label-for="cost_code"
+              label-align="left"
+              label-size="sm"
+              class="text-base"
+            >
+              <traction-input id="cost_code" v-model="costCode"></traction-input>
+            </traction-form-group>
+          </div>
+          <traction-button
+            id="createTractionPlates"
+            class="text-sm ml-8 mr-8 text-white border-sdb-400 bg-sdb-400 shadow-sm hover:bg-sdb focus:border-sdb focus:shadow-outline-sdb active:bg-sdb-600"
+            theme="create"
+            :disabled="isDisabled"
+            @click="createTractionPlates"
+            >Import {{ barcodeCount }}</traction-button
+          >
+        </div>
       </div>
-    </div>
-  </div>
+    </template>
+    Pacbio receptions are disabled, please use the general reception. Link in the menu bar at the
+    top
+  </flagged-feature>
 </template>
 
 <script>
