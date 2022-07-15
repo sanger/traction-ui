@@ -1,4 +1,10 @@
 describe('Pacbio library creation from sample', () => {
+  beforeEach(() => {
+    cy.withFlags({
+      dpl_277_disable_pacbio_specific_reception: { enabled: false },
+    })
+  })
+
   it('Visits the pacbio samples url', () => {
     cy.intercept('/v1/pacbio/requests', {
       fixture: 'tractionPacbioSamples.json',
