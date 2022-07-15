@@ -1,12 +1,6 @@
 // https://docs.cypress.io/api/introduction/api.html
 
 describe('Import samples from Samples extraction, for Pacbio', () => {
-  beforeEach(() => {
-    cy.withFlags({
-      dpl_277_enable_general_reception: { enabled: true },
-    })
-  })
-
   it('Successfully', () => {
     cy.visit('#/reception')
     cy.clickMenuItem('Samples Extraction')

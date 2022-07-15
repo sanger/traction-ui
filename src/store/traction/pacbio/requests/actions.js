@@ -1,5 +1,4 @@
 import handlePromise from '@/api/PromiseHelper'
-import { handleResponse } from '@/api/ResponseHelper'
 
 const setRequests = async ({ commit, getters }) => {
   let request = getters.requestsRequest
@@ -42,62 +41,11 @@ const createRequestPayload = (sample) => {
   }
 }
 
-const exportSampleExtractionTubesIntoTraction = async (
-  { getters },
-  { tubes, libraryType = undefined },
-) => {
-  const body = {
-    data: {
-      type: 'requests',
-      attributes: {
-        requests: sampleExtractionTubeJson(tubes, libraryType),
-      },
-    },
-  }
-
-  const request = getters.requestsRequest
-  const promise = request.create({ data: body })
-  const response = await handleResponse(promise)
-  return response
-}
-
-const sampleExtractionTubeJson = (tubes, libraryType) => {
-  return tubes.map(
-    ({
-      library_type,
-      estimate_of_gb_required,
-      number_of_smrt_cells,
-      barcode,
-      study_uuid: external_study_id,
-      sample_uuid: external_id,
-      cost_code,
-      fields: { sanger_sample_id: name, sample_common_name: species },
-    }) => ({
-      sample: { name, species, external_id },
-      request: {
-        external_study_id,
-        library_type: libraryType === undefined ? library_type : libraryType,
-        estimate_of_gb_required,
-        number_of_smrt_cells,
-        ...(cost_code ? { cost_code } : null),
-      },
-      tube: { barcode },
-    }),
-  )
-}
-
 const actions = {
   setRequests,
   updateRequest,
-  exportSampleExtractionTubesIntoTraction,
 }
 
-export {
-  setRequests,
-  updateRequest,
-  createRequestPayload,
-  exportSampleExtractionTubesIntoTraction,
-  sampleExtractionTubeJson,
-}
+export { setRequests, updateRequest, createRequestPayload }
 
 export default actions

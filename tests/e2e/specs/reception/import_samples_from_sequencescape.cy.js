@@ -2,12 +2,6 @@ const sequencescapeRequest =
   '/api/v2/labware?filter[barcode]=DN9000002A,NT1O&include=receptacles.aliquots.sample.sample_metadata,receptacles.aliquots.study&fields[plates]=labware_barcode,receptacles&fields[tubes]=labware_barcode,receptacles&fields[wells]=position,aliquots&fields[receptacles]=aliquots&fields[samples]=sample_metadata,name,uuid&fields[sample_metadata]=sample_common_name&fields[studies]=uuid&fields[aliquots]=study,library_type,sample'
 
 describe('Import samples from Sequencescape', () => {
-  beforeEach(() => {
-    cy.withFlags({
-      dpl_277_enable_general_reception: { enabled: true },
-    })
-  })
-
   it('Successfully', () => {
     cy.visit('#/reception')
     cy.clickMenuItem('Sequencescape')
