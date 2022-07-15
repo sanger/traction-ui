@@ -6,13 +6,11 @@ import LabelPrinting from '@/views/LabelPrinting'
 import QcResultsUpload from '@/views/QcResultsUpload'
 import PageNotFound from '@/views/PageNotFound'
 import SaphyrView from '@/views/SaphyrView'
-import SaphyrReception from '@/views/saphyr/SaphyrReception'
 import SaphyrSamples from '@/views/saphyr/SaphyrSamples'
 import SaphyrLibraries from '@/views/saphyr/SaphyrLibraries'
 import SaphyrRuns from '@/views/saphyr/SaphyrRuns'
 import SaphyrRun from '@/views/saphyr/SaphyrRun'
 import PacbioView from '@/views/PacbioView'
-import PacbioReceptionSamplesExtraction from '@/views/pacbio/PacbioReceptionSamplesExtraction'
 import PacbioPlateIndex from '@/views/pacbio/PacbioPlateIndex'
 import PacbioSampleIndex from '@/views/pacbio/PacbioSampleIndex'
 import PacbioLibraryIndex from '@/views/pacbio/PacbioLibraryIndex'
@@ -64,13 +62,7 @@ export default new Router({
       component: SaphyrView,
       meta: { pipeline: 'Saphyr' },
       children: [
-        { path: '', redirect: 'reception', meta: { page: 'Reception' } },
-        {
-          path: 'reception',
-          name: 'SaphyrReception',
-          component: SaphyrReception,
-          meta: { page: 'Reception' },
-        },
+        { path: '', redirect: 'samples', meta: { page: 'Samples' } },
         {
           path: 'samples',
           name: 'SaphyrSamples',
@@ -99,13 +91,7 @@ export default new Router({
       component: PacbioView,
       meta: { pipeline: 'PacBio' },
       children: [
-        { path: '', redirect: 'reception' },
-        {
-          path: 'samples-extraction-reception',
-          name: 'PacbioReceptionSamplesExtraction',
-          component: PacbioReceptionSamplesExtraction,
-          meta: { page: 'Samples Extraction Reception' },
-        },
+        { path: '', redirect: 'samples' },
         {
           path: 'samples',
           name: 'PacbioSampleIndex',
@@ -142,12 +128,6 @@ export default new Router({
           component: PacbioRunShow,
           props: true,
           meta: { page: 'Run' },
-        },
-        {
-          path: 'sequencescape-reception',
-          name: 'PacbioReceptionSequencescape',
-          component: PacbioReceptionSequencescape,
-          meta: { page: 'Sequencescape Reception' },
         },
         {
           path: 'pool/:id',
