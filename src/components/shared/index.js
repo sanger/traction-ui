@@ -1,13 +1,13 @@
-import FlaggedFeature from '@/components/shared/FlaggedFeature'
-import LoadingFullScreenModal from '@/components/shared/LoadingFullScreenModal'
-import TractionButton from '@/components/shared/TractionButton'
-import TractionFieldset from '@/components/shared/TractionFieldset'
-import TractionFieldGroup from '@/components/shared/TractionFieldGroup'
-import TractionSection from '@/components/shared/TractionSection'
-import TractionHeading from '@/components/TractionHeading'
-import TractionLabel from '@/components/shared/TractionLabel'
-import TractionMenu from '@/components/shared/TractionMenu'
-import TractionMenuItem from '@/components/shared/TractionMenuItem'
+import FlaggedFeature from '@/components/shared/FlaggedFeature.vue'
+import LoadingFullScreenModal from '@/components/shared/LoadingFullScreenModal.vue'
+import TractionButton from '@/components/shared/TractionButton.vue'
+import TractionFieldset from '@/components/shared/TractionFieldset.vue'
+import TractionFieldGroup from '@/components/shared/TractionFieldGroup.vue'
+import TractionSection from '@/components/shared/TractionSection.vue'
+import TractionHeading from '@/components/TractionHeading.vue'
+import TractionLabel from '@/components/shared/TractionLabel.vue'
+import TractionMenu from '@/components/shared/TractionMenu.vue'
+import TractionMenuItem from '@/components/shared/TractionMenuItem.vue'
 
 import {
   BModal,
