@@ -75,23 +75,15 @@ export default {
   data() {
     return {
       barcodes: '',
-      busy: false,
       requestOptions: defaultRequestOptions(),
     }
   },
   computed: {
-    barcodeArray() {
-      return this.barcodes.split(/\s/).filter(Boolean)
-    },
-    isDisabled() {
-      return this.barcodeArray.length === 0 || this.busy
-    },
-    barcodeCount() {
-      return this.barcodeArray.length
-    },
-    presentRequestOptions() {
-      return Object.fromEntries(Object.entries(this.requestOptions).filter(([, v]) => v))
-    },
+    barcodeArray: ({ barcodes }) => barcodes.split(/\s/).filter(Boolean),
+    isDisabled: ({ barcodeArray }) => barcodeArray.length === 0,
+    barcodeCount: ({ barcodeArray }) => barcodeArray.length,
+    presentRequestOptions: ({ requestOptions }) =>
+      Object.fromEntries(Object.entries(requestOptions).filter(([, v]) => v)),
   },
   methods: {
     async importLabware() {
