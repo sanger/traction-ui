@@ -1,5 +1,5 @@
 <!--
-  TractionFieldSet
+  TractionFieldset
 
   Renders a fieldset
   - Title provides a legend for the fieldset
@@ -31,7 +31,7 @@
 <script>
 // Component
 export default {
-  name: 'TractionFieldSet',
+  name: 'TractionFieldset',
   props: {
     title: {
       type: String,
