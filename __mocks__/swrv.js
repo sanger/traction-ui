@@ -2,9 +2,7 @@ const baseURL = import.meta.env.VITE_TRACTION_BASE_URL
 
 const flags = {
   flipper_id: 'User',
-  features: {
-    dpl_277_enable_general_reception: { enabled: true },
-  },
+  features: {},
 }
 
 const libraryTypes = {

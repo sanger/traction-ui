@@ -4,7 +4,6 @@ import Api from '@/api'
 import build from '@/api/ApiBuilder'
 import PrinterList from '@/config/PrinterList'
 import traction from '@/store/traction'
-import sampleExtraction from '@/store/sampleExtraction'
 import printMyBarcode from '@/store/printMyBarcode'
 import PlateMap from '@/config/PlateMap'
 
@@ -24,7 +23,6 @@ export default new Vuex.Store({
   },
   modules: {
     traction,
-    sampleExtraction,
     printMyBarcode,
   },
 })
