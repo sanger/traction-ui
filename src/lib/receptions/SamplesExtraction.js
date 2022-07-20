@@ -23,6 +23,18 @@ const getLabware = async (request, barcodes) => {
   }
 }
 
+/**
+ * Makes a request to the Samples Extraction API to retrieve the asset
+ * associated with the provided barcodes. Uses the provided requestOptions to
+ * construct a reception object that can be posted to the traction receptions
+ * endpoint
+ * @param { sampleExtraction: { assets: { get: Function } } } requests The API requests store ($store.getters.api)
+ * @param { Array<String> } barcodes Array of barcodes to look up
+ * @param { Object } requestOptions Additional request parameters, will over-ride any
+ * imported from SS if present
+ * @returns { Object } Reception object ready for import into traction
+ *
+ */
 const labwareForReception = async ({ requests, barcodes, requestOptions }) => {
   const { assets = [] } = await getLabware(requests.sampleExtraction.assets, barcodes.join(','))
   const requestAttributes = transformLabwareList({
@@ -43,9 +55,17 @@ const labwareForReception = async ({ requests, barcodes, requestOptions }) => {
   }
 }
 
+/**
+ * Transforms the provided list of samples extraction assets into requestAttributes
+ * for import into traction
+ */
 const transformLabwareList = ({ labwareList, requestOptions } = {}) =>
   labwareList.flatMap((labware) => transformLabware({ labware, requestOptions }))
 
+/**
+ * Takes a deserialized asset object and extracts the request, sample and
+ * container information for import into traction via a reception resource.
+ */
 const transformLabware = ({ labware, requestOptions }) => ({
   request: {
     external_study_id: labware.study_uuid,
