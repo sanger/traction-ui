@@ -31,7 +31,7 @@
 
 <script>
 import Api from '@/mixins/Api'
-import { createReception } from '@/services/traction/Reception'
+import { createReceptionResource } from '@/services/traction/Reception'
 import Receptions from '@/lib/receptions'
 
 const numberRequests = (i) => (i === 1 ? '1 request' : `${i} requests`)
@@ -79,7 +79,7 @@ export default {
       this.showModal(`Creating ${numberRequests(requestAttributes.length)} for ${source}`)
 
       try {
-        await createReception(this.receptionRequest, {
+        await createReceptionResource(this.receptionRequest, {
           source: `traction-ui.${source}`,
           requestAttributes,
         })

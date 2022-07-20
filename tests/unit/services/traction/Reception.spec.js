@@ -1,4 +1,4 @@
-import { createReception } from '@/services/traction/Reception'
+import { createReceptionResource } from '@/services/traction/Reception'
 // import { Data } from '@support/testHelper'
 
 // Setup some of the parameters we'll be testing with
@@ -35,20 +35,23 @@ const createdReceptionResponse = {
 }
 
 describe('Traction', () => {
-  describe('#createReception', () => {
+  describe('#createReceptionResource', () => {
     const createReceptionRequest = vi.fn()
 
     it('successfully', async () => {
       createReceptionRequest.mockResolvedValue(createdReceptionResponse)
 
-      const response = await createReception(createReceptionRequest, { source, requestAttributes })
+      const response = await createReceptionResource(createReceptionRequest, {
+        source,
+        requestAttributes,
+      })
 
       expect(response).toEqual(createdReceptionResponse.data)
     })
 
     it('does not import labware if none are present', async () => {
       expect(
-        createReception(createReceptionRequest, {
+        createReceptionResource(createReceptionRequest, {
           source,
           requestAttributes: [],
         }),
@@ -60,7 +63,7 @@ describe('Traction', () => {
     it('generates a valid reception payload', async () => {
       createReceptionRequest.mockResolvedValue(createdReceptionResponse)
 
-      await createReception(createReceptionRequest, { source, requestAttributes })
+      await createReceptionResource(createReceptionRequest, { source, requestAttributes })
 
       expect(createReceptionRequest).toHaveBeenCalledWith({
         data: {
@@ -78,7 +81,7 @@ describe('Traction', () => {
       createReceptionRequest.mockRejectedValue({ response: failedResponse })
 
       expect(
-        createReception(createReceptionRequest, { source, requestAttributes }),
+        createReceptionResource(createReceptionRequest, { source, requestAttributes }),
       ).rejects.toThrow('error1 There was an error.')
     })
   })

@@ -7,7 +7,7 @@ import { handleResponse } from '@/api/ResponseHelper'
   Usually prefixed with traction-ui to disambiguate from any potential direct import
   @param requestAttributes: {Array} Array of request attribute objects to create
 */
-const createReception = async (request, { source, requestAttributes }) => {
+const createReceptionResource = async (request, { source, requestAttributes }) => {
   if (requestAttributes.length < 1) {
     throw 'No labware to import'
   }
@@ -22,4 +22,4 @@ const createReception = async (request, { source, requestAttributes }) => {
     throw errors
   }
 }
-export { createReception }
+export { createReceptionResource }
