@@ -3,6 +3,7 @@ import * as Sequencescape from './Sequencescape'
 import * as SamplesExtraction from './SamplesExtraction'
 import DataTypeSelect from '@/components/shared/DataTypeSelect'
 
+// Specifies the fields collected for each pipeline
 const ReceptionForms = [
   {
     title: 'PacBio Options',
