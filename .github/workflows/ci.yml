@@ -76,12 +76,10 @@ jobs:
       uses: cypress-io/github-action@v4
       with:
         start: npm start
-        wait-on: http://localhost:3000/
+        wait-on: http://localhost:5174/
         spec: "tests/e2e/**/*"
         config-file: cypress.config.js
         config: video=false
-      env:
-        CYPRESS_baseUrl: http://localhost:3000/
     # after the test run completes
     # store any screenshots
     # NOTE: screenshots will be generated only if E2E test failed
