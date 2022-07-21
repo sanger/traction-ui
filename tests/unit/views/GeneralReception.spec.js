@@ -91,7 +91,7 @@ describe('GeneralReception', () => {
   it('handles a successful import', async () => {
     store.state.traction.messages = []
     const mockedcreateReception = vi
-      .spyOn(Reception, 'createReception')
+      .spyOn(Reception, 'createReceptionResource')
       .mockImplementation(() => {})
     const wrapper = buildWrapper()
     // We've begun the import
@@ -121,7 +121,7 @@ describe('GeneralReception', () => {
     store.state.traction.messages = []
     const message = 'The princess is in another castle'
 
-    vi.spyOn(Reception, 'createReception').mockRejectedValue(new Error(message))
+    vi.spyOn(Reception, 'createReceptionResource').mockRejectedValue(new Error(message))
     const wrapper = buildWrapper()
     // We've begun the import
     await wrapper
