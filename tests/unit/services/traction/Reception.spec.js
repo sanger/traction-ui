@@ -68,9 +68,10 @@ describe('Traction', () => {
       expect(createReceptionRequest).toHaveBeenCalledWith({
         data: {
           data: {
+            type: 'receptions',
             attributes: {
               source,
-              requestAttributes,
+              request_attributes: requestAttributes,
             },
           },
         },

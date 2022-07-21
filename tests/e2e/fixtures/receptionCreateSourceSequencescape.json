@@ -1,9 +1,10 @@
 {
   "data": {
     "data": {
+      "type": "receptions",
       "attributes": {
         "source": "traction-ui.sequencescape",
-        "requestAttributes": [
+        "request_attributes": [
           {
             "request": {
               "external_study_id": "5b173660-94c9-11ec-8c89-acde48001122",

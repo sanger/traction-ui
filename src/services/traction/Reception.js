@@ -13,7 +13,11 @@ const createReceptionResource = async (request, { source, requestAttributes }) =
   }
 
   const { success, data, errors } = await handleResponse(
-    request({ data: { data: { attributes: { source, requestAttributes } } } }),
+    request({
+      data: {
+        data: { type: 'receptions', attributes: { source, request_attributes: requestAttributes } },
+      },
+    }),
   )
 
   if (success) {
