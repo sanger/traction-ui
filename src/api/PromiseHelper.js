@@ -13,9 +13,24 @@ const handlePromise = async (promise) => {
   try {
     rawResponse = await promise
   } catch (resp) {
-    let responseObject = resp.response
-    responseObject['data'] = responseObject['data']['data']
-    rawResponse = responseObject
+    if (resp.response) {
+      let responseObject = resp.response
+      responseObject['data'] = responseObject['data']['data']
+      rawResponse = responseObject
+    } else {
+      // We don't always end up with a server response, which results in the
+      // above pattern failing with 'Cannot read properties of undefined
+      // (reading 'data')' obscuring the original error. Here we re-throw the
+      // original error.
+      // This is a little inconsistent with the behaviour above, and instead we
+      // would be better off returning an Api.Response with an invalid status.
+      // However when I actually tried that approach I discovered that we ended
+      // up just hiding errors instead.
+      // Given we already have pressure to move onto handleResponse, I've
+      // decided to leave the core-behaviour unchanged, but ensure that a useful
+      // error message is propagated.
+      throw resp
+    }
   }
   let response = new Api.Response(rawResponse)
   return response
