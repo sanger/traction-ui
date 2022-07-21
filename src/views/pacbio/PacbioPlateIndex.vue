@@ -40,7 +40,7 @@
         <traction-button
           :id="'details-btn-' + row.item.id"
           size="sm"
-          variant="outline-primary"
+          theme="default"
           @click="row.toggleDetails"
         >
           {{ row.detailsShowing ? 'Hide' : 'Show' }} Plate

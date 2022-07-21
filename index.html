@@ -21,6 +21,21 @@
     <meta name="theme-color" content="#232643" />
     <script type="module" src="/src/main.js"></script>
     <title>Traction</title>
+    <style>
+      /* Inline style for loading pane */
+      #app-loading-pane {
+        width: 20%;
+        margin: 10em auto;
+        text-align: center;
+        font-family: 'Helvetica Neue', Arial, system-ui, -apple-system, BlinkMacSystemFont,
+          'Segoe UI', Roboto, 'Noto Sans', sans-serif;
+        color: #718096;
+      }
+
+      #app-loading-pane-logo {
+        width: 100%;
+      }
+    </style>
   </head>
   <body>
     <noscript>
@@ -29,7 +44,12 @@
         it to continue.</strong
       >
     </noscript>
-    <div id="app"></div>
+    <div id="app">
+      <div id="app-loading-pane">
+        <img id="app-loading-pane-logo" src="traction-logo.svg" />
+        <h1 id="app-loading-pane-loading">Loading...</h1>
+      </div>
+    </div>
     <!-- built files will be auto injected -->
   </body>
 </html>

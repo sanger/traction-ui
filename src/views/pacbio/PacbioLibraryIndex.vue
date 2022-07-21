@@ -55,7 +55,7 @@
         <traction-button
           :id="`editPool-${row.item.pool.id}`"
           size="sm"
-          variant="outline-primary"
+          theme="edit"
           :to="{ name: 'PacbioPoolCreate', params: { id: row.item.pool.id } }"
           >Edit</traction-button
         >
@@ -67,7 +67,7 @@
     <div class="clearfix">
       <traction-button
         id="deleteLibraries"
-        variant="danger"
+        theme="delete"
         class="float-left"
         :disabled="selected.length === 0"
         @click="handleLibraryDelete"

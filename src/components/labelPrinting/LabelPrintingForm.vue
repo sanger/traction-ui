@@ -82,10 +82,10 @@
             ></traction-input>
           </traction-form-group>
 
-          <traction-button id="submit-button" type="submit" variant="primary"
+          <traction-button id="submit-button" type="submit" theme="print"
             >Print Labels</traction-button
           >
-          <traction-button id="reset-button" type="reset" variant="danger" class="float-left"
+          <traction-button id="reset-button" type="reset" theme="default" class="float-left"
             >Reset</traction-button
           >
         </traction-form>

@@ -145,6 +145,28 @@ const deserialize = ({ data, included }, includeStore = {}) => {
   }
 }
 
+const matchesAllAttributes =
+  (filters) =>
+  ({ attributes }) =>
+    Object.entries(filters).every(([key, value]) => attributes[key] === value)
+
+/**
+ * Filters the given array of JSON-API objects to those matching the provided attributes
+ * @param {Array} data Array of JSON API data
+ * @param {Object} attributes The attributes and their values to match
+ * @returns {Array} Array of the extracted attribute
+ */
+const filterByAttribute = (data, filters) => data.filter(matchesAllAttributes(filters))
+
+/**
+ * Extracts the given attribute from all JSON-API objects in the array and
+ * returnthem as an array
+ * @param {Array} data Array of JSON API data
+ * @param {String} attribute The attribute to extract
+ * @returns {Array} Array of the extracted attribute
+ */
+const mapAttribute = (data, attribute) => data.map(({ attributes }) => attributes[attribute])
+
 export {
   extractAttributes,
   mapRelationships,
@@ -157,6 +179,8 @@ export {
   deserialize,
   dataToObjectById,
   extractRelationshipsAndGroupById,
+  mapAttribute,
+  filterByAttribute,
 }
 
 export default deserialize

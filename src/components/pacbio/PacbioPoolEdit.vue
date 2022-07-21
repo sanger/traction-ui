@@ -82,7 +82,7 @@
       <traction-button
         v-if="!persisted"
         data-action="create-pool"
-        variant="success"
+        theme="create"
         :disabled="busy"
         @click="create()"
       >
@@ -92,7 +92,7 @@
       <traction-button
         v-if="persisted"
         data-action="update-pool"
-        variant="success"
+        theme="update"
         :disabled="busy"
         @click="update()"
       >

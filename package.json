@@ -22,7 +22,7 @@
   },
   "dependencies": {
     "@sanger/ui-styling": "^4.0.0",
-    "@vue/composition-api": "^1.6.3",
+    "@vitejs/plugin-vue2": "^1.1.2",
     "autoprefixer": "^10.4.7",
     "axios": "^0.21.4",
     "bootstrap-vue": "^2.22.0",
@@ -34,9 +34,8 @@
     "postcss": "^8.4.14",
     "swrv": "^0.9.6",
     "tailwindcss": "3.1.6",
-    "vite": "^2.9.13",
-    "vite-plugin-vue2": "^2.0.1",
-    "vue": "^2.6.12",
+    "vite": "^3.0.0",
+    "vue": "^2.7.5",
     "vue-router": "^3.5.3",
     "vue-selecto": "^1.17.0",
     "vue-simple-spinner": "^1.2.10",
@@ -55,8 +54,9 @@
     "npm-run-all": "^4.1.5",
     "postcss-cli": "^10.0.0",
     "prettier": "2.7.1",
+    "rollup-plugin-visualizer": "^5.7.0",
     "sass": "^1.53.0",
     "vitest": "^0.15.2",
-    "vue-template-compiler": "^2.6.12"
+    "vue-template-compiler": "^2.7.5"
   }
 }
