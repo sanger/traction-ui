@@ -15,7 +15,11 @@
           "insert_size": 100,
           "created_at": "2021/06/15 10:25",
           "deactivated_at": null,
-          "source_identifier": "DN1:A1"
+          "source_identifier": "DN1:A1",
+          "run_suitability": {
+            "ready_for_run": true,
+            "errors": []
+          }
         },
         "relationships": {
           "request": {
@@ -74,7 +78,11 @@
           "insert_size": 100,
           "created_at": "2021/06/15 10:25",
           "deactivated_at": null,
-          "source_identifier": "DN1:A2"
+          "source_identifier": "DN1:A2",
+          "run_suitability": {
+            "ready_for_run": true,
+            "errors": []
+          }
         },
         "relationships": {
           "request": {
@@ -133,7 +141,11 @@
           "insert_size": 100,
           "created_at": "2021/06/15 10:25",
           "deactivated_at": null,
-          "source_identifier": "DN1:A3"
+          "source_identifier": "DN1:A3",
+          "run_suitability": {
+            "ready_for_run": true,
+            "errors": []
+          }
         },
         "relationships": {
           "request": {
@@ -192,7 +204,11 @@
           "insert_size": 100,
           "created_at": "2021/06/15 10:25",
           "deactivated_at": null,
-          "source_identifier": "DN1:A4"
+          "source_identifier": "DN1:A4",
+          "run_suitability": {
+            "ready_for_run": true,
+            "errors": []
+          }
         },
         "relationships": {
           "request": {
@@ -251,7 +267,11 @@
           "insert_size": 100,
           "created_at": "2021/06/15 10:25",
           "deactivated_at": null,
-          "source_identifier": "DN1:A5"
+          "source_identifier": "DN1:A5",
+          "run_suitability": {
+            "ready_for_run": true,
+            "errors": []
+          }
         },
         "relationships": {
           "request": {

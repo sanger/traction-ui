@@ -7,6 +7,7 @@ describe('Libraries.vue', () => {
   let wrapper, libraries, mockLibraries
 
   beforeEach(() => {
+    const setLibrariesAction = vi.spyOn(store.getters.api.traction.pacbio.libraries, 'get')
     mockLibraries = [
       {
         id: 1,
@@ -55,8 +56,9 @@ describe('Libraries.vue', () => {
         },
       },
     ]
-
-    store.commit('traction/pacbio/libraries/setLibraries', mockLibraries)
+    setLibrariesAction.mockImplementation(() => {
+      store.commit('traction/pacbio/libraries/setLibraries', mockLibraries)
+    })
 
     wrapper = mount(Libraries, {
       store,
