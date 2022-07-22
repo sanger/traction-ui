@@ -1,24 +1,24 @@
 <template>
-  <div class="flex flex-col justify-start ">
-    <traction-menu
+  <div class="flex flex-col justify-start">
+    <traction-menu :border="true"
       ><traction-menu-item
         v-for="(pipelineRoute, index) in pipelineInfo.routes"
         :key="index"
         :active="index == sourceIndex"
+        color="blue"
         @click.native="setSource(index)"
         >{{ humanise(pipelineRoute) }}</traction-menu-item
       >
     </traction-menu>
-    <b-card-body>
-      <router-view></router-view>
-    </b-card-body>
+    <router-view class="mt-8"></router-view>
   </div>
 </template>
 
 <script>
 import PipelinesConfig from '@/config/PipelinesConfig'
 import { humanise } from '@/lib/stringHumanisation'
-
+import VueRouter from 'vue-router'
+const { isNavigationFailure, NavigationFailureType } = VueRouter
 export default {
   name: 'PipelineView',
   props: {
@@ -42,7 +42,11 @@ export default {
     },
     setSource(indx) {
       this.sourceIndex = indx
-      this.$router.push({ path: this.path(this.pipelineInfo.routes[indx]) })
+      this.$router.push({ path: this.path(this.pipelineInfo.routes[indx]) }).catch((error) => {
+        if (!isNavigationFailure(error, NavigationFailureType.duplicated)) {
+          console.error(error)
+        }
+      })
     },
     humanise,
   },

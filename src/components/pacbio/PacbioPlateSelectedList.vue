@@ -1,5 +1,5 @@
 <template>
-  <traction-col data-type="selected-plate-list" class="selected-plate-list">
+  <div>
     <!-- eslint-disable vue/attribute-hyphenation-->
     <VueSelecto
       :container="$el"
@@ -9,35 +9,31 @@
       hitRate="20"
       @select="onSelect"
     />
-    <!-- eslint-enable vue/attribute-hyphenation -->
-    <h3>Selected plates</h3>
-    <traction-tabs content-class="mt-3" fill>
-      <traction-tab title="Plates">
-        <div class="wrapper">
-          <div v-if="selectedPlates.length === 0" data-type="warning-message">
+    <TractionSection title="Selected Plates">
+      <div class="flex flex-col">
+        <TractionMenu :border="true">
+          <TractionMenuItem
+            v-for="(tabTitle, index) in tabTitles"
+            :key="index"
+            :active="index == sourceIndex"
+            color="blue"
+            @click.native="setSource(index)"
+            >{{ tabTitle }}</TractionMenuItem
+          >
+        </TractionMenu>
+        <div v-if="sourceIndex == 0" class="wrapper" >
+          <div v-if="selectedPlates.length == 0" data-type="warning-message" class="mt-4">
             No plates selected
           </div>
+
           <div v-for="plate in selectedPlates" :key="plate.id" data-type="selected-plate-item">
             {{ plate.barcode }}
             <Plate ref="plate" v-bind="plate"></Plate>
           </div>
         </div>
-      </traction-tab>
-      <traction-tab title="Requests">
-        <traction-list-group class="selected-list-group">
-          <traction-table
-            :items="selectedPlateRequests"
-            show-empty
-            small
-            :fields="requestFields"
-            :tbody-tr-class="rowClass"
-            empty-text="No plates selected"
-            @row-clicked="requestClicked"
-          ></traction-table>
-        </traction-list-group>
-      </traction-tab>
-    </traction-tabs>
-  </traction-col>
+        </div>
+    </TractionSection>
+  </div>
 </template>
 
 <script>
@@ -64,6 +60,8 @@ export default {
         'number_of_smrt_cells',
         'estimate_of_gb_required',
       ],
+      sourceIndex: 0,
+      tabTitles: ['Plates', 'Requests'],
     }
   },
   computed: {
@@ -96,6 +94,9 @@ export default {
       e.removed.forEach((el) => {
         this.selectWellRequests(el.__vue__.$attrs.id)
       })
+    },
+    setSource(indx) {
+      this.sourceIndex = indx
     },
   },
 }

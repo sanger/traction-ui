@@ -1,21 +1,25 @@
 <template>
-  <details v-if="selectedTagSet.id" class="tag-set-item">
-    <summary data-attribute="tag-set-name" class="tag-set-name">
-      {{ tagSetName }} <traction-badge>{{ tagCount }} tags</traction-badge>
-    </summary>
-    <div data-type="tag-set-item" class="wrapper flex-wrap">
-      <div
-        v-for="tag in selectedTagSet.tags"
-        :key="tag.id"
-        data-attribute="group-id"
-        class="border rounded"
-      >
-        {{ tag.group_id }}
+  <div class="px-4">
+    <details v-if="selectedTagSet.id" class="tag-set-item">
+      <summary data-attribute="tag-set-name" class="tag-set-name">
+        {{ tagSetName }} <b-badge>{{ tagCount }} tags</b-badge>
+      </summary>
+      <div data-type="tag-set-item" class="wrapper flex-wrap">
+        <div
+          v-for="tag in selectedTagSet.tags"
+          :key="tag.id"
+          data-attribute="group-id"
+          class="border rounded"
+        >
+          {{ tag.group_id }}
+        </div>
       </div>
+    </details>
+    <div v-else class="tag-set-item">
+      <TractionMutedText data-attribute="tag-set-name-placeholder" class="tag-set-name"
+        >No tag set selected</TractionMutedText
+      >
     </div>
-  </details>
-  <div v-else class="tag-set-item">
-    <div data-attribute="tag-set-name-placeholder" class="tag-set-name">No tag set selected</div>
   </div>
 </template>
 

@@ -1,13 +1,18 @@
 <template>
   <div class="tag-set-list">
-    <h3>Select tag set</h3>
-    <traction-select
-      v-if="!isEmpty"
-      :value="selected"
-      data-type="tag-set-list"
-      :options="options"
-      @change="updateSelected"
-    ></traction-select>
+    <TractionSection title="Tag Selection">
+      <div class="text-left">
+        Select tag set
+        <traction-select
+          v-if="!isEmpty"
+          :value="selected"
+          data-type="tag-set-list"
+          :options="options"
+          @change="updateSelected"
+        ></traction-select>
+      </div>
+    </TractionSection>
+    >>>>>>> a672d88f (PacBio Pool/new page styling changes)
   </div>
 </template>
 

@@ -1,101 +1,60 @@
 <template>
   <div data-type="pool">
-    <h3>
-      Pooled Samples <traction-badge data-attribute="pool-type">{{ poolType }}</traction-badge>
-    </h3>
-    <traction-row class="mb-1">
-      <traction-col>
-        <traction-checkbox
-          v-model="autoTag"
-          name="check-button"
-          switch
-          data-attribute="auto-tagging"
-        >
-          Autotagging
-        </traction-checkbox>
-      </traction-col>
-      <traction-col>
-        <traction-file
-          id="qcFileInput"
-          ref="qc-file-form-field"
-          :state="parsedFile"
-          placeholder="Choose a file or drop it here..."
-          drop-placeholder="Drop file here..."
-          accept="text/csv, .csv"
-          size="sm"
-          @input="uploadFile"
-        ></traction-file>
-      </traction-col>
-    </traction-row>
+    <TractionSection title="Pooled Samples" :tag="`${poolType}`">
+      <div class="space-y-8">
+        <div>
+          <TractionSubSection title="Select file">
+            <TractionFileBrowser
+              ref-elem="qc-file-form-field"
+              ready="parsedFile"
+              file-types="text/csv, .csv"
+              input-action="uploadFile"
+            />
+          </TractionSubSection>
+        </div>
+        <div>
+          <TractionSubSection title="Apply All">
+            <div class="grid gap-5 grid-cols-5 mb-10 text-sm">
+              <label> Auto tagging</label>
+              <label>Template Prep Kit Box Barcode </label>
+              <label> Volume</label>
+              <label> Concentration</label>
+              <label> Insert Size</label>
+              <div class="w-full flex justify-center">
+                <TractionToggle v-model="autoTag" />
+              </div>
+              <TractionTextField
+                value-field="poolItem.template_prep_kit_box_barcode"
+                data-attribute-value="template-prep-kit-box-barcode"
+                place-holder-text="Template Prep Kit Box Barcode"
+              />
+              <TractionTextField
+                value-field="poolItem.volume"
+                data-attribute-value="volume"
+                place-holder-text="Volume"
+              />
+              <TractionTextField
+                value-field="poolItem.concentration"
+                data-attribute-value="concentration"
+                place-holder-text="Concentration"
+              />
+              <TractionTextField
+                value-field="poolItem.insert_size"
+                data-attribute-value="insert-size"
+                place-holder-text="Insert Size"
+              />
+            </div>
+          </TractionSubSection>
+        </div>
+      </div>
+    </TractionSection>
     <PacbioPoolLibraryList :auto-tag="autoTag" />
-    <div class="pool-edit" data-type="pool-edit">
-      <traction-table-simple>
-        <traction-tr>
-          <traction-td v-if="!!tubeItem.barcode" class="barcode" data-attribute="barcode">
-            pool barcode: {{ tubeItem.barcode }}
-          </traction-td>
-          <traction-td v-else>&nbsp;</traction-td>
-          <traction-td class="template-prep-kit-box-barcode">
-            <traction-input
-              v-model="poolItem.template_prep_kit_box_barcode"
-              data-attribute="template-prep-kit-box-barcode"
-              :value="poolItem.template_prep_kit_box_barcode"
-              placeholder="Template Prep Kit Box Barcode"
-              type="text"
-              title="Template Prep Kit Box Barcode"
-            />
-          </traction-td>
-          <traction-td class="pool-attribute">
-            <traction-input
-              v-model="poolItem.volume"
-              data-attribute="volume"
-              :value="poolItem.volume"
-              placeholder="Volume"
-              type="text"
-              title="Volume"
-            />
-          </traction-td>
-          <traction-td class="pool-attribute">
-            <traction-input
-              v-model="poolItem.concentration"
-              data-attribute="concentration"
-              :value="poolItem.concentration"
-              placeholder="Concentration"
-              type="text"
-              title="Concentration"
-            />
-          </traction-td>
-          <traction-td class="pool-attribute">
-            <traction-input
-              v-model="poolItem.insert_size"
-              data-attribute="insert-size"
-              :value="poolItem.insert_size"
-              placeholder="Insert Size"
-              type="text"
-              title="Insert Size"
-            />
-          </traction-td>
-        </traction-tr>
-      </traction-table-simple>
-    </div>
-    <div class="text-right">
-      <traction-button
-        v-if="!persisted"
-        data-action="create-pool"
-        theme="create"
-        :disabled="busy"
-        @click="create()"
-      >
+    <div class="text-right py-8">
+      <traction-button>
         <span class="button-text">Create Pool </span>
-        <traction-spinner v-show="busy" small></traction-spinner>
-      </traction-button>
-      <traction-button
-        v-if="persisted"
-        data-action="update-pool"
-        theme="update"
-        :disabled="busy"
-        @click="update()"
-      >
+        <traction-spinner v-show="busy" small></traction-spinner
+      ></traction-button>
+      <traction-button>
         <span class="button-text">Update Pool </span>
         <traction-spinner v-show="busy" small></traction-spinner>
       </traction-button>
@@ -107,6 +66,8 @@
 import PacbioPoolLibraryList from '@/components/pacbio/PacbioPoolLibraryList'
 import { createNamespacedHelpers } from 'vuex'
 import { eachRecord } from '@/lib/csv/pacbio'
+import TractionFileBrowser from '../shared/TractionFileBrowser.vue'
+import TractionTextField from '../shared/TractionTextField.vue'
 
 const { mapGetters, mapActions } = createNamespacedHelpers('traction/pacbio/poolCreate')
 
@@ -114,6 +75,8 @@ export default {
   name: 'PoolEdit',
   components: {
     PacbioPoolLibraryList,
+    TractionFileBrowser,
+    TractionTextField,
   },
   data() {
     return {

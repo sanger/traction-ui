@@ -1,7 +1,7 @@
 <template>
-  <traction-col>
-    <traction-form @submit.prevent="handleSubmit()">
-      <h3>Find Plate</h3>
+   <traction-form @submit.prevent="handleSubmit()">
+    <TractionSection title="Plate" class="mb-2">
+      <div class="text-left">Find Plate</div>
       <traction-input
         v-model="enteredLabware"
         data-input="plate-find"
@@ -22,12 +22,13 @@
           Plate: {{ item.barcode }}
         </traction-list-group-item>
       </traction-list-group>
+        </TractionSection>
     </traction-form>
-  </traction-col>
 </template>
 
 <script>
 import { createNamespacedHelpers } from 'vuex'
+import {TractionTextField} 
 const { mapMutations, mapActions, mapGetters } = createNamespacedHelpers(
   'traction/pacbio/poolCreate',
 )
