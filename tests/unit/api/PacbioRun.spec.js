@@ -454,6 +454,7 @@ describe('Run', () => {
         run.dna_control_complex_box_barcode,
       )
       expect(result.data.attributes.system_name).toEqual(run.system_name)
+      expect(result.data.attributes.smrt_link_version).toEqual(run.smrt_link_version)
       expect(result.data.attributes.comments).toEqual(run.comments)
     })
   })

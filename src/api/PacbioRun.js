@@ -192,6 +192,7 @@ const createWellsPayload = (wells, plateId) => {
   }
 }
 
+// This is exactly the same as the create payload apart from the id
 const updateRunPayload = (run) => {
   return {
     data: {
@@ -201,6 +202,7 @@ const updateRunPayload = (run) => {
         sequencing_kit_box_barcode: run.sequencing_kit_box_barcode,
         dna_control_complex_box_barcode: run.dna_control_complex_box_barcode,
         system_name: run.system_name,
+        smrt_link_version: run.smrt_link_version,
         comments: run.comments,
       },
     },
