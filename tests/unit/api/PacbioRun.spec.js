@@ -3,6 +3,7 @@ import Response from '@/api/Response'
 import * as Run from '@/api/PacbioRun'
 import build from '@/api/ApiBuilder'
 import Api from '@/api'
+import { it } from 'vitest'
 
 describe('Run', () => {
   let run, failedResponse
@@ -51,6 +52,10 @@ describe('Run', () => {
 
       it('will have a plate with wellsToDelete', () => {
         expect(run.plate.wellsToDelete).toBeDefined()
+      })
+
+      it('will have a smrt link version', () => {
+        expect(run.smrt_link_version).toBeDefined()
       })
     })
   })
@@ -226,6 +231,8 @@ describe('Run', () => {
         run.dna_control_complex_box_barcode,
       )
       expect(result.data.attributes.system_name).toEqual(run.system_name)
+
+      expect(result.data.attributes.smrt_link_version).toEqual(run.smrt_link_version)
     })
   })
 

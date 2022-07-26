@@ -6,6 +6,7 @@ const DefaultSystemName = 'Sequel IIe'
 const DefaultPreExtensionTime = 2
 const DefaultCcsAnalysisOutput = 'Yes'
 const DefaultLoadingTarget = 0.85
+const DefaultSmrtLinkVersion = 'v10'
 const DefaultGenerateHiFi = (systemName) => {
   switch (systemName) {
     case 'Sequel I':
@@ -37,6 +38,7 @@ const build = (object) => {
       dna_control_complex_box_barcode: '',
       comments: '',
       system_name: DefaultSystemName,
+      smrt_link_version: DefaultSmrtLinkVersion,
       wellDefaults: wellDefaults(DefaultSystemName),
       plate: {
         wells: [],
@@ -134,6 +136,7 @@ const createRunPayload = (run) => {
         sequencing_kit_box_barcode: run.sequencing_kit_box_barcode,
         dna_control_complex_box_barcode: run.dna_control_complex_box_barcode,
         system_name: run.system_name,
+        smrt_link_version: run.smrt_link_version,
         comments: run.comments,
       },
     },
