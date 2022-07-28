@@ -41,6 +41,7 @@ import SequencescapeLabware from './sequencescapeLabware'
 import SequencescapeLabwareTubeOnly from './sequencescapeLabwareTubeOnly'
 import SequencescapeLabwarePlateOnly from './sequencescapeLabwarePlateOnly'
 import SequencescapePlates from './sequencescapePlates'
+import TractionOntRequests from './tractionOntRequests'
 import TractionTubeWithContainerMaterials from './tractionTubeWithContainerMaterials'
 import TractionTubesWithPacbioPools from './tractionTubesWithPacbioPools'
 import TractionPlates from './tractionPlates'
@@ -90,6 +91,7 @@ export default {
   SequencescapeLabwarePlateOnly,
   SequencescapeLabwareTubeOnly,
   SequencescapePlates,
+  TractionOntRequests,
   TractionTubeWithContainerMaterials,
   TractionTubesWithPacbioPools,
   TractionPlates,

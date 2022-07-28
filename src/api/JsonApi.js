@@ -1,3 +1,5 @@
+import Vue from 'vue'
+
 /**
  * Extract the attributes from a JSON API resource object, merge them with the id
  * and type attributes
@@ -167,6 +169,24 @@ const filterByAttribute = (data, filters) => data.filter(matchesAllAttributes(fi
  */
 const mapAttribute = (data, attribute) => data.map(({ attributes }) => attributes[attribute])
 
+/**
+ * Helper function to store json api resource objects in the store.
+ *
+ * @param {string} resource name of the resource to populate in the store
+ * @param {bool} includeRelationships indicates if related resource ids should
+ * be extracted and included in the resulting object.
+ * @return {Function} A mutation function for populating the resource
+ */
+const populateById =
+  (resource, { includeRelationships = false } = {}) =>
+  (state, data) => {
+    const before = state.resources[resource]
+    Vue.set(state.resources, resource, {
+      ...before, // Merge in the existing state
+      ...dataToObjectById({ data, includeRelationships }),
+    })
+  }
+
 export {
   extractAttributes,
   mapRelationships,
@@ -181,6 +201,7 @@ export {
   extractRelationshipsAndGroupById,
   mapAttribute,
   filterByAttribute,
+  populateById,
 }
 
 export default deserialize
