@@ -19,6 +19,7 @@ import PacbioPoolIndex from '@/views/pacbio/PacbioPoolIndex'
 import PacbioRunIndex from '@/views/pacbio/PacbioRunIndex'
 import PacbioRunShow from '@/views/pacbio/PacbioRunShow'
 import ONT from '@/views/ONT'
+import ONTSampleIndex from '@/views/ONT/ONTSampleIndex.vue'
 import PacbioReceptionSequencescape from '@/views/pacbio/PacbioReceptionSequencescape'
 import PacbioPoolCreate from '@/views/pacbio/PacbioPoolCreate'
 
@@ -150,6 +151,14 @@ export default new Router({
       path: '/ont',
       component: ONT,
       meta: { pipeline: 'ONT' },
+      children: [
+        {
+          path: 'samples',
+          name: 'ONTSampleIndex',
+          component: ONTSampleIndex,
+          meta: { page: 'Samples' },
+        },
+      ],
     },
     {
       path: '/404',
