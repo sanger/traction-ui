@@ -10,6 +10,7 @@
       widthStyle,
     ]"
     @click="click"
+    
   >
     <slot />
   </button>

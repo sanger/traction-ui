@@ -17,15 +17,21 @@
         </div>
         <div>
           <traction-sub-section title="Apply All" class="py-6">
-            <div class="grid gap-5 grid-cols-5 mb-10 text-sm">
+            <div class="grid gap-5 grid-cols-6 mb-10 text-sm" data-type="pool-edit">
               <label> Auto tagging</label>
+              <label v-if="!!tubeItem.barcode"> Pool Barcode </label>
+              <label v-else></label>
               <label>Template Prep Kit Box Barcode </label>
               <label> Volume</label>
               <label> Concentration</label>
               <label> Insert Size</label>
               <div class="w-full flex justify-center">
-                <traction-toggle v-model="autoTag" />
+                <traction-toggle v-model="autoTag" data-attribute="check-box" />
               </div>
+              <label v-if="!!tubeItem.barcode" data-attribute="barcode" class="font-bold flex-wrap">
+                {{ tubeItem.barcode }}
+              </label>
+              <label v-else></label>
               <traction-text-field
                 value-field="poolItem.template_prep_kit_box_barcode"
                 data-attribute-value="template-prep-kit-box-barcode"
@@ -53,11 +59,23 @@
     </traction-section>
     <PacbioPoolLibraryList :auto-tag="autoTag" />
     <div class="text-right py-8">
-      <traction-button>
+      <traction-button
+        v-if="!persisted"
+        data-action="create-pool"
+        theme="create"
+        :disabled="busy"
+        @click="create()"
+      >
         <span class="button-text">Create Pool </span>
-        <traction-spinner v-show="busy" small></traction-spinner
-      ></traction-button>
-      <traction-button>
+        <traction-spinner v-show="busy" small></traction-spinner>
+      </traction-button>
+      <traction-button
+        v-if="persisted"
+        data-action="update-pool"
+        theme="update"
+        :disabled="busy"
+        @click="update()"
+      >
         <span class="button-text">Update Pool </span>
         <traction-spinner v-show="busy" small></traction-spinner>
       </traction-button>

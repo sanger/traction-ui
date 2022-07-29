@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div data-type="selected-plate-list">
     <!-- eslint-disable vue/attribute-hyphenation-->
     <VueSelecto
       :container="$el"
