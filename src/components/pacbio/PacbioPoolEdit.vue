@@ -1,6 +1,6 @@
 <template>
   <div data-type="pool">
-    <traction-section title="Pooled Samples" :tag="`${poolType}`">
+    <traction-section title="Pooled Samples" :tag="`${poolType}`" data-attribute="pool-type">
       <div class="space-y-12">
         <div class="flex flex-col">
           <label class="text-left p-0">Select file</label>
@@ -32,25 +32,37 @@
                 {{ tubeItem.barcode }}
               </label>
               <label v-else></label>
-              <traction-text-field
-                value-field="poolItem.template_prep_kit_box_barcode"
-                data-attribute-value="template-prep-kit-box-barcode"
-                place-holder-text="Template Prep Kit Box Barcode"
+              <traction-input
+                v-model="poolItem.template_prep_kit_box_barcode"
+                data-attribute="template-prep-kit-box-barcode"
+                :value="poolItem.template_prep_kit_box_barcode"
+                placeholder="Template Prep Kit Box Barcode"
+                type="text"
+                title="Template Prep Kit Box Barcode"
               />
-              <traction-text-field
-                value-field="poolItem.volume"
-                data-attribute-value="volume"
-                place-holder-text="Volume"
+              <traction-input
+                v-model="poolItem.volume"
+                data-attribute="volume"
+                :value="poolItem.volume"
+                placeholder="Volume"
+                type="text"
+                title="Volume"
               />
-              <traction-text-field
-                value-field="poolItem.concentration"
-                data-attribute-value="concentration"
-                place-holder-text="Concentration"
+              <traction-input
+                v-model="poolItem.concentration"
+                data-attribute="concentration"
+                :value="poolItem.concentration"
+                placeholder="Concentration"
+                type="text"
+                title="Concentration"
               />
-              <traction-text-field
-                value-field="poolItem.insert_size"
-                data-attribute-value="insert-size"
-                place-holder-text="Insert Size"
+              <traction-input
+                v-model="poolItem.insert_size"
+                data-attribute="insert-size"
+                :value="poolItem.insert_size"
+                placeholder="Insert Size"
+                type="text"
+                title="Insert Size"
               />
             </div>
           </traction-sub-section>
@@ -87,7 +99,6 @@
 import PacbioPoolLibraryList from '@/components/pacbio/PacbioPoolLibraryList'
 import { createNamespacedHelpers } from 'vuex'
 import { eachRecord } from '@/lib/csv/pacbio'
-import TractionTextField from '../shared/TractionTextField.vue'
 
 const { mapGetters, mapActions } = createNamespacedHelpers('traction/pacbio/poolCreate')
 
@@ -95,7 +106,6 @@ export default {
   name: 'PoolEdit',
   components: {
     PacbioPoolLibraryList,
-    TractionTextField,
   },
   data() {
     return {
