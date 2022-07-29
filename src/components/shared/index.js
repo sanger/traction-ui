@@ -99,7 +99,6 @@ const registerBootstrapComponents = (vue) => {
   /* eslint-enable vue/component-definition-name-casing */
 }
 
-
 const registerGlobal = (vue) => {
   vue.component('FlaggedFeature', FlaggedFeature)
   vue.component('LoadingFullScreenModal', LoadingFullScreenModal)
@@ -114,7 +113,7 @@ const registerGlobal = (vue) => {
   vue.component('TractionTag', TractionTag)
   vue.component('TractionSubSection', TractionSubSection)
   vue.component('TractionMutedText', TractionMutedText)
-  vue.component('TractionToggle',TractionToggle)
+  vue.component('TractionToggle', TractionToggle)
   registerBootstrapComponents(vue)
 }
 

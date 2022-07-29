@@ -21,7 +21,7 @@
             >{{ tabTitle }}</traction-menu-item
           >
         </traction-menu>
-        <div v-if="sourceIndex == 0" class="wrapper" >
+        <div v-if="sourceIndex == 0" class="wrapper">
           <div v-if="selectedPlates.length == 0" data-type="warning-message" class="mt-4">
             No plates selected
           </div>
@@ -31,7 +31,7 @@
             <Plate ref="plate" v-bind="plate"></Plate>
           </div>
         </div>
-         <div v-else class="mt-4">
+        <div v-else class="mt-4">
           <traction-list-group class="selected-list-group">
             <traction-table
               :items="selectedPlateRequests"

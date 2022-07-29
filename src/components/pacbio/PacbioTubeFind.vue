@@ -1,6 +1,6 @@
 <template>
   <div>
-    <traction-form  @submit.prevent="handleSubmit()">
+    <traction-form @submit.prevent="handleSubmit()">
       <traction-section title="Tube" class-names="mb-2">
         <div class="text-left">Find Tube</div>
         <traction-input

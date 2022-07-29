@@ -6,21 +6,21 @@
 
 <script>
 export default {
-/**
- * # TractionTag
- *
- * Tailwind component to display a tag 
- * with a text. Support for two colors
- * 
- * @example
- * <template>
- *   <div>
- *      <traction-tag>
- *        Tag Text
- *      </traction-tag>
- *   </div>
- * </template>
- */
+  /**
+   * # TractionTag
+   *
+   * Tailwind component to display a tag
+   * with a text. Support for two colors
+   *
+   * @example
+   * <template>
+   *   <div>
+   *      <traction-tag>
+   *        Tag Text
+   *      </traction-tag>
+   *   </div>
+   * </template>
+   */
   name: 'TractionTag',
   props: {
     color: {

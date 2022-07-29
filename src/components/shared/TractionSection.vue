@@ -14,23 +14,23 @@
 
 <script>
 export default {
-/**
- * # TractionSection
- *
- * Tailwind component to display a traction style section 
- * with a title and an optional border.
- * 
- * @example
- * <template>
- *   <div>
- *      <traction-section :show-border="true" title="Title">
- *        <div>
- *          Components to display within section
- *        </div>
- *      </traction-section>
- *   </div>
- * </template>
- */
+  /**
+   * # TractionSection
+   *
+   * Tailwind component to display a traction style section
+   * with a title and an optional border.
+   *
+   * @example
+   * <template>
+   *   <div>
+   *      <traction-section :show-border="true" title="Title">
+   *        <div>
+   *          Components to display within section
+   *        </div>
+   *      </traction-section>
+   *   </div>
+   * </template>
+   */
   name: 'TractionSection',
   props: {
     title: {

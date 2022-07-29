@@ -21,7 +21,6 @@ export default {
     },
     showBorder: Boolean,
     shadow: Boolean,
-   
   },
   computed: {
     getClass() {

@@ -1,19 +1,17 @@
 <template>
   <div class="mt-8">
-
     <traction-section title="Selected Tubes">
-      
-        <traction-list-group class="selected-list-group">
-          <traction-table
-            :items="selectedTubeRequests"
-            show-empty
-            small
-            :fields="requestFields"
-            :tbody-tr-class="rowClass"
-            empty-text="No tubes selected"
-            @row-clicked="requestClicked"
-          ></traction-table>
-        </traction-list-group>
+      <traction-list-group class="selected-list-group">
+        <traction-table
+          :items="selectedTubeRequests"
+          show-empty
+          small
+          :fields="requestFields"
+          :tbody-tr-class="rowClass"
+          empty-text="No tubes selected"
+          @row-clicked="requestClicked"
+        ></traction-table>
+      </traction-list-group>
     </traction-section>
   </div>
 </template>
