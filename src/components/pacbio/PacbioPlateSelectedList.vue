@@ -9,18 +9,18 @@
       hitRate="20"
       @select="onSelect"
     />
-    <TractionSection title="Selected Plates">
+    <traction-section title="Selected Plates">
       <div class="flex flex-col">
-        <TractionMenu :border="true">
-          <TractionMenuItem
+        <traction-menu :border="true">
+          <traction-menu-item
             v-for="(tabTitle, index) in tabTitles"
             :key="index"
             :active="index == sourceIndex"
             color="blue"
             @click.native="setSource(index)"
-            >{{ tabTitle }}</TractionMenuItem
+            >{{ tabTitle }}</traction-menu-item
           >
-        </TractionMenu>
+        </traction-menu>
         <div v-if="sourceIndex == 0" class="wrapper" >
           <div v-if="selectedPlates.length == 0" data-type="warning-message" class="mt-4">
             No plates selected
@@ -31,8 +31,21 @@
             <Plate ref="plate" v-bind="plate"></Plate>
           </div>
         </div>
+         <div v-else class="mt-4">
+          <traction-list-group class="selected-list-group">
+            <traction-table
+              :items="selectedPlateRequests"
+              show-empty
+              small
+              :fields="requestFields"
+              :tbody-tr-class="rowClass"
+              empty-text="No plates selected"
+              @row-clicked="requestClicked"
+            ></traction-table>
+          </traction-list-group>
         </div>
-    </TractionSection>
+      </div>
+    </traction-section>
   </div>
 </template>
 

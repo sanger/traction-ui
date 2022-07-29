@@ -6,7 +6,6 @@
   </menu>
 </template>
 
-/** * Provides a softer text. **/
 <script>
 /**
  * # TractionMutedText
