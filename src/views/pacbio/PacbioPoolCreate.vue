@@ -12,7 +12,7 @@
             >{{ tabTitle }}</traction-menu-item
           >
         </traction-menu>
-        <div v-if="sourceIndex == 0" class="flex flex-col" >
+        <div v-if="sourceIndex == 0" class="flex flex-col">
           <PacbioPlateFind class="mb-6" />
           <PacbioPlateSelectedList class="mb-2" />
         </div>
@@ -21,10 +21,14 @@
           <PacbioTubeSelectedList />
         </div>
       </div>
-      <div class="flex flex-col w-1/2 mt-6">
-        <PacbioTagSetList ref="tagSetList" />
-        <PacbioTagSetItem />
-        <PacbioPoolEdit />
+      <div class="flex flex-col w-1/2 mt-6 gap-y-4">
+        <div>
+          <PacbioTagSetList ref="tagSetList" />
+          <PacbioTagSetItem />
+        </div>
+        <div>
+          <PacbioPoolEdit />
+        </div>
       </div>
     </div>
   </div>

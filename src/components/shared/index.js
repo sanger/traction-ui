@@ -115,6 +115,7 @@ const registerGlobal = (vue) => {
   vue.component('TractionSubSection', TractionSubSection)
   vue.component('TractionMutedText', TractionMutedText)
   vue.component('TractionToggle',TractionToggle)
+  registerBootstrapComponents(vue)
 }
 
 export { registerGlobal, registerBootstrapComponents }

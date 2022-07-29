@@ -1,19 +1,22 @@
 <template>
   <div data-type="pool">
     <traction-section title="Pooled Samples" :tag="`${poolType}`">
-      <div class="space-y-8">
-        <div>
-          <traction-sub-section title="Select file">
-            <traction-file-browser
-              ref-elem="qc-file-form-field"
-              ready="parsedFile"
-              file-types="text/csv, .csv"
-              input-action="uploadFile"
-            />
-          </traction-sub-section>
+      <div class="space-y-12">
+        <div class="flex flex-col">
+          <label class="text-left p-0">Select file</label>
+          <traction-file
+            id="qcFileInput"
+            ref="qc-file-form-field"
+            :state="parsedFile"
+            placeholder="Choose a file or drop it here..."
+            drop-placeholder="Drop file here..."
+            accept="text/csv, .csv"
+            size="sm"
+            @input="uploadFile"
+          ></traction-file>
         </div>
         <div>
-          <traction-sub-section title="Apply All">
+          <traction-sub-section title="Apply All" class="py-6">
             <div class="grid gap-5 grid-cols-5 mb-10 text-sm">
               <label> Auto tagging</label>
               <label>Template Prep Kit Box Barcode </label>
@@ -66,7 +69,6 @@
 import PacbioPoolLibraryList from '@/components/pacbio/PacbioPoolLibraryList'
 import { createNamespacedHelpers } from 'vuex'
 import { eachRecord } from '@/lib/csv/pacbio'
-import TractionFileBrowser from '../shared/TractionFileBrowser.vue'
 import TractionTextField from '../shared/TractionTextField.vue'
 
 const { mapGetters, mapActions } = createNamespacedHelpers('traction/pacbio/poolCreate')
@@ -75,7 +77,6 @@ export default {
   name: 'PoolEdit',
   components: {
     PacbioPoolLibraryList,
-    TractionFileBrowser,
     TractionTextField,
   },
   data() {
