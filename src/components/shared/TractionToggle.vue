@@ -1,8 +1,8 @@
 <template>
   <div
     :class="[
-      'w-12 h-6 flex rounded-full p-1 duration-100 cursor-pointer bg-sdb-500',
-      `${value ? 'bg-sdb-500' : 'bg-gray-300'}`,
+      'w-12 h-6 flex rounded-full p-1 duration-100 cursor-pointer bg-gray-300',
+      `${value ? 'bg-sdb-300' : 'bg-gray-300'}`,
     ]"
     :aria-checked="value.toString()"
     @click="toggle"
@@ -13,9 +13,6 @@
     ></div>
   </div>
 </template>
-
-/** *A toggle switch component * Modified from * *
-https://dev.to/fayaz/making-a-custom-toggle-switch-button-with-tailwindcss-and-vue-js-9cm **/
 
 <script>
 export default {
