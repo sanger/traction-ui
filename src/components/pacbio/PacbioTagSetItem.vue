@@ -16,8 +16,8 @@
       </div>
     </details>
     <div v-else class="tag-set-item">
-      <TractionMutedText data-attribute="tag-set-name-placeholder" class="tag-set-name"
-        >No tag set selected</TractionMutedText
+      <traction-muted-text data-attribute="tag-set-name-placeholder" class="tag-set-name"
+        >No tag set selected</traction-muted-text
       >
     </div>
   </div>

@@ -1,7 +1,7 @@
 <template>
   <div>
-    <traction-form @submit.prevent="handleSubmit()">
-      <TractionSection title="Tube" class-names="mb-2">
+    <traction-form  @submit.prevent="handleSubmit()">
+      <traction-section title="Tube" class-names="mb-2">
         <div class="text-left">Find Tube</div>
         <traction-input
           v-model="enteredLabware"
@@ -23,7 +23,7 @@
             Tube: {{ item.barcode }}
           </traction-list-group-item>
         </traction-list-group>
-      </TractionSection>
+      </traction-section>
     </traction-form>
   </div>
 </template>

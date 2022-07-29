@@ -1,6 +1,6 @@
 <template>
   <div class="tag-set-list">
-    <TractionSection title="Tag Selection">
+    <traction-section title="Tag Selection">
       <div class="text-left">
         Select tag set
         <traction-select
@@ -11,8 +11,7 @@
           @change="updateSelected"
         ></traction-select>
       </div>
-    </TractionSection>
-    >>>>>>> a672d88f (PacBio Pool/new page styling changes)
+    </traction-section>
   </div>
 </template>
 

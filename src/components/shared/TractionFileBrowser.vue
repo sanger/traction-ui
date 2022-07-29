@@ -11,7 +11,17 @@
           ></b-form-file>
 </template>
 
+
+
 <script>
+
+/**
+ * # TractionFileBrowser
+ *
+ * This component provides a wrapper file browser bootstrtap component 
+ * TODO: Need to replace with a custom component using tailwind
+ * 
+ */
 
 export default {
     name: "TractionFileBrowser",

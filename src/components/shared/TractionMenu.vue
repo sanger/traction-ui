@@ -5,9 +5,23 @@
     <slot />
   </menu>
 </template>
-
 <script>
 export default {
+/**
+ * # TractionMenu
+ *
+ * This component provides a tailwind component to display a top level
+ * menu.
+ *
+ * @example
+ * <template>
+ *   <div>
+ *      <traction-menu :border="true">
+ *         <traction-menu-item/>
+ *      </traction-menu>
+ *   </div>
+ * </template>
+ */
   name: 'TractionMenu',
   props: {
     border: {

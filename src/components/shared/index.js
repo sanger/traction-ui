@@ -9,7 +9,6 @@ import TractionLabel from '@/components/shared/TractionLabel.vue'
 import TractionMenu from '@/components/shared/TractionMenu.vue'
 import TractionMenuItem from '@/components/shared/TractionMenuItem.vue'
 import TractionTag from '@/components/shared/TractionTag'
-import TractionCheckBox from '@/components/shared/TractionCheckBox'
 import TractionSubSection from '@/components/shared/TractionSubSection'
 import TractionMutedText from '@/components/shared/TractionMutedText'
 import TractionToggle from '@/components/shared/TractionToggle'
@@ -113,7 +112,6 @@ const registerGlobal = (vue) => {
   vue.component('TractionMenu', TractionMenu)
   vue.component('TractionMenuItem', TractionMenuItem)
   vue.component('TractionTag', TractionTag)
-  vue.component('TractionCheckBox', TractionCheckBox)
   vue.component('TractionSubSection', TractionSubSection)
   vue.component('TractionMutedText', TractionMutedText)
   vue.component('TractionToggle',TractionToggle)

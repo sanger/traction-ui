@@ -15,6 +15,21 @@
 
 <script>
 export default {
+/**
+ * # TractionMenuItem
+ *
+ * Tailwind component to display a menu-item/tab-item within TractionMenu. 
+ * Support for two colors.
+ *
+ * @example
+ * <template>
+ *   <div>
+ *      <traction-menu :border="true">
+ *         <traction-menu-item/>
+ *      </traction-menu>
+ *   </div>
+ * </template>
+ */
   name: 'TractionMenuItem',
   props: {
     active: {

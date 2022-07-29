@@ -6,10 +6,22 @@
   </menu>
 </template>
 
-/**
- * Provides a softer text.
- **/
+/** * Provides a softer text. **/
 <script>
+/**
+ * # TractionMutedText
+ *
+ * Tailwind component to display a softer text
+ *
+ * @example
+ * <template>
+ *   <div>
+ *      <traction-muted-text>
+ *         Text to display
+ *      </traction-muted-text>
+ *   </div>
+ * </template>
+ */
 export default {
   name: 'TractionMutedText',
 }

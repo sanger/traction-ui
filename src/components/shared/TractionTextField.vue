@@ -12,6 +12,20 @@
 
 <script>
 export default {
+/**
+ * # TractionTextField
+ *
+ * Tailwind component to display a input/text field with an optiobnal label/title
+ *
+ * @example
+ * <template>
+ *   <div>
+ *      <traction-text-field labelText="Label>
+ *         Text to display
+ *      </traction-text-field>
+ *   </div>
+ * </template>
+ */
   name: 'TractionTextField',
   props: {
     value: {

@@ -19,6 +19,18 @@ https://dev.to/fayaz/making-a-custom-toggle-switch-button-with-tailwindcss-and-v
 
 <script>
 export default {
+  /**
+   * # TractionToggle
+   *
+   * Tailwind component to display a toggle switch component
+   * Modified from https://dev.to/fayaz/making-a-custom-toggle-switch-button-with-tailwindcss-and-vue-js-9cm
+   * @example
+   * <template>
+   *   <div>
+   *      <traction-toggle>
+   *   </div>
+   * </template>
+   */
   name: 'TractionToggle',
   props: {
     value: {

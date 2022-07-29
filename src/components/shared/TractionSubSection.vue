@@ -9,6 +9,23 @@
 
 <script>
 export default {
+/**
+ * # TractionSubSection
+ *
+ * Tailwind component to display a traction style sub-section 
+ * with a title and an optional border.
+ * 
+ * @example
+ * <template>
+ *   <div>
+ *      <traction-sub-section title="Title">
+ *        <div>
+ *          Components to display within section
+ *        </div>
+ *      </traction-sub-section>
+ *   </div>
+ * </template>
+ */
   name: 'TractionSubSection',
   props: {
     title: {

@@ -1,19 +1,19 @@
 <template>
   <div data-type="pool">
-    <TractionSection title="Pooled Samples" :tag="`${poolType}`">
+    <traction-section title="Pooled Samples" :tag="`${poolType}`">
       <div class="space-y-8">
         <div>
-          <TractionSubSection title="Select file">
-            <TractionFileBrowser
+          <traction-sub-section title="Select file">
+            <traction-file-browser
               ref-elem="qc-file-form-field"
               ready="parsedFile"
               file-types="text/csv, .csv"
               input-action="uploadFile"
             />
-          </TractionSubSection>
+          </traction-sub-section>
         </div>
         <div>
-          <TractionSubSection title="Apply All">
+          <traction-sub-section title="Apply All">
             <div class="grid gap-5 grid-cols-5 mb-10 text-sm">
               <label> Auto tagging</label>
               <label>Template Prep Kit Box Barcode </label>
@@ -21,33 +21,33 @@
               <label> Concentration</label>
               <label> Insert Size</label>
               <div class="w-full flex justify-center">
-                <TractionToggle v-model="autoTag" />
+                <traction-toggle v-model="autoTag" />
               </div>
-              <TractionTextField
+              <traction-text-field
                 value-field="poolItem.template_prep_kit_box_barcode"
                 data-attribute-value="template-prep-kit-box-barcode"
                 place-holder-text="Template Prep Kit Box Barcode"
               />
-              <TractionTextField
+              <traction-text-field
                 value-field="poolItem.volume"
                 data-attribute-value="volume"
                 place-holder-text="Volume"
               />
-              <TractionTextField
+              <traction-text-field
                 value-field="poolItem.concentration"
                 data-attribute-value="concentration"
                 place-holder-text="Concentration"
               />
-              <TractionTextField
+              <traction-text-field
                 value-field="poolItem.insert_size"
                 data-attribute-value="insert-size"
                 place-holder-text="Insert Size"
               />
             </div>
-          </TractionSubSection>
+          </traction-sub-section>
         </div>
       </div>
-    </TractionSection>
+    </traction-section>
     <PacbioPoolLibraryList :auto-tag="autoTag" />
     <div class="text-right py-8">
       <traction-button>
