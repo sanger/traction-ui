@@ -3,7 +3,6 @@ import Response from '@/api/Response'
 import * as Run from '@/api/PacbioRun'
 import build from '@/api/ApiBuilder'
 import Api from '@/api'
-import { it } from 'vitest'
 
 describe('Run', () => {
   let run, failedResponse
