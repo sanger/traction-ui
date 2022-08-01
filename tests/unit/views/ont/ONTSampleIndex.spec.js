@@ -1,4 +1,4 @@
-import ONTSampleIndex from '@/views/ont/ONTSampleIndex'
+import ONTSampleIndex from '@/views/ONT/ONTSampleIndex.vue'
 import { mount, localVue, store, Data } from '@support/testHelper'
 import { vi } from 'vitest'
 import flushPromises from 'flush-promises'
