@@ -36,7 +36,6 @@
                 v-model="poolItem.template_prep_kit_box_barcode"
                 data-attribute="template-prep-kit-box-barcode"
                 :value="poolItem.template_prep_kit_box_barcode"
-                placeholder="Template Prep Kit Box Barcode"
                 type="text"
                 title="Template Prep Kit Box Barcode"
               />
@@ -44,7 +43,6 @@
                 v-model="poolItem.volume"
                 data-attribute="volume"
                 :value="poolItem.volume"
-                placeholder="Volume"
                 type="text"
                 title="Volume"
               />
@@ -52,7 +50,6 @@
                 v-model="poolItem.concentration"
                 data-attribute="concentration"
                 :value="poolItem.concentration"
-                placeholder="Concentration"
                 type="text"
                 title="Concentration"
               />
@@ -60,7 +57,6 @@
                 v-model="poolItem.insert_size"
                 data-attribute="insert-size"
                 :value="poolItem.insert_size"
-                placeholder="Insert Size"
                 type="text"
                 title="Insert Size"
               />
