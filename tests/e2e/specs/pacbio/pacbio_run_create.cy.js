@@ -49,6 +49,7 @@ describe('Pacbio Run Create view', () => {
       .get('#dna-control-complex-box-barcode')
       .type('Lxxxxx101717600123199')
     cy.get('#system-name').select('Sequel IIe')
+    cy.get('[data-attribute=smrt-link-version]').select('v10')
     // TODO: calling it  list group item is not specific enough
     cy.get('.list-group-item')
       // this obviously gets quite a lot into implementation but at least it works!

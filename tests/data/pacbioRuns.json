@@ -13,6 +13,7 @@
           "sequencing_kit_box_barcode": "DM000110086180012311",
           "dna_control_complex_box_barcode": "Lxxxxx10171760012311",
           "system_name": "Sequel I",
+          "smrt_link_version": "v10",
           "created_at": "11/09/2019 01:11",
           "all_wells_have_pools": true
         }
@@ -29,6 +30,7 @@
           "sequencing_kit_box_barcode": "DM000110086180012312",
           "dna_control_complex_box_barcode": "Lxxxxx10171760012312",
           "system_name": "Sequel II",
+          "smrt_link_version": "v10",
           "created_at": "12/09/2019 02:22",
           "all_wells_have_pools": true
         }
@@ -45,6 +47,7 @@
           "sequencing_kit_box_barcode": "DM000110086180012312",
           "dna_control_complex_box_barcode": "Lxxxxx10171760012312",
           "system_name": "Sequel II",
+          "smrt_link_version": "v10",
           "created_at": "10/09/2019 02:22"
         }
       },
@@ -60,6 +63,7 @@
           "sequencing_kit_box_barcode": "DM000110086180012312",
           "dna_control_complex_box_barcode": "Lxxxxx10171760012312",
           "system_name": "Sequel II",
+          "smrt_link_version": "v10",
           "created_at": "10/09/2019 02:22",
           "all_wells_have_pools": true
         }
@@ -76,6 +80,7 @@
           "sequencing_kit_box_barcode": "DM000110086180012312",
           "dna_control_complex_box_barcode": "Lxxxxx10171760012312",
           "system_name": "Sequel II",
+          "smrt_link_version": "v10",
           "created_at": "10/09/2019 02:22",
           "all_wells_have_pools": true
         }
@@ -92,6 +97,7 @@
           "sequencing_kit_box_barcode": "DM000110086180012312",
           "dna_control_complex_box_barcode": "Lxxxxx10171760012312",
           "system_name": "Sequel II",
+          "smrt_link_version": "v10",
           "created_at": "10/09/2019 02:22",
           "all_wells_have_pools": false
         }
