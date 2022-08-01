@@ -192,7 +192,7 @@ const createWellsPayload = (wells, plateId) => {
   }
 }
 
-// This is exactly the same as the create payload apart from the id
+// This is exactly the same as createRunPayload apart from the included id key here
 const updateRunPayload = (run) => {
   return {
     data: {
