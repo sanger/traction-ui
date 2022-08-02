@@ -80,6 +80,14 @@
             "name": "pools"
           }
         ]
+      },
+      {
+        "name": "ont",
+        "resources": [
+          {
+            "name": "requests"
+          }
+        ]
       }
     ]
   },
