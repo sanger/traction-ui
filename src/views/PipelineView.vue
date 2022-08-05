@@ -37,6 +37,7 @@ export default {
     },
   },
   methods: {
+    /**This method returns the relative path to navigate to while clicking on a pipeline menu item*/
     path(route) {
       return '/' + this.pipelineInfo.name + '/' + route
     },

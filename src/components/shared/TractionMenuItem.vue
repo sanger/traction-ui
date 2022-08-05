@@ -2,14 +2,12 @@
   <li
     :class="[
       'pl-2 pr-2 p-0 m-0 rounded-t-md', // No margins, padded left and right
-      `hover:${getColor} hover:text-white transition-colors duration-200 ease-in-out`,
+      `hover:text-gray-100 transition-colors duration-200 ease-in-out`,
+      `${colorStyle}`,
       'cursor-pointer',
-      active ? `text-white ${getColor}` : `${getTextColor}`,
     ]"
   >
-    <div :class="active ? `border-1  border-${getColor}` : ``">
-      <slot />
-    </div>
+    <slot />
   </li>
 </template>
 
@@ -44,12 +42,12 @@ export default {
   },
 
   computed: {
-    getColor() {
-      return this.color == 'blue' ? 'bg-sdb-300' : 'bg-sp'
-    },
-    getTextColor() {
-      return this.color == 'blue' ? 'text-sdb-300' : 'text-sp'
-    },
+    colorStyle: ({ active, color }) =>
+      active
+        ? `text-white ${color == 'blue' ? 'bg-sdb-300 ' : 'bg-sp'}`
+        : `border-2 border-white text-black bg-gray-200 ${
+            color == 'blue' ? ' hover:bg-sdb-300' : 'hover:bg-sp'
+          }`,
   },
 }
 </script>
