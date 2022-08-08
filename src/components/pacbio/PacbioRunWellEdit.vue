@@ -106,7 +106,7 @@
 
     <traction-button
       id="disableAdaptiveLoadingBtn"
-      variant="primary"
+      theme="default"
       @click="disableAdaptiveLoadingInput()"
     >
       Disable Adaptive Loading
@@ -139,12 +139,12 @@
       <traction-button
         v-if="action.label == 'Update'"
         id="deleteWellBtn"
-        variant="danger"
+        theme="delete"
         @click="removeWell()"
       >
         Delete well
       </traction-button>
-      <traction-button :id="action.id" :variant="action.variant" @click="update()">
+      <traction-button :id="action.id" :theme="action.theme" @click="update()">
         {{ action.label }}
       </traction-button>
     </template>
@@ -230,14 +230,14 @@ export default {
         this.currentWell = await this.buildWell(this.position)
         this.action = {
           id: 'createBtn',
-          variant: 'success',
+          theme: 'create',
           label: 'Create',
         }
       } else {
         this.currentWell = { ...this.well(this.position) }
         this.action = {
           id: 'updateBtn',
-          variant: 'primary',
+          theme: 'update',
           label: 'Update',
         }
       }

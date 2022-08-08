@@ -1,7 +1,7 @@
 // TODO: routes are not tested so cause errors on start
-import Vue from 'vue'
 import Router from 'vue-router'
 import TractionDashboard from '@/views/TractionDashboard'
+import GeneralReception from '@/views/GeneralReception'
 import LabelPrinting from '@/views/LabelPrinting'
 import PageNotFound from '@/views/PageNotFound'
 import SaphyrView from '@/views/SaphyrView'
@@ -19,10 +19,9 @@ import PacbioPoolIndex from '@/views/pacbio/PacbioPoolIndex'
 import PacbioRunIndex from '@/views/pacbio/PacbioRunIndex'
 import PacbioRunShow from '@/views/pacbio/PacbioRunShow'
 import ONT from '@/views/ONT'
+import ONTSampleIndex from '@/views/ONT/ONTSampleIndex.vue'
 import PacbioReceptionSequencescape from '@/views/pacbio/PacbioReceptionSequencescape'
 import PacbioPoolCreate from '@/views/pacbio/PacbioPoolCreate'
-
-Vue.use(Router)
 
 export default new Router({
   routes: [
@@ -36,6 +35,12 @@ export default new Router({
       name: 'Dashboard',
       meta: { pipeline: 'Dashboard' },
       component: TractionDashboard,
+    },
+    {
+      path: '/reception',
+      name: 'Reception',
+      meta: { pipeline: 'Reception' },
+      component: GeneralReception,
     },
     {
       path: '/label-printing',
@@ -146,6 +151,14 @@ export default new Router({
       path: '/ont',
       component: ONT,
       meta: { pipeline: 'ONT' },
+      children: [
+        {
+          path: 'samples',
+          name: 'ONTSampleIndex',
+          component: ONTSampleIndex,
+          meta: { page: 'Samples' },
+        },
+      ],
     },
     {
       path: '/404',

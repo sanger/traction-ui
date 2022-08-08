@@ -3,7 +3,7 @@
     <traction-button
       id="printLabels"
       v-traction-modal.printerModal
-      variant="primary"
+      theme="print"
       :disabled="disabled"
     >
       Print Labels

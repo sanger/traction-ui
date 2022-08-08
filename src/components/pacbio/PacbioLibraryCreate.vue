@@ -4,7 +4,7 @@
       id="pacbioLibraryCreate"
       v-traction-modal.pacbioLibraryModal
       :disabled="disabled"
-      variant="success"
+      theme="create"
       @click="show"
     >
       Create Library
@@ -97,7 +97,7 @@
       <template #modal-footer="{ cancel }">
         <traction-button @click="cancel()"> Cancel </traction-button>
 
-        <traction-button id="create-btn" variant="success" type="submit" form="libraryCreateModal">
+        <traction-button id="create-btn" theme="create" type="submit" form="libraryCreateModal">
           Create
         </traction-button>
       </template>

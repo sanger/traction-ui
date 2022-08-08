@@ -1,12 +1,15 @@
-import FlaggedFeature from '@/components/shared/FlaggedFeature'
-import LoadingFullScreenModal from '@/components/shared/LoadingFullScreenModal'
-import TractionSection from '@/components/shared/TractionSection'
-import TractionHeading from '@/components/TractionHeading'
-import TractionMenu from '@/components/shared/TractionMenu'
-import TractionMenuItem from '@/components/shared/TractionMenuItem'
+import FlaggedFeature from '@/components/shared/FlaggedFeature.vue'
+import LoadingFullScreenModal from '@/components/shared/LoadingFullScreenModal.vue'
+import TractionButton from '@/components/shared/TractionButton.vue'
+import TractionFieldset from '@/components/shared/TractionFieldset.vue'
+import TractionFieldGroup from '@/components/shared/TractionFieldGroup.vue'
+import TractionSection from '@/components/shared/TractionSection.vue'
+import TractionHeading from '@/components/TractionHeading.vue'
+import TractionLabel from '@/components/shared/TractionLabel.vue'
+import TractionMenu from '@/components/shared/TractionMenu.vue'
+import TractionMenuItem from '@/components/shared/TractionMenuItem.vue'
 
 import {
-  BButton,
   BModal,
   VBModal,
   BFormSelect,
@@ -47,7 +50,6 @@ import {
 
 const registerBootstrapComponents = (vue) => {
   /* eslint-disable vue/component-definition-name-casing */
-  vue.component('traction-button', BButton)
   vue.component('traction-modal', BModal)
   vue.component('traction-select', BFormSelect)
   vue.component('traction-alert', BAlert)
@@ -84,7 +86,7 @@ const registerBootstrapComponents = (vue) => {
   vue.component('traction-input-group-append', BInputGroupAppend)
   vue.component('traction-pagination', BPagination)
 
-  /* 
+  /*
     directive is marked wth a v in front
     so it will be used as 'v-traction-modal'
   */
@@ -96,6 +98,10 @@ const registerBootstrapComponents = (vue) => {
 const registerGlobal = (vue) => {
   vue.component('FlaggedFeature', FlaggedFeature)
   vue.component('LoadingFullScreenModal', LoadingFullScreenModal)
+  vue.component('TractionButton', TractionButton)
+  vue.component('TractionFieldGroup', TractionFieldGroup)
+  vue.component('TractionFieldset', TractionFieldset)
+  vue.component('TractionLabel', TractionLabel)
   vue.component('TractionSection', TractionSection)
   vue.component('TractionHeading', TractionHeading)
   vue.component('TractionMenu', TractionMenu)

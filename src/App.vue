@@ -7,10 +7,11 @@
           <div class="flex flex-row gap-x-2">
             <img class="w-8 h-8" src="./images/traction-logo.svg" alt="Traction logo" />
             <div class="text-white text-2xl">Traction</div>
-          </div>
-          <div class="flex justify-center">
             <TractionLink name="Home" link="/dashboard" view-type="2" />
             <TractionLink name="Label Printing" link="/label-printing" view-type="2" />
+            <flagged-feature name="dpl_277_enable_general_reception"
+              ><TractionLink name="Reception" link="/reception" view-type="2"
+            /></flagged-feature>
           </div>
         </div>
       </div>

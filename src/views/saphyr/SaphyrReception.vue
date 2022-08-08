@@ -1,35 +1,43 @@
 <template>
-  <div class="reception">
-    <div class="form-group">
-      <label for="barcodes">Barcodes:</label>
-      <textarea
-        id="barcodes"
-        v-model="barcodes"
-        type="text"
-        class="form-control"
-        rows="10"
-        cols="10"
-        name="barcodes"
-      />
-    </div>
+  <flagged-feature name="dpl_277_disable_saphyr_specific_reception">
+    <template #disabled>
+      <div class="reception">
+        <div class="form-group">
+          <label for="barcodes">Barcodes:</label>
+          <textarea
+            id="barcodes"
+            v-model="barcodes"
+            type="text"
+            class="form-control"
+            rows="10"
+            cols="10"
+            name="barcodes"
+          />
+        </div>
 
-    <traction-button
-      id="findSampleExtractionTubes"
-      class="scanButton"
-      variant="success"
-      :disabled="barcodes.length === 0"
-      @click="handleSampleExtractionTubes"
-      >Import Sample Extraction Tubes</traction-button
-    >
-  </div>
+        <traction-button
+          id="findSampleExtractionTubes"
+          class="scanButton"
+          theme="create"
+          :disabled="barcodes.length === 0"
+          @click="handleSampleExtractionTubes"
+          >Import Sample Extraction Tubes</traction-button
+        >
+      </div>
+    </template>
+    Saphyr receptions are disabled, please use the general reception. Link in the menu bar at the
+    top
+  </flagged-feature>
 </template>
 
 <script>
 import { mapActions, mapState } from 'vuex'
 import deserialize from '@/api/JsonApi'
+import FlaggedFeature from '../../components/shared/FlaggedFeature.vue'
 
 export default {
   name: 'SaphyrReception',
+  components: { FlaggedFeature },
   props: {},
   data() {
     return {

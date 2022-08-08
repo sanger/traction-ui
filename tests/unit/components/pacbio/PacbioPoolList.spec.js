@@ -6,6 +6,8 @@ describe('pacbioPoolList', () => {
   let wrapper
 
   beforeEach(() => {
+    const setPoolsAction = vi.spyOn(store.getters.api.traction.pacbio.libraries, 'get')
+    setPoolsAction.mockImplementation(() => {})
     store.state.traction.pacbio.pools = storePools
 
     wrapper = mount(pacbioPoolList, {

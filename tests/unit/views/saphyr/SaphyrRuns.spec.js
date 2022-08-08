@@ -10,7 +10,6 @@ describe('Runs.vue', () => {
     mockRuns = new Response(Data.Runs).deserialize.runs
 
     store.commit('traction/saphyr/runs/setRuns', mockRuns)
-
     wrapper = mount(Runs, { store, localVue, router })
     runs = wrapper.vm
   })

@@ -43,7 +43,7 @@
       <template #cell(actions)="row">
         <traction-button
           :id="generateId('edit', row.item.id)"
-          variant="outline-dark"
+          theme="edit"
           size="sm"
           class="mr-1"
           @click="redirectToRun(row.item.id)"
@@ -53,7 +53,7 @@
 
         <traction-button
           :id="generateId('startRun', row.item.id)"
-          variant="outline-success"
+          theme="create"
           size="sm"
           class="mr-1"
           :disabled="row.item.state !== 'pending'"
@@ -64,7 +64,7 @@
 
         <traction-button
           :id="generateId('completeRun', row.item.id)"
-          variant="outline-primary"
+          theme="update"
           size="sm"
           class="mr-1"
           :disabled="isRunDisabled(row.item)"
@@ -75,7 +75,7 @@
 
         <traction-button
           :id="generateId('cancelRun', row.item.id)"
-          variant="outline-danger"
+          theme="delete"
           size="sm"
           class="mr-1"
           :disabled="isRunDisabled(row.item)"
@@ -89,7 +89,7 @@
     <span class="font-weight-bold">Total records: {{ runs.length }}</span>
 
     <div class="clearfix">
-      <traction-button id="newRun" class="float-left" variant="success" @click="redirectToRun()">
+      <traction-button id="newRun" class="float-left" theme="create" @click="redirectToRun()">
         New Run
       </traction-button>
       <traction-pagination

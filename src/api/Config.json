@@ -9,6 +9,9 @@
       },
       {
         "name": "tags"
+      },
+      {
+        "name": "receptions"
       }
     ],
     "pipelines": [
@@ -75,6 +78,14 @@
           },
           {
             "name": "pools"
+          }
+        ]
+      },
+      {
+        "name": "ont",
+        "resources": [
+          {
+            "name": "requests"
           }
         ]
       }

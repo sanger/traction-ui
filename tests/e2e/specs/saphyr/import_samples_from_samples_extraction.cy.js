@@ -1,6 +1,12 @@
 // https://docs.cypress.io/api/introduction/api.html
 
 describe('Import samples from Samples extraction, for Saphyr', () => {
+  beforeEach(() => {
+    cy.withFlags({
+      dpl_277_disable_saphyr_specific_reception: { enabled: false },
+    })
+  })
+
   it('Successfully', () => {
     cy.visit('#/saphyr/reception')
     cy.contains('Barcodes:')

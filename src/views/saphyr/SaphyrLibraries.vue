@@ -66,7 +66,7 @@
 
       <traction-button
         id="deleteLibraries"
-        variant="danger"
+        theme="delete"
         class="float-left"
         :disabled="selected.length === 0"
         @click="handleLibraryDelete"

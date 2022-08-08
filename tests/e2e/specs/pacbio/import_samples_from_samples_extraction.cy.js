@@ -1,6 +1,11 @@
 // https://docs.cypress.io/api/introduction/api.html
 
 describe('Import samples from Samples extraction, for Pacbio', () => {
+  beforeEach(() => {
+    cy.withFlags({
+      dpl_277_disable_pacbio_specific_reception: { enabled: false },
+    })
+  })
   it('Successfully', () => {
     cy.visit('#/pacbio/samples-extraction-reception')
     cy.contains('Barcodes:')

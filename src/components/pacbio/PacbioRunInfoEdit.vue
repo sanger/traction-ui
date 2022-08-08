@@ -68,6 +68,22 @@
       </traction-row>
       <traction-row>
         <traction-col>
+          <label for="smrt-link-version">SMRT Link Version:</label>
+        </traction-col>
+        <traction-col>
+          <traction-select
+            id="smrt-link-version"
+            ref="smrtLinkVersion"
+            :value="smrtLinkVersion"
+            data-attribute="smrt-link-version"
+            :options="smrtLinkOptions"
+            title="SMRT Link Version"
+            @change="setSmrtLinkVersion"
+          />
+        </traction-col>
+      </traction-row>
+      <traction-row>
+        <traction-col>
           <label for="default-comments">Comments:</label>
         </traction-col>
         <traction-col>
@@ -95,6 +111,7 @@ export default {
   data() {
     return {
       systemNameOptions: ['Sequel I', 'Sequel II', 'Sequel IIe'],
+      smrtLinkOptions: ['v10'],
     }
   },
   computed: {
@@ -106,6 +123,7 @@ export default {
       comments: (state) => state.currentRun.comments,
       uuid: (state) => state.currentRun.uuid,
       systemName: (state) => state.currentRun.system_name,
+      smrtLinkVersion: (state) => state.currentRun.smrt_link_version,
     }),
   },
   methods: {
@@ -115,6 +133,7 @@ export default {
       'setComments',
       'setUuid',
       'setSystemName',
+      'setSmrtLinkVersion',
     ]),
   },
 }

@@ -1,11 +1,12 @@
-const ont = {
-  namespaced: true,
-  state: {
-    labelTemplateId: import.meta.env.VITE_ONT_LABEL_TEMPLATE_ID,
-  },
-  getters: {
-    labelTemplateId: (state) => state.labelTemplateId,
-  },
-}
+import state from './state'
+import getters from './getters'
+import mutations from './mutations'
+import actions from './actions'
 
-export default ont
+export default {
+  namespaced: true,
+  getters,
+  mutations,
+  actions,
+  state,
+}

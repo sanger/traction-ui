@@ -1,3 +1,5 @@
+import Vue from 'vue'
+
 /**
  * Extract the attributes from a JSON API resource object, merge them with the id
  * and type attributes
@@ -145,6 +147,46 @@ const deserialize = ({ data, included }, includeStore = {}) => {
   }
 }
 
+const matchesAllAttributes =
+  (filters) =>
+  ({ attributes }) =>
+    Object.entries(filters).every(([key, value]) => attributes[key] === value)
+
+/**
+ * Filters the given array of JSON-API objects to those matching the provided attributes
+ * @param {Array} data Array of JSON API data
+ * @param {Object} attributes The attributes and their values to match
+ * @returns {Array} Array of the extracted attribute
+ */
+const filterByAttribute = (data, filters) => data.filter(matchesAllAttributes(filters))
+
+/**
+ * Extracts the given attribute from all JSON-API objects in the array and
+ * returnthem as an array
+ * @param {Array} data Array of JSON API data
+ * @param {String} attribute The attribute to extract
+ * @returns {Array} Array of the extracted attribute
+ */
+const mapAttribute = (data, attribute) => data.map(({ attributes }) => attributes[attribute])
+
+/**
+ * Helper function to store json api resource objects in the store.
+ *
+ * @param {string} resource name of the resource to populate in the store
+ * @param {bool} includeRelationships indicates if related resource ids should
+ * be extracted and included in the resulting object.
+ * @return {Function} A mutation function for populating the resource
+ */
+const populateById =
+  (resource, { includeRelationships = false } = {}) =>
+  (state, data) => {
+    const before = state.resources[resource]
+    Vue.set(state.resources, resource, {
+      ...before, // Merge in the existing state
+      ...dataToObjectById({ data, includeRelationships }),
+    })
+  }
+
 export {
   extractAttributes,
   mapRelationships,
@@ -157,6 +199,9 @@ export {
   deserialize,
   dataToObjectById,
   extractRelationshipsAndGroupById,
+  mapAttribute,
+  filterByAttribute,
+  populateById,
 }
 
 export default deserialize

@@ -1,17 +1,7 @@
-import { dataToObjectById } from '@/api/JsonApi'
+import { dataToObjectById, populateById } from '@/api/JsonApi'
 import Vue from 'vue'
 import { newLibrary } from '@/store/traction/pacbio/poolCreate/pool.js'
 import defaultState from './state'
-
-const populateById =
-  (resource, { includeRelationships = false } = {}) =>
-  (state, data) => {
-    const before = state.resources[resource]
-    Vue.set(state.resources, resource, {
-      ...before, // Merge in the existing state
-      ...dataToObjectById({ data, includeRelationships }),
-    })
-  }
 
 // Mutations handle synchronous update of state.
 export default {
