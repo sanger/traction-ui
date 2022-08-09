@@ -41,6 +41,8 @@ export default {
     path(route) {
       return '/' + this.pipelineInfo.name + '/' + route
     },
+    /** Callback handler for tab item selection - Each tab selection navigates user to a different page which
+     * is handled by the router.push method**/
     setSource(indx) {
       this.sourceIndex = indx
       this.$router.push({ path: this.path(this.pipelineInfo.routes[indx]) }).catch((error) => {
