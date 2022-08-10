@@ -1,26 +1,36 @@
 <template>
-  <div>
-    <traction-container id="pool" fluid>
-      <traction-row>
-        <traction-col md="12" lg="6">
-          <traction-tabs content-class="mt-3" fill no-fade>
-            <traction-tab title="Add Plates">
-              <PacbioPlateFind ref="labwareFind" />
-              <PacbioPlateSelectedList />
-            </traction-tab>
-            <traction-tab title="Add Tubes">
-              <PacbioTubeFind ref="labwareFind" />
-              <PacbioTubeSelectedList
-            /></traction-tab>
-          </traction-tabs>
-        </traction-col>
-        <traction-col md="12" lg="6">
+  <div id="pool">
+    <div class="flex flex-row">
+      <div class="flex flex-col w-1/2 px-4">
+        <traction-menu :border="true">
+          <traction-menu-item
+            v-for="(tabTitle, index) in tabTitles"
+            :key="index"
+            :active="index == sourceIndex"
+            color="blue"
+            @click.native="setSource(index)"
+            >{{ tabTitle }}</traction-menu-item
+          >
+        </traction-menu>
+        <div v-if="sourceIndex == 0" class="flex flex-col">
+          <PacbioPlateFind class="mb-6" />
+          <PacbioPlateSelectedList class="mb-2" />
+        </div>
+        <div v-else>
+          <PacbioTubeFind class="mb-2" />
+          <PacbioTubeSelectedList />
+        </div>
+      </div>
+      <div class="flex flex-col w-1/2 mt-6 gap-y-4">
+        <div>
           <PacbioTagSetList ref="tagSetList" />
           <PacbioTagSetItem />
+        </div>
+        <div>
           <PacbioPoolEdit />
-        </traction-col>
-      </traction-row>
-    </traction-container>
+        </div>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -47,8 +57,9 @@ export default {
     PacbioTagSetItem,
     PacbioPoolEdit,
   },
+
   data() {
-    return {}
+    return { sourceIndex: 0, tabTitles: ['Add Plates', 'Add Tubes'] }
   },
   created() {
     const requests = this.fetchPacbioRequests()
@@ -70,6 +81,9 @@ export default {
       if (!success) {
         this.showAlert(errors, 'danger')
       }
+    },
+    setSource(indx) {
+      this.sourceIndex = indx
     },
     ...mapActions(['fetchPacbioRequests', 'fetchPacbioTagSets', 'populateLibrariesFromPool']),
   },

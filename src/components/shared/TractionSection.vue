@@ -1,10 +1,11 @@
 <template>
-  <section class="flex flex-col gap-y-4 mb-10">
+  <section :class="`flex flex-col gap-y-4 ${classNames}`">
     <TractionHeading level="4" :show-border="true">
       <div class="flex flex-row gap-x-2">
         <slot name="icon"></slot> {{ title }}
-      </div></TractionHeading
-    >
+        <TractionTag v-if="tag.length > 0">{{ tag }}</TractionTag>
+      </div>
+    </TractionHeading>
     <div class="sm:px-6 lg:px-8">
       <slot></slot>
     </div>
@@ -13,11 +14,36 @@
 
 <script>
 export default {
+  /**
+   * # TractionSection
+   *
+   * Tailwind component to display a traction style section
+   * with a title and an optional border.
+   *
+   * @example
+   * <template>
+   *   <div>
+   *      <traction-section :show-border="true" title="Title">
+   *        <div>
+   *          Components to display within section
+   *        </div>
+   *      </traction-section>
+   *   </div>
+   * </template>
+   */
   name: 'TractionSection',
   props: {
     title: {
       type: String,
       required: true,
+    },
+    classNames: {
+      type: String,
+      default: '',
+    },
+    tag: {
+      type: String,
+      default: '',
     },
   },
 }

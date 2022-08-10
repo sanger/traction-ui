@@ -16,7 +16,7 @@
         </div>
       </div>
     </div>
-    <TractionHeading level="1">{{ pipeline }} {{ page }}</TractionHeading>
+    <TractionHeading level="1" shadow>{{ pipeline }} {{ page }}</TractionHeading>
     <div class="flex flex-col mb-auto px-4 py-10">
       <router-view class="text-center" />
     </div>
