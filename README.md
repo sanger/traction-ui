@@ -33,12 +33,11 @@ Install the require dependencies:
 
 ## Running
 
-In the project directory, you can run:
+To run the app and have hot-reloads for development, run the following:
 
     npm run start
 
-To run the app and have hot-reloads for development:
-*This internally run serve and serve:css commands*
+This internally runs `serve` and `serve:css` commands.
 
 ## Testing
 
