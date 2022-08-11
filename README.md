@@ -63,17 +63,17 @@ This internally runs `serve` and `serve:css` commands.
     - if you don't already have one create `.env.production.local` in the root folder as a copy of `.env.production`
     - change `VITE_TRACTION_BASE_URL=REPLACE_VITE_TRACTION_BASE_URL` to `VITE_TRACTION_BASE_URL=http://traction`
     - change `VITE_SAMPLEEXTRACTION_BASE_URL=REPLACE_VITE_SAMPLEEXTRACTION_BASE_URL` to `VITE_SAMPLEEXTRACTION_BASE_URL=http://samples-extraction`
-    - change to `VITE_SEQUENCESCAPE_BASE_URL=REPLACE_VITE_SEQUENCESCAPE_BASE_URL` to `VITE_SEQUENCESCAPE_BASE_URL=http://sequencescape`
+    - change `VITE_SEQUENCESCAPE_BASE_URL=REPLACE_VITE_SEQUENCESCAPE_BASE_URL` to `VITE_SEQUENCESCAPE_BASE_URL=http://sequencescape`
 
 ## CSS
 
-- To modify Tailwind configuration
- Tailwind styles used in this project is from `@sanger/ui-styling` npm module. Any further modifications required for the project can be done in `tailwind.config.js` file in root directory.
+The Tailwind styles used in this project are from the `@sanger/ui-styling` npm module. Any further modifications required for the project can be done in the `tailwind.config.js` file, in the root directory.
 
-- To generate Tailwind css independently you can run:
+To generate Tailwind css independently you can run:
+
+    npm run serve:css
+
 *This is not required mostly, as this will be run as part of 'npm run start'*
-
-npm run serve:css
 
 ## Formatting and Linting
 
