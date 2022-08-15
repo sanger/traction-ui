@@ -4,6 +4,7 @@ const flags = {
   flipper_id: 'User',
   features: {
     dpl_277_enable_general_reception: { enabled: true },
+    dpl_439_enable_qc_results: { enabled: true }
   },
 }
 

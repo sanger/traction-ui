@@ -3,6 +3,7 @@ import Router from 'vue-router'
 import TractionDashboard from '@/views/TractionDashboard'
 import GeneralReception from '@/views/GeneralReception'
 import LabelPrinting from '@/views/LabelPrinting'
+import QCResults from '@/views/QCResults'
 import PageNotFound from '@/views/PageNotFound'
 import SaphyrView from '@/views/SaphyrView'
 import SaphyrReception from '@/views/saphyr/SaphyrReception'
@@ -47,6 +48,12 @@ export default new Router({
       name: 'LabelPrinting',
       meta: { page: 'Label Printing' },
       component: LabelPrinting,
+    },
+    {
+      path: '/qc-results',
+      name: 'QCResults',
+      meta: { page: 'QC Results' },
+      component: QCResults,
     },
     {
       path: '/saphyr',

@@ -1,8 +1,7 @@
 <template>
-  <flagged-feature name="dpl_277_enable_general_reception">
-    <template #disabled
-      >General reception is disabled, please use the pipeline specific receptions</template
-    >
+  <!--<flagged-feature name="dpl_277_enable_general_reception">-->
+   <div>
+
 
     <loading-full-screen-modal v-bind="modalState"></loading-full-screen-modal>
 
@@ -26,7 +25,8 @@
       @importFailed="importFailed"
       @importLoaded="importLoaded"
     ></component>
-  </flagged-feature>
+    </div>
+  <!--</flagged-feature>-->
 </template>
 
 <script>
