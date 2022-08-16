@@ -29,22 +29,24 @@
     </traction-section>
 
     <traction-section title="QC Results" v-if="displayForm">
+      <traction-muted-text>
+        Not all values need to be supplied, just those where new results are available.
+        Any previous values will not be overwritten - a full history is kept.
+      </traction-muted-text>
+
       <traction-field-group
         v-for="qcAssay in qcAssays"
         :key="qcAssay.key"
-        :label="`${qcAssay.name} (${qcAssay.units})`"
+        :label="formatFieldName(qcAssay)"
         :attribute="qcAssay.key"
-        :for="qcAssay.key">
+        :for="qcAssay.key"
+        :description="formatLatestValue(qcAssay.key)">
           <traction-input
             :id="qcAssay.key"
             v-model="formData[qcAssay.key]"
             :type="qcAssay.dataType"
           ></traction-input>
-          <br/>
-          Existing value: {{ existingData[qcAssay.key] }}
       </traction-field-group>
-
-      <br/>
 
       <traction-button
         id="save"
@@ -66,17 +68,20 @@
         Search new barcode
       </traction-button>
     </traction-section>
+
   </div>
 </template>
 
 <script>
 import Api from '@/mixins/Api'
 import BarcodeIcon from '@/icons/BarcodeIcon.vue'
+import TractionMutedText from '../shared/TractionMutedText.vue'
 
 export default {
   name: 'QCResultsForm',
   components: {
-    BarcodeIcon
+    BarcodeIcon,
+    TractionMutedText,
   },
   mixins: [Api],
   props: {
@@ -111,6 +116,23 @@ export default {
           'dataType': 'number',
           'units': 'ng/μl',
         },
+        {
+          'key': 'thingWithNoUnits',
+          'name': 'Thing',
+          'dataType': 'number'
+        },
+        {
+          'key': 'thingWithNoUnits2',
+          'name': 'Thing2',
+          'dataType': 'number',
+          'units': null
+        },
+        {
+          'key': 'thingWithNoUnits3',
+          'name': 'Thing3',
+          'dataType': 'number',
+          'units': ''
+        },
       ]
       return mockAssays
     },
@@ -126,6 +148,7 @@ export default {
       this.preprocessBarcode()
 
       const tractionData = await this.loadExistingTractionData()
+      // this.showAlert('There was a problem loading the data for this barcode.', 'danger')
       this.existingData = tractionData
 
       this.displayForm = true
@@ -139,6 +162,9 @@ export default {
     async loadExistingTractionData() {
       return {
         tissueMass: 5,
+        thingWithNoUnits: 9,
+        thingWithNoUnits2: 19,
+        thingWithNoUnits3: 94,
       }
     },
     // Reset the form, to look at QC results of a new labware
@@ -157,10 +183,13 @@ export default {
     async save() {
       this.isDisabled = true
 
+      // When doing this for real, make sure blank values for fields don't get saved & don't overwrite existingData
       this.existingData = this.formData
       this.formData = {}
 
       this.isDisabled = false
+      this.showAlert('Saved successfully.', 'success')
+      // this.showAlert('There was a problem saving the data.', 'danger')
     },
     isObjEmpty(obj) {
       return Object.keys(obj).length === 0
@@ -170,6 +199,28 @@ export default {
       this.formData = {}
       this.existingData = {}
       this.displayForm = false
+    },
+    formatFieldName(qcAssayConfig) {
+      let txt = qcAssayConfig.name
+      if(qcAssayConfig.units) {
+        txt += " (" + qcAssayConfig.units + ")"
+      }
+      return txt
+    },
+    formatLatestValue(qcAssay) {
+      const existingValue = this.existingData[qcAssay]
+      const qcAssayConfig = this.qcAssays.filter((assay)=>{return (assay.key === qcAssay)})[0]
+
+      let txt = "Latest: "
+      if(existingValue){
+        txt += existingValue
+        if(qcAssayConfig.units) {
+          txt += qcAssayConfig.units
+        }
+      } else {
+        txt += "none"
+      }
+      return txt
     }
   },
 }
