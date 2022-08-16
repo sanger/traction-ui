@@ -1,22 +1,25 @@
 <template>
   <div class="display-contents">
-    <traction-section title="Scan Barcode" v-if="!displayForm">
-      <template #icon><BarcodeIcon /></template>
-      <traction-textarea
-        id="barcode"
-        v-model="barcode"
-        placeholder="Scan barcode to add QC results..."
-        rows="1"
-        max-rows="1"
-        name="barcode"
-        class="text-base"
-      />
-
-      <br/>
+    <traction-section title="Labware" >
+      <traction-field-group
+        label="Barcode"
+        attribute="barcode"
+        for="barcode">
+          <traction-textarea
+            id="barcode"
+            v-model="barcode"
+            placeholder="Scan barcode to manage QC results..."
+            rows="1"
+            max-rows="1"
+            name="barcode"
+            class="text-base"
+            :disabled="displayForm"
+          />
+      </traction-field-group>
 
       <traction-button
         id="searchBarcode"
-        :disabled="isDisabled"
+        :disabled="isDisabled || displayForm"
         class="ml-8 mr-8"
         theme="create"
         @click="searchBarcode"
@@ -24,7 +27,6 @@
         Go
       </traction-button>
     </traction-section>
-
 
     <traction-section title="QC Results" v-if="displayForm">
       <traction-field-group
@@ -87,14 +89,15 @@ export default {
       existingData: {},
       displayForm: false,
       formData: {},
+      isDisabled: false,
+      barcodeDisabled: false,
     }
   },
   computed: {
-    isDisabled: () => false,
   },
   methods: {
+    // Retrieve the QC assays that we know about (configured in Traction Service), for user to enter data against.
     retrieveQCAssays() {
-      console.log("retrieving QC Assays...")
       const mockAssays = [
         {
           'key': 'tissueMass',
@@ -109,31 +112,65 @@ export default {
           'units': 'ng/μl',
         },
       ]
-      console.log(mockAssays)
       return mockAssays
     },
+    // See if we recognise the user-entered barcode and loads data if so.
+    // Currently only checks if in Traction, but could also check Sequencescape and Samples Extraction
     async searchBarcode() {
-      console.log("searching by barcode...", this.barcode)
+      this.isDisabled = true
+      if(!this.barcode) {
+        this.isDisabled = false
+        return
+      }
+
+      this.preprocessBarcode()
+
       const tractionData = await this.loadExistingTractionData()
-      console.log("retrieved traction data...", tractionData)
       this.existingData = tractionData
+
       this.displayForm = true
+      this.barcodeDisabled = true
+      this.isDisabled = false
+    },
+    // Do any validation or formatting required on the user-entered barcode
+    preprocessBarcode() {
+      this.barcode = this.barcode.trim()
     },
     async loadExistingTractionData() {
-      console.log("searching Traction for barcode...")
       return {
         tissueMass: 5,
       }
     },
+    // Reset the form, to look at QC results of a new labware
     async searchNewBarcode() {
-      this.displayForm = false
+      let goAhead = false
+      if(!this.isObjEmpty(this.formData)){
+        goAhead = confirm("There is unsaved data in the form. Are you sure you want to discard it?")
+      } else {
+        goAhead = true
+      }
+      if(goAhead) {
+        this.resetForm()
+      }
     },
+    // Send user-entered QC data to Traction Service to be saved
     async save() {
-      console.log('saving...')
-      console.log(this.formData)
+      this.isDisabled = true
+
       this.existingData = this.formData
       this.formData = {}
+
+      this.isDisabled = false
     },
+    isObjEmpty(obj) {
+      return Object.keys(obj).length === 0
+    },
+    resetForm() {
+      this.barcode = ''
+      this.formData = {}
+      this.existingData = {}
+      this.displayForm = false
+    }
   },
 }
 </script>
