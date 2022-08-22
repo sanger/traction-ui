@@ -1,4 +1,19 @@
 import handlePromise from '@/api/PromiseHelper'
+import { handleResponse } from '@/api/ResponseHelper'
+
+const fetchQcAssayTypes = async ({ commit, rootState }) => {
+  const request = rootState.api.traction.qc_assay_types
+  const promise = request.get()
+  const response = await handleResponse(promise)
+
+  const { success, data: { data } = {}, errors = [] } = response
+
+  if (success) {
+    commit('populateQcAssayTypes', data)
+  }
+
+  return { success, errors }
+}
 
 const startRun = async ({ dispatch }, { id, pipeline }) => {
   let payload = { id: id, attributes: { state: 'started' } }
@@ -59,8 +74,9 @@ const actions = {
   cancelRun,
   handleRunUpdate,
   setTags,
+  fetchQcAssayTypes
 }
 
-export { startRun, completeRun, cancelRun, handleRunUpdate, runPayloadJson, setTags }
+export { startRun, completeRun, cancelRun, handleRunUpdate, runPayloadJson, setTags, fetchQcAssayTypes }
 
 export default actions

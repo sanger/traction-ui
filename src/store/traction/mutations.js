@@ -1,4 +1,5 @@
 import Vue from 'vue'
+import { populateById } from '@/api/JsonApi'
 
 const mutations = {
   setTags(state, tags) {
@@ -17,6 +18,12 @@ const mutations = {
   removeMessage(state, messageIndex) {
     Vue.delete(state.messages, messageIndex)
   },
+  /**
+   * Populated with resources via API calls from the actions
+   * @param {Object} state The VueXState object
+   * @param {Array.{}} qcAssayTypes The qcAssayType resources to populate the store
+   */
+   populateQcAssayTypes: populateById('qcAssayTypes', { includeRelationships: true })
 }
 
 export default mutations

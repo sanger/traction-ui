@@ -44,8 +44,8 @@
           <traction-input
             :id="qcAssay.key"
             v-model="formData[qcAssay.key]"
-            :type="qcAssay.dataType"
           ></traction-input>
+          <!-- :type="qcAssay.dataType" -->
       </traction-field-group>
 
       <traction-button
@@ -76,6 +76,7 @@
 import Api from '@/mixins/Api'
 import BarcodeIcon from '@/icons/BarcodeIcon.vue'
 import TractionMutedText from '../shared/TractionMutedText.vue'
+import { mapActions, mapGetters } from 'vuex'
 
 export default {
   name: 'QCResultsForm',
@@ -90,7 +91,7 @@ export default {
   data() {
     return {
       barcode: '',
-      qcAssays: this.retrieveQCAssays(),
+      qcAssays: [],
       existingData: {},
       displayForm: false,
       formData: {},
@@ -102,40 +103,40 @@ export default {
   },
   methods: {
     // Retrieve the QC assays that we know about (configured in Traction Service), for user to enter data against.
-    retrieveQCAssays() {
-      const mockAssays = [
-        {
-          'key': 'tissueMass',
-          'name': 'Tissue mass',
-          'dataType': 'number',
-          'units': 'mg',
-        },
-        {
-          'key': 'qubit',
-          'name': 'Qubit',
-          'dataType': 'number',
-          'units': 'ng/μl',
-        },
-        {
-          'key': 'thingWithNoUnits',
-          'name': 'Thing',
-          'dataType': 'number'
-        },
-        {
-          'key': 'thingWithNoUnits2',
-          'name': 'Thing2',
-          'dataType': 'number',
-          'units': null
-        },
-        {
-          'key': 'thingWithNoUnits3',
-          'name': 'Thing3',
-          'dataType': 'number',
-          'units': ''
-        },
-      ]
-      return mockAssays
-    },
+    // retrieveQCAssaysMock() {
+    //   const mockAssays = [
+    //     {
+    //       'key': 'tissueMass',
+    //       'name': 'Tissue mass',
+    //       'dataType': 'number',
+    //       'units': 'mg',
+    //     },
+    //     {
+    //       'key': 'qubit',
+    //       'name': 'Qubit',
+    //       'dataType': 'number',
+    //       'units': 'ng/μl',
+    //     },
+    //     {
+    //       'key': 'thingWithNoUnits',
+    //       'name': 'Thing',
+    //       'dataType': 'number'
+    //     },
+    //     {
+    //       'key': 'thingWithNoUnits2',
+    //       'name': 'Thing2',
+    //       'dataType': 'number',
+    //       'units': null
+    //     },
+    //     {
+    //       'key': 'thingWithNoUnits3',
+    //       'name': 'Thing3',
+    //       'dataType': 'number',
+    //       'units': ''
+    //     },
+    //   ]
+    //   return mockAssays
+    // },
     // See if we recognise the user-entered barcode and loads data if so.
     // Currently only checks if in Traction, but could also check Sequencescape and Samples Extraction
     async searchBarcode() {
@@ -148,6 +149,7 @@ export default {
       this.preprocessBarcode()
 
       const tractionData = await this.loadExistingTractionData()
+
       // this.showAlert('There was a problem loading the data for this barcode.', 'danger')
       this.existingData = tractionData
 
@@ -160,12 +162,19 @@ export default {
       this.barcode = this.barcode.trim()
     },
     async loadExistingTractionData() {
+      // First call Traction Service to get QC Assay Types
+      await this.fetchQcAssayTypes()
+      this.qcAssays = this.qcAssayTypesArray()
+
+      // TODO: Then call Traction Service to retrieve any existing QC Results for the user-entered barcode
       return {
         tissueMass: 5,
         thingWithNoUnits: 9,
         thingWithNoUnits2: 19,
         thingWithNoUnits3: 94,
       }
+
+      // TODO: In future, also check external services (SS, SampEx) to find extra info about user-entered barcode
     },
     // Reset the form, to look at QC results of a new labware
     async searchNewBarcode() {
@@ -201,7 +210,7 @@ export default {
       this.displayForm = false
     },
     formatFieldName(qcAssayConfig) {
-      let txt = qcAssayConfig.name
+      let txt = qcAssayConfig.label
       if(qcAssayConfig.units) {
         txt += " (" + qcAssayConfig.units + ")"
       }
@@ -221,7 +230,9 @@ export default {
         txt += "none"
       }
       return txt
-    }
+    },
+    ...mapActions('traction', ['fetchQcAssayTypes']),
+    ...mapGetters('traction', ['qcAssayTypesArray']),
   },
 }
 </script>
