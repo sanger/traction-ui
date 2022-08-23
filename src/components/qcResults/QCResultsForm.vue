@@ -166,6 +166,8 @@ export default {
       await this.fetchQcAssayTypes()
       this.qcAssays = this.qcAssayTypesArray()
 
+      await this.fetchQcResultsForBarcode()
+
       // TODO: Then call Traction Service to retrieve any existing QC Results for the user-entered barcode
       return {
         tissueMass: 5,
@@ -231,7 +233,7 @@ export default {
       }
       return txt
     },
-    ...mapActions('traction', ['fetchQcAssayTypes']),
+    ...mapActions('traction', ['fetchQcAssayTypes', 'fetchQcResultsForBarcode']),
     ...mapGetters('traction', ['qcAssayTypesArray']),
   },
 }

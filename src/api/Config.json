@@ -15,6 +15,9 @@
       },
       {
         "name": "qc_assay_types"
+      },
+      {
+        "name": "qc_results"
       }
     ],
     "pipelines": [

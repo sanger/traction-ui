@@ -15,6 +15,22 @@ const fetchQcAssayTypes = async ({ commit, rootState }) => {
   return { success, errors }
 }
 
+const fetchQcResultsForBarcode = async ({ commit, rootState }) => {
+  const request = rootState.api.traction.qc_results
+  const promise = request.get({filter: {labware_barcode: 'test_bc'}})
+  const response = await handleResponse(promise)
+
+  const { success, data: { data } = {}, errors = [] } = response
+  console.log('data...')
+  console.log(data)
+
+  if (success) {
+    // commit('populateQcResults', data)
+  }
+
+  return { success, errors }
+}
+
 const startRun = async ({ dispatch }, { id, pipeline }) => {
   let payload = { id: id, attributes: { state: 'started' } }
   await dispatch('handleRunUpdate', { payload, pipeline })
@@ -74,9 +90,10 @@ const actions = {
   cancelRun,
   handleRunUpdate,
   setTags,
-  fetchQcAssayTypes
+  fetchQcAssayTypes,
+  fetchQcResultsForBarcode
 }
 
-export { startRun, completeRun, cancelRun, handleRunUpdate, runPayloadJson, setTags, fetchQcAssayTypes }
+export { startRun, completeRun, cancelRun, handleRunUpdate, runPayloadJson, setTags, fetchQcAssayTypes, fetchQcResultsForBarcode }
 
 export default actions
