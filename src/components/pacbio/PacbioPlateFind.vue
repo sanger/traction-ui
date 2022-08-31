@@ -1,6 +1,6 @@
 <template>
   <traction-form @submit.prevent="handleSubmit()">
-    <traction-section title="Plate" class="mb-2">
+    <traction-section title="Plate" number="1" class="mb-2">
       <div class="text-left">Find Plate</div>
       <traction-input
         v-model="enteredLabware"
