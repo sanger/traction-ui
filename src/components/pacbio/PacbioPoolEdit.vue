@@ -1,6 +1,11 @@
 <template>
   <div data-type="pool">
-    <traction-section number="6" title="Pooled Samples" :tag="`${poolType}`" data-attribute="pool-type">
+    <traction-section
+      number="6"
+      title="Pooled Samples"
+      :tag="`${poolType}`"
+      data-attribute="pool-type"
+    >
       <div class="space-y-12">
         <div class="flex flex-col">
           <label class="text-left p-0">Select file</label>

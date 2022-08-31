@@ -2,7 +2,7 @@
   <section :class="`flex flex-col gap-y-4 ${classNames}`">
     <TractionHeading level="4" :show-border="true">
       <div class="flex flex-row gap-x-2">
-        <div v-if="number">{{ number }}. </div>
+        <div v-if="number">{{ number }}.</div>
         <slot name="icon"></slot> {{ title }}
         <TractionTag v-if="tag.length > 0">{{ tag }}</TractionTag>
       </div>
@@ -48,8 +48,8 @@ export default {
     },
     number: {
       type: String,
-      default: ''
-    }
+      default: '',
+    },
   },
 }
 </script>
