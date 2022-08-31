@@ -31,6 +31,11 @@ Install the require dependencies:
 
     npm install --include=dev
 
+NB npm 7+ installs peer dependencies by default. In our case swrv will cause resolution failures so you will need to install with the --legacy-peer-deps flag:
+https://stackoverflow.com/questions/66239691/what-does-npm-install-legacy-peer-deps-do-exactly-when-is-it-recommended-wh
+
+    npm install --include-dev --legacy-peer-deps
+
 ## Running
 
 In the project directory, you can run:

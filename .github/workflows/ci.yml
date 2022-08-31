@@ -23,7 +23,7 @@ jobs:
         cache: 'npm'
     - name: Install dependencides
       run: >-
-        npm ci
+        npm ci --legacy-peer-deps
     - name: Run npm pretty
       run: >-
         npm run pretty
@@ -40,7 +40,7 @@ jobs:
         cache: 'npm'
     - name: Install dependencides
       run: >-
-        npm ci
+        npm ci --legacy-peer-deps
     - name: Lint using ESLint
       run: >-
         npm run lint
@@ -57,7 +57,7 @@ jobs:
         cache: 'npm'
     - name: Install dependencides
       run: >-
-        npm ci
+        npm ci --legacy-peer-deps
     - name: Run unit tests
       run: >-
         npm run test:unit
