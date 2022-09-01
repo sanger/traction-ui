@@ -9,7 +9,7 @@
       hitRate="20"
       @select="onSelect"
     />
-    <traction-section title="Selected Plates">
+    <traction-section number="2" title="Selected Plates">
       <div class="flex flex-col">
         <traction-menu :border="true">
           <traction-menu-item

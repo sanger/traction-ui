@@ -1,6 +1,6 @@
 <template>
   <div class="mt-8">
-    <traction-section title="Selected Tubes">
+    <traction-section number="4" title="Selected Tubes">
       <traction-list-group class="selected-list-group">
         <traction-table
           :items="selectedTubeRequests"

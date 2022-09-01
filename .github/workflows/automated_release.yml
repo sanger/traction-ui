@@ -28,7 +28,7 @@ jobs:
 
       - name: Install
         run: >-
-          npm ci
+          npm ci --legacy-peer-deps
 
       - name: Compile Build
         run: >-

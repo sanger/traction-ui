@@ -1,6 +1,11 @@
 <template>
   <div data-type="pool">
-    <traction-section title="Pooled Samples" :tag="`${poolType}`" data-attribute="pool-type">
+    <traction-section
+      number="6"
+      title="Pooled Samples"
+      :tag="`${poolType}`"
+      data-attribute="pool-type"
+    >
       <div class="space-y-12">
         <div class="flex flex-col">
           <label class="text-left p-0">Select file</label>
@@ -16,7 +21,7 @@
           ></traction-file>
         </div>
         <div>
-          <traction-sub-section title="Apply All" class="py-6">
+          <traction-sub-section title="Pool information" class="py-6">
             <div class="grid gap-5 grid-cols-6 mb-10 text-sm" data-type="pool-edit">
               <label> Auto tagging</label>
               <label v-if="!!tubeItem.barcode"> Pool Barcode </label>
