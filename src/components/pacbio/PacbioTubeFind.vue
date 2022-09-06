@@ -1,29 +1,31 @@
 <template>
-  <traction-col>
+  <div>
     <traction-form @submit.prevent="handleSubmit()">
-      <h3>Find Tube</h3>
-      <traction-input
-        v-model="enteredLabware"
-        data-input="tube-find"
-        autocomplete="off"
-        placeholder="Search or scan for tube by barcode"
-        class="mb-2"
-      >
-      </traction-input>
-      <traction-list-group data-type="tube-list" class="find-list-group">
-        <traction-list-group-item
-          v-for="item in getFilteredList"
-          :key="item.id"
-          button
-          :active="item.selected"
-          data-action="select-tube"
-          @click="toggleSelected(item)"
+      <traction-section number="2a" title="Tube" class-names="mb-2">
+        <div class="text-left">Find Tube</div>
+        <traction-input
+          v-model="enteredLabware"
+          data-input="tube-find"
+          autocomplete="off"
+          placeholder="Search or scan for tube by barcode"
+          class="mb-2"
         >
-          Tube: {{ item.barcode }}
-        </traction-list-group-item>
-      </traction-list-group>
+        </traction-input>
+        <traction-list-group data-type="tube-list" class="find-list-group">
+          <traction-list-group-item
+            v-for="item in getFilteredList"
+            :key="item.id"
+            button
+            :active="item.selected"
+            data-action="select-tube"
+            @click="toggleSelected(item)"
+          >
+            Tube: {{ item.barcode }}
+          </traction-list-group-item>
+        </traction-list-group>
+      </traction-section>
     </traction-form>
-  </traction-col>
+  </div>
 </template>
 
 <script>

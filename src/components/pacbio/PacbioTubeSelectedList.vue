@@ -1,18 +1,19 @@
 <template>
-  <traction-col data-type="selected-tube-list" class="selected-tube-list">
-    <h3>Selected Tube Requests</h3>
-    <traction-list-group class="selected-list-group">
-      <traction-table
-        :items="selectedTubeRequests"
-        show-empty
-        small
-        :fields="requestFields"
-        :tbody-tr-class="rowClass"
-        empty-text="No tubes selected"
-        @row-clicked="requestClicked"
-      ></traction-table>
-    </traction-list-group>
-  </traction-col>
+  <div class="mt-8">
+    <traction-section number="2b" title="Selected Tubes">
+      <traction-list-group class="selected-list-group">
+        <traction-table
+          :items="selectedTubeRequests"
+          show-empty
+          small
+          :fields="requestFields"
+          :tbody-tr-class="rowClass"
+          empty-text="No tubes selected"
+          @row-clicked="requestClicked"
+        ></traction-table>
+      </traction-list-group>
+    </traction-section>
+  </div>
 </template>
 
 <script>

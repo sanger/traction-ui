@@ -1,7 +1,7 @@
 <template>
-  <traction-col>
-    <traction-form @submit.prevent="handleSubmit()">
-      <h3>Find Plate</h3>
+  <traction-form @submit.prevent="handleSubmit()">
+    <traction-section title="Plate" number="1a" class="mb-2">
+      <div class="text-left">Find Plate</div>
       <traction-input
         v-model="enteredLabware"
         data-input="plate-find"
@@ -22,8 +22,8 @@
           Plate: {{ item.barcode }}
         </traction-list-group-item>
       </traction-list-group>
-    </traction-form>
-  </traction-col>
+    </traction-section>
+  </traction-form>
 </template>
 
 <script>

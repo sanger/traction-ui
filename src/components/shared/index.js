@@ -8,6 +8,10 @@ import TractionHeading from '@/components/TractionHeading.vue'
 import TractionLabel from '@/components/shared/TractionLabel.vue'
 import TractionMenu from '@/components/shared/TractionMenu.vue'
 import TractionMenuItem from '@/components/shared/TractionMenuItem.vue'
+import TractionTag from '@/components/shared/TractionTag'
+import TractionSubSection from '@/components/shared/TractionSubSection'
+import TractionMutedText from '@/components/shared/TractionMutedText'
+import TractionToggle from '@/components/shared/TractionToggle'
 
 import {
   BModal,
@@ -106,8 +110,11 @@ const registerGlobal = (vue) => {
   vue.component('TractionHeading', TractionHeading)
   vue.component('TractionMenu', TractionMenu)
   vue.component('TractionMenuItem', TractionMenuItem)
-
+  vue.component('TractionTag', TractionTag)
+  vue.component('TractionSubSection', TractionSubSection)
+  vue.component('TractionMutedText', TractionMutedText)
+  vue.component('TractionToggle', TractionToggle)
   registerBootstrapComponents(vue)
 }
 
-export { registerGlobal }
+export { registerGlobal, registerBootstrapComponents }

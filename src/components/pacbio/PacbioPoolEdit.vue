@@ -1,84 +1,77 @@
 <template>
   <div data-type="pool">
-    <h3>
-      Pooled Samples <traction-badge data-attribute="pool-type">{{ poolType }}</traction-badge>
-    </h3>
-    <traction-row class="mb-1">
-      <traction-col>
-        <traction-checkbox
-          v-model="autoTag"
-          name="check-button"
-          switch
-          data-attribute="auto-tagging"
-        >
-          Autotagging
-        </traction-checkbox>
-      </traction-col>
-      <traction-col>
-        <traction-file
-          id="qcFileInput"
-          ref="qc-file-form-field"
-          :state="parsedFile"
-          placeholder="Choose a file or drop it here..."
-          drop-placeholder="Drop file here..."
-          accept="text/csv, .csv"
-          size="sm"
-          @input="uploadFile"
-        ></traction-file>
-      </traction-col>
-    </traction-row>
+    <traction-section
+      number="4"
+      title="Pooled Samples"
+      :tag="`${poolType}`"
+      data-attribute="pool-type"
+    >
+      <div class="space-y-12">
+        <div class="flex flex-col">
+          <label class="text-left p-0">Select file</label>
+          <traction-file
+            id="qcFileInput"
+            ref="qc-file-form-field"
+            :state="parsedFile"
+            placeholder="Choose a file or drop it here..."
+            drop-placeholder="Drop file here..."
+            accept="text/csv, .csv"
+            size="sm"
+            @input="uploadFile"
+          ></traction-file>
+        </div>
+        <div>
+          <traction-sub-section title="Pool information" class="py-6">
+            <div class="grid gap-5 grid-cols-6 mb-10 text-sm" data-type="pool-edit">
+              <label> Auto tagging</label>
+              <label v-if="!!tubeItem.barcode"> Pool Barcode </label>
+              <label v-else></label>
+              <label>Template Prep Kit Box Barcode </label>
+              <label> Volume</label>
+              <label> Concentration</label>
+              <label> Insert Size</label>
+              <div class="w-full flex justify-center">
+                <traction-toggle v-model="autoTag" data-attribute="check-box" />
+              </div>
+              <label v-if="!!tubeItem.barcode" data-attribute="barcode" class="font-bold flex-wrap">
+                {{ tubeItem.barcode }}
+              </label>
+              <label v-else></label>
+              <traction-input
+                v-model="poolItem.template_prep_kit_box_barcode"
+                data-attribute="template-prep-kit-box-barcode"
+                :value="poolItem.template_prep_kit_box_barcode"
+                type="text"
+                title="Template Prep Kit Box Barcode"
+              />
+              <traction-input
+                v-model="poolItem.volume"
+                data-attribute="volume"
+                :value="poolItem.volume"
+                type="text"
+                title="Volume"
+              />
+              <traction-input
+                v-model="poolItem.concentration"
+                data-attribute="concentration"
+                :value="poolItem.concentration"
+                type="text"
+                title="Concentration"
+              />
+              <traction-input
+                v-model="poolItem.insert_size"
+                data-attribute="insert-size"
+                :value="poolItem.insert_size"
+                type="text"
+                title="Insert Size"
+              />
+            </div>
+          </traction-sub-section>
+        </div>
+      </div>
+    </traction-section>
     <PacbioPoolLibraryList :auto-tag="autoTag" />
-    <div class="pool-edit" data-type="pool-edit">
-      <traction-table-simple>
-        <traction-tr>
-          <traction-td v-if="!!tubeItem.barcode" class="barcode" data-attribute="barcode">
-            pool barcode: {{ tubeItem.barcode }}
-          </traction-td>
-          <traction-td v-else>&nbsp;</traction-td>
-          <traction-td class="template-prep-kit-box-barcode">
-            <traction-input
-              v-model="poolItem.template_prep_kit_box_barcode"
-              data-attribute="template-prep-kit-box-barcode"
-              :value="poolItem.template_prep_kit_box_barcode"
-              placeholder="Template Prep Kit Box Barcode"
-              type="text"
-              title="Template Prep Kit Box Barcode"
-            />
-          </traction-td>
-          <traction-td class="pool-attribute">
-            <traction-input
-              v-model="poolItem.volume"
-              data-attribute="volume"
-              :value="poolItem.volume"
-              placeholder="Volume"
-              type="text"
-              title="Volume"
-            />
-          </traction-td>
-          <traction-td class="pool-attribute">
-            <traction-input
-              v-model="poolItem.concentration"
-              data-attribute="concentration"
-              :value="poolItem.concentration"
-              placeholder="Concentration"
-              type="text"
-              title="Concentration"
-            />
-          </traction-td>
-          <traction-td class="pool-attribute">
-            <traction-input
-              v-model="poolItem.insert_size"
-              data-attribute="insert-size"
-              :value="poolItem.insert_size"
-              placeholder="Insert Size"
-              type="text"
-              title="Insert Size"
-            />
-          </traction-td>
-        </traction-tr>
-      </traction-table-simple>
-    </div>
-    <div class="text-right">
+    <div class="text-right py-8">
       <traction-button
         v-if="!persisted"
         data-action="create-pool"

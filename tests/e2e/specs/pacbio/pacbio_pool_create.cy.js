@@ -145,7 +145,7 @@ describe('Pacbio Pool Create', () => {
     })
 
     // Auto-tagging
-    cy.get('[data-attribute=auto-tagging]').click()
+    cy.get('[data-attribute=check-box]').click()
 
     cy.get('[data-type=pool-library-edit]')
       .filter(':contains("DN814327C:A1")')
