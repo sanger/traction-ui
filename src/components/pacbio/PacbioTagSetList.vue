@@ -1,6 +1,6 @@
 <template>
   <div class="tag-set-list">
-    <traction-section number="5" title="Tag Selection">
+    <traction-section number="3" title="Tag Selection">
       <div class="text-left">
         Select tag set
         <traction-select

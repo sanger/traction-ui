@@ -1,7 +1,7 @@
 <template>
   <div data-type="pool">
     <traction-section
-      number="6"
+      number="4"
       title="Pooled Samples"
       :tag="`${poolType}`"
       data-attribute="pool-type"
