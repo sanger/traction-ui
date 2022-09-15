@@ -42,7 +42,7 @@
     "vuex": "^3.6.2"
   },
   "devDependencies": {
-    "@vue/test-utils": "^1.0.3",
+    "@vue/test-utils": "^2.0.2",
     "cypress": "^10.3.0",
     "cypress-file-upload": "^5.0.8",
     "dotenv": "^16.0.1",
