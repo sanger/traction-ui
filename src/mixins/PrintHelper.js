@@ -2,9 +2,9 @@
  * A helper mixin to store commonly used functionality
  */
  import { printJob } from '@/api/PrintJobRequests'
+ import PrinterList from '@/config/PrinterList'
 
  const MESSAGE_SUCCESS_PRINTER = 'Printed successfully'
- const IS_SQUIX = true // TODO: replace with better thing - e.g. load from config
 
  export default {
    name: 'PrintHelper',
@@ -12,7 +12,11 @@
      async handlePrintLabel(pipeline, printerName) {
        let successful, errors, message
 
-       if(IS_SQUIX) { // Squix printer
+      // TODO: modify getter to include 'type', and then use this.$store.getters.printers
+       let printer
+       PrinterList.forEach(v => { if(v["printerName"] == printerName){printer = v} })
+
+       if(printer["type"] == "squix") { // Squix printer
 
          const params = {
            printerName: printerName,

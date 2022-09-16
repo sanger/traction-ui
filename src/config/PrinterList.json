@@ -1,8 +1,8 @@
 [
-  { "printerName": "g216bc" },
-  { "printerName": "h105bc" },
-  { "printerName": "stub" },
-  { "printerName": "aPrinterName" },
-  { "printerName": "ssrtubebc-sq1" },
-  { "printerName": "aa309bc1" }
+  { "printerName": "g216bc", "type": "toshiba" },
+  { "printerName": "h105bc", "type": "toshiba" },
+  { "printerName": "stub", "type": "toshiba" },
+  { "printerName": "aPrinterName", "type": "squix" },
+  { "printerName": "ssrtubebc-sq1", "type": "squix" },
+  { "printerName": "aa309bc1", "type": "squix" }
 ]
