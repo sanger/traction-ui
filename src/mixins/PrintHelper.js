@@ -1,8 +1,7 @@
 /**
  * A helper mixin to store commonly used functionality
  */
- import { printJob } from '@/api/PrintJobRequests'
- import PrinterList from '@/config/PrinterList'
+//  import { printJob } from '@/api/PrintJobRequests'
 
  const MESSAGE_SUCCESS_PRINTER = 'Printed successfully'
 
@@ -10,35 +9,25 @@
    name: 'PrintHelper',
    methods: {
      async handlePrintLabel(pipeline, printerName) {
-       let successful, errors, message
 
-      // TODO: modify getter to include 'type', and then use this.$store.getters.printers
-       let printer
-       PrinterList.forEach(v => { if(v["printerName"] == printerName){printer = v} })
+        const params = {
+          printerName: printerName,
+          barcodesList: this.selected.map(v => (v["barcode"])),
+          copies: "1",
+        }
+        const printJobV2Response = await this.printJobV2(params)
 
-       if(printer["type"] == "squix") { // Squix printer
+        const successful = printJobV2Response.success
+        const message = printJobV2Response.data.message
 
-         const params = {
-           printerName: printerName,
-           barcodesList: this.selected.map(v => (v["barcode"])),
-           copies: "1",
-         }
-         const printJobV2Response = await this.printJobV2(params) // this.printJobV2 is not a function
-
-         successful = printJobV2Response.success
-         message = printJobV2Response.data.message
-
-       } else { // Toshiba printer
-
-         // Is this equivalent to the following, without the let?
-         //  let { successful, errors: { message } = {} } = await printJob(
-         successful, { errors: { message } = {} } = await printJob(
-           printerName,
-           this.selected,
-           pipeline,
-         )
-
-       }
+        // TODO: figure out how pipeline is being used in this previous code,
+        // and make sure we're including the same info in the V2 request.
+        //
+        // let { successful, errors: { message } = {} } = await printJob(
+        //   printerName,
+        //   this.selected,
+        //   pipeline,
+        // )
 
        if (successful) {
          this.showAlert(MESSAGE_SUCCESS_PRINTER, 'success')
