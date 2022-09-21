@@ -120,8 +120,7 @@ import PrinterModal from '@/components/PrinterModal'
 import PrintHelper from '@/mixins/PrintHelper'
 import TableHelper from '@/mixins/TableHelper'
 
-import { createNamespacedHelpers } from 'vuex'
-const { mapActions, mapGetters } = createNamespacedHelpers('traction/pacbio/requests')
+import { mapActions, mapGetters } from 'vuex'
 
 export default {
   name: 'PacbioSampleIndex',
@@ -160,7 +159,7 @@ export default {
     }
   },
   computed: {
-    ...mapGetters(['requests']),
+    ...mapGetters('traction/pacbio/requests', ['requests']),
   },
   created() {
     this.provider()
@@ -173,7 +172,8 @@ export default {
         this.showAlert('Failed to get samples: ' + error.message, 'danger')
       }
     },
-    ...mapActions(['setRequests']),
+    ...mapActions('traction/pacbio/requests', ['setRequests']),
+    ...mapActions('printMyBarcode', ['printJobV2']),
   },
 }
 </script>
