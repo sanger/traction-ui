@@ -47,7 +47,7 @@ describe('Modal.vue', () => {
   })
 
   describe('modal', () => {
-    it('has printer select form', () => {
+    it('has printer select form', async () => {
       let printerOptions = [
         { value: null, text: 'Please select a printer' },
         { value: 1, text: 'printer1' },
@@ -58,6 +58,8 @@ describe('Modal.vue', () => {
       ]
 
       wrapper.setData({ printerOptions: printerOptions })
+      await(wrapper.vm.$nextTick()) // necessary to allow the view to update
+
       expect(wrapper.find('select').findAll('option').length).toEqual(printerOptions.length)
     })
   })
