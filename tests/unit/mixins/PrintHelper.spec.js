@@ -21,7 +21,7 @@ describe('PrintHelper', () => {
         }
       },
       methods: {
-        printJobV2: printJobV2Mock
+        printJobV2: printJobV2Mock,
       },
       render() {},
     })

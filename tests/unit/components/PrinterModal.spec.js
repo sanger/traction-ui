@@ -58,7 +58,7 @@ describe('Modal.vue', () => {
       ]
 
       wrapper.setData({ printerOptions: printerOptions })
-      await(wrapper.vm.$nextTick()) // necessary to allow the view to update
+      await wrapper.vm.$nextTick() // necessary to allow the view to update
 
       expect(wrapper.find('select').findAll('option').length).toEqual(printerOptions.length)
     })
