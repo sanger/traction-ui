@@ -1,14 +1,17 @@
 import PrintHelper from '@/mixins/PrintHelper'
 import { localVue, mount } from '@support/testHelper'
-import * as printJobRequests from '@/api/PrintJobRequests'
-
-vi.mock('@/api/PrintJobRequests')
 
 describe('PrintHelper', () => {
   let helper, wrapper
   const selected = []
+  const testPrinterName = 'printer_1'
 
-  beforeEach(() => {
+  let printJobV2Success = vi.fn()
+  printJobV2Success.mockResolvedValue({ success: true, data: { message: 'Printed successfully' } })
+  let printJobV2Fail = vi.fn()
+  printJobV2Fail.mockResolvedValue({ success: false, data: { message: 'did not work' } })
+
+  const mountWrapper = (printJobV2Mock) => {
     wrapper = mount(PrintHelper, {
       localVue,
       template: '<div />',
@@ -17,34 +20,35 @@ describe('PrintHelper', () => {
           selected,
         }
       },
+      methods: {
+        printJobV2: printJobV2Mock
+      },
       render() {},
     })
 
     helper = wrapper.vm
-  })
+  }
 
   describe('#handlePrintLabel', () => {
     it('handles success', async () => {
-      const printJob = vi.spyOn(printJobRequests, 'printJob')
-      const showAlert = vi.spyOn(helper, 'showAlert')
+      mountWrapper(printJobV2Success)
 
-      printJob.mockImplementation(() => {})
+      const showAlert = vi.spyOn(helper, 'showAlert')
       showAlert.mockImplementation(() => {})
-      printJob.mockResolvedValue({ successful: true })
-      await helper.handlePrintLabel('pipeline', 'hello')
-      expect(printJob).toHaveBeenCalledWith('hello', selected, 'pipeline')
+
+      await helper.handlePrintLabel('pipeline_1', testPrinterName)
+
       expect(helper.showAlert).toHaveBeenCalledWith('Printed successfully', 'success')
     })
 
     it('handles failure', async () => {
-      const printJob = vi.spyOn(printJobRequests, 'printJob')
-      const showAlert = vi.spyOn(helper, 'showAlert')
+      mountWrapper(printJobV2Fail)
 
-      printJob.mockImplementation(() => {})
+      const showAlert = vi.spyOn(helper, 'showAlert')
       showAlert.mockImplementation(() => {})
-      printJob.mockResolvedValue({ successful: false, errors: { message: 'did not work' } })
-      await helper.handlePrintLabel('pipeline', 'hello')
-      expect(printJob).toHaveBeenCalledWith('hello', selected, 'pipeline')
+
+      await helper.handlePrintLabel('pipeline_1', testPrinterName)
+
       expect(helper.showAlert).toHaveBeenCalledWith('did not work', 'danger')
     })
   })
