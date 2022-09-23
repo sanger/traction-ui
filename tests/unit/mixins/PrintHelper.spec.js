@@ -26,7 +26,10 @@ describe('PrintHelper', () => {
   describe('#handlePrintLabel', () => {
     it('handles success', async () => {
       let printJobV2Success = vi.fn()
-      printJobV2Success.mockResolvedValue({ success: true, data: { message: 'Printed successfully' } })
+      printJobV2Success.mockResolvedValue({
+        success: true,
+        data: { message: 'Printed successfully' },
+      })
       mountWrapper(printJobV2Success)
 
       const showAlert = vi.spyOn(helper, 'showAlert')
