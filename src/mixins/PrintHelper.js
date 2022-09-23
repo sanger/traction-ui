@@ -13,12 +13,10 @@ export default {
         barcodesList: this.selected.map((v) => v['barcode']),
         copies: '1',
       }
-      const printJobV2Response = await this.printJobV2(params)
 
-      const successful = printJobV2Response.success
-      const message = printJobV2Response.data.message
+      const { success, data: { message } = {} } = await this.printJobV2(params)
 
-      if (successful) {
+      if (success) {
         this.showAlert(MESSAGE_SUCCESS_PRINTER, 'success')
       } else {
         this.showAlert(message, 'danger')

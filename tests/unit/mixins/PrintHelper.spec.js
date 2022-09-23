@@ -4,7 +4,6 @@ import { localVue, mount } from '@support/testHelper'
 describe('PrintHelper', () => {
   let helper, wrapper
   const selected = []
-  const testPrinterName = 'printer_1'
 
   let printJobV2Success = vi.fn()
   printJobV2Success.mockResolvedValue({ success: true, data: { message: 'Printed successfully' } })
@@ -36,7 +35,7 @@ describe('PrintHelper', () => {
       const showAlert = vi.spyOn(helper, 'showAlert')
       showAlert.mockImplementation(() => {})
 
-      await helper.handlePrintLabel('pipeline_1', testPrinterName)
+      await helper.handlePrintLabel('pipeline_1', 'printer_1')
 
       expect(helper.showAlert).toHaveBeenCalledWith('Printed successfully', 'success')
     })
@@ -47,7 +46,7 @@ describe('PrintHelper', () => {
       const showAlert = vi.spyOn(helper, 'showAlert')
       showAlert.mockImplementation(() => {})
 
-      await helper.handlePrintLabel('pipeline_1', testPrinterName)
+      await helper.handlePrintLabel('pipeline_1', 'printer_1')
 
       expect(helper.showAlert).toHaveBeenCalledWith('did not work', 'danger')
     })
