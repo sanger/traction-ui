@@ -5,11 +5,6 @@ describe('PrintHelper', () => {
   let helper, wrapper
   const selected = []
 
-  let printJobV2Success = vi.fn()
-  printJobV2Success.mockResolvedValue({ success: true, data: { message: 'Printed successfully' } })
-  let printJobV2Fail = vi.fn()
-  printJobV2Fail.mockResolvedValue({ success: false, data: { message: 'did not work' } })
-
   const mountWrapper = (printJobV2Mock) => {
     wrapper = mount(PrintHelper, {
       localVue,
@@ -30,6 +25,8 @@ describe('PrintHelper', () => {
 
   describe('#handlePrintLabel', () => {
     it('handles success', async () => {
+      let printJobV2Success = vi.fn()
+      printJobV2Success.mockResolvedValue({ success: true, data: { message: 'Printed successfully' } })
       mountWrapper(printJobV2Success)
 
       const showAlert = vi.spyOn(helper, 'showAlert')
@@ -41,6 +38,8 @@ describe('PrintHelper', () => {
     })
 
     it('handles failure', async () => {
+      let printJobV2Fail = vi.fn()
+      printJobV2Fail.mockResolvedValue({ success: false, data: { message: 'did not work' } })
       mountWrapper(printJobV2Fail)
 
       const showAlert = vi.spyOn(helper, 'showAlert')
