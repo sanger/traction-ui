@@ -11,7 +11,7 @@
             :options="movieTimeOptions"
             :value="currentRun.wellDefaults.movie_time"
             title="Movie Time"
-            @change="setDefaultMovieTime"
+            @input="setDefaultMovieTime"
           >
           </traction-select>
         </traction-col>
@@ -26,7 +26,7 @@
             title="Generate HiFi"
             :options="generateHifiOptions[currentRun.system_name]"
             :value="currentRun.wellDefaults.generate_hifi"
-            @change="setDefaultGenerateHifi"
+            @input="setDefaultGenerateHifi"
           >
           </traction-select>
         </traction-col>
@@ -56,7 +56,7 @@
             title="Pre-extension Time"
             :value="currentRun.wellDefaults.pre_extension_time"
             placeholder="Pre-extension time"
-            @change="setDefaultPreExtensionTime"
+            @input="setDefaultPreExtensionTime"
           >
           </traction-input>
         </traction-col>
@@ -73,7 +73,7 @@
             placeholder="Loading Target (P1 + P2)"
             type="number"
             :step="0.05"
-            @change="setDefaultLoadingTarget"
+            @input="setDefaultLoadingTarget"
           >
           </traction-input>
         </traction-col>
@@ -89,7 +89,7 @@
             placeholder="Default Binding Kit Box Barcode for new wells"
             type="text"
             title="Default Binding Kit Box Barcode for new wells"
-            @change="setDefaultBindingKitBoxBarcode"
+            @input="setDefaultBindingKitBoxBarcode"
           >
           </traction-input>
         </traction-col>
