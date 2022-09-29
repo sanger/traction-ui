@@ -94,8 +94,7 @@ import PrintHelper from '@/mixins/PrintHelper'
 import TableHelper from '@/mixins/TableHelper'
 import PrinterModal from '@/components/PrinterModal'
 import * as consts from '@/consts/consts'
-import { createNamespacedHelpers } from 'vuex'
-const { mapActions, mapGetters } = createNamespacedHelpers('traction/saphyr/tubes')
+import { mapActions, mapGetters } from 'vuex'
 
 export default {
   name: 'SaphyrLibraries',
@@ -132,7 +131,7 @@ export default {
     }
   },
   computed: {
-    ...mapGetters(['libraries']),
+    ...mapGetters('traction/saphyr/tubes', ['libraries']),
   },
   created() {
     // When this component is created (the 'created' lifecycle hook is called), we need to get the
@@ -165,7 +164,8 @@ export default {
     async provider() {
       await this.setLibraries()
     },
-    ...mapActions(['deleteLibraries', 'setLibraries']),
+    ...mapActions('traction/saphyr/tubes', ['deleteLibraries', 'setLibraries']),
+    ...mapActions('printMyBarcode', ['printJobV2']),
   },
 }
 </script>

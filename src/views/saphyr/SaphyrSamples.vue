@@ -146,6 +146,7 @@ export default {
     },
     ...mapActions('traction/saphyr/tubes', ['createLibrariesInTraction']),
     ...mapActions('traction/saphyr/requests', ['setRequests']),
+    ...mapActions('printMyBarcode', ['printJobV2']),
   },
 }
 </script>
