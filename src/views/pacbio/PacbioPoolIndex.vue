@@ -125,8 +125,7 @@
 import PrintHelper from '@/mixins/PrintHelper'
 import TableHelper from '@/mixins/TableHelper'
 import PrinterModal from '@/components/PrinterModal'
-import { createNamespacedHelpers } from 'vuex'
-const { mapActions, mapGetters } = createNamespacedHelpers('traction/pacbio/pools')
+import { mapActions, mapGetters } from 'vuex'
 
 export default {
   name: 'PacbioPoolIndex',
@@ -175,7 +174,7 @@ export default {
     }
   },
   computed: {
-    ...mapGetters(['pools']),
+    ...mapGetters('traction/pacbio/pools', ['pools']),
   },
   created() {
     // When this component is created (the 'created' lifecycle hook is called), we need to get the
@@ -195,7 +194,8 @@ export default {
         this.showAlert('Failed to get pools: ' + error.message, 'danger')
       }
     },
-    ...mapActions(['setPools']),
+    ...mapActions('traction/pacbio/pools', ['setPools']),
+    ...mapActions('printMyBarcode', ['printJobV2']),
   },
 }
 </script>
