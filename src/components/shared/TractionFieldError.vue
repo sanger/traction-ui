@@ -10,6 +10,7 @@
     <div
       v-if="error.length"
       class="text-left ml-1 text-red-400 mt-1 text-xxs"
+      :data-attribute="dataAttribute"
     >
       {{ error }}
     </div>
@@ -27,13 +28,13 @@ export default {
       type: String,
       default: '',
     },
+    dataAttribute: {
+      type: String,
+      default: '',
+    },
     withIcon: {
       type: Boolean,
       default: false,
-    },
-    bordered: {
-      type: Boolean,
-      default: true,
     },
   },
 }

@@ -53,7 +53,6 @@
         <traction-col>
           <traction-input
             id="default-pre-extension-time"
-            title="Pre-extension Time"
             :value="currentRun.wellDefaults.pre_extension_time"
             placeholder="Pre-extension time"
             @input="setDefaultPreExtensionTime"
@@ -68,11 +67,10 @@
         <traction-col>
           <traction-input
             id="default-loading-target"
-            title="Loading Target (P1 + P2)"
             :value="currentRun.wellDefaults.loading_target_p1_plus_p2"
             placeholder="Loading Target (P1 + P2)"
             type="number"
-            :step="0.05"
+            step="0.05"
             @input="setDefaultLoadingTarget"
           >
           </traction-input>
@@ -88,7 +86,6 @@
             :value="currentRun.wellDefaults.binding_kit_box_barcode"
             placeholder="Default Binding Kit Box Barcode for new wells"
             type="text"
-            title="Default Binding Kit Box Barcode for new wells"
             @input="setDefaultBindingKitBoxBarcode"
           >
           </traction-input>

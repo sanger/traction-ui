@@ -6,11 +6,8 @@ module.exports = {
   theme: {
     ...defaultOptions.theme,
     fontSize: {
-      ...defaultOptions.fontSize,
       xxs: '0.6rem',
-    },
-    fontFamily: {
-      poppins: ["'Inter'", 'sans-serif'],
+      ...defaultOptions.theme.fontSize,
     },
   },
   important: true,

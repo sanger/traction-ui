@@ -11,9 +11,8 @@
             :value="runName"
             placeholder="Run name"
             type="text"
-            width="48"
-            title="Run Name"
-            readonly
+            classes="w-48"
+            disabled
           />
         </traction-col>
       </traction-row>
@@ -27,9 +26,8 @@
             :value="sequencingKitBoxBarcode"
             placeholder="Sequencing Kit Box Barcode"
             type="text"
-            width="48"
-            title="Sequencing Kit Box Barcode"
-            @change="setSequencingKitBoxBarcode"
+            classes="w-48"
+            @input="setSequencingKitBoxBarcode"
           />
         </traction-col>
       </traction-row>
@@ -45,9 +43,8 @@
             :value="dnaControlComplexBoxBarcode"
             placeholder="DNA Control Complex Box Barcode"
             type="text"
-            width="48"
-            title="DNA Control Complex Box Barcode"
-            @change="setDNAControlComplexBoxBarcode"
+            classes="w-48"
+            @input="setDNAControlComplexBoxBarcode"
           />
         </traction-col>
       </traction-row>
@@ -92,9 +89,8 @@
             :value="comments"
             placeholder="Comments"
             type="text"
-            width="48"
-            title="Comments"
-            @change="setComments"
+            classes="w-48"
+            @input="setComments"
           />
         </traction-col>
       </traction-row>

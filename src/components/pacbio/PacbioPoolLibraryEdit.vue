@@ -15,6 +15,9 @@
         :state="hasErrors('tag_id')"
         class="tag-id"
       ></traction-select>
+      <traction-invalid-feedback data-attribute="tag-id-error">
+        {{ errorsFor('tag_id') }}
+      </traction-invalid-feedback>
     </traction-td>
     <traction-td>
       <traction-field-error
@@ -145,9 +148,10 @@ export default {
     ...mapMutations(['updateLibrary']),
     ...mapActions(['applyTags']),
     hasErrors(attribute) {
-      if (!this.library.errors) {
+      if (!this.library.errors || !this.library.errors[attribute]) {
         return false
       }
+
       return this.library.errors[attribute].length > 0
     },
     errorsFor(attribute) {

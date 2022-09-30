@@ -2,20 +2,21 @@
   <div class="flex flex-col">
     <label v-if="title">{{ title }}</label>
     <input
+      :id="id"
+      :value="content"
       :data-attribute="dataAttribute"
       :placeholder="placeholder"
-      :value="value"
       :type="type"
       :max="max"
       :min="min"
       :step="step"
+      :disabled="disabled"
       :class="`w-full border border-gray-300 p-2 rounded-md focus:ring-sdb-100 focus:border-sdb-100 disabled:opacity-75 disabled:cursor-not-allowed${classes}`"
       @input="input($event)"
     />
   </div>
 </template>
 <script>
-import { within } from '@/lib/propValidations'
 export default {
   /**
    * # TractionInput
@@ -43,30 +44,39 @@ export default {
     type: {
       type: String,
       default: 'text',
-      validator: within('text', 'number'),
     },
     min: {
-      type: Number,
-      default: 0,
+      type: String,
+      default: '0',
     },
     max: {
-      type: Number,
-      default: 100,
+      type: String,
+      default: '100',
     },
     step: {
-      type: Number,
-      default: 1,
+      type: String,
+      default: '1',
     },
+
     classes: {
       type: String,
       default: '',
     },
+    id: {
+      type: String,
+      default: '',
+    },
+    disabled: {
+      type: Boolean,
+      default: false,
+    },
   },
   data() {
     return {
-      content: this.value,
+      content: this.type == 'number' ? Number(this.value) : this.value,
     }
   },
+
   methods: {
     input(event) {
       // Emit text data the payload event

@@ -5,7 +5,6 @@
       <traction-input
         v-model="enteredLabware"
         data-input="plate-find"
-        autocomplete="off"
         placeholder="Search or scan for plate by barcode"
         class-names="mb-2"
       >
