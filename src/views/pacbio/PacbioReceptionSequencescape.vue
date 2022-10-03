@@ -35,7 +35,7 @@
               label-size="sm"
               class="text-base"
             >
-              <traction-input id="cost_code" v-model="costCode" :value="costCode"></traction-input>
+              <traction-input id="cost_code" v-model="costCode"></traction-input>
             </traction-form-group>
           </div>
           <traction-button

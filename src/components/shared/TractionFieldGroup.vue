@@ -16,7 +16,7 @@
       :id="fieldId"
       :value="value"
       :data-attribute="attribute"
-      v-bind="componentProps"
+      v-bind="value"
       @input="input"
     ></component>
     <slot></slot>
