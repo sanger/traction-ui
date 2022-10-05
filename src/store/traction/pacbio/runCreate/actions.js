@@ -18,7 +18,6 @@ export default {
     if (success) {
       commit('populateSmrtLinkVersions', data)
     }
-
     return { success, errors }
   }
 }

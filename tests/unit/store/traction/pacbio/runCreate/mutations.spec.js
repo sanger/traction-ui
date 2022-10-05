@@ -16,7 +16,6 @@ describe('mutations.js', () => {
       // apply mutation
       populateSmrtLinkVersions(state, smrtLinkVersions)
       // assert result
-      console.log(state.resources.smrtLinkVersions)
       expect(state.resources.smrtLinkVersions).toEqual(
         dataToObjectById({ data: smrtLinkVersions }),
       )

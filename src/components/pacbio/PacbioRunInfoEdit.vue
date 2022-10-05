@@ -115,6 +115,11 @@ export default {
     }
   },
   computed: {
+    smrtLinkVersionList() {
+      return this.$store.getters['traction/pacbio/runCreate/smrtLinkVersionList'].map((element) =>
+        ({value: element.id, text: element.name})
+      )
+    },
     ...mapGetters(['currentRun']),
     ...mapState({
       runName: (state) => state.currentRun.name,
@@ -135,6 +140,17 @@ export default {
       'setSystemName',
       'setSmrtLinkVersion',
     ]),
+    alertOnFail({ success, errors }) {
+      if (!success) {
+        this.showAlert(errors, 'danger')
+      }
+    },
+    async provider() {
+      await this.$store.dispatch('traction/pacbio/runCreate/fetchSmrtLinkVersions')
+    }
+  },
+  created() {
+    this.provider()
   },
 }
 </script>

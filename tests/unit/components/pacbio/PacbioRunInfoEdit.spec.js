@@ -8,7 +8,20 @@ describe('PacbioRunInfoEdit', () => {
   beforeEach(() => {
     run = Run.build()
 
+    const smrtLinkVersions =  [
+      {
+        id: '1',
+        version: 'v1',
+        default: true,
+      },
+      {
+        id: '2',
+        version: 'v2',
+        default: false,
+      }]
+
     store.commit('traction/pacbio/runs/setCurrentRun', run)
+    store.state.traction.pacbio.runCreate.resources.smrtLinkVersions = smrtLinkVersions
 
     // required as suggestion to remove the deprecated function
     // https://vue-test-utils.vuejs.org/api/options.html#attachtodocument
@@ -47,6 +60,12 @@ describe('PacbioRunInfoEdit', () => {
     })
     it('has a Comments input', () => {
       expect(wrapper.find('#comments')).toBeDefined()
+    })
+  })
+
+  describe('smrt link versions', () => {
+    it('returns the correct versions', () => {
+      expect(runInfo.smrtLinkVersionList.length).toEqual(2)
     })
   })
 
