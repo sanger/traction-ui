@@ -7,6 +7,5 @@ export default {
    * @param {Object} state The VueX store
    * @return {String} The id of the labelTemplate to use
    */
-  labelTemplateId: (state) => state.labelTemplateId,
   requests: (state) => Object.values(state.resources.requests),
 }
