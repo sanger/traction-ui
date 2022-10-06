@@ -14,9 +14,10 @@
       :is="component"
       v-if="component"
       :id="fieldId"
+      v-model="getAttribute"
       :value="value"
       :data-attribute="attribute"
-      v-bind="value"
+      v-bind="componentProps"
       @input="input"
     ></component>
     <slot></slot>
@@ -44,6 +45,7 @@ export default {
     value: { type: [String, Number, Object, Array], required: false, default: null },
   },
   data: (component) => ({ fieldId: component.for || uniqueId() }),
+  
   methods: {
     input(value) {
       // Support either native components emiting events, or components
@@ -54,6 +56,9 @@ export default {
         this.$emit('input', value)
       }
     },
+    getAttribute() {
+      return this.attribute
+    }
   },
 }
 </script>
