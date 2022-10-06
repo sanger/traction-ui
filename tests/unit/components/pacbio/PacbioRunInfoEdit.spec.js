@@ -1,6 +1,7 @@
 import * as Run from '@/api/PacbioRun'
 import PacbioRunInfoEdit from '@/components/pacbio/PacbioRunInfoEdit'
 import { localVue, mount, store } from '@support/testHelper'
+import { expect, it } from 'vitest'
 
 describe('PacbioRunInfoEdit', () => {
   let wrapper, runInfo, run
@@ -66,6 +67,24 @@ describe('PacbioRunInfoEdit', () => {
   describe('smrt link versions', () => {
     it('returns the correct versions', () => {
       expect(runInfo.smrtLinkVersionList.length).toEqual(2)
+    })
+
+    it('returns the default version', () => {
+      const default_version = runInfo.smrtLinkVersionList.find(version => version.default)
+      expect(runInfo.defaultSmrtLinkVersion).toEqual(default_version)
+    })
+
+    it('can return the default version', () => {
+      runInfo.setSmrtLinkVersion(null);
+      const default_version = runInfo.smrtLinkVersionList.find(version => version.default)
+      expect(runInfo.selectedSmrtLinkVersion, default_version)
+    })
+
+    it('can return the selected version', () => {
+      runInfo.smrtLinkVersionList.forEach(function(version) {
+        runInfo.setSmrtLinkVersion(version)
+        expect(runInfo.selectedSmrtLinkVersion).toEqual(version)
+      })
     })
   })
 
