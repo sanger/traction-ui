@@ -128,7 +128,7 @@ export default {
       return this.smrtLinkVersionList.find(version => version.default)
     },
     selectedSmrtLinkVersion() {
-      return this.smrtLinkVersion || this.defaultSmrtLinkversion
+      return this.smrtLinkVersion || this.defaultSmrtLinkVersion
     },
     ...mapGetters(['currentRun']),
     ...mapState({
