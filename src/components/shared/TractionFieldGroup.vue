@@ -5,7 +5,13 @@
   - label: The label to apply
   - description: Longer text providing more help
   - component: the type of component to render (if not handled in the slot)
-  - componentProps: The configuration for the component
+  - componentProps: The configuration for the component 
+                    (E.g for configuration 'ReceptionForms' in /src/lib/receptions/index.js)
+  - attribute : the value field name
+
+  Note:
+   v-model: binds with the given attribute field
+   (This binding is required for any custom component (for e.g traction-input) that requires a 'v-model' directive as an argument to set a value internally/
 -->
 <template>
   <div class="text-left mb-5">
