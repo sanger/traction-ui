@@ -12,6 +12,9 @@ describe('Pacbio Run Create view', () => {
         },
       },
     })
+    cy.intercept('/v1/pacbio/smrt_link_versions', {
+      fixture: 'tractionPacbioSmrtLinkVersions.json'
+    })
     cy.intercept('/v1/pacbio/runs/plates', {
       statusCode: 201,
       body: {
