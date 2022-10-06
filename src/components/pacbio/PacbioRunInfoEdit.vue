@@ -72,11 +72,12 @@
         </traction-col>
         <traction-col>
           <traction-select
+            v-model="selectedSmrtLinkVersion"
             id="smrt-link-version"
             ref="smrtLinkVersion"
             :value="smrtLinkVersion"
             data-attribute="smrt-link-version"
-            :options="smrtLinkOptions"
+            :options="smrtLinkVersionSelectOptions"
             title="SMRT Link Version"
             @change="setSmrtLinkVersion"
           />
@@ -116,9 +117,18 @@ export default {
   },
   computed: {
     smrtLinkVersionList() {
-      return this.$store.getters['traction/pacbio/runCreate/smrtLinkVersionList'].map((element) =>
-        ({value: element.id, text: element.name})
+      return Object.values(this.$store.getters['traction/pacbio/runCreate/smrtLinkVersionList'])
+    },
+    smrtLinkVersionSelectOptions() {
+      return Object.values(this.$store.getters['traction/pacbio/runCreate/smrtLinkVersionList']).map(({id, name}) =>
+        ({value: id, text: name})
       )
+    },
+    defaultSmrtLinkVersion() {
+      return this.smrtLinkVersionList.find(version => version.default)
+    },
+    selectedSmrtLinkVersion() {
+      return this.smrtLinkVersion || this.defaultSmrtLinkversion
     },
     ...mapGetters(['currentRun']),
     ...mapState({
