@@ -29,7 +29,7 @@ export default {
       type: [Number, String],
       default: '',
     },
-     dataAttribute: {
+    dataAttribute: {
       type: String,
       default: '',
     },

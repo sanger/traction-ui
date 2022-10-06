@@ -45,7 +45,7 @@ export default {
     value: { type: [String, Number, Object, Array], required: false, default: null },
   },
   data: (component) => ({ fieldId: component.for || uniqueId() }),
-  
+
   methods: {
     input(value) {
       // Support either native components emiting events, or components
@@ -58,7 +58,7 @@ export default {
     },
     getAttribute() {
       return this.attribute
-    }
+    },
   },
 }
 </script>
