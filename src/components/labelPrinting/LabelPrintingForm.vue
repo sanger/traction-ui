@@ -5,16 +5,18 @@
         <traction-form v-if="show" class="text-left" @submit="onSubmit" @reset="onReset">
           <traction-form-group
             id="barcode-input-group"
-            label="Barcode:"
+            label="Barcodes:"
             label-for="barcode-input"
-            description="A single barcode to create labels for."
+            description="A list of barcodes to create labels for."
           >
-            <traction-input
+            <traction-textarea
               id="barcode-input"
               v-model="form.barcode"
-              placeholder="Please scan the barcode"
+              placeholder="Please scan the barcodes" 
               required
-            ></traction-input>
+              rows="6" 
+              max-rows="10"
+            />
           </traction-form-group>
 
           <traction-form-group
@@ -139,8 +141,9 @@ export default {
   methods: {
     setSuffixOptions() {
       let suffixOptions = SuffixList.map((obj) => ({
-        text: obj.one_character_name,
+        text: obj.one_character_name.concat(' - ', obj.tube),
       }))
+      suffixOptions.push({text:'No suffix'})
       this.suffixOptions = suffixOptions
     },
     setPrinterNames() {
@@ -150,11 +153,17 @@ export default {
       this.printerOptions = printerOptions
     },
     suffixedBarcodes() {
-      var listSuffixedBarcodes = []
-
+      let listSuffixedBarcodes = []
+      
       if (this.form.barcode && this.form.selectedSuffix && this.form.selectedNumberOfLabels <= 9) {
-        for (let i = 0; i < this.form.selectedNumberOfLabels; i++) {
-          listSuffixedBarcodes.push(this.form.barcode.concat('-', this.form.selectedSuffix, i + 1))
+        let barcodes = this.form.barcode.split(/\r?\n|\r|\n/g)
+        let suffix = this.form.selectedSuffix
+        suffix = suffix === 'No suffix' ? "" : suffix.substring(0,1)
+        
+        for (let barcode of barcodes){
+          for (let i = 0; i < this.form.selectedNumberOfLabels; i++) {
+            listSuffixedBarcodes.push(barcode.concat('-', suffix, i + 1))
+          }
         }
       }
       return listSuffixedBarcodes
