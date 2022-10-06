@@ -12,12 +12,12 @@ describe('PacbioRunInfoEdit', () => {
     const smrtLinkVersions =  [
       {
         id: '1',
-        version: 'v1',
+        name: 'v1',
         default: true,
       },
       {
         id: '2',
-        version: 'v2',
+        name: 'v2',
         default: false,
       }]
 
@@ -75,7 +75,7 @@ describe('PacbioRunInfoEdit', () => {
     })
 
     it('can return the default version', () => {
-      runInfo.setSmrtLinkVersion(null);
+      runInfo.setSmrtLinkVersion(null)
       expect(runInfo.selectedSmrtLinkVersion).toEqual(runInfo.defaultSmrtLinkVersion)
     })
 
@@ -84,6 +84,11 @@ describe('PacbioRunInfoEdit', () => {
         runInfo.setSmrtLinkVersion(version)
         expect(runInfo.selectedSmrtLinkVersion).toEqual(version)
       })
+    })
+
+    it('returns smrt link version select options', () => {
+      const options = runInfo.smrtLinkVersionList.map(({id, name}) => ({value: id, text: name}))
+      expect(runInfo.smrtLinkVersionSelectOptions).toEqual(options)
     })
   })
 
