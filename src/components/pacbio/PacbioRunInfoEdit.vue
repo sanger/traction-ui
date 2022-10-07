@@ -72,9 +72,9 @@
         </traction-col>
         <traction-col>
           <traction-select
-            v-model="selectedSmrtLinkVersion"
             id="smrt-link-version"
             ref="smrtLinkVersion"
+            v-model="selectedSmrtLinkVersion"
             :value="smrtLinkVersion"
             data-attribute="smrt-link-version"
             :options="smrtLinkVersionSelectOptions"
@@ -141,6 +141,9 @@ export default {
       smrtLinkVersion: (state) => state.currentRun.smrt_link_version,
     }),
   },
+  created() {
+    this.provider()
+  },
   methods: {
     ...mapMutations([
       'setSequencingKitBoxBarcode',
@@ -158,9 +161,6 @@ export default {
     async provider() {
       await this.$store.dispatch('traction/pacbio/runCreate/fetchSmrtLinkVersions')
     },
-  },
-  created() {
-    this.provider()
   },
 }
 </script>

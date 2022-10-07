@@ -1,6 +1,6 @@
 import getters from '@/store/traction/pacbio/runCreate/getters'
 import defaultState from '@/store/traction/pacbio/runCreate/state'
-import { Data } from '@support/testHelper'
+// import { Data } from '@support/testHelper'
 
 describe('getters.js', () => {
   const state = defaultState()
