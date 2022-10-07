@@ -9,7 +9,7 @@ describe('PacbioRunInfoEdit', () => {
   beforeEach(() => {
     run = Run.build()
 
-    const smrtLinkVersions =  [
+    const smrtLinkVersions = [
       {
         id: '1',
         name: 'v1',
@@ -19,7 +19,8 @@ describe('PacbioRunInfoEdit', () => {
         id: '2',
         name: 'v2',
         default: false,
-      }]
+      },
+    ]
 
     store.commit('traction/pacbio/runs/setCurrentRun', run)
     store.state.traction.pacbio.runCreate.resources.smrtLinkVersions = smrtLinkVersions
@@ -70,7 +71,7 @@ describe('PacbioRunInfoEdit', () => {
     })
 
     it('returns the default version', () => {
-      const default_version = runInfo.smrtLinkVersionList.find(version => version.default)
+      const default_version = runInfo.smrtLinkVersionList.find((version) => version.default)
       expect(runInfo.defaultSmrtLinkVersion).toEqual(default_version)
     })
 
@@ -80,14 +81,14 @@ describe('PacbioRunInfoEdit', () => {
     })
 
     it('can return the selected version', () => {
-      runInfo.smrtLinkVersionList.forEach(function(version) {
+      runInfo.smrtLinkVersionList.forEach(function (version) {
         runInfo.setSmrtLinkVersion(version)
         expect(runInfo.selectedSmrtLinkVersion).toEqual(version)
       })
     })
 
     it('returns smrt link version select options', () => {
-      const options = runInfo.smrtLinkVersionList.map(({id, name}) => ({value: id, text: name}))
+      const options = runInfo.smrtLinkVersionList.map(({ id, name }) => ({ value: id, text: name }))
       expect(runInfo.smrtLinkVersionSelectOptions).toEqual(options)
     })
   })

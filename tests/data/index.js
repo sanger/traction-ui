@@ -97,5 +97,5 @@ export default {
   TractionTubesWithPacbioPools,
   TractionPlates,
   AutoTagStore,
-  TractionPacbioSmrtLinkVersions
+  TractionPacbioSmrtLinkVersions,
 }

@@ -10,7 +10,7 @@ export default () => {
     // resource types are indexed by their id.
     resources: {
       // The SMRT Link version store.
-      smrtLinkVersions: {}
-    }
+      smrtLinkVersions: {},
+    },
   }
 }

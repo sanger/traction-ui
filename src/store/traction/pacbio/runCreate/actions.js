@@ -7,8 +7,7 @@ export default {
    * @param rootState the vuex rootState object. Provides access to current state
    * @param commit the vuex commit object. Provides access to mutations
    */
-  fetchSmrtLinkVersions: async({commit, rootState}) => {
-
+  fetchSmrtLinkVersions: async ({ commit, rootState }) => {
     const request = rootState.api.traction.pacbio.smrt_link_versions
     const promise = request.get({})
     const response = await handleResponse(promise)
@@ -19,7 +18,5 @@ export default {
       commit('populateSmrtLinkVersions', data)
     }
     return { success, errors }
-  }
+  },
 }
-
-

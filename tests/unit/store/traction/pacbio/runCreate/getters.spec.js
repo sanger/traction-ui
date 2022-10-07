@@ -4,11 +4,7 @@ import { Data } from '@support/testHelper'
 
 describe('getters.js', () => {
   const state = defaultState()
-  const {
-    smrtLinkVersionList,
-  } = getters
-
-  
+  const { smrtLinkVersionList } = getters
 
   describe('smrtLinkVersionList', () => {
     it('returns a list of smrt link version resources', () => {

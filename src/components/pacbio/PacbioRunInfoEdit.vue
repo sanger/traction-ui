@@ -120,12 +120,12 @@ export default {
       return Object.values(this.$store.getters['traction/pacbio/runCreate/smrtLinkVersionList'])
     },
     smrtLinkVersionSelectOptions() {
-      return Object.values(this.$store.getters['traction/pacbio/runCreate/smrtLinkVersionList']).map(({id, name}) =>
-        ({value: id, text: name})
-      )
+      return Object.values(
+        this.$store.getters['traction/pacbio/runCreate/smrtLinkVersionList'],
+      ).map(({ id, name }) => ({ value: id, text: name }))
     },
     defaultSmrtLinkVersion() {
-      return this.smrtLinkVersionList.find(version => version.default)
+      return this.smrtLinkVersionList.find((version) => version.default)
     },
     selectedSmrtLinkVersion() {
       return this.smrtLinkVersion || this.defaultSmrtLinkVersion
@@ -157,7 +157,7 @@ export default {
     },
     async provider() {
       await this.$store.dispatch('traction/pacbio/runCreate/fetchSmrtLinkVersions')
-    }
+    },
   },
   created() {
     this.provider()
