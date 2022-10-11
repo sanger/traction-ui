@@ -72,9 +72,9 @@
         </traction-col>
         <traction-col>
           <traction-select
-            v-model="selectedSmrtLinkVersion"
             id="smrt-link-version"
             ref="smrtLinkVersion"
+            v-model="selectedSmrtLinkVersion"
             :value="smrtLinkVersion"
             data-attribute="smrt-link-version"
             :options="smrtLinkVersionSelectOptions"
@@ -120,15 +120,15 @@ export default {
       return Object.values(this.$store.getters['traction/pacbio/runCreate/smrtLinkVersionList'])
     },
     smrtLinkVersionSelectOptions() {
-      return Object.values(this.$store.getters['traction/pacbio/runCreate/smrtLinkVersionList']).map(({id, name}) =>
-        ({value: id, text: name})
-      )
+      return Object.values(
+        this.$store.getters['traction/pacbio/runCreate/smrtLinkVersionList'],
+      ).map(({ id, name }) => ({ value: id, text: name }))
     },
     defaultSmrtLinkVersion() {
-      return this.smrtLinkVersionList.find(version => version.default)
+      return this.smrtLinkVersionList.find((version) => version.default)
     },
     selectedSmrtLinkVersion() {
-      return this.smrtLinkVersion || this.defaultSmrtLinkversion
+      return this.smrtLinkVersion || this.defaultSmrtLinkVersion
     },
     ...mapGetters(['currentRun']),
     ...mapState({
@@ -140,6 +140,9 @@ export default {
       systemName: (state) => state.currentRun.system_name,
       smrtLinkVersion: (state) => state.currentRun.smrt_link_version,
     }),
+  },
+  created() {
+    this.provider()
   },
   methods: {
     ...mapMutations([
@@ -157,10 +160,7 @@ export default {
     },
     async provider() {
       await this.$store.dispatch('traction/pacbio/runCreate/fetchSmrtLinkVersions')
-    }
-  },
-  created() {
-    this.provider()
+    },
   },
 }
 </script>

@@ -4,9 +4,7 @@ import { Data } from '@support/testHelper'
 import { dataToObjectById } from '@/api/JsonApi'
 
 describe('mutations.js', () => {
-  const {
-   populateSmrtLinkVersions
-  } = mutations
+  const { populateSmrtLinkVersions } = mutations
 
   describe('populateSmrtLinkVersions', () => {
     it('updates the state', () => {
@@ -16,9 +14,7 @@ describe('mutations.js', () => {
       // apply mutation
       populateSmrtLinkVersions(state, smrtLinkVersions)
       // assert result
-      expect(state.resources.smrtLinkVersions).toEqual(
-        dataToObjectById({ data: smrtLinkVersions }),
-      )
+      expect(state.resources.smrtLinkVersions).toEqual(dataToObjectById({ data: smrtLinkVersions }))
     })
   })
 })

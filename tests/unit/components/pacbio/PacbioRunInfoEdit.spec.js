@@ -1,6 +1,7 @@
 import * as Run from '@/api/PacbioRun'
 import PacbioRunInfoEdit from '@/components/pacbio/PacbioRunInfoEdit'
 import { localVue, mount, store } from '@support/testHelper'
+import { expect, it } from 'vitest'
 
 describe('PacbioRunInfoEdit', () => {
   let wrapper, runInfo, run
@@ -8,17 +9,18 @@ describe('PacbioRunInfoEdit', () => {
   beforeEach(() => {
     run = Run.build()
 
-    const smrtLinkVersions =  [
+    const smrtLinkVersions = [
       {
         id: '1',
-        version: 'v1',
+        name: 'v1',
         default: true,
       },
       {
         id: '2',
-        version: 'v2',
+        name: 'v2',
         default: false,
-      }]
+      },
+    ]
 
     store.commit('traction/pacbio/runs/setCurrentRun', run)
     store.state.traction.pacbio.runCreate.resources.smrtLinkVersions = smrtLinkVersions
@@ -66,6 +68,28 @@ describe('PacbioRunInfoEdit', () => {
   describe('smrt link versions', () => {
     it('returns the correct versions', () => {
       expect(runInfo.smrtLinkVersionList.length).toEqual(2)
+    })
+
+    it('returns the default version', () => {
+      const default_version = runInfo.smrtLinkVersionList.find((version) => version.default)
+      expect(runInfo.defaultSmrtLinkVersion).toEqual(default_version)
+    })
+
+    it('can return the default version', () => {
+      runInfo.setSmrtLinkVersion(null)
+      expect(runInfo.selectedSmrtLinkVersion).toEqual(runInfo.defaultSmrtLinkVersion)
+    })
+
+    it('can return the selected version', () => {
+      runInfo.smrtLinkVersionList.forEach(function (version) {
+        runInfo.setSmrtLinkVersion(version)
+        expect(runInfo.selectedSmrtLinkVersion).toEqual(version)
+      })
+    })
+
+    it('returns smrt link version select options', () => {
+      const options = runInfo.smrtLinkVersionList.map(({ id, name }) => ({ value: id, text: name }))
+      expect(runInfo.smrtLinkVersionSelectOptions).toEqual(options)
     })
   })
 
