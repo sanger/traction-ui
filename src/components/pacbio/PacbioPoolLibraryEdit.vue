@@ -23,10 +23,7 @@
       <traction-field-error
         data-attribute="template-prep-kit-box-barcode-error"
         :error="errorsFor('template_prep_kit_box_barcode')"
-        :with-icon="
-          attributeValueExists('template_prep_kit_box_barcode') ||
-          hasErrors('template_prep_kit_box_barcode')
-        "
+        :with-icon="isValidationExists('template_prep_kit_box_barcode')"
       >
         <traction-input
           v-model="template_prep_kit_box_barcode"
@@ -40,7 +37,7 @@
       <traction-field-error
         data-attribute="volume-error"
         :error="errorsFor('volume')"
-        :with-icon="attributeValueExists('volume') || hasErrors('volume')"
+        :with-icon="isValidationExists('volume')"
       >
         <traction-input
           v-model="volume"
@@ -54,7 +51,7 @@
       <traction-field-error
         data-attribute="concentration-error"
         :error="errorsFor('concentration')"
-        :with-icon="attributeValueExists('concentration') || hasErrors('concentration')"
+        :with-icon="isValidationExists('concentration')"
       >
         <traction-input
           v-model="concentration"
@@ -68,7 +65,7 @@
       <traction-field-error
         data-attribute="insert-size-error"
         :error="errorsFor('insert_size')"
-        :with-icon="attributeValueExists('insert_size') || hasErrors('insert_size')"
+        :with-icon="isValidationExists('insert_size')"
       >
         <traction-input
           v-model="insert_size"
@@ -148,17 +145,20 @@ export default {
     ...mapMutations(['updateLibrary']),
     ...mapActions(['applyTags']),
     hasErrors(attribute) {
+      //Check any errors exist in library for the given attribute
       if (!this.library.errors || !this.library.errors[attribute]) {
         return false
       }
-
-      return this.library.errors[attribute].length > 0
+      return true
     },
     errorsFor(attribute) {
       return this.library.errors && this.library.errors[attribute]
     },
     attributeValueExists(attribute) {
       return this.library[attribute] && this.library[attribute].length > 0
+    },
+    isValidationExists(attribute) {
+      return this.attributeValueExists(attribute) || this.hasErrors(attribute)
     },
   },
 }

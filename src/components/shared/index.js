@@ -14,6 +14,7 @@ import TractionMutedText from '@/components/shared/TractionMutedText'
 import TractionToggle from '@/components/shared/TractionToggle'
 import TractionInput from '@/components/shared/TractionInput'
 import TractionFieldError from '@/components/shared/TractionFieldError'
+import TractionResultIcon from '@/components/shared/icons/TractionResultIcon'
 
 import {
   BModal,
@@ -116,6 +117,7 @@ const registerGlobal = (vue) => {
   vue.component('TractionToggle', TractionToggle)
   vue.component('TractionInput', TractionInput)
   vue.component('TractionFieldError', TractionFieldError)
+  vue.component('TractionResultIcon', TractionResultIcon)
   registerBootstrapComponents(vue)
 }
 
