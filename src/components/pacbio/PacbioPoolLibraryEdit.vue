@@ -12,7 +12,7 @@
         v-model="tag_id"
         data-type="tag-list"
         :options="tagListOptions"
-        :state="hasErrors('tag_id')"
+        :state="errorsFor('tag_id')?.length > 0"
         class="tag-id"
       ></traction-select>
       <traction-invalid-feedback data-attribute="tag-id-error">
@@ -144,21 +144,15 @@ export default {
   methods: {
     ...mapMutations(['updateLibrary']),
     ...mapActions(['applyTags']),
-    hasErrors(attribute) {
-      //Check any errors exist in library for the given attribute
-      if (!this.library.errors || !this.library.errors[attribute]) {
-        return false
-      }
-      return true
-    },
+    //return any errors exist in library for the given attribute
     errorsFor(attribute) {
-      return this.library.errors && this.library.errors[attribute]
+      return this.library?.errors?.[attribute]
     },
     attributeValueExists(attribute) {
-      return this.library[attribute] && this.library[attribute].length > 0
+      return this.library?.[attribute]?.length > 0
     },
     isValidationExists(attribute) {
-      return this.attributeValueExists(attribute) || this.hasErrors(attribute)
+      return this.attributeValueExists(attribute) || this.errorsFor(attribute)?.length > 0
     },
   },
 }
