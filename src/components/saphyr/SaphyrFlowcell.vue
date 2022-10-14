@@ -8,7 +8,7 @@
         :value="libraryBarcode"
         placeholder="Library barcode"
         type="text"
-        @change="setBarcode"
+        @input="setBarcode"
       />
     </traction-col>
   </traction-row>

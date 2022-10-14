@@ -6,9 +6,8 @@
         <traction-input
           v-model="enteredLabware"
           data-input="tube-find"
-          autocomplete="off"
           placeholder="Search or scan for tube by barcode"
-          class="mb-2"
+          classes="mb-2"
         >
         </traction-input>
         <traction-list-group data-type="tube-list" class="find-list-group">

@@ -13,6 +13,9 @@ import TractionSubSection from '@/components/shared/TractionSubSection'
 import TractionMutedText from '@/components/shared/TractionMutedText'
 import TractionToggle from '@/components/shared/TractionToggle'
 import TractionSpinner from '@/components/shared/TractionSpinner'
+import TractionInput from '@/components/shared/TractionInput'
+import TractionFieldError from '@/components/shared/TractionFieldError'
+import TractionResultIcon from '@/components/shared/icons/TractionResultIcon'
 
 import {
   BModal,
@@ -24,7 +27,6 @@ import {
   BCol,
   BForm,
   BFormGroup,
-  BFormInput,
   BCard,
   BCardText,
   BListGroup,
@@ -62,7 +64,6 @@ const registerBootstrapComponents = (vue) => {
   vue.component('traction-col', BCol)
   vue.component('traction-form', BForm)
   vue.component('traction-form-group', BFormGroup)
-  vue.component('traction-input', BFormInput)
   vue.component('traction-card', BCard)
   vue.component('traction-card-body', BCardBody)
   vue.component('traction-card-text', BCardText)
@@ -115,6 +116,9 @@ const registerGlobal = (vue) => {
   vue.component('TractionMutedText', TractionMutedText)
   vue.component('TractionToggle', TractionToggle)
   vue.component('TractionSpinner', TractionSpinner)
+  vue.component('TractionInput', TractionInput)
+  vue.component('TractionFieldError', TractionFieldError)
+  vue.component('TractionResultIcon', TractionResultIcon)
   registerBootstrapComponents(vue)
 }
 

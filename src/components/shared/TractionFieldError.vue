@@ -1,0 +1,38 @@
+<template>
+  <div class="flex flex-col">
+    <div class="flex flex-row">
+      <slot />
+      <div v-if="withIcon" class="flex ml-1 items-center justify-center">
+        <traction-result-icon :result="`${error.length ? 'fail' : 'pass'}`" />
+      </div>
+    </div>
+    <div
+      v-if="error.length"
+      class="text-left ml-1 text-red-400 mt-1 text-xxs"
+      :data-attribute="dataAttribute"
+    >
+      {{ error }}
+    </div>
+  </div>
+</template>
+
+<script>
+export default {
+  name: 'TractionFieldError',
+  props: {
+    error: {
+      type: String,
+      default: '',
+    },
+    dataAttribute: {
+      type: String,
+      default: '',
+    },
+    /**If enabled - displays a tick icon next to child if there is no error , other wise a cross icon */
+    withIcon: {
+      type: Boolean,
+      default: false,
+    },
+  },
+}
+</script>
