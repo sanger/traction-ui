@@ -76,7 +76,7 @@ describe('PacbioRunInfoEdit', () => {
     })
 
     it('can return the default version', () => {
-      runInfo.smrtLinkVersionId = null
+      runInfo.setSmrtLinkVersionId(null)
       expect(runInfo.selectedSmrtLinkVersion).toEqual(runInfo.defaultSmrtLinkVersion)
     })
 
