@@ -54,7 +54,7 @@ describe('Run', () => {
       })
 
       it('will have a smrt link version', () => {
-        expect(run.smrt_link_version).toBeDefined()
+        expect(run.smrt_link_version_id).toBeDefined()
       })
     })
   })
@@ -231,7 +231,7 @@ describe('Run', () => {
       )
       expect(result.data.attributes.system_name).toEqual(run.system_name)
 
-      expect(result.data.attributes.smrt_link_version).toEqual(run.smrt_link_version)
+      expect(result.data.attributes.pacbio_smrt_link_version_id).toEqual(run.smrt_link_version_id)
     })
   })
 
@@ -453,7 +453,7 @@ describe('Run', () => {
         run.dna_control_complex_box_barcode,
       )
       expect(result.data.attributes.system_name).toEqual(run.system_name)
-      expect(result.data.attributes.smrt_link_version).toEqual(run.smrt_link_version)
+      expect(result.data.attributes.pacbio_smrt_link_version_id).toEqual(run.smrt_link_version_id)
       expect(result.data.attributes.comments).toEqual(run.comments)
     })
   })
