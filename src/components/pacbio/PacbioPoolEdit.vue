@@ -80,7 +80,7 @@
         @click="create()"
       >
         <span class="button-text">Create Pool </span>
-        <traction-spinner v-show="busy" small></traction-spinner>
+        <traction-spinner v-show="busy"></traction-spinner>
       </traction-button>
       <traction-button
         v-if="persisted"
@@ -90,7 +90,7 @@
         @click="update()"
       >
         <span class="button-text">Update Pool </span>
-        <traction-spinner v-show="busy" small></traction-spinner>
+        <traction-spinner v-show="busy"></traction-spinner>
       </traction-button>
     </div>
   </div>

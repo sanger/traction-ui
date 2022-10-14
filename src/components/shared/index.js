@@ -12,6 +12,7 @@ import TractionTag from '@/components/shared/TractionTag'
 import TractionSubSection from '@/components/shared/TractionSubSection'
 import TractionMutedText from '@/components/shared/TractionMutedText'
 import TractionToggle from '@/components/shared/TractionToggle'
+import TractionSpinner from '@/components/shared/TractionSpinner'
 
 import {
   BModal,
@@ -37,7 +38,6 @@ import {
   BTableSimple,
   BTr,
   BTd,
-  BSpinner,
   BFormInvalidFeedback,
   BThead,
   BTh,
@@ -77,7 +77,7 @@ const registerBootstrapComponents = (vue) => {
   vue.component('traction-file', BFormFile)
   vue.component('traction-tr', BTr)
   vue.component('traction-td', BTd)
-  vue.component('traction-spinner', BSpinner)
+
   vue.component('traction-invalid-feedback', BFormInvalidFeedback)
   vue.component('traction-thead', BThead)
   vue.component('traction-th', BTh)
@@ -114,6 +114,7 @@ const registerGlobal = (vue) => {
   vue.component('TractionSubSection', TractionSubSection)
   vue.component('TractionMutedText', TractionMutedText)
   vue.component('TractionToggle', TractionToggle)
+  vue.component('TractionSpinner', TractionSpinner)
   registerBootstrapComponents(vue)
 }
 
