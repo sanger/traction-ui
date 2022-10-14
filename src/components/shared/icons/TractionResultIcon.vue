@@ -4,11 +4,7 @@
   Component to render a tick(/pass) or cross(/fail) icon
 -->
 <template>
-  <svg
-    class="h-4 w-4"
-    xmlns="http://www.w3.org/2000/svg"
-    viewBox="0 0 20 20"
-  >
+  <svg class="h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
     <path
       v-if="hasPassed"
       fill="#00FF00"
@@ -29,11 +25,10 @@
 <script>
 import { within } from '@/lib/propValidations'
 
-
 export default {
   name: 'TractionResultIcon',
   props: {
-    //If result prop is "pass", displays a tick icon, otherwise a cross icon 
+    //If result prop is "pass", displays a tick icon, otherwise a cross icon
     result: {
       type: String,
       default: 'pass',

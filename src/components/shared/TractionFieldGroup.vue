@@ -62,7 +62,7 @@ export default {
     attribute: { type: String, required: false, default: null },
     description: { type: String, required: false, default: null },
     component: { type: [String, Object], required: false, default: null },
-    //The props for the component 
+    //The props for the component
     componentProps: { type: Object, required: false, default: () => ({}) },
     // We bind the value to the component, so the restrictions will mainly
     // come from that
@@ -71,7 +71,7 @@ export default {
   data: (component) => ({ fieldId: component.for || uniqueId() }),
 
   computed: {
-     getAttribute() {
+    getAttribute() {
       return this.attribute
     },
   },
@@ -85,7 +85,6 @@ export default {
         this.$emit('input', value)
       }
     },
-   
   },
 }
 </script>
