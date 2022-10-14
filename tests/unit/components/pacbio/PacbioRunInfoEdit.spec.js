@@ -1,7 +1,6 @@
 import * as Run from '@/api/PacbioRun'
 import PacbioRunInfoEdit from '@/components/pacbio/PacbioRunInfoEdit'
 import { localVue, mount, store } from '@support/testHelper'
-import { expect, it } from 'vitest'
 
 describe('PacbioRunInfoEdit', () => {
   let wrapper, runInfo, run
