@@ -34,6 +34,7 @@ describe('PacbioWellModal', () => {
   it('must have movieTimeOptions data', () => {
     expect(modal.movieTimeOptions).toEqual([
       { text: 'Movie Time', value: '', disabled: true },
+      '10.0',
       '15.0',
       '20.0',
       '24.0',
