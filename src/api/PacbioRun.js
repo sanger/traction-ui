@@ -6,6 +6,10 @@ const DefaultSystemName = 'Sequel IIe'
 const DefaultPreExtensionTime = 2
 const DefaultCcsAnalysisOutput = 'Yes'
 const DefaultLoadingTarget = 0.85
+const DefaultOnPlateLoadingConcentration = ''
+const ValueYes = 'Yes'
+const ValueInSmrtLink = 'In SMRT Link'
+
 // const DefaultSmrtLinkVersion = 'v10'
 const DefaultGenerateHiFi = (systemName) => {
   switch (systemName) {
@@ -27,6 +31,11 @@ const wellDefaults = (systemName) => {
     loading_target_p1_plus_p2: DefaultLoadingTarget,
     generate_hifi: DefaultGenerateHiFi(systemName),
     binding_kit_box_barcode: '',
+    on_plate_loading_concentration: DefaultOnPlateLoadingConcentration,
+    ccs_analysis_output_include_kinetics_information: ValueYes,
+    ccs_analysis_output_include_low_quality_reads: ValueYes,
+    demultiplex_barcodes: ValueInSmrtLink,
+    fivemc_calls_in_cpg_motifs: ValueYes,
   }
 }
 
@@ -169,6 +178,13 @@ const createWellsPayload = (wells, plateId) => {
       pre_extension_time: well.pre_extension_time,
       binding_kit_box_barcode: well.binding_kit_box_barcode,
       loading_target_p1_plus_p2: well.loading_target_p1_plus_p2,
+      ccs_analysis_output_include_kinetics_information:
+        well.ccs_analysis_output_include_kinetics_information,
+      ccs_analysis_output_include_low_quality_reads:
+        well.ccs_analysis_output_include_low_quality_reads,
+      demultiplex_barcodes: well.demultiplex_barcodes,
+      fivemc_calls_in_cpg_motifs: well.fivemc_calls_in_cpg_motifs,
+
       relationships: {
         plate: {
           data: {
@@ -229,6 +245,12 @@ const updateWellPayload = (well) => {
         pre_extension_time: well.pre_extension_time,
         binding_kit_box_barcode: well.binding_kit_box_barcode,
         loading_target_p1_plus_p2: well.loading_target_p1_plus_p2,
+        ccs_analysis_output_include_kinetics_information:
+          well.ccs_analysis_output_include_kinetics_information,
+        ccs_analysis_output_include_low_quality_reads:
+          well.ccs_analysis_output_include_low_quality_reads,
+        demultiplex_barcodes: well.demultiplex_barcodes,
+        fivemc_calls_in_cpg_motifs: well.fivemc_calls_in_cpg_motifs,
       },
       relationships: {
         pools: {

@@ -178,6 +178,10 @@ describe('#buildWell', () => {
       pools: [],
       pre_extension_time: 2,
       loading_target_p1_plus_p2: 0.85,
+      ccs_analysis_output_include_kinetics_information: 'Yes',
+      ccs_analysis_output_include_low_quality_reads: 'Yes',
+      demultiplex_barcodes: 'In SMRT Link',
+      fivemc_calls_in_cpg_motifs: 'Yes',
     }
 
     let wellObject = await Actions.buildWell({ state }, position)
@@ -199,6 +203,10 @@ describe('#buildWell', () => {
       pools: [],
       pre_extension_time: 2,
       loading_target_p1_plus_p2: 0.85,
+      ccs_analysis_output_include_kinetics_information: 'Yes',
+      ccs_analysis_output_include_low_quality_reads: 'Yes',
+      demultiplex_barcodes: 'In SMRT Link',
+      fivemc_calls_in_cpg_motifs: 'Yes',
     }
 
     delete state.currentRun.default_binding_kit_box_barcode

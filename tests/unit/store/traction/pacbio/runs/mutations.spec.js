@@ -3,6 +3,7 @@ import Actions from '@/store/traction/pacbio/runs/actions'
 import * as Run from '@/api/PacbioRun'
 import { Data } from '@support/testHelper'
 import Response from '@/api/Response'
+import { expect } from 'vitest'
 
 describe('mutate', () => {
   let runs, state
@@ -30,6 +31,54 @@ describe('mutateRun', () => {
     let systemName = 'System 1'
     Mutations.setSystemName(state, systemName)
     expect(state.currentRun.system_name).toEqual(systemName)
+  })
+
+  it('can set the default v11 smrt link options in the state', () => {
+    const binding_kit_box_barcode = 'BKBC1'
+    const loading_target_p1_plus_p2 = 0.4
+    const movie_time = 10
+    const on_plate_loading_concentration = 11
+    const pre_extension_time = 2
+    const ccs_analysis_output_include_kinetics_information = 'Yes'
+    const ccs_analysis_output_include_low_quality_reads = 'No'
+    const demultiplex_barcodes = 'In SMRT Link'
+    const fivemc_calls_in_cpg_motifs = 'Yes'
+
+    Mutations.setDefaultBindingKitBoxBarcode(state, binding_kit_box_barcode)
+    Mutations.setDefaultLoadingTargetP1PlusP2(state, loading_target_p1_plus_p2)
+    Mutations.setDefaultMovieTime(state, movie_time)
+    Mutations.setDefaultOnPlateLoadingConcentration(state, on_plate_loading_concentration)
+    Mutations.setDefaultPreExtensionTime(state, pre_extension_time)
+    Mutations.setDefaultCcsAnalysisOutputIncludeKineticsInformation(
+      state,
+      ccs_analysis_output_include_kinetics_information,
+    )
+    Mutations.setDefaultCcsAnalysisOutputIncludeLowQualityReads(
+      state,
+      ccs_analysis_output_include_low_quality_reads,
+    )
+    Mutations.setDefaultDemultiplexBarcodes(state, demultiplex_barcodes)
+    Mutations.setDefaultFivemcCallsInCpgMotifs(state, fivemc_calls_in_cpg_motifs)
+
+    expect(state.currentRun.wellDefaults.binding_kit_box_barcode).toEqual(binding_kit_box_barcode)
+    expect(state.currentRun.wellDefaults.loading_target_p1_plus_p2).toEqual(
+      loading_target_p1_plus_p2,
+    )
+    expect(state.currentRun.wellDefaults.movie_time).toEqual(movie_time)
+    expect(state.currentRun.wellDefaults.on_plate_loading_concentration).toEqual(
+      on_plate_loading_concentration,
+    )
+    expect(state.currentRun.wellDefaults.pre_extension_time).toEqual(pre_extension_time)
+    expect(state.currentRun.wellDefaults.ccs_analysis_output_include_kinetics_information).toEqual(
+      ccs_analysis_output_include_kinetics_information,
+    )
+    expect(state.currentRun.wellDefaults.ccs_analysis_output_include_low_quality_reads).toEqual(
+      ccs_analysis_output_include_low_quality_reads,
+    )
+    expect(state.currentRun.wellDefaults.demultiplex_barcodes).toEqual(demultiplex_barcodes)
+    expect(state.currentRun.wellDefaults.fivemc_calls_in_cpg_motifs).toEqual(
+      fivemc_calls_in_cpg_motifs,
+    )
   })
 })
 
