@@ -8,6 +8,7 @@
         <traction-col>
           <traction-select
             id="default-movie-time"
+            data-attribute="default-movie-time"
             :options="movieTimeOptions"
             :value="currentRun.wellDefaults.movie_time"
             title="Movie Time"
@@ -23,6 +24,7 @@
         <traction-col>
           <traction-select
             id="default-generate-hifi"
+            data-attribute="default-generate-hifi"
             title="Generate HiFi"
             :options="generateHifiOptions[currentRun.system_name]"
             :value="currentRun.wellDefaults.generate_hifi"
@@ -38,6 +40,7 @@
         <traction-col>
           <traction-select
             id="default-ccs-analysis-output"
+            data-attribute="default-ccs-analysis-output"
             title="Ccs Analysis Output"
             :options="ccsAnalysisOutputOptions"
             :value="currentRun.wellDefaults.ccs_analysis_output"
@@ -53,6 +56,7 @@
         <traction-col>
           <traction-input
             id="default-pre-extension-time"
+            data-attribute="default-pre-extension-time"
             title="Pre-extension Time"
             :value="currentRun.wellDefaults.pre_extension_time"
             placeholder="Pre-extension time"
@@ -68,6 +72,7 @@
         <traction-col>
           <traction-input
             id="default-loading-target"
+            data-attribute="default-loading-target-p1-plus-p2"
             title="Loading Target (P1 + P2)"
             :value="currentRun.wellDefaults.loading_target_p1_plus_p2"
             placeholder="Loading Target (P1 + P2)"
@@ -85,6 +90,7 @@
         <traction-col>
           <traction-input
             id="default-binding-kit-box-barcode"
+            data-attribute="default-binding-kit-box-barcode"
             :value="currentRun.wellDefaults.binding_kit_box_barcode"
             placeholder="Default Binding Kit Box Barcode for new wells"
             type="text"
