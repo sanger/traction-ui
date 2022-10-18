@@ -3,6 +3,7 @@ import Response from '@/api/Response'
 import * as Run from '@/api/PacbioRun'
 import build from '@/api/ApiBuilder'
 import Api from '@/api'
+import { describe, expect } from 'vitest'
 
 describe('Run', () => {
   let run, failedResponse
@@ -506,6 +507,43 @@ describe('Run', () => {
 
       let response = await Run.destroy(1, pacbioRequest.runs)
       expect(response).toEqual(expected)
+    })
+  })
+
+  describe('wellDefaults', () => {
+    const DefaultSystemName = 'Sequel IIe'
+    const DefaultBindingKitBoxBarcode = ''
+    const DefaultLoadingTarget = 0.85
+    const DefaultMovieTime = ''
+    const DefaultOnPlateLoadingConcentration = ''
+    const DefaultPreExtensionTime = 2
+    const ValueYes = 'Yes'
+    const ValueInSmrtLink = 'In SMRT Link'
+    let defaults = Run.wellDefaults(DefaultSystemName)
+
+    it('has v11 smrt link options', () => {
+      // versions|key
+      // v10     |ccs_analysis_output
+      // v10     |generate_hifi
+      // v10,v11 |binding_kit_box_barcode
+      // v10,v11 |loading_target_p1_plus_p2
+      // v10,v11 |movie_time
+      // v10,v11 |on_plate_loading_concentration
+      // v10,v11 |pre_extension_time
+      // v11     |ccs_analysis_output_include_kinetics_information
+      // v11     |ccs_analysis_output_include_low_quality_reads
+      // v11     |demultiplex_barcodes
+      // v11     |fivemc_calls_in_cpg_motifs
+
+      expect(defaults.binding_kit_box_barcode).toEqual(DefaultBindingKitBoxBarcode)
+      expect(defaults.loading_target_p1_plus_p2).toEqual(DefaultLoadingTarget)
+      expect(defaults.movie_time).toEqual(DefaultMovieTime)
+      expect(defaults.on_plate_loading_concentration).toEqual(DefaultOnPlateLoadingConcentration)
+      expect(defaults.pre_extension_time).toEqual(DefaultPreExtensionTime)
+      expect(defaults.ccs_analysis_output_include_kinetics_information).toEqual(ValueYes)
+      expect(defaults.ccs_analysis_output_include_low_quality_reads).toEqual(ValueYes)
+      expect(defaults.demultiplex_barcodes).toEqual(ValueInSmrtLink)
+      expect(defaults.fivemc_calls_in_cpg_motifs).toEqual(ValueYes)
     })
   })
 })
