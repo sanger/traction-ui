@@ -3,7 +3,7 @@ import Response from '@/api/Response'
 import * as Run from '@/api/PacbioRun'
 import build from '@/api/ApiBuilder'
 import Api from '@/api'
-import { describe, expect } from 'vitest'
+import { describe, expect, it } from 'vitest'
 
 describe('Run', () => {
   let run, failedResponse
@@ -281,7 +281,22 @@ describe('Run', () => {
       expect(result.data.attributes.wells[0].binding_kit_box_barcode).toEqual(
         wells[0].binding_kit_box_barcode,
       )
-      expect(result.data.attributes.wells[0].loading_target).toEqual(wells[0].loading_target)
+      expect(result.data.attributes.wells[0].loading_target_p1_plus_p2).toEqual(
+        wells[0].loading_target_p1_plus_p2,
+      )
+      expect(
+        result.data.attributes.wells[0].ccs_analysis_output_include_kinetics_information,
+      ).toEqual(wells[0].ccs_analysis_output_include_kinetics_information)
+      expect(result.data.attributes.wells[0].ccs_analysis_output_include_low_quality_reads).toEqual(
+        wells[0].ccs_analysis_output_include_low_quality_reads,
+      )
+      expect(result.data.attributes.wells[0].demultiplex_barcodes).toEqual(
+        wells[0].demultiplex_barcodes,
+      )
+      expect(result.data.attributes.wells[0].fivemc_calls_in_cpg_motifs).toEqual(
+        wells[0].fivemc_calls_in_cpg_motifs,
+      )
+
       expect(result.data.attributes.wells[0].relationships.plate.data.type).toEqual('plates')
       expect(result.data.attributes.wells[0].relationships.plate.data.id).toEqual(plateID)
       expect(result.data.attributes.wells[0].relationships.pools.data[0].type).toEqual('pools')
@@ -296,6 +311,24 @@ describe('Run', () => {
       expect(result.data.attributes.wells[1].relationships.pools.data[0].id).toEqual(
         wells[1].pools[0].id,
       )
+    })
+
+    it('has v11 smrt link options', () => {
+      let result = Run.createWellsPayload(wells, plateID)
+
+      expect(result.data.attributes.wells[0]).toHaveProperty('binding_kit_box_barcode')
+      expect(result.data.attributes.wells[0]).toHaveProperty('loading_target_p1_plus_p2')
+      expect(result.data.attributes.wells[0]).toHaveProperty('movie_time')
+      expect(result.data.attributes.wells[0]).toHaveProperty('on_plate_loading_concentration')
+      expect(result.data.attributes.wells[0]).toHaveProperty('pre_extension_time')
+      expect(result.data.attributes.wells[0]).toHaveProperty(
+        'ccs_analysis_output_include_kinetics_information',
+      )
+      expect(result.data.attributes.wells[0]).toHaveProperty(
+        'ccs_analysis_output_include_low_quality_reads',
+      )
+      expect(result.data.attributes.wells[0]).toHaveProperty('demultiplex_barcodes')
+      expect(result.data.attributes.wells[0]).toHaveProperty('fivemc_calls_in_cpg_motifs')
     })
   })
 
@@ -482,9 +515,26 @@ describe('Run', () => {
       expect(result.data.attributes.ccs_analysis_output).toEqual(well.ccs_analysis_output)
       expect(result.data.attributes.pre_extension_time).toEqual(well.pre_extension_time)
       expect(result.data.attributes.binding_kit_box_barcode).toEqual(well.binding_kit_box_barcode)
-      expect(result.data.attributes.loading_target).toEqual(well.loading_target)
+      expect(result.data.attributes.loading_target_p1_plus_p2).toEqual(
+        well.loading_target_p1_plus_p2,
+      )
       expect(result.data.relationships.pools.data[0].type).toEqual('pools')
       expect(result.data.relationships.pools.data[0].id).toEqual(well.pools[0].id)
+    })
+    it('has v11 smrt link options', async () => {
+      let result = Run.updateWellPayload(well)
+
+      expect(result.data.attributes).toHaveProperty('binding_kit_box_barcode')
+      expect(result.data.attributes).toHaveProperty('loading_target_p1_plus_p2')
+      expect(result.data.attributes).toHaveProperty('movie_time')
+      expect(result.data.attributes).toHaveProperty('on_plate_loading_concentration')
+      expect(result.data.attributes).toHaveProperty('pre_extension_time')
+      expect(result.data.attributes).toHaveProperty(
+        'ccs_analysis_output_include_kinetics_information',
+      )
+      expect(result.data.attributes).toHaveProperty('ccs_analysis_output_include_low_quality_reads')
+      expect(result.data.attributes).toHaveProperty('demultiplex_barcodes')
+      expect(result.data.attributes).toHaveProperty('fivemc_calls_in_cpg_motifs')
     })
   })
 

@@ -16,7 +16,11 @@
         "generate_hifi": "In SMRT Link",
         "ccs_analysis_output": "",
         "pre_extension_time": "2",
-        "bindng_kit_box_barcode": "BKB1"
+        "bindng_kit_box_barcode": "BKB1",
+        "ccs_analysis_output_include_kinetics_information": "Yes",
+        "ccs_analysis_output_include_low_quality_reads": "Yes",
+        "demultiplex_barcodes": "In SMRT Link",
+        "fivemc_calls_in_cpg_motifs": "Yes"
       }
     }
   },
