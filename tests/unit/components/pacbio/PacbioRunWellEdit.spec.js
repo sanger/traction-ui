@@ -4,6 +4,19 @@ import storePools from '@tests/data/StorePools'
 import * as Run from '@/api/PacbioRun'
 import * as Actions from '@/store/traction/pacbio/runs/actions'
 
+const smrtLinkVersions = [
+  {
+    id: '1',
+    name: 'v1',
+    default: true,
+  },
+  {
+    id: '2',
+    name: 'v2',
+    default: false,
+  },
+]
+
 describe('PacbioWellModal', () => {
   let modal, wrapper, props, storeWell, run, state
 
@@ -11,7 +24,9 @@ describe('PacbioWellModal', () => {
     props = { position: 'A1' }
 
     run = Run.build()
+    run.smrt_link_version_id = '1'
     state = { currentRun: run }
+    store.state.traction.pacbio.runCreate.resources.smrtLinkVersions = smrtLinkVersions
     storeWell = Actions.buildWell({ state }, props.position)
     storeWell.pools = [{ id: 1, barcode: 'TRAC-0' }]
     run.plate.wells[0] = storeWell
@@ -44,6 +59,10 @@ describe('PacbioWellModal', () => {
 
   it('must have ccsAnalysisOutputOptions data', () => {
     expect(modal.ccsAnalysisOutputOptions).toEqual(['Yes', 'No'])
+  })
+
+  it('will have a selected smrt link version', () => {
+    expect(modal.selectedSmrtLinkVersion).toEqual(smrtLinkVersions[0])
   })
 
   describe('generateHifiOptions', () => {

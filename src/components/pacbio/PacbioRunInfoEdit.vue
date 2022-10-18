@@ -110,9 +110,9 @@ export default {
   data() {
     return {
       systemNameOptions: ['Sequel I', 'Sequel II', 'Sequel IIe'],
-      // smrtLinkOptions: ['v10'],
     }
   },
+  // A lot of the below could be improved. Can we use the store?
   computed: {
     smrtLinkVersionList() {
       return Object.values(this.$store.getters['traction/pacbio/runCreate/smrtLinkVersionList'])
@@ -157,7 +157,6 @@ export default {
       comments: (state) => state.currentRun.comments,
       uuid: (state) => state.currentRun.uuid,
       systemName: (state) => state.currentRun.system_name,
-      // smrtLinkVersion: (state) => state.currentRun.smrt_link_version,
       smrtLinkVersionId: (state) => state.currentRun.smrt_link_version_id,
     }),
   },
@@ -171,7 +170,6 @@ export default {
       'setComments',
       'setUuid',
       'setSystemName',
-      // 'setSmrtLinkVersion',
       'setSmrtLinkVersionId',
     ]),
     alertOnFail({ success, errors }) {

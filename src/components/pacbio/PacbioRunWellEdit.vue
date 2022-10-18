@@ -152,6 +152,8 @@
 </template>
 
 <script>
+// There is a lot of duplication between this component and PacbioRunWellEdit.
+// A lot of it could be moved to the store
 import { mapMutations, mapGetters, mapActions } from 'vuex'
 
 export default {
@@ -201,6 +203,11 @@ export default {
   computed: {
     ...mapGetters('traction/pacbio/runs', ['currentRun', 'well']),
     ...mapGetters('traction/pacbio/pools', ['poolByBarcode']),
+    selectedSmrtLinkVersion() {
+      return this.$store.getters['traction/pacbio/runCreate/smrtLinkVersionList'].find(
+        (version) => version.id === this.currentRun.smrt_link_version_id,
+      )
+    },
   },
   methods: {
     addRow() {
