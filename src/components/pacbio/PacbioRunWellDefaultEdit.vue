@@ -107,6 +107,8 @@
 </template>
 
 <script>
+// There is a lot of duplication between this component and PacbioRunWellEdit.
+// A lot of it could be moved to the store
 import { createNamespacedHelpers } from 'vuex'
 const { mapGetters, mapMutations } = createNamespacedHelpers('traction/pacbio/runs')
 
