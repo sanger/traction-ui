@@ -94,9 +94,9 @@
           v-model="currentWell.loading_target_p1_plus_p2"
           placeholder="Adaptive loading disabled - Add loading target to enable"
           type="number"
-          :min="0"
-          :max="1"
-          :step="0.05"
+          min="0"
+          max="1"
+          step="0.05"
           lazy-formatter
           :formatter="formatLoadingTargetValue"
         >
@@ -122,7 +122,7 @@
             ref="poolBarcode"
             :value="`${row.item.barcode}`"
             placeholder="Pool Barcode"
-            @change="updatePoolBarcode(row, $event)"
+            @input="updatePoolBarcode(row, $event)"
           >
           </traction-input>
 

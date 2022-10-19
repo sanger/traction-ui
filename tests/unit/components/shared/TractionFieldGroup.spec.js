@@ -9,8 +9,8 @@ describe('TractionFieldGroup.vue', () => {
     description: 'Some additional text',
     componentProps: {
       type: 'number',
-      step: 1,
-      minimum: 0,
+      step: '1',
+      min: '0',
     },
   }
 
