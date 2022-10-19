@@ -67,7 +67,6 @@ describe('PacbioRunWellDefaultEdit', () => {
 
   //["ccs_analysis_output", "generate_hifi", "on_plate_loading_concentration", "binding_kit_box_barcode", "pre_extension_time", "loading_target_p1_plus_p2", "movie_time"]
   describe('if the SMRT Link version is v10', () => {
-
     it('has a movie time default input', () => {
       expect(wrapper.find('[data-attribute=default-movie-time]').exists()).toBeTruthy()
     })
@@ -86,7 +85,9 @@ describe('PacbioRunWellDefaultEdit', () => {
     })
 
     it('has a loading target p1 plus p2 default input', () => {
-      expect(wrapper.find('[data-attribute=default-loading-target-p1-plus-p2]').exists()).toBeTruthy()
+      expect(
+        wrapper.find('[data-attribute=default-loading-target-p1-plus-p2]').exists(),
+      ).toBeTruthy()
     })
 
     it('has a CCS analysis output default input', () => {
@@ -94,21 +95,30 @@ describe('PacbioRunWellDefaultEdit', () => {
     })
 
     it('does not have a CCS analysis output include kinetics information default input', () => {
-      expect(wrapper.find('[data-attribute=default-ccs-analysis-output-include-kinetics-information]').exists()).toBeFalsy()
+      expect(
+        wrapper
+          .find('[data-attribute=default-ccs-analysis-output-include-kinetics-information]')
+          .exists(),
+      ).toBeFalsy()
     })
 
     it('does not have a CCS analysis output include low quality reads default input', () => {
-      expect(wrapper.find('[data-attribute=default-ccs-analysis-output-include-low-quality-reads]').exists()).toBeFalsy()
+      expect(
+        wrapper
+          .find('[data-attribute=default-ccs-analysis-output-include-low-quality-reads]')
+          .exists(),
+      ).toBeFalsy()
     })
 
     it('does not have a fivemc calls in cpg motifs default input', () => {
-      expect(wrapper.find('[data-attribute=default-fivemc-calls-in-cpg-motifs]').exists()).toBeFalsy()
+      expect(
+        wrapper.find('[data-attribute=default-fivemc-calls-in-cpg-motifs]').exists(),
+      ).toBeFalsy()
     })
 
     it('does not have a demultiplex barcodes default input', () => {
       expect(wrapper.find('[data-attribute=default-demultiplex-barcodes]').exists()).toBeFalsy()
     })
-
   })
 
   /*["ccs_analysis_output_include_kinetics_information",
@@ -135,19 +145,31 @@ describe('PacbioRunWellDefaultEdit', () => {
     })
 
     it('has a loading target p1 plus p2 default input', () => {
-      expect(wrapper.find('[data-attribute=default-loading-target-p1-plus-p2]').exists()).toBeTruthy()
+      expect(
+        wrapper.find('[data-attribute=default-loading-target-p1-plus-p2]').exists(),
+      ).toBeTruthy()
     })
 
     it('has a CCS analysis output include kinetics information default input', () => {
-      expect(wrapper.find('[data-attribute=default-ccs-analysis-output-include-kinetics-information]').exists()).toBeTruthy()
+      expect(
+        wrapper
+          .find('[data-attribute=default-ccs-analysis-output-include-kinetics-information]')
+          .exists(),
+      ).toBeTruthy()
     })
 
     it('has a CCS analysis output include low quality reads default input', () => {
-      expect(wrapper.find('[data-attribute=default-ccs-analysis-output-include-low-quality-reads]').exists()).toBeTruthy()
+      expect(
+        wrapper
+          .find('[data-attribute=default-ccs-analysis-output-include-low-quality-reads]')
+          .exists(),
+      ).toBeTruthy()
     })
 
     it('has a fivemc calls in cpg motifs default input', () => {
-      expect(wrapper.find('[data-attribute=default-fivemc-calls-in-cpg-motifs]').exists()).toBeTruthy()
+      expect(
+        wrapper.find('[data-attribute=default-fivemc-calls-in-cpg-motifs]').exists(),
+      ).toBeTruthy()
     })
 
     it('has a demultiplex barcodes default input', () => {
