@@ -72,11 +72,8 @@
         <traction-col>
           <traction-input
             id="default-loading-target"
-<<<<<<< HEAD
             data-attribute="default-loading-target-p1-plus-p2"
             title="Loading Target (P1 + P2)"
-=======
->>>>>>> develop
             :value="currentRun.wellDefaults.loading_target_p1_plus_p2"
             placeholder="Loading Target (P1 + P2)"
             type="number"
