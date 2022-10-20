@@ -110,7 +110,6 @@ export default {
   data() {
     return {
       systemNameOptions: ['Sequel I', 'Sequel II', 'Sequel IIe'],
-      // smrtLinkOptions: ['v10'],
     }
   },
   computed: {
