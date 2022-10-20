@@ -6,9 +6,9 @@
       <traction-form-group id="movieTime-group" label="Movie time:" label-for="movieTime">
         <traction-select
           id="movieTime"
-          data-attribute="movie-time"
           ref="movieTime"
           v-model="currentWell.movie_time"
+          data-attribute="movie-time"
           :options="movieTimeOptions"
         >
         </traction-select>
@@ -54,9 +54,9 @@
       >
         <traction-select
           id="ccsAnalysisOutput"
-          data-attribute="ccs-analysis-output"
           ref="ccsAnalysisOutput"
           v-model="currentWell.ccs_analysis_output"
+          data-attribute="ccs-analysis-output"
           :options="ccsAnalysisOutputOptions"
         >
         </traction-select>
@@ -69,9 +69,9 @@
       >
         <traction-input
           id="preExtensionTime"
-          data-attribute="pre-extension-time"
           ref="preExtensionTime"
           v-model="currentWell.pre_extension_time"
+          data-attribute="pre-extension-time"
           placeholder="Pre-extension time"
         >
         </traction-input>
@@ -84,9 +84,9 @@
       >
         <traction-input
           id="bindingKitBoxBarcode"
-          data-attribute="binding-kit-box-barcode"
           ref="bindingKitBoxBarcode"
           v-model="currentWell.binding_kit_box_barcode"
+          data-attribute="binding-kit-box-barcode"
           placeholder="Binding Kit Box Barcode"
         >
         </traction-input>
@@ -98,9 +98,9 @@
       >
         <traction-input
           id="loadingTarget"
-          data-attribute="loading-target-p1-plus-p2"
           ref="loadingTarget"
           v-model="currentWell.loading_target_p1_plus_p2"
+          data-attribute="loading-target-p1-plus-p2"
           placeholder="Adaptive loading disabled - Add loading target to enable"
           type="number"
           min="0"
@@ -119,9 +119,9 @@
       >
         <traction-select
           id="ccs-analysis-output-include-kinetics-information"
-          data-attribute="ccs-analysis-output-include-kinetics-information"
-          :options="ccsAnalysisOutputOptions"
           v-model="currentWell.ccs_analysis_output_include_kinetics_information"
+          :options="ccsAnalysisOutputOptions"
+          data-attribute="ccs-analysis-output-include-kinetics-information"
         >
         </traction-select>
       </traction-form-group>
@@ -133,9 +133,9 @@
       >
         <traction-select
           id="ccs-analysis-output-include-low-quality-reads"
-          data-attribute="ccs-analysis-output-include-low-quality-reads"
-          :options="ccsAnalysisOutputOptions"
           v-model="currentWell.ccs_analysis_output_include_low_quality_reads"
+          :options="ccsAnalysisOutputOptions"
+          data-attribute="ccs-analysis-output-include-low-quality-reads"
         >
         </traction-select>
       </traction-form-group>
@@ -147,9 +147,9 @@
       >
         <traction-select
           id="fivemc-calls-in-cpg-motifs"
-          data-attribute="fivemc-calls-in-cpg-motifs"
-          :options="ccsAnalysisOutputOptions"
           v-model="currentWell.fivemc_calls_in_cpg_motifs"
+          :options="ccsAnalysisOutputOptions"
+          data-attribute="fivemc-calls-in-cpg-motifs"
         >
         </traction-select>
       </traction-form-group>
@@ -161,9 +161,9 @@
       >
         <traction-select
           id="demultiplex-barcodes"
-          data-attribute="demultiplex-barcodes"
-          :options="generateHifiOptions"
           v-model="currentWell.demultiplex_barcodes"
+          :options="generateHifiOptions"
+          data-attribute="demultiplex-barcodes"
         >
         </traction-select>
       </traction-form-group>
