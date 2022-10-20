@@ -5,13 +5,13 @@ import { describe, expect, it } from 'vitest'
 
 const smrtLinkVersions = [
   {
-    id: '1',
-    name: 'v1',
+    id: 1,
+    name: 'v10',
     default: true,
   },
   {
-    id: '2',
-    name: 'v2',
+    id: 2,
+    name: 'v11',
     default: false,
   },
 ]
@@ -21,7 +21,7 @@ describe('PacbioRunWellDefaultEdit', () => {
 
   beforeEach(() => {
     run = Run.build()
-    run.smrt_link_version_id = '1'
+    run.smrt_link_version_id = 1
 
     store.commit('traction/pacbio/runs/setCurrentRun', run)
     store.state.traction.pacbio.runCreate.resources.smrtLinkVersions = smrtLinkVersions
@@ -44,36 +44,96 @@ describe('PacbioRunWellDefaultEdit', () => {
     expect(runInfo.selectedSmrtLinkVersion).toEqual(smrtLinkVersions[0])
   })
 
-  describe('form inputs', () => {
-    it('has a Default Movie time input', () => {
-      expect(wrapper.find('#default-movie-time')).toBeDefined()
-    })
-    it('has a Default Generate Hifi input', () => {
-      expect(wrapper.find('#default-generate-hifi')).toBeDefined()
-    })
-    it('has a Default Ccs Analysis Output', () => {
-      expect(wrapper.find('#default-ccs-analysis-output')).toBeDefined()
-    })
-    it('has a Default Pre extension time input', () => {
-      expect(wrapper.find('#default-pre-extension-time')).toBeDefined()
-    })
-    it('has a Default Loading Target input', () => {
-      expect(wrapper.find('#default-loading-target')).toBeDefined()
-    })
-    it('has a Default Binding Kit Box Barcode input', () => {
-      expect(wrapper.find('#default-binding-kit-box-barcode')).toBeDefined()
-    })
-  })
-
-  //["ccs_analysis_output", "generate_hifi", "on_plate_loading_concentration", "binding_kit_box_barcode", "pre_extension_time", "loading_target_p1_plus_p2", "movie_time"]
+  /*["ccs_analysis_output", 
+  "generate_hifi", 
+  "on_plate_loading_concentration", 
+  "binding_kit_box_barcode", 
+  "pre_extension_time", 
+  "loading_target_p1_plus_p2", 
+  "movie_time"]
+  */
   describe('if the SMRT Link version is v10', () => {
+    beforeEach(() => {
+      runInfo.currentRun.smrt_link_version_id = 1
+    })
     it('has a movie time default input', () => {
-      expect(wrapper.find('[data-attribute=default-movie-time]').exists()).toBeTruthy()
+      expect(wrapper.find('[data-attribute="default-movie-time"]').exists()).toBeTruthy()
     })
 
     it('has a generate hifi default input', () => {
-      console.log(wrapper.find('[data-attribute=default-generate-hifi]'))
-      expect(wrapper.find('[data-attribute=default-generate-hifi]').exists()).toBeTruthy()
+      expect(wrapper.find('[data-attribute="default-generate-hifi"]').exists()).toBeTruthy()
+    })
+
+    it('has a binding kit box barcode default input', () => {
+      expect(
+        wrapper.find('[data-attribute="default-binding-kit-box-barcode"]').exists(),
+      ).toBeTruthy()
+    })
+
+    it('has a pre extension time default input', () => {
+      expect(wrapper.find('[data-attribute="default-pre-extension-time"]').exists()).toBeTruthy()
+    })
+
+    it('has a loading target p1 plus p2 default input', () => {
+      expect(
+        wrapper.find('[data-attribute="default-loading-target-p1-plus-p2"]').exists(),
+      ).toBeTruthy()
+    })
+
+    it('has a CCS analysis output default input', () => {
+      expect(wrapper.find('[data-attribute="default-ccs-analysis-output"]').exists()).toBeTruthy()
+    })
+
+    it('has an on plate loading concentration default input', () => {
+      expect(
+        wrapper.find('[data-attribute="default-on-plate-loading-concentration"]').exists(),
+      ).toBeTruthy()
+    })
+
+    it('does not have a CCS analysis output include kinetics information default input', () => {
+      expect(
+        wrapper
+          .find('[data-attribute="default-ccs-analysis-output-include-kinetics-information"]')
+          .exists(),
+      ).toBeFalsy()
+    })
+
+    it('does not have a CCS analysis output include low quality reads default input', () => {
+      expect(
+        wrapper
+          .find('[data-attribute="default-ccs-analysis-output-include-low-quality-reads"]')
+          .exists(),
+      ).toBeFalsy()
+    })
+
+    it('does not have a fivemc calls in cpg motifs default input', () => {
+      expect(
+        wrapper.find('[data-attribute="default-fivemc-calls-in-cpg-motifs"]').exists(),
+      ).toBeFalsy()
+    })
+
+    it('does not have a demultiplex barcodes default input', () => {
+      expect(wrapper.find('[data-attribute="default-demultiplex-barcodes"]').exists()).toBeFalsy()
+    })
+  })
+
+  /*["ccs_analysis_output_include_kinetics_information",
+    "ccs_analysis_output_include_low_quality_reads",
+    "fivemc_calls_in_cpg_motifs",
+    "demultiplex_barcodes",
+    "on_plate_loading_concentration",
+    "binding_kit_box_barcode",
+    "pre_extension_time",
+    "loading_target_p1_plus_p2",
+    "movie_time"]
+  */
+  describe('if the SMRT Link version is v11', () => {
+    beforeEach(() => {
+      runInfo.currentRun.smrt_link_version_id = 2
+    })
+
+    it('has a movie time default input', () => {
+      expect(wrapper.find('[data-attribute=default-movie-time]').exists()).toBeTruthy()
     })
 
     it('has a binding kit box barcode default input', () => {
@@ -90,63 +150,9 @@ describe('PacbioRunWellDefaultEdit', () => {
       ).toBeTruthy()
     })
 
-    it('has a CCS analysis output default input', () => {
-      expect(wrapper.find('[data-attribute=default-ccs-analysis-output]').exists()).toBeTruthy()
-    })
-
-    it('does not have a CCS analysis output include kinetics information default input', () => {
+    it('has an on plate loading concentration default input', () => {
       expect(
-        wrapper
-          .find('[data-attribute=default-ccs-analysis-output-include-kinetics-information]')
-          .exists(),
-      ).toBeFalsy()
-    })
-
-    it('does not have a CCS analysis output include low quality reads default input', () => {
-      expect(
-        wrapper
-          .find('[data-attribute=default-ccs-analysis-output-include-low-quality-reads]')
-          .exists(),
-      ).toBeFalsy()
-    })
-
-    it('does not have a fivemc calls in cpg motifs default input', () => {
-      expect(
-        wrapper.find('[data-attribute=default-fivemc-calls-in-cpg-motifs]').exists(),
-      ).toBeFalsy()
-    })
-
-    it('does not have a demultiplex barcodes default input', () => {
-      expect(wrapper.find('[data-attribute=default-demultiplex-barcodes]').exists()).toBeFalsy()
-    })
-  })
-
-  /*["ccs_analysis_output_include_kinetics_information",
-    "ccs_analysis_output_include_low_quality_reads",
-    "fivemc_calls_in_cpg_motifs",
-    "demultiplex_barcodes",
-    "on_plate_loading_concentration",
-    "binding_kit_box_barcode",
-    "pre_extension_time",
-    "loading_target_p1_plus_p2",
-    "movie_time"]
-  */
-  describe('if the SMRT Link version is v11', () => {
-    it('has a movie time default input', () => {
-      expect(wrapper.find('[data-attribute=default-movie-time]').exists()).toBeTruthy()
-    })
-
-    it('has a binding kit box barcode default input', () => {
-      expect(wrapper.find('[data-attribute=default-binding-kit-box-barcode]').exists()).toBeTruthy()
-    })
-
-    it('has a pre extension time default input', () => {
-      expect(wrapper.find('[data-attribute=default-pre-extension-time]').exists()).toBeTruthy()
-    })
-
-    it('has a loading target p1 plus p2 default input', () => {
-      expect(
-        wrapper.find('[data-attribute=default-loading-target-p1-plus-p2]').exists(),
+        wrapper.find('[data-attribute="default-on-plate-loading-concentration"]').exists(),
       ).toBeTruthy()
     })
 
