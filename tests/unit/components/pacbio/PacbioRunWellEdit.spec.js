@@ -22,7 +22,7 @@ describe('PacbioWellModal', () => {
 
   beforeEach(() => {
     // set isStatic is true so modal is visible.
-    props = { position: 'A1', isStatic: true}
+    props = { position: 'A1', isStatic: true }
 
     run = Run.build()
     run.smrt_link_version_id = '1'
@@ -101,9 +101,6 @@ describe('PacbioWellModal', () => {
 
   //["ccs_analysis_output", "generate_hifi", "on_plate_loading_concentration", "binding_kit_box_barcode", "pre_extension_time", "loading_target_p1_plus_p2", "movie_time"]
   describe('if the SMRT Link version is v10', () => {
-
-   
-
     it('has a movie time input', () => {
       expect(wrapper.find('[data-attribute="movie-time"]').exists()).toBeTruthy()
     })
@@ -122,9 +119,7 @@ describe('PacbioWellModal', () => {
     })
 
     it('has a loading target p1 plus p2 input', () => {
-      expect(
-        wrapper.find('[data-attribute="loading-target-p1-plus-p2"]').exists(),
-      ).toBeTruthy()
+      expect(wrapper.find('[data-attribute="loading-target-p1-plus-p2"]').exists()).toBeTruthy()
     })
 
     it('has a CCS analysis output input', () => {
@@ -141,16 +136,12 @@ describe('PacbioWellModal', () => {
 
     it('does not have a CCS analysis output include low quality reads input', () => {
       expect(
-        wrapper
-          .find('[data-attribute="ccs-analysis-output-include-low-quality-reads"]')
-          .exists(),
+        wrapper.find('[data-attribute="ccs-analysis-output-include-low-quality-reads"]').exists(),
       ).toBeFalsy()
     })
 
     it('does not have a fivemc calls in cpg motifs input', () => {
-      expect(
-        wrapper.find('[data-attribute="fivemc-calls-in-cpg-motifs"]').exists(),
-      ).toBeFalsy()
+      expect(wrapper.find('[data-attribute="fivemc-calls-in-cpg-motifs"]').exists()).toBeFalsy()
     })
 
     it('does not have a demultiplex barcodes input', () => {
@@ -169,7 +160,6 @@ describe('PacbioWellModal', () => {
     "movie_time"]
   */
   describe('if the SMRT Link version is v11', () => {
-
     beforeEach(() => {
       run.smrt_link_version_id = '2'
       store.state.traction.pacbio.runCreate.resources.smrtLinkVersions = smrtLinkVersions
@@ -192,9 +182,7 @@ describe('PacbioWellModal', () => {
     })
 
     it('has a loading target p1 plus p2 input', () => {
-      expect(
-        wrapper.find('[data-attribute="loading-target-p1-plus-p2"]').exists(),
-      ).toBeTruthy()
+      expect(wrapper.find('[data-attribute="loading-target-p1-plus-p2"]').exists()).toBeTruthy()
     })
 
     it('has a CCS analysis output include kinetics information input', () => {
@@ -207,16 +195,12 @@ describe('PacbioWellModal', () => {
 
     it('has a CCS analysis output include low quality reads input', () => {
       expect(
-        wrapper
-          .find('[data-attribute="ccs-analysis-output-include-low-quality-reads"]')
-          .exists(),
+        wrapper.find('[data-attribute="ccs-analysis-output-include-low-quality-reads"]').exists(),
       ).toBeTruthy()
     })
 
     it('has a fivemc calls in cpg motifs input', () => {
-      expect(
-        wrapper.find('[data-attribute="fivemc-calls-in-cpg-motifs"]').exists(),
-      ).toBeTruthy()
+      expect(wrapper.find('[data-attribute="fivemc-calls-in-cpg-motifs"]').exists()).toBeTruthy()
     })
 
     it('has a demultiplex barcodes input', () => {
