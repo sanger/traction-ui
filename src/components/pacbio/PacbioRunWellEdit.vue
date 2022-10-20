@@ -29,7 +29,7 @@
         </traction-input>
       </traction-form-group>
 
-      <traction-form-group
+      <traction-form-group v-if="['v10'].includes(selectedSmrtLinkVersion.name)"
         id="generateHiFi-group"
         data-attribute="generate-hifi"
         label="Generate HiFi Reads:"
@@ -45,7 +45,7 @@
         </traction-select>
       </traction-form-group>
 
-      <traction-form-group
+      <traction-form-group v-if="['v10'].includes(selectedSmrtLinkVersion.name)"
         id="ccsAnalysisOutput-group"
         label="CCS Analysis Output - Include Kinetics Information:"
         label-for="ccsAnalysisOutput"
@@ -109,6 +109,59 @@
         >
         </traction-input>
       </traction-form-group>
+
+      <traction-form-group v-if="['v11'].includes(selectedSmrtLinkVersion.name)"
+        label="CCS Output Include Kinetics Information"
+        label-for="ccs-analysis-output-include-kinetics-information"
+      >
+        <traction-select
+          id="ccs-analysis-output-include-kinetics-information"
+          data-attribute="ccs-analysis-output-include-kinetics-information"
+          :options="ccsAnalysisOutputOptions"
+          v-model="currentWell.ccs_analysis_output_include_kinetics_information"
+          >
+        </traction-select>
+      </traction-form-group>
+
+      <traction-form-group v-if="['v11'].includes(selectedSmrtLinkVersion.name)"
+        label="CCS Analysis Output Include Low Quality Reads"
+        label-for="ccs-analysis-output-include-low-quality-reads"
+      >
+        <traction-select
+          id="ccs-analysis-output-include-low-quality-reads"
+          data-attribute="ccs-analysis-output-include-low-quality-reads"
+          :options="ccsAnalysisOutputOptions"
+          v-model="currentWell.ccs_analysis_output_include_low_quality_reads"
+          >
+        </traction-select>
+      </traction-form-group>
+
+      <traction-form-group v-if="['v11'].includes(selectedSmrtLinkVersion.name)"
+        label="5mc Calls In CpG Motifs"
+        label-for="fivemc-calls-in-cpg-motifs"
+      >
+        <traction-select
+          id="fivemc-calls-in-cpg-motifs"
+          data-attribute="fivemc-calls-in-cpg-motifs"
+          :options="ccsAnalysisOutputOptions"
+          v-model="currentWell.fivemc_calls_in_cpg_motifs"
+          >
+        </traction-select>
+      </traction-form-group>
+
+      <traction-form-group v-if="['v11'].includes(selectedSmrtLinkVersion.name)"
+        label="Demultiplex Barcodes"
+        label-for="demultiplex-barcodes"
+      >
+        <traction-select
+          id="demultiplex-barcodes"
+          data-attribute="demultiplex-barcodes"
+          :options="generateHifiOptions"
+          v-model="currentWell.demultiplex_barcodes"
+          >
+        </traction-select>
+      </traction-form-group>
+
     </traction-form>
 
     <traction-button
@@ -223,11 +276,9 @@ export default {
     ...mapGetters('traction/pacbio/runs', ['currentRun', 'well']),
     ...mapGetters('traction/pacbio/pools', ['poolByBarcode']),
     selectedSmrtLinkVersion() {
-      const version = this.$store.getters['traction/pacbio/runCreate/smrtLinkVersionList'].find(
+      return Object.values(this.$store.getters['traction/pacbio/runCreate/smrtLinkVersionList']).find(
         (version) => version.id === this.currentRun.smrt_link_version_id,
       )
-      console.log(version)
-      return version
     },
   },
   methods: {
@@ -312,8 +363,5 @@ export default {
     ...mapActions('traction/pacbio/runs', ['buildWell']),
     ...mapMutations('traction/pacbio/runs', ['createWell', 'updateWell', 'deleteWell']),
   },
-  mounted() {
-    console.log('got here')
-  }
 }
 </script>
