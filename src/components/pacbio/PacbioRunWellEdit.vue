@@ -1,5 +1,5 @@
 <template>
-  <traction-modal ref="well-modal" :static="true" size="lg">
+  <traction-modal ref="well-modal" :static="isStatic" size="lg">
     <template #modal-title> Add Pool to Well: {{ position }} </template>
 
     <traction-form>
@@ -16,6 +16,7 @@
 
       <traction-form-group
         id="plateLoading-group"
+        data-attribute="on-plate-loading-concentration"
         label="On Plate Loading Concentration (mP):"
         label-for="onPlateLoadingConc"
       >
@@ -169,6 +170,18 @@ export default {
       type: [String],
       required: true,
     },
+    /* 
+      we need this as by default static is false
+      which means we can't test it.
+      but when static is true it is displayed on top
+      of the DOM so you can't see it
+      Better to test in e2e or just get rid of the modal
+      my preferred route as modals are awful
+    */
+    isStatic: {
+      type: Boolean,
+      default: false
+    },
   },
   data() {
     return {
@@ -210,9 +223,11 @@ export default {
     ...mapGetters('traction/pacbio/runs', ['currentRun', 'well']),
     ...mapGetters('traction/pacbio/pools', ['poolByBarcode']),
     selectedSmrtLinkVersion() {
-      return this.$store.getters['traction/pacbio/runCreate/smrtLinkVersionList'].find(
+      const version = this.$store.getters['traction/pacbio/runCreate/smrtLinkVersionList'].find(
         (version) => version.id === this.currentRun.smrt_link_version_id,
       )
+      console.log(version)
+      return version
     },
   },
   methods: {
@@ -297,5 +312,8 @@ export default {
     ...mapActions('traction/pacbio/runs', ['buildWell']),
     ...mapMutations('traction/pacbio/runs', ['createWell', 'updateWell', 'deleteWell']),
   },
+  mounted() {
+    console.log('got here')
+  }
 }
 </script>

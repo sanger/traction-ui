@@ -7,12 +7,12 @@ import * as Actions from '@/store/traction/pacbio/runs/actions'
 const smrtLinkVersions = [
   {
     id: '1',
-    name: 'v1',
+    name: 'v10',
     default: true,
   },
   {
     id: '2',
-    name: 'v2',
+    name: 'v11',
     default: false,
   },
 ]
@@ -21,7 +21,8 @@ describe('PacbioWellModal', () => {
   let modal, wrapper, props, storeWell, run, state
 
   beforeEach(() => {
-    props = { position: 'A1' }
+    // set isStatic is true so modal is visible.
+    props = { position: 'A1', isStatic: true}
 
     run = Run.build()
     run.smrt_link_version_id = '1'
@@ -31,8 +32,6 @@ describe('PacbioWellModal', () => {
     storeWell.pools = [{ id: 1, barcode: 'TRAC-0' }]
     run.plate.wells[0] = storeWell
     store.commit('traction/pacbio/runs/setCurrentRun', run)
-
-    
 
     wrapper = mount(WellEdit, {
       localVue,
@@ -102,6 +101,9 @@ describe('PacbioWellModal', () => {
 
   //["ccs_analysis_output", "generate_hifi", "on_plate_loading_concentration", "binding_kit_box_barcode", "pre_extension_time", "loading_target_p1_plus_p2", "movie_time"]
   describe('if the SMRT Link version is v10', () => {
+
+   
+
     it('has a movie time input', () => {
       expect(wrapper.find('[data-attribute="movie-time"]').exists()).toBeTruthy()
     })
@@ -167,8 +169,17 @@ describe('PacbioWellModal', () => {
     "movie_time"]
   */
   describe('if the SMRT Link version is v11', () => {
-    it('has a movie time default input', () => {
 
+    beforeEach(() => {
+      run.smrt_link_version_id = '2'
+      store.state.traction.pacbio.runCreate.resources.smrtLinkVersions = smrtLinkVersions
+    })
+
+    it('will have the correct smrt link version', () => {
+      expect(modal.selectedSmrtLinkVersion.name).toEqual('v11')
+    })
+
+    it('has a movie time default input', () => {
       expect(wrapper.find('[data-attribute="movie-time"]').exists()).toBeTruthy()
     })
 
