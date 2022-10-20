@@ -1,11 +1,12 @@
 <template>
-  <traction-modal ref="well-modal" size="lg">
+  <traction-modal ref="well-modal" :static="true" size="lg">
     <template #modal-title> Add Pool to Well: {{ position }} </template>
 
     <traction-form>
       <traction-form-group id="movieTime-group" label="Movie time:" label-for="movieTime">
         <traction-select
           id="movieTime"
+          data-attribute="movie-time"
           ref="movieTime"
           v-model="currentWell.movie_time"
           :options="movieTimeOptions"
@@ -29,6 +30,7 @@
 
       <traction-form-group
         id="generateHiFi-group"
+        data-attribute="generate-hifi"
         label="Generate HiFi Reads:"
         label-for="generateHiFi"
       >
@@ -49,6 +51,7 @@
       >
         <traction-select
           id="ccsAnalysisOutput"
+          data-attribute="ccs-analysis-output"
           ref="ccsAnalysisOutput"
           v-model="currentWell.ccs_analysis_output"
           :options="ccsAnalysisOutputOptions"
@@ -63,6 +66,7 @@
       >
         <traction-input
           id="preExtensionTime"
+          data-attribute="pre-extension-time"
           ref="preExtensionTime"
           v-model="currentWell.pre_extension_time"
           placeholder="Pre-extension time"
@@ -77,6 +81,7 @@
       >
         <traction-input
           id="bindingKitBoxBarcode"
+          data-attribute="binding-kit-box-barcode"
           ref="bindingKitBoxBarcode"
           v-model="currentWell.binding_kit_box_barcode"
           placeholder="Binding Kit Box Barcode"
@@ -90,6 +95,7 @@
       >
         <traction-input
           id="loadingTarget"
+          data-attribute="loading-target-p1-plus-p2"
           ref="loadingTarget"
           v-model="currentWell.loading_target_p1_plus_p2"
           placeholder="Adaptive loading disabled - Add loading target to enable"

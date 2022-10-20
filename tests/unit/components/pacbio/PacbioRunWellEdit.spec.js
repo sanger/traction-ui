@@ -32,6 +32,8 @@ describe('PacbioWellModal', () => {
     run.plate.wells[0] = storeWell
     store.commit('traction/pacbio/runs/setCurrentRun', run)
 
+    
+
     wrapper = mount(WellEdit, {
       localVue,
       store,
@@ -98,42 +100,124 @@ describe('PacbioWellModal', () => {
     expect(modal.poolByBarcode).toBeDefined()
   })
 
-  describe('form elements', () => {
-    it('has a Pool Barcode input', () => {
-      expect(wrapper.find('.poolBarcode')).toBeDefined()
+  //["ccs_analysis_output", "generate_hifi", "on_plate_loading_concentration", "binding_kit_box_barcode", "pre_extension_time", "loading_target_p1_plus_p2", "movie_time"]
+  describe('if the SMRT Link version is v10', () => {
+    it('has a movie time input', () => {
+      expect(wrapper.find('[data-attribute="movie-time"]').exists()).toBeTruthy()
     })
-    it('has a Movie Time input', () => {
-      expect(wrapper.find('.movieTime')).toBeDefined()
+
+    it('has a generate hifi input', () => {
+      console.log(wrapper.find('[data-attribute=generate-hifi]'))
+      expect(wrapper.find('[data-attribute="generate-hifi"]').exists()).toBeTruthy()
     })
-    it('has a On Plate Loading Concentration input', () => {
-      expect(wrapper.find('.onPlateLoadingConc')).toBeDefined()
+
+    it('has a binding kit box barcode input', () => {
+      expect(wrapper.find('[data-attribute="binding-kit-box-barcode"]').exists()).toBeTruthy()
     })
-    it('has a Generate HiFi input', () => {
-      expect(wrapper.find('.generateHiFi')).toBeDefined()
+
+    it('has a pre extension time input', () => {
+      expect(wrapper.find('[data-attribute="pre-extension-time"]').exists()).toBeTruthy()
     })
-    it('has a CCS Analysis Output input', () => {
-      expect(wrapper.find('.ccsAnalysisOutput')).toBeDefined()
+
+    it('has a loading target p1 plus p2 input', () => {
+      expect(
+        wrapper.find('[data-attribute="loading-target-p1-plus-p2"]').exists(),
+      ).toBeTruthy()
     })
-    it('has a table of well pools', () => {
-      expect(wrapper.find('#wellPools')).toBeDefined()
+
+    it('has a CCS analysis output input', () => {
+      expect(wrapper.find('[data-attribute="ccs-analysis-output"]').exists()).toBeTruthy()
     })
-    it('has a pre-extension time input', () => {
-      expect(wrapper.find('.preExtensionTime')).toBeDefined()
+
+    it('does not have a CCS analysis output include kinetics information input', () => {
+      expect(
+        wrapper
+          .find('[data-attribute="ccs-analysis-output-include-kinetics-information"]')
+          .exists(),
+      ).toBeFalsy()
     })
-    it('has a bindingKitBoxBarcode', () => {
-      expect(wrapper.find('.bindingKitBoxBarcode')).toBeDefined()
+
+    it('does not have a CCS analysis output include low quality reads input', () => {
+      expect(
+        wrapper
+          .find('[data-attribute="ccs-analysis-output-include-low-quality-reads"]')
+          .exists(),
+      ).toBeFalsy()
     })
-    it('has a loadingTarget', () => {
-      expect(wrapper.find('.loadingTarget')).toBeDefined()
+
+    it('does not have a fivemc calls in cpg motifs input', () => {
+      expect(
+        wrapper.find('[data-attribute="fivemc-calls-in-cpg-motifs"]').exists(),
+      ).toBeFalsy()
     })
-    it('has a useAdaptiveLoading', () => {
-      expect(wrapper.find('.useAdaptiveLoading')).toBeDefined()
+
+    it('does not have a demultiplex barcodes input', () => {
+      expect(wrapper.find('[data-attribute="demultiplex-barcodes"]').exists()).toBeFalsy()
     })
-    it('has a updateBtn', () => {
-      expect(wrapper.find('#updateBtn')).toBeDefined()
+  })
+
+  /*["ccs_analysis_output_include_kinetics_information",
+    "ccs_analysis_output_include_low_quality_reads",
+    "fivemc_calls_in_cpg_motifs",
+    "demultiplex_barcodes",
+    "on_plate_loading_concentration",
+    "binding_kit_box_barcode",
+    "pre_extension_time",
+    "loading_target_p1_plus_p2",
+    "movie_time"]
+  */
+  describe('if the SMRT Link version is v11', () => {
+    it('has a movie time default input', () => {
+
+      expect(wrapper.find('[data-attribute="movie-time"]').exists()).toBeTruthy()
     })
-    it('has a removeWellBtn', () => {
-      expect(wrapper.find('#removeWellBtn')).toBeDefined()
+
+    it('has a binding kit box barcode input', () => {
+      expect(wrapper.find('[data-attribute="binding-kit-box-barcode"]').exists()).toBeTruthy()
+    })
+
+    it('has a pre extension time input', () => {
+      expect(wrapper.find('[data-attribute="pre-extension-time"]').exists()).toBeTruthy()
+    })
+
+    it('has a loading target p1 plus p2 input', () => {
+      expect(
+        wrapper.find('[data-attribute="loading-target-p1-plus-p2"]').exists(),
+      ).toBeTruthy()
+    })
+
+    it('has a CCS analysis output include kinetics information input', () => {
+      expect(
+        wrapper
+          .find('[data-attribute="ccs-analysis-output-include-kinetics-information"]')
+          .exists(),
+      ).toBeTruthy()
+    })
+
+    it('has a CCS analysis output include low quality reads input', () => {
+      expect(
+        wrapper
+          .find('[data-attribute="ccs-analysis-output-include-low-quality-reads"]')
+          .exists(),
+      ).toBeTruthy()
+    })
+
+    it('has a fivemc calls in cpg motifs input', () => {
+      expect(
+        wrapper.find('[data-attribute="fivemc-calls-in-cpg-motifs"]').exists(),
+      ).toBeTruthy()
+    })
+
+    it('has a demultiplex barcodes input', () => {
+      expect(wrapper.find('[data-attribute="demultiplex-barcodes"]').exists()).toBeTruthy()
+    })
+
+    it('does not have a CCS analysis output input', () => {
+      expect(wrapper.find('[data-attribute="ccs-analysis-output"]').exists()).toBeFalsy()
+    })
+
+    it('does not have a generate hifi input', () => {
+      expect(wrapper.find('[data-attribute="generate-hifi"]').exists()).toBeFalsy()
     })
   })
 
