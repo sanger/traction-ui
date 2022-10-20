@@ -19,7 +19,7 @@ const mutations = {
   setDNAControlComplexBoxBarcode: mutateRun('dna_control_complex_box_barcode'),
   setComments: mutateRun('comments'),
   setSystemName: mutateRun('system_name'),
-  setSmrtLinkVersion: mutateRun('smrt_link_version'),
+  setSmrtLinkVersionId: mutateRun('smrt_link_version_id'),
   setDefaultBindingKitBoxBarcode: mutateWellDefaults('binding_kit_box_barcode'),
   setDefaultMovieTime: mutateWellDefaults('movie_time'),
   setDefaultGenerateHifi: mutateWellDefaults('generate_hifi'),

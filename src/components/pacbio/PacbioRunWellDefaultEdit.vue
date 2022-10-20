@@ -113,6 +113,7 @@ export default {
     return {
       movieTimeOptions: [
         { text: 'Movie Time', value: '', disabled: true },
+        '10.0',
         '15.0',
         '20.0',
         '24.0',

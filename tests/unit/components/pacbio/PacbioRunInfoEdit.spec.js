@@ -8,7 +8,21 @@ describe('PacbioRunInfoEdit', () => {
   beforeEach(() => {
     run = Run.build()
 
+    const smrtLinkVersions = [
+      {
+        id: '1',
+        name: 'v1',
+        default: true,
+      },
+      {
+        id: '2',
+        name: 'v2',
+        default: false,
+      },
+    ]
+
     store.commit('traction/pacbio/runs/setCurrentRun', run)
+    store.state.traction.pacbio.runCreate.resources.smrtLinkVersions = smrtLinkVersions
 
     // required as suggestion to remove the deprecated function
     // https://vue-test-utils.vuejs.org/api/options.html#attachtodocument
@@ -47,6 +61,34 @@ describe('PacbioRunInfoEdit', () => {
     })
     it('has a Comments input', () => {
       expect(wrapper.find('#comments')).toBeDefined()
+    })
+  })
+
+  describe('smrt link versions', () => {
+    it('returns the correct versions', () => {
+      expect(runInfo.smrtLinkVersionList.length).toEqual(2)
+    })
+
+    it('returns the default version', () => {
+      const default_version = runInfo.smrtLinkVersionList.find((version) => version.default)
+      expect(runInfo.defaultSmrtLinkVersion).toEqual(default_version)
+    })
+
+    it('can return the default version', () => {
+      runInfo.setSmrtLinkVersionId(null)
+      expect(runInfo.selectedSmrtLinkVersion).toEqual(runInfo.defaultSmrtLinkVersion)
+    })
+
+    it('can return the selected version', () => {
+      runInfo.smrtLinkVersionList.forEach(function (version) {
+        runInfo.setSmrtLinkVersionId(version.id)
+        expect(runInfo.selectedSmrtLinkVersion).toEqual(version)
+      })
+    })
+
+    it('returns smrt link version select options', () => {
+      const options = runInfo.smrtLinkVersionList.map(({ id, name }) => ({ value: id, text: name }))
+      expect(runInfo.smrtLinkVersionSelectOptions).toEqual(options)
     })
   })
 
