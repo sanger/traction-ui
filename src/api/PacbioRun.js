@@ -47,7 +47,6 @@ const build = (object) => {
       dna_control_complex_box_barcode: '',
       comments: '',
       system_name: DefaultSystemName,
-      // smrt_link_version: DefaultSmrtLinkVersion,
       smrt_link_version_id: null,
       wellDefaults: wellDefaults(DefaultSystemName),
       plate: {
