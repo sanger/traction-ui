@@ -11,9 +11,8 @@
             :value="runName"
             placeholder="Run name"
             type="text"
-            width="48"
-            title="Run Name"
-            readonly
+            classes="w-48"
+            disabled
           />
         </traction-col>
       </traction-row>
@@ -27,9 +26,8 @@
             :value="sequencingKitBoxBarcode"
             placeholder="Sequencing Kit Box Barcode"
             type="text"
-            width="48"
-            title="Sequencing Kit Box Barcode"
-            @change="setSequencingKitBoxBarcode"
+            classes="w-48"
+            @input="setSequencingKitBoxBarcode"
           />
         </traction-col>
       </traction-row>
@@ -45,9 +43,8 @@
             :value="dnaControlComplexBoxBarcode"
             placeholder="DNA Control Complex Box Barcode"
             type="text"
-            width="48"
-            title="DNA Control Complex Box Barcode"
-            @change="setDNAControlComplexBoxBarcode"
+            classes="w-48"
+            @input="setDNAControlComplexBoxBarcode"
           />
         </traction-col>
       </traction-row>
@@ -74,11 +71,10 @@
           <traction-select
             id="smrt-link-version"
             ref="smrtLinkVersion"
-            :value="smrtLinkVersion"
+            v-model="selectedSmrtLinkVersionId"
             data-attribute="smrt-link-version"
-            :options="smrtLinkOptions"
+            :options="smrtLinkVersionSelectOptions"
             title="SMRT Link Version"
-            @change="setSmrtLinkVersion"
           />
         </traction-col>
       </traction-row>
@@ -92,9 +88,8 @@
             :value="comments"
             placeholder="Comments"
             type="text"
-            width="48"
-            title="Comments"
-            @change="setComments"
+            classes="w-48"
+            @input="setComments"
           />
         </traction-col>
       </traction-row>
@@ -111,10 +106,44 @@ export default {
   data() {
     return {
       systemNameOptions: ['Sequel I', 'Sequel II', 'Sequel IIe'],
-      smrtLinkOptions: ['v10'],
     }
   },
   computed: {
+    smrtLinkVersionList() {
+      return Object.values(this.$store.getters['traction/pacbio/runCreate/smrtLinkVersionList'])
+    },
+    smrtLinkVersionSelectOptions() {
+      // Returns an array of objects with value and text properties to make
+      // the options of smrt-link-version select drop-down list.
+      return Object.values(
+        this.$store.getters['traction/pacbio/runCreate/smrtLinkVersionList'],
+      ).map(({ id, name }) => ({ value: id, text: name }))
+    },
+    defaultSmrtLinkVersion() {
+      // Returns the default smrt link version object
+      return this.smrtLinkVersionList.find((version) => version.default)
+    },
+    runSmrtLinkVersion() {
+      // Returns the smrt link version object of the run if the current run has
+      // a valid smrt_link_version_id; null otherwise.
+      const id = this.smrtLinkVersionId
+      return this.smrtLinkVersionList.find((version) => version.id == id)
+    },
+    selectedSmrtLinkVersion() {
+      // Returns the smrt link version object of the run or the default smrt
+      // link version object, in that order.
+      return this.runSmrtLinkVersion || this.defaultSmrtLinkVersion
+    },
+    selectedSmrtLinkVersionId: {
+      get() {
+        // Returns the id of the smrt link version of the run or the default.
+        return this.selectedSmrtLinkVersion?.id
+      },
+      set(value) {
+        // Sets the id of the smrt link version of the run after user selection.
+        this.setSmrtLinkVersionId(value)
+      },
+    },
     ...mapGetters(['currentRun']),
     ...mapState({
       runName: (state) => state.currentRun.name,
@@ -123,8 +152,12 @@ export default {
       comments: (state) => state.currentRun.comments,
       uuid: (state) => state.currentRun.uuid,
       systemName: (state) => state.currentRun.system_name,
-      smrtLinkVersion: (state) => state.currentRun.smrt_link_version,
+      // smrtLinkVersion: (state) => state.currentRun.smrt_link_version,
+      smrtLinkVersionId: (state) => state.currentRun.smrt_link_version_id,
     }),
+  },
+  created() {
+    this.provider()
   },
   methods: {
     ...mapMutations([
@@ -133,8 +166,17 @@ export default {
       'setComments',
       'setUuid',
       'setSystemName',
-      'setSmrtLinkVersion',
+      // 'setSmrtLinkVersion',
+      'setSmrtLinkVersionId',
     ]),
+    alertOnFail({ success, errors }) {
+      if (!success) {
+        this.showAlert(errors, 'danger')
+      }
+    },
+    async provider() {
+      await this.$store.dispatch('traction/pacbio/runCreate/fetchSmrtLinkVersions')
+    },
   },
 }
 </script>
