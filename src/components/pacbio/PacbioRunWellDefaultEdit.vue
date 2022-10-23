@@ -57,7 +57,6 @@
           <traction-input
             id="default-pre-extension-time"
             data-attribute="default-pre-extension-time"
-            title="Pre-extension Time"
             :value="currentRun.wellDefaults.pre_extension_time"
             placeholder="Pre-extension time"
             @input="setDefaultPreExtensionTime"
@@ -73,7 +72,6 @@
           <traction-input
             id="default-loading-target-p1-plus-p2"
             data-attribute="default-loading-target-p1-plus-p2"
-            title="Loading Target (P1 + P2)"
             :value="currentRun.wellDefaults.loading_target_p1_plus_p2"
             placeholder="Loading Target (P1 + P2)"
             type="number"
