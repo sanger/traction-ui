@@ -1,4 +1,3 @@
-
 describe('Pacbio Run Create view', () => {
   beforeEach(() => {
     cy.intercept('/v1/pacbio/runs', {
@@ -148,7 +147,7 @@ describe('Pacbio Run Create view', () => {
     // Ensure we made the request
     cy.wait('@deleteRun')
   })
-  
+
   // need to work out why it can't find binding kit box barcode
   it.skip('allows for the selection of well defaults', () => {
     cy.intercept('/v1/pacbio/runs/wells', {
@@ -192,8 +191,5 @@ describe('Pacbio Run Create view', () => {
       cy.get('[data-attribute="binding-kit-box-barcode"]').contains('12345')
       cy.get('[data-attribute="loading-target-p1-plus-p2"]').contains('0.75')
     })
-    
-
   })
-  
 })
