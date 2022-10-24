@@ -71,10 +71,11 @@
           <traction-select
             id="smrt-link-version"
             ref="smrtLinkVersion"
-            v-model="selectedSmrtLinkVersionId"
+            :value="smrtLinkVersionId"
             data-attribute="smrt-link-version"
             :options="smrtLinkVersionSelectOptions"
             title="SMRT Link Version"
+            @change="setSmrtLinkVersionId"
           />
         </traction-col>
       </traction-row>
@@ -120,30 +121,10 @@ export default {
         this.$store.getters['traction/pacbio/runCreate/smrtLinkVersionList'],
       ).map(({ id, name }) => ({ value: id, text: name }))
     },
-    defaultSmrtLinkVersion() {
-      // Returns the default smrt link version object
-      return this.smrtLinkVersionList.find((version) => version.default)
-    },
-    runSmrtLinkVersion() {
-      // Returns the smrt link version object of the run if the current run has
-      // a valid smrt_link_version_id; null otherwise.
-      const id = this.smrtLinkVersionId
-      return this.smrtLinkVersionList.find((version) => version.id == id)
-    },
     selectedSmrtLinkVersion() {
-      // Returns the smrt link version object of the run or the default smrt
-      // link version object, in that order.
-      return this.runSmrtLinkVersion || this.defaultSmrtLinkVersion
-    },
-    selectedSmrtLinkVersionId: {
-      get() {
-        // Returns the id of the smrt link version of the run or the default.
-        return this.selectedSmrtLinkVersion?.id
-      },
-      set(value) {
-        // Sets the id of the smrt link version of the run after user selection.
-        this.setSmrtLinkVersionId(value)
-      },
+      return Object.values(
+        this.$store.getters['traction/pacbio/runCreate/smrtLinkVersionList'],
+      ).find((version) => version.id == this.currentRun.smrt_link_version_id)
     },
     ...mapGetters(['currentRun']),
     ...mapState({
@@ -155,9 +136,6 @@ export default {
       systemName: (state) => state.currentRun.system_name,
       smrtLinkVersionId: (state) => state.currentRun.smrt_link_version_id,
     }),
-  },
-  created() {
-    this.provider()
   },
   methods: {
     ...mapMutations([
@@ -172,9 +150,6 @@ export default {
       if (!success) {
         this.showAlert(errors, 'danger')
       }
-    },
-    async provider() {
-      //await this.$store.dispatch('traction/pacbio/runCreate/fetchSmrtLinkVersions')
     },
   },
 }
