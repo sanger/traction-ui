@@ -13,7 +13,8 @@
       "created_at": "2021/06/15 10:25",
       "state": "pending",
       "comments": "Sample207",
-      "all_wells_have_pools": true
+      "all_wells_have_pools": true,
+      "pacbio_smrt_link_version_id": 1
     },
     "relationships": {
       "plate": {
