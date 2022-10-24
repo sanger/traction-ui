@@ -283,7 +283,7 @@ export default {
     selectedSmrtLinkVersion() {
       return Object.values(
         this.$store.getters['traction/pacbio/runCreate/smrtLinkVersionList'],
-      ).find((version) => version.id === this.currentRun.smrt_link_version_id)
+      ).find((version) => version.id == this.currentRun.smrt_link_version_id)
     },
   },
   methods: {

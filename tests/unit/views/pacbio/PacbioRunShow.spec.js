@@ -1,5 +1,6 @@
 import PacbioRun from '@/views/pacbio/PacbioRunShow'
 import { localVue, mount, store, router } from '@support/testHelper'
+import { describe } from 'vitest'
 
 const smrtLinkVersions = [
   {
@@ -13,6 +14,13 @@ const smrtLinkVersions = [
     default: false,
   },
 ]
+
+describe('PacbioRun provider', () => {
+  it('receives pacbio smrt link versions and commits in state', () => {})
+  describe('newRun action', () => {
+    it('creates currentRun in the state', () => {})
+  })
+})
 
 describe('Run.vue', () => {
   let wrapper, mockRun, pacbioRun

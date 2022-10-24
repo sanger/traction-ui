@@ -69,16 +69,6 @@ describe('PacbioRunInfoEdit', () => {
       expect(runInfo.smrtLinkVersionList.length).toEqual(2)
     })
 
-    it('returns the default version', () => {
-      const default_version = runInfo.smrtLinkVersionList.find((version) => version.default)
-      expect(runInfo.defaultSmrtLinkVersion).toEqual(default_version)
-    })
-
-    it('can return the default version', () => {
-      runInfo.setSmrtLinkVersionId(null)
-      expect(runInfo.selectedSmrtLinkVersion).toEqual(runInfo.defaultSmrtLinkVersion)
-    })
-
     it('can return the selected version', () => {
       runInfo.smrtLinkVersionList.forEach(function (version) {
         runInfo.setSmrtLinkVersionId(version.id)
