@@ -118,7 +118,7 @@
       <traction-row v-if="['v11'].includes(selectedSmrtLinkVersion.name)">
         <traction-col>
           <label for="default-ccs-analysis-output-include-kinetics-information"
-            >CCS Output Include Kinetics Information`</label
+            >CCS Output Include Kinetics Information:</label
           >
         </traction-col>
         <traction-col>
@@ -137,7 +137,7 @@
       <traction-row v-if="['v11'].includes(selectedSmrtLinkVersion.name)">
         <traction-col>
           <label for="default-ccs-analysis-output-include-low-quality-reads"
-            >CCS Output Include Kinetics Information`</label
+            >CCS Output Include Low Quality:</label
           >
         </traction-col>
         <traction-col>
@@ -172,7 +172,7 @@
       </traction-row>
       <traction-row v-if="['v11'].includes(selectedSmrtLinkVersion.name)">
         <traction-col>
-          <label for="default-fivemc-calls-in-cpg-motifs">5mc Calls In CpG Motifs</label>
+          <label for="default-fivemc-calls-in-cpg-motifs">5mc Calls In CpG Motifs:</label>
         </traction-col>
         <traction-col>
           <traction-select

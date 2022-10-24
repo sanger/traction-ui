@@ -2,6 +2,7 @@ import Response from '@/api/Response'
 import * as Actions from '@/store/traction/pacbio/runs/actions'
 import { Data } from '@support/testHelper'
 import * as Run from '@/api/PacbioRun'
+import { expect, vi } from 'vitest'
 
 describe('#setRuns', () => {
   let commit, get, getters, failedResponse
@@ -48,9 +49,19 @@ describe('#newRun', () => {
   it('successfully', async () => {
     let newRun = Run.build()
     vi.spyOn(Run, 'build')
+
+    // defaultSmrtLinkVersion mock getter to return the default version
+    const version = { id: 1, name: 'v10', default: true }
+    const defaultSmrtLinkVersion = () => version
+    const rootGetters = {
+      'traction/pacbio/runCreate/defaultSmrtLinkVersion': vi.fn(defaultSmrtLinkVersion),
+    }
     Run.build.mockReturnValue(newRun)
 
-    Actions.newRun({ commit })
+    Actions.newRun({ commit, rootGetters })
+    // The run will be updated in the action before calling setCurrentRun
+    expect(newRun.smrt_link_version_id).toBeDefined
+    expect(newRun.smrt_link_version_id, version.id)
     expect(commit).toHaveBeenCalledWith('setCurrentRun', newRun)
   })
 })
@@ -89,6 +100,9 @@ describe('#editRun', () => {
     mockRun.plate.wellsToDelete = []
     find.mockReturnValue(Data.PacbioRun)
     await Actions.editRun({ commit, getters }, mockRun.id)
+
+    // The run created in the action will be updated before calling setCurrentRun.
+    mockRun.smrt_link_version_id = mockRun.pacbio_smrt_link_version_id
     expect(commit).toHaveBeenCalledWith('setCurrentRun', mockRun)
   })
 

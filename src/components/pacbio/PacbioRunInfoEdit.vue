@@ -174,7 +174,7 @@ export default {
       }
     },
     async provider() {
-      await this.$store.dispatch('traction/pacbio/runCreate/fetchSmrtLinkVersions')
+      //await this.$store.dispatch('traction/pacbio/runCreate/fetchSmrtLinkVersions')
     },
   },
 }

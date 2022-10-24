@@ -4,18 +4,19 @@ import storePools from '@tests/data/StorePools'
 import * as Run from '@/api/PacbioRun'
 import * as Actions from '@/store/traction/pacbio/runs/actions'
 
-const smrtLinkVersions = [
-  {
-    id: '1',
+// They are like the following in the store; not an array.
+const smrtLinkVersions = {
+  1: {
+    id: 1,
     name: 'v10',
     default: true,
   },
-  {
-    id: '2',
+  2: {
+    id: 2,
     name: 'v11',
     default: false,
   },
-]
+}
 
 describe('PacbioWellModal', () => {
   let modal, wrapper, props, storeWell, run, state
@@ -25,7 +26,7 @@ describe('PacbioWellModal', () => {
     props = { position: 'A1', isStatic: true }
 
     run = Run.build()
-    run.smrt_link_version_id = '1'
+    run.smrt_link_version_id = 1
     state = { currentRun: run }
     store.state.traction.pacbio.runCreate.resources.smrtLinkVersions = smrtLinkVersions
     storeWell = Actions.buildWell({ state }, props.position)
@@ -63,7 +64,7 @@ describe('PacbioWellModal', () => {
   })
 
   it('will have a selected smrt link version', () => {
-    expect(modal.selectedSmrtLinkVersion).toEqual(smrtLinkVersions[0])
+    expect(modal.selectedSmrtLinkVersion).toEqual(smrtLinkVersions[1])
   })
 
   describe('generateHifiOptions', () => {
@@ -161,7 +162,7 @@ describe('PacbioWellModal', () => {
   */
   describe('if the SMRT Link version is v11', () => {
     beforeEach(() => {
-      run.smrt_link_version_id = '2'
+      run.smrt_link_version_id = 2
       store.state.traction.pacbio.runCreate.resources.smrtLinkVersions = smrtLinkVersions
     })
 
