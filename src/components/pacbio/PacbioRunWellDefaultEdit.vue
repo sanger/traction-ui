@@ -119,7 +119,7 @@
       <traction-row v-if="['v11'].includes(selectedSmrtLinkVersion?.name)">
         <traction-col>
           <label for="default-ccs-analysis-output-include-low-quality-reads"
-            >CCS Output Include Low Quality:</label
+            >CCS Output Include Low Quality Reads:</label
           >
         </traction-col>
         <traction-col>
