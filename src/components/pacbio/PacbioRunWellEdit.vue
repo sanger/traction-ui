@@ -16,7 +16,6 @@
 
       <traction-form-group
         id="plateLoading-group"
-        data-attribute="on-plate-loading-concentration"
         label="On Plate Loading Concentration (mP):"
         label-for="onPlateLoadingConc"
       >
@@ -24,6 +23,7 @@
           id="onPlateLoadingConc"
           ref="onPlateLoadingConc"
           v-model="currentWell.on_plate_loading_concentration"
+          data-attribute="on-plate-loading-concentration"
           placeholder="On Plate Loading Concentration (mP)"
         >
         </traction-input>
@@ -32,7 +32,6 @@
       <traction-form-group
         v-if="['v10'].includes(selectedSmrtLinkVersion.name)"
         id="generateHiFi-group"
-        data-attribute="generate-hifi"
         label="Generate HiFi Reads:"
         label-for="generateHiFi"
       >
@@ -40,6 +39,7 @@
           id="generateHiFi"
           ref="generateHiFi"
           v-model="currentWell.generate_hifi"
+          data-attribute="generate-hifi"
           :options="generateHifiOptions[currentRun.system_name]"
           @change="updateCCSAnalysisOutput"
         >
@@ -162,7 +162,7 @@
         <traction-select
           id="demultiplex-barcodes"
           v-model="currentWell.demultiplex_barcodes"
-          :options="generateHifiOptions"
+          :options="generateHifiOptions[currentRun.system_name]"
           data-attribute="demultiplex-barcodes"
         >
         </traction-select>

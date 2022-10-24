@@ -100,7 +100,7 @@
       <traction-row>
         <traction-col>
           <label for="default-on-plate-loading-concentration"
-            >Default Binding Kit Box Barcode:</label
+            >On plate loading concentration:</label
           >
         </traction-col>
         <traction-col>
@@ -155,14 +155,14 @@
       </traction-row>
       <traction-row v-if="['v11'].includes(selectedSmrtLinkVersion.name)">
         <traction-col>
-          <label for="default-demultiplex-barcodes">Binding Kit Box Barcode:</label>
+          <label for="default-demultiplex-barcodes">Demultiplex barcodes:</label>
         </traction-col>
         <traction-col>
           <traction-select
             id="default-demultiplex-barcodes"
             data-attribute="default-demultiplex-barcodes"
             title="Demultiplex Barcodes"
-            :options="generateHifiOptions"
+            :options="generateHifiOptions[currentRun.system_name]"
             :value="currentRun.wellDefaults.demultiplex_barcodes"
             placeholder="Default Demultiplex Barcodes for new wells"
             @change="setDefaultDemultiplexBarcodes"
