@@ -10,7 +10,6 @@ const DefaultOnPlateLoadingConcentration = ''
 const ValueYes = 'Yes'
 const ValueInSmrtLink = 'In SMRT Link'
 
-// const DefaultSmrtLinkVersion = 'v10'
 const DefaultGenerateHiFi = (systemName) => {
   switch (systemName) {
     case 'Sequel I':

@@ -46,7 +46,6 @@ describe('PacbioRunWellDefaultEdit', () => {
 
   /*["ccs_analysis_output", 
   "generate_hifi", 
-  "on_plate_loading_concentration", 
   "binding_kit_box_barcode", 
   "pre_extension_time", 
   "loading_target_p1_plus_p2", 
@@ -84,12 +83,6 @@ describe('PacbioRunWellDefaultEdit', () => {
       expect(wrapper.find('[data-attribute="default-ccs-analysis-output"]').exists()).toBeTruthy()
     })
 
-    it('has an on plate loading concentration default input', () => {
-      expect(
-        wrapper.find('[data-attribute="default-on-plate-loading-concentration"]').exists(),
-      ).toBeTruthy()
-    })
-
     it('does not have a CCS analysis output include kinetics information default input', () => {
       expect(
         wrapper
@@ -121,7 +114,6 @@ describe('PacbioRunWellDefaultEdit', () => {
     "ccs_analysis_output_include_low_quality_reads",
     "fivemc_calls_in_cpg_motifs",
     "demultiplex_barcodes",
-    "on_plate_loading_concentration",
     "binding_kit_box_barcode",
     "pre_extension_time",
     "loading_target_p1_plus_p2",
@@ -147,12 +139,6 @@ describe('PacbioRunWellDefaultEdit', () => {
     it('has a loading target p1 plus p2 default input', () => {
       expect(
         wrapper.find('[data-attribute=default-loading-target-p1-plus-p2]').exists(),
-      ).toBeTruthy()
-    })
-
-    it('has an on plate loading concentration default input', () => {
-      expect(
-        wrapper.find('[data-attribute="default-on-plate-loading-concentration"]').exists(),
       ).toBeTruthy()
     })
 

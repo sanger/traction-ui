@@ -97,24 +97,6 @@
           </traction-input>
         </traction-col>
       </traction-row>
-      <traction-row>
-        <traction-col>
-          <label for="default-on-plate-loading-concentration"
-            >On plate loading concentration:</label
-          >
-        </traction-col>
-        <traction-col>
-          <traction-input
-            id="default-on-plate-loading-concentration"
-            data-attribute="default-on-plate-loading-concentration"
-            :value="currentRun.wellDefaults.on_plate_loading_concentration"
-            placeholder="Default On Plate Loading Concentration for new wells"
-            type="text"
-            @input="setDefaultOnPlateLoadingConcentration"
-          >
-          </traction-input>
-        </traction-col>
-      </traction-row>
       <traction-row v-if="['v11'].includes(selectedSmrtLinkVersion.name)">
         <traction-col>
           <label for="default-ccs-analysis-output-include-kinetics-information"
