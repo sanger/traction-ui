@@ -10,14 +10,14 @@
             id="default-movie-time"
             data-attribute="default-movie-time"
             :options="movieTimeOptions"
-            :value="currentRun.wellDefaults.movie_time"
+            :value="currentRun.wellDefaults?.movie_time"
             title="Movie Time"
             @input="setDefaultMovieTime"
           >
           </traction-select>
         </traction-col>
       </traction-row>
-      <traction-row v-if="['v10'].includes(selectedSmrtLinkVersion.name)">
+      <traction-row v-if="['v10'].includes(selectedSmrtLinkVersion?.name)">
         <traction-col>
           <label for="default-generate-hifi">Generate HiFi:</label>
         </traction-col>
@@ -27,13 +27,13 @@
             data-attribute="default-generate-hifi"
             title="Generate HiFi"
             :options="generateHifiOptions[currentRun.system_name]"
-            :value="currentRun.wellDefaults.generate_hifi"
+            :value="currentRun.wellDefaults?.generate_hifi"
             @input="setDefaultGenerateHifi"
           >
           </traction-select>
         </traction-col>
       </traction-row>
-      <traction-row v-if="['v10'].includes(selectedSmrtLinkVersion.name)">
+      <traction-row v-if="['v10'].includes(selectedSmrtLinkVersion?.name)">
         <traction-col>
           <label for="default-ccs-analysis-output">Ccs Analysis Output:</label>
         </traction-col>
@@ -43,7 +43,7 @@
             data-attribute="default-ccs-analysis-output"
             title="Ccs Analysis Output"
             :options="ccsAnalysisOutputOptions"
-            :value="currentRun.wellDefaults.ccs_analysis_output"
+            :value="currentRun.wellDefaults?.ccs_analysis_output"
             @change="setDefaultCcsAnalysisOutput"
           >
           </traction-select>
@@ -57,7 +57,7 @@
           <traction-input
             id="default-pre-extension-time"
             data-attribute="default-pre-extension-time"
-            :value="currentRun.wellDefaults.pre_extension_time"
+            :value="currentRun.wellDefaults?.pre_extension_time"
             placeholder="Pre-extension time"
             @input="setDefaultPreExtensionTime"
           >
@@ -72,7 +72,7 @@
           <traction-input
             id="default-loading-target-p1-plus-p2"
             data-attribute="default-loading-target-p1-plus-p2"
-            :value="currentRun.wellDefaults.loading_target_p1_plus_p2"
+            :value="currentRun.wellDefaults?.loading_target_p1_plus_p2"
             placeholder="Loading Target (P1 + P2)"
             type="number"
             step="0.05"
@@ -89,7 +89,7 @@
           <traction-input
             id="default-binding-kit-box-barcode"
             data-attribute="default-binding-kit-box-barcode"
-            :value="currentRun.wellDefaults.binding_kit_box_barcode"
+            :value="currentRun.wellDefaults?.binding_kit_box_barcode"
             placeholder="Default Binding Kit Box Barcode for new wells"
             type="text"
             @input="setDefaultBindingKitBoxBarcode"
@@ -97,7 +97,7 @@
           </traction-input>
         </traction-col>
       </traction-row>
-      <traction-row v-if="['v11'].includes(selectedSmrtLinkVersion.name)">
+      <traction-row v-if="['v11'].includes(selectedSmrtLinkVersion?.name)">
         <traction-col>
           <label for="default-ccs-analysis-output-include-kinetics-information"
             >CCS Output Include Kinetics Information:</label
@@ -109,17 +109,17 @@
             data-attribute="default-ccs-analysis-output-include-kinetics-information"
             title="CCS Analysis Output Include Kinetics Information"
             :options="ccsAnalysisOutputOptions"
-            :value="currentRun.wellDefaults.ccs_analysis_output_include_kinetics_information"
+            :value="currentRun.wellDefaults?.ccs_analysis_output_include_kinetics_information"
             placeholder="Default CCS Analysis Output Include Kinetics Information for new wells"
             @change="setDefaultCcsAnalysisOutputIncludeKineticsInformation"
           >
           </traction-select>
         </traction-col>
       </traction-row>
-      <traction-row v-if="['v11'].includes(selectedSmrtLinkVersion.name)">
+      <traction-row v-if="['v11'].includes(selectedSmrtLinkVersion?.name)">
         <traction-col>
           <label for="default-ccs-analysis-output-include-low-quality-reads"
-            >CCS Output Include Low Quality:</label
+            >CCS Output Include Low Quality Reads:</label
           >
         </traction-col>
         <traction-col>
@@ -128,14 +128,14 @@
             data-attribute="default-ccs-analysis-output-include-low-quality-reads"
             title="CCS Analysis Output Include Low Quality Reads"
             :options="ccsAnalysisOutputOptions"
-            :value="currentRun.wellDefaults.ccs_analysis_output_include_low_quality_reads"
+            :value="currentRun.wellDefaults?.ccs_analysis_output_include_low_quality_reads"
             placeholder="Default CCS Analysis Output Include Low Quality Reads for new wells"
             @input="setDefaultCcsAnalysisOutputIncludeLowQualityReads"
           >
           </traction-select>
         </traction-col>
       </traction-row>
-      <traction-row v-if="['v11'].includes(selectedSmrtLinkVersion.name)">
+      <traction-row v-if="['v11'].includes(selectedSmrtLinkVersion?.name)">
         <traction-col>
           <label for="default-demultiplex-barcodes">Demultiplex barcodes:</label>
         </traction-col>
@@ -145,14 +145,14 @@
             data-attribute="default-demultiplex-barcodes"
             title="Demultiplex Barcodes"
             :options="generateHifiOptions[currentRun.system_name]"
-            :value="currentRun.wellDefaults.demultiplex_barcodes"
+            :value="currentRun.wellDefaults?.demultiplex_barcodes"
             placeholder="Default Demultiplex Barcodes for new wells"
             @change="setDefaultDemultiplexBarcodes"
           >
           </traction-select>
         </traction-col>
       </traction-row>
-      <traction-row v-if="['v11'].includes(selectedSmrtLinkVersion.name)">
+      <traction-row v-if="['v11'].includes(selectedSmrtLinkVersion?.name)">
         <traction-col>
           <label for="default-fivemc-calls-in-cpg-motifs">5mc Calls In CpG Motifs:</label>
         </traction-col>
@@ -162,7 +162,7 @@
             data-attribute="default-fivemc-calls-in-cpg-motifs"
             title="5mc Calls In CpG Motifs"
             :options="ccsAnalysisOutputOptions"
-            :value="currentRun.wellDefaults.fivemc_calls_in_cpg_motifs"
+            :value="currentRun.wellDefaults?.fivemc_calls_in_cpg_motifs"
             placeholder="Default 5mc Calls in CpG Motifs for new wells"
             @input="setDefaultFivemcCallsInCpgMotifs"
           >
