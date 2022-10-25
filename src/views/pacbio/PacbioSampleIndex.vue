@@ -154,7 +154,7 @@ export default {
       filter: null,
       sortBy: 'created_at',
       sortDesc: true,
-      perPage: 6,
+      perPage: 24,
       currentPage: 1,
     }
   },
