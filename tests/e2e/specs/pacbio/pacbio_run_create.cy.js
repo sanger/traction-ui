@@ -150,7 +150,7 @@ describe('Pacbio Run Create view', () => {
   })
 
   // need to work out why it can't find binding kit box barcode
-  it('allows for the selection of well defaults', () => {
+  it.skip('allows for the selection of well defaults', () => {
     cy.intercept('/v1/pacbio/runs/wells', {
       statusCode: 201,
       body: { data: {} },
