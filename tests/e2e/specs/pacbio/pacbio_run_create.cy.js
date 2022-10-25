@@ -69,6 +69,7 @@ describe('Pacbio Run Create view', () => {
     cy.get('[data-attribute="generate-hifi"]').select('Do Not Generate')
     cy.get('[data-attribute="binding-kit-box-barcode"]').type('12345')
     cy.get('[data-attribute="loading-target-p1-plus-p2"]').type('0.75')
+    cy.get('[data-attribute="pre-extension-time"]').type(3)
     cy.get('#updateBtn').click()
     cy.get('button').contains('Create').click()
     // TODO: we need a success message.
@@ -105,7 +106,7 @@ describe('Pacbio Run Create view', () => {
     cy.get('[data-attribute="demultiplex-barcodes"]').select('Do Not Generate')
     cy.get('[data-attribute="binding-kit-box-barcode"]').type('12345')
     cy.get('[data-attribute="loading-target-p1-plus-p2"]').type('0.75')
-
+    cy.get('[data-attribute="pre-extension-time"]').type(3)
     cy.get('[data-attribute="ccs-analysis-output-include-kinetics-information"]').select('Yes')
     cy.get('[data-attribute="ccs-analysis-output-include-low-quality-reads"]').select('No')
     cy.get('[data-attribute="fivemc-calls-in-cpg-motifs"]').select('Yes')
@@ -149,7 +150,7 @@ describe('Pacbio Run Create view', () => {
   })
 
   // need to work out why it can't find binding kit box barcode
-  it.skip('allows for the selection of well defaults', () => {
+  it('allows for the selection of well defaults', () => {
     cy.intercept('/v1/pacbio/runs/wells', {
       statusCode: 201,
       body: { data: {} },
@@ -167,10 +168,11 @@ describe('Pacbio Run Create view', () => {
 
     cy.get('.pacbioRunWellDefaultEdit').within(() => {
       cy.get('[data-attribute="default-movie-time"]').select('15.0')
-      cy.get('[data-attribute="default-on-plate-loading-concentration"]').type('2')
       cy.get('[data-attribute="default-generate-hifi"]').select('Do Not Generate')
       cy.get('[data-attribute="default-binding-kit-box-barcode"]').type('12345')
       cy.get('[data-attribute="default-loading-target-p1-plus-p2"]').type('0.75')
+      cy.get('[data-attribute="default-pre-extension-time"]').clear()
+      cy.get('[data-attribute="default-pre-extension-time"]').type(3)
     })
 
     // TODO: calling it  list group item is not specific enough
@@ -188,7 +190,9 @@ describe('Pacbio Run Create view', () => {
     cy.get('.modal-body').within(() => {
       cy.get('[data-attribute="movie-time"]').contains('15.0')
       cy.get('[data-attribute="generate-hifi"]').contains('Do Not Generate')
-      cy.get('[data-attribute="binding-kit-box-barcode"]').contains('12345')
+      cy.get('[data-attribute="binding-kit-box-barcode"]').should('contain', '12345')
+      cy.get('[data-attribute="pre-extension-time"]').contains('3')
+
       cy.get('[data-attribute="loading-target-p1-plus-p2"]').contains('0.75')
     })
   })

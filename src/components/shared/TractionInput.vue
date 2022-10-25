@@ -64,7 +64,6 @@ export default {
     //max value the component can accept if the type is 'number'
     max: {
       type: String,
-      default: '100',
     },
     //the amount of increment if the type is 'number'
     step: {
