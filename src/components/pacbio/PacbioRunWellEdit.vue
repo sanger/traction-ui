@@ -16,7 +16,7 @@
 
       <traction-form-group
         id="plateLoading-group"
-        label="On Plate Loading Concentration (mP):"
+        label="On Plate Loading Concentration (pM):"
         label-for="onPlateLoadingConc"
       >
         <traction-input
@@ -24,7 +24,7 @@
           ref="onPlateLoadingConc"
           v-model="currentWell.on_plate_loading_concentration"
           data-attribute="on-plate-loading-concentration"
-          placeholder="On Plate Loading Concentration (mP)"
+          placeholder="On Plate Loading Concentration (pM)"
         >
         </traction-input>
       </traction-form-group>
