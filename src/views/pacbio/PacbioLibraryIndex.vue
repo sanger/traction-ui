@@ -159,7 +159,6 @@ export default {
     this.provider()
   },
   methods: {
-
     async handleLibraryDelete() {
       try {
         let selectedIds = this.selected.map((s) => s.id)
@@ -186,7 +185,7 @@ export default {
       }
     },
     setCurrentPage(value) {
-        this.currentPage = value;
+      this.currentPage = value
     },
     ...mapActions('traction/pacbio/libraries', ['deleteLibraries', 'setLibraries']),
     ...mapActions('printMyBarcode', ['printJobV2']),

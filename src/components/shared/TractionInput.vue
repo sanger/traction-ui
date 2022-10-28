@@ -25,7 +25,7 @@ export default {
    */
   name: 'TractionInput',
   props: {
-    //value field of input which will be bind automatically with 'v-model' prop passed into the component 
+    //value field of input which will be bind automatically with 'v-model' prop passed into the component
     value: {
       type: [Number, String],
       default: '',
@@ -66,7 +66,7 @@ export default {
       type: String,
       default: '100',
     },
-    //the amount of increment if the type is 'number' 
+    //the amount of increment if the type is 'number'
     step: {
       type: String,
       default: '1',
@@ -82,7 +82,7 @@ export default {
       type: String,
       default: '',
     },
-    //disabled or not? - if disabled user cannot enter values 
+    //disabled or not? - if disabled user cannot enter values
     disabled: {
       type: Boolean,
       default: false,

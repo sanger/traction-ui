@@ -164,7 +164,7 @@ export default {
     async provider() {
       await this.setLibraries()
     },
-     setCurrentPage(value) {
+    setCurrentPage(value) {
       this.currentPage = value
     },
     ...mapActions('traction/saphyr/tubes', ['deleteLibraries', 'setLibraries']),

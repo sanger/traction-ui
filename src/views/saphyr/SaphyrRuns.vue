@@ -98,7 +98,7 @@
         :total-items="runs.length"
         :items-per-page="perPage"
         aria-controls="libraries-table"
-         @change="setCurrentPage"
+        @change="setCurrentPage"
       >
       </traction-pagination>
     </div>
@@ -172,7 +172,7 @@ export default {
         this.showAlert('Failed to get runs: ' + error.message, 'danger')
       }
     },
-      setCurrentPage(value) {
+    setCurrentPage(value) {
       this.currentPage = value
     },
     ...mapActions('traction/saphyr/runs', ['setRuns']),

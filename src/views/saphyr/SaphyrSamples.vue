@@ -145,7 +145,7 @@ export default {
         console.error(err)
       }
     },
-      setCurrentPage(value) {
+    setCurrentPage(value) {
       this.currentPage = value
     },
     ...mapActions('traction/saphyr/tubes', ['createLibrariesInTraction']),
