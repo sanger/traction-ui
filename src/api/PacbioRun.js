@@ -8,6 +8,7 @@ const DefaultCcsAnalysisOutput = 'Yes'
 const DefaultLoadingTarget = 0.85
 const DefaultOnPlateLoadingConcentration = ''
 const ValueYes = 'Yes'
+const ValueNo = 'No'
 const ValueInSmrtLink = 'In SMRT Link'
 
 const DefaultGenerateHiFi = (systemName) => {
@@ -32,7 +33,7 @@ const wellDefaults = (systemName) => {
     binding_kit_box_barcode: '',
     on_plate_loading_concentration: DefaultOnPlateLoadingConcentration,
     ccs_analysis_output_include_kinetics_information: ValueYes,
-    ccs_analysis_output_include_low_quality_reads: ValueYes,
+    ccs_analysis_output_include_low_quality_reads: ValueNo,
     demultiplex_barcodes: ValueInSmrtLink,
     include_fivemc_calls_in_cpg_motifs: ValueYes,
   }

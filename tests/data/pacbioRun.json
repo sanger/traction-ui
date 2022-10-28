@@ -22,7 +22,7 @@
           "pre_extension_time": 2,
           "on_plate_loading_concentration": "",
           "ccs_analysis_output_include_kinetics_information": "Yes",
-          "ccs_analysis_output_include_low_quality_reads": "Yes",
+          "ccs_analysis_output_include_low_quality_reads": "No",
           "demultiplex_barcodes": "In SMRT Link",
           "include_fivemc_calls_in_cpg_motifs": "Yes"
         }
