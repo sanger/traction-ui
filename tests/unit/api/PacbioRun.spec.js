@@ -234,6 +234,26 @@ describe('Run', () => {
 
       expect(result.data.attributes.pacbio_smrt_link_version_id).toEqual(run.smrt_link_version_id)
     })
+
+    it('trims sequencing_kit_box_barcode in payload', () => {
+      const untrimmed = '   trimmed   \r\n   '
+      const trimmed = untrimmed.trim()
+      run.sequencing_kit_box_barcode = untrimmed
+      const result = Run.createRunPayload(run)
+
+      expect(trimmed).toEqual('trimmed')
+      expect(result.data.attributes.sequencing_kit_box_barcode).toEqual(trimmed)
+    })
+
+    it('trims sequencing_kit_box_barcode in payload', () => {
+      const untrimmed = '   trimmed   \r \n   '
+      const trimmed = untrimmed.trim()
+      run.dna_control_complex_box_barcode = untrimmed
+      const result = Run.createRunPayload(run)
+
+      expect(trimmed).toEqual('trimmed')
+      expect(result.data.attributes.dna_control_complex_box_barcode).toEqual(trimmed)
+    })
   })
 
   describe('createPlatePayload', () => {
@@ -311,6 +331,17 @@ describe('Run', () => {
       expect(result.data.attributes.wells[1].relationships.pools.data[0].id).toEqual(
         wells[1].pools[0].id,
       )
+    })
+
+    it('trims binding_kit_box_barcode in payload', () => {
+      const untrimmed = '   trimmed   \r\n   '
+      const trimmed = untrimmed.trim()
+
+      run.plate.wells[0].binding_kit_box_barcode = untrimmed
+      let result = Run.createWellsPayload(wells, plateID)
+
+      expect(trimmed).toEqual('trimmed')
+      expect(result.data.attributes.wells[0].binding_kit_box_barcode).toEqual(trimmed)
     })
 
     it('has v11 smrt link options', () => {
@@ -490,6 +521,26 @@ describe('Run', () => {
       expect(result.data.attributes.pacbio_smrt_link_version_id).toEqual(run.smrt_link_version_id)
       expect(result.data.attributes.comments).toEqual(run.comments)
     })
+
+    it('trims sequencing_kit_box_barcode in payload', () => {
+      const untrimmed = '   trimmed   \r\n   '
+      const trimmed = untrimmed.trim()
+      run.sequencing_kit_box_barcode = untrimmed
+      const result = Run.updateRunPayload(run)
+
+      expect(trimmed).toEqual('trimmed')
+      expect(result.data.attributes.sequencing_kit_box_barcode).toEqual(trimmed)
+    })
+
+    it('trims sequencing_kit_box_barcode in payload', () => {
+      const untrimmed = '   trimmed   \r \n   '
+      const trimmed = untrimmed.trim()
+      run.dna_control_complex_box_barcode = untrimmed
+      const result = Run.updateRunPayload(run)
+
+      expect(trimmed).toEqual('trimmed')
+      expect(result.data.attributes.dna_control_complex_box_barcode).toEqual(trimmed)
+    })
   })
 
   describe('updateWellPayload', () => {
@@ -535,6 +586,17 @@ describe('Run', () => {
       expect(result.data.attributes).toHaveProperty('ccs_analysis_output_include_low_quality_reads')
       expect(result.data.attributes).toHaveProperty('demultiplex_barcodes')
       expect(result.data.attributes).toHaveProperty('include_fivemc_calls_in_cpg_motifs')
+    })
+
+    it('trims binding_kit_box_barcode in payload', () => {
+      const untrimmed = '   trimmed   \r\n   '
+      const trimmed = untrimmed.trim()
+
+      well.binding_kit_box_barcode = untrimmed
+      let result = Run.updateWellPayload(well)
+
+      expect(trimmed).toEqual('trimmed')
+      expect(result.data.attributes.binding_kit_box_barcode).toEqual(trimmed)
     })
   })
 
