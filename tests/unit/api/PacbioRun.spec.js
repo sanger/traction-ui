@@ -569,7 +569,7 @@ describe('Run', () => {
     const DefaultPreExtensionTime = 2
     const ValueYes = 'Yes'
     const ValueNo = 'No'
-    const ValueInSmrtLink = 'In SMRT Link'
+    const ValueOnInstrument = 'On Instrument'
     let defaults = Run.wellDefaults(DefaultSystemName)
 
     it('has v11 smrt link options', () => {
@@ -593,7 +593,7 @@ describe('Run', () => {
       expect(defaults.pre_extension_time).toEqual(DefaultPreExtensionTime)
       expect(defaults.ccs_analysis_output_include_kinetics_information).toEqual(ValueYes)
       expect(defaults.ccs_analysis_output_include_low_quality_reads).toEqual(ValueNo)
-      expect(defaults.demultiplex_barcodes).toEqual(ValueInSmrtLink)
+      expect(defaults.demultiplex_barcodes).toEqual(ValueOnInstrument)
       expect(defaults.include_fivemc_calls_in_cpg_motifs).toEqual(ValueYes)
     })
   })

@@ -9,7 +9,7 @@ const DefaultLoadingTarget = 0.85
 const DefaultOnPlateLoadingConcentration = ''
 const ValueYes = 'Yes'
 const ValueNo = 'No'
-const ValueInSmrtLink = 'In SMRT Link'
+const ValueOnInstrument = 'On Instrument'
 
 const DefaultGenerateHiFi = (systemName) => {
   switch (systemName) {
@@ -34,7 +34,7 @@ const wellDefaults = (systemName) => {
     on_plate_loading_concentration: DefaultOnPlateLoadingConcentration,
     ccs_analysis_output_include_kinetics_information: ValueYes,
     ccs_analysis_output_include_low_quality_reads: ValueNo,
-    demultiplex_barcodes: ValueInSmrtLink,
+    demultiplex_barcodes: ValueOnInstrument,
     include_fivemc_calls_in_cpg_motifs: ValueYes,
   }
 }

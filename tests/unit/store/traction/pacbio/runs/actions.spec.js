@@ -194,7 +194,7 @@ describe('#buildWell', () => {
       loading_target_p1_plus_p2: 0.85,
       ccs_analysis_output_include_kinetics_information: 'Yes',
       ccs_analysis_output_include_low_quality_reads: 'No',
-      demultiplex_barcodes: 'In SMRT Link',
+      demultiplex_barcodes: 'On Instrument',
       include_fivemc_calls_in_cpg_motifs: 'Yes',
     }
 
@@ -219,7 +219,7 @@ describe('#buildWell', () => {
       loading_target_p1_plus_p2: 0.85,
       ccs_analysis_output_include_kinetics_information: 'Yes',
       ccs_analysis_output_include_low_quality_reads: 'No',
-      demultiplex_barcodes: 'In SMRT Link',
+      demultiplex_barcodes: 'On Instrument',
       include_fivemc_calls_in_cpg_motifs: 'Yes',
     }
 
