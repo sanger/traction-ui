@@ -41,13 +41,13 @@ const settings = {
 Vue.use(VueTailwind, settings)
 
 export default {
-   /**
+  /**
    * # TractionPagination
    *
    * A wrapper for TPagination component from VueTailwind library
    * https://www.vue-tailwind.com/docs/pagination/
    *
-   * Displays a pagination component 
+   * Displays a pagination component
    */
   name: 'TractionPagination',
   components: {
