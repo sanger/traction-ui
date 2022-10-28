@@ -14,6 +14,7 @@ import Vue from 'vue'
 import VueTailwind from 'vue-tailwind'
 import TPagination from 'vue-tailwind/dist/t-pagination'
 
+/*Initialization settings for TPagination component*/
 const settings = {
   't-pagination': {
     component: TPagination,
@@ -35,9 +36,19 @@ const settings = {
     },
   },
 }
+
+/*Configure Vue to use vue-tailwind with given settings*/
 Vue.use(VueTailwind, settings)
 
 export default {
+   /**
+   * # TractionPagination
+   *
+   * A wrapper for TPagination component from VueTailwind library
+   * https://www.vue-tailwind.com/docs/pagination/
+   *
+   * Displays a pagination component 
+   */
   name: 'TractionPagination',
   components: {
     TPagination,
