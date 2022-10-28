@@ -182,7 +182,7 @@ const createWellsPayload = (wells, plateId) => {
       ccs_analysis_output_include_low_quality_reads:
         well.ccs_analysis_output_include_low_quality_reads,
       demultiplex_barcodes: well.demultiplex_barcodes,
-      include_fivemc_calls_in_cpg_motifs: well.fivemc_calls_in_cpg_motifs,
+      include_fivemc_calls_in_cpg_motifs: well.include_fivemc_calls_in_cpg_motifs,
 
       relationships: {
         plate: {

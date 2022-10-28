@@ -271,7 +271,24 @@ describe('Run', () => {
     beforeEach(() => {
       run = Run.build()
 
-      run.plate.wells[0] = { position: 'A1', pools: [{ id: 1 }, { id: 2 }] }
+      run.plate.wells[0] = {
+        position: 'A1',
+        pools: [{ id: 1 }, { id: 2 }],
+
+        row: 'A',
+        column: 1,
+        movie_time: 30.0,
+        on_plate_loading_concentration: 0.5,
+        generate_hifi: 'In SMRT Link',
+        ccs_analysis_output: 'Yes',
+        pre_extension_time: 1,
+        binding_kit_box_barcode: 'BKBB1',
+        loading_target_p1_plus_p2: 1,
+        ccs_analysis_output_include_kinetics_information: 'Yes',
+        ccs_analysis_output_include_low_quality_reads: 'No',
+        demultiplex_barcodes: 'Yes',
+        include_fivemc_calls_in_cpg_motifs: 'Yes',
+      }
       run.plate.wells[1] = { position: 'A2', pools: [{ id: 2 }] }
 
       wells = run.plate.wells
@@ -313,6 +330,7 @@ describe('Run', () => {
       expect(result.data.attributes.wells[0].demultiplex_barcodes).toEqual(
         wells[0].demultiplex_barcodes,
       )
+
       expect(result.data.attributes.wells[0].include_fivemc_calls_in_cpg_motifs).toEqual(
         wells[0].include_fivemc_calls_in_cpg_motifs,
       )
