@@ -154,17 +154,19 @@
       </traction-row>
       <traction-row v-if="['v11'].includes(selectedSmrtLinkVersion?.name)">
         <traction-col>
-          <label for="default-fivemc-calls-in-cpg-motifs">5mc Calls In CpG Motifs:</label>
+          <label for="default-include-fivemc-calls-in-cpg-motifs"
+            >Include 5mc Calls In CpG Motifs:</label
+          >
         </traction-col>
         <traction-col>
           <traction-select
-            id="default-fivemc-calls-in-cpg-motifs"
-            data-attribute="default-fivemc-calls-in-cpg-motifs"
-            title="5mc Calls In CpG Motifs"
+            id="default-include-fivemc-calls-in-cpg-motifs"
+            data-attribute="default-include-fivemc-calls-in-cpg-motifs"
+            title="Include 5mc Calls In CpG Motifs"
             :options="ccsAnalysisOutputOptions"
-            :value="currentRun.wellDefaults?.fivemc_calls_in_cpg_motifs"
-            placeholder="Default 5mc Calls in CpG Motifs for new wells"
-            @input="setDefaultFivemcCallsInCpgMotifs"
+            :value="currentRun.wellDefaults?.include_fivemc_calls_in_cpg_motifs"
+            placeholder="Default Include 5mc Calls in CpG Motifs for new wells"
+            @input="setIncludeDefaultFivemcCallsInCpgMotifs"
           >
           </traction-select>
         </traction-col>
@@ -241,7 +243,7 @@ export default {
       'setDefaultCcsAnalysisOutputIncludeKineticsInformation',
       'setDefaultCcsAnalysisOutputIncludeLowQualityReads',
       'setDefaultDemultiplexBarcodes',
-      'setDefaultFivemcCallsInCpgMotifs',
+      'setIncludeDefaultFivemcCallsInCpgMotifs',
     ]),
   },
 }

@@ -34,7 +34,7 @@ const mutations = {
     'ccs_analysis_output_include_low_quality_reads',
   ),
   setDefaultDemultiplexBarcodes: mutateWellDefaults('demultiplex_barcodes'),
-  setDefaultFivemcCallsInCpgMotifs: mutateWellDefaults('fivemc_calls_in_cpg_motifs'),
+  setDefaultIncludeFivemcCallsInCpgMotifs: mutateWellDefaults('include_fivemc_calls_in_cpg_motifs'),
 
   createWell(state, well) {
     state.currentRun.plate.wells.push(well)

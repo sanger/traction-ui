@@ -109,7 +109,7 @@ describe('Pacbio Run Create view', () => {
     cy.get('[data-attribute="pre-extension-time"]').type(3)
     cy.get('[data-attribute="ccs-analysis-output-include-kinetics-information"]').select('Yes')
     cy.get('[data-attribute="ccs-analysis-output-include-low-quality-reads"]').select('No')
-    cy.get('[data-attribute="fivemc-calls-in-cpg-motifs"]').select('Yes')
+    cy.get('[data-attribute="include-fivemc-calls-in-cpg-motifs"]').select('Yes')
 
     cy.get('#updateBtn').click()
     cy.get('button').contains('Create').click()

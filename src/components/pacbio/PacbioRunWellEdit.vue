@@ -142,14 +142,14 @@
 
       <traction-form-group
         v-if="['v11'].includes(selectedSmrtLinkVersion.name)"
-        label="5mc Calls In CpG Motifs"
-        label-for="fivemc-calls-in-cpg-motifs"
+        label="Include 5mc Calls In CpG Motifs"
+        label-for="include-fivemc-calls-in-cpg-motifs"
       >
         <traction-select
-          id="fivemc-calls-in-cpg-motifs"
-          v-model="currentWell.fivemc_calls_in_cpg_motifs"
+          id="include-fivemc-calls-in-cpg-motifs"
+          v-model="currentWell.include_fivemc_calls_in_cpg_motifs"
           :options="ccsAnalysisOutputOptions"
-          data-attribute="fivemc-calls-in-cpg-motifs"
+          data-attribute="include-fivemc-calls-in-cpg-motifs"
         >
         </traction-select>
       </traction-form-group>

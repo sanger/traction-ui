@@ -142,7 +142,9 @@ describe('PacbioWellModal', () => {
     })
 
     it('does not have a fivemc calls in cpg motifs input', () => {
-      expect(wrapper.find('[data-attribute="fivemc-calls-in-cpg-motifs"]').exists()).toBeFalsy()
+      expect(
+        wrapper.find('[data-attribute="include-fivemc-calls-in-cpg-motifs"]').exists(),
+      ).toBeFalsy()
     })
 
     it('does not have a demultiplex barcodes input', () => {
@@ -152,7 +154,7 @@ describe('PacbioWellModal', () => {
 
   /*["ccs_analysis_output_include_kinetics_information",
     "ccs_analysis_output_include_low_quality_reads",
-    "fivemc_calls_in_cpg_motifs",
+    "include_fivemc_calls_in_cpg_motifs",
     "demultiplex_barcodes",
     "on_plate_loading_concentration",
     "binding_kit_box_barcode",
@@ -201,7 +203,9 @@ describe('PacbioWellModal', () => {
     })
 
     it('has a fivemc calls in cpg motifs input', () => {
-      expect(wrapper.find('[data-attribute="fivemc-calls-in-cpg-motifs"]').exists()).toBeTruthy()
+      expect(
+        wrapper.find('[data-attribute="include-fivemc-calls-in-cpg-motifs"]').exists(),
+      ).toBeTruthy()
     })
 
     it('has a demultiplex barcodes input', () => {

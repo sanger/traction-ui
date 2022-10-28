@@ -34,7 +34,7 @@ const wellDefaults = (systemName) => {
     ccs_analysis_output_include_kinetics_information: ValueYes,
     ccs_analysis_output_include_low_quality_reads: ValueYes,
     demultiplex_barcodes: ValueInSmrtLink,
-    fivemc_calls_in_cpg_motifs: ValueYes,
+    include_fivemc_calls_in_cpg_motifs: ValueYes,
   }
 }
 
@@ -181,7 +181,7 @@ const createWellsPayload = (wells, plateId) => {
       ccs_analysis_output_include_low_quality_reads:
         well.ccs_analysis_output_include_low_quality_reads,
       demultiplex_barcodes: well.demultiplex_barcodes,
-      fivemc_calls_in_cpg_motifs: well.fivemc_calls_in_cpg_motifs,
+      include_fivemc_calls_in_cpg_motifs: well.fivemc_calls_in_cpg_motifs,
 
       relationships: {
         plate: {
@@ -248,7 +248,7 @@ const updateWellPayload = (well) => {
         ccs_analysis_output_include_low_quality_reads:
           well.ccs_analysis_output_include_low_quality_reads,
         demultiplex_barcodes: well.demultiplex_barcodes,
-        fivemc_calls_in_cpg_motifs: well.fivemc_calls_in_cpg_motifs,
+        include_fivemc_calls_in_cpg_motifs: well.include_fivemc_calls_in_cpg_motifs,
       },
       relationships: {
         pools: {

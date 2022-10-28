@@ -293,8 +293,8 @@ describe('Run', () => {
       expect(result.data.attributes.wells[0].demultiplex_barcodes).toEqual(
         wells[0].demultiplex_barcodes,
       )
-      expect(result.data.attributes.wells[0].fivemc_calls_in_cpg_motifs).toEqual(
-        wells[0].fivemc_calls_in_cpg_motifs,
+      expect(result.data.attributes.wells[0].include_fivemc_calls_in_cpg_motifs).toEqual(
+        wells[0].include_fivemc_calls_in_cpg_motifs,
       )
 
       expect(result.data.attributes.wells[0].relationships.plate.data.type).toEqual('plates')
@@ -328,7 +328,7 @@ describe('Run', () => {
         'ccs_analysis_output_include_low_quality_reads',
       )
       expect(result.data.attributes.wells[0]).toHaveProperty('demultiplex_barcodes')
-      expect(result.data.attributes.wells[0]).toHaveProperty('fivemc_calls_in_cpg_motifs')
+      expect(result.data.attributes.wells[0]).toHaveProperty('include_fivemc_calls_in_cpg_motifs')
     })
   })
 
@@ -534,7 +534,7 @@ describe('Run', () => {
       )
       expect(result.data.attributes).toHaveProperty('ccs_analysis_output_include_low_quality_reads')
       expect(result.data.attributes).toHaveProperty('demultiplex_barcodes')
-      expect(result.data.attributes).toHaveProperty('fivemc_calls_in_cpg_motifs')
+      expect(result.data.attributes).toHaveProperty('include_fivemc_calls_in_cpg_motifs')
     })
   })
 
@@ -583,7 +583,7 @@ describe('Run', () => {
       // v11     |ccs_analysis_output_include_kinetics_information
       // v11     |ccs_analysis_output_include_low_quality_reads
       // v11     |demultiplex_barcodes
-      // v11     |fivemc_calls_in_cpg_motifs
+      // v11     |include_fivemc_calls_in_cpg_motifs
 
       expect(defaults.binding_kit_box_barcode).toEqual(DefaultBindingKitBoxBarcode)
       expect(defaults.loading_target_p1_plus_p2).toEqual(DefaultLoadingTarget)
@@ -593,7 +593,7 @@ describe('Run', () => {
       expect(defaults.ccs_analysis_output_include_kinetics_information).toEqual(ValueYes)
       expect(defaults.ccs_analysis_output_include_low_quality_reads).toEqual(ValueYes)
       expect(defaults.demultiplex_barcodes).toEqual(ValueInSmrtLink)
-      expect(defaults.fivemc_calls_in_cpg_motifs).toEqual(ValueYes)
+      expect(defaults.include_fivemc_calls_in_cpg_motifs).toEqual(ValueYes)
     })
   })
 })

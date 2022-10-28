@@ -101,7 +101,7 @@ describe('PacbioRunWellDefaultEdit', () => {
 
     it('does not have a fivemc calls in cpg motifs default input', () => {
       expect(
-        wrapper.find('[data-attribute="default-fivemc-calls-in-cpg-motifs"]').exists(),
+        wrapper.find('[data-attribute="default-include-fivemc-calls-in-cpg-motifs"]').exists(),
       ).toBeFalsy()
     })
 
@@ -112,7 +112,7 @@ describe('PacbioRunWellDefaultEdit', () => {
 
   /*["ccs_analysis_output_include_kinetics_information",
     "ccs_analysis_output_include_low_quality_reads",
-    "fivemc_calls_in_cpg_motifs",
+    "include_fivemc_calls_in_cpg_motifs",
     "demultiplex_barcodes",
     "binding_kit_box_barcode",
     "pre_extension_time",
@@ -160,7 +160,7 @@ describe('PacbioRunWellDefaultEdit', () => {
 
     it('has a fivemc calls in cpg motifs default input', () => {
       expect(
-        wrapper.find('[data-attribute=default-fivemc-calls-in-cpg-motifs]').exists(),
+        wrapper.find('[data-attribute=default-include-fivemc-calls-in-cpg-motifs]').exists(),
       ).toBeTruthy()
     })
 
