@@ -161,9 +161,12 @@ export default {
   methods: {
     async provider() {
       try {
-        await this.setRuns()
+        const { success, errors } = await this.setRuns()
+        if (!success) {
+          throw errors
+        }
       } catch (error) {
-        this.showAlert('Failed to get runs: ' + error.message, 'danger')
+        this.showAlert('Failed to get pools: ' + error.message, 'danger')
       }
     },
     isRunDisabled(run) {

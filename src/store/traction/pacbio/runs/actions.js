@@ -1,6 +1,8 @@
 import handlePromise from '@/api/PromiseHelper'
 import * as PacbioRun from '@/api/PacbioRun'
 
+import handleResponse from '@/api/ResponseHelper'
+
 const splitPosition = (position) => {
   // match() returns [original, row, column] e.g "A10 => ["A10", "A", "10"]
   return position.match(/(\S)(\d+)/).slice(1)
@@ -20,15 +22,16 @@ const buildWell = ({ state }, position) => {
 
 const setRuns = async ({ commit, getters }) => {
   let request = getters.runRequest
-  let promise = request.get({ include: 'plate.wells.pools.tube' })
-  let response = await handlePromise(promise)
+  let promise = request.get()
+  let response = await handleResponse(promise)
 
-  if (response.successful && !response.empty) {
-    let runs = response.deserialize.runs
-    commit('setRuns', runs)
+  const { success, data: { data } = {}, errors = [] } = response
+
+  if (success) {
+    commit('setRuns', data)
   }
 
-  return response
+  return { success, errors }
 }
 
 const newRun = ({ commit, rootGetters }) => {

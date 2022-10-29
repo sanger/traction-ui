@@ -2,7 +2,6 @@ import Response from '@/api/Response'
 import * as Actions from '@/store/traction/pacbio/runs/actions'
 import { Data } from '@support/testHelper'
 import * as Run from '@/api/PacbioRun'
-import { expect, vi } from 'vitest'
 
 describe('#setRuns', () => {
   let commit, get, getters, failedResponse
@@ -16,26 +15,20 @@ describe('#setRuns', () => {
   })
 
   it('successfully', async () => {
-    get.mockReturnValue(Data.PacbioRuns)
+    const response = Data.PacbioRuns
+    const { data: runs } = response.data
+    get.mockResolvedValue(response)
 
-    let expectedResponse = new Response(Data.PacbioRuns)
-    let expectedRuns = expectedResponse.deserialize.runs
-
-    let response = await Actions.setRuns({ commit, getters })
-
-    expect(commit).toHaveBeenCalledWith('setRuns', expectedRuns)
-    expect(response).toEqual(expectedResponse)
+    await Actions.setRuns({ commit, getters })
+    expect(commit).toHaveBeenCalledWith('setRuns', runs)
   })
 
   it('unsuccessfully', async () => {
-    get.mockReturnValue(failedResponse)
+    get.mockRejectedValue(failedResponse)
 
-    let expectedResponse = new Response(failedResponse)
-
-    let response = await Actions.setRuns({ commit, getters })
+    await Actions.setRuns({ commit, getters })
 
     expect(commit).not.toHaveBeenCalled()
-    expect(response).toEqual(expectedResponse)
   })
 })
 

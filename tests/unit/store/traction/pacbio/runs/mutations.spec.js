@@ -2,20 +2,18 @@ import Mutations from '@/store/traction/pacbio/runs/mutations'
 import Actions from '@/store/traction/pacbio/runs/actions'
 import * as Run from '@/api/PacbioRun'
 import { Data } from '@support/testHelper'
-import Response from '@/api/Response'
-import { expect } from 'vitest'
+import storeRuns from '@tests/data/StoreRuns'
 
 describe('mutate', () => {
-  let runs, state
+  let state
 
-  beforeEach(() => {
-    runs = new Response(Data.PacbioRuns).deserialize.runs
-    state = { runs: [] }
-  })
-
-  it('can update the mutate the state, e.g setRuns', () => {
+  it('"setRuns" sets "state.runs" to the given runs', () => {
+    const { data: runs } = Data.PacbioRuns.data
+    state = {
+      runs: {},
+    }
     Mutations.setRuns(state, runs)
-    expect(state.runs.length).toEqual(runs.length)
+    expect(state.runs).toEqual(storeRuns)
   })
 })
 

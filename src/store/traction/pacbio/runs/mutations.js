@@ -1,4 +1,5 @@
 import Vue from 'vue'
+import { dataToObjectById } from '@/api/JsonApi'
 
 const mutate = (key) => (state, val) => {
   state[key] = val
@@ -13,7 +14,11 @@ const mutateWellDefaults = (key) => (state, val) => {
 }
 
 const mutations = {
-  setRuns: mutate('runs'),
+  setRuns(state, runs) {
+    state.runs = dataToObjectById({ data: runs, includeRelationships: false })
+  },
+
+  // setRuns: mutate('runs'),
   setCurrentRun: mutate('currentRun'),
   setSequencingKitBoxBarcode: mutateRun('sequencing_kit_box_barcode'),
   setDNAControlComplexBoxBarcode: mutateRun('dna_control_complex_box_barcode'),

@@ -1,24 +1,23 @@
 import PacbioRuns from '@/views/pacbio/PacbioRunIndex'
 import { mount, localVue, store, Data, router } from '@support/testHelper'
-import Response from '@/api/Response'
+import storeRuns from '@tests/data/storeRuns'
 
 describe('Runs.vue', () => {
   const pipeline = 'pacbio'
-  let wrapper, runs, mockRuns
+  let wrapper, runs
 
   beforeEach(() => {
-    mockRuns = new Response(Data.PacbioRuns).deserialize.runs
-
-    store.commit('traction/pacbio/runs/setRuns', mockRuns)
+    const get = vi.fn()
+    store.state.api.traction.pacbio.runs = { get: get }
+    get.mockResolvedValue(Data.PacbioRuns)
 
     wrapper = mount(PacbioRuns, { store, router, localVue })
     runs = wrapper.vm
-    runs.provider = vi.fn()
   })
 
   describe('created hook', () => {
     it('sets the runs data', () => {
-      expect(runs.runs).toEqual(mockRuns)
+      expect(runs.runs).toEqual(Object.values(storeRuns))
     })
   })
 
@@ -76,7 +75,7 @@ describe('Runs.vue', () => {
 
       button = wrapper.find('#startRun-1')
       button.trigger('click')
-      expect(runs.startRun).toBeCalledWith({ id: mockRuns[0].id, pipeline })
+      expect(runs.startRun).toBeCalledWith({ id: storeRuns['1'].id, pipeline })
     })
   })
 
@@ -114,7 +113,7 @@ describe('Runs.vue', () => {
       button = wrapper.find('#completeRun-2')
       button.trigger('click')
 
-      expect(runs.completeRun).toBeCalledWith({ id: mockRuns[1].id, pipeline })
+      expect(runs.completeRun).toBeCalledWith({ id: storeRuns['2'].id, pipeline })
     })
   })
 
@@ -152,7 +151,7 @@ describe('Runs.vue', () => {
       button = wrapper.find('#cancelRun-2')
       button.trigger('click')
 
-      expect(runs.cancelRun).toBeCalledWith({ id: mockRuns[1].id, pipeline })
+      expect(runs.cancelRun).toBeCalledWith({ id: storeRuns['2'].id, pipeline })
     })
   })
 
@@ -164,12 +163,9 @@ describe('Runs.vue', () => {
       expect(button.isVisible()).toBe(true) // button is shown
     })
 
+    // the last run has all_wells_have_pools set to false
     it('it does not exist when the run has wells without pools', () => {
-      mockRuns[0].all_wells_have_pools = false
-      store.commit('traction/pacbio/runs/setRuns', mockRuns)
-      wrapper = mount(PacbioRuns, { store, router, localVue })
-
-      button = wrapper.find('#generate-sample-sheet-1')
+      button = wrapper.find('#generate-sample-sheet-6')
       expect(button.isVisible()).toBe(false) // button is hidden
     })
 
@@ -193,7 +189,7 @@ describe('Runs.vue', () => {
         localVue,
         data() {
           return {
-            filter: mockRuns[0].name,
+            filter: storeRuns['1'].name,
           }
         },
       })

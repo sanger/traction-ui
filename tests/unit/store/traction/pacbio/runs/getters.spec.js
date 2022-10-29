@@ -1,19 +1,18 @@
 import Response from '@/api/Response'
 import { Data } from '@support/testHelper'
 import getters from '@/store/traction/pacbio/runs/getters'
+import storeRuns from '@tests/data/StoreRuns'
 
-let runs
+const state = { runs: storeRuns }
 
 describe('getters', () => {
-  beforeEach(() => {
-    runs = new Response(Data.PacbioRuns).deserialize.runs
+  it('"run" returns the given run from "state.runs"', () => {
+    const actual = getters.run(state)(Object.keys(storeRuns)[0])
+    expect(actual).toEqual(Object.values(storeRuns)[0])
   })
 
-  it('"run" returns the given run from "state.runs"', () => {
-    const state = {
-      runs: runs,
-    }
-    const actual = getters.run(state)(runs[0].id)
-    expect(actual).toEqual(runs[0])
+  it('"runs" returns runs from "state.runs"', () => {
+    const actual = getters.runs(state)
+    expect(actual).toEqual(Object.values(storeRuns))
   })
 })

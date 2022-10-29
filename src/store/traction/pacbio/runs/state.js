@@ -1,5 +1,5 @@
 const state = {
-  runs: [],
+  runs: {},
   currentRun: {},
 }
 
