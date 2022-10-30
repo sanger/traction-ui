@@ -34,10 +34,10 @@ const setRuns = async ({ commit, getters }) => {
   return { success, errors }
 }
 
-const newRun = ({ commit, rootGetters }) => {
+const newRun = ({ commit, getters }) => {
   let run = PacbioRun.build()
   // Set default smrt_link_version_id on current run in the state
-  const defaultSmrtLinkVersion = rootGetters['traction/pacbio/runCreate/defaultSmrtLinkVersion']
+  const defaultSmrtLinkVersion = getters.defaultSmrtLinkVersion
   run.smrt_link_version_id = defaultSmrtLinkVersion.id
   commit('setCurrentRun', run)
 }
@@ -94,6 +94,24 @@ const getRun = async ({ getters }, id) => {
   }
 }
 
+/**
+ * Retrieves a list of pacbio smrt_link_versions and populates the store.
+ * @param rootState the vuex rootState object. Provides access to current state
+ * @param commit the vuex commit object. Provides access to mutations
+ */
+const fetchSmrtLinkVersions = async ({ commit, rootState }) => {
+  const request = rootState.api.traction.pacbio.smrt_link_versions
+  const promise = request.get({})
+  const response = await handleResponse(promise)
+
+  const { success, data: { data } = {}, errors = [] } = response
+
+  if (success) {
+    commit('populateSmrtLinkVersions', data)
+  }
+  return { success, errors }
+}
+
 const actions = {
   getRun,
   setRuns,
@@ -102,8 +120,9 @@ const actions = {
   editRun,
   updateRun,
   buildWell,
+  fetchSmrtLinkVersions,
 }
 
-export { setRuns, newRun, createRun, editRun, updateRun, getRun, buildWell }
+export { setRuns, newRun, createRun, editRun, updateRun, getRun, buildWell, fetchSmrtLinkVersions }
 
 export default actions

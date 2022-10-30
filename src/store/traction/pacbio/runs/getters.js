@@ -9,6 +9,17 @@ const getters = {
   well: (state) => (position) => {
     return state.currentRun.plate.wells.find((well) => well.position === position)
   },
+
+  /**
+   * Returns a list of all fetched smrt link versions
+   * @param {Object} state The Vuex state object
+   */
+  smrtLinkVersionList: ({ resources }) => {
+    return resources.smrtLinkVersions
+  },
+  defaultSmrtLinkVersion: ({ resources }) => {
+    return Object.values(resources.smrtLinkVersions).find((version) => version.default)
+  },
 }
 
 export default getters

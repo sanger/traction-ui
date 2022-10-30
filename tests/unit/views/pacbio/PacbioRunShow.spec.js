@@ -44,7 +44,7 @@ describe('Run.vue', () => {
       },
     }
 
-    store.state.traction.pacbio.runCreate.resources.smrtLinkVersions = smrtLinkVersions
+    store.state.traction.pacbio.runs.resources.smrtLinkVersions = smrtLinkVersions
     mockRun.smrt_link_version_id = 1
     store.commit('traction/pacbio/runs/setCurrentRun', mockRun)
 

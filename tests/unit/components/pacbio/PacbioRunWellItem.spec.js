@@ -37,7 +37,7 @@ describe('Well.vue', () => {
     }
 
     store.commit('traction/pacbio/runs/setCurrentRun', run)
-    store.state.traction.pacbio.runCreate.resources.smrtLinkVersions = smrtLinkVersions
+    store.state.traction.pacbio.runs.resources.smrtLinkVersions = smrtLinkVersions
 
     wrapper = mount(Well, {
       localVue,

@@ -28,7 +28,7 @@ describe('PacbioWellModal', () => {
     run = Run.build()
     run.smrt_link_version_id = 1
     state = { currentRun: run }
-    store.state.traction.pacbio.runCreate.resources.smrtLinkVersions = smrtLinkVersions
+    store.state.traction.pacbio.runs.resources.smrtLinkVersions = smrtLinkVersions
     storeWell = Actions.buildWell({ state }, props.position)
     storeWell.pools = [{ id: 1, barcode: 'TRAC-0' }]
     run.plate.wells[0] = storeWell
@@ -165,7 +165,7 @@ describe('PacbioWellModal', () => {
   describe('if the SMRT Link version is v11', () => {
     beforeEach(() => {
       run.smrt_link_version_id = 2
-      store.state.traction.pacbio.runCreate.resources.smrtLinkVersions = smrtLinkVersions
+      store.state.traction.pacbio.runs.resources.smrtLinkVersions = smrtLinkVersions
     })
 
     it('will have the correct smrt link version', () => {

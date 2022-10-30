@@ -224,11 +224,11 @@ export default {
     }
   },
   computed: {
-    ...mapGetters(['currentRun']),
+    ...mapGetters(['currentRun', 'smrtLinkVersionList']),
     selectedSmrtLinkVersion() {
-      return Object.values(
-        this.$store.getters['traction/pacbio/runCreate/smrtLinkVersionList'],
-      ).find((version) => version.id == this.currentRun.smrt_link_version_id)
+      return Object.values(this.smrtLinkVersionList).find(
+        (version) => version.id == this.currentRun.smrt_link_version_id,
+      )
     },
   },
   methods: {

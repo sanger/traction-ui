@@ -278,12 +278,12 @@ export default {
     }
   },
   computed: {
-    ...mapGetters('traction/pacbio/runs', ['currentRun', 'well']),
+    ...mapGetters('traction/pacbio/runs', ['currentRun', 'well', 'smrtLinkVersionList']),
     ...mapGetters('traction/pacbio/pools', ['poolByBarcode']),
     selectedSmrtLinkVersion() {
-      return Object.values(
-        this.$store.getters['traction/pacbio/runCreate/smrtLinkVersionList'],
-      ).find((version) => version.id == this.currentRun.smrt_link_version_id)
+      return Object.values(this.smrtLinkVersionList).find(
+        (version) => version.id == this.currentRun.smrt_link_version_id,
+      )
     },
   },
   methods: {

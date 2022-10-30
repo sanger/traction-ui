@@ -1,5 +1,5 @@
 import Vue from 'vue'
-import { dataToObjectById } from '@/api/JsonApi'
+import { dataToObjectById, populateById } from '@/api/JsonApi'
 
 const mutate = (key) => (state, val) => {
   state[key] = val
@@ -18,7 +18,6 @@ const mutations = {
     state.runs = dataToObjectById({ data: runs, includeRelationships: false })
   },
 
-  // setRuns: mutate('runs'),
   setCurrentRun: mutate('currentRun'),
   setSequencingKitBoxBarcode: mutateRun('sequencing_kit_box_barcode'),
   setDNAControlComplexBoxBarcode: mutateRun('dna_control_complex_box_barcode'),
@@ -55,6 +54,13 @@ const mutations = {
     well.id ? state.currentRun.plate.wellsToDelete.push(well.id) : ''
     state.currentRun.plate.wells.splice(wellIndex, 1)
   },
+
+  /**
+   * Populated with resources via APi calls from the actions
+   * @param {Object} state The VueXState object
+   * @param {Array.{}} smrtLinkVersions The SmrtLinkVersions to populate the store
+   */
+  populateSmrtLinkVersions: populateById('smrtLinkVersions'),
 }
 
 export default mutations

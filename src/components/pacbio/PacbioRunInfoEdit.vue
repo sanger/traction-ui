@@ -111,22 +111,20 @@ export default {
   },
   // A lot of the below could be improved. Can we use the store?
   computed: {
-    smrtLinkVersionList() {
-      return Object.values(this.$store.getters['traction/pacbio/runCreate/smrtLinkVersionList'])
+    smrtLinkVersionListValues() {
+      return Object.values(this.smrtLinkVersionList)
     },
     smrtLinkVersionSelectOptions() {
       // Returns an array of objects with value and text properties to make
       // the options of smrt-link-version select drop-down list.
-      return Object.values(
-        this.$store.getters['traction/pacbio/runCreate/smrtLinkVersionList'],
-      ).map(({ id, name }) => ({ value: id, text: name }))
+      return this.smrtLinkVersionListValues.map(({ id, name }) => ({ value: id, text: name }))
     },
     selectedSmrtLinkVersion() {
-      return Object.values(
-        this.$store.getters['traction/pacbio/runCreate/smrtLinkVersionList'],
-      ).find((version) => version.id == this.currentRun.smrt_link_version_id)
+      return this.smrtLinkVersionListValues.find(
+        (version) => version.id == this.currentRun.smrt_link_version_id,
+      )
     },
-    ...mapGetters(['currentRun']),
+    ...mapGetters(['currentRun', 'smrtLinkVersionList']),
     ...mapState({
       runName: (state) => state.currentRun.name,
       sequencingKitBoxBarcode: (state) => state.currentRun.sequencing_kit_box_barcode,

@@ -124,12 +124,12 @@ export default {
       this.newRun()
       this.showAlert('Run has been reset', 'success', 'run-validation-message')
     },
-    ...mapActions(['createRun', 'updateRun', 'editRun', 'newRun']),
+    ...mapActions(['createRun', 'updateRun', 'editRun', 'newRun', 'fetchSmrtLinkVersions']),
     redirectToRuns() {
       this.$router.push({ name: 'PacbioRunIndex' })
     },
     async provider() {
-      await this.$store.dispatch('traction/pacbio/runCreate/fetchSmrtLinkVersions')
+      await this.fetchSmrtLinkVersions()
       if (this.id === 'new') {
         this.newRun()
       } else if (!this.newRecord) {

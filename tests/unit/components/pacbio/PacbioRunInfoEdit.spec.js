@@ -22,7 +22,7 @@ describe('PacbioRunInfoEdit', () => {
     ]
 
     store.commit('traction/pacbio/runs/setCurrentRun', run)
-    store.state.traction.pacbio.runCreate.resources.smrtLinkVersions = smrtLinkVersions
+    store.state.traction.pacbio.runs.resources.smrtLinkVersions = smrtLinkVersions
 
     // required as suggestion to remove the deprecated function
     // https://vue-test-utils.vuejs.org/api/options.html#attachtodocument
