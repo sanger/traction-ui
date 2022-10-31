@@ -1,6 +1,5 @@
 import PacbioRun from '@/views/pacbio/PacbioRunShow'
 import { localVue, mount, store, router } from '@support/testHelper'
-import { beforeEach, describe, it } from 'vitest'
 
 const smrtLinkVersions = [
   {

@@ -39,7 +39,7 @@
           <pacbioPoolList ref="pacbioPoolList"></pacbioPoolList>
         </traction-col>
         <traction-col>
-          <Plate ref="plate" @alert="showAlert"></Plate>
+          <Plate v-if="currentRun.id" ref="plate" @alert="showAlert"></Plate>
         </traction-col>
       </traction-row>
     </div>
@@ -53,7 +53,7 @@ import pacbioPoolList from '@/components/pacbio/PacbioPoolList'
 import Plate from '@/components/pacbio/PacbioRunPlateItem'
 
 import { createNamespacedHelpers } from 'vuex'
-const { mapActions } = createNamespacedHelpers('traction/pacbio/runs')
+const { mapActions, mapGetters } = createNamespacedHelpers('traction/pacbio/runs')
 import * as consts from '@/consts/consts'
 
 export default {
@@ -121,17 +121,23 @@ export default {
       this.showAlert('Run has been reset', 'success', 'run-validation-message')
     },
     ...mapActions(['createRun', 'updateRun', 'editRun', 'newRun', 'fetchSmrtLinkVersions']),
+    ...mapGetters(['currentRun']),
     redirectToRuns() {
       this.$router.push({ name: 'PacbioRunIndex' })
     },
     async provider() {
-      await this.fetchSmrtLinkVersions()
+      const smrtLinkVersions = this.fetchSmrtLinkVersions()
       if (this.id === 'new') {
         this.newRun()
       } else if (!this.newRecord) {
         await this.editRun(parseInt(this.$route.params.id))
       } else {
         this.$router.push({ name: '404' })
+      }
+    },
+    alertOnFail({ success, errors }) {
+      if (!success) {
+        this.showAlert(errors, 'danger')
       }
     },
   },
