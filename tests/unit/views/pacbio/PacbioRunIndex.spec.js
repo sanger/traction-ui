@@ -1,6 +1,6 @@
 import PacbioRuns from '@/views/pacbio/PacbioRunIndex'
 import { mount, localVue, store, Data, router } from '@support/testHelper'
-import storeRuns from '@tests/data/storeRuns'
+import storeRuns from '@tests/data/StoreRuns'
 
 describe('Runs.vue', () => {
   const pipeline = 'pacbio'
