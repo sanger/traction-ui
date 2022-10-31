@@ -126,7 +126,7 @@ export default {
       this.$router.push({ name: 'PacbioRunIndex' })
     },
     async provider() {
-      const smrtLinkVersions = this.fetchSmrtLinkVersions()
+      this.fetchSmrtLinkVersions()
       if (this.id === 'new') {
         this.newRun()
       } else if (!this.newRecord) {
