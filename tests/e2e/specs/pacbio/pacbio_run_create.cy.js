@@ -127,7 +127,7 @@ describe('Pacbio Run Create view', () => {
         },
       },
     })
-    cy.intercept('DELETE', '/v1/pacbio/runs/1', { statusCode: 200 }).as('deleteRun')
+    cy.intercept('DELETE', '/v1/pacbio/runs/7', { statusCode: 200 }).as('deleteRun')
     const dataTransfer = new DataTransfer()
 
     cy.visit('#/pacbio/runs')
