@@ -39,7 +39,7 @@
           <pacbioPoolList ref="pacbioPoolList"></pacbioPoolList>
         </traction-col>
         <traction-col>
-          <Plate v-if="currentRun.id" ref="plate" @alert="showAlert"></Plate>
+          <Plate ref="plate" @alert="showAlert"></Plate>
         </traction-col>
       </traction-row>
     </div>
@@ -53,7 +53,7 @@ import pacbioPoolList from '@/components/pacbio/PacbioPoolList'
 import Plate from '@/components/pacbio/PacbioRunPlateItem'
 
 import { createNamespacedHelpers } from 'vuex'
-const { mapGetters, mapState, mapActions } = createNamespacedHelpers('traction/pacbio/runs')
+const { mapActions } = createNamespacedHelpers('traction/pacbio/runs')
 import * as consts from '@/consts/consts'
 
 export default {
@@ -98,10 +98,6 @@ export default {
     currentAction() {
       return this.actions[this.newRecord ? 'create' : 'update']
     },
-    ...mapGetters(['currentRun']),
-    ...mapState({
-      currentRun: (state) => state.currentRun,
-    }),
   },
   created() {
     this.provider()

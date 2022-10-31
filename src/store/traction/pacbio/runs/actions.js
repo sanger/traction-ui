@@ -3,6 +3,8 @@ import * as PacbioRun from '@/api/PacbioRun'
 
 import handleResponse from '@/api/ResponseHelper'
 
+import defaultState from './state'
+
 const splitPosition = (position) => {
   // match() returns [original, row, column] e.g "A10 => ["A10", "A", "10"]
   return position.match(/(\S)(\d+)/).slice(1)
@@ -34,14 +36,22 @@ const setRuns = async ({ commit, getters }) => {
   return { success, errors }
 }
 
+// need to pass resources
+// populates an existing run into state
+// this is not correct. We are mutating state with some data coming from elsewhere
+// we can't be sure what that is
 const newRun = ({ commit, getters }) => {
+
   let run = PacbioRun.build()
   // Set default smrt_link_version_id on current run in the state
+  // this should happen in PacbioRun.build
   const defaultSmrtLinkVersion = getters.defaultSmrtLinkVersion
   run.smrt_link_version_id = defaultSmrtLinkVersion.id
   commit('setCurrentRun', run)
 }
 
+// this will be the next thing to refactor
+// move it to handle response
 const editRun = async ({ commit, getters }, runId) => {
   let request = getters.runRequest
   let promise = request.find({ id: runId, include: 'plate.wells.pools.tube' })

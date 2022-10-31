@@ -34,13 +34,6 @@ describe('PacbioRunInfoEdit', () => {
     runInfo = wrapper.vm
   })
 
-  it('can have mapState', () => {
-    expect(runInfo.sequencingKitBoxBarcode).toBeDefined()
-    expect(runInfo.dnaControlComplexBoxBarcode).toBeDefined()
-    expect(runInfo.comments).toBeDefined()
-    expect(runInfo.systemName).toBeDefined()
-  })
-
   it('can have getters', () => {
     expect(runInfo.currentRun).toBeDefined()
   })

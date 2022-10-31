@@ -8,7 +8,7 @@
         <traction-col>
           <traction-input
             id="run-name"
-            :value="runName"
+            :value="currentRun.name"
             placeholder="Run name"
             type="text"
             classes="w-48"
@@ -23,7 +23,7 @@
         <traction-col>
           <traction-input
             id="sequencing-kit-box-barcode"
-            :value="sequencingKitBoxBarcode"
+            :value="currentRun.sequencing_kit_box_barcode"
             placeholder="Sequencing Kit Box Barcode"
             type="text"
             classes="w-48"
@@ -40,7 +40,7 @@
         <traction-col>
           <traction-input
             id="dna-control-complex-box-barcode"
-            :value="dnaControlComplexBoxBarcode"
+            :value="currentRun.dna_control_complex_box_barcode"
             placeholder="DNA Control Complex Box Barcode"
             type="text"
             classes="w-48"
@@ -56,7 +56,7 @@
           <traction-select
             id="system-name"
             ref="systemName"
-            :value="systemName"
+            :value="currentRun.system_name"
             :options="systemNameOptions"
             title="System Name"
             @change="setSystemName"
@@ -71,7 +71,7 @@
           <traction-select
             id="smrt-link-version"
             ref="smrtLinkVersion"
-            :value="smrtLinkVersionId"
+            :value="currentRun.smrt_link_version_id"
             data-attribute="smrt-link-version"
             :options="smrtLinkVersionSelectOptions"
             title="SMRT Link Version"
@@ -86,7 +86,7 @@
         <traction-col>
           <traction-input
             id="comments"
-            :value="comments"
+            :value="currentRun.comments"
             placeholder="Comments"
             type="text"
             classes="w-48"
@@ -125,15 +125,6 @@ export default {
       )
     },
     ...mapGetters(['currentRun', 'smrtLinkVersionList']),
-    ...mapState({
-      runName: (state) => state.currentRun.name,
-      sequencingKitBoxBarcode: (state) => state.currentRun.sequencing_kit_box_barcode,
-      dnaControlComplexBoxBarcode: (state) => state.currentRun.dna_control_complex_box_barcode,
-      comments: (state) => state.currentRun.comments,
-      uuid: (state) => state.currentRun.uuid,
-      systemName: (state) => state.currentRun.system_name,
-      smrtLinkVersionId: (state) => state.currentRun.smrt_link_version_id,
-    }),
   },
   methods: {
     ...mapMutations([

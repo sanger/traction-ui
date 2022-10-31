@@ -1,5 +1,6 @@
 import Vue from 'vue'
 import { dataToObjectById, populateById } from '@/api/JsonApi'
+import defaultState from './state'
 
 const mutate = (key) => (state, val) => {
   state[key] = val
@@ -61,6 +62,12 @@ const mutations = {
    * @param {Array.{}} smrtLinkVersions The SmrtLinkVersions to populate the store
    */
   populateSmrtLinkVersions: populateById('smrtLinkVersions'),
+
+  // This method clears the editable data in run page
+  clearRunData: (state) => {
+    const new_state = defaultState()
+    Object.assign(state, new_state, { resources: state.resources })
+  },
 }
 
 export default mutations

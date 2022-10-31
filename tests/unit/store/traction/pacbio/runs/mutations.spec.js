@@ -25,9 +25,10 @@ describe('js', () => {
     deleteWell,
     setRuns,
     populateSmrtLinkVersions,
+    clearRunData,
   } = mutations
 
-  const { buildWell } = actions
+  const { buildWell, newRun } = actions
 
   describe('mutate', () => {
     let state
@@ -196,6 +197,34 @@ describe('js', () => {
       populateSmrtLinkVersions(state, smrtLinkVersions)
       // assert result
       expect(state.resources.smrtLinkVersions).toEqual(dataToObjectById({ data: smrtLinkVersions }))
+    })
+  })
+
+  
+  describe('clearRunData', () => {
+    it('clears existing run data', () => {
+      const state = defaultState()
+      
+      const run = Run.build()
+      state.currentRun = run
+
+      expect(state).toEqual({
+        runs: {},
+        currentRun: run,
+        resources: {
+          smrtLinkVersions:{},
+        }
+      })
+
+     // get this test working add method
+      clearRunData(state)
+      expect(state).toEqual({
+        runs: {}, // need to add this but currently it is not an issue
+        currentRun: {},
+        resources: {
+          smrtLinkVersions:{},
+        }
+      })
     })
   })
 })
