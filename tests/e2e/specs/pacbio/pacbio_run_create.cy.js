@@ -33,7 +33,7 @@ describe('Pacbio Run Create view', () => {
         fixture: 'tractionPacbioPools.json',
       },
     )
-    cy.intercept('/v1/pacbio/runs?include=plate.wells.pools.tube', {
+    cy.intercept('/v1/pacbio/runs', {
       fixture: 'tractionPacbioRuns.json',
     })
   })

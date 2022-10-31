@@ -1,6 +1,6 @@
 describe('Pacbio Runs view', () => {
   it('Visits the pacbio runs url', () => {
-    cy.intercept('/v1/pacbio/runs?include=plate.wells.pools.tube', {
+    cy.intercept('/v1/pacbio/runs', {
       fixture: 'tractionPacbioRuns.json',
     })
     cy.visit('#/pacbio/runs')
