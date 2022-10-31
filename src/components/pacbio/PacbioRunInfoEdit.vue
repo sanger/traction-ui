@@ -100,7 +100,7 @@
 
 <script>
 import { createNamespacedHelpers } from 'vuex'
-const { mapGetters, mapState, mapMutations } = createNamespacedHelpers('traction/pacbio/runs')
+const { mapGetters, mapMutations } = createNamespacedHelpers('traction/pacbio/runs')
 
 export default {
   name: 'PacbioRunInfoEdit',

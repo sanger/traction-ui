@@ -3,8 +3,6 @@ import * as PacbioRun from '@/api/PacbioRun'
 
 import handleResponse from '@/api/ResponseHelper'
 
-import defaultState from './state'
-
 const splitPosition = (position) => {
   // match() returns [original, row, column] e.g "A10 => ["A10", "A", "10"]
   return position.match(/(\S)(\d+)/).slice(1)
@@ -41,7 +39,6 @@ const setRuns = async ({ commit, getters }) => {
 // this is not correct. We are mutating state with some data coming from elsewhere
 // we can't be sure what that is
 const newRun = ({ commit, getters }) => {
-
   let run = PacbioRun.build()
   // Set default smrt_link_version_id on current run in the state
   // this should happen in PacbioRun.build

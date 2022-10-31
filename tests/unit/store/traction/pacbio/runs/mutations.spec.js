@@ -28,7 +28,7 @@ describe('js', () => {
     clearRunData,
   } = mutations
 
-  const { buildWell, newRun } = actions
+  const { buildWell } = actions
 
   describe('mutate', () => {
     let state
@@ -200,11 +200,10 @@ describe('js', () => {
     })
   })
 
-  
   describe('clearRunData', () => {
     it('clears existing run data', () => {
       const state = defaultState()
-      
+
       const run = Run.build()
       state.currentRun = run
 
@@ -212,18 +211,18 @@ describe('js', () => {
         runs: {},
         currentRun: run,
         resources: {
-          smrtLinkVersions:{},
-        }
+          smrtLinkVersions: {},
+        },
       })
 
-     // get this test working add method
+      // get this test working add method
       clearRunData(state)
       expect(state).toEqual({
         runs: {}, // need to add this but currently it is not an issue
         currentRun: {},
         resources: {
-          smrtLinkVersions:{},
-        }
+          smrtLinkVersions: {},
+        },
       })
     })
   })
