@@ -18,7 +18,7 @@
       </traction-row>
       <traction-row>
         <traction-col>
-          <label for="default-sequencing-kit-box-barcode">Sequencing Kit Box Barcode:</label>
+          <label for="sequencing-kit-box-barcode">Sequencing Kit Box Barcode:</label>
         </traction-col>
         <traction-col>
           <traction-input
@@ -33,9 +33,7 @@
       </traction-row>
       <traction-row>
         <traction-col>
-          <label for="default-dna-control-complex-box-barcode"
-            >DNA Control Complex Box Barcode:</label
-          >
+          <label for="dna-control-complex-box-barcode">DNA Control Complex Box Barcode:</label>
         </traction-col>
         <traction-col>
           <traction-input
@@ -50,7 +48,7 @@
       </traction-row>
       <traction-row>
         <traction-col>
-          <label for="default-system-name">System Name:</label>
+          <label for="system-name">System Name:</label>
         </traction-col>
         <traction-col>
           <traction-select
@@ -81,7 +79,7 @@
       </traction-row>
       <traction-row>
         <traction-col>
-          <label for="default-comments">Comments:</label>
+          <label for="comments">Comments:</label>
         </traction-col>
         <traction-col>
           <traction-input

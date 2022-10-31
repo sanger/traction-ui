@@ -50,17 +50,35 @@ describe('PacbioRunInfoEdit', () => {
   })
 
   describe('form inputs', () => {
+    it('has a Run Name input', () => {
+      const name = 'run-name'
+      expect(wrapper.find('label[for="' + name + '"]').exists()).toBe(true)
+      expect(wrapper.find('input[id="' + name + '"]').exists()).toBe(true)
+    })
     it('has a Sequencing Kit Box Barcode input', () => {
-      expect(wrapper.find('#sequencing-kit-box-barcode')).toBeDefined()
+      const name = 'sequencing-kit-box-barcode'
+      expect(wrapper.find('label[for="' + name + '"]').exists()).toBe(true)
+      expect(wrapper.find('input[id="' + name + '"]').exists()).toBe(true)
     })
     it('has a DNA Control Complex Box Barcode input', () => {
-      expect(wrapper.find('#dna-control-complex-box-barcode')).toBeDefined()
+      const name = 'dna-control-complex-box-barcode'
+      expect(wrapper.find('label[for="' + name + '"]').exists()).toBe(true)
+      expect(wrapper.find('input[id="' + name + '"]').exists()).toBe(true)
     })
-    it('has a System Name input', () => {
-      expect(wrapper.find('#system-name')).toBeDefined()
+    it('has a System Name select', () => {
+      const name = 'system-name'
+      expect(wrapper.find('label[for="' + name + '"]').exists()).toBe(true)
+      expect(wrapper.find('select[id="' + name + '"]').exists()).toBe(true)
+    })
+    it('has a SMRT Link Version select', () => {
+      const name = 'smrt-link-version'
+      expect(wrapper.find('label[for="' + name + '"]').exists()).toBe(true)
+      expect(wrapper.find('select[id="' + name + '"]').exists()).toBe(true)
     })
     it('has a Comments input', () => {
-      expect(wrapper.find('#comments')).toBeDefined()
+      const name = 'comments'
+      expect(wrapper.find('label[for="' + name + '"]').exists()).toBe(true)
+      expect(wrapper.find('input[id="' + name + '"]').exists()).toBe(true)
     })
   })
 
