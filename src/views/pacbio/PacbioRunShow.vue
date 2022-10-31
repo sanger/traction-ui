@@ -53,7 +53,7 @@ import pacbioPoolList from '@/components/pacbio/PacbioPoolList'
 import Plate from '@/components/pacbio/PacbioRunPlateItem'
 
 import { createNamespacedHelpers } from 'vuex'
-const { mapActions, mapGetters } = createNamespacedHelpers('traction/pacbio/runs')
+const { mapGetters, mapState, mapActions } = createNamespacedHelpers('traction/pacbio/runs')
 import * as consts from '@/consts/consts'
 
 export default {
@@ -98,6 +98,10 @@ export default {
     currentAction() {
       return this.actions[this.newRecord ? 'create' : 'update']
     },
+    ...mapGetters(['currentRun']),
+    ...mapState({
+      currentRun: (state) => state.currentRun,
+    }),
   },
   created() {
     this.provider()
@@ -120,24 +124,18 @@ export default {
       this.newRun()
       this.showAlert('Run has been reset', 'success', 'run-validation-message')
     },
-    ...mapActions(['createRun', 'updateRun', 'editRun', 'newRun', 'fetchSmrtLinkVersions']),
-    ...mapGetters(['currentRun']),
+    ...mapActions(['createRun', 'updateRun', 'editRun', 'newRun']),
     redirectToRuns() {
       this.$router.push({ name: 'PacbioRunIndex' })
     },
     async provider() {
-      this.fetchSmrtLinkVersions()
+      await this.$store.dispatch('traction/pacbio/runs/fetchSmrtLinkVersions')
       if (this.id === 'new') {
         this.newRun()
       } else if (!this.newRecord) {
         await this.editRun(parseInt(this.$route.params.id))
       } else {
         this.$router.push({ name: '404' })
-      }
-    },
-    alertOnFail({ success, errors }) {
-      if (!success) {
-        this.showAlert(errors, 'danger')
       }
     },
   },
