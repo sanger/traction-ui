@@ -11,13 +11,18 @@ describe('"TractionInput.vue"', () => {
   }
 
   it('displays the label and text box', () => {
-    const wrapper = buildWrapper({title:"Label Text"})
+    const wrapper = buildWrapper({ title: 'Label Text' })
     expect(wrapper.text()).toContain('Label Text')
     expect(wrapper.find('input').exists()).toBeTruthy()
   })
 
+  it('displays the placeholder text', () => {
+    const wrapper = buildWrapper({ placeholder: 'Place holder' })
+    expect(wrapper.find('input').element.placeholder).toEqual('Place holder')
+  })
+
   it('sets default value for type string', () => {
-    const wrapper = buildWrapper({ type:'text', value: "test" })
+    const wrapper = buildWrapper({ type: 'text', value: 'test' })
     expect(wrapper.find('input[type=text]').element.value).toEqual('test')
   })
 
@@ -27,17 +32,18 @@ describe('"TractionInput.vue"', () => {
   })
 
   it('emits the value', async () => {
-    const wrapper = buildWrapper({type:'number'})
+    const wrapper = buildWrapper({ type: 'number' })
     await wrapper.find('input').setValue('10000')
     expect(wrapper.emitted().input).toEqual([['10000']])
   })
+
   it('sets min,max with given value for type number', () => {
-    const wrapper = buildWrapper({ type: 'number', value: 10 ,min:4, max:10 })
+    const wrapper = buildWrapper({ type: 'number', value: 10, min: 4, max: 10 })
     expect(wrapper.find('input[type=number]').element.min).toEqual('4')
     expect(wrapper.find('input[type=number]').element.max).toEqual('10')
   })
 
-  it("updates the v-model value when changing the input value, ", () => {
+  it('updates the v-model value when changing the input value, ', () => {
     var comp = mount({
       template: '<div> <traction-input v-model="test"></traction-input> </div>',
       components: { 'traction-input': TractionInput },
@@ -51,7 +57,7 @@ describe('"TractionInput.vue"', () => {
     expect(comp.vm.test).toBe('Test value')
   })
 
-  it('updates the input when changing the v-model value externally,',  async() => {
+  it('updates the input when changing the v-model value externally,', async () => {
     var wrapper = mount({
       template: '<div> <traction-input :value="test"></traction-input> </div>',
       components: { 'traction-input': TractionInput },
@@ -61,7 +67,7 @@ describe('"TractionInput.vue"', () => {
     })
     const textInput = wrapper.find('input')
     expect(textInput.element.value).toBe('')
-    await wrapper.setData({ test:'New Test value' })
+    await wrapper.setData({ test: 'New Test value' })
     expect(textInput.element.value).toBe('New Test value')
   })
 })
