@@ -3,8 +3,8 @@
     <label v-if="title">{{ title }}</label>
     <input
       :id="id"
-      v-bind="$attrs" 
-      :value="value" 
+      v-bind="$attrs"
+      :value="value"
       :data-attribute="dataAttribute"
       :class="`w-full border border-gray-300 p-2 rounded-md focus:ring-sdb-100 focus:border-sdb-100 disabled:opacity-75 disabled:cursor-not-allowed${classes}`"
       @input="input($event)"
