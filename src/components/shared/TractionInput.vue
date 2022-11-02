@@ -6,6 +6,7 @@
    - v-bind="$attrs" in <input> is to support fallthrough attributes to ensure that all recieving components props 
       is passed to the enclosed html <input> component. This allows to use this component as a normal html <input> 
       element by passing in all props allowed in <input> to <traction-input>
+     The $attrs object includes all attributes that are not declared by the component's props
   - @input - On input, emit its own custom input event with the new value
 -->
 
