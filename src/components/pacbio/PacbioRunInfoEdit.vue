@@ -18,7 +18,7 @@
       </traction-row>
       <traction-row>
         <traction-col>
-          <label for="default-sequencing-kit-box-barcode">Sequencing Kit Box Barcode:</label>
+          <label for="sequencing-kit-box-barcode">Sequencing Kit Box Barcode:</label>
         </traction-col>
         <traction-col>
           <traction-input
@@ -33,9 +33,7 @@
       </traction-row>
       <traction-row>
         <traction-col>
-          <label for="default-dna-control-complex-box-barcode"
-            >DNA Control Complex Box Barcode:</label
-          >
+          <label for="dna-control-complex-box-barcode">DNA Control Complex Box Barcode:</label>
         </traction-col>
         <traction-col>
           <traction-input
@@ -50,7 +48,7 @@
       </traction-row>
       <traction-row>
         <traction-col>
-          <label for="default-system-name">System Name:</label>
+          <label for="system-name">System Name:</label>
         </traction-col>
         <traction-col>
           <traction-select
@@ -71,16 +69,17 @@
           <traction-select
             id="smrt-link-version"
             ref="smrtLinkVersion"
-            v-model="selectedSmrtLinkVersionId"
+            :value="smrtLinkVersionId"
             data-attribute="smrt-link-version"
             :options="smrtLinkVersionSelectOptions"
             title="SMRT Link Version"
+            @change="setSmrtLinkVersionId"
           />
         </traction-col>
       </traction-row>
       <traction-row>
         <traction-col>
-          <label for="default-comments">Comments:</label>
+          <label for="comments">Comments:</label>
         </traction-col>
         <traction-col>
           <traction-input
@@ -108,6 +107,7 @@ export default {
       systemNameOptions: ['Sequel I', 'Sequel II', 'Sequel IIe'],
     }
   },
+  // A lot of the below could be improved. Can we use the store?
   computed: {
     smrtLinkVersionList() {
       return Object.values(this.$store.getters['traction/pacbio/runCreate/smrtLinkVersionList'])
@@ -119,30 +119,10 @@ export default {
         this.$store.getters['traction/pacbio/runCreate/smrtLinkVersionList'],
       ).map(({ id, name }) => ({ value: id, text: name }))
     },
-    defaultSmrtLinkVersion() {
-      // Returns the default smrt link version object
-      return this.smrtLinkVersionList.find((version) => version.default)
-    },
-    runSmrtLinkVersion() {
-      // Returns the smrt link version object of the run if the current run has
-      // a valid smrt_link_version_id; null otherwise.
-      const id = this.smrtLinkVersionId
-      return this.smrtLinkVersionList.find((version) => version.id == id)
-    },
     selectedSmrtLinkVersion() {
-      // Returns the smrt link version object of the run or the default smrt
-      // link version object, in that order.
-      return this.runSmrtLinkVersion || this.defaultSmrtLinkVersion
-    },
-    selectedSmrtLinkVersionId: {
-      get() {
-        // Returns the id of the smrt link version of the run or the default.
-        return this.selectedSmrtLinkVersion?.id
-      },
-      set(value) {
-        // Sets the id of the smrt link version of the run after user selection.
-        this.setSmrtLinkVersionId(value)
-      },
+      return Object.values(
+        this.$store.getters['traction/pacbio/runCreate/smrtLinkVersionList'],
+      ).find((version) => version.id == this.currentRun.smrt_link_version_id)
     },
     ...mapGetters(['currentRun']),
     ...mapState({
@@ -152,12 +132,8 @@ export default {
       comments: (state) => state.currentRun.comments,
       uuid: (state) => state.currentRun.uuid,
       systemName: (state) => state.currentRun.system_name,
-      // smrtLinkVersion: (state) => state.currentRun.smrt_link_version,
       smrtLinkVersionId: (state) => state.currentRun.smrt_link_version_id,
     }),
-  },
-  created() {
-    this.provider()
   },
   methods: {
     ...mapMutations([
@@ -166,16 +142,12 @@ export default {
       'setComments',
       'setUuid',
       'setSystemName',
-      // 'setSmrtLinkVersion',
       'setSmrtLinkVersionId',
     ]),
     alertOnFail({ success, errors }) {
       if (!success) {
         this.showAlert(errors, 'danger')
       }
-    },
-    async provider() {
-      await this.$store.dispatch('traction/pacbio/runCreate/fetchSmrtLinkVersions')
     },
   },
 }
