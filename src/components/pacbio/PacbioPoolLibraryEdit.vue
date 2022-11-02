@@ -12,7 +12,7 @@
         v-model="tag_id"
         data-type="tag-list"
         :options="tagListOptions"
-        :state="hasErrors('tag_id')"
+        :state="errorsFor('tag_id')?.length > 0"
         class="tag-id"
       ></traction-select>
       <traction-invalid-feedback data-attribute="tag-id-error">
@@ -20,60 +20,60 @@
       </traction-invalid-feedback>
     </traction-td>
     <traction-td>
-      <traction-input
-        v-model="template_prep_kit_box_barcode"
-        data-attribute="template-prep-kit-box-barcode"
-        :value="template_prep_kit_box_barcode"
-        placeholder="Template Prep Kit Box Barcode"
-        type="text"
-        title="Template Prep Kit Box Barcode"
-        :state="hasErrors('template_prep_kit_box_barcode')"
-      />
-      <traction-invalid-feedback data-attribute="template-prep-kit-box-barcode-error">
-        {{ errorsFor('template_prep_kit_box_barcode') }}
-      </traction-invalid-feedback>
+      <traction-field-error
+        data-attribute="template-prep-kit-box-barcode-error"
+        :error="errorsFor('template_prep_kit_box_barcode')"
+        :with-icon="isValidationExists('template_prep_kit_box_barcode')"
+      >
+        <traction-input
+          v-model="template_prep_kit_box_barcode"
+          data-attribute="template-prep-kit-box-barcode"
+          :value="template_prep_kit_box_barcode"
+          placeholder="Template Prep Kit Box Barcode"
+        />
+      </traction-field-error>
     </traction-td>
     <traction-td>
-      <traction-input
-        v-model="volume"
-        data-attribute="volume"
-        :value="volume"
-        placeholder="Volume"
-        type="text"
-        title="Volume"
-        :state="hasErrors('volume')"
-      />
-      <traction-invalid-feedback data-attribute="volume-error">
-        {{ errorsFor('volume') }}
-      </traction-invalid-feedback>
+      <traction-field-error
+        data-attribute="volume-error"
+        :error="errorsFor('volume')"
+        :with-icon="isValidationExists('volume')"
+      >
+        <traction-input
+          v-model="volume"
+          data-attribute="volume"
+          :value="volume"
+          placeholder="Volume"
+        />
+      </traction-field-error>
     </traction-td>
     <traction-td>
-      <traction-input
-        v-model="concentration"
-        data-attribute="concentration"
-        :value="concentration"
-        placeholder="Concentration"
-        type="text"
-        title="Concentration"
-        :state="hasErrors('concentration')"
-      />
-      <traction-invalid-feedback data-attribute="concentration-error">
-        {{ errorsFor('concentration') }}
-      </traction-invalid-feedback>
+      <traction-field-error
+        data-attribute="concentration-error"
+        :error="errorsFor('concentration')"
+        :with-icon="isValidationExists('concentration')"
+      >
+        <traction-input
+          v-model="concentration"
+          data-attribute="concentration"
+          :value="concentration"
+          placeholder="Concentration"
+        />
+      </traction-field-error>
     </traction-td>
     <traction-td>
-      <traction-input
-        v-model="insert_size"
-        data-attribute="insert-size"
-        :value="insert_size"
-        placeholder="Insert Size"
-        type="text"
-        title="Insert Size"
-        :state="hasErrors('insert_size')"
-      />
-      <traction-invalid-feedback data-attribute="insert-size-error">
-        {{ errorsFor('insert_size') }}
-      </traction-invalid-feedback>
+      <traction-field-error
+        data-attribute="insert-size-error"
+        :error="errorsFor('insert_size')"
+        :with-icon="isValidationExists('insert_size')"
+      >
+        <traction-input
+          v-model="insert_size"
+          data-attribute="insert-size"
+          :value="insert_size"
+          placeholder="Insert Size"
+        />
+      </traction-field-error>
     </traction-td>
   </traction-tr>
 </template>
@@ -144,14 +144,15 @@ export default {
   methods: {
     ...mapMutations(['updateLibrary']),
     ...mapActions(['applyTags']),
-    hasErrors(attribute) {
-      if (!this.library.errors) {
-        return null
-      }
-      return !this.library.errors[attribute]
-    },
+    //return any errors exist in library for the given attribute
     errorsFor(attribute) {
-      return this.library.errors && this.library.errors[attribute]
+      return this.library?.errors?.[attribute]
+    },
+    attributeValueExists(attribute) {
+      return this.library?.[attribute]?.length > 0
+    },
+    isValidationExists(attribute) {
+      return this.attributeValueExists(attribute) || this.errorsFor(attribute)?.length > 0
     },
   },
 }

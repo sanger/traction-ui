@@ -46,6 +46,7 @@ import TractionTubeWithContainerMaterials from './tractionTubeWithContainerMater
 import TractionTubesWithPacbioPools from './tractionTubesWithPacbioPools'
 import TractionPlates from './tractionPlates'
 import AutoTagStore from './autoTagStore'
+import TractionPacbioSmrtLinkVersions from './tractionPacbioSmrtLinkVersions'
 
 export default {
   CreateChip,
@@ -96,4 +97,5 @@ export default {
   TractionTubesWithPacbioPools,
   TractionPlates,
   AutoTagStore,
+  TractionPacbioSmrtLinkVersions,
 }

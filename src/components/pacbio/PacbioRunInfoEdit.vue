@@ -11,15 +11,14 @@
             :value="runName"
             placeholder="Run name"
             type="text"
-            width="48"
-            title="Run Name"
-            readonly
+            classes="w-48"
+            disabled
           />
         </traction-col>
       </traction-row>
       <traction-row>
         <traction-col>
-          <label for="default-sequencing-kit-box-barcode">Sequencing Kit Box Barcode:</label>
+          <label for="sequencing-kit-box-barcode">Sequencing Kit Box Barcode:</label>
         </traction-col>
         <traction-col>
           <traction-input
@@ -27,17 +26,14 @@
             :value="sequencingKitBoxBarcode"
             placeholder="Sequencing Kit Box Barcode"
             type="text"
-            width="48"
-            title="Sequencing Kit Box Barcode"
-            @change="setSequencingKitBoxBarcode"
+            classes="w-48"
+            @input="setSequencingKitBoxBarcode"
           />
         </traction-col>
       </traction-row>
       <traction-row>
         <traction-col>
-          <label for="default-dna-control-complex-box-barcode"
-            >DNA Control Complex Box Barcode:</label
-          >
+          <label for="dna-control-complex-box-barcode">DNA Control Complex Box Barcode:</label>
         </traction-col>
         <traction-col>
           <traction-input
@@ -45,15 +41,14 @@
             :value="dnaControlComplexBoxBarcode"
             placeholder="DNA Control Complex Box Barcode"
             type="text"
-            width="48"
-            title="DNA Control Complex Box Barcode"
-            @change="setDNAControlComplexBoxBarcode"
+            classes="w-48"
+            @input="setDNAControlComplexBoxBarcode"
           />
         </traction-col>
       </traction-row>
       <traction-row>
         <traction-col>
-          <label for="default-system-name">System Name:</label>
+          <label for="system-name">System Name:</label>
         </traction-col>
         <traction-col>
           <traction-select
@@ -74,17 +69,17 @@
           <traction-select
             id="smrt-link-version"
             ref="smrtLinkVersion"
-            :value="smrtLinkVersion"
+            :value="smrtLinkVersionId"
             data-attribute="smrt-link-version"
-            :options="smrtLinkOptions"
+            :options="smrtLinkVersionSelectOptions"
             title="SMRT Link Version"
-            @change="setSmrtLinkVersion"
+            @change="setSmrtLinkVersionId"
           />
         </traction-col>
       </traction-row>
       <traction-row>
         <traction-col>
-          <label for="default-comments">Comments:</label>
+          <label for="comments">Comments:</label>
         </traction-col>
         <traction-col>
           <traction-input
@@ -92,9 +87,8 @@
             :value="comments"
             placeholder="Comments"
             type="text"
-            width="48"
-            title="Comments"
-            @change="setComments"
+            classes="w-48"
+            @input="setComments"
           />
         </traction-col>
       </traction-row>
@@ -111,10 +105,25 @@ export default {
   data() {
     return {
       systemNameOptions: ['Sequel I', 'Sequel II', 'Sequel IIe'],
-      smrtLinkOptions: ['v10'],
     }
   },
+  // A lot of the below could be improved. Can we use the store?
   computed: {
+    smrtLinkVersionList() {
+      return Object.values(this.$store.getters['traction/pacbio/runCreate/smrtLinkVersionList'])
+    },
+    smrtLinkVersionSelectOptions() {
+      // Returns an array of objects with value and text properties to make
+      // the options of smrt-link-version select drop-down list.
+      return Object.values(
+        this.$store.getters['traction/pacbio/runCreate/smrtLinkVersionList'],
+      ).map(({ id, name }) => ({ value: id, text: name }))
+    },
+    selectedSmrtLinkVersion() {
+      return Object.values(
+        this.$store.getters['traction/pacbio/runCreate/smrtLinkVersionList'],
+      ).find((version) => version.id == this.currentRun.smrt_link_version_id)
+    },
     ...mapGetters(['currentRun']),
     ...mapState({
       runName: (state) => state.currentRun.name,
@@ -123,7 +132,7 @@ export default {
       comments: (state) => state.currentRun.comments,
       uuid: (state) => state.currentRun.uuid,
       systemName: (state) => state.currentRun.system_name,
-      smrtLinkVersion: (state) => state.currentRun.smrt_link_version,
+      smrtLinkVersionId: (state) => state.currentRun.smrt_link_version_id,
     }),
   },
   methods: {
@@ -133,8 +142,13 @@ export default {
       'setComments',
       'setUuid',
       'setSystemName',
-      'setSmrtLinkVersion',
+      'setSmrtLinkVersionId',
     ]),
+    alertOnFail({ success, errors }) {
+      if (!success) {
+        this.showAlert(errors, 'danger')
+      }
+    },
   },
 }
 </script>

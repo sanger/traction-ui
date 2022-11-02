@@ -5,7 +5,7 @@
       :value="chip.barcode"
       placeholder="Chip barcode"
       type="text"
-      @change="setBarcode"
+      @input="setBarcode"
     />
     <flowcell
       v-for="(flowcell, index) in chip.flowcells"

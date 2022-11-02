@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="w-full flex flex-col">
     <traction-form-group
       label="Filter"
       label-cols-sm="1"
@@ -7,18 +7,19 @@
       label-for="filterInput"
       class="mb-0"
     >
-      <traction-input-group>
+      <div class="w-full flex flex-row gap-x-2">
         <traction-input
           id="filterInput"
           v-model="filter"
-          type="search"
           placeholder="Type to Search"
+          type="search"
+          class="w-full"
         >
         </traction-input>
         <traction-input-group-append>
           <traction-button :disabled="!filter" @click="filter = ''">Clear</traction-button>
         </traction-input-group-append>
-      </traction-input-group>
+      </div>
     </traction-form-group>
     <br />
 
@@ -145,7 +146,7 @@ export default {
       filter: null,
       sortBy: 'created_at',
       sortDesc: true,
-      perPage: 6,
+      perPage: 24,
       currentPage: 1,
     }
   },

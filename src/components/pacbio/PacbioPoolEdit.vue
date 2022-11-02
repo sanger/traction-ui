@@ -22,7 +22,7 @@
         </div>
         <div>
           <traction-sub-section title="Pool information" class="py-6">
-            <div class="grid gap-5 grid-cols-6 mb-10 text-sm" data-type="pool-edit">
+            <div class="grid gap-5 grid-cols-6 mb-10 text-sm min-h-32" data-type="pool-edit">
               <label> Auto tagging</label>
               <label v-if="!!tubeItem.barcode"> Pool Barcode </label>
               <label v-else></label>
@@ -41,29 +41,21 @@
                 v-model="poolItem.template_prep_kit_box_barcode"
                 data-attribute="template-prep-kit-box-barcode"
                 :value="poolItem.template_prep_kit_box_barcode"
-                type="text"
-                title="Template Prep Kit Box Barcode"
               />
               <traction-input
                 v-model="poolItem.volume"
                 data-attribute="volume"
                 :value="poolItem.volume"
-                type="text"
-                title="Volume"
               />
               <traction-input
                 v-model="poolItem.concentration"
                 data-attribute="concentration"
                 :value="poolItem.concentration"
-                type="text"
-                title="Concentration"
               />
               <traction-input
                 v-model="poolItem.insert_size"
                 data-attribute="insert-size"
                 :value="poolItem.insert_size"
-                type="text"
-                title="Insert Size"
               />
             </div>
           </traction-sub-section>
@@ -80,7 +72,7 @@
         @click="create()"
       >
         <span class="button-text">Create Pool </span>
-        <traction-spinner v-show="busy" small></traction-spinner>
+        <traction-spinner v-show="busy"></traction-spinner>
       </traction-button>
       <traction-button
         v-if="persisted"
@@ -90,7 +82,7 @@
         @click="update()"
       >
         <span class="button-text">Update Pool </span>
-        <traction-spinner v-show="busy" small></traction-spinner>
+        <traction-spinner v-show="busy"></traction-spinner>
       </traction-button>
     </div>
   </div>

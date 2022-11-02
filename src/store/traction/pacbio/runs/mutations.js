@@ -19,13 +19,22 @@ const mutations = {
   setDNAControlComplexBoxBarcode: mutateRun('dna_control_complex_box_barcode'),
   setComments: mutateRun('comments'),
   setSystemName: mutateRun('system_name'),
-  setSmrtLinkVersion: mutateRun('smrt_link_version'),
+  setSmrtLinkVersionId: mutateRun('smrt_link_version_id'),
   setDefaultBindingKitBoxBarcode: mutateWellDefaults('binding_kit_box_barcode'),
   setDefaultMovieTime: mutateWellDefaults('movie_time'),
   setDefaultGenerateHifi: mutateWellDefaults('generate_hifi'),
   setDefaultCcsAnalysisOutput: mutateWellDefaults('ccs_analysis_output'),
   setDefaultPreExtensionTime: mutateWellDefaults('pre_extension_time'),
-  setDefaultLoadingTarget: mutateWellDefaults('loading_target_p1_plus_p2'),
+  setDefaultLoadingTargetP1PlusP2: mutateWellDefaults('loading_target_p1_plus_p2'),
+  setDefaultOnPlateLoadingConcentration: mutateWellDefaults('on_plate_loading_concentration'),
+  setDefaultCcsAnalysisOutputIncludeKineticsInformation: mutateWellDefaults(
+    'ccs_analysis_output_include_kinetics_information',
+  ),
+  setDefaultCcsAnalysisOutputIncludeLowQualityReads: mutateWellDefaults(
+    'ccs_analysis_output_include_low_quality_reads',
+  ),
+  setDefaultDemultiplexBarcodes: mutateWellDefaults('demultiplex_barcodes'),
+  setDefaultIncludeFivemcCallsInCpgMotifs: mutateWellDefaults('include_fivemc_calls_in_cpg_motifs'),
 
   createWell(state, well) {
     state.currentRun.plate.wells.push(well)
