@@ -188,7 +188,7 @@ export default {
       this.currentPage = value
     },
     ...mapActions('traction/pacbio/libraries', ['deleteLibraries', 'setLibraries']),
-    ...mapActions('printMyBarcode', ['printJobV2']),
+    ...mapActions('printMyBarcode', ['printJob']),
   },
 }
 </script>

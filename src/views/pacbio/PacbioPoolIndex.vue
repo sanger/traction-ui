@@ -198,7 +198,7 @@ export default {
       this.currentPage = value
     },
     ...mapActions('traction/pacbio/pools', ['setPools']),
-    ...mapActions('printMyBarcode', ['printJobV2']),
+    ...mapActions('printMyBarcode', ['printJob']),
   },
 }
 </script>

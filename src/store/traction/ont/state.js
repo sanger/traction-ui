@@ -11,8 +11,5 @@ export default () => {
       requests: {},
       samples: {},
     },
-    // Imported from the original implementation. Used by PMB V1.
-    // Strong suspicion we're not used
-    labelTemplateId: import.meta.env.VITE_ONT_LABEL_TEMPLATE_ID,
   }
 }

@@ -9,12 +9,6 @@ const saphyr = {
     runs: saphyrRunsModule,
     requests: saphyrRequestsModule,
   },
-  state: {
-    labelTemplateId: import.meta.env.VITE_SAPHYR_LABEL_TEMPLATE_ID,
-  },
-  getters: {
-    labelTemplateId: (state) => state.labelTemplateId,
-  },
 }
 
 export default saphyr

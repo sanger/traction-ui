@@ -168,7 +168,7 @@ export default {
       this.currentPage = value
     },
     ...mapActions('traction/saphyr/tubes', ['deleteLibraries', 'setLibraries']),
-    ...mapActions('printMyBarcode', ['printJobV2']),
+    ...mapActions('printMyBarcode', ['printJob']),
   },
 }
 </script>
