@@ -95,7 +95,7 @@
     ]
   },
   {
-    "name": "printMyBarcodeV2",
+    "name": "printMyBarcode",
     "apiNamespace": "v2",
     "baseURL": "VITE_PRINTMYBARCODE_BASE_URL",
     "resources": [
