@@ -1,8 +1,18 @@
+<!--
+  TractionInput 
+  
+  Renders a custom input tailwind component to display an input field with an optional label 
+   - Title represents the label to be displayed (if required)
+   - v-bind="$attrs" in <input> is to support fallthrough attributes to ensure that all recieving components props 
+      is passed to the enclosed html <input> component. This allows to use this component as a normal html <input> 
+      element by passing in all props allowed in <input> to <traction-input>
+  - @input - On input, emit its own custom input event with the new value
+-->
+
 <template>
   <div class="flex flex-col">
     <label v-if="title">{{ title }}</label>
     <input
-      :id="id"
       v-bind="$attrs"
       :value="value"
       :data-attribute="dataAttribute"
