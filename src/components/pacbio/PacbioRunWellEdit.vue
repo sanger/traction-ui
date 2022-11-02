@@ -1,5 +1,5 @@
 <template>
-  <traction-modal ref="well-modal" size="lg">
+  <traction-modal ref="well-modal" :static="isStatic" size="lg">
     <template #modal-title> Add Pool to Well: {{ position }} </template>
 
     <traction-form>
@@ -8,6 +8,7 @@
           id="movieTime"
           ref="movieTime"
           v-model="currentWell.movie_time"
+          data-attribute="movie-time"
           :options="movieTimeOptions"
         >
         </traction-select>
@@ -15,19 +16,21 @@
 
       <traction-form-group
         id="plateLoading-group"
-        label="On Plate Loading Concentration (mP):"
+        label="On Plate Loading Concentration (pM):"
         label-for="onPlateLoadingConc"
       >
         <traction-input
           id="onPlateLoadingConc"
           ref="onPlateLoadingConc"
           v-model="currentWell.on_plate_loading_concentration"
-          placeholder="On Plate Loading Concentration (mP)"
+          data-attribute="on-plate-loading-concentration"
+          placeholder="On Plate Loading Concentration (pM)"
         >
         </traction-input>
       </traction-form-group>
 
       <traction-form-group
+        v-if="['v10'].includes(selectedSmrtLinkVersion.name)"
         id="generateHiFi-group"
         label="Generate HiFi Reads:"
         label-for="generateHiFi"
@@ -36,6 +39,7 @@
           id="generateHiFi"
           ref="generateHiFi"
           v-model="currentWell.generate_hifi"
+          data-attribute="generate-hifi"
           :options="generateHifiOptions[currentRun.system_name]"
           @change="updateCCSAnalysisOutput"
         >
@@ -43,6 +47,7 @@
       </traction-form-group>
 
       <traction-form-group
+        v-if="['v10'].includes(selectedSmrtLinkVersion.name)"
         id="ccsAnalysisOutput-group"
         label="CCS Analysis Output - Include Kinetics Information:"
         label-for="ccsAnalysisOutput"
@@ -51,6 +56,7 @@
           id="ccsAnalysisOutput"
           ref="ccsAnalysisOutput"
           v-model="currentWell.ccs_analysis_output"
+          data-attribute="ccs-analysis-output"
           :options="ccsAnalysisOutputOptions"
         >
         </traction-select>
@@ -65,6 +71,7 @@
           id="preExtensionTime"
           ref="preExtensionTime"
           v-model="currentWell.pre_extension_time"
+          data-attribute="pre-extension-time"
           placeholder="Pre-extension time"
         >
         </traction-input>
@@ -79,6 +86,7 @@
           id="bindingKitBoxBarcode"
           ref="bindingKitBoxBarcode"
           v-model="currentWell.binding_kit_box_barcode"
+          data-attribute="binding-kit-box-barcode"
           placeholder="Binding Kit Box Barcode"
         >
         </traction-input>
@@ -92,15 +100,72 @@
           id="loadingTarget"
           ref="loadingTarget"
           v-model="currentWell.loading_target_p1_plus_p2"
+          data-attribute="loading-target-p1-plus-p2"
           placeholder="Adaptive loading disabled - Add loading target to enable"
           type="number"
-          :min="0"
-          :max="1"
-          :step="0.05"
+          min="0"
+          max="1"
+          step="0.05"
           lazy-formatter
           :formatter="formatLoadingTargetValue"
         >
         </traction-input>
+      </traction-form-group>
+
+      <traction-form-group
+        v-if="['v11'].includes(selectedSmrtLinkVersion.name)"
+        label="CCS Output Include Kinetics Information"
+        label-for="ccs-analysis-output-include-kinetics-information"
+      >
+        <traction-select
+          id="ccs-analysis-output-include-kinetics-information"
+          v-model="currentWell.ccs_analysis_output_include_kinetics_information"
+          :options="ccsAnalysisOutputOptions"
+          data-attribute="ccs-analysis-output-include-kinetics-information"
+        >
+        </traction-select>
+      </traction-form-group>
+
+      <traction-form-group
+        v-if="['v11'].includes(selectedSmrtLinkVersion.name)"
+        label="CCS Analysis Output Include Low Quality Reads"
+        label-for="ccs-analysis-output-include-low-quality-reads"
+      >
+        <traction-select
+          id="ccs-analysis-output-include-low-quality-reads"
+          v-model="currentWell.ccs_analysis_output_include_low_quality_reads"
+          :options="ccsAnalysisOutputOptions"
+          data-attribute="ccs-analysis-output-include-low-quality-reads"
+        >
+        </traction-select>
+      </traction-form-group>
+
+      <traction-form-group
+        v-if="['v11'].includes(selectedSmrtLinkVersion.name)"
+        label="Include 5mc Calls In CpG Motifs"
+        label-for="include-fivemc-calls-in-cpg-motifs"
+      >
+        <traction-select
+          id="include-fivemc-calls-in-cpg-motifs"
+          v-model="currentWell.include_fivemc_calls_in_cpg_motifs"
+          :options="ccsAnalysisOutputOptions"
+          data-attribute="include-fivemc-calls-in-cpg-motifs"
+        >
+        </traction-select>
+      </traction-form-group>
+
+      <traction-form-group
+        v-if="['v11'].includes(selectedSmrtLinkVersion.name)"
+        label="Demultiplex Barcodes"
+        label-for="demultiplex-barcodes"
+      >
+        <traction-select
+          id="demultiplex-barcodes"
+          v-model="currentWell.demultiplex_barcodes"
+          :options="generateHifiOptions[currentRun.system_name]"
+          data-attribute="demultiplex-barcodes"
+        >
+        </traction-select>
       </traction-form-group>
     </traction-form>
 
@@ -122,7 +187,7 @@
             ref="poolBarcode"
             :value="`${row.item.barcode}`"
             placeholder="Pool Barcode"
-            @change="updatePoolBarcode(row, $event)"
+            @input="updatePoolBarcode(row, $event)"
           >
           </traction-input>
 
@@ -152,6 +217,8 @@
 </template>
 
 <script>
+// There is a lot of duplication between this component and PacbioRunWellEdit.
+// A lot of it could be moved to the store
 import { mapMutations, mapGetters, mapActions } from 'vuex'
 
 export default {
@@ -161,6 +228,18 @@ export default {
       type: [String],
       required: true,
     },
+    /* 
+      we need this as by default static is false
+      which means we can't test it.
+      but when static is true it is displayed on top
+      of the DOM so you can't see it
+      Better to test in e2e or just get rid of the modal
+      my preferred route as modals are awful
+    */
+    isStatic: {
+      type: Boolean,
+      default: false,
+    },
   },
   data() {
     return {
@@ -168,6 +247,7 @@ export default {
       action: {},
       movieTimeOptions: [
         { text: 'Movie Time', value: '', disabled: true },
+        '10.0',
         '15.0',
         '20.0',
         '24.0',
@@ -200,6 +280,11 @@ export default {
   computed: {
     ...mapGetters('traction/pacbio/runs', ['currentRun', 'well']),
     ...mapGetters('traction/pacbio/pools', ['poolByBarcode']),
+    selectedSmrtLinkVersion() {
+      return Object.values(
+        this.$store.getters['traction/pacbio/runCreate/smrtLinkVersionList'],
+      ).find((version) => version.id == this.currentRun.smrt_link_version_id)
+    },
   },
   methods: {
     addRow() {

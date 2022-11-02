@@ -14,8 +14,8 @@ const ReceptionForms = [
         attribute: 'estimate_of_gb_required',
         componentProps: {
           type: 'number',
-          step: 1,
-          minimum: 0,
+          step: '1',
+          min: '0',
         },
       },
       {
@@ -24,8 +24,8 @@ const ReceptionForms = [
         attribute: 'number_of_smrt_cells',
         componentProps: {
           type: 'number',
-          step: 1,
-          minimum: 0,
+          step: '1',
+          min: '0',
         },
       },
     ],
@@ -47,14 +47,13 @@ const ReceptionForms = [
         attribute: 'number_of_flowcells',
         componentProps: {
           type: 'number',
-          step: 1,
-          minimum: 0,
+          step: '1',
+          min: '0',
         },
       },
     ],
   },
 ]
-
 const defaultRequestOptions = () => ({
   library_type: undefined,
   cost_code: null,

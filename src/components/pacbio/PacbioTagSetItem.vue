@@ -3,8 +3,8 @@
     <details v-if="selectedTagSet.id" class="tag-set-item mt-2">
       <summary data-attribute="tag-set-name" class="tag-set-name">
         {{ tagSetName }}
-        <b-badge class="bg-sp rounded-md text-white text-sm ml-2 px-2 py-1"
-          >{{ tagCount }} tags</b-badge
+        <traction-tag class="bg-sp rounded-md text-white text-sm ml-2 px-2 py-1"
+          >{{ tagCount }} tags</traction-tag
         >
       </summary>
       <div data-type="tag-set-item" class="wrapper flex-wrap p-4">

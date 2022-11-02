@@ -45,10 +45,9 @@
               id="number-of-labels"
               v-model="form.selectedNumberOfLabels"
               type="number"
-              :min="1"
-              :max="9"
+              min="1"
+              max="9"
               placeholder="Please enter a number"
-              required
             ></traction-input>
           </traction-form-group>
 
@@ -77,10 +76,9 @@
               id="copies"
               v-model="form.copies"
               type="number"
-              :min="1"
-              :max="10"
+              min="1"
+              max="10"
               placeholder="Please select a number"
-              required
             ></traction-input>
           </traction-form-group>
 

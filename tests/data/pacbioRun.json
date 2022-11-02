@@ -11,7 +11,7 @@
         "sequencing_kit_box_barcode": "DM000110086180012312",
         "dna_control_complex_box_barcode": "Lxxxxx10171760012319",
         "system_name": "Sequel II",
-        "smrt_link_version": "v10",
+        "pacbio_smrt_link_version_id": 1,
         "created_at": "10/17/2019 12:56",
         "wellDefaults": {
           "binding_kit_box_barcode": "",
@@ -19,7 +19,12 @@
           "generate_hifi": "In SMRT Link",
           "loading_target_p1_plus_p2": 0.85,
           "movie_time": "",
-          "pre_extension_time": 2
+          "pre_extension_time": 2,
+          "on_plate_loading_concentration": "",
+          "ccs_analysis_output_include_kinetics_information": "Yes",
+          "ccs_analysis_output_include_low_quality_reads": "No",
+          "demultiplex_barcodes": "On Instrument",
+          "include_fivemc_calls_in_cpg_motifs": "Yes"
         }
       },
       "relationships": {

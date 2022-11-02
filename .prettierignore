@@ -18,3 +18,5 @@ node_modules
 *.csv
 src/styles/index.css
 release.tar.gz
+*.mp4
+*.svg
