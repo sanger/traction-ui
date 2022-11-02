@@ -101,9 +101,10 @@
       <traction-pagination
         v-model="currentPage"
         class="float-right"
-        :total-rows="requests.length"
-        :per-page="perPage"
+        :total-items="requests.length"
+        :items-per-page="perPage"
         aria-controls="samples-table"
+        @change="setCurrentPage"
       >
       </traction-pagination>
     </div>
@@ -171,6 +172,9 @@ export default {
       } catch (error) {
         this.showAlert('Failed to get samples: ' + error.message, 'danger')
       }
+    },
+    setCurrentPage(value) {
+      this.currentPage = value
     },
     ...mapActions('traction/pacbio/requests', ['setRequests']),
     ...mapActions('printMyBarcode', ['printJobV2']),

@@ -77,11 +77,11 @@
       <traction-pagination
         v-model="currentPage"
         class="float-right"
-        :total-rows="libraries.length"
-        :per-page="perPage"
+        :total-items="libraries.length"
+        :items-per-page="perPage"
         aria-controls="libraries-table"
-      >
-      </traction-pagination>
+        @change="setCurrentPage"
+      />
     </div>
     <traction-form-group label-cols-lg="1" label="Per Page" label-for="input-per-page">
       <traction-input id="input-per-page" v-model="perPage" trim class="w-25"></traction-input>
@@ -163,6 +163,9 @@ export default {
     // Provider function used by the bootstrap-vue table component
     async provider() {
       await this.setLibraries()
+    },
+    setCurrentPage(value) {
+      this.currentPage = value
     },
     ...mapActions('traction/saphyr/tubes', ['deleteLibraries', 'setLibraries']),
     ...mapActions('printMyBarcode', ['printJobV2']),

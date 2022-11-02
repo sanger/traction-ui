@@ -85,12 +85,12 @@
 
       <traction-pagination
         v-model="currentPage"
+        :total-items="libraries.length"
+        :items-per-page="perPage"
         class="float-right"
-        :total-rows="libraries.length"
-        :per-page="perPage"
         aria-controls="library-index"
-      >
-      </traction-pagination>
+        @change="setCurrentPage"
+      />
     </div>
 
     <traction-form-group label-cols-lg="1" label="Per Page" label-for="input-per-page">
@@ -183,6 +183,9 @@ export default {
       } catch (error) {
         this.showAlert('Failed to get libraries: ' + error.message, 'danger')
       }
+    },
+    setCurrentPage(value) {
+      this.currentPage = value
     },
     ...mapActions('traction/pacbio/libraries', ['deleteLibraries', 'setLibraries']),
     ...mapActions('printMyBarcode', ['printJobV2']),
