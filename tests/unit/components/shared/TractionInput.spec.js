@@ -45,7 +45,7 @@ describe('"TractionInput.vue"', () => {
 
   it('updates the v-model value when changing the input value, ', () => {
     var comp = mount({
-      template: '<div> <traction-input v-model="test"></traction-input> </div>',
+      template: '<traction-input v-model="test"></traction-input>',
       components: { 'traction-input': TractionInput },
       data: {
         test: '',
@@ -59,7 +59,7 @@ describe('"TractionInput.vue"', () => {
 
   it('updates the input when changing the v-model value externally,', async () => {
     var wrapper = mount({
-      template: '<div> <traction-input :value="test"></traction-input> </div>',
+      template: '<traction-input :value="test"></traction-input>',
       components: { 'traction-input': TractionInput },
       data() {
         return { test: '' }
