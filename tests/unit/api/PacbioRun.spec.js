@@ -3,6 +3,7 @@ import Response from '@/api/Response'
 import * as Run from '@/api/PacbioRun'
 import build from '@/api/ApiBuilder'
 import Api from '@/api'
+import { describe, expect, it } from 'vitest'
 
 describe('Run', () => {
   let run, failedResponse
@@ -233,6 +234,26 @@ describe('Run', () => {
 
       expect(result.data.attributes.pacbio_smrt_link_version_id).toEqual(run.smrt_link_version_id)
     })
+
+    it('trims sequencing_kit_box_barcode in payload', () => {
+      const untrimmed = '   trimmed   \r\n   '
+      const trimmed = untrimmed.trim()
+      run.sequencing_kit_box_barcode = untrimmed
+      const result = Run.createRunPayload(run)
+
+      expect(trimmed).toEqual('trimmed')
+      expect(result.data.attributes.sequencing_kit_box_barcode).toEqual(trimmed)
+    })
+
+    it('trims sequencing_kit_box_barcode in payload', () => {
+      const untrimmed = '   trimmed   \r \n   '
+      const trimmed = untrimmed.trim()
+      run.dna_control_complex_box_barcode = untrimmed
+      const result = Run.createRunPayload(run)
+
+      expect(trimmed).toEqual('trimmed')
+      expect(result.data.attributes.dna_control_complex_box_barcode).toEqual(trimmed)
+    })
   })
 
   describe('createPlatePayload', () => {
@@ -250,7 +271,24 @@ describe('Run', () => {
     beforeEach(() => {
       run = Run.build()
 
-      run.plate.wells[0] = { position: 'A1', pools: [{ id: 1 }, { id: 2 }] }
+      run.plate.wells[0] = {
+        position: 'A1',
+        pools: [{ id: 1 }, { id: 2 }],
+
+        row: 'A',
+        column: 1,
+        movie_time: 30.0,
+        on_plate_loading_concentration: 0.5,
+        generate_hifi: 'In SMRT Link',
+        ccs_analysis_output: 'Yes',
+        pre_extension_time: 1,
+        binding_kit_box_barcode: 'BKBB1',
+        loading_target_p1_plus_p2: 1,
+        ccs_analysis_output_include_kinetics_information: 'Yes',
+        ccs_analysis_output_include_low_quality_reads: 'No',
+        demultiplex_barcodes: 'Yes',
+        include_fivemc_calls_in_cpg_motifs: 'Yes',
+      }
       run.plate.wells[1] = { position: 'A2', pools: [{ id: 2 }] }
 
       wells = run.plate.wells
@@ -280,7 +318,23 @@ describe('Run', () => {
       expect(result.data.attributes.wells[0].binding_kit_box_barcode).toEqual(
         wells[0].binding_kit_box_barcode,
       )
-      expect(result.data.attributes.wells[0].loading_target).toEqual(wells[0].loading_target)
+      expect(result.data.attributes.wells[0].loading_target_p1_plus_p2).toEqual(
+        wells[0].loading_target_p1_plus_p2,
+      )
+      expect(
+        result.data.attributes.wells[0].ccs_analysis_output_include_kinetics_information,
+      ).toEqual(wells[0].ccs_analysis_output_include_kinetics_information)
+      expect(result.data.attributes.wells[0].ccs_analysis_output_include_low_quality_reads).toEqual(
+        wells[0].ccs_analysis_output_include_low_quality_reads,
+      )
+      expect(result.data.attributes.wells[0].demultiplex_barcodes).toEqual(
+        wells[0].demultiplex_barcodes,
+      )
+
+      expect(result.data.attributes.wells[0].include_fivemc_calls_in_cpg_motifs).toEqual(
+        wells[0].include_fivemc_calls_in_cpg_motifs,
+      )
+
       expect(result.data.attributes.wells[0].relationships.plate.data.type).toEqual('plates')
       expect(result.data.attributes.wells[0].relationships.plate.data.id).toEqual(plateID)
       expect(result.data.attributes.wells[0].relationships.pools.data[0].type).toEqual('pools')
@@ -295,6 +349,35 @@ describe('Run', () => {
       expect(result.data.attributes.wells[1].relationships.pools.data[0].id).toEqual(
         wells[1].pools[0].id,
       )
+    })
+
+    it('trims binding_kit_box_barcode in payload', () => {
+      const untrimmed = '   trimmed   \r\n   '
+      const trimmed = untrimmed.trim()
+
+      run.plate.wells[0].binding_kit_box_barcode = untrimmed
+      let result = Run.createWellsPayload(wells, plateID)
+
+      expect(trimmed).toEqual('trimmed')
+      expect(result.data.attributes.wells[0].binding_kit_box_barcode).toEqual(trimmed)
+    })
+
+    it('has v11 smrt link options', () => {
+      let result = Run.createWellsPayload(wells, plateID)
+
+      expect(result.data.attributes.wells[0]).toHaveProperty('binding_kit_box_barcode')
+      expect(result.data.attributes.wells[0]).toHaveProperty('loading_target_p1_plus_p2')
+      expect(result.data.attributes.wells[0]).toHaveProperty('movie_time')
+      expect(result.data.attributes.wells[0]).toHaveProperty('on_plate_loading_concentration')
+      expect(result.data.attributes.wells[0]).toHaveProperty('pre_extension_time')
+      expect(result.data.attributes.wells[0]).toHaveProperty(
+        'ccs_analysis_output_include_kinetics_information',
+      )
+      expect(result.data.attributes.wells[0]).toHaveProperty(
+        'ccs_analysis_output_include_low_quality_reads',
+      )
+      expect(result.data.attributes.wells[0]).toHaveProperty('demultiplex_barcodes')
+      expect(result.data.attributes.wells[0]).toHaveProperty('include_fivemc_calls_in_cpg_motifs')
     })
   })
 
@@ -456,6 +539,26 @@ describe('Run', () => {
       expect(result.data.attributes.pacbio_smrt_link_version_id).toEqual(run.smrt_link_version_id)
       expect(result.data.attributes.comments).toEqual(run.comments)
     })
+
+    it('trims sequencing_kit_box_barcode in payload', () => {
+      const untrimmed = '   trimmed   \r\n   '
+      const trimmed = untrimmed.trim()
+      run.sequencing_kit_box_barcode = untrimmed
+      const result = Run.updateRunPayload(run)
+
+      expect(trimmed).toEqual('trimmed')
+      expect(result.data.attributes.sequencing_kit_box_barcode).toEqual(trimmed)
+    })
+
+    it('trims sequencing_kit_box_barcode in payload', () => {
+      const untrimmed = '   trimmed   \r \n   '
+      const trimmed = untrimmed.trim()
+      run.dna_control_complex_box_barcode = untrimmed
+      const result = Run.updateRunPayload(run)
+
+      expect(trimmed).toEqual('trimmed')
+      expect(result.data.attributes.dna_control_complex_box_barcode).toEqual(trimmed)
+    })
   })
 
   describe('updateWellPayload', () => {
@@ -481,9 +584,37 @@ describe('Run', () => {
       expect(result.data.attributes.ccs_analysis_output).toEqual(well.ccs_analysis_output)
       expect(result.data.attributes.pre_extension_time).toEqual(well.pre_extension_time)
       expect(result.data.attributes.binding_kit_box_barcode).toEqual(well.binding_kit_box_barcode)
-      expect(result.data.attributes.loading_target).toEqual(well.loading_target)
+      expect(result.data.attributes.loading_target_p1_plus_p2).toEqual(
+        well.loading_target_p1_plus_p2,
+      )
       expect(result.data.relationships.pools.data[0].type).toEqual('pools')
       expect(result.data.relationships.pools.data[0].id).toEqual(well.pools[0].id)
+    })
+    it('has v11 smrt link options', async () => {
+      let result = Run.updateWellPayload(well)
+
+      expect(result.data.attributes).toHaveProperty('binding_kit_box_barcode')
+      expect(result.data.attributes).toHaveProperty('loading_target_p1_plus_p2')
+      expect(result.data.attributes).toHaveProperty('movie_time')
+      expect(result.data.attributes).toHaveProperty('on_plate_loading_concentration')
+      expect(result.data.attributes).toHaveProperty('pre_extension_time')
+      expect(result.data.attributes).toHaveProperty(
+        'ccs_analysis_output_include_kinetics_information',
+      )
+      expect(result.data.attributes).toHaveProperty('ccs_analysis_output_include_low_quality_reads')
+      expect(result.data.attributes).toHaveProperty('demultiplex_barcodes')
+      expect(result.data.attributes).toHaveProperty('include_fivemc_calls_in_cpg_motifs')
+    })
+
+    it('trims binding_kit_box_barcode in payload', () => {
+      const untrimmed = '   trimmed   \r\n   '
+      const trimmed = untrimmed.trim()
+
+      well.binding_kit_box_barcode = untrimmed
+      let result = Run.updateWellPayload(well)
+
+      expect(trimmed).toEqual('trimmed')
+      expect(result.data.attributes.binding_kit_box_barcode).toEqual(trimmed)
     })
   })
 
@@ -506,6 +637,44 @@ describe('Run', () => {
 
       let response = await Run.destroy(1, pacbioRequest.runs)
       expect(response).toEqual(expected)
+    })
+  })
+
+  describe('wellDefaults', () => {
+    const DefaultSystemName = 'Sequel IIe'
+    const DefaultBindingKitBoxBarcode = ''
+    const DefaultLoadingTarget = 0.85
+    const DefaultMovieTime = ''
+    const DefaultOnPlateLoadingConcentration = ''
+    const DefaultPreExtensionTime = 2
+    const ValueYes = 'Yes'
+    const ValueNo = 'No'
+    const ValueOnInstrument = 'On Instrument'
+    let defaults = Run.wellDefaults(DefaultSystemName)
+
+    it('has v11 smrt link options', () => {
+      // versions|key
+      // v10     |ccs_analysis_output
+      // v10     |generate_hifi
+      // v10,v11 |binding_kit_box_barcode
+      // v10,v11 |loading_target_p1_plus_p2
+      // v10,v11 |movie_time
+      // v10,v11 |on_plate_loading_concentration
+      // v10,v11 |pre_extension_time
+      // v11     |ccs_analysis_output_include_kinetics_information
+      // v11     |ccs_analysis_output_include_low_quality_reads
+      // v11     |demultiplex_barcodes
+      // v11     |include_fivemc_calls_in_cpg_motifs
+
+      expect(defaults.binding_kit_box_barcode).toEqual(DefaultBindingKitBoxBarcode)
+      expect(defaults.loading_target_p1_plus_p2).toEqual(DefaultLoadingTarget)
+      expect(defaults.movie_time).toEqual(DefaultMovieTime)
+      expect(defaults.on_plate_loading_concentration).toEqual(DefaultOnPlateLoadingConcentration)
+      expect(defaults.pre_extension_time).toEqual(DefaultPreExtensionTime)
+      expect(defaults.ccs_analysis_output_include_kinetics_information).toEqual(ValueYes)
+      expect(defaults.ccs_analysis_output_include_low_quality_reads).toEqual(ValueNo)
+      expect(defaults.demultiplex_barcodes).toEqual(ValueOnInstrument)
+      expect(defaults.include_fivemc_calls_in_cpg_motifs).toEqual(ValueYes)
     })
   })
 })

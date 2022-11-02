@@ -1,5 +1,19 @@
 import PacbioRun from '@/views/pacbio/PacbioRunShow'
 import { localVue, mount, store, router } from '@support/testHelper'
+import { beforeEach, describe, it } from 'vitest'
+
+const smrtLinkVersions = [
+  {
+    id: 1,
+    name: 'v10',
+    default: true,
+  },
+  {
+    id: 2,
+    name: 'v11',
+    default: false,
+  },
+]
 
 describe('Run.vue', () => {
   let wrapper, mockRun, pacbioRun
@@ -30,6 +44,8 @@ describe('Run.vue', () => {
       },
     }
 
+    store.state.traction.pacbio.runCreate.resources.smrtLinkVersions = smrtLinkVersions
+    mockRun.smrt_link_version_id = 1
     store.commit('traction/pacbio/runs/setCurrentRun', mockRun)
 
     wrapper = mount(PacbioRun, {
