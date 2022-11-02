@@ -1,15 +1,11 @@
 import { handleResponse } from '@/api/ResponseHelper'
 
-// When PrintJobRequest and PMB v1 API is updated to use PMB v2
-// Then, rename the printJobV2 function here to not include v2
-// The rest of the app doesn't care how we are printing things, and that way,
-// if we updated to V3 for instance, the changes could be isolated here.
-const printJobV2 = async ({ getters }, params) => {
-  const request = getters.printJobV2Request
+const printJob = async ({ getters }, params) => {
+  const request = getters.printJobRequest
 
   const labelTemplateName = getters.tubeLabelTemplateName
 
-  const payload = createPrintJobJsonV2(params, labelTemplateName)
+  const payload = createPrintJobJson(params, labelTemplateName)
 
   const promise = request.create({ data: payload })
 
@@ -31,7 +27,7 @@ const printJobV2 = async ({ getters }, params) => {
   return response
 }
 
-const createPrintJobJsonV2 = (params, labelTemplateName) => {
+const createPrintJobJson = (params, labelTemplateName) => {
   const labels = createLabelsV2(params.barcodesList)
 
   return {
@@ -62,9 +58,9 @@ const formatDate = () => {
 }
 
 const actions = {
-  printJobV2,
+  printJob,
 }
 
-export { printJobV2, createPrintJobJsonV2 }
+export { printJob, createPrintJobJson }
 
 export default actions

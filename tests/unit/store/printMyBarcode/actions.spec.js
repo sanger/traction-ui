@@ -7,7 +7,7 @@ const formatDate = () => {
 }
 
 describe('actions', () => {
-  let printerName, barcodesList, copies, tubeLabelTemplateName, createPrintJobJsonV2
+  let printerName, barcodesList, copies, tubeLabelTemplateName, createPrintJobJson
 
   beforeEach(() => {
     printerName = 'aPrinterName'
@@ -15,7 +15,7 @@ describe('actions', () => {
     copies = '2'
     tubeLabelTemplateName = 'traction_tube_label_template'
 
-    createPrintJobJsonV2 = {
+    createPrintJobJson = {
       print_job: {
         printer_name: printerName,
         label_template_name: 'traction_tube_label_template',
@@ -40,14 +40,14 @@ describe('actions', () => {
     }
   })
 
-  describe('#printJobV2', () => {
+  describe('#printJob', () => {
     let params, create, getters
 
     beforeEach(() => {
       create = vi.fn()
 
       getters = {
-        printJobV2Request: { create: create },
+        printJobRequest: { create: create },
         tubeLabelTemplateName: tubeLabelTemplateName,
       }
 
@@ -65,9 +65,9 @@ describe('actions', () => {
         success: true,
       })
 
-      const response = await Actions.printJobV2({ getters }, params)
+      const response = await Actions.printJob({ getters }, params)
 
-      expect(create).toHaveBeenCalledWith({ data: createPrintJobJsonV2 })
+      expect(create).toHaveBeenCalledWith({ data: createPrintJobJson })
       expect(response).toEqual(expectedResponse)
     })
 
@@ -87,9 +87,9 @@ describe('actions', () => {
         },
       }
 
-      const response = await Actions.printJobV2({ getters }, params)
+      const response = await Actions.printJob({ getters }, params)
 
-      expect(create).toHaveBeenCalledWith({ data: createPrintJobJsonV2 })
+      expect(create).toHaveBeenCalledWith({ data: createPrintJobJson })
       expect(response).toEqual(expectedResponse)
     })
 
@@ -97,7 +97,7 @@ describe('actions', () => {
       const emptyResponse = { success: false, data: { errors: [] } }
 
       create.mockReturnValue(emptyResponse)
-      const response = await Actions.printJobV2({ getters }, params)
+      const response = await Actions.printJob({ getters }, params)
 
       const expectedResponse = {
         success: false,
@@ -106,12 +106,12 @@ describe('actions', () => {
         },
       }
 
-      expect(create).toHaveBeenCalledWith({ data: createPrintJobJsonV2 })
+      expect(create).toHaveBeenCalledWith({ data: createPrintJobJson })
       expect(response).toEqual(expectedResponse)
     })
   })
 
-  describe('#createPrintJobJsonV2', () => {
+  describe('#createPrintJobJson', () => {
     it('returns the correct json', () => {
       const params = {
         printerName: printerName,
@@ -119,8 +119,8 @@ describe('actions', () => {
         copies: copies,
       }
 
-      const result = Actions.createPrintJobJsonV2(params, tubeLabelTemplateName)
-      expect(result).toEqual(createPrintJobJsonV2)
+      const result = Actions.createPrintJobJson(params, tubeLabelTemplateName)
+      expect(result).toEqual(createPrintJobJson)
     })
   })
 })

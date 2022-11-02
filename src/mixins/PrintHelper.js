@@ -14,7 +14,7 @@ export default {
         copies: '1',
       }
 
-      const { success, data: { message } = {} } = await this.printJobV2(params)
+      const { success, data: { message } = {} } = await this.printJob(params)
 
       if (success) {
         this.showAlert(MESSAGE_SUCCESS_PRINTER, 'success')
