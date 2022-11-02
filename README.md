@@ -22,7 +22,6 @@ config required:
     VITE_TRACTION_BASE_URL=<url>
     VITE_PRINTMYBARCODE_BASE_URL=<url>
     VITE_SAMPLEEXTRACTION_BASE_URL=<url>
-    VITE_LABEL_TEMPLATE_ID=<id>
     VITE_LOG=false
 
 ### Setup Steps

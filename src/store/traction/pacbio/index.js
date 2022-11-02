@@ -20,7 +20,6 @@ const pacbio = {
     runCreate: runCreate,
   },
   state: {
-    labelTemplateId: import.meta.env.VITE_PACBIO_LABEL_TEMPLATE_ID,
     // We may decide to pull this from traction-service
     libraryTypes: [
       'Pacbio_HiFi',
@@ -31,9 +30,6 @@ const pacbio = {
       'PacBio_Ultra_Low_Input',
       'PacBio_Ultra_Low_Input_mplx',
     ],
-  },
-  getters: {
-    labelTemplateId: (state) => state.labelTemplateId,
   },
 }
 
