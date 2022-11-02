@@ -52,11 +52,6 @@ export default {
       type: String,
       default: '',
     },
-    //id field
-    id: {
-      type: String,
-      default: '',
-    },
   },
 
   methods: {
