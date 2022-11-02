@@ -18,6 +18,7 @@ describe('Well.vue', () => {
     }
 
     run = Run.build()
+    run.smrt_link_version_id = 1
     state = { currentRun: run }
     storeWell = Actions.buildWell({ state }, 'A1')
     storeWell.pools = [
@@ -30,7 +31,13 @@ describe('Well.vue', () => {
     storeWell.binding_kit_box_barcode = '12345'
     run.plate.wells[0] = storeWell
 
+    const smrtLinkVersions = {
+      1: { id: 1, name: 'v10', default: true },
+      2: { id: 2, name: 'v11', default: false },
+    }
+
     store.commit('traction/pacbio/runs/setCurrentRun', run)
+    store.state.traction.pacbio.runCreate.resources.smrtLinkVersions = smrtLinkVersions
 
     wrapper = mount(Well, {
       localVue,

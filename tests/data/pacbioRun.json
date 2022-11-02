@@ -19,7 +19,12 @@
           "generate_hifi": "In SMRT Link",
           "loading_target_p1_plus_p2": 0.85,
           "movie_time": "",
-          "pre_extension_time": 2
+          "pre_extension_time": 2,
+          "on_plate_loading_concentration": "",
+          "ccs_analysis_output_include_kinetics_information": "Yes",
+          "ccs_analysis_output_include_low_quality_reads": "No",
+          "demultiplex_barcodes": "On Instrument",
+          "include_fivemc_calls_in_cpg_motifs": "Yes"
         }
       },
       "relationships": {

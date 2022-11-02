@@ -31,8 +31,11 @@ const setRuns = async ({ commit, getters }) => {
   return response
 }
 
-const newRun = ({ commit }) => {
+const newRun = ({ commit, rootGetters }) => {
   let run = PacbioRun.build()
+  // Set default smrt_link_version_id on current run in the state
+  const defaultSmrtLinkVersion = rootGetters['traction/pacbio/runCreate/defaultSmrtLinkVersion']
+  run.smrt_link_version_id = defaultSmrtLinkVersion.id
   commit('setCurrentRun', run)
 }
 
@@ -50,6 +53,8 @@ const editRun = async ({ commit, getters }, runId) => {
     })
     // Needed for deleting existing wells
     run.plate.wellsToDelete = []
+    // Set smrt_link_version_id on currenRun in the state
+    run.smrt_link_version_id = run.pacbio_smrt_link_version_id
     commit('setCurrentRun', run)
   }
 }

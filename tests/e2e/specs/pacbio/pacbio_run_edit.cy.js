@@ -18,6 +18,9 @@ describe('Pacbio Run Edit view', () => {
     cy.intercept('/v1/pacbio/runs/7', {
       fixture: 'tractionPacbioRun.json',
     })
+    cy.intercept('/v1/pacbio/smrt_link_versions', {
+      fixture: 'tractionPacbioSmrtLinkVersions.json',
+    })
   })
 
   it('Updates a run successfully', () => {
