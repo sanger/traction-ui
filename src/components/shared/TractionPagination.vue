@@ -50,9 +50,7 @@ export default {
    * Displays a pagination component
    */
   name: 'TractionPagination',
-  components: {
-    TPagination,
-  },
+ 
   props: {
     //value field  which will be bind automatically with 'v-model' prop passed into the component
     value: {
