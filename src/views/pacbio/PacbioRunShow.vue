@@ -129,6 +129,7 @@ export default {
       this.$router.push({ name: 'PacbioRunIndex' })
     },
     async provider() {
+      await this.$store.dispatch('traction/pacbio/runCreate/fetchSmrtLinkVersions')
       if (this.id === 'new') {
         this.newRun()
       } else if (!this.newRecord) {

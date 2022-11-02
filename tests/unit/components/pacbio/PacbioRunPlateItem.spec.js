@@ -9,7 +9,16 @@ describe('Plate.vue', () => {
 
   beforeEach(() => {
     let run = new Response(Data.PacbioRun).deserialize.runs[0]
+
+    // smrt link versions are retrieved by PacbioRunShow view
+    // smrt_link_version_id is set on the currentRun by newRun and editRun actions
+    run.smrt_link_version_id = run.pacbio_smrt_link_version_id
+    const smrtLinkVersions = {
+      1: { id: 1, name: 'v10', default: true },
+      2: { id: 2, name: 'v11', default: false },
+    }
     store.commit('traction/pacbio/runs/setCurrentRun', run)
+    store.state.traction.pacbio.runCreate.resources.smrtLinkVersions = smrtLinkVersions
 
     wrapper = mount(Plate, { localVue, store })
     plate = wrapper.vm

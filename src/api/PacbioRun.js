@@ -6,6 +6,11 @@ const DefaultSystemName = 'Sequel IIe'
 const DefaultPreExtensionTime = 2
 const DefaultCcsAnalysisOutput = 'Yes'
 const DefaultLoadingTarget = 0.85
+const DefaultOnPlateLoadingConcentration = ''
+const ValueYes = 'Yes'
+const ValueNo = 'No'
+const ValueOnInstrument = 'On Instrument'
+
 const DefaultGenerateHiFi = (systemName) => {
   switch (systemName) {
     case 'Sequel I':
@@ -26,6 +31,11 @@ const wellDefaults = (systemName) => {
     loading_target_p1_plus_p2: DefaultLoadingTarget,
     generate_hifi: DefaultGenerateHiFi(systemName),
     binding_kit_box_barcode: '',
+    on_plate_loading_concentration: DefaultOnPlateLoadingConcentration,
+    ccs_analysis_output_include_kinetics_information: ValueYes,
+    ccs_analysis_output_include_low_quality_reads: ValueNo,
+    demultiplex_barcodes: ValueOnInstrument,
+    include_fivemc_calls_in_cpg_motifs: ValueYes,
   }
 }
 
@@ -132,8 +142,8 @@ const createRunPayload = (run) => {
     data: {
       type: 'runs',
       attributes: {
-        sequencing_kit_box_barcode: run.sequencing_kit_box_barcode,
-        dna_control_complex_box_barcode: run.dna_control_complex_box_barcode,
+        sequencing_kit_box_barcode: run.sequencing_kit_box_barcode?.trim(),
+        dna_control_complex_box_barcode: run.dna_control_complex_box_barcode?.trim(),
         system_name: run.system_name,
         pacbio_smrt_link_version_id: run.smrt_link_version_id,
         comments: run.comments,
@@ -165,8 +175,15 @@ const createWellsPayload = (wells, plateId) => {
       generate_hifi: well.generate_hifi,
       ccs_analysis_output: well.ccs_analysis_output,
       pre_extension_time: well.pre_extension_time,
-      binding_kit_box_barcode: well.binding_kit_box_barcode,
+      binding_kit_box_barcode: well.binding_kit_box_barcode?.trim(),
       loading_target_p1_plus_p2: well.loading_target_p1_plus_p2,
+      ccs_analysis_output_include_kinetics_information:
+        well.ccs_analysis_output_include_kinetics_information,
+      ccs_analysis_output_include_low_quality_reads:
+        well.ccs_analysis_output_include_low_quality_reads,
+      demultiplex_barcodes: well.demultiplex_barcodes,
+      include_fivemc_calls_in_cpg_motifs: well.include_fivemc_calls_in_cpg_motifs,
+
       relationships: {
         plate: {
           data: {
@@ -198,8 +215,8 @@ const updateRunPayload = (run) => {
       id: run.id,
       type: 'runs',
       attributes: {
-        sequencing_kit_box_barcode: run.sequencing_kit_box_barcode,
-        dna_control_complex_box_barcode: run.dna_control_complex_box_barcode,
+        sequencing_kit_box_barcode: run.sequencing_kit_box_barcode?.trim(),
+        dna_control_complex_box_barcode: run.dna_control_complex_box_barcode?.trim(),
         system_name: run.system_name,
         pacbio_smrt_link_version_id: run.smrt_link_version_id,
         comments: run.comments,
@@ -225,8 +242,14 @@ const updateWellPayload = (well) => {
         generate_hifi: well.generate_hifi,
         ccs_analysis_output: well.ccs_analysis_output,
         pre_extension_time: well.pre_extension_time,
-        binding_kit_box_barcode: well.binding_kit_box_barcode,
+        binding_kit_box_barcode: well.binding_kit_box_barcode?.trim(),
         loading_target_p1_plus_p2: well.loading_target_p1_plus_p2,
+        ccs_analysis_output_include_kinetics_information:
+          well.ccs_analysis_output_include_kinetics_information,
+        ccs_analysis_output_include_low_quality_reads:
+          well.ccs_analysis_output_include_low_quality_reads,
+        demultiplex_barcodes: well.demultiplex_barcodes,
+        include_fivemc_calls_in_cpg_motifs: well.include_fivemc_calls_in_cpg_motifs,
       },
       relationships: {
         pools: {
