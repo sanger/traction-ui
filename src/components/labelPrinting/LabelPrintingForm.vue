@@ -182,13 +182,10 @@ export default {
         barcodesList: this.suffixedBarcodes(),
         copies: this.form.copies,
       }
-      const printJobV2Response = await this.printJobV2(params)
-      this.showAlert(
-        printJobV2Response.data.message,
-        printJobV2Response.success ? 'success' : 'danger',
-      )
+      const printJobResponse = await this.printJob(params)
+      this.showAlert(printJobResponse.data.message, printJobResponse.success ? 'success' : 'danger')
     },
-    ...mapActions('printMyBarcode', ['printJobV2']),
+    ...mapActions('printMyBarcode', ['printJob']),
   },
 }
 </script>

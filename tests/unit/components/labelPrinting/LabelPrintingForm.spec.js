@@ -129,13 +129,13 @@ describe('LabelPrintingForm.vue', () => {
           },
         })
 
-        labelPrintingForm.printJobV2 = vi.fn()
+        labelPrintingForm.printJob = vi.fn()
         labelPrintingForm.showAlert = vi.fn()
       })
 
-      it('calls printJobV2 successfully', async () => {
+      it('calls printJob successfully', async () => {
         const response = { success: true, data: { message: 'a msg' } }
-        labelPrintingForm.printJobV2.mockImplementation(() => response)
+        labelPrintingForm.printJob.mockImplementation(() => response)
 
         await labelPrintingForm.sendPrintRequest()
 
@@ -145,13 +145,13 @@ describe('LabelPrintingForm.vue', () => {
           copies: '1',
         }
 
-        expect(labelPrintingForm.printJobV2).toBeCalledWith(expectedParams)
+        expect(labelPrintingForm.printJob).toBeCalledWith(expectedParams)
         expect(labelPrintingForm.showAlert).toBeCalledWith('a msg', 'success')
       })
 
-      it('calls printJobV2 unsuccessfully', async () => {
+      it('calls printJob unsuccessfully', async () => {
         const response = { success: false, data: { message: 'an error msg' } }
-        labelPrintingForm.printJobV2.mockImplementation(() => response)
+        labelPrintingForm.printJob.mockImplementation(() => response)
 
         await labelPrintingForm.sendPrintRequest()
 
@@ -161,7 +161,7 @@ describe('LabelPrintingForm.vue', () => {
           copies: '1',
         }
 
-        expect(labelPrintingForm.printJobV2).toBeCalledWith(expectedParams)
+        expect(labelPrintingForm.printJob).toBeCalledWith(expectedParams)
         expect(labelPrintingForm.showAlert).toBeCalledWith('an error msg', 'danger')
       })
     })

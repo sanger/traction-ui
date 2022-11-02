@@ -12,7 +12,7 @@ describe('getters', () => {
     expect(getters.sampleExtractionTubeRequest({}, {}, rootState)).toBe('aRequestURL')
   })
 
-  it('"printJobV2Request" returns "rootState.api.printMyBarcodeV2.print_jobs"', () => {
+  it('"printJobRequest" returns "rootState.api.printMyBarcodeV2.print_jobs"', () => {
     const rootState = {
       api: {
         printMyBarcodeV2: {
@@ -20,7 +20,7 @@ describe('getters', () => {
         },
       },
     }
-    expect(getters.printJobV2Request({}, {}, rootState)).toBe('aPrintJobsRequestURL')
+    expect(getters.printJobRequest({}, {}, rootState)).toBe('aPrintJobsRequestURL')
   })
 
   it('"tubeLabelTemplateName" returns "state.tubeLabelTemplateName"', () => {
