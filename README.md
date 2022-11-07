@@ -60,6 +60,7 @@ To run the app and have hot-reloads for development:
 - Running end to end tests:
 
         npm run test:e2e:all
+        
 
 - Running individual end to end tests, this will spawn an interactive cypress session:
 

@@ -89,7 +89,7 @@ const registerBootstrapComponents = (vue) => {
   vue.component('traction-nav', BNav)
   vue.component('traction-input-group', BInputGroup)
   vue.component('traction-input-group-append', BInputGroupAppend)
-  vue.component('traction-pagination',BPagination)
+  vue.component('traction-pagination', BPagination)
 
   /*
     directive is marked wth a v in front
