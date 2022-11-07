@@ -12,9 +12,9 @@
             <traction-textarea
               id="barcode-input"
               v-model="form.barcode"
-              placeholder="Please scan the barcodes" 
+              placeholder="Please scan the barcodes"
               required
-              rows="6" 
+              rows="6"
               max-rows="10"
             />
           </traction-form-group>
@@ -139,9 +139,9 @@ export default {
   methods: {
     setSuffixOptions() {
       let suffixOptions = SuffixList.map((obj) => ({
-        text: obj.one_character_name.concat(' - ', obj.tube),
+        text: obj.suffix.concat(' - ', obj.tubeStage),
       }))
-      suffixOptions.push({text:'No suffix'})
+      suffixOptions.push({ text: 'No suffix' })
       this.suffixOptions = suffixOptions
     },
     setPrinterNames() {
@@ -152,19 +152,23 @@ export default {
     },
     suffixedBarcodes() {
       let listSuffixedBarcodes = []
-      
+
       if (this.form.barcode && this.form.selectedSuffix && this.form.selectedNumberOfLabels <= 9) {
         let barcodes = this.form.barcode.split(/\r?\n|\r|\n/g)
-        let suffix = this.form.selectedSuffix
-        suffix = suffix === 'No suffix' ? "" : suffix.substring(0,1)
-        
-        for (let barcode of barcodes){
+        //let suffix = this.form.selectedSuffix
+        //suffix = suffix === 'No suffix' ? "" : suffix.substring(0,4)
+        let suffix = this.suffix()
+
+        for (let barcode of barcodes) {
           for (let i = 0; i < this.form.selectedNumberOfLabels; i++) {
             listSuffixedBarcodes.push(barcode.concat('-', suffix, i + 1))
           }
         }
       }
       return listSuffixedBarcodes
+    },
+    suffix() {
+      return this.form.selectedSuffix === 'No suffix' ? '' : this.form.selectedSuffix.slice(0, 4)
     },
     printerName() {
       return this.form.selectedPrinterName
@@ -190,6 +194,7 @@ export default {
         printerName: this.printerName(),
         barcodesList: this.suffixedBarcodes(),
         copies: this.form.copies,
+        suffix: this.suffix(),
       }
       const printJobResponse = await this.printJob(params)
       this.showAlert(printJobResponse.data.message, printJobResponse.success ? 'success' : 'danger')
