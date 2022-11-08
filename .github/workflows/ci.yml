@@ -5,12 +5,10 @@ on:
     branches:
       - develop
       - master
-      -
   pull_request:
     branches:
       - develop
       - master
-
 jobs:
   prettier:
     name: Check format with prettier
