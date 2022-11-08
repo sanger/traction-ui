@@ -155,8 +155,6 @@ export default {
 
       if (this.form.barcode && this.form.selectedSuffix && this.form.selectedNumberOfLabels <= 9) {
         let barcodes = this.form.barcode.split(/\r?\n|\r|\n/g)
-        //let suffix = this.form.selectedSuffix
-        //suffix = suffix === 'No suffix' ? "" : suffix.substring(0,4)
         let suffix = this.suffix()
 
         for (let barcode of barcodes) {

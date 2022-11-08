@@ -7,11 +7,11 @@ const formatDate = () => {
 }
 
 const getSuffix = (suffix, barcode) => {
-  return suffix ? barcode.slice(-5) : ''
+  return suffix ? barcode.slice(barcode.lastIndexOf('-') + 1) : ''
 }
 
 const trimBarcode = (suffix, barcode) => {
-  return suffix ? barcode.slice(0, -6) : barcode
+  return suffix ? barcode.slice(0, barcode.lastIndexOf('-')) : barcode
 }
 
 describe('actions', () => {

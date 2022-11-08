@@ -43,7 +43,11 @@ describe('LabelPrintingForm.vue', () => {
 
   describe('methods', () => {
     it('setSuffixOptions ', async () => {
-      expect(labelPrintingForm.suffixOptions.length - 1).toEqual(SuffixList.length)
+      let suffixOptions = SuffixList.map((obj) => ({
+        text: obj.suffix.concat(' - ', obj.tubeStage),
+      }))
+      suffixOptions.push({ text: 'No suffix' })
+      expect(labelPrintingForm.suffixOptions).toEqual(suffixOptions)
     })
 
     it('setPrinterNames ', async () => {
