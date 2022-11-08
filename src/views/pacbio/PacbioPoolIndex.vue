@@ -108,11 +108,11 @@
       <traction-pagination
         v-model="currentPage"
         class="float-right"
-        :total-items="pools.length"
-        :items-per-page="perPage"
-        aria-controls="plate-index"
-        @change="setCurrentPage"
-      />
+        :total-rows="pools.length"
+        :per-page="perPage"
+        aria-controls="pool-index"
+      >
+      </traction-pagination>
     </div>
 
     <traction-form-group label-cols-lg="1" label="Per Page" label-for="input-per-page">
@@ -194,9 +194,7 @@ export default {
         this.showAlert('Failed to get pools: ' + error.message, 'danger')
       }
     },
-    setCurrentPage(value) {
-      this.currentPage = value
-    },
+
     ...mapActions('traction/pacbio/pools', ['setPools']),
     ...mapActions('printMyBarcode', ['printJob']),
   },
