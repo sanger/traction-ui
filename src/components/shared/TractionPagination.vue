@@ -48,6 +48,7 @@ export default {
    * https://www.vue-tailwind.com/docs/pagination/
    *
    * Displays a pagination component
+   * 
    */
   name: 'TractionPagination',
 

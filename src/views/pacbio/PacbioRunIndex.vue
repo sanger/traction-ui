@@ -99,7 +99,6 @@
       <traction-button id="newRun" class="float-left" theme="create" @click="redirectToRun()">
         New Run
       </traction-button>
-
       <traction-pagination
         v-model="currentPage"
         class="float-right"

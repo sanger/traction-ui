@@ -82,7 +82,6 @@
         @selectPrinter="handlePrintLabel('pacbio', $event)"
       >
       </printerModal>
-
       <traction-pagination
         v-model="currentPage"
         :total-items="libraries.length"

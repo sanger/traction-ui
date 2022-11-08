@@ -73,7 +73,6 @@
       >
         Delete Libraries
       </traction-button>
-
       <traction-pagination
         v-model="currentPage"
         class="float-right"

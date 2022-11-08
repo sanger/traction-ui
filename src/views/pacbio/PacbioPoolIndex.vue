@@ -104,7 +104,6 @@
         @selectPrinter="handlePrintLabel('pacbio', $event)"
       >
       </printerModal>
-
       <traction-pagination
         v-model="currentPage"
         class="float-right"

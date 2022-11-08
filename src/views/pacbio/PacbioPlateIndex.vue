@@ -51,9 +51,7 @@
         <Plate ref="plate" :plate="row.item" @alert="alert"></Plate>
       </template>
     </traction-table>
-
     <span class="font-weight-bold">Total records: {{ plates.length }}</span>
-
     <traction-pagination
       v-model="currentPage"
       class="float-right"

@@ -85,9 +85,7 @@
         </traction-button>
       </template>
     </traction-table>
-
     <span class="font-weight-bold">Total records: {{ runs.length }}</span>
-
     <div class="clearfix">
       <traction-button id="newRun" class="float-left" theme="create" @click="redirectToRun()">
         New Run

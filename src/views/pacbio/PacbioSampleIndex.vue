@@ -97,7 +97,6 @@
         @alert="showAlert"
       >
       </PacbioLibraryCreate>
-
       <traction-pagination
         v-model="currentPage"
         class="float-right"

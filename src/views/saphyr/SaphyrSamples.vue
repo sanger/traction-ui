@@ -69,7 +69,6 @@
         @selectEnzyme="createLibraries"
       >
       </enzymeModal>
-
       <traction-pagination
         v-model="currentPage"
         class="float-right"
