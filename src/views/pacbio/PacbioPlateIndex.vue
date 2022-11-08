@@ -57,11 +57,11 @@
     <traction-pagination
       v-model="currentPage"
       class="float-right"
-      :total-items="plates.length"
-      :items-per-page="perPage"
+      :total-rows="plates.length"
+      :per-page="perPage"
       aria-controls="plate-index"
-      @change="setCurrentPage"
-    />
+    >
+    </traction-pagination>
     <traction-form-group label-cols-lg="1" label="Per Page" label-for="input-per-page">
       <traction-input id="input-per-page" v-model="perPage" trim classes="w-25"></traction-input>
     </traction-form-group>
@@ -115,9 +115,7 @@ export default {
         this.showAlert('Failed to get plates: ' + error.message, 'danger')
       }
     },
-    setCurrentPage(value) {
-      this.currentPage = value
-    },
+
     ...mapActions(['setPlates']),
   },
 }

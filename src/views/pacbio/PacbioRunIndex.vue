@@ -103,10 +103,9 @@
       <traction-pagination
         v-model="currentPage"
         class="float-right"
-        :total-items="runs.length"
-        :items-per-page="perPage"
+        :total-rows="runs.length"
+        :per-page="perPage"
         aria-controls="run-index"
-        @change="setCurrentPage"
       >
       </traction-pagination>
     </div>
@@ -186,9 +185,7 @@ export default {
     redirectToRun(runId) {
       this.$router.push({ path: `/pacbio/run/${runId || 'new'}` })
     },
-    setCurrentPage(value) {
-      this.currentPage = value
-    },
+
     ...mapActions('traction/pacbio/runs', ['setRuns', 'generateSampleSheet']),
     ...mapActions('traction', ['startRun', 'completeRun', 'cancelRun']),
   },

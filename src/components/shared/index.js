@@ -12,9 +12,8 @@ import TractionTag from '@/components/shared/TractionTag'
 import TractionSubSection from '@/components/shared/TractionSubSection'
 import TractionMutedText from '@/components/shared/TractionMutedText'
 import TractionToggle from '@/components/shared/TractionToggle'
-import TractionPagination from '@/components/shared/TractionPagination'
 import TractionSpinner from '@/components/shared/TractionSpinner'
-// import TractionInput from '@/components/shared/TractionInput'
+import TractionInput from '@/components/shared/TractionInput'
 import TractionFieldError from '@/components/shared/TractionFieldError'
 import TractionResultIcon from '@/components/shared/icons/TractionResultIcon'
 
@@ -52,7 +51,7 @@ import {
   BCardBody,
   BInputGroup,
   BInputGroupAppend,
-  BFormInput,
+  BPagination,
 } from 'bootstrap-vue'
 
 const registerBootstrapComponents = (vue) => {
@@ -90,7 +89,7 @@ const registerBootstrapComponents = (vue) => {
   vue.component('traction-nav', BNav)
   vue.component('traction-input-group', BInputGroup)
   vue.component('traction-input-group-append', BInputGroupAppend)
-  vue.component('traction-input', BFormInput)
+  vue.component('traction-pagination', BPagination)
 
   /*
     directive is marked wth a v in front
@@ -118,10 +117,9 @@ const registerGlobal = (vue) => {
   vue.component('TractionToggle', TractionToggle)
   vue.component('TractionSpinner', TractionSpinner)
   // This is currently causing a bug reverted to Bootstrap component.
-  // vue.component('TractionInput', TractionInput)
+  vue.component('TractionInput', TractionInput)
   vue.component('TractionFieldError', TractionFieldError)
   vue.component('TractionResultIcon', TractionResultIcon)
-  vue.component('TractionPagination', TractionPagination)
   registerBootstrapComponents(vue)
 }
 

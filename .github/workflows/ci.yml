@@ -9,7 +9,6 @@ on:
     branches:
       - develop
       - master
-
 jobs:
   prettier:
     name: Check format with prettier
