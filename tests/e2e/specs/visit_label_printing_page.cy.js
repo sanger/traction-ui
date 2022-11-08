@@ -5,14 +5,14 @@ describe('Label Printing page', () => {
     cy.visit('#/label-printing')
 
     cy.get('#barcode-input').type('aBarcode')
-    cy.get('#suffix-selection').select('L')
+    cy.get('#suffix-selection').select('OPLX - Pool')
     cy.get('#number-of-labels').type(3)
     cy.get('#printer-choice').select('stub')
     cy.get('#copies').type(2)
   })
 
   it('Shows the correct information', () => {
-    cy.contains('Barcode:')
+    cy.contains('Barcodes:')
     cy.contains('Suffix:')
     cy.contains('Number of labels:')
     cy.contains('Choice of Printer:')
@@ -23,9 +23,9 @@ describe('Label Printing page', () => {
     cy.get('#submit-button').click()
 
     cy.contains('List of barcodes to be printed:')
-    cy.contains('aBarcode-L1')
-    cy.contains('aBarcode-L2')
-    cy.contains('aBarcode-L3')
+    cy.contains('aBarcode-OPLX1')
+    cy.contains('aBarcode-OPLX2')
+    cy.contains('aBarcode-OPLX3')
   })
 
   it('PMB request is successful', () => {

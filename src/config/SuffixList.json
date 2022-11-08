@@ -1,22 +1,86 @@
 [
   {
-    "tube": "Lysis tubes",
-    "one_character_name": "L"
+    "tubeStage": "PreLibrary",
+    "suffix": "UPRL"
   },
   {
-    "tube": "Post extraction normalised tube for shear",
-    "one_character_name": "N"
+    "tubeStage": "Pre PCR Amplification",
+    "suffix": "UPPA"
   },
   {
-    "tube": "Megaruptor tube",
-    "one_character_name": "M"
+    "tubeStage": "Post Amplification A",
+    "suffix": "UPAA"
   },
   {
-    "tube": "Post megaruptor tube",
-    "one_character_name": "F"
+    "tubeStage": "Post Amplification B",
+    "suffix": "UPAB"
   },
   {
-    "tube": "Post SPRI tube",
-    "one_character_name": "S"
+    "tubeStage": "Post Pool pre-Size Selection",
+    "suffix": "UPPS"
+  },
+  {
+    "tubeStage": "Final Library",
+    "suffix": "USBT"
+  },
+  {
+    "tubeStage": "Extraction",
+    "suffix": "EEXT"
+  },
+  {
+    "tubeStage": "Post extraction post-SPRI 1 (SPK3)",
+    "suffix": "ESP1"
+  },
+  {
+    "tubeStage": "Sheared",
+    "suffix": "ESHR"
+  },
+  {
+    "tubeStage": "Sheared + SPRI",
+    "suffix": "ESP2"
+  },
+  {
+    "tubeStage": "Supernatant",
+    "suffix": "ESN1"
+  },
+  {
+    "tubeStage": "Supernatant",
+    "suffix": "ESN2"
+  },
+  {
+    "tubeStage": "Stock",
+    "suffix": "OSTK"
+  },
+  {
+    "tubeStage": "Sheared",
+    "suffix": "OSHR"
+  },
+  {
+    "tubeStage": "PreLib",
+    "suffix": "OPRL"
+  },
+  {
+    "tubeStage": "End Repaired",
+    "suffix": "OEND"
+  },
+  {
+    "tubeStage": "Final Library",
+    "suffix": "OFIN"
+  },
+  {
+    "tubeStage": "Pool",
+    "suffix": "OPLX"
+  },
+  {
+    "tubeStage": "Excess x-linked?",
+    "suffix": "HXCL"
+  },
+  {
+    "tubeStage": "Extraction",
+    "suffix": "BEXT"
+  },
+  {
+    "tubeStage": "Labelling",
+    "suffix": "BDLE"
   }
 ]
