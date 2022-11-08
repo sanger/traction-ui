@@ -93,10 +93,9 @@
       <traction-pagination
         v-model="currentPage"
         class="float-right"
-        :total-items="runs.length"
-        :items-per-page="perPage"
+        :total-rows="runs.length"
+        :per-page="perPage"
         aria-controls="libraries-table"
-        @change="setCurrentPage"
       >
       </traction-pagination>
     </div>
@@ -169,9 +168,6 @@ export default {
       } catch (error) {
         this.showAlert('Failed to get runs: ' + error.message, 'danger')
       }
-    },
-    setCurrentPage(value) {
-      this.currentPage = value
     },
     ...mapActions('traction/saphyr/runs', ['setRuns']),
     ...mapActions('traction', ['startRun', 'completeRun', 'cancelRun']),

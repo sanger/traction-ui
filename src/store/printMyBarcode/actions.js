@@ -28,7 +28,7 @@ const printJob = async ({ getters }, params) => {
 }
 
 const createPrintJobJson = (params, labelTemplateName) => {
-  const labels = createLabelsV2(params.barcodesList)
+  const labels = createLabelsV2(params)
 
   return {
     print_job: {
@@ -40,13 +40,13 @@ const createPrintJobJson = (params, labelTemplateName) => {
   }
 }
 
-const createLabelsV2 = (barcodesList) => {
-  return barcodesList.map((barcode) => {
+const createLabelsV2 = (params) => {
+  return params.barcodesList.map((barcode) => {
     return {
       barcode: barcode,
       first_line: formatDate(),
-      second_line: barcode,
-      third_line: '',
+      second_line: trimBarcode(params.suffix, barcode),
+      third_line: getSuffix(params.suffix, barcode),
       label_name: 'main_label',
     }
   })
@@ -55,6 +55,14 @@ const createLabelsV2 = (barcodesList) => {
 const formatDate = () => {
   const [, mmm, dd, yyyy] = new Date().toDateString().split(' ')
   return `${dd}-${mmm}-${yyyy.slice(2)}`
+}
+
+const getSuffix = (suffix, barcode) => {
+  return suffix ? barcode.slice(barcode.lastIndexOf('-') + 1) : ''
+}
+
+const trimBarcode = (suffix, barcode) => {
+  return suffix ? barcode.slice(0, barcode.lastIndexOf('-')) : barcode
 }
 
 const actions = {

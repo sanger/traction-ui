@@ -24,8 +24,8 @@ describe('LabelPrintingForm.vue', () => {
       expect(labelPrintingForm.form.barcode).toBe('aBarcode')
     })
     it('has a form with selectedSuffix', () => {
-      wrapper.setData({ form: { selectedSuffix: 'L' } })
-      expect(labelPrintingForm.form.selectedSuffix).toBe('L')
+      wrapper.setData({ form: { selectedSuffix: 'ESHR' } })
+      expect(labelPrintingForm.form.selectedSuffix).toBe('ESHR')
     })
     it('has a form with a selectedNumberOfLabels', () => {
       wrapper.setData({ form: { selectedNumberOfLabels: '2' } })
@@ -43,7 +43,11 @@ describe('LabelPrintingForm.vue', () => {
 
   describe('methods', () => {
     it('setSuffixOptions ', async () => {
-      expect(labelPrintingForm.suffixOptions.length).toEqual(SuffixList.length)
+      let suffixOptions = SuffixList.map((obj) => ({
+        text: obj.suffix.concat(' - ', obj.tubeStage),
+      }))
+      suffixOptions.push({ text: 'No suffix' })
+      expect(labelPrintingForm.suffixOptions).toEqual(suffixOptions)
     })
 
     it('setPrinterNames ', async () => {
@@ -55,21 +59,21 @@ describe('LabelPrintingForm.vue', () => {
         wrapper.setData({
           form: {
             barcode: 'aBarcode',
-            selectedSuffix: 'L',
+            selectedSuffix: 'ESHR',
             selectedNumberOfLabels: 2,
           },
         })
-        expect(labelPrintingForm.suffixedBarcodes()).toEqual(['aBarcode-L1', 'aBarcode-L2'])
+        expect(labelPrintingForm.suffixedBarcodes()).toEqual(['aBarcode-ESHR1', 'aBarcode-ESHR2'])
       })
       it('returns an empty list when barcode is not present', () => {
         wrapper.setData({
-          form: { selectedSuffix: 'L', selectedNumberOfLabels: 2 },
+          form: { selectedSuffix: 'ESHR', selectedNumberOfLabels: 2 },
         })
         expect(labelPrintingForm.suffixedBarcodes()).toEqual([])
       })
       it('returns an empty list when selectedNumberOfLabels is not present', () => {
         wrapper.setData({
-          form: { selectedSuffix: 'L', barcode: 'aBarcide' },
+          form: { selectedSuffix: 'ESHR', barcode: 'aBarcide' },
         })
         expect(labelPrintingForm.suffixedBarcodes()).toEqual([])
       })
@@ -83,7 +87,7 @@ describe('LabelPrintingForm.vue', () => {
         wrapper.setData({
           form: {
             barcode: 'aBarcode',
-            selectedSuffix: 'L',
+            selectedSuffix: 'ESHR',
             selectedNumberOfLabels: 10,
           },
         })
@@ -122,7 +126,7 @@ describe('LabelPrintingForm.vue', () => {
         wrapper.setData({
           form: {
             barcode: 'aBarcode',
-            selectedSuffix: 'L',
+            selectedSuffix: 'ESHR',
             selectedNumberOfLabels: 2,
             selectedPrinterName: 'stub',
             copies: '1',
@@ -140,9 +144,10 @@ describe('LabelPrintingForm.vue', () => {
         await labelPrintingForm.sendPrintRequest()
 
         const expectedParams = {
-          barcodesList: ['aBarcode-L1', 'aBarcode-L2'],
+          barcodesList: ['aBarcode-ESHR1', 'aBarcode-ESHR2'],
           printerName: labelPrintingForm.form.selectedPrinterName,
           copies: '1',
+          suffix: 'ESHR',
         }
 
         expect(labelPrintingForm.printJob).toBeCalledWith(expectedParams)
@@ -156,9 +161,10 @@ describe('LabelPrintingForm.vue', () => {
         await labelPrintingForm.sendPrintRequest()
 
         const expectedParams = {
-          barcodesList: ['aBarcode-L1', 'aBarcode-L2'],
+          barcodesList: ['aBarcode-ESHR1', 'aBarcode-ESHR2'],
           printerName: labelPrintingForm.form.selectedPrinterName,
           copies: '1',
+          suffix: 'ESHR',
         }
 
         expect(labelPrintingForm.printJob).toBeCalledWith(expectedParams)

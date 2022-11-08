@@ -12,6 +12,4 @@ module.exports = {
   },
   important: true,
   corePlugins: {},
-  //The default theme of Vue-Tailwindcss library depends on the @tailwindcss/forms plugin
-  plugins: [require('@tailwindcss/forms')],
 }
