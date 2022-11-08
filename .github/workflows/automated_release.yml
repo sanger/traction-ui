@@ -6,8 +6,6 @@ on:
     branches:
       - master
       - develop
-      - original_traction_pagination
-      
 jobs:
   build:
     runs-on: ubuntu-latest
