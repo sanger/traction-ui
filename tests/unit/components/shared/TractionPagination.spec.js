@@ -1,4 +1,4 @@
--import { localVue, mount } from '@support/testHelper'
+import { localVue, mount } from '@support/testHelper'
 
 import TractionPagination from '@/components/shared/TractionPagination'
 import TPagination from 'vue-tailwind/dist/t-pagination'
