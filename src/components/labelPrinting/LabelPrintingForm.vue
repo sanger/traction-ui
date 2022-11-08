@@ -138,6 +138,7 @@ export default {
   },
   methods: {
     setSuffixOptions() {
+      //Display the suffix with the process stage description
       let suffixOptions = SuffixList.map((obj) => ({
         text: obj.suffix.concat(' - ', obj.tubeStage),
       }))
@@ -153,6 +154,7 @@ export default {
     suffixedBarcodes() {
       let listSuffixedBarcodes = []
 
+      //Add the four letter suffix plus the label number to the barcodes
       if (this.form.barcode && this.form.selectedSuffix && this.form.selectedNumberOfLabels <= 9) {
         let barcodes = this.form.barcode.split(/\r?\n|\r|\n/g)
         let suffix = this.suffix()
