@@ -71,7 +71,7 @@
             :value="smrtLinkVersionId"
             data-attribute="smrt-link-version"
             :options="smrtLinkVersionSelectOptions"
-            @input="setSmrtLinkVersionId"
+            @change="setSmrtLinkVersionId"
           />
         </traction-col>
       </traction-row>

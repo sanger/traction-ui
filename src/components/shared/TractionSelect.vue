@@ -20,7 +20,7 @@
       :class="`w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-sdb-100 focus:border-sdb-100 disabled:opacity-75 disabled:bg-gray-200 disabled:cursor-not-allowed ${classes}`"
       @change="input($event)"
     >
-      <option v-if="placeholder" value="" disabled="true">{{placeholder}}}</option>
+      <option v-if="optionHeader" value="" disabled="true">{{ optionHeader }}</option>
       <option v-for="option in getOptions" :key="option.text" :value="option.value">
         {{ option.text }}
       </option>
@@ -58,7 +58,7 @@ export default {
       type: String,
       default: '',
     },
-    placeholder: {
+    optionHeader: {
       type: String,
       default: '',
     },

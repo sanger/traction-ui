@@ -1,7 +1,7 @@
 import { localVue, mount } from '@support/testHelper'
 
 import TractionSelect from '@/components/shared/TractionSelect'
-import { describe } from 'vitest'
+import { describe, expect, it } from 'vitest'
 
 describe('TractionSelect.vue', () => {
   const buildWrapper = (props = {}) => {
@@ -15,6 +15,14 @@ describe('TractionSelect.vue', () => {
     const wrapper = buildWrapper({ title: 'Label Text' })
     expect(wrapper.text()).toContain('Label Text')
     expect(wrapper.find('select').exists()).toBeTruthy()
+  })
+
+  it('displays the placeholder', () => {
+    const wrapper = buildWrapper({ title: 'Label Text', optionHeader: 'Testing' })
+    const options = wrapper.find('select').findAll('option')
+    //Option displayed as disabled
+    expect(options.at(0).element.text).toEqual('Testing')
+    expect(wrapper.find('option:disabled').element.text).toBe('Testing')
   })
 
   describe('Testing different value types for options', () => {
@@ -97,5 +105,23 @@ describe('TractionSelect.vue', () => {
     expect(select.element.value).toBe('')
     await wrapper.setData({ test: 'Option 3' })
     expect(select.element.value).toBe('Option 3')
+  })
+  it('invokes call back when select changes value,', async () => {
+    var wrapper = mount({
+      template:
+        '<traction-select :value="test" :options="optionData" @input="setTest"></traction-select>',
+      components: { 'traction-select': TractionSelect },
+      data() {
+        return { test: '', dummyTest: '', optionData: ['Option 1', 'Option 2', 'Option 3'] }
+      },
+      methods: {
+        setTest(value) {
+          this.dummyTest = value
+        },
+      },
+    })
+    const options = wrapper.find('select').findAll('option')
+    await options.at(1).setSelected()
+    expect(wrapper.vm.dummyTest).toEqual('Option 2')
   })
 })

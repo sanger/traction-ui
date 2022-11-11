@@ -11,7 +11,7 @@
             data-attribute="default-movie-time"
             :options="movieTimeOptions"
             :value="currentRun.wellDefaults.movie_time"
-            placeholder="Movie Time"
+            option-header="Movie Time"
             @input="setDefaultMovieTime"
           >
           </traction-select>
@@ -27,7 +27,7 @@
             data-attribute="default-generate-hifi"
             :options="generateHifiOptions[currentRun.system_name]"
             :value="currentRun.wellDefaults.generate_hifi"
-            placeholder="Please select a value"
+            option-header="Please select a value"
             @input="setDefaultGenerateHifi"
           >
           </traction-select>
@@ -43,7 +43,7 @@
             data-attribute="default-ccs-analysis-output"
             :options="ccsAnalysisOutputOptions"
             :value="currentRun.wellDefaults.ccs_analysis_output"
-            @change="setDefaultCcsAnalysisOutput"
+            @input="setDefaultCcsAnalysisOutput"
           >
           </traction-select>
         </traction-col>
@@ -106,11 +106,10 @@
           <traction-select
             id="default-ccs-analysis-output-include-kinetics-information"
             data-attribute="default-ccs-analysis-output-include-kinetics-information"
-            title="CCS Analysis Output Include Kinetics Information"
             :options="ccsAnalysisOutputOptions"
             :value="currentRun.wellDefaults.ccs_analysis_output_include_kinetics_information"
-            placeholder="Default CCS Analysis Output Include Kinetics Information for new wells"
-            @change="setDefaultCcsAnalysisOutputIncludeKineticsInformation"
+            option-header="Default CCS Analysis Output Include Kinetics Information for new wells"
+            @input="setDefaultCcsAnalysisOutputIncludeKineticsInformation"
           >
           </traction-select>
         </traction-col>
@@ -125,10 +124,9 @@
           <traction-select
             id="default-ccs-analysis-output-include-low-quality-reads"
             data-attribute="default-ccs-analysis-output-include-low-quality-reads"
-            title="CCS Analysis Output Include Low Quality Reads"
             :options="ccsAnalysisOutputOptions"
             :value="currentRun.wellDefaults.ccs_analysis_output_include_low_quality_reads"
-            placeholder="Default CCS Analysis Output Include Low Quality Reads for new wells"
+            option-header="Default CCS Analysis Output Include Low Quality Reads for new wells"
             @input="setDefaultCcsAnalysisOutputIncludeLowQualityReads"
           >
           </traction-select>
@@ -146,7 +144,7 @@
             :options="generateHifiOptions[currentRun.system_name]"
             :value="currentRun.wellDefaults.demultiplex_barcodes"
             placeholder="Default Demultiplex Barcodes for new wells"
-            @change="setDefaultDemultiplexBarcodes"
+            @input="setDefaultDemultiplexBarcodes"
           >
           </traction-select>
         </traction-col>
@@ -163,7 +161,7 @@
             data-attribute="default-include-fivemc-calls-in-cpg-motifs"
             :options="ccsAnalysisOutputOptions"
             :value="currentRun.wellDefaults.include_fivemc_calls_in_cpg_motifs"
-            placeholder="Default Include 5mc Calls in CpG Motifs for new wells"
+            option-header="Default Include 5mc Calls in CpG Motifs for new wells"
             @input="setDefaultIncludeFivemcCallsInCpgMotifs"
           >
           </traction-select>
