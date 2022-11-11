@@ -29,9 +29,7 @@
               id="suffix-selection"
               v-model="form.selectedSuffix"
               :options="suffixOptions"
-              value-field="text"
               placeholder="Please select a suffix"
-              required
             ></traction-select>
           </traction-form-group>
 
@@ -61,8 +59,6 @@
               id="printer-choice"
               v-model="form.selectedPrinterName"
               :options="printerOptions"
-              value-field="text"
-              required
             ></traction-select>
           </traction-form-group>
 
@@ -139,17 +135,12 @@ export default {
   methods: {
     setSuffixOptions() {
       //Display the suffix with the process stage description
-      let suffixOptions = SuffixList.map((obj) => ({
-        text: obj.suffix.concat(' - ', obj.tubeStage),
-      }))
-      suffixOptions.push({ text: 'No suffix' })
+      let suffixOptions = SuffixList.map((obj) => obj.suffix.concat(' - ', obj.tubeStage))
+      suffixOptions.push('No suffix')
       this.suffixOptions = suffixOptions
     },
     setPrinterNames() {
-      let printerOptions = this.$store.getters.printers.map((name) => ({
-        text: name,
-      }))
-      this.printerOptions = printerOptions
+      this.printerOptions = this.$store.getters.printers
     },
     suffixedBarcodes() {
       let listSuffixedBarcodes = []
@@ -168,6 +159,7 @@ export default {
       return listSuffixedBarcodes
     },
     suffix() {
+      console.log('SELECTED-SUFFIX=' + this.form.selectedSuffix)
       return this.form.selectedSuffix === 'No suffix' ? '' : this.form.selectedSuffix.slice(0, 4)
     },
     printerName() {

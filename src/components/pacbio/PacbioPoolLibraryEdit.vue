@@ -7,17 +7,20 @@
       {{ request.source_identifier }}
     </traction-td>
     <traction-td>
+      <traction-field-error
+        data-attribute="tag-id-error"
+        :error="errorsFor('tag_id')"
+        :with-icon="isValidationExists('tag_id')"
+      >
       <traction-select
         v-if="tagList.length > 0"
         v-model="tag_id"
         data-type="tag-list"
         :options="tagListOptions"
-        :state="errorsFor('tag_id')?.length > 0"
         class="tag-id"
       ></traction-select>
-      <traction-invalid-feedback data-attribute="tag-id-error">
-        {{ errorsFor('tag_id') }}
-      </traction-invalid-feedback>
+      </traction-field-error>
+    
     </traction-td>
     <traction-td>
       <traction-field-error

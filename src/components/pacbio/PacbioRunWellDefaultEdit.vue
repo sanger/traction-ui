@@ -11,7 +11,7 @@
             data-attribute="default-movie-time"
             :options="movieTimeOptions"
             :value="currentRun.wellDefaults.movie_time"
-            title="Movie Time"
+            placeholder="Movie Time"
             @input="setDefaultMovieTime"
           >
           </traction-select>
@@ -25,9 +25,9 @@
           <traction-select
             id="default-generate-hifi"
             data-attribute="default-generate-hifi"
-            title="Generate HiFi"
             :options="generateHifiOptions[currentRun.system_name]"
             :value="currentRun.wellDefaults.generate_hifi"
+            placeholder="Please select a value"
             @input="setDefaultGenerateHifi"
           >
           </traction-select>
@@ -41,7 +41,6 @@
           <traction-select
             id="default-ccs-analysis-output"
             data-attribute="default-ccs-analysis-output"
-            title="Ccs Analysis Output"
             :options="ccsAnalysisOutputOptions"
             :value="currentRun.wellDefaults.ccs_analysis_output"
             @change="setDefaultCcsAnalysisOutput"
@@ -162,7 +161,6 @@
           <traction-select
             id="default-include-fivemc-calls-in-cpg-motifs"
             data-attribute="default-include-fivemc-calls-in-cpg-motifs"
-            title="Include 5mc Calls In CpG Motifs"
             :options="ccsAnalysisOutputOptions"
             :value="currentRun.wellDefaults.include_fivemc_calls_in_cpg_motifs"
             placeholder="Default Include 5mc Calls in CpG Motifs for new wells"
@@ -193,32 +191,12 @@ export default {
   name: 'PacbioRunWellDefaultEdit',
   data() {
     return {
-      movieTimeOptions: [
-        { text: 'Movie Time', value: '', disabled: true },
-        '10.0',
-        '15.0',
-        '20.0',
-        '24.0',
-        '30.0',
-      ],
+      movieTimeOptions: ['10.0', '15.0', '20.0', '24.0', '30.0'],
       generateHifiOptions: {
-        '': [{ text: 'Please select a System Name', value: '', disabled: true }],
-        'Sequel I': [
-          { text: 'Please select a value', value: '', disabled: true },
-          'In SMRT Link',
-          'Do Not Generate',
-        ],
-        'Sequel II': [
-          { text: 'Please select a value', value: '', disabled: true },
-          'In SMRT Link',
-          'Do Not Generate',
-        ],
-        'Sequel IIe': [
-          { text: 'Please select a value', value: '', disabled: true },
-          'In SMRT Link',
-          'Do Not Generate',
-          'On Instrument',
-        ],
+        '': [],
+        'Sequel I': ['In SMRT Link', 'Do Not Generate'],
+        'Sequel II': ['In SMRT Link', 'Do Not Generate'],
+        'Sequel IIe': ['In SMRT Link', 'Do Not Generate', 'On Instrument'],
       },
       ccsAnalysisOutputOptions: ['Yes', 'No'],
     }

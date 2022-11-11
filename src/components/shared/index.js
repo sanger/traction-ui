@@ -15,12 +15,12 @@ import TractionToggle from '@/components/shared/TractionToggle'
 import TractionSpinner from '@/components/shared/TractionSpinner'
 import TractionInput from '@/components/shared/TractionInput'
 import TractionFieldError from '@/components/shared/TractionFieldError'
+import TractionSelect from '@/components/shared/TractionSelect'
 import TractionResultIcon from '@/components/shared/icons/TractionResultIcon'
 
 import {
   BModal,
   VBModal,
-  BFormSelect,
   BAlert,
   BContainer,
   BRow,
@@ -57,7 +57,6 @@ import {
 const registerBootstrapComponents = (vue) => {
   /* eslint-disable vue/component-definition-name-casing */
   vue.component('traction-modal', BModal)
-  vue.component('traction-select', BFormSelect)
   vue.component('traction-alert', BAlert)
   vue.component('traction-container', BContainer)
   vue.component('traction-row', BRow)
@@ -116,10 +115,10 @@ const registerGlobal = (vue) => {
   vue.component('TractionMutedText', TractionMutedText)
   vue.component('TractionToggle', TractionToggle)
   vue.component('TractionSpinner', TractionSpinner)
-  // This is currently causing a bug reverted to Bootstrap component.
   vue.component('TractionInput', TractionInput)
   vue.component('TractionFieldError', TractionFieldError)
   vue.component('TractionResultIcon', TractionResultIcon)
+  vue.component('TractionSelect', TractionSelect)
   registerBootstrapComponents(vue)
 }
 
