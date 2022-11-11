@@ -140,7 +140,6 @@
           <traction-select
             id="default-demultiplex-barcodes"
             data-attribute="default-demultiplex-barcodes"
-            title="Demultiplex Barcodes"
             :options="generateHifiOptions[currentRun.system_name]"
             :value="currentRun.wellDefaults.demultiplex_barcodes"
             placeholder="Default Demultiplex Barcodes for new wells"

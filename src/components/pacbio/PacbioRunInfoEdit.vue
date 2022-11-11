@@ -71,7 +71,7 @@
             :value="smrtLinkVersionId"
             data-attribute="smrt-link-version"
             :options="smrtLinkVersionSelectOptions"
-            @change="setSmrtLinkVersionId"
+            @input="setSmrtLinkVersionId"
           />
         </traction-col>
       </traction-row>
@@ -113,7 +113,7 @@ export default {
     smrtLinkVersionSelectOptions() {
       // Returns an array of objects with value and text properties to make
       // the options of smrt-link-version select drop-down list.
-      
+
       return Object.values(
         this.$store.getters['traction/pacbio/runCreate/smrtLinkVersionList'],
       ).map(({ id, name }) => ({ value: id, text: name }))

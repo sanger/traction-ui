@@ -20,8 +20,8 @@ import { filterByAttribute, mapAttribute } from '@/api/JsonApi'
 // select elements can't handle the former. So we encode it
 const UNDEFINED = '_undefined'
 
-const encode = (value) => (value === undefined ? UNDEFINED : value)
-const decode = (value) => (value === UNDEFINED ? undefined : value)
+const encode = (value) => (value === undefined ? 'UNDEFINED' : value)
+const decode = (value) => (value === UNDEFINED ? undefined : value === '' ? null : value)
 
 export default {
   name: 'LibraryTypeSelect',
@@ -71,7 +71,7 @@ export default {
         return []
       }
     },
-    nullOption: ({ allowNone }) => (allowNone ? [{ value: null, text: 'None' }] : []),
+    nullOption: ({ allowNone }) => (allowNone ? [{ value: '', text: 'None' }] : []),
     filters: ({ pipeline }) => (pipeline ? { pipeline } : {}),
     filteredLibraryTypes() {
       return filterByAttribute(this.remoteLibraryTypes?.data || [], this.filters)
