@@ -7,7 +7,7 @@
       is passed to the enclosed html <select> component. This allows to use this component as a normal html <select> 
       element by passing in all props allowed in <select> to <traction-select>
      The $attrs object includes all attributes that are not declared by the component's props
-  - @input - On input, emit its own custom input event with the new value
+  - @chnage - On change, emit its own custom input event with the new value
 -->
 
 <template>
@@ -58,12 +58,23 @@ export default {
       type: String,
       default: '',
     },
+    //header/title for options displayed which is disabled
     optionHeader: {
       type: String,
       default: '',
     },
   },
   computed: {
+    /**
+     * Options can be given in any of the following forms to support the existing usages
+     * 1. As a normal string array e.g ['text1','text2'] . In this case both 'text'
+     *    and 'value' fields will be set as the strings in array
+     * 2. As an array of objects of 'text' and 'value' fields e.g [{text:'sample text', value:"text1"}]
+     * 3. As an array of objects of form [{text:'sample text'}]. In this case both 'text'
+     *    and 'value' fields will be set to 'text' field data
+     * 4. As an array of objects of form [{value:'sample value'}]. In this case both text 
+     *    and value fields will be set to 'value' field data
+     * **/
     getOptions() {
       return this.options.map((option) => {
         if (typeof option == 'string') {
