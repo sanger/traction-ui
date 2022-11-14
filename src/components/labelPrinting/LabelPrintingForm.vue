@@ -59,6 +59,7 @@
               id="printer-choice"
               v-model="form.selectedPrinterName"
               :options="printerOptions"
+              required
             ></traction-select>
           </traction-form-group>
 
@@ -159,7 +160,6 @@ export default {
       return listSuffixedBarcodes
     },
     suffix() {
-      console.log('SELECTED-SUFFIX=' + this.form.selectedSuffix)
       return this.form.selectedSuffix === 'No suffix' ? '' : this.form.selectedSuffix.slice(0, 4)
     },
     printerName() {
