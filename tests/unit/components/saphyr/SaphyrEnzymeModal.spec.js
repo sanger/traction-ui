@@ -39,7 +39,7 @@ describe('SaphyrEnzymeModal.vue', () => {
     it('has enzyme options', async () => {
       let enzymeOptions = {
         enzymeOptions: [
-          { value: "", text: 'Please select an option' },
+          { value: '', text: 'Please select an option' },
           { value: 1, text: 'enz1' },
           { value: 2, text: 'enz2' },
         ],

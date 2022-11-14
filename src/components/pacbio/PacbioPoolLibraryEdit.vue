@@ -12,15 +12,14 @@
         :error="errorsFor('tag_id')"
         :with-icon="isValidationExists('tag_id')"
       >
-      <traction-select
-        v-if="tagList.length > 0"
-        v-model="tag_id"
-        data-type="tag-list"
-        :options="tagListOptions"
-        class="tag-id"
-      ></traction-select>
+        <traction-select
+          v-if="tagList.length > 0"
+          v-model="tag_id"
+          data-type="tag-list"
+          :options="tagListOptions"
+          class="tag-id"
+        ></traction-select>
       </traction-field-error>
-    
     </traction-td>
     <traction-td>
       <traction-field-error

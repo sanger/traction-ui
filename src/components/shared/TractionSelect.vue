@@ -72,7 +72,7 @@ export default {
      * 2. As an array of objects of 'text' and 'value' fields e.g [{text:'sample text', value:"text1"}]
      * 3. As an array of objects of form [{text:'sample text'}]. In this case both 'text'
      *    and 'value' fields will be set to 'text' field data
-     * 4. As an array of objects of form [{value:'sample value'}]. In this case both text 
+     * 4. As an array of objects of form [{value:'sample value'}]. In this case both text
      *    and value fields will be set to 'value' field data
      * **/
     getOptions() {
@@ -91,7 +91,7 @@ export default {
         return option
       })
     },
-  },
+  },n
   methods: {
     input(event) {
       // Emit select data
