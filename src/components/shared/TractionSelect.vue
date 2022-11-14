@@ -91,7 +91,7 @@ export default {
         return option
       })
     },
-  },n
+  },
   methods: {
     input(event) {
       // Emit select data
