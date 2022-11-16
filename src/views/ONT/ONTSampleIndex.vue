@@ -1,5 +1,5 @@
 <template>
-  <DataFetcher :fetcher="this.fetchOntRequests">
+  <DataFetcher :fetcher="fetchOntRequests">
     <div class="flex-row p-5 bg-gray-100 rounded-md shadow-md">
       <div class="w-full w-1/2 mx-auto min-w-[500px]">
         <div class="flex flex-col flex-start">
