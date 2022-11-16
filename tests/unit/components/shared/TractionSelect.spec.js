@@ -78,7 +78,7 @@ describe('TractionSelect.vue', () => {
   })
 
   it('updates the v-model value when changing the selected value, ', async () => {
-    var wrapper = mount({
+    const wrapper = mount({
       template: '<traction-select v-model="test" :options="optionData" ></traction-select>',
       components: { 'traction-select': TractionSelect },
       data() {
