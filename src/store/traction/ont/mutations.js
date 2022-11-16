@@ -6,5 +6,5 @@ export default {
    * @param {Object} state The VueXState object
    * @param {Array.{}} requests The request resources to populate the store
    */
-  populateRequests: populateById('requests', { includeRelationships: true }),
+  populateRequests: populateById('requests', { includeRelationships: true }, true),
 }
