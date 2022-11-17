@@ -138,9 +138,12 @@ export default {
   },
   methods: {
     setSuffixOptions() {
-      //Display the suffix with the process stage description
+      //Display the workflow and suffix with the process stage description
       let suffixOptions = SuffixList.map((obj) => ({
-        text: obj.suffix.concat(' - ', obj.tubeStage),
+        label: obj.workflow,
+        options: obj.options.map((option) => ({
+          text: option.suffix.concat(' - ', option.tubeStage),
+        })),
       }))
       suffixOptions.push({ text: 'No suffix' })
       this.suffixOptions = suffixOptions
@@ -153,16 +156,53 @@ export default {
     },
     suffixedBarcodes() {
       let listSuffixedBarcodes = []
+      let noOfLabels = this.form.selectedNumberOfLabels
+      let applyLabels = noOfLabels > 1 && noOfLabels <= 9
 
-      //Add the four letter suffix plus the label number to the barcodes
-      if (this.form.barcode && this.form.selectedSuffix && this.form.selectedNumberOfLabels <= 9) {
+      //Append the four letter suffix(plus the label number, if given) to the barcodes
+      if (this.form.barcode && this.form.selectedSuffix) {
         let barcodes = this.form.barcode.split(/\r?\n|\r|\n/g)
-        let suffix = this.suffix()
-
-        for (let barcode of barcodes) {
-          for (let i = 0; i < this.form.selectedNumberOfLabels; i++) {
-            listSuffixedBarcodes.push(barcode.concat('-', suffix, i + 1))
-          }
+        switch (true) {
+          case this.suffix() && applyLabels:
+            listSuffixedBarcodes = this.appendSuffixWithLabels(
+              barcodes,
+              listSuffixedBarcodes,
+              noOfLabels,
+            )
+            break
+          case this.suffix() && !applyLabels:
+            listSuffixedBarcodes = this.appendSuffix(barcodes, listSuffixedBarcodes)
+            break
+          case applyLabels && !this.suffix():
+            listSuffixedBarcodes = this.appendLabels(barcodes, listSuffixedBarcodes, noOfLabels)
+            break
+          case !applyLabels && !this.suffix():
+            for (let barcode of barcodes) {
+              listSuffixedBarcodes.push(barcode)
+            }
+            break
+        }
+      }
+      return listSuffixedBarcodes
+    },
+    appendSuffix(barcodes, listSuffixedBarcodes) {
+      for (let barcode of barcodes) {
+        listSuffixedBarcodes.push(barcode.concat('-', this.suffix()))
+      }
+      return listSuffixedBarcodes
+    },
+    appendLabels(barcodes, listSuffixedBarcodes, noOfLabels) {
+      for (let barcode of barcodes) {
+        for (let i = 0; i < noOfLabels; i++) {
+          listSuffixedBarcodes.push(barcode.concat('-', i + 1))
+        }
+      }
+      return listSuffixedBarcodes
+    },
+    appendSuffixWithLabels(barcodes, listSuffixedBarcodes, noOfLabels) {
+      for (let barcode of barcodes) {
+        for (let i = 0; i < noOfLabels; i++) {
+          listSuffixedBarcodes.push(barcode.concat('-', this.suffix(), '-', i + 1))
         }
       }
       return listSuffixedBarcodes
