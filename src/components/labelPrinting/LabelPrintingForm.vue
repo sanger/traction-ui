@@ -159,11 +159,12 @@ export default {
       let noOfLabels = this.form.selectedNumberOfLabels
       let applyLabels = noOfLabels > 1 && noOfLabels <= 9
 
-      //Append the four letter suffix(plus the label number, if given) to the barcodes
+      //Append the four letter suffix and/or the label number, if given to the barcodes
       if (this.form.barcode && this.form.selectedSuffix) {
         let barcodes = this.form.barcode.split(/\r?\n|\r|\n/g)
         switch (true) {
           case this.suffix() && applyLabels:
+            //Add both suffix and label number to the barcodes to be printed
             listSuffixedBarcodes = this.appendSuffixWithLabels(
               barcodes,
               listSuffixedBarcodes,
@@ -171,12 +172,15 @@ export default {
             )
             break
           case this.suffix() && !applyLabels:
+            //Add only suffix to the barcodes to be printed
             listSuffixedBarcodes = this.appendSuffix(barcodes, listSuffixedBarcodes)
             break
           case applyLabels && !this.suffix():
+            //Add only label number to the barcodes to be printed
             listSuffixedBarcodes = this.appendLabels(barcodes, listSuffixedBarcodes, noOfLabels)
             break
           case !applyLabels && !this.suffix():
+            //Just the plain barcodes list to be printed
             for (let barcode of barcodes) {
               listSuffixedBarcodes.push(barcode)
             }
