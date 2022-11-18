@@ -1,5 +1,5 @@
 <template>
-  <div class="flex flex-row items-center gap-3 text-gray-700">
+  <div class="flex flex-row items-center gap-2 text-gray-700">
     <TractionButton theme="pagination" :disabled="isInFirstPage" @click="firstPageClick">
       <svg xmlns="http://www.w3.org/2000/svg" height="24" width="24">
         <path
@@ -23,11 +23,7 @@
       </svg>
     </TractionButton>
     <div v-for="page in pages" :key="page.name">
-      <traction-button
-        :theme="getPageButtonTheme(page.name)"
-        :disabled="page.isDisabled"
-        @click="pageClick(page.name)"
-      >
+      <traction-button :theme="getPageButtonTheme(page.name)" @click="pageClick(page.name)">
         {{ page.name }}
       </traction-button>
     </div>
