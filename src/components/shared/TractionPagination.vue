@@ -59,8 +59,6 @@ export default {
   /**
    * # TractionPagination
    *
-   *
-   *
    * Displays a pagination component
    *
    */
@@ -86,7 +84,7 @@ export default {
     },
     maxVisibleButtons: {
       type: Number,
-      default: 3,
+      default: 5,
     },
   },
   data() {
@@ -98,20 +96,22 @@ export default {
     totalPages() {
       return Math.ceil(this.totalRows / this.perPage)
     },
-
+    visibleButtons() {
+      return Math.min(this.totalPages,this.maxVisibleButtons)
+    },
     startPage() {
       if (this.currentPage === 1) {
         return 1
       }
 
       if (this.currentPage === this.totalPages) {
-        return this.totalPages - this.maxVisibleButtons + 1
+        return this.totalPages - this.visibleButtons + 1
       }
 
       return this.currentPage - 1
     },
     endPage() {
-      return Math.min(this.startPage + this.maxVisibleButtons - 1, this.totalPages)
+      return Math.min(this.startPage + this.visibleButtons - 1, this.totalPages)
     },
     pages() {
       const range = []
