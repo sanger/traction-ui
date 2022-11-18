@@ -1,86 +1,111 @@
 [
   {
-    "tubeStage": "PreLibrary",
-    "suffix": "UPRL"
+    "workflow": "PacBio UltraLow",
+    "options": [
+      {
+        "tubeStage": "PreLibrary",
+        "suffix": "UPRL"
+      },
+      {
+        "tubeStage": "Pre PCR Amplification",
+        "suffix": "UPPA"
+      },
+      {
+        "tubeStage": "Post Amplification A",
+        "suffix": "UPAA"
+      },
+      {
+        "tubeStage": "Post Amplification B",
+        "suffix": "UPAB"
+      },
+      {
+        "tubeStage": "Post Pool pre-Size Selection",
+        "suffix": "UPPS"
+      },
+      {
+        "tubeStage": "Final Library",
+        "suffix": "USBT"
+      }
+    ]
   },
   {
-    "tubeStage": "Pre PCR Amplification",
-    "suffix": "UPPA"
+    "workflow": "Extraction",
+    "options": [
+      {
+        "tubeStage": "Extraction",
+        "suffix": "EEXT"
+      },
+      {
+        "tubeStage": "Post extraction post-SPRI 1 (SPK3)",
+        "suffix": "ESP1"
+      },
+      {
+        "tubeStage": "Sheared",
+        "suffix": "ESHR"
+      },
+      {
+        "tubeStage": "Sheared + SPRI",
+        "suffix": "ESP2"
+      },
+      {
+        "tubeStage": "Supernatant",
+        "suffix": "ESN1"
+      },
+      {
+        "tubeStage": "Supernatant",
+        "suffix": "ESN2"
+      }
+    ]
   },
   {
-    "tubeStage": "Post Amplification A",
-    "suffix": "UPAA"
+    "workflow": "ONT",
+    "options": [
+      {
+        "tubeStage": "Stock",
+        "suffix": "OSTK"
+      },
+      {
+        "tubeStage": "Sheared",
+        "suffix": "OSHR"
+      },
+      {
+        "tubeStage": "PreLib",
+        "suffix": "OPRL"
+      },
+      {
+        "tubeStage": "End Repaired",
+        "suffix": "OEND"
+      },
+      {
+        "tubeStage": "Final Library",
+        "suffix": "OFIN"
+      },
+      {
+        "tubeStage": "Pool",
+        "suffix": "OPLX"
+      }
+    ]
   },
   {
-    "tubeStage": "Post Amplification B",
-    "suffix": "UPAB"
+    "workflow": "HiC",
+    "options": [
+      {
+        "tubeStage": "Excess x-linked?",
+        "suffix": "HXCL"
+      }
+    ]
   },
   {
-    "tubeStage": "Post Pool pre-Size Selection",
-    "suffix": "UPPS"
-  },
-  {
-    "tubeStage": "Final Library",
-    "suffix": "USBT"
-  },
-  {
-    "tubeStage": "Extraction",
-    "suffix": "EEXT"
-  },
-  {
-    "tubeStage": "Post extraction post-SPRI 1 (SPK3)",
-    "suffix": "ESP1"
-  },
-  {
-    "tubeStage": "Sheared",
-    "suffix": "ESHR"
-  },
-  {
-    "tubeStage": "Sheared + SPRI",
-    "suffix": "ESP2"
-  },
-  {
-    "tubeStage": "Supernatant",
-    "suffix": "ESN1"
-  },
-  {
-    "tubeStage": "Supernatant",
-    "suffix": "ESN2"
-  },
-  {
-    "tubeStage": "Stock",
-    "suffix": "OSTK"
-  },
-  {
-    "tubeStage": "Sheared",
-    "suffix": "OSHR"
-  },
-  {
-    "tubeStage": "PreLib",
-    "suffix": "OPRL"
-  },
-  {
-    "tubeStage": "End Repaired",
-    "suffix": "OEND"
-  },
-  {
-    "tubeStage": "Final Library",
-    "suffix": "OFIN"
-  },
-  {
-    "tubeStage": "Pool",
-    "suffix": "OPLX"
-  },
-  {
-    "tubeStage": "Excess x-linked?",
-    "suffix": "HXCL"
-  },
-  {
-    "tubeStage": "Extraction",
-    "suffix": "BEXT"
-  },
-  {
-    "tubeStage": "Labelling",
-    "suffix": "BDLE"
+    "workflow": "BioNano",
+    "options": [
+      {
+        "tubeStage": "Extraction",
+        "suffix": "BEXT"
+      },
+      {
+        "tubeStage": "Labelling",
+        "suffix": "BDLE"
+      }
+    ]
   }
 ]
