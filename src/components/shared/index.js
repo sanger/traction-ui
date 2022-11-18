@@ -16,7 +16,7 @@ import TractionSpinner from '@/components/shared/TractionSpinner'
 import TractionInput from '@/components/shared/TractionInput'
 import TractionFieldError from '@/components/shared/TractionFieldError'
 import TractionResultIcon from '@/components/shared/icons/TractionResultIcon'
-
+import TractionPagination from '@/components/shared/TractionPagination'
 import {
   BModal,
   VBModal,
@@ -51,7 +51,7 @@ import {
   BCardBody,
   BInputGroup,
   BInputGroupAppend,
-  BPagination,
+  //BPagination,
 } from 'bootstrap-vue'
 
 const registerBootstrapComponents = (vue) => {
@@ -89,8 +89,8 @@ const registerBootstrapComponents = (vue) => {
   vue.component('traction-nav', BNav)
   vue.component('traction-input-group', BInputGroup)
   vue.component('traction-input-group-append', BInputGroupAppend)
-  vue.component('traction-pagination', BPagination)
-
+  //vue.component('traction-pagination', BPagination)
+  vue.component('traction-pagination', TractionPagination)
   /*
     directive is marked wth a v in front
     so it will be used as 'v-traction-modal'

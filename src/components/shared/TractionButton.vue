@@ -50,6 +50,7 @@ const themes = {
   edit: 'text-white bg-sdb-400 hover:bg-sdb active:bg-sdb-600',
   reset: 'text-white bg-sdb-400 hover:bg-sdb active:bg-sdb-600',
   cancel: 'text-white bg-sdb-400 hover:bg-sdb active:bg-sdb-600',
+  pagination: 'bg-white text-black border-2 border-gray-300',
 }
 
 export default {
