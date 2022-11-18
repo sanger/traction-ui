@@ -21,6 +21,7 @@ describe('barcodePrinting', () => {
       copies: 1,
     }
 
+    // TODO: Check payload
     it('successful', async () => {
       const message = 'Barcodes successfully printed'
       const mockResponse = {
@@ -36,6 +37,7 @@ describe('barcodePrinting', () => {
       expect(data).toEqual({ message })
     })
 
+    //TODO: Check errors are correct
     it('unsuccessful', async () => {
       const mockResponse = {
         status: '422',
