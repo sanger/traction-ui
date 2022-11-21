@@ -1,9 +1,8 @@
 <template>
   <button
     :class="[
-      'w-full inline-flex justify-center rounded-md border border-transparent',
+      'w-full inline-flex justify-center rounded-md ',
       'px-4 py-2 font-medium',
-      'focus:outline-none focus:ring-2 focus:ring-offset-2',
       'sm:mt-0 sm:text-sm disabled:cursor-not-allowed disabled:opacity-50',
       themeStyle,
       sizeStyle,
@@ -50,7 +49,9 @@ const themes = {
   edit: 'text-white bg-sdb-400 hover:bg-sdb active:bg-sdb-600',
   reset: 'text-white bg-sdb-400 hover:bg-sdb active:bg-sdb-600',
   cancel: 'text-white bg-sdb-400 hover:bg-sdb active:bg-sdb-600',
-  pagination: 'bg-white text-black border-2 border-gray-300 hover:bg-gray-400',
+  paginationDefault: 'bg-white text-black  border-gray-300 hover:bg-gray-400',
+  paginationSelect:
+    'text-white bg-sdb-200 shadow-sm focus:shadow-outline-sdb hover:bg-sdb-300 active:bg-sdb-400',
 }
 
 export default {
