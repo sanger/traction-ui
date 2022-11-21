@@ -6,31 +6,40 @@ const formatDate = () => {
   return `${dd}-${mmm}-${yyyy.slice(2)}`
 }
 
+const getSuffix = (suffix, barcode) => {
+  return suffix ? barcode.slice(barcode.lastIndexOf('-') + 1) : ''
+}
+
+const trimBarcode = (suffix, barcode) => {
+  return suffix ? barcode.slice(0, barcode.lastIndexOf('-')) : barcode
+}
+
 describe('actions', () => {
-  let printerName, barcodesList, copies, tubeLabelTemplateName, createPrintJobJsonV2
+  let printerName, barcodesList, copies, tubeLabelTemplateName, createPrintJobJson, suffix
 
   beforeEach(() => {
     printerName = 'aPrinterName'
-    barcodesList = ['aBarcode-A1', 'aBarcode-A2']
+    barcodesList = ['aBarcode-UPPA1', 'aBarcode-UPPA2']
     copies = '2'
     tubeLabelTemplateName = 'traction_tube_label_template'
+    suffix = 'UPPA'
 
-    createPrintJobJsonV2 = {
+    createPrintJobJson = {
       print_job: {
         printer_name: printerName,
         label_template_name: 'traction_tube_label_template',
         labels: [
           {
             first_line: formatDate(),
-            second_line: barcodesList[0],
-            third_line: '',
+            second_line: trimBarcode(suffix, barcodesList[0]),
+            third_line: getSuffix(suffix, barcodesList[0]),
             barcode: barcodesList[0],
             label_name: 'main_label',
           },
           {
             first_line: formatDate(),
-            second_line: barcodesList[1],
-            third_line: '',
+            second_line: trimBarcode(suffix, barcodesList[1]),
+            third_line: getSuffix(suffix, barcodesList[1]),
             barcode: barcodesList[1],
             label_name: 'main_label',
           },
@@ -40,14 +49,14 @@ describe('actions', () => {
     }
   })
 
-  describe('#printJobV2', () => {
+  describe('#printJob', () => {
     let params, create, getters
 
     beforeEach(() => {
       create = vi.fn()
 
       getters = {
-        printJobV2Request: { create: create },
+        printJobRequest: { create: create },
         tubeLabelTemplateName: tubeLabelTemplateName,
       }
 
@@ -55,6 +64,7 @@ describe('actions', () => {
         printerName: printerName,
         barcodesList: barcodesList,
         copies: copies,
+        suffix: suffix,
       }
     })
 
@@ -65,9 +75,9 @@ describe('actions', () => {
         success: true,
       })
 
-      const response = await Actions.printJobV2({ getters }, params)
+      const response = await Actions.printJob({ getters }, params)
 
-      expect(create).toHaveBeenCalledWith({ data: createPrintJobJsonV2 })
+      expect(create).toHaveBeenCalledWith({ data: createPrintJobJson })
       expect(response).toEqual(expectedResponse)
     })
 
@@ -87,9 +97,9 @@ describe('actions', () => {
         },
       }
 
-      const response = await Actions.printJobV2({ getters }, params)
+      const response = await Actions.printJob({ getters }, params)
 
-      expect(create).toHaveBeenCalledWith({ data: createPrintJobJsonV2 })
+      expect(create).toHaveBeenCalledWith({ data: createPrintJobJson })
       expect(response).toEqual(expectedResponse)
     })
 
@@ -97,7 +107,7 @@ describe('actions', () => {
       const emptyResponse = { success: false, data: { errors: [] } }
 
       create.mockReturnValue(emptyResponse)
-      const response = await Actions.printJobV2({ getters }, params)
+      const response = await Actions.printJob({ getters }, params)
 
       const expectedResponse = {
         success: false,
@@ -106,21 +116,22 @@ describe('actions', () => {
         },
       }
 
-      expect(create).toHaveBeenCalledWith({ data: createPrintJobJsonV2 })
+      expect(create).toHaveBeenCalledWith({ data: createPrintJobJson })
       expect(response).toEqual(expectedResponse)
     })
   })
 
-  describe('#createPrintJobJsonV2', () => {
+  describe('#createPrintJobJson', () => {
     it('returns the correct json', () => {
       const params = {
         printerName: printerName,
         barcodesList: barcodesList,
         copies: copies,
+        suffix: suffix,
       }
 
-      const result = Actions.createPrintJobJsonV2(params, tubeLabelTemplateName)
-      expect(result).toEqual(createPrintJobJsonV2)
+      const result = Actions.createPrintJobJson(params, tubeLabelTemplateName)
+      expect(result).toEqual(createPrintJobJson)
     })
   })
 })

@@ -42,3 +42,4 @@ coverage
 /src/styles/index.css
 # Ignore the build stats file
 /stats.html
+.DS_Store

@@ -96,16 +96,6 @@
   },
   {
     "name": "printMyBarcode",
-    "apiNamespace": "v1",
-    "baseURL": "VITE_PRINTMYBARCODE_BASE_URL",
-    "resources": [
-      {
-        "name": "print_jobs"
-      }
-    ]
-  },
-  {
-    "name": "printMyBarcodeV2",
     "apiNamespace": "v2",
     "baseURL": "VITE_PRINTMYBARCODE_BASE_URL",
     "resources": [

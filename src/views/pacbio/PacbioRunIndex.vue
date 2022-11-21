@@ -185,6 +185,7 @@ export default {
     redirectToRun(runId) {
       this.$router.push({ path: `/pacbio/run/${runId || 'new'}` })
     },
+
     ...mapActions('traction/pacbio/runs', ['setRuns', 'generateSampleSheet']),
     ...mapActions('traction', ['startRun', 'completeRun', 'cancelRun']),
   },

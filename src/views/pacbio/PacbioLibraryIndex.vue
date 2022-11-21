@@ -89,8 +89,7 @@
         :total-rows="libraries.length"
         :per-page="perPage"
         aria-controls="library-index"
-      >
-      </traction-pagination>
+      />
     </div>
 
     <traction-form-group label-cols-lg="1" label="Per Page" label-for="input-per-page">
@@ -185,7 +184,7 @@ export default {
       }
     },
     ...mapActions('traction/pacbio/libraries', ['deleteLibraries', 'setLibraries']),
-    ...mapActions('printMyBarcode', ['printJobV2']),
+    ...mapActions('printMyBarcode', ['printJob']),
   },
 }
 </script>

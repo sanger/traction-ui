@@ -12,5 +12,4 @@ module.exports = {
   },
   important: true,
   corePlugins: {},
-  plugins: [],
 }

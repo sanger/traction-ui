@@ -194,8 +194,9 @@ export default {
         this.showAlert('Failed to get pools: ' + error.message, 'danger')
       }
     },
+
     ...mapActions('traction/pacbio/pools', ['setPools']),
-    ...mapActions('printMyBarcode', ['printJobV2']),
+    ...mapActions('printMyBarcode', ['printJob']),
   },
 }
 </script>

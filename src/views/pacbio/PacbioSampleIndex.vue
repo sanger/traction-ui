@@ -172,8 +172,9 @@ export default {
         this.showAlert('Failed to get samples: ' + error.message, 'danger')
       }
     },
+
     ...mapActions('traction/pacbio/requests', ['setRequests']),
-    ...mapActions('printMyBarcode', ['printJobV2']),
+    ...mapActions('printMyBarcode', ['printJob']),
   },
 }
 </script>

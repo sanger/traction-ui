@@ -1,15 +1,11 @@
 import { handleResponse } from '@/api/ResponseHelper'
 
-// When PrintJobRequest and PMB v1 API is updated to use PMB v2
-// Then, rename the printJobV2 function here to not include v2
-// The rest of the app doesn't care how we are printing things, and that way,
-// if we updated to V3 for instance, the changes could be isolated here.
-const printJobV2 = async ({ getters }, params) => {
-  const request = getters.printJobV2Request
+const printJob = async ({ getters }, params) => {
+  const request = getters.printJobRequest
 
   const labelTemplateName = getters.tubeLabelTemplateName
 
-  const payload = createPrintJobJsonV2(params, labelTemplateName)
+  const payload = createPrintJobJson(params, labelTemplateName)
 
   const promise = request.create({ data: payload })
 
@@ -31,8 +27,8 @@ const printJobV2 = async ({ getters }, params) => {
   return response
 }
 
-const createPrintJobJsonV2 = (params, labelTemplateName) => {
-  const labels = createLabelsV2(params.barcodesList)
+const createPrintJobJson = (params, labelTemplateName) => {
+  const labels = createLabelsV2(params)
 
   return {
     print_job: {
@@ -44,13 +40,13 @@ const createPrintJobJsonV2 = (params, labelTemplateName) => {
   }
 }
 
-const createLabelsV2 = (barcodesList) => {
-  return barcodesList.map((barcode) => {
+const createLabelsV2 = (params) => {
+  return params.barcodesList.map((barcode) => {
     return {
       barcode: barcode,
       first_line: formatDate(),
-      second_line: barcode,
-      third_line: '',
+      second_line: trimBarcode(params.suffix, barcode),
+      third_line: getSuffix(params.suffix, barcode),
       label_name: 'main_label',
     }
   })
@@ -61,10 +57,18 @@ const formatDate = () => {
   return `${dd}-${mmm}-${yyyy.slice(2)}`
 }
 
-const actions = {
-  printJobV2,
+const getSuffix = (suffix, barcode) => {
+  return suffix ? barcode.slice(barcode.lastIndexOf('-') + 1) : ''
 }
 
-export { printJobV2, createPrintJobJsonV2 }
+const trimBarcode = (suffix, barcode) => {
+  return suffix ? barcode.slice(0, barcode.lastIndexOf('-')) : barcode
+}
+
+const actions = {
+  printJob,
+}
+
+export { printJob, createPrintJobJson }
 
 export default actions
