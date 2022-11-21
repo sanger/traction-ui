@@ -69,11 +69,13 @@
 
       <template #row-details="row">
         <traction-card class="text-left">
-          <template v-for="(field, index) in field_in_details">
-            <span :key="field.label + index" class="font-weight-bold">{{ field.label }}</span
-            >: {{ row.item[field.item] }}
-            <br :key="field.label" />
-          </template>
+          <span
+            v-for="(field, index) in field_in_details"
+            :key="field.label + index"
+            class="font-weight-bold"
+            >{{ field.label }}</span
+          >: {{ row.item[field.item] }}
+          <br />
         </traction-card>
       </template>
     </traction-table>

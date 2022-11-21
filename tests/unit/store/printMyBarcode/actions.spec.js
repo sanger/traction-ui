@@ -1,5 +1,6 @@
-import * as Actions from '@/store/printMyBarcode/actions'
+import actions from '@/store/printMyBarcode/actions'
 import { newResponse } from '@/api/ResponseHelper'
+import defaultState from '@/store/printMyBarcode/state'
 
 const formatDate = () => {
   const [, mmm, dd, yyyy] = new Date().toDateString().split(' ')
@@ -15,7 +16,9 @@ const trimBarcode = (suffix, barcode) => {
 }
 
 describe('actions', () => {
-  let printerName, barcodesList, copies, tubeLabelTemplateName, createPrintJobJson, suffix
+  const { printJob, createPrintJobJson, createPrintJob } = actions
+
+  let printerName, barcodesList, copies, tubeLabelTemplateName, printJobJson, suffix
 
   beforeEach(() => {
     printerName = 'aPrinterName'
@@ -24,7 +27,7 @@ describe('actions', () => {
     tubeLabelTemplateName = 'traction_tube_label_template'
     suffix = 'UPPA'
 
-    createPrintJobJson = {
+    printJobJson = {
       print_job: {
         printer_name: printerName,
         label_template_name: 'traction_tube_label_template',
@@ -56,15 +59,15 @@ describe('actions', () => {
       create = vi.fn()
 
       getters = {
-        printJobRequest: { create: create },
+        printJobRequest: { create },
         tubeLabelTemplateName: tubeLabelTemplateName,
       }
 
       params = {
-        printerName: printerName,
-        barcodesList: barcodesList,
+        printerName,
+        barcodesList,
         copies: copies,
-        suffix: suffix,
+        suffix,
       }
     })
 
@@ -75,9 +78,9 @@ describe('actions', () => {
         success: true,
       })
 
-      const response = await Actions.printJob({ getters }, params)
+      const response = await printJob({ getters }, params)
 
-      expect(create).toHaveBeenCalledWith({ data: createPrintJobJson })
+      expect(create).toHaveBeenCalledWith({ data: printJobJson })
       expect(response).toEqual(expectedResponse)
     })
 
@@ -97,9 +100,9 @@ describe('actions', () => {
         },
       }
 
-      const response = await Actions.printJob({ getters }, params)
+      const response = await printJob({ getters }, params)
 
-      expect(create).toHaveBeenCalledWith({ data: createPrintJobJson })
+      expect(create).toHaveBeenCalledWith({ data: printJobJson })
       expect(response).toEqual(expectedResponse)
     })
 
@@ -107,7 +110,7 @@ describe('actions', () => {
       const emptyResponse = { success: false, data: { errors: [] } }
 
       create.mockReturnValue(emptyResponse)
-      const response = await Actions.printJob({ getters }, params)
+      const response = await printJob({ getters }, params)
 
       const expectedResponse = {
         success: false,
@@ -116,22 +119,92 @@ describe('actions', () => {
         },
       }
 
-      expect(create).toHaveBeenCalledWith({ data: createPrintJobJson })
+      expect(create).toHaveBeenCalledWith({ data: printJobJson })
       expect(response).toEqual(expectedResponse)
     })
   })
 
-  describe('#createPrintJobJson', () => {
+  describe('#printJobJson', () => {
     it('returns the correct json', () => {
       const params = {
-        printerName: printerName,
-        barcodesList: barcodesList,
-        copies: copies,
-        suffix: suffix,
+        printerName,
+        barcodesList,
+        copies,
+        suffix,
       }
 
-      const result = Actions.createPrintJobJson(params, tubeLabelTemplateName)
-      expect(result).toEqual(createPrintJobJson)
+      const result = createPrintJobJson(params, tubeLabelTemplateName)
+      expect(result).toEqual(printJobJson)
+    })
+  })
+
+  describe('#createPrintJob', () => {
+    const printJobOptions = {
+      printerName: 'my_printer',
+      labels: [
+        {
+          barcode: 'TRAC-1',
+          first_line: 'line 1',
+          second_line: 'line 2',
+          third_line: 'line 3',
+          fourth_line: 'line 4',
+          label_name: 'main_label',
+        },
+      ],
+      copies: 1,
+    }
+
+    it('successful', async () => {
+      const create = vi.fn()
+      const rootState = { api: { printMyBarcode: { print_jobs: { create } } } }
+      const mockResponse = {
+        status: '201',
+      }
+
+      create.mockResolvedValue(mockResponse)
+
+      const { success, message } = await createPrintJob(
+        { rootState, state: defaultState },
+        { ...printJobOptions },
+      )
+
+      expect(success).toBeTruthy()
+      expect(message).toEqual('Barcode(s) successfully printed')
+    })
+
+    //TODO: Check errors are correct
+    it('unsuccessful', async () => {
+      const create = vi.fn()
+      const rootState = { api: { printMyBarcode: { print_jobs: { create } } } }
+      const mockResponse = {
+        status: '422',
+        response: {
+          data: {
+            errors: [
+              {
+                source: {
+                  pointer: '/data/attributes/printer',
+                },
+                detail: "can't be blank",
+              },
+            ],
+          },
+        },
+      }
+
+      create.mockRejectedValue(mockResponse)
+
+      // eslint-disable-next-line no-unused-vars
+      const { _, ...rest } = printJobOptions
+
+      const { success, message } = await createPrintJob(
+        { rootState, state: defaultState },
+        { ...rest },
+      )
+
+      expect(success).toBeFalsy()
+      // looks like there is an issue with the errors again. How many times do we have to fix this.
+      expect(message).toEqual("/data/attributes/printer can't be blank")
     })
   })
 })
