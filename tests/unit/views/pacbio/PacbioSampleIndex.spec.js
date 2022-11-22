@@ -1,6 +1,7 @@
 import Samples from '@/views/pacbio/PacbioSampleIndex'
 import { mount, localVue, store, Data, router } from '@support/testHelper'
 import Response from '@/api/Response'
+import { beforeEach, describe, expect, it } from 'vitest'
 
 // TODO: why do we need to set sortDesc to false? I think we also need to isolate tests
 describe('Samples.vue', () => {
@@ -46,23 +47,6 @@ describe('Samples.vue', () => {
     })
   })
 
-  describe('printerModal', () => {
-    beforeEach(() => {
-      wrapper = mount(Samples, { store, router, localVue })
-      wrapper.setData({ sortDesc: false })
-
-      samples = wrapper.vm
-      samples.handlePrintLabel = vi.fn()
-    })
-
-    it('passes selected printer to function on emit event', () => {
-      samples.selected = [{ id: 1 }]
-      let modal = wrapper.findComponent({ ref: 'printerModal' })
-      modal.vm.$emit('selectPrinter', 'printer1')
-      expect(samples.handlePrintLabel).toBeCalledWith('pacbio', 'printer1')
-    })
-  })
-
   describe('sample metadata modal', () => {
     it('contains sample metadata modal', () => {
       expect(wrapper.findComponent({ ref: 'sampleMetadata' }).exists()).toBeTruthy()
@@ -93,6 +77,48 @@ describe('Samples.vue', () => {
       samples.selected = [{ id: 1 }]
       samples.$nextTick(() => {
         expect(button.props('disabled')).toBe(false)
+      })
+    })
+  })
+
+  describe('Printing labels', () => {
+    beforeEach(() => {
+      samples.selected = [
+        { id: 1, barcode: 'TRAC-1', source_identifier: 'SQSC-1' },
+        { id: 2, barcode: 'TRAC-2', source_identifier: 'SQSC-2' },
+        { id: 3, barcode: 'TRAC-2', source_identifier: 'SQSC-2' },
+      ]
+    })
+
+    describe('#createLabels', () => {
+      it('will have the correct number of labels', () => {
+        expect(samples.createLabels().length).toEqual(3)
+      })
+
+      it('will have the correct text for each label', () => {
+        const label = samples.createLabels()[0]
+        expect(label.first_line).toEqual('Pacbio - Sample')
+        expect(/\d{2}-\w{3}-\d{2}/g.test(label.second_line)).toBeTruthy()
+        expect(label.third_line).toEqual('TRAC-1')
+        expect(label.fourth_line).toEqual('SQSC-1')
+        expect(label.label_name).toEqual('main_label')
+      })
+    })
+
+    describe('#printLabels', () => {
+      beforeEach(() => {
+        samples.createPrintJob = vi.fn()
+
+        const modal = wrapper.findComponent({ ref: 'printerModal' })
+        modal.vm.$emit('selectPrinter', 'printer1')
+      })
+
+      it('should create a print job', () => {
+        expect(samples.createPrintJob).toBeCalledWith({
+          printerName: 'printer1',
+          labels: samples.createLabels(),
+          copies: '1',
+        })
       })
     })
   })
