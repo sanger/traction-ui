@@ -58,7 +58,7 @@
         ref="printerModal"
         class="float-left"
         :disabled="selected.length === 0"
-        @selectPrinter="handlePrintLabel('saphyr', $event)"
+        @selectPrinter="printLabels($event)"
       >
       </printerModal>
 
@@ -88,10 +88,10 @@
 <script>
 import EnzymeModal from '@/components/saphyr/SaphyrEnzymeModal'
 import PrinterModal from '@/components/PrinterModal'
-import PrintHelper from '@/mixins/PrintHelper'
 import TableHelper from '@/mixins/TableHelper'
 import * as consts from '@/consts/consts'
 import { mapActions, mapGetters } from 'vuex'
+import { getCurrentDate } from '@/lib/DateHelpers'
 
 export default {
   name: 'SaphyrSamples',
@@ -99,7 +99,7 @@ export default {
     EnzymeModal,
     PrinterModal,
   },
-  mixins: [PrintHelper, TableHelper],
+  mixins: [TableHelper],
   data() {
     return {
       fields: [
@@ -144,10 +144,39 @@ export default {
         console.error(err)
       }
     },
+    /*
+      create the labels needed for the print job
+      each label will be in the format { first_line: pipeline - type, second_line: current date, third_line: barcode, fourth_line: source, label_name: }
+      @returns {Array[{Object}, {Object} ...]}
+    */
+    createLabels() {
+      const date = getCurrentDate()
+      return this.selected.map(({ barcode }) => {
+        return {
+          first_line: 'Saphyr - Sample',
+          second_line: date,
+          third_line: barcode,
+          label_name: 'main_label',
+        }
+      })
+    },
+    /*
+      Creates the print job and shows a success or failure alert
+      @param {String} printerName The name of the printer to send the print job to
+    */
+    async printLabels(printerName) {
+      const { success, message = {} } = await this.createPrintJob({
+        printerName,
+        labels: this.createLabels(),
+        copies: '1',
+      })
+
+      this.showAlert(message, success ? 'success' : 'danger')
+    },
 
     ...mapActions('traction/saphyr/tubes', ['createLibrariesInTraction']),
     ...mapActions('traction/saphyr/requests', ['setRequests']),
-    ...mapActions('printMyBarcode', ['printJob']),
+    ...mapActions('printMyBarcode', ['createPrintJob']),
   },
 }
 </script>

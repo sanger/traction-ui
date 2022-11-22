@@ -107,20 +107,6 @@ describe('Samples.vue', () => {
     })
   })
 
-  describe('printerModal', () => {
-    beforeEach(() => {
-      wrapper.setData({ sortDesc: false })
-      samples.handlePrintLabel = vi.fn()
-    })
-
-    it('passes selected printer to function on emit event', () => {
-      samples.selected = [{ id: 1 }]
-      let modal = wrapper.findComponent({ ref: 'printerModal' })
-      modal.vm.$emit('selectPrinter', 'printer1')
-      expect(samples.handlePrintLabel).toBeCalledWith('saphyr', 'printer1')
-    })
-  })
-
   describe('enzymeModal', () => {
     beforeEach(() => {
       wrapper.setData({ sortDesc: false })
@@ -133,6 +119,49 @@ describe('Samples.vue', () => {
       modal.vm.$emit('selectEnzyme', 2)
 
       expect(samples.createLibraries).toBeCalledWith(2)
+    })
+  })
+
+  describe('Printing labels', () => {
+    beforeEach(() => {
+      samples.selected = [
+        { id: 1, barcode: 'TRAC-1' },
+        { id: 2, barcode: 'TRAC-2' },
+        { id: 3, barcode: 'TRAC-2' },
+      ]
+    })
+
+    describe('#createLabels', () => {
+      it('will have the correct number of labels', () => {
+        expect(samples.createLabels().length).toEqual(3)
+      })
+
+      it('will have the correct text for each label', () => {
+        const label = samples.createLabels()[0]
+        expect(label.first_line).toEqual('Saphyr - Sample')
+        expect(/\d{2}-\w{3}-\d{2}/g.test(label.second_line)).toBeTruthy()
+        expect(label.third_line).toEqual('TRAC-1')
+        expect(label.label_name).toEqual('main_label')
+      })
+    })
+
+    describe('#printLabels', () => {
+      beforeEach(() => {
+        samples.createPrintJob = vi.fn().mockImplementation(() => {
+          return { success: true, message: 'success' }
+        })
+
+        const modal = wrapper.findComponent({ ref: 'printerModal' })
+        modal.vm.$emit('selectPrinter', 'printer1')
+      })
+
+      it('should create a print job', () => {
+        expect(samples.createPrintJob).toBeCalledWith({
+          printerName: 'printer1',
+          labels: samples.createLabels(),
+          copies: '1',
+        })
+      })
     })
   })
 })

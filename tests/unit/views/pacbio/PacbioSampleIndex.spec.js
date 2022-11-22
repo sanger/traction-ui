@@ -107,7 +107,9 @@ describe('Samples.vue', () => {
 
     describe('#printLabels', () => {
       beforeEach(() => {
-        samples.createPrintJob = vi.fn()
+        samples.createPrintJob = vi.fn().mockImplementation(() => {
+          return { success: true, message: 'success' }
+        })
 
         const modal = wrapper.findComponent({ ref: 'printerModal' })
         modal.vm.$emit('selectPrinter', 'printer1')
