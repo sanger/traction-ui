@@ -95,6 +95,7 @@ export default {
       fields: [
         { key: 'selected', label: '' },
         { key: 'id', label: 'Sample ID (Request)', sortable: true },
+        { key: 'sample_name', label: 'Sample Name', sortable: true },
         { key: 'library_type', label: 'Library type' },
         { key: 'data_type', label: 'Data type' },
         { key: 'number_of_flowcells', label: 'Number of flowcells' },

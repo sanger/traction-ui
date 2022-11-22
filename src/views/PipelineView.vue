@@ -4,7 +4,7 @@
       ><traction-menu-item
         v-for="(pipelineRoute, index) in pipelineInfo.routes"
         :key="index"
-        :active="index == sourceIndex"
+        :active="isActive(pipelineRoute)"
         color="blue"
         @click.native="setSource(index)"
         >{{ humanise(pipelineRoute) }}</traction-menu-item
@@ -50,6 +50,9 @@ export default {
           console.error(error)
         }
       })
+    },
+    isActive(pipelineRoute) {
+      return this.$route.path === this.path(pipelineRoute)
     },
     humanise,
   },

@@ -1,14 +1,41 @@
+import { wellToIndex } from './wellHelpers'
+
 const mergeRepresentations = (parent, child, keyFunction = (id) => id) => {
   return Object.values(parent).map((parentRecord) => {
     return { ...child[keyFunction(parentRecord.id)], ...parentRecord }
   })
 }
 
+const sortRequestByWellColumnIndex = (resources) => (a, b) =>
+  wellToIndex(resources.wells[a.well] || { position: 'A1' }) -
+  wellToIndex(resources.wells[b.well] || { position: 'A1' })
+
 export default {
   /**
    * @param {Object} state The VueX store
    */
   requests: (state) => Object.values(state.resources.requests),
+
+  /**
+   * Returns the pool
+   * @param {Object} state The Vuex state object
+   */
+  poolItem: (state) => state.pool || {},
+
+  /**
+   * Returns the tube
+   * @param {Object} state The Vuex state object
+   */
+  tubeItem: (state) => state.tube || {},
+
+  /**
+   * Returns a library
+   * @param {Object} state The Vuex state object
+   */
+  libraryItem:
+    ({ libraries }) =>
+    (id) =>
+      libraries[`_${id}`],
 
   /**
    * Returns a list of selected plates
@@ -81,5 +108,21 @@ export default {
     } else {
       return { id: null, tags: [] }
     }
+  },
+
+  /**
+   * Returns a list of selected requests
+   *
+   * Note: Ordering is grouped by plate (in id order) and sorted in column order
+   * @param {Object} state The Vuex state object
+   * @return {Array} An array of selected requests in the order in which they were selected
+   */
+  selectedRequests: ({ libraries, resources }) => {
+    return Object.values(libraries)
+      .map(({ ont_request_id }) => ({
+        ...resources.requests[ont_request_id],
+        selected: true,
+      }))
+      .sort(sortRequestByWellColumnIndex(resources))
   },
 }

@@ -81,7 +81,7 @@ const extractPoolAttributes = ({ kit_barcode, volume, concentration, insert_size
 
 /*
   produce a json api compliant payload
-  e.g. { data: { type: 'pools', attributes: { library_attributes: [ library1, library2 ... ], template_prep_kit_box_barcode, volume, concentration, insert_size}}}
+  e.g. { data: { type: 'pools', attributes: { library_attributes: [ library1, library2 ... ], kit_barcode, volume, concentration, insert_size}}}
 */
 const payload = ({ libraries, pool }) => {
   return {

@@ -95,6 +95,9 @@
           },
           {
             "name": "tag_sets"
+          },
+          {
+            "name": "pools"
           }
         ]
       }

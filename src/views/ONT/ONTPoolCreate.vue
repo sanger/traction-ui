@@ -1,5 +1,5 @@
 <template>
-  <DataFetcher id="pool" :fetcher="fetchOntTagSets">
+  <DataFetcher id="pool" :fetcher="provider">
     <div class="flex flex-row">
       <div class="flex flex-col w-1/2 px-4">
         <div class="flex flex-col">
@@ -16,7 +16,7 @@
           <OntTagSetItem />
         </div>
         <div>
-          <!-- <PacbioPoolEdit /> -->
+          <OntPoolEdit />
         </div>
       </div>
     </div>
@@ -27,6 +27,7 @@
 import OntTagSetList from '@/components/ont/OntTagSetList'
 import OntPlateSelectedList from '@/components/ont/OntPlateSelectedList'
 import OntTagSetItem from '@/components/ont/OntTagSetItem'
+import OntPoolEdit from '@/components/ont/OntPoolEdit'
 import LabwareFinder from '@/components/LabwareFinder'
 import DataFetcher from '@/components/DataFetcher'
 
@@ -37,10 +38,11 @@ export default {
   name: 'ONTPoolCreate',
   components: {
     OntTagSetList,
-    LabwareFinder,
     OntPlateSelectedList,
     OntTagSetItem,
+    OntPoolEdit,
     DataFetcher,
+    LabwareFinder,
   },
   //   created() {
   //     // const requests = this.fetchPacbioRequests()
@@ -65,8 +67,16 @@ export default {
         this.showAlert(errors, 'danger')
       }
     },
-    // ...mapActions(['populateLibrariesFromPool']),
-    ...mapActions(['findOntPlate', 'fetchOntTagSets']),
+    async provider() {
+      let response = { success: false, errors: [] }
+      this.setPoolData(this.$route.params.id)
+      await this.fetchOntTagSets().then((res) => {
+        console.log(res)
+        response = res
+      })
+      return response
+    },
+    ...mapActions(['findOntPlate', 'fetchOntTagSets', 'setPoolData']),
   },
 }
 </script>
