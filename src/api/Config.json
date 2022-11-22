@@ -89,6 +89,12 @@
         "resources": [
           {
             "name": "requests"
+          },
+          {
+            "name": "plates"
+          },
+          {
+            "name": "tag_sets"
           }
         ]
       }

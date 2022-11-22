@@ -126,7 +126,9 @@ export default {
       const filter = {
         [this.filterValue]: this.filterInput,
       }
-      await this.fetchOntRequests(filter)
+      await this.fetchOntRequests(filter).then(({ success, errors }) => {
+        success ? '' : this.showAlert(errors, 'danger')
+      })
     },
     async resetFilter() {
       this.filterValue = ''
