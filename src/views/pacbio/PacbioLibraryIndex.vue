@@ -183,6 +183,7 @@ export default {
       const date = getCurrentDate()
       return this.selected.map(({ barcode, source_identifier }) => {
         return {
+          barcode,
           first_line: 'Pacbio - Library',
           second_line: date,
           third_line: barcode,

@@ -173,6 +173,7 @@ export default {
       const date = getCurrentDate()
       return this.selected.map(({ barcode }) => {
         return {
+          barcode,
           first_line: 'Saphyr - Library',
           second_line: date,
           third_line: barcode,

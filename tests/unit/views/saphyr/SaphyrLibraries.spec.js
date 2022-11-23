@@ -139,6 +139,7 @@ describe('Libraries.vue', () => {
 
       it('will have the correct text for each label', () => {
         const label = libraries.createLabels()[0]
+        expect(label.barcode).toEqual('TRAC-1')
         expect(label.first_line).toEqual('Saphyr - Library')
         expect(/\d{2}-\w{3}-\d{2}/g.test(label.second_line)).toBeTruthy()
         expect(label.third_line).toEqual('TRAC-1')
