@@ -123,18 +123,46 @@ describe('Libraries.vue', () => {
     })
   })
 
-  describe('printerModal', () => {
+  describe('Printing labels', () => {
     beforeEach(() => {
-      wrapper.setData({ sortDesc: false })
-      libraries.handlePrintLabel = vi.fn()
+      libraries.selected = [
+        { id: 1, barcode: 'TRAC-1' },
+        { id: 2, barcode: 'TRAC-2' },
+        { id: 3, barcode: 'TRAC-2' },
+      ]
     })
 
-    it('passes selected printer to function on emit event', () => {
-      libraries.selected = [{ id: 1 }]
-      let modal = wrapper.findComponent({ ref: 'printerModal' })
-      modal.vm.$emit('selectPrinter', 'printer1')
+    describe('#createLabels', () => {
+      it('will have the correct number of labels', () => {
+        expect(libraries.createLabels().length).toEqual(3)
+      })
 
-      expect(libraries.handlePrintLabel).toBeCalledWith('saphyr', 'printer1')
+      it('will have the correct text for each label', () => {
+        const label = libraries.createLabels()[0]
+        expect(label.first_line).toEqual('Saphyr - Library')
+        expect(/\d{2}-\w{3}-\d{2}/g.test(label.second_line)).toBeTruthy()
+        expect(label.third_line).toEqual('TRAC-1')
+        expect(label.label_name).toEqual('main_label')
+      })
+    })
+
+    describe('#printLabels', () => {
+      beforeEach(() => {
+        libraries.createPrintJob = vi.fn().mockImplementation(() => {
+          return { success: true, message: 'success' }
+        })
+
+        const modal = wrapper.findComponent({ ref: 'printerModal' })
+        modal.vm.$emit('selectPrinter', 'printer1')
+      })
+
+      it('should create a print job', () => {
+        expect(libraries.createPrintJob).toBeCalledWith({
+          printerName: 'printer1',
+          labels: libraries.createLabels(),
+          copies: '1',
+        })
+      })
     })
   })
 })
