@@ -168,6 +168,11 @@ describe('actions', () => {
         { ...printJobOptions },
       )
 
+      const { printerName: printer_name, ...payload } = printJobOptions
+
+      expect(create).toBeCalledWith({
+        data: { ...payload, printer_name, label_template_name: defaultState.tubeLabelTemplateName },
+      })
       expect(success).toBeTruthy()
       expect(message).toEqual('Barcode(s) successfully printed')
     })

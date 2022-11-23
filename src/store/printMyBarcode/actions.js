@@ -83,7 +83,7 @@ const createPrintJob = async (
 
   const payload = {
     printer_name: printerName,
-    label_template: tubeLabelTemplateName,
+    label_template_name: tubeLabelTemplateName,
     labels,
     copies,
   }
