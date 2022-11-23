@@ -3,6 +3,16 @@ import { groupIncludedByResource } from '@/api/JsonApi'
 import { wellFor, wellToIndex } from './wellHelpers'
 import { validate, valid, payload } from './pool'
 
+// We should move all of these non-exported functions to a helper file
+// These can be shared across ONT and Pacbio
+// Only issue is that some commit to specifc stores but should be fairly easy to move out
+
+const sourceRegex = /^(?<barcode>[\w-]+)(:(?<wellName>\w[0-9]{1,2})){0,1}$/
+
+const errorFor = ({ lines, records }, message) => `Library ${records} on line ${lines}: ${message}`
+const csvLogger = (commit, info, level) => (message) =>
+  commit('traction/addMessage', { type: level, message: errorFor(info, message) }, { root: true })
+
 const autoTagPlate = ({ state, commit }, { library }) => {
   const initialWell = wellFor(state, library)
   const initialIndex = wellToIndex(initialWell)
@@ -24,6 +34,66 @@ const autoTagPlate = ({ state, commit }, { library }) => {
   })
 }
 
+const requestsForPlate = ({ barcode, wellName, plates, commit, wells }) => {
+  const plate = Object.values(plates).find((plate) => plate.barcode == barcode)
+  if (!plate) return { success: false, errors: barcodeNotFound(barcode) }
+
+  // Not sure why we are selecting the plate if its not already selected
+  commit('selectPlate', { id: plate.id, selected: true })
+  const wellId = plate.wells.find((well_id) => wells[well_id].position == wellName)
+  if (!wellId)
+    return {
+      success: false,
+      errors: `A well named ${wellName} could not be found on ${barcode}`,
+    }
+  return { success: true, requestIds: wells[wellId].requests }
+}
+
+const requestsForTube = ({ barcode, tubes, commit }) => {
+  const tube = Object.values(tubes).find((tube) => tube.barcode == barcode)
+  if (!tube) return { success: false, errors: barcodeNotFound(barcode) }
+  // Same here: Not sure why we are selecting the tube if its not already selected
+  commit('selectTube', { id: tube.id, selected: true })
+  return { success: true, requestIds: tube.requests }
+}
+
+const findRequestsForSource = ({
+  sourceData: { barcode, wellName },
+  commit,
+  resources: { plates, wells, tubes },
+}) => {
+  console.log(barcode, wellName)
+  if (wellName) {
+    return requestsForPlate({ barcode, wellName, plates, commit, wells })
+  } else {
+    return requestsForTube({ barcode, tubes, commit })
+  }
+}
+
+const barcodeNotFound = (barcode) =>
+  `${barcode} could not be found. Barcode should be in the format barcode:well for plates (eg. DN123S:A1) or just barcode for tubes.`
+
+/**
+ *
+ * Finds the tag id for the tag specified by tag, within the current tag group
+ * @param {Object} options - An options object
+ * @param {Object} options.getters PacbioVueX store getters object
+ * @param {String} options.tag Tag group_id to find
+ * @param {Function} options.error Error function for user feedback
+ * @returns {Object} Object containing the matching tag_id
+ */
+const buildTagAttributes = ({ getters, tag, error }) => {
+  if (tag) {
+    const matchedTag = getters.selectedTagSet.tags.find(({ group_id }) => group_id === tag)
+    if (matchedTag) {
+      return { tag_id: matchedTag.id }
+    } else {
+      error(`Could not find a tag named ${tag} in selected tag group`)
+    }
+  }
+  return {}
+}
+
 export default {
   /**
    * Sets the pool data in the store
@@ -32,11 +102,45 @@ export default {
    * @param id the id of the pool
    */
   setPoolData: async ({ commit, rootState }, id) => {
+    // We always want to clear out old data first
+    commit('clearPoolData')
+    // Guard clause to not run the rest if the id is not a number e.g. 'new'
     if (isNaN(id)) {
-      commit('clearPoolData')
+      return
     }
-    // We want to populate libraries if id exists
+
+    const request = rootState.api.traction.ont.pools
+    const promise = request.find({
+      id: id,
+      include: 'libraries.tag.tag_set,libraries.source_plate.wells.requests,libraries.request,tube',
+    })
+    const response = await handleResponse(promise)
+
+    const { success, data: { data, included = [] } = {}, errors = [] } = response
+
+    if (success) {
+      const {
+        libraries,
+        requests,
+        wells,
+        plates = [],
+        tag_sets: [tag_set] = [{}],
+        tubes: [tube],
+      } = groupIncludedByResource(included)
+      // Can we await these commits? The pool page initially shows as empty until all this data is added
+      commit('populatePoolAttributes', data)
+      commit('populateLibraries', libraries)
+      commit('populateRequests', requests)
+      commit('populateWells', wells)
+      commit('populatePlates', plates)
+      commit('selectTagSet', tag_set)
+      commit('populateTube', tube)
+      plates.forEach(({ id }) => commit('selectPlate', { id, selected: true }))
+    }
+
+    return { success, errors }
   },
+
   findOntPlate: async ({ commit, rootState }, filter) => {
     // Here we want to make sure the filter exists
     // If it doesn't exist the request will return all plates
@@ -187,11 +291,12 @@ export default {
    *   if tag 2 was applied to A1, then C1 would receive tag 4 regardless
    *   the state of B1.
    */
-  applyTags: ({ state, commit, getters }, { library, autoTag }) => {
+  applyTags: ({ state, commit }, { library, autoTag }) => {
     // We always apply the first tag
     commit('updateLibrary', library)
     if (autoTag) {
-      const request = state.resources.requests[library.ont_request_id]
+      // const request = state.resources.requests[library.ont_request_id]
+      // If we support tubes we want to add a check here whether request is from tube or plate
       autoTagPlate({ state, commit }, { library })
     }
   },

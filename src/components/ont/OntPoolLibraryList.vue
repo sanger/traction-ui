@@ -4,6 +4,7 @@
       <traction-thead>
         <traction-tr>
           <traction-th> Sample Name </traction-th>
+          <traction-th> Source </traction-th>
           <traction-th> Tag </traction-th>
           <traction-th> Kit Barcode </traction-th>
           <traction-th> Volume </traction-th>

@@ -44,20 +44,6 @@ export default {
     DataFetcher,
     LabwareFinder,
   },
-  //   created() {
-  //     // const requests = this.fetchPacbioRequests()
-  //     // const tagSets = this.fetchPacbioTagSets()
-  //     // Needed due to left over pool data from previously edited pools
-  //     // this.$store.commit('traction/pacbio/poolCreate/clearPoolData')
-  //     if (this.$route.params.id !== 'new') {
-  //       // const libraries = this.populateLibrariesFromPool(this.$route.params.id)
-  //       // libraries.then(this.alertOnFail)
-  //     }
-  //     // We don't use await here as otherwise the handling of one response will be blocked
-  //     // by the other
-  //     // requests.then(this.alertOnFail)
-  //     // tagSets.then(this.alertOnFail)
-  //   },
   computed: {
     ...mapGetters(['selectedPlates']),
   },
@@ -68,13 +54,10 @@ export default {
       }
     },
     async provider() {
-      let response = { success: false, errors: [] }
       this.setPoolData(this.$route.params.id)
-      await this.fetchOntTagSets().then((res) => {
-        console.log(res)
-        response = res
+      return await this.fetchOntTagSets().then((res) => {
+        return res
       })
-      return response
     },
     ...mapActions(['findOntPlate', 'fetchOntTagSets', 'setPoolData']),
   },

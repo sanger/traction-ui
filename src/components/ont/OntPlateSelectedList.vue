@@ -67,7 +67,14 @@ export default {
   },
   data() {
     return {
-      requestFields: ['id', 'sample_name', 'data_type', 'library_type', 'number_of_flowcells'],
+      requestFields: [
+        'id',
+        'sample_name',
+        'source_identifier',
+        'data_type',
+        'library_type',
+        'number_of_flowcells',
+      ],
       sourceIndex: 0,
       tabTitles: ['Plates', 'Requests'],
     }

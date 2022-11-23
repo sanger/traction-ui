@@ -1,5 +1,5 @@
 import Vue from 'vue'
-import { populateById } from '@/api/JsonApi'
+import { populateById, dataToObjectById } from '@/api/JsonApi'
 import { newLibrary } from './pool'
 import defaultState from './state'
 
@@ -42,6 +42,39 @@ export default {
   updateLibrary: ({ libraries }, library) => {
     const key = `_${library.ont_request_id}`
     Vue.set(libraries, key, Object.assign({}, libraries[key], library))
+  },
+  /**
+   * Populated the result with the response
+   * @param {Object} state The VueXState object
+   * @param {Object} Response A response object
+   **/
+  populateLibraries: ({ libraries }, data) => {
+    const newLibraries = dataToObjectById({ data, includeRelationships: true })
+    Object.values(newLibraries).forEach((library) => {
+      const key = `_${library.request}`
+      Vue.set(
+        libraries,
+        key,
+        newLibrary({ ...library, ont_request_id: library.request, tag_id: library.tag }),
+      )
+    })
+  },
+  populatePoolAttributes: (store, { id, attributes }) => {
+    store.pool = {
+      id,
+      ...attributes,
+    }
+  },
+  /**
+   * Populated with resources via APi calls from the actions
+   * @param {Object} state The VueXState object
+   * @param {Object.{}} tube The tube resource to populate the store
+   */
+  populateTube: (store, { id, attributes }) => {
+    store.tube = {
+      id,
+      ...attributes,
+    }
   },
   populatePlates: populateById('plates', { includeRelationships: true }),
   populateWells: populateById('wells', { includeRelationships: true }),

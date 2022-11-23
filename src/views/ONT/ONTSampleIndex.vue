@@ -1,39 +1,6 @@
 <template>
   <DataFetcher :fetcher="fetchOntRequests">
-    <div class="flex-row p-5 bg-gray-100 rounded-md shadow-md">
-      <div class="w-full w-1/2 mx-auto min-w-[500px]">
-        <div class="flex flex-col flex-start">
-          <p class="font-bold mb-5 font-size text-xl">Filter results</p>
-          <p class="mb-5 font-size text-md">By default returns the most recent 100 results</p>
-        </div>
-        <div class="flex mb-5 mx-auto">
-          <traction-input
-            id="filterInput"
-            v-model="filterInput"
-            type="search"
-            placeholder="Type to Search"
-            label="Search value"
-            class="w-1/2 mr-10"
-          />
-          <traction-select
-            v-model="filterValue"
-            :options="filterOptions"
-            label="Search type"
-            class="w-1/2"
-          />
-        </div>
-        <div class="flex justify-end mx-auto">
-          <traction-button @click="resetFilter()">Reset</traction-button>
-          <traction-button
-            :disabled="filterValue == '' || filterInput == ''"
-            @click="getFilteredData()"
-            >Search</traction-button
-          >
-        </div>
-      </div>
-    </div>
-    <br />
-
+    <FilterCard :fetcher="fetchOntRequests" :filter-options="filterOptions" />
     <div class="clearfix">
       <traction-pagination
         v-model="currentPage"
@@ -82,12 +49,14 @@
 import TableHelper from '@/mixins/TableHelper'
 import { createNamespacedHelpers } from 'vuex'
 import DataFetcher from '../../components/DataFetcher.vue'
+import FilterCard from '../../components/FilterCard.vue'
 const { mapActions, mapGetters } = createNamespacedHelpers('traction/ont')
 
 export default {
   name: 'OntSampleIndex',
   components: {
     DataFetcher,
+    FilterCard,
   },
   mixins: [TableHelper],
   data() {
@@ -95,6 +64,7 @@ export default {
       fields: [
         { key: 'selected', label: '' },
         { key: 'id', label: 'Sample ID (Request)', sortable: true },
+        { key: 'source_identifier', label: 'Source', sortable: true },
         { key: 'sample_name', label: 'Sample Name', sortable: true },
         { key: 'library_type', label: 'Library type' },
         { key: 'data_type', label: 'Data type' },
@@ -110,8 +80,6 @@ export default {
       ],
       filteredItems: [],
       selected: [],
-      filterInput: '',
-      filterValue: '',
       sortBy: 'created_at',
       sortDesc: true,
       perPage: 25,
@@ -123,21 +91,6 @@ export default {
   },
   methods: {
     ...mapActions(['fetchOntRequests']),
-    async getFilteredData() {
-      const filter = {
-        [this.filterValue]: this.filterInput,
-      }
-      await this.fetchOntRequests(filter).then(({ success, errors }) => {
-        success ? '' : this.showAlert(errors, 'danger')
-      })
-    },
-    async resetFilter() {
-      this.filterValue = ''
-      this.filterInput = ''
-      await this.fetchOntRequests().then(({ success, errors }) => {
-        success ? '' : this.showAlert(errors, 'danger')
-      })
-    },
   },
 }
 </script>

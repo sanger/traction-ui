@@ -3,9 +3,9 @@
     <traction-td data-attribute="request-sample-name">
       {{ request.sample_name }}
     </traction-td>
-    <!-- <traction-td data-attribute="request-source-identifier">
+    <traction-td data-attribute="request-source-identifier">
       {{ request.source_identifier }}
-    </traction-td> -->
+    </traction-td>
     <traction-td>
       <traction-select
         v-if="tagList.length > 0"
