@@ -153,6 +153,7 @@ export default {
       const date = getCurrentDate()
       return this.selected.map(({ barcode }) => {
         return {
+          // currently don't have a barcode but not causing any harm
           barcode,
           first_line: 'Saphyr - Sample',
           second_line: date,

@@ -14,10 +14,6 @@ describe('LabelPrintingForm.vue', () => {
     labelPrintingForm = wrapper.vm
   })
 
-  it('will have an reset button', () => {
-    expect(wrapper.find('#reset-button').exists()).toBeTruthy()
-  })
-
   describe('data', () => {
     it('has a form with a barcode', () => {
       wrapper.setData({ form: { barcode: 'aBarcode' } })
@@ -39,6 +35,10 @@ describe('LabelPrintingForm.vue', () => {
       wrapper.setData({ form: { copies: '1' } })
       expect(labelPrintingForm.form.copies).toBe('1')
     })
+  })
+
+  describe('printer Names', () => {
+    
   })
 
   describe('methods', () => {
@@ -169,6 +169,15 @@ describe('LabelPrintingForm.vue', () => {
         expect(labelPrintingForm.printJob).toBeCalledWith(expectedParams)
         expect(labelPrintingForm.showAlert).toBeCalledWith('an error msg', 'danger')
       })
+    })
+
+    describe('create labels', () => {
+
+      it('works', () => {
+        expect(true).toBeTruthy()
+      })
+
+
     })
   })
 })
