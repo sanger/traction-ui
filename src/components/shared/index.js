@@ -52,7 +52,7 @@ import {
   BCardBody,
   BInputGroup,
   BInputGroupAppend,
-  //BPagination,
+  BPagination,
 } from 'bootstrap-vue'
 
 const registerBootstrapComponents = (vue) => {
@@ -90,8 +90,7 @@ const registerBootstrapComponents = (vue) => {
   vue.component('traction-nav', BNav)
   vue.component('traction-input-group', BInputGroup)
   vue.component('traction-input-group-append', BInputGroupAppend)
-  //vue.component('traction-pagination', BPagination)
-  vue.component('traction-pagination', TractionPagination)
+  vue.component('traction-b-pagination', BPagination)
   /*
     directive is marked wth a v in front
     so it will be used as 'v-traction-modal'
@@ -117,10 +116,10 @@ const registerGlobal = (vue) => {
   vue.component('TractionMutedText', TractionMutedText)
   vue.component('TractionToggle', TractionToggle)
   vue.component('TractionSpinner', TractionSpinner)
-  // This is currently causing a bug reverted to Bootstrap component.
   vue.component('TractionInput', TractionInput)
   vue.component('TractionFieldError', TractionFieldError)
   vue.component('TractionResultIcon', TractionResultIcon)
+  vue.component('TractionPagination', TractionPagination)
   vue.component('TractionPaginationIcon', TractionPaginationIcon)
   registerBootstrapComponents(vue)
 }
