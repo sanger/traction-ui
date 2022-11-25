@@ -43,7 +43,7 @@
           >
             <traction-input
               id="number-of-labels"
-              v-model="form.numberOfLabels"
+              v-model="form.selectedNumberOfLabels"
               type="number"
               min="1"
               max="9"
