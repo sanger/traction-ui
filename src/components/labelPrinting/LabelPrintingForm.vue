@@ -43,7 +43,7 @@
           >
             <traction-input
               id="number-of-labels"
-              v-model="form.selectedNumberOfLabels"
+              v-model="form.numberOfLabels"
               type="number"
               min="1"
               max="9"
@@ -64,22 +64,6 @@
               value-field="text"
               required
             ></traction-select>
-          </traction-form-group>
-
-          <traction-form-group
-            id="copies-group"
-            label="Number of copies per label:"
-            label-for="copies"
-            description="Number of copies of each label you would like to print. (Only supported by Squix printers)"
-          >
-            <traction-input
-              id="copies"
-              v-model="form.copies"
-              type="number"
-              min="1"
-              max="10"
-              placeholder="Please select a number"
-            ></traction-input>
           </traction-form-group>
 
           <traction-button id="submit-button" type="submit" theme="print"
@@ -119,7 +103,7 @@ const defaultForm = () => ({
   selectedSuffix: null,
   selectedNumberOfLabels: null,
   selectedPrinterName: null,
-  copies: null,
+  copies: '1',
 })
 
 export default {
@@ -127,33 +111,25 @@ export default {
   data() {
     return {
       form: defaultForm(),
-      suffixOptions: [],
-      printerOptions: [],
       show: true,
     }
   },
-  created() {
-    this.setSuffixOptions()
-    this.setPrinterNames()
-  },
-  methods: {
-    setSuffixOptions() {
-      //Display the workflow and suffix with the process stage description
-      let suffixOptions = SuffixList.map((obj) => ({
-        label: obj.workflow,
-        options: obj.options.map((option) => ({
-          text: option.suffix.concat(' - ', option.tubeStage),
-        })),
-      }))
-      suffixOptions.push({ text: 'No suffix' })
-      this.suffixOptions = suffixOptions
-    },
-    setPrinterNames() {
-      let printerOptions = this.$store.getters.printers.map((name) => ({
+  computed: {
+    printerOptions() {
+      return this.$store.getters.printers.map((name) => ({
         text: name,
       }))
-      this.printerOptions = printerOptions
     },
+    suffixOptions() {
+      return SuffixList.map((item) => ({
+        label: item.workflow,
+        options: item.options.map((option) => ({
+          text: option.suffix.concat(' - ', option.stage),
+        })),
+      })).concat([{ text: 'No suffix' }])
+    },
+  },
+  methods: {
     suffixedBarcodes() {
       let listSuffixedBarcodes = []
       let noOfLabels = this.form.selectedNumberOfLabels

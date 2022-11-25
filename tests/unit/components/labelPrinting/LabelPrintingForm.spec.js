@@ -1,6 +1,7 @@
 import LabelPrintingForm from '@/components/labelPrinting/LabelPrintingForm'
 import SuffixList from '@/config/SuffixList'
 import { localVue, mount, store } from '@support/testHelper'
+import { beforeEach, describe, expect, it } from 'vitest'
 
 describe('LabelPrintingForm.vue', () => {
   let wrapper, labelPrintingForm
@@ -37,26 +38,71 @@ describe('LabelPrintingForm.vue', () => {
     })
   })
 
-  describe('printer Names', () => {
-    
+  it('has the correct printer Options', () => {
+    expect(labelPrintingForm.printerOptions.length).toEqual(store.getters.printers.length)
+  })
+
+  it('has the correct Suffix Options', () => {
+    // includes no suffix option
+    expect(labelPrintingForm.suffixOptions.length).toEqual(Object.values(SuffixList).length + 1)
+
+    // each workflow has a set number of options
+    // check the first one
+    expect(labelPrintingForm.suffixOptions[0].options.length).toEqual(
+      Object.values(SuffixList)[0].options.length,
+    )
+
+    // and the last one
+    const lastIndex = Object.values(SuffixList).length - 1
+    expect(labelPrintingForm.suffixOptions[lastIndex].options.length).toEqual(
+      Object.values(SuffixList)[lastIndex].options.length,
+    )
+  })
+
+  describe.skip('labels', () => {
+    const options = {
+      barcodeList: 'SQSC-1\nSQSC-2\nSQSC-3',
+      stage: 'UPRL',
+      numberOfLabels: 3,
+    }
+
+    beforeEach(() => {
+      wrapper = mount(LabelPrintingForm, {
+        localVue,
+        store,
+        data() {},
+      })
+      labelPrintingForm = wrapper.vm
+    })
+
+    it('works', () => {
+      expect(true).toBeTruthy()
+    })
+
+    it('with no stage or number of labels', () => {
+      const expected = [{}]
+
+      const wrapper = mount(LabelPrintingForm, {
+        localVue,
+        store,
+        data() {
+          return {
+            form: { ...options, stage: null, numberOfLabels: null },
+          }
+        },
+      })
+
+      expect(wrapper.vm.labels).toEqual(expected)
+    })
+
+    it('with a stage', () => {})
+
+    it('with number of labels', () => {})
+
+    it('with stage and number of labels', () => {})
   })
 
   describe('methods', () => {
-    it('setSuffixOptions ', async () => {
-      let suffixOptions = SuffixList.map((obj) => ({
-        label: obj.workflow,
-        options: obj.options.map((option) => ({
-          text: option.suffix.concat(' - ', option.tubeStage),
-        })),
-      }))
-      suffixOptions.push({ text: 'No suffix' })
-      expect(labelPrintingForm.suffixOptions).toEqual(suffixOptions)
-    })
-
-    it('setPrinterNames ', async () => {
-      expect(labelPrintingForm.printerOptions.length).toEqual(store.getters.printers.length)
-    })
-
     describe('suffixedBarcodes', () => {
       it('created the list of suffixed barcodes when all form data is present', () => {
         wrapper.setData({
@@ -172,12 +218,9 @@ describe('LabelPrintingForm.vue', () => {
     })
 
     describe('create labels', () => {
-
       it('works', () => {
         expect(true).toBeTruthy()
       })
-
-
     })
   })
 })

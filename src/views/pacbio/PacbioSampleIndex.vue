@@ -183,6 +183,7 @@ export default {
       const date = getCurrentDate()
       return this.selected.map(({ barcode, source_identifier }) => {
         return {
+          // currently don't have a barcode but not causing any harm
           barcode,
           first_line: 'Pacbio - Sample',
           second_line: date,
