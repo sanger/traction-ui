@@ -1,3 +1,11 @@
+<!--
+  TractionPagination
+  
+  Renders a custom tailwind or bootstrap pagination component based on 'enable_custom_pagination' feature flag is enabled or not respectively
+   - flagged-feature  is the wrapper for the component to be toggled, name field specifies the name of the toggle feature 
+   - <template #disabled> displays the bootstrap pagination when the feature flag is disabled, otherwise the custom component
+   - @input - On input, emit its own custom input event with the new value
+-->
 <template>
   <div class="flex flex-row items-center gap-2 text-gray-700">
     <flagged-feature name="enable_custom_pagination">
@@ -7,7 +15,7 @@
           :per-page="perPage"
           :total-rows="totalRows"
           class="float-right"
-          @page-click="(event,page)=>pageClick(page)"
+          @page-click="(event, page) => pageClick(page)"
         />
       </template>
 
@@ -75,7 +83,7 @@ export default {
   /**
    * # TractionPagination
    *
-   * Displays a pagination component
+   * Displays a custom pagination or bootstrap component based on 'enable_custom_pagination' feature flag
    *
    */
   name: 'TractionPagination',
@@ -97,6 +105,7 @@ export default {
       type: Number,
       default: 10,
     },
+    /**Maximum visible page buttons to be displayed */
     maxVisibleButtons: {
       type: Number,
       default: 3,
@@ -108,12 +117,15 @@ export default {
     }
   },
   computed: {
+    //Calculate total pages required
     totalPages() {
       return Math.ceil(this.totalRows / this.perPage)
     },
+    //If total number of pages is less than number of buttons given, display only as many buttons as the pages
     visibleButtons() {
       return Math.min(this.totalPages, this.maxVisibleButtons)
     },
+    //Calculate the start page number to be displayed (in page button), based on current selectiobn
     startPage() {
       if (this.currentPage === 1) {
         return 1
@@ -125,9 +137,11 @@ export default {
 
       return this.currentPage - 1
     },
+    //Calculate the end page number to be displayed, based on current selection
     endPage() {
       return Math.min(this.startPage + this.visibleButtons - 1, this.totalPages)
     },
+    //Get page numbers to display in page-buttons
     pages() {
       const range = []
       for (let i = this.startPage; i <= this.endPage; i++) {
@@ -137,31 +151,38 @@ export default {
       }
       return range
     },
+    //Is the very first page of total number of pages selected?
     isInFirstPage() {
       return this.currentPage === 1
     },
+    //Is the very last page of total number of pages selected?
     isInLastPage() {
       return this.currentPage === this.totalPages
     },
   },
   methods: {
-    /**Emitted when the page change */
+    /**Emitted when the page changes */
     pageClick(pageNumber) {
       this.currentPage = pageNumber
       this.$emit('input', pageNumber)
     },
+    /**Handles the first page button (<<) click */
     firstPageClick() {
       this.pageClick(1)
     },
-    nextPageClick() {
-      this.pageClick(this.currentPage + 1)
-    },
+    /**Handles the previous page button (<) click */
     prevPageClick() {
       this.pageClick(this.currentPage - 1)
     },
+    /**Handles the next page button (>) click */
+    nextPageClick() {
+      this.pageClick(this.currentPage + 1)
+    },
+    /**Handles the last page button (>>) click */
     lastPageClick() {
       this.pageClick(this.totalPages)
     },
+    /**Display page-button style based on whether it is selected or not*/
     getPageButtonTheme(page) {
       return this.currentPage === page ? 'paginationSelect' : 'paginationDefault'
     },
