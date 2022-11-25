@@ -8,7 +8,6 @@ describe('Label Printing page', () => {
     cy.get('#suffix-selection').select('OPLX - Pool')
     cy.get('#number-of-labels').type(3)
     cy.get('#printer-choice').select('stub')
-    cy.get('#copies').type(2)
   })
 
   it('Shows the correct information', () => {
@@ -16,7 +15,6 @@ describe('Label Printing page', () => {
     cy.contains('Suffix:')
     cy.contains('Number of labels:')
     cy.contains('Choice of Printer:')
-    cy.contains('Number of copies per label:')
     cy.contains('Reset')
     cy.contains('Print Labels')
 
