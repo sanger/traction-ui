@@ -10,7 +10,7 @@
   <div class="flex flex-row items-center gap-2 text-gray-700">
     <flagged-feature name="enable_custom_pagination">
       <template #disabled>
-        <traction-b-pagination
+        <b-pagination
           :value="value"
           :per-page="perPage"
           :total-rows="totalRows"
@@ -79,6 +79,8 @@
 </template>
 
 <script>
+import {BPagination} from 'bootstrap-vue'
+
 export default {
   /**
    * # TractionPagination
@@ -87,6 +89,7 @@ export default {
    *
    */
   name: 'TractionPagination',
+  components: { BPagination },
   inheritAttrs: false,
   props: {
     //value field  which will be bind automatically with 'v-model' prop passed into the component

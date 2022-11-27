@@ -52,7 +52,6 @@ import {
   BCardBody,
   BInputGroup,
   BInputGroupAppend,
-  BPagination,
 } from 'bootstrap-vue'
 
 const registerBootstrapComponents = (vue) => {
@@ -90,7 +89,6 @@ const registerBootstrapComponents = (vue) => {
   vue.component('traction-nav', BNav)
   vue.component('traction-input-group', BInputGroup)
   vue.component('traction-input-group-append', BInputGroupAppend)
-  vue.component('traction-b-pagination', BPagination)
   /*
     directive is marked wth a v in front
     so it will be used as 'v-traction-modal'
