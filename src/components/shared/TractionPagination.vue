@@ -79,7 +79,7 @@
 </template>
 
 <script>
-import {BPagination} from 'bootstrap-vue'
+import { BPagination } from 'bootstrap-vue'
 
 export default {
   /**
