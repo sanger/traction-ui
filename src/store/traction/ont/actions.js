@@ -191,6 +191,12 @@ export default {
     }
   },
 
+  /**
+   * Retrieves a list of ont requests from traction-service and populates the source
+   * with associated data
+   * @param rootState the vuex rootState object. Provides access to the current state
+   * @param commit the vuex commit object. Provides access to mutations
+  */
   fetchOntRequests: async ({ commit, rootState }, filter) => {
     const request = rootState.api.traction.ont.requests
     const promise = request.get({ filter: filter })
@@ -199,7 +205,7 @@ export default {
     let { success, data: { data } = {}, errors = [] } = response
 
     if (success) {
-      commit('setRequests', data)
+      commit('populateRequests', data)
     }
 
     return { success, errors }

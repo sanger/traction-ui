@@ -1,0 +1,27 @@
+{
+  "data": {
+    "data": [
+        {
+            "id": "8",
+            "type": "tag_sets",
+            "links": {
+                "self": "http://localhost:3100/v1/ont/tag_sets/8"
+            },
+            "attributes": {
+                "name": "ONT_native",
+                "uuid": null,
+                "pipeline": "ont"
+            },
+                "relationships": {
+                    "tags": {
+                        "links": {
+                            "self": "http://localhost:3100/v1/ont/tag_sets/8/relationships/tags",
+                            "related": "http://localhost:3100/v1/ont/tag_sets/8/tags"}
+                        }
+                    }
+                }
+            ]
+        },
+        "status": 200,
+        "statusText": "Success"
+    }

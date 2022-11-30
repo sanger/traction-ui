@@ -61,6 +61,8 @@ describe('actions.js', () => {
     })
   })
 
+
+  // handles success and failure are switched - fix after asking
   describe('fetchPacbioTagSets', () => {
     it('handles success', async () => {
       // mock commit
