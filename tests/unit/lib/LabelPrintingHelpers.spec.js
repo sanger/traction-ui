@@ -1,6 +1,6 @@
 import { getCurrentDate } from '@/lib/DateHelpers'
-import { createSuffixDropdownOptions } from '@/lib/LabelPrintingHelpers'
-import { expect } from 'vitest'
+import { createSuffixDropdownOptions, createSuffixItems } from '@/lib/LabelPrintingHelpers'
+import { expect, it } from 'vitest'
 
 const suffixList = [
   {
@@ -92,8 +92,14 @@ describe('LabelPrintingHelpers.js', () => {
   })
 
   describe('createSuffixItems', () => {
-    it('works', () => {
-      expect(true).toBeTruthy()
+    it('creates a key for each suffix', () => {
+      const items = createSuffixItems(suffixList)
+      expect(Object.keys(items)).toEqual(['ST1', 'ST2', 'ST3', 'ST10', 'ST11', 'ST12'])
+    })
+
+    it('creates a list of options for each suffix', () => {
+      const items = createSuffixItems(suffixList)
+      expect(Object.values(items)[0]).toEqual(suffixList[0].options[0])
     })
   })
 

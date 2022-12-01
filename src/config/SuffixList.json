@@ -27,7 +27,7 @@
         "stage": "Post Amplification B",
         "suffix": "UPAB",
         "text": "UPAB - Post Amplification B",
-        "value": "UPAA",
+        "value": "UPAB",
         "workflow": "PacBio UltraLow"
       },
       {
