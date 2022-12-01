@@ -1,5 +1,9 @@
 import { getCurrentDate } from '@/lib/DateHelpers'
-import { createSuffixDropdownOptions, createSuffixItems } from '@/lib/LabelPrintingHelpers'
+import {
+  createSuffixDropdownOptions,
+  createSuffixItems,
+  createBarcodeLabelItem,
+} from '@/lib/LabelPrintingHelpers'
 import { expect, it } from 'vitest'
 
 const suffixList = [
@@ -58,11 +62,6 @@ const suffixList = [
 ]
 
 describe('LabelPrintingHelpers.js', () => {
-  it('works', () => {
-    const date = getCurrentDate()
-    expect(date).toBeDefined()
-  })
-
   describe('createSuffixDropdownOptions', () => {
     it('creates an item for each workflow', () => {
       const items = createSuffixDropdownOptions(suffixList)
@@ -104,8 +103,51 @@ describe('LabelPrintingHelpers.js', () => {
   })
 
   describe('createBarcodeLabelItem', () => {
-    it('works', () => {
-      expect(true).toBeTruthy()
+    const date = getCurrentDate()
+    const sourceBarcode = 'SQSC-1234'
+    const stage = 'ST1 - Stage 1'
+
+    it('barcode only', () => {
+      const { barcode, first_line, second_line, third_line, fourth_line } = createBarcodeLabelItem({
+        sourceBarcode,
+        date,
+      })
+      expect(barcode).toEqual(sourceBarcode)
+      expect(first_line).toEqual(date)
+      expect(second_line).toEqual('')
+      expect(third_line).toEqual(sourceBarcode)
+      expect(fourth_line).toEqual('')
+    })
+
+    it('barcode with a single suffix', () => {
+      const suffixes = ['ST1']
+      const { barcode, first_line, second_line, third_line, fourth_line } = createBarcodeLabelItem({
+        sourceBarcode,
+        stage,
+        date,
+        suffixes,
+      })
+      expect(barcode).toEqual(`${sourceBarcode}-${suffixes[0]}`)
+      expect(first_line).toEqual(date)
+      expect(second_line).toEqual(stage)
+      expect(third_line).toEqual(sourceBarcode)
+      expect(fourth_line).toEqual(suffixes[0])
+    })
+
+    // we could go on but not necessary
+    it('barcode with 2 suffixes', () => {
+      const suffixes = ['ST1', '1']
+      const { barcode, first_line, second_line, third_line, fourth_line } = createBarcodeLabelItem({
+        sourceBarcode,
+        stage,
+        date,
+        suffixes,
+      })
+      expect(barcode).toEqual(`${sourceBarcode}-${suffixes[0]}-${suffixes[1]}`)
+      expect(first_line).toEqual(date)
+      expect(second_line).toEqual(stage)
+      expect(third_line).toEqual(`${sourceBarcode}`)
+      expect(fourth_line).toEqual(`${suffixes[0]}-${suffixes[1]}`)
     })
   })
 })
