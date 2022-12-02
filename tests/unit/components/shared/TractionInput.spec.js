@@ -2,7 +2,7 @@ import { localVue, mount } from '@support/testHelper'
 
 import TractionInput from '@/components/shared/TractionInput'
 
-describe('"TractionInput.vue"', () => {
+describe('TractionInput.vue', () => {
   const buildWrapper = (props = {}) => {
     return mount(TractionInput, {
       localVue,
@@ -47,8 +47,10 @@ describe('"TractionInput.vue"', () => {
     var comp = mount({
       template: '<traction-input v-model="test"></traction-input>',
       components: { 'traction-input': TractionInput },
-      data: {
-        test: '',
+      data() {
+        return {
+          test: '',
+        }
       },
     })
     const textInput = comp.find('input')
