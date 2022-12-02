@@ -12,7 +12,7 @@
         v-model="tag_id"
         data-type="tag-list"
         :options="tagListOptions"
-        :state="(!errorsFor('tag_id')?.length > 0)"
+        :state="!errorsFor('tag_id')?.length > 0"
         class="tag-id"
       ></traction-select>
       <traction-invalid-feedback data-attribute="tag-id-error">
