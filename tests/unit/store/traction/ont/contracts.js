@@ -71,7 +71,7 @@ const storeTagSetData = {
   },
 }
 
-const populateTagParameters = Data.TractionTags.data.data
+const populateTagParameters = Data.TractionOntTags.data.data
 const storeTagData = {
   1: {
     id: '1',

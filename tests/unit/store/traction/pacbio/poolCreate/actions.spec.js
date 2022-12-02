@@ -70,6 +70,21 @@ describe('actions.js', () => {
       // mock dependencies
       const get = vi.fn()
       const rootState = { api: { traction: { pacbio: { tag_sets: { get } } } } }
+      get.mockResolvedValue(Data.PacbioTagSets)
+      // apply action
+      const { success } = await fetchPacbioTagSets({ commit, rootState })
+      // assert result
+      expect(commit).toHaveBeenCalledWith('populateTagSets', Data.PacbioTagSets.data.data)
+      expect(commit).toHaveBeenCalledWith('populateTags', Data.PacbioTagSets.data.included)
+      expect(success).toEqual(true)
+    })
+
+    it('handles failure', async () => {
+      // mock commit
+      const commit = vi.fn()
+      // mock dependencies
+      const get = vi.fn()
+      const rootState = { api: { traction: { pacbio: { tag_sets: { get } } } } }
       get.mockRejectedValue({
         data: { data: [] },
         status: 500,
@@ -80,21 +95,6 @@ describe('actions.js', () => {
       // assert result
       expect(commit).not.toHaveBeenCalled()
       expect(success).toEqual(false)
-    })
-
-    it('handles failure', async () => {
-      // mock commit
-      const commit = vi.fn()
-      // mock dependencies
-      const get = vi.fn()
-      const rootState = { api: { traction: { pacbio: { tag_sets: { get } } } } }
-      get.mockResolvedValue(Data.PacbioTagSets)
-      // apply action
-      const { success } = await fetchPacbioTagSets({ commit, rootState })
-      // assert result
-      expect(commit).toHaveBeenCalledWith('populateTagSets', Data.PacbioTagSets.data.data)
-      expect(commit).toHaveBeenCalledWith('populateTags', Data.PacbioTagSets.data.included)
-      expect(success).toEqual(true)
     })
   })
 
@@ -575,7 +575,7 @@ describe('actions.js', () => {
         }),
       )
 
-      // In total we expect ot update8 wells in this case
+      // In total we expect to update 8 wells in this case
       expect(commit).toHaveBeenCalledTimes(6)
     })
 

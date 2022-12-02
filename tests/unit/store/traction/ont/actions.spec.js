@@ -13,6 +13,7 @@ describe('actions.js', () => {
     deselectPlateAndContents,
     createPool,
     updatePool,
+    applyTags,
     updateLibraryFromCsvRecord
   } = actions
 
@@ -29,7 +30,7 @@ describe('fetchOntRequests', () => {
     // assert result (Might make sense to pull these into separate tests)
     expect(commit).toHaveBeenCalledWith(
       'populateRequests',
-      Contracts.requests.populateRequestsParameters, //what is this for?
+      Contracts.requests.populateRequestsParameters,
     )
     expect(success).toEqual(true)
   })
@@ -65,7 +66,7 @@ describe('fetchOntTagSets', () => {
     const { success } = await fetchOntTagSets( { commit, rootState})
     // assert result
     expect(commit).toHaveBeenCalledWith('populateTagSets',
-    Contracts.tagSets.populateTagSetParameters, // info added to contract for tagset parameters
+    Contracts.tagSets.populateTagSetParameters,
     )
     expect(commit).toHaveBeenNthCalledWith('populateTags',
     Contracts.tags.populateTagParameters,
@@ -346,49 +347,195 @@ describe('updatePool', () => {
 })
 
 describe('applyTags', () => {
-  it('applies a single tag when autoTag is false', async () => {
+  const state = Data.OntAutoTagStore
+  const library = { ont_request_id: '13', tag_id: '130'} // Starting in B1
 
+  it('applies a single tag when autoTag is false', async () => {
+    const commit = vi.fn()
+    const autoTag = false
+
+    await applyTags({ commit, state}, { library, autoTag })
+    // Update the changed well
+    expect(commit).toHaveBeenCalledWith('updateLibrary', {
+      ont_request_id: '13',
+      tag_id: '130',
+    })
+    // But nothing else
+    expect(commit).toHaveBeenCalledTimes(1)
+
+    // We don't update earlier wells
+    expect(commit).not.toHaveBeenCalledWith(
+      'updateLibrary',
+      expect.objectContaining({ ont_request_id: '1' }),
+    )
   })
 
   it('applies tags to wells on the same plate with a higher column index when autoTag is true', async () => {
+    const commit = vi.fn()
+    const autoTag = true
 
+    // are the first two tests needed as they have already been tested before?
+    await applyTags( { commit, state }, { library, autoTag})
+
+    // Update the changed well
+    expect(commit).toHaveBeenCalledWith('updateLibrary', {
+      ont_request_id: '13',
+      tag_id: '130',
+    })
+
+    // We don't update earlier wells
+    expect(commit).not.toHaveBeenCalledWith(
+      'updateLibrary', 
+      expect.objectContaining({ 
+        ont_request_id: '1',
+      })
+    )
+
+    // How is this one and the next one different - where did we indicate selected wells
+    // We don't update unselected wells
+    expect(commit).not.toHaveBeenCalledWith(
+      'updateLibrary',
+      expect.objectContaining({
+        ont_request_id: '25', // C1
+      })
+    )
+
+    // We update wells further down the plate
+    expect(commit).toHaveBeenCalledWith(
+      'updateLibrary',
+      expect.objectContaining({ 
+        ont_request_id: '37', //D1
+        tag_id: '132'
+      })
+    )
+
+    // We update wells in the next column
+    expect(commit).toHaveBeenCalledWith(
+      'updateLibrary',
+      expect.objectContaining({
+        ont_request_id: '2', // A2
+        tag_id: '137'
+      })
+    )
+
+    // But not another plate
+    expect(commit).not.toHaveBeenCalledWith(
+      'updateLibrary',
+      expect.objectContaining({
+        ont_request_id: '61', //B1
+      })
+    )
+
+    expect(commit).not.toHaveBeenCalledWith(
+      'updateLibrary',
+      expect.objectContaining({
+        ont_request_id: '73', // C1
+      }),
+    )
+
+    // or a tube
+    expect(commit).not.toHaveBeenCalledWith(
+      'updateLibrary',
+      expect.objectContaining({
+        ont_request_id: '96', // is this not a plate? 
+      }),
+    )
+    expect(commit).not.toHaveBeenCalledWith(
+      'updateLibrary',
+      expect.objectContaining({
+        ont_request_id: '97', // a tube
+      }),
+    )
+
+    // In total we expect ot update8 wells in this case
+    expect(commit).toHaveBeenCalledTimes(6)
   })
 
-  it('applies tags to tubes with a higher index when autoTag is true', async () => {
-    
-  })
+  // uncomment if tube functionality is added
+  /* it('applies tags to tubes with a higher index when autoTag is true', async () => {
+    const commit = vi.fn()
+    const autoTag = true
+    const library = { ont_request_id: '98', tag_id: '130'}
+
+    const selectedRequests = Object.values(state.libraries).map(
+      ({ ont_request_id }) => state.resources.requests[ont_request_id],
+    )
+
+    await applyTags({ commit, state, getters: {selectedRequests} }, { library, autoTag })
+
+    // Update the changed well
+    expect(commit).toHaveBeenCalledWith(
+      'updateLibrary', {
+        ont_request_id: '98',
+        tag_id: '130'
+    })
+
+    // We don't update earlier wells
+    expect(commit).not.toHaveBeenCalledWith(
+      'updateLibrary', 
+        expect.objectContaining({
+          ont_request_id: '1',
+        })
+      )
+
+      // We don't update earlier tubes
+      expect(commit).not.toHaveBeenCalledWith(
+        'updateLibrary',
+        expect.objectContaining({ 
+          ont_request_id: '97',
+        })
+      )
+
+      // We don't update unselected wells
+      expect(commit).not.toHaveBeenCalledWith(
+        'updateLibrary',
+        expect.objectContaining({
+          ont_request_id: '25' // C1
+        })
+      )
+
+      // We do update tubes with higher ids
+      expect(commit).toHaveBeenCalledWith(
+        'updateLibrary',
+        expect.objectContaining({
+          ont_request_id: '99', // D1
+          tag_id: '131'
+        })
+      )
+
+      // In total we expect to update 2 tubes in this case
+      expect(commit).toHaveBeenCalledWith(2)
+  }) */
 })
 
 describe('updateLibraryFromCsvRecord', () => {
-  const state = Data.AutoTagStore
+  const state = Data.OntAutoTagStore
   const info = {
     lines: 3,
     records: 2
   }
   const getters = {
     selectedTagSet: {
-      id: '',
-      type: '',
-      name: '',
-      uuid: '',
-      pipeline: '',
+      id: '8',
+      type: 'tags',
+      name: 'ont_native',
+      pipeline: 'ont',
       tags: [
-        { id: '', type: '', oligo: '', group_id: ''},
-        { id: '', type: '', oligo: '', group_id: ''},
-        { id: '', type: '', oligo: '', group_id: ''},
-        { id: '', type: '', oligo: '', group_id: ''},
-        { id: '', type: '', oligo: '', group_id: ''},
-        { id: '', type: '', oligo: '', group_id: ''},
+        { id: '385', type: 'tags', oligo: 'CACAAAGACACCGACAACTTTCTT', group_id: 'NB01'},
+        { id: '386', type: 'tags', oligo: 'ACAGACGACTACAAACGGAATCGA', group_id: 'NB02'},
+        { id: '387', type: 'tags', oligo: 'CCTGGTAACTGGGACACAAGACTC', group_id: 'NB03'},
+        { id: '388', type: 'tags', oligo: 'TAGGGAAACACGATAGAATCCGAA', group_id: 'NB04'},
+        { id: '389', type: 'tags', oligo: 'AAGGTTACACAAACCCTGGACAAG', group_id: 'NB05'},
+        { id: '390', type: 'tags', oligo: 'GACTACTTTCTGCCTTTGCGAGAA', group_id: 'NB06'},
       ],
     },
   }
 
   it('updates the corresponding library', async () => {
     const commit = vi.fn()
-    const record = {
-      // source: '',
+    const record = { // are these library attributes
+      // source: '', // eg NB02
       // tag: '',
-      // genome_size: ,
       // insert_size: ,
       // concentration: ,
       // volume: 
@@ -398,9 +545,9 @@ describe('updateLibraryFromCsvRecord', () => {
 
     expect(commit).toHaveBeenCalledWith(
       'updateLibrary',
-      expect.objectContaining({
+      expect.objectContaining({ // does not match attributes above?
         // ont_request_id: '',
-        // tag_id: '',
+        // tag_id: '', // eg 387
         // insert_size: ,
         // concentration: ,
         // volume: 
@@ -413,7 +560,6 @@ describe('updateLibraryFromCsvRecord', () => {
     const record = {
       // source: '',
       // tag: '',
-      // // genome_size: ,
       // insert_size: ,
       // concentration: ,
       // volume: 
@@ -437,7 +583,6 @@ describe('updateLibraryFromCsvRecord', () => {
     const commit = vi.fn()
     const record = {
       // tag: '',
-      // genome_size: ,
       // insert_size: ,
       // concentration: ,
       // volume: 
@@ -531,7 +676,6 @@ describe('updateLibraryFromCsvRecord', () => {
       const record = {
         // source: '',
         // tag: '',
-        // genome_size: ,
         // insert_size: ,
         // concentration: ,
         // volume: 
@@ -553,7 +697,6 @@ describe('updateLibraryFromCsvRecord', () => {
     const commit = vi.fn()
     const record = {
       // source: '',
-      // genome_size: ,
       // insert_size: ,
       // concentration: ,
       // volume: ,
@@ -570,5 +713,14 @@ describe('updateLibraryFromCsvRecord', () => {
     { root: true }
   )
 })
+
+describe('setPoolData', () => {
+  // TODO
+})
+
+describe('findOntPlate', () => {
+  // TODO
+})
+
 })
 })
