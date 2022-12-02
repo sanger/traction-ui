@@ -14,9 +14,8 @@ describe('ExtractionQcForm.vue', () => {
   })
 
   describe('data', () => {
-    it('has a form with a test', () => {
-      wrapper.setData({ form: { test: 'atest' } })
-      expect(extractionQcForm.form.test).toBe('atest')
+    it('has used_by options', () => {
+      expect(extractionQcForm.used_by_options.count).toEqual(2)
     })
   })
 })
