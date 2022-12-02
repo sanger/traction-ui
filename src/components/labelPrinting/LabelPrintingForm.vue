@@ -30,6 +30,7 @@
               v-model="form.selectedSuffix"
               :options="suffixOptions"
               placeholder="Please select a suffix"
+              value-field="text"
             ></traction-select>
           </traction-form-group>
 
@@ -59,6 +60,7 @@
               id="printer-choice"
               v-model="form.selectedPrinterName"
               :options="printerOptions"
+              value-field="text"
               required
             ></traction-select>
           </traction-form-group>
@@ -136,8 +138,10 @@ export default {
   methods: {
     setSuffixOptions() {
       //Display the suffix with the process stage description
-      let suffixOptions = SuffixList.map((obj) => obj.suffix.concat(' - ', obj.tubeStage))
-      suffixOptions.push('No suffix')
+       let suffixOptions = SuffixList.map((obj) => ({
+        text: obj.suffix.concat(' - ', obj.tubeStage),
+      }))
+      suffixOptions.push({ text: 'No suffix' })
       this.suffixOptions = suffixOptions
     },
     setPrinterNames() {

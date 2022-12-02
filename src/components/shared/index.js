@@ -77,7 +77,6 @@ const registerBootstrapComponents = (vue) => {
   vue.component('traction-file', BFormFile)
   vue.component('traction-tr', BTr)
   vue.component('traction-td', BTd)
-
   vue.component('traction-invalid-feedback', BFormInvalidFeedback)
   vue.component('traction-thead', BThead)
   vue.component('traction-th', BTh)

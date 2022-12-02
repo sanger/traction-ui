@@ -8,7 +8,6 @@
           :value="selected"
           data-type="tag-set-list"
           :options="options"
-          option-header="Please select a tag set"
           @input="updateSelected"
         ></traction-select>
       </div>
@@ -29,7 +28,7 @@ export default {
       )
     },
     options() {
-      return [...this.tagSets]
+      return [{ value: null, text: 'Please select a tag set' }, ...this.tagSets]
     },
     selected() {
       const { id = null } = this.$store.getters['traction/pacbio/poolCreate/selectedTagSet']

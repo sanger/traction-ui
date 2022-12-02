@@ -11,23 +11,44 @@
 -->
 
 <template>
-  <div class="flex flex-col">
-    <label v-if="title">{{ title }}</label>
-    <select
-      v-if="options"
-      v-bind="$attrs"
-      :value="value"
-      :class="`w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-sdb-100 focus:border-sdb-100 disabled:opacity-75 disabled:bg-gray-200 disabled:cursor-not-allowed ${classes}`"
-      @change="input($event)"
-    >
-      <option v-if="optionHeader" value="" disabled="true">{{ optionHeader }}</option>
-      <option v-for="option in getOptions" :key="option.text" :value="option.value">
-        {{ option.text }}
-      </option>
-    </select>
+  <div>
+    <flagged-feature name="enable_custom_select">
+      <template #disabled>
+        <b-form-select
+          v-bind="$attrs"
+          :value="value"
+          :options="options"
+          :place-holder="placeholder"
+          title="title"
+          @input="(val) => input(val)"
+        />
+      </template>
+      <div class="flex flex-col">
+        <label v-if="label">{{ label }}</label>
+        <select
+          v-if="options"
+          v-bind="$attrs"
+          :value="value"
+          :placeholder="placeholder"
+          :class="`w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-sdb-100 focus:border-sdb-100 disabled:opacity-75 disabled:bg-gray-200 disabled:cursor-not-allowed ${classes}`"
+          @change="(event) => input(event.target.value)"
+        >
+          <option
+            v-for="option in getOptions"
+            :key="option.value"
+            :value="option.value == null ? '' : option.value"
+            :disabled="option.disabled"
+          >
+            {{ option.text }}
+          </option>
+        </select>
+      </div>
+    </flagged-feature>
   </div>
 </template>
+
 <script>
+import { BFormSelect } from 'bootstrap-vue'
 export default {
   /**
    * # TractionSelect
@@ -35,11 +56,12 @@ export default {
    * Tailwind component to display a select field using html <select> element
    */
   name: 'TractionSelect',
+  components: { BFormSelect },
   inheritAttrs: false,
   props: {
     //value field of select which will be bind automatically with 'v-model' prop passed into the component
     value: {
-      type: String,
+      type: [String, Number],
       default: '',
     },
     options: {
@@ -49,7 +71,7 @@ export default {
       },
     },
     //Title to display on top of the select, if given
-    title: {
+    label: {
       type: String,
       default: '',
     },
@@ -58,8 +80,8 @@ export default {
       type: String,
       default: '',
     },
-    //header/title for options displayed which is disabled
-    optionHeader: {
+    //placeholder value
+    placeholder: {
       type: String,
       default: '',
     },
@@ -69,33 +91,21 @@ export default {
      * Options can be given in any of the following forms to support the existing usages
      * 1. As a normal string array e.g ['text1','text2'] . In this case both 'text'
      *    and 'value' fields will be set as the strings in array
-     * 2. As an array of objects of 'text' and 'value' fields e.g [{text:'sample text', value:"text1"}]
-     * 3. As an array of objects of form [{text:'sample text'}]. In this case both 'text'
-     *    and 'value' fields will be set to 'text' field data
-     * 4. As an array of objects of form [{value:'sample value'}]. In this case both text
-     *    and value fields will be set to 'value' field data
+     * 2. As an array of objects of 'text' and 'value' fields e.g [{text:'sample text', value:"text1", disabled:true}]
      * **/
     getOptions() {
       return this.options.map((option) => {
         if (typeof option == 'string') {
-          return { text: option, value: option }
-        } else if (typeof option == 'object') {
-          if ('text' in option && 'value' in option) {
-            return option
-          } else if (!('text' in option) && 'value' in option) {
-            return { text: option.value, value: option.value }
-          } else if ('text' in option && !('value' in option)) {
-            return { text: option.text, value: option.text }
-          }
+          return { text: option, value: option, disabled: false }
         }
-        return option
+        return { ...option }
       })
     },
   },
   methods: {
-    input(event) {
-      // Emit select data
-      this.$emit('input', event.target.value)
+    input(selectedValue) {
+      // Emit selected value
+      this.$emit('input', selectedValue)
     },
   },
 }

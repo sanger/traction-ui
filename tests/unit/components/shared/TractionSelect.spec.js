@@ -12,13 +12,13 @@ describe('TractionSelect.vue', () => {
   }
 
   it('displays the label and select box', () => {
-    const wrapper = buildWrapper({ title: 'Label Text' })
+    const wrapper = buildWrapper({ label: 'Label Text' })
     expect(wrapper.text()).toContain('Label Text')
     expect(wrapper.find('select').exists()).toBeTruthy()
   })
 
   it('displays the placeholder', () => {
-    const wrapper = buildWrapper({ title: 'Label Text', optionHeader: 'Testing' })
+    const wrapper = buildWrapper({ label: 'Label Text', placeholder: 'Testing' })
     const options = wrapper.find('select').findAll('option')
     //Option displayed as disabled
     expect(options.at(0).element.text).toEqual('Testing')
@@ -46,11 +46,38 @@ describe('TractionSelect.vue', () => {
       })
       expect(wrapper.find('select').element.options.length).toEqual(3)
     })
-    it('sets options given an array of objects with text', () => {
+    it('sets options given an array of objects with values', () => {
       const wrapper = buildWrapper({
         options: [{ value: 'Option 1' }, { value: 'Option 2' }, { value: 'Option 3' }],
       })
       expect(wrapper.find('select').element.options.length).toEqual(3)
+    })
+
+    it('supports disabled field', () => {
+      const wrapper = buildWrapper({
+        options: [
+          { value: 'Option 1', text: 'Option 1', disabled: true },
+          { value: 'Option 2', text: 'Option 2', disabled: false },
+        ],
+      })
+      //Option displayed as disabled
+      const options = wrapper.find('select').findAll('option')
+      expect(options.at(0).element.text).toEqual('Option 1')
+      expect(wrapper.find('option:disabled').element.text).toBe('Option 1')
+      expect(wrapper.find('option:enabled').element.text).toBe('Option 2')
+    })
+    it('supports value field as null which will be disabled by default(to allow compatibility with bootstrap component', () => {
+      const wrapper = buildWrapper({
+        options: [
+          { value: null, text: 'Option 1' },
+          { value: 'Option 2', text: 'Option 2' },
+        ],
+      })
+      //Option displayed as disabled
+      const options = wrapper.find('select').findAll('option')
+      expect(options.at(0).element.text).toEqual('Option 1')
+       expect(wrapper.find('option:disabled').element.text).toBe('Option 1')
+      //expect(wrapper.find('option:disabled').element.text).toBe('Option 1')
     })
   })
 

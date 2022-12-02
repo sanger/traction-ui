@@ -55,6 +55,7 @@
             id="system-name"
             ref="systemName"
             :value="systemName"
+            title="System Name"
             :options="systemNameOptions"
             @input="setSystemName"
           />
@@ -70,6 +71,7 @@
             ref="smrtLinkVersion"
             :value="smrtLinkVersionId"
             data-attribute="smrt-link-version"
+            title="SMRT Link Version"
             :options="smrtLinkVersionSelectOptions"
             @input="setSmrtLinkVersionId"
           />

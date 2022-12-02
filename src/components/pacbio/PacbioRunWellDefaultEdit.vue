@@ -11,12 +11,12 @@
             data-attribute="default-movie-time"
             :options="movieTimeOptions"
             :value="currentRun.wellDefaults.movie_time"
-            option-header="Movie Time"
             @input="setDefaultMovieTime"
           >
           </traction-select>
         </traction-col>
       </traction-row>
+
       <traction-row v-if="['v10'].includes(selectedSmrtLinkVersion.name)">
         <traction-col>
           <label for="default-generate-hifi">Generate HiFi:</label>
@@ -25,9 +25,9 @@
           <traction-select
             id="default-generate-hifi"
             data-attribute="default-generate-hifi"
+            title="Generate HiFi"
             :options="generateHifiOptions[currentRun.system_name]"
             :value="currentRun.wellDefaults.generate_hifi"
-            option-header="Please select a value"
             @input="setDefaultGenerateHifi"
           >
           </traction-select>
@@ -41,6 +41,7 @@
           <traction-select
             id="default-ccs-analysis-output"
             data-attribute="default-ccs-analysis-output"
+            title="Ccs Analysis Output"
             :options="ccsAnalysisOutputOptions"
             :value="currentRun.wellDefaults.ccs_analysis_output"
             @input="setDefaultCcsAnalysisOutput"
@@ -106,9 +107,10 @@
           <traction-select
             id="default-ccs-analysis-output-include-kinetics-information"
             data-attribute="default-ccs-analysis-output-include-kinetics-information"
+            title="CCS Analysis Output Include Kinetics Information"
+            placeholder="Default CCS Analysis Output Include Kinetics Information for new wells"
             :options="ccsAnalysisOutputOptions"
             :value="currentRun.wellDefaults.ccs_analysis_output_include_kinetics_information"
-            option-header="Default CCS Analysis Output Include Kinetics Information for new wells"
             @input="setDefaultCcsAnalysisOutputIncludeKineticsInformation"
           >
           </traction-select>
@@ -124,9 +126,10 @@
           <traction-select
             id="default-ccs-analysis-output-include-low-quality-reads"
             data-attribute="default-ccs-analysis-output-include-low-quality-reads"
+            title="CCS Analysis Output Include Low Quality Reads"
             :options="ccsAnalysisOutputOptions"
             :value="currentRun.wellDefaults.ccs_analysis_output_include_low_quality_reads"
-            option-header="Default CCS Analysis Output Include Low Quality Reads for new wells"
+            placeholder="Default CCS Analysis Output Include Low Quality Reads for new wells"
             @input="setDefaultCcsAnalysisOutputIncludeLowQualityReads"
           >
           </traction-select>
@@ -140,6 +143,7 @@
           <traction-select
             id="default-demultiplex-barcodes"
             data-attribute="default-demultiplex-barcodes"
+            title="Demultiplex Barcodes"
             :options="generateHifiOptions[currentRun.system_name]"
             :value="currentRun.wellDefaults.demultiplex_barcodes"
             placeholder="Default Demultiplex Barcodes for new wells"
@@ -158,9 +162,10 @@
           <traction-select
             id="default-include-fivemc-calls-in-cpg-motifs"
             data-attribute="default-include-fivemc-calls-in-cpg-motifs"
+            title="Include 5mc Calls In CpG Motifs"
             :options="ccsAnalysisOutputOptions"
             :value="currentRun.wellDefaults.include_fivemc_calls_in_cpg_motifs"
-            option-header="Default Include 5mc Calls in CpG Motifs for new wells"
+            placeholder="Default Include 5mc Calls in CpG Motifs for new wells"
             @input="setDefaultIncludeFivemcCallsInCpgMotifs"
           >
           </traction-select>
@@ -183,17 +188,28 @@
 // A lot of it could be moved to the store
 import { createNamespacedHelpers } from 'vuex'
 const { mapGetters, mapMutations } = createNamespacedHelpers('traction/pacbio/runs')
-
+const defaultValues = [
+  { text: 'Please select a value', value: '', disabled: true },
+  'In SMRT Link',
+  'Do Not Generate',
+]
 export default {
   name: 'PacbioRunWellDefaultEdit',
   data() {
     return {
-      movieTimeOptions: ['10.0', '15.0', '20.0', '24.0', '30.0'],
+      movieTimeOptions: [
+        { text: 'Movie Time', value: '', disabled: true },
+        '10.0',
+        '15.0',
+        '20.0',
+        '24.0',
+        '30.0',
+      ],
       generateHifiOptions: {
-        '': [],
-        'Sequel I': ['In SMRT Link', 'Do Not Generate'],
-        'Sequel II': ['In SMRT Link', 'Do Not Generate'],
-        'Sequel IIe': ['In SMRT Link', 'Do Not Generate', 'On Instrument'],
+        '': [defaultValues[0]],
+        'Sequel I': defaultValues,
+        'Sequel II': defaultValues,
+        'Sequel IIe': [...defaultValues, 'On Instrument'],
       },
       ccsAnalysisOutputOptions: ['Yes', 'No'],
     }
