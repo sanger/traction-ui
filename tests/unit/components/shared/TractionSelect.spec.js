@@ -1,5 +1,4 @@
 import { localVue, mount } from '@support/testHelper'
-
 import TractionSelect from '@/components/shared/TractionSelect'
 import { describe, expect, it } from 'vitest'
 
@@ -8,6 +7,7 @@ describe('TractionSelect.vue', () => {
     return mount(TractionSelect, {
       localVue,
       propsData: props,
+      components: {},
     })
   }
 
@@ -15,14 +15,6 @@ describe('TractionSelect.vue', () => {
     const wrapper = buildWrapper({ label: 'Label Text' })
     expect(wrapper.text()).toContain('Label Text')
     expect(wrapper.find('select').exists()).toBeTruthy()
-  })
-
-  it('displays the placeholder', () => {
-    const wrapper = buildWrapper({ label: 'Label Text', placeholder: 'Testing' })
-    const options = wrapper.find('select').findAll('option')
-    //Option displayed as disabled
-    expect(options.at(0).element.text).toEqual('Testing')
-    expect(wrapper.find('option:disabled').element.text).toBe('Testing')
   })
 
   describe('Testing different value types for options', () => {
@@ -53,7 +45,7 @@ describe('TractionSelect.vue', () => {
       expect(wrapper.find('select').element.options.length).toEqual(3)
     })
 
-    it('supports disabled field', () => {
+    it('displays disabled option', () => {
       const wrapper = buildWrapper({
         options: [
           { value: 'Option 1', text: 'Option 1', disabled: true },
@@ -66,7 +58,7 @@ describe('TractionSelect.vue', () => {
       expect(wrapper.find('option:disabled').element.text).toBe('Option 1')
       expect(wrapper.find('option:enabled').element.text).toBe('Option 2')
     })
-    it('supports value field as null which will be disabled by default(to allow compatibility with bootstrap component', () => {
+    it('supports value field as null (to allow compatibility with bootstrap component', () => {
       const wrapper = buildWrapper({
         options: [
           { value: null, text: 'Option 1' },
@@ -76,8 +68,7 @@ describe('TractionSelect.vue', () => {
       //Option displayed as disabled
       const options = wrapper.find('select').findAll('option')
       expect(options.at(0).element.text).toEqual('Option 1')
-       expect(wrapper.find('option:disabled').element.text).toBe('Option 1')
-      //expect(wrapper.find('option:disabled').element.text).toBe('Option 1')
+      expect(options.at(0).element.value).toEqual('')
     })
   })
 
@@ -103,21 +94,14 @@ describe('TractionSelect.vue', () => {
     expect(wrapper.find('option:checked').element.value).toBe('Option 2')
     expect(wrapper.find('select').element.value).toEqual('Option 2')
   })
-
   it('updates the v-model value when changing the selected value, ', async () => {
-    const wrapper = mount({
-      template: '<traction-select v-model="test" :options="optionData" ></traction-select>',
-      components: { 'traction-select': TractionSelect },
-      data() {
-        return {
-          test: '',
-          optionData: ['Option 1', 'Option 2', 'Option 3'],
-        }
-      },
+    var wrapper = mount(TractionSelect, {
+      localVue,
+      propsData: { options: ['Option 1', 'Option 2', 'Option 3'] },
     })
     const options = wrapper.find('select').findAll('option')
     await options.at(1).setSelected()
-    expect(wrapper.vm.test).toBe('Option 2')
+    expect(wrapper.find('select').element.value).toBe('Option 2')
   })
 
   it('updates the selected value when changing the v-model value externally,', async () => {
@@ -147,7 +131,7 @@ describe('TractionSelect.vue', () => {
         },
       },
     })
-    const options = wrapper.find('select').findAll('option')
+    const options = await wrapper.find('select').findAll('option')
     await options.at(1).setSelected()
     expect(wrapper.vm.dummyTest).toEqual('Option 2')
   })

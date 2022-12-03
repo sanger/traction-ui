@@ -18,7 +18,7 @@
           v-bind="$attrs"
           :value="value"
           :options="options"
-          :place-holder="placeholder"
+          :placeholder="placeholder"
           title="title"
           @input="(val) => input(val)"
         />
@@ -48,7 +48,8 @@
 </template>
 
 <script>
-import { BFormSelect } from 'bootstrap-vue'
+import { BFormSelect} from 'bootstrap-vue'
+import FlaggedFeature from '@/components/shared/FlaggedFeature.vue'
 export default {
   /**
    * # TractionSelect
@@ -56,7 +57,7 @@ export default {
    * Tailwind component to display a select field using html <select> element
    */
   name: 'TractionSelect',
-  components: { BFormSelect },
+  components: { BFormSelect,FlaggedFeature },
   inheritAttrs: false,
   props: {
     //value field of select which will be bind automatically with 'v-model' prop passed into the component
@@ -92,11 +93,20 @@ export default {
      * 1. As a normal string array e.g ['text1','text2'] . In this case both 'text'
      *    and 'value' fields will be set as the strings in array
      * 2. As an array of objects of 'text' and 'value' fields e.g [{text:'sample text', value:"text1", disabled:true}]
+     *    If only text field is given,value will be defaulted to text field ,
      * **/
     getOptions() {
       return this.options.map((option) => {
         if (typeof option == 'string') {
           return { text: option, value: option, disabled: false }
+        } else if (typeof option == 'object') {
+          if ('text' in option && !('value' in option)) {
+            return {
+              text: option.text,
+              value: option.text,
+              disabled: 'disabled' in option ? option.disabled : false,
+            }
+          }
         }
         return { ...option }
       })
