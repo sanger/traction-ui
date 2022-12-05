@@ -1,3 +1,10 @@
+/* 
+  TODO: I think semantics are important here.
+  We are using suffix for the purpose of printing
+  but this actually refers to workflows and options
+  e.g. suffixDropdown options should be WorkflowDropdownOptions
+*/
+
 /*
  * @example: suffixList
   Example format of suffixList:
