@@ -100,7 +100,7 @@ import {
   createSuffixItems,
   createLabelsFromBarcodes,
 } from '@/lib/LabelPrintingHelpers'
-import { getCurrentDate } from '@/lib/dateHelpers'
+import { getCurrentDate } from '@/lib/DateHelpers'
 import { mapActions } from 'vuex'
 
 const defaultForm = () => ({
