@@ -55,21 +55,6 @@ describe('PacbioPoolIndex.vue', () => {
     })
   })
 
-  describe('printerModal', () => {
-    beforeEach(() => {
-      wrapper.setData({ sortDesc: false })
-      pools.handlePrintLabel = vi.fn()
-    })
-
-    it('passes selected printer to function on emit event', () => {
-      pools.selected = [{ id: 1 }]
-      let modal = wrapper.findComponent({ ref: 'printerModal' })
-      modal.vm.$emit('selectPrinter', 'printer1')
-
-      expect(pools.handlePrintLabel).toBeCalledWith('pacbio', 'printer1')
-    })
-  })
-
   describe('Edit button', () => {
     let button
 
@@ -85,7 +70,7 @@ describe('PacbioPoolIndex.vue', () => {
     })
   })
 
-  describe.skip('Printing labels', () => {
+  describe('Printing labels', () => {
     beforeEach(() => {
       pools.selected = [
         { id: 1, barcode: 'TRAC-1', source_identifier: 'SQSC-1' },
@@ -102,7 +87,7 @@ describe('PacbioPoolIndex.vue', () => {
       it('will have the correct text for each label', () => {
         const label = pools.createLabels()[0]
         expect(label.barcode).toEqual('TRAC-1')
-        expect(label.first_line).toEqual('Pacbio - Library')
+        expect(label.first_line).toEqual('Pacbio - Pool')
         expect(/\d{2}-\w{3}-\d{2}/g.test(label.second_line)).toBeTruthy()
         expect(label.third_line).toEqual('TRAC-1')
         expect(label.fourth_line).toEqual('SQSC-1')
