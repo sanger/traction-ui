@@ -4,6 +4,20 @@ import { createSuffixDropdownOptions } from '@/lib/LabelPrintingHelpers'
 import { localVue, mount, store } from '@support/testHelper'
 import { beforeEach, describe, expect, it } from 'vitest'
 
+const options = {
+  sourceBarcodeList: 'SQSC-1\nSQSC-2\nSQSC-3',
+  suffix: 'UPRL',
+  numberOfLabels: 3,
+  copies: '1',
+  printerName: 'aPrinter',
+}
+
+const evt = {
+  preventDefault: () => {
+    return {}
+  },
+}
+
 describe('LabelPrintingForm.vue', () => {
   let wrapper, labelPrintingForm
 
@@ -31,14 +45,7 @@ describe('LabelPrintingForm.vue', () => {
    * we have tested the methods in the helper library
    * we also have a e2e test
    */
-  describe.skip('labels', () => {
-    const options = {
-      sourceBarcodeList: 'SQSC-1\nSQSC-2\nSQSC-3',
-      suffix: 'UPRL',
-      numberOfLabels: 3,
-      copies: '1',
-    }
-
+  describe('labels', () => {
     it('should have the correct number', () => {
       const wrapper = mount(LabelPrintingForm, {
         localVue,
@@ -55,62 +62,15 @@ describe('LabelPrintingForm.vue', () => {
     })
   })
 
-  describe.skip('methods', () => {
-    describe('suffixedBarcodes', () => {
-      it('created the list of suffixed barcodes when all form data is present', () => {
-        wrapper.setData({
-          form: {
-            barcode: 'aBarcode',
-            selectedSuffix: 'ESHR',
-            selectedNumberOfLabels: 2,
-          },
-        })
-        expect(labelPrintingForm.suffixedBarcodes()).toEqual(['aBarcode-ESHR-1', 'aBarcode-ESHR-2'])
-      })
-      it('returns an empty list when barcode is not present', () => {
-        wrapper.setData({
-          form: { selectedSuffix: 'ESHR', selectedNumberOfLabels: 2 },
-        })
-        expect(labelPrintingForm.suffixedBarcodes()).toEqual([])
-      })
-      it('can add barcode without suffix', () => {
-        wrapper.setData({
-          form: { selectedSuffix: 'No suffix', barcode: 'aBarcode', selectedNumberOfLabels: 2 },
-        })
-        expect(labelPrintingForm.suffixedBarcodes()).toEqual(['aBarcode-1', 'aBarcode-2'])
-      })
-      it('can add barcode without lables', () => {
-        wrapper.setData({
-          form: { barcode: 'aBarcode', selectedSuffix: 'HXCL' },
-        })
-        expect(labelPrintingForm.suffixedBarcodes()).toEqual(['aBarcode-HXCL'])
-      })
-      it('can add barcode without suffix and labels', () => {
-        wrapper.setData({
-          form: { selectedSuffix: 'No suffix', barcode: 'aBarcode' },
-        })
-        expect(labelPrintingForm.suffixedBarcodes()).toEqual(['aBarcode'])
-      })
-    })
-
-    describe('printer', () => {
-      it('gets the printer', () => {
-        wrapper.setData({ form: { selectedPrinterName: 'stub' } })
-        expect(labelPrintingForm.printerName()).toEqual(labelPrintingForm.form.selectedPrinterName)
-      })
-    })
-
+  describe('methods', () => {
     describe('onReset', () => {
       it('resets the forms data', () => {
         wrapper.setData({
           form: { printerName: 'stub' },
         })
 
-        const evt = {
-          preventDefault: () => {
-            return {}
-          },
-        }
+        labelPrintingForm = wrapper.vm
+
         labelPrintingForm.onReset(evt)
         expect(labelPrintingForm.form.sourceBarcodeList).toEqual(null)
         expect(labelPrintingForm.form.suffix).toEqual(null)
@@ -119,60 +79,54 @@ describe('LabelPrintingForm.vue', () => {
       })
     })
 
-    describe.skip('#sendPrintRequest', () => {
+    describe('#printLabels', () => {
       beforeEach(() => {
-        wrapper.setData({
-          form: {
-            barcode: 'aBarcode',
-            selectedSuffix: 'ESHR',
-            selectedNumberOfLabels: 2,
-            selectedPrinterName: 'stub',
-            copies: '1',
+        const wrapper = mount(LabelPrintingForm, {
+          localVue,
+          store,
+          data() {
+            return {
+              form: options,
+            }
           },
         })
 
-        labelPrintingForm.printJob = vi.fn()
-        labelPrintingForm.showAlert = vi.fn()
+        labelPrintingForm = wrapper.vm
       })
 
       it('calls printJob successfully', async () => {
-        const response = { success: true, data: { message: 'a msg' } }
-        labelPrintingForm.printJob.mockImplementation(() => response)
+        labelPrintingForm.createPrintJob = vi.fn().mockImplementation(() => {
+          return { success: true, message: 'success' }
+        })
 
-        await labelPrintingForm.sendPrintRequest()
+        const result = await labelPrintingForm.printLabels(evt)
 
-        const expectedParams = {
-          barcodesList: ['aBarcode-ESHR-1', 'aBarcode-ESHR-2'],
-          printerName: labelPrintingForm.form.selectedPrinterName,
-          copies: '1',
-          suffix: 'ESHR',
+        const expected = {
+          printerName: options.printerName,
+          labels: labelPrintingForm.labels,
+          copies: options.copies,
         }
 
-        expect(labelPrintingForm.printJob).toBeCalledWith(expectedParams)
-        expect(labelPrintingForm.showAlert).toBeCalledWith('a msg', 'success')
+        expect(labelPrintingForm.createPrintJob).toBeCalledWith(expected)
+        expect(result).toEqual({ success: true, message: 'success' })
       })
 
+      // not sure we need to test failure??
       it('calls printJob unsuccessfully', async () => {
-        const response = { success: false, data: { message: 'an error msg' } }
-        labelPrintingForm.printJob.mockImplementation(() => response)
+        labelPrintingForm.createPrintJob = vi.fn().mockImplementation(() => {
+          return { success: false, message: 'failure' }
+        })
 
-        await labelPrintingForm.sendPrintRequest()
+        const result = await labelPrintingForm.printLabels(evt)
 
-        const expectedParams = {
-          barcodesList: ['aBarcode-ESHR-1', 'aBarcode-ESHR-2'],
-          printerName: labelPrintingForm.form.selectedPrinterName,
-          copies: '1',
-          suffix: 'ESHR',
+        const expected = {
+          printerName: options.printerName,
+          labels: labelPrintingForm.labels,
+          copies: options.copies,
         }
 
-        expect(labelPrintingForm.printJob).toBeCalledWith(expectedParams)
-        expect(labelPrintingForm.showAlert).toBeCalledWith('an error msg', 'danger')
-      })
-    })
-
-    describe('create labels', () => {
-      it('works', () => {
-        expect(true).toBeTruthy()
+        expect(labelPrintingForm.createPrintJob).toBeCalledWith(expected)
+        expect(result).toEqual({ success: false, message: 'failure' })
       })
     })
   })
