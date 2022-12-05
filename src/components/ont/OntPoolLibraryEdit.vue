@@ -109,9 +109,6 @@ export default {
       default: false,
     },
   },
-  data() {
-    return {}
-  },
   computed: {
     ...mapGetters(['selectedTagSet', 'libraryItem']),
     tagList() {

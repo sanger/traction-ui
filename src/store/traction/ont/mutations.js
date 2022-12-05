@@ -11,6 +11,13 @@ export default {
       Vue.delete(state.selected.plates, `${id}`)
     }
   },
+   selectTube: (state, { id, selected = true }) => {
+    if (selected) {
+      Vue.set(state.selected.tubes, `${id}`, { id: id, selected: true })
+    } else {
+      Vue.delete(state.selected.tubes, `${id}`)
+    }
+  },
   selectRequest: ({ libraries }, { id, selected = true }) => {
     if (selected) {
       Vue.set(libraries, `_${id}`, newLibrary({ ont_request_id: id }))
@@ -77,6 +84,7 @@ export default {
     }
   },
   populatePlates: populateById('plates', { includeRelationships: true }),
+  populateTubes: populateById('tubes', { includeRelationships: true }),
   populateWells: populateById('wells', { includeRelationships: true }),
   setRequests: populateById('requests', { includeRelationships: true }, true),
   populateRequests: populateById('requests', { includeRelationships: true }),

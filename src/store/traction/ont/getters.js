@@ -43,6 +43,12 @@ export default {
    */
   selectedPlates: ({ selected, resources }) =>
     mergeRepresentations(selected.plates, resources.plates),
+  
+  /**
+   * Returns a list of selected tubes
+   * @param {Object} state The Vuex state object
+   */
+  selectedTubes: ({ selected, resources }) => mergeRepresentations(selected.tubes, resources.tubes),
 
   /**
    * Returns a list of all fetched wells

@@ -12,7 +12,8 @@ const sourceRegex = /^(?<barcode>[\w-]+)(:(?<wellName>\w[0-9]{1,2})){0,1}$/
 const errorFor = ({ lines, records }, message) => `Library ${records} on line ${lines}: ${message}`
 const csvLogger = (commit, info, level) => (message) =>
   commit('traction/addMessage', { type: level, message: errorFor(info, message) }, { root: true })
-
+const tubeFor = ({ resources }, { ont_request_id }) =>
+  resources.tubes[resources.requests[ont_request_id]?.tube]
 const autoTagPlate = ({ state, commit }, { library }) => {
   const initialWell = wellFor(state, library)
   const initialIndex = wellToIndex(initialWell)
@@ -32,6 +33,22 @@ const autoTagPlate = ({ state, commit }, { library }) => {
     const newTag = (initialTagIndex + offset) % tags.length
     commit('updateLibrary', { ont_request_id, tag_id: tags[newTag] })
   })
+}
+
+const autoTagTube = ({ state, commit, getters }, { library }) => {
+  const initialTube = tubeFor(state, library)
+  const tags = state.resources.tagSets[state.selected.tagSet.id].tags
+  const initialTagIndex = tags.indexOf(library.tag_id)
+
+  Object.values(getters.selectedRequests)
+    .filter((request) => {
+      // request.tube doesn't exist so we are going to have to get the tube through the source identifier
+      return request.tube && parseInt(request.tube) > parseInt(initialTube.id)
+    })
+    .forEach((req, offset) => {
+      const newTag = (initialTagIndex + offset + 1) % tags.length
+      commit('updateLibrary', { ont_request_id: req.id, tag_id: tags[newTag] })
+    })
 }
 
 const requestsForPlate = ({ barcode, wellName, plates, commit, wells }) => {
@@ -62,7 +79,6 @@ const findRequestsForSource = ({
   commit,
   resources: { plates, wells, tubes },
 }) => {
-  console.log(barcode, wellName)
   if (wellName) {
     return requestsForPlate({ barcode, wellName, plates, commit, wells })
   } else {
@@ -169,6 +185,39 @@ export default {
       commit('selectPlate', { id: data[0].id, selected: true })
       commit('populatePlates', data)
       commit('populateWells', wells)
+      commit('populateRequests', requests)
+    }
+
+    return { success, errors }
+  },
+
+  findOntTube: async ({ commit, rootState }, filter) => {
+    // Here we want to make sure the filter exists
+    // If it doesn't exist the request will return all tubes
+    if (filter['barcode'].trim() === '') {
+      return {
+        success: false,
+        errors: ['Please provide a tube barcode'],
+      }
+    }
+
+    const request = rootState.api.traction.ont.tubes
+    const promise = request.get({ filter: filter, include: 'requests' })
+    const response = await handleResponse(promise)
+    let { success, data: { data, included = [] } = {}, errors = [] } = response
+    const { requests } = groupIncludedByResource(included)
+
+    // We will be return a successful empty list if no tubes match the filter
+    // Therefore we want to return an error if we don't have any tubes
+    if (!data.length) {
+      success = false
+      errors = [`Unable to find tube with barcode: ${filter['barcode']}`]
+    }
+
+    if (success) {
+      // We want to grab the first (and only) record from the applied filter
+      commit('selectTube', { id: data[0].id, selected: true })
+      commit('populateTubes', data)
       commit('populateRequests', requests)
     }
 
@@ -297,13 +346,17 @@ export default {
    *   if tag 2 was applied to A1, then C1 would receive tag 4 regardless
    *   the state of B1.
    */
-  applyTags: ({ state, commit }, { library, autoTag }) => {
+  applyTags: ({ state, commit, getters }, { library, autoTag }) => {
     // We always apply the first tag
     commit('updateLibrary', library)
     if (autoTag) {
-      // const request = state.resources.requests[library.ont_request_id]
-      // If we support tubes we want to add a check here whether request is from tube or plate
-      autoTagPlate({ state, commit }, { library })
+      const request = state.resources.requests[library.ont_request_id]
+      const plateMatch = request.source_identifier.match(sourceRegex)?.groups.wellName
+      if (plateMatch) {
+        autoTagPlate({ state, commit }, { library })
+      } else {
+        autoTagTube({ state, commit, getters }, { library })
+      }
     }
   },
 
@@ -318,6 +371,19 @@ export default {
       for (let requestId of requests) {
         commit('selectRequest', { id: requestId, selected: false })
       }
+    }
+  },
+
+  /**
+   * When a tube is deselected, we need to also remove all its requests
+   */
+  deselectTubeAndContents: ({ commit, state }, tubeBarcode) => {
+    const tube = Object.values(state.resources.tubes).find((tube) => tube.barcode == tubeBarcode)
+    commit('selectTube', { id: tube.id, selected: false })
+    const { requests } = state.resources.tubes[tube.id]
+
+    for (let requestId of requests) {
+      commit('selectRequest', { id: requestId, selected: false })
     }
   },
 }
