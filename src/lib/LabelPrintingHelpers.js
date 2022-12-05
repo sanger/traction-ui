@@ -19,6 +19,16 @@
 
 /*
  * @param {Array [Object, ...]} suffixList
+ * @param {String} the attribute to extract from each object
+ * @returns [Array] e.g. [attribute, attribute ...]
+ * for each object return the named attribute
+ */
+const byAttribute = (objects, attribute) => {
+  return objects.map((object) => object[attribute])
+}
+
+/*
+ * @param {Array [Object, ...]} suffixList
  * @returns {Array} A list which can be used as a drop-down (Bootstrap only?) in the format
  * example: [{ label: 'workflow', options: [{text:'text', value: 'value', ...}, ..., { text: 'No suffix', value: null }]}]
  * The last item returned is a no suffix option
@@ -64,6 +74,15 @@ const createSuffixItems = (suffixList) => {
   }, {})
 }
 
+// @returns {Object} - An empty SuffixItem with all attributes set to null
+const NullSuffixItem = () => ({
+  stage: null,
+  suffix: null,
+  text: null,
+  value: null,
+  workflow: null,
+})
+
 /*
  * @param {String} sourceBarcode - original barcode
  * @param {string} date - date the barcode is created
@@ -92,4 +111,43 @@ const createBarcodeLabelItem = ({ sourceBarcode, date, stage = '', suffixes = []
   }
 }
 
-export { createSuffixDropdownOptions, createSuffixItems, createBarcodeLabelItem }
+/*
+ * @param {Array} sourceBarcode - set of sourceBarcodes
+ * @param {string} date - date the barcode is created
+ * @param {suffixItem} - used for text on labels defaults to NullSuffixItem
+ * @param {Number} numberOfLabels - Number of labels to print for each barcode defaults to 0
+ * @returns [BarcodeLabelItem, ...} - An array of BarcodeLabelItem objects suitable for printing
+ */
+const createLabelsFromBarcodes = ({
+  sourceBarcodeList,
+  date,
+  suffixItem = NullSuffixItem,
+  numberOfLabels = 0,
+} = {}) => {
+  const { stage, suffix } = suffixItem
+
+  // takes a number and turns it into an array with a sequence of numbers e.g. [1,2,3,4,5]
+  // if number is 0 returns an empty array
+  const numberList = Array.from({ length: numberOfLabels }, (v, k) => k + 1)
+
+  // for each sourceBarcode create a BarcodeLabelItem
+  return sourceBarcodeList.flatMap((sourceBarcode) => {
+    // if numberOfLabels is empty we just want to return a single item with
+    if (numberList.length === 0) {
+      return createBarcodeLabelItem({ sourceBarcode, date, stage, suffixes: [suffix] })
+    } else {
+      // if numberList is filled return a BarcodeLabelItem for each one
+      return numberList.map((number) =>
+        createBarcodeLabelItem({ sourceBarcode, date, stage, suffixes: [suffix, number] }),
+      )
+    }
+  })
+}
+
+export {
+  byAttribute,
+  createSuffixDropdownOptions,
+  createSuffixItems,
+  createBarcodeLabelItem,
+  createLabelsFromBarcodes,
+}

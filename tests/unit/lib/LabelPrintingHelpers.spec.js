@@ -1,10 +1,12 @@
 import { getCurrentDate } from '@/lib/DateHelpers'
 import {
+  byAttribute,
   createSuffixDropdownOptions,
   createSuffixItems,
   createBarcodeLabelItem,
+  createLabelsFromBarcodes,
 } from '@/lib/LabelPrintingHelpers'
-import { expect, it } from 'vitest'
+import { describe, expect, it } from 'vitest'
 
 const suffixList = [
   {
@@ -62,6 +64,16 @@ const suffixList = [
 ]
 
 describe('LabelPrintingHelpers.js', () => {
+  describe('byAttribute', () => {
+    it('returns each attribute', () => {
+      const array = [
+        { a: 1, b: 2 },
+        { a: 3, b: 4 },
+        { a: 5, b: 6 },
+      ]
+      expect(byAttribute(array, 'a')).toEqual([1, 3, 5])
+    })
+  })
   describe('createSuffixDropdownOptions', () => {
     it('creates an item for each workflow', () => {
       const items = createSuffixDropdownOptions(suffixList)
@@ -90,7 +102,7 @@ describe('LabelPrintingHelpers.js', () => {
     })
   })
 
-  describe('createSuffixItems', () => {
+  describe('#createSuffixItems', () => {
     it('creates a key for each suffix', () => {
       const items = createSuffixItems(suffixList)
       expect(Object.keys(items)).toEqual(['ST1', 'ST2', 'ST3', 'ST10', 'ST11', 'ST12'])
@@ -102,7 +114,7 @@ describe('LabelPrintingHelpers.js', () => {
     })
   })
 
-  describe('createBarcodeLabelItem', () => {
+  describe('#createBarcodeLabelItem', () => {
     const date = getCurrentDate()
     const sourceBarcode = 'SQSC-1234'
     const stage = 'ST1 - Stage 1'
@@ -149,5 +161,86 @@ describe('LabelPrintingHelpers.js', () => {
       expect(third_line).toEqual(`${sourceBarcode}`)
       expect(fourth_line).toEqual(`${suffixes[0]}-${suffixes[1]}`)
     })
+  })
+
+  describe('#createLabelsFromBarcodes', () => {
+    const sourceBarcodeList = ['SQSC-1', 'SQSC-2', 'SQSC-3', 'SQSC-4', 'SQSC-5']
+    const date = getCurrentDate()
+    const suffixItem = {
+      stage: 'Stage1',
+      suffix: 'ST1',
+      text: 'ST1 - Stage1',
+      value: 'ST1',
+      workflow: 'Worflow 1',
+    }
+    const numberOfLabels = 3
+
+    it('with no workflow stage', () => {
+      const barcodeLabels = createLabelsFromBarcodes({ sourceBarcodeList, date })
+      expect(barcodeLabels.length).toEqual(5)
+      expect(byAttribute(barcodeLabels, 'barcode')).toEqual(sourceBarcodeList)
+    })
+
+    it('with a workflow stage', () => {
+      const barcodeLabels = createLabelsFromBarcodes({ sourceBarcodeList, date, suffixItem })
+      expect(barcodeLabels.length).toEqual(5)
+      expect(byAttribute(barcodeLabels, 'barcode')).toEqual([
+        'SQSC-1-ST1',
+        'SQSC-2-ST1',
+        'SQSC-3-ST1',
+        'SQSC-4-ST1',
+        'SQSC-5-ST1',
+      ])
+      expect(barcodeLabels[0]).toEqual({
+        barcode: 'SQSC-1-ST1',
+        first_line: date,
+        second_line: suffixItem.stage,
+        third_line: 'SQSC-1',
+        fourth_line: 'ST1',
+      })
+    })
+
+    it('with a workflow stage and numbers', () => {
+      const barcodeLabels = createLabelsFromBarcodes({
+        sourceBarcodeList,
+        date,
+        suffixItem,
+        numberOfLabels,
+      })
+      expect(barcodeLabels.length).toEqual(15)
+      expect(byAttribute(barcodeLabels, 'barcode')).toEqual([
+        'SQSC-1-ST1-1',
+        'SQSC-1-ST1-2',
+        'SQSC-1-ST1-3',
+        'SQSC-2-ST1-1',
+        'SQSC-2-ST1-2',
+        'SQSC-2-ST1-3',
+        'SQSC-3-ST1-1',
+        'SQSC-3-ST1-2',
+        'SQSC-3-ST1-3',
+        'SQSC-4-ST1-1',
+        'SQSC-4-ST1-2',
+        'SQSC-4-ST1-3',
+        'SQSC-5-ST1-1',
+        'SQSC-5-ST1-2',
+        'SQSC-5-ST1-3',
+      ])
+      expect(barcodeLabels[0]).toEqual({
+        barcode: 'SQSC-1-ST1-1',
+        first_line: date,
+        second_line: suffixItem.stage,
+        third_line: 'SQSC-1',
+        fourth_line: 'ST1-1',
+      })
+      expect(barcodeLabels.slice(-1)[0]).toEqual({
+        barcode: 'SQSC-5-ST1-3',
+        first_line: date,
+        second_line: suffixItem.stage,
+        third_line: 'SQSC-5',
+        fourth_line: 'ST1-3',
+      })
+    })
+
+    it('with numbers only', () => {})
   })
 })
