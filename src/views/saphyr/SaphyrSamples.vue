@@ -89,7 +89,6 @@
 import EnzymeModal from '@/components/saphyr/SaphyrEnzymeModal'
 import PrinterModal from '@/components/PrinterModal'
 import TableHelper from '@/mixins/TableHelper'
-import * as consts from '@/consts/consts'
 import { mapActions, mapGetters } from 'vuex'
 import { getCurrentDate } from '@/lib/DateHelpers'
 
@@ -134,7 +133,7 @@ export default {
         let barcodes = response.deserialize.libraries.map((l) => l.barcode)
         this.showAlert('Libraries successfully created with barcodes: ' + barcodes, 'success')
       } else {
-        this.showAlert(consts.MESSAGE_ERROR_CREATE_LIBRARY_FAILED, 'danger')
+        this.showAlert('Failed to create library in Traction: ', 'danger')
       }
     },
     async provider() {

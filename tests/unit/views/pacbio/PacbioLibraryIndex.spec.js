@@ -1,6 +1,5 @@
 import Libraries from '@/views/pacbio/PacbioLibraryIndex'
 import { mount, localVue, Data, store, router } from '@support/testHelper'
-import * as consts from '@/consts/consts'
 import Response from '@/api/Response'
 import { expect } from 'vitest'
 
@@ -126,7 +125,7 @@ describe('Libraries.vue', () => {
 
       expect(libraries.deleteLibraries).toBeCalled()
 
-      expect(libraries.showAlert).toBeCalledWith(consts.MESSAGE_ERROR_DELETION_FAILED, 'danger')
+      expect(libraries.showAlert).toBeCalledWith('Failed to delete: ', 'danger')
     })
   })
 

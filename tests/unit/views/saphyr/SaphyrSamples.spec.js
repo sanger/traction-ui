@@ -1,6 +1,5 @@
 import Samples from '@/views/saphyr/SaphyrSamples'
 import { mount, localVue, store, Data, router } from '@support/testHelper'
-import * as consts from '@/consts/consts'
 import Response from '@/api/Response'
 
 describe('Samples.vue', () => {
@@ -93,7 +92,7 @@ describe('Samples.vue', () => {
       await samples.createLibraries(selectedEnzymeId)
 
       expect(samples.createLibrariesInTraction).toBeCalledWith(payload)
-      expect(samples.showAlert).toBeCalledWith(consts.MESSAGE_ERROR_CREATE_LIBRARY_FAILED, 'danger')
+      expect(samples.showAlert).toBeCalledWith('Failed to create library in Traction: ', 'danger')
     })
   })
 

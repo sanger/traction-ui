@@ -1,6 +1,5 @@
 import Libraries from '@/views/saphyr/SaphyrLibraries'
 import { mount, localVue, store, Data } from '@support/testHelper'
-import * as consts from '@/consts/consts'
 import VueRouter from 'vue-router'
 import Response from '@/api/Response'
 
@@ -109,7 +108,7 @@ describe('Libraries.vue', () => {
 
       expect(libraries.deleteLibraries).toBeCalled()
 
-      expect(libraries.showAlert).toBeCalledWith(consts.MESSAGE_ERROR_DELETION_FAILED, 'danger')
+      expect(libraries.showAlert).toBeCalledWith('Failed to delete: ', 'danger')
     })
   })
 

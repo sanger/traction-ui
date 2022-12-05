@@ -92,7 +92,6 @@
 <script>
 import TableHelper from '@/mixins/TableHelper'
 import PrinterModal from '@/components/PrinterModal'
-import * as consts from '@/consts/consts'
 import { mapActions, mapGetters } from 'vuex'
 import { getCurrentDate } from '@/lib/DateHelpers'
 
@@ -156,7 +155,7 @@ export default {
           throw Error(responses.map((r) => r.errors.message).join(','))
         }
       } catch (error) {
-        this.showAlert(consts.MESSAGE_ERROR_DELETION_FAILED + error.message, 'danger')
+        this.showAlert('Failed to delete: ' + error.message, 'danger')
       }
     },
     // Get all the libraries
