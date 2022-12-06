@@ -8,13 +8,17 @@ import { newResponse } from '@/api/ResponseHelper'
 
 describe('actions.js', () => {
   const {
+    fetchOntRequests,
     fetchOntTagSets,
     selectWellRequests,
     deselectPlateAndContents,
     createPool,
     updatePool,
     applyTags,
-    updateLibraryFromCsvRecord
+    updateLibraryFromCsvRecord, 
+    setPoolData,
+    findOntPlate,
+    findOntTube
   } = actions
 
 describe('fetchOntRequests', () => {
@@ -47,7 +51,7 @@ describe('fetchOntRequests', () => {
       statusText: 'Internal Server Error',
     })
     // apply action
-    const { success } = await actions.fetchOntRequests({ commit, rootState })
+    const { success } = await fetchOntRequests({ commit, rootState })
     // assert result (Might make sense to pull these into separate tests)
     expect(commit).not.toHaveBeenCalled()
     expect(success).toEqual(false)
@@ -64,11 +68,12 @@ describe('fetchOntTagSets', () => {
     get.mockResolvedValue(Data.TractionOntTagSets)
     // apply action
     const { success } = await fetchOntTagSets( { commit, rootState})
+    console.log(success)
     // assert result
     expect(commit).toHaveBeenCalledWith('populateTagSets',
     Contracts.tagSets.populateTagSetParameters,
     )
-    expect(commit).toHaveBeenNthCalledWith('populateTags',
+    expect(commit).toHaveBeenCalledWith('populateTags',
     Contracts.tags.populateTagParameters,
     )
     expect(success).toEqual(true)
@@ -104,7 +109,6 @@ describe('selectWellRequests', () => {
       resources: {
         ...defaultStateObject.resources,
         wells: {
-          //what data is this populated with?
           1: { id: '1', type: 'wells', position: 'A1', requests: ['2'] 
         },
       },
@@ -113,7 +117,6 @@ describe('selectWellRequests', () => {
   // apply action
   await selectWellRequests({ commit, state}, '1')
   // assert result
-  // is this the data corresponding to the above?
   expect(commit).toHaveBeenCalledWith('selectRequest', { id: '2', selected: true })
     })
 
@@ -130,9 +133,12 @@ it ('deselects requests if selected', async () => {
       1: { id: '1', type: 'wells', position: 'A1', requests: ['2'] },
     },
   },
-  libraries: {
+  pooling:
+  {
+    libraries: {
     _2: { ont_request_id: '2' },
   },
+}
 }
 // apply action
 await selectWellRequests({ commit, state }, '1')
@@ -151,7 +157,7 @@ describe('deselectPlateAndContents', () => {
       ...defaultStateObject,
       resources: {
         ...defaultStateObject.resources,
-        plates: { // what is the data added?
+        plates: {
           1: { id: 1, wells: ['10', '20'] },
         },
         wells: {
@@ -168,7 +174,7 @@ describe('deselectPlateAndContents', () => {
       },
     }
     // apply action
-    await deselectPlateAndContents({ commit, state }, '1') // what is this 1?
+    await deselectPlateAndContents({ commit, state }, '1')
     // assert result
     expect(commit).toHaveBeenCalledWith('selectPlate', { id: '1', selected: false })
     expect(commit).toHaveBeenCalledWith('selectRequest', { id: '100', selected: false })
@@ -214,10 +220,10 @@ describe('createPool', () => {
     }
     // mock dependencies
     const create = vi.fn()
-    const rootState = { api: { traction: { ont: { pools: { create } } } } } //cannot access - is this because of the flipper?
+    const rootState = { api: { traction: { ont: { pools: { create } } } } }
     const libraries = { _1: library1, _2: library2 }
     create.mockResolvedValue(mockResponse)
-    const { success, barcode } = await createPool({ rootState, state: { libraries, pool } })
+    const { success, barcode } = await createPool({ rootState, state: { pooling: { libraries, pool } } })
     expect(create).toHaveBeenCalledWith({
       data: payload({ libraries, pool }),
       include: expect.anything()
@@ -255,7 +261,7 @@ it('when there is an error', async() => {
     const { success, errors } = await createPool({
       commit,
       rootState,
-      state: { libraries, pool }
+      state: { pooling: { libraries, pool } }
     })
     expect(create).not.toHaveBeenCalled()
     expect(success).toBeFalsy()
@@ -264,7 +270,7 @@ it('when there is an error', async() => {
 })
 
 describe('updatePool', () => {
-  const library1 = { // why does this have the extra attribute for id?
+  const library1 = {
     id: '10',
     ont_request_id: '1', 
     tag_id: '1',
@@ -356,7 +362,7 @@ describe('applyTags', () => {
 
     await applyTags({ commit, state}, { library, autoTag })
     // Update the changed well
-    expect(commit).toHaveBeenCalledWith('updateLibrary', {
+    expect(commit).toHaveBeenCalledWith('updatePoolingLibrary', {
       ont_request_id: '13',
       tag_id: '130',
     })
@@ -365,7 +371,7 @@ describe('applyTags', () => {
 
     // We don't update earlier wells
     expect(commit).not.toHaveBeenCalledWith(
-      'updateLibrary',
+      'updatePoolingLibrary',
       expect.objectContaining({ ont_request_id: '1' }),
     )
   })
@@ -374,18 +380,17 @@ describe('applyTags', () => {
     const commit = vi.fn()
     const autoTag = true
 
-    // are the first two tests needed as they have already been tested before?
     await applyTags( { commit, state }, { library, autoTag})
 
     // Update the changed well
-    expect(commit).toHaveBeenCalledWith('updateLibrary', {
+    expect(commit).toHaveBeenCalledWith('updatePoolingLibrary', {
       ont_request_id: '13',
       tag_id: '130',
     })
 
     // We don't update earlier wells
     expect(commit).not.toHaveBeenCalledWith(
-      'updateLibrary', 
+      'updatePoolingLibrary', 
       expect.objectContaining({ 
         ont_request_id: '1',
       })
@@ -394,7 +399,7 @@ describe('applyTags', () => {
     // How is this one and the next one different - where did we indicate selected wells
     // We don't update unselected wells
     expect(commit).not.toHaveBeenCalledWith(
-      'updateLibrary',
+      'updatePoolingLibrary',
       expect.objectContaining({
         ont_request_id: '25', // C1
       })
@@ -402,7 +407,7 @@ describe('applyTags', () => {
 
     // We update wells further down the plate
     expect(commit).toHaveBeenCalledWith(
-      'updateLibrary',
+      'updatePoolingLibrary',
       expect.objectContaining({ 
         ont_request_id: '37', //D1
         tag_id: '132'
@@ -411,7 +416,7 @@ describe('applyTags', () => {
 
     // We update wells in the next column
     expect(commit).toHaveBeenCalledWith(
-      'updateLibrary',
+      'updatePoolingLibrary',
       expect.objectContaining({
         ont_request_id: '2', // A2
         tag_id: '137'
@@ -420,14 +425,14 @@ describe('applyTags', () => {
 
     // But not another plate
     expect(commit).not.toHaveBeenCalledWith(
-      'updateLibrary',
+      'updatePoolingLibrary',
       expect.objectContaining({
         ont_request_id: '61', //B1
       })
     )
 
     expect(commit).not.toHaveBeenCalledWith(
-      'updateLibrary',
+      'updatePoolingLibrary',
       expect.objectContaining({
         ont_request_id: '73', // C1
       }),
@@ -435,24 +440,24 @@ describe('applyTags', () => {
 
     // or a tube
     expect(commit).not.toHaveBeenCalledWith(
-      'updateLibrary',
+      'updatePoolingLibrary',
       expect.objectContaining({
         ont_request_id: '96', // is this not a plate? 
       }),
     )
     expect(commit).not.toHaveBeenCalledWith(
-      'updateLibrary',
+      'updatePoolingLibrary',
       expect.objectContaining({
         ont_request_id: '97', // a tube
       }),
     )
 
-    // In total we expect ot update8 wells in this case
+    // In total we expect to update wells in this case
     expect(commit).toHaveBeenCalledTimes(6)
   })
 
   // uncomment if tube functionality is added
-  /* it('applies tags to tubes with a higher index when autoTag is true', async () => {
+  it('applies tags to tubes with a higher index when autoTag is true', async () => {
     const commit = vi.fn()
     const autoTag = true
     const library = { ont_request_id: '98', tag_id: '130'}
@@ -465,14 +470,14 @@ describe('applyTags', () => {
 
     // Update the changed well
     expect(commit).toHaveBeenCalledWith(
-      'updateLibrary', {
+      'updatePoolingLibrary', {
         ont_request_id: '98',
         tag_id: '130'
     })
 
     // We don't update earlier wells
     expect(commit).not.toHaveBeenCalledWith(
-      'updateLibrary', 
+      'updatePoolingLibrary', 
         expect.objectContaining({
           ont_request_id: '1',
         })
@@ -480,7 +485,7 @@ describe('applyTags', () => {
 
       // We don't update earlier tubes
       expect(commit).not.toHaveBeenCalledWith(
-        'updateLibrary',
+        'updatePoolingLibrary',
         expect.objectContaining({ 
           ont_request_id: '97',
         })
@@ -488,7 +493,7 @@ describe('applyTags', () => {
 
       // We don't update unselected wells
       expect(commit).not.toHaveBeenCalledWith(
-        'updateLibrary',
+        'updatePoolingLibrary',
         expect.objectContaining({
           ont_request_id: '25' // C1
         })
@@ -496,7 +501,7 @@ describe('applyTags', () => {
 
       // We do update tubes with higher ids
       expect(commit).toHaveBeenCalledWith(
-        'updateLibrary',
+        'updatePoolingLibrary',
         expect.objectContaining({
           ont_request_id: '99', // D1
           tag_id: '131'
@@ -505,7 +510,7 @@ describe('applyTags', () => {
 
       // In total we expect to update 2 tubes in this case
       expect(commit).toHaveBeenCalledWith(2)
-  }) */
+  })
 })
 
 describe('updateLibraryFromCsvRecord', () => {
@@ -523,7 +528,7 @@ describe('updateLibraryFromCsvRecord', () => {
       tags: [
         { id: '385', type: 'tags', oligo: 'CACAAAGACACCGACAACTTTCTT', group_id: 'NB01'},
         { id: '386', type: 'tags', oligo: 'ACAGACGACTACAAACGGAATCGA', group_id: 'NB02'},
-        { id: '387', type: 'tags', oligo: 'CCTGGTAACTGGGACACAAGACTC', group_id: 'NB03'},
+        { id: '387', type: 'tags', oligo: 'CCTGGTAACTGGGACACAAGACTC', group_id: 'NB03'}, // info
         { id: '388', type: 'tags', oligo: 'TAGGGAAACACGATAGAATCCGAA', group_id: 'NB04'},
         { id: '389', type: 'tags', oligo: 'AAGGTTACACAAACCCTGGACAAG', group_id: 'NB05'},
         { id: '390', type: 'tags', oligo: 'GACTACTTTCTGCCTTTGCGAGAA', group_id: 'NB06'},
@@ -533,24 +538,24 @@ describe('updateLibraryFromCsvRecord', () => {
 
   it('updates the corresponding library', async () => {
     const commit = vi.fn()
-    const record = { // are these library attributes
-      // source: '', // eg NB02
-      // tag: '',
-      // insert_size: ,
-      // concentration: ,
-      // volume: 
+    const record = {
+      // source: '',
+      tag: 'NB03',
+      insert_size: 12345,
+      concentration: 10,
+      volume: 20
     }
 
     updateLibraryFromCsvRecord({ state, commit, getters }, { record, info })
 
     expect(commit).toHaveBeenCalledWith(
-      'updateLibrary',
-      expect.objectContaining({ // does not match attributes above?
+      'updatePoolingLibrary',
+      expect.objectContaining({
         // ont_request_id: '',
-        // tag_id: '', // eg 387
-        // insert_size: ,
-        // concentration: ,
-        // volume: 
+        tag_id: '387',
+        insert_size: 12345,
+        concentration: 10,
+        volume: 20
       }),
     )
   })
@@ -559,22 +564,22 @@ describe('updateLibraryFromCsvRecord', () => {
     const commit = vi.fn()
     const record = {
       // source: '',
-      // tag: '',
-      // insert_size: ,
-      // concentration: ,
-      // volume: 
+      tag: 'NB03',
+      insert_size: 12345,
+      concentration: 10,
+      volume: 20
     }
 
     updateLibraryFromCsvRecord({ state, commit, getters }, { record, info })
 
     expect(commit).toHaveBeenCalledWith(
-      'updateLibrary',
+      'updatePoolingLibrary',
       expect.objectContaining({
         // ont_request_id: '',
-        // tag_id: '',
-        // insert_size: ,
-        // concentration: ,
-        // volume: 
+        tag_id: '387',
+        insert_size: 12345,
+        concentration: 10,
+        volume: 20
       }),
     )
   })
@@ -582,10 +587,10 @@ describe('updateLibraryFromCsvRecord', () => {
   it('records an error when source is missing', async () => {
     const commit = vi.fn()
     const record = {
-      // tag: '',
-      // insert_size: ,
-      // concentration: ,
-      // volume: 
+      tag: 'NB03',
+      insert_size: 12345,
+      concentration: 10,
+      volume: 20
     }
 
     updateLibraryFromCsvRecord({ state, commit, getters }, { record, info })
@@ -675,10 +680,10 @@ describe('updateLibraryFromCsvRecord', () => {
     const commit = vi.fn()
       const record = {
         // source: '',
-        // tag: '',
-        // insert_size: ,
-        // concentration: ,
-        // volume: 
+        tag: 'NB03',
+        insert_size: 12345,
+        concentration: 10,
+        volume: 20
       }
 
       updateLibraryFromCsvRecord({ state, commit, getters }, {record, info} )
@@ -697,9 +702,9 @@ describe('updateLibraryFromCsvRecord', () => {
     const commit = vi.fn()
     const record = {
       // source: '',
-      // insert_size: ,
-      // concentration: ,
-      // volume: ,
+      insert_size: 12345,
+      concentration: 10,
+      volume: 20,
   }
 
   updateLibraryFromCsvRecord({ state, commit, getters }, { record, info })
@@ -713,14 +718,88 @@ describe('updateLibraryFromCsvRecord', () => {
     { root: true }
   )
 })
+})
 
 describe('setPoolData', () => {
-  // TODO
+  it('sets the pool data for the given pool id', async () => {
+    // mock commit
+    const commit = vi.fn()
+    // mock dependencies
+    const find = vi.fn()
+    const rootState = { api: { traction: { ont: { pools: { find } } } } }
+
+    find.mockResolvedValue(Data.TractionOntPools)
+
+    const { success } = await setPoolData( {commit, rootState }, 1 )
+    // assert result
+    expect(commit).toHaveBeenCalledWith('clearPoolData')
+    expect(commit).toHaveBeenCalledWith('populatePoolAttributes', Data.TractionOntPools.data.data)
+    expect(commit).toHaveBeenCalledWith('populateLibraries', Data.TractionOntPools.data.data)
+    expect(commit).toHaveBeenCalledWith('populateRequests', ) // add requests
+    expect(commit).toHaveBeenCalledWith('populateWells', ) // add wells
+    expect(commit).toHaveBeenCalledWith('populatePlates, ') // add plates
+    expect(commit).toHaveBeenCalledWith('selectTagSet', ) // add tagset
+    expect(commit).toHaveBeenCalledWith('populateEachTube', ) // add tube
+    // add 'selectPlate' for each plate id
+
+    expect(success).toEqual(true)
+  })
+
+  it ('only clears the pool data when the id is not a number', async () => {
+    // mock commit
+    const commit = vi.fn()
+    // mock dependencies
+    const find = vi.fn()
+    const rootState = { api: { traction: { ont: { pools: { find } } } } }
+
+    find.mockRejectedValue()
+    
+    const { success } = await setPoolData( { commit, rootState }, 1 )
+    expect(commit).not.toHaveBeenCalled
+    expect(success).toEqual(false)
+  })
 })
 
 describe('findOntPlate', () => {
-  // TODO
+  it('returns the plate that fits the valid plate barcode', async () => {
+    // mock commit
+    const commit = vi.fn()
+    // mock dependencies
+    const get = vi.fn()
+    const rootState = { api: { traction: { ont: { tubes: { get } } } } }
+
+    get.mockResolvedValue(Data.TractionTubesWithOntPools)
+
+    const { success, errors } = await findOntPlate( { commit, rootState}, filter) // mock a filter
+
+    expect(commit).toHaveBeenCalledWith('selectTube', )
+    expect(commit).toHaveBeenCalledWith('populateTubes', )
+    expect(commit).toHaveBeenCalledWith('populateRequests', )
+
+    expect(success).toEqual(true)
+  })
+
+  it('returns an error and an empty list when plate barcode cannot be found', async () => {
+    // mock commit
+    const commit = vi.fn()
+    // mock dependencies
+    const get = vi.fn()
+    const rootState = { api: { traction: { ont: { tubes: { get } } } } }
+
+    get.mockResolvedValue(Data.TractionTubesWithOntPools)
+
+    const { success, errors } = await findOntPlate( { commit, rootState}, filter) // mock a filter
+    expect(errors).toEqual('Please provide a plate barcode')
+    expect(success).toEqual(false)
+  })
 })
 
+describe('findOntTube', () => {
+  it('returns the record from the valid tube barcode', async () => {
+
+  })
+
+  it('returns an error and an empty list when the tube barcode cannot be found')
 })
+
 })

@@ -71,17 +71,17 @@ const storeTagSetData = {
   },
 }
 
-const populateTagParameters = Data.TractionOntTags.data.data
+const populateTagParameters = Data.TractionOntTagSets.data.included
 const storeTagData = {
-  1: {
-    id: '1',
+  385: {
+    id: '385',
     type: 'tags', 
     oligo: 'CACAAAGACACCGACAACTTTCTT',
     group_id: 'NB01',
     set_name: 'ont',
   },
-  2: {
-    id: '2',
+  386: {
+    id: '386',
     type: 'tags', 
     oligo: 'ACAGACGACTACAAACGGAATCGA',
     group_id: 'NB02',

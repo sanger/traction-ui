@@ -43,9 +43,10 @@ import SequencescapeLabwarePlateOnly from './sequencescapeLabwarePlateOnly'
 import SequencescapePlates from './sequencescapePlates'
 import TractionOntRequests from './tractionOntRequests'
 import TractionOntTagSets from './tractionOntTagSets.json'
-import TractionOntTags from './tractionOntTags'
+import TractionOntPools from './tractionOntPools.json'
 import TractionTubeWithContainerMaterials from './tractionTubeWithContainerMaterials'
 import TractionTubesWithPacbioPools from './tractionTubesWithPacbioPools'
+import TractionTubesWithOntPools from './tractionTubesWithOntPools.json'
 import TractionPlates from './tractionPlates'
 import AutoTagStore from './autoTagStore'
 // import OntAutoTagStore from './ontAutoTagStore.json'
@@ -97,9 +98,10 @@ export default {
   SequencescapePlates,
   TractionOntRequests,
   TractionOntTagSets,
-  TractionOntTags,
+  TractionOntPools,
   TractionTubeWithContainerMaterials,
   TractionTubesWithPacbioPools,
+  TractionTubesWithOntPools,
   TractionPlates,
   AutoTagStore,
   //OntAutoTagStore,

@@ -499,1589 +499,547 @@
       "requests": {
         "1": {
           "id": "1",
-          "type": "requests",
-          "library_type": "library_type_1",
-          "estimate_of_gb_required": 100,
-          "number_of_smrt_cells": 3,
-          "cost_code": "PSD1234",
-          "external_study_id": "1",
-          "sample_name": "Sample48",
-          "barcode": null,
-          "sample_species": "human",
-          "created_at": "2021/11/30 13:57",
-          "source_identifier": "DN1:A1",
-          "well": "1",
-          "plate": "1"
+          "source_identifier": "DN1:A1"
+ 
         },
         "2": {
           "id": "2",
-          "type": "requests",
-          "library_type": "library_type_1",
-          "estimate_of_gb_required": 100,
-          "number_of_smrt_cells": 3,
-          "cost_code": "PSD1234",
-          "external_study_id": "1",
-          "sample_name": "Sample47",
-          "barcode": null,
-          "sample_species": "human",
-          "created_at": "2021/11/30 13:57",
-          "source_identifier": "DN1:A2",
-          "well": "2",
-          "plate": "1"
+          "source_identifier": "DN1:A2"
+ 
         },
         "3": {
           "id": "3",
-          "type": "requests",
-          "library_type": "library_type_1",
-          "estimate_of_gb_required": 100,
-          "number_of_smrt_cells": 3,
-          "cost_code": "PSD1234",
-          "external_study_id": "1",
-          "sample_name": "Sample46",
-          "barcode": null,
-          "sample_species": "human",
-          "created_at": "2021/11/30 13:57",
-          "source_identifier": "DN1:A3",
-          "well": "3",
-          "plate": "1"
+          "source_identifier": "DN1:A3"
+ 
         },
         "4": {
           "id": "4",
-          "type": "requests",
-          "library_type": "library_type_1",
-          "estimate_of_gb_required": 100,
-          "number_of_smrt_cells": 3,
-          "cost_code": "PSD1234",
-          "external_study_id": "1",
-          "sample_name": "Sample45",
-          "barcode": null,
-          "sample_species": "human",
-          "created_at": "2021/11/30 13:57",
-          "source_identifier": "DN1:A4",
-          "well": "4",
-          "plate": "1"
+          "source_identifier": "DN1:A4"
+ 
         },
         "5": {
           "id": "5",
-          "type": "requests",
-          "library_type": "library_type_1",
-          "estimate_of_gb_required": 100,
-          "number_of_smrt_cells": 3,
-          "cost_code": "PSD1234",
-          "external_study_id": "1",
-          "sample_name": "Sample44",
-          "barcode": null,
-          "sample_species": "human",
-          "created_at": "2021/11/30 13:57",
-          "source_identifier": "DN1:A5",
-          "well": "5",
-          "plate": "1"
+          "source_identifier": "DN1:A5"
+ 
         },
         "6": {
           "id": "6",
-          "type": "requests",
-          "library_type": "library_type_1",
-          "estimate_of_gb_required": 100,
-          "number_of_smrt_cells": 3,
-          "cost_code": "PSD1234",
-          "external_study_id": "1",
-          "sample_name": "Sample43",
-          "barcode": null,
-          "sample_species": "human",
-          "created_at": "2021/11/30 13:57",
-          "source_identifier": "DN1:A6",
-          "well": "6",
-          "plate": "1"
+          "source_identifier": "DN1:A6"
+ 
         },
         "7": {
           "id": "7",
-          "type": "requests",
-          "library_type": "library_type_1",
-          "estimate_of_gb_required": 100,
-          "number_of_smrt_cells": 3,
-          "cost_code": "PSD1234",
-          "external_study_id": "1",
-          "sample_name": "Sample42",
-          "barcode": null,
-          "sample_species": "human",
-          "created_at": "2021/11/30 13:57",
-          "source_identifier": "DN1:A7",
-          "well": "7",
-          "plate": "1"
+          "source_identifier": "DN1:A7"
+ 
         },
         "8": {
           "id": "8",
-          "type": "requests",
-          "library_type": "library_type_1",
-          "estimate_of_gb_required": 100,
-          "number_of_smrt_cells": 3,
-          "cost_code": "PSD1234",
-          "external_study_id": "1",
-          "sample_name": "Sample41",
-          "barcode": null,
-          "sample_species": "human",
-          "created_at": "2021/11/30 13:57",
-          "source_identifier": "DN1:A8",
-          "well": "8",
-          "plate": "1"
+          "source_identifier": "DN1:A8"
+ 
         },
         "9": {
           "id": "9",
-          "type": "requests",
-          "library_type": "library_type_1",
-          "estimate_of_gb_required": 100,
-          "number_of_smrt_cells": 3,
-          "cost_code": "PSD1234",
-          "external_study_id": "1",
-          "sample_name": "Sample40",
-          "barcode": null,
-          "sample_species": "human",
-          "created_at": "2021/11/30 13:57",
-          "source_identifier": "DN1:A9",
-          "well": "9",
-          "plate": "1"
+          "source_identifier": "DN1:A9"
+ 
         },
         "10": {
           "id": "10",
-          "type": "requests",
-          "library_type": "library_type_1",
-          "estimate_of_gb_required": 100,
-          "number_of_smrt_cells": 3,
-          "cost_code": "PSD1234",
-          "external_study_id": "1",
-          "sample_name": "Sample39",
-          "barcode": null,
-          "sample_species": "human",
-          "created_at": "2021/11/30 13:57",
           "source_identifier": "DN1:A10",
-          "well": "10",
-          "plate": "1"
+          
         },
         "11": {
           "id": "11",
-          "type": "requests",
-          "library_type": "library_type_1",
-          "estimate_of_gb_required": 100,
-          "number_of_smrt_cells": 3,
-          "cost_code": "PSD1234",
-          "external_study_id": "1",
-          "sample_name": "Sample38",
-          "barcode": null,
-          "sample_species": "human",
-          "created_at": "2021/11/30 13:57",
           "source_identifier": "DN1:A11",
-          "well": "11",
-          "plate": "1"
+          
         },
         "12": {
           "id": "12",
-          "type": "requests",
-          "library_type": "library_type_1",
-          "estimate_of_gb_required": 100,
-          "number_of_smrt_cells": 3,
-          "cost_code": "PSD1234",
-          "external_study_id": "1",
-          "sample_name": "Sample37",
-          "barcode": null,
-          "sample_species": "human",
-          "created_at": "2021/11/30 13:57",
           "source_identifier": "DN1:A12",
-          "well": "12",
-          "plate": "1"
+          
         },
         "13": {
           "id": "13",
-          "type": "requests",
-          "library_type": "library_type_1",
-          "estimate_of_gb_required": 100,
-          "number_of_smrt_cells": 3,
-          "cost_code": "PSD1234",
-          "external_study_id": "1",
-          "sample_name": "Sample36",
-          "barcode": null,
-          "sample_species": "human",
-          "created_at": "2021/11/30 13:57",
           "source_identifier": "DN1:B1",
-          "well": "13",
-          "plate": "1"
+
         },
         "14": {
           "id": "14",
-          "type": "requests",
-          "library_type": "library_type_1",
-          "estimate_of_gb_required": 100,
-          "number_of_smrt_cells": 3,
-          "cost_code": "PSD1234",
-          "external_study_id": "1",
-          "sample_name": "Sample35",
-          "barcode": null,
-          "sample_species": "human",
-          "created_at": "2021/11/30 13:57",
           "source_identifier": "DN1:B2",
-          "well": "14",
-          "plate": "1"
+
         },
         "15": {
           "id": "15",
-          "type": "requests",
-          "library_type": "library_type_1",
-          "estimate_of_gb_required": 100,
-          "number_of_smrt_cells": 3,
-          "cost_code": "PSD1234",
-          "external_study_id": "1",
-          "sample_name": "Sample34",
-          "barcode": null,
-          "sample_species": "human",
-          "created_at": "2021/11/30 13:57",
           "source_identifier": "DN1:B3",
-          "well": "15",
-          "plate": "1"
+
         },
         "16": {
           "id": "16",
-          "type": "requests",
-          "library_type": "library_type_1",
-          "estimate_of_gb_required": 100,
-          "number_of_smrt_cells": 3,
-          "cost_code": "PSD1234",
-          "external_study_id": "1",
-          "sample_name": "Sample33",
-          "barcode": null,
-          "sample_species": "human",
-          "created_at": "2021/11/30 13:57",
           "source_identifier": "DN1:B4",
-          "well": "16",
-          "plate": "1"
+
         },
         "17": {
           "id": "17",
-          "type": "requests",
-          "library_type": "library_type_1",
-          "estimate_of_gb_required": 100,
-          "number_of_smrt_cells": 3,
-          "cost_code": "PSD1234",
-          "external_study_id": "1",
-          "sample_name": "Sample32",
-          "barcode": null,
-          "sample_species": "human",
-          "created_at": "2021/11/30 13:57",
           "source_identifier": "DN1:B5",
-          "well": "17",
-          "plate": "1"
+
         },
         "18": {
           "id": "18",
-          "type": "requests",
-          "library_type": "library_type_1",
-          "estimate_of_gb_required": 100,
-          "number_of_smrt_cells": 3,
-          "cost_code": "PSD1234",
-          "external_study_id": "1",
-          "sample_name": "Sample31",
-          "barcode": null,
-          "sample_species": "human",
-          "created_at": "2021/11/30 13:57",
           "source_identifier": "DN1:B6",
-          "well": "18",
-          "plate": "1"
+
         },
         "19": {
           "id": "19",
-          "type": "requests",
-          "library_type": "library_type_1",
-          "estimate_of_gb_required": 100,
-          "number_of_smrt_cells": 3,
-          "cost_code": "PSD1234",
-          "external_study_id": "1",
-          "sample_name": "Sample30",
-          "barcode": null,
-          "sample_species": "human",
-          "created_at": "2021/11/30 13:57",
           "source_identifier": "DN1:B7",
-          "well": "19",
-          "plate": "1"
+
         },
         "20": {
           "id": "20",
-          "type": "requests",
-          "library_type": "library_type_1",
-          "estimate_of_gb_required": 100,
-          "number_of_smrt_cells": 3,
-          "cost_code": "PSD1234",
-          "external_study_id": "1",
-          "sample_name": "Sample29",
-          "barcode": null,
-          "sample_species": "human",
-          "created_at": "2021/11/30 13:57",
           "source_identifier": "DN1:B8",
-          "well": "20",
-          "plate": "1"
+
         },
         "21": {
           "id": "21",
-          "type": "requests",
-          "library_type": "library_type_1",
-          "estimate_of_gb_required": 100,
-          "number_of_smrt_cells": 3,
-          "cost_code": "PSD1234",
-          "external_study_id": "1",
-          "sample_name": "Sample28",
-          "barcode": null,
-          "sample_species": "human",
-          "created_at": "2021/11/30 13:57",
           "source_identifier": "DN1:B9",
-          "well": "21",
-          "plate": "1"
+
         },
         "22": {
           "id": "22",
-          "type": "requests",
-          "library_type": "library_type_1",
-          "estimate_of_gb_required": 100,
-          "number_of_smrt_cells": 3,
-          "cost_code": "PSD1234",
-          "external_study_id": "1",
-          "sample_name": "Sample27",
-          "barcode": null,
-          "sample_species": "human",
-          "created_at": "2021/11/30 13:57",
           "source_identifier": "DN1:B10",
-          "well": "22",
-          "plate": "1"
+          
         },
         "23": {
           "id": "23",
-          "type": "requests",
-          "library_type": "library_type_1",
-          "estimate_of_gb_required": 100,
-          "number_of_smrt_cells": 3,
-          "cost_code": "PSD1234",
-          "external_study_id": "1",
-          "sample_name": "Sample26",
-          "barcode": null,
-          "sample_species": "human",
-          "created_at": "2021/11/30 13:57",
           "source_identifier": "DN1:B11",
-          "well": "23",
-          "plate": "1"
+          
         },
         "24": {
           "id": "24",
-          "type": "requests",
-          "library_type": "library_type_1",
-          "estimate_of_gb_required": 100,
-          "number_of_smrt_cells": 3,
-          "cost_code": "PSD1234",
-          "external_study_id": "1",
-          "sample_name": "Sample25",
-          "barcode": null,
-          "sample_species": "human",
-          "created_at": "2021/11/30 13:57",
           "source_identifier": "DN1:B12",
-          "well": "24",
-          "plate": "1"
+          
         },
         "25": {
           "id": "25",
-          "type": "requests",
-          "library_type": "library_type_1",
-          "estimate_of_gb_required": 100,
-          "number_of_smrt_cells": 3,
-          "cost_code": "PSD1234",
-          "external_study_id": "1",
-          "sample_name": "Sample24",
-          "barcode": null,
-          "sample_species": "human",
-          "created_at": "2021/11/30 13:57",
           "source_identifier": "DN1:C1",
-          "well": "25",
-          "plate": "1"
+
         },
         "26": {
           "id": "26",
-          "type": "requests",
-          "library_type": "library_type_1",
-          "estimate_of_gb_required": 100,
-          "number_of_smrt_cells": 3,
-          "cost_code": "PSD1234",
-          "external_study_id": "1",
-          "sample_name": "Sample23",
-          "barcode": null,
-          "sample_species": "human",
-          "created_at": "2021/11/30 13:57",
-          "source_identifier": "DN1:C2",
-          "well": "26"
-        },
+          "source_identifier": "DN1:A1",
+
+          
         "27": {
           "id": "27",
-          "type": "requests",
-          "library_type": "library_type_1",
-          "estimate_of_gb_required": 100,
-          "number_of_smrt_cells": 3,
-          "cost_code": "PSD1234",
-          "external_study_id": "1",
-          "sample_name": "Sample22",
-          "barcode": null,
-          "sample_species": "human",
-          "created_at": "2021/11/30 13:57",
           "source_identifier": "DN1:C3",
-          "well": "27",
-          "plate": "1"
+
         },
         "28": {
           "id": "28",
-          "type": "requests",
-          "library_type": "library_type_1",
-          "estimate_of_gb_required": 100,
-          "number_of_smrt_cells": 3,
-          "cost_code": "PSD1234",
-          "external_study_id": "1",
-          "sample_name": "Sample21",
-          "barcode": null,
-          "sample_species": "human",
-          "created_at": "2021/11/30 13:57",
           "source_identifier": "DN1:C4",
-          "well": "28",
-          "plate": "1"
+
         },
         "29": {
           "id": "29",
-          "type": "requests",
-          "library_type": "library_type_1",
-          "estimate_of_gb_required": 100,
-          "number_of_smrt_cells": 3,
-          "cost_code": "PSD1234",
-          "external_study_id": "1",
-          "sample_name": "Sample20",
-          "barcode": null,
-          "sample_species": "human",
-          "created_at": "2021/11/30 13:57",
           "source_identifier": "DN1:C5",
-          "well": "29",
-          "plate": "1"
+
         },
         "30": {
           "id": "30",
-          "type": "requests",
-          "library_type": "library_type_1",
-          "estimate_of_gb_required": 100,
-          "number_of_smrt_cells": 3,
-          "cost_code": "PSD1234",
-          "external_study_id": "1",
-          "sample_name": "Sample19",
-          "barcode": null,
-          "sample_species": "human",
-          "created_at": "2021/11/30 13:57",
           "source_identifier": "DN1:C6",
-          "well": "30",
-          "plate": "1"
+
         },
         "31": {
           "id": "31",
-          "type": "requests",
-          "library_type": "library_type_1",
-          "estimate_of_gb_required": 100,
-          "number_of_smrt_cells": 3,
-          "cost_code": "PSD1234",
-          "external_study_id": "1",
-          "sample_name": "Sample18",
-          "barcode": null,
-          "sample_species": "human",
-          "created_at": "2021/11/30 13:57",
           "source_identifier": "DN1:C7",
-          "well": "31",
-          "plate": "1"
+
         },
         "32": {
           "id": "32",
-          "type": "requests",
-          "library_type": "library_type_1",
-          "estimate_of_gb_required": 100,
-          "number_of_smrt_cells": 3,
-          "cost_code": "PSD1234",
-          "external_study_id": "1",
-          "sample_name": "Sample17",
-          "barcode": null,
-          "sample_species": "human",
-          "created_at": "2021/11/30 13:57",
           "source_identifier": "DN1:C8",
-          "well": "32",
-          "plate": "1"
+
         },
         "33": {
           "id": "33",
-          "type": "requests",
-          "library_type": "library_type_1",
-          "estimate_of_gb_required": 100,
-          "number_of_smrt_cells": 3,
-          "cost_code": "PSD1234",
-          "external_study_id": "1",
-          "sample_name": "Sample16",
-          "barcode": null,
-          "sample_species": "human",
-          "created_at": "2021/11/30 13:57",
           "source_identifier": "DN1:C9",
-          "well": "33",
-          "plate": "1"
+
         },
         "34": {
           "id": "34",
-          "type": "requests",
-          "library_type": "library_type_1",
-          "estimate_of_gb_required": 100,
-          "number_of_smrt_cells": 3,
-          "cost_code": "PSD1234",
-          "external_study_id": "1",
-          "sample_name": "Sample15",
-          "barcode": null,
-          "sample_species": "human",
-          "created_at": "2021/11/30 13:57",
           "source_identifier": "DN1:C10",
-          "well": "34",
-          "plate": "1"
+          
         },
         "35": {
           "id": "35",
-          "type": "requests",
-          "library_type": "library_type_1",
-          "estimate_of_gb_required": 100,
-          "number_of_smrt_cells": 3,
-          "cost_code": "PSD1234",
-          "external_study_id": "1",
-          "sample_name": "Sample14",
-          "barcode": null,
-          "sample_species": "human",
-          "created_at": "2021/11/30 13:57",
           "source_identifier": "DN1:C11",
-          "well": "35",
-          "plate": "1"
+          
         },
         "36": {
           "id": "36",
-          "type": "requests",
-          "library_type": "library_type_1",
-          "estimate_of_gb_required": 100,
-          "number_of_smrt_cells": 3,
-          "cost_code": "PSD1234",
-          "external_study_id": "1",
-          "sample_name": "Sample13",
-          "barcode": null,
-          "sample_species": "human",
-          "created_at": "2021/11/30 13:57",
           "source_identifier": "DN1:C12",
-          "well": "36",
-          "plate": "1"
+          
         },
         "37": {
           "id": "37",
-          "type": "requests",
-          "library_type": "library_type_1",
-          "estimate_of_gb_required": 100,
-          "number_of_smrt_cells": 3,
-          "cost_code": "PSD1234",
-          "external_study_id": "1",
-          "sample_name": "Sample12",
-          "barcode": null,
-          "sample_species": "human",
-          "created_at": "2021/11/30 13:57",
           "source_identifier": "DN1:D1",
-          "well": "37",
-          "plate": "1"
+
         },
         "38": {
           "id": "38",
-          "type": "requests",
-          "library_type": "library_type_1",
-          "estimate_of_gb_required": 100,
-          "number_of_smrt_cells": 3,
-          "cost_code": "PSD1234",
-          "external_study_id": "1",
-          "sample_name": "Sample11",
-          "barcode": null,
-          "sample_species": "human",
-          "created_at": "2021/11/30 13:57",
           "source_identifier": "DN1:D2",
-          "well": "38",
-          "plate": "1"
+
         },
         "39": {
           "id": "39",
-          "type": "requests",
-          "library_type": "library_type_1",
-          "estimate_of_gb_required": 100,
-          "number_of_smrt_cells": 3,
-          "cost_code": "PSD1234",
-          "external_study_id": "1",
-          "sample_name": "Sample10",
-          "barcode": null,
-          "sample_species": "human",
-          "created_at": "2021/11/30 13:57",
           "source_identifier": "DN1:D3",
-          "well": "39",
-          "plate": "1"
+
         },
         "40": {
           "id": "40",
-          "type": "requests",
-          "library_type": "library_type_1",
-          "estimate_of_gb_required": 100,
-          "number_of_smrt_cells": 3,
-          "cost_code": "PSD1234",
-          "external_study_id": "1",
-          "sample_name": "Sample9",
-          "barcode": null,
-          "sample_species": "human",
-          "created_at": "2021/11/30 13:57",
-          "source_identifier": "DN1:D4",
-          "well": "40",
-          "plate": "1"
-        },
+        "source_identifier": "DN1:D4",
+
+      },
         "41": {
           "id": "41",
-          "type": "requests",
-          "library_type": "library_type_1",
-          "estimate_of_gb_required": 100,
-          "number_of_smrt_cells": 3,
-          "cost_code": "PSD1234",
-          "external_study_id": "1",
-          "sample_name": "Sample8",
-          "barcode": null,
-          "sample_species": "human",
-          "created_at": "2021/11/30 13:57",
-          "source_identifier": "DN1:D5",
-          "well": "41",
-          "plate": "1"
-        },
+        "source_identifier": "DN1:D5",
+
+      },
         "42": {
           "id": "42",
-          "type": "requests",
-          "library_type": "library_type_1",
-          "estimate_of_gb_required": 100,
-          "number_of_smrt_cells": 3,
-          "cost_code": "PSD1234",
-          "external_study_id": "1",
-          "sample_name": "Sample7",
-          "barcode": null,
-          "sample_species": "human",
-          "created_at": "2021/11/30 13:57",
-          "source_identifier": "DN1:D6",
-          "well": "42",
-          "plate": "1"
-        },
+        "source_identifier": "DN1:D6",
+
+      },
         "43": {
           "id": "43",
-          "type": "requests",
-          "library_type": "library_type_1",
-          "estimate_of_gb_required": 100,
-          "number_of_smrt_cells": 3,
-          "cost_code": "PSD1234",
-          "external_study_id": "1",
-          "sample_name": "Sample6",
-          "barcode": null,
-          "sample_species": "human",
-          "created_at": "2021/11/30 13:57",
-          "source_identifier": "DN1:D7",
-          "well": "43",
-          "plate": "1"
-        },
+        "source_identifier": "DN1:D7",
+
+      },
         "44": {
           "id": "44",
-          "type": "requests",
-          "library_type": "library_type_1",
-          "estimate_of_gb_required": 100,
-          "number_of_smrt_cells": 3,
-          "cost_code": "PSD1234",
-          "external_study_id": "1",
-          "sample_name": "Sample5",
-          "barcode": null,
-          "sample_species": "human",
-          "created_at": "2021/11/30 13:57",
-          "source_identifier": "DN1:D8",
-          "well": "44",
-          "plate": "1"
-        },
+        "source_identifier": "DN1:D8",
+
+      },
         "45": {
           "id": "45",
-          "type": "requests",
-          "library_type": "library_type_1",
-          "estimate_of_gb_required": 100,
-          "number_of_smrt_cells": 3,
-          "cost_code": "PSD1234",
-          "external_study_id": "1",
-          "sample_name": "Sample4",
-          "barcode": null,
-          "sample_species": "human",
-          "created_at": "2021/11/30 13:57",
-          "source_identifier": "DN1:D9",
-          "well": "45",
-          "plate": "1"
-        },
+        "source_identifier": "DN1:D9",
+
+      },
         "46": {
           "id": "46",
-          "type": "requests",
-          "library_type": "library_type_1",
-          "estimate_of_gb_required": 100,
-          "number_of_smrt_cells": 3,
-          "cost_code": "PSD1234",
-          "external_study_id": "1",
-          "sample_name": "Sample3",
-          "barcode": null,
-          "sample_species": "human",
-          "created_at": "2021/11/30 13:57",
-          "source_identifier": "DN1:D10",
-          "well": "46",
-          "plate": "1"
+        "source_identifier": "DN1:D10",
+        
         },
         "47": {
           "id": "47",
-          "type": "requests",
-          "library_type": "library_type_1",
-          "estimate_of_gb_required": 100,
-          "number_of_smrt_cells": 3,
-          "cost_code": "PSD1234",
-          "external_study_id": "1",
-          "sample_name": "Sample2",
-          "barcode": null,
-          "sample_species": "human",
-          "created_at": "2021/11/30 13:57",
-          "source_identifier": "DN1:D11",
-          "well": "47",
-          "plate": "1"
+        "source_identifier": "DN1:D11",
+        
         },
         "48": {
           "id": "48",
-          "type": "requests",
-          "library_type": "library_type_1",
-          "estimate_of_gb_required": 100,
-          "number_of_smrt_cells": 3,
-          "cost_code": "PSD1234",
-          "external_study_id": "1",
-          "sample_name": "Sample1",
-          "barcode": null,
-          "sample_species": "human",
-          "created_at": "2021/11/30 13:57",
-          "source_identifier": "DN1:D12",
-          "well": "48",
-          "plate": "1"
+        "source_identifier": "DN1:D12",
+        
         },
         "49": {
           "id": "49",
-          "type": "requests",
-          "library_type": "library_type_1",
-          "estimate_of_gb_required": 100,
-          "number_of_smrt_cells": 3,
-          "cost_code": "PSD1234",
-          "external_study_id": "1",
-          "sample_name": "Sample96",
-          "barcode": null,
-          "sample_species": "human",
-          "created_at": "2021/11/30 13:57",
           "source_identifier": "DN2:A1",
-          "well": "97",
-          "plate": "2"
+
         },
         "50": {
           "id": "50",
-          "type": "requests",
-          "library_type": "library_type_1",
-          "estimate_of_gb_required": 100,
-          "number_of_smrt_cells": 3,
-          "cost_code": "PSD1234",
-          "external_study_id": "1",
-          "sample_name": "Sample95",
-          "barcode": null,
-          "sample_species": "human",
-          "created_at": "2021/11/30 13:57",
           "source_identifier": "DN2:A2",
-          "well": "98",
-          "plate": "2"
+
         },
         "51": {
           "id": "51",
-          "type": "requests",
-          "library_type": "library_type_1",
-          "estimate_of_gb_required": 100,
-          "number_of_smrt_cells": 3,
-          "cost_code": "PSD1234",
-          "external_study_id": "1",
-          "sample_name": "Sample94",
-          "barcode": null,
-          "sample_species": "human",
-          "created_at": "2021/11/30 13:57",
           "source_identifier": "DN2:A3",
-          "well": "99",
-          "plate": "2"
+
         },
         "52": {
           "id": "52",
-          "type": "requests",
-          "library_type": "library_type_1",
-          "estimate_of_gb_required": 100,
-          "number_of_smrt_cells": 3,
-          "cost_code": "PSD1234",
-          "external_study_id": "1",
-          "sample_name": "Sample93",
-          "barcode": null,
-          "sample_species": "human",
-          "created_at": "2021/11/30 13:57",
           "source_identifier": "DN2:A4",
-          "well": "100",
-          "plate": "2"
+
+          
         },
         "53": {
           "id": "53",
-          "type": "requests",
-          "library_type": "library_type_1",
-          "estimate_of_gb_required": 100,
-          "number_of_smrt_cells": 3,
-          "cost_code": "PSD1234",
-          "external_study_id": "1",
-          "sample_name": "Sample92",
-          "barcode": null,
-          "sample_species": "human",
-          "created_at": "2021/11/30 13:57",
           "source_identifier": "DN2:A5",
-          "well": "101",
-          "plate": "2"
+
+          
         },
         "54": {
           "id": "54",
-          "type": "requests",
-          "library_type": "library_type_1",
-          "estimate_of_gb_required": 100,
-          "number_of_smrt_cells": 3,
-          "cost_code": "PSD1234",
-          "external_study_id": "1",
-          "sample_name": "Sample91",
-          "barcode": null,
-          "sample_species": "human",
-          "created_at": "2021/11/30 13:57",
           "source_identifier": "DN2:A6",
-          "well": "102",
-          "plate": "2"
+
+          
         },
         "55": {
           "id": "55",
-          "type": "requests",
-          "library_type": "library_type_1",
-          "estimate_of_gb_required": 100,
-          "number_of_smrt_cells": 3,
-          "cost_code": "PSD1234",
-          "external_study_id": "1",
-          "sample_name": "Sample90",
-          "barcode": null,
-          "sample_species": "human",
-          "created_at": "2021/11/30 13:57",
           "source_identifier": "DN2:A7",
-          "well": "103",
-          "plate": "2"
+
+          
         },
         "56": {
           "id": "56",
-          "type": "requests",
-          "library_type": "library_type_1",
-          "estimate_of_gb_required": 100,
-          "number_of_smrt_cells": 3,
-          "cost_code": "PSD1234",
-          "external_study_id": "1",
-          "sample_name": "Sample89",
-          "barcode": null,
-          "sample_species": "human",
-          "created_at": "2021/11/30 13:57",
           "source_identifier": "DN2:A8",
-          "well": "104",
-          "plate": "2"
+
+          
         },
         "57": {
           "id": "57",
-          "type": "requests",
-          "library_type": "library_type_1",
-          "estimate_of_gb_required": 100,
-          "number_of_smrt_cells": 3,
-          "cost_code": "PSD1234",
-          "external_study_id": "1",
-          "sample_name": "Sample88",
-          "barcode": null,
-          "sample_species": "human",
-          "created_at": "2021/11/30 13:57",
           "source_identifier": "DN2:A9",
-          "well": "105",
-          "plate": "2"
+
+          
         },
         "58": {
           "id": "58",
-          "type": "requests",
-          "library_type": "library_type_1",
-          "estimate_of_gb_required": 100,
-          "number_of_smrt_cells": 3,
-          "cost_code": "PSD1234",
-          "external_study_id": "1",
-          "sample_name": "Sample87",
-          "barcode": null,
-          "sample_species": "human",
-          "created_at": "2021/11/30 13:57",
           "source_identifier": "DN2:A10",
-          "well": "106",
-          "plate": "2"
+          
+
         },
         "59": {
           "id": "59",
-          "type": "requests",
-          "library_type": "library_type_1",
-          "estimate_of_gb_required": 100,
-          "number_of_smrt_cells": 3,
-          "cost_code": "PSD1234",
-          "external_study_id": "1",
-          "sample_name": "Sample86",
-          "barcode": null,
-          "sample_species": "human",
-          "created_at": "2021/11/30 13:57",
           "source_identifier": "DN2:A11",
-          "well": "107",
-          "plate": "2"
+          
+
         },
         "60": {
           "id": "60",
-          "type": "requests",
-          "library_type": "library_type_1",
-          "estimate_of_gb_required": 100,
-          "number_of_smrt_cells": 3,
-          "cost_code": "PSD1234",
-          "external_study_id": "1",
-          "sample_name": "Sample85",
-          "barcode": null,
-          "sample_species": "human",
-          "created_at": "2021/11/30 13:57",
           "source_identifier": "DN2:A12",
-          "well": "108",
-          "plate": "2"
+          
+
         },
         "61": {
           "id": "61",
-          "type": "requests",
-          "library_type": "library_type_1",
-          "estimate_of_gb_required": 100,
-          "number_of_smrt_cells": 3,
-          "cost_code": "PSD1234",
-          "external_study_id": "1",
-          "sample_name": "Sample84",
-          "barcode": null,
-          "sample_species": "human",
-          "created_at": "2021/11/30 13:57",
           "source_identifier": "DN2:B1",
-          "well": "109",
-          "plate": "2"
+
+          
         },
         "62": {
           "id": "62",
-          "type": "requests",
-          "library_type": "library_type_1",
-          "estimate_of_gb_required": 100,
-          "number_of_smrt_cells": 3,
-          "cost_code": "PSD1234",
-          "external_study_id": "1",
-          "sample_name": "Sample83",
-          "barcode": null,
-          "sample_species": "human",
-          "created_at": "2021/11/30 13:57",
           "source_identifier": "DN2:B2",
-          "well": "110",
-          "plate": "2"
+
+          
         },
         "63": {
           "id": "63",
-          "type": "requests",
-          "library_type": "library_type_1",
-          "estimate_of_gb_required": 100,
-          "number_of_smrt_cells": 3,
-          "cost_code": "PSD1234",
-          "external_study_id": "1",
-          "sample_name": "Sample82",
-          "barcode": null,
-          "sample_species": "human",
-          "created_at": "2021/11/30 13:57",
           "source_identifier": "DN2:B3",
-          "well": "111",
-          "plate": "2"
+
+          
         },
         "64": {
           "id": "64",
-          "type": "requests",
-          "library_type": "library_type_1",
-          "estimate_of_gb_required": 100,
-          "number_of_smrt_cells": 3,
-          "cost_code": "PSD1234",
-          "external_study_id": "1",
-          "sample_name": "Sample81",
-          "barcode": null,
-          "sample_species": "human",
-          "created_at": "2021/11/30 13:57",
           "source_identifier": "DN2:B4",
-          "well": "112",
-          "plate": "2"
+
+          
         },
         "65": {
           "id": "65",
-          "type": "requests",
-          "library_type": "library_type_1",
-          "estimate_of_gb_required": 100,
-          "number_of_smrt_cells": 3,
-          "cost_code": "PSD1234",
-          "external_study_id": "1",
-          "sample_name": "Sample80",
-          "barcode": null,
-          "sample_species": "human",
-          "created_at": "2021/11/30 13:57",
           "source_identifier": "DN2:B5",
-          "well": "113",
-          "plate": "2"
+
+          
         },
         "66": {
           "id": "66",
-          "type": "requests",
-          "library_type": "library_type_1",
-          "estimate_of_gb_required": 100,
-          "number_of_smrt_cells": 3,
-          "cost_code": "PSD1234",
-          "external_study_id": "1",
-          "sample_name": "Sample79",
-          "barcode": null,
-          "sample_species": "human",
-          "created_at": "2021/11/30 13:57",
           "source_identifier": "DN2:B6",
-          "well": "114",
-          "plate": "2"
+
+          
         },
         "67": {
           "id": "67",
-          "type": "requests",
-          "library_type": "library_type_1",
-          "estimate_of_gb_required": 100,
-          "number_of_smrt_cells": 3,
-          "cost_code": "PSD1234",
-          "external_study_id": "1",
-          "sample_name": "Sample78",
-          "barcode": null,
-          "sample_species": "human",
-          "created_at": "2021/11/30 13:57",
           "source_identifier": "DN2:B7",
-          "well": "115",
-          "plate": "2"
+
+          
         },
         "68": {
           "id": "68",
-          "type": "requests",
-          "library_type": "library_type_1",
-          "estimate_of_gb_required": 100,
-          "number_of_smrt_cells": 3,
-          "cost_code": "PSD1234",
-          "external_study_id": "1",
-          "sample_name": "Sample77",
-          "barcode": null,
-          "sample_species": "human",
-          "created_at": "2021/11/30 13:57",
           "source_identifier": "DN2:B8",
-          "well": "116",
-          "plate": "2"
+
+          
         },
         "69": {
           "id": "69",
-          "type": "requests",
-          "library_type": "library_type_1",
-          "estimate_of_gb_required": 100,
-          "number_of_smrt_cells": 3,
-          "cost_code": "PSD1234",
-          "external_study_id": "1",
-          "sample_name": "Sample76",
-          "barcode": null,
-          "sample_species": "human",
-          "created_at": "2021/11/30 13:57",
           "source_identifier": "DN2:B9",
-          "well": "117",
-          "plate": "2"
+
+          
         },
         "70": {
           "id": "70",
-          "type": "requests",
-          "library_type": "library_type_1",
-          "estimate_of_gb_required": 100,
-          "number_of_smrt_cells": 3,
-          "cost_code": "PSD1234",
-          "external_study_id": "1",
-          "sample_name": "Sample75",
-          "barcode": null,
-          "sample_species": "human",
-          "created_at": "2021/11/30 13:57",
           "source_identifier": "DN2:B10",
-          "well": "118",
-          "plate": "2"
+          
+
         },
         "71": {
           "id": "71",
-          "type": "requests",
-          "library_type": "library_type_1",
-          "estimate_of_gb_required": 100,
-          "number_of_smrt_cells": 3,
-          "cost_code": "PSD1234",
-          "external_study_id": "1",
-          "sample_name": "Sample74",
-          "barcode": null,
-          "sample_species": "human",
-          "created_at": "2021/11/30 13:57",
           "source_identifier": "DN2:B11",
-          "well": "119",
-          "plate": "2"
+          
+
         },
         "72": {
           "id": "72",
-          "type": "requests",
-          "library_type": "library_type_1",
-          "estimate_of_gb_required": 100,
-          "number_of_smrt_cells": 3,
-          "cost_code": "PSD1234",
-          "external_study_id": "1",
-          "sample_name": "Sample73",
-          "barcode": null,
-          "sample_species": "human",
-          "created_at": "2021/11/30 13:57",
           "source_identifier": "DN2:B12",
-          "well": "120",
-          "plate": "2"
+          
+
         },
         "73": {
           "id": "73",
-          "type": "requests",
-          "library_type": "library_type_1",
-          "estimate_of_gb_required": 100,
-          "number_of_smrt_cells": 3,
-          "cost_code": "PSD1234",
-          "external_study_id": "1",
-          "sample_name": "Sample72",
-          "barcode": null,
-          "sample_species": "human",
-          "created_at": "2021/11/30 13:57",
           "source_identifier": "DN2:C1",
-          "well": "121",
-          "plate": "2"
+
+          
         },
         "74": {
           "id": "74",
-          "type": "requests",
-          "library_type": "library_type_1",
-          "estimate_of_gb_required": 100,
-          "number_of_smrt_cells": 3,
-          "cost_code": "PSD1234",
-          "external_study_id": "1",
-          "sample_name": "Sample71",
-          "barcode": null,
-          "sample_species": "human",
-          "created_at": "2021/11/30 13:57",
           "source_identifier": "DN2:C2",
-          "well": "122",
-          "plate": "2"
+
+          
         },
         "75": {
           "id": "75",
-          "type": "requests",
-          "library_type": "library_type_1",
-          "estimate_of_gb_required": 100,
-          "number_of_smrt_cells": 3,
-          "cost_code": "PSD1234",
-          "external_study_id": "1",
-          "sample_name": "Sample70",
-          "barcode": null,
-          "sample_species": "human",
-          "created_at": "2021/11/30 13:57",
           "source_identifier": "DN2:C3",
-          "well": "123",
-          "plate": "2"
+
+          
         },
         "76": {
           "id": "76",
-          "type": "requests",
-          "library_type": "library_type_1",
-          "estimate_of_gb_required": 100,
-          "number_of_smrt_cells": 3,
-          "cost_code": "PSD1234",
-          "external_study_id": "1",
-          "sample_name": "Sample69",
-          "barcode": null,
-          "sample_species": "human",
-          "created_at": "2021/11/30 13:57",
           "source_identifier": "DN2:C4",
-          "well": "124",
-          "plate": "2"
+
+          
         },
         "77": {
           "id": "77",
-          "type": "requests",
-          "library_type": "library_type_1",
-          "estimate_of_gb_required": 100,
-          "number_of_smrt_cells": 3,
-          "cost_code": "PSD1234",
-          "external_study_id": "1",
-          "sample_name": "Sample68",
-          "barcode": null,
-          "sample_species": "human",
-          "created_at": "2021/11/30 13:57",
           "source_identifier": "DN2:C5",
-          "well": "125",
-          "plate": "2"
+
+          
         },
         "78": {
           "id": "78",
-          "type": "requests",
-          "library_type": "library_type_1",
-          "estimate_of_gb_required": 100,
-          "number_of_smrt_cells": 3,
-          "cost_code": "PSD1234",
-          "external_study_id": "1",
-          "sample_name": "Sample67",
-          "barcode": null,
-          "sample_species": "human",
-          "created_at": "2021/11/30 13:57",
           "source_identifier": "DN2:C6",
-          "well": "126",
-          "plate": "2"
+
+          
         },
         "79": {
           "id": "79",
-          "type": "requests",
-          "library_type": "library_type_1",
-          "estimate_of_gb_required": 100,
-          "number_of_smrt_cells": 3,
-          "cost_code": "PSD1234",
-          "external_study_id": "1",
-          "sample_name": "Sample66",
-          "barcode": null,
-          "sample_species": "human",
-          "created_at": "2021/11/30 13:57",
           "source_identifier": "DN2:C7",
-          "well": "127",
-          "plate": "2"
+
+          
         },
         "80": {
           "id": "80",
-          "type": "requests",
-          "library_type": "library_type_1",
-          "estimate_of_gb_required": 100,
-          "number_of_smrt_cells": 3,
-          "cost_code": "PSD1234",
-          "external_study_id": "1",
-          "sample_name": "Sample65",
-          "barcode": null,
-          "sample_species": "human",
-          "created_at": "2021/11/30 13:57",
           "source_identifier": "DN2:C8",
-          "well": "128",
-          "plate": "2"
+
+          
         },
         "81": {
           "id": "81",
-          "type": "requests",
-          "library_type": "library_type_1",
-          "estimate_of_gb_required": 100,
-          "number_of_smrt_cells": 3,
-          "cost_code": "PSD1234",
-          "external_study_id": "1",
-          "sample_name": "Sample64",
-          "barcode": null,
-          "sample_species": "human",
-          "created_at": "2021/11/30 13:57",
           "source_identifier": "DN2:C9",
-          "well": "129",
-          "plate": "2"
+
+          
         },
         "82": {
           "id": "82",
-          "type": "requests",
-          "library_type": "library_type_1",
-          "estimate_of_gb_required": 100,
-          "number_of_smrt_cells": 3,
-          "cost_code": "PSD1234",
-          "external_study_id": "1",
-          "sample_name": "Sample63",
-          "barcode": null,
-          "sample_species": "human",
-          "created_at": "2021/11/30 13:57",
           "source_identifier": "DN2:C10",
-          "well": "130",
-          "plate": "2"
+          
+
         },
         "83": {
           "id": "83",
-          "type": "requests",
-          "library_type": "library_type_1",
-          "estimate_of_gb_required": 100,
-          "number_of_smrt_cells": 3,
-          "cost_code": "PSD1234",
-          "external_study_id": "1",
-          "sample_name": "Sample62",
-          "barcode": null,
-          "sample_species": "human",
-          "created_at": "2021/11/30 13:57",
           "source_identifier": "DN2:C11",
-          "well": "131",
-          "plate": "2"
+          
+
         },
         "84": {
           "id": "84",
-          "type": "requests",
-          "library_type": "library_type_1",
-          "estimate_of_gb_required": 100,
-          "number_of_smrt_cells": 3,
-          "cost_code": "PSD1234",
-          "external_study_id": "1",
-          "sample_name": "Sample61",
-          "barcode": null,
-          "sample_species": "human",
-          "created_at": "2021/11/30 13:57",
           "source_identifier": "DN2:C12",
-          "well": "132",
-          "plate": "2"
+          
+
         },
         "85": {
           "id": "85",
-          "type": "requests",
-          "library_type": "library_type_1",
-          "estimate_of_gb_required": 100,
-          "number_of_smrt_cells": 3,
-          "cost_code": "PSD1234",
-          "external_study_id": "1",
-          "sample_name": "Sample60",
-          "barcode": null,
-          "sample_species": "human",
-          "created_at": "2021/11/30 13:57",
           "source_identifier": "DN2:D1",
-          "well": "133",
-          "plate": "2"
+
+          
         },
         "86": {
           "id": "86",
-          "type": "requests",
-          "library_type": "library_type_1",
-          "estimate_of_gb_required": 100,
-          "number_of_smrt_cells": 3,
-          "cost_code": "PSD1234",
-          "external_study_id": "1",
-          "sample_name": "Sample59",
-          "barcode": null,
-          "sample_species": "human",
-          "created_at": "2021/11/30 13:57",
           "source_identifier": "DN2:D2",
-          "well": "134",
-          "plate": "2"
+
+          
         },
         "87": {
           "id": "87",
-          "type": "requests",
-          "library_type": "library_type_1",
-          "estimate_of_gb_required": 100,
-          "number_of_smrt_cells": 3,
-          "cost_code": "PSD1234",
-          "external_study_id": "1",
-          "sample_name": "Sample58",
-          "barcode": null,
-          "sample_species": "human",
-          "created_at": "2021/11/30 13:57",
           "source_identifier": "DN2:D3",
-          "well": "135",
-          "plate": "2"
+
+          
         },
         "88": {
           "id": "88",
-          "type": "requests",
-          "library_type": "library_type_1",
-          "estimate_of_gb_required": 100,
-          "number_of_smrt_cells": 3,
-          "cost_code": "PSD1234",
-          "external_study_id": "1",
-          "sample_name": "Sample57",
-          "barcode": null,
-          "sample_species": "human",
-          "created_at": "2021/11/30 13:57",
           "source_identifier": "DN2:D4",
-          "well": "136",
-          "plate": "2"
+
+          
         },
         "89": {
           "id": "89",
-          "type": "requests",
-          "library_type": "library_type_1",
-          "estimate_of_gb_required": 100,
-          "number_of_smrt_cells": 3,
-          "cost_code": "PSD1234",
-          "external_study_id": "1",
-          "sample_name": "Sample56",
-          "barcode": null,
-          "sample_species": "human",
-          "created_at": "2021/11/30 13:57",
           "source_identifier": "DN2:D5",
-          "well": "137",
-          "plate": "2"
+
+          
         },
         "90": {
           "id": "90",
-          "type": "requests",
-          "library_type": "library_type_1",
-          "estimate_of_gb_required": 100,
-          "number_of_smrt_cells": 3,
-          "cost_code": "PSD1234",
-          "external_study_id": "1",
-          "sample_name": "Sample55",
-          "barcode": null,
-          "sample_species": "human",
-          "created_at": "2021/11/30 13:57",
           "source_identifier": "DN2:D6",
-          "well": "138",
-          "plate": "2"
+
+          
         },
         "91": {
           "id": "91",
-          "type": "requests",
-          "library_type": "library_type_1",
-          "estimate_of_gb_required": 100,
-          "number_of_smrt_cells": 3,
-          "cost_code": "PSD1234",
-          "external_study_id": "1",
-          "sample_name": "Sample54",
-          "barcode": null,
-          "sample_species": "human",
-          "created_at": "2021/11/30 13:57",
           "source_identifier": "DN2:D7",
-          "well": "139",
-          "plate": "2"
+
+          
         },
         "92": {
           "id": "92",
-          "type": "requests",
-          "library_type": "library_type_1",
-          "estimate_of_gb_required": 100,
-          "number_of_smrt_cells": 3,
-          "cost_code": "PSD1234",
-          "external_study_id": "1",
-          "sample_name": "Sample53",
-          "barcode": null,
-          "sample_species": "human",
-          "created_at": "2021/11/30 13:57",
           "source_identifier": "DN2:D8",
-          "well": "140",
-          "plate": "2"
+
+          
         },
         "93": {
           "id": "93",
-          "type": "requests",
-          "library_type": "library_type_1",
-          "estimate_of_gb_required": 100,
-          "number_of_smrt_cells": 3,
-          "cost_code": "PSD1234",
-          "external_study_id": "1",
-          "sample_name": "Sample52",
-          "barcode": null,
-          "sample_species": "human",
-          "created_at": "2021/11/30 13:57",
           "source_identifier": "DN2:D9",
-          "well": "141",
-          "plate": "2"
+
+          
         },
         "94": {
           "id": "94",
-          "type": "requests",
-          "library_type": "library_type_1",
-          "estimate_of_gb_required": 100,
-          "number_of_smrt_cells": 3,
-          "cost_code": "PSD1234",
-          "external_study_id": "1",
-          "sample_name": "Sample51",
-          "barcode": null,
-          "sample_species": "human",
-          "created_at": "2021/11/30 13:57",
           "source_identifier": "DN2:D10",
-          "well": "142",
-          "plate": "2"
+          
+
         },
         "95": {
           "id": "95",
-          "type": "requests",
-          "library_type": "library_type_1",
-          "estimate_of_gb_required": 100,
-          "number_of_smrt_cells": 3,
-          "cost_code": "PSD1234",
-          "external_study_id": "1",
-          "sample_name": "Sample50",
-          "barcode": null,
-          "sample_species": "human",
-          "created_at": "2021/11/30 13:57",
           "source_identifier": "DN2:D11",
-          "well": "143",
-          "plate": "2"
+          
+
         },
         "96": {
           "id": "96",
-          "type": "requests",
-          "library_type": "library_type_1",
-          "estimate_of_gb_required": 100,
-          "number_of_smrt_cells": 3,
-          "cost_code": "PSD1234",
-          "external_study_id": "1",
-          "sample_name": "Sample49",
-          "barcode": null,
-          "sample_species": "human",
-          "created_at": "2021/11/30 13:57",
           "source_identifier": "DN2:D12",
-          "well": "144",
-          "plate": "2"
+          
+
         },
         "97": {
           "id": "97",
-          "type": "requests",
-          "library_type": "library_type_1",
-          "estimate_of_gb_required": 100,
-          "number_of_smrt_cells": 3,
-          "cost_code": "PSD1234",
-          "external_study_id": "1",
-          "sample_name": "Sample49",
-          "barcode": null,
-          "sample_species": "human",
-          "created_at": "2021/11/30 13:57",
           "source_identifier": "DN2:D12",
-          "well": null,
-          "plate": null,
-          "tube": "1"
+          
+
         },
         "98": {
           "id": "98",
-          "type": "requests",
-          "library_type": "library_type_1",
-          "estimate_of_gb_required": 100,
-          "number_of_smrt_cells": 3,
-          "cost_code": "PSD1234",
-          "external_study_id": "1",
-          "sample_name": "Sample49",
-          "barcode": null,
-          "sample_species": "human",
-          "created_at": "2021/11/30 13:57",
           "source_identifier": "DN2:D12",
-          "well": null,
-          "plate": null,
+          
+  
           "tube": "2"
         },
         "99": {
           "id": "99",
-          "type": "requests",
-          "library_type": "library_type_1",
-          "estimate_of_gb_required": 100,
-          "number_of_smrt_cells": 3,
-          "cost_code": "PSD1234",
-          "external_study_id": "1",
-          "sample_name": "Sample49",
-          "barcode": null,
-          "sample_species": "human",
-          "created_at": "2021/11/30 13:57",
           "source_identifier": "DN2:D12",
-          "well": null,
-          "plate": null,
-          "tube": "3"
+          
+  
         }
       },
       "tagSets": {
@@ -2185,23 +1143,7 @@
         "tag_id": null
       },
       "_98": {
-        "ont_request_id": "98",
-        "tag_id": null
-      },
-      "_99": {
-        "ont_request_id": "99",
-        "tag_id": null
-      }
-    },
-    "pool": {
-      "id": "1",
-      "volume": 1,
-      "concentration": 1,
-      "template_prep_kit_box_barcode": "LK12345",
-      "insert_size": 100,
-      "created_at": "2021/11/30 13:57",
-      "updated_at": "2021/11/30 13:57",
-      "source_identifier": "DN1:A1"
+        "ont_request_i"updated_at": er": "DN1:A1"
     },
     "tube": { "id": "1", "barcode": "TRAC-2-1" }
   }
