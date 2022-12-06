@@ -7,9 +7,6 @@ describe('ExtractionQc.vue', () => {
   beforeEach(() => {
     wrapper = mount(ExtractionQc, {
       localVue,
-      stubs: {
-        // ExtractionQcForm: true,
-      },
     })
   })
 

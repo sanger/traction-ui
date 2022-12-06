@@ -3,24 +3,24 @@
     <traction-form class="text-left" @submit="onSubmit">
       <traction-sub-section title="Which QC Results would you like to upload?" class="py-6">
         <traction-select
-          v-model="used_by_selected"
-          :options="used_by_options"
-          :state="Boolean(used_by_selected)? true : null"
+          v-model="usedBySelected"
+          :options="usedByOptions"
+          :state="Boolean(usedBySelected) ? true : null"
           required
         ></traction-select>
       </traction-sub-section>
       <traction-sub-section title="CSV File" class="py-6">
         <traction-file
           v-model="file"
-          :state="Boolean(file)? true : null"
+          :state="Boolean(file) ? true : null"
           placeholder="Choose a file or drop it here..."
           drop-placeholder="Drop file here (CSV only)..."
           accept="text/csv, .csv"
           required
         ></traction-file>
       </traction-sub-section>
-      <traction-button id="upload-button" type="submit" theme="create" size="lg">
-        <!-- Weird bug that spinner won't show unless button text is two words/ big enough? -->
+      <traction-button id="upload-button" type="submit" theme="create" size="lg" :disabled="busy">
+        <!-- Weird bug - spinner won't show unless button text is two words/ big enough? -->
         Upload File
         <traction-spinner v-show="this.busy"></traction-spinner>
       </traction-button>
@@ -29,33 +29,49 @@
 </template>
 
 <script>
-import { parse } from 'csv-parse/browser/esm/sync'
+import Api from '@/mixins/Api'
+import { createQcResultsUploadResource } from '@/services/traction/QcResultsUpload'
+
+const EXTRACTION_USED_BY = 'extraction'
 
 export default {
   name: 'ExtractionQcForm',
+  mixins: [Api],
   data() {
     return {
-      // Call API or pull out to config?
-      used_by_options: [
+      usedByOptions: [
         { value: null, text: 'Please select a option' },
-        { value: 'extraction', text: 'Extraction' }
+        { value: EXTRACTION_USED_BY, text: 'Extraction' },
       ],
       file: null,
-      used_by_selected: null,
-      busy: null
+      usedBySelected: null,
+      busy: null,
     }
   },
-  created() {},
+  computed: {
+    qcResultUploadsRequest: ({ api }) => api.traction.qc_results_uploads.create,
+  },
   methods: {
     async onSubmit() {
-      console.log("Submit!")
-      // this.busy = true
-      // const csv = await this.file.text()
-      // const used_by = this.used_by_selected
-      // call API
-      // this.busy = false
-      // this.showAlert("Uploading file!", 'success')
-    }
+      await this.postCSV()
+    },
+    async postCSV() {
+      this.busy = true
+      try {
+        const csv = await this.file.text()
+        let data = { csv: csv, usedBySelected: this.usedBySelected }
+        await createQcResultsUploadResource(this.qcResultUploadsRequest, data)
+
+        // Todo: clear alerts
+        // this.$store.commit('traction/removeMessage', messageIndex)
+        this.hideAlert()
+
+        this.showAlert(`Successfully imported ${this.file.name}`, 'success')
+      } catch (e) {
+        this.showAlert(e, 'danger')
+      }
+      this.busy = false
+    },
   },
 }
 </script>
