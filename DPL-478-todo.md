@@ -16,14 +16,17 @@
 - A `used_by` drop down for (extraction: 0, some_future_group: 1) to form
 - Store CSV and used_by data in form
 - An upload button to form
-
-### Todo
-
 - When the button is pressed, call API to persist
 - Button handle: Once the button is pressed it should be disabled
 - Button handle: While the csv is being processed there should be visual feedback
 - Button handle: Once processing is finished the button should be enable
 - If the upload is successful there should be some feedback indicating that it is a success (along with an indication of how many qc results have been created)
 - If the upload fails then there should be some feedback (giving reasons as to why it has failed with an indication of where it has failed)
-- Add `used_by` options to config somewhere/ API call to
 - There should be wiggle room if the use tries to upload previously recorded records. Rather than failing it will just create a new record. The qc results table is idempotent so should not overwrite amend or delete. ()
+
+### Todo
+
+- Test once Service error message handling has been updated
+- `createQcResultsUploadResource` tests
+- `ExtractionQcForm` tests
+- e2e tests
