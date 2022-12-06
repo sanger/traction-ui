@@ -21,7 +21,7 @@ const autoTagPlate = ({ state, commit }, { library }) => {
   const initialTagIndex = tags.indexOf(library.tag_id)
   const plate = initialWell.plate
 
-  Object.values(state.libraries).forEach(({ ont_request_id }) => {
+  Object.values(state.pooling.libraries).forEach(({ ont_request_id }) => {
     const otherWell = wellFor(state, { ont_request_id })
 
     if (otherWell?.plate !== plate) return
@@ -31,7 +31,7 @@ const autoTagPlate = ({ state, commit }, { library }) => {
     if (offset < 1) return
 
     const newTag = (initialTagIndex + offset) % tags.length
-    commit('updateLibrary', { ont_request_id, tag_id: tags[newTag] })
+    commit('updatePoolingLibrary', { ont_request_id, tag_id: tags[newTag] })
   })
 }
 
@@ -47,7 +47,7 @@ const autoTagTube = ({ state, commit, getters }, { library }) => {
     })
     .forEach((req, offset) => {
       const newTag = (initialTagIndex + offset + 1) % tags.length
-      commit('updateLibrary', { ont_request_id: req.id, tag_id: tags[newTag] })
+      commit('updatePoolingLibrary', { ont_request_id: req.id, tag_id: tags[newTag] })
     })
 }
 
@@ -145,12 +145,12 @@ export default {
       } = groupIncludedByResource(included)
       // Can we await these commits? The pool page initially shows as empty until all this data is added
       commit('populatePoolAttributes', data)
-      commit('populateLibraries', libraries)
+      commit('populatePoolingLibraries', libraries)
+      commit('populatePoolingTube', tube)
       commit('populateRequests', requests)
       commit('populateWells', wells)
       commit('populatePlates', plates)
       commit('selectTagSet', tag_set)
-      commit('populateTube', tube)
       plates.forEach(({ id }) => commit('selectPlate', { id, selected: true }))
     }
 
@@ -233,7 +233,7 @@ export default {
    */
   selectWellRequests: ({ commit, state }, well_id) => {
     const { requests } = state.resources.wells[well_id]
-    const selectedRequests = state.libraries
+    const selectedRequests = state.pooling.libraries
     for (let id of requests) {
       const selected = !!selectedRequests[`_${id}`]
       commit('selectRequest', { id, selected: !selected })
@@ -279,7 +279,7 @@ export default {
   /*
    * Creates a pool from the libraries
    */
-  createPool: async ({ rootState, state: { libraries, pool } }) => {
+  createPool: async ({ rootState, state: { pooling: { libraries, pool }} }) => {
     validate({ libraries })
     if (!valid({ libraries })) return { success: false, errors: 'The pool is invalid' }
     const request = rootState.api.traction.ont.pools
@@ -310,7 +310,7 @@ export default {
    * @param commit the vuex commit object. Provides access to mutations
    */
   updateLibraryFromCsvRecord: (
-    { state: { resources, libraries }, commit, getters },
+    { state: { resources, pooling }, commit, getters },
     { record: { source, tag, ...attributes }, info },
   ) => {
     const error = csvLogger(commit, info, 'danger')
@@ -327,11 +327,11 @@ export default {
     const tagAttributes = buildTagAttributes({ getters, tag, error })
 
     requestIds.forEach((ont_request_id) => {
-      if (!libraries[`_${ont_request_id}`]) {
+      if (!pooling.libraries[`_${ont_request_id}`]) {
         // We're adding a library
         csvLogger(commit, info, 'info')(`Added ${source} to pool`)
       }
-      commit('updateLibrary', { ont_request_id, ...tagAttributes, ...attributes })
+      commit('updatePoolingLibrary', { ont_request_id, ...tagAttributes, ...attributes })
     })
   },
 
@@ -348,7 +348,7 @@ export default {
    */
   applyTags: ({ state, commit, getters }, { library, autoTag }) => {
     // We always apply the first tag
-    commit('updateLibrary', library)
+    commit('updatePoolingLibrary', library)
     if (autoTag) {
       const request = state.resources.requests[library.ont_request_id]
       const plateMatch = request.source_identifier.match(sourceRegex)?.groups.wellName

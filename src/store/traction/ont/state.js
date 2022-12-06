@@ -29,7 +29,6 @@ export default () => {
       // The main source of tagSet information. tagSets are indexed by id.
       // Populated by the tags from a tag set
       tags: {},
-      //
     },
     // Selected collects together user input in the front end, such as
     // selected plates and libraries.
@@ -47,13 +46,14 @@ export default () => {
       // attribute { id: 'tube_id', selected: true }
       tubes: {},
     },
-    // Libraries. Indexed by an internally generated id.
-    libraries: {},
-
-    // Pool: The current pool being edited or created
-    pool: {},
-
-    // Tube: The tube for the current pool
-    tube: {},
+    // Handles the store data for the pooling page
+    pooling: {
+      // Libraries. Indexed by an internally generated id.
+      libraries: {},
+      // Pool: The current pool being edited or created
+      pool: {},
+      // Tube: The tube for the current pool
+      tube: {}
+    }
   }
 }

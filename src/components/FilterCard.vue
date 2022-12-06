@@ -15,6 +15,7 @@
           class="w-1/2 mr-10"
         />
         <traction-select
+          id="filterValue"
           v-model="filterValue"
           :options="filterOptions"
           label="Search type"

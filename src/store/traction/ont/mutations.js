@@ -18,11 +18,11 @@ export default {
       Vue.delete(state.selected.tubes, `${id}`)
     }
   },
-  selectRequest: ({ libraries }, { id, selected = true }) => {
+  selectRequest: (state, { id, selected = true }) => {
     if (selected) {
-      Vue.set(libraries, `_${id}`, newLibrary({ ont_request_id: id }))
+      Vue.set(state.pooling.libraries, `_${id}`, newLibrary({ ont_request_id: id }))
     } else {
-      Vue.delete(libraries, `_${id}`)
+      Vue.delete(state.pooling.libraries, `_${id}`)
     }
   },
   /**
@@ -46,28 +46,28 @@ export default {
    * @param {Object} state The VueXState object
    * @param {Object.{}} library The library data to update
    */
-  updateLibrary: ({ libraries }, library) => {
+  updatePoolingLibrary: (state, library) => {
     const key = `_${library.ont_request_id}`
-    Vue.set(libraries, key, Object.assign({}, libraries[key], library))
+    Vue.set(state.pooling.libraries, key, Object.assign({}, state.pooling.libraries[key], library))
   },
   /**
    * Populated the result with the response
    * @param {Object} state The VueXState object
    * @param {Object} Response A response object
    **/
-  populateLibraries: ({ libraries }, data) => {
+  populatePoolingLibraries: (state, data) => {
     const newLibraries = dataToObjectById({ data, includeRelationships: true })
     Object.values(newLibraries).forEach((library) => {
       const key = `_${library.request}`
       Vue.set(
-        libraries,
+        state.pooling.libraries,
         key,
         newLibrary({ ...library, ont_request_id: library.request, tag_id: library.tag }),
       )
     })
   },
-  populatePoolAttributes: (store, { id, attributes }) => {
-    store.pool = {
+  populatePoolAttributes: (state, { id, attributes }) => {
+    state.pooling.pool = {
       id,
       ...attributes,
     }
@@ -77,8 +77,8 @@ export default {
    * @param {Object} state The VueXState object
    * @param {Object.{}} tube The tube resource to populate the store
    */
-  populateTube: (store, { id, attributes }) => {
-    store.tube = {
+  populatePoolingTube: (state, { id, attributes }) => {
+    state.pooling.tube = {
       id,
       ...attributes,
     }

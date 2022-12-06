@@ -87,7 +87,7 @@ const librarySetter = (attr) => {
       return this.library[attr]
     },
     set(newValue) {
-      this.updateLibrary({ ont_request_id: this.library.ont_request_id, [attr]: newValue })
+      this.updatePoolingLibrary({ ont_request_id: this.library.ont_request_id, [attr]: newValue })
     },
   }
 }
@@ -137,7 +137,7 @@ export default {
     },
   },
   methods: {
-    ...mapMutations(['updateLibrary']),
+    ...mapMutations(['updatePoolingLibrary']),
     ...mapActions(['applyTags']),
     //return any errors exist in library for the given attribute
     errorsFor(attribute) {

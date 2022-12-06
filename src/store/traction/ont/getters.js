@@ -20,22 +20,22 @@ export default {
    * Returns the pool
    * @param {Object} state The Vuex state object
    */
-  poolItem: (state) => state.pool || {},
+  poolItem: (state) => state.pooling.pool || {},
 
   /**
    * Returns the tube
    * @param {Object} state The Vuex state object
    */
-  tubeItem: (state) => state.tube || {},
+  tubeItem: (state) => state.pooling.tube || {},
 
   /**
    * Returns a library
    * @param {Object} state The Vuex state object
    */
   libraryItem:
-    ({ libraries }) =>
+    (state) =>
     (id) =>
-      libraries[`_${id}`],
+      state.pooling.libraries[`_${id}`],
 
   /**
    * Returns a list of selected plates
@@ -69,7 +69,7 @@ export default {
    */
   requestList: (state) => (ids) => {
     const requests = state.resources.requests
-    const selectedRequests = state.libraries
+    const selectedRequests = state.pooling.libraries
     if (ids) {
       return ids.map((id) => {
         return { ...requests[id], selected: !!selectedRequests[`_${id}`] }
@@ -123,8 +123,8 @@ export default {
    * @param {Object} state The Vuex state object
    * @return {Array} An array of selected requests in the order in which they were selected
    */
-  selectedRequests: ({ libraries, resources }) => {
-    return Object.values(libraries)
+  selectedRequests: ({ pooling, resources }) => {
+    return Object.values(pooling.libraries)
       .map(({ ont_request_id }) => ({
         ...resources.requests[ont_request_id],
         selected: true,

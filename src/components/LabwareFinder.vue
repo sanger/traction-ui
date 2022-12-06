@@ -1,7 +1,7 @@
 <template>
   <div class="flex flex-row">
     <traction-input
-      id="data-type"
+      id="labware-finder-input"
       v-model="searchValue"
       type="search"
       placeholder="Type to Search"
@@ -35,9 +35,6 @@ export default {
     }
   },
   methods: {
-    clearSearch() {
-      this.searchValue = ''
-    },
     async search() {
       await this.fetcher({ [this.filter]: this.searchValue }).then((res) => {
         if (res.success) {
