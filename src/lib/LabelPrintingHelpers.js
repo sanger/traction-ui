@@ -103,8 +103,8 @@ const NullSuffixItem = () => ({
  *  fourth_line - suffixes joined together e.g. ST1-1
  */
 const createBarcodeLabelItem = ({ sourceBarcode, date, stage = '', suffixes = [] } = {}) => {
-  // takes the suffixes, removes any nulls and joins them together with a dash
-  const parsedSuffixes = suffixes.filter((suffix) => suffix !== null).join('-')
+  // takes the suffixes, removes any falseys e.g null, undefined and joins them together with a dash
+  const parsedSuffixes = suffixes.filter((suffix) => suffix).join('-')
 
   // takes the sourceBarcode and joins with the parsedSuffixes if there are any with a dash
   const barcode = `${sourceBarcode}${parsedSuffixes ? '-' : ''}${parsedSuffixes}`
@@ -115,6 +115,7 @@ const createBarcodeLabelItem = ({ sourceBarcode, date, stage = '', suffixes = []
     second_line: stage,
     third_line: sourceBarcode,
     fourth_line: parsedSuffixes,
+    label_name: 'main_label',
   }
 }
 

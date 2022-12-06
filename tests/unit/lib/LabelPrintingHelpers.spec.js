@@ -120,46 +120,52 @@ describe('LabelPrintingHelpers.js', () => {
     const stage = 'ST1 - Stage 1'
 
     it('barcode only', () => {
-      const { barcode, first_line, second_line, third_line, fourth_line } = createBarcodeLabelItem({
-        sourceBarcode,
-        date,
-      })
+      const { barcode, first_line, second_line, third_line, fourth_line, label_name } =
+        createBarcodeLabelItem({
+          sourceBarcode,
+          date,
+        })
       expect(barcode).toEqual(sourceBarcode)
       expect(first_line).toEqual(date)
       expect(second_line).toEqual('')
       expect(third_line).toEqual(sourceBarcode)
       expect(fourth_line).toEqual('')
+      expect(label_name).toEqual('main_label')
     })
 
     it('barcode with a single suffix', () => {
       const suffixes = ['ST1']
-      const { barcode, first_line, second_line, third_line, fourth_line } = createBarcodeLabelItem({
-        sourceBarcode,
-        stage,
-        date,
-        suffixes,
-      })
+      const { barcode, first_line, second_line, third_line, fourth_line, label_name } =
+        createBarcodeLabelItem({
+          sourceBarcode,
+          stage,
+          date,
+          suffixes,
+        })
       expect(barcode).toEqual(`${sourceBarcode}-${suffixes[0]}`)
       expect(first_line).toEqual(date)
       expect(second_line).toEqual(stage)
       expect(third_line).toEqual(sourceBarcode)
       expect(fourth_line).toEqual(suffixes[0])
+      expect(label_name).toEqual('main_label')
     })
 
     // we could go on but not necessary
     it('barcode with 2 suffixes', () => {
       const suffixes = ['ST1', '1']
-      const { barcode, first_line, second_line, third_line, fourth_line } = createBarcodeLabelItem({
-        sourceBarcode,
-        stage,
-        date,
-        suffixes,
-      })
+      const { barcode, first_line, second_line, third_line, fourth_line, label_name } =
+        createBarcodeLabelItem({
+          sourceBarcode,
+          stage,
+          date,
+          suffixes,
+        })
       expect(barcode).toEqual(`${sourceBarcode}-${suffixes[0]}-${suffixes[1]}`)
       expect(first_line).toEqual(date)
       expect(second_line).toEqual(stage)
       expect(third_line).toEqual(`${sourceBarcode}`)
       expect(fourth_line).toEqual(`${suffixes[0]}-${suffixes[1]}`)
+      expect(label_name).toEqual('main_label')
     })
   })
 
@@ -197,6 +203,7 @@ describe('LabelPrintingHelpers.js', () => {
         second_line: suffixItem.stage,
         third_line: 'SQSC-1',
         fourth_line: 'ST1',
+        label_name: 'main_label',
       })
     })
 
@@ -231,6 +238,7 @@ describe('LabelPrintingHelpers.js', () => {
         second_line: suffixItem.stage,
         third_line: 'SQSC-1',
         fourth_line: 'ST1-1',
+        label_name: 'main_label',
       })
       expect(barcodeLabels.slice(-1)[0]).toEqual({
         barcode: 'SQSC-5-ST1-3',
@@ -238,9 +246,30 @@ describe('LabelPrintingHelpers.js', () => {
         second_line: suffixItem.stage,
         third_line: 'SQSC-5',
         fourth_line: 'ST1-3',
+        label_name: 'main_label',
       })
     })
 
-    it('with numbers only', () => {})
+    it('with numbers only', () => {
+      const barcodeLabels = createLabelsFromBarcodes({ sourceBarcodeList, date, numberOfLabels })
+      expect(barcodeLabels.length).toEqual(15)
+      expect(byAttribute(barcodeLabels, 'barcode')).toEqual([
+        'SQSC-1-1',
+        'SQSC-1-2',
+        'SQSC-1-3',
+        'SQSC-2-1',
+        'SQSC-2-2',
+        'SQSC-2-3',
+        'SQSC-3-1',
+        'SQSC-3-2',
+        'SQSC-3-3',
+        'SQSC-4-1',
+        'SQSC-4-2',
+        'SQSC-4-3',
+        'SQSC-5-1',
+        'SQSC-5-2',
+        'SQSC-5-3',
+      ])
+    })
   })
 })
