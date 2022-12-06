@@ -13,7 +13,7 @@ const errorFor = ({ lines, records }, message) => `Library ${records} on line ${
 const csvLogger = (commit, info, level) => (message) =>
   commit('traction/addMessage', { type: level, message: errorFor(info, message) }, { root: true })
 const tubeFor = ({ resources }, { ont_request_id }) =>
-  resources.tubes[resources.requests[ont_request_id]?.tube]
+  Object.values(resources.tubes).find((tube) => tube.requests[0] == ont_request_id)
 const autoTagPlate = ({ state, commit }, { library }) => {
   const initialWell = wellFor(state, library)
   const initialIndex = wellToIndex(initialWell)
@@ -42,8 +42,8 @@ const autoTagTube = ({ state, commit, getters }, { library }) => {
 
   Object.values(getters.selectedRequests)
     .filter((request) => {
-      // request.tube doesn't exist so we are going to have to get the tube through the source identifier
-      return request.tube && parseInt(request.tube) > parseInt(initialTube.id)
+      let tube = tubeFor(state, { ont_request_id: request.id })
+      return tube && parseInt(tube.id) > parseInt(initialTube.id)
     })
     .forEach((req, offset) => {
       const newTag = (initialTagIndex + offset + 1) % tags.length
