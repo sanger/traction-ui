@@ -47,7 +47,7 @@ store.state.traction.ont.resources.wells = wells
 
 describe('PacbioPoolLibraryList.vue', () => {
   it('should have a list of libraries', () => {
-    store.state.traction.ont.libraries = libraries
+    store.state.traction.ont.pooling.libraries = libraries
     const wrapper = mount(OntPoolLibraryList, {
       store,
       localVue,

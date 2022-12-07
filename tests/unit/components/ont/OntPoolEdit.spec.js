@@ -25,14 +25,14 @@ describe('ontPoolEdit#new', () => {
   let wrapper
   beforeEach(() => {
     wrapper = buildWrapper()
-    store.state.traction.ont.pool = pool
+    store.state.traction.ont.pooling.pool = pool
   })
 
   describe('input', () => {
     it('kit barcode', async () => {
       const input = wrapper.find('[data-attribute=kit-barcode]')
       await input.setValue('017865101789500022821')
-      expect(store.state.traction.ont.pool.kit_barcode).toEqual(
+      expect(store.state.traction.ont.pooling.pool.kit_barcode).toEqual(
         '017865101789500022821',
       )
     })
@@ -40,19 +40,19 @@ describe('ontPoolEdit#new', () => {
     it('volume', async () => {
       const input = wrapper.find('[data-attribute=volume]')
       await input.setValue('10.0')
-      expect(store.state.traction.ont.pool.volume).toEqual('10.0')
+      expect(store.state.traction.ont.pooling.pool.volume).toEqual('10.0')
     })
 
     it('concentration', async () => {
       const input = wrapper.find('[data-attribute=concentration]')
       await input.setValue('2.4')
-      expect(store.state.traction.ont.pool.concentration).toEqual('2.4')
+      expect(store.state.traction.ont.pooling.pool.concentration).toEqual('2.4')
     })
 
     it('insert size', async () => {
       const input = wrapper.find('[data-attribute=insert-size]')
       await input.setValue('100')
-      expect(store.state.traction.ont.pool.insert_size).toEqual('100')
+      expect(store.state.traction.ont.pooling.pool.insert_size).toEqual('100')
     })
   })
 
@@ -87,9 +87,9 @@ describe('ontPoolEdit#edit', () => {
 
   beforeEach(() => {
     wrapper = buildWrapper()
-    store.state.traction.ont.libraries = {}
-    store.state.traction.ont.pool = pool
-    store.state.traction.ont.tube = tube
+    store.state.traction.ont.pooling.libraries = {}
+    store.state.traction.ont.pooling.pool = pool
+    store.state.traction.ont.pooling.tube = tube
   })
 
   describe('input', () => {
@@ -164,29 +164,37 @@ describe('ontPoolEdit#edit', () => {
     })
   })
 
-//   describe('pool type', () => {
-//     it('says empty when there are no libraries', async () => {
-//       const poolCreateStore = Object.assign({}, Data.AutoTagStore, {
-//         libraries: {},
-//       })
-//       store.state.traction.ont = poolCreateStore
-//       await localVue.nextTick()
-//       expect(wrapper.find('[data-attribute=pool-type]').text()).toContain('Empty')
-//     })
+  describe('pool type', () => {
+    it('says empty when there are no libraries', async () => {
+      const poolCreateStore = Object.assign({}, Data.ontAutoTagStore, {
+        pooling: {
+          libraries: {},
+          pool: {},
+          tube: {}
+        },
+      })
+      store.state.traction.ont = poolCreateStore
+      await localVue.nextTick()
+      expect(wrapper.find('[data-attribute=pool-type]').text()).toContain('Empty')
+    })
 
-//     it('says library when there is one library', async () => {
-//       const poolCreateStore = Object.assign({}, Data.AutoTagStore, {
-//         libraries: { _1: newLibrary({ pacbio_request_id: '1' }) },
-//       })
-//       store.state.traction.pacbio.poolCreate = poolCreateStore
-//       await localVue.nextTick()
-//       expect(wrapper.find('[data-attribute=pool-type]').text()).toContain('Library')
-//     })
+    it('says library when there is one library', async () => {
+      const poolCreateStore = Object.assign({}, Data.AutoTagStore, {
+        pooling: {
+          tube: {},
+          libraries: { _1: newLibrary({ ont_request_id: '1' }) },
+          pool: {}
+        }
+      })
+      store.state.traction.ont = poolCreateStore
+      await localVue.nextTick()
+      expect(wrapper.find('[data-attribute=pool-type]').text()).toContain('Library')
+    })
 
-//     it('says pool when there are multiple libraries', async () => {
-//       store.state.traction.pacbio.poolCreate = Data.AutoTagStore
-//       await localVue.nextTick()
-//       expect(wrapper.find('[data-attribute=pool-type]').text()).toContain('Pool')
-//     })
-//   })
+    it('says pool when there are multiple libraries', async () => {
+      store.state.traction.ont = Data.AutoTagStore
+      await localVue.nextTick()
+      expect(wrapper.find('[data-attribute=pool-type]').text()).toContain('Pool')
+    })
+  })
 })

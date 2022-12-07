@@ -293,7 +293,7 @@ export default {
   /*
    * Update a pool and libraries
    */
-  updatePool: async ({ rootState, state: { libraries, pool } }) => {
+  updatePool: async ({ rootState, state: { pooling: { libraries, pool } }}) => {
     validate({ libraries })
     if (!valid({ libraries })) return { success: false, errors: 'The pool is invalid' }
     const request = rootState.api.traction.ont.pools

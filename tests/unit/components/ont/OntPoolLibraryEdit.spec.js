@@ -35,7 +35,7 @@ describe('OntPoolLibraryEdit.vue', () => {
 
   describe('valid', () => {
     beforeEach(() => {
-      store.state.traction.ont.libraries = { _1: library }
+      store.state.traction.ont.pooling.libraries = { _1: library }
 
       wrapper = mount(OntPoolLibraryEdit, {
         store,
@@ -78,7 +78,7 @@ describe('OntPoolLibraryEdit.vue', () => {
       it('will updated the tag_id', async () => {
         const options = wrapper.find('[data-type=tag-list]').findAll('option')
         await options.at(1).setSelected()
-        expect(store.state.traction.ont.libraries['_1'].tag_id).toEqual('1')
+        expect(store.state.traction.ont.pooling.libraries['_1'].tag_id).toEqual('1')
       })
     })
 
@@ -87,26 +87,26 @@ describe('OntPoolLibraryEdit.vue', () => {
         const input = wrapper.find('[data-attribute=kit-barcode]')
         await input.setValue('017865101789500022821')
         expect(
-          store.state.traction.ont.libraries['_1'].kit_barcode,
+          store.state.traction.ont.pooling.libraries['_1'].kit_barcode,
         ).toEqual('017865101789500022821')
       })
 
       it('volume', async () => {
         const input = wrapper.find('[data-attribute=volume]')
         await input.setValue('10.0')
-        expect(store.state.traction.ont.libraries['_1'].volume).toEqual('10.0')
+        expect(store.state.traction.ont.pooling.libraries['_1'].volume).toEqual('10.0')
       })
 
       it('concentration', async () => {
         const input = wrapper.find('[data-attribute=concentration]')
         await input.setValue('2.4')
-        expect(store.state.traction.ont.libraries['_1'].concentration).toEqual('2.4')
+        expect(store.state.traction.ont.pooling.libraries['_1'].concentration).toEqual('2.4')
       })
 
       it('insert size', async () => {
         const input = wrapper.find('[data-attribute=insert-size]')
         await input.setValue('100')
-        expect(store.state.traction.ont.libraries['_1'].insert_size).toEqual('100')
+        expect(store.state.traction.ont.pooling.libraries['_1'].insert_size).toEqual('100')
       })
     })
   })
@@ -118,7 +118,7 @@ describe('OntPoolLibraryEdit.vue', () => {
     }
 
     it('tag id', () => {
-      store.state.traction.ont.libraries = {
+      store.state.traction.ont.pooling.libraries = {
         _1: { ...library, errors: { tag_id: 'must be present' } },
       }
 
@@ -132,7 +132,7 @@ describe('OntPoolLibraryEdit.vue', () => {
     })
 
     it('volume', () => {
-      store.state.traction.ont.libraries = {
+      store.state.traction.ont.pooling.libraries = {
         _1: { ...library, errors: { volume: 'must be present' } },
       }
 
@@ -146,7 +146,7 @@ describe('OntPoolLibraryEdit.vue', () => {
     })
 
     it('concentration', () => {
-      store.state.traction.ont.libraries = {
+      store.state.traction.ont.pooling.libraries = {
         _1: { ...library, errors: { concentration: 'must be present' } },
       }
 
@@ -160,7 +160,7 @@ describe('OntPoolLibraryEdit.vue', () => {
     })
 
     it('insert size', () => {
-      store.state.traction.ont.libraries = {
+      store.state.traction.ont.pooling.libraries = {
         _1: { ...library, errors: { insert_size: 'must be present' } },
       }
 

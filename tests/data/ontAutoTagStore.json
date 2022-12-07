@@ -2808,7 +2808,7 @@
       "_3": {
         "ont_request_id": "3",
         "kit_barcode": "barcode-2",
-        "tag_id": null,
+        "tag_id": "386",
         "volume": 9,
         "concentration": 7,
         "insert_size": 3696,
@@ -2818,7 +2818,24 @@
         "deactivated_at": null,
         "state": "pending",
         "request": "3",
-        "tag": null,
+        "tag": "386",
+        "pool": "3",
+        "source_plate": "1"
+      },
+      "_4": {
+        "ont_request_id": "4",
+        "kit_barcode": null,
+        "tag_id": "387",
+        "volume": 9,
+        "concentration": 7,
+        "insert_size": 5123,
+        "id": "78",
+        "type": "libraries",
+        "created_at": "2022/12/07 11:58",
+        "deactivated_at": null,
+        "state": "pending",
+        "request": "4",
+        "tag": "387",
         "pool": "3",
         "source_plate": "1"
       }
@@ -2831,7 +2848,7 @@
       "insert_size": 8251,
       "created_at": "2022/11/10 15:05",
       "updated_at": "2022/11/10 15:05",
-      "source_identifier": "GEN-1668092750-1:C1"
+      "source_identifier": "GEN-1668092750-1:C1-D1"
     },
     "tube": {
       "id": "5",
