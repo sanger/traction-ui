@@ -13,7 +13,7 @@
         >
         <template #cell(action)="row">
             <traction-button
-            :id="'details-btn-' + row.item.id"
+            :id="'remove-btn-' + row.item.id"
             size="sm"
             class="mr-2"
             theme="default"
