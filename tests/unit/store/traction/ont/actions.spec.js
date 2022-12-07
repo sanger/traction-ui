@@ -380,7 +380,7 @@ describe('applyTags', () => {
     const commit = vi.fn()
     const autoTag = true
 
-    await applyTags( { commit, state }, { library, autoTag})
+    await applyTags( { state, commit  }, { library, autoTag })
 
     // Update the changed well
     expect(commit).toHaveBeenCalledWith('updatePoolingLibrary', {
@@ -800,6 +800,6 @@ describe('findOntTube', () => {
   })
 
   it('returns an error and an empty list when the tube barcode cannot be found')
-})
+  })
 
 })

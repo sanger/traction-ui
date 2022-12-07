@@ -49,7 +49,7 @@ import TractionTubesWithPacbioPools from './tractionTubesWithPacbioPools'
 import TractionTubesWithOntPools from './tractionTubesWithOntPools.json'
 import TractionPlates from './tractionPlates'
 import AutoTagStore from './autoTagStore'
-// import OntAutoTagStore from './ontAutoTagStore.json'
+import OntAutoTagStore from './ontAutoTagStore.json'
 import TractionPacbioSmrtLinkVersions from './tractionPacbioSmrtLinkVersions'
 
 export default {
@@ -104,6 +104,6 @@ export default {
   TractionTubesWithOntPools,
   TractionPlates,
   AutoTagStore,
-  //OntAutoTagStore,
+  OntAutoTagStore,
   TractionPacbioSmrtLinkVersions,
 }
