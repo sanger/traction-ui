@@ -741,7 +741,7 @@ describe('setPoolData', () => {
 
     find.mockRejectedValue()
     
-    const { success } = await setPoolData( { commit, rootState }, new )
+    const { success } = await setPoolData( { commit, rootState }, "new" )
     expect(commit).not.toHaveBeenCalled()
     expect(success).toEqual(false)
   })
