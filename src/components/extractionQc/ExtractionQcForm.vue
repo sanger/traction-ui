@@ -22,7 +22,7 @@
       <traction-button id="upload-button" type="submit" theme="create" size="lg" :disabled="busy">
         <!-- Weird bug - spinner won't show unless button text is two words/ big enough? -->
         Upload File
-        <traction-spinner v-show="this.busy"></traction-spinner>
+        <traction-spinner v-show="busy"></traction-spinner>
       </traction-button>
     </traction-form>
   </div>
@@ -63,10 +63,7 @@ export default {
         await createQcResultsUploadResource(this.qcResultUploadsRequest, data)
 
         // Todo: clear alerts
-        // this.$store.commit('traction/removeMessage', messageIndex)
-        this.hideAlert()
-
-        this.showAlert(`Successfully imported ${this.file.name}`, 'success')
+        this.showAlert(`Successfully imported: ${this.file.name}`, 'success')
       } catch (e) {
         this.showAlert(e, 'danger')
       }

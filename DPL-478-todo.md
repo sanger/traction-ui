@@ -23,10 +23,10 @@
 - If the upload is successful there should be some feedback indicating that it is a success (along with an indication of how many qc results have been created)
 - If the upload fails then there should be some feedback (giving reasons as to why it has failed with an indication of where it has failed)
 - There should be wiggle room if the use tries to upload previously recorded records. Rather than failing it will just create a new record. The qc results table is idempotent so should not overwrite amend or delete. ()
+- `createQcResultsUploadResource` tests
+- Test once Service error message handling has been updated
+- `ExtractionQcForm` tests
 
 ### Todo
 
-- Test once Service error message handling has been updated
-- `createQcResultsUploadResource` tests
-- `ExtractionQcForm` tests
-- e2e tests
+- e2e test
