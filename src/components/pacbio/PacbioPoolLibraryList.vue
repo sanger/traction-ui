@@ -18,18 +18,17 @@
           :key="request.id"
           :request="request"
           :auto-tag="autoTag"
+          :validated="validated"
+          :notify="notify"
         ></PacbioPoolLibraryEdit>
       </traction-tbody>
     </traction-table-simple>
   </div>
 </template>
-
 <script>
 import PacbioPoolLibraryEdit from '@/components/pacbio/PacbioPoolLibraryEdit'
 import { createNamespacedHelpers } from 'vuex'
-
 const { mapGetters } = createNamespacedHelpers('traction/pacbio/poolCreate')
-
 export default {
   name: 'PacbioPoolLibraryList',
   components: {
@@ -40,13 +39,21 @@ export default {
       type: Boolean,
       default: false,
     },
+    validated: {
+      type: Boolean,
+      default: false,
+    },
+    notify: {
+      type: Function,
+      required: true,
+      default: () => {},
+    },
   },
   computed: {
     ...mapGetters(['selectedRequests']),
   },
 }
 </script>
-
 <style scoped lang="scss">
 th {
   font-size: 0.8em;

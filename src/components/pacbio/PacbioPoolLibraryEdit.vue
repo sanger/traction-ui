@@ -7,17 +7,20 @@
       {{ request.source_identifier }}
     </traction-td>
     <traction-td>
-      <traction-select
-        v-if="tagList.length > 0"
-        v-model="tag_id"
-        data-type="tag-list"
-        :options="tagListOptions"
-        :state="errorsFor('tag_id')?.length > 0"
-        class="tag-id"
-      ></traction-select>
-      <traction-invalid-feedback data-attribute="tag-id-error">
-        {{ errorsFor('tag_id') }}
-      </traction-invalid-feedback>
+      <traction-field-error
+        data-attribute="tag-id-error"
+        :error="errorsFor('tag_id')"
+        :with-icon="isValidationExists('tag_id')"
+      >
+        <traction-select
+          v-if="tagList.length > 0"
+          :value="tag_id"
+          data-type="tag-list"
+          :options="tagListOptions"
+          class="tag-id"
+          @input="handleTagIDChange"
+        ></traction-select>
+      </traction-field-error>
     </traction-td>
     <traction-td>
       <traction-field-error
@@ -30,6 +33,7 @@
           data-attribute="template-prep-kit-box-barcode"
           :value="template_prep_kit_box_barcode"
           placeholder="Template Prep Kit Box Barcode"
+          class="template-prep-kit-box-barcode"
         />
       </traction-field-error>
     </traction-td>
@@ -77,7 +81,6 @@
     </traction-td>
   </traction-tr>
 </template>
-
 <script>
 import { createNamespacedHelpers } from 'vuex'
 const { mapGetters, mapMutations, mapActions } = createNamespacedHelpers(
@@ -89,7 +92,11 @@ const librarySetter = (attr) => {
       return this.library[attr]
     },
     set(newValue) {
+      if (newValue !== this.library[attr]) {
+        this.validationRequiredFields[attr] = true
+      }
       this.updateLibrary({ pacbio_request_id: this.library.pacbio_request_id, [attr]: newValue })
+      this.notify()
     },
   }
 }
@@ -110,9 +117,20 @@ export default {
       type: Boolean,
       default: false,
     },
+    validated: {
+      type: Boolean,
+      default: false,
+    },
+    notify: {
+      type: Function,
+      required: true,
+    },
   },
   data() {
-    return {}
+    return {
+      /**Array index are property names and values can true or false to represent validation required */
+      validationRequiredFields: [],
+    }
   },
   computed: {
     ...mapGetters(['selectedTagSet', 'libraryItem']),
@@ -146,18 +164,35 @@ export default {
     ...mapActions(['applyTags']),
     //return any errors exist in library for the given attribute
     errorsFor(attribute) {
+      this.setValidationRequired()
       return this.library?.errors?.[attribute]
     },
     attributeValueExists(attribute) {
+      this.setValidationRequired()
       return this.library?.[attribute]?.length > 0
     },
     isValidationExists(attribute) {
-      return this.attributeValueExists(attribute) || this.errorsFor(attribute)?.length > 0
+      if (this.validated) {
+        return true
+      } else {
+        return !this.validationRequiredFields[attribute]
+      }
+    },
+    setValidationRequired() {
+      if (this.validated) {
+        this.validationRequiredFields = []
+      }
+    },
+    handleTagIDChange(value) {
+      if (value !== this.tag_id) {
+        this.validationRequiredFields['tag_id'] = true
+      }
+      this.tag_id = value
+      this.notify()
     },
   },
 }
 </script>
-
 <style scoped lang="scss">
 td,
 .custom-select,
