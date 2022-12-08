@@ -75,14 +75,14 @@ const populateTagParameters = Data.TractionOntTagSets.data.included
 const storeTagData = {
   385: {
     id: '385',
-    type: 'tags', 
+    type: 'tags',
     oligo: 'CACAAAGACACCGACAACTTTCTT',
     group_id: 'NB01',
     set_name: 'ont',
   },
   386: {
     id: '386',
-    type: 'tags', 
+    type: 'tags',
     oligo: 'ACAGACGACTACAAACGGAATCGA',
     group_id: 'NB02',
     set_name: 'ont',
@@ -104,5 +104,5 @@ export default {
     populateTagParameters,
     storeTagData,
     getterTagReturn: Object.values(storeTagData),
-  }
+  },
 }
