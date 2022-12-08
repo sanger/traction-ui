@@ -7,7 +7,6 @@ const tagSets = {
   3: { id: '3', name: 'TagSet3' },
 }
 
-
 store.state.traction.ont.resources.tagSets = tagSets
 
 const tags = {

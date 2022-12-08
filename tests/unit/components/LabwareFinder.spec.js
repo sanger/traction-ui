@@ -3,7 +3,6 @@ import LabwareFinder from '@/components/LabwareFinder'
 import { expect } from 'vitest'
 import flushPromises from 'flush-promises'
 
-
 describe('LabwareFinder.vue', () => {
   let wrapper
 
@@ -12,12 +11,12 @@ describe('LabwareFinder.vue', () => {
     mockFetch.mockReturnValue(Promise.resolve({ success: true, errors: [] }))
 
     wrapper = mount(LabwareFinder, {
-        localVue,
-        store,
-        propsData: {
-          fetcher: mockFetch,
-          filter: 'barcode'
-        }
+      localVue,
+      store,
+      propsData: {
+        fetcher: mockFetch,
+        filter: 'barcode',
+      },
     })
 
     expect(wrapper.vm.searchValue).toBe('')
@@ -30,22 +29,22 @@ describe('LabwareFinder.vue', () => {
     mockFetch.mockReturnValue(Promise.resolve({ success: true, errors: [] }))
 
     wrapper = mount(LabwareFinder, {
-        localVue,
-        store,
-        propsData: {
-          fetcher: mockFetch,
-          filter: 'barcode'
-        },
-        data: function() {
-          return {
-            searchValue: 'test-barcode',
-          }
+      localVue,
+      store,
+      propsData: {
+        fetcher: mockFetch,
+        filter: 'barcode',
+      },
+      data: function () {
+        return {
+          searchValue: 'test-barcode',
         }
+      },
     })
     // search button
     wrapper.find('button').trigger('click')
     await flushPromises()
-    expect(wrapper.vm.fetcher).toBeCalledWith({'barcode': 'test-barcode'})
+    expect(wrapper.vm.fetcher).toBeCalledWith({ barcode: 'test-barcode' })
     // It clears the search value after successful search
     expect(wrapper.vm.searchValue).toBe('')
   })

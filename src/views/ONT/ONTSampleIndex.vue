@@ -28,6 +28,7 @@
       hover
       selectable
       select-mode="single"
+      tbody-tr-class="sample"
       @filtered="onFiltered"
       @row-selected="onRowSelected"
     >
@@ -63,15 +64,19 @@ export default {
     return {
       fields: [
         { key: 'selected', label: '' },
-        { key: 'id', label: 'Sample ID (Request)', sortable: true },
-        { key: 'source_identifier', label: 'Source', sortable: true },
-        { key: 'sample_name', label: 'Sample Name', sortable: true },
-        { key: 'library_type', label: 'Library type' },
-        { key: 'data_type', label: 'Data type' },
-        { key: 'number_of_flowcells', label: 'Number of flowcells' },
-        { key: 'cost_code', label: 'Cost code' },
-        { key: 'external_study_id', label: 'External study ID' },
-        { key: 'created_at', label: 'Created at', sortable: true },
+        { key: 'id', label: 'Sample ID (Request)', sortable: true, tdClass: 'id' },
+        { key: 'source_identifier', label: 'Source', sortable: true, tdClass: 'source_identifier' },
+        { key: 'sample_name', label: 'Sample Name', sortable: true, tdClass: 'sample_name' },
+        { key: 'library_type', label: 'Library type', tdClass: 'library_type' },
+        { key: 'data_type', label: 'Data type', tdClass: 'data_type' },
+        {
+          key: 'number_of_flowcells',
+          label: 'Number of flowcells',
+          tdClass: 'number_of_flowcells',
+        },
+        { key: 'cost_code', label: 'Cost code', tdClass: 'cost_code' },
+        { key: 'external_study_id', label: 'External study ID', tdClass: 'external_study_id' },
+        { key: 'created_at', label: 'Created at', sortable: true, tdClass: 'created_at' },
       ],
       filterOptions: [
         { value: '', text: '' },

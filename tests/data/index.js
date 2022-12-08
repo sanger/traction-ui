@@ -52,6 +52,7 @@ import OntAutoTagStore from './ontAutoTagStore.json'
 import OntPlatesRequest from './ontPlatesRequest.json'
 import OntTubesRequest from './ontTubesRequest.json'
 import OntPlates from './ontPlates.json'
+import TractionOntPool from './tractionOntPool.json'
 import TractionPacbioSmrtLinkVersions from './tractionPacbioSmrtLinkVersions'
 
 export default {
@@ -101,6 +102,7 @@ export default {
   TractionOntRequests,
   TractionOntTagSets,
   TractionOntPools,
+  TractionOntPool,
   TractionTubeWithContainerMaterials,
   TractionTubesWithPacbioPools,
   TractionPlates,

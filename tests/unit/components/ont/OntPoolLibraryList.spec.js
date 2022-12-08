@@ -6,7 +6,7 @@ const libraryAttributes = {
   tag_id: '1',
   volume: '1.0',
   concentration: '10.0',
-  insert_size: '100'
+  insert_size: '100',
 }
 
 const requests = {

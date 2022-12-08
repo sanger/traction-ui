@@ -3,7 +3,6 @@ import DataFetcher from '@/components/DataFetcher'
 import flushPromises from 'flush-promises'
 import { expect } from 'vitest'
 
-
 describe('DataFetcher.vue', () => {
   let wrapper
 
@@ -12,11 +11,11 @@ describe('DataFetcher.vue', () => {
     mockFetch.mockReturnValue(Promise.resolve({ success: true, data: 'success' }))
 
     wrapper = mount(DataFetcher, {
-        localVue,
-        store,
-        propsData: {
-          fetcher: mockFetch
-        }
+      localVue,
+      store,
+      propsData: {
+        fetcher: mockFetch,
+      },
     })
     expect(wrapper.vm.isLoading).toBe(true)
     expect(wrapper.find('#traction-spinner')).toBeDefined()
@@ -27,11 +26,11 @@ describe('DataFetcher.vue', () => {
     mockFetch.mockReturnValue(Promise.resolve({ success: true, data: 'success' }))
 
     wrapper = mount(DataFetcher, {
-        localVue,
-        store,
-        propsData: {
-          fetcher: mockFetch
-        }
+      localVue,
+      store,
+      propsData: {
+        fetcher: mockFetch,
+      },
     })
     expect(mockFetch).toHaveBeenCalledOnce()
     await flushPromises()
@@ -44,11 +43,11 @@ describe('DataFetcher.vue', () => {
     mockFetch.mockReturnValue(Promise.resolve({ success: false, data: 'error' }))
 
     wrapper = mount(DataFetcher, {
-        localVue,
-        store,
-        propsData: {
-          fetcher: mockFetch
-        }
+      localVue,
+      store,
+      propsData: {
+        fetcher: mockFetch,
+      },
     })
     // Here we mock the global showAlert method to check its being called
     wrapper.vm.showAlert = vi.fn()

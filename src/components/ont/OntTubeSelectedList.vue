@@ -11,17 +11,17 @@
           empty-text="No tubes selected"
           @row-clicked="requestClicked"
         >
-        <template #cell(action)="row">
+          <template #cell(action)="row">
             <traction-button
-            :id="'remove-btn-' + row.item.id"
-            size="sm"
-            class="mr-2"
-            theme="default"
-            @click="deselectTubeAndContents(row.item.source_identifier)"
+              :id="'remove-btn-' + row.item.id"
+              size="sm"
+              class="mr-2"
+              theme="default"
+              @click="deselectTubeAndContents(row.item.source_identifier)"
             >
-            Remove
+              Remove
             </traction-button>
-        </template>
+          </template>
         </traction-table>
       </traction-list-group>
     </traction-section>
@@ -31,9 +31,7 @@
 <script>
 import { createNamespacedHelpers } from 'vuex'
 
-const { mapGetters, mapMutations, mapActions } = createNamespacedHelpers(
-  'traction/ont',
-)
+const { mapGetters, mapMutations, mapActions } = createNamespacedHelpers('traction/ont')
 
 export default {
   name: 'OntTubeSelectedList',
@@ -46,7 +44,7 @@ export default {
         'data_type',
         'library_type',
         'number_of_flowcells',
-        'action'
+        'action',
       ],
     }
   },

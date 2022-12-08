@@ -11,7 +11,7 @@ export default {
       Vue.delete(state.selected.plates, `${id}`)
     }
   },
-   selectTube: (state, { id, selected = true }) => {
+  selectTube: (state, { id, selected = true }) => {
     if (selected) {
       Vue.set(state.selected.tubes, `${id}`, { id: id, selected: true })
     } else {

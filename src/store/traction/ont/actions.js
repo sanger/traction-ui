@@ -245,7 +245,7 @@ export default {
    * with associated data
    * @param rootState the vuex rootState object. Provides access to the current state
    * @param commit the vuex commit object. Provides access to mutations
-  */
+   */
   fetchOntRequests: async ({ commit, rootState }, filter) => {
     const request = rootState.api.traction.ont.requests
     const promise = request.get({ filter: filter })
@@ -279,7 +279,12 @@ export default {
   /*
    * Creates a pool from the libraries
    */
-  createPool: async ({ rootState, state: { pooling: { libraries, pool }} }) => {
+  createPool: async ({
+    rootState,
+    state: {
+      pooling: { libraries, pool },
+    },
+  }) => {
     validate({ libraries })
     if (!valid({ libraries })) return { success: false, errors: 'The pool is invalid' }
     const request = rootState.api.traction.ont.pools
@@ -293,7 +298,12 @@ export default {
   /*
    * Update a pool and libraries
    */
-  updatePool: async ({ rootState, state: { pooling: { libraries, pool } }}) => {
+  updatePool: async ({
+    rootState,
+    state: {
+      pooling: { libraries, pool },
+    },
+  }) => {
     validate({ libraries })
     if (!valid({ libraries })) return { success: false, errors: 'The pool is invalid' }
     const request = rootState.api.traction.ont.pools

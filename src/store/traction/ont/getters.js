@@ -32,10 +32,7 @@ export default {
    * Returns a library
    * @param {Object} state The Vuex state object
    */
-  libraryItem:
-    (state) =>
-    (id) =>
-      state.pooling.libraries[`_${id}`],
+  libraryItem: (state) => (id) => state.pooling.libraries[`_${id}`],
 
   /**
    * Returns a list of selected plates
@@ -43,7 +40,7 @@ export default {
    */
   selectedPlates: ({ selected, resources }) =>
     mergeRepresentations(selected.plates, resources.plates),
-  
+
   /**
    * Returns a list of selected tubes
    * @param {Object} state The Vuex state object

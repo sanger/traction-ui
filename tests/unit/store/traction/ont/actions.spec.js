@@ -354,7 +354,7 @@ describe('updatePool', () => {
 
 describe('applyTags', () => {
   const state = Data.OntAutoTagStore
-  const library = { ont_request_id: '13', tag_id: '130'} // Starting in B1
+  const library = { ont_request_id: '13', tag_id: '385'} // Starting in E2
 
   it('applies a single tag when autoTag is false', async () => {
     const commit = vi.fn()
@@ -364,15 +364,15 @@ describe('applyTags', () => {
     // Update the changed well
     expect(commit).toHaveBeenCalledWith('updatePoolingLibrary', {
       ont_request_id: '13',
-      tag_id: '130',
+      tag_id: '385',
     })
     // But nothing else
     expect(commit).toHaveBeenCalledTimes(1)
 
-    // We don't update earlier wells
+    // We don't update higher up requests
     expect(commit).not.toHaveBeenCalledWith(
       'updatePoolingLibrary',
-      expect.objectContaining({ ont_request_id: '1' }),
+      expect.objectContaining({ ont_request_id: '3' }),
     )
   })
 
@@ -385,14 +385,14 @@ describe('applyTags', () => {
     // Update the changed well
     expect(commit).toHaveBeenCalledWith('updatePoolingLibrary', {
       ont_request_id: '13',
-      tag_id: '130',
+      tag_id: '385',
     })
 
     // We don't update earlier wells
     expect(commit).not.toHaveBeenCalledWith(
       'updatePoolingLibrary', 
       expect.objectContaining({ 
-        ont_request_id: '1',
+        ont_request_id: '3',
       })
     )
 
@@ -400,7 +400,7 @@ describe('applyTags', () => {
     expect(commit).not.toHaveBeenCalledWith(
       'updatePoolingLibrary',
       expect.objectContaining({
-        ont_request_id: '25', // C1
+        ont_request_id: '1', // A1
       })
     )
 
@@ -408,8 +408,8 @@ describe('applyTags', () => {
     expect(commit).toHaveBeenCalledWith(
       'updatePoolingLibrary',
       expect.objectContaining({ 
-        ont_request_id: '4', //D1
-        tag_id: '132'
+        ont_request_id: '14', //F2
+        tag_id: '386'
       })
     )
 
@@ -417,8 +417,8 @@ describe('applyTags', () => {
     expect(commit).toHaveBeenCalledWith(
       'updatePoolingLibrary',
       expect.objectContaining({
-        ont_request_id: '2', // A2
-        tag_id: '137'
+        ont_request_id: '17', // A4
+        tag_id: '389'
       })
     )
 
@@ -430,55 +430,42 @@ describe('applyTags', () => {
       })
     )
 
-    expect(commit).not.toHaveBeenCalledWith(
-      'updatePoolingLibrary',
-      expect.objectContaining({
-        ont_request_id: '73', // C1
-      }),
-    )
-
     // or a tube
     expect(commit).not.toHaveBeenCalledWith(
       'updatePoolingLibrary',
       expect.objectContaining({
-        ont_request_id: '96', // is this not a plate? 
-      }),
-    )
-    expect(commit).not.toHaveBeenCalledWith(
-      'updatePoolingLibrary',
-      expect.objectContaining({
-        ont_request_id: '97', // a tube
+        ont_request_id: '192', // a tube
       }),
     )
 
     // In total we expect to update wells in this case
-    expect(commit).toHaveBeenCalledTimes(6)
+    expect(commit).toHaveBeenCalledTimes(5)
   })
 
-  // uncomment if tube functionality is added
   it('applies tags to tubes with a higher index when autoTag is true', async () => {
     const commit = vi.fn()
     const autoTag = true
-    const library = { ont_request_id: '98', tag_id: '130'}
+    const library = { ont_request_id: '193', tag_id: '385'}
 
-    const selectedRequests = Object.values(state.libraries).map(
+    const selectedRequests = Object.values(state.pooling.libraries).map(
       ({ ont_request_id }) => state.resources.requests[ont_request_id],
     )
 
+    console.log(selectedRequests)
     await applyTags({ commit, state, getters: {selectedRequests} }, { library, autoTag })
 
-    // Update the changed well
+    // Update the changed tube request
     expect(commit).toHaveBeenCalledWith(
       'updatePoolingLibrary', {
-        ont_request_id: '98',
-        tag_id: '130'
+        ont_request_id: '193',
+        tag_id: '385'
     })
 
     // We don't update earlier wells
     expect(commit).not.toHaveBeenCalledWith(
       'updatePoolingLibrary', 
         expect.objectContaining({
-          ont_request_id: '1',
+          ont_request_id: '13',
         })
       )
 
@@ -486,7 +473,7 @@ describe('applyTags', () => {
       expect(commit).not.toHaveBeenCalledWith(
         'updatePoolingLibrary',
         expect.objectContaining({ 
-          ont_request_id: '97',
+          ont_request_id: '192',
         })
       )
 
@@ -494,7 +481,7 @@ describe('applyTags', () => {
       expect(commit).not.toHaveBeenCalledWith(
         'updatePoolingLibrary',
         expect.objectContaining({
-          ont_request_id: '25' // C1
+          ont_request_id: '1'
         })
       )
 
@@ -502,13 +489,13 @@ describe('applyTags', () => {
       expect(commit).toHaveBeenCalledWith(
         'updatePoolingLibrary',
         expect.objectContaining({
-          ont_request_id: '99', // D1
-          tag_id: '131'
+          ont_request_id: '194',
+          tag_id: '386'
         })
       )
 
       // In total we expect to update 2 tubes in this case
-      expect(commit).toHaveBeenCalledWith(2)
+      expect(commit).toHaveBeenCalledTimes(2)
   })
 })
 
@@ -728,13 +715,13 @@ describe('setPoolData', () => {
     const find = vi.fn()
     const rootState = { api: { traction: { ont: { pools: { find } } } } }
 
-    find.mockResolvedValue(Data.TractionOntPools) // populate with ont data, currently pacbio copy
+    find.mockResolvedValue(Data.TractionOntPool) // populate with ont data, currently pacbio copy
 
-    const { success } = await setPoolData( {commit, rootState }, 1 )
+    const { success } = await setPoolData( {commit, rootState }, 3 )
     // assert result
     expect(commit).toHaveBeenCalledWith('clearPoolData')
-    expect(commit).toHaveBeenCalledWith('populatePoolAttributes', Data.TractionOntPools.data.data)
-    expect(commit).toHaveBeenCalledWith('populateLibraries', Data.TractionOntPools.data.data)
+    expect(commit).toHaveBeenCalledWith('populatePoolAttributes', Data.TractionOntPool.data.data)
+    expect(commit).toHaveBeenCalledWith('populatePoolingLibraries', Data.TractionOntPool.data.data)
     expect(commit).toHaveBeenCalledWith('populateRequests', ) // add requests
     expect(commit).toHaveBeenCalledWith('populateWells', ) // add wells
     expect(commit).toHaveBeenCalledWith('populatePlates, ') // add plates
@@ -754,8 +741,8 @@ describe('setPoolData', () => {
 
     find.mockRejectedValue()
     
-    const { success } = await setPoolData( { commit, rootState }, 1 )
-    expect(commit).not.toHaveBeenCalled
+    const { success } = await setPoolData( { commit, rootState }, new )
+    expect(commit).not.toHaveBeenCalled()
     expect(success).toEqual(false)
   })
 })

@@ -8,7 +8,7 @@
       label="Search value"
       class="w-full"
     />
-    <traction-button @click="search()"> Search </traction-button>
+    <traction-button @click="search()" data-action="find-labware"> Search </traction-button>
   </div>
 </template>
 

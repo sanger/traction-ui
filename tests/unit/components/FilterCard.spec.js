@@ -2,7 +2,6 @@ import { mount, localVue, store } from '@support/testHelper'
 import FilterCard from '@/components/FilterCard'
 import { expect } from 'vitest'
 
-
 describe('FilterCard.vue', () => {
   let wrapper
 
@@ -11,16 +10,16 @@ describe('FilterCard.vue', () => {
     mockFetch.mockReturnValue(Promise.resolve({ success: true, errors: [] }))
 
     wrapper = mount(FilterCard, {
-        localVue,
-        store,
-        propsData: {
-          fetcher: mockFetch,
-          filterOptions: [
-            { value: '1', text: 'Filter 1' },
-            { value: '2', text: 'Filter 2' },
-            { value: '3', text: 'Filter 3' }
-          ]
-        }
+      localVue,
+      store,
+      propsData: {
+        fetcher: mockFetch,
+        filterOptions: [
+          { value: '1', text: 'Filter 1' },
+          { value: '2', text: 'Filter 2' },
+          { value: '3', text: 'Filter 3' },
+        ],
+      },
     })
 
     expect(wrapper.vm.filterInput).toBe('')
@@ -40,26 +39,26 @@ describe('FilterCard.vue', () => {
     mockFetch.mockReturnValue(Promise.resolve({ success: true, errors: [] }))
 
     wrapper = mount(FilterCard, {
-        localVue,
-        store,
-        propsData: {
-          fetcher: mockFetch,
-          filterOptions: [
-            { value: '1', text: 'Filter 1' },
-            { value: '2', text: 'Filter 2' },
-            { value: '3', text: 'Filter 3' }
-          ]
-        },
-        data: function() {
-            return {
-                filterInput: 'Search value',
-                filterValue: '1'
-            }
+      localVue,
+      store,
+      propsData: {
+        fetcher: mockFetch,
+        filterOptions: [
+          { value: '1', text: 'Filter 1' },
+          { value: '2', text: 'Filter 2' },
+          { value: '3', text: 'Filter 3' },
+        ],
+      },
+      data: function () {
+        return {
+          filterInput: 'Search value',
+          filterValue: '1',
         }
+      },
     })
     // search button
     wrapper.findAll('button').at(1).trigger('click')
-    expect(wrapper.vm.fetcher).toBeCalledWith({'1': 'Search value'})
+    expect(wrapper.vm.fetcher).toBeCalledWith({ 1: 'Search value' })
   })
 
   it('clears the data when reset is clicked', async () => {
@@ -67,22 +66,22 @@ describe('FilterCard.vue', () => {
     mockFetch.mockReturnValue(Promise.resolve({ success: true, errors: [] }))
 
     wrapper = mount(FilterCard, {
-        localVue,
-        store,
-        propsData: {
-          fetcher: mockFetch,
-          filterOptions: [
-            { value: '1', text: 'Filter 1' },
-            { value: '2', text: 'Filter 2' },
-            { value: '3', text: 'Filter 3' }
-          ]
-        },
-        data: function() {
-            return {
-                filterInput: 'Search value',
-                filterValue: '1'
-            }
+      localVue,
+      store,
+      propsData: {
+        fetcher: mockFetch,
+        filterOptions: [
+          { value: '1', text: 'Filter 1' },
+          { value: '2', text: 'Filter 2' },
+          { value: '3', text: 'Filter 3' },
+        ],
+      },
+      data: function () {
+        return {
+          filterInput: 'Search value',
+          filterValue: '1',
         }
+      },
     })
     // reset button
     wrapper.findAll('button').at(0).trigger('click')

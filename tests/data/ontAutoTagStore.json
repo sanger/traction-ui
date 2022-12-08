@@ -103,864 +103,714 @@
           "94",
           "95"
         ]
+      },
+      "2": {
+        "id": "2",
+        "type": "plates",
+        "barcode": "GEN-1668092750-2",
+        "created_at": "2022/11/10 15:05",
+        "wells": ["96", "97"]
       }
     },
-    "tubes": {},
+    "tubes": {
+      "2": {
+        "id": "2",
+        "type": "tubes",
+        "barcode": "GEN-1668092750-4",
+        "requests": ["192"]
+      },
+      "3": {
+        "id": "3",
+        "type": "tubes",
+        "barcode": "GEN-1668092750-5",
+        "requests": ["193"]
+      },
+      "4": {
+        "id": "4",
+        "type": "tubes",
+        "barcode": "GEN-1668092750-6",
+        "requests": ["194"]
+      }
+    },
     "wells": {
       "1": {
         "id": "1",
         "type": "wells",
         "position": "A1",
-        "requests": [
-          "1"
-        ],
+        "requests": ["1"],
         "plate": "1"
       },
       "2": {
         "id": "2",
         "type": "wells",
         "position": "B1",
-        "requests": [
-          "2"
-        ],
+        "requests": ["2"],
         "plate": "1"
       },
       "3": {
         "id": "3",
         "type": "wells",
         "position": "C1",
-        "requests": [
-          "3"
-        ],
+        "requests": ["3"],
         "plate": "1"
       },
       "4": {
         "id": "4",
         "type": "wells",
         "position": "D1",
-        "requests": [
-          "4"
-        ],
+        "requests": ["4"],
         "plate": "1"
       },
       "5": {
         "id": "5",
         "type": "wells",
         "position": "E1",
-        "requests": [
-          "5"
-        ],
+        "requests": ["5"],
         "plate": "1"
       },
       "6": {
         "id": "6",
         "type": "wells",
         "position": "F1",
-        "requests": [
-          "6"
-        ],
+        "requests": ["6"],
         "plate": "1"
       },
       "7": {
         "id": "7",
         "type": "wells",
         "position": "G1",
-        "requests": [
-          "7"
-        ],
+        "requests": ["7"],
         "plate": "1"
       },
       "8": {
         "id": "8",
         "type": "wells",
         "position": "H1",
-        "requests": [
-          "8"
-        ],
+        "requests": ["8"],
         "plate": "1"
       },
       "9": {
         "id": "9",
         "type": "wells",
         "position": "A2",
-        "requests": [
-          "9"
-        ],
+        "requests": ["9"],
         "plate": "1"
       },
       "10": {
         "id": "10",
         "type": "wells",
         "position": "B2",
-        "requests": [
-          "10"
-        ],
+        "requests": ["10"],
         "plate": "1"
       },
       "11": {
         "id": "11",
         "type": "wells",
         "position": "C2",
-        "requests": [
-          "11"
-        ],
+        "requests": ["11"],
         "plate": "1"
       },
       "12": {
         "id": "12",
         "type": "wells",
         "position": "D2",
-        "requests": [
-          "12"
-        ],
+        "requests": ["12"],
         "plate": "1"
       },
       "13": {
         "id": "13",
         "type": "wells",
         "position": "E2",
-        "requests": [
-          "13"
-        ],
+        "requests": ["13"],
         "plate": "1"
       },
       "14": {
         "id": "14",
         "type": "wells",
         "position": "F2",
-        "requests": [
-          "14"
-        ],
+        "requests": ["14"],
         "plate": "1"
       },
       "15": {
         "id": "15",
         "type": "wells",
         "position": "G2",
-        "requests": [
-          "15"
-        ],
+        "requests": ["15"],
         "plate": "1"
       },
       "16": {
         "id": "16",
         "type": "wells",
         "position": "H2",
-        "requests": [
-          "16"
-        ],
+        "requests": ["16"],
         "plate": "1"
       },
       "17": {
         "id": "17",
         "type": "wells",
         "position": "A3",
-        "requests": [
-          "17"
-        ],
+        "requests": ["17"],
         "plate": "1"
       },
       "18": {
         "id": "18",
         "type": "wells",
         "position": "B3",
-        "requests": [
-          "18"
-        ],
+        "requests": ["18"],
         "plate": "1"
       },
       "19": {
         "id": "19",
         "type": "wells",
         "position": "C3",
-        "requests": [
-          "19"
-        ],
+        "requests": ["19"],
         "plate": "1"
       },
       "20": {
         "id": "20",
         "type": "wells",
         "position": "D3",
-        "requests": [
-          "20"
-        ],
+        "requests": ["20"],
         "plate": "1"
       },
       "21": {
         "id": "21",
         "type": "wells",
         "position": "E3",
-        "requests": [
-          "21"
-        ],
+        "requests": ["21"],
         "plate": "1"
       },
       "22": {
         "id": "22",
         "type": "wells",
         "position": "F3",
-        "requests": [
-          "22"
-        ],
+        "requests": ["22"],
         "plate": "1"
       },
       "23": {
         "id": "23",
         "type": "wells",
         "position": "G3",
-        "requests": [
-          "23"
-        ],
+        "requests": ["23"],
         "plate": "1"
       },
       "24": {
         "id": "24",
         "type": "wells",
         "position": "H3",
-        "requests": [
-          "24"
-        ],
+        "requests": ["24"],
         "plate": "1"
       },
       "25": {
         "id": "25",
         "type": "wells",
         "position": "A4",
-        "requests": [
-          "25"
-        ],
+        "requests": ["25"],
         "plate": "1"
       },
       "26": {
         "id": "26",
         "type": "wells",
         "position": "B4",
-        "requests": [
-          "26"
-        ],
+        "requests": ["26"],
         "plate": "1"
       },
       "27": {
         "id": "27",
         "type": "wells",
         "position": "C4",
-        "requests": [
-          "27"
-        ],
+        "requests": ["27"],
         "plate": "1"
       },
       "28": {
         "id": "28",
         "type": "wells",
         "position": "D4",
-        "requests": [
-          "28"
-        ],
+        "requests": ["28"],
         "plate": "1"
       },
       "29": {
         "id": "29",
         "type": "wells",
         "position": "E4",
-        "requests": [
-          "29"
-        ],
+        "requests": ["29"],
         "plate": "1"
       },
       "30": {
         "id": "30",
         "type": "wells",
         "position": "F4",
-        "requests": [
-          "30"
-        ],
+        "requests": ["30"],
         "plate": "1"
       },
       "31": {
         "id": "31",
         "type": "wells",
         "position": "G4",
-        "requests": [
-          "31"
-        ],
+        "requests": ["31"],
         "plate": "1"
       },
       "32": {
         "id": "32",
         "type": "wells",
         "position": "H4",
-        "requests": [
-          "32"
-        ],
+        "requests": ["32"],
         "plate": "1"
       },
       "33": {
         "id": "33",
         "type": "wells",
         "position": "A5",
-        "requests": [
-          "33"
-        ],
+        "requests": ["33"],
         "plate": "1"
       },
       "34": {
         "id": "34",
         "type": "wells",
         "position": "B5",
-        "requests": [
-          "34"
-        ],
+        "requests": ["34"],
         "plate": "1"
       },
       "35": {
         "id": "35",
         "type": "wells",
         "position": "C5",
-        "requests": [
-          "35"
-        ],
+        "requests": ["35"],
         "plate": "1"
       },
       "36": {
         "id": "36",
         "type": "wells",
         "position": "D5",
-        "requests": [
-          "36"
-        ],
+        "requests": ["36"],
         "plate": "1"
       },
       "37": {
         "id": "37",
         "type": "wells",
         "position": "E5",
-        "requests": [
-          "37"
-        ],
+        "requests": ["37"],
         "plate": "1"
       },
       "38": {
         "id": "38",
         "type": "wells",
         "position": "F5",
-        "requests": [
-          "38"
-        ],
+        "requests": ["38"],
         "plate": "1"
       },
       "39": {
         "id": "39",
         "type": "wells",
         "position": "G5",
-        "requests": [
-          "39"
-        ],
+        "requests": ["39"],
         "plate": "1"
       },
       "40": {
         "id": "40",
         "type": "wells",
         "position": "H5",
-        "requests": [
-          "40"
-        ],
+        "requests": ["40"],
         "plate": "1"
       },
       "41": {
         "id": "41",
         "type": "wells",
         "position": "A6",
-        "requests": [
-          "41"
-        ],
+        "requests": ["41"],
         "plate": "1"
       },
       "42": {
         "id": "42",
         "type": "wells",
         "position": "B6",
-        "requests": [
-          "42"
-        ],
+        "requests": ["42"],
         "plate": "1"
       },
       "43": {
         "id": "43",
         "type": "wells",
         "position": "C6",
-        "requests": [
-          "43"
-        ],
+        "requests": ["43"],
         "plate": "1"
       },
       "44": {
         "id": "44",
         "type": "wells",
         "position": "D6",
-        "requests": [
-          "44"
-        ],
+        "requests": ["44"],
         "plate": "1"
       },
       "45": {
         "id": "45",
         "type": "wells",
         "position": "E6",
-        "requests": [
-          "45"
-        ],
+        "requests": ["45"],
         "plate": "1"
       },
       "46": {
         "id": "46",
         "type": "wells",
         "position": "F6",
-        "requests": [
-          "46"
-        ],
+        "requests": ["46"],
         "plate": "1"
       },
       "47": {
         "id": "47",
         "type": "wells",
         "position": "G6",
-        "requests": [
-          "47"
-        ],
+        "requests": ["47"],
         "plate": "1"
       },
       "48": {
         "id": "48",
         "type": "wells",
         "position": "H6",
-        "requests": [
-          "48"
-        ],
+        "requests": ["48"],
         "plate": "1"
       },
       "49": {
         "id": "49",
         "type": "wells",
         "position": "A7",
-        "requests": [
-          "49"
-        ],
+        "requests": ["49"],
         "plate": "1"
       },
       "50": {
         "id": "50",
         "type": "wells",
         "position": "B7",
-        "requests": [
-          "50"
-        ],
+        "requests": ["50"],
         "plate": "1"
       },
       "51": {
         "id": "51",
         "type": "wells",
         "position": "C7",
-        "requests": [
-          "51"
-        ],
+        "requests": ["51"],
         "plate": "1"
       },
       "52": {
         "id": "52",
         "type": "wells",
         "position": "D7",
-        "requests": [
-          "52"
-        ],
+        "requests": ["52"],
         "plate": "1"
       },
       "53": {
         "id": "53",
         "type": "wells",
         "position": "E7",
-        "requests": [
-          "53"
-        ],
+        "requests": ["53"],
         "plate": "1"
       },
       "54": {
         "id": "54",
         "type": "wells",
         "position": "F7",
-        "requests": [
-          "54"
-        ],
+        "requests": ["54"],
         "plate": "1"
       },
       "55": {
         "id": "55",
         "type": "wells",
         "position": "G7",
-        "requests": [
-          "55"
-        ],
+        "requests": ["55"],
         "plate": "1"
       },
       "56": {
         "id": "56",
         "type": "wells",
         "position": "H7",
-        "requests": [
-          "56"
-        ],
+        "requests": ["56"],
         "plate": "1"
       },
       "57": {
         "id": "57",
         "type": "wells",
         "position": "A8",
-        "requests": [
-          "57"
-        ],
+        "requests": ["57"],
         "plate": "1"
       },
       "58": {
         "id": "58",
         "type": "wells",
         "position": "B8",
-        "requests": [
-          "58"
-        ],
+        "requests": ["58"],
         "plate": "1"
       },
       "59": {
         "id": "59",
         "type": "wells",
         "position": "C8",
-        "requests": [
-          "59"
-        ],
+        "requests": ["59"],
         "plate": "1"
       },
       "60": {
         "id": "60",
         "type": "wells",
         "position": "D8",
-        "requests": [
-          "60"
-        ],
+        "requests": ["60"],
         "plate": "1"
       },
       "61": {
         "id": "61",
         "type": "wells",
         "position": "E8",
-        "requests": [
-          "61"
-        ],
+        "requests": ["61"],
         "plate": "1"
       },
       "62": {
         "id": "62",
         "type": "wells",
         "position": "F8",
-        "requests": [
-          "62"
-        ],
+        "requests": ["62"],
         "plate": "1"
       },
       "63": {
         "id": "63",
         "type": "wells",
         "position": "G8",
-        "requests": [
-          "63"
-        ],
+        "requests": ["63"],
         "plate": "1"
       },
       "64": {
         "id": "64",
         "type": "wells",
         "position": "H8",
-        "requests": [
-          "64"
-        ],
+        "requests": ["64"],
         "plate": "1"
       },
       "65": {
         "id": "65",
         "type": "wells",
         "position": "A9",
-        "requests": [
-          "65"
-        ],
+        "requests": ["65"],
         "plate": "1"
       },
       "66": {
         "id": "66",
         "type": "wells",
         "position": "B9",
-        "requests": [
-          "66"
-        ],
+        "requests": ["66"],
         "plate": "1"
       },
       "67": {
         "id": "67",
         "type": "wells",
         "position": "C9",
-        "requests": [
-          "67"
-        ],
+        "requests": ["67"],
         "plate": "1"
       },
       "68": {
         "id": "68",
         "type": "wells",
         "position": "D9",
-        "requests": [
-          "68"
-        ],
+        "requests": ["68"],
         "plate": "1"
       },
       "69": {
         "id": "69",
         "type": "wells",
         "position": "E9",
-        "requests": [
-          "69"
-        ],
+        "requests": ["69"],
         "plate": "1"
       },
       "70": {
         "id": "70",
         "type": "wells",
         "position": "F9",
-        "requests": [
-          "70"
-        ],
+        "requests": ["70"],
         "plate": "1"
       },
       "71": {
         "id": "71",
         "type": "wells",
         "position": "G9",
-        "requests": [
-          "71"
-        ],
+        "requests": ["71"],
         "plate": "1"
       },
       "72": {
         "id": "72",
         "type": "wells",
         "position": "H9",
-        "requests": [
-          "72"
-        ],
+        "requests": ["72"],
         "plate": "1"
       },
       "73": {
         "id": "73",
         "type": "wells",
         "position": "A10",
-        "requests": [
-          "73"
-        ],
+        "requests": ["73"],
         "plate": "1"
       },
       "74": {
         "id": "74",
         "type": "wells",
         "position": "B10",
-        "requests": [
-          "74"
-        ],
+        "requests": ["74"],
         "plate": "1"
       },
       "75": {
         "id": "75",
         "type": "wells",
         "position": "C10",
-        "requests": [
-          "75"
-        ],
+        "requests": ["75"],
         "plate": "1"
       },
       "76": {
         "id": "76",
         "type": "wells",
         "position": "D10",
-        "requests": [
-          "76"
-        ],
+        "requests": ["76"],
         "plate": "1"
       },
       "77": {
         "id": "77",
         "type": "wells",
         "position": "E10",
-        "requests": [
-          "77"
-        ],
+        "requests": ["77"],
         "plate": "1"
       },
       "78": {
         "id": "78",
         "type": "wells",
         "position": "F10",
-        "requests": [
-          "78"
-        ],
+        "requests": ["78"],
         "plate": "1"
       },
       "79": {
         "id": "79",
         "type": "wells",
         "position": "G10",
-        "requests": [
-          "79"
-        ],
+        "requests": ["79"],
         "plate": "1"
       },
       "80": {
         "id": "80",
         "type": "wells",
         "position": "H10",
-        "requests": [
-          "80"
-        ],
+        "requests": ["80"],
         "plate": "1"
       },
       "81": {
         "id": "81",
         "type": "wells",
         "position": "A11",
-        "requests": [
-          "81"
-        ],
+        "requests": ["81"],
         "plate": "1"
       },
       "82": {
         "id": "82",
         "type": "wells",
         "position": "B11",
-        "requests": [
-          "82"
-        ],
+        "requests": ["82"],
         "plate": "1"
       },
       "83": {
         "id": "83",
         "type": "wells",
         "position": "C11",
-        "requests": [
-          "83"
-        ],
+        "requests": ["83"],
         "plate": "1"
       },
       "84": {
         "id": "84",
         "type": "wells",
         "position": "D11",
-        "requests": [
-          "84"
-        ],
+        "requests": ["84"],
         "plate": "1"
       },
       "85": {
         "id": "85",
         "type": "wells",
         "position": "E11",
-        "requests": [
-          "85"
-        ],
+        "requests": ["85"],
         "plate": "1"
       },
       "86": {
         "id": "86",
         "type": "wells",
         "position": "F11",
-        "requests": [
-          "86"
-        ],
+        "requests": ["86"],
         "plate": "1"
       },
       "87": {
         "id": "87",
         "type": "wells",
         "position": "G11",
-        "requests": [
-          "87"
-        ],
+        "requests": ["87"],
         "plate": "1"
       },
       "88": {
         "id": "88",
         "type": "wells",
         "position": "H11",
-        "requests": [
-          "88"
-        ],
+        "requests": ["88"],
         "plate": "1"
       },
       "89": {
         "id": "89",
         "type": "wells",
         "position": "A12",
-        "requests": [
-          "89"
-        ],
+        "requests": ["89"],
         "plate": "1"
       },
       "90": {
         "id": "90",
         "type": "wells",
         "position": "B12",
-        "requests": [
-          "90"
-        ],
+        "requests": ["90"],
         "plate": "1"
       },
       "91": {
         "id": "91",
         "type": "wells",
         "position": "C12",
-        "requests": [
-          "91"
-        ],
+        "requests": ["91"],
         "plate": "1"
       },
       "92": {
         "id": "92",
         "type": "wells",
         "position": "D12",
-        "requests": [
-          "92"
-        ],
+        "requests": ["92"],
         "plate": "1"
       },
       "93": {
         "id": "93",
         "type": "wells",
         "position": "E12",
-        "requests": [
-          "93"
-        ],
+        "requests": ["93"],
         "plate": "1"
       },
       "94": {
         "id": "94",
         "type": "wells",
         "position": "F12",
-        "requests": [
-          "94"
-        ],
+        "requests": ["94"],
         "plate": "1"
       },
       "95": {
         "id": "95",
         "type": "wells",
         "position": "G12",
-        "requests": [
-          "95"
-        ],
+        "requests": ["95"],
         "plate": "1"
+      },
+      "96": {
+        "id": "96",
+        "type": "wells",
+        "position": "A1",
+        "requests": ["96"],
+        "plate": "2"
+      },
+      "97": {
+        "id": "97",
+        "type": "wells",
+        "position": "B1",
+        "requests": ["97"],
+        "plate": "2"
       }
     },
     "requests": {
@@ -2103,6 +1953,66 @@
         "sample_name": "GENSAMPLE-1668092750-95",
         "source_identifier": "GEN-1668092750-1:G12",
         "created_at": "2022/11/10 15:05"
+      },
+      "96": {
+        "id": "96",
+        "type": "requests",
+        "library_type": "ONT_GridIon_mplx",
+        "data_type": "basecalls and raw data",
+        "cost_code": "S10095",
+        "external_study_id": "96aa2032-137e-4beb-a898-f015a35e1b60",
+        "number_of_flowcells": 1,
+        "sample_name": "GENSAMPLE-1668092750-96",
+        "source_identifier": "GEN-1668092750-2:A1",
+        "created_at": "2022/11/10 15:05"
+      },
+      "97": {
+        "id": "97",
+        "type": "requests",
+        "library_type": "ONT_GridIon_mplx",
+        "data_type": "basecalls and raw data",
+        "cost_code": "S10096",
+        "external_study_id": "a63f873f-5e22-4242-8aef-d1165b63ccab",
+        "number_of_flowcells": 1,
+        "sample_name": "GENSAMPLE-1668092750-97",
+        "source_identifier": "GEN-1668092750-2:B1",
+        "created_at": "2022/11/10 15:05"
+      },
+      "192": {
+        "id": "192",
+        "type": "requests",
+        "library_type": "ONT_PromethIon_mplx",
+        "data_type": "basecalls and raw data",
+        "cost_code": "S10191",
+        "external_study_id": "a7b7ec2c-bf5e-4ce8-96da-d7fecdfcd3dd",
+        "number_of_flowcells": 1,
+        "sample_name": "GENSAMPLE-1668092750-192",
+        "source_identifier": "GEN-1668092750-4",
+        "created_at": "2022/11/10 15:05"
+      },
+      "193": {
+        "id": "193",
+        "type": "requests",
+        "library_type": "ONT_PromethIon_mplx",
+        "data_type": "basecalls and raw data",
+        "cost_code": "S10191",
+        "external_study_id": "a7b7ec2c-bf5e-4ce8-96da-d7fecdfcd3dd",
+        "number_of_flowcells": 1,
+        "sample_name": "GENSAMPLE-1668092750-193",
+        "source_identifier": "GEN-1668092750-5",
+        "created_at": "2022/11/10 15:05"
+      },
+      "194": {
+        "id": "194",
+        "type": "requests",
+        "library_type": "ONT_PromethIon_mplx",
+        "data_type": "basecalls and raw data",
+        "cost_code": "S10191",
+        "external_study_id": "a7b7ec2c-bf5e-4ce8-96da-d7fecdfcd3dd",
+        "number_of_flowcells": 1,
+        "sample_name": "GENSAMPLE-1668092750-194",
+        "source_identifier": "GEN-1668092750-6",
+        "created_at": "2022/11/10 15:05"
       }
     },
     "tagSets": {
@@ -2799,45 +2709,80 @@
       "1": {
         "id": "1",
         "selected": true
+      },
+      "2": {
+        "id": "2",
+        "selected": true
       }
     },
-    "tubes": {}
+    "tubes": {
+      "2": {
+        "id": "2",
+        "selected": true
+      },
+      "3": {
+        "id": "3",
+        "selected": true
+      },
+      "4": {
+        "id": "4",
+        "selected": true
+      }
+    }
   },
   "pooling": {
     "libraries": {
       "_3": {
         "ont_request_id": "3",
-        "kit_barcode": "barcode-2",
-        "tag_id": "386",
-        "volume": 9,
-        "concentration": 7,
-        "insert_size": 3696,
-        "id": "3",
-        "type": "libraries",
-        "created_at": "2022/11/10 15:05",
-        "deactivated_at": null,
-        "state": "pending",
-        "request": "3",
-        "tag": "386",
-        "pool": "3",
-        "source_plate": "1"
+        "tag_id": "386"
       },
       "_4": {
         "ont_request_id": "4",
-        "kit_barcode": null,
-        "tag_id": "387",
-        "volume": 9,
-        "concentration": 7,
-        "insert_size": 5123,
-        "id": "78",
-        "type": "libraries",
-        "created_at": "2022/12/07 11:58",
-        "deactivated_at": null,
-        "state": "pending",
-        "request": "4",
-        "tag": "387",
-        "pool": "3",
-        "source_plate": "1"
+        "tag_id": "387"
+      },
+      "_12": {
+        "ont_request_id": "12",
+        "tag_id": null
+      },
+      "_13": {
+        "ont_request_id": "13",
+        "tag_id": null
+      },
+      "_14": {
+        "ont_request_id": "14",
+        "tag_id": null
+      },
+      "_15": {
+        "ont_request_id": "15",
+        "tag_id": null
+      },
+      "_16": {
+        "ont_request_id": "16",
+        "tag_id": null
+      },
+      "_17": {
+        "ont_request_id": "17",
+        "tag_id": null
+      },
+      "_96": {
+        "ont_request_id": "96",
+        "tag_id": null
+      },
+      "_97": {
+        "ont_request_id": "97",
+        "tag_id": null
+      },
+      "_192": {
+        "ont_request_id": "192",
+        "tag_id": null
+      },
+      "_193": {
+        "ont_request_id": "193",
+        "tag_id": null
+      },
+      "_194": {
+        "ont_request_id": "194",
+        "tag_id": null
       }
     },
     "pool": {

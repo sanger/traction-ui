@@ -86,9 +86,9 @@ describe('OntPoolLibraryEdit.vue', () => {
       it('kit barcode id', async () => {
         const input = wrapper.find('[data-attribute=kit-barcode]')
         await input.setValue('017865101789500022821')
-        expect(
-          store.state.traction.ont.pooling.libraries['_1'].kit_barcode,
-        ).toEqual('017865101789500022821')
+        expect(store.state.traction.ont.pooling.libraries['_1'].kit_barcode).toEqual(
+          '017865101789500022821',
+        )
       })
 
       it('volume', async () => {

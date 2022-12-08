@@ -32,9 +32,7 @@ describe('ontPoolEdit#new', () => {
     it('kit barcode', async () => {
       const input = wrapper.find('[data-attribute=kit-barcode]')
       await input.setValue('017865101789500022821')
-      expect(store.state.traction.ont.pooling.pool.kit_barcode).toEqual(
-        '017865101789500022821',
-      )
+      expect(store.state.traction.ont.pooling.pool.kit_barcode).toEqual('017865101789500022821')
     })
 
     it('volume', async () => {
@@ -170,7 +168,7 @@ describe('ontPoolEdit#edit', () => {
         pooling: {
           libraries: {},
           pool: {},
-          tube: {}
+          tube: {},
         },
       })
       store.state.traction.ont = poolCreateStore
@@ -183,8 +181,8 @@ describe('ontPoolEdit#edit', () => {
         pooling: {
           tube: {},
           libraries: { _1: newLibrary({ ont_request_id: '1' }) },
-          pool: {}
-        }
+          pool: {},
+        },
       })
       store.state.traction.ont = poolCreateStore
       await localVue.nextTick()
