@@ -33,7 +33,6 @@
           data-attribute="template-prep-kit-box-barcode"
           :value="template_prep_kit_box_barcode"
           placeholder="Template Prep Kit Box Barcode"
-          class="template-prep-kit-box-barcode"
         />
       </traction-field-error>
     </traction-td>
