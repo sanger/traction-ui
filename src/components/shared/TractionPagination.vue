@@ -41,14 +41,14 @@
           <path d="m14 18-6-6 6-6 1.4 1.4-4.6 4.6 4.6 4.6Z" />
         </traction-pagination-icon>
       </TractionButton>
-      <div v-for="page in pages" :key="page.name">
+      <div v-for="page in pages" :key="page">
         <traction-button
           :disabled="page.isDisabled"
-          :theme="getPageButtonTheme(page.name)"
+          :theme="getPageButtonTheme(page)"
           data-testid="page-button"
-          @click="pageClick(page.name)"
+          @click="pageClick(page)"
         >
-          {{ page.name }}
+          {{ page }}
         </traction-button>
       </div>
 
@@ -146,13 +146,7 @@ export default {
     },
     //Get page numbers to display in page-buttons
     pages() {
-      const range = []
-      for (let i = this.startPage; i <= this.endPage; i++) {
-        range.push({
-          name: i,
-        })
-      }
-      return range
+      return Array.from({ length: this.endPage - this.startPage + 1 }, (v, k) => k + this.startPage)
     },
     //Is the very first page of total number of pages selected?
     isInFirstPage() {
