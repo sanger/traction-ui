@@ -33,14 +33,31 @@
           :class="`w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-sdb-100 focus:border-sdb-100 disabled:opacity-75 disabled:bg-gray-200 disabled:cursor-not-allowed ${classes}`"
           @change="(event) => input(event.target.value)"
         >
-          <option
-            v-for="option in getOptions"
-            :key="option.value"
-            :value="option.value == null ? '' : option.value"
-            :disabled="option.disabled"
+          <template v-if="isGroupsExists">
+            <optgroup
+              v-for="(optionGroupName, index) in optionGroupNames"
+              :key="'optionGroupName' + index"
+              label="optionGroupName"
+            >
+              <option
+                v-for="option in optionsForGroup(optionGroupName)"
+                :key="option.value"
+                :value="option.value == null ? '' : option.value"
+                :disabled="option.disabled"
+              >
+                {{ option.text }}
+              </option>
+            </optgroup></template
+          ><template v-else>
+            <option
+              v-for="option in formattedOptions"
+              :key="option.value"
+              :value="option.value == null ? '' : option.value"
+              :disabled="option.disabled"
+            >
+              {{ option.text }}
+            </option></template
           >
-            {{ option.text }}
-          </option>
         </select>
       </div>
     </flagged-feature>
@@ -48,8 +65,10 @@
 </template>
 
 <script>
-import { BFormSelect} from 'bootstrap-vue'
+import { BFormSelect } from 'bootstrap-vue'
 import FlaggedFeature from '@/components/shared/FlaggedFeature.vue'
+import _ from 'lodash-es'
+
 export default {
   /**
    * # TractionSelect
@@ -57,7 +76,7 @@ export default {
    * Tailwind component to display a select field using html <select> element
    */
   name: 'TractionSelect',
-  components: { BFormSelect,FlaggedFeature },
+  components: { BFormSelect, FlaggedFeature },
   inheritAttrs: false,
   props: {
     //value field of select which will be bind automatically with 'v-model' prop passed into the component
@@ -87,6 +106,7 @@ export default {
       default: '',
     },
   },
+
   computed: {
     /**
      * Options can be given in any of the following forms to support the existing usages
@@ -95,27 +115,47 @@ export default {
      * 2. As an array of objects of 'text' and 'value' fields e.g [{text:'sample text', value:"text1", disabled:true}]
      *    If only text field is given,value will be defaulted to text field ,
      * **/
-    getOptions() {
+    formattedOptions() {
       return this.options.map((option) => {
+        let optionNew = { ...option }
         if (typeof option == 'string') {
-          return { text: option, value: option, disabled: false }
-        } else if (typeof option == 'object') {
+          optionNew = { text: option, value: option, disabled: false, label: '' }
+        }
+        if (typeof option == 'object') {
           if ('text' in option && !('value' in option)) {
-            return {
+            optionNew = {
               text: option.text,
               value: option.text,
-              disabled: 'disabled' in option ? option.disabled : false,
             }
           }
+          optionNew = {
+            ...optionNew,
+            label: 'label' in option ? option.label : '',
+            disabled: 'disabled' in option ? option.disabled : false,
+          }
         }
-        return { ...option }
+        return optionNew
       })
+    },
+    optionGroups() {
+      const val = _.groupBy(this.formattedOptions, (val) => val.label)
+      return val
+    },
+    optionGroupNames() {
+      return Object.keys(this.optionGroups)
+    },
+    isGroupsExists() {
+      const keys = Object.keys(this.formattedOptions)
+      return keys.length > 0 && keys.some((key) => key.length > 0)
     },
   },
   methods: {
     input(selectedValue) {
       // Emit selected value
       this.$emit('input', selectedValue)
+    },
+    optionsForGroup(groupName) {
+      return this.optionGroups[groupName]
     },
   },
 }

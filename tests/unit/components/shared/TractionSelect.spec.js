@@ -72,6 +72,20 @@ describe('TractionSelect.vue', () => {
     })
   })
 
+  it('displays option groups', () => {
+    const wrapper = buildWrapper({
+      options: [
+        { value: 'Option 1-1', text: 'Option 1-1', label: 'Group 1' },
+        { value: 'Option 1-2 ', text: 'Option 1-2', label: 'Group 1' },
+        { value: 'Option 2-1', text: 'Option 2-1', label: 'Group 2' },
+        { value: 'Option 2-2 ', text: 'Option 2-2', label: 'Group 2' },
+      ],
+    })
+    //Option displayed as disabled
+    const optGroups = wrapper.find('select').findAll('optgroup')
+    expect(optGroups).toHaveLength(2)
+  })
+
   it('sets default value for type string', () => {
     const wrapper = buildWrapper({
       options: ['Option 1', 'Option 2', 'Option 3'],
