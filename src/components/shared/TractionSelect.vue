@@ -120,7 +120,7 @@ export default {
       let retOptions = []
       this.options.map((option) => {
         /**
-         * Flat pack and restructure all options with 'label feld' . An empty label field indicate 
+         * Flat pack and restructure all options with 'label feld' . An empty label field indicate
          * that the option doesn't belong to any group
          */
         if (typeof option == 'object' && 'label' in option && 'options' in option) {
