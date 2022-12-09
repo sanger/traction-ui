@@ -2120,6 +2120,19 @@
           "479",
           "480"
         ]
+      },
+      "9": {
+        "id": "9",
+        "type": "tag_sets",
+        "name": "ONT_mock",
+        "uuid": null,
+        "pipeline": "ont",
+        "tags": [
+          "500",
+          "501",
+          "502",
+          "503"
+        ]
       }
     },
     "tags": {
@@ -2698,6 +2711,30 @@
         "type": "tags",
         "oligo": "CTGAACGGTCATAGAGTCCACCAT",
         "group_id": "NB96"
+      },
+      "500": {
+        "id": "500",
+        "type": "tags",
+        "oligo": "CTGAACGGTCATAGAGTCCACCCC",
+        "group_id": "NB100"
+      }, 
+      "501": {
+        "id": "501",
+        "type": "tags",
+        "oligo": "CTGAACGGTCATAGAGTCCACCCT",
+        "group_id": "NB101"
+      },
+      "502": {
+        "id": "502",
+        "type": "tags",
+        "oligo": "CTGAACGGTCATAGAGTCCACCAC",
+        "group_id": "NB102"
+      }, 
+      "503": {
+        "id": "503",
+        "type": "tags",
+        "oligo": "CTGAACGGTCATAGAGTCCACCAA",
+        "group_id": "NB103"
       }
     }
   },

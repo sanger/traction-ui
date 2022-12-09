@@ -107,6 +107,7 @@ describe('actions.js', () => {
       find.mockResolvedValue(Data.TractionPacbioPool)
       // apply action
       const { success } = await populateLibrariesFromPool({ commit, rootState })
+
       // assert result (Might make sense to pull these into separate tests)
       expect(commit).toHaveBeenCalledWith(
         'populatePoolAttributes',
@@ -669,7 +670,7 @@ describe('actions.js', () => {
     it('updates the corresponding library', async () => {
       const commit = vi.fn()
       const record = {
-        source: 'DN1-A10',
+        source: 'DN1:A10',
         tag: 'bc1024T',
         genome_size: 6.3,
         insert_size: 15230,
@@ -741,7 +742,7 @@ describe('actions.js', () => {
     it('records an error when the plate cant be found', async () => {
       const commit = vi.fn()
       const record = {
-        source: 'DN34-A10',
+        source: 'DN34:A10',
       }
 
       updateLibraryFromCsvRecord({ state, commit, getters }, { record, info })
@@ -751,7 +752,7 @@ describe('actions.js', () => {
         {
           type: 'danger',
           message:
-            'Library 2 on line 3: DN34 could not be found. Barcode should be in the format barcode-well for plates (eg. DN123S-A1) or just barcode for tubes.',
+            'Library 2 on line 3: DN34 could not be found. Barcode should be in the format barcode:well for plates (eg. DN123S:A1) or just barcode for tubes.',
         },
         { root: true },
       )
@@ -760,7 +761,7 @@ describe('actions.js', () => {
     it('records an error when the well cant be found', async () => {
       const commit = vi.fn()
       const record = {
-        source: 'DN1-X13',
+        source: 'DN1:X13',
       }
 
       updateLibraryFromCsvRecord({ state, commit, getters }, { record, info })
@@ -778,7 +779,7 @@ describe('actions.js', () => {
     it('records an error when the tag cant be found', async () => {
       const commit = vi.fn()
       const record = {
-        source: 'DN1-A1',
+        source: 'DN1:A1',
         tag: 'bc1001_BAK8A_OA',
       }
 
@@ -798,7 +799,7 @@ describe('actions.js', () => {
     it('flags the plate as selected', async () => {
       const commit = vi.fn()
       const record = {
-        source: 'DN1-A1',
+        source: 'DN1:A1',
         tag: 'bc1001_BAK8A_OA',
       }
 
@@ -813,7 +814,7 @@ describe('actions.js', () => {
     it('notifies of request addition', async () => {
       const commit = vi.fn()
       const record = {
-        source: 'DN1-A3',
+        source: 'DN1:A3',
         tag: 'bc1024T',
         genome_size: 6.3,
         insert_size: 15230,
@@ -827,7 +828,7 @@ describe('actions.js', () => {
         'traction/addMessage',
         {
           type: 'info',
-          message: 'Library 2 on line 3: Added DN1-A3 to pool',
+          message: 'Library 2 on line 3: Added DN1:A3 to pool',
         },
         { root: true },
       )
@@ -836,7 +837,7 @@ describe('actions.js', () => {
     it('does not notifies of request update', async () => {
       const commit = vi.fn()
       const record = {
-        source: 'DN1-A1',
+        source: 'DN1:A1',
         genome_size: 6.3,
         insert_size: 15230,
         concentration: 13,
@@ -849,7 +850,7 @@ describe('actions.js', () => {
         'traction/addMessage',
         {
           type: 'info',
-          message: 'Library 2 on line 3: Added DN1-A1 to pool',
+          message: 'Library 2 on line 3: Added DN1:A1 to pool',
         },
         { root: true },
       )
