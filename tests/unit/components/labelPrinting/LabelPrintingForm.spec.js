@@ -60,6 +60,24 @@ describe('LabelPrintingForm.vue', () => {
       // 3 barcodes and 3 of each
       expect(wrapper.vm.labels.length).toEqual(9)
     })
+
+    it('should remove new lines', () => {
+      const wrapper = mount(LabelPrintingForm, {
+        localVue,
+        store,
+        data() {
+          return {
+            form: {
+              ...options,
+              sourceBarcodeList: 'SQSC-1\nSQSC-2\nSQSC-3\n\n',
+              numberOfLabels: 1,
+            },
+          }
+        },
+      })
+
+      expect(wrapper.vm.labels.length).toEqual(3)
+    })
   })
 
   describe('methods', () => {

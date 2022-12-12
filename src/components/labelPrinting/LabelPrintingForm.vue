@@ -136,7 +136,9 @@ export default {
       const suffixItem = this.suffixItems[this.form.suffix]
 
       // it is possible for there to be no barcodes so we need to add a guard
-      const splitSourceBarcodeList = this.form.sourceBarcodeList?.split(/\r?\n|\r|\n/g) || []
+      // we filter to remove an nulls
+      const splitSourceBarcodeList =
+        this.form.sourceBarcodeList?.split(/\r?\n|\r|\n/g).filter((b) => b) || []
 
       return createLabelsFromBarcodes({
         sourceBarcodeList: splitSourceBarcodeList,
