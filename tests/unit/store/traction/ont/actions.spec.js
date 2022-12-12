@@ -777,10 +777,7 @@ describe('actions.js', () => {
 
       get.mockResolvedValue(Data.OntPlateRequest)
 
-      const { success } = await findOntPlate(
-        { commit, rootState },
-        { barcode: 'GEN-1668092750-1' },
-      )
+      const { success } = await findOntPlate({ commit, rootState }, { barcode: 'GEN-1668092750-1' })
 
       expect(commit).toHaveBeenCalledWith('selectPlate', { id: '1', selected: true })
       expect(commit).toHaveBeenCalledWith('populatePlates', Data.OntPlateRequest.data.data)
@@ -835,10 +832,7 @@ describe('actions.js', () => {
 
       get.mockResolvedValue(Data.OntTubeRequest)
 
-      const { success } = await findOntTube(
-        { commit, rootState },
-        { barcode: 'GEN-1668092750-4' },
-      )
+      const { success } = await findOntTube({ commit, rootState }, { barcode: 'GEN-1668092750-4' })
 
       expect(commit).toHaveBeenCalledWith('selectTube', { id: '2', selected: true })
       expect(commit).toHaveBeenCalledWith('populateTubes', Data.OntTubeRequest.data.data)
