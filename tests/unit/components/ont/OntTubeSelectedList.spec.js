@@ -2,7 +2,6 @@ import { mount, localVue, store, Data } from '@support/testHelper'
 import OntTubeSelectedList from '@/components/Ont/OntTubeSelectedList'
 import Response from '@/api/Response'
 import { expect } from 'vitest'
-import flushPromises from 'flush-promises'
 
 describe('OntTubeSelectedList', () => {
   let wrapper, mockTubes

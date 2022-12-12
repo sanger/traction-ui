@@ -2127,12 +2127,7 @@
         "name": "ONT_mock",
         "uuid": null,
         "pipeline": "ont",
-        "tags": [
-          "500",
-          "501",
-          "502",
-          "503"
-        ]
+        "tags": ["500", "501", "502", "503"]
       }
     },
     "tags": {
@@ -2717,7 +2712,7 @@
         "type": "tags",
         "oligo": "CTGAACGGTCATAGAGTCCACCCC",
         "group_id": "NB100"
-      }, 
+      },
       "501": {
         "id": "501",
         "type": "tags",
@@ -2729,7 +2724,7 @@
         "type": "tags",
         "oligo": "CTGAACGGTCATAGAGTCCACCAC",
         "group_id": "NB102"
-      }, 
+      },
       "503": {
         "id": "503",
         "type": "tags",

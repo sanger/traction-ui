@@ -112,7 +112,12 @@ describe('Ont Pool Create', () => {
     })
     cy.get('[data-type=pool-library-edit]').should('have.length', 4)
 
-    const orderedElements = ['GEN-1668092750-1:A1', 'GEN-1668092750-1:B1', 'GEN-1668092750-1:C1', 'GEN-1668092750-1:D1']
+    const orderedElements = [
+      'GEN-1668092750-1:A1',
+      'GEN-1668092750-1:B1',
+      'GEN-1668092750-1:C1',
+      'GEN-1668092750-1:D1',
+    ]
 
     cy.get('#qcFileInput').attachFile('ont.csv')
     // Validate the order
@@ -175,7 +180,12 @@ describe('Ont Pool Create', () => {
     })
     cy.get('[data-type=pool-library-edit]').should('have.length', 4)
 
-    const orderedElements = ['GEN-1668092750-1:A1', 'GEN-1668092750-1:B1', 'GEN-1668092750-1:C1', 'GEN-1668092750-1:D1']
+    const orderedElements = [
+      'GEN-1668092750-1:A1',
+      'GEN-1668092750-1:B1',
+      'GEN-1668092750-1:C1',
+      'GEN-1668092750-1:D1',
+    ]
 
     cy.get('#qcFileInput').attachFile('ontAndTags.csv')
     // Validate the order

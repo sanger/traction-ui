@@ -122,7 +122,7 @@ export default {
     commit('clearPoolData')
     // Guard clause to not run the rest if the id is not a number e.g. 'new'
     if (isNaN(id)) {
-      return
+      return { success: true, errors: [] }
     }
 
     const request = rootState.api.traction.ont.pools

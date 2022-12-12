@@ -644,7 +644,7 @@ describe('actions.js', () => {
         'traction/addMessage',
         {
           type: 'danger',
-          message: 'Library 2 on line 3. Could not find a tag named NB100 in selected tag group',
+          message: 'Library 2 on line 3: Could not find a tag named NB100 in selected tag group',
         },
         { root: true },
       )
@@ -722,13 +722,14 @@ describe('actions.js', () => {
 
       // assert result
       expect(commit).toHaveBeenCalledWith('clearPoolData')
-      expect(commit).toHaveBeenCalledWith(
-        'populatePoolAttributes', 
-        Data.TractionOntPool.data.data
-        )
+      expect(commit).toHaveBeenCalledWith('populatePoolAttributes', Data.TractionOntPool.data.data)
       expect(commit).toHaveBeenCalledWith(
         'populatePoolingLibraries',
-        Data.TractionOntPool.data.included.slice(0, 1),
+        Data.TractionOntPool.data.included.slice(0, 2),
+      )
+      expect(commit).toHaveBeenCalledWith(
+        'populatePoolingTube',
+        Data.TractionOntPool.data.included.slice(-1)[0],
       )
       expect(commit).toHaveBeenCalledWith(
         'populateRequests',
@@ -736,20 +737,16 @@ describe('actions.js', () => {
       )
       expect(commit).toHaveBeenCalledWith(
         'populateWells',
-        Data.TractionOntPool.data.included.slice(6, 101)
+        Data.TractionOntPool.data.included.slice(6, 101),
       )
       expect(commit).toHaveBeenCalledWith(
         'populatePlates',
-        Data.TractionOntPool.data.included.slice(5, 6)
+        Data.TractionOntPool.data.included.slice(5, 6),
       )
       expect(commit).toHaveBeenCalledWith(
         'selectTagSet',
-        Data.TractionOntPool.data.included.slice(101, 196)
-      ) 
-      expect(commit).toHaveBeenCalledWith(
-        'populateEachTube',
-        Data.TractionOntPool.data.included.slice(-1)[0],
-      ) 
+        Data.TractionOntPool.data.included.slice(4, 5)[0],
+      )
 
       expect(success).toEqual(true)
     })
@@ -762,17 +759,11 @@ describe('actions.js', () => {
       const rootState = { api: { traction: { ont: { pools: { find } } } } }
       find.mockResolvedValue(Data.TractionOntPool)
 
-      const { success } = await setPoolData({ commit, rootState }, "new")
-      expect(commit).toHaveBeenCalledWith('clearPoolData')
-      expect(commit).not.toHaveBeenCalled('populatePoolattributes')
-      expect(commit).not.toHaveBeenCalled('populatePoolingLibraries')
-      expect(commit).not.toHaveBeenCalled('populateRequests')
-      expect(commit).not.toHaveBeenCalled('populateWells')
-      expect(commit).not.toHaveBeenCalled('populatePlates')
-      expect(commit).not.toHaveBeenCalled('populateTagSet')
-      expect(commit).not.toHaveBeenCalled('populateEachTube')
+      const { success, errors } = await setPoolData({ commit, rootState }, 'new')
+      expect(commit).toHaveBeenLastCalledWith('clearPoolData')
 
       expect(success).toEqual(true)
+      expect(errors).toEqual([])
     })
   })
 
@@ -782,15 +773,25 @@ describe('actions.js', () => {
       const commit = vi.fn()
       // mock dependencies
       const get = vi.fn()
-      const rootState = { api: { traction: { ont: { tubes: { get } } } } }
+      const rootState = { api: { traction: { ont: { plates: { get } } } } }
 
-      get.mockResolvedValue(Data.OntPlates)
+      get.mockResolvedValue(Data.OntPlateRequest)
 
-      const { success, errors } = await findOntPlate({ commit, rootState })
+      const { success } = await findOntPlate(
+        { commit, rootState },
+        { barcode: 'GEN-1668092750-1' },
+      )
 
-      expect(commit).toHaveBeenCalledWith('selectTube')
-      expect(commit).toHaveBeenCalledWith('populateTubes')
-      expect(commit).toHaveBeenCalledWith('populateRequests')
+      expect(commit).toHaveBeenCalledWith('selectPlate', { id: '1', selected: true })
+      expect(commit).toHaveBeenCalledWith('populatePlates', Data.OntPlateRequest.data.data)
+      expect(commit).toHaveBeenCalledWith(
+        'populateWells',
+        Data.OntPlateRequest.data.included.slice(0, 8),
+      )
+      expect(commit).toHaveBeenCalledWith(
+        'populateRequests',
+        Data.OntPlateRequest.data.included.slice(8, 16),
+      )
 
       expect(success).toEqual(true)
     })
@@ -800,19 +801,81 @@ describe('actions.js', () => {
       const commit = vi.fn()
       // mock dependencies
       const get = vi.fn()
-      const rootState = { api: { traction: { ont: { tubes: { get } } } } }
+      const rootState = { api: { traction: { ont: { plates: { get } } } } }
 
-      get.mockResolvedValue(Data.OntPlates)
+      get.mockResolvedValue({ data: { data: [] } })
 
-      const { success, errors } = await findOntPlate({ commit, rootState }, filter) // mock a filter
-      expect(errors).toEqual('Please provide a plate barcode')
+      const { success, errors } = await findOntPlate(
+        { commit, rootState },
+        { barcode: 'fake-barcode' },
+      )
+      expect(errors).toEqual(['Unable to find plate with barcode: fake-barcode'])
+      expect(success).toEqual(false)
+    })
+
+    it('returns an error and an empty list when plate barcode is not provided', async () => {
+      const commit = vi.fn()
+      // mock dependencies
+      const get = vi.fn()
+      const rootState = { api: { traction: { ont: { plates: { get } } } } }
+
+      const { success, errors } = await findOntPlate({ commit, rootState }, { barcode: '' })
+      expect(errors).toEqual(['Please provide a plate barcode'])
       expect(success).toEqual(false)
     })
   })
 
   describe('findOntTube', () => {
-    it('returns the record from the valid tube barcode', async () => {})
+    it('returns the tube that fits the valid tube barcode', async () => {
+      // mock commit
+      const commit = vi.fn()
+      // mock dependencies
+      const get = vi.fn()
+      const rootState = { api: { traction: { ont: { tubes: { get } } } } }
 
-    it('returns an error and an empty list when the tube barcode cannot be found')
+      get.mockResolvedValue(Data.OntTubeRequest)
+
+      const { success } = await findOntTube(
+        { commit, rootState },
+        { barcode: 'GEN-1668092750-4' },
+      )
+
+      expect(commit).toHaveBeenCalledWith('selectTube', { id: '2', selected: true })
+      expect(commit).toHaveBeenCalledWith('populateTubes', Data.OntTubeRequest.data.data)
+      expect(commit).toHaveBeenCalledWith(
+        'populateRequests',
+        Data.OntTubeRequest.data.included.slice(0, 1),
+      )
+
+      expect(success).toEqual(true)
+    })
+
+    it('returns an error and an empty list when tube barcode cannot be found', async () => {
+      // mock commit
+      const commit = vi.fn()
+      // mock dependencies
+      const get = vi.fn()
+      const rootState = { api: { traction: { ont: { tubes: { get } } } } }
+
+      get.mockResolvedValue({ data: { data: [] } })
+
+      const { success, errors } = await findOntTube(
+        { commit, rootState },
+        { barcode: 'fake-barcode' },
+      )
+      expect(errors).toEqual(['Unable to find tube with barcode: fake-barcode'])
+      expect(success).toEqual(false)
+    })
+
+    it('returns an error and an empty list when tube barcode is not provided', async () => {
+      const commit = vi.fn()
+      // mock dependencies
+      const get = vi.fn()
+      const rootState = { api: { traction: { ont: { tubes: { get } } } } }
+
+      const { success, errors } = await findOntTube({ commit, rootState }, { barcode: '' })
+      expect(errors).toEqual(['Please provide a tube barcode'])
+      expect(success).toEqual(false)
+    })
   })
 })
