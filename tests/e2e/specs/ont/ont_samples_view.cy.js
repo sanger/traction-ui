@@ -4,7 +4,7 @@ describe('Ont samples view', () => {
       fixture: 'tractionOntRequests.json',
     })
     cy.visit('#/ont/samples')
-    cy.get('#samples-table').contains('tr', '5')
+    cy.get('#samples-table').find('tr').should('have.length', '7')
     cy.get('.sample')
       .first()
       .within(() => {

@@ -128,4 +128,28 @@ export default {
       }))
       .sort(sortRequestByWellColumnIndex(resources))
   },
+
+  /**
+   * Returns a list of pools
+   *
+   * @param {Object} state The Vuex state object
+   * @return {Array} An array of selected requests in the order in which they were selected
+   */
+  pools: (state) => {
+    return Object.values(state.resources.pools).map((pool) => {
+      const libraries = pool.libraries.map((libraryId) => {
+        const { id, type, request, tag } = state.resources.libraries[libraryId]
+        const { sample_name } = state.resources.requests[request]
+        const { group_id } = state.resources.tags[tag] || {}
+        return { id, type, sample_name, group_id }
+      })
+      const { barcode } = state.resources.tubes[pool.tube]
+
+      return {
+        ...pool,
+        libraries,
+        barcode,
+      }
+    })
+  },
 }

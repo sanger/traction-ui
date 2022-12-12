@@ -83,6 +83,9 @@ export default {
       ...attributes,
     }
   },
+  populatePools: populateById('pools', { includeRelationships: true }),
+  setPools: populateById('pools', { includeRelationships: true }, true),
+  populateLibraries: populateById('libraries', { includeRelationships: true }),
   populatePlates: populateById('plates', { includeRelationships: true }),
   populateTubes: populateById('tubes', { includeRelationships: true }),
   populateWells: populateById('wells', { includeRelationships: true }),

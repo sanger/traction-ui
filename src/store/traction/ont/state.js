@@ -29,6 +29,10 @@ export default () => {
       // The main source of tagSet information. tagSets are indexed by id.
       // Populated by the tags from a tag set
       tags: {},
+      // The main source of pool information. Pools are indexed by id.
+      pools: {},
+      // The main source of library information. libraries are indexed by id.
+      libraries: {},
     },
     // Selected collects together user input in the front end, such as
     // selected plates and libraries.

@@ -254,7 +254,35 @@ export default {
     let { success, data: { data } = {}, errors = [] } = response
 
     if (success) {
-      commit('populateRequests', data)
+      commit('setRequests', data)
+    }
+
+    return { success, errors }
+  },
+
+  /**
+   * Retrieves a list of ont pools from traction-service and populates the source
+   * with associated data
+   * @param rootState the vuex rootState object. Provides access to the current state
+   * @param commit the vuex commit object. Provides access to mutations
+   */
+  fetchOntPools: async ({ commit, rootState }, filter) => {
+    const request = rootState.api.traction.ont.pools
+    const promise = request.get({
+      filter: filter,
+      include: 'tube,libraries.tag,libraries.request',
+    })
+    const response = await handleResponse(promise)
+
+    let { success, data: { data, included = [] } = {}, errors = [] } = response
+    const { tubes, libraries, tags, requests } = groupIncludedByResource(included)
+
+    if (success) {
+      commit('setPools', data)
+      commit('populateTubes', tubes)
+      commit('populateTags', tags)
+      commit('populateLibraries', libraries)
+      commit('populateRequests', requests)
     }
 
     return { success, errors }

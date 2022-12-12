@@ -22,6 +22,7 @@ import PacbioPoolCreate from '@/views/pacbio/PacbioPoolCreate'
 import ONT from '@/views/ONT'
 import ONTSampleIndex from '@/views/ONT/ONTSampleIndex'
 import ONTPoolCreate from '@/views/ONT/ONTPoolCreate'
+import ONTPoolIndex from '@/views/ONT/ONTPoolIndex'
 import PacbioReceptionSequencescape from '@/views/pacbio/PacbioReceptionSequencescape'
 
 export default new Router({
@@ -165,6 +166,12 @@ export default new Router({
           component: ONTPoolCreate,
           props: true,
           meta: { page: 'Pool' },
+        },
+        {
+          path: 'pools',
+          name: 'OntPoolIndex',
+          component: ONTPoolIndex,
+          meta: { page: 'Pools' },
         },
       ],
     },

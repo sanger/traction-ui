@@ -9,6 +9,7 @@ import { newResponse } from '@/api/ResponseHelper'
 describe('actions.js', () => {
   const {
     fetchOntRequests,
+    fetchOntPools,
     fetchOntTagSets,
     selectWellRequests,
     deselectPlateAndContents,
@@ -33,7 +34,7 @@ describe('actions.js', () => {
       const { success } = await actions.fetchOntRequests({ commit, rootState })
       // assert result (Might make sense to pull these into separate tests)
       expect(commit).toHaveBeenCalledWith(
-        'populateRequests',
+        'setRequests',
         Contracts.requests.populateRequestsParameters,
       )
       expect(success).toEqual(true)
@@ -52,6 +53,56 @@ describe('actions.js', () => {
       })
       // apply action
       const { success } = await fetchOntRequests({ commit, rootState })
+      // assert result (Might make sense to pull these into separate tests)
+      expect(commit).not.toHaveBeenCalled()
+      expect(success).toEqual(false)
+    })
+  })
+
+  describe('fetchOntPools', () => {
+    it('handles success', async () => {
+      // mock commit
+      const commit = vi.fn()
+      // mock dependencies
+      const get = vi.fn()
+      const rootState = { api: { traction: { ont: { pools: { get } } } } }
+      get.mockResolvedValue(Data.TractionOntPools)
+      // apply action
+      const { success } = await actions.fetchOntPools({ commit, rootState })
+      // assert result (Might make sense to pull these into separate tests)
+      expect(commit).toHaveBeenCalledWith('setPools', Data.TractionOntPools.data.data)
+      expect(commit).toHaveBeenCalledWith(
+        'populateTubes',
+        Data.TractionOntPools.data.included.slice(0, 3),
+      )
+      expect(commit).toHaveBeenCalledWith(
+        'populateTags',
+        Data.TractionOntPools.data.included.slice(22, 29),
+      )
+      expect(commit).toHaveBeenCalledWith(
+        'populateLibraries',
+        Data.TractionOntPools.data.included.slice(3, 22),
+      )
+      expect(commit).toHaveBeenCalledWith(
+        'populateRequests',
+        Data.TractionOntPools.data.included.slice(29, 39),
+      )
+      expect(success).toEqual(true)
+    })
+
+    it('handles failure', async () => {
+      // mock commit
+      const commit = vi.fn()
+      // mock dependencies
+      const get = vi.fn()
+      const rootState = { api: { traction: { ont: { pools: { get } } } } }
+      get.mockRejectedValue({
+        data: { data: [] },
+        status: 500,
+        statusText: 'Internal Server Error',
+      })
+      // apply action
+      const { success } = await fetchOntPools({ commit, rootState })
       // assert result (Might make sense to pull these into separate tests)
       expect(commit).not.toHaveBeenCalled()
       expect(success).toEqual(false)
