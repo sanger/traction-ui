@@ -108,7 +108,7 @@ const defaultForm = () => ({
   suffix: null,
   numberOfLabels: null,
   printerName: null,
-  copies: '1',
+  copies: 1,
 })
 
 export default {

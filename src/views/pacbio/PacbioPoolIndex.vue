@@ -208,7 +208,7 @@ export default {
       const { success, message = {} } = await this.createPrintJob({
         printerName,
         labels: this.createLabels(),
-        copies: '1',
+        copies: 1,
       })
 
       this.showAlert(message, success ? 'success' : 'danger')

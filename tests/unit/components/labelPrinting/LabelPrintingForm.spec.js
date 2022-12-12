@@ -8,7 +8,7 @@ const options = {
   sourceBarcodeList: 'SQSC-1\nSQSC-2\nSQSC-3',
   suffix: 'UPRL',
   numberOfLabels: 3,
-  copies: '1',
+  copies: 1,
   printerName: 'aPrinter',
 }
 

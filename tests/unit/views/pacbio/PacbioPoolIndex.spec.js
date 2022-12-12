@@ -109,7 +109,7 @@ describe('PacbioPoolIndex.vue', () => {
         expect(pools.createPrintJob).toBeCalledWith({
           printerName: 'printer1',
           labels: pools.createLabels(),
-          copies: '1',
+          copies: 1,
         })
       })
     })

@@ -159,7 +159,7 @@ describe('Samples.vue', () => {
         expect(samples.createPrintJob).toBeCalledWith({
           printerName: 'printer1',
           labels: samples.createLabels(),
-          copies: '1',
+          copies: 1,
         })
       })
     })
