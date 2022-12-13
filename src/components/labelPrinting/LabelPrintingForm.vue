@@ -2,7 +2,7 @@
   <traction-container>
     <traction-row>
       <traction-col>
-        <traction-form v-if="show" class="text-left" @submit="onSubmit" @reset="onReset">
+        <traction-form v-if="show" class="text-left" @submit="printLabels" @reset="onReset">
           <traction-form-group
             id="barcode-input-group"
             label="Barcodes:"
@@ -11,7 +11,7 @@
           >
             <traction-textarea
               id="barcode-input"
-              v-model="form.barcode"
+              v-model="form.sourceBarcodeList"
               placeholder="Please scan the barcodes"
               required
               rows="6"
@@ -27,9 +27,8 @@
           >
             <traction-select
               id="suffix-selection"
-              v-model="form.selectedSuffix"
+              v-model="form.suffix"
               :options="suffixOptions"
-              value-field="text"
               placeholder="Please select a suffix"
               required
             ></traction-select>
@@ -43,7 +42,7 @@
           >
             <traction-input
               id="number-of-labels"
-              v-model="form.selectedNumberOfLabels"
+              v-model="form.numberOfLabels"
               type="number"
               min="1"
               max="9"
@@ -59,27 +58,11 @@
           >
             <traction-select
               id="printer-choice"
-              v-model="form.selectedPrinterName"
+              v-model="form.printerName"
               :options="printerOptions"
               value-field="text"
               required
             ></traction-select>
-          </traction-form-group>
-
-          <traction-form-group
-            id="copies-group"
-            label="Number of copies per label:"
-            label-for="copies"
-            description="Number of copies of each label you would like to print. (Only supported by Squix printers)"
-          >
-            <traction-input
-              id="copies"
-              v-model="form.copies"
-              type="number"
-              min="1"
-              max="10"
-              placeholder="Please select a number"
-            ></traction-input>
           </traction-form-group>
 
           <traction-button id="submit-button" type="submit" theme="print"
@@ -100,7 +83,7 @@
           >
             <traction-card-text>
               <ul id="list-barcodes-to-print">
-                <li v-for="(item, index) in suffixedBarcodes()" :key="index + 1">{{ item }}</li>
+                <li v-for="{ barcode } in labels" :key="barcode">{{ barcode }}</li>
               </ul>
             </traction-card-text>
           </traction-card>
@@ -112,14 +95,20 @@
 
 <script>
 import SuffixList from '@/config/SuffixList'
+import {
+  createSuffixDropdownOptions,
+  createSuffixItems,
+  createLabelsFromBarcodes,
+} from '@/lib/LabelPrintingHelpers'
+import { getCurrentDate } from '@/lib/DateHelpers'
 import { mapActions } from 'vuex'
 
 const defaultForm = () => ({
-  barcode: null,
-  selectedSuffix: null,
-  selectedNumberOfLabels: null,
-  selectedPrinterName: null,
-  copies: null,
+  sourceBarcodeList: null,
+  suffix: null,
+  numberOfLabels: null,
+  printerName: null,
+  copies: 1,
 })
 
 export default {
@@ -127,99 +116,55 @@ export default {
   data() {
     return {
       form: defaultForm(),
-      suffixOptions: [],
-      printerOptions: [],
       show: true,
     }
   },
-  created() {
-    this.setSuffixOptions()
-    this.setPrinterNames()
-  },
-  methods: {
-    setSuffixOptions() {
-      //Display the workflow and suffix with the process stage description
-      let suffixOptions = SuffixList.map((obj) => ({
-        label: obj.workflow,
-        options: obj.options.map((option) => ({
-          text: option.suffix.concat(' - ', option.tubeStage),
-        })),
-      }))
-      suffixOptions.push({ text: 'No suffix' })
-      this.suffixOptions = suffixOptions
-    },
-    setPrinterNames() {
-      let printerOptions = this.$store.getters.printers.map((name) => ({
+  computed: {
+    printerOptions() {
+      return this.$store.getters.printers.map((name) => ({
         text: name,
       }))
-      this.printerOptions = printerOptions
     },
-    suffixedBarcodes() {
-      let listSuffixedBarcodes = []
-      let noOfLabels = this.form.selectedNumberOfLabels
-      let applyLabels = noOfLabels > 1 && noOfLabels <= 9
+    suffixOptions() {
+      return createSuffixDropdownOptions(SuffixList)
+    },
+    suffixItems() {
+      return createSuffixItems(SuffixList)
+    },
+    labels() {
+      const date = getCurrentDate()
+      const suffixItem = this.suffixItems[this.form.suffix]
 
-      //Append the four letter suffix and/or the label number, if given to the barcodes
-      if (this.form.barcode && this.form.selectedSuffix) {
-        let barcodes = this.form.barcode.split(/\r?\n|\r|\n/g)
-        switch (true) {
-          case this.suffix() && applyLabels:
-            //Add both suffix and label number to the barcodes to be printed
-            listSuffixedBarcodes = this.appendSuffixWithLabels(
-              barcodes,
-              listSuffixedBarcodes,
-              noOfLabels,
-            )
-            break
-          case this.suffix() && !applyLabels:
-            //Add only suffix to the barcodes to be printed
-            listSuffixedBarcodes = this.appendSuffix(barcodes, listSuffixedBarcodes)
-            break
-          case applyLabels && !this.suffix():
-            //Add only label number to the barcodes to be printed
-            listSuffixedBarcodes = this.appendLabels(barcodes, listSuffixedBarcodes, noOfLabels)
-            break
-          case !applyLabels && !this.suffix():
-            //Just the plain barcodes list to be printed
-            for (let barcode of barcodes) {
-              listSuffixedBarcodes.push(barcode)
-            }
-            break
-        }
-      }
-      return listSuffixedBarcodes
+      // it is possible for there to be no barcodes so we need to add a guard
+      // we filter to remove an nulls
+      const splitSourceBarcodeList =
+        this.form.sourceBarcodeList?.split(/\r?\n|\r|\n/g).filter((b) => b) || []
+
+      return createLabelsFromBarcodes({
+        sourceBarcodeList: splitSourceBarcodeList,
+        date,
+        suffixItem,
+        numberOfLabels: this.form.numberOfLabels,
+      })
     },
-    appendSuffix(barcodes, listSuffixedBarcodes) {
-      for (let barcode of barcodes) {
-        listSuffixedBarcodes.push(barcode.concat('-', this.suffix()))
-      }
-      return listSuffixedBarcodes
-    },
-    appendLabels(barcodes, listSuffixedBarcodes, noOfLabels) {
-      for (let barcode of barcodes) {
-        for (let i = 0; i < noOfLabels; i++) {
-          listSuffixedBarcodes.push(barcode.concat('-', i + 1))
-        }
-      }
-      return listSuffixedBarcodes
-    },
-    appendSuffixWithLabels(barcodes, listSuffixedBarcodes, noOfLabels) {
-      for (let barcode of barcodes) {
-        for (let i = 0; i < noOfLabels; i++) {
-          listSuffixedBarcodes.push(barcode.concat('-', this.suffix(), '-', i + 1))
-        }
-      }
-      return listSuffixedBarcodes
-    },
-    suffix() {
-      return this.form.selectedSuffix === 'No suffix' ? '' : this.form.selectedSuffix.slice(0, 4)
-    },
-    printerName() {
-      return this.form.selectedPrinterName
-    },
-    onSubmit(event) {
+  },
+  methods: {
+    /*
+      Creates the print job and shows a success or failure alert
+      @param {event}
+    */
+    async printLabels(event) {
       event.preventDefault()
-      this.sendPrintRequest()
+
+      const { success, message = {} } = await this.createPrintJob({
+        printerName: this.form.printerName,
+        labels: this.labels,
+        copies: this.form.copies,
+      })
+
+      this.showAlert(message, success ? 'success' : 'danger')
+
+      return { success, message }
     },
     onReset(event) {
       event.preventDefault()
@@ -233,17 +178,7 @@ export default {
         this.show = true
       })
     },
-    async sendPrintRequest() {
-      const params = {
-        printerName: this.printerName(),
-        barcodesList: this.suffixedBarcodes(),
-        copies: this.form.copies,
-        suffix: this.suffix(),
-      }
-      const printJobResponse = await this.printJob(params)
-      this.showAlert(printJobResponse.data.message, printJobResponse.success ? 'success' : 'danger')
-    },
-    ...mapActions('printMyBarcode', ['printJob']),
+    ...mapActions('printMyBarcode', ['createPrintJob']),
   },
 }
 </script>
