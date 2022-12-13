@@ -1,6 +1,12 @@
 // https://docs.cypress.io/api/introduction/api.html
 
 describe('My First Test', () => {
+  beforeEach(() => {
+    cy.withFlags({
+      dpl_478_enable_qc_results_upload: { enabled: true },
+    })
+  })
+
   it('Visits the app root url', () => {
     cy.visit('/')
     cy.contains('Home')
