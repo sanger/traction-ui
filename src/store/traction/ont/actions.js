@@ -128,7 +128,8 @@ export default {
     const request = rootState.api.traction.ont.pools
     const promise = request.find({
       id: id,
-      include: 'libraries.tag.tag_set,libraries.source_plate.wells.requests,libraries.request,tube',
+      include:
+        'libraries.tag.tag_set,libraries.source_plate.wells.requests,libraries.source_tube.requests,libraries.request,tube',
     })
     const response = await handleResponse(promise)
 
@@ -141,16 +142,21 @@ export default {
         wells,
         plates = [],
         tag_sets: [tag_set] = [{}],
-        tubes: [tube],
+        tubes,
       } = groupIncludedByResource(included)
+      // We need to find the pool tube in the list of returned tubes
+      let poolingTube = tubes.find((tube) => tube.id == data.relationships.tube.data.id)
       // Can we await these commits? The pool page initially shows as empty until all this data is added
       commit('populatePoolAttributes', data)
       commit('populatePoolingLibraries', libraries)
-      commit('populatePoolingTube', tube)
+      commit('populatePoolingTube', poolingTube)
+      commit('populateTubes', tubes)
       commit('populateRequests', requests)
       commit('populateWells', wells)
       commit('populatePlates', plates)
       commit('selectTagSet', tag_set)
+      // I don't think there is any harm in including the pooling tube in selected store
+      tubes.forEach(({ id }) => commit('selectTube', { id, selected: true }))
       plates.forEach(({ id }) => commit('selectPlate', { id, selected: true }))
     }
 

@@ -4,7 +4,7 @@ describe('ONT Pool Edit', () => {
       fixture: 'tractionOntPools.json',
     })
     cy.intercept(
-      'v1/ont/pools/1?include=libraries.tag.tag_set,libraries.source_plate.wells.requests,libraries.request,tube',
+      'v1/ont/pools/7?include=libraries.tag.tag_set,libraries.source_plate.wells.requests,libraries.source_tube.requests,libraries.request,tube',
       {
         fixture: 'tractionOntPool.json',
       },

@@ -795,6 +795,10 @@ describe('actions.js', () => {
         Data.TractionOntPool.data.included.slice(5, 6),
       )
       expect(commit).toHaveBeenCalledWith(
+        'populateTubes',
+        Data.TractionOntPool.data.included.slice(-1),
+      )
+      expect(commit).toHaveBeenCalledWith(
         'selectTagSet',
         Data.TractionOntPool.data.included.slice(4, 5)[0],
       )
