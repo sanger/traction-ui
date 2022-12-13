@@ -30,7 +30,6 @@
               v-model="form.suffix"
               :options="suffixOptions"
               placeholder="Please select a suffix"
-              value-field="text"
             ></traction-select>
           </traction-form-group>
 
@@ -134,6 +133,8 @@ export default {
     labels() {
       const date = getCurrentDate()
       const suffixItem = this.suffixItems[this.form.suffix]
+
+      console.log(suffixItem)
 
       // it is possible for there to be no barcodes so we need to add a guard
       // we filter to remove an nulls
