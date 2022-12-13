@@ -108,7 +108,6 @@
 <script>
 import Api from '@/mixins/Api'
 import ModalHelper from '@/mixins/ModalHelper'
-import * as consts from '@/consts/consts'
 import { mapActions, mapGetters } from 'vuex'
 
 export default {
@@ -142,7 +141,7 @@ export default {
         await this.setTags()
         this.tractionTags.forEach((tag) => this.tagOptions.push(tag.group_id))
       } catch (error) {
-        this.showAlert(consts.MESSAGE_ERROR_FIND_TAGS_FAILED + error.message, 'danger')
+        this.showAlert('Failed to find tags in Traction' + error.message, 'danger')
       }
     },
     async createLibrary() {
@@ -151,7 +150,7 @@ export default {
         this.hide()
         this.$emit('alert', 'Created library with barcode ' + barcode, 'success')
       } else {
-        this.showAlert(consts.MESSAGE_ERROR_CREATE_LIBRARY_FAILED + errors, 'danger')
+        this.showAlert('Failed to create library in Traction: ' + errors, 'danger')
       }
     },
     show() {

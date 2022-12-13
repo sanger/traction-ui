@@ -1,6 +1,5 @@
 import { mount, localVue, store } from '@support/testHelper'
 import PacbioLibraryCreate from '@/components/pacbio/PacbioLibraryCreate'
-import * as consts from '@/consts/consts'
 
 describe('PacbioLibraryCreate.vue', () => {
   let wrapper, modal, props
@@ -90,7 +89,7 @@ describe('PacbioLibraryCreate.vue', () => {
 
       expect(modal.createLibraryInTraction).toBeCalledWith(payload)
       expect(modal.showAlert).toBeCalledWith(
-        consts.MESSAGE_ERROR_CREATE_LIBRARY_FAILED + 'it did not work',
+        'Failed to create library in Traction: it did not work',
         'danger',
       )
     })
