@@ -52,7 +52,9 @@ import OntPlatesRequest from './ontPlatesRequest.json'
 import OntTubesRequest from './ontTubesRequest.json'
 import OntPlates from './ontPlates.json'
 import OntPlateRequest from './ontPlateRequest.json'
+import OntRequestsRequest from './ontRequestsRequest'
 import OntTubeRequest from './ontTubeRequest.json'
+import tractionOntLibraries from './tractionOntLibraries'
 import TractionOntPool from './tractionOntPool.json'
 import TractionOntPools from './tractionOntPools.json'
 import TractionPacbioSmrtLinkVersions from './tractionPacbioSmrtLinkVersions'
@@ -101,6 +103,7 @@ export default {
   SequencescapeLabwarePlateOnly,
   SequencescapeLabwareTubeOnly,
   SequencescapePlates,
+  tractionOntLibraries,
   TractionOntRequests,
   TractionOntTagSets,
   TractionOntPool,
@@ -114,6 +117,7 @@ export default {
   OntTubesRequest,
   OntPlates,
   OntPlateRequest,
+  OntRequestsRequest,
   OntTubeRequest,
   TractionPacbioSmrtLinkVersions,
 }
