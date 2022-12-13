@@ -41,7 +41,7 @@
           v-model="currentWell.generate_hifi"
           data-attribute="generate-hifi"
           :options="generateHifiOptions[currentRun.system_name]"
-          @change="updateCCSAnalysisOutput"
+          @input="updateCCSAnalysisOutput"
         >
         </traction-select>
       </traction-form-group>

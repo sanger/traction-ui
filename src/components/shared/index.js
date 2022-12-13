@@ -15,13 +15,13 @@ import TractionToggle from '@/components/shared/TractionToggle'
 import TractionSpinner from '@/components/shared/TractionSpinner'
 import TractionInput from '@/components/shared/TractionInput'
 import TractionFieldError from '@/components/shared/TractionFieldError'
+import TractionSelect from '@/components/shared/TractionSelect'
 import TractionResultIcon from '@/components/shared/icons/TractionResultIcon'
 import TractionPaginationIcon from '@/components/shared/icons/TractionPaginationIcon'
 import TractionPagination from '@/components/shared/TractionPagination'
 import {
   BModal,
   VBModal,
-  BFormSelect,
   BAlert,
   BContainer,
   BRow,
@@ -57,7 +57,6 @@ import {
 const registerBootstrapComponents = (vue) => {
   /* eslint-disable vue/component-definition-name-casing */
   vue.component('traction-modal', BModal)
-  vue.component('traction-select', BFormSelect)
   vue.component('traction-alert', BAlert)
   vue.component('traction-container', BContainer)
   vue.component('traction-row', BRow)
@@ -78,7 +77,6 @@ const registerBootstrapComponents = (vue) => {
   vue.component('traction-file', BFormFile)
   vue.component('traction-tr', BTr)
   vue.component('traction-td', BTd)
-
   vue.component('traction-invalid-feedback', BFormInvalidFeedback)
   vue.component('traction-thead', BThead)
   vue.component('traction-th', BTh)
@@ -117,6 +115,7 @@ const registerGlobal = (vue) => {
   vue.component('TractionInput', TractionInput)
   vue.component('TractionFieldError', TractionFieldError)
   vue.component('TractionResultIcon', TractionResultIcon)
+  vue.component('TractionSelect', TractionSelect)
   vue.component('TractionPagination', TractionPagination)
   vue.component('TractionPaginationIcon', TractionPaginationIcon)
   registerBootstrapComponents(vue)
