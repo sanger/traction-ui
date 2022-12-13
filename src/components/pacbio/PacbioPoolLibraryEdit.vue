@@ -92,7 +92,8 @@ const librarySetter = (attr) => {
     },
     set(newValue) {
       if (newValue !== this.library[attr]) {
-        this.validationRequiredFields[attr] = true
+        // record that the attribute has been altered
+        this.fieldsThatRequireValidation[attr] = true
       }
       this.updateLibrary({ pacbio_request_id: this.library.pacbio_request_id, [attr]: newValue })
       this.notify()
@@ -116,10 +117,12 @@ export default {
       type: Boolean,
       default: false,
     },
+    // indicates whether the values in this component have been validated
     validated: {
       type: Boolean,
       default: false,
     },
+    // function passed from parent indicating what to do when user changes an attribute
     notify: {
       type: Function,
       required: true,
@@ -127,8 +130,8 @@ export default {
   },
   data() {
     return {
-      /**Array index are property names and values can true or false to represent validation required */
-      validationRequiredFields: [],
+      // This is an array holding attribute names that have been changed and require validation
+      fieldsThatRequireValidation: [],
     }
   },
   computed: {
@@ -170,21 +173,26 @@ export default {
       this.setValidationRequired()
       return this.library?.[attribute]?.length > 0
     },
+    // method used to decide the state of the valid/invalid flag on the field
     isValidationExists(attribute) {
       if (this.validated) {
         return true
       } else {
-        return !this.validationRequiredFields[attribute]
+        // red cross for invalid or null for no flag if changed
+        return !this.fieldsThatRequireValidation[attribute]
       }
     },
     setValidationRequired() {
       if (this.validated) {
-        this.validationRequiredFields = []
+        // The parent component has validated the attributes, so we can clear
+        // the outstanding list of attributes that require validation
+        this.fieldsThatRequireValidation = []
       }
     },
     handleTagIDChange(value) {
       if (value !== this.tag_id) {
-        this.validationRequiredFields['tag_id'] = true
+        // record that the tag id has been altered
+        this.fieldsThatRequireValidation['tag_id'] = true
       }
       this.tag_id = value
       this.notify()

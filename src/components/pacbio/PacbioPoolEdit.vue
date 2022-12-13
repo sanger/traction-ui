@@ -161,6 +161,9 @@ export default {
         this.parsedFile = false
       }
     },
+    // Function passed to child components in notify prop, to be used when any attribute
+    // in the child component is changed. The validated flag is reset to true when the user
+    // clicks the update button and the changed values are checked and saved.
     onFieldUpdate() {
       this.validated = false
     },

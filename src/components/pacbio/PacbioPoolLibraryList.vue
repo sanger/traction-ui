@@ -39,10 +39,14 @@ export default {
       type: Boolean,
       default: false,
     },
+    // flag passed from parent indicating whether the attributes in child
+    // component(s) have been validated
     validated: {
       type: Boolean,
       default: false,
     },
+    // function passed from parent indicating what to do when user changes
+    // an attribute in a child component
     notify: {
       type: Function,
       required: true,
