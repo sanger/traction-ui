@@ -35,7 +35,7 @@
     "swrv": "^0.9.6",
     "vite": "^3.2.4",
     "tailwindcss": "3.2.4",
-    "vue": "^2.7.5",
+    "vue": "^3.2.45",
     "vue-router": "^3.5.3",
     "vue-selecto": "^1.20.3",
     "vue-simple-spinner": "^1.2.10",
