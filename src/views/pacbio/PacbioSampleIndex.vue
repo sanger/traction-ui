@@ -69,11 +69,13 @@
 
       <template #row-details="row">
         <traction-card class="text-left">
-          <template v-for="(field, index) in field_in_details">
-            <span :key="field.label + index" class="font-weight-bold">{{ field.label }}</span
-            >: {{ row.item[field.item] }}
-            <br :key="field.label" />
-          </template>
+          <span
+            v-for="(field, index) in field_in_details"
+            :key="field.label + index"
+            class="font-weight-bold"
+            >{{ field.label }}</span
+          >: {{ row.item[field.item] }}
+          <br />
         </traction-card>
       </template>
     </traction-table>
@@ -85,7 +87,7 @@
         ref="printerModal"
         class="float-left"
         :disabled="selected.length === 0"
-        @selectPrinter="handlePrintLabel('pacbio', $event)"
+        @selectPrinter="printLabels($event)"
       >
       </printerModal>
 
@@ -117,8 +119,8 @@
 import PacbioLibraryCreate from '@/components/pacbio/PacbioLibraryCreate'
 import PacbioSampleMetadataEdit from '@/components/pacbio/PacbioSampleMetadataEdit'
 import PrinterModal from '@/components/PrinterModal'
-import PrintHelper from '@/mixins/PrintHelper'
 import TableHelper from '@/mixins/TableHelper'
+import { getCurrentDate } from '@/lib/DateHelpers'
 
 import { mapActions, mapGetters } from 'vuex'
 
@@ -129,7 +131,7 @@ export default {
     PrinterModal,
     PacbioSampleMetadataEdit,
   },
-  mixins: [PrintHelper, TableHelper],
+  mixins: [TableHelper],
   data() {
     return {
       fields: [
@@ -172,9 +174,41 @@ export default {
         this.showAlert('Failed to get samples: ' + error.message, 'danger')
       }
     },
+    /*
+      create the labels needed for the print job
+      each label will be in the format { first_line: pipeline - type, second_line: current date, third_line: barcode, fourth_line: source, label_name: }
+      @returns {Array[{Object}, {Object} ...]}
+    */
+    createLabels() {
+      const date = getCurrentDate()
+      return this.selected.map(({ barcode, source_identifier }) => {
+        return {
+          // currently don't have a barcode but not causing any harm
+          barcode,
+          first_line: 'Pacbio - Sample',
+          second_line: date,
+          third_line: barcode,
+          fourth_line: source_identifier,
+          label_name: 'main_label',
+        }
+      })
+    },
+    /*
+      Creates the print job and shows a success or failure alert
+      @param {String} printerName The name of the printer to send the print job to
+    */
+    async printLabels(printerName) {
+      const { success, message = {} } = await this.createPrintJob({
+        printerName,
+        labels: this.createLabels(),
+        copies: 1,
+      })
+
+      this.showAlert(message, success ? 'success' : 'danger')
+    },
 
     ...mapActions('traction/pacbio/requests', ['setRequests']),
-    ...mapActions('printMyBarcode', ['printJob']),
+    ...mapActions('printMyBarcode', ['createPrintJob']),
   },
 }
 </script>
