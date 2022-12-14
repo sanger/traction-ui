@@ -1,43 +1,45 @@
 <template>
-  <DataFetcher id="pool" :fetcher="provider">
-    <div class="flex flex-row">
-      <div class="flex flex-col w-1/2 px-4">
-        <traction-menu :border="true">
-          <traction-menu-item
-            v-for="(tabTitle, index) in tabTitles"
-            :key="index"
-            :active="index == sourceIndex"
-            color="blue"
-            @click.native="setSource(index)"
-            >{{ tabTitle }}</traction-menu-item
-          >
-        </traction-menu>
-        <div v-if="sourceIndex == 0" class="flex flex-col">
-          <traction-section title="Plates" number="1a" class="mb-2">
-            <div class="text-left">Find plates</div>
-            <LabwareFinder :fetcher="findOntPlate" filter="barcode" class="mb-6" />
-          </traction-section>
-          <OntPlateSelectedList class="mb-2" />
+  <flagged-feature name="dpl_279_ont_libraries_and_pools">
+    <DataFetcher id="pool" :fetcher="provider">
+      <div class="flex flex-row">
+        <div class="flex flex-col w-1/2 px-4">
+          <traction-menu :border="true">
+            <traction-menu-item
+              v-for="(tabTitle, index) in tabTitles"
+              :key="index"
+              :active="index == sourceIndex"
+              color="blue"
+              @click.native="setSource(index)"
+              >{{ tabTitle }}</traction-menu-item
+            >
+          </traction-menu>
+          <div v-if="sourceIndex == 0" class="flex flex-col">
+            <traction-section title="Plates" number="1a" class="mb-2">
+              <div class="text-left">Find plates</div>
+              <LabwareFinder :fetcher="findOntPlate" filter="barcode" class="mb-6" />
+            </traction-section>
+            <OntPlateSelectedList class="mb-2" />
+          </div>
+          <div v-else>
+            <traction-section title="Tubes" number="2a" class="mb-2">
+              <div class="text-left">Find Tubes</div>
+              <LabwareFinder :fetcher="findOntTube" filter="barcode" class="mb-6" />
+            </traction-section>
+            <OntTubeSelectedList class="mb-2" />
+          </div>
         </div>
-        <div v-else>
-          <traction-section title="Tubes" number="2a" class="mb-2">
-            <div class="text-left">Find Tubes</div>
-            <LabwareFinder :fetcher="findOntTube" filter="barcode" class="mb-6" />
-          </traction-section>
-          <OntTubeSelectedList class="mb-2" />
+        <div class="flex flex-col w-1/2 mt-6 gap-y-4">
+          <div>
+            <OntTagSetList ref="tagSetList" />
+            <OntTagSetItem />
+          </div>
+          <div>
+            <OntPoolEdit />
+          </div>
         </div>
       </div>
-      <div class="flex flex-col w-1/2 mt-6 gap-y-4">
-        <div>
-          <OntTagSetList ref="tagSetList" />
-          <OntTagSetItem />
-        </div>
-        <div>
-          <OntPoolEdit />
-        </div>
-      </div>
-    </div>
-  </DataFetcher>
+    </DataFetcher>
+  </flagged-feature>
 </template>
 
 <script>

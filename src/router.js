@@ -169,7 +169,7 @@ export default new Router({
         },
         {
           path: 'pools',
-          name: 'OntPoolIndex',
+          name: 'ONTPoolIndex',
           component: ONTPoolIndex,
           meta: { page: 'Pools' },
         },
