@@ -1,6 +1,6 @@
 /**
- * Finds the well associated with a pacbio_request
- * @param {Object} resources PacbioVueX store resources object
+ * Finds the well associated with a ont_request
+ * @param {Object} resources Ont VueX store resources object
  * @returns {Object} the matching well from the store
  */
 const wellFor = ({ resources }, { ont_request_id }) =>

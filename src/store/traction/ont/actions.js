@@ -93,7 +93,7 @@ const barcodeNotFound = (barcode) =>
  *
  * Finds the tag id for the tag specified by tag, within the current tag group
  * @param {Object} options - An options object
- * @param {Object} options.getters PacbioVueX store getters object
+ * @param {Object} options.getters Ont VueX store getters object
  * @param {String} options.tag Tag group_id to find
  * @param {Function} options.error Error function for user feedback
  * @returns {Object} Object containing the matching tag_id

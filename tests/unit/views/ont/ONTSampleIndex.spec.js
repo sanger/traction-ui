@@ -11,7 +11,7 @@ const buildWrapper = () =>
 
 it('displays each of the requests', async () => {
   const get = vi.spyOn(store.state.api.traction.ont.requests, 'get')
-  get.mockResolvedValue(Data.TractionOntRequests)
+  get.mockResolvedValue(Data.TractionOntRequests.data)
   const expectedRequests = Data.TractionOntRequests.data.data.length
   const wrapper = buildWrapper()
   await flushPromises()

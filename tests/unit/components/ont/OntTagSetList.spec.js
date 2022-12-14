@@ -1,5 +1,6 @@
 import OntTagSetList from '@/components/ont/OntTagSetList'
 import { localVue, mount, store } from '@support/testHelper'
+import flushPromises from 'flush-promises'
 
 const tagSets = {
   1: { id: '1', name: 'TagSet1', tags: [] },
@@ -29,9 +30,10 @@ describe('OntTagSetList', () => {
 
     it('allows the user to select a tag set', async () => {
       const options = wrapper.find('[data-type=tag-set-list]').findAll('option')
-      // bizarrely if you try to select the first option it returns null
       await options.at(1).setSelected()
-      expect(store.state.traction.ont.selected.tagSet.id).toEqual(tagSets['1'].id)
+      await flushPromises()
+
+      expect(store.state.traction.ont.selected.tagSet.id).toEqual(tagSets[1].id)
     })
   })
 
