@@ -30,8 +30,9 @@ describe('OntTagSetList', () => {
     it('allows the user to select a tag set', async () => {
       const options = wrapper.find('[data-type=tag-set-list]').findAll('option')
       await options.at(1).setSelected()
-      await flushPromises()
 
+      console.log(options)
+      console.log(store.state.traction.ont.selected.tagSet.id)
       expect(store.state.traction.ont.selected.tagSet.id).toEqual(tagSets[1].id)
     })
   })

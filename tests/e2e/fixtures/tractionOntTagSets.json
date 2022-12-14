@@ -4,7 +4,7 @@
       "id": "8",
       "type": "tag_sets",
       "links": {
-        "self": "http://localhost:3100/v1/ont/tag_sets/8"
+        "self": "/v1/ont/tag_sets/8"
       },
       "attributes": {
         "name": "ONT_native",
@@ -14,8 +14,8 @@
       "relationships": {
         "tags": {
           "links": {
-            "self": "http://localhost:3100/v1/ont/tag_sets/8/relationships/tags",
-            "related": "http://localhost:3100/v1/ont/tag_sets/8/tags"
+            "self": "/v1/ont/tag_sets/8/relationships/tags",
+            "related": "/v1/ont/tag_sets/8/tags"
           },
           "data": [
             {

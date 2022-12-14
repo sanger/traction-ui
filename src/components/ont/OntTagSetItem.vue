@@ -30,10 +30,7 @@
 import { createNamespacedHelpers } from 'vuex'
 const { mapGetters } = createNamespacedHelpers('traction/ont')
 export default {
-  name: 'OntTagSetShow',
-  data() {
-    return {}
-  },
+  name: 'OntTagSetItem',
   computed: {
     ...mapGetters(['selectedTagSet']),
     tagSetName() {
