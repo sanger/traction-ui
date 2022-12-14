@@ -27,7 +27,7 @@ describe('OntPoolIndex', () => {
     const wrapper = mount(ONTPoolIndex, {
       localVue,
       store,
-      router
+      router,
     })
     await flushPromises()
     expect(wrapper.findAll('tbody>tr').length).toEqual(expectedPools)
