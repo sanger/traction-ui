@@ -4,6 +4,8 @@ const flags = {
   flipper_id: 'User',
   features: {
     dpl_277_enable_general_reception: { enabled: true },
+    enable_custom_select: { enabled: true },
+    enable_custom_pagination: { enabled: true },
   },
 }
 

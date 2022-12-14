@@ -15,12 +15,13 @@ import TractionToggle from '@/components/shared/TractionToggle'
 import TractionSpinner from '@/components/shared/TractionSpinner'
 import TractionInput from '@/components/shared/TractionInput'
 import TractionFieldError from '@/components/shared/TractionFieldError'
+import TractionSelect from '@/components/shared/TractionSelect'
 import TractionResultIcon from '@/components/shared/icons/TractionResultIcon'
-
+import TractionPaginationIcon from '@/components/shared/icons/TractionPaginationIcon'
+import TractionPagination from '@/components/shared/TractionPagination'
 import {
   BModal,
   VBModal,
-  BFormSelect,
   BAlert,
   BContainer,
   BRow,
@@ -51,13 +52,11 @@ import {
   BCardBody,
   BInputGroup,
   BInputGroupAppend,
-  BPagination,
 } from 'bootstrap-vue'
 
 const registerBootstrapComponents = (vue) => {
   /* eslint-disable vue/component-definition-name-casing */
   vue.component('traction-modal', BModal)
-  vue.component('traction-select', BFormSelect)
   vue.component('traction-alert', BAlert)
   vue.component('traction-container', BContainer)
   vue.component('traction-row', BRow)
@@ -78,7 +77,6 @@ const registerBootstrapComponents = (vue) => {
   vue.component('traction-file', BFormFile)
   vue.component('traction-tr', BTr)
   vue.component('traction-td', BTd)
-
   vue.component('traction-invalid-feedback', BFormInvalidFeedback)
   vue.component('traction-thead', BThead)
   vue.component('traction-th', BTh)
@@ -89,8 +87,6 @@ const registerBootstrapComponents = (vue) => {
   vue.component('traction-nav', BNav)
   vue.component('traction-input-group', BInputGroup)
   vue.component('traction-input-group-append', BInputGroupAppend)
-  vue.component('traction-pagination', BPagination)
-
   /*
     directive is marked wth a v in front
     so it will be used as 'v-traction-modal'
@@ -116,10 +112,12 @@ const registerGlobal = (vue) => {
   vue.component('TractionMutedText', TractionMutedText)
   vue.component('TractionToggle', TractionToggle)
   vue.component('TractionSpinner', TractionSpinner)
-  // This is currently causing a bug reverted to Bootstrap component.
   vue.component('TractionInput', TractionInput)
   vue.component('TractionFieldError', TractionFieldError)
   vue.component('TractionResultIcon', TractionResultIcon)
+  vue.component('TractionSelect', TractionSelect)
+  vue.component('TractionPagination', TractionPagination)
+  vue.component('TractionPaginationIcon', TractionPaginationIcon)
   registerBootstrapComponents(vue)
 }
 
