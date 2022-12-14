@@ -1,6 +1,5 @@
 import OntTagSetList from '@/components/ont/OntTagSetList'
 import { localVue, mount, store } from '@support/testHelper'
-import flushPromises from 'flush-promises'
 
 describe('OntTagSetList', () => {
   let wrapper
@@ -31,9 +30,9 @@ describe('OntTagSetList', () => {
       const options = wrapper.find('[data-type=tag-set-list]').findAll('option')
       await options.at(1).setSelected()
 
-      console.log(options)
-      console.log(store.state.traction.ont.selected.tagSet.id)
-      expect(store.state.traction.ont.selected.tagSet.id).toEqual(tagSets[1].id)
+      wrapper.vm.$nextTick(() => {
+        expect(store.state.traction.ont.selected.tagSet.id).toEqual(tagSets['1'].id)
+      })
     })
   })
 
