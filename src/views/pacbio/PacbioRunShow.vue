@@ -54,7 +54,6 @@ import Plate from '@/components/pacbio/PacbioRunPlateItem'
 
 import { createNamespacedHelpers } from 'vuex'
 const { mapGetters, mapState, mapActions } = createNamespacedHelpers('traction/pacbio/runs')
-import * as consts from '@/consts/consts'
 
 export default {
   name: 'PacbioRunShow',
@@ -114,7 +113,7 @@ export default {
         this.redirectToRuns()
       } else {
         this.showAlert(
-          consts.MESSAGE_ERROR_CREATE_RUN_FAILED + responses,
+          'Failed to create run in Traction: ' + responses,
           'danger',
           'run-validation-message',
         )

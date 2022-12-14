@@ -79,7 +79,7 @@
         ref="printerModal"
         class="float-left"
         :disabled="selected.length === 0"
-        @selectPrinter="handlePrintLabel('pacbio', $event)"
+        @selectPrinter="printLabels($event)"
       >
       </printerModal>
 
@@ -99,18 +99,17 @@
 </template>
 
 <script>
-import PrintHelper from '@/mixins/PrintHelper'
 import TableHelper from '@/mixins/TableHelper'
 import PrinterModal from '@/components/PrinterModal'
-import * as consts from '@/consts/consts'
 import { mapActions, mapGetters } from 'vuex'
+import { getCurrentDate } from '@/lib/DateHelpers'
 
 export default {
   name: 'PacbioLibraryIndex',
   components: {
     PrinterModal,
   },
-  mixins: [PrintHelper, TableHelper],
+  mixins: [TableHelper],
   data() {
     return {
       fields: [
@@ -171,8 +170,39 @@ export default {
           throw Error(responses.map((r) => r.errors.message).join(','))
         }
       } catch (error) {
-        this.showAlert(consts.MESSAGE_ERROR_DELETION_FAILED + error.message, 'danger')
+        this.showAlert('Failed to delete: ' + error.message, 'danger')
       }
+    },
+    /*
+      create the labels needed for the print job
+      each label will be in the format { first_line: pipeline - type, second_line: current date, third_line: barcode, fourth_line: source, label_name: }
+      @returns {Array[{Object}, {Object} ...]}
+    */
+    createLabels() {
+      const date = getCurrentDate()
+      return this.selected.map(({ barcode, source_identifier }) => {
+        return {
+          barcode,
+          first_line: 'Pacbio - Library',
+          second_line: date,
+          third_line: barcode,
+          fourth_line: source_identifier,
+          label_name: 'main_label',
+        }
+      })
+    },
+    /*
+      Creates the print job and shows a success or failure alert
+      @param {String} printerName The name of the printer to send the print job to
+    */
+    async printLabels(printerName) {
+      const { success, message = {} } = await this.createPrintJob({
+        printerName,
+        labels: this.createLabels(),
+        copies: 1,
+      })
+
+      this.showAlert(message, success ? 'success' : 'danger')
     },
     // Get all the libraries
     // Provider function used by the bootstrap-vue table component
@@ -184,7 +214,7 @@ export default {
       }
     },
     ...mapActions('traction/pacbio/libraries', ['deleteLibraries', 'setLibraries']),
-    ...mapActions('printMyBarcode', ['printJob']),
+    ...mapActions('printMyBarcode', ['createPrintJob']),
   },
 }
 </script>

@@ -55,9 +55,9 @@
             id="system-name"
             ref="systemName"
             :value="systemName"
-            :options="systemNameOptions"
             title="System Name"
-            @change="setSystemName"
+            :options="systemNameOptions"
+            @input="setSystemName"
           />
         </traction-col>
       </traction-row>
@@ -71,9 +71,9 @@
             ref="smrtLinkVersion"
             :value="smrtLinkVersionId"
             data-attribute="smrt-link-version"
-            :options="smrtLinkVersionSelectOptions"
             title="SMRT Link Version"
-            @change="setSmrtLinkVersionId"
+            :options="smrtLinkVersionSelectOptions"
+            @input="setSmrtLinkVersionId"
           />
         </traction-col>
       </traction-row>
@@ -115,6 +115,7 @@ export default {
     smrtLinkVersionSelectOptions() {
       // Returns an array of objects with value and text properties to make
       // the options of smrt-link-version select drop-down list.
+
       return Object.values(
         this.$store.getters['traction/pacbio/runCreate/smrtLinkVersionList'],
       ).map(({ id, name }) => ({ value: id, text: name }))
