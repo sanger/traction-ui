@@ -14,11 +14,10 @@
       >
         <traction-select
           v-if="tagList.length > 0"
-          :value="tag_id"
+          v-model="tag_id"
           data-type="tag-list"
           :options="tagListOptions"
           class="tag-id"
-          @input="handleTagIDChange"
         ></traction-select>
       </traction-field-error>
     </traction-td>
@@ -94,9 +93,9 @@ const librarySetter = (attr) => {
       if (newValue !== this.library[attr]) {
         // record that the attribute has been altered
         this.fieldsThatRequireValidation[attr] = true
+        this.notify()
       }
       this.updateLibrary({ pacbio_request_id: this.library.pacbio_request_id, [attr]: newValue })
-      this.notify()
     },
   }
 }
@@ -154,6 +153,11 @@ export default {
         return this.library.tag_id
       },
       set(tag_id) {
+        if (tag_id !== this.tag_id) {
+          // record that the tag id has been altered
+          this.fieldsThatRequireValidation['tag_id'] = true
+          this.notify()
+        }
         this.applyTags({
           library: { tag_id, pacbio_request_id: this.library.pacbio_request_id },
           autoTag: this.autoTag,
@@ -188,14 +192,6 @@ export default {
         // the outstanding list of attributes that require validation
         this.fieldsThatRequireValidation = []
       }
-    },
-    handleTagIDChange(value) {
-      if (value !== this.tag_id) {
-        // record that the tag id has been altered
-        this.fieldsThatRequireValidation['tag_id'] = true
-      }
-      this.tag_id = value
-      this.notify()
     },
   },
 }
