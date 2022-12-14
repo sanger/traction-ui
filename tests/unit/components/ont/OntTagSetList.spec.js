@@ -2,14 +2,13 @@ import OntTagSetList from '@/components/ont/OntTagSetList'
 import { localVue, mount, store } from '@support/testHelper'
 import flushPromises from 'flush-promises'
 
-const tagSets = {
-  1: { id: '1', name: 'TagSet1', tags: [] },
-  2: { id: '2', name: 'TagSet2', tags: [] },
-  3: { id: '3', name: 'TagSet3', tags: [] },
-}
-
 describe('OntTagSetList', () => {
   let wrapper
+  const tagSets = {
+    1: { id: '1', name: 'TagSet1', tags: [] },
+    2: { id: '2', name: 'TagSet2', tags: [] },
+    3: { id: '3', name: 'TagSet3', tags: [] },
+  }
 
   describe('when there are some tag sets to show', () => {
     beforeEach(() => {

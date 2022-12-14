@@ -1,5 +1,5 @@
 import { mount, localVue, store, Data } from '@support/testHelper'
-import OntPlateSelectedList from '@/components/Ont/OntPlateSelectedList'
+import OntPlateSelectedList from '@/components/ont/OntPlateSelectedList'
 import Response from '@/api/Response'
 
 describe('OntPlateSelectedList', () => {

@@ -1,5 +1,5 @@
 import { mount, localVue, store, Data } from '@support/testHelper'
-import OntTubeSelectedList from '@/components/Ont/OntTubeSelectedList'
+import OntTubeSelectedList from '@/components/ont/OntTubeSelectedList'
 import Response from '@/api/Response'
 import { expect } from 'vitest'
 
