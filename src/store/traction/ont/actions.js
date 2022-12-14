@@ -241,7 +241,7 @@ export default {
     const { requests } = state.resources.wells[well_id]
     const selectedRequests = state.pooling.libraries
     for (let id of requests) {
-      const selected = !!selectedRequests[`_${id}`]
+      const selected = !!selectedRequests[id]
       commit('selectRequest', { id, selected: !selected })
     }
   },
@@ -371,7 +371,7 @@ export default {
     const tagAttributes = buildTagAttributes({ getters, tag, error })
 
     requestIds.forEach((ont_request_id) => {
-      if (!pooling.libraries[`_${ont_request_id}`]) {
+      if (!pooling.libraries[ont_request_id]) {
         // We're adding a library
         csvLogger(commit, info, 'info')(`Added ${source} to pool`)
       }

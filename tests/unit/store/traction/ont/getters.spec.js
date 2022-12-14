@@ -89,14 +89,14 @@ describe('getters.js', () => {
     // keys are maintained in insertion order, not numeric order. This allow our requests
     // to maintain the order in which they were selected
     const libraries = {
-      _3: {
+      3: {
         ont_request_id: '3',
         tag_id: null,
         volume: null,
         concentration: null,
         insert_size: null,
       },
-      _4: {
+      4: {
         ont_request_id: '4',
         tag_id: null,
         volume: null,
@@ -107,7 +107,7 @@ describe('getters.js', () => {
 
     it('returns a library', () => {
       state.pooling.libraries = libraries
-      expect(libraryItem(state)('3')).toEqual(libraries['_3'])
+      expect(libraryItem(state)('3')).toEqual(libraries['3'])
     })
   })
 
@@ -170,14 +170,14 @@ describe('getters.js', () => {
     }
 
     const libraries = {
-      _3: {
+      3: {
         ont_request_id: '3',
         tag_id: null,
         volume: null,
         concentration: null,
         insert_size: null,
       },
-      _4: {
+      4: {
         ont_request_id: '4',
         tag_id: null,
         volume: null,
@@ -255,21 +255,21 @@ describe('getters.js', () => {
     const plates = dataToObjectById({ data: plateResources, includeRelationships: true })
 
     const libraries = {
-      _8: {
+      8: {
         ont_request_id: '8',
         tag_id: null,
         volume: null,
         concentration: null,
         insert_size: null,
       }, // a selected request
-      _7: {
+      7: {
         ont_request_id: '7',
         tag_id: null,
         volume: null,
         concentration: null,
         insert_size: null,
       }, // a selected request
-      _6: {
+      6: {
         ont_request_id: '6',
         tag_id: null,
         volume: null,
@@ -286,9 +286,9 @@ describe('getters.js', () => {
 
     it('returns an array of request resources that have been selected', () => {
       expect(selectedRequests(state)).toEqual([
-        { ...requests['8'], selected: true },
-        { ...requests['7'], selected: true },
         { ...requests['6'], selected: true },
+        { ...requests['7'], selected: true },
+        { ...requests['8'], selected: true },
       ])
     })
   })

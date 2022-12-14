@@ -20,9 +20,9 @@ export default {
   },
   selectRequest: (state, { id, selected = true }) => {
     if (selected) {
-      Vue.set(state.pooling.libraries, `_${id}`, newLibrary({ ont_request_id: id }))
+      Vue.set(state.pooling.libraries, `${id}`, newLibrary({ ont_request_id: id }))
     } else {
-      Vue.delete(state.pooling.libraries, `_${id}`)
+      Vue.delete(state.pooling.libraries, `${id}`)
     }
   },
   /**
@@ -47,8 +47,11 @@ export default {
    * @param {Object.{}} library The library data to update
    */
   updatePoolingLibrary: (state, library) => {
-    const key = `_${library.ont_request_id}`
-    Vue.set(state.pooling.libraries, key, Object.assign({}, state.pooling.libraries[key], library))
+    Vue.set(
+      state.pooling.libraries,
+      `${library.ont_request_id}`,
+      Object.assign({}, state.pooling.libraries[library.ont_request_id], library),
+    )
   },
   /**
    * Populated the result with the response
@@ -58,10 +61,9 @@ export default {
   populatePoolingLibraries: (state, data) => {
     const newLibraries = dataToObjectById({ data, includeRelationships: true })
     Object.values(newLibraries).forEach((library) => {
-      const key = `_${library.request}`
       Vue.set(
         state.pooling.libraries,
-        key,
+        `${library.request}`,
         newLibrary({ ...library, ont_request_id: library.request, tag_id: library.tag }),
       )
     })

@@ -4,7 +4,6 @@ import { describe, expect, it } from 'vitest'
 import Contracts from './contracts'
 import { Data } from '@support/testHelper'
 import { dataToObjectById } from '@/api/JsonApi'
-import { _ } from 'core-js'
 
 describe('populateRequests', () => {
   it('updates the state', () => {
@@ -105,7 +104,7 @@ describe('selectRequest', () => {
       pooling: {
         ...defaultStateObject.pooling,
         libraries: {
-          _2: {
+          2: {
             ont_request_id: '2',
             tag_id: null,
             kit_barcode: null,
@@ -120,7 +119,7 @@ describe('selectRequest', () => {
     // apply mutation
     mutations.selectRequest(state, { id: '1' })
     expect(state.pooling.libraries).toEqual({
-      _2: {
+      2: {
         ont_request_id: '2',
         tag_id: null,
         kit_barcode: null,
@@ -128,7 +127,7 @@ describe('selectRequest', () => {
         concentration: null,
         insert_size: null,
       },
-      _1: {
+      1: {
         ont_request_id: '1',
         tag_id: null,
         kit_barcode: null,
@@ -147,7 +146,7 @@ describe('selectRequest', () => {
       pooling: {
         ...defaultStateObject.pooling,
         libraries: {
-          _2: {
+          2: {
             ont_request_id: '2',
             tag_id: null,
             kit_barcode: null,
@@ -218,7 +217,7 @@ describe('clearPoolData', () => {
           barcode: 'barcode',
         },
         libraries: {
-          _2: {
+          2: {
             ont_request_id: '2',
             tag_id: null,
             kit_barcode: null,
@@ -273,7 +272,7 @@ describe('updatePoolingLibrary', () => {
       pooling: {
         ...defaultStateObject.pooling,
         libraries: {
-          _2: {
+          2: {
             ont_request_id: '2',
             tag_id: null,
             kit_barcode: null,
@@ -295,7 +294,7 @@ describe('updatePoolingLibrary', () => {
       insert_size: null,
     })
     expect(state.pooling.libraries).toEqual({
-      _2: {
+      2: {
         ont_request_id: '2',
         tag_id: null,
         kit_barcode: null,
@@ -310,7 +309,7 @@ describe('updatePoolingLibrary', () => {
 describe('populatePoolingLibraries', () => {
   it('populates the pooling libraries', () => {
     const expectedPoolingLibraries = {
-      _1: {
+      1: {
         ont_request_id: '1',
         kit_barcode: 'barcode-0',
         tag_id: null,
@@ -330,7 +329,7 @@ describe('populatePoolingLibraries', () => {
         source_plate: undefined,
         source_tube: undefined,
       },
-      _2: {
+      2: {
         ont_request_id: '2',
         kit_barcode: 'barcode-1',
         tag_id: null,
@@ -350,7 +349,7 @@ describe('populatePoolingLibraries', () => {
         source_plate: undefined,
         source_tube: undefined,
       },
-      _3: {
+      3: {
         ont_request_id: '3',
         kit_barcode: 'barcode-2',
         tag_id: null,
@@ -370,7 +369,7 @@ describe('populatePoolingLibraries', () => {
         source_plate: undefined,
         source_tube: undefined,
       },
-      _4: {
+      4: {
         ont_request_id: '4',
         kit_barcode: 'barcode-3',
         tag_id: null,
@@ -515,7 +514,7 @@ describe('populateTubes', () => {
 describe('populateWells', () => {
   it('updates the state', () => {
     // mock state
-    const wells = Data.tractionOntWells.data.data
+    const wells = Data.OntPlatesRequest.data.included.slice(0, 8)
     const state = defaultState()
     // apply mutation
     mutations.populateWells(state, wells)

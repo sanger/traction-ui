@@ -183,7 +183,7 @@ describe('actions.js', () => {
         },
         pooling: {
           libraries: {
-            _2: { ont_request_id: '2' },
+            2: { ont_request_id: '2' },
           },
         },
       }
@@ -215,8 +215,8 @@ describe('actions.js', () => {
         selected: {
           ...defaultStateObject.selected,
           requests: {
-            _100: { id: '100', selected: true },
-            _300: { id: '300', selected: true },
+            100: { id: '100', selected: true },
+            300: { id: '300', selected: true },
           },
         },
       }
@@ -268,7 +268,7 @@ describe('actions.js', () => {
       // mock dependencies
       const create = vi.fn()
       const rootState = { api: { traction: { ont: { pools: { create } } } } }
-      const libraries = { _1: library1, _2: library2 }
+      const libraries = { 1: library1, 2: library2 }
       create.mockResolvedValue(mockResponse)
       const { success, barcode } = await createPool({
         rootState,
@@ -291,7 +291,7 @@ describe('actions.js', () => {
       // mock dependencies
       const update = vi.fn(() => Promise.reject({ response: mockResponse }))
       const rootState = { api: { traction: { ont: { pools: { update } } } } }
-      const libraries = { _1: library1, _2: library2 }
+      const libraries = { 1: library1, 2: library2 }
       const expectedResponse = newResponse({ ...mockResponse, success: false })
       const { success, errors } = await updatePool({
         rootState,
@@ -310,7 +310,7 @@ describe('actions.js', () => {
       // mock dependencies
       const create = vi.fn()
       const rootState = { api: { traction: { ont: { pools: { create } } } } }
-      const libraries = { _1: library1, _2: { ...library2, concentration: '' } }
+      const libraries = { 1: library1, 2: { ...library2, concentration: '' } }
       const { success, errors } = await createPool({
         commit,
         rootState,
@@ -361,7 +361,7 @@ describe('actions.js', () => {
       // mock dependencies
       const update = vi.fn()
       const rootState = { api: { traction: { ont: { pools: { update } } } } }
-      const libraries = { _1: library1, _2: library2 }
+      const libraries = { 1: library1, 2: library2 }
       update.mockResolvedValue(mockResponse)
       const { success } = await updatePool({ rootState, state: { pooling: { libraries, pool } } })
       expect(update).toHaveBeenCalledWith(payload({ libraries, pool }))
@@ -377,7 +377,7 @@ describe('actions.js', () => {
       // mock dependencies
       const update = vi.fn(() => Promise.reject({ response: mockResponse }))
       const rootState = { api: { traction: { ont: { pools: { update } } } } }
-      const libraries = { _1: library1, _2: library2 }
+      const libraries = { 1: library1, 2: library2 }
       const expectedResponse = newResponse({ ...mockResponse, success: false })
       const { success, errors } = await updatePool({
         rootState,
@@ -396,7 +396,7 @@ describe('actions.js', () => {
       // mock dependencies
       const update = vi.fn()
       const rootState = { api: { traction: { ont: { pools: { update } } } } }
-      const libraries = { _1: library1, _2: { ...library2, concentration: '' } }
+      const libraries = { 1: library1, 2: { ...library2, concentration: '' } }
       const { success, errors } = await updatePool({
         commit,
         rootState,

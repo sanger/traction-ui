@@ -16,9 +16,9 @@ const requests = {
 }
 
 const libraries = {
-  _1: { ont_request_id: '1', ...libraryAttributes },
-  _2: { ont_request_id: '2', ...libraryAttributes, tag_id: '2' },
-  _3: { ont_request_id: '3', ...libraryAttributes, tag_id: '3' },
+  1: { ont_request_id: '1', ...libraryAttributes },
+  2: { ont_request_id: '2', ...libraryAttributes, tag_id: '2' },
+  3: { ont_request_id: '3', ...libraryAttributes, tag_id: '3' },
 }
 
 const tagSet = {
@@ -45,7 +45,7 @@ store.state.traction.ont.resources.tags = tags
 store.state.traction.ont.resources.requests = requests
 store.state.traction.ont.resources.wells = wells
 
-describe('PacbioPoolLibraryList.vue', () => {
+describe('OntPoolLibraryList.vue', () => {
   it('should have a list of libraries', () => {
     store.state.traction.ont.pooling.libraries = libraries
     const wrapper = mount(OntPoolLibraryList, {

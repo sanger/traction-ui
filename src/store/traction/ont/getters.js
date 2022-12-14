@@ -32,7 +32,7 @@ export default {
    * Returns a library
    * @param {Object} state The Vuex state object
    */
-  libraryItem: (state) => (id) => state.pooling.libraries[`_${id}`],
+  libraryItem: (state) => (id) => state.pooling.libraries[id],
 
   /**
    * Returns a list of selected plates
@@ -69,11 +69,11 @@ export default {
     const selectedRequests = state.pooling.libraries
     if (ids) {
       return ids.map((id) => {
-        return { ...requests[id], selected: !!selectedRequests[`_${id}`] }
+        return { ...requests[id], selected: !!selectedRequests[id] }
       })
     } else {
       return Object.values(requests).map((request) => {
-        return { ...request, selected: !!selectedRequests[`_${request.id}`] }
+        return { ...request, selected: !!selectedRequests[request.id] }
       })
     }
   },
