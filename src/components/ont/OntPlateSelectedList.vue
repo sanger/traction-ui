@@ -59,14 +59,21 @@ import { VueSelecto } from 'vue-selecto'
 
 const { mapGetters, mapMutations, mapActions } = createNamespacedHelpers('traction/ont')
 
+/**
+ * # OntPlateSelectedList
+ *
+ * Displays a list of plates that are in the ont selected store
+ * Contains tabs to switch between list of selected plates and list of selected requests
+ */
 export default {
-  name: 'OntLabwareSelectedList',
+  name: 'OntPlateSelectedList',
   components: {
     Plate,
     VueSelecto,
   },
   data() {
     return {
+      // The tabular fields to display for each plate request
       requestFields: [
         'id',
         'sample_name',
@@ -81,6 +88,7 @@ export default {
   },
   computed: {
     ...mapGetters(['selectedPlates', 'wellList', 'requestList']),
+    // A method to determine which requests are selected from plates
     selectedPlateRequests() {
       return this.selectedPlates.flatMap((plate) => {
         return this.wellList(plate.wells).flatMap((well) => {

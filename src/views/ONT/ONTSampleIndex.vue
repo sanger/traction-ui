@@ -49,8 +49,8 @@
 <script>
 import TableHelper from '@/mixins/TableHelper'
 import { createNamespacedHelpers } from 'vuex'
-import DataFetcher from '../../components/DataFetcher.vue'
-import FilterCard from '../../components/FilterCard.vue'
+import DataFetcher from '@/components/DataFetcher.vue'
+import FilterCard from '@/components/FilterCard.vue'
 const { mapActions, mapGetters } = createNamespacedHelpers('traction/ont')
 
 export default {

@@ -12,12 +12,6 @@ describe('ONT Pool Edit', () => {
     cy.intercept('/v1/ont/tag_sets?include=tags', {
       fixture: 'tractionOntTagSets.json',
     })
-    cy.intercept('flipper/api/actors/User', {
-      flipper_id: 'User',
-      features: {
-        dpl_279_ont_libraries_and_pools: { enabled: true },
-      },
-    })
   })
 
   it('Updates a pool successfully', () => {

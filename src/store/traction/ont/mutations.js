@@ -4,6 +4,12 @@ import { newLibrary } from './pool'
 import defaultState from './state'
 
 export default {
+  /**
+   * Selects of deselects a plate based on the params
+   * @param state The Vuex state
+   * @param id The id of the plate to select
+   * @param selected Defaults to true, selects or deselects the plate
+   */
   selectPlate: (state, { id, selected = true }) => {
     if (selected) {
       Vue.set(state.selected.plates, `${id}`, { id: id, selected: true })
@@ -11,6 +17,12 @@ export default {
       Vue.delete(state.selected.plates, `${id}`)
     }
   },
+  /**
+   * Selects of deselects a tube based on the params
+   * @param state The Vuex state
+   * @param id The id of the tube to select
+   * @param selected Defaults to true, selects or deselects the tube
+   */
   selectTube: (state, { id, selected = true }) => {
     if (selected) {
       Vue.set(state.selected.tubes, `${id}`, { id: id, selected: true })
@@ -18,6 +30,12 @@ export default {
       Vue.delete(state.selected.tubes, `${id}`)
     }
   },
+  /**
+   * Given a request id it creates or deletes a pooling library
+   * @param state The Vuex state
+   * @param id The id of the tube to select
+   * @param selected Defaults to true, selects or deselects the tube
+   */
   selectRequest: (state, { id, selected = true }) => {
     if (selected) {
       Vue.set(state.pooling.libraries, `${id}`, newLibrary({ ont_request_id: id }))
@@ -68,6 +86,12 @@ export default {
       )
     })
   },
+  /**
+   * Populates the pooling pool
+   * @param {Object} state The VueXState object
+   * @param id The pool id]
+   * @param attributes the pool attributes
+   **/
   populatePoolAttributes: (state, { id, attributes }) => {
     state.pooling.pool = {
       id,

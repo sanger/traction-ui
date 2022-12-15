@@ -1,11 +1,18 @@
 import { wellToIndex } from './wellHelpers'
 
+/**
+ * Used for combining objects based on id
+ */
 const mergeRepresentations = (parent, child, keyFunction = (id) => id) => {
   return Object.values(parent).map((parentRecord) => {
     return { ...child[keyFunction(parentRecord.id)], ...parentRecord }
   })
 }
 
+/**
+ * Orders the well resources by column/row index
+ * @param resources The Vuex state resources object
+ */
 const sortRequestByWellColumnIndex = (resources) => (a, b) =>
   wellToIndex(resources.wells[a.well] || { position: 'A1' }) -
   wellToIndex(resources.wells[b.well] || { position: 'A1' })
@@ -136,20 +143,25 @@ export default {
    * @return {Array} An array of selected requests in the order in which they were selected
    */
   pools: (state) => {
-    return Object.values(state.resources.pools).map((pool) => {
-      const libraries = pool.libraries.map((libraryId) => {
-        const { id, type, request, tag } = state.resources.libraries[libraryId]
-        const { sample_name } = state.resources.requests[request]
-        const { group_id } = state.resources.tags[tag] || {}
-        return { id, type, sample_name, group_id }
-      })
-      const { barcode } = state.resources.tubes[pool.tube]
+    // We catch here in case this getter is called when the resources aren't pulled
+    try {
+      return Object.values(state.resources.pools).map((pool) => {
+        const libraries = pool.libraries.map((libraryId) => {
+          const { id, type, request, tag } = state.resources.libraries[libraryId]
+          const { sample_name } = state.resources.requests[request]
+          const { group_id } = state.resources.tags[tag] || {}
+          return { id, type, sample_name, group_id }
+        })
+        const { barcode } = state.resources.tubes[pool.tube]
 
-      return {
-        ...pool,
-        libraries,
-        barcode,
-      }
-    })
+        return {
+          ...pool,
+          libraries,
+          barcode,
+        }
+      })
+    } catch (e) {
+      return []
+    }
   },
 }

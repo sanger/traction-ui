@@ -17,6 +17,11 @@
 import Plate96SVG from '@/components/svg/Plate96SVG'
 import Well from '@/components/ont/OntWellItem'
 
+/**
+ * # OntPlateItem
+ *
+ * Displays an SVG of a 96 well plate with well selection ability
+ */
 export default {
   name: 'OntPlateItem',
   components: {

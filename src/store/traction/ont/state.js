@@ -1,7 +1,6 @@
 /**
- * Generates an object describing a new library for population `store.libraries`
- * @param {Object} attributes any attributes of the object to pre-populate
- * @example
+ * Generates an object describing the shared ONT resources for use in the vuex
+ * store
  */
 
 export default () => {

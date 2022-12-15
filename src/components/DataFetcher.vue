@@ -11,9 +11,23 @@
   </div>
 </template>
 <script>
+/**
+ * # DataFetcher
+ *
+ * This component provides a means of wrapping content that will be displayed
+ * based on a result. Typically the result of a request to traction-service.
+ *
+ * @example
+ * <template>
+ *     <DataFetcher :fetcher="fetchServiceData">
+ *       Content to display on success
+ *     </DataFetcher>
+ * </template>
+ */
 export default {
   name: 'DataFetcher',
   props: {
+    // A method that performs the required data fetch
     fetcher: {
       type: Function,
       required: true,

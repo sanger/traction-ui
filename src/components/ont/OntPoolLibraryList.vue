@@ -30,6 +30,11 @@ import { createNamespacedHelpers } from 'vuex'
 
 const { mapGetters } = createNamespacedHelpers('traction/ont')
 
+/**
+ * # OntPoolLibraryList
+ *
+ * Displays a list of libraries from the ont pool libraries store
+ */
 export default {
   name: 'OntPoolLibraryList',
   components: {

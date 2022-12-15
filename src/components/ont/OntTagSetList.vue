@@ -16,6 +16,11 @@
 </template>
 
 <script>
+/**
+ * # OntTagSetList
+ *
+ * Displays a list of tagSets to select from for ont pooling
+ */
 export default {
   name: 'OntTagSetList',
   computed: {
@@ -43,7 +48,3 @@ export default {
   },
 }
 </script>
-
-<style scoped lang="scss">
-@import 'src/styles/components.scss';
-</style>

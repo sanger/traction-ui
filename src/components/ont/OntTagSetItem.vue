@@ -7,12 +7,12 @@
           >{{ tagCount }} tags</traction-tag
         >
       </summary>
-      <div data-type="tag-set-item" class="wrapper flex-wrap p-4">
+      <div data-type="tag-set-item" class="flex flex-wrap p-4">
         <div
           v-for="tag in selectedTagSet.tags"
           :key="tag.id"
           data-attribute="group-id"
-          class="flex items-center border bg-sdb-300 text-white text-sm rounded-md"
+          class="flex items-center p-4 border bg-sdb-300 text-white text-sm rounded-md"
         >
           {{ tag.group_id }}
         </div>
@@ -29,6 +29,11 @@
 <script>
 import { createNamespacedHelpers } from 'vuex'
 const { mapGetters } = createNamespacedHelpers('traction/ont')
+/**
+ * # OntTagSetItem
+ *
+ * Displays a single tag that is present in the ont store selected tagset
+ */
 export default {
   name: 'OntTagSetItem',
   computed: {
@@ -42,24 +47,3 @@ export default {
   },
 }
 </script>
-
-<style scoped lang="scss">
-@import 'src/styles/components.scss';
-.wrapper {
-  display: flex;
-}
-.wrapper > div {
-  padding: 5px;
-  min-width: 100px;
-  margin: 2px;
-  height: 50px;
-  vertical-align: middle;
-}
-.tag-set-item {
-  padding-bottom: 10px;
-  padding-top: 10px;
-}
-.tag-set-name {
-  text-align: left;
-}
-</style>
