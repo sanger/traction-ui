@@ -2,6 +2,10 @@
 
 describe('Extraction QC page', () => {
   beforeEach(() => {
+    cy.withFlags({
+      dpl_478_enable_qc_results_upload: { enabled: true },
+    })
+
     cy.visit('#/qc-results-upload')
     cy.get('#used-by-select-input').select('Extraction')
   })
