@@ -3,6 +3,7 @@
     <traction-form class="text-left" @submit="onSubmit">
       <traction-sub-section title="Which QC Results would you like to upload?" class="py-6">
         <traction-select
+          id="used-by-select-input"
           v-model="usedBySelected"
           :options="usedByOptions"
           :state="!!usedBySelected ? true : null"
@@ -11,6 +12,7 @@
       </traction-sub-section>
       <traction-sub-section title="CSV File" class="py-6">
         <traction-file
+          id="qc-results-upload-file"
           v-model="file"
           :state="!!file ? true : null"
           placeholder="Choose a file or drop it here..."
