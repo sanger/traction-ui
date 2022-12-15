@@ -34,7 +34,6 @@
 
 <script>
 import Chip from '@/components/saphyr/SaphyrChip'
-import PrintHelper from '@/mixins/PrintHelper'
 import { createNamespacedHelpers } from 'vuex'
 const { mapGetters, mapActions, mapState, mapMutations } =
   createNamespacedHelpers('traction/saphyr/runs')
@@ -44,7 +43,6 @@ export default {
   components: {
     Chip,
   },
-  mixins: [PrintHelper],
   props: {
     id: {
       type: [String, Number],

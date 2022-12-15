@@ -11,12 +11,12 @@
             data-attribute="default-movie-time"
             :options="movieTimeOptions"
             :value="currentRun.wellDefaults.movie_time"
-            title="Movie Time"
             @input="setDefaultMovieTime"
           >
           </traction-select>
         </traction-col>
       </traction-row>
+
       <traction-row v-if="['v10'].includes(selectedSmrtLinkVersion.name)">
         <traction-col>
           <label for="default-generate-hifi">Generate HiFi:</label>
@@ -44,7 +44,7 @@
             title="Ccs Analysis Output"
             :options="ccsAnalysisOutputOptions"
             :value="currentRun.wellDefaults.ccs_analysis_output"
-            @change="setDefaultCcsAnalysisOutput"
+            @input="setDefaultCcsAnalysisOutput"
           >
           </traction-select>
         </traction-col>
@@ -108,10 +108,10 @@
             id="default-ccs-analysis-output-include-kinetics-information"
             data-attribute="default-ccs-analysis-output-include-kinetics-information"
             title="CCS Analysis Output Include Kinetics Information"
+            placeholder="Default CCS Analysis Output Include Kinetics Information for new wells"
             :options="ccsAnalysisOutputOptions"
             :value="currentRun.wellDefaults.ccs_analysis_output_include_kinetics_information"
-            placeholder="Default CCS Analysis Output Include Kinetics Information for new wells"
-            @change="setDefaultCcsAnalysisOutputIncludeKineticsInformation"
+            @input="setDefaultCcsAnalysisOutputIncludeKineticsInformation"
           >
           </traction-select>
         </traction-col>
@@ -147,7 +147,7 @@
             :options="generateHifiOptions[currentRun.system_name]"
             :value="currentRun.wellDefaults.demultiplex_barcodes"
             placeholder="Default Demultiplex Barcodes for new wells"
-            @change="setDefaultDemultiplexBarcodes"
+            @input="setDefaultDemultiplexBarcodes"
           >
           </traction-select>
         </traction-col>
@@ -188,7 +188,11 @@
 // A lot of it could be moved to the store
 import { createNamespacedHelpers } from 'vuex'
 const { mapGetters, mapMutations } = createNamespacedHelpers('traction/pacbio/runs')
-
+const defaultValues = [
+  { text: 'Please select a value', value: '', disabled: true },
+  'In SMRT Link',
+  'Do Not Generate',
+]
 export default {
   name: 'PacbioRunWellDefaultEdit',
   data() {
@@ -202,23 +206,10 @@ export default {
         '30.0',
       ],
       generateHifiOptions: {
-        '': [{ text: 'Please select a System Name', value: '', disabled: true }],
-        'Sequel I': [
-          { text: 'Please select a value', value: '', disabled: true },
-          'In SMRT Link',
-          'Do Not Generate',
-        ],
-        'Sequel II': [
-          { text: 'Please select a value', value: '', disabled: true },
-          'In SMRT Link',
-          'Do Not Generate',
-        ],
-        'Sequel IIe': [
-          { text: 'Please select a value', value: '', disabled: true },
-          'In SMRT Link',
-          'Do Not Generate',
-          'On Instrument',
-        ],
+        '': [defaultValues[0]],
+        'Sequel I': defaultValues,
+        'Sequel II': defaultValues,
+        'Sequel IIe': [...defaultValues, 'On Instrument'],
       },
       ccsAnalysisOutputOptions: ['Yes', 'No'],
     }
