@@ -321,11 +321,11 @@ export default {
     const { tubes, libraries, tags, requests } = groupIncludedByResource(included)
 
     if (success) {
-      await commit('populateRequests', requests)
-      await commit('populateTubes', tubes)
-      await commit('populateTags', tags)
-      await commit('populateLibraries', libraries)
-      await commit('setPools', data)
+      commit('populateRequests', requests)
+      commit('populateTubes', tubes)
+      commit('populateTags', tags)
+      commit('populateLibraries', libraries)
+      commit('setPools', data)
     }
 
     return { success, errors }
