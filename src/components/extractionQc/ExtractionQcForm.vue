@@ -5,14 +5,14 @@
         <traction-select
           v-model="usedBySelected"
           :options="usedByOptions"
-          :state="Boolean(usedBySelected) ? true : null"
+          :state="!!usedBySelected ? true : null"
           required
         ></traction-select>
       </traction-sub-section>
       <traction-sub-section title="CSV File" class="py-6">
         <traction-file
           v-model="file"
-          :state="Boolean(file) ? true : null"
+          :state="!!file ? true : null"
           placeholder="Choose a file or drop it here..."
           drop-placeholder="Drop file here (CSV only)..."
           accept="text/csv, .csv"
@@ -32,8 +32,6 @@
 import Api from '@/mixins/Api'
 import { createQcResultsUploadResource } from '@/services/traction/QcResultsUpload'
 
-const EXTRACTION_USED_BY = 'extraction'
-
 export default {
   name: 'ExtractionQcForm',
   mixins: [Api],
@@ -41,7 +39,7 @@ export default {
     return {
       usedByOptions: [
         { value: null, text: 'Please select a option' },
-        { value: EXTRACTION_USED_BY, text: 'Extraction' },
+        { value: 'extraction', text: 'Extraction' },
       ],
       file: null,
       usedBySelected: null,
@@ -52,7 +50,8 @@ export default {
     qcResultUploadsRequest: ({ api }) => api.traction.qc_results_uploads.create,
   },
   methods: {
-    async onSubmit() {
+    async onSubmit(event) {
+      event.preventDefault()
       await this.postCSV()
     },
     async postCSV() {
@@ -62,7 +61,6 @@ export default {
         let data = { csv: csv, usedBySelected: this.usedBySelected }
         await createQcResultsUploadResource(this.qcResultUploadsRequest, data)
 
-        // Todo: clear alerts
         this.showAlert(`Successfully imported: ${this.file.name}`, 'success')
       } catch (e) {
         this.showAlert(e, 'danger')
