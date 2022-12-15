@@ -76,7 +76,7 @@ describe('ExtractionQcForm.vue', () => {
   describe('#onSubmit', () => {
     it('calls postCSV', () => {
       extractionQcForm.postCSV = vi.fn()
-      extractionQcForm.onSubmit()
+      extractionQcForm.onSubmit(evt)
       expect(extractionQcForm.postCSV).toBeCalled()
     })
   })
@@ -106,7 +106,7 @@ describe('ExtractionQcForm.vue', () => {
         .spyOn(QcResultsUpload, 'createQcResultsUploadResource')
         .mockImplementation(() => {})
 
-      await extractionQcForm.postCSV(evt)
+      await extractionQcForm.postCSV()
 
       expect(createQcResultsUploadResource).toBeCalledWith(create, {
         csv: 'xxx',
@@ -124,7 +124,7 @@ describe('ExtractionQcForm.vue', () => {
         .spyOn(QcResultsUpload, 'createQcResultsUploadResource')
         .mockRejectedValue('This is an error msg')
 
-      await extractionQcForm.postCSV(evt)
+      await extractionQcForm.postCSV()
 
       expect(createQcResultsUploadResource).toBeCalledWith(create, {
         csv: 'xxx',
