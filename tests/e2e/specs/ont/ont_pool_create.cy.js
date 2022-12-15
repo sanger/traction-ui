@@ -7,6 +7,13 @@ describe('Ont Pool Create', () => {
     cy.intercept('/v1/ont/plates?filter[barcode]=GENSAMPLE-1668092750-1&include=wells.requests', {
       fixture: 'tractionOntPlate.json',
     })
+
+    cy.intercept('flipper/api/actors/User', {
+      flipper_id: 'User',
+      features: {
+        dpl_279_ont_libraries_and_pools: { enabled: true },
+      },
+    })
   })
 
   it('Creates a pool successfully', () => {

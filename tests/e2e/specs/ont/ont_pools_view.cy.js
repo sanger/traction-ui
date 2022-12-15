@@ -3,6 +3,12 @@ describe('Ont pools view', () => {
     cy.intercept('v1/ont/pools?include=tube,libraries.tag,libraries.request', {
       fixture: 'tractionOntPools.json',
     })
+    cy.intercept('flipper/api/actors/User', {
+      flipper_id: 'User',
+      features: {
+        dpl_279_ont_libraries_and_pools: { enabled: true },
+      },
+    })
     cy.visit('#/ont/pools')
     cy.get('#pool-index').find('tr').should('have.length', '4')
     cy.get('.pool')
