@@ -2,18 +2,18 @@
 
 describe('Extraction QC page', () => {
   beforeEach(() => {
-    cy.visit('#/extraction-qc')
+    cy.visit('#/qc-results-upload')
     cy.get('#used-by-select-input').select('Extraction')
   })
 
-  it('Shows the correct information', () => {
+  it('Shows the correct components', () => {
     cy.contains('QC Results Upload')
     cy.contains('Which QC Results would you like to upload?')
     cy.contains('CSV File')
     cy.contains('Upload File')
   })
 
-  it('PMB request is successful', () => {
+  it('QcResultsUpload POST request is successful', () => {
     cy.get('#qc-results-upload-file').attachFile('qc-results-upload.csv')
 
     cy.get('#upload-button').click()
@@ -28,7 +28,7 @@ describe('Extraction QC page', () => {
     cy.contains('Successfully imported: qc-results-upload.csv')
   })
 
-  it('PMB request is unsuccessful, failed response', () => {
+  it('QcResultsUpload POST is unsuccessful, unprocessable entity', () => {
     cy.get('#qc-results-upload-file').attachFile('qc-results-upload-failure.csv')
     cy.get('#upload-button').click()
 

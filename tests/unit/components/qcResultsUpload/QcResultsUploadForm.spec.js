@@ -1,4 +1,4 @@
-import ExtractionQcForm from '@/components/extractionQc/ExtractionQcForm'
+import QcResultsUploadForm from '@/components/qcResultsUpload/QcResultsUploadForm'
 import { localVue, mount, store } from '@support/testHelper'
 import { describe } from 'vitest'
 import * as QcResultsUpload from '@/services/traction/QcResultsUpload'
@@ -9,16 +9,16 @@ const evt = {
   },
 }
 
-describe('ExtractionQcForm.vue', () => {
-  let wrapper, extractionQcForm
+describe('QcResultsUploadForm.vue', () => {
+  let wrapper, form
 
   beforeEach(() => {
-    wrapper = mount(ExtractionQcForm, {
+    wrapper = mount(QcResultsUploadForm, {
       localVue,
       store,
       propsData: {},
     })
-    extractionQcForm = wrapper.vm
+    form = wrapper.vm
   })
 
   it('will have an upload button', () => {
@@ -27,16 +27,16 @@ describe('ExtractionQcForm.vue', () => {
 
   describe('#data', () => {
     it('has usedByOptions', () => {
-      expect(extractionQcForm.usedByOptions.length).toEqual(2)
+      expect(form.usedByOptions.length).toEqual(2)
     })
     it('has file', () => {
-      expect(extractionQcForm.file).toEqual(null)
+      expect(form.file).toEqual(null)
     })
     it('has usedBySelected', () => {
-      expect(extractionQcForm.usedBySelected).toEqual(null)
+      expect(form.usedBySelected).toEqual(null)
     })
     it('has busy', () => {
-      expect(extractionQcForm.busy).toEqual(null)
+      expect(form.busy).toEqual(null)
     })
     describe('file', () => {
       // In the test, this gives a warning suggesting that the
@@ -48,26 +48,26 @@ describe('ExtractionQcForm.vue', () => {
         }
 
         wrapper.setData({ file: mockFile })
-        expect(extractionQcForm.file).toEqual(mockFile)
+        expect(form.file).toEqual(mockFile)
       })
     })
     describe('usedBySelected', () => {
       it('gets the usedBySelected', () => {
         wrapper.setData({ usedBySelected: 'extraction' })
-        expect(extractionQcForm.usedBySelected).toEqual('extraction')
+        expect(form.usedBySelected).toEqual('extraction')
       })
     })
     describe('busy', () => {
       it('gets the busy', () => {
         wrapper.setData({ busy: true })
-        expect(extractionQcForm.busy).toEqual(true)
+        expect(form.busy).toEqual(true)
       })
     })
   })
 
   describe('#computed', () => {
     it('gets the api request', () => {
-      expect(extractionQcForm.qcResultUploadsRequest).toEqual(
+      expect(form.qcResultUploadsRequest).toEqual(
         store.getters.api.traction.qc_results_uploads.create,
       )
     })
@@ -75,9 +75,9 @@ describe('ExtractionQcForm.vue', () => {
 
   describe('#onSubmit', () => {
     it('calls postCSV', () => {
-      extractionQcForm.postCSV = vi.fn()
-      extractionQcForm.onSubmit(evt)
-      expect(extractionQcForm.postCSV).toBeCalled()
+      form.postCSV = vi.fn()
+      form.onSubmit(evt)
+      expect(form.postCSV).toBeCalled()
     })
   })
 
@@ -96,7 +96,7 @@ describe('ExtractionQcForm.vue', () => {
         usedBySelected: 'extraction',
         file: mockFile,
       })
-      extractionQcForm.showAlert = vi.fn()
+      form.showAlert = vi.fn()
 
       create = store.getters.api.traction.qc_results_uploads.create
     })
@@ -106,17 +106,14 @@ describe('ExtractionQcForm.vue', () => {
         .spyOn(QcResultsUpload, 'createQcResultsUploadResource')
         .mockImplementation(() => {})
 
-      await extractionQcForm.postCSV()
+      await form.postCSV()
 
       expect(createQcResultsUploadResource).toBeCalledWith(create, {
         csv: 'xxx',
         usedBySelected: 'extraction',
       })
-      expect(extractionQcForm.showAlert).toBeCalledWith(
-        'Successfully imported: fileName',
-        'success',
-      )
-      expect(extractionQcForm.busy).toEqual(false)
+      expect(form.showAlert).toBeCalledWith('Successfully imported: fileName', 'success')
+      expect(form.busy).toEqual(false)
     })
 
     it('handles a failed import', async () => {
@@ -124,14 +121,14 @@ describe('ExtractionQcForm.vue', () => {
         .spyOn(QcResultsUpload, 'createQcResultsUploadResource')
         .mockRejectedValue('This is an error msg')
 
-      await extractionQcForm.postCSV()
+      await form.postCSV()
 
       expect(createQcResultsUploadResource).toBeCalledWith(create, {
         csv: 'xxx',
         usedBySelected: 'extraction',
       })
-      expect(extractionQcForm.showAlert).toBeCalledWith('This is an error msg', 'danger')
-      expect(extractionQcForm.busy).toEqual(false)
+      expect(form.showAlert).toBeCalledWith('This is an error msg', 'danger')
+      expect(form.busy).toEqual(false)
     })
   })
 })

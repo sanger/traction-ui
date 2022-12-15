@@ -3,7 +3,7 @@ import Router from 'vue-router'
 import TractionDashboard from '@/views/TractionDashboard'
 import GeneralReception from '@/views/GeneralReception'
 import LabelPrinting from '@/views/LabelPrinting'
-import ExtractionQc from '@/views/ExtractionQc'
+import QcResultsUpload from '@/views/QcResultsUpload'
 import PageNotFound from '@/views/PageNotFound'
 import SaphyrView from '@/views/SaphyrView'
 import SaphyrReception from '@/views/saphyr/SaphyrReception'
@@ -50,10 +50,10 @@ export default new Router({
       component: LabelPrinting,
     },
     {
-      path: '/extraction-qc',
-      name: 'ExtractionQc',
+      path: '/qc-results-upload',
+      name: 'QcResultsUpload',
       meta: { page: 'QC Results Upload' },
-      component: ExtractionQc,
+      component: QcResultsUpload,
     },
     {
       path: '/saphyr',

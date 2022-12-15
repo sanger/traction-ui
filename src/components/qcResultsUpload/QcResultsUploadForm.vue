@@ -35,7 +35,7 @@ import Api from '@/mixins/Api'
 import { createQcResultsUploadResource } from '@/services/traction/QcResultsUpload'
 
 export default {
-  name: 'ExtractionQcForm',
+  name: 'QcResultsUploadForm',
   mixins: [Api],
   data() {
     return {
