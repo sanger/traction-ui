@@ -52,7 +52,7 @@ export default new Router({
     {
       path: '/extraction-qc',
       name: 'ExtractionQc',
-      meta: { page: 'Extraction QC' },
+      meta: { page: 'QC Results Upload' },
       component: ExtractionQc,
     },
     {

@@ -3,6 +3,12 @@ import { localVue, mount, store } from '@support/testHelper'
 import { describe } from 'vitest'
 import * as QcResultsUpload from '@/services/traction/QcResultsUpload'
 
+const evt = {
+  preventDefault: () => {
+    return {}
+  },
+}
+
 describe('ExtractionQcForm.vue', () => {
   let wrapper, extractionQcForm
 
@@ -100,7 +106,7 @@ describe('ExtractionQcForm.vue', () => {
         .spyOn(QcResultsUpload, 'createQcResultsUploadResource')
         .mockImplementation(() => {})
 
-      await extractionQcForm.postCSV()
+      await extractionQcForm.postCSV(evt)
 
       expect(createQcResultsUploadResource).toBeCalledWith(create, {
         csv: 'xxx',
@@ -118,7 +124,7 @@ describe('ExtractionQcForm.vue', () => {
         .spyOn(QcResultsUpload, 'createQcResultsUploadResource')
         .mockRejectedValue('This is an error msg')
 
-      await extractionQcForm.postCSV()
+      await extractionQcForm.postCSV(evt)
 
       expect(createQcResultsUploadResource).toBeCalledWith(create, {
         csv: 'xxx',
