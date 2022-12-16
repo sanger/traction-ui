@@ -12,6 +12,9 @@
       },
       {
         "name": "receptions"
+      },
+      {
+        "name": "qc_results_uploads"
       }
     ],
     "pipelines": [

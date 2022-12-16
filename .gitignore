@@ -43,4 +43,6 @@ coverage
 # Ignore the build stats file
 /stats.html
 .DS_Store
+
+# vscode
 .vscode
