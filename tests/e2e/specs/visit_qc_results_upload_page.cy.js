@@ -20,7 +20,6 @@ describe('Extraction QC page', () => {
   it('QcResultsUpload POST request is successful', () => {
     cy.get('#qc-results-upload-file').attachFile('qc-results-upload.csv')
 
-    cy.get('#upload-button').click()
     cy.intercept('/v1/qc_results_uploads', {
       statusCode: 201,
       body: {
@@ -29,29 +28,30 @@ describe('Extraction QC page', () => {
         },
       },
     })
+    cy.get('#upload-button').click()
+
     cy.contains('Successfully imported: qc-results-upload.csv')
   })
 
   it('QcResultsUpload POST is unsuccessful, unprocessable entity', () => {
     cy.get('#qc-results-upload-file').attachFile('qc-results-upload-failure.csv')
-    cy.get('#upload-button').click()
 
     cy.intercept('/v1/qc_results_uploads', {
       statusCode: 422,
       body: {
-        errors: {
-          errors: [
-            {
-              title: 'Missing required headers: Tissue Tube ID',
-              detail: 'csv_data - Missing required headers: Tissue Tube ID',
-              code: '100',
-              source: { pointer: '/data/attributes/csv_data' },
-              status: '422',
-            },
-          ],
-        },
+        errors: [
+          {
+            title: 'Missing required headers: Tissue Tube ID',
+            detail: 'csv_data - Missing required headers: Tissue Tube ID',
+            code: '100',
+            source: { pointer: '/data/attributes/csv_data' },
+            status: '422',
+          },
+        ],
       },
     })
+    cy.get('#upload-button').click()
+
     cy.contains(
       'Missing required headers: Tissue Tube ID csv_data - Missing required headers: Tissue Tube ID',
     )
