@@ -42,10 +42,21 @@ import SequencescapeLabwareTubeOnly from './sequencescapeLabwareTubeOnly'
 import SequencescapeLabwarePlateOnly from './sequencescapeLabwarePlateOnly'
 import SequencescapePlates from './sequencescapePlates'
 import TractionOntRequests from './tractionOntRequests'
+import TractionOntTagSets from './tractionOntTagSets.json'
 import TractionTubeWithContainerMaterials from './tractionTubeWithContainerMaterials'
 import TractionTubesWithPacbioPools from './tractionTubesWithPacbioPools'
 import TractionPlates from './tractionPlates'
 import AutoTagStore from './autoTagStore'
+import OntAutoTagStore from './ontAutoTagStore.json'
+import OntPlatesRequest from './ontPlatesRequest.json'
+import OntTubesRequest from './ontTubesRequest.json'
+import OntPlates from './ontPlates.json'
+import OntPlateRequest from './ontPlateRequest.json'
+import OntRequestsRequest from './ontRequestsRequest'
+import OntTubeRequest from './ontTubeRequest.json'
+import tractionOntLibraries from './tractionOntLibraries'
+import TractionOntPool from './tractionOntPool.json'
+import TractionOntPools from './tractionOntPools.json'
 import TractionPacbioSmrtLinkVersions from './tractionPacbioSmrtLinkVersions'
 
 export default {
@@ -92,10 +103,21 @@ export default {
   SequencescapeLabwarePlateOnly,
   SequencescapeLabwareTubeOnly,
   SequencescapePlates,
+  tractionOntLibraries,
   TractionOntRequests,
+  TractionOntTagSets,
+  TractionOntPool,
+  TractionOntPools,
   TractionTubeWithContainerMaterials,
   TractionTubesWithPacbioPools,
   TractionPlates,
   AutoTagStore,
+  OntAutoTagStore,
+  OntPlatesRequest,
+  OntTubesRequest,
+  OntPlates,
+  OntPlateRequest,
+  OntRequestsRequest,
+  OntTubeRequest,
   TractionPacbioSmrtLinkVersions,
 }

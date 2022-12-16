@@ -6,6 +6,7 @@ const flags = {
     dpl_277_enable_general_reception: { enabled: true },
     enable_custom_select: { enabled: true },
     enable_custom_pagination: { enabled: true },
+    dpl_279_ont_libraries_and_pools: { enabled: true },
   },
 }
 

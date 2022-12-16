@@ -60,10 +60,49 @@ const storeData = {
   },
 }
 
+const populateTagSetParameters = Data.TractionOntTagSets.data.data
+const storeTagSetData = {
+  8: {
+    id: '8',
+    type: 'tag_sets',
+    name: 'ONT_native',
+    uuid: null,
+    pipeline: 'ont',
+  },
+}
+
+const populateTagParameters = Data.TractionOntTagSets.data.included
+const storeTagData = {
+  385: {
+    id: '385',
+    type: 'tags',
+    oligo: 'CACAAAGACACCGACAACTTTCTT',
+    group_id: 'NB01',
+    set_name: 'ont',
+  },
+  386: {
+    id: '386',
+    type: 'tags',
+    oligo: 'ACAGACGACTACAAACGGAATCGA',
+    group_id: 'NB02',
+    set_name: 'ont',
+  },
+}
+
 export default {
   requests: {
     populateRequestsParameters,
     storeData,
     getterRequestReturn: Object.values(storeData),
+  },
+  tagSets: {
+    populateTagSetParameters,
+    storeTagSetData,
+    getterTagSetReturn: Object.values(storeTagSetData),
+  },
+  tags: {
+    populateTagParameters,
+    storeTagData,
+    getterTagReturn: Object.values(storeTagData),
   },
 }
