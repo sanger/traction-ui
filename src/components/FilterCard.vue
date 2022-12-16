@@ -11,14 +11,12 @@
           v-model="filterInput"
           type="search"
           placeholder="Type to Search"
-          label="Search value"
           class="w-1/2 mr-10"
         />
         <traction-select
           id="filterValue"
           v-model="filterValue"
           :options="filterOptions"
-          label="Search type"
           class="w-1/2"
         />
       </div>
