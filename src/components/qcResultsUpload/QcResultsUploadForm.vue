@@ -44,7 +44,7 @@ export default {
         { value: 'extraction', text: 'Extraction' },
       ],
       file: null,
-      usedBySelected: null,
+      usedBySelected: 'extraction',
       busy: null,
     }
   },
