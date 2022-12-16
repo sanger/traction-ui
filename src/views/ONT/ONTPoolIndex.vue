@@ -165,7 +165,21 @@ export default {
 
       this.showAlert(message, success ? 'success' : 'danger')
     },
+
+    async provider() {
+      try {
+        const { success, errors } = await this.setPools()
+        if (!success) {
+          throw errors
+        }
+      } catch (error) {
+        this.showAlert('Failed to get pools: ' + error.message, 'danger')
+      }
+    },
+
     ...mapActions('traction/ont', ['fetchOntPools']),
+    ...mapActions('traction/ont/pools', ['setPools']),
+    ...mapActions('printMyBarcode', ['createPrintJob']),
   },
 }
 </script>
