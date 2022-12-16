@@ -21,36 +21,11 @@ describe('QcResultsUploadForm.vue', () => {
     form = wrapper.vm
   })
 
-  it('will have an upload button', () => {
-    expect(wrapper.find('#upload-button').exists()).toBeTruthy()
-  })
-
   describe('#data', () => {
     it('has usedByOptions', () => {
       expect(form.usedByOptions.length).toEqual(2)
     })
-    it('has file', () => {
-      expect(form.file).toEqual(null)
-    })
-    it('has usedBySelected', () => {
-      expect(form.usedBySelected).toEqual(null)
-    })
-    it('has busy', () => {
-      expect(form.busy).toEqual(null)
-    })
-    describe('file', () => {
-      // In the test, this gives a warning suggesting that the
-      // BFormFile `multiple` property is true
-      // As it expects `v-model` to be an array
-      it('gets the file', () => {
-        const mockFile = {
-          async text() {},
-        }
 
-        wrapper.setData({ file: mockFile })
-        expect(form.file).toEqual(mockFile)
-      })
-    })
     describe('usedBySelected', () => {
       it('gets the usedBySelected', () => {
         wrapper.setData({ usedBySelected: 'extraction' })
