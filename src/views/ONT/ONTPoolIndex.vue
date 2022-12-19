@@ -35,6 +35,18 @@
         @filtered="onFiltered"
         @row-selected="onRowSelected"
       >
+
+      <template #cell(selected)="{ rowSelected }">
+        <template v-if="rowSelected">
+          <span>&check;</span>
+          <span class="sr-only">Selected</span>
+        </template>
+        <template v-else>
+          <span>&nbsp;</span>
+          <span class="sr-only">Not selected</span>
+        </template>
+      </template>
+
         <template #cell(actions)="row">
           <router-link
             data-action="edit-pool"
@@ -72,6 +84,16 @@
           </traction-card>
         </template>
       </traction-table>
+
+      <div class="clearfix">
+        <printerModal
+          ref="printerModal"
+          class="float-left"
+          :disabled="selected.length === 0"
+          @selectPrinter="printLabels($event)"
+        >
+        </printerModal>
+      </div>
     </DataFetcher>
   </flagged-feature>
 </template>
@@ -80,6 +102,7 @@
 import TableHelper from '@/mixins/TableHelper'
 import DataFetcher from '../../components/DataFetcher.vue'
 import FilterCard from '../../components/FilterCard.vue'
+import PrinterModal from '@/components/PrinterModal'
 import { mapActions, mapGetters } from 'vuex'
 import { getCurrentDate } from '@/lib/DateHelpers'
 
@@ -88,6 +111,7 @@ export default {
   components: {
     DataFetcher,
     FilterCard,
+    PrinterModal,
   },
   mixins: [TableHelper],
   data() {
@@ -165,7 +189,8 @@ export default {
 
       this.showAlert(message, success ? 'success' : 'danger')
     },
-
+    // Get all the libraries
+    // Provider function used by the bootstrap-vue table component
     async provider() {
       try {
         const { success, errors } = await this.setPools()
