@@ -75,7 +75,7 @@ describe('PacbioPoolLibraryEdit.vue', () => {
     })
 
     describe('when the user selects a tag', () => {
-      it('will updated the tag_id', async () => {
+      it('will update the tag_id', async () => {
         const options = wrapper.find('[data-type=tag-list]').findAll('option')
         await options.at(1).setSelected()
         expect(store.state.traction.pacbio.poolCreate.libraries['_1'].tag_id).toEqual('1')
