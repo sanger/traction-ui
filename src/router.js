@@ -3,6 +3,7 @@ import Router from 'vue-router'
 import TractionDashboard from '@/views/TractionDashboard'
 import GeneralReception from '@/views/GeneralReception'
 import LabelPrinting from '@/views/LabelPrinting'
+import QcResultsUpload from '@/views/QcResultsUpload'
 import PageNotFound from '@/views/PageNotFound'
 import SaphyrView from '@/views/SaphyrView'
 import SaphyrReception from '@/views/saphyr/SaphyrReception'
@@ -18,10 +19,12 @@ import PacbioLibraryIndex from '@/views/pacbio/PacbioLibraryIndex'
 import PacbioPoolIndex from '@/views/pacbio/PacbioPoolIndex'
 import PacbioRunIndex from '@/views/pacbio/PacbioRunIndex'
 import PacbioRunShow from '@/views/pacbio/PacbioRunShow'
-import ONT from '@/views/ONT'
-import ONTSampleIndex from '@/views/ONT/ONTSampleIndex.vue'
-import PacbioReceptionSequencescape from '@/views/pacbio/PacbioReceptionSequencescape'
 import PacbioPoolCreate from '@/views/pacbio/PacbioPoolCreate'
+import ONT from '@/views/ONT'
+import ONTSampleIndex from '@/views/ONT/ONTSampleIndex'
+import ONTPoolCreate from '@/views/ONT/ONTPoolCreate'
+import ONTPoolIndex from '@/views/ONT/ONTPoolIndex'
+import PacbioReceptionSequencescape from '@/views/pacbio/PacbioReceptionSequencescape'
 
 export default new Router({
   routes: [
@@ -47,6 +50,12 @@ export default new Router({
       name: 'LabelPrinting',
       meta: { page: 'Label Printing' },
       component: LabelPrinting,
+    },
+    {
+      path: '/qc-results-upload',
+      name: 'QcResultsUpload',
+      meta: { page: 'QC Results Upload' },
+      component: QcResultsUpload,
     },
     {
       path: '/saphyr',
@@ -157,6 +166,19 @@ export default new Router({
           name: 'ONTSampleIndex',
           component: ONTSampleIndex,
           meta: { page: 'Samples' },
+        },
+        {
+          path: 'pool/:id',
+          name: 'ONTPoolCreate',
+          component: ONTPoolCreate,
+          props: true,
+          meta: { page: 'Pool' },
+        },
+        {
+          path: 'pools',
+          name: 'ONTPoolIndex',
+          component: ONTPoolIndex,
+          meta: { page: 'Pools' },
         },
       ],
     },

@@ -3,7 +3,7 @@ import { validate, payload, valid } from '@/store/traction/pacbio/poolCreate/poo
 import { handleResponse } from '@/api/ResponseHelper'
 import { wellFor, wellToIndex } from './wellHelpers'
 
-const sourceRegex = /^(?<barcode>\w+)(-(?<wellName>\w[0-9]{1,2})){0,1}$/
+const sourceRegex = /^(?<barcode>[\w-]+)(:(?<wellName>\w[0-9]{1,2})){0,1}$/
 
 const errorFor = ({ lines, records }, message) => `Library ${records} on line ${lines}: ${message}`
 const csvLogger = (commit, info, level) => (message) =>
@@ -75,7 +75,7 @@ const buildTagAttributes = ({ getters, tag, error }) => {
 }
 
 const barcodeNotFound = (barcode) =>
-  `${barcode} could not be found. Barcode should be in the format barcode-well for plates (eg. DN123S-A1) or just barcode for tubes.`
+  `${barcode} could not be found. Barcode should be in the format barcode:well for plates (eg. DN123S:A1) or just barcode for tubes.`
 
 const requestsForPlate = ({ barcode, wellName, plates, commit, wells }) => {
   const plate = Object.values(plates).find((plate) => plate.barcode == barcode)

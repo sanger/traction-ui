@@ -9,9 +9,12 @@
             <div class="text-white text-2xl">Traction</div>
             <TractionLink name="Home" link="/dashboard" view-type="2" />
             <TractionLink name="Label Printing" link="/label-printing" view-type="2" />
-            <flagged-feature name="dpl_277_enable_general_reception"
-              ><TractionLink name="Reception" link="/reception" view-type="2"
-            /></flagged-feature>
+            <flagged-feature name="dpl_478_enable_qc_results_upload">
+              <TractionLink name="QC Results Upload" link="/qc-results-upload" view-type="2" />
+            </flagged-feature>
+            <flagged-feature name="dpl_277_enable_general_reception">
+              <TractionLink name="Reception" link="/reception" view-type="2" />
+            </flagged-feature>
           </div>
         </div>
       </div>

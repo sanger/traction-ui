@@ -12,6 +12,9 @@
       },
       {
         "name": "receptions"
+      },
+      {
+        "name": "qc_results_uploads"
       }
     ],
     "pipelines": [
@@ -89,6 +92,18 @@
         "resources": [
           {
             "name": "requests"
+          },
+          {
+            "name": "plates"
+          },
+          {
+            "name": "tubes"
+          },
+          {
+            "name": "tag_sets"
+          },
+          {
+            "name": "pools"
           }
         ]
       }
