@@ -125,6 +125,7 @@ export default {
     notify: {
       type: Function,
       required: true,
+      default: () => {},
     },
   },
   data() {
