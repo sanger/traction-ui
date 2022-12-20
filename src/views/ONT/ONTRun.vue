@@ -15,9 +15,9 @@
 </template>
 
 <script>
-import ONTRunInformation from '@/components/ont/ONTRunInformation'
-import ONTAddPools from '@/components/ont/ONTAddPools'
-import ONTRunFlowcell from '@/components/ont/ONTRunFlowcell'
+import ONTRunInformation from '@/components/ont/runs/ONTRunInformation'
+import ONTAddPools from '@/components/ont/runs/ONTAddPools'
+import ONTRunFlowcell from '@/components/ont/runs/ONTRunFlowcell'
 
 export default {
   name: 'ONTRun',
