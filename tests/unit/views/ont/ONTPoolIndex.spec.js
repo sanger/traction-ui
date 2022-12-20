@@ -6,7 +6,7 @@ import flushPromises from 'flush-promises'
 describe('OntPoolIndex', () => {
   let wrapper, pools
 
-  beforeEach(() => {
+  beforeEach( async() => {
     // Ideally I'd love to mock the http response here, but swrv seems to tun
     // into problems mounting via-vue test utils, and `getCurrentInstance` fails
     // to find the instance
@@ -20,23 +20,25 @@ describe('OntPoolIndex', () => {
         },
       })),
     }))
-  })
 
-  it('displays each of the pools', async () => {
     const get = vi.spyOn(store.state.api.traction.ont.pools, 'get')
     get.mockResolvedValue(Data.TractionOntPools)
-    const expectedPools = Data.TractionOntPools.data.data.length
-    const wrapper = mount(ONTPoolIndex, {
+    wrapper = mount(ONTPoolIndex, {
       localVue,
       store,
       router,
     })
     await flushPromises()
+  })
+
+  it('displays each of the pools', async () => {
+    const expectedPools = Data.TractionOntPools.data.data.length
     expect(wrapper.findAll('tbody>tr').length).toEqual(expectedPools)
   })
 
   describe('Printing labels', () => {
     beforeEach(() => {
+      pools = wrapper.vm
       pools.selected = [
         { id: 1, barcode: 'TRAC-1', source_identifier: 'SQSC-1' },
         { id: 2, barcode: 'TRAC-2', source_identifier: 'SQSC-2' },

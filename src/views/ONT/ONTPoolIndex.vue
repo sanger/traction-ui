@@ -35,17 +35,16 @@
         @filtered="onFiltered"
         @row-selected="onRowSelected"
       >
-
-      <template #cell(selected)="{ rowSelected }">
-        <template v-if="rowSelected">
-          <span>&check;</span>
-          <span class="sr-only">Selected</span>
+        <template #cell(selected)="{ rowSelected }">
+          <template v-if="rowSelected">
+            <span>&check;</span>
+            <span class="sr-only">Selected</span>
+          </template>
+          <template v-else>
+            <span>&nbsp;</span>
+            <span class="sr-only">Not selected</span>
+          </template>
         </template>
-        <template v-else>
-          <span>&nbsp;</span>
-          <span class="sr-only">Not selected</span>
-        </template>
-      </template>
 
         <template #cell(actions)="row">
           <router-link
@@ -117,6 +116,7 @@ export default {
   data() {
     return {
       fields: [
+        { key: 'selected', label: '' },
         { key: 'id', label: 'Pool ID', sortable: true, tdClass: 'pool-id' },
         { key: 'barcode', label: 'Pool Barcode', sortable: true, tdClass: 'barcode' },
         { key: 'source_identifier', label: 'Source', sortable: true, tdClass: 'source-identifier' },
@@ -155,6 +155,11 @@ export default {
   },
   computed: {
     ...mapGetters('traction/ont', ['pools']),
+  },
+  created() {
+    // When this component is created (the 'created' lifecycle hook is called), we need to get the
+    // items for the table
+    this.provider()
   },
   methods: {
     /* 
