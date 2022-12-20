@@ -5,11 +5,11 @@
     </traction-list-group>
   </div>
 </template>
-
 <script>
 import TableHelper from '@/mixins/TableHelper'
 import { createNamespacedHelpers } from 'vuex'
 import Tube from '@/components/pacbio/PacbioPoolTubeItem'
+
 const { mapActions, mapGetters } = createNamespacedHelpers('traction/pacbio/pools')
 
 export default {
@@ -39,14 +39,12 @@ export default {
   },
 }
 </script>
-
 <style scoped>
 .pools {
   border: solid;
   border-width: 1px;
   padding: 20px;
 }
-
 .list-group {
   max-height: 400px;
   overflow-y: auto;

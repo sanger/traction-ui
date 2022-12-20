@@ -62,7 +62,7 @@
         </div>
       </div>
     </traction-section>
-    <PacbioPoolLibraryList :auto-tag="autoTag" />
+    <PacbioPoolLibraryList :auto-tag="autoTag" :validated="validated" :notify="onFieldUpdate" />
     <div class="text-right py-8">
       <traction-button
         v-if="!persisted"
@@ -87,14 +87,11 @@
     </div>
   </div>
 </template>
-
 <script>
 import PacbioPoolLibraryList from '@/components/pacbio/PacbioPoolLibraryList'
 import { createNamespacedHelpers } from 'vuex'
 import { eachRecord } from '@/lib/csv/pacbio'
-
 const { mapGetters, mapActions } = createNamespacedHelpers('traction/pacbio/poolCreate')
-
 export default {
   name: 'PoolEdit',
   components: {
@@ -105,6 +102,7 @@ export default {
       busy: false,
       autoTag: false,
       parsedFile: null,
+      validated: true,
     }
   },
   computed: {
@@ -140,6 +138,7 @@ export default {
     },
     update() {
       this.busy = true
+      this.validated = true
       this.updatePool().then(({ success, errors }) => {
         success
           ? this.showAlert(`Pool successfully updated`, 'success', 'pool-create-message')
@@ -152,7 +151,6 @@ export default {
         this.parsedFile = null
         return
       }
-
       try {
         const csv = await newFile.text()
         eachRecord(csv, this.updateLibraryFromCsvRecord)
@@ -163,13 +161,17 @@ export default {
         this.parsedFile = false
       }
     },
+    // Function passed to child components in notify prop, to be used when any attribute
+    // in the child component is changed. The validated flag is reset to true when the user
+    // clicks the update button and the changed values are checked and saved.
+    onFieldUpdate() {
+      this.validated = false
+    },
   },
 }
 </script>
-
 <style scoped lang="scss">
 @import 'src/styles/components.scss';
-
 .button-text {
   padding-right: 2px;
   position: relative;
@@ -198,7 +200,6 @@ export default {
 .template-prep-kit-box-barcode {
   width: 120px;
 }
-
 .col {
   // See https://developer.mozilla.org/en-US/docs/Web/CSS/overflow-anchor/Guide_to_scroll_anchoring
   // When the DOM content changes, the browser uses a 'scroll-anchor' to try and
