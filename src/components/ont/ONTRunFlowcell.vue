@@ -12,9 +12,7 @@
  */
 export default {
   name: 'ONTRunFlowcell',
-  computed: {
-  },
-  methods: {
-  },
+  computed: {},
+  methods: {},
 }
 </script>

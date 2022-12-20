@@ -12,9 +12,7 @@
  */
 export default {
   name: 'ONTRunInformation',
-  computed: {
-  },
-  methods: {
-  },
+  computed: {},
+  methods: {},
 }
 </script>
