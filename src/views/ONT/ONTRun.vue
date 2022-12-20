@@ -24,10 +24,10 @@ export default {
   components: {
     ONTRunInformation,
     ONTAddPools,
-    ONTRunFlowcell
+    ONTRunFlowcell,
   },
   data() {
-    return { }
+    return {}
   },
   created() {
     if (this.$route.params.id !== 'new') {

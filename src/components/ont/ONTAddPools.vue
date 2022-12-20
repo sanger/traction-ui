@@ -12,9 +12,7 @@
  */
 export default {
   name: 'ONTAddPools',
-  computed: {
-  },
-  methods: {
-  },
+  computed: {},
+  methods: {},
 }
 </script>
