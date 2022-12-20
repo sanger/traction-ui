@@ -1,8 +1,8 @@
-- Add all ONT Run components to within /ont/run folder, and update import statement
+- Add all ONT Run components to within /ont/run folder, and update import statement [DONE as28]
 
 # Store
 
-- Create ont folder in store, with the relevant vuex riles `src/store/traction/ont/runs/ <actions>/<getters> etc`
+- Create ont folder in store, with the relevant vuex riles `src/store/traction/ont/runs/ <actions>/<getters> etc` [DONE as28]
 - Create an store Run index file, pulling in run module
 - Add currentRun object to the state.js file
 
