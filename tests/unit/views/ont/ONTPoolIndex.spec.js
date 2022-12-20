@@ -6,7 +6,7 @@ import flushPromises from 'flush-promises'
 describe('OntPoolIndex', () => {
   let wrapper, pools
 
-  beforeEach( async() => {
+  beforeEach(async () => {
     // Ideally I'd love to mock the http response here, but swrv seems to tun
     // into problems mounting via-vue test utils, and `getCurrentInstance` fails
     // to find the instance
