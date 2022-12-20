@@ -35,6 +35,17 @@
         @filtered="onFiltered"
         @row-selected="onRowSelected"
       >
+        <template #cell(selected)="{ rowSelected }">
+          <template v-if="rowSelected">
+            <span>&check;</span>
+            <span class="sr-only">Selected</span>
+          </template>
+          <template v-else>
+            <span>&nbsp;</span>
+            <span class="sr-only">Not selected</span>
+          </template>
+        </template>
+
         <template #cell(actions)="row">
           <router-link
             data-action="edit-pool"
@@ -72,6 +83,16 @@
           </traction-card>
         </template>
       </traction-table>
+
+      <div class="clearfix">
+        <printerModal
+          ref="printerModal"
+          class="float-left"
+          :disabled="selected.length === 0"
+          @selectPrinter="printLabels($event)"
+        >
+        </printerModal>
+      </div>
     </DataFetcher>
   </flagged-feature>
 </template>
@@ -80,18 +101,22 @@
 import TableHelper from '@/mixins/TableHelper'
 import DataFetcher from '@/components/DataFetcher.vue'
 import FilterCard from '@/components/FilterCard.vue'
+import PrinterModal from '@/components/PrinterModal'
 import { mapActions, mapGetters } from 'vuex'
+import { getCurrentDate } from '@/lib/DateHelpers'
 
 export default {
   name: 'OntPoolIndex',
   components: {
     DataFetcher,
     FilterCard,
+    PrinterModal,
   },
   mixins: [TableHelper],
   data() {
     return {
       fields: [
+        { key: 'selected', label: '' },
         { key: 'id', label: 'Pool ID', sortable: true, tdClass: 'pool-id' },
         { key: 'barcode', label: 'Barcode', sortable: true, tdClass: 'barcode' },
         { key: 'source_identifier', label: 'Source', sortable: true, tdClass: 'source-identifier' },
@@ -132,8 +157,60 @@ export default {
   computed: {
     ...mapGetters('traction/ont', ['pools']),
   },
+  created() {
+    // When this component is created (the 'created' lifecycle hook is called), we need to get the
+    // items for the table
+    this.provider()
+  },
   methods: {
+    /* 
+      create the labels needed for the print job
+      each label will be in the format { first_line: pipeline - type, second_line: current date, 
+      third_line: barcode, fourth_line: source, label_name: }
+      @returns {Array[{Object}, {Object} ...]}
+    */
+    createLabels() {
+      const date = getCurrentDate()
+      return this.selected.map(({ barcode, source_identifier }) => {
+        return {
+          barcode,
+          first_line: 'Ont - Pool',
+          second_line: date,
+          third_line: barcode,
+          fourth_line: source_identifier,
+          label_name: 'main_label',
+        }
+      })
+    },
+    /*
+      creates the print job and shows a success or failure alert
+      @param {String} printerName The name of the printer to send the print job to
+    */
+    async printLabels(printerName) {
+      const { success, message = {} } = await this.createPrintJob({
+        printerName,
+        labels: this.createLabels(),
+        copies: 1,
+      })
+
+      this.showAlert(message, success ? 'success' : 'danger')
+    },
+    // Get all the libraries
+    // Provider function used by the bootstrap-vue table component
+    async provider() {
+      try {
+        const { success, errors } = await this.setPools()
+        if (!success) {
+          throw errors
+        }
+      } catch (error) {
+        this.showAlert('Failed to get pools: ' + error.message, 'danger')
+      }
+    },
+
     ...mapActions('traction/ont', ['fetchOntPools']),
+    ...mapActions('traction/ont/pools', ['setPools']),
+    ...mapActions('printMyBarcode', ['createPrintJob']),
   },
 }
 </script>
