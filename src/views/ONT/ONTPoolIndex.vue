@@ -99,8 +99,8 @@
 
 <script>
 import TableHelper from '@/mixins/TableHelper'
-import DataFetcher from '../../components/DataFetcher.vue'
-import FilterCard from '../../components/FilterCard.vue'
+import DataFetcher from '@/components/DataFetcher.vue'
+import FilterCard from '@/components/FilterCard.vue'
 import PrinterModal from '@/components/PrinterModal'
 import { mapActions, mapGetters } from 'vuex'
 import { getCurrentDate } from '@/lib/DateHelpers'
