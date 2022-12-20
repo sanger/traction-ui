@@ -95,6 +95,11 @@ import { eachRecord } from '@/lib/csv/pacbio'
 
 const { mapGetters, mapActions } = createNamespacedHelpers('traction/ont')
 
+/**
+ * # OntPoolEdit
+ *
+ * Displays metadata about the current pool in the ont pooling store
+ */
 export default {
   name: 'OntPoolEdit',
   components: {
@@ -147,6 +152,7 @@ export default {
         this.busy = false
       })
     },
+    // Allows users to upload a file to autopopulate the pool's selected libraries
     async uploadFile(newFile) {
       if (newFile === null) {
         this.parsedFile = null
@@ -166,40 +172,3 @@ export default {
   },
 }
 </script>
-
-<style scoped lang="scss">
-@import 'src/styles/components.scss';
-
-.button-text {
-  padding-right: 2px;
-  position: relative;
-  top: 2px;
-}
-.custom-select,
-.form-control {
-  font-size: 0.8em;
-}
-.pool-edit {
-  padding-bottom: 5px;
-  padding-top: 5px;
-}
-.td-empty {
-  width: 110px;
-}
-.barcode {
-  width: 250px;
-  font-size: 0.8em;
-  font-weight: bold;
-  text-align: right;
-}
-.pool-attribute {
-  width: 90px;
-}
-.template-prep-kit-box-barcode {
-  width: 120px;
-}
-
-.col {
-  overflow-anchor: none;
-}
-</style>

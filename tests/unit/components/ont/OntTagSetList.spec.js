@@ -30,9 +30,7 @@ describe('OntTagSetList', () => {
       const options = wrapper.find('[data-type=tag-set-list]').findAll('option')
       await options.at(1).setSelected()
 
-      wrapper.vm.$nextTick(() => {
-        expect(store.state.traction.ont.selected.tagSet.id).toEqual(tagSets['1'].id)
-      })
+      expect(store.state.traction.ont.selected.tagSet.id).toEqual(tagSets['1'].id)
     })
   })
 

@@ -33,6 +33,11 @@ import { createNamespacedHelpers } from 'vuex'
 
 const { mapGetters, mapMutations, mapActions } = createNamespacedHelpers('traction/ont')
 
+/**
+ * # OntTubeSelectedList
+ *
+ * Displays a list of tube requests that are in the ont selected store
+ */
 export default {
   name: 'OntTubeSelectedList',
   data() {
@@ -78,15 +83,3 @@ export default {
   },
 }
 </script>
-
-<style scoped lang="scss">
-@import 'src/styles/components.scss';
-.wrapper {
-  overflow: auto;
-  display: flex;
-  flex-wrap: wrap;
-}
-.wrapper > div {
-  width: 50%;
-}
-</style>

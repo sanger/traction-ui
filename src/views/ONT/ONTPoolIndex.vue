@@ -99,8 +99,8 @@
 
 <script>
 import TableHelper from '@/mixins/TableHelper'
-import DataFetcher from '../../components/DataFetcher.vue'
-import FilterCard from '../../components/FilterCard.vue'
+import DataFetcher from '@/components/DataFetcher.vue'
+import FilterCard from '@/components/FilterCard.vue'
 import PrinterModal from '@/components/PrinterModal'
 import { mapActions, mapGetters } from 'vuex'
 import { getCurrentDate } from '@/lib/DateHelpers'
@@ -118,7 +118,7 @@ export default {
       fields: [
         { key: 'selected', label: '' },
         { key: 'id', label: 'Pool ID', sortable: true, tdClass: 'pool-id' },
-        { key: 'barcode', label: 'Pool Barcode', sortable: true, tdClass: 'barcode' },
+        { key: 'barcode', label: 'Barcode', sortable: true, tdClass: 'barcode' },
         { key: 'source_identifier', label: 'Source', sortable: true, tdClass: 'source-identifier' },
         { key: 'volume', label: 'Volume', sortable: true, tdClass: 'volume' },
         { key: 'concentration', label: 'Concentration', sortable: true, tdClass: 'concentration' },
@@ -141,6 +141,7 @@ export default {
       filterOptions: [
         { value: '', text: '' },
         { value: 'id', text: 'Pool ID' },
+        { value: 'barcode', text: 'Barcode' },
         // Need to specify filters in json api resources if we want more filters
       ],
       primary_key: 'id',

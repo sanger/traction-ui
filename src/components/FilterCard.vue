@@ -11,14 +11,12 @@
           v-model="filterInput"
           type="search"
           placeholder="Type to Search"
-          label="Search value"
           class="w-1/2 mr-10"
         />
         <traction-select
           id="filterValue"
           v-model="filterValue"
           :options="filterOptions"
-          label="Search type"
           class="w-1/2"
         />
       </div>
@@ -34,13 +32,30 @@
   </div>
 </template>
 <script>
+/**
+ * # FilterCard
+ *
+ * This component contains elements required to perform a filtered search to traction-service.
+ *
+ * @example
+ * <template>
+ *     <FilterCard :fetcher="fetchServiceData" :filter-options=[{ value: '', text: ''}] />
+ * </template>
+ */
 export default {
   name: 'FilterCard',
   props: {
+    // A method that performs the required data fetch
     fetcher: {
       type: Function,
       required: true,
     },
+    // A list of filters to filter the fetcher method on
+    // In the format
+    // [
+    //    { value: '', text: '' },
+    //    { value: 'id', text: 'id' }
+    // ]
     filterOptions: {
       type: Array,
       required: true,

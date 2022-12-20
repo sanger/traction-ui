@@ -1,7 +1,7 @@
 import { handleResponse } from '@/api/ResponseHelper'
 /*
   Generates a reception resource in traction
-  @param request: {Function} Function to make a request to the taction
+  @param request: {Function} Function to make a request to the Traction
   receptions controller
   @param source: {string} The source from which the samples were imported.
   Usually prefixed with traction-ui to disambiguate from any potential direct import

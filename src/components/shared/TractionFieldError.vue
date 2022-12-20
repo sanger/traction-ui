@@ -2,7 +2,11 @@
   <div class="flex flex-col">
     <div class="flex flex-row">
       <slot />
-      <div v-if="withIcon" class="flex ml-1 items-center justify-center">
+      <div
+        v-if="withIcon"
+        class="flex ml-1 items-center justify-center"
+        :data-attribute="dataAttribute + '-icon'"
+      >
         <traction-result-icon :result="`${error.length ? 'fail' : 'pass'}`" />
       </div>
     </div>

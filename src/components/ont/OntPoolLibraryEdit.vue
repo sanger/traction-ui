@@ -13,7 +13,7 @@
         data-type="tag-list"
         :options="tagListOptions"
         :state="errorsFor('tag_id')?.length > 0"
-        class="tag-id"
+        class="tag-id flex w-96"
       ></traction-select>
       <traction-invalid-feedback data-attribute="tag-id-error">
         {{ errorsFor('tag_id') }}
@@ -91,6 +91,11 @@ const librarySetter = (attr) => {
     },
   }
 }
+/**
+ * # OntPoolLibraryEdit
+ *
+ * Displays a library from the ont store pool libraies
+ */
 export default {
   name: 'OntPoolLibraryEdit',
   props: {
@@ -152,7 +157,6 @@ export default {
   },
 }
 </script>
-
 <style scoped lang="scss">
 td,
 .custom-select,

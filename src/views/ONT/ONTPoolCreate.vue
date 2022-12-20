@@ -2,7 +2,7 @@
   <flagged-feature name="dpl_279_ont_libraries_and_pools">
     <DataFetcher id="pool" :fetcher="provider">
       <div class="flex flex-row">
-        <div class="flex flex-col w-1/2 px-4">
+        <div class="flex flex-col w-1/2 p-5">
           <traction-menu :border="true">
             <traction-menu-item
               v-for="(tabTitle, index) in tabTitles"
@@ -81,10 +81,8 @@ export default {
       this.sourceIndex = indx
     },
     async provider() {
-      this.setPoolData(this.$route.params.id)
-      return await this.fetchOntTagSets().then((res) => {
-        return res
-      })
+      await this.setPoolData(this.$route.params.id)
+      return await this.fetchOntTagSets().then((res) => res)
     },
     ...mapActions(['findOntPlate', 'findOntTube', 'fetchOntTagSets', 'setPoolData']),
   },
