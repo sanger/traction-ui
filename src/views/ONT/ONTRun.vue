@@ -1,14 +1,21 @@
 <template>
-  <div id="pool">
-    <div class="flex flex-row">
-      <ONTRunInformation></ONTRunInformation>
-    </div>
-    <div class="flex flex-row">
-      <div class="flex flex-col w-1/2 px-4">
-        <ONTAddPools></ONTAddPools>
+  <div id="ontrun">
+    <router-link :to="{ name: 'ONTRuns' }">
+      <traction-button id="backToRunsButton" class="float-right">Back</traction-button>
+    </router-link>
+    <div>
+      <div class="flex flex-row">
+        <div class="flex flex-col w-1/2">
+          <ONTRunInformation></ONTRunInformation>
+        </div>
       </div>
-      <div class="flex flex-col w-1/2 mt-6 gap-y-4">
-        <ONTRunFlowcell></ONTRunFlowcell>
+      <div class="flex flex-row">
+        <div class="flex flex-col w-1/2">
+          <ONTAddPools></ONTAddPools>
+        </div>
+        <div class="flex flex-col w-1/2">
+          <ONTRunFlowcell></ONTRunFlowcell>
+        </div>
       </div>
     </div>
   </div>
@@ -31,6 +38,7 @@ export default {
   },
   created() {
     if (this.$route.params.id !== 'new') {
+
     }
   },
   methods: {
