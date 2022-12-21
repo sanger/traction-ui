@@ -10,11 +10,14 @@
         </div>
       </div>
       <div class="flex flex-row">
-        <div class="flex flex-col w-1/2">
+        <div class="flex flex-col">
           <ONTAddPools></ONTAddPools>
         </div>
         <div class="flex flex-col w-1/2">
-          <ONTRunFlowcell></ONTRunFlowcell>
+          <ONTRunInstrumentFlowcells
+            :flowcell-num-rows="numFlowCellRows"
+            :flowcell-num-columns="numFlowCellColumns"
+          ></ONTRunInstrumentFlowcells>
         </div>
       </div>
     </div>
@@ -24,22 +27,30 @@
 <script>
 import ONTRunInformation from '@/components/ont/runs/ONTRunInformation'
 import ONTAddPools from '@/components/ont/runs/ONTAddPools'
-import ONTRunFlowcell from '@/components/ont/runs/ONTRunFlowcell'
+import ONTRunInstrumentFlowcells from '@/components/ont/runs/ONTRunInstrumentFlowcells'
 
 export default {
   name: 'ONTRun',
   components: {
     ONTRunInformation,
     ONTAddPools,
-    ONTRunFlowcell,
+    ONTRunInstrumentFlowcells,
   },
   data() {
     return {}
   },
+  computed: {
+    numFlowCellRows() {
+      // TODO: fetch this from instrument in run
+      return 8
+    },
+    numFlowCellColumns() {
+      // TODO: fetch this from instrument in run
+      return 3
+    },
+  },
   created() {
-    if (this.$route.params.id !== 'new') {
-
-    }
+    if (this.$route.params.id !== 'new') {}
   },
   methods: {
     alertOnFail({ success, errors }) {
