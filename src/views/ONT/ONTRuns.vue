@@ -6,14 +6,12 @@
       responsive
       show-empty
       small
-      :items="mockRuns"
+      :items="runs"
       :fields="fields"
-      :sort-by.sync="sortBy"
-      :sort-desc.sync="sortDesc"
       tbody-tr-class="run"
     ></traction-table>
 
-    <span class="font-weight-bold">Total records: {{ mockRuns.length }}</span>
+    <span class="font-weight-bold">Total records: {{ runs.length }}</span>
 
     <div class="clearfix">
       <traction-button id="newRun" class="float-left" theme="create" @click="redirectToRun()"
@@ -44,31 +42,30 @@ export default {
         },
         { key: 'created_at', label: 'Created at', sortable: true },
       ],
-      sortBy: 'created_at',
-      sortDesc: true,
       mockRuns: [
         { id: 1, name: 'arun', state: 'Active', instrument_name: 'bob', created_at: '1/1/1' },
       ],
     }
   },
   computed: {
-    // ...mapGetters('traction/ont/runs', ['runs']),
+    ...mapGetters('traction/ont/runs', ['runs']),
   },
   created() {
-    // this.provider()
+    this.provider()
   },
   methods: {
-    // async provider() {
-    //   try {
-    //     await this.setRuns()
-    //   } catch (error) {
-    //     this.showAlert('Failed to get runs: ' + error.message, 'danger')
-    //   }
-    // },
+    async provider() {
+      try {
+        // setRuns is currently mocking the data, until backend is complete
+        await this.setRuns()
+      } catch (error) {
+        this.showAlert('Failed to get runs: ' + error.message, 'danger')
+      }
+    },
     redirectToRun(runId) {
       this.$router.push({ path: `/ont/run/${runId || 'new'}` })
     },
-    // ...mapActions('traction/ont/runs', ['setRuns']),
+    ...mapActions('traction/ont/runs', ['setRuns']),
   },
 }
 </script>

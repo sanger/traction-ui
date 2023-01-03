@@ -1,4 +1,4 @@
-import ONTPoolCreate from '@/views/ONT/ONTPoolCreate.vue'
+import ONTPoolCreate from '@/views/ont/ONTPoolCreate.vue'
 import { mount, localVue, store, Data, router } from '@support/testHelper'
 import flushPromises from 'flush-promises'
 import { expect } from 'vitest'

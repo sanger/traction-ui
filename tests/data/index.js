@@ -54,6 +54,7 @@ import OntPlates from './ontPlates.json'
 import OntPlateRequest from './ontPlateRequest.json'
 import OntRequestsRequest from './ontRequestsRequest'
 import OntTubeRequest from './ontTubeRequest.json'
+import OntRuns from './ontRuns.json'
 import tractionOntLibraries from './tractionOntLibraries'
 import TractionOntPool from './tractionOntPool.json'
 import TractionOntPools from './tractionOntPools.json'
@@ -114,10 +115,11 @@ export default {
   AutoTagStore,
   OntAutoTagStore,
   OntPlatesRequest,
-  OntTubesRequest,
   OntPlates,
   OntPlateRequest,
   OntRequestsRequest,
+  OntRuns,
   OntTubeRequest,
+  OntTubesRequest,
   TractionPacbioSmrtLinkVersions,
 }

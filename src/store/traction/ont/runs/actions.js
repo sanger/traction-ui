@@ -1,13 +1,59 @@
-// import handlePromise from '@/api/PromiseHelper'
+import handlePromise from '@/api/PromiseHelper'
 // import * as ONTRun from '@/api/ONTRun'
 
 const setRuns = async ({ commit, getters }) => {
-  // let request = getters.runRequest
-  // let promise = request.get({ include: 'plate.wells.pools.tube' })
+  let request = getters.runRequest
+  // let promise = request.get()
   // let response = await handlePromise(promise)
   // if (response.successful && !response.empty) {
-  //   let runs = response.deserialize.runs
-  //   commit('setRuns', runs)
+  // let runs = response.deserialize.runs
+
+  // mock out data until backend ready
+  const runs = [
+    {
+      id: 1,
+      name: 'anothername',
+      state: 'started',
+      instrument_name: 'MinIon',
+      created_at: '12/09/2019 02:22',
+    },
+    {
+      id: 2,
+      name: 'anothername1',
+      state: 'completed',
+      instrument_name: 'MinIon',
+      created_at: '10/09/2019 02:22',
+    },
+    {
+      id: 3,
+      name: 'anothername2',
+      state: 'cancelled',
+      instrument_name: 'MinIon',
+      created_at: '10/08/2019 02:22',
+    },
+    {
+      id: 4,
+      name: 'anothername3',
+      state: 'completed',
+      instrument_name: 'MinIon',
+      created_at: '10/07/2019 02:22',
+    },
+    {
+      id: 5,
+      name: 'anothername4',
+      state: 'cancelled',
+      instrument_name: 'MinIon',
+      created_at: '10/01/2019 02:22',
+    },
+    {
+      id: 6,
+      name: 'anothername5',
+      state: 'completed',
+      instrument_name: 'Gridion',
+      created_at: '10/02/2022 02:22',
+    },
+  ]
+  commit('setRuns', runs)
   // }
   // return response
 }

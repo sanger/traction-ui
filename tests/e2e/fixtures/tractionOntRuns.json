@@ -1,0 +1,82 @@
+{
+  "data": [
+    {
+      "id": "1",
+      "type": "runs",
+      "links": {
+        "self": "http://localhost:3100/v1/pacbio/runs/1"
+      },
+      "attributes": {
+        "name": "aname",
+        "state": "pending",
+        "instrument_name": "Minion",
+        "created_at": "11/09/2019 01:11"
+      }
+    },
+    {
+      "id": "2",
+      "type": "runs",
+      "links": {
+        "self": "http://localhost:3100/v1/pacbio/runs/2"
+      },
+      "attributes": {
+        "name": "anothername",
+        "state": "started",
+        "instrument_name": "Minion",
+        "created_at": "12/09/2019 02:22"
+      }
+    },
+    {
+      "id": "3",
+      "type": "runs",
+      "links": {
+        "self": "http://localhost:3100/v1/pacbio/runs/3"
+      },
+      "attributes": {
+        "name": "anothername1",
+        "state": "completed",
+        "instrument_name": "Minion",
+        "created_at": "10/09/2019 02:22"
+      }
+    },
+    {
+      "id": "4",
+      "type": "runs",
+      "links": {
+        "self": "http://localhost:3100/v1/pacbio/runs/4"
+      },
+      "attributes": {
+        "name": "anothername2",
+        "state": "cancelled",
+        "instrument_name": "Minion",
+        "created_at": "10/09/2019 02:22"
+      }
+    },
+    {
+      "id": "5",
+      "type": "runs",
+      "links": {
+        "self": "http://localhost:3100/v1/pacbio/runs/5"
+      },
+      "attributes": {
+        "name": "anothername3",
+        "state": "completed",
+        "instrument_name": "Gridion",
+        "created_at": "10/09/2022 02:22"
+      }
+    },
+    {
+      "id": "6",
+      "type": "runs",
+      "links": {
+        "self": "http://localhost:3100/v1/pacbio/runs/6"
+      },
+      "attributes": {
+        "name": "anothername4",
+        "state": "started",
+        "instrument_name": "Minion",
+        "created_at": "10/09/2019 02:22"
+      }
+    }
+  ]
+}

@@ -1,6 +1,5 @@
 <template>
   <div class="tag-set-list">
-    Test : {{ instrument }}
     <traction-section number="1" title="Run Information">
       <div class="flex flex-row">
         <div class="flex flex-col w-1/2">
@@ -27,6 +26,7 @@
 </template>
 
 <script>
+import { mapState } from 'vuex'
 /**
  * # ONTRunInformation
  *
@@ -38,10 +38,6 @@ export default {
     return {
       state: null,
       instrument: null,
-      instrumentsList: [
-        { value: 'instrument_1', text: 'Instrument 1' },
-        { value: 'instrument_2', text: 'Instrument 2' },
-      ],
       statesList: [
         { value: 'pending', text: 'Pending' },
         { value: 'started', text: 'Started' },
@@ -51,16 +47,23 @@ export default {
     }
   },
   computed: {
+    ...mapState('traction/ont', ['instrumentTypes']),
     instrumentOptions() {
-      return [
-        { value: null, text: 'Please select an instrument', disabled: true },
-        ...this.instrumentsList,
-      ]
+      let options = this.instrumentTypes.map((name) => ({
+        value: name,
+        text: this.capatalise(name),
+      }))
+
+      return [{ value: null, text: 'Please select an instrument', disabled: true }, ...options]
     },
     stateOptions() {
       return [{ value: null, text: 'Please select a state' }, ...this.statesList]
     },
   },
-  methods: {},
+  methods: {
+    capatalise(str) {
+      return str.charAt(0).toUpperCase() + str.slice(1)
+    },
+  },
 }
 </script>

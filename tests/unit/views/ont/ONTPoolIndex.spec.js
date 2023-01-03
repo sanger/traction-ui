@@ -1,4 +1,4 @@
-import ONTPoolIndex from '@/views/ONT/ONTPoolIndex.vue'
+import ONTPoolIndex from '@/views/ont/ONTPoolIndex.vue'
 import { mount, localVue, store, Data, router } from '@support/testHelper'
 import { vi } from 'vitest'
 import flushPromises from 'flush-promises'
