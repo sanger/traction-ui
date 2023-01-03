@@ -5,12 +5,10 @@ const setRuns = async ({ commit, getters }) => {
   // let request = getters.runRequest
   // let promise = request.get({ include: 'plate.wells.pools.tube' })
   // let response = await handlePromise(promise)
-
   // if (response.successful && !response.empty) {
   //   let runs = response.deserialize.runs
   //   commit('setRuns', runs)
   // }
-
   // return response
 }
 
@@ -26,7 +24,6 @@ const editRun = async ({ commit, getters }, runId) => {
   // let request = getters.runRequest
   // let promise = request.find({ id: runId, include: 'plate.wells.pools.tube' })
   // let response = await handlePromise(promise)
-
   // if (response.successful) {
   //   const run = response.deserialize.runs[0]
   //   run.wellDefaults = ONTRun.wellDefaults(run.system_name)
@@ -44,7 +41,6 @@ const editRun = async ({ commit, getters }, runId) => {
 
 const createRun = async ({ getters }) => {
   // let run = getters.currentRun
-
   // let request = getters.ontRequests
   // return await ONTRun.create(run, request)
 }
@@ -52,10 +48,8 @@ const createRun = async ({ getters }) => {
 const updateRun = async ({ getters, dispatch }) => {
   // let run = getters.currentRun
   // let originalRun = await dispatch('getRun', run.id)
-
   // let request = getters.pacbioRequests
   // let responses = await ONTRun.update(run, request)
-
   // if (responses.length != 0) {
   //   // Rollback - revert run back to original data
   //   await ONTRun.update(originalRun, request)
@@ -67,7 +61,6 @@ const getRun = async ({ getters }, id) => {
   // let request = getters.runRequest
   // let promise = request.find({ id, include: 'plate.wells.pools.libraries' })
   // let response = await handlePromise(promise)
-
   // if (response.successful) {
   //   let run = response.deserialize.runs[0]
   //   return run

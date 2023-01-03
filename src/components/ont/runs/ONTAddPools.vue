@@ -25,14 +25,14 @@ export default {
   name: 'ONTAddPools',
   data() {
     return {
-      pool_barcode: null
+      pool_barcode: null,
     }
   },
   computed: {},
   methods: {
     search() {
-      console.log("Searching... with ", this.pool_barcode)
-    }
+      console.log('Searching... with ', this.pool_barcode)
+    },
   },
 }
 </script>

@@ -50,7 +50,8 @@ export default {
     },
   },
   created() {
-    if (this.$route.params.id !== 'new') {}
+    if (this.$route.params.id !== 'new') {
+    }
   },
   methods: {
     alertOnFail({ success, errors }) {

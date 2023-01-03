@@ -16,7 +16,7 @@
           class="flex flex-col px-2 py-2"
         >
         </ONTFlowCell>
-    </div>
+      </div>
     </traction-section>
   </div>
 </template>

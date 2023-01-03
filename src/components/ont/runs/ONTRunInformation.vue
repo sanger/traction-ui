@@ -38,13 +38,24 @@ export default {
     return {
       state: null,
       instrument: null,
-      instrumentsList: [{ value: 'instrument_1', text: 'Instrument 1' }, { value: 'instrument_2', text: 'Instrument 2' }],
-      statesList: [{ value: 'pending', text: 'Pending' }, { value: 'started', text: 'Started' }, { value: 'completed', text: 'Completed' }, { value: 'cancelled', text: 'Cancelled' }],
+      instrumentsList: [
+        { value: 'instrument_1', text: 'Instrument 1' },
+        { value: 'instrument_2', text: 'Instrument 2' },
+      ],
+      statesList: [
+        { value: 'pending', text: 'Pending' },
+        { value: 'started', text: 'Started' },
+        { value: 'completed', text: 'Completed' },
+        { value: 'cancelled', text: 'Cancelled' },
+      ],
     }
   },
   computed: {
     instrumentOptions() {
-      return [{ value: null, text: 'Please select an instrument', disabled: true }, ...this.instrumentsList]
+      return [
+        { value: null, text: 'Please select an instrument', disabled: true },
+        ...this.instrumentsList,
+      ]
     },
     stateOptions() {
       return [{ value: null, text: 'Please select a state' }, ...this.statesList]
