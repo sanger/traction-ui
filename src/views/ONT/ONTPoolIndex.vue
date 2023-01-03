@@ -157,11 +157,6 @@ export default {
   computed: {
     ...mapGetters('traction/ont', ['pools']),
   },
-  created() {
-    // When this component is created (the 'created' lifecycle hook is called), we need to get the
-    // items for the table
-    this.provider()
-  },
   methods: {
     /* 
       create the labels needed for the print job
@@ -195,21 +190,7 @@ export default {
 
       this.showAlert(message, success ? 'success' : 'danger')
     },
-    // Get all the libraries
-    // Provider function used by the bootstrap-vue table component
-    async provider() {
-      try {
-        const { success, errors } = await this.setPools()
-        if (!success) {
-          throw errors
-        }
-      } catch (error) {
-        this.showAlert('Failed to get pools: ' + error.message, 'danger')
-      }
-    },
-
     ...mapActions('traction/ont', ['fetchOntPools']),
-    ...mapActions('traction/ont/pools', ['setPools']),
     ...mapActions('printMyBarcode', ['createPrintJob']),
   },
 }
