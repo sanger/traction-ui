@@ -54,6 +54,7 @@ import OntPlates from './ontPlates.json'
 import OntPlateRequest from './ontPlateRequest.json'
 import OntRequestsRequest from './ontRequestsRequest'
 import OntTubeRequest from './ontTubeRequest.json'
+import OntRun from './ontRun.json'
 import OntRuns from './ontRuns.json'
 import tractionOntLibraries from './tractionOntLibraries'
 import TractionOntPool from './tractionOntPool.json'
@@ -118,6 +119,7 @@ export default {
   OntPlates,
   OntPlateRequest,
   OntRequestsRequest,
+  OntRun,
   OntRuns,
   OntTubeRequest,
   OntTubesRequest,

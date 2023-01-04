@@ -10,7 +10,7 @@ const mutations = {
   setRuns: mutate('runs'),
   setCurrentRun: mutate('currentRun'),
   setInstrumentName: mutateRun('instrument_name'),
-  setCurrentState: mutateRun('current_state'),
+  setState: mutateRun('state'),
 }
 
 export default mutations

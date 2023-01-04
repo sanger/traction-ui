@@ -3,6 +3,15 @@
     <router-link :to="{ name: 'ONTRuns' }">
       <traction-button id="backToRunsButton" class="float-right">Back</traction-button>
     </router-link>
+
+    <traction-button
+      :id="currentAction.id"
+      class="float-right"
+      :theme="currentAction.theme"
+      @click="runAction"
+      >{{ currentAction.label }}</traction-button
+    >
+
     <div>
       <div class="flex flex-row">
         <div class="flex flex-col w-1/2">
@@ -44,14 +53,38 @@ export default {
       type: [String, Number],
       default: 0,
     },
+    actions: {
+      type: Object,
+      default() {
+        return {
+          create: {
+            id: 'create',
+            theme: 'create',
+            label: 'Create',
+            method: 'createRun',
+          },
+          update: {
+            id: 'update',
+            theme: 'update',
+            label: 'Update',
+            method: 'updateRun',
+          },
+        }
+      },
+    },
   },
   data() {
-    return {}
+    return {
+      newRecord: isNaN(this.id),
+    }
   },
   computed: {
+    currentAction() {
+      return this.actions[this.newRecord ? 'create' : 'update']
+    },
     numFlowCellRows() {
       // TODO: fetch this from instrument in run
-      return 8
+      return 2
     },
     numFlowCellColumns() {
       // TODO: fetch this from instrument in run
@@ -62,9 +95,24 @@ export default {
     this.provider()
   },
   methods: {
-    ...mapActions(['newRun']),
+    ...mapActions(['newRun', 'createRun']),
     provider() {
       this.newRun()
+    },
+    async runAction() {
+      // WHY multiple responses?
+      let responses = await this[this.currentAction.method]()
+
+      // Check what this responses will be, an object or list?
+      if (responses.length == 0) {
+        this.redirectToRuns()
+      } else {
+        this.showAlert(
+          'Failed to create run in Traction: ' + responses,
+          'danger',
+          'run-validation-message',
+        )
+      }
     },
   },
 }

@@ -17,8 +17,8 @@
             <traction-select
               id="state-selection"
               :options="stateOptions"
-              :value="currentState"
-              @input="setCurrentState"
+              :value="state"
+              @input="setState"
             ></traction-select>
           </traction-field-group>
         </div>
@@ -52,7 +52,7 @@ export default {
     ...mapGetters(['currentRun']),
     ...mapState({
       instrumentName: (state) => state.currentRun.instrument_name,
-      currentState: (state) => state.currentRun.current_state,
+      state: (state) => state.currentRun.state,
     }),
     instrumentOptions() {
       let options = this.instrumentTypes.map((name) => ({
@@ -75,7 +75,7 @@ export default {
     capitalise(str) {
       return str.charAt(0).toUpperCase() + str.slice(1)
     },
-    ...mapMutations(['setInstrumentName', 'setCurrentState']),
+    ...mapMutations(['setInstrumentName', 'setState']),
   },
 }
 </script>

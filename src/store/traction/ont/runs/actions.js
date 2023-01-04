@@ -64,11 +64,19 @@ const newRun = ({ commit }) => {
   commit('setCurrentRun', run)
 }
 
+const createRun = async ({ getters }) => {
+  let run = getters.currentRun
+
+  let request = getters.runRequest
+  return await OntRun.create(run, request)
+}
+
 const actions = {
   setRuns,
   newRun,
+  createRun,
 }
 
-export { setRuns, newRun }
+export { setRuns, newRun, createRun }
 
 export default actions

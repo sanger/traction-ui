@@ -16,6 +16,11 @@
 - Store Instrument name in Vuex State, so it is accessible from other components
 - Test: ONTRunInformation contains Instrument name drop down
 - Test: ONTRunInformation contains State drop down
+- Add Create Run button to ONTRun view and test
+- Add method to call createRun action, redirect to runs page if successful, or show error
+- Create createRun VueX actions
+- Add create function to OntRun.js api
+- Test: create run button, runAction, actions, OntRun.js
 
 # Todo
 
@@ -23,9 +28,11 @@
 
 ## Run (create) View
 
-- Add Create Run button to ONTRun view and test
+- Pull service changes, and check create run works and errors as expected
 
 ## ONTRunInfomation
+
+- Fetch instrument name list from backend, and persist in VueX the instrument id
 
 ## ONTAddPools
 

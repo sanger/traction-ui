@@ -27,14 +27,14 @@ describe('ONTRunInformation', () => {
       expect(runInfo.currentRun).toBeDefined()
       expect(runInfo.currentRun.id).toEqual('new')
       expect(runInfo.currentRun.instrument_name).toEqual('')
-      expect(runInfo.currentRun.current_state).toEqual('')
+      expect(runInfo.currentRun.state).toEqual('')
     })
     it('#mapState', () => {
       expect(runInfo.currentRun).toBeDefined()
       expect(runInfo.instrumentName).toBeDefined()
       expect(runInfo.instrumentName).toEqual('')
-      expect(runInfo.currentState).toBeDefined()
-      expect(runInfo.currentState).toEqual('')
+      expect(runInfo.state).toBeDefined()
+      expect(runInfo.state).toEqual('')
     })
     it('must have instrumentOptions data', () => {
       expect(runInfo.instrumentOptions).toEqual([
@@ -94,9 +94,9 @@ describe('ONTRunInformation', () => {
         runInfo.setInstrumentName('gridion')
         expect(runInfo.instrumentName).toEqual('gridion')
       })
-      it('#setCurrentState', () => {
-        runInfo.setCurrentState('started')
-        expect(runInfo.currentState).toEqual('started')
+      it('#setState', () => {
+        runInfo.setState('started')
+        expect(runInfo.state).toEqual('started')
       })
     })
   })
