@@ -13,7 +13,7 @@
         data-type="tag-list"
         :options="tagListOptions"
         :state="errorsFor('tag_id')?.length > 0"
-        class="tag-id flex w-96"
+        class="tag-id flex w-[110px]"
       ></traction-select>
       <traction-invalid-feedback data-attribute="tag-id-error">
         {{ errorsFor('tag_id') }}
@@ -162,8 +162,5 @@ td,
 .custom-select,
 .form-control {
   font-size: 0.8em;
-}
-.tag-id {
-  width: 110px;
 }
 </style>
