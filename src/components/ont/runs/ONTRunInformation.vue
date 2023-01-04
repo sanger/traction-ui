@@ -6,8 +6,9 @@
           <traction-field-group label="Instrument" label-for="instrument-selection">
             <traction-select
               id="instrument-selection"
-              v-model="instrument"
               :options="instrumentOptions"
+              :value="instrumentName"
+              @input="setInstrumentName"
             ></traction-select>
           </traction-field-group>
         </div>
@@ -15,8 +16,9 @@
           <traction-field-group label="State" label-for="state-selection">
             <traction-select
               id="state-selection"
-              v-model="state"
               :options="stateOptions"
+              :value="currentState"
+              @input="setCurrentState"
             ></traction-select>
           </traction-field-group>
         </div>
@@ -26,7 +28,9 @@
 </template>
 
 <script>
-import { mapState } from 'vuex'
+import { createNamespacedHelpers } from 'vuex'
+const { mapGetters, mapState, mapMutations } = createNamespacedHelpers('traction/ont/runs')
+
 /**
  * # ONTRunInformation
  *
@@ -36,34 +40,42 @@ export default {
   name: 'ONTRunInformation',
   data() {
     return {
-      state: null,
-      instrument: null,
-      statesList: [
-        { value: 'pending', text: 'Pending' },
-        { value: 'started', text: 'Started' },
-        { value: 'completed', text: 'Completed' },
-        { value: 'cancelled', text: 'Cancelled' },
+      statesList: ['pending', 'started', 'completed', 'cancelled'],
+      instrumentTypes: [
+        'minion', // 1 flowcell
+        'gridion', // 5 flowcells
+        'promethion', // 24 flowcells
       ],
     }
   },
   computed: {
-    ...mapState('traction/ont', ['instrumentTypes']),
+    ...mapGetters(['currentRun']),
+    ...mapState({
+      instrumentName: (state) => state.currentRun.instrument_name,
+      currentState: (state) => state.currentRun.current_state,
+    }),
     instrumentOptions() {
       let options = this.instrumentTypes.map((name) => ({
         value: name,
-        text: this.capatalise(name),
+        text: this.capitalise(name),
       }))
 
       return [{ value: null, text: 'Please select an instrument', disabled: true }, ...options]
     },
     stateOptions() {
-      return [{ value: null, text: 'Please select a state' }, ...this.statesList]
+      let options = this.statesList.map((state) => ({
+        value: state,
+        text: this.capitalise(state),
+      }))
+
+      return [{ value: null, text: 'Please select a state', disabled: true }, ...options]
     },
   },
   methods: {
-    capatalise(str) {
+    capitalise(str) {
       return str.charAt(0).toUpperCase() + str.slice(1)
     },
+    ...mapMutations(['setInstrumentName', 'setCurrentState']),
   },
 }
 </script>

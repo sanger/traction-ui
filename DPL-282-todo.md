@@ -11,20 +11,21 @@
 - Test Run view: has nested components
 - Test: Runs button on ONT Dashboard
 - Add Instrument name drop down to ONTRunInfomation (details in service story - Possibly call Traction Service, to fetch list of Instrument, filtering instruments by ONT pipeline, with data: name, rows, columns [WIP as28]. Currently fetching instrument name list from the state.
+- Create run object in the state
+- Add State drop down to ONTRunInfomation (Pending/Started/Completed/Cancelled)
+- Store Instrument name in Vuex State, so it is accessible from other components
+- Test: ONTRunInformation contains Instrument name drop down
+- Test: ONTRunInformation contains State drop down
 
 # Todo
+
+- Make naming of ONT vs Ont consistent
 
 ## Run (create) View
 
 - Add Create Run button to ONTRun view and test
-- Create run object in the state
 
 ## ONTRunInfomation
-
-- Add State drop down to ONTRunInfomation (Pending/Started/Completed/Cancelled) [WIP as28]
-- Store Instrument name in Vuex State, so it is accessible from other components
-- Test: ONTRunInformation contains Instrument name drop down
-- Test: ONTRunInformation contains State drop down
 
 ## ONTAddPools
 
@@ -34,9 +35,9 @@
 
 ## ONTRunInstrumentFlowcells
 
+- Investigate how this could be dynamically created, based on Instrument Name
 - Create simple mocked version of ONTRunInstrumentFlowcells [DONE as28]
 - Contains ONTFlowCells in tabular format - how best to pass in the matrix of flowcells and their linked pools?
-- Investigate how this could be dynamically created, based on Instrument Name
 - Possibly adding config for each instrument layout (e.g 1x5 6x8) - p.s. Limber has something similar
 
 ## ONTFlowCell

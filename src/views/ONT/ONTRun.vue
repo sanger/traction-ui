@@ -29,12 +29,21 @@ import ONTRunInformation from '@/components/ont/runs/ONTRunInformation'
 import ONTAddPools from '@/components/ont/runs/ONTAddPools'
 import ONTRunInstrumentFlowcells from '@/components/ont/runs/ONTRunInstrumentFlowcells'
 
+import { createNamespacedHelpers } from 'vuex'
+const { mapActions } = createNamespacedHelpers('traction/ont/runs')
+
 export default {
   name: 'ONTRun',
   components: {
     ONTRunInformation,
     ONTAddPools,
     ONTRunInstrumentFlowcells,
+  },
+  props: {
+    id: {
+      type: [String, Number],
+      default: 0,
+    },
   },
   data() {
     return {}
@@ -50,14 +59,12 @@ export default {
     },
   },
   created() {
-    if (this.$route.params.id !== 'new') {
-    }
+    this.provider()
   },
   methods: {
-    alertOnFail({ success, errors }) {
-      if (!success) {
-        this.showAlert(errors, 'danger')
-      }
+    ...mapActions(['newRun']),
+    provider() {
+      this.newRun()
     },
   },
 }

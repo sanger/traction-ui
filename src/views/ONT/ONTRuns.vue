@@ -62,8 +62,8 @@ export default {
         this.showAlert('Failed to get runs: ' + error.message, 'danger')
       }
     },
-    redirectToRun(runId) {
-      this.$router.push({ path: `/ont/run/${runId || 'new'}` })
+    redirectToRun() {
+      this.$router.push({ path: '/ont/run/new' })
     },
     ...mapActions('traction/ont/runs', ['setRuns']),
   },
