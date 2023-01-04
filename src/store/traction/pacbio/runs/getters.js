@@ -1,5 +1,5 @@
 const getters = {
-  runs: (state) => state.runs,
+  runs: (state) => Object.values(state.runs),
   run: (state) => (id) => {
     return state.runs.find((run) => run.id == id)
   },
