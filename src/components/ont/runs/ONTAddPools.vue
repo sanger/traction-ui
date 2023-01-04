@@ -1,14 +1,7 @@
 <template>
   <div>
-    <traction-section number="2" title="Add Pools">
-      <div class="flex flex-row">
-        <traction-input
-          v-model="pool_barcode"
-          data-attribute="pool-barcode"
-          placeholder="Enter a pool barcode"
-        />
-        <traction-button data-action="find-pools" @click="search()"> Search </traction-button>
-      </div>
+    <traction-section title="Add Pools" number="2" class="mb-2">
+      <LabwareFinder :fetcher="findOntPool" filter="barcode" class="mb-6" />
     </traction-section>
   </div>
 </template>
@@ -21,8 +14,15 @@
  * panels that can be dragged into the flow cells of the instrument displayed on the right of the screen.
  * (see ONTRunInstrumentFlowcells)
  */
+import LabwareFinder from '@/components/LabwareFinder'
+import { createNamespacedHelpers } from 'vuex'
+const { mapActions } = createNamespacedHelpers('traction/ont/pools')
+
 export default {
   name: 'ONTAddPools',
+  components: {
+    LabwareFinder,
+  },
   data() {
     return {
       pool_barcode: null,
@@ -33,6 +33,7 @@ export default {
     search() {
       console.log('Searching... with ', this.pool_barcode)
     },
+    ...mapActions(['findOntPool']),
   },
 }
 </script>

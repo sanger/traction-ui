@@ -36,6 +36,8 @@
 
 ## ONTAddPools
 
+- Check existing ONT pool vuex request/state etc (WIP hc6)
+- Enter pool barcode, populate list of pools, and display
 - Mock request, to return a pool [pool is an object? with what properties? where will it come from?]
 - Add List to display pools, showing pool barcode and number of samples, with a remove button [how is the connection between an instrument 'run' with its 24/48 flowcells and their linked pools maintained?]
 - Add test for the above ONTAddPools

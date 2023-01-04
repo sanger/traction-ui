@@ -1,18 +1,20 @@
 import ontRunsModule from '@/store/traction/ont/runs'
+import ontPoolsModule from '@/store/traction/ont/pools'
+import state from './state'
+import getters from './getters'
+import mutations from './mutations'
+import actions from './actions'
 
 const ont = {
   namespaced: true,
   modules: {
     runs: ontRunsModule,
+    pools: ontPoolsModule,
   },
-  state: {
-    // We may decide to pull this from traction-service
-    instrumentTypes: [
-      'minion', // 1 flowcell
-      'gridion', // 5 flowcells
-      'promethion', // 24 flowcells
-    ],
-  },
+  getters,
+  mutations,
+  actions,
+  state,
 }
 
 export default ont
