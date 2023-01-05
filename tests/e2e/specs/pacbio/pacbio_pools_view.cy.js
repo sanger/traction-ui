@@ -7,6 +7,10 @@ describe('Pacbio Pools view', () => {
       },
     )
     cy.visit('#/pacbio/pools')
+    // Check filters are visible
+    cy.get('#filterInput').should('be.visible')
+    cy.get('#filterValue').should('be.visible')
+    cy.get('#filterValue').children().should('contain', 'Barcode').and('contain', 'Pool ID')
     cy.get('#pool-index>tbody').contains('tr', '2')
     cy.get('.pool')
       .first()
