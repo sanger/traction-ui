@@ -61,13 +61,13 @@ const setLibraries = async ({ commit, getters }, filter) => {
       return {
         id: library.id,
         ...library.attributes,
-        pool: pools.find((pool) => pool.id == library.relationships.pool.data?.id),
-        tag_group_id: tags.find((tag) => tag.id == library.relationships.tag.data?.id)?.attributes
+        pool: pools?.find((pool) => pool.id == library.relationships.pool.data?.id),
+        tag_group_id: tags?.find((tag) => tag.id == library.relationships.tag.data?.id)?.attributes
           .group_id,
-        sample_name: requests.find(
+        sample_name: requests?.find(
           (request) => request.id == library.relationships.request.data?.id,
         )?.attributes.sample_name,
-        barcode: tubes.find((tube) => tube.id == library.relationships.tube.data?.id)?.attributes
+        barcode: tubes?.find((tube) => tube.id == library.relationships.tube.data?.id)?.attributes
           .barcode,
       }
     })

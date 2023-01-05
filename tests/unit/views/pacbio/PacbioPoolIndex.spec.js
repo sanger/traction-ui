@@ -1,17 +1,19 @@
 import PacbioPoolIndex from '@/views/pacbio/PacbioPoolIndex'
-import { mount, localVue, store, router } from '@support/testHelper'
-import storePools from '@tests/data/StorePools'
+import { mount, localVue, store, Data, router } from '@support/testHelper'
+import flushPromises from 'flush-promises'
 
 describe('PacbioPoolIndex.vue', () => {
   let wrapper, pools
 
-  beforeEach(() => {
-    store.state.traction.pacbio.pools = storePools
+  beforeEach(async () => {
+    const get = vi.spyOn(store.state.api.traction.pacbio.pools, 'get')
+    get.mockResolvedValue(Data.TractionPacbioPools)
     wrapper = mount(PacbioPoolIndex, {
       store,
       router,
       localVue,
     })
+    await flushPromises()
     pools = wrapper.vm
   })
 
@@ -29,7 +31,9 @@ describe('PacbioPoolIndex.vue', () => {
   })
 
   describe('perPage', () => {
-    beforeEach(() => {
+    beforeEach(async () => {
+      const get = vi.spyOn(store.state.api.traction.pacbio.pools, 'get')
+      get.mockResolvedValue(Data.TractionPacbioPools)
       wrapper = mount(PacbioPoolIndex, {
         store,
         router,
@@ -38,6 +42,7 @@ describe('PacbioPoolIndex.vue', () => {
           return { perPage: 1 }
         },
       })
+      await flushPromises()
     })
 
     it('states how many rows the table should contain', () => {

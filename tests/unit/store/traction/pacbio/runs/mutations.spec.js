@@ -2,20 +2,45 @@ import Mutations from '@/store/traction/pacbio/runs/mutations'
 import Actions from '@/store/traction/pacbio/runs/actions'
 import * as Run from '@/api/PacbioRun'
 import { Data } from '@support/testHelper'
-import Response from '@/api/Response'
 import { expect } from 'vitest'
 
 describe('mutate', () => {
   let runs, state
 
   beforeEach(() => {
-    runs = new Response(Data.PacbioRuns).deserialize.runs
+    runs = Data.PacbioRuns.data.data.splice(0, 2)
     state = { runs: [] }
   })
 
   it('can update the mutate the state, e.g setRuns', () => {
+    let expectedRuns = {
+      1: {
+        id: '1',
+        type: 'runs',
+        name: 'aname',
+        state: 'pending',
+        sequencing_kit_box_barcode: 'DM000110086180012311',
+        dna_control_complex_box_barcode: 'Lxxxxx10171760012311',
+        system_name: 'Sequel I',
+        pacbio_smrt_link_version_id: 1,
+        created_at: '11/09/2019 01:11',
+        all_wells_have_pools: true,
+      },
+      2: {
+        id: '2',
+        type: 'runs',
+        name: 'anothername',
+        state: 'started',
+        sequencing_kit_box_barcode: 'DM000110086180012312',
+        dna_control_complex_box_barcode: 'Lxxxxx10171760012312',
+        system_name: 'Sequel II',
+        pacbio_smrt_link_version_id: 1,
+        created_at: '12/09/2019 02:22',
+        all_wells_have_pools: true,
+      },
+    }
     Mutations.setRuns(state, runs)
-    expect(state.runs.length).toEqual(runs.length)
+    expect(state.runs).toEqual(expectedRuns)
   })
 })
 

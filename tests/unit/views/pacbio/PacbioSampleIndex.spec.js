@@ -1,16 +1,15 @@
 import Samples from '@/views/pacbio/PacbioSampleIndex'
 import { mount, localVue, store, Data, router } from '@support/testHelper'
-import Response from '@/api/Response'
 import { beforeEach, describe, expect, it } from 'vitest'
+import flushPromises from 'flush-promises'
 
 // TODO: why do we need to set sortDesc to false? I think we also need to isolate tests
 describe('Samples.vue', () => {
-  let wrapper, samples, mockSamples
+  let wrapper, samples
 
-  beforeEach(() => {
-    mockSamples = new Response(Data.TractionPacbioSamples).deserialize.requests
-    store.commit('traction/pacbio/requests/setRequests', mockSamples)
-
+  beforeEach(async () => {
+    const get = vi.spyOn(store.state.api.traction.pacbio.requests, 'get')
+    get.mockReturnValue(Data.PacbioRequestsRequest)
     wrapper = mount(Samples, {
       store,
       router,
@@ -20,7 +19,7 @@ describe('Samples.vue', () => {
     // TODO: Vue no longer allows you to override methods in mount. This causes all sorts of issues which we need to fix.
     wrapper.setData({ sortDesc: false })
     samples = wrapper.vm
-    samples.provider = vi.fn()
+    await flushPromises()
   })
 
   describe('building the table', () => {
@@ -32,7 +31,7 @@ describe('Samples.vue', () => {
     })
 
     it('contains the correct data', async () => {
-      expect(wrapper.find('tbody').findAll('tr').length).toEqual(12)
+      expect(wrapper.find('tbody').findAll('tr').length).toEqual(5)
     })
   })
 
@@ -57,7 +56,8 @@ describe('Samples.vue', () => {
     let button
 
     it('is present for each sample', () => {
-      button = wrapper.find('#details-btn-1')
+      // 40 is one of the request id's from Data.PacbioRequestsRequest
+      button = wrapper.find('#details-btn-40')
       expect(button.text()).toEqual('Show Details')
     })
   })
