@@ -332,6 +332,36 @@ export default {
   },
 
   /**
+   * Retrieves a list of ont pools from traction-service and populates the source
+   * with associated data, appending data to the previously stored state
+   * @param rootState the vuex rootState object. Provides access to the current state
+   * @param commit the vuex commit object. Provides access to mutations
+   */
+  // For the component, the included relationships are not required
+  // However, the functionality does not appear to work without them
+  populateOntPools: async ({ commit, rootState }, filter) => {
+    const request = rootState.api.traction.ont.pools
+    const promise = request.get({
+      filter: filter,
+      include: 'tube,libraries.tag,libraries.request',
+    })
+    const response = await handleResponse(promise)
+
+    let { success, data: { data, included = [] } = {}, errors = [] } = response
+    const { tubes, libraries, tags, requests } = groupIncludedByResource(included)
+
+    if (success) {
+      commit('populateRequests', requests)
+      commit('populateTubes', tubes)
+      commit('populateTags', tags)
+      commit('populateLibraries', libraries)
+      commit('populatePools', data)
+    }
+
+    return { success, errors }
+  },
+
+  /**
    * Sets the tagSet and tags data in the store
    * @param rootState the vuex state object. Provides access to current state
    * @param commit the vuex commit object. Provides access to mutations

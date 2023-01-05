@@ -1,7 +1,17 @@
 <template>
   <div>
     <traction-section title="Add Pools" number="2" class="mb-2">
-      <LabwareFinder :fetcher="findOntPool" filter="barcode" class="mb-6" />
+      <LabwareFinder :fetcher="populateOntPools" filter="barcode" class="mb-6" />
+      <traction-table
+        id="pool-index"
+        show-empty
+        responsive
+        :items="pools"
+        :fields="fields"
+        hover
+        tbody-tr-class="pool"
+      >
+      </traction-table>
     </traction-section>
   </div>
 </template>
@@ -16,7 +26,7 @@
  */
 import LabwareFinder from '@/components/LabwareFinder'
 import { createNamespacedHelpers } from 'vuex'
-const { mapActions } = createNamespacedHelpers('traction/ont/pools')
+const { mapActions, mapGetters, mapState } = createNamespacedHelpers('traction/ont')
 
 export default {
   name: 'ONTAddPools',
@@ -26,14 +36,20 @@ export default {
   data() {
     return {
       pool_barcode: null,
+      fields: [
+        { key: 'id', label: 'Pool ID', sortable: true, tdClass: 'pool-id' },
+        { key: 'barcode', label: 'Barcode', sortable: true, tdClass: 'barcode' },
+      ],
     }
   },
-  computed: {},
+  computed: {
+    ...mapState({
+      pools: (state) => state.pooling,
+    }),
+    ...mapGetters(['pools']),
+  },
   methods: {
-    search() {
-      console.log('Searching... with ', this.pool_barcode)
-    },
-    ...mapActions(['findOntPool']),
+    ...mapActions(['populateOntPools']),
   },
 }
 </script>

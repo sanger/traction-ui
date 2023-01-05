@@ -109,6 +109,7 @@ export default {
       ...attributes,
     }
   },
+  // populatePools `includeRelationships: false` doesn't seem to work
   populatePools: populateById('pools', { includeRelationships: true }),
   setPools: populateById('pools', { includeRelationships: true }, true),
   populateLibraries: populateById('libraries', { includeRelationships: true }),
