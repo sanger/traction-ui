@@ -2,13 +2,13 @@
   <DataFetcher :fetcher="setRequests">
     <FilterCard :fetcher="setRequests" :filter-options="filterOptions" />
     <div class="clearfix">
-      <printerModal
+      <PrinterModal
         ref="printerModal"
         class="float-left"
         :disabled="selected.length === 0"
         @selectPrinter="printLabels($event)"
       >
-      </printerModal>
+      </PrinterModal>
 
       <PacbioLibraryCreate
         ref="libraryCreateBtn"

@@ -1,23 +1,30 @@
-import Samples from '@/views/pacbio/PacbioSampleIndex'
+import PacbioSamples from '@/views/pacbio/PacbioSampleIndex'
 import { mount, localVue, store, Data, router } from '@support/testHelper'
 import { beforeEach, describe, expect, it } from 'vitest'
 import flushPromises from 'flush-promises'
 
-// TODO: why do we need to set sortDesc to false? I think we also need to isolate tests
-describe('Samples.vue', () => {
+describe('PacbioSamples.vue', () => {
   let wrapper, samples
 
   beforeEach(async () => {
-    const get = vi.spyOn(store.state.api.traction.pacbio.requests, 'get')
-    get.mockReturnValue(Data.PacbioRequestsRequest)
-    wrapper = mount(Samples, {
+    // Remove the included data in the dummy response as its not needed
+    let PacbioRequestsRequest = Data.PacbioRequestsRequest
+    PacbioRequestsRequest.data.included = []
+
+    // DataFetcher calls requests get on render so we need to mock the call
+    const requestGet = vi.spyOn(store.state.api.traction.pacbio.requests, 'get')
+    requestGet.mockReturnValue(PacbioRequestsRequest)
+
+    // PacbioLibraryCreate calls tags get on render so we need to mock the call
+    const tagGet = vi.spyOn(store.state.api.traction.tags, 'get')
+    tagGet.mockReturnValue(Data.TactionTags)
+
+    wrapper = mount(PacbioSamples, {
       store,
       router,
       localVue,
     })
 
-    // TODO: Vue no longer allows you to override methods in mount. This causes all sorts of issues which we need to fix.
-    wrapper.setData({ sortDesc: false })
     samples = wrapper.vm
     await flushPromises()
   })
