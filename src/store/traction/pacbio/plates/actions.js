@@ -4,7 +4,7 @@ const setPlates = async ({ commit, getters }, filter) => {
   let request = getters.getPlates
   let promise = request.get({
     include: 'wells.materials',
-    filter: filter,
+    filter,
   })
   let response = await handlePromise(promise)
 

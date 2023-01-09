@@ -3,7 +3,7 @@ import { handleResponse } from '@/api/ResponseHelper'
 
 const setRequests = async ({ commit, getters }, filter) => {
   let request = getters.requestsRequest
-  let promise = request.get({ filter: filter })
+  let promise = request.get({ filter })
   let response = await handlePromise(promise)
 
   if (response.successful) {

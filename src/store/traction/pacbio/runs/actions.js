@@ -21,7 +21,7 @@ const buildWell = ({ state }, position) => {
 
 const fetchPacbioRuns = async ({ commit, getters }, filter) => {
   const request = getters.runRequest
-  const promise = request.get({ filter: filter })
+  const promise = request.get({ filter })
   const response = await handleResponse(promise)
 
   let { success, data: { data } = {}, errors = [] } = response

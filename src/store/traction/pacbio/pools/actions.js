@@ -11,7 +11,7 @@ const setPools = async ({ commit, getters }, filter) => {
       tags: 'group_id',
       libraries: 'request,tag,run_suitability',
     },
-    filter: filter,
+    filter,
   })
   let response = await handleResponse(promise)
 

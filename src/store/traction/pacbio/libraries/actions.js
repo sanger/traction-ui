@@ -46,18 +46,22 @@ const deleteLibraries = async ({ getters }, libraryIds) => {
 }
 
 const setLibraries = async ({ commit, getters }, filter) => {
-  let request = getters.libraryRequest
-  let promise = request.get({
+  const request = getters.libraryRequest
+  const promise = request.get({
     include: 'request,tag,tube,pool',
-    filter: filter,
+    filter,
   })
-  let response = await handleResponse(promise)
+  const response = await handleResponse(promise)
 
   const { success, data: { data, included = [] } = {}, errors = [] } = response
   const { tubes, tags, requests, pools } = groupIncludedByResource(included)
 
   if (success) {
-    let libraries = data.map((library) => {
+    /* 
+      Here we build library objects to include necessary relational data
+      for the pacbio libraries page
+    */
+    const libraries = data.map((library) => {
       return {
         id: library.id,
         ...library.attributes,
