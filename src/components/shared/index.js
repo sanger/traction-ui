@@ -19,6 +19,10 @@ import TractionSelect from '@/components/shared/TractionSelect'
 import TractionResultIcon from '@/components/shared/icons/TractionResultIcon'
 import TractionPaginationIcon from '@/components/shared/icons/TractionPaginationIcon'
 import TractionPagination from '@/components/shared/TractionPagination'
+import TractionTable from '@/components/shared/TractionTable'
+import TractionArrowIcon from '@/components/shared/icons/TractionArrowIcon'
+import TractionTableCell from '@/components/shared/TractionTableCell'
+
 import {
   BModal,
   VBModal,
@@ -87,6 +91,8 @@ const registerBootstrapComponents = (vue) => {
   vue.component('traction-nav', BNav)
   vue.component('traction-input-group', BInputGroup)
   vue.component('traction-input-group-append', BInputGroupAppend)
+  vue.component('custom-table', TractionTable)
+  vue.component('custom-table-cell', TractionTableCell)
   /*
     directive is marked wth a v in front
     so it will be used as 'v-traction-modal'
@@ -118,6 +124,7 @@ const registerGlobal = (vue) => {
   vue.component('TractionSelect', TractionSelect)
   vue.component('TractionPagination', TractionPagination)
   vue.component('TractionPaginationIcon', TractionPaginationIcon)
+  vue.component('TractionArrowIcon', TractionArrowIcon)
   registerBootstrapComponents(vue)
 }
 

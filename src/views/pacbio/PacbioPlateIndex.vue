@@ -21,6 +21,7 @@
       </traction-input-group>
     </traction-form-group>
     <br />
+    
 
     <traction-table
       id="plate-index"
