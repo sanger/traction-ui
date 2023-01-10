@@ -6,6 +6,7 @@ const build = (object) => {
       id: 'new',
       instrument_name: '',
       state: '',
+      flowcell_attributes: []
     }
   )
 }

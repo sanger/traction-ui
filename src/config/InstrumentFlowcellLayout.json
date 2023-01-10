@@ -1,0 +1,14 @@
+{
+  "MinIon": {
+    "columns": 1,
+    "rows": 1
+  },
+  "GridIon": {
+    "columns": 5,
+    "rows": 1
+  },
+  "PromethIon": {
+    "columns": 3,
+    "rows": 8
+  }
+}

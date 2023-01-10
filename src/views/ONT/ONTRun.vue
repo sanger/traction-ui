@@ -23,10 +23,9 @@
           <ONTAddPools></ONTAddPools>
         </div>
         <div class="flex flex-col w-1/2">
-          <ONTRunInstrumentFlowcells
-            :flowcell-num-rows="numFlowCellRows"
-            :flowcell-num-columns="numFlowCellColumns"
-          ></ONTRunInstrumentFlowcells>
+          <ONTRunInstrumentFlowcells></ONTRunInstrumentFlowcells>
+          <!-- :flowcell-num-rows="numFlowCellRows"
+            :flowcell-num-columns="numFlowCellColumns" -->
         </div>
       </div>
     </div>

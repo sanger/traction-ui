@@ -67,6 +67,7 @@ import traction from '@/store/traction'
 import sampleExtraction from '@/store/sampleExtraction'
 import printMyBarcode from '@/store/printMyBarcode'
 import PlateMap from '@/config/PlateMap'
+import InstrumentFlowcellLayout from '@/config/InstrumentFlowcellLayout'
 
 Vue.use(Vuex)
 
@@ -75,12 +76,14 @@ export default new Vuex.Store({
     api: build({ config: Api.Config, environment: import.meta.env }),
     printers: PrinterList,
     plateMap: PlateMap,
+    instrumentFlowcellLayout : InstrumentFlowcellLayout
   },
   mutations: {},
   getters: {
     api: (state) => state.api,
-    printers: (state) => state.printers.map((obj) => obj.printerName),
+    printers: (state) => ( state.printers.map((obj) => obj.printerName)  ),
     plateMap: (state) => state.plateMap,
+    instrumentFlowcellLayout: (state) => state.instrumentFlowcellLayout,
   },
   modules: {
     traction,

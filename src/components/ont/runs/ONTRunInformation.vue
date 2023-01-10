@@ -42,9 +42,9 @@ export default {
     return {
       statesList: ['pending', 'started', 'completed', 'cancelled'],
       instrumentTypes: [
-        'minion', // 1 flowcell
-        'gridion', // 5 flowcells
-        'promethion', // 24 flowcells
+        'MinIon', // 1 flowcell
+        'GridIon', // 5 flowcells
+        'PromethIon', // 24 flowcells
       ],
     }
   },
@@ -57,7 +57,7 @@ export default {
     instrumentOptions() {
       let options = this.instrumentTypes.map((name) => ({
         value: name,
-        text: this.capitalise(name),
+        text: name,
       }))
 
       return [{ value: null, text: 'Please select an instrument', disabled: true }, ...options]

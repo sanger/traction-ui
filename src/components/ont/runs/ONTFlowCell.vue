@@ -1,12 +1,12 @@
 <template>
-  <!--Card 1-->
-  <div class="rounded overflow-hidden shadow-lg bg-green-500">
-    <div class="px-6 py-4">
+  <div>Position: {{ position }}</div>
+  <!-- <div class="rounded overflow-hidden shadow-lg bg-green-500"> -->
+  <!-- <div class="px-6 py-4">
       <div class="font-bold text-l mb-2">{{ poolBarcode }}</div>
       <p class="text-gray-700 text-base">Flowcell {{ flowcellRow }}, {{ flowcellCol }}</p>
     </div>
-    <div class="px-4 py-2 bg-white">ID: {{ flowcellId }}</div>
-  </div>
+    <div class="px-4 py-2 bg-white">ID: {{ flowcellId }}</div> -->
+  <!-- </div> -->
 </template>
 <script>
 /**
@@ -17,23 +17,15 @@
 export default {
   name: 'ONTFlowCell',
   props: {
-    flowcellId: {
-      type: String,
-      required: true,
-    },
-    flowcellRow: {
+    position: {
       type: Number,
-      required: true,
+      // required: true,
     },
-    flowcellCol: {
-      type: Number,
-      required: true,
-    },
-    poolBarcode: {
-      type: String,
-      required: false,
-      default: 'No pool set',
-    },
+    // poolBarcode: {
+    //   type: String,
+    //   required: false,
+    //   default: 'No pool set',
+    // },
   },
   data() {
     return {
