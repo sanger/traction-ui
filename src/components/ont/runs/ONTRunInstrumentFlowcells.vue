@@ -1,27 +1,25 @@
 <template>
   <div>
     <traction-section number="3" title="Run Instrument Flowcells">
-      <div
-        v-for="rowIndex in Number(flowcellNumRows)"
-        :key="rowIndex"
-        class="flex flex-row px-2 py-2"
-      >
-        <ONTFlowCell
-          v-for="colIndex in Number(flowcellNumColumns)"
-          :key="colIndex"
-          flowcell-id="flowcell id"
-          :flowcell-row="rowIndex"
-          :flowcell-col="colIndex"
-          pool-barcode="Pool123456"
-          class="flex flex-col px-2 py-2"
-        >
-        </ONTFlowCell>
+      <div v-if="getInstrumentLayout">
+        <div v-for="rowIndex in numOfRows" :key="rowIndex" class="flex flex-row px-2 py-2">
+          <ONTFlowCell
+            v-for="colIndex in numOfColumns"
+            :key="colIndex"
+            :position="calculatePosition(rowIndex, colIndex)"
+            class="flex flex-col px-2 py-2"
+          >
+          </ONTFlowCell>
+        </div>
       </div>
     </traction-section>
   </div>
 </template>
 
 <script>
+import { createNamespacedHelpers } from 'vuex'
+const { mapGetters } = createNamespacedHelpers('traction/ont/runs')
+
 import ONTFlowCell from '@/components/ont/runs/ONTFlowCell'
 /**
  * # ONTRunInstrumentFlowcells
@@ -34,17 +32,25 @@ export default {
   components: {
     ONTFlowCell,
   },
-  props: {
-    flowcellNumRows: {
-      type: Number,
-      default: 0,
+  props: {},
+  computed: {
+    ...mapGetters(['currentRun', 'instrumentFlowcellLayout']),
+    getInstrumentLayout() {
+      return this.instrumentFlowcellLayout[this.currentRun.instrument_name]
     },
-    flowcellNumColumns: {
-      type: Number,
-      default: 0,
+    numOfRows() {
+      return this.getInstrumentLayout['rows']
+    },
+    numOfColumns() {
+      return this.getInstrumentLayout['columns']
     },
   },
-  computed: {},
-  methods: {},
+  methods: {
+    calculatePosition(rowIndex, colIndex) {
+      return this.numOfColumns * (rowIndex - 1) + colIndex
+      // correct below
+      // row number + ((col number - 1) * max rows)
+    },
+  },
 }
 </script>
