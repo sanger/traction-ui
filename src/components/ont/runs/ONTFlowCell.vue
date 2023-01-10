@@ -13,6 +13,13 @@
       :value="flowcellId"
       @input="setFlowcellId({ $event, position })"
     ></traction-input>
+    <traction-input
+      :id="'pool-id-' + position"
+      type="string"
+      placeholder="Scan pool ID"
+      :value="poolId"
+      @input="setPoolId({ $event, position })"
+    ></traction-input>
   </div>
 </template>
 <script>
@@ -37,6 +44,7 @@ export default {
   },
   computed: {
     ...mapState({
+      // Only needed for debugging
       flowcell(state) {
         return state.currentRun.flowcell_attributes.find(
           (flowcell) => flowcell.position == this.position,
@@ -50,10 +58,18 @@ export default {
           return flowcell.flowcell_id
         }
       },
+      poolId(state) {
+        let flowcell = state.currentRun.flowcell_attributes.find(
+          (flowcell) => flowcell.position == this.position,
+        )
+        if (flowcell) {
+          return flowcell.pool_id
+        }
+      },
     }),
   },
   methods: {
-    ...mapMutations(['setFlowcellId']),
+    ...mapMutations(['setFlowcellId', 'setPoolId']),
   },
 }
 </script>

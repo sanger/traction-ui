@@ -1,3 +1,5 @@
+import Vue from 'vue'
+
 const mutate = (key) => (state, val) => {
   state[key] = val
 }
@@ -12,9 +14,22 @@ const setFlowcellId = () => (state, obj) => {
   )
 
   if (exists) {
-    exists.flowcell_id = obj.$event
+    Vue.set(exists, 'flowcell_id', obj.$event)
   } else {
     let flowcell = { ...{ flowcell_id: obj.$event }, ...{ position: obj.position } }
+    state.currentRun.flowcell_attributes.push(flowcell)
+  }
+}
+
+const setPoolId = () => (state, obj) => {
+  const exists = state.currentRun.flowcell_attributes.find(
+    (flowcell) => flowcell.position == obj.position,
+  )
+
+  if (exists) {
+    Vue.set(exists, 'pool_id', obj.$event)
+  } else {
+    let flowcell = { ...{ pool_id: obj.$event }, ...{ position: obj.position } }
     state.currentRun.flowcell_attributes.push(flowcell)
   }
 }
@@ -25,6 +40,7 @@ const mutations = {
   setInstrumentName: mutateRun('instrument_name'),
   setState: mutateRun('state'),
   setFlowcellId: setFlowcellId(),
+  setPoolId: setPoolId(),
 }
 
 export default mutations
