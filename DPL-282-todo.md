@@ -48,12 +48,15 @@
 
 - Investigate how this could be dynamically created, based on Instrument Name
 - Create simple mocked version of ONTRunInstrumentFlowcells [DONE as28]
+- Should this be done as an SVG? Does it need to be, is it easier to just use components
 - Contains ONTFlowCells in tabular format - how best to pass in the matrix of flowcells and their linked pools?
 - Possibly adding config for each instrument layout (e.g 1x5 6x8) - p.s. Limber has something similar
+- Add to the store's currentRun a matrix of the flowcells with pool barcodes and the flowcell ids they contain
 
 ## ONTFlowCell
 
 - Create a simple mocked version of a flowcell with pool information [DONE as28]
+- will need an input box to scan in the flowcell ID (how do we ensure this is done? colour change to show complete? e.g. blank when empty, yellow when pool, green when flowcell id added)
 - What props are needed?
 - Should it have a remove button on it? How is that affected by run state?
 - Add v-if to draw empty version if no pool linked
