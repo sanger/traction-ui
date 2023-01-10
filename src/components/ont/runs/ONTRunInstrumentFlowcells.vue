@@ -47,9 +47,7 @@ export default {
   },
   methods: {
     calculatePosition(rowIndex, colIndex) {
-      return this.numOfColumns * (rowIndex - 1) + colIndex
-      // correct below
-      // row number + ((col number - 1) * max rows)
+      return this.numOfRows * (colIndex - 1) + rowIndex
     },
   },
 }
