@@ -3,16 +3,29 @@
     <div class="rounded overflow-hidden shadow-lg" :class="flowcell_bg_colour" >
       <div class="px-2 py-2">
         <div class="text-xl mb-2">Position: {{ position }}</div>
-        <traction-form-group id="input-group-flowcell-id" label="Flowcell Id:" label-for="flowcell-id" label-align="left">
+        <traction-form-group
+          id="input-group-flowcell-id"
+          label="Flowcell"
+          label-for="flowcell-id"
+          label-align="left"
+          label-cols="auto"
+        >
           <traction-input
             :id="'flowcell-id-' + position"
             type="string"
+            size="sm"
             placeholder="Scan flowcell ID"
             :value="flowcellId"
             @input="setFlowcellId({ $event, position })"
           ></traction-input>
         </traction-form-group>
-        <traction-form-group id="input-group-pool-id" label="Pool Id:" label-for="pool-id" label-align="left">
+        <traction-form-group
+          id="input-group-pool-id"
+          label="Pool Id  "
+          label-for="pool-id"
+          label-align="left"
+          label-cols="auto"
+        >
           <traction-input
             :id="'pool-id-' + position"
             type="string"
