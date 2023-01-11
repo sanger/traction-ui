@@ -1,25 +1,28 @@
 <template>
   <div>
-    Position: {{ position }} flowcell: {{ flowcell }}
-    <div class="rounded overflow-hidden shadow-lg bg-green-500">
-      <div class="px-6 py-4">
-        <div class="font-bold text-l mb-2">No pool</div>
+    <div class="rounded overflow-hidden shadow-lg" :class="flowcell_bg_colour" >
+      <div class="px-2 py-2">
+        <div class="text-xl mb-2">Position: {{ position }}</div>
+        <traction-form-group id="input-group-flowcell-id" label="Flowcell Id:" label-for="flowcell-id" label-align="left">
+          <traction-input
+            :id="'flowcell-id-' + position"
+            type="string"
+            placeholder="Scan flowcell ID"
+            :value="flowcellId"
+            @input="setFlowcellId({ $event, position })"
+          ></traction-input>
+        </traction-form-group>
+        <traction-form-group id="input-group-pool-id" label="Pool Id:" label-for="pool-id" label-align="left">
+          <traction-input
+            :id="'pool-id-' + position"
+            type="string"
+            placeholder="Scan pool ID"
+            :value="poolId"
+            @input="setPoolId({ $event, position })"
+          ></traction-input>
+        </traction-form-group>
       </div>
     </div>
-    <traction-input
-      :id="'flowcell-id-' + position"
-      type="string"
-      placeholder="Scan flowcell ID"
-      :value="flowcellId"
-      @input="setFlowcellId({ $event, position })"
-    ></traction-input>
-    <traction-input
-      :id="'pool-id-' + position"
-      type="string"
-      placeholder="Scan pool ID"
-      :value="poolId"
-      @input="setPoolId({ $event, position })"
-    ></traction-input>
   </div>
 </template>
 <script>
@@ -66,6 +69,14 @@ export default {
           return flowcell.pool_id
         }
       },
+      flowcell_bg_colour() {
+        var counter = 0
+        if(this.flowcellId) { counter++ }
+        if(this.poolId) { counter++ }
+        if(counter == 2) { return "fc_ready" }
+        if(counter == 1) { return "fc_partial" }
+        return "fc_empty"
+      },
     }),
   },
   methods: {
@@ -73,3 +84,10 @@ export default {
   },
 }
 </script>
+
+<style scoped lang="scss">
+  .fc_empty { background-color: rgb(230, 230, 230) }
+  .fc_partial { background-color: rgb(243, 243, 82) }
+  .fc_ready { background-color: rgb(77, 199, 77) }
+</style>
+
