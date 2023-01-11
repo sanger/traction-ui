@@ -24,10 +24,13 @@
 
 ## ONTFlowCell
 
-- will need an input box to scan in the pool ID
-- add colour change to show flowcell id present. e.g. blank when empty, yellow when pool, green when flowcell id added)
-- Add remove button for pool
-- Make flowcell droppable
+- will need an input box to scan in the pool ID [DONE]
+- add colour change to show flowcell id present. e.g. grey when empty, yellow when pool, green when flowcell id added) [DONE]
+- if we add validation can add a red colour to indicate an issue with that flowcell (plus small error msg)
+- UI for Flowcells is currently quite large. So for Promethion version you have to scroll a lot to reach lower positions. Maybe that will make it hard to drag / drop into them?
+- Possibly also want to change the input box into a text label once 'return' triggered (e.g. by scanner) to 'fix' that value once validated. So you don't accidently overscan a value you already entered. Would need a clear button then though.
+- Add clear / remove button for flowcell data (clears pool id and flowcell id from store [and backend?])
+- Make a pool droppable from search on left of screen into a flowcell (with validation in case already connected to another)
 - Add tests
 
 # Done
