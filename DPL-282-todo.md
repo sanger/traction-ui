@@ -1,3 +1,35 @@
+# Todo
+
+- Make naming of ONT vs Ont consistent
+
+## Run (create) View
+
+- Pull service changes, and check create run works and errors as expected
+
+## ONTRunInfomation
+
+- Fetch instrument name list from backend, and persist in VueX the instrument name and type
+
+## ONTAddPools
+
+- showing pool barcode and number of samples
+- add a remove button
+- [how is the connection between an instrument 'run' with its 24/48 flowcells and their linked pools maintained?]
+- Add test for the above ONTAddPools
+- Make pool items draggable
+
+## ONTRunInstrumentFlowcells
+
+- Add v-if to draw empty version if no pool linked
+
+## ONTFlowCell
+
+- will need an input box to scan in the pool ID
+- add colour change to show flowcell id present. e.g. blank when empty, yellow when pool, green when flowcell id added)
+- Add remove button for pool
+- Make flowcell droppable
+- Add tests
+
 # Done
 
 - Add all ONT Run components to within /ont/run folder, and update import statement [DONE as28]
@@ -25,39 +57,11 @@
 - Enter pool barcode, populate list of pools, and display
 - Mock request, to return a pool
 - Add List to display pools
-
-# Todo
-
-- Make naming of ONT vs Ont consistent
-
-## Run (create) View
-
-- Pull service changes, and check create run works and errors as expected
-
-## ONTRunInfomation
-
-- Fetch instrument name list from backend, and persist in VueX the instrument id
-
-## ONTAddPools
-
-- showing pool barcode and number of samples
-- add a remove button [how is the connection between an instrument 'run' with its 24/48 flowcells and their linked pools maintained?]
-- Add test for the above ONTAddPools
-
-## ONTRunInstrumentFlowcells
-
 - Investigate how this could be dynamically created, based on Instrument Name
 - Create simple mocked version of ONTRunInstrumentFlowcells [DONE as28]
 - Should this be done as an SVG? Does it need to be, is it easier to just use components
 - Contains ONTFlowCells in tabular format - how best to pass in the matrix of flowcells and their linked pools?
 - Possibly adding config for each instrument layout (e.g 1x5 6x8) - p.s. Limber has something similar
 - Add to the store's currentRun a matrix of the flowcells with pool barcodes and the flowcell ids they contain
-
-## ONTFlowCell
-
 - Create a simple mocked version of a flowcell with pool information [DONE as28]
-- will need an input box to scan in the flowcell ID (how do we ensure this is done? colour change to show complete? e.g. blank when empty, yellow when pool, green when flowcell id added)
-- What props are needed?
-- Should it have a remove button on it? How is that affected by run state?
-- Add v-if to draw empty version if no pool linked
-- Add tests
+- OntFlowcell: will need an input box to scan in the flowcell ID
