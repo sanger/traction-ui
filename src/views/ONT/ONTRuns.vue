@@ -14,9 +14,12 @@
     <span class="font-weight-bold">Total records: {{ runs.length }}</span>
 
     <div class="clearfix">
-      <traction-button id="newRun" class="float-left" theme="create" @click="redirectToRun()"
-        >New Run</traction-button
-      >
+      <traction-button
+        id="newRun"
+        class="float-left"
+        theme="create"
+        @click="redirectToRun()"
+      >New Run</traction-button>
     </div>
   </div>
 </template>
@@ -31,19 +34,15 @@ export default {
   data() {
     return {
       fields: [
-        { key: 'id', label: 'Run ID', sortable: true, tdClass: 'run-id' },
-        { key: 'name', label: 'Name', sortable: true, tdClass: 'name' },
-        { key: 'state', label: 'State', sortable: true, tdClass: 'state' },
+        { key: 'id', label: 'Run ID', sortable: true },
+        { key: 'experiment_name', label: 'Name', sortable: true },
+        { key: 'state', label: 'State', sortable: true },
         {
           key: 'instrument_name',
           label: 'Instrument Name',
           sortable: true,
-          tdClass: 'instrument-name',
         },
         { key: 'created_at', label: 'Created at', sortable: true },
-      ],
-      mockRuns: [
-        { id: 1, name: 'arun', state: 'Active', instrument_name: 'bob', created_at: '1/1/1' },
       ],
     }
   },

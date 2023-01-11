@@ -4,11 +4,28 @@ import { localVue, mount, store } from '@support/testHelper'
 import { describe } from 'vitest'
 
 describe('ONTRunInformation', () => {
-  let wrapper, runInfo, run
+  let wrapper, runInfo, run, instruments
 
   beforeEach(() => {
+    instruments = [
+      {
+        id: '1',
+        type: 'instruments',
+        name: 'GXB02004',
+        instrument_type: 'GridION',
+        max_number_of_flowcells: 5,
+      },
+      {
+        id: '2',
+        type: 'instruments',
+        name: 'PC24B148',
+        instrument_type: 'PromethION',
+        max_number_of_flowcells: 24,
+      },
+    ]
     run = OntRun.build()
-    store.commit('traction/ont/runs/setCurrentRun', run)
+    store.commit('traction/ont/run/setCurrentRun', run)
+    store.commit('traction/ont/run/setInstruments', instruments)
 
     wrapper = mount(ONTRunInformation, { localVue, store })
     runInfo = wrapper.vm
@@ -18,9 +35,6 @@ describe('ONTRunInformation', () => {
     it('must have statesList data', () => {
       expect(runInfo.statesList).toEqual(['pending', 'started', 'completed', 'cancelled'])
     })
-    it('must have instrumentTypes data', () => {
-      expect(runInfo.instrumentTypes).toEqual(['minion', 'gridion', 'promethion'])
-    })
   })
   describe('#computed', () => {
     it('#mapGetters', () => {
@@ -28,6 +42,7 @@ describe('ONTRunInformation', () => {
       expect(runInfo.currentRun.id).toEqual('new')
       expect(runInfo.currentRun.instrument_name).toEqual('')
       expect(runInfo.currentRun.state).toEqual('')
+      expect(runInfo.instruments).toEqual(instruments)
     })
     it('#mapState', () => {
       expect(runInfo.currentRun).toBeDefined()
@@ -44,16 +59,12 @@ describe('ONTRunInformation', () => {
           disabled: true,
         },
         {
-          text: 'Minion',
-          value: 'minion',
+          text: 'GXB02004',
+          value: 'GXB02004',
         },
         {
-          text: 'Gridion',
-          value: 'gridion',
-        },
-        {
-          text: 'Promethion',
-          value: 'promethion',
+          text: 'PC24B148',
+          value: 'PC24B148',
         },
       ])
     })

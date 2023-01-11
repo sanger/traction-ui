@@ -9,8 +9,7 @@
       class="float-right"
       :theme="currentAction.theme"
       @click="runAction"
-      >{{ currentAction.label }}</traction-button
-    >
+    >{{ currentAction.label }}</traction-button>
 
     <div>
       <div class="flex flex-row">
@@ -24,8 +23,6 @@
         </div>
         <div class="flex flex-col w-1/2">
           <ONTRunInstrumentFlowcells></ONTRunInstrumentFlowcells>
-          <!-- :flowcell-num-rows="numFlowCellRows"
-            :flowcell-num-columns="numFlowCellColumns" -->
         </div>
       </div>
     </div>
@@ -112,6 +109,9 @@ export default {
           'run-validation-message',
         )
       }
+    },
+    redirectToRuns() {
+      this.$router.push({ name: 'ONTRuns' })
     },
   },
 }

@@ -1,16 +1,19 @@
+# Service Code review
+
+- lets you create a run with no state (could default to pending), but doesn't let you create a run with none pending state. Maybe, front end doesn't need to have this state dropdown, and backend could default to 'pending'. NOTE: completed worked, but started and cancelled didn't
+
 # Todo
 
 - Make naming of ONT vs Ont consistent
+- make naming of pool_id to ont_pool_id throughout
 
 ## Run (create) View
-
-- Pull service changes, and check create run works and errors as expected
 
 ## ONTRunInfomation
 
 ## ONTAddPools
 
-- showing pool barcode and number of samples
+- showing number of samples
 - add a remove button
 - [how is the connection between an instrument 'run' with its 24/48 flowcells and their linked pools maintained?]
 - Add test for the above ONTAddPools
@@ -22,8 +25,6 @@
 
 ## ONTFlowCell
 
-- will need an input box to scan in the pool ID [DONE]
-- add colour change to show flowcell id present. e.g. grey when empty, yellow when pool, green when flowcell id added) [DONE]
 - if we add validation can add a red colour to indicate an issue with that flowcell (plus small error msg)
 - UI for Flowcells is currently quite large. So for Promethion version you have to scroll a lot to reach lower positions. Maybe that will make it hard to drag / drop into them?
 - Possibly also want to change the input box into a text label once 'return' triggered (e.g. by scanner) to 'fix' that value once validated. So you don't accidently overscan a value you already entered. Would need a clear button then though.
@@ -67,3 +68,6 @@
 - Create a simple mocked version of a flowcell with pool information [DONE as28]
 - OntFlowcell: will need an input box to scan in the flowcell ID
 - Fetch instrument name list from backend, and persist in VueX the instrument name and type
+- Pull service changes, and check create run works and errors as expected
+- will need an input box to scan in the pool ID [DONE]
+- add colour change to show flowcell id present. e.g. grey when empty, yellow when pool, green when flowcell id added) [DONE]

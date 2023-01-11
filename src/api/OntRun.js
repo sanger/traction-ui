@@ -1,5 +1,6 @@
 import handlePromise from './PromiseHelper'
 
+// Move to state
 const build = (object) => {
   return (
     object || {
@@ -12,17 +13,10 @@ const build = (object) => {
 }
 
 const create = async (run, request) => {
-  // let runId
-  // let responses = []
-
   try {
     let runPayload = createRunPayload(run)
     await createResource(runPayload, request)
-    // runId = runResponse.deserialize.runs[0].id
-    // responses.push(runResponse)
   } catch (err) {
-    // How does this work?
-    // destroy(runId, request.runs)
     return err.message
   }
   // What to return?
@@ -36,10 +30,14 @@ const createRunPayload = (run) => {
       attributes: {
         ont_instrument_id: 1, // this will be the instrument id
         state: run.state,
-        flowcell_attributes: [],
+        flowcell_attributes: flowcellsPayload(run.flowcell_attributes),
       },
     },
   }
+}
+
+const flowcellsPayload = (flowcells) => {
+  return flowcells.filter((fc) => fc.flowcell_id && fc.ont_pool_id)
 }
 
 const createResource = async (payload, request) => {

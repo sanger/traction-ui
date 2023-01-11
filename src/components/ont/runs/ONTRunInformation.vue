@@ -71,6 +71,7 @@ export default {
     this.provider()
   },
   methods: {
+    // use data fetcher instead?
     async provider() {
       try {
         await this.setInstruments()

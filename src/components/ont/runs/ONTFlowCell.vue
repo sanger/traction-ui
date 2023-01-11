@@ -79,7 +79,7 @@ export default {
           (flowcell) => flowcell.position == this.position,
         )
         if (flowcell) {
-          return flowcell.pool_id
+          return flowcell.ont_pool_id
         }
       },
       flowcell_bg_colour() {

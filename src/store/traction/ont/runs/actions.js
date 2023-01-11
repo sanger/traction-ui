@@ -1,62 +1,24 @@
-import handlePromise from '@/api/PromiseHelper'
+import { handleResponse } from '@/api/ResponseHelper'
 import * as OntRun from '@/api/OntRun'
 
-// const setRuns = async ({ commit, getters }) => {
-const setRuns = async ({ commit }) => {
-  // let request = getters.runRequest
-  // let promise = request.get()
-  // let response = await handlePromise(promise)
-  // if (response.successful && !response.empty) {
-  // let runs = response.deserialize.runs
+const setRuns = async ({ commit, getters }) => {
+  let request = getters.runRequest
+  let promise = request.get({ include: 'instrument' })
+  const response = await handleResponse(promise)
+  const { success, data: { data, included = [] } = {}, errors = [] } = response
+  if (success && !data.empty) {
+    let runs = data.map((r) => {
+      let instrument = included.find((i) => i.id == r.attributes.ont_instrument_id).attributes
 
-  // Mock-out data until backend service ready
-  const runs = [
-    {
-      id: 1,
-      name: 'anothername',
-      state: 'started',
-      instrument_name: 'MinIon',
-      created_at: '12/09/2019 02:22',
-    },
-    {
-      id: 2,
-      name: 'anothername1',
-      state: 'completed',
-      instrument_name: 'MinIon',
-      created_at: '10/09/2019 02:22',
-    },
-    {
-      id: 3,
-      name: 'anothername2',
-      state: 'cancelled',
-      instrument_name: 'MinIon',
-      created_at: '10/08/2019 02:22',
-    },
-    {
-      id: 4,
-      name: 'anothername3',
-      state: 'completed',
-      instrument_name: 'MinIon',
-      created_at: '10/07/2019 02:22',
-    },
-    {
-      id: 5,
-      name: 'anothername4',
-      state: 'cancelled',
-      instrument_name: 'MinIon',
-      created_at: '10/01/2019 02:22',
-    },
-    {
-      id: 6,
-      name: 'anothername5',
-      state: 'completed',
-      instrument_name: 'Gridion',
-      created_at: '10/02/2022 02:22',
-    },
-  ]
-  commit('setRuns', runs)
-  // }
-  // return response
+      return {
+        ...r.attributes,
+        id: r.id,
+        instrument_name: `${instrument.name} (${instrument.instrument_type})`,
+      }
+    })
+    commit('setRuns', runs)
+  }
+  return errors
 }
 
 const newRun = ({ commit }) => {
@@ -74,11 +36,14 @@ const createRun = async ({ getters }) => {
 const setInstruments = async ({ commit, getters }) => {
   let request = getters.instrumentRequest
   let promise = request.get()
-  let response = await handlePromise(promise)
-  if (response.successful && !response.empty) {
-    let instruments = response.deserialize.instruments
+  const response = await handleResponse(promise)
+  const { success, data: { data, included = [] } = {}, errors = [] } = response
+
+  if (success && !data.empty) {
+    let instruments = data.map((i) => i.attributes)
     commit('setInstruments', instruments)
   }
+  return errors
 }
 
 const actions = {

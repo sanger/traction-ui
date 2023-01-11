@@ -27,9 +27,9 @@ const setPoolId = () => (state, obj) => {
   )
 
   if (exists) {
-    Vue.set(exists, 'pool_id', obj.$event)
+    Vue.set(exists, 'ont_pool_id', obj.$event)
   } else {
-    let flowcell = { ...{ pool_id: obj.$event }, ...{ position: obj.position } }
+    let flowcell = { ...{ ont_pool_id: obj.$event }, ...{ position: obj.position } }
     state.currentRun.flowcell_attributes.push(flowcell)
   }
 }
