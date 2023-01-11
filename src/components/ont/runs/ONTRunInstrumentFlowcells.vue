@@ -8,8 +8,7 @@
             :key="colIndex"
             :position="calculatePosition(rowIndex, colIndex)"
             class="flex flex-col px-2 py-2"
-          >
-          </ONTFlowCell>
+          ></ONTFlowCell>
         </div>
       </div>
     </traction-section>
@@ -34,9 +33,15 @@ export default {
   },
   props: {},
   computed: {
-    ...mapGetters(['currentRun', 'instrumentFlowcellLayout']),
+    ...mapGetters(['currentRun', 'instrumentFlowcellLayout', 'instruments']),
     getInstrumentLayout() {
-      return this.instrumentFlowcellLayout[this.currentRun.instrument_name]
+      let instrumenConfig = this.instruments.find(
+        (instrument) => instrument.name == this.currentRun.instrument_name,
+      )
+      if (instrumenConfig) {
+        return this.instrumentFlowcellLayout[instrumenConfig.instrument_type]
+      }
+      return {}
     },
     numOfRows() {
       return this.getInstrumentLayout['rows']

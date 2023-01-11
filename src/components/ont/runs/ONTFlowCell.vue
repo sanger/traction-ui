@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div class="rounded overflow-hidden shadow-lg" :class="flowcell_bg_colour" >
+    <div class="rounded overflow-hidden shadow-lg" :class="flowcell_bg_colour">
       <div class="px-2 py-2">
         <div class="text-xl mb-2">Position: {{ position }}</div>
         <traction-form-group
@@ -45,7 +45,7 @@
  * Displays a panel for an individualflow cell. May be empty or contain a pool.
  */
 import { createNamespacedHelpers } from 'vuex'
-const { mapGetters, mapState, mapMutations } = createNamespacedHelpers('traction/ont/runs')
+const { mapState, mapMutations } = createNamespacedHelpers('traction/ont/runs')
 
 export default {
   name: 'ONTFlowCell',
@@ -84,11 +84,19 @@ export default {
       },
       flowcell_bg_colour() {
         var counter = 0
-        if(this.flowcellId) { counter++ }
-        if(this.poolId) { counter++ }
-        if(counter == 2) { return "fc_ready" }
-        if(counter == 1) { return "fc_partial" }
-        return "fc_empty"
+        if (this.flowcellId) {
+          counter++
+        }
+        if (this.poolId) {
+          counter++
+        }
+        if (counter == 2) {
+          return 'fc_ready'
+        }
+        if (counter == 1) {
+          return 'fc_partial'
+        }
+        return 'fc_empty'
       },
     }),
   },
@@ -99,8 +107,13 @@ export default {
 </script>
 
 <style scoped lang="scss">
-  .fc_empty { background-color: rgb(230, 230, 230) }
-  .fc_partial { background-color: rgb(243, 243, 82) }
-  .fc_ready { background-color: rgb(77, 199, 77) }
+.fc_empty {
+  background-color: rgb(230, 230, 230);
+}
+.fc_partial {
+  background-color: rgb(243, 243, 82);
+}
+.fc_ready {
+  background-color: rgb(77, 199, 77);
+}
 </style>
-

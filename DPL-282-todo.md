@@ -8,8 +8,6 @@
 
 ## ONTRunInfomation
 
-- Fetch instrument name list from backend, and persist in VueX the instrument name and type
-
 ## ONTAddPools
 
 - showing pool barcode and number of samples
@@ -68,3 +66,4 @@
 - Add to the store's currentRun a matrix of the flowcells with pool barcodes and the flowcell ids they contain
 - Create a simple mocked version of a flowcell with pool information [DONE as28]
 - OntFlowcell: will need an input box to scan in the flowcell ID
+- Fetch instrument name list from backend, and persist in VueX the instrument name and type

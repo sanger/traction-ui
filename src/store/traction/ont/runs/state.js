@@ -4,6 +4,7 @@ const state = {
   runs: [],
   currentRun: {},
   instrumentFlowcellLayout: InstrumentFlowcellLayout,
+  instruments: [],
 }
 
 export default state

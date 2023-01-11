@@ -29,7 +29,8 @@
 
 <script>
 import { createNamespacedHelpers } from 'vuex'
-const { mapGetters, mapState, mapMutations } = createNamespacedHelpers('traction/ont/runs')
+const { mapGetters, mapState, mapMutations, mapActions } =
+  createNamespacedHelpers('traction/ont/runs')
 
 /**
  * # ONTRunInformation
@@ -41,23 +42,18 @@ export default {
   data() {
     return {
       statesList: ['pending', 'started', 'completed', 'cancelled'],
-      instrumentTypes: [
-        'MinIon', // 1 flowcell
-        'GridIon', // 5 flowcells
-        'PromethIon', // 24 flowcells
-      ],
     }
   },
   computed: {
-    ...mapGetters(['currentRun']),
+    ...mapGetters(['currentRun', 'instruments']),
     ...mapState({
       instrumentName: (state) => state.currentRun.instrument_name,
       state: (state) => state.currentRun.state,
     }),
     instrumentOptions() {
-      let options = this.instrumentTypes.map((name) => ({
-        value: name,
-        text: name,
+      let options = this.instruments.map((instrument) => ({
+        value: instrument.name,
+        text: instrument.name,
       }))
 
       return [{ value: null, text: 'Please select an instrument', disabled: true }, ...options]
@@ -71,11 +67,22 @@ export default {
       return [{ value: null, text: 'Please select a state', disabled: true }, ...options]
     },
   },
+  created() {
+    this.provider()
+  },
   methods: {
+    async provider() {
+      try {
+        await this.setInstruments()
+      } catch (error) {
+        this.showAlert('Failed to get instruments: ' + error.message, 'danger')
+      }
+    },
     capitalise(str) {
       return str.charAt(0).toUpperCase() + str.slice(1)
     },
     ...mapMutations(['setInstrumentName', 'setState']),
+    ...mapActions(['setInstruments']),
   },
 }
 </script>

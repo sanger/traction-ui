@@ -41,6 +41,7 @@ const mutations = {
   setState: mutateRun('state'),
   setFlowcellId: setFlowcellId(),
   setPoolId: setPoolId(),
+  setInstruments: mutate('instruments'),
 }
 
 export default mutations

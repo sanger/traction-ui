@@ -1,4 +1,4 @@
-// import handlePromise from '@/api/PromiseHelper'
+import handlePromise from '@/api/PromiseHelper'
 import * as OntRun from '@/api/OntRun'
 
 // const setRuns = async ({ commit, getters }) => {
@@ -71,12 +71,23 @@ const createRun = async ({ getters }) => {
   return await OntRun.create(run, request)
 }
 
+const setInstruments = async ({ commit, getters }) => {
+  let request = getters.instrumentRequest
+  let promise = request.get()
+  let response = await handlePromise(promise)
+  if (response.successful && !response.empty) {
+    let instruments = response.deserialize.instruments
+    commit('setInstruments', instruments)
+  }
+}
+
 const actions = {
   setRuns,
   newRun,
   createRun,
+  setInstruments,
 }
 
-export { setRuns, newRun, createRun }
+export { setRuns, newRun, createRun, setInstruments }
 
 export default actions

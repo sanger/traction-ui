@@ -76,12 +76,12 @@ export default new Vuex.Store({
     api: build({ config: Api.Config, environment: import.meta.env }),
     printers: PrinterList,
     plateMap: PlateMap,
-    instrumentFlowcellLayout : InstrumentFlowcellLayout
+    instrumentFlowcellLayout: InstrumentFlowcellLayout,
   },
   mutations: {},
   getters: {
     api: (state) => state.api,
-    printers: (state) => ( state.printers.map((obj) => obj.printerName)  ),
+    printers: (state) => state.printers.map((obj) => obj.printerName),
     plateMap: (state) => state.plateMap,
     instrumentFlowcellLayout: (state) => state.instrumentFlowcellLayout,
   },
