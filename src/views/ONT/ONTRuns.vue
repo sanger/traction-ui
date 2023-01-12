@@ -52,7 +52,6 @@ export default {
   methods: {
     async provider() {
       try {
-        // setRuns is currently mocking the data, until backend is complete
         await this.setRuns()
       } catch (error) {
         this.showAlert('Failed to get runs: ' + error.message, 'danger')
