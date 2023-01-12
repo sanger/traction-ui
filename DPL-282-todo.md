@@ -6,6 +6,21 @@
 
 - Make naming of ONT vs Ont consistent
 - make naming of pool_id to ont_pool_id throughout
+- naming of Flowcell or FlowCell
+- possibly refactor `populateOntPools` in `src/store/traction/ont/actions.js`
+
+## Tests
+
+- LabwareFinder, button is disabled is there searchValue is empty
+- ONTFlowell.spec.js has no tests yet
+- ONTRunInformation remove '@/api/OntRun', and add setInstruments?
+- ONTRunInstrumentFlowcells.spec.js has no tests yet
+- `src/store/traction/ont/actions.js` `populateOntPools` function
+- `src/store/traction/ont/runs/actions.js`
+- `src/store/traction/ont/runs/getters.js`
+- `src/store/traction/ont/runs/mutations.js`
+- `src/store/traction/ont/runs/state.js`
+- `tests/unit/views/ont/ONTRun.spec.js` update with response
 
 ## Runs View
 

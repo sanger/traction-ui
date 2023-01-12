@@ -12,7 +12,8 @@ describe('ONTRun.vue', () => {
       state: '',
     }
 
-    store.commit('traction/ont/runs/setCurrentRun', mockRun)
+    // dont think we need this
+    // store.commit('traction/ont/runs/setCurrentRun', mockRun)
 
     wrapper = mount(ONTRun, {
       store,
@@ -81,6 +82,7 @@ describe('ONTRun.vue', () => {
     })
 
     it('unsuccessful', async () => {
+      // return whole response object
       ontRun.createRun.mockReturnValue(['this is an error'])
 
       await ontRun.runAction()
