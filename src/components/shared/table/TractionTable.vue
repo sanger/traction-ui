@@ -19,20 +19,20 @@
           <table
             v-bind="$attrs"
             class="min-w-full divide-y divide-gray-200"
-            :data-attribute="dataAttribute"
+            data-attribute="dataAttribute"
           >
             <thead>
               <tr>
                 <th
-                  v-for="(headerColumn, indx) in headerColumns"
-                  :key="headerColumn.name"
+                  v-for="field in fields"
+                  :key="field.key"
                   className="px-6 py-3 bg-gray-50 text-left select-none"
                 >
-                  {{ headerColumn }}
+                  {{ field.label }}
                   <traction-button
-                    v-if="headerColumn.sortRequired"
-                    :data-testid="`${headerColumn}-sort-button`"
-                    @click="sortButtonClick(headerColumn, indx)"
+                    v-if="field.sortable"
+                    :data-testid="`${field.key}-sort-button`"
+                    @click="sortButtonClick(field.key, indx)"
                   >
                     <traction-arrow-icon>
                       <path
@@ -65,28 +65,25 @@ export default {
       type: String,
       default: '',
     },
-    headerColumns: {
-      type: Array,
-      required: true,
-      default: () => [{ name: '', sortRequired: false }],
-      validator: (columns) => {
-        const columnNames = columns.map((col) => col.name)
-        return columnNames.length == new Set(columnNames).size
-      },
-    },
+    fields: {
+      type:Array,
+      default: ()=> [{ key: '', label: '' }],
+    }
   },
   data() {
     return {
-      sortAscending: this.headerColumns.map(() => false),
+     sortFields: this.fields.map(() => false),
     }
+
   },
   methods: {
     /**Emitted when the page changes */
     sortClick(column, index) {
-      this.sortAscending[index] = !this.sortAscending[index]
+      this.sortFields[index] = !this.sortFields[index]
       this.$emit('input', column)
     },
   },
 }
+</script>
 
 

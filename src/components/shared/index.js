@@ -19,9 +19,9 @@ import TractionSelect from '@/components/shared/TractionSelect'
 import TractionResultIcon from '@/components/shared/icons/TractionResultIcon'
 import TractionPaginationIcon from '@/components/shared/icons/TractionPaginationIcon'
 import TractionPagination from '@/components/shared/TractionPagination'
-import TractionTable from '@/components/shared/TractionTable'
+import TractionTable from '@/components/shared/table/TractionTable'
+import TractionTableCell from '@/components/shared/table/TractionTableCell'
 import TractionArrowIcon from '@/components/shared/icons/TractionArrowIcon'
-import TractionTableCell from '@/components/shared/TractionTableCell'
 
 import {
   BModal,

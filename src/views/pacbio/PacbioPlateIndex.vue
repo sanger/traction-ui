@@ -21,7 +21,25 @@
       </traction-input-group>
     </traction-form-group>
     <br />
-    
+
+    <custom-table id="plate-index" :fields="fields">
+      <tr>
+        <template v-for="(plate, index) in plates">
+          <custom-table-cell v-if="fields[index] && fields[index].key === 'show_details'" :key="index">
+            <traction-button
+              :id="'details-btn-' + index"
+              size="sm"
+              theme="default"
+            >
+              {{  'Show' }} Plate
+            </traction-button>
+          </custom-table-cell>
+          <custom-table-cell v-if="fields[index]&& fields[index].key !== 'show_details'" :key="index">
+            <Plate ref="plate" :plate="plate" @alert="alert"></Plate>
+          </custom-table-cell>
+        </template>
+      </tr>
+    </custom-table>
 
     <traction-table
       id="plate-index"
