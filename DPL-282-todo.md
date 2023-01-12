@@ -11,7 +11,7 @@
 
 ## Tests
 
-- LabwareFinder, button is disabled is there searchValue is empty
+- LabwareFinder, button is disabled is there searchValue is empty [hc6 done]
 - ONTFlowell.spec.js has no tests yet
 - ONTRunInformation remove '@/api/OntRun', and add setInstruments?
 - ONTRunInstrumentFlowcells.spec.js has no tests yet
