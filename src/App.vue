@@ -112,5 +112,7 @@ a {
   width: 30em;
   z-index: 1051;
   word-break: break-word;
+  max-height: 500px;
+  overflow-y: scroll;
 }
 </style>
