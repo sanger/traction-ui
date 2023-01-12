@@ -49,12 +49,12 @@ describe('ONTFlowCell', () => {
   describe('#methods', () => {
     describe('#mapMutations', () => {
       it('#setFlowcellId', () => {
-        ontFlowCell.setFlowcellId('FC2')
+        ontFlowCell.setFlowcellId({ $event: 'FC2', position: 1 })
         expect(ontFlowCell.flowcellId).toEqual('FC2')
       })
 
       it('#setPoolId', () => {
-        ontFlowCell.setPoolId('Pool2')
+        ontFlowCell.setPoolId({ $event: 'Pool2', position: 1 })
         expect(ontFlowCell.poolId).toEqual('Pool2')
       })
     })
