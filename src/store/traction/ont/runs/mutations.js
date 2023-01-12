@@ -36,7 +36,6 @@ const setPoolId = () => (state, obj) => {
 
 const mutations = {
   setRuns: mutate('runs'),
-  setCurrentRun: mutate('currentRun'),
   setInstrumentName: mutateRun('instrument_name'),
   setState: mutateRun('state'),
   setFlowcellId: setFlowcellId(),

@@ -3,18 +3,9 @@ import { localVue, mount, store, router } from '@support/testHelper'
 import { beforeEach, describe, it } from 'vitest'
 
 describe('ONTRun.vue', () => {
-  let wrapper, mockRun, ontRun
+  let wrapper, ontRun
 
   beforeEach(() => {
-    mockRun = {
-      id: 'new',
-      instrument_name: '',
-      state: '',
-    }
-
-    // dont think we need this
-    // store.commit('traction/ont/runs/setCurrentRun', mockRun)
-
     wrapper = mount(ONTRun, {
       store,
       router,

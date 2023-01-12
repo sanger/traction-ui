@@ -11,13 +11,13 @@ describe('ONTFlowCell', () => {
     }
 
     // create a flowcell in the store and set its pool
-    store.commit('traction/ont/runs/setFlowcellId', { $event: "FC1", position: 1 })
-    store.commit('traction/ont/runs/setPoolId', { $event: "Pool1", position: 1 })
+    store.commit('traction/ont/runs/setFlowcellId', { $event: 'FC1', position: 1 })
+    store.commit('traction/ont/runs/setPoolId', { $event: 'Pool1', position: 1 })
 
     wrapper = mount(ONTFlowCell, {
       localVue,
       propsData: props,
-      store
+      store,
     })
 
     ontFlowCell = wrapper.vm
@@ -32,7 +32,11 @@ describe('ONTFlowCell', () => {
   describe('#computed', () => {
     it('#mapState', () => {
       expect(ontFlowCell.flowcell).toBeDefined()
-      expect(ontFlowCell.flowcell).toEqual({ flowcell_id: 'FC1', ont_pool_id: 'Pool1', position: 1 })
+      expect(ontFlowCell.flowcell).toEqual({
+        flowcell_id: 'FC1',
+        ont_pool_id: 'Pool1',
+        position: 1,
+      })
       expect(ontFlowCell.flowcellId).toBeDefined()
       expect(ontFlowCell.flowcellId).toEqual('FC1')
       expect(ontFlowCell.poolId).toBeDefined()
@@ -42,7 +46,7 @@ describe('ONTFlowCell', () => {
     })
   })
 
-   describe('#methods', () => {
+  describe('#methods', () => {
     describe('#mapMutations', () => {
       it('#setFlowcellId', () => {
         ontFlowCell.setFlowcellId('FC2')

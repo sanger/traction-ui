@@ -3,7 +3,7 @@ import { localVue, mount, store } from '@support/testHelper'
 import { describe } from 'vitest'
 
 describe('ONTRunInformation', () => {
-  let wrapper, runInfo, run, instruments
+  let wrapper, runInfo, instruments
 
   beforeEach(() => {
     instruments = [

@@ -1,8 +1,6 @@
-import Response from '@/api/Response'
 import * as Actions from '@/store/traction/ont/runs/actions'
 import { Data } from '@support/testHelper'
 import { expect, vi } from 'vitest'
-import { handleResponse, newResponse } from '@/api/ResponseHelper'
 
 describe('actions.js', () => {
   let failedResponse
@@ -115,13 +113,13 @@ describe('actions.js', () => {
           name: 'GXB02004',
           instrument_type: 'GridION',
           max_number_of_flowcells: 5,
-          id: "1",
+          id: '1',
         },
         {
           name: 'PC24B148',
           instrument_type: 'PromethION',
           max_number_of_flowcells: 24,
-          id: "2",
+          id: '2',
         },
       ]
       expect(commit).toHaveBeenCalledWith('setInstruments', expected)
