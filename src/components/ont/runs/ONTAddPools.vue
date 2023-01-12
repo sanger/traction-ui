@@ -2,7 +2,7 @@
   <div>
     <traction-section title="Add Pools" number="2" class="mb-2">
       <LabwareFinder :fetcher="populateOntPools" filter="barcode" class="mb-6" />
-      <traction-table
+      <!-- <traction-table
         id="pool-index"
         show-empty
         responsive
@@ -10,8 +10,10 @@
         :fields="fields"
         hover
         tbody-tr-class="pool"
-      >
-      </traction-table>
+      ></traction-table>-->
+      <traction-list-group class="list-group">
+        <Pool v-for="pool in pools" :key="pool.id" v-bind:pool="pool"></Pool>
+      </traction-list-group>
     </traction-section>
   </div>
 </template>
@@ -27,11 +29,16 @@
 import LabwareFinder from '@/components/LabwareFinder'
 import { createNamespacedHelpers } from 'vuex'
 const { mapActions, mapGetters, mapState } = createNamespacedHelpers('traction/ont')
+import Pool from '@/components/ont/runs/ONTPoolListItem'
+
+const img = new Image()
+img.src = '/tube.png'
 
 export default {
   name: 'ONTAddPools',
   components: {
     LabwareFinder,
+    Pool
   },
   data() {
     return {

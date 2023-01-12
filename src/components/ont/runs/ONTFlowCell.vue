@@ -26,13 +26,22 @@
           label-align="left"
           label-cols="auto"
         >
-          <traction-input
-            :id="'pool-id-' + position"
-            type="string"
-            placeholder="Scan pool ID"
-            :value="poolId"
-            @input="setPoolId({ $event, position })"
-          ></traction-input>
+          <!-- Droppable -->
+          <div
+            class="dropzone"
+            id="droptarget"
+            @dragover="dragOver"
+            @dragleave="dragLeave"
+            @drop="onDrop"
+          >
+            <traction-input
+              :id="'pool-id-' + position"
+              type="string"
+              placeholder="Scan pool ID"
+              :value="poolId"
+              @input="setPoolId({ $event, position })"
+            ></traction-input>
+          </div>
         </traction-form-group>
       </div>
     </div>
@@ -102,6 +111,17 @@ export default {
   },
   methods: {
     ...mapMutations(['setFlowcellId', 'setPoolId']),
+    dragOver(event) {
+      event.preventDefault()
+      this.hover = true
+    },
+    dragLeave(event) {
+      event.preventDefault()
+      this.hover = false
+    },
+    onDrop(event) {
+      event.dataTransfer.getData('barcode')
+    },
   },
 }
 </script>
