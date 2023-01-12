@@ -12,8 +12,8 @@
 ## Tests
 
 - LabwareFinder, button is disabled is there searchValue is empty [hc6 done]
+- ONTRunInformation remove '@/api/OntRun', and add setInstruments? [hc6 done]
 - ONTFlowell.spec.js has no tests yet
-- ONTRunInformation remove '@/api/OntRun', and add setInstruments?
 - ONTRunInstrumentFlowcells.spec.js has no tests yet
 - `src/store/traction/ont/actions.js` `populateOntPools` function
 - `src/store/traction/ont/runs/actions.js`

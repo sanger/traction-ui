@@ -1,4 +1,3 @@
-import * as OntRun from '@/api/OntRun'
 import ONTRunInformation from '@/components/ont/runs/ONTRunInformation'
 import { localVue, mount, store } from '@support/testHelper'
 import { describe } from 'vitest'
@@ -23,9 +22,7 @@ describe('ONTRunInformation', () => {
         max_number_of_flowcells: 24,
       },
     ]
-    run = OntRun.build()
-    store.commit('traction/ont/run/setCurrentRun', run)
-    store.commit('traction/ont/run/setInstruments', instruments)
+    store.commit('traction/ont/runs/setInstruments', instruments)
 
     wrapper = mount(ONTRunInformation, { localVue, store })
     runInfo = wrapper.vm
