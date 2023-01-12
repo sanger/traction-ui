@@ -1,5 +1,4 @@
 import { handleResponse } from '@/api/ResponseHelper'
-import * as OntRun from '@/api/OntRun'
 
 const setRuns = async ({ commit, getters }) => {
   let request = getters.runRequest
@@ -21,26 +20,43 @@ const setRuns = async ({ commit, getters }) => {
   return errors
 }
 
-const newRun = ({ commit }) => {
-  let run = OntRun.build()
-  commit('setCurrentRun', run)
-}
-
 const createRun = async ({ getters }) => {
   let run = getters.currentRun
-
   let request = getters.runRequest
-  return await OntRun.create(run, request)
+
+  let instrument_id = getters.instruments.find((i) => i.name == run.instrument_name).id
+
+  let runPayload = {
+    data: {
+      type: 'runs',
+      attributes: {
+        ont_instrument_id: instrument_id, // TODO: this will be the instrument id
+        state: run.state,
+        flowcell_attributes: run.flowcell_attributes.filter(
+          (fc) => fc.flowcell_id && fc.ont_pool_id,
+        ),
+      },
+    },
+  }
+
+  let promise = request.create({ data: runPayload })
+  return await handleResponse(promise)
 }
 
 const setInstruments = async ({ commit, getters }) => {
   let request = getters.instrumentRequest
   let promise = request.get()
   const response = await handleResponse(promise)
-  const { success, data: { data, included = [] } = {}, errors = [] } = response
+  const { success, data: { data } = {}, errors = [] } = response
 
   if (success && !data.empty) {
-    let instruments = data.map((i) => i.attributes)
+    let instruments = data.map((i) => {
+      return {
+        ...i.attributes,
+        id: i.id,
+      }
+    })
+
     commit('setInstruments', instruments)
   }
   return errors
@@ -48,11 +64,10 @@ const setInstruments = async ({ commit, getters }) => {
 
 const actions = {
   setRuns,
-  newRun,
   createRun,
   setInstruments,
 }
 
-export { setRuns, newRun, createRun, setInstruments }
+export { setRuns, createRun, setInstruments }
 
 export default actions

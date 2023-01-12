@@ -9,7 +9,8 @@
       class="float-right"
       :theme="currentAction.theme"
       @click="runAction"
-    >{{ currentAction.label }}</traction-button>
+      >{{ currentAction.label }}</traction-button
+    >
 
     <div>
       <div class="flex flex-row">
@@ -78,33 +79,17 @@ export default {
     currentAction() {
       return this.actions[this.newRecord ? 'create' : 'update']
     },
-    numFlowCellRows() {
-      // TODO: fetch this from instrument in run
-      return 2
-    },
-    numFlowCellColumns() {
-      // TODO: fetch this from instrument in run
-      return 3
-    },
-  },
-  created() {
-    this.provider()
   },
   methods: {
-    ...mapActions(['newRun', 'createRun']),
-    provider() {
-      this.newRun()
-    },
+    ...mapActions(['createRun']),
     async runAction() {
-      // WHY multiple responses?
-      let responses = await this[this.currentAction.method]()
+      let response = await this[this.currentAction.method]()
 
-      // Check what this responses will be, an object or list?
-      if (responses.length == 0) {
+      if (response.success) {
         this.redirectToRuns()
       } else {
         this.showAlert(
-          'Failed to create run in Traction: ' + responses,
+          'Failed to create run in Traction: ' + response.errors,
           'danger',
           'run-validation-message',
         )

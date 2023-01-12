@@ -7,6 +7,10 @@
 - Make naming of ONT vs Ont consistent
 - make naming of pool_id to ont_pool_id throughout
 
+## Runs View
+
+- pagination and order (sort by default desc)
+
 ## Run (create) View
 
 ## ONTRunInfomation
