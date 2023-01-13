@@ -62,12 +62,49 @@ const setInstruments = async ({ commit, getters }) => {
   return errors
 }
 
+/**
+ * Retrieves a list of ont pools from traction-service and populates the source
+ * with associated data, appending data to the previously stored state
+ * @param rootState the vuex rootState object. Provides access to the current state
+ * @param commit the vuex commit object. Provides access to mutations
+ */
+// For the component, the included relationships are not required
+// However, the functionality does not appear to work without them
+const populateOntPools = async ({ commit, rootState }, filter) => {
+  console.log("in populateOntPools")
+  if(filter === '') {
+    console.log('caught empty filter')
+    return { success: true, errors: [] }
+  }
+  const request = rootState.api.traction.ont.pools
+  const promise = request.get({
+    filter: filter,
+  })
+  const response = await handleResponse(promise)
+
+  let { success, data: { data } = {}, errors = [] } = response
+
+  if (success && !data.empty) {
+    let pools = data.map((p) => {
+      return {
+        ...p.attributes,
+        id: p.id,
+      }
+    })
+
+    commit('populatePools', pools)
+  }
+
+  return { success, errors }
+}
+
 const actions = {
   setRuns,
   createRun,
   setInstruments,
+  populateOntPools,
 }
 
-export { setRuns, createRun, setInstruments }
+export { setRuns, createRun, setInstruments, populateOntPools }
 
 export default actions

@@ -10,6 +10,7 @@ const state = {
   },
   instrumentFlowcellLayout: InstrumentFlowcellLayout,
   instruments: [],
+  pools: [],
 }
 
 export default state

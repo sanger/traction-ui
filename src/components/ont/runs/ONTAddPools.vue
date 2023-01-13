@@ -28,7 +28,7 @@
  */
 import LabwareFinder from '@/components/LabwareFinder'
 import { createNamespacedHelpers } from 'vuex'
-const { mapActions, mapGetters, mapState } = createNamespacedHelpers('traction/ont')
+const { mapActions, mapGetters, mapState } = createNamespacedHelpers('traction/ont/runs')
 import Pool from '@/components/ont/runs/ONTPoolListItem'
 
 const img = new Image()
@@ -45,7 +45,7 @@ export default {
       pool_barcode: null,
       fields: [
         { key: 'id', label: 'Pool ID', sortable: true, tdClass: 'pool-id' },
-        { key: 'barcode', label: 'Barcode', sortable: true, tdClass: 'barcode' },
+        { key: 'kit_barcode', label: 'Barcode', sortable: true, tdClass: 'barcode' },
       ],
     }
   },
