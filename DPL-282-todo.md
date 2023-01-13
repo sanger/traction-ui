@@ -21,6 +21,8 @@
 
 ## Components
 
+- comment on pool list saying drag and drop into a pool id input
+- add comment to page saying how to work it
 - show pools used on edit
 - remove button for pool id?
 - update list of states?
