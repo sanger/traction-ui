@@ -32,9 +32,10 @@
                   <traction-button
                     v-if="field.sortable"
                     :data-testid="`${field.key}-sort-button`"
+                    theme="navigation"
                     @click="sortButtonClick(field.key, indx)"
                   >
-                    <traction-arrow-icon>
+                    <traction-arrow-icon direction="up">
                       <path
                         d="m11 18-6-6 6-6 1.4 1.4L7.825 12l4.575 4.6Zm6.6 0-6-6 6-6L19 7.4 14.425 12 19 16.6Z"
                       />
@@ -66,15 +67,33 @@ export default {
       default: '',
     },
     fields: {
-      type:Array,
-      default: ()=> [{ key: '', label: '' }],
-    }
+      type: Array,
+      default: () => [{ key: '', label: '' }],
+    },
+    columns: {
+      type: [Object, Array],
+      required: false,
+      default: null,
+      validator: (data) => {
+        if (Array.isArray(data)) {
+          return data.length == this.fields.length
+        } else {
+          const invalidFields = this.fields.filter((field) => !Object.keys(data).includes(field))
+          return invalidFields.length === 0
+        }
+      },
+      customColumns:{
+        type:Array,
+        required:false,
+        default:[{colName:"",component:null}]
+      }
+    },
+
   },
   data() {
     return {
-     sortFields: this.fields.map(() => false),
+      sortFields: this.fields.map(() => false),
     }
-
   },
   methods: {
     /**Emitted when the page changes */
@@ -85,5 +104,3 @@ export default {
   },
 }
 </script>
-
-

@@ -23,22 +23,23 @@
     <br />
 
     <custom-table id="plate-index" :fields="fields">
-      <tr>
-        <template v-for="(plate, index) in plates">
-          <custom-table-cell v-if="fields[index] && fields[index].key === 'show_details'" :key="index">
-            <traction-button
-              :id="'details-btn-' + index"
-              size="sm"
-              theme="default"
+      <template v-for="(plate, index) in plates">
+        <tr :key="index">
+          <template v-for="(field, fieldIndex) in fields">
+            <custom-table-cell
+              v-if="fields[fieldIndex] && fields[fieldIndex].key === 'show_details'"
+              :key="field + '-' + fieldIndex"
             >
-              {{  'Show' }} Plate
-            </traction-button>
-          </custom-table-cell>
-          <custom-table-cell v-if="fields[index]&& fields[index].key !== 'show_details'" :key="index">
-            <Plate ref="plate" :plate="plate" @alert="alert"></Plate>
-          </custom-table-cell>
-        </template>
-      </tr>
+              <traction-button :id="'details-btn-' + index" size="sm" theme="default">
+                {{ 'Show' }} Plate
+              </traction-button>
+            </custom-table-cell>
+            <custom-table-cell v-else :key="'show_details -' + fieldIndex">
+              {{ fields[fieldIndex] ? plate[fields[fieldIndex].key] : '' }}
+            </custom-table-cell>
+          </template>
+        </tr>
+      </template>
     </custom-table>
 
     <traction-table

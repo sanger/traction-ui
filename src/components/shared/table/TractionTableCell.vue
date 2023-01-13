@@ -15,7 +15,7 @@
    */
 -->
 <template>
-  <td v-bind="$attrs" className="px-6 py-4 whitespace-nowrap">{children}</td>
+  <td v-bind="$attrs" className="px-6 py-4 whitespace-nowrap"><slot /></td>
 </template>
 <script>
 export default {

@@ -52,6 +52,8 @@ const themes = {
   paginationDefault: 'bg-white text-black  border-gray-300 hover:bg-gray-400',
   paginationSelect:
     'text-white bg-sdb-200 shadow-sm focus:shadow-outline-sdb hover:bg-sdb-300 active:bg-sdb-400',
+  navigation:
+    'text-sdb-200 border-0 bg-white shadow-sm focus:shadow-outline-sdb hover:bg-sdb-300 active:bg-sdb-400',
 }
 
 export default {
