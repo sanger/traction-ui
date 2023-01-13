@@ -84,7 +84,7 @@ export default {
     this.provider()
   },
   methods: {
-    ...mapActions(['createRun', 'setInstruments', 'editRun']),
+    ...mapActions(['createRun', 'setInstruments', 'editRun', 'newRun']),
     async runAction() {
       let response = await this[this.currentAction.method]()
 
@@ -102,7 +102,9 @@ export default {
       this.$router.push({ name: 'ONTRuns' })
     },
     async provider() {
-      if (!this.newRecord) {
+      if (this.id === 'new') {
+        this.newRun()
+      } else if (!this.newRecord) {
         await this.setInstruments()
         await this.editRun(parseInt(this.id))
       }

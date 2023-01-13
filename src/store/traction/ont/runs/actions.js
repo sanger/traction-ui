@@ -20,6 +20,17 @@ const setRuns = async ({ commit, getters }) => {
   return errors
 }
 
+const newRun = ({ commit }) => {
+  let run = {
+    id: 'new',
+    instrument_name: '',
+    state: '',
+    flowcell_attributes: [],
+  }
+
+  commit('setCurrentRun', run)
+}
+
 const createRun = async ({ getters }) => {
   let run = getters.currentRun
   let request = getters.runRequest
@@ -129,8 +140,9 @@ const actions = {
   setInstruments,
   populateOntPools,
   editRun,
+  newRun,
 }
 
-export { setRuns, createRun, setInstruments, populateOntPools, editRun }
+export { setRuns, createRun, setInstruments, populateOntPools, editRun, newRun }
 
 export default actions
