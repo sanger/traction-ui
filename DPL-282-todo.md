@@ -29,14 +29,17 @@
 ## Run (create) View
 
 ## ONTRunInfomation
+- on creation of a new run, clear the instrument and other values from the currentRun so the screen doesn't show the previously selected instrument
 
 ## ONTAddPools
 
+- bug: on going to the new run, without searching for anything, it is showing a list of pool kit-barcodes
+- change from using kit_barcode to using tube barcode for the display
 - showing number of samples
 - add a remove button
 - [how is the connection between an instrument 'run' with its 24/48 flowcells and their linked pools maintained?]
 - Add test for the above ONTAddPools
-- Make pool items draggable
+- Make pool items dropable into flowcells
 
 ## ONTRunInstrumentFlowcells
 
@@ -53,6 +56,7 @@
 
 # Done
 
+- ONTAddPools: Make pool items draggable
 - Add all ONT Run components to within /ont/run folder, and update import statement [DONE as28]
 - Create ont folder in store, with the relevant vuex riles `src/store/traction/ont/runs/ <actions>/<getters> etc` [DONE as28]
 - Create an store Run index file, pulling in run module [DONE as28]
