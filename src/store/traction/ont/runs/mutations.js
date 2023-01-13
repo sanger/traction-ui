@@ -42,6 +42,7 @@ const mutations = {
   setPoolId: setPoolId(),
   setInstruments: mutate('instruments'),
   populatePools: mutate('pools'),
+  setCurrentRun: mutate('currentRun'),
 }
 
 export default mutations

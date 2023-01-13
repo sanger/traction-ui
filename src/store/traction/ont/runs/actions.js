@@ -71,9 +71,7 @@ const setInstruments = async ({ commit, getters }) => {
 // For the component, the included relationships are not required
 // However, the functionality does not appear to work without them
 const populateOntPools = async ({ commit, rootState }, filter) => {
-  console.log("in populateOntPools")
   if(filter === '') {
-    console.log('caught empty filter')
     return { success: true, errors: [] }
   }
   const request = rootState.api.traction.ont.pools
@@ -98,13 +96,41 @@ const populateOntPools = async ({ commit, rootState }, filter) => {
   return { success, errors }
 }
 
+const editRun = async ({ commit, getters }, runId) => {
+  let request = getters.runRequest
+  let promise = request.find({ id: runId, include: 'flowcells' })
+  let response = await handleResponse(promise)
+
+  const { success, data: { data, included = [] } = {}, errors = [] } = response
+
+  if (success && !data.empty) {
+    let instrument_name = getters.instruments.find((i) => i.id == data.attributes.ont_instrument_id).name
+
+    let currentRun = {
+      id: data.id,
+      instrument_name: instrument_name,
+      state: data.attributes.state,
+      flowcell_attributes: included.map((fc) => {
+        return {
+          flowcell_id: fc.attributes.flowcell_id,
+          ont_pool_id: fc.attributes.ont_pool_id,
+          position: fc.attributes.position,
+        }
+      })
+    }
+
+    commit('setCurrentRun', currentRun)
+  }
+}
+
 const actions = {
   setRuns,
   createRun,
   setInstruments,
   populateOntPools,
+  editRun,
 }
 
-export { setRuns, createRun, setInstruments, populateOntPools }
+export { setRuns, createRun, setInstruments, populateOntPools, editRun }
 
 export default actions
