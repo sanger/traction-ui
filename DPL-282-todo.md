@@ -4,55 +4,48 @@
 
 # Todo
 
+## Generic
+
 - Make naming of ONT vs Ont consistent
 - make naming of pool_id to ont_pool_id throughout
 - naming of Flowcell or FlowCell
-- possibly refactor `populateOntPools` in `src/store/traction/ont/actions.js`
+- comments throughout
 
-## Tests
+## Refactor
 
-- LabwareFinder, button is disabled is there searchValue is empty [hc6 done]
-- ONTRunInformation remove '@/api/OntRun', and add setInstruments? [hc6 done]
-- `src/store/traction/ont/runs/actions.js` [hc6 done]
-- `src/store/traction/ont/runs/getters.js` [hc6 done]
-- `src/store/traction/ont/runs/mutations.js` [hc6 done]
+- refactor actions/ vuex
+- pool id is being used in flowcells
+- refactor actions
+- have to recall instruments on editRun
+- run includeResource fails (reuse resources)/ pools resource with filter
 
-- ONTFlowell.spec.js has no tests yet
-- ONTRunInstrumentFlowcells.spec.js has no tests yet
-- `src/store/traction/ont/actions.js`
-- `tests/unit/views/ont/ONTRun.spec.js` update with response
+## Components
 
-## Runs View
-
-- pagination and order (sort by default desc)
-
-## Run (create) View
-
-## ONTRunInfomation
-- on creation of a new run, clear the instrument and other values from the currentRun so the screen doesn't show the previously selected instrument
-
-## ONTAddPools
-
-- bug: on going to the new run, without searching for anything, it is showing a list of pool kit-barcodes
-- change from using kit_barcode to using tube barcode for the display
-- showing number of samples
-- add a remove button
-- [how is the connection between an instrument 'run' with its 24/48 flowcells and their linked pools maintained?]
-- Add test for the above ONTAddPools
-- Make pool items dropable into flowcells
-
-## ONTRunInstrumentFlowcells
-
+- show pools used on edit
+- remove button for pool id?
+- update list of states?
+- error if cant find pool
+- alert before changing instrument, if there are pools
+- on create, can changes instrument but not state, only state pending
+- on edit, can change state but not instrument
+- change from using kit_barcode to using tube barcode for the display (which barcode?)
+- showing number of samples in pools list
+- add a remove button from pools list?
+- show used pools in edit run
+- Runs View: pagination and order (sort by default desc)
 - Add v-if to draw empty version if no pool linked
+- ONTFlowCell: if we add validation can add a red colour to indicate an issue with that flowcell (plus small error msg)
+- ONTFlowCell: UI for Flowcells is currently quite large. So for Promethion version you have to scroll a lot to reach lower positions. Maybe that will make it hard to drag / drop into them?
+- ONTFlowCell: Possibly also want to change the input box into a text label once 'return' triggered (e.g. by scanner) to 'fix' that value once validated. So you don't accidently overscan a value you already entered. Would need a clear button then though.
+- ONTFlowCell: Add clear / remove button for flowcell data (clears pool id and flowcell id from store [and backend?])
+- ONTFlowCell: Add tests
 
-## ONTFlowCell
+## Tests
 
-- if we add validation can add a red colour to indicate an issue with that flowcell (plus small error msg)
-- UI for Flowcells is currently quite large. So for Promethion version you have to scroll a lot to reach lower positions. Maybe that will make it hard to drag / drop into them?
-- Possibly also want to change the input box into a text label once 'return' triggered (e.g. by scanner) to 'fix' that value once validated. So you don't accidently overscan a value you already entered. Would need a clear button then though.
-- Add clear / remove button for flowcell data (clears pool id and flowcell id from store [and backend?])
-- Make a pool droppable from search on left of screen into a flowcell (with validation in case already connected to another)
-- Add tests
+- Test: ONTRunInstrumentFlowcells.spec.js has no tests yet
+- Test: `src/store/traction/ont/actions.js`
+- Test: `tests/unit/views/ont/ONTRun.spec.js` update with response
+- Test: ONTAddPools
 
 # Done
 
@@ -94,3 +87,11 @@
 - Pull service changes, and check create run works and errors as expected
 - will need an input box to scan in the pool ID [DONE]
 - add colour change to show flowcell id present. e.g. grey when empty, yellow when pool, green when flowcell id added) [DONE]
+-  Test: LabwareFinder, button is disabled is there searchValue is empty [hc6 done]
+-  Test: ONTRunInformation remove '@/api/OntRun', and add setInstruments? [hc6 done]
+-  Test: `src/store/traction/ont/runs/actions.js` [hc6 done]
+-  Test: `src/store/traction/ont/runs/getters.js` [hc6 done]
+-  Test: `src/store/traction/ont/runs/mutations.js` [hc6 done]
+- on creation of a new run, clear the instrument and other values from the currentRun so the screen doesn't show the previously selected instrument
+- Test: - ONTFlowell.spec.js
+- Make pool items dropable into flowcells
