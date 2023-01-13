@@ -45,7 +45,18 @@
               </tr>
             </thead>
             <tbody class="bg-white divide-y divide-gray-200">
-              <slot />
+              <template v-for="(row, rowIndex) in rows">
+                <tr :key="rowIndex">
+                  <template v-for="cell in row">
+                    <custom-table-cell v-if="cell.item.custom" :key="'custom-' + cell.item.id">
+                      <slot :name="`cell(${cell.item.column.name})`" v-bind="cell" />
+                    </custom-table-cell>
+                    <custom-table-cell v-else :key="cell.item.id">
+                      {{ cell.item.text }}
+                    </custom-table-cell>
+                  </template>
+                </tr>
+              </template>
             </tbody>
           </table>
         </div>
@@ -70,30 +81,46 @@ export default {
       type: Array,
       default: () => [{ key: '', label: '' }],
     },
-    columns: {
-      type: [Object, Array],
+    rowData: {
+      type: Array,
       required: false,
       default: null,
-      validator: (data) => {
-        if (Array.isArray(data)) {
-          return data.length == this.fields.length
-        } else {
-          const invalidFields = this.fields.filter((field) => !Object.keys(data).includes(field))
-          return invalidFields.length === 0
-        }
-      },
-      customColumns:{
-        type:Array,
-        required:false,
-        default:[{colName:"",component:null}]
-      }
     },
-
+    customColumns: {
+      type: Array,
+      required: false,
+      default: () => [],
+    },
   },
-  data() {
-    return {
-      sortFields: this.fields.map(() => false),
-    }
+
+  computed: {
+    rows() {
+      const val = this.rowData.map((row, rowIndx) => {
+        return this.fields.map((field, colIndx) => {
+          let text = ''
+          if (typeof this.rowData[rowIndx] === 'object' && field.key in this.rowData[rowIndx]) {
+            text = row[field.key]
+          } else {
+            text = row[colIndx]
+          }
+          return {
+            item: {
+              id: rowIndx + ',' + colIndx,
+              rowIndx: rowIndx,
+              column: { index: colIndx, name: field.key },
+              text: text,
+              custom: this.customColumns.some((column) => column === field.key),
+            },
+            toggleDetails: () => {
+              this.detailsShowing = !this.detailsShowing
+              alert(this.detailsShowing)
+            },
+            detailsShowing: this.detailsShowing,
+          }
+        })
+      })
+      return val
+    },
   },
   methods: {
     /**Emitted when the page changes */

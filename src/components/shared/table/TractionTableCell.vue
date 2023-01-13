@@ -20,5 +20,11 @@
 <script>
 export default {
   name: 'TractionTableCell',
+  props:{
+    id:{
+      type:String,
+      default:""
+    }
+  }
 }
 </script>

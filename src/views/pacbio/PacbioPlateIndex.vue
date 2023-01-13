@@ -22,26 +22,18 @@
     </traction-form-group>
     <br />
 
-    <custom-table id="plate-index" :fields="fields">
-      <template v-for="(plate, index) in plates">
-        <tr :key="index">
-          <template v-for="(field, fieldIndex) in fields">
-            <custom-table-cell
-              v-if="fields[fieldIndex] && fields[fieldIndex].key === 'show_details'"
-              :key="field + '-' + fieldIndex"
-            >
-              <traction-button :id="'details-btn-' + index" size="sm" theme="default">
-                {{ 'Show' }} Plate
-              </traction-button>
-            </custom-table-cell>
-            <custom-table-cell v-else :key="'show_details -' + fieldIndex">
-              {{ fields[fieldIndex] ? plate[fields[fieldIndex].key] : '' }}
-            </custom-table-cell>
-          </template>
-        </tr>
+    <custom-table id="plate-index" :fields="fields" :row-data="plates" :custom-columns="customColumns">
+      <template #cell(show_details)="row">
+         <traction-button
+          :id="'details-btn-' + row.item.id"
+          size="sm"
+          theme="default"
+          @click="row.toggleDetails"
+        >
+          {{ row.detailsShowing ? 'Hide' : 'Show' }} Plate
+        </traction-button>
       </template>
     </custom-table>
-
     <traction-table
       id="plate-index"
       show-empty
@@ -118,6 +110,9 @@ export default {
   },
   computed: {
     ...mapGetters(['plates']),
+    customColumns() {
+      return ['show_details']
+    },
   },
   created() {
     // When this component is created (the 'created' lifecycle hook is called), we need to get the
