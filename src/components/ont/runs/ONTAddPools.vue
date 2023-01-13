@@ -2,17 +2,8 @@
   <div>
     <traction-section title="Add Pools" number="2" class="mb-2">
       <LabwareFinder :fetcher="populateOntPools" filter="barcode" class="mb-6" />
-      <!-- <traction-table
-        id="pool-index"
-        show-empty
-        responsive
-        :items="pools"
-        :fields="fields"
-        hover
-        tbody-tr-class="pool"
-      ></traction-table>-->
       <traction-list-group class="list-group">
-        <Pool v-for="pool in pools" :key="pool.id" v-bind:pool="pool"></Pool>
+        <Pool v-for="pool in pools" :key="pool.id" :pool="pool"></Pool>
       </traction-list-group>
     </traction-section>
   </div>
