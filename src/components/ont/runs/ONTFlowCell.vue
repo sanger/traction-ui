@@ -120,7 +120,8 @@ export default {
       this.hover = false
     },
     onDrop(event) {
-      event.dataTransfer.getData('barcode')
+      let bc = event.dataTransfer.getData('barcode')
+      this.setPoolId({ $event: bc, position: this.position })
     },
   },
 }

@@ -31,7 +31,7 @@ export default {
   methods: {
     dragStart(event) {
       event.dataTransfer.setDragImage(img, 120, 50)
-      event.dataTransfer.setData('barcode', 'aBarcode')
+      event.dataTransfer.setData('barcode', this.pool.kit_barcode)
     },
   },
 }
