@@ -12,27 +12,12 @@
       >{{ currentAction.label }}</traction-button
     >
 
-    <div>
-      <div class="flex flex-row">
-        <div class="flex flex-col w-1/2">
-          <ONTRunInformation></ONTRunInformation>
-        </div>
-      </div>
-      <div class="flex flex-row">
-        <div class="flex flex-col">
-          <ONTAddPools></ONTAddPools>
-        </div>
-        <div class="flex flex-col w-1/2">
-          <ONTRunInstrumentFlowcells></ONTRunInstrumentFlowcells>
-        </div>
-      </div>
-    </div>
+    <ONTRunInformation></ONTRunInformation>
+    <ONTRunInstrumentFlowcells></ONTRunInstrumentFlowcells>
   </div>
 </template>
-
 <script>
 import ONTRunInformation from '@/components/ont/runs/ONTRunInformation'
-import ONTAddPools from '@/components/ont/runs/ONTAddPools'
 import ONTRunInstrumentFlowcells from '@/components/ont/runs/ONTRunInstrumentFlowcells'
 
 import { createNamespacedHelpers } from 'vuex'
@@ -42,7 +27,6 @@ export default {
   name: 'ONTRun',
   components: {
     ONTRunInformation,
-    ONTAddPools,
     ONTRunInstrumentFlowcells,
   },
   props: {
@@ -108,7 +92,7 @@ export default {
         await this.setInstruments()
         await this.editRun(parseInt(this.id))
       }
-    }
+    },
   },
 }
 </script>

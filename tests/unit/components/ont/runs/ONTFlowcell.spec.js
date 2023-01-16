@@ -1,9 +1,9 @@
-import ONTFlowCell from '@/components/ont/runs/ONTFlowCell'
+import ONTFlowcell from '@/components/ont/runs/ONTFlowcell'
 import { localVue, mount, store } from '@support/testHelper'
 import { describe } from 'vitest'
 
-describe('ONTFlowCell', () => {
-  let wrapper, ontFlowCell, props
+describe('ONTFlowcell', () => {
+  let wrapper, ontFlowcell, props
 
   beforeEach(() => {
     props = {
@@ -14,48 +14,48 @@ describe('ONTFlowCell', () => {
     store.commit('traction/ont/runs/setFlowcellId', { $event: 'FC1', position: 1 })
     store.commit('traction/ont/runs/setPoolId', { $event: 'Pool1', position: 1 })
 
-    wrapper = mount(ONTFlowCell, {
+    wrapper = mount(ONTFlowcell, {
       localVue,
       propsData: props,
       store,
     })
 
-    ontFlowCell = wrapper.vm
+    ontFlowcell = wrapper.vm
   })
 
   describe('props', () => {
     it('must have a position', () => {
-      expect(ontFlowCell.position).toEqual(props.position)
+      expect(ontFlowcell.position).toEqual(props.position)
     })
   })
 
   describe('#computed', () => {
     it('#mapState', () => {
-      expect(ontFlowCell.flowcell).toBeDefined()
-      expect(ontFlowCell.flowcell).toEqual({
+      expect(ontFlowcell.flowcell).toBeDefined()
+      expect(ontFlowcell.flowcell).toEqual({
         flowcell_id: 'FC1',
         ont_pool_id: 'Pool1',
         position: 1,
       })
-      expect(ontFlowCell.flowcellId).toBeDefined()
-      expect(ontFlowCell.flowcellId).toEqual('FC1')
-      expect(ontFlowCell.poolId).toBeDefined()
-      expect(ontFlowCell.poolId).toEqual('Pool1')
-      expect(ontFlowCell.flowcell_bg_colour).toBeDefined()
-      expect(ontFlowCell.flowcell_bg_colour).toEqual('fc_ready')
+      expect(ontFlowcell.flowcellId).toBeDefined()
+      expect(ontFlowcell.flowcellId).toEqual('FC1')
+      expect(ontFlowcell.poolId).toBeDefined()
+      expect(ontFlowcell.poolId).toEqual('Pool1')
+      expect(ontFlowcell.flowcell_bg_colour).toBeDefined()
+      expect(ontFlowcell.flowcell_bg_colour).toEqual('fc_ready')
     })
   })
 
   describe('#methods', () => {
     describe('#mapMutations', () => {
       it('#setFlowcellId', () => {
-        ontFlowCell.setFlowcellId({ $event: 'FC2', position: 1 })
-        expect(ontFlowCell.flowcellId).toEqual('FC2')
+        ontFlowcell.setFlowcellId({ $event: 'FC2', position: 1 })
+        expect(ontFlowcell.flowcellId).toEqual('FC2')
       })
 
       it('#setPoolId', () => {
-        ontFlowCell.setPoolId({ $event: 'Pool2', position: 1 })
-        expect(ontFlowCell.poolId).toEqual('Pool2')
+        ontFlowcell.setPoolId({ $event: 'Pool2', position: 1 })
+        expect(ontFlowcell.poolId).toEqual('Pool2')
       })
     })
   })

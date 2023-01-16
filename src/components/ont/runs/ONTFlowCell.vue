@@ -26,22 +26,13 @@
           label-align="left"
           label-cols="auto"
         >
-          <!-- Droppable -->
-          <div
-            class="dropzone"
-            id="droptarget"
-            @dragover="dragOver"
-            @dragleave="dragLeave"
-            @drop="onDrop"
-          >
-            <traction-input
-              :id="'pool-id-' + position"
-              type="string"
-              placeholder="Scan pool ID"
-              :value="poolId"
-              @input="setPoolId({ $event, position })"
-            ></traction-input>
-          </div>
+          <traction-input
+            :id="'pool-id-' + position"
+            type="string"
+            placeholder="Scan pool ID"
+            :value="poolId"
+            @input="setPoolId({ $event, position })"
+          ></traction-input>
         </traction-form-group>
       </div>
     </div>
@@ -49,7 +40,7 @@
 </template>
 <script>
 /**
- * # ONTFlowCell
+ * # ONTFlowcell
  *
  * Displays a panel for an individualflow cell. May be empty or contain a pool.
  */
@@ -57,7 +48,7 @@ import { createNamespacedHelpers } from 'vuex'
 const { mapState, mapMutations } = createNamespacedHelpers('traction/ont/runs')
 
 export default {
-  name: 'ONTFlowCell',
+  name: 'ONTFlowcell',
   props: {
     position: {
       type: Number,

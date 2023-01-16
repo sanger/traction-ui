@@ -1,16 +1,17 @@
 <template>
   <div>
-    <traction-section number="3" title="Run Instrument Flowcells">
+    <traction-section number="2" title="Run Instrument Flowcells">
       <div v-if="getInstrumentLayout">
         <div v-for="rowIndex in numOfRows" :key="rowIndex" class="flex flex-row px-2 py-2">
-          <ONTFlowCell
+          <ONTFlowcell
             v-for="colIndex in numOfColumns"
             :key="colIndex"
             :position="calculatePosition(rowIndex, colIndex)"
             class="flex flex-col px-2 py-2"
-          ></ONTFlowCell>
+          ></ONTFlowcell>
         </div>
       </div>
+      <div v-else>Please select an Instrument</div>
     </traction-section>
   </div>
 </template>
@@ -19,7 +20,7 @@
 import { createNamespacedHelpers } from 'vuex'
 const { mapGetters } = createNamespacedHelpers('traction/ont/runs')
 
-import ONTFlowCell from '@/components/ont/runs/ONTFlowCell'
+import ONTFlowcell from '@/components/ont/runs/ONTFlowcell'
 /**
  * # ONTRunInstrumentFlowcells
  *
@@ -29,7 +30,7 @@ import ONTFlowCell from '@/components/ont/runs/ONTFlowCell'
 export default {
   name: 'ONTRunInstrumentFlowcells',
   components: {
-    ONTFlowCell,
+    ONTFlowcell,
   },
   props: {},
   computed: {
@@ -41,7 +42,6 @@ export default {
       if (instrumenConfig) {
         return this.instrumentFlowcellLayout[instrumenConfig.instrument_type]
       }
-      return {}
     },
     numOfRows() {
       return this.getInstrumentLayout['rows']

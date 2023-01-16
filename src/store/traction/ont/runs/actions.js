@@ -82,7 +82,7 @@ const setInstruments = async ({ commit, getters }) => {
 // For the component, the included relationships are not required
 // However, the functionality does not appear to work without them
 const populateOntPools = async ({ commit, rootState }, filter) => {
-  if(filter === '') {
+  if (filter === '') {
     return { success: true, errors: [] }
   }
   const request = rootState.api.traction.ont.pools
@@ -115,7 +115,9 @@ const editRun = async ({ commit, getters }, runId) => {
   const { success, data: { data, included = [] } = {}, errors = [] } = response
 
   if (success && !data.empty) {
-    let instrument_name = getters.instruments.find((i) => i.id == data.attributes.ont_instrument_id).name
+    let instrument_name = getters.instruments.find(
+      (i) => i.id == data.attributes.ont_instrument_id,
+    ).name
 
     let currentRun = {
       id: data.id,
@@ -127,10 +129,12 @@ const editRun = async ({ commit, getters }, runId) => {
           ont_pool_id: fc.attributes.ont_pool_id,
           position: fc.attributes.position,
         }
-      })
+      }),
     }
 
     commit('setCurrentRun', currentRun)
+
+    return { success, errors }
   }
 }
 

@@ -12,7 +12,6 @@ describe('ONTRun.vue', () => {
       localVue,
       stubs: {
         ONTRunInstrumentFlowcells: true,
-        ONTAddPools: true,
         ONTRunInformation: true,
       },
       propsData: { id: 'new' },
@@ -23,12 +22,6 @@ describe('ONTRun.vue', () => {
   describe('ONTRunInformation', () => {
     it('dispays the run infomation', () => {
       expect(wrapper.findComponent({ ref: 'ONTRunInformation' })).toBeTruthy()
-    })
-  })
-
-  describe('ONTAddPools', () => {
-    it('dispays the pools', () => {
-      expect(wrapper.findComponent({ ref: 'ONTAddPools' })).toBeTruthy()
     })
   })
 
