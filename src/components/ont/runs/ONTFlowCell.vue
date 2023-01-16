@@ -21,7 +21,7 @@
         </traction-form-group>
         <traction-form-group
           id="input-group-pool-id"
-          label="Pool Kit Barcode"
+          label="Pool Barcode"
           label-for="pool-id"
           label-align="left"
           label-cols="auto"
@@ -29,9 +29,9 @@
           <traction-input
             :id="'pool-id-' + position"
             type="string"
-            placeholder="Scan pool kit barcode"
-            :value="poolKitBarcode"
-            @input="setPoolKitBarcode({ $event, position })"
+            placeholder="Scan pool barcode"
+            :value="poolTubeBarcode"
+            @input="setPoolTubeBarcode({ $event, position })"
           ></traction-input>
         </traction-form-group>
       </div>
@@ -74,12 +74,12 @@ export default {
           return flowcell.flowcell_id
         }
       },
-      poolKitBarcode(state) {
+      poolTubeBarcode(state) {
         let flowcell = state.currentRun.flowcell_attributes.find(
           (flowcell) => flowcell.position == this.position,
         )
         if (flowcell) {
-          return flowcell.ont_pool_kit_barcode
+          return flowcell.tube_barcode
         }
       },
       flowcell_bg_colour() {
@@ -87,7 +87,7 @@ export default {
         if (this.flowcellId) {
           counter++
         }
-        if (this.poolKitBarcode) {
+        if (this.poolTubeBarcode) {
           counter++
         }
         if (counter == 2) {
@@ -101,7 +101,7 @@ export default {
     }),
   },
   methods: {
-    ...mapMutations(['setFlowcellId', 'setPoolKitBarcode']),
+    ...mapMutations(['setFlowcellId', 'setPoolTubeBarcode']),
   },
 }
 </script>

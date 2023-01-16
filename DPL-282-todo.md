@@ -1,6 +1,6 @@
 # Service Code review
 
-- lets you create a run with no state (could default to pending), but doesn't let you create a run with none pending state. Maybe, front end doesn't need to have this state dropdown, and backend could default to 'pending'. NOTE: completed worked, but started and cancelled didn't
+- On update, if the pool barcode doesn't exist, it throws a 500. If the pool barcode doesn't exist on create, it gives a 422. For both create and update, when it fails, please could it provide a flowcell position or the pool barcode which failed?
 
 # Todo
 
@@ -11,25 +11,35 @@
 
 ## Refactor
 
-- refactor actions/ vuex
+- Refactor Vuex
 - run includeResource fails (reuse resources)/ pools resource with filter
 - instrument/pool id conversion (use included?)
 
 ## Components
-
-- `updateRun`
-- Update with what will be used when scanning in Pool to Flowcell (tube barcode?) [hc6 emailed]
-- Runs View: pagination and order (sort by default desc)
 
 ## Tests
 
 - Test: ONTRunInstrumentFlowcells.spec.js has no tests yet
 - Test: `src/store/traction/ont/actions.js`
 - Test: `tests/unit/views/ont/ONTRun.spec.js` update with response
+
 - Test: ONTFlowcell
+
+## Questions For UAT
+
+- Usage: How/ When will the run be created in relation to the physical creation (upfront/ pending/ plan/ on reflection)
+- Instrument: Is there a default instrument to be selected? Currently we are restricting the abilty to change the instrument type after a run has been created, is this ok?
+- State: Is there a default state to be selected on `create`? Can the state be changed from and to anything? Should updates be allowed for all states?
+- Flowcell ID: Does the flowcell ID need to be validated in any way? Can it be reused? (between a run, or any previous runs?) Does it always have the same prefix or format that can be validated?
+- Pool Barcide: Do you want to see any pool metadata on the flowcell? (Could add a link to Pools view?) Or is the Pools side bar list helpful.
+- Flowcell: Do they want a clear/reset button from Flowcell ID or Pool Barcode inputs?
+- Run: Do they want a Reset button for the whole run (could just navigate away from page)
+- Run: Might you ever need to create a Draft run
+- Run: Validation, should you be allowed to create a run with no flowcell data
 
 ## Not MVP?
 
+- Runs View: pagination and order (sort by default desc) (FilterCard) resources, paginator jsonapi resources (service - paginator / filter / default sort) (waiting on back end)
 - remove button for pool id within flowcell?
 - ONTFlowcell: Add clear / remove button for flowcell data (clears pool id and flowcell id from store [and backend?])
 - ONTFlowcell: Possibly also want to change the input box into a text label once 'return' triggered (e.g. by scanner) to 'fix' that value once validated. So you don't accidently overscan a value you already entered. Would need a clear button then though.
@@ -38,6 +48,8 @@
 
 # Done
 
+- Update with what will be used when scanning in Pool to Flowcell (**tube barcode**)
+- `updateRun` action
 - Use ont_pool_id in flowcell data when creating a run (call setPools on OntRun creation)
 - Add v-if to draw empty version if no pool linked
 - on edit, disable changing the instrument

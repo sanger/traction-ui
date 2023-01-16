@@ -31,16 +31,19 @@ const newRun = ({ commit }) => {
   commit('setCurrentRun', run)
 }
 
-const createRun = async ({ getters }) => {
+const createRun = async ({ getters, rootGetters }) => {
   let run = getters.currentRun
   let request = getters.runRequest
 
   let instrument_id = getters.instruments.find((i) => i.name == run.instrument_name).id
 
+  let existingPools = rootGetters['traction/ont/pools']
+
   let flowcell_attributes = run.flowcell_attributes
-    .filter((fc) => fc.flowcell_id && fc.ont_pool_kit_barcode)
+    .filter((fc) => fc.flowcell_id && fc.tube_barcode)
     .map((fc) => {
-      let pool_id = getters.pools.find((p) => p.kit_barcode == fc.ont_pool_kit_barcode).id
+      let pool = existingPools.find((p) => p.barcode == fc.tube_barcode)
+      let pool_id = pool ? pool.id : ''
       return { ...fc, ...{ ont_pool_id: pool_id } }
     })
 
@@ -56,6 +59,38 @@ const createRun = async ({ getters }) => {
   }
 
   let promise = request.create({ data: runPayload })
+  return await handleResponse(promise)
+}
+
+const updateRun = async ({ getters, rootGetters }) => {
+  let run = getters.currentRun
+  let request = getters.runRequest
+  let instrument_id = getters.instruments.find((i) => i.name == run.instrument_name).id
+
+  let existingPools = rootGetters['traction/ont/pools']
+
+  let flowcell_attributes = run.flowcell_attributes
+    .filter((fc) => fc.flowcell_id && fc.tube_barcode)
+    .map((fc) => {
+      let pool = existingPools.find((p) => p.barcode == fc.tube_barcode)
+      let pool_id = pool ? pool.id : ''
+
+      return { ...fc, ...{ ont_pool_id: pool_id } }
+    })
+
+  let runPayload = {
+    data: {
+      type: 'runs',
+      id: run.id,
+      attributes: {
+        ont_instrument_id: instrument_id,
+        state: run.state,
+        flowcell_attributes: flowcell_attributes,
+      },
+    },
+  }
+
+  let promise = request.update(runPayload)
   return await handleResponse(promise)
 }
 
@@ -78,36 +113,7 @@ const setInstruments = async ({ commit, getters }) => {
   return errors
 }
 
-/**
- * Retrieves a list of ont pools from traction-service and populates the source
- * with associated data, appending data to the previously stored state
- * @param rootState the vuex rootState object. Provides access to the current state
- * @param commit the vuex commit object. Provides access to mutations
- */
-// For the component, the included relationships are not required
-// However, the functionality does not appear to work without them
-const populateOntPools = async ({ commit, rootState }) => {
-  const request = rootState.api.traction.ont.pools
-  const promise = request.get()
-  const response = await handleResponse(promise)
-
-  let { success, data: { data } = {}, errors = [] } = response
-
-  if (success && !data.empty) {
-    let pools = data.map((p) => {
-      return {
-        ...p.attributes,
-        id: p.id,
-      }
-    })
-
-    commit('populatePools', pools)
-  }
-
-  return { success, errors }
-}
-
-const editRun = async ({ commit, getters }, runId) => {
+const editRun = async ({ commit, getters, rootGetters }, runId) => {
   let request = getters.runRequest
   let promise = request.find({ id: runId, include: 'flowcells' })
   let response = await handleResponse(promise)
@@ -119,20 +125,20 @@ const editRun = async ({ commit, getters }, runId) => {
       (i) => i.id == data.attributes.ont_instrument_id,
     ).name
 
+    let existingPools = rootGetters['traction/ont/pools']
+
     let currentRun = {
       id: data.id,
       instrument_name: instrument_name,
       state: data.attributes.state,
       flowcell_attributes: included.map((fc) => {
-        let ont_pool_kit_barcode = getters.pools.find(
-          (p) => p.id == fc.attributes.ont_pool_id,
-        ).kit_barcode
+        let tube_barcode = existingPools.find((p) => p.id == fc.attributes.ont_pool_id).barcode
 
         return {
           flowcell_id: fc.attributes.flowcell_id,
           ont_pool_id: fc.attributes.ont_pool_id,
           position: fc.attributes.position,
-          ont_pool_kit_barcode: ont_pool_kit_barcode,
+          tube_barcode: tube_barcode,
         }
       }),
     }
@@ -147,11 +153,11 @@ const actions = {
   setRuns,
   createRun,
   setInstruments,
-  populateOntPools,
   editRun,
   newRun,
+  updateRun,
 }
 
-export { setRuns, createRun, setInstruments, populateOntPools, editRun, newRun }
+export { setRuns, createRun, setInstruments, editRun, newRun, updateRun }
 
 export default actions
