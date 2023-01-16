@@ -37,15 +37,20 @@ const createRun = async ({ getters }) => {
 
   let instrument_id = getters.instruments.find((i) => i.name == run.instrument_name).id
 
+  let flowcell_attributes = run.flowcell_attributes
+    .filter((fc) => fc.flowcell_id && fc.ont_pool_kit_barcode)
+    .map((fc) => {
+      let pool_id = getters.pools.find((p) => p.kit_barcode == fc.ont_pool_kit_barcode).id
+      return { ...fc, ...{ ont_pool_id: pool_id } }
+    })
+
   let runPayload = {
     data: {
       type: 'runs',
       attributes: {
-        ont_instrument_id: instrument_id, // TODO: this will be the instrument id
+        ont_instrument_id: instrument_id,
         state: run.state,
-        flowcell_attributes: run.flowcell_attributes.filter(
-          (fc) => fc.flowcell_id && fc.ont_pool_id,
-        ),
+        flowcell_attributes: flowcell_attributes,
       },
     },
   }
@@ -81,14 +86,9 @@ const setInstruments = async ({ commit, getters }) => {
  */
 // For the component, the included relationships are not required
 // However, the functionality does not appear to work without them
-const populateOntPools = async ({ commit, rootState }, filter) => {
-  if (filter === '') {
-    return { success: true, errors: [] }
-  }
+const populateOntPools = async ({ commit, rootState }) => {
   const request = rootState.api.traction.ont.pools
-  const promise = request.get({
-    filter: filter,
-  })
+  const promise = request.get()
   const response = await handleResponse(promise)
 
   let { success, data: { data } = {}, errors = [] } = response
@@ -124,10 +124,15 @@ const editRun = async ({ commit, getters }, runId) => {
       instrument_name: instrument_name,
       state: data.attributes.state,
       flowcell_attributes: included.map((fc) => {
+        let ont_pool_kit_barcode = getters.pools.find(
+          (p) => p.id == fc.attributes.ont_pool_id,
+        ).kit_barcode
+
         return {
           flowcell_id: fc.attributes.flowcell_id,
           ont_pool_id: fc.attributes.ont_pool_id,
           position: fc.attributes.position,
+          ont_pool_kit_barcode: ont_pool_kit_barcode,
         }
       }),
     }

@@ -13,19 +13,20 @@
 
 - refactor actions/ vuex
 - run includeResource fails (reuse resources)/ pools resource with filter
+- instrument/pool id conversion (use included?)
 
 ## Components
 
-- check what will be used when scanning in tube to flowcell (barcode? kit_barcode?)
-- Use ont_pool_id in flowcell data when creating a run (call set pools on OntRun init?)
+- `updateRun`
+- Update with what will be used when scanning in Pool to Flowcell (tube barcode?) [hc6 emailed]
 - Runs View: pagination and order (sort by default desc)
-- ONTFlowcell: Add tests
 
 ## Tests
 
 - Test: ONTRunInstrumentFlowcells.spec.js has no tests yet
 - Test: `src/store/traction/ont/actions.js`
 - Test: `tests/unit/views/ont/ONTRun.spec.js` update with response
+- Test: ONTFlowcell
 
 ## Not MVP?
 
@@ -37,6 +38,7 @@
 
 # Done
 
+- Use ont_pool_id in flowcell data when creating a run (call setPools on OntRun creation)
 - Add v-if to draw empty version if no pool linked
 - on edit, disable changing the instrument
 - update list of states

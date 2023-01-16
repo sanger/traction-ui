@@ -9,8 +9,8 @@
       class="float-right"
       :theme="currentAction.theme"
       @click="runAction"
-      >{{ currentAction.label }}</traction-button
-    >
+      :disabled="!runValid"
+    >{{ currentAction.label }}</traction-button>
 
     <ONTRunInformation></ONTRunInformation>
     <ONTRunInstrumentFlowcells></ONTRunInstrumentFlowcells>
@@ -21,7 +21,7 @@ import ONTRunInformation from '@/components/ont/runs/ONTRunInformation'
 import ONTRunInstrumentFlowcells from '@/components/ont/runs/ONTRunInstrumentFlowcells'
 
 import { createNamespacedHelpers } from 'vuex'
-const { mapActions } = createNamespacedHelpers('traction/ont/runs')
+const { mapActions, mapGetters } = createNamespacedHelpers('traction/ont/runs')
 
 export default {
   name: 'ONTRun',
@@ -60,15 +60,19 @@ export default {
     }
   },
   computed: {
+    ...mapGetters(['currentRun']),
     currentAction() {
       return this.actions[this.newRecord ? 'create' : 'update']
     },
+    runValid() {
+      return this.currentRun.instrument_name && this.currentRun.state
+    }
   },
   created() {
     this.provider()
   },
   methods: {
-    ...mapActions(['createRun', 'setInstruments', 'editRun', 'newRun']),
+    ...mapActions(['createRun', 'setInstruments', 'editRun', 'newRun', 'populateOntPools']),
     async runAction() {
       let response = await this[this.currentAction.method]()
 
@@ -86,6 +90,8 @@ export default {
       this.$router.push({ name: 'ONTRuns' })
     },
     async provider() {
+      await this.populateOntPools()
+
       if (this.id === 'new') {
         this.newRun()
       } else if (!this.newRecord) {
