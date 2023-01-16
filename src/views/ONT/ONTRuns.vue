@@ -9,7 +9,19 @@
       :items="runs"
       :fields="fields"
       tbody-tr-class="run"
-    ></traction-table>
+    >
+      <template #cell(actions)="row">
+        <traction-button
+          :id="generateId('editRun', row.item.id)"
+          theme="edit"
+          size="sm"
+          class="mr-1"
+          @click="redirectToRun(row.item.id)"
+        >
+          Edit
+        </traction-button>
+      </template>
+    </traction-table>
 
     <span class="font-weight-bold">Total records: {{ runs.length }}</span>
 
@@ -40,6 +52,7 @@ export default {
           sortable: true,
         },
         { key: 'created_at', label: 'Created at', sortable: true },
+        { key: 'actions', label: 'Actions' },
       ],
     }
   },
@@ -52,14 +65,16 @@ export default {
   methods: {
     async provider() {
       try {
-        // setRuns is currently mocking the data, until backend is complete
         await this.setRuns()
       } catch (error) {
         this.showAlert('Failed to get runs: ' + error.message, 'danger')
       }
     },
-    redirectToRun() {
-      this.$router.push({ path: '/ont/run/new' })
+    generateId(text, id) {
+      return `${text}-${id}`
+    },
+    redirectToRun(runId) {
+      this.$router.push({ path: `/ont/run/${runId || 'new'}` })
     },
     ...mapActions('traction/ont/runs', ['setRuns']),
   },

@@ -3,25 +3,15 @@ import { localVue, mount, store, router } from '@support/testHelper'
 import { beforeEach, describe, it } from 'vitest'
 
 describe('ONTRun.vue', () => {
-  let wrapper, mockRun, ontRun
+  let wrapper, ontRun
 
   beforeEach(() => {
-    mockRun = {
-      id: 'new',
-      instrument_name: '',
-      state: '',
-    }
-
-    // dont think we need this
-    // store.commit('traction/ont/runs/setCurrentRun', mockRun)
-
     wrapper = mount(ONTRun, {
       store,
       router,
       localVue,
       stubs: {
         ONTRunInstrumentFlowcells: true,
-        ONTAddPools: true,
         ONTRunInformation: true,
       },
       propsData: { id: 'new' },
@@ -32,12 +22,6 @@ describe('ONTRun.vue', () => {
   describe('ONTRunInformation', () => {
     it('dispays the run infomation', () => {
       expect(wrapper.findComponent({ ref: 'ONTRunInformation' })).toBeTruthy()
-    })
-  })
-
-  describe('ONTAddPools', () => {
-    it('dispays the pools', () => {
-      expect(wrapper.findComponent({ ref: 'ONTAddPools' })).toBeTruthy()
     })
   })
 

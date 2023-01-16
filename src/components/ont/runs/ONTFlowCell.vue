@@ -21,7 +21,7 @@
         </traction-form-group>
         <traction-form-group
           id="input-group-pool-id"
-          label="Pool Id  "
+          label="Pool Kit Barcode"
           label-for="pool-id"
           label-align="left"
           label-cols="auto"
@@ -29,9 +29,9 @@
           <traction-input
             :id="'pool-id-' + position"
             type="string"
-            placeholder="Scan pool ID"
-            :value="poolId"
-            @input="setPoolId({ $event, position })"
+            placeholder="Scan pool kit barcode"
+            :value="poolKitBarcode"
+            @input="setPoolKitBarcode({ $event, position })"
           ></traction-input>
         </traction-form-group>
       </div>
@@ -40,7 +40,7 @@
 </template>
 <script>
 /**
- * # ONTFlowCell
+ * # ONTFlowcell
  *
  * Displays a panel for an individualflow cell. May be empty or contain a pool.
  */
@@ -48,7 +48,7 @@ import { createNamespacedHelpers } from 'vuex'
 const { mapState, mapMutations } = createNamespacedHelpers('traction/ont/runs')
 
 export default {
-  name: 'ONTFlowCell',
+  name: 'ONTFlowcell',
   props: {
     position: {
       type: Number,
@@ -74,12 +74,12 @@ export default {
           return flowcell.flowcell_id
         }
       },
-      poolId(state) {
+      poolKitBarcode(state) {
         let flowcell = state.currentRun.flowcell_attributes.find(
           (flowcell) => flowcell.position == this.position,
         )
         if (flowcell) {
-          return flowcell.ont_pool_id
+          return flowcell.ont_pool_kit_barcode
         }
       },
       flowcell_bg_colour() {
@@ -87,7 +87,7 @@ export default {
         if (this.flowcellId) {
           counter++
         }
-        if (this.poolId) {
+        if (this.poolKitBarcode) {
           counter++
         }
         if (counter == 2) {
@@ -101,7 +101,7 @@ export default {
     }),
   },
   methods: {
-    ...mapMutations(['setFlowcellId', 'setPoolId']),
+    ...mapMutations(['setFlowcellId', 'setPoolKitBarcode']),
   },
 }
 </script>

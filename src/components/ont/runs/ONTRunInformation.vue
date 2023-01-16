@@ -8,6 +8,7 @@
               id="instrument-selection"
               :options="instrumentOptions"
               :value="instrumentName"
+              :disabled="!newRecord"
               @input="setInstrumentName"
             ></traction-select>
           </traction-field-group>
@@ -41,7 +42,7 @@ export default {
   name: 'ONTRunInformation',
   data() {
     return {
-      statesList: ['pending', 'started', 'completed', 'cancelled'],
+      statesList: ['Pending', 'Completed', 'User Terminated', 'Instrument Crashed', 'Restart'],
     }
   },
   computed: {
@@ -60,11 +61,14 @@ export default {
     },
     stateOptions() {
       let options = this.statesList.map((state) => ({
-        value: state,
-        text: this.capitalise(state),
+        value: this.formatState(state),
+        text: state,
       }))
 
       return [{ value: null, text: 'Please select a state', disabled: true }, ...options]
+    },
+    newRecord() {
+      return isNaN(this.currentRun.id)
     },
   },
   created() {
@@ -79,8 +83,8 @@ export default {
         this.showAlert('Failed to get instruments: ' + error.message, 'danger')
       }
     },
-    capitalise(str) {
-      return str.charAt(0).toUpperCase() + str.slice(1)
+    formatState(str) {
+      return str.replace(/\s+/g, '_').toLowerCase()
     },
     ...mapMutations(['setInstrumentName', 'setState']),
     ...mapActions(['setInstruments']),

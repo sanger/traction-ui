@@ -9,40 +9,24 @@
       class="float-right"
       :theme="currentAction.theme"
       @click="runAction"
-      >{{ currentAction.label }}</traction-button
-    >
+      :disabled="!runValid"
+    >{{ currentAction.label }}</traction-button>
 
-    <div>
-      <div class="flex flex-row">
-        <div class="flex flex-col w-1/2">
-          <ONTRunInformation></ONTRunInformation>
-        </div>
-      </div>
-      <div class="flex flex-row">
-        <div class="flex flex-col">
-          <ONTAddPools></ONTAddPools>
-        </div>
-        <div class="flex flex-col w-1/2">
-          <ONTRunInstrumentFlowcells></ONTRunInstrumentFlowcells>
-        </div>
-      </div>
-    </div>
+    <ONTRunInformation></ONTRunInformation>
+    <ONTRunInstrumentFlowcells></ONTRunInstrumentFlowcells>
   </div>
 </template>
-
 <script>
 import ONTRunInformation from '@/components/ont/runs/ONTRunInformation'
-import ONTAddPools from '@/components/ont/runs/ONTAddPools'
 import ONTRunInstrumentFlowcells from '@/components/ont/runs/ONTRunInstrumentFlowcells'
 
 import { createNamespacedHelpers } from 'vuex'
-const { mapActions } = createNamespacedHelpers('traction/ont/runs')
+const { mapActions, mapGetters } = createNamespacedHelpers('traction/ont/runs')
 
 export default {
   name: 'ONTRun',
   components: {
     ONTRunInformation,
-    ONTAddPools,
     ONTRunInstrumentFlowcells,
   },
   props: {
@@ -76,12 +60,19 @@ export default {
     }
   },
   computed: {
+    ...mapGetters(['currentRun']),
     currentAction() {
       return this.actions[this.newRecord ? 'create' : 'update']
     },
+    runValid() {
+      return this.currentRun.instrument_name && this.currentRun.state
+    }
+  },
+  created() {
+    this.provider()
   },
   methods: {
-    ...mapActions(['createRun']),
+    ...mapActions(['createRun', 'setInstruments', 'editRun', 'newRun', 'populateOntPools']),
     async runAction() {
       let response = await this[this.currentAction.method]()
 
@@ -97,6 +88,16 @@ export default {
     },
     redirectToRuns() {
       this.$router.push({ name: 'ONTRuns' })
+    },
+    async provider() {
+      await this.populateOntPools()
+
+      if (this.id === 'new') {
+        this.newRun()
+      } else if (!this.newRecord) {
+        await this.setInstruments()
+        await this.editRun(parseInt(this.id))
+      }
     },
   },
 }

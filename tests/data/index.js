@@ -48,6 +48,7 @@ import TractionTubesWithPacbioPools from './tractionTubesWithPacbioPools'
 import TractionPlates from './tractionPlates'
 import AutoTagStore from './autoTagStore'
 import OntAutoTagStore from './ontAutoTagStore.json'
+import OntInstruments from './ontInstruments.json'
 import OntPlatesRequest from './ontPlatesRequest.json'
 import OntTubesRequest from './ontTubesRequest.json'
 import OntPlates from './ontPlates.json'
@@ -115,6 +116,7 @@ export default {
   TractionPlates,
   AutoTagStore,
   OntAutoTagStore,
+  OntInstruments,
   OntPlatesRequest,
   OntPlates,
   OntPlateRequest,
