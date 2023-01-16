@@ -8,9 +8,10 @@
       :id="currentAction.id"
       class="float-right"
       :theme="currentAction.theme"
-      @click="runAction"
       :disabled="!runValid"
-    >{{ currentAction.label }}</traction-button>
+      @click="runAction"
+      >{{ currentAction.label }}</traction-button
+    >
 
     <ONTRunInformation></ONTRunInformation>
     <ONTRunInstrumentFlowcells></ONTRunInstrumentFlowcells>
@@ -66,13 +67,19 @@ export default {
     },
     runValid() {
       return this.currentRun.instrument_name && this.currentRun.state
-    }
+    },
   },
   created() {
     this.provider()
   },
   methods: {
-    ...mapActions('traction/ont/runs', ['createRun', 'setInstruments', 'editRun', 'newRun', 'updateRun']),
+    ...mapActions('traction/ont/runs', [
+      'createRun',
+      'setInstruments',
+      'editRun',
+      'newRun',
+      'updateRun',
+    ]),
     ...mapActions('traction/ont', ['fetchOntPools']),
     async runAction() {
       let response = await this[this.currentAction.method]()

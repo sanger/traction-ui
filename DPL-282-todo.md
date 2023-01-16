@@ -12,8 +12,6 @@
 ## Refactor
 
 - Refactor Vuex
-- run includeResource fails (reuse resources)/ pools resource with filter
-- instrument/pool id conversion (use included?)
 
 ## Components
 

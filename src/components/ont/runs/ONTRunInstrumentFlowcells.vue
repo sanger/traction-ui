@@ -1,7 +1,7 @@
 <template>
   <div>
     <traction-section number="2" title="Run Instrument Flowcells">
-      <div v-if="getInstrumentLayout">
+      <div v-if="getInstrumentLayout.rows">
         <div v-for="rowIndex in numOfRows" :key="rowIndex" class="flex flex-row px-2 py-2">
           <ONTFlowcell
             v-for="colIndex in numOfColumns"
@@ -42,6 +42,7 @@ export default {
       if (instrumenConfig) {
         return this.instrumentFlowcellLayout[instrumenConfig.instrument_type]
       }
+      return {}
     },
     numOfRows() {
       return this.getInstrumentLayout['rows']
