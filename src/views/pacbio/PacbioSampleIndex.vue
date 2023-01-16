@@ -143,6 +143,7 @@ export default {
       filterOptions: [
         { value: '', text: '' },
         { value: 'id', text: 'Sample ID' },
+        { value: 'source_identifier', text: 'Source' },
         { value: 'species', text: 'Species' },
         { value: 'sample_name', text: 'Name' },
         // Need to specify filters in json api resources if we want more filters

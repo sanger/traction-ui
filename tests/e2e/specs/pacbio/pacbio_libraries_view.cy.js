@@ -13,6 +13,7 @@ describe('Pacbio Libraries view', () => {
       .and('contain', 'Library ID')
       .and('contain', 'Pool ID')
       .and('contain', 'Sample Name')
+      .and('contain', 'Source')
     cy.get('#library-index').contains('tr', '5')
     cy.get('.library')
       .first()
