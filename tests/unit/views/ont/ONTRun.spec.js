@@ -2,6 +2,8 @@ import ONTRun from '@/views/ont/ONTRun'
 import { localVue, mount, store, router } from '@support/testHelper'
 import { beforeEach, describe, it } from 'vitest'
 
+// - Test: `ONTRun.spec.js` (`actions`, `mapGetters`, `currentAction`, `runValid`, `mapActions`, `runAction`, `redirectToRuns`, `provider`)
+
 describe('ONTRun.vue', () => {
   let wrapper, ontRun
 
@@ -28,6 +30,27 @@ describe('ONTRun.vue', () => {
   describe('ONTRunInstrumentFlowcells', () => {
     it('dispays the flowcells', () => {
       expect(wrapper.findComponent({ ref: 'ONTRunInstrumentFlowcells' })).toBeTruthy()
+    })
+  })
+
+  describe('#props', () => {
+    it('has the required props', () => {
+      expect(ontRun.id).toEqual('new')
+    })
+  })
+
+  describe('#newRecord', () => {
+    it('returns true when run is a new record', () => {
+      expect(ontRun.newRecord).toEqual(true)
+    })
+    it('returns false when currentRun is not a new record', () => {
+      wrapper = mount(ONTRun, {
+        store,
+        router,
+        propsData: { id: '1' },
+      })
+      ontRun = wrapper.vm
+      expect(ontRun.newRecord).toEqual(false)
     })
   })
 
@@ -58,7 +81,7 @@ describe('ONTRun.vue', () => {
     })
 
     it('successful', async () => {
-      ontRun.createRun.mockReturnValue([])
+      ontRun.createRun.mockReturnValue({ success: true })
 
       await ontRun.runAction()
       expect(ontRun.createRun).toBeCalled()
@@ -67,7 +90,7 @@ describe('ONTRun.vue', () => {
 
     it('unsuccessful', async () => {
       // return whole response object
-      ontRun.createRun.mockReturnValue(['this is an error'])
+      ontRun.createRun.mockReturnValue({ errors: 'this is an error' })
 
       await ontRun.runAction()
       expect(ontRun.createRun).toBeCalled()
