@@ -10,8 +10,7 @@
       :theme="currentAction.theme"
       :disabled="!runValid"
       @click="runAction"
-      >{{ currentAction.label }}</traction-button
-    >
+    >{{ currentAction.label }}</traction-button>
 
     <ONTRunInformation></ONTRunInformation>
     <ONTRunInstrumentFlowcells></ONTRunInstrumentFlowcells>
@@ -35,29 +34,24 @@ export default {
       type: [String, Number],
       default: 0,
     },
-    actions: {
-      type: Object,
-      default() {
-        return {
-          create: {
-            id: 'create',
-            theme: 'create',
-            label: 'Create',
-            method: 'createRun',
-          },
-          update: {
-            id: 'update',
-            theme: 'update',
-            label: 'Update',
-            method: 'updateRun',
-          },
-        }
-      },
-    },
   },
   data() {
     return {
       newRecord: isNaN(this.id),
+      actions: {
+        create: {
+          id: 'create',
+          theme: 'create',
+          label: 'Create',
+          method: 'createRun',
+        },
+        update: {
+          id: 'update',
+          theme: 'update',
+          label: 'Update',
+          method: 'updateRun',
+        },
+      },
     }
   },
   computed: {

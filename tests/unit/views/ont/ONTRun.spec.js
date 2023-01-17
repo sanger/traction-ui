@@ -39,7 +39,7 @@ describe('ONTRun.vue', () => {
     })
   })
 
-  describe('#create', () => {
+  describe('#createRun', () => {
     beforeEach(() => {
       ontRun.showAlert = vi.fn()
       ontRun.createRun = vi.fn()
