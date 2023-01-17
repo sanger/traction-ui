@@ -20,7 +20,6 @@
 - Test: `ONTRunInstrumentFlowcells.spec.js`
 - Test: `src/store/traction/ont/runs/actions.js` (`updateRun`, `editRun`)
 - Test: `ONTRun.spec.js` (`props`, `newRecord`, `actions`, `mapGetters`, `currentAction`, `runValid`, `mapActions`, `runAction`, `redirectToRuns`, `provider`)
-- Test: `ONTRuns.spec.js` (`editRun`, `mapGetters`, `generateId`, `redirectToRun`, `mapActions`)
 
 ## Questions For UAT
 
@@ -42,6 +41,8 @@
 - ONTFlowcell: if we add validation can add a red colour to indicate an issue with that flowcell (plus small error msg)
 
 # Done
+
+- Test: `ONTRuns.spec.js` (`editRun`, `mapGetters`, `generateId`, `redirectToRun`, `mapActions`)
 
 - Test: ONTFlowcell
   - Test: `ONTRunInformation`
