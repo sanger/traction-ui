@@ -20,7 +20,6 @@
 - Test: ONTRunInstrumentFlowcells.spec.js has no tests yet
 - Test: `src/store/traction/ont/actions.js`
 - Test: `tests/unit/views/ont/ONTRun.spec.js` update with response
-- Test: ONTFlowcell
 
 ## Questions For UAT
 
@@ -42,7 +41,9 @@
 - ONTFlowcell: if we add validation can add a red colour to indicate an issue with that flowcell (plus small error msg)
 
 # Done
-- Test: `ONTRunInformation`
+
+- Test: ONTFlowcell
+  - Test: `ONTRunInformation`
 - Update with what will be used when scanning in Pool to Flowcell (**tube barcode**)
 - `updateRun` action
 - Use ont_pool_id in flowcell data when creating a run (call setPools on OntRun creation)

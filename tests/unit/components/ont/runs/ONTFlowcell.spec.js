@@ -10,9 +10,9 @@ describe('ONTFlowcell', () => {
       position: 1,
     }
 
-    // create a flowcell in the store and set its pool
+    // Create a flowcell in the store and set its tube barcode
     store.commit('traction/ont/runs/setFlowcellId', { $event: 'FC1', position: 1 })
-    store.commit('traction/ont/runs/setPoolId', { $event: 'Pool1', position: 1 })
+    store.commit('traction/ont/runs/setPoolTubeBarcode', { $event: 'TRAC-1-A', position: 1 })
 
     wrapper = mount(ONTFlowcell, {
       localVue,
@@ -34,13 +34,13 @@ describe('ONTFlowcell', () => {
       expect(ontFlowcell.flowcell).toBeDefined()
       expect(ontFlowcell.flowcell).toEqual({
         flowcell_id: 'FC1',
-        ont_pool_id: 'Pool1',
+        tube_barcode: 'TRAC-1-A',
         position: 1,
       })
       expect(ontFlowcell.flowcellId).toBeDefined()
       expect(ontFlowcell.flowcellId).toEqual('FC1')
-      expect(ontFlowcell.poolId).toBeDefined()
-      expect(ontFlowcell.poolId).toEqual('Pool1')
+      expect(ontFlowcell.poolTubeBarcode).toBeDefined()
+      expect(ontFlowcell.poolTubeBarcode).toEqual('TRAC-1-A')
       expect(ontFlowcell.flowcell_bg_colour).toBeDefined()
       expect(ontFlowcell.flowcell_bg_colour).toEqual('fc_ready')
     })
@@ -53,9 +53,9 @@ describe('ONTFlowcell', () => {
         expect(ontFlowcell.flowcellId).toEqual('FC2')
       })
 
-      it('#setPoolId', () => {
-        ontFlowcell.setPoolId({ $event: 'Pool2', position: 1 })
-        expect(ontFlowcell.poolId).toEqual('Pool2')
+      it('#setPoolTubeBarcode', () => {
+        ontFlowcell.setPoolTubeBarcode({ $event: 'TRAC-1-B', position: 1 })
+        expect(ontFlowcell.poolTubeBarcode).toEqual('TRAC-1-B')
       })
     })
   })
