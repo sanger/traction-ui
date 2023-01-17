@@ -31,6 +31,7 @@
 <script>
 import { createNamespacedHelpers } from 'vuex'
 
+// TODO: Does this need to be moved to top level ONT?
 const { mapGetters, mapMutations, mapActions } = createNamespacedHelpers('traction/ont/pools')
 
 /**

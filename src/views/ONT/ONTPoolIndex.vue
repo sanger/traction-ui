@@ -190,7 +190,7 @@ export default {
 
       this.showAlert(message, success ? 'success' : 'danger')
     },
-    ...mapActions('traction/ont', ['fetchOntPools']),
+    ...mapActions('traction/ont/pools', ['fetchOntPools']),
     ...mapActions('printMyBarcode', ['createPrintJob']),
   },
 }

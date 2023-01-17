@@ -21,6 +21,7 @@
  *
  * Displays a list of tagSets to select from for ont pooling
  */
+// TODO: ONT store: Does this need to be moved to top level ONT?
 export default {
   name: 'OntTagSetList',
   computed: {

@@ -1,5 +1,5 @@
-import mutations from '@/store/traction/ont/mutations'
-import defaultState from '@/store/traction/ont/state'
+import mutations from '@/store/traction/ont/pools/mutations'
+import defaultState from '@/store/traction/ont/pools/state'
 import { describe, expect, it } from 'vitest'
 import Contracts from './contracts'
 import { Data } from '@support/testHelper'

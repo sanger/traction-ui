@@ -1,9 +1,9 @@
 import { Data } from '@support/testHelper'
-import actions from '@/store/traction/ont/actions'
+import actions from '@/store/traction/ont/pools/actions'
 import { describe, expect, it } from 'vitest'
 import Contracts from './contracts'
-import defaultState from '@/store/traction/ont/state'
-import { payload } from '@/store/traction/ont/pool'
+import defaultState from '@/store/traction/ont/pools/state'
+import { payload } from '@/store/traction/ont/pools/pool'
 import { newResponse } from '@/api/ResponseHelper'
 
 describe('actions.js', () => {

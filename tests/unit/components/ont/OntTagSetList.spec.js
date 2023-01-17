@@ -11,7 +11,7 @@ describe('OntTagSetList', () => {
 
   describe('when there are some tag sets to show', () => {
     beforeEach(() => {
-      store.state.traction.ont.resources.tagSets = tagSets
+      store.state.traction.ont.pools.resources.tagSets = tagSets
 
       wrapper = mount(OntTagSetList, {
         localVue,
@@ -30,13 +30,13 @@ describe('OntTagSetList', () => {
       const options = wrapper.find('[data-type=tag-set-list]').findAll('option')
       await options.at(1).setSelected()
 
-      expect(store.state.traction.ont.selected.tagSet.id).toEqual(tagSets['1'].id)
+      expect(store.state.traction.ont.pools.selected.tagSet.id).toEqual(tagSets['1'].id)
     })
   })
 
   describe('when there are no tag sets to show', () => {
     beforeEach(() => {
-      store.state.traction.ont.resources.tagSets = {}
+      store.state.traction.ont.pools.resources.tagSets = {}
 
       wrapper = mount(OntTagSetList, {
         localVue,
@@ -51,7 +51,7 @@ describe('OntTagSetList', () => {
 
   describe('when there is an error', () => {
     beforeEach(() => {
-      store.state.traction.ont.resources.tagSets = {}
+      store.state.traction.ont.pools.resources.tagSets = {}
 
       wrapper = mount(OntTagSetList, {
         localVue,

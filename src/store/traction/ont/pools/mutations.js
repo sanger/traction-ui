@@ -118,4 +118,5 @@ export default {
   populateRequests: populateById('requests', { includeRelationships: true }),
   populateTagSets: populateById('tagSets', { includeRelationships: true }),
   populateTags: populateById('tags'),
+  populatePools: populateById('pools', { includeRelationships: true }),
 }

@@ -1,6 +1,6 @@
 import { mount, localVue, store } from '@support/testHelper'
 import OntPoolEdit from '@/components/ont/OntPoolEdit'
-import { newLibrary } from '@/store/traction/ont/pool.js'
+import { newLibrary } from '@/store/traction/ont/pools/pool.js'
 import { Data } from '@support/testHelper'
 import * as pacbio from '@/lib/csv/pacbio'
 
@@ -25,32 +25,32 @@ describe('ontPoolEdit#new', () => {
   let wrapper
   beforeEach(() => {
     wrapper = buildWrapper()
-    store.state.traction.ont.pooling.pool = pool
+    store.state.traction.ont.pools.pooling.pool = pool
   })
 
   describe('input', () => {
     it('kit barcode', async () => {
       const input = wrapper.find('[data-attribute=kit-barcode]')
       await input.setValue('017865101789500022821')
-      expect(store.state.traction.ont.pooling.pool.kit_barcode).toEqual('017865101789500022821')
+      expect(store.state.traction.ont.pools.pooling.pool.kit_barcode).toEqual('017865101789500022821')
     })
 
     it('volume', async () => {
       const input = wrapper.find('[data-attribute=volume]')
       await input.setValue('10.0')
-      expect(store.state.traction.ont.pooling.pool.volume).toEqual('10.0')
+      expect(store.state.traction.ont.pools.pooling.pool.volume).toEqual('10.0')
     })
 
     it('concentration', async () => {
       const input = wrapper.find('[data-attribute=concentration]')
       await input.setValue('2.4')
-      expect(store.state.traction.ont.pooling.pool.concentration).toEqual('2.4')
+      expect(store.state.traction.ont.pools.pooling.pool.concentration).toEqual('2.4')
     })
 
     it('insert size', async () => {
       const input = wrapper.find('[data-attribute=insert-size]')
       await input.setValue('100')
-      expect(store.state.traction.ont.pooling.pool.insert_size).toEqual('100')
+      expect(store.state.traction.ont.pools.pooling.pool.insert_size).toEqual('100')
     })
   })
 
@@ -85,9 +85,9 @@ describe('ontPoolEdit#edit', () => {
 
   beforeEach(() => {
     wrapper = buildWrapper()
-    store.state.traction.ont.pooling.libraries = {}
-    store.state.traction.ont.pooling.pool = pool
-    store.state.traction.ont.pooling.tube = tube
+    store.state.traction.ont.pools.pooling.libraries = {}
+    store.state.traction.ont.pools.pooling.pool = pool
+    store.state.traction.ont.pools.pooling.tube = tube
   })
 
   describe('input', () => {
@@ -171,7 +171,7 @@ describe('ontPoolEdit#edit', () => {
           tube: {},
         },
       })
-      store.state.traction.ont = poolCreateStore
+      store.state.traction.ont.pools = poolCreateStore
       await localVue.nextTick()
       expect(wrapper.find('[data-attribute=pool-type]').text()).toContain('Empty')
     })
@@ -184,13 +184,13 @@ describe('ontPoolEdit#edit', () => {
           pool: {},
         },
       })
-      store.state.traction.ont = poolCreateStore
+      store.state.traction.ont.pools = poolCreateStore
       await localVue.nextTick()
       expect(wrapper.find('[data-attribute=pool-type]').text()).toContain('Library')
     })
 
     it('says pool when there are multiple libraries', async () => {
-      store.state.traction.ont = Data.AutoTagStore
+      store.state.traction.ont.pools = Data.AutoTagStore
       await localVue.nextTick()
       expect(wrapper.find('[data-attribute=pool-type]').text()).toContain('Pool')
     })

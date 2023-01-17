@@ -1,5 +1,5 @@
-import getters from '@/store/traction/ont/getters'
-import defaultState from '@/store/traction/ont/state'
+import getters from '@/store/traction/ont/pools/getters'
+import defaultState from '@/store/traction/ont/pools/state'
 import merge from 'lodash-es/merge'
 import { describe, expect, it } from 'vitest'
 import Contracts from './contracts'
