@@ -13,6 +13,7 @@ describe('actions.js', () => {
     fetchOntTagSets,
     selectWellRequests,
     deselectPlateAndContents,
+    deselectTubeAndContents,
     createPool,
     updatePool,
     applyTags,
@@ -195,7 +196,7 @@ describe('actions.js', () => {
   })
 
   describe('deselectPlateAndContents', () => {
-    it('selects requests if unselected', async () => {
+    it('deselects plate content if selected and removes resources', async () => {
       // mock commit
       const commit = vi.fn()
       // mock dependencies
@@ -226,8 +227,50 @@ describe('actions.js', () => {
       expect(commit).toHaveBeenCalledWith('selectPlate', { id: '1', selected: false })
       expect(commit).toHaveBeenCalledWith('selectRequest', { id: '100', selected: false })
       expect(commit).toHaveBeenCalledWith('selectRequest', { id: '300', selected: false })
+      expect(commit).toHaveBeenCalledWith('removePlateResource', '1')
+      expect(commit).toHaveBeenCalledWith('removeWellResource', '10')
+      expect(commit).toHaveBeenCalledWith('removeWellResource', '20')
+      expect(commit).toHaveBeenCalledWith('removeRequestResource', '100')
+      expect(commit).toHaveBeenCalledWith('removeRequestResource', '200')
+      expect(commit).toHaveBeenCalledWith('removeRequestResource', '300')
+      expect(commit).toHaveBeenCalledWith('removeRequestResource', '400')
       // we don't want to select any unselected requests
       expect(commit).not.toHaveBeenCalledWith('selectRequest', { id: '200', selected: true })
+    })
+  })
+
+  describe('deselectTubeAndContents', () => {
+    it('deselects tube content if selected and removes resources', async () => {
+      // mock commit
+      const commit = vi.fn()
+      // mock dependencies
+      const defaultStateObject = defaultState()
+      const state = {
+        ...defaultStateObject,
+        resources: {
+          ...defaultStateObject.resources,
+          tubes: {
+            1: { id: 1, barcode: 'tube-barcode', requests: ['100'] },
+          },
+        },
+        selected: {
+          ...defaultStateObject.selected,
+          requests: {
+            100: { id: '100', selected: true },
+            300: { id: '300', selected: true },
+          },
+        },
+      }
+      // apply action
+      await deselectTubeAndContents({ commit, state }, 'tube-barcode')
+      // assert result
+      expect(commit).toHaveBeenCalledWith('selectTube', { id: 1, selected: false })
+      expect(commit).toHaveBeenCalledWith('selectRequest', { id: '100', selected: false })
+      expect(commit).toHaveBeenCalledWith('removeTubeResource', 1)
+      expect(commit).toHaveBeenCalledWith('removeRequestResource', '100')
+      // we don't want to select or delete any unselected requests
+      expect(commit).not.toHaveBeenCalledWith('selectRequest', { id: '300', selected: true })
+      expect(commit).not.toHaveBeenCalledWith('removeRequestResource', '300')
     })
   })
 

@@ -592,3 +592,91 @@ describe('populateTags', () => {
     )
   })
 })
+
+describe('removePlateResource', () => {
+  it('updates the state', () => {
+    // mock state
+    const defaultStateObject = defaultState()
+    const state = {
+      ...defaultStateObject,
+      resources: {
+        ...defaultStateObject.resources,
+        plates: {
+          1: { id: 1, wells: ['10', '20'] },
+          2: { id: 2, wells: ['11'] },
+        },
+      },
+    }
+    // apply mutation
+    mutations.removePlateResource(state, '1')
+    // assert result
+    expect(state.resources.plates).toEqual({ 2: { id: 2, wells: ['11'] } })
+  })
+})
+
+describe('removeWellResource', () => {
+  it('updates the state', () => {
+    // mock state
+    const defaultStateObject = defaultState()
+    const state = {
+      ...defaultStateObject,
+      resources: {
+        ...defaultStateObject.resources,
+        wells: {
+          10: { id: '10', type: 'wells', position: 'A1', requests: ['100', '300'] },
+          11: { id: '11', type: 'wells', position: 'A2', requests: ['50'] },
+        },
+      },
+    }
+    // apply mutation
+    mutations.removeWellResource(state, '10')
+    // assert result
+    expect(state.resources.wells).toEqual({
+      11: { id: '11', type: 'wells', position: 'A2', requests: ['50'] },
+    })
+  })
+})
+
+describe('removeTubeResource', () => {
+  it('updates the state', () => {
+    // mock state
+    const defaultStateObject = defaultState()
+    const state = {
+      ...defaultStateObject,
+      resources: {
+        ...defaultStateObject.resources,
+        tubes: {
+          1: { id: 1, barcode: 'tube-barcode', requests: ['10', '20'] },
+          2: { id: 2, barcode: 'tube-barcode-2', requests: ['11'] },
+        },
+      },
+    }
+    // apply mutation
+    mutations.removeTubeResource(state, 1)
+    // assert result
+    expect(state.resources.tubes).toEqual({
+      2: { id: 2, barcode: 'tube-barcode-2', requests: ['11'] },
+    })
+  })
+})
+
+describe('removeRequestResource', () => {
+  it('updates the state', () => {
+    // mock state
+    const defaultStateObject = defaultState()
+    const state = {
+      ...defaultStateObject,
+      resources: {
+        ...defaultStateObject.resources,
+        requests: {
+          1: { id: 1 },
+          2: { id: 2 },
+        },
+      },
+    }
+    // apply mutation
+    mutations.removeRequestResource(state, '1')
+    // assert result
+    expect(state.resources.requests).toEqual({ 2: { id: 2 } })
+  })
+})
