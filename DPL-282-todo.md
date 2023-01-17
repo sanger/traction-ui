@@ -19,7 +19,7 @@
 
 - Test: `ONTRunInstrumentFlowcells.spec.js`
 - Test: `src/store/traction/ont/runs/actions.js` (`updateRun`, `editRun`)
-- Test: `ONTRun.spec.js` (`props`, `newRecord`, `actions`, `mapGetters`, `currentAction`, `runValid`, `mapActions`, `runAction`, `redirectToRuns`, `provider`)
+- Test: `ONTRun.spec.js` (WIP hc6)
 
 ## Questions For UAT
 
