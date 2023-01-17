@@ -14,23 +14,25 @@ describe('ONTRuns.vue', () => {
     runs.provider = vi.fn()
   })
 
-  describe('created hook', () => {
-    it('sets the runs data', () => {
-      expect(runs.runs.length).toEqual(mockRuns.length)
-    })
-  })
-
   describe('building the table', () => {
     it('exists', () => {
       expect(wrapper.find('table').exists()).toBeTruthy
     })
 
     it('contains the correct data', async () => {
-      expect(wrapper.find('tbody').findAll('tr').length).toEqual(6)
+      expect(wrapper.find('tbody').findAll('tr').length).toEqual(2)
+    })
+
+    it('contains the correct headers', async () => {
+      let headers = wrapper.findAll('th')
+
+      for (let field of runs.fields) {
+        expect(headers.filter((header) => header.text() === field.label)).toBeDefined()
+      }
     })
   })
 
-  describe('new run button', () => {
+  describe('New run button', () => {
     it('contains a create new run button', () => {
       expect(wrapper.find('button').exists()).toBeTruthy()
     })
@@ -42,6 +44,19 @@ describe('ONTRuns.vue', () => {
     })
   })
 
+  describe('Edit Run button', () => {
+    it('contains a Edit Run button', () => {
+      expect(wrapper.find('#editRun-1')).toBeDefined()
+      expect(wrapper.find('#editRun-2')).toBeDefined()
+    })
+
+    it('will call editRun when Edit is clicked', async () => {
+      let button = wrapper.find('#editRun-1')
+      button.trigger('click')
+      expect(runs.$route.path).toEqual('/ont/run/1')
+    })
+  })
+
   describe('#showAlert', () => {
     it('emits an event with the message', () => {
       runs.showAlert('show this message', 'danger')
@@ -50,6 +65,12 @@ describe('ONTRuns.vue', () => {
         type: 'danger',
         message: 'show this message',
       })
+    })
+  })
+
+  describe('#mapGetters', () => {
+    it('sets the runs data', () => {
+      expect(runs.runs.length).toEqual(mockRuns.length)
     })
   })
 
@@ -73,6 +94,12 @@ describe('ONTRuns.vue', () => {
       })
       runs.provider()
       expect(runs.showAlert).toBeCalled()
+    })
+  })
+
+  describe('#generateId', () => {
+    it('returns the generated text', () => {
+      expect(runs.generateId('text', 'id')).toEqual('text-id')
     })
   })
 })
