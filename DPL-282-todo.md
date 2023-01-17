@@ -17,8 +17,8 @@
 
 ## Tests
 
-- Test: ONTRunInstrumentFlowcells.spec.js has no tests yet
-- Test: `src/store/traction/ont/actions.js`
+- Test: `ONTRunInstrumentFlowcells.spec.js`
+- Test: `src/store/traction/ont/actions.js` (`updateRun`, `editRun`)
 - Test: `tests/unit/views/ont/ONTRun.spec.js` update with response
 
 ## Questions For UAT

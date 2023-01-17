@@ -64,8 +64,27 @@ describe('actions.js', () => {
     })
   })
 
+  describe('#newRun', () => {
+    let commit
+
+    beforeEach(() => {
+      commit = vi.fn()
+    })
+
+    it('successfully', () => {
+      Actions.newRun({ commit })
+      let newRun = {
+        id: 'new',
+        instrument_name: '',
+        state: '',
+        flowcell_attributes: [],
+      }
+      expect(commit).toHaveBeenCalledWith('setCurrentRun', newRun)
+    })
+  })
+
   describe('#createRun', () => {
-    let create, getters
+    let create, getters, rootGetters
 
     beforeEach(() => {
       create = vi.fn()
@@ -74,12 +93,29 @@ describe('actions.js', () => {
         runRequest: { create: create },
         instruments: [{ id: 1, name: 'bob' }],
       }
+      rootGetters = {
+        'traction/ont/pools': [],
+      }
     })
 
     it('successfully', async () => {
       const promise = Promise.resolve(Data.OntRun)
       create.mockReturnValue(promise)
-      let response = await Actions.createRun({ getters })
+      let response = await Actions.createRun({ getters, rootGetters })
+
+      let payload = {
+        data: {
+          data: {
+            type: 'runs',
+            attributes: {
+              ont_instrument_id: 1,
+              state: 'pending',
+              flowcell_attributes: [],
+            },
+          },
+        },
+      }
+      expect(create).toBeCalledWith(payload)
 
       expect(response.success).toBeTruthy()
     })
@@ -87,7 +123,7 @@ describe('actions.js', () => {
     it('unsuccessfully', async () => {
       const promise = Promise.reject(failedResponse)
       create.mockReturnValue(promise)
-      const response = await Actions.createRun({ getters })
+      const response = await Actions.createRun({ getters, rootGetters })
 
       expect(response.success).toBeFalsy()
       expect(response.errors).toEqual(failedResponse)
