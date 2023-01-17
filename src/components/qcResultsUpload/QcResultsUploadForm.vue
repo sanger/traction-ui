@@ -57,7 +57,6 @@ export default {
       await this.postCSV()
     },
     async postCSV() {
-      // Add a comment saying this might take up to a minute to upload
       this.busy = true
       try {
         const csv = await this.file.text()
@@ -66,14 +65,7 @@ export default {
 
         this.showAlert(`Successfully imported: ${this.file.name}`, 'success')
       } catch (e) {
-        let errors = e.split(',')
-        let count = errors.length
-        let uniqueErrors = [...new Set(errors)]
-
-        let msg = `${count} rows have error: ${uniqueErrors}`
-
-        // 195 rows have error: Missing data: LR EXTRACTION DECISION [ESP1] csv_data - Missing data: LR EXTRACTION DECISION [ESP1], Missing data: LR EXTRACTION DECISION [ESP1] csv_data - Missing data: LR EXTRACTION DECISION [ESP1]
-        this.showAlert(msg, 'danger')
+        this.showAlert(e, 'danger')
       }
       this.busy = false
     },

@@ -8,7 +8,6 @@ const getters = {
   instrumentRequest: (state, getters, rootState) => rootState.api.traction.ont.instruments,
   instrumentFlowcellLayout: (state) => state.instrumentFlowcellLayout,
   instruments: (state) => state.instruments,
-  pools: (state) => state.pools,
 }
 
 export default getters

@@ -68,24 +68,24 @@ describe('mutations', () => {
     })
   })
 
-  describe('setPoolId', () => {
+  describe('setPoolTubeBarcode', () => {
     it('creates a flowcell object if one does not exist already for the position', () => {
-      let obj = { $event: 'poolId', position: '1' }
-      Mutations.setPoolId(state, obj)
+      let obj = { $event: 'TRAC-A-1', position: '1' }
+      Mutations.setPoolTubeBarcode(state, obj)
       expect(state.currentRun.flowcell_attributes.length).toEqual(1)
       expect(state.currentRun.flowcell_attributes[0]).toEqual({
-        ont_pool_id: 'poolId',
+        tube_barcode: 'TRAC-A-1',
         position: '1',
       })
     })
 
     it('updates the flowcell object is one exists for the position', () => {
-      Mutations.setPoolId(state, { $event: 'poolId', position: '1' })
-      let obj = { $event: 'poolIdupdated', position: '1' }
-      Mutations.setPoolId(state, obj)
+      Mutations.setPoolTubeBarcode(state, { $event: 'TRAC-A-1', position: '1' })
+      let obj = { $event: 'TRAC-A-2', position: '1' }
+      Mutations.setPoolTubeBarcode(state, obj)
       expect(state.currentRun.flowcell_attributes.length).toEqual(1)
       expect(state.currentRun.flowcell_attributes[0]).toEqual({
-        ont_pool_id: 'poolIdupdated',
+        tube_barcode: 'TRAC-A-2',
         position: '1',
       })
     })

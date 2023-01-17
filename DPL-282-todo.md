@@ -17,11 +17,9 @@
 
 ## Tests
 
-- Test: ONTRunInstrumentFlowcells.spec.js has no tests yet
-- Test: `src/store/traction/ont/actions.js`
+- Test: `ONTRunInstrumentFlowcells.spec.js`
+- Test: `src/store/traction/ont/actions.js` (`updateRun`, `editRun`)
 - Test: `tests/unit/views/ont/ONTRun.spec.js` update with response
-
-- Test: ONTFlowcell
 
 ## Questions For UAT
 
@@ -29,7 +27,7 @@
 - Instrument: Is there a default instrument to be selected? Currently we are restricting the abilty to change the instrument type after a run has been created, is this ok?
 - State: Is there a default state to be selected on `create`? Can the state be changed from and to anything? Should updates be allowed for all states?
 - Flowcell ID: Does the flowcell ID need to be validated in any way? Can it be reused? (between a run, or any previous runs?) Does it always have the same prefix or format that can be validated?
-- Pool Barcide: Do you want to see any pool metadata on the flowcell? (Could add a link to Pools view?) Or is the Pools side bar list helpful.
+- Pool Barcode: Do you want to see any pool metadata on the flowcell? (Could add a link to Pools view?) Or is the Pools side bar list helpful.
 - Flowcell: Do they want a clear/reset button from Flowcell ID or Pool Barcode inputs?
 - Run: Do they want a Reset button for the whole run (could just navigate away from page)
 - Run: Might you ever need to create a Draft run
@@ -38,14 +36,14 @@
 ## Not MVP?
 
 - Runs View: pagination and order (sort by default desc) (FilterCard) resources, paginator jsonapi resources (service - paginator / filter / default sort) (waiting on back end)
-- remove button for pool id within flowcell?
-- ONTFlowcell: Add clear / remove button for flowcell data (clears pool id and flowcell id from store [and backend?])
 - ONTFlowcell: Possibly also want to change the input box into a text label once 'return' triggered (e.g. by scanner) to 'fix' that value once validated. So you don't accidently overscan a value you already entered. Would need a clear button then though.
 - ONTFlowcell: UI for Flowcells is currently quite large. So for Promethion version you have to scroll a lot to reach lower positions.
 - ONTFlowcell: if we add validation can add a red colour to indicate an issue with that flowcell (plus small error msg)
 
 # Done
 
+- Test: ONTFlowcell
+  - Test: `ONTRunInformation`
 - Update with what will be used when scanning in Pool to Flowcell (**tube barcode**)
 - `updateRun` action
 - Use ont_pool_id in flowcell data when creating a run (call setPools on OntRun creation)
