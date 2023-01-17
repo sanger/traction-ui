@@ -21,15 +21,15 @@ const setFlowcellId = () => (state, obj) => {
   }
 }
 
-const setPoolKitBarcode = () => (state, obj) => {
+const setPoolTubeBarcode = () => (state, obj) => {
   const exists = state.currentRun.flowcell_attributes.find(
     (flowcell) => flowcell.position == obj.position,
   )
 
   if (exists) {
-    Vue.set(exists, 'ont_pool_kit_barcode', obj.$event)
+    Vue.set(exists, 'tube_barcode', obj.$event)
   } else {
-    let flowcell = { ...{ ont_pool_kit_barcode: obj.$event }, ...{ position: obj.position } }
+    let flowcell = { ...{ tube_barcode: obj.$event }, ...{ position: obj.position } }
     state.currentRun.flowcell_attributes.push(flowcell)
   }
 }
@@ -39,7 +39,7 @@ const mutations = {
   setInstrumentName: mutateRun('instrument_name'),
   setState: mutateRun('state'),
   setFlowcellId: setFlowcellId(),
-  setPoolKitBarcode: setPoolKitBarcode(),
+  setPoolTubeBarcode: setPoolTubeBarcode(),
   setInstruments: mutate('instruments'),
   populatePools: mutate('pools'),
   setCurrentRun: mutate('currentRun'),
