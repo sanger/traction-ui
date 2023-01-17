@@ -93,7 +93,7 @@ import OntPoolLibraryList from '@/components/ont/OntPoolLibraryList'
 import { createNamespacedHelpers } from 'vuex'
 import { eachRecord } from '@/lib/csv/pacbio'
 
-const { mapGetters, mapActions } = createNamespacedHelpers('traction/ont')
+const { mapGetters, mapActions } = createNamespacedHelpers('traction/ont/pools')
 
 /**
  * # OntPoolEdit

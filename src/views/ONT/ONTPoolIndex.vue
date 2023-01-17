@@ -155,7 +155,7 @@ export default {
     }
   },
   computed: {
-    ...mapGetters('traction/ont', ['pools']),
+    ...mapGetters('traction/ont/pools', ['pools']),
   },
   methods: {
     /* 

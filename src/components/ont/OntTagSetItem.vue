@@ -28,7 +28,7 @@
 
 <script>
 import { createNamespacedHelpers } from 'vuex'
-const { mapGetters } = createNamespacedHelpers('traction/ont')
+const { mapGetters } = createNamespacedHelpers('traction/ont/pools')
 /**
  * # OntTagSetItem
  *

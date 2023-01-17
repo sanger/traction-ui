@@ -3,12 +3,12 @@ import getters from './getters'
 import mutations from './mutations'
 import actions from './actions'
 
-const pool = {
+const pools = {
   namespaced: true,
-  state,
   getters,
   mutations,
   actions,
+  state,
 }
 
-export default pool
+export default pools

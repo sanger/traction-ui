@@ -31,7 +31,7 @@
 <script>
 import { createNamespacedHelpers } from 'vuex'
 
-const { mapGetters, mapMutations, mapActions } = createNamespacedHelpers('traction/ont')
+const { mapGetters, mapMutations, mapActions } = createNamespacedHelpers('traction/ont/pools')
 
 /**
  * # OntTubeSelectedList
