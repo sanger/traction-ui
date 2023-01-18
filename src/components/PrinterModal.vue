@@ -18,6 +18,10 @@
       @shown="clearSelect"
     >
       <traction-select v-model="selectedPrinterId" :options="printerOptions" />
+      <template #modal-footer="{ ok, cancel }">
+        <traction-button size="sm" theme="accent" @click="ok()"> OK </traction-button>
+        <traction-button size="sm" theme="cancel" @click="cancel()"> Cancel </traction-button>
+      </template>
     </traction-modal>
   </div>
 </template>

@@ -30,7 +30,6 @@
               v-model="form.suffix"
               :options="suffixOptions"
               placeholder="Please select a suffix"
-              required
             ></traction-select>
           </traction-form-group>
 
@@ -38,14 +37,14 @@
             id="number-of-labels-group"
             label="Number of labels:"
             label-for="number-of-labels"
-            description="Number of labels to print (max 9)"
+            description="Number of labels to print (max 80)"
           >
             <traction-input
               id="number-of-labels"
               v-model="form.numberOfLabels"
               type="number"
               min="1"
-              max="9"
+              max="80"
               placeholder="Please enter a number"
             ></traction-input>
           </traction-form-group>
@@ -134,6 +133,8 @@ export default {
     labels() {
       const date = getCurrentDate()
       const suffixItem = this.suffixItems[this.form.suffix]
+
+      console.log(suffixItem)
 
       // it is possible for there to be no barcodes so we need to add a guard
       // we filter to remove an nulls

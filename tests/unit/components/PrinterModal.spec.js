@@ -21,7 +21,7 @@ describe('Modal.vue', () => {
   })
 
   it('will have an button component', () => {
-    expect(wrapper.find('.btn').element).toBeTruthy()
+    expect(wrapper.find('button').element).toBeTruthy()
   })
 
   it('will have an modal component', () => {

@@ -12,7 +12,7 @@ describe('eachRecord', () => {
     expect(callback).toHaveBeenCalledWith(
       {
         record: {
-          source: 'DN814597W-A10',
+          source: 'DN814597W:A10',
           tag: 'bc1059T',
           genome_size: 6.3,
           insert_size: 15230,
@@ -28,7 +28,7 @@ describe('eachRecord', () => {
     expect(callback).toHaveBeenCalledWith(
       {
         record: {
-          source: 'DN814597W-E10',
+          source: 'DN814597W:E10',
           tag: 'bc1064T',
           genome_size: 6.1,
           insert_size: 13681,
@@ -51,7 +51,7 @@ describe('eachRecord', () => {
     expect(callback).toHaveBeenCalledWith(
       {
         record: {
-          source: 'DN814597W-A10',
+          source: 'DN814597W:A10',
           genome_size: 6.3,
           insert_size: 15230,
           concentration: 13,
@@ -66,7 +66,7 @@ describe('eachRecord', () => {
     expect(callback).toHaveBeenCalledWith(
       {
         record: {
-          source: 'DN814597W-E10',
+          source: 'DN814597W:E10',
           tag: 'bc1064T',
         },
         info: expect.objectContaining({ lines: 6 }),

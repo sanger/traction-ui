@@ -6,18 +6,18 @@
 
     <loading-full-screen-modal v-bind="modalState"></loading-full-screen-modal>
 
-    <traction-heading level="4" :show-border="true"
-      >Source
-      <traction-menu
-        ><traction-menu-item
+    <traction-heading level="4" :show-border="true">
+      Source
+      <traction-menu>
+        <traction-menu-item
           v-for="(receptionItem, index) in receptions"
           :key="index"
           :active="index == sourceIndex"
           @click.native="setSource(index)"
           >{{ receptionItem.name }}</traction-menu-item
         >
-      </traction-menu></traction-heading
-    >
+      </traction-menu>
+    </traction-heading>
 
     <component
       :is="receptionComponent"

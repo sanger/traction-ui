@@ -7,17 +7,19 @@
       {{ request.source_identifier }}
     </traction-td>
     <traction-td>
-      <traction-select
-        v-if="tagList.length > 0"
-        v-model="tag_id"
-        data-type="tag-list"
-        :options="tagListOptions"
-        :state="errorsFor('tag_id')?.length > 0"
-        class="tag-id"
-      ></traction-select>
-      <traction-invalid-feedback data-attribute="tag-id-error">
-        {{ errorsFor('tag_id') }}
-      </traction-invalid-feedback>
+      <traction-field-error
+        data-attribute="tag-id-error"
+        :error="errorsFor('tag_id')"
+        :with-icon="isValidationExists('tag_id')"
+      >
+        <traction-select
+          v-if="tagList.length > 0"
+          v-model="tag_id"
+          data-type="tag-list"
+          :options="tagListOptions"
+          class="tag-id"
+        ></traction-select>
+      </traction-field-error>
     </traction-td>
     <traction-td>
       <traction-field-error
@@ -77,7 +79,6 @@
     </traction-td>
   </traction-tr>
 </template>
-
 <script>
 import { createNamespacedHelpers } from 'vuex'
 const { mapGetters, mapMutations, mapActions } = createNamespacedHelpers(
@@ -89,6 +90,11 @@ const librarySetter = (attr) => {
       return this.library[attr]
     },
     set(newValue) {
+      if (newValue !== this.library[attr]) {
+        // record that the attribute has been altered
+        this.fieldsThatRequireValidation[attr] = true
+        this.notify()
+      }
       this.updateLibrary({ pacbio_request_id: this.library.pacbio_request_id, [attr]: newValue })
     },
   }
@@ -110,9 +116,23 @@ export default {
       type: Boolean,
       default: false,
     },
+    // indicates whether the values in this component have been validated
+    validated: {
+      type: Boolean,
+      default: false,
+    },
+    // function passed from parent indicating what to do when user changes an attribute
+    notify: {
+      type: Function,
+      required: true,
+      default: () => {},
+    },
   },
   data() {
-    return {}
+    return {
+      // This is an array holding attribute names that have been changed and require validation
+      fieldsThatRequireValidation: [],
+    }
   },
   computed: {
     ...mapGetters(['selectedTagSet', 'libraryItem']),
@@ -134,6 +154,11 @@ export default {
         return this.library.tag_id
       },
       set(tag_id) {
+        if (tag_id !== this.tag_id) {
+          // record that the tag id has been altered
+          this.fieldsThatRequireValidation['tag_id'] = true
+          this.notify()
+        }
         this.applyTags({
           library: { tag_id, pacbio_request_id: this.library.pacbio_request_id },
           autoTag: this.autoTag,
@@ -146,18 +171,32 @@ export default {
     ...mapActions(['applyTags']),
     //return any errors exist in library for the given attribute
     errorsFor(attribute) {
+      this.setValidationRequired()
       return this.library?.errors?.[attribute]
     },
     attributeValueExists(attribute) {
+      this.setValidationRequired()
       return this.library?.[attribute]?.length > 0
     },
+    // method used to decide the state of the valid/invalid flag on the field
     isValidationExists(attribute) {
-      return this.attributeValueExists(attribute) || this.errorsFor(attribute)?.length > 0
+      if (this.validated) {
+        return true
+      } else {
+        // red cross for invalid or null for no flag if changed
+        return !this.fieldsThatRequireValidation[attribute]
+      }
+    },
+    setValidationRequired() {
+      if (this.validated) {
+        // The parent component has validated the attributes, so we can clear
+        // the outstanding list of attributes that require validation
+        this.fieldsThatRequireValidation = []
+      }
     },
   },
 }
 </script>
-
 <style scoped lang="scss">
 td,
 .custom-select,
