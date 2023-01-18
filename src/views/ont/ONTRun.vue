@@ -5,6 +5,16 @@
     </router-link>
 
     <traction-button
+      v-if="newRecord"
+      id="resetButton"
+      type="reset"
+      theme="default"
+      class="float-right"
+      @click="newRun"
+      >Reset</traction-button
+    >
+
+    <traction-button
       :id="currentAction.id"
       class="float-right"
       :theme="currentAction.theme"
@@ -61,7 +71,10 @@ export default {
       return this.actions[this.newRecord ? 'create' : 'update']
     },
     runValid() {
-      return this.currentRun.instrument_name && this.currentRun.state
+      let flowcells = (this.currentRun.flowcell_attributes || []).filter(
+        (fc) => fc.flowcell_id && fc.tube_barcode,
+      )
+      return this.currentRun.instrument_name && this.currentRun.state && flowcells.length != 0
     },
   },
   created() {

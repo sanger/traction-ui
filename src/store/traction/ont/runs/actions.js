@@ -23,8 +23,8 @@ const setRuns = async ({ commit, getters }) => {
 const newRun = ({ commit }) => {
   let run = {
     id: 'new',
-    instrument_name: '',
-    state: '',
+    instrument_name: null,
+    state: null,
     flowcell_attributes: [],
   }
 

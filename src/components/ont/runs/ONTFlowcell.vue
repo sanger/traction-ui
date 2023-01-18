@@ -21,7 +21,7 @@
         </traction-form-group>
         <traction-form-group
           id="input-group-pool-id"
-          label="Pool Barcode"
+          label="Library Barcode"
           label-for="pool-id"
           label-align="left"
           label-cols="auto"

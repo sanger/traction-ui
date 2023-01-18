@@ -9,6 +9,8 @@
       :items="runs"
       :fields="fields"
       tbody-tr-class="run"
+      :sort-by.sync="sortBy"
+      :sort-desc.sync="sortDesc"
     >
       <template #cell(actions)="row">
         <traction-button
@@ -17,9 +19,8 @@
           size="sm"
           class="mr-1"
           @click="redirectToRun(row.item.id)"
+          >Edit</traction-button
         >
-          Edit
-        </traction-button>
       </template>
     </traction-table>
 
@@ -44,7 +45,7 @@ export default {
     return {
       fields: [
         { key: 'id', label: 'Run ID', sortable: true },
-        { key: 'experiment_name', label: 'Name', sortable: true },
+        { key: 'experiment_name', label: 'Experiment ID', sortable: true },
         { key: 'state', label: 'State', sortable: true },
         {
           key: 'instrument_name',
@@ -54,6 +55,8 @@ export default {
         { key: 'created_at', label: 'Created at', sortable: true },
         { key: 'actions', label: 'Actions' },
       ],
+      sortBy: 'created_at',
+      sortDesc: true,
     }
   },
   computed: {

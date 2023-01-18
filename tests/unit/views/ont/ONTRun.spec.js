@@ -27,6 +27,12 @@ describe('ONTRun.vue', () => {
     })
   })
 
+  describe('Reset button', () => {
+    it('will show if the record is new', () => {
+      expect(wrapper.find('#resetButton').exists()).toBeTruthy()
+    })
+  })
+
   describe('ONTRunInformation', () => {
     it('dispays the run infomation', () => {
       expect(wrapper.findComponent({ ref: 'ONTRunInformation' })).toBeTruthy()
