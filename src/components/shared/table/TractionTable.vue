@@ -13,53 +13,51 @@
 -->
 <template>
   <div class="flex flex-col overflow-y-auto overflow-x-auto max-h-screen">
-    <div>
-      <div class="py-2 align-middle inline-block min-w-full">
-        <div class="shadow overflow-hidden border-b border-gray-200 sm:rounded-lg">
-          <table
-            v-bind="$attrs"
-            class="min-w-full divide-y divide-gray-200"
-            data-attribute="dataAttribute"
-          >
-            <thead>
-              <tr>
-                <th
-                  v-for="field in fields"
-                  :key="field.key"
-                  className="px-6 py-3 bg-gray-50 text-left select-none"
+    <div class="py-2 align-middle inline-block min-w-full">
+      <div class="shadow overflow-hidden border-b border-gray-200 sm:rounded-lg">
+        <table
+          v-bind="$attrs"
+          class="w-full divide-y divide-gray-200"
+          data-attribute="dataAttribute"
+        >
+          <thead>
+            <tr>
+              <th
+                v-for="field in fields"
+                :key="field.key"
+                className="px-6 py-3 bg-gray-50 text-left select-none"
+              >
+                {{ field.label }}
+                <traction-button
+                  v-if="field.sortable"
+                  :data-testid="`${field.key}-sort-button`"
+                  theme="navigation"
+                  @click="sortButtonClick(field.key, indx)"
                 >
-                  {{ field.label }}
-                  <traction-button
-                    v-if="field.sortable"
-                    :data-testid="`${field.key}-sort-button`"
-                    theme="navigation"
-                    @click="sortButtonClick(field.key, indx)"
-                  >
-                    <traction-arrow-icon direction="up">
-                      <path
-                        d="m11 18-6-6 6-6 1.4 1.4L7.825 12l4.575 4.6Zm6.6 0-6-6 6-6L19 7.4 14.425 12 19 16.6Z"
-                      />
-                    </traction-arrow-icon>
-                  </traction-button>
-                </th>
+                  <traction-arrow-icon direction="up">
+                    <path
+                      d="m11 18-6-6 6-6 1.4 1.4L7.825 12l4.575 4.6Zm6.6 0-6-6 6-6L19 7.4 14.425 12 19 16.6Z"
+                    />
+                  </traction-arrow-icon>
+                </traction-button>
+              </th>
+            </tr>
+          </thead>
+          <tbody class="bg-white divide-y divide-gray-200">
+            <template v-for="(row, rowIndex) in rows">
+              <tr :key="rowIndex">
+                <template v-for="cell in row">
+                  <custom-table-cell v-if="cell.item.custom" :key="'custom-' + cell.item.id">
+                    <slot :name="`cell(${cell.item.column.name})`" v-bind="cell" />
+                  </custom-table-cell>
+                  <custom-table-cell v-else :key="cell.item.id">
+                    {{ cell.item.text }}
+                  </custom-table-cell>
+                </template>
               </tr>
-            </thead>
-            <tbody class="bg-white divide-y divide-gray-200">
-              <template v-for="(row, rowIndex) in rows">
-                <tr :key="rowIndex">
-                  <template v-for="cell in row">
-                    <custom-table-cell v-if="cell.item.custom" :key="'custom-' + cell.item.id">
-                      <slot :name="`cell(${cell.item.column.name})`" v-bind="cell" />
-                    </custom-table-cell>
-                    <custom-table-cell v-else :key="cell.item.id">
-                      {{ cell.item.text }}
-                    </custom-table-cell>
-                  </template>
-                </tr>
-              </template>
-            </tbody>
-          </table>
-        </div>
+            </template>
+          </tbody>
+        </table>
       </div>
     </div>
   </div>
@@ -84,7 +82,7 @@ export default {
     rowData: {
       type: Array,
       required: false,
-      default: null,
+      default: () => [],
     },
     customColumns: {
       type: Array,
@@ -92,7 +90,11 @@ export default {
       default: () => [],
     },
   },
-
+  data() {
+    return {
+      details: new Array(10).fill(false),
+    }
+  },
   computed: {
     rows() {
       const val = this.rowData.map((row, rowIndx) => {
@@ -112,10 +114,12 @@ export default {
               custom: this.customColumns.some((column) => column === field.key),
             },
             toggleDetails: () => {
-              this.detailsShowing = !this.detailsShowing
-              alert(this.detailsShowing)
+              if (this.details == undefined || this.details.length <= rowIndx) return
+              const newDetails = [...this.details]
+              newDetails[rowIndx] = !newDetails[rowIndx]
+              this.details = newDetails
             },
-            detailsShowing: this.detailsShowing,
+            detailsShowing: this.details[rowIndx],
           }
         })
       })
@@ -128,6 +132,7 @@ export default {
       this.sortFields[index] = !this.sortFields[index]
       this.$emit('input', column)
     },
+    
   },
 }
 </script>

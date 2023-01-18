@@ -22,9 +22,14 @@
     </traction-form-group>
     <br />
 
-    <custom-table id="plate-index" :fields="fields" :row-data="plates" :custom-columns="customColumns">
-      <template #cell(show_details)="row">
-         <traction-button
+    <custom-table
+      id="plate-index"
+      :fields="fields"
+      :row-data="plates"
+      :custom-columns="customColumns"
+    >
+      <template #cell(show_details)="row" >
+        <traction-button
           :id="'details-btn-' + row.item.id"
           size="sm"
           theme="default"
