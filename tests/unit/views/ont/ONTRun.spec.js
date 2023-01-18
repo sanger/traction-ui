@@ -2,8 +2,6 @@ import ONTRun from '@/views/ont/ONTRun'
 import { localVue, mount, store, router } from '@support/testHelper'
 import { beforeEach, describe, it } from 'vitest'
 
-// - Test: `ONTRun.spec.js` (`actions`, `mapGetters`, `currentAction`, `runValid`, `mapActions`, `runAction`, `redirectToRuns`, `provider`)
-
 describe('ONTRun.vue', () => {
   let wrapper, ontRun
 
