@@ -8,18 +8,12 @@ describe('ONTRunInstrumentFlowcells', () => {
   let wrapper, ontRunInstrumentFlowcell, mockInstruments, mockRun
 
   beforeEach(() => {
-    // create a flowcell in the store and set its pool
-    // store.commit('traction/ont/runs/setFlowcellId', { $event: 'FC1', position: 1 })
-    // store.commit('traction/ont/runs/setPoolId', { $event: 'Pool1', position: 1 })
-
-    // TODO: add one or more ONTFlowcell?
-
     mockInstruments = new Response(Data.OntInstruments).deserialize.instruments
     store.commit('traction/ont/runs/setInstruments', mockInstruments)
 
     mockRun = {
       id: 'new',
-      instrument_name: 'GXB02004',
+      instrument_name: 'PC24B148',
       state: 'pending',
       flowcell_attributes: [],
     }
@@ -36,7 +30,6 @@ describe('ONTRunInstrumentFlowcells', () => {
 
   describe('#computed', () => {
     it('#mapGetters', () => {
-
       it('must have currentRun', () => {
         expect(ontRunInstrumentFlowcell.currentRun).toEqual(mockRun)
       })
@@ -49,24 +42,22 @@ describe('ONTRunInstrumentFlowcells', () => {
       })
     })
 
-    // expect(ontRunInstrumentFlowcell.getInstrumentLayout()).toEqual('')
-    // expect(ontRunInstrumentFlowcell.numOfRows()).toEqual(1)
-    // expect(ontRunInstrumentFlowcell.numOfColumns()).toEqual(5)
-
     it('#mapState', () => {
       expect(ontRunInstrumentFlowcell.getInstrumentLayout).toBeDefined()
-      // expect(ontRunInstrumentFlowcell.getInstrumentLayout).toEqual('FC1')
+      expect(ontRunInstrumentFlowcell.getInstrumentLayout).toEqual({ "columns": 3, "rows": 8 })
       expect(ontRunInstrumentFlowcell.numOfRows).toBeDefined()
-      // expect(ontRunInstrumentFlowcell.numOfRows).toEqual('Pool1')
+      expect(ontRunInstrumentFlowcell.numOfRows).toEqual(8)
       expect(ontRunInstrumentFlowcell.numOfColumns).toBeDefined()
-      // expect(ontRunInstrumentFlowcell.numOfColumns).toEqual('fc_ready')
+      expect(ontRunInstrumentFlowcell.numOfColumns).toEqual(3)
     })
   })
 
-  // describe('#methods', () => {
-  //   it('#calculatePosition', () => {
-  //     // TODO: set something?
-  //     expect(ontRunInstrumentFlowcell.calculatePosition(rowIndex, colIndex)).toEqual(?)
-  //   }
-  // })
+  describe('#methods', () => {
+    it('#calculatePosition', () => {
+      let rowIndex = 2
+      let colIndex = 3
+      // NB. positions are numbered in column order (e.g. PromethIon col 1 is positions 1-8, col 2 is 9-16, col 3 is 17-24)
+      expect(ontRunInstrumentFlowcell.calculatePosition(rowIndex, colIndex)).toEqual(18)
+    })
+  })
 })
