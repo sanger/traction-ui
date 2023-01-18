@@ -23,9 +23,18 @@ describe('ONTRunInstrumentFlowcells', () => {
       store,
       router,
       localVue,
+      stubs: {
+        ONTFlowcell: true,
+      },
     })
 
     ontRunInstrumentFlowcell = wrapper.vm
+  })
+
+  describe('components', () => {
+    it('has an ONTFlowcell component', () => {
+      expect(wrapper.findComponent({ name: 'ONTFlowcell' }).exists()).toBe(true)
+    })
   })
 
   describe('#computed', () => {
@@ -42,11 +51,15 @@ describe('ONTRunInstrumentFlowcells', () => {
       })
     })
 
-    it('#mapState', () => {
+    it('#getInstrumentLayout', () => {
       expect(ontRunInstrumentFlowcell.getInstrumentLayout).toBeDefined()
       expect(ontRunInstrumentFlowcell.getInstrumentLayout).toEqual({ columns: 3, rows: 8 })
+    })
+    it('#numOfRows', () => {
       expect(ontRunInstrumentFlowcell.numOfRows).toBeDefined()
       expect(ontRunInstrumentFlowcell.numOfRows).toEqual(8)
+    })
+    it('#numOfColumns', () => {
       expect(ontRunInstrumentFlowcell.numOfColumns).toBeDefined()
       expect(ontRunInstrumentFlowcell.numOfColumns).toEqual(3)
     })
