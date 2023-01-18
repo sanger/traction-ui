@@ -82,8 +82,9 @@ export default {
       if (response.success) {
         this.redirectToRuns()
       } else {
+        let action = this.newRecord ? 'create' : 'update'
         this.showAlert(
-          'Failed to create run in Traction: ' + response.errors,
+          `Failed to ${action} run in Traction: ${response.errors}`,
           'danger',
           'run-validation-message',
         )

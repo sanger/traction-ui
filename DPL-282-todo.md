@@ -17,9 +17,8 @@
 
 ## Tests
 
-- Test: `ONTRunInstrumentFlowcells.spec.js`
 - Test: `src/store/traction/ont/runs/actions.js` (`updateRun`, `editRun`)
-- Test: `ONTRun.spec.js` (WIP hc6)
+- e2e Test
 
 ## Questions For UAT
 
@@ -42,6 +41,8 @@
 
 # Done
 
+- Test: `ONTRun.spec.js`
+- Test: `ONTRunInstrumentFlowcells.spec.js`
 - Test: `ONTRuns.spec.js` (`editRun`, `mapGetters`, `generateId`, `redirectToRun`, `mapActions`)
 
 - Test: ONTFlowcell
