@@ -46,7 +46,6 @@ describe('getters', () => {
     expect(actual).toEqual('aInstrumentRequest')
   })
 
-
   it('"instrumentFlowcellLayout" returns "state.instrumentFlowcellLayout"', () => {
     const actual = getters.instrumentFlowcellLayout(state)
     expect(actual).toEqual(InstrumentFlowcellLayout)

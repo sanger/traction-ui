@@ -10,7 +10,8 @@
       :theme="currentAction.theme"
       :disabled="!runValid"
       @click="runAction"
-    >{{ currentAction.label }}</traction-button>
+      >{{ currentAction.label }}</traction-button
+    >
 
     <ONTRunInformation></ONTRunInformation>
     <ONTRunInstrumentFlowcells></ONTRunInstrumentFlowcells>

@@ -44,7 +44,7 @@ describe('ONTRunInstrumentFlowcells', () => {
 
     it('#mapState', () => {
       expect(ontRunInstrumentFlowcell.getInstrumentLayout).toBeDefined()
-      expect(ontRunInstrumentFlowcell.getInstrumentLayout).toEqual({ "columns": 3, "rows": 8 })
+      expect(ontRunInstrumentFlowcell.getInstrumentLayout).toEqual({ columns: 3, rows: 8 })
       expect(ontRunInstrumentFlowcell.numOfRows).toBeDefined()
       expect(ontRunInstrumentFlowcell.numOfRows).toEqual(8)
       expect(ontRunInstrumentFlowcell.numOfColumns).toBeDefined()
