@@ -7,6 +7,11 @@
 - Make naming of ONT vs Ont consistent
 - Add comments throughout
 - Refactor Vuex
+- UI: Update col/row locations for Promethion (dependent on: Alex)
+- UI: Update PromethION column/ row naming system (dependent on: Alex)
+- UI: Add Flowcell ID validation (dependent on: Alex)
+- UI: Support Runs Pagination (dependent on: Service)
+- UI: Display information about the invalid position on the creation or update of a run. Possibly show error in the specific flowcell (dependent on: Service)
 
 ## Tests
 
