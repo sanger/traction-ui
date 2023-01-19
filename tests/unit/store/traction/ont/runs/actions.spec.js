@@ -1,6 +1,7 @@
 import * as Actions from '@/store/traction/ont/runs/actions'
 import { Data } from '@support/testHelper'
-import { expect, vi } from 'vitest'
+import { describe, expect, vi } from 'vitest'
+import Response from '@/api/Response'
 
 describe('actions.js', () => {
   let failedResponse
@@ -156,6 +157,112 @@ describe('actions.js', () => {
 
       expect(response.success).toBeFalsy()
       expect(response.errors).toEqual(failedResponse)
+    })
+  })
+
+  describe('#updateRun', () => {
+    let update, getters, rootGetters, run, instruments, payload
+
+    beforeEach(() => {
+      run = {
+        id: '16',
+        state: 'pending',
+        instrument_name: 'GXB02004',
+        flowcell_attributes: [],
+      }
+      instruments = new Response(Data.OntInstruments).deserialize.instruments
+
+      update = vi.fn()
+
+      getters = {
+        currentRun: run,
+        runRequest: { update: update },
+        instruments: instruments,
+      }
+      rootGetters = {
+        'traction/ont/pools': [],
+      }
+      payload = {
+        data: {
+          type: 'runs',
+          id: '16',
+          attributes: {
+            state: 'pending',
+            ont_instrument_id: '1',
+            flowcell_attributes: [],
+          },
+        },
+      }
+    })
+
+    it('successfully', async () => {
+      const promise = Promise.resolve(Data.OntRun)
+      update.mockReturnValue(promise)
+
+      let response = await Actions.updateRun({ getters, rootGetters })
+
+      expect(update).toBeCalledWith(payload)
+      expect(response.success).toBeTruthy()
+    })
+
+    it('unsuccessfully', async () => {
+      const promise = Promise.reject(failedResponse)
+      update.mockReturnValue(promise)
+
+      const response = await Actions.updateRun({ getters, rootGetters })
+      expect(update).toBeCalledWith(payload)
+
+      expect(response.success).toBeFalsy()
+      expect(response.errors).toEqual(failedResponse)
+    })
+  })
+
+  describe('#editRun', () => {
+    let commit, getters, rootGetters, instruments, mockRun, find, mockedReturnValue
+
+    beforeEach(() => {
+      mockRun = {
+        id: 1,
+        instrument_name: 'GXB02004',
+        state: 'pending',
+        flowcell_attributes: [],
+      }
+
+      find = vi.fn()
+      commit = vi.fn()
+
+      instruments = new Response(Data.OntInstruments).deserialize.instruments
+
+      getters = {
+        runRequest: { find: find },
+        instruments: instruments,
+      }
+      rootGetters = {
+        'traction/ont/pools': [],
+      }
+
+      mockedReturnValue = {
+        success: true,
+        data: {
+          data: {
+            id: mockRun.id,
+            attributes: {
+              state: mockRun.state,
+              ont_instrument_id: 1,
+            },
+          },
+          flowcell_attributes: mockRun.flowcell_attributes,
+        },
+        errors: [],
+      }
+    })
+
+    it('successfully', async () => {
+      find.mockReturnValue(mockedReturnValue)
+      const response = await Actions.editRun({ commit, getters, rootGetters }, mockRun.id)
+      expect(commit).toHaveBeenCalledWith('setCurrentRun', mockRun)
+
+      expect(response.success).toBeTruthy()
     })
   })
 
