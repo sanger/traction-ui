@@ -1,11 +1,7 @@
-# Service Code review
-
-- On update, if the pool barcode doesn't exist, it throws a 500. If the pool barcode doesn't exist on create, it gives a 422. For both create and update, when it fails, please could it provide a flowcell position or the pool barcode which failed?
-
 # Todo
 
-- UI: Support Runs Pagination (dependent on: Service) (service done) https://github.com/sanger/traction-service/pull/890/commits/b160f9e3c223e2932afddc6a58e6e8ec6ed8d3d9
 - UI: Display information about the invalid position on the creation or update of a run. Possibly show error in the specific flowcell (dependent on: Service)
+
 - Make naming of ONT vs Ont consistent
 - Add comments throughout
 - Refactor Vuex
@@ -26,6 +22,7 @@
 - UI: Make Pool Barcode and Flowcell always uppercase
 - UI: Add Flowcell ID validation (dependent on: Alex)
 - UI: Update PromethION column/ row naming system (dependent on: Alex)
+- UI: Support Runs Pagination (dependent on: Service) (service done) https://github.com/sanger/traction-service/pull/890/commits/b160f9e3c223e2932afddc6a58e6e8ec6ed8d3d9
 
 - Test: `ONTRun.spec.js`
 - Test: `ONTRunInstrumentFlowcells.spec.js`

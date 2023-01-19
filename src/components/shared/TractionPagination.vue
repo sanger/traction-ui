@@ -1,8 +1,8 @@
 <!--
   TractionPagination
-  
+
   Renders a custom tailwind or bootstrap pagination component based on 'enable_custom_pagination' feature flag is enabled or not respectively
-   - flagged-feature  is the wrapper for the component to be toggled, name field specifies the name of the toggle feature 
+   - flagged-feature  is the wrapper for the component to be toggled, name field specifies the name of the toggle feature
    - <template #disabled> displays the bootstrap pagination when the feature flag is disabled, otherwise the custom component
    - @input - On input, emit its own custom input event with the new value
 -->
@@ -47,9 +47,7 @@
           :theme="getPageButtonTheme(page)"
           data-testid="page-button"
           @click="pageClick(page)"
-        >
-          {{ page }}
-        </traction-button>
+        >{{ page }}</traction-button>
       </div>
 
       <TractionButton
@@ -105,7 +103,7 @@ export default {
     },
     /**Number of items that every page represents */
     perPage: {
-      type: Number,
+      type: [Number, String],
       default: 10,
     },
     /**Maximum visible page buttons to be displayed */
