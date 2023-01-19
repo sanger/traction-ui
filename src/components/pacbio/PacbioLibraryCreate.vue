@@ -108,7 +108,7 @@
 <script>
 import Api from '@/mixins/Api'
 import ModalHelper from '@/mixins/ModalHelper'
-import { mapActions, mapGetters } from 'vuex'
+import { mapActions, mapGetters, mapState } from 'vuex'
 
 export default {
   name: 'PacbioLibraryCreate',
@@ -131,6 +131,10 @@ export default {
   },
   computed: {
     ...mapGetters('traction', ['tractionTags']),
+    ...mapState('traction/pacbio/poolCreate', {
+      tagSets: (state) => state.resources.tagSets, // reuse indexed tagsets
+      tags: (state) => state.resources.tags, // reuse indexed tags
+    }),
   },
   created() {
     this.provider()
@@ -138,11 +142,19 @@ export default {
   methods: {
     async provider() {
       try {
-        await this.setTags()
-        this.tractionTags.forEach((tag) => this.tagOptions.push(tag.group_id))
+        await this.fetchPacbioTagSets() // Fetch pacbio tagSet and Tag resources
+        this.pushTagOptions() // Update tagOptions for select component
       } catch (error) {
         this.showAlert('Failed to find tags in Traction' + error.message, 'danger')
       }
+    },
+    pushTagOptions() {
+      // Options for TractionSelect component.
+      Object.values(this.tagSets).forEach((tagSet) => {
+        const options = tagSet.tags.map((id) => this.tags[id].group_id)
+        const obj = { label: '--- ' + tagSet.name + ' ---', options: options }
+        this.tagOptions.push(obj)
+      })
     },
     async createLibrary() {
       const { success, barcode, errors } = await this.createLibraryInTraction(this.library)
@@ -157,7 +169,7 @@ export default {
       this.library = { tag: { group_id: '' }, sample: this.selectedSample }
     },
     ...mapActions('traction/pacbio/libraries', ['createLibraryInTraction']),
-    ...mapActions('traction', ['setTags']),
+    ...mapActions('traction/pacbio/poolCreate', ['fetchPacbioTagSets']), // reuse fetch action
   },
 }
 </script>
