@@ -53,7 +53,11 @@ describe('ONTRunInstrumentFlowcells', () => {
 
     it('#getInstrumentLayout', () => {
       expect(ontRunInstrumentFlowcell.getInstrumentLayout).toBeDefined()
-      expect(ontRunInstrumentFlowcell.getInstrumentLayout).toEqual({ columns: 3, rows: 8 })
+      expect(ontRunInstrumentFlowcell.getInstrumentLayout).toEqual({
+        columns: 3,
+        rows: 8,
+        useCoordinates: true
+      })
     })
     it('#numOfRows', () => {
       expect(ontRunInstrumentFlowcell.numOfRows).toBeDefined()
@@ -62,6 +66,10 @@ describe('ONTRunInstrumentFlowcells', () => {
     it('#numOfColumns', () => {
       expect(ontRunInstrumentFlowcell.numOfColumns).toBeDefined()
       expect(ontRunInstrumentFlowcell.numOfColumns).toEqual(3)
+    })
+    it('#useCoordinates', () => {
+      expect(ontRunInstrumentFlowcell.useCoordinates).toBeDefined()
+      expect(ontRunInstrumentFlowcell.useCoordinates).toEqual(true)
     })
   })
 

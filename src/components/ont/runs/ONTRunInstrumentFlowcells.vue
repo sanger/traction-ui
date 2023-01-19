@@ -51,15 +51,17 @@ export default {
     numOfColumns() {
       return this.getInstrumentLayout['columns']
     },
+    useCoordinates() {
+      return this.getInstrumentLayout['useCoordinates']
+    }
   },
   methods: {
     calculatePosition(rowIndex, colIndex) {
       return this.numOfRows * (colIndex - 1) + rowIndex
     },
     calculateCoordinate(rowIndex, colIndex) {
-      let isPromethion = this.currentRun.instrument_name[0] == 'P'
       let rowLetters = ['A', 'B','C','D','E','F','G','H']
-      return isPromethion ? `${rowLetters[rowIndex-1]}${colIndex}` : `${colIndex}`
+      return this.useCoordinates ? `${rowLetters[rowIndex-1]}${colIndex}` : `${colIndex}`
     },
   },
 }
