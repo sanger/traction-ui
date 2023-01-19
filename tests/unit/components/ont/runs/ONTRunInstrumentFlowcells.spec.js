@@ -72,5 +72,11 @@ describe('ONTRunInstrumentFlowcells', () => {
       // NB. positions are numbered in column order (e.g. PromethIon col 1 is positions 1-8, col 2 is 9-16, col 3 is 17-24)
       expect(ontRunInstrumentFlowcell.calculatePosition(rowIndex, colIndex)).toEqual(18)
     })
+
+    it('#calculateCoordinate for PromethION', () => {
+      let rowIndex = 2
+      let colIndex = 3
+      expect(ontRunInstrumentFlowcell.calculateCoordinate(rowIndex, colIndex)).toEqual('B3')
+    })
   })
 })

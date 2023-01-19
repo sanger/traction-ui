@@ -8,6 +8,7 @@ describe('ONTFlowcell', () => {
   beforeEach(() => {
     props = {
       position: 1,
+      coordinate: 'A1'
     }
 
     // Create a flowcell in the store and set its tube barcode
@@ -27,9 +28,26 @@ describe('ONTFlowcell', () => {
     it('must have a position', () => {
       expect(ontFlowcell.position).toEqual(props.position)
     })
+    it('must have a coordinate', () => {
+      expect(ontFlowcell.coordinate).toEqual(props.coordinate)
+    })
   })
 
   describe('#computed', () => {
+    describe('flowcellIdValidation', () => {
+      it('errors if FlowcellId is not valid', async () => {
+        const flowcellIdInput = wrapper.find('#flowcell-id-1')
+        await flowcellIdInput.setValue('some value')
+        expect(ontFlowcell.flowcellIdValidation).toBeFalsy()
+      })
+
+      it('does not error if FlowcellId is valid', async () => {
+        const flowcellIdInput = wrapper.find('#flowcell-id-1')
+        await flowcellIdInput.setValue('ABC123')
+        expect(ontFlowcell.flowcellIdValidation).toBeTruthy()
+      })
+    })
+
     it('#mapState', () => {
       expect(ontFlowcell.flowcell).toBeDefined()
       expect(ontFlowcell.flowcell).toEqual({
@@ -56,6 +74,12 @@ describe('ONTFlowcell', () => {
       it('#setPoolTubeBarcode', () => {
         ontFlowcell.setPoolTubeBarcode({ $event: 'TRAC-1-B', position: 1 })
         expect(ontFlowcell.poolTubeBarcode).toEqual('TRAC-1-B')
+      })
+    })
+
+    describe('formatter', () => {
+      it('formats the string', () => {
+        expect(ontFlowcell.formatter(' a StriNG    ')).toEqual('A STRING')
       })
     })
   })

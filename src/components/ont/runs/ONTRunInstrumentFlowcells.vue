@@ -7,6 +7,7 @@
             v-for="colIndex in numOfColumns"
             :key="colIndex"
             :position="calculatePosition(rowIndex, colIndex)"
+            :coordinate="calculateCoordinate(rowIndex, colIndex)"
             class="flex flex-col px-2 py-2"
           ></ONTFlowcell>
         </div>
@@ -54,6 +55,11 @@ export default {
   methods: {
     calculatePosition(rowIndex, colIndex) {
       return this.numOfRows * (colIndex - 1) + rowIndex
+    },
+    calculateCoordinate(rowIndex, colIndex) {
+      let isPromethion = this.currentRun.instrument_name[0] == 'P'
+      let rowLetters = ['A', 'B','C','D','E','F','G','H']
+      return isPromethion ? `${rowLetters[rowIndex-1]}${colIndex}` : `${colIndex}`
     },
   },
 }
