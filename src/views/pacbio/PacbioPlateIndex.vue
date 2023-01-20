@@ -27,6 +27,7 @@
       :fields="fields"
       :row-data="plates"
       :custom-columns="customColumns"
+      :data-id-field="'id'"
     >
       <template #cell(show_details)="row">
         <traction-button

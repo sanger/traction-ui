@@ -39,10 +39,7 @@
                     :classes="'bg-gray-50'"
                     @click="sortButtonClick(field.key, fieldIndex)"
                   >
-                    <traction-sort-icon
-                      :direction="sortDirection(field.key)"
-                      :class="text-red-100"
-                    />
+                    <traction-sort-icon :direction="sortDirections[fieldIndex]" />
                   </traction-button>
                 </div>
               </th>
@@ -60,7 +57,7 @@
                   </custom-table-cell>
                 </template>
               </tr>
-              <tr v-if="showRowDetails[rowIndex]" :key="'custom-comp' + rowIndex">
+              <tr v-if="rows[rowIndex][0].detailsShowing" :key="'custom-comp' + rowIndex">
                 <custom-table-cell>
                   <slot :name="`row-details`" v-bind="rows[rowIndex][0]" />
                 </custom-table-cell>
@@ -73,11 +70,11 @@
   </div>
 </template>
 <script>
-import TractionArrowIcon from '@/components/shared/icons/TractionArrowIcon'
-import { within } from '@/lib/propValidations'
+import TractionSortIcon from '@/components/shared/icons/TractionSortIcon'
+import uniqueId from 'lodash-es/uniqueId'
 export default {
   name: 'TractionTable',
-  components: { TractionArrowIcon },
+  components: { TractionSortIcon },
   inheritAttrs: false,
   props: {
     //attribute name to represent this component for testing, if given
@@ -104,11 +101,16 @@ export default {
       required: false,
       default: '',
     },
+    dataIdField: {
+      type: String,
+      required: false,
+      default: '',
+    },
   },
   data() {
     return {
-      showRowDetails: this.rowData ? new Array(this.rowData.length).fill(false) : [],
-      sortField: { name: this.sortBy, ascending: true },
+      showRowDetails: [],
+      sortField: { key: this.sortBy, ascending: true },
     }
   },
 
@@ -119,10 +121,10 @@ export default {
       const val = [...this.rowData].sort((a, b) => {
         let arr1 = isAsc ? a : b
         let arr2 = isAsc ? b : a
-        if (arr1[this.sortField] < arr2[this.sortField]) {
+        if (arr1[this.sortField.key] < arr2[this.sortField.key]) {
           return -1
         }
-        if (arr1[this.sortField] > arr2[this.sortField]) {
+        if (arr1[this.sortField.key] > arr2[this.sortField.key]) {
           return 1
         }
         return 0
@@ -141,7 +143,7 @@ export default {
           return {
             item: {
               ...row,
-              id: rowIndx + ',' + colIndx,
+              id: row.item && row.item.id ? row.item.id : rowIndx + ',' + colIndx,
               rowIndx: rowIndx,
               column: { index: colIndx, name: field.key },
               text: text,
@@ -149,11 +151,13 @@ export default {
             },
             toggleDetails: () => {
               if (this.showRowDetails == undefined || this.showRowDetails.length <= rowIndx) return
-              this.showRowDetails = [...this.showRowDetails].map((val, index) =>
-                rowIndx == index ? !val : val,
-              )
+              this.showRowDetails = [...this.showRowDetails].map((rowDetail) => {
+                return rowDetail.id == this.rowID(row)
+                  ? { ...rowDetail, show: !rowDetail.show }
+                  : rowDetail
+              })
             },
-            detailsShowing: this.showRowDetails[rowIndx],
+            detailsShowing: this.isShowDetails(row),
           }
         })
       })
@@ -161,19 +165,41 @@ export default {
   },
   watch: {
     rowData: function () {
-      this.showRowDetails = this.rowData ? new Array(this.rowData.length).fill(false) : []
+      this.showRowDetails = this.rowData
+        ? this.rowData.map((data) => {
+            return {
+              id: this.dataIdField in data ? data[this.dataIdField] : '',
+              show: false,
+            }
+          })
+        : []
     },
   },
   methods: {
+    rowID(row) {
+      return this.dataIdField in row ? row[this.dataIdField] : undefined
+    },
+    isShowDetails(row) {
+      const rowIdVal = this.rowID(row)
+      if (!rowIdVal) return false
+      const details = this.showRowDetails.find((rowd) => rowd.id === rowIdVal)
+      return details ? details.show : false
+    },
     /**Emitted when the page changes */
     sortButtonClick(column) {
       this.sortField = {
-        name: column,
-        ascending: this.sortField.name !== column ? true : !this.sortField.ascending,
+        key: column,
+        ascending: this.sortField.key !== column ? true : !this.sortField.ascending,
       }
     },
-    sortDirection(name) {
-      return this.sortField.name == name ? (this.sortField.ascending ? 'down' : 'up') : 'none'
+    sortDirections() {
+      this.fields.map((field) => {
+        return {
+          key: field.key,
+          direction:
+            this.sortField.key == field.key ? (this.sortField.ascending ? 'up' : 'down') : 'none',
+        }
+      })
     },
   },
 }

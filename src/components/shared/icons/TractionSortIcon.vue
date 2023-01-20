@@ -16,6 +16,17 @@
     >
       <path d="M8.5 15 3 10l5.5-5Zm-1-2.25v-5.5L4.5 10Zm4 2.25V5l5.5 5Z" />
     </svg>
+    <svg
+      v-if="direction == 'none'"
+      xmlns="http://www.w3.org/2000/svg"
+      fill="currentColor"
+      height="20"
+      width="20"
+      stroke="currentColor"
+      class="text-gray-100 fill-current hover:text-sdb"
+    >
+      <path d="M8.5 15 3 10l5.5-5Zm-1-2.25v-5.5L4.5 10Zm4 2.25V5l5.5 5Z" />
+    </svg>
   </div>
 </template>
 
@@ -27,15 +38,14 @@ export default {
   props: {
     direction: {
       type: String,
-      default: 'left',
-      validator: within('up', 'down'),
+      default: 'up',
     },
   },
   computed: {
     transform() {
       switch (this.direction) {
         case 'up':
-          return 1800
+          return 180
         default:
           return 90
       }
