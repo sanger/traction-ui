@@ -15,16 +15,23 @@
    */
 -->
 <template>
-  <td v-bind="$attrs" className="px-6 py-4 whitespace-nowrap"><slot /></td>
+  <td v-bind="$attrs" :class="`px-6 py-2 whitespace-nowrap ${classes}`">
+    <slot />
+  </td>
 </template>
 <script>
 export default {
   name: 'TractionTableCell',
-  props:{
-    id:{
-      type:String,
-      default:""
-    }
-  }
+  props: {
+    id: {
+      type: String,
+      default: '',
+    },
+    classes: {
+      type: String,
+      required: false,
+      default: '',
+    },
+  },
 }
 </script>

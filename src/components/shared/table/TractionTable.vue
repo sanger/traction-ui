@@ -17,29 +17,34 @@
       <div class="shadow overflow-hidden border-b border-gray-200 sm:rounded-lg">
         <table
           v-bind="$attrs"
-          class="w-full divide-y divide-gray-200"
+          class="w-full divide-y divide-gray-200 table-fixed"
           data-attribute="dataAttribute"
         >
           <thead>
             <tr>
               <th
-                v-for="field in fields"
+                v-for="(field, fieldIndex) in fields"
                 :key="field.key"
-                className="px-6 py-3 bg-gray-50 text-left select-none"
+                class="px-6 py-3 bg-gray-50 text-left select-none"
               >
-                {{ field.label }}
-                <traction-button
-                  v-if="field.sortable"
-                  :data-testid="`${field.key}-sort-button`"
-                  theme="navigation"
-                  @click="sortButtonClick(field.key, indx)"
-                >
-                  <traction-arrow-icon direction="up">
-                    <path
-                      d="m11 18-6-6 6-6 1.4 1.4L7.825 12l4.575 4.6Zm6.6 0-6-6 6-6L19 7.4 14.425 12 19 16.6Z"
+                <div class="flex justify-center">
+                  <div class="py-2">
+                    {{ field.label }}
+                  </div>
+                  <traction-button
+                    v-if="field.sortable"
+                    :data-testid="`${field.key}-sort-button`"
+                    theme="sort"
+                    :size="'sm'"
+                    :classes="'bg-gray-50'"
+                    @click="sortButtonClick(field.key, fieldIndex)"
+                  >
+                    <traction-sort-icon
+                      :direction="sortDirection(field.key)"
+                      :class="text-red-100"
                     />
-                  </traction-arrow-icon>
-                </traction-button>
+                  </traction-button>
+                </div>
               </th>
             </tr>
           </thead>
@@ -55,6 +60,11 @@
                   </custom-table-cell>
                 </template>
               </tr>
+              <tr v-if="showRowDetails[rowIndex]" :key="'custom-comp' + rowIndex">
+                <custom-table-cell>
+                  <slot :name="`row-details`" v-bind="rows[rowIndex][0]" />
+                </custom-table-cell>
+              </tr>
             </template>
           </tbody>
         </table>
@@ -64,7 +74,7 @@
 </template>
 <script>
 import TractionArrowIcon from '@/components/shared/icons/TractionArrowIcon'
-
+import { within } from '@/lib/propValidations'
 export default {
   name: 'TractionTable',
   components: { TractionArrowIcon },
@@ -89,24 +99,48 @@ export default {
       required: false,
       default: () => [],
     },
+    sortBy: {
+      type: String,
+      required: false,
+      default: '',
+    },
   },
   data() {
     return {
-      details: new Array(10).fill(false),
+      showRowDetails: this.rowData ? new Array(this.rowData.length).fill(false) : [],
+      sortField: { name: this.sortBy, ascending: true },
     }
   },
+
   computed: {
+    sortedData() {
+      if (!this.sortField) return this.rowData
+      const isAsc = this.sortField.ascending
+      const val = [...this.rowData].sort((a, b) => {
+        let arr1 = isAsc ? a : b
+        let arr2 = isAsc ? b : a
+        if (arr1[this.sortField] < arr2[this.sortField]) {
+          return -1
+        }
+        if (arr1[this.sortField] > arr2[this.sortField]) {
+          return 1
+        }
+        return 0
+      })
+      return val
+    },
     rows() {
-      const val = this.rowData.map((row, rowIndx) => {
+      return this.sortedData.map((row, rowIndx) => {
         return this.fields.map((field, colIndx) => {
           let text = ''
-          if (typeof this.rowData[rowIndx] === 'object' && field.key in this.rowData[rowIndx]) {
+          if (typeof row === 'object' && field.key in row) {
             text = row[field.key]
           } else {
             text = row[colIndx]
           }
           return {
             item: {
+              ...row,
               id: rowIndx + ',' + colIndx,
               rowIndx: rowIndx,
               column: { index: colIndx, name: field.key },
@@ -114,25 +148,33 @@ export default {
               custom: this.customColumns.some((column) => column === field.key),
             },
             toggleDetails: () => {
-              if (this.details == undefined || this.details.length <= rowIndx) return
-              const newDetails = [...this.details]
-              newDetails[rowIndx] = !newDetails[rowIndx]
-              this.details = newDetails
+              if (this.showRowDetails == undefined || this.showRowDetails.length <= rowIndx) return
+              this.showRowDetails = [...this.showRowDetails].map((val, index) =>
+                rowIndx == index ? !val : val,
+              )
             },
-            detailsShowing: this.details[rowIndx],
+            detailsShowing: this.showRowDetails[rowIndx],
           }
         })
       })
-      return val
+    },
+  },
+  watch: {
+    rowData: function () {
+      this.showRowDetails = this.rowData ? new Array(this.rowData.length).fill(false) : []
     },
   },
   methods: {
     /**Emitted when the page changes */
-    sortClick(column, index) {
-      this.sortFields[index] = !this.sortFields[index]
-      this.$emit('input', column)
+    sortButtonClick(column) {
+      this.sortField = {
+        name: column,
+        ascending: this.sortField.name !== column ? true : !this.sortField.ascending,
+      }
     },
-    
+    sortDirection(name) {
+      return this.sortField.name == name ? (this.sortField.ascending ? 'down' : 'up') : 'none'
+    },
   },
 }
 </script>

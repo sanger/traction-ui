@@ -28,7 +28,7 @@
       :row-data="plates"
       :custom-columns="customColumns"
     >
-      <template #cell(show_details)="row" >
+      <template #cell(show_details)="row">
         <traction-button
           :id="'details-btn-' + row.item.id"
           size="sm"
@@ -37,6 +37,9 @@
         >
           {{ row.detailsShowing ? 'Hide' : 'Show' }} Plate
         </traction-button>
+      </template>
+      <template #row-details="row">
+        <Plate ref="plate" :plate="row.item" :height="'20'" :width="'20'" @alert="alert" />
       </template>
     </custom-table>
     <traction-table

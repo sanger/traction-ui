@@ -5,10 +5,11 @@
 -->
 <template>
   <svg
-    class="h-5 w-5"
+    class="h-3 w-5"
     xmlns="http://www.w3.org/2000/svg"
     viewBox="0 0 20 20"
     fill="currentColor"
+    stroke="currentColor"
     aria-hidden="true"
     :transform="`rotate(${transform})`"
   >
@@ -33,15 +34,19 @@ export default {
       validator: within('up', 'down', 'left', 'right'),
     },
   },
-  computed:{
+  computed: {
     transform() {
-      switch(this.direction) {
-        case 'up': return 90;
-        case 'down': return 270;
-        case 'right':return 180;
-        default: return 0;
+      switch (this.direction) {
+        case 'up':
+          return 90
+        case 'down':
+          return 270
+        case 'right':
+          return 180
+        default:
+          return 0
       }
-    }
-  }
+    },
+  },
 }
 </script>

@@ -1,6 +1,11 @@
 <template>
   <div>
-    <Plate96SVG v-if="wells" ref="plate96Svg" :height="'30%'" :width="'30%'">
+    <Plate96SVG
+      v-if="wells"
+      ref="plate96Svg"
+      :height="widthSVG"
+      :width="heightSVG"
+    >
       <Well
         v-for="(well, position) in plateMap.wells"
         :key="position"
@@ -31,6 +36,16 @@ export default {
         return {}
       },
     },
+    width: {
+      type: String,
+      required: false,
+      default: '',
+    },
+    height: {
+      type: String,
+      required: false,
+      default: '',
+    },
   },
   data() {
     return {
@@ -40,6 +55,12 @@ export default {
   computed: {
     plateMap() {
       return PlateMap
+    },
+    widthSVG() {
+      return this.width ? `'${this.width}%'` : '30%'
+    },
+    heightSVG() {
+      return this.width ? `'${this.width}%'` : '30%'
     },
   },
   methods: {

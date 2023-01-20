@@ -22,7 +22,7 @@ import TractionPagination from '@/components/shared/TractionPagination'
 import TractionTable from '@/components/shared/table/TractionTable'
 import TractionTableCell from '@/components/shared/table/TractionTableCell'
 import TractionArrowIcon from '@/components/shared/icons/TractionArrowIcon'
-
+import TractionSortIcon from '@/components/shared/icons/TractionSortIcon'
 import {
   BModal,
   VBModal,
@@ -125,6 +125,8 @@ const registerGlobal = (vue) => {
   vue.component('TractionPagination', TractionPagination)
   vue.component('TractionPaginationIcon', TractionPaginationIcon)
   vue.component('TractionArrowIcon', TractionArrowIcon)
+  vue.component('TractionSortIcon', TractionSortIcon)
+
   registerBootstrapComponents(vue)
 }
 
