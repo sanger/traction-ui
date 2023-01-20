@@ -1,5 +1,6 @@
 import { Data } from '@support/testHelper'
 import * as Actions from '@/store/traction/pacbio/pools/actions'
+import { it } from 'vitest'
 
 describe('#setPools', () => {
   let commit, get, getters, failedResponse
@@ -42,4 +43,8 @@ describe('#setPools', () => {
 
     expect(commit).not.toHaveBeenCalled()
   })
+
+  it('returns the pool that fits the valid tube barcode', async () => {})
+
+  it('returns an error and an empty list(?) when the plate barcode cannot be found', async () => {})
 })

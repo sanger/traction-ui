@@ -2,7 +2,6 @@ import handleResponse from '@/api/ResponseHelper'
 import { groupIncludedByResource } from '@/api/JsonApi'
 
 const setPools = async ({ commit, getters }, filter) => {
-  
   let request = getters.poolRequest
   let promise = request.get({
     include: 'tube,libraries.tag,libraries.request',
@@ -12,22 +11,23 @@ const setPools = async ({ commit, getters }, filter) => {
       tags: 'group_id',
       libraries: 'request,tag,run_suitability',
     },
-    filter
+    filter,
   })
   let response = await handleResponse(promise)
 
   const { success, data: { data, included = [] } = {}, errors = [] } = response
 
-  if (success) {
+  if (success && data.length > 0) {
     const { tubes, libraries, tags, requests } = groupIncludedByResource(included)
     commit('setPools', data)
     commit('setTubes', tubes)
     commit('setLibraries', libraries)
     commit('setTags', tags)
     commit('setRequests', requests)
+    return { success, errors }
+  } else {
+    return { success: false, errors: `Unable to find pool with barcode: ${filter['barcode']}` }
   }
-
-  return { success, errors }
 }
 
 const actions = { setPools }
