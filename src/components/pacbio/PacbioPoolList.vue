@@ -1,19 +1,18 @@
 <template>
-  <DataFetcher :fetcher="findPacbioPools">
-    <LabwareFinder :fetcher="findPacbioPools" filter="barcode" />
+  <div>
+    <LabwareFinder :fetcher="setPools" filter="barcode" />
     <div class="pools">
       <traction-list-group class="list-group">
         <tube v-for="pool in pools" :key="pool.id" v-bind="pool"> </tube>
       </traction-list-group>
     </div>
-  </DataFetcher>
+  </div>
 </template>
 <script>
 import TableHelper from '@/mixins/TableHelper'
 import { createNamespacedHelpers } from 'vuex'
 import Tube from '@/components/pacbio/PacbioPoolTubeItem'
 import LabwareFinder from '@/components/LabwareFinder'
-import DataFetcher from '@/components/DataFetcher'
 
 const { mapActions, mapGetters } = createNamespacedHelpers('traction/pacbio/pools')
 
@@ -22,7 +21,6 @@ export default {
   components: {
     Tube,
     LabwareFinder,
-    DataFetcher,
   },
   mixins: [TableHelper],
   data() {
