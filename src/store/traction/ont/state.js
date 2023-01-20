@@ -32,6 +32,10 @@ export default () => {
       pools: {},
       // The main source of library information. libraries are indexed by id.
       libraries: {},
+      // The main source of run information. runs are indexed by id.
+      runs: {},
+      // The main source of instrument information. instrument are indexed by id.
+      instruments: {},
     },
     // Selected collects together user input in the front end, such as
     // selected plates and libraries.

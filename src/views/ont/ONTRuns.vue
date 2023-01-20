@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <DataFetcher :fetcher="fetchOntRuns">
     <div class="clearfix">
       <traction-pagination
         v-model="currentPage"
@@ -49,15 +49,21 @@
         @click="redirectToRun()"
       >New Run</traction-button>
     </div>
-  </div>
+  </DataFetcher>
 </template>
 
 <script>
 import TableHelper from '@/mixins/TableHelper'
-import { mapActions, mapGetters } from 'vuex'
+import DataFetcher from '@/components/DataFetcher.vue'
+
+import { createNamespacedHelpers } from 'vuex'
+const { mapActions, mapGetters } = createNamespacedHelpers('traction/ont')
 
 export default {
   name: 'ONTRuns',
+  components: {
+    DataFetcher,
+  },
   mixins: [TableHelper],
   data() {
     return {
@@ -80,26 +86,16 @@ export default {
     }
   },
   computed: {
-    ...mapGetters('traction/ont/runs', ['runs']),
-  },
-  created() {
-    this.provider()
+    ...mapGetters(['runs']),
   },
   methods: {
-    async provider() {
-      try {
-        await this.setRuns()
-      } catch (error) {
-        this.showAlert('Failed to get runs: ' + error.message, 'danger')
-      }
-    },
     generateId(text, id) {
       return `${text}-${id}`
     },
     redirectToRun(runId) {
       this.$router.push({ path: `/ont/run/${runId || 'new'}` })
     },
-    ...mapActions('traction/ont/runs', ['setRuns']),
+    ...mapActions(['fetchOntRuns']),
   },
 }
 </script>
