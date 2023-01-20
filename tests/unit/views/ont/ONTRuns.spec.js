@@ -3,15 +3,17 @@ import { mount, localVue, store, Data, router } from '@support/testHelper'
 import Response from '@/api/Response'
 
 describe('ONTRuns.vue', () => {
-  let wrapper, runs, mockRuns
+  let wrapper, runs, mockRuns, mockInstruments
 
-  beforeEach(() => {
+  beforeEach(async () => {
     mockRuns = new Response(Data.OntRuns).deserialize.runs
-    store.commit('traction/ont/runs/setRuns', mockRuns)
+    mockInstruments = new Response(Data.OntInstruments).deserialize.instruments
 
-    wrapper = mount(ONTRuns, { store, router, localVue })
+    const get = vi.spyOn(store.state.api.traction.ont.runs, 'get')
+    get.mockResolvedValue(Data.OntRuns)
+
+    wrapper = await mount(ONTRuns, { store, router, localVue })
     runs = wrapper.vm
-    runs.provider = vi.fn()
   })
 
   describe('building the table', () => {
@@ -75,29 +77,6 @@ describe('ONTRuns.vue', () => {
   describe('#mapGetters', () => {
     it('sets the runs data', () => {
       expect(runs.runs.length).toEqual(mockRuns.length)
-    })
-  })
-
-  describe('#provider', () => {
-    beforeEach(() => {
-      wrapper = mount(ONTRuns, { store, localVue })
-      runs = wrapper.vm
-
-      runs.setRuns = vi.fn()
-      runs.showAlert = vi.fn()
-    })
-
-    it('calls setRuns successfully', () => {
-      runs.provider()
-      expect(runs.setRuns).toBeCalled()
-    })
-
-    it('calls setRuns unsuccessfully', () => {
-      runs.setRuns.mockImplementation(() => {
-        throw Error('Raise this error')
-      })
-      runs.provider()
-      expect(runs.showAlert).toBeCalled()
     })
   })
 
