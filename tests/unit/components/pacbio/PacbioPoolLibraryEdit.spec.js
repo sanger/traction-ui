@@ -25,12 +25,13 @@ const library = newLibrary({ pacbio_request_id: '1' })
 // TODO: The tag list would probably better done using a separate component and an emit
 // but that is a bigger job
 describe('PacbioPoolLibraryEdit.vue', () => {
-  let wrapper
+  let wrapper, notify
 
   beforeEach(() => {
     store.state.traction.pacbio.poolCreate.resources.tagSets = { 1: tagSet }
     store.state.traction.pacbio.poolCreate.resources.tags = tags
     store.state.traction.pacbio.poolCreate.selected.tagSet = { id: tagSet.id }
+    notify = vi.fn()
   })
 
   describe('valid', () => {
@@ -43,6 +44,7 @@ describe('PacbioPoolLibraryEdit.vue', () => {
         propsData: {
           id: 1,
           request,
+          notify
         },
       })
     })
@@ -115,6 +117,7 @@ describe('PacbioPoolLibraryEdit.vue', () => {
     const propsData = {
       id: 1,
       request,
+      notify
     }
 
     it('tag id', () => {
