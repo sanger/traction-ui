@@ -37,10 +37,10 @@ export default {
   computed: {
     ...mapGetters(['currentRun', 'instrumentFlowcellLayout', 'instruments']),
     getInstrumentLayout() {
-      let instrumenConfig = this.instruments.find(
+      let instrumentConfig = this.instruments.find(
         (instrument) => instrument.name == this.currentRun.instrument_name,
       )
-      if (instrumenConfig) {
+      if (instrumentConfig) {
         return this.instrumentFlowcellLayout[instrumenConfig.instrument_type]
       }
       return {}

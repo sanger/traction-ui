@@ -1,31 +1,29 @@
 <template>
-  <div class="tag-set-list">
-    <traction-section number="1" title="Run Information">
-      <div class="flex flex-row">
-        <div class="flex flex-col w-1/2">
-          <traction-field-group label="Instrument" label-for="instrument-selection">
-            <traction-select
-              id="instrument-selection"
-              :options="instrumentOptions"
-              :value="instrumentName"
-              :disabled="!newRecord"
-              @input="setInstrumentName"
-            ></traction-select>
-          </traction-field-group>
-        </div>
-        <div class="flex flex-col w-1/2">
-          <traction-field-group label="State" label-for="state-selection">
-            <traction-select
-              id="state-selection"
-              :options="stateOptions"
-              :value="state"
-              @input="setState"
-            ></traction-select>
-          </traction-field-group>
-        </div>
+  <traction-section number="1" title="Run Information">
+    <div class="flex flex-row">
+      <div class="flex flex-col w-1/2">
+        <traction-field-group label="Instrument" label-for="instrument-selection">
+          <traction-select
+            id="instrument-selection"
+            :options="instrumentOptions"
+            :value="instrumentName"
+            :disabled="!newRecord"
+            @input="setInstrumentName"
+          ></traction-select>
+        </traction-field-group>
       </div>
-    </traction-section>
-  </div>
+      <div class="flex flex-col w-1/2">
+        <traction-field-group label="State" label-for="state-selection">
+          <traction-select
+            id="state-selection"
+            :options="stateOptions"
+            :value="state"
+            @input="setState"
+          ></traction-select>
+        </traction-field-group>
+      </div>
+    </div>
+  </traction-section>
 </template>
 
 <script>

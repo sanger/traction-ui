@@ -68,16 +68,17 @@ export default {
   data() {
     return {
       fields: [
-        { key: 'id', label: 'Run ID', sortable: true },
-        { key: 'experiment_name', label: 'Experiment ID', sortable: true },
-        { key: 'state', label: 'State', sortable: true },
+        { key: 'id', label: 'Run ID', sortable: true, tdClass: 'run-id' },
+        { key: 'experiment_name', label: 'Experiment ID', sortable: true, tdClass: 'experiment-name' },
+        { key: 'state', label: 'State', sortable: true, tdClass: 'state' },
         {
           key: 'instrument_name',
           label: 'Instrument Name',
           sortable: true,
+          tdClass: 'instrument-name'
         },
-        { key: 'created_at', label: 'Created at', sortable: true },
-        { key: 'actions', label: 'Actions' },
+        { key: 'created_at', label: 'Created at', sortable: true, tdClass: 'created-at' },
+        { key: 'actions', label: 'Actions', tdClass: 'actions' },
       ],
       sortBy: 'created_at',
       sortDesc: true,
