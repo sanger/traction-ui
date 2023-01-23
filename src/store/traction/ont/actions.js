@@ -456,11 +456,11 @@ export default {
       const { requests = [] } = state.resources.wells[wellId]
       for (let requestId of requests) {
         commit('selectRequest', { id: requestId, selected: false })
-        commit('removeRequestResource', requestId)
+        commit('removeResource', { resource: 'requests', id: requestId })
       }
-      commit('removeWellResource', wellId)
+      commit('removeResource', { resource: 'wells', id: wellId })
     }
-    commit('removePlateResource', plateId)
+    commit('removeResource', { resource: 'plates', id: plateId })
   },
 
   /**
@@ -473,8 +473,8 @@ export default {
 
     for (let requestId of requests) {
       commit('selectRequest', { id: requestId, selected: false })
-      commit('removeRequestResource', requestId)
+      commit('removeResource', { resource: 'requests', id: requestId })
     }
-    commit('removeTubeResource', tube.id)
+    commit('removeResource', { resource: 'tubes', id: tube.id })
   },
 }

@@ -110,36 +110,13 @@ export default {
     }
   },
   /**
-   * Populated with resources via API calls from the actions
+   * Remove specific resource given the store resource location and resource id
    * @param {Object} state The VueXState object
-   * @param {Object.{}} plateId The plate id to remove from the store
+   * @param {String} resource The name of the resource from the store
+   * @param {Object.{}} resourceId The resource id to remove from the store
    */
-  removePlateResource: (state, plateId) => {
-    delete state.resources.plates[plateId]
-  },
-  /**
-   * Populated with resources via API calls from the actions
-   * @param {Object} state The VueXState object
-   * @param {Object.{}} wellId The plate id to remove from the store
-   */
-  removeWellResource: (state, wellId) => {
-    delete state.resources.wells[wellId]
-  },
-  /**
-   * Populated with resources via API calls from the actions
-   * @param {Object} state The VueXState object
-   * @param {Object.{}} plateId The plate id to remove from the store
-   */
-  removeRequestResource: (state, requestId) => {
-    delete state.resources.requests[requestId]
-  },
-  /**
-   * Populated with resources via API calls from the actions
-   * @param {Object} state The VueXState object
-   * @param {Object.{}} tubeId The tube id to remove from the store
-   */
-  removeTubeResource: (state, tubeId) => {
-    delete state.resources.tubes[tubeId]
+  removeResource: (state, { resource, id }) => {
+    delete state.resources[resource][id]
   },
   populatePools: populateById('pools', { includeRelationships: true }),
   setPools: populateById('pools', { includeRelationships: true }, true),
