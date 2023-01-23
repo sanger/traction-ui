@@ -55,9 +55,13 @@ export default {
    * Clears the data on the pool/new page
    * @param {Object} state The Vuex state object
    */
-  clearPoolData: (state) => {
+  clearPoolData: (state, keepSelected = false) => {
     const new_state = defaultState()
-    Object.assign(state, new_state, { resources: state.resources })
+    const selected = keepSelected ? state.selected : new_state.selected
+    Object.assign(state, new_state, {
+      resources: state.resources,
+      selected,
+    })
   },
   /**
    * Updates the library with the corresponding data

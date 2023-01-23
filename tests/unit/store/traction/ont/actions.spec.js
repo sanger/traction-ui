@@ -310,17 +310,20 @@ describe('actions.js', () => {
       }
       // mock dependencies
       const create = vi.fn()
+      const commit = vi.fn()
       const rootState = { api: { traction: { ont: { pools: { create } } } } }
       const libraries = { 1: library1, 2: library2 }
       create.mockResolvedValue(mockResponse)
       const { success, barcode } = await createPool({
         rootState,
+        commit,
         state: { pooling: { libraries, pool } },
       })
       expect(create).toHaveBeenCalledWith({
         data: payload({ libraries, pool }),
         include: expect.anything(),
       })
+      expect(commit).toHaveBeenCalledWith('clearPoolData', true)
       expect(success).toBeTruthy()
       expect(barcode).toEqual('TRAC-1')
     })
@@ -333,13 +336,17 @@ describe('actions.js', () => {
       }
       // mock dependencies
       const update = vi.fn(() => Promise.reject({ response: mockResponse }))
+      const commit = vi.fn()
       const rootState = { api: { traction: { ont: { pools: { update } } } } }
       const libraries = { 1: library1, 2: library2 }
       const expectedResponse = newResponse({ ...mockResponse, success: false })
       const { success, errors } = await updatePool({
         rootState,
+        commit,
         state: { pooling: { libraries, pool } },
       })
+      // Doesn't clear data if there is an error
+      expect(commit).not.toHaveBeenCalledWith('clearPoolData', true)
       expect(success).toBeFalsy
       expect(errors).toEqual(expectedResponse.errors)
     })

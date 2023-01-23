@@ -43,7 +43,7 @@ describe('OntPoolLibraryEdit.vue', () => {
         propsData: {
           id: 1,
           request,
-          notify: () => {}
+          notify: () => {},
         },
       })
     })
@@ -116,7 +116,7 @@ describe('OntPoolLibraryEdit.vue', () => {
     const propsData = {
       id: 1,
       request,
-      notify: () => {}
+      notify: () => {},
     }
 
     it('tag id', () => {

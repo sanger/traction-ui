@@ -357,6 +357,7 @@ export default {
    */
   createPool: async ({
     rootState,
+    commit,
     state: {
       pooling: { libraries, pool },
     },
@@ -368,6 +369,10 @@ export default {
     const { success, data: { included = [] } = {}, errors } = await handleResponse(promise)
     const { tubes: [tube = {}] = [] } = groupIncludedByResource(included)
     const { attributes: { barcode = '' } = {} } = tube
+
+    // Clear pool data so users can make another one without refreshing page
+    success ? commit('clearPoolData', true) : ''
+
     return { success, barcode, errors }
   },
 
