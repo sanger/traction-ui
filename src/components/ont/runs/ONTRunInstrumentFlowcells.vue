@@ -53,15 +53,15 @@ export default {
     },
     useCoordinates() {
       return this.getInstrumentLayout['useCoordinates']
-    }
+    },
   },
   methods: {
     calculatePosition(rowIndex, colIndex) {
       return this.numOfRows * (colIndex - 1) + rowIndex
     },
     calculateCoordinate(rowIndex, colIndex) {
-      let rowLetters = ['A', 'B','C','D','E','F','G','H']
-      return this.useCoordinates ? `${rowLetters[rowIndex-1]}${colIndex}` : `${colIndex}`
+      let rowLetters = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H']
+      return this.useCoordinates ? `${rowLetters[rowIndex - 1]}${colIndex}` : `${colIndex}`
     },
   },
 }

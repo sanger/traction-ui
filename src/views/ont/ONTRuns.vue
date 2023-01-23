@@ -35,19 +35,17 @@
           size="sm"
           class="mr-1"
           @click="redirectToRun(row.item.id)"
-        >Edit</traction-button>
+          >Edit</traction-button
+        >
       </template>
     </traction-table>
 
     <span class="font-weight-bold">Total records: {{ runs.length }}</span>
 
     <div class="clearfix">
-      <traction-button
-        id="newRun"
-        class="float-left"
-        theme="create"
-        @click="redirectToRun()"
-      >New Run</traction-button>
+      <traction-button id="newRun" class="float-left" theme="create" @click="redirectToRun()"
+        >New Run</traction-button
+      >
     </div>
   </DataFetcher>
 </template>
@@ -69,13 +67,18 @@ export default {
     return {
       fields: [
         { key: 'id', label: 'Run ID', sortable: true, tdClass: 'run-id' },
-        { key: 'experiment_name', label: 'Experiment ID', sortable: true, tdClass: 'experiment-name' },
+        {
+          key: 'experiment_name',
+          label: 'Experiment ID',
+          sortable: true,
+          tdClass: 'experiment-name',
+        },
         { key: 'state', label: 'State', sortable: true, tdClass: 'state' },
         {
           key: 'instrument_name',
           label: 'Instrument Name',
           sortable: true,
-          tdClass: 'instrument-name'
+          tdClass: 'instrument-name',
         },
         { key: 'created_at', label: 'Created at', sortable: true, tdClass: 'created-at' },
         { key: 'actions', label: 'Actions', tdClass: 'actions' },

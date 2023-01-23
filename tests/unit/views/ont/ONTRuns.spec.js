@@ -3,11 +3,10 @@ import { mount, localVue, store, Data, router } from '@support/testHelper'
 import Response from '@/api/Response'
 
 describe('ONTRuns.vue', () => {
-  let wrapper, runs, mockRuns, mockInstruments
+  let wrapper, runs, mockRuns
 
   beforeEach(async () => {
     mockRuns = new Response(Data.OntRuns).deserialize.runs
-    mockInstruments = new Response(Data.OntInstruments).deserialize.instruments
 
     const get = vi.spyOn(store.state.api.traction.ont.runs, 'get')
     get.mockResolvedValue(Data.OntRuns)

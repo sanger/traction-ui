@@ -8,7 +8,7 @@ describe('ONTFlowcell', () => {
   beforeEach(() => {
     props = {
       position: 1,
-      coordinate: 'A1'
+      coordinate: 'A1',
     }
 
     // Create a flowcell in the store and set its tube barcode

@@ -331,7 +331,6 @@ export default {
     return { success, errors }
   },
 
-
   /**
    * Retrieves a list of ont runs from traction-service and populates the source
    * with associated instrument data
@@ -347,7 +346,6 @@ export default {
     let { success, data: { data, included = [] } = {}, errors = [] } = response
     const { instruments } = groupIncludedByResource(included)
 
-
     if (success) {
       commit('setRuns', data)
       commit('populateInstruments', instruments)
@@ -355,7 +353,6 @@ export default {
 
     return { success, errors }
   },
-
 
   /**
    * Sets the tagSet and tags data in the store
