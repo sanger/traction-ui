@@ -41,7 +41,7 @@ export default {
         (instrument) => instrument.name == this.currentRun.instrument_name,
       )
       if (instrumentConfig) {
-        return this.instrumentFlowcellLayout[instrumenConfig.instrument_type]
+        return this.instrumentFlowcellLayout[instrumentConfig.instrument_type]
       }
       return {}
     },
