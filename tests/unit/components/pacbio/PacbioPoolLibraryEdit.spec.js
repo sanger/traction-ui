@@ -43,7 +43,7 @@ describe('PacbioPoolLibraryEdit.vue', () => {
         propsData: {
           id: 1,
           request,
-          notify: () => {}
+          notify: () => {},
         },
       })
     })
