@@ -9,12 +9,18 @@ describe('ONT Run page', () => {
   })
 
   it('Shows the correct information', () => {
-    cy.get('#instrument-selection').select('GXB02004')
-    cy.get('#flowcell-id-1')
-    cy.get('#state-selection').select('Pending')
-
     cy.contains('ONT Run')
     cy.contains('1. Run Information')
     cy.contains('2. Run Instrument Flowcells')
+
+    cy.get('#create').should('be.disabled')
+
+    cy.get('#instrument-selection').select('GXB02004')
+    cy.get('#state-selection').select('Pending')
+
+    cy.get('#flowcell-id-1').type('ABC123')
+    cy.get('#pool-id-1').type('12345')
+
+    cy.get('#create').should('be.enabled')
   })
 })
