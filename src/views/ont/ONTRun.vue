@@ -5,12 +5,23 @@
     </router-link>
 
     <traction-button
+      v-if="newRecord"
+      id="resetButton"
+      type="reset"
+      theme="default"
+      class="float-right"
+      @click="newRun"
+      >Reset</traction-button
+    >
+
+    <traction-button
       :id="currentAction.id"
       class="float-right"
       :theme="currentAction.theme"
       :disabled="!runValid"
       @click="runAction"
-    >{{ currentAction.label }}</traction-button>
+      >{{ currentAction.label }}</traction-button
+    >
 
     <ONTRunInformation></ONTRunInformation>
     <ONTRunInstrumentFlowcells></ONTRunInstrumentFlowcells>
@@ -60,7 +71,10 @@ export default {
       return this.actions[this.newRecord ? 'create' : 'update']
     },
     runValid() {
-      return this.currentRun.instrument_name && this.currentRun.state
+      let flowcells = (this.currentRun.flowcell_attributes || []).filter(
+        (fc) => fc.flowcell_id && fc.tube_barcode,
+      )
+      return this.currentRun.instrument_name && this.currentRun.state && flowcells.length != 0
     },
   },
   created() {
@@ -81,8 +95,9 @@ export default {
       if (response.success) {
         this.redirectToRuns()
       } else {
+        let action = this.newRecord ? 'create' : 'update'
         this.showAlert(
-          'Failed to create run in Traction: ' + response.errors,
+          `Failed to ${action} run in Traction: ${response.errors}`,
           'danger',
           'run-validation-message',
         )

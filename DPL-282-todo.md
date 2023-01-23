@@ -1,49 +1,32 @@
-# Service Code review
-
-- On update, if the pool barcode doesn't exist, it throws a 500. If the pool barcode doesn't exist on create, it gives a 422. For both create and update, when it fails, please could it provide a flowcell position or the pool barcode which failed?
-
 # Todo
 
-## Generic
+- UI: Display information about the invalid position on the creation or update of a run. Possibly show error in the specific flowcell (dependent on: Service)
 
 - Make naming of ONT vs Ont consistent
 - Add comments throughout
-
-## Refactor
-
 - Refactor Vuex
-
-## Components
 
 ## Tests
 
-- Test: `ONTRunInstrumentFlowcells.spec.js`
-- Test: `src/store/traction/ont/runs/actions.js` (`updateRun`, `editRun`)
-- Test: `ONTRun.spec.js` (`props`, `newRecord`, `actions`, `mapGetters`, `currentAction`, `runValid`, `mapActions`, `runAction`, `redirectToRuns`, `provider`)
-
-## Questions For UAT
-
-- Usage: How/ When will the run be created in relation to the physical creation (upfront/ pending/ plan/ on reflection)
-- Instrument: Is there a default instrument to be selected? Currently we are restricting the abilty to change the instrument type after a run has been created, is this ok?
-- State: Is there a default state to be selected on `create`? Can the state be changed from and to anything? Should updates be allowed for all states?
-- Flowcell ID: Does the flowcell ID need to be validated in any way? Can it be reused? (between a run, or any previous runs?) Does it always have the same prefix or format that can be validated?
-- Pool Barcode: Do you want to see any pool metadata on the flowcell? (Could add a link to Pools view?) Or is the Pools side bar list helpful.
-- Flowcell: Do they want a clear/reset button from Flowcell ID or Pool Barcode inputs?
-- Run: Do they want a Reset button for the whole run (could just navigate away from page)
-- Run: Might you ever need to create a Draft run
-- Run: Validation, should you be allowed to create a run with no flowcell data
-
-## Not MVP?
-
-- Runs View: pagination and order (sort by default desc) (FilterCard) resources, paginator jsonapi resources (service - paginator / filter / default sort) (waiting on back end)
-- ONTFlowcell: Possibly also want to change the input box into a text label once 'return' triggered (e.g. by scanner) to 'fix' that value once validated. So you don't accidently overscan a value you already entered. Would need a clear button then though.
-- ONTFlowcell: UI for Flowcells is currently quite large. So for Promethion version you have to scroll a lot to reach lower positions.
-- ONTFlowcell: if we add validation can add a red colour to indicate an issue with that flowcell (plus small error msg)
+- e2e Test
 
 # Done
 
-- Test: `ONTRuns.spec.js` (`editRun`, `mapGetters`, `generateId`, `redirectToRun`, `mapActions`)
+- Test: `src/store/traction/ont/runs/actions.js` (`updateRun`, `editRun`)
+- UI: Runs sort by most recent
+- UI: Reset button for whole page
+- UI: Runs table header, rename ‘Name’ to ‘Experiment ID’
+- UI: Don’t let create a run with no flowcell data (Create button disabled)
+- UI: Rename ‘Pool Barcode’ to ‘Library Barcode’
+- UI: Trim library barcode/ flowcell
+- UI: Make Pool Barcode and Flowcell always uppercase
+- UI: Add Flowcell ID validation (dependent on: Alex)
+- UI: Update PromethION column/ row naming system (dependent on: Alex)
+- UI: Support Runs Pagination (dependent on: Service) (service done) https://github.com/sanger/traction-service/pull/890/commits/b160f9e3c223e2932afddc6a58e6e8ec6ed8d3d9
 
+- Test: `ONTRun.spec.js`
+- Test: `ONTRunInstrumentFlowcells.spec.js`
+- Test: `ONTRuns.spec.js` (`editRun`, `mapGetters`, `generateId`, `redirectToRun`, `mapActions`)
 - Test: ONTFlowcell
   - Test: `ONTRunInformation`
 - Update with what will be used when scanning in Pool to Flowcell (**tube barcode**)

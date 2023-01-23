@@ -56,6 +56,9 @@ describe('PacbioPoolLibraryList.vue', () => {
     const wrapper = mount(PacbioPoolLibraryList, {
       store,
       localVue,
+      stubs: {
+        PacbioPoolLibraryEdit: true
+      }
     })
     expect(wrapper.findAll('[data-type=pool-library-edit]').length).toEqual(
       Object.values(libraries).length,

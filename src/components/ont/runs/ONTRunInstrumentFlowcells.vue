@@ -7,6 +7,7 @@
             v-for="colIndex in numOfColumns"
             :key="colIndex"
             :position="calculatePosition(rowIndex, colIndex)"
+            :coordinate="calculateCoordinate(rowIndex, colIndex)"
             class="flex flex-col px-2 py-2"
           ></ONTFlowcell>
         </div>
@@ -50,10 +51,17 @@ export default {
     numOfColumns() {
       return this.getInstrumentLayout['columns']
     },
+    useCoordinates() {
+      return this.getInstrumentLayout['useCoordinates']
+    }
   },
   methods: {
     calculatePosition(rowIndex, colIndex) {
       return this.numOfRows * (colIndex - 1) + rowIndex
+    },
+    calculateCoordinate(rowIndex, colIndex) {
+      let rowLetters = ['A', 'B','C','D','E','F','G','H']
+      return this.useCoordinates ? `${rowLetters[rowIndex-1]}${colIndex}` : `${colIndex}`
     },
   },
 }

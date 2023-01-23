@@ -1,6 +1,7 @@
 import * as Actions from '@/store/traction/ont/runs/actions'
 import { Data } from '@support/testHelper'
-import { expect, vi } from 'vitest'
+import { describe, expect, vi } from 'vitest'
+import Response from '@/api/Response'
 
 describe('actions.js', () => {
   let failedResponse
@@ -24,13 +25,20 @@ describe('actions.js', () => {
     beforeEach(() => {
       commit = vi.fn()
       get = vi.fn()
-      getters = { runRequest: { get: get } }
+      getters = {
+        runRequest: {
+          get: get,
+        },
+      }
     })
 
     it('successfully', async () => {
       const promise = Promise.resolve(Data.OntRuns)
       get.mockReturnValue(promise)
-      await Actions.setRuns({ commit, getters })
+      await Actions.setRuns({
+        commit,
+        getters,
+      })
 
       let expected = [
         {
@@ -56,7 +64,10 @@ describe('actions.js', () => {
     it('unsuccessfully', async () => {
       const promise = Promise.reject(failedResponse)
       get.mockReturnValue(promise)
-      const response = await Actions.setRuns({ commit, getters })
+      const response = await Actions.setRuns({
+        commit,
+        getters,
+      })
 
       expect(response.success).toBeFalsy()
       expect(response.errors).toEqual(failedResponse.errors)
@@ -72,11 +83,13 @@ describe('actions.js', () => {
     })
 
     it('successfully', () => {
-      Actions.newRun({ commit })
+      Actions.newRun({
+        commit,
+      })
       let newRun = {
         id: 'new',
-        instrument_name: '',
-        state: '',
+        instrument_name: null,
+        state: null,
         flowcell_attributes: [],
       }
       expect(commit).toHaveBeenCalledWith('setCurrentRun', newRun)
@@ -89,9 +102,20 @@ describe('actions.js', () => {
     beforeEach(() => {
       create = vi.fn()
       getters = {
-        currentRun: { instrument_name: 'bob', state: 'pending', flowcell_attributes: [] },
-        runRequest: { create: create },
-        instruments: [{ id: 1, name: 'bob' }],
+        currentRun: {
+          instrument_name: 'bob',
+          state: 'pending',
+          flowcell_attributes: [],
+        },
+        runRequest: {
+          create: create,
+        },
+        instruments: [
+          {
+            id: 1,
+            name: 'bob',
+          },
+        ],
       }
       rootGetters = {
         'traction/ont/pools': [],
@@ -101,7 +125,10 @@ describe('actions.js', () => {
     it('successfully', async () => {
       const promise = Promise.resolve(Data.OntRun)
       create.mockReturnValue(promise)
-      let response = await Actions.createRun({ getters, rootGetters })
+      let response = await Actions.createRun({
+        getters,
+        rootGetters,
+      })
 
       let payload = {
         data: {
@@ -123,10 +150,119 @@ describe('actions.js', () => {
     it('unsuccessfully', async () => {
       const promise = Promise.reject(failedResponse)
       create.mockReturnValue(promise)
-      const response = await Actions.createRun({ getters, rootGetters })
+      const response = await Actions.createRun({
+        getters,
+        rootGetters,
+      })
 
       expect(response.success).toBeFalsy()
       expect(response.errors).toEqual(failedResponse)
+    })
+  })
+
+  describe('#updateRun', () => {
+    let update, getters, rootGetters, run, instruments, payload
+
+    beforeEach(() => {
+      run = {
+        id: '16',
+        state: 'pending',
+        instrument_name: 'GXB02004',
+        flowcell_attributes: [],
+      }
+      instruments = new Response(Data.OntInstruments).deserialize.instruments
+
+      update = vi.fn()
+
+      getters = {
+        currentRun: run,
+        runRequest: { update: update },
+        instruments: instruments,
+      }
+      rootGetters = {
+        'traction/ont/pools': [],
+      }
+      payload = {
+        data: {
+          type: 'runs',
+          id: '16',
+          attributes: {
+            state: 'pending',
+            ont_instrument_id: '1',
+            flowcell_attributes: [],
+          },
+        },
+      }
+    })
+
+    it('successfully', async () => {
+      const promise = Promise.resolve(Data.OntRun)
+      update.mockReturnValue(promise)
+
+      let response = await Actions.updateRun({ getters, rootGetters })
+
+      expect(update).toBeCalledWith(payload)
+      expect(response.success).toBeTruthy()
+    })
+
+    it('unsuccessfully', async () => {
+      const promise = Promise.reject(failedResponse)
+      update.mockReturnValue(promise)
+
+      const response = await Actions.updateRun({ getters, rootGetters })
+      expect(update).toBeCalledWith(payload)
+
+      expect(response.success).toBeFalsy()
+      expect(response.errors).toEqual(failedResponse)
+    })
+  })
+
+  describe('#editRun', () => {
+    let commit, getters, rootGetters, instruments, mockRun, find, mockedReturnValue
+
+    beforeEach(() => {
+      mockRun = {
+        id: 1,
+        instrument_name: 'GXB02004',
+        state: 'pending',
+        flowcell_attributes: [],
+      }
+
+      find = vi.fn()
+      commit = vi.fn()
+
+      instruments = new Response(Data.OntInstruments).deserialize.instruments
+
+      getters = {
+        runRequest: { find: find },
+        instruments: instruments,
+      }
+      rootGetters = {
+        'traction/ont/pools': [],
+      }
+
+      mockedReturnValue = {
+        success: true,
+        data: {
+          data: {
+            id: mockRun.id,
+            attributes: {
+              state: mockRun.state,
+              ont_instrument_id: 1,
+            },
+          },
+          flowcell_attributes: mockRun.flowcell_attributes,
+        },
+        errors: [],
+      }
+    })
+
+    it('successfully', async () => {
+      find.mockReturnValue(mockedReturnValue)
+      const response = await Actions.editRun({ commit, getters, rootGetters }, mockRun.id)
+      expect(commit).toHaveBeenCalledWith('setCurrentRun', mockRun)
+
+      expect(response.success).toBeTruthy()
     })
   })
 
@@ -136,13 +272,20 @@ describe('actions.js', () => {
     beforeEach(() => {
       commit = vi.fn()
       get = vi.fn()
-      getters = { instrumentRequest: { get: get } }
+      getters = {
+        instrumentRequest: {
+          get: get,
+        },
+      }
     })
 
     it('successfully', async () => {
       const promise = Promise.resolve(Data.OntInstruments)
       get.mockReturnValue(promise)
-      await Actions.setInstruments({ commit, getters })
+      await Actions.setInstruments({
+        commit,
+        getters,
+      })
 
       let expected = [
         {
@@ -164,7 +307,10 @@ describe('actions.js', () => {
     it('unsuccessfully', async () => {
       const promise = Promise.reject(failedResponse)
       get.mockReturnValue(promise)
-      const response = await Actions.setInstruments({ commit, getters })
+      const response = await Actions.setInstruments({
+        commit,
+        getters,
+      })
 
       expect(response.success).toBeFalsy()
       expect(response.errors).toEqual(failedResponse.errors)

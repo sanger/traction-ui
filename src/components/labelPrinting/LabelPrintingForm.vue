@@ -37,14 +37,14 @@
             id="number-of-labels-group"
             label="Number of labels:"
             label-for="number-of-labels"
-            description="Number of labels to print (max 9)"
+            description="Number of labels to print (max 80)"
           >
             <traction-input
               id="number-of-labels"
               v-model="form.numberOfLabels"
               type="number"
               min="1"
-              max="9"
+              max="80"
               placeholder="Please enter a number"
             ></traction-input>
           </traction-form-group>

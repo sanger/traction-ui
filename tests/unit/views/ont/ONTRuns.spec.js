@@ -30,6 +30,10 @@ describe('ONTRuns.vue', () => {
         expect(headers.filter((header) => header.text() === field.label)).toBeDefined()
       }
     })
+
+    it('orders the data by created_at desc', async () => {
+      expect(wrapper.find('tbody').findAll('tr').at(0).text().includes('ONTRUN-2')).toBeTruthy()
+    })
   })
 
   describe('New run button', () => {

@@ -90,10 +90,11 @@ describe('ONTRunInformation.vue', () => {
   })
 
   describe('#newRecord', () => {
-    it('returns false when currentRun is not a new record', () => {
+    expect(ontRunInfomation.newRecord).toEqual(true)
+    it('returns false when currentRun is a new record', () => {
       expect(ontRunInfomation.newRecord).toEqual(true)
     })
-    it('returns true when currentRun is a new record', () => {
+    it('returns false when currentRun is not a new record', () => {
       store.commit('traction/ont/runs/setCurrentRun', {
         id: '1',
         instrument_name: '',
