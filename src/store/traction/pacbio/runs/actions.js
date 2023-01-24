@@ -1,4 +1,5 @@
 import handlePromise from '@/api/PromiseHelper'
+import { handleResponse } from '@/api/ResponseHelper'
 import * as PacbioRun from '@/api/PacbioRun'
 
 const splitPosition = (position) => {
@@ -18,17 +19,18 @@ const buildWell = ({ state }, position) => {
   }
 }
 
-const setRuns = async ({ commit, getters }) => {
-  let request = getters.runRequest
-  let promise = request.get({ include: 'plate.wells.pools.tube' })
-  let response = await handlePromise(promise)
+const fetchPacbioRuns = async ({ commit, getters }, filter) => {
+  const request = getters.runRequest
+  const promise = request.get({ filter })
+  const response = await handleResponse(promise)
 
-  if (response.successful && !response.empty) {
-    let runs = response.deserialize.runs
-    commit('setRuns', runs)
+  let { success, data: { data } = {}, errors = [] } = response
+
+  if (success) {
+    commit('setRuns', data)
   }
 
-  return response
+  return { success, errors }
 }
 
 const newRun = ({ commit, rootGetters }) => {
@@ -92,8 +94,8 @@ const getRun = async ({ getters }, id) => {
 }
 
 const actions = {
+  fetchPacbioRuns,
   getRun,
-  setRuns,
   newRun,
   createRun,
   editRun,
@@ -101,6 +103,6 @@ const actions = {
   buildWell,
 }
 
-export { setRuns, newRun, createRun, editRun, updateRun, getRun, buildWell }
+export { fetchPacbioRuns, newRun, createRun, editRun, updateRun, getRun, buildWell }
 
 export default actions

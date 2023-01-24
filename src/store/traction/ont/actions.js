@@ -205,7 +205,7 @@ export default {
     }
 
     const request = rootState.api.traction.ont.plates
-    const promise = request.get({ filter: filter, include: 'wells.requests' })
+    const promise = request.get({ filter, include: 'wells.requests' })
     const response = await handleResponse(promise)
     let { success, data: { data, included = [] } = {}, errors = [] } = response
     const { wells, requests } = groupIncludedByResource(included)
@@ -245,7 +245,7 @@ export default {
     }
 
     const request = rootState.api.traction.ont.tubes
-    const promise = request.get({ filter: filter, include: 'requests' })
+    const promise = request.get({ filter, include: 'requests' })
     const response = await handleResponse(promise)
     let { success, data: { data, included = [] } = {}, errors = [] } = response
     const { requests } = groupIncludedByResource(included)
@@ -291,7 +291,7 @@ export default {
    */
   fetchOntRequests: async ({ commit, rootState }, filter) => {
     const request = rootState.api.traction.ont.requests
-    const promise = request.get({ filter: filter })
+    const promise = request.get({ filter })
     const response = await handleResponse(promise)
 
     let { success, data: { data } = {}, errors = [] } = response
@@ -312,7 +312,7 @@ export default {
   fetchOntPools: async ({ commit, rootState }, filter) => {
     const request = rootState.api.traction.ont.pools
     const promise = request.get({
-      filter: filter,
+      filter,
       include: 'tube,libraries.tag,libraries.request',
     })
     const response = await handleResponse(promise)

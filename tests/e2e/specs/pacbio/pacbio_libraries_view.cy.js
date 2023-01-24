@@ -1,9 +1,19 @@
 describe('Pacbio Libraries view', () => {
   it('Visits the pacbio libraries url', () => {
-    cy.intercept('/v1/pacbio/libraries?include=request,tag,tube', {
+    cy.intercept('/v1/pacbio/libraries?include=request,tag,tube,pool', {
       fixture: 'tractionPacbioLibraries.json',
     })
     cy.visit('#/pacbio/libraries')
+    // Check filters are visible
+    cy.get('#filterInput').should('be.visible')
+    cy.get('#filterValue').should('be.visible')
+    cy.get('#filterValue')
+      .children()
+      .should('contain', 'Barcode')
+      .and('contain', 'Library ID')
+      .and('contain', 'Pool ID')
+      .and('contain', 'Sample Name')
+      .and('contain', 'Source')
     cy.get('#library-index').contains('tr', '5')
     cy.get('.library')
       .first()
