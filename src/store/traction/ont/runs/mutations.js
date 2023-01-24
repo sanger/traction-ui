@@ -35,7 +35,6 @@ const setPoolTubeBarcode = () => (state, obj) => {
 }
 
 const mutations = {
-  // setRuns: mutate('runs'),
   setInstrumentName: mutateRun('instrument_name'),
   setState: mutateRun('state'),
   setFlowcellId: setFlowcellId(),

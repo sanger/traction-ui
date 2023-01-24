@@ -4,10 +4,9 @@ import Response from '@/api/Response'
 import { expect, describe } from 'vitest'
 
 describe('mutations', () => {
-  let runs, state, instruments
+  let state, instruments
 
   beforeEach(() => {
-    runs = new Response(Data.OntRuns).deserialize.runs
     instruments = new Response(Data.OntInstruments).deserialize.instruments
     state = {
       runs: [],
@@ -22,10 +21,6 @@ describe('mutations', () => {
   })
 
   describe('mutate', () => {
-    it('can mutate the state, e.g setRuns', () => {
-      Mutations.setRuns(state, runs)
-      expect(state.runs).toEqual(runs)
-    })
     it('can mutate the state, e.g setInstruments', () => {
       Mutations.setInstruments(state, instruments)
       expect(state.instruments).toEqual(instruments)

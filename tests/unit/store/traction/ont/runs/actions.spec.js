@@ -19,62 +19,6 @@ describe('actions.js', () => {
     }
   })
 
-  describe('#setRuns', () => {
-    let commit, get, getters
-
-    beforeEach(() => {
-      commit = vi.fn()
-      get = vi.fn()
-      getters = {
-        runRequest: {
-          get: get,
-        },
-      }
-    })
-
-    it('successfully', async () => {
-      const promise = Promise.resolve(Data.OntRuns)
-      get.mockReturnValue(promise)
-      await Actions.setRuns({
-        commit,
-        getters,
-      })
-
-      let expected = [
-        {
-          created_at: '2023-01-11T15:45:25.034Z',
-          experiment_name: 'ONTRUN-1',
-          id: '1',
-          instrument_name: 'GXB02004 (GridION)',
-          ont_instrument_id: 1,
-          state: 'pending',
-        },
-        {
-          created_at: '2023-01-11T15:51:13.691Z',
-          experiment_name: 'ONTRUN-2',
-          id: '2',
-          instrument_name: 'PC24B148 (PromethION)',
-          ont_instrument_id: 2,
-          state: 'started',
-        },
-      ]
-      expect(commit).toHaveBeenCalledWith('setRuns', expected)
-    })
-
-    it('unsuccessfully', async () => {
-      const promise = Promise.reject(failedResponse)
-      get.mockReturnValue(promise)
-      const response = await Actions.setRuns({
-        commit,
-        getters,
-      })
-
-      expect(response.success).toBeFalsy()
-      expect(response.errors).toEqual(failedResponse.errors)
-      expect(commit).not.toHaveBeenCalled()
-    })
-  })
-
   describe('#newRun', () => {
     let commit
 

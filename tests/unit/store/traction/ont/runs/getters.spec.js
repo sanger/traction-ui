@@ -4,14 +4,12 @@ import getters from '@/store/traction/ont/runs/getters'
 import InstrumentFlowcellLayout from '@/config/InstrumentFlowcellLayout'
 
 describe('getters', () => {
-  let runs, state, instruments, rootState
+  let state, instruments, rootState
 
   beforeEach(() => {
-    runs = new Response(Data.OntRuns).deserialize.runs
     instruments = new Response(Data.OntInstruments).deserialize.instruments
 
     state = {
-      runs: runs,
       currentRun: { id: 1 },
       instruments: instruments,
       instrumentFlowcellLayout: InstrumentFlowcellLayout,
@@ -19,16 +17,6 @@ describe('getters', () => {
     rootState = {
       api: { traction: { ont: { runs: 'aRunRequest', instruments: 'aInstrumentRequest' } } },
     }
-  })
-
-  it('"runs" returns "state.runs"', () => {
-    const actual = getters.runs(state)
-    expect(actual).toEqual(runs)
-  })
-
-  it('"run" returns the given run from "state.runs"', () => {
-    const actual = getters.run(state)(runs[0].id)
-    expect(actual).toEqual(runs[0])
   })
 
   it('"currentRun" returns "state.currentRun"', () => {
