@@ -52,7 +52,7 @@ import {
   BCardBody,
   BInputGroup,
   BInputGroupAppend,
-  BFormInput
+  BFormInput,
 } from 'bootstrap-vue'
 
 const registerBootstrapComponents = (vue) => {

@@ -1,25 +1,20 @@
 import PacbioRuns from '@/views/pacbio/PacbioRunIndex'
 import { mount, localVue, store, Data, router } from '@support/testHelper'
 import Response from '@/api/Response'
+import flushPromises from 'flush-promises'
 
 describe('Runs.vue', () => {
   const pipeline = 'pacbio'
   let wrapper, runs, mockRuns
 
-  beforeEach(() => {
+  beforeEach(async () => {
     mockRuns = new Response(Data.PacbioRuns).deserialize.runs
-
-    store.commit('traction/pacbio/runs/setRuns', mockRuns)
+    const get = vi.spyOn(store.state.api.traction.pacbio.runs, 'get')
+    get.mockReturnValue(Data.PacbioRuns)
 
     wrapper = mount(PacbioRuns, { store, router, localVue })
     runs = wrapper.vm
-    runs.provider = vi.fn()
-  })
-
-  describe('created hook', () => {
-    it('sets the runs data', () => {
-      expect(runs.runs).toEqual(mockRuns)
-    })
+    await flushPromises()
   })
 
   describe('building the table', () => {
@@ -164,10 +159,13 @@ describe('Runs.vue', () => {
       expect(button.isVisible()).toBe(true) // button is shown
     })
 
-    it('it does not exist when the run has wells without pools', () => {
-      mockRuns[0].all_wells_have_pools = false
-      store.commit('traction/pacbio/runs/setRuns', mockRuns)
+    it('it does not exist when the run has wells without pools', async () => {
+      let noPoolsRun = Data.PacbioRuns
+      noPoolsRun.data.data[0].attributes.all_wells_have_pools = false
+      const get = vi.spyOn(store.state.api.traction.pacbio.runs, 'get')
+      get.mockReturnValue(noPoolsRun)
       wrapper = mount(PacbioRuns, { store, router, localVue })
+      await flushPromises()
 
       button = wrapper.find('#generate-sample-sheet-1')
       expect(button.isVisible()).toBe(false) // button is hidden
@@ -187,7 +185,10 @@ describe('Runs.vue', () => {
   })
 
   describe('filtering runs', () => {
-    beforeEach(() => {
+    beforeEach(async () => {
+      const get = vi.spyOn(store.state.api.traction.pacbio.runs, 'get')
+      get.mockReturnValue(Data.PacbioRuns)
+
       wrapper = mount(PacbioRuns, {
         store,
         localVue,
@@ -197,7 +198,7 @@ describe('Runs.vue', () => {
           }
         },
       })
-      wrapper.vm.provider = vi.fn()
+      await flushPromises()
     })
 
     it('will filter the runs in the table', () => {
@@ -218,7 +219,10 @@ describe('Runs.vue', () => {
   })
 
   describe('pagination', () => {
-    beforeEach(() => {
+    beforeEach(async () => {
+      const get = vi.spyOn(store.state.api.traction.pacbio.runs, 'get')
+      get.mockReturnValue(Data.PacbioRuns)
+
       wrapper = mount(PacbioRuns, {
         store,
         localVue,
@@ -229,34 +233,11 @@ describe('Runs.vue', () => {
           }
         },
       })
-      wrapper.vm.provider = vi.fn()
+      await flushPromises()
     })
 
     it('will paginate the runs in the table', () => {
       expect(wrapper.find('tbody').findAll('tr').length).toEqual(2)
-    })
-  })
-
-  describe('#provider', () => {
-    beforeEach(() => {
-      wrapper = mount(PacbioRuns, { store, localVue })
-      runs = wrapper.vm
-
-      runs.setRuns = vi.fn()
-      runs.showAlert = vi.fn()
-    })
-
-    it('calls setRuns successfully', () => {
-      runs.provider()
-      expect(runs.setRuns).toBeCalled()
-    })
-
-    it('calls setRuns unsuccessfully', () => {
-      runs.setRuns.mockImplementation(() => {
-        throw Error('Raise this error')
-      })
-      runs.provider()
-      expect(runs.showAlert).toBeCalled()
     })
   })
 

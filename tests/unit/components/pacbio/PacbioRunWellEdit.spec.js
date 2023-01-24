@@ -107,7 +107,6 @@ describe('PacbioWellModal', () => {
     })
 
     it('has a generate hifi input', () => {
-      console.log(wrapper.find('[data-attribute=generate-hifi]'))
       expect(wrapper.find('[data-attribute="generate-hifi"]').exists()).toBeTruthy()
     })
 

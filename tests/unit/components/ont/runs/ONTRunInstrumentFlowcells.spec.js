@@ -56,7 +56,7 @@ describe('ONTRunInstrumentFlowcells', () => {
       expect(ontRunInstrumentFlowcell.getInstrumentLayout).toEqual({
         columns: 3,
         rows: 8,
-        useCoordinates: true
+        useCoordinates: true,
       })
     })
     it('#numOfRows', () => {

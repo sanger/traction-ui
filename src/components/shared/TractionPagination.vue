@@ -47,7 +47,8 @@
           :theme="getPageButtonTheme(page)"
           data-testid="page-button"
           @click="pageClick(page)"
-        >{{ page }}</traction-button>
+          >{{ page }}</traction-button
+        >
       </div>
 
       <TractionButton

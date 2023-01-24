@@ -3,15 +3,15 @@
     <div class="w-full w-1/2 mx-auto min-w-[500px]">
       <div class="flex flex-col flex-start">
         <p class="font-bold mb-5 font-size text-xl">Filter results</p>
-        <p class="mb-5 font-size text-md">By default returns the most recent 100 results</p>
+        <p class="mb-5 font-size text-md">By default returns the most recent 1000 results</p>
       </div>
-      <div class="flex mb-5 mx-auto">
+      <div class="flex mb-2 mx-auto">
         <traction-input
           id="filterInput"
           v-model="filterInput"
           type="search"
           placeholder="Type to Search"
-          class="w-1/2 mr-10"
+          class="w-1/2 mr-5"
         />
         <traction-select
           id="filterValue"

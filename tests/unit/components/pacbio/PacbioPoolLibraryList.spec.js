@@ -57,8 +57,8 @@ describe('PacbioPoolLibraryList.vue', () => {
       store,
       localVue,
       stubs: {
-        PacbioPoolLibraryEdit: true
-      }
+        PacbioPoolLibraryEdit: true,
+      },
     })
     expect(wrapper.findAll('[data-type=pool-library-edit]').length).toEqual(
       Object.values(libraries).length,

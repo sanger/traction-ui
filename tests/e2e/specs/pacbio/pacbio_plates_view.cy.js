@@ -4,6 +4,10 @@ describe('Pacbio plates view', () => {
       fixture: 'pacbioPlates.json',
     })
     cy.visit('#/pacbio/plates')
+    // Check filters are visible
+    cy.get('#filterInput').should('be.visible')
+    cy.get('#filterValue').should('be.visible')
+    cy.get('#filterValue').children().should('contain', 'Barcode').and('contain', 'Plate ID')
     cy.get('#plate-index').contains('td', '1')
     cy.get('#filterInput').clear().type('1')
     cy.get('#input-per-page').clear().type('1')

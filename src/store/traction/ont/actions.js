@@ -17,7 +17,6 @@ export default {
     let { success, data: { data, included = [] } = {}, errors = [] } = response
     const { instruments } = groupIncludedByResource(included)
 
-
     if (success) {
       commit('setRuns', data)
       commit('populateInstruments', instruments)

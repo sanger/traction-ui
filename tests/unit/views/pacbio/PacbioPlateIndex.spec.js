@@ -1,13 +1,13 @@
 import PacbioPlates from '@/views/pacbio/PacbioPlateIndex'
 import { mount, localVue, store, Data, router } from '@support/testHelper'
-import Response from '@/api/Response'
+import flushPromises from 'flush-promises'
 
 describe('PacbioPlates.vue', () => {
-  let wrapper, plates, mockPlates
+  let wrapper, plates
 
-  beforeEach(() => {
-    mockPlates = new Response(Data.PacbioPlates).deserialize.plates
-    store.commit('traction/pacbio/plates/setPlates', mockPlates)
+  beforeEach(async () => {
+    const get = vi.spyOn(store.state.api.traction.pacbio.plates, 'get')
+    get.mockResolvedValue(Data.PacbioPlates)
 
     wrapper = mount(PacbioPlates, {
       store,
@@ -20,7 +20,7 @@ describe('PacbioPlates.vue', () => {
 
     wrapper.setData({ sortDesc: false })
     plates = wrapper.vm
-    plates.provider = vi.fn()
+    await flushPromises()
   })
 
   describe('building the table', () => {
@@ -36,7 +36,7 @@ describe('PacbioPlates.vue', () => {
     })
 
     it('contains the correct data', async () => {
-      expect(wrapper.find('tbody').findAll('tr').length).toEqual(mockPlates.length)
+      expect(wrapper.find('tbody').findAll('tr').length).toEqual(2)
     })
   })
 
@@ -57,13 +57,17 @@ describe('PacbioPlates.vue', () => {
   })
 
   describe('perPage', () => {
-    beforeEach(() => {
+    beforeEach(async () => {
+      const get = vi.spyOn(store.state.api.traction.pacbio.plates, 'get')
+      get.mockResolvedValue(Data.PacbioPlates)
+
       wrapper = mount(PacbioPlates, {
         store,
         router,
         localVue,
       })
       wrapper.setData({ perPage: 1 })
+      await flushPromises()
     })
 
     it('states how many rows the table should contain', () => {

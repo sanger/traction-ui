@@ -13,6 +13,7 @@
 # Done
 
 - Test: `src/store/traction/ont/runs/actions.js` (`updateRun`, `editRun`)
+
 - UI: Runs sort by most recent
 - UI: Reset button for whole page
 - UI: Runs table header, rename ‘Name’ to ‘Experiment ID’
@@ -27,6 +28,7 @@
 - Test: `ONTRun.spec.js`
 - Test: `ONTRunInstrumentFlowcells.spec.js`
 - Test: `ONTRuns.spec.js` (`editRun`, `mapGetters`, `generateId`, `redirectToRun`, `mapActions`)
+
 - Test: ONTFlowcell
   - Test: `ONTRunInformation`
 - Update with what will be used when scanning in Pool to Flowcell (**tube barcode**)

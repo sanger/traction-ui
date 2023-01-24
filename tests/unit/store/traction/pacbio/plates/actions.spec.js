@@ -10,24 +10,31 @@ describe('#createPlateInTraction', () => {
     get = vi.fn()
     getters = { getPlates: { get: get } }
     plates = new Response(Data.PacbioPlates).deserialize.plates
-    failedResponse = { data: { data: [] }, status: 500, statusText: 'Internal Server Error' }
+    failedResponse = {
+      data: { data: { errors: { error1: ['There was an error'] } } },
+      status: 500,
+      statusText: 'Internal Server Error',
+    }
   })
 
   describe('setPlates', () => {
     it('fetches the plates from the service, and commits them', async () => {
       get.mockReturnValue(Data.PacbioPlates)
-      await Actions.setPlates({ commit, getters })
+      const { success, errors } = await Actions.setPlates({ commit, getters })
 
       expect(commit).toHaveBeenCalledWith('setPlates', plates)
+      expect(success).toEqual(true)
+      expect(errors).toEqual([])
     })
 
     it('errors fetching the plates', async () => {
-      get.mockReturnValue(failedResponse)
-      let expectedResponse = new Response(failedResponse)
-      let response = await Actions.setPlates({ commit, getters })
+      get.mockRejectedValue({ response: failedResponse })
+
+      const { success, errors } = await Actions.setPlates({ commit, getters })
 
       expect(commit).not.toHaveBeenCalled()
-      expect(response).toEqual(expectedResponse)
+      expect(success).toEqual(false)
+      expect(errors).toEqual({ message: 'error1 There was an error' })
     })
   })
 })

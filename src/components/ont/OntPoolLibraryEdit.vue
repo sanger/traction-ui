@@ -7,17 +7,19 @@
       {{ request.source_identifier }}
     </traction-td>
     <traction-td>
-      <traction-select
-        v-if="tagList.length > 0"
-        v-model="tag_id"
-        data-type="tag-list"
-        :options="tagListOptions"
-        :state="errorsFor('tag_id')?.length > 0"
-        class="tag-id flex w-[110px]"
-      ></traction-select>
-      <traction-invalid-feedback data-attribute="tag-id-error">
-        {{ errorsFor('tag_id') }}
-      </traction-invalid-feedback>
+      <traction-field-error
+        data-attribute="tag-id-error"
+        :error="errorsFor('tag_id')"
+        :with-icon="isValidationExists('tag_id')"
+      >
+        <traction-select
+          v-if="tagList.length > 0"
+          v-model="tag_id"
+          data-type="tag-list"
+          :options="tagListOptions"
+          class="tag-id flex w-[110px]"
+        ></traction-select>
+      </traction-field-error>
     </traction-td>
     <traction-td>
       <traction-field-error
@@ -87,6 +89,10 @@ const librarySetter = (attr) => {
       return this.library[attr]
     },
     set(newValue) {
+      if (newValue !== this.library[attr]) {
+        this.fieldsThatRequireValidation[attr] = true
+        this.notify()
+      }
       this.updatePoolingLibrary({ ont_request_id: this.library.ont_request_id, [attr]: newValue })
     },
   }
@@ -113,6 +119,22 @@ export default {
       type: Boolean,
       default: false,
     },
+    // Indicates whether the values in this component have been validated
+    validated: {
+      type: Boolean,
+      default: false,
+    },
+    // Parent function indiciated what to do when a user changes an attribute
+    notify: {
+      type: Function,
+      required: true,
+      default: () => {},
+    },
+  },
+  data() {
+    return {
+      fieldsThatRequireValidation: [],
+    }
   },
   computed: {
     ...mapGetters(['selectedTagSet', 'libraryItem']),
@@ -134,6 +156,10 @@ export default {
         return this.library.tag_id
       },
       set(tag_id) {
+        if (tag_id !== this.tag_id) {
+          this.fieldsThatRequireValidation['tag_id'] = true
+          this.notify()
+        }
         this.applyTags({
           library: { tag_id, ont_request_id: this.library.ont_request_id },
           autoTag: this.autoTag,
@@ -146,13 +172,24 @@ export default {
     ...mapActions(['applyTags']),
     //return any errors exist in library for the given attribute
     errorsFor(attribute) {
+      this.setValidationRequired()
       return this.library?.errors?.[attribute]
     },
     attributeValueExists(attribute) {
+      this.setValidationRequired()
       return this.library?.[attribute]?.length > 0
     },
     isValidationExists(attribute) {
-      return this.attributeValueExists(attribute) || this.errorsFor(attribute)?.length > 0
+      if (this.validated) {
+        return true
+      } else {
+        return !this.fieldsThatRequireValidation[attribute]
+      }
+    },
+    setValidationRequired() {
+      if (this.validated) {
+        this.fieldsThatRequireValidation = []
+      }
     },
   },
 }

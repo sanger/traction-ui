@@ -41,7 +41,7 @@ export default {
         (instrument) => instrument.name == this.currentRun.instrument_name,
       )
       if (instrumentConfig) {
-        return this.instrumentFlowcellLayout[instrumenConfig.instrument_type]
+        return this.instrumentFlowcellLayout[instrumentConfig.instrument_type]
       }
       return {}
     },
@@ -53,15 +53,15 @@ export default {
     },
     useCoordinates() {
       return this.getInstrumentLayout['useCoordinates']
-    }
+    },
   },
   methods: {
     calculatePosition(rowIndex, colIndex) {
       return this.numOfRows * (colIndex - 1) + rowIndex
     },
     calculateCoordinate(rowIndex, colIndex) {
-      let rowLetters = ['A', 'B','C','D','E','F','G','H']
-      return this.useCoordinates ? `${rowLetters[rowIndex-1]}${colIndex}` : `${colIndex}`
+      let rowLetters = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H']
+      return this.useCoordinates ? `${rowLetters[rowIndex - 1]}${colIndex}` : `${colIndex}`
     },
   },
 }

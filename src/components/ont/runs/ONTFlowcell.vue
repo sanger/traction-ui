@@ -15,14 +15,15 @@
             size="sm"
             placeholder="Scan flowcell ID"
             :value="flowcellId"
-            @input="setFlowcellId({ $event, position })"
             :formatter="formatter"
             :state="flowcellIdValidation"
+            @input="setFlowcellId({ $event, position })"
           ></traction-input>
           <!-- This will only be shown if the preceding input has an invalid state -->
-          <traction-invalid-feedback
-            id="input-live-feedback"
-          >Enter at valid Flowcell ID (3 letters then atleast 3 numbers)</traction-invalid-feedback>
+          <traction-invalid-feedback id="input-live-feedback"
+            >Enter at valid Flowcell ID (3 letters then atleast 3
+            numbers)</traction-invalid-feedback
+          >
         </traction-form-group>
         <traction-form-group
           id="input-group-pool-id"
@@ -35,8 +36,8 @@
             :id="'pool-id-' + position"
             placeholder="Scan library barcode"
             :value="poolTubeBarcode"
-            @input="setPoolTubeBarcode({ $event, position })"
             :formatter="formatter"
+            @input="setPoolTubeBarcode({ $event, position })"
           ></traction-input>
         </traction-form-group>
       </div>
@@ -62,7 +63,7 @@ export default {
     coordinate: {
       type: String,
       required: true,
-    }
+    },
   },
   data() {
     return {}
@@ -72,6 +73,8 @@ export default {
       if (this.flowcellId) {
         // 3 letters followed by at least 3 numbers
         return !!this.flowcellId.match(/^[a-zA-Z]{3}\d{3,}$/)
+      } else {
+        return null
       }
     },
     ...mapState({
@@ -119,7 +122,7 @@ export default {
     ...mapMutations(['setFlowcellId', 'setPoolTubeBarcode']),
     formatter(value) {
       return value.toUpperCase().trim()
-    }
+    },
   },
 }
 </script>

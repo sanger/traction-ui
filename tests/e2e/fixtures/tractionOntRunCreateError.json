@@ -1,0 +1,13 @@
+{
+  "errors": [
+    {
+      "title": "pool at position 1 is required",
+      "detail": "flowcells.ont_pool_id - pool at position 1 is required",
+      "code": "100",
+      "source": {
+        "pointer": "/data/attributes/flowcells.ont_pool_id"
+      },
+      "status": "422"
+    }
+  ]
+}

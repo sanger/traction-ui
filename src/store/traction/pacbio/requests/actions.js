@@ -1,15 +1,18 @@
 import handlePromise from '@/api/PromiseHelper'
 import { handleResponse } from '@/api/ResponseHelper'
 
-const setRequests = async ({ commit, getters }) => {
+const setRequests = async ({ commit, getters }, filter) => {
   let request = getters.requestsRequest
-  let promise = request.get()
+  let promise = request.get({ filter })
   let response = await handlePromise(promise)
 
-  if (response.successful && !response.empty) {
+  if (response.successful) {
     let requests = response.deserialize.requests
     commit('setRequests', requests)
+    return { success: true, errors: [] }
   }
+
+  return { success: false, errors: response.errors }
 }
 
 const updateRequest = async ({ getters }, payload) => {
