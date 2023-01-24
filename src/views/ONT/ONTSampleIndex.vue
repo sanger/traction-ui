@@ -81,6 +81,8 @@ export default {
       filterOptions: [
         { value: '', text: '' },
         { value: 'id', text: 'Sample ID (Request)' },
+        { value: 'source_identifier', text: 'Source barcode' },
+        { value: 'sample_name', text: 'Sample name' },
         // Need to specify filters in json api resources if we want more filters
       ],
       filteredItems: [],

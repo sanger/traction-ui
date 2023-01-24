@@ -13,6 +13,7 @@ describe('actions.js', () => {
     fetchOntTagSets,
     selectWellRequests,
     deselectPlateAndContents,
+    deselectTubeAndContents,
     createPool,
     updatePool,
     applyTags,
@@ -195,7 +196,7 @@ describe('actions.js', () => {
   })
 
   describe('deselectPlateAndContents', () => {
-    it('selects requests if unselected', async () => {
+    it('deselects plate content if selected and removes resources', async () => {
       // mock commit
       const commit = vi.fn()
       // mock dependencies
@@ -226,8 +227,50 @@ describe('actions.js', () => {
       expect(commit).toHaveBeenCalledWith('selectPlate', { id: '1', selected: false })
       expect(commit).toHaveBeenCalledWith('selectRequest', { id: '100', selected: false })
       expect(commit).toHaveBeenCalledWith('selectRequest', { id: '300', selected: false })
+      expect(commit).toHaveBeenCalledWith('removeResource', { resource: 'plates', id: '1' })
+      expect(commit).toHaveBeenCalledWith('removeResource', { resource: 'wells', id: '10' })
+      expect(commit).toHaveBeenCalledWith('removeResource', { resource: 'wells', id: '20' })
+      expect(commit).toHaveBeenCalledWith('removeResource', { resource: 'requests', id: '100' })
+      expect(commit).toHaveBeenCalledWith('removeResource', { resource: 'requests', id: '200' })
+      expect(commit).toHaveBeenCalledWith('removeResource', { resource: 'requests', id: '300' })
+      expect(commit).toHaveBeenCalledWith('removeResource', { resource: 'requests', id: '400' })
       // we don't want to select any unselected requests
       expect(commit).not.toHaveBeenCalledWith('selectRequest', { id: '200', selected: true })
+    })
+  })
+
+  describe('deselectTubeAndContents', () => {
+    it('deselects tube content if selected and removes resources', async () => {
+      // mock commit
+      const commit = vi.fn()
+      // mock dependencies
+      const defaultStateObject = defaultState()
+      const state = {
+        ...defaultStateObject,
+        resources: {
+          ...defaultStateObject.resources,
+          tubes: {
+            1: { id: 1, barcode: 'tube-barcode', requests: ['100'] },
+          },
+        },
+        selected: {
+          ...defaultStateObject.selected,
+          requests: {
+            100: { id: '100', selected: true },
+            300: { id: '300', selected: true },
+          },
+        },
+      }
+      // apply action
+      await deselectTubeAndContents({ commit, state }, 'tube-barcode')
+      // assert result
+      expect(commit).toHaveBeenCalledWith('selectTube', { id: 1, selected: false })
+      expect(commit).toHaveBeenCalledWith('selectRequest', { id: '100', selected: false })
+      expect(commit).toHaveBeenCalledWith('removeResource', { resource: 'tubes', id: 1 })
+      expect(commit).toHaveBeenCalledWith('removeResource', { resource: 'requests', id: '100' })
+      // we don't want to select or delete any unselected requests
+      expect(commit).not.toHaveBeenCalledWith('selectRequest', { id: '300', selected: true })
+      expect(commit).not.toHaveBeenCalledWith('removeResource', { resource: 'requests', id: '300' })
     })
   })
 
@@ -267,17 +310,20 @@ describe('actions.js', () => {
       }
       // mock dependencies
       const create = vi.fn()
+      const commit = vi.fn()
       const rootState = { api: { traction: { ont: { pools: { create } } } } }
       const libraries = { 1: library1, 2: library2 }
       create.mockResolvedValue(mockResponse)
       const { success, barcode } = await createPool({
         rootState,
+        commit,
         state: { pooling: { libraries, pool } },
       })
       expect(create).toHaveBeenCalledWith({
         data: payload({ libraries, pool }),
         include: expect.anything(),
       })
+      expect(commit).toHaveBeenCalledWith('clearPoolData', true)
       expect(success).toBeTruthy()
       expect(barcode).toEqual('TRAC-1')
     })
@@ -290,13 +336,17 @@ describe('actions.js', () => {
       }
       // mock dependencies
       const update = vi.fn(() => Promise.reject({ response: mockResponse }))
+      const commit = vi.fn()
       const rootState = { api: { traction: { ont: { pools: { update } } } } }
       const libraries = { 1: library1, 2: library2 }
       const expectedResponse = newResponse({ ...mockResponse, success: false })
       const { success, errors } = await updatePool({
         rootState,
+        commit,
         state: { pooling: { libraries, pool } },
       })
+      // Doesn't clear data if there is an error
+      expect(commit).not.toHaveBeenCalledWith('clearPoolData', true)
       expect(success).toBeFalsy
       expect(errors).toEqual(expectedResponse.errors)
     })
