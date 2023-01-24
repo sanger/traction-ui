@@ -50,7 +50,7 @@ describe('OntPoolCreate', () => {
           ont: {
             pools: {
               resources: { tagSets },
-            }
+            },
           },
         },
       },
@@ -90,7 +90,7 @@ describe('OntPoolCreate', () => {
             pools: {
               resources: { plates, tagSets, wells, requests, tags },
               pooling: { pool, tube, libraries },
-            }
+            },
           },
         },
       },

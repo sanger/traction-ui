@@ -32,7 +32,9 @@ describe('ontPoolEdit#new', () => {
     it('kit barcode', async () => {
       const input = wrapper.find('[data-attribute=kit-barcode]')
       await input.setValue('017865101789500022821')
-      expect(store.state.traction.ont.pools.pooling.pool.kit_barcode).toEqual('017865101789500022821')
+      expect(store.state.traction.ont.pools.pooling.pool.kit_barcode).toEqual(
+        '017865101789500022821',
+      )
     })
 
     it('volume', async () => {

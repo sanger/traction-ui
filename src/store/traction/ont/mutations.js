@@ -1,7 +1,6 @@
 import { populateById } from '@/api/JsonApi'
 
 export default {
-
   /**
    * Remove specific resource given the store resource location and resource id
    * @param {Object} state The VueXState object

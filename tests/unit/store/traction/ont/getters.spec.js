@@ -1,4 +1,4 @@
-import { expect, it } from "vitest"
+import { expect, it } from 'vitest'
 
 describe('getters.js', () => {
   it('works', () => {

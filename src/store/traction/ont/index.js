@@ -9,7 +9,7 @@ const ont = {
   namespaced: true,
   modules: {
     runs: ontRunsModule,
-    pools
+    pools,
   },
   getters,
   mutations,
