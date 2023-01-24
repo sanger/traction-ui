@@ -1,16 +1,21 @@
 describe('Pacbio Run Create view', () => {
   beforeEach(() => {
-    cy.intercept('/v1/pacbio/runs', {
-      statusCode: 201,
-      body: {
-        data: {
-          id: '1',
-          type: 'runs',
-          links: {
-            self: '/v1/pacbio/runs/1',
+    cy.intercept(
+      {
+        url: '/flipper/api/actors/User',
+      },
+      {
+        statusCode: 200,
+        body: {
+          flipper_id: 'User',
+          features: {
+            enable_custom_select: true,
           },
         },
       },
+    )
+    cy.intercept('/v1/pacbio/runs', {
+      fixture: 'tractionPacbioRuns.json',
     })
     cy.intercept('/v1/pacbio/smrt_link_versions', {
       fixture: 'tractionPacbioSmrtLinkVersions.json',
@@ -33,9 +38,6 @@ describe('Pacbio Run Create view', () => {
         fixture: 'tractionPacbioPools.json',
       },
     )
-    cy.intercept('/v1/pacbio/runs?include=plate.wells.pools.tube', {
-      fixture: 'tractionPacbioRuns.json',
-    })
   })
 
   it('Creates a run successfully - v10', () => {
@@ -127,7 +129,7 @@ describe('Pacbio Run Create view', () => {
         },
       },
     })
-    cy.intercept('DELETE', '/v1/pacbio/runs/1', { statusCode: 200 }).as('deleteRun')
+    cy.intercept('DELETE', '/v1/pacbio/runs/7', { statusCode: 200 }).as('deleteRun')
     const dataTransfer = new DataTransfer()
 
     cy.visit('#/pacbio/runs')

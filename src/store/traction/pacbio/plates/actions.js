@@ -1,16 +1,20 @@
 import handlePromise from '@/api/PromiseHelper'
 
-const setPlates = async ({ commit, getters }) => {
+const setPlates = async ({ commit, getters }, filter) => {
   let request = getters.getPlates
-  let promise = request.get({ include: 'wells.materials' })
+  let promise = request.get({
+    include: 'wells.materials',
+    filter,
+  })
   let response = await handlePromise(promise)
 
   if (response.successful && !response.empty) {
     let plates = response.deserialize.plates
     commit('setPlates', plates)
+    return { success: true, errors: [] }
   }
 
-  return response
+  return { success: false, errors: response.errors }
 }
 
 const actions = {

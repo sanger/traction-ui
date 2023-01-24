@@ -3,8 +3,9 @@ import * as Actions from '@/store/traction/pacbio/runs/actions'
 import { Data } from '@support/testHelper'
 import * as Run from '@/api/PacbioRun'
 import { expect, vi } from 'vitest'
+import { newResponse } from '@/api/ResponseHelper'
 
-describe('#setRuns', () => {
+describe('#fetchPacbioRuns', () => {
   let commit, get, getters, failedResponse
 
   beforeEach(() => {
@@ -12,30 +13,32 @@ describe('#setRuns', () => {
     get = vi.fn()
     getters = { runRequest: { get: get } }
 
-    failedResponse = { data: { data: [] }, status: 500, statusText: 'Internal Server Error' }
+    failedResponse = {
+      data: { data: { errors: { error1: ['There was an error'] } } },
+      status: 500,
+      statusText: 'Internal Server Error',
+    }
   })
 
   it('successfully', async () => {
     get.mockReturnValue(Data.PacbioRuns)
 
-    let expectedResponse = new Response(Data.PacbioRuns)
-    let expectedRuns = expectedResponse.deserialize.runs
+    let { success, errors } = await Actions.fetchPacbioRuns({ commit, getters })
 
-    let response = await Actions.setRuns({ commit, getters })
-
-    expect(commit).toHaveBeenCalledWith('setRuns', expectedRuns)
-    expect(response).toEqual(expectedResponse)
+    expect(commit).toHaveBeenCalledWith('setRuns', Data.PacbioRuns.data.data)
+    expect(success).toEqual(true)
+    expect(errors).toEqual([])
   })
 
   it('unsuccessfully', async () => {
-    get.mockReturnValue(failedResponse)
+    get.mockRejectedValue({ response: failedResponse })
+    const expectedResponse = newResponse({ ...failedResponse, success: false })
 
-    let expectedResponse = new Response(failedResponse)
-
-    let response = await Actions.setRuns({ commit, getters })
+    let { success, errors } = await Actions.fetchPacbioRuns({ commit, getters })
 
     expect(commit).not.toHaveBeenCalled()
-    expect(response).toEqual(expectedResponse)
+    expect(success).toEqual(false)
+    expect(errors).toEqual(expectedResponse.errors)
   })
 })
 
