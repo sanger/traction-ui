@@ -8,6 +8,8 @@ describe('Extraction QC page', () => {
 
     cy.visit('#/qc-results-upload')
     cy.get('#used-by-select-input').select('Extraction')
+    cy.contains('Upload File')
+    cy.contains('Re-enable')
   })
 
   it('Shows the correct components', () => {

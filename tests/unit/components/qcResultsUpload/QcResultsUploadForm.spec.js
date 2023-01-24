@@ -33,9 +33,18 @@ describe('QcResultsUploadForm.vue', () => {
       })
     })
     describe('busy', () => {
-      it('gets the busy', () => {
+      it('gets the busy status', () => {
+        expect(form.busy).toEqual(null)
         wrapper.setData({ busy: true })
         expect(form.busy).toEqual(true)
+      })
+    })
+
+    describe('disableUpload', () => {
+      it('gets the disableUpload status', () => {
+        expect(form.disableUpload).toEqual(null)
+        wrapper.setData({ disableUpload: true })
+        expect(form.disableUpload).toEqual(true)
       })
     })
   })
@@ -79,7 +88,7 @@ describe('QcResultsUploadForm.vue', () => {
     it('handles a successful import', async () => {
       const createQcResultsUploadResource = vi
         .spyOn(QcResultsUpload, 'createQcResultsUploadResource')
-        .mockImplementation(() => {})
+        .mockImplementation(() => { })
 
       await form.postCSV()
 
@@ -89,6 +98,7 @@ describe('QcResultsUploadForm.vue', () => {
       })
       expect(form.showAlert).toBeCalledWith('Successfully imported: fileName', 'success')
       expect(form.busy).toEqual(false)
+      expect(form.disableUpload).toEqual(true)
     })
 
     it('handles a failed import', async () => {
@@ -104,6 +114,7 @@ describe('QcResultsUploadForm.vue', () => {
       })
       expect(form.showAlert).toBeCalledWith('This is an error msg', 'danger')
       expect(form.busy).toEqual(false)
+      expect(form.disableUpload).toEqual(true)
     })
   })
 })
