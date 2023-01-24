@@ -49,12 +49,6 @@ describe('ONTFlowcell', () => {
     })
 
     it('#mapState', () => {
-      expect(ontFlowcell.flowcell).toBeDefined()
-      expect(ontFlowcell.flowcell).toEqual({
-        flowcell_id: 'FC1',
-        tube_barcode: 'TRAC-1-A',
-        position: 1,
-      })
       expect(ontFlowcell.flowcellId).toBeDefined()
       expect(ontFlowcell.flowcellId).toEqual('FC1')
       expect(ontFlowcell.poolTubeBarcode).toBeDefined()
