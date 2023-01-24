@@ -1,7 +1,6 @@
 import InstrumentFlowcellLayout from '@/config/InstrumentFlowcellLayout'
 
 const state = {
-  // runs: [],
   currentRun: {
     flowcell_attributes: [],
   },

@@ -1,25 +1,5 @@
 import { handleResponse } from '@/api/ResponseHelper'
 
-const setRuns = async ({ commit, getters }) => {
-  let request = getters.runRequest
-  let promise = request.get({ include: 'instrument' })
-  const response = await handleResponse(promise)
-  const { success, data: { data, included = [] } = {}, errors = [] } = response
-  if (success && !data.empty) {
-    let runs = data.map((r) => {
-      let instrument = included.find((i) => i.id == r.attributes.ont_instrument_id).attributes
-
-      return {
-        ...r.attributes,
-        id: r.id,
-        instrument_name: `${instrument.name} (${instrument.instrument_type})`,
-      }
-    })
-    commit('setRuns', runs)
-  }
-  return errors
-}
-
 const newRun = ({ commit }) => {
   let run = {
     id: 'new',
@@ -150,7 +130,6 @@ const editRun = async ({ commit, getters, rootGetters }, runId) => {
 }
 
 const actions = {
-  setRuns,
   createRun,
   setInstruments,
   editRun,
@@ -158,6 +137,6 @@ const actions = {
   updateRun,
 }
 
-export { setRuns, createRun, setInstruments, editRun, newRun, updateRun }
+export { createRun, setInstruments, editRun, newRun, updateRun }
 
 export default actions

@@ -90,7 +90,6 @@ describe('ONTRunInformation.vue', () => {
   })
 
   describe('#newRecord', () => {
-    expect(ontRunInfomation.newRecord).toEqual(true)
     it('returns false when currentRun is a new record', () => {
       expect(ontRunInfomation.newRecord).toEqual(true)
     })
