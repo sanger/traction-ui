@@ -6,6 +6,9 @@ describe('ONT Run page', () => {
     cy.intercept('v1/ont/pools?include=tube,libraries.tag,libraries.request', {
       fixture: 'tractionOntPools.json',
     })
+    cy.intercept('/v1/ont/runs?include=instrument', {
+      fixture: 'tractionOntRuns.json',
+    })
   })
 
   it('Shows the correct information', () => {
@@ -35,7 +38,7 @@ describe('ONT Run page', () => {
     cy.get('#create').should('be.enabled')
     cy.get('#create').click()
 
-    cy.get('#run-index').contains('tr', '6')
+    cy.get('#run-index').contains('tr', '5')
   })
 
   it('Shows an error message if run create fails', () => {
