@@ -1,5 +1,4 @@
-import rootMutations from '@/store/traction/ont/mutations'
-import poolMutations from '@/store/traction/ont/pools/mutations'
+import mutations from '@/store/traction/ont/pools/mutations'
 import defaultState from '@/store/traction/ont/pools/state'
 import { describe, expect, it } from 'vitest'
 import Contracts from './contracts'
@@ -26,9 +25,8 @@ describe('mutations', () => {
     selectRequest,
     selectTube,
     selectPlate,
-  } = poolMutations
-
-  const { removeResource } = rootMutations
+    removeResource,
+  } = mutations
 
   describe('populateRequests', () => {
     it('updates the state', () => {
