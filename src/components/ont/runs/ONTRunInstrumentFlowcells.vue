@@ -61,7 +61,7 @@ export default {
     },
     calculateCoordinate(rowIndex, colIndex) {
       let rowLetters = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H']
-      return this.useCoordinates ? `${rowLetters[rowIndex - 1]}${colIndex}` : `${colIndex}`
+      return this.useCoordinates ? `${colIndex}${rowLetters[rowIndex - 1]}` : `${colIndex}`
     },
   },
 }
