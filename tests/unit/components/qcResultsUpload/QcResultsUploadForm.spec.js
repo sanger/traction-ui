@@ -88,7 +88,7 @@ describe('QcResultsUploadForm.vue', () => {
     it('handles a successful import', async () => {
       const createQcResultsUploadResource = vi
         .spyOn(QcResultsUpload, 'createQcResultsUploadResource')
-        .mockImplementation(() => { })
+        .mockImplementation(() => {})
 
       await form.postCSV()
 

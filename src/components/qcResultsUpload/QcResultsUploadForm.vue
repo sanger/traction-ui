@@ -37,7 +37,8 @@
         size="lg"
         :disabled="!disableUpload"
         @click="disableUpload = !disableUpload"
-      >Re-enable</traction-button>
+        >Re-enable</traction-button
+      >
     </traction-form>
   </div>
 </template>
