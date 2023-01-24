@@ -26,7 +26,7 @@ import ONTFlowcell from '@/components/ont/runs/ONTFlowcell'
  * # ONTRunInstrumentFlowcells
  *
  * Displays a visual representation of the selected instrument and it's flowcells.
- * Pool panels can be dragged into the flowcells to link them.
+ * The user can scan flowcell ids and pool tube barcodes into the flowcells and create (or update) a run.
  */
 export default {
   name: 'ONTRunInstrumentFlowcells',
