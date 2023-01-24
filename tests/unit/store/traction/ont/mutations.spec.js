@@ -261,6 +261,73 @@ describe('clearPoolData', () => {
       tube: {},
     })
   })
+
+  it('clears existing pool data but keeps selected when specified', () => {
+    const defaultStateObject = defaultState()
+    const state = {
+      ...defaultStateObject,
+      pooling: {
+        tube: {
+          id: '1',
+          barcode: 'barcode',
+        },
+        libraries: {
+          2: {
+            ont_request_id: '2',
+            tag_id: null,
+            kit_barcode: null,
+            volume: null,
+            concentration: null,
+            insert_size: null,
+          },
+        },
+        pool: {
+          id: '1',
+        },
+      },
+      selected: {
+        tagSet: {
+          id: '2',
+        },
+        plates: {
+          1: {
+            id: '1',
+            selected: true,
+          },
+        },
+        tube: {
+          1: {
+            id: '1',
+            selected: true,
+          },
+        },
+      },
+    }
+    // populates an existing pool into state
+    mutations.clearPoolData(state, true)
+    expect(state.selected).toEqual({
+      tagSet: {
+        id: '2',
+      },
+      plates: {
+        1: {
+          id: '1',
+          selected: true,
+        },
+      },
+      tube: {
+        1: {
+          id: '1',
+          selected: true,
+        },
+      },
+    })
+    expect(state.pooling).toEqual({
+      libraries: {},
+      pool: {},
+      tube: {},
+    })
+  })
 })
 
 describe('updatePoolingLibrary', () => {
@@ -590,5 +657,47 @@ describe('populateTags', () => {
     expect(state.resources.tags).toEqual(
       dataToObjectById({ data: tags, includeRelationships: true }),
     )
+  })
+})
+
+describe('removeResource', () => {
+  it('with a plate updates the state', () => {
+    // mock state
+    const defaultStateObject = defaultState()
+    const state = {
+      ...defaultStateObject,
+      resources: {
+        ...defaultStateObject.resources,
+        plates: {
+          1: { id: 1, wells: ['10', '20'] },
+          2: { id: 2, wells: ['11'] },
+        },
+      },
+    }
+    // apply mutation
+    mutations.removeResource(state, { resource: 'plates', id: '1' })
+    // assert result
+    expect(state.resources.plates).toEqual({ 2: { id: 2, wells: ['11'] } })
+  })
+
+  it('with a well updates the state', () => {
+    // mock state
+    const defaultStateObject = defaultState()
+    const state = {
+      ...defaultStateObject,
+      resources: {
+        ...defaultStateObject.resources,
+        wells: {
+          10: { id: '10', type: 'wells', position: 'A1', requests: ['100', '300'] },
+          11: { id: '11', type: 'wells', position: 'A2', requests: ['50'] },
+        },
+      },
+    }
+    // apply mutation
+    mutations.removeResource(state, { resource: 'wells', id: '10' })
+    // assert result
+    expect(state.resources.wells).toEqual({
+      11: { id: '11', type: 'wells', position: 'A2', requests: ['50'] },
+    })
   })
 })
