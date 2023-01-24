@@ -380,6 +380,7 @@ export default {
    */
   createPool: async ({
     rootState,
+    commit,
     state: {
       pooling: { libraries, pool },
     },
@@ -391,6 +392,10 @@ export default {
     const { success, data: { included = [] } = {}, errors } = await handleResponse(promise)
     const { tubes: [tube = {}] = [] } = groupIncludedByResource(included)
     const { attributes: { barcode = '' } = {} } = tube
+
+    // Clear pool data so users can make another one without refreshing page
+    success ? commit('clearPoolData', true) : ''
+
     return { success, barcode, errors }
   },
 
@@ -479,8 +484,11 @@ export default {
       const { requests = [] } = state.resources.wells[wellId]
       for (let requestId of requests) {
         commit('selectRequest', { id: requestId, selected: false })
+        commit('removeResource', { resource: 'requests', id: requestId })
       }
+      commit('removeResource', { resource: 'wells', id: wellId })
     }
+    commit('removeResource', { resource: 'plates', id: plateId })
   },
 
   /**
@@ -493,6 +501,8 @@ export default {
 
     for (let requestId of requests) {
       commit('selectRequest', { id: requestId, selected: false })
+      commit('removeResource', { resource: 'requests', id: requestId })
     }
+    commit('removeResource', { resource: 'tubes', id: tube.id })
   },
 }

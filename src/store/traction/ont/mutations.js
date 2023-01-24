@@ -55,9 +55,13 @@ export default {
    * Clears the data on the pool/new page
    * @param {Object} state The Vuex state object
    */
-  clearPoolData: (state) => {
+  clearPoolData: (state, keepSelected = false) => {
     const new_state = defaultState()
-    Object.assign(state, new_state, { resources: state.resources })
+    const selected = keepSelected ? state.selected : new_state.selected
+    Object.assign(state, new_state, {
+      resources: state.resources,
+      selected,
+    })
   },
   /**
    * Updates the library with the corresponding data
@@ -99,7 +103,7 @@ export default {
     }
   },
   /**
-   * Populated with resources via APi calls from the actions
+   * Populated with resources via API calls from the actions
    * @param {Object} state The VueXState object
    * @param {Object.{}} tube The tube resource to populate the store
    */
@@ -109,6 +113,16 @@ export default {
       ...attributes,
     }
   },
+  /**
+   * Remove specific resource given the store resource location and resource id
+   * @param {Object} state The VueXState object
+   * @param {String} resource The name of the resource from the store
+   * @param {Object.{}} resourceId The resource id to remove from the store
+   */
+  removeResource: (state, { resource, id }) => {
+    delete state.resources[resource][id]
+  },
+  populatePools: populateById('pools', { includeRelationships: true }),
   setPools: populateById('pools', { includeRelationships: true }, true),
   populateLibraries: populateById('libraries', { includeRelationships: true }),
   populatePlates: populateById('plates', { includeRelationships: true }),
