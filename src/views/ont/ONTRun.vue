@@ -88,7 +88,7 @@ export default {
       'newRun',
       'updateRun',
     ]),
-    ...mapActions('traction/ont', ['fetchOntPools']),
+    ...mapActions('traction/ont/pools', ['fetchOntPools']),
     async runAction() {
       let response = await this[this.currentAction.method]()
 

@@ -17,7 +17,7 @@ const createRun = async ({ getters, rootGetters }) => {
 
   let instrument_id = getters.instruments.find((i) => i.name == run.instrument_name).id
 
-  let existingPools = rootGetters['traction/ont/pools']
+  let existingPools = rootGetters['traction/ont/pools/pools']
 
   let flowcell_attributes = run.flowcell_attributes
     .filter((fc) => fc.flowcell_id && fc.tube_barcode)
@@ -47,7 +47,7 @@ const updateRun = async ({ getters, rootGetters }) => {
   let request = getters.runRequest
   let instrument_id = getters.instruments.find((i) => i.name == run.instrument_name).id
 
-  let existingPools = rootGetters['traction/ont/pools']
+  let existingPools = rootGetters['traction/ont/pools/pools']
 
   let flowcell_attributes = run.flowcell_attributes
     .filter((fc) => fc.flowcell_id && fc.tube_barcode)
@@ -105,7 +105,7 @@ const editRun = async ({ commit, getters, rootGetters }, runId) => {
       (i) => i.id == data.attributes.ont_instrument_id,
     ).name
 
-    let existingPools = rootGetters['traction/ont/pools']
+    let existingPools = rootGetters['traction/ont/pools/pools']
 
     let currentRun = {
       id: data.id,
