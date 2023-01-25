@@ -7,7 +7,8 @@
       fade
       :show="dismissSeconds"
       @dismissed="dismiss()"
-    >{{ message }}</traction-alert>
+      >{{ message }}</traction-alert
+    >
   </div>
 </template>
 
