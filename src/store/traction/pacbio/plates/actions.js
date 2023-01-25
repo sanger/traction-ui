@@ -1,20 +1,45 @@
-import handlePromise from '@/api/PromiseHelper'
+import handleResponse from '@/api/ResponseHelper'
+import { groupIncludedByResource } from '@/api/JsonApi'
 
 const setPlates = async ({ commit, getters }, filter) => {
-  let request = getters.getPlates
-  let promise = request.get({
-    include: 'wells.materials',
-    filter,
-  })
-  let response = await handlePromise(promise)
+  const request = getters.getPlates
+  const promise = request.get({ filter, include: 'wells.requests' })
+  const response = await handleResponse(promise)
+  let { success, data: { data, included = [] } = {}, errors = [] } = response
+  const { wells, requests } = groupIncludedByResource(included)
 
-  if (response.successful && !response.empty) {
-    let plates = response.deserialize.plates
+  if (success) {
+    /*
+      Here we build plate objects to include necessary relational data
+      for the pacbio plates page
+    */
+    const plates = data.map((plate) => {
+      return {
+        id: plate.id,
+        ...plate.attributes,
+        // Map the wells to the plate
+        wells: plate.relationships.wells.data?.map((well) => {
+          let w = wells?.find((w1) => w1.id == well.id)
+          // Map the requests to each well
+          let reqs = w.relationships.requests.data?.map((request) => {
+            let req = requests?.find((r) => r.id == request.id)
+            return {
+              id: req.id,
+              ...req.attributes,
+            }
+          })
+          return {
+            ...w.attributes,
+            requests: reqs,
+          }
+        }),
+      }
+    })
+
     commit('setPlates', plates)
-    return { success: true, errors: [] }
   }
 
-  return { success: false, errors: response.errors }
+  return { success, errors }
 }
 
 const actions = {

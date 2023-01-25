@@ -21,12 +21,44 @@ describe('actions', () => {
       const commit = vi.fn()
       const get = vi.fn()
       const getters = { requestsRequest: { get: get } }
+      let requests = Data.TractionPacbioSamples
+      requests.data.data.splice(2, 4)
+      get.mockReturnValue(requests)
 
-      get.mockReturnValue(Data.TractionPacbioSamples)
+      const expectedRequests = {
+        2: {
+          id: '2',
+          type: 'requests',
+          library_type: 'library_type_1',
+          estimate_of_gb_required: 100,
+          number_of_smrt_cells: 3,
+          cost_code: 'PSD1234',
+          external_study_id: 'mockStudy-ID',
+          sample_name: 'mockName3',
+          barcode: 'TRAC-83',
+          sample_species: 'mockSpecies',
+          source_identifier: 'NT127Q',
+          created_at: '10/14/2019 10:56',
+        },
+        3: {
+          id: '3',
+          type: 'requests',
+          library_type: 'library_type_1',
+          estimate_of_gb_required: 100,
+          number_of_smrt_cells: 3,
+          cost_code: 'PSD1234',
+          external_study_id: 'mockStudy-ID',
+          sample_name: 'mockName3',
+          barcode: 'TRAC-84',
+          sample_species: 'mockSpecies',
+          source_identifier: 'NT127Q',
+          created_at: '10/14/2019 11:01',
+        },
+      }
 
       await Actions.setRequests({ commit, getters })
 
-      expect(commit).toHaveBeenCalledWith('setRequests', requests)
+      expect(commit).toHaveBeenCalledWith('setRequests', expectedRequests)
     })
   })
 

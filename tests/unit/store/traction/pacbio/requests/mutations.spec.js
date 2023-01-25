@@ -1,19 +1,16 @@
-import Response from '@/api/Response'
 import { Data } from '@support/testHelper'
 import mutations from '@/store/traction/pacbio/requests/mutations'
-
-let requests
+import { dataToObjectById } from '@/api/JsonApi'
 
 describe('mutations', () => {
-  beforeEach(() => {
-    requests = new Response(Data.TractionPacbioSamples).deserialize.requests
-  })
-
   it('"setRequests" sets "state.requests" to the given requests', () => {
+    const requests = Data.PacbioRequestsRequest.data.data
     const state = {
-      requests: [],
+      requests: {},
     }
     mutations.setRequests(state, requests)
-    expect(state.requests).toEqual(requests)
+    expect(state.requests).toEqual(
+      dataToObjectById({ data: requests, includeRelationships: false }),
+    )
   })
 })
