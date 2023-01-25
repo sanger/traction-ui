@@ -94,20 +94,13 @@ export default {
         }
       },
       flowcell_bg_colour() {
-        var counter = 0
-        if (this.flowcellId) {
-          counter++
+        if (this.flowcellId && this.poolTubeBarcode) {
+          return 'bg-green-500'
+        } else if (this.flowcellId || this.poolTubeBarcode) {
+          return 'bg-yellow-300'
+        } else {
+          return 'bg-white'
         }
-        if (this.poolTubeBarcode) {
-          counter++
-        }
-        if (counter == 2) {
-          return 'fc_ready'
-        }
-        if (counter == 1) {
-          return 'fc_partial'
-        }
-        return 'fc_empty'
       },
     }),
   },
@@ -119,15 +112,3 @@ export default {
   },
 }
 </script>
-
-<style scoped lang="scss">
-.fc_empty {
-  background-color: rgb(230, 230, 230);
-}
-.fc_partial {
-  background-color: rgb(243, 243, 82);
-}
-.fc_ready {
-  background-color: rgb(77, 199, 77);
-}
-</style>
