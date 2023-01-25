@@ -84,7 +84,7 @@ describe('ONTRunInstrumentFlowcells', () => {
     it('#calculateCoordinate for PromethION', () => {
       let rowIndex = 2
       let colIndex = 3
-      expect(ontRunInstrumentFlowcell.calculateCoordinate(rowIndex, colIndex)).toEqual('3B')
+      expect(ontRunInstrumentFlowcell.calculateCoordinate(rowIndex, colIndex)).toEqual('B3')
     })
   })
 })
