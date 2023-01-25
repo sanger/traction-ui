@@ -22,8 +22,8 @@ describe('Plate.vue', () => {
   let wrapper, plate
 
   beforeEach(() => {
-    store.state.traction.ont.resources.plates = plates
-    store.state.traction.ont.resources.wells = wells
+    store.state.traction.ont.pools.resources.plates = plates
+    store.state.traction.ont.pools.resources.wells = wells
 
     wrapper = mount(Plate, {
       localVue,

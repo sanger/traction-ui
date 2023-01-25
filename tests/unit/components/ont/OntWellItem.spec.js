@@ -24,7 +24,7 @@ describe('Well.vue', () => {
       requests: ['1'],
     }
 
-    store.state.traction.ont.resources.requests = requests
+    store.state.traction.ont.pools.resources.requests = requests
 
     wrapper = mount(Well, {
       propsData: props,

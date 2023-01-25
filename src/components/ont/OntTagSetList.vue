@@ -21,6 +21,7 @@
  *
  * Displays a list of tagSets to select from for ont pooling
  */
+// TODO: ONT store: Does this need to be moved to top level ONT?
 export default {
   name: 'OntTagSetList',
   computed: {
@@ -28,22 +29,24 @@ export default {
       return this.tagSets.length === 0
     },
     tagSets() {
-      return this.$store.getters['traction/ont/tagSetList'].map(({ id: value, name: text }) => ({
-        value,
-        text,
-      }))
+      return this.$store.getters['traction/ont/pools/tagSetList'].map(
+        ({ id: value, name: text }) => ({
+          value,
+          text,
+        }),
+      )
     },
     options() {
       return [{ value: null, text: 'Please select a tag set' }, ...this.tagSets]
     },
     selected() {
-      const { id = null } = this.$store.getters['traction/ont/selectedTagSet']
+      const { id = null } = this.$store.getters['traction/ont/pools/selectedTagSet']
       return id
     },
   },
   methods: {
     updateSelected(id) {
-      this.$store.commit('traction/ont/selectTagSet', { id })
+      this.$store.commit('traction/ont/pools/selectTagSet', { id })
     },
   },
 }

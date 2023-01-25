@@ -9,8 +9,8 @@ describe('OntPlateSelectedList', () => {
     const responseBody = new Response(Data.OntPlatesRequest)._body
     mockPlates = responseBody.data
     const mockWells = responseBody.included.slice(0, 16)
-    store.commit('traction/ont/populatePlates', mockPlates)
-    store.commit('traction/ont/populateWells', mockWells)
+    store.commit('traction/ont/pools/populatePlates', mockPlates)
+    store.commit('traction/ont/pools/populateWells', mockWells)
 
     wrapper = mount(OntPlateSelectedList, {
       localVue,
@@ -34,7 +34,7 @@ describe('OntPlateSelectedList', () => {
   describe('Plate selection', () => {
     beforeEach(() => {
       let selectPlate = { id: '1', selected: true }
-      store.commit('traction/ont/selectPlate', selectPlate)
+      store.commit('traction/ont/pools/selectPlate', selectPlate)
     })
 
     it('contains the selected plate', () => {
@@ -46,7 +46,7 @@ describe('OntPlateSelectedList', () => {
   describe('Plate@onSelect', () => {
     beforeEach(() => {
       let selectPlate = { id: '1', selected: true }
-      store.commit('traction/ont/selectPlate', selectPlate)
+      store.commit('traction/ont/pools/selectPlate', selectPlate)
     })
 
     it('selects the requests associated with the well', async () => {
@@ -61,8 +61,8 @@ describe('OntPlateSelectedList', () => {
         removed: [{ __vue__: { $attrs: { id: '2' } } }],
       })
 
-      expect(dispatch).toHaveBeenCalledWith('traction/ont/selectWellRequests', '1')
-      expect(dispatch).toHaveBeenCalledWith('traction/ont/selectWellRequests', '2')
+      expect(dispatch).toHaveBeenCalledWith('traction/ont/pools/selectWellRequests', '1')
+      expect(dispatch).toHaveBeenCalledWith('traction/ont/pools/selectWellRequests', '2')
     })
   })
 })

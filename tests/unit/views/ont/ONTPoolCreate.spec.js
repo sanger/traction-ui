@@ -48,7 +48,9 @@ describe('OntPoolCreate', () => {
       state: {
         traction: {
           ont: {
-            resources: { tagSets },
+            pools: {
+              resources: { tagSets },
+            },
           },
         },
       },
@@ -85,8 +87,10 @@ describe('OntPoolCreate', () => {
       state: {
         traction: {
           ont: {
-            resources: { plates, tagSets, wells, requests, tags },
-            pooling: { pool, tube, libraries },
+            pools: {
+              resources: { plates, tagSets, wells, requests, tags },
+              pooling: { pool, tube, libraries },
+            },
           },
         },
       },

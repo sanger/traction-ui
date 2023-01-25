@@ -155,7 +155,7 @@ export default {
     }
   },
   computed: {
-    ...mapGetters('traction/ont', ['pools']),
+    ...mapGetters('traction/ont/pools', ['pools']),
   },
   methods: {
     /* 
@@ -190,7 +190,7 @@ export default {
 
       this.showAlert(message, success ? 'success' : 'danger')
     },
-    ...mapActions('traction/ont', ['fetchOntPools']),
+    ...mapActions('traction/ont/pools', ['fetchOntPools']),
     ...mapActions('printMyBarcode', ['createPrintJob']),
   },
 }
