@@ -142,7 +142,6 @@ export default {
       ],
       filterOptions: [
         { value: '', text: '' },
-        { value: 'id', text: 'Sample ID' },
         { value: 'source_identifier', text: 'Source' },
         { value: 'species', text: 'Species' },
         { value: 'sample_name', text: 'Name' },

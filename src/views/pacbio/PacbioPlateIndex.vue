@@ -84,7 +84,6 @@ export default {
       ],
       filterOptions: [
         { value: '', text: '' },
-        { value: 'id', text: 'Plate ID' },
         { value: 'barcode', text: 'Barcode' },
       ],
       filteredItems: [],

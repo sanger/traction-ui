@@ -7,7 +7,7 @@ describe('PacbioPlates.vue', () => {
 
   beforeEach(async () => {
     const get = vi.spyOn(store.state.api.traction.pacbio.plates, 'get')
-    get.mockResolvedValue(Data.PacbioPlates)
+    get.mockResolvedValue(Data.PacbioPlatesRequest)
 
     wrapper = mount(PacbioPlates, {
       store,
@@ -44,12 +44,13 @@ describe('PacbioPlates.vue', () => {
     let button
 
     it('is present for each plate', () => {
-      button = wrapper.find('#details-btn-1')
+      // btn-61 because that is the first plate ID in the mocked data
+      button = wrapper.find('#details-btn-61')
       expect(button.text()).toEqual('Show Plate')
     })
 
     it('has a plate component on button click', async () => {
-      button = wrapper.find('#details-btn-1')
+      button = wrapper.find('#details-btn-61')
       await button.trigger('click')
       expect(wrapper.findComponent({ ref: 'plate' }).exists()).toBeTruthy()
       expect(button.text()).toEqual('Hide Plate')
@@ -59,7 +60,7 @@ describe('PacbioPlates.vue', () => {
   describe('perPage', () => {
     beforeEach(async () => {
       const get = vi.spyOn(store.state.api.traction.pacbio.plates, 'get')
-      get.mockResolvedValue(Data.PacbioPlates)
+      get.mockResolvedValue(Data.PacbioPlatesRequest)
 
       wrapper = mount(PacbioPlates, {
         store,

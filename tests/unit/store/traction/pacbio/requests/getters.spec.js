@@ -35,6 +35,6 @@ describe('getters', () => {
     const state = {
       requests: requests,
     }
-    expect(getters.requests(state)).toBe(Object.values(requests))
+    expect(getters.requests(state)).toStrictEqual(Object.values(requests))
   })
 })

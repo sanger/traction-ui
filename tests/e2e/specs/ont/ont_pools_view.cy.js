@@ -10,6 +10,14 @@ describe('Ont pools view', () => {
       },
     })
     cy.visit('#/ont/pools')
+    // Check filters are visible
+    cy.get('#filterInput').should('be.visible')
+    cy.get('#filterValue').should('be.visible')
+    cy.get('#filterValue')
+      .children()
+      .should('contain', 'Barcode')
+      .and('contain', 'Pool ID')
+      .and('contain', 'Sample Name')
     cy.get('#pool-index').find('tr').should('have.length', '4')
     cy.get('.pool')
       .first()
