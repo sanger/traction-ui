@@ -99,6 +99,7 @@ export default {
       this.$router.push({ name: 'ONTRuns' })
     },
     async provider() {
+      await this.setInstruments()
       await this.fetchOntPools()
 
       if (this.id === 'new') {
@@ -106,7 +107,7 @@ export default {
       } else if (!this.newRecord) {
         await this.editRun(parseInt(this.id))
       }
-      return await this.setInstruments().then((res) => res)
+      return { success: true }
     },
   },
 }

@@ -172,7 +172,7 @@ describe('ONTRun.vue', () => {
       beforeEach(() => {
         ontRun.fetchOntPools = vi.fn()
         ontRun.newRun = vi.fn()
-        ontRun.setInstruments = vi.fn(() => Promise.resolve())
+        ontRun.setInstruments = vi.fn()
       })
 
       it('calls fetchOntPools successfully', async () => {
