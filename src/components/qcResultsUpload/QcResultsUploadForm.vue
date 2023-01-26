@@ -21,11 +21,24 @@
           required
         ></traction-file>
       </traction-sub-section>
-      <traction-button id="upload-button" type="submit" theme="create" size="lg" :disabled="busy">
+      <traction-button
+        id="upload-button"
+        type="submit"
+        theme="create"
+        size="lg"
+        :disabled="disableUpload"
+      >
         <!-- Weird bug - spinner won't show unless button text is two words/ big enough? -->
         Upload File
         <traction-spinner v-show="busy"></traction-spinner>
       </traction-button>
+      <traction-button
+        id="reenable-button"
+        size="lg"
+        :disabled="!disableUpload"
+        @click="disableUpload = !disableUpload"
+        >Re-enable</traction-button
+      >
     </traction-form>
   </div>
 </template>
@@ -46,6 +59,7 @@ export default {
       file: null,
       usedBySelected: 'extraction',
       busy: null,
+      disableUpload: null,
     }
   },
   computed: {
@@ -57,7 +71,9 @@ export default {
       await this.postCSV()
     },
     async postCSV() {
+      // We want to keep the button disabled after every upload, unless refreshed or "Re-enable" clicked
       this.busy = true
+      this.disableUpload = true
       try {
         const csv = await this.file.text()
         let data = { csv: csv, usedBySelected: this.usedBySelected }
