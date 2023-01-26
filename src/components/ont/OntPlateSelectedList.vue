@@ -57,7 +57,7 @@ import Plate from '@/components/ont/OntPlateItem'
 import { createNamespacedHelpers } from 'vuex'
 import { VueSelecto } from 'vue-selecto'
 
-const { mapGetters, mapMutations, mapActions } = createNamespacedHelpers('traction/ont')
+const { mapGetters, mapMutations, mapActions } = createNamespacedHelpers('traction/ont/')
 
 /**
  * # OntPlateSelectedList
