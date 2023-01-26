@@ -5,10 +5,9 @@
         <!-- display warning message if no pools are selected-->
 
         <div class="pools">
-          <!-- for pool in selected pools display the list -->
           <traction-list-group class="list-group">
             <tube v-for="pool in pools" :key="pool.id" v-bind="pool">
-                <!-- add a remove button and bind it to deselectPool -->
+              <!-- add a remove button and bind it to deselectPool -->
             </tube>
           </traction-list-group>
         </div>
@@ -21,16 +20,16 @@
 import Tube from '@/components/pacbio/PacbioPoolTubeItem'
 import { createNamespacedHelpers } from 'vuex'
 
-const { mapGetters } = createNamespacedHelpers('traction/pacbio/pools')
+const { mapGetters } = createNamespacedHelpers('traction/pacbio/runCreate')
 
 export default {
   name: 'PacbioPoolSelectedList',
   components: {
     Tube,
   },
-    computed: {
-      ...mapGetters(['pools'])
-    }
+  computed: {
+    ...mapGetters(['pools']),
+  },
 }
 </script>
 <style scoped>

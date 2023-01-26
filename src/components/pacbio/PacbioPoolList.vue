@@ -1,6 +1,6 @@
 <template>
   <div class="pools">
-    <LabwareFinder :fetcher="setPools" filter="barcode" />
+    <LabwareFinder :fetcher="findPools" filter="barcode" />
     <PacbioPoolSelectedList></PacbioPoolSelectedList>
   </div>
 </template>
@@ -10,7 +10,7 @@ import { createNamespacedHelpers } from 'vuex'
 import LabwareFinder from '@/components/LabwareFinder'
 import PacbioPoolSelectedList from './PacbioPoolSelectedList.vue'
 
-const { mapActions, mapGetters } = createNamespacedHelpers('traction/pacbio/pools')
+const { mapActions, mapGetters } = createNamespacedHelpers('traction/pacbio/runCreate')
 
 export default {
   name: 'PacbioPoolList',
@@ -25,18 +25,8 @@ export default {
   computed: {
     ...mapGetters(['pools']),
   },
-  // created() {
-  //   this.provider()
-  // },
   methods: {
-    // async provider() {
-    //   try {
-    //     await this.setPools()
-    //   } catch (error) {
-    //     this.showAlert(`Failed to get pools: ${error.message}`, 'danger')
-    //   }
-    // },
-    ...mapActions(['setPools']),
+    ...mapActions(['findPools']),
   },
 }
 </script>
