@@ -45,33 +45,21 @@ describe('ONTRunInstrumentFlowcells', () => {
         expect(ontRunInstrumentFlowcell.currentRun).toEqual(mockRun)
       })
 
-      it('must have instrumentFlowcellLayout', () => {
-        expect(ontRunInstrumentFlowcell.instrumentFlowcellLayout).toEqual(InstrumentFlowcellLayout)
-      })
       it('must have instruments', () => {
-        expect(ontRunInstrumentFlowcell.instruments).toEqual(mockInstruments)
+        let expected = mockInstruments.map((i) => {
+          let instrumentConfig = InstrumentFlowcellLayout[i.instrument_type]
+          return {
+            ...i,
+            ...instrumentConfig,
+          }
+        })
+        expect(ontRunInstrumentFlowcell.instruments).toEqual(expected)
       })
-    })
 
-    it('#getInstrumentLayout', () => {
-      expect(ontRunInstrumentFlowcell.getInstrumentLayout).toBeDefined()
-      expect(ontRunInstrumentFlowcell.getInstrumentLayout).toEqual({
-        columns: 3,
-        rows: 8,
-        useCoordinates: true,
+      it('must have instrumentByName', () => {
+        let expected = mockInstruments.find((i) => i.name == 'PC24B148')
+        expect(ontRunInstrumentFlowcell.instrument).toEqual(expected)
       })
-    })
-    it('#numOfRows', () => {
-      expect(ontRunInstrumentFlowcell.numOfRows).toBeDefined()
-      expect(ontRunInstrumentFlowcell.numOfRows).toEqual(8)
-    })
-    it('#numOfColumns', () => {
-      expect(ontRunInstrumentFlowcell.numOfColumns).toBeDefined()
-      expect(ontRunInstrumentFlowcell.numOfColumns).toEqual(3)
-    })
-    it('#useCoordinates', () => {
-      expect(ontRunInstrumentFlowcell.useCoordinates).toBeDefined()
-      expect(ontRunInstrumentFlowcell.useCoordinates).toEqual(true)
     })
   })
 

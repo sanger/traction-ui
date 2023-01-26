@@ -2,7 +2,7 @@
   "data": {
     "data": [
       {
-        "id": "1",
+        "id": 1,
         "type": "instruments",
         "links": {
           "self": "http://127.0.0.1:3100/v1/ont/instruments/1"
@@ -14,7 +14,7 @@
         }
       },
       {
-        "id": "2",
+        "id": 2,
         "type": "instruments",
         "links": {
           "self": "http://127.0.0.1:3100/v1/ont/instruments/2"

@@ -1,7 +1,50 @@
 import { expect, it } from 'vitest'
+import Response from '@/api/Response'
+import { Data } from '@support/testHelper'
+import getters from '@/store/traction/ont/getters'
+import InstrumentFlowcellLayout from '@/config/InstrumentFlowcellLayout'
 
 describe('getters.js', () => {
-  it('works', () => {
-    expect(true).toBeTruthy()
+  let state, instruments, runs
+
+  beforeEach(() => {
+    instruments = new Response(Data.OntInstruments).deserialize.instruments
+    runs = new Response(Data.OntRuns).deserialize.runs
+
+    state = {
+      resources: {
+        instruments: instruments,
+        runs: runs,
+      },
+    }
+  })
+
+  it('"instruments" returns "state.resources.instruments"', () => {
+    const actual = getters.instruments(state)
+
+    let expected = Object.values(state.resources.instruments).map((i) => {
+      let instrumentConfig = InstrumentFlowcellLayout[i.instrument_type]
+      return {
+        ...i,
+        ...instrumentConfig,
+      }
+    })
+
+    expect(actual).toEqual(expected)
+  })
+
+  it('"runs" returns "state.resources.runs"', () => {
+    const actual = getters.runs(state)
+
+    let expected = Object.values(runs).map((r) => {
+      let instrument = Object.values(state.resources.instruments).find(
+        (i) => i.id == r.ont_instrument_id,
+      )
+      return {
+        ...r,
+        instrument_name: `${instrument.name} (${instrument.instrument_type})`,
+      }
+    })
+    expect(actual).toEqual(expected)
   })
 })

@@ -28,9 +28,4 @@ describe('getters', () => {
     const actual = getters.runRequest(state, '', rootState)
     expect(actual).toEqual('aRunRequest')
   })
-
-  it('"instrumentFlowcellLayout" returns "state.instrumentFlowcellLayout"', () => {
-    const actual = getters.instrumentFlowcellLayout(state)
-    expect(actual).toEqual(InstrumentFlowcellLayout)
-  })
 })

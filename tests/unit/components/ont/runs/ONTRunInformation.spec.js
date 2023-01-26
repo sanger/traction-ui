@@ -2,6 +2,7 @@ import ONTRunInformation from '@/components/ont/runs/ONTRunInformation'
 import { localVue, mount, store, router, Data } from '@support/testHelper'
 import { beforeEach, describe, it } from 'vitest'
 import Response from '@/api/Response'
+import InstrumentFlowcellLayout from '@/config/InstrumentFlowcellLayout'
 
 describe('ONTRunInformation.vue', () => {
   let wrapper, ontRunInfomation, mockInstruments, mockRun
@@ -57,7 +58,14 @@ describe('ONTRunInformation.vue', () => {
       expect(ontRunInfomation.currentRun).toEqual(mockRun)
     })
     it('must have instruments', () => {
-      expect(ontRunInfomation.instruments).toEqual(mockInstruments)
+      let expected = mockInstruments.map((i) => {
+        let instrumentConfig = InstrumentFlowcellLayout[i.instrument_type]
+        return {
+          ...i,
+          ...instrumentConfig,
+        }
+      })
+      expect(ontRunInfomation.instruments).toEqual(expected)
     })
   })
   describe('#mapState', () => {

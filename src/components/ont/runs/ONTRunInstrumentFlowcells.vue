@@ -1,10 +1,10 @@
 <template>
   <div>
     <traction-section number="2" title="Run Instrument Flowcells">
-      <div v-if="getInstrumentLayout.rows">
-        <div v-for="rowIndex in numOfRows" :key="rowIndex" class="flex flex-row px-2 py-2">
+      <div v-if="instrument">
+        <div v-for="rowIndex in instrument.rows" :key="rowIndex" class="flex flex-row px-2 py-2">
           <ONTFlowcell
-            v-for="colIndex in numOfColumns"
+            v-for="colIndex in instrument.columns"
             :key="colIndex"
             :position="calculatePosition(rowIndex, colIndex)"
             :coordinate="calculateCoordinate(rowIndex, colIndex)"
@@ -33,34 +33,21 @@ export default {
   },
   props: {},
   computed: {
-    ...mapGetters('traction/ont/runs', ['currentRun', 'instrumentFlowcellLayout']),
-    ...mapGetters('traction/ont', ['instruments']),
-    getInstrumentLayout() {
-      let instrumentConfig = this.instruments.find(
-        (instrument) => instrument.name == this.currentRun.instrument_name,
-      )
-      if (instrumentConfig) {
-        return this.instrumentFlowcellLayout[instrumentConfig.instrument_type]
-      }
-      return {}
-    },
-    numOfRows() {
-      return this.getInstrumentLayout['rows']
-    },
-    numOfColumns() {
-      return this.getInstrumentLayout['columns']
-    },
-    useCoordinates() {
-      return this.getInstrumentLayout['useCoordinates']
+    ...mapGetters('traction/ont/runs', ['currentRun']),
+    ...mapGetters('traction/ont', ['instruments', 'instrumentByName']),
+    instrument() {
+      return this.instrumentByName(this.currentRun.instrument_name)
     },
   },
   methods: {
     calculatePosition(rowIndex, colIndex) {
-      return this.numOfRows * (colIndex - 1) + rowIndex
+      return this.instrument.rows * (colIndex - 1) + rowIndex
     },
     calculateCoordinate(rowIndex, colIndex) {
       let rowLetters = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H']
-      return this.useCoordinates ? `${colIndex}${rowLetters[rowIndex - 1]}` : `${colIndex}`
+      return this.instrument.useCoordinates
+        ? `${colIndex}${rowLetters[rowIndex - 1]}`
+        : `${colIndex}`
     },
   },
 }
