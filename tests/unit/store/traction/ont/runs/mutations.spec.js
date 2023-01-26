@@ -1,13 +1,10 @@
 import Mutations from '@/store/traction/ont/runs/mutations'
-import { Data } from '@support/testHelper'
-import Response from '@/api/Response'
 import { expect, describe } from 'vitest'
 
 describe('mutations', () => {
-  let state, instruments
+  let state
 
   beforeEach(() => {
-    instruments = new Response(Data.OntInstruments).deserialize.instruments
     state = {
       runs: [],
       currentRun: {
@@ -16,18 +13,23 @@ describe('mutations', () => {
         state: '',
         flowcell_attributes: [],
       },
-      instruments: [],
     }
   })
 
   describe('mutate', () => {
-    it('can mutate the state, e.g setInstruments', () => {
-      Mutations.setInstruments(state, instruments)
-      expect(state.instruments).toEqual(instruments)
+    it('can mutate the state, e.g setCurrentRun', () => {
+      let currentRun = {
+        id: '1',
+        instrument_name: '',
+        state: 'pending',
+        flowcell_attributes: [],
+      }
+      Mutations.setCurrentRun(state, currentRun)
+      expect(state.currentRun).toEqual(currentRun)
     })
   })
   describe('mutateRun', () => {
-    it('can mutate the currentRun state, e.g setInstrumentName', () => {
+    it('can mutate the currentRun state, e.g setCurrentRun', () => {
       let instrumentName = 'Bob'
       Mutations.setInstrumentName(state, instrumentName)
       expect(state.currentRun.instrument_name).toEqual(instrumentName)

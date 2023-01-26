@@ -9,7 +9,9 @@ describe('ONTRunInstrumentFlowcells', () => {
 
   beforeEach(() => {
     mockInstruments = new Response(Data.OntInstruments).deserialize.instruments
-    store.commit('traction/ont/runs/setInstruments', mockInstruments)
+
+    let rawInstruments = new Response(Data.OntInstruments)._body.data
+    store.commit('traction/ont/setInstruments', rawInstruments)
 
     mockRun = {
       id: 'new',

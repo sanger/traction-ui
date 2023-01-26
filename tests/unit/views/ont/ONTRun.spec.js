@@ -3,20 +3,24 @@ import { localVue, mount, store, router } from '@support/testHelper'
 import { beforeEach, describe, it } from 'vitest'
 
 describe('ONTRun.vue', () => {
-  let wrapper, ontRun
+  let wrapper, ontRun, stubs
 
   beforeEach(() => {
+    stubs = {
+      DataFetcher: true,
+      ONTRunInstrumentFlowcells: true,
+      ONTRunInformation: true,
+    }
+
     wrapper = mount(ONTRun, {
       store,
       router,
       localVue,
-      stubs: {
-        ONTRunInstrumentFlowcells: true,
-        ONTRunInformation: true,
-      },
+      stubs: stubs,
       propsData: { id: 'new' },
     })
     ontRun = wrapper.vm
+    ontRun.showAlert = vi.fn()
   })
 
   describe('Back button', () => {
@@ -59,6 +63,8 @@ describe('ONTRun.vue', () => {
       wrapper = mount(ONTRun, {
         store,
         router,
+        localVue,
+        stubs: stubs,
         propsData: { id: '1' },
       })
       ontRun = wrapper.vm
@@ -68,7 +74,6 @@ describe('ONTRun.vue', () => {
 
   describe('#createRun', () => {
     beforeEach(() => {
-      ontRun.showAlert = vi.fn()
       ontRun.createRun = vi.fn()
       ontRun.redirectToRuns = vi.fn()
     })
@@ -117,17 +122,14 @@ describe('ONTRun.vue', () => {
         store,
         router,
         localVue,
-        stubs: {
-          ONTRunInstrumentFlowcells: true,
-          ONTRunInformation: true,
-        },
+        stubs: stubs,
         propsData: { id: '1' },
       })
       ontRun = wrapper.vm
 
-      ontRun.showAlert = vi.fn()
       ontRun.updateRun = vi.fn()
       ontRun.redirectToRuns = vi.fn()
+      ontRun.showAlert = vi.fn()
     })
     it('contains a update new run button', () => {
       expect(wrapper.find('#update')).toBeTruthy()
@@ -152,7 +154,6 @@ describe('ONTRun.vue', () => {
     })
 
     it('unsuccessful', async () => {
-      // return whole response object
       ontRun.updateRun.mockReturnValue({ errors: 'this is an error' })
 
       await ontRun.runAction()
@@ -171,38 +172,38 @@ describe('ONTRun.vue', () => {
       beforeEach(() => {
         ontRun.fetchOntPools = vi.fn()
         ontRun.newRun = vi.fn()
+        ontRun.setInstruments = vi.fn(() => Promise.resolve())
       })
 
       it('calls fetchOntPools successfully', async () => {
         await ontRun.provider()
         expect(ontRun.fetchOntPools).toBeCalled()
         expect(ontRun.newRun).toBeCalled()
+        expect(ontRun.setInstruments).toBeCalled()
       })
     })
+
     describe('when it is an existing run', () => {
       beforeEach(() => {
         wrapper = mount(ONTRun, {
           store,
           router,
           localVue,
-          stubs: {
-            ONTRunInstrumentFlowcells: true,
-            ONTRunInformation: true,
-          },
+          stubs: stubs,
           propsData: { id: '1' },
         })
         ontRun = wrapper.vm
 
         ontRun.fetchOntPools = vi.fn()
-        ontRun.setInstruments = vi.fn()
+        ontRun.setInstruments = vi.fn(() => Promise.resolve())
         ontRun.editRun = vi.fn()
       })
 
       it('calls fetchOntPools successfully', async () => {
         await ontRun.provider()
         expect(ontRun.fetchOntPools).toBeCalled()
-        expect(ontRun.setInstruments).toBeCalled()
         expect(ontRun.editRun).toBeCalledWith(1)
+        expect(ontRun.setInstruments).toBeCalled()
       })
     })
   })

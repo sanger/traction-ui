@@ -27,9 +27,8 @@
 </template>
 
 <script>
-import { createNamespacedHelpers } from 'vuex'
-const { mapGetters, mapState, mapMutations, mapActions } =
-  createNamespacedHelpers('traction/ont/runs')
+import { createNamespacedHelpers, mapGetters } from 'vuex'
+const { mapState, mapMutations } = createNamespacedHelpers('traction/ont/runs')
 
 /**
  * # ONTRunInformation
@@ -44,7 +43,8 @@ export default {
     }
   },
   computed: {
-    ...mapGetters(['currentRun', 'instruments']),
+    ...mapGetters('traction/ont', ['instruments']),
+    ...mapGetters('traction/ont/runs', ['currentRun']),
     ...mapState({
       instrumentName: (state) => state.currentRun.instrument_name,
       state: (state) => state.currentRun.state,
@@ -69,23 +69,11 @@ export default {
       return isNaN(this.currentRun.id)
     },
   },
-  created() {
-    this.provider()
-  },
   methods: {
-    // use data fetcher instead?
-    async provider() {
-      try {
-        await this.setInstruments()
-      } catch (error) {
-        this.showAlert('Failed to get instruments: ' + error.message, 'danger')
-      }
-    },
     formatState(str) {
       return str.replace(/\s+/g, '_').toLowerCase()
     },
     ...mapMutations(['setInstrumentName', 'setState']),
-    ...mapActions(['setInstruments']),
   },
 }
 </script>

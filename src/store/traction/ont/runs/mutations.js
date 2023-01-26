@@ -39,7 +39,6 @@ const mutations = {
   setState: mutateRun('state'),
   setFlowcellId: setFlowcellId(),
   setPoolTubeBarcode: setPoolTubeBarcode(),
-  setInstruments: mutate('instruments'),
   populatePools: mutate('pools'),
   setCurrentRun: mutate('currentRun'),
 }

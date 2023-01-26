@@ -18,9 +18,7 @@
 </template>
 
 <script>
-import { createNamespacedHelpers } from 'vuex'
-const { mapGetters } = createNamespacedHelpers('traction/ont/runs')
-
+import { mapGetters } from 'vuex'
 import ONTFlowcell from '@/components/ont/runs/ONTFlowcell'
 /**
  * # ONTRunInstrumentFlowcells
@@ -35,7 +33,8 @@ export default {
   },
   props: {},
   computed: {
-    ...mapGetters(['currentRun', 'instrumentFlowcellLayout', 'instruments']),
+    ...mapGetters('traction/ont/runs', ['currentRun', 'instrumentFlowcellLayout']),
+    ...mapGetters('traction/ont', ['instruments']),
     getInstrumentLayout() {
       let instrumentConfig = this.instruments.find(
         (instrument) => instrument.name == this.currentRun.instrument_name,

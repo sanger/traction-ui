@@ -15,7 +15,8 @@ const createRun = async ({ getters, rootGetters }) => {
   let run = getters.currentRun
   let request = getters.runRequest
 
-  let instrument_id = getters.instruments.find((i) => i.name == run.instrument_name).id
+  let existingInstruments = rootGetters['traction/ont/instruments']
+  let instrument_id = existingInstruments.find((i) => i.name == run.instrument_name).id
 
   let existingPools = rootGetters['traction/ont/pools/pools']
 
@@ -45,7 +46,9 @@ const createRun = async ({ getters, rootGetters }) => {
 const updateRun = async ({ getters, rootGetters }) => {
   let run = getters.currentRun
   let request = getters.runRequest
-  let instrument_id = getters.instruments.find((i) => i.name == run.instrument_name).id
+
+  let existingInstruments = rootGetters['traction/ont/instruments']
+  let instrument_id = existingInstruments.find((i) => i.name == run.instrument_name).id
 
   let existingPools = rootGetters['traction/ont/pools/pools']
 
@@ -74,25 +77,6 @@ const updateRun = async ({ getters, rootGetters }) => {
   return await handleResponse(promise)
 }
 
-const setInstruments = async ({ commit, getters }) => {
-  let request = getters.instrumentRequest
-  let promise = request.get()
-  const response = await handleResponse(promise)
-  const { success, data: { data } = {}, errors = [] } = response
-
-  if (success && !data.empty) {
-    let instruments = data.map((i) => {
-      return {
-        ...i.attributes,
-        id: i.id,
-      }
-    })
-
-    commit('setInstruments', instruments)
-  }
-  return errors
-}
-
 const editRun = async ({ commit, getters, rootGetters }, runId) => {
   let request = getters.runRequest
   let promise = request.find({ id: runId, include: 'flowcells' })
@@ -101,7 +85,8 @@ const editRun = async ({ commit, getters, rootGetters }, runId) => {
   const { success, data: { data, included = [] } = {}, errors = [] } = response
 
   if (success && !data.empty) {
-    let instrument_name = getters.instruments.find(
+    let existingInstruments = rootGetters['traction/ont/instruments']
+    let instrument_name = existingInstruments.find(
       (i) => i.id == data.attributes.ont_instrument_id,
     ).name
 
@@ -131,12 +116,11 @@ const editRun = async ({ commit, getters, rootGetters }, runId) => {
 
 const actions = {
   createRun,
-  setInstruments,
   editRun,
   newRun,
   updateRun,
 }
 
-export { createRun, setInstruments, editRun, newRun, updateRun }
+export { createRun, editRun, newRun, updateRun }
 
 export default actions

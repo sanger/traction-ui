@@ -8,7 +8,9 @@ describe('ONTRunInformation.vue', () => {
 
   beforeEach(() => {
     mockInstruments = new Response(Data.OntInstruments).deserialize.instruments
-    store.commit('traction/ont/runs/setInstruments', mockInstruments)
+
+    let rawInstruments = new Response(Data.OntInstruments)._body.data
+    store.commit('traction/ont/setInstruments', rawInstruments)
 
     mockRun = {
       id: 'new',
@@ -65,7 +67,7 @@ describe('ONTRunInformation.vue', () => {
     })
   })
   describe('#instrumentOptions', () => {
-    it('must have currentRun', () => {
+    it('must format instrumentOptions', () => {
       let options = mockInstruments.map((instrument) => ({
         value: instrument.name,
         text: instrument.name,
@@ -79,7 +81,7 @@ describe('ONTRunInformation.vue', () => {
   })
 
   describe('#stateOptions', () => {
-    it('must have currentRun', () => {
+    it('must format stateOptions', () => {
       let options = ontRunInfomation.statesList.map((state) => ({
         value: state.replace(/\s+/g, '_').toLowerCase(),
         text: state,

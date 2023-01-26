@@ -1,9 +1,8 @@
 <template>
-  <div id="ontrun">
+  <DataFetcher :fetcher="provider">
     <router-link :to="{ name: 'ONTRuns' }">
       <traction-button id="backToRunsButton" class="float-right">Back</traction-button>
     </router-link>
-
     <traction-button
       v-if="newRecord"
       id="resetButton"
@@ -25,20 +24,20 @@
 
     <ONTRunInformation></ONTRunInformation>
     <ONTRunInstrumentFlowcells></ONTRunInstrumentFlowcells>
-  </div>
+  </DataFetcher>
 </template>
 <script>
+import DataFetcher from '@/components/DataFetcher.vue'
 import ONTRunInformation from '@/components/ont/runs/ONTRunInformation'
 import ONTRunInstrumentFlowcells from '@/components/ont/runs/ONTRunInstrumentFlowcells'
-
-import { createNamespacedHelpers, mapActions } from 'vuex'
-const { mapGetters } = createNamespacedHelpers('traction/ont/runs')
+import { mapActions, mapGetters } from 'vuex'
 
 export default {
   name: 'ONTRun',
   components: {
     ONTRunInformation,
     ONTRunInstrumentFlowcells,
+    DataFetcher,
   },
   props: {
     id: {
@@ -66,7 +65,8 @@ export default {
     }
   },
   computed: {
-    ...mapGetters(['currentRun']),
+    ...mapGetters('traction/ont/runs', ['currentRun']),
+    ...mapGetters('traction/ont', ['instruments']),
     currentAction() {
       return this.actions[this.newRecord ? 'create' : 'update']
     },
@@ -77,17 +77,9 @@ export default {
       return this.currentRun.instrument_name && this.currentRun.state && flowcells.length != 0
     },
   },
-  created() {
-    this.provider()
-  },
   methods: {
-    ...mapActions('traction/ont/runs', [
-      'createRun',
-      'setInstruments',
-      'editRun',
-      'newRun',
-      'updateRun',
-    ]),
+    ...mapActions('traction/ont/runs', ['createRun', 'editRun', 'newRun', 'updateRun']),
+    ...mapActions('traction/ont', ['setInstruments']),
     ...mapActions('traction/ont/pools', ['fetchOntPools']),
     async runAction() {
       let response = await this[this.currentAction.method]()
@@ -112,9 +104,9 @@ export default {
       if (this.id === 'new') {
         this.newRun()
       } else if (!this.newRecord) {
-        await this.setInstruments()
         await this.editRun(parseInt(this.id))
       }
+      return await this.setInstruments().then((res) => res)
     },
   },
 }

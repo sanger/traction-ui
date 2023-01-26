@@ -5,7 +5,6 @@ const state = {
     flowcell_attributes: [],
   },
   instrumentFlowcellLayout: InstrumentFlowcellLayout,
-  instruments: [],
 }
 
 export default state

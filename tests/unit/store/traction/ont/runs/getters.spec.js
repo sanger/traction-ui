@@ -29,18 +29,8 @@ describe('getters', () => {
     expect(actual).toEqual('aRunRequest')
   })
 
-  it('"instrumentRequest" returns "state.instrumentRequest"', () => {
-    const actual = getters.instrumentRequest(state, '', rootState)
-    expect(actual).toEqual('aInstrumentRequest')
-  })
-
   it('"instrumentFlowcellLayout" returns "state.instrumentFlowcellLayout"', () => {
     const actual = getters.instrumentFlowcellLayout(state)
     expect(actual).toEqual(InstrumentFlowcellLayout)
-  })
-
-  it('"instruments" returns "state.instruments"', () => {
-    const actual = getters.instruments(state)
-    expect(actual).toEqual(instruments)
   })
 })
