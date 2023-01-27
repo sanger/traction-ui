@@ -1,49 +1,48 @@
 <template>
   <div>
-    <div class="rounded overflow-hidden shadow-lg" :class="flowcell_bg_colour">
-      <div class="px-2 py-2">
-        <div class="text-xl mb-2">{{ coordinate }}</div>
-        <traction-form-group
-          id="input-group-flowcell-id"
-          label="Flowcell"
-          label-for="flowcell-id"
-          label-align="left"
-          label-cols="auto"
-        >
-          <traction-input
-            :id="'flowcell-id-' + position"
-            placeholder="Scan flowcell ID"
-            :value="flowcellId"
-            :formatter="formatter"
-            :state="flowcellIdValidation"
-            @input="setFlowcellId({ $event, position })"
-          ></traction-input>
-          <!-- This will only be shown if the preceding input has an invalid state -->
-          <traction-invalid-feedback id="input-flowcell-id-feedback"
-            >Enter at valid Flowcell ID (3 letters then atleast 3
-            numbers)</traction-invalid-feedback
-          >
-        </traction-form-group>
-        <traction-form-group
-          id="input-group-pool-id"
-          label="Library Barcode"
-          label-for="pool-id"
-          label-align="left"
-          label-cols="auto"
-        >
-          <traction-input
-            :id="'pool-id-' + position"
-            v-model="barcode"
-            :formatter="formatter"
-            :state="barcodeState"
-            debounce="500"
-            placeholder="Scan library barcode"
-          ></traction-input>
-          <traction-invalid-feedback id="input-pool-tube-barcode-feedback"
-            >Enter at valid Pool Library barcode</traction-invalid-feedback
-          >
-        </traction-form-group>
-      </div>
+    <div class="px-2 py-2 rounded overflow-hidden shadow-lg" :class="flowcell_bg_colour">
+
+      <div class="text-xl mb-2">{{ coordinate }}</div>
+      <traction-form-group
+        id="input-group-flowcell-id"
+        label="Flowcell"
+        label-for="flowcell-id"
+        label-align="left"
+        label-cols="auto"
+      >
+        <traction-input
+          :id="'flowcell-id-' + position"
+          placeholder="Scan flowcell ID"
+          :value="flowcellId"
+          :formatter="formatter"
+          :state="flowcellIdValidation"
+          @input="setFlowcellId({ $event, position })"
+        ></traction-input>
+        <!-- This will only be shown if the preceding input has an invalid state -->
+        <traction-invalid-feedback id="input-flowcell-id-feedback">
+          Enter at valid Flowcell ID (3 letters then atleast 3
+          numbers)
+        </traction-invalid-feedback>
+      </traction-form-group>
+      <traction-form-group
+        id="input-group-pool-id"
+        label="Library Barcode"
+        label-for="pool-id"
+        label-align="left"
+        label-cols="auto"
+      >
+        <traction-input
+          :id="'pool-id-' + position"
+          v-model="barcode"
+          :formatter="formatter"
+          :state="barcodeState"
+          debounce="500"
+          placeholder="Scan library barcode"
+        ></traction-input>
+        <traction-invalid-feedback
+          id="input-pool-tube-barcode-feedback"
+        >Enter at valid Pool Library barcode</traction-invalid-feedback>
+      </traction-form-group>
     </div>
   </div>
 </template>
@@ -118,9 +117,9 @@ export default {
       },
       flowcell_bg_colour() {
         if (this.flowcellIdValidation && this.barcodeState) {
-          return 'bg-green-500'
+          return 'bg-green-200'
         } else if (this.flowcellIdValidation || this.barcodeState) {
-          return 'bg-yellow-300'
+          return 'bg-yellow-200'
         } else {
           return 'bg-white'
         }

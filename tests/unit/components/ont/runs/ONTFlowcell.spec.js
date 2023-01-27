@@ -54,7 +54,7 @@ describe('ONTFlowcell', () => {
       expect(ontFlowcell.poolTubeBarcode).toBeDefined()
       expect(ontFlowcell.poolTubeBarcode).toEqual('TRAC-1-A')
       expect(ontFlowcell.flowcell_bg_colour).toBeDefined()
-      expect(ontFlowcell.flowcell_bg_colour).toEqual('bg-green-500')
+      expect(ontFlowcell.flowcell_bg_colour).toEqual('bg-green-200')
     })
   })
 

@@ -44,7 +44,7 @@ export default {
       return this.instrument.rows * (colIndex - 1) + rowIndex
     },
     calculateCoordinate(rowIndex, colIndex) {
-      let rowLetters = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H']
+      const rowLetters = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H']
       return this.instrument.useCoordinates
         ? `${colIndex}${rowLetters[rowIndex - 1]}`
         : `${colIndex}`
