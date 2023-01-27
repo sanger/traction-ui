@@ -107,7 +107,7 @@ export default {
   },
   methods: {
     async runAction() {
-      let responses = await this[this.currentAction.method]()
+      const responses = await this[this.currentAction.method]()
 
       if (responses.length == 0) {
         this.redirectToRuns()

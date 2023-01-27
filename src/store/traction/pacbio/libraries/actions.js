@@ -7,7 +7,7 @@ const createLibraryInTraction = async ({ rootState, rootGetters }, library) => {
   const tag = rootGetters['traction/tractionTags'].find((l) => l.group_id == library.tag.group_id)
   const tag_id = tag ? tag.id : ''
 
-  let body = {
+  const body = {
     data: {
       type: 'pools',
       attributes: {
@@ -38,10 +38,10 @@ const createLibraryInTraction = async ({ rootState, rootGetters }, library) => {
 }
 
 const deleteLibraries = async ({ getters }, libraryIds) => {
-  let request = getters.libraryRequest
-  let promises = request.destroy(libraryIds)
+  const request = getters.libraryRequest
+  const promises = request.destroy(libraryIds)
 
-  let responses = await Promise.all(promises.map((promise) => handlePromise(promise)))
+  const responses = await Promise.all(promises.map((promise) => handlePromise(promise)))
   return responses
 }
 
@@ -82,7 +82,7 @@ const setLibraries = async ({ commit, getters }, filter) => {
 }
 
 const updateTag = async ({ getters }, payload) => {
-  let body = {
+  const body = {
     data: {
       id: payload.request_library_id,
       type: 'tags',
@@ -100,7 +100,7 @@ const updateTag = async ({ getters }, payload) => {
 }
 
 const updateLibrary = async ({ commit, getters }, payload) => {
-  let body = {
+  const body = {
     id: payload.id,
     type: 'libraries',
     attributes: {

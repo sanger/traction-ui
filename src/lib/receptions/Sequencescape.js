@@ -63,7 +63,7 @@ const getLabware = async (request, barcodes) => {
  *
  */
 const labwareForReception = async ({ requests, barcodes, requestOptions }) => {
-  let request = requests.sequencescape.labware
+  const request = requests.sequencescape.labware
   const { plates = [], tubes = [] } = await getLabware(request, barcodes.join(','))
   const requestAttributes = transformLabwareList({
     labwareList: [...plates, ...tubes],

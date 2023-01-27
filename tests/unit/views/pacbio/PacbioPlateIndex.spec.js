@@ -29,8 +29,8 @@ describe('PacbioPlates.vue', () => {
     })
 
     it('contains the correct fields', () => {
-      let headers = wrapper.findAll('th')
-      for (let field of plates.fields) {
+      const headers = wrapper.findAll('th')
+      for (const field of plates.fields) {
         expect(headers.filter((header) => header.text() === field.label)).toBeDefined()
       }
     })

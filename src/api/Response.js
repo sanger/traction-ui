@@ -27,7 +27,7 @@ class Response {
   get errors() {
     if (this._errors === undefined) return {}
 
-    let self = this
+    const self = this
     return Object.assign({
       message: Object.keys(self._errors)
         .map((key) => {

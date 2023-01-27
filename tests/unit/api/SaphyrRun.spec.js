@@ -44,7 +44,7 @@ describe('Run', () => {
       })
 
       it('each flowcell will have a position', () => {
-        let flowcells = run.chip.flowcells
+        const flowcells = run.chip.flowcells
         expect(flowcells['0'].position).toEqual(1)
         expect(flowcells['1'].position).toEqual(2)
       })
@@ -106,8 +106,8 @@ describe('Run', () => {
         const request = { create: vi.fn() }
         request.create.mockResolvedValue(Data.CreateRun)
 
-        let mockResponse = new Response(Data.CreateRun)
-        let response = await Run.createResource(
+        const mockResponse = new Response(Data.CreateRun)
+        const response = await Run.createResource(
           { data: { type: 'runs', attributes: { name: run.name } } },
           request,
         )
@@ -143,8 +143,8 @@ describe('Run', () => {
         const request = { create: vi.fn() }
         request.create.mockResolvedValue(Data.CreateChip)
 
-        let mockResponse = new Response(Data.CreateChip)
-        let response = await Run.createResource(
+        const mockResponse = new Response(Data.CreateChip)
+        const response = await Run.createResource(
           { data: { type: 'chips', attributes: { barcode: run.chip.barcode, run_id: runId } } },
           request,
         )
@@ -180,8 +180,8 @@ describe('Run', () => {
         const request = { create: vi.fn() }
         request.create.mockResolvedValue(Data.CreateFlowcell)
 
-        let mockResponse = new Response(Data.CreateFlowcell)
-        let response = await Run.createResource(
+        const mockResponse = new Response(Data.CreateFlowcell)
+        const response = await Run.createResource(
           {
             data: {
               type: 'flowcells',
@@ -255,10 +255,10 @@ describe('Run', () => {
 
         api.traction.saphyr.runs.destroy.mockResolvedValue(Data.SuccessfulDestroy)
 
-        let runResponse = new Response(Data.CreateRun)
-        let runId = runResponse.deserialize.runs[0].id
+        const runResponse = new Response(Data.CreateRun)
+        const runId = runResponse.deserialize.runs[0].id
 
-        let resp = await Run.create(run, api.traction.saphyr)
+        const resp = await Run.create(run, api.traction.saphyr)
 
         expect(api.traction.saphyr.runs.destroy).toBeCalledWith(runId)
         expect(api.traction.saphyr.flowcells.create).not.toBeCalled()
@@ -274,13 +274,13 @@ describe('Run', () => {
         api.traction.saphyr.chips.destroy.mockResolvedValue(Data.SuccessfulDestroy)
         api.traction.saphyr.runs.destroy.mockResolvedValue(Data.SuccessfulDestroy)
 
-        let runResponse = new Response(Data.CreateRun)
-        let runId = runResponse.deserialize.runs[0].id
+        const runResponse = new Response(Data.CreateRun)
+        const runId = runResponse.deserialize.runs[0].id
 
-        let chipResponse = new Response(Data.CreateChip)
-        let chipId = chipResponse.deserialize.chips[0].id
+        const chipResponse = new Response(Data.CreateChip)
+        const chipId = chipResponse.deserialize.chips[0].id
 
-        let resp = await Run.create(run, api.traction.saphyr)
+        const resp = await Run.create(run, api.traction.saphyr)
 
         expect(api.traction.saphyr.runs.destroy).toBeCalledWith(runId)
         expect(api.traction.saphyr.chips.destroy).toBeCalledWith(chipId)
@@ -324,10 +324,10 @@ describe('Run', () => {
 
       it('rolls back the request', async () => {
         api.traction.saphyr.runs.destroy.mockResolvedValue(Data.SuccessfulDestroy)
-        let expected = new Response(Data.SuccessfulDestroy)
+        const expected = new Response(Data.SuccessfulDestroy)
 
-        let runResponse = new Response(Data.CreateRun)
-        let response = await Run.destroy(runResponse, api.traction.saphyr.runs)
+        const runResponse = new Response(Data.CreateRun)
+        const response = await Run.destroy(runResponse, api.traction.saphyr.runs)
 
         expect(response).toEqual(expected)
       })
@@ -338,7 +338,7 @@ describe('Run', () => {
     let request, payload
 
     beforeEach(() => {
-      let api = build({ config: Api.Config, environment: import.meta.env })
+      const api = build({ config: Api.Config, environment: import.meta.env })
       request = api.traction.saphyr
       request.update = vi.fn()
 
@@ -347,21 +347,21 @@ describe('Run', () => {
 
     it('successful', async () => {
       request.update.mockResolvedValue(Data.CreateRun)
-      let mockResponse = new Response(Data.CreateRun)
+      const mockResponse = new Response(Data.CreateRun)
 
-      let response = await Run.updateResource(payload, request)
+      const response = await Run.updateResource(payload, request)
       expect(response).toEqual(mockResponse)
     })
 
     it('unsuccessful', async () => {
-      let failedResponse = {
+      const failedResponse = {
         status: 404,
         statusText: 'Record not found',
         data: { errors: { run: ['Failed to update.'] } },
       }
 
       request.update.mockReturnValue(failedResponse)
-      let mockResponse = new Response(failedResponse)
+      const mockResponse = new Response(failedResponse)
 
       await expect(Run.updateResource(payload, request)).rejects.toEqual(mockResponse.errors)
     })
@@ -377,7 +377,7 @@ describe('Run', () => {
       run.chip.flowcells[0] = { position: 1, library: { baroce: 'TRAC-1' } }
       run.chip.flowcells[1] = { position: 2, library: { baroce: 'TRAC-2' } }
 
-      let api = build({ config: Api.Config, environment: import.meta.env })
+      const api = build({ config: Api.Config, environment: import.meta.env })
       request = api.traction.saphyr
 
       request.runs.update = vi.fn()

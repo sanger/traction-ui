@@ -76,7 +76,7 @@ export default {
       this.disableUpload = true
       try {
         const csv = await this.file.text()
-        let data = { csv: csv, usedBySelected: this.usedBySelected }
+        const data = { csv: csv, usedBySelected: this.usedBySelected }
         await createQcResultsUploadResource(this.qcResultUploadsRequest, data)
 
         this.showAlert(`Successfully imported: ${this.file.name}`, 'success')

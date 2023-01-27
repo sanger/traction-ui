@@ -23,7 +23,7 @@ describe('#fetchPacbioRuns', () => {
   it('successfully', async () => {
     get.mockReturnValue(Data.PacbioRuns)
 
-    let { success, errors } = await Actions.fetchPacbioRuns({ commit, getters })
+    const { success, errors } = await Actions.fetchPacbioRuns({ commit, getters })
 
     expect(commit).toHaveBeenCalledWith('setRuns', Data.PacbioRuns.data.data)
     expect(success).toEqual(true)
@@ -34,7 +34,7 @@ describe('#fetchPacbioRuns', () => {
     get.mockRejectedValue({ response: failedResponse })
     const expectedResponse = newResponse({ ...failedResponse, success: false })
 
-    let { success, errors } = await Actions.fetchPacbioRuns({ commit, getters })
+    const { success, errors } = await Actions.fetchPacbioRuns({ commit, getters })
 
     expect(commit).not.toHaveBeenCalled()
     expect(success).toEqual(false)
@@ -50,7 +50,7 @@ describe('#newRun', () => {
   })
 
   it('successfully', async () => {
-    let newRun = Run.build()
+    const newRun = Run.build()
     vi.spyOn(Run, 'build')
 
     // defaultSmrtLinkVersion mock getter to return the default version
@@ -134,7 +134,7 @@ describe('#updateRun', () => {
 
   it('when successful, it doesnt rollback', async () => {
     update.mockResolvedValue([])
-    let resp = await Actions.updateRun({ getters, dispatch })
+    const resp = await Actions.updateRun({ getters, dispatch })
 
     expect(update).toHaveBeenCalledWith(mockRun, pacbioRequests)
     expect(update).toHaveBeenCalledTimes(1)
@@ -143,7 +143,7 @@ describe('#updateRun', () => {
 
   it('when unsuccessful, it does rollback', async () => {
     update.mockResolvedValue([{ error: 'this is an error' }])
-    let resp = await Actions.updateRun({ getters, dispatch })
+    const resp = await Actions.updateRun({ getters, dispatch })
 
     expect(update).toHaveBeenCalledWith(mockRun, pacbioRequests)
     expect(update).toHaveBeenCalledTimes(2)
@@ -162,10 +162,10 @@ describe('#getRun', () => {
   it('successfully', async () => {
     find.mockReturnValue(Data.PacbioRun)
 
-    let expectedResponse = new Response(Data.PacbioRun)
-    let expectedRun = expectedResponse.deserialize.runs[0]
+    const expectedResponse = new Response(Data.PacbioRun)
+    const expectedRun = expectedResponse.deserialize.runs[0]
 
-    let response = await Actions.getRun({ getters })
+    const response = await Actions.getRun({ getters })
 
     expect(response).toEqual(expectedRun)
   })
@@ -182,8 +182,8 @@ describe('#buildWell', () => {
   })
 
   it('builds a wellObject as expected', async () => {
-    let position = 'A10'
-    let expectedWellObject = {
+    const position = 'A10'
+    const expectedWellObject = {
       row: 'A',
       column: '10',
       movie_time: '',
@@ -201,14 +201,14 @@ describe('#buildWell', () => {
       include_fivemc_calls_in_cpg_motifs: 'Yes',
     }
 
-    let wellObject = await Actions.buildWell({ state }, position)
+    const wellObject = await Actions.buildWell({ state }, position)
 
     expect(wellObject).toEqual(expectedWellObject)
   })
 
   it('sets binding kit box barcode to "" if no default value is given', async () => {
-    let position = 'A10'
-    let expectedWellObject = {
+    const position = 'A10'
+    const expectedWellObject = {
       row: 'A',
       column: '10',
       movie_time: '',
@@ -227,7 +227,7 @@ describe('#buildWell', () => {
     }
 
     delete state.currentRun.default_binding_kit_box_barcode
-    let wellObject = await Actions.buildWell({ state }, position)
+    const wellObject = await Actions.buildWell({ state }, position)
 
     expect(wellObject).toEqual(expectedWellObject)
   })

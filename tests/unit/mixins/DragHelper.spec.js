@@ -16,8 +16,8 @@ describe('DragHelper', () => {
 
   describe('#updateFlowcell', () => {
     it('emits an event for updateFlowcell', () => {
-      let flowcellPosition = 1
-      let libraryName = 'aLibraryName'
+      const flowcellPosition = 1
+      const libraryName = 'aLibraryName'
 
       dragHelper.updateFlowcell(flowcellPosition, libraryName)
 
@@ -29,8 +29,8 @@ describe('DragHelper', () => {
 
   describe('#updateLibraryList', () => {
     it('emits an event for updateLibraryList', () => {
-      let libraryName = 'aLibraryName'
-      let assignToFlowcell = true
+      const libraryName = 'aLibraryName'
+      const assignToFlowcell = true
 
       dragHelper.updateLibraryList(libraryName, assignToFlowcell)
 
@@ -42,7 +42,7 @@ describe('DragHelper', () => {
 
   describe('#allowDrop', () => {
     it('sets hover to true', () => {
-      let mockEvent = { preventDefault: vi.fn() }
+      const mockEvent = { preventDefault: vi.fn() }
       dragHelper.allowDrop(mockEvent)
       expect(dragHelper.hover).toEqual(true)
     })
@@ -50,7 +50,7 @@ describe('DragHelper', () => {
 
   describe('#endDrop', () => {
     it('sets hover to false', () => {
-      let mockEvent = { preventDefault: vi.fn() }
+      const mockEvent = { preventDefault: vi.fn() }
       dragHelper.endDrop(mockEvent)
       expect(dragHelper.hover).toEqual(false)
     })

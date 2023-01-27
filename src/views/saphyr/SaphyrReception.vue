@@ -55,13 +55,13 @@ export default {
     },
     async handleSampleExtractionTubes() {
       try {
-        let getSETubeResponse = await this.getSampleExtractionTubesForBarcodes(this.getBarcodes())
+        const getSETubeResponse = await this.getSampleExtractionTubesForBarcodes(this.getBarcodes())
 
         if (!getSETubeResponse.success) {
           throw { message: getSETubeResponse.errors }
         }
 
-        let exportSampleTubesResponse = await this.exportSampleExtractionTubesIntoTraction(
+        const exportSampleTubesResponse = await this.exportSampleExtractionTubesIntoTraction(
           this.sampleExtractionTubes,
         )
 
@@ -72,7 +72,7 @@ export default {
           throw { message: exportSampleTubesResponse.errors }
         }
 
-        let tractionTubesBarcodeList = deserialize(exportSampleTubesResponse.data)
+        const tractionTubesBarcodeList = deserialize(exportSampleTubesResponse.data)
           .requests.map((r) => r.barcode)
           .join(', ')
 
