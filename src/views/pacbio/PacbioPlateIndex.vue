@@ -24,31 +24,12 @@
 
     <custom-table
       id="plate-index"
+      data-id-field="id"
       :fields="fields"
-      :row-data="plates"
+      :items="plates"
       :custom-columns="customColumns"
-      :data-id-field="'id'"
-    >
-      <template #cell(show_details)="row">
-        <traction-button
-          :id="'details-btn-' + row.item.id"
-          size="sm"
-          theme="default"
-          @click="row.toggleDetails"
-        >
-          {{ row.detailsShowing ? 'Hide' : 'Show' }} Plate
-        </traction-button>
-      </template>
-      <template #row-details="row">
-        <Plate ref="plate" :plate="row.item" :height="'20'" :width="'20'" @alert="alert" />
-      </template>
-    </custom-table>
-    <traction-table
-      id="plate-index"
       show-empty
       responsive
-      :items="plates"
-      :fields="fields"
       :filter="filter"
       :per-page="perPage"
       :current-page="currentPage"
@@ -67,11 +48,10 @@
           {{ row.detailsShowing ? 'Hide' : 'Show' }} Plate
         </traction-button>
       </template>
-
       <template #row-details="row">
-        <Plate ref="plate" :plate="row.item" @alert="alert"></Plate>
+        <Plate ref="plate" :plate="row.item" height="10" width="10" @alert="alert" />
       </template>
-    </traction-table>
+    </custom-table>
 
     <span class="font-weight-bold">Total records: {{ plates.length }}</span>
 
@@ -94,7 +74,6 @@ import TableHelper from '@/mixins/TableHelper'
 import Plate from '@/components/plates/PlateItem'
 import { createNamespacedHelpers } from 'vuex'
 const { mapActions, mapGetters } = createNamespacedHelpers('traction/pacbio/plates')
-
 export default {
   name: 'PacbioPlates',
   components: {

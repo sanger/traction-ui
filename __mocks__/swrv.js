@@ -7,6 +7,7 @@ const flags = {
     dpl_478_enable_qc_results_upload: { enabled: true },
     enable_custom_select: { enabled: true },
     enable_custom_pagination: { enabled: true },
+    enable_custom_table: { enabled: true },
     dpl_279_ont_libraries_and_pools: { enabled: true },
   },
 }
