@@ -67,7 +67,7 @@ describe('mutations', () => {
 
   describe('setPoolTubeBarcode', () => {
     it('creates a flowcell object if one does not exist already for the position', () => {
-      let obj = { $event: 'TRAC-A-1', position: '1' }
+      let obj = { barcode: 'TRAC-A-1', position: '1' }
       Mutations.setPoolTubeBarcode(state, obj)
       expect(state.currentRun.flowcell_attributes.length).toEqual(1)
       expect(state.currentRun.flowcell_attributes[0]).toEqual({
@@ -77,8 +77,8 @@ describe('mutations', () => {
     })
 
     it('updates the flowcell object is one exists for the position', () => {
-      Mutations.setPoolTubeBarcode(state, { $event: 'TRAC-A-1', position: '1' })
-      let obj = { $event: 'TRAC-A-2', position: '1' }
+      Mutations.setPoolTubeBarcode(state, { barcode: 'TRAC-A-1', position: '1' })
+      let obj = { barcode: 'TRAC-A-2', position: '1' }
       Mutations.setPoolTubeBarcode(state, obj)
       expect(state.currentRun.flowcell_attributes.length).toEqual(1)
       expect(state.currentRun.flowcell_attributes[0]).toEqual({

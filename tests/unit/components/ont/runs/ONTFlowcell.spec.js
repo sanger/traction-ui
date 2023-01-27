@@ -12,8 +12,8 @@ describe('ONTFlowcell', () => {
     }
 
     // Create a flowcell in the store and set its tube barcode
-    store.commit('traction/ont/runs/setFlowcellId', { $event: 'FC1', position: 1 })
-    store.commit('traction/ont/runs/setPoolTubeBarcode', { $event: 'TRAC-1-A', position: 1 })
+    store.commit('traction/ont/runs/setFlowcellId', { $event: 'ABC123', position: 1 })
+    store.commit('traction/ont/runs/setPoolTubeBarcode', { barcode: 'TRAC-1-A', position: 1 })
 
     wrapper = mount(ONTFlowcell, {
       localVue,
@@ -50,7 +50,7 @@ describe('ONTFlowcell', () => {
 
     it('#mapState', () => {
       expect(ontFlowcell.flowcellId).toBeDefined()
-      expect(ontFlowcell.flowcellId).toEqual('FC1')
+      expect(ontFlowcell.flowcellId).toEqual('ABC123')
       expect(ontFlowcell.poolTubeBarcode).toBeDefined()
       expect(ontFlowcell.poolTubeBarcode).toEqual('TRAC-1-A')
       expect(ontFlowcell.flowcell_bg_colour).toBeDefined()
@@ -66,7 +66,7 @@ describe('ONTFlowcell', () => {
       })
 
       it('#setPoolTubeBarcode', () => {
-        ontFlowcell.setPoolTubeBarcode({ $event: 'TRAC-1-B', position: 1 })
+        ontFlowcell.setPoolTubeBarcode({ barcode: 'TRAC-1-B', position: 1 })
         expect(ontFlowcell.poolTubeBarcode).toEqual('TRAC-1-B')
       })
     })

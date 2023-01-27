@@ -27,9 +27,9 @@ const setPoolTubeBarcode = () => (state, obj) => {
   )
 
   if (exists) {
-    Vue.set(exists, 'tube_barcode', obj.$event)
+    Vue.set(exists, 'tube_barcode', obj.barcode)
   } else {
-    let flowcell = { ...{ tube_barcode: obj.$event }, ...{ position: obj.position } }
+    let flowcell = { ...{ tube_barcode: obj.barcode }, ...{ position: obj.position } }
     state.currentRun.flowcell_attributes.push(flowcell)
   }
 }

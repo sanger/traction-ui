@@ -12,7 +12,6 @@
         >
           <traction-input
             :id="'flowcell-id-' + position"
-            size="sm"
             placeholder="Scan flowcell ID"
             :value="flowcellId"
             :formatter="formatter"
@@ -20,9 +19,10 @@
             @input="setFlowcellId({ $event, position })"
           ></traction-input>
           <!-- This will only be shown if the preceding input has an invalid state -->
-          <traction-invalid-feedback id="input-live-feedback">
-            Enter at valid Flowcell ID (3 letters then atleast 3 numbers)
-          </traction-invalid-feedback>
+          <traction-invalid-feedback id="input-flowcell-id-feedback"
+            >Enter at valid Flowcell ID (3 letters then atleast 3
+            numbers)</traction-invalid-feedback
+          >
         </traction-form-group>
         <traction-form-group
           id="input-group-pool-id"
@@ -33,11 +33,15 @@
         >
           <traction-input
             :id="'pool-id-' + position"
-            placeholder="Scan library barcode"
-            :value="poolTubeBarcode"
+            v-model="barcode"
             :formatter="formatter"
-            @input="setPoolTubeBarcode({ $event, position })"
+            :state="barcodeState"
+            debounce="500"
+            placeholder="Scan library barcode"
           ></traction-input>
+          <traction-invalid-feedback id="input-pool-tube-barcode-feedback"
+            >Enter at valid Pool Library barcode</traction-invalid-feedback
+          >
         </traction-form-group>
       </div>
     </div>
@@ -51,6 +55,7 @@
  */
 import { createNamespacedHelpers } from 'vuex'
 const { mapState, mapMutations } = createNamespacedHelpers('traction/ont/runs')
+const { mapActions } = createNamespacedHelpers('traction/ont/pools')
 
 export default {
   name: 'ONTFlowcell',
@@ -65,7 +70,9 @@ export default {
     },
   },
   data() {
-    return {}
+    return {
+      barcodeState: null,
+    }
   },
   computed: {
     flowcellIdValidation() {
@@ -75,6 +82,22 @@ export default {
       } else {
         return null
       }
+    },
+    // For Vuex asynchronous validation we need to use computer setter and getter properties
+    barcode: {
+      get() {
+        if (this.poolTubeBarcode) {
+          this.setBarcodeState(true)
+        }
+        return this.poolTubeBarcode
+      },
+      async set(value) {
+        let response = await this.validatePoolBarcode(value)
+        if (response.success) {
+          this.setPoolTubeBarcode({ barcode: value, position: this.position })
+        }
+        this.setBarcodeState(response.success)
+      },
     },
     ...mapState({
       flowcellId(state) {
@@ -94,9 +117,9 @@ export default {
         }
       },
       flowcell_bg_colour() {
-        if (this.flowcellId && this.poolTubeBarcode) {
+        if (this.flowcellIdValidation && this.barcodeState) {
           return 'bg-green-500'
-        } else if (this.flowcellId || this.poolTubeBarcode) {
+        } else if (this.flowcellIdValidation || this.barcodeState) {
           return 'bg-yellow-300'
         } else {
           return 'bg-white'
@@ -106,8 +129,12 @@ export default {
   },
   methods: {
     ...mapMutations(['setFlowcellId', 'setPoolTubeBarcode']),
+    ...mapActions(['validatePoolBarcode']),
     formatter(value) {
       return value.toUpperCase().trim()
+    },
+    setBarcodeState(state) {
+      this.barcodeState = state
     },
   },
 }

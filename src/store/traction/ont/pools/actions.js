@@ -304,6 +304,32 @@ export default {
   },
 
   /**
+   * Validate a pool for the given barcode exists
+   * @param rootState the vuex state object. Provides access to current state
+   * @param barcode the barcode applied to the pool search
+   */
+  validatePoolBarcode: async ({ rootState }, barcode) => {
+    // Here we want to make sure the barcode exists
+    // If it doesn't, set success to null for component validation
+    if (barcode.trim() === '') {
+      return {
+        success: null,
+      }
+    }
+
+    const request = rootState.api.traction.ont.pools
+    const promise = request.get({ filter: { barcode } })
+    const response = await handleResponse(promise)
+    let { success, data: { data } = {} } = response
+
+    // We will be returned a successful empty list if no pools match the barcode
+    // Therefore we want to return success false, if we don't have any pools
+    if (!data.length) {
+      success = false
+    }
+    return { success }
+  },
+  /**
    * Retrieves a list of ont pools from traction-service and populates the source
    * with associated data
    * @param rootState the vuex rootState object. Provides access to the current state
