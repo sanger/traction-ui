@@ -1,7 +1,6 @@
 <template>
   <div>
     <div class="px-2 py-2 rounded overflow-hidden shadow-lg" :class="flowcell_bg_colour">
-
       <div class="text-xl mb-2">{{ coordinate }}</div>
       <traction-form-group
         id="input-group-flowcell-id"
@@ -20,8 +19,7 @@
         ></traction-input>
         <!-- This will only be shown if the preceding input has an invalid state -->
         <traction-invalid-feedback id="input-flowcell-id-feedback">
-          Enter at valid Flowcell ID (3 letters then atleast 3
-          numbers)
+          Enter at valid Flowcell ID (3 letters then atleast 3 numbers)
         </traction-invalid-feedback>
       </traction-form-group>
       <traction-form-group
@@ -39,9 +37,9 @@
           debounce="500"
           placeholder="Scan library barcode"
         ></traction-input>
-        <traction-invalid-feedback
-          id="input-pool-tube-barcode-feedback"
-        >Enter at valid Pool Library barcode</traction-invalid-feedback>
+        <traction-invalid-feedback id="input-pool-tube-barcode-feedback"
+          >Enter at valid Pool Library barcode</traction-invalid-feedback
+        >
       </traction-form-group>
     </div>
   </div>

@@ -6,7 +6,7 @@ describe('ONT Pool Edit', () => {
     cy.intercept(
       'v1/ont/pools/7?include=libraries.tag.tag_set,libraries.source_plate.wells.requests,libraries.source_tube.requests,libraries.request,tube',
       {
-        fixture: 'tractionOntPool.json',
+        fixture: 'tractionOntPoolWithIncludes.json',
       },
     )
     cy.intercept('/v1/ont/tag_sets?include=tags', {

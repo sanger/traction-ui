@@ -3,8 +3,9 @@ describe('ONT Run page', () => {
     cy.intercept('/v1/ont/instruments', {
       fixture: 'tractionOntInstruments.json',
     })
-    cy.intercept('v1/ont/pools?include=tube,libraries.tag,libraries.request', {
-      fixture: 'tractionOntPools.json',
+    cy.intercept('v1/ont/pools?filter[barcode]=TRAC-1-2', {
+      statusCode: 200,
+      fixture: 'tractionOntPool.json',
     })
     cy.intercept('/v1/ont/runs?include=instrument', {
       fixture: 'tractionOntRuns.json',
@@ -33,12 +34,36 @@ describe('ONT Run page', () => {
     cy.get('#state-selection').select('Pending')
 
     cy.get('#flowcell-id-1').type('ABC123')
-    cy.get('#pool-id-1').type('Unknown')
+    cy.get('#pool-id-1').type('TRAC-1-2')
 
     cy.get('#create').should('be.enabled')
     cy.get('#create').click()
 
     cy.get('#run-index').contains('tr', '5')
+  })
+
+  it('Handles validation', () => {
+    cy.intercept('POST', '/v1/ont/runs', {
+      statusCode: 201,
+      fixture: 'tractionOntRunCreateSuccess.json',
+    })
+    cy.intercept('v1/ont/pools?filter[barcode]=UNKNOWN', {
+      statusCode: 200,
+      fixture: 'emptyData.json',
+    })
+
+    cy.visit('#/ont/run/new')
+
+    cy.get('#instrument-selection').select('GXB02004')
+    cy.get('#state-selection').select('Pending')
+
+    cy.get('#flowcell-id-1').type('123ABC')
+    cy.contains('Enter at valid Flowcell ID (3 letters then atleast 3 numbers)')
+
+    cy.get('#pool-id-1').type('Unknown')
+    cy.contains('Enter at valid Pool Library barcode')
+
+    cy.get('#create').should('be.disabled')
   })
 
   it('Shows an error message if run create fails', () => {
@@ -53,11 +78,14 @@ describe('ONT Run page', () => {
     cy.get('#state-selection').select('Pending')
 
     cy.get('#flowcell-id-1').type('ABC123')
-    cy.get('#pool-id-1').type('Unknown')
+    cy.get('#pool-id-1').type('TRAC-1-2')
+
+    cy.get('#flowcell-id-2').type('ABC123')
+    cy.get('#pool-id-2').type('TRAC-1-2')
 
     cy.get('#create').should('be.enabled')
     cy.get('#create').click()
 
-    cy.contains('pool at position 1 is required')
+    cy.contains('flowcell_id ABC123 at position x1 is duplicated in the same run')
   })
 })
