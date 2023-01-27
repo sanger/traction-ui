@@ -17,6 +17,7 @@
           :to="{ name: 'PacbioPoolCreate', params: { id: id } }"
           >Edit</traction-button
         >
+        <traction-button @click="deselectPoolAndContents(pool.id)">Remove</traction-button>
       </traction-col>
       <traction-col cols="9">
         <dl class="row">
