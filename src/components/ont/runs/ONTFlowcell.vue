@@ -18,7 +18,7 @@
         ></traction-input>
         <!-- This will only be shown if the preceding input has an invalid state -->
         <traction-invalid-feedback id="input-flowcell-id-feedback">
-          Enter at valid Flowcell ID (3 letters then atleast 3 numbers)
+          Enter at valid Flowcell ID (3 letters then at least 3 numbers)
         </traction-invalid-feedback>
       </traction-form-group>
       <traction-form-group
