@@ -1,13 +1,12 @@
 <template>
   <div>
-    <div class="px-2 py-2 rounded overflow-hidden shadow-lg" :class="flowcell_bg_colour">
+    <div style="width: 200px" class="px-2 rounded overflow-hidden shadow-lg" :class="flowcell_bg_colour">
       <div class="text-xl mb-2">{{ coordinate }}</div>
       <traction-form-group
         id="input-group-flowcell-id"
-        label="Flowcell"
+        label="Flowcell ID:"
         label-for="flowcell-id"
         label-align="left"
-        label-cols="auto"
       >
         <traction-input
           :id="'flowcell-id-' + position"
@@ -24,10 +23,9 @@
       </traction-form-group>
       <traction-form-group
         id="input-group-pool-id"
-        label="Library Barcode"
+        label="Pool Library Barcode:"
         label-for="pool-id"
         label-align="left"
-        label-cols="auto"
       >
         <traction-input
           :id="'pool-id-' + position"
@@ -38,7 +36,7 @@
           placeholder="Scan library barcode"
         ></traction-input>
         <traction-invalid-feedback id="input-pool-tube-barcode-feedback"
-          >Enter at valid Pool Library barcode</traction-invalid-feedback
+          >Enter a valid Pool Library barcode</traction-invalid-feedback
         >
       </traction-form-group>
     </div>
@@ -115,11 +113,11 @@ export default {
       },
       flowcell_bg_colour() {
         if (this.flowcellIdValidation && this.barcodeState) {
-          return 'bg-green-200'
+          return 'border border-3 border-success'
         } else if (this.flowcellIdValidation || this.barcodeState) {
-          return 'bg-yellow-200'
+          return 'border border-3 border-warning'
         } else {
-          return 'bg-white'
+          return 'border border-3 border-white'
         }
       },
     }),
