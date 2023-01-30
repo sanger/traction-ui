@@ -5,7 +5,7 @@ const setPlates = async ({ commit, getters }, filter) => {
   const request = getters.getPlates
   const promise = request.get({ filter, include: 'wells.requests' })
   const response = await handleResponse(promise)
-  let { success, data: { data, included = [] } = {}, errors = [] } = response
+  const { success, data: { data, included = [] } = {}, errors = [] } = response
   const { wells, requests } = groupIncludedByResource(included)
 
   if (success) {
@@ -19,10 +19,10 @@ const setPlates = async ({ commit, getters }, filter) => {
         ...plate.attributes,
         // Map the wells to the plate
         wells: plate.relationships.wells.data?.map((well) => {
-          let w = wells?.find((w1) => w1.id == well.id)
+          const w = wells?.find((w1) => w1.id == well.id)
           // Map the requests to each well
-          let reqs = w.relationships.requests.data?.map((request) => {
-            let req = requests?.find((r) => r.id == request.id)
+          const reqs = w.relationships.requests.data?.map((request) => {
+            const req = requests?.find((r) => r.id == request.id)
             return {
               id: req.id,
               ...req.attributes,

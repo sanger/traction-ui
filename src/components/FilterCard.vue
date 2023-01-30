@@ -1,9 +1,11 @@
 <template>
-  <div class="mx-auto w-1/2 bg-gray-100 rounded-md mb-5 p-5">
+  <div class="mx-auto w-1/2 bg-gray-100 rounded-md mb-5 p-3">
     <div class="flex flex-col mb-2">
-      <p class="flex font-semibold text-xl px-3">Filter results</p>
-      <traction-muted-text> By default returns the most recent 1000 results </traction-muted-text>
-      <div class="flex flex-row mx-3">
+      <p class="flex font-semibold text-xl">Filter results</p>
+      <p class="inline-flex font-light text-gray-700 text-xs italiclist-none mb-2">
+        By default returns the most recent 1000 results
+      </p>
+      <div class="flex flex-row">
         <traction-input
           id="filterInput"
           v-model="filterInput"

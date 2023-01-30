@@ -21,7 +21,7 @@ describe('actions', () => {
       const commit = vi.fn()
       const get = vi.fn()
       const getters = { requestsRequest: { get: get } }
-      let requests = Data.TractionPacbioSamples
+      const requests = Data.TractionPacbioSamples
       requests.data.data.splice(2, 11)
       get.mockReturnValue(requests)
 
