@@ -61,7 +61,7 @@ describe('ONT Run page', () => {
     cy.contains('Enter at valid Flowcell ID (3 letters then at least 3 numbers)')
 
     cy.get('#pool-id-1').type('Unknown')
-    cy.contains('Enter at valid Pool Library barcode')
+    cy.contains('Enter a valid Pool Library barcode')
 
     cy.get('#create').should('be.disabled')
   })

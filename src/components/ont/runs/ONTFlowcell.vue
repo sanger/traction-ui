@@ -1,6 +1,10 @@
 <template>
   <div>
-    <div style="width: 200px" class="px-2 rounded overflow-hidden shadow-lg" :class="flowcell_bg_colour">
+    <div
+      style="width: 200px"
+      class="px-2 rounded overflow-hidden shadow-lg"
+      :class="flowcell_bg_colour"
+    >
       <div class="text-xl mb-2">{{ coordinate }}</div>
       <traction-form-group
         id="input-group-flowcell-id"
