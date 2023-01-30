@@ -85,7 +85,7 @@ describe('Run', () => {
       pacbioRequest.runs.plates.create.mockResolvedValue(Data.PacbioSequencingPlate)
       pacbioRequest.runs.wells.create.mockResolvedValue(Data.PacbioWell)
 
-      let resp = await Run.create(run, pacbioRequest)
+      const resp = await Run.create(run, pacbioRequest)
 
       expect(pacbioRequest.runs.create).toBeCalled()
       expect(pacbioRequest.runs.plates.create).toBeCalled()
@@ -97,12 +97,12 @@ describe('Run', () => {
     it('returns false if the run cannot be created', async () => {
       pacbioRequest.runs.create.mockReturnValue(failedResponse)
 
-      let promise = new Promise((resolve) => {
+      const promise = new Promise((resolve) => {
         resolve(Data.SuccessfulDestroy)
       })
       pacbioRequest.runs.destroy.mockReturnValue([promise])
 
-      let resp = await Run.create(run, pacbioRequest)
+      const resp = await Run.create(run, pacbioRequest)
 
       expect(pacbioRequest.runs.create).toBeCalled()
       expect(pacbioRequest.runs.plates.create).not.toBeCalled()
@@ -115,15 +115,15 @@ describe('Run', () => {
       pacbioRequest.runs.create.mockReturnValue(Data.PacbioRun)
       pacbioRequest.runs.plates.create.mockResolvedValue(failedResponse)
 
-      let promise = new Promise((resolve) => {
+      const promise = new Promise((resolve) => {
         resolve(Data.SuccessfulDestroy)
       })
       pacbioRequest.runs.destroy.mockReturnValue([promise])
 
-      let runResponse = new Response(Data.PacbioRun)
-      let runId = runResponse.deserialize.runs[0].id
+      const runResponse = new Response(Data.PacbioRun)
+      const runId = runResponse.deserialize.runs[0].id
 
-      let resp = await Run.create(run, pacbioRequest)
+      const resp = await Run.create(run, pacbioRequest)
 
       expect(pacbioRequest.runs.create).toBeCalled()
       expect(pacbioRequest.runs.plates.create).toBeCalled()
@@ -139,15 +139,15 @@ describe('Run', () => {
       pacbioRequest.runs.plates.create.mockResolvedValue(Data.PacbioSequencingPlate)
       pacbioRequest.runs.wells.create.mockResolvedValue(failedResponse)
 
-      let promise = new Promise((resolve) => {
+      const promise = new Promise((resolve) => {
         resolve(Data.SuccessfulDestroy)
       })
       pacbioRequest.runs.destroy.mockReturnValue([promise])
 
-      let runResponse = new Response(Data.PacbioRun)
-      let runId = runResponse.deserialize.runs[0].id
+      const runResponse = new Response(Data.PacbioRun)
+      const runId = runResponse.deserialize.runs[0].id
 
-      let resp = await Run.create(run, pacbioRequest)
+      const resp = await Run.create(run, pacbioRequest)
 
       expect(pacbioRequest.runs.create).toBeCalled()
       expect(pacbioRequest.runs.plates.create).toBeCalled()
@@ -178,7 +178,7 @@ describe('Run', () => {
       it('should remove that well from the payload', () => {
         pacbioRequest.runs.create.mockResolvedValue([Data.PacbioRun])
 
-        let promise = new Promise((resolve) => {
+        const promise = new Promise((resolve) => {
           resolve(Data.SuccessfulDestroy)
         })
         pacbioRequest.runs.destroy.mockReturnValue([promise])
@@ -193,9 +193,9 @@ describe('Run', () => {
     it('success', async () => {
       const request = { create: vi.fn() }
       request.create.mockResolvedValue(Data.PacbioRun)
-      let mockResponse = new Response(Data.PacbioRun)
+      const mockResponse = new Response(Data.PacbioRun)
 
-      let response = await Run.createResource({}, request)
+      const response = await Run.createResource({}, request)
       expect(response).toEqual(mockResponse)
     })
 
@@ -221,7 +221,7 @@ describe('Run', () => {
     })
 
     it('returns a runs payload', async () => {
-      let result = Run.createRunPayload(run)
+      const result = Run.createRunPayload(run)
 
       expect(result.data.type).toEqual('runs')
       expect(result.data.attributes.sequencing_kit_box_barcode).toEqual(
@@ -258,7 +258,7 @@ describe('Run', () => {
 
   describe('createPlatePayload', () => {
     it('returns a plates payload', async () => {
-      let result = Run.createPlatePayload(123)
+      const result = Run.createPlatePayload(123)
 
       expect(result.data.type).toEqual('plates')
       expect(result.data.attributes.pacbio_run_id).toEqual(123)
@@ -296,7 +296,7 @@ describe('Run', () => {
     })
 
     it('returns wells payload', async () => {
-      let result = Run.createWellsPayload(wells, plateID)
+      const result = Run.createWellsPayload(wells, plateID)
 
       expect(result.data.type).toEqual('wells')
       expect(result.data.attributes.wells[0].row).toEqual(wells[0].row)
@@ -356,14 +356,14 @@ describe('Run', () => {
       const trimmed = untrimmed.trim()
 
       run.plate.wells[0].binding_kit_box_barcode = untrimmed
-      let result = Run.createWellsPayload(wells, plateID)
+      const result = Run.createWellsPayload(wells, plateID)
 
       expect(trimmed).toEqual('trimmed')
       expect(result.data.attributes.wells[0].binding_kit_box_barcode).toEqual(trimmed)
     })
 
     it('has v11 smrt link options', () => {
-      let result = Run.createWellsPayload(wells, plateID)
+      const result = Run.createWellsPayload(wells, plateID)
 
       expect(result.data.attributes.wells[0]).toHaveProperty('binding_kit_box_barcode')
       expect(result.data.attributes.wells[0]).toHaveProperty('loading_target_p1_plus_p2')
@@ -416,11 +416,11 @@ describe('Run', () => {
       pacbioRequest.runs.update.mockResolvedValue(Data.PacbioRun)
       pacbioRequest.runs.wells.update.mockResolvedValue(Data.PacbioWell)
 
-      let resp = await Run.update(run, pacbioRequest)
+      const resp = await Run.update(run, pacbioRequest)
 
-      let expectedRunPayload = Run.updateRunPayload(run)
-      let expectedWell1Payload = Run.updateWellPayload(well1)
-      let expectedWell2Payload = Run.updateWellPayload(well2)
+      const expectedRunPayload = Run.updateRunPayload(run)
+      const expectedWell1Payload = Run.updateWellPayload(well1)
+      const expectedWell2Payload = Run.updateWellPayload(well2)
 
       expect(pacbioRequest.runs.update).toBeCalledWith(expectedRunPayload)
       expect(pacbioRequest.runs.wells.update).toHaveBeenNthCalledWith(1, expectedWell1Payload)
@@ -431,7 +431,7 @@ describe('Run', () => {
 
     it('on failure, it returns a list of errors', async () => {
       pacbioRequest.runs.update.mockResolvedValue(failedResponse)
-      let resp = await Run.update(run, pacbioRequest)
+      const resp = await Run.update(run, pacbioRequest)
 
       expect(pacbioRequest.runs.update).toHaveBeenCalled()
       expect(pacbioRequest.runs.wells.update).not.toHaveBeenCalled()
@@ -478,7 +478,7 @@ describe('Run', () => {
       })
 
       it('should call destroy method for each id in wellsToDelete', async () => {
-        let promise = new Promise((resolve) => {
+        const promise = new Promise((resolve) => {
           resolve(Data.SuccessfulDestroy)
         })
         pacbioRequest.runs.update.mockResolvedValue(Data.PacbioRun)
@@ -497,9 +497,9 @@ describe('Run', () => {
     it('success', async () => {
       const request = { update: vi.fn() }
       request.update.mockResolvedValue(Data.PacbioRun)
-      let mockResponse = new Response(Data.PacbioRun)
+      const mockResponse = new Response(Data.PacbioRun)
 
-      let response = await Run.updateResource({}, request)
+      const response = await Run.updateResource({}, request)
       expect(response).toEqual(mockResponse)
     })
 
@@ -525,7 +525,7 @@ describe('Run', () => {
     })
 
     it('return run payload', async () => {
-      let result = Run.updateRunPayload(run)
+      const result = Run.updateRunPayload(run)
 
       expect(result.data.id).toEqual(run.id)
       expect(result.data.type).toEqual('runs')
@@ -570,7 +570,7 @@ describe('Run', () => {
     })
 
     it('return run payload', async () => {
-      let result = Run.updateWellPayload(well)
+      const result = Run.updateWellPayload(well)
 
       expect(result.data.id).toEqual(well.id)
       expect(result.data.type).toEqual('wells')
@@ -591,7 +591,7 @@ describe('Run', () => {
       expect(result.data.relationships.pools.data[0].id).toEqual(well.pools[0].id)
     })
     it('has v11 smrt link options', async () => {
-      let result = Run.updateWellPayload(well)
+      const result = Run.updateWellPayload(well)
 
       expect(result.data.attributes).toHaveProperty('binding_kit_box_barcode')
       expect(result.data.attributes).toHaveProperty('loading_target_p1_plus_p2')
@@ -611,7 +611,7 @@ describe('Run', () => {
       const trimmed = untrimmed.trim()
 
       well.binding_kit_box_barcode = untrimmed
-      let result = Run.updateWellPayload(well)
+      const result = Run.updateWellPayload(well)
 
       expect(trimmed).toEqual('trimmed')
       expect(result.data.attributes.binding_kit_box_barcode).toEqual(trimmed)
@@ -628,14 +628,14 @@ describe('Run', () => {
     })
 
     it('rolls back the request', async () => {
-      let promise = new Promise((resolve) => {
+      const promise = new Promise((resolve) => {
         resolve(Data.SuccessfulDestroy)
       })
 
       pacbioRequest.runs.destroy.mockReturnValue([promise])
-      let expected = new Response(Data.SuccessfulDestroy)
+      const expected = new Response(Data.SuccessfulDestroy)
 
-      let response = await Run.destroy(1, pacbioRequest.runs)
+      const response = await Run.destroy(1, pacbioRequest.runs)
       expect(response).toEqual(expected)
     })
   })
@@ -650,7 +650,7 @@ describe('Run', () => {
     const ValueYes = 'Yes'
     const ValueNo = 'No'
     const ValueOnInstrument = 'On Instrument'
-    let defaults = Run.wellDefaults(DefaultSystemName)
+    const defaults = Run.wellDefaults(DefaultSystemName)
 
     it('has v11 smrt link options', () => {
       // versions|key

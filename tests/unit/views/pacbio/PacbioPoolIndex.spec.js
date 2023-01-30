@@ -19,8 +19,8 @@ describe('PacbioPoolIndex.vue', () => {
 
   describe('building the table', () => {
     it('contains the correct fields', () => {
-      let headers = wrapper.findAll('th')
-      for (let field of pools.fields) {
+      const headers = wrapper.findAll('th')
+      for (const field of pools.fields) {
         expect(headers.filter((header) => header.text() === field.label)).toBeDefined()
       }
     })

@@ -33,7 +33,7 @@ describe('Runs.vue', () => {
     })
 
     it('will redirect to the run when newRun is clicked', async () => {
-      let button = wrapper.find('#newRun')
+      const button = wrapper.find('#newRun')
       button.trigger('click')
       expect(runs.$route.path).toEqual('/pacbio/run/new')
     })
@@ -160,7 +160,7 @@ describe('Runs.vue', () => {
     })
 
     it('it does not exist when the run has wells without pools', async () => {
-      let noPoolsRun = Data.PacbioRuns
+      const noPoolsRun = Data.PacbioRuns
       noPoolsRun.data.data[0].attributes.all_wells_have_pools = false
       const get = vi.spyOn(store.state.api.traction.pacbio.runs, 'get')
       get.mockReturnValue(noPoolsRun)
@@ -242,7 +242,7 @@ describe('Runs.vue', () => {
   })
 
   describe('#updateRun', () => {
-    let id = 1
+    const id = 1
     beforeEach(() => {
       runs.startRun = vi.fn()
       runs.completeRun = vi.fn()
@@ -261,7 +261,7 @@ describe('Runs.vue', () => {
     })
 
     it('calls cancelRun successfully', () => {
-      let id = 1
+      const id = 1
       runs.updateRun('cancel', id)
       expect(runs.cancelRun).toBeCalledWith({ id, pipeline })
     })
@@ -300,7 +300,7 @@ describe('Runs.vue', () => {
     })
 
     it('will call editRun when Edit is clicked', async () => {
-      let button = wrapper.find('#editRun-1')
+      const button = wrapper.find('#editRun-1')
       button.trigger('click')
       expect(runs.$route.path).toEqual('/pacbio/run/1')
     })

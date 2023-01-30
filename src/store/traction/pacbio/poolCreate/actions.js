@@ -164,7 +164,7 @@ export default {
   selectWellRequests: ({ commit, state }, well_id) => {
     const { requests } = state.resources.wells[well_id]
     const selectedRequests = state.libraries
-    for (let id of requests) {
+    for (const id of requests) {
       const selected = !!selectedRequests[`_${id}`]
       commit('selectRequest', { id, selected: !selected })
     }
@@ -175,9 +175,9 @@ export default {
   deselectPlateAndContents: ({ commit, state }, plateId) => {
     commit('selectPlate', { id: plateId, selected: false })
     const { wells } = state.resources.plates[plateId]
-    for (let wellId of wells) {
+    for (const wellId of wells) {
       const { requests = [] } = state.resources.wells[wellId]
-      for (let requestId of requests) {
+      for (const requestId of requests) {
         commit('selectRequest', { id: requestId, selected: false })
       }
     }
@@ -189,7 +189,7 @@ export default {
     commit('selectTube', { id: tubeId, selected: false })
     const { requests } = state.resources.tubes[tubeId]
 
-    for (let requestId of requests) {
+    for (const requestId of requests) {
       commit('selectRequest', { id: requestId, selected: false })
     }
   },
@@ -201,7 +201,7 @@ export default {
 
     const { requests } = state.resources.tubes[tubeId]
 
-    for (let requestId of requests) {
+    for (const requestId of requests) {
       commit('selectRequest', { id: requestId, selected: true })
     }
   },

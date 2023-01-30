@@ -52,15 +52,15 @@ describe('Flowcell', () => {
 
     //TODO: this test is not testing the implementation.
     it('successful when barcode is valid', async () => {
-      let libraryTube = Data.TubeWithLibrary
-      let successfulResponse = new Response(libraryTube)
-      let tube = successfulResponse.deserialize.tubes[0]
+      const libraryTube = Data.TubeWithLibrary
+      const successfulResponse = new Response(libraryTube)
+      const tube = successfulResponse.deserialize.tubes[0]
 
       flowcell.isLibraryBarcodeValid.mockReturnValue(true)
       flowcell.getTubeForBarcode.mockReturnValue(tube)
 
       await flowcell.setBarcode(newBarcode)
-      let expected = {
+      const expected = {
         flowcellIndex: 0,
         library: {
           barcode: 'TRAC-2-21',

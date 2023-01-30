@@ -74,12 +74,12 @@ export default {
       })
     },
     async getEnzymeOptions() {
-      let promise = this.enzymeRequest.get()
-      let response = await handlePromise(promise)
+      const promise = this.enzymeRequest.get()
+      const response = await handlePromise(promise)
 
       if (response.successful) {
-        let enzymes = response.deserialize.enzymes
-        let enzymeOptions = enzymes.map((enzyme) =>
+        const enzymes = response.deserialize.enzymes
+        const enzymeOptions = enzymes.map((enzyme) =>
           Object.assign({ value: parseInt(enzyme.id), text: enzyme.name }),
         )
         enzymeOptions.unshift({ value: null, text: 'Please select an option' })

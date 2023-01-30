@@ -67,8 +67,8 @@ describe('Libraries.vue', () => {
 
   describe('building the table', () => {
     it('contains the correct fields', () => {
-      let headers = wrapper.findAll('th')
-      for (let field of libraries.fields) {
+      const headers = wrapper.findAll('th')
+      for (const field of libraries.fields) {
         expect(headers.filter((header) => header.text() === field.label)).toBeDefined()
       }
     })
@@ -97,7 +97,7 @@ describe('Libraries.vue', () => {
     })
 
     it('calls showAlert when there is an error', async () => {
-      let failedResponse = {
+      const failedResponse = {
         status: 422,
         statusText: 'Unprocessable Entity',
         data: { data: { errors: { it: ['did not work'] } } },

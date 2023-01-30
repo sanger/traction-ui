@@ -8,7 +8,7 @@ describe('PacbioSamples.vue', () => {
 
   beforeEach(async () => {
     // Remove the included data in the dummy response as its not needed
-    let PacbioRequestsRequest = Data.PacbioRequestsRequest
+    const PacbioRequestsRequest = Data.PacbioRequestsRequest
     PacbioRequestsRequest.data.included = []
 
     // DataFetcher calls requests get on render so we need to mock the call
@@ -31,8 +31,8 @@ describe('PacbioSamples.vue', () => {
 
   describe('building the table', () => {
     it('contains the correct fields', () => {
-      let headers = wrapper.findAll('th')
-      for (let field of samples.fields) {
+      const headers = wrapper.findAll('th')
+      for (const field of samples.fields) {
         expect(headers.filter((header) => header.text() === field.label)).toBeDefined()
       }
     })

@@ -93,7 +93,7 @@ describe('Well.vue', () => {
   })
 
   it('will have an ellipse with the correct attributes', () => {
-    let ellipse = wrapper.find('ellipse')
+    const ellipse = wrapper.find('ellipse')
     expect(ellipse.exists()).toBeTruthy()
     expect(ellipse.attributes('cx')).toEqual(well.cx)
     expect(ellipse.attributes('cy')).toEqual(well.cy)
@@ -103,7 +103,7 @@ describe('Well.vue', () => {
 
   describe('status', () => {
     it('will be valid if it is complete', () => {
-      let ellipse = wrapper.find('ellipse')
+      const ellipse = wrapper.find('ellipse')
       expect(ellipse.attributes('class')).toContain('complete')
     })
 
@@ -117,7 +117,7 @@ describe('Well.vue', () => {
           WellModal: true,
         },
       })
-      let ellipse = wrapper.find('ellipse')
+      const ellipse = wrapper.find('ellipse')
       expect(ellipse.attributes('class')).toEqual('filled')
     })
 
@@ -131,7 +131,7 @@ describe('Well.vue', () => {
           WellModal: true,
         },
       })
-      let ellipse = wrapper.find('ellipse')
+      const ellipse = wrapper.find('ellipse')
       expect(ellipse.attributes('class')).toEqual('filled')
     })
 
@@ -144,7 +144,7 @@ describe('Well.vue', () => {
           WellModal: true,
         },
       })
-      let ellipse = wrapper.find('ellipse')
+      const ellipse = wrapper.find('ellipse')
       expect(ellipse.attributes('class')).toEqual('complete')
     })
 
@@ -166,7 +166,7 @@ describe('Well.vue', () => {
         },
       })
 
-      let ellipse = wrapper.find('ellipse')
+      const ellipse = wrapper.find('ellipse')
       expect(ellipse.attributes('class')).toEqual('empty')
     })
   })
@@ -216,8 +216,8 @@ describe('Well.vue', () => {
 
   describe('tooltip', () => {
     it('will only be visible if there are some pools', () => {
-      let title = wrapper.find('title')
-      let expected = storeWell.pools.map((p) => p.barcode).join(',')
+      const title = wrapper.find('title')
+      const expected = storeWell.pools.map((p) => p.barcode).join(',')
       expect(title.text()).toEqual(expected)
     })
   })

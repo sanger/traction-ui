@@ -30,8 +30,8 @@ describe('Samples.vue', () => {
 
   describe('building the table', () => {
     it('contains the correct fields', () => {
-      let headers = wrapper.findAll('th')
-      for (let field of samples.fields) {
+      const headers = wrapper.findAll('th')
+      for (const field of samples.fields) {
         expect(headers.filter((header) => header.text() === field.label)).toBeDefined()
       }
     })
@@ -43,7 +43,7 @@ describe('Samples.vue', () => {
 
   describe('selecting samples', () => {
     beforeEach(() => {
-      let firstCell = wrapper.find('[role="cell"]')
+      const firstCell = wrapper.find('[role="cell"]')
       firstCell.trigger('click')
     })
 
@@ -67,7 +67,7 @@ describe('Samples.vue', () => {
     })
 
     it('is successful', async () => {
-      let expectedResponse = new Response(Data.Libraries)
+      const expectedResponse = new Response(Data.Libraries)
       samples.createLibrariesInTraction.mockReturnValue(expectedResponse)
 
       await samples.createLibraries(selectedEnzymeId)
@@ -80,12 +80,12 @@ describe('Samples.vue', () => {
     })
 
     it('shows a error message on failure', async () => {
-      let failedResponse = {
+      const failedResponse = {
         status: 422,
         statusText: 'Unprocessable Entity',
         data: { data: { errors: { it: ['did not work'] } } },
       }
-      let expectedResponse = new Response(failedResponse)
+      const expectedResponse = new Response(failedResponse)
 
       samples.createLibrariesInTraction.mockReturnValue(expectedResponse)
 
@@ -114,7 +114,7 @@ describe('Samples.vue', () => {
 
     it('passes selected enzyme id to function on emit event', () => {
       samples.selected = [{ id: 1 }]
-      let modal = wrapper.findComponent({ ref: 'enzymeModal' })
+      const modal = wrapper.findComponent({ ref: 'enzymeModal' })
       modal.vm.$emit('selectEnzyme', 2)
 
       expect(samples.createLibraries).toBeCalledWith(2)
