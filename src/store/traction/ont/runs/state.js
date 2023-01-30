@@ -1,5 +1,7 @@
 const state = {
-  currentRun: {},
+  currentRun: {
+    flowcell_attributes: [],
+  },
 }
 
 export default state
