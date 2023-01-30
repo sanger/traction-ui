@@ -120,13 +120,19 @@ export default {
         }
       },
       flowcell_bg_colour() {
+        if (this.flowcellIdValidation == false || this.barcodeState == false) {
+          return 'border border-3 border-danger'
+        }
+
         if (this.flowcellIdValidation && this.barcodeState) {
           return 'border border-3 border-success'
-        } else if (this.flowcellIdValidation || this.barcodeState) {
-          return 'border border-3 border-warning'
-        } else {
-          return 'border border-3 border-white'
         }
+
+        if (this.flowcellIdValidation || this.barcodeState) {
+          return 'border border-3 border-warning'
+        }
+
+        return 'border border-3 border-white'
       },
     }),
   },
