@@ -1,32 +1,30 @@
 <template>
-  <div class="flex-row p-5 bg-gray-100 rounded-md shadow-md mb-5">
-    <div class="w-full w-1/2 mx-auto min-w-[500px]">
-      <div class="flex flex-col flex-start">
-        <p class="font-bold mb-5 font-size text-xl">Filter results</p>
-        <p class="mb-5 font-size text-md">By default returns the most recent 1000 results</p>
-      </div>
-      <div class="flex mb-2 mx-auto">
+  <div class="mx-auto w-1/2 bg-gray-100 rounded-md mb-5 p-5">
+    <div class="flex flex-col mb-2">
+      <p class="flex font-semibold text-xl px-3">Filter results</p>
+      <traction-muted-text> By default returns the most recent 1000 results </traction-muted-text>
+      <div class="flex flex-row mx-3">
         <traction-input
           id="filterInput"
           v-model="filterInput"
           type="search"
           placeholder="Type to Search"
-          class="w-1/2 mr-5"
+          class="mr-2 w-1/2"
         />
         <traction-select
           id="filterValue"
           v-model="filterValue"
           :options="filterOptions"
-          class="w-1/2"
+          class="mr-2 w-1/2"
         />
-      </div>
-      <div class="flex justify-end mx-auto">
-        <traction-button @click="resetFilter()">Reset</traction-button>
-        <traction-button
-          :disabled="filterValue == '' || filterInput == ''"
-          @click="getFilteredData()"
-          >Search</traction-button
-        >
+        <div class="flex mx-auto justify-end">
+          <traction-button @click="resetFilter()">Reset</traction-button>
+          <traction-button
+            :disabled="filterValue == '' || filterInput == ''"
+            @click="getFilteredData()"
+            >Search</traction-button
+          >
+        </div>
       </div>
     </div>
   </div>
