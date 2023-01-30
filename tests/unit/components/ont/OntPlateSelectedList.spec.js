@@ -33,7 +33,7 @@ describe('OntPlateSelectedList', () => {
 
   describe('Plate selection', () => {
     beforeEach(() => {
-      let selectPlate = { id: '1', selected: true }
+      const selectPlate = { id: '1', selected: true }
       store.commit('traction/ont/selectPlate', selectPlate)
     })
 
@@ -45,7 +45,7 @@ describe('OntPlateSelectedList', () => {
 
   describe('Plate@onSelect', () => {
     beforeEach(() => {
-      let selectPlate = { id: '1', selected: true }
+      const selectPlate = { id: '1', selected: true }
       store.commit('traction/ont/selectPlate', selectPlate)
     })
 

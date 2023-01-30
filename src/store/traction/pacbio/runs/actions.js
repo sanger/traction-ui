@@ -8,7 +8,7 @@ const splitPosition = (position) => {
 }
 
 const buildWell = ({ state }, position) => {
-  let [row, column] = splitPosition(position)
+  const [row, column] = splitPosition(position)
   return {
     row,
     column,
@@ -24,7 +24,7 @@ const fetchPacbioRuns = async ({ commit, getters }, filter) => {
   const promise = request.get({ filter })
   const response = await handleResponse(promise)
 
-  let { success, data: { data } = {}, errors = [] } = response
+  const { success, data: { data } = {}, errors = [] } = response
 
   if (success) {
     commit('setRuns', data)
@@ -34,7 +34,7 @@ const fetchPacbioRuns = async ({ commit, getters }, filter) => {
 }
 
 const newRun = ({ commit, rootGetters }) => {
-  let run = PacbioRun.build()
+  const run = PacbioRun.build()
   // Set default smrt_link_version_id on current run in the state
   const defaultSmrtLinkVersion = rootGetters['traction/pacbio/runCreate/defaultSmrtLinkVersion']
   run.smrt_link_version_id = defaultSmrtLinkVersion.id
@@ -42,9 +42,9 @@ const newRun = ({ commit, rootGetters }) => {
 }
 
 const editRun = async ({ commit, getters }, runId) => {
-  let request = getters.runRequest
-  let promise = request.find({ id: runId, include: 'plate.wells.pools.tube' })
-  let response = await handlePromise(promise)
+  const request = getters.runRequest
+  const promise = request.find({ id: runId, include: 'plate.wells.pools.tube' })
+  const response = await handlePromise(promise)
 
   if (response.successful) {
     const run = response.deserialize.runs[0]
@@ -62,18 +62,18 @@ const editRun = async ({ commit, getters }, runId) => {
 }
 
 const createRun = async ({ getters }) => {
-  let run = getters.currentRun
+  const run = getters.currentRun
 
-  let request = getters.pacbioRequests
+  const request = getters.pacbioRequests
   return await PacbioRun.create(run, request)
 }
 
 const updateRun = async ({ getters, dispatch }) => {
-  let run = getters.currentRun
-  let originalRun = await dispatch('getRun', run.id)
+  const run = getters.currentRun
+  const originalRun = await dispatch('getRun', run.id)
 
-  let request = getters.pacbioRequests
-  let responses = await PacbioRun.update(run, request)
+  const request = getters.pacbioRequests
+  const responses = await PacbioRun.update(run, request)
 
   if (responses.length != 0) {
     // Rollback - revert run back to original data
@@ -83,12 +83,12 @@ const updateRun = async ({ getters, dispatch }) => {
 }
 
 const getRun = async ({ getters }, id) => {
-  let request = getters.runRequest
-  let promise = request.find({ id, include: 'plate.wells.pools.libraries' })
-  let response = await handlePromise(promise)
+  const request = getters.runRequest
+  const promise = request.find({ id, include: 'plate.wells.pools.libraries' })
+  const response = await handlePromise(promise)
 
   if (response.successful) {
-    let run = response.deserialize.runs[0]
+    const run = response.deserialize.runs[0]
     return run
   }
 }

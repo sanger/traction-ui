@@ -48,9 +48,9 @@ describe('actions', () => {
 
       create.mockReturnValue(Data.TractionSaphyrTubesWithRequest)
 
-      let response = await Actions.exportSampleExtractionTubesIntoTraction({ getters }, tubes)
+      const response = await Actions.exportSampleExtractionTubesIntoTraction({ getters }, tubes)
 
-      let expectedPayload = {
+      const expectedPayload = {
         data: {
           data: {
             type: 'requests',
@@ -65,7 +65,7 @@ describe('actions', () => {
     })
 
     it('unsuccessfully', async () => {
-      let failedResponse = {
+      const failedResponse = {
         success: false,
         status: 422,
         statusText: 'Unprocessable Entity',
@@ -79,7 +79,7 @@ describe('actions', () => {
 
       create.mockReturnValue(failedResponse)
 
-      let response = await Actions.exportSampleExtractionTubesIntoTraction(
+      const response = await Actions.exportSampleExtractionTubesIntoTraction(
         { dispatch, getters },
         tubes,
       )

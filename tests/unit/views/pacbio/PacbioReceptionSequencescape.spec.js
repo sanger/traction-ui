@@ -45,9 +45,9 @@ describe('PacbioReceptionSequencescape', () => {
     })
 
     it('calls the right function', async () => {
-      let input = wrapper.find('textarea')
+      const input = wrapper.find('textarea')
       await input.setValue(barcodes)
-      let button = wrapper.find('#createTractionPlates')
+      const button = wrapper.find('#createTractionPlates')
       await button.trigger('click')
       expect(reception.createTractionPlates).toBeCalled()
     })

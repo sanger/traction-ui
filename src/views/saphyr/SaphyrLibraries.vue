@@ -140,12 +140,12 @@ export default {
   methods: {
     async handleLibraryDelete() {
       try {
-        let selectedIds = this.selected.map((s) => s.id)
-        let selectedBarcodes = this.selected.map((s) => s.barcode)
-        let responses = await this.deleteLibraries(selectedIds)
+        const selectedIds = this.selected.map((s) => s.id)
+        const selectedBarcodes = this.selected.map((s) => s.barcode)
+        const responses = await this.deleteLibraries(selectedIds)
 
         if (responses.every((r) => r.successful)) {
-          let keyword = selectedIds.length > 1 ? 'Libraries' : 'Library'
+          const keyword = selectedIds.length > 1 ? 'Libraries' : 'Library'
           this.showAlert(
             `${keyword} ${selectedBarcodes.join(', ')} successfully deleted`,
             'success',

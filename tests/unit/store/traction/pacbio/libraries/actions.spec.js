@@ -100,29 +100,29 @@ describe('#deleteLibraries', () => {
   })
 
   it('successfully', async () => {
-    let mockResponse = { data: {}, status: 204, statusText: 'OK' }
+    const mockResponse = { data: {}, status: 204, statusText: 'OK' }
 
-    let promise = new Promise((resolve) => {
+    const promise = new Promise((resolve) => {
       resolve(mockResponse)
     })
 
     destroy.mockReturnValue([promise])
 
-    let expectedResponse = new Response(mockResponse)
-    let response = await Actions.deleteLibraries({ getters }, libraryIds)
+    const expectedResponse = new Response(mockResponse)
+    const response = await Actions.deleteLibraries({ getters }, libraryIds)
 
     expect(response).toEqual([expectedResponse])
   })
 
   it('unsuccessfully', async () => {
-    let promise = new Promise((reject) => {
+    const promise = new Promise((reject) => {
       reject(failedResponse)
     })
 
     destroy.mockReturnValue([promise])
 
-    let expectedResponse = new Response(failedResponse)
-    let response = await Actions.deleteLibraries({ getters }, libraryIds)
+    const expectedResponse = new Response(failedResponse)
+    const response = await Actions.deleteLibraries({ getters }, libraryIds)
 
     expect(response).toEqual([expectedResponse])
   })
@@ -144,7 +144,7 @@ describe('#setLibraries', () => {
   })
 
   it('successfully', async () => {
-    let libraries = Data.TractionPacbioLibraries
+    const libraries = Data.TractionPacbioLibraries
     libraries.data.data.splice(2, 4)
     get.mockResolvedValue(libraries)
 

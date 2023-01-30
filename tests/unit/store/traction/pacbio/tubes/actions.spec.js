@@ -10,28 +10,28 @@ describe('#isLibraryBarcodeValid', () => {
   })
 
   it('will return false when barcode is null', async () => {
-    let result = await Actions.isLibraryBarcodeValid({ dispatch }, '')
+    const result = await Actions.isLibraryBarcodeValid({ dispatch }, '')
     expect(result).toEqual(false)
   })
 
   it('will return false if there is no pool', async () => {
-    let sampleTube = new Response(Data.TractionTubesWithPacbioPools).deserialize.tubes[0]
+    const sampleTube = new Response(Data.TractionTubesWithPacbioPools).deserialize.tubes[0]
     dispatch.mockReturnValue(sampleTube)
-    let result = await Actions.isLibraryBarcodeValid({ dispatch }, 'TRAC-1')
+    const result = await Actions.isLibraryBarcodeValid({ dispatch }, 'TRAC-1')
     expect(result).toEqual(false)
   })
 
   it('will return false if the pool is not ready', async () => {
-    let sampleTube = new Response(Data.TractionTubesWithPacbioPools).deserialize.tubes[1]
+    const sampleTube = new Response(Data.TractionTubesWithPacbioPools).deserialize.tubes[1]
     dispatch.mockReturnValue(sampleTube)
-    let result = await Actions.isLibraryBarcodeValid({ dispatch }, 'TRAC-2')
+    const result = await Actions.isLibraryBarcodeValid({ dispatch }, 'TRAC-2')
     expect(result).toEqual(false)
   })
 
   it('will return true if the pool is ready', async () => {
-    let libraryTube = new Response(Data.TractionTubesWithPacbioPools).deserialize.tubes[2]
+    const libraryTube = new Response(Data.TractionTubesWithPacbioPools).deserialize.tubes[2]
     dispatch.mockReturnValue(libraryTube)
-    let result = await Actions.isLibraryBarcodeValid({ dispatch }, 'TRAC-3')
+    const result = await Actions.isLibraryBarcodeValid({ dispatch }, 'TRAC-3')
     expect(result).toEqual(true)
   })
 })
@@ -50,8 +50,8 @@ describe('#getTubeForBarcode', () => {
   it('successfully', async () => {
     get.mockReturnValue(Data.TractionTubeWithContainerMaterials)
 
-    let expectedResponse = new Response(Data.TractionTubeWithContainerMaterials)
-    let response = await Actions.getTubeForBarcode({ getters }, barcode)
+    const expectedResponse = new Response(Data.TractionTubeWithContainerMaterials)
+    const response = await Actions.getTubeForBarcode({ getters }, barcode)
 
     expect(response).toEqual(expectedResponse.deserialize.tubes[0])
   })
@@ -59,7 +59,7 @@ describe('#getTubeForBarcode', () => {
   it('unsuccessfully', async () => {
     get.mockReturnValue(failedResponse)
 
-    let response = await Actions.getTubeForBarcode({ getters }, barcode)
+    const response = await Actions.getTubeForBarcode({ getters }, barcode)
     expect(response).toEqual()
   })
 })
