@@ -50,7 +50,7 @@ export default {
       state: (state) => state.currentRun.state,
     }),
     instrumentOptions() {
-      let options = this.instruments.map((instrument) => ({
+      const options = this.instruments.map((instrument) => ({
         value: instrument.name,
         text: instrument.name,
       }))
@@ -58,7 +58,7 @@ export default {
       return [{ value: null, text: 'Please select an instrument', disabled: true }, ...options]
     },
     stateOptions() {
-      let options = this.statesList.map((state) => ({
+      const options = this.statesList.map((state) => ({
         value: this.formatState(state),
         text: state,
       }))

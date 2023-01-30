@@ -5,7 +5,7 @@ export default {
     try {
       return Object.values(state.resources.runs).map((r) => {
         // Is there a way to not do this and just get the instrument id from the run data
-        let instrument = Object.values(state.resources.instruments).find(
+        const instrument = Object.values(state.resources.instruments).find(
           (i) => i.id == r.ont_instrument_id,
         )
         return {
@@ -20,7 +20,7 @@ export default {
   instruments: (state) => {
     try {
       return Object.values(state.resources.instruments).map((i) => {
-        let instrumentConfig = InstrumentFlowcellLayout[i.instrument_type]
+        const instrumentConfig = InstrumentFlowcellLayout[i.instrument_type]
         return {
           ...i,
           ...instrumentConfig,

@@ -25,17 +25,17 @@ describe('Plate.vue', () => {
   describe('methods', () => {
     describe('#getWellAt', () => {
       it('gets the well at the given position when it exists and has material', () => {
-        let expected = plate.wells.find((w) => w.position == 'A1')
+        const expected = plate.wells.find((w) => w.position == 'A1')
         expect(plate.getWellAt('A1')).toEqual(expected)
       })
 
       it('creates an empty well for the given position when a well exists but has no material', () => {
-        let expected = { position: 'A2', materials: [] }
+        const expected = { position: 'A2', materials: [] }
         expect(plate.getWellAt('A2')).toEqual(expected)
       })
 
       it('creates an empty well for the given position when a well does not exist', () => {
-        let expected = { position: 'A3', materials: [] }
+        const expected = { position: 'A3', materials: [] }
         expect(plate.getWellAt('A3')).toEqual(expected)
       })
     })
@@ -53,7 +53,7 @@ describe('Plate.vue', () => {
 
   describe('SVG wells', () => {
     it('has the correct number of wells', () => {
-      let ellipses = wrapper.findAllComponents({ ref: 'well' })
+      const ellipses = wrapper.findAllComponents({ ref: 'well' })
       expect(ellipses.length).toEqual(Object.keys(PlateMap.wells).length)
     })
   })

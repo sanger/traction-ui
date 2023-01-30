@@ -69,7 +69,7 @@ export default {
   },
   methods: {
     getWellAt(mapWell, position) {
-      let well = this.wellData.find((well) => well.position == position)
+      const well = this.wellData.find((well) => well.position == position)
       return well ? { ...mapWell, ...well } : mapWell
     },
     clickWell(id) {

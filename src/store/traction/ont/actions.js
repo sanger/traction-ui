@@ -10,11 +10,11 @@ export default {
    */
   fetchOntRuns: async ({ commit, rootState }) => {
     const request = rootState.api.traction.ont.runs
-    let promise = request.get({ include: 'instrument' })
+    const promise = request.get({ include: 'instrument' })
 
     const response = await handleResponse(promise)
 
-    let { success, data: { data, included = [] } = {}, errors = [] } = response
+    const { success, data: { data, included = [] } = {}, errors = [] } = response
     const { instruments } = groupIncludedByResource(included)
 
     if (success) {
@@ -26,7 +26,7 @@ export default {
   },
   setInstruments: async ({ commit, rootState }) => {
     const request = rootState.api.traction.ont.instruments
-    let promise = request.get()
+    const promise = request.get()
     const response = await handleResponse(promise)
     const { success, data: { data } = {}, errors = [] } = response
 

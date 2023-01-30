@@ -153,11 +153,11 @@ export default {
   methods: {
     async handleLibraryDelete() {
       try {
-        let selectedIds = this.selected.map((s) => s.id)
-        let responses = await this.deleteLibraries(selectedIds)
+        const selectedIds = this.selected.map((s) => s.id)
+        const responses = await this.deleteLibraries(selectedIds)
 
         if (responses.every((r) => r.successful)) {
-          let keyword = selectedIds.length > 1 ? 'Libraries' : 'Library'
+          const keyword = selectedIds.length > 1 ? 'Libraries' : 'Library'
           this.showAlert(`${keyword} ${selectedIds.join(', ')} successfully deleted`, 'success')
           // Refetch the updated libraries
           try {

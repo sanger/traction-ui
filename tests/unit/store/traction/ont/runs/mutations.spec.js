@@ -18,7 +18,7 @@ describe('mutations', () => {
 
   describe('mutate', () => {
     it('can mutate the state, e.g setCurrentRun', () => {
-      let currentRun = {
+      const currentRun = {
         id: '1',
         instrument_name: '',
         state: 'pending',
@@ -30,13 +30,13 @@ describe('mutations', () => {
   })
   describe('mutateRun', () => {
     it('can mutate the currentRun state, e.g setCurrentRun', () => {
-      let instrumentName = 'Bob'
+      const instrumentName = 'Bob'
       Mutations.setInstrumentName(state, instrumentName)
       expect(state.currentRun.instrument_name).toEqual(instrumentName)
     })
 
     it('can mutate the currentRun state, e.g setState', () => {
-      let runState = 'Pending'
+      const runState = 'Pending'
       Mutations.setState(state, runState)
       expect(state.currentRun.state).toEqual(runState)
     })
@@ -44,7 +44,7 @@ describe('mutations', () => {
 
   describe('setFlowcellId', () => {
     it('creates a flowcell object if one does not exist already for the position', () => {
-      let obj = { $event: 'flowcell1', position: '1' }
+      const obj = { $event: 'flowcell1', position: '1' }
       Mutations.setFlowcellId(state, obj)
       expect(state.currentRun.flowcell_attributes.length).toEqual(1)
       expect(state.currentRun.flowcell_attributes[0]).toEqual({
@@ -55,7 +55,7 @@ describe('mutations', () => {
 
     it('updates the flowcell object is one exists for the position', () => {
       Mutations.setFlowcellId(state, { $event: 'flowcell1', position: '1' })
-      let obj = { $event: 'flowcell1updated', position: '1' }
+      const obj = { $event: 'flowcell1updated', position: '1' }
       Mutations.setFlowcellId(state, obj)
       expect(state.currentRun.flowcell_attributes.length).toEqual(1)
       expect(state.currentRun.flowcell_attributes[0]).toEqual({
@@ -67,7 +67,7 @@ describe('mutations', () => {
 
   describe('setPoolTubeBarcode', () => {
     it('creates a flowcell object if one does not exist already for the position', () => {
-      let obj = { barcode: 'TRAC-A-1', position: '1' }
+      const obj = { barcode: 'TRAC-A-1', position: '1' }
       Mutations.setPoolTubeBarcode(state, obj)
       expect(state.currentRun.flowcell_attributes.length).toEqual(1)
       expect(state.currentRun.flowcell_attributes[0]).toEqual({
@@ -78,7 +78,7 @@ describe('mutations', () => {
 
     it('updates the flowcell object is one exists for the position', () => {
       Mutations.setPoolTubeBarcode(state, { barcode: 'TRAC-A-1', position: '1' })
-      let obj = { barcode: 'TRAC-A-2', position: '1' }
+      const obj = { barcode: 'TRAC-A-2', position: '1' }
       Mutations.setPoolTubeBarcode(state, obj)
       expect(state.currentRun.flowcell_attributes.length).toEqual(1)
       expect(state.currentRun.flowcell_attributes[0]).toEqual({

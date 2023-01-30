@@ -71,7 +71,7 @@ export default {
       return this.actions[this.newRecord ? 'create' : 'update']
     },
     runValid() {
-      let flowcells = (this.currentRun.flowcell_attributes || []).filter(
+      const flowcells = (this.currentRun.flowcell_attributes || []).filter(
         (fc) => fc.flowcell_id && fc.tube_barcode,
       )
       return this.currentRun.instrument_name && this.currentRun.state && flowcells.length != 0
@@ -82,12 +82,12 @@ export default {
     ...mapActions('traction/ont', ['setInstruments']),
     ...mapActions('traction/ont/pools', ['fetchOntPools']),
     async runAction() {
-      let response = await this[this.currentAction.method]()
+      const response = await this[this.currentAction.method]()
 
       if (response.success) {
         this.redirectToRuns()
       } else {
-        let action = this.newRecord ? 'create' : 'update'
+        const action = this.newRecord ? 'create' : 'update'
         this.showAlert(
           `Failed to ${action} run in Traction: ${response.errors}`,
           'danger',

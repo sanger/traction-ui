@@ -10,7 +10,7 @@ describe('ONTRunInstrumentFlowcells', () => {
   beforeEach(() => {
     mockInstruments = new Response(Data.OntInstruments).deserialize.instruments
 
-    let rawInstruments = new Response(Data.OntInstruments)._body.data
+    const rawInstruments = new Response(Data.OntInstruments)._body.data
     store.commit('traction/ont/setInstruments', rawInstruments)
 
     mockRun = {
@@ -46,8 +46,8 @@ describe('ONTRunInstrumentFlowcells', () => {
       })
 
       it('must have instruments', () => {
-        let expected = mockInstruments.map((i) => {
-          let instrumentConfig = InstrumentFlowcellLayout[i.instrument_type]
+        const expected = mockInstruments.map((i) => {
+          const instrumentConfig = InstrumentFlowcellLayout[i.instrument_type]
           return {
             ...i,
             ...instrumentConfig,
@@ -57,7 +57,7 @@ describe('ONTRunInstrumentFlowcells', () => {
       })
 
       it('must have instrumentByName', () => {
-        let expected = mockInstruments.find((i) => i.name == 'PC24B148')
+        const expected = mockInstruments.find((i) => i.name == 'PC24B148')
         expect(ontRunInstrumentFlowcell.instrument).toEqual(expected)
       })
     })
@@ -65,15 +65,15 @@ describe('ONTRunInstrumentFlowcells', () => {
 
   describe('#methods', () => {
     it('#calculatePosition', () => {
-      let rowIndex = 2
-      let colIndex = 3
+      const rowIndex = 2
+      const colIndex = 3
       // NB. positions are numbered in column order (e.g. PromethIon col 1 is positions 1-8, col 2 is 9-16, col 3 is 17-24)
       expect(ontRunInstrumentFlowcell.calculatePosition(rowIndex, colIndex)).toEqual(18)
     })
 
     it('#calculateCoordinate for PromethION', () => {
-      let rowIndex = 2
-      let colIndex = 3
+      const rowIndex = 2
+      const colIndex = 3
       expect(ontRunInstrumentFlowcell.calculateCoordinate(rowIndex, colIndex)).toEqual('3B')
     })
   })

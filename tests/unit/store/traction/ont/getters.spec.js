@@ -22,8 +22,8 @@ describe('getters.js', () => {
   it('"instruments" returns "state.resources.instruments"', () => {
     const actual = getters.instruments(state)
 
-    let expected = Object.values(state.resources.instruments).map((i) => {
-      let instrumentConfig = InstrumentFlowcellLayout[i.instrument_type]
+    const expected = Object.values(state.resources.instruments).map((i) => {
+      const instrumentConfig = InstrumentFlowcellLayout[i.instrument_type]
       return {
         ...i,
         ...instrumentConfig,
@@ -36,8 +36,8 @@ describe('getters.js', () => {
   it('"runs" returns "state.resources.runs"', () => {
     const actual = getters.runs(state)
 
-    let expected = Object.values(runs).map((r) => {
-      let instrument = Object.values(state.resources.instruments).find(
+    const expected = Object.values(runs).map((r) => {
+      const instrument = Object.values(state.resources.instruments).find(
         (i) => i.id == r.ont_instrument_id,
       )
       return {

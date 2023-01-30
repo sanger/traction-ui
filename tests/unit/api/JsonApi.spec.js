@@ -157,7 +157,7 @@ describe('JsonApi', () => {
       })
 
       it('will extract each record correctly', () => {
-        let item = JsonApi.extractResourceObject(dataItem, included)
+        const item = JsonApi.extractResourceObject(dataItem, included)
         expect(deserialized.cheeses[0]).toEqual(item)
       })
     })

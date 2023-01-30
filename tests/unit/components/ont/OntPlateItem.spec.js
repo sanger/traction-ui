@@ -76,7 +76,7 @@ describe('Plate.vue', () => {
 
   describe('SVG wells', () => {
     it('has the correct number of wells', () => {
-      let ellipses = wrapper.findAllComponents({ ref: 'well' })
+      const ellipses = wrapper.findAllComponents({ ref: 'well' })
       expect(ellipses.length).toEqual(Object.keys(store.state.plateMap.wells).length)
     })
   })

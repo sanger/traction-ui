@@ -30,7 +30,7 @@ describe('actions.js', () => {
       Actions.newRun({
         commit,
       })
-      let newRun = {
+      const newRun = {
         id: 'new',
         instrument_name: null,
         state: null,
@@ -60,12 +60,12 @@ describe('actions.js', () => {
     it('successfully', async () => {
       const promise = Promise.resolve(Data.OntRun)
       create.mockReturnValue(promise)
-      let response = await Actions.createRun({
+      const response = await Actions.createRun({
         getters,
         rootGetters,
       })
 
-      let payload = {
+      const payload = {
         data: {
           data: {
             type: 'runs',
@@ -130,7 +130,7 @@ describe('actions.js', () => {
       const promise = Promise.resolve(Data.OntRun)
       update.mockReturnValue(promise)
 
-      let response = await Actions.updateRun({ getters, rootGetters })
+      const response = await Actions.updateRun({ getters, rootGetters })
 
       expect(update).toBeCalledWith(payload)
       expect(response.success).toBeTruthy()

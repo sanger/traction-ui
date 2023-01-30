@@ -171,7 +171,7 @@ export default {
         tubes,
       } = groupIncludedByResource(included)
       // We need to find the pool tube in the list of returned tubes
-      let poolingTube = tubes.find((tube) => tube.id == data.relationships.tube.data.id)
+      const poolingTube = tubes.find((tube) => tube.id == data.relationships.tube.data.id)
       commit('populatePoolAttributes', data)
       commit('populatePoolingLibraries', libraries)
       commit('populatePoolingTube', poolingTube)
@@ -277,7 +277,7 @@ export default {
   selectWellRequests: ({ commit, state }, well_id) => {
     const { requests } = state.resources.wells[well_id]
     const selectedRequests = state.pooling.libraries
-    for (let id of requests) {
+    for (const id of requests) {
       const selected = !!selectedRequests[id]
       commit('selectRequest', { id, selected: !selected })
     }
@@ -294,7 +294,7 @@ export default {
     const promise = request.get({ filter: filter })
     const response = await handleResponse(promise)
 
-    let { success, data: { data } = {}, errors = [] } = response
+    const { success, data: { data } = {}, errors = [] } = response
 
     if (success) {
       commit('setRequests', data)
@@ -343,7 +343,7 @@ export default {
     })
     const response = await handleResponse(promise)
 
-    let { success, data: { data, included = [] } = {}, errors = [] } = response
+    const { success, data: { data, included = [] } = {}, errors = [] } = response
     const { tubes, libraries, tags, requests } = groupIncludedByResource(included)
 
     if (success) {
@@ -373,7 +373,7 @@ export default {
     })
     const response = await handleResponse(promise)
 
-    let { success, data: { data, included = [] } = {}, errors = [] } = response
+    const { success, data: { data, included = [] } = {}, errors = [] } = response
     const { tubes, libraries, tags, requests } = groupIncludedByResource(included)
 
     if (success) {
@@ -508,9 +508,9 @@ export default {
   deselectPlateAndContents: ({ commit, state }, plateId) => {
     commit('selectPlate', { id: plateId, selected: false })
     const { wells } = state.resources.plates[plateId]
-    for (let wellId of wells) {
+    for (const wellId of wells) {
       const { requests = [] } = state.resources.wells[wellId]
-      for (let requestId of requests) {
+      for (const requestId of requests) {
         commit('selectRequest', { id: requestId, selected: false })
         commit('removeResource', { resource: 'requests', id: requestId })
       }
@@ -527,7 +527,7 @@ export default {
     commit('selectTube', { id: tube.id, selected: false })
     const { requests } = state.resources.tubes[tube.id]
 
-    for (let requestId of requests) {
+    for (const requestId of requests) {
       commit('selectRequest', { id: requestId, selected: false })
       commit('removeResource', { resource: 'requests', id: requestId })
     }

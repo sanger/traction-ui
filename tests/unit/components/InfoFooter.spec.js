@@ -5,7 +5,7 @@ describe('InfoFooter.vue', () => {
   let wrapper
 
   beforeEach(() => {
-    let response = {
+    const response = {
       status: 200,
       statusText: 'OK',
       data: { errors: {} },
@@ -32,13 +32,13 @@ describe('InfoFooter.vue', () => {
 
   describe('getRelease method', () => {
     it('returns "Releases" when repo equals default release', () => {
-      let defaultRelease = 'https://github.com/sanger/traction-ui/releases'
+      const defaultRelease = 'https://github.com/sanger/traction-ui/releases'
       wrapper.setData({ repo: defaultRelease })
       expect(wrapper.vm.getRelease()).toEqual('Releases')
     })
 
     it('returns a sliced version of repo when repo doesnt equal default release', () => {
-      let exampleRelease = 'https://github.com/sanger/traction-ui/releases/tag/12345'
+      const exampleRelease = 'https://github.com/sanger/traction-ui/releases/tag/12345'
       wrapper.setData({ repo: exampleRelease })
       expect(wrapper.vm.getRelease()).toEqual('12345')
     })

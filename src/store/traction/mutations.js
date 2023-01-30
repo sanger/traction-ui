@@ -5,7 +5,7 @@ const mutations = {
     state.tractionTags = tags
   },
   updateRun(state, run) {
-    let runIndex = state.pacbio.runs.runs.map((e) => e.id).indexOf(run.id)
+    const runIndex = state.pacbio.runs.runs.map((e) => e.id).indexOf(run.id)
 
     state.pacbio.runs.runs.splice(runIndex, 1, run)
     state.pacbio.runs.runs = [...state.pacbio.runs.runs]

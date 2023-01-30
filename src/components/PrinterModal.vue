@@ -59,7 +59,7 @@ export default {
     },
     handleSubmit() {
       // OR store holds key id and text value - emit id then store handles get name
-      let printerName = this.printerOptions[this.selectedPrinterId].text
+      const printerName = this.printerOptions[this.selectedPrinterId].text
       this.$emit('selectPrinter', printerName)
       this.clearSelect()
       /**
@@ -72,7 +72,7 @@ export default {
       })
     },
     setPrinterNames() {
-      let printerOptions = this.$store.getters.printers.map((printer, index) => ({
+      const printerOptions = this.$store.getters.printers.map((printer, index) => ({
         value: index + 1,
         text: printer,
       }))

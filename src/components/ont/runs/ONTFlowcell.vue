@@ -95,7 +95,7 @@ export default {
         return this.poolTubeBarcode
       },
       async set(value) {
-        let response = await this.validatePoolBarcode(value)
+        const response = await this.validatePoolBarcode(value)
         if (response.success) {
           this.setPoolTubeBarcode({ barcode: value, position: this.position })
         }
@@ -104,7 +104,7 @@ export default {
     },
     ...mapState({
       flowcellId(state) {
-        let flowcell = state.currentRun.flowcell_attributes.find(
+        const flowcell = state.currentRun.flowcell_attributes.find(
           (flowcell) => flowcell.position == this.position,
         )
         if (flowcell) {
@@ -112,7 +112,7 @@ export default {
         }
       },
       poolTubeBarcode(state) {
-        let flowcell = state.currentRun.flowcell_attributes.find(
+        const flowcell = state.currentRun.flowcell_attributes.find(
           (flowcell) => flowcell.position == this.position,
         )
         if (flowcell) {

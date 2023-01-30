@@ -56,7 +56,7 @@ describe('Well.vue', () => {
   })
 
   it('will have an ellipse with the correct attributes', () => {
-    let ellipse = wrapper.find('ellipse')
+    const ellipse = wrapper.find('ellipse')
     expect(ellipse.exists()).toBeTruthy()
     expect(ellipse.attributes('cx')).toEqual(well.cx)
     expect(ellipse.attributes('cy')).toEqual(well.cy)
@@ -66,7 +66,7 @@ describe('Well.vue', () => {
 
   describe('#status', () => {
     it('will be filled if the well has materials', () => {
-      let ellipse = wrapper.find('ellipse')
+      const ellipse = wrapper.find('ellipse')
       expect(ellipse.attributes('class')).toContain('filled')
     })
 
@@ -77,15 +77,15 @@ describe('Well.vue', () => {
         propsData: props,
       })
 
-      let ellipse = wrapper.find('ellipse')
+      const ellipse = wrapper.find('ellipse')
       expect(ellipse.attributes('class')).toContain('empty')
     })
   })
 
   describe('#tooltip', () => {
     it('will display the materials requests name', () => {
-      let title = wrapper.find('title')
-      let expected = well.well_info.materials.map((m) => m.sample_name).join(', ')
+      const title = wrapper.find('title')
+      const expected = well.well_info.materials.map((m) => m.sample_name).join(', ')
       expect(title.text()).toEqual(expected)
     })
   })

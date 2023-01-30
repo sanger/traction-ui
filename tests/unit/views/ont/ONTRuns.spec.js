@@ -25,9 +25,9 @@ describe('ONTRuns.vue', () => {
     })
 
     it('contains the correct headers', async () => {
-      let headers = wrapper.findAll('th')
+      const headers = wrapper.findAll('th')
 
-      for (let field of runs.fields) {
+      for (const field of runs.fields) {
         expect(headers.filter((header) => header.text() === field.label)).toBeDefined()
       }
     })
@@ -43,7 +43,7 @@ describe('ONTRuns.vue', () => {
     })
 
     it('will redirect to the run when newRun is clicked', async () => {
-      let button = wrapper.find('#newRun')
+      const button = wrapper.find('#newRun')
       button.trigger('click')
       expect(runs.$route.path).toEqual('/ont/run/new')
     })
@@ -56,7 +56,7 @@ describe('ONTRuns.vue', () => {
     })
 
     it('will call editRun when Edit is clicked', async () => {
-      let button = wrapper.find('#editRun-1')
+      const button = wrapper.find('#editRun-1')
       button.trigger('click')
       expect(runs.$route.path).toEqual('/ont/run/1')
     })

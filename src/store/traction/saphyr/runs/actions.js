@@ -2,12 +2,12 @@ import handlePromise from '@/api/PromiseHelper'
 import * as Run from '@/api/SaphyrRun'
 
 const setRuns = async ({ commit, getters }) => {
-  let request = getters.runRequest
-  let promise = request.get({ include: 'chip.flowcells.library' })
-  let response = await handlePromise(promise)
+  const request = getters.runRequest
+  const promise = request.get({ include: 'chip.flowcells.library' })
+  const response = await handlePromise(promise)
 
   if (response.successful && !response.empty) {
-    let runs = response.deserialize.runs
+    const runs = response.deserialize.runs
     commit('setRuns', runs)
   }
 
@@ -18,15 +18,15 @@ const isLibraryBarcodeValid = async ({ dispatch }, barcode) => {
   if (!barcode) {
     return false
   }
-  let libraryTube = await dispatch('getTubeForBarcode', barcode)
+  const libraryTube = await dispatch('getTubeForBarcode', barcode)
   return validateLibraryTube(libraryTube)
 }
 
 // TODO: Reuse action from tubes module?
 const getTubeForBarcode = async ({ rootGetters }, barcode) => {
-  let request = rootGetters['traction/saphyr/tubes/tubeRequest']
-  let promise = request.get({ filter: { barcode }, include: 'materials' })
-  let response = await handlePromise(promise)
+  const request = rootGetters['traction/saphyr/tubes/tubeRequest']
+  const promise = request.get({ filter: { barcode }, include: 'materials' })
+  const response = await handlePromise(promise)
 
   if (response.successful && !response.empty) {
     return response.deserialize.tubes[0]
@@ -47,31 +47,31 @@ const validateLibraryTube = (tube) => {
 }
 
 const editRun = async ({ commit, getters }, runId) => {
-  let request = getters.runRequest
-  let promise = request.find({ id: runId, include: 'chip.flowcells.library' })
-  let response = await handlePromise(promise)
+  const request = getters.runRequest
+  const promise = request.find({ id: runId, include: 'chip.flowcells.library' })
+  const response = await handlePromise(promise)
 
   if (response.successful) {
-    let run = response.deserialize.runs[0]
+    const run = response.deserialize.runs[0]
     commit('setCurrentRun', run)
   }
 }
 
 const newRun = ({ commit }) => {
-  let run = Run.build()
+  const run = Run.build()
   commit('setCurrentRun', run)
 }
 
 const createRun = async ({ getters }) => {
-  let run = getters.currentRun
-  let request = getters.saphyrRequests
+  const run = getters.currentRun
+  const request = getters.saphyrRequests
 
   return await Run.create(run, request)
 }
 
 const updateRun = async ({ getters }) => {
-  let run = getters.currentRun
-  let request = getters.saphyrRequests
+  const run = getters.currentRun
+  const request = getters.saphyrRequests
 
   return await Run.update(run, request)
 }

@@ -46,7 +46,7 @@ export default {
   },
   methods: {
     handleSubmit() {
-      let labware = this.tubeList.find((labware) => labware.barcode === this.enteredLabware)
+      const labware = this.tubeList.find((labware) => labware.barcode === this.enteredLabware)
       labware
         ? this.toggleSelected(labware)
         : this.showAlert(

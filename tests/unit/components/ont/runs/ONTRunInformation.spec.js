@@ -10,7 +10,7 @@ describe('ONTRunInformation.vue', () => {
   beforeEach(() => {
     mockInstruments = new Response(Data.OntInstruments).deserialize.instruments
 
-    let rawInstruments = new Response(Data.OntInstruments)._body.data
+    const rawInstruments = new Response(Data.OntInstruments)._body.data
     store.commit('traction/ont/setInstruments', rawInstruments)
 
     mockRun = {
@@ -58,8 +58,8 @@ describe('ONTRunInformation.vue', () => {
       expect(ontRunInfomation.currentRun).toEqual(mockRun)
     })
     it('must have instruments', () => {
-      let expected = mockInstruments.map((i) => {
-        let instrumentConfig = InstrumentFlowcellLayout[i.instrument_type]
+      const expected = mockInstruments.map((i) => {
+        const instrumentConfig = InstrumentFlowcellLayout[i.instrument_type]
         return {
           ...i,
           ...instrumentConfig,
@@ -76,11 +76,11 @@ describe('ONTRunInformation.vue', () => {
   })
   describe('#instrumentOptions', () => {
     it('must format instrumentOptions', () => {
-      let options = mockInstruments.map((instrument) => ({
+      const options = mockInstruments.map((instrument) => ({
         value: instrument.name,
         text: instrument.name,
       }))
-      let expected = [
+      const expected = [
         { value: null, text: 'Please select an instrument', disabled: true },
         ...options,
       ]
@@ -90,11 +90,11 @@ describe('ONTRunInformation.vue', () => {
 
   describe('#stateOptions', () => {
     it('must format stateOptions', () => {
-      let options = ontRunInfomation.statesList.map((state) => ({
+      const options = ontRunInfomation.statesList.map((state) => ({
         value: state.replace(/\s+/g, '_').toLowerCase(),
         text: state,
       }))
-      let expected = [{ value: null, text: 'Please select a state', disabled: true }, ...options]
+      const expected = [{ value: null, text: 'Please select a state', disabled: true }, ...options]
       expect(ontRunInfomation.stateOptions).toEqual(expected)
     })
   })

@@ -17,10 +17,10 @@ describe('#setRuns', () => {
   it('successfully', async () => {
     get.mockReturnValue(Data.Runs)
 
-    let expectedResponse = new Response(Data.Runs)
-    let expectedRuns = expectedResponse.deserialize.runs
+    const expectedResponse = new Response(Data.Runs)
+    const expectedRuns = expectedResponse.deserialize.runs
 
-    let response = await Actions.setRuns({ commit, getters })
+    const response = await Actions.setRuns({ commit, getters })
 
     expect(commit).toHaveBeenCalledWith('setRuns', expectedRuns)
     expect(response).toEqual(expectedResponse)
@@ -29,9 +29,9 @@ describe('#setRuns', () => {
   it('unsuccessfully', async () => {
     get.mockReturnValue(failedResponse)
 
-    let expectedResponse = new Response(failedResponse)
+    const expectedResponse = new Response(failedResponse)
 
-    let response = await Actions.setRuns({ commit, getters })
+    const response = await Actions.setRuns({ commit, getters })
 
     expect(commit).not.toHaveBeenCalled()
     expect(response).toEqual(expectedResponse)
@@ -46,21 +46,21 @@ describe('#isLibraryBarcodeValid', () => {
   })
 
   it('will return false when barcode is null', async () => {
-    let result = await Actions.isLibraryBarcodeValid({ dispatch }, '')
+    const result = await Actions.isLibraryBarcodeValid({ dispatch }, '')
     expect(result).toEqual(false)
   })
 
   it('will return false if the barcode belongs to a sample', async () => {
-    let sampleTube = new Response(Data.TractionTubesWithSample).deserialize.tubes[0]
+    const sampleTube = new Response(Data.TractionTubesWithSample).deserialize.tubes[0]
     dispatch.mockReturnValue(sampleTube)
-    let result = await Actions.isLibraryBarcodeValid({ dispatch }, 'TRAC-1')
+    const result = await Actions.isLibraryBarcodeValid({ dispatch }, 'TRAC-1')
     expect(result).toEqual(false)
   })
 
   it('will return true if the barcode belongs to a library', async () => {
-    let libraryTube = new Response(Data.TubeWithLibrary).deserialize.tubes[0]
+    const libraryTube = new Response(Data.TubeWithLibrary).deserialize.tubes[0]
     dispatch.mockReturnValue(libraryTube)
-    let result = await Actions.isLibraryBarcodeValid({ dispatch }, 'TRAC-1')
+    const result = await Actions.isLibraryBarcodeValid({ dispatch }, 'TRAC-1')
     expect(result).toEqual(true)
   })
 })
@@ -79,8 +79,8 @@ describe('#getTubeForBarcode', () => {
   it('successfully', async () => {
     get.mockReturnValue(Data.TubeWithLibrary)
 
-    let expectedResponse = new Response(Data.TubeWithLibrary)
-    let response = await Actions.getTubeForBarcode({ rootGetters }, barcode)
+    const expectedResponse = new Response(Data.TubeWithLibrary)
+    const response = await Actions.getTubeForBarcode({ rootGetters }, barcode)
 
     expect(response).toEqual(expectedResponse.deserialize.tubes[0])
   })
@@ -88,7 +88,7 @@ describe('#getTubeForBarcode', () => {
   it('unsuccessfully', async () => {
     get.mockReturnValue(failedResponse)
 
-    let response = await Actions.getTubeForBarcode({ rootGetters }, barcode)
+    const response = await Actions.getTubeForBarcode({ rootGetters }, barcode)
     expect(response).toEqual()
   })
 })
@@ -137,7 +137,7 @@ describe('#newRun', () => {
   })
 
   it('successfully', async () => {
-    let newRun = Run.build()
+    const newRun = Run.build()
     vi.spyOn(Run, 'build').mockImplementation(() => newRun)
 
     Actions.newRun({ commit })
