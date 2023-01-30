@@ -12,18 +12,18 @@
         label-for="flowcell-id"
         label-align="left"
       >
-        <traction-input
+        <BFormInput
           :id="'flowcell-id-' + position"
           placeholder="Scan flowcell ID"
           :value="flowcellId"
           :formatter="formatter"
           :state="flowcellIdValidation"
           @input="setFlowcellId({ $event, position })"
-        ></traction-input>
+        ></BFormInput>
         <!-- This will only be shown if the preceding input has an invalid state -->
-        <traction-invalid-feedback id="input-flowcell-id-feedback">
-          Enter at valid Flowcell ID (3 letters then at least 3 numbers)
-        </traction-invalid-feedback>
+        <traction-invalid-feedback id="input-flowcell-id-feedback"
+          >Enter at valid Flowcell ID (3 letters then at least 3 numbers)</traction-invalid-feedback
+        >
       </traction-form-group>
       <traction-form-group
         id="input-group-pool-id"
@@ -31,14 +31,14 @@
         label-for="pool-id"
         label-align="left"
       >
-        <traction-input
+        <BFormInput
           :id="'pool-id-' + position"
           v-model="barcode"
           :formatter="formatter"
           :state="barcodeState"
           debounce="500"
           placeholder="Scan library barcode"
-        ></traction-input>
+        ></BFormInput>
         <traction-invalid-feedback id="input-pool-tube-barcode-feedback"
           >Enter a valid Pool Library barcode</traction-invalid-feedback
         >
@@ -55,9 +55,13 @@
 import { createNamespacedHelpers } from 'vuex'
 const { mapState, mapMutations } = createNamespacedHelpers('traction/ont/runs')
 const { mapActions } = createNamespacedHelpers('traction/ont/pools')
+import { BFormInput } from 'bootstrap-vue'
 
 export default {
   name: 'ONTFlowcell',
+  components: {
+    BFormInput,
+  },
   props: {
     position: {
       type: Number,

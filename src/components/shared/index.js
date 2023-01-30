@@ -52,7 +52,6 @@ import {
   BCardBody,
   BInputGroup,
   BInputGroupAppend,
-  BFormInput,
 } from 'bootstrap-vue'
 
 const registerBootstrapComponents = (vue) => {
@@ -86,7 +85,6 @@ const registerBootstrapComponents = (vue) => {
   vue.component('traction-card-header', BCardHeader)
   vue.component('traction-nav-item', BNavItem)
   vue.component('traction-nav', BNav)
-  vue.component('traction-input', BFormInput)
   vue.component('traction-input-group', BInputGroup)
   vue.component('traction-input-group-append', BInputGroupAppend)
   /*
