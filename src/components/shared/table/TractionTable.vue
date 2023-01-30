@@ -57,25 +57,16 @@
                 <template v-for="(row, rowIndex) in rows">
                   <tr v-if="row" :key="rowIndex">
                     <template v-for="cell in row">
-                      <custom-table-cell v-if="cell.item.custom" :key="'custom-' + cell.item.id">
-                        <slot :name="`cell(${cell.item.column.name})`" v-bind="cell" />
-                      </custom-table-cell>
-                      <custom-table-cell v-else :key="cell.item.id">
-                        {{ cell.item.text }}
+                      <custom-table-cell v-if="cell" :key="'custom-' + cell.item.id">
+                        <slot :name="`cell(${cell.item.column.name})`" v-bind="cell">
+                          {{ cell.item.text }}</slot
+                        >
                       </custom-table-cell>
                     </template>
                   </tr>
-                  <tr
-                    v-if="rows[rowIndex][0].detailsShowing"
-                    :key="'custom-comp' + rowIndex"
-                  >
+                  <tr v-if="rows[rowIndex][0].detailsShowing" :key="'custom-comp' + rowIndex">
                     <custom-table-cell>
-                      <slot
-                        :name="`row-details`"
-                        v-bind="rows[rowIndex][0]"
-                        :width="'30'"
-                        :height="'30'"
-                      />
+                      <slot :name="`row-details`" v-bind="rows[rowIndex][0]" />
                     </custom-table-cell>
                   </tr>
                 </template>
@@ -90,6 +81,7 @@
 <script>
 import TractionSortIcon from '@/components/shared/icons/TractionSortIcon'
 import BTableWrapper from '@/components/shared/table/BTableWrapper'
+import { within } from '@/lib/propValidations'
 
 export default {
   name: 'TractionTable',
@@ -114,11 +106,6 @@ export default {
       required: false,
       default: () => [],
     },
-    customColumns: {
-      type: Array,
-      required: false,
-      default: () => [],
-    },
     sortBy: {
       type: String,
       required: false,
@@ -128,6 +115,17 @@ export default {
       type: String,
       required: false,
       default: '',
+    },
+    selectable: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
+    selectMode: {
+      type: String,
+      required: false,
+      default: 'single',
+      validator: () => within('single', 'multiple'),
     },
   },
   data() {
@@ -170,7 +168,6 @@ export default {
               rowIndx: rowIndx,
               column: { index: colIndx, name: field.key },
               text: text,
-              custom: this.customColumns.some((column) => column === field.key),
             },
             toggleDetails: () => {
               if (this.showRowDetails == undefined || this.showRowDetails.length <= rowIndx) return
@@ -181,6 +178,7 @@ export default {
               })
             },
             detailsShowing: this.isShowDetails(row),
+            detailsDim: 30,
           }
         })
       })

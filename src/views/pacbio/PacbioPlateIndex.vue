@@ -27,7 +27,6 @@
       data-id-field="id"
       :fields="fields"
       :items="plates"
-      :custom-columns="customColumns"
       show-empty
       responsive
       :filter="filter"
@@ -49,7 +48,13 @@
         </traction-button>
       </template>
       <template #row-details="row">
-        <Plate ref="plate" :plate="row.item" height="10" width="10" @alert="alert" />
+        <Plate
+          ref="plate"
+          :plate="row.item"
+          :height="row.detailsDim"
+          width="row.detailsDim"
+          @alert="alert"
+        />
       </template>
     </custom-table>
 
@@ -98,9 +103,6 @@ export default {
   },
   computed: {
     ...mapGetters(['plates']),
-    customColumns() {
-      return ['show_details']
-    },
   },
   created() {
     // When this component is created (the 'created' lifecycle hook is called), we need to get the
