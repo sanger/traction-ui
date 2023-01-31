@@ -43,8 +43,12 @@ describe('PacbioLibraryCreate.vue', () => {
     expect(modal.selectedSample).toEqual(props.selectedSample)
   })
 
+  it('must have tagSetOptions data', () => {
+    expect(modal.tagSetOptions).toEqual([{ value: '', text: 'Please select a tag set' }])
+  })
+
   it('must have tagOptions data', () => {
-    expect(modal.tagOptions).toEqual([{ value: '', text: 'No tag' }])
+    expect(modal.tagOptions).toEqual([{ value: '', text: 'Please select a tag' }])
   })
 
   describe('#createLibrary', () => {
