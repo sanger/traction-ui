@@ -1,25 +1,29 @@
 <template>
-  <div class="mx-auto w-1/2 bg-gray-100 rounded-md mb-5 p-3">
-    <div class="flex flex-col mb-2">
-      <p class="flex font-semibold text-xl">Filter results</p>
-      <p class="inline-flex font-light text-gray-700 text-xs italiclist-none mb-2">
-        By default returns the most recent 1000 results
-      </p>
-      <div class="flex flex-row">
+  <div class="flex mx-auto w-1/2 bg-gray-100 rounded-md mb-2 p-3">
+    <div class="flex w-full">
+      <div class="w-full">
+        <p class="flex font-semibold text-xl">Filter results</p>
+        <p class="flex font-light text-gray-700 text-xs italiclist-none">
+          By default returns the most recent 1000 results
+        </p>
+      </div>
+      <div class="flex w-full">
         <traction-input
           id="filterInput"
           v-model="filterInput"
           type="search"
           placeholder="Type to Search"
-          class="mr-2 w-1/2"
+          class="mr-5 w-full"
         />
         <traction-select
           id="filterValue"
           v-model="filterValue"
           :options="filterOptions"
-          class="mr-2 w-1/2"
+          class="w-full"
         />
-        <div class="flex mx-auto justify-end">
+      </div>
+      <div class="w-full">
+        <div class="w-full">
           <traction-button @click="resetFilter()">Reset</traction-button>
           <traction-button
             :disabled="filterValue == '' || filterInput == ''"
