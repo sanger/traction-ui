@@ -9,7 +9,7 @@ describe('ONT Runs view', () => {
       },
     })
   })
-  
+
   it('Visits the ont runs url', () => {
     cy.intercept('/v1/ont/runs?include=instrument', {
       fixture: 'tractionOntRuns.json',
