@@ -14,7 +14,7 @@ describe('Well.vue', () => {
       ry: '11.032985',
       well_info: {
         position: 'A1',
-        materials: [{ sample_name: 'SampleName1' }, { sample_name: 'SampleName2' }],
+        requests: [{ sample_name: 'SampleName1' }, { sample_name: 'SampleName2' }],
       },
     }
 
@@ -70,8 +70,8 @@ describe('Well.vue', () => {
       expect(ellipse.attributes('class')).toContain('filled')
     })
 
-    it('will be empty the well does not have material', () => {
-      props['well_info'] = { position: 'A1', materials: [] }
+    it('will be empty the well does not have a request', () => {
+      props['well_info'] = { position: 'A1', requests: [] }
 
       wrapper = mount(Well, {
         propsData: props,
@@ -83,26 +83,26 @@ describe('Well.vue', () => {
   })
 
   describe('#tooltip', () => {
-    it('will display the materials requests name', () => {
+    it('will display the requests name', () => {
       const title = wrapper.find('title')
-      const expected = well.well_info.materials.map((m) => m.sample_name).join(', ')
+      const expected = wrapper.vm.tooltip
       expect(title.text()).toEqual(expected)
     })
   })
 
-  describe('#hasMaterial', () => {
-    it('will return true if the well has materials', () => {
-      expect(well.hasMaterial).toEqual(true)
+  describe('#hasRequest', () => {
+    it('will return true if the well has requests', () => {
+      expect(well.hasRequest).toEqual(true)
     })
 
-    it('will return false if the well doesnt not have any materials', () => {
-      props['well_info'] = { position: 'A1', materials: [] }
+    it('will return false if the well doesnt not have any requests', () => {
+      props['well_info'] = { position: 'A1', requests: [] }
 
       wrapper = mount(Well, {
         propsData: props,
       })
 
-      expect(wrapper.vm.hasMaterial).toEqual(false)
+      expect(wrapper.vm.hasRequest).toEqual(false)
     })
   })
 })

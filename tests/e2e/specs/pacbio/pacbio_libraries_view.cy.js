@@ -10,8 +10,6 @@ describe('Pacbio Libraries view', () => {
     cy.get('#filterValue')
       .children()
       .should('contain', 'Barcode')
-      .and('contain', 'Library ID')
-      .and('contain', 'Pool ID')
       .and('contain', 'Sample Name')
       .and('contain', 'Source')
     cy.get('#library-index').contains('tr', '5')

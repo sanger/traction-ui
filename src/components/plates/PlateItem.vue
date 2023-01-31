@@ -45,7 +45,7 @@ export default {
   methods: {
     getWellAt(position) {
       const well = this.wells.find((well) => well.position == position)
-      return well && well.materials ? well : { position, materials: [] }
+      return well && well.requests ? well : { position, requests: [] }
     },
   },
 }

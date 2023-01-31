@@ -139,7 +139,6 @@ export default {
       filteredItems: [],
       filterOptions: [
         { value: '', text: '' },
-        { value: 'id', text: 'Run ID' },
         { value: 'name', text: 'Name' },
         { value: 'state', text: 'State' },
         // Need to specify filters in json api resources if we want more filters

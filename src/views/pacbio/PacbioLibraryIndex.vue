@@ -130,8 +130,6 @@ export default {
       ],
       filterOptions: [
         { value: '', text: '' },
-        { value: 'id', text: 'Library ID' },
-        { value: 'pool', text: 'Pool ID' },
         { value: 'barcode', text: 'Barcode' },
         { value: 'sample_name', text: 'Sample Name' },
         { value: 'source_identifier', text: 'Source' },
