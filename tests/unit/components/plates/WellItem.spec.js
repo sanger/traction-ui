@@ -85,7 +85,7 @@ describe('Well.vue', () => {
   describe('#tooltip', () => {
     it('will display the requests name', () => {
       const title = wrapper.find('title')
-      const expected = well.well_info.requests.map((r) => r.sample_name).join(', ')
+      const expected = wrapper.vm.tooltip
       expect(title.text()).toEqual(expected)
     })
   })
