@@ -1,5 +1,3 @@
-import { beforeEach } from 'vitest'
-
 describe('ONT Runs view', () => {
   beforeEach(() => {
     cy.intercept('flipper/api/actors/User', {
