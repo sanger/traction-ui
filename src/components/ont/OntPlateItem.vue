@@ -22,6 +22,7 @@ import Well from '@/components/ont/OntWellItem'
  *
  * Displays an SVG of a 96 well plate with well selection ability
  */
+// TODO: ONT store: Does this need to be moved to top level ONT?
 export default {
   name: 'OntPlateItem',
   components: {
@@ -64,7 +65,7 @@ export default {
     },
   },
   mounted() {
-    this.wellData = this.$store.getters['traction/ont/wellList'](this.wells)
+    this.wellData = this.$store.getters['traction/ont/pools/wellList'](this.wells)
   },
   methods: {
     getWellAt(mapWell, position) {

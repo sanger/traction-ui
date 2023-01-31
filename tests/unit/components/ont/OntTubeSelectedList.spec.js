@@ -11,8 +11,8 @@ describe('OntTubeSelectedList', () => {
       const responseBody = new Response(Data.OntTubesRequest)._body
       mockTubes = responseBody.data
       const mockRequests = responseBody.included
-      store.commit('traction/ont/populateTubes', mockTubes)
-      store.commit('traction/ont/populateRequests', mockRequests)
+      store.commit('traction/ont/pools/populateTubes', mockTubes)
+      store.commit('traction/ont/pools/populateRequests', mockRequests)
 
       wrapper = mount(OntTubeSelectedList, {
         localVue,
@@ -38,13 +38,13 @@ describe('OntTubeSelectedList', () => {
       const responseBody = new Response(Data.OntTubesRequest)._body
       mockTubes = responseBody.data
       const mockRequests = responseBody.included
-      store.commit('traction/ont/populateTubes', mockTubes)
-      store.commit('traction/ont/populateRequests', mockRequests)
+      store.commit('traction/ont/pools/populateTubes', mockTubes)
+      store.commit('traction/ont/pools/populateRequests', mockRequests)
 
       const selectTube = { id: '1', selected: true }
       const selectRequest = { id: '191', selected: true }
-      store.commit('traction/ont/selectTube', selectTube)
-      store.commit('traction/ont/selectRequest', selectRequest)
+      store.commit('traction/ont/pools/selectTube', selectTube)
+      store.commit('traction/ont/pools/selectRequest', selectRequest)
 
       wrapper = mount(OntTubeSelectedList, {
         localVue,
@@ -69,7 +69,7 @@ describe('OntTubeSelectedList', () => {
       const button = wrapper.find('#remove-btn-191')
       await button.trigger('click')
       expect(dispatch).toHaveBeenCalledWith(
-        'traction/ont/deselectTubeAndContents',
+        'traction/ont/pools/deselectTubeAndContents',
         'GEN-1668092750-3',
       )
     })

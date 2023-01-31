@@ -100,6 +100,10 @@ run:
 
     npm run lint
 
+To fix errors automatically run:
+
+    npm run lint -- --fix 
+
 ## Deployment
 
 This project is built into a static archive for deployment. To trigger the creation of a new image, increment the `.release-version` version with the corresponding change according to

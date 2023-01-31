@@ -39,15 +39,15 @@ const wells = {
   3: { id: 3, position: 'C1' },
 }
 
-store.state.traction.ont.selected.tagSet = tagSet
-store.state.traction.ont.resources.tagSets = { 1: tagSet }
-store.state.traction.ont.resources.tags = tags
-store.state.traction.ont.resources.requests = requests
-store.state.traction.ont.resources.wells = wells
+store.state.traction.ont.pools.selected.tagSet = tagSet
+store.state.traction.ont.pools.resources.tagSets = { 1: tagSet }
+store.state.traction.ont.pools.resources.tags = tags
+store.state.traction.ont.pools.resources.requests = requests
+store.state.traction.ont.pools.resources.wells = wells
 
 describe('OntPoolLibraryList.vue', () => {
   it('should have a list of libraries', () => {
-    store.state.traction.ont.pooling.libraries = libraries
+    store.state.traction.ont.pools.pooling.libraries = libraries
     const wrapper = mount(OntPoolLibraryList, {
       store,
       localVue,
