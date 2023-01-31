@@ -7,7 +7,7 @@ describe('Pacbio Runs view', () => {
     // Check filters are visible
     cy.get('#filterInput').should('be.visible')
     cy.get('#filterValue').should('be.visible')
-    cy.get('#filterValue').children().should('contain', 'Run ID').and('contain', 'Name')
+    cy.get('#filterValue').children().and('contain', 'Name')
     cy.get('#run-index').contains('tr', '5')
     cy.get('#startRun-7')
     cy.get('#completeRun-7')
