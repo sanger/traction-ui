@@ -1,30 +1,32 @@
 <template>
-  <DataFetcher :fetcher="provider">
-    <router-link :to="{ name: 'ONTRuns' }">
-      <traction-button id="backToRunsButton" class="float-right">Back</traction-button>
-    </router-link>
-    <traction-button
-      v-if="newRecord"
-      id="resetButton"
-      type="reset"
-      theme="default"
-      class="float-right"
-      @click="newRun"
-      >Reset</traction-button
-    >
+  <flagged-feature name="dpl_281_ont_create_sequencing_runs">
+    <DataFetcher :fetcher="provider">
+      <router-link :to="{ name: 'ONTRuns' }">
+        <traction-button id="backToRunsButton" class="float-right">Back</traction-button>
+      </router-link>
+      <traction-button
+        v-if="newRecord"
+        id="resetButton"
+        type="reset"
+        theme="default"
+        class="float-right"
+        @click="newRun"
+        >Reset</traction-button
+      >
 
-    <traction-button
-      :id="currentAction.id"
-      class="float-right"
-      :theme="currentAction.theme"
-      :disabled="!runValid"
-      @click="runAction"
-      >{{ currentAction.label }}</traction-button
-    >
+      <traction-button
+        :id="currentAction.id"
+        class="float-right"
+        :theme="currentAction.theme"
+        :disabled="!runValid"
+        @click="runAction"
+        >{{ currentAction.label }}</traction-button
+      >
 
-    <ONTRunInformation></ONTRunInformation>
-    <ONTRunInstrumentFlowcells></ONTRunInstrumentFlowcells>
-  </DataFetcher>
+      <ONTRunInformation></ONTRunInformation>
+      <ONTRunInstrumentFlowcells></ONTRunInstrumentFlowcells>
+    </DataFetcher>
+  </flagged-feature>
 </template>
 <script>
 import DataFetcher from '@/components/DataFetcher.vue'
