@@ -50,7 +50,7 @@
 /**
  * # ONTFlowcell
  *
- * Displays a panel for an individualflow cell. May be empty or contain a pool.
+ * Displays a panel for an individual flowcell. May be empty or contain a pool.
  */
 import { createNamespacedHelpers } from 'vuex'
 const { mapState, mapMutations } = createNamespacedHelpers('traction/ont/runs')
@@ -86,7 +86,7 @@ export default {
         return null
       }
     },
-    // For Vuex asynchronous validation we need to use computer setter and getter properties
+    // For Vuex asynchronous validation we need to use computed getter and setter properties
     barcode: {
       get() {
         if (this.poolTubeBarcode) {

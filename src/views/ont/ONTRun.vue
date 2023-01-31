@@ -78,7 +78,7 @@ export default {
     },
   },
   methods: {
-    ...mapActions('traction/ont/runs', ['createRun', 'editRun', 'newRun', 'updateRun']),
+    ...mapActions('traction/ont/runs', ['createRun', 'fetchRun', 'newRun', 'updateRun']),
     ...mapActions('traction/ont', ['setInstruments']),
     ...mapActions('traction/ont/pools', ['fetchOntPools']),
     async runAction() {
@@ -105,7 +105,7 @@ export default {
       if (this.id === 'new') {
         this.newRun()
       } else if (!this.newRecord) {
-        await this.editRun(parseInt(this.id))
+        await this.fetchRun(parseInt(this.id))
       }
       return { success: true }
     },

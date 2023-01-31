@@ -4,7 +4,6 @@ export default {
   runs: (state) => {
     try {
       return Object.values(state.resources.runs).map((r) => {
-        // Is there a way to not do this and just get the instrument id from the run data
         const instrument = Object.values(state.resources.instruments).find(
           (i) => i.id == r.ont_instrument_id,
         )

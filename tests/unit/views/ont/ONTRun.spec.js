@@ -196,13 +196,13 @@ describe('ONTRun.vue', () => {
 
         ontRun.fetchOntPools = vi.fn()
         ontRun.setInstruments = vi.fn(() => Promise.resolve())
-        ontRun.editRun = vi.fn()
+        ontRun.fetchRun = vi.fn()
       })
 
       it('calls fetchOntPools successfully', async () => {
         await ontRun.provider()
         expect(ontRun.fetchOntPools).toBeCalled()
-        expect(ontRun.editRun).toBeCalledWith(1)
+        expect(ontRun.fetchRun).toBeCalledWith(1)
         expect(ontRun.setInstruments).toBeCalled()
       })
     })

@@ -33,7 +33,7 @@ const { mapState, mapMutations } = createNamespacedHelpers('traction/ont/runs')
 /**
  * # ONTRunInformation
  *
- * Displays an information panel allowing the user to select a choice of instrument and/or state for the run.
+ * Displays an information panel allowing the user to select an instrument and state for the run.
  */
 export default {
   name: 'ONTRunInformation',

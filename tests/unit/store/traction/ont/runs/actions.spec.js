@@ -148,7 +148,7 @@ describe('actions.js', () => {
     })
   })
 
-  describe('#editRun', () => {
+  describe('#fetchRun', () => {
     let getters, mockRun, find, mockedReturnValue
 
     beforeEach(() => {
@@ -184,7 +184,7 @@ describe('actions.js', () => {
 
     it('successfully', async () => {
       find.mockReturnValue(mockedReturnValue)
-      const response = await Actions.editRun({ commit, getters, rootGetters }, mockRun.id)
+      const response = await Actions.fetchRun({ commit, getters, rootGetters }, mockRun.id)
       expect(commit).toHaveBeenCalledWith('setCurrentRun', mockRun)
 
       expect(response.success).toBeTruthy()

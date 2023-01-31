@@ -77,7 +77,7 @@ const updateRun = async ({ getters, rootGetters }) => {
   return await handleResponse(promise)
 }
 
-const editRun = async ({ commit, getters, rootGetters }, runId) => {
+const fetchRun = async ({ commit, getters, rootGetters }, runId) => {
   const request = getters.runRequest
   const promise = request.find({ id: runId, include: 'flowcells' })
   const response = await handleResponse(promise)
@@ -116,11 +116,11 @@ const editRun = async ({ commit, getters, rootGetters }, runId) => {
 
 const actions = {
   createRun,
-  editRun,
+  fetchRun,
   newRun,
   updateRun,
 }
 
-export { createRun, editRun, newRun, updateRun }
+export { createRun, fetchRun, newRun, updateRun }
 
 export default actions
