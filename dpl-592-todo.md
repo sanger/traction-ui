@@ -2,9 +2,7 @@ DPL-592
 
 # Todo
 
-- Make pools persist when searching for multiple pool barcodes (selectedPools getter?)
-  - There was a way to make the pools persist without creating a selected attribute in the store
-  - As all the pools in the store are the pools that are there as the filter results
+
   - In that case, how do we deselect a certain pool without a selected component?
 
 - selected pools should be able to get removed with a click
@@ -12,29 +10,42 @@ DPL-592
   - add a remove button within the list of pools
   - create a method to deselectPool(take pool.id) on click
 
-- add and modify tests
+- tests
   - actions.spec.js
   - the display should be empty when nothing is being searched
-  - revert changes on pools.actions.spec
   - add test for when multiple barcodes are searched for
   - add test for when one pool barcode is removed
 
 # Done
 
+## building
+
 - Add LabwareFinder to PacbioPoolList.vue
 - Modify setPools action for LabwareFinder
-- Add error message indicating user to input a barcode when the search button is clicked without a filter
-- Add prompt for users to enter barcode when they search for nothing
+- add PacbioSelectedPoolsList component (after OntPlateSelectedList.vue component)
+- remove the provider and created methods
+
+functionality
 
 - allow users to select pools they search for and for them to persist when adding multiple pool barcodes
 
-  - add PacbioSelectedPoolsList component (after OntPlateSelectedList.vue component)
-  - remove the provider and created methods
+  - Add error message indicating user to input a barcode when the search button is clicked without a filter
+  - Add prompt for users to enter barcode when they search for nothing
 
 - get rid of the 'Failed to get pools: xxx' error that comes up due the provider method getting called in created trying to set pools with SetPools
-
   - the barcode is unidentified during that step
+
+  - Make pools persist when searching for multiple pool barcodes (selectedPools getter?)
+
+  - There was a way to make the pools persist without creating a selected attribute in the store
+  - As all the pools in the store are the pools that are there as the filter results
+
+refactoring and restructuring
 
 - leave setPools as it was and make a findPools action in RunCreate store
 - copied setpools over to runcreate/actions
 - returned pools/actions to what it was, the pacbiopools page now works
+
+tests
+
+- revert changes on pools.actions.spec

@@ -1,23 +1,39 @@
 import { populateById } from '@/api/JsonApi'
 import { dataToObjectById } from '@/api/JsonApi'
+import Vue from 'vue'
 
 // Mutations handle synchronous update of state
 
 const mutations = {
   setPools(state, pools) {
-    state.pools = dataToObjectById({ data: pools, includeRelationships: true })
+    Vue.set(state, 'pools', {
+      ...state.pools,
+      ...dataToObjectById({ data: pools, includeRelationships: true }),
+    })
   },
   setTubes(state, tubes) {
-    state.tubes = dataToObjectById({ data: tubes, includeRelationships: false })
+    Vue.set(state, 'tubes', {
+      ...state.tubes,
+      ...dataToObjectById({ data: tubes, includeRelationships: false }),
+    })
   },
   setLibraries(state, libraries) {
-    state.libraries = dataToObjectById({ data: libraries, includeRelationships: true })
+    Vue.set(state, 'libraries', {
+      ...state.libraries,
+      ...dataToObjectById({ data: libraries, includeRelationships: true }),
+    })
   },
   setTags(state, tags) {
-    state.tags = dataToObjectById({ data: tags, includeRelationships: false })
+    Vue.set(state, 'tags', {
+      ...state.tags,
+      ...dataToObjectById({ data: tags, includeRelationships: false }),
+    })
   },
   setRequests(state, requests) {
-    state.requests = dataToObjectById({ data: requests, includeRelationships: false })
+    Vue.set(state, 'requests', {
+      ...state.requests,
+      ...dataToObjectById({ data: requests, includeRelationships: false }),
+    })
   },
 }
 
