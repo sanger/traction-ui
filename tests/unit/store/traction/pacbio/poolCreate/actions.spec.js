@@ -3,7 +3,6 @@ import actions from '@/store/traction/pacbio/poolCreate/actions'
 import defaultState from '@/store/traction/pacbio/poolCreate/state'
 import { newResponse } from '@/api/ResponseHelper'
 import { payload } from '@/store/traction/pacbio/poolCreate/pool'
-import { describe, it } from 'vitest'
 
 describe('actions.js', () => {
   const {
@@ -855,43 +854,6 @@ describe('actions.js', () => {
         },
         { root: true },
       )
-    })
-  })
-  describe('findPools', () => {
-    let commit, get, getters
-    beforeEach(() => {
-      // mock commit
-      commit = vi.fn()
-      // mock dependencies
-      get = vi.fn()
-      getters = { poolRequest: { get: get } }
-    })
-
-    it('returns the pool that fits the valid tube barcode when searching for one pool', async () => {
-      const response = Data.TractionPacbioPools
-      const { data: pools, included } = response.data
-      get.mockResolvedValue(response)
-
-      await actions.setPools({ commit, getters }, { barcode: 'TRAC-2-1' })
-
-      // the information returned belongs to the pool with given tube barcode
-      expect(commit).toHaveBeenCalledWith('setPools', pools.slice(0.1))
-      expect(commit).toHaveBeenCalledWith('setTubes', included.slice(0, 1))
-      expect(commit).toHaveBeenCalledWith('setLibraries', included.slice(2, 3))
-      expect(commit).toHaveBeenCalledWith('setTags', included.slice(4, 5))
-      expect(commit).toHaveBeenCalledWith('setRequests', included.slice(6, 7))
-    })
-
-    it('returns multiple pools when multiple existing pools are searched for', async () => {})
-    it('returns an error when the barcode cannot be found', async () => {
-      get.mockResolvedValue({ data: { data: [] } })
-      const { success, errors } = await actions.setPools(
-        { commit, getters },
-        { barcode: 'fake-barcode' },
-      )
-
-      expect(errors).toEqual(['Unable to find pool with barcode: fake-barcode'])
-      expect(success).toEqual(false)
     })
   })
 })

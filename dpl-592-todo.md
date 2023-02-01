@@ -9,12 +9,13 @@ DPL-592
 
 ## tests
 
-- actions.spec.js
 - the display should be empty when nothing is being searched
 - add test for when multiple barcodes are searched for
 - add test for when one pool barcode is removed
 - add test for removepool mutation
-  - add test for the new store created? (will be copied from pools one)
+- move tests from poolcreate to runcreate (will be copied from pools one)
+   
+
 
 # Done
 
