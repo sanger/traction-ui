@@ -335,7 +335,7 @@ export default {
       this.$refs['well-modal'].hide()
     },
     async update() {
-      let validPools = await this.checkPools()
+      const validPools = await this.checkPools()
       if (validPools && this.action.label == 'Create') {
         this.createWell(this.currentWell)
         this.alert('Well created', 'success')
@@ -354,8 +354,8 @@ export default {
       this.hide()
     },
     async updatePoolBarcode(row, barcode) {
-      let index = row.index
-      let pool = await this.poolByBarcode(barcode)
+      const index = row.index
+      const pool = await this.poolByBarcode(barcode)
       if (pool) {
         this.currentWell.pools[index] = { id: pool.id, barcode }
       } else {

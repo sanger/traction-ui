@@ -1,4 +1,4 @@
-import ONTPoolCreate from '@/views/ONT/ONTPoolCreate.vue'
+import ONTPoolCreate from '@/views/ont/ONTPoolCreate.vue'
 import { mount, localVue, store, Data, router } from '@support/testHelper'
 import flushPromises from 'flush-promises'
 import { expect } from 'vitest'
@@ -48,7 +48,9 @@ describe('OntPoolCreate', () => {
       state: {
         traction: {
           ont: {
-            resources: { tagSets },
+            pools: {
+              resources: { tagSets },
+            },
           },
         },
       },
@@ -85,8 +87,10 @@ describe('OntPoolCreate', () => {
       state: {
         traction: {
           ont: {
-            resources: { plates, tagSets, wells, requests, tags },
-            pooling: { pool, tube, libraries },
+            pools: {
+              resources: { plates, tagSets, wells, requests, tags },
+              pooling: { pool, tube, libraries },
+            },
           },
         },
       },

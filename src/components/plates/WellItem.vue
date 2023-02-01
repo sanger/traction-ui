@@ -1,6 +1,6 @@
 <template>
   <ellipse :class="status" :cx="cx" :cy="cy" :rx="rx" :ry="ry">
-    <title v-if="hasMaterial" v-text="tooltip"></title>
+    <title v-if="hasRequest" v-text="tooltip"></title>
   </ellipse>
 </template>
 
@@ -41,14 +41,14 @@ export default {
     },
   },
   computed: {
-    hasMaterial() {
-      return this.well_info.materials.some((m) => m.sample_name)
+    hasRequest() {
+      return this.well_info.requests.some((r) => r.sample_name)
     },
     status() {
-      return this.hasMaterial ? 'filled' : 'empty'
+      return this.hasRequest ? 'filled' : 'empty'
     },
     tooltip() {
-      return this.hasMaterial ? this.well_info.materials.map((m) => m.sample_name).join(', ') : ''
+      return this.hasRequest ? this.well_info.requests.map((r) => r.sample_name).join(', ') : ''
     },
   },
 }

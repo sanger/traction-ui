@@ -4,11 +4,11 @@
       :variant="variant"
       :data-type="dataType"
       dismissible
-      show
+      fade
+      :show="dismissSeconds"
       @dismissed="dismiss()"
+      >{{ message }}</traction-alert
     >
-      {{ message }}
-    </traction-alert>
   </div>
 </template>
 
@@ -31,6 +31,11 @@ export default {
       type: String,
       required: true,
     },
+  },
+  data() {
+    return {
+      dismissSeconds: 15,
+    }
   },
   computed: {
     variant() {

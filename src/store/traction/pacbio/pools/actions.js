@@ -1,9 +1,9 @@
 import handleResponse from '@/api/ResponseHelper'
 import { groupIncludedByResource } from '@/api/JsonApi'
 
-const setPools = async ({ commit, getters }) => {
-  let request = getters.poolRequest
-  let promise = request.get({
+const setPools = async ({ commit, getters }, filter) => {
+  const request = getters.poolRequest
+  const promise = request.get({
     include: 'tube,libraries.tag,libraries.request',
     fields: {
       requests: 'sample_name',
@@ -11,8 +11,9 @@ const setPools = async ({ commit, getters }) => {
       tags: 'group_id',
       libraries: 'request,tag,run_suitability',
     },
+    filter,
   })
-  let response = await handleResponse(promise)
+  const response = await handleResponse(promise)
 
   const { success, data: { data, included = [] } = {}, errors = [] } = response
 

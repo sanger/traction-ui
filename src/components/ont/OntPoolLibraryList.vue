@@ -18,6 +18,8 @@
           :key="request.id"
           :request="request"
           :auto-tag="autoTag"
+          :validated="validated"
+          :notify="notify"
         ></OntPoolLibraryEdit>
       </traction-tbody>
     </traction-table-simple>
@@ -28,7 +30,7 @@
 import OntPoolLibraryEdit from '@/components/ont/OntPoolLibraryEdit'
 import { createNamespacedHelpers } from 'vuex'
 
-const { mapGetters } = createNamespacedHelpers('traction/ont')
+const { mapGetters } = createNamespacedHelpers('traction/ont/pools')
 
 /**
  * # OntPoolLibraryList
@@ -44,6 +46,17 @@ export default {
     autoTag: {
       type: Boolean,
       default: false,
+    },
+    // Indicates whether the values in this component have been validated
+    validated: {
+      type: Boolean,
+      default: false,
+    },
+    // Parent function indiciated what to do when a user changes an attribute
+    notify: {
+      type: Function,
+      required: true,
+      default: () => {},
     },
   },
   computed: {

@@ -14,7 +14,7 @@ describe('ByBarcode', () => {
   beforeEach(() => {
     barcodes = 'DN1\nDN2\nDN3\nDN4\nDN5'
     importFunction = vi.fn(() => ({ source: 'test', requestAttributes: [] }))
-    let propsData = {
+    const propsData = {
       importFunction,
       source,
       title: 'Sequencescape',

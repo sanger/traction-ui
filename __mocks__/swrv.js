@@ -8,6 +8,7 @@ const flags = {
     enable_custom_select: { enabled: true },
     enable_custom_pagination: { enabled: true },
     dpl_279_ont_libraries_and_pools: { enabled: true },
+    dpl_281_ont_create_sequencing_runs: { enabled: true },
   },
 }
 

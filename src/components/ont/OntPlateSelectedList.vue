@@ -57,7 +57,8 @@ import Plate from '@/components/ont/OntPlateItem'
 import { createNamespacedHelpers } from 'vuex'
 import { VueSelecto } from 'vue-selecto'
 
-const { mapGetters, mapMutations, mapActions } = createNamespacedHelpers('traction/ont/')
+// TODO: Does this need to be moved to top level ONT?
+const { mapGetters, mapMutations, mapActions } = createNamespacedHelpers('traction/ont/pools')
 
 /**
  * # OntPlateSelectedList

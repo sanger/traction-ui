@@ -100,29 +100,29 @@ describe('#deleteLibraries', () => {
   })
 
   it('successfully', async () => {
-    let mockResponse = { data: {}, status: 204, statusText: 'OK' }
+    const mockResponse = { data: {}, status: 204, statusText: 'OK' }
 
-    let promise = new Promise((resolve) => {
+    const promise = new Promise((resolve) => {
       resolve(mockResponse)
     })
 
     destroy.mockReturnValue([promise])
 
-    let expectedResponse = new Response(mockResponse)
-    let response = await Actions.deleteLibraries({ getters }, libraryIds)
+    const expectedResponse = new Response(mockResponse)
+    const response = await Actions.deleteLibraries({ getters }, libraryIds)
 
     expect(response).toEqual([expectedResponse])
   })
 
   it('unsuccessfully', async () => {
-    let promise = new Promise((reject) => {
+    const promise = new Promise((reject) => {
       reject(failedResponse)
     })
 
     destroy.mockReturnValue([promise])
 
-    let expectedResponse = new Response(failedResponse)
-    let response = await Actions.deleteLibraries({ getters }, libraryIds)
+    const expectedResponse = new Response(failedResponse)
+    const response = await Actions.deleteLibraries({ getters }, libraryIds)
 
     expect(response).toEqual([expectedResponse])
   })
@@ -136,38 +136,134 @@ describe('#setLibraries', () => {
     get = vi.fn()
     getters = { libraryRequest: { get: get } }
 
-    failedResponse = { data: { data: [] }, status: 500, statusText: 'Internal Server Error' }
+    failedResponse = {
+      data: { data: { errors: { error1: ['There was an error'] } } },
+      status: 500,
+      statusText: 'Internal Server Error',
+    }
   })
 
   it('successfully', async () => {
-    get.mockReturnValue(Data.TractionPacbioLibraries)
+    const libraries = Data.TractionPacbioLibraries
+    libraries.data.data.splice(2, 4)
+    get.mockResolvedValue(libraries)
 
-    let libraries = await Actions.setLibraries({ commit, getters })
+    const { success, errors } = await Actions.setLibraries({ commit, getters })
 
-    expect(commit).toHaveBeenCalledWith('setLibraries', libraries)
-    let library = libraries[0]
-    expect(library.request).toBeDefined()
-    expect(library.tag_group_id).toBeDefined()
+    // Because we do some data manipulation in the action the easiest way to build the expected data
+    // is to do it manually
+    const expectedLibraries = [
+      {
+        id: '721',
+        state: 'pending',
+        volume: 1,
+        concentration: 1,
+        template_prep_kit_box_barcode: 'LK12345',
+        insert_size: 100,
+        created_at: '2021/06/15 10:25',
+        deactivated_at: null,
+        source_identifier: 'DN1:A1',
+        run_suitability: { ready_for_run: true, errors: [] },
+        pool: {
+          id: '1',
+          type: 'pools',
+          attributes: {
+            concentration: 1,
+            created_at: '2021-07-23T10:15:37.000Z',
+            insert_size: 1,
+            run_suitability: {
+              errors: [],
+              ready_for_run: true,
+            },
+            source_identifier: 'DN1:A4',
+            template_prep_kit_box_barcode: '2424',
+            updated_at: '2021-07-23T10:15:37.000Z',
+            volume: 1,
+          },
+          links: {
+            self: 'http://localhost:3100/v1/pacbio/pools/1',
+          },
+        },
+        tag_group_id: 'bc1009_BAK8A_OA',
+        sample_name: 'Sample48',
+        barcode: 'TRAC-2-721',
+      },
+      {
+        id: '722',
+        state: 'pending',
+        volume: 1,
+        concentration: 1,
+        template_prep_kit_box_barcode: 'LK12345',
+        insert_size: 100,
+        created_at: '2021/06/15 10:25',
+        deactivated_at: null,
+        source_identifier: 'DN1:A2',
+        run_suitability: { ready_for_run: true, errors: [] },
+        pool: {
+          id: '2',
+          type: 'pools',
+          attributes: {
+            concentration: 1,
+            created_at: '2021-07-23T10:15:37.000Z',
+            insert_size: 1,
+            volume: 1,
+            run_suitability: {
+              errors: [],
+              ready_for_run: true,
+            },
+            source_identifier: 'DN1:A5',
+            template_prep_kit_box_barcode: '2424',
+            updated_at: '2021-07-23T10:15:37.000Z',
+          },
+          links: {
+            self: 'http://localhost:3100/v1/pacbio/pools/2',
+          },
+        },
+        tag_group_id: 'bc1008_BAK8A_OA',
+        sample_name: 'Sample47',
+        barcode: 'TRAC-2-722',
+      },
+    ]
+    expect(commit).toHaveBeenCalledWith('setLibraries', expectedLibraries)
+    expect(success).toEqual(true)
+    expect(errors).toEqual([])
   })
 
   it('when the library has no request, tube or tag', async () => {
-    get.mockReturnValue(Data.TractionPacbioLibrariesNoRelationships)
+    get.mockResolvedValue(Data.TractionPacbioLibrariesNoRelationships)
 
-    let libraries = await Actions.setLibraries({ commit, getters })
+    const { success, errors } = await Actions.setLibraries({ commit, getters })
 
-    expect(commit).toHaveBeenCalledWith('setLibraries', libraries)
-    let library = libraries[0]
-    expect(library.request).not.toBeDefined()
-    expect(library.tag_group_id).toBeNull()
+    const expectedLibrary = [
+      {
+        id: '7',
+        state: 'pending',
+        volume: 1,
+        concentration: 1,
+        template_prep_kit_box_barcode: 'LK12345',
+        insert_size: 100,
+        created_at: '2019/10/16 13:52',
+        deactivated_at: null,
+        source_identifier: null,
+        pool: undefined,
+        tag_group_id: undefined,
+        sample_name: undefined,
+        barcode: undefined,
+      },
+    ]
+    expect(commit).toHaveBeenCalledWith('setLibraries', expectedLibrary)
+    expect(success).toEqual(true)
+    expect(errors).toEqual([])
   })
 
   it('unsuccessfully', async () => {
-    get.mockReturnValue(failedResponse)
+    get.mockRejectedValue({ response: failedResponse })
 
-    let response = await Actions.setLibraries({ commit, getters })
+    const expectedResponse = newResponse({ ...failedResponse, success: false })
+    const { success, errors } = await Actions.setLibraries({ commit, getters })
 
-    expect(commit).not.toHaveBeenCalled()
-    expect(response).toBeNull()
+    expect(success).toEqual(false)
+    expect(errors).toEqual(expectedResponse.errors)
   })
 })
 

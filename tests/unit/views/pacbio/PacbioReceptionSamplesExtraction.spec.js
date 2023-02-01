@@ -33,9 +33,9 @@ describe('PacbioReceptionSamplesExtraction', () => {
     })
 
     it('calls the right function', async () => {
-      let input = wrapper.find('textarea')
+      const input = wrapper.find('textarea')
       input.setValue(barcodes)
-      let button = wrapper.find('#findSampleExtractionTubes')
+      const button = wrapper.find('#findSampleExtractionTubes')
       button.trigger('click')
       expect(reception.handleSampleExtractionTubes).toBeCalled()
     })
@@ -130,7 +130,7 @@ describe('PacbioReceptionSamplesExtraction', () => {
 
       reception.getSampleExtractionTubesForBarcodes.mockResolvedValue(mockSamplesExtractionResponse)
 
-      let failedResponse = {
+      const failedResponse = {
         success: false,
         status: 422,
         statusText: 'Unprocessable Entity',
@@ -164,13 +164,13 @@ describe('PacbioReceptionSamplesExtraction', () => {
   describe('#barcodeArray', () => {
     it('single barcode', () => {
       wrapper.setData({ barcodes: 'TRAC-1\n' })
-      let result = reception.barcodeArray
+      const result = reception.barcodeArray
       expect(result).toEqual(['TRAC-1'])
     })
 
     it('multiple barcodes', () => {
       wrapper.setData({ barcodes: 'TRAC-1\nTRAC-2\nTRAC-3\nTRAC-4\nTRAC-5' })
-      let result = reception.barcodeArray
+      const result = reception.barcodeArray
       expect(result).toEqual(['TRAC-1', 'TRAC-2', 'TRAC-3', 'TRAC-4', 'TRAC-5'])
     })
   })

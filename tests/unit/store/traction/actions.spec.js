@@ -66,10 +66,10 @@ describe('#handleRunUpdate', () => {
   it('successfully', async () => {
     update.mockReturnValue(Data.UpdateRun)
 
-    let expectedResponse = new Response(Data.UpdateRun)
-    let expectedRun = expectedResponse.deserialize.runs[0]
+    const expectedResponse = new Response(Data.UpdateRun)
+    const expectedRun = expectedResponse.deserialize.runs[0]
 
-    let response = await Actions.handleRunUpdate(
+    const response = await Actions.handleRunUpdate(
       { rootGetters, getters, commit },
       { payload, pipeline },
     )
@@ -81,8 +81,8 @@ describe('#handleRunUpdate', () => {
   it('unsuccessfully', async () => {
     update.mockReturnValue(failedResponse)
 
-    let expectedResponse = new Response(failedResponse)
-    let response = await Actions.handleRunUpdate(
+    const expectedResponse = new Response(failedResponse)
+    const response = await Actions.handleRunUpdate(
       { rootGetters, getters, commit },
       { payload, pipeline },
     )
@@ -94,8 +94,8 @@ describe('#handleRunUpdate', () => {
 
 describe('#runPayloadJson', () => {
   it('will convert a payload to the correct format', () => {
-    let payload = { id: 1, attributes: { state: 'a state' } }
-    let json = Actions.runPayloadJson(payload)
+    const payload = { id: 1, attributes: { state: 'a state' } }
+    const json = Actions.runPayloadJson(payload)
     expect(json.data).toBeDefined()
     expect(json.data.id).toEqual(1)
     expect(json.data.attributes).toBeDefined()
@@ -117,10 +117,10 @@ describe('#setTags', () => {
   it('successfully', async () => {
     get.mockReturnValue(Data.TractionTags)
 
-    let expectedResponse = new Response(Data.TractionTags)
-    let expectedTags = expectedResponse.deserialize.tags
+    const expectedResponse = new Response(Data.TractionTags)
+    const expectedTags = expectedResponse.deserialize.tags
 
-    let response = await Actions.setTags({ getters, commit })
+    const response = await Actions.setTags({ getters, commit })
 
     expect(commit).toHaveBeenCalledWith('setTags', expectedTags)
     expect(response).toEqual(expectedResponse)
@@ -129,9 +129,9 @@ describe('#setTags', () => {
   it('unsuccessfully', async () => {
     get.mockReturnValue(failedResponse)
 
-    let expectedResponse = new Response(failedResponse)
+    const expectedResponse = new Response(failedResponse)
 
-    let response = await Actions.setTags({ getters, commit })
+    const response = await Actions.setTags({ getters, commit })
 
     expect(commit).not.toHaveBeenCalled()
     expect(response).toEqual(expectedResponse)

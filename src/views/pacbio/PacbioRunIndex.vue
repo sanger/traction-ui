@@ -1,26 +1,32 @@
 <template>
-  <div>
-    <traction-form-group
-      label="Filter"
-      label-cols-sm="1"
-      label-align-sm="right"
-      label-for="filterInput"
-      class="mb-0"
-    >
-      <traction-input-group>
+  <DataFetcher :fetcher="fetchPacbioRuns">
+    <FilterCard :fetcher="fetchPacbioRuns" :filter-options="filterOptions" />
+    <div class="clearfix">
+      <traction-button id="newRun" class="float-left" theme="create" @click="redirectToRun()">
+        New Run
+      </traction-button>
+      <traction-pagination
+        v-model="currentPage"
+        class="float-right"
+        :total-rows="runs.length"
+        :per-page="perPage"
+        aria-controls="run-index"
+      >
+      </traction-pagination>
+      <traction-form-group
+        class="float-right mx-5"
+        label-cols-lg="4"
+        label="Per Page"
+        label-for="input-per-page"
+      >
         <traction-input
-          id="filterInput"
-          v-model="filter"
-          type="search"
-          placeholder="Type to Search"
-        >
-        </traction-input>
-        <traction-input-group-append>
-          <traction-button :disabled="!filter" @click="filter = ''">Clear</traction-button>
-        </traction-input-group-append>
-      </traction-input-group>
-    </traction-form-group>
-    <br />
+          id="input-per-page"
+          v-model="perPage"
+          trim
+          class="w-full w-25"
+        ></traction-input>
+      </traction-form-group>
+    </div>
 
     <traction-table
       id="run-index"
@@ -92,35 +98,21 @@
         </a>
       </template>
     </traction-table>
-
-    <span class="font-weight-bold">Total records: {{ runs.length }}</span>
-
-    <div class="clearfix">
-      <traction-button id="newRun" class="float-left" theme="create" @click="redirectToRun()">
-        New Run
-      </traction-button>
-
-      <traction-pagination
-        v-model="currentPage"
-        class="float-right"
-        :total-rows="runs.length"
-        :per-page="perPage"
-        aria-controls="run-index"
-      >
-      </traction-pagination>
-    </div>
-    <traction-form-group label-cols-lg="1" label="Per Page" label-for="input-per-page">
-      <traction-input id="input-per-page" v-model="perPage" trim classes="w-25"></traction-input>
-    </traction-form-group>
-  </div>
+  </DataFetcher>
 </template>
 
 <script>
+import DataFetcher from '@/components/DataFetcher'
+import FilterCard from '@/components/FilterCard'
 import TableHelper from '@/mixins/TableHelper'
 import { mapActions, mapGetters } from 'vuex'
 
 export default {
   name: 'PacbioRuns',
+  components: {
+    DataFetcher,
+    FilterCard,
+  },
   mixins: [TableHelper],
   data() {
     return {
@@ -145,27 +137,23 @@ export default {
         { key: 'actions', label: 'Actions' },
       ],
       filteredItems: [],
+      filterOptions: [
+        { value: '', text: '' },
+        { value: 'name', text: 'Name' },
+        { value: 'state', text: 'State' },
+        // Need to specify filters in json api resources if we want more filters
+      ],
       filter: null,
       sortBy: 'created_at',
       sortDesc: true,
-      perPage: 24,
+      perPage: 25,
       currentPage: 1,
     }
   },
   computed: {
     ...mapGetters('traction/pacbio/runs', ['runs']),
   },
-  created() {
-    this.provider()
-  },
   methods: {
-    async provider() {
-      try {
-        await this.setRuns()
-      } catch (error) {
-        this.showAlert('Failed to get runs: ' + error.message, 'danger')
-      }
-    },
     isRunDisabled(run) {
       return run.state == 'completed' || run.state == 'cancelled' || run.state == 'pending'
     },
@@ -186,10 +174,8 @@ export default {
       this.$router.push({ path: `/pacbio/run/${runId || 'new'}` })
     },
 
-    ...mapActions('traction/pacbio/runs', ['setRuns', 'generateSampleSheet']),
+    ...mapActions('traction/pacbio/runs', ['fetchPacbioRuns', 'generateSampleSheet']),
     ...mapActions('traction', ['startRun', 'completeRun', 'cancelRun']),
   },
 }
 </script>
-
-<style></style>

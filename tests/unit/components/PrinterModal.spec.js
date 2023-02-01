@@ -35,7 +35,7 @@ describe('Modal.vue', () => {
     })
 
     it('has printer options', () => {
-      let printerOptions = [
+      const printerOptions = [
         { value: null, text: 'Please select a printer' },
         { value: 1, text: 'print1' },
         { value: 2, text: 'printer2' },
@@ -48,7 +48,7 @@ describe('Modal.vue', () => {
 
   describe('modal', () => {
     it('has printer select form', async () => {
-      let printerOptions = [
+      const printerOptions = [
         { value: null, text: 'Please select a printer' },
         { value: 1, text: 'printer1' },
         { value: 2, text: 'printer2' },
@@ -76,7 +76,7 @@ describe('Modal.vue', () => {
     })
 
     it('without selectedPrinterId', () => {
-      let evt = {
+      const evt = {
         preventDefault: () => {
           return {}
         },
@@ -89,7 +89,7 @@ describe('Modal.vue', () => {
 
     it('with selectedEnzymeId', () => {
       wrapper.setData({ selectedPrinterId: 1 })
-      let evt = {
+      const evt = {
         preventDefault: () => {
           return {}
         },
@@ -103,7 +103,7 @@ describe('Modal.vue', () => {
     it('#handleSubmit', () => {
       wrapper.setData({ selectedPrinterId: 1 })
 
-      let printerOptions = [
+      const printerOptions = [
         { value: null, text: 'Please select a printer' },
         { value: 1, text: 'printer1' },
         { value: 2, text: 'printer2' },

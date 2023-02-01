@@ -73,7 +73,7 @@ describe('Sequencescape', () => {
           tube: { barcode: '3980000001795' },
         },
       ]
-      let { plates, tubes, foundBarcodes } = await labwareForImport({
+      const { plates, tubes, foundBarcodes } = await labwareForImport({
         request,
         barcodes,
         sampleType: PacbioSample,
@@ -299,7 +299,7 @@ describe('Sequencescape', () => {
       })
 
       it('wells should have a position and samples', () => {
-        let well = transformedPlate.wells[0]
+        const well = transformedPlate.wells[0]
         expect(Object.keys(well)).toEqual(['position', 'samples'])
         expect(well.position).toEqual('A1')
       })
@@ -313,7 +313,7 @@ describe('Sequencescape', () => {
       it('samples should have an id, name and tag', () => {
         transformedPlates = transformPlates({ plates, sampleType: OntSample })
         transformedPlate = transformedPlates[0]
-        let sample = transformedPlate.wells[0].samples[0]
+        const sample = transformedPlate.wells[0].samples[0]
         expect(Object.keys(sample)).toEqual(['externalId', 'name', 'tagOligo', 'externalStudyId'])
         expect(sample.externalId).toEqual('64e065a4-a9b0-11eb-991b-fa163eac3af7')
         expect(sample.name).toEqual('DTOL10233354')
@@ -325,7 +325,7 @@ describe('Sequencescape', () => {
       it('has no library type by default', () => {
         transformedPlates = transformPlates({ plates, sampleType: PacbioSample })
         transformedPlate = transformedPlates[0]
-        let sample = transformedPlate.wells[0].samples[0]
+        const sample = transformedPlate.wells[0].samples[0]
         expect(Object.keys(sample)).toEqual([
           'external_id',
           'name',
@@ -350,7 +350,7 @@ describe('Sequencescape', () => {
           costCode: 'aCostCodeExample',
         })
         transformedPlate = transformedPlates[0]
-        let sample = transformedPlate.wells[0].samples[0]
+        const sample = transformedPlate.wells[0].samples[0]
         expect(Object.keys(sample)).toEqual([
           'external_id',
           'name',
@@ -408,13 +408,13 @@ describe('Sequencescape', () => {
     })
 
     it('request should have external_study_id and library_type', () => {
-      let request = transformedTube.request
+      const request = transformedTube.request
       expect(Object.keys(request)).toEqual(['external_study_id', 'library_type', 'cost_code'])
       expect(request.external_study_id).toEqual('aexternal_study_id')
     })
 
     it('sample should have name, external_id and species', () => {
-      let sample = transformedTube.sample
+      const sample = transformedTube.sample
       expect(Object.keys(sample)).toEqual(['name', 'external_id', 'species'])
       expect(sample.name).toEqual('a_sample_name')
       expect(sample.external_id).toEqual('a_sample_external_id')
@@ -422,7 +422,7 @@ describe('Sequencescape', () => {
     })
 
     it('tube should have a barcode', () => {
-      let tube = transformedTube.tube
+      const tube = transformedTube.tube
       expect(Object.keys(tube)).toEqual(['barcode'])
       expect(tube.barcode).toEqual('a_machine_barcode')
     })
@@ -432,12 +432,12 @@ describe('Sequencescape', () => {
         transformedTubes = transformTubes({ tubes, libraryType: 'alibrary_type' })
         transformedTube = transformedTubes[0]
 
-        let request = transformedTube.request
+        const request = transformedTube.request
         expect(request.library_type).toEqual('alibrary_type')
       })
 
       it('libraryType defaults to null', () => {
-        let request = transformedTube.request
+        const request = transformedTube.request
         expect(request.library_type).not.toBeDefined()
       })
     })
@@ -447,12 +447,12 @@ describe('Sequencescape', () => {
         transformedTubes = transformTubes({ tubes, costCode: 'acost_code' })
         transformedTube = transformedTubes[0]
 
-        let request = transformedTube.request
+        const request = transformedTube.request
         expect(request.cost_code).toEqual('acost_code')
       })
 
       it('costCode defaults to null', () => {
-        let request = transformedTube.request
+        const request = transformedTube.request
         expect(request.cost_code).not.toBeDefined()
       })
     })

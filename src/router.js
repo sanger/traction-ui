@@ -21,9 +21,11 @@ import PacbioRunIndex from '@/views/pacbio/PacbioRunIndex'
 import PacbioRunShow from '@/views/pacbio/PacbioRunShow'
 import PacbioPoolCreate from '@/views/pacbio/PacbioPoolCreate'
 import ONT from '@/views/ONT'
-import ONTSampleIndex from '@/views/ONT/ONTSampleIndex'
-import ONTPoolCreate from '@/views/ONT/ONTPoolCreate'
-import ONTPoolIndex from '@/views/ONT/ONTPoolIndex'
+import ONTPoolCreate from '@/views/ont/ONTPoolCreate'
+import ONTPoolIndex from '@/views/ont/ONTPoolIndex'
+import ONTRuns from '@/views/ont/ONTRuns'
+import ONTRun from '@/views/ont/ONTRun'
+import ONTSampleIndex from '@/views/ont/ONTSampleIndex'
 import PacbioReceptionSequencescape from '@/views/pacbio/PacbioReceptionSequencescape'
 
 export default new Router({
@@ -179,6 +181,19 @@ export default new Router({
           name: 'ONTPoolIndex',
           component: ONTPoolIndex,
           meta: { page: 'Pools' },
+        },
+        {
+          path: 'runs',
+          name: 'ONTRuns',
+          component: ONTRuns,
+          meta: { page: 'Runs' },
+        },
+        {
+          path: 'run/:id',
+          name: 'ONTRun',
+          component: ONTRun,
+          props: true,
+          meta: { page: 'Run' },
         },
       ],
     },

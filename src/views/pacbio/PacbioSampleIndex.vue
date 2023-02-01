@@ -1,26 +1,46 @@
 <template>
-  <div>
-    <traction-form-group
-      label="Filter"
-      label-cols-sm="1"
-      label-align-sm="right"
-      label-for="filterInput"
-      class="mb-0"
-    >
-      <traction-input-group>
+  <DataFetcher :fetcher="setRequests">
+    <FilterCard :fetcher="setRequests" :filter-options="filterOptions" />
+    <div class="clearfix">
+      <PrinterModal
+        ref="printerModal"
+        class="float-left"
+        :disabled="selected.length === 0"
+        @selectPrinter="printLabels($event)"
+      >
+      </PrinterModal>
+
+      <PacbioLibraryCreate
+        ref="libraryCreateBtn"
+        :selected-sample="selected[0]"
+        :disabled="selected.length === 0"
+        class="float-left"
+        @alert="showAlert"
+      >
+      </PacbioLibraryCreate>
+
+      <traction-pagination
+        v-model="currentPage"
+        class="float-right"
+        :total-rows="requests.length"
+        :per-page="perPage"
+        aria-controls="samples-table"
+      >
+      </traction-pagination>
+      <traction-form-group
+        class="float-right mx-5"
+        label-cols-lg="4"
+        label="Per Page"
+        label-for="input-per-page"
+      >
         <traction-input
-          id="filterInput"
-          v-model="filter"
-          type="search"
-          placeholder="Type to Search"
-        >
-        </traction-input>
-        <traction-input-group-append>
-          <traction-button :disabled="!filter" @click="filter = ''">Clear</traction-button>
-        </traction-input-group-append>
-      </traction-input-group>
-    </traction-form-group>
-    <br />
+          id="input-per-page"
+          v-model="perPage"
+          trim
+          class="w-full w-25"
+        ></traction-input>
+      </traction-form-group>
+    </div>
 
     <traction-table
       id="samples-table"
@@ -69,56 +89,23 @@
 
       <template #row-details="row">
         <traction-card class="text-left">
-          <span
-            v-for="(field, index) in field_in_details"
-            :key="field.label + index"
-            class="font-weight-bold"
-            >{{ field.label }}</span
-          >: {{ row.item[field.item] }}
-          <br />
+          <template v-for="(field, index) in field_in_details">
+            <span :key="field.label + index" class="font-weight-bold">{{ field.label }}</span
+            >: {{ row.item[field.item] }}
+            <br :key="field.label" />
+          </template>
         </traction-card>
       </template>
     </traction-table>
-
-    <span class="font-weight-bold">Total records: {{ requests.length }}</span>
-
-    <div class="clearfix">
-      <printerModal
-        ref="printerModal"
-        class="float-left"
-        :disabled="selected.length === 0"
-        @selectPrinter="printLabels($event)"
-      >
-      </printerModal>
-
-      <PacbioLibraryCreate
-        ref="libraryCreateBtn"
-        :selected-sample="selected[0]"
-        :disabled="selected.length === 0"
-        class="float-left"
-        @alert="showAlert"
-      >
-      </PacbioLibraryCreate>
-
-      <traction-pagination
-        v-model="currentPage"
-        class="float-right"
-        :total-rows="requests.length"
-        :per-page="perPage"
-        aria-controls="samples-table"
-      >
-      </traction-pagination>
-    </div>
-    <traction-form-group label-cols-lg="1" label="Per Page" label-for="input-per-page">
-      <traction-input id="input-per-page" v-model="perPage" trim class="w-25"></traction-input>
-    </traction-form-group>
-  </div>
+  </DataFetcher>
 </template>
 
 <script>
 import PacbioLibraryCreate from '@/components/pacbio/PacbioLibraryCreate'
 import PacbioSampleMetadataEdit from '@/components/pacbio/PacbioSampleMetadataEdit'
 import PrinterModal from '@/components/PrinterModal'
+import FilterCard from '@/components/FilterCard'
+import DataFetcher from '@/components/DataFetcher'
 import TableHelper from '@/mixins/TableHelper'
 import { getCurrentDate } from '@/lib/DateHelpers'
 
@@ -130,6 +117,8 @@ export default {
     PacbioLibraryCreate,
     PrinterModal,
     PacbioSampleMetadataEdit,
+    FilterCard,
+    DataFetcher,
   },
   mixins: [TableHelper],
   data() {
@@ -151,29 +140,26 @@ export default {
         { label: 'Cost code', item: 'cost_code' },
         { label: 'External study ID', item: 'external_study_id' },
       ],
+      filterOptions: [
+        { value: '', text: '' },
+        { value: 'source_identifier', text: 'Source' },
+        { value: 'species', text: 'Species' },
+        { value: 'sample_name', text: 'Name' },
+        // Need to specify filters in json api resources if we want more filters
+      ],
       filteredItems: [],
       selected: [],
       filter: null,
       sortBy: 'created_at',
       sortDesc: true,
-      perPage: 24,
+      perPage: 25,
       currentPage: 1,
     }
   },
   computed: {
     ...mapGetters('traction/pacbio/requests', ['requests']),
   },
-  created() {
-    this.provider()
-  },
   methods: {
-    async provider() {
-      try {
-        await this.setRequests()
-      } catch (error) {
-        this.showAlert('Failed to get samples: ' + error.message, 'danger')
-      }
-    },
     /*
       create the labels needed for the print job
       each label will be in the format { first_line: pipeline - type, second_line: current date, third_line: barcode, fourth_line: source, label_name: }

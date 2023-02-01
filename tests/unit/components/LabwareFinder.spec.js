@@ -22,6 +22,7 @@ describe('LabwareFinder.vue', () => {
     expect(wrapper.vm.searchValue).toBe('')
     expect(wrapper.find('#labware-finder-input')).toBeDefined()
     expect(wrapper.find('button').text()).toBe('Search')
+    expect(wrapper.find('button').element.disabled).toBe(true)
   })
 
   it('calls the fetch function with the correct data', async () => {
@@ -42,6 +43,7 @@ describe('LabwareFinder.vue', () => {
       },
     })
     // search button
+    expect(wrapper.find('button').element.disabled).toBe(false)
     wrapper.find('button').trigger('click')
     await flushPromises()
     expect(wrapper.vm.fetcher).toBeCalledWith({ barcode: 'test-barcode' })
