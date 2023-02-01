@@ -6,9 +6,7 @@
 
         <div class="pools">
           <traction-list-group class="list-group">
-            <tube v-for="pool in pools" :key="pool.id" v-bind="pool">
-              <!-- add a remove button and bind it to deselectPool -->
-            </tube>
+            <tube v-for="pool in pools" :key="pool.id" v-bind="pool"> </tube>
           </traction-list-group>
         </div>
       </div>

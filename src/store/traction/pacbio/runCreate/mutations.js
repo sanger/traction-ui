@@ -35,6 +35,9 @@ const mutations = {
       ...dataToObjectById({ data: requests, includeRelationships: false }),
     })
   },
+  removePool(state, id) {
+    Vue.delete(state.pools, id)
+  },
 }
 
 export default {

@@ -1,20 +1,20 @@
 DPL-592
 
-# Todo
+# To do
 
+## functionality
 
-  - In that case, how do we deselect a certain pool without a selected component?
+- display a warning message if no pools are selected in pacbioPoolSelectedList
+- put something indicative of what the search button is for (pools) in run create
 
-- selected pools should be able to get removed with a click
+## tests
 
-  - add a remove button within the list of pools
-  - create a method to deselectPool(take pool.id) on click
-
-- tests
-  - actions.spec.js
-  - the display should be empty when nothing is being searched
-  - add test for when multiple barcodes are searched for
-  - add test for when one pool barcode is removed
+- actions.spec.js
+- the display should be empty when nothing is being searched
+- add test for when multiple barcodes are searched for
+- add test for when one pool barcode is removed
+- add test for removepool mutation
+  - add test for the new store created? (will be copied from pools one)
 
 # Done
 
@@ -25,7 +25,7 @@ DPL-592
 - add PacbioSelectedPoolsList component (after OntPlateSelectedList.vue component)
 - remove the provider and created methods
 
-functionality
+## functionality
 
 - allow users to select pools they search for and for them to persist when adding multiple pool barcodes
 
@@ -33,19 +33,28 @@ functionality
   - Add prompt for users to enter barcode when they search for nothing
 
 - get rid of the 'Failed to get pools: xxx' error that comes up due the provider method getting called in created trying to set pools with SetPools
+
   - the barcode is unidentified during that step
-
   - Make pools persist when searching for multiple pool barcodes (selectedPools getter?)
-
   - There was a way to make the pools persist without creating a selected attribute in the store
   - As all the pools in the store are the pools that are there as the filter results
 
-refactoring and restructuring
+- selected pools should be able to get removed with a click
+  - add a remove button within the list of pools
+  - create a method to removePool(take pool.id) on click in the component
+  - pacbiopooltubeitem - import and export mutations, map mutation for deselect
+  - create function in mutations for deselect
+    - make debugger to see if it hits it
+    - second argument is pool.id which should be the pool being deleted
+    - remove the pool from state pools (remove item from list)
+    - set state.pools the previous way = new list
+
+## refactoring and restructuring
 
 - leave setPools as it was and make a findPools action in RunCreate store
 - copied setpools over to runcreate/actions
 - returned pools/actions to what it was, the pacbiopools page now works
 
-tests
+## tests
 
 - revert changes on pools.actions.spec

@@ -17,7 +17,7 @@
           :to="{ name: 'PacbioPoolCreate', params: { id: id } }"
           >Edit</traction-button
         >
-        <traction-button @click="deselectPoolAndContents(pool.id)">Remove</traction-button>
+        <traction-button @click="removePool(id)">Remove</traction-button>
       </traction-col>
       <traction-col cols="9">
         <dl class="row">
@@ -61,6 +61,9 @@
 </template>
 
 <script>
+import { createNamespacedHelpers } from 'vuex'
+const { mapMutations } = createNamespacedHelpers('traction/pacbio/runCreate')
+
 const img = new Image()
 img.src = '/tube.png'
 
@@ -133,6 +136,7 @@ export default {
       event.dataTransfer.setDragImage(img, 120, 50)
       event.dataTransfer.setData('barcode', barcode)
     },
+    ...mapMutations(['removePool']),
   },
 }
 </script>
