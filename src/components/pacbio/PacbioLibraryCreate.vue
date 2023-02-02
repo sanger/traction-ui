@@ -135,7 +135,7 @@ export default {
   },
   data() {
     return {
-      library: { tag: {}, sample: {} },
+      library: { tag: { id: '' }, sample: {} },
       selectedTagSetId: '',
       selectedTagId: '',
     }
