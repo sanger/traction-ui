@@ -2,10 +2,9 @@ import handlePromise from '@/api/PromiseHelper'
 import { groupIncludedByResource } from '@/api/JsonApi'
 import { handleResponse } from '@/api/ResponseHelper'
 
-const createLibraryInTraction = async ({ rootState, rootGetters }, library) => {
+const createLibraryInTraction = async ({ rootState }, library) => {
   // Some duplication of code from createPool but this is for single library pool
-  const tag = rootGetters['traction/tractionTags'].find((l) => l.group_id == library.tag.group_id)
-  const tag_id = tag ? tag.id : ''
+  const tag_id = library.tag.id
 
   let body = {
     data: {
