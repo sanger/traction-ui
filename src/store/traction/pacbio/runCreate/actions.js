@@ -10,8 +10,8 @@ const findPools = async ({ commit, getters }, filter) => {
     }
   }
 
-  let request = getters.poolRequest
-  let promise = request.get({
+  const request = getters.poolRequest
+  const promise = request.get({
     include: 'tube,libraries.tag,libraries.request',
     fields: {
       requests: 'sample_name',
@@ -21,7 +21,7 @@ const findPools = async ({ commit, getters }, filter) => {
     },
     filter,
   })
-  let response = await handleResponse(promise)
+  const response = await handleResponse(promise)
 
   const { success, data: { data, included = [] } = {}, errors = [] } = response
 
@@ -35,7 +35,7 @@ const findPools = async ({ commit, getters }, filter) => {
     commit('setRequests', requests)
     return { success, errors }
   } else {
-    return { success: false, errors: `Unable to find pool with barcode: ${filter['barcode']}` }
+    return { success: false, errors: [`Unable to find pool with barcode: ${filter['barcode']}`] }
   }
 }
 

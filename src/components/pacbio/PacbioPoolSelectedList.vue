@@ -1,16 +1,12 @@
 <template>
   <div data-type="selected-pool-list">
-    <traction-section title="Selected Pools">
       <div class="flex flex-col">
-        <!-- display warning message if no pools are selected-->
-
         <div class="pools">
           <traction-list-group class="list-group">
             <tube v-for="pool in pools" :key="pool.id" v-bind="pool"> </tube>
           </traction-list-group>
         </div>
       </div>
-    </traction-section>
   </div>
 </template>
 

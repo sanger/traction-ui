@@ -1,5 +1,6 @@
 <template>
   <div class="pools">
+    <traction-section title="Pools"></traction-section>
     <LabwareFinder :fetcher="findPools" filter="barcode" />
     <PacbioPoolSelectedList></PacbioPoolSelectedList>
   </div>
@@ -30,4 +31,10 @@ export default {
   },
 }
 </script>
-<style scoped></style>
+<style scoped>
+.pools {
+  border: solid;
+  border-width: 1px;
+  padding: 20px;
+}
+</style>

@@ -1,9 +1,9 @@
 import { Data } from '@support/testHelper'
 import actions from '@/store/traction/pacbio/runCreate/actions'
-import { describe, it } from 'vitest'
+import { describe, expect, it } from 'vitest'
 
 describe('actions.js', () => {
-  const { fetchSmrtLinkVersions } = actions
+  const { fetchSmrtLinkVersions, findPools } = actions
 
   describe('fetchSmrtLinkVersions', () => {
     it('handles success', async () => {
@@ -51,21 +51,38 @@ describe('actions.js', () => {
       const { data: pools, included } = response.data
       get.mockResolvedValue(response)
 
-      await actions.setPools({ commit, getters }, { barcode: 'TRAC-2-1' })
+      // apply action
+      const { success } = await findPools({ commit, getters }, { barcode: 'TRAC-2-1' })
 
       // the information returned belongs to the pool with given tube barcode
-      expect(commit).toHaveBeenCalledWith('setPools', pools.slice(0.1))
+      expect(commit).toHaveBeenCalledWith('setPools', pools.slice(0, 1))
       expect(commit).toHaveBeenCalledWith('setTubes', included.slice(0, 1))
       expect(commit).toHaveBeenCalledWith('setLibraries', included.slice(2, 3))
       expect(commit).toHaveBeenCalledWith('setTags', included.slice(4, 5))
       expect(commit).toHaveBeenCalledWith('setRequests', included.slice(6, 7))
+      expect(success).toEqual(true)
     })
 
-    it('returns the pools when given multiple valid tube barcodes', async () => {})
+    it('returns the pools when given multiple valid tube barcodes', async () => {
+      // same thing as above, change slice parameters
+      const response = Data.TractionPacbioPools
+      const { data: pools, included } = response.data
+      get.mockResolvedValue(response)
+
+      // method being called twice with different barcodes, populating the state with pool objects
+      const { success } = await findPools({ commit, getters }, { barcode: 'TRAC-2-1,TRAC-2-2'})
+
+      expect(commit).toHaveBeenCalledWith('setPools', pools.slice(0, 1))
+      expect(commit).toHaveBeenCalledWith('setTubes', included.slice(0, 1))
+      expect(commit).toHaveBeenCalledWith('setLibraries', included.slice(2, 3))
+      expect(commit).toHaveBeenCalledWith('setTags', included.slice(4, 5))
+      expect(commit).toHaveBeenCalledWith('setRequests', included.slice(6, 7))
+      expect(success).toEqual(true)
+    })
 
     it('returns an error and an empty list when the barcode cannot be found', async () => {
       get.mockResolvedValue({ data: { data: [] } })
-      const { success, errors } = await actions.setPools(
+      const { success, errors } = await actions.findPools(
         { commit, getters },
         { barcode: 'fake-barcode' },
       )
@@ -74,7 +91,9 @@ describe('actions.js', () => {
     })
 
     it('returns an error and an empty list a barcode is not provided', async () => {
-      const { success, errors } = await findPools({ commit, getters })
+      const { success, errors } = await findPools({ commit, getters }, { barcode: '' })
+      expect(errors).toEqual(['Please provide a plate barcode'])
+      expect(success).toEqual(false)
     })
   })
 })

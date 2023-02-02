@@ -2,19 +2,12 @@ DPL-592
 
 # To do
 
-## functionality
-
-- display a warning message if no pools are selected in pacbioPoolSelectedList
-- put something indicative of what the search button is for (pools) in run create
-
 ## tests
 
-- the display should be empty when nothing is being searched
-- add test for when multiple barcodes are searched for
-- add test for when one pool barcode is removed
-- add test for removepool mutation
-- move tests from poolcreate to runcreate (will be copied from pools one)
-   
+- actions.spec.js
+  - add test for when multiple barcodes are searched for
+- mutations.spec.js
+  - add test for removepool mutation
 
 
 # Done
@@ -50,6 +43,8 @@ DPL-592
     - remove the pool from state pools (remove item from list)
     - set state.pools the previous way = new list
 
+- put something indicative of what the search button is for (pools) in run create
+
 ## refactoring and restructuring
 
 - leave setPools as it was and make a findPools action in RunCreate store
@@ -59,3 +54,8 @@ DPL-592
 ## tests
 
 - revert changes on pools.actions.spec
+- move tests from poolcreate to runcreate (will be copied from pools one)
+
+- getters.spec.js
+- mutations.spec.js
+  - add test for set... mutations used from pools store
