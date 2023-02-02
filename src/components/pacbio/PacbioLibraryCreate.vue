@@ -25,17 +25,17 @@
         <traction-form-group id="tag-set-select-input" label-for="tag-set-input" label="Tag:">
           <traction-select
             id="tag-set-input"
-            v-model="selectedTagSet"
+            v-model="selectedTagSetId"
             data-type="tag-set-list"
             :options="tagSetOptions"
-            @input="resetTag"
+            @input="resetSelectedTagId"
           ></traction-select>
         </traction-form-group>
 
         <traction-form-group id="tag-select-input" label-for="tag-input">
           <traction-select
             id="tag-input"
-            v-model="library.tag.group_id"
+            v-model="selectedTagId"
             :options="tagOptions"
             class="mb-3"
           />
@@ -135,8 +135,9 @@ export default {
   },
   data() {
     return {
-      library: { tag: { group_id: '' }, sample: {} },
-      selectedTagSet: '', // selected value of tag-set dropdown
+      library: { tag: {}, sample: {} },
+      selectedTagSetId: '',
+      selectedTagId: '',
     }
   },
   computed: {
@@ -145,26 +146,24 @@ export default {
       tagSets: (state) => state.resources.tagSets,
       tags: (state) => state.resources.tags,
     }),
-    // Return tag-set options from the store
-    tagSetList() {
-      return Object.values(this.tagSets).map(({ id: value, name: text }) => ({ value, text }))
-    },
-    // Return tag-set options for the first dropdown
+    // Return options for the first dropdown
     tagSetOptions() {
-      return [{ value: '', text: 'Please select a tag set' }, ...this.tagSetList]
+      const tagSets = Object.values(this.tagSets)
+      const options = tagSets.map(({ id: value, name: text }) => ({ value, text }))
+      const placeholder = { value: '', text: 'Please select a tag set' }
+      return [placeholder, ...options]
     },
-    // Return tag options for the selected tag-set from the store
-    tagList() {
-      if (this.selectedTagSet) {
-        const tagSet = this.tagSets[this.selectedTagSet]
-        return tagSet.tags.map((id) => this.tags[id].group_id)
-      } else {
-        return []
-      }
-    },
-    // Return tag options for the second dropdown
+    // Return options for the second dropdown
     tagOptions() {
-      return [{ value: '', text: 'Please select a tag' }, ...this.tagList]
+      const placeholder = { value: '', text: 'Please select a tag' }
+      if (this.selectedTagSetId) {
+        const tagSet = this.tagSets[this.selectedTagSetId]
+        const tags = tagSet.tags.map((id) => this.tags[id])
+        const options = tags.map(({ id: value, group_id: text }) => ({ value, text }))
+        return [placeholder, ...options]
+      } else {
+        return [placeholder]
+      }
     },
   },
   created() {
@@ -179,11 +178,14 @@ export default {
         this.showAlert('Failed to find tags in Traction' + error.message, 'danger')
       }
     },
-    // Reset the library tag if tag-set is changed
-    resetTag() {
-      this.library.tag.group_id = ''
+    // Reset the selected tag id if tag-set is changed
+    resetSelectedTagId() {
+      this.selectedTagId = ''
     },
     async createLibrary() {
+      if (this.selectedTagId) {
+        this.library.tag = this.tags[this.selectedTagId]
+      }
       const { success, barcode, errors } = await this.createLibraryInTraction(this.library)
       if (success) {
         this.hide()
