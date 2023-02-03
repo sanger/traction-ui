@@ -1,6 +1,6 @@
 <template>
   <div class="pools">
-    <traction-section title="Pools"></traction-section>
+    <div class="font-semibold text-xl text-left py-3">Pools</div>
     <LabwareFinder :fetcher="findPools" filter="barcode" />
     <PacbioPoolSelectedList></PacbioPoolSelectedList>
   </div>

@@ -6,6 +6,11 @@
     @dragstart="drag(barcode, $event)"
     @click="expanded = !expanded"
   >
+    <div class="flex justify-end content-end items-end">
+      <button class="w-8 bg-gray-300 text-slate-400" @click="removePool(id)">
+        x
+      </button>
+    </div>
     <traction-row>
       <traction-col cols="3">
         <img src="/tube.png" />
@@ -17,7 +22,6 @@
           :to="{ name: 'PacbioPoolCreate', params: { id: id } }"
           >Edit</traction-button
         >
-        <traction-button @click="removePool(id)">Remove</traction-button>
       </traction-col>
       <traction-col cols="9">
         <dl class="row">
@@ -113,6 +117,11 @@ export default {
       required: true,
     },
     /* eslint-enable vue/prop-name-casing */
+    closeable: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
   },
   data() {
     return {

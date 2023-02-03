@@ -72,7 +72,8 @@ describe('mutations.js', () => {
     state = {
       pools: {}
     }
+    mutations.setPools(state, pools)
     mutations.removePool(state, 2)
-    expect(state.pools).toEqual(storePools.pools['1'])
+    expect(state.pools).toEqual({1: storePools.pools[1]})
   })
 })

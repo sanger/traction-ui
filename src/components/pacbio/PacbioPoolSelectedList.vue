@@ -1,6 +1,6 @@
 <template>
   <div data-type="selected-pool-list">
-      <div class="flex flex-col">
+      <div class="flex flex-col py-3">
         <div class="pools">
           <traction-list-group class="list-group">
             <tube v-for="pool in pools" :key="pool.id" v-bind="pool"> </tube>
@@ -27,11 +27,6 @@ export default {
 }
 </script>
 <style scoped>
-/* .pools {
-  border: solid;
-  border-width: 1px;
-  padding: 20px;
-} */
 .list-group {
   max-height: 400px;
   overflow-y: auto;

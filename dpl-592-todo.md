@@ -3,11 +3,9 @@ DPL-592
 # To do
 
 ## tests
+- end to end tests?
 
-- actions.spec.js
-  - add test for when multiple barcodes are searched for
-- mutations.spec.js
-  - add test for removepool mutation
+## styling
 
 
 # Done
@@ -57,5 +55,11 @@ DPL-592
 - move tests from poolcreate to runcreate (will be copied from pools one)
 
 - getters.spec.js
+ - a valid barcode
 - mutations.spec.js
   - add test for set... mutations used from pools store
+  - add test for removepool mutation
+
+## styling
+- change layout to fit all the other components on the page
+- change the button layout
