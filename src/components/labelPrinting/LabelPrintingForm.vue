@@ -68,17 +68,19 @@
         </traction-form>
       </motion.div>
       <div class="w-1/2 mt-4 p-3 border-t-4 border-sp rounded-md space-y-4 bg-sdb-400">
-        <traction-heading level="3" className="text-white" show-border>
-          Barcodes to be printed
-        </traction-heading>
-        <traction-card tag="article" style="max-width: 20rem" class="mb-2 text-black">
-          <traction-card-text>
-            <ul id="list-barcodes-to-print">
-              <li class="text-sm" v-for="{ barcode } in labels" :key="barcode">{{ barcode }}</li>
-            </ul>
-          </traction-card-text>
-        </traction-card>
-        <div class="flex flex-col space-y-4">
+        <div>
+          <traction-heading level="3" class-name="text-white" show-border>
+            Barcodes to be printed
+          </traction-heading>
+          <traction-card tag="article" style="max-width: 20rem" class="mb-2 text-black text-left">
+            <traction-card-text>
+              <ul id="list-barcodes-to-print">
+                <li v-for="{ barcode } in labels" :key="barcode" class="text-sm">{{ barcode }}</li>
+              </ul>
+            </traction-card-text>
+          </traction-card>
+        </div>
+        <div class="space-y-4 flex flex-col">
           <traction-button id="submit-button" type="submit" theme="printRed"
             >Print Labels</traction-button
           >
