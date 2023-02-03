@@ -10,7 +10,7 @@
       >
         <traction-form v-if="show" class="text-left" @submit="printLabels" @reset="onReset">
           <traction-form-group id="barcode-input-group" label-for="barcode-input">
-            <traction-heading level="3" show-border>Barcodes:</traction-heading>
+            <traction-heading level="3" show-border>Barcodes</traction-heading>
             <traction-muted-text>A list of barcodes to create labels for</traction-muted-text>
             <div class="mt-2">
               <traction-textarea
@@ -68,10 +68,18 @@
         </traction-form>
       </motion.div>
       <div class="w-1/2 mt-4 p-3 border-t-4 border-sp rounded-md space-y-4 bg-sdb-400">
-        <div>
-          <traction-heading level="3" class-name="text-white" show-border>
-            Barcodes to be printed
-          </traction-heading>
+        <traction-heading level="3" class-name="text-white" show-border>
+          Barcodes to be printed
+        </traction-heading>
+        <div class="flex flex-col">
+          <div class="space-x-4 flex flex-row pb-4">
+            <traction-button id="submit-button" type="submit" theme="printRed" class="w-full"
+              >Print Labels</traction-button
+            >
+            <traction-button id="reset-button" type="reset" theme="resetWhite"
+              >Reset</traction-button
+            >
+          </div>
           <traction-card tag="article" style="max-width: 20rem" class="mb-2 text-black text-left">
             <traction-card-text>
               <ul id="list-barcodes-to-print">
@@ -79,14 +87,6 @@
               </ul>
             </traction-card-text>
           </traction-card>
-        </div>
-        <div class="space-y-4 flex flex-col">
-          <traction-button id="submit-button" type="submit" theme="printRed"
-            >Print Labels</traction-button
-          >
-          <traction-button id="reset-button" type="reset" theme="resetWhite" class="float-left"
-            >Reset</traction-button
-          >
         </div>
       </div>
     </div>
