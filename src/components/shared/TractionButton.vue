@@ -45,9 +45,11 @@ const themes = {
   update: 'text-white bg-orange-500 hover:bg-orange-400 active:bg-orange-600',
   delete: 'text-white bg-red-500 hover:bg-red-400 active:bg-red-600',
   print: 'text-white bg-blue-500 hover:bg-blue-400 active:bg-blue-600',
+  printRed: 'text-white bg-sp hover:bg-sp-400 active:bg-sp-600',
   // Currently same as default
   edit: 'text-white bg-sdb-400 hover:bg-sdb active:bg-sdb-600',
   reset: 'text-white bg-sdb-400 hover:bg-sdb active:bg-sdb-600',
+  resetWhite: 'text-black bg-white hover:bg-gray-400 active:bg-gray-500',
   cancel: 'text-white bg-sdb-400 hover:bg-sdb active:bg-sdb-600',
   paginationDefault: 'bg-white text-black  border-gray-300 hover:bg-gray-400',
   paginationSelect:
