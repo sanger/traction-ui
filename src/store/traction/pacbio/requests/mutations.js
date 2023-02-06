@@ -1,6 +1,8 @@
+import { dataToObjectById } from '@/api/JsonApi'
+
 const mutations = {
   setRequests(state, requests) {
-    state.requests = requests
+    state.requests = dataToObjectById({ data: requests, includeRelationships: false })
   },
 }
 

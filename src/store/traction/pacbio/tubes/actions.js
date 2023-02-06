@@ -4,14 +4,14 @@ const isLibraryBarcodeValid = async ({ dispatch }, barcode) => {
   if (!barcode) {
     return false
   }
-  let libraryTube = await dispatch('getTubeForBarcode', barcode)
+  const libraryTube = await dispatch('getTubeForBarcode', barcode)
   return validateLibraryTube(libraryTube)
 }
 
 const getTubeForBarcode = async ({ getters }, barcode) => {
-  let request = getters.tubeRequest
-  let promise = request.get({ filter: { barcode: barcode }, include: 'pools' })
-  let response = await handlePromise(promise)
+  const request = getters.tubeRequest
+  const promise = request.get({ filter: { barcode: barcode }, include: 'pools' })
+  const response = await handlePromise(promise)
 
   if (response.successful && !response.empty) {
     return response.deserialize.tubes[0]

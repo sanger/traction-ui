@@ -14,7 +14,7 @@ const handlePromise = async (promise) => {
     rawResponse = await promise
   } catch (resp) {
     if (resp.response) {
-      let responseObject = resp.response
+      const responseObject = resp.response
       responseObject['data'] = responseObject['data']['data']
       rawResponse = responseObject
     } else {
@@ -32,7 +32,7 @@ const handlePromise = async (promise) => {
       throw resp
     }
   }
-  let response = new Api.Response(rawResponse)
+  const response = new Api.Response(rawResponse)
   return response
 }
 

@@ -107,7 +107,6 @@ describe('PacbioWellModal', () => {
     })
 
     it('has a generate hifi input', () => {
-      console.log(wrapper.find('[data-attribute=generate-hifi]'))
       expect(wrapper.find('[data-attribute="generate-hifi"]').exists()).toBeTruthy()
     })
 
@@ -260,7 +259,7 @@ describe('PacbioWellModal', () => {
 
     describe('addRow', () => {
       it('adds an empty pool to the currentWell', () => {
-        let expectedPools = [...modal.currentWell.pools, { id: '', barcode: '' }]
+        const expectedPools = [...modal.currentWell.pools, { id: '', barcode: '' }]
         modal.addRow()
         expect(modal.currentWell.pools).toEqual(expectedPools)
       })
@@ -300,7 +299,7 @@ describe('PacbioWellModal', () => {
       })
 
       it('gets the well if its an existing well', () => {
-        let well = modal.well(props.position)
+        const well = modal.well(props.position)
 
         modal.showModalForPosition()
 

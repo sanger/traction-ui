@@ -151,7 +151,7 @@ describe('Runs.vue', () => {
       const button = wrapper.find('#cancelRun-2')
       button.trigger('click')
 
-      let id = wrapper.find('tbody').findAll('tr').at(4).findAll('td').at(0).text()
+      const id = wrapper.find('tbody').findAll('tr').at(4).findAll('td').at(0).text()
       expect(runs.cancelRun).toBeCalledWith({ id, pipeline })
     })
   })

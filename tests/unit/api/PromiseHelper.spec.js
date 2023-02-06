@@ -5,7 +5,7 @@ describe('PromiseHelper', () => {
   describe('handlePromise', () => {
     describe('resolve', () => {
       it('accepts a promise and returns a Response object', async () => {
-        let mockResponse = {
+        const mockResponse = {
           data: {
             data: [
               {
@@ -24,11 +24,11 @@ describe('PromiseHelper', () => {
           statusText: 'OK',
         }
 
-        let promise = new Promise((resolve) => {
+        const promise = new Promise((resolve) => {
           resolve(mockResponse)
         })
 
-        let response = await PromiseHelper.handlePromise(promise)
+        const response = await PromiseHelper.handlePromise(promise)
         expect(response).toBeInstanceOf(Api.Response)
 
         expect(response.status).toEqual(200)
@@ -40,7 +40,7 @@ describe('PromiseHelper', () => {
 
     describe('rejects', () => {
       it('accepts a promise and returns a Response object', async () => {
-        let mockResponse = {
+        const mockResponse = {
           data: {
             errors: {
               name: ['name error message 1'],
@@ -51,15 +51,15 @@ describe('PromiseHelper', () => {
           statusText: 'Unprocessible entity',
         }
 
-        let promise = new Promise((reject) => {
+        const promise = new Promise((reject) => {
           reject(mockResponse)
         })
 
-        let response = await PromiseHelper.handlePromise(promise)
+        const response = await PromiseHelper.handlePromise(promise)
         expect(response).toBeInstanceOf(Api.Response)
 
         expect(response.status).toEqual(422)
-        let message =
+        const message =
           'name name error message 1, species species error message 2.1, species species error message 2.2'
         expect(response.errors).toEqual({ message: message })
         expect(response.successful).toBeFalsy()

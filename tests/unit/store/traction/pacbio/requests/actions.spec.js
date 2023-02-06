@@ -21,40 +21,76 @@ describe('actions', () => {
       const commit = vi.fn()
       const get = vi.fn()
       const getters = { requestsRequest: { get: get } }
+      const requests = Data.TractionPacbioSamples
+      requests.data.data.splice(2, 11)
+      get.mockReturnValue(requests)
 
-      get.mockReturnValue(Data.TractionPacbioSamples)
+      const expectedRequests = [
+        {
+          id: '1',
+          type: 'requests',
+          attributes: {
+            library_type: 'library_type_1',
+            estimate_of_gb_required: 100,
+            number_of_smrt_cells: 3,
+            cost_code: 'PSD1234',
+            external_study_id: 'mockStudy-ID',
+            sample_name: 'mockName3',
+            barcode: 'TRAC-82',
+            sample_species: 'mockSpecies',
+            source_identifier: 'NT127Q',
+            created_at: '10/14/2019 10:56',
+          },
+        },
+        {
+          id: '2',
+          type: 'requests',
+          attributes: {
+            library_type: 'library_type_1',
+            estimate_of_gb_required: 100,
+            number_of_smrt_cells: 3,
+            cost_code: 'PSD1234',
+            external_study_id: 'mockStudy-ID',
+            sample_name: 'mockName3',
+            barcode: 'TRAC-83',
+            sample_species: 'mockSpecies',
+            source_identifier: 'NT127Q',
+            created_at: '10/14/2019 10:56',
+          },
+        },
+      ]
 
       await Actions.setRequests({ commit, getters })
 
-      expect(commit).toHaveBeenCalledWith('setRequests', requests)
+      expect(commit).toHaveBeenCalledWith('setRequests', expectedRequests)
     })
   })
 
   describe('updateRequest', () => {
     it('successful', async () => {
-      let sample = requests[0]
+      const sample = requests[0]
       const update = vi.fn()
       const getters = { requestsRequest: { update: update }, requests: requests }
 
       update.mockReturnValue(Data.TractionPacbioSamples)
 
-      let resp = await Actions.updateRequest({ getters }, sample)
+      const resp = await Actions.updateRequest({ getters }, sample)
 
-      let expectedPayload = Actions.createRequestPayload(sample)
+      const expectedPayload = Actions.createRequestPayload(sample)
       expect(getters.requestsRequest.update).toHaveBeenCalledWith(expectedPayload)
 
-      let expectedResp = new Response(Data.TractionPacbioSamples)
+      const expectedResp = new Response(Data.TractionPacbioSamples)
       expect(resp).toEqual(expectedResp)
     })
 
     it('unsuccessful', async () => {
-      let sample = requests[0]
+      const sample = requests[0]
       const update = vi.fn()
       const getters = { requestsRequest: { update: update }, requests: requests }
 
       update.mockReturnValue(failedResponse)
 
-      let expectedResponse = new Response(failedResponse)
+      const expectedResponse = new Response(failedResponse)
       await expect(Actions.updateRequest({ getters }, sample)).rejects.toEqual(
         expectedResponse.errors,
       )
@@ -63,8 +99,8 @@ describe('actions', () => {
 
   describe('createRequestPayload', () => {
     it('creates the payload for the sample', async () => {
-      let sample = new Response(Data.TractionPacbioSamples).deserialize.requests[0]
-      let result = Actions.createRequestPayload(sample)
+      const sample = new Response(Data.TractionPacbioSamples).deserialize.requests[0]
+      const result = Actions.createRequestPayload(sample)
 
       expect(result.data.id).toEqual(sample.id)
       expect(result.data.type).toEqual('requests')
@@ -97,9 +133,9 @@ describe('actions', () => {
       })
       create.mockReturnValue(Data.CreatePacbioRequest)
 
-      let response = await Actions.exportSampleExtractionTubesIntoTraction({ getters }, { tubes })
+      const response = await Actions.exportSampleExtractionTubesIntoTraction({ getters }, { tubes })
 
-      let expectedPayload = {
+      const expectedPayload = {
         data: {
           data: {
             type: 'requests',
@@ -115,7 +151,7 @@ describe('actions', () => {
     })
 
     it('unsuccessfully', async () => {
-      let failedResponse = {
+      const failedResponse = {
         success: false,
         status: 422,
         statusText: 'Unprocessable Entity',
@@ -129,7 +165,7 @@ describe('actions', () => {
 
       create.mockReturnValue(failedResponse)
 
-      let response = await Actions.exportSampleExtractionTubesIntoTraction(
+      const response = await Actions.exportSampleExtractionTubesIntoTraction(
         { dispatch, getters },
         { tubes },
       )
@@ -176,9 +212,9 @@ describe('actions', () => {
     })
 
     it('if cost code is null do not include cost code in request', () => {
-      let tubes = new Response(Data.SampleExtractionTubesWithSample).deserialize.assets
+      const tubes = new Response(Data.SampleExtractionTubesWithSample).deserialize.assets
       tubes[0].cost_code = null
-      let [{ request }] = Actions.sampleExtractionTubeJson(tubes)
+      const [{ request }] = Actions.sampleExtractionTubeJson(tubes)
       expect(request.cost_code).not.toBeDefined()
     })
   })

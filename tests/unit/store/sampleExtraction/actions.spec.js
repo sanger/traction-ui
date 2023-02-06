@@ -29,9 +29,9 @@ describe('#getSampleExtractionTubesForBarcodes', () => {
       success: true,
     })
 
-    let expectedTubes = deserialize(expectedResponse.data).assets
+    const expectedTubes = deserialize(expectedResponse.data).assets
 
-    let response = await Actions.getSampleExtractionTubesForBarcodes(
+    const response = await Actions.getSampleExtractionTubesForBarcodes(
       { commit, getters },
       barcodeList,
     )
@@ -48,7 +48,7 @@ describe('#getSampleExtractionTubesForBarcodes', () => {
       errors: 'Sample Extraction tubes failed to be imported',
     }
 
-    let response = await Actions.getSampleExtractionTubesForBarcodes(
+    const response = await Actions.getSampleExtractionTubesForBarcodes(
       { commit, getters },
       barcodeList,
     )
@@ -65,7 +65,7 @@ describe('#getSampleExtractionTubesForBarcodes', () => {
       errors: 'Sample Extraction tubes failed to be imported',
     }
 
-    let response = await Actions.getSampleExtractionTubesForBarcodes(
+    const response = await Actions.getSampleExtractionTubesForBarcodes(
       { commit, getters },
       barcodeList,
     )

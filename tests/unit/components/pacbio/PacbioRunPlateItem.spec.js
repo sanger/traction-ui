@@ -8,7 +8,7 @@ describe('Plate.vue', () => {
   let plate, wrapper
 
   beforeEach(() => {
-    let run = new Response(Data.PacbioRun).deserialize.runs[0]
+    const run = new Response(Data.PacbioRun).deserialize.runs[0]
 
     // smrt link versions are retrieved by PacbioRunShow view
     // smrt_link_version_id is set on the currentRun by newRun and editRun actions
@@ -30,7 +30,7 @@ describe('Plate.vue', () => {
 
   describe('wells', () => {
     it('has the correct number of wells', () => {
-      let ellipses = wrapper.findAll('ellipse')
+      const ellipses = wrapper.findAll('ellipse')
       expect(ellipses.length).toEqual(Object.keys(PlateMap.wells).length)
     })
   })

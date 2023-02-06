@@ -7,7 +7,7 @@ const createLibraryInTraction = async ({ rootState }, library) => {
   // Some duplication of code from createPool but this is for single library pool
   const tag_id = library.tag.id
 
-  let body = {
+  const body = {
     data: {
       type: 'pools',
       attributes: {
@@ -38,43 +38,51 @@ const createLibraryInTraction = async ({ rootState }, library) => {
 }
 
 const deleteLibraries = async ({ getters }, libraryIds) => {
-  let request = getters.libraryRequest
-  let promises = request.destroy(libraryIds)
+  const request = getters.libraryRequest
+  const promises = request.destroy(libraryIds)
 
-  let responses = await Promise.all(promises.map((promise) => handlePromise(promise)))
+  const responses = await Promise.all(promises.map((promise) => handlePromise(promise)))
   return responses
 }
 
-const setLibraries = async ({ commit, getters }) => {
-  let request = getters.libraryRequest
-  let promise = request.get({ include: 'request,tag,tube' })
-  let response = await handlePromise(promise)
-  let libraries = null
+const setLibraries = async ({ commit, getters }, filter) => {
+  const request = getters.libraryRequest
+  const promise = request.get({
+    include: 'request,tag,tube,pool',
+    filter,
+  })
+  const response = await handleResponse(promise)
 
-  if (response.successful && !response.empty) {
-    // TODO: this is a hack. We are no longer returning multiple tags
-    // for a library so we should just have a single group_id
-    libraries = response.deserialize.libraries.map((library) => {
-      // This is getting more complicated
-      // I think this needs to be done in one go when we deserialize
-      // the libraries
-      const {
-        tag: { group_id: tag_group_id } = { group_id: null },
-        // should be request: { sample: { name } }
-        request: { sample_name } = { sample_name: null },
-        tube: { barcode } = { barcode: null },
-      } = library
-      return { ...library, tag_group_id, sample_name, barcode }
+  const { success, data: { data, included = [] } = {}, errors = [] } = response
+  const { tubes, tags, requests, pools } = groupIncludedByResource(included)
+
+  if (success) {
+    /* 
+      Here we build library objects to include necessary relational data
+      for the pacbio libraries page
+    */
+    const libraries = data.map((library) => {
+      return {
+        id: library.id,
+        ...library.attributes,
+        pool: pools?.find((pool) => pool.id == library.relationships.pool.data?.id),
+        tag_group_id: tags?.find((tag) => tag.id == library.relationships.tag.data?.id)?.attributes
+          .group_id,
+        sample_name: requests?.find(
+          (request) => request.id == library.relationships.request.data?.id,
+        )?.attributes.sample_name,
+        barcode: tubes?.find((tube) => tube.id == library.relationships.tube.data?.id)?.attributes
+          .barcode,
+      }
     })
-
     commit('setLibraries', libraries)
   }
 
-  return libraries
+  return { success, errors }
 }
 
 const updateTag = async ({ getters }, payload) => {
-  let body = {
+  const body = {
     data: {
       id: payload.request_library_id,
       type: 'tags',
@@ -92,7 +100,7 @@ const updateTag = async ({ getters }, payload) => {
 }
 
 const updateLibrary = async ({ commit, getters }, payload) => {
-  let body = {
+  const body = {
     id: payload.id,
     type: 'libraries',
     attributes: {

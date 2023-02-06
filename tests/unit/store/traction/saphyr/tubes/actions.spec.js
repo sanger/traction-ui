@@ -18,10 +18,10 @@ describe('#getTractionTubesForBarcodes', () => {
   it('successfully for samples', async () => {
     get.mockReturnValue(Data.TractionSaphyrTubesWithRequest)
 
-    let expectedResponse = new Response(Data.TractionSaphyrTubesWithRequest)
-    let expectedTubes = expectedResponse.deserialize.tubes
+    const expectedResponse = new Response(Data.TractionSaphyrTubesWithRequest)
+    const expectedTubes = expectedResponse.deserialize.tubes
 
-    let response = await Actions.getTractionTubesForBarcodes({ commit, getters }, barcodeList)
+    const response = await Actions.getTractionTubesForBarcodes({ commit, getters }, barcodeList)
 
     expect(commit).toHaveBeenCalledWith('setTubes', expectedTubes)
     expect(response).toEqual(expectedResponse)
@@ -30,10 +30,10 @@ describe('#getTractionTubesForBarcodes', () => {
   it('successfully for libraries', async () => {
     get.mockReturnValue(Data.TubeWithLibrary)
 
-    let expectedResponse = new Response(Data.TubeWithLibrary)
-    let expectedTubes = expectedResponse.deserialize.tubes
+    const expectedResponse = new Response(Data.TubeWithLibrary)
+    const expectedTubes = expectedResponse.deserialize.tubes
 
-    let response = await Actions.getTractionTubesForBarcodes({ commit, getters }, barcodeList)
+    const response = await Actions.getTractionTubesForBarcodes({ commit, getters }, barcodeList)
 
     expect(commit).toHaveBeenCalledWith('setTubes', expectedTubes)
     expect(response).toEqual(expectedResponse)
@@ -42,9 +42,9 @@ describe('#getTractionTubesForBarcodes', () => {
   it('unsuccessfully', async () => {
     get.mockReturnValue(failedResponse)
 
-    let expectedResponse = new Response(failedResponse)
+    const expectedResponse = new Response(failedResponse)
 
-    let response = await Actions.getTractionTubesForBarcodes({ commit, getters }, barcodeList)
+    const response = await Actions.getTractionTubesForBarcodes({ commit, getters }, barcodeList)
 
     expect(commit).not.toHaveBeenCalled()
     expect(response).toEqual(expectedResponse)
@@ -53,9 +53,9 @@ describe('#getTractionTubesForBarcodes', () => {
   it('when no tubes exist', async () => {
     get.mockReturnValue(emptyResponse)
 
-    let expectedResponse = new Response(emptyResponse)
+    const expectedResponse = new Response(emptyResponse)
 
-    let response = await Actions.getTractionTubesForBarcodes({ commit, getters }, barcodeList)
+    const response = await Actions.getTractionTubesForBarcodes({ commit, getters }, barcodeList)
 
     expect(commit).not.toHaveBeenCalled()
     expect(response).toEqual(expectedResponse)
@@ -68,7 +68,7 @@ describe('#createLibrariesInTraction', () => {
   beforeEach(() => {
     create = vi.fn()
     getters = { libraryRequest: { create: create } }
-    let samples = [
+    const samples = [
       {
         barcode: 'TRAC-1',
         material: {
@@ -92,29 +92,29 @@ describe('#createLibrariesInTraction', () => {
         },
       },
     ]
-    let enzymeID = 1
+    const enzymeID = 1
     payload = { samples: samples, enzymeID: enzymeID }
   })
 
   it('successfully', async () => {
-    let expectedResponse = new Response(Data.TubeWithLibrary)
+    const expectedResponse = new Response(Data.TubeWithLibrary)
     create.mockReturnValue(Data.TubeWithLibrary)
 
-    let response = await Actions.createLibrariesInTraction({ getters }, payload)
+    const response = await Actions.createLibrariesInTraction({ getters }, payload)
     expect(response).toEqual(expectedResponse)
   })
 
   it('unsuccessfully', async () => {
-    let failedResponse = {
+    const failedResponse = {
       status: 422,
       statusText: 'Unprocessable Entity',
       data: { errors: { name: ['error message'] } },
     }
-    let expectedResponse = new Response(failedResponse)
+    const expectedResponse = new Response(failedResponse)
 
     create.mockReturnValue(failedResponse)
 
-    let response = await Actions.createLibrariesInTraction({ getters }, payload)
+    const response = await Actions.createLibrariesInTraction({ getters }, payload)
     expect(response).toEqual(expectedResponse)
   })
 })
@@ -131,29 +131,29 @@ describe('#deleteLibraries', () => {
   })
 
   it('successfully', async () => {
-    let mockResponse = { data: {}, status: 204, statusText: 'OK' }
+    const mockResponse = { data: {}, status: 204, statusText: 'OK' }
 
-    let promise = new Promise((resolve) => {
+    const promise = new Promise((resolve) => {
       resolve(mockResponse)
     })
 
     destroy.mockReturnValue([promise])
 
-    let expectedResponse = new Response(mockResponse)
-    let response = await Actions.deleteLibraries({ getters }, libraryIds)
+    const expectedResponse = new Response(mockResponse)
+    const response = await Actions.deleteLibraries({ getters }, libraryIds)
 
     expect(response).toEqual([expectedResponse])
   })
 
   it('unsuccessfully', async () => {
-    let promise = new Promise((reject) => {
+    const promise = new Promise((reject) => {
       reject(failedResponse)
     })
 
     destroy.mockReturnValue([promise])
 
-    let expectedResponse = new Response(failedResponse)
-    let response = await Actions.deleteLibraries({ getters }, libraryIds)
+    const expectedResponse = new Response(failedResponse)
+    const response = await Actions.deleteLibraries({ getters }, libraryIds)
 
     expect(response).toEqual([expectedResponse])
   })
@@ -173,7 +173,7 @@ describe('#setLibraries', () => {
   it('successfully', async () => {
     get.mockReturnValue(Data.TractionSaphyrLibraries)
 
-    let libraries = await Actions.setLibraries({ commit, getters })
+    const libraries = await Actions.setLibraries({ commit, getters })
 
     expect(commit).toHaveBeenCalledWith('setLibraries', libraries)
   })
@@ -181,7 +181,7 @@ describe('#setLibraries', () => {
   it('unsuccessfully', async () => {
     get.mockReturnValue(failedResponse)
 
-    let response = await Actions.setLibraries({ commit, getters })
+    const response = await Actions.setLibraries({ commit, getters })
 
     expect(commit).not.toHaveBeenCalled()
     expect(response).toBeNull()
