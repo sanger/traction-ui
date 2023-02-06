@@ -1,7 +1,11 @@
 <template>
   <flagged-feature name="dpl_281_ont_create_sequencing_runs">
     <DataFetcher :fetcher="fetchOntRuns">
-      <div class="clearfix">
+      <div class="clearfix mt-5">
+        <traction-button id="newRun" class="float-left" theme="create" @click="redirectToRun()">
+          New Run
+        </traction-button>
+        <span class="font-weight-bold">Total records: {{ runs.length }}</span>
         <traction-pagination
           v-model="currentPage"
           class="float-right"
@@ -10,8 +14,18 @@
           aria-controls="run-index"
         ></traction-pagination>
 
-        <traction-form-group label-cols-lg="1" label="Per Page" label-for="input-per-page">
-          <traction-input id="input-per-page" v-model="perPage" trim class="w-25"></traction-input>
+        <traction-form-group
+          class="float-right mx-5"
+          label-cols-lg="4"
+          label="Per Page"
+          label-for="input-per-page"
+        >
+          <traction-input
+            id="input-per-page"
+            v-model="perPage"
+            trim
+            class="w-full w-25"
+          ></traction-input>
         </traction-form-group>
       </div>
 
@@ -38,16 +52,22 @@
             @click="redirectToRun(row.item.id)"
             >Edit</traction-button
           >
+          <a
+            :id="generateId('sample-sheet', row.item.id)"
+            :href="generateSampleSheetPath(row.item.id)"
+            class="text-primary p-1 mr-1 inline-block border-2 rounded-md whitespace-nowrap"
+          >
+            Sample Sheet
+          </a>
+          <a
+            :id="generateId('sample-sheet-settings', row.item.id)"
+            :href="generateSampleSheetPath(row.item.id, true)"
+            class="text-primary p-1 mr-1 inline-block border-2 rounded-md whitespace-nowrap"
+          >
+            Sample Sheet Settings
+          </a>
         </template>
       </traction-table>
-
-      <span class="font-weight-bold">Total records: {{ runs.length }}</span>
-
-      <div class="clearfix">
-        <traction-button id="newRun" class="float-left" theme="create" @click="redirectToRun()"
-          >New Run</traction-button
-        >
-      </div>
     </DataFetcher>
   </flagged-feature>
 </template>
@@ -97,6 +117,10 @@ export default {
   methods: {
     generateId(text, id) {
       return `${text}-${id}`
+    },
+    generateSampleSheetPath(id, settings = false) {
+      const path = settings ? '/sample_sheeting_settings' : '/sample_sheet'
+      return import.meta.env.VITE_TRACTION_BASE_URL + '/v1/ont/runs/' + id + path
     },
     redirectToRun(runId) {
       this.$router.push({ path: `/ont/run/${runId || 'new'}` })
