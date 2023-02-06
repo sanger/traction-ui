@@ -1,11 +1,11 @@
 import handlePromise from '@/api/PromiseHelper'
 import { groupIncludedByResource } from '@/api/JsonApi'
 import { handleResponse } from '@/api/ResponseHelper'
+import { dataToObjectById } from '@/api/JsonApi'
 
-const createLibraryInTraction = async ({ rootState, rootGetters }, library) => {
+const createLibraryInTraction = async ({ rootState }, library) => {
   // Some duplication of code from createPool but this is for single library pool
-  const tag = rootGetters['traction/tractionTags'].find((l) => l.group_id == library.tag.group_id)
-  const tag_id = tag ? tag.id : ''
+  const tag_id = library.tag.id
 
   const body = {
     data: {
@@ -138,14 +138,44 @@ const updateLibrary = async ({ commit, getters }, payload) => {
   return { success, errors }
 }
 
+// Fetch Pacbio tagSets and tags and store choices in state
+const fetchPacbioTagSets = async ({ commit, rootState }) => {
+  const request = rootState.api.traction.pacbio.tag_sets
+  const promise = request.get({ include: 'tags' })
+  const response = await handleResponse(promise)
+  const { success, data: { data, included = [] } = {}, errors = [] } = response
+  if (success) {
+    const tagSets = dataToObjectById({ data, includeRelationships: true })
+    const tags = dataToObjectById({ data: included })
+    const tagSetChoices = []
+    const tagChoices = {}
+    Object.values(tagSets).forEach((tagSet) => {
+      tagSetChoices.push({ value: tagSet.id, text: tagSet.name })
+      tagChoices[tagSet.id] = tagSet.tags
+        .map((tagId) => tags[tagId])
+        .map(({ id: value, group_id: text }) => ({ value, text }))
+    })
+    commit('setTagSetChoices', { tagSetChoices, tagChoices })
+  }
+  return { success, errors, response }
+}
+
 const actions = {
   createLibraryInTraction,
   deleteLibraries,
   setLibraries,
   updateLibrary,
   updateTag,
+  fetchPacbioTagSets,
 }
 
-export { createLibraryInTraction, deleteLibraries, setLibraries, updateLibrary, updateTag }
+export {
+  createLibraryInTraction,
+  deleteLibraries,
+  setLibraries,
+  updateLibrary,
+  updateTag,
+  fetchPacbioTagSets,
+}
 
 export default actions

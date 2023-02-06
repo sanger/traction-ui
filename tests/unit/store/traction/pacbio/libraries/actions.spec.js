@@ -18,7 +18,7 @@ describe('#createLibraryInTraction', () => {
     }
     rootState = { api: { traction: { pacbio: { pools: { create } } } } }
     library = {
-      tag: { group_id: '123abc1' },
+      tag: { id: 1, group_id: '123abc1' },
       volume: 1.0,
       concentration: 1.0,
       template_prep_kit_box_barcode: 'LK12345',
