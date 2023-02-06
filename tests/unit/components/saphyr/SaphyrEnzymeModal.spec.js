@@ -37,7 +37,7 @@ describe('SaphyrEnzymeModal.vue', () => {
     })
 
     it('has enzyme options', async () => {
-      let enzymeOptions = {
+      const enzymeOptions = {
         enzymeOptions: [
           { value: null, text: 'Please select an option' },
           { value: 1, text: 'enz1' },
@@ -62,7 +62,7 @@ describe('SaphyrEnzymeModal.vue', () => {
 
   describe('#handleOk', () => {
     it('without selectedEnzymeId', () => {
-      let evt = {
+      const evt = {
         preventDefault: () => {
           return {}
         },
@@ -74,7 +74,7 @@ describe('SaphyrEnzymeModal.vue', () => {
 
     it('with selectedEnzymeId', () => {
       wrapper.setData({ selectedEnzymeId: 1 })
-      let evt = {
+      const evt = {
         preventDefault: () => {
           return {}
         },
@@ -104,8 +104,8 @@ describe('SaphyrEnzymeModal.vue', () => {
 
       await enzymeModal.getEnzymeOptions()
 
-      let enzymes = new Response(EnzymesJson).deserialize.enzymes
-      let enzymeOptions = enzymes.map((enzyme, index) =>
+      const enzymes = new Response(EnzymesJson).deserialize.enzymes
+      const enzymeOptions = enzymes.map((enzyme, index) =>
         Object.assign({ value: index + 1, text: enzyme.name }),
       )
       enzymeOptions.unshift({ value: null, text: 'Please select an option' })
@@ -114,7 +114,7 @@ describe('SaphyrEnzymeModal.vue', () => {
     })
 
     it('failure', async () => {
-      let mockResponse = {
+      const mockResponse = {
         data: {
           errors: {
             name: ['name error message 1'],

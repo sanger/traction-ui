@@ -12,8 +12,8 @@ const mutations = {
     state.currentRun.chip.barcode = barcode
   },
   setLibraryBarcode(state, payload) {
-    let library = payload.library
-    let flowcellIndex = payload.flowcellIndex
+    const library = payload.library
+    const flowcellIndex = payload.flowcellIndex
     state.currentRun.chip.flowcells[flowcellIndex].library = library
   },
 }

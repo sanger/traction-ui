@@ -32,9 +32,9 @@ describe('Response', () => {
     })
 
     it('has some attributes', () => {
-      let attributes = response.deserialize
+      const attributes = response.deserialize
       expect(attributes.requests.length).toEqual(2)
-      let request = attributes.requests[0]
+      const request = attributes.requests[0]
       expect(request.name).toEqual('testname1')
       expect(request.species).toEqual('testspecies1')
     })
@@ -52,7 +52,7 @@ describe('Response', () => {
     })
 
     it('data returns serialized object', () => {
-      let serializedObj = deserialize(mockResponse.data)
+      const serializedObj = deserialize(mockResponse.data)
       expect(response.deserialize).toEqual(serializedObj)
     })
   })
@@ -77,7 +77,7 @@ describe('Response', () => {
     })
 
     it('has some errors', () => {
-      let message =
+      const message =
         'name name error message 1, species species error message 2.1, species species error message 2.2'
       expect(response.errors).toEqual({ message: message })
     })

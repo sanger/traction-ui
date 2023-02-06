@@ -34,6 +34,20 @@ NB npm 7+ installs peer dependencies by default. In our case swrv will cause res
 https://stackoverflow.com/questions/66239691/what-does-npm-install-legacy-peer-deps-do-exactly-when-is-it-recommended-wh
 
     npm install --include-dev --legacy-peer-deps
+    
+### Node versions
+
+You will need to use the node version in the .nvmrc file
+
+If you are using npm you can do:
+    
+    nvm use
+    
+If you are seeing fatal errors when running the tests this is likely caused by Node. v16.15.1 has a bug. Steps to fix this:
+ - nvm use
+ - npm install
+ - restart an running services
+ - maybe remove node_modules
 
 ## Running
 
@@ -100,10 +114,18 @@ run:
 
     npm run lint
 
+To fix errors automatically run:
+
+    npm run lint -- --fix 
+
 ## Deployment
 
 This project is built into a static archive for deployment. To trigger the creation of a new image, increment the `.release-version` version with the corresponding change according to
 [semver](https://semver.org/).
+
+## Style Guide
+
+[style guide](style_guide.md)
 
 ## Miscellaneous
 

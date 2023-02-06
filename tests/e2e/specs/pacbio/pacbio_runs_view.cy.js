@@ -1,9 +1,13 @@
 describe('Pacbio Runs view', () => {
   it('Visits the pacbio runs url', () => {
-    cy.intercept('/v1/pacbio/runs?include=plate.wells.pools.tube', {
+    cy.intercept('/v1/pacbio/runs', {
       fixture: 'tractionPacbioRuns.json',
     })
     cy.visit('#/pacbio/runs')
+    // Check filters are visible
+    cy.get('#filterInput').should('be.visible')
+    cy.get('#filterValue').should('be.visible')
+    cy.get('#filterValue').children().and('contain', 'Name')
     cy.get('#run-index').contains('tr', '5')
     cy.get('#startRun-7')
     cy.get('#completeRun-7')

@@ -26,7 +26,7 @@ describe('FilterCard.vue', () => {
     expect(wrapper.vm.filterValue).toBe('')
     expect(wrapper.find('#filterInput')).toBeDefined()
     expect(wrapper.find('#filterValue')).toBeDefined()
-    let options = wrapper.find('#filterValue').findAll('option')
+    const options = wrapper.find('#filterValue').findAll('option')
     expect(options.at(0).text()).toBe('Filter 1')
     expect(options.at(1).text()).toBe('Filter 2')
     expect(options.at(2).text()).toBe('Filter 3')

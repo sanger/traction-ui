@@ -62,7 +62,7 @@
         </div>
       </div>
     </traction-section>
-    <OntPoolLibraryList :auto-tag="autoTag" />
+    <OntPoolLibraryList :auto-tag="autoTag" :validated="validated" :notify="onFieldUpdate" />
     <div class="text-right py-8">
       <traction-button
         v-if="!persisted"
@@ -93,7 +93,7 @@ import OntPoolLibraryList from '@/components/ont/OntPoolLibraryList'
 import { createNamespacedHelpers } from 'vuex'
 import { eachRecord } from '@/lib/csv/pacbio'
 
-const { mapGetters, mapActions } = createNamespacedHelpers('traction/ont')
+const { mapGetters, mapActions } = createNamespacedHelpers('traction/ont/pools')
 
 /**
  * # OntPoolEdit
@@ -110,6 +110,7 @@ export default {
       busy: false,
       autoTag: false,
       parsedFile: null,
+      validated: true,
     }
   },
   computed: {
@@ -145,6 +146,7 @@ export default {
     },
     update() {
       this.busy = true
+      this.validated = true
       this.updatePool().then(({ success, errors }) => {
         success
           ? this.showAlert(`Pool successfully updated`, 'success', 'pool-create-message')
@@ -168,6 +170,10 @@ export default {
         this.showAlert(error, 'danger', 'pool-create-message')
         this.parsedFile = false
       }
+    },
+    // Function passed to child components for use in validation
+    onFieldUpdate() {
+      this.validated = false
     },
   },
 }

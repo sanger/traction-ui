@@ -35,7 +35,7 @@ export default {
   },
   methods: {
     async setBarcode(barcode) {
-      let isValid = this.isChipBarcodeValid(barcode)
+      const isValid = this.isChipBarcodeValid(barcode)
 
       if (isValid) {
         this.alert('Chip barcode is valid', 'success')

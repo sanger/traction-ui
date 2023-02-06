@@ -1,6 +1,6 @@
 describe('Pacbio Run Edit view', () => {
   beforeEach(() => {
-    cy.intercept('/v1/pacbio/runs?include=plate.wells.pools.tube', {
+    cy.intercept('/v1/pacbio/runs', {
       fixture: 'tractionPacbioRuns.json',
     })
     cy.intercept('/v1/pacbio/runs/7?include=plate.wells.pools.tube', {

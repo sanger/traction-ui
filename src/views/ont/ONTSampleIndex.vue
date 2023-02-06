@@ -51,7 +51,8 @@ import TableHelper from '@/mixins/TableHelper'
 import { createNamespacedHelpers } from 'vuex'
 import DataFetcher from '@/components/DataFetcher.vue'
 import FilterCard from '@/components/FilterCard.vue'
-const { mapActions, mapGetters } = createNamespacedHelpers('traction/ont')
+// TODO: Move these actions back to top level store.
+const { mapActions, mapGetters } = createNamespacedHelpers('traction/ont/pools')
 
 export default {
   name: 'OntSampleIndex',
@@ -81,6 +82,8 @@ export default {
       filterOptions: [
         { value: '', text: '' },
         { value: 'id', text: 'Sample ID (Request)' },
+        { value: 'source_identifier', text: 'Source barcode' },
+        { value: 'sample_name', text: 'Sample name' },
         // Need to specify filters in json api resources if we want more filters
       ],
       filteredItems: [],

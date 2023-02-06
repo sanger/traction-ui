@@ -104,6 +104,12 @@
           },
           {
             "name": "pools"
+          },
+          {
+            "name": "instruments"
+          },
+          {
+            "name": "runs"
           }
         ]
       }

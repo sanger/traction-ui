@@ -52,7 +52,7 @@ import LabwareFinder from '@/components/LabwareFinder'
 import DataFetcher from '@/components/DataFetcher'
 
 import { createNamespacedHelpers } from 'vuex'
-const { mapActions, mapGetters } = createNamespacedHelpers('traction/ont')
+const { mapActions, mapGetters } = createNamespacedHelpers('traction/ont/pools')
 
 export default {
   name: 'ONTPoolCreate',

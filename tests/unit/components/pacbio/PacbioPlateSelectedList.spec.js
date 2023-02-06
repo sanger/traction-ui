@@ -34,7 +34,7 @@ describe('PacbioPlateSelectedList', () => {
 
   describe('Plate selection', () => {
     beforeEach(() => {
-      let selectPlate = { id: '61', selected: true }
+      const selectPlate = { id: '61', selected: true }
       store.commit('traction/pacbio/poolCreate/selectPlate', selectPlate)
     })
 
@@ -46,7 +46,7 @@ describe('PacbioPlateSelectedList', () => {
 
   describe('Plate@onSelect', () => {
     beforeEach(() => {
-      let selectPlate = { id: '61', selected: true }
+      const selectPlate = { id: '61', selected: true }
       store.commit('traction/pacbio/poolCreate/selectPlate', selectPlate)
     })
 

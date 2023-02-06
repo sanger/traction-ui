@@ -22,8 +22,8 @@ describe('Plate.vue', () => {
   let wrapper, plate
 
   beforeEach(() => {
-    store.state.traction.ont.resources.plates = plates
-    store.state.traction.ont.resources.wells = wells
+    store.state.traction.ont.pools.resources.plates = plates
+    store.state.traction.ont.pools.resources.wells = wells
 
     wrapper = mount(Plate, {
       localVue,
@@ -76,7 +76,7 @@ describe('Plate.vue', () => {
 
   describe('SVG wells', () => {
     it('has the correct number of wells', () => {
-      let ellipses = wrapper.findAllComponents({ ref: 'well' })
+      const ellipses = wrapper.findAllComponents({ ref: 'well' })
       expect(ellipses.length).toEqual(Object.keys(store.state.plateMap.wells).length)
     })
   })
