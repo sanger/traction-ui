@@ -1,14 +1,19 @@
 <template>
-  <div class="w-1/2 mx-auto">
-    <div class="w-full mt-4 w-100 flex flex-row gap-4 space-x-4 bg-gray-100 rounded-md p-5">
-      <motion.div
-        variants="variants.fadeInParent"
-        initial="hidden"
-        animate="visible"
-        exit="hidden"
-        class="w-full space-x-4 space-y-10"
+  <div class="w-2/3 mx-auto">
+    <div class="w-full mt-4 w-100 gap-4 space-x-4 bg-gray-100 rounded-md">
+      <traction-form
+        v-if="show"
+        class="text-left flex flex-row"
+        @submit="printLabels"
+        @reset="onReset"
       >
-        <traction-form v-if="show" class="text-left" @submit="printLabels" @reset="onReset">
+        <motion.div
+          variants="variants.fadeInParent"
+          initial="hidden"
+          animate="visible"
+          exit="hidden"
+          class="w-full space-x-4 space-y-10 p-10"
+        >
           <traction-form-group id="barcode-input-group" label-for="barcode-input">
             <traction-heading level="3" show-border>Barcodes</traction-heading>
             <traction-muted-text>A list of barcodes to create labels for</traction-muted-text>
@@ -65,30 +70,32 @@
               ></traction-select>
             </div>
           </traction-form-group>
-        </traction-form>
-      </motion.div>
-      <div class="w-1/2 mt-4 p-3 border-t-4 border-sp rounded-md space-y-4 bg-sdb-400">
-        <traction-heading level="3" class-name="text-white" show-border>
-          Barcodes to be printed
-        </traction-heading>
-        <div class="flex flex-col">
-          <div class="space-x-4 flex flex-row pb-4">
-            <traction-button id="submit-button" type="submit" theme="printRed" class="w-full"
-              >Print Labels</traction-button
-            >
-            <traction-button id="reset-button" type="reset" theme="resetWhite"
-              >Reset</traction-button
-            >
+        </motion.div>
+        <div class="w-3/5 mt-4 p-3 border-t-4 border-sp rounded-md space-y-4 bg-sdb-400">
+          <traction-heading level="3" class-name="text-white italic" show-border>
+            Barcodes to be printed
+          </traction-heading>
+          <div class="">
+            <div class="space-x-4 pb-4">
+              <traction-button id="submit-button" type="submit" theme="printRed" class=""
+                >Print Labels</traction-button
+              >
+              <traction-button id="reset-button" type="reset" theme="resetWhite"
+                >Reset</traction-button
+              >
+            </div>
+            <traction-card tag="article" style="max-width: 20rem" class="mb-2 text-black text-left">
+              <traction-card-text>
+                <ul id="list-barcodes-to-print">
+                  <li v-for="{ barcode } in labels" :key="barcode" class="text-sm">
+                    {{ barcode }}
+                  </li>
+                </ul>
+              </traction-card-text>
+            </traction-card>
           </div>
-          <traction-card tag="article" style="max-width: 20rem" class="mb-2 text-black text-left">
-            <traction-card-text>
-              <ul id="list-barcodes-to-print">
-                <li v-for="{ barcode } in labels" :key="barcode" class="text-sm">{{ barcode }}</li>
-              </ul>
-            </traction-card-text>
-          </traction-card>
         </div>
-      </div>
+      </traction-form>
     </div>
   </div>
 </template>
