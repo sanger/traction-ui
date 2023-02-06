@@ -28,6 +28,7 @@
             v-model="selectedTagSetId"
             data-type="tag-set-list"
             :options="tagSetOptions"
+            class="mb-3"
             @input="resetSelectedTagId"
           ></traction-select>
         </traction-form-group>
@@ -35,8 +36,9 @@
         <traction-form-group id="tag-select-input" label-for="tag-input">
           <traction-select
             id="tag-input"
-            v-model="selectedTagId"
+            v-model="library.tag.id"
             :options="tagOptions"
+            :disabled="!selectedTagSetId"
             class="mb-3"
           />
         </traction-form-group>
@@ -118,7 +120,8 @@
 <script>
 import Api from '@/mixins/Api'
 import ModalHelper from '@/mixins/ModalHelper'
-import { mapActions, mapState } from 'vuex'
+import { createNamespacedHelpers } from 'vuex'
+const { mapActions, mapGetters } = createNamespacedHelpers('traction/pacbio/libraries')
 
 export default {
   name: 'PacbioLibraryCreate',
@@ -137,33 +140,20 @@ export default {
     return {
       library: { tag: { id: '' }, sample: {} },
       selectedTagSetId: '',
-      selectedTagId: '',
     }
   },
   computed: {
-    // Map fetched Pacbio tag sets and tags
-    ...mapState('traction/pacbio/poolCreate', {
-      tagSets: (state) => state.resources.tagSets,
-      tags: (state) => state.resources.tags,
-    }),
+    ...mapGetters(['tagSetChoices', 'tagChoices']),
+
     // Return options for the first dropdown
     tagSetOptions() {
-      const tagSets = Object.values(this.tagSets)
-      const options = tagSets.map(({ id: value, name: text }) => ({ value, text }))
       const placeholder = { value: '', text: 'Please select a tag set' }
-      return [placeholder, ...options]
+      return [placeholder, ...this.tagSetChoices]
     },
     // Return options for the second dropdown
     tagOptions() {
       const placeholder = { value: '', text: 'Please select a tag' }
-      if (this.selectedTagSetId) {
-        const tagSet = this.tagSets[this.selectedTagSetId]
-        const tags = tagSet.tags.map((id) => this.tags[id])
-        const options = tags.map(({ id: value, group_id: text }) => ({ value, text }))
-        return [placeholder, ...options]
-      } else {
-        return [placeholder]
-      }
+      return [placeholder, ...this.tagChoices(this.selectedTagSetId)]
     },
   },
   created() {
@@ -180,12 +170,9 @@ export default {
     },
     // Reset the selected tag id if tag-set is changed
     resetSelectedTagId() {
-      this.selectedTagId = ''
+      this.library.tag.id = ''
     },
     async createLibrary() {
-      if (this.selectedTagId) {
-        this.library.tag = this.tags[this.selectedTagId]
-      }
       const { success, barcode, errors } = await this.createLibraryInTraction(this.library)
       if (success) {
         this.hide()
@@ -195,11 +182,10 @@ export default {
       }
     },
     show() {
-      this.library = { tag: { group_id: '' }, sample: this.selectedSample }
+      this.library = { tag: { id: '' }, sample: this.selectedSample }
+      this.selectedTagSetId = ''
     },
-    ...mapActions('traction/pacbio/libraries', ['createLibraryInTraction']),
-    // Map action to fetch Pacbio tag-sets and tags
-    ...mapActions('traction/pacbio/poolCreate', ['fetchPacbioTagSets']),
+    ...mapActions(['fetchPacbioTagSets', 'createLibraryInTraction']),
   },
 }
 </script>
