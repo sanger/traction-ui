@@ -20,12 +20,12 @@
             ><slot :name="slot" v-bind="scope" /></template
         ></b-table-wrapper>
       </template>
-      <div class="flex flex-col overflow-y-auto overflow-x-auto max-h-screen">
+      <div class="flex flex-col overflow-x-auto">
         <div class="py-2 align-middle inline-block min-w-full">
           <div class="shadow overflow-hidden border-b border-gray-200 sm:rounded-lg">
             <table
               v-bind="$attrs"
-              class="w-full divide-y divide-gray-200 table-fixed"
+              class="w-full divide-y divide-gray-200 table-auto text-sm"
               data-attribute="dataAttribute"
             >
               <thead>
@@ -33,7 +33,7 @@
                   <th
                     v-for="(field, fieldIndex) in fields"
                     :key="field.key"
-                    class="px-6 py-3 bg-gray-50 text-left select-none"
+                    class="px-6 py-3 bg-gray-50 content-center select-none"
                   >
                     <div class="flex justify-center font-medium text-gray-600 text-xs">
                       <div class="py-2">
@@ -55,9 +55,18 @@
               </thead>
               <tbody class="bg-white divide-y divide-gray-200">
                 <template v-for="(row, rowIndex) in rows">
-                  <tr v-if="row" :key="rowIndex">
+                  <tr
+                    v-if="row"
+                    :key="rowIndex"
+                    :class="`${selectable ? 'hover:bg-gray-200 cursor-pointer' : ''}`"
+                    @click="onRowClick(row, $event)"
+                  >
                     <template v-for="cell in row">
-                      <custom-table-cell v-if="cell" :key="'custom-' + cell.item.id">
+                      <custom-table-cell
+                        v-if="cell"
+                        :key="'custom-' + rowIndex + '-' + cell.item.column.name"
+                        :classes="backgroundColor(row)"
+                      >
                         <slot :name="`cell(${cell.item.column.name})`" v-bind="cell">
                           {{ cell.item.text }}</slot
                         >
@@ -65,7 +74,7 @@
                     </template>
                   </tr>
                   <tr v-if="rows[rowIndex][0].detailsShowing" :key="'custom-comp' + rowIndex">
-                    <custom-table-cell>
+                    <custom-table-cell :classes="`border-0`">
                       <slot :name="`row-details`" v-bind="rows[rowIndex][0]" />
                     </custom-table-cell>
                   </tr>
@@ -81,6 +90,7 @@
 <script>
 import TractionSortIcon from '@/components/shared/icons/TractionSortIcon'
 import BTableWrapper from '@/components/shared/table/BTableWrapper'
+import { alphaNumericSortDefault } from '@/lib/DateHelpers'
 import { within } from '@/lib/propValidations'
 
 export default {
@@ -114,7 +124,7 @@ export default {
     dataIdField: {
       type: String,
       required: false,
-      default: '',
+      default: 'id',
     },
     selectable: {
       type: Boolean,
@@ -130,7 +140,7 @@ export default {
   },
   data() {
     return {
-      showRowDetails: [],
+      rowDetails: [],
       sortField: { key: this.sortBy, ascending: true },
     }
   },
@@ -142,13 +152,7 @@ export default {
       const val = [...this.items].sort((a, b) => {
         let arr1 = isAsc ? a : b
         let arr2 = isAsc ? b : a
-        if (arr1[this.sortField.key] < arr2[this.sortField.key]) {
-          return -1
-        }
-        if (arr1[this.sortField.key] > arr2[this.sortField.key]) {
-          return 1
-        }
-        return 0
+        return alphaNumericSortDefault(arr1[this.sortField.key], arr2[this.sortField.key], true)
       })
       return val
     },
@@ -164,21 +168,25 @@ export default {
           return {
             item: {
               ...row,
-              id: row.item && row.item.id ? row.item.id : rowIndx + ',' + colIndx,
-              rowIndx: rowIndx,
+              id:
+                this.dataIdField in row && row[this.dataIdField]
+                  ? row[this.dataIdField]
+                  : rowIndx + ',' + colIndx,
               column: { index: colIndx, name: field.key },
               text: text,
             },
             toggleDetails: () => {
-              if (this.showRowDetails == undefined || this.showRowDetails.length <= rowIndx) return
-              this.showRowDetails = [...this.showRowDetails].map((rowDetail) => {
+              if (this.rowDetails == undefined || this.rowDetails.length <= rowIndx) return
+              this.rowDetails = [...this.rowDetails].map((rowDetail) => {
                 return rowDetail.id == this.rowID(row)
                   ? { ...rowDetail, show: !rowDetail.show }
                   : rowDetail
               })
             },
             detailsShowing: this.isShowDetails(row),
-            detailsDim: 30,
+            detailsDim: '100',
+            rowSelected: this.isRowSelected(row),
+            rowIndx: rowIndx,
           }
         })
       })
@@ -186,25 +194,34 @@ export default {
   },
   watch: {
     items: function () {
-      this.showRowDetails = this.items
+      this.rowDetails = this.items
         ? this.items.map((data) => {
             return {
               id: this.dataIdField in data ? data[this.dataIdField] : '',
               show: false,
+              selected: false,
             }
           })
         : []
     },
   },
   methods: {
-    rowID(row) {
-      return this.dataIdField in row ? row[this.dataIdField] : undefined
+    rowID(item) {
+      return item && this.dataIdField in item && item[this.dataIdField]
+        ? item[this.dataIdField]
+        : -1
     },
     isShowDetails(row) {
       const rowIdVal = this.rowID(row)
       if (!rowIdVal) return false
-      const details = this.showRowDetails.find((rowd) => rowd.id === rowIdVal)
+      const details = this.rowDetails.find((rowd) => rowd.id === rowIdVal)
       return details ? details.show : false
+    },
+    isRowSelected(item) {
+      const rowIdVal = this.rowID(item)
+      if (!rowIdVal) return false
+      const details = this.rowDetails.find((rowd) => rowd.id === rowIdVal)
+      return details ? details.selected : false
     },
     /**Emitted when the page changes */
     sortButtonClick(fieldKey) {
@@ -222,6 +239,24 @@ export default {
     },
     scoped() {
       return ['show_details']
+    },
+    onRowClick(row, e) {
+      if (!this.selectable) return
+      if (this.rowDetails == undefined || this.rowDetails.length <= row[0].item.rowIndx) {
+        return
+      }
+      this.rowDetails = [...this.rowDetails].map((rowDetail) => {
+        return rowDetail.id == this.rowID(row[0].item)
+          ? { ...rowDetail, selected: !rowDetail.selected }
+          : {
+              ...rowDetail,
+              selected:
+                this.selectMode == 'single' ? false : e.shiftKey ? rowDetail.selected : false,
+            }
+      })
+    },
+    backgroundColor(row) {
+      return this.isRowSelected(row[0].item) ? 'bg-gray-400' : ''
     },
   },
 }

@@ -52,7 +52,7 @@
           ref="plate"
           :plate="row.item"
           :height="row.detailsDim"
-          width="row.detailsDim"
+          :width="row.detailsDim"
           @alert="alert"
         />
       </template>

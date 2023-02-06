@@ -22,8 +22,9 @@
     </traction-form-group>
     <br />
 
-    <traction-table
+    <custom-table
       id="samples-table"
+      data-id-field="id"
       show-empty
       responsive
       :items="requests"
@@ -78,7 +79,7 @@
           <br />
         </traction-card>
       </template>
-    </traction-table>
+    </custom-table>
 
     <span class="font-weight-bold">Total records: {{ requests.length }}</span>
 
@@ -135,7 +136,7 @@ export default {
   data() {
     return {
       fields: [
-        { key: 'selected', label: '' },
+        { key: 'selected', label: '\u2713' },
         { key: 'id', label: 'Sample ID (Request)', sortable: true },
         { key: 'sample_name', label: 'Name', sortable: true },
         { key: 'sample_species', label: 'Species', sortable: true },

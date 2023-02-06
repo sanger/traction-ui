@@ -32,12 +32,12 @@ export default {
       },
     },
     width: {
-      type: String,
+      type: [String, Number],
       required: false,
       default: '',
     },
     height: {
-      type: String,
+      type: [String, Number],
       required: false,
       default: '',
     },
@@ -52,10 +52,12 @@ export default {
       return PlateMap
     },
     widthSVG() {
-      return this.width ? `'${this.width}%'` : '30%'
+      const width = this.width ? `${this.width}%` : '30%'
+      console.log(width)
+      return width
     },
     heightSVG() {
-      return this.height ? `'${this.height}%'` : '30%'
+      return this.height ? `${this.height}%` : '30%'
     },
   },
   methods: {
