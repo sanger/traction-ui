@@ -1,5 +1,5 @@
 <template>
-  <div class="w-2/3 mx-auto">
+  <div class="w-3/5 mx-auto">
     <div class="w-full mt-4 w-100 gap-4 space-x-4 bg-gray-100 rounded-md">
       <traction-form
         v-if="show"
