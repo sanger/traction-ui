@@ -187,7 +187,7 @@
             ref="poolBarcode"
             :value="`${row.item.barcode}`"
             placeholder="Pool Barcode"
-            @input="updatePoolBarcode(row, $event)"
+            @input="debouncePoolBarcode(row, $event)"
           >
           </traction-input>
 
@@ -228,7 +228,7 @@ export default {
       type: [String],
       required: true,
     },
-    /* 
+    /*
       we need this as by default static is false
       which means we can't test it.
       but when static is true it is displayed on top
@@ -275,6 +275,7 @@ export default {
       },
       ccsAnalysisOutputOptions: ['Yes', 'No'],
       decimalPercentageRegex: /^(?:1(?:\.0{0,2})?|0?(?:\.\d{0,2})?)$/,
+      poolBarcodeDebounceTimer: null,
     }
   },
   computed: {
@@ -352,6 +353,14 @@ export default {
       this.deleteWell(this.currentWell)
       this.alert('Well successfully deleted', 'success')
       this.hide()
+    },
+    debouncePoolBarcode(row, barcode) {
+      // We are debouncing the input events so that we do not constantly try to validate
+      if (this.poolBarcodeDebounceTimer) clearTimeout(this.poolBarcodeDebounceTimer)
+      this.poolBarcodeDebounceTimer = setTimeout(async () => {
+        await this.updatePoolBarcode(row, barcode)
+        // 500 is the time to debounce
+      }, 500)
     },
     async updatePoolBarcode(row, barcode) {
       const index = row.index

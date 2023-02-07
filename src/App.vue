@@ -25,7 +25,7 @@
     </div>
     <div v-show="hasMessages" class="bottom-0 fixed right-0 -top-2 z-[1051]">
       <div class="flex justify-end mb-2 border-sp border-b-2 tracking-tight leading-relaxed">
-        <traction-button class="mb-2" @click="clearAlerts()" >Clear</traction-button>
+        <traction-button class="mb-2" @click="clearAlerts()">Clear</traction-button>
       </div>
       <div class="max-h-[500px] overflow-y-scroll w-full max-w-[500px] break-words">
         <TractionMessage
