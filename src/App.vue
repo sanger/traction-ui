@@ -23,14 +23,19 @@
     <div class="flex flex-col mb-auto px-4 py-10">
       <router-view class="text-center" />
     </div>
-    <div class="message-container">
-      <TractionMessage
-        v-for="(message, index) in messages"
-        ref="alert"
-        :key="index"
-        v-bind="message"
-        @dismissed="dismiss(index)"
-      ></TractionMessage>
+    <div v-show="hasMessages" class="bottom-0 fixed right-0 -top-2 z-[1051]">
+      <div class="flex justify-end mb-2 border-sp border-b-2 tracking-tight leading-relaxed">
+        <traction-button class="mb-2" @click="clearAlerts()" >Clear</traction-button>
+      </div>
+      <div class="max-h-[500px] overflow-y-scroll w-full max-w-[500px] break-words">
+        <TractionMessage
+          v-for="(message, index) in messages"
+          ref="alert"
+          :key="index"
+          v-bind="message"
+          @dismissed="dismiss(index)"
+        ></TractionMessage>
+      </div>
     </div>
     <InfoFooter></InfoFooter>
   </div>
@@ -65,10 +70,16 @@ export default {
     messages() {
       return this.$store.getters['traction/messages']
     },
+    hasMessages() {
+      return !!Object.keys(this.messages).length
+    },
   },
   methods: {
     dismiss(messageIndex) {
       this.$store.commit('traction/removeMessage', messageIndex)
+    },
+    clearAlerts() {
+      this.$store.commit('traction/clearMessages')
     },
   },
 }
@@ -104,15 +115,5 @@ a {
     text-decoration: none;
     color: black;
   }
-}
-.message-container {
-  position: fixed;
-  bottom: 0;
-  right: 1em;
-  width: 30em;
-  z-index: 1051;
-  word-break: break-word;
-  max-height: 500px;
-  overflow-y: scroll;
 }
 </style>

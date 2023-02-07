@@ -34,7 +34,7 @@ export default {
   },
   data() {
     return {
-      dismissSeconds: 15,
+      dismissSeconds: 150,
     }
   },
   computed: {
