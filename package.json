@@ -27,7 +27,7 @@
     "autoprefixer": "^10.4.13",
     "axios": "^1.2.1",
     "core-js": "^3.26.1",
-    "csv-parse": "^5.3.3",
+    "csv-parse": "^5.3.4",
     "flush-promises": "^1.0.2",
     "global": "^4.4.0",
     "lodash-es": "^4.17.21",
