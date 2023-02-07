@@ -71,20 +71,20 @@
             </div>
           </traction-form-group>
         </motion.div>
-        <div class="w-3/5 mt-4 p-3 border-t-4 border-sp rounded-md space-y-4 bg-sdb-400">
+        <div class="w-1/2 m-4 p-3 border-t-4 border-sp rounded-md space-y-4 bg-sdb-400">
           <traction-heading level="3" class-name="text-white italic" show-border>
             Barcodes to be printed
           </traction-heading>
-          <div class="">
-            <div class="space-x-4 pb-4">
-              <traction-button id="submit-button" type="submit" theme="printRed" class=""
+          <div>
+            <div class="space-x-4 pb-4 flex flex-row">
+              <traction-button id="submit-button" class="grow" type="submit" theme="printRed"
                 >Print Labels</traction-button
               >
               <traction-button id="reset-button" type="reset" theme="resetWhite"
                 >Reset</traction-button
               >
             </div>
-            <traction-card tag="article" style="max-width: 20rem" class="mb-2 text-black text-left">
+            <traction-card tag="article" class="mb-2 text-black text-left">
               <traction-card-text>
                 <ul id="list-barcodes-to-print">
                   <li v-for="{ barcode } in labels" :key="barcode" class="text-sm">
