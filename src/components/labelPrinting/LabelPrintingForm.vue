@@ -7,7 +7,7 @@
         @submit="printLabels"
         @reset="onReset"
       >
-        <motion.div
+        <div
           variants="variants.fadeInParent"
           initial="hidden"
           animate="visible"
@@ -70,7 +70,7 @@
               ></traction-select>
             </div>
           </traction-form-group>
-        </motion.div>
+        </div>
         <div class="w-1/2 m-4 p-3 border-t-4 border-sp rounded-md space-y-4 bg-sdb-400">
           <traction-heading level="3" class-name="text-white italic" show-border>
             Barcodes to be printed
