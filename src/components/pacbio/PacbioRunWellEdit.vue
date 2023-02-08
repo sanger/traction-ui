@@ -187,7 +187,8 @@
             ref="poolBarcode"
             :value="`${row.item.barcode}`"
             placeholder="Pool Barcode"
-            @input="debouncePoolBarcode(row, $event)"
+            :debounce="500"
+            @input="updatePoolBarcode(row, $event)"
           >
           </traction-input>
 
@@ -353,14 +354,6 @@ export default {
       this.deleteWell(this.currentWell)
       this.alert('Well successfully deleted', 'success')
       this.hide()
-    },
-    debouncePoolBarcode(row, barcode) {
-      // We are debouncing the input events so that we do not constantly try to validate
-      if (this.poolBarcodeDebounceTimer) clearTimeout(this.poolBarcodeDebounceTimer)
-      this.poolBarcodeDebounceTimer = setTimeout(async () => {
-        await this.updatePoolBarcode(row, barcode)
-        // 500 is the time to debounce
-      }, 500)
     },
     async updatePoolBarcode(row, barcode) {
       const index = row.index

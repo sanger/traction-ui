@@ -45,14 +45,22 @@
           :id="'details-btn-' + row.item.id"
           size="sm"
           theme="default"
-          @click="row.toggleDetails"
+          @click="
+            row.toggleDetails()
+            getPlate(row.item.barcode)
+          "
         >
           {{ row.detailsShowing ? 'Hide' : 'Show' }} Plate
         </traction-button>
       </template>
 
       <template #row-details="row">
-        <Plate ref="plate" :plate="row.item" @alert="alert"></Plate>
+        <Plate
+          v-if="currentPlate.id == row.item.id"
+          ref="plate"
+          :plate="currentPlate"
+          @alert="alert"
+        ></Plate>
       </template>
     </traction-table>
   </DataFetcher>
@@ -92,6 +100,7 @@ export default {
       sortDesc: true,
       perPage: 25,
       currentPage: 1,
+      currentPlate: {},
     }
   },
   computed: {
@@ -101,8 +110,10 @@ export default {
     alert(message, type) {
       this.showAlert(message, type)
     },
-
-    ...mapActions(['setPlates']),
+    async getPlate(barcode) {
+      this.currentPlate = await this.getFullPlate({ barcode: barcode })
+    },
+    ...mapActions(['setPlates', 'getFullPlate']),
   },
 }
 </script>
