@@ -276,7 +276,6 @@ export default {
       },
       ccsAnalysisOutputOptions: ['Yes', 'No'],
       decimalPercentageRegex: /^(?:1(?:\.0{0,2})?|0?(?:\.\d{0,2})?)$/,
-      poolBarcodeDebounceTimer: null,
     }
   },
   computed: {
