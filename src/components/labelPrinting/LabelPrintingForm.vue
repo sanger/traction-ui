@@ -7,13 +7,7 @@
         @submit="printLabels"
         @reset="onReset"
       >
-        <div
-          variants="variants.fadeInParent"
-          initial="hidden"
-          animate="visible"
-          exit="hidden"
-          class="w-full space-x-4 space-y-10 p-10"
-        >
+        <div class="w-full space-x-4 space-y-10 p-10">
           <traction-form-group id="barcode-input-group" label-for="barcode-input">
             <traction-heading level="3" show-border>Barcodes</traction-heading>
             <traction-muted-text>A list of barcodes to create labels for</traction-muted-text>
