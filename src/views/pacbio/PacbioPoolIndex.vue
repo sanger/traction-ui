@@ -34,10 +34,11 @@
       </traction-form-group>
     </div>
 
-    <traction-table
+    <custom-table
       id="pool-index"
       show-empty
       responsive
+      primary_key="id"
       :items="pools"
       :fields="fields"
       :filter="filter"
@@ -104,7 +105,7 @@
           </ul>
         </traction-card>
       </template>
-    </traction-table>
+    </custom-table>
   </DataFetcher>
 </template>
 

@@ -44,7 +44,7 @@
 
     <custom-table
       id="samples-table"
-      data-id-field="id"
+      primary_key="id"
       show-empty
       responsive
       :items="requests"
@@ -91,9 +91,9 @@
       <template #row-details="row">
         <traction-card class="text-left">
           <template v-for="(field, index) in field_in_details">
-            <span :key="field.label + index" class="font-weight-bold">{{ field.label }}</span
+            <span v-if="field" :key="field.label + index" class="font-weight-bold">{{ field.label }}</span
             >: {{ row.item[field.item] }}
-            <br :key="field.label" />
+            <br  v-if="field" :key="field.label" />
           </template>
         </traction-card>
       </template>

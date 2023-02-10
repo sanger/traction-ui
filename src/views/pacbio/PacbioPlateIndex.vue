@@ -28,7 +28,7 @@
 
     <custom-table
       id="plate-index"
-      data-id-field="id"
+      primary_key="id"
       :fields="fields"
       :items="plates"
       show-empty

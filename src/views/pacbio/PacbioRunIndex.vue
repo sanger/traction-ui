@@ -28,7 +28,7 @@
       </traction-form-group>
     </div>
 
-    <traction-table
+    <custom-table
       id="run-index"
       hover
       responsive
@@ -97,7 +97,7 @@
           Generate Sample Sheet
         </a>
       </template>
-    </traction-table>
+    </custom-table>
   </DataFetcher>
 </template>
 

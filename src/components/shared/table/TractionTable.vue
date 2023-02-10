@@ -20,9 +20,9 @@
             ><slot :name="slot" v-bind="scope" /></template
         ></b-table-wrapper>
       </template>
-      <div class="flex flex-col overflow-x-auto">
+      <div class="flex flex-col">
         <div class="py-2 align-middle inline-block min-w-full">
-          <div class="shadow overflow-hidden border-b border-gray-200 sm:rounded-lg">
+          <div class="shadow border-b border-gray-200 sm:rounded-lg">
             <table
               v-bind="$attrs"
               class="w-full divide-y divide-gray-200 table-auto text-sm"
@@ -33,7 +33,7 @@
                   <th
                     v-for="(field, fieldIndex) in fields"
                     :key="field.key"
-                    class="px-6 py-3 bg-gray-50 content-center select-none"
+                    class="px-2 py-4 bg-gray-50 content-center select-none"
                   >
                     <div class="flex justify-center font-medium text-gray-600 text-xs">
                       <div class="py-2">
@@ -68,7 +68,7 @@
                         :classes="backgroundColor(row)"
                       >
                         <slot :name="`cell(${cell.item.column.name})`" v-bind="cell">
-                          {{ cell.item.text }}</slot
+                          {{ text(cell) }}</slot
                         >
                       </custom-table-cell>
                     </template>
@@ -90,7 +90,7 @@
 <script>
 import TractionSortIcon from '@/components/shared/icons/TractionSortIcon'
 import BTableWrapper from '@/components/shared/table/BTableWrapper'
-import { alphaNumericSortDefault } from '@/lib/DateHelpers'
+import { alphaNumericSortDefault, flattenObject } from '@/lib/DateHelpers'
 import { within } from '@/lib/propValidations'
 
 export default {
@@ -109,7 +109,7 @@ export default {
     },
     fields: {
       type: Array,
-      default: () => [{ key: '', label: '' }],
+      default: () => [{ key: '', label: '', formatter: () => {} }],
     },
     items: {
       type: Array,
@@ -121,7 +121,7 @@ export default {
       required: false,
       default: '',
     },
-    dataIdField: {
+    primaryKey: {
       type: String,
       required: false,
       default: 'id',
@@ -150,8 +150,8 @@ export default {
       if (!this.sortField) return this.items
       const isAsc = this.sortField.ascending
       const val = [...this.items].sort((a, b) => {
-        let arr1 = isAsc ? a : b
-        let arr2 = isAsc ? b : a
+        const arr1 = isAsc ? a : b
+        const arr2 = isAsc ? b : a
         return alphaNumericSortDefault(arr1[this.sortField.key], arr2[this.sortField.key], true)
       })
       return val
@@ -160,8 +160,9 @@ export default {
       return this.sortedData.map((row, rowIndx) => {
         return this.fields.map((field, colIndx) => {
           let text = ''
-          if (typeof row === 'object' && field.key in row) {
-            text = row[field.key]
+          if (typeof row === 'object') {
+            const flattenRow = flattenObject(row)
+            text = flattenRow[field.key]
           } else {
             text = row[colIndx]
           }
@@ -169,8 +170,8 @@ export default {
             item: {
               ...row,
               id:
-                this.dataIdField in row && row[this.dataIdField]
-                  ? row[this.dataIdField]
+                this.primaryKey in row && row[this.primaryKey]
+                  ? row[this.primaryKey]
                   : rowIndx + ',' + colIndx,
               column: { index: colIndx, name: field.key },
               text: text,
@@ -184,7 +185,7 @@ export default {
               })
             },
             detailsShowing: this.isShowDetails(row),
-            detailsDim: '100',
+            detailsDim: '60',
             rowSelected: this.isRowSelected(row),
             rowIndx: rowIndx,
           }
@@ -197,7 +198,7 @@ export default {
       this.rowDetails = this.items
         ? this.items.map((data) => {
             return {
-              id: this.dataIdField in data ? data[this.dataIdField] : '',
+              id: this.primaryKey in data ? data[this.primaryKey] : '',
               show: false,
               selected: false,
             }
@@ -207,9 +208,7 @@ export default {
   },
   methods: {
     rowID(item) {
-      return item && this.dataIdField in item && item[this.dataIdField]
-        ? item[this.dataIdField]
-        : -1
+      return item && this.primaryKey in item && item[this.primaryKey] ? item[this.primaryKey] : -1
     },
     isShowDetails(row) {
       const rowIdVal = this.rowID(row)
@@ -257,6 +256,16 @@ export default {
     },
     backgroundColor(row) {
       return this.isRowSelected(row[0].item) ? 'bg-gray-400' : ''
+    },
+    text(cell) {
+      if (!cell) return ''
+      const field = this.fields.find((field) => field.key == cell.item.column.name)
+      if (field && 'formatter' in field) {
+        const arr = flattenObject(cell)
+        return field.formatter(arr)
+      } else {
+        return cell.item.text
+      }
     },
   },
 }

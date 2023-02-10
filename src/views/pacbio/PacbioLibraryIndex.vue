@@ -42,9 +42,9 @@
       </traction-form-group>
     </div>
 
-    <traction-table
+    <custom-table
       id="library-index"
-      show-empty
+      :primary_key="{ primary_key }"
       responsive
       :items="libraries"
       :fields="fields"
@@ -80,7 +80,7 @@
           >Edit</traction-button
         >
       </template>
-    </traction-table>
+    </custom-table>
   </DataFetcher>
 </template>
 
