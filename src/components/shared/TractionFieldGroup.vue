@@ -37,7 +37,6 @@
       :is="component"
       v-if="component"
       :id="fieldId"
-      v-model="getAttribute"
       :value="value"
       :data-attribute="attribute"
       v-bind="componentProps"
@@ -69,12 +68,6 @@ export default {
     value: { type: [String, Number, Object, Array], required: false, default: null },
   },
   data: (component) => ({ fieldId: component.for || uniqueId() }),
-
-  computed: {
-    getAttribute() {
-      return this.attribute
-    },
-  },
   methods: {
     input(value) {
       // Support either native components emiting events, or components

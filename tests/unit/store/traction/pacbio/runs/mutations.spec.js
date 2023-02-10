@@ -2,20 +2,45 @@ import Mutations from '@/store/traction/pacbio/runs/mutations'
 import Actions from '@/store/traction/pacbio/runs/actions'
 import * as Run from '@/api/PacbioRun'
 import { Data } from '@support/testHelper'
-import Response from '@/api/Response'
 import { expect } from 'vitest'
 
 describe('mutate', () => {
   let runs, state
 
   beforeEach(() => {
-    runs = new Response(Data.PacbioRuns).deserialize.runs
+    runs = Data.PacbioRuns.data.data.splice(0, 2)
     state = { runs: [] }
   })
 
   it('can update the mutate the state, e.g setRuns', () => {
+    const expectedRuns = {
+      1: {
+        id: '1',
+        type: 'runs',
+        name: 'aname',
+        state: 'pending',
+        sequencing_kit_box_barcode: 'DM000110086180012311',
+        dna_control_complex_box_barcode: 'Lxxxxx10171760012311',
+        system_name: 'Sequel I',
+        pacbio_smrt_link_version_id: 1,
+        created_at: '11/09/2019 01:11',
+        all_wells_have_pools: true,
+      },
+      2: {
+        id: '2',
+        type: 'runs',
+        name: 'anothername',
+        state: 'started',
+        sequencing_kit_box_barcode: 'DM000110086180012312',
+        dna_control_complex_box_barcode: 'Lxxxxx10171760012312',
+        system_name: 'Sequel II',
+        pacbio_smrt_link_version_id: 1,
+        created_at: '12/09/2019 02:22',
+        all_wells_have_pools: true,
+      },
+    }
     Mutations.setRuns(state, runs)
-    expect(state.runs.length).toEqual(runs.length)
+    expect(state.runs).toEqual(expectedRuns)
   })
 })
 
@@ -28,7 +53,7 @@ describe('mutateRun', () => {
   })
 
   it('can update the mutate the state, e.g setSystemName', () => {
-    let systemName = 'System 1'
+    const systemName = 'System 1'
     Mutations.setSystemName(state, systemName)
     expect(state.currentRun.system_name).toEqual(systemName)
   })
@@ -94,11 +119,11 @@ describe('createWell', () => {
 
   it('creates the well', async () => {
     position = 'A10'
-    let wellObject = await Actions.buildWell({ state }, position)
+    const wellObject = await Actions.buildWell({ state }, position)
 
     Mutations.createWell(state, wellObject)
 
-    let well = state.currentRun.plate.wells.find((well) => well.position === position)
+    const well = state.currentRun.plate.wells.find((well) => well.position === position)
     expect(well).toBeDefined()
     expect(well.position).toEqual(position)
     expect(well.generate_hifi).toEqual('On Instrument')
@@ -117,13 +142,13 @@ describe('updateWell', () => {
 
   it('updates the correct well from currentRun state', async () => {
     position = 'A10'
-    let wellObject = await Actions.buildWell({ state }, position)
+    const wellObject = await Actions.buildWell({ state }, position)
     Mutations.createWell(state, wellObject)
-    let well = { ...wellObject, binding_kit_box_barcode: 'test_bkbb' }
+    const well = { ...wellObject, binding_kit_box_barcode: 'test_bkbb' }
 
     Mutations.updateWell(state, well)
 
-    let updatedWell = state.currentRun.plate.wells.find((well) => well.position === position)
+    const updatedWell = state.currentRun.plate.wells.find((well) => well.position === position)
     expect(updatedWell.binding_kit_box_barcode).toBe('test_bkbb')
   })
 })
@@ -139,10 +164,10 @@ describe('deleteWell', () => {
   })
 
   it('removes well from currentRun state', async () => {
-    let position = 'A10'
-    let wellObject = await Actions.buildWell({ state }, position)
+    const position = 'A10'
+    const wellObject = await Actions.buildWell({ state }, position)
     Mutations.createWell(state, wellObject)
-    let well = state.currentRun.plate.wells.find((well) => well.position === position)
+    const well = state.currentRun.plate.wells.find((well) => well.position === position)
 
     Mutations.deleteWell(state, well)
 
@@ -151,11 +176,11 @@ describe('deleteWell', () => {
   })
 
   it('removes well from currentRun state and adds to wellsToDelete state if well has an ID', async () => {
-    let position = 'A10'
-    let wellObject = await Actions.buildWell({ state }, position)
+    const position = 'A10'
+    const wellObject = await Actions.buildWell({ state }, position)
     wellObject.id = '1' // Has an ID to show it exists in DB
     Mutations.createWell(state, wellObject)
-    let well = state.currentRun.plate.wells.find((well) => well.position === position)
+    const well = state.currentRun.plate.wells.find((well) => well.position === position)
 
     Mutations.deleteWell(state, well)
 

@@ -1,13 +1,13 @@
 import PacbioPlates from '@/views/pacbio/PacbioPlateIndex'
 import { mount, localVue, store, Data, router } from '@support/testHelper'
-import Response from '@/api/Response'
+import flushPromises from 'flush-promises'
 
 describe('PacbioPlates.vue', () => {
-  let wrapper, plates, mockPlates
+  let wrapper, plates
 
-  beforeEach(() => {
-    mockPlates = new Response(Data.PacbioPlates).deserialize.plates
-    store.commit('traction/pacbio/plates/setPlates', mockPlates)
+  beforeEach(async () => {
+    const get = vi.spyOn(store.state.api.traction.pacbio.plates, 'get')
+    get.mockResolvedValue(Data.PacbioPlatesRequest)
 
     wrapper = mount(PacbioPlates, {
       store,
@@ -20,7 +20,7 @@ describe('PacbioPlates.vue', () => {
 
     wrapper.setData({ sortDesc: false })
     plates = wrapper.vm
-    plates.provider = vi.fn()
+    await flushPromises()
   })
 
   describe('building the table', () => {
@@ -29,14 +29,14 @@ describe('PacbioPlates.vue', () => {
     })
 
     it('contains the correct fields', () => {
-      let headers = wrapper.findAll('th')
-      for (let field of plates.fields) {
+      const headers = wrapper.findAll('th')
+      for (const field of plates.fields) {
         expect(headers.filter((header) => header.text() === field.label)).toBeDefined()
       }
     })
 
     it('contains the correct data', async () => {
-      expect(wrapper.find('tbody').findAll('tr').length).toEqual(mockPlates.length)
+      expect(wrapper.find('tbody').findAll('tr').length).toEqual(2)
     })
   })
 
@@ -44,12 +44,13 @@ describe('PacbioPlates.vue', () => {
     let button
 
     it('is present for each plate', () => {
-      button = wrapper.find('#details-btn-1')
+      // btn-61 because that is the first plate ID in the mocked data
+      button = wrapper.find('#details-btn-61')
       expect(button.text()).toEqual('Show Plate')
     })
 
     it('has a plate component on button click', async () => {
-      button = wrapper.find('#details-btn-1')
+      button = wrapper.find('#details-btn-61')
       await button.trigger('click')
       expect(wrapper.findComponent({ ref: 'plate' }).exists()).toBeTruthy()
       expect(button.text()).toEqual('Hide Plate')
@@ -57,13 +58,17 @@ describe('PacbioPlates.vue', () => {
   })
 
   describe('perPage', () => {
-    beforeEach(() => {
+    beforeEach(async () => {
+      const get = vi.spyOn(store.state.api.traction.pacbio.plates, 'get')
+      get.mockResolvedValue(Data.PacbioPlatesRequest)
+
       wrapper = mount(PacbioPlates, {
         store,
         router,
         localVue,
       })
       wrapper.setData({ perPage: 1 })
+      await flushPromises()
     })
 
     it('states how many rows the table should contain', () => {

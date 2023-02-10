@@ -11,8 +11,8 @@ describe('OntTubeSelectedList', () => {
       const responseBody = new Response(Data.OntTubesRequest)._body
       mockTubes = responseBody.data
       const mockRequests = responseBody.included
-      store.commit('traction/ont/populateTubes', mockTubes)
-      store.commit('traction/ont/populateRequests', mockRequests)
+      store.commit('traction/ont/pools/populateTubes', mockTubes)
+      store.commit('traction/ont/pools/populateRequests', mockRequests)
 
       wrapper = mount(OntTubeSelectedList, {
         localVue,
@@ -21,8 +21,8 @@ describe('OntTubeSelectedList', () => {
     })
 
     it('contains the correct fields', () => {
-      let headers = wrapper.findAll('th')
-      for (let field of wrapper.vm.requestFields) {
+      const headers = wrapper.findAll('th')
+      for (const field of wrapper.vm.requestFields) {
         expect(headers.filter((header) => header.text() === field)).toBeDefined()
       }
     })
@@ -38,13 +38,13 @@ describe('OntTubeSelectedList', () => {
       const responseBody = new Response(Data.OntTubesRequest)._body
       mockTubes = responseBody.data
       const mockRequests = responseBody.included
-      store.commit('traction/ont/populateTubes', mockTubes)
-      store.commit('traction/ont/populateRequests', mockRequests)
+      store.commit('traction/ont/pools/populateTubes', mockTubes)
+      store.commit('traction/ont/pools/populateRequests', mockRequests)
 
-      let selectTube = { id: '1', selected: true }
-      let selectRequest = { id: '191', selected: true }
-      store.commit('traction/ont/selectTube', selectTube)
-      store.commit('traction/ont/selectRequest', selectRequest)
+      const selectTube = { id: '1', selected: true }
+      const selectRequest = { id: '191', selected: true }
+      store.commit('traction/ont/pools/selectTube', selectTube)
+      store.commit('traction/ont/pools/selectRequest', selectRequest)
 
       wrapper = mount(OntTubeSelectedList, {
         localVue,
@@ -66,10 +66,10 @@ describe('OntTubeSelectedList', () => {
     it('deselects the tube and request when the remove button is clicked', async () => {
       const dispatch = vi.fn()
       store.dispatch = dispatch
-      let button = wrapper.find('#remove-btn-191')
+      const button = wrapper.find('#remove-btn-191')
       await button.trigger('click')
       expect(dispatch).toHaveBeenCalledWith(
-        'traction/ont/deselectTubeAndContents',
+        'traction/ont/pools/deselectTubeAndContents',
         'GEN-1668092750-3',
       )
     })

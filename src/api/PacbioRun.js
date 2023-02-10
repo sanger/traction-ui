@@ -59,22 +59,22 @@ const build = (object) => {
 
 const create = async (run, request) => {
   let runId
-  let responses = []
+  const responses = []
 
   try {
-    let runPayload = createRunPayload(run)
-    let runResponse = await createResource(runPayload, request.runs)
+    const runPayload = createRunPayload(run)
+    const runResponse = await createResource(runPayload, request.runs)
     responses.push(runResponse)
     runId = runResponse.deserialize.runs[0].id
 
-    let platePayload = createPlatePayload(runId)
-    let plateResponse = await createResource(platePayload, request.runs.plates)
+    const platePayload = createPlatePayload(runId)
+    const plateResponse = await createResource(platePayload, request.runs.plates)
     responses.push(plateResponse)
-    let plateId = plateResponse.deserialize.plates[0].id
+    const plateId = plateResponse.deserialize.plates[0].id
 
-    let wellsWithPools = run.plate.wells.filter((well) => well.pools.length != 0)
-    let wellsPayload = createWellsPayload(wellsWithPools, plateId)
-    let wellResponse = await createResource(wellsPayload, request.runs.wells)
+    const wellsWithPools = run.plate.wells.filter((well) => well.pools.length != 0)
+    const wellsPayload = createWellsPayload(wellsWithPools, plateId)
+    const wellResponse = await createResource(wellsPayload, request.runs.wells)
     responses.push(wellResponse)
   } catch (err) {
     destroy(runId, request.runs)
@@ -84,7 +84,7 @@ const create = async (run, request) => {
 }
 
 const createResource = async (payload, request) => {
-  let response = await handlePromise(request.create({ data: payload }))
+  const response = await handlePromise(request.create({ data: payload }))
   if (response.successful) {
     return response
   } else {
@@ -93,23 +93,23 @@ const createResource = async (payload, request) => {
 }
 
 const update = async (run, request) => {
-  let responses = []
+  const responses = []
 
   try {
-    let runPayload = updateRunPayload(run)
-    let runResponse = await updateResource(runPayload, request.runs)
+    const runPayload = updateRunPayload(run)
+    const runResponse = await updateResource(runPayload, request.runs)
     responses.push(runResponse)
-    let wellsWithPools = run.plate.wells.filter((well) => well.pools.length != 0)
+    const wellsWithPools = run.plate.wells.filter((well) => well.pools.length != 0)
     for (const well of wellsWithPools) {
       if (well.id) {
         // Well exists - Update well
-        let wellPayload = updateWellPayload(well)
-        let wellResponse = await updateResource(wellPayload, request.runs.wells)
+        const wellPayload = updateWellPayload(well)
+        const wellResponse = await updateResource(wellPayload, request.runs.wells)
         responses.push(wellResponse)
       } else {
         // Well does not exist - Create well
-        let wellPayload = createWellsPayload([well], run.plate.id)
-        let wellResponse = await createResource(wellPayload, request.runs.wells)
+        const wellPayload = createWellsPayload([well], run.plate.id)
+        const wellResponse = await createResource(wellPayload, request.runs.wells)
         responses.push(wellResponse)
       }
     }
@@ -164,8 +164,8 @@ const createPlatePayload = (runId) => {
 }
 
 const createWellsPayload = (wells, plateId) => {
-  let wellsAttributes = wells.map((well) => {
-    let poolsAttributes = well.pools.map(({ id }) => ({ type: 'pools', id }))
+  const wellsAttributes = wells.map((well) => {
+    const poolsAttributes = well.pools.map(({ id }) => ({ type: 'pools', id }))
 
     return {
       row: well.row,
@@ -262,7 +262,7 @@ const updateWellPayload = (well) => {
 
 const destroy = async (id, { destroy }) => {
   // needs to be promise[0] as destroy return an array
-  let [promise] = destroy(id)
+  const [promise] = destroy(id)
   return await handlePromise(promise)
 }
 

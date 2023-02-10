@@ -22,11 +22,23 @@
           {{ selectedSample.sample_name }} ({{ selectedSample.source_identifier }})
         </traction-form-group>
 
-        <traction-form-group id="tag-select-input" label="Tag:" label-for="tag-input">
+        <traction-form-group id="tag-set-select-input" label-for="tag-set-input" label="Tag:">
+          <traction-select
+            id="tag-set-input"
+            v-model="selectedTagSetId"
+            data-type="tag-set-list"
+            :options="tagSetOptions"
+            class="mb-3"
+            @input="resetSelectedTagId"
+          ></traction-select>
+        </traction-form-group>
+
+        <traction-form-group id="tag-select-input" label-for="tag-input">
           <traction-select
             id="tag-input"
-            v-model="library.tag.group_id"
+            v-model="library.tag.id"
             :options="tagOptions"
+            :disabled="!selectedTagSetId"
             class="mb-3"
           />
         </traction-form-group>
@@ -108,7 +120,8 @@
 <script>
 import Api from '@/mixins/Api'
 import ModalHelper from '@/mixins/ModalHelper'
-import { mapActions, mapGetters } from 'vuex'
+import { createNamespacedHelpers } from 'vuex'
+const { mapActions, mapGetters } = createNamespacedHelpers('traction/pacbio/libraries')
 
 export default {
   name: 'PacbioLibraryCreate',
@@ -125,24 +138,39 @@ export default {
   },
   data() {
     return {
-      library: { tag: { group_id: '' }, sample: {} },
-      tagOptions: [{ value: '', text: 'No tag' }],
+      library: { tag: { id: '' }, sample: {} },
+      selectedTagSetId: '',
     }
   },
   computed: {
-    ...mapGetters('traction', ['tractionTags']),
+    ...mapGetters(['tagSetChoices', 'tagChoices']),
+
+    // Return options for the first dropdown
+    tagSetOptions() {
+      const placeholder = { value: '', text: 'Please select a tag set' }
+      return [placeholder, ...this.tagSetChoices]
+    },
+    // Return options for the second dropdown
+    tagOptions() {
+      const placeholder = { value: '', text: 'Please select a tag' }
+      return [placeholder, ...this.tagChoices(this.selectedTagSetId)]
+    },
   },
   created() {
     this.provider()
   },
   methods: {
+    // Fetch Pacbio tag-sets and tags
     async provider() {
       try {
-        await this.setTags()
-        this.tractionTags.forEach((tag) => this.tagOptions.push(tag.group_id))
+        await this.fetchPacbioTagSets()
       } catch (error) {
         this.showAlert('Failed to find tags in Traction' + error.message, 'danger')
       }
+    },
+    // Reset the selected tag id if tag-set is changed
+    resetSelectedTagId() {
+      this.library.tag.id = ''
     },
     async createLibrary() {
       const { success, barcode, errors } = await this.createLibraryInTraction(this.library)
@@ -154,10 +182,10 @@ export default {
       }
     },
     show() {
-      this.library = { tag: { group_id: '' }, sample: this.selectedSample }
+      this.library = { tag: { id: '' }, sample: this.selectedSample }
+      this.selectedTagSetId = ''
     },
-    ...mapActions('traction/pacbio/libraries', ['createLibraryInTraction']),
-    ...mapActions('traction', ['setTags']),
+    ...mapActions(['fetchPacbioTagSets', 'createLibraryInTraction']),
   },
 }
 </script>

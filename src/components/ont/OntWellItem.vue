@@ -86,7 +86,9 @@ export default {
       }
     },
     getRequest() {
-      return this.requests ? this.$store.getters['traction/ont/requestList'](this.requests)[0] : ''
+      return this.requests
+        ? this.$store.getters['traction/ont/pools/requestList'](this.requests)[0]
+        : ''
     },
   },
   methods: {

@@ -24,7 +24,7 @@ describe('Well.vue', () => {
       requests: ['1'],
     }
 
-    store.state.traction.ont.resources.requests = requests
+    store.state.traction.ont.pools.resources.requests = requests
 
     wrapper = mount(Well, {
       propsData: props,
@@ -65,7 +65,7 @@ describe('Well.vue', () => {
   })
 
   it('will have an ellipse with the correct attributes', () => {
-    let ellipse = wrapper.find('ellipse')
+    const ellipse = wrapper.find('ellipse')
     expect(ellipse.exists()).toBeTruthy()
     expect(ellipse.attributes('cx')).toEqual(well.cx)
     expect(ellipse.attributes('cy')).toEqual(well.cy)
@@ -75,7 +75,7 @@ describe('Well.vue', () => {
 
   describe('#status', () => {
     it('will be filled if the well has a request', () => {
-      let ellipse = wrapper.find('ellipse')
+      const ellipse = wrapper.find('ellipse')
       expect(ellipse.attributes('class')).toContain('filled')
     })
 
@@ -87,15 +87,15 @@ describe('Well.vue', () => {
         store,
       })
 
-      let ellipse = wrapper.find('ellipse')
+      const ellipse = wrapper.find('ellipse')
       expect(ellipse.attributes('class')).toContain('empty')
     })
   })
 
   describe('#tooltip', () => {
     it('will display the materials requests name', () => {
-      let title = wrapper.find('title')
-      let expected = 'Sample1'
+      const title = wrapper.find('title')
+      const expected = 'Sample1'
       expect(title.text()).toEqual(expected)
     })
   })

@@ -23,7 +23,7 @@ const assign = (object, other) => {
 }
 
 const build = (object) => {
-  let run = object || {
+  const run = object || {
     id: 'new',
     name: '',
     chip: {
@@ -42,23 +42,23 @@ const build = (object) => {
 
 const create = async (run, request) => {
   let id
-  let responses = []
+  const responses = []
 
   try {
-    let runPayload = { data: { type: 'runs', attributes: { name: run.name } } }
-    let runResponse = await createResource(runPayload, request.runs)
+    const runPayload = { data: { type: 'runs', attributes: { name: run.name } } }
+    const runResponse = await createResource(runPayload, request.runs)
     id = runResponse.deserialize.runs[0].id
     responses.push(runResponse)
 
-    let chipPayload = {
+    const chipPayload = {
       data: { type: 'chips', attributes: { barcode: run.chip.barcode, saphyr_run_id: id } },
     }
-    let chipResponse = await createResource(chipPayload, request.chips)
+    const chipResponse = await createResource(chipPayload, request.chips)
     id = chipResponse.deserialize.chips[0].id
     responses.push(chipResponse)
 
     for (const flowcell of run.chip.flowcells) {
-      let flowcellPayload = {
+      const flowcellPayload = {
         data: {
           type: 'flowcells',
           attributes: {
@@ -68,7 +68,7 @@ const create = async (run, request) => {
           },
         },
       }
-      let flowcellResponse = await createResource(flowcellPayload, request.flowcells)
+      const flowcellResponse = await createResource(flowcellPayload, request.flowcells)
       responses.push(flowcellResponse)
     }
   } catch (err) {
@@ -79,7 +79,7 @@ const create = async (run, request) => {
 }
 
 const createResource = async (payload, request) => {
-  let response = await handlePromise(request.create({ data: payload }))
+  const response = await handlePromise(request.create({ data: payload }))
 
   if (response.successful) {
     return response
@@ -89,28 +89,28 @@ const createResource = async (payload, request) => {
 }
 
 const update = async (run, request) => {
-  let responses = []
+  const responses = []
 
   try {
-    let runPayload = { data: { id: run.id, type: 'runs', attributes: { name: run.name } } }
-    let runResponse = await updateResource(runPayload, request.runs)
+    const runPayload = { data: { id: run.id, type: 'runs', attributes: { name: run.name } } }
+    const runResponse = await updateResource(runPayload, request.runs)
     responses.push(runResponse)
 
-    let chipPayload = {
+    const chipPayload = {
       data: { id: run.chip.id, type: 'chips', attributes: { barcode: run.chip.barcode } },
     }
-    let chipResponse = await updateResource(chipPayload, request.chips)
+    const chipResponse = await updateResource(chipPayload, request.chips)
     responses.push(chipResponse)
 
     for (const flowcell of run.chip.flowcells) {
-      let flowcellPayload = {
+      const flowcellPayload = {
         data: {
           id: flowcell.id,
           type: 'flowcells',
           attributes: { saphyr_library_id: flowcell.library.id },
         },
       }
-      let flowcellResponse = await updateResource(flowcellPayload, request.flowcells)
+      const flowcellResponse = await updateResource(flowcellPayload, request.flowcells)
       responses.push(flowcellResponse)
     }
   } catch (err) {
@@ -133,9 +133,9 @@ const updateResource = async (payload, request) => {
 
 const rollback = (responses, request) => {
   for (const response of responses) {
-    let deserializedResponse = response.deserialize
-    let type = Object.keys(deserializedResponse)[0]
-    let id = deserializedResponse[type][0].id
+    const deserializedResponse = response.deserialize
+    const type = Object.keys(deserializedResponse)[0]
+    const id = deserializedResponse[type][0].id
     destroy(id, request[type])
   }
 
@@ -143,7 +143,7 @@ const rollback = (responses, request) => {
 }
 
 const destroy = async (id, request) => {
-  let promise = request.destroy(id)
+  const promise = request.destroy(id)
 
   return await handlePromise(promise)
 }

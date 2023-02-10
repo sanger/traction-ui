@@ -17,14 +17,14 @@ describe('PipelineView', () => {
 
   describe('#pipelineInfo', () => {
     it('has config for a pipeline', () => {
-      let pipelineInfo = pipelineView.pipelineInfo
+      const pipelineInfo = pipelineView.pipelineInfo
       expect(Object.keys(pipelineInfo)).toEqual(['name', 'title', 'description', 'routes'])
     })
   })
 
   describe('#path', () => {
     it('returns the path for a given route, with the pipeline', () => {
-      let path = pipelineView.path('testroute')
+      const path = pipelineView.path('testroute')
       expect(path).toEqual('/pacbio/testroute')
     })
   })

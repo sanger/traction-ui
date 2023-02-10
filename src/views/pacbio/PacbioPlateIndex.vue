@@ -1,26 +1,30 @@
 <template>
-  <div class="pacbio-plates">
-    <traction-form-group
-      label="Filter"
-      label-cols-sm="1"
-      label-align-sm="right"
-      label-for="filterInput"
-      class="mb-0"
-    >
-      <traction-input-group>
+  <DataFetcher :fetcher="setPlates">
+    <FilterCard :fetcher="setPlates" :filter-options="filterOptions" />
+
+    <div class="clearfix">
+      <traction-pagination
+        v-model="currentPage"
+        class="float-right"
+        :total-rows="plates.length"
+        :per-page="perPage"
+        aria-controls="plate-index"
+      >
+      </traction-pagination>
+      <traction-form-group
+        class="float-right mx-5"
+        label-cols-lg="4"
+        label="Per Page"
+        label-for="input-per-page"
+      >
         <traction-input
-          id="filterInput"
-          v-model="filter"
-          type="search"
-          placeholder="Type to Search"
-        >
-        </traction-input>
-        <traction-input-group-append>
-          <traction-button :disabled="!filter" @click="filter = ''">Clear</traction-button>
-        </traction-input-group-append>
-      </traction-input-group>
-    </traction-form-group>
-    <br />
+          id="input-per-page"
+          v-model="perPage"
+          trim
+          classes="w-full w-25"
+        ></traction-input>
+      </traction-form-group>
+    </div>
 
     <custom-table
       id="plate-index"
@@ -57,32 +61,22 @@
         />
       </template>
     </custom-table>
-
-    <span class="font-weight-bold">Total records: {{ plates.length }}</span>
-
-    <traction-pagination
-      v-model="currentPage"
-      class="float-right"
-      :total-rows="plates.length"
-      :per-page="perPage"
-      aria-controls="plate-index"
-    >
-    </traction-pagination>
-    <traction-form-group label-cols-lg="1" label="Per Page" label-for="input-per-page">
-      <traction-input id="input-per-page" v-model="perPage" trim classes="w-25"></traction-input>
-    </traction-form-group>
-  </div>
+  </DataFetcher>
 </template>
 
 <script>
 import TableHelper from '@/mixins/TableHelper'
 import Plate from '@/components/plates/PlateItem'
+import FilterCard from '@/components/FilterCard'
+import DataFetcher from '@/components/DataFetcher'
 import { createNamespacedHelpers } from 'vuex'
 const { mapActions, mapGetters } = createNamespacedHelpers('traction/pacbio/plates')
 export default {
   name: 'PacbioPlates',
   components: {
     Plate,
+    FilterCard,
+    DataFetcher,
   },
   mixins: [TableHelper],
   data() {
@@ -93,32 +87,24 @@ export default {
         { key: 'created_at', label: 'Created at', sortable: true },
         { key: 'show_details', label: 'Show Details' },
       ],
+      filterOptions: [
+        { value: '', text: '' },
+        { value: 'barcode', text: 'Barcode' },
+      ],
       filteredItems: [],
       filter: null,
       sortBy: 'created_at',
       sortDesc: true,
-      perPage: 24,
+      perPage: 25,
       currentPage: 1,
     }
   },
   computed: {
     ...mapGetters(['plates']),
   },
-  created() {
-    // When this component is created (the 'created' lifecycle hook is called), we need to get the
-    // items for the table
-    this.provider()
-  },
   methods: {
     alert(message, type) {
       this.showAlert(message, type)
-    },
-    async provider() {
-      try {
-        await this.setPlates()
-      } catch (error) {
-        this.showAlert('Failed to get plates: ' + error.message, 'danger')
-      }
     },
 
     ...mapActions(['setPlates']),

@@ -44,12 +44,12 @@ describe('Run.vue', () => {
 
   describe('displaying the data', () => {
     it('shows the current id of the run', () => {
-      let id = wrapper.find('#id').text()
+      const id = wrapper.find('#id').text()
       expect(id).toEqual(`Run ID: ${mockRun.id}`)
     })
 
     it('shows the current state of the run', () => {
-      let state = wrapper.find('#state').text()
+      const state = wrapper.find('#state').text()
       expect(state).toMatch(`State: ${mockRun.state}`)
     })
   })

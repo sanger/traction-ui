@@ -28,7 +28,8 @@
 
 <script>
 import { createNamespacedHelpers } from 'vuex'
-const { mapGetters } = createNamespacedHelpers('traction/ont')
+// TODO: ONT store: Does this need to be moved to top level ONT?
+const { mapGetters } = createNamespacedHelpers('traction/ont/pools')
 /**
  * # OntTagSetItem
  *

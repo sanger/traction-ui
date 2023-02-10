@@ -9,8 +9,8 @@ describe('Pacbio library creation from sample', () => {
     cy.intercept('/v1/pacbio/requests', {
       fixture: 'tractionPacbioSamples.json',
     })
-    cy.intercept('/v1/tags', {
-      fixture: 'tractionTags.json',
+    cy.intercept('/v1/pacbio/tag_sets?include=tags', {
+      fixture: 'tractionPacbioTagSets.json',
     })
     cy.intercept('/v1/pacbio/pools?include=tube', {
       fixture: 'tractionPacbioPool.json',
@@ -19,6 +19,7 @@ describe('Pacbio library creation from sample', () => {
     cy.get('#samples-table').contains('td', '5')
     cy.get('#samples-table').first().click()
     cy.get('#pacbioLibraryCreate').click()
+    cy.get('#tag-set-input').select('Sequel_16_barcodes_v3')
     cy.get('#tag-input').select('bc1001_BAK8A_OA')
     cy.get('#library-volume').type(1)
     cy.get('#library-concentration').type(1)

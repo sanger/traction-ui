@@ -7,7 +7,7 @@ const tagSets = {
   3: { id: '3', name: 'TagSet3' },
 }
 
-store.state.traction.ont.resources.tagSets = tagSets
+store.state.traction.ont.pools.resources.tagSets = tagSets
 
 const tags = {
   1: { id: '1', group_id: 'Tag1' },
@@ -26,14 +26,14 @@ const tags = {
 
 const expectedTagSet = { ...tagSets['1'], tags: Object.values(tags).slice(0, 6) }
 
-store.state.traction.ont.resources.tags = tags
+store.state.traction.ont.pools.resources.tags = tags
 
 describe('OntTagSetItem', () => {
   let wrapper
 
   describe('when there is a selected tag list', () => {
     beforeEach(() => {
-      store.commit('traction/ont/selectTagSet', { id: '1' })
+      store.commit('traction/ont/pools/selectTagSet', { id: '1' })
 
       wrapper = mount(OntTagSetItem, {
         localVue,
@@ -64,7 +64,7 @@ describe('OntTagSetItem', () => {
 
   describe('when there is no selected tag list', () => {
     beforeEach(() => {
-      store.state.traction.ont.selected.tagSet = {}
+      store.state.traction.ont.pools.selected.tagSet = {}
 
       wrapper = mount(OntTagSetItem, {
         localVue,

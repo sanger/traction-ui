@@ -1,27 +1,46 @@
 <template>
-  <div class="w-full flex flex-col">
-    <traction-form-group
-      label="Filter"
-      label-cols-sm="1"
-      label-align-sm="right"
-      label-for="filterInput"
-      class="mb-0"
-    >
-      <div class="w-full flex flex-row gap-x-2">
+  <DataFetcher :fetcher="setLibraries">
+    <FilterCard :fetcher="setLibraries" :filter-options="filterOptions" />
+
+    <div class="clearfix">
+      <traction-button
+        id="deleteLibraries"
+        theme="delete"
+        class="float-left"
+        :disabled="selected.length === 0"
+        @click="handleLibraryDelete"
+      >
+        Delete Libraries
+      </traction-button>
+      <printerModal
+        ref="printerModal"
+        class="float-left"
+        :disabled="selected.length === 0"
+        @selectPrinter="printLabels($event)"
+      >
+      </printerModal>
+
+      <traction-pagination
+        v-model="currentPage"
+        class="float-right"
+        :total-rows="libraries.length"
+        :per-page="perPage"
+        aria-controls="library-index"
+      />
+      <traction-form-group
+        class="float-right mx-5"
+        label-cols-lg="4"
+        label="Per Page"
+        label-for="input-per-page"
+      >
         <traction-input
-          id="filterInput"
-          v-model="filter"
-          placeholder="Type to Search"
-          type="search"
-          class="w-full"
-        >
-        </traction-input>
-        <traction-input-group-append>
-          <traction-button :disabled="!filter" @click="filter = ''">Clear</traction-button>
-        </traction-input-group-append>
-      </div>
-    </traction-form-group>
-    <br />
+          id="input-per-page"
+          v-model="perPage"
+          trim
+          class="w-full w-25"
+        ></traction-input>
+      </traction-form-group>
+    </div>
 
     <traction-table
       id="library-index"
@@ -62,45 +81,14 @@
         >
       </template>
     </traction-table>
-
-    <span class="font-weight-bold">Total records: {{ libraries.length }}</span>
-
-    <div class="clearfix">
-      <traction-button
-        id="deleteLibraries"
-        theme="delete"
-        class="float-left"
-        :disabled="selected.length === 0"
-        @click="handleLibraryDelete"
-      >
-        Delete Libraries
-      </traction-button>
-      <printerModal
-        ref="printerModal"
-        class="float-left"
-        :disabled="selected.length === 0"
-        @selectPrinter="printLabels($event)"
-      >
-      </printerModal>
-
-      <traction-pagination
-        v-model="currentPage"
-        class="float-right"
-        :total-rows="libraries.length"
-        :per-page="perPage"
-        aria-controls="library-index"
-      />
-    </div>
-
-    <traction-form-group label-cols-lg="1" label="Per Page" label-for="input-per-page">
-      <traction-input id="input-per-page" v-model="perPage" trim class="w-25"></traction-input>
-    </traction-form-group>
-  </div>
+  </DataFetcher>
 </template>
 
 <script>
 import TableHelper from '@/mixins/TableHelper'
 import PrinterModal from '@/components/PrinterModal'
+import FilterCard from '@/components/FilterCard'
+import DataFetcher from '@/components/DataFetcher'
 import { mapActions, mapGetters } from 'vuex'
 import { getCurrentDate } from '@/lib/DateHelpers'
 
@@ -108,6 +96,8 @@ export default {
   name: 'PacbioLibraryIndex',
   components: {
     PrinterModal,
+    FilterCard,
+    DataFetcher,
   },
   mixins: [TableHelper],
   data() {
@@ -138,34 +128,41 @@ export default {
         { key: 'created_at', label: 'Created at', sortable: true, tdClass: 'created-at' },
         { key: 'actions', label: 'Actions' },
       ],
+      filterOptions: [
+        { value: '', text: '' },
+        { value: 'barcode', text: 'Barcode' },
+        { value: 'sample_name', text: 'Sample Name' },
+        { value: 'source_identifier', text: 'Source' },
+        // Need to specify filters in json api resources if we want more filters
+      ],
       primary_key: 'id',
       filteredItems: [],
       selected: [],
       filter: null,
       sortBy: 'created_at',
       sortDesc: true,
-      perPage: 24,
+      perPage: 25,
       currentPage: 1,
     }
   },
   computed: {
     ...mapGetters('traction/pacbio/libraries', ['libraries']),
   },
-  created() {
-    // When this component is created (the 'created' lifecycle hook is called), we need to get the
-    // items for the table
-    this.provider()
-  },
   methods: {
     async handleLibraryDelete() {
       try {
-        let selectedIds = this.selected.map((s) => s.id)
-        let responses = await this.deleteLibraries(selectedIds)
+        const selectedIds = this.selected.map((s) => s.id)
+        const responses = await this.deleteLibraries(selectedIds)
 
         if (responses.every((r) => r.successful)) {
-          let keyword = selectedIds.length > 1 ? 'Libraries' : 'Library'
+          const keyword = selectedIds.length > 1 ? 'Libraries' : 'Library'
           this.showAlert(`${keyword} ${selectedIds.join(', ')} successfully deleted`, 'success')
-          this.provider()
+          // Refetch the updated libraries
+          try {
+            await this.setLibraries()
+          } catch (error) {
+            this.showAlert('Failed to get libraries: ' + error.message, 'danger')
+          }
         } else {
           throw Error(responses.map((r) => r.errors.message).join(','))
         }
@@ -203,15 +200,6 @@ export default {
       })
 
       this.showAlert(message, success ? 'success' : 'danger')
-    },
-    // Get all the libraries
-    // Provider function used by the bootstrap-vue table component
-    async provider() {
-      try {
-        await this.setLibraries()
-      } catch (error) {
-        this.showAlert('Failed to get libraries: ' + error.message, 'danger')
-      }
     },
     ...mapActions('traction/pacbio/libraries', ['deleteLibraries', 'setLibraries']),
     ...mapActions('printMyBarcode', ['createPrintJob']),

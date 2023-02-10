@@ -48,12 +48,15 @@ import TractionTubesWithPacbioPools from './tractionTubesWithPacbioPools'
 import TractionPlates from './tractionPlates'
 import AutoTagStore from './autoTagStore'
 import OntAutoTagStore from './ontAutoTagStore.json'
+import OntInstruments from './ontInstruments.json'
 import OntPlatesRequest from './ontPlatesRequest.json'
 import OntTubesRequest from './ontTubesRequest.json'
 import OntPlates from './ontPlates.json'
 import OntPlateRequest from './ontPlateRequest.json'
 import OntRequestsRequest from './ontRequestsRequest'
 import OntTubeRequest from './ontTubeRequest.json'
+import OntRun from './ontRun.json'
+import OntRuns from './ontRuns.json'
 import tractionOntLibraries from './tractionOntLibraries'
 import TractionOntPool from './tractionOntPool.json'
 import TractionOntPools from './tractionOntPools.json'
@@ -113,11 +116,14 @@ export default {
   TractionPlates,
   AutoTagStore,
   OntAutoTagStore,
+  OntInstruments,
   OntPlatesRequest,
-  OntTubesRequest,
   OntPlates,
   OntPlateRequest,
   OntRequestsRequest,
+  OntRun,
+  OntRuns,
   OntTubeRequest,
+  OntTubesRequest,
   TractionPacbioSmrtLinkVersions,
 }

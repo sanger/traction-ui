@@ -3,8 +3,9 @@ import * as Actions from '@/store/traction/pacbio/runs/actions'
 import { Data } from '@support/testHelper'
 import * as Run from '@/api/PacbioRun'
 import { expect, vi } from 'vitest'
+import { newResponse } from '@/api/ResponseHelper'
 
-describe('#setRuns', () => {
+describe('#fetchPacbioRuns', () => {
   let commit, get, getters, failedResponse
 
   beforeEach(() => {
@@ -12,30 +13,32 @@ describe('#setRuns', () => {
     get = vi.fn()
     getters = { runRequest: { get: get } }
 
-    failedResponse = { data: { data: [] }, status: 500, statusText: 'Internal Server Error' }
+    failedResponse = {
+      data: { data: { errors: { error1: ['There was an error'] } } },
+      status: 500,
+      statusText: 'Internal Server Error',
+    }
   })
 
   it('successfully', async () => {
     get.mockReturnValue(Data.PacbioRuns)
 
-    let expectedResponse = new Response(Data.PacbioRuns)
-    let expectedRuns = expectedResponse.deserialize.runs
+    const { success, errors } = await Actions.fetchPacbioRuns({ commit, getters })
 
-    let response = await Actions.setRuns({ commit, getters })
-
-    expect(commit).toHaveBeenCalledWith('setRuns', expectedRuns)
-    expect(response).toEqual(expectedResponse)
+    expect(commit).toHaveBeenCalledWith('setRuns', Data.PacbioRuns.data.data)
+    expect(success).toEqual(true)
+    expect(errors).toEqual([])
   })
 
   it('unsuccessfully', async () => {
-    get.mockReturnValue(failedResponse)
+    get.mockRejectedValue({ response: failedResponse })
+    const expectedResponse = newResponse({ ...failedResponse, success: false })
 
-    let expectedResponse = new Response(failedResponse)
-
-    let response = await Actions.setRuns({ commit, getters })
+    const { success, errors } = await Actions.fetchPacbioRuns({ commit, getters })
 
     expect(commit).not.toHaveBeenCalled()
-    expect(response).toEqual(expectedResponse)
+    expect(success).toEqual(false)
+    expect(errors).toEqual(expectedResponse.errors)
   })
 })
 
@@ -47,7 +50,7 @@ describe('#newRun', () => {
   })
 
   it('successfully', async () => {
-    let newRun = Run.build()
+    const newRun = Run.build()
     vi.spyOn(Run, 'build')
 
     // defaultSmrtLinkVersion mock getter to return the default version
@@ -131,7 +134,7 @@ describe('#updateRun', () => {
 
   it('when successful, it doesnt rollback', async () => {
     update.mockResolvedValue([])
-    let resp = await Actions.updateRun({ getters, dispatch })
+    const resp = await Actions.updateRun({ getters, dispatch })
 
     expect(update).toHaveBeenCalledWith(mockRun, pacbioRequests)
     expect(update).toHaveBeenCalledTimes(1)
@@ -140,7 +143,7 @@ describe('#updateRun', () => {
 
   it('when unsuccessful, it does rollback', async () => {
     update.mockResolvedValue([{ error: 'this is an error' }])
-    let resp = await Actions.updateRun({ getters, dispatch })
+    const resp = await Actions.updateRun({ getters, dispatch })
 
     expect(update).toHaveBeenCalledWith(mockRun, pacbioRequests)
     expect(update).toHaveBeenCalledTimes(2)
@@ -159,10 +162,10 @@ describe('#getRun', () => {
   it('successfully', async () => {
     find.mockReturnValue(Data.PacbioRun)
 
-    let expectedResponse = new Response(Data.PacbioRun)
-    let expectedRun = expectedResponse.deserialize.runs[0]
+    const expectedResponse = new Response(Data.PacbioRun)
+    const expectedRun = expectedResponse.deserialize.runs[0]
 
-    let response = await Actions.getRun({ getters })
+    const response = await Actions.getRun({ getters })
 
     expect(response).toEqual(expectedRun)
   })
@@ -179,8 +182,8 @@ describe('#buildWell', () => {
   })
 
   it('builds a wellObject as expected', async () => {
-    let position = 'A10'
-    let expectedWellObject = {
+    const position = 'A10'
+    const expectedWellObject = {
       row: 'A',
       column: '10',
       movie_time: '',
@@ -198,14 +201,14 @@ describe('#buildWell', () => {
       include_fivemc_calls_in_cpg_motifs: 'Yes',
     }
 
-    let wellObject = await Actions.buildWell({ state }, position)
+    const wellObject = await Actions.buildWell({ state }, position)
 
     expect(wellObject).toEqual(expectedWellObject)
   })
 
   it('sets binding kit box barcode to "" if no default value is given', async () => {
-    let position = 'A10'
-    let expectedWellObject = {
+    const position = 'A10'
+    const expectedWellObject = {
       row: 'A',
       column: '10',
       movie_time: '',
@@ -224,7 +227,7 @@ describe('#buildWell', () => {
     }
 
     delete state.currentRun.default_binding_kit_box_barcode
-    let wellObject = await Actions.buildWell({ state }, position)
+    const wellObject = await Actions.buildWell({ state }, position)
 
     expect(wellObject).toEqual(expectedWellObject)
   })

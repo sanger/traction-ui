@@ -1,12 +1,20 @@
+import runs from '@/store/traction/ont/runs'
+import pools from '@/store/traction/ont/pools'
 import state from './state'
 import getters from './getters'
 import mutations from './mutations'
 import actions from './actions'
 
-export default {
+const ont = {
   namespaced: true,
+  modules: {
+    runs,
+    pools,
+  },
   getters,
   mutations,
   actions,
   state,
 }
+
+export default ont

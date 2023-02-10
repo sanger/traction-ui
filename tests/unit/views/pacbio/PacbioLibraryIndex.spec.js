@@ -2,87 +2,42 @@ import Libraries from '@/views/pacbio/PacbioLibraryIndex'
 import { mount, localVue, Data, store, router } from '@support/testHelper'
 import Response from '@/api/Response'
 import { expect } from 'vitest'
+import flushPromises from 'flush-promises'
 
 describe('Libraries.vue', () => {
-  let wrapper, libraries, mockLibraries
+  let wrapper, libraries
 
-  beforeEach(() => {
-    const setLibrariesAction = vi.spyOn(store.getters.api.traction.pacbio.libraries, 'get')
-    mockLibraries = [
-      {
-        id: 1,
-        barcode: 'TRAC-8',
-        material: {
-          id: 6,
-          type: 'libraries',
-          state: 'pending',
-          sample_names: 'sample_d,sample_e',
-          volume: 1.0,
-          concentration: 1.0,
-          template_prep_kit_box_barcode: 'LK12345',
-          insert_size: 100,
-          created_at: '03/12/2019 11:49',
-        },
-        pool: {
-          id: '1',
-          type: 'pools',
-        },
-        run_suitability: {
-          ready_for_run: true,
-          errors: [],
-        },
-      },
-      {
-        id: 2,
-        barcode: 'TRAC-8',
-        material: {
-          id: 6,
-          type: 'libraries',
-          state: 'pending',
-          sample_names: 'sample_d,sample_e',
-          volume: 1.0,
-          concentration: 1.0,
-          template_prep_kit_box_barcode: 'LK12345',
-          insert_size: 100,
-          created_at: '03/12/2019 11:49',
-        },
-        pool: {
-          id: '1',
-          type: 'pools',
-        },
-        run_suitability: {
-          ready_for_run: true,
-          errors: [],
-        },
-      },
-    ]
-    setLibrariesAction.mockImplementation(() => {
-      store.commit('traction/pacbio/libraries/setLibraries', mockLibraries)
-    })
+  beforeEach(async () => {
+    const get = vi.spyOn(store.state.api.traction.pacbio.libraries, 'get')
+    get.mockResolvedValue(Data.TractionPacbioLibraries)
 
     wrapper = mount(Libraries, {
       store,
       router,
       localVue,
     })
+    await flushPromises()
     libraries = wrapper.vm
   })
 
   describe('building the table', () => {
     it('contains the correct fields', () => {
-      let headers = wrapper.findAll('th')
-      for (let field of libraries.fields) {
+      const headers = wrapper.findAll('th')
+      for (const field of libraries.fields) {
         expect(headers.filter((header) => header.text() === field.label)).toBeDefined()
       }
     })
 
     it('contains the correct data', async () => {
-      expect(wrapper.find('tbody').findAll('tr').length).toEqual(2)
+      expect(wrapper.find('tbody').findAll('tr').length).toEqual(5)
     })
   })
 
   describe('perPage', () => {
-    beforeEach(() => {
+    beforeEach(async () => {
+      const get = vi.spyOn(store.state.api.traction.pacbio.libraries, 'get')
+      get.mockResolvedValue(Data.TractionPacbioLibraries)
+
       wrapper = mount(Libraries, {
         store,
         router,
@@ -91,6 +46,7 @@ describe('Libraries.vue', () => {
           return { perPage: 1 }
         },
       })
+      await flushPromises()
     })
 
     it('states how many rows the table should contain', () => {
@@ -99,10 +55,23 @@ describe('Libraries.vue', () => {
   })
 
   describe('#handleLibraryDelete', () => {
+    let mockLibraries
     beforeEach(() => {
+      mockLibraries = [
+        {
+          id: '721',
+          barcode: 'TRAC-2-721',
+        },
+        {
+          id: '722',
+          barcode: 'TRAC-2-722',
+        },
+      ]
       libraries.deleteLibraries = vi.fn()
       libraries.showAlert = vi.fn()
-      wrapper.setData({ selected: mockLibraries })
+      wrapper.setData({
+        selected: mockLibraries,
+      })
     })
 
     it('calls the correct functions', async () => {
@@ -110,11 +79,14 @@ describe('Libraries.vue', () => {
       await libraries.handleLibraryDelete()
 
       expect(libraries.deleteLibraries).toBeCalledWith(mockLibraries.map((s) => s.id))
-      expect(libraries.showAlert).toBeCalledWith('Libraries 1, 2 successfully deleted', 'success')
+      expect(libraries.showAlert).toBeCalledWith(
+        'Libraries 721, 722 successfully deleted',
+        'success',
+      )
     })
 
     it('calls showAlert when there is an error', async () => {
-      let failedResponse = {
+      const failedResponse = {
         status: 422,
         statusText: 'Unprocessable Entity',
         data: { data: { errors: { it: ['did not work'] } } },

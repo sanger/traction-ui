@@ -43,8 +43,12 @@ describe('PacbioLibraryCreate.vue', () => {
     expect(modal.selectedSample).toEqual(props.selectedSample)
   })
 
+  it('must have tagSetOptions data', () => {
+    expect(modal.tagSetOptions).toEqual([{ value: '', text: 'Please select a tag set' }])
+  })
+
   it('must have tagOptions data', () => {
-    expect(modal.tagOptions).toEqual([{ value: '', text: 'No tag' }])
+    expect(modal.tagOptions).toEqual([{ value: '', text: 'Please select a tag' }])
   })
 
   describe('#createLibrary', () => {
@@ -53,12 +57,12 @@ describe('PacbioLibraryCreate.vue', () => {
     beforeEach(() => {
       modal.createLibraryInTraction = vi.fn()
       modal.showAlert = vi.fn()
-      payload = { tag: { group_id: 1 }, sample: { id: 1 } }
+      payload = { tag: { id: 1 }, sample: { id: 1 } }
     })
 
     it('is successful', async () => {
       wrapper.setData({ library: payload })
-      let expectedResponse = { success: true, barcode: 'TRAC-1', errors: [] }
+      const expectedResponse = { success: true, barcode: 'TRAC-1', errors: [] }
       modal.createLibraryInTraction.mockReturnValue(expectedResponse)
 
       await modal.createLibrary()
@@ -68,9 +72,9 @@ describe('PacbioLibraryCreate.vue', () => {
     })
 
     it('does not error when there is no tag', async () => {
-      const payloadNoTag = { tag: { group_id: '' }, sample: { id: 1 } }
+      const payloadNoTag = { tag: { id: '' }, sample: { id: 1 } }
       wrapper.setData({ library: payloadNoTag })
-      let expectedResponse = { success: true, barcode: 'TRAC-1', errors: [] }
+      const expectedResponse = { success: true, barcode: 'TRAC-1', errors: [] }
       modal.createLibraryInTraction.mockReturnValue(expectedResponse)
 
       await modal.createLibrary()
@@ -80,9 +84,9 @@ describe('PacbioLibraryCreate.vue', () => {
     })
 
     it('shows a error message on failure', async () => {
-      wrapper.setData({ library: { tag: { group_id: 1 }, sample: { id: 1 } } })
+      wrapper.setData({ library: { tag: { id: 1 }, sample: { id: 1 } } })
 
-      let expectedResponse = { success: false, barcode: '', errors: ['it did not work'] }
+      const expectedResponse = { success: false, barcode: '', errors: ['it did not work'] }
       modal.createLibraryInTraction.mockReturnValue(expectedResponse)
 
       await modal.createLibrary()
