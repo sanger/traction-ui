@@ -1,17 +1,18 @@
 <template>
-  <div>
-    <traction-form class="text-left" @submit="onSubmit">
-      <traction-sub-section title="Which QC Results would you like to upload?" class="py-6">
-        <traction-select
+  <div class="w-3/5 mx-auto bg-gray-100 border border-gray-200 bg-gray-100 rounded-md p-4">
+    <traction-form @submit="onSubmit">
+      <traction-heading level="3" show-border>Which QC Results would you like to upload?</traction-heading>
+      <traction-select
+          class="my-5"
           id="used-by-select-input"
           v-model="usedBySelected"
           :options="usedByOptions"
           :state="!!usedBySelected ? true : null"
           required
         ></traction-select>
-      </traction-sub-section>
-      <traction-sub-section title="CSV File" class="py-6">
+      <traction-heading level="3" show-border>CSV file</traction-heading>
         <traction-file
+          class="my-5 text-left"
           id="qc-results-upload-file"
           v-model="file"
           :state="!!file ? true : null"
@@ -20,7 +21,7 @@
           accept="text/csv, .csv"
           required
         ></traction-file>
-      </traction-sub-section>
+        <div class="space-x-4 pb-4 flex flex-row justify-end">
       <traction-button
         id="upload-button"
         type="submit"
@@ -30,6 +31,7 @@
       >
         <!-- Weird bug - spinner won't show unless button text is two words/ big enough? -->
         Upload File
+        <UploadIcon class="pl-1"/>
         <traction-spinner v-show="busy"></traction-spinner>
       </traction-button>
       <traction-button
@@ -37,8 +39,10 @@
         size="lg"
         :disabled="!disableUpload"
         @click="disableUpload = !disableUpload"
+        theme="reset"
         >Re-enable</traction-button
       >
+    </div>
     </traction-form>
   </div>
 </template>
@@ -46,9 +50,13 @@
 <script>
 import Api from '@/mixins/Api'
 import { createQcResultsUploadResource } from '@/services/traction/QcResultsUpload'
+import UploadIcon from '@/icons/UploadIcon.vue'
 
 export default {
   name: 'QcResultsUploadForm',
+  components: {
+    UploadIcon
+  },
   mixins: [Api],
   data() {
     return {
