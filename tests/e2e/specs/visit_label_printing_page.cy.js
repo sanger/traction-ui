@@ -11,16 +11,16 @@ describe('Label Printing page', () => {
   })
 
   it('Shows the correct information', () => {
-    cy.contains('Barcodes:')
-    cy.contains('Suffix:')
-    cy.contains('Number of labels:')
-    cy.contains('Choice of Printer:')
+    cy.contains('Barcodes')
+    cy.contains('Suffix')
+    cy.contains('Number of labels')
+    cy.contains('Choice of Printer')
     cy.contains('Reset')
     cy.contains('Print Labels')
 
     cy.get('#submit-button').click()
 
-    cy.contains('List of barcodes to be printed:')
+    cy.contains('Barcodes to be printed')
     cy.contains('aBarcode-OPLX-1')
     cy.contains('aBarcode-OPLX-2')
     cy.contains('aBarcode-OPLX-3')
