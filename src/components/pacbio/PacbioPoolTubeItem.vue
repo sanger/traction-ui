@@ -7,9 +7,7 @@
     @click="expanded = !expanded"
   >
     <div class="flex justify-end content-end items-end">
-      <button class="w-8 bg-gray-300 text-slate-400" @click="removePool(id)">
-        x
-      </button>
+      <button class="w-8 bg-gray-300 text-slate-400" @click="removePool(id)">x</button>
     </div>
     <traction-row>
       <traction-col cols="3">

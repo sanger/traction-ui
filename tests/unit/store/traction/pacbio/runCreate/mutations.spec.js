@@ -70,10 +70,10 @@ describe('mutations.js', () => {
 
   it('"removePool" removes the given pool id from state.pool', () => {
     state = {
-      pools: {}
+      pools: {},
     }
     mutations.setPools(state, pools)
     mutations.removePool(state, 2)
-    expect(state.pools).toEqual({1: storePools.pools[1]})
+    expect(state.pools).toEqual({ 1: storePools.pools[1] })
   })
 })

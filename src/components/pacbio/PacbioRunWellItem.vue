@@ -80,7 +80,7 @@ export default {
   },
   computed: {
     ...mapGetters('traction/pacbio/runs', ['well']),
-    ...mapGetters('traction/pacbio/pools', ['poolByBarcode']),
+    ...mapGetters('traction/pacbio/runCreate', ['poolByBarcode']),
     position() {
       return `${this.row}${this.column}`
     },

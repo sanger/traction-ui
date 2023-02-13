@@ -41,4 +41,9 @@ export default {
       }
     })
   },
+  poolByBarcode:
+    (state, { pools }) =>
+    (barcode) => {
+      return pools.find((pool) => pool.barcode === barcode)
+    },
 }

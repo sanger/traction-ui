@@ -3,18 +3,20 @@ DPL-592
 # To do
 
 - creating a run:
+
   - after dragging and dropping the pool to well, the well is not populated with the pool information
-  - have the pool being edited come up under the selected list
 
 - when editing a run:
-  - the pool in the well (in the run) doesn't come up under Pools
   - the well knows the pool barcode but not other features such as movie_time etc
   - runInfoEdit is fine, runWellDefaultEdit and runPlateItem are not
 
 ## tests
+
 ### end to end tests
+
 - pacbio_run_create
-  - cannot cy.get() components I've added such as 
+
+  - cannot cy.get() components I've added such as
     - .pacbioPoolList
     - .pacbioPoolSelectedList
     - (doesn't actually need them but out of curiosity)
@@ -23,7 +25,6 @@ DPL-592
 - pacbio_run_edit
   - not making the changes on #movie_time (says to select 15, does not)
   - when updating, errors saying pool is not valid
-
 
 # Done
 
@@ -49,6 +50,7 @@ DPL-592
   - As all the pools in the store are the pools that are there as the filter results
 
 - selected pools should be able to get removed with a click
+
   - add a remove button within the list of pools
   - create a method to removePool(take pool.id) on click in the component
   - pacbiopooltubeitem - import and export mutations, map mutation for deselect
@@ -59,6 +61,8 @@ DPL-592
     - set state.pools the previous way = new list
 
 - put something indicative of what the search button is for (pools) in run create
+
+- can save pools into wells when creating and editing a run
 
 ## refactoring and restructuring
 
@@ -72,11 +76,12 @@ DPL-592
 - move tests from poolcreate to runcreate (will be copied from pools one)
 
 - getters.spec.js
- - a valid barcode
+- a valid barcode
 - mutations.spec.js
   - add test for set... mutations used from pools store
   - add test for removepool mutation
 
 ## styling
+
 - change layout to fit all the other components on the page
 - change the button layout

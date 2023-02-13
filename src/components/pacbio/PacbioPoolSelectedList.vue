@@ -1,12 +1,12 @@
 <template>
   <div data-type="selected-pool-list">
-      <div class="flex flex-col py-3">
-        <div class="pools">
-          <traction-list-group class="list-group">
-            <tube v-for="pool in pools" :key="pool.id" v-bind="pool"> </tube>
-          </traction-list-group>
-        </div>
+    <div class="flex flex-col py-3">
+      <div class="pools">
+        <traction-list-group class="list-group">
+          <tube v-for="pool in pools" :key="pool.id" v-bind="pool"> </tube>
+        </traction-list-group>
       </div>
+    </div>
   </div>
 </template>
 

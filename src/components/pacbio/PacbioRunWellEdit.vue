@@ -279,7 +279,7 @@ export default {
   },
   computed: {
     ...mapGetters('traction/pacbio/runs', ['currentRun', 'well']),
-    ...mapGetters('traction/pacbio/pools', ['poolByBarcode']),
+    ...mapGetters('traction/pacbio/runCreate', ['poolByBarcode']),
     selectedSmrtLinkVersion() {
       return Object.values(
         this.$store.getters['traction/pacbio/runCreate/smrtLinkVersionList'],
