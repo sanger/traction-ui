@@ -14,7 +14,7 @@ const setPlates = async ({ commit, getters }, filter) => {
   return { success, errors }
 }
 
-const getFullPlate = async ({ getters }, filter) => {
+const findPlate = async ({ getters }, filter) => {
   const request = getters.getPlates
   const promise = request.get({ filter, include: 'wells.requests' })
   const response = await handleResponse(promise)
@@ -50,9 +50,9 @@ const getFullPlate = async ({ getters }, filter) => {
 
 const actions = {
   setPlates,
-  getFullPlate,
+  findPlate,
 }
 
-export { setPlates, getFullPlate }
+export { setPlates, findPlate }
 
 export default actions

@@ -111,9 +111,9 @@ export default {
       this.showAlert(message, type)
     },
     async getPlate(barcode) {
-      this.currentPlate = await this.getFullPlate({ barcode: barcode })
+      this.currentPlate = await this.findPlate({ barcode: barcode })
     },
-    ...mapActions(['setPlates', 'getFullPlate']),
+    ...mapActions(['setPlates', 'findPlate']),
   },
 }
 </script>

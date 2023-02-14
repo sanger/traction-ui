@@ -39,7 +39,7 @@ describe('Pacbio plates actions', () => {
     })
   })
 
-  describe('getFullPlate', () => {
+  describe('findPlate', () => {
     it('fetches the plate from the service, and returns it with wells and requests', async () => {
       get.mockReturnValue(Data.PacbioPlatesRequest)
       const expectedPlate = {
@@ -86,7 +86,7 @@ describe('Pacbio plates actions', () => {
         ],
       }
       // Barcode provided is first plate in Data.PacbioPlatesRequest
-      const plate = await Actions.getFullPlate({ commit, getters }, { barcode: 'DN814327C' })
+      const plate = await Actions.findPlate({ commit, getters }, { barcode: 'DN814327C' })
 
       expect(plate).toEqual(expectedPlate)
     })
@@ -95,7 +95,7 @@ describe('Pacbio plates actions', () => {
       get.mockRejectedValue({ response: failedResponse })
 
       // Barcode provided is first plate in Data.PacbioPlatesRequest
-      const plate = await Actions.getFullPlate({ commit, getters }, { barcode: 'DN814327C' })
+      const plate = await Actions.findPlate({ commit, getters }, { barcode: 'DN814327C' })
 
       expect(plate).toEqual({})
     })
