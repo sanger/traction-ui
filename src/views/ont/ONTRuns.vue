@@ -59,13 +59,6 @@
           >
             Sample Sheet
           </a>
-          <a
-            :id="generateId('sample-sheet-settings', row.item.id)"
-            :href="generateSampleSheetPath(row.item.id, true)"
-            class="text-primary p-1 mr-1 inline-block border-2 rounded-md whitespace-nowrap"
-          >
-            Sample Sheet Settings
-          </a>
         </template>
       </traction-table>
     </DataFetcher>
@@ -118,9 +111,8 @@ export default {
     generateId(text, id) {
       return `${text}-${id}`
     },
-    generateSampleSheetPath(id, settings = false) {
-      const path = settings ? '/sample_sheeting_settings' : '/sample_sheet'
-      return import.meta.env.VITE_TRACTION_BASE_URL + '/v1/ont/runs/' + id + path
+    generateSampleSheetPath(id) {
+      return import.meta.env.VITE_TRACTION_BASE_URL + `/v1/ont/runs/${id}/sample_sheet`
     },
     redirectToRun(runId) {
       this.$router.push({ path: `/ont/run/${runId || 'new'}` })

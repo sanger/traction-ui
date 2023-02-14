@@ -26,7 +26,6 @@ describe('ONT Runs view', () => {
           .invoke('text')
           .should('include', 'Edit')
           .and('include', 'Sample Sheet')
-          .and('include', 'Sample Sheet Settings')
       })
   })
 })
