@@ -104,6 +104,11 @@ describe('Pacbio Run Create view', () => {
     cy.get('#system-name').select('Sequel IIe')
     cy.get('[data-attribute="smrt-link-version"]').select('v11')
     // TODO: calling it  list group item is not specific enough
+
+    // get the pool list component, type in the barcode of the pool being searched, click search
+    cy.get('#labware-finder-input').type('TRAC-2-2')
+    cy.get('button').contains('Search').click()
+    
     cy.get('.list-group-item')
       // this obviously gets quite a lot into implementation but at least it works!
       .first()
