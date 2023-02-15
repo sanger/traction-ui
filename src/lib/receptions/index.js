@@ -66,6 +66,8 @@ const defaultRequestOptions = () => ({
 const Receptions = [
   {
     name: 'Sequencescape',
+    text: 'Sequencescape',
+    value: 'Sequencescape',
     component: ByBarcode,
     props: {
       importFunction: Sequencescape.labwareForReception,
@@ -75,6 +77,8 @@ const Receptions = [
   },
   {
     name: 'Samples Extraction',
+    text: 'Samples Extraction',
+    value: 'Samples Extraction',
     component: ByBarcode,
     props: {
       importFunction: SamplesExtraction.labwareForReception,
