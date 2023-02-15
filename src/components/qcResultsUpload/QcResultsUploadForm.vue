@@ -12,7 +12,7 @@
         :state="!!usedBySelected ? true : null"
         required
       ></traction-select>
-      <traction-heading level="3" show-border>CSV file</traction-heading>
+      <traction-heading level="3" show-border>CSV File</traction-heading>
       <traction-file
         class="my-5 text-left"
         id="qc-results-upload-file"
