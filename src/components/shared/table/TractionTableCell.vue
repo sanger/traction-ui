@@ -15,7 +15,7 @@
    */
 -->
 <template>
-  <td v-bind="$attrs" :class="`text-sm text-center px-1 py-1 border-2 border-gray-200 whitespace-nowrap ${classes}`">
+  <td v-bind="$attrs" :class="`text-sm text-center px-1 py-1 border-2 border-gray-200 whitespace-nowrap ${classes}`" @click="click">
     <slot />
   </td>
 </template>
@@ -33,5 +33,11 @@ export default {
       default: '',
     },
   },
+  methods:{
+   click() {
+      // Emit text data the payload event
+      this.$emit('click',this.id)
+    },
+  }
 }
 </script>

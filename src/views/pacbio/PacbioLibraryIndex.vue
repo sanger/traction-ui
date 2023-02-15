@@ -76,7 +76,7 @@
           :id="`editPool-${row.item.pool?.id}`"
           size="sm"
           theme="edit"
-          @click="(event) => warn('test', event, row)"
+          :to="{ name: 'PacbioPoolCreate', params: { id: row.item.pool ? row.item.pool.id : '' } }"
           >Edit</traction-button
         >
       </template>
@@ -200,14 +200,6 @@ export default {
       })
 
       this.showAlert(message, success ? 'success' : 'danger')
-    },
-    warn(message, event, row) {
-      // :to="{ name: 'PacbioPoolCreate', params: { id: row.item.pool ? row.item.pool.id : '' } }"
-      // now we have access to the native event
-      if (event) {
-        event.preventDefault()
-      }
-      alert(message + '-' + row.item.pool.id)
     },
     ...mapActions('traction/pacbio/libraries', ['deleteLibraries', 'setLibraries']),
     ...mapActions('printMyBarcode', ['createPrintJob']),

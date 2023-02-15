@@ -59,13 +59,14 @@
                     v-if="row"
                     :key="rowIndex"
                     :class="`${selectable ? 'hover:bg-gray-200 cursor-pointer' : ''}`"
-                    @click="onRowClick(row, $event)"
                   >
                     <template v-for="(field, fieldIndex) in fields">
                       <traction-table-cell
                         v-if="field"
+                        :id="field.key"
                         :key="'custom-' + rowIndex + '-' + fieldIndex"
                         :classes="`${backgroundColor(row)}`"
+                        @click="onRowClick($event, row)"
                       >
                         <slot :name="`cell(${field.key})`" v-bind="row">
                           {{ text(row.item, field) }}</slot
@@ -130,7 +131,7 @@ export default {
     selectable: {
       type: Boolean,
       required: false,
-      default: false,
+      default: true,
     },
     selectMode: {
       type: String,
@@ -203,7 +204,7 @@ export default {
           : 'descend'
         : 'none'
     },
-    onRowClick(row) {
+    onRowClick(id, row) {
       if (!this.selectable) return
       const rowIndex = this.rows.findIndex((elem) => elem.id === row.id)
       const prevSelectedRowIndx =
