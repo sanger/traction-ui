@@ -15,7 +15,7 @@
    */
 -->
 <template>
-  <td v-bind="$attrs" :class="`text-sm text-center px-1 py-1 border-2 border-gray-200  ${classes}`">
+  <td v-bind="$attrs" :class="`text-sm text-center px-1 py-1 border-2 border-gray-200 whitespace-nowrap ${classes}`">
     <slot />
   </td>
 </template>

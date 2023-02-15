@@ -26,7 +26,7 @@
       </traction-form-group>
     </div>
 
-    <custom-table
+    <traction-table
       id="plate-index"
       primary_key="id"
       :fields="fields"
@@ -43,7 +43,7 @@
     >
       <template #cell(show_details)="row">
         <traction-button
-          :id="'details-btn-' + row.item.id"
+          :id="'details-btn-' + row.id"
           size="sm"
           theme="default"
           @click="row.toggleDetails"
@@ -60,7 +60,7 @@
           @alert="alert"
         />
       </template>
-    </custom-table>
+    </traction-table>
   </DataFetcher>
 </template>
 

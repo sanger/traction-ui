@@ -42,7 +42,7 @@
       </traction-form-group>
     </div>
 
-    <custom-table
+    <traction-table
       id="samples-table"
       primary_key="id"
       show-empty
@@ -97,7 +97,7 @@
           </template>
         </traction-card>
       </template>
-      </custom-table>
+      </traction-table>
        
 
   </DataFetcher>

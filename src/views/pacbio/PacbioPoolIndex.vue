@@ -34,7 +34,7 @@
       </traction-form-group>
     </div>
 
-    <custom-table
+    <traction-table
       id="pool-index"
       show-empty
       responsive
@@ -105,7 +105,7 @@
           </ul>
         </traction-card>
       </template>
-    </custom-table>
+    </traction-table>
   </DataFetcher>
 </template>
 

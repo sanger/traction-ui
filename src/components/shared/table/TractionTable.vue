@@ -20,7 +20,7 @@
             ><slot :name="slot" v-bind="scope" /></template
         ></b-table-wrapper>
       </template>
-      <div class="flex flex-col">
+      <div class="flex">
         <div class="py-2 align-middle inline-block min-w-full">
           <div class="shadow border-b border-gray-200 sm:rounded-lg">
             <table
@@ -61,22 +61,22 @@
                     :class="`${selectable ? 'hover:bg-gray-200 cursor-pointer' : ''}`"
                     @click="onRowClick(row, $event)"
                   >
-                    <template v-for="cell in row">
-                      <custom-table-cell
-                        v-if="cell"
-                        :key="'custom-' + rowIndex + '-' + cell.item.column.name"
-                        :classes="backgroundColor(row)"
+                    <template v-for="(field, fieldIndex) in fields">
+                      <traction-table-cell
+                        v-if="field"
+                        :key="'custom-' + rowIndex + '-' + fieldIndex"
+                        :classes="`${backgroundColor(row)}`"
                       >
-                        <slot :name="`cell(${cell.item.column.name})`" v-bind="cell">
-                          {{ text(cell) }}</slot
+                        <slot :name="`cell(${field.key})`" v-bind="row">
+                          {{ text(row.item, field) }}</slot
                         >
-                      </custom-table-cell>
+                      </traction-table-cell>
                     </template>
                   </tr>
-                  <tr v-if="rows[rowIndex][0].detailsShowing" :key="'custom-comp' + rowIndex">
-                    <custom-table-cell :classes="`border-0`">
-                      <slot :name="`row-details`" v-bind="rows[rowIndex][0]" />
-                    </custom-table-cell>
+                  <tr v-if="row.detailsShowing" :key="'custom-comp' + rowIndex">
+                    <traction-table-cell :classes="`border-0`">
+                      <slot :name="`row-details`" v-bind="row" />
+                    </traction-table-cell>
                   </tr>
                 </template>
               </tbody>
@@ -90,12 +90,13 @@
 <script>
 import TractionSortIcon from '@/components/shared/icons/TractionSortIcon'
 import BTableWrapper from '@/components/shared/table/BTableWrapper'
+import TractionTableCell from '@/components/shared/table/TractionTableCell'
 import { alphaNumericSortDefault, flattenObject } from '@/lib/DateHelpers'
 import { within } from '@/lib/propValidations'
 
 export default {
   name: 'TractionTable',
-  components: { TractionSortIcon, BTableWrapper },
+  components: { TractionSortIcon, BTableWrapper, TractionTableCell },
   inheritAttrs: false,
   props: {
     //attribute name to represent this component for testing, if given
@@ -139,13 +140,27 @@ export default {
     },
   },
   data() {
+    const rows = this.sortedData().map((row, rowIndx) => {
+      const id = this.primaryKey in row && row[this.primaryKey] ? row[this.primaryKey] : rowIndx
+      return {
+        item: { ...row },
+        id: this.primaryKey in row && row[this.primaryKey] ? row[this.primaryKey] : rowIndx,
+        toggleDetails: () => {
+          this.handleToggleDetails(id)
+        },
+        detailsShowing: false,
+        rowSelected: false,
+        rowIndx: rowIndx,
+        detailsDim: '60',
+      }
+    })
     return {
-      rowDetails: [],
+      rows: rows,
       sortField: { key: this.sortBy, ascending: true },
     }
   },
 
-  computed: {
+  methods: {
     sortedData() {
       if (!this.sortField) return this.items
       const isAsc = this.sortField.ascending
@@ -156,71 +171,13 @@ export default {
       })
       return val
     },
-    rows() {
-      return this.sortedData.map((row, rowIndx) => {
-        return this.fields.map((field, colIndx) => {
-          let text = ''
-          if (typeof row === 'object') {
-            const flattenRow = flattenObject(row)
-            text = flattenRow[field.key]
-          } else {
-            text = row[colIndx]
-          }
-          return {
-            item: {
-              ...row,
-              id:
-                this.primaryKey in row && row[this.primaryKey]
-                  ? row[this.primaryKey]
-                  : rowIndx + ',' + colIndx,
-              column: { index: colIndx, name: field.key },
-              text: text,
-            },
-            toggleDetails: () => {
-              if (this.rowDetails == undefined || this.rowDetails.length <= rowIndx) return
-              this.rowDetails = [...this.rowDetails].map((rowDetail) => {
-                return rowDetail.id == this.rowID(row)
-                  ? { ...rowDetail, show: !rowDetail.show }
-                  : rowDetail
-              })
-            },
-            detailsShowing: this.isShowDetails(row),
-            detailsDim: '60',
-            rowSelected: this.isRowSelected(row),
-            rowIndx: rowIndx,
-          }
-        })
+    handleToggleDetails(id) {
+      const rowIndex = this.rows.findIndex((row) => row.id === id)
+      if (rowIndex < 0) return
+      this.rows.splice(rowIndex, 1, {
+        ...this.rows[rowIndex],
+        detailsShowing: !this.rows[rowIndex].detailsShowing,
       })
-    },
-  },
-  watch: {
-    items: function () {
-      this.rowDetails = this.items
-        ? this.items.map((data) => {
-            return {
-              id: this.primaryKey in data ? data[this.primaryKey] : '',
-              show: false,
-              selected: false,
-            }
-          })
-        : []
-    },
-  },
-  methods: {
-    rowID(item) {
-      return item && this.primaryKey in item && item[this.primaryKey] ? item[this.primaryKey] : -1
-    },
-    isShowDetails(row) {
-      const rowIdVal = this.rowID(row)
-      if (!rowIdVal) return false
-      const details = this.rowDetails.find((rowd) => rowd.id === rowIdVal)
-      return details ? details.show : false
-    },
-    isRowSelected(item) {
-      const rowIdVal = this.rowID(item)
-      if (!rowIdVal) return false
-      const details = this.rowDetails.find((rowd) => rowd.id === rowIdVal)
-      return details ? details.selected : false
     },
     /**Emitted when the page changes */
     sortButtonClick(fieldKey) {
@@ -228,6 +185,16 @@ export default {
         key: fieldKey,
         ascending: this.sortField.key !== fieldKey ? true : !this.sortField.ascending,
       }
+      const isAsc = this.sortField.ascending
+      this.rows = [...this.rows].sort((a, b) => {
+        const arr1 = isAsc ? a : b
+        const arr2 = isAsc ? b : a
+        return alphaNumericSortDefault(
+          arr1.item[this.sortField.key],
+          arr2.item[this.sortField.key],
+          true,
+        )
+      })
     },
     sortDirection(fieldkey) {
       return fieldkey == this.sortField.key
@@ -236,35 +203,39 @@ export default {
           : 'descend'
         : 'none'
     },
-    scoped() {
-      return ['show_details']
-    },
-    onRowClick(row, e) {
+    onRowClick(row) {
       if (!this.selectable) return
-      if (this.rowDetails == undefined || this.rowDetails.length <= row[0].item.rowIndx) {
-        return
-      }
-      this.rowDetails = [...this.rowDetails].map((rowDetail) => {
-        return rowDetail.id == this.rowID(row[0].item)
-          ? { ...rowDetail, selected: !rowDetail.selected }
-          : {
-              ...rowDetail,
-              selected:
-                this.selectMode == 'single' ? false : e.shiftKey ? rowDetail.selected : false,
-            }
+      const rowIndex = this.rows.findIndex((elem) => elem.id === row.id)
+      const prevSelectedRowIndx =
+        this.selectMode === 'single' ? this.rows.findIndex((row) => row.rowSelected) : -1
+      if (rowIndex < 0) return
+      this.rows.splice(rowIndex, 1, {
+        ...this.rows[rowIndex],
+        rowSelected: !this.rows[rowIndex].rowSelected,
       })
+      if (prevSelectedRowIndx >= 0) {
+        this.rows.splice(prevSelectedRowIndx, 1, {
+          ...this.rows[prevSelectedRowIndx],
+          rowSelected: !this.rows[prevSelectedRowIndx].rowSelected,
+        })
+      }
     },
     backgroundColor(row) {
-      return this.isRowSelected(row[0].item) ? 'bg-gray-400' : ''
+      return row.rowSelected ? 'bg-gray-400' : ''
     },
-    text(cell) {
-      if (!cell) return ''
-      const field = this.fields.find((field) => field.key == cell.item.column.name)
+    text(item, field) {
+      let text = ''
+      if (typeof item === 'object') {
+        const flattenRow = flattenObject(item)
+        text = flattenRow[field.key]
+      } else {
+        text = String(item)
+      }
       if (field && 'formatter' in field) {
-        const arr = flattenObject(cell)
+        const arr = flattenObject(item)
         return field.formatter(arr)
       } else {
-        return cell.item.text
+        return text
       }
     },
   },

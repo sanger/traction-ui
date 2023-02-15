@@ -20,7 +20,6 @@ import TractionResultIcon from '@/components/shared/icons/TractionResultIcon'
 import TractionPaginationIcon from '@/components/shared/icons/TractionPaginationIcon'
 import TractionPagination from '@/components/shared/TractionPagination'
 import TractionTable from '@/components/shared/table/TractionTable'
-import TractionTableCell from '@/components/shared/table/TractionTableCell'
 import TractionArrowIcon from '@/components/shared/icons/TractionArrowIcon'
 import TractionSortIcon from '@/components/shared/icons/TractionSortIcon'
 import {
@@ -38,7 +37,6 @@ import {
   BListGroupItem,
   BTabs,
   BTab,
-  BTable,
   BBadge,
   BFormCheckbox,
   BFormFile,
@@ -74,7 +72,6 @@ const registerBootstrapComponents = (vue) => {
   vue.component('traction-list-group-item', BListGroupItem)
   vue.component('traction-tabs', BTabs)
   vue.component('traction-tab', BTab)
-  vue.component('traction-table', BTable)
   vue.component('traction-table-simple', BTableSimple)
   vue.component('traction-badge', BBadge)
   vue.component('traction-checkbox', BFormCheckbox)
@@ -91,8 +88,7 @@ const registerBootstrapComponents = (vue) => {
   vue.component('traction-nav', BNav)
   vue.component('traction-input-group', BInputGroup)
   vue.component('traction-input-group-append', BInputGroupAppend)
-  vue.component('custom-table', TractionTable)
-  vue.component('custom-table-cell', TractionTableCell)
+
   /*
     directive is marked wth a v in front
     so it will be used as 'v-traction-modal'
@@ -126,6 +122,7 @@ const registerGlobal = (vue) => {
   vue.component('TractionPaginationIcon', TractionPaginationIcon)
   vue.component('TractionArrowIcon', TractionArrowIcon)
   vue.component('TractionSortIcon', TractionSortIcon)
+  vue.component('TractionTable', TractionTable)
 
   registerBootstrapComponents(vue)
 }
