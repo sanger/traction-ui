@@ -1,39 +1,35 @@
 <template>
   <flagged-feature name="dpl_277_enable_general_reception">
     <div class="flex flex-row space-x-12 px-12">
-      <div class="w-1/2 space-y-12">
+      <loading-full-screen-modal v-bind="modalState"></loading-full-screen-modal>
+      <div class="w-1/2 space-y-8">
         <div>
           <traction-heading level="4" :show-border="true"> Source </traction-heading>
           <traction-muted-text class="float-left"
             >The location to import the labware from
           </traction-muted-text>
-          <traction-select id="sourceSelect" class="mt-2" v-model="source" :options="receptions" />
-        </div>
-
-        <div>
-          <traction-heading level="4" :show-border="true">Scan barcodes</traction-heading>
-          <traction-muted-text class="float-left"
-            >The list of labware barcodes to import from source</traction-muted-text
-          >
-          <traction-textarea
-            id="barcodes"
-            v-model="barcodes"
-            placeholder="Scan barcodes to import..."
-            rows="4"
-            max-rows="10"
-            name="barcodes"
-            class="text-base mt-2"
+          <traction-select
+            id="sourceSelect"
+            v-model="source"
+            class="mt-2"
+            :options="receptions"
+            data-type="source-list"
           />
         </div>
-      </div>
-      <div class="w-1/2 space-y-12">
+
         <div>
           <traction-heading level="4" :show-border="true"> Pipeline </traction-heading>
           <traction-muted-text class="float-left"
             >The Traction pipeline to import the requests into</traction-muted-text
           >
-          <traction-select id="sourceSelect" v-model="pipeline" :options="pipelineOptions" />
+          <traction-select
+            id="sourceSelect"
+            v-model="pipeline"
+            :options="pipelineOptions"
+            data-type="pipeline-list"
+          />
         </div>
+
         <div>
           <traction-heading level="4" :show-border="true"> Request Options </traction-heading>
           <traction-muted-text class="float-left"
@@ -58,6 +54,7 @@
                 <traction-input
                   id="number_of_smrt_cells"
                   v-model="requestOptions.number_of_smrt_cells"
+                  data-type="smrt-cells-input"
                   type="number"
                   step="1"
                   min="0"
@@ -98,32 +95,51 @@
           </div>
         </div>
       </div>
-    </div>
-    <div class="mx-auto max-w-3xl w-1/2 bg-gray-100 rounded p-3">
-      <traction-heading level="4" :show-border="true"> Summary </traction-heading>
-      <div class="flex flex-col w-full">
-        <traction-muted-text class="float-left">Imports data into Traction</traction-muted-text>
-        <p class="text-left">
-          Import {{ barcodeCount }} labware into {{ pipeline }} from {{ source }}
-        </p>
-        <div class="flex flex-row space-x-12 mt-5">
-          <traction-button
-            id="reset"
-            fullWidth
-            theme="delete"
-            @click="importLabware"
+      <div class="w-1/2 space-y-8">
+        <div>
+          <traction-heading level="4" :show-border="true">Scan barcodes</traction-heading>
+          <traction-muted-text class="float-left"
+            >The list of labware barcodes to import from source</traction-muted-text
           >
-            Reset
-          </traction-button>
-          <traction-button
-            id="importLabware"
-            :disabled="isDisabled"
-            fullWidth
-            theme="edit"
-            @click="importLabware"
-          >
-            Import
-          </traction-button>
+          <traction-textarea
+            id="barcodes"
+            v-model="barcodes"
+            placeholder="Scan barcodes to import..."
+            rows="4"
+            max-rows="10"
+            name="barcodes"
+            class="text-base mt-2"
+          />
+        </div>
+        <div class="bg-gray-100 rounded p-3">
+          <traction-heading level="4" :show-border="true"> Summary </traction-heading>
+          <div class="flex flex-col w-full">
+            <traction-muted-text class="float-left">Imports data into Traction</traction-muted-text>
+            <p id="importText" class="text-left">
+              Import {{ barcodeCount }} labware into {{ pipeline }} from {{ source }}
+            </p>
+            <div class="flex flex-row space-x-8 mt-5">
+              <traction-button
+                id="reset"
+                full-width
+                theme="delete"
+                data-action="reset-form"
+                @click="reset"
+              >
+                Reset
+              </traction-button>
+              <traction-button
+                id="importLabware"
+                :disabled="isDisabled"
+                full-width
+                theme="edit"
+                data-action="import-labware"
+                @click="importLabware"
+              >
+                Import
+              </traction-button>
+            </div>
+          </div>
         </div>
       </div>
     </div>
@@ -135,21 +151,25 @@ import Api from '@/mixins/Api'
 import { createReceptionResource } from '@/services/traction/Reception'
 import Receptions from '@/lib/receptions'
 import TractionHeading from '../components/TractionHeading.vue'
-import BarcodeIcon from '@/icons/BarcodeIcon.vue'
 import LibraryTypeSelect from '@/components/shared/LibraryTypeSelect'
 import DataTypeSelect from '@/components/shared/DataTypeSelect'
 import { defaultRequestOptions } from '@/lib/receptions'
 
 const numberRequests = (i) => (i === 1 ? '1 request' : `${i} requests`)
 
+// We don't expect the modal to display without a message. If we end up in this
+// state then something has gone horribly wrong.
+const stuckModal =
+  "We appear to be stuck, this shouldn't happen. Please contact support, and try reloading the page"
+const defaultModal = () => ({ visible: false, message: stuckModal })
+
 export default {
+  name: 'GeneralReception',
   components: {
     TractionHeading,
-    BarcodeIcon,
     LibraryTypeSelect,
     DataTypeSelect,
   },
-  name: 'GeneralReception',
   mixins: [Api],
   props: {
     receptions: {
@@ -168,6 +188,7 @@ export default {
     ],
     requestOptions: defaultRequestOptions(),
     barcodes: '',
+    modalState: defaultModal(),
   }),
   computed: {
     reception: ({ receptions, source }) => receptions.find((r) => r.text == source),
@@ -182,10 +203,14 @@ export default {
     importStarted({ message }) {
       this.showModal(message)
     },
+    clearModal() {
+      this.modalState = defaultModal()
+    },
     showModal(message) {
       this.modalState = { visible: true, message }
     },
     importFailed({ message }) {
+      this.clearModal()
       this.showAlert(message, 'danger')
     },
     async importLoaded({ requestAttributes, source }) {
@@ -207,7 +232,6 @@ export default {
       }
       this.clearModal()
     },
-
     async importLabware() {
       this.importStarted({ message: `Fetching ${this.barcodeCount} items from ${this.source}` })
       try {
@@ -227,6 +251,12 @@ export default {
           message: e.toString(),
         })
       }
+    },
+    reset() {
+      this.source = 'Sequencescape'
+      this.pipeline = 'PacBio'
+      this.requestOptions = defaultRequestOptions()
+      this.barcodes = ''
     },
   },
 }
