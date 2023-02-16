@@ -43,7 +43,11 @@
               :import-text="`Import from ${source} (where available)`"
             />
             <traction-field-group label="Cost Code" attribute="cost_code" for="cost_code">
-              <traction-input id="cost_code" v-model="requestOptions.cost_code"></traction-input>
+              <traction-input
+                id="cost_code"
+                v-model="requestOptions.cost_code"
+                data-attribute="cost-code-input"
+              ></traction-input>
             </traction-field-group>
             <div v-if="pipeline == 'PacBio'">
               <traction-field-group
@@ -54,7 +58,7 @@
                 <traction-input
                   id="number_of_smrt_cells"
                   v-model="requestOptions.number_of_smrt_cells"
-                  data-type="smrt-cells-input"
+                  data-attribute="smrt-cells-input"
                   type="number"
                   step="1"
                   min="0"
@@ -87,6 +91,7 @@
                 <traction-input
                   id="number_of_flowcells"
                   v-model="requestOptions.number_of_flowcells"
+                  data-attribute="number-of-flowcells-input"
                   type="number"
                   step="1"
                   min="0"
@@ -200,7 +205,7 @@ export default {
     isDisabled: ({ barcodeArray }) => barcodeArray.length === 0,
     barcodeCount: ({ barcodeArray }) => barcodeArray.length,
     presentRequestOptions: ({ requestOptions }) =>
-      Object.fromEntries(Object.entries(requestOptions).filter(([, v]) => v))
+      Object.fromEntries(Object.entries(requestOptions).filter(([, v]) => v)),
   },
   methods: {
     importStarted({ message }) {
@@ -220,7 +225,6 @@ export default {
       this.showModal(`Creating ${numberRequests(requestAttributes.length)} for ${this.source}`)
 
       try {
-        console.log(requestAttributes)
         await createReceptionResource(this.receptionRequest, {
           source: `traction-ui.${this.reception.name}`,
           requestAttributes,

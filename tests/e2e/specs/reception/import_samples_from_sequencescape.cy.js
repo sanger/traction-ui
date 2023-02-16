@@ -6,7 +6,9 @@ describe('Import samples from Sequencescape', () => {
     cy.withFlags({
       dpl_277_enable_general_reception: { enabled: true },
     })
-    cy.intercept('v1/library_types?fields[library_types]=name,pipeline', { fixture: 'tractionLibraryTypes.json'} )
+    cy.intercept('v1/library_types?fields[library_types]=name,pipeline', {
+      fixture: 'tractionLibraryTypes.json',
+    })
   })
 
   it('Successfully', () => {
@@ -46,7 +48,6 @@ describe('Import samples from Sequencescape', () => {
     cy.contains('Imported 3 requests from Sequencescape')
 
     cy.fixture('receptionCreateSourceSequencescape').then(({ data }) => {
-      console.log(data)
       cy.log('@postPayload')
       cy.wait('@postPayload').its('request.body').should('deep.equal', data)
     })

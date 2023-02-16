@@ -7,7 +7,7 @@ const tractionReceptionsCreate = store.getters.api.traction.receptions.create
 
 const Receptions = [
   {
-    name: 'Sequencescape',
+    name: 'sequencescape',
     text: 'Sequencescape',
     value: 'Sequencescape',
     props: {
@@ -15,7 +15,7 @@ const Receptions = [
     },
   },
   {
-    name: 'Samples Extraction',
+    name: 'samples-extraction',
     text: 'Samples Extraction',
     value: 'Samples Extraction',
     props: {
@@ -59,20 +59,39 @@ describe('GeneralReception', () => {
     expect(wrapper.find('[data-type=pipeline-list]').element.value).toEqual('PacBio')
   })
 
-  it('has request options', () => {
-    /* 
-      We test this more thoroughly in the e2e tests since request options are dynamic
-      Here we just test they exist
-    */
-    const wrapper = buildWrapper()
+  describe('request options', () => {
+    it('has the correct values for cost code and library type', () => {
+      const wrapper = buildWrapper()
+      const libraryType = wrapper.find('[data-attribute=library-type-list]')
+      expect(libraryType.find('option[value="Pacbio_HiFi"]').exists()).toBe(true)
+      expect(libraryType.find('option[value="Pacbio_IsoSeq"]').exists()).toBe(true)
+      expect(libraryType.find('option[value="ONT_GridIon"]').exists()).toBe(true)
+      expect(libraryType.find('option[value="_undefined"]').exists()).toBe(true)
 
-    const libraryType = wrapper.find('[data-type=library-type-list]')
-    expect(libraryType.find('option[value="Pacbio_HiFi"]').exists()).toBe(true)
-    expect(libraryType.find('option[value="Pacbio_IsoSeq"]').exists()).toBe(true)
-    expect(libraryType.find('option[value="ONT_GridIon"]').exists()).toBe(true)
-    expect(libraryType.find('option[value="_undefined"]').exists()).toBe(true)
+      expect(wrapper.find('[data-attribute=cost-code-input]')).toBeTruthy()
+    })
 
-    expect(wrapper.find('[data-type=smrt-cells-input]')).toBeTruthy()
+    it('shows ONT options when ONT is selected', async () => {
+      const wrapper = buildWrapper()
+      await wrapper.setData({ pipeline: 'ONT' })
+
+      expect(wrapper.find('[data-attribute=data-type-list]')).toBeTruthy()
+      expect(wrapper.find('[data-attribute=number-of-flowcells-input]')).toBeTruthy()
+      // Does not show PacBio options
+      expect(wrapper.find('[data-attribute=smrt-cells-input]').exists()).toBe(false)
+      expect(wrapper.find('[data-attribute=estimate_of_gb_required]').exists()).toBe(false)
+    })
+
+    it('shows PacBio options when PacBio is selected', async () => {
+      const wrapper = buildWrapper()
+      await wrapper.setData({ pipeline: 'PacBio' })
+
+      expect(wrapper.find('[data-attribute=smrt-cells-input]')).toBeTruthy()
+      expect(wrapper.find('[data-attribute=estimate_of_gb_required]')).toBeTruthy()
+      // Does not show ONT options
+      expect(wrapper.find('[data-attribute=data-type-list]').exists()).toBe(false)
+      expect(wrapper.find('[data-attribute=number-of-flowcells-input]').exists()).toBe(false)
+    })
   })
 
   describe('barcode text area', () => {

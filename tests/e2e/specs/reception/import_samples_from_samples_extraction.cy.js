@@ -5,8 +5,12 @@ describe('Import samples from Samples extraction, for Pacbio', () => {
     cy.withFlags({
       dpl_277_enable_general_reception: { enabled: true },
     })
-    cy.intercept('v1/library_types?fields[library_types]=name,pipeline', { fixture: 'tractionLibraryTypes.json'} )
-    cy.intercept('v1/data_types?fields[data_types]=name,pipeline', { fixture: 'tractionDataTypes.json'} )
+    cy.intercept('v1/library_types?fields[library_types]=name,pipeline', {
+      fixture: 'tractionLibraryTypes.json',
+    })
+    cy.intercept('v1/data_types?fields[data_types]=name,pipeline', {
+      fixture: 'tractionDataTypes.json',
+    })
   })
 
   it('Successfully', () => {
