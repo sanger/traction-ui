@@ -55,9 +55,13 @@ const editRun = async ({ commit, getters }, runId) => {
     })
     // Needed for deleting existing wells
     run.plate.wellsToDelete = []
-    // Set smrt_link_version_id on currenRun in the state
+    // Set smrt_link_version_id on currentRun in the state
     run.smrt_link_version_id = run.pacbio_smrt_link_version_id
+    // Set pools for the selected run
+    const pools = run.plate.wells.flatMap((well) => well.pools)
+
     commit('setCurrentRun', run)
+    commit('traction/pacbio/runCreate/setPoolsForExistingRun', pools, { root: true })
   }
 }
 

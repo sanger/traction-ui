@@ -11,6 +11,16 @@ const mutations = {
       ...dataToObjectById({ data: pools, includeRelationships: true }),
     })
   },
+  setPoolsForExistingRun(state, pools) {
+    const poolsObject = pools.reduce(function (acc, cur) {
+      acc[cur.id] = cur
+      return acc
+    }, {})
+    Vue.set(state, 'pools', {
+      ...state.pools,
+      ...poolsObject,
+    })
+  },
   setTubes(state, tubes) {
     Vue.set(state, 'tubes', {
       ...state.tubes,
