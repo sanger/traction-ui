@@ -6,12 +6,13 @@ describe('Import samples from Sequencescape', () => {
     cy.withFlags({
       dpl_277_enable_general_reception: { enabled: true },
     })
+    cy.intercept('v1/library_types?fields[library_types]=name,pipeline', { fixture: 'tractionLibraryTypes.json'} )
   })
 
   it('Successfully', () => {
     cy.visit('#/reception')
-    cy.clickMenuItem('Sequencescape')
-    cy.contains('Scan Barcodes')
+    cy.get('[data-type="source-list"]').select('Sequencescape')
+    cy.contains('Scan barcodes')
     cy.get('#barcodes').type('DN9000002A\nNT1O')
     cy.get('#cost_code').type('aCostCodeExample')
     cy.get('[data-attribute=estimate_of_gb_required]').type('3')
@@ -40,29 +41,33 @@ describe('Import samples from Sequencescape', () => {
       'postPayload',
     )
 
-    cy.get('button').contains('Import 2 labware from Sequencescape').click()
+    cy.contains('Import 2 labware into PacBio from Sequencescape')
+    cy.get('[data-action="import-labware"]').click()
     cy.contains('Imported 3 requests from Sequencescape')
 
     cy.fixture('receptionCreateSourceSequencescape').then(({ data }) => {
+      console.log(data)
+      cy.log('@postPayload')
       cy.wait('@postPayload').its('request.body').should('deep.equal', data)
     })
   })
 
   it('Unsuccessfully - when the plates do not exist', () => {
     cy.visit('#/reception')
-    cy.contains('Scan Barcodes')
+    cy.contains('Scan barcodes')
     cy.get('#barcodes').type('DN9000002A\nNT1O')
     cy.intercept(sequencescapeRequest, {
       statusCode: 200,
       body: { data: [] },
     })
-    cy.get('button').contains('Import 2 labware from Sequencescape').click()
+    cy.contains('Import 2 labware into PacBio from Sequencescape')
+    cy.get('[data-action="import-labware"]').click()
     cy.contains('Labware could not be retrieved from Sequencescape')
   })
 
   it('Unsuccessfully - when there is an error from traction', () => {
     cy.visit('#/reception')
-    cy.contains('Scan Barcodes')
+    cy.contains('Scan barcodes')
     cy.get('#barcodes').type('DN9000002A\nNT1O')
     cy.intercept(sequencescapeRequest, {
       fixture: 'sequencescapeLabware.json',
@@ -71,7 +76,8 @@ describe('Import samples from Sequencescape', () => {
       statusCode: 422,
       body: { errors: [{ title: 'receptions', detail: 'There was an error.' }] },
     })
-    cy.get('button').contains('Import 2 labware from Sequencescape').click()
+    cy.contains('Import 2 labware into PacBio from Sequencescape')
+    cy.get('[data-action="import-labware"]').click()
     cy.contains('There was an error.')
   })
 })

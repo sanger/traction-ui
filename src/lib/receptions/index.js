@@ -12,24 +12,16 @@ const defaultRequestOptions = () => ({
 
 const Receptions = [
   {
-    name: 'Sequencescape',
+    name: 'sequencescape',
     text: 'Sequencescape',
     value: 'Sequencescape',
-    props: {
-      importFunction: Sequencescape.labwareForReception,
-      source: 'sequencescape',
-      title: 'Sequencescape',
-    },
+    importFunction: Sequencescape.labwareForReception,
   },
   {
-    name: 'Samples Extraction',
+    name: 'samples-extraction',
     text: 'Samples Extraction',
     value: 'Samples Extraction',
-    props: {
-      importFunction: SamplesExtraction.labwareForReception,
-      source: 'samples-extraction',
-      title: 'Samples Extraction',
-    },
+    importFunction: SamplesExtraction.labwareForReception,
   },
 ]
 

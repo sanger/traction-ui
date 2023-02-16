@@ -68,6 +68,7 @@
                 <traction-input
                   id="estimate_of_gb_required"
                   v-model="requestOptions.estimate_of_gb_required"
+                  data-attribute="estimate_of_gb_required"
                   type="number"
                   step="1"
                   min="0"
@@ -198,6 +199,8 @@ export default {
     barcodeArray: ({ barcodes }) => barcodes.split(/\s/).filter(Boolean),
     isDisabled: ({ barcodeArray }) => barcodeArray.length === 0,
     barcodeCount: ({ barcodeArray }) => barcodeArray.length,
+    presentRequestOptions: ({ requestOptions }) =>
+      Object.fromEntries(Object.entries(requestOptions).filter(([, v]) => v))
   },
   methods: {
     importStarted({ message }) {
@@ -213,17 +216,18 @@ export default {
       this.clearModal()
       this.showAlert(message, 'danger')
     },
-    async importLoaded({ requestAttributes, source }) {
-      this.showModal(`Creating ${numberRequests(requestAttributes.length)} for ${source}`)
+    async importLoaded({ requestAttributes }) {
+      this.showModal(`Creating ${numberRequests(requestAttributes.length)} for ${this.source}`)
 
       try {
+        console.log(requestAttributes)
         await createReceptionResource(this.receptionRequest, {
-          source: `traction-ui.${source}`,
+          source: `traction-ui.${this.reception.name}`,
           requestAttributes,
         })
 
         this.showAlert(
-          `Imported ${numberRequests(requestAttributes.length)} from ${this.reception.name}`,
+          `Imported ${numberRequests(requestAttributes.length)} from ${this.source}`,
           'success',
         )
       } catch (e) {
@@ -235,14 +239,13 @@ export default {
     async importLabware() {
       this.importStarted({ message: `Fetching ${this.barcodeCount} items from ${this.source}` })
       try {
-        const response = await this.reception.props.importFunction({
+        const response = await this.reception.importFunction({
           requests: this.api,
           barcodes: this.barcodeArray,
           requestOptions: this.presentRequestOptions,
         })
 
         this.importLoaded({
-          source: this.source,
           requestAttributes: response.requestAttributes,
         })
       } catch (e) {
