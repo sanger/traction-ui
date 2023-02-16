@@ -88,7 +88,6 @@ const registerBootstrapComponents = (vue) => {
   vue.component('traction-nav', BNav)
   vue.component('traction-input-group', BInputGroup)
   vue.component('traction-input-group-append', BInputGroupAppend)
-
   /*
     directive is marked wth a v in front
     so it will be used as 'v-traction-modal'

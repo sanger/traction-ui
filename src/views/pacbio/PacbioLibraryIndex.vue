@@ -44,7 +44,7 @@
 
     <traction-table
       id="library-index"
-      :primary_key="{ primary_key }"
+      show-empty
       responsive
       :items="libraries"
       :fields="fields"

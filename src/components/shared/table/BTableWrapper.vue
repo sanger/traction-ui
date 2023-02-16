@@ -13,5 +13,6 @@ import { BTable } from 'bootstrap-vue'
 export default {
   name: 'BTableWrapper',
   components: { BTable },
+  inheritAttrs: false
 }
 </script>

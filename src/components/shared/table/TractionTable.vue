@@ -10,12 +10,20 @@
    * </tr>
    * </traction-table>
    */
+   #[slot]="scope"  is equivalent of v-slot:[slotName]="slotScope"
 -->
 <template>
   <div>
     <flagged-feature name="enable_custom_table">
       <template #disabled>
-        <b-table-wrapper :fields="fields" :items="items">
+        <b-table-wrapper
+          :fields="fields"
+          :items="items"
+          :selectable="selectable"
+          :select-mode="selectMode"
+          :primary-key="primaryKey"
+          
+        >
           <template v-for="(_, slot) of $scopedSlots" #[slot]="scope"
             ><slot :name="slot" v-bind="scope" /></template
         ></b-table-wrapper>
