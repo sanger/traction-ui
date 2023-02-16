@@ -22,7 +22,6 @@
           :selectable="selectable"
           :select-mode="selectMode"
           :primary-key="primaryKey"
-          
         >
           <template v-for="(_, slot) of $scopedSlots" #[slot]="scope"
             ><slot :name="slot" v-bind="scope" /></template
@@ -153,7 +152,7 @@ export default {
       const id = this.primaryKey in row && row[this.primaryKey] ? row[this.primaryKey] : rowIndx
       return {
         item: { ...row },
-        id: this.primaryKey in row && row[this.primaryKey] ? row[this.primaryKey] : rowIndx,
+        id: id,
         toggleDetails: () => {
           this.handleToggleDetails(id)
         },
@@ -167,6 +166,31 @@ export default {
       rows: rows,
       sortField: { key: this.sortBy, ascending: true },
     }
+  },
+  watch: {
+    items: function () {
+      const rows = []
+      this.sortedData().forEach((item, rowIndx) => {
+        const id =
+          this.primaryKey in item && item[this.primaryKey] ? item[this.primaryKey] : rowIndx
+        const row = this.rows.find((row) => row.id === id)
+        if (row) {
+          rows.push({ ...row, item: item })
+        } else
+          rows.push({
+            item: { ...item },
+            id: id,
+            toggleDetails: () => {
+              this.handleToggleDetails(id)
+            },
+            detailsShowing: false,
+            rowSelected: false,
+            rowIndx: rowIndx,
+            detailsDim: '60',
+          })
+      })
+      this.rows = rows
+    },
   },
 
   methods: {
@@ -213,6 +237,8 @@ export default {
         : 'none'
     },
     onRowClick(id, row) {
+      const srcElement = window.event.srcElement
+      if (!(srcElement instanceof HTMLTableCellElement)) return
       if (!this.selectable) return
       const rowIndex = this.rows.findIndex((elem) => elem.id === row.id)
       const prevSelectedRowIndx =
@@ -222,7 +248,7 @@ export default {
         ...this.rows[rowIndex],
         rowSelected: !this.rows[rowIndex].rowSelected,
       })
-      if (prevSelectedRowIndx >= 0) {
+      if (prevSelectedRowIndx >= 0 && prevSelectedRowIndx !== rowIndex) {
         this.rows.splice(prevSelectedRowIndx, 1, {
           ...this.rows[prevSelectedRowIndx],
           rowSelected: !this.rows[prevSelectedRowIndx].rowSelected,
