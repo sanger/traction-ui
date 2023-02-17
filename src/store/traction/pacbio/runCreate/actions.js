@@ -3,6 +3,7 @@ import { groupIncludedByResource } from '@/api/JsonApi'
 
 const findPools = async ({ commit, getters }, filter) => {
   // when users search for nothing, prompt them to enter a barcode
+  console.log(filter)
   if (filter['barcode'].trim() === '') {
     return {
       success: false,
@@ -24,7 +25,6 @@ const findPools = async ({ commit, getters }, filter) => {
   const response = await handleResponse(promise)
 
   const { success, data: { data, included = [] } = {}, errors = [] } = response
-
   // success is true with an empty list when no pools match the filter
   if (success && data.length > 0) {
     const { tubes, libraries, tags, requests } = groupIncludedByResource(included)

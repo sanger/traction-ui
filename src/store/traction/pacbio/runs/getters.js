@@ -9,6 +9,10 @@ const getters = {
   well: (state) => (position) => {
     return state.currentRun.plate.wells.find((well) => well.position === position)
   },
+  poolBarcodes: (state) => {
+    const pools = state.currentRun.plate.wells.flatMap((well) => well.pools)
+    return pools.map((pool) => pool.tube.barcode).join(',')
+  },
 }
 
 export default getters

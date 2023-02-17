@@ -1,6 +1,7 @@
 import PacbioRun from '@/views/pacbio/PacbioRunShow'
+import actions from '@/pacbio/runCreate/actions.js'
 import { localVue, mount, store, router } from '@support/testHelper'
-import { beforeEach, describe, it } from 'vitest'
+import { beforeEach, describe, expect, it } from 'vitest'
 
 const smrtLinkVersions = [
   {
@@ -189,6 +190,19 @@ describe('Run.vue', () => {
       )
       expect(pacbioRun.redirectToRuns).not.toBeCalled()
     })
+  })
+
+  describe('finds pool barcodes when editing a run', () => {
+    // mock the smartlink versions function
+    actions.fetchSmrtLinkVersions = vi.fn()
+    // mock editRun function
+    pacbioRun.editRun = vi.fn()
+    // populate currentRun with data
+    let currentRunData // maybe use pacbioRun?
+    const barcode = '1234'
+    expect(pacbioRun.poolBarcodes).toBeCalledWith(currentRunData, barcode)
+    // mock findPools method
+    pacbioRun.findPools = vi.fn()
   })
 
   describe('#reset', () => {

@@ -42,26 +42,9 @@ export default {
     })
   },
 
-  editedPools: (state) => {
-    return Object.values(state.pools).map((pool) => {
-      const { barcode } = state.tubes[pool.tube]
-
-      return {
-        ...pool,
-        barcode,
-      }
-    })
-  },
-
   poolByBarcode:
     (state, { pools }) =>
     (barcode) => {
       return pools.find((pool) => pool.barcode === barcode)
-    },
-
-  checkPoolExists:
-    (state, { editedPools }) =>
-    (barcode) => {
-      return editedPools.find((pool) => pool.barcode === barcode)
     },
 }

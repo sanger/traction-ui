@@ -97,7 +97,7 @@ export default {
     currentAction() {
       return this.actions[this.newRecord ? 'create' : 'update']
     },
-    ...mapGetters(['currentRun']),
+    ...mapGetters(['currentRun', 'poolBarcodes']),
     ...mapState({
       currentRun: (state) => state.currentRun,
     }),
@@ -124,6 +124,8 @@ export default {
       this.showAlert('Run has been reset', 'success', 'run-validation-message')
     },
     ...mapActions(['createRun', 'updateRun', 'editRun', 'newRun']),
+    ...mapActions('traction/pacbio/runCreate', 'findPools'),
+
     redirectToRuns() {
       this.$router.push({ name: 'PacbioRunIndex' })
     },
@@ -133,6 +135,8 @@ export default {
         this.newRun()
       } else if (!this.newRecord) {
         await this.editRun(parseInt(this.$route.params.id))
+        const barcodes = this.poolBarcodes
+        this.findPools({ barcode: barcodes })
       } else {
         this.$router.push({ name: '404' })
       }
