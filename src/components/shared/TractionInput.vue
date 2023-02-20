@@ -52,12 +52,29 @@ export default {
       type: String,
       default: '',
     },
+    //The time in ms to debounce the input events
+    debounce: {
+      type: Number,
+      default: 0,
+    },
   },
-
+  data() {
+    return {
+      debounceTimer: null,
+    }
+  },
   methods: {
     input(event) {
-      // Emit text data the payload event
-      this.$emit('input', event.target.value)
+      // If debounce is supplied we want to debounce the input events
+      if (this.debounce > 0) {
+        if (this.debounceTimer) clearTimeout(this.debounceTimer)
+        this.debounceTimer = setTimeout(() => {
+          this.$emit('input', event.target.value)
+        }, this.debounce)
+      } else {
+        // Emit text data the payload event
+        this.$emit('input', event.target.value)
+      }
     },
   },
 }

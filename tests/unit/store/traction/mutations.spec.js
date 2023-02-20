@@ -1,6 +1,7 @@
 import Response from '@/api/Response'
 import { Data } from '@support/testHelper'
 import mutations from '@/store/traction/mutations'
+import { expect } from 'vitest'
 
 let tractionTags
 
@@ -52,5 +53,27 @@ describe('addMessage', () => {
       { type: 'Alert', message: 'Existing' },
       { type: 'info', message: 'New message' },
     ])
+  })
+})
+
+describe('clearMessages', () => {
+  beforeEach(() => {
+    tractionTags = new Response(Data.TractionTags).deserialize.tractionTags
+  })
+
+  it('clears all messages but keeps tractionTags', () => {
+    const state = {
+      messages: {
+        1: { type: 'Alert', message: 'Existing' },
+        2: { type: 'Alert', message: 'Message' },
+        3: { type: 'Alert', message: 'Another Message' },
+      },
+      tractionTags,
+    }
+
+    mutations.clearMessages(state)
+
+    expect(state.messages).toEqual({})
+    expect(state.tractionTags).toEqual(tractionTags)
   })
 })
