@@ -12,5 +12,7 @@ export default () => {
       // The SMRT Link version store.
       smrtLinkVersions: {},
     },
+    // Run: The current run being edited or created
+    run: {},
   }
 }
