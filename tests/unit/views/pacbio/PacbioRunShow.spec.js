@@ -1,5 +1,4 @@
 import PacbioRun from '@/views/pacbio/PacbioRunShow'
-import actions from '@/pacbio/runCreate/actions.js'
 import { localVue, mount, store, router } from '@support/testHelper'
 import { beforeEach, describe, expect, it } from 'vitest'
 
@@ -37,10 +36,10 @@ describe('Run.vue', () => {
       },
       plate: {
         wells: [
-          { position: 'A1', library: { barcode: '' } },
-          { position: 'A2', library: { barcode: '' } },
-          { position: 'B1', library: { barcode: '' } },
-          { position: 'B2', library: { barcode: '' } },
+          { position: 'A1', pools: [{ tube: { barcode: 'TRAC-1-1' } }] },
+          { position: 'A2', pools: [{ tube: { barcode: 'TRAC-1-2' } }] },
+          { position: 'B1', pools: [{ tube: { barcode: 'TRAC-1-3' } }] },
+          { position: 'B2', pools: [{ tube: { barcode: 'TRAC-1-4' } }] },
         ],
       },
     }
@@ -156,6 +155,7 @@ describe('Run.vue', () => {
 
       pacbioRun.showAlert = vi.fn()
       pacbioRun.updateRun = vi.fn()
+      pacbioRun.editRun = vi.fn()
       pacbioRun.redirectToRuns = vi.fn()
     })
 
@@ -192,17 +192,26 @@ describe('Run.vue', () => {
     })
   })
 
-  describe('finds pool barcodes when editing a run', () => {
-    // mock the smartlink versions function
-    actions.fetchSmrtLinkVersions = vi.fn()
-    // mock editRun function
-    pacbioRun.editRun = vi.fn()
-    // populate currentRun with data
-    let currentRunData // maybe use pacbioRun?
-    const barcode = '1234'
-    expect(pacbioRun.poolBarcodes).toBeCalledWith(currentRunData, barcode)
-    // mock findPools method
-    pacbioRun.findPools = vi.fn()
+  describe('#created', () => {
+    it('"findPools" gets called with a list of barcodes', () => {
+      // TODO: awaiting refactoring
+      // pacbioRun.findPools = vi.fn()
+      // pacbioRun.editRun = vi.fn()
+      
+      // wrapper = mount(PacbioRun, {
+      //   propsData: { id: 1 },
+      //   store,
+      //   router,
+      //   localVue,
+      //   stubs: {
+      //     Plate: true,
+      //     pacbioPoolList: true,
+      //     PacbioRunInfoEdit: true,
+      //   },
+      // })
+      // pacbioRun = wrapper.vm
+      // expect(pacbioRun.findPools).toBeCalledWith({ barcode: 'TRAC-1-1,TRAC-1-2,TRAC-1-3,TRAC-1-4' })
+    })
   })
 
   describe('#reset', () => {

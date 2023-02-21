@@ -3,7 +3,6 @@ import { groupIncludedByResource } from '@/api/JsonApi'
 
 const findPools = async ({ commit, getters }, filter) => {
   // when users search for nothing, prompt them to enter a barcode
-  console.log(filter)
   if (filter['barcode'].trim() === '') {
     return {
       success: false,

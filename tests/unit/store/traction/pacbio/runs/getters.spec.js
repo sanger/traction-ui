@@ -1,14 +1,13 @@
 import Response from '@/api/Response'
 import { Data } from '@support/testHelper'
 import getters from '@/store/traction/pacbio/runs/getters'
-import { expect, it } from 'vitest'
-
-let runs, run
+import { describe, expect, it } from 'vitest'
 
 describe('getters', () => {
+  let runs, run
+
   beforeEach(() => {
     runs = new Response(Data.PacbioRuns).deserialize.runs
-    run = new Response(Data.PacbioRun).deserialize.run
   })
 
   it('"run" returns the given run from "state.runs"', () => {
@@ -19,13 +18,69 @@ describe('getters', () => {
     expect(actual).toEqual(runs[0])
   })
 
-  it('"poolBarcodes" returns barcodes from currentRun when editing runs', () => {
-    const state = { run: run }
-    const barcodes = getters.poolBarcodes(state)
-    expect(barcodes).toEqual(run.barcode)
-  })
+  describe('poolBarcodes', () => {
+    it('returns barcodes when editing a run with a single pool', () => {
+      const currentRun = {
+        id: '1',
+        plate: {
+          wells: [
+            {
+              pools: [
+                {
+                  tube: {
+                    barcode: 'TRAC-1-1',
+                  },
+                },
+              ],
+            },
+          ],
+        },
+      }
 
-  it('"poolBarcodes" returns nothing when creating runs', () => {
-    
+      const state = { currentRun }
+      const barcodes = getters.poolBarcodes(state)
+      expect(barcodes).toEqual('TRAC-1-1')
+    })
+
+    it('returns barcodes when editing a run with multiple pools', () => {
+      const currentRun = {
+        id: '1',
+        plate: {
+          wells: [
+            {
+              pools: [
+                {
+                  tube: {
+                    barcode: 'TRAC-1-1',
+                  },
+                },
+                {
+                  tube: {
+                    barcode: 'TRAC-1-2',
+                  },
+                },
+              ],
+            },
+          ],
+        },
+      }
+      const state = { currentRun }
+      const barcodes = getters.poolBarcodes(state)
+      expect(barcodes).toEqual('TRAC-1-1,TRAC-1-2')
+    })
+
+    it('doesnt return a barcode when creating a run', () => {
+      // TODO awaiting refactoring
+      
+      // const currentRun = {
+      //   id: 'new',
+      //   plate: {
+      //     wells: [],
+      //   },
+      // }
+      // const state = currentRun
+      // const barcodes = getters.poolBarcodes(state)
+      // expect(barcodes).toEqual(null)
+    })
   })
 })
