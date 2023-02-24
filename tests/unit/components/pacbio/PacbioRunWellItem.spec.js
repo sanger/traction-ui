@@ -178,6 +178,7 @@ describe('Well.vue', () => {
     beforeEach(() => {
       newBarcode = 'TRAC-2-1'
       store.state.traction.pacbio.pools = storePools
+      store.state.traction.pacbio.runCreate.pools = storePools
     })
 
     it('adds the pool to the well if the well exists', async () => {
@@ -186,7 +187,6 @@ describe('Well.vue', () => {
       expectedWell.pools.push({ id: '1', barcode: 'TRAC-2-1' })
 
       await wrapper.vm.updatePoolBarcode(newBarcode)
-
       expect(wrapper.vm.updateWell).toBeCalledWith(expectedWell)
     })
 

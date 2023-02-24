@@ -1,8 +1,9 @@
-import { mount, localVue, store } from '@support/testHelper'
+import { mount, localVue, store, Data } from '@support/testHelper'
 import WellEdit from '@/components/pacbio/PacbioRunWellEdit'
 import storePools from '@tests/data/StorePools'
 import * as Run from '@/api/PacbioRun'
 import * as Actions from '@/store/traction/pacbio/runs/actions'
+import { expect } from 'vitest'
 
 // They are like the following in the store; not an array.
 const smrtLinkVersions = {
@@ -33,6 +34,11 @@ describe('PacbioWellModal', () => {
     storeWell.pools = [{ id: 1, barcode: 'TRAC-0' }]
     run.plate.wells[0] = storeWell
     store.commit('traction/pacbio/runs/setCurrentRun', run)
+
+    // mocking the request for updatePoolBarcode method
+    const request = store.state.api.traction.pacbio.pools
+    request.get = vi.fn()
+    request.get.mockResolvedValue(Data.PacbioPool)
 
     wrapper = mount(WellEdit, {
       localVue,
@@ -231,11 +237,9 @@ describe('PacbioWellModal', () => {
 
   describe('methods', () => {
     describe('updatePoolBarcode', () => {
-      let newBarcode, row, poolId, poolObject
+      let row, poolObject
 
       beforeEach(() => {
-        newBarcode = 'TRAC-2-1'
-        poolId = '1'
         row = { index: 0 }
         poolObject = { id: 10, barcode: 'oldBarcode' }
         modal.currentWell.pools[0] = poolObject
@@ -244,9 +248,8 @@ describe('PacbioWellModal', () => {
       })
 
       it('successful when barcode is valid', async () => {
-        await modal.updatePoolBarcode(row, newBarcode)
-
-        expect(modal.currentWell.pools[0]).toEqual({ id: poolId, barcode: newBarcode })
+        await modal.updatePoolBarcode(row, 'TRAC-2-2')
+        expect(modal.currentWell.pools[0]).toEqual({ id: '1', barcode: 'TRAC-2-2' })
       })
 
       it('is unsuccessful when barcode is not valid', async () => {
@@ -360,7 +363,7 @@ describe('PacbioWellModal', () => {
 
     describe('checkPools', () => {
       it('returns true if all the pools exist', async () => {
-        store.state.traction.pacbio.pools = storePools
+        store.state.traction.pacbio.runCreate.pools = storePools
         storeWell.pools = [
           { id: '1', barcode: 'TRAC-2-1' },
           { id: '2', barcode: 'TRAC-2-2' },
@@ -371,7 +374,7 @@ describe('PacbioWellModal', () => {
       })
 
       it('returns false if one or more pools do not exist', async () => {
-        store.state.traction.pacbio.pools = storePools
+        store.state.traction.pacbio.runCreate.pools = storePools
         storeWell.pools = [
           { id: '1', barcode: 'TRAC-2-0' },
           { id: '2', barcode: 'TRAC-2-2' },
@@ -384,6 +387,7 @@ describe('PacbioWellModal', () => {
 
     describe('updateCCSAnalysisOutput', () => {
       it('sets ccs_analysis_ouput to "No" when generate_hifi is set to "Do Not Generate"', () => {
+        // storeWell.mockReset()
         storeWell.generate_hifi = 'Do Not Generate'
         storeWell.ccs_analysis_output = 'Yes'
         wrapper.setData({ currentWell: storeWell })

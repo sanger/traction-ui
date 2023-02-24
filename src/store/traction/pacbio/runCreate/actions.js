@@ -27,6 +27,7 @@ const findPools = async ({ commit, getters }, filter) => {
   // success is true with an empty list when no pools match the filter
   if (success && data.length > 0) {
     const { tubes, libraries, tags, requests } = groupIncludedByResource(included)
+
     commit('setPools', data)
     commit('setTubes', tubes)
     commit('setLibraries', libraries)

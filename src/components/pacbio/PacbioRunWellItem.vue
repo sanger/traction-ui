@@ -138,6 +138,7 @@ export default {
     async updatePoolBarcode(barcode) {
       const existingWell = this.well(this.position)
       const { id } = this.poolByBarcode(barcode)
+
       if (existingWell) {
         // if well exists, push pool into well
         existingWell.pools.push({ id, barcode })

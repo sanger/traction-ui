@@ -4,7 +4,7 @@ import getters from '@/store/traction/pacbio/runs/getters'
 import { describe, expect, it } from 'vitest'
 
 describe('getters', () => {
-  let runs, run
+  let runs
 
   beforeEach(() => {
     runs = new Response(Data.PacbioRuns).deserialize.runs
@@ -67,20 +67,6 @@ describe('getters', () => {
       const state = { currentRun }
       const barcodes = getters.poolBarcodes(state)
       expect(barcodes).toEqual('TRAC-1-1,TRAC-1-2')
-    })
-
-    it('doesnt return a barcode when creating a run', () => {
-      // TODO awaiting refactoring
-      
-      // const currentRun = {
-      //   id: 'new',
-      //   plate: {
-      //     wells: [],
-      //   },
-      // }
-      // const state = currentRun
-      // const barcodes = getters.poolBarcodes(state)
-      // expect(barcodes).toEqual(null)
     })
   })
 })

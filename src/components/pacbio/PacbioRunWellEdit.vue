@@ -355,6 +355,7 @@ export default {
     },
     async updatePoolBarcode(row, barcode) {
       const index = row.index
+      await this.$store.dispatch('traction/pacbio/runCreate/findPools', { barcode: barcode })
       const pool = await this.poolByBarcode(barcode)
       if (pool) {
         this.currentWell.pools[index] = { id: pool.id, barcode }
