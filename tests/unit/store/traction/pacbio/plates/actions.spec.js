@@ -1,101 +1,16 @@
 import { Data } from '@support/testHelper'
 import * as Actions from '@/store/traction/pacbio/plates/actions'
 
-describe('#createPlateInTraction', () => {
+describe('Pacbio plates actions', () => {
   let commit, get, getters, failedResponse, expectedPlates
 
   beforeEach(() => {
     commit = vi.fn()
     get = vi.fn()
     getters = { getPlates: { get: get } }
-    expectedPlates = [
-      {
-        barcode: 'DN814327C',
-        created_at: '2021/06/03 06:59',
-        id: '61',
-        wells: [
-          {
-            position: 'A1',
-            requests: [
-              {
-                barcode: null,
-                cost_code: null,
-                created_at: '2021/06/03 06:59',
-                estimate_of_gb_required: null,
-                external_study_id: 'fec8a1fa-b9e2-11e9-9123-fa163e99b035',
-                id: '40',
-                library_type: null,
-                number_of_smrt_cells: null,
-                sample_name: 'sample_DN814327C_A1',
-                sample_species: 'human',
-                source_identifier: 'DN814327C:A1',
-              },
-            ],
-          },
-          {
-            position: 'A2',
-            requests: [
-              {
-                barcode: null,
-                cost_code: null,
-                created_at: '2021/06/03 06:59',
-                estimate_of_gb_required: null,
-                external_study_id: 'fec8a1fa-b9e2-11e9-9123-fa163e99b035',
-                id: '41',
-                library_type: null,
-                number_of_smrt_cells: null,
-                sample_name: 'sample_DN814327C_A2',
-                sample_species: 'human',
-                source_identifier: 'DN814327C:A2',
-              },
-            ],
-          },
-        ],
-      },
-      {
-        barcode: 'DN814567Q',
-        created_at: '2021/06/03 14:57',
-        id: '62',
-        wells: [
-          {
-            position: 'A1',
-            requests: [
-              {
-                barcode: null,
-                cost_code: null,
-                created_at: '2021/06/03 14:57',
-                estimate_of_gb_required: null,
-                external_study_id: 'd160363e-ba2e-11e7-b4cc-68b599768938',
-                id: '136',
-                library_type: null,
-                number_of_smrt_cells: null,
-                sample_name: '5049STDY8152829',
-                sample_species: 'human',
-                source_identifier: 'DN814567Q:A1',
-              },
-            ],
-          },
-          {
-            position: 'B1',
-            requests: [
-              {
-                barcode: null,
-                cost_code: null,
-                created_at: '2021/06/03 14:57',
-                estimate_of_gb_required: null,
-                external_study_id: 'd160363e-ba2e-11e7-b4cc-68b599768938',
-                id: '137',
-                library_type: null,
-                number_of_smrt_cells: null,
-                sample_name: '5049STDY8152830',
-                sample_species: 'cat',
-                source_identifier: 'DN814567Q:B1',
-              },
-            ],
-          },
-        ],
-      },
-    ]
+
+    expectedPlates = Data.PacbioPlatesRequest.data.data
+
     failedResponse = {
       data: { data: { errors: { error1: ['There was an error'] } } },
       status: 500,
@@ -121,6 +36,68 @@ describe('#createPlateInTraction', () => {
       expect(commit).not.toHaveBeenCalled()
       expect(success).toEqual(false)
       expect(errors).toEqual('error1 There was an error')
+    })
+  })
+
+  describe('findPlate', () => {
+    it('fetches the plate from the service, and returns it with wells and requests', async () => {
+      get.mockReturnValue(Data.PacbioPlatesRequest)
+      const expectedPlate = {
+        id: '61',
+        barcode: 'DN814327C',
+        created_at: '2021/06/03 06:59',
+        wells: [
+          {
+            position: 'A1',
+            requests: [
+              {
+                id: '40',
+                library_type: null,
+                estimate_of_gb_required: null,
+                number_of_smrt_cells: null,
+                cost_code: null,
+                external_study_id: 'fec8a1fa-b9e2-11e9-9123-fa163e99b035',
+                sample_name: 'sample_DN814327C_A1',
+                barcode: null,
+                sample_species: 'human',
+                created_at: '2021/06/03 06:59',
+                source_identifier: 'DN814327C:A1',
+              },
+            ],
+          },
+          {
+            position: 'A2',
+            requests: [
+              {
+                id: '41',
+                library_type: null,
+                estimate_of_gb_required: null,
+                number_of_smrt_cells: null,
+                cost_code: null,
+                external_study_id: 'fec8a1fa-b9e2-11e9-9123-fa163e99b035',
+                sample_name: 'sample_DN814327C_A2',
+                barcode: null,
+                sample_species: 'human',
+                created_at: '2021/06/03 06:59',
+                source_identifier: 'DN814327C:A2',
+              },
+            ],
+          },
+        ],
+      }
+      // Barcode provided is first plate in Data.PacbioPlatesRequest
+      const plate = await Actions.findPlate({ commit, getters }, { barcode: 'DN814327C' })
+
+      expect(plate).toEqual(expectedPlate)
+    })
+
+    it('errors fetching the plate', async () => {
+      get.mockRejectedValue({ response: failedResponse })
+
+      // Barcode provided is first plate in Data.PacbioPlatesRequest
+      const plate = await Actions.findPlate({ commit, getters }, { barcode: 'DN814327C' })
+
+      expect(plate).toEqual({})
     })
   })
 })

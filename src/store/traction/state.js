@@ -1,6 +1,6 @@
-const state = {
-  tractionTags: [],
-  messages: {},
+export default () => {
+  return {
+    tractionTags: [],
+    messages: {},
+  }
 }
-
-export default state
