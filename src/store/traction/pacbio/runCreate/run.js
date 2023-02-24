@@ -33,6 +33,31 @@ const newRun = (attributes) => {
   }
 }
 
+const defaultWellAttributes = () => {
+  const onInstrument = 'On Instrument'
+
+  return {
+    movie_time: null,
+    ccs_analysis_output: 'Yes',
+    pre_extension_time: 2,
+    loading_target_p1_plus_p2: 0.85,
+    generate_hifi: onInstrument,
+    binding_kit_box_barcode: null,
+    on_plate_loading_concentration: null,
+    ccs_analysis_output_include_kinetics_information: 'Yes',
+    ccs_analysis_output_include_low_quality_reads: 'No',
+    demultiplex_barcodes: onInstrument,
+    include_fivemc_calls_in_cpg_motifs: 'Yes',
+  }
+}
+
+const newWell = (attributes) => {
+  return {
+    ...defaultWellAttributes(),
+    ...attributes,
+  }
+}
+
 /*
  * @param Object - A Pacbio Sequencing Run
  * @returns none - It modifies the original as it needs to be reactive
@@ -57,4 +82,4 @@ const valid = ({ run }) => {
   return Object.keys(run.errors || {}).length === 0
 }
 
-export { newRun, validate, valid }
+export { newRun, validate, valid, defaultWellAttributes, newWell }

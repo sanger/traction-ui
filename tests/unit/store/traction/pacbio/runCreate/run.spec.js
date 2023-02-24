@@ -1,5 +1,11 @@
 import defaultState from '@/store/traction/pacbio/poolCreate/state'
-import { newRun, validate, valid } from '@/store/traction/pacbio/runCreate/run'
+import {
+  newRun,
+  validate,
+  valid,
+  defaultWellAttributes,
+  newWell,
+} from '@/store/traction/pacbio/runCreate/run'
 
 const existingRun = {
   id: 1,
@@ -16,6 +22,21 @@ describe('run.js', () => {
       expect(run.id).toEqual('new')
       expect(run.system_name).toBeTypeOf('string')
       expect(run.plate.wells).toEqual([])
+    })
+  })
+
+  describe('newWell', () => {
+    it('will have the default well attributes if nothing is changed', () => {
+      expect(newWell()).toEqual(defaultWellAttributes())
+    })
+
+    it('will have the correct attributes if any are passed', () => {
+      const attributes = {
+        movie_time: 15.0,
+        binding_kit_box_barcode: 'boxboxbox',
+        on_plate_loading_concentration: 3.5,
+      }
+      expect(newWell(attributes)).toEqual({ ...defaultWellAttributes(), ...attributes })
     })
   })
 
