@@ -1,28 +1,15 @@
 <template>
   <div v-if="selectedRequests" data-type="pool-library-list">
-    <traction-table-simple>
-      <traction-thead>
-        <traction-tr>
-          <traction-th> Sample Name </traction-th>
-          <traction-th> Source </traction-th>
-          <traction-th> Tag </traction-th>
-          <traction-th> Template prep kit box barcode </traction-th>
-          <traction-th> Volume </traction-th>
-          <traction-th> Concentration </traction-th>
-          <traction-th> Insert Size </traction-th>
-        </traction-tr>
-      </traction-thead>
-      <traction-tbody>
-        <PacbioPoolLibraryEdit
-          v-for="request in selectedRequests"
-          :key="request.id"
-          :request="request"
-          :auto-tag="autoTag"
-          :validated="validated"
-          :notify="notify"
-        ></PacbioPoolLibraryEdit>
-      </traction-tbody>
-    </traction-table-simple>
+    <traction-table :fields="headerFields" simple>
+      <PacbioPoolLibraryEdit
+        v-for="request in selectedRequests"
+        :key="request.id"
+        :request="request"
+        :auto-tag="autoTag"
+        :validated="validated"
+        :notify="notify"
+      ></PacbioPoolLibraryEdit>
+    </traction-table>
   </div>
 </template>
 <script>
@@ -52,6 +39,19 @@ export default {
       required: true,
       default: () => {},
     },
+  },
+  data() {
+    return {
+      headerFields: [
+        'Sample Name',
+        'Source',
+        'Tag',
+        'Template prep kit box barcode',
+        'Volume',
+        'Concentration',
+        'Insert Size',
+      ],
+    }
   },
   computed: {
     ...mapGetters(['selectedRequests']),

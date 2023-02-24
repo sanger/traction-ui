@@ -20,6 +20,8 @@ import TractionResultIcon from '@/components/shared/icons/TractionResultIcon'
 import TractionPaginationIcon from '@/components/shared/icons/TractionPaginationIcon'
 import TractionPagination from '@/components/shared/TractionPagination'
 import TractionTable from '@/components/shared/table/TractionTable'
+import TractionTableRow from '@/components/shared/table/TractionTableRow'
+import TractionTableColumn from '@/components/shared/table/TractionTableColumn'
 import TractionArrowIcon from '@/components/shared/icons/TractionArrowIcon'
 import TractionSortIcon from '@/components/shared/icons/TractionSortIcon'
 import {
@@ -40,13 +42,7 @@ import {
   BBadge,
   BFormCheckbox,
   BFormFile,
-  BTableSimple,
-  BTr,
-  BTd,
   BFormInvalidFeedback,
-  BThead,
-  BTh,
-  BTbody,
   BFormTextarea,
   BCardHeader,
   BNav,
@@ -72,16 +68,10 @@ const registerBootstrapComponents = (vue) => {
   vue.component('traction-list-group-item', BListGroupItem)
   vue.component('traction-tabs', BTabs)
   vue.component('traction-tab', BTab)
-  vue.component('traction-table-simple', BTableSimple)
   vue.component('traction-badge', BBadge)
   vue.component('traction-checkbox', BFormCheckbox)
   vue.component('traction-file', BFormFile)
-  vue.component('traction-tr', BTr)
-  vue.component('traction-td', BTd)
   vue.component('traction-invalid-feedback', BFormInvalidFeedback)
-  vue.component('traction-thead', BThead)
-  vue.component('traction-th', BTh)
-  vue.component('traction-tbody', BTbody)
   vue.component('traction-textarea', BFormTextarea)
   vue.component('traction-card-header', BCardHeader)
   vue.component('traction-nav-item', BNavItem)
@@ -122,6 +112,8 @@ const registerGlobal = (vue) => {
   vue.component('TractionArrowIcon', TractionArrowIcon)
   vue.component('TractionSortIcon', TractionSortIcon)
   vue.component('TractionTable', TractionTable)
+  vue.component('TractionTableRow', TractionTableRow)
+  vue.component('TractionTableColumn', TractionTableColumn)
 
   registerBootstrapComponents(vue)
 }
