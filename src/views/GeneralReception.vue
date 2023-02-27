@@ -27,6 +27,7 @@
             v-model="pipeline"
             :options="pipelineOptions"
             data-type="pipeline-list"
+            @input="resetRequestOptions()"
           />
         </div>
 
@@ -41,6 +42,7 @@
               :label-cols="0"
               :allow-none="false"
               :import-text="`Import from ${source} (where available)`"
+              :pipeline="pipeline.toLowerCase()"
             />
             <traction-field-group label="Cost Code" attribute="cost_code" for="cost_code">
               <traction-input
@@ -264,6 +266,10 @@ export default {
       this.pipeline = 'PacBio'
       this.requestOptions = defaultRequestOptions()
       this.barcodes = ''
+      this.resetRequestOptions()
+    },
+    resetRequestOptions() {
+      this.requestOptions = defaultRequestOptions()
     },
   },
 }

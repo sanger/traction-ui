@@ -60,20 +60,21 @@ describe('GeneralReception', () => {
   })
 
   describe('request options', () => {
-    it('has the correct values for cost code and library type', () => {
+    it('has the a cost code input field', () => {
       const wrapper = buildWrapper()
-      const libraryType = wrapper.find('[data-attribute=library-type-list]')
-      expect(libraryType.find('option[value="Pacbio_HiFi"]').exists()).toBe(true)
-      expect(libraryType.find('option[value="Pacbio_IsoSeq"]').exists()).toBe(true)
-      expect(libraryType.find('option[value="ONT_GridIon"]').exists()).toBe(true)
-      expect(libraryType.find('option[value="_undefined"]').exists()).toBe(true)
-
       expect(wrapper.find('[data-attribute=cost-code-input]')).toBeTruthy()
     })
 
     it('shows ONT options when ONT is selected', async () => {
       const wrapper = buildWrapper()
       await wrapper.setData({ pipeline: 'ONT' })
+
+      // Library type
+      const libraryType = wrapper.find('[data-attribute=library-type-list]')
+      expect(libraryType.find('option[value="ONT_GridIon"]').exists()).toBe(true)
+      expect(libraryType.find('option[value="_undefined"]').exists()).toBe(true)
+      // It should not have any ONT options when Pacbio is the selected pipeline
+      expect(libraryType.find('option[value="Pacbio_HiFi"]').exists()).toBe(false)
 
       expect(wrapper.find('[data-attribute=data-type-list]')).toBeTruthy()
       expect(wrapper.find('[data-attribute=number-of-flowcells-input]')).toBeTruthy()
@@ -85,6 +86,14 @@ describe('GeneralReception', () => {
     it('shows PacBio options when PacBio is selected', async () => {
       const wrapper = buildWrapper()
       await wrapper.setData({ pipeline: 'PacBio' })
+
+      // Library type
+      const libraryType = wrapper.find('[data-attribute=library-type-list]')
+      expect(libraryType.find('option[value="Pacbio_HiFi"]').exists()).toBe(true)
+      expect(libraryType.find('option[value="Pacbio_IsoSeq"]').exists()).toBe(true)
+      expect(libraryType.find('option[value="_undefined"]').exists()).toBe(true)
+      // It should not have any ONT options when Pacbio is the selected pipeline
+      expect(libraryType.find('option[value="ONT_GridIon"]').exists()).toBe(false)
 
       expect(wrapper.find('[data-attribute=smrt-cells-input]')).toBeTruthy()
       expect(wrapper.find('[data-attribute=estimate_of_gb_required]')).toBeTruthy()
