@@ -197,7 +197,6 @@ describe('Run.vue', () => {
       // TODO: awaiting refactoring
       // pacbioRun.findPools = vi.fn()
       // pacbioRun.editRun = vi.fn()
-      
       // wrapper = mount(PacbioRun, {
       //   propsData: { id: 1 },
       //   store,

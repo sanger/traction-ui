@@ -3,7 +3,7 @@ import WellEdit from '@/components/pacbio/PacbioRunWellEdit'
 import storePools from '@tests/data/StorePools'
 import * as Run from '@/api/PacbioRun'
 import * as Actions from '@/store/traction/pacbio/runs/actions'
-import { expect } from 'vitest'
+import { beforeEach, expect } from 'vitest'
 
 // They are like the following in the store; not an array.
 const smrtLinkVersions = {
@@ -29,13 +29,14 @@ describe('PacbioWellModal', () => {
     run = Run.build()
     run.smrt_link_version_id = 1
     state = { currentRun: run }
+    Object.assign(store.state.traction.pacbio.runCreate, storePools)
     store.state.traction.pacbio.runCreate.resources.smrtLinkVersions = smrtLinkVersions
     storeWell = Actions.buildWell({ state }, props.position)
     storeWell.pools = [{ id: 1, barcode: 'TRAC-0' }]
     run.plate.wells[0] = storeWell
     store.commit('traction/pacbio/runs/setCurrentRun', run)
 
-    // mocking the request for updatePoolBarcode method
+    // mocking the request for updatePoolBarcode method in checkPools
     const request = store.state.api.traction.pacbio.pools
     request.get = vi.fn()
     request.get.mockResolvedValue(Data.PacbioPool)
@@ -363,7 +364,6 @@ describe('PacbioWellModal', () => {
 
     describe('checkPools', () => {
       it('returns true if all the pools exist', async () => {
-        store.state.traction.pacbio.runCreate.pools = storePools
         storeWell.pools = [
           { id: '1', barcode: 'TRAC-2-1' },
           { id: '2', barcode: 'TRAC-2-2' },
@@ -374,7 +374,6 @@ describe('PacbioWellModal', () => {
       })
 
       it('returns false if one or more pools do not exist', async () => {
-        store.state.traction.pacbio.runCreate.pools = storePools
         storeWell.pools = [
           { id: '1', barcode: 'TRAC-2-0' },
           { id: '2', barcode: 'TRAC-2-2' },
@@ -387,7 +386,6 @@ describe('PacbioWellModal', () => {
 
     describe('updateCCSAnalysisOutput', () => {
       it('sets ccs_analysis_ouput to "No" when generate_hifi is set to "Do Not Generate"', () => {
-        // storeWell.mockReset()
         storeWell.generate_hifi = 'Do Not Generate'
         storeWell.ccs_analysis_output = 'Yes'
         wrapper.setData({ currentWell: storeWell })

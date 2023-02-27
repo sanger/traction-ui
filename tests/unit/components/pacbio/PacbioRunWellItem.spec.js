@@ -36,6 +36,8 @@ describe('Well.vue', () => {
       2: { id: 2, name: 'v11', default: false },
     }
 
+    Object.assign(store.state.traction.pacbio.runCreate, storePools)
+
     store.commit('traction/pacbio/runs/setCurrentRun', run)
     store.state.traction.pacbio.runCreate.resources.smrtLinkVersions = smrtLinkVersions
 
@@ -177,8 +179,7 @@ describe('Well.vue', () => {
 
     beforeEach(() => {
       newBarcode = 'TRAC-2-1'
-      store.state.traction.pacbio.pools = storePools
-      store.state.traction.pacbio.runCreate.pools = storePools
+      // store.state.traction.pacbio.runCreate = storePools
     })
 
     it('adds the pool to the well if the well exists', async () => {

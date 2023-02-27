@@ -108,7 +108,7 @@ describe('Pacbio Run Create view', () => {
     // get the pool list component, type in the barcode of the pool being searched, click search
     cy.get('#labware-finder-input').type('TRAC-2-2')
     cy.get('button').contains('Search').click()
-    
+
     cy.get('.list-group-item')
       // this obviously gets quite a lot into implementation but at least it works!
       .first()
