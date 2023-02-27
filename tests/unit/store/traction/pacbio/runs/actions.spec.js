@@ -89,7 +89,9 @@ describe('#editRun', () => {
   let getters, commit, mockRun, find
 
   beforeEach(() => {
-    mockRun = new Response(Data.PacbioRun).deserialize.runs[0]
+    // TODO: The file PacbioRunWithWellDefaults  is not a correct response
+    // once refactor is done we should remove it.
+    mockRun = new Response(Data.PacbioRunWithWellDefaults).deserialize.runs[0]
 
     find = vi.fn()
     getters = { runRequest: { find: find } }
@@ -101,7 +103,7 @@ describe('#editRun', () => {
       well.pools.forEach((pool) => (pool.barcode = pool.tube.barcode))
     })
     mockRun.plate.wellsToDelete = []
-    find.mockReturnValue(Data.PacbioRun)
+    find.mockReturnValue(Data.PacbioRunWithWellDefaults)
     await Actions.editRun({ commit, getters }, mockRun.id)
 
     // The run created in the action will be updated before calling setCurrentRun.

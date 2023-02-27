@@ -3,7 +3,7 @@ import actions from '@/store/traction/pacbio/runCreate/actions'
 import { describe } from 'vitest'
 
 describe('actions.js', () => {
-  const { fetchSmrtLinkVersions } = actions
+  const { fetchSmrtLinkVersions, fetchRun } = actions
 
   describe('fetchSmrtLinkVersions', () => {
     it('handles success', async () => {
@@ -34,5 +34,22 @@ describe('actions.js', () => {
       expect(commit).not.toHaveBeenCalled()
       expect(success).toBeFalsy()
     })
+  })
+
+  describe('fetchRun', () => {
+    it('handles success', async () => {
+      const commit = vi.fn()
+      const find = vi.fn()
+      const rootState = { api: { traction: { pacbio: { runs: { find } } } } }
+      find.mockResolvedValue(Data.PacbioRun)
+      const { success } = await fetchRun({ commit, rootState })
+      expect(commit).toHaveBeenCalledWith('populateRun', Data.PacbioRun.data.data)
+      expect(commit).toHaveBeenCalledWith('populateWells', Data.PacbioRun.data.included.slice(1, 2))
+      expect(commit).toHaveBeenCalledWith('populatePools', Data.PacbioRun.data.included.slice(2, 3))
+      expect(commit).toHaveBeenCalledWith('populateTubes', Data.PacbioRun.data.included.slice(3, 4))
+      expect(success).toBeTruthy()
+    })
+
+    it('handles failure', () => {})
   })
 })
