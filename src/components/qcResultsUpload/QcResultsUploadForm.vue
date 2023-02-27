@@ -5,18 +5,18 @@
         >Which QC Results would you like to upload?</traction-heading
       >
       <traction-select
-        class="my-5"
         id="used-by-select-input"
         v-model="usedBySelected"
+        class="my-5"
         :options="usedByOptions"
         :state="!!usedBySelected ? true : null"
         required
       ></traction-select>
       <traction-heading level="3" show-border>CSV File</traction-heading>
       <traction-file
-        class="my-5 text-left"
         id="qc-results-upload-file"
         v-model="file"
+        class="my-5 text-left"
         :state="!!file ? true : null"
         placeholder="Choose a file or drop it here..."
         drop-placeholder="Drop file here (CSV only)..."
@@ -31,7 +31,6 @@
           size="lg"
           :disabled="disableUpload"
         >
-          <!-- Weird bug - spinner won't show unless button text is two words/ big enough? -->
           Upload File
           <UploadIcon class="pl-1" />
           <traction-spinner v-show="busy"></traction-spinner>
@@ -40,8 +39,8 @@
           id="reenable-button"
           size="lg"
           :disabled="!disableUpload"
-          @click="disableUpload = !disableUpload"
           theme="reset"
+          @click="disableUpload = !disableUpload"
           >Re-enable</traction-button
         >
       </div>
