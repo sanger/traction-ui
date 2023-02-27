@@ -130,7 +130,7 @@
               <traction-button
                 id="reset"
                 full-width
-                theme="delete"
+                theme="reset"
                 data-action="reset-form"
                 @click="reset"
               >
@@ -140,7 +140,7 @@
                 id="importLabware"
                 :disabled="isDisabled"
                 full-width
-                theme="edit"
+                theme="create"
                 data-action="import-labware"
                 @click="importLabware"
               >
