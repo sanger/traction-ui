@@ -178,11 +178,18 @@ const mapAttribute = (data, attribute) => data.map(({ attributes }) => attribute
  * @return {Function} A mutation function for populating the resource
  */
 const populateById =
-  (resource, { includeRelationships = false } = {}, replaceData = false) =>
+  (
+    resource,
+    { includeRelationships = false, populateResources = true } = {},
+    replaceData = false,
+  ) =>
   (state, data) => {
+    // if resources then add to state.resources
+    const result = populateResources ? state.resources : state
+
     // Store the current data so we dont overwrite it unless specifed to do so
-    const before = replaceData ? {} : state.resources[resource]
-    Vue.set(state.resources, resource, {
+    const before = replaceData ? {} : result[resource]
+    Vue.set(result, resource, {
       ...before,
       ...dataToObjectById({ data, includeRelationships }),
     })

@@ -2,6 +2,7 @@ import * as JsonApi from '@/api/JsonApi'
 import TestResponse from '@tests/data/testResponse'
 import CircularResponse from '@tests/data/circularResponse'
 import { describe, expect } from 'vitest'
+import { Data } from '@support/testHelper'
 
 // TODO: create a factory which will build a JSON api response. Doing this manually is crushing me.
 describe('JsonApi', () => {
@@ -241,6 +242,31 @@ describe('JsonApi', () => {
       const data = TestResponse.data.data
       const filtered = JsonApi.mapAttribute(data, 'attrA')
       expect(filtered).toEqual(['you caught me', 'wild horses'])
+    })
+  })
+
+  describe('populateById', () => {
+    it('with resources', () => {
+      const state = { resources: {} }
+      const wells = Data.PacbioRun.data.included.slice(1, 2)
+      JsonApi.populateById('wells')(state, wells)
+      expect(state.resources.wells).toEqual(JsonApi.dataToObjectById({ data: wells }))
+    })
+
+    it('without resources', () => {
+      const state = {}
+      const wells = Data.PacbioRun.data.included.slice(1, 2)
+      JsonApi.populateById('wells', { populateResources: false })(state, wells)
+      expect(state.wells).toEqual(JsonApi.dataToObjectById({ data: wells }))
+    })
+
+    it('with relationships', () => {
+      const state = { resources: {} }
+      const wells = Data.PacbioRun.data.included.slice(1, 2)
+      JsonApi.populateById('wells', { includeRelationships: true })(state, wells)
+      expect(state.resources.wells).toEqual(
+        JsonApi.dataToObjectById({ data: wells, includeRelationships: true }),
+      )
     })
   })
 })
