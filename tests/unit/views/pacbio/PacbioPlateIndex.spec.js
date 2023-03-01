@@ -14,7 +14,7 @@ describe('PacbioPlates.vue', () => {
       router,
       localVue,
       stubs: {
-        Plate: true, // Stubbed to prevent unnecessarily loading the plate SVG
+        // Plate: true, // Stubbed to prevent unnecessarily loading the plate SVG
       },
     })
 
@@ -52,6 +52,8 @@ describe('PacbioPlates.vue', () => {
     it('has a plate component on button click', async () => {
       button = wrapper.find('#details-btn-61')
       await button.trigger('click')
+      // Here we flush promises because the getPlate promise needs to be resolved to see the plate
+      await flushPromises()
       expect(wrapper.findComponent({ ref: 'plate' }).exists()).toBeTruthy()
       expect(button.text()).toEqual('Hide Plate')
     })

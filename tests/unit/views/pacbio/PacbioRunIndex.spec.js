@@ -33,7 +33,7 @@ describe('Runs.vue', () => {
     })
 
     it('will redirect to the run when newRun is clicked', async () => {
-      const button = wrapper.find('#newRun')
+      const button = wrapper.find('[data-action=new-run]')
       button.trigger('click')
       expect(runs.$route.path).toEqual('/pacbio/run/new')
     })

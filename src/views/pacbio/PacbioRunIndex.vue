@@ -2,7 +2,13 @@
   <DataFetcher :fetcher="fetchPacbioRuns">
     <FilterCard :fetcher="fetchPacbioRuns" :filter-options="filterOptions" />
     <div class="clearfix">
-      <traction-button id="newRun" class="float-left" theme="create" @click="redirectToRun()">
+      <traction-button
+        id="newRun"
+        data-action="new-run"
+        class="float-left"
+        theme="create"
+        @click="redirectToRun()"
+      >
         New Run
       </traction-button>
       <traction-pagination

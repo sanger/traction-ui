@@ -1,4 +1,5 @@
 import Vue from 'vue'
+import defaultState from './state'
 
 const mutations = {
   setTags(state, tags) {
@@ -16,6 +17,15 @@ const mutations = {
   },
   removeMessage(state, messageIndex) {
     Vue.delete(state.messages, messageIndex)
+  },
+  /**
+   * Clears all messages
+   * @param {Object} state The Vuex state object
+   */
+  clearMessages(state) {
+    const new_state = defaultState()
+    // Keep tractionTags but clear messages
+    Object.assign(state, new_state, { tractionTags: state.tractionTags })
   },
 }
 

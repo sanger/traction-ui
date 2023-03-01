@@ -48,7 +48,7 @@ describe('Pacbio Run Create view', () => {
     const dataTransfer = new DataTransfer()
 
     cy.visit('#/pacbio/runs')
-    cy.get('button').contains('New Run').click()
+    cy.get('[data-action=new-run]').contains('New Run').click()
     cy.get('#sequencing-kit-box-barcode').type('Lxxxxx101826100123199')
     cy.get('.pacbioRunInfoEdit')
       .get('#dna-control-complex-box-barcode')
@@ -85,7 +85,7 @@ describe('Pacbio Run Create view', () => {
     const dataTransfer = new DataTransfer()
 
     cy.visit('#/pacbio/runs')
-    cy.get('button').contains('New Run').click()
+    cy.get('[data-action=new-run]').contains('New Run').click()
     cy.get('#sequencing-kit-box-barcode').type('Lxxxxx101826100123199')
     cy.get('.pacbioRunInfoEdit')
       .get('#dna-control-complex-box-barcode')
@@ -133,7 +133,7 @@ describe('Pacbio Run Create view', () => {
     const dataTransfer = new DataTransfer()
 
     cy.visit('#/pacbio/runs')
-    cy.get('button').contains('New Run').click()
+    cy.get('[data-action=new-run]').contains('New Run').click()
     cy.get('#sequencing-kit-box-barcode').type('Lxxxxx101826100123199')
     cy.get('#dna-control-complex-box-barcode').type('Lxxxxx101717600123199')
     cy.get('#system-name').select('Sequel IIe')
@@ -160,7 +160,7 @@ describe('Pacbio Run Create view', () => {
     const dataTransfer = new DataTransfer()
 
     cy.visit('#/pacbio/runs')
-    cy.get('button').contains('New Run').click()
+    cy.get('[data-action=new-run]').contains('New Run').click()
     cy.get('#sequencing-kit-box-barcode').type('Lxxxxx101826100123199')
     cy.get('.pacbioRunInfoEdit')
       .get('#dna-control-complex-box-barcode')
