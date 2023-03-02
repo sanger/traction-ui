@@ -39,10 +39,6 @@ const findPools = async ({ commit, getters }, filter) => {
   }
 }
 
-const actions = { findPools }
-
-export { findPools }
-
 // Asynchronous update of state.
 export default {
   /**
@@ -62,5 +58,5 @@ export default {
     }
     return { success, errors }
   },
-  ...actions,
+  findPools,
 }

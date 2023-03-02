@@ -175,12 +175,8 @@ describe('Well.vue', () => {
 
   // TODO: same as well modal - refactor baby!
   describe('updatePoolBarcode', () => {
-    let newBarcode, expectedWell
-
-    beforeEach(() => {
-      newBarcode = 'TRAC-2-1'
-      // store.state.traction.pacbio.runCreate = storePools
-    })
+    let expectedWell
+    const newBarcode = 'TRAC-2-1'
 
     it('adds the pool to the well if the well exists', async () => {
       wrapper.vm.updateWell = vi.fn()

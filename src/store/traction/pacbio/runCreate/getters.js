@@ -18,7 +18,8 @@ export default {
     return Object.values(getters.smrtLinkVersionList).find((version) => version.default)
   },
 
-  // copied over from pools/getters.js
+  // TODO refactor to reuse the functions
+  // poolsRequest and pools copied over from pools/getters.js
   poolRequest: (state, getters, rootState) => rootState.api.traction.pacbio.pools,
   pools: (state) => {
     return Object.values(state.pools).map((pool) => {

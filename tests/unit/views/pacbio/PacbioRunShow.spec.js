@@ -192,24 +192,24 @@ describe('Run.vue', () => {
     })
   })
 
-  describe('#created', () => {
+  describe.skip('#created', () => {
     it('"findPools" gets called with a list of barcodes', () => {
       // TODO: awaiting refactoring
-      // pacbioRun.findPools = vi.fn()
-      // pacbioRun.editRun = vi.fn()
-      // wrapper = mount(PacbioRun, {
-      //   propsData: { id: 1 },
-      //   store,
-      //   router,
-      //   localVue,
-      //   stubs: {
-      //     Plate: true,
-      //     pacbioPoolList: true,
-      //     PacbioRunInfoEdit: true,
-      //   },
-      // })
-      // pacbioRun = wrapper.vm
-      // expect(pacbioRun.findPools).toBeCalledWith({ barcode: 'TRAC-1-1,TRAC-1-2,TRAC-1-3,TRAC-1-4' })
+      pacbioRun.findPools = vi.fn()
+      pacbioRun.editRun = vi.fn()
+      wrapper = mount(PacbioRun, {
+        propsData: { id: 1 },
+        store,
+        router,
+        localVue,
+        stubs: {
+          Plate: true,
+          pacbioPoolList: true,
+          PacbioRunInfoEdit: true,
+        },
+      })
+      pacbioRun = wrapper.vm
+      expect(pacbioRun.findPools).toBeCalledWith({ barcode: 'TRAC-1-1,TRAC-1-2,TRAC-1-3,TRAC-1-4' })
     })
   })
 
