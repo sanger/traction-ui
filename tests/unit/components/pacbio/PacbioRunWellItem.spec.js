@@ -36,6 +36,8 @@ describe('Well.vue', () => {
       2: { id: 2, name: 'v11', default: false },
     }
 
+    Object.assign(store.state.traction.pacbio.runCreate, storePools)
+
     store.commit('traction/pacbio/runs/setCurrentRun', run)
     store.state.traction.pacbio.runCreate.resources.smrtLinkVersions = smrtLinkVersions
 
@@ -173,12 +175,8 @@ describe('Well.vue', () => {
 
   // TODO: same as well modal - refactor baby!
   describe('updatePoolBarcode', () => {
-    let newBarcode, expectedWell
-
-    beforeEach(() => {
-      newBarcode = 'TRAC-2-1'
-      store.state.traction.pacbio.pools = storePools
-    })
+    let expectedWell
+    const newBarcode = 'TRAC-2-1'
 
     it('adds the pool to the well if the well exists', async () => {
       wrapper.vm.updateWell = vi.fn()
@@ -186,7 +184,6 @@ describe('Well.vue', () => {
       expectedWell.pools.push({ id: '1', barcode: 'TRAC-2-1' })
 
       await wrapper.vm.updatePoolBarcode(newBarcode)
-
       expect(wrapper.vm.updateWell).toBeCalledWith(expectedWell)
     })
 

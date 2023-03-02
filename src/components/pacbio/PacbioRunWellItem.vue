@@ -80,7 +80,7 @@ export default {
   },
   computed: {
     ...mapGetters('traction/pacbio/runs', ['well']),
-    ...mapGetters('traction/pacbio/pools', ['poolByBarcode']),
+    ...mapGetters('traction/pacbio/runCreate', ['poolByBarcode']),
     position() {
       return `${this.row}${this.column}`
     },
@@ -138,6 +138,7 @@ export default {
     async updatePoolBarcode(barcode) {
       const existingWell = this.well(this.position)
       const { id } = this.poolByBarcode(barcode)
+
       if (existingWell) {
         // if well exists, push pool into well
         existingWell.pools.push({ id, barcode })

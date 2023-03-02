@@ -1,6 +1,6 @@
 import PacbioRun from '@/views/pacbio/PacbioRunShow'
 import { localVue, mount, store, router } from '@support/testHelper'
-import { beforeEach, describe, it } from 'vitest'
+import { beforeEach, describe, expect, it } from 'vitest'
 
 const smrtLinkVersions = [
   {
@@ -36,10 +36,10 @@ describe('Run.vue', () => {
       },
       plate: {
         wells: [
-          { position: 'A1', library: { barcode: '' } },
-          { position: 'A2', library: { barcode: '' } },
-          { position: 'B1', library: { barcode: '' } },
-          { position: 'B2', library: { barcode: '' } },
+          { position: 'A1', pools: [{ tube: { barcode: 'TRAC-1-1' } }] },
+          { position: 'A2', pools: [{ tube: { barcode: 'TRAC-1-2' } }] },
+          { position: 'B1', pools: [{ tube: { barcode: 'TRAC-1-3' } }] },
+          { position: 'B2', pools: [{ tube: { barcode: 'TRAC-1-4' } }] },
         ],
       },
     }
@@ -155,6 +155,7 @@ describe('Run.vue', () => {
 
       pacbioRun.showAlert = vi.fn()
       pacbioRun.updateRun = vi.fn()
+      pacbioRun.editRun = vi.fn()
       pacbioRun.redirectToRuns = vi.fn()
     })
 
@@ -188,6 +189,27 @@ describe('Run.vue', () => {
         'run-validation-message',
       )
       expect(pacbioRun.redirectToRuns).not.toBeCalled()
+    })
+  })
+
+  describe.skip('#created', () => {
+    it('"findPools" gets called with a list of barcodes', () => {
+      // TODO: awaiting refactoring
+      pacbioRun.findPools = vi.fn()
+      pacbioRun.editRun = vi.fn()
+      wrapper = mount(PacbioRun, {
+        propsData: { id: 1 },
+        store,
+        router,
+        localVue,
+        stubs: {
+          Plate: true,
+          pacbioPoolList: true,
+          PacbioRunInfoEdit: true,
+        },
+      })
+      pacbioRun = wrapper.vm
+      expect(pacbioRun.findPools).toBeCalledWith({ barcode: 'TRAC-1-1,TRAC-1-2,TRAC-1-3,TRAC-1-4' })
     })
   })
 
