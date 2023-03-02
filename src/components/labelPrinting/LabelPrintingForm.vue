@@ -1,14 +1,10 @@
 <template>
   <div class="w-3/5 mx-auto">
     <div class="w-full mt-4 w-100 gap-4 space-x-4 bg-gray-100 rounded-md">
-      <traction-form
-        v-if="show"
-        class="text-left flex flex-row"
-        @submit="printLabels"
-        @reset="onReset"
-      >
+      <traction-form v-if="show" class="flex flex-row" @submit="printLabels" @reset="onReset">
         <div class="w-full space-x-4 space-y-10 p-10">
           <traction-form-group id="barcode-input-group" label-for="barcode-input">
+            <BarcodeIcon class="float-left mr-2 mt-3" />
             <traction-heading level="3" show-border>Barcodes</traction-heading>
             <traction-muted-text>A list of barcodes to create labels for</traction-muted-text>
             <div class="mt-2">
@@ -103,6 +99,7 @@ import {
 } from '@/lib/LabelPrintingHelpers'
 import { getCurrentDate } from '@/lib/DateHelpers'
 import { mapActions } from 'vuex'
+import BarcodeIcon from '@/icons/BarcodeIcon.vue'
 
 const defaultForm = () => ({
   sourceBarcodeList: null,
@@ -114,6 +111,9 @@ const defaultForm = () => ({
 
 export default {
   name: 'LabelPrintingForm',
+  components: {
+    BarcodeIcon,
+  },
   data() {
     return {
       form: defaultForm(),
