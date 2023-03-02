@@ -5,6 +5,7 @@ import {
   valid,
   defaultWellAttributes,
   newWell,
+  payload,
 } from '@/store/traction/pacbio/runCreate/run'
 
 const existingRun = {
@@ -13,6 +14,11 @@ const existingRun = {
   dna_control_complex_box_barcode: 'mods',
   comments: 'blah, blah, blah',
   smrt_link_version_id: 1,
+}
+
+const wells = {
+  1: { ...newWell() },
+  2: { ...newWell(), pools: [1, 2] },
 }
 
 describe('run.js', () => {
@@ -63,6 +69,43 @@ describe('run.js', () => {
 
     it('when there are errors', () => {
       expect(valid({ run: { ...existingRun, errors: { a: 1, b: 2 } } })).toBeFalsy()
+    })
+  })
+
+  describe('payload', () => {
+    const wellValues = Object.values(wells)
+
+    it('for a new run', () => {
+      const aRun = newRun()
+      // eslint-disable-next-line no-unused-vars
+      const { id, ...attributes } = aRun
+      const aPayload = payload({ run: attributes, wells: wellValues })
+      expect(aPayload).toEqual({
+        data: {
+          type: 'runs',
+          attributes: {
+            wells_attributes: wellValues,
+            ...attributes,
+          },
+        },
+      })
+    })
+
+    it('for an existing run', () => {
+      const aRun = newRun()
+      const { id, ...attributes } = aRun
+      const wellValues = Object.values(wells)
+      const aPayload = payload({ id, run: attributes, wells: wellValues })
+      expect(aPayload).toEqual({
+        data: {
+          type: 'runs',
+          id,
+          attributes: {
+            wells_attributes: wellValues,
+            ...attributes,
+          },
+        },
+      })
     })
   })
 })

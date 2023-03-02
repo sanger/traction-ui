@@ -82,4 +82,17 @@ const valid = ({ run }) => {
   return Object.keys(run.errors || {}).length === 0
 }
 
-export { newRun, validate, valid, defaultWellAttributes, newWell }
+const payload = ({ id, run, wells }) => {
+  return {
+    data: {
+      type: 'runs',
+      id,
+      attributes: {
+        ...run,
+        wells_attributes: [...wells],
+      },
+    },
+  }
+}
+
+export { newRun, validate, valid, defaultWellAttributes, newWell, payload }
