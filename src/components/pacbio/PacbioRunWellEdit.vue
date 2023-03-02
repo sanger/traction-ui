@@ -187,6 +187,7 @@
             ref="poolBarcode"
             :value="`${row.item.barcode}`"
             placeholder="Pool Barcode"
+            :debounce="500"
             @input="updatePoolBarcode(row, $event)"
           >
           </traction-input>
@@ -228,7 +229,7 @@ export default {
       type: [String],
       required: true,
     },
-    /* 
+    /*
       we need this as by default static is false
       which means we can't test it.
       but when static is true it is displayed on top

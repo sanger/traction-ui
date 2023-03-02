@@ -73,6 +73,21 @@ describe('ONTRuns.vue', () => {
     })
   })
 
+  describe('generate sample sheet button', () => {
+    let button
+
+    it('it exists when the run has wells with pools', () => {
+      button = wrapper.find('#sample-sheet-1')
+      expect(button.isVisible()).toBe(true) // button is shown
+    })
+
+    it('on click generateSampleSheetPath is called', () => {
+      button = wrapper.find('#sample-sheet-1')
+
+      expect(button.attributes('href')).toEqual(runs.generateSampleSheetPath(1))
+    })
+  })
+
   describe('#showAlert', () => {
     it('emits an event with the message', () => {
       runs.showAlert('show this message', 'danger')

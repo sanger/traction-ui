@@ -22,7 +22,7 @@ describe('ONT Runs view', () => {
         cy.get('.state').invoke('text').should('match', /\w+/)
         cy.get('.instrument-name').invoke('text').should('match', /\w+/)
         cy.get('.created-at').invoke('text').should('match', /\d+/)
-        cy.get('.actions').invoke('text').should('include', 'Edit')
+        cy.get('.actions').invoke('text').should('include', 'Edit').and('include', 'Sample Sheet')
       })
   })
 })
