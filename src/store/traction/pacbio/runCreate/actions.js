@@ -1,5 +1,6 @@
 import { handleResponse } from '@/api/ResponseHelper'
 import { groupIncludedByResource } from '@/api/JsonApi'
+import { createPayload } from '@/store/traction/pacbio/runCreate/run'
 
 // Asynchronous update of state.
 export default {
@@ -43,7 +44,30 @@ export default {
     return { success, errors }
   },
 
-  saveRun: async() => {
-    return
-  }
+  /**
+   * Saves (persists) the existing run. If it is a new run it will be created.
+   * If it is an existing run it will be updated.
+   * @param rootState the vuex rootState object. Provides access to current state
+   * @param state {runs, wells}. The current run and it's wells
+   * TODO: There is a lot of jiggery pokery to get everything working in the method
+   * and tests so a factory might be the best idea.
+   */
+  saveRun: async ({ rootState, state: { run, wells } }) => {
+    const request = rootState.api.traction.pacbio.runs
+    const { id, ...runAttributes } = run
+    const wellValues = Object.values(wells)
+
+    const payload =
+      id === 'new'
+        ? createPayload({ run: runAttributes, wells: wellValues })
+        : createPayload({ id, run: runAttributes, wells: wellValues })
+
+    const promise = id === 'new' ? request.create({ data: payload }) : request.update(payload)
+
+    const response = await handleResponse(promise)
+
+    const { success, errors = [] } = response
+
+    return { success, errors }
+  },
 }

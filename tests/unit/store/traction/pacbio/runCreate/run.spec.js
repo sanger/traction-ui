@@ -5,7 +5,7 @@ import {
   valid,
   defaultWellAttributes,
   newWell,
-  payload,
+  createPayload,
 } from '@/store/traction/pacbio/runCreate/run'
 
 const existingRun = {
@@ -27,7 +27,6 @@ describe('run.js', () => {
       const run = newRun()
       expect(run.id).toEqual('new')
       expect(run.system_name).toBeTypeOf('string')
-      expect(run.plate.wells).toEqual([])
     })
   })
 
@@ -72,15 +71,15 @@ describe('run.js', () => {
     })
   })
 
-  describe('payload', () => {
+  describe('createPayload', () => {
     const wellValues = Object.values(wells)
 
     it('for a new run', () => {
       const aRun = newRun()
       // eslint-disable-next-line no-unused-vars
       const { id, ...attributes } = aRun
-      const aPayload = payload({ run: attributes, wells: wellValues })
-      expect(aPayload).toEqual({
+      const payload = createPayload({ run: attributes, wells: wellValues })
+      expect(payload).toEqual({
         data: {
           type: 'runs',
           attributes: {
@@ -95,8 +94,8 @@ describe('run.js', () => {
       const aRun = newRun()
       const { id, ...attributes } = aRun
       const wellValues = Object.values(wells)
-      const aPayload = payload({ id, run: attributes, wells: wellValues })
-      expect(aPayload).toEqual({
+      const payload = createPayload({ id, run: attributes, wells: wellValues })
+      expect(payload).toEqual({
         data: {
           type: 'runs',
           id,

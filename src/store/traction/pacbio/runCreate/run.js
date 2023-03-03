@@ -11,9 +11,6 @@ const runAttributes = {
   dna_control_complex_box_barcode: null,
   comments: null,
   smrt_link_version_id: null,
-  plate: {
-    wells: [],
-  },
 }
 
 /*
@@ -82,7 +79,7 @@ const valid = ({ run }) => {
   return Object.keys(run.errors || {}).length === 0
 }
 
-const payload = ({ id, run, wells }) => {
+const createPayload = ({ id, run, wells }) => {
   return {
     data: {
       type: 'runs',
@@ -95,4 +92,4 @@ const payload = ({ id, run, wells }) => {
   }
 }
 
-export { newRun, validate, valid, defaultWellAttributes, newWell, payload }
+export { newRun, validate, valid, defaultWellAttributes, newWell, createPayload }

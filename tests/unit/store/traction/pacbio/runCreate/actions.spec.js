@@ -1,12 +1,17 @@
 import { Data } from '@support/testHelper'
 import actions from '@/store/traction/pacbio/runCreate/actions'
 import { describe } from 'vitest'
-import { newRun, newWell, payload } from '@/store/traction/pacbio/runCreate/run'
+import { newRun, newWell, createPayload } from '@/store/traction/pacbio/runCreate/run'
 
 const failedResponse = {
   data: { data: [] },
   status: 500,
   statusText: 'Internal Server Error',
+}
+
+const wells = {
+  1: { ...newWell() },
+  2: { ...newWell(), pools: [1, 2] },
 }
 
 describe('actions.js', () => {
@@ -64,9 +69,7 @@ describe('actions.js', () => {
     })
   })
 
-  describe.skip('saveRun', async () => {
-    const wells = { 1: newWell(), 2: newWell() }
-
+  describe('saveRun', async () => {
     describe('create', () => {
       const run = newRun()
 
@@ -76,41 +79,52 @@ describe('actions.js', () => {
           data: { data: {} },
         }
         const create = vi.fn()
+        // eslint-disable-next-line no-unused-vars
+        const { id, ...attributes } = run
         const rootState = { api: { traction: { pacbio: { runs: { create } } } } }
         create.mockResolvedValue(mockResponse)
-        const { success, data } = await saveRun({ rootState, state: { run, wells } })
+        const { success } = await saveRun({ rootState, state: { run, wells } })
         expect(create).toHaveBeenCalledWith({
-          data: payload({ run, wells }),
-          include: expect.anything(),
+          data: createPayload({ run: attributes, wells: Object.values(wells) }),
         })
         expect(success).toBeTruthy()
-        expect(data).toEqual({ data: {} })
       })
 
-      it('failure', () => {})
+      it('failure', async () => {
+        const create = vi.fn()
+        const rootState = { api: { traction: { pacbio: { runs: { create } } } } }
+        create.mockRejectedValue(failedResponse)
+        const { success } = await saveRun({ rootState, state: { run, wells } })
+        expect(success).toBeFalsy()
+      })
     })
 
     describe('update', () => {
+      const run = { ...newRun(), id: 1 }
+      const { id, ...attributes } = run
+
       it('success', async () => {
         const mockResponse = {
           status: '201',
           data: { data: {} },
         }
-        const create = vi.fn()
-        const run = {}
-        const wells = []
-        const rootState = { api: { traction: { pacbio: { runs: { create } } } } }
-        create.mockResolvedValue(mockResponse)
-        const { success, data } = await saveRun({ rootState, state: { run, wells } })
-        expect(create).toHaveBeenCalledWith({
-          data: payload({ run, wells }),
-          include: expect.anything(),
-        })
+        const update = vi.fn()
+        const rootState = { api: { traction: { pacbio: { runs: { update } } } } }
+        update.mockResolvedValue(mockResponse)
+        const { success } = await saveRun({ rootState, state: { run, wells } })
+        expect(update).toHaveBeenCalledWith(
+          createPayload({ id, run: attributes, wells: Object.values(wells) }),
+        )
         expect(success).toBeTruthy()
-        expect(data).toEqual({ data: {} })
       })
 
-      it('failure', () => {})
+      it('failure', async () => {
+        const update = vi.fn()
+        const rootState = { api: { traction: { pacbio: { runs: { update } } } } }
+        update.mockRejectedValue(failedResponse)
+        const { success } = await saveRun({ rootState, state: { id, run, wells } })
+        expect(success).toBeFalsy()
+      })
     })
   })
 })
