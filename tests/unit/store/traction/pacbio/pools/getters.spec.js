@@ -102,11 +102,6 @@ describe('getters', () => {
     expect(actual).toEqual(pools)
   })
 
-  it('"poolByBarcode" returns the pool with the specified barcode from "state.pools"', () => {
-    const actual = getters.poolByBarcode(state, { pools: getters.pools(state) })('TRAC-2-1')
-    expect(actual).toEqual(pools[0])
-  })
-
   it('"pools" returns pools successfully and with an empty library group_id if that library has no tag', () => {
     state.libraries[1] = {
       id: '1',

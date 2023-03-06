@@ -1,6 +1,7 @@
 <template>
   <traction-select
     id="data-type"
+    data-attribute="data-type-list"
     :value="value"
     :options="dataTypes"
     @input="handleInput"

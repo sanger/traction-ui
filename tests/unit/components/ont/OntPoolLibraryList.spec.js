@@ -51,6 +51,9 @@ describe('OntPoolLibraryList.vue', () => {
     const wrapper = mount(OntPoolLibraryList, {
       store,
       localVue,
+      propsData: {
+        notify: () => {},
+      },
     })
     expect(wrapper.findAll('[data-type=pool-library-edit]').length).toEqual(
       Object.values(libraries).length,

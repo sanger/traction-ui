@@ -18,10 +18,19 @@ export default () => {
     // Wells: The wells that belong to the run
     wells: {},
 
-    //Pools: The pools that belong to the wells
+    //Pools: The pools that belong to the wells or the pool selected for a new run
     pools: {},
 
-    //Tubes: The tubes for each pool
+    //Tubes: The tubes for each pool or the tubes selected for a new run
     tubes: {},
+
+    //Libraries: The libraries for the currently selected pools
+    libraries: {},
+
+    //Requests: The requests for the libraries for the currenly selected pools
+    requests: {},
+
+    //Tags: The tags for the currently selected libraries
+    tags: {},
   }
 }

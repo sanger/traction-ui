@@ -29,11 +29,6 @@ const getters = {
       }
     })
   },
-  poolByBarcode:
-    (state, { pools }) =>
-    (barcode) => {
-      return pools.find((pool) => pool.barcode === barcode)
-    },
 }
 
 export default getters

@@ -1,6 +1,18 @@
 import { populateById } from '@/api/JsonApi'
+import { dataToObjectById } from '@/api/JsonApi'
+import Vue from 'vue'
+import defaultState from './state'
 
-// Mutations handle synchronous update of state.
+// Mutations handle synchronous update of state
+
+// Helper function for setting pools data
+const setData = (state, type, data, includeRelationships = false) => {
+  Vue.set(state, type, {
+    ...state[type],
+    ...dataToObjectById({ data, includeRelationships }),
+  })
+}
+
 export default {
   /**
    * Populated with resources via APi calls from the actions
@@ -34,4 +46,30 @@ export default {
    * @param {Object} smrtLinkVersions The pools for the wells for the current run
    */
   populatePools: populateById('pools', { includeRelationships: true, populateResources: false }),
+  setPools(state, pools) {
+    Vue.set(state, 'pools', {
+      ...state.pools,
+      ...dataToObjectById({ data: pools, includeRelationships: true }),
+    })
+  },
+
+  setTubes(state, tubes) {
+    setData(state, 'tubes', tubes, false)
+  },
+  setLibraries(state, libraries) {
+    setData(state, 'libraries', libraries, true)
+  },
+  setTags(state, tags) {
+    setData(state, 'tags', tags, false)
+  },
+  setRequests(state, requests) {
+    setData(state, 'requests', requests, false)
+  },
+  removePool(state, id) {
+    Vue.delete(state.pools, id)
+  },
+  clearPoolData(state) {
+    const new_state = defaultState()
+    Object.assign(state, new_state, { resources: state.resources })
+  },
 }

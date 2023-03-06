@@ -187,6 +187,7 @@
             ref="poolBarcode"
             :value="`${row.item.barcode}`"
             placeholder="Pool Barcode"
+            :debounce="500"
             @input="updatePoolBarcode(row, $event)"
           >
           </traction-input>
@@ -228,7 +229,7 @@ export default {
       type: [String],
       required: true,
     },
-    /* 
+    /*
       we need this as by default static is false
       which means we can't test it.
       but when static is true it is displayed on top
@@ -279,7 +280,7 @@ export default {
   },
   computed: {
     ...mapGetters('traction/pacbio/runs', ['currentRun', 'well']),
-    ...mapGetters('traction/pacbio/pools', ['poolByBarcode']),
+    ...mapGetters('traction/pacbio/runCreate', ['poolByBarcode']),
     selectedSmrtLinkVersion() {
       return Object.values(
         this.$store.getters['traction/pacbio/runCreate/smrtLinkVersionList'],
@@ -355,6 +356,7 @@ export default {
     },
     async updatePoolBarcode(row, barcode) {
       const index = row.index
+      await this.$store.dispatch('traction/pacbio/runCreate/findPools', { barcode: barcode })
       const pool = await this.poolByBarcode(barcode)
       if (pool) {
         this.currentWell.pools[index] = { id: pool.id, barcode }

@@ -38,6 +38,12 @@ describe('Pacbio Run Create view', () => {
         fixture: 'tractionPacbioPools.json',
       },
     )
+    cy.intercept(
+      '/v1/pacbio/pools?filter[barcode]=TRAC-2-2&include=tube,libraries.tag,libraries.request&fields[requests]=sample_name&fields[tubes]=barcode&fields[tags]=group_id&fields[libraries]=request,tag,run_suitability',
+      {
+        fixture: 'pacbioPool.json',
+      },
+    )
   })
 
   it('Creates a run successfully - v10', () => {
@@ -48,14 +54,19 @@ describe('Pacbio Run Create view', () => {
     const dataTransfer = new DataTransfer()
 
     cy.visit('#/pacbio/runs')
-    cy.get('button').contains('New Run').click()
+    cy.get('[data-action=new-run]').contains('New Run').click()
     cy.get('#sequencing-kit-box-barcode').type('Lxxxxx101826100123199')
     cy.get('.pacbioRunInfoEdit')
       .get('#dna-control-complex-box-barcode')
       .type('Lxxxxx101717600123199')
     cy.get('#system-name').select('Sequel IIe')
     cy.get('[data-attribute="smrt-link-version"]').select('v10')
-    // TODO: calling it  list group item is not specific enough
+
+    // get the pool list component, type in the barcode of the pool being searched, click search
+    cy.get('#labware-finder-input').type('TRAC-2-2')
+    cy.get('button').contains('Search').click()
+
+    // get the pool being searched
     cy.get('.list-group-item')
       // this obviously gets quite a lot into implementation but at least it works!
       .first()
@@ -85,7 +96,7 @@ describe('Pacbio Run Create view', () => {
     const dataTransfer = new DataTransfer()
 
     cy.visit('#/pacbio/runs')
-    cy.get('button').contains('New Run').click()
+    cy.get('[data-action=new-run]').contains('New Run').click()
     cy.get('#sequencing-kit-box-barcode').type('Lxxxxx101826100123199')
     cy.get('.pacbioRunInfoEdit')
       .get('#dna-control-complex-box-barcode')
@@ -93,6 +104,11 @@ describe('Pacbio Run Create view', () => {
     cy.get('#system-name').select('Sequel IIe')
     cy.get('[data-attribute="smrt-link-version"]').select('v11')
     // TODO: calling it  list group item is not specific enough
+
+    // get the pool list component, type in the barcode of the pool being searched, click search
+    cy.get('#labware-finder-input').type('TRAC-2-2')
+    cy.get('button').contains('Search').click()
+
     cy.get('.list-group-item')
       // this obviously gets quite a lot into implementation but at least it works!
       .first()
@@ -133,10 +149,14 @@ describe('Pacbio Run Create view', () => {
     const dataTransfer = new DataTransfer()
 
     cy.visit('#/pacbio/runs')
-    cy.get('button').contains('New Run').click()
+    cy.get('[data-action=new-run]').contains('New Run').click()
     cy.get('#sequencing-kit-box-barcode').type('Lxxxxx101826100123199')
     cy.get('#dna-control-complex-box-barcode').type('Lxxxxx101717600123199')
     cy.get('#system-name').select('Sequel IIe')
+    // find the pool by barcode
+    cy.get('#labware-finder-input').type('TRAC-2-2')
+    cy.get('button').contains('Search').click()
+
     cy.get('.list-group-item')
       .first()
       .trigger('dragstart', { dataTransfer: dataTransfer, force: true })
@@ -160,7 +180,7 @@ describe('Pacbio Run Create view', () => {
     const dataTransfer = new DataTransfer()
 
     cy.visit('#/pacbio/runs')
-    cy.get('button').contains('New Run').click()
+    cy.get('[data-action=new-run]').contains('New Run').click()
     cy.get('#sequencing-kit-box-barcode').type('Lxxxxx101826100123199')
     cy.get('.pacbioRunInfoEdit')
       .get('#dna-control-complex-box-barcode')

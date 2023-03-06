@@ -32,11 +32,7 @@ import {
   BCardText,
   BListGroup,
   BListGroupItem,
-  BTabs,
-  BTab,
   BTable,
-  BBadge,
-  BFormCheckbox,
   BFormFile,
   BTableSimple,
   BTr,
@@ -46,10 +42,6 @@ import {
   BTh,
   BTbody,
   BFormTextarea,
-  BCardHeader,
-  BNav,
-  BNavItem,
-  BCardBody,
   BInputGroup,
   BInputGroupAppend,
 } from 'bootstrap-vue'
@@ -64,16 +56,11 @@ const registerBootstrapComponents = (vue) => {
   vue.component('traction-form', BForm)
   vue.component('traction-form-group', BFormGroup)
   vue.component('traction-card', BCard)
-  vue.component('traction-card-body', BCardBody)
   vue.component('traction-card-text', BCardText)
   vue.component('traction-list-group', BListGroup)
   vue.component('traction-list-group-item', BListGroupItem)
-  vue.component('traction-tabs', BTabs)
-  vue.component('traction-tab', BTab)
   vue.component('traction-table', BTable)
   vue.component('traction-table-simple', BTableSimple)
-  vue.component('traction-badge', BBadge)
-  vue.component('traction-checkbox', BFormCheckbox)
   vue.component('traction-file', BFormFile)
   vue.component('traction-tr', BTr)
   vue.component('traction-td', BTd)
@@ -82,9 +69,6 @@ const registerBootstrapComponents = (vue) => {
   vue.component('traction-th', BTh)
   vue.component('traction-tbody', BTbody)
   vue.component('traction-textarea', BFormTextarea)
-  vue.component('traction-card-header', BCardHeader)
-  vue.component('traction-nav-item', BNavItem)
-  vue.component('traction-nav', BNav)
   vue.component('traction-input-group', BInputGroup)
   vue.component('traction-input-group-append', BInputGroupAppend)
   /*

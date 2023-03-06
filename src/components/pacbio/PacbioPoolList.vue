@@ -1,21 +1,23 @@
 <template>
   <div class="pools">
-    <traction-list-group class="list-group">
-      <tube v-for="pool in pools" :key="pool.id" v-bind="pool"> </tube>
-    </traction-list-group>
+    <div class="font-semibold text-xl text-left py-3">Pools</div>
+    <LabwareFinder :fetcher="findPools" filter="barcode" />
+    <PacbioPoolSelectedList></PacbioPoolSelectedList>
   </div>
 </template>
 <script>
 import TableHelper from '@/mixins/TableHelper'
 import { createNamespacedHelpers } from 'vuex'
-import Tube from '@/components/pacbio/PacbioPoolTubeItem'
+import LabwareFinder from '@/components/LabwareFinder'
+import PacbioPoolSelectedList from './PacbioPoolSelectedList.vue'
 
-const { mapActions, mapGetters } = createNamespacedHelpers('traction/pacbio/pools')
+const { mapActions, mapGetters } = createNamespacedHelpers('traction/pacbio/runCreate')
 
 export default {
   name: 'PacbioPoolList',
   components: {
-    Tube,
+    LabwareFinder,
+    PacbioPoolSelectedList,
   },
   mixins: [TableHelper],
   data() {
@@ -24,18 +26,8 @@ export default {
   computed: {
     ...mapGetters(['pools']),
   },
-  created() {
-    this.provider()
-  },
   methods: {
-    async provider() {
-      try {
-        await this.setPools()
-      } catch (error) {
-        this.showAlert(`Failed to get pools: ${error.message}`, 'danger')
-      }
-    },
-    ...mapActions(['setPools']),
+    ...mapActions(['findPools']),
   },
 }
 </script>
@@ -44,9 +36,5 @@ export default {
   border: solid;
   border-width: 1px;
   padding: 20px;
-}
-.list-group {
-  max-height: 400px;
-  overflow-y: auto;
 }
 </style>

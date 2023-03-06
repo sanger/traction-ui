@@ -1,6 +1,6 @@
 import { Data } from '@support/testHelper'
 import actions from '@/store/traction/pacbio/runCreate/actions'
-import { describe } from 'vitest'
+import { describe, expect, it } from 'vitest'
 import { newRun, newWell, createPayload } from '@/store/traction/pacbio/runCreate/run'
 
 const failedResponse = {
@@ -15,7 +15,7 @@ const wells = {
 }
 
 describe('actions.js', () => {
-  const { fetchSmrtLinkVersions, fetchRun, saveRun } = actions
+  const { fetchSmrtLinkVersions, findPools, fetchRun, saveRun } = actions
 
   describe('fetchSmrtLinkVersions', () => {
     it('handles success', async () => {
@@ -66,6 +66,33 @@ describe('actions.js', () => {
       const { success } = await fetchRun({ commit, rootState })
       expect(commit).not.toHaveBeenCalled()
       expect(success).toBeFalsy()
+    })
+  })
+
+  describe('findPools', () => {
+    let commit, get, getters
+    beforeEach(() => {
+      // mock commit
+      commit = vi.fn()
+      // mock dependencies
+      get = vi.fn()
+      getters = { poolRequest: { get: get } }
+    })
+
+    it('returns the pool when given a valid tube barcode', async () => {
+      const response = Data.PacbioPool
+      const { data: pools, included } = response.data
+      get.mockResolvedValue(response)
+
+      // apply action
+      const { success } = await findPools({ commit, getters }, { barcode: 'TRAC-2-1' })
+
+      // assert result
+      expect(commit).toHaveBeenCalledWith('setPools', pools.slice(0, 1))
+      expect(commit).toHaveBeenCalledWith('setTubes', included.slice(0, 1))
+      expect(commit).toHaveBeenCalledWith('setLibraries', included.slice(1, 2))
+      expect(commit).toHaveBeenCalledWith('setRequests', included.slice(2, 3))
+      expect(success).toEqual(true)
     })
   })
 
