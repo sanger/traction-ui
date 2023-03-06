@@ -11,7 +11,7 @@
           <traction-select
             id="sourceSelect"
             v-model="source"
-            class="mt-2"
+            class="inline-block w-full"
             :options="receptions"
             data-type="source-list"
           />
@@ -26,6 +26,7 @@
             id="sourceSelect"
             v-model="pipeline"
             :options="pipelineOptions"
+            class="inline-block w-full"
             data-type="pipeline-list"
             @input="resetRequestOptions()"
           />
