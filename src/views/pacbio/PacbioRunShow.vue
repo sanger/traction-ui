@@ -130,6 +130,7 @@ export default {
     },
     async provider() {
       await this.$store.dispatch('traction/pacbio/runCreate/fetchSmrtLinkVersions')
+      await this.$store.commit('traction/pacbio/runCreate/clearPoolData')
       if (this.id === 'new') {
         this.newRun()
       } else if (!this.newRecord) {

@@ -1,6 +1,7 @@
 import { populateById } from '@/api/JsonApi'
 import { dataToObjectById } from '@/api/JsonApi'
 import Vue from 'vue'
+import defaultState from './state'
 
 // Mutations handle synchronous update of state
 
@@ -19,21 +20,10 @@ export default {
    * @param {Array.{}} smrtLinkVersions The SmrtLinkVersions to populate the store
    */
   populateSmrtLinkVersions: populateById('smrtLinkVersions'),
-  // ...mutations,
   setPools(state, pools) {
     Vue.set(state, 'pools', {
       ...state.pools,
       ...dataToObjectById({ data: pools, includeRelationships: true }),
-    })
-  },
-  setPoolsForExistingRun(state, pools) {
-    const poolsObject = pools.reduce(function (acc, cur) {
-      acc[cur.id] = cur
-      return acc
-    }, {})
-    Vue.set(state, 'pools', {
-      ...state.pools,
-      ...poolsObject,
     })
   },
 
@@ -49,8 +39,11 @@ export default {
   setRequests(state, requests) {
     setData(state, 'requests', requests, false)
   },
-
   removePool(state, id) {
     Vue.delete(state.pools, id)
+  },
+  clearPoolData(state) {
+    const new_state = defaultState()
+    Object.assign(state, new_state, { resources: state.resources })
   },
 }

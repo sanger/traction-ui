@@ -76,4 +76,25 @@ describe('mutations.js', () => {
     mutations.removePool(state, 2)
     expect(state.pools).toEqual({ 1: storePools.pools[1] })
   })
+
+  describe('clearPoolData', () => {
+    it('clears existing pool data', () => {
+      const defaultStateObject = defaultState()
+      const state = {
+        ...defaultStateObject,
+      }
+      // populates an existing pool into state
+      mutations.clearPoolData(state)
+      expect(state).toEqual({
+        resources: {
+          smrtLinkVersions: {},
+        },
+        pools: {},
+        tubes: {},
+        libraries: {},
+        requests: {},
+        tags: {},
+      })
+    })
+  })
 })
