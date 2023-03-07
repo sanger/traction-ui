@@ -44,7 +44,7 @@
                   class="px-2 py-4 bg-gray-50 content-center select-none"
                 >
                   <div class="flex justify-center font-medium text-gray-600 text-xs">
-                    <div class="py-2">
+                    <div class="py-2" :data-testid="`header-div-${fieldIndex}`">
                       {{ fieldText(field) }}
                     </div>
                     <traction-button
@@ -73,7 +73,7 @@
                     <traction-table-column
                       v-if="field"
                       :id="field.key"
-                      :key="'custom-' + rowIndex + '-' + fieldIndex"
+                      :key="`custom-${rowIndex}-${fieldIndex}`"
                       :classes="`border-2 border-gray-100 ${backgroundColor(row)}`"
                       @click="onRowClick($event, row)"
                     >
@@ -138,7 +138,7 @@ export default {
     selectable: {
       type: Boolean,
       required: false,
-      default: true,
+      default: false,
     },
     selectMode: {
       type: String,
@@ -248,18 +248,11 @@ export default {
       const prevSelectedRowIndx =
         this.selectMode === 'single' ? this.rows.findIndex((row) => row.rowSelected) : -1
       if (rowIndex < 0) return
-      this.rows.splice(rowIndex, 1, {
-        ...this.rows[rowIndex],
-        rowSelected: !this.rows[rowIndex].rowSelected,
-      })
+      this.rows[rowIndex].rowSelected = !this.rows[rowIndex].rowSelected
       if (prevSelectedRowIndx >= 0 && prevSelectedRowIndx !== rowIndex) {
-        this.rows.splice(prevSelectedRowIndx, 1, {
-          ...this.rows[prevSelectedRowIndx],
-          rowSelected: false,
-        })
+        this.rows[prevSelectedRowIndx].rowSelected = false
       }
-      const selectedRows = this.rows.filter((row) => row.rowSelected)
-      const selectedItems = selectedRows.map((row) => row.item)
+      const selectedItems = this.rows.filter((row) => row.rowSelected).map((row) => row.item)
       this.$emit('row-selected', selectedItems)
     },
     backgroundColor(row) {

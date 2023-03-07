@@ -5,7 +5,7 @@
         <slot />
       </b-tr>
     </template>
-    <tr v-bind="$attrs" :class="classes">
+    <tr v-bind="$attrs" data-testid="row" :class="classes">
       <slot /></tr
   ></flagged-feature>
 </template>
@@ -19,10 +19,6 @@ export default {
     classes: {
       type: String,
       required: false,
-      default: '',
-    },
-    id: {
-      type: String,
       default: '',
     },
   },
