@@ -92,4 +92,34 @@ const createPayload = ({ id, run, wells }) => {
   }
 }
 
-export { newRun, validate, valid, defaultWellAttributes, newWell, createPayload }
+const RunTypeEnum = {
+  New: Symbol('new'),
+  Existing: Symbol('existing'),
+}
+
+const createRunType = ({ id }) => {
+  if (isNaN(id)) {
+    return {
+      type: RunTypeEnum.New,
+      theme: 'create',
+      label: 'Create',
+    }
+  } else {
+    return {
+      type: RunTypeEnum.Existing,
+      theme: 'update',
+      label: 'Update',
+    }
+  }
+}
+
+export {
+  newRun,
+  validate,
+  valid,
+  defaultWellAttributes,
+  newWell,
+  createPayload,
+  RunTypeEnum,
+  createRunType,
+}

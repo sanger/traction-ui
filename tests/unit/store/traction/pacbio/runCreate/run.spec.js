@@ -6,6 +6,8 @@ import {
   defaultWellAttributes,
   newWell,
   createPayload,
+  RunTypeEnum,
+  createRunType,
 } from '@/store/traction/pacbio/runCreate/run'
 
 const existingRun = {
@@ -105,6 +107,20 @@ describe('run.js', () => {
           },
         },
       })
+    })
+  })
+
+  describe('runType', () => {
+    it('new', () => {
+      const runType = createRunType({ id: 'new' })
+      expect(runType.type).toEqual(RunTypeEnum.New)
+      expect(Object.keys(runType)).toEqual(['type', 'theme', 'label'])
+    })
+
+    it('existing', () => {
+      const runType = createRunType({ id: 1 })
+      expect(runType.type).toEqual(RunTypeEnum.Existing)
+      expect(Object.keys(runType)).toEqual(['type', 'theme', 'label'])
     })
   })
 })
