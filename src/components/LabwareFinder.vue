@@ -2,13 +2,19 @@
   <div class="flex flex-row">
     <traction-input
       id="labware-finder-input"
+      ref="search"
       v-model="searchValue"
       type="search"
       placeholder="Type to Search"
       label="Search value"
       class="w-full"
+      @enterKeyPress="search()"
     />
-    <traction-button data-action="find-labware" :disabled="searchValue == ''" @click="search()">
+    <traction-button
+      data-action="find-labware"
+      :disabled="searchValue == ''"
+      @click="buttonClick()"
+    >
       Search
     </traction-button>
   </div>
@@ -50,6 +56,13 @@ export default {
     }
   },
   methods: {
+    buttonClick() {
+      this.$nextTick(() => {
+        const searchInputRef = this.$refs.search
+        searchInputRef.focus()
+      })
+      this.search()
+    },
     async search() {
       await this.fetcher({ [this.filter]: this.searchValue }).then((res) => {
         if (res.success) {
