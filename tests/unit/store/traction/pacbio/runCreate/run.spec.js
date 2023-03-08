@@ -23,6 +23,8 @@ const wells = {
   2: { ...newWell(), pools: [1, 2] },
 }
 
+const wellValues = Object.values(wells)
+
 describe('run.js', () => {
   describe('newRun', () => {
     it('should have the correct attributes', () => {
@@ -74,8 +76,6 @@ describe('run.js', () => {
   })
 
   describe('createPayload', () => {
-    const wellValues = Object.values(wells)
-
     it('for a new run', () => {
       const aRun = newRun()
       // eslint-disable-next-line no-unused-vars
@@ -95,7 +95,6 @@ describe('run.js', () => {
     it('for an existing run', () => {
       const aRun = newRun()
       const { id, ...attributes } = aRun
-      const wellValues = Object.values(wells)
       const payload = createPayload({ id, run: attributes, wells: wellValues })
       expect(payload).toEqual({
         data: {
@@ -111,16 +110,62 @@ describe('run.js', () => {
   })
 
   describe('runType', () => {
-    it('new', () => {
-      const runType = createRunType({ id: 'new' })
-      expect(runType.type).toEqual(RunTypeEnum.New)
-      expect(Object.keys(runType)).toEqual(['type', 'theme', 'label'])
+    describe('new', () => {
+      it('will have the correct attributes', () => {
+        const runType = createRunType({ id: 'new' })
+        expect(runType.type).toEqual(RunTypeEnum.New)
+        expect(Object.keys(runType)).toEqual(['type', 'theme', 'label', 'payload', 'promise'])
+      })
+
+      it('will create the correct payload', () => {
+        const runType = createRunType({ id: 'new' })
+        const aRun = newRun()
+        // eslint-disable-next-line no-unused-vars
+        const { id, ...attributes } = aRun
+        expect(runType.payload({ run: aRun, wells })).toEqual(
+          createPayload({ run: attributes, wells: wellValues }),
+        )
+      })
+
+      it('will create the correct promise', () => {
+        const runType = createRunType({ id: 'new' })
+        const aRun = newRun()
+        // eslint-disable-next-line no-unused-vars
+        const { id, ...attributes } = aRun
+        const payload = runType.payload({ run: attributes, wells })
+        const request = { create: vi.fn(), update: vi.fn() }
+        runType.promise({ payload, request })
+        expect(request.create).toBeCalledWith({ data: payload })
+      })
     })
 
-    it('existing', () => {
-      const runType = createRunType({ id: 1 })
-      expect(runType.type).toEqual(RunTypeEnum.Existing)
-      expect(Object.keys(runType)).toEqual(['type', 'theme', 'label'])
+    describe('existing', () => {
+      it('will have the correct attributes', () => {
+        const runType = createRunType({ id: 1 })
+        expect(runType.type).toEqual(RunTypeEnum.Existing)
+        expect(Object.keys(runType)).toEqual(['type', 'theme', 'label', 'payload', 'promise'])
+      })
+
+      it('will create the correct payload', () => {
+        const runType = createRunType({ id: 1 })
+        const aRun = newRun()
+        // eslint-disable-next-line no-unused-vars
+        const { id, ...attributes } = aRun
+        expect(runType.payload({ run: aRun, wells })).toEqual(
+          createPayload({ id, run: attributes, wells: wellValues }),
+        )
+      })
+
+      it('will create the correct promise', () => {
+        const runType = createRunType({ id: 1 })
+        const aRun = newRun()
+        // eslint-disable-next-line no-unused-vars
+        const { id, ...attributes } = aRun
+        const payload = runType.payload({ run: attributes, wells })
+        const request = { create: vi.fn(), update: vi.fn() }
+        runType.promise({ payload, request })
+        expect(request.update).toBeCalledWith(payload)
+      })
     })
   })
 })

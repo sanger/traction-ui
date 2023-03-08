@@ -103,12 +103,26 @@ const createRunType = ({ id }) => {
       type: RunTypeEnum.New,
       theme: 'create',
       label: 'Create',
+      payload({ run, wells }) {
+        const { id, ...attributes } = run
+        return createPayload({ run: attributes, wells: Object.values(wells) })
+      },
+      promise({ payload, request }) {
+        return request.create({ data: payload })
+      },
     }
   } else {
     return {
       type: RunTypeEnum.Existing,
       theme: 'update',
       label: 'Update',
+      payload({ run, wells }) {
+        const { id, ...attributes } = run
+        return createPayload({ id, run: attributes, wells: Object.values(wells) })
+      },
+      promise({ payload, request }) {
+        return request.update(payload)
+      },
     }
   }
 }
