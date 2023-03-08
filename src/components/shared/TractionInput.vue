@@ -15,6 +15,7 @@
     <label v-if="title">{{ title }}</label>
     <input
       v-bind="$attrs"
+      ref="inputRef"
       :value="value"
       :data-attribute="dataAttribute"
       :class="`w-full border border-gray-300 p-2 rounded-md focus:ring-sdb-100 focus:border-sdb-100 disabled:opacity-75 disabled:cursor-not-allowed${classes}`"

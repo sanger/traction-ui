@@ -10,11 +10,7 @@
       class="w-full"
       @enterKeyPress="search()"
     />
-    <traction-button
-      data-action="find-labware"
-      :disabled="searchValue == ''"
-      @click="buttonClick()"
-    >
+    <traction-button data-action="find-labware" :disabled="searchValue == ''" @click="search()">
       Search
     </traction-button>
   </div>
@@ -71,6 +67,7 @@ export default {
           this.showAlert(res.errors, 'danger')
         }
       })
+      this.$refs.search.$refs.inputRef.focus()
     },
   },
 }
