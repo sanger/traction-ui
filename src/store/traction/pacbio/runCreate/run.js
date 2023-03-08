@@ -104,6 +104,7 @@ const createRunType = ({ id }) => {
       theme: 'create',
       label: 'Create',
       payload({ run, wells }) {
+        // eslint-disable-next-line no-unused-vars
         const { id, ...attributes } = run
         return createPayload({ run: attributes, wells: Object.values(wells) })
       },
@@ -117,6 +118,7 @@ const createRunType = ({ id }) => {
       theme: 'update',
       label: 'Update',
       payload({ run, wells }) {
+        // eslint-disable-next-line no-unused-vars
         const { id, ...attributes } = run
         return createPayload({ id, run: attributes, wells: Object.values(wells) })
       },
