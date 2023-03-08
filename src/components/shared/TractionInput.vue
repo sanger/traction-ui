@@ -15,10 +15,12 @@
     <label v-if="title">{{ title }}</label>
     <input
       v-bind="$attrs"
+      ref="inputRef"
       :value="value"
       :data-attribute="dataAttribute"
       :class="`w-full border border-gray-300 p-2 rounded-md focus:ring-sdb-100 focus:border-sdb-100 disabled:opacity-75 disabled:cursor-not-allowed${classes}`"
       @input="input($event)"
+      @keyup.enter="input($event)"
     />
   </div>
 </template>
@@ -65,6 +67,9 @@ export default {
   },
   methods: {
     input(event) {
+      if (event.key === 'Enter') {
+        this.$emit('enterKeyPress', event.target.value)
+      }
       // If debounce is supplied we want to debounce the input events
       if (this.debounce > 0) {
         if (this.debounceTimer) clearTimeout(this.debounceTimer)
