@@ -52,13 +52,6 @@ export default {
     }
   },
   methods: {
-    buttonClick() {
-      this.$nextTick(() => {
-        const searchInputRef = this.$refs.search
-        searchInputRef.focus()
-      })
-      this.search()
-    },
     async search() {
       await this.fetcher({ [this.filter]: this.searchValue }).then((res) => {
         if (res.success) {
@@ -67,6 +60,7 @@ export default {
           this.showAlert(res.errors, 'danger')
         }
       })
+      // redirecting the focus to the input after searching
       this.$refs.search.$refs.inputRef.focus()
     },
   },
