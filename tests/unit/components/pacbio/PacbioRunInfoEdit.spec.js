@@ -1,13 +1,24 @@
-import * as Run from '@/api/PacbioRun'
 import PacbioRunInfoEdit from '@/components/pacbio/PacbioRunInfoEdit'
 import { localVue, mount, store } from '@support/testHelper'
+import { beforeEach, describe, expect } from 'vitest'
+
+// required as suggestion to remove the deprecated function
+// https://vue-test-utils.vuejs.org/api/options.html#attachtodocument
+const elem = document.createElement('div')
+if (document.body) {
+  document.body.appendChild(elem)
+}
+const buildWrapper = () =>
+  mount(PacbioRunInfoEdit, {
+    localVue,
+    store,
+    sync: false,
+    attachTo: elem,
+  })
 
 describe('PacbioRunInfoEdit', () => {
-  let wrapper, runInfo, run
-
+  let runInfo, wrapper
   beforeEach(() => {
-    run = Run.build()
-
     const smrtLinkVersions = [
       {
         id: '1',
@@ -20,25 +31,9 @@ describe('PacbioRunInfoEdit', () => {
         default: false,
       },
     ]
-
-    store.commit('traction/pacbio/runs/setCurrentRun', run)
     store.state.traction.pacbio.runCreate.resources.smrtLinkVersions = smrtLinkVersions
-
-    // required as suggestion to remove the deprecated function
-    // https://vue-test-utils.vuejs.org/api/options.html#attachtodocument
-    const elem = document.createElement('div')
-    if (document.body) {
-      document.body.appendChild(elem)
-    }
-    wrapper = mount(PacbioRunInfoEdit, { localVue, store, sync: false, attachTo: elem })
+    wrapper = buildWrapper()
     runInfo = wrapper.vm
-  })
-
-  it('can have mapState', () => {
-    expect(runInfo.sequencingKitBoxBarcode).toBeDefined()
-    expect(runInfo.dnaControlComplexBoxBarcode).toBeDefined()
-    expect(runInfo.comments).toBeDefined()
-    expect(runInfo.systemName).toBeDefined()
   })
 
   it('can have getters', () => {
@@ -47,39 +42,6 @@ describe('PacbioRunInfoEdit', () => {
 
   it('must have systemName data', () => {
     expect(runInfo.systemNameOptions).toEqual(['Sequel I', 'Sequel II', 'Sequel IIe'])
-  })
-
-  describe('form inputs', () => {
-    it('has a Run Name input', () => {
-      const name = 'run-name'
-      expect(wrapper.find('label[for="' + name + '"]').exists()).toBe(true)
-      expect(wrapper.find('input[id="' + name + '"]').exists()).toBe(true)
-    })
-    it('has a Sequencing Kit Box Barcode input', () => {
-      const name = 'sequencing-kit-box-barcode'
-      expect(wrapper.find('label[for="' + name + '"]').exists()).toBe(true)
-      expect(wrapper.find('input[id="' + name + '"]').exists()).toBe(true)
-    })
-    it('has a DNA Control Complex Box Barcode input', () => {
-      const name = 'dna-control-complex-box-barcode'
-      expect(wrapper.find('label[for="' + name + '"]').exists()).toBe(true)
-      expect(wrapper.find('input[id="' + name + '"]').exists()).toBe(true)
-    })
-    it('has a System Name select', () => {
-      const name = 'system-name'
-      expect(wrapper.find('label[for="' + name + '"]').exists()).toBe(true)
-      expect(wrapper.find('select[id="' + name + '"]').exists()).toBe(true)
-    })
-    it('has a SMRT Link Version select', () => {
-      const name = 'smrt-link-version'
-      expect(wrapper.find('label[for="' + name + '"]').exists()).toBe(true)
-      expect(wrapper.find('select[id="' + name + '"]').exists()).toBe(true)
-    })
-    it('has a Comments input', () => {
-      const name = 'comments'
-      expect(wrapper.find('label[for="' + name + '"]').exists()).toBe(true)
-      expect(wrapper.find('input[id="' + name + '"]').exists()).toBe(true)
-    })
   })
 
   describe('smrt link versions', () => {
@@ -99,8 +61,100 @@ describe('PacbioRunInfoEdit', () => {
       expect(runInfo.smrtLinkVersionSelectOptions).toEqual(options)
     })
   })
+})
 
-  afterEach(() => {
-    wrapper.destroy()
+describe('pacbioRunInfoEdit#new', () => {
+  const run = {
+    id: 'new',
+    system_name: 'Sequel IIe',
+    sequencing_kit_box_barcode: null,
+    dna_control_complex_box_barcode: null,
+    comments: null,
+    smrt_link_version_id: null,
+  }
+
+  let wrapper
+  beforeEach(() => {
+    wrapper = buildWrapper()
+    store.state.traction.pacbio.runCreate.run = run
+  })
+
+  describe('input', () => {
+    it('run name', () => {
+      const name = 'run-name'
+      expect(wrapper.find('label[for="' + name + '"]').exists()).toBe(true)
+      expect(wrapper.find('input[id="' + name + '"]').exists()).toBe(true)
+    })
+    it('sequencing kit box barcode', async () => {
+      const input = wrapper.find(['data-attribute=sequencing_kit_box_barcode'])
+      await input.setValue('SKB1')
+      expect(store.state.traction.pacbio.runCreate.run.sequencing_kit_box_barcode).toEqual('SKB1')
+    }),
+      it('dna control complex box barcode', async () => {
+        const input = wrapper.find(['data-attribute=dna_control_complex_box_barcode'])
+        await input.setValue('DCCB1')
+        expect(store.state.traction.pacbio.runCreate.run.dna_control_complex_box_barcode).toEqual(
+          'DCCB1',
+        )
+      }),
+      it('system name', async () => {
+        expect(store.state.traction.pacbio.runCreate.run.system_name).toEqual('Sequel IIe')
+      }),
+      it('smrt_link_version_id', async () => {
+        const options = wrapper.find(['data-attribute=smrt_link_version']).findAll('option')
+        await options.at(1).setSelected()
+        expect(store.state.traction.pacbio.runCreate.run.smrt_link_version_id).toEqual(1)
+      }),
+      it('comments', async () => {
+        const input = wrapper.find(['data-attribute=comments'])
+        await input.setValue('example comment')
+        expect(store.state.traction.pacbio.runCreate.run.comments).toEqual('example comment')
+      })
+  })
+})
+
+describe('pacbioRunInfoEdit#edit', () => {
+  const run = {
+    id: '4',
+    system_name: 'Sequel II',
+    sequencing_kit_box_barcode: 'SKB4',
+    dna_control_complex_box_barcode: 'DCCB4',
+    comments: 'PacbioSample3000',
+    smrt_link_version_id: 1,
+  }
+
+  let wrapper
+
+  beforeEach(() => {
+    wrapper = buildWrapper()
+    store.state.traction.pacbio.runCreate.run = run
+  })
+
+  describe('input', () => {
+    it('run name', () => {
+      const name = 'run-name'
+      expect(wrapper.find('label[for="' + name + '"]').exists()).toBe(true)
+      expect(wrapper.find('input[id="' + name + '"]').exists()).toBe(true)
+    })
+    it('sequencing kit box barcode', async () => {
+      const input = wrapper.find(['data-attribute=sequencing_kit_box_barcode'])
+      expect(input.element.value).toEqual('SKB4')
+    }),
+      it('dna control complex box barcode', async () => {
+        const input = wrapper.find(['data-attribute=dna_control_complex_box_barcode'])
+        expect(input.element.value).toEqual('DCCB4')
+      }),
+      it('system name', async () => {
+        const input = wrapper.find(['id=system-name'])
+        expect(input.element.value).toEqual('Sequel II')
+      }),
+      it('smrt_link_version_id', async () => {
+        const options = wrapper.find(['id=smrt_link_version']).findAll('option')
+        expect(options.element.value).toEqual(1)
+      }),
+      it('comments', async () => {
+        const input = wrapper.find(['data-attribute=comments'])
+        expect(input.element.value).toEqual('PacbioSample3000')
+      })
   })
 })
