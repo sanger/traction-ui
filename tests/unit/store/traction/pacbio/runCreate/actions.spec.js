@@ -167,10 +167,11 @@ describe('actions.js', () => {
       expect(commit).toHaveBeenCalledWith('populateRunType', newRunType)
     })
 
-    it.skip('for an existing run', async () => {
+    it('for an existing run', async () => {
       const id = 1
       const commit = vi.fn()
       const fetchRun = vi.fn()
+      fetchRun.mockResolvedValue({ success: true })
       const dispatch = vi.fn(fetchRun)
       const update = vi.fn()
       const rootState = { api: { traction: { pacbio: { runs: { update } } } } }

@@ -109,13 +109,13 @@ export default {
 
   setRun: async ({ commit, dispatch, rootState }, { id }) => {
     const runType = createRunType({ id })
+    commit('populateRunType', runType)
 
     if (runType.type === RunTypeEnum.New) {
       // eslint-disable-next-line no-unused-vars
       const { id: _id, ...attributes } = newRun()
 
       commit('populateRun', { id, attributes })
-      commit('populateRunType', runType)
       return { success: true }
     }
 
