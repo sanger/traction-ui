@@ -112,6 +112,39 @@ const RunTypeEnum = {
   Existing: Symbol('existing'),
 }
 
+const newRunType = {
+  type: RunTypeEnum.New,
+  theme: 'create',
+  label: 'Create',
+
+  // returns the payload slightly different for new and existing runs
+  payload({ run, wells }) {
+    // eslint-disable-next-line no-unused-vars
+    const { id, ...attributes } = run
+    return createPayload({ run: attributes, wells: Object.values(wells) })
+  },
+
+  // returns a promise different for create or update
+  promise({ payload, request }) {
+    return request.create({ data: payload })
+  },
+}
+
+const existingRunType = {
+  type: RunTypeEnum.Existing,
+  theme: 'update',
+  label: 'Update',
+  payload({ run, wells }) {
+    // eslint-disable-next-line no-unused-vars
+    const { id, ...attributes } = run
+    return createPayload({ id, run: attributes, wells: Object.values(wells) })
+  },
+  // the function handle should be the same for create and update
+  promise({ payload, request }) {
+    return request.update(payload)
+  },
+}
+
 /**
  *
  * @param {Integer | String} id - id of rhe run
@@ -120,40 +153,7 @@ const RunTypeEnum = {
  * It is clear that new runType and existing runType are very similar. Question is how to improve?
  */
 const createRunType = ({ id }) => {
-  if (isNaN(id)) {
-    return {
-      type: RunTypeEnum.New,
-      theme: 'create',
-      label: 'Create',
-
-      // returns the payload slightly different for new and existing runs
-      payload({ run, wells }) {
-        // eslint-disable-next-line no-unused-vars
-        const { id, ...attributes } = run
-        return createPayload({ run: attributes, wells: Object.values(wells) })
-      },
-
-      // returns a promise different for create or update
-      promise({ payload, request }) {
-        return request.create({ data: payload })
-      },
-    }
-  } else {
-    return {
-      type: RunTypeEnum.Existing,
-      theme: 'update',
-      label: 'Update',
-      payload({ run, wells }) {
-        // eslint-disable-next-line no-unused-vars
-        const { id, ...attributes } = run
-        return createPayload({ id, run: attributes, wells: Object.values(wells) })
-      },
-      // the function handle should be the same for create and update
-      promise({ payload, request }) {
-        return request.update(payload)
-      },
-    }
-  }
+  return isNaN(id) ? newRunType : existingRunType
 }
 
 export {
@@ -165,4 +165,6 @@ export {
   createPayload,
   RunTypeEnum,
   createRunType,
+  newRunType,
+  existingRunType,
 }

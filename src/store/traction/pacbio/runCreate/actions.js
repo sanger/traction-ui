@@ -1,5 +1,6 @@
 import { handleResponse } from '@/api/ResponseHelper'
 import { groupIncludedByResource } from '@/api/JsonApi'
+import { newRun, createRunType, RunTypeEnum } from './run'
 
 // Asynchronous update of state.
 export default {
@@ -26,6 +27,7 @@ export default {
    * @param rootState the vuex rootState object. Provides access to current state
    * @param commit the vuex commit object. Provides access to mutations
    * @param filter the barcode(s) to find the pools for
+   * TODO: remove getter. Better to use rootState
    */
   findPools: async ({ commit, getters }, filter) => {
     // when users search for nothing, prompt them to enter a barcode
@@ -70,9 +72,9 @@ export default {
    * @param rootState the vuex rootState object. Provides access to current state
    * @param commit the vuex commit object. Provides access to mutations
    */
-  fetchRun: async ({ commit, rootState }) => {
+  fetchRun: async ({ commit, rootState }, { id }) => {
     const request = rootState.api.traction.pacbio.runs
-    const promise = request.find({})
+    const promise = request.find({ id })
     const response = await handleResponse(promise)
 
     const { success, data: { data, included = [] } = {}, errors = [] } = response
@@ -92,25 +94,32 @@ export default {
    * If it is an existing run it will be updated.
    * @param rootState the vuex rootState object. Provides access to current state
    * @param state {runs, wells}. The current run and it's wells
-   * TODO: There is a lot of jiggery pokery to get everything working in the method
-   * and tests so a factory might be the best idea.
    */
   saveRun: async ({ rootState, state: { runType, run, wells } }) => {
     const request = rootState.api.traction.pacbio.runs
 
     const payload = runType.payload({ run, wells })
-    // const { id, ...runAttributes } = run
-    // const wellValues = Object.values(wells)
-
-    // const payload =
-    //   id === 'new'
-    //     ? createPayload({ run: runAttributes, wells: wellValues })
-    //     : createPayload({ id, run: runAttributes, wells: wellValues })
-
     const promise = runType.promise({ request, payload })
     const response = await handleResponse(promise)
 
     const { success, errors = [] } = response
+
+    return { success, errors }
+  },
+
+  setRun: async ({ commit, dispatch, rootState }, { id }) => {
+    const runType = createRunType({ id })
+
+    if (runType.type === RunTypeEnum.New) {
+      // eslint-disable-next-line no-unused-vars
+      const { id: _id, ...attributes } = newRun()
+
+      commit('populateRun', { id, attributes })
+      commit('populateRunType', runType)
+      return { success: true }
+    }
+
+    const { success, errors = [] } = await dispatch('fetchRun', { commit, rootState }, { id })
 
     return { success, errors }
   },

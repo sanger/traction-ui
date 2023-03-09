@@ -26,8 +26,8 @@ export default {
    * @param {Object} state The VueXState object
    * @param {Object} smrtLinkVersions The current run to populate the store
    */
-  populateRun: (store, { id, attributes }) => {
-    store.run = {
+  populateRun: (state, { id, attributes }) => {
+    state.run = {
       id,
       ...attributes,
     }
@@ -39,6 +39,15 @@ export default {
    * @param {Object} smrtLinkVersions The wells for the current run
    */
   populateWells: populateById('wells', { includeRelationships: true, populateResources: false }),
+
+  /**
+   * Populated the run type
+   * @param {Object} state The VueXState object
+   * @param {Object} smrtLinkVersions The runType
+   */
+  populateRunType: (state, runType) => {
+    state.runType = runType
+  },
 
   /**
    * Populated via API calls from the actions

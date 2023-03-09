@@ -2,7 +2,6 @@ import getters from '@/store/traction/pacbio/runCreate/getters'
 import defaultState from '@/store/traction/pacbio/runCreate/state'
 import storePools from '@tests/data/StorePools'
 import { describe } from 'vitest'
-// import { Data } from '@support/testHelper'
 
 describe('getters.js', () => {
   const pools = [

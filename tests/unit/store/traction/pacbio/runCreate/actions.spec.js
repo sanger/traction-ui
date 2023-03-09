@@ -1,7 +1,13 @@
 import { Data } from '@support/testHelper'
 import actions from '@/store/traction/pacbio/runCreate/actions'
 import { describe, expect, it } from 'vitest'
-import { newRun, newWell, createRunType } from '@/store/traction/pacbio/runCreate/run'
+import {
+  newRun,
+  newWell,
+  createRunType,
+  newRunType,
+  existingRunType,
+} from '@/store/traction/pacbio/runCreate/run'
 
 const failedResponse = {
   data: { data: [] },
@@ -15,7 +21,7 @@ const wells = {
 }
 
 describe('actions.js', () => {
-  const { fetchSmrtLinkVersions, findPools, fetchRun, saveRun } = actions
+  const { fetchSmrtLinkVersions, findPools, fetchRun, saveRun, setRun } = actions
 
   describe('fetchSmrtLinkVersions', () => {
     it('handles success', async () => {
@@ -50,7 +56,7 @@ describe('actions.js', () => {
       const find = vi.fn()
       const rootState = { api: { traction: { pacbio: { runs: { find } } } } }
       find.mockResolvedValue(Data.PacbioRun)
-      const { success } = await fetchRun({ commit, rootState })
+      const { success } = await fetchRun({ commit, rootState }, { id: 1 })
       expect(commit).toHaveBeenCalledWith('populateRun', Data.PacbioRun.data.data)
       expect(commit).toHaveBeenCalledWith('populateWells', Data.PacbioRun.data.included.slice(1, 2))
       expect(commit).toHaveBeenCalledWith('populatePools', Data.PacbioRun.data.included.slice(2, 3))
@@ -63,7 +69,7 @@ describe('actions.js', () => {
       const find = vi.fn()
       const rootState = { api: { traction: { pacbio: { runs: { find } } } } }
       find.mockRejectedValue(failedResponse)
-      const { success } = await fetchRun({ commit, rootState })
+      const { success } = await fetchRun({ commit, rootState }, { id: 1 })
       expect(commit).not.toHaveBeenCalled()
       expect(success).toBeFalsy()
     })
@@ -76,7 +82,7 @@ describe('actions.js', () => {
       commit = vi.fn()
       // mock dependencies
       get = vi.fn()
-      getters = { poolRequest: { get: get } }
+      getters = { poolRequest: { get } }
     })
 
     it('returns the pool when given a valid tube barcode', async () => {
@@ -107,7 +113,6 @@ describe('actions.js', () => {
           data: { data: {} },
         }
         const create = vi.fn()
-        // eslint-disable-next-line no-unused-vars
         const rootState = { api: { traction: { pacbio: { runs: { create } } } } }
         create.mockResolvedValue(mockResponse)
         const { success } = await saveRun({ rootState, state: { runType, run, wells } })
@@ -148,6 +153,31 @@ describe('actions.js', () => {
         const { success } = await saveRun({ rootState, state: { runType, run, wells } })
         expect(success).toBeFalsy()
       })
+    })
+  })
+
+  describe('setRun', () => {
+    it('for a new run', async () => {
+      const run = newRun()
+      const { id, ...attributes } = run
+      const commit = vi.fn()
+      const { success } = await setRun({ commit }, { id })
+      expect(success).toBeTruthy()
+      expect(commit).toHaveBeenCalledWith('populateRun', { id, attributes })
+      expect(commit).toHaveBeenCalledWith('populateRunType', newRunType)
+    })
+
+    it.skip('for an existing run', async () => {
+      const id = 1
+      const commit = vi.fn()
+      const fetchRun = vi.fn()
+      const dispatch = vi.fn(fetchRun)
+      const update = vi.fn()
+      const rootState = { api: { traction: { pacbio: { runs: { update } } } } }
+      const { success } = await setRun({ commit, dispatch, rootState }, { id })
+      expect(dispatch).toHaveBeenCalledWith('fetchRun', { commit, rootState }, { id })
+      expect(commit).toHaveBeenCalledWith('populateRunType', existingRunType)
+      expect(success).toBeTruthy()
     })
   })
 })

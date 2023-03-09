@@ -2,7 +2,7 @@ import mutations from '@/store/traction/pacbio/runCreate/mutations'
 import defaultState from '@/store/traction/pacbio/runCreate/state'
 import { Data } from '@support/testHelper'
 import { dataToObjectById } from '@/api/JsonApi'
-import { newRun } from '@/store/traction/pacbio/runCreate/run'
+import { newRun, createRunType } from '@/store/traction/pacbio/runCreate/run'
 import storePools from '@tests/data/StorePools'
 import { expect, it } from 'vitest'
 
@@ -15,7 +15,8 @@ const tags = included.slice(4, 6)
 const requests = included.slice(6, 8)
 
 describe('mutations.js', () => {
-  const { populateSmrtLinkVersions, populateRun, populateWells, populatePools } = mutations
+  const { populateSmrtLinkVersions, populateRun, populateWells, populatePools, populateRunType } =
+    mutations
 
   describe('populateSmrtLinkVersions', () => {
     it('updates the state', () => {
@@ -134,6 +135,16 @@ describe('mutations.js', () => {
         tags: {},
         runType: {},
       })
+    })
+  })
+
+  describe('populateRunType', () => {
+    it('populates run type', () => {
+      const runType = createRunType({ id: 1 })
+      const state = defaultState()
+      // apply mutation
+      populateRunType(state, runType)
+      expect(state.runType).toEqual(runType)
     })
   })
 })
