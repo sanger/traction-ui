@@ -132,6 +132,7 @@ describe('mutations.js', () => {
         libraries: {},
         requests: {},
         tags: {},
+        runType: {},
       })
     })
   })

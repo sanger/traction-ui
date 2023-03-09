@@ -32,5 +32,8 @@ export default () => {
 
     //Tags: The tags for the currently selected libraries
     tags: {},
+
+    //Run Type: The type of run either new or existing
+    runType: {},
   }
 }
