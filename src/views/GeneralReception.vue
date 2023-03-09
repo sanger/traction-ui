@@ -46,9 +46,7 @@
               :pipeline="pipeline.toLowerCase()"
             />
             <traction-field-group label="Cost Code" attribute="cost_code" for="cost_code">
-              <traction-muted-text
-            >Default Pacbio cost code: S4773</traction-muted-text
-          >
+              <traction-muted-text>Default Pacbio cost code: S4773</traction-muted-text>
               <traction-input
                 id="cost_code"
                 v-model="requestOptions.cost_code"
