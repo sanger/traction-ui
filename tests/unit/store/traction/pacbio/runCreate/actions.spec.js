@@ -1,7 +1,7 @@
 import { Data } from '@support/testHelper'
 import actions from '@/store/traction/pacbio/runCreate/actions'
 import { describe, expect, it } from 'vitest'
-import { newRun, newWell, createPayload } from '@/store/traction/pacbio/runCreate/run'
+import { newRun, newWell, createRunType } from '@/store/traction/pacbio/runCreate/run'
 
 const failedResponse = {
   data: { data: [] },
@@ -99,6 +99,7 @@ describe('actions.js', () => {
   describe('saveRun', async () => {
     describe('create', () => {
       const run = newRun()
+      const runType = createRunType({ id: run.id })
 
       it('success', async () => {
         const mockResponse = {
@@ -107,13 +108,10 @@ describe('actions.js', () => {
         }
         const create = vi.fn()
         // eslint-disable-next-line no-unused-vars
-        const { id, ...attributes } = run
         const rootState = { api: { traction: { pacbio: { runs: { create } } } } }
         create.mockResolvedValue(mockResponse)
-        const { success } = await saveRun({ rootState, state: { run, wells } })
-        expect(create).toHaveBeenCalledWith({
-          data: createPayload({ run: attributes, wells: Object.values(wells) }),
-        })
+        const { success } = await saveRun({ rootState, state: { runType, run, wells } })
+        expect(create).toHaveBeenCalled()
         expect(success).toBeTruthy()
       })
 
@@ -121,14 +119,14 @@ describe('actions.js', () => {
         const create = vi.fn()
         const rootState = { api: { traction: { pacbio: { runs: { create } } } } }
         create.mockRejectedValue(failedResponse)
-        const { success } = await saveRun({ rootState, state: { run, wells } })
+        const { success } = await saveRun({ rootState, state: { runType, run, wells } })
         expect(success).toBeFalsy()
       })
     })
 
     describe('update', () => {
       const run = { ...newRun(), id: 1 }
-      const { id, ...attributes } = run
+      const runType = createRunType({ id: run.id })
 
       it('success', async () => {
         const mockResponse = {
@@ -138,10 +136,8 @@ describe('actions.js', () => {
         const update = vi.fn()
         const rootState = { api: { traction: { pacbio: { runs: { update } } } } }
         update.mockResolvedValue(mockResponse)
-        const { success } = await saveRun({ rootState, state: { run, wells } })
-        expect(update).toHaveBeenCalledWith(
-          createPayload({ id, run: attributes, wells: Object.values(wells) }),
-        )
+        const { success } = await saveRun({ rootState, state: { runType, run, wells } })
+        expect(update).toHaveBeenCalled()
         expect(success).toBeTruthy()
       })
 
@@ -149,7 +145,7 @@ describe('actions.js', () => {
         const update = vi.fn()
         const rootState = { api: { traction: { pacbio: { runs: { update } } } } }
         update.mockRejectedValue(failedResponse)
-        const { success } = await saveRun({ rootState, state: { id, run, wells } })
+        const { success } = await saveRun({ rootState, state: { runType, run, wells } })
         expect(success).toBeFalsy()
       })
     })

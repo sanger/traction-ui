@@ -1,6 +1,5 @@
 import { handleResponse } from '@/api/ResponseHelper'
 import { groupIncludedByResource } from '@/api/JsonApi'
-import { createPayload } from '@/store/traction/pacbio/runCreate/run'
 
 // Asynchronous update of state.
 export default {
@@ -96,18 +95,19 @@ export default {
    * TODO: There is a lot of jiggery pokery to get everything working in the method
    * and tests so a factory might be the best idea.
    */
-  saveRun: async ({ rootState, state: { run, wells } }) => {
+  saveRun: async ({ rootState, state: { runType, run, wells } }) => {
     const request = rootState.api.traction.pacbio.runs
-    const { id, ...runAttributes } = run
-    const wellValues = Object.values(wells)
 
-    const payload =
-      id === 'new'
-        ? createPayload({ run: runAttributes, wells: wellValues })
-        : createPayload({ id, run: runAttributes, wells: wellValues })
+    const payload = runType.payload({ run, wells })
+    // const { id, ...runAttributes } = run
+    // const wellValues = Object.values(wells)
 
-    const promise = id === 'new' ? request.create({ data: payload }) : request.update(payload)
+    // const payload =
+    //   id === 'new'
+    //     ? createPayload({ run: runAttributes, wells: wellValues })
+    //     : createPayload({ id, run: runAttributes, wells: wellValues })
 
+    const promise = runType.promise({ request, payload })
     const response = await handleResponse(promise)
 
     const { success, errors = [] } = response

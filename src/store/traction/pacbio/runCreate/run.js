@@ -117,6 +117,7 @@ const RunTypeEnum = {
  * @param {Integer | String} id - id of rhe run
  * @returns {Object} - runType { type:, theme:, label:, payload: function, promise: function}
  * I have isolated the complexity for new and existing runs.
+ * It is clear that new runType and existing runType are very similar. Question is how to improve?
  */
 const createRunType = ({ id }) => {
   if (isNaN(id)) {
