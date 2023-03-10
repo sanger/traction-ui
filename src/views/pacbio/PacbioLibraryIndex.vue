@@ -26,6 +26,7 @@
         :total-rows="libraries.length"
         :per-page="perPage"
         aria-controls="library-index"
+        @input="onPageChange($event, perPage)"
       />
       <traction-form-group
         class="float-right mx-5"
@@ -46,7 +47,7 @@
       id="library-index"
       show-empty
       responsive
-      :items="libraries"
+      :items="tableData"
       :fields="fields"
       :filter="filter"
       :per-page="perPage"
@@ -147,6 +148,11 @@ export default {
   },
   computed: {
     ...mapGetters('traction/pacbio/libraries', ['libraries']),
+  },
+   watch: {
+    libraries(newValue) {
+      this.setInitialData(newValue)
+    },
   },
   methods: {
     async handleLibraryDelete() {

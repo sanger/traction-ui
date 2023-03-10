@@ -27,7 +27,7 @@
       hover
       responsive
       show-empty
-      :items="runs"
+      :items="tableData"
       :fields="fields"
       :filter="filter"
       :sort-by.sync="sortBy"
@@ -98,6 +98,7 @@
         :total-rows="runs.length"
         :per-page="perPage"
         aria-controls="libraries-table"
+        @input="onPageChange($event, perPage)"
       >
       </traction-pagination>
     </div>
@@ -136,6 +137,11 @@ export default {
   },
   computed: {
     ...mapGetters('traction/saphyr/runs', ['runs']),
+  },
+  watch: {
+    runs(newValue) {
+      this.setInitialData(newValue)
+    },
   },
   created() {
     this.provider()

@@ -9,6 +9,7 @@
         :total-rows="plates.length"
         :per-page="perPage"
         aria-controls="plate-index"
+        @input="onPageChange($event, perPage)"
       >
       </traction-pagination>
       <traction-form-group
@@ -30,7 +31,7 @@
       id="plate-index"
       primary_key="id"
       :fields="fields"
-      :items="plates"
+      :items="tableData"
       show-empty
       responsive
       :filter="filter"
@@ -106,6 +107,11 @@ export default {
   },
   computed: {
     ...mapGetters(['plates']),
+  },
+  watch: {
+    plates(newValue) {
+      this.setInitialData(newValue)
+    },
   },
   methods: {
     alert(message, type) {

@@ -12,6 +12,7 @@
           :total-rows="runs.length"
           :per-page="perPage"
           aria-controls="run-index"
+          @input="onPageChange($event, perPage)"
         ></traction-pagination>
 
         <traction-form-group
@@ -35,7 +36,7 @@
         responsive
         show-empty
         small
-        :items="runs"
+        :items="tableData"
         :fields="fields"
         tbody-tr-class="run"
         :per-page="perPage"
@@ -106,6 +107,11 @@ export default {
   },
   computed: {
     ...mapGetters(['runs']),
+  },
+  watch: {
+    runs(newValue) {
+      this.setInitialData(newValue)
+    },
   },
   methods: {
     generateId(text, id) {

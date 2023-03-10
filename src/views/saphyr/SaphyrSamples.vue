@@ -26,7 +26,7 @@
       id="samples-table"
       show-empty
       responsive
-      :items="requests"
+      :items="tableData"
       :fields="fields"
       :filter="filter"
       :per-page="perPage"
@@ -76,6 +76,7 @@
         :total-rows="requests.length"
         :per-page="perPage"
         aria-controls="samples-table"
+        @input="onPageChange($event, perPage)"
       >
       </traction-pagination>
     </div>
@@ -120,6 +121,11 @@ export default {
   },
   computed: {
     ...mapGetters('traction/saphyr/requests', ['requests']),
+  },
+  watch: {
+    requests(newValue) {
+      this.setInitialData(newValue)
+    },
   },
   created() {
     this.provider()

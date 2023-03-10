@@ -17,6 +17,7 @@
         :total-rows="runs.length"
         :per-page="perPage"
         aria-controls="run-index"
+        @input="onPageChange($event, perPage)"
       >
       </traction-pagination>
       <traction-form-group
@@ -40,7 +41,7 @@
       responsive
       show-empty
       small
-      :items="runs"
+      :items="tableData"
       :fields="fields"
       :filter="filter"
       :sort-by.sync="sortBy"
@@ -158,6 +159,11 @@ export default {
   },
   computed: {
     ...mapGetters('traction/pacbio/runs', ['runs']),
+  },
+  watch: {
+    runs(newValue) {
+      this.setInitialData(newValue)
+    },
   },
   methods: {
     isRunDisabled(run) {

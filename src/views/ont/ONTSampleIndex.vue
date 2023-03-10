@@ -8,6 +8,7 @@
         :total-rows="requests.length"
         :per-page="perPage"
         aria-controls="samples-table"
+        @input="onPageChange($event, perPage)"
       >
       </traction-pagination>
       <traction-form-group label-cols-lg="1" label="Per Page" label-for="input-per-page">
@@ -19,7 +20,7 @@
       id="samples-table"
       show-empty
       responsive
-      :items="requests"
+      :items="tableData"
       :fields="fields"
       :per-page="perPage"
       :current-page="currentPage"
@@ -96,6 +97,11 @@ export default {
   },
   computed: {
     ...mapGetters(['requests']),
+  },
+  watch: {
+    requests(newValue) {
+      this.setInitialData(newValue)
+    },
   },
   methods: {
     ...mapActions(['fetchOntRequests']),

@@ -9,6 +9,7 @@
           :total-rows="pools.length"
           :per-page="perPage"
           aria-controls="pool-index"
+          @input="onPageChange($event, perPage)"
         >
         </traction-pagination>
 
@@ -21,7 +22,7 @@
         id="pool-index"
         show-empty
         responsive
-        :items="pools"
+        :items="tableData"
         :fields="fields"
         :filter="filter"
         :per-page="perPage"
@@ -157,6 +158,11 @@ export default {
   },
   computed: {
     ...mapGetters('traction/ont/pools', ['pools']),
+  },
+  watch: {
+    pools(newValue) {
+      this.setInitialData(newValue)
+    },
   },
   methods: {
     /* 
