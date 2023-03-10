@@ -7,6 +7,12 @@ describe('Pacbio Run Edit view', () => {
       fixture: 'tractionPacbioRun.json',
     })
     cy.intercept(
+      '/v1/pacbio/pools?filter[barcode]=TRAC-2-1&include=tube,libraries.tag,libraries.request&fields[requests]=sample_name&fields[tubes]=barcode&fields[tags]=group_id&fields[libraries]=request,tag,run_suitability',
+      {
+        fixture: 'pacbioPool.json',
+      },
+    )
+    cy.intercept(
       '/v1/pacbio/pools?include=tube,libraries.tag,libraries.request&fields[requests]=sample_name&fields[tubes]=barcode&fields[tags]=group_id&fields[libraries]=request,tag,run_suitability',
       {
         fixture: 'tractionPacbioPools.json',

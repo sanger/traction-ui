@@ -30,7 +30,7 @@ export default {
   computed: {
     getClass() {
       return {
-        'text-3xl font-bold tracking-tight leading-loose': this.level == 1,
+        'text-3xl font-bold tracking-tight leading-loose px-5': this.level == 1,
         'text-2xl font-bold tracking-tight leading-relaxed': this.level == 2,
         'text-xl font-bold tracking-tight leading-relaxed': this.level == 3,
         'text-lg font-bold tracking-tight leading-relaxed': this.level == 4,
