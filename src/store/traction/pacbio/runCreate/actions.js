@@ -125,15 +125,18 @@ export default {
    * @returns { success, errors }. Was the action successful? were there any errors?
    *
    */
-  setRun: async ({ commit, dispatch, rootState }, { id }) => {
+  setRun: async ({ commit, dispatch, rootState, getters }, { id }) => {
     // create and commit the runType based on the id
     const runType = createRunType({ id })
     commit('populateRunType', runType)
 
     // if it is a new create a new run and commit it
     if (runType.type === RunTypeEnum.New) {
+      // ensure that the smrt link version id is set to the default
       // eslint-disable-next-line no-unused-vars
-      const { id: _id, ...attributes } = newRun()
+      const { id: _id, ...attributes } = newRun({
+        smrt_link_version_id: getters.defaultSmrtLinkVersion.id,
+      })
 
       commit('populateRun', { id, attributes })
 

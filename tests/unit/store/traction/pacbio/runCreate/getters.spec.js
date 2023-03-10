@@ -4,7 +4,10 @@ import storePools from '@tests/data/StorePools'
 import { describe } from 'vitest'
 
 describe('getters.js', () => {
-  const pools = [
+  const { smrtLinkVersionList, defaultSmrtLinkVersion, pools, poolByBarcode } = getters
+
+  // TODO: we probably need to sort the way we create the pools for tests
+  const mockPools = [
     {
       id: '1',
       type: 'pools',
@@ -97,37 +100,44 @@ describe('getters.js', () => {
     },
   ]
 
+  const smrtLinkVersions = [
+    {
+      id: '1',
+      version: 'v1',
+      default: true,
+    },
+    {
+      id: '2',
+      version: 'v2',
+      default: false,
+    },
+  ]
+
   describe('smrtLinkVersionList', () => {
     const state = defaultState()
-    const { smrtLinkVersionList } = getters
     it('returns a list of smrt link version resources', () => {
-      const expected = [
-        {
-          id: '1',
-          version: 'v1',
-          default: true,
-        },
-        {
-          id: '2',
-          version: 'v2',
-          default: false,
-        },
-      ]
-      state.resources.smrtLinkVersions = expected
-      expect(smrtLinkVersionList(state)).toEqual(expected)
+      state.resources.smrtLinkVersions = smrtLinkVersions
+      expect(smrtLinkVersionList(state)).toEqual(smrtLinkVersions)
+    })
+  })
+
+  describe('defaultSmrtLinVersion', () => {
+    const state = defaultState()
+    it('returns the default SMRT Link Version', () => {
+      state.resources.smrtLinkVersions = smrtLinkVersions
+      expect(defaultSmrtLinkVersion(state)).toEqual(smrtLinkVersions[0])
     })
   })
 
   describe('pools', () => {
     const state = storePools
     it('"pools" returns denormalized pools from "state.pools"', () => {
-      const actual = getters.pools(state)
-      expect(actual).toEqual(pools)
+      expect(pools(state)).toEqual(mockPools)
     })
 
     it('"poolByBarcode" returns the pool with the specified barcode from "state.pools"', () => {
-      const actual = getters.poolByBarcode(state, { pools: getters.pools(state) })('TRAC-2-1')
-      expect(actual).toEqual(pools[0])
+      const actual = poolByBarcode(state, { pools: pools(state) })('TRAC-2-1')
+      expect(actual).toEqual(mockPools[0])
     })
 
     it('"pools" returns pools successfully and with an empty library group_id if that library has no tag', () => {
@@ -138,8 +148,7 @@ describe('getters.js', () => {
         type: 'libraries',
         run_suitability: { ready_for_run: true, errors: [] },
       }
-      const pools = getters.pools(state)
-      expect(pools[0].libraries[0].group_id).toEqual(undefined)
+      expect(pools(state)[0].libraries[0].group_id).toEqual(undefined)
     })
   })
 })

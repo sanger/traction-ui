@@ -14,8 +14,8 @@ export default {
   smrtLinkVersionList: ({ resources }) => {
     return resources.smrtLinkVersions
   },
-  defaultSmrtLinkVersion: (state, getters) => {
-    return Object.values(getters.smrtLinkVersionList).find((version) => version.default)
+  defaultSmrtLinkVersion: ({ resources: { smrtLinkVersions } }) => {
+    return Object.values(smrtLinkVersions).find((version) => version.default)
   },
 
   // TODO refactor to reuse the functions

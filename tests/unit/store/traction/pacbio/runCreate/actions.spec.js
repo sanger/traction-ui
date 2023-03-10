@@ -20,6 +20,12 @@ const wells = {
   2: { ...newWell(), pools: [1, 2] },
 }
 
+const defaultSmrtLinkVersion = {
+  id: '1',
+  version: 'v1',
+  default: true,
+}
+
 describe('actions.js', () => {
   const { fetchSmrtLinkVersions, findPools, fetchRun, saveRun, setRun } = actions
 
@@ -157,13 +163,19 @@ describe('actions.js', () => {
   })
 
   describe('setRun', () => {
+    // this works but we are getting into implementation so probably needs a method
+    // to construct a new run with smrt link version
     it('for a new run', async () => {
+      const getters = { defaultSmrtLinkVersion }
       const run = newRun()
       const { id, ...attributes } = run
       const commit = vi.fn()
-      const { success } = await setRun({ commit }, { id })
+      const { success } = await setRun({ commit, getters }, { id })
       expect(success).toBeTruthy()
-      expect(commit).toHaveBeenCalledWith('populateRun', { id, attributes })
+      expect(commit).toHaveBeenCalledWith('populateRun', {
+        id,
+        attributes: { ...attributes, smrt_link_version_id: defaultSmrtLinkVersion.id },
+      })
       expect(commit).toHaveBeenCalledWith('populateRunType', newRunType)
     })
 
