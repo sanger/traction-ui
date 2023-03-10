@@ -48,4 +48,6 @@ export default {
     (barcode) => {
       return pools.find((pool) => pool.barcode === barcode)
     },
+
+  runItem: (state) => state.run || {},
 }
