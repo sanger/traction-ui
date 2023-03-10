@@ -161,12 +161,13 @@ export default {
       currentPage: 1,
     }
   },
-  /*computed: {
+  computed: {
     ...mapGetters('traction/pacbio/requests', ['requests']),
-  },*/
-  mounted() {
-    const requests = mapGetters('traction/pacbio/requests', ['requests'])
-    this.setInitialData(requests)
+  },
+  watch: {
+    requests(newValue) {
+      this.setInitialData(newValue)
+    },
   },
   methods: {
     /*
