@@ -15,8 +15,20 @@ const tags = included.slice(4, 6)
 const requests = included.slice(6, 8)
 
 describe('mutations.js', () => {
-  const { populateSmrtLinkVersions, populateRun, populateWells, populatePools, populateRunType } =
-    mutations
+  const {
+    populateSmrtLinkVersions,
+    populateRun,
+    populateWells,
+    populatePools,
+    populateRunType,
+    clearRunData,
+    setPools,
+    setRequests,
+    setTags,
+    setLibraries,
+    setTubes,
+    removePool,
+  } = mutations
 
   describe('populateSmrtLinkVersions', () => {
     it('updates the state', () => {
@@ -68,7 +80,7 @@ describe('mutations.js', () => {
       state = {
         pools: {},
       }
-      mutations.setPools(state, pools)
+      setPools(state, pools)
       expect(state.pools).toEqual(storePools.pools)
     })
 
@@ -76,7 +88,7 @@ describe('mutations.js', () => {
       state = {
         tubes: {},
       }
-      mutations.setTubes(state, tubes)
+      setTubes(state, tubes)
       expect(state.tubes).toEqual(storePools.tubes)
     })
 
@@ -84,7 +96,7 @@ describe('mutations.js', () => {
       state = {
         libraries: {},
       }
-      mutations.setLibraries(state, libraries)
+      setLibraries(state, libraries)
       expect(state.libraries).toEqual(storePools.libraries)
     })
 
@@ -92,7 +104,7 @@ describe('mutations.js', () => {
       state = {
         tags: {},
       }
-      mutations.setTags(state, tags)
+      setTags(state, tags)
       expect(state.tags).toEqual(storePools.tags)
     })
 
@@ -100,7 +112,7 @@ describe('mutations.js', () => {
       state = {
         requests: {},
       }
-      mutations.setRequests(state, requests)
+      setRequests(state, requests)
       expect(state.requests).toEqual(storePools.requests)
     })
 
@@ -108,20 +120,20 @@ describe('mutations.js', () => {
       state = {
         pools: {},
       }
-      mutations.setPools(state, pools)
-      mutations.removePool(state, 2)
+      setPools(state, pools)
+      removePool(state, 2)
       expect(state.pools).toEqual({ 1: storePools.pools[1] })
     })
   })
 
-  describe('clearPoolData', () => {
+  describe('clearRunData', () => {
     it('clears existing pool data', () => {
       const defaultStateObject = defaultState()
       const state = {
         ...defaultStateObject,
       }
       // populates an existing pool into state
-      mutations.clearPoolData(state)
+      clearRunData(state)
       expect(state).toEqual({
         resources: {
           smrtLinkVersions: {},

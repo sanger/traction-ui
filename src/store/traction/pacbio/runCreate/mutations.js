@@ -77,7 +77,7 @@ export default {
   removePool(state, id) {
     Vue.delete(state.pools, id)
   },
-  clearPoolData(state) {
+  clearRunData(state) {
     const new_state = defaultState()
     Object.assign(state, new_state, { resources: state.resources })
   },
