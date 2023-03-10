@@ -1,8 +1,12 @@
 /**
  * A mixin to store commonly used functionality for the bootstrap table component
  */
+
 export default {
   name: 'TableHelper',
+  data() {
+    return { tableData: [] }
+  },
   methods: {
     onRowSelected(items) {
       this.selected = items
@@ -11,6 +15,16 @@ export default {
       // Trigger pagination to update the number of buttons/pages due to filtering
       this.filteredItems = filteredItems
       this.currentPage = 1
+    },
+    setInitialData(initialTableData) {
+      alert('here')
+      console.log(initialTableData)
+      this.initialTableData = initialTableData
+      this.tableData = initialTableData
+    },
+    onPageChange(currentPage, perPage) {
+      this.currentPage = currentPage
+      this.tableData = this.initialData.slice(currentPage * perPage, perPage)
     },
   },
   computed: {

@@ -16,7 +16,7 @@
         :disabled="selected.length === 0"
         class="float-left"
         @alert="showAlert"
-      >
+        >lo
       </PacbioLibraryCreate>
 
       <traction-pagination
@@ -25,6 +25,7 @@
         :total-rows="requests.length"
         :per-page="perPage"
         aria-controls="samples-table"
+        @input="onPageChange($event, perPage)"
       >
       </traction-pagination>
       <traction-form-group
@@ -47,7 +48,7 @@
       primary_key="id"
       show-empty
       responsive
-      :items="requests"
+      :items="tableData"
       :fields="fields"
       :filter="filter"
       :per-page="perPage"
@@ -91,15 +92,15 @@
       <template #row-details="row">
         <traction-card class="text-left">
           <template v-for="(field, index) in field_in_details">
-            <span v-if="field" :key="field.label + index" class="font-weight-bold">{{ field.label }}</span
+            <span v-if="field" :key="field.label + index" class="font-weight-bold">{{
+              field.label
+            }}</span
             >: {{ row.item[field.item] }}
-            <br  v-if="field" :key="field.label" />
+            <br v-if="field" :key="field.label" />
           </template>
         </traction-card>
       </template>
-      </traction-table>
-       
-
+    </traction-table>
   </DataFetcher>
 </template>
 
@@ -124,6 +125,7 @@ export default {
     DataFetcher,
   },
   mixins: [TableHelper],
+
   data() {
     return {
       fields: [
@@ -159,8 +161,12 @@ export default {
       currentPage: 1,
     }
   },
-  computed: {
+  /*computed: {
     ...mapGetters('traction/pacbio/requests', ['requests']),
+  },*/
+  mounted() {
+    const requests = mapGetters('traction/pacbio/requests', ['requests'])
+    this.setInitialData(requests)
   },
   methods: {
     /*
