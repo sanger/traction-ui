@@ -8,6 +8,7 @@ export default {
    * Retrieves a list of pacbio smrt_link_versions and populates the store.
    * @param rootState the vuex rootState object. Provides access to current state
    * @param commit the vuex commit object. Provides access to mutations
+   * @returns { success, errors }. Was the request successful? were there any errors?
    */
   fetchSmrtLinkVersions: async ({ commit, rootState }) => {
     const request = rootState.api.traction.pacbio.smrt_link_versions
@@ -27,6 +28,7 @@ export default {
    * @param rootState the vuex rootState object. Provides access to current state
    * @param commit the vuex commit object. Provides access to mutations
    * @param filter the barcode(s) to find the pools for
+   * @returns { success, errors }. Was the request successful? were there any errors?
    * TODO: remove getter. Better to use rootState
    */
   findPools: async ({ commit, getters }, filter) => {
@@ -56,6 +58,7 @@ export default {
     if (success && data.length > 0) {
       const { tubes, libraries, tags, requests } = groupIncludedByResource(included)
 
+      // commit pools, tubes, libraries, tags and requests
       commit('setPools', data)
       commit('setTubes', tubes)
       commit('setLibraries', libraries)
@@ -71,6 +74,7 @@ export default {
    * Retrieves a pacbio run and populates the store.
    * @param rootState the vuex rootState object. Provides access to current state
    * @param commit the vuex commit object. Provides access to mutations
+   * @returns { success, errors }. Was the request successful? were there any errors?
    */
   fetchRun: async ({ commit, rootState }, { id }) => {
     const request = rootState.api.traction.pacbio.runs
@@ -79,6 +83,8 @@ export default {
 
     const { success, data: { data, included = [] } = {}, errors = [] } = response
 
+    // create run, wells, pools and tubes
+    // TODO: we need to add libraries tags and requests to cover existing runs
     if (success) {
       const { wells, pools, tubes } = groupIncludedByResource(included)
       commit('populateRun', data)
@@ -94,10 +100,12 @@ export default {
    * If it is an existing run it will be updated.
    * @param rootState the vuex rootState object. Provides access to current state
    * @param state {runs, wells}. The current run and it's wells
+   * @returns { success, errors }. Was the request successful? were there any errors?
    */
   saveRun: async ({ rootState, state: { runType, run, wells } }) => {
     const request = rootState.api.traction.pacbio.runs
 
+    // based on the runType create the payload and the promise
     const payload = runType.payload({ run, wells })
     const promise = runType.promise({ request, payload })
     const response = await handleResponse(promise)
@@ -107,20 +115,36 @@ export default {
     return { success, errors }
   },
 
+  /**
+   * Sets the current run. If it is a new run it will be created.
+   * If it is an existing run it will be updated.
+   * @param rootState the vuex rootState object. Provides access to current state
+   * @param dispatch We need to call another action
+   * @param commit the vuex commit object. Provides access to mutations
+   * @param id The id of the run. It will be new or existing
+   * @returns { success, errors }. Was the action successful? were there any errors?
+   *
+   */
   setRun: async ({ commit, dispatch, rootState }, { id }) => {
+    // create and commit the runType based on the id
     const runType = createRunType({ id })
     commit('populateRunType', runType)
 
+    // if it is a new create a new run and commit it
     if (runType.type === RunTypeEnum.New) {
       // eslint-disable-next-line no-unused-vars
       const { id: _id, ...attributes } = newRun()
 
       commit('populateRun', { id, attributes })
-      return { success: true }
+
+      // success will always be true and errors will be empty
+      return { success: true, errors: [] }
     }
 
+    // call the fetch run action
     const { success, errors = [] } = await dispatch('fetchRun', { commit, rootState }, { id })
 
+    // return the result from the fetchRun
     return { success, errors }
   },
 }
