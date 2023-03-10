@@ -29,8 +29,8 @@
       ></b-table-wrapper>
     </template>
     <div class="flex">
-      <div class="py-2 align-middle inline-block min-w-full">
-        <div class="sm:rounded-lg">
+      <div class="flex w-full py-2 align-middle inline-block min-w-full">
+        <div class="flex w-full sm:rounded-lg">
           <table
             v-bind="$attrs"
             class="w-full divide-y divide-gray-100 table-auto text-sm"
