@@ -1,16 +1,34 @@
 <!--
    TractionTable
    Renders a table component using html <table> element
-  * @example
-   * <template>
-   * <traction-table>
-   *  <tr>
-   *      <traction-table-cell>STAN-123</traction-table-cell>
-   *      <traction-table-cell>Proviasette</traction-table-cell>
-   * </tr>
-   * </traction-table>
-   */
-   #[slot]="scope"  is equivalent of v-slot:[slotName]="slotScope"
+
+  1) Renders a simple table  if 'simple' prop set to true. 
+     - 'fields' props are header columns labels
+     - rows and colums to be defined as slots 
+    @example for simple table
+    <template>
+    <traction-table simple 
+        :fields=[{key:column1,label:'Header Column1', key:column2,label:'Header Column2']}>
+     <traction-table-row>
+         <traction-table-column>Column-1 value</traction-table-column>
+         <traction-table-column>Column-2 value</traction-table-column>
+    </traction-table-row>
+    </traction-table>
+   
+
+   2)Renders table which accepts a object array
+   - 'fields' props are header columns labels
+   - 'items' is the data to be displayed, which can be objects array or a simple string array
+      if object array, the object should contain fields corresponding to header field keys
+   <template>
+    <traction-table  
+      :fields=[{key:column1,label:'Header Column1', key:column2,label:'Header Column2']}>
+      :items=[{column1:'Column 1',column2:'Column 2'}]
+    />
+   </template
+
+
+   Note: #[slot]="scope"  is equivalent of v-slot:[slotName]="slotScope"
 -->
 <template>
   <flagged-feature name="enable_custom_table">
@@ -43,7 +61,7 @@
                   :key="fieldKey(field, fieldIndex)"
                   class="px-2 py-4 bg-gray-50 content-center select-none"
                 >
-                  <div class="flex justify-center font-medium text-gray-600 text-xs">
+                  <div class="flex justify-center font-medium text-gray-600 text-sm">
                     <div class="py-2" :data-testid="`header-div-${fieldIndex}`">
                       {{ fieldText(field) }}
                     </div>
@@ -109,10 +127,6 @@ export default {
   props: {
     //attribute name to represent this component for testing, if given
     dataAttribute: {
-      type: String,
-      default: '',
-    },
-    id: {
       type: String,
       default: '',
     },

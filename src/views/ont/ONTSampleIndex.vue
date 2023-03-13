@@ -8,7 +8,7 @@
         :total-rows="requests.length"
         :per-page="perPage"
         aria-controls="samples-table"
-        @input="onPageChange($event, perPage)"
+        @input="onPageChange($event)"
       >
       </traction-pagination>
       <traction-form-group label-cols-lg="1" label="Per Page" label-for="input-per-page">
@@ -100,7 +100,7 @@ export default {
   },
   watch: {
     requests(newValue) {
-      this.setInitialData(newValue)
+      this.setInitialData(newValue,this.perPage)
     },
   },
   methods: {

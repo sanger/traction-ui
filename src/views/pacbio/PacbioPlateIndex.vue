@@ -9,7 +9,7 @@
         :total-rows="plates.length"
         :per-page="perPage"
         aria-controls="plate-index"
-        @input="onPageChange($event, perPage)"
+        @input="onPageChange($event)"
       >
       </traction-pagination>
       <traction-form-group
@@ -110,7 +110,7 @@ export default {
   },
   watch: {
     plates(newValue) {
-      this.setInitialData(newValue)
+      this.setInitialData(newValue,this.perPage)
     },
   },
   methods: {

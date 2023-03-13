@@ -16,7 +16,7 @@
         :total-rows="pools.length"
         :per-page="perPage"
         aria-controls="pool-index"
-               @input="onPageChange($event, perPage)"
+               @input="onPageChange($event)"
  
       >
       </traction-pagination>
@@ -68,6 +68,7 @@
 
       <template #cell(actions)="row">
         <router-link
+          id="edit-pool"
           data-action="edit-pool"
           :to="{ name: 'PacbioPoolCreate', params: { id: row.item.id } }"
         >
@@ -178,7 +179,7 @@ export default {
   },
   watch: {
     pools(newValue) {
-      this.setInitialData(newValue)
+      this.setInitialData(newValue,this.perPage)
     },
   },
   methods: {

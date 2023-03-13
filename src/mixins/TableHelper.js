@@ -18,14 +18,15 @@ export default {
       this.filteredItems = filteredItems
       this.currentPage = 1
     },
-    setInitialData(initialData) {
+    setInitialData(initialData, perPage) {
       this.initialData = initialData
-      this.tableData = initialData
+      this.perPage = perPage
+      this.tableData = this.initialData.slice(0, perPage)
     },
-    onPageChange(currentPage, perPage) {
+    onPageChange(currentPage) {
       this.currentPage = currentPage
-      const start = currentPage * perPage
-      this.tableData = this.initialData.slice(start, start + perPage)
+      const start = currentPage * this.perPage
+      this.tableData = this.initialData.slice(start, start + this.perPage)
     },
   },
   computed: {
@@ -44,6 +45,5 @@ export default {
 
       return this.items.length
     },
-    // ...mapGetters('traction/pacbio/requests', ['requests']),
   },
 }

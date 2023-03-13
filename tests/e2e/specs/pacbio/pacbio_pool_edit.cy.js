@@ -27,7 +27,10 @@ describe('Pacbio Pool Edit', () => {
 
   it('Updates a pool successfully', () => {
     cy.visit('#/pacbio/pools')
-    cy.get('.pool [data-action=edit-pool]').first().click()
+    cy.get('#pool-index').within(() => {
+      cy.get('#edit-pool').first().click()
+    })
+
     cy.get('[data-type=plate-item]').should('be.visible')
     cy.get('[data-attribute=tag-set-name]').should('be.visible')
     cy.get('[data-type=pool-edit]').within(() => {
@@ -47,7 +50,9 @@ describe('Pacbio Pool Edit', () => {
 
   it('Will not update a pool if there is an error', () => {
     cy.visit('#/pacbio/pools')
-    cy.get('.pool [data-action=edit-pool]').first().click()
+     cy.get('#pool-index').within(() => {
+       cy.get('#edit-pool').first().click()
+     })
     cy.get('[data-type=plate-item]').should('be.visible')
     cy.get('[data-attribute=tag-set-name]').should('be.visible')
     cy.get('[data-type=pool-library-edit]').within(() => {

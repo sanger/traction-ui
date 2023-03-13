@@ -26,7 +26,7 @@
         :total-rows="libraries.length"
         :per-page="perPage"
         aria-controls="library-index"
-        @input="onPageChange($event, perPage)"
+        @input="onPageChange($event)"
       />
       <traction-form-group
         class="float-right mx-5"
@@ -151,7 +151,7 @@ export default {
   },
    watch: {
     libraries(newValue) {
-      this.setInitialData(newValue)
+      this.setInitialData(newValue,this.perPage)
     },
   },
   methods: {

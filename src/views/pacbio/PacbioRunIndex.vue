@@ -17,7 +17,7 @@
         :total-rows="runs.length"
         :per-page="perPage"
         aria-controls="run-index"
-        @input="onPageChange($event, perPage)"
+        @input="onPageChange($event)"
       >
       </traction-pagination>
       <traction-form-group
@@ -162,7 +162,7 @@ export default {
   },
   watch: {
     runs(newValue) {
-      this.setInitialData(newValue)
+      this.setInitialData(newValue,this.perPage)
     },
   },
   methods: {

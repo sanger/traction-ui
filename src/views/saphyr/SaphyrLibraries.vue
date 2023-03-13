@@ -80,7 +80,7 @@
         :total-rows="libraries.length"
         :per-page="perPage"
         aria-controls="libraries-table"
-        @input="onPageChange($event, perPage)"
+        @input="onPageChange($event)"
       >
       </traction-pagination>
     </div>
@@ -135,7 +135,7 @@ export default {
   },
   watch: {
     libraries(newValue) {
-      this.setInitialData(newValue)
+      this.setInitialData(newValue,this.perPage)
     },
   },
   created() {
