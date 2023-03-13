@@ -1,3 +1,7 @@
+<!-- 
+ This is a wrapper component for <b-table> and <b-table-simple>
+-->
+
 <template>
   <b-table-simple v-if="simple" v-bind="$attrs" v-on="$listeners">
     <b-thead>

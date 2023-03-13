@@ -1,3 +1,12 @@
+<!--/**
+   * # TractionTableRow
+   *
+   * * This component provides a wrapper for a boot-strap <b-tr> and HTML <tr> 
+   *
+   * @example
+   * 
+   */
+-->
 <template>
   <flagged-feature name="enable_custom_table">
     <template #disabled>

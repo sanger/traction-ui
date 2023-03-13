@@ -1,7 +1,7 @@
 <!--/**
    * # TractionTableColumn
    *
-   * This component provides a wrapper for a table column cell 
+   * This component provides a wrapper for a boot-strap <b-td> and HTML <td>
    *
    * @example
    * 

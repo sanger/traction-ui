@@ -1,6 +1,9 @@
 <!--
    TractionTable
    Renders a table component using html <table> element
+  
+  The design of this component is based on how a b-table is working inorder to make it compatible
+   with b-table through feature flags
 
   1) Renders a simple table  if 'simple' prop set to true. 
      - 'fields' props are header columns labels
@@ -27,7 +30,7 @@
     />
    </template
 
-
+  
    Note: #[slot]="scope"  is equivalent of v-slot:[slotName]="slotScope"
 -->
 <template>
@@ -130,89 +133,128 @@ export default {
       type: String,
       default: '',
     },
+    /**
+     * Header fields
+     * key - key field to the header column
+     * label - label to display on header
+     * formatter - Formatter function if any customization required to display the header label
+     */
     fields: {
       type: Array,
       default: () => [{ key: '', label: '', formatter: () => {} }],
     },
+    /**
+     * Data to display in table
+     * This should be an object data having field names same as header field keys
+     */
     items: {
       type: Array,
       required: false,
       default: () => [],
     },
+    /**
+     * current sort-by column field
+     */
     sortBy: {
       type: String,
       required: false,
       default: '',
     },
+    /**
+     * For table which has got a 'showDetails' functionality (which allows the user to display extra information),
+     * it is required to provide a primaryKey. This allows to keep the state internally, so that
+     * open/close row status will not be lost while sorting data
+     *
+     */
     primaryKey: {
       type: String,
       required: false,
       default: 'id',
     },
+    /**
+     * Specifies whether the table rows are selectable
+     */
     selectable: {
       type: Boolean,
       required: false,
       default: false,
     },
+    /**
+     * Single/multiple row selection?
+     */
     selectMode: {
       type: String,
       required: false,
       default: 'single',
       validator: () => within('single', 'multiple'),
     },
+    /**
+     * This allows to use table header with any slot component
+     * 'fields' is the only mandatory props and 'items' doesn't have any effect in this case
+     */
     simple: {
       type: Boolean,
       required: false,
     },
   },
   data() {
-    const rows = this.sortedData().map((row, rowIndx) => {
-      const id = this.primaryKey in row && row[this.primaryKey] ? row[this.primaryKey] : rowIndx
-      return {
-        item: { ...row },
-        id: id,
-        toggleDetails: () => {
-          this.handleToggleDetails(id)
-        },
-        detailsShowing: false,
-        rowSelected: false,
-        rowIndx: rowIndx,
-        detailsDim: '60',
-      }
-    })
+    //Create 'row' data based on initial data passed in through 'items' prop
+    const rows = this.generateRowData()
     return {
       rows: rows,
       sortField: { key: this.sortBy, ascending: true },
     }
   },
   watch: {
+    //Update 'row' data, whenever the data changes (passed in through 'items' prop)
     items: function () {
-      const rows = []
-      this.sortedData().forEach((item, rowIndx) => {
-        const id =
-          this.primaryKey in item && item[this.primaryKey] ? item[this.primaryKey] : rowIndx
-        const row = this.rows.find((row) => row.id === id)
-        if (row) {
-          rows.push({ ...row, item: item })
-        } else
-          rows.push({
-            item: { ...item },
-            id: id,
-            toggleDetails: () => {
-              this.handleToggleDetails(id)
-            },
-            detailsShowing: false,
-            rowSelected: false,
-            rowIndx: rowIndx,
-            detailsDim: '60',
-          })
-      })
-      this.rows = rows
+      this.rows = this.generateRowData()
     },
   },
 
   methods: {
+    generateRowData() {
+      const rows = []
+
+      /**Initially sort the  table data based on current sort field**/
+      this.sortedData().forEach((item, rowIndx) => {
+        const id =
+          this.primaryKey in item && item[this.primaryKey] ? item[this.primaryKey] : rowIndx
+        const row = this.rows?.find((row) => row.id === id)
+        //This row already exists, so only update the data associated with it
+        if (row) {
+          rows.push({ ...row, item: item })
+        } else
+          rows.push({
+            /**Table data to be displayed */
+            item: { ...item },
+
+            /**Id of row*/
+            id: id,
+
+            /**Callback method when a row is toggled using the button in 'showDetails' slot
+             * Design is based on how bootstrap table is expecting this feature to work, to ensure the compatibility with b-table**/
+            toggleDetails: () => {
+              this.handleToggleDetails(id)
+            },
+            /**Flag to show whether the additional row is in display or not
+               This prop design is based on how bootstrap table is expecting this feature to work to ensure it is compatible with b-table***/
+            detailsShowing: false,
+
+            /**The dimension to display if there is any labware svg displayed in row**/
+            detailsDim: '60',
+
+            /**Is row is selected or not?**/
+            rowSelected: false,
+
+            /**Index of row**/
+            rowIndx: rowIndx,
+          })
+      })
+      return rows
+    },
     sortedData() {
+      /**Sort table data based on sort field */
       if (!this.sortField) return this.items
       const isAsc = this.sortField.ascending
       const val = [...this.items].sort((a, b) => {
@@ -222,6 +264,7 @@ export default {
       })
       return val
     },
+    /**Callback when a row is toggled using the button in 'showDetails' slot*/
     handleToggleDetails(id) {
       const rowIndex = this.rows.findIndex((row) => row.id === id)
       if (rowIndex < 0) return
@@ -230,7 +273,7 @@ export default {
         detailsShowing: !this.rows[rowIndex].detailsShowing,
       })
     },
-    /**Emitted when the page changes */
+    /**Emitted when the sort button is clicked */
     sortButtonClick(fieldKey) {
       this.sortField = {
         key: fieldKey,
@@ -247,6 +290,7 @@ export default {
         )
       })
     },
+    /**Ascending or descending sort? */
     sortDirection(fieldkey) {
       return fieldkey == this.sortField.key
         ? this.sortField.ascending
@@ -254,26 +298,39 @@ export default {
           : 'descend'
         : 'none'
     },
+
+    /**Callback when a row is clicked */
     onRowClick(id, row) {
+      /**Only listen to column clicks. This is to avoid clicks from any any embedded controls like buttons displayed within columns  */
       const srcElement = window.event.srcElement
       if (!(srcElement instanceof HTMLTableCellElement)) return
       if (!this.selectable) return
+      //Toggle row selection
+
       const rowIndex = this.rows.findIndex((elem) => elem.id === row.id)
+      if (rowIndex < 0) return
+
       const prevSelectedRowIndx =
         this.selectMode === 'single' ? this.rows.findIndex((row) => row.rowSelected) : -1
-      if (rowIndex < 0) return
       this.rows[rowIndex].rowSelected = !this.rows[rowIndex].rowSelected
       if (prevSelectedRowIndx >= 0 && prevSelectedRowIndx !== rowIndex) {
         this.rows[prevSelectedRowIndx].rowSelected = false
       }
       const selectedItems = this.rows.filter((row) => row.rowSelected).map((row) => row.item)
+      /**Emit 'row-selected' even with table data corresponding to selected rows**/
       this.$emit('row-selected', selectedItems)
     },
+    /**Row background colour */
     backgroundColor(row) {
       return row.rowSelected ? 'bg-gray-400' : ''
     },
+    /**Text to display in table */
     text(item, field) {
       let text = ''
+      /**This is agian for bootstrap table compatibility which allows to access the nested data fields in an object
+       * The only contradiction from b-table is - if there are multiple fields with same name in nested hierarchy,
+       * this will always returns the last field matching
+       */
       if (typeof item === 'object') {
         const flattenRow = flattenObject(item)
         text = flattenRow[field.key]
@@ -287,9 +344,11 @@ export default {
         return text
       }
     },
+    /**Key value accessor for the header fiels */
     fieldKey(field, indx) {
       return typeof field === 'object' && 'key' in field ? field.key : indx
     },
+    /**Value accessor for header field */
     fieldText(field) {
       return typeof field === 'object' && 'label' in field
         ? field.label
@@ -297,6 +356,7 @@ export default {
         ? field
         : ''
     },
+    /**This is for Bootstrap row selection which needs a re-emission which failed to work otherwise  */
     onRowSelection(value) {
       this.$emit('row-selected', value)
     },
