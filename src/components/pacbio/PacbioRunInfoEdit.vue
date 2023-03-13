@@ -8,7 +8,7 @@
         <traction-col>
           <traction-input
             id="run-name"
-            :value="runName"
+            :value="runItem.id"
             placeholder="Run name"
             type="text"
             classes="w-48"
@@ -23,11 +23,11 @@
         <traction-col>
           <traction-input
             id="sequencing-kit-box-barcode"
-            :value="sequencingKitBoxBarcode"
+            :v-model="runItem.sequencing_kit_box_barcode"
+            :value="runItem.sequencing_kit_box_barcode"
             placeholder="Sequencing Kit Box Barcode"
             type="text"
             classes="w-48"
-            @input="setSequencingKitBoxBarcode"
           />
         </traction-col>
       </traction-row>
@@ -38,11 +38,11 @@
         <traction-col>
           <traction-input
             id="dna-control-complex-box-barcode"
-            :value="dnaControlComplexBoxBarcode"
+            v-model="runItem.dna_control_complex_box_barcode"
+            :value="runItem.dna_control_complex_box_barcode"
             placeholder="DNA Control Complex Box Barcode"
             type="text"
             classes="w-48"
-            @input="setDNAControlComplexBoxBarcode"
           />
         </traction-col>
       </traction-row>
@@ -54,10 +54,10 @@
           <traction-select
             id="system-name"
             ref="systemName"
-            :value="systemName"
+            :v-model="runItem.system_name"
+            :value="runItem.system_name"
             title="System Name"
             :options="systemNameOptions"
-            @input="setSystemName"
           />
         </traction-col>
       </traction-row>
@@ -69,11 +69,11 @@
           <traction-select
             id="smrt-link-version"
             ref="smrtLinkVersion"
-            :value="smrtLinkVersionId"
+            :v-model="runItem.smrt_link_version_id"
+            :value="runItem.smrt_link_version_id"
             data-attribute="smrt-link-version"
             title="SMRT Link Version"
             :options="smrtLinkVersionSelectOptions"
-            @input="setSmrtLinkVersionId"
           />
         </traction-col>
       </traction-row>
@@ -84,11 +84,11 @@
         <traction-col>
           <traction-input
             id="comments"
-            :value="comments"
+            :v-model="runItem.comments"
+            :value="runItem.comments"
             placeholder="Comments"
             type="text"
             classes="w-48"
-            @input="setComments"
           />
         </traction-col>
       </traction-row>
@@ -98,7 +98,7 @@
 
 <script>
 import { createNamespacedHelpers } from 'vuex'
-const { mapGetters, mapState, mapMutations } = createNamespacedHelpers('traction/pacbio/runs')
+const { mapGetters } = createNamespacedHelpers('traction/pacbio/runCreate')
 
 export default {
   name: 'PacbioRunInfoEdit',
@@ -120,31 +120,9 @@ export default {
         this.$store.getters['traction/pacbio/runCreate/smrtLinkVersionList'],
       ).map(({ id, name }) => ({ value: id, text: name }))
     },
-    selectedSmrtLinkVersion() {
-      return Object.values(
-        this.$store.getters['traction/pacbio/runCreate/smrtLinkVersionList'],
-      ).find((version) => version.id == this.currentRun.smrt_link_version_id)
-    },
-    ...mapGetters(['currentRun']),
-    ...mapState({
-      runName: (state) => state.currentRun.name,
-      sequencingKitBoxBarcode: (state) => state.currentRun.sequencing_kit_box_barcode,
-      dnaControlComplexBoxBarcode: (state) => state.currentRun.dna_control_complex_box_barcode,
-      comments: (state) => state.currentRun.comments,
-      uuid: (state) => state.currentRun.uuid,
-      systemName: (state) => state.currentRun.system_name,
-      smrtLinkVersionId: (state) => state.currentRun.smrt_link_version_id,
-    }),
+    ...mapGetters(['runItem']),
   },
   methods: {
-    ...mapMutations([
-      'setSequencingKitBoxBarcode',
-      'setDNAControlComplexBoxBarcode',
-      'setComments',
-      'setUuid',
-      'setSystemName',
-      'setSmrtLinkVersionId',
-    ]),
     alertOnFail({ success, errors }) {
       if (!success) {
         this.showAlert(errors, 'danger')
