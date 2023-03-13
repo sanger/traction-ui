@@ -114,8 +114,10 @@ const RunTypeEnum = {
 
 const newRunType = {
   type: RunTypeEnum.New,
+  id: 'create-run',
   theme: 'create',
-  label: 'Create',
+  action: 'create',
+  label: 'Create Run',
 
   // returns the payload slightly different for new and existing runs
   payload({ run, wells }) {
@@ -132,8 +134,10 @@ const newRunType = {
 
 const existingRunType = {
   type: RunTypeEnum.Existing,
+  id: 'update-run',
   theme: 'update',
-  label: 'Update',
+  action: 'create',
+  label: 'Update Run',
   payload({ run, wells }) {
     // eslint-disable-next-line no-unused-vars
     const { id, ...attributes } = run

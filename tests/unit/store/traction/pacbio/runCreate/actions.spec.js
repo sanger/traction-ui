@@ -179,16 +179,29 @@ describe('actions.js', () => {
       expect(commit).toHaveBeenCalledWith('populateRunType', newRunType)
     })
 
+    // TODO: This is clearly complex and needs to be simplified.
     it('for an existing run', async () => {
+      const state = {
+        tubes: {
+          1: { barcode: 'TRAC-2-1', id: '1', type: 'tubes' },
+          2: { barcode: 'TRAC-2-2', id: '2', type: 'tubes' },
+        },
+      }
       const id = 1
       const commit = vi.fn()
-      const fetchRun = vi.fn()
-      fetchRun.mockResolvedValue({ success: true })
-      const dispatch = vi.fn(fetchRun)
+      const getters = {}
+      const dispatch = vi.fn()
       const update = vi.fn()
+      dispatch.mockResolvedValue({ success: true })
+
       const rootState = { api: { traction: { pacbio: { runs: { update } } } } }
-      const { success } = await setRun({ commit, dispatch, rootState }, { id })
+      const { success } = await setRun({ commit, dispatch, rootState, state, getters }, { id })
       expect(dispatch).toHaveBeenCalledWith('fetchRun', { commit, rootState }, { id })
+      expect(dispatch).toHaveBeenCalledWith(
+        'findPools',
+        { commit, getters },
+        { filter: 'TRAC-2-1,TRAC-2-2' },
+      )
       expect(commit).toHaveBeenCalledWith('populateRunType', existingRunType)
       expect(success).toBeTruthy()
     })

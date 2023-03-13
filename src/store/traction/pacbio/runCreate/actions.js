@@ -125,7 +125,7 @@ export default {
    * @returns { success, errors }. Was the action successful? were there any errors?
    *
    */
-  setRun: async ({ commit, dispatch, rootState, getters }, { id }) => {
+  setRun: async ({ commit, dispatch, rootState, getters, state }, { id }) => {
     // create and commit the runType based on the id
     const runType = createRunType({ id })
     commit('populateRunType', runType)
@@ -145,7 +145,24 @@ export default {
     }
 
     // call the fetch run action
-    const { success, errors = [] } = await dispatch('fetchRun', { commit, rootState }, { id })
+    let { success, errors = [] } = await dispatch('fetchRun', { commit, rootState }, { id })
+
+    // if the call is successful we need to get the pools and barcodes.
+    // TODO: We need to turn the service into a single call to return this data
+    // to reduce complexity
+    if (success) {
+      const filter = Object.values(state.tubes)
+        .map((tube) => tube.barcode)
+        .join()
+
+      // not sure how to do this better maybe closure?
+      const { success: _success, errors: _errors } = await dispatch(
+        'findPools',
+        { commit, getters },
+        { filter },
+      )
+      success, (errors = _success), _errors
+    }
 
     // return the result from the fetchRun
     return { success, errors }

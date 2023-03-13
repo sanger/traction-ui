@@ -114,7 +114,15 @@ describe('run.js', () => {
       it('will have the correct attributes', () => {
         const runType = createRunType({ id: 'new' })
         expect(runType.type).toEqual(RunTypeEnum.New)
-        expect(Object.keys(runType)).toEqual(['type', 'theme', 'label', 'payload', 'promise'])
+        expect(Object.keys(runType)).toEqual([
+          'type',
+          'id',
+          'theme',
+          'action',
+          'label',
+          'payload',
+          'promise',
+        ])
       })
 
       it('will create the correct payload', () => {
@@ -143,7 +151,15 @@ describe('run.js', () => {
       it('will have the correct attributes', () => {
         const runType = createRunType({ id: 1 })
         expect(runType.type).toEqual(RunTypeEnum.Existing)
-        expect(Object.keys(runType)).toEqual(['type', 'theme', 'label', 'payload', 'promise'])
+        expect(Object.keys(runType)).toEqual([
+          'type',
+          'id',
+          'theme',
+          'action',
+          'label',
+          'payload',
+          'promise',
+        ])
       })
 
       it('will create the correct payload', () => {
