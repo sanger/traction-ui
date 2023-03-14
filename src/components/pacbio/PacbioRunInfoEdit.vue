@@ -23,11 +23,11 @@
         <traction-col>
           <traction-input
             id="sequencing-kit-box-barcode"
-            :v-model="runItem.sequencing_kit_box_barcode"
-            :value="runItem.sequencing_kit_box_barcode"
+            v-model="runItem.sequencing_kit_box_barcode"
             placeholder="Sequencing Kit Box Barcode"
             type="text"
             classes="w-48"
+            data-attribute="sequencing_kit_box_barcode"
           />
         </traction-col>
       </traction-row>
@@ -39,10 +39,10 @@
           <traction-input
             id="dna-control-complex-box-barcode"
             v-model="runItem.dna_control_complex_box_barcode"
-            :value="runItem.dna_control_complex_box_barcode"
             placeholder="DNA Control Complex Box Barcode"
             type="text"
             classes="w-48"
+            data-attribute="dna_control_complex_box_barcode"
           />
         </traction-col>
       </traction-row>
@@ -55,7 +55,6 @@
             id="system-name"
             ref="systemName"
             :v-model="runItem.system_name"
-            :value="runItem.system_name"
             title="System Name"
             :options="systemNameOptions"
           />
@@ -70,10 +69,9 @@
             id="smrt-link-version"
             ref="smrtLinkVersion"
             :v-model="runItem.smrt_link_version_id"
-            :value="runItem.smrt_link_version_id"
-            data-attribute="smrt-link-version"
             title="SMRT Link Version"
             :options="smrtLinkVersionSelectOptions"
+            data-attribute="smrt_link_version"
           />
         </traction-col>
       </traction-row>
@@ -84,11 +82,11 @@
         <traction-col>
           <traction-input
             id="comments"
-            :v-model="runItem.comments"
-            :value="runItem.comments"
+            v-model="runItem.comments"
             placeholder="Comments"
             type="text"
             classes="w-48"
+            data-attribute="comments"
           />
         </traction-col>
       </traction-row>
@@ -109,18 +107,16 @@ export default {
   },
   // A lot of the below could be improved. Can we use the store?
   computed: {
-    smrtLinkVersionList() {
-      return Object.values(this.$store.getters['traction/pacbio/runCreate/smrtLinkVersionList'])
-    },
     smrtLinkVersionSelectOptions() {
       // Returns an array of objects with value and text properties to make
       // the options of smrt-link-version select drop-down list.
 
-      return Object.values(
-        this.$store.getters['traction/pacbio/runCreate/smrtLinkVersionList'],
-      ).map(({ id, name }) => ({ value: id, text: name }))
+      return Object.values(this.smrtLinkVersionList).map(({ id, name }) => ({
+        value: id,
+        text: name,
+      }))
     },
-    ...mapGetters(['runItem']),
+    ...mapGetters(['runItem', 'smrtLinkVersionList']),
   },
   methods: {
     alertOnFail({ success, errors }) {
