@@ -2,7 +2,7 @@ import mutations from '@/store/traction/pacbio/runCreate/mutations'
 import defaultState from '@/store/traction/pacbio/runCreate/state'
 import { Data } from '@support/testHelper'
 import { dataToObjectById } from '@/api/JsonApi'
-import { newRun, createRunType } from '@/store/traction/pacbio/runCreate/run'
+import { newRun, createRunType, defaultWellAttributes } from '@/store/traction/pacbio/runCreate/run'
 import storePools from '@tests/data/StorePools'
 import { expect, it } from 'vitest'
 
@@ -28,6 +28,7 @@ describe('mutations.js', () => {
     setLibraries,
     setTubes,
     removePool,
+    populateDefaultWellAttributes,
   } = mutations
 
   describe('populateSmrtLinkVersions', () => {
@@ -146,6 +147,7 @@ describe('mutations.js', () => {
         requests: {},
         tags: {},
         runType: {},
+        defaultWellAttributes: {},
       })
     })
   })
@@ -157,6 +159,15 @@ describe('mutations.js', () => {
       // apply mutation
       populateRunType(state, runType)
       expect(state.runType).toEqual(runType)
+    })
+  })
+
+  describe('populateDefaultWellAttributes', () => {
+    it('populates default well attributes', () => {
+      const state = defaultState()
+      // apply mutation
+      populateDefaultWellAttributes(state, { ...defaultWellAttributes() })
+      expect(state.defaultWellAttributes).toEqual(defaultWellAttributes())
     })
   })
 })

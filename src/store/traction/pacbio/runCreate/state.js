@@ -35,5 +35,8 @@ export default () => {
 
     //Run Type: The type of run either new or existing
     runType: {},
+
+    //Default well attributes: The default attributes needed for each well
+    defaultWellAttributes: {},
   }
 }

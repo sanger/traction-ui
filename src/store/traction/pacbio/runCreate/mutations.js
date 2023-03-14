@@ -55,6 +55,15 @@ export default {
    * @param {Object} smrtLinkVersions The pools for the wells for the current run
    */
   populatePools: populateById('pools', { includeRelationships: true, populateResources: false }),
+
+  /**
+   * @param {Object} state The VueXState object
+   * @param {Object} defaultWellAttributes The default well attributes
+   */
+  populateDefaultWellAttributes: (state, defaultWellAttributes) => {
+    state.defaultWellAttributes = defaultWellAttributes
+  },
+
   setPools(state, pools) {
     Vue.set(state, 'pools', {
       ...state.pools,
