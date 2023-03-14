@@ -87,10 +87,11 @@ export default {
     // TODO: we need to add libraries tags and requests to cover existing runs
     if (success) {
       const { wells, pools, tubes } = groupIncludedByResource(included)
+
       commit('populateRun', data)
       commit('populateWells', wells)
       commit('populatePools', pools)
-      commit('populateTubes', tubes)
+      commit('setTubes', tubes)
     }
     return { success, errors }
   },
@@ -125,7 +126,7 @@ export default {
    * @returns { success, errors }. Was the action successful? were there any errors?
    *
    */
-  setRun: async ({ commit, dispatch, rootState, getters, state }, { id }) => {
+  setRun: async ({ commit, dispatch, getters, state }, { id }) => {
     // create and commit the runType based on the id
     const runType = createRunType({ id })
     commit('populateRunType', runType)
@@ -145,23 +146,20 @@ export default {
     }
 
     // call the fetch run action
-    let { success, errors = [] } = await dispatch('fetchRun', { commit, rootState }, { id })
+    let { success, errors = [] } = await dispatch('fetchRun', { id })
 
     // if the call is successful we need to get the pools and barcodes.
     // TODO: We need to turn the service into a single call to return this data
     // to reduce complexity
     if (success) {
-      const filter = Object.values(state.tubes)
+      const barcode = Object.values(state.tubes)
         .map((tube) => tube.barcode)
         .join()
 
       // not sure how to do this better maybe closure?
-      const { success: _success, errors: _errors } = await dispatch(
-        'findPools',
-        { commit, getters },
-        { filter },
-      )
-      success, (errors = _success), _errors
+      const { success: _success, errors: _errors } = await dispatch('findPools', { barcode })
+      success = _success
+      errors = _errors
     }
 
     // return the result from the fetchRun

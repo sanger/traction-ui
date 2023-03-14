@@ -1,7 +1,7 @@
 import PacbioRun from '@/views/pacbio/PacbioRunShow'
-import { localVue, mount, store, router } from '@/support/testHelper'
+import { localVue, mount, store, router, Data } from '@support/testHelper'
 import { beforeEach, describe, expect, it } from 'vitest'
-import { newRunType, existingRunType } from '@/store/traction/pacbio/runCreate'
+import { newRunType, existingRunType } from '@/store/traction/pacbio/runCreate/run'
 
 const smrtLinkVersions = [
   {
@@ -16,7 +16,7 @@ const smrtLinkVersions = [
   },
 ]
 
-describe.todo('PacbioRunShow.vue', () => {
+describe('PacbioRunShow.vue', () => {
   beforeEach(() => {
     store.state.traction.pacbio.runCreate.resources.smrtLinkVersions = smrtLinkVersions
   })
@@ -43,6 +43,7 @@ describe.todo('PacbioRunShow.vue', () => {
           Plate: true,
           pacbioPoolList: true,
           PacbioRunInfoEdit: true,
+          PacbioRunWellDefaultEdit: true,
         },
         propsData: { id: 'new' },
       })
@@ -72,8 +73,8 @@ describe.todo('PacbioRunShow.vue', () => {
       } = store
 
       smrtLinkVersionsRequest.get = vi.fn()
-      runsRequest.find = vi.fn()
-      poolsRequest.get = vi.fn()
+      runsRequest.find = vi.fn(() => Data.PacbioRun)
+      poolsRequest.get = vi.fn(() => Data.PacbioPool)
 
       const wrapper = mount(PacbioRun, {
         store,
@@ -83,6 +84,7 @@ describe.todo('PacbioRunShow.vue', () => {
           Plate: true,
           pacbioPoolList: true,
           PacbioRunInfoEdit: true,
+          PacbioRunWellDefaultEdit: true,
         },
         propsData: { id: 1 },
       })

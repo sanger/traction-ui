@@ -66,7 +66,7 @@ describe('actions.js', () => {
       expect(commit).toHaveBeenCalledWith('populateRun', Data.PacbioRun.data.data)
       expect(commit).toHaveBeenCalledWith('populateWells', Data.PacbioRun.data.included.slice(1, 2))
       expect(commit).toHaveBeenCalledWith('populatePools', Data.PacbioRun.data.included.slice(2, 3))
-      expect(commit).toHaveBeenCalledWith('populateTubes', Data.PacbioRun.data.included.slice(3, 4))
+      expect(commit).toHaveBeenCalledWith('setTubes', Data.PacbioRun.data.included.slice(3, 4))
       expect(success).toBeTruthy()
     })
 
@@ -191,17 +191,11 @@ describe('actions.js', () => {
       const commit = vi.fn()
       const getters = {}
       const dispatch = vi.fn()
-      const update = vi.fn()
       dispatch.mockResolvedValue({ success: true })
 
-      const rootState = { api: { traction: { pacbio: { runs: { update } } } } }
-      const { success } = await setRun({ commit, dispatch, rootState, state, getters }, { id })
-      expect(dispatch).toHaveBeenCalledWith('fetchRun', { commit, rootState }, { id })
-      expect(dispatch).toHaveBeenCalledWith(
-        'findPools',
-        { commit, getters },
-        { filter: 'TRAC-2-1,TRAC-2-2' },
-      )
+      const { success } = await setRun({ commit, dispatch, state, getters }, { id })
+      expect(dispatch).toHaveBeenCalledWith('fetchRun', { id })
+      expect(dispatch).toHaveBeenCalledWith('findPools', { barcode: 'TRAC-2-1,TRAC-2-2' })
       expect(commit).toHaveBeenCalledWith('populateRunType', existingRunType)
       expect(success).toBeTruthy()
     })

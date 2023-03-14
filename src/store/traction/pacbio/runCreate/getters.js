@@ -50,4 +50,6 @@ export default {
     },
 
   runItem: (state) => state.run || {},
+
+  runType: (state) => state.runType || {},
 }
