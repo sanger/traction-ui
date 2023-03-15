@@ -12,5 +12,11 @@ export default () => {
       // The SMRT Link version store.
       smrtLinkVersions: {},
     },
+
+    pools: {},
+    tubes: {},
+    libraries: {},
+    requests: {},
+    tags: {},
   }
 }
