@@ -114,6 +114,12 @@ describe('TractionDashboard.vue', () => {
         button.trigger('click')
         expect(wrapper.vm.$route.path).toBe('/pacbio/runs')
       })
+      it('will have a pool/new button', () => {
+        const button = box.findAll('a').at(5)
+        expect(button.text()).toEqual('Pool/new')
+        button.trigger('click')
+        expect(wrapper.vm.$route.path).toBe('/pacbio/pool/new')
+      })
     })
   })
 
@@ -128,6 +134,33 @@ describe('TractionDashboard.vue', () => {
 
     it('will have a description', () => {
       expect(box.find('[data-attribute=description]').text()).toBeDefined()
+    })
+
+    describe('route buttons', () => {
+      it('will have a samples button', () => {
+        const button = box.findAll('a').at(0)
+        expect(button.text()).toEqual('Samples')
+        button.trigger('click')
+        expect(wrapper.vm.$route.path).toBe('/ont/samples')
+      })
+      it('will have a pools button', () => {
+        const button = box.findAll('a').at(1)
+        expect(button.text()).toEqual('Pools')
+        button.trigger('click')
+        expect(wrapper.vm.$route.path).toBe('/ont/pools')
+      })
+      it('will have a pool/new button', () => {
+        const button = box.findAll('a').at(2)
+        expect(button.text()).toEqual('Pool/new')
+        button.trigger('click')
+        expect(wrapper.vm.$route.path).toBe('/ont/pool/new')
+      })
+      it('will have a runs button', () => {
+        const button = box.findAll('a').at(3)
+        expect(button.text()).toEqual('Runs')
+        button.trigger('click')
+        expect(wrapper.vm.$route.path).toBe('/ont/runs')
+      })
     })
   })
 })

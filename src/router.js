@@ -24,7 +24,6 @@ import ONTPoolIndex from '@/views/ont/ONTPoolIndex'
 import ONTRuns from '@/views/ont/ONTRuns'
 import ONTRun from '@/views/ont/ONTRun'
 import ONTSampleIndex from '@/views/ont/ONTSampleIndex'
-import PacbioReceptionSequencescape from '@/views/pacbio/PacbioReceptionSequencescape'
 
 export default new Router({
   routes: [
