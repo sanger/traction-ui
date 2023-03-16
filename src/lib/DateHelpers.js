@@ -1,7 +1,7 @@
 /* 
   @returns {String} representation of current date in format dd-mmm-yy
 */
-const getCurrentDate = () => {
+export const getCurrentDate = () => {
   const [, mmm, dd, yyyy] = new Date().toDateString().split(' ')
   return `${dd}-${mmm}-${yyyy.slice(2)}`
 }
@@ -54,16 +54,34 @@ export const alphaNumericSortDefault = (a, b, alphaFirst) => {
   return regexSort(a, b, { alpha: regAlpha, numeric: regNumeric }, alphaFirst)
 }
 
-export const flattenObject = (obj) => {
+/**
+ * Flatten an object with nested objects
+ * If there are repeated fields of same name, it will flattened with [parentFieldName.fieldName]
+ * e.g 
+ * { name: 'Person1',job: { name: 'Job1'}} is flattened to {name:'Person1,job.name:"Job1"}
+ * 
+ * Limitation
+ * 
+ * If there are more than one level of identical fields, it will be overwritten
+ * For eg 
+ * { name:"Test", type:{ name:"class1"},type1:{type:{name:"class2"}}
+ * Here there is only one field called type.name which will be overwritten with 'class2'
+ * 
+ * @param {*} obj - object to flatten
+ * @param {*} objectAccessor - accessor for object which is useful to uniquely identify if there are dupliacte names
+ * @param {*} result - result/flattened object in progress
+ * @returns 
+ */
+export const flattenObject = (obj, objectAccessor, result) => {
   if (!obj) {
     return {}
   }
-  return Object.keys(obj).reduce(
-    (acc, cur) =>
-      typeof obj[cur] === 'object'
-        ? { ...acc, ...flattenObject(obj[cur]) }
-        : { ...acc, [cur]: obj[cur] },
-    {},
-  )
+  return Object.keys(obj).reduce((acc, cur) => {
+    return typeof obj[cur] === 'object'
+      ? { ...acc, ...flattenObject(obj[cur], cur, acc) }
+      : result && Object.keys(result).includes(cur)
+      ? { ...acc, [objectAccessor + '.' + cur]: obj[cur] }
+      : { ...acc, [cur]: obj[cur] }
+  }, {})
 }
-export { getCurrentDate }
+
