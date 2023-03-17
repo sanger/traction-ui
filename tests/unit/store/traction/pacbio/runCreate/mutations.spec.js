@@ -1,7 +1,7 @@
 import mutations from '@/store/traction/pacbio/runCreate/mutations'
 import defaultState from '@/store/traction/pacbio/runCreate/state'
 import { Data } from '@support/testHelper'
-import { dataToObjectById } from '@/api/JsonApi'
+import { dataToObjectById, dataToObjectByPosition } from '@/api/JsonApi'
 import { newRun, createRunType, defaultWellAttributes } from '@/store/traction/pacbio/runCreate/run'
 import storePools from '@tests/data/StorePools'
 import { expect, it } from 'vitest'
@@ -36,7 +36,7 @@ describe('mutations.js', () => {
       // mock state
       const smrtLinkVersions = Data.TractionPacbioSmrtLinkVersions.data.data
       const state = defaultState()
-      // apply mutation
+      // apply mutations
       populateSmrtLinkVersions(state, smrtLinkVersions)
       // assert result
       expect(state.resources.smrtLinkVersions).toEqual(dataToObjectById({ data: smrtLinkVersions }))
@@ -63,7 +63,9 @@ describe('mutations.js', () => {
       // apply mutation
       populateWells(state, wells)
       // assert result
-      expect(state.wells).toEqual(dataToObjectById({ data: wells, includeRelationships: true }))
+      expect(state.wells).toEqual(
+        dataToObjectByPosition({ data: wells, includeRelationships: true }),
+      )
     })
   })
 

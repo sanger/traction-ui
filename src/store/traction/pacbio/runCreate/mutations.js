@@ -1,5 +1,4 @@
-import { populateById } from '@/api/JsonApi'
-import { dataToObjectById } from '@/api/JsonApi'
+import { populateById, populateBy, dataToObjectById, dataToObjectByPosition } from '@/api/JsonApi'
 import Vue from 'vue'
 import defaultState from './state'
 
@@ -38,7 +37,10 @@ export default {
    * @param {Object} state The VueXState object
    * @param {Object} smrtLinkVersions The wells for the current run
    */
-  populateWells: populateById('wells', { includeRelationships: true, populateResources: false }),
+  populateWells: populateBy('wells', dataToObjectByPosition, {
+    includeRelationships: true,
+    populateResources: false,
+  }),
 
   /**
    * Populated the run type
