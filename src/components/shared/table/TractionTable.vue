@@ -343,7 +343,7 @@ export default {
       } else {
         text = String(item)
       }
-      if (field && typeof item === 'object' && 'formatter' in field) {
+      if (field && typeof field === 'object' && 'formatter' in field) {
         const arr = flattenObject(item)
         return field.formatter(arr)
       } else {
