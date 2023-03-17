@@ -77,7 +77,7 @@
         />
       </traction-field-error>
     </traction-table-column>
-  </traction-table-row >
+  </traction-table-row>
 </template>
 
 <script>

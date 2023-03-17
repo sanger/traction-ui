@@ -16,8 +16,7 @@
         :total-rows="pools.length"
         :per-page="perPage"
         aria-controls="pool-index"
-               @input="onPageChange($event)"
- 
+        @input="onPageChange($event)"
       >
       </traction-pagination>
 
@@ -179,7 +178,7 @@ export default {
   },
   watch: {
     pools(newValue) {
-      this.setInitialData(newValue,this.perPage)
+      this.setInitialData(newValue, this.perPage)
     },
   },
   methods: {

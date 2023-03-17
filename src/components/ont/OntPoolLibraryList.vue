@@ -1,7 +1,6 @@
 <template>
   <div v-if="selectedRequests" data-type="pool-library-list">
     <traction-table :fields="headerFields" simple>
-      <traction-tbody>
         <OntPoolLibraryEdit
           v-for="request in selectedRequests"
           :key="request.id"
@@ -10,7 +9,6 @@
           :validated="validated"
           :notify="notify"
         ></OntPoolLibraryEdit>
-      </traction-tbody>
     </traction-table>
   </div>
 </template>

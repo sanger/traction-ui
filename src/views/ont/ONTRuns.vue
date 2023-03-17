@@ -43,6 +43,7 @@
         :current-page="currentPage"
         :sort-by.sync="sortBy"
         :sort-desc.sync="sortDesc"
+        
       >
         <template #cell(actions)="row">
           <traction-button
@@ -110,7 +111,7 @@ export default {
   },
   watch: {
     runs(newValue) {
-      this.setInitialData(newValue,this.perPage)
+      this.setInitialData(newValue, this.perPage)
     },
   },
   methods: {

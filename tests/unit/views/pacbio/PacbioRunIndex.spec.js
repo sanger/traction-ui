@@ -107,7 +107,7 @@ describe('Runs.vue', () => {
       runs.completeRun = vi.fn()
 
       button = wrapper.find('#completeRun-2')
-      button.trigger('click')
+      button.trigger('click') 
 
       expect(runs.completeRun).toBeCalledWith({ id: mockRuns[1].id, pipeline })
     })

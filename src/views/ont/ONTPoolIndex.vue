@@ -161,7 +161,7 @@ export default {
   },
   watch: {
     pools(newValue) {
-      this.setInitialData(newValue,this.perPage)
+      this.setInitialData(newValue, this.perPage)
     },
   },
   methods: {

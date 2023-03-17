@@ -32,7 +32,7 @@ describe('Runs.vue', () => {
 
   describe('sorting', () => {
     it('will sort the runs by created at', () => {
-      expect(wrapper.find('tbody').findAll('tr').at(0).text()).toMatch(/TRAC-678/)
+      expect(wrapper.find('tbody').findAll('tr').at(1).text()).toMatch(/TRAC-678/)
     })
   })
 

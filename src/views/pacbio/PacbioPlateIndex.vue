@@ -110,7 +110,7 @@ export default {
   },
   watch: {
     plates(newValue) {
-      this.setInitialData(newValue,this.perPage)
+      this.setInitialData(newValue, this.perPage)
     },
   },
   methods: {

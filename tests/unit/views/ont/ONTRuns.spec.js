@@ -44,7 +44,7 @@ describe('ONTRuns.vue', () => {
     })
 
     it('orders the data by created_at desc', async () => {
-      expect(wrapper.find('tbody').findAll('tr').at(0).text().includes('ONTRUN-2')).toBeTruthy()
+      expect(wrapper.findAll('td').at(1).text().includes('ONTRUN-2')).toBeTruthy()
     })
   })
 

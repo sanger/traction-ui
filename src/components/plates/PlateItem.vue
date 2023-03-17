@@ -53,7 +53,6 @@ export default {
     },
     widthSVG() {
       const width = this.width ? `${this.width}%` : '30%'
-      console.log(width)
       return width
     },
     heightSVG() {

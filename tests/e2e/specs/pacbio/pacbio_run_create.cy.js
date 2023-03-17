@@ -10,7 +10,7 @@ describe('Pacbio Run Create view', () => {
           flipper_id: 'User',
           features: {
             enable_custom_select: true,
-            enable_custom_table:true,
+            enable_custom_table: true,
           },
         },
       },

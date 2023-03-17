@@ -149,9 +149,9 @@ export default {
   computed: {
     ...mapGetters('traction/pacbio/libraries', ['libraries']),
   },
-   watch: {
+  watch: {
     libraries(newValue) {
-      this.setInitialData(newValue,this.perPage)
+      this.setInitialData(newValue, this.perPage)
     },
   },
   methods: {

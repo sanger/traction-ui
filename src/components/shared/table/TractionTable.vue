@@ -2,8 +2,9 @@
    TractionTable
    Renders a table component using html <table> element
   
-  The design of this component is based on how a b-table is working inorder to make it compatible
-   with b-table through feature flags
+  The overall design of this component and in partcular the scoped slot design, data structures, and event handling is based on how a bootstrap table is working 
+  inorder to make it compatible with b-table through feature flags
+
 
   1) Renders a simple table  if 'simple' prop set to true. 
      - 'fields' props are header columns labels
@@ -31,7 +32,12 @@
    </template
 
   
-   Note: #[slot]="scope"  is equivalent of v-slot:[slotName]="slotScope"
+   Note: 
+   - #[slot]="scope"  is equivalent of v-slot:[slotName]="slotScope"
+   - If there is no bootstrap constraint, the data structure for header and fields can be more freely designed, as 
+      well as scoped slots intercatiob 
+     
+
 -->
 <template>
   <flagged-feature name="enable_custom_table">
@@ -120,7 +126,7 @@
 <script>
 import TractionSortIcon from '@/components/shared/icons/TractionSortIcon'
 import BTableWrapper from '@/components/shared/table/BTableWrapper'
-import { alphaNumericSortDefault, flattenObject } from '@/lib/DateHelpers'
+import { alphaNumericSortDefault, flattenObject } from '@/lib/DataHelpers'
 import { within } from '@/lib/propValidations'
 
 export default {
@@ -161,9 +167,9 @@ export default {
       default: '',
     },
     /**
-     * For table which has got a 'showDetails' functionality (which allows the user to display extra information),
-     * it is required to provide a primaryKey. This allows to keep the state internally, so that
-     * open/close row status will not be lost while sorting data
+     * Primary key field to uniquely idebntify a row.
+     * This can be particularly useful in cases where table is used with 'showDetails' functionalit (which allows the user to display extra information),
+     * This key make sure that open/close row status will not be lost while sorting data
      *
      */
     primaryKey: {
@@ -202,7 +208,7 @@ export default {
     const rows = this.generateRowData()
     return {
       rows: rows,
-      sortField: { key: this.sortBy, ascending: true },
+      sortField: { key: this.sortBy, ascending: false },
     }
   },
   watch: {
@@ -255,12 +261,12 @@ export default {
     },
     sortedData() {
       /**Sort table data based on sort field */
-      if (!this.sortField) return this.items
-      const isAsc = this.sortField.ascending
+      if (!this.sortBy ) return this.items
+      const isAsc = this.sortField?this.sortField.ascending:false
       const val = [...this.items].sort((a, b) => {
         const arr1 = isAsc ? a : b
         const arr2 = isAsc ? b : a
-        return alphaNumericSortDefault(arr1[this.sortField.key], arr2[this.sortField.key], true)
+        return alphaNumericSortDefault(arr1[this.sortBy], arr2[this.sortBy], true)
       })
       return val
     },
@@ -337,7 +343,7 @@ export default {
       } else {
         text = String(item)
       }
-      if (field && 'formatter' in field) {
+      if (field && typeof item === 'object' && 'formatter' in field) {
         const arr = flattenObject(item)
         return field.formatter(arr)
       } else {
@@ -356,7 +362,8 @@ export default {
         ? field
         : ''
     },
-    /**This is for Bootstrap row selection which needs a re-emission which failed to work otherwise  */
+    /** This can be removed once we remove bootstrap table
+     * This is for Bootstrap row selection which needs a re-emission which failed to work otherwise  */
     onRowSelection(value) {
       this.$emit('row-selected', value)
     },
