@@ -1,6 +1,6 @@
 import { handleResponse } from '@/api/ResponseHelper'
 import { groupIncludedByResource } from '@/api/JsonApi'
-import { newRun, createRunType, RunTypeEnum } from './run'
+import { newRun, createRunType, RunTypeEnum, newWell } from './run'
 
 // Asynchronous update of state.
 export default {
@@ -176,6 +176,6 @@ export default {
    * @param position We need to call another action
    */
   getWell: ({ state }, { position }) => {
-    return state.wells[position]
+    return state.wells[position] || newWell({ position, attributes: state.defaultWellAttributes })
   },
 }

@@ -41,6 +41,7 @@ describe('run.js', () => {
         position: 'A1',
         row: 'A',
         column: '1',
+        pools: [],
       })
     })
 
@@ -56,6 +57,7 @@ describe('run.js', () => {
         position: 'A1',
         row: 'A',
         column: '1',
+        pools: [],
       })
     })
   })

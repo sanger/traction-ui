@@ -7,6 +7,7 @@ import {
   createRunType,
   newRunType,
   existingRunType,
+  defaultWellAttributes,
 } from '@/store/traction/pacbio/runCreate/run'
 
 const failedResponse = {
@@ -27,7 +28,7 @@ const defaultSmrtLinkVersion = {
 }
 
 describe('actions.js', () => {
-  const { fetchSmrtLinkVersions, findPools, fetchRun, saveRun, setRun } = actions
+  const { fetchSmrtLinkVersions, findPools, fetchRun, saveRun, setRun, getWell } = actions
 
   describe('fetchSmrtLinkVersions', () => {
     it('handles success', async () => {
@@ -202,8 +203,29 @@ describe('actions.js', () => {
   })
 
   describe('getWell', () => {
-    it('if it is a new well', () => {})
+    it('if it is a new well', () => {
+      const state = {
+        wells: {},
+        defaultWellAttributes: { ...defaultWellAttributes() },
+      }
 
-    it('if it is an existing well', () => {})
+      const position = 'A1'
+
+      const well = getWell({ state }, { position })
+      expect(well).toEqual(newWell({ position, attributes: state.defaultWellAttributes }))
+    })
+
+    it('if it is an existing well', () => {
+      const position = 'A1'
+      const well = newWell({ position })
+
+      const state = {
+        wells: { [position]: well },
+        defaultWellAttributes: { ...defaultWellAttributes() },
+      }
+
+      const gottenWell = getWell({ state }, { position })
+      expect(gottenWell).toEqual(well)
+    })
   })
 })
