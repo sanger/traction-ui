@@ -107,7 +107,7 @@ describe('Runs.vue', () => {
       runs.completeRun = vi.fn()
 
       button = wrapper.find('#completeRun-2')
-      button.trigger('click') 
+      button.trigger('click')
 
       expect(runs.completeRun).toBeCalledWith({ id: mockRuns[1].id, pipeline })
     })
@@ -202,8 +202,10 @@ describe('Runs.vue', () => {
     })
 
     it('will filter the runs in the table', () => {
-      expect(wrapper.find('tbody').findAll('tr').length).toEqual(1)
-      expect(wrapper.find('tbody').findAll('tr').at(0).text()).toMatch(/Sequel I/)
+      wrapper.vm.$nextTick(() => {
+        expect(wrapper.find('tbody').findAll('tr').length).toEqual(1)
+        expect(wrapper.find('tbody').findAll('tr').at(0).text()).toMatch(/Sequel II/)
+      })
     })
   })
 

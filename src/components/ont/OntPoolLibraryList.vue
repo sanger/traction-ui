@@ -1,14 +1,14 @@
 <template>
   <div v-if="selectedRequests" data-type="pool-library-list">
     <traction-table :fields="headerFields" simple>
-        <OntPoolLibraryEdit
-          v-for="request in selectedRequests"
-          :key="request.id"
-          :request="request"
-          :auto-tag="autoTag"
-          :validated="validated"
-          :notify="notify"
-        ></OntPoolLibraryEdit>
+      <OntPoolLibraryEdit
+        v-for="request in selectedRequests"
+        :key="request.id"
+        :request="request"
+        :auto-tag="autoTag"
+        :validated="validated"
+        :notify="notify"
+      ></OntPoolLibraryEdit>
     </traction-table>
   </div>
 </template>

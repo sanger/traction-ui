@@ -208,6 +208,7 @@ export default {
     const rows = this.generateRowData()
     return {
       rows: rows,
+      //TODO: Ascending property to be passed as a prop
       sortField: { key: this.sortBy, ascending: false },
     }
   },
@@ -261,8 +262,8 @@ export default {
     },
     sortedData() {
       /**Sort table data based on sort field */
-      if (!this.sortBy ) return this.items
-      const isAsc = this.sortField?this.sortField.ascending:false
+      if (!this.sortBy) return this.items
+      const isAsc = this.sortField ? this.sortField.ascending : false
       const val = [...this.items].sort((a, b) => {
         const arr1 = isAsc ? a : b
         const arr2 = isAsc ? b : a

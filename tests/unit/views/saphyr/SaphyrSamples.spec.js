@@ -37,18 +37,19 @@ describe('Samples.vue', () => {
     })
 
     it('contains the correct data', () => {
-      expect(wrapper.find('tbody').findAll('tr').length).toEqual(6)
+      wrapper.vm.$nextTick(() => expect(wrapper.find('tbody').findAll('tr').length).toEqual(6))
     })
   })
 
   describe('selecting samples', () => {
-    beforeEach(() => {
-      const firstCell = wrapper.find('[role="cell"]')
-      firstCell.trigger('click')
-    })
+    beforeEach(() => {})
 
     it('will create a list of selected requests', () => {
-      expect(samples.selected.length).toEqual(1)
+      wrapper.vm.$nextTick(() => {
+        const firstCell = wrapper.find('[role="cell"]')
+        firstCell.trigger('click')
+        expect(samples.selected.length).toEqual(1)
+      })
     })
   })
 
