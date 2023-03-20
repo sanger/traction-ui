@@ -28,7 +28,8 @@ const defaultSmrtLinkVersion = {
 }
 
 describe('actions.js', () => {
-  const { fetchSmrtLinkVersions, findPools, fetchRun, saveRun, setRun, getWell } = actions
+  const { fetchSmrtLinkVersions, findPools, fetchRun, saveRun, setRun, getWell, updateWell } =
+    actions
 
   describe('fetchSmrtLinkVersions', () => {
     it('handles success', async () => {
@@ -226,6 +227,15 @@ describe('actions.js', () => {
 
       const gottenWell = getWell({ state }, { position })
       expect(gottenWell).toEqual(well)
+    })
+  })
+
+  describe('updateWell', () => {
+    it('updates the well', () => {
+      const well = { position: 'A1', row: 'A', column: '1' }
+      const commit = vi.fn()
+      updateWell({ commit }, { well })
+      expect(commit).toHaveBeenCalledWith('updateWell', well)
     })
   })
 })

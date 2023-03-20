@@ -92,4 +92,9 @@ export default {
     const new_state = defaultState()
     Object.assign(state, new_state, { resources: state.resources })
   },
+
+  updateWell({ wells }, well) {
+    const position = well.position
+    Vue.set(wells, position, Object.assign({}, wells[position], well))
+  },
 }

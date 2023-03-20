@@ -178,4 +178,12 @@ export default {
   getWell: ({ state }, { position }) => {
     return state.wells[position] || newWell({ position, attributes: state.defaultWellAttributes })
   },
+
+  /**
+   * Updates thw ell
+   * @param commit the vuex commit object. Provides access to mutations
+   */
+  updateWell: ({ commit }, { well }) => {
+    commit('updateWell', well)
+  },
 }
