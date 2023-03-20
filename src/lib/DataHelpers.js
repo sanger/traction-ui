@@ -1,5 +1,5 @@
 /**
- * Function to sort alphaNumeric values based on reg expressions given. 
+ * Function to sort alphaNumeric values based on reg expressions given.
  * @param a
  * @param b
  * @param regExp  Reg expressions for string and numeric parts.

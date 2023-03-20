@@ -168,7 +168,7 @@ export default {
     },
     /**
      * Primary key field to uniquely identify a row.
-     * This can be particularly useful in cases where table is used with 'showDetails' functionality 
+     * This can be particularly useful in cases where table is used with 'showDetails' functionality
      * (which allows the user to display extra information),
      * This key make sure that open/close row status will not be lost while sorting data
      *
