@@ -16,8 +16,8 @@ const failedResponse = {
 }
 
 const wells = {
-  1: { ...newWell() },
-  2: { ...newWell(), pools: [1, 2] },
+  1: { ...newWell({ position: 'A1' }) },
+  2: { ...newWell({ position: 'A2' }), pools: [1, 2] },
 }
 
 const defaultSmrtLinkVersion = {
@@ -199,5 +199,11 @@ describe('actions.js', () => {
       expect(commit).toHaveBeenCalledWith('populateRunType', existingRunType)
       expect(success).toBeTruthy()
     })
+  })
+
+  describe('getWell', () => {
+    it('if it is a new well', () => {})
+
+    it('if it is an existing well', () => {})
   })
 })

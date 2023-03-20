@@ -48,10 +48,19 @@ const defaultWellAttributes = () => {
   }
 }
 
-const newWell = (attributes) => {
+const splitPosition = (position) => {
+  // match() returns [original, row, column] e.g "A10 => ["A10", "A", "10"]
+  return position.match(/(\S)(\d+)/).slice(1)
+}
+
+const newWell = ({ position, attributes }) => {
+  const [row, column] = splitPosition(position)
   return {
     ...defaultWellAttributes(),
     ...attributes,
+    position,
+    row,
+    column,
   }
 }
 
