@@ -1,17 +1,16 @@
 <template>
-  
-    <DataFetcher :fetcher="fetchOntPools">
-      <FilterCard :fetcher="fetchOntPools" :filter-options="filterOptions" />
-      <div class="clearfix">
-        <traction-pagination
-          v-model="currentPage"
-          class="float-right"
-          :total-rows="pools.length"
-          :per-page="perPage"
-          aria-controls="pool-index"
-          @input="onPageChange($event)"
-        >
-        </traction-pagination>
+  <DataFetcher :fetcher="fetchOntPools">
+    <FilterCard :fetcher="fetchOntPools" :filter-options="filterOptions" />
+    <div class="clearfix">
+      <traction-pagination
+        v-model="currentPage"
+        class="float-right"
+        :total-rows="pools.length"
+        :per-page="perPage"
+        aria-controls="pool-index"
+        @input="onPageChange($event)"
+      >
+      </traction-pagination>
 
       <traction-form-group label-cols-lg="1" label="Per Page" label-for="input-per-page">
         <traction-input id="input-per-page" v-model="perPage" trim class="w-25"></traction-input>

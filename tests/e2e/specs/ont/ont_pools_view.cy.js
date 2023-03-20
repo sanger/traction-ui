@@ -21,7 +21,6 @@ describe('Ont pools view', () => {
       .and('contain', 'Pool ID')
       .and('contain', 'Sample Name')
     cy.get('#pool-index').find('tr').should('have.length', '4')
-
     cy.get('#id').invoke('text').should('match', /\d+/)
     cy.get('#barcode').invoke('text').should('include', 'TRAC')
     cy.get('#source_identifier').invoke('text').should('match', /\w+/)

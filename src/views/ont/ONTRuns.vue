@@ -11,7 +11,7 @@
         :total-rows="runs.length"
         :per-page="perPage"
         aria-controls="run-index"
-          @input="onPageChange($event)"
+        @input="onPageChange($event)"
       ></traction-pagination>
 
       <traction-form-group

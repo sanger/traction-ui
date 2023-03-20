@@ -19,7 +19,7 @@ describe('OntPoolIndex', () => {
 
   it('displays each of the pools', async () => {
     const expectedPools = Data.TractionOntPools.data.data.length
-    expect(wrapper.findAll('tbody>tr').length).toEqual(expectedPools)
+    wrapper.vm.$nextTick(() => expect(wrapper.findAll('tbody>tr').length).toEqual(expectedPools))
   })
 
   describe('Printing labels', () => {
