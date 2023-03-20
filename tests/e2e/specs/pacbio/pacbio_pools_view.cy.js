@@ -1,4 +1,9 @@
 describe('Pacbio Pools view', () => {
+   beforeEach(() =>
+     cy.withFlags({
+       enable_custom_table: { enabled: true },
+     }),
+   )
   it('Visits the pacbio pools url', () => {
     cy.intercept(
       'v1/pacbio/pools?include=tube,libraries.tag,libraries.request&fields[requests]=sample_name&fields[tubes]=barcode&fields[tags]=group_id&fields[libraries]=request,tag,run_suitability',

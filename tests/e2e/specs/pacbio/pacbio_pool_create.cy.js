@@ -7,6 +7,9 @@ describe('Pacbio Pool Create', () => {
     cy.intercept('/v1/pacbio/requests?include=well.plate,tube', {
       fixture: 'pacbioRequestsRequest.json',
     })
+    cy.withFlags({
+      enable_custom_table: { enabled: true },
+    })
   })
 
   it('Creates a pool successfully', () => {

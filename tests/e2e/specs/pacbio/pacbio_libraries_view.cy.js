@@ -1,4 +1,9 @@
 describe('Pacbio Libraries view', () => {
+  beforeEach(() =>
+    cy.withFlags({
+      enable_custom_table: { enabled: true },
+    }),
+  )
   it('Visits the pacbio libraries url', () => {
     cy.intercept('/v1/pacbio/libraries?include=request,tag,tube,pool', {
       fixture: 'tractionPacbioLibraries.json',
