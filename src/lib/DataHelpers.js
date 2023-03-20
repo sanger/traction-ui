@@ -1,5 +1,5 @@
 /**
- * Function to sort alphaNumeric values based on reg expressions given. Thisvsorts
+ * Function to sort alphaNumeric values based on reg expressions given. 
  * @param a
  * @param b
  * @param regExp  Reg expressions for string and numeric parts.
@@ -36,7 +36,7 @@ export function regexSort(a, b, regExp, alphaFirst) {
 }
 
 /**
- * Sorts alphanumeric strings with alphabetical order  followed by number sort
+ * Sorts alphanumeric strings .The default way sorting in alphabetical order followed by number sort
  */
 export const alphaNumericSortDefault = (a, b, alphaFirst) => {
   if (!a) return -1

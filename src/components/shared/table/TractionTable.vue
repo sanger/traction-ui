@@ -2,13 +2,15 @@
    TractionTable
    Renders a table component using html <table> element
   
-  The overall design of this component and in partcular the scoped slot design, data structures, and event handling is based on how a bootstrap table is working 
-  inorder to make it compatible with b-table through feature flags
+  The overall design of this component, in partcular, the scoped slot design, data structures, 
+  and event handling is based on how a bootstrap table is working so as to make this compatible 
+  with b-table through feature flags
 
 
   1) Renders a simple table  if 'simple' prop set to true. 
      - 'fields' props are header columns labels
-     - rows and colums to be defined as slots 
+    This will display any slot component with a table header. If need to displayed as a table, 
+    rows and colums to be defined as slots 
     @example for simple table
     <template>
     <traction-table simple 
@@ -20,10 +22,11 @@
     </traction-table>
    
 
-   2)Renders table which accepts a object array
+   2)Renders table which accepts an object array
    - 'fields' props are header columns labels
-   - 'items' is the data to be displayed, which can be objects array or a simple string array
-      if object array, the object should contain fields corresponding to header field keys
+   - 'items' field represents the data to be displayed, which can be an object array or a simple string array
+      If object array, the object should contain fields corresponding to header field keys
+
    <template>
     <traction-table  
       :fields=[{key:column1,label:'Header Column1', key:column2,label:'Header Column2']}>
@@ -34,11 +37,8 @@
   
    Note: 
    - #[slot]="scope"  is equivalent of v-slot:[slotName]="slotScope"
-   - If there is no bootstrap constraint, the data structure for header and fields can be more freely designed, as 
-      well as scoped slots intercatiob 
-     
-
 -->
+
 <template>
   <flagged-feature name="enable_custom_table">
     <template #disabled>
@@ -141,8 +141,8 @@ export default {
     },
     /**
      * Header fields
-     * key - key field to the header column
-     * label - label to display on header
+     * key - Key field of header column
+     * label - Text to display on header
      * formatter - Formatter function if any customization required to display the header label
      */
     fields: {
@@ -151,7 +151,7 @@ export default {
     },
     /**
      * Data to display in table
-     * This should be an object data having field names same as header field keys
+     * This should be either an object array having field names same as header field keys or a string array
      */
     items: {
       type: Array,
@@ -167,8 +167,9 @@ export default {
       default: '',
     },
     /**
-     * Primary key field to uniquely idebntify a row.
-     * This can be particularly useful in cases where table is used with 'showDetails' functionalit (which allows the user to display extra information),
+     * Primary key field to uniquely identify a row.
+     * This can be particularly useful in cases where table is used with 'showDetails' functionality 
+     * (which allows the user to display extra information),
      * This key make sure that open/close row status will not be lost while sorting data
      *
      */
@@ -196,7 +197,7 @@ export default {
     },
     /**
      * This allows to use table header with any slot component
-     * 'fields' is the only mandatory props and 'items' doesn't have any effect in this case
+     * 'fields' is the only mandatory prop and 'items' doesn't have any effect in this case
      */
     simple: {
       type: Boolean,
@@ -248,10 +249,11 @@ export default {
                This prop design is based on how bootstrap table is expecting this feature to work to ensure it is compatible with b-table***/
             detailsShowing: false,
 
-            /**The dimension to display if there is any labware svg displayed in row**/
+            /**The dimension to display if there is any labware svg displayed in row
+             * If not given, the svg are displaying in small dimension and the reason couldn't be found**/
             detailsDim: '60',
 
-            /**Is row is selected or not?**/
+            /**Is row selected or not?**/
             rowSelected: false,
 
             /**Index of row**/
@@ -312,19 +314,18 @@ export default {
       const srcElement = window.event.srcElement
       if (!(srcElement instanceof HTMLTableCellElement)) return
       if (!this.selectable) return
-      //Toggle row selection
 
+      //Toggle row selection and if multiple selection allowed, retain all other existing selections,
       const rowIndex = this.rows.findIndex((elem) => elem.id === row.id)
       if (rowIndex < 0) return
-
       const prevSelectedRowIndx =
         this.selectMode === 'single' ? this.rows.findIndex((row) => row.rowSelected) : -1
       this.rows[rowIndex].rowSelected = !this.rows[rowIndex].rowSelected
       if (prevSelectedRowIndx >= 0 && prevSelectedRowIndx !== rowIndex) {
         this.rows[prevSelectedRowIndx].rowSelected = false
       }
-      const selectedItems = this.rows.filter((row) => row.rowSelected).map((row) => row.item)
       /**Emit 'row-selected' even with table data corresponding to selected rows**/
+      const selectedItems = this.rows.filter((row) => row.rowSelected).map((row) => row.item)
       this.$emit('row-selected', selectedItems)
     },
     /**Row background colour */
@@ -335,8 +336,6 @@ export default {
     text(item, field) {
       let text = ''
       /**This is agian for bootstrap table compatibility which allows to access the nested data fields in an object
-       * The only contradiction from b-table is - if there are multiple fields with same name in nested hierarchy,
-       * this will always returns the last field matching
        */
       if (typeof item === 'object') {
         const flattenRow = flattenObject(item)
@@ -351,11 +350,11 @@ export default {
         return text
       }
     },
-    /**Key value accessor for the header fiels */
+    /**Key field accessor for the header fiels */
     fieldKey(field, indx) {
       return typeof field === 'object' && 'key' in field ? field.key : indx
     },
-    /**Value accessor for header field */
+    /**Value field accessor for header field */
     fieldText(field) {
       return typeof field === 'object' && 'label' in field
         ? field.label
