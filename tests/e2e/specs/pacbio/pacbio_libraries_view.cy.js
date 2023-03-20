@@ -12,7 +12,6 @@ describe('Pacbio Libraries view', () => {
       .should('contain', 'Barcode')
       .and('contain', 'Sample Name')
       .and('contain', 'Source')
-    cy.wait(3000)
     cy.get('#library-index').contains('tr', '5')
     cy.get('#id').should('have.length.above', 0)
     cy.get('#sample_name').should('have.length.greaterThan', 0)
