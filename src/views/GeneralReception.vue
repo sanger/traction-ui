@@ -1,159 +1,157 @@
 <template>
-  <flagged-feature name="dpl_277_enable_general_reception">
-    <div class="flex flex-row space-x-12 px-12">
-      <loading-full-screen-modal v-bind="modalState"></loading-full-screen-modal>
-      <div class="w-1/2 space-y-8">
-        <div>
-          <traction-heading level="4" :show-border="true"> Source </traction-heading>
-          <traction-muted-text class="float-left"
-            >The location to import the labware from
-          </traction-muted-text>
-          <traction-select
-            id="sourceSelect"
-            v-model="source"
-            class="inline-block w-full"
-            :options="receptions"
-            data-type="source-list"
-          />
-        </div>
+  <div class="flex flex-row space-x-12 px-12">
+    <loading-full-screen-modal v-bind="modalState"></loading-full-screen-modal>
+    <div class="w-1/2 space-y-8">
+      <div>
+        <traction-heading level="4" :show-border="true"> Source </traction-heading>
+        <traction-muted-text class="float-left"
+          >The location to import the labware from
+        </traction-muted-text>
+        <traction-select
+          id="sourceSelect"
+          v-model="source"
+          class="inline-block w-full"
+          :options="receptions"
+          data-type="source-list"
+        />
+      </div>
 
-        <div>
-          <traction-heading level="4" :show-border="true"> Pipeline </traction-heading>
-          <traction-muted-text class="float-left"
-            >The Traction pipeline to import the requests into</traction-muted-text
-          >
-          <traction-select
-            id="sourceSelect"
-            v-model="pipeline"
-            :options="pipelineOptions"
-            class="inline-block w-full"
-            data-type="pipeline-list"
-            @input="resetRequestOptions()"
-          />
-        </div>
+      <div>
+        <traction-heading level="4" :show-border="true"> Pipeline </traction-heading>
+        <traction-muted-text class="float-left"
+          >The Traction pipeline to import the requests into</traction-muted-text
+        >
+        <traction-select
+          id="sourceSelect"
+          v-model="pipeline"
+          :options="pipelineOptions"
+          class="inline-block w-full"
+          data-type="pipeline-list"
+          @input="resetRequestOptions()"
+        />
+      </div>
 
+      <div>
+        <traction-heading level="4" :show-border="true"> Request Options </traction-heading>
+        <traction-muted-text class="float-left"
+          >Default values to apply to the imported requests</traction-muted-text
+        >
         <div>
-          <traction-heading level="4" :show-border="true"> Request Options </traction-heading>
-          <traction-muted-text class="float-left"
-            >Default values to apply to the imported requests</traction-muted-text
-          >
-          <div>
-            <LibraryTypeSelect
-              v-model="requestOptions.library_type"
-              :label-cols="0"
-              :allow-none="false"
-              :import-text="`Import from ${source} (where available)`"
-              :pipeline="pipeline.toLowerCase()"
-            />
-            <traction-field-group label="Cost Code" attribute="cost_code" for="cost_code">
-              <traction-muted-text>Default Pacbio cost code: S4773</traction-muted-text>
+          <LibraryTypeSelect
+            v-model="requestOptions.library_type"
+            :label-cols="0"
+            :allow-none="false"
+            :import-text="`Import from ${source} (where available)`"
+            :pipeline="pipeline.toLowerCase()"
+          />
+          <traction-field-group label="Cost Code" attribute="cost_code" for="cost_code">
+            <traction-muted-text>Default Pacbio cost code: S4773</traction-muted-text>
+            <traction-input
+              id="cost_code"
+              v-model="requestOptions.cost_code"
+              data-attribute="cost-code-input"
+            ></traction-input>
+          </traction-field-group>
+          <div v-if="pipeline == 'PacBio'">
+            <traction-field-group
+              label="Number of SMRT cells"
+              attribute="number_of_smrt_cells"
+              for="number_of_smrt_cells"
+            >
               <traction-input
-                id="cost_code"
-                v-model="requestOptions.cost_code"
-                data-attribute="cost-code-input"
+                id="number_of_smrt_cells"
+                v-model="requestOptions.number_of_smrt_cells"
+                data-attribute="smrt-cells-input"
+                type="number"
+                step="1"
+                min="0"
               ></traction-input>
             </traction-field-group>
-            <div v-if="pipeline == 'PacBio'">
-              <traction-field-group
-                label="Number of SMRT cells"
-                attribute="number_of_smrt_cells"
-                for="number_of_smrt_cells"
-              >
-                <traction-input
-                  id="number_of_smrt_cells"
-                  v-model="requestOptions.number_of_smrt_cells"
-                  data-attribute="smrt-cells-input"
-                  type="number"
-                  step="1"
-                  min="0"
-                ></traction-input>
-              </traction-field-group>
-              <traction-field-group
-                label="Number of Gigabases required"
-                attribute="estimate_of_gb_required"
-                for="estimate_of_gb_required"
-              >
-                <traction-input
-                  id="estimate_of_gb_required"
-                  v-model="requestOptions.estimate_of_gb_required"
-                  data-attribute="estimate_of_gb_required"
-                  type="number"
-                  step="1"
-                  min="0"
-                ></traction-input>
-              </traction-field-group>
-            </div>
-            <div v-if="pipeline == 'ONT'">
-              <traction-field-group label="Data Type" attribute="data_type" for="data_type">
-                <DataTypeSelect v-model="requestOptions.data_type" pipeline="ont" />
-              </traction-field-group>
-              <traction-field-group
-                label="Number of Flowcells"
-                attribute="number_of_flowcells"
-                for="number_of_flowcells"
-              >
-                <traction-input
-                  id="number_of_flowcells"
-                  v-model="requestOptions.number_of_flowcells"
-                  data-attribute="number-of-flowcells-input"
-                  type="number"
-                  step="1"
-                  min="0"
-                ></traction-input>
-              </traction-field-group>
-            </div>
+            <traction-field-group
+              label="Number of Gigabases required"
+              attribute="estimate_of_gb_required"
+              for="estimate_of_gb_required"
+            >
+              <traction-input
+                id="estimate_of_gb_required"
+                v-model="requestOptions.estimate_of_gb_required"
+                data-attribute="estimate_of_gb_required"
+                type="number"
+                step="1"
+                min="0"
+              ></traction-input>
+            </traction-field-group>
           </div>
-        </div>
-      </div>
-      <div class="w-1/2 space-y-8">
-        <div>
-          <traction-heading level="4" :show-border="true">Scan barcodes</traction-heading>
-          <traction-muted-text class="float-left"
-            >The list of labware barcodes to import from source</traction-muted-text
-          >
-          <traction-textarea
-            id="barcodes"
-            v-model="barcodes"
-            placeholder="Scan barcodes to import..."
-            rows="4"
-            max-rows="10"
-            name="barcodes"
-            class="text-base mt-2"
-          />
-        </div>
-        <div class="bg-gray-100 rounded p-3">
-          <traction-heading level="4" :show-border="true"> Summary </traction-heading>
-          <div class="flex flex-col w-full">
-            <traction-muted-text class="float-left">Imports data into Traction</traction-muted-text>
-            <p id="importText" class="text-left">
-              Import {{ barcodeCount }} labware into {{ pipeline }} from {{ source }}
-            </p>
-            <div class="flex flex-row space-x-8 mt-5">
-              <traction-button
-                id="reset"
-                full-width
-                theme="reset"
-                data-action="reset-form"
-                @click="reset"
-              >
-                Reset
-              </traction-button>
-              <traction-button
-                id="importLabware"
-                :disabled="isDisabled"
-                full-width
-                theme="create"
-                data-action="import-labware"
-                @click="importLabware"
-              >
-                Import
-              </traction-button>
-            </div>
+          <div v-if="pipeline == 'ONT'">
+            <traction-field-group label="Data Type" attribute="data_type" for="data_type">
+              <DataTypeSelect v-model="requestOptions.data_type" pipeline="ont" />
+            </traction-field-group>
+            <traction-field-group
+              label="Number of Flowcells"
+              attribute="number_of_flowcells"
+              for="number_of_flowcells"
+            >
+              <traction-input
+                id="number_of_flowcells"
+                v-model="requestOptions.number_of_flowcells"
+                data-attribute="number-of-flowcells-input"
+                type="number"
+                step="1"
+                min="0"
+              ></traction-input>
+            </traction-field-group>
           </div>
         </div>
       </div>
     </div>
-  </flagged-feature>
+    <div class="w-1/2 space-y-8">
+      <div>
+        <traction-heading level="4" :show-border="true">Scan barcodes</traction-heading>
+        <traction-muted-text class="float-left"
+          >The list of labware barcodes to import from source</traction-muted-text
+        >
+        <traction-textarea
+          id="barcodes"
+          v-model="barcodes"
+          placeholder="Scan barcodes to import..."
+          rows="4"
+          max-rows="10"
+          name="barcodes"
+          class="text-base mt-2"
+        />
+      </div>
+      <div class="bg-gray-100 rounded p-3">
+        <traction-heading level="4" :show-border="true"> Summary </traction-heading>
+        <div class="flex flex-col w-full">
+          <traction-muted-text class="float-left">Imports data into Traction</traction-muted-text>
+          <p id="importText" class="text-left">
+            Import {{ barcodeCount }} labware into {{ pipeline }} from {{ source }}
+          </p>
+          <div class="flex flex-row space-x-8 mt-5">
+            <traction-button
+              id="reset"
+              full-width
+              theme="reset"
+              data-action="reset-form"
+              @click="reset"
+            >
+              Reset
+            </traction-button>
+            <traction-button
+              id="importLabware"
+              :disabled="isDisabled"
+              full-width
+              theme="create"
+              data-action="import-labware"
+              @click="importLabware"
+            >
+              Import
+            </traction-button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
 </template>
 
 <script>

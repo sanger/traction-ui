@@ -3,9 +3,7 @@ describe('Ont pools view', () => {
     cy.intercept('flipper/api/actors/User', {
       flipper_id: 'User',
       features: {
-        dpl_281_ont_create_sequencing_runs: { enabled: true },
         enable_custom_table: { enabled: true },
-        dpl_279_ont_libraries_and_pools: { enabled: true },
       },
     })
   })
@@ -13,7 +11,6 @@ describe('Ont pools view', () => {
     cy.intercept('v1/ont/pools?include=tube,libraries.tag,libraries.request', {
       fixture: 'tractionOntPools.json',
     })
-
     cy.visit('#/ont/pools')
     // Check filters are visible
     cy.get('#filterInput').should('be.visible')

@@ -15,6 +15,15 @@ const DEFAULT_FEATURE = { enabled: false }
  * This component provides a means of wrapping content that will be displayed
  * based on the state of a feature flag persisted in traction-service.
  *
+ * When testing in cypress you can mock flag responses:
+ *
+ * @example
+ *   beforeEach(() => {
+ *   cy.withFlags({
+ *     dpl_277_enable_general_reception: { enabled: true },
+ *   })
+ * })
+ *
  * @example
  * <template>
  *   <div>

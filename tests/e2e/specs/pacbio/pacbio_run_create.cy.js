@@ -3,7 +3,6 @@ describe('Pacbio Run Create view', () => {
     cy.intercept('flipper/api/actors/User', {
       flipper_id: 'User',
       features: {
-        enable_custom_select: { enabled: true },
         enable_custom_table: { enabled: true },
       },
     })

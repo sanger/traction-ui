@@ -15,8 +15,6 @@ describe('ONT Pool Edit', () => {
     cy.intercept('flipper/api/actors/User', {
       flipper_id: 'User',
       features: {
-        dpl_281_ont_create_sequencing_runs: { enabled: true },
-        dpl_279_ont_libraries_and_pools: { enabled: true },
         enable_custom_table: { enabled: true },
       },
     })
