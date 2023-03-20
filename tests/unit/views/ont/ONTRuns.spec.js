@@ -6,17 +6,6 @@ describe('ONTRuns.vue', () => {
   let wrapper, runs, mockRuns
 
   beforeEach(async () => {
-    vi.mock('swrv', () => ({
-      default: vi.fn(() => ({
-        data: {
-          flipper_id: 'User',
-          features: {
-            dpl_281_ont_create_sequencing_runs: { enabled: true },
-          },
-        },
-      })),
-    }))
-
     mockRuns = new Response(Data.OntRuns).deserialize.runs
 
     const get = vi.spyOn(store.state.api.traction.ont.runs, 'get')
