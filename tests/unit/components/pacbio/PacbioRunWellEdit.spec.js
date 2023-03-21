@@ -115,7 +115,7 @@ describe('PacbioWellEdit', () => {
           propsData,
           data() {
             return {
-              smrtLinkVersion: smrtLinkVersions['1']
+              smrtLinkVersion: smrtLinkVersions['2']
             }
           }
         })

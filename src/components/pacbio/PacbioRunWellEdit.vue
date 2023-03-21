@@ -99,7 +99,7 @@
         <traction-input
           id="loading-target"
           ref="loadingTarget"
-          v-model="currentWell.loading_target_p1_plus_p2"
+          v-model="well.loading_target_p1_plus_p2"
           data-attribute="loading-target-p1-plus-p2"
           placeholder="Adaptive loading disabled - Add loading target to enable"
           type="number"
@@ -119,7 +119,7 @@
       >
         <traction-select
           id="ccs-analysis-output-include-kinetics-information"
-          v-model="currentWell.ccs_analysis_output_include_kinetics_information"
+          v-model="well.ccs_analysis_output_include_kinetics_information"
           :options="ccsAnalysisOutputOptions"
           data-attribute="ccs-analysis-output-include-kinetics-information"
         >
@@ -133,7 +133,7 @@
       >
         <traction-select
           id="ccs-analysis-output-include-low-quality-reads"
-          v-model="currentWell.ccs_analysis_output_include_low_quality_reads"
+          v-model="well.ccs_analysis_output_include_low_quality_reads"
           :options="ccsAnalysisOutputOptions"
           data-attribute="ccs-analysis-output-include-low-quality-reads"
         >
@@ -147,7 +147,7 @@
       >
         <traction-select
           id="include-fivemc-calls-in-cpg-motifs"
-          v-model="currentWell.include_fivemc_calls_in_cpg_motifs"
+          v-model="well.include_fivemc_calls_in_cpg_motifs"
           :options="ccsAnalysisOutputOptions"
           data-attribute="include-fivemc-calls-in-cpg-motifs"
         >
@@ -161,8 +161,8 @@
       >
         <traction-select
           id="demultiplex-barcodes"
-          v-model="currentWell.demultiplex_barcodes"
-          :options="generateHifiOptions[currentRun.system_name]"
+          v-model="well.demultiplex_barcodes"
+          :options="generateHifiOptions"
           data-attribute="demultiplex-barcodes"
         >
         </traction-select>
@@ -177,7 +177,7 @@
       Disable Adaptive Loading
     </traction-button>
 
-    <!-- <traction-table id="wellPools" stacked :items="currentWell.pools" :fields="wellPoolsFields">
+    <traction-table id="wellPools" stacked :items="well.pools" :fields="wellPoolsFields">
       <template #table-caption>Pools</template>
 
       <template #cell(barcode)="row">
@@ -197,7 +197,7 @@
           >
         </traction-form>
       </template>
-    </traction-table> -->
+    </traction-table>
 
     <traction-button class="button btn-xs btn-success" @click="addRow">+</traction-button>
 
@@ -267,16 +267,10 @@ export default {
     }
   },
   computed: {
-    ...mapGetters('traction/pacbio/runs', ['currentRun', 'well']),
     ...mapGetters('traction/pacbio/runCreate', ['poolByBarcode']),
-    selectedSmrtLinkVersion() {
-      return Object.values(
-        this.$store.getters['traction/pacbio/runCreate/smrtLinkVersionList'],
-      ).find((version) => version.id == this.currentRun.smrt_link_version_id)
-    },
   },
   created() {
-    this.well = getWell({ position: this.position})
+    this.well = this.getWell({ position: this.position})
   },
   methods: {
     addRow() {
