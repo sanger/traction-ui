@@ -17,6 +17,7 @@ const requests = included.slice(6, 8)
 describe('mutations.js', () => {
   const {
     populateSmrtLinkVersions,
+    populateSmrtLinkVersion,
     populateRun,
     populateWells,
     populatePools,
@@ -41,6 +42,21 @@ describe('mutations.js', () => {
       populateSmrtLinkVersions(state, smrtLinkVersions)
       // assert result
       expect(state.resources.smrtLinkVersions).toEqual(dataToObjectById({ data: smrtLinkVersions }))
+    })
+  })
+
+  describe('populateSmrtLinkVersion', () => {
+    it('updates the state', () => {
+      // mock state
+      const state = defaultState()
+      const smrtLinkVersion = {
+        id: Data.TractionPacbioSmrtLinkVersions.data.data[0].id,
+        ...Data.TractionPacbioSmrtLinkVersions.data.data[0].attributes,
+      }
+      // apply mutations
+      populateSmrtLinkVersion(state, smrtLinkVersion)
+      // assert result
+      expect(state.smrtLinkVersion).toEqual(smrtLinkVersion)
     })
   })
 
@@ -149,6 +165,7 @@ describe('mutations.js', () => {
         libraries: {},
         requests: {},
         tags: {},
+        smrtLinkVersion: {},
         runType: {},
         defaultWellAttributes: {},
       })

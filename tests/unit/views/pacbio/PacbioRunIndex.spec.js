@@ -159,18 +159,6 @@ describe('Runs.vue', () => {
       expect(button.isVisible()).toBe(true) // button is shown
     })
 
-    it('it does not exist when the run has wells without pools', async () => {
-      const noPoolsRun = Data.PacbioRuns
-      noPoolsRun.data.data[0].attributes.all_wells_have_pools = false
-      const get = vi.spyOn(store.state.api.traction.pacbio.runs, 'get')
-      get.mockReturnValue(noPoolsRun)
-      wrapper = mount(PacbioRuns, { store, router, localVue })
-      await flushPromises()
-
-      button = wrapper.find('#generate-sample-sheet-1')
-      expect(button.isVisible()).toBe(false) // button is hidden
-    })
-
     it('on click generateSampleSheetPath is called', () => {
       button = wrapper.find('#generate-sample-sheet-1')
 

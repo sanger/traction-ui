@@ -13,8 +13,7 @@
         "system_name": "Sequel II",
         "created_at": "2021/06/15 10:25",
         "state": "pending",
-        "comments": "Sample207",
-        "all_wells_have_pools": true
+        "comments": "Sample207"
       },
       "relationships": {
         "plate": {
@@ -38,8 +37,7 @@
         "system_name": "Sequel II",
         "created_at": "2021/06/15 10:25",
         "state": "pending",
-        "comments": "Sample21",
-        "all_wells_have_pools": true
+        "comments": "Sample21"
       },
       "relationships": {
         "plate": {
@@ -63,8 +61,7 @@
         "system_name": "Sequel II",
         "created_at": "2021/06/15 10:25",
         "state": "pending",
-        "comments": "Sample15",
-        "all_wells_have_pools": true
+        "comments": "Sample15"
       },
       "relationships": {
         "plate": {
@@ -88,8 +85,7 @@
         "system_name": "Sequel II",
         "created_at": "2021/06/15 10:25",
         "state": "pending",
-        "comments": "Sample240",
-        "all_wells_have_pools": true
+        "comments": "Sample240"
       },
       "relationships": {
         "plate": {
@@ -113,8 +109,7 @@
         "system_name": "Sequel II",
         "created_at": "2021/06/15 10:25",
         "state": "pending",
-        "comments": "Sample73",
-        "all_wells_have_pools": true
+        "comments": "Sample73"
       },
       "relationships": {
         "plate": {

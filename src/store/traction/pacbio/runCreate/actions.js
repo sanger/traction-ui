@@ -1,5 +1,5 @@
 import { handleResponse } from '@/api/ResponseHelper'
-import { groupIncludedByResource } from '@/api/JsonApi'
+import { groupIncludedByResource, extractAttributes } from '@/api/JsonApi'
 import { newRun, createRunType, RunTypeEnum, newWell } from './run'
 
 // Asynchronous update of state.
@@ -76,13 +76,13 @@ export default {
    * @param commit the vuex commit object. Provides access to mutations
    * @returns { success, errors }. Was the request successful? were there any errors?
    */
-  fetchRun: async ({ commit, rootState, getters }, { id }) => {
+  fetchRun: async ({ commit, rootState }, { id }) => {
     const request = rootState.api.traction.pacbio.runs
     const promise = request.find({
       id,
       // This is long but we want to include pool data
       include:
-        'plate.wells.pools.tube,plate.wells.pools.libraries.tag,plate.wells.pools.libraries.request',
+        'plate.wells.pools.tube,plate.wells.pools.libraries.tag,plate.wells.pools.libraries.request,smrt_link_version',
       fields: {
         requests: 'sample_name',
         tubes: 'barcode',
@@ -95,11 +95,12 @@ export default {
     const { success, data: { data, included = [] } = {}, errors = [] } = response
 
     if (success) {
-      const { wells, pools, tubes, libraries, tags, requests } = groupIncludedByResource(included)
+      const { wells, pools, tubes, libraries, tags, requests, smrt_link_versions } =
+        groupIncludedByResource(included)
 
-      // Set a full smrtLinkVersion object in the run data
-      data.attributes.smrtLinkVersion =
-        getters.smrtLinkVersionList[data.attributes.pacbio_smrt_link_version_id]
+      const smrtLinkVersion = smrt_link_versions.length
+        ? extractAttributes(smrt_link_versions[0])
+        : {}
 
       commit('populateRun', data)
       commit('populateWells', wells)
@@ -108,6 +109,7 @@ export default {
       commit('setTags', tags)
       commit('setRequests', requests)
       commit('setTubes', tubes)
+      commit('populateSmrtLinkVersion', smrtLinkVersion)
     }
     return { success, errors }
   },
@@ -153,11 +155,10 @@ export default {
     if (runType.type === RunTypeEnum.New) {
       // ensure that the smrt link version id is set to the default
       // eslint-disable-next-line no-unused-vars
-      const { id: _id, ...attributes } = newRun({
-        smrtLinkVersion: getters.defaultSmrtLinkVersion,
-      })
+      const { id: _id, ...attributes } = newRun()
 
       commit('populateRun', { id, attributes })
+      commit('populateSmrtLinkVersion', getters.defaultSmrtLinkVersion)
 
       // success will always be true and errors will be empty
       return { success: true, errors: [] }
@@ -182,7 +183,7 @@ export default {
   },
 
   /**
-   * Updates thw ell
+   * Updates the well
    * @param commit the vuex commit object. Provides access to mutations
    */
   updateWell: ({ commit }, { well }) => {
