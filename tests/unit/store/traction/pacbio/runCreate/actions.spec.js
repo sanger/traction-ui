@@ -62,12 +62,15 @@ describe('actions.js', () => {
     it('handles success', async () => {
       const commit = vi.fn()
       const find = vi.fn()
-      const get = vi.fn()
-      get.mockResolvedValue({ 1: defaultSmrtLinkVersion })
       const rootState = { api: { traction: { pacbio: { runs: { find } } } } }
-      const getters = { smrtLinkVersionList: { get } }
       find.mockResolvedValue(Data.PacbioRun)
-      const { success } = await fetchRun({ commit, rootState, getters }, { id: 1 })
+      const { success } = await fetchRun({ commit, rootState }, { id: 1 })
+
+      const smrtLinkVersion = {
+        id: Data.PacbioRun.data.included.slice(7, 8)[0].id,
+        type: Data.PacbioRun.data.included.slice(7, 8)[0].type,
+        ...Data.PacbioRun.data.included.slice(7, 8)[0].attributes,
+      }
 
       expect(commit).toHaveBeenCalledWith('populateRun', Data.PacbioRun.data.data)
       expect(commit).toHaveBeenCalledWith('populateWells', Data.PacbioRun.data.included.slice(1, 2))
@@ -76,6 +79,7 @@ describe('actions.js', () => {
       expect(commit).toHaveBeenCalledWith('setLibraries', Data.PacbioRun.data.included.slice(4, 5))
       expect(commit).toHaveBeenCalledWith('setTags', Data.PacbioRun.data.included.slice(5, 6))
       expect(commit).toHaveBeenCalledWith('setRequests', Data.PacbioRun.data.included.slice(6, 7))
+      expect(commit).toHaveBeenCalledWith('populateSmrtLinkVersion', smrtLinkVersion)
       expect(success).toBeTruthy()
     })
 
@@ -183,8 +187,9 @@ describe('actions.js', () => {
       expect(success).toBeTruthy()
       expect(commit).toHaveBeenCalledWith('populateRun', {
         id,
-        attributes: { ...attributes, smrtLinkVersion: defaultSmrtLinkVersion },
+        attributes: { ...attributes },
       })
+      expect(commit).toHaveBeenCalledWith('populateSmrtLinkVersion', getters.defaultSmrtLinkVersion)
       expect(commit).toHaveBeenCalledWith('populateRunType', newRunType)
     })
 

@@ -17,6 +17,8 @@ export default {
   defaultSmrtLinkVersion: ({ resources: { smrtLinkVersions } }) => {
     return Object.values(smrtLinkVersions).find((version) => version.default)
   },
+  // The smrtLinkVersion of the current run
+  smrtLinkVersion: (state) => state.smrtLinkVersion || {},
 
   // TODO refactor to reuse the functions
   // poolsRequest and pools copied over from pools/getters.js

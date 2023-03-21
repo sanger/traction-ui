@@ -95,7 +95,6 @@
         </traction-button>
 
         <a
-          v-show="row.item.all_wells_have_pools"
           :id="generateId('generate-sample-sheet', row.item.id)"
           :href="generateSampleSheetPath(row.item.id)"
           class="text-primary"
@@ -180,7 +179,7 @@ export default {
       this.$router.push({ path: `/pacbio/run/${runId || 'new'}` })
     },
 
-    ...mapActions('traction/pacbio/runs', ['fetchPacbioRuns', 'generateSampleSheet']),
+    ...mapActions('traction/pacbio/runs', ['fetchPacbioRuns']),
     ...mapActions('traction', ['startRun', 'completeRun', 'cancelRun']),
   },
 }

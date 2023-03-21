@@ -4,7 +4,8 @@ import storePools from '@tests/data/StorePools'
 import { describe } from 'vitest'
 
 describe('getters.js', () => {
-  const { smrtLinkVersionList, defaultSmrtLinkVersion, pools, poolByBarcode } = getters
+  const { smrtLinkVersionList, defaultSmrtLinkVersion, smrtLinkVersion, pools, poolByBarcode } =
+    getters
 
   // TODO: we probably need to sort the way we create the pools for tests
   const mockPools = [
@@ -121,11 +122,19 @@ describe('getters.js', () => {
     })
   })
 
-  describe('defaultSmrtLinVersion', () => {
+  describe('defaultSmrtLinkVersion', () => {
     const state = defaultState()
     it('returns the default SMRT Link Version', () => {
       state.resources.smrtLinkVersions = smrtLinkVersions
       expect(defaultSmrtLinkVersion(state)).toEqual(smrtLinkVersions[0])
+    })
+  })
+
+  describe('smrtLinkVersion', () => {
+    const state = defaultState()
+    it('returns the current SMRT Link Version', () => {
+      state.smrtLinkVersion = smrtLinkVersions[0]
+      expect(smrtLinkVersion(state)).toEqual(smrtLinkVersions[0])
     })
   })
 

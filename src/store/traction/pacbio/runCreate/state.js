@@ -36,6 +36,9 @@ export default () => {
     //Run Type: The type of run either new or existing
     runType: {},
 
+    //smrtLinkVersion: The smrtLinkVersion of the run either new or existing
+    smrtLinkVersion: {},
+
     //Default well attributes: The default attributes needed for each well
     defaultWellAttributes: {},
   }
