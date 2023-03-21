@@ -3,11 +3,11 @@
     <template #modal-title> Add Pool to Well: {{ position }} </template>
 
     <traction-form>
-      <traction-form-group id="movieTime-group" label="Movie time:" label-for="movieTime">
+      <traction-form-group id="movie-time-group" label="Movie time:" label-for="movie-time">
         <traction-select
-          id="movieTime"
+          id="movie-time"
           ref="movieTime"
-          v-model="currentWell.movie_time"
+          v-model="well.movie_time"
           data-attribute="movie-time"
           :options="movieTimeOptions"
         >
@@ -15,14 +15,14 @@
       </traction-form-group>
 
       <traction-form-group
-        id="plateLoading-group"
+        id="on-plate-loading-concentration-group"
         label="On Plate Loading Concentration (pM):"
-        label-for="onPlateLoadingConc"
+        label-for="on-plate-loading-concentration"
       >
         <traction-input
-          id="onPlateLoadingConc"
-          ref="onPlateLoadingConc"
-          v-model="currentWell.on_plate_loading_concentration"
+          id="on-plate-loading-concentration"
+          ref="onPlateLoadingConcentration"
+          v-model="well.on_plate_loading_concentration"
           data-attribute="on-plate-loading-concentration"
           placeholder="On Plate Loading Concentration (pM)"
         >
@@ -30,32 +30,32 @@
       </traction-form-group>
 
       <traction-form-group
-        v-if="['v10'].includes(selectedSmrtLinkVersion.name)"
-        id="generateHiFi-group"
+        v-if="['v10'].includes(smrtLinkVersion.name)"
+        id="generate-hifi-group"
         label="Generate HiFi Reads:"
-        label-for="generateHiFi"
+        label-for="generate-hifi"
       >
         <traction-select
-          id="generateHiFi"
+          id="generate-hifi"
           ref="generateHiFi"
-          v-model="currentWell.generate_hifi"
+          v-model="well.generate_hifi"
           data-attribute="generate-hifi"
-          :options="generateHifiOptions[currentRun.system_name]"
+          :options="generateHifiOptions"
           @input="updateCCSAnalysisOutput"
         >
         </traction-select>
       </traction-form-group>
 
       <traction-form-group
-        v-if="['v10'].includes(selectedSmrtLinkVersion.name)"
-        id="ccsAnalysisOutput-group"
+        v-if="['v10'].includes(smrtLinkVersion.name)"
+        id="ccs-analysis-output-group"
         label="CCS Analysis Output - Include Kinetics Information:"
-        label-for="ccsAnalysisOutput"
+        label-for="ccs-analysis-output"
       >
         <traction-select
-          id="ccsAnalysisOutput"
+          id="ccs-analysis-output"
           ref="ccsAnalysisOutput"
-          v-model="currentWell.ccs_analysis_output"
+          v-model="well.ccs_analysis_output"
           data-attribute="ccs-analysis-output"
           :options="ccsAnalysisOutputOptions"
         >
@@ -63,14 +63,14 @@
       </traction-form-group>
 
       <traction-form-group
-        id="preExtensionTime-group"
+        id="pre-extension-time-group"
         label="Pre-extension time (hours):"
-        label-for="preExtensionTime"
+        label-for="pre-extension-time"
       >
         <traction-input
-          id="preExtensionTime"
+          id="pre-extension-time"
           ref="preExtensionTime"
-          v-model="currentWell.pre_extension_time"
+          v-model="well.pre_extension_time"
           data-attribute="pre-extension-time"
           placeholder="Pre-extension time"
         >
@@ -78,26 +78,26 @@
       </traction-form-group>
 
       <traction-form-group
-        id="bindingKitBoxBarcode-group"
+        id="binding-kit-box-barcode-group"
         label="Binding Kit Box Barcode: "
-        label-for="bindingKitBoxBarcode"
+        label-for="binding-kit-box-barcode"
       >
         <traction-input
-          id="bindingKitBoxBarcode"
+          id="binding-kit-box-barcode"
           ref="bindingKitBoxBarcode"
-          v-model="currentWell.binding_kit_box_barcode"
+          v-model="well.binding_kit_box_barcode"
           data-attribute="binding-kit-box-barcode"
           placeholder="Binding Kit Box Barcode"
         >
         </traction-input>
       </traction-form-group>
       <traction-form-group
-        id="loadingTarget-group"
+        id="loading-target-p1-plus-p2-group"
         label="Loading Target (P1 + P2): (0 to 1) "
-        label-for="loadingTarget"
+        label-for="loading-target-p1-plus-p2"
       >
         <traction-input
-          id="loadingTarget"
+          id="loading-target"
           ref="loadingTarget"
           v-model="currentWell.loading_target_p1_plus_p2"
           data-attribute="loading-target-p1-plus-p2"
@@ -113,7 +113,7 @@
       </traction-form-group>
 
       <traction-form-group
-        v-if="['v11'].includes(selectedSmrtLinkVersion.name)"
+        v-if="['v11'].includes(smrtLinkVersion.name)"
         label="CCS Output Include Kinetics Information"
         label-for="ccs-analysis-output-include-kinetics-information"
       >
@@ -127,7 +127,7 @@
       </traction-form-group>
 
       <traction-form-group
-        v-if="['v11'].includes(selectedSmrtLinkVersion.name)"
+        v-if="['v11'].includes(smrtLinkVersion.name)"
         label="CCS Analysis Output Include Low Quality Reads"
         label-for="ccs-analysis-output-include-low-quality-reads"
       >
@@ -141,7 +141,7 @@
       </traction-form-group>
 
       <traction-form-group
-        v-if="['v11'].includes(selectedSmrtLinkVersion.name)"
+        v-if="['v11'].includes(smrtLinkVersion.name)"
         label="Include 5mc Calls In CpG Motifs"
         label-for="include-fivemc-calls-in-cpg-motifs"
       >
@@ -155,7 +155,7 @@
       </traction-form-group>
 
       <traction-form-group
-        v-if="['v11'].includes(selectedSmrtLinkVersion.name)"
+        v-if="['v11'].includes(smrtLinkVersion.name)"
         label="Demultiplex Barcodes"
         label-for="demultiplex-barcodes"
       >
@@ -177,7 +177,7 @@
       Disable Adaptive Loading
     </traction-button>
 
-    <traction-table id="wellPools" stacked :items="currentWell.pools" :fields="wellPoolsFields">
+    <!-- <traction-table id="wellPools" stacked :items="currentWell.pools" :fields="wellPoolsFields">
       <template #table-caption>Pools</template>
 
       <template #cell(barcode)="row">
@@ -197,7 +197,7 @@
           >
         </traction-form>
       </template>
-    </traction-table>
+    </traction-table> -->
 
     <traction-button class="button btn-xs btn-success" @click="addRow">+</traction-button>
 
@@ -244,7 +244,8 @@ export default {
   },
   data() {
     return {
-      currentWell: {},
+      smrtLinkVersion: {},
+      well: {},
       action: {},
       movieTimeOptions: [
         { text: 'Movie Time', value: '', disabled: true },
@@ -255,25 +256,12 @@ export default {
         '30.0',
       ],
       wellPoolsFields: ['barcode'],
-      generateHifiOptions: {
-        '': [{ text: 'Please select a System Name', value: '', disabled: true }],
-        'Sequel I': [
-          { text: 'Please select a value', value: '', disabled: true },
-          'In SMRT Link',
-          'Do Not Generate',
-        ],
-        'Sequel II': [
-          { text: 'Please select a value', value: '', disabled: true },
-          'In SMRT Link',
-          'Do Not Generate',
-        ],
-        'Sequel IIe': [
-          { text: 'Please select a value', value: '', disabled: true },
-          'In SMRT Link',
-          'Do Not Generate',
-          'On Instrument',
-        ],
-      },
+      generateHifiOptions: [
+        { text: 'Please select a value', value: '', disabled: true },
+        'In SMRT Link',
+        'Do Not Generate',
+        'On Instrument',
+      ],
       ccsAnalysisOutputOptions: ['Yes', 'No'],
       decimalPercentageRegex: /^(?:1(?:\.0{0,2})?|0?(?:\.\d{0,2})?)$/,
     }
@@ -286,6 +274,9 @@ export default {
         this.$store.getters['traction/pacbio/runCreate/smrtLinkVersionList'],
       ).find((version) => version.id == this.currentRun.smrt_link_version_id)
     },
+  },
+  created() {
+    this.well = getWell({ position: this.position})
   },
   methods: {
     addRow() {
@@ -367,7 +358,7 @@ export default {
     alert(message, type) {
       this.$emit('alert', message, type)
     },
-    ...mapActions('traction/pacbio/runs', ['buildWell']),
+    ...mapActions('traction/pacbio/runCreate', ['getWell']),
     ...mapMutations('traction/pacbio/runs', ['createWell', 'updateWell', 'deleteWell']),
   },
 }
