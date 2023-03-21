@@ -1,5 +1,5 @@
 <template>
-  <div class="run">
+  <DataFetcher :fetcher="provider">
     <router-link :to="{ name: 'PacbioRunIndex' }">
       <traction-button id="backToRunsButton" class="float-right">Back</traction-button>
     </router-link>
@@ -44,7 +44,7 @@
         </traction-col>
       </traction-row>
     </div>
-  </div>
+  </DataFetcher>
 </template>
 
 <script>
@@ -52,6 +52,7 @@ import PacbioRunInfoEdit from '@/components/pacbio/PacbioRunInfoEdit'
 import PacbioRunWellDefaultEdit from '@/components/pacbio/PacbioRunWellDefaultEdit'
 import pacbioPoolList from '@/components/pacbio/PacbioPoolList'
 import Plate from '@/components/pacbio/PacbioRunPlateItem'
+import DataFetcher from '@/components/DataFetcher'
 import { RunTypeEnum } from '@/store/traction/pacbio/runCreate/run'
 
 import { createNamespacedHelpers } from 'vuex'
@@ -66,6 +67,7 @@ export default {
     PacbioRunWellDefaultEdit,
     pacbioPoolList,
     Plate,
+    DataFetcher,
   },
   props: {
     id: {
@@ -78,13 +80,6 @@ export default {
       return this.runType.type === RunTypeEnum.New
     },
     ...mapGetters(['runType']),
-  },
-  created() {
-    const smrtLinkVersions = this.fetchSmrtLinkVersions()
-    this.clearRunData()
-    const run = this.setRun({ id: this.id })
-    smrtLinkVersions.then(this.alertOnFail)
-    run.then(this.alertOnFail)
   },
   methods: {
     resetRun() {
@@ -110,13 +105,13 @@ export default {
           : this.showAlert(errors, 'danger', 'run-create-message')
       })
     },
+    async provider() {
+      // Seeds required data and loads the page via the DataFetcher
+      // Set smrtLinkVersions first as setRun depends on it
+      await this.fetchSmrtLinkVersions()
+      await this.setRun({ id: this.id })
+      return { success: true }
+    },
   },
 }
 </script>
-
-<style>
-button {
-  margin-right: 2px;
-  margin-left: 2px;
-}
-</style>

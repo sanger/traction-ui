@@ -10,7 +10,7 @@ const runAttributes = {
   sequencing_kit_box_barcode: null,
   dna_control_complex_box_barcode: null,
   comments: null,
-  smrt_link_version_id: null,
+  smrtLinkVersion: null,
 }
 
 /*

@@ -76,21 +76,37 @@ export default {
    * @param commit the vuex commit object. Provides access to mutations
    * @returns { success, errors }. Was the request successful? were there any errors?
    */
-  fetchRun: async ({ commit, rootState }, { id }) => {
+  fetchRun: async ({ commit, rootState, getters }, { id }) => {
     const request = rootState.api.traction.pacbio.runs
-    const promise = request.find({ id })
+    const promise = request.find({
+      id,
+      // This is long but we want to include pool data
+      include:
+        'plate.wells.pools.tube,plate.wells.pools.libraries.tag,plate.wells.pools.libraries.request',
+      fields: {
+        requests: 'sample_name',
+        tubes: 'barcode',
+        tags: 'group_id',
+        libraries: 'request,tag,run_suitability',
+      },
+    })
     const response = await handleResponse(promise)
 
     const { success, data: { data, included = [] } = {}, errors = [] } = response
 
-    // create run, wells, pools and tubes
-    // TODO: we need to add libraries tags and requests to cover existing runs
     if (success) {
-      const { wells, pools, tubes } = groupIncludedByResource(included)
+      const { wells, pools, tubes, libraries, tags, requests } = groupIncludedByResource(included)
+
+      // Set a full smrtLinkVersion object in the run data
+      data.attributes.smrtLinkVersion =
+        getters.smrtLinkVersionList[data.attributes.pacbio_smrt_link_version_id]
 
       commit('populateRun', data)
       commit('populateWells', wells)
       commit('populatePools', pools)
+      commit('setLibraries', libraries)
+      commit('setTags', tags)
+      commit('setRequests', requests)
       commit('setTubes', tubes)
     }
     return { success, errors }
@@ -119,14 +135,14 @@ export default {
   /**
    * Sets the current run. If it is a new run it will be created.
    * If it is an existing run it will be updated.
-   * @param rootState the vuex rootState object. Provides access to current state
    * @param dispatch We need to call another action
    * @param commit the vuex commit object. Provides access to mutations
+   * @param getters Provides access to the vuex getters
    * @param id The id of the run. It will be new or existing
    * @returns { success, errors }. Was the action successful? were there any errors?
    *
    */
-  setRun: async ({ commit, dispatch, getters, state }, { id }) => {
+  setRun: async ({ commit, dispatch, getters }, { id }) => {
     // create and commit the runType based on the id
     const runType = createRunType({ id })
     commit('populateRunType', runType)
@@ -136,7 +152,7 @@ export default {
       // ensure that the smrt link version id is set to the default
       // eslint-disable-next-line no-unused-vars
       const { id: _id, ...attributes } = newRun({
-        smrt_link_version_id: getters.defaultSmrtLinkVersion.id,
+        smrtLinkVersion: getters.defaultSmrtLinkVersion,
       })
 
       commit('populateRun', { id, attributes })
@@ -146,21 +162,7 @@ export default {
     }
 
     // call the fetch run action
-    let { success, errors = [] } = await dispatch('fetchRun', { id })
-
-    // if the call is successful we need to get the pools and barcodes.
-    // TODO: We need to turn the service into a single call to return this data
-    // to reduce complexity
-    if (success) {
-      const barcode = Object.values(state.tubes)
-        .map((tube) => tube.barcode)
-        .join()
-
-      // not sure how to do this better maybe closure?
-      const { success: _success, errors: _errors } = await dispatch('findPools', { barcode })
-      success = _success
-      errors = _errors
-    }
+    const { success, errors = [] } = await dispatch('fetchRun', { id })
 
     // return the result from the fetchRun
     return { success, errors }
