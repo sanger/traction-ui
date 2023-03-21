@@ -30,8 +30,7 @@ describe('PacbioWellEdit', () => {
 
   let wrapper
 
-
-  describe.only('SMRT Link Versions', () => {
+  describe('SMRT Link Versions', () => {
     //["ccs_analysis_output", "generate_hifi", "on_plate_loading_concentration", "binding_kit_box_barcode", "pre_extension_time", "loading_target_p1_plus_p2", "movie_time"]
     describe('if the SMRT Link version is v10', () => {
 
