@@ -7,6 +7,7 @@ import {
   createRunType,
   newRunType,
   existingRunType,
+  defaultWellAttributes,
 } from '@/store/traction/pacbio/runCreate/run'
 
 const failedResponse = {
@@ -16,8 +17,8 @@ const failedResponse = {
 }
 
 const wells = {
-  1: { ...newWell() },
-  2: { ...newWell(), pools: [1, 2] },
+  1: { ...newWell({ position: 'A1' }) },
+  2: { ...newWell({ position: 'A2' }), pools: [1, 2] },
 }
 
 const defaultSmrtLinkVersion = {
@@ -27,7 +28,8 @@ const defaultSmrtLinkVersion = {
 }
 
 describe('actions.js', () => {
-  const { fetchSmrtLinkVersions, findPools, fetchRun, saveRun, setRun } = actions
+  const { fetchSmrtLinkVersions, findPools, fetchRun, saveRun, setRun, getWell, updateWell } =
+    actions
 
   describe('fetchSmrtLinkVersions', () => {
     it('handles success', async () => {
@@ -204,6 +206,42 @@ describe('actions.js', () => {
       expect(dispatch).toHaveBeenCalledWith('fetchRun', { id })
       expect(commit).toHaveBeenCalledWith('populateRunType', existingRunType)
       expect(success).toBeTruthy()
+    })
+  })
+
+  describe('getWell', () => {
+    it('if it is a new well', () => {
+      const state = {
+        wells: {},
+        defaultWellAttributes: { ...defaultWellAttributes() },
+      }
+
+      const position = 'A1'
+
+      const well = getWell({ state }, { position })
+      expect(well).toEqual(newWell({ position, attributes: state.defaultWellAttributes }))
+    })
+
+    it('if it is an existing well', () => {
+      const position = 'A1'
+      const well = newWell({ position })
+
+      const state = {
+        wells: { [position]: well },
+        defaultWellAttributes: { ...defaultWellAttributes() },
+      }
+
+      const gottenWell = getWell({ state }, { position })
+      expect(gottenWell).toEqual(well)
+    })
+  })
+
+  describe('updateWell', () => {
+    it('updates the well', () => {
+      const well = { position: 'A1', row: 'A', column: '1' }
+      const commit = vi.fn()
+      updateWell({ commit }, { well })
+      expect(commit).toHaveBeenCalledWith('updateWell', well)
     })
   })
 })

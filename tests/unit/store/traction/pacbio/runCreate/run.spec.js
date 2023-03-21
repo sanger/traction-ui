@@ -19,8 +19,8 @@ const existingRun = {
 }
 
 const wells = {
-  1: { ...newWell() },
-  2: { ...newWell(), pools: [1, 2] },
+  1: { ...newWell({ position: 'A1' }) },
+  2: { ...newWell({ position: 'A2' }), pools: [1, 2] },
 }
 
 const wellValues = Object.values(wells)
@@ -36,7 +36,13 @@ describe('run.js', () => {
 
   describe('newWell', () => {
     it('will have the default well attributes if nothing is changed', () => {
-      expect(newWell()).toEqual(defaultWellAttributes())
+      expect(newWell({ position: 'A1' })).toEqual({
+        ...defaultWellAttributes(),
+        position: 'A1',
+        row: 'A',
+        column: '1',
+        pools: [],
+      })
     })
 
     it('will have the correct attributes if any are passed', () => {
@@ -45,7 +51,14 @@ describe('run.js', () => {
         binding_kit_box_barcode: 'boxboxbox',
         on_plate_loading_concentration: 3.5,
       }
-      expect(newWell(attributes)).toEqual({ ...defaultWellAttributes(), ...attributes })
+      expect(newWell({ position: 'A1', attributes })).toEqual({
+        ...defaultWellAttributes(),
+        ...attributes,
+        position: 'A1',
+        row: 'A',
+        column: '1',
+        pools: [],
+      })
     })
   })
 

@@ -29,6 +29,7 @@ describe('mutations.js', () => {
     setTubes,
     removePool,
     populateDefaultWellAttributes,
+    updateWell,
   } = mutations
 
   describe('populateSmrtLinkVersions', () => {
@@ -170,6 +171,24 @@ describe('mutations.js', () => {
       // apply mutation
       populateDefaultWellAttributes(state, { ...defaultWellAttributes() })
       expect(state.defaultWellAttributes).toEqual(defaultWellAttributes())
+    })
+  })
+
+  describe('updateWell', () => {
+    it('when it is a new well', () => {
+      const state = defaultState()
+      const well = { position: 'A1', row: 'A', column: '1' }
+      updateWell(state, well)
+      expect(state.wells['A1']).toEqual(well)
+    })
+
+    it('when it is an existing well', () => {
+      const state = defaultState()
+      const well = { position: 'A1', row: 'A', column: '1' }
+      updateWell(state, well)
+      const updatedWell = { ...well, newAttribute: 'some nonsense' }
+      updateWell(state, updatedWell)
+      expect(state.wells['A1']).toEqual(updatedWell)
     })
   })
 })

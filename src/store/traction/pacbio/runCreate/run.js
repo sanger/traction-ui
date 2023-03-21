@@ -18,7 +18,7 @@ const runAttributes = {
  */
 const requiredAttributes = () => ['sequencing_kit_box_barcode', 'dna_control_complex_box_barcode']
 
-/*
+/**
  * @param {attributes} - Object of attributes for an existing run
  * @returns {Object} - A Fresh Pacbio Sequencing Run.
  * If id is nil it will be marked as a new run
@@ -48,10 +48,31 @@ const defaultWellAttributes = () => {
   }
 }
 
-const newWell = (attributes) => {
+/**
+ *
+ * @param {String} position e.g. A1
+ * @returns {Array} [row, column] e.g. ['A','1']
+ */
+const splitPosition = (position) => {
+  // match() returns [original, row, column] e.g "A10 => ["A10", "A", "10"]
+  return position.match(/(\S)(\d+)/).slice(1)
+}
+
+/**
+ *
+ * @param {String} position The position of the well e.g. A1
+ * @param {Object} attributes Any other attributes
+ * @returns {Object} A new well with all of the required attributes
+ */
+const newWell = ({ position, attributes }) => {
+  const [row, column] = splitPosition(position)
   return {
     ...defaultWellAttributes(),
     ...attributes,
+    position,
+    row,
+    column,
+    pools: [],
   }
 }
 

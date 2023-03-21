@@ -1,6 +1,6 @@
 import { handleResponse } from '@/api/ResponseHelper'
 import { groupIncludedByResource } from '@/api/JsonApi'
-import { newRun, createRunType, RunTypeEnum } from './run'
+import { newRun, createRunType, RunTypeEnum, newWell } from './run'
 
 // Asynchronous update of state.
 export default {
@@ -116,7 +116,7 @@ export default {
    * Saves (persists) the existing run. If it is a new run it will be created.
    * If it is an existing run it will be updated.
    * @param rootState the vuex rootState object. Provides access to current state
-   * @param state {runs, wells}. The current run and it's wells
+   * @param state {runType, runs, wells}. The current runType, run and it's wells
    * @returns { success, errors }. Was the request successful? were there any errors?
    */
   saveRun: async ({ rootState, state: { runType, run, wells } }) => {
@@ -139,6 +139,8 @@ export default {
    * @param commit the vuex commit object. Provides access to mutations
    * @param getters Provides access to the vuex getters
    * @param id The id of the run. It will be new or existing
+   * @params getters
+   * @param state. The current state
    * @returns { success, errors }. Was the action successful? were there any errors?
    *
    */
@@ -166,5 +168,24 @@ export default {
 
     // return the result from the fetchRun
     return { success, errors }
+  },
+
+  /**
+   * Gets the well based on it's position.
+   * If it is a new well it will be built along with retrieving the currentWellDefaults
+   * If it is an existing well it will be retrieved
+   * @param state the vuex rootState object. Provides access to current state
+   * @param position We need to call another action
+   */
+  getWell: ({ state }, { position }) => {
+    return state.wells[position] || newWell({ position, attributes: state.defaultWellAttributes })
+  },
+
+  /**
+   * Updates thw ell
+   * @param commit the vuex commit object. Provides access to mutations
+   */
+  updateWell: ({ commit }, { well }) => {
+    commit('updateWell', well)
   },
 }
