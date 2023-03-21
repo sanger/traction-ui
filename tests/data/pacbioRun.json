@@ -165,19 +165,115 @@
       },
       {
         "id": "1",
-        "type": "smrt_link_versions",
+        "type": "libraries",
         "links": {
-          "self": "http://localhost:3100/v1/pacbio/smrt_link_versions/1"
+          "self": "http://localhost:3100/v1/pacbio/libraries/1"
         },
         "attributes": {
-          "name": "v10",
-          "default": true
+          "run_suitability": {
+            "ready_for_run": true,
+            "errors": []
+          },
+          "state": "pending",
+          "volume": 1,
+          "concentration": 1,
+          "template_prep_kit_box_barcode": "LK12345",
+          "insert_size": 100,
+          "created_at": "2023/03/20 13:46",
+          "deactivated_at": null,
+          "source_identifier": "TRAC-2-1"
         },
         "relationships": {
-          "smrt_link_option_versions": {
+          "request": {
             "links": {
-              "self": "http://localhost:3100/v1/pacbio/smrt_link_versions/1/relationships/smrt_link_option_versions",
-              "related": "http://localhost:3100/v1/pacbio/smrt_link_versions/1/smrt_link_option_versions"
+              "self": "http://localhost:3100/v1/pacbio/libraries/1/relationships/request",
+              "related": "http://localhost:3100/v1/pacbio/libraries/1/request"
+            },
+            "data": {
+              "type": "requests",
+              "id": "241"
+            }
+          },
+          "tube": {
+            "links": {
+              "self": "http://localhost:3100/v1/pacbio/libraries/1/relationships/tube",
+              "related": "http://localhost:3100/v1/pacbio/libraries/1/tube"
+            }
+          },
+          "tag": {
+            "links": {
+              "self": "http://localhost:3100/v1/pacbio/libraries/1/relationships/tag",
+              "related": "http://localhost:3100/v1/pacbio/libraries/1/tag"
+            },
+            "data": null
+          },
+          "pool": {
+            "links": {
+              "self": "http://localhost:3100/v1/pacbio/libraries/1/relationships/pool",
+              "related": "http://localhost:3100/v1/pacbio/libraries/1/pool"
+            },
+            "data": {
+              "type": "pools",
+              "id": "1"
+            }
+          },
+          "source_well": {
+            "links": {
+              "self": "http://localhost:3100/v1/pacbio/libraries/1/relationships/source_well",
+              "related": "http://localhost:3100/v1/pacbio/libraries/1/source_well"
+            }
+          },
+          "source_plate": {
+            "links": {
+              "self": "http://localhost:3100/v1/pacbio/libraries/1/relationships/source_plate",
+              "related": "http://localhost:3100/v1/pacbio/libraries/1/source_plate"
+            }
+          }
+        }
+      },
+      {
+        "id": "181",
+        "type": "tags",
+        "attributes": {
+          "oligo": "CACATATCAGAGTGCG",
+          "group_id": "bc1001"
+        }
+      },
+      {
+        "id": "241",
+        "type": "requests",
+        "links": {
+          "self": "http://localhost:3100/v1/pacbio/requests/241"
+        },
+        "attributes": {
+          "library_type": "Sequel-v1",
+          "estimate_of_gb_required": 10,
+          "number_of_smrt_cells": 3,
+          "cost_code": "PSD1234",
+          "external_study_id": "13e016c1-4882-4631-821a-9d2a618c4c6c",
+          "sample_name": "PacbioSample0",
+          "barcode": "TRAC-2-1",
+          "sample_species": "Species0",
+          "created_at": "2023/03/20 13:46",
+          "source_identifier": "TRAC-2-1"
+        },
+        "relationships": {
+          "well": {
+            "links": {
+              "self": "http://localhost:3100/v1/pacbio/requests/241/relationships/well",
+              "related": "http://localhost:3100/v1/pacbio/requests/241/well"
+            }
+          },
+          "plate": {
+            "links": {
+              "self": "http://localhost:3100/v1/pacbio/requests/241/relationships/plate",
+              "related": "http://localhost:3100/v1/pacbio/requests/241/plate"
+            }
+          },
+          "tube": {
+            "links": {
+              "self": "http://localhost:3100/v1/pacbio/requests/241/relationships/tube",
+              "related": "http://localhost:3100/v1/pacbio/requests/241/tube"
             }
           }
         }

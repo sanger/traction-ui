@@ -62,13 +62,20 @@ describe('actions.js', () => {
     it('handles success', async () => {
       const commit = vi.fn()
       const find = vi.fn()
+      const get = vi.fn()
+      get.mockResolvedValue({ 1: defaultSmrtLinkVersion })
       const rootState = { api: { traction: { pacbio: { runs: { find } } } } }
+      const getters = { smrtLinkVersionList: { get } }
       find.mockResolvedValue(Data.PacbioRun)
-      const { success } = await fetchRun({ commit, rootState }, { id: 1 })
+      const { success } = await fetchRun({ commit, rootState, getters }, { id: 1 })
+
       expect(commit).toHaveBeenCalledWith('populateRun', Data.PacbioRun.data.data)
       expect(commit).toHaveBeenCalledWith('populateWells', Data.PacbioRun.data.included.slice(1, 2))
       expect(commit).toHaveBeenCalledWith('populatePools', Data.PacbioRun.data.included.slice(2, 3))
       expect(commit).toHaveBeenCalledWith('setTubes', Data.PacbioRun.data.included.slice(3, 4))
+      expect(commit).toHaveBeenCalledWith('setLibraries', Data.PacbioRun.data.included.slice(4, 5))
+      expect(commit).toHaveBeenCalledWith('setTags', Data.PacbioRun.data.included.slice(5, 6))
+      expect(commit).toHaveBeenCalledWith('setRequests', Data.PacbioRun.data.included.slice(6, 7))
       expect(success).toBeTruthy()
     })
 
@@ -176,7 +183,7 @@ describe('actions.js', () => {
       expect(success).toBeTruthy()
       expect(commit).toHaveBeenCalledWith('populateRun', {
         id,
-        attributes: { ...attributes, smrt_link_version_id: defaultSmrtLinkVersion.id },
+        attributes: { ...attributes, smrtLinkVersion: defaultSmrtLinkVersion },
       })
       expect(commit).toHaveBeenCalledWith('populateRunType', newRunType)
     })
@@ -197,7 +204,6 @@ describe('actions.js', () => {
 
       const { success } = await setRun({ commit, dispatch, state, getters }, { id })
       expect(dispatch).toHaveBeenCalledWith('fetchRun', { id })
-      expect(dispatch).toHaveBeenCalledWith('findPools', { barcode: 'TRAC-2-1,TRAC-2-2' })
       expect(commit).toHaveBeenCalledWith('populateRunType', existingRunType)
       expect(success).toBeTruthy()
     })
