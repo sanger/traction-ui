@@ -39,3 +39,28 @@ describe('#fetchPacbioRuns', () => {
     expect(errors).toEqual(expectedResponse.errors)
   })
 })
+
+describe('#updateRun', () => {
+  let updatedRun, commit, update, rootState
+
+  beforeEach(() => {
+    updatedRun = {
+      id: '1',
+      type: 'runs',
+      state: 'started',
+    }
+    commit = vi.fn()
+    update = vi.fn()
+    rootState = { api: { traction: { pacbio: { runs: { update: update } } } } }
+  })
+
+  it('updates the given run in the states runs', async () => {
+    update.mockReturnValue({ data: Data.PacbioRuns.data.data[0] })
+
+    const { success, errors } = await Actions.updateRun({ rootState, commit }, { ...updatedRun })
+
+    expect(commit).toHaveBeenCalledWith('setRuns', [Data.PacbioRuns.data.data[0]])
+    expect(success).toEqual(true)
+    expect(errors).toEqual([])
+  })
+})

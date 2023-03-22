@@ -8,8 +8,10 @@ const mutations = {
    * @param {Object} data A response object
    **/
   setRuns: (state, data) => {
-    const runs = dataToObjectById({ data, includeRelationships: true })
-    Vue.set(state, 'runs', runs)
+    Vue.set(state, 'runs', {
+      ...state.runs,
+      ...dataToObjectById({ data, includeRelationships: true }),
+    })
   },
 }
 
