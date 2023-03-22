@@ -95,12 +95,17 @@ export default {
     const { success, data: { data, included = [] } = {}, errors = [] } = response
 
     if (success) {
-      const { wells, pools, tubes, libraries, tags, requests, smrt_link_versions } =
-        groupIncludedByResource(included)
+      const {
+        wells,
+        pools,
+        tubes,
+        libraries,
+        tags,
+        requests,
+        smrt_link_versions: [smrt_link_version = {}] = [],
+      } = groupIncludedByResource(included)
 
-      const smrtLinkVersion = smrt_link_versions.length
-        ? extractAttributes(smrt_link_versions[0])
-        : {}
+      const smrtLinkVersion = extractAttributes(smrt_link_version)
 
       commit('populateRun', data)
       commit('populateWells', wells)
