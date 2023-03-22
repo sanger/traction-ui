@@ -1,17 +1,6 @@
 import getters from '@/store/printMyBarcode/getters'
 
 describe('getters', () => {
-  it('"sampleExtractionTubeRequest" returns "rootState.api.sampleExtraction.assets"', () => {
-    const rootState = {
-      api: {
-        sampleExtraction: {
-          assets: 'aRequestURL',
-        },
-      },
-    }
-    expect(getters.sampleExtractionTubeRequest({}, {}, rootState)).toBe('aRequestURL')
-  })
-
   it('"printJobRequest" returns "rootState.api.printMyBarcode.print_jobs"', () => {
     const rootState = {
       api: {
