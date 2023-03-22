@@ -28,8 +28,15 @@ const defaultSmrtLinkVersion = {
 }
 
 describe('actions.js', () => {
-  const { fetchSmrtLinkVersions, findPools, fetchRun, saveRun, setRun, getWell, updateWell } =
-    actions
+  const {
+    fetchSmrtLinkVersions,
+    findPools,
+    fetchRun,
+    saveRun,
+    setRun,
+    getOrCreateWell,
+    updateWell,
+  } = actions
 
   describe('fetchSmrtLinkVersions', () => {
     it('handles success', async () => {
@@ -214,7 +221,7 @@ describe('actions.js', () => {
     })
   })
 
-  describe('getWell', () => {
+  describe('getOrCreateWell', () => {
     it('if it is a new well', () => {
       const state = {
         wells: {},
@@ -223,7 +230,7 @@ describe('actions.js', () => {
 
       const position = 'A1'
 
-      const well = getWell({ state }, { position })
+      const well = getOrCreateWell({ state }, { position })
       expect(well).toEqual(newWell({ position, attributes: state.defaultWellAttributes }))
     })
 
@@ -236,7 +243,7 @@ describe('actions.js', () => {
         defaultWellAttributes: { ...defaultWellAttributes() },
       }
 
-      const gottenWell = getWell({ state }, { position })
+      const gottenWell = getOrCreateWell({ state }, { position })
       expect(gottenWell).toEqual(well)
     })
   })
