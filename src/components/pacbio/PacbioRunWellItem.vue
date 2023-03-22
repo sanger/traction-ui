@@ -29,7 +29,7 @@ import { mapActions, mapMutations, mapGetters } from 'vuex'
 import WellEdit from '@/components/pacbio/PacbioRunWellEdit'
 
 export default {
-  name: 'PacbioRunWellEdit',
+  name: 'PacbioRunWellItem',
   components: {
     WellEdit,
   },
@@ -79,17 +79,19 @@ export default {
     }
   },
   computed: {
-    ...mapGetters('traction/pacbio/runs', ['well']),
-    ...mapGetters('traction/pacbio/runCreate', ['poolByBarcode']),
+    ...mapGetters('traction/pacbio/runCreate', ['poolByBarcode', 'getWell', 'pools']),
     position() {
       return `${this.row}${this.column}`
     },
     tooltip() {
-      return this.storeWell.pools.map((p) => p.barcode).join(',')
+      return this.storeWell.pools
+        .map((p) => {
+          return this.pools.find((pool) => p == pool.id).barcode
+        })
+        .join(',')
     },
     hasPools() {
       if (this.storeWell === undefined) return false
-      if (this.storeWell.pools.every((p) => p.barcode == '')) return false
       return this.storeWell.pools.length > 0
     },
     hasValidMetadata() {
@@ -101,7 +103,7 @@ export default {
       return this.required_metadata_fields.some((field) => this.storeWell[field] !== '')
     },
     storeWell() {
-      return this.well(this.position)
+      return this.getWell(this.position)
     },
     status() {
       if (this.hasPools && this.hasValidMetadata) {
@@ -114,8 +116,8 @@ export default {
     },
   },
   methods: {
-    ...mapActions('traction/pacbio/runs', ['buildWell']),
-    ...mapMutations('traction/pacbio/runs', ['updateWell', 'createWell']),
+    ...mapActions('traction/pacbio/runCreate', ['getOrCreateWell']),
+    ...mapMutations('traction/pacbio/runCreate', ['updateWell']),
     alert(message, type) {
       this.$emit('alert', message, type)
     },
@@ -136,19 +138,10 @@ export default {
       this.hover = false
     },
     async updatePoolBarcode(barcode) {
-      const existingWell = this.well(this.position)
+      const well = this.getOrCreateWell({ position: this.position })
       const { id } = this.poolByBarcode(barcode)
-
-      if (existingWell) {
-        // if well exists, push pool into well
-        existingWell.pools.push({ id, barcode })
-        this.updateWell(existingWell)
-      } else {
-        // if well does not exist create well and give it a pool
-        const newWell = await this.buildWell(this.position)
-        newWell.pools.push({ id, barcode })
-        this.createWell(newWell)
-      }
+      well.pools.push(id)
+      this.updateWell(well)
     },
   },
 }
