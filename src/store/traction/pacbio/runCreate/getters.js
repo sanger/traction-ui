@@ -54,4 +54,5 @@ export default {
   runItem: (state) => state.run || {},
 
   runType: (state) => state.runType || {},
+  getWell: (state) => (position) => state.wells[position],
 }

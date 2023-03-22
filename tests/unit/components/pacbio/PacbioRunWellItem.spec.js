@@ -1,11 +1,10 @@
-import * as Run from '@/api/PacbioRun'
 import Well from '@/components/pacbio/PacbioRunWellItem'
 import { localVue, mount, store } from '@support/testHelper'
-import * as Actions from '@/store/traction/pacbio/runs/actions'
+import * as Run from '@/store/traction/pacbio/runCreate/run'
 import storePools from '@tests/data/StorePools'
 
 describe('Well.vue', () => {
-  let well, wrapper, props, storeWell, run, state
+  let well, wrapper, props, storeWell, run
 
   beforeEach(() => {
     props = {
@@ -17,28 +16,28 @@ describe('Well.vue', () => {
       ry: '11.032985',
     }
 
-    run = Run.build()
-    run.smrt_link_version_id = 1
-    state = { currentRun: run }
-    storeWell = Actions.buildWell({ state }, 'A1')
-    storeWell.pools = [
-      { id: 1, barcode: 'TRAC-1' },
-      { id: 2, barcode: 'TRAC-2' },
-    ]
-    storeWell.movie_time = '15'
-    storeWell.on_plate_loading_concentration = 234
-    storeWell.generate_hifi = 'In SMRT Link'
-    storeWell.binding_kit_box_barcode = '12345'
-    run.plate.wells[0] = storeWell
-
     const smrtLinkVersions = {
       1: { id: 1, name: 'v10', default: true },
       2: { id: 2, name: 'v11', default: false },
     }
 
-    Object.assign(store.state.traction.pacbio.runCreate, storePools)
-
-    store.commit('traction/pacbio/runs/setCurrentRun', run)
+    run = Run.newRun()
+    run.smrtLinkVersion = smrtLinkVersions[0]
+    storeWell = {
+      position: 'A1',
+      pools: ['1', '2'],
+      on_plate_loading_concentration: 234,
+      movie_time: 15,
+      generate_hifi: 'In SMRT Link',
+      binding_kit_box_barcode: '12345',
+    }
+    store.state.traction.pacbio.runCreate.pools = storePools['pools']
+    store.state.traction.pacbio.runCreate.tubes = storePools['tubes']
+    store.state.traction.pacbio.runCreate.libraries = storePools['libraries']
+    store.state.traction.pacbio.runCreate.tags = storePools['tags']
+    store.state.traction.pacbio.runCreate.requests = storePools['requests']
+    store.state.traction.pacbio.runCreate.wells = { A1: storeWell }
+    store.state.traction.pacbio.runCreate.run = run
     store.state.traction.pacbio.runCreate.resources.smrtLinkVersions = smrtLinkVersions
 
     wrapper = mount(Well, {
@@ -173,7 +172,6 @@ describe('Well.vue', () => {
     })
   })
 
-  // TODO: same as well modal - refactor baby!
   describe('updatePoolBarcode', () => {
     let expectedWell
     const newBarcode = 'TRAC-2-1'
@@ -181,7 +179,7 @@ describe('Well.vue', () => {
     it('adds the pool to the well if the well exists', async () => {
       wrapper.vm.updateWell = vi.fn()
       expectedWell = storeWell
-      expectedWell.pools.push({ id: '1', barcode: 'TRAC-2-1' })
+      expectedWell.pools.push('1')
 
       await wrapper.vm.updatePoolBarcode(newBarcode)
       expect(wrapper.vm.updateWell).toBeCalledWith(expectedWell)
@@ -201,9 +199,15 @@ describe('Well.vue', () => {
         store,
         propsData: props,
       })
-      wrapper.vm.createWell = vi.fn()
-      expectedWell = Actions.buildWell({ state }, 'H12')
-      expectedWell.pools.push({ id: '1', barcode: 'TRAC-2-1' })
+
+      expectedWell = {
+        position: 'H12',
+        pools: ['1'],
+        on_plate_loading_concentration: 234,
+        movie_time: 15,
+        generate_hifi: 'In SMRT Link',
+        binding_kit_box_barcode: '12345',
+      }
 
       await wrapper.vm.updatePoolBarcode(newBarcode)
 
@@ -214,7 +218,11 @@ describe('Well.vue', () => {
   describe('tooltip', () => {
     it('will only be visible if there are some pools', () => {
       const title = wrapper.find('title')
-      const expected = storeWell.pools.map((p) => p.barcode).join(',')
+      const expected = storeWell.pools
+        .map((p) => {
+          return storePools.find((pool) => p == pool.id).barcode
+        })
+        .join(',')
       expect(title.text()).toEqual(expected)
     })
   })

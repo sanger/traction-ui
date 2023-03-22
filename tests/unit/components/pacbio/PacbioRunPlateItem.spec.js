@@ -17,7 +17,7 @@ describe('Plate.vue', () => {
       1: { id: 1, name: 'v10', default: true },
       2: { id: 2, name: 'v11', default: false },
     }
-    store.commit('traction/pacbio/runs/setCurrentRun', run)
+    store.commit('traction/pacbio/runCreate/populateRun', run)
     store.state.traction.pacbio.runCreate.resources.smrtLinkVersions = smrtLinkVersions
 
     wrapper = mount(Plate, { localVue, store })

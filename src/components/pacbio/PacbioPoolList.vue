@@ -1,5 +1,5 @@
 <template>
-  <div class="pools">
+  <div class="p-[20px] border-solid border-[1px] border-black">
     <div class="font-semibold text-xl text-left py-3">Pools</div>
     <LabwareFinder :fetcher="findPools" filter="barcode" />
     <PacbioPoolSelectedList></PacbioPoolSelectedList>
@@ -11,7 +11,7 @@ import { createNamespacedHelpers } from 'vuex'
 import LabwareFinder from '@/components/LabwareFinder'
 import PacbioPoolSelectedList from './PacbioPoolSelectedList.vue'
 
-const { mapActions, mapGetters } = createNamespacedHelpers('traction/pacbio/runCreate')
+const { mapActions } = createNamespacedHelpers('traction/pacbio/runCreate')
 
 export default {
   name: 'PacbioPoolList',
@@ -23,18 +23,8 @@ export default {
   data() {
     return {}
   },
-  computed: {
-    ...mapGetters(['pools']),
-  },
   methods: {
     ...mapActions(['findPools']),
   },
 }
 </script>
-<style scoped>
-.pools {
-  border: solid;
-  border-width: 1px;
-  padding: 20px;
-}
-</style>

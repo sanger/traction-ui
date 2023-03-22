@@ -177,14 +177,15 @@ export default {
   },
 
   /**
-   * Gets the well based on it's position.
+   * Gets or creates the well based on it's position.
    * If it is a new well it will be built along with retrieving the currentWellDefaults
    * If it is an existing well it will be retrieved
    * @param state the vuex rootState object. Provides access to current state
-   * @param position We need to call another action
+   * @param position The position of the well
+   * @param attributes Any additional attributes
    */
-  getWell: ({ state }, { position }) => {
-    return state.wells[position] || newWell({ position, attributes: state.defaultWellAttributes })
+  getOrCreateWell: ({ state }, { position }) => {
+    return state.wells[position] || newWell({ position, ...state.defaultWellAttributes })
   },
 
   /**
