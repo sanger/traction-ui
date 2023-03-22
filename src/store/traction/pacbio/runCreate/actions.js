@@ -189,4 +189,21 @@ export default {
   updateWell: ({ commit }, { well }) => {
     commit('updateWell', well)
   },
+
+  /**
+   * Gets the pool based on it's barcode.
+   * Finds the pool, commits it to store and then returns it
+   * If it is an existing well it will be retrieved
+   * @param dispatch We need to call another action
+   * @param getters Provides access to the vuex getters
+   * @param barcode The barcode to find
+   * @returns {Object} {success, errors, pool} success: was the pool returned, errors: any errors from API call, pool: The actual pool
+   */
+  getPool: async ({dispatch, getters}, {barcode}) => {
+    const { success, errors = []} = await dispatch('findPools', { barcode})
+
+    const pool = success ? getters.poolByBarcode(barcode) : {}
+    
+    return { success, errors, pool}
+  }
 }

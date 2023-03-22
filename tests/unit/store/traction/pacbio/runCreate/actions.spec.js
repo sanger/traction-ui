@@ -1,5 +1,6 @@
 import { Data } from '@support/testHelper'
 import actions from '@/store/traction/pacbio/runCreate/actions'
+import getters from '@/store/traction/pacbio/runCreate/getters'
 import { describe, expect, it } from 'vitest'
 import {
   newRun,
@@ -28,7 +29,7 @@ const defaultSmrtLinkVersion = {
 }
 
 describe('actions.js', () => {
-  const { fetchSmrtLinkVersions, findPools, fetchRun, saveRun, setRun, getWell, updateWell } =
+  const { fetchSmrtLinkVersions, findPools, fetchRun, saveRun, setRun, getWell, updateWell, getPool } =
     actions
 
   describe('fetchSmrtLinkVersions', () => {
@@ -247,6 +248,28 @@ describe('actions.js', () => {
       const commit = vi.fn()
       updateWell({ commit }, { well })
       expect(commit).toHaveBeenCalledWith('updateWell', well)
+    })
+  })
+
+  describe('getPool', () => {
+    it('when finding the pool is successful', async () => {
+      const barcode = 'TRAC-2-1'
+      const dispatch = vi.fn()
+      const getters = {poolByBarcode: () => ({id: '1', barcode})}
+      dispatch.mockResolvedValue({ success: true })
+      const {success, pool} = await getPool({dispatch, getters}, {barcode})
+      expect(success).toBeTruthy()
+      expect(pool).toEqual({id: '1', barcode})
+    })
+
+    it('when finding the pool fails', async () => {
+      const barcode = 'TRAC-2-1'
+      const dispatch = vi.fn()
+      const getters = {}
+      dispatch.mockResolvedValue({ success: false, errors: ['it didnt work'] })
+      const {success, errors} = await getPool({dispatch, getters}, {barcode})
+      expect(success).toBeFalsy()
+      expect(errors).toEqual(['it didnt work'])
     })
   })
 })
