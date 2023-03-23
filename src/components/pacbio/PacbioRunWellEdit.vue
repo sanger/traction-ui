@@ -270,7 +270,7 @@ export default {
     ...mapGetters('traction/pacbio/runCreate', ['poolByBarcode']),
   },
   created() {
-    this.well = this.getWell({ position: this.position})
+    this.well = this.getWell({ position: this.position })
   },
   methods: {
     addRow() {

@@ -29,8 +29,16 @@ const defaultSmrtLinkVersion = {
 }
 
 describe('actions.js', () => {
-  const { fetchSmrtLinkVersions, findPools, fetchRun, saveRun, setRun, getWell, updateWell, getPool } =
-    actions
+  const {
+    fetchSmrtLinkVersions,
+    findPools,
+    fetchRun,
+    saveRun,
+    setRun,
+    getWell,
+    updateWell,
+    getPool,
+  } = actions
 
   describe('fetchSmrtLinkVersions', () => {
     it('handles success', async () => {
@@ -215,7 +223,7 @@ describe('actions.js', () => {
     })
   })
 
-  describe('getWell', () => {
+  describe('getOrCreateWell', () => {
     it('if it is a new well', () => {
       const state = {
         wells: {},
@@ -224,7 +232,7 @@ describe('actions.js', () => {
 
       const position = 'A1'
 
-      const well = getWell({ state }, { position })
+      const well = getOrCreateWell({ state }, { position })
       expect(well).toEqual(newWell({ position, attributes: state.defaultWellAttributes }))
     })
 
@@ -237,7 +245,7 @@ describe('actions.js', () => {
         defaultWellAttributes: { ...defaultWellAttributes() },
       }
 
-      const gottenWell = getWell({ state }, { position })
+      const gottenWell = getOrCreateWell({ state }, { position })
       expect(gottenWell).toEqual(well)
     })
   })
@@ -255,11 +263,11 @@ describe('actions.js', () => {
     it('when finding the pool is successful', async () => {
       const barcode = 'TRAC-2-1'
       const dispatch = vi.fn()
-      const getters = {poolByBarcode: () => ({id: '1', barcode})}
+      const getters = { poolByBarcode: () => ({ id: '1', barcode }) }
       dispatch.mockResolvedValue({ success: true })
-      const {success, pool} = await getPool({dispatch, getters}, {barcode})
+      const { success, pool } = await getPool({ dispatch, getters }, { barcode })
       expect(success).toBeTruthy()
-      expect(pool).toEqual({id: '1', barcode})
+      expect(pool).toEqual({ id: '1', barcode })
     })
 
     it('when finding the pool fails', async () => {
@@ -267,7 +275,7 @@ describe('actions.js', () => {
       const dispatch = vi.fn()
       const getters = {}
       dispatch.mockResolvedValue({ success: false, errors: ['it didnt work'] })
-      const {success, errors} = await getPool({dispatch, getters}, {barcode})
+      const { success, errors } = await getPool({ dispatch, getters }, { barcode })
       expect(success).toBeFalsy()
       expect(errors).toEqual(['it didnt work'])
     })

@@ -18,19 +18,17 @@ const smrtLinkVersions = {
 
 const propsData = {
   position: 'A1',
-  isStatic: true
+  isStatic: true,
 }
 
 store.state.traction.pacbio.runCreate.resources.smrtLinkVersions = smrtLinkVersions
 
 describe('PacbioWellEdit', () => {
-
   let wrapper
 
   describe('SMRT Link Versions', () => {
     //["ccs_analysis_output", "generate_hifi", "on_plate_loading_concentration", "binding_kit_box_barcode", "pre_extension_time", "loading_target_p1_plus_p2", "movie_time"]
     describe('if the SMRT Link version is v10', () => {
-
       beforeEach(() => {
         wrapper = mount(PacbioRunWellEdit, {
           localVue,
@@ -38,9 +36,9 @@ describe('PacbioWellEdit', () => {
           propsData,
           data() {
             return {
-              smrtLinkVersion: smrtLinkVersions['1']
+              smrtLinkVersion: smrtLinkVersions['1'],
             }
-          }
+          },
         })
       })
 
@@ -111,9 +109,9 @@ describe('PacbioWellEdit', () => {
           propsData,
           data() {
             return {
-              smrtLinkVersion: smrtLinkVersions['2']
+              smrtLinkVersion: smrtLinkVersions['2'],
             }
-          }
+          },
         })
       })
 
@@ -165,7 +163,6 @@ describe('PacbioWellEdit', () => {
         expect(wrapper.find('[data-attribute="generate-hifi"]').exists()).toBeFalsy()
       })
     })
-
   })
 })
 
@@ -250,8 +247,6 @@ describe('PacbioWellEdit', () => {
 //       ])
 //     })
 //   })
-
-  
 
 //   describe('alert', () => {
 //     it('emits an event with the message', () => {

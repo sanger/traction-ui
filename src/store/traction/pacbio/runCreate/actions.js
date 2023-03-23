@@ -205,11 +205,11 @@ export default {
    * @param barcode The barcode to find
    * @returns {Object} {success, errors, pool} success: was the pool returned, errors: any errors from API call, pool: The actual pool
    */
-  getPool: async ({dispatch, getters}, {barcode}) => {
-    const { success, errors = []} = await dispatch('findPools', { barcode})
+  getPool: async ({ dispatch, getters }, { barcode }) => {
+    const { success, errors = [] } = await dispatch('findPools', { barcode })
 
     const pool = success ? getters.poolByBarcode(barcode) : {}
-    
-    return { success, errors, pool}
-  }
+
+    return { success, errors, pool }
+  },
 }

@@ -41,9 +41,14 @@ describe('#fetchPacbioRuns', () => {
 })
 
 describe('#updateRun', () => {
-  let updatedRun, commit, update, rootState
+  let updatedRun, commit, update, rootState, failedResponse
 
   beforeEach(() => {
+    failedResponse = {
+      data: { data: { errors: { error1: ['There was an error'] } } },
+      status: 500,
+      statusText: 'Internal Server Error',
+    }
     updatedRun = {
       id: '1',
       type: 'runs',
@@ -54,13 +59,24 @@ describe('#updateRun', () => {
     rootState = { api: { traction: { pacbio: { runs: { update: update } } } } }
   })
 
-  it('updates the given run in the states runs', async () => {
-    update.mockReturnValue({ data: Data.PacbioRuns.data.data[0] })
+  it('successfully', async () => {
+    update.mockReturnValue(Data.PacbioRun)
 
     const { success, errors } = await Actions.updateRun({ rootState, commit }, { ...updatedRun })
 
-    expect(commit).toHaveBeenCalledWith('setRuns', [Data.PacbioRuns.data.data[0]])
+    expect(commit).toHaveBeenCalledWith('setRuns', [Data.PacbioRun.data.data])
     expect(success).toEqual(true)
     expect(errors).toEqual([])
+  })
+
+  it('unsuccessfully', async () => {
+    update.mockRejectedValue({ response: failedResponse })
+    const expectedResponse = newResponse({ ...failedResponse, success: false })
+
+    const { success, errors } = await Actions.updateRun({ rootState, commit }, { ...updatedRun })
+
+    expect(commit).not.toHaveBeenCalled()
+    expect(success).toEqual(false)
+    expect(errors).toEqual(expectedResponse.errors)
   })
 })
