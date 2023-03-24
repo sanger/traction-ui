@@ -56,7 +56,6 @@ describe('OntTubeSelectedList', () => {
     })
 
     it('contains the selected tube requests', async () => {
-      wrapper.vm.model.selectedTubeRequests = [{ id: '191', selected: true }]
       await wrapper.vm.$nextTick()
       expect(wrapper.find('tbody').findAll('tr').length).toEqual(1)
       expect(wrapper.find('tbody').findAll('td').at(0).text()).toEqual('191')
