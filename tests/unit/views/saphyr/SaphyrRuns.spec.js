@@ -25,16 +25,16 @@ describe('Runs.vue', () => {
       expect(wrapper.find('table').element).toBeTruthy()
     })
 
-    it('contains the correct data', () => {
-      wrapper.vm.$nextTick(() => expect(wrapper.findAll('tr').length).toEqual(6))
+    it('contains the correct data', async () => {
+      await wrapper.vm.$nextTick()
+      expect(wrapper.findAll('tr').length).toEqual(6)
     })
   })
 
   describe('sorting', () => {
-    it('will sort the runs by created at', () => {
-      wrapper.vm.$nextTick(() =>
-        expect(wrapper.find('tbody').findAll('tr').at(1).text()).toMatch(/TRAC-678/),
-      )
+    it('will sort the runs by created at', async () => {
+      await wrapper.vm.$nextTick()
+      expect(wrapper.find('tbody').findAll('tr').at(1).text()).toMatch(/TRAC-678/)
     })
   })
 
@@ -55,180 +55,161 @@ describe('Runs.vue', () => {
       const filterInput = wrapper.find('#filterInput')
       filterInput.element.value = mockRuns[0].chip_barcode
       filterInput.trigger('input')
-      wrapper.vm.$nextTick(() => {
-        expect(wrapper.find('tbody').findAll('tr').length).toEqual(1)
-        expect(wrapper.find('tbody').findAll('tr').at(0).text()).toMatch(/TRAC-123/)
-      })
+      await wrapper.vm.$nextTick()
+      expect(wrapper.find('tbody').findAll('tr').length).toEqual(1)
+      expect(wrapper.find('tbody').findAll('tr').at(0).text()).toMatch(/TRAC-123/)
     })
   })
 
   // TODO: Move data creation into factories as we are having to reference data that is
   // outside of the tests.
   describe('start button', () => {
-    it('is enabled when the run state is pending', () => {
+    it('is enabled when the run state is pending', async () => {
       // run at(0) is in state pending
-      wrapper.vm.$nextTick(() => {
-        const button = wrapper.find('#startRun-6')
-        expect(button.attributes('disabled')).toBeFalsy()
-      })
+      await wrapper.vm.$nextTick()
+      const button = wrapper.find('#startRun-6')
+      expect(button.attributes('disabled')).toBeFalsy()
     })
 
-    it('is disabled is the run state is not pending', () => {
+    it('is disabled is the run state is not pending', async () => {
       // run at(4) is in state started
-      wrapper.vm.$nextTick(() => {
-        const button = wrapper.find('#startRun-2')
-        expect(button.attributes('disabled')).toBeTruthy()
-      })
+      await wrapper.vm.$nextTick()
+      const button = wrapper.find('#startRun-2')
+      expect(button.attributes('disabled')).toBeTruthy()
     })
 
-    it('on click startRun is called', () => {
+    it('on click startRun is called', async () => {
       // run at(0) is in state pending
-      wrapper.vm.$nextTick(() => {
-        runs.startRun = vi.fn()
+      await wrapper.vm.$nextTick()
+      runs.startRun = vi.fn()
 
-        const button = wrapper.find('#startRun-6')
-        button.trigger('click')
+      const button = wrapper.find('#startRun-6')
+      button.trigger('click')
 
-        const id = wrapper.find('tbody').findAll('tr').at(0).findAll('td').at(0).text()
-        expect(runs.startRun).toBeCalledWith({ id, pipeline })
-      })
+      const id = wrapper.find('tbody').findAll('tr').at(0).findAll('td').at(0).text()
+      expect(runs.startRun).toBeCalledWith({ id, pipeline })
     })
   })
 
   describe('complete button', () => {
-    it('is is enabled when the run state is pending', () => {
-      wrapper.vm.$nextTick(() => {
-        // run at(0) is in state pending
-        const button = wrapper.find('#completeRun-6')
-        expect(button.attributes('disabled')).toBeFalsy()
-      })
+    it('is is enabled when the run state is pending', async () => {
+      await wrapper.vm.$nextTick()
+      // run at(0) is in state pending
+      const button = wrapper.find('#completeRun-6')
+      expect(button.attributes('disabled')).toBeFalsy()
     })
 
-    it('is is enabled when the run state is started', () => {
+    it('is is enabled when the run state is started', async () => {
+      await wrapper.vm.$nextTick()
       // run at(4) is in state started
-      wrapper.vm.$nextTick(() => {
-        const button = wrapper.find('#completeRun-2')
-        expect(button.attributes('disabled')).toBeFalsy()
-      })
+      const button = wrapper.find('#completeRun-2')
+      expect(button.attributes('disabled')).toBeFalsy()
     })
 
-    it('is disabled if the run state is completed', () => {
+    it('is disabled if the run state is completed', async () => {
       // run at(3) is in state completed
-      wrapper.vm.$nextTick(() => {
-        const button = wrapper.find('#completeRun-3')
-        expect(button.attributes('disabled')).toBeTruthy()
-      })
+      await wrapper.vm.$nextTick()
+      const button = wrapper.find('#completeRun-3')
+      expect(button.attributes('disabled')).toBeTruthy()
     })
 
-    it('is disabled is the run state is cancelled', () => {
+    it('is disabled is the run state is cancelled', async () => {
       // run at(2) is in state cancelled
-      wrapper.vm.$nextTick(() => {
-        const button = wrapper.find('#completeRun-4')
-        expect(button.attributes('disabled')).toBeTruthy()
-      })
+      await wrapper.vm.$nextTick()
+      const button = wrapper.find('#completeRun-4')
+      expect(button.attributes('disabled')).toBeTruthy()
     })
 
-    it('on click completeRun is called', () => {
+    it('on click completeRun is called', async () => {
       // run at(4) is in state started
-      wrapper.vm.$nextTick(() => {
-        runs.completeRun = vi.fn()
+      await wrapper.vm.$nextTick()
+      runs.completeRun = vi.fn()
 
-        const button = wrapper.find('#completeRun-2')
-        button.trigger('click')
+      const button = wrapper.find('#completeRun-2')
+      button.trigger('click')
 
-        const id = wrapper.find('tbody').findAll('tr').at(4).findAll('td').at(0).text()
-        expect(runs.completeRun).toBeCalledWith({ id, pipeline })
-      })
+      const id = wrapper.find('tbody').findAll('tr').at(4).findAll('td').at(0).text()
+      expect(runs.completeRun).toBeCalledWith({ id, pipeline })
     })
   })
 
   describe('cancel button', () => {
-    it('is is enabled when the run state is pending', () => {
+    it('is is enabled when the run state is pending', async () => {
       // run at(0) is in state pending
-      wrapper.vm.$nextTick(() => {
-        const button = wrapper.find('#cancelRun-6')
-        expect(button.attributes('disabled')).toBeFalsy()
-      })
+      await wrapper.vm.$nextTick()
+      const button = wrapper.find('#cancelRun-6')
+      expect(button.attributes('disabled')).toBeFalsy()
     })
 
-    it('is is enabled when the run state is started', () => {
+    it('is is enabled when the run state is started', async () => {
       // run at(4) is in state started
-      wrapper.vm.$nextTick(() => {
-        const button = wrapper.find('#cancelRun-2')
-        expect(button.attributes('disabled')).toBeFalsy()
-      })
+      await wrapper.vm.$nextTick()
+      const button = wrapper.find('#cancelRun-2')
+      expect(button.attributes('disabled')).toBeFalsy()
     })
 
-    it('is disabled if the run state is completed', () => {
+    it('is disabled if the run state is completed', async () => {
       // run at(3) is in state completed
-      wrapper.vm.$nextTick(() => {
-        const button = wrapper.find('#cancelRun-3')
-        expect(button.attributes('disabled')).toBeTruthy()
-      })
+      await wrapper.vm.$nextTick()
+      const button = wrapper.find('#cancelRun-3')
+      expect(button.attributes('disabled')).toBeTruthy()
     })
 
-    it('is disabled is the run state is cancelled', () => {
+    it('is disabled is the run state is cancelled', async () => {
       // run at(2) is in state cancelled
-      wrapper.vm.$nextTick(() => {
-        const button = wrapper.find('#cancelRun-4')
-        expect(button.attributes('disabled')).toBeTruthy()
-      })
+      await wrapper.vm.$nextTick()
+      const button = wrapper.find('#cancelRun-4')
+      expect(button.attributes('disabled')).toBeTruthy()
     })
 
-    it('on click completeRun is called', () => {
+    it('on click completeRun is called', async () => {
       // run at(4) is in state started
-      wrapper.vm.$nextTick(() => {
-        runs.cancelRun = vi.fn()
+      await wrapper.vm.$nextTick()
+      runs.cancelRun = vi.fn()
 
-        const button = wrapper.find('#cancelRun-2')
-        button.trigger('click')
+      const button = wrapper.find('#cancelRun-2')
+      button.trigger('click')
 
-        const id = wrapper.find('tbody').findAll('tr').at(4).findAll('td').at(0).text()
-        expect(runs.cancelRun).toBeCalledWith({ id, pipeline })
-      })
+      const id = wrapper.find('tbody').findAll('tr').at(4).findAll('td').at(0).text()
+      expect(runs.cancelRun).toBeCalledWith({ id, pipeline })
     })
   })
 
   describe('new run button', () => {
-    it('contains a create new run button', () => {
-      wrapper.vm.$nextTick(() => {
-        expect(wrapper.find('#newRun')).toBeDefined()
-      })
+    it('contains a create new run button', async () => {
+      await wrapper.vm.$nextTick()
+      expect(wrapper.find('#newRun')).toBeDefined()
     })
 
     it('will redirect to the run when newRun is clicked', async () => {
-      wrapper.vm.$nextTick(() => {
-        const button = wrapper.find('#newRun')
-        button.trigger('click')
-        expect(runs.$route.path).toEqual('/saphyr/run/new')
-      })
+      await wrapper.vm.$nextTick()
+      const button = wrapper.find('#newRun')
+      button.trigger('click')
+      expect(runs.$route.path).toEqual('/saphyr/run/new')
     })
   })
 
   describe('edit run button', () => {
-    it('contains a create new run button', () => {
-      wrapper.vm.$nextTick(() => {
-        expect(wrapper.find('#edit-1')).toBeDefined()
-      })
+    it('contains a create new run button', async () => {
+      await wrapper.vm.$nextTick()
+      expect(wrapper.find('#edit-1')).toBeDefined()
     })
 
     it('will redirect to the run when newRun is clicked', async () => {
-      wrapper.vm.$nextTick(() => {
-        const button = wrapper.find('#edit-1')
-        button.trigger('click')
-        expect(runs.$route.path).toEqual('/saphyr/run/1')
-      })
+      await wrapper.vm.$nextTick()
+      const button = wrapper.find('#edit-1')
+      button.trigger('click')
+      expect(runs.$route.path).toEqual('/saphyr/run/1')
     })
   })
 
   describe('#showAlert', () => {
-    it('emits an event with the message', () => {
-      wrapper.vm.$nextTick(() => {
-        runs.showAlert('show this message', 'danger')
-        expect(Object.values(store.state.traction.messages)).toContainEqual({
-          type: 'danger',
-          message: 'show this message',
-        })
+    it('emits an event with the message', async () => {
+      await wrapper.vm.$nextTick()
+      runs.showAlert('show this message', 'danger')
+      expect(Object.values(store.state.traction.messages)).toContainEqual({
+        type: 'danger',
+        message: 'show this message',
       })
     })
   })
@@ -247,10 +228,9 @@ describe('Runs.vue', () => {
       })
     })
 
-    it('will paginate the runs in the table', () => {
-      wrapper.vm.$nextTick(() => {
-        expect(wrapper.find('tbody').findAll('tr').length).toEqual(2)
-      })
+    it('will paginate the runs in the table', async () => {
+      await wrapper.vm.$nextTick()
+      expect(wrapper.find('tbody').findAll('tr').length).toEqual(2)
     })
   })
 

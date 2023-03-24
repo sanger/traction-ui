@@ -225,9 +225,9 @@ export default {
       const rows = []
 
       /**Initially sort the  table data based on current sort field**/
-      this.sortedData().forEach((item, rowIndx) => {
+      this.sortedData().forEach((item, rowIndex) => {
         const id =
-          this.primaryKey in item && item[this.primaryKey] ? item[this.primaryKey] : rowIndx
+          this.primaryKey in item && item[this.primaryKey] ? item[this.primaryKey] : rowIndex
         const row = this.rows?.find((row) => row.id === id)
         //This row already exists, so only update the data associated with it
         if (row) {
@@ -257,7 +257,7 @@ export default {
             rowSelected: false,
 
             /**Index of row**/
-            rowIndx: rowIndx,
+            rowIndex: rowIndex,
           })
       })
       return rows

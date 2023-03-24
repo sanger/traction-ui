@@ -55,30 +55,28 @@ describe('OntTubeSelectedList', () => {
       })
     })
 
-    it('contains the selected tube requests', () => {
-      wrapper.vm.$nextTick(() => {
-        expect(wrapper.find('tbody').findAll('tr').length).toEqual(1)
-        expect(wrapper.find('tbody').findAll('td').at(0).text()).toEqual('191')
-        expect(wrapper.find('tbody').findAll('td').at(1).text()).toEqual('GENSAMPLE-1668092750-191')
-        expect(wrapper.find('tbody').findAll('td').at(2).text()).toEqual('GEN-1668092750-3')
-        expect(wrapper.find('tbody').findAll('td').at(3).text()).toEqual('basecalls')
-        expect(wrapper.find('tbody').findAll('td').at(4).text()).toEqual('ONT_PromethIon')
-        expect(wrapper.find('tbody').findAll('td').at(5).text()).toEqual('1')
-        expect(wrapper.find('tbody').findAll('td').at(6).text()).toEqual('Remove')
-      })
+    it('contains the selected tube requests', async () => {
+      await wrapper.vm.$nextTick()
+      expect(wrapper.find('tbody').findAll('tr').length).toEqual(1)
+      expect(wrapper.find('tbody').findAll('td').at(0).text()).toEqual('191')
+      expect(wrapper.find('tbody').findAll('td').at(1).text()).toEqual('GENSAMPLE-1668092750-191')
+      expect(wrapper.find('tbody').findAll('td').at(2).text()).toEqual('GEN-1668092750-3')
+      expect(wrapper.find('tbody').findAll('td').at(3).text()).toEqual('basecalls')
+      expect(wrapper.find('tbody').findAll('td').at(4).text()).toEqual('ONT_PromethIon')
+      expect(wrapper.find('tbody').findAll('td').at(5).text()).toEqual('1')
+      expect(wrapper.find('tbody').findAll('td').at(6).text()).toEqual('Remove')
     })
 
-    it('deselects the tube and request when the remove button is clicked', () => {
+    it('deselects the tube and request when the remove button is clicked', async () => {
       const dispatch = vi.fn()
       store.dispatch = dispatch
-      wrapper.vm.$nextTick(() => {
-        const button = wrapper.find('#remove-btn-191')
-        button.trigger('click')
-        expect(dispatch).toHaveBeenCalledWith(
-          'traction/ont/pools/deselectTubeAndContents',
-          'GEN-1668092750-3',
-        )
-      })
+      await wrapper.vm.$nextTick()
+      const button = wrapper.find('#remove-btn-191')
+      button.trigger('click')
+      expect(dispatch).toHaveBeenCalledWith(
+        'traction/ont/pools/deselectTubeAndContents',
+        'GEN-1668092750-3',
+      )
     })
   })
 })
