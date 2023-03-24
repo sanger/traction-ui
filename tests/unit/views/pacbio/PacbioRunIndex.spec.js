@@ -203,8 +203,8 @@ describe('Runs.vue', () => {
 
     it('will filter the runs in the table', async () => {
       await wrapper.vm.$nextTick()
-      expect(wrapper.find('tbody').findAll('tr').length).toEqual(1)
-      expect(wrapper.find('tbody').findAll('tr').at(0).text()).toMatch(/Sequel II/)
+      expect(wrapper.find('tbody').findAll('[data-testid="row"]').length).toEqual(1)
+      expect(wrapper.find('tbody').findAll('[data-testid="row"]').at(0).text()).toMatch(/Sequel II/)
     })
   })
 
