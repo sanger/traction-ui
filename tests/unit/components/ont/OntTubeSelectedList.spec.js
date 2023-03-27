@@ -56,7 +56,6 @@ describe('OntTubeSelectedList', () => {
     })
 
     it('contains the selected tube requests', async () => {
-      await wrapper.vm.$nextTick()
       expect(wrapper.find('tbody').findAll('tr').length).toEqual(1)
       expect(wrapper.find('tbody').findAll('td').at(0).text()).toEqual('191')
       expect(wrapper.find('tbody').findAll('td').at(1).text()).toEqual('GENSAMPLE-1668092750-191')

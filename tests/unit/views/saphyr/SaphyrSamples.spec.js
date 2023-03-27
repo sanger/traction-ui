@@ -36,8 +36,7 @@ describe('Samples.vue', () => {
       }
     })
 
-    it('contains the correct data', async () => {
-      await wrapper.vm.$nextTick()
+    it('contains the correct data', () => {
       expect(wrapper.find('tbody').findAll('tr').length).toEqual(6)
     })
   })
@@ -45,9 +44,8 @@ describe('Samples.vue', () => {
   describe('selecting samples', () => {
     beforeEach(() => {})
 
-    it('will create a list of selected requests', async () => {
-      await wrapper.vm.$nextTick()
-      const firstCell = wrapper.find('[role="cell"]')
+    it('will create a list of selected requests', () => {
+      const firstCell = wrapper.find('tbody').findAll('td').at(0)
       firstCell.trigger('click')
       expect(samples.selected.length).toEqual(1)
     })

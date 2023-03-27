@@ -36,8 +36,8 @@
       :current-page="currentPage"
       @filtered="onFiltered"
     >
-      <template #cell(chip_barcode)="data">
-        {{ truncateText(data.value, 40) }}
+      <template #cell(chip_barcode)="row">
+        {{ truncateText(row.item.chip_barcode, 40) }}
       </template>
 
       <template #cell(actions)="row">

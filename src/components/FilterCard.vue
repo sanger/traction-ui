@@ -26,6 +26,7 @@
         <div class="w-full">
           <traction-button @click="resetFilter()">Reset</traction-button>
           <traction-button
+            id="`filterButton`"
             :disabled="filterValue == '' || filterInput == ''"
             @click="getFilteredData()"
             >Search</traction-button

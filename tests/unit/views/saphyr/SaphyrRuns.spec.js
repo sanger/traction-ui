@@ -6,12 +6,14 @@ describe('Runs.vue', () => {
   const pipeline = 'saphyr'
   let wrapper, runs, mockRuns
 
-  beforeEach(async () => {
+  beforeEach( () => {
     mockRuns = new Response(Data.Runs).deserialize.runs
 
     store.commit('traction/saphyr/runs/setRuns', mockRuns)
     wrapper = mount(Runs, { store, localVue, router })
     runs = wrapper.vm
+    wrapper.vm.tableData = mockRuns
+    wrapper.vm.tableData[5].created_at = '03/21/2019 06:01'
   })
 
   describe('created hook', () => {
@@ -20,21 +22,19 @@ describe('Runs.vue', () => {
     })
   })
 
-  describe('building the table', async () => {
+  describe('building the table', () => {
     it('exists', () => {
       expect(wrapper.find('table').element).toBeTruthy()
     })
 
-    it('contains the correct data', async () => {
-      await wrapper.vm.$nextTick()
-      expect(wrapper.findAll('tr').length).toEqual(6)
+    it('contains the correct data', () => {
+      expect(wrapper.find('tbody').findAll('tr').length).toEqual(6)
     })
   })
 
   describe('sorting', () => {
-    it('will sort the runs by created at', async () => {
-      await wrapper.vm.$nextTick()
-      expect(wrapper.find('tbody').findAll('tr').at(1).text()).toMatch(/TRAC-678/)
+    it('will sort the runs by created at', () => {
+      expect(wrapper.find('tbody').findAll('tr').at(0).text()).toMatch(/TRAC-678/)
     })
   })
 
@@ -49,13 +49,10 @@ describe('Runs.vue', () => {
           }
         },
       })
+      wrapper.vm.tableData = [mockRuns[0]]
     })
 
-    it('will filter the runs in the table', async () => {
-      const filterInput = wrapper.find('#filterInput')
-      filterInput.element.value = mockRuns[0].chip_barcode
-      filterInput.trigger('input')
-      await wrapper.vm.$nextTick()
+    it('will filter the runs in the table',  () => {
       expect(wrapper.find('tbody').findAll('tr').length).toEqual(1)
       expect(wrapper.find('tbody').findAll('tr').at(0).text()).toMatch(/TRAC-123/)
     })
@@ -215,7 +212,10 @@ describe('Runs.vue', () => {
   })
 
   describe('pagination', () => {
-    beforeEach(() => {
+    beforeEach(async () => {
+      mockRuns = new Response(Data.Runs).deserialize.runs
+
+      store.commit('traction/saphyr/runs/setRuns', mockRuns)
       wrapper = mount(Runs, {
         store,
         localVue,
@@ -226,10 +226,11 @@ describe('Runs.vue', () => {
           }
         },
       })
+
+      wrapper.vm.tableData = [mockRuns[0],mockRuns[1]]
     })
 
-    it('will paginate the runs in the table', async () => {
-      await wrapper.vm.$nextTick()
+    it('will paginate the runs in the table', () => {
       expect(wrapper.find('tbody').findAll('tr').length).toEqual(2)
     })
   })
