@@ -6,7 +6,7 @@ describe('Runs.vue', () => {
   const pipeline = 'saphyr'
   let wrapper, runs, mockRuns
 
-  beforeEach( () => {
+  beforeEach(() => {
     mockRuns = new Response(Data.Runs).deserialize.runs
 
     store.commit('traction/saphyr/runs/setRuns', mockRuns)
@@ -52,7 +52,7 @@ describe('Runs.vue', () => {
       wrapper.vm.tableData = [mockRuns[0]]
     })
 
-    it('will filter the runs in the table',  () => {
+    it('will filter the runs in the table', () => {
       expect(wrapper.find('tbody').findAll('tr').length).toEqual(1)
       expect(wrapper.find('tbody').findAll('tr').at(0).text()).toMatch(/TRAC-123/)
     })
@@ -227,7 +227,7 @@ describe('Runs.vue', () => {
         },
       })
 
-      wrapper.vm.tableData = [mockRuns[0],mockRuns[1]]
+      wrapper.vm.tableData = [mockRuns[0], mockRuns[1]]
     })
 
     it('will paginate the runs in the table', () => {
