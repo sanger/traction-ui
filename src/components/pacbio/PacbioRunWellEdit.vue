@@ -210,8 +210,14 @@
       >
         Delete well
       </traction-button>
-      <traction-button :id="action.id" :theme="action.theme" @click="update()">
+      <traction-button
+        :id="action.id"
+        data-action="create-well"
+        :theme="action.theme"
+        @click="update()"
+      >
         {{ action.label }}
+        Create
       </traction-button>
     </template>
   </traction-modal>
@@ -220,7 +226,7 @@
 <script>
 // There is a lot of duplication between this component and PacbioRunWellEdit.
 // A lot of it could be moved to the store
-import { mapMutations, mapGetters, mapActions } from 'vuex'
+import { mapGetters } from 'vuex'
 
 export default {
   name: 'WellModal',
@@ -244,8 +250,6 @@ export default {
   },
   data() {
     return {
-      smrtLinkVersion: {},
-      well: {},
       action: {},
       movieTimeOptions: [
         { text: 'Movie Time', value: '', disabled: true },
@@ -267,10 +271,13 @@ export default {
     }
   },
   computed: {
-    ...mapGetters('traction/pacbio/runCreate', ['poolByBarcode']),
-  },
-  created() {
-    this.well = this.getWell({ position: this.position })
+    ...mapGetters('traction/pacbio/runCreate', ['poolByBarcode', 'smrtLinkVersion', 'getWell']),
+    well() {
+      return this.getWell(this.position)
+    },
+    newWell() {
+      return !this.well.id
+    },
   },
   methods: {
     addRow() {
@@ -297,25 +304,22 @@ export default {
       this.currentWell.loading_target_p1_plus_p2 = ''
     },
     async showModalForPosition() {
-      if (!this.well(this.position)) {
-        this.currentWell = await this.buildWell(this.position)
+      if (this.newWell) {
         this.action = {
-          id: 'createBtn',
+          id: 'create',
+          dataAction: 'create-well',
           theme: 'create',
           label: 'Create',
         }
       } else {
-        this.currentWell = { ...this.well(this.position) }
         this.action = {
-          id: 'updateBtn',
+          id: 'update',
+          dataAction: 'update-well',
           theme: 'update',
           label: 'Update',
         }
       }
       this.$refs['well-modal'].show()
-    },
-    async checkPools() {
-      return await this.currentWell.pools.every((pool) => this.poolByBarcode(pool.barcode))
     },
     hide() {
       this.$refs['well-modal'].hide()
@@ -352,8 +356,6 @@ export default {
     alert(message, type) {
       this.$emit('alert', message, type)
     },
-    ...mapActions('traction/pacbio/runCreate', ['getWell']),
-    ...mapMutations('traction/pacbio/runs', ['createWell', 'updateWell', 'deleteWell']),
   },
 }
 </script>

@@ -1,6 +1,5 @@
 import { Data } from '@support/testHelper'
 import actions from '@/store/traction/pacbio/runCreate/actions'
-import getters from '@/store/traction/pacbio/runCreate/getters'
 import { describe, expect, it } from 'vitest'
 import {
   newRun,
@@ -35,7 +34,7 @@ describe('actions.js', () => {
     fetchRun,
     saveRun,
     setRun,
-    getWell,
+    getOrCreateWell,
     updateWell,
     getPool,
   } = actions

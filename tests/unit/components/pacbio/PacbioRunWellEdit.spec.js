@@ -1,6 +1,7 @@
-import { mount, localVue, store, Data } from '@support/testHelper'
+import { mount, localVue, store } from '@support/testHelper'
 import PacbioRunWellEdit from '@/components/pacbio/PacbioRunWellEdit'
 import { beforeEach, expect } from 'vitest'
+import { newWell } from '@/store/traction/pacbio/runCreate/run'
 
 // They are like the following in the store; not an array.
 const smrtLinkVersions = {
@@ -29,16 +30,16 @@ describe('PacbioWellEdit', () => {
   describe('SMRT Link Versions', () => {
     //["ccs_analysis_output", "generate_hifi", "on_plate_loading_concentration", "binding_kit_box_barcode", "pre_extension_time", "loading_target_p1_plus_p2", "movie_time"]
     describe('if the SMRT Link version is v10', () => {
+      store.state.traction.pacbio.runCreate.smrtLinkVersion = smrtLinkVersions['1']
+      store.state.traction.pacbio.runCreate.wells = {
+        A1: newWell({ position: propsData.position }),
+      }
+
       beforeEach(() => {
         wrapper = mount(PacbioRunWellEdit, {
           localVue,
           store,
           propsData,
-          data() {
-            return {
-              smrtLinkVersion: smrtLinkVersions['1'],
-            }
-          },
         })
       })
 
@@ -103,15 +104,14 @@ describe('PacbioWellEdit', () => {
     */
     describe('if the SMRT Link version is v11', () => {
       beforeEach(() => {
+        store.state.traction.pacbio.runCreate.smrtLinkVersion = smrtLinkVersions['2']
+        store.state.traction.pacbio.runCreate.wells = {
+          A1: newWell({ position: propsData.position }),
+        }
         wrapper = mount(PacbioRunWellEdit, {
           localVue,
           store,
           propsData,
-          data() {
-            return {
-              smrtLinkVersion: smrtLinkVersions['2'],
-            }
-          },
         })
       })
 
@@ -164,8 +164,49 @@ describe('PacbioWellEdit', () => {
       })
     })
   })
+
+  describe.skip('well type', () => {
+    it('if it is a new well', () => {
+      store.state.traction.pacbio.runCreate.smrtLinkVersion = smrtLinkVersions['1']
+      store.state.traction.pacbio.runCreate.wells = {
+        A1: newWell({ position: propsData.position }),
+      }
+
+      wrapper = mount(PacbioRunWellEdit, {
+        localVue,
+        store,
+        propsData,
+      })
+
+      const modal = wrapper.vm
+      modal.showModalForPosition()
+
+      const button = wrapper.find('[data-action=create-well]')
+      expect(button.text()).toEqual('Create')
+    })
+
+    it('if it is an existing well', () => {
+      store.state.traction.pacbio.runCreate.smrtLinkVersion = smrtLinkVersions['1']
+      store.state.traction.pacbio.runCreate.wells = {
+        A1: newWell({ id: 1, position: propsData.position }),
+      }
+
+      wrapper = mount(PacbioRunWellEdit, {
+        localVue,
+        store,
+        propsData,
+      })
+
+      const modal = wrapper.vm
+      modal.showModalForPosition()
+
+      const button = wrapper.find('[data-action=create-well]')
+      expect(button.text()).toEqual('Update')
+    })
+  })
 })
 
+// TODO: remove tests once we have finished adding updated ones.
 // describe('PacbioWellModal', () => {
 //   let modal, wrapper, props, storeWell, run, state
 
