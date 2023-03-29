@@ -86,7 +86,7 @@ export default {
       this.clearRunData()
       this.showAlert('Run has been reset', 'success', 'run-validation-message')
     },
-    ...mapActions(['setRun', 'saveRun', 'fetchSmrtLinkVersions']),
+    ...mapActions(['setRun', 'saveRun', 'fetchSmrtLinkVersions', 'setDefaultWellAttributes']),
     ...mapMutations(['clearRunData']),
 
     redirectToRuns() {
@@ -110,6 +110,8 @@ export default {
       // Set smrtLinkVersions first as setRun depends on it
       await this.fetchSmrtLinkVersions()
       await this.setRun({ id: this.id })
+      // Sets the runCreate/defaultWellAttributes store on loading the view
+      await this.setDefaultWellAttributes()
       return { success: true }
     },
   },
