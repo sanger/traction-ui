@@ -1,19 +1,5 @@
 describe('Pacbio Run Create view', () => {
   beforeEach(() => {
-    cy.intercept(
-      {
-        url: '/flipper/api/actors/User',
-      },
-      {
-        statusCode: 200,
-        body: {
-          flipper_id: 'User',
-          features: {
-            enable_custom_select: true,
-          },
-        },
-      },
-    )
     cy.intercept('/v1/pacbio/runs', {
       fixture: 'tractionPacbioRuns.json',
     })
