@@ -31,6 +31,7 @@ describe('mutations.js', () => {
     removePool,
     populateDefaultWellAttributes,
     updateWell,
+    deleteWell,
   } = mutations
 
   describe('populateSmrtLinkVersions', () => {
@@ -206,6 +207,15 @@ describe('mutations.js', () => {
       const updatedWell = { ...well, newAttribute: 'some nonsense' }
       updateWell(state, updatedWell)
       expect(state.wells['A1']).toEqual(updatedWell)
+    })
+  })
+
+  describe('deleteWell', () => {
+    it('should delete the well', () => {
+      const state = defaultState()
+      state.wells = { A1: { position: 'A1' }, A2: { position: 'A2' } }
+      deleteWell(state, 'A1')
+      expect(state.wells).toEqual({ A2: { position: 'A2' } })
     })
   })
 })

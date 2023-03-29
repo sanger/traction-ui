@@ -177,7 +177,7 @@
       Disable Adaptive Loading
     </traction-button>
 
-    <traction-table id="wellPools" stacked :items="well.pools" :fields="wellPoolsFields">
+    <traction-table id="wellPools" stacked :items="localPools" :fields="wellPoolsFields">
       <template #table-caption>Pools</template>
 
       <template #cell(barcode)="row">
@@ -203,8 +203,9 @@
 
     <template #modal-footer="{}">
       <traction-button
-        v-if="action.label == 'Update'"
-        id="deleteWellBtn"
+        v-if="!newWell"
+        id="delete-well"
+        data-action="delete-well"
         theme="delete"
         @click="removeWell()"
       >
@@ -212,12 +213,11 @@
       </traction-button>
       <traction-button
         :id="action.id"
-        data-action="create-well"
+        :data-action="action.dataAction"
         :theme="action.theme"
         @click="update()"
       >
         {{ action.label }}
-        Create
       </traction-button>
     </template>
   </traction-modal>
@@ -250,7 +250,7 @@ export default {
   },
   data() {
     return {
-      action: {},
+      localPools: [],
       movieTimeOptions: [
         { text: 'Movie Time', value: '', disabled: true },
         '10.0',
@@ -271,20 +271,52 @@ export default {
     }
   },
   computed: {
-    ...mapGetters('traction/pacbio/runCreate', ['poolByBarcode', 'smrtLinkVersion', 'getWell']),
+    ...mapGetters('traction/pacbio/runCreate', [
+      'poolByBarcode',
+      'smrtLinkVersion',
+      'getWell',
+      'pools',
+    ]),
     well() {
       return this.getWell(this.position)
     },
     newWell() {
       return !this.well.id
     },
+    // this is needed to update the well. We need to make sure we have the
+    // right pools
+    wellPayload() {
+      return { ...this.well, pools: this.poolIds }
+    },
+    action() {
+      return this.newWell
+        ? {
+            id: 'create',
+            dataAction: 'create-well',
+            theme: 'create',
+            label: 'Create',
+          }
+        : {
+            id: 'update',
+            dataAction: 'update-well',
+            theme: 'update',
+            label: 'Update',
+          }
+    },
+    poolIds() {
+      return this.localPools.map((pool) => pool.id)
+    },
+  },
+  // not sure if this is the right place for this?
+  mounted() {
+    this.populatePools()
   },
   methods: {
     addRow() {
-      this.currentWell.pools.push({ id: '', barcode: '' })
+      this.localPools.push({ id: '', barcode: '' })
     },
     removeRow(row) {
-      this.currentWell.pools.splice(row.index, 1)
+      this.localPools.splice(row.index, 1)
     },
     updateCCSAnalysisOutput() {
       if (this.currentWell.generate_hifi === 'Do Not Generate') {
@@ -304,57 +336,39 @@ export default {
       this.currentWell.loading_target_p1_plus_p2 = ''
     },
     async showModalForPosition() {
-      if (this.newWell) {
-        this.action = {
-          id: 'create',
-          dataAction: 'create-well',
-          theme: 'create',
-          label: 'Create',
-        }
-      } else {
-        this.action = {
-          id: 'update',
-          dataAction: 'update-well',
-          theme: 'update',
-          label: 'Update',
-        }
-      }
       this.$refs['well-modal'].show()
     },
     hide() {
       this.$refs['well-modal'].hide()
     },
     async update() {
-      const validPools = await this.checkPools()
-      if (validPools && this.action.label == 'Create') {
-        this.createWell(this.currentWell)
-        this.alert('Well created', 'success')
-        this.hide()
-      } else if (validPools && this.action.label == 'Update') {
-        this.updateWell(this.currentWell)
-        this.alert('Well updated', 'success')
-        this.hide()
-      } else {
-        this.showAlert('Pool is not valid', 'danger')
-      }
+      this.updateWell(this.wellPayload)
+      this.alert('Well created', 'success')
+      this.hide()
     },
     removeWell() {
-      this.deleteWell(this.currentWell)
+      this.deleteWell(this.position)
       this.alert('Well successfully deleted', 'success')
       this.hide()
     },
     async updatePoolBarcode(row, barcode) {
       const index = row.index
       await this.$store.dispatch('traction/pacbio/runCreate/findPools', { barcode: barcode })
-      const pool = await this.poolByBarcode(barcode)
+      const pool = this.poolByBarcode(barcode)
       if (pool) {
-        this.currentWell.pools[index] = { id: pool.id, barcode }
+        this.localPools[index] = { id: pool.id, barcode }
       } else {
         this.showAlert('Pool is not valid', 'danger')
       }
     },
     alert(message, type) {
       this.$emit('alert', message, type)
+    },
+    populatePools() {
+      this.well.pools.forEach((id) => {
+        const pool = this.pools.find((pool) => pool.id === id)
+        this.localPools.push({ id, barcode: pool.barcode })
+      })
     },
   },
 }

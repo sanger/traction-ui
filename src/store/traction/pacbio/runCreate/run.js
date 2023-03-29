@@ -67,11 +67,11 @@ const newWell = ({ position, attributes }) => {
   const [row, column] = splitPosition(position)
   return {
     ...defaultWellAttributes(),
+    pools: [],
     ...attributes,
     position,
     row,
     column,
-    pools: [],
   }
 }
 

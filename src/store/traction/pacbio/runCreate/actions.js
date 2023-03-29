@@ -192,7 +192,7 @@ export default {
    * Updates the well
    * @param commit the vuex commit object. Provides access to mutations
    */
-  updateWell: ({ commit }, { well }) => {
+  updateWell: ({ commit }, well) => {
     commit('updateWell', well)
   },
 

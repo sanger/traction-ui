@@ -253,7 +253,7 @@ describe('actions.js', () => {
     it('updates the well', () => {
       const well = { position: 'A1', row: 'A', column: '1' }
       const commit = vi.fn()
-      updateWell({ commit }, { well })
+      updateWell({ commit }, well)
       expect(commit).toHaveBeenCalledWith('updateWell', well)
     })
   })

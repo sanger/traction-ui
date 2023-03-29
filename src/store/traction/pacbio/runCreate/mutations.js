@@ -100,8 +100,22 @@ export default {
     Object.assign(state, new_state, { resources: state.resources })
   },
 
+  /**
+   * @param {Object} { wells } The VueXState object
+   * @param {Object} well The well to update
+   * Replaces the well in store with the updated well
+   */
   updateWell({ wells }, well) {
     const position = well.position
     Vue.set(wells, position, Object.assign({}, wells[position], well))
+  },
+
+  /**
+   * @param {Object} { wells } The VueXState object
+   * @param {Object} well The well to update
+   * Replaces the well in store with the updated well
+   */
+  deleteWell({ wells }, position) {
+    Vue.delete(wells, position)
   },
 }
