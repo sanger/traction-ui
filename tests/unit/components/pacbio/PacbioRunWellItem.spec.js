@@ -52,10 +52,6 @@ describe('Well.vue', () => {
     well = wrapper.vm
   })
 
-  it('will be defined', () => {
-    expect(well).toBeDefined()
-  })
-
   it('must have a row', () => {
     expect(well.row).toEqual(props.row)
   })
