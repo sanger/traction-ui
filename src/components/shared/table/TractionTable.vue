@@ -49,6 +49,7 @@
         :select-mode="selectMode"
         :primary-key="primaryKey"
         :simple="simple"
+        :empty-text="emptyText"
         @row-selected="onRowSelection"
       >
         <template v-for="(_, slot) of $scopedSlots" #[slot]="scope"
@@ -57,7 +58,7 @@
     </template>
     <div class="flex">
       <div class="flex w-full py-2 align-middle inline-block min-w-full">
-        <div class="flex w-full sm:rounded-lg">
+        <div class="flex flex-col w-full sm:rounded-lg">
           <table
             v-bind="$attrs"
             class="w-full divide-y divide-gray-100 table-auto text-sm"
@@ -90,34 +91,41 @@
             </thead>
             <tbody class="bg-white divide-y divide-gray-200">
               <template v-if="simple"><slot /> </template>
-              <template v-for="(row, rowIndex) in rows" v-else>
-                <traction-table-row
-                  v-if="row"
-                  :key="rowIndex"
-                  :class="`${selectable ? 'hover:bg-gray-200 cursor-pointer' : ''}`"
-                >
-                  <template v-for="(field, fieldIndex) in fields">
-                    <traction-table-column
-                      v-if="field"
-                      :id="field.key"
-                      :key="`custom-${rowIndex}-${fieldIndex}`"
-                      :classes="`border-2 border-gray-100 ${backgroundColor(row)}`"
-                      @click="onRowClick($event, row)"
-                    >
-                      <slot :name="`cell(${field.key})`" v-bind="row">
-                        {{ text(row.item, field) }}</slot
+              <template v-else>
+                <template v-for="(row, rowIndex) in rows">
+                  <traction-table-row
+                    v-if="row"
+                    :key="rowIndex"
+                    :class="`${selectable ? 'hover:bg-gray-200 cursor-pointer' : ''}`"
+                  >
+                    <template v-for="(field, fieldIndex) in fields">
+                      <traction-table-column
+                        v-if="field"
+                        :id="field.key"
+                        :key="`custom-${rowIndex}-${fieldIndex}`"
+                        :classes="`border-2 border-gray-100 ${backgroundColor(row)}`"
+                        @click="onRowClick($event, row)"
                       >
+                        <slot :name="`cell(${field.key})`" v-bind="row">
+                          {{ text(row.item, field) }}</slot
+                        >
+                      </traction-table-column>
+                    </template>
+                  </traction-table-row>
+                  <traction-table-row v-if="row.detailsShowing" :key="'custom-comp' + rowIndex">
+                    <traction-table-column :classes="`border-0`">
+                      <slot :name="`row-details`" v-bind="row" />
                     </traction-table-column>
-                  </template>
-                </traction-table-row>
-                <traction-table-row v-if="row.detailsShowing" :key="'custom-comp' + rowIndex">
-                  <traction-table-column :classes="`border-0`">
-                    <slot :name="`row-details`" v-bind="row" />
-                  </traction-table-column>
-                </traction-table-row>
+                  </traction-table-row>
+                </template>
               </template>
             </tbody>
           </table>
+          <template v-if="rows.length == 0 && !simple" >
+            <div class="text-md mt-8 whitespace-nowrap" data-testid="empty-text">
+              {{ emptyText }}
+            </div>
+          </template>
         </div>
       </div>
     </div>
@@ -202,6 +210,12 @@ export default {
     simple: {
       type: Boolean,
       required: false,
+    },
+    /**A text to be displayed in case there is no data available for a table which is not 'simple' */
+    emptyText: {
+      type: String,
+      required: false,
+      default: '',
     },
   },
   data() {

@@ -45,12 +45,12 @@ export default {
     return {
       requestFields: [
         { key: 'id', label: 'id' },
-        { key: 'sample_name', label: 'sample_name' },
-        { key: 'source_identifier', label: 'source_identifier' },
-        { key: 'data_type', label: 'data_type' },
-        { key: 'library_type', label: 'library_type' },
-        { key: 'number_of_flowcells', label: 'number_of_flowcells' },
-        { key: 'action', label: 'action' },
+        { key: 'sample_name', label: 'Sample name' },
+        { key: 'source_identifier', label: 'Source identifier' },
+        { key: 'data_type', label: 'Data type' },
+        { key: 'library_type', label: 'Library type' },
+        { key: 'number_of_flowcells', label: 'Number of flowcells' },
+        { key: 'action', label: 'Action' },
       ],
     }
   },

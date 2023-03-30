@@ -25,7 +25,6 @@ describe('ONT Pool Edit', () => {
     cy.get('#pool-index').within(() => {
       cy.get('[data-action=edit-pool]').first().click()
     })
-    // cy.get('.pool [data-action=edit-pool]').first().click()
     cy.get('[data-type=plate-item]').should('be.visible')
     cy.get('[data-attribute=tag-set-name]').should('be.visible')
     cy.get('[data-type=pool-edit]').within(() => {

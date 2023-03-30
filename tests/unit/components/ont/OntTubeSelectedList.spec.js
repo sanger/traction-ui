@@ -29,10 +29,7 @@ describe('OntTubeSelectedList', () => {
 
     it('contains the correct data', async () => {
       expect(wrapper.find('tbody').findAll('tr').length).toEqual(0)
-      /*TODO-:The empty-text feature need to be implemented in custon-table.
-      This test case should be enabled after that
-      **/
-      // expect(wrapper.find('.b-table-empty-row').text()).toEqual('No tubes selected')
+       expect(wrapper.find('[data-testid=empty-text]').text()).toEqual('No tubes selected')
     })
   })
 
