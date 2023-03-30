@@ -19,16 +19,7 @@ import TractionSelect from '@/components/shared/TractionSelect'
 import TractionResultIcon from '@/components/shared/icons/TractionResultIcon'
 import TractionPaginationIcon from '@/components/shared/icons/TractionPaginationIcon'
 import TractionPagination from '@/components/shared/TractionPagination'
-<<<<<<< Updated upstream
-=======
-import TractionTable from '@/components/shared/table/TractionTable'
-import TractionTableRow from '@/components/shared/table/TractionTableRow'
-import TractionTableColumn from '@/components/shared/table/TractionTableColumn'
-import TractionArrowIcon from '@/components/shared/icons/TractionArrowIcon'
-import TractionSortIcon from '@/components/shared/icons/TractionSortIcon'
 import TractionForm from '@/components/shared/TractionForm'
-
->>>>>>> Stashed changes
 import {
   BModal,
   VBModal,
@@ -110,16 +101,7 @@ const registerGlobal = (vue) => {
   vue.component('TractionSelect', TractionSelect)
   vue.component('TractionPagination', TractionPagination)
   vue.component('TractionPaginationIcon', TractionPaginationIcon)
-<<<<<<< Updated upstream
-=======
-  vue.component('TractionArrowIcon', TractionArrowIcon)
-  vue.component('TractionSortIcon', TractionSortIcon)
-  vue.component('TractionTable', TractionTable)
-  vue.component('TractionTableRow', TractionTableRow)
-  vue.component('TractionTableColumn', TractionTableColumn)
   vue.component('TractionForm', TractionForm)
-
->>>>>>> Stashed changes
   registerBootstrapComponents(vue)
 }
 

@@ -18,8 +18,6 @@ export default {
   name: 'TractionForm',
   components: { BForm },
   inheritAttrs: false,
-  props: {},
-  data() {},
   methods: {
     submitAction() {
       this.$emit('submit')
