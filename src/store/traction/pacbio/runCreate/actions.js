@@ -213,16 +213,16 @@ export default {
     return { success, errors, pool }
   },
 
-    /**
+  /**
    * Updates the store with the SMRT version selected on the component.
    * @param commit the vuex commit object. Provides access to mutations.
    * @param smrtLinkVersion the smrtLinkVersion object to update the store with.
    */
   updateSmrtLinkVersion: ({ commit }, smrtLinkVersion) => {
-    commit('populateSmrtLinkVersion', {...smrtLinkVersion})
+    commit('populateSmrtLinkVersion', { ...smrtLinkVersion })
   },
 
-    /**
+  /**
    * Sets the defaultWellAttributes
    * @param commit the vuex commit object. Provides access to mutations
    */

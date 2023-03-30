@@ -118,7 +118,7 @@ const createPayload = ({ id, run, wells }) => {
       id,
       attributes: {
         ...run,
-        wells_attributes: [...wells],
+        well_attributes: [...wells],
       },
     },
   }

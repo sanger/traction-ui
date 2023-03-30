@@ -98,7 +98,7 @@ describe('run.js', () => {
         data: {
           type: 'runs',
           attributes: {
-            wells_attributes: wellValues,
+            well_attributes: wellValues,
             ...attributes,
           },
         },
@@ -114,7 +114,7 @@ describe('run.js', () => {
           type: 'runs',
           id,
           attributes: {
-            wells_attributes: wellValues,
+            well_attributes: wellValues,
             ...attributes,
           },
         },
