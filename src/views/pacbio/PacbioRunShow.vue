@@ -103,7 +103,11 @@ export default {
       this.saveRun().then(({ success, errors }) => {
         success
           ? this.showAlert(`Run successfully created/updated`, 'success', 'run-create-message')
-          : this.showAlert('Failed to create run in Traction: ' + errors, 'danger', 'run-create-message')
+          : this.showAlert(
+              'Failed to create run in Traction: ' + errors,
+              'danger',
+              'run-create-message',
+            )
       })
     },
     async provider() {
