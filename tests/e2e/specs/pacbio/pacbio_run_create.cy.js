@@ -46,7 +46,7 @@ describe('Pacbio Run Create view', () => {
       .get('#dna-control-complex-box-barcode')
       .type('Lxxxxx101717600123199')
     cy.get('#system-name').select('Sequel IIe')
-    cy.get('[data-attribute="smrt-link-version"]').select('v10')
+    cy.get('#smrt-link-version').select('v10')
 
     // get the pool list component, type in the barcode of the pool being searched, click search
     cy.get('#labware-finder-input').type('TRAC-2-2')
@@ -69,7 +69,7 @@ describe('Pacbio Run Create view', () => {
     cy.get('[data-attribute="binding-kit-box-barcode"]').type('12345')
     cy.get('[data-attribute="loading-target-p1-plus-p2"]').type('0.75')
     cy.get('[data-attribute="pre-extension-time"]').type(3)
-    cy.get('#updateBtn').click()
+    cy.get('#update').click()
     cy.get('button').contains('Create').click()
     // TODO: we need a success message.
   })
@@ -88,7 +88,7 @@ describe('Pacbio Run Create view', () => {
       .get('#dna-control-complex-box-barcode')
       .type('Lxxxxx101717600123199')
     cy.get('#system-name').select('Sequel IIe')
-    cy.get('[data-attribute="smrt-link-version"]').select('v11')
+    cy.get('#smrt-link-version').select('v11')
     // TODO: calling it  list group item is not specific enough
 
     // get the pool list component, type in the barcode of the pool being searched, click search
@@ -115,13 +115,13 @@ describe('Pacbio Run Create view', () => {
     cy.get('[data-attribute="ccs-analysis-output-include-low-quality-reads"]').select('No')
     cy.get('[data-attribute="include-fivemc-calls-in-cpg-motifs"]').select('Yes')
 
-    cy.get('#updateBtn').click()
+    cy.get('#update').click()
     cy.get('button').contains('Create').click()
     // TODO: we need a success message.
   })
 
   it('creates a run unsuccessfully', () => {
-    cy.intercept('/v1/pacbio/runs/wells', {
+    cy.intercept('POST', '/v1/pacbio/runs', {
       statusCode: 422,
       body: {
         data: {
@@ -131,7 +131,6 @@ describe('Pacbio Run Create view', () => {
         },
       },
     })
-    cy.intercept('DELETE', '/v1/pacbio/runs/7', { statusCode: 200 }).as('deleteRun')
     const dataTransfer = new DataTransfer()
 
     cy.visit('#/pacbio/runs')
@@ -150,11 +149,9 @@ describe('Pacbio Run Create view', () => {
     cy.get('ellipse').first().trigger('drop', { dataTransfer: dataTransfer, force: true })
     cy.get('button').contains('Create').click()
     cy.contains(
-      '[data-type=run-validation-message]',
+      '[data-type=run-create-message]',
       'Failed to create run in Traction: error1 some error',
     )
-    // Ensure we made the request
-    cy.wait('@deleteRun')
   })
 
   // need to work out why it can't find binding kit box barcode

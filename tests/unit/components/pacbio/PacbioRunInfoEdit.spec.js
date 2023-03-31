@@ -32,6 +32,7 @@ describe('PacbioRunInfoEdit', () => {
 
   const run = {
     id: 'new',
+    name: 'TRACTION-RUN-3',
     system_name: 'Sequel IIe',
     sequencing_kit_box_barcode: null,
     dna_control_complex_box_barcode: null,
@@ -64,12 +65,10 @@ describe('PacbioRunInfoEdit', () => {
   })
 
   describe('input', () => {
-    it.todo('run name', () => {
-      // TODO: Modify the test for the component to receive a run name on edit, and nothing on create
-      const name = 'run-name'
-      expect(wrapper.find('label[for="' + name + '"]').exists()).toBe(true)
-      expect(wrapper.find('input[id="' + name + '"]').exists()).toBe(true)
+    it('has a run name on run edit', async () => {
+      expect(store.state.traction.pacbio.runCreate.run.name).toEqual('TRACTION-RUN-3')
     })
+
     it('sequencing kit box barcode', async () => {
       const input = wrapper.find('[data-attribute=sequencing_kit_box_barcode]')
       await input.setValue('SKB1')
