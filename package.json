@@ -26,7 +26,6 @@
     "bootstrap-vue": "^2.23.1",
     "autoprefixer": "^10.4.13",
     "axios": "^1.2.1",
-    "core-js": "^3.26.1",
     "csv-parse": "^5.3.6",
     "flush-promises": "^1.0.2",
     "global": "^4.4.0",

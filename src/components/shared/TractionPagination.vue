@@ -1,94 +1,69 @@
-<!--
-  TractionPagination
-
-  Renders a custom tailwind or bootstrap pagination component based on 'enable_custom_pagination' feature flag is enabled or not respectively
-   - flagged-feature  is the wrapper for the component to be toggled, name field specifies the name of the toggle feature
-   - <template #disabled> displays the bootstrap pagination when the feature flag is disabled, otherwise the custom component
-   - @input - On input, emit its own custom input event with the new value
--->
 <template>
   <div class="flex flex-row items-center gap-2 text-gray-700">
-    <flagged-feature name="enable_custom_pagination">
-      <template #disabled>
-        <b-pagination
-          :value="value"
-          :per-page="perPage"
-          :total-rows="totalRows"
-          class="float-right"
-          @page-click="(event, page) => pageClick(page)"
+    <TractionButton
+      theme="paginationDefault"
+      data-testid="first-button"
+      :disabled="isInFirstPage"
+      @click="firstPageClick"
+    >
+      <traction-pagination-icon>
+        <path
+          d="m11 18-6-6 6-6 1.4 1.4L7.825 12l4.575 4.6Zm6.6 0-6-6 6-6L19 7.4 14.425 12 19 16.6Z"
         />
-      </template>
+      </traction-pagination-icon>
+    </TractionButton>
+    <TractionButton
+      theme="paginationDefault"
+      data-testid="prev-button"
+      :disabled="isInFirstPage"
+      @click="prevPageClick"
+    >
+      <traction-pagination-icon>
+        <path d="m14 18-6-6 6-6 1.4 1.4-4.6 4.6 4.6 4.6Z" />
+      </traction-pagination-icon>
+    </TractionButton>
+    <div v-for="page in pages" :key="page">
+      <traction-button
+        :disabled="page.isDisabled"
+        :theme="getPageButtonTheme(page)"
+        data-testid="page-button"
+        @click="pageClick(page)"
+        >{{ page }}</traction-button
+      >
+    </div>
 
-      <TractionButton
-        theme="paginationDefault"
-        data-testid="first-button"
-        :disabled="isInFirstPage"
-        @click="firstPageClick"
-      >
-        <traction-pagination-icon>
-          <path
-            d="m11 18-6-6 6-6 1.4 1.4L7.825 12l4.575 4.6Zm6.6 0-6-6 6-6L19 7.4 14.425 12 19 16.6Z"
-          />
-        </traction-pagination-icon>
-      </TractionButton>
-      <TractionButton
-        theme="paginationDefault"
-        data-testid="prev-button"
-        :disabled="isInFirstPage"
-        @click="prevPageClick"
-      >
-        <traction-pagination-icon>
-          <path d="m14 18-6-6 6-6 1.4 1.4-4.6 4.6 4.6 4.6Z" />
-        </traction-pagination-icon>
-      </TractionButton>
-      <div v-for="page in pages" :key="page">
-        <traction-button
-          :disabled="page.isDisabled"
-          :theme="getPageButtonTheme(page)"
-          data-testid="page-button"
-          @click="pageClick(page)"
-          >{{ page }}</traction-button
-        >
-      </div>
-
-      <TractionButton
-        theme="paginationDefault"
-        :disabled="isInLastPage"
-        data-testid="next-button"
-        @click="nextPageClick"
-      >
-        <traction-pagination-icon>
-          <path d="M9.4 18 8 16.6l4.6-4.6L8 7.4 9.4 6l6 6Z" />
-        </traction-pagination-icon>
-      </TractionButton>
-      <TractionButton
-        theme="paginationDefault"
-        :disabled="isInLastPage"
-        data-testid="last-button"
-        @click="lastPageClick"
-      >
-        <traction-pagination-icon>
-          <path
-            d="M6.4 18 5 16.6 9.575 12 5 7.4 6.4 6l6 6Zm6.6 0-1.4-1.4 4.575-4.6L11.6 7.4 13 6l6 6Z"
-          />
-        </traction-pagination-icon>
-      </TractionButton>
-    </flagged-feature>
+    <TractionButton
+      theme="paginationDefault"
+      :disabled="isInLastPage"
+      data-testid="next-button"
+      @click="nextPageClick"
+    >
+      <traction-pagination-icon>
+        <path d="M9.4 18 8 16.6l4.6-4.6L8 7.4 9.4 6l6 6Z" />
+      </traction-pagination-icon>
+    </TractionButton>
+    <TractionButton
+      theme="paginationDefault"
+      :disabled="isInLastPage"
+      data-testid="last-button"
+      @click="lastPageClick"
+    >
+      <traction-pagination-icon>
+        <path
+          d="M6.4 18 5 16.6 9.575 12 5 7.4 6.4 6l6 6Zm6.6 0-1.4-1.4 4.575-4.6L11.6 7.4 13 6l6 6Z"
+        />
+      </traction-pagination-icon>
+    </TractionButton>
   </div>
 </template>
 
 <script>
-import { BPagination } from 'bootstrap-vue'
-
 export default {
   /**
    * # TractionPagination
-   *
-   * Displays a custom pagination or bootstrap component based on 'enable_custom_pagination' feature flag
-   *
+   * @input - On input, emit its own custom input event with the new value
    */
   name: 'TractionPagination',
-  components: { BPagination },
   inheritAttrs: false,
   props: {
     //value field  which will be bind automatically with 'v-model' prop passed into the component

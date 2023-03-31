@@ -4,22 +4,6 @@ import flushPromises from 'flush-promises'
 import { expect } from 'vitest'
 
 describe('OntPoolCreate', () => {
-  beforeEach(() => {
-    // Ideally I'd love to mock the http response here, but swrv seems to tun
-    // into problems mounting via-vue test utils, and `getCurrentInstance` fails
-    // to find the instance
-    vi.mock('swrv', () => ({
-      default: vi.fn(() => ({
-        data: {
-          flipper_id: 'User',
-          features: {
-            dpl_279_ont_libraries_and_pools: { enabled: true },
-          },
-        },
-      })),
-    }))
-  })
-
   it('will fetch all of the data', async () => {
     const {
       state: {
