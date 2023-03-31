@@ -121,7 +121,7 @@
               </template>
             </tbody>
           </table>
-          <template v-if="rows.length == 0 && !simple" >
+          <template v-if="rows.length == 0 && !simple">
             <div class="text-md mt-8 whitespace-nowrap" data-testid="empty-text">
               {{ emptyText }}
             </div>

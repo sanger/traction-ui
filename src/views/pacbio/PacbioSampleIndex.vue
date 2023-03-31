@@ -16,7 +16,7 @@
         :disabled="selected.length === 0"
         class="float-left"
         @alert="showAlert"
-        >
+      >
       </PacbioLibraryCreate>
 
       <traction-pagination

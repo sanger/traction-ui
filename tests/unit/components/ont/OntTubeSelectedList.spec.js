@@ -29,7 +29,7 @@ describe('OntTubeSelectedList', () => {
 
     it('contains the correct data', async () => {
       expect(wrapper.find('tbody').findAll('tr').length).toEqual(0)
-       expect(wrapper.find('[data-testid=empty-text]').text()).toEqual('No tubes selected')
+      expect(wrapper.find('[data-testid=empty-text]').text()).toEqual('No tubes selected')
     })
   })
 
