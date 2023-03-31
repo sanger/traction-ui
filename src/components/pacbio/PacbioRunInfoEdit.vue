@@ -8,7 +8,8 @@
         <traction-col>
           <traction-input
             id="run-name"
-            :value="runItem.id"
+            v-model="runItem.name"
+            :value="runItem.name"
             placeholder="Run name"
             type="text"
             classes="w-48"
@@ -24,6 +25,7 @@
           <traction-input
             id="sequencing-kit-box-barcode"
             v-model="runItem.sequencing_kit_box_barcode"
+            :value="runItem.sequencing_kit_box_barcode"
             placeholder="Sequencing Kit Box Barcode"
             type="text"
             classes="w-48"
@@ -39,6 +41,7 @@
           <traction-input
             id="dna-control-complex-box-barcode"
             v-model="runItem.dna_control_complex_box_barcode"
+            :value="runItem.dna_control_complex_box_barcode"
             placeholder="DNA Control Complex Box Barcode"
             type="text"
             classes="w-48"
@@ -54,7 +57,8 @@
           <traction-select
             id="system-name"
             ref="systemName"
-            :v-model="runItem.system_name"
+            v-model="runItem.system_name"
+            :value="runItem.system_name"
             title="System Name"
             :options="systemNameOptions"
           />
@@ -68,10 +72,11 @@
           <traction-select
             id="smrt-link-version"
             ref="smrtLinkVersion"
-            :v-model="runItem.smrt_link_version_id"
+            :value="smrtLinkVersion.id"
             title="SMRT Link Version"
             :options="smrtLinkVersionSelectOptions"
             data-attribute="smrt_link_version"
+            @input="setSmrtLinkVersion"
           />
         </traction-col>
       </traction-row>
@@ -87,6 +92,7 @@
             type="text"
             classes="w-48"
             data-attribute="comments"
+            :value="runItem.comments"
           />
         </traction-col>
       </traction-row>
@@ -96,7 +102,7 @@
 
 <script>
 import { createNamespacedHelpers } from 'vuex'
-const { mapGetters } = createNamespacedHelpers('traction/pacbio/runCreate')
+const { mapGetters, mapActions } = createNamespacedHelpers('traction/pacbio/runCreate')
 
 export default {
   name: 'PacbioRunInfoEdit',
@@ -107,6 +113,7 @@ export default {
   },
   // A lot of the below could be improved. Can we use the store?
   computed: {
+    ...mapGetters(['runItem', 'smrtLinkVersionList', 'smrtLinkVersion']),
     smrtLinkVersionSelectOptions() {
       // Returns an array of objects with value and text properties to make
       // the options of smrt-link-version select drop-down list.
@@ -116,13 +123,19 @@ export default {
         text: name,
       }))
     },
-    ...mapGetters(['runItem', 'smrtLinkVersionList']),
   },
   methods: {
+    ...mapActions(['updateSmrtLinkVersion']),
     alertOnFail({ success, errors }) {
       if (!success) {
         this.showAlert(errors, 'danger')
       }
+    },
+
+    // Sets the runCreate/smrtLinkVersion store with the version selected in the component
+    setSmrtLinkVersion(id) {
+      const option = this.smrtLinkVersionList[id]
+      this.updateSmrtLinkVersion(option)
     },
   },
 }

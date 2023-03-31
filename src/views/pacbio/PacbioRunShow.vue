@@ -40,7 +40,7 @@
           <pacbioPoolList ref="pacbioPoolList"></pacbioPoolList>
         </traction-col>
         <traction-col>
-          <Plate v-if="!newRecord" ref="plate" @alert="showAlert"></Plate>
+          <Plate ref="plate" @alert="showAlert"></Plate>
         </traction-col>
       </traction-row>
     </div>
@@ -82,11 +82,12 @@ export default {
     ...mapGetters(['runType']),
   },
   methods: {
-    resetRun() {
+    async resetRun() {
       this.clearRunData()
+      await this.setRun({ id: this.id })
       this.showAlert('Run has been reset', 'success', 'run-validation-message')
     },
-    ...mapActions(['setRun', 'saveRun', 'fetchSmrtLinkVersions']),
+    ...mapActions(['setRun', 'saveRun', 'fetchSmrtLinkVersions', 'setDefaultWellAttributes']),
     ...mapMutations(['clearRunData']),
 
     redirectToRuns() {
@@ -109,7 +110,10 @@ export default {
       // Seeds required data and loads the page via the DataFetcher
       // Set smrtLinkVersions first as setRun depends on it
       await this.fetchSmrtLinkVersions()
+      this.clearRunData()
       await this.setRun({ id: this.id })
+      // Sets the runCreate/defaultWellAttributes store on loading the view
+      await this.setDefaultWellAttributes()
       return { success: true }
     },
   },

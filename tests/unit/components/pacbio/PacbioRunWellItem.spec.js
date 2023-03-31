@@ -31,11 +31,11 @@ describe('Well.vue', () => {
       generate_hifi: 'In SMRT Link',
       binding_kit_box_barcode: '12345',
     }
-    store.state.traction.pacbio.runCreate.pools = storePools['pools']
-    store.state.traction.pacbio.runCreate.tubes = storePools['tubes']
-    store.state.traction.pacbio.runCreate.libraries = storePools['libraries']
-    store.state.traction.pacbio.runCreate.tags = storePools['tags']
-    store.state.traction.pacbio.runCreate.requests = storePools['requests']
+    store.state.traction.pacbio.runCreate.pools = storePools.pools
+    store.state.traction.pacbio.runCreate.tubes = storePools.tubes
+    store.state.traction.pacbio.runCreate.libraries = storePools.libraries
+    store.state.traction.pacbio.runCreate.tags = storePools.tags
+    store.state.traction.pacbio.runCreate.requests = storePools.libraries
     store.state.traction.pacbio.runCreate.wells = { A1: storeWell }
     store.state.traction.pacbio.runCreate.run = run
     store.state.traction.pacbio.runCreate.resources.smrtLinkVersions = smrtLinkVersions
@@ -172,7 +172,7 @@ describe('Well.vue', () => {
     let expectedWell
     const newBarcode = 'TRAC-2-1'
 
-    it('adds the pool to the well if the well exists', async () => {
+    it('adds the pool to the well', async () => {
       wrapper.vm.updateWell = vi.fn()
       expectedWell = storeWell
       expectedWell.pools.push('1')
@@ -180,45 +180,13 @@ describe('Well.vue', () => {
       await wrapper.vm.updatePoolBarcode(newBarcode)
       expect(wrapper.vm.updateWell).toBeCalledWith(expectedWell)
     })
-
-    it('creates a new well if the well doesnt exist', async () => {
-      props = {
-        row: 'H',
-        column: '12',
-        cx: '60.440327',
-        cy: '75.818642',
-        rx: '10.906492',
-        ry: '11.032985',
-      }
-      wrapper = mount(Well, {
-        localVue,
-        store,
-        propsData: props,
-      })
-
-      expectedWell = {
-        position: 'H12',
-        pools: ['1'],
-        on_plate_loading_concentration: 234,
-        movie_time: 15,
-        generate_hifi: 'In SMRT Link',
-        binding_kit_box_barcode: '12345',
-      }
-
-      await wrapper.vm.updatePoolBarcode(newBarcode)
-
-      expect(wrapper.vm.createWell).toBeCalledWith(expectedWell)
-    })
   })
 
   describe('tooltip', () => {
     it('will only be visible if there are some pools', () => {
       const title = wrapper.find('title')
-      const expected = storeWell.pools
-        .map((p) => {
-          return storePools.find((pool) => p == pool.id).barcode
-        })
-        .join(',')
+      // Barcodes of the tubes the store pools relate to
+      const expected = 'TRAC-2-1,TRAC-2-2'
       expect(title.text()).toEqual(expected)
     })
   })

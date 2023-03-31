@@ -226,7 +226,7 @@
 <script>
 // There is a lot of duplication between this component and PacbioRunWellEdit.
 // A lot of it could be moved to the store
-import { mapGetters } from 'vuex'
+import { mapGetters, mapActions, mapMutations } from 'vuex'
 
 export default {
   name: 'WellModal',
@@ -250,6 +250,7 @@ export default {
   },
   data() {
     return {
+      well: {},
       localPools: [],
       movieTimeOptions: [
         { text: 'Movie Time', value: '', disabled: true },
@@ -277,11 +278,9 @@ export default {
       'getWell',
       'pools',
     ]),
-    well() {
-      return this.getWell(this.position)
-    },
     newWell() {
-      return !this.well.id
+      // Check if well exists in state
+      return !this.getWell(this.position)
     },
     // this is needed to update the well. We need to make sure we have the
     // right pools
@@ -307,11 +306,9 @@ export default {
       return this.localPools.map((pool) => pool.id)
     },
   },
-  // not sure if this is the right place for this?
-  mounted() {
-    this.populatePools()
-  },
   methods: {
+    ...mapActions('traction/pacbio/runCreate', ['getOrCreateWell', 'updateWell']),
+    ...mapMutations('traction/pacbio/runCreate', ['deleteWell']),
     addRow() {
       this.localPools.push({ id: '', barcode: '' })
     },
@@ -319,8 +316,8 @@ export default {
       this.localPools.splice(row.index, 1)
     },
     updateCCSAnalysisOutput() {
-      if (this.currentWell.generate_hifi === 'Do Not Generate') {
-        this.currentWell.ccs_analysis_output = 'No'
+      if (this.well.generate_hifi === 'Do Not Generate') {
+        this.well.ccs_analysis_output = 'No'
       }
     },
     formatLoadingTargetValue(val) {
@@ -333,9 +330,11 @@ export default {
       }
     },
     disableAdaptiveLoadingInput() {
-      this.currentWell.loading_target_p1_plus_p2 = ''
+      this.well.loading_target_p1_plus_p2 = ''
     },
     async showModalForPosition() {
+      // We also need to setup the well here in case state has updated since
+      await this.setupWell()
       this.$refs['well-modal'].show()
     },
     hide() {
@@ -364,8 +363,12 @@ export default {
     alert(message, type) {
       this.$emit('alert', message, type)
     },
-    populatePools() {
-      this.well.pools.forEach((id) => {
+    async setupWell() {
+      this.well = await this.getOrCreateWell({ position: this.position })
+      // We need to flush localPools to prevent duplicates
+      this.localPools = []
+      // If the well has pools we want the barcode and id of each to display
+      this.well.pools?.forEach((id) => {
         const pool = this.pools.find((pool) => pool.id === id)
         this.localPools.push({ id, barcode: pool.barcode })
       })

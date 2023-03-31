@@ -166,11 +166,9 @@ describe('PacbioWellEdit', () => {
   })
 
   describe('well type', () => {
-    it('if it is a new well', () => {
+    it('if it doesnt exist in state (new)', () => {
       store.state.traction.pacbio.runCreate.smrtLinkVersion = smrtLinkVersions['1']
-      store.state.traction.pacbio.runCreate.wells = {
-        A1: newWell({ position: propsData.position }),
-      }
+      store.state.traction.pacbio.runCreate.wells = {}
 
       wrapper = mount(PacbioRunWellEdit, {
         localVue,
@@ -200,7 +198,7 @@ describe('PacbioWellEdit', () => {
   })
 
   describe('pools', () => {
-    it('well should have correct pools when updated', () => {
+    it('well should have correct pools when updated', async () => {
       const well = newWell({ attributes: { id: 1, pools: [1] }, position: propsData.position })
 
       store.state.traction.pacbio.runCreate = {
@@ -217,6 +215,9 @@ describe('PacbioWellEdit', () => {
         store,
         propsData,
       })
+
+      // This method sets the well data for the modal on show
+      await wrapper.vm.showModalForPosition()
 
       expect(wrapper.vm.poolIds).toEqual([1])
 

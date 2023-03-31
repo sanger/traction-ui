@@ -11,9 +11,11 @@ export default {
    * Returns a list of all fetched smrt link versions
    * @param {Object} state The Vuex state object
    */
+
   smrtLinkVersionList: ({ resources }) => {
     return resources.smrtLinkVersions
   },
+
   defaultSmrtLinkVersion: ({ resources: { smrtLinkVersions } }) => {
     return Object.values(smrtLinkVersions).find((version) => version.default)
   },
@@ -54,5 +56,8 @@ export default {
   runItem: (state) => state.run || {},
 
   runType: (state) => state.runType || {},
+
   getWell: (state) => (position) => state.wells[position],
+
+  runDefaultWellAttributes: (state) => state.defaultWellAttributes || {},
 }
