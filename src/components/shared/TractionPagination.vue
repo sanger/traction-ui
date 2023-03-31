@@ -1,5 +1,16 @@
 <template>
   <div class="flex flex-row items-center gap-2 text-gray-700">
+    <label label-for="input-per-page" class="whitespace-nowrap mr-2"> Per Page</label>
+    <traction-input
+      id="input-per-page"
+      v-model="itemsPerPage"
+      data-testid="per-page-input"
+      trim
+      class="w-full w-25"
+      type="number"
+      min="1"
+      @input="onChangePerPage($event)"
+    ></traction-input>
     <TractionButton
       theme="paginationDefault"
       data-testid="first-button"
@@ -91,12 +102,13 @@ export default {
   data() {
     return {
       currentPage: this.value,
+      itemsPerPage: Number(this.perPage),
     }
   },
   computed: {
     //Calculate total pages required
     totalPages() {
-      return Math.ceil(this.totalRows / this.perPage)
+      return Math.ceil(this.totalRows / this.itemsPerPage)
     },
     //If total number of pages is less than number of buttons given, display only as many buttons as the pages
     visibleButtons() {
@@ -135,7 +147,8 @@ export default {
     /**Emitted when the page changes */
     pageClick(pageNumber) {
       this.currentPage = pageNumber
-      this.$emit('input', pageNumber)
+      //this.$emit('input', this.currentPage)
+       this.$emit('input', {currentPage:this.currentPage, perPage:this.itemsPerPage})
     },
     /**Handles the first page button (<<) click */
     firstPageClick() {
@@ -156,6 +169,15 @@ export default {
     /**Display page-button style based on whether it is selected or not*/
     getPageButtonTheme(page) {
       return this.currentPage === page ? 'paginationSelect' : 'paginationDefault'
+    },
+    onChangePerPage(perPage) {
+      this.itemsPerPage = Number(perPage)
+      /*When number of items to displayed per page  are greater than the total number of rows or 
+      total pages required is less than the current page, reset current page to 1 **/
+      if (perPage > this.totalRows || this.totalPages < this.currentPage) {
+        this.currentPage = 1
+      }
+      this.$emit('input', {currentPage:this.currentPage, perPage:this.itemsPerPage})
     },
   },
 }

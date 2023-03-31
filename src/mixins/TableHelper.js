@@ -23,9 +23,10 @@ export default {
       this.perPage = perPage
       this.tableData = this.initialData.slice(0, perPage)
     },
-    onPageChange(currentPage) {
-      this.currentPage = currentPage
-      const start = currentPage * this.perPage
+    onPageChange(pageInfo) {
+      this.perPage = pageInfo.perPage
+      this.currentPage = pageInfo.currentPage
+      const start = (this.currentPage - 1) * this.perPage
       this.tableData = this.initialData.slice(start, start + this.perPage)
     },
   },

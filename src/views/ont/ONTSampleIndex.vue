@@ -11,9 +11,6 @@
         @input="onPageChange($event)"
       >
       </traction-pagination>
-      <traction-form-group label-cols-lg="1" label="Per Page" label-for="input-per-page">
-        <traction-input id="input-per-page" v-model="perPage" trim class="w-25"></traction-input>
-      </traction-form-group>
     </div>
 
     <traction-table
