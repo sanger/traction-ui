@@ -38,14 +38,14 @@ describe('Pacbio Run Edit view', () => {
     cy.visit('#/pacbio/runs')
     cy.get('#editRun-7').click()
     cy.get('ellipse').first().click()
-    cy.get('#movieTime').select('15.0')
-    cy.get('#loadingTarget').invoke('val')
-    cy.get('#updateBtn').click()
+    cy.get('#movie-time').select('15.0')
+    cy.get('#loading-target').invoke('val')
+    cy.get('#update').click()
     cy.get('button').contains('Update').click()
   })
 
   it('will not create a run if there is an error', () => {
-    cy.intercept('/v1/pacbio/runs/wells/6', {
+    cy.intercept('PATCH', '/v1/pacbio/runs/7', {
       statusCode: 422,
       body: {
         data: {
@@ -59,12 +59,12 @@ describe('Pacbio Run Edit view', () => {
     cy.visit('#/pacbio/runs')
     cy.get('#editRun-7').click()
     cy.get('ellipse').first().click()
-    cy.get('#onPlateLoadingConc').clear()
-    cy.get('#updateBtn').click()
+    cy.get('#on-plate-loading-concentration-group').clear()
+    cy.get('#update').click()
     cy.get('ellipse').first().should('have.class', 'filled')
     cy.get('button').contains('Update').click()
     cy.contains(
-      '[data-type=run-validation-message]',
+      '[data-type=run-create-message]',
       "Failed to create run in Traction: on_plate_loading_concentration can't be blank",
     )
   })
