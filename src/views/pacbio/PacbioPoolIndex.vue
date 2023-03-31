@@ -39,7 +39,6 @@
       id="pool-index"
       show-empty
       responsive
-      primary_key="id"
       :items="tableData"
       :fields="fields"
       :filter="filter"
@@ -130,7 +129,7 @@ export default {
   data() {
     return {
       fields: [
-        { key: 'selected', label: '' },
+        { key: 'selected', label: '\u2713' },
         { key: 'id', label: 'Pool ID', sortable: true, tdClass: 'pool-id' },
         {
           key: 'run_suitability',

@@ -115,7 +115,7 @@ export default {
   data() {
     return {
       fields: [
-        { key: 'selected', label: '' },
+        { key: 'selected', label: '\u2713' },
         { key: 'id', label: 'Pool ID', sortable: true, tdClass: 'pool-id' },
         { key: 'barcode', label: 'Barcode', sortable: true, tdClass: 'barcode' },
         { key: 'source_identifier', label: 'Source', sortable: true, tdClass: 'source-identifier' },

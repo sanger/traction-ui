@@ -145,7 +145,7 @@ export default {
     //attribute name to represent this component for testing, if given
     dataAttribute: {
       type: String,
-      default: '',
+      default: 'tractionTable',
     },
     /**
      * Header fields
@@ -364,7 +364,7 @@ export default {
         return text
       }
     },
-    /**Key field accessor for the header fiels */
+    /**Key field accessor for the header field*/
     fieldKey(field, indx) {
       return typeof field === 'object' && 'key' in field ? field.key : indx
     },

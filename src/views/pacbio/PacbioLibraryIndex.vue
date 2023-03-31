@@ -77,7 +77,7 @@
           :id="`editPool-${row.item.pool?.id}`"
           size="sm"
           theme="edit"
-          :to="{ name: 'PacbioPoolCreate', params: { id: row.item.pool ? row.item.pool.id : '' } }"
+          :to="{ name: 'PacbioPoolCreate', params: { id: row.item.pool.id } }"
           >Edit</traction-button
         >
       </template>
@@ -104,7 +104,7 @@ export default {
   data() {
     return {
       fields: [
-        { key: 'selected', label: '' },
+        { key: 'selected', label: '\u2713' },
         { key: 'pool.id', label: 'pool ID', sortable: true, tdClass: 'pool-id' },
         { key: 'id', label: 'Library ID', sortable: true, tdClass: 'library-id' },
         {

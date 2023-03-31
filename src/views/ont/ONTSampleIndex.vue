@@ -65,7 +65,7 @@ export default {
   data() {
     return {
       fields: [
-        { key: 'selected', label: '' },
+        { key: 'selected', label: '\u2713' },
         { key: 'id', label: 'Sample ID (Request)', sortable: true, tdClass: 'id' },
         { key: 'source_identifier', label: 'Source', sortable: true, tdClass: 'source_identifier' },
         { key: 'sample_name', label: 'Sample Name', sortable: true, tdClass: 'sample_name' },
