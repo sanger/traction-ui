@@ -21,14 +21,12 @@ describe('Pacbio Pool Create', () => {
     cy.get('[data-attribute=tag-set-name]').click()
     cy.get('[data-attribute=group-id]').should('have.length', 12)
 
-    //TODO: add at least one more sample
     cy.get('[data-type=selected-plate-list]').within(() => {
       cy.get('[data-type=plate-item]').first()
       cy.get('ellipse').first().click()
     })
     cy.get('[data-type=pool-library-edit]').should('have.length', 1)
     // and samples that have failed qc should not be selectable
-    // TODO: Is this brittle? Need to know the data.
     cy.get('[data-type=pool-library-edit]').within(() => {
       cy.get('[data-type=tag-list]').select('bc1001')
       cy.get('[data-attribute=template-prep-kit-box-barcode]').type('ABC1')

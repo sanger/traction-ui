@@ -195,7 +195,7 @@ const mapAttribute = (data, attribute) => data.map(({ attributes }) => attribute
 
 /**
  * Helper function to store json api resource objects in the store.
- * Move this to populatBy to prevent duplication
+ * TODO: Move this to populateBy to prevent duplication
  * @param {string} resource name of the resource to populate in the store
  * @param {bool} includeRelationships indicates if related resource ids should
  * be extracted and included in the resulting object.

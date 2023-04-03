@@ -227,5 +227,3 @@ describe('PacbioWellEdit', () => {
     })
   })
 })
-
-// TODO maybe. I haven't tested updatePoolBarcode, update or row methods

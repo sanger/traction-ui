@@ -201,7 +201,6 @@ describe('actions.js', () => {
       expect(commit).toHaveBeenCalledWith('populateRunType', newRunType)
     })
 
-    // TODO: This is clearly complex and needs to be simplified.
     it('for an existing run', async () => {
       const state = {
         tubes: {

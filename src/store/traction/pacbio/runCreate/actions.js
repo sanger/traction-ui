@@ -29,14 +29,13 @@ export default {
    * @param commit the vuex commit object. Provides access to mutations
    * @param filter the barcode(s) to find the pools for
    * @returns { success, errors }. Was the request successful? were there any errors?
-   * TODO: remove getter. Better to use rootState
    */
   findPools: async ({ commit, getters }, filter) => {
     // when users search for nothing, prompt them to enter a barcode
     if (filter['barcode'].trim() === '') {
       return {
         success: false,
-        errors: ['Please provide a plate barcode'],
+        errors: ['Please provide a pool barcode'],
       }
     }
 

@@ -98,11 +98,14 @@ export default {
         this.showAlert(errors, 'danger')
       }
     },
-    // TODO: Still to test through e2e tests.
     save() {
       this.saveRun().then(({ success, errors }) => {
         success
-          ? this.showAlert(`Run successfully created/updated`, 'success', 'run-create-message')
+          ? this.showAlert(
+              `Run successfully ${this.runType.action}d`,
+              'success',
+              'run-create-message',
+            )
           : this.showAlert(
               'Failed to create run in Traction: ' + errors,
               'danger',

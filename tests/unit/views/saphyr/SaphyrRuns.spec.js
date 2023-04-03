@@ -55,8 +55,6 @@ describe('Runs.vue', () => {
     })
   })
 
-  // TODO: Move data creation into factories as we are having to reference data that is
-  // outside of the tests.
   describe('start button', () => {
     it('is enabled when the run state is pending', () => {
       // run at(0) is in state pending

@@ -137,7 +137,7 @@ export default {
       await this.updatePoolBarcode(event.dataTransfer.getData('barcode'))
       this.hover = false
     },
-    // TODO: why does this need to be async??
+    // It looks like all actions are async even if they do nothing async
     async updatePoolBarcode(barcode) {
       const well = await this.getOrCreateWell({ position: this.position })
       const { id } = this.poolByBarcode(barcode)

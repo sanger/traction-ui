@@ -41,7 +41,6 @@ describe('Pacbio Pool Edit', () => {
       statusCode: 200,
     })
     cy.get('[data-action=update-pool]').click()
-    // TODO: need to give this a better name
     cy.contains('[data-type=pool-create-message]', 'Pool successfully updated')
   })
 
