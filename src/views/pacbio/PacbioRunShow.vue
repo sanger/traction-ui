@@ -111,6 +111,9 @@ export default {
               'danger',
               'run-create-message',
             )
+        if (success) {
+          this.redirectToRuns()
+        }
       })
     },
     async provider() {

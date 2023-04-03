@@ -156,7 +156,7 @@ const existingRunType = {
   type: RunTypeEnum.Existing,
   id: 'update-run',
   theme: 'update',
-  action: 'create',
+  action: 'update',
   label: 'Update Run',
   payload({ run, wells }) {
     // eslint-disable-next-line no-unused-vars
