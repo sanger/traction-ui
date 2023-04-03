@@ -61,6 +61,7 @@
             :value="runItem.system_name"
             title="System Name"
             :options="systemNameOptions"
+            data-attribute="system_name"
           />
         </traction-col>
       </traction-row>
