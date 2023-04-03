@@ -2,7 +2,7 @@
    TractionTable
    Renders a table component using html <table> element
   
-  The overall design of this component, in partcular, the scoped slot design, data structures, 
+  The overall design of this component, in particular, the scoped slot design, data structures, 
   and event handling is based on how a bootstrap table is working so as to make this compatible 
   with b-table through feature flags
 
