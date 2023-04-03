@@ -231,7 +231,7 @@ describe('actions.js', () => {
       const position = 'A1'
 
       const well = getOrCreateWell({ state }, { position })
-      expect(well).toEqual(newWell({ position, attributes: state.defaultWellAttributes }))
+      expect(well).toEqual(newWell({ position, ...state.defaultWellAttributes }))
     })
 
     it('if it is an existing well', () => {

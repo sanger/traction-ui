@@ -51,7 +51,7 @@ describe('run.js', () => {
         binding_kit_box_barcode: 'boxboxbox',
         on_plate_loading_concentration: 3.5,
       }
-      expect(newWell({ position: 'A1', attributes })).toEqual({
+      expect(newWell({ position: 'A1', ...attributes })).toEqual({
         ...defaultWellAttributes(),
         ...attributes,
         position: 'A1',

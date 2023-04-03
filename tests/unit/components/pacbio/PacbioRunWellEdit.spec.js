@@ -199,7 +199,7 @@ describe('PacbioWellEdit', () => {
 
   describe('pools', () => {
     it('well should have correct pools when updated', async () => {
-      const well = newWell({ attributes: { id: 1, pools: [1] }, position: propsData.position })
+      const well = newWell({ position: propsData.position, ...{ id: 1, pools: [1] } })
 
       store.state.traction.pacbio.runCreate = {
         pools: { 1: { id: 1, tube: 1 }, 2: { id: 2, tube: 2 } },

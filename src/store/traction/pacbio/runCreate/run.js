@@ -63,7 +63,7 @@ const splitPosition = (position) => {
  * @param {Object} attributes Any other attributes
  * @returns {Object} A new well with all of the required attributes
  */
-const newWell = ({ position, attributes }) => {
+const newWell = ({ position, ...attributes }) => {
   const [row, column] = splitPosition(position)
   return {
     ...defaultWellAttributes(),
