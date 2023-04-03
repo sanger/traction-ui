@@ -148,7 +148,7 @@ export default {
     pageClick(pageNumber) {
       this.currentPage = pageNumber
       //this.$emit('input', this.currentPage)
-       this.$emit('input', {currentPage:this.currentPage, perPage:this.itemsPerPage})
+      this.$emit('input', { currentPage: this.currentPage, perPage: this.itemsPerPage })
     },
     /**Handles the first page button (<<) click */
     firstPageClick() {
@@ -177,7 +177,7 @@ export default {
       if (perPage > this.totalRows || this.totalPages < this.currentPage) {
         this.currentPage = 1
       }
-      this.$emit('input', {currentPage:this.currentPage, perPage:this.itemsPerPage})
+      this.$emit('input', { currentPage: this.currentPage, perPage: this.itemsPerPage })
     },
   },
 }
