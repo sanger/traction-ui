@@ -96,11 +96,11 @@ export default {
     },
     hasValidMetadata() {
       if (this.storeWell === undefined) return false
-      return this.required_metadata_fields.every((field) => this.storeWell[field] !== '')
+      return this.required_metadata_fields.every((field) => this.storeWell[field])
     },
     hasSomeMetadata() {
       if (this.storeWell === undefined) return false
-      return this.required_metadata_fields.some((field) => this.storeWell[field] !== '')
+      return this.required_metadata_fields.some((field) => this.storeWell[field])
     },
     storeWell() {
       return this.getWell(this.position)
