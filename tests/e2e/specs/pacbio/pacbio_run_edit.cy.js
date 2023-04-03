@@ -18,8 +18,8 @@ describe('Pacbio Run Edit view', () => {
   })
 
   it('Updates a run successfully', () => {
-    cy.intercept('POST', '/v1/pacbio/runs/7', {
-      statusCode: 201,
+    cy.intercept('PATCH', '/v1/pacbio/runs/7', {
+      statusCode: 200,
       body: {
         data: {},
       },
