@@ -84,7 +84,6 @@
       >
       </traction-pagination>
     </div>
-   
   </div>
 </template>
 

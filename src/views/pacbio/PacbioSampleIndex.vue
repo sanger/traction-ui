@@ -28,7 +28,6 @@
         @input="onPageChange($event)"
       >
       </traction-pagination>
-      
     </div>
 
     <traction-table
