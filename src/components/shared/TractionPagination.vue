@@ -147,7 +147,6 @@ export default {
     /**Emitted when the page changes */
     pageClick(pageNumber) {
       this.currentPage = pageNumber
-      //this.$emit('input', this.currentPage)
       this.$emit('input', { currentPage: this.currentPage, perPage: this.itemsPerPage })
     },
     /**Handles the first page button (<<) click */

@@ -2,30 +2,30 @@
    TractionTable
    Renders a table component using html <table> element
   
-  The overall design of this component, in particular, the scoped slot design, data structures, 
-  and event handling is based on how a bootstrap table is working so as to make this compatible 
-  with b-table through feature flags
+    The overall design of this component, in particular, the scoped slot design, data structures, 
+    and event handling is based on how a bootstrap table is working so as to make this compatible 
+    with b-table through feature flags
 
 
   1) Renders a simple table  if 'simple' prop set to true. 
      - 'fields' props are header columns labels
-    This will display any slot component with a table header. If need to displayed as a table, 
-    rows and colums to be defined as slots 
-    @example for simple table
-    <template>
-    <traction-table simple 
-        :fields=[{key:column1,label:'Header Column1', key:column2,label:'Header Column2']}>
-     <traction-table-row>
-         <traction-table-column>Column-1 value</traction-table-column>
-         <traction-table-column>Column-2 value</traction-table-column>
-    </traction-table-row>
-    </traction-table>
+        This will display any slot component with a table header. If need to displayed as a table, 
+        rows and colums to be defined as slots 
+        @example for simple table
+        <template>
+        <traction-table simple 
+            :fields=[{key:column1,label:'Header Column1', key:column2,label:'Header Column2']}>
+        <traction-table-row>
+            <traction-table-column>Column-1 value</traction-table-column>
+            <traction-table-column>Column-2 value</traction-table-column>
+        </traction-table-row>
+        </traction-table>
    
 
-   2)Renders table which accepts an object array
-   - 'fields' props are header columns labels
-   - 'items' field represents the data to be displayed, which can be an object array or a simple string array
-      If object array, the object should contain fields corresponding to header field keys
+   2) Renders table which accepts an object array
+      - 'fields' props are header columns labels
+      - 'items' field represents the data to be displayed, which can be an object array or a simple string array
+          If object array, the object should contain fields corresponding to header field keys
 
    <template>
     <traction-table  
