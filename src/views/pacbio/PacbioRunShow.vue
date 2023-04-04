@@ -85,6 +85,7 @@ export default {
     async resetRun() {
       this.clearRunData()
       await this.setRun({ id: this.id })
+      await this.setDefaultWellAttributes()
       this.showAlert('Run has been reset', 'success', 'run-validation-message')
     },
     ...mapActions(['setRun', 'saveRun', 'fetchSmrtLinkVersions', 'setDefaultWellAttributes']),
