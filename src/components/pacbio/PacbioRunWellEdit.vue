@@ -254,7 +254,7 @@ export default {
         '24.0',
         '30.0',
       ],
-      wellPoolsFields: ['barcode'],
+      wellPoolsFields: [{ key: 'barcode', label: 'Barcode' }],
       generateHifiOptions: {
         '': [{ text: 'Please select a System Name', value: '', disabled: true }],
         'Sequel I': [
