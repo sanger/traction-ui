@@ -10,7 +10,19 @@
           :tbody-tr-class="rowClass"
           empty-text="No tubes selected"
           @row-clicked="requestClicked"
-        ></traction-table>
+        >
+          <template #cell(action)="row">
+            <traction-button
+              :id="'remove-btn-' + row.item.id"
+              size="sm"
+              class="mr-2"
+              theme="default"
+              @click="deselectTubeAndContents(row.item.source_identifier)"
+            >
+              Remove
+            </traction-button>
+          </template>
+        </traction-table>
       </traction-list-group>
     </traction-section>
   </div>
@@ -33,6 +45,7 @@ export default {
         'library_type',
         'number_of_smrt_cells',
         'estimate_of_gb_required',
+        'action',
       ],
     }
   },
@@ -48,7 +61,7 @@ export default {
   },
   methods: {
     ...mapMutations(['selectTube', 'selectRequest']),
-    ...mapActions(['selectWellRequests']),
+    ...mapActions(['selectWellRequests', 'deselectTubeAndContents']),
     requestClicked({ id, selected }) {
       this.selectRequest({ id, selected: !selected })
     },

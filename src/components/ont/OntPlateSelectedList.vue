@@ -29,7 +29,10 @@
           <div v-for="plate in selectedPlates" :key="plate.id" data-type="selected-plate-item">
             {{ plate.barcode }}
             <Plate ref="plate" v-bind="plate" :wellData="wellList(plate.wells)"></Plate>
-            <traction-button class="mt-0" @click="deselectPlateAndContents(plate.id)"
+            <traction-button
+              :id="'remove-plate-btn-' + plate.id"
+              class="mt-0"
+              @click="deselectPlateAndContents(plate.id)"
               >Remove</traction-button
             >
           </div>

@@ -29,6 +29,12 @@
           <div v-for="plate in selectedPlates" :key="plate.id" data-type="selected-plate-item">
             {{ plate.barcode }}
             <Plate ref="plate" v-bind="plate"></Plate>
+            <traction-button
+              :id="'remove-plate-btn-' + plate.id"
+              class="mt-0"
+              @click="deselectPlateAndContents(plate.id)"
+              >Remove</traction-button
+            >
           </div>
         </div>
         <div v-else class="mt-4">
@@ -91,7 +97,7 @@ export default {
   },
   methods: {
     ...mapMutations(['selectPlate', 'selectRequest']),
-    ...mapActions(['selectWellRequests']),
+    ...mapActions(['selectWellRequests', 'deselectPlateAndContents']),
     requestClicked({ id, selected }) {
       this.selectRequest({ id, selected: !selected })
     },

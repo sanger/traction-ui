@@ -185,9 +185,10 @@ export default {
   /**
    * When a tube is deselected, we need to also remove all its requests
    */
-  deselectTubeAndContents: ({ commit, state }, tubeId) => {
-    commit('selectTube', { id: tubeId, selected: false })
-    const { requests } = state.resources.tubes[tubeId]
+  deselectTubeAndContents: ({ commit, state }, tubeBarcode) => {
+    const tube = Object.values(state.resources.tubes).find((tube) => tube.barcode == tubeBarcode)
+    commit('selectTube', { id: tube.id, selected: false })
+    const { requests } = state.resources.tubes[tube.id]
 
     for (const requestId of requests) {
       commit('selectRequest', { id: requestId, selected: false })
@@ -324,5 +325,84 @@ export default {
       }
       commit('updateLibrary', { pacbio_request_id, ...tagAttributes, ...attributes })
     })
+  },
+
+  /**
+   * Sets the plate data in the store
+   * @param rootState the vuex state object. Provides access to current state
+   * @param commit the vuex commit object. Provides access to mutations
+   * @param filter the filter applied to the plate search
+   */
+  findPacbioPlate: async ({ commit, rootState }, filter) => {
+    // Here we want to make sure the filter exists
+    // If it doesn't exist the request will return all plates
+    if (filter['barcode'].trim() === '') {
+      return {
+        success: false,
+        errors: ['Please provide a plate barcode'],
+      }
+    }
+
+    const request = rootState.api.traction.pacbio.plates
+    const promise = request.get({ filter: filter, include: 'wells.requests' })
+    const response = await handleResponse(promise)
+    let { success, data: { data, included = [] } = {}, errors = [] } = response
+    const { wells, requests } = groupIncludedByResource(included)
+
+    // We will be return a successful empty list if no plates match the filter
+    // Therefore we want to return an error if we don't have any plates
+    if (!data.length) {
+      success = false
+      errors = [`Unable to find plate with barcode: ${filter['barcode']}`]
+    }
+
+    if (success) {
+      // We want to grab the first (and only) record from the applied filter
+      commit('selectPlate', { id: data[0].id, selected: true })
+      commit('populatePlates', data)
+      commit('populateWells', wells)
+      commit('populateRequests', requests)
+    }
+
+    return { success, errors }
+  },
+
+  /**
+   * Sets the tube data in the store
+   * @param rootState the vuex state object. Provides access to current state
+   * @param commit the vuex commit object. Provides access to mutations
+   * @param filter the filter applied to the tube search
+   */
+  findPacbioTube: async ({ commit, rootState }, filter) => {
+    // Here we want to make sure the filter exists
+    // If it doesn't exist the request will return all tubes
+    if (filter['barcode'].trim() === '') {
+      return {
+        success: false,
+        errors: ['Please provide a tube barcode'],
+      }
+    }
+
+    const request = rootState.api.traction.pacbio.tubes
+    const promise = request.get({ filter: filter, include: 'requests' })
+    const response = await handleResponse(promise)
+    let { success, data: { data, included = [] } = {}, errors = [] } = response
+    const { requests } = groupIncludedByResource(included)
+
+    // We will be return a successful empty list if no tubes match the filter
+    // Therefore we want to return an error if we don't have any tubes
+    if (!data.length) {
+      success = false
+      errors = [`Unable to find tube with barcode: ${filter['barcode']}`]
+    }
+
+    if (success) {
+      // We want to grab the first (and only) record from the applied filter
+      commit('selectTube', { id: data[0].id, selected: true })
+      commit('populateTubes', data)
+      commit('populateRequests', requests)
+    }
+
+    return { success, errors }
   },
 }
