@@ -10,6 +10,12 @@ describe('ONT Run page', () => {
     cy.intercept('/v1/ont/runs?include=instrument', {
       fixture: 'tractionOntRuns.json',
     })
+    cy.intercept('flipper/api/actors/User', {
+      flipper_id: 'User',
+      features: {
+        enable_custom_table: { enabled: true },
+      },
+    })
   })
 
   it('Shows the correct information', () => {

@@ -20,11 +20,11 @@ describe('ONTRuns.vue', () => {
       expect(wrapper.find('table').exists()).toBeTruthy
     })
 
-    it('contains the correct data', async () => {
+    it('contains the correct data', () => {
       expect(wrapper.find('tbody').findAll('tr').length).toEqual(2)
     })
 
-    it('contains the correct headers', async () => {
+    it('contains the correct headers', () => {
       const headers = wrapper.findAll('th')
 
       for (const field of runs.fields) {
@@ -32,7 +32,7 @@ describe('ONTRuns.vue', () => {
       }
     })
 
-    it('orders the data by created_at desc', async () => {
+    it('orders the data by created_at desc', () => {
       expect(wrapper.find('tbody').findAll('tr').at(0).text().includes('ONTRUN-2')).toBeTruthy()
     })
   })
