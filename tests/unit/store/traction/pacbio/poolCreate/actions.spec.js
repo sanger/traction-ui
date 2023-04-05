@@ -259,7 +259,7 @@ describe('actions.js', () => {
           ...defaultStateObject.resources,
           tubes: {
             1: { id: 1, barcode: 'tube-1', requests: ['100', '300'] },
-            2: { id: 2, barcode: 'tube-1', requests: ['200', '400'] },
+            2: { id: 2, barcode: 'tube-2', requests: ['200', '400'] },
           },
         },
         selected: {
