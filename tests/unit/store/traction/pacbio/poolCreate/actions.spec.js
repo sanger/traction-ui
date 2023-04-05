@@ -6,7 +6,6 @@ import { payload } from '@/store/traction/pacbio/poolCreate/pool'
 
 describe('actions.js', () => {
   const {
-    fetchPacbioRequests,
     fetchPacbioTagSets,
     selectWellRequests,
     deselectPlateAndContents,
@@ -20,48 +19,6 @@ describe('actions.js', () => {
     findPacbioPlate,
     findPacbioTube,
   } = actions
-
-  describe('fetchPacbioRequests', () => {
-    it('handles success', async () => {
-      // mock commit
-      const commit = vi.fn()
-      // mock dependencies
-      const get = vi.fn()
-      const rootState = { api: { traction: { pacbio: { requests: { get } } } } }
-      get.mockResolvedValue(Data.PacbioRequestsRequest)
-      // apply action
-      const { success } = await fetchPacbioRequests({ commit, rootState })
-      // assert result (Might make sense to pull these into separate tests)
-      expect(commit).toHaveBeenCalledWith('populateRequests', Data.PacbioRequestsRequest.data.data)
-      expect(commit).toHaveBeenCalledWith(
-        'populatePlates',
-        Data.PacbioRequestsRequest.data.included.slice(0, 2),
-      )
-      expect(commit).toHaveBeenCalledWith(
-        'populateWells',
-        Data.PacbioRequestsRequest.data.included.slice(2, 6),
-      )
-      expect(success).toEqual(true)
-    })
-
-    it('handles failure', async () => {
-      // mock commit
-      const commit = vi.fn()
-      // mock dependencies
-      const get = vi.fn()
-      const rootState = { api: { traction: { pacbio: { requests: { get } } } } }
-      get.mockRejectedValue({
-        data: { data: [] },
-        status: 500,
-        statusText: 'Internal Server Error',
-      })
-      // apply action
-      const { success } = await fetchPacbioRequests({ commit, rootState })
-      // assert result (Might make sense to pull these into separate tests)
-      expect(commit).not.toHaveBeenCalled()
-      expect(success).toEqual(false)
-    })
-  })
 
   // handles success and failure are switched - fix after asking
   describe('fetchPacbioTagSets', () => {

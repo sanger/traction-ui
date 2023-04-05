@@ -114,29 +114,6 @@ const findRequestsForSource = ({
 // Actions handle asynchronous update of state, via mutations.
 // see https://vuex.vuejs.org/guide/actions.html
 export default {
-  /**
-   * Retrieves a list of pacbio request from traction-service and populates the store
-   * with associated plates, wells and tubes
-   * @param rootState the vuex rootState object. Provides access to current state
-   * @param commit the vuex commit object. Provides access to mutations
-   */
-  fetchPacbioRequests: async ({ commit, rootState }) => {
-    const request = rootState.api.traction.pacbio.requests
-    const promise = request.get({ include: 'well.plate,tube' })
-    const response = await handleResponse(promise)
-
-    const { success, data: { data, included = [] } = {}, errors = [] } = response
-
-    if (success) {
-      const { wells, plates, tubes } = groupIncludedByResource(included)
-      commit('populateRequests', data)
-      commit('populatePlates', plates)
-      commit('populateWells', wells)
-      commit('populateTubes', tubes)
-    }
-
-    return { success, errors }
-  },
   fetchPacbioTagSets: async ({ commit, rootState }) => {
     const request = rootState.api.traction.pacbio.tag_sets
     /* I've been explicit about the includes here as we make an assumption

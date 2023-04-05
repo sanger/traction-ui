@@ -14,7 +14,7 @@
         </traction-menu>
         <div v-if="sourceIndex == 0" class="flex flex-col">
           <traction-section title="Plates" number="1a" class="mb-2">
-            <div class="text-left">Find plates</div>
+            <div class="text-left">Find Plates</div>
             <LabwareFinder :fetcher="findPacbioPlate" filter="barcode" class="mb-6" />
           </traction-section>
           <PacbioPlateSelectedList class="mb-2" />
@@ -88,7 +88,6 @@ export default {
       this.sourceIndex = indx
     },
     ...mapActions([
-      'fetchPacbioRequests',
       'fetchPacbioTagSets',
       'populateLibrariesFromPool',
       'findPacbioPlate',
