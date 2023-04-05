@@ -40,12 +40,12 @@ export default {
   data() {
     return {
       requestFields: [
-        'source_identifier',
-        'sample_species',
-        'library_type',
-        'number_of_smrt_cells',
-        'estimate_of_gb_required',
-        'action',
+        { key: 'source_identifier', label: 'Source identifier' },
+        { key: 'sample_species', label: 'Sample species' },
+        { key: 'library_type', label: 'Library type' },
+        { key: 'number_of_smrt_cells', label: 'Number of smrt cells' },
+        { key: 'estimate_of_gb_required', label: 'Estimate of gb required' },
+        { key: 'action', label: 'Action' }
       ],
     }
   },

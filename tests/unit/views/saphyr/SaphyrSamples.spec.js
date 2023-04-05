@@ -42,12 +42,11 @@ describe('Samples.vue', () => {
   })
 
   describe('selecting samples', () => {
-    beforeEach(() => {
-      const firstCell = wrapper.find('[role="cell"]')
-      firstCell.trigger('click')
-    })
+    beforeEach(() => {})
 
     it('will create a list of selected requests', () => {
+      const firstCell = wrapper.find('tbody').findAll('td').at(0)
+      firstCell.trigger('click')
       expect(samples.selected.length).toEqual(1)
     })
   })

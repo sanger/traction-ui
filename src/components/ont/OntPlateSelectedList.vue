@@ -79,12 +79,12 @@ export default {
     return {
       // The tabular fields to display for each plate request
       requestFields: [
-        'id',
-        'sample_name',
-        'source_identifier',
-        'data_type',
-        'library_type',
-        'number_of_flowcells',
+        { key: 'id', label: 'id' },
+        { key: 'sample_name', label: 'Sample name' },
+        { key: 'source_identifier', label: 'Source identifier' },
+        { key: 'data_type', label: 'Data type' },
+        { key: 'library_type', label: 'Library type' },
+        { key: 'number_of_flowcells', label: 'Number of flowcells' },
       ],
       sourceIndex: 0,
       tabTitles: ['Plates', 'Requests'],

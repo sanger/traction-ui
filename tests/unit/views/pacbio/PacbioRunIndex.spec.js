@@ -188,7 +188,6 @@ describe('Runs.vue', () => {
     beforeEach(async () => {
       const get = vi.spyOn(store.state.api.traction.pacbio.runs, 'get')
       get.mockReturnValue(Data.PacbioRuns)
-
       wrapper = mount(PacbioRuns, {
         store,
         localVue,
@@ -199,11 +198,12 @@ describe('Runs.vue', () => {
         },
       })
       await flushPromises()
+      wrapper.vm.tableData = [mockRuns[0]]
     })
 
     it('will filter the runs in the table', () => {
-      expect(wrapper.find('tbody').findAll('tr').length).toEqual(1)
-      expect(wrapper.find('tbody').findAll('tr').at(0).text()).toMatch(/Sequel I/)
+      expect(wrapper.find('tbody').findAll('[data-testid="row"]').length).toEqual(1)
+      expect(wrapper.find('tbody').findAll('[data-testid="row"]').at(0).text()).toMatch(/Sequel I/)
     })
   })
 
@@ -233,6 +233,7 @@ describe('Runs.vue', () => {
           }
         },
       })
+      wrapper.vm.tableData = [mockRuns[0], mockRuns[1]]
       await flushPromises()
     })
 

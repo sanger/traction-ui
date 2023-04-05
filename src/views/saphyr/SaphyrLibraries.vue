@@ -27,7 +27,7 @@
       ref="libraries_table"
       show-empty
       responsive
-      :items="libraries"
+      :items="tableData"
       :fields="fields"
       :filter="filter"
       :per-page="perPage"
@@ -80,12 +80,10 @@
         :total-rows="libraries.length"
         :per-page="perPage"
         aria-controls="libraries-table"
+        @input="onPageChange($event)"
       >
       </traction-pagination>
     </div>
-    <traction-form-group label-cols-lg="1" label="Per Page" label-for="input-per-page">
-      <traction-input id="input-per-page" v-model="perPage" trim class="w-25"></traction-input>
-    </traction-form-group>
   </div>
 </template>
 
@@ -131,6 +129,11 @@ export default {
   },
   computed: {
     ...mapGetters('traction/saphyr/tubes', ['libraries']),
+  },
+  watch: {
+    libraries(newValue) {
+      this.setInitialData(newValue, this.perPage)
+    },
   },
   created() {
     // When this component is created (the 'created' lifecycle hook is called), we need to get the

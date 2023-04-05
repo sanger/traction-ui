@@ -1,5 +1,11 @@
 describe('Pacbio Run Create view', () => {
   beforeEach(() => {
+    cy.intercept('flipper/api/actors/User', {
+      flipper_id: 'User',
+      features: {
+        enable_custom_table: { enabled: true },
+      },
+    })
     cy.intercept('/v1/pacbio/runs', {
       fixture: 'tractionPacbioRuns.json',
     })

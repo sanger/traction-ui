@@ -129,6 +129,9 @@ This project is built into a static archive for deployment. To trigger the creat
 
 ## Miscellaneous
 
+ #### Custom traction table implementation
+![Design](https://github.com/sanger/traction-ui/blob/dpl_611_traction_table/traction-table.png?raw=true)
+
 ### Updating the Table of Contents
 
 To update the table of contents after adding things to this README you can use the [markdown-toc](https://github.com/jonschlinkert/markdown-toc)
