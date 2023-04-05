@@ -45,7 +45,7 @@ export default {
         { key: 'library_type', label: 'Library type' },
         { key: 'number_of_smrt_cells', label: 'Number of smrt cells' },
         { key: 'estimate_of_gb_required', label: 'Estimate of gb required' },
-        { key: 'action', label: 'Action' }
+        { key: 'action', label: 'Action' },
       ],
     }
   },
@@ -67,16 +67,8 @@ export default {
     },
     rowClass(item) {
       if (item && item.selected) {
-        return 'table-primary'
+        return 'bg-gray-400'
       }
-    },
-    onSelect(e) {
-      e.added.forEach((el) => {
-        this.selectWellRequests(el.__vue__.$attrs.id)
-      })
-      e.removed.forEach((el) => {
-        this.selectWellRequests(el.__vue__.$attrs.id)
-      })
     },
   },
 }

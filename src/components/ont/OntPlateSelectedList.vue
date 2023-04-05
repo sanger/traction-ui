@@ -109,7 +109,7 @@ export default {
     },
     rowClass(item) {
       if (item && item.selected) {
-        return 'table-primary'
+        return 'bg-gray-400'
       }
     },
     onSelect(e) {

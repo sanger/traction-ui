@@ -50,7 +50,9 @@
         :primary-key="primaryKey"
         :simple="simple"
         :empty-text="emptyText"
+        :tbody-tr-class="tbodyTrClass"
         @row-selected="onRowSelection"
+        @row-clicked="onRowClicked"
       >
         <template v-for="(_, slot) of $scopedSlots" #[slot]="scope"
           ><slot :name="slot" v-bind="scope" /></template
@@ -217,6 +219,12 @@ export default {
       required: false,
       default: '',
     },
+    /**Classes to apply to a single row */
+    tbodyTrClass: {
+      type: Function,
+      required: false,
+      default: () => {},
+    },
   },
   data() {
     //Create 'row' data based on initial data passed in through 'items' prop
@@ -268,7 +276,7 @@ export default {
             detailsDim: '60',
 
             /**Is row selected or not?**/
-            rowSelected: false,
+            selected: false,
 
             /**Index of row**/
             rowIndex: rowIndex,
@@ -327,24 +335,26 @@ export default {
       /**Only listen to column clicks. This is to avoid clicks from any any embedded controls like buttons displayed within columns  */
       const srcElement = window.event.srcElement
       if (!(srcElement instanceof HTMLTableCellElement)) return
-      if (!this.selectable) return
-
-      //Toggle row selection and if multiple selection allowed, retain all other existing selections,
-      const rowIndex = this.rows.findIndex((elem) => elem.id === row.id)
-      if (rowIndex < 0) return
-      const prevSelectedRowIndx =
-        this.selectMode === 'single' ? this.rows.findIndex((row) => row.rowSelected) : -1
-      this.rows[rowIndex].rowSelected = !this.rows[rowIndex].rowSelected
-      if (prevSelectedRowIndx >= 0 && prevSelectedRowIndx !== rowIndex) {
-        this.rows[prevSelectedRowIndx].rowSelected = false
+      if (this.selectable) {
+        //Toggle row selection and if multiple selection allowed, retain all other existing selections,
+        const rowIndex = this.rows.findIndex((elem) => elem.id === row.id)
+        if (rowIndex < 0) return
+        const prevSelectedRowIndx =
+          this.selectMode === 'single' ? this.rows.findIndex((row) => row.selected) : -1
+        this.rows[rowIndex].selected = !this.rows[rowIndex].selected
+        if (prevSelectedRowIndx >= 0 && prevSelectedRowIndx !== rowIndex) {
+          this.rows[prevSelectedRowIndx].selected = false
+        }
+        /**Emit 'row-selected' even with table data corresponding to selected rows**/
+        const selectedItems = this.rows.filter((row) => row.selected).map((row) => row.item)
+        this.$emit('row-selected', selectedItems)
       }
-      /**Emit 'row-selected' even with table data corresponding to selected rows**/
-      const selectedItems = this.rows.filter((row) => row.rowSelected).map((row) => row.item)
-      this.$emit('row-selected', selectedItems)
+      this.$emit('row-clicked', row.item)
     },
     /**Row background colour */
     backgroundColor(row) {
-      return row.rowSelected ? 'bg-gray-400' : ''
+      const background = this.tbodyTrClass(row.item) || ''
+      return row.selected ? 'bg-gray-400' : background
     },
     /**Text to display in table */
     text(item, field) {
@@ -380,6 +390,9 @@ export default {
      * This is for Bootstrap row selection which needs a re-emission which failed to work otherwise  */
     onRowSelection(value) {
       this.$emit('row-selected', value)
+    },
+    onRowClicked(value) {
+      this.$emit('row-clicked', value)
     },
   },
 }
