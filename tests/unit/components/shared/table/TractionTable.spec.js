@@ -121,6 +121,40 @@ describe('TractionTable', () => {
         'bg-gray-400',
       )
     })
+    it('emits row-click event by default', async () => {
+      const wrapper = buildWrapper({ fields: fields, items: items })
+      await wrapper.findAll('[data-testid=column]').at(0).trigger('click')
+      expect(wrapper.emitted()).toHaveProperty('row-clicked')
+      expect(wrapper.findAll('[data-testid=column]').at(0).attributes('class')).not.toContain(
+        'bg-gray-400',
+      )
+    })
+
+    it('emits row-click event by default', async () => {
+      const wrapper = buildWrapper({
+        fields: fields,
+        items: items,
+      })
+      await wrapper.findAll('[data-testid=column]').at(0).trigger('click')
+      expect(wrapper.emitted()).toHaveProperty('row-clicked')
+      expect(wrapper.findAll('[data-testid=column]').at(0).attributes('class')).not.toContain(
+        'bg-gray-400',
+      )
+    })
+    it('sets the background color on rowClicked event if tbodyTrClass defined', async () => {
+      const wrapper = buildWrapper({
+        fields: fields,
+        items: items,
+        tbodyTrClass: () => {
+          return 'bg-gray-400'
+        },
+      })
+      await wrapper.findAll('[data-testid=column]').at(0).trigger('click')
+      expect(wrapper.emitted()).toHaveProperty('row-clicked')
+      expect(wrapper.findAll('[data-testid=column]').at(0).attributes('class')).toContain(
+        'bg-gray-400',
+      )
+    })
     it('allows single selection by default', async () => {
       const wrapper = buildWrapper({ fields: fields, items: items, selectable: true })
       await wrapper.findAll('[data-testid=column]').at(0).trigger('click')
