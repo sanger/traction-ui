@@ -23,11 +23,10 @@ describe('PacbioPlateFind', () => {
     expect(wrapper.find('.list-group').findAll('.list-group-item').length).toEqual(2)
   })
 
-  it('filters the list when the input is entered', () => {
+  it('filters the list when the input is entered', async () => {
     wrapper.vm.enteredLabware = 'DN1'
-    wrapper.vm.$nextTick(() => {
-      expect(wrapper.find('.list-group').findAll('.list-group-item').length).toEqual(1)
-    })
+    await wrapper.vm.$nextTick()
+    expect(wrapper.find('.list-group').findAll('.list-group-item').length).toEqual(1)
   })
 
   describe('Handle submit', () => {

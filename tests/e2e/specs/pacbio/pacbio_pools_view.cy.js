@@ -1,4 +1,9 @@
 describe('Pacbio Pools view', () => {
+  beforeEach(() =>
+    cy.withFlags({
+      enable_custom_table: { enabled: true },
+    }),
+  )
   it('Visits the pacbio pools url', () => {
     cy.intercept(
       'v1/pacbio/pools?include=tube,libraries.tag,libraries.request&fields[requests]=sample_name&fields[tubes]=barcode&fields[tags]=group_id&fields[libraries]=request,tag,run_suitability',
@@ -15,17 +20,14 @@ describe('Pacbio Pools view', () => {
       .should('contain', 'Pool Barcode')
       .and('contain', 'Sample Name')
     cy.get('#pool-index>tbody').contains('tr', '2')
-    cy.get('.pool')
-      .first()
-      .within(() => {
-        // is there a better way? don't want to tie values to fixtures
-        cy.get('.pool-id').invoke('text').should('match', /\d+/)
-        cy.get('.barcode').invoke('text').should('include', 'TRAC')
-        cy.get('.source-identifier').invoke('text').should('match', /\w+/)
-        cy.get('.volume').invoke('text').should('match', /\d+/)
-        cy.get('.concentration').invoke('text').should('match', /\d+/)
-        cy.get('.template-prep-kit-box-barcode').invoke('text').should('match', /\w+/)
-        cy.get('.insert-size').invoke('text').should('match', /\d+/)
-      })
+
+    // is there a better way? don't want to tie values to fixtures
+    cy.get('#id').invoke('text').should('match', /\d+/)
+    cy.get('#barcode').invoke('text').should('include', 'TRAC')
+    cy.get('#source_identifier').invoke('text').should('match', /\w+/)
+    cy.get('#volume').invoke('text').should('match', /\d+/)
+    cy.get('#concentration').invoke('text').should('match', /\d+/)
+    cy.get('#template_prep_kit_box_barcode').invoke('text').should('match', /\w+/)
+    cy.get('#insert_size').invoke('text').should('match', /\d+/)
   })
 })

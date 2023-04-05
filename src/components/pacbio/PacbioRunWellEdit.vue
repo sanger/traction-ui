@@ -260,7 +260,7 @@ export default {
         '24.0',
         '30.0',
       ],
-      wellPoolsFields: ['barcode'],
+      wellPoolsFields: [{ key: 'barcode', label: 'Barcode' }],
       generateHifiOptions: [
         { text: 'Please select a value', value: '', disabled: true },
         'In SMRT Link',

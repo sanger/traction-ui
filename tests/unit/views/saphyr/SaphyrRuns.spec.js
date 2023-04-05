@@ -12,6 +12,8 @@ describe('Runs.vue', () => {
     store.commit('traction/saphyr/runs/setRuns', mockRuns)
     wrapper = mount(Runs, { store, localVue, router })
     runs = wrapper.vm
+    wrapper.vm.tableData = mockRuns
+    wrapper.vm.tableData[5].created_at = '03/21/2019 06:01'
   })
 
   describe('created hook', () => {
@@ -25,7 +27,7 @@ describe('Runs.vue', () => {
       expect(wrapper.find('table').element).toBeTruthy()
     })
 
-    it('contains the correct data', async () => {
+    it('contains the correct data', () => {
       expect(wrapper.find('tbody').findAll('tr').length).toEqual(6)
     })
   })
@@ -47,6 +49,7 @@ describe('Runs.vue', () => {
           }
         },
       })
+      wrapper.vm.tableData = [mockRuns[0]]
     })
 
     it('will filter the runs in the table', () => {
@@ -56,20 +59,23 @@ describe('Runs.vue', () => {
   })
 
   describe('start button', () => {
-    it('is enabled when the run state is pending', () => {
+    it('is enabled when the run state is pending', async () => {
       // run at(0) is in state pending
+      await wrapper.vm.$nextTick()
       const button = wrapper.find('#startRun-6')
       expect(button.attributes('disabled')).toBeFalsy()
     })
 
-    it('is disabled is the run state is not pending', () => {
+    it('is disabled is the run state is not pending', async () => {
       // run at(4) is in state started
+      await wrapper.vm.$nextTick()
       const button = wrapper.find('#startRun-2')
       expect(button.attributes('disabled')).toBeTruthy()
     })
 
-    it('on click startRun is called', () => {
+    it('on click startRun is called', async () => {
       // run at(0) is in state pending
+      await wrapper.vm.$nextTick()
       runs.startRun = vi.fn()
 
       const button = wrapper.find('#startRun-6')
@@ -81,32 +87,37 @@ describe('Runs.vue', () => {
   })
 
   describe('complete button', () => {
-    it('is is enabled when the run state is pending', () => {
+    it('is is enabled when the run state is pending', async () => {
+      await wrapper.vm.$nextTick()
       // run at(0) is in state pending
       const button = wrapper.find('#completeRun-6')
       expect(button.attributes('disabled')).toBeFalsy()
     })
 
-    it('is is enabled when the run state is started', () => {
+    it('is is enabled when the run state is started', async () => {
+      await wrapper.vm.$nextTick()
       // run at(4) is in state started
       const button = wrapper.find('#completeRun-2')
       expect(button.attributes('disabled')).toBeFalsy()
     })
 
-    it('is disabled if the run state is completed', () => {
+    it('is disabled if the run state is completed', async () => {
       // run at(3) is in state completed
+      await wrapper.vm.$nextTick()
       const button = wrapper.find('#completeRun-3')
       expect(button.attributes('disabled')).toBeTruthy()
     })
 
-    it('is disabled is the run state is cancelled', () => {
+    it('is disabled is the run state is cancelled', async () => {
       // run at(2) is in state cancelled
+      await wrapper.vm.$nextTick()
       const button = wrapper.find('#completeRun-4')
       expect(button.attributes('disabled')).toBeTruthy()
     })
 
-    it('on click completeRun is called', () => {
+    it('on click completeRun is called', async () => {
       // run at(4) is in state started
+      await wrapper.vm.$nextTick()
       runs.completeRun = vi.fn()
 
       const button = wrapper.find('#completeRun-2')
@@ -118,32 +129,37 @@ describe('Runs.vue', () => {
   })
 
   describe('cancel button', () => {
-    it('is is enabled when the run state is pending', () => {
+    it('is is enabled when the run state is pending', async () => {
       // run at(0) is in state pending
+      await wrapper.vm.$nextTick()
       const button = wrapper.find('#cancelRun-6')
       expect(button.attributes('disabled')).toBeFalsy()
     })
 
-    it('is is enabled when the run state is started', () => {
+    it('is is enabled when the run state is started', async () => {
       // run at(4) is in state started
+      await wrapper.vm.$nextTick()
       const button = wrapper.find('#cancelRun-2')
       expect(button.attributes('disabled')).toBeFalsy()
     })
 
-    it('is disabled if the run state is completed', () => {
+    it('is disabled if the run state is completed', async () => {
       // run at(3) is in state completed
+      await wrapper.vm.$nextTick()
       const button = wrapper.find('#cancelRun-3')
       expect(button.attributes('disabled')).toBeTruthy()
     })
 
-    it('is disabled is the run state is cancelled', () => {
+    it('is disabled is the run state is cancelled', async () => {
       // run at(2) is in state cancelled
+      await wrapper.vm.$nextTick()
       const button = wrapper.find('#cancelRun-4')
       expect(button.attributes('disabled')).toBeTruthy()
     })
 
-    it('on click completeRun is called', () => {
+    it('on click completeRun is called', async () => {
       // run at(4) is in state started
+      await wrapper.vm.$nextTick()
       runs.cancelRun = vi.fn()
 
       const button = wrapper.find('#cancelRun-2')
@@ -155,11 +171,13 @@ describe('Runs.vue', () => {
   })
 
   describe('new run button', () => {
-    it('contains a create new run button', () => {
+    it('contains a create new run button', async () => {
+      await wrapper.vm.$nextTick()
       expect(wrapper.find('#newRun')).toBeDefined()
     })
 
     it('will redirect to the run when newRun is clicked', async () => {
+      await wrapper.vm.$nextTick()
       const button = wrapper.find('#newRun')
       button.trigger('click')
       expect(runs.$route.path).toEqual('/saphyr/run/new')
@@ -167,11 +185,13 @@ describe('Runs.vue', () => {
   })
 
   describe('edit run button', () => {
-    it('contains a create new run button', () => {
+    it('contains a create new run button', async () => {
+      await wrapper.vm.$nextTick()
       expect(wrapper.find('#edit-1')).toBeDefined()
     })
 
     it('will redirect to the run when newRun is clicked', async () => {
+      await wrapper.vm.$nextTick()
       const button = wrapper.find('#edit-1')
       button.trigger('click')
       expect(runs.$route.path).toEqual('/saphyr/run/1')
@@ -179,7 +199,8 @@ describe('Runs.vue', () => {
   })
 
   describe('#showAlert', () => {
-    it('emits an event with the message', () => {
+    it('emits an event with the message', async () => {
+      await wrapper.vm.$nextTick()
       runs.showAlert('show this message', 'danger')
       expect(Object.values(store.state.traction.messages)).toContainEqual({
         type: 'danger',
@@ -189,7 +210,10 @@ describe('Runs.vue', () => {
   })
 
   describe('pagination', () => {
-    beforeEach(() => {
+    beforeEach(async () => {
+      mockRuns = new Response(Data.Runs).deserialize.runs
+
+      store.commit('traction/saphyr/runs/setRuns', mockRuns)
       wrapper = mount(Runs, {
         store,
         localVue,
@@ -200,6 +224,8 @@ describe('Runs.vue', () => {
           }
         },
       })
+
+      wrapper.vm.tableData = [mockRuns[0], mockRuns[1]]
     })
 
     it('will paginate the runs in the table', () => {

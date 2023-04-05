@@ -28,8 +28,8 @@ describe('OntTubeSelectedList', () => {
     })
 
     it('contains the correct data', async () => {
-      expect(wrapper.find('tbody').findAll('tr').length).toEqual(1)
-      expect(wrapper.find('.b-table-empty-row').text()).toEqual('No tubes selected')
+      expect(wrapper.find('tbody').findAll('tr').length).toEqual(0)
+      expect(wrapper.find('[data-testid=empty-text]').text()).toEqual('No tubes selected')
     })
   })
 
@@ -52,7 +52,7 @@ describe('OntTubeSelectedList', () => {
       })
     })
 
-    it('contains the selected tube requests', () => {
+    it('contains the selected tube requests', async () => {
       expect(wrapper.find('tbody').findAll('tr').length).toEqual(1)
       expect(wrapper.find('tbody').findAll('td').at(0).text()).toEqual('191')
       expect(wrapper.find('tbody').findAll('td').at(1).text()).toEqual('GENSAMPLE-1668092750-191')
@@ -66,8 +66,9 @@ describe('OntTubeSelectedList', () => {
     it('deselects the tube and request when the remove button is clicked', async () => {
       const dispatch = vi.fn()
       store.dispatch = dispatch
+      await wrapper.vm.$nextTick()
       const button = wrapper.find('#remove-btn-191')
-      await button.trigger('click')
+      button.trigger('click')
       expect(dispatch).toHaveBeenCalledWith(
         'traction/ont/pools/deselectTubeAndContents',
         'GEN-1668092750-3',

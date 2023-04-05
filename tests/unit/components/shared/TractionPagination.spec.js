@@ -2,7 +2,7 @@ import { localVue, mount } from '@support/testHelper'
 
 import TractionPagination from '@/components/shared/TractionPagination'
 
-import { describe, expect, it } from 'vitest'
+import { beforeEach, describe, expect, it } from 'vitest'
 
 describe('TractionPagination.vue', () => {
   const buildWrapper = (props = {}) => {
@@ -27,6 +27,8 @@ describe('TractionPagination.vue', () => {
       expect(wrapper.findAll('[data-testid=page-button]').at(1).attributes('class')).toContain(
         'text-white bg-sdb-200 shadow-sm focus:shadow-outline-sdb hover:bg-sdb-300 active:bg-sdb-400',
       )
+      expect(wrapper.vm.itemsPerPage).equals(5)
+      expect(wrapper.find('[data-testid=per-page-input]').element.value).toBe('5')
     })
   })
   describe('Total number of pages are more than buttons on display', () => {
@@ -199,6 +201,46 @@ describe('TractionPagination.vue', () => {
           'text-white bg-sdb-200 shadow-sm focus:shadow-outline-sdb hover:bg-sdb-300 active:bg-sdb-400',
         )
       })
+    })
+  })
+  describe('Changing value in per page', () => {
+    let wrapper
+    beforeEach(() => {
+      wrapper = mount(TractionPagination, {
+        propsData: { vmodel: 'currentPage', totalRows: 30, perPage: 5, maxVisibleButtons: 5 },
+        localVue,
+        data() {
+          return {
+            currentPage: 3,
+          }
+        },
+      })
+    })
+    it('changes total number of page buttons displayed ', async () => {
+      const textInput = wrapper.find('[data-testid=per-page-input')
+      textInput.element.value = 10
+      await textInput.trigger('input')
+      expect(wrapper.findAll('[data-testid=page-button]')).toHaveLength(3)
+      textInput.element.value = 2
+      await textInput.trigger('input')
+      expect(wrapper.findAll('[data-testid=page-button]')).toHaveLength(5)
+    })
+    it('resets current page to 1 if perPage has a value greater than total rows', async () => {
+      const textInput = wrapper.find('[data-testid=per-page-input')
+      textInput.element.value = 40
+      await textInput.trigger('input')
+      expect(wrapper.findAll('[data-testid=page-button]')).toHaveLength(1)
+      expect(wrapper.findAll('[data-testid=page-button]').at(0).text()).toBe('1')
+    })
+    it('resets current page  if total pages required is less than the curret page in display', async () => {
+      const textInput = wrapper.find('[data-testid=per-page-input')
+      textInput.element.value = 3
+      await textInput.trigger('input')
+      await wrapper.find('[data-testid=last-button]').trigger('click')
+      textInput.element.value = 15
+      await textInput.trigger('input')
+      expect(wrapper.findAll('[data-testid=page-button]')).toHaveLength(2)
+      expect(wrapper.findAll('[data-testid=page-button]').at(0).text()).toBe('1')
     })
   })
 })

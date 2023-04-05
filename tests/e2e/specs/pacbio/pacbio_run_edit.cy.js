@@ -1,6 +1,8 @@
 describe('Pacbio Run Edit view', () => {
   beforeEach(() => {
-    // Visit the runs page and populates the smrt link versions
+    cy.withFlags({
+      enable_custom_table: { enabled: true },
+    })
     cy.intercept('/v1/pacbio/runs', {
       fixture: 'tractionPacbioRuns.json',
     })
@@ -26,7 +28,9 @@ describe('Pacbio Run Edit view', () => {
     })
 
     cy.visit('#/pacbio/runs')
-    cy.get('#editRun-7').click()
+    cy.get('#actions').within(() => {
+      cy.get('#editRun-7').click()
+    })
     cy.get('ellipse').first().click()
     cy.get('[data-attribute="movie-time"]').select('15.0')
     cy.get('[data-attribute="loading-target-p1-plus-p2"]').invoke('val')
@@ -48,7 +52,9 @@ describe('Pacbio Run Edit view', () => {
     })
 
     cy.visit('#/pacbio/runs')
-    cy.get('#editRun-7').click()
+    cy.get('#actions').within(() => {
+      cy.get('#editRun-7').click()
+    })
     cy.get('ellipse').first().click()
     cy.get('[data-attribute="on-plate-loading-concentration"]').clear()
     cy.get('#update').click()
