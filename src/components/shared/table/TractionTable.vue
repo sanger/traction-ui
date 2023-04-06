@@ -353,7 +353,10 @@ export default {
     },
     /**Row background colour */
     backgroundColor(row) {
-      const background = this.tbodyTrClass(row.item) || ''
+      const background =
+        this.tbodyTrClass && typeof this.tbodyTrClass == 'function'
+          ? this.tbodyTrClass(row.item)
+          : ''
       return row.selected ? 'bg-gray-400' : background
     },
     /**Text to display in table */
