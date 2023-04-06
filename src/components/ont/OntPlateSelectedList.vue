@@ -38,7 +38,7 @@
             >
           </div>
         </div>
-        <div v-else id="selectedList" class="mt-4" >
+        <div v-else id="selectedList" class="mt-4">
           <traction-list-group class="selected-list-group">
             <traction-table
               :items="selectedPlateRequests"
