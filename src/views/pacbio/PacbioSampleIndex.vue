@@ -112,7 +112,6 @@ export default {
     DataFetcher,
   },
   mixins: [TableHelper],
-
   data() {
     return {
       fields: [
