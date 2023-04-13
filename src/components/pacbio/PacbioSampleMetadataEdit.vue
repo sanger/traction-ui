@@ -99,7 +99,7 @@ export default {
     ...mapActions(['updateRequest']),
     show() {
       this.$refs['modal'].show()
-      this.request = this.req
+      this.request = { ...this.req }
     },
     alert(message, type) {
       this.$emit('alert', message, type)
