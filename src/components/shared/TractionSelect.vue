@@ -87,7 +87,8 @@ export default {
   computed: {
     propValue: {
       get() {
-        return this.value
+        // if value is null or undefined we want to use an empty ''
+        return this.value || ''
       },
       set(value) {
         this.$emit('input', value)
