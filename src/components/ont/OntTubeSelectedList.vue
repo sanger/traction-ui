@@ -44,13 +44,13 @@ export default {
   data() {
     return {
       requestFields: [
-        'id',
-        'sample_name',
-        'source_identifier',
-        'data_type',
-        'library_type',
-        'number_of_flowcells',
-        'action',
+        { key: 'id', label: 'id' },
+        { key: 'sample_name', label: 'Sample name' },
+        { key: 'source_identifier', label: 'Source identifier' },
+        { key: 'data_type', label: 'Data type' },
+        { key: 'library_type', label: 'Library type' },
+        { key: 'number_of_flowcells', label: 'Number of flowcells' },
+        { key: 'action', label: 'Action' },
       ],
     }
   },

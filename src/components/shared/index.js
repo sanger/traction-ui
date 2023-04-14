@@ -20,6 +20,11 @@ import TractionResultIcon from '@/components/shared/icons/TractionResultIcon'
 import TractionPaginationIcon from '@/components/shared/icons/TractionPaginationIcon'
 import TractionPagination from '@/components/shared/TractionPagination'
 import TractionForm from '@/components/shared/TractionForm'
+import TractionTable from '@/components/shared/table/TractionTable'
+import TractionTableRow from '@/components/shared/table/TractionTableRow'
+import TractionTableColumn from '@/components/shared/table/TractionTableColumn'
+import TractionArrowIcon from '@/components/shared/icons/TractionArrowIcon'
+import TractionSortIcon from '@/components/shared/icons/TractionSortIcon'
 import {
   BModal,
   VBModal,
@@ -32,15 +37,8 @@ import {
   BCardText,
   BListGroup,
   BListGroupItem,
-  BTable,
   BFormFile,
-  BTableSimple,
-  BTr,
-  BTd,
   BFormInvalidFeedback,
-  BThead,
-  BTh,
-  BTbody,
   BFormTextarea,
   BInputGroup,
   BInputGroupAppend,
@@ -58,15 +56,8 @@ const registerBootstrapComponents = (vue) => {
   vue.component('traction-card-text', BCardText)
   vue.component('traction-list-group', BListGroup)
   vue.component('traction-list-group-item', BListGroupItem)
-  vue.component('traction-table', BTable)
-  vue.component('traction-table-simple', BTableSimple)
   vue.component('traction-file', BFormFile)
-  vue.component('traction-tr', BTr)
-  vue.component('traction-td', BTd)
   vue.component('traction-invalid-feedback', BFormInvalidFeedback)
-  vue.component('traction-thead', BThead)
-  vue.component('traction-th', BTh)
-  vue.component('traction-tbody', BTbody)
   vue.component('traction-textarea', BFormTextarea)
   vue.component('traction-input-group', BInputGroup)
   vue.component('traction-input-group-append', BInputGroupAppend)
@@ -102,6 +93,12 @@ const registerGlobal = (vue) => {
   vue.component('TractionPagination', TractionPagination)
   vue.component('TractionPaginationIcon', TractionPaginationIcon)
   vue.component('TractionForm', TractionForm)
+  vue.component('TractionArrowIcon', TractionArrowIcon)
+  vue.component('TractionSortIcon', TractionSortIcon)
+  vue.component('TractionTable', TractionTable)
+  vue.component('TractionTableRow', TractionTableRow)
+  vue.component('TractionTableColumn', TractionTableColumn)
+
   registerBootstrapComponents(vue)
 }
 

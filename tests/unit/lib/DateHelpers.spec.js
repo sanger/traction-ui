@@ -1,6 +1,6 @@
 import { getCurrentDate } from '@/lib/DateHelpers'
 
-describe('dateHelpers', () => {
+describe('getCurrentDate', () => {
   beforeEach(() => {
     // tell vitest we use mocked time
     vi.useFakeTimers()

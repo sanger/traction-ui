@@ -1,12 +1,12 @@
 <template>
-  <traction-tr data-type="pool-library-edit">
-    <traction-td data-attribute="request-sample-name">
+  <traction-table-row data-type="pool-library-edit">
+    <traction-table-column data-attribute="request-sample-name">
       {{ request.sample_name }}
-    </traction-td>
-    <traction-td data-attribute="request-source-identifier">
+    </traction-table-column>
+    <traction-table-column data-attribute="request-source-identifier">
       {{ request.source_identifier }}
-    </traction-td>
-    <traction-td>
+    </traction-table-column>
+    <traction-table-column>
       <traction-field-error
         data-attribute="tag-id-error"
         :error="errorsFor('tag_id')"
@@ -20,8 +20,8 @@
           class="tag-id"
         ></traction-select>
       </traction-field-error>
-    </traction-td>
-    <traction-td>
+    </traction-table-column>
+    <traction-table-column>
       <traction-field-error
         data-attribute="template-prep-kit-box-barcode-error"
         :error="errorsFor('template_prep_kit_box_barcode')"
@@ -34,8 +34,8 @@
           placeholder="Template Prep Kit Box Barcode"
         />
       </traction-field-error>
-    </traction-td>
-    <traction-td>
+    </traction-table-column>
+    <traction-table-column>
       <traction-field-error
         data-attribute="volume-error"
         :error="errorsFor('volume')"
@@ -48,8 +48,8 @@
           placeholder="Volume"
         />
       </traction-field-error>
-    </traction-td>
-    <traction-td>
+    </traction-table-column>
+    <traction-table-column>
       <traction-field-error
         data-attribute="concentration-error"
         :error="errorsFor('concentration')"
@@ -62,8 +62,8 @@
           placeholder="Concentration"
         />
       </traction-field-error>
-    </traction-td>
-    <traction-td>
+    </traction-table-column>
+    <traction-table-column>
       <traction-field-error
         data-attribute="insert-size-error"
         :error="errorsFor('insert_size')"
@@ -76,8 +76,8 @@
           placeholder="Insert Size"
         />
       </traction-field-error>
-    </traction-td>
-  </traction-tr>
+    </traction-table-column>
+  </traction-table-row>
 </template>
 <script>
 import { createNamespacedHelpers } from 'vuex'

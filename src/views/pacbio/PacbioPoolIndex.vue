@@ -16,29 +16,16 @@
         :total-rows="pools.length"
         :per-page="perPage"
         aria-controls="pool-index"
+        @input="onPageChange($event)"
       >
       </traction-pagination>
-
-      <traction-form-group
-        class="float-right mx-5"
-        label-cols-lg="4"
-        label="Per Page"
-        label-for="input-per-page"
-      >
-        <traction-input
-          id="input-per-page"
-          v-model="perPage"
-          trim
-          class="w-full w-25"
-        ></traction-input>
-      </traction-form-group>
     </div>
 
     <traction-table
       id="pool-index"
       show-empty
       responsive
-      :items="pools"
+      :items="tableData"
       :fields="fields"
       :filter="filter"
       :per-page="perPage"
@@ -65,6 +52,7 @@
 
       <template #cell(actions)="row">
         <router-link
+          id="edit-pool"
           data-action="edit-pool"
           :to="{ name: 'PacbioPoolCreate', params: { id: row.item.id } }"
         >
@@ -127,7 +115,7 @@ export default {
   data() {
     return {
       fields: [
-        { key: 'selected', label: '' },
+        { key: 'selected', label: '\u2713' },
         { key: 'id', label: 'Pool ID', sortable: true, tdClass: 'pool-id' },
         {
           key: 'run_suitability',
@@ -172,6 +160,11 @@ export default {
   },
   computed: {
     ...mapGetters('traction/pacbio/pools', ['pools']),
+  },
+  watch: {
+    pools(newValue) {
+      this.setInitialData(newValue, this.perPage)
+    },
   },
   methods: {
     /*

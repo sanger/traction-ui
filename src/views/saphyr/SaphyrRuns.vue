@@ -27,7 +27,7 @@
       hover
       responsive
       show-empty
-      :items="runs"
+      :items="tableData"
       :fields="fields"
       :filter="filter"
       :sort-by.sync="sortBy"
@@ -36,8 +36,8 @@
       :current-page="currentPage"
       @filtered="onFiltered"
     >
-      <template #cell(chip_barcode)="data">
-        {{ truncateText(data.value, 40) }}
+      <template #cell(chip_barcode)="row">
+        {{ truncateText(row.item.chip_barcode, 40) }}
       </template>
 
       <template #cell(actions)="row">
@@ -98,12 +98,10 @@
         :total-rows="runs.length"
         :per-page="perPage"
         aria-controls="libraries-table"
+        @input="onPageChange($event)"
       >
       </traction-pagination>
     </div>
-    <traction-form-group label-cols-lg="1" label="Per Page" label-for="input-per-page">
-      <traction-input id="input-per-page" v-model="perPage" trim class="w-25"></traction-input>
-    </traction-form-group>
   </div>
 </template>
 
@@ -136,6 +134,11 @@ export default {
   },
   computed: {
     ...mapGetters('traction/saphyr/runs', ['runs']),
+  },
+  watch: {
+    runs(newValue) {
+      this.setInitialData(newValue, this.perPage)
+    },
   },
   created() {
     this.provider()

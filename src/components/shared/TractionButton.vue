@@ -7,6 +7,7 @@
       themeStyle,
       sizeStyle,
       widthStyle,
+      classes,
     ]"
     @click="click"
   >
@@ -54,6 +55,9 @@ const themes = {
   paginationDefault: 'bg-white text-black  border-gray-300 hover:bg-gray-400',
   paginationSelect:
     'text-white bg-sdb-200 shadow-sm focus:shadow-outline-sdb hover:bg-sdb-300 active:bg-sdb-400',
+  navigation:
+    'text-sdb-200 border-0 bg-white shadow-sm focus:shadow-outline-sdb hover:bg-sdb-300 active:bg-sdb-400',
+  sort: 'text-sdb-100 hover:text-blue-800 active:text-blue-400',
 }
 
 export default {
@@ -82,6 +86,11 @@ export default {
       type: [String, Object],
       required: false,
       default: null,
+    },
+    classes: {
+      type: String,
+      required: false,
+      default: '',
     },
   },
   computed: {

@@ -1,5 +1,8 @@
 describe('Pacbio Run Edit view', () => {
   beforeEach(() => {
+    cy.withFlags({
+      enable_custom_table: { enabled: true },
+    })
     cy.intercept('/v1/pacbio/runs', {
       fixture: 'tractionPacbioRuns.json',
     })
@@ -36,7 +39,9 @@ describe('Pacbio Run Edit view', () => {
     })
 
     cy.visit('#/pacbio/runs')
-    cy.get('#editRun-7').click()
+    cy.get('#actions').within(() => {
+      cy.get('#editRun-7').click()
+    })
     cy.get('ellipse').first().click()
     cy.get('#movieTime').select('15.0')
     cy.get('#loadingTarget').invoke('val')
@@ -57,7 +62,9 @@ describe('Pacbio Run Edit view', () => {
     })
 
     cy.visit('#/pacbio/runs')
-    cy.get('#editRun-7').click()
+    cy.get('#actions').within(() => {
+      cy.get('#editRun-7').click()
+    })
     cy.get('ellipse').first().click()
     cy.get('#onPlateLoadingConc').clear()
     cy.get('#updateBtn').click()
