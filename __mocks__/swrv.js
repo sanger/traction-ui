@@ -2,7 +2,7 @@ const baseURL = import.meta.env.VITE_TRACTION_BASE_URL
 
 const flags = {
   flipper_id: 'User',
-  features: { enable_custom_form: { enabled: false } },
+  features: { enable_custom_form: { enabled: true } },
 }
 
 const libraryTypes = {

@@ -1,15 +1,20 @@
 <template>
   <flagged-feature name="enable_custom_form">
     <template #disabled
-      ><b-form @submit="submitAction" @reset="resetAction">
+      ><b-form :class="classes" @submit="submitAction" @reset="resetAction">
         <slot />
       </b-form>
     </template>
-    <div class="flex flex-col">
-      <form action="submitAction" reset="resetAction" >
-        <slot />
-      </form>
-    </div>
+    <form
+      v-bind="$attrs"
+      :class="classes"
+      action=""
+      reset=""
+      @submit.prevent="submitAction"
+      @reset.prevent="resetAction"
+    >
+      <slot />
+    </form>
   </flagged-feature>
 </template>
 <script>
@@ -18,6 +23,12 @@ export default {
   name: 'TractionForm',
   components: { BForm },
   inheritAttrs: false,
+  props: {
+    classes: {
+      type: String,
+      default: '',
+    },
+  },
   methods: {
     submitAction() {
       this.$emit('submit')
