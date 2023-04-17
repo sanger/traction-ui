@@ -29,7 +29,7 @@ export default {
   components: { BForm },
   inheritAttrs: false,
   props: {
-     //any custom tailwind class to set the styling option
+    //any custom tailwind class to set the styling option
     classes: {
       type: String,
       default: '',
@@ -40,7 +40,7 @@ export default {
     submitAction() {
       this.$emit('submit')
     },
-     /**reset event will be emitted externally on reset */
+    /**reset event will be emitted externally on reset */
     resetAction() {
       this.$emit('reset')
     },
