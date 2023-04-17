@@ -9,8 +9,8 @@
     <div class="flex justify-end">
       <button class="w-8 bg-gray-300 text-slate-400" @click="removePool(id)">x</button>
     </div>
-    <traction-row>
-      <traction-col cols="3">
+    <flex-row>
+      <flex-col >
         <img src="/tube.png" />
         <traction-button
           :id="`editPool-${id}`"
@@ -20,8 +20,8 @@
           :to="{ name: 'PacbioPoolCreate', params: { id: id } }"
           >Edit</traction-button
         >
-      </traction-col>
-      <traction-col cols="9">
+      </flex-col>
+      <flex-col >
         <dl class="row">
           <dt>Barcode</dt>
           <dd data-attribute="barcode">{{ barcode }}</dd>
@@ -57,8 +57,8 @@
           </dl>
         </div>
         <div v-else>Pool invalid. Click for more information</div>
-      </traction-col>
-    </traction-row>
+      </flex-col>
+    </flex-row>
   </traction-list-group-item>
 </template>
 
