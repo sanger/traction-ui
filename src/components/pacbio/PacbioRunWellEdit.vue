@@ -369,7 +369,12 @@ export default {
       this.localPools = []
       // If the well has pools we want the barcode and id of each to display
       this.well.pools?.forEach((id) => {
-        const pool = this.pools.find((pool) => pool.id === id)
+        const pool = this.pools.find((pool) => pool.id == id)
+        if (!pool) {
+          console.log('error getting pool from id: ' + id)
+          console.log(this.pools)
+          return
+        }
         this.localPools.push({ id, barcode: pool.barcode })
       })
     },
