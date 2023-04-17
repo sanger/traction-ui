@@ -90,7 +90,7 @@
               </traction-table-row>
             </thead>
             <tbody class="bg-white divide-y divide-gray-200">
-              <template v-if="simple"><slot /> </template>
+              <template v-if="simple"><slot /></template>
               <template v-else>
                 <template v-for="(row, rowIndex) in rows">
                   <traction-table-row
@@ -113,7 +113,7 @@
                     </template>
                   </traction-table-row>
                   <traction-table-row v-if="row.detailsShowing" :key="'custom-comp' + rowIndex">
-                    <traction-table-column :classes="`border-0`">
+                    <traction-table-column :classes="`border-0`" :colspan="fields.length">
                       <slot :name="`row-details`" v-bind="row" />
                     </traction-table-column>
                   </traction-table-row>
@@ -271,7 +271,7 @@ export default {
             rowSelected: false,
 
             /**Index of row**/
-            rowIndex: rowIndex,
+            index: rowIndex,
           })
       })
       return rows
