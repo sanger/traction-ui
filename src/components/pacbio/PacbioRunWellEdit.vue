@@ -315,6 +315,9 @@ export default {
     removeRow(row) {
       this.localPools.splice(row.index, 1)
     },
+    removeInvalidPools() {
+      this.localPools = this.localPools.filter((pool) => pool.id && pool.barcode)
+    },
     updateCCSAnalysisOutput() {
       if (this.well.generate_hifi === 'Do Not Generate') {
         this.well.ccs_analysis_output = 'No'
@@ -341,6 +344,7 @@ export default {
       this.$refs['well-modal'].hide()
     },
     async update() {
+      this.removeInvalidPools()
       this.updateWell(this.wellPayload)
       this.alert('Well created', 'success')
       this.hide()
@@ -353,7 +357,7 @@ export default {
     async updatePoolBarcode(row, barcode) {
       const index = row.index
       await this.$store.dispatch('traction/pacbio/runCreate/findPools', { barcode: barcode })
-      const pool = this.poolByBarcode(barcode)
+      const pool = await this.poolByBarcode(barcode)
       if (pool) {
         this.localPools[index] = { id: pool.id, barcode }
       } else {
@@ -370,11 +374,6 @@ export default {
       // If the well has pools we want the barcode and id of each to display
       this.well.pools?.forEach((id) => {
         const pool = this.pools.find((pool) => pool.id == id)
-        if (!pool) {
-          console.log('error getting pool from id: ' + id)
-          console.log(this.pools)
-          return
-        }
         this.localPools.push({ id, barcode: pool.barcode })
       })
     },
