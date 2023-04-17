@@ -25,6 +25,7 @@ describe('Pacbio Pool Edit', () => {
     })
     cy.withFlags({
       enable_custom_table: { enabled: true },
+      enable_custom_form: { enabled: true },
     })
   })
 

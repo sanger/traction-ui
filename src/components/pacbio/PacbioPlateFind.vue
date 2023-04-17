@@ -1,5 +1,5 @@
 <template>
-  <traction-form @submit.prevent="handleSubmit()">
+  <traction-form @submit="handleSubmit()">
     <traction-section title="Plate" number="1a" class="mb-2">
       <div class="text-left">Find Plate</div>
       <traction-input

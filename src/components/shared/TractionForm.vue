@@ -1,7 +1,7 @@
 <template>
   <flagged-feature name="enable_custom_form">
     <template #disabled
-      ><b-form :class="classes" @submit="submitAction" @reset="resetAction">
+      ><b-form :class="classes" @submit.prevent="submitAction" @reset.prevent="resetAction">
         <slot />
       </b-form>
     </template>
