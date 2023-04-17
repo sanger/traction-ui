@@ -30,7 +30,10 @@ import SampleExtractionTubesWithSample from './sampleExtractionTubesWithSample'
 import PacbioRuns from './pacbioRuns'
 import PacbioRun from './pacbioRun'
 import PacbioPlates from './pacbioPlates'
+import PacbioPlateRequest from './pacbioPlateRequest'
 import PacbioPlatesRequest from './pacbioPlatesRequest'
+import PacbioTubeRequest from './pacbioTubeRequest'
+import PacbioTubesRequest from './pacbioTubesRequest'
 import PacbioPool from './pacbioPool'
 import PacbioRequestsRequest from './pacbioRequestsRequest'
 import PacbioTagSets from './pacbioTagSets'
@@ -98,7 +101,10 @@ export default {
   PacbioRuns,
   PacbioRun,
   PacbioPlates,
+  PacbioPlateRequest,
   PacbioPlatesRequest,
+  PacbioTubeRequest,
+  PacbioTubesRequest,
   PacbioPool,
   PacbioRequestsRequest,
   PacbioTagSets,

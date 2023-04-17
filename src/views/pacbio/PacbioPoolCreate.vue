@@ -13,12 +13,18 @@
           >
         </traction-menu>
         <div v-if="sourceIndex == 0" class="flex flex-col">
-          <PacbioPlateFind class="mb-6" />
+          <traction-section title="Plates" number="1a" class="mb-2">
+            <div class="text-left">Find Plates</div>
+            <LabwareFinder :fetcher="findPacbioPlate" filter="barcode" class="mb-6" />
+          </traction-section>
           <PacbioPlateSelectedList class="mb-2" />
         </div>
         <div v-else>
-          <PacbioTubeFind class="mb-2" />
-          <PacbioTubeSelectedList />
+          <traction-section title="Tubes" number="2a" class="mb-2">
+            <div class="text-left">Find Tubes</div>
+            <LabwareFinder :fetcher="findPacbioTube" filter="barcode" class="mb-6" />
+          </traction-section>
+          <PacbioTubeSelectedList class="mb-2" />
         </div>
       </div>
       <div class="flex flex-col w-1/2 mt-6 gap-y-4">
@@ -36,12 +42,11 @@
 
 <script>
 import PacbioTagSetList from '@/components/pacbio/PacbioTagSetList'
-import PacbioPlateFind from '@/components/pacbio/PacbioPlateFind'
 import PacbioPlateSelectedList from '@/components/pacbio/PacbioPlateSelectedList'
-import PacbioTubeFind from '@/components/pacbio/PacbioTubeFind'
 import PacbioTubeSelectedList from '@/components/pacbio/PacbioTubeSelectedList'
 import PacbioTagSetItem from '@/components/pacbio/PacbioTagSetItem'
 import PacbioPoolEdit from '@/components/pacbio/PacbioPoolEdit'
+import LabwareFinder from '@/components/LabwareFinder'
 
 import { createNamespacedHelpers } from 'vuex'
 const { mapActions } = createNamespacedHelpers('traction/pacbio/poolCreate')
@@ -50,19 +55,17 @@ export default {
   name: 'PacbioPoolCreate',
   components: {
     PacbioTagSetList,
-    PacbioPlateFind,
     PacbioPlateSelectedList,
-    PacbioTubeFind,
     PacbioTubeSelectedList,
     PacbioTagSetItem,
     PacbioPoolEdit,
+    LabwareFinder,
   },
 
   data() {
     return { sourceIndex: 0, tabTitles: ['Add Plates', 'Add Tubes'] }
   },
   created() {
-    const requests = this.fetchPacbioRequests()
     const tagSets = this.fetchPacbioTagSets()
     // Needed due to left over pool data from previously edited pools
     this.$store.commit('traction/pacbio/poolCreate/clearPoolData')
@@ -73,7 +76,6 @@ export default {
     }
     // We don't use await here as otherwise the handling of one response will be blocked
     // by the other
-    requests.then(this.alertOnFail)
     tagSets.then(this.alertOnFail)
   },
   methods: {
@@ -85,7 +87,12 @@ export default {
     setSource(indx) {
       this.sourceIndex = indx
     },
-    ...mapActions(['fetchPacbioRequests', 'fetchPacbioTagSets', 'populateLibrariesFromPool']),
+    ...mapActions([
+      'fetchPacbioTagSets',
+      'populateLibrariesFromPool',
+      'findPacbioPlate',
+      'findPacbioTube',
+    ]),
   },
 }
 </script>
