@@ -14,8 +14,7 @@
           "dna_control_complex_box_barcode": "Lxxxxx10171760012311",
           "system_name": "Sequel I",
           "pacbio_smrt_link_version_id": 1,
-          "created_at": "11/09/2019 01:11",
-          "all_wells_have_pools": true
+          "created_at": "11/09/2019 01:11"
         }
       },
       {
@@ -31,8 +30,7 @@
           "dna_control_complex_box_barcode": "Lxxxxx10171760012312",
           "system_name": "Sequel II",
           "pacbio_smrt_link_version_id": 1,
-          "created_at": "12/09/2019 02:22",
-          "all_wells_have_pools": true
+          "created_at": "12/09/2019 02:22"
         }
       },
       {
@@ -64,8 +62,7 @@
           "dna_control_complex_box_barcode": "Lxxxxx10171760012312",
           "system_name": "Sequel II",
           "pacbio_smrt_link_version_id": 1,
-          "created_at": "10/09/2019 02:22",
-          "all_wells_have_pools": true
+          "created_at": "10/09/2019 02:22"
         }
       },
       {
@@ -81,8 +78,7 @@
           "dna_control_complex_box_barcode": "Lxxxxx10171760012312",
           "system_name": "Sequel II",
           "pacbio_smrt_link_version_id": 1,
-          "created_at": "10/09/2019 02:22",
-          "all_wells_have_pools": true
+          "created_at": "10/09/2019 02:22"
         }
       },
       {
@@ -98,8 +94,7 @@
           "dna_control_complex_box_barcode": "Lxxxxx10171760012312",
           "system_name": "Sequel II",
           "pacbio_smrt_link_version_id": 1,
-          "created_at": "10/09/2019 02:22",
-          "all_wells_have_pools": false
+          "created_at": "10/09/2019 02:22"
         }
       }
     ],

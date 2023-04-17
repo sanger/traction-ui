@@ -1,5 +1,4 @@
-import { populateById } from '@/api/JsonApi'
-import { dataToObjectById } from '@/api/JsonApi'
+import { populateById, populateBy, dataToObjectById, dataToObjectByPosition } from '@/api/JsonApi'
 import Vue from 'vue'
 import defaultState from './state'
 
@@ -20,6 +19,60 @@ export default {
    * @param {Array.{}} smrtLinkVersions The SmrtLinkVersions to populate the store
    */
   populateSmrtLinkVersions: populateById('smrtLinkVersions'),
+
+  /**
+   * Populated via API calls from the actions
+   * @param {Object} state The VueXState object
+   * @param {Object} run The current run to populate the store
+   */
+  populateRun: (state, { id, attributes }) => {
+    state.run = {
+      id,
+      ...attributes,
+    }
+  },
+
+  /**
+   * Populated via API calls from the actions
+   * @param {Object} state The VueXState object
+   */
+  populateWells: populateBy('wells', dataToObjectByPosition, {
+    includeRelationships: true,
+    populateResources: false,
+  }),
+
+  /**
+   * Populated the run type
+   * @param {Object} state The VueXState object
+   * @param {Object} runType The runType
+   */
+  populateRunType: (state, runType) => {
+    state.runType = runType
+  },
+
+  /**
+   * Populated the run smrtLinkVersion
+   * @param {Object} state The VueXState object
+   * @param {Object} smrtLinkVersion The smrtLinkVersion
+   */
+  populateSmrtLinkVersion: (state, smrtLinkVersion) => {
+    state.smrtLinkVersion = smrtLinkVersion
+  },
+
+  /**
+   * Populated via API calls from the actions
+   * @param {Object} state The VueXState object
+   */
+  populatePools: populateById('pools', { includeRelationships: true, populateResources: false }),
+
+  /**
+   * @param {Object} state The VueXState object
+   * @param {Object} defaultWellAttributes The default well attributes
+   */
+  populateDefaultWellAttributes: (state, defaultWellAttributes) => {
+    state.defaultWellAttributes = defaultWellAttributes
+  },
+
   setPools(state, pools) {
     Vue.set(state, 'pools', {
       ...state.pools,
@@ -42,8 +95,27 @@ export default {
   removePool(state, id) {
     Vue.delete(state.pools, id)
   },
-  clearPoolData(state) {
+  clearRunData(state) {
     const new_state = defaultState()
     Object.assign(state, new_state, { resources: state.resources })
+  },
+
+  /**
+   * @param {Object} { wells } The VueXState object
+   * @param {Object} well The well to update
+   * Replaces the well in store with the updated well
+   */
+  updateWell({ wells }, well) {
+    const position = well.position
+    Vue.set(wells, position, Object.assign({}, wells[position], well))
+  },
+
+  /**
+   * @param {Object} { wells } The VueXState object
+   * @param {Object} well The well to update
+   * Replaces the well in store with the updated well
+   */
+  deleteWell({ wells }, position) {
+    Vue.delete(wells, position)
   },
 }

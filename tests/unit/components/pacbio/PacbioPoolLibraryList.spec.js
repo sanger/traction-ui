@@ -25,7 +25,6 @@ const libraries = {
   _3: { pacbio_request_id: '3', ...libraryAttributes, tag_id: '3' },
 }
 
-// TODO: This is a definite smell. We should not need this here.
 const tagSet = {
   id: '1',
   name: 'TagSet1',

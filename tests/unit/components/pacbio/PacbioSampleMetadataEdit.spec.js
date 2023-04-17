@@ -36,16 +36,14 @@ describe('PacbioSampleMetadataEdit.vue', () => {
     })
 
     it('successful ', async () => {
-      modal.updateRequest.mockReturnValue(true)
+      modal.updateRequest.mockResolvedValue({ success: true, errors: [] })
       await modal.update()
       expect(modal.alert).toBeCalledWith('Sample updated', 'success')
       expect(modal.hide).toBeCalled()
     })
 
     it('unsuccessful ', async () => {
-      modal.updateRequest.mockImplementation(() => {
-        throw Error('Raise this error')
-      })
+      modal.updateRequest.mockResolvedValue({ success: false, errors: ['Error: Raise this error'] })
       await modal.update()
       expect(modal.alert).toBeCalledWith(
         'Failed to update sample. Error: Raise this error',

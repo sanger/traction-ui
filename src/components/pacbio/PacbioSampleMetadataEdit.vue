@@ -86,12 +86,11 @@ export default {
   },
   methods: {
     async update() {
-      try {
-        await this.updateRequest(this.request)
-        this.alert('Sample updated', 'success')
-      } catch (err) {
-        this.alert('Failed to update sample. ' + err, 'danger')
-      }
+      await this.updateRequest(this.request).then(({ success, errors }) => {
+        success
+          ? this.alert('Sample updated', 'success')
+          : this.alert('Failed to update sample. ' + errors, 'danger')
+      })
       this.hide()
     },
     generateId(text, id) {
@@ -100,7 +99,7 @@ export default {
     ...mapActions(['updateRequest']),
     show() {
       this.$refs['modal'].show()
-      this.request = this.req
+      this.request = { ...this.req }
     },
     alert(message, type) {
       this.$emit('alert', message, type)

@@ -25,6 +25,7 @@ import TractionPacbioPool from './tractionPacbioPool'
 import TractionPacbioPools from './tractionPacbioPools'
 import TractionPacbioPoolsNoRelationships from './tractionPacbioPoolsNoRelationships'
 import TractionPacbioSamples from './tractionPacbioSamples'
+import TractionPacbioSample from './tractionPacbioSample'
 import SampleExtractionTubesWithSample from './sampleExtractionTubesWithSample'
 import PacbioRuns from './pacbioRuns'
 import PacbioRun from './pacbioRun'
@@ -62,6 +63,7 @@ import tractionOntLibraries from './tractionOntLibraries'
 import TractionOntPool from './tractionOntPool.json'
 import TractionOntPools from './tractionOntPools.json'
 import TractionPacbioSmrtLinkVersions from './tractionPacbioSmrtLinkVersions'
+import PacbioRunWithWellDefaults from './pacbioRunWithWellDefaults'
 
 export default {
   CreateChip,
@@ -92,6 +94,7 @@ export default {
   TractionPacbioPoolsNoRelationships,
   TractionPacbioLibrary,
   TractionPacbioSamples,
+  TractionPacbioSample,
   PacbioRuns,
   PacbioRun,
   PacbioPlates,
@@ -128,4 +131,5 @@ export default {
   OntTubeRequest,
   OntTubesRequest,
   TractionPacbioSmrtLinkVersions,
+  PacbioRunWithWellDefaults,
 }
