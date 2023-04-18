@@ -3,6 +3,19 @@ import { mount, localVue, store, Data, router } from '@support/testHelper'
 import { beforeEach, describe, expect, it } from 'vitest'
 import flushPromises from 'flush-promises'
 
+// TODO: Because of the way this is setup we are getting stderr throughout on ci
+// Error: Error: getaddrinfo EAI_AGAIN traction
+//     at Object.dispatchError (/home/runner/work/traction-ui/traction-ui/node_modules/jsdom/lib/jsdom/living/xhr/xhr-utils.js:63:19)
+// stderr | tests/unit/views/pacbio/PacbioSampleIndex.spec.js > PacbioSamples.vue > building the table > contains the correct data
+//     at Request.<anonymous> (/home/runner/work/traction-ui/traction-ui/node_modules/jsdom/lib/jsdom/living/xhr/XMLHttpRequest-impl.js:655:18)
+//     at Request.emit (node:events:525:35)
+//     at ClientRequest.<anonymous> (/home/runner/work/traction-ui/traction-ui/node_modules/jsdom/lib/jsdom/living/helpers/http-request.js:121:14)
+//     at ClientRequest.emit (node:events:513:28)
+//     at Socket.socketErrorListener (node:_http_client:481:9)
+//     at Socket.emit (node:events:513:28)
+//     at emitErrorNT (node:internal/streams/destroy:157:8)
+//     at emitErrorCloseNT (node:internal/streams/destroy:122:3)
+//     at processTicksAndRejections (node:internal/process/task_queues:83:21) undefined
 describe('PacbioSamples.vue', () => {
   let wrapper, samples
 

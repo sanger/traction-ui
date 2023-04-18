@@ -43,7 +43,6 @@ describe('actions', () => {
       expect(message).toEqual('Barcode(s) successfully printed')
     })
 
-    //TODO: Check errors are correct
     it('unsuccessful', async () => {
       const create = vi.fn()
       const rootState = { api: { printMyBarcode: { print_jobs: { create } } } }

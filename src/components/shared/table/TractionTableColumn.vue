@@ -18,6 +18,7 @@
       :id="id"
       data-testid="column"
       v-bind="$attrs"
+      :colspan="colspan"
       :class="`px-1 py-1 text-sm whitespace-nowrap text-center ${classes}`"
       @click="click"
     >
@@ -40,6 +41,11 @@ export default {
       type: String,
       required: false,
       default: '',
+    },
+    colspan: {
+      type: Number,
+      required: false,
+      default: 1,
     },
   },
   methods: {

@@ -6,36 +6,25 @@ describe('Pacbio Run Edit view', () => {
     cy.intercept('/v1/pacbio/runs', {
       fixture: 'tractionPacbioRuns.json',
     })
-    cy.intercept('/v1/pacbio/runs/7?include=plate.wells.pools.tube', {
-      fixture: 'tractionPacbioRun.json',
-    })
-    cy.intercept(
-      '/v1/pacbio/pools?filter[barcode]=TRAC-2-1&include=tube,libraries.tag,libraries.request&fields[requests]=sample_name&fields[tubes]=barcode&fields[tags]=group_id&fields[libraries]=request,tag,run_suitability',
-      {
-        fixture: 'pacbioPool.json',
-      },
-    )
-    cy.intercept(
-      '/v1/pacbio/pools?include=tube,libraries.tag,libraries.request&fields[requests]=sample_name&fields[tubes]=barcode&fields[tags]=group_id&fields[libraries]=request,tag,run_suitability',
-      {
-        fixture: 'tractionPacbioPools.json',
-      },
-    )
-    cy.intercept('/v1/pacbio/runs/7?include=plate.wells.pools.libraries', {
-      fixture: 'tractionPacbioRun.json',
-    })
-    cy.intercept('/v1/pacbio/runs/7', {
-      fixture: 'tractionPacbioRun.json',
-    })
     cy.intercept('/v1/pacbio/smrt_link_versions', {
       fixture: 'tractionPacbioSmrtLinkVersions.json',
     })
+
+    // Get the existing run to be edited
+    cy.intercept(
+      'v1/pacbio/runs/7?include=plate.wells.pools.tube,plate.wells.pools.libraries.tag,plate.wells.pools.libraries.request,smrt_link_version',
+      {
+        fixture: 'tractionPacbioRun.json',
+      },
+    )
   })
 
   it('Updates a run successfully', () => {
-    cy.intercept('/v1/pacbio/runs/wells/6', {
+    cy.intercept('PATCH', '/v1/pacbio/runs/7', {
       statusCode: 200,
-      body: { data: {} },
+      body: {
+        data: {},
+      },
     })
 
     cy.visit('#/pacbio/runs')
@@ -43,14 +32,15 @@ describe('Pacbio Run Edit view', () => {
       cy.get('#editRun-7').click()
     })
     cy.get('ellipse').first().click()
-    cy.get('#movieTime').select('15.0')
-    cy.get('#loadingTarget').invoke('val')
-    cy.get('#updateBtn').click()
+    cy.get('[data-attribute="movie-time"]').select('15.0')
+    cy.get('[data-attribute="loading-target-p1-plus-p2"]').invoke('val')
+    cy.get('#update').click()
     cy.get('button').contains('Update').click()
+    cy.contains('[data-type=run-create-message]', 'Run successfully updated')
   })
 
   it('will not create a run if there is an error', () => {
-    cy.intercept('/v1/pacbio/runs/wells/6', {
+    cy.intercept('PATCH', '/v1/pacbio/runs/7', {
       statusCode: 422,
       body: {
         data: {
@@ -66,12 +56,12 @@ describe('Pacbio Run Edit view', () => {
       cy.get('#editRun-7').click()
     })
     cy.get('ellipse').first().click()
-    cy.get('#onPlateLoadingConc').clear()
-    cy.get('#updateBtn').click()
+    cy.get('[data-attribute="on-plate-loading-concentration"]').clear()
+    cy.get('#update').click()
     cy.get('ellipse').first().should('have.class', 'filled')
     cy.get('button').contains('Update').click()
     cy.contains(
-      '[data-type=run-validation-message]',
+      '[data-type=run-create-message]',
       "Failed to create run in Traction: on_plate_loading_concentration can't be blank",
     )
   })

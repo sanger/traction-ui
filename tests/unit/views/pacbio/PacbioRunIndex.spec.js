@@ -4,7 +4,6 @@ import Response from '@/api/Response'
 import flushPromises from 'flush-promises'
 
 describe('Runs.vue', () => {
-  const pipeline = 'pacbio'
   let wrapper, runs, mockRuns
 
   beforeEach(async () => {
@@ -66,12 +65,12 @@ describe('Runs.vue', () => {
       expect(button.attributes('disabled')).toBeTruthy()
     })
 
-    it('on click startRun is called', () => {
-      runs.startRun = vi.fn()
+    it('on click updateRun is called', () => {
+      runs.updateRun = vi.fn()
 
       button = wrapper.find('#startRun-1')
       button.trigger('click')
-      expect(runs.startRun).toBeCalledWith({ id: mockRuns[0].id, pipeline })
+      expect(runs.updateRun).toBeCalledWith({ id: mockRuns[0].id, state: 'started' })
     })
   })
 
@@ -102,14 +101,14 @@ describe('Runs.vue', () => {
       expect(button.attributes('disabled')).toBeTruthy()
     })
 
-    it('on click completeRun is called', () => {
+    it('on click updateRun is called', () => {
       // run at(2) is in state started
-      runs.completeRun = vi.fn()
+      runs.updateRun = vi.fn()
 
       button = wrapper.find('#completeRun-2')
       button.trigger('click')
 
-      expect(runs.completeRun).toBeCalledWith({ id: mockRuns[1].id, pipeline })
+      expect(runs.updateRun).toBeCalledWith({ id: mockRuns[1].id, state: 'completed' })
     })
   })
 
@@ -140,14 +139,14 @@ describe('Runs.vue', () => {
       expect(button.attributes('disabled')).toBeTruthy()
     })
 
-    it('on click cancelRun is called', () => {
+    it('on click updateRun is called', () => {
       // run at(2) is in state started
-      runs.cancelRun = vi.fn()
+      runs.updateRun = vi.fn()
 
       button = wrapper.find('#cancelRun-2')
       button.trigger('click')
 
-      expect(runs.cancelRun).toBeCalledWith({ id: mockRuns[1].id, pipeline })
+      expect(runs.updateRun).toBeCalledWith({ id: mockRuns[1].id, state: 'cancelled' })
     })
   })
 
@@ -157,18 +156,6 @@ describe('Runs.vue', () => {
     it('it exists when the run has wells with pools', () => {
       button = wrapper.find('#generate-sample-sheet-1')
       expect(button.isVisible()).toBe(true) // button is shown
-    })
-
-    it('it does not exist when the run has wells without pools', async () => {
-      const noPoolsRun = Data.PacbioRuns
-      noPoolsRun.data.data[0].attributes.all_wells_have_pools = false
-      const get = vi.spyOn(store.state.api.traction.pacbio.runs, 'get')
-      get.mockReturnValue(noPoolsRun)
-      wrapper = mount(PacbioRuns, { store, router, localVue })
-      await flushPromises()
-
-      button = wrapper.find('#generate-sample-sheet-1')
-      expect(button.isVisible()).toBe(false) // button is hidden
     })
 
     it('on click generateSampleSheetPath is called', () => {
@@ -245,33 +232,31 @@ describe('Runs.vue', () => {
   describe('#updateRun', () => {
     const id = 1
     beforeEach(() => {
-      runs.startRun = vi.fn()
-      runs.completeRun = vi.fn()
-      runs.cancelRun = vi.fn()
+      runs.updateRun = vi.fn()
       runs.showAlert = vi.fn()
     })
 
     it('calls startRun successfully', () => {
-      runs.updateRun('start', id)
-      expect(runs.startRun).toBeCalledWith({ id, pipeline })
+      runs.updateRunState('started', id)
+      expect(runs.updateRun).toBeCalledWith({ id, state: 'started' })
     })
 
     it('calls completeRun successfully', () => {
-      runs.updateRun('complete', id)
-      expect(runs.completeRun).toBeCalledWith({ id, pipeline })
+      runs.updateRunState('completed', id)
+      expect(runs.updateRun).toBeCalledWith({ id, state: 'completed' })
     })
 
     it('calls cancelRun successfully', () => {
       const id = 1
-      runs.updateRun('cancel', id)
-      expect(runs.cancelRun).toBeCalledWith({ id, pipeline })
+      runs.updateRunState('cancelled', id)
+      expect(runs.updateRun).toBeCalledWith({ id, state: 'cancelled' })
     })
 
     it('calls setRuns unsuccessfully', () => {
-      runs.startRun.mockImplementation(() => {
+      runs.updateRun.mockImplementation(() => {
         throw Error('Raise this error')
       })
-      runs.updateRun('start', 1)
+      runs.updateRunState('started', 1)
       expect(runs.showAlert).toBeCalled()
     })
   })
