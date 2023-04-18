@@ -19,6 +19,8 @@ import TractionSelect from '@/components/shared/TractionSelect'
 import TractionResultIcon from '@/components/shared/icons/TractionResultIcon'
 import TractionPaginationIcon from '@/components/shared/icons/TractionPaginationIcon'
 import TractionPagination from '@/components/shared/TractionPagination'
+import TractionCard from '@/components/shared/TractionCard'
+import TractionCardText from '@/components/shared/TractionCardText'
 import {
   BModal,
   VBModal,
@@ -28,8 +30,8 @@ import {
   BCol,
   BForm,
   BFormGroup,
-  BCard,
-  BCardText,
+  // BCard,
+  // BCardText,
   BListGroup,
   BListGroupItem,
   BTable,
@@ -55,8 +57,8 @@ const registerBootstrapComponents = (vue) => {
   vue.component('traction-col', BCol)
   vue.component('traction-form', BForm)
   vue.component('traction-form-group', BFormGroup)
-  vue.component('traction-card', BCard)
-  vue.component('traction-card-text', BCardText)
+  // vue.component('traction-card', BCard)
+  // vue.component('traction-card-text', BCardText)
   vue.component('traction-list-group', BListGroup)
   vue.component('traction-list-group-item', BListGroupItem)
   vue.component('traction-table', BTable)
@@ -102,6 +104,8 @@ const registerGlobal = (vue) => {
   vue.component('TractionSelect', TractionSelect)
   vue.component('TractionPagination', TractionPagination)
   vue.component('TractionPaginationIcon', TractionPaginationIcon)
+  vue.component('TractionCard', TractionCard)
+  vue.component('TractionCardText', TractionCardText)
   registerBootstrapComponents(vue)
 }
 
