@@ -14,8 +14,7 @@ describe('Plate.vue', () => {
     // smrt_link_version_id is set on the currentRun by newRun and editRun actions
     run.smrt_link_version_id = run.pacbio_smrt_link_version_id
     const smrtLinkVersions = {
-      1: { id: 1, name: 'v10', default: true },
-      2: { id: 2, name: 'v11', default: false },
+      1: { id: 1, name: 'v11', default: true },
     }
     store.commit('traction/pacbio/runCreate/populateRun', run)
     store.state.traction.pacbio.runCreate.resources.smrtLinkVersions = smrtLinkVersions
