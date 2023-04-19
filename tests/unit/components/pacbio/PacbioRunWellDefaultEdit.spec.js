@@ -29,6 +29,11 @@ const smrtLinkVersions = [
     name: 'v11',
     default: false,
   },
+  {
+    id: 3,
+    name: 'v12_revio',
+    default: false,
+  },
 ]
 
 const run = {
@@ -46,107 +51,6 @@ describe('PacbioRunWellDefaultEdit', () => {
     store.state.traction.pacbio.runCreate.run = run
     store.state.traction.pacbio.runCreate.defaultWellAttributes = defaultWellAttributes()
     store.state.traction.pacbio.runCreate.resources.smrtLinkVersions = smrtLinkVersions
-  })
-
-  /*["ccs_analysis_output", 
-  "generate_hifi", 
-  "binding_kit_box_barcode", 
-  "pre_extension_time", 
-  "loading_target_p1_plus_p2", 
-  "movie_time"]
-  */
-  describe('if the SMRT Link version is v10', () => {
-    beforeEach(() => {
-      store.state.traction.pacbio.runCreate.smrtLinkVersion = smrtLinkVersions[0]
-      wrapper = buildWrapper()
-      runInfo = wrapper.vm
-    })
-
-    it('will have a selected smrt link version of v10', () => {
-      expect(runInfo.smrtLinkVersion.id).toEqual(smrtLinkVersions[0].id)
-    })
-
-    describe('input', () => {
-      it('has a movie time input', async () => {
-        const options = wrapper.find('[data-attribute=default-movie-time]').findAll('option')
-        // select the first option
-        await options.at(1).setSelected()
-        expect(store.state.traction.pacbio.runCreate.defaultWellAttributes.movie_time).toEqual(
-          '10.0',
-        )
-      })
-
-      it('has a generate hifi input', async () => {
-        const options = wrapper.find('[data-attribute=default-generate-hifi]').findAll('option')
-        // select the first option
-        await options.at(1).setSelected()
-        expect(store.state.traction.pacbio.runCreate.defaultWellAttributes.generate_hifi).toEqual(
-          'In SMRT Link',
-        )
-      })
-
-      it('has a CCS analysis output input', async () => {
-        const options = wrapper
-          .find('[data-attribute=default-ccs-analysis-output]')
-          .findAll('option')
-        // select the first option
-        await options.at(0).setSelected()
-        expect(
-          store.state.traction.pacbio.runCreate.defaultWellAttributes.ccs_analysis_output,
-        ).toEqual('Yes')
-      })
-
-      it('has a pre extension time input', async () => {
-        const input = wrapper.find('[data-attribute=default-pre-extension-time]')
-        await input.setValue('3')
-        expect(
-          store.state.traction.pacbio.runCreate.defaultWellAttributes.pre_extension_time,
-        ).toEqual('3')
-      })
-
-      it('has a loading target p1 plus p2 input', async () => {
-        const input = wrapper.find('[data-attribute=default-loading-target-p1-plus-p2]')
-        await input.setValue('1')
-        expect(
-          store.state.traction.pacbio.runCreate.defaultWellAttributes.loading_target_p1_plus_p2,
-        ).toEqual('1')
-      })
-
-      it('has a binding kit box barcode input', async () => {
-        const input = wrapper.find('[data-attribute=default-binding-kit-box-barcode]')
-        await input.setValue('ABC123')
-        expect(
-          store.state.traction.pacbio.runCreate.defaultWellAttributes.binding_kit_box_barcode,
-        ).toEqual('ABC123')
-      })
-
-      // checks only components specific to v10 are being shown
-      it('does not have a CCS analysis output include kinetics information default input', () => {
-        expect(
-          wrapper
-            .find('[data-attribute="default-ccs-analysis-output-include-kinetics-information"]')
-            .exists(),
-        ).toBeFalsy()
-      })
-
-      it('does not have a CCS analysis output include low quality reads default input', () => {
-        expect(
-          wrapper
-            .find('[data-attribute="default-ccs-analysis-output-include-low-quality-reads"]')
-            .exists(),
-        ).toBeFalsy()
-      })
-
-      it('does not have a fivemc calls in cpg motifs default input', () => {
-        expect(
-          wrapper.find('[data-attribute="default-include-fivemc-calls-in-cpg-motifs"]').exists(),
-        ).toBeFalsy()
-      })
-
-      it('does not have a demultiplex barcodes default input', () => {
-        expect(wrapper.find('[data-attribute="default-demultiplex-barcodes"]').exists()).toBeFalsy()
-      })
-    })
   })
 
   /*["ccs_analysis_output_include_kinetics_information",
@@ -257,6 +161,59 @@ describe('PacbioRunWellDefaultEdit', () => {
 
       it('does not have a generate hifi default input', () => {
         expect(wrapper.find('[data-attribute=default-generate-hifi]').exists()).toBeFalsy()
+      })
+    })
+  })
+
+  /*["movie_acquisition_time",
+     "include_base_kinetics",
+    ]
+  */
+  describe('if the SMRT Link version is v12', () => {
+    beforeEach(() => {
+      store.state.traction.pacbio.runCreate.smrtLinkVersion = smrtLinkVersions[2]
+      wrapper = buildWrapper()
+      runInfo = wrapper.vm
+    })
+
+    it('will have a selected smrt link version of v12', () => {
+      expect(runInfo.smrtLinkVersion.id).toEqual(smrtLinkVersions[2].id)
+    })
+
+    describe('input', () => {
+      it('has a movie acquisition time input', async () => {
+        const input = wrapper.find('[data-attribute=default-movie-acquisition-time]')
+        await input.setValue('30')
+        expect(
+          store.state.traction.pacbio.runCreate.defaultWellAttributes.movie_acquisition_time,
+        ).toEqual('30')
+      })
+
+      it('has a include base kinetics input', async () => {
+        const options = wrapper
+          .find('[data-attribute=default-include-base-kinetics]')
+          .findAll('option')
+        // select the first option
+        await options.at(0).setSelected()
+        expect(
+          store.state.traction.pacbio.runCreate.defaultWellAttributes.include_base_kinetics,
+        ).toEqual('True')
+      })
+
+      it('has a library concentration', async () => {
+        const input = wrapper.find('[data-attribute=default-library-concentration]')
+        await input.setValue('1')
+        expect(
+          store.state.traction.pacbio.runCreate.defaultWellAttributes.library_concentration,
+        ).toEqual('1')
+      })
+
+      it('has a polymerase kit', async () => {
+        const input = wrapper.find('[data-attribute=default-polymerase-kit]')
+        await input.setValue('1')
+        expect(store.state.traction.pacbio.runCreate.defaultWellAttributes.polymerase_kit).toEqual(
+          '1',
+        )
       })
     })
   })
