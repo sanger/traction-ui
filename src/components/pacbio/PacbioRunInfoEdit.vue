@@ -109,10 +109,10 @@ export default {
   name: 'PacbioRunInfoEdit',
   data() {
     return {
-      systemNameOptions: ['Sequel I', 'Sequel II', 'Sequel IIe'],
+      // There is only one but we will need to add Revio in the next iteration.
+      systemNameOptions: ['Sequel IIe'],
     }
   },
-  // A lot of the below could be improved. Can we use the store?
   computed: {
     ...mapGetters(['runItem', 'smrtLinkVersionList', 'smrtLinkVersion']),
     smrtLinkVersionSelectOptions() {

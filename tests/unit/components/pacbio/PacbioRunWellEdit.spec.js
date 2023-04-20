@@ -7,11 +7,6 @@ import { newWell } from '@/store/traction/pacbio/runCreate/run'
 const smrtLinkVersions = {
   1: {
     id: 1,
-    name: 'v10',
-    default: true,
-  },
-  2: {
-    id: 2,
     name: 'v11',
     default: false,
   },
@@ -28,70 +23,6 @@ describe('PacbioWellEdit', () => {
   let wrapper
 
   describe('SMRT Link Versions', () => {
-    //["ccs_analysis_output", "generate_hifi", "on_plate_loading_concentration", "binding_kit_box_barcode", "pre_extension_time", "loading_target_p1_plus_p2", "movie_time"]
-    describe('if the SMRT Link version is v10', () => {
-      store.state.traction.pacbio.runCreate.smrtLinkVersion = smrtLinkVersions['1']
-      store.state.traction.pacbio.runCreate.wells = {
-        A1: newWell({ position: propsData.position }),
-      }
-
-      beforeEach(() => {
-        wrapper = mount(PacbioRunWellEdit, {
-          localVue,
-          store,
-          propsData,
-        })
-      })
-
-      it('has a movie time input', () => {
-        expect(wrapper.find('[data-attribute="movie-time"]').exists()).toBeTruthy()
-      })
-
-      it('has a generate hifi input', () => {
-        expect(wrapper.find('[data-attribute="generate-hifi"]').exists()).toBeTruthy()
-      })
-
-      it('has a binding kit box barcode input', () => {
-        expect(wrapper.find('[data-attribute="binding-kit-box-barcode"]').exists()).toBeTruthy()
-      })
-
-      it('has a pre extension time input', () => {
-        expect(wrapper.find('[data-attribute="pre-extension-time"]').exists()).toBeTruthy()
-      })
-
-      it('has a loading target p1 plus p2 input', () => {
-        expect(wrapper.find('[data-attribute="loading-target-p1-plus-p2"]').exists()).toBeTruthy()
-      })
-
-      it('has a CCS analysis output input', () => {
-        expect(wrapper.find('[data-attribute="ccs-analysis-output"]').exists()).toBeTruthy()
-      })
-
-      it('does not have a CCS analysis output include kinetics information input', () => {
-        expect(
-          wrapper
-            .find('[data-attribute="ccs-analysis-output-include-kinetics-information"]')
-            .exists(),
-        ).toBeFalsy()
-      })
-
-      it('does not have a CCS analysis output include low quality reads input', () => {
-        expect(
-          wrapper.find('[data-attribute="ccs-analysis-output-include-low-quality-reads"]').exists(),
-        ).toBeFalsy()
-      })
-
-      it('does not have a fivemc calls in cpg motifs input', () => {
-        expect(
-          wrapper.find('[data-attribute="include-fivemc-calls-in-cpg-motifs"]').exists(),
-        ).toBeFalsy()
-      })
-
-      it('does not have a demultiplex barcodes input', () => {
-        expect(wrapper.find('[data-attribute="demultiplex-barcodes"]').exists()).toBeFalsy()
-      })
-    })
-
     /*["ccs_analysis_output_include_kinetics_information",
       "ccs_analysis_output_include_low_quality_reads",
       "include_fivemc_calls_in_cpg_motifs",
@@ -104,7 +35,7 @@ describe('PacbioWellEdit', () => {
     */
     describe('if the SMRT Link version is v11', () => {
       beforeEach(() => {
-        store.state.traction.pacbio.runCreate.smrtLinkVersion = smrtLinkVersions['2']
+        store.state.traction.pacbio.runCreate.smrtLinkVersion = smrtLinkVersions['1']
         store.state.traction.pacbio.runCreate.wells = {
           A1: newWell({ position: propsData.position }),
         }
