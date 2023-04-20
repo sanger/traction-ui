@@ -5,10 +5,9 @@
       <select
         v-if="options"
         v-bind="$attrs"
-        :value="value"
+        v-model="propValue"
         :placeholder="placeholder"
         :class="`w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-sdb-100 focus:border-sdb-100 disabled:opacity-75 disabled:bg-gray-200 disabled:cursor-not-allowed ${classes}`"
-        @change="(event) => input(event.target.value)"
       >
         <template v-for="(optionGroupName, index) in optionGroupNames">
           <template v-if="optionGroupName">
@@ -85,8 +84,16 @@ export default {
       default: '',
     },
   },
-
   computed: {
+    propValue: {
+      get() {
+        // if value is null or undefined we want to use an empty ''
+        return this.value || ''
+      },
+      set(value) {
+        this.$emit('input', value)
+      },
+    },
     /**
      * Options can be given in any of the following forms to support the existing usages
      * 1. As a normal string array e.g ['text1','text2'] . In this case both 'text'
@@ -126,10 +133,6 @@ export default {
   },
 
   methods: {
-    input(selectedValue) {
-      // Emit selected value
-      this.$emit('input', selectedValue)
-    },
     /**Format the option fields (if required) as expected by html select*/
     formatOption(option, label) {
       let optionNew = { ...option }

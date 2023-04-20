@@ -8,7 +8,8 @@
         <traction-col>
           <traction-input
             id="run-name"
-            :value="runName"
+            v-model="runItem.name"
+            :value="runItem.name"
             placeholder="Run name"
             type="text"
             classes="w-48"
@@ -23,11 +24,12 @@
         <traction-col>
           <traction-input
             id="sequencing-kit-box-barcode"
-            :value="sequencingKitBoxBarcode"
+            v-model="runItem.sequencing_kit_box_barcode"
+            :value="runItem.sequencing_kit_box_barcode"
             placeholder="Sequencing Kit Box Barcode"
             type="text"
             classes="w-48"
-            @input="setSequencingKitBoxBarcode"
+            data-attribute="sequencing_kit_box_barcode"
           />
         </traction-col>
       </traction-row>
@@ -38,11 +40,12 @@
         <traction-col>
           <traction-input
             id="dna-control-complex-box-barcode"
-            :value="dnaControlComplexBoxBarcode"
+            v-model="runItem.dna_control_complex_box_barcode"
+            :value="runItem.dna_control_complex_box_barcode"
             placeholder="DNA Control Complex Box Barcode"
             type="text"
             classes="w-48"
-            @input="setDNAControlComplexBoxBarcode"
+            data-attribute="dna_control_complex_box_barcode"
           />
         </traction-col>
       </traction-row>
@@ -54,10 +57,11 @@
           <traction-select
             id="system-name"
             ref="systemName"
-            :value="systemName"
+            v-model="runItem.system_name"
+            :value="runItem.system_name"
             title="System Name"
             :options="systemNameOptions"
-            @input="setSystemName"
+            data-attribute="system_name"
           />
         </traction-col>
       </traction-row>
@@ -69,11 +73,11 @@
           <traction-select
             id="smrt-link-version"
             ref="smrtLinkVersion"
-            :value="smrtLinkVersionId"
-            data-attribute="smrt-link-version"
+            :value="smrtLinkVersion.id"
             title="SMRT Link Version"
             :options="smrtLinkVersionSelectOptions"
-            @input="setSmrtLinkVersionId"
+            data-attribute="smrt_link_version"
+            @input="setSmrtLinkVersion"
           />
         </traction-col>
       </traction-row>
@@ -84,11 +88,12 @@
         <traction-col>
           <traction-input
             id="comments"
-            :value="comments"
+            v-model="runItem.comments"
             placeholder="Comments"
             type="text"
             classes="w-48"
-            @input="setComments"
+            data-attribute="comments"
+            :value="runItem.comments"
           />
         </traction-col>
       </traction-row>
@@ -98,7 +103,7 @@
 
 <script>
 import { createNamespacedHelpers } from 'vuex'
-const { mapGetters, mapState, mapMutations } = createNamespacedHelpers('traction/pacbio/runs')
+const { mapGetters, mapActions } = createNamespacedHelpers('traction/pacbio/runCreate')
 
 export default {
   name: 'PacbioRunInfoEdit',
@@ -109,46 +114,29 @@ export default {
   },
   // A lot of the below could be improved. Can we use the store?
   computed: {
-    smrtLinkVersionList() {
-      return Object.values(this.$store.getters['traction/pacbio/runCreate/smrtLinkVersionList'])
-    },
+    ...mapGetters(['runItem', 'smrtLinkVersionList', 'smrtLinkVersion']),
     smrtLinkVersionSelectOptions() {
       // Returns an array of objects with value and text properties to make
       // the options of smrt-link-version select drop-down list.
 
-      return Object.values(
-        this.$store.getters['traction/pacbio/runCreate/smrtLinkVersionList'],
-      ).map(({ id, name }) => ({ value: id, text: name }))
+      return Object.values(this.smrtLinkVersionList).map(({ id, name }) => ({
+        value: id,
+        text: name,
+      }))
     },
-    selectedSmrtLinkVersion() {
-      return Object.values(
-        this.$store.getters['traction/pacbio/runCreate/smrtLinkVersionList'],
-      ).find((version) => version.id == this.currentRun.smrt_link_version_id)
-    },
-    ...mapGetters(['currentRun']),
-    ...mapState({
-      runName: (state) => state.currentRun.name,
-      sequencingKitBoxBarcode: (state) => state.currentRun.sequencing_kit_box_barcode,
-      dnaControlComplexBoxBarcode: (state) => state.currentRun.dna_control_complex_box_barcode,
-      comments: (state) => state.currentRun.comments,
-      uuid: (state) => state.currentRun.uuid,
-      systemName: (state) => state.currentRun.system_name,
-      smrtLinkVersionId: (state) => state.currentRun.smrt_link_version_id,
-    }),
   },
   methods: {
-    ...mapMutations([
-      'setSequencingKitBoxBarcode',
-      'setDNAControlComplexBoxBarcode',
-      'setComments',
-      'setUuid',
-      'setSystemName',
-      'setSmrtLinkVersionId',
-    ]),
+    ...mapActions(['updateSmrtLinkVersion']),
     alertOnFail({ success, errors }) {
       if (!success) {
         this.showAlert(errors, 'danger')
       }
+    },
+
+    // Sets the runCreate/smrtLinkVersion store with the version selected in the component
+    setSmrtLinkVersion(id) {
+      const option = this.smrtLinkVersionList[id]
+      this.updateSmrtLinkVersion(option)
     },
   },
 }

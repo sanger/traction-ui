@@ -14,6 +14,7 @@
         <traction-menu :border="true">
           <traction-menu-item
             v-for="(tabTitle, index) in tabTitles"
+            :id="tabTitle"
             :key="index"
             :active="index == sourceIndex"
             color="blue"
@@ -29,12 +30,15 @@
           <div v-for="plate in selectedPlates" :key="plate.id" data-type="selected-plate-item">
             {{ plate.barcode }}
             <Plate ref="plate" v-bind="plate" :wellData="wellList(plate.wells)"></Plate>
-            <traction-button class="mt-0" @click="deselectPlateAndContents(plate.id)"
+            <traction-button
+              :id="'remove-plate-btn-' + plate.id"
+              class="mt-0"
+              @click="deselectPlateAndContents(plate.id)"
               >Remove</traction-button
             >
           </div>
         </div>
-        <div v-else class="mt-4">
+        <div v-else id="selectedList" class="mt-4">
           <traction-list-group class="selected-list-group">
             <traction-table
               :items="selectedPlateRequests"
@@ -76,12 +80,12 @@ export default {
     return {
       // The tabular fields to display for each plate request
       requestFields: [
-        'id',
-        'sample_name',
-        'source_identifier',
-        'data_type',
-        'library_type',
-        'number_of_flowcells',
+        { key: 'id', label: 'id' },
+        { key: 'sample_name', label: 'Sample name' },
+        { key: 'source_identifier', label: 'Source identifier' },
+        { key: 'data_type', label: 'Data type' },
+        { key: 'library_type', label: 'Library type' },
+        { key: 'number_of_flowcells', label: 'Number of flowcells' },
       ],
       sourceIndex: 0,
       tabTitles: ['Plates', 'Requests'],
@@ -106,7 +110,7 @@ export default {
     },
     rowClass(item) {
       if (item && item.selected) {
-        return 'table-primary'
+        return 'bg-gray-400'
       }
     },
     onSelect(e) {

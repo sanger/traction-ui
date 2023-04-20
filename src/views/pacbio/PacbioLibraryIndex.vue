@@ -26,27 +26,15 @@
         :total-rows="libraries.length"
         :per-page="perPage"
         aria-controls="library-index"
+        @input="onPageChange($event)"
       />
-      <traction-form-group
-        class="float-right mx-5"
-        label-cols-lg="4"
-        label="Per Page"
-        label-for="input-per-page"
-      >
-        <traction-input
-          id="input-per-page"
-          v-model="perPage"
-          trim
-          class="w-full w-25"
-        ></traction-input>
-      </traction-form-group>
     </div>
 
     <traction-table
       id="library-index"
       show-empty
       responsive
-      :items="libraries"
+      :items="tableData"
       :fields="fields"
       :filter="filter"
       :per-page="perPage"
@@ -73,7 +61,7 @@
 
       <template #cell(actions)="row">
         <traction-button
-          :id="`editPool-${row.item.pool.id}`"
+          :id="`editPool-${row.item.pool?.id}`"
           size="sm"
           theme="edit"
           :to="{ name: 'PacbioPoolCreate', params: { id: row.item.pool.id } }"
@@ -103,7 +91,7 @@ export default {
   data() {
     return {
       fields: [
-        { key: 'selected', label: '' },
+        { key: 'selected', label: '\u2713' },
         { key: 'pool.id', label: 'pool ID', sortable: true, tdClass: 'pool-id' },
         { key: 'id', label: 'Library ID', sortable: true, tdClass: 'library-id' },
         {
@@ -147,6 +135,11 @@ export default {
   },
   computed: {
     ...mapGetters('traction/pacbio/libraries', ['libraries']),
+  },
+  watch: {
+    libraries(newValue) {
+      this.setInitialData(newValue, this.perPage)
+    },
   },
   methods: {
     async handleLibraryDelete() {

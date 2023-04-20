@@ -17,21 +17,9 @@
         :total-rows="runs.length"
         :per-page="perPage"
         aria-controls="run-index"
+        @input="onPageChange($event)"
       >
       </traction-pagination>
-      <traction-form-group
-        class="float-right mx-5"
-        label-cols-lg="4"
-        label="Per Page"
-        label-for="input-per-page"
-      >
-        <traction-input
-          id="input-per-page"
-          v-model="perPage"
-          trim
-          class="w-full w-25"
-        ></traction-input>
-      </traction-form-group>
     </div>
 
     <traction-table
@@ -40,7 +28,7 @@
       responsive
       show-empty
       small
-      :items="runs"
+      :items="tableData"
       :fields="fields"
       :filter="filter"
       :sort-by.sync="sortBy"
@@ -57,7 +45,7 @@
           size="sm"
           class="mr-1"
           :disabled="row.item.state !== 'pending'"
-          @click="updateRun('start', row.item.id)"
+          @click="updateRunState('started', row.item.id)"
         >
           Start
         </traction-button>
@@ -68,7 +56,7 @@
           size="sm"
           class="mr-1"
           :disabled="isRunDisabled(row.item)"
-          @click="updateRun('complete', row.item.id)"
+          @click="updateRunState('completed', row.item.id)"
         >
           Complete
         </traction-button>
@@ -79,7 +67,7 @@
           size="sm"
           class="mr-1"
           :disabled="isRunDisabled(row.item)"
-          @click="updateRun('cancel', row.item.id)"
+          @click="updateRunState('cancelled', row.item.id)"
         >
           Cancel
         </traction-button>
@@ -95,7 +83,6 @@
         </traction-button>
 
         <a
-          v-show="row.item.all_wells_have_pools"
           :id="generateId('generate-sample-sheet', row.item.id)"
           :href="generateSampleSheetPath(row.item.id)"
           class="text-primary"
@@ -159,6 +146,11 @@ export default {
   computed: {
     ...mapGetters('traction/pacbio/runs', ['runs']),
   },
+  watch: {
+    runs(newValue) {
+      this.setInitialData(newValue, this.perPage)
+    },
+  },
   methods: {
     isRunDisabled(run) {
       return run.state == 'completed' || run.state == 'cancelled' || run.state == 'pending'
@@ -169,9 +161,9 @@ export default {
     generateSampleSheetPath(id) {
       return import.meta.env.VITE_TRACTION_BASE_URL + '/v1/pacbio/runs/' + id + '/sample_sheet'
     },
-    updateRun(status, id) {
+    updateRunState(status, id) {
       try {
-        this[status + 'Run']({ id, pipeline: 'pacbio' })
+        this.updateRun({ id, state: status })
       } catch (error) {
         this.showAlert('Failed to update run: ' + error.message, 'danger')
       }
@@ -180,8 +172,7 @@ export default {
       this.$router.push({ path: `/pacbio/run/${runId || 'new'}` })
     },
 
-    ...mapActions('traction/pacbio/runs', ['fetchPacbioRuns', 'generateSampleSheet']),
-    ...mapActions('traction', ['startRun', 'completeRun', 'cancelRun']),
+    ...mapActions('traction/pacbio/runs', ['fetchPacbioRuns', 'updateRun']),
   },
 }
 </script>

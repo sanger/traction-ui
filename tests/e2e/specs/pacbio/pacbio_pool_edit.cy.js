@@ -20,14 +20,41 @@ describe('Pacbio Pool Edit', () => {
       fixture: 'pacbioPlatesRequest.json',
     })
 
-    cy.intercept('v1/pacbio/requests?include=well.plate,tube', {
-      fixture: 'pacbioRequestsRequest.json',
+    cy.withFlags({
+      enable_custom_table: { enabled: true },
     })
   })
 
+  it('updates pool information on clicking requests table rows', () => {
+    cy.visit('#/pacbio/pools')
+    cy.get('#pool-index').within(() => {
+      cy.get('#edit-pool').first().click()
+    })
+    cy.get('[data-type=plate-item]').should('be.visible')
+    cy.get('#Requests').click()
+    cy.get('[data-type=pool-library-list]').within(() => {
+      cy.get('[data-testid=row]').should('have.length', 2)
+    })
+    cy.get('#selectedList').within(() => {
+      cy.get('#source_identifier').first().click()
+    })
+    cy.get('[data-type=pool-library-list]').within(() => {
+      cy.get('[data-testid=row]').should('have.length', 3)
+    })
+    //Deselect row requests
+    cy.get('#selectedList').within(() => {
+      cy.get('#source_identifier').first().click()
+    })
+    cy.get('[data-type=pool-library-list]').within(() => {
+      cy.get('[data-testid=row]').should('have.length', 2)
+    })
+  })
   it('Updates a pool successfully', () => {
     cy.visit('#/pacbio/pools')
-    cy.get('.pool [data-action=edit-pool]').first().click()
+    cy.get('#pool-index').within(() => {
+      cy.get('#edit-pool').first().click()
+    })
+
     cy.get('[data-type=plate-item]').should('be.visible')
     cy.get('[data-attribute=tag-set-name]').should('be.visible')
     cy.get('[data-type=pool-edit]').within(() => {
@@ -41,13 +68,14 @@ describe('Pacbio Pool Edit', () => {
       statusCode: 200,
     })
     cy.get('[data-action=update-pool]').click()
-    // TODO: need to give this a better name
     cy.contains('[data-type=pool-create-message]', 'Pool successfully updated')
   })
 
   it('Will not update a pool if there is an error', () => {
     cy.visit('#/pacbio/pools')
-    cy.get('.pool [data-action=edit-pool]').first().click()
+    cy.get('#pool-index').within(() => {
+      cy.get('#edit-pool').first().click()
+    })
     cy.get('[data-type=plate-item]').should('be.visible')
     cy.get('[data-attribute=tag-set-name]').should('be.visible')
     cy.get('[data-type=pool-library-edit]').within(() => {

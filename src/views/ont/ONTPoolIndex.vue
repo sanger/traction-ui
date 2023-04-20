@@ -8,19 +8,16 @@
         :total-rows="pools.length"
         :per-page="perPage"
         aria-controls="pool-index"
+        @input="onPageChange($event)"
       >
       </traction-pagination>
-
-      <traction-form-group label-cols-lg="1" label="Per Page" label-for="input-per-page">
-        <traction-input id="input-per-page" v-model="perPage" trim class="w-25"></traction-input>
-      </traction-form-group>
     </div>
 
     <traction-table
       id="pool-index"
       show-empty
       responsive
-      :items="pools"
+      :items="tableData"
       :fields="fields"
       :filter="filter"
       :per-page="perPage"
@@ -114,7 +111,7 @@ export default {
   data() {
     return {
       fields: [
-        { key: 'selected', label: '' },
+        { key: 'selected', label: '\u2713' },
         { key: 'id', label: 'Pool ID', sortable: true, tdClass: 'pool-id' },
         { key: 'barcode', label: 'Barcode', sortable: true, tdClass: 'barcode' },
         { key: 'source_identifier', label: 'Source', sortable: true, tdClass: 'source-identifier' },
@@ -124,7 +121,7 @@ export default {
         { key: 'insert_size', label: 'Insert Size', sortable: true, tdClass: 'insert-size' },
         {
           key: 'final_library_amount',
-          labe: 'Final Library Amount',
+          label: 'Final Library Amount',
           sortable: true,
           tdClass: 'final-library-amount',
         },
@@ -155,6 +152,11 @@ export default {
   },
   computed: {
     ...mapGetters('traction/ont/pools', ['pools']),
+  },
+  watch: {
+    pools(newValue) {
+      this.setInitialData(newValue, this.perPage)
+    },
   },
   methods: {
     /* 

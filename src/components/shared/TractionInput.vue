@@ -8,6 +8,7 @@
       element by passing in all props allowed in <input> to <traction-input>
      The $attrs object includes all attributes that are not declared by the component's props
   - @input - On input, emit its own custom input event with the new value
+  - @keyup.enter - On enter, allow emiting of the custom input event 
 -->
 
 <template>

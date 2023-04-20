@@ -14,6 +14,7 @@
         <traction-menu :border="true">
           <traction-menu-item
             v-for="(tabTitle, index) in tabTitles"
+            :id="tabTitle"
             :key="index"
             :active="index == sourceIndex"
             color="blue"
@@ -29,9 +30,15 @@
           <div v-for="plate in selectedPlates" :key="plate.id" data-type="selected-plate-item">
             {{ plate.barcode }}
             <Plate ref="plate" v-bind="plate"></Plate>
+            <traction-button
+              :id="'remove-plate-btn-' + plate.id"
+              class="mt-0"
+              @click="deselectPlateAndContents(plate.id)"
+              >Remove</traction-button
+            >
           </div>
         </div>
-        <div v-else class="mt-4">
+        <div v-else id="selectedList" class="mt-4">
           <traction-list-group class="selected-list-group">
             <traction-table
               :items="selectedPlateRequests"
@@ -67,11 +74,11 @@ export default {
   data() {
     return {
       requestFields: [
-        'source_identifier',
-        'sample_species',
-        'library_type',
-        'number_of_smrt_cells',
-        'estimate_of_gb_required',
+        { key: 'source_identifier', label: 'Source Identifier' },
+        { key: 'sample_species', label: 'Sample species' },
+        { key: 'library_type', label: 'Library type' },
+        { key: 'number_of_smrt_cells', label: 'Number of smrt cells' },
+        { key: 'estimate_of_gb_required', label: 'Estimate of gb required' },
       ],
       sourceIndex: 0,
       tabTitles: ['Plates', 'Requests'],
@@ -91,13 +98,13 @@ export default {
   },
   methods: {
     ...mapMutations(['selectPlate', 'selectRequest']),
-    ...mapActions(['selectWellRequests']),
+    ...mapActions(['selectWellRequests', 'deselectPlateAndContents']),
     requestClicked({ id, selected }) {
       this.selectRequest({ id, selected: !selected })
     },
     rowClass(item) {
       if (item && item.selected) {
-        return 'table-primary'
+        return 'bg-gray-400'
       }
     },
     onSelect(e) {

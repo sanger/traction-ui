@@ -1,5 +1,5 @@
 /*
-  TODO: separate out into reusable functional methods
+  Deprecated. Do not use.
 */
 import deserialize from '@/api/JsonApi'
 

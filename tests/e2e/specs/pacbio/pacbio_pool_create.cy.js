@@ -4,31 +4,32 @@ describe('Pacbio Pool Create', () => {
       fixture: 'tractionPacbioTagSets.json',
     })
 
-    cy.intercept('/v1/pacbio/requests?include=well.plate,tube', {
-      fixture: 'pacbioRequestsRequest.json',
+    cy.intercept('/v1/pacbio/plates?filter[barcode]=GEN-1680611780-1&include=wells.requests', {
+      fixture: 'tractionPacbioPlate.json',
+    })
+    cy.withFlags({
+      enable_custom_table: { enabled: true },
     })
   })
 
   it('Creates a pool successfully', () => {
     cy.visit('#/pacbio/pool/new')
     cy.contains('Pool')
-    cy.get('[data-type=plate-list]').find('[data-action=select-plate]').first().click()
-    cy.get('[data-input=plate-find]').type('DN814567Q{enter}')
+    cy.get('#labware-finder-input').type('GEN-1680611780-1')
+    cy.get('[data-action=find-labware]').click()
 
-    cy.get('[data-type=plate-item]').should('have.length', 2)
+    cy.get('[data-type=plate-item]').should('have.length', 1)
 
     cy.get('[data-type=tag-set-list]').select('IsoSeq_v1')
     cy.get('[data-attribute=tag-set-name]').click()
     cy.get('[data-attribute=group-id]').should('have.length', 12)
 
-    //TODO: add at least one more sample
     cy.get('[data-type=selected-plate-list]').within(() => {
       cy.get('[data-type=plate-item]').first()
       cy.get('ellipse').first().click()
     })
     cy.get('[data-type=pool-library-edit]').should('have.length', 1)
     // and samples that have failed qc should not be selectable
-    // TODO: Is this brittle? Need to know the data.
     cy.get('[data-type=pool-library-edit]').within(() => {
       cy.get('[data-type=tag-list]').select('bc1001')
       cy.get('[data-attribute=template-prep-kit-box-barcode]').type('ABC1')
@@ -59,10 +60,10 @@ describe('Pacbio Pool Create', () => {
   it('Will not create a pool if there is an error', () => {
     cy.visit('#/pacbio/pool/new')
     cy.contains('Pool')
-    cy.get('[data-type=plate-list]').find('button').first().click()
-    cy.get('[data-input=plate-find]').type('DN814567Q{enter}')
+    cy.get('#labware-finder-input').type('GEN-1680611780-1')
+    cy.get('[data-action=find-labware]').click()
 
-    cy.get('[data-type=plate-item]').should('have.length', 2)
+    cy.get('[data-type=plate-item]').should('have.length', 1)
 
     cy.get('[data-type=tag-set-list]').select('IsoSeq_v1')
     cy.get('[data-attribute=group-id]').should('have.length', 12)
@@ -96,10 +97,10 @@ describe('Pacbio Pool Create', () => {
   it('can automate creation of large pools', () => {
     cy.visit('#/pacbio/pool/new')
     cy.contains('Pool')
-    cy.get('[data-type=plate-list]').find('[data-action=select-plate]').first().click()
-    cy.get('[data-input=plate-find]').type('DN814567Q{enter}')
+    cy.get('#labware-finder-input').type('GEN-1680611780-1')
+    cy.get('[data-action=find-labware]').click()
 
-    cy.get('[data-type=plate-item]').should('have.length', 2)
+    cy.get('[data-type=plate-item]').should('have.length', 1)
 
     cy.get('[data-type=tag-set-list]').select('IsoSeq_v1')
     cy.get('[data-attribute=group-id]').should('have.length', 12)
@@ -117,23 +118,15 @@ describe('Pacbio Pool Create', () => {
         .trigger('mouseup', {
           position: 'bottomRight',
         })
-      // We select in two separate steps as it lets us validate that selection
-      // is 'sticky'.
-      cy.get('[data-type=plate-item]')
-        .last()
-        .trigger('mousedown', {
-          position: 'topLeft',
-        })
-        .trigger('mousemove', {
-          position: 'bottomRight',
-        })
-        .trigger('mouseup', {
-          position: 'bottomRight',
-        })
     })
     cy.get('[data-type=pool-library-edit]').should('have.length', 4)
 
-    const orderedElements = ['DN814327C:A1', 'DN814327C:A2', 'DN814567Q:A1', 'DN814567Q:B1']
+    const orderedElements = [
+      'GEN-1680611780-1:A1',
+      'GEN-1680611780-1:B1',
+      'GEN-1680611780-1:C1',
+      'GEN-1680611780-1:D1',
+    ]
 
     cy.get('#qcFileInput').attachFile('pacbio.csv')
     // Validate the order
@@ -148,33 +141,13 @@ describe('Pacbio Pool Create', () => {
     cy.get('[data-attribute=check-box]').click()
 
     cy.get('[data-type=pool-library-edit]')
-      .filter(':contains("DN814327C:A1")')
+      .filter(':contains("GEN-1680611780-1:A1")')
       .find('[data-type=tag-list]')
       .select('bc1002')
     cy.get('[data-type=pool-library-edit]')
-      .filter(':contains("DN814327C:A2")')
+      .filter(':contains("GEN-1680611780-1:B1")')
       .find('[data-type=tag-list]')
-      .should('have.value', '258')
-
-    // We don't want to flow beyond the first plate
-    cy.get('[data-type=pool-library-edit]')
-      .filter(':contains("DN814567Q:A1")')
-      .find('[data-type=tag-list]')
-      .should('have.value', '')
-    cy.get('[data-type=pool-library-edit]')
-      .filter(':contains("DN814567Q:B1")')
-      .find('[data-type=tag-list]')
-      .should('have.value', '')
-
-    // We can then select the second plate independently
-    cy.get('[data-type=pool-library-edit]')
-      .filter(':contains("DN814567Q:A1")')
-      .find('[data-type=tag-list]')
-      .select('bc1003')
-    cy.get('[data-type=pool-library-edit]')
-      .filter(':contains("DN814567Q:B1")')
-      .find('[data-type=tag-list]')
-      .should('have.value', '252')
+      .should('have.value', '251')
 
     cy.intercept('/v1/pacbio/pools?include=tube', {
       statusCode: 201,
@@ -196,10 +169,10 @@ describe('Pacbio Pool Create', () => {
   it('can populate tags from csv', () => {
     cy.visit('#/pacbio/pool/new')
     cy.contains('Pool')
-    cy.get('[data-type=plate-list]').find('[data-action=select-plate]').first().click()
-    cy.get('[data-input=plate-find]').type('DN814567Q{enter}')
+    cy.get('#labware-finder-input').type('GEN-1680611780-1')
+    cy.get('[data-action=find-labware]').click()
 
-    cy.get('[data-type=plate-item]').should('have.length', 2)
+    cy.get('[data-type=plate-item]').should('have.length', 1)
 
     cy.get('[data-type=tag-set-list]').select('IsoSeq_v1')
     cy.get('[data-attribute=group-id]').should('have.length', 12)
@@ -217,23 +190,15 @@ describe('Pacbio Pool Create', () => {
         .trigger('mouseup', {
           position: 'bottomRight',
         })
-      // We select in two separate steps as it lets us validate that selection
-      // is 'sticky'.
-      cy.get('[data-type=plate-item]')
-        .last()
-        .trigger('mousedown', {
-          position: 'topLeft',
-        })
-        .trigger('mousemove', {
-          position: 'bottomRight',
-        })
-        .trigger('mouseup', {
-          position: 'bottomRight',
-        })
     })
     cy.get('[data-type=pool-library-edit]').should('have.length', 4)
 
-    const orderedElements = ['DN814327C:A1', 'DN814327C:A2', 'DN814567Q:A1', 'DN814567Q:B1']
+    const orderedElements = [
+      'GEN-1680611780-1:A1',
+      'GEN-1680611780-1:B1',
+      'GEN-1680611780-1:C1',
+      'GEN-1680611780-1:D1',
+    ]
 
     cy.get('#qcFileInput').attachFile('pacbioAndTags.csv')
     // Validate the order
@@ -245,24 +210,14 @@ describe('Pacbio Pool Create', () => {
     })
 
     cy.get('[data-type=pool-library-edit]')
-      .filter(':contains("DN814327C:A1")')
+      .filter(':contains("GEN-1680611780-1:A1")')
       .find('[data-type=tag-list]')
       .should('have.value', '250')
 
     cy.get('[data-type=pool-library-edit]')
-      .filter(':contains("DN814327C:A2")')
+      .filter(':contains("GEN-1680611780-1:B1")')
       .find('[data-type=tag-list]')
       .should('have.value', '251')
-
-    // We can then select the second plate independently
-    cy.get('[data-type=pool-library-edit]')
-      .filter(':contains("DN814567Q:A1")')
-      .find('[data-type=tag-list]')
-      .should('have.value', '252')
-    cy.get('[data-type=pool-library-edit]')
-      .filter(':contains("DN814567Q:B1")')
-      .find('[data-type=tag-list]')
-      .should('have.value', '253')
 
     cy.intercept('/v1/pacbio/pools?include=tube', {
       statusCode: 201,

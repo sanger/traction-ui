@@ -13,6 +13,6 @@ describe('OntSampleIndex', () => {
       store,
     })
     await flushPromises()
-    expect(wrapper.findAll('tbody>tr').length).toEqual(expectedRequests)
+    expect(wrapper.findAll('tr').length).toEqual(expectedRequests + 1)
   })
 })

@@ -6,7 +6,6 @@ import { payload } from '@/store/traction/pacbio/poolCreate/pool'
 
 describe('actions.js', () => {
   const {
-    fetchPacbioRequests,
     fetchPacbioTagSets,
     selectWellRequests,
     deselectPlateAndContents,
@@ -17,49 +16,9 @@ describe('actions.js', () => {
     populateLibrariesFromPool,
     applyTags,
     updateLibraryFromCsvRecord,
+    findPacbioPlate,
+    findPacbioTube,
   } = actions
-
-  describe('fetchPacbioRequests', () => {
-    it('handles success', async () => {
-      // mock commit
-      const commit = vi.fn()
-      // mock dependencies
-      const get = vi.fn()
-      const rootState = { api: { traction: { pacbio: { requests: { get } } } } }
-      get.mockResolvedValue(Data.PacbioRequestsRequest)
-      // apply action
-      const { success } = await fetchPacbioRequests({ commit, rootState })
-      // assert result (Might make sense to pull these into separate tests)
-      expect(commit).toHaveBeenCalledWith('populateRequests', Data.PacbioRequestsRequest.data.data)
-      expect(commit).toHaveBeenCalledWith(
-        'populatePlates',
-        Data.PacbioRequestsRequest.data.included.slice(0, 2),
-      )
-      expect(commit).toHaveBeenCalledWith(
-        'populateWells',
-        Data.PacbioRequestsRequest.data.included.slice(2, 6),
-      )
-      expect(success).toEqual(true)
-    })
-
-    it('handles failure', async () => {
-      // mock commit
-      const commit = vi.fn()
-      // mock dependencies
-      const get = vi.fn()
-      const rootState = { api: { traction: { pacbio: { requests: { get } } } } }
-      get.mockRejectedValue({
-        data: { data: [] },
-        status: 500,
-        statusText: 'Internal Server Error',
-      })
-      // apply action
-      const { success } = await fetchPacbioRequests({ commit, rootState })
-      // assert result (Might make sense to pull these into separate tests)
-      expect(commit).not.toHaveBeenCalled()
-      expect(success).toEqual(false)
-    })
-  })
 
   // handles success and failure are switched - fix after asking
   describe('fetchPacbioTagSets', () => {
@@ -256,8 +215,8 @@ describe('actions.js', () => {
         resources: {
           ...defaultStateObject.resources,
           tubes: {
-            1: { id: 1, requests: ['100', '300'] },
-            2: { id: 2, requests: ['200', '400'] },
+            1: { id: 1, barcode: 'tube-1', requests: ['100', '300'] },
+            2: { id: 2, barcode: 'tube-2', requests: ['200', '400'] },
           },
         },
         selected: {
@@ -269,9 +228,9 @@ describe('actions.js', () => {
         },
       }
       // apply action
-      await deselectTubeAndContents({ commit, state }, '1')
+      await deselectTubeAndContents({ commit, state }, 'tube-1')
       // assert result
-      expect(commit).toHaveBeenCalledWith('selectTube', { id: '1', selected: false })
+      expect(commit).toHaveBeenCalledWith('selectTube', { id: 1, selected: false })
       expect(commit).toHaveBeenCalledWith('selectRequest', { id: '100', selected: false })
       expect(commit).toHaveBeenCalledWith('selectRequest', { id: '300', selected: false })
       // We don't want to select any unselected requests
@@ -854,6 +813,118 @@ describe('actions.js', () => {
         },
         { root: true },
       )
+    })
+  })
+
+  describe('findPacbioPlate', () => {
+    it('returns the plate that fits the valid plate barcode', async () => {
+      // mock commit
+      const commit = vi.fn()
+      // mock dependencies
+      const get = vi.fn()
+      const rootState = { api: { traction: { pacbio: { plates: { get } } } } }
+
+      get.mockResolvedValue(Data.PacbioPlateRequest)
+
+      const { success } = await findPacbioPlate(
+        { commit, rootState },
+        { barcode: 'GEN-1680611780-1' },
+      )
+
+      expect(commit).toHaveBeenCalledWith('selectPlate', { id: '1', selected: true })
+      expect(commit).toHaveBeenCalledWith('populatePlates', Data.PacbioPlateRequest.data.data)
+      expect(commit).toHaveBeenCalledWith(
+        'populateWells',
+        Data.PacbioPlateRequest.data.included.slice(0, 8),
+      )
+      expect(commit).toHaveBeenCalledWith(
+        'populateRequests',
+        Data.PacbioPlateRequest.data.included.slice(8, 16),
+      )
+
+      expect(success).toEqual(true)
+    })
+
+    it('returns an error and an empty list when plate barcode cannot be found', async () => {
+      // mock commit
+      const commit = vi.fn()
+      // mock dependencies
+      const get = vi.fn()
+      const rootState = { api: { traction: { pacbio: { plates: { get } } } } }
+
+      get.mockResolvedValue({ data: { data: [] } })
+
+      const { success, errors } = await findPacbioPlate(
+        { commit, rootState },
+        { barcode: 'fake-barcode' },
+      )
+      expect(errors).toEqual(['Unable to find plate with barcode: fake-barcode'])
+      expect(success).toEqual(false)
+    })
+
+    it('returns an error and an empty list when plate barcode is not provided', async () => {
+      const commit = vi.fn()
+      // mock dependencies
+      const get = vi.fn()
+      const rootState = { api: { traction: { pacbio: { plates: { get } } } } }
+
+      const { success, errors } = await findPacbioPlate({ commit, rootState }, { barcode: '' })
+      expect(errors).toEqual(['Please provide a plate barcode'])
+      expect(success).toEqual(false)
+    })
+  })
+
+  describe('findPacbioTube', () => {
+    it('returns the tube that fits the valid tube barcode', async () => {
+      // mock commit
+      const commit = vi.fn()
+      // mock dependencies
+      const get = vi.fn()
+      const rootState = { api: { traction: { pacbio: { tubes: { get } } } } }
+
+      get.mockResolvedValue(Data.PacbioTubeRequest)
+
+      const { success } = await findPacbioTube(
+        { commit, rootState },
+        { barcode: 'GEN-1680611780-6' },
+      )
+
+      expect(commit).toHaveBeenCalledWith('selectTube', { id: '1', selected: true })
+      expect(commit).toHaveBeenCalledWith('populateTubes', Data.PacbioTubeRequest.data.data)
+      expect(commit).toHaveBeenCalledWith(
+        'populateRequests',
+        Data.PacbioTubeRequest.data.included.slice(0, 1),
+      )
+
+      expect(success).toEqual(true)
+    })
+
+    it('returns an error and an empty list when tube barcode cannot be found', async () => {
+      // mock commit
+      const commit = vi.fn()
+      // mock dependencies
+      const get = vi.fn()
+      const rootState = { api: { traction: { pacbio: { tubes: { get } } } } }
+
+      get.mockResolvedValue({ data: { data: [] } })
+
+      const { success, errors } = await findPacbioTube(
+        { commit, rootState },
+        { barcode: 'fake-barcode' },
+      )
+      expect(errors).toEqual(['Unable to find tube with barcode: fake-barcode'])
+      expect(success).toEqual(false)
+    })
+
+    it('returns an error and an empty list when tube barcode is not provided', async () => {
+      const commit = vi.fn()
+      // mock dependencies
+      const get = vi.fn()
+      const rootState = { api: { traction: { pacbio: { tubes: { get } } } } }
+
+      const { success, errors } = await findPacbioTube({ commit, rootState }, { barcode: '' })
+      expect(errors).toEqual(['Please provide a tube barcode'])
+      expect(success).toEqual(false)
     })
   })
 })

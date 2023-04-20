@@ -1,4 +1,3 @@
-import handlePromise from '@/api/PromiseHelper'
 import handleResponse from '@/api/ResponseHelper'
 
 const setRequests = async ({ commit, getters }, filter) => {
@@ -15,19 +14,19 @@ const setRequests = async ({ commit, getters }, filter) => {
   return { success, errors }
 }
 
-const updateRequest = async ({ getters }, payload) => {
+const updateRequest = async ({ commit, getters }, payload) => {
   const request = getters.requestsRequest
-  const sample = getters.requests.find((r) => r.id == payload.id)
-
-  const requestPayload = createRequestPayload(sample)
+  const requestPayload = createRequestPayload(payload)
   const promise = request.update(requestPayload)
-  const response = await handlePromise(promise)
+  const response = await handleResponse(promise)
 
-  if (response.successful) {
-    return response
-  } else {
-    throw response.errors
+  const { success, data: { data } = {}, errors = [] } = response
+
+  if (success) {
+    commit('updateRequest', data)
   }
+
+  return { success, errors }
 }
 
 const createRequestPayload = (sample) => {
