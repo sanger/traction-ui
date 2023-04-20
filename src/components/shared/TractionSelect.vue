@@ -7,6 +7,7 @@
         v-bind="$attrs"
         v-model="propValue"
         :placeholder="placeholder"
+        :data-attribute="dataAttribute"
         :class="`w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-sdb-100 focus:border-sdb-100 disabled:opacity-75 disabled:bg-gray-200 disabled:cursor-not-allowed ${classes}`"
       >
         <template v-for="(optionGroupName, index) in optionGroupNames">
@@ -80,6 +81,11 @@ export default {
     },
     //placeholder value
     placeholder: {
+      type: String,
+      default: '',
+    },
+    //attribute name to represent this component for testing, if given
+    dataAttribute: {
       type: String,
       default: '',
     },
