@@ -2,6 +2,7 @@
  * A mixin to store commonly used functionality for the bootstrap table component
  */
 
+import { alphaNumericSortDefault } from '@/lib/DataHelpers'
 export default {
   name: 'TableHelper',
   data() {
@@ -18,9 +19,32 @@ export default {
       this.filteredItems = filteredItems
       this.currentPage = 1
     },
-    setInitialData(initialData, perPage) {
+    /**defaultSortOptions for table data. This should be on object of shape
+     * {
+     *   sortBy:string, //The default sort field
+     *   isAscending:boolean //ascending or descending
+     * } */
+    setInitialData(initialData, perPage, defaultSortOptions) {
       this.initialData = initialData
       this.perPage = perPage
+      this.defaultSortField = defaultSortOptions
+
+      if (
+        defaultSortOptions &&
+        typeof defaultSortOptions == 'object' &&
+        'sortBy' in defaultSortOptions &&
+        defaultSortOptions.sortBy
+      ) {
+        //The default sorting will be descending
+        const isAsc = 'isAscending' in defaultSortOptions ? !!defaultSortOptions.isAscending : false
+        this.initialData = [...initialData].sort((a, b) => {
+          const arr1 = isAsc ? a : b
+          const arr2 = isAsc ? b : a
+          return alphaNumericSortDefault(arr1[this.sortBy], arr2[this.sortBy], true)
+        })
+      } else {
+        this.initialData = initialData
+      }
       this.tableData = this.initialData.slice(0, perPage)
     },
     onPageChange(pageInfo) {
