@@ -29,8 +29,6 @@ import {
   VBModal,
   BAlert,
   BContainer,
-  BRow,
-  BCol,
   BForm,
   BFormGroup,
   BCard,
@@ -49,8 +47,6 @@ const registerBootstrapComponents = (vue) => {
   vue.component('traction-modal', BModal)
   vue.component('traction-alert', BAlert)
   vue.component('traction-container', BContainer)
-  vue.component('traction-row', BRow)
-  vue.component('traction-col', BCol)
   vue.component('traction-form', BForm)
   vue.component('traction-form-group', BFormGroup)
   vue.component('traction-card', BCard)

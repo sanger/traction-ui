@@ -25,24 +25,14 @@
     <br />
 
     <div>
-      <traction-row>
-        <traction-col cols="6">
-          <pacbioRunInfoEdit ref="pacbioRunInfoEdit"></pacbioRunInfoEdit>
-          <br />
-        </traction-col>
-        <traction-col>
-          <pacbioRunWellDefaultEdit ref="pacbioRunWellDefaultEdit"></pacbioRunWellDefaultEdit>
-          <br />
-        </traction-col>
-      </traction-row>
-      <traction-row>
-        <traction-col cols="6">
-          <pacbioPoolList ref="pacbioPoolList"></pacbioPoolList>
-        </traction-col>
-        <traction-col>
-          <Plate ref="plate" @alert="showAlert"></Plate>
-        </traction-col>
-      </traction-row>
+      <div class="grid grid-cols-2 w-full space-x-4 mb-6">
+        <pacbioRunInfoEdit ref="pacbioRunInfoEdit"></pacbioRunInfoEdit>
+        <pacbioRunWellDefaultEdit ref="pacbioRunWellDefaultEdit"></pacbioRunWellDefaultEdit>
+      </div>
+      <div class="grid grid-cols-2">
+        <pacbioPoolList ref="pacbioPoolList"></pacbioPoolList>
+        <Plate ref="plate" @alert="showAlert"></Plate>
+      </div>
     </div>
   </DataFetcher>
 </template>

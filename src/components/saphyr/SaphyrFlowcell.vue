@@ -1,6 +1,5 @@
 <template>
-  <traction-row class="flowcell">
-    <traction-col>
+  <div class="grid grod-cold-2">
       <div class="position">{{ position }}</div>
 
       <traction-input
@@ -10,8 +9,7 @@
         type="text"
         @input="setBarcode"
       />
-    </traction-col>
-  </traction-row>
+  </div>
 </template>
 
 <script>
