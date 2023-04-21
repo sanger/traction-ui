@@ -19,9 +19,10 @@ describe('TractionTableColumn', () => {
       'px-1 py-1 text-sm whitespace-nowrap text-center',
     )
   })
-  it('sets the given class attributes for the column component', () => {
-    const wrapper = buildWrapper({ classes: 'text-lg' })
+  it('sets the given props for the column component', () => {
+    const wrapper = buildWrapper({ classes: 'text-lg', colspan: 2 })
     expect(wrapper.find('[data-testid=column]').attributes('class')).toContain('text-lg')
+    expect(wrapper.find('[data-testid=column]').attributes('colspan')).toEqual('2')
   })
   it('emits id on click event', () => {
     const wrapper = buildWrapper({ id: 'test-column' })

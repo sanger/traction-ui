@@ -1,5 +1,5 @@
 <template>
-  <div class="run">
+  <DataFetcher :fetcher="provider">
     <router-link :to="{ name: 'PacbioRunIndex' }">
       <traction-button id="backToRunsButton" class="float-right">Back</traction-button>
     </router-link>
@@ -13,11 +13,12 @@
       >Reset</traction-button
     >
     <traction-button
-      :id="currentAction.id"
+      :id="runType.id"
       class="float-right"
-      :theme="currentAction.theme"
-      @click="runAction"
-      >{{ currentAction.label }}</traction-button
+      :theme="runType.theme"
+      :data-action="runType.id"
+      @click="save"
+      >{{ runType.label }}</traction-button
     >
 
     <br />
@@ -39,11 +40,11 @@
           <pacbioPoolList ref="pacbioPoolList"></pacbioPoolList>
         </traction-col>
         <traction-col>
-          <Plate v-if="currentRun.id" ref="plate" @alert="showAlert"></Plate>
+          <Plate ref="plate" @alert="showAlert"></Plate>
         </traction-col>
       </traction-row>
     </div>
-  </div>
+  </DataFetcher>
 </template>
 
 <script>
@@ -51,9 +52,13 @@ import PacbioRunInfoEdit from '@/components/pacbio/PacbioRunInfoEdit'
 import PacbioRunWellDefaultEdit from '@/components/pacbio/PacbioRunWellDefaultEdit'
 import pacbioPoolList from '@/components/pacbio/PacbioPoolList'
 import Plate from '@/components/pacbio/PacbioRunPlateItem'
+import DataFetcher from '@/components/DataFetcher'
+import { RunTypeEnum } from '@/store/traction/pacbio/runCreate/run'
 
 import { createNamespacedHelpers } from 'vuex'
-const { mapGetters, mapState, mapActions } = createNamespacedHelpers('traction/pacbio/runs')
+const { mapGetters, mapActions, mapMutations } = createNamespacedHelpers(
+  'traction/pacbio/runCreate',
+)
 
 export default {
   name: 'PacbioRunShow',
@@ -62,92 +67,66 @@ export default {
     PacbioRunWellDefaultEdit,
     pacbioPoolList,
     Plate,
+    DataFetcher,
   },
   props: {
     id: {
       type: [String, Number],
       default: 0,
     },
-    actions: {
-      type: Object,
-      default() {
-        return {
-          create: {
-            id: 'create',
-            theme: 'create',
-            label: 'Create',
-            method: 'createRun',
-          },
-          update: {
-            id: 'update',
-            theme: 'update',
-            label: 'Update',
-            method: 'updateRun',
-          },
-        }
-      },
-    },
-  },
-  data() {
-    return {
-      newRecord: isNaN(this.id),
-    }
   },
   computed: {
-    currentAction() {
-      return this.actions[this.newRecord ? 'create' : 'update']
+    newRecord() {
+      return this.runType.type === RunTypeEnum.New
     },
-    ...mapGetters(['currentRun', 'poolBarcodes']),
-    ...mapState({
-      currentRun: (state) => state.currentRun,
-    }),
-  },
-  created() {
-    this.provider()
+    ...mapGetters(['runType']),
   },
   methods: {
-    async runAction() {
-      const responses = await this[this.currentAction.method]()
-
-      if (responses.length == 0) {
-        this.redirectToRuns()
-      } else {
-        this.showAlert(
-          'Failed to create run in Traction: ' + responses,
-          'danger',
-          'run-validation-message',
-        )
-      }
-    },
-    resetRun() {
-      this.newRun()
+    async resetRun() {
+      this.clearRunData()
+      await this.setRun({ id: this.id })
+      await this.setDefaultWellAttributes()
       this.showAlert('Run has been reset', 'success', 'run-validation-message')
     },
-    ...mapActions(['createRun', 'updateRun', 'editRun', 'newRun']),
+    ...mapActions(['setRun', 'saveRun', 'fetchSmrtLinkVersions', 'setDefaultWellAttributes']),
+    ...mapMutations(['clearRunData']),
 
     redirectToRuns() {
       this.$router.push({ name: 'PacbioRunIndex' })
     },
-    async provider() {
-      await this.$store.dispatch('traction/pacbio/runCreate/fetchSmrtLinkVersions')
-      await this.$store.commit('traction/pacbio/runCreate/clearPoolData')
-      if (this.id === 'new') {
-        this.newRun()
-      } else if (!this.newRecord) {
-        await this.editRun(parseInt(this.$route.params.id))
-        const barcodes = this.poolBarcodes
-        await this.$store.dispatch('traction/pacbio/runCreate/findPools', { barcode: barcodes })
-      } else {
-        this.$router.push({ name: '404' })
+    alertOnFail({ success, errors }) {
+      if (!success) {
+        this.showAlert(errors, 'danger')
       }
+    },
+    save() {
+      this.saveRun().then(({ success, errors }) => {
+        success
+          ? this.showAlert(
+              `Run successfully ${this.runType.action}d`,
+              'success',
+              'run-create-message',
+            )
+          : this.showAlert(
+              'Failed to create run in Traction: ' + errors,
+              'danger',
+              'run-create-message',
+            )
+        if (success) {
+          this.redirectToRuns()
+        }
+      })
+    },
+    async provider() {
+      // Seeds required data and loads the page via the DataFetcher
+      // Set smrtLinkVersions first as setRun depends on it
+      await this.fetchSmrtLinkVersions()
+      this.clearRunData()
+      await this.setRun({ id: this.id })
+      // Sets the runCreate/defaultWellAttributes store on loading the view
+      await this.setDefaultWellAttributes()
+      return { success: true }
     },
   },
 }
 </script>
-
-<style>
-button {
-  margin-right: 2px;
-  margin-left: 2px;
-}
-</style>

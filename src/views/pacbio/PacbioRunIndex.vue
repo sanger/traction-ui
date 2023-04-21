@@ -45,7 +45,7 @@
           size="sm"
           class="mr-1"
           :disabled="row.item.state !== 'pending'"
-          @click="updateRun('start', row.item.id)"
+          @click="updateRunState('started', row.item.id)"
         >
           Start
         </traction-button>
@@ -56,7 +56,7 @@
           size="sm"
           class="mr-1"
           :disabled="isRunDisabled(row.item)"
-          @click="updateRun('complete', row.item.id)"
+          @click="updateRunState('completed', row.item.id)"
         >
           Complete
         </traction-button>
@@ -67,7 +67,7 @@
           size="sm"
           class="mr-1"
           :disabled="isRunDisabled(row.item)"
-          @click="updateRun('cancel', row.item.id)"
+          @click="updateRunState('cancelled', row.item.id)"
         >
           Cancel
         </traction-button>
@@ -83,7 +83,6 @@
         </traction-button>
 
         <a
-          v-show="row.item.all_wells_have_pools"
           :id="generateId('generate-sample-sheet', row.item.id)"
           :href="generateSampleSheetPath(row.item.id)"
           class="text-primary"
@@ -149,7 +148,7 @@ export default {
   },
   watch: {
     runs(newValue) {
-      this.setInitialData(newValue, this.perPage)
+      this.setInitialData(newValue, this.perPage, { sortBy: 'created_at' })
     },
   },
   methods: {
@@ -162,9 +161,9 @@ export default {
     generateSampleSheetPath(id) {
       return import.meta.env.VITE_TRACTION_BASE_URL + '/v1/pacbio/runs/' + id + '/sample_sheet'
     },
-    updateRun(status, id) {
+    updateRunState(status, id) {
       try {
-        this[status + 'Run']({ id, pipeline: 'pacbio' })
+        this.updateRun({ id, state: status })
       } catch (error) {
         this.showAlert('Failed to update run: ' + error.message, 'danger')
       }
@@ -173,8 +172,7 @@ export default {
       this.$router.push({ path: `/pacbio/run/${runId || 'new'}` })
     },
 
-    ...mapActions('traction/pacbio/runs', ['fetchPacbioRuns', 'generateSampleSheet']),
-    ...mapActions('traction', ['startRun', 'completeRun', 'cancelRun']),
+    ...mapActions('traction/pacbio/runs', ['fetchPacbioRuns', 'updateRun']),
   },
 }
 </script>

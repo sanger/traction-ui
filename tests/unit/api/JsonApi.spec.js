@@ -2,9 +2,29 @@ import * as JsonApi from '@/api/JsonApi'
 import TestResponse from '@tests/data/testResponse'
 import CircularResponse from '@tests/data/circularResponse'
 import { describe, expect } from 'vitest'
+import { Data } from '@support/testHelper'
 
 // TODO: create a factory which will build a JSON api response. Doing this manually is crushing me.
 describe('JsonApi', () => {
+  const {
+    extractAttributes,
+    mapRelationships,
+    extractRelationship,
+    extractRelationships,
+    findIncluded,
+    deserializeIncluded,
+    extractResourceObject,
+    deserialize,
+    groupIncludedByResource,
+    extractRelationshipsAndGroupById,
+    dataToObjectById,
+    filterByAttribute,
+    populateById,
+    mapAttribute,
+    dataToObjectByPosition,
+    populateBy,
+  } = JsonApi
+
   let data, included, dataItem
 
   describe('deserialize', () => {
@@ -16,7 +36,7 @@ describe('JsonApi', () => {
 
     describe('for a given record', () => {
       it('can extract the attributes', () => {
-        expect(JsonApi.extractAttributes(dataItem)).toEqual({
+        expect(extractAttributes(dataItem)).toEqual({
           id: '1',
           type: 'cheeses',
           attrA: 'you caught me',
@@ -25,22 +45,22 @@ describe('JsonApi', () => {
       })
 
       it('can map the relationships', () => {
-        expect(JsonApi.mapRelationships(dataItem.relationships)).toEqual({
+        expect(mapRelationships(dataItem.relationships)).toEqual({
           bean: { id: '1', type: 'beans' },
           pickle: { id: '2', type: 'pickles' },
           chocolates: [{ id: '3', type: 'chocolates' }],
         })
-        expect(JsonApi.mapRelationships(undefined)).toEqual({})
+        expect(mapRelationships(undefined)).toEqual({})
       })
 
       it('can extract a relationship', () => {
-        expect(JsonApi.extractRelationship({ type: 'pickles', id: '2' }, included)).toEqual({
+        expect(extractRelationship({ type: 'pickles', id: '2' }, included)).toEqual({
           type: 'pickles',
           id: '2',
           attrI: 'I just keep',
           attrJ: 'rolling on',
         })
-        expect(JsonApi.extractRelationship([{ type: 'chocolates', id: '3' }], included)).toEqual([
+        expect(extractRelationship([{ type: 'chocolates', id: '3' }], included)).toEqual([
           {
             attrC: 'can you',
             attrD: 'feel it',
@@ -52,15 +72,15 @@ describe('JsonApi', () => {
       })
 
       it('can find the included', () => {
-        expect(JsonApi.findIncluded({ id: '2', type: 'pickles' }, included).attributes).toEqual({
+        expect(findIncluded({ id: '2', type: 'pickles' }, included).attributes).toEqual({
           attrI: 'I just keep',
           attrJ: 'rolling on',
         })
-        expect(JsonApi.findIncluded({ id: '1', type: 'beans' }, included).attributes).toEqual({})
+        expect(findIncluded({ id: '1', type: 'beans' }, included).attributes).toEqual({})
       })
 
       it('can spread the included', () => {
-        expect(JsonApi.deserializeIncluded({ id: '2', type: 'pickles' }, included)).toEqual({
+        expect(deserializeIncluded({ id: '2', type: 'pickles' }, included)).toEqual({
           id: '2',
           type: 'pickles',
           attrI: 'I just keep',
@@ -69,9 +89,9 @@ describe('JsonApi', () => {
       })
 
       it('can extract the relationships', () => {
-        expect(JsonApi.extractRelationships(undefined, included)).toEqual({})
-        expect(JsonApi.extractRelationships(dataItem.relationships, undefined)).toEqual({})
-        expect(JsonApi.extractRelationships(dataItem.relationships, included)).toEqual({
+        expect(extractRelationships(undefined, included)).toEqual({})
+        expect(extractRelationships(dataItem.relationships, undefined)).toEqual({})
+        expect(extractRelationships(dataItem.relationships, included)).toEqual({
           bean: { id: '1', type: 'beans' },
           pickle: { attrI: 'I just keep', attrJ: 'rolling on', id: '2', type: 'pickles' },
           chocolates: [
@@ -87,7 +107,7 @@ describe('JsonApi', () => {
       })
 
       it('can extract a resource object', () => {
-        expect(JsonApi.extractResourceObject(dataItem, included)).toEqual({
+        expect(extractResourceObject(dataItem, included)).toEqual({
           id: '1',
           type: 'cheeses',
           attrA: 'you caught me',
@@ -114,7 +134,7 @@ describe('JsonApi', () => {
         })
 
         it('can extract a resource object', () => {
-          expect(JsonApi.extractResourceObject(dataItem, included)).toMatchObject({
+          expect(extractResourceObject(dataItem, included)).toMatchObject({
             id: '1',
             state: 'pending',
             volume: 1.0,
@@ -139,8 +159,8 @@ describe('JsonApi', () => {
       })
 
       it('will work if single record is passed through deserializer', () => {
-        expect(JsonApi.deserialize({ data: dataItem, included: included })).toEqual({
-          cheeses: [JsonApi.extractResourceObject(dataItem, included)],
+        expect(deserialize({ data: dataItem, included: included })).toEqual({
+          cheeses: [extractResourceObject(dataItem, included)],
         })
       })
     })
@@ -149,7 +169,7 @@ describe('JsonApi', () => {
       let deserialized
 
       beforeEach(() => {
-        deserialized = JsonApi.deserialize(TestResponse.data)
+        deserialized = deserialize(TestResponse.data)
       })
 
       it('will extract all of the records', () => {
@@ -157,7 +177,7 @@ describe('JsonApi', () => {
       })
 
       it('will extract each record correctly', () => {
-        const item = JsonApi.extractResourceObject(dataItem, included)
+        const item = extractResourceObject(dataItem, included)
         expect(deserialized.cheeses[0]).toEqual(item)
       })
     })
@@ -166,7 +186,7 @@ describe('JsonApi', () => {
   describe('groupIncludedByResource', () => {
     it('groups resources from an included array', () => {
       const included = TestResponse.data.included
-      expect(JsonApi.groupIncludedByResource(included)).toEqual({
+      expect(groupIncludedByResource(included)).toEqual({
         pickles: included.slice(0, 1),
         chocolates: included.slice(1, 3),
         crisps: included.slice(3, 5),
@@ -177,7 +197,7 @@ describe('JsonApi', () => {
   describe('extractRelationshipsAndGroupById', () => {
     it('creates a list of relationships by id', () => {
       const relationships = TestResponse.data.data[0].relationships
-      const extractedRelationships = JsonApi.extractRelationshipsAndGroupById(relationships)
+      const extractedRelationships = extractRelationshipsAndGroupById(relationships)
       expect(Object.keys(extractedRelationships)).toEqual([
         'bean',
         'pickle',
@@ -195,7 +215,7 @@ describe('JsonApi', () => {
     })
 
     it('returns an empty object if the relationships are undefined', () => {
-      const extractedRelationships = JsonApi.extractRelationshipsAndGroupById()
+      const extractedRelationships = extractRelationshipsAndGroupById()
       expect(extractedRelationships).toEqual({})
     })
   })
@@ -203,7 +223,7 @@ describe('JsonApi', () => {
   describe('dataToObjectById', () => {
     it('creates an object with the id as key', () => {
       const data = TestResponse.data.data
-      const object = JsonApi.dataToObjectById({ data })
+      const object = dataToObjectById({ data })
       const keys = Object.keys(object)
       expect(keys.length).toEqual(data.length)
       expect(object[keys[0]]).toEqual({ id: data[0].id, type: data[0].type, ...data[0].attributes })
@@ -211,7 +231,7 @@ describe('JsonApi', () => {
 
     it('adds the relationships if requested', () => {
       const data = TestResponse.data.data
-      const object = JsonApi.dataToObjectById({ data, includeRelationships: true })
+      const object = dataToObjectById({ data, includeRelationships: true })
       const item = object['1']
       const keys = Object.keys(item)
       expect(keys.includes('bean')).toBeTruthy()
@@ -223,14 +243,14 @@ describe('JsonApi', () => {
   describe('filterByAttribute', () => {
     it('filters objects by attribute value', () => {
       const data = TestResponse.data.data
-      const filtered = JsonApi.filterByAttribute(data, { attrA: 'wild horses' })
+      const filtered = filterByAttribute(data, { attrA: 'wild horses' })
       expect(filtered.length).toEqual(1)
       expect(filtered[0]).toEqual(data[1])
     })
 
     it('filters nothing if an empty object is provided', () => {
       const data = TestResponse.data.data
-      const filtered = JsonApi.filterByAttribute(data, {})
+      const filtered = filterByAttribute(data, {})
       expect(filtered.length).toEqual(2)
       expect(filtered[0]).toEqual(data[0])
       expect(filtered[1]).toEqual(data[1])
@@ -239,8 +259,82 @@ describe('JsonApi', () => {
   describe('mapAttribute', () => {
     it('extract the given attribute into an array', () => {
       const data = TestResponse.data.data
-      const filtered = JsonApi.mapAttribute(data, 'attrA')
+      const filtered = mapAttribute(data, 'attrA')
       expect(filtered).toEqual(['you caught me', 'wild horses'])
+    })
+  })
+
+  describe('populateById', () => {
+    it('with resources', () => {
+      const state = { resources: {} }
+      const wells = Data.PacbioRun.data.included.slice(1, 2)
+      populateById('wells')(state, wells)
+      expect(state.resources.wells).toEqual(dataToObjectById({ data: wells }))
+    })
+
+    it('without resources', () => {
+      const state = {}
+      const wells = Data.PacbioRun.data.included.slice(1, 2)
+      populateById('wells', { populateResources: false })(state, wells)
+      expect(state.wells).toEqual(dataToObjectById({ data: wells }))
+    })
+
+    it('with relationships', () => {
+      const state = { resources: {} }
+      const wells = Data.PacbioRun.data.included.slice(1, 2)
+      populateById('wells', { includeRelationships: true })(state, wells)
+      expect(state.resources.wells).toEqual(
+        dataToObjectById({ data: wells, includeRelationships: true }),
+      )
+    })
+  })
+
+  describe('dataToObjectByPosition', () => {
+    it('creates an object with the position as key', () => {
+      const data = Data.PacbioWells.data.data
+      const wells = dataToObjectByPosition({ data })
+      const keys = Object.keys(wells)
+      expect(keys.length).toEqual(data.length)
+      // bizarre. It reverses the keys.
+      expect(wells[keys[0]]).toEqual({
+        id: data[1].id,
+        position: data[1].position,
+        type: data[1].type,
+        ...data[1].attributes,
+      })
+    })
+
+    it('adds the relationships if requested', () => {
+      const data = Data.PacbioWells.data.data
+      const wells = dataToObjectByPosition({ data, includeRelationships: true })
+      const item = wells['A1']
+      const keys = Object.keys(item)
+      expect(keys.includes('pools')).toBeTruthy()
+    })
+  })
+
+  describe('populateBy', () => {
+    it('with resources', () => {
+      const state = { resources: {} }
+      const wells = Data.PacbioRun.data.included.slice(1, 2)
+      populateBy('wells', dataToObjectByPosition)(state, wells)
+      expect(state.resources.wells).toEqual(dataToObjectByPosition({ data: wells }))
+    })
+
+    it('without resources', () => {
+      const state = {}
+      const wells = Data.PacbioRun.data.included.slice(1, 2)
+      populateBy('wells', dataToObjectByPosition, { populateResources: false })(state, wells)
+      expect(state.wells).toEqual(dataToObjectByPosition({ data: wells }))
+    })
+
+    it('with relationships', () => {
+      const state = { resources: {} }
+      const wells = Data.PacbioRun.data.included.slice(1, 2)
+      populateBy('wells', dataToObjectByPosition, { includeRelationships: true })(state, wells)
+      expect(state.resources.wells).toEqual(
+        dataToObjectByPosition({ data: wells, includeRelationships: true }),
+      )
     })
   })
 })

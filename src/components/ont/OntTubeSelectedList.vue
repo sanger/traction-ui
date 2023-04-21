@@ -70,16 +70,8 @@ export default {
     },
     rowClass(item) {
       if (item && item.selected) {
-        return 'table-primary'
+        return 'bg-gray-400'
       }
-    },
-    onSelect(e) {
-      e.added.forEach((el) => {
-        this.selectWellRequests(el.__vue__.$attrs.id)
-      })
-      e.removed.forEach((el) => {
-        this.selectWellRequests(el.__vue__.$attrs.id)
-      })
     },
   },
 }

@@ -137,7 +137,6 @@ export default {
       return this.run_suitability.formattedErrors
     },
   },
-  // TODO: need to add a a test for drag
   methods: {
     drag(barcode, event) {
       event.dataTransfer.setDragImage(img, 120, 50)
