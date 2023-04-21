@@ -1,17 +1,14 @@
 import Response from '@/api/Response'
 import * as Actions from '@/store/traction/pacbio/requests/actions'
 import { Data } from '@support/testHelper'
+import { expect } from 'vitest'
+import { newResponse } from '@/api/ResponseHelper'
 
-let requests, failedResponse
+let requests
 
 describe('actions', () => {
   beforeEach(() => {
     requests = new Response(Data.TractionPacbioSamples).deserialize.requests
-    failedResponse = {
-      status: 404,
-      statusText: 'Record not found',
-      data: { errors: { title: ['The record could not be found.'] } },
-    }
   })
 
   describe('setRequests', () => {
@@ -68,30 +65,37 @@ describe('actions', () => {
     it('successful', async () => {
       const sample = requests[0]
       const update = vi.fn()
-      const getters = { requestsRequest: { update: update }, requests: requests }
+      const commit = vi.fn()
+      const getters = { requestsRequest: { update: update } }
 
-      update.mockReturnValue(Data.TractionPacbioSamples)
+      update.mockReturnValue(Data.TractionPacbioSample)
 
-      const resp = await Actions.updateRequest({ getters }, sample)
-
+      const { success, errors } = await Actions.updateRequest({ commit, getters }, sample)
       const expectedPayload = Actions.createRequestPayload(sample)
-      expect(getters.requestsRequest.update).toHaveBeenCalledWith(expectedPayload)
 
-      const expectedResp = new Response(Data.TractionPacbioSamples)
-      expect(resp).toEqual(expectedResp)
+      expect(getters.requestsRequest.update).toHaveBeenCalledWith(expectedPayload)
+      expect(commit).toHaveBeenCalledWith('updateRequest', Data.TractionPacbioSample.data.data)
+      expect(success).toEqual(true)
+      expect(errors).toEqual([])
     })
 
     it('unsuccessful', async () => {
       const sample = requests[0]
       const update = vi.fn()
-      const getters = { requestsRequest: { update: update }, requests: requests }
+      const commit = vi.fn()
+      const getters = { requestsRequest: { update: update } }
+      const mockResponse = {
+        status: '422',
+        data: { data: { errors: { error1: ['There was an error'] } } },
+      }
 
-      update.mockReturnValue(failedResponse)
+      update.mockRejectedValue({ response: mockResponse })
+      const expectedResponse = newResponse({ ...mockResponse, success: false })
 
-      const expectedResponse = new Response(failedResponse)
-      await expect(Actions.updateRequest({ getters }, sample)).rejects.toEqual(
-        expectedResponse.errors,
-      )
+      const { success, errors } = await Actions.updateRequest({ commit, getters }, sample)
+
+      expect(success).toEqual(false)
+      expect(errors).toEqual(expectedResponse.errors)
     })
   })
 

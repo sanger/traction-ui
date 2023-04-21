@@ -1,113 +1,46 @@
-import * as Run from '@/api/PacbioRun'
 import PacbioRunWellDefaultEdit from '@/components/pacbio/PacbioRunWellDefaultEdit'
 import { localVue, mount, store } from '@support/testHelper'
 import { describe, expect, it } from 'vitest'
+import { defaultWellAttributes } from '@/store/traction/pacbio/runCreate/run'
+
+// required as suggestion to remove the deprecated function
+// https://vue-test-utils.vuejs.org/api/options.html#attachtodocument
+const elem = document.createElement('div')
+if (document.body) {
+  document.body.appendChild(elem)
+}
+
+const buildWrapper = () =>
+  mount(PacbioRunWellDefaultEdit, {
+    localVue,
+    store,
+    sync: false,
+    attachTo: elem,
+  })
 
 const smrtLinkVersions = [
   {
     id: 1,
-    name: 'v10',
-    default: true,
-  },
-  {
-    id: 2,
     name: 'v11',
     default: false,
   },
 ]
 
+const run = {
+  id: 'new',
+  system_name: 'Sequel IIe',
+  sequencing_kit_box_barcode: null,
+  dna_control_complex_box_barcode: null,
+  comments: null,
+}
+
 describe('PacbioRunWellDefaultEdit', () => {
-  let wrapper, runInfo, run
+  let wrapper, runInfo
 
   beforeEach(() => {
-    run = Run.build()
-    run.smrt_link_version_id = 1
-
-    store.commit('traction/pacbio/runs/setCurrentRun', run)
+    store.state.traction.pacbio.runCreate.run = run
+    store.state.traction.pacbio.runCreate.defaultWellAttributes = defaultWellAttributes()
     store.state.traction.pacbio.runCreate.resources.smrtLinkVersions = smrtLinkVersions
-
-    // required as suggestion to remove the deprecated function
-    // https://vue-test-utils.vuejs.org/api/options.html#attachtodocument
-    const elem = document.createElement('div')
-    if (document.body) {
-      document.body.appendChild(elem)
-    }
-    wrapper = mount(PacbioRunWellDefaultEdit, { localVue, store, sync: false, attachTo: elem })
-    runInfo = wrapper.vm
-  })
-
-  it('can have getters', () => {
-    expect(runInfo.currentRun).toBeDefined()
-  })
-
-  it('will have a selected smrt link version', () => {
-    expect(runInfo.selectedSmrtLinkVersion).toEqual(smrtLinkVersions[0])
-  })
-
-  /*["ccs_analysis_output", 
-  "generate_hifi", 
-  "binding_kit_box_barcode", 
-  "pre_extension_time", 
-  "loading_target_p1_plus_p2", 
-  "movie_time"]
-  */
-  describe('if the SMRT Link version is v10', () => {
-    beforeEach(() => {
-      runInfo.currentRun.smrt_link_version_id = 1
-    })
-    it('has a movie time default input', () => {
-      expect(wrapper.find('[data-attribute="default-movie-time"]').exists()).toBeTruthy()
-    })
-
-    it('has a generate hifi default input', () => {
-      expect(wrapper.find('[data-attribute="default-generate-hifi"]').exists()).toBeTruthy()
-    })
-
-    it('has a binding kit box barcode default input', () => {
-      expect(
-        wrapper.find('[data-attribute="default-binding-kit-box-barcode"]').exists(),
-      ).toBeTruthy()
-    })
-
-    it('has a pre extension time default input', () => {
-      expect(wrapper.find('[data-attribute="default-pre-extension-time"]').exists()).toBeTruthy()
-    })
-
-    it('has a loading target p1 plus p2 default input', () => {
-      expect(
-        wrapper.find('[data-attribute="default-loading-target-p1-plus-p2"]').exists(),
-      ).toBeTruthy()
-    })
-
-    it('has a CCS analysis output default input', () => {
-      expect(wrapper.find('[data-attribute="default-ccs-analysis-output"]').exists()).toBeTruthy()
-    })
-
-    it('does not have a CCS analysis output include kinetics information default input', () => {
-      expect(
-        wrapper
-          .find('[data-attribute="default-ccs-analysis-output-include-kinetics-information"]')
-          .exists(),
-      ).toBeFalsy()
-    })
-
-    it('does not have a CCS analysis output include low quality reads default input', () => {
-      expect(
-        wrapper
-          .find('[data-attribute="default-ccs-analysis-output-include-low-quality-reads"]')
-          .exists(),
-      ).toBeFalsy()
-    })
-
-    it('does not have a fivemc calls in cpg motifs default input', () => {
-      expect(
-        wrapper.find('[data-attribute="default-include-fivemc-calls-in-cpg-motifs"]').exists(),
-      ).toBeFalsy()
-    })
-
-    it('does not have a demultiplex barcodes default input', () => {
-      expect(wrapper.find('[data-attribute="default-demultiplex-barcodes"]').exists()).toBeFalsy()
-    })
   })
 
   /*["ccs_analysis_output_include_kinetics_information",
@@ -121,63 +54,104 @@ describe('PacbioRunWellDefaultEdit', () => {
   */
   describe('if the SMRT Link version is v11', () => {
     beforeEach(() => {
-      runInfo.currentRun.smrt_link_version_id = 2
+      store.state.traction.pacbio.runCreate.smrtLinkVersion = smrtLinkVersions[0]
+      wrapper = buildWrapper()
+      runInfo = wrapper.vm
     })
 
-    it('has a movie time default input', () => {
-      expect(wrapper.find('[data-attribute=default-movie-time]').exists()).toBeTruthy()
+    it('will have a selected smrt link version of v11', () => {
+      expect(runInfo.smrtLinkVersion.id).toEqual(smrtLinkVersions[0].id)
     })
 
-    it('has a binding kit box barcode default input', () => {
-      expect(wrapper.find('[data-attribute=default-binding-kit-box-barcode]').exists()).toBeTruthy()
-    })
+    describe('input', () => {
+      it('has a movie time input', async () => {
+        const options = wrapper.find('[data-attribute=default-movie-time]').findAll('option')
+        // select the first option
+        await options.at(1).setSelected()
+        expect(store.state.traction.pacbio.runCreate.defaultWellAttributes.movie_time).toEqual(
+          '10.0',
+        )
+      })
 
-    it('has a pre extension time default input', () => {
-      expect(wrapper.find('[data-attribute=default-pre-extension-time]').exists()).toBeTruthy()
-    })
+      it('has a pre extension time input', async () => {
+        const input = wrapper.find('[data-attribute=default-pre-extension-time]')
+        await input.setValue('3')
+        expect(
+          store.state.traction.pacbio.runCreate.defaultWellAttributes.pre_extension_time,
+        ).toEqual('3')
+      })
 
-    it('has a loading target p1 plus p2 default input', () => {
-      expect(
-        wrapper.find('[data-attribute=default-loading-target-p1-plus-p2]').exists(),
-      ).toBeTruthy()
-    })
+      it('has a loading target p1 plus p2 input', async () => {
+        const input = wrapper.find('[data-attribute=default-loading-target-p1-plus-p2]')
+        await input.setValue('1')
+        expect(
+          store.state.traction.pacbio.runCreate.defaultWellAttributes.loading_target_p1_plus_p2,
+        ).toEqual('1')
+      })
 
-    it('has a CCS analysis output include kinetics information default input', () => {
-      expect(
-        wrapper
+      it('has a binding kit box barcode input', async () => {
+        const input = wrapper.find('[data-attribute=default-binding-kit-box-barcode]')
+        await input.setValue('ABC123')
+        expect(
+          store.state.traction.pacbio.runCreate.defaultWellAttributes.binding_kit_box_barcode,
+        ).toEqual('ABC123')
+      })
+
+      it('has a CCS analysis output include kinetics information input', async () => {
+        const options = wrapper
           .find('[data-attribute=default-ccs-analysis-output-include-kinetics-information]')
-          .exists(),
-      ).toBeTruthy()
-    })
+          .findAll('option')
+        // select the first option
+        await options.at(0).setSelected()
+        expect(
+          store.state.traction.pacbio.runCreate.defaultWellAttributes
+            .ccs_analysis_output_include_kinetics_information,
+        ).toEqual('Yes')
+      })
 
-    it('has a CCS analysis output include low quality reads default input', () => {
-      expect(
-        wrapper
+      it('has a CCS analysis output include low quality reads input', async () => {
+        const options = wrapper
           .find('[data-attribute=default-ccs-analysis-output-include-low-quality-reads]')
-          .exists(),
-      ).toBeTruthy()
-    })
+          .findAll('option')
+        // select the first option
+        await options.at(0).setSelected()
+        expect(
+          store.state.traction.pacbio.runCreate.defaultWellAttributes
+            .ccs_analysis_output_include_low_quality_reads,
+        ).toEqual('Yes')
+      })
 
-    it('has a fivemc calls in cpg motifs default input', () => {
-      expect(
-        wrapper.find('[data-attribute=default-include-fivemc-calls-in-cpg-motifs]').exists(),
-      ).toBeTruthy()
-    })
+      it('has a demultiplex barcodes default input', async () => {
+        const options = wrapper
+          .find('[data-attribute=default-demultiplex-barcodes]')
+          .findAll('option')
+        // select the first option
+        await options.at(1).setSelected()
+        expect(
+          store.state.traction.pacbio.runCreate.defaultWellAttributes.demultiplex_barcodes,
+        ).toEqual('In SMRT Link')
+      })
 
-    it('has a demultiplex barcodes default input', () => {
-      expect(wrapper.find('[data-attribute=default-demultiplex-barcodes]').exists()).toBeTruthy()
-    })
+      it('has a fivemc calls in cpg motifs default input', async () => {
+        const options = wrapper
+          .find('[data-attribute=default-include-fivemc-calls-in-cpg-motifs]')
+          .findAll('option')
+        // select the first option
+        await options.at(0).setSelected()
+        expect(
+          store.state.traction.pacbio.runCreate.defaultWellAttributes
+            .include_fivemc_calls_in_cpg_motifs,
+        ).toEqual('Yes')
+      })
 
-    it('does not have a CCS analysis output default input', () => {
-      expect(wrapper.find('[data-attribute=default-ccs-analysis-output]').exists()).toBeFalsy()
-    })
+      // checks components only specific to v11 are being shown
+      it('does not have a CCS analysis output default input', () => {
+        expect(wrapper.find('[data-attribute=default-ccs-analysis-output]').exists()).toBeFalsy()
+      })
 
-    it('does not have a generate hifi default input', () => {
-      expect(wrapper.find('[data-attribute=default-generate-hifi]').exists()).toBeFalsy()
+      it('does not have a generate hifi default input', () => {
+        expect(wrapper.find('[data-attribute=default-generate-hifi]').exists()).toBeFalsy()
+      })
     })
-  })
-
-  afterEach(() => {
-    wrapper.destroy()
   })
 })

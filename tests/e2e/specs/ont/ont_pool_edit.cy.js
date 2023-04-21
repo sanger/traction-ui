@@ -20,6 +20,36 @@ describe('ONT Pool Edit', () => {
       },
     })
   })
+  it('updates pool information on clicking requests table rows', () => {
+    cy.visit('#/ont/pools')
+    cy.get('#pool-index').within(() => {
+      cy.get('[data-action=edit-pool]').first().click()
+    })
+    cy.get('[data-type=plate-item]').should('be.visible')
+    cy.get('#Requests').click()
+    //Select row in requests
+    let selectedListLength = 0
+    cy.get('[data-type=pool-library-list]').within(() => {
+      cy.get('[data-testid=row]')
+        .its('length')
+        .then((length) => {
+          selectedListLength = length
+        })
+    })
+    cy.get('#selectedList').within(() => {
+      cy.get('#source_identifier').first().click()
+    })
+    cy.get('[data-type=pool-library-list]').within(() => {
+      cy.get('[data-testid=row]').should('have.length', selectedListLength + 1)
+    })
+    //Deselect row requests
+    cy.get('#selectedList').within(() => {
+      cy.get('#source_identifier').first().click()
+    })
+    cy.get('[data-type=pool-library-list]').within(() => {
+      cy.get('[data-testid=row]').should('have.length', selectedListLength)
+    })
+  })
 
   it('Updates a pool successfully', () => {
     cy.visit('#/ont/pools')

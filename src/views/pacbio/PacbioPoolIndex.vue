@@ -163,7 +163,7 @@ export default {
   },
   watch: {
     pools(newValue) {
-      this.setInitialData(newValue, this.perPage)
+      this.setInitialData(newValue, this.perPage, { sortBy: 'created_at' })
     },
   },
   methods: {

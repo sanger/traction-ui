@@ -3,6 +3,15 @@ import { localVue, mount, store } from '@support/testHelper'
 import { describe } from 'vitest'
 import * as QcResultsUpload from '@/services/traction/QcResultsUpload'
 
+// TODO: stderr | tests/unit/components/qcResultsUpload/QcResultsUploadForm.spec.js > QcResultsUploadForm.vue > #postCSV > handles a failed import
+// [Vue warn]: Invalid prop: type check failed for prop "value". Expected Array, , got Object
+
+// found in
+
+// ---> <BFormFile>
+//        <QcResultsUploadForm> at /Users/si5/webapps/traction-ui/src/components/qcResultsUpload/QcResultsUploadForm.vue
+//          <Root>
+// [Vue warn]: Invalid prop: type check failed for prop "value". Expected Array, , got Object
 const evt = {
   preventDefault: () => {
     return {}

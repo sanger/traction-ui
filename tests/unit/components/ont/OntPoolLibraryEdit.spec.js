@@ -22,7 +22,6 @@ const tags = {
 
 const library = newLibrary({ ont_request_id: '1' })
 
-// TODO: The tag list would probably better done using a separate component and an emit
 // but that is a bigger job
 describe('OntPoolLibraryEdit.vue', () => {
   let wrapper

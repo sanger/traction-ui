@@ -13,95 +13,43 @@ describe('Pacbio Run Create view', () => {
     cy.intercept('/v1/pacbio/smrt_link_versions', {
       fixture: 'tractionPacbioSmrtLinkVersions.json',
     })
-    cy.intercept('/v1/pacbio/runs/plates', {
-      statusCode: 201,
-      body: {
-        data: {
-          id: 1,
-          type: 'plates',
-          links: {
-            self: '/v1/pacbio/runs/plates/1',
-          },
-        },
-      },
-    })
-    cy.intercept(
-      '/v1/pacbio/pools?include=tube,libraries.tag,libraries.request&fields[requests]=sample_name&fields[tubes]=barcode&fields[tags]=group_id&fields[libraries]=request,tag,run_suitability',
-      {
-        fixture: 'tractionPacbioPools.json',
-      },
-    )
+
+    // Find the pool being searched for by barcode
     cy.intercept(
       '/v1/pacbio/pools?filter[barcode]=TRAC-2-2&include=tube,libraries.tag,libraries.request&fields[requests]=sample_name&fields[tubes]=barcode&fields[tags]=group_id&fields[libraries]=request,tag,run_suitability',
       {
         fixture: 'pacbioPool.json',
       },
     )
-  })
 
-  it('Creates a run successfully - v10', () => {
-    cy.intercept('/v1/pacbio/runs/wells', {
+    // Message on successful creation or edit of the run
+    cy.intercept('POST', '/v1/pacbio/runs', {
       statusCode: 201,
-      body: { data: {} },
+      body: {
+        data: {},
+      },
     })
-    const dataTransfer = new DataTransfer()
-
-    cy.visit('#/pacbio/runs')
-    cy.get('[data-action=new-run]').contains('New Run').click()
-    cy.get('#sequencing-kit-box-barcode').type('Lxxxxx101826100123199')
-    cy.get('.pacbioRunInfoEdit')
-      .get('#dna-control-complex-box-barcode')
-      .type('Lxxxxx101717600123199')
-    cy.get('#system-name').select('Sequel IIe')
-    cy.get('[data-attribute="smrt-link-version"]').select('v10')
-
-    // get the pool list component, type in the barcode of the pool being searched, click search
-    cy.get('#labware-finder-input').type('TRAC-2-2')
-    cy.get('button').contains('Search').click()
-
-    // get the pool being searched
-    cy.get('.list-group-item')
-      // this obviously gets quite a lot into implementation but at least it works!
-      .first()
-      .trigger('dragstart', { dataTransfer: dataTransfer, force: true })
-      .trigger('drag', { dataTransfer: dataTransfer, force: true })
-    // again better to rename this item to make it more descriptive
-    cy.get('ellipse')
-      .first()
-      .trigger('drop', { dataTransfer: dataTransfer, force: true })
-      .trigger('click')
-    cy.get('[data-attribute="movie-time"]').select('15.0')
-    cy.get('[data-attribute="on-plate-loading-concentration"]').type('2')
-    cy.get('[data-attribute="generate-hifi"]').select('Do Not Generate')
-    cy.get('[data-attribute="binding-kit-box-barcode"]').type('12345')
-    cy.get('[data-attribute="loading-target-p1-plus-p2"]').type('0.75')
-    cy.get('[data-attribute="pre-extension-time"]').type(3)
-    cy.get('#updateBtn').click()
-    cy.get('button').contains('Create').click()
-    // TODO: we need a success message.
   })
 
   it('Creates a run successfully - v11', () => {
-    cy.intercept('/v1/pacbio/runs/wells', {
-      statusCode: 201,
-      body: { data: {} },
-    })
     const dataTransfer = new DataTransfer()
 
+    // Checks the PacbioRunInfoEdit component
     cy.visit('#/pacbio/runs')
     cy.get('[data-action=new-run]').contains('New Run').click()
-    cy.get('#sequencing-kit-box-barcode').type('Lxxxxx101826100123199')
+    cy.get('[data-attribute="sequencing_kit_box_barcode"]').type('Lxxxxx101826100123199')
     cy.get('.pacbioRunInfoEdit')
-      .get('#dna-control-complex-box-barcode')
+      .get('[data-attribute="dna_control_complex_box_barcode"]')
       .type('Lxxxxx101717600123199')
-    cy.get('#system-name').select('Sequel IIe')
-    cy.get('[data-attribute="smrt-link-version"]').select('v11')
+    cy.get('[data-attribute="system_name"]').select('Sequel IIe')
+    cy.get('[data-attribute="smrt_link_version"]').select('v11')
     // TODO: calling it  list group item is not specific enough
 
-    // get the pool list component, type in the barcode of the pool being searched, click search
+    // Get the PacbioPoolList component, type in the barcode of the pool being searched, click search
     cy.get('#labware-finder-input').type('TRAC-2-2')
     cy.get('button').contains('Search').click()
 
+    // Get the pool being searched
     cy.get('.list-group-item')
       // this obviously gets quite a lot into implementation but at least it works!
       .first()
@@ -122,13 +70,13 @@ describe('Pacbio Run Create view', () => {
     cy.get('[data-attribute="ccs-analysis-output-include-low-quality-reads"]').select('No')
     cy.get('[data-attribute="include-fivemc-calls-in-cpg-motifs"]').select('Yes')
 
-    cy.get('#updateBtn').click()
+    cy.get('#update').click()
     cy.get('button').contains('Create').click()
-    // TODO: we need a success message.
+    cy.contains('[data-type=run-create-message]', 'Run successfully created')
   })
 
   it('creates a run unsuccessfully', () => {
-    cy.intercept('/v1/pacbio/runs/wells', {
+    cy.intercept('POST', '/v1/pacbio/runs', {
       statusCode: 422,
       body: {
         data: {
@@ -138,30 +86,31 @@ describe('Pacbio Run Create view', () => {
         },
       },
     })
-    cy.intercept('DELETE', '/v1/pacbio/runs/7', { statusCode: 200 }).as('deleteRun')
     const dataTransfer = new DataTransfer()
 
+    // Checks the PacbioRunInfoEdit component
     cy.visit('#/pacbio/runs')
     cy.get('[data-action=new-run]').contains('New Run').click()
-    cy.get('#sequencing-kit-box-barcode').type('Lxxxxx101826100123199')
-    cy.get('#dna-control-complex-box-barcode').type('Lxxxxx101717600123199')
-    cy.get('#system-name').select('Sequel IIe')
-    // find the pool by barcode
+    cy.get('[data-attribute="sequencing_kit_box_barcode"]').type('Lxxxxx101826100123199')
+    cy.get('[data-attribute="dna_control_complex_box_barcode"]').type('Lxxxxx101717600123199')
+    cy.get('[data-attribute="system_name"]').select('Sequel IIe')
+
+    // Get the PacbioPoolList component, type in the barcode of the pool being searched, click search
     cy.get('#labware-finder-input').type('TRAC-2-2')
     cy.get('button').contains('Search').click()
 
+    // Get the pool being searched
     cy.get('.list-group-item')
       .first()
       .trigger('dragstart', { dataTransfer: dataTransfer, force: true })
       .trigger('drag', { dataTransfer: dataTransfer, force: true })
     cy.get('ellipse').first().trigger('drop', { dataTransfer: dataTransfer, force: true })
+
     cy.get('button').contains('Create').click()
     cy.contains(
-      '[data-type=run-validation-message]',
+      '[data-type=run-create-message]',
       'Failed to create run in Traction: error1 some error',
     )
-    // Ensure we made the request
-    cy.wait('@deleteRun')
   })
 
   // need to work out why it can't find binding kit box barcode
