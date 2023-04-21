@@ -10,7 +10,7 @@
       <button class="w-8 bg-gray-300 text-slate-400" @click="removePool(id)">x</button>
     </div>
     <flex-row>
-      <flex-col >
+      <flex-col>
         <img src="/tube.png" />
         <traction-button
           :id="`editPool-${id}`"
@@ -21,7 +21,7 @@
           >Edit</traction-button
         >
       </flex-col>
-      <flex-col >
+      <flex-col>
         <dl class="row">
           <dt>Barcode</dt>
           <dd data-attribute="barcode">{{ barcode }}</dd>

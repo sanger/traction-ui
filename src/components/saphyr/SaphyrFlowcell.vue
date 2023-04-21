@@ -1,14 +1,14 @@
 <template>
   <div class="grid grod-cold-2">
-      <div class="position">{{ position }}</div>
+    <div class="position">{{ position }}</div>
 
-      <traction-input
-        :id="'libraryBarcode-' + index"
-        :value="libraryBarcode"
-        placeholder="Library barcode"
-        type="text"
-        @input="setBarcode"
-      />
+    <traction-input
+      :id="'libraryBarcode-' + index"
+      :value="libraryBarcode"
+      placeholder="Library barcode"
+      type="text"
+      @input="setBarcode"
+    />
   </div>
 </template>
 
