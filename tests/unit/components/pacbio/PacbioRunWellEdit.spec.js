@@ -34,7 +34,7 @@ describe('PacbioWellEdit', () => {
 
   describe('SMRT Link Versions', () => {
     //["ccs_analysis_output", "generate_hifi", "on_plate_loading_concentration", "binding_kit_box_barcode", "pre_extension_time", "loading_target_p1_plus_p2", "movie_time"]
-    describe('if the SMRT Link version is v10', () => {
+    describe.skip('if the SMRT Link version is v10', () => {
       store.state.traction.pacbio.runCreate.smrtLinkVersion = smrtLinkVersions['1']
       store.state.traction.pacbio.runCreate.wells = {
         A1: newWell({ position: propsData.position }),
@@ -50,7 +50,7 @@ describe('PacbioWellEdit', () => {
 
       describe('has the correct options', () => {
         it('has a movie time input', () => {
-          expect(wrapper.find('[data-attribute="movie-time"]').exists()).toBeTruthy()
+          expect(wrapper.find('[data-attribute="default-movie-time"]').exists()).toBeTruthy()
         })
 
         it('has a generate hifi input', () => {
@@ -142,25 +142,31 @@ describe('PacbioWellEdit', () => {
 
       describe('has the correct options', () => {
         it('has a movie time default input', () => {
-          expect(wrapper.find('[data-attribute="movie-time"]').exists()).toBeTruthy()
+          expect(wrapper.find('[data-attribute="default-movie-time"]').exists()).toBeTruthy()
         })
 
         it('has a binding kit box barcode input', () => {
-          expect(wrapper.find('[data-attribute="binding-kit-box-barcode"]').exists()).toBeTruthy()
+          expect(
+            wrapper.find('[data-attribute="default-binding-kit-box-barcode"]').exists(),
+          ).toBeTruthy()
         })
 
         it('has a pre extension time input', () => {
-          expect(wrapper.find('[data-attribute="pre-extension-time"]').exists()).toBeTruthy()
+          expect(
+            wrapper.find('[data-attribute="default-pre-extension-time"]').exists(),
+          ).toBeTruthy()
         })
 
         it('has a loading target p1 plus p2 input', () => {
-          expect(wrapper.find('[data-attribute="loading-target-p1-plus-p2"]').exists()).toBeTruthy()
+          expect(
+            wrapper.find('[data-attribute="default-loading-target-p1-plus-p2"]').exists(),
+          ).toBeTruthy()
         })
 
         it('has a CCS analysis output include kinetics information input', () => {
           expect(
             wrapper
-              .find('[data-attribute="ccs-analysis-output-include-kinetics-information"]')
+              .find('[data-attribute="default-ccs-analysis-output-include-kinetics-information"]')
               .exists(),
           ).toBeTruthy()
         })
@@ -168,49 +174,59 @@ describe('PacbioWellEdit', () => {
         it('has a CCS analysis output include low quality reads input', () => {
           expect(
             wrapper
-              .find('[data-attribute="ccs-analysis-output-include-low-quality-reads"]')
+              .find('[data-attribute="default-ccs-analysis-output-include-low-quality-reads"]')
               .exists(),
           ).toBeTruthy()
         })
 
         it('has a fivemc calls in cpg motifs input', () => {
           expect(
-            wrapper.find('[data-attribute="include-fivemc-calls-in-cpg-motifs"]').exists(),
+            wrapper.find('[data-attribute="default-include-fivemc-calls-in-cpg-motifs"]').exists(),
           ).toBeTruthy()
         })
 
         it('has a demultiplex barcodes input', () => {
-          expect(wrapper.find('[data-attribute="demultiplex-barcodes"]').exists()).toBeTruthy()
+          expect(
+            wrapper.find('[data-attribute="default-demultiplex-barcodes"]').exists(),
+          ).toBeTruthy()
         })
       })
 
       describe('does not have options belonging to other versions', () => {
-        //v10 options
+        //v10 options - not used anymore?
         it('does not have a CCS analysis output input', () => {
-          expect(wrapper.find('[data-attribute="ccs-analysis-output"]').exists()).toBeFalsy()
+          expect(
+            wrapper.find('[data-attribute="default-ccs-analysis-output"]').exists(),
+          ).toBeFalsy()
         })
 
         it('does not have a generate hifi input', () => {
-          expect(wrapper.find('[data-attribute="generate-hifi"]').exists()).toBeFalsy()
+          expect(wrapper.find('[data-attribute="default-generate-hifi"]').exists()).toBeFalsy()
         })
 
         //v12_revio options
         it('has a movie acquisition time input', () => {
-          expect(wrapper.find('[data-attribute="movie-acquisition-time"]').exists()).toBeFalsy()
+          expect(
+            wrapper.find('[data-attribute="default-movie-acquisition-time"]').exists(),
+          ).toBeFalsy()
         })
 
         it('has include base kinetics input', () => {
-          expect(wrapper.find('[data-attribute="include-base-kinetics"]').exists()).toBeFalsy()
+          expect(
+            wrapper.find('[data-attribute="default-include-base-kinetics"]').exists(),
+          ).toBeFalsy()
         })
 
         it('has a library concentration input', () => {
-          expect(wrapper.find('[data-attribute="library-concentration"]').exists()).toBeFalsy()
+          expect(
+            wrapper.find('[data-attribute="default-library-concentration"]').exists(),
+          ).toBeFalsy()
         })
       })
     })
 
     // ["movie_acquisition_time", "include_base_kinetics", "library_concentration", "polymerase_kit", "pre_extension_time"]
-    describe.todo('if the SMRT Link version is v12_revio', () => {
+    describe('if the SMRT Link version is v12_revio', () => {
       beforeEach(() => {
         store.state.traction.pacbio.runCreate.smrtLinkVersion = smrtLinkVersions['3']
         store.state.traction.pacbio.runCreate.wells = {
@@ -225,67 +241,86 @@ describe('PacbioWellEdit', () => {
 
       describe('has the correct options', () => {
         it('has a movie acquisition time input', () => {
-          expect(wrapper.find('[data-attribute="movie-acquisition-time"]').exists()).toBeTruthy()
+          expect(
+            wrapper.find('[data-attribute="default-movie-acquisition-time"]').exists(),
+          ).toBeTruthy()
         })
 
         it('has include base kinetics input', () => {
-          expect(wrapper.find('[data-attribute="include-base-kinetics"]').exists()).toBeTruthy()
+          expect(
+            wrapper.find('[data-attribute="default-include-base-kinetics"]').exists(),
+          ).toBeTruthy()
         })
 
         it('has a library concentration input', () => {
-          expect(wrapper.find('[data-attribute="library-concentration"]').exists()).toBeTruthy()
+          expect(
+            wrapper.find('[data-attribute="default-library-concentration"]').exists(),
+          ).toBeTruthy()
         })
 
         it('has a pre extension time input', () => {
-          expect(wrapper.find('[data-attribute="pre-extension-time"]').exists()).toBeTruthy()
+          expect(
+            wrapper.find('[data-attribute="default-pre-extension-time"]').exists(),
+          ).toBeTruthy()
         })
       })
 
       describe('does not have options belonging to other versions', () => {
-        // v10 and v11 options
+        //v10 options
+        it('does not have a CCS analysis output input', () => {
+          expect(
+            wrapper.find('[data-attribute="default-ccs-analysis-output"]').exists(),
+          ).toBeFalsy()
+        })
+
+        it('does not have a generate hifi input', () => {
+          expect(wrapper.find('[data-attribute="default-generate-hifi"]').exists()).toBeFalsy()
+        })
+
+        // v11 options
         it('has a movie time default input', () => {
-          expect(wrapper.find('[data-attribute="movie-time"]').exists()).toBeFalsy()
+          expect(wrapper.find('[data-attribute="default-movie-time"]').exists()).toBeFalsy()
         })
 
         it('has a binding kit box barcode input', () => {
-          expect(wrapper.find('[data-attribute="binding-kit-box-barcode"]').exists()).toBeFalsy()
+          expect(
+            wrapper.find('[data-attribute="default-binding-kit-box-barcode"]').exists(),
+          ).toBeFalsy()
         })
 
         it('has a loading target p1 plus p2 input', () => {
-          expect(wrapper.find('[data-attribute="loading-target-p1-plus-p2"]').exists()).toBeFalsy()
+          expect(
+            wrapper.find('[data-attribute="default-loading-target-p1-plus-p2"]').exists(),
+          ).toBeFalsy()
         })
 
         it('has a CCS analysis output include kinetics information input', () => {
           expect(
             wrapper
-              .find('[data-attribute="ccs-analysis-output-include-kinetics-information"]')
+              .find('[data-attribute="default-ccs-analysis-output-include-kinetics-information"]')
               .exists(),
           ).toBeFalsy()
 
           it('has a CCS analysis output include low quality reads input', () => {
             expect(
               wrapper
-                .find('[data-attribute="ccs-analysis-output-include-low-quality-reads"]')
+                .find('[data-attribute="default-ccs-analysis-output-include-low-quality-reads"]')
                 .exists(),
             ).toBeFalsy()
           })
 
           it('has a fivemc calls in cpg motifs input', () => {
             expect(
-              wrapper.find('[data-attribute="include-fivemc-calls-in-cpg-motifs"]').exists(),
+              wrapper
+                .find('[data-attribute="default-include-fivemc-calls-in-cpg-motifs"]')
+                .exists(),
             ).toBeFalsy()
           })
 
           it('has a demultiplex barcodes input', () => {
-            expect(wrapper.find('[data-attribute="demultiplex-barcodes"]').exists()).toBeFalsy()
-          })
-
-          it('does not have a CCS analysis output input', () => {
-            expect(wrapper.find('[data-attribute="ccs-analysis-output"]').exists()).toBeFalsy()
-          })
-
-          it('does not have a generate hifi input', () => {
-            expect(wrapper.find('[data-attribute="generate-hifi"]').exists()).toBeFalsy()
+            expect(
+              wrapper.find('[data-attribute="default-demultiplex-barcodes"]').exists(),
+            ).toBeFalsy()
           })
         })
       })

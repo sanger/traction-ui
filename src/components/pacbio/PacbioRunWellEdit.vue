@@ -2,7 +2,7 @@
   <traction-modal ref="well-modal" :static="isStatic" size="lg">
     <template #modal-title> Add Pool to Well: {{ position }} </template>
 
-    <traction-form>
+    <!-- <traction-form>
       <traction-form-group id="movie-time-group" label="Movie time:" label-for="movie-time">
         <traction-select
           id="movie-time"
@@ -167,7 +167,30 @@
         >
         </traction-select>
       </traction-form-group>
-    </traction-form>
+    </traction-form> -->
+
+    <fieldset>
+      <traction-form-group v-for="field in smrtLinkWellDefaults" :key="field.name">
+        <label>{{ field.label }}</label>
+        <component
+          :is="field.component"
+          v-bind="field.props"
+          v-model="runDefaultWellAttributes[field.value]"
+        />
+      </traction-form-group>
+
+      <!-- include this to the above smrtLinkWellDefaults? -->
+      <traction-form-group label="Pre-extension time" label-for="pre-extension-time">
+        <traction-input
+          id="pre-extension-time"
+          ref="preExtensionTime"
+          v-model="well.pre_extension_time"
+          data-attribute="default-pre-extension-time"
+          placeholder="Pre-extension time"
+        >
+        </traction-input>
+      </traction-form-group>
+    </fieldset>
 
     <traction-button
       id="disableAdaptiveLoadingBtn"
@@ -227,6 +250,7 @@
 // There is a lot of duplication between this component and PacbioRunWellEdit.
 // A lot of it could be moved to the store
 import { mapGetters, mapActions, mapMutations } from 'vuex'
+import { smrtLinkVersionDefaultComponents } from '@/store/traction/pacbio/runCreate/run'
 
 export default {
   name: 'WellModal',
@@ -277,7 +301,12 @@ export default {
       'smrtLinkVersion',
       'getWell',
       'pools',
+      'runDefaultWellAttributes',
+      'runItem',
     ]),
+    smrtLinkWellDefaults() {
+      return smrtLinkVersionDefaultComponents[this.smrtLinkVersion.name]
+    },
     newWell() {
       // Check if well exists in state
       return !this.getWell(this.position)
