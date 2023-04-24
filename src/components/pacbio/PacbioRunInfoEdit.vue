@@ -109,8 +109,7 @@ export default {
   name: 'PacbioRunInfoEdit',
   data() {
     return {
-      // There is only one but we will need to add Revio in the next iteration.
-      systemNameOptions: ['Sequel IIe'],
+      systemNameOptions: ['Sequel IIe', 'Revio'],
     }
   },
   computed: {
