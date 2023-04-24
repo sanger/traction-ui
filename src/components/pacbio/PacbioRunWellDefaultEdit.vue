@@ -147,6 +147,16 @@ export default {
             },
           },
           {
+            name: 'pre-extension-time',
+            component: 'traction-input',
+            value: 'pre_extension_time',
+            label: 'Pre-extension time:',
+            props: {
+              placeholder: 'Default Pre-extension time',
+              dataAttribute: 'default-pre-extension-time',
+            },
+          },
+          {
             name: 'include_base_kinetics',
             component: 'traction-select',
             value: 'include_base_kinetics',

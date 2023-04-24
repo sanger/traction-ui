@@ -186,6 +186,14 @@ describe('PacbioRunWellDefaultEdit', () => {
         ).toEqual('30')
       })
 
+      it('has a pre extension time input', async () => {
+        const input = wrapper.find('[data-attribute=default-pre-extension-time]')
+        await input.setValue('3')
+        expect(
+          store.state.traction.pacbio.runCreate.defaultWellAttributes.pre_extension_time,
+        ).toEqual('3')
+      })
+
       it('has a include base kinetics input', async () => {
         const options = wrapper
           .find('[data-attribute=default-include-base-kinetics]')
