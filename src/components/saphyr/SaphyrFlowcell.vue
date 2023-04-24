@@ -1,5 +1,5 @@
 <template>
-  <div class="grid grod-cold-2">
+  <div class="grid grod-cold-2 flowcell">
     <div class="position">{{ position }}</div>
 
     <traction-input
