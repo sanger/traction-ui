@@ -17,8 +17,7 @@ describe('Well.vue', () => {
     }
 
     const smrtLinkVersions = {
-      1: { id: 1, name: 'v10', default: true },
-      2: { id: 2, name: 'v11', default: false },
+      1: { id: 1, name: 'v11', default: true },
     }
 
     run = Run.newRun()
@@ -31,14 +30,21 @@ describe('Well.vue', () => {
       generate_hifi: 'In SMRT Link',
       binding_kit_box_barcode: '12345',
     }
-    store.state.traction.pacbio.runCreate.pools = storePools.pools
-    store.state.traction.pacbio.runCreate.tubes = storePools.tubes
-    store.state.traction.pacbio.runCreate.libraries = storePools.libraries
-    store.state.traction.pacbio.runCreate.tags = storePools.tags
-    store.state.traction.pacbio.runCreate.requests = storePools.libraries
-    store.state.traction.pacbio.runCreate.wells = { A1: storeWell }
-    store.state.traction.pacbio.runCreate.run = run
-    store.state.traction.pacbio.runCreate.resources.smrtLinkVersions = smrtLinkVersions
+    // store.state.traction.pacbio.runCreate.pools = storePools.pools
+    // store.state.traction.pacbio.runCreate.tubes = storePools.tubes
+    // store.state.traction.pacbio.runCreate.libraries = storePools.libraries
+    // store.state.traction.pacbio.runCreate.tags = storePools.tags
+    // store.state.traction.pacbio.runCreate.requests = storePools.libraries
+    // store.state.traction.pacbio.runCreate.wells = { A1: storeWell }
+    // store.state.traction.pacbio.runCreate.run = run
+    // store.state.traction.pacbio.runCreate.resources.smrtLinkVersions = smrtLinkVersions
+
+    store.state.traction.pacbio.runCreate = {
+      ...storePools,
+      wells: { A1: storeWell },
+      run,
+      resources: { smrtLinkVersions },
+    }
 
     wrapper = mount(Well, {
       localVue,

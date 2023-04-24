@@ -221,7 +221,7 @@ export default {
     },
     /**Classes to apply to a single row */
     tbodyTrClass: {
-      type: Function,
+      type: [String, Function],
       required: false,
       default: () => {},
     },

@@ -30,39 +30,6 @@
       </traction-form-group>
 
       <traction-form-group
-        v-if="['v10'].includes(smrtLinkVersion.name)"
-        id="generate-hifi-group"
-        label="Generate HiFi Reads:"
-        label-for="generate-hifi"
-      >
-        <traction-select
-          id="generate-hifi"
-          ref="generateHiFi"
-          v-model="well.generate_hifi"
-          data-attribute="generate-hifi"
-          :options="generateHifiOptions"
-          @input="updateCCSAnalysisOutput"
-        >
-        </traction-select>
-      </traction-form-group>
-
-      <traction-form-group
-        v-if="['v10'].includes(smrtLinkVersion.name)"
-        id="ccs-analysis-output-group"
-        label="CCS Analysis Output - Include Kinetics Information:"
-        label-for="ccs-analysis-output"
-      >
-        <traction-select
-          id="ccs-analysis-output"
-          ref="ccsAnalysisOutput"
-          v-model="well.ccs_analysis_output"
-          data-attribute="ccs-analysis-output"
-          :options="ccsAnalysisOutputOptions"
-        >
-        </traction-select>
-      </traction-form-group>
-
-      <traction-form-group
         id="pre-extension-time-group"
         label="Pre-extension time (hours):"
         label-for="pre-extension-time"
@@ -113,7 +80,6 @@
       </traction-form-group>
 
       <traction-form-group
-        v-if="['v11'].includes(smrtLinkVersion.name)"
         label="CCS Output Include Kinetics Information"
         label-for="ccs-analysis-output-include-kinetics-information"
       >
@@ -127,7 +93,6 @@
       </traction-form-group>
 
       <traction-form-group
-        v-if="['v11'].includes(smrtLinkVersion.name)"
         label="CCS Analysis Output Include Low Quality Reads"
         label-for="ccs-analysis-output-include-low-quality-reads"
       >
@@ -141,7 +106,6 @@
       </traction-form-group>
 
       <traction-form-group
-        v-if="['v11'].includes(smrtLinkVersion.name)"
         label="Include 5mc Calls In CpG Motifs"
         label-for="include-fivemc-calls-in-cpg-motifs"
       >
@@ -154,11 +118,7 @@
         </traction-select>
       </traction-form-group>
 
-      <traction-form-group
-        v-if="['v11'].includes(smrtLinkVersion.name)"
-        label="Demultiplex Barcodes"
-        label-for="demultiplex-barcodes"
-      >
+      <traction-form-group label="Demultiplex Barcodes" label-for="demultiplex-barcodes">
         <traction-select
           id="demultiplex-barcodes"
           v-model="well.demultiplex_barcodes"
