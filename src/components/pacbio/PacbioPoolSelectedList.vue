@@ -22,7 +22,7 @@ export default {
 </script>
 <style scoped>
 .list-group {
-  max-height: 400px;
+  max-height: 500px;
   overflow-y: auto;
 }
 </style>
