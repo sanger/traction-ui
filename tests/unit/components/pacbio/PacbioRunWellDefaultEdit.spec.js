@@ -25,7 +25,7 @@ const smrtLinkVersions = [
     default: false,
   },
   {
-    id: 3,
+    id: 2,
     name: 'v12_revio',
     default: false,
   },
@@ -168,13 +168,13 @@ describe('PacbioRunWellDefaultEdit', () => {
   */
   describe('if the SMRT Link version is v12', () => {
     beforeEach(() => {
-      store.state.traction.pacbio.runCreate.smrtLinkVersion = smrtLinkVersions[2]
+      store.state.traction.pacbio.runCreate.smrtLinkVersion = smrtLinkVersions[1]
       wrapper = buildWrapper()
       runInfo = wrapper.vm
     })
 
     it('will have a selected smrt link version of v12', () => {
-      expect(runInfo.smrtLinkVersion.id).toEqual(smrtLinkVersions[2].id)
+      expect(runInfo.smrtLinkVersion.id).toEqual(smrtLinkVersions[1].id)
     })
 
     describe('input', () => {
