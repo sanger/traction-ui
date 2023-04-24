@@ -201,6 +201,16 @@ const smrtLinkVersionDefaultComponents = {
         placeholder: 'Polymerase Kit',
       },
     },
+    {
+      name: 'pre-extension-time',
+      component: 'traction-input',
+      value: 'pre_extension_time',
+      label: 'Pre-extension time:',
+      props: {
+        placeholder: 'Default Pre-extension time',
+        dataAttribute: 'default-pre-extension-time',
+      },
+    },
   ],
 }
 

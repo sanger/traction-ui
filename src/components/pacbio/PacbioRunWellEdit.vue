@@ -2,193 +2,14 @@
   <traction-modal ref="well-modal" :static="isStatic" size="lg">
     <template #modal-title> Add Pool to Well: {{ position }} </template>
 
-    <!-- <traction-form>
-      <traction-form-group id="movie-time-group" label="Movie time:" label-for="movie-time">
-        <traction-select
-          id="movie-time"
-          ref="movieTime"
-          v-model="well.movie_time"
-          data-attribute="movie-time"
-          :options="movieTimeOptions"
-        >
-        </traction-select>
-      </traction-form-group>
-
-      <traction-form-group
-        id="on-plate-loading-concentration-group"
-        label="On Plate Loading Concentration (pM):"
-        label-for="on-plate-loading-concentration"
-      >
-        <traction-input
-          id="on-plate-loading-concentration"
-          ref="onPlateLoadingConcentration"
-          v-model="well.on_plate_loading_concentration"
-          data-attribute="on-plate-loading-concentration"
-          placeholder="On Plate Loading Concentration (pM)"
-        >
-        </traction-input>
-      </traction-form-group>
-
-      <traction-form-group
-        v-if="['v10'].includes(smrtLinkVersion.name)"
-        id="generate-hifi-group"
-        label="Generate HiFi Reads:"
-        label-for="generate-hifi"
-      >
-        <traction-select
-          id="generate-hifi"
-          ref="generateHiFi"
-          v-model="well.generate_hifi"
-          data-attribute="generate-hifi"
-          :options="generateHifiOptions"
-          @input="updateCCSAnalysisOutput"
-        >
-        </traction-select>
-      </traction-form-group>
-
-      <traction-form-group
-        v-if="['v10'].includes(smrtLinkVersion.name)"
-        id="ccs-analysis-output-group"
-        label="CCS Analysis Output - Include Kinetics Information:"
-        label-for="ccs-analysis-output"
-      >
-        <traction-select
-          id="ccs-analysis-output"
-          ref="ccsAnalysisOutput"
-          v-model="well.ccs_analysis_output"
-          data-attribute="ccs-analysis-output"
-          :options="ccsAnalysisOutputOptions"
-        >
-        </traction-select>
-      </traction-form-group>
-
-      <traction-form-group
-        id="pre-extension-time-group"
-        label="Pre-extension time (hours):"
-        label-for="pre-extension-time"
-      >
-        <traction-input
-          id="pre-extension-time"
-          ref="preExtensionTime"
-          v-model="well.pre_extension_time"
-          data-attribute="pre-extension-time"
-          placeholder="Pre-extension time"
-        >
-        </traction-input>
-      </traction-form-group>
-
-      <traction-form-group
-        id="binding-kit-box-barcode-group"
-        label="Binding Kit Box Barcode: "
-        label-for="binding-kit-box-barcode"
-      >
-        <traction-input
-          id="binding-kit-box-barcode"
-          ref="bindingKitBoxBarcode"
-          v-model="well.binding_kit_box_barcode"
-          data-attribute="binding-kit-box-barcode"
-          placeholder="Binding Kit Box Barcode"
-        >
-        </traction-input>
-      </traction-form-group>
-      <traction-form-group
-        id="loading-target-p1-plus-p2-group"
-        label="Loading Target (P1 + P2): (0 to 1) "
-        label-for="loading-target-p1-plus-p2"
-      >
-        <traction-input
-          id="loading-target"
-          ref="loadingTarget"
-          v-model="well.loading_target_p1_plus_p2"
-          data-attribute="loading-target-p1-plus-p2"
-          placeholder="Adaptive loading disabled - Add loading target to enable"
-          type="number"
-          min="0"
-          max="1"
-          step="0.05"
-          lazy-formatter
-          :formatter="formatLoadingTargetValue"
-        >
-        </traction-input>
-      </traction-form-group>
-
-      <traction-form-group
-        v-if="['v11'].includes(smrtLinkVersion.name)"
-        label="CCS Output Include Kinetics Information"
-        label-for="ccs-analysis-output-include-kinetics-information"
-      >
-        <traction-select
-          id="ccs-analysis-output-include-kinetics-information"
-          v-model="well.ccs_analysis_output_include_kinetics_information"
-          :options="ccsAnalysisOutputOptions"
-          data-attribute="ccs-analysis-output-include-kinetics-information"
-        >
-        </traction-select>
-      </traction-form-group>
-
-      <traction-form-group
-        v-if="['v11'].includes(smrtLinkVersion.name)"
-        label="CCS Analysis Output Include Low Quality Reads"
-        label-for="ccs-analysis-output-include-low-quality-reads"
-      >
-        <traction-select
-          id="ccs-analysis-output-include-low-quality-reads"
-          v-model="well.ccs_analysis_output_include_low_quality_reads"
-          :options="ccsAnalysisOutputOptions"
-          data-attribute="ccs-analysis-output-include-low-quality-reads"
-        >
-        </traction-select>
-      </traction-form-group>
-
-      <traction-form-group
-        v-if="['v11'].includes(smrtLinkVersion.name)"
-        label="Include 5mc Calls In CpG Motifs"
-        label-for="include-fivemc-calls-in-cpg-motifs"
-      >
-        <traction-select
-          id="include-fivemc-calls-in-cpg-motifs"
-          v-model="well.include_fivemc_calls_in_cpg_motifs"
-          :options="ccsAnalysisOutputOptions"
-          data-attribute="include-fivemc-calls-in-cpg-motifs"
-        >
-        </traction-select>
-      </traction-form-group>
-
-      <traction-form-group
-        v-if="['v11'].includes(smrtLinkVersion.name)"
-        label="Demultiplex Barcodes"
-        label-for="demultiplex-barcodes"
-      >
-        <traction-select
-          id="demultiplex-barcodes"
-          v-model="well.demultiplex_barcodes"
-          :options="generateHifiOptions"
-          data-attribute="demultiplex-barcodes"
-        >
-        </traction-select>
-      </traction-form-group>
-    </traction-form> -->
-
     <fieldset>
       <traction-form-group v-for="field in smrtLinkWellDefaults" :key="field.name">
         <label>{{ field.label }}</label>
         <component
           :is="field.component"
           v-bind="field.props"
-          v-model="runDefaultWellAttributes[field.value]"
+          v-model="getWell(position)[field.value]"
         />
-      </traction-form-group>
-
-      <!-- include this to the above smrtLinkWellDefaults? -->
-      <traction-form-group label="Pre-extension time" label-for="pre-extension-time">
-        <traction-input
-          id="pre-extension-time"
-          ref="preExtensionTime"
-          v-model="well.pre_extension_time"
-          data-attribute="default-pre-extension-time"
-          placeholder="Pre-extension time"
-        >
-        </traction-input>
       </traction-form-group>
     </fieldset>
 
@@ -301,7 +122,6 @@ export default {
       'smrtLinkVersion',
       'getWell',
       'pools',
-      'runDefaultWellAttributes',
       'runItem',
     ]),
     smrtLinkWellDefaults() {
