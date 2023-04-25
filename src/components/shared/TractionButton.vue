@@ -11,6 +11,7 @@
     ]"
     @click="click"
   >
+    {{ text }}
     <slot />
   </button>
 </template>
@@ -88,6 +89,11 @@ export default {
       default: null,
     },
     classes: {
+      type: String,
+      required: false,
+      default: '',
+    },
+    text: {
       type: String,
       required: false,
       default: '',

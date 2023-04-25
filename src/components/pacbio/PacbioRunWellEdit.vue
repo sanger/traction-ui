@@ -7,19 +7,12 @@
         <label>{{ field.label }}</label>
         <component
           :is="field.component"
+          v-model="well[field.value]"
           v-bind="field.props"
-          v-model="getWell(position)[field.value]"
+          v-on="field.events"
         />
       </traction-form-group>
     </fieldset>
-
-    <traction-button
-      id="disableAdaptiveLoadingBtn"
-      theme="default"
-      @click="disableAdaptiveLoadingInput()"
-    >
-      Disable Adaptive Loading
-    </traction-button>
 
     <traction-table id="wellPools" stacked :items="localPools" :fields="wellPoolsFields">
       <template #table-caption>Pools</template>
@@ -71,7 +64,6 @@
 // There is a lot of duplication between this component and PacbioRunWellEdit.
 // A lot of it could be moved to the store
 import { mapGetters, mapActions, mapMutations } from 'vuex'
-import { smrtLinkVersionDefaultComponents } from '@/store/traction/pacbio/runCreate/run'
 
 export default {
   name: 'WellModal',
@@ -97,22 +89,191 @@ export default {
     return {
       well: {},
       localPools: [],
-      movieTimeOptions: [
-        { text: 'Movie Time', value: '', disabled: true },
-        '10.0',
-        '15.0',
-        '20.0',
-        '24.0',
-        '30.0',
-      ],
       wellPoolsFields: [{ key: 'barcode', label: 'Barcode' }],
-      generateHifiOptions: [
-        { text: 'Please select a value', value: '', disabled: true },
-        'In SMRT Link',
-        'Do Not Generate',
-        'On Instrument',
-      ],
-      ccsAnalysisOutputOptions: ['Yes', 'No'],
+      smrtLinkVersionComponents: {
+        v10: [],
+        v11: [
+          {
+            name: 'movie_time',
+            component: 'traction-select',
+            value: 'movie_time',
+            label: 'Move time: ',
+            props: {
+              options: [
+                { text: 'Movie Time', value: '', disabled: true },
+                '10.0',
+                '15.0',
+                '20.0',
+                '24.0',
+                '30.0',
+              ],
+              dataAttribute: 'movie-time',
+            }
+          },
+          {
+            name: 'on_plate_loading_concentration',
+            component: 'traction-input',
+            value: 'on_plate_loading_concentration',
+            label: 'On Plate Loading Concentration (pM):',
+            props: {
+              placeholder: 'On Plate Loading Concentration (pM)',
+              dataAttribute: 'on-plate-loading-concentration',
+            },
+          },
+          {
+            name: 'pre-extension-time',
+            component: 'traction-input',
+            value: 'pre_extension_time',
+            label: 'Pre-extension time (hours):',
+            props: {
+              placeholder: 'Pre-extension time',
+              dataAttribute: 'pre-extension-time',
+            },
+          },
+          {
+            name: 'binding_kit_box_barcode',
+            component: 'traction-input',
+            value: 'binding_kit_box_barcode',
+            label: 'Binding Kit Box Barcode:',
+            props: {
+              dataAttribute: 'binding-kit-box-barcode',
+              placeholder: 'Binding Kit Box Barcode',
+            },
+          },
+          {
+            name: 'loading_target_p1_plus_p2',
+            component: 'traction-input',
+            value: 'loading_target_p1_plus_p2',
+            label: 'Loading Target (P1 + P2): (0 to 1)',
+            props: {
+              type: 'number',
+              step: 0.05,
+              min: 0,
+              max: 1,
+              dataAttribute: 'loading-target-p1-plus-p2',
+              placeholder: 'Adaptive loading disabled - Add loading target to enable',
+              formatter: this.formatLoadingTargetValue
+            },
+          },
+          {
+            name: 'ccs_analysis_output_include_kinetics_information',
+            component: 'traction-select',
+            value: 'ccs_analysis_output_include_kinetics_information',
+            label: 'CCS Analysis Output Include Kinetics Information:',
+            props: {
+              options: ['Yes', 'No'],
+              dataAttribute: 'ccs-analysis-output-include-kinetics-information',
+            },
+          },
+          {
+            name: 'ccs_analysis_output_include_low_quality_reads',
+            component: 'traction-select',
+            value: 'ccs_analysis_output_include_low_quality_reads',
+            label: 'CCS Analysis Output Include Low Quality Reads:',
+            props: {
+              options: ['Yes', 'No'],
+              dataAttribute: 'ccs-analysis-output-include-low-quality-reads',
+            },
+          },
+          {
+            name: 'include_fivemc_calls_in_cpg_motifs',
+            component: 'traction-select',
+            attribute: 'include_fivemc_calls_in_cpg_motifs',
+            label: 'Include 5mc Calls In CpG Motifs:',
+            props: {
+              options: ['Yes', 'No'],
+              dataAttribute: 'include-fivemc-calls-in-cpg-motifs',
+              placeholder: 'Include 5mc Calls in CpG Motifs for new wells',
+            },
+          },
+          {
+            name: 'demultiplex_barcodes',
+            component: 'traction-select',
+            value: 'demultiplex_barcodes',
+            label: 'Demultiplex barcodes:',
+            props: {
+              options: [
+                { text: 'Please select a value', value: '', disabled: true },
+                'In SMRT Link',
+                'Do Not Generate',
+                'On Instrument',
+              ],
+              dataAttribute: 'demultiplex-barcodes',
+            },
+          },
+          {
+            name: 'disableAdaptiveLoadingBtn',
+            component: 'traction-button',
+            value: 'disable_adaptive_loading',
+            props: {
+              text: 'Disable Adaptive Loading',
+              theme: "default",
+            },
+            events: {
+              click: this.disableAdaptiveLoadingInput
+            }
+          },
+        ],
+        v12_revio: [
+          {
+            name: 'movie_acquisition_time',
+            component: 'traction-input',
+            value: 'movie_acquisition_time',
+            label: 'Movie Acquisition Time (hrs):',
+            props: {
+              type: 'number',
+              step: 1,
+              max: 30,
+              min: 0.1,
+              dataAttribute: 'movie-acquisition-time',
+              placeholder: 'Movie Acquisition Time',
+            },
+          },
+          {
+            name: 'include_base_kinetics',
+            component: 'traction-select',
+            value: 'include_base_kinetics',
+            label: 'Include Base Kinetics: ',
+            props: {
+              options: ['True', 'False'],
+              dataAttribute: 'include-base-kinetics',
+              placeholder: 'Include Base Kinetics',
+            },
+          },
+          {
+            name: 'library_concentration',
+            component: 'traction-input',
+            value: 'library_concentration',
+            label: 'Library Concentration: ',
+            props: {
+              type: 'number',
+              dataAttribute: 'library-concentration',
+              placeholder: 'Library Concentration',
+            },
+          },
+          {
+            name: 'polymerase_kit',
+            component: 'traction-input',
+            value: 'polymerase_kit',
+            label: 'Polymerase Kit ',
+            props: {
+              type: 'number',
+              dataAttribute: 'polymerase-kit',
+              placeholder: 'Polymerase Kit',
+            },
+          },
+          {
+            name: 'pre-extension-time',
+            component: 'traction-input',
+            value: 'pre_extension_time',
+            label: 'Pre-extension time:',
+            props: {
+              placeholder: 'Pre-extension time',
+              dataAttribute: 'pre-extension-time',
+            },
+          },
+        ],
+      },
       decimalPercentageRegex: /^(?:1(?:\.0{0,2})?|0?(?:\.\d{0,2})?)$/,
     }
   },
@@ -125,7 +286,7 @@ export default {
       'runItem',
     ]),
     smrtLinkWellDefaults() {
-      return smrtLinkVersionDefaultComponents[this.smrtLinkVersion.name]
+      return this.smrtLinkVersionComponents[this.smrtLinkVersion.name]
     },
     newWell() {
       // Check if well exists in state
@@ -177,7 +338,7 @@ export default {
         if (this.decimalPercentageRegex.test(val)) {
           return val
         } else {
-          return isNaN(this.loadingTargetValue) ? 0 : this.loadingTargetValue
+          return isNaN(this.well.loading_target_p1_plus_p2) ? 0 : this.well.loading_target_p1_plus_p2
         }
       }
     },

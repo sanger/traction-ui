@@ -52,6 +52,7 @@ const defaultWellAttributes = () => {
 }
 
 const smrtLinkVersionDefaultComponents = {
+  v10: [],
   v11: [
     {
       name: 'movie_time',

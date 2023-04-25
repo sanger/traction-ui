@@ -42,6 +42,16 @@ describe('TractionButton.vue', () => {
     expect(wrapper.attributes('class')).toContain('text-sm')
   })
 
+  it('can have a text prop', () => {
+    const wrapper = mount(TractionButton, {
+      propsData: {
+        text: 'Button text'
+      },
+      slots: {},
+    })
+    expect(wrapper.text()).toContain('Button text')
+  })
+
   it('can be full width', () => {
     const wrapper = buildWrapper({ fullWidth: true })
     expect(wrapper.attributes('class')).toContain('w-full')
