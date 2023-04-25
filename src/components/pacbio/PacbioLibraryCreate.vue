@@ -17,7 +17,7 @@
       :static="isStatic"
       scrollable
     >
-      <traction-form id="libraryCreateModal" @submit.prevent="createLibrary" @keydown.enter.prevent>
+      <traction-form id="libraryCreateModal" @submit="createLibrary" @keydown.enter.prevent>
         <traction-form-group id="selected-sample" label="The sample selected for this library is:">
           {{ selectedSample.sample_name }} ({{ selectedSample.source_identifier }})
         </traction-form-group>

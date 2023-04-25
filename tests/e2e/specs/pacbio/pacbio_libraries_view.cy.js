@@ -2,6 +2,7 @@ describe('Pacbio Libraries view', () => {
   beforeEach(() =>
     cy.withFlags({
       enable_custom_table: { enabled: true },
+      enable_custom_form: { enabled: true },
     }),
   )
   it('Visits the pacbio libraries url', () => {

@@ -18,7 +18,7 @@
       <template #table-caption>Pools</template>
 
       <template #cell(barcode)="row">
-        <traction-form inline>
+        <traction-form classes="flex flex-wrap items-center">
           <traction-input
             id="poolBarcode"
             ref="poolBarcode"
@@ -29,7 +29,7 @@
           >
           </traction-input>
 
-          <traction-button class="button btn-xs btn-danger" inline @click="removeRow(row)"
+          <traction-button class="button btn-xs btn-danger" @click="removeRow(row)"
             >-</traction-button
           >
         </traction-form>
