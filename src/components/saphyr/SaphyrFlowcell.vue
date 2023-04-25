@@ -1,17 +1,15 @@
 <template>
-  <traction-row class="flowcell">
-    <traction-col>
-      <div class="position">{{ position }}</div>
+  <div class="grid grod-cold-2 flowcell">
+    <div class="position">{{ position }}</div>
 
-      <traction-input
-        :id="'libraryBarcode-' + index"
-        :value="libraryBarcode"
-        placeholder="Library barcode"
-        type="text"
-        @input="setBarcode"
-      />
-    </traction-col>
-  </traction-row>
+    <traction-input
+      :id="'libraryBarcode-' + index"
+      :value="libraryBarcode"
+      placeholder="Library barcode"
+      type="text"
+      @input="setBarcode"
+    />
+  </div>
 </template>
 
 <script>
