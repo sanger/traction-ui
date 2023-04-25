@@ -21,16 +21,11 @@ const buildWrapper = () =>
 const smrtLinkVersions = [
   {
     id: 1,
-    name: 'v10',
-    default: true,
-  },
-  {
-    id: 2,
     name: 'v11',
     default: false,
   },
   {
-    id: 3,
+    id: 2,
     name: 'v12_revio',
     default: false,
   },
@@ -64,13 +59,13 @@ describe('PacbioRunWellDefaultEdit', () => {
   */
   describe('if the SMRT Link version is v11', () => {
     beforeEach(() => {
-      store.state.traction.pacbio.runCreate.smrtLinkVersion = smrtLinkVersions[1]
+      store.state.traction.pacbio.runCreate.smrtLinkVersion = smrtLinkVersions[0]
       wrapper = buildWrapper()
       runInfo = wrapper.vm
     })
 
     it('will have a selected smrt link version of v11', () => {
-      expect(runInfo.smrtLinkVersion.id).toEqual(smrtLinkVersions[1].id)
+      expect(runInfo.smrtLinkVersion.id).toEqual(smrtLinkVersions[0].id)
     })
 
     describe('input', () => {
@@ -173,13 +168,13 @@ describe('PacbioRunWellDefaultEdit', () => {
   */
   describe('if the SMRT Link version is v12', () => {
     beforeEach(() => {
-      store.state.traction.pacbio.runCreate.smrtLinkVersion = smrtLinkVersions[2]
+      store.state.traction.pacbio.runCreate.smrtLinkVersion = smrtLinkVersions[1]
       wrapper = buildWrapper()
       runInfo = wrapper.vm
     })
 
     it('will have a selected smrt link version of v12', () => {
-      expect(runInfo.smrtLinkVersion.id).toEqual(smrtLinkVersions[2].id)
+      expect(runInfo.smrtLinkVersion.id).toEqual(smrtLinkVersions[1].id)
     })
 
     describe('input', () => {
@@ -189,6 +184,14 @@ describe('PacbioRunWellDefaultEdit', () => {
         expect(
           store.state.traction.pacbio.runCreate.defaultWellAttributes.movie_acquisition_time,
         ).toEqual('30')
+      })
+
+      it('has a pre extension time input', async () => {
+        const input = wrapper.find('[data-attribute=default-pre-extension-time]')
+        await input.setValue('3')
+        expect(
+          store.state.traction.pacbio.runCreate.defaultWellAttributes.pre_extension_time,
+        ).toEqual('3')
       })
 
       it('has a include base kinetics input', async () => {

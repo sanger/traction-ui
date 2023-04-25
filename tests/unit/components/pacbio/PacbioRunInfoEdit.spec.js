@@ -50,7 +50,7 @@ describe('PacbioRunInfoEdit', () => {
   })
 
   it('must have systemName data', () => {
-    expect(runInfo.systemNameOptions).toEqual(['Sequel I', 'Sequel II', 'Sequel IIe'])
+    expect(runInfo.systemNameOptions).toEqual(['Sequel IIe', 'Revio'])
   })
 
   describe('smrt link versions', () => {
