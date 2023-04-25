@@ -37,6 +37,25 @@
           }
         }
       }
+    },
+    {
+      "id": "3",
+      "type": "smrt_link_versions",
+      "links": {
+        "self": "http://traction/v1/pacbio/smrt_link_versions/3"
+      },
+      "attributes": {
+        "name": "v12_revio",
+        "default": false
+      },
+      "relationships": {
+        "smrt_link_option_versions": {
+          "links": {
+            "self": "http://traction/v1/pacbio/smrt_link_versions/3/relationships/smrt_link_option_versions",
+            "related": "http://traction/v1/pacbio/smrt_link_versions/3/smrt_link_option_versions"
+          }
+        }
+      }
     }
   ]
 }

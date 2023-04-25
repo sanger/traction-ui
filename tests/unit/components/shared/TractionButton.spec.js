@@ -45,7 +45,7 @@ describe('TractionButton.vue', () => {
   it('can have a text prop', () => {
     const wrapper = mount(TractionButton, {
       propsData: {
-        text: 'Button text'
+        text: 'Button text',
       },
       slots: {},
     })

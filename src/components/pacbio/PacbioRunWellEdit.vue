@@ -108,7 +108,7 @@ export default {
                 '30.0',
               ],
               dataAttribute: 'movie-time',
-            }
+            },
           },
           {
             name: 'on_plate_loading_concentration',
@@ -152,7 +152,7 @@ export default {
               max: 1,
               dataAttribute: 'loading-target-p1-plus-p2',
               placeholder: 'Adaptive loading disabled - Add loading target to enable',
-              formatter: this.formatLoadingTargetValue
+              formatter: this.formatLoadingTargetValue,
             },
           },
           {
@@ -207,11 +207,11 @@ export default {
             value: 'disable_adaptive_loading',
             props: {
               text: 'Disable Adaptive Loading',
-              theme: "default",
+              theme: 'default',
             },
             events: {
-              click: this.disableAdaptiveLoadingInput
-            }
+              click: this.disableAdaptiveLoadingInput,
+            },
           },
         ],
         v12_revio: [
@@ -338,7 +338,9 @@ export default {
         if (this.decimalPercentageRegex.test(val)) {
           return val
         } else {
-          return isNaN(this.well.loading_target_p1_plus_p2) ? 0 : this.well.loading_target_p1_plus_p2
+          return isNaN(this.well.loading_target_p1_plus_p2)
+            ? 0
+            : this.well.loading_target_p1_plus_p2
         }
       }
     },
