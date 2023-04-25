@@ -75,8 +75,7 @@ export default {
     qcResultUploadsRequest: ({ api }) => api.traction.qc_results_uploads.create,
   },
   methods: {
-    async onSubmit(event) {
-      event.preventDefault()
+    async onSubmit() {
       await this.postCSV()
     },
     async postCSV() {

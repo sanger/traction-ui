@@ -19,6 +19,7 @@ import TractionSelect from '@/components/shared/TractionSelect'
 import TractionResultIcon from '@/components/shared/icons/TractionResultIcon'
 import TractionPaginationIcon from '@/components/shared/icons/TractionPaginationIcon'
 import TractionPagination from '@/components/shared/TractionPagination'
+import TractionForm from '@/components/shared/TractionForm'
 import TractionTable from '@/components/shared/table/TractionTable'
 import TractionTableRow from '@/components/shared/table/TractionTableRow'
 import TractionTableColumn from '@/components/shared/table/TractionTableColumn'
@@ -29,7 +30,6 @@ import {
   VBModal,
   BAlert,
   BContainer,
-  BForm,
   BFormGroup,
   BCard,
   BCardText,
@@ -89,6 +89,7 @@ const registerGlobal = (vue) => {
   vue.component('TractionSelect', TractionSelect)
   vue.component('TractionPagination', TractionPagination)
   vue.component('TractionPaginationIcon', TractionPaginationIcon)
+  vue.component('TractionForm', TractionForm)
   vue.component('TractionArrowIcon', TractionArrowIcon)
   vue.component('TractionSortIcon', TractionSortIcon)
   vue.component('TractionTable', TractionTable)
