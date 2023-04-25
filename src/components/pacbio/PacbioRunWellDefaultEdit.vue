@@ -16,39 +16,6 @@
           </traction-select>
         </traction-col>
       </traction-row>
-
-      <traction-row v-if="['v10'].includes(smrtLinkVersion.name)">
-        <traction-col>
-          <label for="default-generate-hifi">Generate HiFi:</label>
-        </traction-col>
-        <traction-col>
-          <traction-select
-            id="default-generate-hifi"
-            v-model="runDefaultWellAttributes.generate_hifi"
-            :options="generateHifiOptions[runItem.system_name]"
-            :value="runDefaultWellAttributes.generate_hifi"
-            data-attribute="default-generate-hifi"
-            title="Generate HiFi"
-          >
-          </traction-select>
-        </traction-col>
-      </traction-row>
-      <traction-row v-if="['v10'].includes(smrtLinkVersion.name)">
-        <traction-col>
-          <label for="default-ccs-analysis-output">Ccs Analysis Output:</label>
-        </traction-col>
-        <traction-col>
-          <traction-select
-            id="default-ccs-analysis-output"
-            v-model="runDefaultWellAttributes.ccs_analysis_output"
-            :options="ccsAnalysisOutputOptions"
-            :value="runDefaultWellAttributes.ccs_analysis_output"
-            data-attribute="default-ccs-analysis-output"
-            title="Ccs Analysis Output"
-          >
-          </traction-select>
-        </traction-col>
-      </traction-row>
       <traction-row>
         <traction-col>
           <label for="default-pre-extension-time">Pre-extension time:</label>
@@ -97,7 +64,7 @@
           </traction-input>
         </traction-col>
       </traction-row>
-      <traction-row v-if="['v11'].includes(smrtLinkVersion.name)">
+      <traction-row>
         <traction-col>
           <label for="default-ccs-analysis-output-include-kinetics-information"
             >CCS Output Include Kinetics Information:</label
@@ -116,7 +83,7 @@
           </traction-select>
         </traction-col>
       </traction-row>
-      <traction-row v-if="['v11'].includes(smrtLinkVersion.name)">
+      <traction-row>
         <traction-col>
           <label for="default-ccs-analysis-output-include-low-quality-reads"
             >CCS Output Include Low Quality Reads:</label
@@ -135,7 +102,7 @@
           </traction-select>
         </traction-col>
       </traction-row>
-      <traction-row v-if="['v11'].includes(smrtLinkVersion.name)">
+      <traction-row>
         <traction-col>
           <label for="default-demultiplex-barcodes">Demultiplex barcodes:</label>
         </traction-col>
@@ -143,7 +110,7 @@
           <traction-select
             id="default-demultiplex-barcodes"
             v-model="runDefaultWellAttributes.demultiplex_barcodes"
-            :options="generateHifiOptions[runItem.system_name]"
+            :options="generateHifiOptions"
             :value="runDefaultWellAttributes.demultiplex_barcodes"
             data-attribute="default-demultiplex-barcodes"
             title="Demultiplex Barcodes"
@@ -152,7 +119,7 @@
           </traction-select>
         </traction-col>
       </traction-row>
-      <traction-row v-if="['v11'].includes(smrtLinkVersion.name)">
+      <traction-row>
         <traction-col>
           <label for="default-include-fivemc-calls-in-cpg-motifs"
             >Include 5mc Calls In CpG Motifs:</label
@@ -188,11 +155,6 @@
 // A lot of it could be moved to the store
 import { createNamespacedHelpers } from 'vuex'
 const { mapGetters } = createNamespacedHelpers('traction/pacbio/runCreate')
-const defaultValues = [
-  { text: 'Please select a value', value: '', disabled: true },
-  'In SMRT Link',
-  'Do Not Generate',
-]
 export default {
   name: 'PacbioRunWellDefaultEdit',
   data() {
@@ -205,12 +167,12 @@ export default {
         '24.0',
         '30.0',
       ],
-      generateHifiOptions: {
-        '': [defaultValues[0]],
-        'Sequel I': defaultValues,
-        'Sequel II': defaultValues,
-        'Sequel IIe': [...defaultValues, 'On Instrument'],
-      },
+      generateHifiOptions: [
+        { text: 'Please select a value', value: '', disabled: true },
+        'In SMRT Link',
+        'Do Not Generate',
+        'On Instrument',
+      ],
       ccsAnalysisOutputOptions: ['Yes', 'No'],
     }
   },
