@@ -1,5 +1,5 @@
 import Vue from 'vue'
-import { dataToObjectById } from '@/api/JsonApi'
+import { dataToObjectById, extractAttributes } from '@/api/JsonApi'
 
 const mutations = {
   /**
@@ -8,10 +8,10 @@ const mutations = {
    * @param {Object} data A response object
    **/
   setRuns: (state, data) => {
-    Vue.set(state, 'runs', {
-      ...state.runs,
-      ...dataToObjectById({ data, includeRelationships: true }),
-    })
+    state.runs = dataToObjectById({ data, includeRelationships: true })
+  },
+  updateRun(state, run) {
+    Vue.set(state.runs, run.id, extractAttributes(run))
   },
 }
 
