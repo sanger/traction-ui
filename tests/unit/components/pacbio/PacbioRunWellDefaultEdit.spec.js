@@ -163,7 +163,8 @@ describe('PacbioRunWellDefaultEdit', () => {
   /*["movie_acquisition_time",
      "include_base_kinetics",
      "library_concentration",
-     "polymerase_kit"
+     "polymerase_kit".
+     "pre_extension_time"
     ]
   */
   describe('if the SMRT Link version is v12', () => {

@@ -122,7 +122,7 @@ export default {
           {
             name: 'include_fivemc_calls_in_cpg_motifs',
             component: 'traction-select',
-            attribute: 'include_fivemc_calls_in_cpg_motifs',
+            value: 'include_fivemc_calls_in_cpg_motifs',
             label: 'Include 5mc Calls In CpG Motifs:',
             props: {
               options: ['Yes', 'No'],
