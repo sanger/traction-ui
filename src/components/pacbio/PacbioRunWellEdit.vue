@@ -260,7 +260,6 @@ export default {
             value: 'polymerase_kit',
             label: 'Polymerase Kit ',
             props: {
-              type: 'number',
               dataAttribute: 'polymerase-kit',
               placeholder: 'Polymerase Kit',
             },
