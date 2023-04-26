@@ -2,140 +2,17 @@
   <traction-modal ref="well-modal" :static="isStatic" size="lg">
     <template #modal-title> Add Pool to Well: {{ position }} </template>
 
-    <traction-form>
-      <traction-form-group id="movie-time-group" label="Movie time:" label-for="movie-time">
-        <traction-select
-          id="movie-time"
-          ref="movieTime"
-          v-model="well.movie_time"
-          data-attribute="movie-time"
-          :options="movieTimeOptions"
-        >
-        </traction-select>
+    <fieldset>
+      <traction-form-group v-for="field in smrtLinkWellDefaults" :key="field.name">
+        <label>{{ field.label }}</label>
+        <component
+          :is="field.component"
+          v-model="well[field.value]"
+          v-bind="field.props"
+          v-on="field.events"
+        />
       </traction-form-group>
-
-      <traction-form-group
-        id="on-plate-loading-concentration-group"
-        label="On Plate Loading Concentration (pM):"
-        label-for="on-plate-loading-concentration"
-      >
-        <traction-input
-          id="on-plate-loading-concentration"
-          ref="onPlateLoadingConcentration"
-          v-model="well.on_plate_loading_concentration"
-          data-attribute="on-plate-loading-concentration"
-          placeholder="On Plate Loading Concentration (pM)"
-        >
-        </traction-input>
-      </traction-form-group>
-
-      <traction-form-group
-        id="pre-extension-time-group"
-        label="Pre-extension time (hours):"
-        label-for="pre-extension-time"
-      >
-        <traction-input
-          id="pre-extension-time"
-          ref="preExtensionTime"
-          v-model="well.pre_extension_time"
-          data-attribute="pre-extension-time"
-          placeholder="Pre-extension time"
-        >
-        </traction-input>
-      </traction-form-group>
-
-      <traction-form-group
-        id="binding-kit-box-barcode-group"
-        label="Binding Kit Box Barcode: "
-        label-for="binding-kit-box-barcode"
-      >
-        <traction-input
-          id="binding-kit-box-barcode"
-          ref="bindingKitBoxBarcode"
-          v-model="well.binding_kit_box_barcode"
-          data-attribute="binding-kit-box-barcode"
-          placeholder="Binding Kit Box Barcode"
-        >
-        </traction-input>
-      </traction-form-group>
-      <traction-form-group
-        id="loading-target-p1-plus-p2-group"
-        label="Loading Target (P1 + P2): (0 to 1) "
-        label-for="loading-target-p1-plus-p2"
-      >
-        <traction-input
-          id="loading-target"
-          ref="loadingTarget"
-          v-model="well.loading_target_p1_plus_p2"
-          data-attribute="loading-target-p1-plus-p2"
-          placeholder="Adaptive loading disabled - Add loading target to enable"
-          type="number"
-          min="0"
-          max="1"
-          step="0.05"
-          lazy-formatter
-          :formatter="formatLoadingTargetValue"
-        >
-        </traction-input>
-      </traction-form-group>
-
-      <traction-form-group
-        label="CCS Output Include Kinetics Information"
-        label-for="ccs-analysis-output-include-kinetics-information"
-      >
-        <traction-select
-          id="ccs-analysis-output-include-kinetics-information"
-          v-model="well.ccs_analysis_output_include_kinetics_information"
-          :options="ccsAnalysisOutputOptions"
-          data-attribute="ccs-analysis-output-include-kinetics-information"
-        >
-        </traction-select>
-      </traction-form-group>
-
-      <traction-form-group
-        label="CCS Analysis Output Include Low Quality Reads"
-        label-for="ccs-analysis-output-include-low-quality-reads"
-      >
-        <traction-select
-          id="ccs-analysis-output-include-low-quality-reads"
-          v-model="well.ccs_analysis_output_include_low_quality_reads"
-          :options="ccsAnalysisOutputOptions"
-          data-attribute="ccs-analysis-output-include-low-quality-reads"
-        >
-        </traction-select>
-      </traction-form-group>
-
-      <traction-form-group
-        label="Include 5mc Calls In CpG Motifs"
-        label-for="include-fivemc-calls-in-cpg-motifs"
-      >
-        <traction-select
-          id="include-fivemc-calls-in-cpg-motifs"
-          v-model="well.include_fivemc_calls_in_cpg_motifs"
-          :options="ccsAnalysisOutputOptions"
-          data-attribute="include-fivemc-calls-in-cpg-motifs"
-        >
-        </traction-select>
-      </traction-form-group>
-
-      <traction-form-group label="Demultiplex Barcodes" label-for="demultiplex-barcodes">
-        <traction-select
-          id="demultiplex-barcodes"
-          v-model="well.demultiplex_barcodes"
-          :options="generateHifiOptions"
-          data-attribute="demultiplex-barcodes"
-        >
-        </traction-select>
-      </traction-form-group>
-    </traction-form>
-
-    <traction-button
-      id="disableAdaptiveLoadingBtn"
-      theme="default"
-      @click="disableAdaptiveLoadingInput()"
-    >
-      Disable Adaptive Loading
-    </traction-button>
+    </fieldset>
 
     <traction-table id="wellPools" stacked :items="localPools" :fields="wellPoolsFields">
       <template #table-caption>Pools</template>
@@ -212,22 +89,193 @@ export default {
     return {
       well: {},
       localPools: [],
-      movieTimeOptions: [
-        { text: 'Movie Time', value: '', disabled: true },
-        '10.0',
-        '15.0',
-        '20.0',
-        '24.0',
-        '30.0',
-      ],
       wellPoolsFields: [{ key: 'barcode', label: 'Barcode' }],
-      generateHifiOptions: [
-        { text: 'Please select a value', value: '', disabled: true },
-        'In SMRT Link',
-        'Do Not Generate',
-        'On Instrument',
-      ],
-      ccsAnalysisOutputOptions: ['Yes', 'No'],
+      smrtLinkVersionComponents: {
+        v10: [],
+        v11: [
+          {
+            name: 'movie_time',
+            component: 'traction-select',
+            value: 'movie_time',
+            label: 'Move time: ',
+            props: {
+              options: [
+                { text: 'Movie Time', value: '', disabled: true },
+                '10.0',
+                '15.0',
+                '20.0',
+                '24.0',
+                '30.0',
+              ],
+              dataAttribute: 'movie-time',
+            },
+          },
+          {
+            name: 'on_plate_loading_concentration',
+            component: 'traction-input',
+            value: 'on_plate_loading_concentration',
+            label: 'On Plate Loading Concentration (pM):',
+            props: {
+              placeholder: 'On Plate Loading Concentration (pM)',
+              dataAttribute: 'on-plate-loading-concentration',
+            },
+          },
+          {
+            name: 'pre-extension-time',
+            component: 'traction-input',
+            value: 'pre_extension_time',
+            label: 'Pre-extension time (hours):',
+            props: {
+              placeholder: 'Pre-extension time',
+              dataAttribute: 'pre-extension-time',
+            },
+          },
+          {
+            name: 'binding_kit_box_barcode',
+            component: 'traction-input',
+            value: 'binding_kit_box_barcode',
+            label: 'Binding Kit Box Barcode:',
+            props: {
+              dataAttribute: 'binding-kit-box-barcode',
+              placeholder: 'Binding Kit Box Barcode',
+            },
+          },
+          {
+            name: 'loading_target_p1_plus_p2',
+            component: 'traction-input',
+            value: 'loading_target_p1_plus_p2',
+            label: 'Loading Target (P1 + P2): (0 to 1)',
+            props: {
+              type: 'number',
+              step: 0.05,
+              min: 0,
+              max: 1,
+              dataAttribute: 'loading-target-p1-plus-p2',
+              placeholder: 'Adaptive loading disabled - Add loading target to enable',
+              formatter: this.formatLoadingTargetValue,
+            },
+          },
+          {
+            name: 'ccs_analysis_output_include_kinetics_information',
+            component: 'traction-select',
+            value: 'ccs_analysis_output_include_kinetics_information',
+            label: 'CCS Analysis Output Include Kinetics Information:',
+            props: {
+              options: ['Yes', 'No'],
+              dataAttribute: 'ccs-analysis-output-include-kinetics-information',
+            },
+          },
+          {
+            name: 'ccs_analysis_output_include_low_quality_reads',
+            component: 'traction-select',
+            value: 'ccs_analysis_output_include_low_quality_reads',
+            label: 'CCS Analysis Output Include Low Quality Reads:',
+            props: {
+              options: ['Yes', 'No'],
+              dataAttribute: 'ccs-analysis-output-include-low-quality-reads',
+            },
+          },
+          {
+            name: 'include_fivemc_calls_in_cpg_motifs',
+            component: 'traction-select',
+            attribute: 'include_fivemc_calls_in_cpg_motifs',
+            label: 'Include 5mc Calls In CpG Motifs:',
+            props: {
+              options: ['Yes', 'No'],
+              dataAttribute: 'include-fivemc-calls-in-cpg-motifs',
+              placeholder: 'Include 5mc Calls in CpG Motifs for new wells',
+            },
+          },
+          {
+            name: 'demultiplex_barcodes',
+            component: 'traction-select',
+            value: 'demultiplex_barcodes',
+            label: 'Demultiplex barcodes:',
+            props: {
+              options: [
+                { text: 'Please select a value', value: '', disabled: true },
+                'In SMRT Link',
+                'Do Not Generate',
+                'On Instrument',
+              ],
+              dataAttribute: 'demultiplex-barcodes',
+            },
+          },
+          {
+            name: 'disableAdaptiveLoadingBtn',
+            component: 'traction-button',
+            value: 'disable_adaptive_loading',
+            props: {
+              text: 'Disable Adaptive Loading',
+              theme: 'default',
+            },
+            events: {
+              click: this.disableAdaptiveLoadingInput,
+            },
+          },
+        ],
+        v12_revio: [
+          {
+            name: 'movie_acquisition_time',
+            component: 'traction-select',
+            value: 'movie_acquisition_time',
+            label: 'Movie Acquisition Time (hrs):',
+            props: {
+              options: [
+                { text: 'Movie Acquisition Time', value: '', disabled: true },
+                '10.0',
+                '15.0',
+                '20.0',
+                '24.0',
+                '30.0',
+              ],
+              dataAttribute: 'movie-acquisition-time',
+            },
+          },
+          {
+            name: 'include_base_kinetics',
+            component: 'traction-select',
+            value: 'include_base_kinetics',
+            label: 'Include Base Kinetics: ',
+            props: {
+              options: ['True', 'False'],
+              dataAttribute: 'include-base-kinetics',
+              placeholder: 'Include Base Kinetics',
+            },
+          },
+          {
+            name: 'library_concentration',
+            component: 'traction-input',
+            value: 'library_concentration',
+            label: 'Library Concentration: ',
+            props: {
+              type: 'number',
+              dataAttribute: 'library-concentration',
+              placeholder: 'Library Concentration',
+            },
+          },
+          {
+            name: 'polymerase_kit',
+            component: 'traction-input',
+            value: 'polymerase_kit',
+            label: 'Polymerase Kit ',
+            props: {
+              dataAttribute: 'polymerase-kit',
+              placeholder: 'Polymerase Kit',
+            },
+          },
+          {
+            name: 'pre-extension-time',
+            component: 'traction-input',
+            value: 'pre_extension_time',
+            label: 'Pre-extension time:',
+            props: {
+              placeholder: 'Pre-extension time',
+              dataAttribute: 'pre-extension-time',
+            },
+          },
+        ],
+      },
       decimalPercentageRegex: /^(?:1(?:\.0{0,2})?|0?(?:\.\d{0,2})?)$/,
     }
   },
@@ -237,7 +285,11 @@ export default {
       'smrtLinkVersion',
       'getWell',
       'pools',
+      'runItem',
     ]),
+    smrtLinkWellDefaults() {
+      return this.smrtLinkVersionComponents[this.smrtLinkVersion.name]
+    },
     newWell() {
       // Check if well exists in state
       return !this.getWell(this.position)
@@ -288,7 +340,9 @@ export default {
         if (this.decimalPercentageRegex.test(val)) {
           return val
         } else {
-          return isNaN(this.loadingTargetValue) ? 0 : this.loadingTargetValue
+          return isNaN(this.well.loading_target_p1_plus_p2)
+            ? 0
+            : this.well.loading_target_p1_plus_p2
         }
       }
     },

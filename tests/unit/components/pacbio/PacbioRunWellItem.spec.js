@@ -4,7 +4,12 @@ import * as Run from '@/store/traction/pacbio/runCreate/run'
 import storePools from '@tests/data/StorePools'
 
 describe('Well.vue', () => {
-  let well, wrapper, props, storeWell, run
+  let well, wrapper, props, storeWell, run, smrtLinkVersion
+
+  const smrtLinkVersions = {
+    1: { id: 1, name: 'v11', default: true },
+    2: { id: 2, name: 'v12_revio', default: false },
+  }
 
   beforeEach(() => {
     props = {
@@ -16,12 +21,8 @@ describe('Well.vue', () => {
       ry: '11.032985',
     }
 
-    const smrtLinkVersions = {
-      1: { id: 1, name: 'v11', default: true },
-    }
-
     run = Run.newRun()
-    run.smrtLinkVersion = smrtLinkVersions[0]
+    smrtLinkVersion = smrtLinkVersions['1']
     storeWell = {
       position: 'A1',
       pools: ['1', '2'],
@@ -29,6 +30,11 @@ describe('Well.vue', () => {
       movie_time: 15,
       generate_hifi: 'In SMRT Link',
       binding_kit_box_barcode: '12345',
+      movie_acquisition_time: 123,
+      include_base_kinetics: 'Yes',
+      library_concentration: 123,
+      polymerase_kit: '123',
+      pre_extension_time: 1,
     }
     // store.state.traction.pacbio.runCreate.pools = storePools.pools
     // store.state.traction.pacbio.runCreate.tubes = storePools.tubes
@@ -43,6 +49,7 @@ describe('Well.vue', () => {
       ...storePools,
       wells: { A1: storeWell },
       run,
+      smrtLinkVersion,
       resources: { smrtLinkVersions },
     }
 
@@ -86,15 +93,6 @@ describe('Well.vue', () => {
     expect(well.ry).toEqual(props.ry)
   })
 
-  it('must have a ry', () => {
-    expect(well.required_metadata_fields).toEqual([
-      'movie_time',
-      'on_plate_loading_concentration',
-      'binding_kit_box_barcode',
-      'generate_hifi',
-    ])
-  })
-
   it('will have an ellipse with the correct attributes', () => {
     const ellipse = wrapper.find('ellipse')
     expect(ellipse.exists()).toBeTruthy()
@@ -105,72 +103,156 @@ describe('Well.vue', () => {
   })
 
   describe('status', () => {
-    it('will be valid if it is complete', () => {
-      const ellipse = wrapper.find('ellipse')
-      expect(ellipse.attributes('class')).toContain('complete')
-    })
-
-    it('will be invalid if there is any missing meta data', () => {
-      storeWell.movie_time = ''
-      wrapper = mount(Well, {
-        localVue,
-        store,
-        propsData: props,
-        stubs: {
-          WellModal: true,
-        },
-      })
-      const ellipse = wrapper.find('ellipse')
-      expect(ellipse.attributes('class')).toEqual('filled')
-    })
-
-    it('will be invalid if there are no pools in the store', () => {
-      storeWell.pools = []
-      wrapper = mount(Well, {
-        localVue,
-        store,
-        propsData: props,
-        stubs: {
-          WellModal: true,
-        },
-      })
-      const ellipse = wrapper.find('ellipse')
-      expect(ellipse.attributes('class')).toEqual('filled')
-    })
-
-    it('will be valid if pre extension time is present', () => {
-      wrapper = mount(Well, {
-        localVue,
-        store,
-        propsData: props,
-        stubs: {
-          WellModal: true,
-        },
-      })
-      const ellipse = wrapper.find('ellipse')
-      expect(ellipse.attributes('class')).toEqual('complete')
-    })
-
-    it('will be empty if there are no pools or metadata', () => {
-      storeWell.pools = []
-      storeWell.movie_time = ''
-      storeWell.generate_hifi = ''
-      storeWell.ccs_analysis_output = ''
-      storeWell.on_plate_loading_concentration = ''
-      storeWell.pre_extension_time = ''
-      storeWell.binding_kit_box_barcode = ''
-
-      wrapper = mount(Well, {
-        localVue,
-        store,
-        propsData: props,
-        stubs: {
-          WellModal: true,
-        },
+    describe('for smrtlink v11', () => {
+      it('will be valid if it is complete', () => {
+        const ellipse = wrapper.find('ellipse')
+        expect(ellipse.attributes('class')).toContain('complete')
       })
 
-      const ellipse = wrapper.find('ellipse')
-      expect(ellipse.attributes('class')).toEqual('empty')
+      it('will be invalid if there is any missing meta data', () => {
+        storeWell.movie_time = ''
+        wrapper = mount(Well, {
+          localVue,
+          store,
+          propsData: props,
+          stubs: {
+            WellModal: true,
+          },
+        })
+        const ellipse = wrapper.find('ellipse')
+        expect(ellipse.attributes('class')).toEqual('filled')
+      })
+
+      it('will be invalid if there are no pools in the store', () => {
+        storeWell.pools = []
+        wrapper = mount(Well, {
+          localVue,
+          store,
+          propsData: props,
+          stubs: {
+            WellModal: true,
+          },
+        })
+        const ellipse = wrapper.find('ellipse')
+        expect(ellipse.attributes('class')).toEqual('filled')
+      })
+
+      it('will be valid if all required metadata is present', () => {
+        wrapper = mount(Well, {
+          localVue,
+          store,
+          propsData: props,
+          stubs: {
+            WellModal: true,
+          },
+        })
+        const ellipse = wrapper.find('ellipse')
+        expect(ellipse.attributes('class')).toEqual('complete')
+      })
+
+      it('will be empty if there are no pools or metadata', () => {
+        storeWell.pools = []
+        storeWell.movie_time = ''
+        storeWell.generate_hifi = ''
+        storeWell.ccs_analysis_output = ''
+        storeWell.on_plate_loading_concentration = ''
+        storeWell.pre_extension_time = ''
+        storeWell.binding_kit_box_barcode = ''
+
+        wrapper = mount(Well, {
+          localVue,
+          store,
+          propsData: props,
+          stubs: {
+            WellModal: true,
+          },
+        })
+
+        const ellipse = wrapper.find('ellipse')
+        expect(ellipse.attributes('class')).toEqual('empty')
+      })
+    })
+
+    describe('for smrtlink v12_revio', () => {
+      beforeEach(() => {
+        store.state.traction.pacbio.runCreate.smrtLinkVersion = smrtLinkVersions['2']
+      })
+
+      it('will be valid if it is complete', () => {
+        wrapper = mount(Well, {
+          localVue,
+          store,
+          propsData: props,
+          stubs: {
+            WellModal: true,
+          },
+        })
+
+        const ellipse = wrapper.find('ellipse')
+        expect(ellipse.attributes('class')).toContain('complete')
+      })
+
+      it('will be invalid if there is any missing meta data', () => {
+        storeWell.movie_acquisition_time = ''
+        wrapper = mount(Well, {
+          localVue,
+          store,
+          propsData: props,
+          stubs: {
+            WellModal: true,
+          },
+        })
+        const ellipse = wrapper.find('ellipse')
+        expect(ellipse.attributes('class')).toEqual('filled')
+      })
+
+      it('will be invalid if there are no pools in the store', () => {
+        storeWell.pools = []
+        wrapper = mount(Well, {
+          localVue,
+          store,
+          propsData: props,
+          stubs: {
+            WellModal: true,
+          },
+        })
+        const ellipse = wrapper.find('ellipse')
+        expect(ellipse.attributes('class')).toEqual('filled')
+      })
+
+      it('will be valid if all required metadata is present', () => {
+        wrapper = mount(Well, {
+          localVue,
+          store,
+          propsData: props,
+          stubs: {
+            WellModal: true,
+          },
+        })
+        const ellipse = wrapper.find('ellipse')
+        expect(ellipse.attributes('class')).toEqual('complete')
+      })
+
+      it('will be empty if there are no pools or metadata', () => {
+        storeWell.pools = []
+        storeWell.movie_acquisition_time = ''
+        storeWell.polymerase_kit = ''
+        storeWell.pre_extension_time = ''
+        storeWell.library_concentration = ''
+        storeWell.include_base_kinetics = ''
+
+        wrapper = mount(Well, {
+          localVue,
+          store,
+          propsData: props,
+          stubs: {
+            WellModal: true,
+          },
+        })
+
+        const ellipse = wrapper.find('ellipse')
+        expect(ellipse.attributes('class')).toEqual('empty')
+      })
     })
   })
 

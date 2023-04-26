@@ -115,13 +115,14 @@ const valid = ({ run }) => {
     { ...well1}, { ...well2}
   ]}}
  **/
-const createPayload = ({ id, run, wells }) => {
+const createPayload = ({ id, run, wells, smrtLinkVersion }) => {
   return {
     data: {
       type: 'runs',
       id,
       attributes: {
         ...run,
+        pacbio_smrt_link_version_id: smrtLinkVersion.id,
         well_attributes: [...wells],
       },
     },
@@ -144,10 +145,10 @@ const newRunType = {
   label: 'Create Run',
 
   // returns the payload slightly different for new and existing runs
-  payload({ run, wells }) {
+  payload({ run, wells, smrtLinkVersion }) {
     // eslint-disable-next-line no-unused-vars
     const { id, ...attributes } = run
-    return createPayload({ run: attributes, wells: Object.values(wells) })
+    return createPayload({ run: attributes, wells: Object.values(wells), smrtLinkVersion })
   },
 
   // returns a promise different for create or update
@@ -162,10 +163,10 @@ const existingRunType = {
   theme: 'update',
   action: 'update',
   label: 'Update Run',
-  payload({ run, wells }) {
+  payload({ run, wells, smrtLinkVersion }) {
     // eslint-disable-next-line no-unused-vars
     const { id, ...attributes } = run
-    return createPayload({ id, run: attributes, wells: Object.values(wells) })
+    return createPayload({ id, run: attributes, wells: Object.values(wells), smrtLinkVersion })
   },
   // the function handle should be the same for create and update
   promise({ payload, request }) {

@@ -2,9 +2,9 @@
   <div class="border border-black p-[10px]">
     <fieldset>
       <div
-        class="grid grid-cols-2 px-2 pb-1 my-auto"
         v-for="field in smrtLinkWellDefaults"
         :key="field.name"
+        class="grid grid-cols-2 px-2 pb-1 my-auto"
       >
         <label class="text-left">{{ field.label }}</label>
         <component
@@ -187,7 +187,6 @@ export default {
             value: 'polymerase_kit',
             label: 'Polymerase Kit ',
             props: {
-              type: 'number',
               dataAttribute: 'default-polymerase-kit',
               placeholder: 'Polymerase Kit',
             },

@@ -33,8 +33,8 @@ describe('Pacbio Run Edit view', () => {
       cy.get('#editRun-7').click()
     })
     cy.get('ellipse').first().click()
-    cy.get('[data-attribute="movie-time"]').select('15.0')
-    cy.get('[data-attribute="loading-target-p1-plus-p2"]').invoke('val')
+    cy.get('[data-attribute="movie-acquisition-time"]').select('15.0')
+    cy.get('[data-attribute="include-base-kinetics"]').select('True')
     cy.get('#update').click()
     cy.get('button').contains('Update').click()
     cy.contains('[data-type=run-create-message]', 'Run successfully updated')
@@ -46,7 +46,7 @@ describe('Pacbio Run Edit view', () => {
       body: {
         data: {
           errors: {
-            on_plate_loading_concentration: ["can't be blank"],
+            sequencing_kit_box_barcode: ["can't be blank"],
           },
         },
       },
@@ -56,14 +56,11 @@ describe('Pacbio Run Edit view', () => {
     cy.get('#actions').within(() => {
       cy.get('#editRun-7').click()
     })
-    cy.get('ellipse').first().click()
-    cy.get('[data-attribute="on-plate-loading-concentration"]').clear()
-    cy.get('#update').click()
-    cy.get('ellipse').first().should('have.class', 'filled')
+    cy.get('[data-attribute="sequencing_kit_box_barcode"]').clear()
     cy.get('button').contains('Update').click()
     cy.contains(
       '[data-type=run-create-message]',
-      "Failed to create run in Traction: on_plate_loading_concentration can't be blank",
+      "Failed to create run in Traction: sequencing_kit_box_barcode can't be blank",
     )
   })
 })

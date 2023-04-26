@@ -58,20 +58,6 @@ export default {
       type: String,
       required: true,
     },
-    // eslint-disable-next-line vue/prop-name-casing
-    required_metadata_fields: {
-      type: Array,
-      default() {
-        // Below doesn't include 'pre_extension_time' or 'ccs_analysis_output'
-        // as they have default values
-        return [
-          'movie_time',
-          'on_plate_loading_concentration',
-          'binding_kit_box_barcode',
-          'generate_hifi',
-        ]
-      },
-    },
   },
   data() {
     return {
@@ -79,9 +65,33 @@ export default {
     }
   },
   computed: {
-    ...mapGetters('traction/pacbio/runCreate', ['poolByBarcode', 'getWell', 'pools']),
+    ...mapGetters('traction/pacbio/runCreate', [
+      'poolByBarcode',
+      'getWell',
+      'pools',
+      'smrtLinkVersion',
+    ]),
     position() {
       return `${this.row}${this.column}`
+    },
+    required_metadata_fields() {
+      if (this.smrtLinkVersion.name == 'v11') {
+        return [
+          'movie_time',
+          'on_plate_loading_concentration',
+          'binding_kit_box_barcode',
+          'generate_hifi',
+        ]
+      } else if (this.smrtLinkVersion.name == 'v12_revio') {
+        return [
+          'movie_acquisition_time',
+          'include_base_kinetics',
+          'library_concentration',
+          'polymerase_kit',
+          'pre_extension_time',
+        ]
+      }
+      return []
     },
     tooltip() {
       return this.storeWell.pools
