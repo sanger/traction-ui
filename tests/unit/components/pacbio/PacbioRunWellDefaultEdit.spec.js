@@ -24,6 +24,11 @@ const smrtLinkVersions = [
     name: 'v11',
     default: false,
   },
+  {
+    id: 2,
+    name: 'v12_revio',
+    default: false,
+  },
 ]
 
 const run = {
@@ -151,6 +156,73 @@ describe('PacbioRunWellDefaultEdit', () => {
 
       it('does not have a generate hifi default input', () => {
         expect(wrapper.find('[data-attribute=default-generate-hifi]').exists()).toBeFalsy()
+      })
+    })
+  })
+
+  /*["movie_acquisition_time",
+     "include_base_kinetics",
+     "library_concentration",
+     "polymerase_kit".
+     "pre_extension_time"
+    ]
+  */
+  describe('if the SMRT Link version is v12', () => {
+    beforeEach(() => {
+      store.state.traction.pacbio.runCreate.smrtLinkVersion = smrtLinkVersions[1]
+      wrapper = buildWrapper()
+      runInfo = wrapper.vm
+    })
+
+    it('will have a selected smrt link version of v12', () => {
+      expect(runInfo.smrtLinkVersion.id).toEqual(smrtLinkVersions[1].id)
+    })
+
+    describe('input', () => {
+      it('has a movie acquisition time input', async () => {
+        const options = wrapper
+          .find('[data-attribute=default-movie-acquisition-time]')
+          .findAll('option')
+        // select the first option
+        await options.at(1).setSelected()
+        expect(
+          store.state.traction.pacbio.runCreate.defaultWellAttributes.movie_acquisition_time,
+        ).toEqual('10.0')
+      })
+
+      it('has a pre extension time input', async () => {
+        const input = wrapper.find('[data-attribute=default-pre-extension-time]')
+        await input.setValue('3')
+        expect(
+          store.state.traction.pacbio.runCreate.defaultWellAttributes.pre_extension_time,
+        ).toEqual('3')
+      })
+
+      it('has a include base kinetics input', async () => {
+        const options = wrapper
+          .find('[data-attribute=default-include-base-kinetics]')
+          .findAll('option')
+        // select the first option
+        await options.at(0).setSelected()
+        expect(
+          store.state.traction.pacbio.runCreate.defaultWellAttributes.include_base_kinetics,
+        ).toEqual('True')
+      })
+
+      it('has a library concentration', async () => {
+        const input = wrapper.find('[data-attribute=default-library-concentration]')
+        await input.setValue('1')
+        expect(
+          store.state.traction.pacbio.runCreate.defaultWellAttributes.library_concentration,
+        ).toEqual('1')
+      })
+
+      it('has a polymerase kit', async () => {
+        const input = wrapper.find('[data-attribute=default-polymerase-kit]')
+        await input.setValue('1')
+        expect(store.state.traction.pacbio.runCreate.defaultWellAttributes.polymerase_kit).toEqual(
+          '1',
+        )
       })
     })
   })
