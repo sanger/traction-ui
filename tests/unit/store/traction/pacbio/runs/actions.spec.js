@@ -64,7 +64,7 @@ describe('#updateRun', () => {
 
     const { success, errors } = await Actions.updateRun({ rootState, commit }, { ...updatedRun })
 
-    expect(commit).toHaveBeenCalledWith('setRuns', [Data.PacbioRun.data.data])
+    expect(commit).toHaveBeenCalledWith('updateRun', Data.PacbioRun.data.data)
     expect(success).toEqual(true)
     expect(errors).toEqual([])
   })

@@ -4,6 +4,7 @@ describe('Pacbio Run Create view', () => {
       flipper_id: 'User',
       features: {
         enable_custom_table: { enabled: true },
+        enable_custom_form: { enabled: true },
       },
     })
     cy.intercept('/v1/pacbio/runs', {

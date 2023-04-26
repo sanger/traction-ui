@@ -1,7 +1,7 @@
 <template>
   <div class="w-3/5 mx-auto">
     <div class="w-full mt-4 w-100 gap-4 space-x-4 bg-gray-100 rounded-md">
-      <traction-form v-if="show" class="flex flex-row" @submit="printLabels" @reset="onReset">
+      <traction-form v-if="show" classes="flex flex-row" @submit="printLabels" @reset="onReset">
         <div class="w-full space-x-4 space-y-10 p-10">
           <traction-form-group id="barcode-input-group" label-for="barcode-input">
             <BarcodeIcon class="float-left mr-2 mt-3" />
@@ -154,9 +154,7 @@ export default {
       Creates the print job and shows a success or failure alert
       @param {event}
     */
-    async printLabels(event) {
-      event.preventDefault()
-
+    async printLabels() {
       const { success, message = {} } = await this.createPrintJob({
         printerName: this.form.printerName,
         labels: this.labels,
@@ -167,9 +165,7 @@ export default {
 
       return { success, message }
     },
-    onReset(event) {
-      event.preventDefault()
-
+    onReset() {
       // Reset our form values
       this.form = defaultForm()
 
