@@ -35,7 +35,7 @@ const updateRun = async ({ rootState, commit }, { id, ...attributes }) => {
 
   if (success) {
     // This updates the store to reflect the state change
-    commit('setRuns', [data])
+    commit('updateRun', data)
   }
 
   return { success, errors }

@@ -3,6 +3,7 @@ describe('Pacbio library creation from sample', () => {
     cy.withFlags({
       dpl_277_disable_pacbio_specific_reception: { enabled: false },
       enable_custom_table: { enabled: true },
+      enable_custom_form: { enabled: true },
     })
   })
 
