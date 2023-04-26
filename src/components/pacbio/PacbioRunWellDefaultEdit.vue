@@ -122,7 +122,7 @@ export default {
           {
             name: 'include_fivemc_calls_in_cpg_motifs',
             component: 'traction-select',
-            attribute: 'include_fivemc_calls_in_cpg_motifs',
+            value: 'include_fivemc_calls_in_cpg_motifs',
             label: 'Include 5mc Calls In CpG Motifs:',
             props: {
               options: ['Yes', 'No'],
@@ -134,16 +134,19 @@ export default {
         v12_revio: [
           {
             name: 'movie_acquisition_time',
-            component: 'traction-input',
+            component: 'traction-select',
             value: 'movie_acquisition_time',
             label: 'Movie Acquisition Time (hrs):',
             props: {
-              type: 'number',
-              step: 1,
-              max: 30,
-              min: 0.1,
+              options: [
+                { text: 'Movie Acquisition Time', value: '', disabled: true },
+                '10.0',
+                '15.0',
+                '20.0',
+                '24.0',
+                '30.0',
+              ],
               dataAttribute: 'default-movie-acquisition-time',
-              placeholder: 'Movie Acquisition Time',
             },
           },
           {

@@ -163,7 +163,8 @@ describe('PacbioRunWellDefaultEdit', () => {
   /*["movie_acquisition_time",
      "include_base_kinetics",
      "library_concentration",
-     "polymerase_kit"
+     "polymerase_kit".
+     "pre_extension_time"
     ]
   */
   describe('if the SMRT Link version is v12', () => {
@@ -179,11 +180,14 @@ describe('PacbioRunWellDefaultEdit', () => {
 
     describe('input', () => {
       it('has a movie acquisition time input', async () => {
-        const input = wrapper.find('[data-attribute=default-movie-acquisition-time]')
-        await input.setValue('30')
+        const options = wrapper
+          .find('[data-attribute=default-movie-acquisition-time]')
+          .findAll('option')
+        // select the first option
+        await options.at(1).setSelected()
         expect(
           store.state.traction.pacbio.runCreate.defaultWellAttributes.movie_acquisition_time,
-        ).toEqual('30')
+        ).toEqual('10.0')
       })
 
       it('has a pre extension time input', async () => {
