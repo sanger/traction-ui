@@ -34,7 +34,7 @@ describe('Well.vue', () => {
       include_base_kinetics: 'Yes',
       library_concentration: 123,
       polymerase_kit: '123',
-      pre_extention_time: 1,
+      pre_extension_time: 1,
     }
     // store.state.traction.pacbio.runCreate.pools = storePools.pools
     // store.state.traction.pacbio.runCreate.tubes = storePools.tubes

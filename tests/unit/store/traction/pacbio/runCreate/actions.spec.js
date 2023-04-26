@@ -142,7 +142,10 @@ describe('actions.js', () => {
         const create = vi.fn()
         const rootState = { api: { traction: { pacbio: { runs: { create } } } } }
         create.mockResolvedValue(mockResponse)
-        const { success } = await saveRun({ rootState, state: { runType, run, wells } })
+        const { success } = await saveRun({
+          rootState,
+          state: { runType, run, wells, smrtLinkVersion: defaultSmrtLinkVersion },
+        })
         expect(create).toHaveBeenCalled()
         expect(success).toBeTruthy()
       })
@@ -151,7 +154,10 @@ describe('actions.js', () => {
         const create = vi.fn()
         const rootState = { api: { traction: { pacbio: { runs: { create } } } } }
         create.mockRejectedValue(failedResponse)
-        const { success } = await saveRun({ rootState, state: { runType, run, wells } })
+        const { success } = await saveRun({
+          rootState,
+          state: { runType, run, wells, smrtLinkVersion: defaultSmrtLinkVersion },
+        })
         expect(success).toBeFalsy()
       })
     })
@@ -168,7 +174,10 @@ describe('actions.js', () => {
         const update = vi.fn()
         const rootState = { api: { traction: { pacbio: { runs: { update } } } } }
         update.mockResolvedValue(mockResponse)
-        const { success } = await saveRun({ rootState, state: { runType, run, wells } })
+        const { success } = await saveRun({
+          rootState,
+          state: { runType, run, wells, smrtLinkVersion: defaultSmrtLinkVersion },
+        })
         expect(update).toHaveBeenCalled()
         expect(success).toBeTruthy()
       })
@@ -177,7 +186,10 @@ describe('actions.js', () => {
         const update = vi.fn()
         const rootState = { api: { traction: { pacbio: { runs: { update } } } } }
         update.mockRejectedValue(failedResponse)
-        const { success } = await saveRun({ rootState, state: { runType, run, wells } })
+        const { success } = await saveRun({
+          rootState,
+          state: { runType, run, wells, smrtLinkVersion: defaultSmrtLinkVersion },
+        })
         expect(success).toBeFalsy()
       })
     })

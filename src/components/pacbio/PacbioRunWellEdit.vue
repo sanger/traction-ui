@@ -217,16 +217,19 @@ export default {
         v12_revio: [
           {
             name: 'movie_acquisition_time',
-            component: 'traction-input',
+            component: 'traction-select',
             value: 'movie_acquisition_time',
             label: 'Movie Acquisition Time (hrs):',
             props: {
-              type: 'number',
-              step: 1,
-              max: 30,
-              min: 0.1,
+              options: [
+                { text: 'Movie Acquisition Time', value: '', disabled: true },
+                '10.0',
+                '15.0',
+                '20.0',
+                '24.0',
+                '30.0',
+              ],
               dataAttribute: 'movie-acquisition-time',
-              placeholder: 'Movie Acquisition Time',
             },
           },
           {

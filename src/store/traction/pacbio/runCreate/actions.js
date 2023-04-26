@@ -125,11 +125,11 @@ export default {
    * @param state {runType, runs, wells}. The current runType, run and it's wells
    * @returns { success, errors }. Was the request successful? were there any errors?
    */
-  saveRun: async ({ rootState, state: { runType, run, wells } }) => {
+  saveRun: async ({ rootState, state: { runType, run, wells, smrtLinkVersion } }) => {
     const request = rootState.api.traction.pacbio.runs
 
     // based on the runType create the payload and the promise
-    const payload = runType.payload({ run, wells })
+    const payload = runType.payload({ run, wells, smrtLinkVersion })
     const promise = runType.promise({ request, payload })
     const response = await handleResponse(promise)
 

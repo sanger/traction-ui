@@ -52,7 +52,7 @@ describe('PacbioWellEdit', () => {
       })
 
       describe('has the correct options', () => {
-        it('has a movie time default input', () => {
+        it('has a movie time input', () => {
           expect(wrapper.find('[data-attribute="movie-time"]').exists()).toBeTruthy()
         })
 
@@ -98,21 +98,15 @@ describe('PacbioWellEdit', () => {
       describe('does not have options belonging to other versions', () => {
         //v12_revio options
         it('has a movie acquisition time input', () => {
-          expect(
-            wrapper.find('[data-attribute="default-movie-acquisition-time"]').exists(),
-          ).toBeFalsy()
+          expect(wrapper.find('[data-attribute="movie-acquisition-time"]').exists()).toBeFalsy()
         })
 
         it('has include base kinetics input', () => {
-          expect(
-            wrapper.find('[data-attribute="default-include-base-kinetics"]').exists(),
-          ).toBeFalsy()
+          expect(wrapper.find('[data-attribute="include-base-kinetics"]').exists()).toBeFalsy()
         })
 
         it('has a library concentration input', () => {
-          expect(
-            wrapper.find('[data-attribute="default-library-concentration"]').exists(),
-          ).toBeFalsy()
+          expect(wrapper.find('[data-attribute="library-concentration"]').exists()).toBeFalsy()
         })
       })
     })
@@ -156,7 +150,7 @@ describe('PacbioWellEdit', () => {
       describe('does not have options belonging to other versions', () => {
         // v11 options
         it('has a movie time input', () => {
-          expect(wrapper.find('[data-attribute="-movie-time"]').exists()).toBeFalsy()
+          expect(wrapper.find('[data-attribute="movie-time"]').exists()).toBeFalsy()
         })
 
         it('has a binding kit box barcode input', () => {
