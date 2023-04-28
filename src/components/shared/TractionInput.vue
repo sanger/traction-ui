@@ -60,7 +60,7 @@ export default {
       type: Number,
       default: 0,
     },
-    //Formatter function to format the displayed value in input field, if given 
+    //Formatter function to format the displayed value in input field, if given
     formatter: {
       type: Function,
       default: undefined,
