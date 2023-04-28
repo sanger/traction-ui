@@ -148,11 +148,7 @@
             "value": "",
             "disabled": true
           },
-          "10.0",
-          "15.0",
-          "20.0",
-          "24.0",
-          "30.0"
+          "24.0"
         ],
         "dataAttribute": "movie-acquisition-time"
       }
@@ -173,7 +169,7 @@
       "name": "library_concentration",
       "component": "traction-input",
       "value": "library_concentration",
-      "label": "Library Concentration: ",
+      "label": "Library Concentration (pM): ",
       "default": true,
       "props": {
         "type": "number",

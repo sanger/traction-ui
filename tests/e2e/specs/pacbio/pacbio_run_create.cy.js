@@ -104,7 +104,7 @@ describe('Pacbio Run Create view', () => {
       .first()
       .trigger('drop', { dataTransfer: dataTransfer, force: true })
       .trigger('click')
-    cy.get('[data-attribute="movie-acquisition-time"]').select('15.0')
+    cy.get('[data-attribute="movie-acquisition-time"]').select('24.0')
     cy.get('[data-attribute="pre-extension-time"]').type('3')
     cy.get('[data-attribute="include-base-kinetics"]').select('True')
     cy.get('[data-attribute="polymerase-kit"]').type('12345')

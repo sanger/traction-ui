@@ -44,8 +44,8 @@ const defaultWellAttributes = () => {
     ccs_analysis_output_include_low_quality_reads: 'No',
     demultiplex_barcodes: onInstrument,
     include_fivemc_calls_in_cpg_motifs: 'Yes',
-    movie_acquisition_time: null,
-    include_base_kinetics: null,
+    movie_acquisition_time: '24.0',
+    include_base_kinetics: 'False',
     library_concentration: null,
     polymerase_kit: null,
   }
