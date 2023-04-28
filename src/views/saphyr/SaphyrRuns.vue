@@ -1,25 +1,20 @@
 <template>
   <div>
-    <traction-form-group
-      label="Filter"
-      label-cols-sm="1"
-      label-align-sm="right"
-      label-for="filterInput"
-      class="mb-0"
-    >
-      <traction-input-group>
-        <traction-input
-          id="filterInput"
-          v-model="filter"
-          type="search"
-          placeholder="Type to Search"
-        >
-        </traction-input>
-        <traction-input-group-append>
-          <traction-button :disabled="!filter" @click="filter = ''">Clear</traction-button>
-        </traction-input-group-append>
-      </traction-input-group>
-    </traction-form-group>
+    <div class="flex flex-row space-x-4">
+      <label class="text-lg font-bold">Filter</label>
+
+      <traction-input
+        id="filterInput"
+        v-model="filter"
+        type="search"
+        placeholder="Type to Search"
+        class="w-48"
+      >
+      </traction-input>
+
+      <traction-button :disabled="!filter" @click="filter = ''">Clear</traction-button>
+    </div>
+
     <br />
 
     <traction-table
