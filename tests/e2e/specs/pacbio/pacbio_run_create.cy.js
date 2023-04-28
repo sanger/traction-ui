@@ -4,6 +4,7 @@ describe('Pacbio Run Create view', () => {
       flipper_id: 'User',
       features: {
         enable_custom_table: { enabled: true },
+        enable_custom_form: { enabled: true },
       },
     })
     cy.intercept('/v1/pacbio/runs', {
@@ -74,6 +75,46 @@ describe('Pacbio Run Create view', () => {
     cy.contains('[data-type=run-create-message]', 'Run successfully created')
   })
 
+  it('Creates a run successfully - v12', () => {
+    const dataTransfer = new DataTransfer()
+
+    // Checks the PacbioRunInfoEdit component
+    cy.visit('#/pacbio/runs')
+    cy.get('[data-action=new-run]').contains('New Run').click()
+    cy.get('[data-attribute="sequencing_kit_box_barcode"]').type('Lxxxxx101826100123199')
+    cy.get('.pacbioRunInfoEdit')
+      .get('[data-attribute="dna_control_complex_box_barcode"]')
+      .type('Lxxxxx101717600123199')
+    cy.get('[data-attribute="system_name"]').select('Revio')
+    cy.get('[data-attribute="smrt_link_version"]').select('v12_revio')
+    // TODO: calling it  list group item is not specific enough
+
+    // Get the PacbioPoolList component, type in the barcode of the pool being searched, click search
+    cy.get('#labware-finder-input').type('TRAC-2-2')
+    cy.get('button').contains('Search').click()
+
+    // Get the pool being searched
+    cy.get('.list-group-item')
+      // this obviously gets quite a lot into implementation but at least it works!
+      .first()
+      .trigger('dragstart', { dataTransfer: dataTransfer, force: true })
+      .trigger('drag', { dataTransfer: dataTransfer, force: true })
+    // again better to rename this item to make it more descriptive
+    cy.get('ellipse')
+      .first()
+      .trigger('drop', { dataTransfer: dataTransfer, force: true })
+      .trigger('click')
+    cy.get('[data-attribute="movie-acquisition-time"]').select('15.0')
+    cy.get('[data-attribute="pre-extension-time"]').type('3')
+    cy.get('[data-attribute="include-base-kinetics"]').select('True')
+    cy.get('[data-attribute="polymerase-kit"]').type('12345')
+    cy.get('[data-attribute="library-concentration"]').type('0.75')
+
+    cy.get('#update').click()
+    cy.get('button').contains('Create').click()
+    cy.contains('[data-type=run-create-message]', 'Run successfully created')
+  })
+
   it('creates a run unsuccessfully', () => {
     cy.intercept('POST', '/v1/pacbio/runs', {
       statusCode: 422,
@@ -127,7 +168,7 @@ describe('Pacbio Run Create view', () => {
       .get('#dna-control-complex-box-barcode')
       .type('Lxxxxx101717600123199')
     cy.get('#system-name').select('Sequel IIe')
-    cy.get('[data-attribute="smrt-link-version"]').select('v10')
+    cy.get('[data-attribute="smrt-link-version"]').select('v11')
 
     cy.get('.pacbioRunWellDefaultEdit').within(() => {
       cy.get('[data-attribute="default-movie-time"]').select('15.0')

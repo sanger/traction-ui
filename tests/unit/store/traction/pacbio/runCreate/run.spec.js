@@ -18,6 +18,19 @@ const existingRun = {
   smrt_link_version_id: 1,
 }
 
+const smrtLinkVersions = {
+  1: {
+    id: 1,
+    name: 'v11',
+    default: false,
+  },
+  2: {
+    id: 2,
+    name: 'v12_revio',
+    default: false,
+  },
+}
+
 const wells = {
   1: { ...newWell({ position: 'A1' }) },
   2: { ...newWell({ position: 'A2' }), pools: [1, 2] },
@@ -93,11 +106,16 @@ describe('run.js', () => {
       const aRun = newRun()
       // eslint-disable-next-line no-unused-vars
       const { id, ...attributes } = aRun
-      const payload = createPayload({ run: attributes, wells: wellValues })
+      const payload = createPayload({
+        run: attributes,
+        wells: wellValues,
+        smrtLinkVersion: smrtLinkVersions['1'],
+      })
       expect(payload).toEqual({
         data: {
           type: 'runs',
           attributes: {
+            pacbio_smrt_link_version_id: smrtLinkVersions['1'].id,
             well_attributes: wellValues,
             ...attributes,
           },
@@ -108,12 +126,18 @@ describe('run.js', () => {
     it('for an existing run', () => {
       const aRun = newRun()
       const { id, ...attributes } = aRun
-      const payload = createPayload({ id, run: attributes, wells: wellValues })
+      const payload = createPayload({
+        id,
+        run: attributes,
+        wells: wellValues,
+        smrtLinkVersion: smrtLinkVersions['1'],
+      })
       expect(payload).toEqual({
         data: {
           type: 'runs',
           id,
           attributes: {
+            pacbio_smrt_link_version_id: smrtLinkVersions['1'].id,
             well_attributes: wellValues,
             ...attributes,
           },
@@ -143,8 +167,14 @@ describe('run.js', () => {
         const aRun = newRun()
         // eslint-disable-next-line no-unused-vars
         const { id, ...attributes } = aRun
-        expect(runType.payload({ run: aRun, wells })).toEqual(
-          createPayload({ run: attributes, wells: wellValues }),
+        expect(
+          runType.payload({ run: aRun, wells, smrtLinkVersion: smrtLinkVersions['1'] }),
+        ).toEqual(
+          createPayload({
+            run: attributes,
+            wells: wellValues,
+            smrtLinkVersion: smrtLinkVersions['1'],
+          }),
         )
       })
 
@@ -153,7 +183,11 @@ describe('run.js', () => {
         const aRun = newRun()
         // eslint-disable-next-line no-unused-vars
         const { id, ...attributes } = aRun
-        const payload = runType.payload({ run: attributes, wells })
+        const payload = runType.payload({
+          run: attributes,
+          wells,
+          smrtLinkVersion: smrtLinkVersions['1'],
+        })
         const request = { create: vi.fn(), update: vi.fn() }
         runType.promise({ payload, request })
         expect(request.create).toBeCalledWith({ data: payload })
@@ -180,8 +214,15 @@ describe('run.js', () => {
         const aRun = newRun()
         // eslint-disable-next-line no-unused-vars
         const { id, ...attributes } = aRun
-        expect(runType.payload({ run: aRun, wells })).toEqual(
-          createPayload({ id, run: attributes, wells: wellValues }),
+        expect(
+          runType.payload({ run: aRun, wells, smrtLinkVersion: smrtLinkVersions['1'] }),
+        ).toEqual(
+          createPayload({
+            id,
+            run: attributes,
+            wells: wellValues,
+            smrtLinkVersion: smrtLinkVersions['1'],
+          }),
         )
       })
 
@@ -190,7 +231,11 @@ describe('run.js', () => {
         const aRun = newRun()
         // eslint-disable-next-line no-unused-vars
         const { id, ...attributes } = aRun
-        const payload = runType.payload({ run: attributes, wells })
+        const payload = runType.payload({
+          run: attributes,
+          wells,
+          smrtLinkVersion: smrtLinkVersions['1'],
+        })
         const request = { create: vi.fn(), update: vi.fn() }
         runType.promise({ payload, request })
         expect(request.update).toBeCalledWith(payload)

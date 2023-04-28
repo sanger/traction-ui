@@ -152,7 +152,7 @@ export default {
   },
   watch: {
     requests(newValue) {
-      this.setInitialData(newValue, this.perPage)
+      this.setInitialData(newValue, this.perPage, { sortBy: 'created_at' })
     },
   },
   methods: {
