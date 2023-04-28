@@ -1,12 +1,7 @@
 <template>
   <div>
-    <traction-form-group
-      label="Filter"
-      label-cols-sm="1"
-      label-align-sm="right"
-      label-for="filterInput"
-      class="mb-0"
-    >
+    <fieldset class="mb-0">
+      <label>Filter</label>
       <traction-input-group>
         <traction-input
           id="filterInput"
@@ -19,7 +14,7 @@
           <traction-button :disabled="!filter" @click="filter = ''">Clear</traction-button>
         </traction-input-group-append>
       </traction-input-group>
-    </traction-form-group>
+    </fieldset>
     <br />
 
     <traction-table

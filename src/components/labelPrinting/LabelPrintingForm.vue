@@ -3,7 +3,7 @@
     <div class="w-full mt-4 w-100 gap-4 space-x-4 bg-gray-100 rounded-md">
       <traction-form v-if="show" classes="flex flex-row" @submit="printLabels" @reset="onReset">
         <div class="w-full space-x-4 space-y-10 p-10">
-          <traction-form-group id="barcode-input-group" label-for="barcode-input">
+          <fieldset>
             <BarcodeIcon class="float-left mr-2 mt-3" />
             <traction-heading level="3" show-border>Barcodes</traction-heading>
             <traction-muted-text>A list of barcodes to create labels for</traction-muted-text>
@@ -17,9 +17,9 @@
                 max-rows="10"
               />
             </div>
-          </traction-form-group>
+          </fieldset>
 
-          <traction-form-group id="suffix-selection-group" label-for="suffix-selection">
+          <fieldset>
             <traction-heading level="3" show-border>Suffix</traction-heading>
             <traction-muted-text>The suffix used to increment the barcode</traction-muted-text>
             <div class="mt-2">
@@ -30,9 +30,9 @@
                 placeholder="Please select a suffix"
               ></traction-select>
             </div>
-          </traction-form-group>
+          </fieldset>
 
-          <traction-form-group id="number-of-labels-group" label-for="number-of-labels">
+          <fieldset>
             <traction-heading level="3" show-border>Number of labels</traction-heading>
             <traction-muted-text>Number of labels to print (max 80)</traction-muted-text>
             <div class="mt-2">
@@ -45,9 +45,9 @@
                 placeholder="Please enter a number"
               ></traction-input>
             </div>
-          </traction-form-group>
+          </fieldset>
 
-          <traction-form-group id="printer-choice-group" label-for="printer-choice">
+          <fieldset>
             <traction-heading level="3" show-border>Choice of Printer</traction-heading>
             <traction-muted-text>The printer to print the labels</traction-muted-text>
             <div class="mt-2">
@@ -59,7 +59,7 @@
                 required
               ></traction-select>
             </div>
-          </traction-form-group>
+          </fieldset>
         </div>
         <div class="w-1/2 m-4 p-3 border-t-4 border-sp rounded-md space-y-4 bg-sdb-400">
           <traction-heading level="3" class-name="text-white italic" show-border>

@@ -13,36 +13,31 @@
           :label-cols="null"
         />
 
-        <traction-form-group
-          id="estimateOfGBRequired"
-          label="Estimate of GB required:"
-          label-for="estimateOfGBRequired"
-        >
+        <fieldset id="estimateOfGBRequired" class="py-2">
+          <label>Estimate of GB required:</label>
           <traction-input
             id="estimateOfGBRequired"
             v-model="request.estimate_of_gb_required"
             placeholder="Estimate of GB required"
           >
           </traction-input>
-        </traction-form-group>
+        </fieldset>
 
-        <traction-form-group
-          id="numberOfSMRTCells"
-          label="Number of SMRT Cells:"
-          label-for="numberOfSMRTCells"
-        >
+        <fieldset id="numberOfSMRTCells" class="py-2">
+          <label>Number of SMRT Cells:</label>
           <traction-input
             id="numberOfSMRTCells"
             v-model="request.number_of_smrt_cells"
             placeholder="Number of SMRT Cells"
           >
           </traction-input>
-        </traction-form-group>
+        </fieldset>
 
-        <traction-form-group id="costCode" label="Cost Code:" label-for="costCode">
+        <fieldset id="costCode" class="py-2">
+          <label>Cost Code:</label>
           <traction-input id="costCode" v-model="request.cost_code" placeholder="Cost Code">
           </traction-input>
-        </traction-form-group>
+        </fieldset>
       </traction-form>
 
       <template #modal-footer="{ cancel }">
