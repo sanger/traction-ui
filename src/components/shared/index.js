@@ -38,8 +38,6 @@ import {
   BFormFile,
   BFormInvalidFeedback,
   BFormTextarea,
-  BInputGroup,
-  BInputGroupAppend,
 } from 'bootstrap-vue'
 
 const registerBootstrapComponents = (vue) => {
@@ -55,8 +53,6 @@ const registerBootstrapComponents = (vue) => {
   vue.component('traction-file', BFormFile)
   vue.component('traction-invalid-feedback', BFormInvalidFeedback)
   vue.component('traction-textarea', BFormTextarea)
-  vue.component('traction-input-group', BInputGroup)
-  vue.component('traction-input-group-append', BInputGroupAppend)
   /*
     directive is marked wth a v in front
     so it will be used as 'v-traction-modal'
