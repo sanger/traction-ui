@@ -2,146 +2,23 @@
   <traction-modal ref="well-modal" :static="isStatic" size="lg">
     <template #modal-title> Add Pool to Well: {{ position }} </template>
 
-    <traction-form>
-      <traction-form-group id="movie-time-group" label="Movie time:" label-for="movie-time">
-        <traction-select
-          id="movie-time"
-          ref="movieTime"
-          v-model="well.movie_time"
-          data-attribute="movie-time"
-          :options="movieTimeOptions"
-        >
-        </traction-select>
+    <fieldset>
+      <traction-form-group v-for="field in smrtLinkWellDefaults" :key="field.name">
+        <label>{{ field.label }}</label>
+        <component
+          :is="field.component"
+          v-model="well[field.value]"
+          v-bind="handleCustomProps(field)"
+          v-on="handleCustomEvents(field)"
+        />
       </traction-form-group>
-
-      <traction-form-group
-        id="on-plate-loading-concentration-group"
-        label="On Plate Loading Concentration (pM):"
-        label-for="on-plate-loading-concentration"
-      >
-        <traction-input
-          id="on-plate-loading-concentration"
-          ref="onPlateLoadingConcentration"
-          v-model="well.on_plate_loading_concentration"
-          data-attribute="on-plate-loading-concentration"
-          placeholder="On Plate Loading Concentration (pM)"
-        >
-        </traction-input>
-      </traction-form-group>
-
-      <traction-form-group
-        id="pre-extension-time-group"
-        label="Pre-extension time (hours):"
-        label-for="pre-extension-time"
-      >
-        <traction-input
-          id="pre-extension-time"
-          ref="preExtensionTime"
-          v-model="well.pre_extension_time"
-          data-attribute="pre-extension-time"
-          placeholder="Pre-extension time"
-        >
-        </traction-input>
-      </traction-form-group>
-
-      <traction-form-group
-        id="binding-kit-box-barcode-group"
-        label="Binding Kit Box Barcode: "
-        label-for="binding-kit-box-barcode"
-      >
-        <traction-input
-          id="binding-kit-box-barcode"
-          ref="bindingKitBoxBarcode"
-          v-model="well.binding_kit_box_barcode"
-          data-attribute="binding-kit-box-barcode"
-          placeholder="Binding Kit Box Barcode"
-        >
-        </traction-input>
-      </traction-form-group>
-      <traction-form-group
-        id="loading-target-p1-plus-p2-group"
-        label="Loading Target (P1 + P2): (0 to 1) "
-        label-for="loading-target-p1-plus-p2"
-      >
-        <traction-input
-          id="loading-target"
-          ref="loadingTarget"
-          v-model="well.loading_target_p1_plus_p2"
-          data-attribute="loading-target-p1-plus-p2"
-          placeholder="Adaptive loading disabled - Add loading target to enable"
-          type="number"
-          min="0"
-          max="1"
-          step="0.05"
-          lazy-formatter
-          :formatter="formatLoadingTargetValue"
-        >
-        </traction-input>
-      </traction-form-group>
-
-      <traction-form-group
-        label="CCS Output Include Kinetics Information"
-        label-for="ccs-analysis-output-include-kinetics-information"
-      >
-        <traction-select
-          id="ccs-analysis-output-include-kinetics-information"
-          v-model="well.ccs_analysis_output_include_kinetics_information"
-          :options="ccsAnalysisOutputOptions"
-          data-attribute="ccs-analysis-output-include-kinetics-information"
-        >
-        </traction-select>
-      </traction-form-group>
-
-      <traction-form-group
-        label="CCS Analysis Output Include Low Quality Reads"
-        label-for="ccs-analysis-output-include-low-quality-reads"
-      >
-        <traction-select
-          id="ccs-analysis-output-include-low-quality-reads"
-          v-model="well.ccs_analysis_output_include_low_quality_reads"
-          :options="ccsAnalysisOutputOptions"
-          data-attribute="ccs-analysis-output-include-low-quality-reads"
-        >
-        </traction-select>
-      </traction-form-group>
-
-      <traction-form-group
-        label="Include 5mc Calls In CpG Motifs"
-        label-for="include-fivemc-calls-in-cpg-motifs"
-      >
-        <traction-select
-          id="include-fivemc-calls-in-cpg-motifs"
-          v-model="well.include_fivemc_calls_in_cpg_motifs"
-          :options="ccsAnalysisOutputOptions"
-          data-attribute="include-fivemc-calls-in-cpg-motifs"
-        >
-        </traction-select>
-      </traction-form-group>
-
-      <traction-form-group label="Demultiplex Barcodes" label-for="demultiplex-barcodes">
-        <traction-select
-          id="demultiplex-barcodes"
-          v-model="well.demultiplex_barcodes"
-          :options="generateHifiOptions"
-          data-attribute="demultiplex-barcodes"
-        >
-        </traction-select>
-      </traction-form-group>
-    </traction-form>
-
-    <traction-button
-      id="disableAdaptiveLoadingBtn"
-      theme="default"
-      @click="disableAdaptiveLoadingInput()"
-    >
-      Disable Adaptive Loading
-    </traction-button>
+    </fieldset>
 
     <traction-table id="wellPools" stacked :items="localPools" :fields="wellPoolsFields">
       <template #table-caption>Pools</template>
 
       <template #cell(barcode)="row">
-        <traction-form inline>
+        <traction-form classes="flex flex-wrap items-center">
           <traction-input
             id="poolBarcode"
             ref="poolBarcode"
@@ -152,7 +29,7 @@
           >
           </traction-input>
 
-          <traction-button class="button btn-xs btn-danger" inline @click="removeRow(row)"
+          <traction-button class="button btn-xs btn-danger" @click="removeRow(row)"
             >-</traction-button
           >
         </traction-form>
@@ -187,6 +64,7 @@
 // There is a lot of duplication between this component and PacbioRunWellEdit.
 // A lot of it could be moved to the store
 import { mapGetters, mapActions, mapMutations } from 'vuex'
+import PacbioRunWellComponents from '@/config/PacbioRunWellComponents'
 
 export default {
   name: 'WellModal',
@@ -212,22 +90,7 @@ export default {
     return {
       well: {},
       localPools: [],
-      movieTimeOptions: [
-        { text: 'Movie Time', value: '', disabled: true },
-        '10.0',
-        '15.0',
-        '20.0',
-        '24.0',
-        '30.0',
-      ],
       wellPoolsFields: [{ key: 'barcode', label: 'Barcode' }],
-      generateHifiOptions: [
-        { text: 'Please select a value', value: '', disabled: true },
-        'In SMRT Link',
-        'Do Not Generate',
-        'On Instrument',
-      ],
-      ccsAnalysisOutputOptions: ['Yes', 'No'],
       decimalPercentageRegex: /^(?:1(?:\.0{0,2})?|0?(?:\.\d{0,2})?)$/,
     }
   },
@@ -237,7 +100,11 @@ export default {
       'smrtLinkVersion',
       'getWell',
       'pools',
+      'runItem',
     ]),
+    smrtLinkWellDefaults() {
+      return PacbioRunWellComponents[this.smrtLinkVersion.name]
+    },
     newWell() {
       // Check if well exists in state
       return !this.getWell(this.position)
@@ -288,7 +155,9 @@ export default {
         if (this.decimalPercentageRegex.test(val)) {
           return val
         } else {
-          return isNaN(this.loadingTargetValue) ? 0 : this.loadingTargetValue
+          return isNaN(this.well.loading_target_p1_plus_p2)
+            ? 0
+            : this.well.loading_target_p1_plus_p2
         }
       }
     },
@@ -336,6 +205,25 @@ export default {
         const pool = this.pools.find((pool) => pool.id == id)
         this.localPools.push({ id, barcode: pool.barcode })
       })
+    },
+    handleCustomProps(component) {
+      if (component.name == 'loading_target_p1_plus_p2') {
+        return {
+          ...component.props,
+          // This doesn't work at the moment as traction-input doesnt have a formatter prop
+          formatter: this.formatLoadingTargetValue,
+        }
+      }
+      return component.props
+    },
+    handleCustomEvents(component) {
+      if (component.name == 'disableAdaptiveLoadingBtn') {
+        return {
+          ...component.events,
+          click: this.disableAdaptiveLoadingInput,
+        }
+      }
+      return component.events
     },
   },
 }
