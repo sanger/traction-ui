@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div class="flex flex-row space-x-4">
+    <fieldset class="flex flex-row space-x-4 mb-0">
       <label class="text-lg font-bold">Filter</label>
 
       <traction-input
@@ -13,7 +13,7 @@
       </traction-input>
 
       <traction-button :disabled="!filter" @click="filter = ''">Clear</traction-button>
-    </div>
+    </fieldset>
 
     <br />
 
@@ -75,9 +75,10 @@
       >
       </traction-pagination>
     </div>
-    <traction-form-group label-cols-lg="1" label="Per Page" label-for="input-per-page">
+    <fieldset>
+      <label>Per Page</label>
       <traction-input id="input-per-page" v-model="perPage" trim class="w-25"></traction-input>
-    </traction-form-group>
+    </fieldset>
   </div>
 </template>
 

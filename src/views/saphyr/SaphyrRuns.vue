@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div class="flex flex-row space-x-4">
+    <fieldset class="flex flex-row space-x-4 mb-0">
       <label class="text-lg font-bold">Filter</label>
 
       <traction-input
@@ -13,7 +13,7 @@
       </traction-input>
 
       <traction-button :disabled="!filter" @click="filter = ''">Clear</traction-button>
-    </div>
+    </fieldset>
 
     <br />
 
