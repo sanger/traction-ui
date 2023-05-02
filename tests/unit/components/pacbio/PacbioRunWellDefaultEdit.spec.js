@@ -187,7 +187,7 @@ describe('PacbioRunWellDefaultEdit', () => {
         await options.at(1).setSelected()
         expect(
           store.state.traction.pacbio.runCreate.defaultWellAttributes.movie_acquisition_time,
-        ).toEqual('10.0')
+        ).toEqual('24.0')
       })
 
       it('has a pre extension time input', async () => {
