@@ -211,7 +211,6 @@ export default {
       if (component.name == 'loading_target_p1_plus_p2') {
         return {
           ...component.props,
-          // This doesn't work at the moment as traction-input doesnt have a formatter prop
           formatter: this.formatLoadingTargetValue,
         }
       }

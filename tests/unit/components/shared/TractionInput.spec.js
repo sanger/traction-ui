@@ -2,7 +2,7 @@ import { localVue, mount } from '@support/testHelper'
 
 import TractionInput from '@/components/shared/TractionInput'
 
-describe('TractionInput.vue"', () => {
+describe('TractionInput.vue', () => {
   const buildWrapper = (props = {}) => {
     return mount(TractionInput, {
       localVue,
@@ -71,5 +71,23 @@ describe('TractionInput.vue"', () => {
     expect(textInput.element.value).toBe('')
     await wrapper.setData({ test: 'New Test value' })
     expect(textInput.element.value).toBe('New Test value')
+  })
+  it('displays formatted text,', async () => {
+    var wrapper = mount({
+      template: '<traction-input :value="test" :formatter="formatText"></traction-input>',
+      components: { 'traction-input': TractionInput },
+      data() {
+        return { test: 'Test' }
+      },
+      methods: {
+        formatText(val) {
+          return val + '_formatted'
+        },
+      },
+    })
+    const textInput = wrapper.find('input')
+    expect(textInput.element.value).toBe('Test_formatted')
+    await wrapper.setData({ test: 'New Test' })
+    expect(textInput.element.value).toBe('New Test_formatted')
   })
 })
