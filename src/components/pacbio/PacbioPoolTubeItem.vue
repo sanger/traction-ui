@@ -1,8 +1,11 @@
 <template>
-  <traction-list-group-item
+  <!--- stiil to add: when you hover over it it shows the hand (not sure if it is necessary)
+when you hover over it the background colour changes to a light blue
+when the pool is invalid it changes the font colour and the background colour to different shades of red and when you hover over it the red darkens-->
+  <div
+    :class="classObject"
     :draggable="!!valid"
     :variant="valid ? 'default' : 'danger'"
-    button
     @dragstart="drag(barcode, $event)"
     @click="expanded = !expanded"
   >
@@ -58,7 +61,7 @@
         <div v-else>Pool invalid. Click for more information</div>
       </div>
     </div>
-  </traction-list-group-item>
+  </div>
 </template>
 
 <script>
@@ -134,6 +137,9 @@ export default {
     },
     errors() {
       return this.run_suitability.formattedErrors
+    },
+    classObject() {
+      return 'm-1 border-2'
     },
   },
   methods: {
