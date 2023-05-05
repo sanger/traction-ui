@@ -14,18 +14,25 @@
       @drop="drop"
       @dragover="allowDrop"
       @dragleave="endDrop"
-      @click="onClick"
+      @click="showModal"
     >
       <title v-if="hasPools" v-text="tooltip"></title>
     </ellipse>
+    <foreignObject>
+      <WellEdit ref="modal" class="modal" :position="position" @alert="alert"></WellEdit>
+    </foreignObject>
   </g>
 </template>
 
 <script>
 import { mapActions, mapMutations, mapGetters } from 'vuex'
+import WellEdit from '@/components/pacbio/PacbioRunWellEdit'
+
 export default {
   name: 'PacbioRunWellItemBS',
-
+  components: {
+    WellEdit,
+  },
   props: {
     row: {
       type: String,
@@ -124,8 +131,8 @@ export default {
     alert(message, type) {
       this.$emit('alert', message, type)
     },
-    onClick() {
-      this.$emit('click',this.position)
+    showModal() {
+      this.$refs.modal.showModalForPosition()
     },
     allowDrop(event) {
       event.preventDefault()
