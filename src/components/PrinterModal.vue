@@ -5,6 +5,7 @@
       v-traction-modal.printerModal
       theme="print"
       :disabled="disabled"
+      @click="onPrintAction()"
     >
       Print Labels
     </traction-button>
@@ -14,7 +15,9 @@
       size="sm"
       title="Print Labels"
       :static="isStatic"
+      :visible="isShow"
       @ok="handleOk"
+      @cancel="handleCancel"
       @shown="clearSelect"
     >
       <traction-select v-model="selectedPrinterId" :options="printerOptions" />
@@ -38,6 +41,7 @@ export default {
     return {
       selectedPrinterId: null,
       printerOptions: [],
+      isShow: false,
     }
   },
   created() {
@@ -47,9 +51,14 @@ export default {
     clearSelect() {
       this.selectedPrinterId = null
     },
+    onPrintAction() {
+      this.isShow = true
+    },
     handleOk(evt) {
       // Prevent modal from closing
-      evt.preventDefault()
+      if (evt) {
+        evt.preventDefault()
+      }
 
       if (!this.selectedPrinterId) {
         alert(MESSAGE_PRINTER_SELECT)
@@ -57,18 +66,25 @@ export default {
         this.handleSubmit()
       }
     },
+    handleCancel() {
+      this.isShow = false
+    },
     handleSubmit() {
       // OR store holds key id and text value - emit id then store handles get name
       const printerName = this.printerOptions[this.selectedPrinterId].text
       this.$emit('selectPrinter', printerName)
       this.clearSelect()
+      this.isShow = false
       /**
        * Hide the modal manually
        * https://vuejsdevelopers.com/2019/01/22/vue-what-is-next-tick/
        * https://bootstrap-vue.js.org/docs/components/modal/#prevent-closing
        */
       this.$nextTick(() => {
-        this.$refs.printerModal.hide()
+        /**This need to be removed when custom_enable_modal feature flag is removed */
+        if (this.$refs.printerModal && 'b-modal' in this.$refs.printerModal.$refs) {
+          this.$refs.printerModal.$refs['b-modal'].hide()
+        }
       })
     },
     setPrinterNames() {
