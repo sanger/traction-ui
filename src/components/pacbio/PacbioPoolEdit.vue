@@ -6,20 +6,30 @@
       :tag="`${poolType}`"
       data-attribute="pool-type"
     >
-      <div class="space-y-12">
-        <div class="flex flex-col">
-          <label class="text-left p-0">Select file</label>
-          <traction-file
+
+    <!-- Will be removed -->
+      <div>
+        <traction-file
+          id="qcFileInput"
+          ref="qc-file-form-field"
+          :state="parsedFile"
+          placeholder="Choose a file or drop it here..."
+          drop-placeholder="Drop file here..."
+          accept="text/csv, .csv"
+          size="sm"
+          @input="uploadFile"
+        ></traction-file>
+
+        <div>
+        <label class="flex text-left " for="qcFileInput">Select file</label>
+          <input
             id="qcFileInput"
-            ref="qc-file-form-field"
-            :state="parsedFile"
-            placeholder="Choose a file or drop it here..."
-            drop-placeholder="Drop file here..."
+            class="relative m-0 block w-full min-w-0 flex-auto rounded border file:border-0"
+            type="file"
             accept="text/csv, .csv"
-            size="sm"
-            @input="uploadFile"
-          ></traction-file>
+          />
         </div>
+
         <div>
           <traction-sub-section title="Pool information" class="py-6">
             <div class="grid gap-5 grid-cols-6 mb-10 text-sm min-h-32" data-type="pool-edit">

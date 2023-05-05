@@ -13,6 +13,8 @@
         required
       ></traction-select>
       <traction-heading level="3" show-border>CSV File</traction-heading>
+
+      <!-- Will be removed -->
       <traction-file
         id="qc-results-upload-file"
         v-model="file"
@@ -23,6 +25,17 @@
         accept="text/csv, .csv"
         required
       ></traction-file>
+
+      <div>
+          <input
+            id="qc-results-upload-file"
+            class="block w-full rounded border file:border-0"
+            type="file"
+            accept="text/csv, .csv"
+            required
+          />
+        </div>
+
       <div class="space-x-4 pb-4 flex flex-row justify-end">
         <traction-button
           id="upload-button"

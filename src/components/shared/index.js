@@ -34,7 +34,6 @@ import {
   BCardText,
   BListGroup,
   BListGroupItem,
-  BFormFile,
   BFormInvalidFeedback,
   BFormTextarea,
 } from 'bootstrap-vue'
@@ -48,7 +47,6 @@ const registerBootstrapComponents = (vue) => {
   vue.component('traction-card-text', BCardText)
   vue.component('traction-list-group', BListGroup)
   vue.component('traction-list-group-item', BListGroupItem)
-  vue.component('traction-file', BFormFile)
   vue.component('traction-invalid-feedback', BFormInvalidFeedback)
   vue.component('traction-textarea', BFormTextarea)
   /*
