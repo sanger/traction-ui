@@ -31,7 +31,6 @@ import {
   BAlert,
   BCard,
   BCardText,
-  BListGroupItem,
   BFormFile,
   BFormInvalidFeedback,
   BFormTextarea,
@@ -43,7 +42,6 @@ const registerBootstrapComponents = (vue) => {
   vue.component('traction-alert', BAlert)
   vue.component('traction-card', BCard)
   vue.component('traction-card-text', BCardText)
-  vue.component('traction-list-group-item', BListGroupItem)
   vue.component('traction-file', BFormFile)
   vue.component('traction-invalid-feedback', BFormInvalidFeedback)
   vue.component('traction-textarea', BFormTextarea)
