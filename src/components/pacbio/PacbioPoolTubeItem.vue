@@ -1,11 +1,7 @@
 <template>
-  <!--- stiil to add: when you hover over it it shows the hand (not sure if it is necessary)
-when you hover over it the background colour changes to a light blue
-when the pool is invalid it changes the font colour and the background colour to different shades of red and when you hover over it the red darkens-->
   <div
     :class="classObject"
     :draggable="!!valid"
-    :variant="valid ? 'default' : 'danger'"
     @dragstart="drag(barcode, $event)"
     @click="expanded = !expanded"
   >
@@ -139,7 +135,12 @@ export default {
       return this.run_suitability.formattedErrors
     },
     classObject() {
-      return 'm-1 border-2'
+      // when the pool is valid we have a gray background
+      // when the pool is invalid we have a red background with red text
+      // TODO: modify red background for hover to be slightly softer. Need new tailwind colour
+      return `m-1 border-2 cursor-pointer rounded-md pb-2  ${
+        this.valid ? 'hover:bg-gray-200' : 'bg-red-200 hover:bg-red-300 text-red-800'
+      }`
     },
   },
   methods: {
