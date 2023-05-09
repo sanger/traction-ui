@@ -25,7 +25,7 @@
             </div>
             <div class="flex justify-end it">
               <div class="flex justify-end text-black">
-                <button @click="close"><traction-close-icon /></button>
+                <button data-attribute="close" @click="close"><traction-close-icon /></button>
               </div>
             </div>
           </div>
@@ -41,10 +41,6 @@
 <script>
 import { BModal } from 'bootstrap-vue'
 export default {
-  /**
-   *
-   * v-slot:[slot]="scope" is same as #[slot]="scope"
-   */
   name: 'TractionModal',
   components: { BModal },
   inheritAttrs: false,
@@ -59,7 +55,6 @@ export default {
     },
   },
   data() {
-    //Create 'row' data based on initial data passed in through 'items' prop
     return {
       ok: () => {
         this.$emit('ok')
@@ -87,6 +82,7 @@ export default {
   methods: {
     close() {
       this.$emit('cancel')
+      this.display = false
     },
     showModal() {
       this.display = true
