@@ -16,14 +16,18 @@
           aria-labelledby="modal-headline"
         >
           <div
-            class="border-b-2 border-gray-200 px-4 pb-4 sm:p-6 sm:pb-4 bg-gray-100 text-lg leading-6 font-medium text-gray-900"
+            class="flex flex-row border-b-2 border-gray-200 px-4 pb-4 sm:p-6 sm:pb-4 bg-gray-100 text-lg leading-6 font-medium text-gray-900"
           >
-            <div class="flex items-end justify-end text-black">
-              <button @click="close"><traction-close-icon /></button>
+            <div class="w-full">
+              <template v-if="hasHeaderSlot"> <slot :name="`modal-header`" /></template>
+              <template v-if="hasModalTitle"> <slot :name="`modal-title`" /></template>
+              <label v-else>{{ title }}</label>
             </div>
-            <template v-if="hasHeaderSlot"> <slot :name="`modal-header`" /></template>
-            <template v-if="hasModalTitle"> <slot :name="`modal-title`" /></template>
-            <label v-else>{{ title }}</label>
+            <div class="flex justify-end it">
+              <div class="flex justify-end text-black">
+                <button @click="close"><traction-close-icon /></button>
+              </div>
+            </div>
           </div>
           <div class="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4"><slot /></div>
           <div class="bg-gray-100 px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse">

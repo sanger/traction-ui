@@ -15,7 +15,9 @@
       size="lg"
       title="Create Library"
       :static="isStatic"
+      :visible="showModal"
       scrollable
+      @cancel="hide"
     >
       <traction-form id="libraryCreateModal" @submit="createLibrary" @keydown.enter.prevent>
         <fieldset id="selected-sample" class="py-1">
@@ -134,6 +136,7 @@ export default {
     return {
       library: { tag: { id: '' }, sample: {} },
       selectedTagSetId: '',
+      showModal: false,
     }
   },
   computed: {
@@ -177,7 +180,11 @@ export default {
     },
     show() {
       this.library = { tag: { id: '' }, sample: this.selectedSample }
+      this.showModal = true
       this.selectedTagSetId = ''
+    },
+    hide() {
+      this.showModal = false;
     },
     ...mapActions(['fetchPacbioTagSets', 'createLibraryInTraction']),
   },
