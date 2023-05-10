@@ -1,3 +1,12 @@
+<!--
+  This component is created as part of traction-modal story and is a duplicate for 'PacbioRunWellItem'.
+  This exists only to maintain compatibility with bootstrap-modal using feature flags. The custom traction-modal 
+  involves some significant changes in the existing component design which involves moving the WellEdit to the 
+  parent component 'PacbioRunPlateItem'.
+  Inorder to ensure the b-modal implementation of this component works (when the feature flag is turned off),
+  it is kept as how it is working now.
+  This component can be removed when custom_enable_modal feature flag is removed. 
+-->
 <template>
   <g>
     <defs>

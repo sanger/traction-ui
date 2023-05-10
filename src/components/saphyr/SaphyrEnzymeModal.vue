@@ -14,6 +14,7 @@
       ref="enzymeModal"
       size="sm"
       title="Create Libraries"
+      :visible="showModal"
       :static="isStatic"
       @ok="handleOk"
       @shown="clearSelect"
@@ -62,12 +63,12 @@ export default {
       } else {
         this.handleSubmit()
       }
-      this.displayModal = false
+      this.showModal = false
     },
     handleSubmit() {
       this.$emit('selectEnzyme', this.selectedEnzymeId)
       this.clearSelect()
-      this.displayModal = true
+      this.showModal = true
       /**
        * Hide the modal manually
        * https://vuejsdevelopers.com/2019/01/22/vue-what-is-next-tick/

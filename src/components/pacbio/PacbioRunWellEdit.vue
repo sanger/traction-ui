@@ -1,5 +1,5 @@
 <template>
-  <traction-modal ref="well-modal" :static="isStatic" size="lg" :visible="isShow" @cancel="hide" >
+  <traction-modal ref="well-modal" :static="isStatic" size="lg" :visible="isShow" @cancel="hide">
     <template #modal-title> Add Pool to Well: {{ position }} </template>
 
     <fieldset>

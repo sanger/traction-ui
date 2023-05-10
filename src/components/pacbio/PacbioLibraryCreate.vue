@@ -184,7 +184,7 @@ export default {
       this.selectedTagSetId = ''
     },
     hide() {
-      this.showModal = false;
+      this.showModal = false
     },
     ...mapActions(['fetchPacbioTagSets', 'createLibraryInTraction']),
   },

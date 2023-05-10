@@ -1,3 +1,16 @@
+<!--/**
+   * # TractionModal
+   * Tailwind component to display an html modal dialog. The overall design of this component, in particular, the scoped slot design, 
+     data structures, and event handling is based on how a bootstrap modal is working so as to make this compatible with b-modal 
+     through 'enable_custom_modal' feature flag
+   * The modal dialog includes  header, body and  footer
+        header - displayed using 'modal-header' scoped slot, or if only requires title can either use 'title' prop or 'modal-title'
+        body -   default slot is displyed as modal body
+        footer - displayed using 'modal-footer' scoped slot 
+        close button - dispalyed always in header,which closes the dialog on click
+   */
+   -->
+
 <template>
   <flagged-feature name="enable_custom_modal">
     <template #disabled>
@@ -45,10 +58,12 @@ export default {
   components: { BModal },
   inheritAttrs: false,
   props: {
+    /**Prop to make the dialog visible or not */
     visible: {
       type: Boolean,
       default: false,
     },
+    /**Title to display in modal header, if don't want to use scoped slots */
     title: {
       type: String,
       default: '',
@@ -56,19 +71,24 @@ export default {
   },
   data() {
     return {
+      /**'ok' event emitted from footer, if there is a corresponding button in 'modal-footer' scoped slot */
       ok: () => {
         this.$emit('ok')
       },
+      /**'cancel' event emitted from footer, if there is a corresponding button in 'modal-footer' scoped slot */
       cancel: () => {
         this.$emit('cancel')
       },
+      /**Mutable property to make the dialog visible or not */
       display: this.visible,
     }
   },
   computed: {
+    /**Is there a scoped slot defined to display header? */
     hasHeaderSlot() {
       return !!this.$slots['modal-header']
     },
+    /**Is there a scoped slot defined to display title? */
     hasModalTitle() {
       return !!this.$slots['modal-title']
     },
@@ -80,12 +100,10 @@ export default {
   },
 
   methods: {
+    /**Close button clicked, so hide the dialog */
     close() {
       this.$emit('cancel')
       this.display = false
-    },
-    showModal() {
-      this.display = true
     },
   },
 }

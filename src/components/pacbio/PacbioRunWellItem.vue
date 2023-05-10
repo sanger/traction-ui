@@ -125,7 +125,7 @@ export default {
       this.$emit('alert', message, type)
     },
     onClick() {
-      this.$emit('click',this.position)
+      this.$emit('click', this.position)
     },
     allowDrop(event) {
       event.preventDefault()
