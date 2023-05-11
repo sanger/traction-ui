@@ -105,10 +105,10 @@ export default {
     async resetFilter() {
       this.filterValue = ''
       this.filterInput = ''
-      ;(this.filterWildcard = true),
-        await this.fetcher().then(({ success, errors }) => {
-          success ? '' : this.showAlert(errors, 'danger')
-        })
+      this.filterWildcard = true
+      await this.fetcher().then(({ success, errors }) => {
+        success ? '' : this.showAlert(errors, 'danger')
+      })
     },
   },
 }

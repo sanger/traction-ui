@@ -109,7 +109,7 @@ describe('FilterCard.vue', () => {
         return {
           filterInput: 'Search value',
           filterValue: '1',
-          filterWildcard: true,
+          filterWildcard: false,
         }
       },
     })
@@ -118,5 +118,6 @@ describe('FilterCard.vue', () => {
     expect(wrapper.vm.fetcher).toBeCalledWith()
     expect(wrapper.vm.filterInput).toBe('')
     expect(wrapper.vm.filterValue).toBe('')
+    expect(wrapper.vm.filterWildcard).toBe(true)
   })
 })
