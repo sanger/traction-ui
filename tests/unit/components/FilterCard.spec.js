@@ -53,12 +53,41 @@ describe('FilterCard.vue', () => {
         return {
           filterInput: 'Search value',
           filterValue: '1',
+          filterWildcard: true,
         }
       },
     })
     // search button
     wrapper.findAll('button').at(1).trigger('click')
     expect(wrapper.vm.fetcher).toBeCalledWith({ 1: 'Search value' })
+  })
+
+  it('calls the fetch function with the correct data when a wildcard is selected', async () => {
+    const mockFetch = vi.fn()
+    mockFetch.mockReturnValue(Promise.resolve({ success: true, errors: [] }))
+
+    wrapper = mount(FilterCard, {
+      localVue,
+      store,
+      propsData: {
+        fetcher: mockFetch,
+        filterOptions: [
+          { value: '1', text: 'Filter 1', wildcard: true },
+          { value: '2', text: 'Filter 2' },
+          { value: '3', text: 'Filter 3' },
+        ],
+      },
+      data: function () {
+        return {
+          filterInput: 'Search value',
+          filterValue: '1',
+          filterWildcard: true,
+        }
+      },
+    })
+    // search button
+    wrapper.findAll('button').at(1).trigger('click')
+    expect(wrapper.vm.fetcher).toBeCalledWith({ 1: 'Search value,wildcard' })
   })
 
   it('clears the data when reset is clicked', async () => {
@@ -80,6 +109,7 @@ describe('FilterCard.vue', () => {
         return {
           filterInput: 'Search value',
           filterValue: '1',
+          filterWildcard: true,
         }
       },
     })

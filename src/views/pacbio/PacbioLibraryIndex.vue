@@ -118,7 +118,7 @@ export default {
       ],
       filterOptions: [
         { value: '', text: '' },
-        { value: 'barcode', text: 'Barcode' },
+        { value: 'barcode', text: 'Barcode', wildcard: true },
         { value: 'sample_name', text: 'Sample Name' },
         { value: 'source_identifier', text: 'Source' },
         // Need to specify filters in json api resources if we want more filters
