@@ -48,13 +48,13 @@ export default {
     }
   },
   computed: {
-    ...mapGetters(['selectedTubes', 'wellList', 'requestList']),
+    ...mapGetters(['poolItem', 'tubeItem', 'selectedRequests']),
     selectedTubeRequests() {
+      return this.selectedRequests
       // Not really sure this belongs here, and I'd prefer to see this handled
-      // in the getters.
-      return this.selectedTubes.flatMap((tube) => {
-        return this.requestList(tube.requests || [])
-      })
+      // return this.selectedTubes.flatMap((tube) => {
+      //   return this.requestList(tube.requests || [])
+      // })
     },
   },
   methods: {
