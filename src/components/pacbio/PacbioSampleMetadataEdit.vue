@@ -1,10 +1,6 @@
 <template>
   <div>
-    <traction-button
-      :id="generateId('editSample', req.id)"
-      size="sm"
-      theme="edit"
-      @click="displayModal(true)"
+    <traction-button :id="generateId('editSample', req.id)" size="sm" theme="edit" @click="show"
       >Edit</traction-button
     >
 
@@ -13,7 +9,7 @@
       ref="modal"
       title="Edit Sample"
       :visible="showModal"
-      @cancel="displayModal(false)"
+      @cancel="hide"
     >
       <traction-form id="sampleMetaDataForm">
         <LibraryTypeSelect
@@ -97,28 +93,27 @@ export default {
           ? this.alert('Sample updated', 'success')
           : this.alert('Failed to update sample. ' + errors, 'danger')
       })
-      this.display(false)
+      this.hide()
     },
     generateId(text, id) {
       return `${text}-${id}`
     },
     ...mapActions(['updateRequest']),
-
-    displayModal(showModal) {
-      this.showModal = showModal
+    show() {
+      this.showModal = true
       /**This need to be removed when custom_enable_modal feature flag is removed */
       if ('b-modal' in this.$refs['modal'].$refs) {
-        if (showModal) {
-          this.$refs['modal'].$refs['b-modal'].show()
-        } else {
-          this.$refs['modal'].$refs['b-modal'].hide()
-        }
+        this.$refs['modal'].$refs['b-modal'].show()
       }
-      if (showModal) {
-        this.request = { ...this.req }
+      this.request = { ...this.req }
+    },
+    hide() {
+      this.showModal = false
+      /**This need to be removed when custom_enable_modal feature flag is removed */
+      if ('b-modal' in this.$refs['modal'].$refs) {
+        this.$refs['modal'].$refs['b-modal'].hide()
       }
     },
-
     alert(message, type) {
       this.$emit('alert', message, type)
     },

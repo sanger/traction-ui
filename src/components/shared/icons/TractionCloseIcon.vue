@@ -4,7 +4,7 @@
   Component to render a tick(/pass) or cross(/fail) icon
 -->
 <template>
-  <svg :class="['h-4 w-4', `${classes}`]" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
+  <svg class="h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
     <path
       fillRule="evenodd"
       fill="currentColor"
@@ -20,9 +20,5 @@
 <script>
 export default {
   name: 'TractionCloseIcon',
-  classes: {
-    type: String,
-    default: '',
-  },
 }
 </script>

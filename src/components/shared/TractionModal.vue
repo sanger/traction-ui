@@ -38,7 +38,7 @@
             </div>
             <div class="flex justify-end">
               <button class="text-gray-700" data-attribute="close" @click="close">
-                <traction-close-icon classes="hover:bg-gray-300" />
+                <traction-close-icon />
               </button>
             </div>
           </div>
