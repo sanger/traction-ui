@@ -1,6 +1,10 @@
 <template>
   <div>
-    <traction-button :id="generateId('editSample', req.id)" size="sm" theme="edit" @click="show"
+    <traction-button
+      :id="generateId('editSample', req.id)"
+      size="sm"
+      theme="edit"
+      @click="displayModal(true)"
       >Edit</traction-button
     >
 
@@ -9,7 +13,7 @@
       ref="modal"
       title="Edit Sample"
       :visible="showModal"
-      @cancel="hide"
+      @cancel="displayModal(false)"
     >
       <traction-form id="sampleMetaDataForm">
         <LibraryTypeSelect
@@ -93,27 +97,28 @@ export default {
           ? this.alert('Sample updated', 'success')
           : this.alert('Failed to update sample. ' + errors, 'danger')
       })
-      this.hide()
+      this.display(false)
     },
     generateId(text, id) {
       return `${text}-${id}`
     },
     ...mapActions(['updateRequest']),
-    show() {
-      this.showModal = true
+
+    displayModal(showModal) {
+      this.showModal = showModal
       /**This need to be removed when custom_enable_modal feature flag is removed */
       if ('b-modal' in this.$refs['modal'].$refs) {
-        this.$refs['modal'].$refs['b-modal'].show()
+        if (showModal) {
+          this.$refs['modal'].$refs['b-modal'].show()
+        } else {
+          this.$refs['modal'].$refs['b-modal'].hide()
+        }
       }
-      this.request = { ...this.req }
-    },
-    hide() {
-      this.showModal = false
-      /**This need to be removed when custom_enable_modal feature flag is removed */
-      if ('b-modal' in this.$refs['modal'].$refs) {
-        this.$refs['modal'].$refs['b-modal'].hide()
+      if (showModal) {
+        this.request = { ...this.req }
       }
     },
+
     alert(message, type) {
       this.$emit('alert', message, type)
     },

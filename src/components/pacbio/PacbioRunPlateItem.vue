@@ -23,7 +23,7 @@
 <script>
 import Plate96SVG from '@/components/svg/Plate96SVG'
 import PlateMap from '@/config/PlateMap'
-import BWell from '@/components/pacbio/PacbioRunWellItemBS'
+import BWell from '@/components/pacbio/PacbioRunWellItemBootstrap'
 import Well from '@/components/pacbio/PacbioRunWellItem'
 import WellEdit from '@/components/pacbio/PacbioRunWellEdit'
 

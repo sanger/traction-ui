@@ -38,7 +38,7 @@ import { mapActions, mapMutations, mapGetters } from 'vuex'
 import WellEdit from '@/components/pacbio/PacbioRunWellEdit'
 
 export default {
-  name: 'PacbioRunWellItemBS',
+  name: 'PacbioRunWellItemBootstrap',
   components: {
     WellEdit,
   },

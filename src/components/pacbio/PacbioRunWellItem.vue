@@ -24,7 +24,7 @@
 <script>
 import { mapActions, mapMutations, mapGetters } from 'vuex'
 export default {
-  name: 'PacbioRunWellItemBS',
+  name: 'PacbioRunWellItem',
 
   props: {
     row: {
