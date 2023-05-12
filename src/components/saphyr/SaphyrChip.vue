@@ -1,5 +1,5 @@
 <template>
-  <traction-container class="chip">
+  <div class="chip container mx-auto">
     <traction-input
       id="barcode"
       :value="chip.barcode"
@@ -14,7 +14,7 @@
       :index="index"
       @alert="alert"
     ></flowcell>
-  </traction-container>
+  </div>
 </template>
 
 <script>
