@@ -141,13 +141,13 @@ describe('ontPoolEdit#edit', () => {
     it('supports no files being selected', async () => {
       await wrapper.vm.uploadFile(null)
       const formField = wrapper.findComponent({ ref: 'qc-file-form-field' })
-      expect(formField.props().state).toEqual(null)
+      expect(formField.value).toEqual("")
     })
 
     it('highlights a valid file', async () => {
       spy.mockImplementation(() => {})
       await wrapper.vm.uploadFile(mockFile)
-      const formField = wrapper.findComponent({ ref: 'qc-file-form-field' })
+      const formField = wrapper.find('[data-attribute=qc-file-form-field]')
       expect(formField.props().state).toEqual(true)
     })
 
@@ -157,9 +157,7 @@ describe('ontPoolEdit#edit', () => {
         throw 'Toys'
       })
       await wrapper.vm.uploadFile(mockFile)
-      const formField = wrapper.findComponent({
-        ref: 'qc-file-form-field',
-      })
+      const formField = wrapper.find('[data-attribute=qc-file-form-field]')
       expect(formField.props().state).toEqual(false)
     })
   })
