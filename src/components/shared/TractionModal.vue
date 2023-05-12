@@ -37,13 +37,13 @@
               <label v-else>{{ title }}</label>
             </div>
             <div class="flex justify-end">
-              <button class="text-gray-800 hover:text-black" data-attribute="close" @click="close">
-                <traction-close-icon />
+              <button class="text-gray-700" data-attribute="close" @click="close">
+                <traction-close-icon classes="hover:bg-gray-300" />
               </button>
             </div>
           </div>
           <div class="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4"><slot /></div>
-          <div class="bg-gray-100 px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse">
+          <div class="flex bg-gray-100 px-4 py-3 sm:px-6 justify-end">
             <slot :name="`modal-footer`" :ok="ok" :cancel="cancel"></slot>
           </div>
         </div>
