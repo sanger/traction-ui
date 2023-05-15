@@ -1,9 +1,9 @@
 <!--/**
    * # TractionModal
-   - Tailwind component to display an html modal dialog. The overall design of this component, in particular, the scoped slot design, 
+   * Tailwind component to display an html modal dialog. The overall design of this component, in particular, the scoped slot design, 
      data structures, and event handling is based on how a bootstrap modal is working so as to make this compatible with b-modal 
      through 'enable_custom_modal' feature flag
-   - The modal dialog includes  header, body and  footer
+   * The modal dialog includes  header, body and  footer
         header - displayed using 'modal-header' scoped slot, or if only requires title can either use 'title' prop or 'modal-title'
         body -   default slot is displyed as modal body
         footer - displayed using 'modal-footer' scoped slot 
@@ -20,31 +20,41 @@
         /></template>
       </b-modal>
     </template>
-    <div v-if="display" class="fixed z-20 inset-0 overflow-y-auto">
-      <div class="flex items-end justify-center pt-4 px-4 pb-20 text-center sm:block xl:p-0">
+
+    <div v-if="display">
+      <!-- overlay -->
+      <div
+        class="absolute inset-0 opacity-50 bg-black h-screen h-screen w-full justify-center items-start md:items-center pt-10 md:pt-0"
+      />
+      <!-- modal -->
+      <div class="fixed z-20 inset-0 overflow-y-auto">
         <div
-          class="inline-block align-bottom bg-white rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-screen-md sm:w-full"
-          role="dialog"
-          aria-modal="true"
-          aria-labelledby="modal-headline"
+          class="flex items-end justify-center pt-4 px-4 pb-20 text-center sm:block xl:p-0 opacity-100 transform translate-y-40 duration-300 ease-in-out transition-opacity transition-transform delay-300 duration-300"
         >
           <div
-            class="flex flex-row border-b-2 border-gray-200 p-4 pb-4 sm:p-6 sm:pb-4 bg-gray-100 text-lg leading-6 font-medium text-gray-900"
+            class="inline-block align-bottom bg-white rounded-lg text-left overflow-hidden shadow-xl sm:my-8 sm:align-middle sm:max-w-screen-md sm:w-full"
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="modal-headline"
           >
-            <div class="w-full mt-2">
-              <template v-if="hasHeaderSlot"> <slot :name="`modal-header`" /></template>
-              <template v-if="hasModalTitle"> <slot :name="`modal-title`" /></template>
-              <label v-else>{{ title }}</label>
+            <div
+              class="flex flex-row border-b-2 border-gray-200 p-4 pb-4 sm:p-6 sm:pb-4 bg-gray-100 text-lg leading-6 font-medium text-gray-900"
+            >
+              <div class="w-full mt-2">
+                <template v-if="hasHeaderSlot"> <slot :name="`modal-header`" /></template>
+                <template v-if="hasModalTitle"> <slot :name="`modal-title`" /></template>
+                <label v-else>{{ title }}</label>
+              </div>
+              <div class="flex justify-end">
+                <button class="text-gray-700" data-attribute="close" @click="close">
+                  <traction-close-icon />
+                </button>
+              </div>
             </div>
-            <div class="flex justify-end">
-              <button class="text-gray-700" data-attribute="close" @click="close">
-                <traction-close-icon />
-              </button>
+            <div class="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4"><slot /></div>
+            <div class="flex bg-gray-100 px-4 py-3 sm:px-6 justify-end">
+              <slot :name="`modal-footer`" :ok="ok" :cancel="cancel"></slot>
             </div>
-          </div>
-          <div class="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4"><slot /></div>
-          <div class="flex bg-gray-100 px-4 py-3 sm:px-6 justify-end">
-            <slot :name="`modal-footer`" :ok="ok" :cancel="cancel"></slot>
           </div>
         </div>
       </div>
@@ -71,14 +81,6 @@ export default {
   },
   data() {
     return {
-      /**'ok' event emitted from footer, if there is a corresponding button in 'modal-footer' scoped slot */
-      ok: () => {
-        this.$emit('ok')
-      },
-      /**'cancel' event emitted from footer, if there is a corresponding button in 'modal-footer' scoped slot */
-      cancel: () => {
-        this.$emit('cancel')
-      },
       /**Mutable property to make the dialog visible or not */
       display: this.visible,
     }
@@ -104,6 +106,14 @@ export default {
     close() {
       this.$emit('cancel')
       this.display = false
+    },
+    /**'ok' event emitted from footer, if there is a corresponding button in 'modal-footer' scoped slot */
+    ok() {
+      this.$emit('ok')
+    },
+    /**'cancel' event emitted from footer, if there is a corresponding button in 'modal-footer' scoped slot */
+    cancel() {
+      this.$emit('cancel')
     },
   },
 }

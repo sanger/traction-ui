@@ -54,12 +54,7 @@ export default {
     onPrintAction() {
       this.isShow = true
     },
-    handleOk(evt) {
-      // Prevent modal from closing
-      if (evt) {
-        evt.preventDefault()
-      }
-
+    handleOk() {
       if (!this.selectedPrinterId) {
         alert(MESSAGE_PRINTER_SELECT)
       } else {
@@ -82,7 +77,10 @@ export default {
        */
       this.$nextTick(() => {
         /**This need to be removed when custom_enable_modal feature flag is removed */
-        if (this.$refs.printerModal && 'b-modal' in this.$refs.printerModal.$refs) {
+        if (
+          'b-modal' in this.$refs.printerModal.$refs &&
+          this.$refs.printerModal.$refs['b-modal']
+        ) {
           this.$refs.printerModal.$refs['b-modal'].hide()
         }
       })
