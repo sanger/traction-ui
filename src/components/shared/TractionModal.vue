@@ -1,9 +1,9 @@
 <!--/**
    * # TractionModal
-   * Tailwind component to display an html modal dialog. The overall design of this component, in particular, the scoped slot design, 
+   - Tailwind component to display an html modal dialog. The overall design of this component, in particular, the scoped slot design, 
      data structures, and event handling is based on how a bootstrap modal is working so as to make this compatible with b-modal 
      through 'enable_custom_modal' feature flag
-   * The modal dialog includes  header, body and  footer
+   - The modal dialog includes  header, body and  footer
         header - displayed using 'modal-header' scoped slot, or if only requires title can either use 'title' prop or 'modal-title'
         body -   default slot is displyed as modal body
         footer - displayed using 'modal-footer' scoped slot 
