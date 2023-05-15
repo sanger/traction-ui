@@ -20,16 +20,15 @@
         /></template>
       </b-modal>
     </template>
-
     <div v-if="display">
       <!-- overlay -->
       <div
-        class="absolute inset-0 opacity-50 bg-black h-screen h-screen w-full justify-center items-start md:items-center pt-10 md:pt-0"
+        class="absolute cursor-auto hover:cursor-auto inset-0 opacity-50 bg-black h-screen w-full justify-center items-start md:items-center pt-10 md:pt-0"
       />
       <!-- modal -->
       <div class="fixed z-20 inset-0 overflow-y-auto">
         <div
-          class="flex items-end justify-center pt-4 px-4 pb-20 text-center sm:block xl:p-0 opacity-100 transform translate-y-40 duration-300 ease-in-out transition-opacity transition-transform delay-300 duration-300"
+          class="flex items-end justify-center pt-4 px-4 pb-20 text-center sm:block xl:p-0 opacity-100"
         >
           <div
             class="inline-block align-bottom bg-white rounded-lg text-left overflow-hidden shadow-xl sm:my-8 sm:align-middle sm:max-w-screen-md sm:w-full"
@@ -83,6 +82,7 @@ export default {
     return {
       /**Mutable property to make the dialog visible or not */
       display: this.visible,
+      originalScrollTop: 0,
     }
   },
   computed: {
@@ -98,9 +98,22 @@ export default {
   watch: {
     visible(newValue) {
       this.display = newValue
+      if (this.$refs['b-modal']) {
+        console.log('BMOdal')
+        return
+      }
+      if (this.display) {
+        /**Remove scrollbars in original backdrop window if any */
+        document.documentElement.style.overflow = 'hidden'
+        this.originalScrollTop = `-${window.scrollY}px`
+        window.scrollTo(0, top)
+      } else {
+        //Regain scrollbars in original window and scroll to it's original position
+        document.documentElement.style.overflow = 'auto'
+        window.scrollTo(0, parseInt(this.originalScrollTop || '0') * -1)
+      }
     },
   },
-
   methods: {
     /**Close button clicked, so hide the dialog */
     close() {
