@@ -98,10 +98,6 @@ export default {
   watch: {
     visible(newValue) {
       this.display = newValue
-      if (this.$refs['b-modal']) {
-        console.log('BMOdal')
-        return
-      }
       if (this.display) {
         /**Remove scrollbars in original backdrop window if any. This is required to disable scrolling of the
          * background when the modal is displayed
