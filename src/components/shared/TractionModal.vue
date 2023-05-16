@@ -103,7 +103,9 @@ export default {
         return
       }
       if (this.display) {
-        /**Remove scrollbars in original backdrop window if any */
+        /**Remove scrollbars in original backdrop window if any. This is required to disable scrolling of the
+         * background when the modal is displayed
+         */
         document.documentElement.style.overflow = 'hidden'
         this.originalScrollTop = `-${window.scrollY}px`
         window.scrollTo(0, top)
