@@ -22,8 +22,8 @@ describe('FilterCard.vue', () => {
       },
     })
 
-    expect(wrapper.vm.filterInput).toBe('')
-    expect(wrapper.vm.filterValue).toBe('')
+    expect(wrapper.vm.filter.input).toBe('')
+    expect(wrapper.vm.filter.value).toBe('')
     expect(wrapper.find('#filterInput')).toBeDefined()
     expect(wrapper.find('#filterValue')).toBeDefined()
     const options = wrapper.find('#filterValue').findAll('option')
@@ -51,9 +51,11 @@ describe('FilterCard.vue', () => {
       },
       data: function () {
         return {
-          filterInput: 'Search value',
-          filterValue: '1',
-          filterWildcard: true,
+          filter: {
+            input: 'Search value',
+            value: '1',
+            wildcard: true,
+          },
         }
       },
     })
@@ -79,9 +81,11 @@ describe('FilterCard.vue', () => {
       },
       data: function () {
         return {
-          filterInput: 'Search value',
-          filterValue: '1',
-          filterWildcard: true,
+          filter: {
+            input: 'Search value',
+            value: '1',
+            wildcard: true,
+          },
         }
       },
     })
@@ -107,17 +111,19 @@ describe('FilterCard.vue', () => {
       },
       data: function () {
         return {
-          filterInput: 'Search value',
-          filterValue: '1',
-          filterWildcard: false,
+          filter: {
+            input: 'Search value',
+            value: '1',
+            wildcard: false,
+          },
         }
       },
     })
     // reset button
     wrapper.findAll('button').at(0).trigger('click')
     expect(wrapper.vm.fetcher).toBeCalledWith()
-    expect(wrapper.vm.filterInput).toBe('')
-    expect(wrapper.vm.filterValue).toBe('')
-    expect(wrapper.vm.filterWildcard).toBe(true)
+    expect(wrapper.vm.filter.input).toBe('')
+    expect(wrapper.vm.filter.value).toBe('')
+    expect(wrapper.vm.filter.wildcard).toBe(true)
   })
 })

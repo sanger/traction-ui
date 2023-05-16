@@ -10,14 +10,14 @@
       <div class="col-span-2 flex mx-auto items-center">
         <traction-input
           id="filterInput"
-          v-model="filterInput"
+          v-model="filter.input"
           type="search"
           placeholder="Type to Search"
           class="mr-5 w-1/2"
         />
         <traction-select
           id="filterValue"
-          v-model="filterValue"
+          v-model="filter.value"
           :options="filterOptions"
           class="mr-5 w-1/2"
         />
@@ -25,7 +25,7 @@
           <label for="checkbox" class="w-1/2">Wildcard</label>
           <input
             id="wildcardValue"
-            v-model="filterWildcard"
+            v-model="filter.wildcard"
             type="checkbox"
             class="w-1/2 bg-sbd-400"
           />
@@ -36,7 +36,7 @@
           <traction-button @click="resetFilter()">Reset</traction-button>
           <traction-button
             id="filterButton"
-            :disabled="filterValue == '' || filterInput == ''"
+            :disabled="filter.value == '' || filter.input == ''"
             @click="getFilteredData()"
             >Search</traction-button
           >
@@ -78,34 +78,36 @@ export default {
   },
   data() {
     return {
-      filterInput: '',
-      filterValue: '',
-      filterWildcard: true,
+      filter: {
+        value: '',
+        input: '',
+        wildcard: true,
+      },
     }
   },
   computed: {
     wildcard() {
-      return this.filterOptions.filter(({ value }) => value == this.filterValue)[0]?.wildcard
+      return this.filterOptions.filter(({ value }) => value == this.filter.value)[0]?.wildcard
     },
   },
   methods: {
     async getFilteredData() {
-      let searchValue = this.filterInput
-      if (this.wildcard && this.filterWildcard) {
+      let searchValue = this.filter.input
+      if (this.wildcard && this.filter.wildcard) {
         // If wildcard is selected, add it to the search string
         searchValue += ',wildcard'
       }
       const filter = {
-        [this.filterValue]: searchValue,
+        [this.filter.value]: searchValue,
       }
       await this.fetcher(filter).then(({ success, errors }) => {
         success ? '' : this.showAlert(errors, 'danger')
       })
     },
     async resetFilter() {
-      this.filterValue = ''
-      this.filterInput = ''
-      this.filterWildcard = true
+      this.filter.value = ''
+      this.filter.input = ''
+      this.filter.wildcard = true
       await this.fetcher().then(({ success, errors }) => {
         success ? '' : this.showAlert(errors, 'danger')
       })
