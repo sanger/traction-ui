@@ -21,7 +21,7 @@
           :options="filterOptions"
           class="mr-5 w-1/2"
         />
-        <div v-if="wildcard" class="justify-center items-center w-1/3">
+        <div v-if="isWildcardOption" class="justify-center items-center w-1/3">
           <label for="checkbox" class="w-1/2">Wildcard</label>
           <input
             id="wildcardValue"
@@ -86,14 +86,14 @@ export default {
     }
   },
   computed: {
-    wildcard() {
+    isWildcardOption() {
       return this.filterOptions.filter(({ value }) => value == this.filter.value)[0]?.wildcard
     },
   },
   methods: {
     async getFilteredData() {
       let searchValue = this.filter.input
-      if (this.wildcard && this.filter.wildcard) {
+      if (this.isWildcardOption && this.filter.wildcard) {
         // If wildcard is selected, add it to the search string
         searchValue += ',wildcard'
       }
