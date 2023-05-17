@@ -1,29 +1,27 @@
 <template>
   <div class="mt-8">
     <traction-section number="2b" title="Selected Tubes">
-      <traction-list-group class="selected-list-group">
-        <traction-table
-          :items="selectedTubeRequests"
-          show-empty
-          small
-          :fields="requestFields"
-          :tbody-tr-class="rowClass"
-          empty-text="No tubes selected"
-          @row-clicked="requestClicked"
-        >
-          <template #cell(action)="row">
-            <traction-button
-              :id="'remove-btn-' + row.item.id"
-              size="sm"
-              class="mr-2"
-              theme="default"
-              @click="deselectTubeAndContents(row.item.source_identifier)"
-            >
-              Remove
-            </traction-button>
-          </template>
-        </traction-table>
-      </traction-list-group>
+      <traction-table
+        :items="selectedTubeRequests"
+        show-empty
+        small
+        :fields="requestFields"
+        :tbody-tr-class="rowClass"
+        empty-text="No tubes selected"
+        @row-clicked="requestClicked"
+      >
+        <template #cell(action)="row">
+          <traction-button
+            :id="'remove-btn-' + row.item.id"
+            size="sm"
+            class="mr-2"
+            theme="default"
+            @click="deselectTubeAndContents(row.item.source_identifier)"
+          >
+            Remove
+          </traction-button>
+        </template>
+      </traction-table>
     </traction-section>
   </div>
 </template>
