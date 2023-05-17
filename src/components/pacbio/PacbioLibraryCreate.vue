@@ -18,11 +18,14 @@
       scrollable
     >
       <traction-form id="libraryCreateModal" @submit="createLibrary" @keydown.enter.prevent>
-        <traction-form-group id="selected-sample" label="The sample selected for this library is:">
+        <fieldset id="selected-sample" class="py-1">
+          <label>The sample selected for this library is:</label>
+          <br />
           {{ selectedSample.sample_name }} ({{ selectedSample.source_identifier }})
-        </traction-form-group>
+        </fieldset>
 
-        <traction-form-group id="tag-set-select-input" label-for="tag-set-input" label="Tag:">
+        <fieldset id="tag-set-select-input" class="py-2">
+          <label>Tag:</label>
           <traction-select
             id="tag-set-input"
             v-model="selectedTagSetId"
@@ -31,9 +34,7 @@
             class="mb-3"
             @input="resetSelectedTagId"
           ></traction-select>
-        </traction-form-group>
 
-        <traction-form-group id="tag-select-input" label-for="tag-input">
           <traction-select
             id="tag-input"
             v-model="library.tag.id"
@@ -41,9 +42,10 @@
             :disabled="!selectedTagSetId"
             class="mb-3"
           />
-        </traction-form-group>
+        </fieldset>
 
-        <traction-form-group id="input-group-volume" label="Volume:" label-for="library-volume">
+        <fieldset id="input-group-volume" class="py-2">
+          <label>Volume:</label>
           <traction-input
             id="library-volume"
             v-model="library.volume"
@@ -53,13 +55,11 @@
             placeholder="Example: 1.0"
           >
           </traction-input>
-        </traction-form-group>
+        </fieldset>
 
-        <traction-form-group
-          id="input-group-concentration"
-          label="Concentration:"
-          label-for="library-concentration"
-        >
+        <fieldset id="input-group-concentration" class="py-2">
+          <label>Concentration:</label>
+
           <traction-input
             id="library-concentration"
             v-model="library.concentration"
@@ -69,13 +69,10 @@
             placeholder="Example: 1.0"
           >
           </traction-input>
-        </traction-form-group>
+        </fieldset>
 
-        <traction-form-group
-          id="input-group-templatePrepKitBoxBarcode"
-          label="Template prep kit box barcode:"
-          label-for="library-templatePrepKitBoxBarcode"
-        >
+        <fieldset id="input-group-templatePrepKitBoxBarcode" class="py-2">
+          <label>Template prep kit box barcode:</label>
           <traction-input
             id="library-templatePrepKitBoxBarcode"
             v-model="library.template_prep_kit_box_barcode"
@@ -87,13 +84,10 @@
             inputmode="numeric"
           >
           </traction-input>
-        </traction-form-group>
+        </fieldset>
 
-        <traction-form-group
-          id="input-group-insertSize"
-          label="Insert size"
-          label-for="library-insertSize"
-        >
+        <fieldset id="input-group-insertSize" class="py-2">
+          <label>Insert size:</label>
           <traction-input
             id="library-insertSize"
             v-model="library.insert_size"
@@ -103,7 +97,7 @@
             placeholder="Example: 100"
           >
           </traction-input>
-        </traction-form-group>
+        </fieldset>
       </traction-form>
 
       <template #modal-footer="{ cancel }">

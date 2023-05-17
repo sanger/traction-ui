@@ -1,25 +1,20 @@
 <template>
   <div>
-    <traction-form-group
-      label="Filter"
-      label-cols-sm="1"
-      label-align-sm="right"
-      label-for="filterInput"
-      class="mb-0"
-    >
-      <traction-input-group>
-        <traction-input
-          id="filterInput"
-          v-model="filter"
-          type="search"
-          placeholder="Type to Search"
-        >
-        </traction-input>
-        <traction-input-group-append>
-          <traction-button :disabled="!filter" @click="filter = ''">Clear</traction-button>
-        </traction-input-group-append>
-      </traction-input-group>
-    </traction-form-group>
+    <fieldset class="flex flex-row space-x-4 mb-0">
+      <label class="text-lg font-bold">Filter</label>
+
+      <traction-input
+        id="filterInput"
+        v-model="filter"
+        type="search"
+        placeholder="Type to Search"
+        class="w-48"
+      >
+      </traction-input>
+
+      <traction-button :disabled="!filter" @click="filter = ''">Clear</traction-button>
+    </fieldset>
+
     <br />
 
     <traction-table
@@ -80,9 +75,10 @@
       >
       </traction-pagination>
     </div>
-    <traction-form-group label-cols-lg="1" label="Per Page" label-for="input-per-page">
+    <fieldset>
+      <label>Per Page</label>
       <traction-input id="input-per-page" v-model="perPage" trim class="w-25"></traction-input>
-    </traction-form-group>
+    </fieldset>
   </div>
 </template>
 

@@ -3,15 +3,16 @@
     <template #modal-title> Add Pool to Well: {{ position }} </template>
 
     <fieldset>
-      <traction-form-group v-for="field in smrtLinkWellDefaults" :key="field.name">
+      <traction-form v-for="field in smrtLinkWellDefaults" :key="field.name">
         <label>{{ field.label }}</label>
         <component
           :is="field.component"
           v-model="well[field.value]"
           v-bind="handleCustomProps(field)"
+          class="pb-2"
           v-on="handleCustomEvents(field)"
         />
-      </traction-form-group>
+      </traction-form>
     </fieldset>
 
     <traction-table id="wellPools" stacked :items="localPools" :fields="wellPoolsFields">
@@ -210,7 +211,6 @@ export default {
       if (component.name == 'loading_target_p1_plus_p2') {
         return {
           ...component.props,
-          // This doesn't work at the moment as traction-input doesnt have a formatter prop
           formatter: this.formatLoadingTargetValue,
         }
       }

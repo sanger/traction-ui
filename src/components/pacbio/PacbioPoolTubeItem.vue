@@ -1,8 +1,8 @@
 <template>
-  <traction-list-group-item
+  <div
+    :class="classObject"
     :draggable="!!valid"
-    :variant="valid ? 'default' : 'danger'"
-    button
+    data-attribute="selected-pool-list"
     @dragstart="drag(barcode, $event)"
     @click="expanded = !expanded"
   >
@@ -58,7 +58,7 @@
         <div v-else>Pool invalid. Click for more information</div>
       </div>
     </div>
-  </traction-list-group-item>
+  </div>
 </template>
 
 <script>
@@ -134,6 +134,14 @@ export default {
     },
     errors() {
       return this.run_suitability.formattedErrors
+    },
+    classObject() {
+      // when the pool is valid we have a gray background
+      // when the pool is invalid we have a red background with red text
+      // TODO: modify red background for hover to be slightly softer. Need new tailwind colour
+      return `m-1 border-2 cursor-pointer rounded-md pb-2  ${
+        this.valid ? 'hover:bg-gray-200' : 'bg-red-200 hover:bg-red-300 text-red-800'
+      }`
     },
   },
   methods: {
