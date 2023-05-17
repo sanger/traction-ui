@@ -28,14 +28,7 @@ import TractionSortIcon from '@/components/shared/icons/TractionSortIcon'
 import TractionModal from '@/components/shared/TractionModal'
 import TractionCloseIcon from '@/components/shared/icons/TractionCloseIcon'
 
-import {
-  VBModal,
-  BAlert,
-  BCard,
-  BCardText,
-  BFormFile,
-  BFormInvalidFeedback,
-} from 'bootstrap-vue'
+import { VBModal, BAlert, BCard, BCardText, BFormFile, BFormInvalidFeedback } from 'bootstrap-vue'
 
 const registerBootstrapComponents = (vue) => {
   /* eslint-disable vue/component-definition-name-casing */
