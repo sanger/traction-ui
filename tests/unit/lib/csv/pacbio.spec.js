@@ -1,9 +1,11 @@
-import fs from 'fs'
+// @vitest-environment node
+// This specifies that this file should be running using the node environment
+// We need to do this because node-based csv-parse library used in 'eachRecord' doesn't work with jsdom
 
+import fs from 'fs'
 import { eachRecord } from '@/lib/csv/pacbio'
 
-// TODO: Unskip this once vitest jsdom / csv-parse ArrayBuffer errors are sorted out
-describe.skip('eachRecord', () => {
+describe('eachRecord', () => {
   it('yields the expected records', () => {
     const csv = fs.readFileSync('./tests/data/csv/pacbio.csv', 'utf8')
     const callback = vi.fn()
