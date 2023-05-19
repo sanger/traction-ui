@@ -85,11 +85,13 @@
             :filter="filter"
           >
           </traction-table>
-          <ul v-if="!row.item.run_suitability.valid">
-            <li v-for="(error, index) in row.item.run_suitability.formattedErrors" :key="index">
-              {{ error }}
-            </li>
-          </ul>
+          <div class="flex mx-auto px-2 text-left">
+            <ul v-if="!row.item.run_suitability.valid">
+              <li v-for="(error, index) in row.item.run_suitability.formattedErrors" :key="index">
+                {{ error }}
+              </li>
+            </ul>
+          </div>
         </traction-card>
       </template>
     </traction-table>

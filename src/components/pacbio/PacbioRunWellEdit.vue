@@ -1,5 +1,5 @@
 <template>
-  <traction-modal ref="well-modal" :static="isStatic" size="lg">
+  <traction-modal ref="well-modal" :static="isStatic" size="lg" :visible="isShow" @cancel="hide">
     <template #modal-title> Add Pool to Well: {{ position }} </template>
 
     <fieldset>
@@ -93,6 +93,8 @@ export default {
       localPools: [],
       wellPoolsFields: [{ key: 'barcode', label: 'Barcode' }],
       decimalPercentageRegex: /^(?:1(?:\.0{0,2})?|0?(?:\.\d{0,2})?)$/,
+      isShow: false,
+      positionData: this.position,
     }
   },
   computed: {
@@ -108,7 +110,7 @@ export default {
     },
     newWell() {
       // Check if well exists in state
-      return !this.getWell(this.position)
+      return !this.getWell(this.positionData)
     },
     // this is needed to update the well. We need to make sure we have the
     // right pools
@@ -165,13 +167,24 @@ export default {
     disableAdaptiveLoadingInput() {
       this.well.loading_target_p1_plus_p2 = ''
     },
-    async showModalForPosition() {
+    async showModalForPosition(position) {
+      if (position) {
+        this.positionData = position
+      }
       // We also need to setup the well here in case state has updated since
       await this.setupWell()
-      this.$refs['well-modal'].show()
+      this.isShow = true
+      /**This need to be removed when custom_enable_modal feature flag is removed */
+      if ('b-modal' in this.$refs['well-modal'].$refs) {
+        this.$refs['well-modal'].$refs['b-modal'].show()
+      }
     },
     hide() {
-      this.$refs['well-modal'].hide()
+      this.isShow = false
+      /**This need to be removed when custom_enable_modal feature flag is removed */
+      if ('b-modal' in this.$refs['well-modal'].$refs) {
+        this.$refs['well-modal'].$refs['b-modal'].hide()
+      }
     },
     async update() {
       this.removeInvalidPools()
@@ -180,7 +193,7 @@ export default {
       this.hide()
     },
     removeWell() {
-      this.deleteWell(this.position)
+      this.deleteWell(this.positionData)
       this.alert('Well successfully deleted', 'success')
       this.hide()
     },
@@ -198,7 +211,7 @@ export default {
       this.$emit('alert', message, type)
     },
     async setupWell() {
-      this.well = await this.getOrCreateWell({ position: this.position })
+      this.well = await this.getOrCreateWell({ position: this.positionData })
       // We need to flush localPools to prevent duplicates
       this.localPools = []
       // If the well has pools we want the barcode and id of each to display

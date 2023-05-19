@@ -5,6 +5,7 @@
       v-traction-modal.enzymeModal
       :disabled="disabled"
       theme="create"
+      @click="displayModal"
     >
       Create Libraries
     </traction-button>
@@ -13,6 +14,7 @@
       ref="enzymeModal"
       size="sm"
       title="Create Libraries"
+      :visible="showModal"
       :static="isStatic"
       @ok="handleOk"
       @shown="clearSelect"
@@ -37,6 +39,7 @@ export default {
     return {
       selectedEnzymeId: null,
       enzymeOptions: [],
+      showModal: false,
     }
   },
   computed: {
@@ -60,18 +63,27 @@ export default {
       } else {
         this.handleSubmit()
       }
+      this.showModal = false
     },
     handleSubmit() {
       this.$emit('selectEnzyme', this.selectedEnzymeId)
       this.clearSelect()
+      this.showModal = true
       /**
        * Hide the modal manually
        * https://vuejsdevelopers.com/2019/01/22/vue-what-is-next-tick/
        * https://bootstrap-vue.js.org/docs/components/modal/#prevent-closing
        */
+
+      /**This need to be removed when custom_enable_modal feature flag is removed */
       this.$nextTick(() => {
-        this.$refs.enzymeModal.hide()
+        if ('b-modal' in this.$refs['enzymeModal'].$refs) {
+          this.$refs['enzymeModal'].$refs['b-modal'].show()
+        }
       })
+    },
+    displayModal() {
+      this.showModal = true
     },
     async getEnzymeOptions() {
       const promise = this.enzymeRequest.get()

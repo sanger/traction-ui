@@ -15,7 +15,9 @@
       size="lg"
       title="Create Library"
       :static="isStatic"
+      :visible="showModal"
       scrollable
+      @cancel="hide"
     >
       <traction-form id="libraryCreateModal" @submit="createLibrary" @keydown.enter.prevent>
         <fieldset id="selected-sample" class="py-1">
@@ -134,6 +136,7 @@ export default {
     return {
       library: { tag: { id: '' }, sample: {} },
       selectedTagSetId: '',
+      showModal: false,
     }
   },
   computed: {
@@ -170,6 +173,10 @@ export default {
       const { success, barcode, errors } = await this.createLibraryInTraction(this.library)
       if (success) {
         this.hide()
+        /**This need to be removed when custom_enable_modal feature flag is removed */
+        if ('b-modal' in this.$refs['modal'].$refs && this.$refs['modal'].$refs['b-modal']) {
+          this.$refs['modal'].$refs['b-modal'].hide()
+        }
         this.$emit('alert', 'Created library with barcode ' + barcode, 'success')
       } else {
         this.showAlert('Failed to create library in Traction: ' + errors, 'danger')
@@ -177,7 +184,11 @@ export default {
     },
     show() {
       this.library = { tag: { id: '' }, sample: this.selectedSample }
+      this.showModal = true
       this.selectedTagSetId = ''
+    },
+    hide() {
+      this.showModal = false
     },
     ...mapActions(['fetchPacbioTagSets', 'createLibraryInTraction']),
   },
