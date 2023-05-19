@@ -23,18 +23,15 @@ import TractionForm from '@/components/shared/TractionForm'
 import TractionTable from '@/components/shared/table/TractionTable'
 import TractionTableRow from '@/components/shared/table/TractionTableRow'
 import TractionTableColumn from '@/components/shared/table/TractionTableColumn'
+import TractionModal from '@/components/shared/TractionModal'
 import TractionArrowIcon from '@/components/shared/icons/TractionArrowIcon'
 import TractionSortIcon from '@/components/shared/icons/TractionSortIcon'
-import {
-  BCard,
-  BCardText,
-  BFormFile,
-  BFormInvalidFeedback,
-} from 'bootstrap-vue'
+import TractionCloseIcon from '@/components/shared/icons/TractionCloseIcon'
+import { BCard, BCardText, BFormFile, BFormInvalidFeedback } from 'bootstrap-vue'
 
 const registerBootstrapComponents = (vue) => {
   /* eslint-disable vue/component-definition-name-casing */
-  
+
   vue.component('traction-card', BCard)
   vue.component('traction-card-text', BCardText)
   vue.component('traction-file', BFormFile)
@@ -76,7 +73,6 @@ const registerGlobal = (vue) => {
   vue.component('TractionTableRow', TractionTableRow)
   vue.component('TractionTableColumn', TractionTableColumn)
   vue.component('TractionModal', TractionModal)
-  vue.component('TractionCloseIcon', TractionCloseIcon)
   vue.component('TractionCloseIcon', TractionCloseIcon)
   registerBootstrapComponents(vue)
 }

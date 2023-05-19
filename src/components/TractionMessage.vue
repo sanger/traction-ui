@@ -1,3 +1,11 @@
+<!--/**
+   * # TractionMessage
+   * Tailwind component to display an alert message. This component uses either a bootstrap b-alert and html component (based on tailwind styles) depending on 
+      'enable_custom_alert' feature flag
+   * The alert message includes message and a close button 
+   * 
+   */
+   -->
 <template>
   <flagged-feature name="enable_custom_alert">
     <template #disabled>
@@ -40,10 +48,12 @@ export default {
         return 'error-message'
       },
     },
+    /**Property to specify alert type - 'success', 'error' and 'danger' are the variants supported which are bootstrap compatible*/
     type: {
       type: String,
       default: 'primary',
     },
+    /**Message to display */
     message: {
       type: String,
       required: true,
@@ -60,6 +70,12 @@ export default {
         }[this.type] || this.type
       )
     },
+    /**
+     * Returns tailwind colors based on 'type' property with default being grey.
+     *  The supported values for 'type' property are as follows
+     * 'success' -  will be displayed in green color
+     * 'error'  -  will be displayed in red color
+     */
     color() {
       let value = { message: 'bg-gray-300 text-gray-400', icon: '' }
       if (this.type === 'success') {
