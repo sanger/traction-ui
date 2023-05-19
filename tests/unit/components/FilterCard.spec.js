@@ -22,8 +22,9 @@ describe('FilterCard.vue', () => {
       },
     })
 
-    expect(wrapper.vm.filterInput).toBe('')
-    expect(wrapper.vm.filterValue).toBe('')
+    expect(wrapper.vm.filter.input).toBe('')
+    expect(wrapper.vm.filter.value).toBe('')
+    expect(wrapper.vm.filter.wildcard).toBe(true)
     expect(wrapper.find('#filterInput')).toBeDefined()
     expect(wrapper.find('#filterValue')).toBeDefined()
     const options = wrapper.find('#filterValue').findAll('option')
@@ -34,7 +35,14 @@ describe('FilterCard.vue', () => {
     expect(wrapper.findAll('button').at(1).text()).toBe('Search')
   })
 
-  it('calls the fetch function with the correct data', async () => {
+  it.each([
+    // Wildcard filterOption and wildcard filter
+    [{ input: 'Search value 1', value: '1', wildcard: true }, { 1: 'Search value 1,wildcard' }],
+    // No wildcard filterOption and wildcard filter
+    [{ input: 'Search value 2', value: '2', wildcard: true }, { 2: 'Search value 2' }],
+    // No wildcard filterOption and no wildcard filter
+    [{ input: 'Search value 3', value: '3', wildcard: false }, { 3: 'Search value 3' }],
+  ])('calls the fetch function with the correct data', async (filter, expectedSearch) => {
     const mockFetch = vi.fn()
     mockFetch.mockReturnValue(Promise.resolve({ success: true, errors: [] }))
 
@@ -44,21 +52,20 @@ describe('FilterCard.vue', () => {
       propsData: {
         fetcher: mockFetch,
         filterOptions: [
-          { value: '1', text: 'Filter 1' },
+          { value: '1', text: 'Filter 1', wildcard: true },
           { value: '2', text: 'Filter 2' },
           { value: '3', text: 'Filter 3' },
         ],
       },
       data: function () {
         return {
-          filterInput: 'Search value',
-          filterValue: '1',
+          filter,
         }
       },
     })
     // search button
     wrapper.findAll('button').at(1).trigger('click')
-    expect(wrapper.vm.fetcher).toBeCalledWith({ 1: 'Search value' })
+    expect(wrapper.vm.fetcher).toBeCalledWith(expectedSearch)
   })
 
   it('clears the data when reset is clicked', async () => {
@@ -78,15 +85,19 @@ describe('FilterCard.vue', () => {
       },
       data: function () {
         return {
-          filterInput: 'Search value',
-          filterValue: '1',
+          filter: {
+            input: 'Search value',
+            value: '1',
+            wildcard: false,
+          },
         }
       },
     })
     // reset button
     wrapper.findAll('button').at(0).trigger('click')
     expect(wrapper.vm.fetcher).toBeCalledWith()
-    expect(wrapper.vm.filterInput).toBe('')
-    expect(wrapper.vm.filterValue).toBe('')
+    expect(wrapper.vm.filter.input).toBe('')
+    expect(wrapper.vm.filter.value).toBe('')
+    expect(wrapper.vm.filter.wildcard).toBe(true)
   })
 })
