@@ -39,8 +39,6 @@ import {
 const registerBootstrapComponents = (vue) => {
   /* eslint-disable vue/component-definition-name-casing */
   vue.component('traction-modal', BModal)
-  vue.component('traction-alert', BAlert)
-  vue.component('traction-container', BContainer)
   vue.component('traction-card', BCard)
   vue.component('traction-card-text', BCardText)
   vue.component('traction-file', BFormFile)
