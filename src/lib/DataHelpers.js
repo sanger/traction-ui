@@ -54,27 +54,26 @@ export const alphaNumericSortDefault = (a, b, alphaFirst) => {
  * e.g
  * { name: 'Person1',job: { name: 'Job1'}} is flattened to {name:'Person1,job.name:"Job1"}
  *
- * Limitations:-
- * If there are more than one level of identical fields, it will be overwritten
- * For eg
- * { name:"Test", type:{ name:"class1"},type1:{type:{name:"class2"}}
- * Here there is only one field called type.name which will be overwritten with 'class2'
- *
  * @param {*} obj - object to flatten
- * @param {*} objectAccessor - accessor for object which is useful to uniquely identify
- *                             a field if there are dupliacte names, useed only in recursive calls
+ * @param {*} parentKey = the key of the parent object
  * @param {*} result - result/flattened object in progress which can be used in recursive calls
  * @returns
  */
-export const flattenObject = (obj, objectAccessor, result) => {
+export const flattenObject = (obj, parentKey) => {
   if (!obj) {
     return {}
   }
-  return Object.keys(obj).reduce((acc, cur) => {
-    return typeof obj[cur] === 'object'
-      ? { ...acc, ...flattenObject(obj[cur], cur, acc) }
-      : result && Object.keys(result).includes(cur)
-      ? { ...acc, [objectAccessor + '.' + cur]: obj[cur] }
-      : { ...acc, [cur]: obj[cur] }
-  }, {})
+  let result = {}
+
+  Object.keys(obj).forEach((key) => {
+    const value = obj[key]
+    const _key = parentKey ? parentKey + '.' + key : key
+    if (typeof value === 'object') {
+      result = { ...result, ...flattenObject(value, _key) }
+    } else {
+      result[_key] = value
+    }
+  })
+
+  return result
 }

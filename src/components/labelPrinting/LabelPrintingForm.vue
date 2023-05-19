@@ -8,9 +8,10 @@
             <traction-heading level="3" show-border>Barcodes</traction-heading>
             <traction-muted-text>A list of barcodes to create labels for</traction-muted-text>
             <div class="mt-2">
-              <traction-textarea
+              <textarea
                 id="barcode-input"
                 v-model="form.sourceBarcodeList"
+                class="w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-sdb-100 focus:border-sdb-100 disabled:opacity-75 disabled:bg-gray-200 disabled:cursor-not-allowed"
                 placeholder="Please scan the barcodes"
                 required
                 rows="6"

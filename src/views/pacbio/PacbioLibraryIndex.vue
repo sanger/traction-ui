@@ -95,9 +95,9 @@ export default {
         { key: 'pool.id', label: 'pool ID', sortable: true, tdClass: 'pool-id' },
         { key: 'id', label: 'Library ID', sortable: true, tdClass: 'library-id' },
         {
-          key: 'run_suitability',
+          key: 'run_suitability.ready_for_run',
           label: 'Ready',
-          formatter: ({ ready_for_run }) => (ready_for_run ? '✓' : ''),
+          formatter: (obj) => (obj['run_suitability.ready_for_run'] ? '✓' : ''),
           sortable: true,
         },
         { key: 'sample_name', label: 'Sample Name', sortable: true, tdClass: 'sample-name' },
@@ -118,7 +118,7 @@ export default {
       ],
       filterOptions: [
         { value: '', text: '' },
-        { value: 'barcode', text: 'Barcode' },
+        { value: 'barcode', text: 'Barcode', wildcard: true },
         { value: 'sample_name', text: 'Sample Name' },
         { value: 'source_identifier', text: 'Source' },
         // Need to specify filters in json api resources if we want more filters
