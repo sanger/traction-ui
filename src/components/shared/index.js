@@ -29,26 +29,20 @@ import {
   BModal,
   VBModal,
   BAlert,
-  BContainer,
   BCard,
   BCardText,
-  BListGroup,
-  BListGroupItem,
+  // BFormFile,
   BFormInvalidFeedback,
-  BFormTextarea,
 } from 'bootstrap-vue'
 
 const registerBootstrapComponents = (vue) => {
   /* eslint-disable vue/component-definition-name-casing */
   vue.component('traction-modal', BModal)
   vue.component('traction-alert', BAlert)
-  vue.component('traction-container', BContainer)
   vue.component('traction-card', BCard)
   vue.component('traction-card-text', BCardText)
-  vue.component('traction-list-group', BListGroup)
-  vue.component('traction-list-group-item', BListGroupItem)
+  // vue.component('traction-file', BFormFile)
   vue.component('traction-invalid-feedback', BFormInvalidFeedback)
-  vue.component('traction-textarea', BFormTextarea)
   /*
     directive is marked wth a v in front
     so it will be used as 'v-traction-modal'

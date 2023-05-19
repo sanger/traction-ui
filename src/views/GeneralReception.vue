@@ -105,19 +105,19 @@
       </div>
     </div>
     <div class="w-1/2 space-y-8">
-      <div>
+      <div class="flex flex-col w-full">
         <traction-heading level="4" :show-border="true">Scan barcodes</traction-heading>
         <traction-muted-text class="float-left"
           >The list of labware barcodes to import from source</traction-muted-text
         >
-        <traction-textarea
+        <textarea
           id="barcodes"
           v-model="barcodes"
           placeholder="Scan barcodes to import..."
           rows="4"
           max-rows="10"
           name="barcodes"
-          class="text-base mt-2"
+          class="text-base mt-2 py-2 px-3 border border-gray-300 bg-white rounded-md"
         />
       </div>
       <div class="bg-gray-100 rounded p-3">

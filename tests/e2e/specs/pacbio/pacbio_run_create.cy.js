@@ -50,7 +50,7 @@ describe('Pacbio Run Create view', () => {
     cy.get('button').contains('Search').click()
 
     // Get the pool being searched
-    cy.get('.list-group-item')
+    cy.get('[data-attribute="selected-pool-list"]')
       // this obviously gets quite a lot into implementation but at least it works!
       .first()
       .trigger('dragstart', { dataTransfer: dataTransfer, force: true })
@@ -94,7 +94,7 @@ describe('Pacbio Run Create view', () => {
     cy.get('button').contains('Search').click()
 
     // Get the pool being searched
-    cy.get('.list-group-item')
+    cy.get('[data-attribute="selected-pool-list"]')
       // this obviously gets quite a lot into implementation but at least it works!
       .first()
       .trigger('dragstart', { dataTransfer: dataTransfer, force: true })
@@ -140,7 +140,7 @@ describe('Pacbio Run Create view', () => {
     cy.get('button').contains('Search').click()
 
     // Get the pool being searched
-    cy.get('.list-group-item')
+    cy.get('[data-attribute="selected-pool-list"]')
       .first()
       .trigger('dragstart', { dataTransfer: dataTransfer, force: true })
       .trigger('drag', { dataTransfer: dataTransfer, force: true })
@@ -180,7 +180,7 @@ describe('Pacbio Run Create view', () => {
     })
 
     // TODO: calling it  list group item is not specific enough
-    cy.get('.list-group-item')
+    cy.get('[data-attribute="selected-pool-list"]')
       // this obviously gets quite a lot into implementation but at least it works!
       .first()
       .trigger('dragstart', { dataTransfer: dataTransfer, force: true })
