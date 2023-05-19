@@ -9,8 +9,8 @@
     <div class="flex justify-end">
       <button class="w-8 bg-gray-300 text-slate-400" @click="removePool(id)">x</button>
     </div>
-    <div class="flex flex-row space-x-4 h-full">
-      <div class="flex flex-col px-2">
+    <div class="flex flex-row space-x-4 h-full w-full">
+      <div class="flex flex-col px-2 w-1/4">
         <img src="/tube.png" />
         <traction-button
           :id="`editPool-${id}`"
@@ -20,7 +20,7 @@
           >Edit</traction-button
         >
       </div>
-      <div class="flex flex-col">
+      <div class="flex flex-col w-3/4">
         <dl class="row">
           <dt>Barcode</dt>
           <dd data-attribute="barcode">{{ barcode }}</dd>

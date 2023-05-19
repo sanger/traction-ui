@@ -1,3 +1,12 @@
+<!--
+  This component is created as part of traction-modal story and is a duplicate for 'PacbioRunWellItem'.
+  This exists only to maintain compatibility with bootstrap-modal using feature flags. The custom traction-modal 
+  involves some significant changes in the existing component design which involves moving the WellEdit to the 
+  parent component 'PacbioRunPlateItem'.
+  Inorder to ensure the b-modal implementation of this component works (when the feature flag is turned off),
+  it is kept as how it is working now.
+  This component can be removed when custom_enable_modal feature flag is removed. 
+-->
 <template>
   <g>
     <defs>
@@ -14,18 +23,25 @@
       @drop="drop"
       @dragover="allowDrop"
       @dragleave="endDrop"
-      @click="onClick"
+      @click="showModal"
     >
       <title v-if="hasPools" v-text="tooltip"></title>
     </ellipse>
+    <foreignObject>
+      <WellEdit ref="modal" class="modal" :position="position" @alert="alert"></WellEdit>
+    </foreignObject>
   </g>
 </template>
 
 <script>
 import { mapActions, mapMutations, mapGetters } from 'vuex'
-export default {
-  name: 'PacbioRunWellItem',
+import WellEdit from '@/components/pacbio/PacbioRunWellEdit'
 
+export default {
+  name: 'PacbioRunWellItemBootstrap',
+  components: {
+    WellEdit,
+  },
   props: {
     row: {
       type: String,
@@ -124,8 +140,8 @@ export default {
     alert(message, type) {
       this.$emit('alert', message, type)
     },
-    onClick() {
-      this.$emit('click', this.position)
+    showModal() {
+      this.$refs.modal.showModalForPosition()
     },
     allowDrop(event) {
       event.preventDefault()
