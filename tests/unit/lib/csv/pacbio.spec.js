@@ -1,5 +1,8 @@
-import fs from 'fs'
+// @vitest-environment node
+// This specifies that this file should be running using the node environment
+// We need to do this because node-based csv-parse library used in 'eachRecord' doesn't work with jsdom
 
+import fs from 'fs'
 import { eachRecord } from '@/lib/csv/pacbio'
 
 describe('eachRecord', () => {
