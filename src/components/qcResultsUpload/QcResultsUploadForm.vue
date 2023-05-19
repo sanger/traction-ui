@@ -27,17 +27,18 @@
       ></traction-file>
       <!--  -->
 
-      <div>
-          <input
-            id="qc-results-upload-file"
-            class="block w-full rounded border file:border-0"
-            type="file"
-            accept="text/csv, .csv"
-            required
-          />
-        </div>
+      <div :class="['w-full', `${border}`]">
+        <input
+          id="qcResultsUploadFile"
+          class="block w-full rounded border file:border-0"
+          type="file"
+          accept="text/csv, .csv"
+          required
+          @change="fileSelected"
+        />
+      </div>
 
-      <div class="space-x-4 pb-4 flex flex-row justify-end">
+      <div class="pt-2 space-x-4 pb-4 flex flex-row justify-end">
         <traction-button
           id="upload-button"
           type="submit"
@@ -87,8 +88,22 @@ export default {
   },
   computed: {
     qcResultUploadsRequest: ({ api }) => api.traction.qc_results_uploads.create,
+    border() {
+      if (this.file === null) return 'border-0'
+      else {
+        return 'rounded border border-green-500'
+      }
+    },
   },
   methods: {
+    async fileSelected(evt) {
+      if (evt === null || evt.target.files === null || evt.target.files.length == 0) {
+        this.file = null
+        return
+      } else {
+        this.file = true
+      }
+    },
     async onSubmit() {
       await this.postCSV()
     },
@@ -96,15 +111,23 @@ export default {
       // We want to keep the button disabled after every upload, unless refreshed or "Re-enable" clicked
       this.busy = true
       this.disableUpload = true
-      try {
-        const csv = await this.file.text()
-        const data = { csv: csv, usedBySelected: this.usedBySelected }
-        await createQcResultsUploadResource(this.qcResultUploadsRequest, data)
 
-        this.showAlert(`Successfully imported: ${this.file.name}`, 'success')
-      } catch (e) {
-        this.showAlert(e, 'danger')
+      // this.file.text is a bootstrap way of getting the info out, need to change this
+      const fileInput = document.getElementById('qcResultsUploadFile')
+      const uploadedFile = fileInput.files[0]
+      const reader = new FileReader()
+
+      reader.onload = async (res) => {
+        const csv = res.target.result
+        try {
+          const data = { csv: csv, usedBySelected: this.usedBySelected }
+          await createQcResultsUploadResource(this.qcResultUploadsRequest, data)
+          this.showAlert(`Successfully imported: ${this.file.name}`, 'success')
+        } catch (e) {
+          this.showAlert(e, 'danger')
+        }
       }
+      reader.readAsText(uploadedFile)
       this.busy = false
     },
   },

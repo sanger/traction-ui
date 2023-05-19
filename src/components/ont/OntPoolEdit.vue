@@ -22,15 +22,15 @@
 
         <div>
           <label class="flex text-left" for="qcFileInput">Select file</label>
-          <input
-            id="qcFileInput"
-            ref="qc-file-form-field"
-            data-attribute="qc-file-input"
-            class="relative m-0 block w-full min-w-0 flex-auto rounded border file:border-0"
-            type="file"
-            accept="text/csv, .csv"
-            @change="uploadFile"
-          />
+          <div :class="['w-full', `${border}`]">
+            <input
+              id="qcFileInput"
+              class="relative m-0 block w-full min-w-0 flex-auto rounded border file:border-0"
+              type="file"
+              accept="text/csv, .csv"
+              @change="uploadFile"
+            />
+          </div>
         </div>
 
         <div>
@@ -141,9 +141,18 @@ export default {
           return 'Pool'
       }
     },
+    border() {
+      if (this.parsedFile === null) return 'border-0'
+      else {
+        const borderColour = this.parsedFile ? 'border-green-500' : 'border-red-500'
+        return `rounded border ${borderColour}`
+      }
+    },
   },
+
   methods: {
     ...mapActions(['createPool', 'updatePool', 'updateLibraryFromCsvRecord']),
+
     create() {
       this.busy = true
       this.createPool().then(({ success, barcode, errors }) => {
@@ -167,6 +176,7 @@ export default {
         this.busy = false
       })
     },
+
     // Allows users to upload a file to autopopulate the pool's selected libraries
     async uploadFile(evt) {
       if (evt === null || evt.target.files === null || evt.target.files.length == 0) {
@@ -186,11 +196,6 @@ export default {
           this.showAlert(error, 'danger', 'pool-create-message')
           this.parsedFile = false
         }
-      }
-      reader.onerror = (error) => {
-        console.error(error)
-        this.showAlert(error, 'danger', 'pool-create-message')
-        this.parsedFile = false
       }
       reader.readAsText(file)
     },

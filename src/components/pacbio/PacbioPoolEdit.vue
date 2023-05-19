@@ -6,8 +6,7 @@
       :tag="`${poolType}`"
       data-attribute="pool-type"
     >
-
-    <!-- Will be removed -->
+      <!-- Will be removed -->
       <div>
         <traction-file
           id="qcFileInput"
@@ -19,15 +18,19 @@
           size="sm"
           @input="uploadFile"
         ></traction-file>
+        <!--  -->
 
         <div>
-        <label class="flex text-left " for="qcFileInput">Select file</label>
-          <input
-            id="qcFileInput"
-            class="relative m-0 block w-full min-w-0 flex-auto rounded border file:border-0"
-            type="file"
-            accept="text/csv, .csv"
-          />
+          <label class="flex text-left" for="qcFileInput">Select file</label>
+          <div :class="['w-full', `${border}`]">
+            <input
+              id="qcFileInput"
+              class="relative m-0 block w-full min-w-0 flex-auto rounded border file:border-0"
+              type="file"
+              accept="text/csv, .csv"
+              @change="uploadFile"
+            />
+          </div>
         </div>
 
         <div>
@@ -130,6 +133,13 @@ export default {
           return 'Pool'
       }
     },
+    border() {
+      if (this.parsedFile === null) return 'border-0'
+      else {
+        const borderColour = this.parsedFile ? 'border-green-500' : 'border-red-500'
+        return `rounded border ${borderColour}`
+      }
+    },
   },
   methods: {
     ...mapActions(['createPool', 'updatePool', 'updateLibraryFromCsvRecord']),
@@ -156,20 +166,29 @@ export default {
         this.busy = false
       })
     },
-    async uploadFile(newFile) {
-      if (newFile === null) {
+
+    // Allows users to upload a file to autopopulate the pool's selected libraries
+    async uploadFile(evt) {
+      if (evt === null || evt.target.files === null || evt.target.files.length == 0) {
         this.parsedFile = null
         return
       }
-      try {
-        const csv = await newFile.text()
-        eachRecord(csv, this.updateLibraryFromCsvRecord)
-        this.parsedFile = true
-      } catch (error) {
-        console.error(error)
-        this.showAlert(error, 'danger', 'pool-create-message')
-        this.parsedFile = false
+
+      const file = evt.target.files[0]
+      const reader = new FileReader()
+
+      reader.onload = (res) => {
+        const csv = res.target.result
+        try {
+          eachRecord(csv, this.updateLibraryFromCsvRecord)
+          this.parsedFile = true
+        } catch (error) {
+          console.error(error)
+          this.showAlert(error, 'danger', 'pool-create-message')
+          this.parsedFile = false
+        }
       }
+      reader.readAsText(file)
     },
     // Function passed to child components in notify prop, to be used when any attribute
     // in the child component is changed. The validated flag is reset to true when the user

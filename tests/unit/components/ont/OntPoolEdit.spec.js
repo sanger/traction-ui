@@ -140,15 +140,22 @@ describe('ontPoolEdit#edit', () => {
     }
     it('supports no files being selected', async () => {
       await wrapper.vm.uploadFile(null)
-      const formField = wrapper.findComponent({ ref: 'qc-file-form-field' })
-      expect(formField.value).toEqual("")
+      const fileInput = wrapper.find('#qcFileInput')
+
+      const emptyFileList = {
+        length: 0,
+        item: () => null,
+      }
+
+      fileInput.element.files = emptyFileList
+      fileInput.trigger('change')
+      expect(wrapper.vm.parsedFile).toBe(null)
     })
 
     it('highlights a valid file', async () => {
       spy.mockImplementation(() => {})
       await wrapper.vm.uploadFile(mockFile)
-      const formField = wrapper.find('[data-attribute=qc-file-form-field]')
-      expect(formField.props().state).toEqual(true)
+      expect(wrapper.vm.parsedFile).toBe(true)
     })
 
     it('highlights a invalid file', async () => {
@@ -157,8 +164,7 @@ describe('ontPoolEdit#edit', () => {
         throw 'Toys'
       })
       await wrapper.vm.uploadFile(mockFile)
-      const formField = wrapper.find('[data-attribute=qc-file-form-field]')
-      expect(formField.props().state).toEqual(false)
+      expect(wrapper.vm.parsedFile).toBe(false)
     })
   })
 
