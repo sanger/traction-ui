@@ -107,8 +107,7 @@ export default {
         window.scrollTo(0, top)
       } else {
         //Regain scrollbars in original window and scroll to it's original position
-        document.documentElement.style.overflow = 'auto'
-        window.scrollTo(0, parseInt(this.originalScrollTop || '0') * -1)
+        this.resetScrollbar()
       }
     },
   },
@@ -117,6 +116,7 @@ export default {
     close() {
       this.$emit('cancel')
       this.display = false
+      this.resetScrollbar()
     },
     /**'ok' event emitted from footer, if there is a corresponding button in 'modal-footer' scoped slot */
     ok() {
@@ -125,6 +125,11 @@ export default {
     /**'cancel' event emitted from footer, if there is a corresponding button in 'modal-footer' scoped slot */
     cancel() {
       this.$emit('cancel')
+    },
+    resetScrollbar() {
+      //Regain scrollbars in original window and scroll to it's original position
+      document.documentElement.style.overflow = 'auto'
+      window.scrollTo(0, parseInt(this.originalScrollTop || '0') * -1)
     },
   },
 }
