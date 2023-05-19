@@ -118,9 +118,9 @@ export default {
         { key: 'selected', label: '\u2713' },
         { key: 'id', label: 'Pool ID', sortable: true, tdClass: 'pool-id' },
         {
-          key: 'run_suitability',
+          key: 'run_suitability.ready_for_run',
           label: 'Ready',
-          formatter: ({ ready_for_run }) => (ready_for_run ? '✓' : ''),
+          formatter: (obj) => (obj['run_suitability.ready_for_run'] ? '✓' : ''),
           sortable: true,
         },
         { key: 'barcode', label: 'Pool Barcode', sortable: true, tdClass: 'barcode' },
