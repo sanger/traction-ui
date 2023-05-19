@@ -8,17 +8,20 @@
       </div></template
     >
     <div
+      data-attribute="message"
       :class="[
-        'flex flex-row border-b-2 border-gray-200 px-4 pb-4 sm:p-6 sm:pb-4 space-x-4', //border and padding
-        `text-lg leading-6 font-medium`, // text style
-        `${color}`, // font color, background color
+        'flex flex-row border-b-2 border-gray-200 rounded rounded-md px-5 py-3 space-x-4 mb-4', //border and padding
+        `text-base leading-6`, // text style
+        `${color.message}`, // font color, background color
       ]"
     >
       <div class="w-full">
-        <label>{{ message }}</label>
+        {{ message }}
       </div>
       <div class="flex justify-end">
-        <button data-attribute="close" @click="dismiss"><traction-close-icon /></button>
+        <button data-attribute="close" @click="dismiss">
+          <traction-close-icon :class-names="`${color.icon}`" />
+        </button>
       </div>
     </div>
   </flagged-feature>
@@ -58,14 +61,16 @@ export default {
       )
     },
     color() {
-      let value = 'bg-gray-300 text-gray-400'
+      let value = { message: 'bg-gray-300 text-gray-400', icon: '' }
       if (this.type === 'success') {
-        value = 'bg-green-300 text-green-400'
+        value = {
+          message: 'bg-green-100 text-green-700',
+          icon: 'text-green-300 hover:text-green-700',
+        }
       }
       if (this.type === 'error' || this.type === 'danger') {
-        value = 'bg-red-200 text-red-400'
+        value = { message: 'bg-red-200 text-red-400', icon: 'text-red-300 hover:text-red-400' }
       }
-
       return value
     },
   },
