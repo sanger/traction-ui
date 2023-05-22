@@ -17,6 +17,7 @@
     >
     <div
       data-attribute="message"
+      :data-type="dataType"
       :class="[
         'flex flex-row border-b-2 border-gray-200 rounded rounded-md px-5 py-3 space-x-4 mb-4', //border and padding
         `text-base leading-6`, // text style
