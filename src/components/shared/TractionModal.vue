@@ -23,7 +23,7 @@
     <div v-if="display">
       <!-- overlay -->
       <div
-        class="absolute cursor-auto hover:cursor-auto inset-0 opacity-50 bg-black h-screen w-full justify-center items-start md:items-center pt-10 md:pt-0"
+        class="fixed cursor-auto hover:cursor-auto inset-0 opacity-50 bg-black h-screen w-full justify-center items-start md:items-center pt-10 md:pt-0"
       />
       <!-- modal -->
       <div class="fixed z-20 inset-0 overflow-y-auto">
@@ -103,8 +103,6 @@ export default {
          * background when the modal is displayed
          */
         document.documentElement.style.overflow = 'hidden'
-        this.originalScrollTop = `-${window.scrollY}px`
-        window.scrollTo(0, top)
       } else {
         //Regain scrollbars in original window and scroll to it's original position
         this.resetScrollbar()
@@ -129,7 +127,6 @@ export default {
     resetScrollbar() {
       //Regain scrollbars in original window and scroll to it's original position
       document.documentElement.style.overflow = 'auto'
-      window.scrollTo(0, parseInt(this.originalScrollTop || '0') * -1)
     },
   },
 }
