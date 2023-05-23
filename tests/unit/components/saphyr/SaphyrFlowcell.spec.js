@@ -50,7 +50,6 @@ describe('Flowcell', () => {
       flowcell.setLibraryBarcode = vi.fn()
     })
 
-    //TODO: this test is not testing the implementation.
     it('successful when barcode is valid', async () => {
       const libraryTube = Data.TubeWithLibrary
       const successfulResponse = new Response(libraryTube)

@@ -1,24 +1,26 @@
 <template>
-  <traction-list-group-item
+  <div
+    :class="classObject"
     :draggable="!!valid"
-    :variant="valid ? 'default' : 'danger'"
-    button
+    data-attribute="selected-pool-list"
     @dragstart="drag(barcode, $event)"
     @click="expanded = !expanded"
   >
-    <traction-row>
-      <traction-col cols="3">
+    <div class="flex justify-end">
+      <button class="w-8 bg-gray-300 text-slate-400" @click="removePool(id)">x</button>
+    </div>
+    <div class="flex flex-row space-x-4 h-full w-full">
+      <div class="flex flex-col px-2 w-1/4">
         <img src="/tube.png" />
         <traction-button
           :id="`editPool-${id}`"
           size="sm"
           theme="edit"
-          :full-width="true"
           :to="{ name: 'PacbioPoolCreate', params: { id: id } }"
           >Edit</traction-button
         >
-      </traction-col>
-      <traction-col cols="9">
+      </div>
+      <div class="flex flex-col w-3/4">
         <dl class="row">
           <dt>Barcode</dt>
           <dd data-attribute="barcode">{{ barcode }}</dd>
@@ -54,12 +56,15 @@
           </dl>
         </div>
         <div v-else>Pool invalid. Click for more information</div>
-      </traction-col>
-    </traction-row>
-  </traction-list-group-item>
+      </div>
+    </div>
+  </div>
 </template>
 
 <script>
+import { createNamespacedHelpers } from 'vuex'
+const { mapMutations } = createNamespacedHelpers('traction/pacbio/runCreate')
+
 const img = new Image()
 img.src = '/tube.png'
 
@@ -109,6 +114,11 @@ export default {
       required: true,
     },
     /* eslint-enable vue/prop-name-casing */
+    closeable: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
   },
   data() {
     return {
@@ -125,13 +135,21 @@ export default {
     errors() {
       return this.run_suitability.formattedErrors
     },
+    classObject() {
+      // when the pool is valid we have a gray background
+      // when the pool is invalid we have a red background with red text
+      // TODO: modify red background for hover to be slightly softer. Need new tailwind colour
+      return `m-1 border-2 cursor-pointer rounded-md pb-2  ${
+        this.valid ? 'hover:bg-gray-200' : 'bg-red-200 hover:bg-red-300 text-red-800'
+      }`
+    },
   },
-  // TODO: need to add a a test for drag
   methods: {
     drag(barcode, event) {
       event.dataTransfer.setDragImage(img, 120, 50)
       event.dataTransfer.setData('barcode', barcode)
     },
+    ...mapMutations(['removePool']),
   },
 }
 </script>

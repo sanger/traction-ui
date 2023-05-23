@@ -75,6 +75,30 @@ const dataToObjectById = ({ data = [], includeRelationships = false }) => {
   }, {})
 }
 
+/**
+ * Useful for grouping resources by a position
+ * Merge this with dataToObjectById to prevent duplication
+ * @param {Array} data Array of JSON API data
+ * @returns {Object} keys will be the position for the data. This usually will be wells
+ */
+const dataToObjectByPosition = ({ data = [], includeRelationships = false }) => {
+  return data.reduce((result, { id, type, attributes: { position, ...rest }, relationships }) => {
+    return {
+      [position]: {
+        // we still keep the id as it will be needed
+        id,
+        // the type can be useful for components
+        type,
+        position,
+        ...rest,
+        // we might not want to use the relationships
+        ...(includeRelationships ? extractRelationshipsAndGroupById(relationships) : {}),
+      },
+      ...result,
+    }
+  }, {})
+}
+
 const extractRelationship = (relationship, included, includeStore = {}) => {
   if (Array.isArray(relationship)) {
     return relationship.map((item) => deserializeIncluded(item, included, includeStore))
@@ -171,20 +195,54 @@ const mapAttribute = (data, attribute) => data.map(({ attributes }) => attribute
 
 /**
  * Helper function to store json api resource objects in the store.
- *
+ * TODO: Move this to populateBy to prevent duplication
  * @param {string} resource name of the resource to populate in the store
  * @param {bool} includeRelationships indicates if related resource ids should
  * be extracted and included in the resulting object.
  * @return {Function} A mutation function for populating the resource
  */
 const populateById =
-  (resource, { includeRelationships = false } = {}, replaceData = false) =>
+  (
+    resource,
+    { includeRelationships = false, populateResources = true } = {},
+    replaceData = false,
+  ) =>
   (state, data) => {
+    // if resources then add to state.resources
+    const result = populateResources ? state.resources : state
+
     // Store the current data so we dont overwrite it unless specifed to do so
-    const before = replaceData ? {} : state.resources[resource]
-    Vue.set(state.resources, resource, {
+    const before = replaceData ? {} : result[resource]
+    Vue.set(result, resource, {
       ...before,
       ...dataToObjectById({ data, includeRelationships }),
+    })
+  }
+
+/**
+ * Helper function to store json api resource objects in the store.
+ *
+ * @param {string} resource name of the resource to populate in the store
+ * @param {bool} includeRelationships indicates if related resource ids should
+ * be extracted and included in the resulting object.
+ * @return {Function} A mutation function for populating the resource
+ */
+const populateBy =
+  (
+    resource,
+    fn,
+    { includeRelationships = false, populateResources = true } = {},
+    replaceData = false,
+  ) =>
+  (state, data) => {
+    // if resources then add to state.resources
+    const result = populateResources ? state.resources : state
+
+    // Store the current data so we dont overwrite it unless specifed to do so
+    const before = replaceData ? {} : result[resource]
+    Vue.set(result, resource, {
+      ...before,
+      ...fn({ data, includeRelationships }),
     })
   }
 
@@ -203,6 +261,8 @@ export {
   mapAttribute,
   filterByAttribute,
   populateById,
+  dataToObjectByPosition,
+  populateBy,
 }
 
 export default deserialize

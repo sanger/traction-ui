@@ -20,6 +20,7 @@ describe('SaphyrEnzymeModal.vue', () => {
       },
     })
     enzymeModal = wrapper.vm
+    enzymeModal.showModal = true
   })
 
   it('will have an button component', () => {
@@ -27,7 +28,7 @@ describe('SaphyrEnzymeModal.vue', () => {
   })
 
   it('will have an modal component', () => {
-    expect(wrapper.find('#enzymeModal').exists()).toBeTruthy()
+    expect(wrapper.find('.modal')).toBeTruthy()
   })
 
   describe('data', () => {

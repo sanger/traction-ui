@@ -9,29 +9,18 @@
         :total-rows="plates.length"
         :per-page="perPage"
         aria-controls="plate-index"
+        @input="onPageChange($event)"
       >
       </traction-pagination>
-      <traction-form-group
-        class="float-right mx-5"
-        label-cols-lg="4"
-        label="Per Page"
-        label-for="input-per-page"
-      >
-        <traction-input
-          id="input-per-page"
-          v-model="perPage"
-          trim
-          classes="w-full w-25"
-        ></traction-input>
-      </traction-form-group>
     </div>
 
     <traction-table
       id="plate-index"
+      primary_key="id"
+      :fields="fields"
+      :items="tableData"
       show-empty
       responsive
-      :items="plates"
-      :fields="fields"
       :filter="filter"
       :per-page="perPage"
       :current-page="currentPage"
@@ -42,7 +31,7 @@
     >
       <template #cell(show_details)="row">
         <traction-button
-          :id="'details-btn-' + row.item.id"
+          :id="'details-btn-' + row.id"
           size="sm"
           theme="default"
           @click="
@@ -53,11 +42,12 @@
           {{ row.detailsShowing ? 'Hide' : 'Show' }} Plate
         </traction-button>
       </template>
-
       <template #row-details="row">
         <Plate
           v-if="currentPlate.id == row.item.id"
           ref="plate"
+          :height="row.detailsDim"
+          :width="row.detailsDim"
           :plate="currentPlate"
           @alert="alert"
         ></Plate>
@@ -73,7 +63,6 @@ import FilterCard from '@/components/FilterCard'
 import DataFetcher from '@/components/DataFetcher'
 import { createNamespacedHelpers } from 'vuex'
 const { mapActions, mapGetters } = createNamespacedHelpers('traction/pacbio/plates')
-
 export default {
   name: 'PacbioPlates',
   components: {
@@ -105,6 +94,11 @@ export default {
   },
   computed: {
     ...mapGetters(['plates']),
+  },
+  watch: {
+    plates(newValue) {
+      this.setInitialData(newValue, this.perPage, { sortBy: 'created_at' })
+    },
   },
   methods: {
     alert(message, type) {

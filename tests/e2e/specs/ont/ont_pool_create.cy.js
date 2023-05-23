@@ -11,7 +11,8 @@ describe('Ont Pool Create', () => {
     cy.intercept('flipper/api/actors/User', {
       flipper_id: 'User',
       features: {
-        dpl_279_ont_libraries_and_pools: { enabled: true },
+        enable_custom_table: { enabled: true },
+        enable_custom_form: { enabled: true },
       },
     })
   })
@@ -27,15 +28,12 @@ describe('Ont Pool Create', () => {
     cy.get('[data-type=tag-set-list]').select('ONT_native')
     cy.get('[data-attribute=tag-set-name]').click()
     cy.get('[data-attribute=group-id]').should('have.length', 96)
-
-    //TODO: add at least one more sample
     cy.get('[data-type=selected-plate-list]').within(() => {
       cy.get('[data-type=plate-item]').first()
       cy.get('ellipse').first().click()
     })
     cy.get('[data-type=pool-library-edit]').should('have.length', 1)
     // and samples that have failed qc should not be selectable
-    // TODO: Is this brittle? Need to know the data.
     cy.get('[data-type=pool-library-edit]').within(() => {
       cy.get('[data-type=tag-list]').select('NB01')
       cy.get('[data-attribute=kit-barcode]').type('ABC1')

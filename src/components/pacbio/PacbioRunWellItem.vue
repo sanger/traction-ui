@@ -14,25 +14,18 @@
       @drop="drop"
       @dragover="allowDrop"
       @dragleave="endDrop"
-      @click="showModal"
+      @click="onClick"
     >
       <title v-if="hasPools" v-text="tooltip"></title>
     </ellipse>
-    <foreignObject>
-      <WellEdit ref="modal" class="modal" :position="position" @alert="alert"></WellEdit>
-    </foreignObject>
   </g>
 </template>
 
 <script>
 import { mapActions, mapMutations, mapGetters } from 'vuex'
-import WellEdit from '@/components/pacbio/PacbioRunWellEdit'
-
 export default {
-  name: 'PacbioRunWellEdit',
-  components: {
-    WellEdit,
-  },
+  name: 'PacbioRunWellItem',
+
   props: {
     row: {
       type: String,
@@ -58,20 +51,6 @@ export default {
       type: String,
       required: true,
     },
-    // eslint-disable-next-line vue/prop-name-casing
-    required_metadata_fields: {
-      type: Array,
-      default() {
-        // Below doesn't include 'pre_extension_time' or 'ccs_analysis_output'
-        // as they have default values
-        return [
-          'movie_time',
-          'on_plate_loading_concentration',
-          'binding_kit_box_barcode',
-          'generate_hifi',
-        ]
-      },
-    },
   },
   data() {
     return {
@@ -79,29 +58,55 @@ export default {
     }
   },
   computed: {
-    ...mapGetters('traction/pacbio/runs', ['well']),
-    ...mapGetters('traction/pacbio/pools', ['poolByBarcode']),
+    ...mapGetters('traction/pacbio/runCreate', [
+      'poolByBarcode',
+      'getWell',
+      'pools',
+      'smrtLinkVersion',
+    ]),
     position() {
       return `${this.row}${this.column}`
     },
+    required_metadata_fields() {
+      if (this.smrtLinkVersion.name == 'v11') {
+        return [
+          'movie_time',
+          'on_plate_loading_concentration',
+          'binding_kit_box_barcode',
+          'generate_hifi',
+        ]
+      } else if (this.smrtLinkVersion.name == 'v12_revio') {
+        return [
+          'movie_acquisition_time',
+          'include_base_kinetics',
+          'library_concentration',
+          'polymerase_kit',
+          'pre_extension_time',
+        ]
+      }
+      return []
+    },
     tooltip() {
-      return this.storeWell.pools.map((p) => p.barcode).join(',')
+      return this.storeWell.pools
+        .map((p) => {
+          return this.pools.find((pool) => p == pool.id).barcode
+        })
+        .join(',')
     },
     hasPools() {
       if (this.storeWell === undefined) return false
-      if (this.storeWell.pools.every((p) => p.barcode == '')) return false
       return this.storeWell.pools.length > 0
     },
     hasValidMetadata() {
       if (this.storeWell === undefined) return false
-      return this.required_metadata_fields.every((field) => this.storeWell[field] !== '')
+      return this.required_metadata_fields.every((field) => this.storeWell[field])
     },
     hasSomeMetadata() {
       if (this.storeWell === undefined) return false
-      return this.required_metadata_fields.some((field) => this.storeWell[field] !== '')
+      return this.required_metadata_fields.some((field) => this.storeWell[field])
     },
     storeWell() {
-      return this.well(this.position)
+      return this.getWell(this.position)
     },
     status() {
       if (this.hasPools && this.hasValidMetadata) {
@@ -114,13 +119,13 @@ export default {
     },
   },
   methods: {
-    ...mapActions('traction/pacbio/runs', ['buildWell']),
-    ...mapMutations('traction/pacbio/runs', ['updateWell', 'createWell']),
+    ...mapActions('traction/pacbio/runCreate', ['getOrCreateWell']),
+    ...mapMutations('traction/pacbio/runCreate', ['updateWell']),
     alert(message, type) {
       this.$emit('alert', message, type)
     },
-    showModal() {
-      this.$refs.modal.showModalForPosition()
+    onClick() {
+      this.$emit('click', this.position)
     },
     allowDrop(event) {
       event.preventDefault()
@@ -135,19 +140,12 @@ export default {
       await this.updatePoolBarcode(event.dataTransfer.getData('barcode'))
       this.hover = false
     },
+    // It looks like all actions are async even if they do nothing async
     async updatePoolBarcode(barcode) {
-      const existingWell = this.well(this.position)
+      const well = await this.getOrCreateWell({ position: this.position })
       const { id } = this.poolByBarcode(barcode)
-      if (existingWell) {
-        // if well exists, push pool into well
-        existingWell.pools.push({ id, barcode })
-        this.updateWell(existingWell)
-      } else {
-        // if well does not exist create well and give it a pool
-        const newWell = await this.buildWell(this.position)
-        newWell.pools.push({ id, barcode })
-        this.createWell(newWell)
-      }
+      well.pools.push(id)
+      this.updateWell(well)
     },
   },
 }

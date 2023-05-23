@@ -1,65 +1,67 @@
 describe('Pacbio Run Edit view', () => {
   beforeEach(() => {
+    cy.withFlags({
+      enable_custom_table: { enabled: true },
+      enable_custom_form: { enabled: true },
+      enable_custom_modal: { enabled: true },
+    })
     cy.intercept('/v1/pacbio/runs', {
       fixture: 'tractionPacbioRuns.json',
-    })
-    cy.intercept('/v1/pacbio/runs/7?include=plate.wells.pools.tube', {
-      fixture: 'tractionPacbioRun.json',
-    })
-    cy.intercept(
-      '/v1/pacbio/pools?include=tube,libraries.tag,libraries.request&fields[requests]=sample_name&fields[tubes]=barcode&fields[tags]=group_id&fields[libraries]=request,tag,run_suitability',
-      {
-        fixture: 'tractionPacbioPools.json',
-      },
-    )
-    cy.intercept('/v1/pacbio/runs/7?include=plate.wells.pools.libraries', {
-      fixture: 'tractionPacbioRun.json',
-    })
-    cy.intercept('/v1/pacbio/runs/7', {
-      fixture: 'tractionPacbioRun.json',
     })
     cy.intercept('/v1/pacbio/smrt_link_versions', {
       fixture: 'tractionPacbioSmrtLinkVersions.json',
     })
+
+    // Get the existing run to be edited
+    cy.intercept(
+      'v1/pacbio/runs/7?include=plate.wells.pools.tube,plate.wells.pools.libraries.tag,plate.wells.pools.libraries.request,smrt_link_version',
+      {
+        fixture: 'tractionPacbioRun.json',
+      },
+    )
   })
 
   it('Updates a run successfully', () => {
-    cy.intercept('/v1/pacbio/runs/wells/6', {
+    cy.intercept('PATCH', '/v1/pacbio/runs/7', {
       statusCode: 200,
-      body: { data: {} },
+      body: {
+        data: {},
+      },
     })
 
     cy.visit('#/pacbio/runs')
-    cy.get('#editRun-7').click()
+    cy.get('#actions').within(() => {
+      cy.get('#editRun-7').click()
+    })
     cy.get('ellipse').first().click()
-    cy.get('#movieTime').select('15.0')
-    cy.get('#loadingTarget').invoke('val')
-    cy.get('#updateBtn').click()
+    cy.get('[data-attribute="movie-acquisition-time"]').select('24.0')
+    cy.get('[data-attribute="include-base-kinetics"]').select('True')
+    cy.get('#update').click()
     cy.get('button').contains('Update').click()
+    cy.contains('[data-type=run-create-message]', 'Run successfully updated')
   })
 
   it('will not create a run if there is an error', () => {
-    cy.intercept('/v1/pacbio/runs/wells/6', {
+    cy.intercept('PATCH', '/v1/pacbio/runs/7', {
       statusCode: 422,
       body: {
         data: {
           errors: {
-            on_plate_loading_concentration: ["can't be blank"],
+            sequencing_kit_box_barcode: ["can't be blank"],
           },
         },
       },
     })
 
     cy.visit('#/pacbio/runs')
-    cy.get('#editRun-7').click()
-    cy.get('ellipse').first().click()
-    cy.get('#onPlateLoadingConc').clear()
-    cy.get('#updateBtn').click()
-    cy.get('ellipse').first().should('have.class', 'filled')
+    cy.get('#actions').within(() => {
+      cy.get('#editRun-7').click()
+    })
+    cy.get('[data-attribute="sequencing_kit_box_barcode"]').clear()
     cy.get('button').contains('Update').click()
     cy.contains(
-      '[data-type=run-validation-message]',
-      "Failed to create run in Traction: on_plate_loading_concentration can't be blank",
+      '[data-type=run-create-message]',
+      "Failed to create run in Traction: sequencing_kit_box_barcode can't be blank",
     )
   })
 })

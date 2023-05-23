@@ -1,25 +1,20 @@
 <template>
   <div>
-    <traction-form-group
-      label="Filter"
-      label-cols-sm="1"
-      label-align-sm="right"
-      label-for="filterInput"
-      class="mb-0"
-    >
-      <traction-input-group>
-        <traction-input
-          id="filterInput"
-          v-model="filter"
-          type="search"
-          placeholder="Type to Search"
-        >
-        </traction-input>
-        <traction-input-group-append>
-          <traction-button :disabled="!filter" @click="filter = ''">Clear</traction-button>
-        </traction-input-group-append>
-      </traction-input-group>
-    </traction-form-group>
+    <fieldset class="flex flex-row space-x-4 mb-0">
+      <label class="text-lg font-bold">Filter</label>
+
+      <traction-input
+        id="filterInput"
+        v-model="filter"
+        type="search"
+        placeholder="Type to Search"
+        class="w-48"
+      >
+      </traction-input>
+
+      <traction-button :disabled="!filter" @click="filter = ''">Clear</traction-button>
+    </fieldset>
+
     <br />
 
     <traction-table
@@ -27,7 +22,7 @@
       hover
       responsive
       show-empty
-      :items="runs"
+      :items="tableData"
       :fields="fields"
       :filter="filter"
       :sort-by.sync="sortBy"
@@ -36,8 +31,8 @@
       :current-page="currentPage"
       @filtered="onFiltered"
     >
-      <template #cell(chip_barcode)="data">
-        {{ truncateText(data.value, 40) }}
+      <template #cell(chip_barcode)="row">
+        {{ truncateText(row.item.chip_barcode, 40) }}
       </template>
 
       <template #cell(actions)="row">
@@ -98,12 +93,10 @@
         :total-rows="runs.length"
         :per-page="perPage"
         aria-controls="libraries-table"
+        @input="onPageChange($event)"
       >
       </traction-pagination>
     </div>
-    <traction-form-group label-cols-lg="1" label="Per Page" label-for="input-per-page">
-      <traction-input id="input-per-page" v-model="perPage" trim class="w-25"></traction-input>
-    </traction-form-group>
   </div>
 </template>
 
@@ -136,6 +129,11 @@ export default {
   },
   computed: {
     ...mapGetters('traction/saphyr/runs', ['runs']),
+  },
+  watch: {
+    runs(newValue) {
+      this.setInitialData(newValue, this.perPage)
+    },
   },
   created() {
     this.provider()

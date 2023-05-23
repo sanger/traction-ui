@@ -4,6 +4,7 @@
       id="library-type"
       :value="libraryType"
       :options="libraryTypes"
+      data-attribute="library-type-list"
       @input="handleInput"
     ></traction-select>
   </traction-field-group>

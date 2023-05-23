@@ -6,12 +6,8 @@
       :class="flowcell_bg_colour"
     >
       <div class="text-xl mb-2">{{ coordinate }}</div>
-      <traction-form-group
-        id="input-group-flowcell-id"
-        label="Flowcell ID:"
-        label-for="flowcell-id"
-        label-align="left"
-      >
+      <fieldset id="input-group-flowcell-id" class="py-2">
+        <label class="flex justify-start">Flowcell ID:</label>
         <BFormInput
           :id="'flowcell-id-' + position"
           placeholder="Scan flowcell ID"
@@ -24,13 +20,9 @@
         <traction-invalid-feedback id="input-flowcell-id-feedback"
           >Enter at valid Flowcell ID (3 letters then at least 3 numbers)</traction-invalid-feedback
         >
-      </traction-form-group>
-      <traction-form-group
-        id="input-group-pool-id"
-        label="Pool Library Barcode:"
-        label-for="pool-id"
-        label-align="left"
-      >
+      </fieldset>
+      <fieldset id="input-group-pool-id" class="py-2">
+        <label class="flex justify-start">Pool Library Barcode:</label>
         <BFormInput
           :id="'pool-id-' + position"
           v-model="barcode"
@@ -42,7 +34,7 @@
         <traction-invalid-feedback id="input-pool-tube-barcode-feedback"
           >Enter a valid Pool Library barcode</traction-invalid-feedback
         >
-      </traction-form-group>
+      </fieldset>
     </div>
   </div>
 </template>

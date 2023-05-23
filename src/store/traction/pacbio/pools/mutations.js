@@ -1,5 +1,6 @@
 import { dataToObjectById } from '@/api/JsonApi'
 
+// these are the same mutations as in pools/mutations.js
 const mutations = {
   setPools(state, pools) {
     state.pools = dataToObjectById({ data: pools, includeRelationships: true })

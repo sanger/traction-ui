@@ -1,52 +1,18 @@
-<!--
-  TractionSelect 
-  
-  Renders a custom select tailwind component to display a select field with an optional label 
-   - Title represents the label to be displayed (if required)
-   - v-bind="$attrs" in <input> is to support fallthrough attributes to ensure that all recieving components props 
-      is passed to the enclosed html <select> component. This allows to use this component as a normal html <select> 
-      element by passing in all props allowed in <select> to <traction-select>
-     The $attrs object includes all attributes that are not declared by the component's props
-  - @chnage - On change, emit its own custom input event with the new value
--->
-
 <template>
   <div>
-    <flagged-feature name="enable_custom_select">
-      <template #disabled>
-        <b-form-select
-          v-bind="$attrs"
-          :value="value"
-          :options="options"
-          :placeholder="placeholder"
-          title="title"
-          @input="(val) => input(val)"
-        />
-      </template>
-      <div class="flex flex-col">
-        <label v-if="label">{{ label }}</label>
-        <select
-          v-if="options"
-          v-bind="$attrs"
-          :value="value"
-          :placeholder="placeholder"
-          :class="`w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-sdb-100 focus:border-sdb-100 disabled:opacity-75 disabled:bg-gray-200 disabled:cursor-not-allowed ${classes}`"
-          @change="(event) => input(event.target.value)"
-        >
-          <template v-for="(optionGroupName, index) in optionGroupNames">
-            <template v-if="optionGroupName">
-              <optgroup :key="'optionGroupName' + index" :label="optionGroupName">
-                <option
-                  v-for="option in optionsForGroup(optionGroupName)"
-                  :key="option.value"
-                  :value="option.value == null ? '' : option.value"
-                  :disabled="option.disabled"
-                >
-                  {{ option.text }}
-                </option>
-              </optgroup>
-            </template>
-            <template v-else>
+    <div class="flex flex-col">
+      <label v-if="label">{{ label }}</label>
+      <select
+        v-if="options"
+        v-bind="$attrs"
+        v-model="propValue"
+        :placeholder="placeholder"
+        :data-attribute="dataAttribute"
+        :class="`w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-sdb-100 focus:border-sdb-100 disabled:opacity-75 disabled:bg-gray-200 disabled:cursor-not-allowed ${classes}`"
+      >
+        <template v-for="(optionGroupName, index) in optionGroupNames">
+          <template v-if="optionGroupName">
+            <optgroup :key="'optionGroupName' + index" :label="optionGroupName">
               <option
                 v-for="option in optionsForGroup(optionGroupName)"
                 :key="option.value"
@@ -55,17 +21,25 @@
               >
                 {{ option.text }}
               </option>
-            </template>
+            </optgroup>
           </template>
-        </select>
-      </div>
-    </flagged-feature>
+          <template v-else>
+            <option
+              v-for="option in optionsForGroup(optionGroupName)"
+              :key="option.value"
+              :value="option.value == null ? '' : option.value"
+              :disabled="option.disabled"
+            >
+              {{ option.text }}
+            </option>
+          </template>
+        </template>
+      </select>
+    </div>
   </div>
 </template>
 
 <script>
-import { BFormSelect } from 'bootstrap-vue'
-import FlaggedFeature from '@/components/shared/FlaggedFeature.vue'
 import _ from 'lodash-es'
 
 export default {
@@ -73,9 +47,15 @@ export default {
    * # TractionSelect
    *
    * Tailwind component to display a select field using html <select> element
+   * Renders a custom select tailwind component to display a select field with an optional label
+   *    - Title represents the label to be displayed (if required)
+   *    - v-bind="$attrs" in <input> is to support fallthrough attributes to ensure that all recieving components props
+   *      is passed to the enclosed html <select> component. This allows to use this component as a normal html <select>
+   *      element by passing in all props allowed in <select> to <traction-select>
+   *      The $attrs object includes all attributes that are not declared by the component's props
+   *    - @change - On change, emit its own custom input event with the new value
    */
   name: 'TractionSelect',
-  components: { BFormSelect, FlaggedFeature },
   inheritAttrs: false,
   props: {
     //value field of select which will be bind automatically with 'v-model' prop passed into the component
@@ -104,9 +84,22 @@ export default {
       type: String,
       default: '',
     },
+    //attribute name to represent this component for testing, if given
+    dataAttribute: {
+      type: String,
+      default: '',
+    },
   },
-
   computed: {
+    propValue: {
+      get() {
+        // if value is null or undefined we want to use an empty ''
+        return this.value || ''
+      },
+      set(value) {
+        this.$emit('input', value)
+      },
+    },
     /**
      * Options can be given in any of the following forms to support the existing usages
      * 1. As a normal string array e.g ['text1','text2'] . In this case both 'text'
@@ -146,10 +139,6 @@ export default {
   },
 
   methods: {
-    input(selectedValue) {
-      // Emit selected value
-      this.$emit('input', selectedValue)
-    },
     /**Format the option fields (if required) as expected by html select*/
     formatOption(option, label) {
       let optionNew = { ...option }

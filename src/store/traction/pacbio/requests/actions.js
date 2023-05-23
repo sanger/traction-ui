@@ -1,4 +1,3 @@
-import handlePromise from '@/api/PromiseHelper'
 import handleResponse from '@/api/ResponseHelper'
 
 const setRequests = async ({ commit, getters }, filter) => {
@@ -15,19 +14,19 @@ const setRequests = async ({ commit, getters }, filter) => {
   return { success, errors }
 }
 
-const updateRequest = async ({ getters }, payload) => {
+const updateRequest = async ({ commit, getters }, payload) => {
   const request = getters.requestsRequest
-  const sample = getters.requests.find((r) => r.id == payload.id)
-
-  const requestPayload = createRequestPayload(sample)
+  const requestPayload = createRequestPayload(payload)
   const promise = request.update(requestPayload)
-  const response = await handlePromise(promise)
+  const response = await handleResponse(promise)
 
-  if (response.successful) {
-    return response
-  } else {
-    throw response.errors
+  const { success, data: { data } = {}, errors = [] } = response
+
+  if (success) {
+    commit('updateRequest', data)
   }
+
+  return { success, errors }
 }
 
 const createRequestPayload = (sample) => {
@@ -45,62 +44,11 @@ const createRequestPayload = (sample) => {
   }
 }
 
-const exportSampleExtractionTubesIntoTraction = async (
-  { getters },
-  { tubes, libraryType = undefined },
-) => {
-  const body = {
-    data: {
-      type: 'requests',
-      attributes: {
-        requests: sampleExtractionTubeJson(tubes, libraryType),
-      },
-    },
-  }
-
-  const request = getters.requestsRequest
-  const promise = request.create({ data: body })
-  const response = await handleResponse(promise)
-  return response
-}
-
-const sampleExtractionTubeJson = (tubes, libraryType) => {
-  return tubes.map(
-    ({
-      library_type,
-      estimate_of_gb_required,
-      number_of_smrt_cells,
-      barcode,
-      study_uuid: external_study_id,
-      sample_uuid: external_id,
-      cost_code,
-      fields: { sanger_sample_id: name, sample_common_name: species },
-    }) => ({
-      sample: { name, species, external_id },
-      request: {
-        external_study_id,
-        library_type: libraryType === undefined ? library_type : libraryType,
-        estimate_of_gb_required,
-        number_of_smrt_cells,
-        ...(cost_code ? { cost_code } : null),
-      },
-      tube: { barcode },
-    }),
-  )
-}
-
 const actions = {
   setRequests,
   updateRequest,
-  exportSampleExtractionTubesIntoTraction,
 }
 
-export {
-  setRequests,
-  updateRequest,
-  createRequestPayload,
-  exportSampleExtractionTubesIntoTraction,
-  sampleExtractionTubeJson,
-}
+export { setRequests, updateRequest, createRequestPayload }
 
 export default actions

@@ -32,6 +32,19 @@ describe('PacbioPlateSelectedList', () => {
     expect(wrapper.findAll('[data-type=warning-message]').length).toEqual(1)
   })
 
+  it('deselects the plate and requests when the remove button is clicked', async () => {
+    const selectPlate = { id: '61', selected: true }
+    await store.commit('traction/pacbio/poolCreate/selectPlate', selectPlate)
+    const dispatch = vi.fn()
+    store.dispatch = dispatch
+    const button = wrapper.find('#remove-plate-btn-61')
+    await button.trigger('click')
+    expect(dispatch).toHaveBeenCalledWith(
+      'traction/pacbio/poolCreate/deselectPlateAndContents',
+      selectPlate.id,
+    )
+  })
+
   describe('Plate selection', () => {
     beforeEach(() => {
       const selectPlate = { id: '61', selected: true }

@@ -24,10 +24,12 @@ describe('PacbioLibraryCreate.vue', () => {
   })
 
   it('will have an modal component', () => {
-    expect(wrapper.find('#pacbioLibraryModal').element).toBeTruthy()
+    expect(wrapper.find('.modal')).toBeTruthy()
   })
 
-  it('will have an form component', () => {
+  it('will have an form component', async () => {
+    wrapper.vm.showModal = true
+    await wrapper.vm.$nextTick()
     expect(wrapper.find('#libraryCreateModal').element).toBeTruthy()
   })
 

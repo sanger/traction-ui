@@ -8,18 +8,16 @@
         :total-rows="requests.length"
         :per-page="perPage"
         aria-controls="samples-table"
+        @input="onPageChange($event)"
       >
       </traction-pagination>
-      <traction-form-group label-cols-lg="1" label="Per Page" label-for="input-per-page">
-        <traction-input id="input-per-page" v-model="perPage" trim class="w-25"></traction-input>
-      </traction-form-group>
     </div>
 
     <traction-table
       id="samples-table"
       show-empty
       responsive
-      :items="requests"
+      :items="tableData"
       :fields="fields"
       :per-page="perPage"
       :current-page="currentPage"
@@ -64,7 +62,7 @@ export default {
   data() {
     return {
       fields: [
-        { key: 'selected', label: '' },
+        { key: 'selected', label: '\u2713' },
         { key: 'id', label: 'Sample ID (Request)', sortable: true, tdClass: 'id' },
         { key: 'source_identifier', label: 'Source', sortable: true, tdClass: 'source_identifier' },
         { key: 'sample_name', label: 'Sample Name', sortable: true, tdClass: 'sample_name' },
@@ -96,6 +94,11 @@ export default {
   },
   computed: {
     ...mapGetters(['requests']),
+  },
+  watch: {
+    requests(newValue) {
+      this.setInitialData(newValue, this.perPage, { sortBy: 'created_at' })
+    },
   },
   methods: {
     ...mapActions(['fetchOntRequests']),

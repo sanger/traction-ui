@@ -9,13 +9,12 @@ describe('PacbioPoolCreate', () => {
       state: {
         api: {
           traction: {
-            pacbio: { requests: requestsRequest, tag_sets: tagSetsRequest, pools: poolsRequest },
+            pacbio: { tag_sets: tagSetsRequest, pools: poolsRequest },
           },
         },
       },
     } = store
 
-    requestsRequest.get = vi.fn(() => Data.PacbioRequestsRequest)
     tagSetsRequest.get = vi.fn(() => Data.PacbioTagSets)
     poolsRequest.find = vi.fn()
 
@@ -34,14 +33,13 @@ describe('PacbioPoolCreate', () => {
         traction: {
           pacbio: {
             poolCreate: {
-              resources: { plates, tagSets },
+              resources: { tagSets },
             },
           },
         },
       },
     } = store
 
-    expect(Object.keys(plates).length).toBeGreaterThan(0)
     expect(Object.keys(tagSets).length).toBeGreaterThan(0)
     expect(poolsRequest.find).not.toBeCalled()
   })
@@ -51,13 +49,12 @@ describe('PacbioPoolCreate', () => {
       state: {
         api: {
           traction: {
-            pacbio: { requests: requestsRequest, tag_sets: tagSetsRequest, pools: poolsRequest },
+            pacbio: { tag_sets: tagSetsRequest, pools: poolsRequest },
           },
         },
       },
     } = store
 
-    requestsRequest.get = vi.fn(() => Data.PacbioRequestsRequest)
     tagSetsRequest.get = vi.fn(() => Data.PacbioTagSets)
     poolsRequest.find = vi.fn(() => Data.TractionPacbioPool)
 
@@ -76,14 +73,13 @@ describe('PacbioPoolCreate', () => {
         traction: {
           pacbio: {
             poolCreate: {
-              resources: { plates, tagSets },
+              resources: { tagSets },
             },
           },
         },
       },
     } = store
 
-    expect(Object.keys(plates).length).toBeGreaterThan(0)
     expect(Object.keys(tagSets).length).toBeGreaterThan(0)
   })
 })

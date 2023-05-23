@@ -15,14 +15,47 @@ describe('ONT Pool Edit', () => {
     cy.intercept('flipper/api/actors/User', {
       flipper_id: 'User',
       features: {
-        dpl_279_ont_libraries_and_pools: { enabled: true },
+        enable_custom_table: { enabled: true },
+        enable_custom_form: { enabled: true },
       },
+    })
+  })
+  it('updates pool information on clicking requests table rows', () => {
+    cy.visit('#/ont/pools')
+    cy.get('#pool-index').within(() => {
+      cy.get('[data-action=edit-pool]').first().click()
+    })
+    cy.get('[data-type=plate-item]').should('be.visible')
+    cy.get('#Requests').click()
+    //Select row in requests
+    let selectedListLength = 0
+    cy.get('[data-type=pool-library-list]').within(() => {
+      cy.get('[data-testid=row]')
+        .its('length')
+        .then((length) => {
+          selectedListLength = length
+        })
+    })
+    cy.get('#selectedList').within(() => {
+      cy.get('#source_identifier').first().click()
+    })
+    cy.get('[data-type=pool-library-list]').within(() => {
+      cy.get('[data-testid=row]').should('have.length', selectedListLength + 1)
+    })
+    //Deselect row requests
+    cy.get('#selectedList').within(() => {
+      cy.get('#source_identifier').first().click()
+    })
+    cy.get('[data-type=pool-library-list]').within(() => {
+      cy.get('[data-testid=row]').should('have.length', selectedListLength)
     })
   })
 
   it('Updates a pool successfully', () => {
     cy.visit('#/ont/pools')
-    cy.get('.pool [data-action=edit-pool]').first().click()
+    cy.get('#pool-index').within(() => {
+      cy.get('[data-action=edit-pool]').first().click()
+    })
     cy.get('[data-type=plate-item]').should('be.visible')
     cy.get('[data-attribute=tag-set-name]').should('be.visible')
     cy.get('[data-type=pool-edit]').within(() => {
@@ -41,7 +74,9 @@ describe('ONT Pool Edit', () => {
 
   it('Will not update a pool if there is an error', () => {
     cy.visit('#/ont/pools')
-    cy.get('.pool [data-action=edit-pool]').first().click()
+    cy.get('#pool-index').within(() => {
+      cy.get('[data-action=edit-pool]').first().click()
+    })
     cy.get('[data-type=plate-item]').should('be.visible')
     cy.get('[data-attribute=tag-set-name]').should('be.visible')
     cy.get('[data-type=pool-library-edit]').within(() => {

@@ -7,20 +7,6 @@ describe('OntPoolIndex', () => {
   let wrapper, pools
 
   beforeEach(async () => {
-    // Ideally I'd love to mock the http response here, but swrv seems to tun
-    // into problems mounting via-vue test utils, and `getCurrentInstance` fails
-    // to find the instance
-    vi.mock('swrv', () => ({
-      default: vi.fn(() => ({
-        data: {
-          flipper_id: 'User',
-          features: {
-            dpl_279_ont_libraries_and_pools: { enabled: true },
-          },
-        },
-      })),
-    }))
-
     const get = vi.spyOn(store.state.api.traction.ont.pools, 'get')
     get.mockResolvedValue(Data.TractionOntPools)
     wrapper = mount(ONTPoolIndex, {
@@ -33,7 +19,8 @@ describe('OntPoolIndex', () => {
 
   it('displays each of the pools', async () => {
     const expectedPools = Data.TractionOntPools.data.data.length
-    expect(wrapper.findAll('tbody>tr').length).toEqual(expectedPools)
+    await wrapper.vm.$nextTick()
+    expect(wrapper.find('tbody').findAll('[data-testid="row"]').length).toEqual(expectedPools)
   })
 
   describe('Printing labels', () => {

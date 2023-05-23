@@ -1,29 +1,27 @@
 <template>
   <div class="mt-8">
     <traction-section number="2b" title="Selected Tubes">
-      <traction-list-group class="selected-list-group">
-        <traction-table
-          :items="selectedTubeRequests"
-          show-empty
-          small
-          :fields="requestFields"
-          :tbody-tr-class="rowClass"
-          empty-text="No tubes selected"
-          @row-clicked="requestClicked"
-        >
-          <template #cell(action)="row">
-            <traction-button
-              :id="'remove-btn-' + row.item.id"
-              size="sm"
-              class="mr-2"
-              theme="default"
-              @click="deselectTubeAndContents(row.item.source_identifier)"
-            >
-              Remove
-            </traction-button>
-          </template>
-        </traction-table>
-      </traction-list-group>
+      <traction-table
+        :items="selectedTubeRequests"
+        show-empty
+        small
+        :fields="requestFields"
+        :tbody-tr-class="rowClass"
+        empty-text="No tubes selected"
+        @row-clicked="requestClicked"
+      >
+        <template #cell(action)="row">
+          <traction-button
+            :id="'remove-btn-' + row.item.id"
+            size="sm"
+            class="mr-2"
+            theme="default"
+            @click="deselectTubeAndContents(row.item.source_identifier)"
+          >
+            Remove
+          </traction-button>
+        </template>
+      </traction-table>
     </traction-section>
   </div>
 </template>
@@ -44,13 +42,13 @@ export default {
   data() {
     return {
       requestFields: [
-        'id',
-        'sample_name',
-        'source_identifier',
-        'data_type',
-        'library_type',
-        'number_of_flowcells',
-        'action',
+        { key: 'id', label: 'id' },
+        { key: 'sample_name', label: 'Sample name' },
+        { key: 'source_identifier', label: 'Source identifier' },
+        { key: 'data_type', label: 'Data type' },
+        { key: 'library_type', label: 'Library type' },
+        { key: 'number_of_flowcells', label: 'Number of flowcells' },
+        { key: 'action', label: 'Action' },
       ],
     }
   },
@@ -70,16 +68,8 @@ export default {
     },
     rowClass(item) {
       if (item && item.selected) {
-        return 'table-primary'
+        return 'bg-gray-400'
       }
-    },
-    onSelect(e) {
-      e.added.forEach((el) => {
-        this.selectWellRequests(el.__vue__.$attrs.id)
-      })
-      e.removed.forEach((el) => {
-        this.selectWellRequests(el.__vue__.$attrs.id)
-      })
     },
   },
 }

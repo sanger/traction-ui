@@ -1,4 +1,10 @@
 describe('Pacbio Runs view', () => {
+  beforeEach(() =>
+    cy.withFlags({
+      enable_custom_table: { enabled: true },
+      enable_custom_form: { enabled: true },
+    }),
+  )
   it('Visits the pacbio runs url', () => {
     cy.intercept('/v1/pacbio/runs', {
       fixture: 'tractionPacbioRuns.json',
@@ -14,15 +20,15 @@ describe('Pacbio Runs view', () => {
     cy.get('#editRun-7')
     cy.get('#cancelRun-7')
     cy.get('#generate-sample-sheet-7')
-    cy.get('.run')
+    cy.get('#run-index')
       .first()
       .within(() => {
-        cy.get('.run-id').should('have.length.greaterThan', 0)
-        cy.get('.name').should('have.length.greaterThan', 0)
-        cy.get('.state').should('have.length.greaterThan', 0)
-        cy.get('.sequencing-kit-box-barcode').should('have.length.greaterThan', 0)
-        cy.get('.dna-control-complex-box-barcode').should('have.length.greaterThan', 0)
-        cy.get('.system-name').should('have.length.greaterThan', 0)
+        cy.get('#id').should('have.length.greaterThan', 0)
+        cy.get('#name').should('have.length.greaterThan', 0)
+        cy.get('#state').should('have.length.greaterThan', 0)
+        cy.get('#sequencing_kit_box_barcode').should('have.length.greaterThan', 0)
+        cy.get('#dna_control_complex_box_barcode').should('have.length.greaterThan', 0)
+        cy.get('#system_name').should('have.length.greaterThan', 0)
       })
   })
 })

@@ -2,11 +2,13 @@
   <div class="flex flex-row">
     <traction-input
       id="labware-finder-input"
+      ref="search"
       v-model="searchValue"
       type="search"
       placeholder="Type to Search"
       label="Search value"
       class="w-full"
+      @enterKeyPress="search()"
     />
     <traction-button data-action="find-labware" :disabled="searchValue == ''" @click="search()">
       Search
@@ -58,6 +60,8 @@ export default {
           this.showAlert(res.errors, 'danger')
         }
       })
+      // redirecting the focus to the input after searching
+      this.$refs.search.$refs.inputRef.focus()
     },
   },
 }

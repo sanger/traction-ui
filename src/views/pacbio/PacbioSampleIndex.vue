@@ -25,28 +25,17 @@
         :total-rows="requests.length"
         :per-page="perPage"
         aria-controls="samples-table"
+        @input="onPageChange($event)"
       >
       </traction-pagination>
-      <traction-form-group
-        class="float-right mx-5"
-        label-cols-lg="4"
-        label="Per Page"
-        label-for="input-per-page"
-      >
-        <traction-input
-          id="input-per-page"
-          v-model="perPage"
-          trim
-          class="w-full w-25"
-        ></traction-input>
-      </traction-form-group>
     </div>
 
     <traction-table
       id="samples-table"
+      primary_key="id"
       show-empty
       responsive
-      :items="requests"
+      :items="tableData"
       :fields="fields"
       :filter="filter"
       :per-page="perPage"
@@ -90,9 +79,11 @@
       <template #row-details="row">
         <traction-card class="text-left">
           <template v-for="(field, index) in field_in_details">
-            <span :key="field.label + index" class="font-weight-bold">{{ field.label }}</span
+            <span v-if="field" :key="field.label + index" class="font-weight-bold">{{
+              field.label
+            }}</span
             >: {{ row.item[field.item] }}
-            <br :key="field.label" />
+            <br v-if="field" :key="field.label" />
           </template>
         </traction-card>
       </template>
@@ -124,7 +115,7 @@ export default {
   data() {
     return {
       fields: [
-        { key: 'selected', label: '' },
+        { key: 'selected', label: '\u2713' },
         { key: 'id', label: 'Sample ID (Request)', sortable: true },
         { key: 'sample_name', label: 'Name', sortable: true },
         { key: 'sample_species', label: 'Species', sortable: true },
@@ -158,6 +149,11 @@ export default {
   },
   computed: {
     ...mapGetters('traction/pacbio/requests', ['requests']),
+  },
+  watch: {
+    requests(newValue) {
+      this.setInitialData(newValue, this.perPage, { sortBy: 'created_at' })
+    },
   },
   methods: {
     /*

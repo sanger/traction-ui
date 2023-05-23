@@ -3,12 +3,9 @@ const baseURL = import.meta.env.VITE_TRACTION_BASE_URL
 const flags = {
   flipper_id: 'User',
   features: {
-    dpl_277_enable_general_reception: { enabled: true },
-    dpl_478_enable_qc_results_upload: { enabled: true },
-    enable_custom_select: { enabled: true },
-    enable_custom_pagination: { enabled: true },
-    dpl_279_ont_libraries_and_pools: { enabled: true },
-    dpl_281_ont_create_sequencing_runs: { enabled: true },
+    enable_custom_table: { enabled: true },
+    enable_custom_form: { enabled: true },
+    enable_custom_modal: { enabled: true },
   },
 }
 

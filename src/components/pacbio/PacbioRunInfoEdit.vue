@@ -1,154 +1,120 @@
 <template>
   <div class="pacbioRunInfoEdit">
     <fieldset>
-      <traction-row>
-        <traction-col>
-          <label for="run-name">Run name:</label>
-        </traction-col>
-        <traction-col>
-          <traction-input
-            id="run-name"
-            :value="runName"
-            placeholder="Run name"
-            type="text"
-            classes="w-48"
-            disabled
-          />
-        </traction-col>
-      </traction-row>
-      <traction-row>
-        <traction-col>
-          <label for="sequencing-kit-box-barcode">Sequencing Kit Box Barcode:</label>
-        </traction-col>
-        <traction-col>
-          <traction-input
-            id="sequencing-kit-box-barcode"
-            :value="sequencingKitBoxBarcode"
-            placeholder="Sequencing Kit Box Barcode"
-            type="text"
-            classes="w-48"
-            @input="setSequencingKitBoxBarcode"
-          />
-        </traction-col>
-      </traction-row>
-      <traction-row>
-        <traction-col>
-          <label for="dna-control-complex-box-barcode">DNA Control Complex Box Barcode:</label>
-        </traction-col>
-        <traction-col>
-          <traction-input
-            id="dna-control-complex-box-barcode"
-            :value="dnaControlComplexBoxBarcode"
-            placeholder="DNA Control Complex Box Barcode"
-            type="text"
-            classes="w-48"
-            @input="setDNAControlComplexBoxBarcode"
-          />
-        </traction-col>
-      </traction-row>
-      <traction-row>
-        <traction-col>
-          <label for="system-name">System Name:</label>
-        </traction-col>
-        <traction-col>
-          <traction-select
-            id="system-name"
-            ref="systemName"
-            :value="systemName"
-            title="System Name"
-            :options="systemNameOptions"
-            @input="setSystemName"
-          />
-        </traction-col>
-      </traction-row>
-      <traction-row>
-        <traction-col>
-          <label for="smrt-link-version">SMRT Link Version:</label>
-        </traction-col>
-        <traction-col>
-          <traction-select
-            id="smrt-link-version"
-            ref="smrtLinkVersion"
-            :value="smrtLinkVersionId"
-            data-attribute="smrt-link-version"
-            title="SMRT Link Version"
-            :options="smrtLinkVersionSelectOptions"
-            @input="setSmrtLinkVersionId"
-          />
-        </traction-col>
-      </traction-row>
-      <traction-row>
-        <traction-col>
-          <label for="comments">Comments:</label>
-        </traction-col>
-        <traction-col>
-          <traction-input
-            id="comments"
-            :value="comments"
-            placeholder="Comments"
-            type="text"
-            classes="w-48"
-            @input="setComments"
-          />
-        </traction-col>
-      </traction-row>
+      <div class="grid grid-cols-2 px-2 pb-1 my-auto pt-1">
+        <label class="text-left" for="run-name">Run name:</label>
+        <traction-input
+          id="run-name"
+          v-model="runItem.name"
+          :value="runItem.name"
+          placeholder="Run name"
+          type="text"
+          disabled
+        />
+      </div>
+      <div class="grid grid-cols-2 px-2 pb-1 my-auto">
+        <label class="text-left" for="sequencing-kit-box-barcode"
+          >Sequencing Kit Box Barcode:</label
+        >
+        <traction-input
+          id="sequencing-kit-box-barcode"
+          v-model="runItem.sequencing_kit_box_barcode"
+          :value="runItem.sequencing_kit_box_barcode"
+          placeholder="Sequencing Kit Box Barcode"
+          type="text"
+          classes="w-48"
+          data-attribute="sequencing_kit_box_barcode"
+        />
+      </div>
+      <div class="grid grid-cols-2 px-2 pb-1 my-auto">
+        <label class="text-left" for="dna-control-complex-box-barcode"
+          >DNA Control Complex Box Barcode:</label
+        >
+        <traction-input
+          id="dna-control-complex-box-barcode"
+          v-model="runItem.dna_control_complex_box_barcode"
+          :value="runItem.dna_control_complex_box_barcode"
+          placeholder="DNA Control Complex Box Barcode"
+          type="text"
+          classes="w-48"
+          data-attribute="dna_control_complex_box_barcode"
+        />
+      </div>
+      <div class="grid grid-cols-2 px-2 pb-2 my-auto">
+        <label class="text-left" for="system-name">System Name:</label>
+        <traction-select
+          id="system-name"
+          ref="systemName"
+          v-model="runItem.system_name"
+          :value="runItem.system_name"
+          title="System Name"
+          :options="systemNameOptions"
+          data-attribute="system_name"
+        />
+      </div>
+      <div class="grid grid-cols-2 px-2 pb-1 my-auto">
+        <label class="text-left" for="smrt-link-version">SMRT Link Version:</label>
+        <traction-select
+          id="smrt-link-version"
+          ref="smrtLinkVersion"
+          :value="smrtLinkVersion.id"
+          title="SMRT Link Version"
+          :options="smrtLinkVersionSelectOptions"
+          data-attribute="smrt_link_version"
+          @input="setSmrtLinkVersion"
+        />
+      </div>
+      <div class="grid grid-cols-2 px-2 pb-1 my-auto">
+        <label class="text-left" for="comments">Comments:</label>
+        <traction-input
+          id="comments"
+          v-model="runItem.comments"
+          placeholder="Comments"
+          type="text"
+          classes="w-48"
+          data-attribute="comments"
+          :value="runItem.comments"
+        />
+      </div>
     </fieldset>
   </div>
 </template>
 
 <script>
 import { createNamespacedHelpers } from 'vuex'
-const { mapGetters, mapState, mapMutations } = createNamespacedHelpers('traction/pacbio/runs')
+const { mapGetters, mapActions } = createNamespacedHelpers('traction/pacbio/runCreate')
 
 export default {
   name: 'PacbioRunInfoEdit',
   data() {
     return {
-      systemNameOptions: ['Sequel I', 'Sequel II', 'Sequel IIe'],
+      systemNameOptions: ['Sequel IIe', 'Revio'],
     }
   },
-  // A lot of the below could be improved. Can we use the store?
   computed: {
-    smrtLinkVersionList() {
-      return Object.values(this.$store.getters['traction/pacbio/runCreate/smrtLinkVersionList'])
-    },
+    ...mapGetters(['runItem', 'smrtLinkVersionList', 'smrtLinkVersion']),
     smrtLinkVersionSelectOptions() {
       // Returns an array of objects with value and text properties to make
       // the options of smrt-link-version select drop-down list.
 
-      return Object.values(
-        this.$store.getters['traction/pacbio/runCreate/smrtLinkVersionList'],
-      ).map(({ id, name }) => ({ value: id, text: name }))
+      return Object.values(this.smrtLinkVersionList).map(({ id, name }) => ({
+        value: id,
+        text: name,
+      }))
     },
-    selectedSmrtLinkVersion() {
-      return Object.values(
-        this.$store.getters['traction/pacbio/runCreate/smrtLinkVersionList'],
-      ).find((version) => version.id == this.currentRun.smrt_link_version_id)
-    },
-    ...mapGetters(['currentRun']),
-    ...mapState({
-      runName: (state) => state.currentRun.name,
-      sequencingKitBoxBarcode: (state) => state.currentRun.sequencing_kit_box_barcode,
-      dnaControlComplexBoxBarcode: (state) => state.currentRun.dna_control_complex_box_barcode,
-      comments: (state) => state.currentRun.comments,
-      uuid: (state) => state.currentRun.uuid,
-      systemName: (state) => state.currentRun.system_name,
-      smrtLinkVersionId: (state) => state.currentRun.smrt_link_version_id,
-    }),
   },
   methods: {
-    ...mapMutations([
-      'setSequencingKitBoxBarcode',
-      'setDNAControlComplexBoxBarcode',
-      'setComments',
-      'setUuid',
-      'setSystemName',
-      'setSmrtLinkVersionId',
-    ]),
+    ...mapActions(['updateSmrtLinkVersion']),
     alertOnFail({ success, errors }) {
       if (!success) {
         this.showAlert(errors, 'danger')
       }
+    },
+
+    // Sets the runCreate/smrtLinkVersion store with the version selected in the component
+    setSmrtLinkVersion(id) {
+      const option = this.smrtLinkVersionList[id]
+      this.updateSmrtLinkVersion(option)
     },
   },
 }

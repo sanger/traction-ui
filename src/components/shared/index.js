@@ -19,60 +19,24 @@ import TractionSelect from '@/components/shared/TractionSelect'
 import TractionResultIcon from '@/components/shared/icons/TractionResultIcon'
 import TractionPaginationIcon from '@/components/shared/icons/TractionPaginationIcon'
 import TractionPagination from '@/components/shared/TractionPagination'
+import TractionForm from '@/components/shared/TractionForm'
+import TractionTable from '@/components/shared/table/TractionTable'
+import TractionTableRow from '@/components/shared/table/TractionTableRow'
+import TractionTableColumn from '@/components/shared/table/TractionTableColumn'
+import TractionArrowIcon from '@/components/shared/icons/TractionArrowIcon'
+import TractionSortIcon from '@/components/shared/icons/TractionSortIcon'
+import TractionModal from '@/components/shared/TractionModal'
+import TractionCloseIcon from '@/components/shared/icons/TractionCloseIcon'
 import TractionCard from '@/components/shared/TractionCard'
 import TractionCardText from '@/components/shared/TractionCardText'
-import {
-  BModal,
-  VBModal,
-  BAlert,
-  BContainer,
-  BRow,
-  BCol,
-  BForm,
-  BFormGroup,
-  // BCard,
-  // BCardText,
-  BListGroup,
-  BListGroupItem,
-  BTable,
-  BFormFile,
-  BTableSimple,
-  BTr,
-  BTd,
-  BFormInvalidFeedback,
-  BThead,
-  BTh,
-  BTbody,
-  BFormTextarea,
-  BInputGroup,
-  BInputGroupAppend,
-} from 'bootstrap-vue'
+
+import { VBModal, BAlert, BFormFile, BFormInvalidFeedback } from 'bootstrap-vue'
 
 const registerBootstrapComponents = (vue) => {
   /* eslint-disable vue/component-definition-name-casing */
-  vue.component('traction-modal', BModal)
   vue.component('traction-alert', BAlert)
-  vue.component('traction-container', BContainer)
-  vue.component('traction-row', BRow)
-  vue.component('traction-col', BCol)
-  vue.component('traction-form', BForm)
-  vue.component('traction-form-group', BFormGroup)
-  // vue.component('traction-card', BCard)
-  // vue.component('traction-card-text', BCardText)
-  vue.component('traction-list-group', BListGroup)
-  vue.component('traction-list-group-item', BListGroupItem)
-  vue.component('traction-table', BTable)
-  vue.component('traction-table-simple', BTableSimple)
   vue.component('traction-file', BFormFile)
-  vue.component('traction-tr', BTr)
-  vue.component('traction-td', BTd)
   vue.component('traction-invalid-feedback', BFormInvalidFeedback)
-  vue.component('traction-thead', BThead)
-  vue.component('traction-th', BTh)
-  vue.component('traction-tbody', BTbody)
-  vue.component('traction-textarea', BFormTextarea)
-  vue.component('traction-input-group', BInputGroup)
-  vue.component('traction-input-group-append', BInputGroupAppend)
   /*
     directive is marked wth a v in front
     so it will be used as 'v-traction-modal'
@@ -104,8 +68,17 @@ const registerGlobal = (vue) => {
   vue.component('TractionSelect', TractionSelect)
   vue.component('TractionPagination', TractionPagination)
   vue.component('TractionPaginationIcon', TractionPaginationIcon)
+  vue.component('TractionForm', TractionForm)
+  vue.component('TractionArrowIcon', TractionArrowIcon)
+  vue.component('TractionSortIcon', TractionSortIcon)
+  vue.component('TractionTable', TractionTable)
+  vue.component('TractionTableRow', TractionTableRow)
+  vue.component('TractionTableColumn', TractionTableColumn)
+  vue.component('TractionModal', TractionModal)
+  vue.component('TractionCloseIcon', TractionCloseIcon)
   vue.component('TractionCard', TractionCard)
   vue.component('TractionCardText', TractionCardText)
+
   registerBootstrapComponents(vue)
 }
 

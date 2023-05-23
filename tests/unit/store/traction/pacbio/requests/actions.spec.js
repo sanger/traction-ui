@@ -1,19 +1,14 @@
 import Response from '@/api/Response'
 import * as Actions from '@/store/traction/pacbio/requests/actions'
 import { Data } from '@support/testHelper'
+import { expect } from 'vitest'
 import { newResponse } from '@/api/ResponseHelper'
-import deserialize from '@/api/JsonApi'
 
-let requests, failedResponse
+let requests
 
 describe('actions', () => {
   beforeEach(() => {
     requests = new Response(Data.TractionPacbioSamples).deserialize.requests
-    failedResponse = {
-      status: 404,
-      statusText: 'Record not found',
-      data: { errors: { title: ['The record could not be found.'] } },
-    }
   })
 
   describe('setRequests', () => {
@@ -70,30 +65,37 @@ describe('actions', () => {
     it('successful', async () => {
       const sample = requests[0]
       const update = vi.fn()
-      const getters = { requestsRequest: { update: update }, requests: requests }
+      const commit = vi.fn()
+      const getters = { requestsRequest: { update: update } }
 
-      update.mockReturnValue(Data.TractionPacbioSamples)
+      update.mockReturnValue(Data.TractionPacbioSample)
 
-      const resp = await Actions.updateRequest({ getters }, sample)
-
+      const { success, errors } = await Actions.updateRequest({ commit, getters }, sample)
       const expectedPayload = Actions.createRequestPayload(sample)
-      expect(getters.requestsRequest.update).toHaveBeenCalledWith(expectedPayload)
 
-      const expectedResp = new Response(Data.TractionPacbioSamples)
-      expect(resp).toEqual(expectedResp)
+      expect(getters.requestsRequest.update).toHaveBeenCalledWith(expectedPayload)
+      expect(commit).toHaveBeenCalledWith('updateRequest', Data.TractionPacbioSample.data.data)
+      expect(success).toEqual(true)
+      expect(errors).toEqual([])
     })
 
     it('unsuccessful', async () => {
       const sample = requests[0]
       const update = vi.fn()
-      const getters = { requestsRequest: { update: update }, requests: requests }
+      const commit = vi.fn()
+      const getters = { requestsRequest: { update: update } }
+      const mockResponse = {
+        status: '422',
+        data: { data: { errors: { error1: ['There was an error'] } } },
+      }
 
-      update.mockReturnValue(failedResponse)
+      update.mockRejectedValue({ response: mockResponse })
+      const expectedResponse = newResponse({ ...mockResponse, success: false })
 
-      const expectedResponse = new Response(failedResponse)
-      await expect(Actions.updateRequest({ getters }, sample)).rejects.toEqual(
-        expectedResponse.errors,
-      )
+      const { success, errors } = await Actions.updateRequest({ commit, getters }, sample)
+
+      expect(success).toEqual(false)
+      expect(errors).toEqual(expectedResponse.errors)
     })
   })
 
@@ -108,114 +110,6 @@ describe('actions', () => {
       expect(result.data.attributes.estimate_of_gb_required).toEqual(sample.estimate_of_gb_required)
       expect(result.data.attributes.number_of_smrt_cells).toEqual(sample.number_of_smrt_cells)
       expect(result.data.attributes.cost_code).toEqual(sample.cost_code)
-    })
-  })
-
-  describe('#exportSampleExtractionTubesIntoTraction', () => {
-    let dispatch, create, getters, tubes
-
-    beforeEach(() => {
-      create = vi.fn()
-      getters = { requestsRequest: { create: create } }
-
-      const expectedResponse = newResponse({
-        ...Data.SampleExtractionTubesWithSample,
-        success: true,
-      })
-
-      tubes = deserialize(expectedResponse.data).assets
-    })
-
-    it('successfully', async () => {
-      const expectedResponse = newResponse({
-        success: true,
-        ...Data.CreatePacbioRequest,
-      })
-      create.mockReturnValue(Data.CreatePacbioRequest)
-
-      const response = await Actions.exportSampleExtractionTubesIntoTraction({ getters }, { tubes })
-
-      const expectedPayload = {
-        data: {
-          data: {
-            type: 'requests',
-            attributes: {
-              requests: Actions.sampleExtractionTubeJson(tubes),
-            },
-          },
-        },
-      }
-      expect(create).toBeCalledWith(expectedPayload)
-
-      expect(response).toEqual(expectedResponse)
-    })
-
-    it('unsuccessfully', async () => {
-      const failedResponse = {
-        success: false,
-        status: 422,
-        statusText: 'Unprocessable Entity',
-        data: { errors: { name: ['error message'] } },
-      }
-
-      const expectedResponse = newResponse({
-        success: false,
-        ...failedResponse,
-      })
-
-      create.mockReturnValue(failedResponse)
-
-      const response = await Actions.exportSampleExtractionTubesIntoTraction(
-        { dispatch, getters },
-        { tubes },
-      )
-      expect(response).toEqual(expectedResponse)
-    })
-  })
-
-  describe('#sampleExtractionTubeJson', () => {
-    it('will convert a deserialized response to the correct format for a pacbio request', () => {
-      const tubes = new Response(Data.SampleExtractionTubesWithSample).deserialize.assets
-      const [{ tube, sample, request }] = Actions.sampleExtractionTubeJson(tubes, undefined)
-      // sample
-      expect(sample.name).toBeDefined()
-      expect(sample.species).toBeDefined()
-      expect(sample.external_id).toBeDefined()
-      expect(sample.external_id.includes('-')).toBeTruthy()
-      // request
-      expect(request.external_study_id).toBeDefined()
-      expect(request.external_study_id.includes('-')).toBeTruthy()
-      expect(request.library_type).toBeDefined()
-      expect(request.estimate_of_gb_required).toBeDefined()
-      expect(request.number_of_smrt_cells).toBeDefined()
-      expect(request.cost_code).toBeDefined()
-      // tube
-      expect(tube.barcode).toBeDefined()
-    })
-
-    it('will import library_type when undefined', () => {
-      const tubes = new Response(Data.SampleExtractionTubesWithSample).deserialize.assets
-      const [{ request }] = Actions.sampleExtractionTubeJson(tubes, undefined)
-      expect(request.library_type).toEqual('type')
-    })
-
-    it('will remove library_type when null', () => {
-      const tubes = new Response(Data.SampleExtractionTubesWithSample).deserialize.assets
-      const [{ request }] = Actions.sampleExtractionTubeJson(tubes, null)
-      expect(request.library_type).toEqual(null)
-    })
-
-    it('will set library_type when specified', () => {
-      const tubes = new Response(Data.SampleExtractionTubesWithSample).deserialize.assets
-      const [{ request }] = Actions.sampleExtractionTubeJson(tubes, 'custom')
-      expect(request.library_type).toEqual('custom')
-    })
-
-    it('if cost code is null do not include cost code in request', () => {
-      const tubes = new Response(Data.SampleExtractionTubesWithSample).deserialize.assets
-      tubes[0].cost_code = null
-      const [{ request }] = Actions.sampleExtractionTubeJson(tubes)
-      expect(request.cost_code).not.toBeDefined()
     })
   })
 })

@@ -2,6 +2,9 @@
 
 describe('Label Printing page', () => {
   beforeEach(() => {
+    cy.withFlags({
+      enable_custom_form: { enabled: true },
+    })
     cy.visit('#/label-printing')
 
     cy.get('#barcode-input').type('aBarcode')

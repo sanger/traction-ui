@@ -1,97 +1,61 @@
-import * as Run from '@/api/PacbioRun'
 import PacbioRunInfoEdit from '@/components/pacbio/PacbioRunInfoEdit'
 import { localVue, mount, store } from '@support/testHelper'
+import { beforeEach, describe, expect } from 'vitest'
+
+// required as suggestion to remove the deprecated function
+// https://vue-test-utils.vuejs.org/api/options.html#attachtodocument
+const elem = document.createElement('div')
+if (document.body) {
+  document.body.appendChild(elem)
+}
+const buildWrapper = () =>
+  mount(PacbioRunInfoEdit, {
+    localVue,
+    store,
+    sync: false,
+    attachTo: elem,
+  })
 
 describe('PacbioRunInfoEdit', () => {
-  let wrapper, runInfo, run
+  const smrtLinkVersions = [
+    {
+      id: '1',
+      name: 'v1',
+      default: true,
+    },
+    {
+      id: '2',
+      name: 'v2',
+      default: false,
+    },
+  ]
+
+  const run = {
+    id: 'new',
+    name: 'TRACTION-RUN-3',
+    system_name: 'Sequel IIe',
+    sequencing_kit_box_barcode: null,
+    dna_control_complex_box_barcode: null,
+    comments: null,
+    smrt_link_version_id: 1,
+  }
+
+  let runInfo, wrapper
 
   beforeEach(() => {
-    run = Run.build()
-
-    const smrtLinkVersions = [
-      {
-        id: '1',
-        name: 'v1',
-        default: true,
-      },
-      {
-        id: '2',
-        name: 'v2',
-        default: false,
-      },
-    ]
-
-    store.commit('traction/pacbio/runs/setCurrentRun', run)
-    store.state.traction.pacbio.runCreate.resources.smrtLinkVersions = smrtLinkVersions
-
-    // required as suggestion to remove the deprecated function
-    // https://vue-test-utils.vuejs.org/api/options.html#attachtodocument
-    const elem = document.createElement('div')
-    if (document.body) {
-      document.body.appendChild(elem)
-    }
-    wrapper = mount(PacbioRunInfoEdit, { localVue, store, sync: false, attachTo: elem })
+    wrapper = buildWrapper()
     runInfo = wrapper.vm
-  })
-
-  it('can have mapState', () => {
-    expect(runInfo.sequencingKitBoxBarcode).toBeDefined()
-    expect(runInfo.dnaControlComplexBoxBarcode).toBeDefined()
-    expect(runInfo.comments).toBeDefined()
-    expect(runInfo.systemName).toBeDefined()
-  })
-
-  it('can have getters', () => {
-    expect(runInfo.currentRun).toBeDefined()
+    store.state.traction.pacbio.runCreate.run = run
+    store.state.traction.pacbio.runCreate.resources.smrtLinkVersions = smrtLinkVersions
   })
 
   it('must have systemName data', () => {
-    expect(runInfo.systemNameOptions).toEqual(['Sequel I', 'Sequel II', 'Sequel IIe'])
-  })
-
-  describe('form inputs', () => {
-    it('has a Run Name input', () => {
-      const name = 'run-name'
-      expect(wrapper.find('label[for="' + name + '"]').exists()).toBe(true)
-      expect(wrapper.find('input[id="' + name + '"]').exists()).toBe(true)
-    })
-    it('has a Sequencing Kit Box Barcode input', () => {
-      const name = 'sequencing-kit-box-barcode'
-      expect(wrapper.find('label[for="' + name + '"]').exists()).toBe(true)
-      expect(wrapper.find('input[id="' + name + '"]').exists()).toBe(true)
-    })
-    it('has a DNA Control Complex Box Barcode input', () => {
-      const name = 'dna-control-complex-box-barcode'
-      expect(wrapper.find('label[for="' + name + '"]').exists()).toBe(true)
-      expect(wrapper.find('input[id="' + name + '"]').exists()).toBe(true)
-    })
-    it('has a System Name select', () => {
-      const name = 'system-name'
-      expect(wrapper.find('label[for="' + name + '"]').exists()).toBe(true)
-      expect(wrapper.find('select[id="' + name + '"]').exists()).toBe(true)
-    })
-    it('has a SMRT Link Version select', () => {
-      const name = 'smrt-link-version'
-      expect(wrapper.find('label[for="' + name + '"]').exists()).toBe(true)
-      expect(wrapper.find('select[id="' + name + '"]').exists()).toBe(true)
-    })
-    it('has a Comments input', () => {
-      const name = 'comments'
-      expect(wrapper.find('label[for="' + name + '"]').exists()).toBe(true)
-      expect(wrapper.find('input[id="' + name + '"]').exists()).toBe(true)
-    })
+    expect(runInfo.systemNameOptions).toEqual(['Sequel IIe', 'Revio'])
   })
 
   describe('smrt link versions', () => {
     it('returns the correct versions', () => {
       expect(runInfo.smrtLinkVersionList.length).toEqual(2)
-    })
-
-    it('can return the selected version', () => {
-      runInfo.smrtLinkVersionList.forEach(function (version) {
-        runInfo.setSmrtLinkVersionId(version.id)
-        expect(runInfo.selectedSmrtLinkVersion).toEqual(version)
-      })
     })
 
     it('returns smrt link version select options', () => {
@@ -100,7 +64,35 @@ describe('PacbioRunInfoEdit', () => {
     })
   })
 
-  afterEach(() => {
-    wrapper.destroy()
+  describe('input', () => {
+    it('has a run name on run edit', async () => {
+      expect(store.state.traction.pacbio.runCreate.run.name).toEqual('TRACTION-RUN-3')
+    })
+
+    it('sequencing kit box barcode', async () => {
+      const input = wrapper.find('[data-attribute=sequencing_kit_box_barcode]')
+      await input.setValue('SKB1')
+      expect(store.state.traction.pacbio.runCreate.run.sequencing_kit_box_barcode).toEqual('SKB1')
+    }),
+      it('dna control complex box barcode', async () => {
+        const input = wrapper.find('[data-attribute=dna_control_complex_box_barcode]')
+        await input.setValue('DCCB1')
+        expect(store.state.traction.pacbio.runCreate.run.dna_control_complex_box_barcode).toEqual(
+          'DCCB1',
+        )
+      }),
+      it('system name', async () => {
+        expect(store.state.traction.pacbio.runCreate.run.system_name).toEqual('Sequel IIe')
+      }),
+      it('smrt_link_version_id', async () => {
+        const options = wrapper.find('[data-attribute=smrt_link_version]').findAll('option')
+        await options.at(1).setSelected()
+        expect(store.state.traction.pacbio.runCreate.run.smrt_link_version_id).toEqual(1)
+      }),
+      it('comments', async () => {
+        const input = wrapper.find('[data-attribute=comments]')
+        await input.setValue('example comment')
+        expect(store.state.traction.pacbio.runCreate.run.comments).toEqual('example comment')
+      })
   })
 })

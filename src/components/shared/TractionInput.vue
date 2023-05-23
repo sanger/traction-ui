@@ -8,6 +8,7 @@
       element by passing in all props allowed in <input> to <traction-input>
      The $attrs object includes all attributes that are not declared by the component's props
   - @input - On input, emit its own custom input event with the new value
+  - @keyup.enter - On enter, allow emiting of the custom input event 
 -->
 
 <template>
@@ -15,10 +16,12 @@
     <label v-if="title">{{ title }}</label>
     <input
       v-bind="$attrs"
-      :value="value"
+      ref="inputRef"
+      :value="displayValue()"
       :data-attribute="dataAttribute"
       :class="`w-full border border-gray-300 p-2 rounded-md focus:ring-sdb-100 focus:border-sdb-100 disabled:opacity-75 disabled:cursor-not-allowed${classes}`"
       @input="input($event)"
+      @keyup.enter="input($event)"
     />
   </div>
 </template>
@@ -57,6 +60,11 @@ export default {
       type: Number,
       default: 0,
     },
+    //Formatter function to format the displayed value in input field, if given
+    formatter: {
+      type: Function,
+      default: undefined,
+    },
   },
   data() {
     return {
@@ -65,6 +73,9 @@ export default {
   },
   methods: {
     input(event) {
+      if (event.key === 'Enter') {
+        this.$emit('enterKeyPress', event.target.value)
+      }
       // If debounce is supplied we want to debounce the input events
       if (this.debounce > 0) {
         if (this.debounceTimer) clearTimeout(this.debounceTimer)
@@ -75,6 +86,13 @@ export default {
         // Emit text data the payload event
         this.$emit('input', event.target.value)
       }
+    },
+    displayValue() {
+      //Formatter function given, so return formated value to display
+      if (this.formatter) {
+        return this.formatter(this.value)
+      }
+      return this.value
     },
   },
 }

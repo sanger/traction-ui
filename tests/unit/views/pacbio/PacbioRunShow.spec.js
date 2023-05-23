@@ -1,211 +1,97 @@
 import PacbioRun from '@/views/pacbio/PacbioRunShow'
-import { localVue, mount, store, router } from '@support/testHelper'
-import { beforeEach, describe, it } from 'vitest'
+import { localVue, mount, store, router, Data } from '@support/testHelper'
+import { beforeEach, describe, expect, it } from 'vitest'
+import { newRunType, existingRunType } from '@/store/traction/pacbio/runCreate/run'
+import flushPromises from 'flush-promises'
 
 const smrtLinkVersions = [
   {
     id: 1,
-    name: 'v10',
-    default: true,
-  },
-  {
-    id: 2,
     name: 'v11',
-    default: false,
+    default: true,
   },
 ]
 
-describe('Run.vue', () => {
-  let wrapper, mockRun, pacbioRun
-
+describe('PacbioRunShow.vue', () => {
   beforeEach(() => {
-    mockRun = {
-      id: '1',
-      name: '',
-      sequencing_kit_box_barcode: '',
-      dna_control_complex_box_barcode: '',
-      comments: '',
-      system_name: '',
-      wellDefaults: {
-        binding_kit_box_barcode: '',
-        ccs_analysis_output: 'Yes',
-        generate_hifi: 'On Instrument',
-        loading_target_p1_plus_p2: 0.85,
-        movie_time: '',
-        pre_extension_time: 2,
-      },
-      plate: {
-        wells: [
-          { position: 'A1', library: { barcode: '' } },
-          { position: 'A2', library: { barcode: '' } },
-          { position: 'B1', library: { barcode: '' } },
-          { position: 'B2', library: { barcode: '' } },
-        ],
-      },
-    }
-
     store.state.traction.pacbio.runCreate.resources.smrtLinkVersions = smrtLinkVersions
-    mockRun.smrt_link_version_id = 1
-    store.commit('traction/pacbio/runs/setCurrentRun', mockRun)
-
-    wrapper = mount(PacbioRun, {
-      store,
-      router,
-      localVue,
-      stubs: {
-        Plate: true,
-        pacbioPoolList: true,
-        PacbioRunInfoEdit: true,
-      },
-      propsData: { id: 'new' },
-    })
-    pacbioRun = wrapper.vm
   })
 
-  describe('Pacbio Run Info', () => {
-    it('dispays the run infomation', () => {
-      expect(wrapper.findComponent({ ref: 'PacbioRunInfoEdit' })).toBeTruthy()
-    })
-  })
+  describe('new', () => {
+    it('shows as a new run ', async () => {
+      const {
+        state: {
+          api: {
+            traction: {
+              pacbio: { smrt_link_versions: smrtLinkVersionsRequest },
+            },
+          },
+        },
+      } = store
 
-  describe('Pacbio Libraries Table', () => {
-    it('dispays the pacbio library table', () => {
-      expect(wrapper.findComponent({ ref: 'pacbioPoolList' })).toBeTruthy()
-    })
-  })
+      smrtLinkVersionsRequest.get = vi.fn()
 
-  describe('PacbioPlate', () => {
-    it('dispays the pacbio run plate', () => {
-      expect(wrapper.findComponent({ ref: 'plate' })).toBeTruthy()
-    })
-  })
-
-  describe('Back button', () => {
-    // TODO: not sure this is needed anymore?
-    it('will always show', () => {
-      expect(wrapper.find('#backToRunsButton').exists()).toBeTruthy()
-      wrapper.find('#backToRunsButton').trigger('click')
-      expect(wrapper.vm.$route.path).toBe('/pacbio/runs')
-    })
-  })
-
-  describe('Reset button', () => {
-    it('will show if the record is new', () => {
-      expect(wrapper.find('#reset').exists()).toBeTruthy()
-    })
-  })
-
-  describe('#create', () => {
-    beforeEach(() => {
-      pacbioRun.showAlert = vi.fn()
-      pacbioRun.createRun = vi.fn()
-      pacbioRun.redirectToRuns = vi.fn()
-    })
-
-    it('will show the create button', () => {
-      expect(wrapper.find('#create').exists()).toBeTruthy()
-    })
-
-    it('calls createRun', async () => {
-      pacbioRun.createRun.mockReturnValue([])
-
-      await pacbioRun.runAction()
-      expect(pacbioRun.createRun).toBeCalled()
-    })
-
-    it('successful', async () => {
-      pacbioRun.createRun.mockReturnValue([])
-
-      await pacbioRun.runAction()
-      expect(pacbioRun.createRun).toBeCalled()
-      expect(pacbioRun.redirectToRuns).toBeCalled()
-    })
-
-    it('unsuccessful', async () => {
-      pacbioRun.createRun.mockReturnValue(['this is an error'])
-
-      await pacbioRun.runAction()
-      expect(pacbioRun.createRun).toBeCalled()
-      expect(pacbioRun.showAlert).toBeCalledWith(
-        'Failed to create run in Traction: this is an error',
-        'danger',
-        'run-validation-message',
-      )
-      expect(pacbioRun.redirectToRuns).not.toBeCalled()
-    })
-  })
-
-  describe('#update', () => {
-    beforeEach(() => {
-      // create the mock of the method before mounting it for testing
-      vi.spyOn(PacbioRun.methods, 'provider').mockImplementation(() => {})
-
-      wrapper = mount(PacbioRun, {
+      const wrapper = mount(PacbioRun, {
         store,
         router,
         localVue,
-        propsData: { id: 1 },
         stubs: {
           Plate: true,
           pacbioPoolList: true,
           PacbioRunInfoEdit: true,
+          PacbioRunWellDefaultEdit: true,
         },
+        propsData: { id: 'new' },
       })
-      pacbioRun = wrapper.vm
+      await flushPromises()
 
-      pacbioRun.showAlert = vi.fn()
-      pacbioRun.updateRun = vi.fn()
-      pacbioRun.redirectToRuns = vi.fn()
-    })
+      const type = newRunType
 
-    it('will show the update button', () => {
-      expect(wrapper.find('#update').exists()).toBeTruthy()
-    })
-
-    it('calls updateRun', async () => {
-      pacbioRun.updateRun.mockReturnValue([])
-
-      await pacbioRun.runAction()
-      expect(pacbioRun.updateRun).toBeCalled()
-    })
-
-    it('successful', async () => {
-      pacbioRun.updateRun.mockReturnValue([])
-
-      await pacbioRun.runAction()
-      expect(pacbioRun.updateRun).toBeCalled()
-      expect(pacbioRun.redirectToRuns).toBeCalled()
-    })
-
-    it('unsuccessful', async () => {
-      pacbioRun.updateRun.mockReturnValue(['this is an error'])
-
-      await pacbioRun.runAction()
-      expect(pacbioRun.updateRun).toBeCalled()
-      expect(pacbioRun.showAlert).toBeCalledWith(
-        'Failed to create run in Traction: this is an error',
-        'danger',
-        'run-validation-message',
-      )
-      expect(pacbioRun.redirectToRuns).not.toBeCalled()
+      const button = wrapper.find(`[data-action=${type.id}]`)
+      expect(button.element.id).toEqual(type.id)
+      expect(button.text()).toEqual(type.label)
     })
   })
 
-  describe('#reset', () => {
-    beforeEach(() => {
-      pacbioRun.showAlert = vi.fn()
-      pacbioRun.newRun = vi.fn()
-    })
+  describe('existing run', () => {
+    it('shows as an existing run ', async () => {
+      const {
+        state: {
+          api: {
+            traction: {
+              pacbio: {
+                smrt_link_versions: smrtLinkVersionsRequest,
+                runs: runsRequest,
+                pools: poolsRequest,
+              },
+            },
+          },
+        },
+      } = store
 
-    it('calls newRun', async () => {
-      pacbioRun.newRun.mockReturnValue([])
-      pacbioRun.resetRun()
-      expect(pacbioRun.newRun).toBeCalled()
-      expect(pacbioRun.showAlert).toBeCalledWith(
-        'Run has been reset',
-        'success',
-        'run-validation-message',
-      )
+      smrtLinkVersionsRequest.get = vi.fn()
+      runsRequest.find = vi.fn(() => Data.PacbioRun)
+      poolsRequest.get = vi.fn(() => Data.PacbioPool)
+
+      const wrapper = mount(PacbioRun, {
+        store,
+        router,
+        localVue,
+        stubs: {
+          Plate: true,
+          pacbioPoolList: true,
+          PacbioRunInfoEdit: true,
+          PacbioRunWellDefaultEdit: true,
+        },
+        propsData: { id: 1 },
+      })
+      await flushPromises()
+
+      const type = existingRunType
+
+      const button = wrapper.find(`[data-action=${type.id}]`)
+      expect(button.element.id).toEqual(type.id)
+      expect(button.text()).toEqual(type.label)
     })
   })
 })
