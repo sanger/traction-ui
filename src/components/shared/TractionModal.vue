@@ -14,7 +14,7 @@
 <template>
   <flagged-feature name="enable_custom_modal">
     <template #disabled>
-      <b-modal v-bind="$attrs" ref="b-modal" :title="title" v-on="$listeners">
+      <b-modal v-bind="$attrs" ref="b-modal" :title="title" v-on="$listeners" @close="close">
         <template v-for="(_, slot) of $scopedSlots" #[slot]="scope"
           ><slot :name="slot" v-bind="scope"
         /></template>
