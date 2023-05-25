@@ -38,6 +38,22 @@
 
 <script>
 import { BAlert } from 'bootstrap-vue'
+
+const colorStyles = {
+  success: {
+    message: 'bg-green-100 text-green-700',
+    icon: 'text-green-400 hover:text-green-700',
+  },
+  danger: {
+    message: 'bg-red-200 text-red-600',
+    icon: 'text-red-400 hover:text-red-600',
+  },
+  error: {
+    message: 'bg-red-200 text-red-600',
+    icon: 'text-red-400 hover:text-red-600',
+  },
+}
+
 export default {
   name: 'TractionMessage',
   components: { BAlert },
@@ -78,17 +94,7 @@ export default {
      * 'error'  -  will be displayed in red color
      */
     color() {
-      let value = { message: 'bg-gray-300 text-gray-400', icon: '' }
-      if (this.type === 'success') {
-        value = {
-          message: 'bg-green-100 text-green-700',
-          icon: 'text-green-300 hover:text-green-700',
-        }
-      }
-      if (this.type === 'error' || this.type === 'danger') {
-        value = { message: 'bg-red-200 text-red-400', icon: 'text-red-300 hover:text-red-400' }
-      }
-      return value
+      return colorStyles[this.type] ?? { message: 'bg-gray-300 text-gray-500', icon: '' }
     },
   },
   methods: {
