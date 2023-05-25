@@ -47,7 +47,7 @@ describe('TractionMessage.vue', () => {
         'bg-green-100 text-green-70',
       )
       expect(wrapper.find('[data-attribute=close-icon]').attributes('class')).toContain(
-        'text-green-300 hover:text-green-700',
+        'text-green-400 hover:text-green-700',
       )
     })
 
@@ -57,10 +57,10 @@ describe('TractionMessage.vue', () => {
         propsData: { ...requiredProps, type: 'error' },
       })
       expect(wrapper.find('[data-attribute=message]').attributes('class')).toContain(
-        'bg-red-200 text-red-400',
+        'bg-red-200 text-red-600',
       )
       expect(wrapper.find('[data-attribute=close-icon]').attributes('class')).toContain(
-        'text-red-300 hover:text-red-400',
+        'text-red-400 hover:text-red-600',
       )
     })
     it('emits dismissed event on close button click', () => {
