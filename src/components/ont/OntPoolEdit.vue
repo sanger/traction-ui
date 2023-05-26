@@ -6,9 +6,8 @@
       :tag="`${poolType}`"
       data-attribute="pool-type"
     >
-      <!-- Will be removed -->
       <div>
-        <traction-file
+        <!-- <traction-file
           id="qcFileInput"
           ref="qc-file-form-field"
           :state="parsedFile"
@@ -17,8 +16,7 @@
           accept="text/csv, .csv"
           size="sm"
           @input="uploadFile"
-        ></traction-file>
-        <!--  -->
+        ></traction-file> -->
 
         <div>
           <label class="flex text-left" for="qcFileInput">Select file</label>
