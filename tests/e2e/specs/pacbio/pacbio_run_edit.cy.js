@@ -3,6 +3,7 @@ describe('Pacbio Run Edit view', () => {
     cy.withFlags({
       enable_custom_table: { enabled: true },
       enable_custom_form: { enabled: true },
+      enable_custom_modal: { enabled: true },
     })
     cy.intercept('/v1/pacbio/runs', {
       fixture: 'tractionPacbioRuns.json',

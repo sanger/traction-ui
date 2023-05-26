@@ -4,7 +4,13 @@
       >Edit</traction-button
     >
 
-    <traction-modal id="editSampleModal" ref="modal" title="Edit Sample">
+    <traction-modal
+      id="editSampleModal"
+      ref="modal"
+      title="Edit Sample"
+      :visible="showModal"
+      @cancel="hide"
+    >
       <traction-form id="sampleMetaDataForm">
         <LibraryTypeSelect
           v-model="request.library_type"
@@ -77,6 +83,7 @@ export default {
         number_of_smrt_cells: '',
         cost_code: '',
       },
+      showModal: false,
     }
   },
   methods: {
@@ -93,8 +100,19 @@ export default {
     },
     ...mapActions(['updateRequest']),
     show() {
-      this.$refs['modal'].show()
+      this.showModal = true
+      /**This need to be removed when custom_enable_modal feature flag is removed */
+      if ('b-modal' in this.$refs['modal'].$refs) {
+        this.$refs['modal'].$refs['b-modal'].show()
+      }
       this.request = { ...this.req }
+    },
+    hide() {
+      this.showModal = false
+      /**This need to be removed when custom_enable_modal feature flag is removed */
+      if ('b-modal' in this.$refs['modal'].$refs) {
+        this.$refs['modal'].$refs['b-modal'].hide()
+      }
     },
     alert(message, type) {
       this.$emit('alert', message, type)
