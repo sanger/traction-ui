@@ -26,9 +26,10 @@
         class="fixed cursor-auto hover:cursor-auto inset-0 opacity-50 bg-black h-screen w-full justify-center items-start md:items-center pt-10 md:pt-0"
       />
       <!-- modal -->
-      <div class="fixed z-20 inset-0 overflow-y-auto" @click="close">
+      <div class="fixed z-20 inset-0 overflow-y-auto" @click.self="close">
         <div
           class="flex items-end justify-center pt-4 px-4 pb-20 text-center sm:block xl:p-0 opacity-100"
+          @click.self="close"
         >
           <div
             class="inline-block align-bottom bg-white rounded-lg text-left overflow-hidden shadow-xl sm:my-8 sm:align-middle sm:max-w-screen-md sm:w-full"
