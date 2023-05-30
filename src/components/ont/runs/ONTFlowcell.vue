@@ -8,32 +8,37 @@
       <div class="text-xl mb-2">{{ coordinate }}</div>
       <fieldset id="input-group-flowcell-id" class="py-2">
         <label class="flex justify-start">Flowcell ID:</label>
-        <BFormInput
-          :id="'flowcell-id-' + position"
-          placeholder="Scan flowcell ID"
-          :value="flowcellId"
-          :formatter="formatter"
-          :state="flowcellIdValidation"
-          @input="setFlowcellId({ $event, position })"
-        ></BFormInput>
-        <!-- This will only be shown if the preceding input has an invalid state -->
-        <traction-invalid-feedback id="input-flowcell-id-feedback"
-          >Enter at valid Flowcell ID (3 letters then at least 3 numbers)</traction-invalid-feedback
+        <traction-field-error
+          id="input-flowcell-id-feedback"
+          :error="flowcellIdValidationError"
+          :with-icon="isFlowIdExists"
         >
+          <traction-input
+            :id="'flowcell-id-' + position"
+            placeholder="Scan flowcell ID"
+            :value="flowcellId"
+            :formatter="formatter"
+            :classes="flowcell_id_field_colour"
+            @input="setFlowcellId({ $event, position })"
+          />
+        </traction-field-error>
       </fieldset>
       <fieldset id="input-group-pool-id" class="py-2">
         <label class="flex justify-start">Pool Library Barcode:</label>
-        <BFormInput
-          :id="'pool-id-' + position"
-          v-model="barcode"
-          :formatter="formatter"
-          :state="barcodeState"
-          debounce="500"
-          placeholder="Scan library barcode"
-        ></BFormInput>
-        <traction-invalid-feedback id="input-pool-tube-barcode-feedback"
-          >Enter a valid Pool Library barcode</traction-invalid-feedback
+        <traction-field-error
+          id="input-pool-tube-barcode-feedback"
+          :error="barcodeValidationError"
+          :with-icon="isBarcodeExists"
         >
+          <traction-input
+            :id="'pool-id-' + position"
+            v-model="barcode"
+            :formatter="formatter"
+            :classes="flowcell_barcode_field_colour"
+            debounce="500"
+            placeholder="Scan library barcode"
+          />
+        </traction-field-error>
       </fieldset>
     </div>
   </div>
@@ -47,13 +52,8 @@
 import { createNamespacedHelpers } from 'vuex'
 const { mapState, mapMutations } = createNamespacedHelpers('traction/ont/runs')
 const { mapActions } = createNamespacedHelpers('traction/ont/pools')
-import { BFormInput } from 'bootstrap-vue'
-
 export default {
   name: 'ONTFlowcell',
-  components: {
-    BFormInput,
-  },
   props: {
     position: {
       type: Number,
@@ -66,32 +66,37 @@ export default {
   },
   data() {
     return {
-      barcodeState: null,
+      barcodeState: true,
     }
   },
   computed: {
-    flowcellIdValidation() {
+    flowcellIdValidationError() {
+      // 3 letters followed by at least 3 numbers
       if (this.flowcellId) {
-        // 3 letters followed by at least 3 numbers
-        return !!this.flowcellId.match(/^[a-zA-Z]{3}\d{3,}$/)
-      } else {
-        return null
+        const isValid = !!this.flowcellId.match(/^[a-zA-Z]{3}\d{3,}$/)
+        return isValid ? '' : 'Enter at valid Flowcell ID (3 letters then at least 3 numbers)'
       }
+      return ''
     },
+    barcodeValidationError() {
+      return this.barcode ? (this.barcodeState ? '' : 'Enter a valid Pool Library barcode') : ''
+    },
+    isFlowIdExists() {
+      return !!this.flowcellId
+    },
+    isBarcodeExists() {
+      return !!this.barcode
+    },
+
     // For Vuex asynchronous validation we need to use computed getter and setter properties
     barcode: {
       get() {
-        if (this.poolTubeBarcode) {
-          this.setBarcodeState(true)
-        }
         return this.poolTubeBarcode
       },
       async set(value) {
         const response = await this.validatePoolBarcode(value)
-        if (response.success) {
-          this.setPoolTubeBarcode({ barcode: value, position: this.position })
-        }
         this.setBarcodeState(response.success)
+        this.setPoolTubeBarcode({ barcode: value, position: this.position })
       },
     },
     ...mapState({
@@ -111,20 +116,37 @@ export default {
           return flowcell.tube_barcode
         }
       },
+      flowcell_id_field_colour() {
+        return this.isFlowIdExists
+          ? this.flowcellIdValidationError.length === 0
+            ? 'border-3 border-solid border-green-600'
+            : 'border-3 border-solid border-red-600 focus:border-red-600'
+          : ''
+      },
+      flowcell_barcode_field_colour() {
+        return this.barcode
+          ? this.barcodeState
+            ? 'border-3 border-solid border-green-600'
+            : 'border-3 border-solid border-red-600 focus:border-red-600'
+          : ''
+      },
       flowcell_bg_colour() {
-        if (this.flowcellIdValidation == false || this.barcodeState == false) {
+        if (!this.isFlowIdExists && !this.isBarcodeExists) return 'border border-3 border-white'
+
+        if (this.flowcellIdValidationError.length > 0 || !this.barcodeState) {
           return 'border border-3 border-danger'
         }
 
-        if (this.flowcellIdValidation && this.barcodeState) {
+        const validFlowId = this.isFlowIdExists && this.flowcellIdValidationError.length === 0
+        const validBarcodeId = this.isBarcodeExists && this.barcodeState
+
+        if (validFlowId && validBarcodeId) {
           return 'border border-3 border-success'
         }
 
-        if (this.flowcellIdValidation || this.barcodeState) {
+        if ((validFlowId && !this.isBarcodeExists) || (validBarcodeId && !this.isFlowIdExists)) {
           return 'border border-3 border-warning'
         }
-
-        return 'border border-3 border-white'
       },
     }),
   },
