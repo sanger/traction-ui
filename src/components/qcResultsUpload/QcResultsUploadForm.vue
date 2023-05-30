@@ -15,7 +15,7 @@
       <traction-heading level="3" show-border>CSV File</traction-heading>
 
       <!-- Will be removed -->
-      <traction-file
+      <!-- <traction-file
         id="qc-results-upload-file"
         v-model="file"
         class="my-5 text-left"
@@ -24,7 +24,7 @@
         drop-placeholder="Drop file here (CSV only)..."
         accept="text/csv, .csv"
         required
-      ></traction-file>
+      ></traction-file> -->
       <!--  -->
 
       <div :class="['w-full', `${border}`]">
@@ -112,7 +112,6 @@ export default {
       this.busy = true
       this.disableUpload = true
 
-      // this.file.text is a bootstrap way of getting the info out, need to change this
       const fileInput = document.getElementById('qcResultsUploadFile')
       const uploadedFile = fileInput.files[0]
       const reader = new FileReader()
@@ -122,7 +121,7 @@ export default {
         try {
           const data = { csv: csv, usedBySelected: this.usedBySelected }
           await createQcResultsUploadResource(this.qcResultUploadsRequest, data)
-          this.showAlert(`Successfully imported: ${this.file.name}`, 'success')
+          this.showAlert(`Successfully imported: ${fileInput.files[0].name}`, 'success')
         } catch (e) {
           this.showAlert(e, 'danger')
         }

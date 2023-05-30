@@ -21,7 +21,7 @@ describe('Extraction QC page', () => {
   })
 
   it('QcResultsUpload POST request is successful', () => {
-    cy.get('#qc-results-upload-file').attachFile('qc-results-upload.csv')
+    cy.get('#qcResultsUploadFile').attachFile('qc-results-upload.csv')
 
     cy.intercept('/v1/qc_results_uploads', {
       statusCode: 201,
@@ -37,7 +37,7 @@ describe('Extraction QC page', () => {
   })
 
   it('QcResultsUpload POST is unsuccessful, unprocessable entity', () => {
-    cy.get('#qc-results-upload-file').attachFile('qc-results-upload-failure.csv')
+    cy.get('#qcResultsUploadFile').attachFile('qc-results-upload-failure.csv')
 
     cy.intercept('/v1/qc_results_uploads', {
       statusCode: 422,

@@ -2,7 +2,6 @@ import { mount, localVue, store } from '@support/testHelper'
 import OntPoolEdit from '@/components/ont/OntPoolEdit'
 import { newLibrary } from '@/store/traction/ont/pools/pool.js'
 import { Data } from '@support/testHelper'
-import * as pacbio from '@/lib/csv/pacbio'
 
 const buildWrapper = () =>
   mount(OntPoolEdit, {
@@ -136,35 +135,39 @@ describe('ontPoolEdit#edit', () => {
   describe('uploadFile', () => {
     it('supports no files being selected', async () => {
       const fileInput = wrapper.find('#qcFileInput')
-
       const emptyFileList = {
         length: 0,
         item: () => null,
       }
 
-      fileInput.element.files = emptyFileList
+      Object.defineProperty(fileInput.element, 'files', {
+        value: emptyFileList,
+        writable: true,
+      })
+
       fileInput.trigger('change')
+      // await wrapper.vm.$nextTick()
       expect(wrapper.vm.parsedFile).toBe(null)
     })
 
     it('highlights a valid file', async () => {
-      const mockFile = new File(['file content'], 'mock_file.csv', {type: 'text/csv '})
-      const event = { target: { files: {mockFile}}}
       const fileInput = wrapper.find('#qcFileInput')
+      const mockFile = new File(['file content'], 'mock_file.csv', { type: 'text/csv ' })
+      const fileList = {
+        length: 1,
+        item: () => mockFile,
+      }
 
-      fileInput.element.files = event.target.files
+      Object.defineProperty(fileInput.element, 'files', {
+        value: fileList,
+        writable: true,
+      })
+
       fileInput.trigger('change')
       expect(wrapper.vm.parsedFile).toBe(true)
     })
 
-    it('highlights a invalid file', async () => {
-      // vi.spyOn(console, 'error').mockImplementation(() => {})
-      // spy.mockImplementation(() => {
-      //   throw 'Toys'
-      // })
-      // await wrapper.vm.uploadFile(mockFile)
-      // expect(wrapper.vm.parsedFile).toBe(false)
-    })
+    it.skip('highlights a invalid file', async () => {})
   })
 
   describe('pool type', () => {
