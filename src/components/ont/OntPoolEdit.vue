@@ -7,20 +7,11 @@
       data-attribute="pool-type"
     >
       <div>
-        <!-- <traction-file
-          id="qcFileInput"
-          ref="qc-file-form-field"
-          :state="parsedFile"
-          placeholder="Choose a file or drop it here..."
-          drop-placeholder="Drop file here..."
-          accept="text/csv, .csv"
-          size="sm"
-          @input="uploadFile"
-        ></traction-file> -->
-
         <div>
           <label class="flex text-left" for="qcFileInput">Select file</label>
-          <div :class="['w-full', `${border}`]">
+          <div 
+          id="borderDiv"
+          :class="['w-full', `${border}`]">
             <input
               id="qcFileInput"
               class="relative m-0 block w-full min-w-0 flex-auto rounded border file:border-0"

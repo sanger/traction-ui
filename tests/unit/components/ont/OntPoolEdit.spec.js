@@ -2,6 +2,8 @@ import { mount, localVue, store } from '@support/testHelper'
 import OntPoolEdit from '@/components/ont/OntPoolEdit'
 import { newLibrary } from '@/store/traction/ont/pools/pool.js'
 import { Data } from '@support/testHelper'
+import { expect } from 'vitest'
+import * as Library from '@/lib/csv/pacbio'
 
 const buildWrapper = () =>
   mount(OntPoolEdit, {
@@ -133,55 +135,19 @@ describe('ontPoolEdit#edit', () => {
   })
 
   describe('uploadFile', () => {
-    it.skip('supports no files being selected', async () => {
+    it('triggers readAsText() on file selection', async () => {
       const fileInput = wrapper.find('#qcFileInput')
-      const emptyFileList = {
-        length: 0,
-        item: () => null,
+      const mockFile = new File(['file content'], 'mock_file.csv', { type: 'csv' })
+
+      const fileReader = {
+        readAsText: vi.fn(),
       }
-
-      Object.defineProperty(fileInput.element, 'files', {
-        value: emptyFileList,
-        writable: true,
-      })
-
-      fileInput.trigger('change')
-      // await wrapper.vm.$nextTick()
-      expect(wrapper.vm.parsedFile).toBe(null)
-    })
-
-    it.skip('highlights a valid file', async () => {
-      const fileInput = wrapper.find('#qcFileInput')
-      const mockFile = new File(['file content'], 'mock_file.csv', { type: 'csv ' })
       const fileList = {
         length: 1,
         item: () => mockFile,
       }
 
-      Object.defineProperty(fileInput.element, 'files', {
-        value: fileList,
-        writable: true,
-      })
-
-      fileInput.trigger('change')
-      expect(wrapper.vm.parsedFile).toBe(true)
-    })
-
-    it.skip('highlights a invalid file', async () => {})
-
-    it('triggers readAsText() on file selection', async () => {
-      const fileInput = wrapper.find('#qcFileInput')
-      const mockFile = new File(['file content'], 'mock_file.csv', { type: 'csv ' })
-
-      // mock the FileReader, which has a readAsText property
-      const fileReader = {
-        readAsText: vi.fn(),
-      }
-      const fileList = {
-        length: 1, 
-        item: () => mockFile
-      }
-
+      // set a spy on FileReader and replace with fileReader mock when called
       vi.spyOn(window, 'FileReader').mockImplementation(() => fileReader)
 
       // files property of fileInput.element is defined as fileList
@@ -191,8 +157,64 @@ describe('ontPoolEdit#edit', () => {
       })
 
       fileInput.trigger('change')
-      await wrapper.vm.$nextTick()
       expect(fileReader.readAsText).toBeCalled()
+    })
+
+    it('sets the parsedFile true for a valid file', async() => {
+      const fileInput = wrapper.find('#qcFileInput')
+      const mockFile = new File(['file content'], 'mock_file.csv', { type: 'csv' })
+      const eachRecord = vi.spyOn(Library, 'eachRecord').mockResolvedValue(
+      []
+    )
+      const fileReader = {
+        readAsText: vi.fn(),
+      }
+      const fileList = {
+        length: 1,
+        item: () => mockFile,
+      }
+      vi.spyOn(window, 'FileReader').mockImplementation(() => fileReader)
+      Object.defineProperty(fileInput.element, 'files', {
+        value: fileList,
+        writable: true,
+      })
+      let onloadRef
+      Object.defineProperty(fileReader, 'onload', {
+        get() {
+          return this._onload
+        },
+        set(onload) {
+          onloadRef = onload
+          this._onload = onload
+        },
+      })
+      fileInput.trigger('change')
+      await wrapper.vm.$nextTick()
+      const event = { target: { result: mockFile } }
+      await onloadRef(event)
+      expect(eachRecord).toBeCalled()
+      expect(wrapper.vm.parsedFile).toBe(true)
+    } )
+
+    it('returns no border when parsedFile is null', async () => {
+      wrapper.parsedFile = null
+      await wrapper.vm.$nextTick()
+
+      expect(wrapper.vm.border).toContain('border-0')
+    })
+
+    it('returns green border when parsedFile is true', async () => {
+      wrapper.vm.parsedFile = true
+      await wrapper.vm.$nextTick()
+
+      expect(wrapper.vm.border).toEqual('rounded border border-green-500')
+    })
+
+    it('returns green border when parsedFile is false', async () => {
+      wrapper.vm.parsedFile = false
+      await wrapper.vm.$nextTick()
+
+      expect(wrapper.vm.border).toEqual('rounded border border-red-500')
     })
   })
 

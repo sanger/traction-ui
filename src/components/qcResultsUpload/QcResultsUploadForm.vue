@@ -14,7 +14,6 @@
       ></traction-select>
       <traction-heading level="3" show-border>CSV File</traction-heading>
 
-      <!-- Will be removed -->
       <!-- <traction-file
         id="qc-results-upload-file"
         v-model="file"
@@ -25,7 +24,6 @@
         accept="text/csv, .csv"
         required
       ></traction-file> -->
-      <!--  -->
 
       <div :class="['w-full', `${border}`]">
         <input
