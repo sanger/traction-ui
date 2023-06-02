@@ -38,13 +38,15 @@ describe('ONTFlowcell', () => {
       it('errors if FlowcellId is not valid', async () => {
         const flowcellIdInput = wrapper.find('#flowcell-id-1')
         await flowcellIdInput.setValue('some value')
-        expect(ontFlowcell.flowcellIdValidation).toBeFalsy()
+        expect(ontFlowcell.flowcellIdValidationError).toBe(
+          'Enter at valid Flowcell ID (3 letters then at least 3 numbers)',
+        )
       })
 
       it('does not error if FlowcellId is valid', async () => {
         const flowcellIdInput = wrapper.find('#flowcell-id-1')
         await flowcellIdInput.setValue('ABC123')
-        expect(ontFlowcell.flowcellIdValidation).toBeTruthy()
+        expect(ontFlowcell.flowcellIdValidationError).toBe('')
       })
     })
 
@@ -54,6 +56,7 @@ describe('ONTFlowcell', () => {
       expect(ontFlowcell.poolTubeBarcode).toBeDefined()
       expect(ontFlowcell.poolTubeBarcode).toEqual('TRAC-1-A')
       expect(ontFlowcell.flowcell_bg_colour).toBeDefined()
+      console.log(ontFlowcell.flowcell_bg_colour)
       expect(ontFlowcell.flowcell_bg_colour).toEqual('border border-3 border-success')
     })
   })

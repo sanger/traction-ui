@@ -12,6 +12,7 @@
           id="input-flowcell-id-feedback"
           :error="flowcellIdValidationError"
           :with-icon="isFlowIdExists"
+          :classes="textSize"
         >
           <traction-input
             :id="'flowcell-id-' + position"
@@ -48,6 +49,16 @@
  * # ONTFlowcell
  *
  * Displays a panel for an individual flowcell. May be empty or contain a pool.
+ *
+ * 'flowcellId' and 'barcode' can be in three states - empty, valid or invalid.
+ * The border colour of input fields for 'flowCellId' and 'barcode' indicate these states as below
+ * No border - empty value, green for a valid value and red for an invalid value
+ *
+ * The border colour of the panel displaying flowcell also depends on the states of 'flowcellId' and 'barcode'
+ * green - if both flowcellId and barcode fields contain valid values
+ * red - if any of flowcellId and barcode fields contain invalid values
+ * white - if both flowcellId and barcode fields are empty
+ * yellow - if one of flowcellId and barcode fields are valid and other is empty
  */
 import { createNamespacedHelpers } from 'vuex'
 const { mapState, mapMutations } = createNamespacedHelpers('traction/ont/runs')
@@ -66,10 +77,13 @@ export default {
   },
   data() {
     return {
-      barcodeState: true,
+      /**Represents whether the barcode is valid (=true) , invalid(=false) or empty(=null) */
+      barcodeState: null,
+      barcodeValue: '',
     }
   },
   computed: {
+    /**Returns an error message if invalid otherwise an empty string */
     flowcellIdValidationError() {
       // 3 letters followed by at least 3 numbers
       if (this.flowcellId) {
@@ -78,12 +92,15 @@ export default {
       }
       return ''
     },
+    /**Returns a message if invalid otherwise empty */
     barcodeValidationError() {
       return this.barcode ? (this.barcodeState ? '' : 'Enter a valid Pool Library barcode') : ''
     },
+    /** Is the flowcellId empty or not */
     isFlowIdExists() {
       return !!this.flowcellId
     },
+    /** Is the barcode field empty or not */
     isBarcodeExists() {
       return !!this.barcode
     },
@@ -91,12 +108,19 @@ export default {
     // For Vuex asynchronous validation we need to use computed getter and setter properties
     barcode: {
       get() {
-        return this.poolTubeBarcode
+        return this.barcodeValue
       },
       async set(value) {
+        this.barcodeValue = value
         const response = await this.validatePoolBarcode(value)
+        /*It is required to update the barcode here because components are externally 
+            listening to this state */
+        this.setPoolTubeBarcode({
+          barcode: response.success ? value : undefined,
+          position: this.position,
+        })
+        //response.success will be null for empty strings
         this.setBarcodeState(response.success)
-        this.setPoolTubeBarcode({ barcode: value, position: this.position })
       },
     },
     ...mapState({
@@ -113,9 +137,12 @@ export default {
           (flowcell) => flowcell.position == this.position,
         )
         if (flowcell) {
+          this.barcodeValue = flowcell.tube_barcode
+          this.barcodeState = true
           return flowcell.tube_barcode
         }
       },
+      /**Displays green if valid, red if invalid and no border if empty */
       flowcell_id_field_colour() {
         return this.isFlowIdExists
           ? this.flowcellIdValidationError.length === 0
@@ -123,19 +150,22 @@ export default {
             : 'border-3 border-solid border-red-600 focus:border-red-600'
           : ''
       },
+      /**Displays green if valid, red if invalid and no border if empty */
       flowcell_barcode_field_colour() {
-        return this.barcode
+        return this.isBarcodeExists
           ? this.barcodeState
             ? 'border-3 border-solid border-green-600'
             : 'border-3 border-solid border-red-600 focus:border-red-600'
           : ''
       },
+      /**
+       * green - if both flowcellId and barcode fields contain valid values
+       * red - if any of flowcellId and barcode fields contain invalid values
+       * white - if both flowcellId and barcode fields are empty
+       * yellow - if one of flowcellId and barcode fields are valid and other is empty
+       */
       flowcell_bg_colour() {
         if (!this.isFlowIdExists && !this.isBarcodeExists) return 'border border-3 border-white'
-
-        if (this.flowcellIdValidationError.length > 0 || !this.barcodeState) {
-          return 'border border-3 border-danger'
-        }
 
         const validFlowId = this.isFlowIdExists && this.flowcellIdValidationError.length === 0
         const validBarcodeId = this.isBarcodeExists && this.barcodeState
@@ -147,6 +177,16 @@ export default {
         if ((validFlowId && !this.isBarcodeExists) || (validBarcodeId && !this.isFlowIdExists)) {
           return 'border border-3 border-warning'
         }
+
+        if (
+          this.flowcellIdValidationError.length > 0 ||
+          (this.isBarcodeExists && !this.barcodeState)
+        ) {
+          return 'border border-3 border-danger'
+        }
+      },
+      textSize() {
+        return 'text-sm'
       },
     }),
   },
