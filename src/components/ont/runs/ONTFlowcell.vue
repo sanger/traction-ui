@@ -36,7 +36,7 @@
             v-model="barcode"
             :formatter="formatter"
             :classes="flowcell_barcode_field_colour"
-            debounce="500"
+            debounce="300"
             placeholder="Scan library barcode"
           />
         </traction-field-error>
