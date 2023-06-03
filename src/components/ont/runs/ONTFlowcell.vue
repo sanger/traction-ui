@@ -12,7 +12,6 @@
           id="input-flowcell-id-feedback"
           :error="flowcellIdValidationError"
           :with-icon="isFlowIdExists"
-          :classes="textSize"
         >
           <traction-input
             :id="'flowcell-id-' + position"
@@ -138,7 +137,7 @@ export default {
         )
         if (flowcell) {
           this.barcodeValue = flowcell.tube_barcode
-          this.barcodeState = true
+          this.barcodeState = !!flowcell.tube_barcode
           return flowcell.tube_barcode
         }
       },
@@ -184,9 +183,6 @@ export default {
         ) {
           return 'border border-3 border-danger'
         }
-      },
-      textSize() {
-        return 'text-sm'
       },
     }),
   },
