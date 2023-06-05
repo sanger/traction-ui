@@ -3,7 +3,7 @@ import OntPoolEdit from '@/components/ont/OntPoolEdit'
 import { newLibrary } from '@/store/traction/ont/pools/pool.js'
 import { Data } from '@support/testHelper'
 import { expect } from 'vitest'
-import * as Library from '@/lib/csv/pacbio'
+import * as pacbio from '@/lib/csv/pacbio'
 
 const buildWrapper = () =>
   mount(OntPoolEdit, {
@@ -135,86 +135,31 @@ describe('ontPoolEdit#edit', () => {
   })
 
   describe('uploadFile', () => {
-    it('triggers readAsText() on file selection', async () => {
-      const fileInput = wrapper.find('#qcFileInput')
-      const mockFile = new File(['file content'], 'mock_file.csv', { type: 'csv' })
+    const spy = vi.spyOn(pacbio, 'eachRecord')
+    const mockFile = {
+      async text() {},
+    }
 
-      const fileReader = {
-        readAsText: vi.fn(),
-      }
-      const fileList = {
-        length: 1,
-        item: () => mockFile,
-      }
-
-      // set a spy on FileReader and replace with fileReader mock when called
-      vi.spyOn(window, 'FileReader').mockImplementation(() => fileReader)
-
-      // files property of fileInput.element is defined as fileList
-      Object.defineProperty(fileInput.element, 'files', {
-        value: fileList,
-        writable: true,
-      })
-
-      fileInput.trigger('change')
-      expect(fileReader.readAsText).toBeCalled()
+    it('supports no files being selected', async () => {
+      await wrapper.vm.uploadFile(null)
+      expect(wrapper.vm.parsedFile).toEqual(null)
     })
 
-    it('sets the parsedFile true for a valid file', async() => {
-      const fileInput = wrapper.find('#qcFileInput')
-      const mockFile = new File(['file content'], 'mock_file.csv', { type: 'csv' })
-      const eachRecord = vi.spyOn(Library, 'eachRecord').mockResolvedValue(
-      []
-    )
-      const fileReader = {
-        readAsText: vi.fn(),
-      }
-      const fileList = {
-        length: 1,
-        item: () => mockFile,
-      }
-      vi.spyOn(window, 'FileReader').mockImplementation(() => fileReader)
-      Object.defineProperty(fileInput.element, 'files', {
-        value: fileList,
-        writable: true,
-      })
-      let onloadRef
-      Object.defineProperty(fileReader, 'onload', {
-        get() {
-          return this._onload
-        },
-        set(onload) {
-          onloadRef = onload
-          this._onload = onload
-        },
-      })
-      fileInput.trigger('change')
-      await wrapper.vm.$nextTick()
-      const event = { target: { result: mockFile } }
-      await onloadRef(event)
-      expect(eachRecord).toBeCalled()
-      expect(wrapper.vm.parsedFile).toBe(true)
-    } )
-
-    it('returns no border when parsedFile is null', async () => {
-      wrapper.parsedFile = null
-      await wrapper.vm.$nextTick()
-
-      expect(wrapper.vm.border).toContain('border-0')
+    it('highlights a valid file', async () => {
+      spy.mockImplementation(() => {})
+      const event = { target: { files: [mockFile] } }
+      await wrapper.vm.uploadFile(event)
+      expect(wrapper.vm.parsedFile).toEqual(true)
     })
 
-    it('returns green border when parsedFile is true', async () => {
-      wrapper.vm.parsedFile = true
-      await wrapper.vm.$nextTick()
-
-      expect(wrapper.vm.border).toEqual('rounded border border-green-500')
-    })
-
-    it('returns green border when parsedFile is false', async () => {
-      wrapper.vm.parsedFile = false
-      await wrapper.vm.$nextTick()
-
-      expect(wrapper.vm.border).toEqual('rounded border border-red-500')
+    it('highlights a invalid file', async () => {
+      vi.spyOn(console, 'error').mockImplementation(() => {})
+      spy.mockImplementation(() => {
+        throw 'Toys'
+      })
+      const event = { target: { files: [mockFile] } }
+      await wrapper.vm.uploadFile(event)
+      expect(wrapper.vm.parsedFile).toEqual(false)
     })
   })
 

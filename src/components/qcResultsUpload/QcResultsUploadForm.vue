@@ -14,17 +14,6 @@
       ></traction-select>
       <traction-heading level="3" show-border>CSV File</traction-heading>
 
-      <!-- <traction-file
-        id="qc-results-upload-file"
-        v-model="file"
-        class="my-5 text-left"
-        :state="!!file ? true : null"
-        placeholder="Choose a file or drop it here..."
-        drop-placeholder="Drop file here (CSV only)..."
-        accept="text/csv, .csv"
-        required
-      ></traction-file> -->
-
       <div :class="['w-full', `${border}`]">
         <input
           id="qcResultsUploadFile"
@@ -99,7 +88,7 @@ export default {
         this.file = null
         return
       } else {
-        this.file = true
+        this.file = evt.target.files[0]
       }
     },
     async onSubmit() {
@@ -110,21 +99,15 @@ export default {
       this.busy = true
       this.disableUpload = true
 
-      const fileInput = document.getElementById('qcResultsUploadFile')
-      const uploadedFile = fileInput.files[0]
-      const reader = new FileReader()
+      try {
+        const csv = await this.file.text()
+        const data = { csv: csv, usedBySelected: this.usedBySelected }
+        await createQcResultsUploadResource(this.qcResultUploadsRequest, data)
 
-      reader.onload = async (res) => {
-        const csv = res.target.result
-        try {
-          const data = { csv: csv, usedBySelected: this.usedBySelected }
-          await createQcResultsUploadResource(this.qcResultUploadsRequest, data)
-          this.showAlert(`Successfully imported: ${fileInput.files[0].name}`, 'success')
-        } catch (e) {
-          this.showAlert(e, 'danger')
-        }
+        this.showAlert(`Successfully imported: ${this.file.name}`, 'success')
+      } catch (e) {
+        this.showAlert(e, 'danger')
       }
-      reader.readAsText(uploadedFile)
       this.busy = false
     },
   },

@@ -162,21 +162,17 @@ export default {
       }
 
       const file = evt.target.files[0]
-      const reader = new FileReader()
-
-      reader.onload = (res) => {
-        const csv = res.target.result
-        try {
-          eachRecord(csv, this.updateLibraryFromCsvRecord)
-          this.parsedFile = true
-        } catch (error) {
-          console.error(error)
-          this.showAlert(error, 'danger', 'pool-create-message')
-          this.parsedFile = false
-        }
+      try {
+        const csv = await file.text()
+        eachRecord(csv, this.updateLibraryFromCsvRecord)
+        this.parsedFile = true
+      } catch (error) {
+        console.error(error)
+        this.showAlert(error, 'danger', 'pool-create-message')
+        this.parsedFile = false
       }
-      reader.readAsText(file)
     },
+
     // Function passed to child components in notify prop, to be used when any attribute
     // in the child component is changed. The validated flag is reset to true when the user
     // clicks the update button and the changed values are checked and saved.

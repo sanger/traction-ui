@@ -9,9 +9,7 @@
       <div>
         <div>
           <label class="flex text-left" for="qcFileInput">Select file</label>
-          <div 
-          id="borderDiv"
-          :class="['w-full', `${border}`]">
+          <div id="borderDiv" :class="['w-full', `${border}`]">
             <input
               id="qcFileInput"
               class="relative m-0 block w-full min-w-0 flex-auto rounded border file:border-0"
@@ -173,20 +171,15 @@ export default {
         return
       }
       const file = evt.target.files[0]
-      const reader = new FileReader()
-
-      reader.onload = (res) => {
-        const csv = res.target.result
-        try {
-          eachRecord(csv, this.updateLibraryFromCsvRecord)
-          this.parsedFile = true
-        } catch (error) {
-          console.error(error)
-          this.showAlert(error, 'danger', 'pool-create-message')
-          this.parsedFile = false
-        }
+      try {
+        const csv = await file.text()
+        eachRecord(csv, this.updateLibraryFromCsvRecord)
+        this.parsedFile = true
+      } catch (error) {
+        console.error(error)
+        this.showAlert(error, 'danger', 'pool-create-message')
+        this.parsedFile = false
       }
-      reader.readAsText(file)
     },
     // Function passed to child components for use in validation
     onFieldUpdate() {

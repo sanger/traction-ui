@@ -94,7 +94,7 @@ describe('QcResultsUploadForm.vue', () => {
       create = store.getters.api.traction.qc_results_uploads.create
     })
 
-    it.skip('handles a successful import', async () => {
+    it('handles a successful import', async () => {
       const createQcResultsUploadResource = vi
         .spyOn(QcResultsUpload, 'createQcResultsUploadResource')
         .mockImplementation(() => {})
@@ -110,7 +110,7 @@ describe('QcResultsUploadForm.vue', () => {
       expect(form.disableUpload).toEqual(true)
     })
 
-    it.skip('handles a failed import', async () => {
+    it('handles a failed import', async () => {
       const createQcResultsUploadResource = vi
         .spyOn(QcResultsUpload, 'createQcResultsUploadResource')
         .mockRejectedValue('This is an error msg')
