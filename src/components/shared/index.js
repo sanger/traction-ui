@@ -28,7 +28,7 @@ import TractionSortIcon from '@/components/shared/icons/TractionSortIcon'
 import TractionModal from '@/components/shared/TractionModal'
 import TractionCloseIcon from '@/components/shared/icons/TractionCloseIcon'
 
-import { VBModal, BAlert, BCard, BCardText, BFormFile, BFormInvalidFeedback } from 'bootstrap-vue'
+import { VBModal, BAlert, BCard, BCardText, BFormFile } from 'bootstrap-vue'
 
 const registerBootstrapComponents = (vue) => {
   /* eslint-disable vue/component-definition-name-casing */
@@ -36,7 +36,6 @@ const registerBootstrapComponents = (vue) => {
   vue.component('traction-card', BCard)
   vue.component('traction-card-text', BCardText)
   vue.component('traction-file', BFormFile)
-  vue.component('traction-invalid-feedback', BFormInvalidFeedback)
   /*
     directive is marked wth a v in front
     so it will be used as 'v-traction-modal'
