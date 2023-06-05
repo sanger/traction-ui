@@ -14,7 +14,7 @@
       ></traction-select>
       <traction-heading level="3" show-border>CSV File</traction-heading>
 
-      <div :class="['w-full', `${border}`]">
+      <div :class="['w-full', 'my-4', `${border}`]">
         <input
           id="qcResultsUploadFile"
           class="block w-full rounded border file:border-0"

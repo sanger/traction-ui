@@ -12,7 +12,7 @@
           <div id="borderDiv" :class="['w-full', `${border}`]">
             <input
               id="qcFileInput"
-              class="relative m-0 block w-full min-w-0 flex-auto rounded border file:border-0"
+              class="block w-full rounded border file:border-0"
               type="file"
               accept="text/csv, .csv"
               @change="uploadFile"
