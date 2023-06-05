@@ -67,7 +67,7 @@ describe('ONT Run page', () => {
     cy.get('#flowcell-id-1').type('123ABC')
     cy.contains('Enter at valid Flowcell ID (3 letters then at least 3 numbers)')
 
-    cy.get('#pool-id-1').type('Unknown')
+    cy.get('#pool-id-1').type('Unknown', { delay: 50 })
     cy.contains('Enter a valid Pool Library barcode')
 
     cy.get('#create').should('be.disabled')
@@ -85,10 +85,10 @@ describe('ONT Run page', () => {
     cy.get('#state-selection').select('Pending')
 
     cy.get('#flowcell-id-1').type('ABC123')
-    cy.get('#pool-id-1').type('TRAC-1-2')
+    cy.get('#pool-id-1').type('TRAC-1-2', { delay: 50 })
 
     cy.get('#flowcell-id-2').type('ABC123')
-    cy.get('#pool-id-2').type('TRAC-1-2')
+    cy.get('#pool-id-2').type('TRAC-1-2', { delay: 50 })
 
     cy.get('#create').should('be.enabled')
     cy.get('#create').click()

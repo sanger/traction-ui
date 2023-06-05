@@ -36,7 +36,7 @@
             :formatter="formatter"
             :classes="flowcell_barcode_field_colour"
             placeholder="Scan library barcode"
-            :debounce="100"
+            :debounce="200"
           />
         </traction-field-error>
       </fieldset>
