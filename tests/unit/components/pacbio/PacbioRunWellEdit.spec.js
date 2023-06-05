@@ -39,7 +39,7 @@ describe('PacbioWellEdit', () => {
       "movie_time"]
     */
     describe('if the SMRT Link version is v11', () => {
-      beforeEach(() => {
+      beforeEach(async () => {
         store.state.traction.pacbio.runCreate.smrtLinkVersion = smrtLinkVersions['1']
         store.state.traction.pacbio.runCreate.wells = {
           A1: newWell({ position: propsData.position }),
@@ -47,8 +47,12 @@ describe('PacbioWellEdit', () => {
         wrapper = mount(PacbioRunWellEdit, {
           localVue,
           store,
-          propsData,
+          propsData: {
+            ...propsData,
+          },
         })
+        wrapper.vm.isShow = true
+        wrapper.vm.positionData = propsData.position
       })
 
       describe('has the correct options', () => {
@@ -123,6 +127,8 @@ describe('PacbioWellEdit', () => {
           store,
           propsData,
         })
+        wrapper.vm.isShow = true
+        wrapper.vm.positionData = propsData.position
       })
 
       describe('has the correct options', () => {
@@ -190,7 +196,7 @@ describe('PacbioWellEdit', () => {
     })
 
     describe('well type', () => {
-      it('if it doesnt exist in state (new)', () => {
+      it('if it doesnt exist in state (new)', async () => {
         store.state.traction.pacbio.runCreate.smrtLinkVersion = smrtLinkVersions['1']
         store.state.traction.pacbio.runCreate.wells = {}
 
@@ -200,11 +206,14 @@ describe('PacbioWellEdit', () => {
           propsData,
         })
 
+        wrapper.vm.isShow = true
+        wrapper.vm.positionData = propsData.position
+        await wrapper.vm.$nextTick()
         const button = wrapper.find('[data-action=create-well]')
         expect(button.text()).toEqual('Create')
       })
 
-      it('if it is an existing well', () => {
+      it('if it is an existing well', async () => {
         store.state.traction.pacbio.runCreate.smrtLinkVersion = smrtLinkVersions['1']
         store.state.traction.pacbio.runCreate.wells = {
           A1: newWell({ attributes: { id: 1 }, position: propsData.position }),
@@ -216,6 +225,9 @@ describe('PacbioWellEdit', () => {
           propsData,
         })
 
+        wrapper.vm.isShow = true
+        wrapper.vm.positionData = propsData.position
+        await wrapper.vm.$nextTick()
         const button = wrapper.find('[data-action=update-well]')
         expect(button.text()).toEqual('Update')
       })

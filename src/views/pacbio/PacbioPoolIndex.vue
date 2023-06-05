@@ -85,11 +85,13 @@
             :filter="filter"
           >
           </traction-table>
-          <ul v-if="!row.item.run_suitability.valid">
-            <li v-for="(error, index) in row.item.run_suitability.formattedErrors" :key="index">
-              {{ error }}
-            </li>
-          </ul>
+          <div class="flex mx-auto px-2 text-left">
+            <ul v-if="!row.item.run_suitability.valid">
+              <li v-for="(error, index) in row.item.run_suitability.formattedErrors" :key="index">
+                {{ error }}
+              </li>
+            </ul>
+          </div>
         </traction-card>
       </template>
     </traction-table>
@@ -118,9 +120,9 @@ export default {
         { key: 'selected', label: '\u2713' },
         { key: 'id', label: 'Pool ID', sortable: true, tdClass: 'pool-id' },
         {
-          key: 'run_suitability',
+          key: 'run_suitability.ready_for_run',
           label: 'Ready',
-          formatter: ({ ready_for_run }) => (ready_for_run ? '✓' : ''),
+          formatter: (obj) => (obj['run_suitability.ready_for_run'] ? '✓' : ''),
           sortable: true,
         },
         { key: 'barcode', label: 'Pool Barcode', sortable: true, tdClass: 'barcode' },

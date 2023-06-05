@@ -10,13 +10,13 @@ describe('DataHelpers', () => {
       }
       expect(flattenObject(testPersonObject)).toEqual({
         name: 'Person1',
-        company: 'Company X',
-        title: 'Test role',
-        place: 'Place X',
-        postcode: 'AB1 2A4',
+        'job.company': 'Company X',
+        'job.title': 'Test role',
+        'location.place': 'Place X',
+        'location.postcode': 'AB1 2A4',
       })
     })
-    it('when there  are duplicated fields', () => {
+    it('when there are duplicated fields', () => {
       const testPersonObject = {
         name: 'Person1',
         job: { name: 'Company X', title: 'Test role' },
@@ -25,9 +25,23 @@ describe('DataHelpers', () => {
       expect(flattenObject(testPersonObject)).toEqual({
         name: 'Person1',
         'job.name': 'Company X',
-        title: 'Test role',
+        'job.title': 'Test role',
         'location.name': 'Place X',
-        postcode: 'AB1 2A4',
+        'location.postcode': 'AB1 2A4',
+      })
+    })
+    it('when there are nested duplicated fields', () => {
+      const testPersonObject = {
+        name: 'Person1',
+        job: { attributes: { name: 'Company X', title: 'Test role' } },
+        location: { name: 'Place X', postcode: 'AB1 2A4' },
+      }
+      expect(flattenObject(testPersonObject)).toEqual({
+        name: 'Person1',
+        'job.attributes.name': 'Company X',
+        'job.attributes.title': 'Test role',
+        'location.name': 'Place X',
+        'location.postcode': 'AB1 2A4',
       })
     })
   })
