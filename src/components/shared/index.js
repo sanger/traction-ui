@@ -35,7 +35,6 @@ const registerBootstrapComponents = (vue) => {
   vue.component('traction-alert', BAlert)
   vue.component('traction-card', BCard)
   vue.component('traction-card-text', BCardText)
-  // vue.component('traction-file', BFormFile)
   vue.component('traction-invalid-feedback', BFormInvalidFeedback)
   /*
     directive is marked wth a v in front
