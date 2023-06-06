@@ -14,7 +14,7 @@
 <template>
   <flagged-feature name="enable_custom_modal">
     <template #disabled>
-      <b-modal v-bind="$attrs" ref="b-modal" :title="title" v-on="$listeners">
+      <b-modal v-bind="$attrs" ref="b-modal" :title="title" v-on="$listeners" @close="close">
         <template v-for="(_, slot) of $scopedSlots" #[slot]="scope"
           ><slot :name="slot" v-bind="scope"
         /></template>
@@ -23,12 +23,13 @@
     <div v-if="display">
       <!-- overlay -->
       <div
-        class="absolute cursor-auto hover:cursor-auto inset-0 opacity-50 bg-black h-screen w-full justify-center items-start md:items-center pt-10 md:pt-0"
+        class="fixed cursor-auto hover:cursor-auto inset-0 opacity-50 bg-black h-screen w-full justify-center items-start md:items-center pt-10 md:pt-0"
       />
       <!-- modal -->
-      <div class="fixed z-20 inset-0 overflow-y-auto">
+      <div class="fixed z-20 inset-0 overflow-y-auto" @click.self="close">
         <div
           class="flex items-end justify-center pt-4 px-4 pb-20 text-center sm:block xl:p-0 opacity-100"
+          @click.self="close"
         >
           <div
             class="inline-block align-bottom bg-white rounded-lg text-left overflow-hidden shadow-xl sm:my-8 sm:align-middle sm:max-w-screen-md sm:w-full"
@@ -103,8 +104,6 @@ export default {
          * background when the modal is displayed
          */
         document.documentElement.style.overflow = 'hidden'
-        this.originalScrollTop = `-${window.scrollY}px`
-        window.scrollTo(0, top)
       } else {
         //Regain scrollbars in original window and scroll to it's original position
         this.resetScrollbar()
@@ -129,7 +128,6 @@ export default {
     resetScrollbar() {
       //Regain scrollbars in original window and scroll to it's original position
       document.documentElement.style.overflow = 'auto'
-      window.scrollTo(0, parseInt(this.originalScrollTop || '0') * -1)
     },
   },
 }
