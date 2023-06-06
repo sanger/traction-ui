@@ -23,24 +23,16 @@ import TractionForm from '@/components/shared/TractionForm'
 import TractionTable from '@/components/shared/table/TractionTable'
 import TractionTableRow from '@/components/shared/table/TractionTableRow'
 import TractionTableColumn from '@/components/shared/table/TractionTableColumn'
+import TractionModal from '@/components/shared/TractionModal'
 import TractionArrowIcon from '@/components/shared/icons/TractionArrowIcon'
 import TractionSortIcon from '@/components/shared/icons/TractionSortIcon'
-import TractionModal from '@/components/shared/TractionModal'
 import TractionCloseIcon from '@/components/shared/icons/TractionCloseIcon'
-
-import { VBModal, BAlert, BFormFile, BFormInvalidFeedback } from 'bootstrap-vue'
+import { BFormFile, BFormInvalidFeedback } from 'bootstrap-vue'
 
 const registerBootstrapComponents = (vue) => {
   /* eslint-disable vue/component-definition-name-casing */
-  vue.component('traction-alert', BAlert)
   vue.component('traction-file', BFormFile)
   vue.component('traction-invalid-feedback', BFormInvalidFeedback)
-  /*
-    directive is marked wth a v in front
-    so it will be used as 'v-traction-modal'
-  */
-  vue.directive('traction-modal', VBModal)
-
   /* eslint-enable vue/component-definition-name-casing */
 }
 
@@ -74,7 +66,6 @@ const registerGlobal = (vue) => {
   vue.component('TractionTableColumn', TractionTableColumn)
   vue.component('TractionModal', TractionModal)
   vue.component('TractionCloseIcon', TractionCloseIcon)
-
   registerBootstrapComponents(vue)
 }
 
