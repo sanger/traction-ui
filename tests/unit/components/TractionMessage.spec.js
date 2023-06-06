@@ -26,37 +26,50 @@ describe('TractionMessage.vue', () => {
       localVue,
       propsData: { ...requiredProps, message: 'bar' },
     })
+    expect(wrapper.find('[data-attribute=message]').element).toBeTruthy()
     expect(wrapper.html()).toContain('bar')
   })
-
-  it('displays the type', () => {
+  it('displays the close button', () => {
     wrapper = mount(TractionMessage, {
       localVue,
-      propsData: { ...requiredProps, type: 'success' },
+      propsData: { ...requiredProps, message: 'bar' },
     })
-    expect(wrapper.find('.alert-success').element).toBeTruthy()
+    expect(wrapper.find('[data-attribute=close]').element).toBeTruthy()
   })
 
-  it('converts types to boottrap styles', () => {
-    wrapper = mount(TractionMessage, {
-      localVue,
-      propsData: { ...requiredProps, type: 'error' },
-    })
-    expect(wrapper.find('.alert-danger').element).toBeTruthy()
-  })
-
-  describe('data-attribute', () => {
-    it('default', () => {
-      const wrapper = mount(TractionMessage, { localVue, propsData: requiredProps })
-      expect(wrapper.find('[data-type=error-message]').exists()).toBeTruthy()
-    })
-
-    it('passed as prop', () => {
-      const wrapper = mount(TractionMessage, {
+  describe('converts types to html styles', () => {
+    it('displays success style', () => {
+      wrapper = mount(TractionMessage, {
         localVue,
-        propsData: { ...requiredProps, dataType: 'darkstar' },
+        propsData: { ...requiredProps, type: 'success' },
       })
-      expect(wrapper.find('[data-type=darkstar]').exists()).toBeTruthy()
+      expect(wrapper.find('[data-attribute=message]').attributes('class')).toContain(
+        'bg-green-100 text-green-70',
+      )
+      expect(wrapper.find('[data-attribute=close-icon]').attributes('class')).toContain(
+        'text-green-400 hover:text-green-700',
+      )
+    })
+
+    it('displays error style', () => {
+      wrapper = mount(TractionMessage, {
+        localVue,
+        propsData: { ...requiredProps, type: 'error' },
+      })
+      expect(wrapper.find('[data-attribute=message]').attributes('class')).toContain(
+        'bg-red-200 text-red-600',
+      )
+      expect(wrapper.find('[data-attribute=close-icon]').attributes('class')).toContain(
+        'text-red-400 hover:text-red-600',
+      )
+    })
+    it('emits dismissed event on close button click', () => {
+      wrapper = mount(TractionMessage, {
+        localVue,
+        propsData: { ...requiredProps, type: 'error' },
+      })
+      wrapper.find('[data-attribute=close]').trigger('click')
+      expect(wrapper.emitted('dismissed')).toBeTruthy()
     })
   })
 })

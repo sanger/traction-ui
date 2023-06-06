@@ -75,7 +75,7 @@
       </template>
 
       <template #row-details="row">
-        <traction-card>
+        <div>
           <traction-table
             small
             bordered
@@ -92,7 +92,7 @@
               </li>
             </ul>
           </div>
-        </traction-card>
+        </div>
       </template>
     </traction-table>
   </DataFetcher>
