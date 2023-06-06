@@ -166,19 +166,20 @@ export default {
 
     // Allows users to upload a file to autopopulate the pool's selected libraries
     async uploadFile(evt) {
-      if (evt === null || evt.target.files === null || evt.target.files.length == 0) {
+      if (evt?.target?.files?.length) {
+        const file = evt.target.files[0]
+        try {
+          const csv = await file.text()
+          eachRecord(csv, this.updateLibraryFromCsvRecord)
+          this.parsedFile = true
+        } catch (error) {
+          console.error(error)
+          this.showAlert(error, 'danger', 'pool-create-message')
+          this.parsedFile = false
+        }
+      } else {
         this.parsedFile = null
         return
-      }
-      const file = evt.target.files[0]
-      try {
-        const csv = await file.text()
-        eachRecord(csv, this.updateLibraryFromCsvRecord)
-        this.parsedFile = true
-      } catch (error) {
-        console.error(error)
-        this.showAlert(error, 'danger', 'pool-create-message')
-        this.parsedFile = false
       }
     },
     // Function passed to child components for use in validation

@@ -84,11 +84,11 @@ export default {
   },
   methods: {
     async fileSelected(evt) {
-      if (evt === null || evt.target.files === null || evt.target.files.length == 0) {
+      if (evt?.target?.files?.length) {
+        this.file = evt.target.files[0]
+      } else {
         this.file = null
         return
-      } else {
-        this.file = evt.target.files[0]
       }
     },
     async onSubmit() {
