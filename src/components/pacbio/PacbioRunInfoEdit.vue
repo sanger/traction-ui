@@ -1,9 +1,11 @@
 <template>
   <div class="pacbioRunInfoEdit">
-    <fieldset>
+    <traction-section title="Run Details">
       <div class="flex flex-col text-left my-auto">
         <label class="text-md m-0" for="run-name">Run name:</label>
-        <traction-muted-text classes="text-gray-700 text-xs italic font-light">Auto-generated traction name</traction-muted-text>
+        <traction-muted-text classes="text-gray-700 text-xs italic font-light"
+          >Auto-generated traction name</traction-muted-text
+        >
         <traction-input
           id="run-name"
           v-model="runItem.name"
@@ -73,7 +75,7 @@
           :value="runItem.comments"
         />
       </div>
-    </fieldset>
+    </traction-section>
   </div>
 </template>
 
