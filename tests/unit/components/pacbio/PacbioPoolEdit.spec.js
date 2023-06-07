@@ -140,15 +140,14 @@ describe('pacbioPoolEdit#edit', () => {
     }
     it('supports no files being selected', async () => {
       await wrapper.vm.uploadFile(null)
-      const formField = wrapper.findComponent({ ref: 'qc-file-form-field' })
-      expect(formField.props().state).toEqual(null)
+      expect(wrapper.vm.parsedFile).toEqual(null)
     })
 
     it('highlights a valid file', async () => {
       spy.mockImplementation(() => {})
-      await wrapper.vm.uploadFile(mockFile)
-      const formField = wrapper.findComponent({ ref: 'qc-file-form-field' })
-      expect(formField.props().state).toEqual(true)
+      const event = { target: { files: [mockFile] } }
+      await wrapper.vm.uploadFile(event)
+      expect(wrapper.vm.parsedFile).toEqual(true)
     })
 
     it('highlights a invalid file', async () => {
@@ -156,11 +155,9 @@ describe('pacbioPoolEdit#edit', () => {
       spy.mockImplementation(() => {
         throw 'Toys'
       })
-      await wrapper.vm.uploadFile(mockFile)
-      const formField = wrapper.findComponent({
-        ref: 'qc-file-form-field',
-      })
-      expect(formField.props().state).toEqual(false)
+      const event = { target: { files: [mockFile] } }
+      await wrapper.vm.uploadFile(event)
+      expect(wrapper.vm.parsedFile).toEqual(false)
     })
   })
 

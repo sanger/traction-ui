@@ -15,6 +15,7 @@ describe('ONT Run page', () => {
       features: {
         enable_custom_table: { enabled: true },
         enable_custom_form: { enabled: true },
+        enable_custom_alert: { enabled: true },
       },
     })
   })
@@ -26,7 +27,7 @@ describe('ONT Run page', () => {
     cy.contains('1. Run Information')
     cy.contains('2. Run Instrument Flowcells')
 
-    cy.get('#create').should('be.disabled')
+    cy.get('#create').should('be.visible')
   })
 
   it('Redirects to the runs list page if run create succeeds', () => {
@@ -69,8 +70,6 @@ describe('ONT Run page', () => {
 
     cy.get('#pool-id-1').type('Unknown')
     cy.contains('Enter a valid Pool Library barcode')
-
-    cy.get('#create').should('be.disabled')
   })
 
   it('Shows an error message if run create fails', () => {

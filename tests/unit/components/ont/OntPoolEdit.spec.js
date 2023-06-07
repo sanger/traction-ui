@@ -2,6 +2,7 @@ import { mount, localVue, store } from '@support/testHelper'
 import OntPoolEdit from '@/components/ont/OntPoolEdit'
 import { newLibrary } from '@/store/traction/ont/pools/pool.js'
 import { Data } from '@support/testHelper'
+import { expect } from 'vitest'
 import * as pacbio from '@/lib/csv/pacbio'
 
 const buildWrapper = () =>
@@ -138,17 +139,17 @@ describe('ontPoolEdit#edit', () => {
     const mockFile = {
       async text() {},
     }
+
     it('supports no files being selected', async () => {
       await wrapper.vm.uploadFile(null)
-      const formField = wrapper.findComponent({ ref: 'qc-file-form-field' })
-      expect(formField.props().state).toEqual(null)
+      expect(wrapper.vm.parsedFile).toEqual(null)
     })
 
     it('highlights a valid file', async () => {
       spy.mockImplementation(() => {})
-      await wrapper.vm.uploadFile(mockFile)
-      const formField = wrapper.findComponent({ ref: 'qc-file-form-field' })
-      expect(formField.props().state).toEqual(true)
+      const event = { target: { files: [mockFile] } }
+      await wrapper.vm.uploadFile(event)
+      expect(wrapper.vm.parsedFile).toEqual(true)
     })
 
     it('highlights a invalid file', async () => {
@@ -156,11 +157,9 @@ describe('ontPoolEdit#edit', () => {
       spy.mockImplementation(() => {
         throw 'Toys'
       })
-      await wrapper.vm.uploadFile(mockFile)
-      const formField = wrapper.findComponent({
-        ref: 'qc-file-form-field',
-      })
-      expect(formField.props().state).toEqual(false)
+      const event = { target: { files: [mockFile] } }
+      await wrapper.vm.uploadFile(event)
+      expect(wrapper.vm.parsedFile).toEqual(false)
     })
   })
 

@@ -73,6 +73,11 @@ export default {
   },
   methods: {
     input(event) {
+      // If a formatter is present we want to format the input
+      if (this.formatter) {
+        event.target.value = this.formatter(event.target.value)
+      }
+
       if (event.key === 'Enter') {
         this.$emit('enterKeyPress', event.target.value)
       }
