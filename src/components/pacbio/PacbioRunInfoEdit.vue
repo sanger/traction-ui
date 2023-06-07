@@ -38,8 +38,7 @@
         />
       </traction-field-group>
 
-      <div class="grid grid-cols-2 px-2 pb-2 my-auto">
-        <label class="text-left" for="system-name">System Name:</label>
+      <traction-field-group label="System Name" for="system-name">
         <traction-select
           id="system-name"
           ref="systemName"
@@ -49,9 +48,9 @@
           :options="systemNameOptions"
           data-attribute="system_name"
         />
-      </div>
-      <div class="grid grid-cols-2 px-2 pb-1 my-auto">
-        <label class="text-left" for="smrt-link-version">SMRT Link Version:</label>
+      </traction-field-group>
+
+      <traction-field-group label="SMRT Link Version" for="smrt-link-version">
         <traction-select
           id="smrt-link-version"
           ref="smrtLinkVersion"
@@ -61,9 +60,9 @@
           data-attribute="smrt_link_version"
           @input="setSmrtLinkVersion"
         />
-      </div>
-      <div class="grid grid-cols-2 px-2 pb-1 my-auto">
-        <label class="text-left" for="comments">Comments:</label>
+      </traction-field-group>
+
+      <traction-field-group label="Comments" for="comments">
         <traction-input
           id="comments"
           v-model="runItem.comments"
@@ -73,7 +72,7 @@
           data-attribute="comments"
           :value="runItem.comments"
         />
-      </div>
+      </traction-field-group>
     </traction-section>
   </div>
 </template>
