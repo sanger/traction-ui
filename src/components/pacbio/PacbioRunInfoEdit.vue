@@ -1,11 +1,8 @@
 <template>
   <div class="pacbioRunInfoEdit">
     <traction-section title="Run Details">
-      <div class="flex flex-col text-left my-auto">
-        <label class="text-md m-0" for="run-name">Run name:</label>
-        <traction-muted-text classes="text-gray-700 text-xs italic font-light"
-          >Auto-generated traction name</traction-muted-text
-        >
+      <traction-field-group label="Run Name" for="run-name">
+        <traction-muted-text>Auto-generated traction name</traction-muted-text>
         <traction-input
           id="run-name"
           v-model="runItem.name"
@@ -14,31 +11,33 @@
           type="text"
           disabled
         />
-      </div>
-      <div class="flex flex-col text-left my-auto">
-        <label class="text-md m-0" for="run-name">Sequencing Kit Box Barcode:</label>
+      </traction-field-group>
+
+      <traction-field-group label="Sequencing Kit Box Barcode" for="sequencing-kit-box-barcode">
         <traction-input
           id="sequencing-kit-box-barcode"
           v-model="runItem.sequencing_kit_box_barcode"
           :value="runItem.sequencing_kit_box_barcode"
           placeholder="Sequencing Kit Box Barcode"
           type="text"
-          classes="w-48"
           data-attribute="sequencing_kit_box_barcode"
         />
-      </div>
-      <div class="flex flex-col text-left my-auto">
-        <label class="text-md m-0" for="run-name">DNA Control Complex Box Barcode:</label>
+      </traction-field-group>
+
+      <traction-field-group
+        label="DNA Control Complex Box Barcode"
+        for="dna-control-complex-box-barcode"
+      >
         <traction-input
           id="dna-control-complex-box-barcode"
           v-model="runItem.dna_control_complex_box_barcode"
           :value="runItem.dna_control_complex_box_barcode"
           placeholder="DNA Control Complex Box Barcode"
           type="text"
-          classes="w-48"
           data-attribute="dna_control_complex_box_barcode"
         />
-      </div>
+      </traction-field-group>
+
       <div class="grid grid-cols-2 px-2 pb-2 my-auto">
         <label class="text-left" for="system-name">System Name:</label>
         <traction-select
