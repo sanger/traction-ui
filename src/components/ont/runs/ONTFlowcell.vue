@@ -11,7 +11,7 @@
         <traction-field-error
           id="input-flowcell-id-feedback"
           :error="flowcellIdValidationError"
-          :with-icon="isFlowIdExists"
+          :with-icon="isFlowcellIdExists"
         >
           <traction-input
             :id="'flowcell-id-' + position"
@@ -96,7 +96,7 @@ export default {
       return this.barcode ? (this.barcodeState ? '' : 'Enter a valid Pool Library barcode') : ''
     },
     /** Is the flowcellId empty or not */
-    isFlowIdExists() {
+    isFlowcellIdExists() {
       return !!this.flowcellId
     },
     /** Is the barcode field empty or not */
@@ -143,7 +143,7 @@ export default {
       },
       /**Displays green if valid, red if invalid and no border if empty */
       flowcell_id_field_colour() {
-        return this.isFlowIdExists
+        return this.isFlowcellIdExists
           ? this.flowcellIdValidationError.length === 0
             ? 'border-3 border-solid border-green-600'
             : 'border-3 border-solid border-red-600 focus:border-red-600'
@@ -164,16 +164,16 @@ export default {
        * yellow - if one of flowcellId and barcode fields are valid and other is empty
        */
       flowcell_bg_colour() {
-        if (!this.isFlowIdExists && !this.isBarcodeExists) return 'border border-3 border-white'
+        if (!this.isFlowcellIdExists && !this.isBarcodeExists) return 'border border-3 border-white'
 
-        const validFlowId = this.isFlowIdExists && this.flowcellIdValidationError.length === 0
+        const validFlowId = this.isFlowcellIdExists && this.flowcellIdValidationError.length === 0
         const validBarcodeId = this.isBarcodeExists && this.barcodeState
 
         if (validFlowId && validBarcodeId) {
           return 'border border-3 border-success'
         }
 
-        if ((validFlowId && !this.isBarcodeExists) || (validBarcodeId && !this.isFlowIdExists)) {
+        if ((validFlowId && !this.isBarcodeExists) || (validBarcodeId && !this.isFlowcellIdExists)) {
           return 'border border-3 border-warning'
         }
 
