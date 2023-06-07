@@ -1,8 +1,9 @@
 <template>
   <div class="pacbioRunInfoEdit">
     <fieldset>
-      <div class="grid grid-cols-2 px-2 pb-1 my-auto pt-1">
-        <label class="text-left" for="run-name">Run name:</label>
+      <div class="flex flex-col text-left my-auto">
+        <label class="text-md m-0" for="run-name">Run name:</label>
+        <traction-muted-text classes="text-gray-700 text-xs italic font-light">Auto-generated traction name</traction-muted-text>
         <traction-input
           id="run-name"
           v-model="runItem.name"
@@ -12,10 +13,8 @@
           disabled
         />
       </div>
-      <div class="grid grid-cols-2 px-2 pb-1 my-auto">
-        <label class="text-left" for="sequencing-kit-box-barcode"
-          >Sequencing Kit Box Barcode:</label
-        >
+      <div class="flex flex-col text-left my-auto">
+        <label class="text-md m-0" for="run-name">Sequencing Kit Box Barcode:</label>
         <traction-input
           id="sequencing-kit-box-barcode"
           v-model="runItem.sequencing_kit_box_barcode"
@@ -26,10 +25,8 @@
           data-attribute="sequencing_kit_box_barcode"
         />
       </div>
-      <div class="grid grid-cols-2 px-2 pb-1 my-auto">
-        <label class="text-left" for="dna-control-complex-box-barcode"
-          >DNA Control Complex Box Barcode:</label
-        >
+      <div class="flex flex-col text-left my-auto">
+        <label class="text-md m-0" for="run-name">DNA Control Complex Box Barcode:</label>
         <traction-input
           id="dna-control-complex-box-barcode"
           v-model="runItem.dna_control_complex_box_barcode"
@@ -119,14 +116,3 @@ export default {
   },
 }
 </script>
-
-<style>
-.pacbioRunInfoEdit {
-  border: solid;
-  border-width: 1px;
-  padding: 10px;
-}
-label {
-  font-size: 1em;
-}
-</style>

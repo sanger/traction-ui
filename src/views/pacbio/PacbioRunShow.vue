@@ -26,9 +26,10 @@
 
     <div>
       <div class="grid grid-cols-2 w-full space-x-4 mb-6">
-        <pacbioRunInfoEdit ref="pacbioRunInfoEdit"></pacbioRunInfoEdit>
-        <pacbioRunWellDefaultEdit ref="pacbioRunWellDefaultEdit"></pacbioRunWellDefaultEdit>
+        <PacbioRunInfoEdit ref="pacbioRunInfoEdit" />
+        <PacbioRunWellDefaultEdit ref="pacbioRunWellDefaultEdit" />
       </div>
+
       <div class="grid grid-cols-2">
         <pacbioPoolList ref="pacbioPoolList"></pacbioPoolList>
         <Plate ref="plate" @alert="showAlert"></Plate>
