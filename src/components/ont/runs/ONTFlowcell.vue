@@ -77,8 +77,7 @@ export default {
   data() {
     return {
       /**Represents whether the barcode is valid (=true) , invalid(=false) or empty(=null) */
-      barcodeState: null,
-      barcodeValue: '',
+      barcodeState: true,
     }
   },
   computed: {
@@ -86,8 +85,9 @@ export default {
     flowcellIdValidationError() {
       // 3 letters followed by at least 3 numbers
       if (this.flowcellId) {
-        const isValid = !!this.flowcellId.match(/^[a-zA-Z]{3}\d{3,}$/)
-        return isValid ? '' : 'Enter at valid Flowcell ID (3 letters then at least 3 numbers)'
+        return this.flowcellId.match(/^[a-zA-Z]{3}\d{3,}$/)
+          ? ''
+          : 'Enter at valid Flowcell ID (3 letters then at least 3 numbers)'
       }
       return ''
     },
@@ -107,15 +107,14 @@ export default {
     // For Vuex asynchronous validation we need to use computed getter and setter properties
     barcode: {
       get() {
-        return this.barcodeValue
+        return this.poolTubeBarcode
       },
       async set(value) {
-        this.barcodeValue = value
         const response = await this.validatePoolBarcode(value)
         /*It is required to update the barcode here because components are externally 
-            listening to this state */
+          listening to this state */
         this.setPoolTubeBarcode({
-          barcode: response.success ? value : undefined,
+          barcode: value,
           position: this.position,
         })
         //response.success will be null for empty strings
@@ -136,8 +135,6 @@ export default {
           (flowcell) => flowcell.position == this.position,
         )
         if (flowcell) {
-          this.barcodeValue = flowcell.tube_barcode
-          this.barcodeState = !!flowcell.tube_barcode
           return flowcell.tube_barcode
         }
       },
