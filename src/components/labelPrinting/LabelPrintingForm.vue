@@ -75,15 +75,15 @@
                 >Reset</traction-button
               >
             </div>
-            <traction-card tag="article" class="mb-2 text-black text-left">
-              <traction-card-text>
+            <div tag="article" class="mb-2 text-black text-left">
+              <div class="flex flex-col bg-white rounded p-4">
                 <ul id="list-barcodes-to-print">
                   <li v-for="{ barcode } in labels" :key="barcode" class="text-sm">
                     {{ barcode }}
                   </li>
                 </ul>
-              </traction-card-text>
-            </traction-card>
+              </div>
+            </div>
           </div>
         </div>
       </traction-form>

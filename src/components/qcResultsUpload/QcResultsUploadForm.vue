@@ -13,17 +13,19 @@
         required
       ></traction-select>
       <traction-heading level="3" show-border>CSV File</traction-heading>
-      <traction-file
-        id="qc-results-upload-file"
-        v-model="file"
-        class="my-5 text-left"
-        :state="!!file ? true : null"
-        placeholder="Choose a file or drop it here..."
-        drop-placeholder="Drop file here (CSV only)..."
-        accept="text/csv, .csv"
-        required
-      ></traction-file>
-      <div class="space-x-4 pb-4 flex flex-row justify-end">
+
+      <div :class="['w-full', 'my-4', `${border}`]">
+        <input
+          id="qcResultsUploadFile"
+          class="block w-full rounded border file:border-0"
+          type="file"
+          accept="text/csv, .csv"
+          required
+          @change="fileSelected"
+        />
+      </div>
+
+      <div class="pt-2 space-x-4 pb-4 flex flex-row justify-end">
         <traction-button
           id="upload-button"
           type="submit"
@@ -73,8 +75,22 @@ export default {
   },
   computed: {
     qcResultUploadsRequest: ({ api }) => api.traction.qc_results_uploads.create,
+    border() {
+      if (this.file === null) return 'border-0'
+      else {
+        return 'rounded border border-green-500'
+      }
+    },
   },
   methods: {
+    async fileSelected(evt) {
+      if (evt?.target?.files?.length) {
+        this.file = evt.target.files[0]
+      } else {
+        this.file = null
+        return
+      }
+    },
     async onSubmit() {
       await this.postCSV()
     },
@@ -82,6 +98,7 @@ export default {
       // We want to keep the button disabled after every upload, unless refreshed or "Re-enable" clicked
       this.busy = true
       this.disableUpload = true
+
       try {
         const csv = await this.file.text()
         const data = { csv: csv, usedBySelected: this.usedBySelected }
