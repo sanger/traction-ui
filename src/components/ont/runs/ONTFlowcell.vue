@@ -170,7 +170,10 @@ export default {
           return 'border border-3 border-success'
         }
 
-        if ((validFlowId && !this.isBarcodeExists) || (validBarcodeId && !this.isFlowcellIdExists)) {
+        if (
+          (validFlowId && !this.isBarcodeExists) ||
+          (validBarcodeId && !this.isFlowcellIdExists)
+        ) {
           return 'border border-3 border-warning'
         }
 
