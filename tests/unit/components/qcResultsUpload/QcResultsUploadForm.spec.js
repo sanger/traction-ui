@@ -90,6 +90,27 @@ describe('QcResultsUploadForm.vue', () => {
     })
   })
 
+  describe('#reEnable', () => {
+    it('resets the file input and other data values', async () => {
+      // TODO: not sure how to best test the file input reset
+      // so maybe a code smell in how I'm doing it?
+
+      // form.$refs.qcResultsUploadFile.value = "test"
+      // const fileInput = wrapper.find('input[type="file"]')
+      // await fileInput.setValue('some value')
+
+      wrapper.setData({ file: 'a mock file', disableUpload: true, uploadSuccessful: true })
+      form.reEnable()
+
+      // const fileInput = wrapper.find('#qcResultsUploadFile')
+      // expect(fileInput.element.value).toEqual(null)
+
+      expect(form.uploadSuccessful).toEqual(null)
+      expect(form.file).toEqual(null)
+      expect(form.disableUpload).toEqual(false)
+    })
+  })
+
   describe('#postCSV', () => {
     let create, mockFile
 

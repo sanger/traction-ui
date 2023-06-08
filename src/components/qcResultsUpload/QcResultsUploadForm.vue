@@ -17,6 +17,7 @@
       <div :class="['w-full', 'my-4', `${border}`]">
         <input
           id="qcResultsUploadFile"
+          ref="qcResultsUploadFile"
           class="block w-full rounded border file:border-0"
           type="file"
           accept="text/csv, .csv"
@@ -42,7 +43,7 @@
           size="lg"
           :disabled="!disableUpload"
           theme="reset"
-          @click="disableUpload = !disableUpload"
+          @click="reEnable()"
           >Re-enable</traction-button
         >
       </div>
@@ -86,6 +87,13 @@ export default {
     },
   },
   methods: {
+    reEnable() {
+      // TODO: Might be a better way then using $refs
+      this.$refs.qcResultsUploadFile.value = null
+      this.uploadSuccessful = null
+      this.file = null
+      this.disableUpload = !this.disableUpload
+    },
     async fileSelected(evt) {
       if (evt?.target?.files?.length) {
         this.file = evt.target.files[0]
