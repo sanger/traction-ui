@@ -16,6 +16,7 @@
   the value field as 'inputValue', the props should be as below
    {
         label: 'Test Input',
+        description: "This is test input",
         component: 'input',
         attribute: 'inputValue',
         componentProps: {
@@ -31,8 +32,9 @@
    (This binding is required for any custom component (for e.g traction-input) that requires a 'v-model' directive as an argument to set a value internally/
 -->
 <template>
-  <div class="text-left mb-5">
-    <traction-label :for="fieldId">{{ label }}</traction-label>
+  <div class="text-left mb-3">
+    <traction-label v-if="label" :for="fieldId" classes="mb-0">{{ label }}</traction-label>
+    <traction-muted-text v-if="description">{{ description }}</traction-muted-text>
     <component
       :is="component"
       v-if="component"
@@ -42,8 +44,9 @@
       v-bind="componentProps"
       @input="input"
     ></component>
-    <slot></slot>
-    <div v-if="description" class="my-2 text-gray-700 text-xs italic">{{ description }}</div>
+    <div class="mt-2">
+      <slot></slot>
+    </div>
   </div>
 </template>
 

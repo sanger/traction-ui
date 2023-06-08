@@ -1,7 +1,7 @@
 <template>
-  <span :class="`text-xs text-gray-700 font-light italic ${classes}`">
+  <div :class="`text-xs text-gray-700 font-light italic ${classes}`">
     <slot />
-  </span>
+  </div>
 </template>
 
 <script>
