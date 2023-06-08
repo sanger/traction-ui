@@ -1,5 +1,5 @@
 <template>
-  <div class="plate">
+  <traction-section title="Plates" class="plate">
     <svg :width="width" :height="height" viewBox="0 0 350 255" preserveAspectRatio="xMidYMin">
       <g id="layer1" transform="translate(-970.03125,-1039.9375)">
         <path
@@ -34,7 +34,7 @@
         </text>
       </g>
     </svg>
-  </div>
+  </traction-section>
 </template>
 
 <script>
