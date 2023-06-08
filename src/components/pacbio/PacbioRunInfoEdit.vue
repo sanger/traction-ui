@@ -1,8 +1,11 @@
 <template>
   <div class="pacbioRunInfoEdit">
     <traction-section title="Run Details">
-      <traction-field-group label="Run Name" for="run-name">
-        <traction-muted-text>Auto-generated traction name</traction-muted-text>
+      <traction-field-group
+        label="Run Name"
+        for="run-name"
+        description="Auto-generated traction name"
+      >
         <traction-input
           id="run-name"
           v-model="runItem.name"
