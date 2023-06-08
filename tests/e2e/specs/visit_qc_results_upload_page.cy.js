@@ -5,6 +5,7 @@ describe('Extraction QC page', () => {
     cy.withFlags({
       dpl_478_enable_qc_results_upload: { enabled: true },
       enable_custom_form: { enabled: true },
+      enable_custom_alert: { enabled: true },
     })
 
     cy.visit('#/qc-results-upload')
@@ -21,7 +22,7 @@ describe('Extraction QC page', () => {
   })
 
   it('QcResultsUpload POST request is successful', () => {
-    cy.get('#qc-results-upload-file').attachFile('qc-results-upload.csv')
+    cy.get('#qcResultsUploadFile').attachFile('qc-results-upload.csv')
 
     cy.intercept('/v1/qc_results_uploads', {
       statusCode: 201,
@@ -37,7 +38,7 @@ describe('Extraction QC page', () => {
   })
 
   it('QcResultsUpload POST is unsuccessful, unprocessable entity', () => {
-    cy.get('#qc-results-upload-file').attachFile('qc-results-upload-failure.csv')
+    cy.get('#qcResultsUploadFile').attachFile('qc-results-upload-failure.csv')
 
     cy.intercept('/v1/qc_results_uploads', {
       statusCode: 422,

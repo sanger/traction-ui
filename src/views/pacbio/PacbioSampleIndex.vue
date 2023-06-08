@@ -77,7 +77,7 @@
       </template>
 
       <template #row-details="row">
-        <traction-card class="text-left">
+        <div class="text-left">
           <template v-for="(field, index) in field_in_details">
             <span v-if="field" :key="field.label + index" class="font-weight-bold">{{
               field.label
@@ -85,7 +85,7 @@
             >: {{ row.item[field.item] }}
             <br v-if="field" :key="field.label" />
           </template>
-        </traction-card>
+        </div>
       </template>
     </traction-table>
   </DataFetcher>

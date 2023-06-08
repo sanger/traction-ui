@@ -6,20 +6,20 @@
       :tag="`${poolType}`"
       data-attribute="pool-type"
     >
-      <div class="space-y-12">
-        <div class="flex flex-col">
-          <label class="text-left p-0">Select file</label>
-          <traction-file
-            id="qcFileInput"
-            ref="qc-file-form-field"
-            :state="parsedFile"
-            placeholder="Choose a file or drop it here..."
-            drop-placeholder="Drop file here..."
-            accept="text/csv, .csv"
-            size="sm"
-            @input="uploadFile"
-          ></traction-file>
+      <div>
+        <div>
+          <label class="flex text-left" for="qcFileInput">Select file</label>
+          <div id="borderDiv" :class="['w-full', `${border}`]">
+            <input
+              id="qcFileInput"
+              class="block w-full rounded border file:border-0"
+              type="file"
+              accept="text/csv, .csv"
+              @change="uploadFile"
+            />
+          </div>
         </div>
+
         <div>
           <traction-sub-section title="Pool information" class="py-6">
             <div class="grid gap-5 grid-cols-6 mb-10 text-sm min-h-32" data-type="pool-edit">
@@ -128,9 +128,18 @@ export default {
           return 'Pool'
       }
     },
+    border() {
+      if (this.parsedFile === null) return 'border-0'
+      else {
+        const borderColour = this.parsedFile ? 'border-green-500' : 'border-red-500'
+        return `rounded border ${borderColour}`
+      }
+    },
   },
+
   methods: {
     ...mapActions(['createPool', 'updatePool', 'updateLibraryFromCsvRecord']),
+
     create() {
       this.busy = true
       this.createPool().then(({ success, barcode, errors }) => {
@@ -154,21 +163,23 @@ export default {
         this.busy = false
       })
     },
+
     // Allows users to upload a file to autopopulate the pool's selected libraries
-    async uploadFile(newFile) {
-      if (newFile === null) {
+    async uploadFile(evt) {
+      if (evt?.target?.files?.length) {
+        const file = evt.target.files[0]
+        try {
+          const csv = await file.text()
+          eachRecord(csv, this.updateLibraryFromCsvRecord)
+          this.parsedFile = true
+        } catch (error) {
+          console.error(error)
+          this.showAlert(error, 'danger', 'pool-create-message')
+          this.parsedFile = false
+        }
+      } else {
         this.parsedFile = null
         return
-      }
-
-      try {
-        const csv = await newFile.text()
-        eachRecord(csv, this.updateLibraryFromCsvRecord)
-        this.parsedFile = true
-      } catch (error) {
-        console.error(error)
-        this.showAlert(error, 'danger', 'pool-create-message')
-        this.parsedFile = false
       }
     },
     // Function passed to child components for use in validation

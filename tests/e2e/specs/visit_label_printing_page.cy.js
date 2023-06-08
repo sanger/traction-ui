@@ -4,6 +4,7 @@ describe('Label Printing page', () => {
   beforeEach(() => {
     cy.withFlags({
       enable_custom_form: { enabled: true },
+      enable_custom_alert: { enabled: true },
     })
     cy.visit('#/label-printing')
 

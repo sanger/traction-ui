@@ -66,7 +66,7 @@
       </template>
 
       <template #row-details="row">
-        <traction-card>
+        <div>
           <traction-table
             small
             bordered
@@ -76,7 +76,7 @@
             :filter="filter"
           >
           </traction-table>
-        </traction-card>
+        </div>
       </template>
     </traction-table>
 
