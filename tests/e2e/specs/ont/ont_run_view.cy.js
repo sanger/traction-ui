@@ -10,6 +10,9 @@ describe('ONT Run page', () => {
     cy.intercept('/v1/ont/runs?include=instrument', {
       fixture: 'tractionOntRuns.json',
     })
+    cy.intercept('/v1/ont/pools?include=tube,libraries.tag,libraries.request', {
+      fixture: 'tractionOntPools.json'
+    })
     cy.intercept('flipper/api/actors/User', {
       flipper_id: 'User',
       features: {
@@ -43,6 +46,8 @@ describe('ONT Run page', () => {
 
     cy.get('#flowcell-id-1').type('ABC123')
     cy.get('#pool-id-1').type('TRAC-1-2')
+    // Wait 500ms to allow debounce function to be called and validate input
+    cy.wait(500)
 
     cy.get('#create').should('be.enabled')
     cy.get('#create').click()
@@ -69,6 +74,9 @@ describe('ONT Run page', () => {
     cy.contains('Enter at valid Flowcell ID (3 letters then at least 3 numbers)')
 
     cy.get('#pool-id-1').type('Unknown')
+    // Wait 500ms to allow debounce function to be called and validate input
+    cy.wait(500)
+
     cy.contains('Enter a valid Pool Library barcode')
   })
 
@@ -85,9 +93,15 @@ describe('ONT Run page', () => {
 
     cy.get('#flowcell-id-1').type('ABC123')
     cy.get('#pool-id-1').type('TRAC-1-2')
+    // Wait 500ms to allow debounce function to be called and validate input
+    cy.wait(500)
+
 
     cy.get('#flowcell-id-2').type('ABC123')
     cy.get('#pool-id-2').type('TRAC-1-2')
+    // Wait 500ms to allow debounce function to be called and validate input
+    cy.wait(500)
+
 
     cy.get('#create').should('be.enabled')
     cy.get('#create').click()

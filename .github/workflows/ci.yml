@@ -84,7 +84,7 @@ jobs:
         wait-on: http://localhost:5173/
         spec: "tests/e2e/**/*"
         config-file: cypress.config.js
-        config: videoCompression=false
+        config: video=false
         install: false
         timeout-minutes: 5
         browser: chrome
@@ -99,8 +99,3 @@ jobs:
       with:
         name: cypress-screenshots
         path: tests/e2e/screenshots
-    - uses: actions/upload-artifact@v1
-      if: failure()
-      with:
-        name: cypress-videos
-        path: tests/e2e/videos
