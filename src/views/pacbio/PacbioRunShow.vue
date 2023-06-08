@@ -31,8 +31,8 @@
       </div>
 
       <div class="grid grid-cols-2 w-full space-x-4">
-        <pacbioPoolList ref="pacbioPoolList"></pacbioPoolList>
-        <Plate ref="plate" @alert="showAlert"></Plate>
+        <pacbioPoolList ref="pacbioPoolList" />
+        <Plate ref="plate" @alert="showAlert" />
       </div>
     </div>
   </DataFetcher>
