@@ -110,13 +110,13 @@ export default {
         return this.poolTubeBarcode
       },
       async set(value) {
-        const response = await this.validatePoolBarcode(value)
         /*It is required to update the barcode here because components are externally 
           listening to this state */
         this.setPoolTubeBarcode({
           barcode: value,
           position: this.position,
         })
+        const response = await this.validatePoolBarcode(value)
         //response.success will be null for empty strings
         this.setBarcodeState(response.success)
       },
