@@ -1,23 +1,19 @@
 <template>
-  <div class="border border-black p-[10px]">
-    <fieldset>
-      <div
-        v-for="field in smrtLinkWellDefaults"
-        :key="field.name"
-        class="grid grid-cols-2 px-2 pb-1 my-auto"
-      >
-        <label class="text-left">{{ field.label }}</label>
+  <traction-section title="Well Defaults">
+    <div v-for="field in smrtLinkWellDefaults" :key="field.name">
+      <traction-field-group :label="field.label" :for="field.name" :description="field.description">
         <component
           :is="field.component"
           v-bind="handleCustomProps(field)"
           v-model="runDefaultWellAttributes[field.value]"
         />
-      </div>
-      <traction-muted-text>
-        * Non-submitted fields, used for providing new wells with default values
-      </traction-muted-text>
-    </fieldset>
-  </div>
+      </traction-field-group>
+    </div>
+
+    <traction-muted-text>
+      * Non-submitted fields, used for providing new wells with default values
+    </traction-muted-text>
+  </traction-section>
 </template>
 
 <script>
