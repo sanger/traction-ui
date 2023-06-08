@@ -81,7 +81,7 @@ jobs:
         wait-on: http://localhost:5173/
         spec: "tests/e2e/**/*"
         config-file: cypress.config.js
-        # config: video=false
+        config: videoCompression=false
         install: false
     # after the test run completes
     # store any screenshots
