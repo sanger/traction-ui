@@ -71,15 +71,18 @@ export default {
       usedBySelected: 'extraction',
       busy: null,
       disableUpload: null,
+      uploadSuccessful: null,
     }
   },
   computed: {
     qcResultUploadsRequest: ({ api }) => api.traction.qc_results_uploads.create,
     border() {
-      if (this.file === null) return 'border-0'
-      else {
+      if (this.uploadSuccessful === true) {
         return 'rounded border border-green-500'
+      } else if (this.uploadSuccessful === false) {
+        return 'rounded border border-red-500'
       }
+      return 'border-0'
     },
   },
   methods: {
@@ -103,9 +106,12 @@ export default {
         const csv = await this.file.text()
         const data = { csv: csv, usedBySelected: this.usedBySelected }
         await createQcResultsUploadResource(this.qcResultUploadsRequest, data)
+        this.uploadSuccessful = true
 
         this.showAlert(`Successfully imported: ${this.file.name}`, 'success')
       } catch (e) {
+        this.uploadSuccessful = false
+
         this.showAlert(e, 'danger')
       }
       this.busy = false
