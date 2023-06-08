@@ -1,20 +1,22 @@
 <template>
-  <div class="PageNotFound">
-    <br />
-    <h2>Page not found</h2>
-    <br />
+  <div class="flex-col text-xl">
+    <img class="w-32 h-32 mx-auto" src="../images/traction-logo.svg" alt="Traction logo" />
+    <h2 class="text-3xl my-5">Page not found</h2>
     <h3>Some useful links:</h3>
-    <router-link :to="{ name: 'Dashboard' }">
-      <label id="backToDashboard">Dashboard</label>
-    </router-link>
-    |
-    <router-link :to="{ name: 'SaphyrRuns' }">
-      <label id="backToSaphyrRuns">Saphyr Runs</label>
-    </router-link>
-    |
-    <router-link :to="{ name: 'PacbioRunIndex' }">
-      <label id="backToPacbioRuns">Pacbio Runs</label>
-    </router-link>
+    <div class="my-5">
+      <router-link :to="{ name: 'Dashboard' }" class="border-r-2 px-2">
+        Dashboard
+      </router-link>
+      <router-link :to="{ name: 'SaphyrRuns' }" class="border-r-2 px-2">
+        Saphyr Runs
+      </router-link>
+      <router-link :to="{ name: 'PacbioRunIndex' }" class="border-r-2 px-2">
+        Pacbio Runs
+      </router-link>
+      <router-link :to="{ name: 'ONTRunIndex' }" class="px-2">
+        Ont Runs
+      </router-link>
+    </div>
   </div>
 </template>
 
@@ -23,14 +25,3 @@ export default {
   name: 'PageNotFound',
 }
 </script>
-
-<style>
-h3,
-label {
-  font-size: 20px;
-}
-
-h2 {
-  font-size: 30px;
-}
-</style>
