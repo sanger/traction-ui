@@ -19,7 +19,7 @@
       ref="inputRef"
       :value="displayValue()"
       :data-attribute="dataAttribute"
-      :class="`w-full border border-gray-300 p-2 rounded-md focus:ring-sdb-100 focus:border-sdb-100 disabled:opacity-75 disabled:cursor-not-allowed${classes}`"
+      :class="`w-full border border-gray-300 p-2 rounded-md focus:ring-sdb-100 focus:border-sdb-100 disabled:opacity-75 disabled:cursor-not-allowed ${classes}`"
       @input="input($event)"
       @keyup.enter="input($event)"
     />
@@ -57,7 +57,7 @@ export default {
     },
     //The time in ms to debounce the input events
     debounce: {
-      type: Number,
+      type: [Number, String],
       default: 0,
     },
     //Formatter function to format the displayed value in input field, if given
@@ -73,6 +73,11 @@ export default {
   },
   methods: {
     input(event) {
+      // If a formatter is present we want to format the input
+      if (this.formatter) {
+        event.target.value = this.formatter(event.target.value)
+      }
+
       if (event.key === 'Enter') {
         this.$emit('enterKeyPress', event.target.value)
       }
