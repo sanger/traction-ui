@@ -1,8 +1,13 @@
 <template>
   <DataFetcher :fetcher="provider">
-    <router-link :to="{ name: 'PacbioRunIndex' }">
-      <traction-button id="backToRunsButton" class="float-right">Back</traction-button>
-    </router-link>
+    <ul class="flex flex-row justify-end">
+      <li>
+        <router-link id="backToRunsButton" :to="{ name: 'PacbioRunIndex' }" class="text-gray-700">
+          <TractionArrowIcon class="inline-block h-4 w-4" />
+          <span class="vertical-middle">Back to runs</span>
+        </router-link>
+      </li>
+    </ul>
 
     <traction-button
       v-if="newRecord"
@@ -39,6 +44,7 @@
 </template>
 
 <script>
+import TractionArrowIcon from '@/components/shared/icons/TractionArrowIcon.vue'
 import PacbioRunInfoEdit from '@/components/pacbio/PacbioRunInfoEdit'
 import PacbioRunWellDefaultEdit from '@/components/pacbio/PacbioRunWellDefaultEdit'
 import pacbioPoolList from '@/components/pacbio/PacbioPoolList'
@@ -54,6 +60,7 @@ const { mapGetters, mapActions, mapMutations } = createNamespacedHelpers(
 export default {
   name: 'PacbioRunShow',
   components: {
+    TractionArrowIcon,
     PacbioRunInfoEdit,
     PacbioRunWellDefaultEdit,
     pacbioPoolList,
@@ -121,3 +128,9 @@ export default {
   },
 }
 </script>
+
+<style scoped>
+.vertical-middle {
+  vertical-align: middle;
+}
+</style>
