@@ -72,12 +72,15 @@ export default {
       usedBySelected: 'extraction',
       busy: null,
       disableUpload: null,
-      uploadSuccessful: null,
+      uploadSuccessful: null, // possible values: true, false and null
     }
   },
   computed: {
     qcResultUploadsRequest: ({ api }) => api.traction.qc_results_uploads.create,
     border() {
+      // If upload is successful, highlight the input box in green
+      // If upload is not successful, highlight the input box in red
+      // Otherwise, uploadSuccessful is null and provide no colouring
       if (this.uploadSuccessful === true) {
         return 'rounded border border-green-500'
       } else if (this.uploadSuccessful === false) {
