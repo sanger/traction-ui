@@ -88,8 +88,7 @@ export default {
   },
   methods: {
     reEnable() {
-      // TODO: Might be a better way then using $refs
-      this.$refs.qcResultsUploadFile.value = null
+      this.$refs.qcResultsUploadFile.value = ''
       this.uploadSuccessful = null
       this.file = null
       this.disableUpload = !this.disableUpload
