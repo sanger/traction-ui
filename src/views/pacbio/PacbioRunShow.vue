@@ -32,7 +32,6 @@
 
       <div class="grid grid-cols-2 w-full space-x-4">
         <pacbioPoolList ref="pacbioPoolList" />
-        <!-- TODO: remove? display-contents div that's adjusting the spacing -->
         <Plate ref="plate" @alert="showAlert" />
       </div>
     </div>
