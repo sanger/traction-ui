@@ -1,8 +1,8 @@
 <template>
-  <div class="display-contents">
+  <span>
     <slot v-if="enabled"></slot>
     <slot v-else name="disabled"></slot>
-  </div>
+  </span>
 </template>
 
 <script>
@@ -63,8 +63,4 @@ export default {
 }
 </script>
 
-<style scoped>
-.display-contents {
-  display: contents;
-}
-</style>
+<style scoped></style>
