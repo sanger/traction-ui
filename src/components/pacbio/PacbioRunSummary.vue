@@ -3,11 +3,6 @@
     <traction-heading level="4" :show-border="true"> Summary </traction-heading>
 
     <div class="flex flex-col w-full">
-      <p id="importText" class="text-left">
-        Create a {{ runItem.system_name }} run with
-        {{ pluralise(plateCount, '0 plates', '1 plate', `${plateCount} plates`) }} and
-        {{ pluralise(wellCount, '0 wells', '1 well', `${wellCount} wells`) }}
-      </p>
       <div class="flex flex-row space-x-8 mt-5">
         <traction-button
           v-if="newRecord"
@@ -37,7 +32,6 @@ defineEmits(['resetRun', 'save'])
 </script>
 
 <script>
-import { pluralise } from '@/lib/stringHumanisation'
 import { RunTypeEnum } from '@/store/traction/pacbio/runCreate/run'
 
 import { createNamespacedHelpers } from 'vuex'
@@ -57,9 +51,6 @@ export default {
     plateCount: ({ runItem }) => (runItem.system_name === 'Revio' ? 2 : 1),
     wellCount: ({ wells }) => Object.keys(wells).length,
     ...mapGetters(['runItem', 'runType', 'wells']),
-  },
-  methods: {
-    pluralise,
   },
 }
 </script>
