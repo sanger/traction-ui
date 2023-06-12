@@ -56,6 +56,14 @@ describe('QcResultsUploadForm.vue', () => {
         expect(form.disableUpload).toEqual(true)
       })
     })
+
+    describe('uploadSuccessful', () => {
+      it('gets the uploadSuccessful status', () => {
+        expect(form.uploadSuccessful).toEqual(null)
+        wrapper.setData({ uploadSuccessful: true })
+        expect(form.uploadSuccessful).toEqual(true)
+      })
+    })
   })
 
   describe('#computed', () => {
@@ -63,6 +71,14 @@ describe('QcResultsUploadForm.vue', () => {
       expect(form.qcResultUploadsRequest).toEqual(
         store.getters.api.traction.qc_results_uploads.create,
       )
+    })
+
+    it('returns the correct border colour', () => {
+      expect(form.border).toEqual('border-0')
+      wrapper.setData({ uploadSuccessful: true })
+      expect(form.border).toEqual('rounded border border-green-500')
+      wrapper.setData({ uploadSuccessful: false })
+      expect(form.border).toEqual('rounded border border-red-500')
     })
   })
 
@@ -108,6 +124,7 @@ describe('QcResultsUploadForm.vue', () => {
       expect(form.showAlert).toBeCalledWith('Successfully imported: fileName', 'success')
       expect(form.busy).toEqual(false)
       expect(form.disableUpload).toEqual(true)
+      expect(form.uploadSuccessful).toEqual(true)
     })
 
     it('handles a failed import', async () => {
@@ -124,6 +141,26 @@ describe('QcResultsUploadForm.vue', () => {
       expect(form.showAlert).toBeCalledWith('This is an error msg', 'danger')
       expect(form.busy).toEqual(false)
       expect(form.disableUpload).toEqual(true)
+      expect(form.uploadSuccessful).toEqual(false)
+    })
+
+    describe('#reEnable', () => {
+      it('resets the file input and other data values', async () => {
+        vi.spyOn(QcResultsUpload, 'createQcResultsUploadResource').mockImplementation(() => {})
+
+        await form.postCSV()
+
+        expect(form.disableUpload).toEqual(true)
+        expect(form.uploadSuccessful).toEqual(true)
+
+        form.reEnable()
+
+        expect(form.disableUpload).toEqual(false)
+        expect(form.uploadSuccessful).toEqual(null)
+        const fileInput = wrapper.find('#qcResultsUploadFile')
+        expect(fileInput.element.value).toEqual('')
+        expect(form.file).toEqual(null)
+      })
     })
   })
 })
