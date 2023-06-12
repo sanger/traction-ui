@@ -1,6 +1,6 @@
 <template>
   <DataFetcher :fetcher="provider">
-    <router-link :to="{ name: 'ONTRuns' }">
+    <router-link :to="{ name: 'ONTRunIndex' }">
       <traction-button id="backToRunsButton" class="float-right">Back</traction-button>
     </router-link>
     <traction-button
