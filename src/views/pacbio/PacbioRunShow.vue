@@ -21,7 +21,7 @@
       </div>
 
       <div class="flex flex-col items-center">
-        <PacbioRunSummary class="w-1/2" />
+        <PacbioRunSummary class="w-1/2" @reset-run="resetRun" @save="save" />
       </div>
     </div>
   </DataFetcher>
