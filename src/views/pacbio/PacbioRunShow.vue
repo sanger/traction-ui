@@ -9,26 +9,6 @@
       </li>
     </ul>
 
-    <traction-button
-      v-if="newRecord"
-      id="reset"
-      theme="reset"
-      class="float-right"
-      @click="resetRun()"
-      >Reset</traction-button
-    >
-    <traction-button
-      :id="runType.id"
-      class="float-right"
-      :theme="runType.theme"
-      :data-action="runType.id"
-      @click="save"
-      >{{ runType.label }}</traction-button
-    >
-
-    <br />
-    <br />
-
     <div>
       <div class="grid grid-cols-2 w-full space-x-4 mb-6">
         <PacbioRunInfoEdit ref="pacbioRunInfoEdit" />
@@ -39,6 +19,10 @@
         <pacbioPoolList ref="pacbioPoolList" />
         <Plate ref="plate" @alert="showAlert" />
       </div>
+
+      <div class="flex flex-col items-center">
+        <PacbioRunSummary class="w-1/2" />
+      </div>
     </div>
   </DataFetcher>
 </template>
@@ -48,6 +32,7 @@ import TractionArrowIcon from '@/components/shared/icons/TractionArrowIcon.vue'
 import PacbioRunInfoEdit from '@/components/pacbio/PacbioRunInfoEdit'
 import PacbioRunWellDefaultEdit from '@/components/pacbio/PacbioRunWellDefaultEdit'
 import pacbioPoolList from '@/components/pacbio/PacbioPoolList'
+import PacbioRunSummary from '@/components/pacbio/PacbioRunSummary'
 import Plate from '@/components/pacbio/PacbioRunPlateItem'
 import DataFetcher from '@/components/DataFetcher'
 import { RunTypeEnum } from '@/store/traction/pacbio/runCreate/run'
@@ -64,6 +49,7 @@ export default {
     PacbioRunInfoEdit,
     PacbioRunWellDefaultEdit,
     pacbioPoolList,
+    PacbioRunSummary,
     Plate,
     DataFetcher,
   },

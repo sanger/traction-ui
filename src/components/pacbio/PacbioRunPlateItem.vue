@@ -1,6 +1,8 @@
 <template>
   <div>
     <traction-section title="Plates" class="plate">
+      <div>Sequencing Kit Box Barcode: {{ runItem.sequencing_kit_box_barcode }}</div>
+
       <flagged-feature name="enable_custom_modal">
         <template #disabled>
           <Plate96SVG :height="'100%'" :width="'100%'">
@@ -36,6 +38,9 @@ import BWell from '@/components/pacbio/PacbioRunWellItemBootstrap'
 import Well from '@/components/pacbio/PacbioRunWellItem'
 import WellEdit from '@/components/pacbio/PacbioRunWellEdit'
 
+import { createNamespacedHelpers } from 'vuex'
+const { mapGetters } = createNamespacedHelpers('traction/pacbio/runCreate')
+
 export default {
   name: 'PacbioRunPlateItem',
   components: {
@@ -53,6 +58,7 @@ export default {
     plateMap() {
       return PlateMap
     },
+    ...mapGetters(['runItem']),
   },
   methods: {
     alert(message, type) {
