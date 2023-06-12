@@ -6,4 +6,16 @@ const capitalizeFirstLetter = (string) => string.charAt(0).toUpperCase() + strin
 // capitalise first letter and remove dashes (can add more when need be)
 const humanise = (string) => capitalizeFirstLetter(string).replace(/-/g, ' ')
 
-export { capitalizeFirstLetter, humanise }
+/**
+ * Render strings in their appropiate pluralised form
+ * Inspired by:
+ * https://kazupon.github.io/vue-i18n/guide/pluralization.html#pluralization
+ * Usage:
+ *    pluralise(appleCount,'no apples','1 apple','{ appleCount } apples')
+ * Returns:
+ *
+ */
+const pluralise = (count, zero, singular, plural) =>
+  count === 0 ? zero : count === 1 ? singular : plural
+
+export { capitalizeFirstLetter, humanise, pluralise }

@@ -57,6 +57,8 @@ export default {
 
   runType: (state) => state.runType || {},
 
+  wells: (state) => state.wells || {},
+
   getWell: (state) => (position) => state.wells[position],
 
   runDefaultWellAttributes: (state) => state.defaultWellAttributes || {},
