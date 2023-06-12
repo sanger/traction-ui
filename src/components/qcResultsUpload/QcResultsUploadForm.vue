@@ -17,6 +17,7 @@
       <div :class="['w-full', 'my-4', `${border}`]">
         <input
           id="qcResultsUploadFile"
+          ref="qcResultsUploadFile"
           class="block w-full rounded border file:border-0"
           type="file"
           accept="text/csv, .csv"
@@ -42,7 +43,7 @@
           size="lg"
           :disabled="!disableUpload"
           theme="reset"
-          @click="disableUpload = !disableUpload"
+          @click="reEnable()"
           >Re-enable</traction-button
         >
       </div>
@@ -71,18 +72,30 @@ export default {
       usedBySelected: 'extraction',
       busy: null,
       disableUpload: null,
+      uploadSuccessful: null, // possible values: true, false and null
     }
   },
   computed: {
     qcResultUploadsRequest: ({ api }) => api.traction.qc_results_uploads.create,
     border() {
-      if (this.file === null) return 'border-0'
-      else {
+      // If upload is successful, highlight the input box in green
+      // If upload is not successful, highlight the input box in red
+      // Otherwise, uploadSuccessful is null and provide no colouring
+      if (this.uploadSuccessful === true) {
         return 'rounded border border-green-500'
+      } else if (this.uploadSuccessful === false) {
+        return 'rounded border border-red-500'
       }
+      return 'border-0'
     },
   },
   methods: {
+    reEnable() {
+      this.$refs.qcResultsUploadFile.value = ''
+      this.uploadSuccessful = null
+      this.file = null
+      this.disableUpload = !this.disableUpload
+    },
     async fileSelected(evt) {
       if (evt?.target?.files?.length) {
         this.file = evt.target.files[0]
@@ -103,9 +116,12 @@ export default {
         const csv = await this.file.text()
         const data = { csv: csv, usedBySelected: this.usedBySelected }
         await createQcResultsUploadResource(this.qcResultUploadsRequest, data)
+        this.uploadSuccessful = true
 
         this.showAlert(`Successfully imported: ${this.file.name}`, 'success')
       } catch (e) {
+        this.uploadSuccessful = false
+
         this.showAlert(e, 'danger')
       }
       this.busy = false
