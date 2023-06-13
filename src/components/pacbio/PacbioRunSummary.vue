@@ -3,7 +3,7 @@
     <traction-heading level="4" :show-border="true"> Summary </traction-heading>
 
     <div class="flex flex-col w-full">
-      <div class="flex flex-row space-x-8 mt-5">
+      <div class="flex flex-row space-x-8">
         <traction-button
           v-if="newRecord"
           id="reset"
