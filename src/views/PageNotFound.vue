@@ -23,14 +23,3 @@ export default {
   name: 'PageNotFound',
 }
 </script>
-
-<style>
-h3,
-label {
-  font-size: 20px;
-}
-
-h2 {
-  font-size: 30px;
-}
-</style>
