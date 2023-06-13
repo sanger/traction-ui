@@ -12,7 +12,7 @@
     </div>
     <div
       v-if="error.length"
-      class="text-left ml-1 text-red-400 mt-1 text-xxs"
+      :class="`text-left ml-1 text-red-400 mt-1 text-xs ${classes}`"
       :data-attribute="dataAttribute"
     >
       {{ error }}
@@ -36,6 +36,10 @@ export default {
     withIcon: {
       type: Boolean,
       default: false,
+    },
+    classes: {
+      type: String,
+      default: '',
     },
   },
 }

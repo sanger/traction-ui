@@ -8,32 +8,37 @@
       <div class="text-xl mb-2">{{ coordinate }}</div>
       <fieldset id="input-group-flowcell-id" class="py-2">
         <label class="flex justify-start">Flowcell ID:</label>
-        <BFormInput
-          :id="'flowcell-id-' + position"
-          placeholder="Scan flowcell ID"
-          :value="flowcellId"
-          :formatter="formatter"
-          :state="flowcellIdValidation"
-          @input="setFlowcellId({ $event, position })"
-        ></BFormInput>
-        <!-- This will only be shown if the preceding input has an invalid state -->
-        <traction-invalid-feedback id="input-flowcell-id-feedback"
-          >Enter at valid Flowcell ID (3 letters then at least 3 numbers)</traction-invalid-feedback
+        <traction-field-error
+          id="input-flowcell-id-feedback"
+          :error="flowcellIdValidationError"
+          :with-icon="isFlowcellIdExists"
         >
+          <traction-input
+            :id="'flowcell-id-' + position"
+            placeholder="Scan flowcell ID"
+            :value="flowcellId"
+            :formatter="formatter"
+            :classes="flowcell_id_field_colour"
+            @input="setFlowcellId({ $event, position })"
+          />
+        </traction-field-error>
       </fieldset>
       <fieldset id="input-group-pool-id" class="py-2">
         <label class="flex justify-start">Pool Library Barcode:</label>
-        <BFormInput
-          :id="'pool-id-' + position"
-          v-model="barcode"
-          :formatter="formatter"
-          :state="barcodeState"
-          debounce="500"
-          placeholder="Scan library barcode"
-        ></BFormInput>
-        <traction-invalid-feedback id="input-pool-tube-barcode-feedback"
-          >Enter a valid Pool Library barcode</traction-invalid-feedback
+        <traction-field-error
+          id="input-pool-tube-barcode-feedback"
+          :error="barcodeValidationError"
+          :with-icon="isBarcodeExists"
         >
+          <traction-input
+            :id="'pool-id-' + position"
+            v-model="barcode"
+            :formatter="formatter"
+            :classes="flowcell_barcode_field_colour"
+            placeholder="Scan library barcode"
+            :debounce="500"
+          />
+        </traction-field-error>
       </fieldset>
     </div>
   </div>
@@ -43,17 +48,22 @@
  * # ONTFlowcell
  *
  * Displays a panel for an individual flowcell. May be empty or contain a pool.
+ *
+ * 'flowcellId' and 'barcode' can be in three states - empty, valid or invalid.
+ * The border colour of input fields for 'flowCellId' and 'barcode' indicate these states as below
+ * No border - empty value, green for a valid value and red for an invalid value
+ *
+ * The border colour of the panel displaying flowcell also depends on the states of 'flowcellId' and 'barcode'
+ * green - if both flowcellId and barcode fields contain valid values
+ * red - if any of flowcellId and barcode fields contain invalid values
+ * white - if both flowcellId and barcode fields are empty
+ * yellow - if one of flowcellId and barcode fields are valid and other is empty
  */
 import { createNamespacedHelpers } from 'vuex'
 const { mapState, mapMutations } = createNamespacedHelpers('traction/ont/runs')
 const { mapActions } = createNamespacedHelpers('traction/ont/pools')
-import { BFormInput } from 'bootstrap-vue'
-
 export default {
   name: 'ONTFlowcell',
-  components: {
-    BFormInput,
-  },
   props: {
     position: {
       type: Number,
@@ -66,31 +76,48 @@ export default {
   },
   data() {
     return {
-      barcodeState: null,
+      /**Represents whether the barcode is valid (=true) , invalid(=false) or empty(=null) */
+      barcodeState: true,
     }
   },
   computed: {
-    flowcellIdValidation() {
+    /**Returns an error message if invalid otherwise an empty string */
+    flowcellIdValidationError() {
+      // 3 letters followed by at least 3 numbers
       if (this.flowcellId) {
-        // 3 letters followed by at least 3 numbers
-        return !!this.flowcellId.match(/^[a-zA-Z]{3}\d{3,}$/)
-      } else {
-        return null
+        return this.flowcellId.match(/^[a-zA-Z]{3}\d{3,}$/)
+          ? ''
+          : 'Enter at valid Flowcell ID (3 letters then at least 3 numbers)'
       }
+      return ''
     },
+    /**Returns a message if invalid otherwise empty */
+    barcodeValidationError() {
+      return this.barcode ? (this.barcodeState ? '' : 'Enter a valid Pool Library barcode') : ''
+    },
+    /** Is the flowcellId empty or not */
+    isFlowcellIdExists() {
+      return !!this.flowcellId
+    },
+    /** Is the barcode field empty or not */
+    isBarcodeExists() {
+      return !!this.barcode
+    },
+
     // For Vuex asynchronous validation we need to use computed getter and setter properties
     barcode: {
       get() {
-        if (this.poolTubeBarcode) {
-          this.setBarcodeState(true)
-        }
         return this.poolTubeBarcode
       },
       async set(value) {
+        /*It is required to update the barcode here because components are externally 
+          listening to this state */
+        this.setPoolTubeBarcode({
+          barcode: value,
+          position: this.position,
+        })
         const response = await this.validatePoolBarcode(value)
-        if (response.success) {
-          this.setPoolTubeBarcode({ barcode: value, position: this.position })
-        }
+        //response.success will be null for empty strings
         this.setBarcodeState(response.success)
       },
     },
@@ -111,20 +138,51 @@ export default {
           return flowcell.tube_barcode
         }
       },
+      /**Displays green if valid, red if invalid and no border if empty */
+      flowcell_id_field_colour() {
+        return this.isFlowcellIdExists
+          ? this.flowcellIdValidationError.length === 0
+            ? 'border-3 border-solid border-green-600'
+            : 'border-3 border-solid border-red-600 focus:border-red-600'
+          : ''
+      },
+      /**Displays green if valid, red if invalid and no border if empty */
+      flowcell_barcode_field_colour() {
+        return this.isBarcodeExists
+          ? this.barcodeState
+            ? 'border-3 border-solid border-green-600'
+            : 'border-3 border-solid border-red-600 focus:border-red-600'
+          : ''
+      },
+      /**
+       * green - if both flowcellId and barcode fields contain valid values
+       * red - if any of flowcellId and barcode fields contain invalid values
+       * white - if both flowcellId and barcode fields are empty
+       * yellow - if one of flowcellId and barcode fields are valid and other is empty
+       */
       flowcell_bg_colour() {
-        if (this.flowcellIdValidation == false || this.barcodeState == false) {
-          return 'border border-3 border-danger'
-        }
+        if (!this.isFlowcellIdExists && !this.isBarcodeExists) return 'border border-3 border-white'
 
-        if (this.flowcellIdValidation && this.barcodeState) {
+        const validFlowId = this.isFlowcellIdExists && this.flowcellIdValidationError.length === 0
+        const validBarcodeId = this.isBarcodeExists && this.barcodeState
+
+        if (validFlowId && validBarcodeId) {
           return 'border border-3 border-success'
         }
 
-        if (this.flowcellIdValidation || this.barcodeState) {
+        if (
+          (validFlowId && !this.isBarcodeExists) ||
+          (validBarcodeId && !this.isFlowcellIdExists)
+        ) {
           return 'border border-3 border-warning'
         }
 
-        return 'border border-3 border-white'
+        if (
+          this.flowcellIdValidationError.length > 0 ||
+          (this.isBarcodeExists && !this.barcodeState)
+        ) {
+          return 'border border-3 border-danger'
+        }
       },
     }),
   },
