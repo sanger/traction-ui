@@ -96,7 +96,7 @@ export default {
       }
     },
     redirectToRuns() {
-      this.$router.push({ name: 'ONTRuns' })
+      this.$router.push({ name: 'ONTRunIndex' })
     },
     async provider() {
       await this.setInstruments()
