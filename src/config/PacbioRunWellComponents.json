@@ -11,7 +11,6 @@
         "options": [
           {
             "text": "Movie Time",
-            "value": "",
             "disabled": true
           },
           "10.0",
@@ -118,13 +117,13 @@
     {
       "name": "include_fivemc_calls_in_cpg_motifs",
       "component": "traction-select",
+      "value": "include_fivemc_calls_in_cpg_motifs",
       "attribute": "include_fivemc_calls_in_cpg_motifs",
       "label": "Include 5mc Calls In CpG Motifs",
       "default": true,
       "props": {
         "options": ["Yes", "No"],
-        "dataAttribute": "include-fivemc-calls-in-cpg-motifs",
-        "placeholder": "Include 5mc Calls in CpG Motifs for new wells"
+        "dataAttribute": "include-fivemc-calls-in-cpg-motifs"
       }
     },
     {
@@ -164,8 +163,7 @@
       "default": true,
       "props": {
         "options": ["True", "False"],
-        "dataAttribute": "include-base-kinetics",
-        "placeholder": "Include Base Kinetics"
+        "dataAttribute": "include-base-kinetics"
       }
     },
     {
