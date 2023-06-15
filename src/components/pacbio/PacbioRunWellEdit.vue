@@ -1,6 +1,6 @@
 <template>
   <traction-modal ref="well-modal" :static="isStatic" size="lg" :visible="isShow" @cancel="hide">
-    <template #modal-title> Add Pool to Well: {{ position }} </template>
+    <template #modal-title>Add Pool to Well: {{ position }}</template>
 
     <fieldset>
       <traction-form v-for="field in smrtLinkWellDefaults" :key="field.name">
@@ -27,8 +27,7 @@
             placeholder="Pool Barcode"
             :debounce="500"
             @input="updatePoolBarcode(row, $event)"
-          >
-          </traction-input>
+          ></traction-input>
 
           <traction-button class="button btn-xs btn-danger" @click="removeRow(row)"
             >-</traction-button
@@ -46,17 +45,15 @@
         data-action="delete-well"
         theme="delete"
         @click="removeWell()"
+        >Delete well</traction-button
       >
-        Delete well
-      </traction-button>
       <traction-button
         :id="action.id"
         :data-action="action.dataAction"
         :theme="action.theme"
         @click="update()"
+        >{{ action.label }}</traction-button
       >
-        {{ action.label }}
-      </traction-button>
     </template>
   </traction-modal>
 </template>
@@ -66,6 +63,8 @@
 // A lot of it could be moved to the store
 import { mapGetters, mapActions, mapMutations } from 'vuex'
 import PacbioRunWellComponents from '@/config/PacbioRunWellComponents'
+
+const PLATE_INDEX = 0
 
 export default {
   name: 'WellModal',
@@ -110,7 +109,7 @@ export default {
     },
     newWell() {
       // Check if well exists in state
-      return !this.getWell(this.positionData)
+      return !this.getWell(this.positionData, PLATE_INDEX)
     },
     // this is needed to update the well. We need to make sure we have the
     // right pools
@@ -188,12 +187,12 @@ export default {
     },
     async update() {
       this.removeInvalidPools()
-      this.updateWell(this.wellPayload)
+      this.updateWell({ well: this.wellPayload, plateIndex: PLATE_INDEX })
       this.alert('Well created', 'success')
       this.hide()
     },
     removeWell() {
-      this.deleteWell(this.positionData)
+      this.deleteWell({ position: this.positionData, plateIndex: PLATE_INDEX })
       this.alert('Well successfully deleted', 'success')
       this.hide()
     },
@@ -211,7 +210,10 @@ export default {
       this.$emit('alert', message, type)
     },
     async setupWell() {
-      this.well = await this.getOrCreateWell({ position: this.positionData })
+      this.well = await this.getOrCreateWell({
+        position: this.positionData,
+        plateIndex: PLATE_INDEX,
+      })
       // We need to flush localPools to prevent duplicates
       this.localPools = []
       // If the well has pools we want the barcode and id of each to display

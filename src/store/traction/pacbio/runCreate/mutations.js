@@ -25,10 +25,11 @@ export default {
    * @param {Object} state The VueXState object
    * @param {Object} run The current run to populate the store
    */
-  populateRun: (state, { id, attributes }) => {
+  populateRun: (state, { id, attributes, plates }) => {
     state.run = {
       id,
       ...attributes,
+      plates,
     }
   },
 
@@ -105,9 +106,13 @@ export default {
    * @param {Object} well The well to update
    * Replaces the well in store with the updated well
    */
-  updateWell({ wells }, well) {
+  updateWell: (state, { well, plateIndex }) => {
     const position = well.position
-    Vue.set(wells, position, Object.assign({}, wells[position], well))
+    Vue.set(
+      state.run.plates[plateIndex].wells,
+      position,
+      Object.assign({}, state.run.plates[plateIndex].wells[position], well),
+    )
   },
 
   /**
@@ -115,7 +120,7 @@ export default {
    * @param {Object} well The well to update
    * Replaces the well in store with the updated well
    */
-  deleteWell({ wells }, position) {
-    Vue.delete(wells, position)
+  deleteWell: (state, { position, plateIndex }) => {
+    Vue.delete(state.run.plates[plateIndex].wells, position)
   },
 }

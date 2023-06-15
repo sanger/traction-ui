@@ -23,6 +23,9 @@
 
 <script>
 import { mapActions, mapMutations, mapGetters } from 'vuex'
+
+const PLATE_INDEX = 0
+
 export default {
   name: 'PacbioRunWellItem',
 
@@ -106,7 +109,7 @@ export default {
       return this.required_metadata_fields.some((field) => this.storeWell[field])
     },
     storeWell() {
-      return this.getWell(this.position)
+      return this.getWell(this.position, PLATE_INDEX)
     },
     status() {
       if (this.hasPools && this.hasValidMetadata) {
@@ -142,10 +145,10 @@ export default {
     },
     // It looks like all actions are async even if they do nothing async
     async updatePoolBarcode(barcode) {
-      const well = await this.getOrCreateWell({ position: this.position })
+      const well = await this.getOrCreateWell({ position: this.position, plateIndex: PLATE_INDEX })
       const { id } = this.poolByBarcode(barcode)
       well.pools.push(id)
-      this.updateWell(well)
+      this.updateWell({ well: well, plateIndex: PLATE_INDEX })
     },
   },
 }

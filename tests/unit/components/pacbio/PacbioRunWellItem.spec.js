@@ -1,15 +1,16 @@
 import Well from '@/components/pacbio/PacbioRunWellItem'
 import { localVue, mount, store } from '@support/testHelper'
-import * as Run from '@/store/traction/pacbio/runCreate/run'
 import storePools from '@tests/data/StorePools'
 
 describe('Well.vue', () => {
-  let well, wrapper, props, storeWell, run, smrtLinkVersion
+  let well, wrapper, props, storeWell, smrtLinkVersion
 
   const smrtLinkVersions = {
     1: { id: 1, name: 'v11', default: true },
     2: { id: 2, name: 'v12_revio', default: false },
   }
+
+  const PLATE_INDEX = 0
 
   beforeEach(() => {
     props = {
@@ -21,7 +22,6 @@ describe('Well.vue', () => {
       ry: '11.032985',
     }
 
-    run = Run.newRun()
     smrtLinkVersion = smrtLinkVersions['1']
     storeWell = {
       position: 'A1',
@@ -46,9 +46,8 @@ describe('Well.vue', () => {
     // store.state.traction.pacbio.runCreate.resources.smrtLinkVersions = smrtLinkVersions
 
     store.state.traction.pacbio.runCreate = {
+      run: { plates: [{ wells: { A1: storeWell } }] },
       ...storePools,
-      wells: { A1: storeWell },
-      run,
       smrtLinkVersion,
       resources: { smrtLinkVersions },
     }
@@ -266,7 +265,7 @@ describe('Well.vue', () => {
       expectedWell.pools.push('1')
 
       await wrapper.vm.updatePoolBarcode(newBarcode)
-      expect(wrapper.vm.updateWell).toBeCalledWith(expectedWell)
+      expect(wrapper.vm.updateWell).toBeCalledWith({ well: expectedWell, plateIndex: PLATE_INDEX })
     })
   })
 

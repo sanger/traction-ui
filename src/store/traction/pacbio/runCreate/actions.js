@@ -159,9 +159,11 @@ export default {
     if (runType.type === RunTypeEnum.New) {
       // ensure that the smrt link version id is set to the default
       // eslint-disable-next-line no-unused-vars
-      const { id: _id, ...attributes } = newRun()
 
-      commit('populateRun', { id, attributes })
+      const { id, ...attributes } = newRun()
+      const plates = attributes.plates
+      delete attributes.plates
+      commit('populateRun', { id, attributes, plates })
       commit('populateSmrtLinkVersion', getters.defaultSmrtLinkVersion)
 
       // success will always be true and errors will be empty
@@ -183,16 +185,19 @@ export default {
    * @param position The position of the well
    * @param attributes Any additional attributes
    */
-  getOrCreateWell: ({ state }, { position }) => {
-    return state.wells[position] || newWell({ position, ...state.defaultWellAttributes })
+  getOrCreateWell: ({ state }, { position, plateIndex }) => {
+    return (
+      state.run.plates[plateIndex].wells[position] ||
+      newWell({ position, ...state.defaultWellAttributes })
+    )
   },
 
   /**
    * Updates the well
    * @param commit the vuex commit object. Provides access to mutations
    */
-  updateWell: ({ commit }, well) => {
-    commit('updateWell', well)
+  updateWell: ({ commit }, { well, plateIndex }) => {
+    commit('updateWell', { well: well, plateIndex: plateIndex })
   },
 
   /**

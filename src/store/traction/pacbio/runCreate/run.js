@@ -22,10 +22,15 @@ const requiredAttributes = () => ['sequencing_kit_box_barcode', 'dna_control_com
  * @returns {Object} - A Fresh Pacbio Sequencing Run.
  * If id is nil it will be marked as a new run
  */
+// TODO: do attributes ever get passed in??
+// TODO: not sure here is the best place to init wells
+// (required for getters getWell from PacbioRunWellItem storeWell)
+// maybe move to original state
 const newRun = (attributes) => {
   return {
     ...runAttributes,
     ...attributes,
+    plates: [{ wells: {} }],
   }
 }
 

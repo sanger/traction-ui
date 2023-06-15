@@ -41,9 +41,13 @@ describe('PacbioWellEdit', () => {
     describe('if the SMRT Link version is v11', () => {
       beforeEach(async () => {
         store.state.traction.pacbio.runCreate.smrtLinkVersion = smrtLinkVersions['1']
-        store.state.traction.pacbio.runCreate.wells = {
-          A1: newWell({ position: propsData.position }),
-        }
+        store.state.traction.pacbio.runCreate.run.plates = [
+          {
+            wells: {
+              A1: newWell({ position: propsData.position }),
+            },
+          },
+        ]
         wrapper = mount(PacbioRunWellEdit, {
           localVue,
           store,
@@ -119,9 +123,13 @@ describe('PacbioWellEdit', () => {
     describe('if the SMRT Link version is v12_revio', () => {
       beforeEach(() => {
         store.state.traction.pacbio.runCreate.smrtLinkVersion = smrtLinkVersions['2']
-        store.state.traction.pacbio.runCreate.wells = {
-          A1: newWell({ position: propsData.position }),
-        }
+        store.state.traction.pacbio.runCreate.run.plates = [
+          {
+            wells: {
+              A1: newWell({ position: propsData.position }),
+            },
+          },
+        ]
         wrapper = mount(PacbioRunWellEdit, {
           localVue,
           store,
@@ -198,7 +206,7 @@ describe('PacbioWellEdit', () => {
     describe('well type', () => {
       it('if it doesnt exist in state (new)', async () => {
         store.state.traction.pacbio.runCreate.smrtLinkVersion = smrtLinkVersions['1']
-        store.state.traction.pacbio.runCreate.wells = {}
+        store.state.traction.pacbio.runCreate.run.plates = [{ wells: {} }]
 
         wrapper = mount(PacbioRunWellEdit, {
           localVue,
@@ -215,9 +223,14 @@ describe('PacbioWellEdit', () => {
 
       it('if it is an existing well', async () => {
         store.state.traction.pacbio.runCreate.smrtLinkVersion = smrtLinkVersions['1']
-        store.state.traction.pacbio.runCreate.wells = {
-          A1: newWell({ attributes: { id: 1 }, position: propsData.position }),
-        }
+
+        store.state.traction.pacbio.runCreate.run.plates = [
+          {
+            wells: {
+              A1: newWell({ attributes: { id: 1 }, position: propsData.position }),
+            },
+          },
+        ]
 
         wrapper = mount(PacbioRunWellEdit, {
           localVue,
@@ -241,8 +254,14 @@ describe('PacbioWellEdit', () => {
           pools: { 1: { id: 1, tube: 1 }, 2: { id: 2, tube: 2 } },
           tubes: { 1: { barcode: 'TRAC-1' }, 2: { barcode: 'TRAC-2' } },
           smrtLinkVersion: smrtLinkVersions['1'],
-          wells: {
-            A1: well,
+          run: {
+            plates: [
+              {
+                wells: {
+                  A1: well,
+                },
+              },
+            ],
           },
         }
 
