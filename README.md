@@ -78,6 +78,10 @@ To run the app and have hot-reloads for development:
 
         npm run test:e2e:one
 
+- Running an individual end to end test, without an interactive cypress session:
+
+        npm run test:cypress:all -- --spec **/<spec_file>
+
     You will need to make the following changes to get it working:
     - if you don't already have one create `.env.production.local` in the root folder as a copy of `.env.production`
     - change `VITE_TRACTION_BASE_URL=REPLACE_VITE_TRACTION_BASE_URL` to `VITE_TRACTION_BASE_URL=http://traction`
