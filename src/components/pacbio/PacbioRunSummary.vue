@@ -39,14 +39,9 @@ const { mapGetters } = createNamespacedHelpers('traction/pacbio/runCreate')
 
 export default {
   name: 'PacbioRunSummary',
-  components: {},
   computed: {
     newRecord: ({ runType }) => runType.type === RunTypeEnum.New,
-    plateCount: ({ runItem }) => (runItem.system_name === 'Revio' ? 2 : 1),
-    wellCount: ({ wells }) => Object.keys(wells).length,
-    ...mapGetters(['runItem', 'runType', 'wells']),
+    ...mapGetters(['runType']),
   },
 }
 </script>
-
-<style scoped></style>
