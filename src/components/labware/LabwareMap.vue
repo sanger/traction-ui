@@ -11,10 +11,16 @@
           v-for="(column, j) in props.numColumns" :key="j"
           class="px-1 py-1 w-full h-full"
         >
-          <labware-well 
-            :address="createAddress(row, column)" 
-            :interactive="true" 
-          />
+          <slot
+            :position="createPosition(row, column)" 
+            :interactive="props.interactive"
+          >
+            <!-- Fallback well component if none is passed in -->
+            <LabwareWell 
+              :position="createPosition(row, column)" 
+              :interactive="props.interactive" 
+            />
+          </slot>
         </div>
       </div>
       <span class="flex py-1 px-2 font-medium text-gray-500">{{ props.name }}</span>
@@ -38,9 +44,13 @@ const props = defineProps({
     required: true,
     default: 0,
   },
+  interactive: {
+    type: Boolean,
+    default: true,
+  },
 })
 
-function createAddress(rowNumber, columnNumber) {
+function createPosition(rowNumber, columnNumber) {
   if (rowNumber > 26) {
     return `${rowNumber},${columnNumber}`;
   }

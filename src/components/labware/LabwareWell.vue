@@ -4,14 +4,14 @@
         @mouseover="hover = true"
         @mouseleave="hover = false"
     >
-        <p class="truncate font-light">{{props.address}}</p>
+        <p class="truncate font-light">{{props.position}}</p>
     </div>
 </template>
 <script setup>
 import {computed, ref} from 'vue'
 
 const props = defineProps({
-  address: {
+  position: {
     type: String,
     required: true,
   },
