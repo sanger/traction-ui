@@ -1,9 +1,8 @@
 <template>
-  <div class="p-[20px] border-solid border-[1px] border-black">
-    <div class="font-semibold text-xl text-left py-3">Pools</div>
+  <traction-section title="Pools">
     <LabwareFinder :fetcher="findPools" filter="barcode" />
     <PacbioPoolSelectedList></PacbioPoolSelectedList>
-  </div>
+  </traction-section>
 </template>
 <script>
 import TableHelper from '@/mixins/TableHelper'

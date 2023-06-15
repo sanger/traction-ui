@@ -30,7 +30,7 @@
         <PacbioRunWellDefaultEdit ref="pacbioRunWellDefaultEdit" />
       </div>
 
-      <div class="grid grid-cols-2">
+      <div class="grid grid-cols-2 w-full space-x-4">
         <pacbioPoolList ref="pacbioPoolList"></pacbioPoolList>
         <Plate ref="plate" @alert="showAlert"></Plate>
       </div>
