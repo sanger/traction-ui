@@ -34,9 +34,6 @@ import BWell from '@/components/pacbio/PacbioRunWellItemBootstrap'
 import Well from '@/components/pacbio/PacbioRunWellItem'
 import WellEdit from '@/components/pacbio/PacbioRunWellEdit'
 
-import { createNamespacedHelpers } from 'vuex'
-const { mapGetters } = createNamespacedHelpers('traction/pacbio/runCreate')
-
 export default {
   name: 'PacbioRunPlateItem',
   components: {
@@ -54,7 +51,6 @@ export default {
     plateMap() {
       return PlateMap
     },
-    ...mapGetters(['runItem']),
   },
   methods: {
     alert(message, type) {
