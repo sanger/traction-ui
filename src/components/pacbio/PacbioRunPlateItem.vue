@@ -2,12 +2,12 @@
   <traction-section title="Plates">
     <flagged-feature name="enable_custom_modal">
       <template #disabled>
-        <Plate96SVG :height="'100%'" :width="'100%'">
+        <Plate96SVG height="100%" width="100%">
           <b-well v-for="(well, key) in plateMap.wells" :key="key" v-bind="well" @alert="alert">
           </b-well>
         </Plate96SVG>
       </template>
-      <Plate96SVG :height="'100%'" :width="'100%'">
+      <Plate96SVG height="100%" width="100%">
         <well
           v-for="(well, key) in plateMap.wells"
           :key="key"
