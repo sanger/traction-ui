@@ -2,7 +2,6 @@
   <div>
     <traction-button
       id="printLabels"
-      v-traction-modal.printerModal
       theme="print"
       :disabled="disabled"
       @click="onPrintAction()"
@@ -70,20 +69,6 @@ export default {
       this.$emit('selectPrinter', printerName)
       this.clearSelect()
       this.isShow = false
-      /**
-       * Hide the modal manually
-       * https://vuejsdevelopers.com/2019/01/22/vue-what-is-next-tick/
-       * https://bootstrap-vue.js.org/docs/components/modal/#prevent-closing
-       */
-      this.$nextTick(() => {
-        /**This need to be removed when custom_enable_modal feature flag is removed */
-        if (
-          'b-modal' in this.$refs.printerModal.$refs &&
-          this.$refs.printerModal.$refs['b-modal']
-        ) {
-          this.$refs.printerModal.$refs['b-modal'].hide()
-        }
-      })
     },
     setPrinterNames() {
       const printerOptions = this.$store.getters.printers.map((printer, index) => ({
