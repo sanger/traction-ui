@@ -1,4 +1,3 @@
-import './styles/legacy_bootstrap.scss'
 import './styles/index.css'
 
 import Vue from 'vue'

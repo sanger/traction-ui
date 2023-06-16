@@ -28,13 +28,7 @@ import TractionArrowIcon from '@/components/shared/icons/TractionArrowIcon'
 import TractionSortIcon from '@/components/shared/icons/TractionSortIcon'
 import TractionCloseIcon from '@/components/shared/icons/TractionCloseIcon'
 
-import { BFormInvalidFeedback } from 'bootstrap-vue'
 
-const registerBootstrapComponents = (vue) => {
-  /* eslint-disable vue/component-definition-name-casing */
-  vue.component('traction-invalid-feedback', BFormInvalidFeedback)
-  /* eslint-enable vue/component-definition-name-casing */
-}
 
 const registerGlobal = (vue) => {
   vue.component('FlaggedFeature', FlaggedFeature)
@@ -66,7 +60,6 @@ const registerGlobal = (vue) => {
   vue.component('TractionTableColumn', TractionTableColumn)
   vue.component('TractionModal', TractionModal)
   vue.component('TractionCloseIcon', TractionCloseIcon)
-  registerBootstrapComponents(vue)
 }
 
-export { registerGlobal, registerBootstrapComponents }
+export { registerGlobal}
