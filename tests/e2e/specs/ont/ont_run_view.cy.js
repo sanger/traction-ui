@@ -15,9 +15,6 @@ describe('ONT Run page', () => {
     })
     cy.intercept('flipper/api/actors/User', {
       flipper_id: 'User',
-      features: {
-        enable_custom_alert: { enabled: true },
-      },
     })
   })
 

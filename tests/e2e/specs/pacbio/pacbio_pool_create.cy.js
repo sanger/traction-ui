@@ -7,9 +7,6 @@ describe('Pacbio Pool Create', () => {
     cy.intercept('/v1/pacbio/plates?filter[barcode]=GEN-1680611780-1&include=wells.requests', {
       fixture: 'tractionPacbioPlate.json',
     })
-    cy.withFlags({
-      enable_custom_alert: { enabled: true },
-    })
   })
 
   it('Creates a pool successfully', () => {

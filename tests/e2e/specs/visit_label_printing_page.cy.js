@@ -2,11 +2,7 @@
 
 describe('Label Printing page', () => {
   beforeEach(() => {
-    cy.withFlags({
-      enable_custom_alert: { enabled: true },
-    })
     cy.visit('#/label-printing')
-
     cy.get('#barcode-input').type('aBarcode')
     cy.get('#suffix-selection').select('OPLX - Pool')
     cy.get('#number-of-labels').type(3)

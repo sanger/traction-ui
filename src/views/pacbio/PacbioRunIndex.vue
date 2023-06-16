@@ -104,7 +104,7 @@ export default {
     return {
       fields: [
         { key: 'id', label: 'Run ID', sortable: true },
-        { key: 'name', label: 'Name', sortable: true},
+        { key: 'name', label: 'Name', sortable: true },
         { key: 'state', label: 'State', sortable: true },
         {
           key: 'sequencing_kit_box_barcode',

@@ -1,11 +1,6 @@
 <template>
   <div>
-    <traction-button
-      id="printLabels"
-      theme="print"
-      :disabled="disabled"
-      @click="onPrintAction()"
-    >
+    <traction-button id="printLabels" theme="print" :disabled="disabled" @click="onPrintAction()">
       Print Labels
     </traction-button>
     <traction-modal

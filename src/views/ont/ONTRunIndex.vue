@@ -15,12 +15,7 @@
       ></traction-pagination>
     </div>
 
-    <traction-table
-      id="run-index"
-      :items="tableData"
-      :fields="fields"
-      :sort-by.sync="sortBy"
-    >
+    <traction-table id="run-index" :items="tableData" :fields="fields" :sort-by.sync="sortBy">
       <template #cell(actions)="row">
         <traction-button
           :id="generateId('editRun', row.item.id)"

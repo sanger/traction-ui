@@ -59,11 +59,7 @@
 
       <template #row-details="row">
         <div>
-          <traction-table
-            :items="row.item.libraries"
-            :fields="field_in_details"
-          >
-          </traction-table>
+          <traction-table :items="row.item.libraries" :fields="field_in_details"> </traction-table>
         </div>
       </template>
     </traction-table>

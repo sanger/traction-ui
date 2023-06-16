@@ -1,8 +1,5 @@
 describe('Pacbio Run Edit view', () => {
   beforeEach(() => {
-    cy.withFlags({
-      enable_custom_alert: { enabled: true },
-    })
     cy.intercept('/v1/pacbio/runs', {
       fixture: 'tractionPacbioRuns.json',
     })

@@ -58,17 +58,16 @@ export default {
         { key: 'selected', label: '\u2713' },
         { key: 'id', label: 'Sample ID (Request)', sortable: true },
         { key: 'source_identifier', label: 'Source', sortable: true },
-        { key: 'sample_name', label: 'Sample Name', sortable: true},
+        { key: 'sample_name', label: 'Sample Name', sortable: true },
         { key: 'library_type', label: 'Library type' },
         { key: 'data_type', label: 'Data type' },
         {
           key: 'number_of_flowcells',
           label: 'Number of flowcells',
-          
         },
         { key: 'cost_code', label: 'Cost code' },
         { key: 'external_study_id', label: 'External study ID' },
-        { key: 'created_at', label: 'Created at', sortable: true},
+        { key: 'created_at', label: 'Created at', sortable: true },
       ],
       filterOptions: [
         { value: '', text: '' },

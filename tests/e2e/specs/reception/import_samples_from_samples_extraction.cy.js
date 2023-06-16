@@ -8,9 +8,6 @@ describe('Import samples from Samples extraction, for Pacbio', () => {
     cy.intercept('v1/data_types?fields[data_types]=name,pipeline', {
       fixture: 'tractionDataTypes.json',
     })
-    cy.withFlags({
-      enable_custom_alert: { enabled: true },
-    })
   })
 
   it('Successfully', () => {
