@@ -1,5 +1,9 @@
 <template>
   <traction-section title="Well Defaults">
+    <traction-muted-text classes="text-left mb-2">
+      Non-submitted fields, used for providing new wells with default values
+    </traction-muted-text>
+
     <div v-for="field in smrtLinkWellDefaults" :key="field.name">
       <traction-field-group :label="field.label" :for="field.name" :description="field.description">
         <component
@@ -9,10 +13,6 @@
         />
       </traction-field-group>
     </div>
-
-    <traction-muted-text>
-      * Non-submitted fields, used for providing new wells with default values
-    </traction-muted-text>
   </traction-section>
 </template>
 

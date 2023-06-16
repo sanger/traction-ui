@@ -1,5 +1,5 @@
 <template>
-  <section :class="`flex flex-col gap-y-4 ${classNames}`">
+  <section :class="`flex flex-col gap-y-2 ${classNames}`">
     <TractionHeading level="4" :show-border="true">
       <div class="flex flex-row gap-x-2">
         <div v-if="number">{{ number }}.</div>
