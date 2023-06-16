@@ -4,7 +4,6 @@ describe('Extraction QC page', () => {
   beforeEach(() => {
     cy.withFlags({
       dpl_478_enable_qc_results_upload: { enabled: true },
-      enable_custom_form: { enabled: true },
       enable_custom_alert: { enabled: true },
     })
 

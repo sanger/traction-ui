@@ -2,9 +2,6 @@ describe('Ont samples view', () => {
   beforeEach(() => {
     cy.intercept('flipper/api/actors/User', {
       flipper_id: 'User',
-      features: {
-        enable_custom_form: { enabled: true },
-      },
     })
   })
   it('Visits the ont samples url', () => {

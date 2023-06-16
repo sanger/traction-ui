@@ -1,7 +1,6 @@
 describe('Pacbio Run Edit view', () => {
   beforeEach(() => {
     cy.withFlags({
-      enable_custom_form: { enabled: true },
       enable_custom_modal: { enabled: true },
       enable_custom_alert: { enabled: true },
     })

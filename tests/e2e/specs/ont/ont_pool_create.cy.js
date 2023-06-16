@@ -10,9 +10,6 @@ describe('Ont Pool Create', () => {
 
     cy.intercept('flipper/api/actors/User', {
       flipper_id: 'User',
-      features: {
-        enable_custom_form: { enabled: true },
-      },
     })
   })
 
