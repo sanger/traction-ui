@@ -40,24 +40,7 @@
 -->
 
 <template>
-  <flagged-feature name="enable_custom_table">
-    <template #disabled>
-      <b-table-wrapper
-        :fields="fields"
-        :items="items"
-        :selectable="selectable"
-        :select-mode="selectMode"
-        :primary-key="primaryKey"
-        :simple="simple"
-        :empty-text="emptyText"
-        :tbody-tr-class="tbodyTrClass"
-        @row-selected="onRowSelection"
-        @row-clicked="onRowClicked"
-      >
-        <template v-for="(_, slot) of $scopedSlots" #[slot]="scope"
-          ><slot :name="slot" v-bind="scope" /></template
-      ></b-table-wrapper>
-    </template>
+ 
     <div class="flex">
       <div class="flex w-full py-2 align-middle inline-block min-w-full">
         <div class="flex flex-col w-full sm:rounded-lg">
@@ -131,17 +114,15 @@
         </div>
       </div>
     </div>
-  </flagged-feature>
 </template>
 <script>
 import TractionSortIcon from '@/components/shared/icons/TractionSortIcon'
-import BTableWrapper from '@/components/shared/table/BTableWrapper'
 import { alphaNumericSortDefault, flattenObject } from '@/lib/DataHelpers'
 import { within } from '@/lib/propValidations'
 
 export default {
   name: 'TractionTable',
-  components: { TractionSortIcon, BTableWrapper },
+  components: { TractionSortIcon },
   inheritAttrs: false,
   props: {
     //attribute name to represent this component for testing, if given
@@ -389,11 +370,7 @@ export default {
         ? field
         : ''
     },
-    /** This can be removed once we remove bootstrap table
-     * This is for Bootstrap row selection which needs a re-emission which failed to work otherwise  */
-    onRowSelection(value) {
-      this.$emit('row-selected', value)
-    },
+    /**Callback when a row is clicked */
     onRowClicked(value) {
       this.$emit('row-clicked', value)
     },

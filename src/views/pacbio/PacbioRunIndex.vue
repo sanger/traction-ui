@@ -24,18 +24,11 @@
 
     <traction-table
       id="run-index"
-      hover
-      responsive
-      show-empty
-      small
       :items="tableData"
       :fields="fields"
-      :filter="filter"
       :sort-by.sync="sortBy"
-      :sort-desc.sync="sortDesc"
       :per-page="perPage"
       :current-page="currentPage"
-      tbody-tr-class="run"
       @filtered="onFiltered"
     >
       <template #cell(actions)="row">
@@ -110,22 +103,20 @@ export default {
   data() {
     return {
       fields: [
-        { key: 'id', label: 'Run ID', sortable: true, tdClass: 'run-id' },
-        { key: 'name', label: 'Name', sortable: true, tdClass: 'name' },
-        { key: 'state', label: 'State', sortable: true, tdClass: 'state' },
+        { key: 'id', label: 'Run ID', sortable: true },
+        { key: 'name', label: 'Name', sortable: true},
+        { key: 'state', label: 'State', sortable: true },
         {
           key: 'sequencing_kit_box_barcode',
           label: 'Sequencing Kit BB',
           sortable: true,
-          tdClass: 'sequencing-kit-box-barcode',
         },
         {
           key: 'dna_control_complex_box_barcode',
           label: 'DNA Control Complex BB',
           sortable: true,
-          tdClass: 'dna-control-complex-box-barcode',
         },
-        { key: 'system_name', label: 'System Name', sortable: true, tdClass: 'system-name' },
+        { key: 'system_name', label: 'System Name', sortable: true },
         { key: 'created_at', label: 'Created at', sortable: true },
         { key: 'actions', label: 'Actions' },
       ],

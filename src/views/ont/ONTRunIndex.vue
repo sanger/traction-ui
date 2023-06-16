@@ -17,17 +17,9 @@
 
     <traction-table
       id="run-index"
-      hover
-      responsive
-      show-empty
-      small
       :items="tableData"
       :fields="fields"
-      tbody-tr-class="run"
-      :per-page="perPage"
-      :current-page="currentPage"
       :sort-by.sync="sortBy"
-      :sort-desc.sync="sortDesc"
     >
       <template #cell(actions)="row">
         <traction-button
@@ -66,21 +58,21 @@ export default {
   data() {
     return {
       fields: [
-        { key: 'id', label: 'Run ID', sortable: true, tdClass: 'run-id' },
+        { key: 'id', label: 'Run ID', sortable: true },
         {
           key: 'experiment_name',
           label: 'Experiment ID',
           sortable: true,
           tdClass: 'experiment-name',
         },
-        { key: 'state', label: 'State', sortable: true, tdClass: 'state' },
+        { key: 'state', label: 'State', sortable: true },
         {
           key: 'instrument_name',
           label: 'Instrument Name',
           sortable: true,
           tdClass: 'instrument-name',
         },
-        { key: 'created_at', label: 'Created at', sortable: true, tdClass: 'created-at' },
+        { key: 'created_at', label: 'Created at', sortable: true },
         { key: 'actions', label: 'Actions', tdClass: 'actions' },
       ],
       sortBy: 'created_at',
