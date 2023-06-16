@@ -8,6 +8,7 @@
           attribute="sourceSelect"
           for="sourceSelect"
           description="The location to import the labware from"
+          layout="spacious"
         >
           <traction-select
             id="sourceSelect"
@@ -25,6 +26,7 @@
           attribute="pipelineSelect"
           for="pipelineSelect"
           description="The Traction pipeline to import the requests into"
+          layout="spacious"
         >
           <traction-select
             id="pipelineSelect"
@@ -39,7 +41,7 @@
 
       <div>
         <traction-heading level="4" :show-border="true"> Request Options </traction-heading>
-        <traction-muted-text class="float-left"
+        <traction-muted-text class="text-left"
           >Default values to apply to the imported requests</traction-muted-text
         >
         <div>
@@ -55,6 +57,7 @@
             attribute="cost_code"
             for="cost_code"
             description="Default Pacbio cost code: S4699"
+            layout="spacious"
           >
             <traction-input
               id="cost_code"
@@ -67,6 +70,7 @@
               label="Number of SMRT cells"
               attribute="number_of_smrt_cells"
               for="number_of_smrt_cells"
+              layout="spacious"
             >
               <traction-input
                 id="number_of_smrt_cells"
@@ -81,6 +85,7 @@
               label="Number of Gigabases required"
               attribute="estimate_of_gb_required"
               for="estimate_of_gb_required"
+              layout="spacious"
             >
               <traction-input
                 id="estimate_of_gb_required"
@@ -121,6 +126,7 @@
           attribute="barcodes"
           for="barcodes"
           description="The list of labware barcodes to import from source"
+          layout="spacious"
         >
           <textarea
             id="barcodes"

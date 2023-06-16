@@ -71,7 +71,6 @@
           v-model="runItem.comments"
           placeholder="Comments"
           type="text"
-          classes="w-48"
           data-attribute="comments"
           :value="runItem.comments"
         />
