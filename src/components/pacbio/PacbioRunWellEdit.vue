@@ -192,6 +192,7 @@ export default {
       this.hide()
     },
     removeWell() {
+      // TODO: deleting a well seems to error in console and doesnt update
       this.deleteWell({ position: this.positionData, plateIndex: PLATE_INDEX })
       this.alert('Well successfully deleted', 'success')
       this.hide()

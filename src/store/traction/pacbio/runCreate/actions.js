@@ -1,5 +1,5 @@
 import { handleResponse } from '@/api/ResponseHelper'
-import { groupIncludedByResource, extractAttributes } from '@/api/JsonApi'
+import { groupIncludedByResource, extractAttributes, extractPlateData } from '@/api/JsonApi'
 import { newRun, createRunType, RunTypeEnum, newWell, defaultWellAttributes } from './run'
 
 // Asynchronous update of state.
@@ -81,7 +81,7 @@ export default {
       id,
       // This is long but we want to include pool data
       include:
-        'plate.wells.pools.tube,plate.wells.pools.libraries.tag,plate.wells.pools.libraries.request,smrt_link_version',
+        'plates.wells.pools.tube,plates.wells.pools.libraries.tag,plates.wells.pools.libraries.request,smrt_link_version',
       fields: {
         requests: 'sample_name',
         tubes: 'barcode',
@@ -95,6 +95,7 @@ export default {
 
     if (success) {
       const {
+        plates,
         wells,
         pools,
         tubes,
@@ -105,9 +106,9 @@ export default {
       } = groupIncludedByResource(included)
 
       const smrtLinkVersion = extractAttributes(smrt_link_version)
+      const plateData = extractPlateData(plates, wells)
 
-      commit('populateRun', data)
-      commit('populateWells', wells)
+      commit('populateRun', { id: data.id, attributes: data.attributes, plates: plateData })
       commit('populatePools', pools)
       commit('setLibraries', libraries)
       commit('setTags', tags)
@@ -125,11 +126,11 @@ export default {
    * @param state {runType, runs, wells}. The current runType, run and it's wells
    * @returns { success, errors }. Was the request successful? were there any errors?
    */
-  saveRun: async ({ rootState, state: { runType, run, wells, smrtLinkVersion } }) => {
+  saveRun: async ({ rootState, state: { runType, run, smrtLinkVersion } }) => {
     const request = rootState.api.traction.pacbio.runs
 
     // based on the runType create the payload and the promise
-    const payload = runType.payload({ run, wells, smrtLinkVersion })
+    const payload = runType.payload({ run, smrtLinkVersion })
     const promise = runType.promise({ request, payload })
     const response = await handleResponse(promise)
 
@@ -163,6 +164,7 @@ export default {
       const { id, ...attributes } = newRun()
       const plates = attributes.plates
       delete attributes.plates
+
       commit('populateRun', { id, attributes, plates })
       commit('populateSmrtLinkVersion', getters.defaultSmrtLinkVersion)
 

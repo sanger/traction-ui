@@ -5,9 +5,10 @@ import {
   valid,
   defaultWellAttributes,
   newWell,
-  createPayload,
+  createRunPayload,
   RunTypeEnum,
   createRunType,
+  buildPlateAttributes,
 } from '@/store/traction/pacbio/runCreate/run'
 
 const existingRun = {
@@ -37,6 +38,7 @@ const wells = {
 }
 
 const wellValues = Object.values(wells)
+const plateValues = [{ wells: wellValues }]
 
 describe('run.js', () => {
   describe('newRun', () => {
@@ -101,22 +103,27 @@ describe('run.js', () => {
     })
   })
 
-  describe('createPayload', () => {
+  describe('createRunPayload', () => {
     it('for a new run', () => {
       const aRun = newRun()
       // eslint-disable-next-line no-unused-vars
       const { id, ...attributes } = aRun
-      const payload = createPayload({
+      const payload = createRunPayload({
         run: attributes,
-        wells: wellValues,
+        plates: plateValues,
         smrtLinkVersion: smrtLinkVersions['1'],
       })
+
+      const platesAttributes = plateValues.map((plate) => {
+        return buildPlateAttributes(plate)
+      })
+
       expect(payload).toEqual({
         data: {
           type: 'runs',
           attributes: {
             pacbio_smrt_link_version_id: smrtLinkVersions['1'].id,
-            well_attributes: wellValues,
+            plates_attributes: platesAttributes,
             ...attributes,
           },
         },
@@ -126,19 +133,24 @@ describe('run.js', () => {
     it('for an existing run', () => {
       const aRun = newRun()
       const { id, ...attributes } = aRun
-      const payload = createPayload({
+      const payload = createRunPayload({
         id,
         run: attributes,
-        wells: wellValues,
+        plates: plateValues,
         smrtLinkVersion: smrtLinkVersions['1'],
       })
+
+      const platesAttributes = plateValues.map((plate) => {
+        return buildPlateAttributes(plate)
+      })
+
       expect(payload).toEqual({
         data: {
           type: 'runs',
           id,
           attributes: {
             pacbio_smrt_link_version_id: smrtLinkVersions['1'].id,
-            well_attributes: wellValues,
+            plates_attributes: platesAttributes,
             ...attributes,
           },
         },
@@ -167,12 +179,15 @@ describe('run.js', () => {
         const aRun = newRun()
         // eslint-disable-next-line no-unused-vars
         const { id, ...attributes } = aRun
+        const plates = attributes.plates
+        delete attributes.plates
+
         expect(
-          runType.payload({ run: aRun, wells, smrtLinkVersion: smrtLinkVersions['1'] }),
+          runType.payload({ run: aRun, plates, smrtLinkVersion: smrtLinkVersions['1'] }),
         ).toEqual(
-          createPayload({
+          createRunPayload({
             run: attributes,
-            wells: wellValues,
+            plates: plates,
             smrtLinkVersion: smrtLinkVersions['1'],
           }),
         )
@@ -214,13 +229,16 @@ describe('run.js', () => {
         const aRun = newRun()
         // eslint-disable-next-line no-unused-vars
         const { id, ...attributes } = aRun
+        const plates = attributes.plates
+        delete attributes.plates
+
         expect(
-          runType.payload({ run: aRun, wells, smrtLinkVersion: smrtLinkVersions['1'] }),
+          runType.payload({ run: aRun, plates, smrtLinkVersion: smrtLinkVersions['1'] }),
         ).toEqual(
-          createPayload({
+          createRunPayload({
             id,
             run: attributes,
-            wells: wellValues,
+            plates: plates,
             smrtLinkVersion: smrtLinkVersions['1'],
           }),
         )

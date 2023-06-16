@@ -34,6 +34,8 @@ const newRun = (attributes) => {
   }
 }
 
+// TODO refactor to newPlate
+
 const defaultWellAttributes = () => {
   const onInstrument = 'On Instrument'
 
@@ -108,19 +110,38 @@ const valid = ({ run }) => {
   return Object.keys(run.errors || {}).length === 0
 }
 
+const buildWellAttributes = (well) => {
+  well.pool_ids = well.pools
+  delete well.pools
+  return well
+}
+
+const buildPlateAttributes = (plate) => {
+  const plateId = plate.id || ''
+  const wells = Object.values(plate.wells)
+  const wells_attributes = wells.map((well) => {
+    return buildWellAttributes(well)
+  })
+  return { id: plateId, wells_attributes: [...wells_attributes] }
+}
+
 /**
  * @param {id} - An Integer for the id of the run
  * @param {run} - A pacbio sequencing run object minus id
- * @param {wells} - An array of wells
+ * @param {plates} - An array of plates
  * @returns {Object} - A request payload
  * @example { data: { type: 'runs', id: 1, attributes: { system_name: 'Sequel IIe',
   sequencing_kit_box_barcode: 'ABC123',
   dna_control_complex_box_barcode: 'BCD234',
-  smrt_link_version_id: 1,}, wells: [
+  smrt_link_version_id: 1,}, plates: [ { wells: [
     { ...well1}, { ...well2}
-  ]}}
+  ]}]}}
  **/
-const createPayload = ({ id, run, wells, smrtLinkVersion }) => {
+const createRunPayload = ({ id, run, plates, smrtLinkVersion }) => {
+  const platesAttributes = plates.map((plate) => {
+    return buildPlateAttributes(plate)
+  })
+
   return {
     data: {
       type: 'runs',
@@ -128,7 +149,7 @@ const createPayload = ({ id, run, wells, smrtLinkVersion }) => {
       attributes: {
         ...run,
         pacbio_smrt_link_version_id: smrtLinkVersion.id,
-        well_attributes: [...wells],
+        plates_attributes: platesAttributes,
       },
     },
   }
@@ -150,10 +171,13 @@ const newRunType = {
   label: 'Create Run',
 
   // returns the payload slightly different for new and existing runs
-  payload({ run, wells, smrtLinkVersion }) {
+  payload({ run, smrtLinkVersion }) {
     // eslint-disable-next-line no-unused-vars
     const { id, ...attributes } = run
-    return createPayload({ run: attributes, wells: Object.values(wells), smrtLinkVersion })
+    const plates = attributes.plates
+    delete attributes.plates
+
+    return createRunPayload({ run: attributes, plates: plates, smrtLinkVersion })
   },
 
   // returns a promise different for create or update
@@ -168,10 +192,12 @@ const existingRunType = {
   theme: 'update',
   action: 'update',
   label: 'Update Run',
-  payload({ run, wells, smrtLinkVersion }) {
+  payload({ run, smrtLinkVersion }) {
     // eslint-disable-next-line no-unused-vars
     const { id, ...attributes } = run
-    return createPayload({ id, run: attributes, wells: Object.values(wells), smrtLinkVersion })
+    const plates = attributes.plates
+    delete attributes.plates
+    return createRunPayload({ id, run: attributes, plates: plates, smrtLinkVersion })
   },
   // the function handle should be the same for create and update
   promise({ payload, request }) {
@@ -196,9 +222,10 @@ export {
   valid,
   defaultWellAttributes,
   newWell,
-  createPayload,
+  createRunPayload,
   RunTypeEnum,
   createRunType,
   newRunType,
   existingRunType,
+  buildPlateAttributes,
 }

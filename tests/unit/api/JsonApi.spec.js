@@ -23,6 +23,7 @@ describe('JsonApi', () => {
     mapAttribute,
     dataToObjectByPosition,
     populateBy,
+    extractPlateData,
   } = JsonApi
 
   let data, included, dataItem
@@ -335,6 +336,21 @@ describe('JsonApi', () => {
       expect(state.resources.wells).toEqual(
         dataToObjectByPosition({ data: wells, includeRelationships: true }),
       )
+    })
+  })
+
+  describe('extractPlateData', () => {
+    // TODO add multiple plates
+    it('builds the plate, well and pool info', () => {
+      const run = Data.PacbioRun.data.data
+      const plates = Data.PacbioRun.data.included.slice(0, 1)
+      const wells = Data.PacbioRun.data.included.slice(1, 2)
+      const result = extractPlateData(plates, wells)
+
+      expect(result[0].id).toEqual(plates[0].id)
+      expect(result[0].pacbio_run_id).toEqual(parseInt(run.id))
+      expect(Object.keys(result[0].wells)).toEqual(wells.map((w) => w.attributes.position))
+      expect(Object.keys(result[0].wells).length).toEqual(1)
     })
   })
 })

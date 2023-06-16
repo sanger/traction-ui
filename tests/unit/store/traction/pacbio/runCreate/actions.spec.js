@@ -69,6 +69,7 @@ describe('actions.js', () => {
   })
 
   describe('fetchRun', () => {
+    // TODO a test with multiple plates, with multiple wells
     it('handles success', async () => {
       const commit = vi.fn()
       const find = vi.fn()
@@ -82,8 +83,29 @@ describe('actions.js', () => {
         ...Data.PacbioRun.data.included.slice(7, 8)[0].attributes,
       }
 
-      expect(commit).toHaveBeenCalledWith('populateRun', Data.PacbioRun.data.data)
-      expect(commit).toHaveBeenCalledWith('populateWells', Data.PacbioRun.data.included.slice(1, 2))
+      const plateInfo = {
+        id: Data.PacbioRun.data.included.slice(0, 1)[0].id,
+        wells: Data.PacbioRun.data.included
+          .slice(0, 1)[0]
+          .relationships.wells.data.map((w) => w.id),
+      }
+
+      const wellsInfo = {
+        id: Data.PacbioRun.data.included.slice(1, 2)[0].id,
+        type: Data.PacbioRun.data.included.slice(1, 2)[0].type,
+        position: Data.PacbioRun.data.included.slice(1, 2)[0].attributes.position,
+        ...Data.PacbioRun.data.included.slice(1, 2)[0].attributes,
+        pools: ['1'],
+      }
+
+      const runData = Data.PacbioRun.data.data
+      const plateData = [{ id: plateInfo.id, pacbio_run_id: 5, wells: { A2: wellsInfo } }]
+
+      expect(commit).toHaveBeenCalledWith('populateRun', {
+        id: runData.id,
+        attributes: runData.attributes,
+        plates: plateData,
+      })
       expect(commit).toHaveBeenCalledWith('populatePools', Data.PacbioRun.data.included.slice(2, 3))
       expect(commit).toHaveBeenCalledWith('setTubes', Data.PacbioRun.data.included.slice(3, 4))
       expect(commit).toHaveBeenCalledWith('setLibraries', Data.PacbioRun.data.included.slice(4, 5))

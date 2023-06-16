@@ -142,6 +142,23 @@ const extractRelationships = (relationships, included, includeStore = {}) => {
   }, {})
 }
 
+const extractPlateData = (plates, wells) => {
+  return plates.map((plate) => {
+    // Get the wells for the given plate
+    const wellIds = plate.relationships.wells.data.map((w) => w.id)
+    const plateWells = wells.filter((well) => wellIds.includes(well.id))
+
+    // Format the well data, to include pool ids
+    const wellsData = dataToObjectByPosition({ data: plateWells, includeRelationships: true })
+
+    return {
+      id: plate.id,
+      ...plate.attributes,
+      wells: wellsData,
+    }
+  })
+}
+
 const extractResourceObject = (data, included, includeStore = {}) => {
   return Object.assign(
     extractAttributes(data),
@@ -263,6 +280,7 @@ export {
   populateById,
   dataToObjectByPosition,
   populateBy,
+  extractPlateData,
 }
 
 export default deserialize

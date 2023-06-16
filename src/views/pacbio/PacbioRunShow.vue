@@ -90,6 +90,7 @@ export default {
       }
     },
     save() {
+      // TODO: if save errors, well barcode are removed
       this.saveRun().then(({ success, errors }) => {
         success
           ? this.showAlert(
