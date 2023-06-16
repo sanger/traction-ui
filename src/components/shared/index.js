@@ -28,8 +28,6 @@ import TractionArrowIcon from '@/components/shared/icons/TractionArrowIcon'
 import TractionSortIcon from '@/components/shared/icons/TractionSortIcon'
 import TractionCloseIcon from '@/components/shared/icons/TractionCloseIcon'
 
-
-
 const registerGlobal = (vue) => {
   vue.component('FlaggedFeature', FlaggedFeature)
   vue.component('LoadingFullScreenModal', LoadingFullScreenModal)
@@ -62,4 +60,4 @@ const registerGlobal = (vue) => {
   vue.component('TractionCloseIcon', TractionCloseIcon)
 }
 
-export { registerGlobal}
+export { registerGlobal }
