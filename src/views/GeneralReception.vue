@@ -5,6 +5,7 @@
       <div>
         <traction-heading level="4" :show-border="true"> Source </traction-heading>
         <traction-field-group
+          label="Source"
           attribute="sourceSelect"
           for="sourceSelect"
           description="The location to import the labware from"
@@ -23,6 +24,7 @@
       <div>
         <traction-heading level="4" :show-border="true">Pipeline</traction-heading>
         <traction-field-group
+          label="Pipeline"
           attribute="pipelineSelect"
           for="pipelineSelect"
           description="The Traction pipeline to import the requests into"
@@ -123,6 +125,7 @@
       <div class="flex flex-col w-full">
         <traction-heading level="4" :show-border="true">Scan barcodes</traction-heading>
         <traction-field-group
+          label="Barcodes"
           attribute="barcodes"
           for="barcodes"
           description="The list of labware barcodes to import from source"
