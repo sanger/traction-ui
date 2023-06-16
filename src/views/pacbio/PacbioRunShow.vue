@@ -1,38 +1,45 @@
 <template>
   <DataFetcher :fetcher="provider">
-    <ul class="flex flex-row justify-end">
-      <li>
-        <router-link id="backToRunsButton" :to="{ name: 'PacbioRunIndex' }" class="text-gray-700">
-          <TractionArrowIcon class="inline-block h-4 w-4" />
-          <span class="vertical-middle">Back to runs</span>
-        </router-link>
-      </li>
-    </ul>
+    <router-link :to="{ name: 'PacbioRunIndex' }">
+      <traction-button id="backToRunsButton" class="float-right">Back</traction-button>
+    </router-link>
 
-    <div>
-      <div class="grid grid-cols-2 w-full space-x-4 mb-6">
-        <PacbioRunInfoEdit ref="pacbioRunInfoEdit" />
-        <PacbioRunWellDefaultEdit ref="pacbioRunWellDefaultEdit" />
-      </div>
+    <traction-button
+      v-if="newRecord"
+      id="reset"
+      theme="reset"
+      class="float-right"
+      @click="resetRun()"
+      >Reset</traction-button
+    >
+    <traction-button
+      :id="runType.id"
+      class="float-right"
+      :theme="runType.theme"
+      :data-action="runType.id"
+      @click="save"
+      >{{ runType.label }}</traction-button
+    >
 
-      <div class="grid grid-cols-2 w-full space-x-4 mb-6">
-        <pacbioPoolList ref="pacbioPoolList" />
-        <Plate ref="plate" @alert="showAlert" />
-      </div>
+    <br />
+    <br />
 
-      <div class="flex flex-col items-center">
-        <PacbioRunSummary class="w-1/2" @reset-run="resetRun" @save="save" />
-      </div>
+    <div class="grid grid-cols-2 w-full space-x-4 mb-6">
+      <PacbioRunInfoEdit ref="pacbioRunInfoEdit" />
+      <PacbioRunWellDefaultEdit ref="pacbioRunWellDefaultEdit" />
+    </div>
+
+    <div class="grid grid-cols-2 w-full space-x-4 mb-6">
+      <pacbioPoolList ref="pacbioPoolList" />
+      <Plate ref="plate" @alert="showAlert" />
     </div>
   </DataFetcher>
 </template>
 
 <script>
-import TractionArrowIcon from '@/components/shared/icons/TractionArrowIcon.vue'
 import PacbioRunInfoEdit from '@/components/pacbio/PacbioRunInfoEdit'
 import PacbioRunWellDefaultEdit from '@/components/pacbio/PacbioRunWellDefaultEdit'
 import pacbioPoolList from '@/components/pacbio/PacbioPoolList'
-import PacbioRunSummary from '@/components/pacbio/PacbioRunSummary'
 import Plate from '@/components/pacbio/PacbioRunPlateItem'
 import DataFetcher from '@/components/DataFetcher'
 import { RunTypeEnum } from '@/store/traction/pacbio/runCreate/run'
@@ -45,11 +52,9 @@ const { mapGetters, mapActions, mapMutations } = createNamespacedHelpers(
 export default {
   name: 'PacbioRunShow',
   components: {
-    TractionArrowIcon,
     PacbioRunInfoEdit,
     PacbioRunWellDefaultEdit,
     pacbioPoolList,
-    PacbioRunSummary,
     Plate,
     DataFetcher,
   },
@@ -114,9 +119,3 @@ export default {
   },
 }
 </script>
-
-<style scoped>
-.vertical-middle {
-  vertical-align: middle;
-}
-</style>
