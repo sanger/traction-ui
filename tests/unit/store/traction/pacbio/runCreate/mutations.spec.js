@@ -194,7 +194,7 @@ describe('mutations.js', () => {
 
   describe('updateWell', () => {
     it('when it is a new well', () => {
-      // TODO maybe update defaultState to include plates: [] ...
+      // TODO DPl-746 maybe update defaultState to include plates: [] ...
       const state = defaultState()
       state.run = { plates: [{ wells: {} }] }
       const well = { position: 'A1', row: 'A', column: '1' }

@@ -57,7 +57,7 @@ export default {
 
   runType: (state) => state.runType || {},
 
-  // TODO: rename to getWellForPlate
+  // TODO DPl-746: rename to getWellForPlate
   getWell: (state) => (position, plateIndex) => state.run.plates[plateIndex].wells[position],
 
   runDefaultWellAttributes: (state) => state.defaultWellAttributes || {},

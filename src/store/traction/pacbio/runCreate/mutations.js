@@ -121,7 +121,8 @@ export default {
    * Replaces the well in store with the updated well
    */
   deleteWell: (state, { position, plateIndex }) => {
-    // TODO: think this is broken
+    // TODO DPl-746: think this is broken
+    // I think this is a back-end issue?
     Vue.delete(state.run.plates[plateIndex].wells, position)
   },
 }

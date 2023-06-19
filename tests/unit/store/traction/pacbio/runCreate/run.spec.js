@@ -103,6 +103,7 @@ describe('run.js', () => {
     })
   })
 
+  // TODO DPl-746 check buildWellAttributes and buildPlateAttributes
   describe('createRunPayload', () => {
     it('for a new run', () => {
       const aRun = newRun()
