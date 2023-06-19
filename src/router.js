@@ -24,7 +24,6 @@ import ONTPoolIndex from '@/views/ont/ONTPoolIndex'
 import ONTRunIndex from '@/views/ont/ONTRunIndex'
 import ONTRun from '@/views/ont/ONTRun'
 import ONTSampleIndex from '@/views/ont/ONTSampleIndex'
-import TestView from '@/views/TestView'
 
 export default new Router({
   routes: [
@@ -56,12 +55,6 @@ export default new Router({
       name: 'QcResultsUpload',
       meta: { page: 'QC Results Upload' },
       component: QcResultsUpload,
-    },
-    {
-      path: '/test',
-      name: 'TestView',
-      meta: { page: 'Test View' },
-      component: TestView,
     },
     {
       path: '/saphyr',

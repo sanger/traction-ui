@@ -144,7 +144,9 @@ describe('Pacbio Run Create view', () => {
       .first()
       .trigger('dragstart', { dataTransfer: dataTransfer, force: true })
       .trigger('drag', { dataTransfer: dataTransfer, force: true })
-    cy.get('[data-attribute=pacbio-run-well]').first().trigger('drop', { dataTransfer: dataTransfer, force: true })
+    cy.get('[data-attribute=pacbio-run-well]')
+      .first()
+      .trigger('drop', { dataTransfer: dataTransfer, force: true })
 
     cy.get('button').contains('Create').click()
     cy.contains(
