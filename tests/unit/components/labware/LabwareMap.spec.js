@@ -10,7 +10,6 @@ describe('LabwareMap.vue', () => {
       name: 'Example labware',
       numRows: 8,
       numColumns: 12,
-      interactive: true,
     }
 
     wrapper = mount(LabwareMap, {
@@ -28,10 +27,6 @@ describe('LabwareMap.vue', () => {
   it('can have a name', () => {
     expect(labware.name).toEqual(props.name)
     expect(wrapper.find('[data-attribute="labware-name"]').text()).toEqual(props.name)
-  })
-
-  it('can have an interactive prop', () => {
-    expect(labware.interactive).toEqual(props.interactive)
   })
 
   it('can have an numRows prop', () => {

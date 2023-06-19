@@ -3,7 +3,7 @@
     <div class="border border-sdb py-2 bg-blue-100 rounded-lg px-2 w-full">
       <div v-for="(row, i) in numRows" :key="i" class="flex flex-row">
         <div v-for="(column, j) in numColumns" :key="j" class="px-1 py-1 w-full h-full">
-          <slot :position="createPosition(row, column)" :interactive="interactive" />
+          <slot :position="createPosition(row, column)" />
         </div>
       </div>
       <span data-attribute="labware-name" class="flex py-1 px-2 font-medium text-gray-500"
@@ -19,13 +19,12 @@
   A component to build labware maps.
   Usage:
   <LabwareMap 
-    v-slot="{ position, interactive }"
+    v-slot="{ position }"
     name="96-well plate"
     :num-rows=6
     :num-columns=5
-    :interactive=true
   >
-    <PacbioRunWell :position="position" :interactive="interactive"/>
+    <PacbioRunWell :position="position"/>
   </LabwareMap>  
 */
 }
@@ -48,11 +47,6 @@ export default {
       type: Number,
       required: true,
       default: 0,
-    },
-    // Determines whether the labware is interactable
-    interactive: {
-      type: Boolean,
-      default: true,
     },
   },
   methods: {
