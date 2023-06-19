@@ -112,7 +112,6 @@ const valid = ({ run }) => {
 
 const buildWellAttributes = (well) => {
   well.pool_ids = well.pools
-  delete well.pools
   return well
 }
 
