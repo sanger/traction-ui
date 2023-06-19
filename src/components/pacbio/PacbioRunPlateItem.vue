@@ -1,23 +1,30 @@
 <template>
-  <flagged-feature name="enable_custom_modal">
-    <template #disabled>
-      <Plate96SVG :height="'100%'" :width="'100%'">
-        <b-well v-for="(well, key) in plateMap.wells" :key="key" v-bind="well" @alert="alert">
-        </b-well>
+  <traction-section title="Plates">
+    <flagged-feature name="enable_custom_modal">
+      <template #disabled>
+        <Plate96SVG height="100%" width="100%">
+          <b-well v-for="(well, key) in plateMap.wells" :key="key" v-bind="well" @alert="alert">
+          </b-well>
+        </Plate96SVG>
+      </template>
+      <Plate96SVG height="100%" width="100%">
+        <well
+          v-for="(well, key) in plateMap.wells"
+          :key="key"
+          v-bind="well"
+          @alert="alert"
+          @click="onWellClick"
+        >
+        </well>
       </Plate96SVG>
-    </template>
-    <Plate96SVG :height="'100%'" :width="'100%'">
-      <well
-        v-for="(well, key) in plateMap.wells"
-        :key="key"
-        v-bind="well"
+      <WellEdit
+        ref="modal"
+        class="modal"
+        :position="selectedWellPosition"
         @alert="alert"
-        @click="onWellClick"
-      >
-      </well>
-    </Plate96SVG>
-    <WellEdit ref="modal" class="modal" :position="selectedWellPosition" @alert="alert"></WellEdit>
-  </flagged-feature>
+      ></WellEdit>
+    </flagged-feature>
+  </traction-section>
 </template>
 
 <script>

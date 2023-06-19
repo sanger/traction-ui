@@ -79,19 +79,23 @@ describe('ONT Pool Edit', () => {
     })
     cy.get('[data-type=plate-item]').should('be.visible')
     cy.get('[data-attribute=tag-set-name]').should('be.visible')
-    cy.get('[data-type=pool-library-edit]').within(() => {
-      cy.get('[data-attribute=insert-size-error-icon]').should('be.visible')
-      cy.get('[data-attribute=insert-size-error-icon]').within(() => {
-        cy.get('[data-attribute=pass]').should('be.visible')
+    cy.get('[data-type=pool-library-edit]').each(($pool) => {
+      cy.wrap($pool).within(() => {
+        cy.get('[data-attribute=insert-size-error-icon]').should('be.visible')
+        cy.get('[data-attribute=insert-size-error-icon]').within(() => {
+          cy.get('[data-attribute=pass]').should('be.visible')
+        })
+        cy.get('[data-attribute=insert-size]').clear()
+        cy.get('[data-attribute=insert-size-error-icon]').should('not.exist')
       })
-      cy.get('[data-attribute=insert-size]').clear()
-      cy.get('[data-attribute=insert-size-error-icon]').should('not.exist')
     })
     cy.get('[data-action=update-pool]').click()
-    cy.get('[data-type=pool-library-edit]').within(() => {
-      cy.get('[data-attribute=insert-size-error-icon]').should('be.visible')
-      cy.get('[data-attribute=insert-size-error-icon]').within(() => {
-        cy.get('[data-attribute=fail]').should('be.visible')
+    cy.get('[data-type=pool-library-edit]').each(($pool) => {
+      cy.wrap($pool).within(() => {
+        cy.get('[data-attribute=insert-size-error-icon]').should('be.visible')
+        cy.get('[data-attribute=insert-size-error-icon]').within(() => {
+          cy.get('[data-attribute=fail]').should('be.visible')
+        })
       })
     })
     cy.contains('[data-type=pool-create-message]', 'The pool is invalid')

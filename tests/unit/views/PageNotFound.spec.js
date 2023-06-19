@@ -21,16 +21,20 @@ describe('PageNotFound.vue', () => {
 
   describe('Links on page ', () => {
     it('will redirect to dashboard', () => {
-      wrapper.find('#backToDashboard').trigger('click')
+      wrapper.find('#dashboard-link').trigger('click')
       expect(wrapper.vm.$route.path).toBe('/dashboard')
     })
+    it('will redirect to saphyr runs', () => {
+      wrapper.find('#saphyr-link').trigger('click')
+      expect(wrapper.vm.$route.path).toBe('/saphyr/runs')
+    })
     it('will redirect to pacbio runs', () => {
-      wrapper.find('#backToPacbioRuns').trigger('click')
+      wrapper.find('#pacbio-link').trigger('click')
       expect(wrapper.vm.$route.path).toBe('/pacbio/runs')
     })
-    it('will redirect to saphyr runs', () => {
-      wrapper.find('#backToSaphyrRuns').trigger('click')
-      expect(wrapper.vm.$route.path).toBe('/saphyr/runs')
+    it('will redirect to ont runs', () => {
+      wrapper.find('#ont-link').trigger('click')
+      expect(wrapper.vm.$route.path).toBe('/ont/runs')
     })
   })
 })

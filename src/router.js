@@ -21,7 +21,7 @@ import PacbioPoolCreate from '@/views/pacbio/PacbioPoolCreate'
 import ONT from '@/views/ONT'
 import ONTPoolCreate from '@/views/ont/ONTPoolCreate'
 import ONTPoolIndex from '@/views/ont/ONTPoolIndex'
-import ONTRuns from '@/views/ont/ONTRuns'
+import ONTRunIndex from '@/views/ont/ONTRunIndex'
 import ONTRun from '@/views/ont/ONTRun'
 import ONTSampleIndex from '@/views/ont/ONTSampleIndex'
 import TestView from '@/views/TestView'
@@ -170,8 +170,8 @@ export default new Router({
         },
         {
           path: 'runs',
-          name: 'ONTRuns',
-          component: ONTRuns,
+          name: 'ONTRunIndex',
+          component: ONTRunIndex,
           meta: { page: 'Runs' },
         },
         {
