@@ -102,7 +102,7 @@ export default {
   },
 
   /**
-   * @param {Object} { wells } The VueXState object
+   * @param {Object} { state } The VueXState object
    * @param {Object} well The well to update
    * Replaces the well in store with the updated well
    */
@@ -116,13 +116,19 @@ export default {
   },
 
   /**
-   * @param {Object} { wells } The VueXState object
-   * @param {Object} well The well to update
-   * Replaces the well in store with the updated well
+   * @param {Object} { state } The VueXState object
+   * @param {Object} well The well to delete
+   * Adds _destroy key to the well in store
    */
-  deleteWell: (state, { position, plateIndex }) => {
-    // TODO DPl-746: think this is broken
-    // I think this is a back-end issue?
-    Vue.delete(state.run.plates[plateIndex].wells, position)
+  // Both Traction UI/ Service don't support deleting a well
+  // and adding a new well back in the same position
+  deleteWell: (state, { well, plateIndex }) => {
+    well._destroy = true
+    const position = well.position
+    Vue.set(
+      state.run.plates[plateIndex].wells,
+      position,
+      Object.assign({}, state.run.plates[plateIndex].wells[position], well),
+    )
   },
 }

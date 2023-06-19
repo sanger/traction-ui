@@ -203,6 +203,17 @@ export default {
   },
 
   /**
+   * "Deletes" the well (adds `_destroy` to the well, so service knows to delete)
+   * @param commit the vuex commit object. Provides access to mutations
+   */
+  // TODO DPl-746:
+  // Both Traction UI/ Service don't support deleting a well
+  // and adding a new well back in the same position
+  deleteWell: ({ commit }, { well, plateIndex }) => {
+    commit('deleteWell', { well: well, plateIndex: plateIndex })
+  },
+
+  /**
    * Gets the pool based on it's barcode.
    * Finds the pool, commits it to store and then returns it
    * If it is an existing well it will be retrieved

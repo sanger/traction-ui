@@ -58,7 +58,16 @@ export default {
   runType: (state) => state.runType || {},
 
   // TODO DPl-746: rename to getWellForPlate
-  getWell: (state) => (position, plateIndex) => state.run.plates[plateIndex].wells[position],
+  // TODO DPl-746: add a comment, saying only return wells that are not
+  // about to be deleted
+  getWell: (state) => (position, plateIndex) => {
+    if (
+      state.run.plates[plateIndex].wells[position] &&
+      state.run.plates[plateIndex].wells[position]._destroy == undefined
+    ) {
+      return state.run.plates[plateIndex].wells[position]
+    }
+  },
 
   runDefaultWellAttributes: (state) => state.defaultWellAttributes || {},
 }

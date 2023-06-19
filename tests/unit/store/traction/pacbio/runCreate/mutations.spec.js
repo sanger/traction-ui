@@ -214,12 +214,15 @@ describe('mutations.js', () => {
   })
 
   describe('deleteWell', () => {
-    it('should delete the well', () => {
+    it('should add _destroy to the well', () => {
       const state = defaultState()
       state.run = { plates: [{ wells: {} }] }
       state.run.plates[PLATE_INDEX].wells = { A1: { position: 'A1' }, A2: { position: 'A2' } }
-      deleteWell(state, { position: 'A1', plateIndex: PLATE_INDEX })
-      expect(state.run.plates[PLATE_INDEX].wells).toEqual({ A2: { position: 'A2' } })
+      deleteWell(state, { well: { position: 'A1' }, plateIndex: PLATE_INDEX })
+      expect(state.run.plates[PLATE_INDEX].wells).toEqual({
+        A1: { position: 'A1', _destroy: true },
+        A2: { position: 'A2' },
+      })
     })
   })
 })

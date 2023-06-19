@@ -61,7 +61,7 @@
 <script>
 // There is a lot of duplication between this component and PacbioRunWellEdit.
 // A lot of it could be moved to the store
-import { mapGetters, mapActions, mapMutations } from 'vuex'
+import { mapGetters, mapActions } from 'vuex'
 import PacbioRunWellComponents from '@/config/PacbioRunWellComponents'
 
 const PLATE_INDEX = 0
@@ -136,8 +136,7 @@ export default {
     },
   },
   methods: {
-    ...mapActions('traction/pacbio/runCreate', ['getOrCreateWell', 'updateWell']),
-    ...mapMutations('traction/pacbio/runCreate', ['deleteWell']),
+    ...mapActions('traction/pacbio/runCreate', ['getOrCreateWell', 'updateWell', 'deleteWell']),
     addRow() {
       this.localPools.push({ id: '', barcode: '' })
     },
@@ -192,9 +191,10 @@ export default {
       this.hide()
     },
     removeWell() {
-      // TODO DPl-746: deleting a well seems to error in console and doesnt update
-      // I think this is a back-end issue?
-      this.deleteWell({ position: this.positionData, plateIndex: PLATE_INDEX })
+      // TODO DPl-746:
+      // Both Traction UI/ Service don't support deleting a well
+      // and adding a new well back in the same position
+      this.deleteWell({ well: this.wellPayload, plateIndex: PLATE_INDEX })
       this.alert('Well successfully deleted', 'success')
       this.hide()
     },
