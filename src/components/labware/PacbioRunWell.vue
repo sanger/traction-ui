@@ -2,120 +2,132 @@
   <div>
     <div
       :class="wellClassNames"
-      @mouseover="hover = true"
-      @mouseleave="hover = false"
-      @drop="drop"
-      @click="onWellClick(props.position)"
+      data-attribute="pacbio-run-well"
+      @mouseover.prevent="hover = true"
+      @mouseleave.prevent="hover = false"
+      @drop.prevent="drop"
+      @dragenter.prevent
+      @dragover.prevent
+      @click="onClick"
     >
-      <p class="truncate font-light">{{ props.position }}</p>
+      <p class="truncate font-light">{{ position }}</p>
     </div>
-    <WellEdit ref="wellEditModalRef" class="modal" :position="props.position" />
+    <span
+      v-if="hasPools && hover"
+      class="absolute z-1 bg-black text-white text-xs p-2 rounded"
+      data-attribute="tooltip"
+    >
+      {{ tooltip }}
+    </span>
   </div>
 </template>
-<script setup>
-import { computed, ref } from 'vue'
+
+<script>
 import { mapActions, mapMutations, mapGetters } from 'vuex'
-import WellEdit from '@/components/pacbio/PacbioRunWellEdit'
-
-
-// TODO: This is largely copied from PacbioRunWellItem.vue
-//       Since this is using vue composition API, we can't use the same vuex approach
-//       Need to figure out a way to use vuex with composition API
-
-const props = defineProps({
-  position: {
-    type: String,
-    required: true,
+export default {
+  name: 'PacbioRunWell',
+  props: {
+    position: {
+      type: String,
+      required: true,
+    },
+    interactive: {
+      type: Boolean,
+      required: true,
+      default: true,
+    },
   },
-  interactive: {
-    type: Boolean,
-    default: true,
+  data() {
+    return {
+      hover: false,
+    }
   },
-})
-
-const hover = ref(false)
-const wellEditModalRef = ref()
-
-const wellClassNames = computed(() => {
-  return [
-    status(),
-    hover.value && props.interactive
-      ? 'ring ring-pink-600 ring-offset-1'
-      : 'border border-gray-800',
-    props.interactive ? 'cursor-pointer' : '',
-    'flex flex-col justify-center mx-auto rounded-full text-xs font-semibold aspect-square w-full select-none',
-  ]
-})
-
-function onWellClick(position) {
-  if (!props.interactive) return
-  wellEditModalRef.value.showModalForPosition(position)
-}
-
-const { getOrCreateWell } = mapActions('traction/pacbio/runCreate', ['getOrCreateWell'])
-const { updateWell } = mapMutations('traction/pacbio/runCreate', ['updateWell'])
-const { poolByBarcode, getWell, pools, smrtLinkVersion } = mapGetters('traction/pacbio/runCreate', [
-  'poolByBarcode',
-  'getWell',
-  'pools',
-  'smrtLinkVersion',
-])
-
-function storeWell() {
-  return getWell(props.position)
-}
-
-function required_metadata_fields() {
-  if (smrtLinkVersion.name == 'v11') {
-    return [
-      'movie_time',
-      'on_plate_loading_concentration',
-      'binding_kit_box_barcode',
-      'generate_hifi',
-    ]
-  } else if (smrtLinkVersion.name == 'v12_revio') {
-    return [
-      'movie_acquisition_time',
-      'include_base_kinetics',
-      'library_concentration',
-      'polymerase_kit',
-      'pre_extension_time',
-    ]
-  }
-  return []
-}
-
-function hasPools() {
-  if (storeWell === undefined) return false
-  return storeWell.pools.length > 0
-}
-function hasValidMetadata() {
-  if (storeWell === undefined) return false
-  return required_metadata_fields.every((field) => storeWell[field])
-}
-function hasSomeMetadata() {
-  if (storeWell === undefined) return false
-  return required_metadata_fields.some((field) => storeWell[field])
-}
-
-function status() {
-  if (hasPools && hasValidMetadata) {
-    return 'bg-green-400 text-white'
-  } else if (hasPools || hasSomeMetadata) {
-    return 'bg-red-400 text-white'
-  } 
-  return 'bg-gray-100 text-black'
-}
-
-async function updatePoolBarcode(barcode) {
-  const well = await getOrCreateWell({ position: props.position })
-  const { id } = poolByBarcode(barcode)
-  well.pools.push(id)
-  updateWell(well)
-}
-
-async function drop(event) {
-  event.preventDefault()
-  await updatePoolBarcode(event.dataTransfer.getData('barcode'))
+  computed: {
+    ...mapGetters('traction/pacbio/runCreate', [
+      'poolByBarcode',
+      'getWell',
+      'pools',
+      'smrtLinkVersion',
+    ]),
+    wellClassNames() {
+      return [
+        this.status,
+        this.hover && this.interactive
+          ? 'ring ring-pink-600 ring-offset-1'
+          : 'border border-gray-800',
+        this.interactive ? 'cursor-pointer' : '',
+        'flex flex-col justify-center mx-auto rounded-full text-xs font-semibold aspect-square w-full select-none',
+      ]
+    },
+    required_metadata_fields() {
+      if (this.smrtLinkVersion.name == 'v11') {
+        return [
+          'movie_time',
+          'on_plate_loading_concentration',
+          'binding_kit_box_barcode',
+          'generate_hifi',
+        ]
+      } else if (this.smrtLinkVersion.name == 'v12_revio') {
+        return [
+          'movie_acquisition_time',
+          'include_base_kinetics',
+          'library_concentration',
+          'polymerase_kit',
+          'pre_extension_time',
+        ]
+      }
+      return []
+    },
+    tooltip() {
+      return this.storeWell.pools
+        .map((p) => {
+          return this.pools.find((pool) => p == pool.id).barcode
+        })
+        .join(',')
+    },
+    hasPools() {
+      if (this.storeWell === undefined) return false
+      return this.storeWell.pools.length > 0
+    },
+    hasValidMetadata() {
+      if (this.storeWell === undefined) return false
+      return this.required_metadata_fields.every((field) => this.storeWell[field])
+    },
+    hasSomeMetadata() {
+      if (this.storeWell === undefined) return false
+      return this.required_metadata_fields.some((field) => this.storeWell[field])
+    },
+    storeWell() {
+      return this.getWell(this.position)
+    },
+    status() {
+      if (this.hasPools && this.hasValidMetadata) {
+        // Complete
+        return 'bg-green-400 text-white'
+      } else if (this.hasPools || this.hasSomeMetadata) {
+        // Incomplete
+        return 'bg-red-400 text-white'
+      }
+      // Empty
+      return 'bg-gray-100 text-black'
+    },
+  },
+  methods: {
+    ...mapActions('traction/pacbio/runCreate', ['getOrCreateWell']),
+    ...mapMutations('traction/pacbio/runCreate', ['updateWell']),
+    onClick() {
+      this.$emit('click', this.position)
+    },
+    async drop(event) {
+      await this.updatePoolBarcode(event.dataTransfer.getData('barcode'))
+    },
+    // It looks like all actions are async even if they do nothing async
+    async updatePoolBarcode(barcode) {
+      const well = await this.getOrCreateWell({ position: this.position })
+      const { id } = this.poolByBarcode(barcode)
+      well.pools.push(id)
+      this.updateWell(well)
+    },
+  },
 }
 </script>

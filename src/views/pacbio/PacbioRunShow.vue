@@ -42,7 +42,7 @@ import TractionArrowIcon from '@/components/shared/icons/TractionArrowIcon.vue'
 import PacbioRunInfoEdit from '@/components/pacbio/PacbioRunInfoEdit'
 import PacbioRunWellDefaultEdit from '@/components/pacbio/PacbioRunWellDefaultEdit'
 import pacbioPoolList from '@/components/pacbio/PacbioPoolList'
-import Plate from '@/components/pacbio/PacbioRunPlateItem'
+import Plate from '@/components/labware/PacbioRunPlate'
 import DataFetcher from '@/components/DataFetcher'
 import { RunTypeEnum } from '@/store/traction/pacbio/runCreate/run'
 
