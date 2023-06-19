@@ -115,8 +115,8 @@ describe('run.js', () => {
         smrtLinkVersion: smrtLinkVersions['1'],
       })
 
-      const platesAttributes = plateValues.map((plate) => {
-        return buildPlateAttributes(plate)
+      const platesAttributes = plateValues.map((plate, plateIndex) => {
+        return buildPlateAttributes(plate, plateIndex)
       })
 
       expect(payload).toEqual({
@@ -141,8 +141,8 @@ describe('run.js', () => {
         smrtLinkVersion: smrtLinkVersions['1'],
       })
 
-      const platesAttributes = plateValues.map((plate) => {
-        return buildPlateAttributes(plate)
+      const platesAttributes = plateValues.map((plate, plateIndex) => {
+        return buildPlateAttributes(plate, plateIndex)
       })
 
       expect(payload).toEqual({

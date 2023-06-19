@@ -116,16 +116,18 @@ const buildWellAttributes = (well) => {
 }
 
 // TODO DPl-746 update to real plate_number and move SKBB
-const buildPlateAttributes = (plate) => {
+const buildPlateAttributes = (plate, plateIndex) => {
   const plateId = plate.id || ''
   const wells = Object.values(plate.wells)
   const wells_attributes = wells.map((well) => {
     return buildWellAttributes(well)
   })
+
   return {
     id: plateId,
-    plate_number: 1,
-    sequencing_kit_box_barcode: 'SKB52',
+    plate_number: plateIndex,
+    sequencing_kit_box_barcode:
+      plate.sequencing_kit_box_barcode || 'REMOVE ONCE IMPLEMENTED PLATE SKBB',
     wells_attributes: [...wells_attributes],
   }
 }
@@ -143,8 +145,8 @@ const buildPlateAttributes = (plate) => {
   ]}]}}
  **/
 const createRunPayload = ({ id, run, plates, smrtLinkVersion }) => {
-  const platesAttributes = plates.map((plate) => {
-    return buildPlateAttributes(plate)
+  const platesAttributes = plates.map((plate, plateIndex) => {
+    return buildPlateAttributes(plate, plateIndex)
   })
 
   return {
