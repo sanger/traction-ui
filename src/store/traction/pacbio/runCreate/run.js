@@ -149,6 +149,11 @@ const createRunPayload = ({ id, run, plates, smrtLinkVersion }) => {
     return buildPlateAttributes(plate, plateIndex)
   })
 
+  // TODO DPL-746
+  // Remove skbb from run attributes
+  // As this will eventually be moved to plate attributes
+  delete run.sequencing_kit_box_barcode
+
   return {
     data: {
       type: 'runs',
