@@ -1,4 +1,4 @@
-import { populateById, populateBy, dataToObjectById, dataToObjectByPosition } from '@/api/JsonApi'
+import { populateById, dataToObjectById } from '@/api/JsonApi'
 import Vue from 'vue'
 import defaultState from './state'
 
@@ -23,7 +23,9 @@ export default {
   /**
    * Populated via API calls from the actions
    * @param {Object} state The VueXState object
-   * @param {Object} run The current run to populate the store
+   * @param {Object} id The id of the current run
+   * @param {Object} attributes The current runs attributes
+   * @param {Object} plates The current runs plates
    */
   populateRun: (state, { id, attributes, plates }) => {
     state.run = {
@@ -104,6 +106,7 @@ export default {
   /**
    * @param {Object} { state } The VueXState object
    * @param {Object} well The well to update
+   * @param {Number} plateIndex The number of the plate
    * Replaces the well in store with the updated well
    */
   updateWell: (state, { well, plateIndex }) => {
@@ -118,7 +121,7 @@ export default {
   /**
    * @param {Object} { state } The VueXState object
    * @param {Object} well The well to delete
-   * @param {Object} plateIndex The number of the plate
+   * @param {Number} plateIndex The number of the plate
    * Adds _destroy key to the well in store so future wells
    * for the same position can be added
    */

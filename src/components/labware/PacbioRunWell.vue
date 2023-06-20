@@ -17,9 +17,9 @@
       v-if="hasPools && hover"
       class="absolute z-1 bg-black text-white text-xs p-2 rounded"
       data-attribute="tooltip"
-      >
+    >
       {{ tooltip }}
-      </span>
+    </span>
   </div>
 </template>
 

@@ -6,8 +6,8 @@ import { newRun, createRunType, RunTypeEnum, newWell, defaultWellAttributes } fr
 export default {
   /**
    * Retrieves a list of pacbio smrt_link_versions and populates the store.
-   * @param rootState the vuex rootState object. Provides access to current state
    * @param commit the vuex commit object. Provides access to mutations
+   * @param rootState the vuex rootState object. Provides access to current state
    * @returns { success, errors }. Was the request successful? were there any errors?
    */
   fetchSmrtLinkVersions: async ({ commit, rootState }) => {
@@ -25,8 +25,8 @@ export default {
 
   /**
    * Retrieves a list of pools based on a filter
-   * @param rootState the vuex rootState object. Provides access to current state
    * @param commit the vuex commit object. Provides access to mutations
+   * @param getters Provides access to the vuex getters
    * @param filter the barcode(s) to find the pools for
    * @returns { success, errors }. Was the request successful? were there any errors?
    */
@@ -71,8 +71,9 @@ export default {
 
   /**
    * Retrieves a pacbio run and populates the store.
-   * @param rootState the vuex rootState object. Provides access to current state
    * @param commit the vuex commit object. Provides access to mutations
+   * @param rootState the vuex rootState object. Provides access to current state
+   * @param id The id of the existing run
    * @returns { success, errors }. Was the request successful? were there any errors?
    */
   fetchRun: async ({ commit, rootState }, { id }) => {
@@ -143,12 +144,10 @@ export default {
   /**
    * Sets the current run. If it is a new run it will be created.
    * If it is an existing run it will be updated.
-   * @param dispatch We need to call another action
    * @param commit the vuex commit object. Provides access to mutations
+   * @param dispatch We need to call another action
    * @param getters Provides access to the vuex getters
    * @param id The id of the run. It will be new or existing
-   * @params getters
-   * @param state. The current state
    * @returns { success, errors }. Was the action successful? were there any errors?
    *
    */
@@ -186,7 +185,7 @@ export default {
    * If it is an existing well it will be retrieved
    * @param state the vuex rootState object. Provides access to current state
    * @param position The position of the well
-   * @param attributes Any additional attributes
+   * @param plateIndex The plate number of the well
    */
   getOrCreateWell: ({ state }, { position, plateIndex }) => {
     return (
@@ -198,18 +197,19 @@ export default {
   /**
    * Updates the well
    * @param commit the vuex commit object. Provides access to mutations
+   * @param well The well to update
+   * @param plateIndex The plate number of the well
    */
   updateWell: ({ commit }, { well, plateIndex }) => {
     commit('updateWell', { well: well, plateIndex: plateIndex })
   },
 
   /**
-   * "Deletes" the well (adds `_destroy` to the well, so service knows to delete)
+   * "Deletes" the well (adds `_destroy` to the well, a flag for the service)
    * @param commit the vuex commit object. Provides access to mutations
+   * @param well The well to update
+   * @param plateIndex The plate number of the well
    */
-  // TODO DPl-746:
-  // Both Traction UI/ Service don't support deleting a well
-  // and adding a new well back in the same position
   deleteWell: ({ commit }, { well, plateIndex }) => {
     commit('deleteWell', { well: well, plateIndex: plateIndex })
   },

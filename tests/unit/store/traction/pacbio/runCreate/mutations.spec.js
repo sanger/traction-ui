@@ -1,7 +1,7 @@
 import mutations from '@/store/traction/pacbio/runCreate/mutations'
 import defaultState from '@/store/traction/pacbio/runCreate/state'
 import { Data } from '@support/testHelper'
-import { dataToObjectById, dataToObjectByPosition } from '@/api/JsonApi'
+import { dataToObjectById } from '@/api/JsonApi'
 import { newRun, createRunType, defaultWellAttributes } from '@/store/traction/pacbio/runCreate/run'
 import storePools from '@tests/data/StorePools'
 import { expect, it } from 'vitest'
@@ -20,7 +20,7 @@ describe('mutations.js', () => {
     populateSmrtLinkVersions,
     populateSmrtLinkVersion,
     populateRun,
-    populateWells,
+    // populateWells,
     populatePools,
     populateRunType,
     clearRunData,

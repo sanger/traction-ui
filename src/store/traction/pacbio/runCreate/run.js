@@ -22,14 +22,12 @@ const requiredAttributes = () => ['sequencing_kit_box_barcode', 'dna_control_com
  * @returns {Object} - A Fresh Pacbio Sequencing Run.
  * If id is nil it will be marked as a new run
  */
-// TODO DPl-746: do attributes ever get passed in??
 // TODO DPl-746: not sure here is the best place to init wells
 // (required for getters getWell from PacbioRunWellItem storeWell)
 // maybe move to original state
-const newRun = (attributes) => {
+const newRun = () => {
   return {
     ...runAttributes,
-    ...attributes,
     plates: [{ wells: {} }],
   }
 }
@@ -118,7 +116,7 @@ const buildWellAttributes = (wellKey, well) => {
   return well
 }
 
-// TODO DPl-746 update to real plate_number and move SKBB
+// Update sequencing_kit_box_barcode once implemented multiple plates for a run
 const buildPlateAttributes = (plate, plateIndex) => {
   const plateId = plate.id || ''
 
@@ -139,23 +137,19 @@ const buildPlateAttributes = (plate, plateIndex) => {
 /**
  * @param {id} - An Integer for the id of the run
  * @param {run} - A pacbio sequencing run object minus id
- * @param {plates} - An array of plates
- * @returns {Object} - A request payload
- * @example { data: { type: 'runs', id: 1, attributes: { system_name: 'Sequel IIe',
-  sequencing_kit_box_barcode: 'ABC123',
-  dna_control_complex_box_barcode: 'BCD234',
-  smrt_link_version_id: 1,}, plates: [ { wells: [
-    { ...well1}, { ...well2}
-  ]}]}}
+ * @param {smrtLinkVersion} - The SMRT Link Version of the run
  **/
-const createRunPayload = ({ id, run, plates, smrtLinkVersion }) => {
+const createRunPayload = ({ id, run, smrtLinkVersion }) => {
+  const plates = run.plates
+  delete run.plates
+
   const platesAttributes = plates.map((plate, plateIndex) => {
     return buildPlateAttributes(plate, plateIndex)
   })
 
-  // TODO DPL-746
-  // Remove skbb from run attributes
-  // As this will eventually be moved to plate attributes
+  // Currently remove sequencing_kit_box_barcode from a run
+  // because this will be moved to plate attributes
+  // once multiple plates for a run are implemented
   delete run.sequencing_kit_box_barcode
 
   return {
@@ -190,10 +184,8 @@ const newRunType = {
   payload({ run, smrtLinkVersion }) {
     // eslint-disable-next-line no-unused-vars
     const { id, ...attributes } = run
-    const plates = attributes.plates
-    delete attributes.plates
 
-    return createRunPayload({ run: attributes, plates: plates, smrtLinkVersion })
+    return createRunPayload({ run: attributes, smrtLinkVersion })
   },
 
   // returns a promise different for create or update
@@ -211,9 +203,8 @@ const existingRunType = {
   payload({ run, smrtLinkVersion }) {
     // eslint-disable-next-line no-unused-vars
     const { id, ...attributes } = run
-    const plates = attributes.plates
-    delete attributes.plates
-    return createRunPayload({ id, run: attributes, plates: plates, smrtLinkVersion })
+
+    return createRunPayload({ id, run: attributes, smrtLinkVersion })
   },
   // the function handle should be the same for create and update
   promise({ payload, request }) {

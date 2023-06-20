@@ -109,9 +109,9 @@ describe('run.js', () => {
       const aRun = newRun()
       // eslint-disable-next-line no-unused-vars
       const { id, ...attributes } = aRun
+      attributes.plates = plateValues
       const payload = createRunPayload({
         run: attributes,
-        plates: plateValues,
         smrtLinkVersion: smrtLinkVersions['1'],
       })
 
@@ -134,10 +134,10 @@ describe('run.js', () => {
     it('for an existing run', () => {
       const aRun = newRun()
       const { id, ...attributes } = aRun
+      attributes.plates = plateValues
       const payload = createRunPayload({
         id,
         run: attributes,
-        plates: plateValues,
         smrtLinkVersion: smrtLinkVersions['1'],
       })
 
@@ -180,15 +180,10 @@ describe('run.js', () => {
         const aRun = newRun()
         // eslint-disable-next-line no-unused-vars
         const { id, ...attributes } = aRun
-        const plates = attributes.plates
-        delete attributes.plates
 
-        expect(
-          runType.payload({ run: aRun, plates, smrtLinkVersion: smrtLinkVersions['1'] }),
-        ).toEqual(
+        expect(runType.payload({ run: aRun, smrtLinkVersion: smrtLinkVersions['1'] })).toEqual(
           createRunPayload({
             run: attributes,
-            plates: plates,
             smrtLinkVersion: smrtLinkVersions['1'],
           }),
         )
@@ -230,16 +225,11 @@ describe('run.js', () => {
         const aRun = newRun()
         // eslint-disable-next-line no-unused-vars
         const { id, ...attributes } = aRun
-        const plates = attributes.plates
-        delete attributes.plates
 
-        expect(
-          runType.payload({ run: aRun, plates, smrtLinkVersion: smrtLinkVersions['1'] }),
-        ).toEqual(
+        expect(runType.payload({ run: aRun, smrtLinkVersion: smrtLinkVersions['1'] })).toEqual(
           createRunPayload({
             id,
             run: attributes,
-            plates: plates,
             smrtLinkVersion: smrtLinkVersions['1'],
           }),
         )

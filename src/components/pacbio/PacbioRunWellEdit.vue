@@ -64,6 +64,7 @@
 import { mapGetters, mapActions } from 'vuex'
 import PacbioRunWellComponents from '@/config/PacbioRunWellComponents'
 
+// Replace this once implemented multiple plates for a run
 const PLATE_INDEX = 0
 
 export default {
@@ -191,9 +192,7 @@ export default {
       this.hide()
     },
     removeWell() {
-      // TODO DPl-746:
-      // Both Traction UI/ Service don't support deleting a well
-      // and adding a new well back in the same position
+      // This currently updates the well object key `<position>_destroy`
       this.deleteWell({ well: this.wellPayload, plateIndex: PLATE_INDEX })
       this.alert('Well successfully deleted', 'success')
       this.hide()
