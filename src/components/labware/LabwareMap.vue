@@ -1,8 +1,8 @@
 <template>
   <div class="flex w-full">
     <div class="border border-sdb py-2 bg-blue-100 rounded-lg px-2 w-full">
-      <div v-for="(row, i) in numRows" :key="i" class="flex flex-row">
-        <div v-for="(column, j) in numColumns" :key="j" class="px-1 py-1 w-full h-full">
+      <div v-for="(row, i) in labwareType.numRows" :key="i" class="flex flex-row">
+        <div v-for="(column, j) in labwareType.numColumns" :key="j" class="px-1 py-1 w-full h-full">
           <slot :position="createPosition(row, column)" />
         </div>
       </div>
@@ -17,17 +17,17 @@
 {
   /*
   A component to build labware maps.
+  To add a new labwareType, add the config to src/lib/LabwareTypes'
   Usage:
   <LabwareMap 
     v-slot="{ position }"
-    name="96-well plate"
-    :num-rows=6
-    :num-columns=5
+    :labware-type="LabwareTypes.Plate96"
   >
     <PacbioRunWell :position="position"/>
   </LabwareMap>  
 */
 }
+import { LabwareTypes } from '../../lib/LabwareTypes'
 export default {
   name: 'LabwareMap',
   props: {
@@ -36,17 +36,10 @@ export default {
       type: String,
       default: '',
     },
-    // Number of rows on the labware
-    numRows: {
-      type: Number,
-      required: true,
-      default: 0,
-    },
-    // Number of columns on the labware
-    numColumns: {
-      type: Number,
-      required: true,
-      default: 0,
+    // Labware Type determines the name, number of rows and columns
+    labwareType: {
+      type: Object,
+      default: LabwareTypes.Plate96,
     },
   },
   methods: {

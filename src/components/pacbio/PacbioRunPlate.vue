@@ -1,6 +1,6 @@
 <template>
   <traction-section title="Plates" class="min-w-[500px]">
-    <LabwareMap v-slot="{ position }" name="96-well plate" :num-rows="8" :num-columns="12">
+    <LabwareMap v-slot="{ position }" :labware-type="labwareType">
       <PacbioRunWell :position="position" :interactive="true" @click="onWellClick" />
     </LabwareMap>
     <WellEdit ref="modal" class="modal" :position="selectedWellPosition" @alert="alert"></WellEdit>
@@ -10,7 +10,8 @@
 <script>
 import WellEdit from '@/components/pacbio/PacbioRunWellEdit'
 import PacbioRunWell from '@/components/labware/PacbioRunWell'
-import LabwareMap from './LabwareMap.vue'
+import LabwareMap from '@/components/labware/LabwareMap.vue'
+import { LabwareTypes } from '../../lib/LabwareTypes'
 
 export default {
   name: 'PacbioRunPlate',
@@ -21,6 +22,7 @@ export default {
   },
   data() {
     return {
+      labwareType: LabwareTypes.Plate96,
       selectedWellPosition: '',
     }
   },

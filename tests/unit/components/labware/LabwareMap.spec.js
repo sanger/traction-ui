@@ -1,5 +1,6 @@
 import { mount, localVue, store } from '@support/testHelper'
 import LabwareMap from '@/components/labware/LabwareMap'
+import { LabwareTypes } from '@/lib/LabwareTypes'
 import { it } from 'vitest'
 
 describe('LabwareMap.vue', () => {
@@ -8,8 +9,7 @@ describe('LabwareMap.vue', () => {
   beforeEach(() => {
     props = {
       name: 'Example labware',
-      numRows: 8,
-      numColumns: 12,
+      labwareType: LabwareTypes.Plate96,
     }
 
     wrapper = mount(LabwareMap, {
@@ -29,12 +29,8 @@ describe('LabwareMap.vue', () => {
     expect(wrapper.find('[data-attribute="labware-name"]').text()).toEqual(props.name)
   })
 
-  it('can have an numRows prop', () => {
-    expect(labware.numRows).toEqual(props.numRows)
-  })
-
-  it('can have an numColumns prop', () => {
-    expect(labware.numColumns).toEqual(props.numColumns)
+  it('can have an labwareType prop', () => {
+    expect(labware.labwareType).toEqual(props.labwareType)
   })
 
   describe('createPosition', () => {

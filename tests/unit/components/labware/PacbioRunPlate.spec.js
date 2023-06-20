@@ -1,5 +1,5 @@
 import { mount, localVue, store } from '@support/testHelper'
-import PacbioRunPlate from '@/components/labware/PacbioRunPlate'
+import PacbioRunPlate from '@/components/pacbio/PacbioRunPlate'
 import { Data } from '@support/testHelper'
 import Response from '@/api/Response'
 import { it } from 'vitest'
