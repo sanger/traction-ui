@@ -10,7 +10,7 @@
         >{{ humanise(pipelineRoute) }}</traction-menu-item
       >
     </traction-menu>
-    <router-view class="mt-5"></router-view>
+    <router-view class="mt-2"></router-view>
   </div>
 </template>
 

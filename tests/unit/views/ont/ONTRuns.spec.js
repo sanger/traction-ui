@@ -1,4 +1,4 @@
-import ONTRuns from '@/views/ont/ONTRuns'
+import ONTRuns from '@/views/ont/ONTRunIndex'
 import { mount, localVue, store, Data, router } from '@support/testHelper'
 import Response from '@/api/Response'
 
