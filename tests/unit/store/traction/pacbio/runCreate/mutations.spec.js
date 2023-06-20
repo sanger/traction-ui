@@ -220,7 +220,7 @@ describe('mutations.js', () => {
       state.run.plates[PLATE_INDEX].wells = { A1: { position: 'A1' }, A2: { position: 'A2' } }
       deleteWell(state, { well: { position: 'A1' }, plateIndex: PLATE_INDEX })
       expect(state.run.plates[PLATE_INDEX].wells).toEqual({
-        A1: { position: 'A1', _destroy: true },
+        A1_destroy: { position: 'A1' },
         A2: { position: 'A2' },
       })
     })

@@ -118,17 +118,20 @@ export default {
   /**
    * @param {Object} { state } The VueXState object
    * @param {Object} well The well to delete
-   * Adds _destroy key to the well in store
+   * @param {Object} plateIndex The number of the plate
+   * Adds _destroy key to the well in store so future wells
+   * for the same position can be added
    */
-  // Both Traction UI/ Service don't support deleting a well
-  // and adding a new well back in the same position
   deleteWell: (state, { well, plateIndex }) => {
-    well._destroy = true
     const position = well.position
+
+    Vue.delete(state.run.plates[plateIndex].wells, position)
+    const newKey = position + '_destroy'
+
     Vue.set(
       state.run.plates[plateIndex].wells,
-      position,
-      Object.assign({}, state.run.plates[plateIndex].wells[position], well),
+      newKey,
+      Object.assign({}, state.run.plates[plateIndex].wells[newKey], well),
     )
   },
 }

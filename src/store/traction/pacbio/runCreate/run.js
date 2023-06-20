@@ -110,7 +110,10 @@ const valid = ({ run }) => {
   return Object.keys(run.errors || {}).length === 0
 }
 
-const buildWellAttributes = (well) => {
+const buildWellAttributes = (wellKey, well) => {
+  if (wellKey.includes('_destroy')) {
+    well._destroy = true
+  }
   well.pool_ids = well.pools
   return well
 }
@@ -118,9 +121,10 @@ const buildWellAttributes = (well) => {
 // TODO DPl-746 update to real plate_number and move SKBB
 const buildPlateAttributes = (plate, plateIndex) => {
   const plateId = plate.id || ''
-  const wells = Object.values(plate.wells)
-  const wells_attributes = wells.map((well) => {
-    return buildWellAttributes(well)
+
+  const wells_attributes = Object.keys(plate.wells).map((wellKey) => {
+    const well = plate.wells[wellKey]
+    return buildWellAttributes(wellKey, well)
   })
 
   return {
