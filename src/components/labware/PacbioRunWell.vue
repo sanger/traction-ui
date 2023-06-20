@@ -7,7 +7,8 @@
       @mouseleave.prevent="hover = false"
       @drop.prevent="drop"
       @dragenter.prevent
-      @dragover.prevent
+      @dragover.prevent="hover = true"
+      @dragleave.prevent="hover = false"
       @click="onClick"
     >
       <p class="truncate font-light">{{ position }}</p>
@@ -119,6 +120,7 @@ export default {
       this.$emit('click', this.position)
     },
     async drop(event) {
+      this.hover = false
       await this.updatePoolBarcode(event.dataTransfer.getData('barcode'))
     },
     // It looks like all actions are async even if they do nothing async
