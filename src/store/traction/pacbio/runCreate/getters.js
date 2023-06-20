@@ -61,6 +61,7 @@ export default {
   // TODO DPl-746: add a comment, saying only return wells that are not
   // about to be deleted
   getWell: (state) => (position, plateIndex) => {
+    // return state.wells[state.run.plates[plateIndex].wells[position]]
     return state.run.plates[plateIndex].wells[position]
   },
 
