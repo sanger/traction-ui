@@ -36,7 +36,7 @@ export default {
       type: String,
       default: '',
     },
-    // Labware Type determines the name, number of rows and columns
+    // Labware Type determines the number of rows and columns
     labwareType: {
       type: Object,
       default: LabwareTypes.Plate96,

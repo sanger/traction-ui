@@ -1,6 +1,6 @@
 <template>
   <traction-section title="Plates" class="min-w-[500px]">
-    <LabwareMap v-slot="{ position }" :labware-type="labwareType">
+    <LabwareMap v-slot="{ position }" :labware-type="labwareType" :name="labwareType.name">
       <PacbioRunWell :position="position" :interactive="true" @click="onWellClick" />
     </LabwareMap>
     <WellEdit ref="modal" class="modal" :position="selectedWellPosition" @alert="alert"></WellEdit>
