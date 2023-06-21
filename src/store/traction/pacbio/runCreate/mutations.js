@@ -106,35 +106,35 @@ export default {
   /**
    * @param {Object} { state } The VueXState object
    * @param {Object} well The well to update
-   * @param {Number} plateIndex The number of the plate
+   * @param {Number} plateNumber The number of the plate
    * Replaces the well in store with the updated well
    */
-  updateWell: (state, { well, plateIndex }) => {
+  updateWell: (state, { well, plateNumber }) => {
     const position = well.position
     Vue.set(
-      state.run.plates[plateIndex].wells,
+      state.run.plates[plateNumber].wells,
       position,
-      Object.assign({}, state.run.plates[plateIndex].wells[position], well),
+      Object.assign({}, state.run.plates[plateNumber].wells[position], well),
     )
   },
 
   /**
    * @param {Object} { state } The VueXState object
    * @param {Object} well The well to delete
-   * @param {Number} plateIndex The number of the plate
+   * @param {Number} plateNumber The number of the plate
    * Adds _destroy key to the well in store so future wells
    * for the same position can be added
    */
-  deleteWell: (state, { well, plateIndex }) => {
+  deleteWell: (state, { well, plateNumber }) => {
     const position = well.position
 
-    Vue.delete(state.run.plates[plateIndex].wells, position)
+    Vue.delete(state.run.plates[plateNumber].wells, position)
     const newKey = position + '_destroy'
 
     Vue.set(
-      state.run.plates[plateIndex].wells,
+      state.run.plates[plateNumber].wells,
       newKey,
-      Object.assign({}, state.run.plates[plateIndex].wells[newKey], well),
+      Object.assign({}, state.run.plates[plateNumber].wells[newKey], well),
     )
   },
 }

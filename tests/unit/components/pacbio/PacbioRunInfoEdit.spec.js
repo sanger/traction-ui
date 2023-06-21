@@ -34,7 +34,6 @@ describe('PacbioRunInfoEdit', () => {
     id: 'new',
     name: 'TRACTION-RUN-3',
     system_name: 'Sequel IIe',
-    sequencing_kit_box_barcode: null,
     dna_control_complex_box_barcode: null,
     comments: null,
     smrt_link_version_id: 1,
@@ -69,30 +68,25 @@ describe('PacbioRunInfoEdit', () => {
       expect(store.state.traction.pacbio.runCreate.run.name).toEqual('TRACTION-RUN-3')
     })
 
-    it('sequencing kit box barcode', async () => {
-      const input = wrapper.find('[data-attribute=sequencing_kit_box_barcode]')
-      await input.setValue('SKB1')
-      expect(store.state.traction.pacbio.runCreate.run.sequencing_kit_box_barcode).toEqual('SKB1')
-    }),
-      it('dna control complex box barcode', async () => {
-        const input = wrapper.find('[data-attribute=dna_control_complex_box_barcode]')
-        await input.setValue('DCCB1')
-        expect(store.state.traction.pacbio.runCreate.run.dna_control_complex_box_barcode).toEqual(
-          'DCCB1',
-        )
-      }),
-      it('system name', async () => {
-        expect(store.state.traction.pacbio.runCreate.run.system_name).toEqual('Sequel IIe')
-      }),
-      it('smrt_link_version_id', async () => {
-        const options = wrapper.find('[data-attribute=smrt_link_version]').findAll('option')
-        await options.at(1).setSelected()
-        expect(store.state.traction.pacbio.runCreate.run.smrt_link_version_id).toEqual(1)
-      }),
-      it('comments', async () => {
-        const input = wrapper.find('[data-attribute=comments]')
-        await input.setValue('example comment')
-        expect(store.state.traction.pacbio.runCreate.run.comments).toEqual('example comment')
-      })
+    it('dna control complex box barcode', async () => {
+      const input = wrapper.find('[data-attribute=dna_control_complex_box_barcode]')
+      await input.setValue('DCCB1')
+      expect(store.state.traction.pacbio.runCreate.run.dna_control_complex_box_barcode).toEqual(
+        'DCCB1',
+      )
+    })
+    it('system name', async () => {
+      expect(store.state.traction.pacbio.runCreate.run.system_name).toEqual('Sequel IIe')
+    })
+    it('smrt_link_version_id', async () => {
+      const options = wrapper.find('[data-attribute=smrt_link_version]').findAll('option')
+      await options.at(1).setSelected()
+      expect(store.state.traction.pacbio.runCreate.run.smrt_link_version_id).toEqual(1)
+    })
+    it('comments', async () => {
+      const input = wrapper.find('[data-attribute=comments]')
+      await input.setValue('example comment')
+      expect(store.state.traction.pacbio.runCreate.run.comments).toEqual('example comment')
+    })
   })
 })

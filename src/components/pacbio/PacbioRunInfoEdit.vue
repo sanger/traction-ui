@@ -16,17 +16,6 @@
         />
       </traction-field-group>
 
-      <traction-field-group label="Sequencing Kit Box Barcode" for="sequencing-kit-box-barcode">
-        <traction-input
-          id="sequencing-kit-box-barcode"
-          v-model="runItem.sequencing_kit_box_barcode"
-          :value="runItem.sequencing_kit_box_barcode"
-          placeholder="Sequencing Kit Box Barcode"
-          type="text"
-          data-attribute="sequencing_kit_box_barcode"
-        />
-      </traction-field-group>
-
       <traction-field-group
         label="DNA Control Complex Box Barcode"
         for="dna-control-complex-box-barcode"

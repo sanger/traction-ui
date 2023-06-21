@@ -18,14 +18,15 @@ describe('PacbioRunPlate.vue', () => {
       1: { id: 1, name: 'v11', default: true },
     }
     store.state.traction.pacbio.runCreate.run = {
-      plates: [
-        {
+      plates: {
+        1: {
+          plate_number: 1,
           wells: {
             A1: newWell({ position: 'A1' }),
             C5: newWell({ position: 'C5' }),
           },
         },
-      ],
+      },
     }
     store.state.traction.pacbio.runCreate.resources.smrtLinkVersions = smrtLinkVersions
 

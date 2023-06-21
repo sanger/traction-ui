@@ -28,7 +28,10 @@ const requiredAttributes = () => ['sequencing_kit_box_barcode', 'dna_control_com
 const newRun = () => {
   return {
     ...runAttributes,
-    plates: [{ wells: {} }],
+    plates: {
+      1: newPlate(1),
+      2: newPlate(2),
+    },
   }
 }
 
@@ -84,6 +87,19 @@ const newWell = ({ position, ...attributes }) => {
   }
 }
 
+/**
+ *
+ * @param {String} plateNumber The number of the plate e.g. 1
+ * @returns {Object} A new plate
+ */
+const newPlate = (plateNumber) => {
+  return {
+    plate_number: plateNumber,
+    sequencing_kit_box_barcode: '',
+    wells: {},
+  }
+}
+
 /*
  * @param {run} - A Pacbio Sequencing Run Object
  * @returns none - It modifies the original as it needs to be reactive
@@ -116,8 +132,7 @@ const buildWellAttributes = (wellKey, well) => {
   return well
 }
 
-// Update sequencing_kit_box_barcode once implemented multiple plates for a run
-const buildPlateAttributes = (plate, plateIndex) => {
+const buildPlateAttributes = (plate, plateNumber) => {
   const plateId = plate.id || ''
 
   const wells_attributes = Object.keys(plate.wells).map((wellKey) => {
@@ -125,11 +140,15 @@ const buildPlateAttributes = (plate, plateIndex) => {
     return buildWellAttributes(wellKey, well)
   })
 
+  // If there is no plate id and no wells then return null
+  if (!plateId && wells_attributes.length === 0) {
+    return null
+  }
+
   return {
     id: plateId,
-    plate_number: plateIndex,
-    sequencing_kit_box_barcode:
-      plate.sequencing_kit_box_barcode || 'REMOVE ONCE IMPLEMENTED PLATE SKBB',
+    plate_number: plateNumber,
+    sequencing_kit_box_barcode: plate.sequencing_kit_box_barcode,
     wells_attributes: [...wells_attributes],
   }
 }
@@ -143,8 +162,8 @@ const createRunPayload = ({ id, run, smrtLinkVersion }) => {
   const plates = run.plates
   delete run.plates
 
-  const platesAttributes = plates.map((plate, plateIndex) => {
-    return buildPlateAttributes(plate, plateIndex)
+  const platesAttributes = Object.values(plates).map((plate) => {
+    return buildPlateAttributes(plate, plate.plate_number)
   })
 
   // Currently remove sequencing_kit_box_barcode from a run
@@ -229,6 +248,7 @@ export {
   valid,
   defaultWellAttributes,
   newWell,
+  newPlate,
   createRunPayload,
   RunTypeEnum,
   createRunType,

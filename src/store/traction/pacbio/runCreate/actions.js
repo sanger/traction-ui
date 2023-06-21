@@ -1,6 +1,6 @@
 import { handleResponse } from '@/api/ResponseHelper'
 import { groupIncludedByResource, extractAttributes, extractPlateData } from '@/api/JsonApi'
-import { newRun, createRunType, RunTypeEnum, newWell, defaultWellAttributes } from './run'
+import { newRun, createRunType, RunTypeEnum, newWell, defaultWellAttributes, newPlate } from './run'
 
 // Asynchronous update of state.
 export default {
@@ -109,8 +109,12 @@ export default {
       const smrtLinkVersion = extractAttributes(smrt_link_version)
       const plateData = extractPlateData(plates, wells)
 
+      // Handles edge case for when we have revio with only 1 plate
+      if (smrtLinkVersion.name == 'v12_revio' && Object.values(plateData).length == 1) {
+        plateData[2] = newPlate(2)
+      }
+
       commit('populateRun', { id: data.id, attributes: data.attributes, plates: plateData })
-      // commit('populateWells', wells)
       commit('populatePools', pools)
       commit('setLibraries', libraries)
       commit('setTags', tags)
@@ -185,11 +189,11 @@ export default {
    * If it is an existing well it will be retrieved
    * @param state the vuex rootState object. Provides access to current state
    * @param position The position of the well
-   * @param plateIndex The plate number of the well
+   * @param plateNumber The plate number of the well
    */
-  getOrCreateWell: ({ state }, { position, plateIndex }) => {
+  getOrCreateWell: ({ state }, { position, plateNumber }) => {
     return (
-      state.run.plates[plateIndex].wells[position] ||
+      state.run.plates[plateNumber].wells[position] ||
       newWell({ position, ...state.defaultWellAttributes })
     )
   },
@@ -198,20 +202,20 @@ export default {
    * Updates the well
    * @param commit the vuex commit object. Provides access to mutations
    * @param well The well to update
-   * @param plateIndex The plate number of the well
+   * @param plateNumber The plate number of the well
    */
-  updateWell: ({ commit }, { well, plateIndex }) => {
-    commit('updateWell', { well: well, plateIndex: plateIndex })
+  updateWell: ({ commit }, { well, plateNumber }) => {
+    commit('updateWell', { well: well, plateNumber: plateNumber })
   },
 
   /**
    * "Deletes" the well (adds `_destroy` to the well, a flag for the service)
    * @param commit the vuex commit object. Provides access to mutations
    * @param well The well to update
-   * @param plateIndex The plate number of the well
+   * @param plateNumber The plate number of the well
    */
-  deleteWell: ({ commit }, { well, plateIndex }) => {
-    commit('deleteWell', { well: well, plateIndex: plateIndex })
+  deleteWell: ({ commit }, { well, plateNumber }) => {
+    commit('deleteWell', { well: well, plateNumber: plateNumber })
   },
 
   /**

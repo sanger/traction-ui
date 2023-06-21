@@ -13,7 +13,7 @@ const tubes = included.slice(0, 2)
 const libraries = included.slice(2, 4)
 const tags = included.slice(4, 6)
 const requests = included.slice(6, 8)
-const PLATE_INDEX = 0
+const PLATE_NUMBER = 0
 
 describe('mutations.js', () => {
   const {
@@ -198,18 +198,18 @@ describe('mutations.js', () => {
       const state = defaultState()
       state.run = { plates: [{ wells: {} }] }
       const well = { position: 'A1', row: 'A', column: '1' }
-      updateWell(state, { well: well, plateIndex: PLATE_INDEX })
-      expect(state.run.plates[PLATE_INDEX].wells['A1']).toEqual(well)
+      updateWell(state, { well: well, plateNumber: PLATE_NUMBER })
+      expect(state.run.plates[PLATE_NUMBER].wells['A1']).toEqual(well)
     })
 
     it('when it is an existing well', () => {
       const state = defaultState()
       state.run = { plates: [{ wells: {} }] }
       const well = { position: 'A1', row: 'A', column: '1' }
-      updateWell(state, { well: well, plateIndex: PLATE_INDEX })
+      updateWell(state, { well: well, plateNumber: PLATE_NUMBER })
       const updatedWell = { ...well, newAttribute: 'some nonsense' }
-      updateWell(state, { well: updatedWell, plateIndex: PLATE_INDEX })
-      expect(state.run.plates[PLATE_INDEX].wells['A1']).toEqual(updatedWell)
+      updateWell(state, { well: updatedWell, plateNumber: PLATE_NUMBER })
+      expect(state.run.plates[PLATE_NUMBER].wells['A1']).toEqual(updatedWell)
     })
   })
 
@@ -217,9 +217,9 @@ describe('mutations.js', () => {
     it('should add _destroy to the well', () => {
       const state = defaultState()
       state.run = { plates: [{ wells: {} }] }
-      state.run.plates[PLATE_INDEX].wells = { A1: { position: 'A1' }, A2: { position: 'A2' } }
-      deleteWell(state, { well: { position: 'A1' }, plateIndex: PLATE_INDEX })
-      expect(state.run.plates[PLATE_INDEX].wells).toEqual({
+      state.run.plates[PLATE_NUMBER].wells = { A1: { position: 'A1' }, A2: { position: 'A2' } }
+      deleteWell(state, { well: { position: 'A1' }, plateNumber: PLATE_NUMBER })
+      expect(state.run.plates[PLATE_NUMBER].wells).toEqual({
         A1_destroy: { position: 'A1' },
         A2: { position: 'A2' },
       })

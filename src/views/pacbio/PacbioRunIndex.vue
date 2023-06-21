@@ -114,12 +114,6 @@ export default {
         { key: 'name', label: 'Name', sortable: true, tdClass: 'name' },
         { key: 'state', label: 'State', sortable: true, tdClass: 'state' },
         {
-          key: 'sequencing_kit_box_barcode',
-          label: 'Sequencing Kit BB',
-          sortable: true,
-          tdClass: 'sequencing-kit-box-barcode',
-        },
-        {
           key: 'dna_control_complex_box_barcode',
           label: 'DNA Control Complex BB',
           sortable: true,

@@ -24,15 +24,17 @@
 </template>
 
 <script>
-import { mapActions, mapMutations, mapGetters } from 'vuex'
-
-const PLATE_INDEX = 0
+import { mapActions, mapGetters } from 'vuex'
 
 export default {
   name: 'PacbioRunWell',
   props: {
     position: {
       type: String,
+      required: true,
+    },
+    plateNumber: {
+      type: Number,
       required: true,
     },
     interactive: {
@@ -60,7 +62,7 @@ export default {
           ? 'ring ring-pink-600 ring-offset-1'
           : 'border border-gray-800',
         this.interactive ? 'cursor-pointer' : '',
-        'flex flex-col justify-center mx-auto rounded-full text-xs font-semibold aspect-square w-full select-none',
+        'flex flex-col justify-center mx-auto rounded-full text-xs font-semibold aspect-square w-full select-none transition duration-200 ease-out',
       ]
     },
     required_metadata_fields() {
@@ -102,25 +104,24 @@ export default {
       return this.required_metadata_fields.some((field) => this.storeWell[field])
     },
     storeWell() {
-      return this.getWell(this.position, PLATE_INDEX)
+      return this.getWell(this.position, this.plateNumber)
     },
     status() {
       if (this.hasPools && this.hasValidMetadata) {
         // Complete
-        return 'bg-green-200 text-black'
+        return 'bg-green-400 text-white'
       } else if (this.hasPools || this.hasSomeMetadata) {
         // Incomplete
-        return 'bg-red-200 text-black'
+        return 'bg-red-400 text-white'
       }
       // Empty
       return 'bg-gray-100 text-black'
     },
   },
   methods: {
-    ...mapActions('traction/pacbio/runCreate', ['getOrCreateWell']),
-    ...mapMutations('traction/pacbio/runCreate', ['updateWell']),
+    ...mapActions('traction/pacbio/runCreate', ['getOrCreateWell', 'updateWell']),
     onClick() {
-      this.$emit('click', this.position)
+      this.$emit('click', this.position, this.plateNumber)
     },
     async drop(event) {
       this.hover = false
@@ -128,10 +129,13 @@ export default {
     },
     // It looks like all actions are async even if they do nothing async
     async updatePoolBarcode(barcode) {
-      const well = await this.getOrCreateWell({ position: this.position, plateIndex: PLATE_INDEX })
+      const well = await this.getOrCreateWell({
+        position: this.position,
+        plateNumber: this.plateNumber,
+      })
       const { id } = this.poolByBarcode(barcode)
       well.pools.push(id)
-      this.updateWell({ well: well, plateIndex: PLATE_INDEX })
+      this.updateWell({ well: well, plateNumber: this.plateNumber })
     },
   },
 }

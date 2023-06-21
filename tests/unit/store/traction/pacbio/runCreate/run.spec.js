@@ -38,7 +38,7 @@ const wells = {
 }
 
 const wellValues = Object.values(wells)
-const plateValues = [{ wells: wellValues }]
+const plateValues = { 1: { plate_number: '1', wells: wellValues } }
 
 describe('run.js', () => {
   describe('newRun', () => {
@@ -115,8 +115,8 @@ describe('run.js', () => {
         smrtLinkVersion: smrtLinkVersions['1'],
       })
 
-      const platesAttributes = plateValues.map((plate, plateIndex) => {
-        return buildPlateAttributes(plate, plateIndex)
+      const platesAttributes = Object.values(plateValues).map((plate) => {
+        return buildPlateAttributes(plate, plate.plate_number)
       })
 
       expect(payload).toEqual({
@@ -141,8 +141,8 @@ describe('run.js', () => {
         smrtLinkVersion: smrtLinkVersions['1'],
       })
 
-      const platesAttributes = plateValues.map((plate, plateIndex) => {
-        return buildPlateAttributes(plate, plateIndex)
+      const platesAttributes = Object.values(plateValues).map((plate) => {
+        return buildPlateAttributes(plate, plate.plate_number)
       })
 
       expect(payload).toEqual({

@@ -27,7 +27,7 @@ const defaultSmrtLinkVersion = {
   default: true,
 }
 
-const PLATE_INDEX = 0
+const PLATE_NUMBER = 1
 
 describe('actions.js', () => {
   const {
@@ -263,13 +263,13 @@ describe('actions.js', () => {
   describe('getOrCreateWell', () => {
     it('if it is a new well', () => {
       const state = {
-        run: { plates: [{ wells: {} }] },
+        run: { plates: { 1: { plate_number: 1, wells: {} } } },
         defaultWellAttributes: { ...defaultWellAttributes() },
       }
 
       const position = 'A1'
 
-      const well = getOrCreateWell({ state }, { position: position, plateIndex: PLATE_INDEX })
+      const well = getOrCreateWell({ state }, { position: position, plateNumber: PLATE_NUMBER })
       expect(well).toEqual(newWell({ position, ...state.defaultWellAttributes }))
     })
 
@@ -278,11 +278,14 @@ describe('actions.js', () => {
       const well = newWell({ position })
 
       const state = {
-        run: { plates: [{ wells: { [position]: well } }] },
+        run: { plates: { 1: { plate_number: 1, wells: { [position]: well } } } },
         defaultWellAttributes: { ...defaultWellAttributes() },
       }
 
-      const gottenWell = getOrCreateWell({ state }, { position: position, plateIndex: PLATE_INDEX })
+      const gottenWell = getOrCreateWell(
+        { state },
+        { position: position, plateNumber: PLATE_NUMBER },
+      )
       expect(gottenWell).toEqual(well)
     })
   })
@@ -291,8 +294,8 @@ describe('actions.js', () => {
     it('updates the well', () => {
       const well = { position: 'A1', row: 'A', column: '1' }
       const commit = vi.fn()
-      updateWell({ commit }, { well: well, plateIndex: PLATE_INDEX })
-      expect(commit).toHaveBeenCalledWith('updateWell', { well: well, plateIndex: PLATE_INDEX })
+      updateWell({ commit }, { well: well, plateNumber: PLATE_NUMBER })
+      expect(commit).toHaveBeenCalledWith('updateWell', { well: well, plateNumber: PLATE_NUMBER })
     })
   })
 
