@@ -79,17 +79,20 @@ describe('actions.js', () => {
       const { success } = await fetchRun({ commit, rootState }, { id: 1 })
 
       const runData = Data.PacbioRun.data.data
+      const includedData = Data.PacbioRun.data.included
+      let idx = 0
 
       const plateInfo = {
-        id: Data.PacbioRun.data.included[0].id,
-        wells: Data.PacbioRun.data.included[0].relationships.wells.data.map((w) => w.id),
+        id: includedData[idx].id,
+        wells: includedData[idx].relationships.wells.data.map((w) => w.id),
       }
 
+      idx += 1 // next payload
       const wellsInfo = {
-        id: Data.PacbioRun.data.included[1].id,
-        type: Data.PacbioRun.data.included[1].type,
-        position: Data.PacbioRun.data.included[1].attributes.position,
-        ...Data.PacbioRun.data.included[1].attributes,
+        id: includedData[idx].id,
+        type: includedData[idx].type,
+        position: includedData[idx].attributes.position,
+        ...includedData[idx].attributes,
         pools: ['1'],
       }
       const plateData = [{ id: plateInfo.id, pacbio_run_id: 5, wells: { A2: wellsInfo } }]
@@ -99,21 +102,20 @@ describe('actions.js', () => {
         plates: plateData,
       }
 
+      expect(commit).toHaveBeenCalledWith('populateRun', runInfo)
+      expect(commit).toHaveBeenCalledWith('populatePools', [includedData[++idx]])
+      expect(commit).toHaveBeenCalledWith('setTubes', [includedData[++idx]])
+      expect(commit).toHaveBeenCalledWith('setLibraries', [includedData[++idx]])
+      expect(commit).toHaveBeenCalledWith('setTags', [includedData[++idx]])
+      expect(commit).toHaveBeenCalledWith('setRequests', [includedData[++idx]])
+      idx += 1 // next payload
       const smrtLinkVersion = {
-        id: Data.PacbioRun.data.included[7].id,
-        type: Data.PacbioRun.data.included[7].type,
-        ...Data.PacbioRun.data.included[7].attributes,
+        id: includedData[idx].id,
+        type: includedData[idx].type,
+        ...includedData[idx].attributes,
       }
-
-      // TODO (Stephen)
-      // expect(commit).toHaveBeenCalledWith('populateRun', runInfo)
-      // expect(commit).toHaveBeenCalledWith('populatePools', Data.PacbioRun.data.included.slice(2, 3))
-      // expect(commit).toHaveBeenCalledWith('setTubes', Data.PacbioRun.data.included.slice(3, 4))
-      // expect(commit).toHaveBeenCalledWith('setLibraries', Data.PacbioRun.data.included.slice(4, 5))
-      // expect(commit).toHaveBeenCalledWith('setTags', Data.PacbioRun.data.included.slice(5, 6))
-      // expect(commit).toHaveBeenCalledWith('setRequests', Data.PacbioRun.data.included.slice(6, 7))
-      // expect(commit).toHaveBeenCalledWith('populateSmrtLinkVersion', smrtLinkVersion)
-      // expect(success).toBeTruthy()
+      expect(commit).toHaveBeenCalledWith('populateSmrtLinkVersion', smrtLinkVersion)
+      expect(success).toBeTruthy()
     })
 
     it('handles failure', async () => {
