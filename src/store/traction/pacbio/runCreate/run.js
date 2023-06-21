@@ -1,8 +1,22 @@
 import Vue from 'vue'
 
 /**
+ * @returns {Object} the default attributes for a plate
+ **/
+const plateAttributes = (plateNumber) => {
+  return {
+    plate_number: plateNumber,
+    sequencing_kit_box_barcode: null,
+    wells: {},
+  }
+}
+
+const plateNumber = 1
+
+/**
  * @returns {Object} the default attributes for a run
- * id new inidcates a new record
+ * id 'new' inidcates a new record
+ * Currently defaults to one plate, for a Sequel IIe run
  **/
 const runAttributes = {
   id: 'new',
@@ -10,6 +24,7 @@ const runAttributes = {
   sequencing_kit_box_barcode: null,
   dna_control_complex_box_barcode: null,
   comments: null,
+  plates: [plateAttributes(plateNumber)],
 }
 
 /*
@@ -18,21 +33,13 @@ const runAttributes = {
 const requiredAttributes = () => ['sequencing_kit_box_barcode', 'dna_control_complex_box_barcode']
 
 /**
- * @param {attributes} - Object of attributes for an existing run
  * @returns {Object} - A Fresh Pacbio Sequencing Run.
- * If id is nil it will be marked as a new run
  */
-// TODO DPl-746: not sure here is the best place to init wells
-// (required for getters getWell from PacbioRunWellItem storeWell)
-// maybe move to original state
 const newRun = () => {
   return {
     ...runAttributes,
-    plates: [{ wells: {} }],
   }
 }
-
-// TODO DPl-746 refactor to newPlate
 
 const defaultWellAttributes = () => {
   const onInstrument = 'On Instrument'

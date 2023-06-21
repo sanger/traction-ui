@@ -39,6 +39,7 @@ const wells = {
 
 const wellValues = Object.values(wells)
 const plateValues = [{ wells: wellValues }]
+const plateNumber = 1
 
 describe('run.js', () => {
   describe('newRun', () => {
@@ -46,6 +47,12 @@ describe('run.js', () => {
       const run = newRun()
       expect(run.id).toEqual('new')
       expect(run.system_name).toBeTypeOf('string')
+      expect(run.sequencing_kit_box_barcode).toEqual(null)
+      expect(run.dna_control_complex_box_barcode).toEqual(null)
+      expect(run.comments).toEqual(null)
+      expect(run.plates[0].plate_number).toEqual(plateNumber)
+      expect(run.plates[0].sequencing_kit_box_barcode).toEqual(null)
+      expect(run.plates[0].wells).toEqual({})
     })
   })
 
