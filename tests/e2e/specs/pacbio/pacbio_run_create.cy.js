@@ -51,8 +51,7 @@ describe('Pacbio Run Create view', () => {
       .first()
       .trigger('dragstart', { dataTransfer: dataTransfer, force: true })
       .trigger('drag', { dataTransfer: dataTransfer, force: true })
-    // again better to rename this item to make it more descriptive
-    cy.get('ellipse')
+    cy.get('[data-attribute=pacbio-run-well]')
       .first()
       .trigger('drop', { dataTransfer: dataTransfer, force: true })
       .trigger('click')
@@ -95,8 +94,7 @@ describe('Pacbio Run Create view', () => {
       .first()
       .trigger('dragstart', { dataTransfer: dataTransfer, force: true })
       .trigger('drag', { dataTransfer: dataTransfer, force: true })
-    // again better to rename this item to make it more descriptive
-    cy.get('ellipse')
+    cy.get('[data-attribute=pacbio-run-well]')
       .first()
       .trigger('drop', { dataTransfer: dataTransfer, force: true })
       .trigger('click')
@@ -140,7 +138,9 @@ describe('Pacbio Run Create view', () => {
       .first()
       .trigger('dragstart', { dataTransfer: dataTransfer, force: true })
       .trigger('drag', { dataTransfer: dataTransfer, force: true })
-    cy.get('ellipse').first().trigger('drop', { dataTransfer: dataTransfer, force: true })
+    cy.get('[data-attribute=pacbio-run-well]')
+      .first()
+      .trigger('drop', { dataTransfer: dataTransfer, force: true })
 
     cy.get('button').contains('Create').click()
     cy.contains(
@@ -181,8 +181,7 @@ describe('Pacbio Run Create view', () => {
       .first()
       .trigger('dragstart', { dataTransfer: dataTransfer, force: true })
       .trigger('drag', { dataTransfer: dataTransfer, force: true })
-    // again better to rename this item to make it more descriptive
-    cy.get('ellipse')
+    cy.get('[data-attribute=pacbio-run-well]')
       .first()
       .trigger('drop', { dataTransfer: dataTransfer, force: true })
       .trigger('click')

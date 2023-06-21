@@ -16,10 +16,13 @@
       </div>
     </div>
     <TractionHeading level="1" shadow>{{ pipeline }} {{ page }}</TractionHeading>
-    <div class="flex flex-col mb-auto px-4 py-10">
+    <div class="flex flex-col mb-auto px-4 pt-4 pb-10">
       <router-view class="text-center" />
     </div>
-    <div v-show="hasMessages" class="bottom-0 fixed right-0 -top-2 z-[1051]">
+    <div
+      v-show="hasMessages"
+      class="bottom-0 fixed right-0 -top-2 z-[1051] p-2 bg-white/75 backdrop-blur-sm rounded-md border shadow m-2"
+    >
       <div class="flex justify-end mb-2 border-sp border-b-2 tracking-tight leading-relaxed">
         <traction-button class="mb-2" @click="clearAlerts()">Clear</traction-button>
       </div>

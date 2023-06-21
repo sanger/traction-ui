@@ -1,9 +1,7 @@
 <template>
-  <menu
-    class="my-2 text-gray-700 text-xs italic list-none inline-flex m-0 p-0 space-x-2 font-light"
-  >
+  <div :class="`text-xs text-gray-700 font-light italic ${classes}`">
     <slot />
-  </menu>
+  </div>
 </template>
 
 <script>
@@ -23,5 +21,12 @@
  */
 export default {
   name: 'TractionMutedText',
+  props: {
+    //any custom tailwind class to extend the default options
+    classes: {
+      type: String,
+      default: '',
+    },
+  },
 }
 </script>
