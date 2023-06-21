@@ -2,16 +2,14 @@ import Vue from 'vue'
 
 /**
  * @returns {Object} the default attributes for a plate
+ * plate number and sequencing_kit_box_barcode to be later implemented
  **/
-const defaultPlateAttributes = (plateNumber) => {
+const defaultPlateAttributes = () => {
   return {
-    plate_number: plateNumber,
     sequencing_kit_box_barcode: null,
     wells: {},
   }
 }
-
-const plateNumber = 1
 
 /**
  * @returns {Object} the default attributes for a run
@@ -24,7 +22,7 @@ const runAttributes = {
   sequencing_kit_box_barcode: null,
   dna_control_complex_box_barcode: null,
   comments: null,
-  plates: [defaultPlateAttributes(plateNumber)],
+  plates: [defaultPlateAttributes()],
 }
 
 /*
@@ -131,9 +129,11 @@ const createPlatePayload = (plate, plateIndex) => {
     return createWellPayload(position, well)
   })
 
+  const plateNumber = plateIndex + 1
+
   return {
     id: plateId,
-    plate_number: plateIndex,
+    plate_number: plateNumber,
     sequencing_kit_box_barcode:
       plate.sequencing_kit_box_barcode || 'REMOVE ONCE IMPLEMENTED PLATE SKBB',
     wells_attributes: [...wells_attributes],

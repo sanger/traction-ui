@@ -39,7 +39,6 @@ const wells = {
 
 const wellValues = Object.values(wells)
 const plateValues = [{ wells: wellValues }]
-const plateNumber = 1
 
 describe('run.js', () => {
   describe('newRun', () => {
@@ -50,7 +49,6 @@ describe('run.js', () => {
       expect(run.sequencing_kit_box_barcode).toEqual(null)
       expect(run.dna_control_complex_box_barcode).toEqual(null)
       expect(run.comments).toEqual(null)
-      expect(run.plates[0].plate_number).toEqual(plateNumber)
       expect(run.plates[0].sequencing_kit_box_barcode).toEqual(null)
       expect(run.plates[0].wells).toEqual({})
     })
@@ -124,7 +122,7 @@ describe('run.js', () => {
       const platePayload = createPlatePayload(plate, 0)
 
       expect(platePayload.id).toEqual(1)
-      expect(platePayload.plate_number).toEqual(0)
+      expect(platePayload.plate_number).toEqual(1)
       expect(platePayload.sequencing_kit_box_barcode).toEqual('REMOVE ONCE IMPLEMENTED PLATE SKBB')
       expect(platePayload.wells_attributes).toEqual([{ ...well, pool_ids: [1, 2] }])
     })
@@ -142,7 +140,7 @@ describe('run.js', () => {
       const platePayload = createPlatePayload(plate, 0)
 
       expect(platePayload.id).toEqual(1)
-      expect(platePayload.plate_number).toEqual(0)
+      expect(platePayload.plate_number).toEqual(1)
       expect(platePayload.sequencing_kit_box_barcode).toEqual('REMOVE ONCE IMPLEMENTED PLATE SKBB')
       expect(platePayload.wells_attributes).toEqual([{ ...well, pool_ids: [1, 2], _destroy: true }])
     })
