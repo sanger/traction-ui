@@ -70,7 +70,6 @@ describe('actions.js', () => {
   })
 
   describe('fetchRun', () => {
-    // TODO DPl-746 a test with multiple plates, with multiple wells
     it('handles success', async () => {
       const commit = vi.fn()
       const find = vi.fn()
