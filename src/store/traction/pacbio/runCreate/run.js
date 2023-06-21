@@ -115,22 +115,20 @@ const valid = ({ run }) => {
   return Object.keys(run.errors || {}).length === 0
 }
 
-const buildWellAttributes = (wellKey, well) => {
-  if (wellKey.includes('_destroy')) {
+const createWellPayload = (position, well) => {
+  if (position.includes('_destroy')) {
     well._destroy = true
   }
   well.pool_ids = well.pools
   return well
 }
 
-// TODO
-// Update sequencing_kit_box_barcode once implemented multiple plates for a run
-const buildPlateAttributes = (plate, plateIndex) => {
+const createPlatePayload = (plate, plateIndex) => {
   const plateId = plate.id || ''
 
-  const wells_attributes = Object.keys(plate.wells).map((wellKey) => {
-    const well = plate.wells[wellKey]
-    return buildWellAttributes(wellKey, well)
+  const wells_attributes = Object.keys(plate.wells).map((position) => {
+    const well = plate.wells[position]
+    return createWellPayload(position, well)
   })
 
   return {
@@ -152,7 +150,7 @@ const createRunPayload = ({ id, run, smrtLinkVersion }) => {
   delete run.plates
 
   const platesAttributes = plates.map((plate, plateIndex) => {
-    return buildPlateAttributes(plate, plateIndex)
+    return createPlatePayload(plate, plateIndex)
   })
 
   // Currently remove sequencing_kit_box_barcode from a run
@@ -243,5 +241,5 @@ export {
   createRunType,
   newRunType,
   existingRunType,
-  buildPlateAttributes,
+  createPlatePayload,
 }

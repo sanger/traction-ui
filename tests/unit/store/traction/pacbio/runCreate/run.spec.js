@@ -8,7 +8,7 @@ import {
   createRunPayload,
   RunTypeEnum,
   createRunType,
-  buildPlateAttributes,
+  createPlatePayload,
 } from '@/store/traction/pacbio/runCreate/run'
 
 const existingRun = {
@@ -110,11 +110,43 @@ describe('run.js', () => {
     })
   })
 
-  // TODO
-  describe('buildWellAttributes', () => {})
+  describe('createPlatePayload', () => {
+    it('returns the plate data', () => {
+      const well = { ...newWell({ position: 'A2' }), pools: [1, 2] }
+      const plate = {
+        id: 1,
+        pacbio_run_id: 2,
+        wells: {
+          A1: well,
+        },
+      }
 
-  // TODO
-  describe('buildPlateAttributes', () => {})
+      const platePayload = createPlatePayload(plate, 0)
+
+      expect(platePayload.id).toEqual(1)
+      expect(platePayload.plate_number).toEqual(0)
+      expect(platePayload.sequencing_kit_box_barcode).toEqual('REMOVE ONCE IMPLEMENTED PLATE SKBB')
+      expect(platePayload.wells_attributes).toEqual([{ ...well, pool_ids: [1, 2] }])
+    })
+
+    it('returns the plate data, including wells to be destroyed', () => {
+      const well = { ...newWell({ position: 'A2' }), pools: [1, 2] }
+      const plate = {
+        id: 1,
+        pacbio_run_id: 2,
+        wells: {
+          A1_destroy: well,
+        },
+      }
+
+      const platePayload = createPlatePayload(plate, 0)
+
+      expect(platePayload.id).toEqual(1)
+      expect(platePayload.plate_number).toEqual(0)
+      expect(platePayload.sequencing_kit_box_barcode).toEqual('REMOVE ONCE IMPLEMENTED PLATE SKBB')
+      expect(platePayload.wells_attributes).toEqual([{ ...well, pool_ids: [1, 2], _destroy: true }])
+    })
+  })
 
   describe('createRunPayload', () => {
     it('for a new run', () => {
@@ -128,7 +160,7 @@ describe('run.js', () => {
       })
 
       const platesAttributes = plateValues.map((plate, plateIndex) => {
-        return buildPlateAttributes(plate, plateIndex)
+        return createPlatePayload(plate, plateIndex)
       })
 
       expect(payload).toEqual({
@@ -154,7 +186,7 @@ describe('run.js', () => {
       })
 
       const platesAttributes = plateValues.map((plate, plateIndex) => {
-        return buildPlateAttributes(plate, plateIndex)
+        return createPlatePayload(plate, plateIndex)
       })
 
       expect(payload).toEqual({
