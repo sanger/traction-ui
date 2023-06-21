@@ -110,7 +110,6 @@ export default {
       const plateData = extractPlateData(plates, wells)
 
       commit('populateRun', { id: data.id, attributes: data.attributes, plates: plateData })
-      // commit('populateWells', wells)
       commit('populatePools', pools)
       commit('setLibraries', libraries)
       commit('setTags', tags)

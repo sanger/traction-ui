@@ -25,7 +25,6 @@ describe('mutations.js', () => {
     populateSmrtLinkVersions,
     populateSmrtLinkVersion,
     populateRun,
-    // populateWells,
     populatePools,
     populateRunType,
     clearRunData,
@@ -78,20 +77,6 @@ describe('mutations.js', () => {
       expect(state.run).toEqual({ ...newRun, id: 1 })
     })
   })
-
-  // describe('populateWells', () => {
-  //   it('updates the state', () => {
-  //     // mock state
-  //     const wells = Data.PacbioRun.data.included.slice(1, 2)
-  //     const state = defaultState()
-  //     // apply mutation
-  //     populateWells(state, wells)
-  //     // assert result
-  //     expect(state.wells).toEqual(
-  //       dataToObjectByPosition({ data: wells, includeRelationships: true }),
-  //     )
-  //   })
-  // })
 
   describe('populatePools', () => {
     it('updates the state', () => {

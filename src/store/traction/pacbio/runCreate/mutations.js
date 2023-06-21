@@ -36,15 +36,6 @@ export default {
   },
 
   /**
-   * Populated via API calls from the actions
-   * @param {Object} state The VueXState object
-   */
-  // populateWells: populateBy('wells', dataToObjectById, {
-  //   includeRelationships: true,
-  //   populateResources: false,
-  // }),
-
-  /**
    * Populated the run type
    * @param {Object} state The VueXState object
    * @param {Object} runType The runType

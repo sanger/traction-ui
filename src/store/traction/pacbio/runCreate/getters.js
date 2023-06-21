@@ -58,7 +58,6 @@ export default {
   runType: (state) => state.runType || {},
 
   getWell: (state) => (position, plateIndex) => {
-    // return state.wells[state.run.plates[plateIndex].wells[position]]
     return state.run.plates[plateIndex].wells[position]
   },
 
