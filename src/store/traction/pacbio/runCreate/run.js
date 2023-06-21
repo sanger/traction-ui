@@ -3,7 +3,7 @@ import Vue from 'vue'
 /**
  * @returns {Object} the default attributes for a plate
  **/
-const plateAttributes = (plateNumber) => {
+const defaultPlateAttributes = (plateNumber) => {
   return {
     plate_number: plateNumber,
     sequencing_kit_box_barcode: null,
@@ -24,7 +24,7 @@ const runAttributes = {
   sequencing_kit_box_barcode: null,
   dna_control_complex_box_barcode: null,
   comments: null,
-  plates: [plateAttributes(plateNumber)],
+  plates: [defaultPlateAttributes(plateNumber)],
 }
 
 /*
@@ -123,6 +123,7 @@ const buildWellAttributes = (wellKey, well) => {
   return well
 }
 
+// TODO
 // Update sequencing_kit_box_barcode once implemented multiple plates for a run
 const buildPlateAttributes = (plate, plateIndex) => {
   const plateId = plate.id || ''
@@ -235,6 +236,7 @@ export {
   validate,
   valid,
   defaultWellAttributes,
+  defaultPlateAttributes,
   newWell,
   createRunPayload,
   RunTypeEnum,

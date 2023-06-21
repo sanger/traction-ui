@@ -2,7 +2,12 @@ import mutations from '@/store/traction/pacbio/runCreate/mutations'
 import defaultState from '@/store/traction/pacbio/runCreate/state'
 import { Data } from '@support/testHelper'
 import { dataToObjectById } from '@/api/JsonApi'
-import { newRun, createRunType, defaultWellAttributes } from '@/store/traction/pacbio/runCreate/run'
+import {
+  newRun,
+  createRunType,
+  defaultWellAttributes,
+  defaultPlateAttributes,
+} from '@/store/traction/pacbio/runCreate/run'
 import storePools from '@tests/data/StorePools'
 import { expect, it } from 'vitest'
 
@@ -194,9 +199,8 @@ describe('mutations.js', () => {
 
   describe('updateWell', () => {
     it('when it is a new well', () => {
-      // TODO DPl-746 maybe update defaultState to include plates: [] ...
       const state = defaultState()
-      state.run = { plates: [{ wells: {} }] }
+      state.run = { plates: [defaultPlateAttributes(1)] }
       const well = { position: 'A1', row: 'A', column: '1' }
       updateWell(state, { well: well, plateIndex: PLATE_INDEX })
       expect(state.run.plates[PLATE_INDEX].wells['A1']).toEqual(well)
