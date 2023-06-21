@@ -82,20 +82,49 @@ describe('actions.js', () => {
       const includedData = Data.PacbioRun.data.included
       let idx = 0
 
-      const plateInfo = {
+      // first payload
+      const plateInfo5 = {
         id: includedData[idx].id,
         wells: includedData[idx].relationships.wells.data.map((w) => w.id),
       }
 
       idx += 1 // next payload
-      const wellsInfo = {
+      const plateInfo6 = {
+        id: includedData[idx].id,
+        wells: includedData[idx].relationships.wells.data.map((w) => w.id),
+      }
+
+      idx += 1 // next payload
+      const wellInfo5 = {
         id: includedData[idx].id,
         type: includedData[idx].type,
         position: includedData[idx].attributes.position,
         ...includedData[idx].attributes,
         pools: ['1'],
       }
-      const plateData = [{ id: plateInfo.id, pacbio_run_id: 5, wells: { A2: wellsInfo } }]
+
+      idx += 1 // next payload
+      const wellInfo6 = {
+        id: includedData[idx].id,
+        type: includedData[idx].type,
+        position: includedData[idx].attributes.position,
+        ...includedData[idx].attributes,
+        pools: ['1'],
+      }
+
+      idx += 1 // next payload
+      const wellInfo7 = {
+        id: includedData[idx].id,
+        type: includedData[idx].type,
+        position: includedData[idx].attributes.position,
+        ...includedData[idx].attributes,
+        pools: ['1'],
+      }
+
+      const plateData = [
+        { id: plateInfo5.id, pacbio_run_id: 5, wells: { A2: wellInfo5 } },
+        { id: plateInfo6.id, pacbio_run_id: 5, wells: { A3: wellInfo6, A4: wellInfo7 } },
+      ]
       const runInfo = {
         id: runData.id,
         attributes: runData.attributes,

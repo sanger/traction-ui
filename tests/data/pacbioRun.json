@@ -74,6 +74,10 @@
               {
                 "type": "wells",
                 "id": "6"
+              },
+              {
+                "type": "wells",
+                "id": "7"
               }
             ]
           }
@@ -131,10 +135,50 @@
           "on_plate_loading_concentration": "nl",
           "row": "A",
           "column": "3",
-          "pacbio_plate_id": 5,
+          "pacbio_plate_id": 6,
           "comment": null,
           "generate_hifi": "On Instrument",
           "position": "A3",
+          "pre_extension_time": 2,
+          "ccs_analysis_output": "Yes",
+          "binding_kit_box_barcode": "bk",
+          "loading_target_p1_plus_p2": 0.85,
+          "ccs_analysis_output_include_low_quality_reads": "No",
+          "include_fivemc_calls_in_cpg_motifs": "Yes",
+          "ccs_analysis_output_include_kinetics_information": "Yes",
+          "demultiplex_barcodes": "On Instrument",
+          "movie_acquisition_time": "24.0",
+          "include_base_kinetics": "False",
+          "library_concentration": null,
+          "polymerase_kit": null
+        },
+        "relationships": {
+          "pools": {
+            "data": [
+              {
+                "type": "pools",
+                "id": "1"
+              }
+            ]
+          }
+        }
+      },
+      {
+        "id": "7",
+        "type": "wells",
+        "links": {
+          "self": "http://localhost:3100/v1/pacbio/runs/wells/7"
+        },
+        "attributes": {
+          "movie_time": "30.0",
+          "insert_size": 100,
+          "on_plate_loading_concentration": "nl",
+          "row": "A",
+          "column": "4",
+          "pacbio_plate_id": 6,
+          "comment": null,
+          "generate_hifi": "On Instrument",
+          "position": "A4",
           "pre_extension_time": 2,
           "ccs_analysis_output": "Yes",
           "binding_kit_box_barcode": "bk",
