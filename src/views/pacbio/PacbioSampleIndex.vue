@@ -33,23 +33,16 @@
     <traction-table
       id="samples-table"
       primary_key="id"
-      show-empty
-      responsive
       :items="tableData"
       :fields="fields"
-      :filter="filter"
-      :per-page="perPage"
-      :current-page="currentPage"
       :sort-by.sync="sortBy"
-      :sort-desc.sync="sortDesc"
-      hover
       selectable
       select-mode="single"
       @filtered="onFiltered"
       @row-selected="onRowSelected"
     >
-      <template #cell(selected)="{ rowSelected }">
-        <template v-if="rowSelected">
+      <template #cell(selected)="{ selected }">
+        <template v-if="selected">
           <span>&check;</span>
           <span class="sr-only">Selected</span>
         </template>

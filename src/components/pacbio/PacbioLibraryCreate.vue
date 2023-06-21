@@ -1,12 +1,6 @@
 <template>
   <div>
-    <traction-button
-      id="pacbioLibraryCreate"
-      v-traction-modal.pacbioLibraryModal
-      :disabled="disabled"
-      theme="create"
-      @click="show"
-    >
+    <traction-button id="pacbioLibraryCreate" :disabled="disabled" theme="create" @click="show">
       Create Library
     </traction-button>
     <traction-modal
@@ -173,10 +167,6 @@ export default {
       const { success, barcode, errors } = await this.createLibraryInTraction(this.library)
       if (success) {
         this.hide()
-        /**This need to be removed when custom_enable_modal feature flag is removed */
-        if ('b-modal' in this.$refs['modal'].$refs && this.$refs['modal'].$refs['b-modal']) {
-          this.$refs['modal'].$refs['b-modal'].hide()
-        }
         this.$emit('alert', 'Created library with barcode ' + barcode, 'success')
       } else {
         this.showAlert('Failed to create library in Traction: ' + errors, 'danger')

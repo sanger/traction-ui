@@ -2,7 +2,6 @@
   <div>
     <traction-button
       id="createLibrariesWithEnzymeButton"
-      v-traction-modal.enzymeModal
       :disabled="disabled"
       theme="create"
       @click="displayModal"
@@ -69,18 +68,6 @@ export default {
       this.$emit('selectEnzyme', this.selectedEnzymeId)
       this.clearSelect()
       this.showModal = true
-      /**
-       * Hide the modal manually
-       * https://vuejsdevelopers.com/2019/01/22/vue-what-is-next-tick/
-       * https://bootstrap-vue.js.org/docs/components/modal/#prevent-closing
-       */
-
-      /**This need to be removed when custom_enable_modal feature flag is removed */
-      this.$nextTick(() => {
-        if ('b-modal' in this.$refs['enzymeModal'].$refs) {
-          this.$refs['enzymeModal'].$refs['b-modal'].show()
-        }
-      })
     },
     displayModal() {
       this.showModal = true
