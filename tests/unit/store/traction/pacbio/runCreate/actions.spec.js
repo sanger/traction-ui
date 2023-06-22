@@ -82,6 +82,7 @@ describe('actions.js', () => {
       let idx = 0
 
       // first payload
+      expect(includedData[idx].type).toBe('plates')
       const plateInfo5 = {
         id: includedData[idx].id,
         plate_number: includedData[idx].plate_number,
@@ -89,6 +90,7 @@ describe('actions.js', () => {
       }
 
       idx += 1 // next payload
+      expect(includedData[idx].type).toBe('plates')
       const plateInfo6 = {
         id: includedData[idx].id,
         plate_number: includedData[idx].plate_number,
@@ -96,6 +98,7 @@ describe('actions.js', () => {
       }
 
       idx += 1 // next payload
+      expect(includedData[idx].type).toBe('wells')
       const wellInfo5 = {
         id: includedData[idx].id,
         type: includedData[idx].type,
@@ -105,6 +108,7 @@ describe('actions.js', () => {
       }
 
       idx += 1 // next payload
+      expect(includedData[idx].type).toBe('wells')
       const wellInfo6 = {
         id: includedData[idx].id,
         type: includedData[idx].type,
@@ -114,6 +118,7 @@ describe('actions.js', () => {
       }
 
       idx += 1 // next payload
+      expect(includedData[idx].type).toBe('wells')
       const wellInfo7 = {
         id: includedData[idx].id,
         type: includedData[idx].type,
@@ -150,6 +155,7 @@ describe('actions.js', () => {
       expect(commit).toHaveBeenCalledWith('setTags', [includedData[++idx]])
       expect(commit).toHaveBeenCalledWith('setRequests', [includedData[++idx]])
       idx += 1 // next payload
+      expect(includedData[idx].type).toBe('smrt_link_versions')
       const smrtLinkVersion = {
         id: includedData[idx].id,
         type: includedData[idx].type,
