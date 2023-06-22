@@ -350,16 +350,18 @@ describe('JsonApi', () => {
       const wells = [well1, well2]
       const result = extractPlateData(plates, wells)
 
-      const resultPlate1 = result[0]
-      const resultPlate2 = result[1]
+      const resultPlate1 = result['1']
+      const resultPlate2 = result['2']
 
       expect(resultPlate1.id).toEqual(plate1.id)
       expect(resultPlate1.pacbio_run_id).toEqual(parseInt(run.id))
+      expect(resultPlate1.plate_number).toEqual(parseInt(resultPlate1.plate_number))
       expect(Object.keys(resultPlate1.wells)).toEqual([well1.attributes.position])
       expect(Object.keys(resultPlate1.wells).length).toEqual(1)
 
       expect(resultPlate2.id).toEqual(plate2.id)
       expect(resultPlate2.pacbio_run_id).toEqual(parseInt(run.id))
+      expect(resultPlate2.plate_number).toEqual(parseInt(resultPlate2.plate_number))
       expect(Object.keys(resultPlate2.wells)).toEqual([well2.attributes.position])
       expect(Object.keys(resultPlate2.wells).length).toEqual(1)
     })
