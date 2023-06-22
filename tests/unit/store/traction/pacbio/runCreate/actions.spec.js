@@ -3,12 +3,12 @@ import actions from '@/store/traction/pacbio/runCreate/actions'
 import { describe, expect, it } from 'vitest'
 import {
   newRun,
+  newPlate,
   newWell,
   createRunType,
   newRunType,
   existingRunType,
   defaultWellAttributes,
-  defaultPlateAttributes,
 } from '@/store/traction/pacbio/runCreate/run'
 
 const failedResponse = {
@@ -84,12 +84,14 @@ describe('actions.js', () => {
       // first payload
       const plateInfo5 = {
         id: includedData[idx].id,
+        plate_number: includedData[idx].plate_number,
         wells: includedData[idx].relationships.wells.data.map((w) => w.id),
       }
 
       idx += 1 // next payload
       const plateInfo6 = {
         id: includedData[idx].id,
+        plate_number: includedData[idx].plate_number,
         wells: includedData[idx].relationships.wells.data.map((w) => w.id),
       }
 
@@ -120,10 +122,21 @@ describe('actions.js', () => {
         pools: ['1'],
       }
 
-      const plateData = [
-        { id: plateInfo5.id, pacbio_run_id: 5, wells: { A2: wellInfo5 } },
-        { id: plateInfo6.id, pacbio_run_id: 5, wells: { A3: wellInfo6, A4: wellInfo7 } },
-      ]
+      const plateData = {
+        1: {
+          id: plateInfo5.id,
+          plate_number: plateInfo5.plate_number,
+          pacbio_run_id: 5,
+          wells: { A2: wellInfo5 },
+        },
+        2: {
+          id: plateInfo6.id,
+          plate_number: plateInfo6.plate_number,
+          pacbio_run_id: 5,
+          wells: { A3: wellInfo6, A4: wellInfo7 },
+        },
+      }
+
       const runInfo = {
         id: runData.id,
         attributes: runData.attributes,
@@ -297,7 +310,7 @@ describe('actions.js', () => {
         run: {
           plates: {
             1: newPlate(1),
-          }
+          },
         },
         defaultWellAttributes: { ...defaultWellAttributes() },
       }

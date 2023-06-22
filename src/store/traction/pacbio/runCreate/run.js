@@ -1,12 +1,14 @@
 import Vue from 'vue'
 
 /**
- * @returns {Object} the default attributes for a plate
- * plate number and sequencing_kit_box_barcode to be later implemented
- **/
-const defaultPlateAttributes = () => {
+ *
+ * @param {String} plateNumber The number of the plate e.g. 1
+ * @returns {Object} A new plate
+ */
+const newPlate = (plateNumber) => {
   return {
-    sequencing_kit_box_barcode: null,
+    plate_number: plateNumber,
+    sequencing_kit_box_barcode: '',
     wells: {},
   }
 }
@@ -22,11 +24,10 @@ const runAttributes = {
   sequencing_kit_box_barcode: null,
   dna_control_complex_box_barcode: null,
   comments: null,
-  // plates: [defaultPlateAttributes()],
   plates: {
     1: newPlate(1),
     2: newPlate(2),
-  }
+  },
 }
 
 /*
@@ -90,19 +91,6 @@ const newWell = ({ position, ...attributes }) => {
     position,
     row,
     column,
-  }
-}
-
-/**
- *
- * @param {String} plateNumber The number of the plate e.g. 1
- * @returns {Object} A new plate
- */
-const newPlate = (plateNumber) => {
-  return {
-    plate_number: plateNumber,
-    sequencing_kit_box_barcode: '',
-    wells: {},
   }
 }
 
@@ -253,7 +241,6 @@ export {
   validate,
   valid,
   defaultWellAttributes,
-  defaultPlateAttributes,
   newWell,
   newPlate,
   createRunPayload,
