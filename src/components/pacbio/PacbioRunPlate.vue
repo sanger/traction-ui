@@ -11,7 +11,7 @@
             :value="runItem.plates[plate].sequencing_kit_box_barcode"
             placeholder="Sequencing Kit Box Barcode"
             type="text"
-            data-attribute="sequencing_kit_box_barcode"
+            :data-attribute="`sequencing_kit_box_barcode-${plate}`"
           />
         </div>
         <div :class="labware.plateClasses">
@@ -19,6 +19,7 @@
             v-slot="{ position }"
             :labware-type="labware.labwareType"
             :name="labware.labwareType.name"
+            :data-attribute="`pacbio-run-plate-${plate}`"
           >
             <PacbioRunWell
               :position="position"
