@@ -148,13 +148,14 @@ describe('actions.js', () => {
         plates: plateData,
       }
 
+      // note: order of commit calls does not match order of includedData payloads
       let call_num = 0
       expect(commit).toHaveBeenNthCalledWith(++call_num, 'populateRun', runInfo)
       expect(commit).toHaveBeenNthCalledWith(++call_num, 'populatePools', [includedData[++idx]])
-      expect(commit).toHaveBeenNthCalledWith(++call_num, 'setTubes', [includedData[++idx]])
-      expect(commit).toHaveBeenNthCalledWith(++call_num, 'setLibraries', [includedData[++idx]])
-      expect(commit).toHaveBeenNthCalledWith(++call_num, 'setTags', [includedData[++idx]])
-      expect(commit).toHaveBeenNthCalledWith(++call_num, 'setRequests', [includedData[++idx]])
+      expect(commit).toHaveBeenNthCalledWith(++call_num + 3, 'setTubes', [includedData[++idx]])
+      expect(commit).toHaveBeenNthCalledWith(++call_num - 1, 'setLibraries', [includedData[++idx]])
+      expect(commit).toHaveBeenNthCalledWith(++call_num - 1, 'setTags', [includedData[++idx]])
+      expect(commit).toHaveBeenNthCalledWith(++call_num - 1, 'setRequests', [includedData[++idx]])
 
       idx += 1 // next payload
       expect(includedData[idx].type).toBe('smrt_link_versions')
@@ -163,7 +164,7 @@ describe('actions.js', () => {
         type: includedData[idx].type,
         ...includedData[idx].attributes,
       }
-      expect(commit).toHaveBeenCalledWith('populateSmrtLinkVersion', smrtLinkVersion)
+      expect(commit).toHaveBeenNthCalledWith(++call_num, 'populateSmrtLinkVersion', smrtLinkVersion)
       expect(success).toBeTruthy()
     })
 
