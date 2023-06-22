@@ -39,6 +39,7 @@
           title="System Name"
           :options="systemNameOptions"
           data-attribute="system_name"
+          :disabled="!newRecord"
         />
       </traction-field-group>
 
@@ -72,11 +73,20 @@
 import { createNamespacedHelpers } from 'vuex'
 const { mapGetters, mapActions } = createNamespacedHelpers('traction/pacbio/runCreate')
 
+// Move to config
+const REVIO = 'Revio'
+const SEQUEL_IIE = 'Sequel IIe'
+
 export default {
   name: 'PacbioRunInfoEdit',
+  props: {
+    newRecord: {
+      type: Boolean,
+    },
+  },
   data() {
     return {
-      systemNameOptions: ['Sequel IIe', 'Revio'],
+      systemNameOptions: [SEQUEL_IIE, REVIO],
     }
   },
   computed: {

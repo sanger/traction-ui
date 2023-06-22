@@ -8,12 +8,18 @@ const elem = document.createElement('div')
 if (document.body) {
   document.body.appendChild(elem)
 }
+
+const props = {
+  newRecord: true,
+}
+
 const buildWrapper = () =>
   mount(PacbioRunInfoEdit, {
     localVue,
     store,
     sync: false,
     attachTo: elem,
+    propsData: props,
   })
 
 describe('PacbioRunInfoEdit', () => {
@@ -41,6 +47,10 @@ describe('PacbioRunInfoEdit', () => {
 
   let runInfo, wrapper
 
+  // Move to config
+  const REVIO = 'Revio'
+  const SEQUEL_IIE = 'Sequel IIe'
+
   beforeEach(() => {
     wrapper = buildWrapper()
     runInfo = wrapper.vm
@@ -49,7 +59,7 @@ describe('PacbioRunInfoEdit', () => {
   })
 
   it('must have systemName data', () => {
-    expect(runInfo.systemNameOptions).toEqual(['Sequel IIe', 'Revio'])
+    expect(runInfo.systemNameOptions).toEqual([SEQUEL_IIE, REVIO])
   })
 
   describe('smrt link versions', () => {
