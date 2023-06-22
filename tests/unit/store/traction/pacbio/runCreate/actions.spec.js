@@ -148,12 +148,14 @@ describe('actions.js', () => {
         plates: plateData,
       }
 
-      expect(commit).toHaveBeenCalledWith('populateRun', runInfo)
-      expect(commit).toHaveBeenCalledWith('populatePools', [includedData[++idx]])
-      expect(commit).toHaveBeenCalledWith('setTubes', [includedData[++idx]])
-      expect(commit).toHaveBeenCalledWith('setLibraries', [includedData[++idx]])
-      expect(commit).toHaveBeenCalledWith('setTags', [includedData[++idx]])
-      expect(commit).toHaveBeenCalledWith('setRequests', [includedData[++idx]])
+      let call_num = 0
+      expect(commit).toHaveBeenNthCalledWith(++call_num, 'populateRun', runInfo)
+      expect(commit).toHaveBeenNthCalledWith(++call_num, 'populatePools', [includedData[++idx]])
+      expect(commit).toHaveBeenNthCalledWith(++call_num, 'setTubes', [includedData[++idx]])
+      expect(commit).toHaveBeenNthCalledWith(++call_num, 'setLibraries', [includedData[++idx]])
+      expect(commit).toHaveBeenNthCalledWith(++call_num, 'setTags', [includedData[++idx]])
+      expect(commit).toHaveBeenNthCalledWith(++call_num, 'setRequests', [includedData[++idx]])
+
       idx += 1 // next payload
       expect(includedData[idx].type).toBe('smrt_link_versions')
       const smrtLinkVersion = {
