@@ -75,6 +75,7 @@ export default {
           plateClasses: 'w-full',
         }
       }
+      return {}
     },
   },
   methods: {
