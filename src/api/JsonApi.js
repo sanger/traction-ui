@@ -99,15 +99,6 @@ const dataToObjectByPosition = ({ data = [], includeRelationships = false }) => 
   }, {})
 }
 
-// const dataToIdByPosition = ({ data = [] }) => {
-//   return data.reduce((result, { id, type, attributes: { position, ...rest }, relationships }) => {
-//     return {
-//       [position]: id,
-//       ...result,
-//     }
-//   }, {})
-// }
-
 const extractRelationship = (relationship, included, includeStore = {}) => {
   if (Array.isArray(relationship)) {
     return relationship.map((item) => deserializeIncluded(item, included, includeStore))
@@ -158,7 +149,6 @@ const extractPlateData = (plates, wells) => {
     const plateWells = wells.filter((well) => wellIds.includes(well.id))
 
     // Format the well data, to include pool ids
-    // const wellsData = dataToIdByPosition({ data: plateWells })
     const wellsData = dataToObjectByPosition({ data: plateWells, includeRelationships: true })
 
     return {

@@ -15,7 +15,7 @@ describe('Pacbio Run Edit view', () => {
 
     // Get the existing run to be edited
     cy.intercept(
-      'v1/pacbio/runs/7?include=plate.wells.pools.tube,plate.wells.pools.libraries.tag,plate.wells.pools.libraries.request,smrt_link_version',
+      'v1/pacbio/runs/7?include=plates.wells.pools.tube,plates.wells.pools.libraries.tag,plates.wells.pools.libraries.request,smrt_link_version',
       {
         fixture: 'tractionPacbioRun.json',
       },

@@ -8,6 +8,7 @@ import {
   newRunType,
   existingRunType,
   defaultWellAttributes,
+  defaultPlateAttributes,
 } from '@/store/traction/pacbio/runCreate/run'
 
 const failedResponse = {
@@ -69,7 +70,6 @@ describe('actions.js', () => {
   })
 
   describe('fetchRun', () => {
-    // TODO DPl-746 a test with multiple plates, with multiple wells
     it('handles success', async () => {
       const commit = vi.fn()
       const find = vi.fn()
@@ -77,40 +77,71 @@ describe('actions.js', () => {
       find.mockResolvedValue(Data.PacbioRun)
       const { success } = await fetchRun({ commit, rootState }, { id: 1 })
 
-      const smrtLinkVersion = {
-        id: Data.PacbioRun.data.included.slice(7, 8)[0].id,
-        type: Data.PacbioRun.data.included.slice(7, 8)[0].type,
-        ...Data.PacbioRun.data.included.slice(7, 8)[0].attributes,
+      const runData = Data.PacbioRun.data.data
+      const includedData = Data.PacbioRun.data.included
+      let idx = 0
+
+      // first payload
+      const plateInfo5 = {
+        id: includedData[idx].id,
+        wells: includedData[idx].relationships.wells.data.map((w) => w.id),
       }
 
-      const plateInfo = {
-        id: Data.PacbioRun.data.included.slice(0, 1)[0].id,
-        wells: Data.PacbioRun.data.included
-          .slice(0, 1)[0]
-          .relationships.wells.data.map((w) => w.id),
+      idx += 1 // next payload
+      const plateInfo6 = {
+        id: includedData[idx].id,
+        wells: includedData[idx].relationships.wells.data.map((w) => w.id),
       }
 
-      const wellsInfo = {
-        id: Data.PacbioRun.data.included.slice(1, 2)[0].id,
-        type: Data.PacbioRun.data.included.slice(1, 2)[0].type,
-        position: Data.PacbioRun.data.included.slice(1, 2)[0].attributes.position,
-        ...Data.PacbioRun.data.included.slice(1, 2)[0].attributes,
+      idx += 1 // next payload
+      const wellInfo5 = {
+        id: includedData[idx].id,
+        type: includedData[idx].type,
+        position: includedData[idx].attributes.position,
+        ...includedData[idx].attributes,
         pools: ['1'],
       }
 
-      const runData = Data.PacbioRun.data.data
-      const plateData = [{ id: plateInfo.id, pacbio_run_id: 5, wells: { A2: wellsInfo } }]
+      idx += 1 // next payload
+      const wellInfo6 = {
+        id: includedData[idx].id,
+        type: includedData[idx].type,
+        position: includedData[idx].attributes.position,
+        ...includedData[idx].attributes,
+        pools: ['1'],
+      }
 
-      expect(commit).toHaveBeenCalledWith('populateRun', {
+      idx += 1 // next payload
+      const wellInfo7 = {
+        id: includedData[idx].id,
+        type: includedData[idx].type,
+        position: includedData[idx].attributes.position,
+        ...includedData[idx].attributes,
+        pools: ['1'],
+      }
+
+      const plateData = [
+        { id: plateInfo5.id, pacbio_run_id: 5, wells: { A2: wellInfo5 } },
+        { id: plateInfo6.id, pacbio_run_id: 5, wells: { A3: wellInfo6, A4: wellInfo7 } },
+      ]
+      const runInfo = {
         id: runData.id,
         attributes: runData.attributes,
         plates: plateData,
-      })
-      expect(commit).toHaveBeenCalledWith('populatePools', Data.PacbioRun.data.included.slice(2, 3))
-      expect(commit).toHaveBeenCalledWith('setTubes', Data.PacbioRun.data.included.slice(3, 4))
-      expect(commit).toHaveBeenCalledWith('setLibraries', Data.PacbioRun.data.included.slice(4, 5))
-      expect(commit).toHaveBeenCalledWith('setTags', Data.PacbioRun.data.included.slice(5, 6))
-      expect(commit).toHaveBeenCalledWith('setRequests', Data.PacbioRun.data.included.slice(6, 7))
+      }
+
+      expect(commit).toHaveBeenCalledWith('populateRun', runInfo)
+      expect(commit).toHaveBeenCalledWith('populatePools', [includedData[++idx]])
+      expect(commit).toHaveBeenCalledWith('setTubes', [includedData[++idx]])
+      expect(commit).toHaveBeenCalledWith('setLibraries', [includedData[++idx]])
+      expect(commit).toHaveBeenCalledWith('setTags', [includedData[++idx]])
+      expect(commit).toHaveBeenCalledWith('setRequests', [includedData[++idx]])
+      idx += 1 // next payload
+      const smrtLinkVersion = {
+        id: includedData[idx].id,
+        type: includedData[idx].type,
+        ...includedData[idx].attributes,
+      }
       expect(commit).toHaveBeenCalledWith('populateSmrtLinkVersion', smrtLinkVersion)
       expect(success).toBeTruthy()
     })
@@ -263,13 +294,17 @@ describe('actions.js', () => {
   describe('getOrCreateWell', () => {
     it('if it is a new well', () => {
       const state = {
-        run: { plates: { 1: { plate_number: 1, wells: {} } } },
+        run: {
+          plates: {
+            1: newPlate(1),
+          }
+        },
         defaultWellAttributes: { ...defaultWellAttributes() },
       }
 
       const position = 'A1'
 
-      const well = getOrCreateWell({ state }, { position: position, plateNumber: PLATE_NUMBER })
+      const well = getOrCreateWell({ state }, { position, plateNumber: PLATE_NUMBER })
       expect(well).toEqual(newWell({ position, ...state.defaultWellAttributes }))
     })
 

@@ -2,7 +2,12 @@ import mutations from '@/store/traction/pacbio/runCreate/mutations'
 import defaultState from '@/store/traction/pacbio/runCreate/state'
 import { Data } from '@support/testHelper'
 import { dataToObjectById } from '@/api/JsonApi'
-import { newRun, createRunType, defaultWellAttributes } from '@/store/traction/pacbio/runCreate/run'
+import {
+  newRun,
+  createRunType,
+  defaultWellAttributes,
+  defaultPlateAttributes,
+} from '@/store/traction/pacbio/runCreate/run'
 import storePools from '@tests/data/StorePools'
 import { expect, it } from 'vitest'
 
@@ -20,7 +25,6 @@ describe('mutations.js', () => {
     populateSmrtLinkVersions,
     populateSmrtLinkVersion,
     populateRun,
-    // populateWells,
     populatePools,
     populateRunType,
     clearRunData,
@@ -73,20 +77,6 @@ describe('mutations.js', () => {
       expect(state.run).toEqual({ ...newRun, id: 1 })
     })
   })
-
-  // describe('populateWells', () => {
-  //   it('updates the state', () => {
-  //     // mock state
-  //     const wells = Data.PacbioRun.data.included.slice(1, 2)
-  //     const state = defaultState()
-  //     // apply mutation
-  //     populateWells(state, wells)
-  //     // assert result
-  //     expect(state.wells).toEqual(
-  //       dataToObjectByPosition({ data: wells, includeRelationships: true }),
-  //     )
-  //   })
-  // })
 
   describe('populatePools', () => {
     it('updates the state', () => {
@@ -194,9 +184,8 @@ describe('mutations.js', () => {
 
   describe('updateWell', () => {
     it('when it is a new well', () => {
-      // TODO DPl-746 maybe update defaultState to include plates: [] ...
       const state = defaultState()
-      state.run = { plates: [{ wells: {} }] }
+      state.run = { plates: [defaultPlateAttributes(1)] }
       const well = { position: 'A1', row: 'A', column: '1' }
       updateWell(state, { well: well, plateNumber: PLATE_NUMBER })
       expect(state.run.plates[PLATE_NUMBER].wells['A1']).toEqual(well)

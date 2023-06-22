@@ -1,8 +1,20 @@
 import Vue from 'vue'
 
 /**
+ * @returns {Object} the default attributes for a plate
+ * plate number and sequencing_kit_box_barcode to be later implemented
+ **/
+const defaultPlateAttributes = () => {
+  return {
+    sequencing_kit_box_barcode: null,
+    wells: {},
+  }
+}
+
+/**
  * @returns {Object} the default attributes for a run
- * id new inidcates a new record
+ * id 'new' inidcates a new record
+ * Currently defaults to one plate, for a Sequel IIe run
  **/
 const runAttributes = {
   id: 'new',
@@ -10,6 +22,11 @@ const runAttributes = {
   sequencing_kit_box_barcode: null,
   dna_control_complex_box_barcode: null,
   comments: null,
+  // plates: [defaultPlateAttributes()],
+  plates: {
+    1: newPlate(1),
+    2: newPlate(2),
+  }
 }
 
 /*
@@ -18,24 +35,13 @@ const runAttributes = {
 const requiredAttributes = () => ['sequencing_kit_box_barcode', 'dna_control_complex_box_barcode']
 
 /**
- * @param {attributes} - Object of attributes for an existing run
  * @returns {Object} - A Fresh Pacbio Sequencing Run.
- * If id is nil it will be marked as a new run
  */
-// TODO DPl-746: not sure here is the best place to init wells
-// (required for getters getWell from PacbioRunWellItem storeWell)
-// maybe move to original state
 const newRun = () => {
   return {
     ...runAttributes,
-    plates: {
-      1: newPlate(1),
-      2: newPlate(2),
-    },
   }
 }
-
-// TODO DPl-746 refactor to newPlate
 
 const defaultWellAttributes = () => {
   const onInstrument = 'On Instrument'
@@ -124,20 +130,20 @@ const valid = ({ run }) => {
   return Object.keys(run.errors || {}).length === 0
 }
 
-const buildWellAttributes = (wellKey, well) => {
-  if (wellKey.includes('_destroy')) {
+const createWellPayload = (position, well) => {
+  if (position.includes('_destroy')) {
     well._destroy = true
   }
   well.pool_ids = well.pools
   return well
 }
 
-const buildPlateAttributes = (plate, plateNumber) => {
+const createPlatePayload = (plate, plateNumber) => {
   const plateId = plate.id || ''
 
-  const wells_attributes = Object.keys(plate.wells).map((wellKey) => {
-    const well = plate.wells[wellKey]
-    return buildWellAttributes(wellKey, well)
+  const wells_attributes = Object.keys(plate.wells).map((position) => {
+    const well = plate.wells[position]
+    return createWellPayload(position, well)
   })
 
   // If there is no plate id and no wells then return null
@@ -163,7 +169,7 @@ const createRunPayload = ({ id, run, smrtLinkVersion }) => {
   delete run.plates
 
   const platesAttributes = Object.values(plates).map((plate) => {
-    return buildPlateAttributes(plate, plate.plate_number)
+    return createPlatePayload(plate, plate.plate_number)
   })
 
   // Currently remove sequencing_kit_box_barcode from a run
@@ -247,6 +253,7 @@ export {
   validate,
   valid,
   defaultWellAttributes,
+  defaultPlateAttributes,
   newWell,
   newPlate,
   createRunPayload,
@@ -254,5 +261,5 @@ export {
   createRunType,
   newRunType,
   existingRunType,
-  buildPlateAttributes,
+  createPlatePayload,
 }

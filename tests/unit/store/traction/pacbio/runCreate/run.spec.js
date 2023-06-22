@@ -8,7 +8,7 @@ import {
   createRunPayload,
   RunTypeEnum,
   createRunType,
-  buildPlateAttributes,
+  createPlatePayload,
 } from '@/store/traction/pacbio/runCreate/run'
 
 const existingRun = {
@@ -46,6 +46,11 @@ describe('run.js', () => {
       const run = newRun()
       expect(run.id).toEqual('new')
       expect(run.system_name).toBeTypeOf('string')
+      expect(run.sequencing_kit_box_barcode).toEqual(null)
+      expect(run.dna_control_complex_box_barcode).toEqual(null)
+      expect(run.comments).toEqual(null)
+      expect(run.plates[0].sequencing_kit_box_barcode).toEqual(null)
+      expect(run.plates[0].wells).toEqual({})
     })
   })
 
@@ -103,7 +108,44 @@ describe('run.js', () => {
     })
   })
 
-  // TODO DPl-746 check buildWellAttributes and buildPlateAttributes
+  describe('createPlatePayload', () => {
+    it('returns the plate data', () => {
+      const well = { ...newWell({ position: 'A2' }), pools: [1, 2] }
+      const plate = {
+        id: 1,
+        pacbio_run_id: 2,
+        wells: {
+          A1: well,
+        },
+      }
+
+      const platePayload = createPlatePayload(plate, 0)
+
+      expect(platePayload.id).toEqual(1)
+      expect(platePayload.plate_number).toEqual(1)
+      expect(platePayload.sequencing_kit_box_barcode).toEqual('REMOVE ONCE IMPLEMENTED PLATE SKBB')
+      expect(platePayload.wells_attributes).toEqual([{ ...well, pool_ids: [1, 2] }])
+    })
+
+    it('returns the plate data, including wells to be destroyed', () => {
+      const well = { ...newWell({ position: 'A2' }), pools: [1, 2] }
+      const plate = {
+        id: 1,
+        pacbio_run_id: 2,
+        wells: {
+          A1_destroy: well,
+        },
+      }
+
+      const platePayload = createPlatePayload(plate, 0)
+
+      expect(platePayload.id).toEqual(1)
+      expect(platePayload.plate_number).toEqual(1)
+      expect(platePayload.sequencing_kit_box_barcode).toEqual('REMOVE ONCE IMPLEMENTED PLATE SKBB')
+      expect(platePayload.wells_attributes).toEqual([{ ...well, pool_ids: [1, 2], _destroy: true }])
+    })
+  })
+
   describe('createRunPayload', () => {
     it('for a new run', () => {
       const aRun = newRun()
@@ -116,7 +158,7 @@ describe('run.js', () => {
       })
 
       const platesAttributes = Object.values(plateValues).map((plate) => {
-        return buildPlateAttributes(plate, plate.plate_number)
+        return createPlatePayload(plate, plate.plate_number)
       })
 
       expect(payload).toEqual({
@@ -142,7 +184,7 @@ describe('run.js', () => {
       })
 
       const platesAttributes = Object.values(plateValues).map((plate) => {
-        return buildPlateAttributes(plate, plate.plate_number)
+        return createPlatePayload(plate, plate.plate_number)
       })
 
       expect(payload).toEqual({
