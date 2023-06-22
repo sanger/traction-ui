@@ -85,7 +85,7 @@ describe('actions.js', () => {
       expect(includedData[idx].type).toBe('plates')
       const plateInfo5 = {
         id: includedData[idx].id,
-        plate_number: includedData[idx].plate_number,
+        plate_number: includedData[idx].attributes.plate_number,
         wells: includedData[idx].relationships.wells.data.map((w) => w.id),
       }
 
@@ -93,7 +93,7 @@ describe('actions.js', () => {
       expect(includedData[idx].type).toBe('plates')
       const plateInfo6 = {
         id: includedData[idx].id,
-        plate_number: includedData[idx].plate_number,
+        plate_number: includedData[idx].attributes.plate_number,
         wells: includedData[idx].relationships.wells.data.map((w) => w.id),
       }
 
