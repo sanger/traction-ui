@@ -335,7 +335,7 @@ describe('actions.js', () => {
       const well = newWell({ position })
 
       const state = {
-        run: { plates: { 1: { plate_number: 1, wells: { [position]: well } } } },
+        run: { plates: { 1: { ...newPlate(1), wells: { [position]: well } } } },
         defaultWellAttributes: { ...defaultWellAttributes() },
       }
 

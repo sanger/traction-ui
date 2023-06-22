@@ -9,6 +9,7 @@ import {
   RunTypeEnum,
   createRunType,
   createPlatePayload,
+  newPlate,
 } from '@/store/traction/pacbio/runCreate/run'
 
 const existingRun = {
@@ -114,6 +115,7 @@ describe('run.js', () => {
     it('returns the plate data', () => {
       const well = { ...newWell({ position: 'A2' }), pools: [1, 2] }
       const plate = {
+        ...newPlate(1),
         id: 1,
         pacbio_run_id: 2,
         wells: {
@@ -131,6 +133,7 @@ describe('run.js', () => {
     it('returns the plate data, including wells to be destroyed', () => {
       const well = { ...newWell({ position: 'A2' }), pools: [1, 2] }
       const plate = {
+        ...newPlate(1),
         id: 1,
         pacbio_run_id: 2,
         wells: {

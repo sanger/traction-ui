@@ -1,6 +1,7 @@
 import PacbioRunWell from '@/components/labware/PacbioRunWell'
 import { localVue, mount, store } from '@support/testHelper'
 import storePools from '@tests/data/StorePools'
+import { newPlate } from '@/store/traction/pacbio/runCreate/run'
 
 describe('PacbioRunWell.vue', () => {
   let well, wrapper, props, storeWell, smrtLinkVersion
@@ -33,7 +34,7 @@ describe('PacbioRunWell.vue', () => {
     }
 
     store.state.traction.pacbio.runCreate = {
-      run: { plates: { 1: { plate_number: 1, wells: { A1: storeWell } } } },
+      run: { plates: { 1: { ...newPlate(1), wells: { A1: storeWell } } } },
       ...storePools,
       smrtLinkVersion,
       resources: { smrtLinkVersions },

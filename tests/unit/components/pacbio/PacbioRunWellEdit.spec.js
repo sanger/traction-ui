@@ -1,7 +1,7 @@
 import { mount, localVue, store } from '@support/testHelper'
 import PacbioRunWellEdit from '@/components/pacbio/PacbioRunWellEdit'
 import { beforeEach, describe, expect } from 'vitest'
-import { newWell } from '@/store/traction/pacbio/runCreate/run'
+import { newWell, newPlate } from '@/store/traction/pacbio/runCreate/run'
 
 // They are like the following in the store; not an array.
 const smrtLinkVersions = {
@@ -44,7 +44,7 @@ describe('PacbioWellEdit', () => {
         store.state.traction.pacbio.runCreate.smrtLinkVersion = smrtLinkVersions['1']
         store.state.traction.pacbio.runCreate.run.plates = {
           1: {
-            plate_number: 1,
+            ...newPlate(1),
             wells: {
               A1: newWell({ position: position }),
             },
@@ -128,7 +128,7 @@ describe('PacbioWellEdit', () => {
         store.state.traction.pacbio.runCreate.smrtLinkVersion = smrtLinkVersions['2']
         store.state.traction.pacbio.runCreate.run.plates = {
           1: {
-            plate_number: 1,
+            ...newPlate(1),
             wells: {
               A1: newWell({ position: position }),
             },
@@ -211,7 +211,7 @@ describe('PacbioWellEdit', () => {
     describe('well type', () => {
       it('if it doesnt exist in state (new)', async () => {
         store.state.traction.pacbio.runCreate.smrtLinkVersion = smrtLinkVersions['1']
-        store.state.traction.pacbio.runCreate.run.plates = { 1: { plate_number: 1, wells: {} } }
+        store.state.traction.pacbio.runCreate.run.plates = { 1: newPlate(1) }
 
         wrapper = mount(PacbioRunWellEdit, {
           localVue,
@@ -232,7 +232,7 @@ describe('PacbioWellEdit', () => {
 
         store.state.traction.pacbio.runCreate.run.plates = {
           1: {
-            plate_number: 1,
+            ...newPlate(1),
             wells: {
               A1: newWell({ attributes: { id: 1 }, position: position }),
             },

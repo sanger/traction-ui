@@ -15,9 +15,6 @@ export default () => {
     // Run: The current run being edited or created
     run: {},
 
-    // Wells: The wells that belong to the run
-    // wells: {},
-
     //Pools: The pools that belong to the wells or the pool selected for a new run
     pools: {},
 
