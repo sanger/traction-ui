@@ -12,17 +12,9 @@ describe('Pacbio Run Edit view', () => {
     cy.intercept('/v1/pacbio/smrt_link_versions', {
       fixture: 'tractionPacbioSmrtLinkVersions.json',
     })
-
-    // Get the existing run to be edited
-    cy.intercept(
-      'v1/pacbio/runs/7?include=plates.wells.pools.tube,plates.wells.pools.libraries.tag,plates.wells.pools.libraries.request,smrt_link_version',
-      {
-        fixture: 'tractionPacbioRun.json',
-      },
-    )
   })
 
-  it('Updates a run successfully', () => {
+  it('Updates a Revio run successfully', () => {
     cy.intercept('PATCH', '/v1/pacbio/runs/7', {
       statusCode: 200,
       body: {
@@ -30,12 +22,50 @@ describe('Pacbio Run Edit view', () => {
       },
     })
 
+    // Get the existing revio run to be edited
+    cy.intercept(
+      'v1/pacbio/runs/7?include=plates.wells.pools.tube,plates.wells.pools.libraries.tag,plates.wells.pools.libraries.request,smrt_link_version',
+      {
+        fixture: 'tractionPacbioRevioRun.json',
+      },
+    )
+
     cy.visit('#/pacbio/runs')
     cy.get('#actions').within(() => {
       cy.get('#editRun-7').click()
     })
     cy.get('[data-attribute=pacbio-run-well]').first().click()
     cy.get('[data-attribute="movie-acquisition-time"]').select('24.0')
+    cy.get('[data-attribute="pre-extension-time"]').type('3')
+    cy.get('[data-attribute="include-base-kinetics"]').select('True')
+    cy.get('#update').click()
+    cy.get('button').contains('Update').click()
+    cy.contains('[data-type=run-create-message]', 'Run successfully updated')
+  })
+
+  it('Updates a Sequel IIe run successfully', () => {
+    cy.intercept('PATCH', '/v1/pacbio/runs/7', {
+      statusCode: 200,
+      body: {
+        data: {},
+      },
+    })
+
+    // Get the existing revio run to be edited
+    cy.intercept(
+      'v1/pacbio/runs/7?include=plates.wells.pools.tube,plates.wells.pools.libraries.tag,plates.wells.pools.libraries.request,smrt_link_version',
+      {
+        fixture: 'tractionPacbioSequelIIeRun.json',
+      },
+    )
+
+    cy.visit('#/pacbio/runs')
+    cy.get('#actions').within(() => {
+      cy.get('#editRun-7').click()
+    })
+    cy.get('[data-attribute=pacbio-run-well]').first().click()
+    cy.get('[data-attribute="movie-acquisition-time"]').select('24.0')
+    cy.get('[data-attribute="pre-extension-time"]').type('3')
     cy.get('[data-attribute="include-base-kinetics"]').select('True')
     cy.get('#update').click()
     cy.get('button').contains('Update').click()
@@ -43,6 +73,14 @@ describe('Pacbio Run Edit view', () => {
   })
 
   it('will not create a run if there is an error', () => {
+    // Get the existing revio run to be edited
+    cy.intercept(
+      'v1/pacbio/runs/7?include=plates.wells.pools.tube,plates.wells.pools.libraries.tag,plates.wells.pools.libraries.request,smrt_link_version',
+      {
+        fixture: 'tractionPacbioRevioRun.json',
+      },
+    )
+
     cy.intercept('PATCH', '/v1/pacbio/runs/7', {
       statusCode: 422,
       body: {
@@ -58,7 +96,7 @@ describe('Pacbio Run Edit view', () => {
     cy.get('#actions').within(() => {
       cy.get('#editRun-7').click()
     })
-    cy.get('[data-attribute="sequencing_kit_box_barcode"]').clear()
+    cy.get('[data-attribute="sequencing_kit_box_barcode-1"]').clear()
     cy.get('button').contains('Update').click()
     cy.contains(
       '[data-type=run-create-message]',

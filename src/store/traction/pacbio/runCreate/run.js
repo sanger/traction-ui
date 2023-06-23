@@ -1,12 +1,14 @@
 import Vue from 'vue'
 
 /**
- * @returns {Object} the default attributes for a plate
- * plate number and sequencing_kit_box_barcode to be later implemented
- **/
-const defaultPlateAttributes = () => {
+ *
+ * @param {String} plateNumber The number of the plate e.g. 1
+ * @returns {Object} A new plate
+ */
+const newPlate = (plateNumber) => {
   return {
-    sequencing_kit_box_barcode: null,
+    plate_number: plateNumber,
+    sequencing_kit_box_barcode: '',
     wells: {},
   }
 }
@@ -22,7 +24,10 @@ const runAttributes = {
   sequencing_kit_box_barcode: null,
   dna_control_complex_box_barcode: null,
   comments: null,
-  plates: [defaultPlateAttributes()],
+  plates: {
+    1: newPlate(1),
+    2: newPlate(2),
+  },
 }
 
 /*
@@ -121,7 +126,7 @@ const createWellPayload = (position, well) => {
   return well
 }
 
-const createPlatePayload = (plate, plateIndex) => {
+const createPlatePayload = (plate, plateNumber) => {
   const plateId = plate.id || ''
 
   const wells_attributes = Object.keys(plate.wells).map((position) => {
@@ -129,13 +134,15 @@ const createPlatePayload = (plate, plateIndex) => {
     return createWellPayload(position, well)
   })
 
-  const plateNumber = plateIndex + 1
+  // If there is no plate id and no wells then return null
+  if (!plateId && wells_attributes.length === 0) {
+    return null
+  }
 
   return {
     id: plateId,
     plate_number: plateNumber,
-    sequencing_kit_box_barcode:
-      plate.sequencing_kit_box_barcode || 'REMOVE ONCE IMPLEMENTED PLATE SKBB',
+    sequencing_kit_box_barcode: plate.sequencing_kit_box_barcode,
     wells_attributes: [...wells_attributes],
   }
 }
@@ -149,8 +156,8 @@ const createRunPayload = ({ id, run, smrtLinkVersion }) => {
   const plates = run.plates
   delete run.plates
 
-  const platesAttributes = plates.map((plate, plateIndex) => {
-    return createPlatePayload(plate, plateIndex)
+  const platesAttributes = Object.values(plates).map((plate) => {
+    return createPlatePayload(plate, plate.plate_number)
   })
 
   // Currently remove sequencing_kit_box_barcode from a run
@@ -234,8 +241,8 @@ export {
   validate,
   valid,
   defaultWellAttributes,
-  defaultPlateAttributes,
   newWell,
+  newPlate,
   createRunPayload,
   RunTypeEnum,
   createRunType,
