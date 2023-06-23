@@ -1,5 +1,11 @@
 {
   "include": ["src/**/*", "tailwind.config.js"],
   "exclude": ["node_modules", "build", "dist"],
-  "vueCompilerOptions": { "target": 2.7 }
+  "vueCompilerOptions": { "target": 2.7 },
+  "compilerOptions": {
+    "baseUrl": "./",
+    "paths": {
+      "@/*": ["src/*"]
+    }
+  }
 }

@@ -1,8 +1,11 @@
 <template>
   <div class="pacbioRunInfoEdit">
-    <fieldset>
-      <div class="grid grid-cols-2 px-2 pb-1 my-auto pt-1">
-        <label class="text-left" for="run-name">Run name:</label>
+    <traction-section title="Run Details">
+      <traction-field-group
+        label="Run Name"
+        for="run-name"
+        description="Auto-generated traction name"
+      >
         <traction-input
           id="run-name"
           v-model="runItem.name"
@@ -11,37 +14,34 @@
           type="text"
           disabled
         />
-      </div>
-      <div class="grid grid-cols-2 px-2 pb-1 my-auto">
-        <label class="text-left" for="sequencing-kit-box-barcode"
-          >Sequencing Kit Box Barcode:</label
-        >
+      </traction-field-group>
+
+      <traction-field-group label="Sequencing Kit Box Barcode" for="sequencing-kit-box-barcode">
         <traction-input
           id="sequencing-kit-box-barcode"
           v-model="runItem.sequencing_kit_box_barcode"
           :value="runItem.sequencing_kit_box_barcode"
           placeholder="Sequencing Kit Box Barcode"
           type="text"
-          classes="w-48"
           data-attribute="sequencing_kit_box_barcode"
         />
-      </div>
-      <div class="grid grid-cols-2 px-2 pb-1 my-auto">
-        <label class="text-left" for="dna-control-complex-box-barcode"
-          >DNA Control Complex Box Barcode:</label
-        >
+      </traction-field-group>
+
+      <traction-field-group
+        label="DNA Control Complex Box Barcode"
+        for="dna-control-complex-box-barcode"
+      >
         <traction-input
           id="dna-control-complex-box-barcode"
           v-model="runItem.dna_control_complex_box_barcode"
           :value="runItem.dna_control_complex_box_barcode"
           placeholder="DNA Control Complex Box Barcode"
           type="text"
-          classes="w-48"
           data-attribute="dna_control_complex_box_barcode"
         />
-      </div>
-      <div class="grid grid-cols-2 px-2 pb-2 my-auto">
-        <label class="text-left" for="system-name">System Name:</label>
+      </traction-field-group>
+
+      <traction-field-group label="System Name" for="system-name">
         <traction-select
           id="system-name"
           ref="systemName"
@@ -51,9 +51,9 @@
           :options="systemNameOptions"
           data-attribute="system_name"
         />
-      </div>
-      <div class="grid grid-cols-2 px-2 pb-1 my-auto">
-        <label class="text-left" for="smrt-link-version">SMRT Link Version:</label>
+      </traction-field-group>
+
+      <traction-field-group label="SMRT Link Version" for="smrt-link-version">
         <traction-select
           id="smrt-link-version"
           ref="smrtLinkVersion"
@@ -63,20 +63,19 @@
           data-attribute="smrt_link_version"
           @input="setSmrtLinkVersion"
         />
-      </div>
-      <div class="grid grid-cols-2 px-2 pb-1 my-auto">
-        <label class="text-left" for="comments">Comments:</label>
+      </traction-field-group>
+
+      <traction-field-group label="Comments" for="comments">
         <traction-input
           id="comments"
           v-model="runItem.comments"
           placeholder="Comments"
           type="text"
-          classes="w-48"
           data-attribute="comments"
           :value="runItem.comments"
         />
-      </div>
-    </fieldset>
+      </traction-field-group>
+    </traction-section>
   </div>
 </template>
 
@@ -119,14 +118,3 @@ export default {
   },
 }
 </script>
-
-<style>
-.pacbioRunInfoEdit {
-  border: solid;
-  border-width: 1px;
-  padding: 10px;
-}
-label {
-  font-size: 1em;
-}
-</style>

@@ -1,5 +1,5 @@
 <template>
-  <traction-field-group label="Library Type" label-for="library-type">
+  <traction-field-group label="Library Type" label-for="library-type" layout="spacious">
     <traction-select
       id="library-type"
       :value="libraryType"

@@ -1,55 +1,41 @@
 <template>
-  <g>
-    <defs>
-      <filter id="blurFilter">
-        <feGaussianBlur in="SourceGraphic" std-deviation="1" />
-      </filter>
-    </defs>
-    <ellipse
-      :class="[{ active: hover }, status]"
-      :cx="cx"
-      :cy="cy"
-      :rx="rx"
-      :ry="ry"
-      @drop="drop"
-      @dragover="allowDrop"
-      @dragleave="endDrop"
+  <div>
+    <div
+      :class="wellClassNames"
+      data-attribute="pacbio-run-well"
+      @mouseover.prevent="hover = true"
+      @mouseleave.prevent="hover = false"
+      @drop.prevent="drop"
+      @dragenter.prevent
+      @dragover.prevent="hover = true"
+      @dragleave.prevent="hover = false"
       @click="onClick"
     >
-      <title v-if="hasPools" v-text="tooltip"></title>
-    </ellipse>
-  </g>
+      <p class="truncate font-light">{{ position }}</p>
+    </div>
+    <span
+      v-if="hasPools && hover"
+      class="absolute z-1 bg-black text-white text-xs p-2 rounded"
+      data-attribute="tooltip"
+    >
+      {{ tooltip }}
+    </span>
+  </div>
 </template>
 
 <script>
 import { mapActions, mapMutations, mapGetters } from 'vuex'
 export default {
-  name: 'PacbioRunWellItem',
-
+  name: 'PacbioRunWell',
   props: {
-    row: {
+    position: {
       type: String,
       required: true,
     },
-    column: {
-      type: String,
+    interactive: {
+      type: Boolean,
       required: true,
-    },
-    cx: {
-      type: String,
-      required: true,
-    },
-    cy: {
-      type: String,
-      required: true,
-    },
-    rx: {
-      type: String,
-      required: true,
-    },
-    ry: {
-      type: String,
-      required: true,
+      default: true,
     },
   },
   data() {
@@ -64,8 +50,15 @@ export default {
       'pools',
       'smrtLinkVersion',
     ]),
-    position() {
-      return `${this.row}${this.column}`
+    wellClassNames() {
+      return [
+        this.status,
+        this.hover && this.interactive
+          ? 'ring ring-pink-600 ring-offset-1'
+          : 'border border-gray-800',
+        this.interactive ? 'cursor-pointer' : '',
+        'flex flex-col justify-center mx-auto rounded-full text-xs font-semibold aspect-square w-full select-none',
+      ]
     },
     required_metadata_fields() {
       if (this.smrtLinkVersion.name == 'v11') {
@@ -110,35 +103,25 @@ export default {
     },
     status() {
       if (this.hasPools && this.hasValidMetadata) {
-        return 'complete'
+        // Complete
+        return 'bg-green-400 text-white'
       } else if (this.hasPools || this.hasSomeMetadata) {
-        return 'filled'
-      } else {
-        return 'empty'
+        // Incomplete
+        return 'bg-red-400 text-white'
       }
+      // Empty
+      return 'bg-gray-100 text-black'
     },
   },
   methods: {
     ...mapActions('traction/pacbio/runCreate', ['getOrCreateWell']),
     ...mapMutations('traction/pacbio/runCreate', ['updateWell']),
-    alert(message, type) {
-      this.$emit('alert', message, type)
-    },
     onClick() {
       this.$emit('click', this.position)
     },
-    allowDrop(event) {
-      event.preventDefault()
-      this.hover = true
-    },
-    endDrop(event) {
-      event.preventDefault()
-      this.hover = false
-    },
     async drop(event) {
-      event.preventDefault()
-      await this.updatePoolBarcode(event.dataTransfer.getData('barcode'))
       this.hover = false
+      await this.updatePoolBarcode(event.dataTransfer.getData('barcode'))
     },
     // It looks like all actions are async even if they do nothing async
     async updatePoolBarcode(barcode) {
@@ -150,25 +133,3 @@ export default {
   },
 }
 </script>
-
-<style scoped lang="scss">
-ellipse {
-  transform: matrix(0.91863074, 0, 0, 0.92029059, 955.85411, 1007.3112);
-  stroke: #000000;
-  stroke: {
-    width: 1px;
-    linecap: round;
-    linejoin: round;
-  }
-}
-.complete {
-  fill: green;
-}
-.filled {
-  fill: red;
-}
-.active {
-  stroke: #ffffff;
-  filter: url(#blurFilter);
-}
-</style>
