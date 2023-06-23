@@ -27,13 +27,12 @@ describe('Pacbio Run Create view', () => {
     })
   })
 
-  it('Creates a run successfully - v11', () => {
+  it('Creates a Sequel IIe run successfully - v11', () => {
     const dataTransfer = new DataTransfer()
 
     // Checks the PacbioRunInfoEdit component
     cy.visit('#/pacbio/runs')
     cy.get('[data-action=new-run]').contains('New Run').click()
-    cy.get('[data-attribute="sequencing_kit_box_barcode"]').type('Lxxxxx101826100123199')
     cy.get('.pacbioRunInfoEdit')
       .get('[data-attribute="dna_control_complex_box_barcode"]')
       .type('Lxxxxx101717600123199')
@@ -44,6 +43,9 @@ describe('Pacbio Run Create view', () => {
     // Get the PacbioPoolList component, type in the barcode of the pool being searched, click search
     cy.get('#labware-finder-input').type('TRAC-2-2')
     cy.get('button').contains('Search').click()
+
+    // Add the plate metadata
+    cy.get('[data-attribute="sequencing_kit_box_barcode-1"]').type('Lxxxxx101826100123199')
 
     // Get the pool being searched
     cy.get('[data-attribute="selected-pool-list"]')
@@ -70,13 +72,12 @@ describe('Pacbio Run Create view', () => {
     cy.contains('[data-type=run-create-message]', 'Run successfully created')
   })
 
-  it('Creates a run successfully - v12', () => {
+  it('Creates a Revio run successfully - v12_revio', () => {
     const dataTransfer = new DataTransfer()
 
     // Checks the PacbioRunInfoEdit component
     cy.visit('#/pacbio/runs')
     cy.get('[data-action=new-run]').contains('New Run').click()
-    cy.get('[data-attribute="sequencing_kit_box_barcode"]').type('Lxxxxx101826100123199')
     cy.get('.pacbioRunInfoEdit')
       .get('[data-attribute="dna_control_complex_box_barcode"]')
       .type('Lxxxxx101717600123199')
@@ -88,13 +89,18 @@ describe('Pacbio Run Create view', () => {
     cy.get('#labware-finder-input').type('TRAC-2-2')
     cy.get('button').contains('Search').click()
 
+    // Add the plate metadata
+    cy.get('[data-attribute="sequencing_kit_box_barcode-1"]').type('Lxxxxx101826100123199')
     // Get the pool being searched
     cy.get('[data-attribute="selected-pool-list"]')
       // this obviously gets quite a lot into implementation but at least it works!
       .first()
       .trigger('dragstart', { dataTransfer: dataTransfer, force: true })
       .trigger('drag', { dataTransfer: dataTransfer, force: true })
-    cy.get('[data-attribute=pacbio-run-well]')
+    // Plate 1
+    cy.get('[data-attribute=pacbio-run-plate-1]')
+      .children()
+      .get('[data-attribute=pacbio-run-well]')
       .first()
       .trigger('drop', { dataTransfer: dataTransfer, force: true })
       .trigger('click')
@@ -103,13 +109,35 @@ describe('Pacbio Run Create view', () => {
     cy.get('[data-attribute="include-base-kinetics"]').select('True')
     cy.get('[data-attribute="polymerase-kit"]').type('12345')
     cy.get('[data-attribute="library-concentration"]').type('0.75')
-
     cy.get('#update').click()
+
+    // Add the plate metadata
+    cy.get('[data-attribute="sequencing_kit_box_barcode-2"]').type('Lxxxxx101826100123199')
+    // Get the pool being searched
+    cy.get('[data-attribute="selected-pool-list"]')
+      // this obviously gets quite a lot into implementation but at least it works!
+      .first()
+      .trigger('dragstart', { dataTransfer: dataTransfer, force: true })
+      .trigger('drag', { dataTransfer: dataTransfer, force: true })
+    // Plate 2
+    cy.get('[data-attribute=pacbio-run-plate-2]')
+      .children()
+      .get('[data-attribute=pacbio-run-well]')
+      .last()
+      .trigger('drop', { dataTransfer: dataTransfer, force: true })
+      .trigger('click')
+    cy.get('[data-attribute="movie-acquisition-time"]').select('24.0')
+    cy.get('[data-attribute="pre-extension-time"]').type('3')
+    cy.get('[data-attribute="include-base-kinetics"]').select('True')
+    cy.get('[data-attribute="polymerase-kit"]').type('12345')
+    cy.get('[data-attribute="library-concentration"]').type('0.75')
+    cy.get('#update').click()
+
     cy.get('button').contains('Create').click()
     cy.contains('[data-type=run-create-message]', 'Run successfully created')
   })
 
-  it('creates a run unsuccessfully', () => {
+  it('Creates a run unsuccessfully', () => {
     cy.intercept('POST', '/v1/pacbio/runs', {
       statusCode: 422,
       body: {
@@ -125,13 +153,15 @@ describe('Pacbio Run Create view', () => {
     // Checks the PacbioRunInfoEdit component
     cy.visit('#/pacbio/runs')
     cy.get('[data-action=new-run]').contains('New Run').click()
-    cy.get('[data-attribute="sequencing_kit_box_barcode"]').type('Lxxxxx101826100123199')
     cy.get('[data-attribute="dna_control_complex_box_barcode"]').type('Lxxxxx101717600123199')
     cy.get('[data-attribute="system_name"]').select('Sequel IIe')
 
     // Get the PacbioPoolList component, type in the barcode of the pool being searched, click search
     cy.get('#labware-finder-input').type('TRAC-2-2')
     cy.get('button').contains('Search').click()
+
+    // Add the plate metadata
+    cy.get('[data-attribute="sequencing_kit_box_barcode-1"]').type('Lxxxxx101826100123199')
 
     // Get the pool being searched
     cy.get('[data-attribute="selected-pool-list"]')
@@ -149,50 +179,47 @@ describe('Pacbio Run Create view', () => {
     )
   })
 
-  // need to work out why it can't find binding kit box barcode
-  it.skip('allows for the selection of well defaults', () => {
+  it('Allows for the selection of well defaults', () => {
     cy.intercept('/v1/pacbio/runs/wells', {
       statusCode: 201,
       body: { data: {} },
     })
-    const dataTransfer = new DataTransfer()
 
     cy.visit('#/pacbio/runs')
     cy.get('[data-action=new-run]').contains('New Run').click()
-    cy.get('#sequencing-kit-box-barcode').type('Lxxxxx101826100123199')
     cy.get('.pacbioRunInfoEdit')
       .get('#dna-control-complex-box-barcode')
       .type('Lxxxxx101717600123199')
     cy.get('#system-name').select('Sequel IIe')
-    cy.get('[data-attribute="smrt-link-version"]').select('v11')
+    cy.get('[data-attribute="smrt_link_version"]').select('v11')
 
-    cy.get('.pacbioRunWellDefaultEdit').within(() => {
-      cy.get('[data-attribute="default-movie-time"]').select('15.0')
-      cy.get('[data-attribute="default-generate-hifi"]').select('Do Not Generate')
-      cy.get('[data-attribute="default-binding-kit-box-barcode"]').type('12345')
-      cy.get('[data-attribute="default-loading-target-p1-plus-p2"]').type('0.75')
-      cy.get('[data-attribute="default-pre-extension-time"]').clear()
-      cy.get('[data-attribute="default-pre-extension-time"]').type(3)
-    })
+    // Set the default values
+    cy.get('[data-attribute="default-movie-time"]').select('15.0')
+    cy.get('[data-attribute="default-pre-extension-time"]').clear().type(3)
+    cy.get('[data-attribute="default-loading-target-p1-plus-p2"]').clear().type('0.75')
+    cy.get('[data-attribute="default-binding-kit-box-barcode"]').type('12345')
+    cy.get('[data-attribute="default-ccs-analysis-output-include-kinetics-information"]').select(
+      'Yes',
+    )
+    cy.get('[data-attribute="default-ccs-analysis-output-include-low-quality-reads"]').select('Yes')
+    cy.get('[data-attribute="default-demultiplex-barcodes"]').select('Do Not Generate')
+    cy.get('[data-attribute="default-include-fivemc-calls-in-cpg-motifs"]').select('No')
 
-    // TODO: calling it  list group item is not specific enough
-    cy.get('[data-attribute="selected-pool-list"]')
-      // this obviously gets quite a lot into implementation but at least it works!
-      .first()
-      .trigger('dragstart', { dataTransfer: dataTransfer, force: true })
-      .trigger('drag', { dataTransfer: dataTransfer, force: true })
-    cy.get('[data-attribute=pacbio-run-well]')
-      .first()
-      .trigger('drop', { dataTransfer: dataTransfer, force: true })
-      .trigger('click')
+    // Add the plate metadata
+    cy.get('[data-attribute="sequencing_kit_box_barcode-1"]').type('Lxxxxx101826100123199')
 
-    cy.get('.modal-body').within(() => {
+    // Click the first well
+    cy.get('[data-attribute=pacbio-run-well]').first().trigger('click')
+
+    cy.get('.modal').within(() => {
       cy.get('[data-attribute="movie-time"]').contains('15.0')
-      cy.get('[data-attribute="generate-hifi"]').contains('Do Not Generate')
-      cy.get('[data-attribute="binding-kit-box-barcode"]').should('contain', '12345')
-      cy.get('[data-attribute="pre-extension-time"]').contains('3')
-
-      cy.get('[data-attribute="loading-target-p1-plus-p2"]').contains('0.75')
+      cy.get('[data-attribute="binding-kit-box-barcode"]').should('have.value', '12345')
+      cy.get('[data-attribute="pre-extension-time"]').should('have.value', '3')
+      cy.get('[data-attribute="loading-target-p1-plus-p2"]').should('have.value', '0.75')
+      cy.get('[data-attribute="ccs-analysis-output-include-kinetics-information"]').contains('Yes')
+      cy.get('[data-attribute="ccs-analysis-output-include-low-quality-reads"]').contains('Yes')
+      cy.get('[data-attribute="demultiplex-barcodes"]').contains('Do Not Generate')
+      cy.get('[data-attribute="include-fivemc-calls-in-cpg-motifs"]').contains('No')
     })
   })
 })

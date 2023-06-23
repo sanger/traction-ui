@@ -46,7 +46,8 @@
           "self": "http://localhost:3100/v1/pacbio/runs/plates/5"
         },
         "attributes": {
-          "pacbio_run_id": 5
+          "pacbio_run_id": 5,
+          "plate_number": 1
         },
         "relationships": {
           "wells": {
@@ -66,7 +67,8 @@
           "self": "http://localhost:3100/v1/pacbio/runs/plates/6"
         },
         "attributes": {
-          "pacbio_run_id": 5
+          "pacbio_run_id": 5,
+          "plate_number": 2
         },
         "relationships": {
           "wells": {

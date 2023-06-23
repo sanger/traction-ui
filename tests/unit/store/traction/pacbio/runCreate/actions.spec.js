@@ -3,12 +3,12 @@ import actions from '@/store/traction/pacbio/runCreate/actions'
 import { describe, expect, it } from 'vitest'
 import {
   newRun,
+  newPlate,
   newWell,
   createRunType,
   newRunType,
   existingRunType,
   defaultWellAttributes,
-  defaultPlateAttributes,
 } from '@/store/traction/pacbio/runCreate/run'
 
 const failedResponse = {
@@ -28,7 +28,7 @@ const defaultSmrtLinkVersion = {
   default: true,
 }
 
-const PLATE_INDEX = 0
+const PLATE_NUMBER = 1
 
 describe('actions.js', () => {
   const {
@@ -82,18 +82,23 @@ describe('actions.js', () => {
       let idx = 0
 
       // first payload
+      expect(includedData[idx].type).toBe('plates')
       const plateInfo5 = {
         id: includedData[idx].id,
+        plate_number: includedData[idx].attributes.plate_number,
         wells: includedData[idx].relationships.wells.data.map((w) => w.id),
       }
 
       idx += 1 // next payload
+      expect(includedData[idx].type).toBe('plates')
       const plateInfo6 = {
         id: includedData[idx].id,
+        plate_number: includedData[idx].attributes.plate_number,
         wells: includedData[idx].relationships.wells.data.map((w) => w.id),
       }
 
       idx += 1 // next payload
+      expect(includedData[idx].type).toBe('wells')
       const wellInfo5 = {
         id: includedData[idx].id,
         type: includedData[idx].type,
@@ -103,6 +108,7 @@ describe('actions.js', () => {
       }
 
       idx += 1 // next payload
+      expect(includedData[idx].type).toBe('wells')
       const wellInfo6 = {
         id: includedData[idx].id,
         type: includedData[idx].type,
@@ -112,6 +118,7 @@ describe('actions.js', () => {
       }
 
       idx += 1 // next payload
+      expect(includedData[idx].type).toBe('wells')
       const wellInfo7 = {
         id: includedData[idx].id,
         type: includedData[idx].type,
@@ -120,29 +127,44 @@ describe('actions.js', () => {
         pools: ['1'],
       }
 
-      const plateData = [
-        { id: plateInfo5.id, pacbio_run_id: 5, wells: { A2: wellInfo5 } },
-        { id: plateInfo6.id, pacbio_run_id: 5, wells: { A3: wellInfo6, A4: wellInfo7 } },
-      ]
+      const plateData = {
+        1: {
+          id: plateInfo5.id,
+          plate_number: plateInfo5.plate_number,
+          pacbio_run_id: 5,
+          wells: { A2: wellInfo5 },
+        },
+        2: {
+          id: plateInfo6.id,
+          plate_number: plateInfo6.plate_number,
+          pacbio_run_id: 5,
+          wells: { A3: wellInfo6, A4: wellInfo7 },
+        },
+      }
+
       const runInfo = {
         id: runData.id,
         attributes: runData.attributes,
         plates: plateData,
       }
 
-      expect(commit).toHaveBeenCalledWith('populateRun', runInfo)
-      expect(commit).toHaveBeenCalledWith('populatePools', [includedData[++idx]])
-      expect(commit).toHaveBeenCalledWith('setTubes', [includedData[++idx]])
-      expect(commit).toHaveBeenCalledWith('setLibraries', [includedData[++idx]])
-      expect(commit).toHaveBeenCalledWith('setTags', [includedData[++idx]])
-      expect(commit).toHaveBeenCalledWith('setRequests', [includedData[++idx]])
+      // note: order of commit calls does not match order of includedData payloads
+      let call_num = 0
+      expect(commit).toHaveBeenNthCalledWith(++call_num, 'populateRun', runInfo)
+      expect(commit).toHaveBeenNthCalledWith(++call_num, 'populatePools', [includedData[++idx]])
+      expect(commit).toHaveBeenNthCalledWith(++call_num + 3, 'setTubes', [includedData[++idx]])
+      expect(commit).toHaveBeenNthCalledWith(++call_num - 1, 'setLibraries', [includedData[++idx]])
+      expect(commit).toHaveBeenNthCalledWith(++call_num - 1, 'setTags', [includedData[++idx]])
+      expect(commit).toHaveBeenNthCalledWith(++call_num - 1, 'setRequests', [includedData[++idx]])
+
       idx += 1 // next payload
+      expect(includedData[idx].type).toBe('smrt_link_versions')
       const smrtLinkVersion = {
         id: includedData[idx].id,
         type: includedData[idx].type,
         ...includedData[idx].attributes,
       }
-      expect(commit).toHaveBeenCalledWith('populateSmrtLinkVersion', smrtLinkVersion)
+      expect(commit).toHaveBeenNthCalledWith(++call_num, 'populateSmrtLinkVersion', smrtLinkVersion)
       expect(success).toBeTruthy()
     })
 
@@ -294,13 +316,17 @@ describe('actions.js', () => {
   describe('getOrCreateWell', () => {
     it('if it is a new well', () => {
       const state = {
-        run: { plates: [defaultPlateAttributes(1)] },
+        run: {
+          plates: {
+            1: newPlate(1),
+          },
+        },
         defaultWellAttributes: { ...defaultWellAttributes() },
       }
 
       const position = 'A1'
 
-      const well = getOrCreateWell({ state }, { position, plateIndex: PLATE_INDEX })
+      const well = getOrCreateWell({ state }, { position, plateNumber: PLATE_NUMBER })
       expect(well).toEqual(newWell({ position, ...state.defaultWellAttributes }))
     })
 
@@ -309,11 +335,14 @@ describe('actions.js', () => {
       const well = newWell({ position })
 
       const state = {
-        run: { plates: [{ wells: { [position]: well } }] },
+        run: { plates: { 1: { ...newPlate(1), wells: { [position]: well } } } },
         defaultWellAttributes: { ...defaultWellAttributes() },
       }
 
-      const gottenWell = getOrCreateWell({ state }, { position: position, plateIndex: PLATE_INDEX })
+      const gottenWell = getOrCreateWell(
+        { state },
+        { position: position, plateNumber: PLATE_NUMBER },
+      )
       expect(gottenWell).toEqual(well)
     })
   })
@@ -322,8 +351,8 @@ describe('actions.js', () => {
     it('updates the well', () => {
       const well = { position: 'A1', row: 'A', column: '1' }
       const commit = vi.fn()
-      updateWell({ commit }, { well: well, plateIndex: PLATE_INDEX })
-      expect(commit).toHaveBeenCalledWith('updateWell', { well: well, plateIndex: PLATE_INDEX })
+      updateWell({ commit }, { well: well, plateNumber: PLATE_NUMBER })
+      expect(commit).toHaveBeenCalledWith('updateWell', { well: well, plateNumber: PLATE_NUMBER })
     })
   })
 

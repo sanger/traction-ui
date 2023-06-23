@@ -1,6 +1,7 @@
 import PacbioRunWell from '@/components/labware/PacbioRunWell'
 import { localVue, mount, store } from '@support/testHelper'
 import storePools from '@tests/data/StorePools'
+import { newPlate } from '@/store/traction/pacbio/runCreate/run'
 
 describe('PacbioRunWell.vue', () => {
   let well, wrapper, props, storeWell, smrtLinkVersion
@@ -10,11 +11,10 @@ describe('PacbioRunWell.vue', () => {
     2: { id: 2, name: 'v12_revio', default: false },
   }
 
-  const PLATE_INDEX = 0
-
   beforeEach(() => {
     props = {
       position: 'A1',
+      plateNumber: 1,
       interactive: true,
     }
 
@@ -34,7 +34,7 @@ describe('PacbioRunWell.vue', () => {
     }
 
     store.state.traction.pacbio.runCreate = {
-      run: { plates: [{ wells: { A1: storeWell } }] },
+      run: { plates: { 1: { ...newPlate(1), wells: { A1: storeWell } } } },
       ...storePools,
       smrtLinkVersion,
       resources: { smrtLinkVersions },
@@ -64,7 +64,7 @@ describe('PacbioRunWell.vue', () => {
     describe('for smrtlink v11', () => {
       it('will be valid if it is complete', () => {
         const well = wrapper.find('[data-attribute=pacbio-run-well]')
-        expect(well.attributes('class')).toContain('bg-green-200 text-black')
+        expect(well.attributes('class')).toContain('bg-green-400 text-white')
       })
 
       it('will be invalid if there is any missing meta data', () => {
@@ -78,7 +78,7 @@ describe('PacbioRunWell.vue', () => {
           },
         })
         const well = wrapper.find('[data-attribute=pacbio-run-well]')
-        expect(well.attributes('class')).toContain('bg-red-200 text-black')
+        expect(well.attributes('class')).toContain('bg-red-400 text-white')
       })
 
       it('will be invalid if there are no pools in the store', () => {
@@ -92,7 +92,7 @@ describe('PacbioRunWell.vue', () => {
           },
         })
         const well = wrapper.find('[data-attribute=pacbio-run-well]')
-        expect(well.attributes('class')).toContain('bg-red-200 text-black')
+        expect(well.attributes('class')).toContain('bg-red-400 text-white')
       })
 
       it('will be valid if all required metadata is present', () => {
@@ -105,7 +105,7 @@ describe('PacbioRunWell.vue', () => {
           },
         })
         const well = wrapper.find('[data-attribute=pacbio-run-well]')
-        expect(well.attributes('class')).toContain('bg-green-200 text-black')
+        expect(well.attributes('class')).toContain('bg-green-400 text-white')
       })
 
       it('will be empty if there are no pools or metadata', () => {
@@ -147,7 +147,7 @@ describe('PacbioRunWell.vue', () => {
         })
 
         const well = wrapper.find('[data-attribute=pacbio-run-well]')
-        expect(well.attributes('class')).toContain('bg-green-200 text-black')
+        expect(well.attributes('class')).toContain('bg-green-400 text-white')
       })
 
       it('will be invalid if there is any missing meta data', () => {
@@ -161,7 +161,7 @@ describe('PacbioRunWell.vue', () => {
           },
         })
         const well = wrapper.find('[data-attribute=pacbio-run-well]')
-        expect(well.attributes('class')).toContain('bg-red-200 text-black')
+        expect(well.attributes('class')).toContain('bg-red-400 text-white')
       })
 
       it('will be invalid if there are no pools in the store', () => {
@@ -175,7 +175,7 @@ describe('PacbioRunWell.vue', () => {
           },
         })
         const well = wrapper.find('[data-attribute=pacbio-run-well]')
-        expect(well.attributes('class')).toContain('bg-red-200 text-black')
+        expect(well.attributes('class')).toContain('bg-red-400 text-white')
       })
 
       it('will be valid if all required metadata is present', () => {
@@ -188,7 +188,7 @@ describe('PacbioRunWell.vue', () => {
           },
         })
         const well = wrapper.find('[data-attribute=pacbio-run-well]')
-        expect(well.attributes('class')).toContain('bg-green-200 text-black')
+        expect(well.attributes('class')).toContain('bg-green-400 text-white')
       })
 
       it('will be empty if there are no pools or metadata', () => {
@@ -224,7 +224,10 @@ describe('PacbioRunWell.vue', () => {
       expectedWell.pools.push('1')
 
       await wrapper.vm.updatePoolBarcode(newBarcode)
-      expect(wrapper.vm.updateWell).toBeCalledWith({ well: expectedWell, plateIndex: PLATE_INDEX })
+      expect(wrapper.vm.updateWell).toBeCalledWith({
+        well: expectedWell,
+        plateNumber: props.plateNumber,
+      })
     })
   })
 

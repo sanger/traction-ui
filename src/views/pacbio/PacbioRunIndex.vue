@@ -8,9 +8,8 @@
         class="float-left"
         theme="create"
         @click="redirectToRun()"
+        >New Run</traction-button
       >
-        New Run
-      </traction-button>
       <traction-pagination
         v-model="currentPage"
         class="float-right"
@@ -18,8 +17,7 @@
         :per-page="perPage"
         aria-controls="run-index"
         @input="onPageChange($event)"
-      >
-      </traction-pagination>
+      ></traction-pagination>
     </div>
 
     <traction-table
@@ -39,9 +37,8 @@
           class="mr-1"
           :disabled="row.item.state !== 'pending'"
           @click="updateRunState('started', row.item.id)"
+          >Start</traction-button
         >
-          Start
-        </traction-button>
 
         <traction-button
           :id="generateId('completeRun', row.item.id)"
@@ -50,9 +47,8 @@
           class="mr-1"
           :disabled="isRunDisabled(row.item)"
           @click="updateRunState('completed', row.item.id)"
+          >Complete</traction-button
         >
-          Complete
-        </traction-button>
 
         <traction-button
           :id="generateId('cancelRun', row.item.id)"
@@ -61,9 +57,8 @@
           class="mr-1"
           :disabled="isRunDisabled(row.item)"
           @click="updateRunState('cancelled', row.item.id)"
+          >Cancel</traction-button
         >
-          Cancel
-        </traction-button>
 
         <traction-button
           :id="generateId('editRun', row.item.id)"
@@ -71,17 +66,15 @@
           size="sm"
           class="mr-1"
           @click="redirectToRun(row.item.id)"
+          >Edit</traction-button
         >
-          Edit
-        </traction-button>
 
         <a
           :id="generateId('generate-sample-sheet', row.item.id)"
           :href="generateSampleSheetPath(row.item.id)"
           class="text-primary"
+          >Generate Sample Sheet</a
         >
-          Generate Sample Sheet
-        </a>
       </template>
     </traction-table>
   </DataFetcher>
@@ -107,16 +100,17 @@ export default {
         { key: 'name', label: 'Name', sortable: true },
         { key: 'state', label: 'State', sortable: true },
         {
-          key: 'sequencing_kit_box_barcode',
-          label: 'Sequencing Kit BB',
-          sortable: true,
-        },
-        {
           key: 'dna_control_complex_box_barcode',
           label: 'DNA Control Complex BB',
           sortable: true,
         },
-        { key: 'system_name', label: 'System Name', sortable: true },
+        {
+          key: 'sequencing_kit_box_barcodes',
+          label: 'Sequencing Kit BB',
+          sortable: true,
+          tdClass: 'sequencing-kit-box-barcodes',
+        },
+        { key: 'system_name', label: 'System Name', sortable: true, tdClass: 'system-name' },
         { key: 'created_at', label: 'Created at', sortable: true },
         { key: 'actions', label: 'Actions' },
       ],

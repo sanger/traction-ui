@@ -143,7 +143,7 @@ const extractRelationships = (relationships, included, includeStore = {}) => {
 }
 
 const extractPlateData = (plates, wells) => {
-  return plates.map((plate) => {
+  return plates.reduce((result, plate) => {
     // Get the wells for the given plate
     const wellIds = plate.relationships.wells.data.map((w) => w.id)
     const plateWells = wells.filter((well) => wellIds.includes(well.id))
@@ -152,11 +152,14 @@ const extractPlateData = (plates, wells) => {
     const wellsData = dataToObjectByPosition({ data: plateWells, includeRelationships: true })
 
     return {
-      id: plate.id,
-      ...plate.attributes,
-      wells: wellsData,
+      [plate.attributes.plate_number]: {
+        id: plate.id,
+        ...plate.attributes,
+        wells: wellsData,
+      },
+      ...result,
     }
-  })
+  }, {})
 }
 
 const extractResourceObject = (data, included, includeStore = {}) => {
