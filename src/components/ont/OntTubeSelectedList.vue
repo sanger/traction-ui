@@ -3,10 +3,7 @@
     <traction-section number="2b" title="Selected Tubes">
       <traction-table
         :items="selectedTubeRequests"
-        show-empty
-        small
         :fields="requestFields"
-        :tbody-tr-class="rowClass"
         empty-text="No tubes selected"
         @row-clicked="requestClicked"
       >

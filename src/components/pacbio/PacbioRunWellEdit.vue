@@ -173,17 +173,9 @@ export default {
       // We also need to setup the well here in case state has updated since
       await this.setupWell()
       this.isShow = true
-      /**This need to be removed when custom_enable_modal feature flag is removed */
-      if ('b-modal' in this.$refs['well-modal'].$refs) {
-        this.$refs['well-modal'].$refs['b-modal'].show()
-      }
     },
     hide() {
       this.isShow = false
-      /**This need to be removed when custom_enable_modal feature flag is removed */
-      if ('b-modal' in this.$refs['well-modal'].$refs) {
-        this.$refs['well-modal'].$refs['b-modal'].hide()
-      }
     },
     async update() {
       this.removeInvalidPools()

@@ -15,24 +15,16 @@
 
     <traction-table
       id="pool-index"
-      show-empty
-      responsive
       :items="tableData"
       :fields="fields"
-      :filter="filter"
-      :per-page="perPage"
-      :current-page="currentPage"
       :sort-by.sync="sortBy"
-      :sort-desc.sync="sortDesc"
-      hover
       selectable
       select-mode="multi"
-      tbody-tr-class="pool"
       @filtered="onFiltered"
       @row-selected="onRowSelected"
     >
-      <template #cell(selected)="{ rowSelected }">
-        <template v-if="rowSelected">
+      <template #cell(selected)="{ selected }">
+        <template v-if="selected">
           <span>&check;</span>
           <span class="sr-only">Selected</span>
         </template>
@@ -67,15 +59,7 @@
 
       <template #row-details="row">
         <div>
-          <traction-table
-            small
-            bordered
-            show-empty
-            :items="row.item.libraries"
-            :fields="field_in_details"
-            :filter="filter"
-          >
-          </traction-table>
+          <traction-table :items="row.item.libraries" :fields="field_in_details"> </traction-table>
         </div>
       </template>
     </traction-table>
@@ -112,20 +96,19 @@ export default {
     return {
       fields: [
         { key: 'selected', label: '\u2713' },
-        { key: 'id', label: 'Pool ID', sortable: true, tdClass: 'pool-id' },
-        { key: 'barcode', label: 'Barcode', sortable: true, tdClass: 'barcode' },
-        { key: 'source_identifier', label: 'Source', sortable: true, tdClass: 'source-identifier' },
-        { key: 'volume', label: 'Volume', sortable: true, tdClass: 'volume' },
-        { key: 'concentration', label: 'Concentration', sortable: true, tdClass: 'concentration' },
-        { key: 'kit_barcode', label: 'Kit Barcode', sortable: true, tdClass: 'kit-barcode' },
-        { key: 'insert_size', label: 'Insert Size', sortable: true, tdClass: 'insert-size' },
+        { key: 'id', label: 'Pool ID', sortable: true },
+        { key: 'barcode', label: 'Barcode', sortable: true },
+        { key: 'source_identifier', label: 'Source', sortable: true },
+        { key: 'volume', label: 'Volume', sortable: true },
+        { key: 'concentration', label: 'Concentration', sortable: true },
+        { key: 'kit_barcode', label: 'Kit Barcode', sortable: true },
+        { key: 'insert_size', label: 'Insert Size', sortable: true },
         {
           key: 'final_library_amount',
           label: 'Final Library Amount',
           sortable: true,
-          tdClass: 'final-library-amount',
         },
-        { key: 'created_at', label: 'Created at', sortable: true, tdClass: 'created-at' },
+        { key: 'created_at', label: 'Created at', sortable: true },
         { key: 'actions', label: 'Actions' },
         { key: 'show_details', label: '' },
       ],

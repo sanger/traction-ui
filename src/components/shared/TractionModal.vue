@@ -12,14 +12,7 @@
    -->
 
 <template>
-  <flagged-feature name="enable_custom_modal">
-    <template #disabled>
-      <b-modal v-bind="$attrs" ref="b-modal" :title="title" v-on="$listeners" @close="close">
-        <template v-for="(_, slot) of $scopedSlots" #[slot]="scope"
-          ><slot :name="slot" v-bind="scope"
-        /></template>
-      </b-modal>
-    </template>
+  <div class="contents">
     <div v-if="display">
       <!-- overlay -->
       <div
@@ -59,13 +52,12 @@
         </div>
       </div>
     </div>
-  </flagged-feature>
+    <div v-else></div>
+  </div>
 </template>
 <script>
-import { BModal } from 'bootstrap-vue'
 export default {
   name: 'TractionModal',
-  components: { BModal },
   inheritAttrs: false,
   props: {
     /**Prop to make the dialog visible or not */

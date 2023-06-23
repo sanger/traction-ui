@@ -19,16 +19,9 @@
 
     <traction-table
       id="runs-table"
-      hover
-      responsive
-      show-empty
       :items="tableData"
       :fields="fields"
-      :filter="filter"
       :sort-by.sync="sortBy"
-      :sort-desc.sync="sortDesc"
-      :per-page="perPage"
-      :current-page="currentPage"
       @filtered="onFiltered"
     >
       <template #cell(chip_barcode)="row">

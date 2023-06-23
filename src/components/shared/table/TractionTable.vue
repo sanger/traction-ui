@@ -40,108 +40,88 @@
 -->
 
 <template>
-  <flagged-feature name="enable_custom_table">
-    <template #disabled>
-      <b-table-wrapper
-        :fields="fields"
-        :items="items"
-        :selectable="selectable"
-        :select-mode="selectMode"
-        :primary-key="primaryKey"
-        :simple="simple"
-        :empty-text="emptyText"
-        :tbody-tr-class="tbodyTrClass"
-        @row-selected="onRowSelection"
-        @row-clicked="onRowClicked"
-      >
-        <template v-for="(_, slot) of $scopedSlots" #[slot]="scope"
-          ><slot :name="slot" v-bind="scope" /></template
-      ></b-table-wrapper>
-    </template>
-    <div class="flex">
-      <div class="flex w-full py-2 align-middle inline-block min-w-full">
-        <div class="flex flex-col w-full sm:rounded-lg">
-          <table
-            v-bind="$attrs"
-            class="w-full divide-y divide-gray-100 table-auto text-sm"
-            data-attribute="dataAttribute"
-          >
-            <thead>
-              <traction-table-row>
-                <th
-                  v-for="(field, fieldIndex) in fields"
-                  :key="fieldKey(field, fieldIndex)"
-                  class="px-2 py-4 bg-gray-50 content-center select-none"
-                >
-                  <div class="flex justify-center font-medium text-gray-600 text-sm">
-                    <div class="py-2" :data-testid="`header-div-${fieldIndex}`">
-                      {{ fieldText(field) }}
-                    </div>
-                    <traction-button
-                      v-if="field.sortable"
-                      :data-testid="`${field.key}-sort-button`"
-                      theme="sort"
-                      :size="'sm'"
-                      :classes="'bg-gray-50'"
-                      @click="sortButtonClick(field.key, fieldIndex)"
-                    >
-                      <traction-sort-icon :direction="sortDirection(field.key)" />
-                    </traction-button>
+  <div class="flex">
+    <div class="flex w-full py-2 align-middle inline-block min-w-full">
+      <div class="flex flex-col w-full sm:rounded-lg">
+        <table
+          v-bind="$attrs"
+          class="w-full divide-y divide-gray-100 table-auto text-sm"
+          data-attribute="dataAttribute"
+        >
+          <thead>
+            <traction-table-row>
+              <th
+                v-for="(field, fieldIndex) in fields"
+                :key="fieldKey(field, fieldIndex)"
+                class="px-2 py-4 bg-gray-50 content-center select-none"
+              >
+                <div class="flex justify-center font-medium text-gray-600 text-sm">
+                  <div class="py-2" :data-testid="`header-div-${fieldIndex}`">
+                    {{ fieldText(field) }}
                   </div>
-                </th>
-              </traction-table-row>
-            </thead>
-            <tbody class="bg-white divide-y divide-gray-200">
-              <template v-if="simple"><slot /></template>
-              <template v-else>
-                <template v-for="(row, rowIndex) in rows">
-                  <traction-table-row
-                    v-if="row"
-                    :key="rowIndex"
-                    :class="`${selectable ? 'hover:bg-gray-200 cursor-pointer' : ''}`"
+                  <traction-button
+                    v-if="field.sortable"
+                    :data-testid="`${field.key}-sort-button`"
+                    theme="sort"
+                    :size="'sm'"
+                    :classes="'bg-gray-50'"
+                    @click="sortButtonClick(field.key, fieldIndex)"
                   >
-                    <template v-for="(field, fieldIndex) in fields">
-                      <traction-table-column
-                        v-if="field"
-                        :id="field.key"
-                        :key="`custom-${rowIndex}-${fieldIndex}`"
-                        :classes="`border-2 border-gray-100 ${backgroundColor(row)}`"
-                        @click="onRowClick($event, row)"
+                    <traction-sort-icon :direction="sortDirection(field.key)" />
+                  </traction-button>
+                </div>
+              </th>
+            </traction-table-row>
+          </thead>
+          <tbody class="bg-white divide-y divide-gray-200">
+            <template v-if="simple"><slot /></template>
+            <template v-else>
+              <template v-for="(row, rowIndex) in rows">
+                <traction-table-row
+                  v-if="row"
+                  :key="rowIndex"
+                  :class="`${selectable ? 'hover:bg-gray-200 cursor-pointer' : ''}`"
+                >
+                  <template v-for="(field, fieldIndex) in fields">
+                    <traction-table-column
+                      v-if="field"
+                      :id="field.key"
+                      :key="`custom-${rowIndex}-${fieldIndex}`"
+                      :classes="`border-2 border-gray-100 ${backgroundColor(row)}`"
+                      @click="onRowClick($event, row)"
+                    >
+                      <slot :name="`cell(${field.key})`" v-bind="row">
+                        {{ text(row.item, field) }}</slot
                       >
-                        <slot :name="`cell(${field.key})`" v-bind="row">
-                          {{ text(row.item, field) }}</slot
-                        >
-                      </traction-table-column>
-                    </template>
-                  </traction-table-row>
-                  <traction-table-row v-if="row.detailsShowing" :key="'custom-comp' + rowIndex">
-                    <traction-table-column :classes="`border-0`" :colspan="fields.length">
-                      <slot :name="`row-details`" v-bind="row" />
                     </traction-table-column>
-                  </traction-table-row>
-                </template>
+                  </template>
+                </traction-table-row>
+                <traction-table-row v-if="row.detailsShowing" :key="'custom-comp' + rowIndex">
+                  <traction-table-column :classes="`border-0`" :colspan="fields.length">
+                    <slot :name="`row-details`" v-bind="row" />
+                  </traction-table-column>
+                </traction-table-row>
               </template>
-            </tbody>
-          </table>
-          <template v-if="rows.length == 0 && !simple">
-            <div class="text-md mt-8 whitespace-nowrap" data-testid="empty-text">
-              {{ emptyText }}
-            </div>
-          </template>
-        </div>
+            </template>
+          </tbody>
+        </table>
+        <template v-if="rows.length == 0 && !simple">
+          <div class="text-md mt-8 whitespace-nowrap" data-testid="empty-text">
+            {{ emptyText }}
+          </div>
+        </template>
       </div>
     </div>
-  </flagged-feature>
+  </div>
 </template>
 <script>
 import TractionSortIcon from '@/components/shared/icons/TractionSortIcon'
-import BTableWrapper from '@/components/shared/table/BTableWrapper'
 import { alphaNumericSortDefault, flattenObject } from '@/lib/DataHelpers'
 import { within } from '@/lib/propValidations'
 
 export default {
   name: 'TractionTable',
-  components: { TractionSortIcon, BTableWrapper },
+  components: { TractionSortIcon },
   inheritAttrs: false,
   props: {
     //attribute name to represent this component for testing, if given
@@ -389,11 +369,7 @@ export default {
         ? field
         : ''
     },
-    /** This can be removed once we remove bootstrap table
-     * This is for Bootstrap row selection which needs a re-emission which failed to work otherwise  */
-    onRowSelection(value) {
-      this.$emit('row-selected', value)
-    },
+    /**Callback when a row is clicked */
     onRowClicked(value) {
       this.$emit('row-clicked', value)
     },
