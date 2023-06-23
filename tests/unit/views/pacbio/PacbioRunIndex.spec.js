@@ -24,6 +24,14 @@ describe('Runs.vue', () => {
     it('contains the correct data', async () => {
       expect(wrapper.find('tbody').findAll('tr').length).toEqual(6)
     })
+
+    it('contains the correct run skbb information', () => {
+      const run2skbb = wrapper.find('tbody').findAll('tr').at(0).findAll('td').at(4).text()
+      expect(run2skbb).toEqual('Plate 1: SKBB 2')
+
+      const run6skbb = wrapper.find('tbody').findAll('tr').at(5).findAll('td').at(4).text()
+      expect(run6skbb).toEqual('Plate 1: SKBB 6, Plate 2: SKBB 7')
+    })
   })
 
   describe('new run button', () => {
