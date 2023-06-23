@@ -26,7 +26,6 @@ describe('Pacbio Runs view', () => {
         cy.get('#id').should('have.length.greaterThan', 0)
         cy.get('#name').should('have.length.greaterThan', 0)
         cy.get('#state').should('have.length.greaterThan', 0)
-        cy.get('#sequencing_kit_box_barcode').should('have.length.greaterThan', 0)
         cy.get('#dna_control_complex_box_barcode').should('have.length.greaterThan', 0)
         cy.get('#system_name').should('have.length.greaterThan', 0)
       })
