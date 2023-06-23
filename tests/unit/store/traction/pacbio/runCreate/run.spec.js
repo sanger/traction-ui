@@ -147,6 +147,19 @@ describe('run.js', () => {
       expect(platePayload.plate_number).toEqual(1)
       expect(platePayload.wells_attributes).toEqual([{ ...well, pool_ids: [1, 2], _destroy: true }])
     })
+
+    it('returns null if empty plate data is provided', () => {
+      const plate = {
+        ...newPlate(1),
+        id: undefined,
+        pacbio_run_id: 3,
+        wells: {},
+      }
+
+      const platePayload = createPlatePayload(plate, plateNumber)
+
+      expect(platePayload).toBe(null)
+    })
   })
 
   describe('createRunPayload', () => {
