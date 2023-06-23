@@ -1,9 +1,7 @@
 import { handleResponse } from '@/api/ResponseHelper'
 import { groupIncludedByResource, extractAttributes, extractPlateData } from '@/api/JsonApi'
 import { newRun, createRunType, RunTypeEnum, newWell, defaultWellAttributes, newPlate } from './run'
-
-// Move to config
-const REVIO = 'Revio'
+import { PacbioRunSystems } from '@/lib/PacbioRunSystems'
 
 // Asynchronous update of state.
 export default {
@@ -113,7 +111,10 @@ export default {
       const plateData = extractPlateData(plates, wells)
 
       // Handles edge case for when we have revio with only 1 plate
-      if (data.attributes.system_name.includes(REVIO) && Object.values(plateData).length == 1) {
+      if (
+        data.attributes.system_name.includes(PacbioRunSystems.Revio.name) &&
+        Object.values(plateData).length == 1
+      ) {
         plateData['2'] = newPlate(2)
       }
 

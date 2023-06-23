@@ -1,6 +1,7 @@
 import PacbioRunInfoEdit from '@/components/pacbio/PacbioRunInfoEdit'
 import { localVue, mount, store } from '@support/testHelper'
 import { beforeEach, describe, expect } from 'vitest'
+import { PacbioRunSystems } from '@/lib/PacbioRunSystems'
 
 // required as suggestion to remove the deprecated function
 // https://vue-test-utils.vuejs.org/api/options.html#attachtodocument
@@ -47,10 +48,6 @@ describe('PacbioRunInfoEdit', () => {
 
   let runInfo, wrapper
 
-  // Move to config
-  const REVIO = 'Revio'
-  const SEQUEL_IIE = 'Sequel IIe'
-
   beforeEach(() => {
     wrapper = buildWrapper()
     runInfo = wrapper.vm
@@ -59,7 +56,8 @@ describe('PacbioRunInfoEdit', () => {
   })
 
   it('must have systemName data', () => {
-    expect(runInfo.systemNameOptions).toEqual([SEQUEL_IIE, REVIO])
+    const systemNames = Object.values(PacbioRunSystems).map((system) => system.name)
+    expect(runInfo.systemNameOptions).toEqual(systemNames)
   })
 
   describe('smrt link versions', () => {

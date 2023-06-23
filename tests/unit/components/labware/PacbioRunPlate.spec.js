@@ -1,6 +1,6 @@
 import { mount, localVue, store } from '@support/testHelper'
 import PacbioRunPlate from '@/components/pacbio/PacbioRunPlate'
-import { newWell, newPlate } from '@/store/traction/pacbio/runCreate/run'
+import { newWell } from '@/store/traction/pacbio/runCreate/run'
 import { it } from 'vitest'
 import { LabwareTypes } from '@/lib/LabwareTypes'
 

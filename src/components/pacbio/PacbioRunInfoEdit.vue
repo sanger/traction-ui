@@ -72,10 +72,7 @@
 <script>
 import { createNamespacedHelpers } from 'vuex'
 const { mapGetters, mapActions } = createNamespacedHelpers('traction/pacbio/runCreate')
-
-// Move to config
-const REVIO = 'Revio'
-const SEQUEL_IIE = 'Sequel IIe'
+import { PacbioRunSystems } from '@/lib/PacbioRunSystems'
 
 export default {
   name: 'PacbioRunInfoEdit',
@@ -86,7 +83,7 @@ export default {
   },
   data() {
     return {
-      systemNameOptions: [SEQUEL_IIE, REVIO],
+      systemNameOptions: Object.values(PacbioRunSystems).map((system) => system.name),
     }
   },
   computed: {

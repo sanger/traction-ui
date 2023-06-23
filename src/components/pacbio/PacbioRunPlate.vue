@@ -39,12 +39,8 @@
 import WellEdit from '@/components/pacbio/PacbioRunWellEdit'
 import PacbioRunWell from '@/components/labware/PacbioRunWell'
 import LabwareMap from '@/components/labware/LabwareMap.vue'
-import { LabwareTypes } from '@/lib/LabwareTypes'
+import { PacbioRunSystems } from '@/lib/PacbioRunSystems'
 import { mapGetters } from 'vuex'
-
-// Move to config
-const REVIO = 'Revio'
-const SEQUEL_IIE = 'Sequel IIe'
 
 export default {
   name: 'PacbioRunPlate',
@@ -55,7 +51,6 @@ export default {
   },
   data() {
     return {
-      labwareType: LabwareTypes.Plate96,
       selectedWellPosition: '',
       selectedPlate: 1,
     }
@@ -63,18 +58,10 @@ export default {
   computed: {
     ...mapGetters('traction/pacbio/runCreate', ['runItem']),
     labware() {
-      if (this.runItem.system_name == REVIO) {
-        return {
-          plateCount: 2,
-          labwareType: LabwareTypes.Plate4,
-          plateClasses: 'w-1/3 mx-auto',
-        }
-      } else if (this.runItem.system_name == SEQUEL_IIE) {
-        return {
-          plateCount: 1,
-          labwareType: LabwareTypes.Plate96,
-          plateClasses: 'w-full',
-        }
+      if (this.runItem.system_name == PacbioRunSystems.Revio.name) {
+        return PacbioRunSystems.Revio
+      } else if (this.runItem.system_name == PacbioRunSystems.SequelIIe.name) {
+        return PacbioRunSystems.SequelIIe
       }
       return {}
     },
