@@ -3,7 +3,7 @@ describe('Pacbio Run Create view', () => {
     cy.intercept('flipper/api/actors/User', {
       flipper_id: 'User',
     })
-    cy.intercept('/v1/pacbio/runs', {
+    cy.intercept('/v1/pacbio/runs?include=plates', {
       fixture: 'tractionPacbioRuns.json',
     })
     cy.intercept('/v1/pacbio/smrt_link_versions', {
