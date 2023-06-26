@@ -1,10 +1,4 @@
 describe('Pacbio Runs view', () => {
-  beforeEach(() =>
-    cy.withFlags({
-      enable_custom_table: { enabled: true },
-      enable_custom_form: { enabled: true },
-    }),
-  )
   it('Visits the pacbio runs url', () => {
     cy.intercept('/v1/pacbio/runs', {
       fixture: 'tractionPacbioRuns.json',

@@ -19,14 +19,8 @@
       primary_key="id"
       :fields="fields"
       :items="tableData"
-      show-empty
-      responsive
-      :filter="filter"
-      :per-page="perPage"
       :current-page="currentPage"
       :sort-by.sync="sortBy"
-      :sort-desc.sync="sortDesc"
-      hover
       @filtered="onFiltered"
     >
       <template #cell(show_details)="row">

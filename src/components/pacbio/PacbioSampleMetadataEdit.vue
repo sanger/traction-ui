@@ -101,18 +101,10 @@ export default {
     ...mapActions(['updateRequest']),
     show() {
       this.showModal = true
-      /**This need to be removed when custom_enable_modal feature flag is removed */
-      if ('b-modal' in this.$refs['modal'].$refs) {
-        this.$refs['modal'].$refs['b-modal'].show()
-      }
       this.request = { ...this.req }
     },
     hide() {
       this.showModal = false
-      /**This need to be removed when custom_enable_modal feature flag is removed */
-      if ('b-modal' in this.$refs['modal'].$refs) {
-        this.$refs['modal'].$refs['b-modal'].hide()
-      }
     },
     alert(message, type) {
       this.$emit('alert', message, type)

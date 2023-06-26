@@ -19,12 +19,6 @@ describe('Pacbio Pool Edit', () => {
     cy.intercept('/v1/pacbio/plates?include=wells.requests', {
       fixture: 'pacbioPlatesRequest.json',
     })
-
-    cy.withFlags({
-      enable_custom_table: { enabled: true },
-      enable_custom_form: { enabled: true },
-      enable_custom_alert: { enabled: true },
-    })
   })
 
   it('updates pool information on clicking requests table rows', () => {

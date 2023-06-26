@@ -19,16 +19,9 @@
 
     <traction-table
       id="samples-table"
-      show-empty
-      responsive
       :items="tableData"
       :fields="fields"
-      :filter="filter"
-      :per-page="perPage"
-      :current-page="currentPage"
       :sort-by.sync="sortBy"
-      :sort-desc.sync="sortDesc"
-      hover
       selectable
       select-mode="single"
       @filtered="onFiltered"

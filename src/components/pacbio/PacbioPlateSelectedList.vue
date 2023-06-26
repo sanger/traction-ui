@@ -41,10 +41,7 @@
         <div v-else id="selectedList" class="mt-4">
           <traction-table
             :items="selectedPlateRequests"
-            show-empty
-            small
             :fields="requestFields"
-            :tbody-tr-class="rowClass"
             empty-text="No plates selected"
             @row-clicked="requestClicked"
           ></traction-table>
