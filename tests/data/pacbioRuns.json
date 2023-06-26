@@ -2,31 +2,75 @@
   "data": {
     "data": [
       {
-        "id": "7",
+        "id": "1",
         "type": "runs",
         "links": {
-          "self": "http://localhost:3100/v1/pacbio/runs/7"
+          "self": "http://localhost:3100/v1/pacbio/runs/1"
         },
         "attributes": {
-          "name": "TRACTION-RUN-7",
-          "dna_control_complex_box_barcode": "DCBB1",
-          "system_name": "Revio",
-          "created_at": "2023/06/21 13:17",
+          "name": "aname",
           "state": "pending",
-          "comments": "GENSAMPLE-1687353183-1:GENSAMPLE-1687353183-1",
-          "pacbio_smrt_link_version_id": 3,
-          "plates_attributes": null
+          "dna_control_complex_box_barcode": "Lxxxxx10171760012311",
+          "system_name": "Sequel I",
+          "pacbio_smrt_link_version_id": 1,
+          "created_at": "11/09/2019 01:11"
         },
         "relationships": {
           "plates": {
             "data": [
               {
                 "type": "plates",
-                "id": "7"
-              },
+                "id": "1"
+              }
+            ]
+          }
+        }
+      },
+      {
+        "id": "2",
+        "type": "runs",
+        "links": {
+          "self": "http://localhost:3100/v1/pacbio/runs/2"
+        },
+        "attributes": {
+          "name": "anothername",
+          "state": "started",
+          "dna_control_complex_box_barcode": "Lxxxxx10171760012312",
+          "system_name": "Sequel II",
+          "pacbio_smrt_link_version_id": 1,
+          "created_at": "12/09/2019 02:22"
+        },
+        "relationships": {
+          "plates": {
+            "data": [
               {
                 "type": "plates",
-                "id": "8"
+                "id": "2"
+              }
+            ]
+          }
+        }
+      },
+      {
+        "id": "3",
+        "type": "runs",
+        "links": {
+          "self": "http://localhost:3100/v1/pacbio/runs/3"
+        },
+        "attributes": {
+          "name": "anothername1",
+          "state": "completed",
+          "dna_control_complex_box_barcode": "Lxxxxx10171760012312",
+          "system_name": "Sequel II",
+          "pacbio_smrt_link_version_id": 1,
+          "created_at": "10/09/2019 02:22"
+        },
+        "relationships": {
+          "plates": {
+            "data": [
+              {
+                "type": "plates",
+                "id": "3"
               }
             ]
           }
@@ -39,21 +83,19 @@
           "self": "http://localhost:3100/v1/pacbio/runs/4"
         },
         "attributes": {
-          "name": "Run4",
-          "dna_control_complex_box_barcode": "DCCB4",
-          "system_name": "Sequel IIe",
-          "created_at": "2023/06/21 13:13",
-          "state": "pending",
-          "comments": "GENSAMPLE-1687353183-1",
-          "pacbio_smrt_link_version_id": 2,
-          "plates_attributes": null
+          "name": "anothername2",
+          "state": "cancelled",
+          "dna_control_complex_box_barcode": "Lxxxxx10171760012312",
+          "system_name": "Sequel II",
+          "pacbio_smrt_link_version_id": 1,
+          "created_at": "10/09/2019 02:22"
         },
         "relationships": {
           "plates": {
             "data": [
               {
                 "type": "plates",
-                "id": "4"
+                "id": "5"
               }
             ]
           }
@@ -66,14 +108,12 @@
           "self": "http://localhost:3100/v1/pacbio/runs/5"
         },
         "attributes": {
-          "name": "Run5",
-          "dna_control_complex_box_barcode": "DCCB5",
-          "system_name": "Sequel IIe",
-          "created_at": "2023/06/21 13:13",
-          "state": "pending",
-          "comments": "GENSAMPLE-1687353183-1:GENSAMPLE-1687353183-2:GENSAMPLE-1687353183-3:GENSAMPLE-1687353183-4:GENSAMPLE-1687353183-5",
-          "pacbio_smrt_link_version_id": 2,
-          "plates_attributes": null
+          "name": "anothername3",
+          "state": "completed",
+          "dna_control_complex_box_barcode": "Lxxxxx10171760012312",
+          "system_name": "Sequel II",
+          "pacbio_smrt_link_version_id": 1,
+          "created_at": "10/09/2019 02:22"
         },
         "relationships": {
           "plates": {
@@ -93,14 +133,12 @@
           "self": "http://localhost:3100/v1/pacbio/runs/6"
         },
         "attributes": {
-          "name": "Run6",
-          "dna_control_complex_box_barcode": "DCCB6",
-          "system_name": "Sequel IIe",
-          "created_at": "2023/06/21 13:13",
-          "state": "pending",
-          "comments": "GENSAMPLE-1687353183-1:GENSAMPLE-1687353183-2:GENSAMPLE-1687353183-3:GENSAMPLE-1687353183-4:GENSAMPLE-1687353183-5",
-          "pacbio_smrt_link_version_id": 2,
-          "plates_attributes": null
+          "name": "anothername4",
+          "state": "started",
+          "dna_control_complex_box_barcode": "Lxxxxx10171760012312",
+          "system_name": "Revio",
+          "pacbio_smrt_link_version_id": 1,
+          "created_at": "10/09/2019 02:22"
         },
         "relationships": {
           "plates": {
@@ -108,6 +146,10 @@
               {
                 "type": "plates",
                 "id": "6"
+              },
+              {
+                "type": "plates",
+                "id": "7"
               }
             ]
           }
@@ -115,6 +157,42 @@
       }
     ],
     "included": [
+      {
+        "id": "1",
+        "type": "plates",
+        "links": {
+          "self": "http://localhost:3100/v1/pacbio/runs/plates/1"
+        },
+        "attributes": {
+          "pacbio_run_id": 2,
+          "plate_number": 1,
+          "sequencing_kit_box_barcode": "SKBB 1"
+        }
+      },
+      {
+        "id": "2",
+        "type": "plates",
+        "links": {
+          "self": "http://localhost:3100/v1/pacbio/runs/plates/2"
+        },
+        "attributes": {
+          "pacbio_run_id": 3,
+          "plate_number": 1,
+          "sequencing_kit_box_barcode": "SKBB 2"
+        }
+      },
+      {
+        "id": "3",
+        "type": "plates",
+        "links": {
+          "self": "http://localhost:3100/v1/pacbio/runs/plates/3"
+        },
+        "attributes": {
+          "pacbio_run_id": 4,
+          "plate_number": 1,
+          "sequencing_kit_box_barcode": "SKBB 3"
+        }
+      },
       {
         "id": "4",
         "type": "plates",
@@ -124,7 +202,7 @@
         "attributes": {
           "pacbio_run_id": 4,
           "plate_number": 1,
-          "sequencing_kit_box_barcode": "SKB4"
+          "sequencing_kit_box_barcode": "SKBB 4"
         }
       },
       {
@@ -136,7 +214,7 @@
         "attributes": {
           "pacbio_run_id": 5,
           "plate_number": 1,
-          "sequencing_kit_box_barcode": "SKB5"
+          "sequencing_kit_box_barcode": "SKBB 5"
         }
       },
       {
@@ -148,7 +226,7 @@
         "attributes": {
           "pacbio_run_id": 6,
           "plate_number": 1,
-          "sequencing_kit_box_barcode": "SKB6"
+          "sequencing_kit_box_barcode": "SKBB 6"
         }
       },
       {
@@ -158,23 +236,13 @@
           "self": "http://localhost:3100/v1/pacbio/runs/plates/7"
         },
         "attributes": {
-          "pacbio_run_id": 7,
-          "plate_number": 1,
-          "sequencing_kit_box_barcode": "12"
-        }
-      },
-      {
-        "id": "8",
-        "type": "plates",
-        "links": {
-          "self": "http://localhost:3100/v1/pacbio/runs/plates/8"
-        },
-        "attributes": {
-          "pacbio_run_id": 7,
+          "pacbio_run_id": 6,
           "plate_number": 2,
-          "sequencing_kit_box_barcode": "23"
+          "sequencing_kit_box_barcode": "SKBB 7"
         }
       }
     ]
-  }
+  },
+  "status": 200,
+  "statusText": "Success"
 }
