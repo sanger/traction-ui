@@ -1,24 +1,16 @@
 <template>
-  <flagged-feature name="enable_custom_form">
-    <template #disabled
-      ><b-form :class="classes" @submit.prevent="submitAction" @reset.prevent="resetAction">
-        <slot />
-      </b-form>
-    </template>
-    <form
-      v-bind="$attrs"
-      :class="classes"
-      action=""
-      reset=""
-      @submit.prevent="submitAction"
-      @reset.prevent="resetAction"
-    >
-      <slot />
-    </form>
-  </flagged-feature>
+  <form
+    v-bind="$attrs"
+    :class="classes"
+    action=""
+    reset=""
+    @submit.prevent="submitAction"
+    @reset.prevent="resetAction"
+  >
+    <slot />
+  </form>
 </template>
 <script>
-import { BForm } from 'bootstrap-vue'
 export default {
   /**
    * # TractionForm
@@ -26,7 +18,6 @@ export default {
    * Tailwind component to display a form  component using html <form> element
    */
   name: 'TractionForm',
-  components: { BForm },
   inheritAttrs: false,
   props: {
     //any custom tailwind class to set the styling option

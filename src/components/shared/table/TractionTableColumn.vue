@@ -8,29 +8,20 @@
    */
 -->
 <template>
-  <flagged-feature name="enable_custom_table">
-    <template #disabled>
-      <b-td>
-        <slot />
-      </b-td>
-    </template>
-    <td
-      :id="id"
-      data-testid="column"
-      v-bind="$attrs"
-      :colspan="colspan"
-      :class="`px-1 py-1 text-sm whitespace-nowrap text-center ${classes}`"
-      @click="click"
-    >
-      <slot />
-    </td>
-  </flagged-feature>
+  <td
+    :id="id"
+    data-testid="column"
+    v-bind="$attrs"
+    :colspan="colspan"
+    :class="`px-1 py-1 text-sm whitespace-nowrap text-center ${classes}`"
+    @click="click"
+  >
+    <slot />
+  </td>
 </template>
 <script>
-import { BTd } from 'bootstrap-vue'
 export default {
   name: 'TractionTableColumn',
-  components: { BTd },
   inheritAttrs: false,
   props: {
     id: {

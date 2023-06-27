@@ -14,10 +14,6 @@ describe('ONT Pool Edit', () => {
     })
     cy.intercept('flipper/api/actors/User', {
       flipper_id: 'User',
-      features: {
-        enable_custom_table: { enabled: true },
-        enable_custom_form: { enabled: true },
-      },
     })
   })
   it('updates pool information on clicking requests table rows', () => {
@@ -79,19 +75,23 @@ describe('ONT Pool Edit', () => {
     })
     cy.get('[data-type=plate-item]').should('be.visible')
     cy.get('[data-attribute=tag-set-name]').should('be.visible')
-    cy.get('[data-type=pool-library-edit]').within(() => {
-      cy.get('[data-attribute=insert-size-error-icon]').should('be.visible')
-      cy.get('[data-attribute=insert-size-error-icon]').within(() => {
-        cy.get('[data-attribute=pass]').should('be.visible')
+    cy.get('[data-type=pool-library-edit]').each(($pool) => {
+      cy.wrap($pool).within(() => {
+        cy.get('[data-attribute=insert-size-error-icon]').should('be.visible')
+        cy.get('[data-attribute=insert-size-error-icon]').within(() => {
+          cy.get('[data-attribute=pass]').should('be.visible')
+        })
+        cy.get('[data-attribute=insert-size]').clear()
+        cy.get('[data-attribute=insert-size-error-icon]').should('not.exist')
       })
-      cy.get('[data-attribute=insert-size]').clear()
-      cy.get('[data-attribute=insert-size-error-icon]').should('not.exist')
     })
     cy.get('[data-action=update-pool]').click()
-    cy.get('[data-type=pool-library-edit]').within(() => {
-      cy.get('[data-attribute=insert-size-error-icon]').should('be.visible')
-      cy.get('[data-attribute=insert-size-error-icon]').within(() => {
-        cy.get('[data-attribute=fail]').should('be.visible')
+    cy.get('[data-type=pool-library-edit]').each(($pool) => {
+      cy.wrap($pool).within(() => {
+        cy.get('[data-attribute=insert-size-error-icon]').should('be.visible')
+        cy.get('[data-attribute=insert-size-error-icon]').within(() => {
+          cy.get('[data-attribute=fail]').should('be.visible')
+        })
       })
     })
     cy.contains('[data-type=pool-create-message]', 'The pool is invalid')

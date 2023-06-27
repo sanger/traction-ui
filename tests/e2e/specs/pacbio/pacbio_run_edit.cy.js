@@ -1,11 +1,5 @@
 describe('Pacbio Run Edit view', () => {
   beforeEach(() => {
-    cy.withFlags({
-      enable_custom_table: { enabled: true },
-      enable_custom_form: { enabled: true },
-      enable_custom_modal: { enabled: true },
-      enable_custom_alert: { enabled: true },
-    })
     cy.intercept('/v1/pacbio/runs', {
       fixture: 'tractionPacbioRuns.json',
     })
@@ -34,7 +28,7 @@ describe('Pacbio Run Edit view', () => {
     cy.get('#actions').within(() => {
       cy.get('#editRun-7').click()
     })
-    cy.get('ellipse').first().click()
+    cy.get('[data-attribute=pacbio-run-well]').first().click()
     cy.get('[data-attribute="movie-acquisition-time"]').select('24.0')
     cy.get('[data-attribute="include-base-kinetics"]').select('True')
     cy.get('#update').click()

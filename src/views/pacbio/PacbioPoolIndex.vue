@@ -23,24 +23,16 @@
 
     <traction-table
       id="pool-index"
-      show-empty
-      responsive
       :items="tableData"
       :fields="fields"
-      :filter="filter"
-      :per-page="perPage"
-      :current-page="currentPage"
       :sort-by.sync="sortBy"
-      :sort-desc.sync="sortDesc"
-      hover
       selectable
       select-mode="multi"
-      tbody-tr-class="pool"
       @filtered="onFiltered"
       @row-selected="onRowSelected"
     >
-      <template #cell(selected)="{ rowSelected }">
-        <template v-if="rowSelected">
+      <template #cell(selected)="{ selected }">
+        <template v-if="selected">
           <span>&check;</span>
           <span class="sr-only">Selected</span>
         </template>
@@ -76,15 +68,7 @@
 
       <template #row-details="row">
         <div>
-          <traction-table
-            small
-            bordered
-            show-empty
-            :items="row.item.libraries"
-            :fields="field_in_details"
-            :filter="filter"
-          >
-          </traction-table>
+          <traction-table :items="row.item.libraries" :fields="field_in_details"> </traction-table>
           <div class="flex mx-auto px-2 text-left">
             <ul v-if="!row.item.run_suitability.valid">
               <li v-for="(error, index) in row.item.run_suitability.formattedErrors" :key="index">
@@ -125,18 +109,17 @@ export default {
           formatter: (obj) => (obj['run_suitability.ready_for_run'] ? '✓' : ''),
           sortable: true,
         },
-        { key: 'barcode', label: 'Pool Barcode', sortable: true, tdClass: 'barcode' },
-        { key: 'source_identifier', label: 'Source', sortable: true, tdClass: 'source-identifier' },
-        { key: 'volume', label: 'Volume', sortable: true, tdClass: 'volume' },
-        { key: 'concentration', label: 'Concentration', sortable: true, tdClass: 'concentration' },
+        { key: 'barcode', label: 'Pool Barcode', sortable: true },
+        { key: 'source_identifier', label: 'Source', sortable: true },
+        { key: 'volume', label: 'Volume', sortable: true },
+        { key: 'concentration', label: 'Concentration', sortable: true },
         {
           key: 'template_prep_kit_box_barcode',
           label: 'Template Prep Kit Box Barcode',
           sortable: true,
-          tdClass: 'template-prep-kit-box-barcode',
         },
-        { key: 'insert_size', label: 'Insert Size', sortable: true, tdClass: 'insert-size' },
-        { key: 'created_at', label: 'Created at', sortable: true, tdClass: 'created-at' },
+        { key: 'insert_size', label: 'Insert Size', sortable: true },
+        { key: 'created_at', label: 'Created at', sortable: true },
         { key: 'actions', label: 'Actions' },
         { key: 'show_details', label: '' },
       ],

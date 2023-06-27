@@ -2,12 +2,6 @@ describe('Pacbio Run Create view', () => {
   beforeEach(() => {
     cy.intercept('flipper/api/actors/User', {
       flipper_id: 'User',
-      features: {
-        enable_custom_table: { enabled: true },
-        enable_custom_form: { enabled: true },
-        enable_custom_modal: { enabled: true },
-        enable_custom_alert: { enabled: true },
-      },
     })
     cy.intercept('/v1/pacbio/runs', {
       fixture: 'tractionPacbioRuns.json',
@@ -57,8 +51,7 @@ describe('Pacbio Run Create view', () => {
       .first()
       .trigger('dragstart', { dataTransfer: dataTransfer, force: true })
       .trigger('drag', { dataTransfer: dataTransfer, force: true })
-    // again better to rename this item to make it more descriptive
-    cy.get('ellipse')
+    cy.get('[data-attribute=pacbio-run-well]')
       .first()
       .trigger('drop', { dataTransfer: dataTransfer, force: true })
       .trigger('click')
@@ -101,8 +94,7 @@ describe('Pacbio Run Create view', () => {
       .first()
       .trigger('dragstart', { dataTransfer: dataTransfer, force: true })
       .trigger('drag', { dataTransfer: dataTransfer, force: true })
-    // again better to rename this item to make it more descriptive
-    cy.get('ellipse')
+    cy.get('[data-attribute=pacbio-run-well]')
       .first()
       .trigger('drop', { dataTransfer: dataTransfer, force: true })
       .trigger('click')
@@ -146,7 +138,9 @@ describe('Pacbio Run Create view', () => {
       .first()
       .trigger('dragstart', { dataTransfer: dataTransfer, force: true })
       .trigger('drag', { dataTransfer: dataTransfer, force: true })
-    cy.get('ellipse').first().trigger('drop', { dataTransfer: dataTransfer, force: true })
+    cy.get('[data-attribute=pacbio-run-well]')
+      .first()
+      .trigger('drop', { dataTransfer: dataTransfer, force: true })
 
     cy.get('button').contains('Create').click()
     cy.contains(
@@ -187,8 +181,7 @@ describe('Pacbio Run Create view', () => {
       .first()
       .trigger('dragstart', { dataTransfer: dataTransfer, force: true })
       .trigger('drag', { dataTransfer: dataTransfer, force: true })
-    // again better to rename this item to make it more descriptive
-    cy.get('ellipse')
+    cy.get('[data-attribute=pacbio-run-well]')
       .first()
       .trigger('drop', { dataTransfer: dataTransfer, force: true })
       .trigger('click')

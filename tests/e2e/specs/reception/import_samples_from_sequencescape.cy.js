@@ -6,9 +6,6 @@ describe('Import samples from Sequencescape', () => {
     cy.intercept('v1/library_types?fields[library_types]=name,pipeline', {
       fixture: 'tractionLibraryTypes.json',
     })
-    cy.withFlags({
-      enable_custom_alert: { enabled: true },
-    })
   })
 
   it('Successfully', () => {
