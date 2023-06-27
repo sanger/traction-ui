@@ -97,7 +97,7 @@ export default {
         { key: 'barcode', label: 'Barcode', sortable: true },
         { key: 'sample_name', label: 'Sample Name', sortable: true },
         { key: 'enzyme_name', label: 'Enzyme Name', sortable: true },
-        { key: 'created_at', label: 'Created at', sortable: true },
+        { key: 'created_at', label: 'Created at (UTC)', sortable: true },
       ],
       items: [],
       filteredItems: [],

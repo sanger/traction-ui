@@ -108,7 +108,7 @@ export default {
           label: 'Final Library Amount',
           sortable: true,
         },
-        { key: 'created_at', label: 'Created at', sortable: true },
+        { key: 'created_at', label: 'Created at (UTC)', sortable: true },
         { key: 'actions', label: 'Actions' },
         { key: 'show_details', label: '' },
       ],

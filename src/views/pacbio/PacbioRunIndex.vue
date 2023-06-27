@@ -117,7 +117,7 @@ export default {
           sortable: true,
         },
         { key: 'system_name', label: 'System Name', sortable: true },
-        { key: 'created_at', label: 'Created at', sortable: true },
+        { key: 'created_at', label: 'Created at (UTC)', sortable: true },
         { key: 'actions', label: 'Actions' },
       ],
       filteredItems: [],

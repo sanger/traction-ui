@@ -104,7 +104,7 @@ export default {
         },
         { key: 'insert_size', label: 'Insert Size', sortable: true },
         { key: 'tag_group_id', label: 'Tag', sortable: true },
-        { key: 'created_at', label: 'Created at', sortable: true },
+        { key: 'created_at', label: 'Created at (UTC)', sortable: true },
         { key: 'actions', label: 'Actions' },
       ],
       filterOptions: [
