@@ -1,39 +1,41 @@
 <template>
   <DataFetcher :fetcher="fetchOntRuns">
-    <div class="clearfix mt-5">
-      <traction-button id="newRun" class="float-left" theme="create" @click="redirectToRun()">
-        New Run
-      </traction-button>
-      <span class="font-weight-bold">Total records: {{ runs.length }}</span>
-      <traction-pagination
-        v-model="currentPage"
-        class="float-right"
-        :total-rows="runs.length"
-        :per-page="perPage"
-        aria-controls="run-index"
-        @input="onPageChange($event)"
-      ></traction-pagination>
-    </div>
+    <div class="flex flex-col">
+      <div class="clearfix mt-5">
+        <traction-button id="newRun" class="float-left" theme="create" @click="redirectToRun()">
+          New Run
+        </traction-button>
+        <span class="font-weight-bold">Total records: {{ runs.length }}</span>
+        <traction-pagination
+          v-model="currentPage"
+          class="float-right"
+          :total-rows="runs.length"
+          :per-page="perPage"
+          aria-controls="run-index"
+          @input="onPageChange($event)"
+        ></traction-pagination>
+      </div>
 
-    <traction-table id="run-index" :items="tableData" :fields="fields" :sort-by.sync="sortBy">
-      <template #cell(actions)="row">
-        <traction-button
-          :id="generateId('editRun', row.item.id)"
-          theme="edit"
-          size="sm"
-          class="mr-1"
-          @click="redirectToRun(row.item.id)"
-          >Edit</traction-button
-        >
-        <a
-          :id="generateId('sample-sheet', row.item.id)"
-          :href="generateSampleSheetPath(row.item.id)"
-          class="text-primary p-1 mr-1 inline-block border-2 rounded-md whitespace-nowrap"
-        >
-          Sample Sheet
-        </a>
-      </template>
-    </traction-table>
+      <traction-table id="run-index" :items="tableData" :fields="fields" :sort-by.sync="sortBy">
+        <template #cell(actions)="row">
+          <traction-button
+            :id="generateId('editRun', row.item.id)"
+            theme="edit"
+            size="sm"
+            class="mr-1"
+            @click="redirectToRun(row.item.id)"
+            >Edit</traction-button
+          >
+          <a
+            :id="generateId('sample-sheet', row.item.id)"
+            :href="generateSampleSheetPath(row.item.id)"
+            class="text-primary p-1 mr-1 inline-block border-2 rounded-md whitespace-nowrap"
+          >
+            Sample Sheet
+          </a>
+        </template>
+      </traction-table>
+    </div>
   </DataFetcher>
 </template>
 
