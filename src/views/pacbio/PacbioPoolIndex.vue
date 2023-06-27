@@ -1,84 +1,87 @@
 <template>
   <DataFetcher :fetcher="setPools">
     <FilterCard :fetcher="setPools" :filter-options="filterOptions" />
-    <div class="clearfix">
-      <printerModal
-        ref="printerModal"
-        class="float-left"
-        :disabled="selected.length === 0"
-        @selectPrinter="printLabels($event)"
-      >
-      </printerModal>
-
-      <traction-pagination
-        v-model="currentPage"
-        class="float-right"
-        :total-rows="pools.length"
-        :per-page="perPage"
-        aria-controls="pool-index"
-        @input="onPageChange($event)"
-      >
-      </traction-pagination>
-    </div>
-
-    <traction-table
-      id="pool-index"
-      :items="tableData"
-      :fields="fields"
-      :sort-by.sync="sortBy"
-      selectable
-      select-mode="multi"
-      @filtered="onFiltered"
-      @row-selected="onRowSelected"
-    >
-      <template #cell(selected)="{ selected }">
-        <template v-if="selected">
-          <span>&check;</span>
-          <span class="sr-only">Selected</span>
-        </template>
-        <template v-else>
-          <span>&nbsp;</span>
-          <span class="sr-only">Not selected</span>
-        </template>
-      </template>
-
-      <template #cell(actions)="row">
-        <router-link
-          id="edit-pool"
-          data-action="edit-pool"
-          :to="{ name: 'PacbioPoolCreate', params: { id: row.item.id } }"
+    <div class="flex flex-col">
+      <div class="clearfix">
+        <printerModal
+          ref="printerModal"
+          class="float-left"
+          :disabled="selected.length === 0"
+          @selectPrinter="printLabels($event)"
         >
-          <traction-button :id="'editPool-' + row.item.id" size="sm" theme="edit"
-            >Edit</traction-button
+        </printerModal>
+
+        <traction-pagination
+          v-model="currentPage"
+          class="float-right"
+          :total-rows="pools.length"
+          :per-page="perPage"
+          aria-controls="pool-index"
+          @input="onPageChange($event)"
+        >
+        </traction-pagination>
+      </div>
+
+      <traction-table
+        id="pool-index"
+        :items="tableData"
+        :fields="fields"
+        :sort-by.sync="sortBy"
+        selectable
+        select-mode="multi"
+        @filtered="onFiltered"
+        @row-selected="onRowSelected"
+      >
+        <template #cell(selected)="{ selected }">
+          <template v-if="selected">
+            <span>&check;</span>
+            <span class="sr-only">Selected</span>
+          </template>
+          <template v-else>
+            <span>&nbsp;</span>
+            <span class="sr-only">Not selected</span>
+          </template>
+        </template>
+
+        <template #cell(actions)="row">
+          <router-link
+            id="edit-pool"
+            data-action="edit-pool"
+            :to="{ name: 'PacbioPoolCreate', params: { id: row.item.id } }"
           >
-        </router-link>
-      </template>
+            <traction-button :id="'editPool-' + row.item.id" size="sm" theme="edit"
+              >Edit</traction-button
+            >
+          </router-link>
+        </template>
 
-      <template #cell(show_details)="row">
-        <traction-button
-          :id="'details-btn-' + row.item.id"
-          size="sm"
-          class="mr-2"
-          theme="default"
-          @click="row.toggleDetails"
-        >
-          {{ row.detailsShowing ? 'Hide' : 'Show' }} Details
-        </traction-button>
-      </template>
+        <template #cell(show_details)="row">
+          <traction-button
+            :id="'details-btn-' + row.item.id"
+            size="sm"
+            class="mr-2"
+            theme="default"
+            @click="row.toggleDetails"
+          >
+            {{ row.detailsShowing ? 'Hide' : 'Show' }} Details
+          </traction-button>
+        </template>
 
-      <template #row-details="row">
-        <div>
-          <traction-table :items="row.item.libraries" :fields="field_in_details"> </traction-table>
-          <div class="flex mx-auto px-2 text-left">
-            <ul v-if="!row.item.run_suitability.valid">
-              <li v-for="(error, index) in row.item.run_suitability.formattedErrors" :key="index">
-                {{ error }}
-              </li>
-            </ul>
+        <template #row-details="row">
+          <div>
+            <traction-table :items="row.item.libraries" :fields="field_in_details">
+            </traction-table>
+            <div class="flex mx-auto px-2 text-left">
+              <ul v-if="!row.item.run_suitability.valid">
+                <li v-for="(error, index) in row.item.run_suitability.formattedErrors" :key="index">
+                  {{ error }}
+                </li>
+              </ul>
+            </div>
           </div>
-        </div>
-      </template>
-    </traction-table>
+        </template>
+      </traction-table>
+    </div>
   </DataFetcher>
 </template>
 
@@ -119,7 +122,7 @@ export default {
           sortable: true,
         },
         { key: 'insert_size', label: 'Insert Size', sortable: true },
-        { key: 'created_at', label: 'Created at', sortable: true },
+        { key: 'created_at', label: 'Created at (UTC)', sortable: true },
         { key: 'actions', label: 'Actions' },
         { key: 'show_details', label: '' },
       ],

@@ -1,77 +1,80 @@
 <template>
   <DataFetcher :fetcher="fetchOntPools">
     <FilterCard :fetcher="fetchOntPools" :filter-options="filterOptions" />
-    <div class="clearfix">
-      <traction-pagination
-        v-model="currentPage"
-        class="float-right"
-        :total-rows="pools.length"
-        :per-page="perPage"
-        aria-controls="pool-index"
-        @input="onPageChange($event)"
-      >
-      </traction-pagination>
-    </div>
-
-    <traction-table
-      id="pool-index"
-      :items="tableData"
-      :fields="fields"
-      :sort-by.sync="sortBy"
-      selectable
-      select-mode="multi"
-      @filtered="onFiltered"
-      @row-selected="onRowSelected"
-    >
-      <template #cell(selected)="{ selected }">
-        <template v-if="selected">
-          <span>&check;</span>
-          <span class="sr-only">Selected</span>
-        </template>
-        <template v-else>
-          <span>&nbsp;</span>
-          <span class="sr-only">Not selected</span>
-        </template>
-      </template>
-
-      <template #cell(actions)="row">
-        <router-link
-          data-action="edit-pool"
-          :to="{ name: 'ONTPoolCreate', params: { id: row.item.id } }"
+    <div class="flex flex-col">
+      <div class="clearfix">
+        <traction-pagination
+          v-model="currentPage"
+          class="float-right"
+          :total-rows="pools.length"
+          :per-page="perPage"
+          aria-controls="pool-index"
+          @input="onPageChange($event)"
         >
-          <traction-button :id="'editPool-' + row.item.id" size="sm" theme="edit"
-            >Edit</traction-button
+        </traction-pagination>
+      </div>
+
+      <traction-table
+        id="pool-index"
+        :items="tableData"
+        :fields="fields"
+        :sort-by.sync="sortBy"
+        selectable
+        select-mode="multi"
+        @filtered="onFiltered"
+        @row-selected="onRowSelected"
+      >
+        <template #cell(selected)="{ selected }">
+          <template v-if="selected">
+            <span>&check;</span>
+            <span class="sr-only">Selected</span>
+          </template>
+          <template v-else>
+            <span>&nbsp;</span>
+            <span class="sr-only">Not selected</span>
+          </template>
+        </template>
+
+        <template #cell(actions)="row">
+          <router-link
+            data-action="edit-pool"
+            :to="{ name: 'ONTPoolCreate', params: { id: row.item.id } }"
           >
-        </router-link>
-      </template>
+            <traction-button :id="'editPool-' + row.item.id" size="sm" theme="edit"
+              >Edit</traction-button
+            >
+          </router-link>
+        </template>
 
-      <template #cell(show_details)="row">
-        <traction-button
-          :id="'details-btn-' + row.item.id"
-          size="sm"
-          class="mr-2"
-          theme="default"
-          @click="row.toggleDetails"
+        <template #cell(show_details)="row">
+          <traction-button
+            :id="'details-btn-' + row.item.id"
+            size="sm"
+            class="mr-2"
+            theme="default"
+            @click="row.toggleDetails"
+          >
+            {{ row.detailsShowing ? 'Hide' : 'Show' }} Details
+          </traction-button>
+        </template>
+
+        <template #row-details="row">
+          <div>
+            <traction-table :items="row.item.libraries" :fields="field_in_details">
+            </traction-table>
+          </div>
+        </template>
+      </traction-table>
+
+      <div class="clearfix">
+        <printerModal
+          ref="printerModal"
+          class="float-left"
+          :disabled="selected.length === 0"
+          @selectPrinter="printLabels($event)"
         >
-          {{ row.detailsShowing ? 'Hide' : 'Show' }} Details
-        </traction-button>
-      </template>
-
-      <template #row-details="row">
-        <div>
-          <traction-table :items="row.item.libraries" :fields="field_in_details"> </traction-table>
-        </div>
-      </template>
-    </traction-table>
-
-    <div class="clearfix">
-      <printerModal
-        ref="printerModal"
-        class="float-left"
-        :disabled="selected.length === 0"
-        @selectPrinter="printLabels($event)"
-      >
-      </printerModal>
+        </printerModal>
+      </div>
     </div>
   </DataFetcher>
 </template>
@@ -108,7 +111,7 @@ export default {
           label: 'Final Library Amount',
           sortable: true,
         },
-        { key: 'created_at', label: 'Created at', sortable: true },
+        { key: 'created_at', label: 'Created at (UTC)', sortable: true },
         { key: 'actions', label: 'Actions' },
         { key: 'show_details', label: '' },
       ],

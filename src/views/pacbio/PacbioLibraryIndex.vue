@@ -1,66 +1,67 @@
 <template>
   <DataFetcher :fetcher="setLibraries">
     <FilterCard :fetcher="setLibraries" :filter-options="filterOptions" />
-
-    <div class="clearfix">
-      <traction-button
-        id="deleteLibraries"
-        theme="delete"
-        class="float-left"
-        :disabled="selected.length === 0"
-        @click="handleLibraryDelete"
-      >
-        Delete Libraries
-      </traction-button>
-      <printerModal
-        ref="printerModal"
-        class="float-left"
-        :disabled="selected.length === 0"
-        @selectPrinter="printLabels($event)"
-      >
-      </printerModal>
-
-      <traction-pagination
-        v-model="currentPage"
-        class="float-right"
-        :total-rows="libraries.length"
-        :per-page="perPage"
-        aria-controls="library-index"
-        @input="onPageChange($event)"
-      />
-    </div>
-
-    <traction-table
-      id="library-index"
-      :items="tableData"
-      :fields="fields"
-      :sort-by.sync="sortBy"
-      selectable
-      select-mode="multi"
-      @filtered="onFiltered"
-      @row-selected="onRowSelected"
-    >
-      <template #cell(selected)="{ selected }">
-        <template v-if="selected">
-          <span>&check;</span>
-          <span class="sr-only">Selected</span>
-        </template>
-        <template v-else>
-          <span>&nbsp;</span>
-          <span class="sr-only">Not selected</span>
-        </template>
-      </template>
-
-      <template #cell(actions)="row">
+    <div class="flex flex-col">
+      <div class="clearfix">
         <traction-button
-          :id="`editPool-${row.item.pool?.id}`"
-          size="sm"
-          theme="edit"
-          :to="{ name: 'PacbioPoolCreate', params: { id: row.item.pool.id } }"
-          >Edit</traction-button
+          id="deleteLibraries"
+          theme="delete"
+          class="float-left"
+          :disabled="selected.length === 0"
+          @click="handleLibraryDelete"
         >
-      </template>
-    </traction-table>
+          Delete Libraries
+        </traction-button>
+        <printerModal
+          ref="printerModal"
+          class="float-left"
+          :disabled="selected.length === 0"
+          @selectPrinter="printLabels($event)"
+        >
+        </printerModal>
+
+        <traction-pagination
+          v-model="currentPage"
+          class="float-right"
+          :total-rows="libraries.length"
+          :per-page="perPage"
+          aria-controls="library-index"
+          @input="onPageChange($event)"
+        />
+      </div>
+
+      <traction-table
+        id="library-index"
+        :items="tableData"
+        :fields="fields"
+        :sort-by.sync="sortBy"
+        selectable
+        select-mode="multi"
+        @filtered="onFiltered"
+        @row-selected="onRowSelected"
+      >
+        <template #cell(selected)="{ selected }">
+          <template v-if="selected">
+            <span>&check;</span>
+            <span class="sr-only">Selected</span>
+          </template>
+          <template v-else>
+            <span>&nbsp;</span>
+            <span class="sr-only">Not selected</span>
+          </template>
+        </template>
+
+        <template #cell(actions)="row">
+          <traction-button
+            :id="`editPool-${row.item.pool?.id}`"
+            size="sm"
+            theme="edit"
+            :to="{ name: 'PacbioPoolCreate', params: { id: row.item.pool.id } }"
+            >Edit</traction-button
+          >
+        </template>
+      </traction-table>
+    </div>
   </DataFetcher>
 </template>
 
@@ -104,7 +105,7 @@ export default {
         },
         { key: 'insert_size', label: 'Insert Size', sortable: true },
         { key: 'tag_group_id', label: 'Tag', sortable: true },
-        { key: 'created_at', label: 'Created at', sortable: true },
+        { key: 'created_at', label: 'Created at (UTC)', sortable: true },
         { key: 'actions', label: 'Actions' },
       ],
       filterOptions: [
