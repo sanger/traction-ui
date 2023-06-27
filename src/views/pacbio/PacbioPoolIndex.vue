@@ -122,7 +122,7 @@ export default {
           sortable: true,
         },
         { key: 'insert_size', label: 'Insert Size', sortable: true },
-        { key: 'created_at', label: 'Created at', sortable: true },
+        { key: 'created_at', label: 'Created at (UTC)', sortable: true },
         { key: 'actions', label: 'Actions' },
         { key: 'show_details', label: '' },
       ],

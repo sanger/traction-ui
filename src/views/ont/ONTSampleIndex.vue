@@ -69,7 +69,7 @@ export default {
         },
         { key: 'cost_code', label: 'Cost code' },
         { key: 'external_study_id', label: 'External study ID' },
-        { key: 'created_at', label: 'Created at', sortable: true },
+        { key: 'created_at', label: 'Created at (UTC)', sortable: true },
       ],
       filterOptions: [
         { value: '', text: '' },

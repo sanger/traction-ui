@@ -72,7 +72,7 @@ export default {
       fields: [
         { key: 'id', label: 'Plate ID', sortable: true },
         { key: 'barcode', label: 'Plate Barcode', sortable: true },
-        { key: 'created_at', label: 'Created at', sortable: true },
+        { key: 'created_at', label: 'Created at (UTC)', sortable: true },
         { key: 'show_details', label: 'Show Details' },
       ],
       filterOptions: [

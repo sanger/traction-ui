@@ -69,7 +69,7 @@ export default {
           sortable: true,
           tdClass: 'instrument-name',
         },
-        { key: 'created_at', label: 'Created at', sortable: true },
+        { key: 'created_at', label: 'Created at (UTC)', sortable: true },
         { key: 'actions', label: 'Actions', tdClass: 'actions' },
       ],
       sortBy: 'created_at',
