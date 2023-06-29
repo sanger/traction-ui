@@ -88,6 +88,20 @@ To run the app and have hot-reloads for development:
     - change `VITE_SAMPLEEXTRACTION_BASE_URL=REPLACE_VITE_SAMPLEEXTRACTION_BASE_URL` to `VITE_SAMPLEEXTRACTION_BASE_URL=http://samples-extraction`
     - change to `VITE_SEQUENCESCAPE_BASE_URL=REPLACE_VITE_SEQUENCESCAPE_BASE_URL` to `VITE_SEQUENCESCAPE_BASE_URL=http://sequencescape`
 
+### Test Fixtures
+
+The test fixtures for HTTP requests are stored in `tests/data/` as structured JSON files. The actual mocked HTTP response is the value of the outer-most `data` property (often with a nested `data` property inside) while additional properties describe the returned status of the response.
+
+```pseudo-json
+{
+  "data": {
+    ...             <-- mocked response
+  },
+  "status": 200,            <-- returned status
+  "statusText": "Success"   <-- returned status text
+}
+```
+
 ## CSS
 
 - To modify Tailwind configuration
