@@ -1,6 +1,7 @@
 <template>
   <DataFetcher :fetcher="fetchOntRequests">
     <FilterCard :fetcher="fetchOntRequests" :filter-options="filterOptions" />
+    <div class="flex mt-2 mb-3 border" />
     <div class="flex flex-col">
       <div class="clearfix">
         <traction-pagination

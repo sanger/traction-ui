@@ -1,6 +1,7 @@
 <template>
   <DataFetcher :fetcher="setRequests">
     <FilterCard :fetcher="setRequests" :filter-options="filterOptions" />
+    <div class="flex mt-2 mb-4 border" />
     <div class="flex flex-col">
       <div class="clearfix">
         <PrinterModal

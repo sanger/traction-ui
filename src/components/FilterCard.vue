@@ -1,8 +1,8 @@
 <template>
-  <div class="flex mx-auto w-full max-w-[1000px] bg-gray-100 rounded-md mb-2 p-3">
+  <div class="flex mx-auto w-full max-w-[1000px] bg-gray-100 rounded-md mt-2 mb-2 p-3">
     <div class="grid grid-cols-4 gap-2">
       <div class="flex flex-col text-left">
-        <p class="flex font-semibold text-xl">Filter results</p>
+        <p class="flex font-semibold text-l">Filter results</p>
         <p class="flex font-light text-gray-700 text-xs italiclist-none">
           By default returns the most recent 1000 results
         </p>
