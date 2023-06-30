@@ -1,26 +1,24 @@
 <template>
   <traction-section number="1" title="Run Information">
-    <div class="flex flex-row">
-      <div class="flex flex-col w-1/2">
-        <traction-field-group label="Instrument" label-for="instrument-selection">
-          <traction-select
-            id="instrument-selection"
-            :options="instrumentOptions"
-            :value="instrumentName"
-            :disabled="!newRecord"
-            @input="setInstrumentName"
-          ></traction-select>
-        </traction-field-group>
+    <div class="grid grid-cols-2 mt-2">
+      <div class="flex flex-col gap-y-2 items-start">
+        <label label-for="instrument-selection"> Instrument </label>
+        <traction-select
+          id="instrument-selection"
+          :options="instrumentOptions"
+          :value="instrumentName"
+          :disabled="!newRecord"
+          @input="setInstrumentName"
+        ></traction-select>
       </div>
-      <div class="flex flex-col w-1/2">
-        <traction-field-group label="State" label-for="state-selection">
-          <traction-select
-            id="state-selection"
-            :options="stateOptions"
-            :value="state"
-            @input="setState"
-          ></traction-select>
-        </traction-field-group>
+      <div class="flex flex-col gap-y-2 items-start">
+        <label label-for="instrument-selection"> State </label>
+        <traction-select
+          id="state-selection"
+          :options="stateOptions"
+          :value="state"
+          @input="setState"
+        ></traction-select>
       </div>
     </div>
   </traction-section>
