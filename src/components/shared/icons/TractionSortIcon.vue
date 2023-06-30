@@ -6,7 +6,9 @@
 <template>
   <svg
     class="svg-icon"
-    style="width: 18; height: 18; vertical-align: middle; fill: currentColor; overflow: hidden"
+    height="18"
+    width="18"
+    style="vertical-align: middle; fill: currentColor; overflow: hidden"
     viewBox="0 0 1024 1024"
     version="1.1"
     xmlns="http://www.w3.org/2000/svg"
