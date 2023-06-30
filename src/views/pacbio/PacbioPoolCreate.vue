@@ -1,6 +1,6 @@
 <template>
   <div id="pool">
-    <div class="flex flex-row">
+    <div class="flex flex-col pt-4">
       <div class="flex flex-col w-1/2 px-4">
         <traction-menu :border="true">
           <traction-menu-item
@@ -12,26 +12,28 @@
             >{{ tabTitle }}</traction-menu-item
           >
         </traction-menu>
+      </div>
+      <div class="w-full grid grid-cols-2 space-x-2 mt-4">
         <div v-if="sourceIndex == 0" class="flex flex-col">
-          <traction-section title="Plates" number="1a" class="mb-2">
+          <traction-section title="Plates" number="1a">
             <div class="text-left">Find Plates</div>
-            <LabwareFinder :fetcher="findPacbioPlate" filter="barcode" class="mb-6" />
+            <LabwareFinder :fetcher="findPacbioPlate" filter="barcode" />
           </traction-section>
-          <PacbioPlateSelectedList class="mb-2" />
         </div>
         <div v-else>
-          <traction-section title="Tubes" number="2a" class="mb-2">
+          <traction-section title="Tubes" number="2a">
             <div class="text-left">Find Tubes</div>
-            <LabwareFinder :fetcher="findPacbioTube" filter="barcode" class="mb-6" />
+            <LabwareFinder :fetcher="findPacbioTube" filter="barcode" />
           </traction-section>
-          <PacbioTubeSelectedList class="mb-2" />
         </div>
-      </div>
-      <div class="flex flex-col w-1/2 mt-6 gap-y-4">
         <div>
           <PacbioTagSetList ref="tagSetList" />
           <PacbioTagSetItem />
         </div>
+        <div v-if="sourceIndex == 0">
+          <PacbioPlateSelectedList />
+        </div>
+        <div v-else><PacbioTubeSelectedList /></div>
         <div>
           <PacbioPoolEdit />
         </div>

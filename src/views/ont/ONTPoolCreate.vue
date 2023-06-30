@@ -1,7 +1,7 @@
 <template>
   <DataFetcher id="pool" :fetcher="provider">
-    <div class="flex flex-row">
-      <div class="flex flex-col w-1/2 p-5">
+    <div class="flex flex-col pt-4">
+      <div class="flex flex-col w-1/2 px-4">
         <traction-menu :border="true">
           <traction-menu-item
             v-for="(tabTitle, index) in tabTitles"
@@ -12,25 +12,29 @@
             >{{ tabTitle }}</traction-menu-item
           >
         </traction-menu>
+      </div>
+      <div class="w-full grid grid-cols-2 space-x-2 mt-4">
         <div v-if="sourceIndex == 0" class="flex flex-col">
           <traction-section title="Plates" number="1a" class="mb-2">
             <div class="text-left">Find plates</div>
             <LabwareFinder :fetcher="findOntPlate" filter="barcode" class="mb-6" />
           </traction-section>
-          <OntPlateSelectedList class="mb-2" />
         </div>
         <div v-else>
           <traction-section title="Tubes" number="2a" class="mb-2">
             <div class="text-left">Find Tubes</div>
             <LabwareFinder :fetcher="findOntTube" filter="barcode" class="mb-6" />
           </traction-section>
-          <OntTubeSelectedList class="mb-2" />
         </div>
-      </div>
-      <div class="flex flex-col w-1/2 mt-6 gap-y-4">
         <div>
           <OntTagSetList ref="tagSetList" />
           <OntTagSetItem />
+        </div>
+        <div v-if="sourceIndex == 0" class="flex flex-col">
+          <OntPlateSelectedList class="mb-2" />
+        </div>
+        <div v-else>
+          <OntTubeSelectedList class="mb-2" />
         </div>
         <div>
           <OntPoolEdit />
