@@ -2,8 +2,8 @@
   <traction-section title="Plates" class="min-w-[500px]">
     <div class="flex flex-row w-full">
       <div v-for="plateNumber in labware.plateCount" :key="plateNumber" class="w-full">
-        <div class="text-left mx-5 mb-5">
-          <traction-label classes="text-left">Plate number: {{ plateNumber }}</traction-label>
+        <div class="text-left mx-5 mb-5 flex flex-col">
+          <traction-label classes="text-left my-2">Plate number: {{ plateNumber }}</traction-label>
           <traction-label classes="text-left">Sequencing Kit Box Barcode:</traction-label>
           <traction-input
             id="sequencing-kit-box-barcode"
