@@ -1,13 +1,14 @@
 import { handleResponse } from '@/api/ResponseHelper'
-import { groupIncludedByResource, extractAttributes } from '@/api/JsonApi'
-import { newRun, createRunType, RunTypeEnum, newWell, defaultWellAttributes } from './run'
+import { groupIncludedByResource, extractAttributes, extractPlateData } from '@/api/JsonApi'
+import { newRun, createRunType, RunTypeEnum, newWell, defaultWellAttributes, newPlate } from './run'
+import { PacbioRunSystems } from '@/lib/PacbioRunSystems'
 
 // Asynchronous update of state.
 export default {
   /**
    * Retrieves a list of pacbio smrt_link_versions and populates the store.
-   * @param rootState the vuex rootState object. Provides access to current state
    * @param commit the vuex commit object. Provides access to mutations
+   * @param rootState the vuex rootState object. Provides access to current state
    * @returns { success, errors }. Was the request successful? were there any errors?
    */
   fetchSmrtLinkVersions: async ({ commit, rootState }) => {
@@ -25,8 +26,8 @@ export default {
 
   /**
    * Retrieves a list of pools based on a filter
-   * @param rootState the vuex rootState object. Provides access to current state
    * @param commit the vuex commit object. Provides access to mutations
+   * @param getters Provides access to the vuex getters
    * @param filter the barcode(s) to find the pools for
    * @returns { success, errors }. Was the request successful? were there any errors?
    */
@@ -71,8 +72,9 @@ export default {
 
   /**
    * Retrieves a pacbio run and populates the store.
-   * @param rootState the vuex rootState object. Provides access to current state
    * @param commit the vuex commit object. Provides access to mutations
+   * @param rootState the vuex rootState object. Provides access to current state
+   * @param id The id of the existing run
    * @returns { success, errors }. Was the request successful? were there any errors?
    */
   fetchRun: async ({ commit, rootState }, { id }) => {
@@ -81,7 +83,7 @@ export default {
       id,
       // This is long but we want to include pool data
       include:
-        'plate.wells.pools.tube,plate.wells.pools.libraries.tag,plate.wells.pools.libraries.request,smrt_link_version',
+        'plates.wells.pools.tube,plates.wells.pools.libraries.tag,plates.wells.pools.libraries.request,smrt_link_version',
       fields: {
         requests: 'sample_name',
         tubes: 'barcode',
@@ -95,6 +97,7 @@ export default {
 
     if (success) {
       const {
+        plates,
         wells,
         pools,
         tubes,
@@ -105,9 +108,17 @@ export default {
       } = groupIncludedByResource(included)
 
       const smrtLinkVersion = extractAttributes(smrt_link_version)
+      const plateData = extractPlateData(plates, wells)
 
-      commit('populateRun', data)
-      commit('populateWells', wells)
+      // Handles edge case for when we have revio with only 1 plate
+      if (
+        data.attributes.system_name.includes(PacbioRunSystems.Revio.name) &&
+        Object.values(plateData).length == 1
+      ) {
+        plateData['2'] = newPlate(2)
+      }
+
+      commit('populateRun', { id: data.id, attributes: data.attributes, plates: plateData })
       commit('populatePools', pools)
       commit('setLibraries', libraries)
       commit('setTags', tags)
@@ -125,11 +136,11 @@ export default {
    * @param state {runType, runs, wells}. The current runType, run and it's wells
    * @returns { success, errors }. Was the request successful? were there any errors?
    */
-  saveRun: async ({ rootState, state: { runType, run, wells, smrtLinkVersion } }) => {
+  saveRun: async ({ rootState, state: { runType, run, smrtLinkVersion } }) => {
     const request = rootState.api.traction.pacbio.runs
 
     // based on the runType create the payload and the promise
-    const payload = runType.payload({ run, wells, smrtLinkVersion })
+    const payload = runType.payload({ run, smrtLinkVersion })
     const promise = runType.promise({ request, payload })
     const response = await handleResponse(promise)
 
@@ -141,12 +152,10 @@ export default {
   /**
    * Sets the current run. If it is a new run it will be created.
    * If it is an existing run it will be updated.
-   * @param dispatch We need to call another action
    * @param commit the vuex commit object. Provides access to mutations
+   * @param dispatch We need to call another action
    * @param getters Provides access to the vuex getters
    * @param id The id of the run. It will be new or existing
-   * @params getters
-   * @param state. The current state
    * @returns { success, errors }. Was the action successful? were there any errors?
    *
    */
@@ -159,9 +168,12 @@ export default {
     if (runType.type === RunTypeEnum.New) {
       // ensure that the smrt link version id is set to the default
       // eslint-disable-next-line no-unused-vars
-      const { id: _id, ...attributes } = newRun()
 
-      commit('populateRun', { id, attributes })
+      const { id, ...attributes } = newRun()
+      const plates = attributes.plates
+      delete attributes.plates
+
+      commit('populateRun', { id, attributes, plates })
       commit('populateSmrtLinkVersion', getters.defaultSmrtLinkVersion)
 
       // success will always be true and errors will be empty
@@ -181,18 +193,33 @@ export default {
    * If it is an existing well it will be retrieved
    * @param state the vuex rootState object. Provides access to current state
    * @param position The position of the well
-   * @param attributes Any additional attributes
+   * @param plateNumber The plate number of the well
    */
-  getOrCreateWell: ({ state }, { position }) => {
-    return state.wells[position] || newWell({ position, ...state.defaultWellAttributes })
+  getOrCreateWell: ({ state }, { position, plateNumber }) => {
+    return (
+      state.run.plates[plateNumber].wells[position] ||
+      newWell({ position, ...state.defaultWellAttributes })
+    )
   },
 
   /**
    * Updates the well
    * @param commit the vuex commit object. Provides access to mutations
+   * @param well The well to update
+   * @param plateNumber The plate number of the well
    */
-  updateWell: ({ commit }, well) => {
-    commit('updateWell', well)
+  updateWell: ({ commit }, { well, plateNumber }) => {
+    commit('updateWell', { well: well, plateNumber: plateNumber })
+  },
+
+  /**
+   * "Deletes" the well (adds `_destroy` to the well, a flag for the service)
+   * @param commit the vuex commit object. Provides access to mutations
+   * @param well The well to update
+   * @param plateNumber The plate number of the well
+   */
+  deleteWell: ({ commit }, { well, plateNumber }) => {
+    commit('deleteWell', { well: well, plateNumber: plateNumber })
   },
 
   /**

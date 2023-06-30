@@ -1,8 +1,22 @@
 import Vue from 'vue'
 
 /**
+ *
+ * @param {String} plateNumber The number of the plate e.g. 1
+ * @returns {Object} A new plate
+ */
+const newPlate = (plateNumber) => {
+  return {
+    plate_number: plateNumber,
+    sequencing_kit_box_barcode: '',
+    wells: {},
+  }
+}
+
+/**
  * @returns {Object} the default attributes for a run
- * id new inidcates a new record
+ * id 'new' inidcates a new record
+ * Currently defaults to one plate, for a Sequel IIe run
  **/
 const runAttributes = {
   id: 'new',
@@ -10,6 +24,10 @@ const runAttributes = {
   sequencing_kit_box_barcode: null,
   dna_control_complex_box_barcode: null,
   comments: null,
+  plates: {
+    1: newPlate(1),
+    2: newPlate(2),
+  },
 }
 
 /*
@@ -18,14 +36,11 @@ const runAttributes = {
 const requiredAttributes = () => ['sequencing_kit_box_barcode', 'dna_control_complex_box_barcode']
 
 /**
- * @param {attributes} - Object of attributes for an existing run
  * @returns {Object} - A Fresh Pacbio Sequencing Run.
- * If id is nil it will be marked as a new run
  */
-const newRun = (attributes) => {
+const newRun = () => {
   return {
     ...runAttributes,
-    ...attributes,
   }
 }
 
@@ -103,19 +118,53 @@ const valid = ({ run }) => {
   return Object.keys(run.errors || {}).length === 0
 }
 
+const createWellPayload = (position, well) => {
+  if (position.includes('_destroy')) {
+    well._destroy = true
+  }
+  well.pool_ids = well.pools
+  return well
+}
+
+const createPlatePayload = (plate, plateNumber) => {
+  const plateId = plate.id || ''
+
+  const wells_attributes = Object.keys(plate.wells).map((position) => {
+    const well = plate.wells[position]
+    return createWellPayload(position, well)
+  })
+
+  // If there is no plate id and no wells then return null
+  if (!plateId && wells_attributes.length === 0) {
+    return null
+  }
+
+  return {
+    id: plateId,
+    plate_number: plateNumber,
+    sequencing_kit_box_barcode: plate.sequencing_kit_box_barcode,
+    wells_attributes: [...wells_attributes],
+  }
+}
+
 /**
  * @param {id} - An Integer for the id of the run
  * @param {run} - A pacbio sequencing run object minus id
- * @param {wells} - An array of wells
- * @returns {Object} - A request payload
- * @example { data: { type: 'runs', id: 1, attributes: { system_name: 'Sequel IIe',
-  sequencing_kit_box_barcode: 'ABC123',
-  dna_control_complex_box_barcode: 'BCD234',
-  smrt_link_version_id: 1,}, wells: [
-    { ...well1}, { ...well2}
-  ]}}
+ * @param {smrtLinkVersion} - The SMRT Link Version of the run
  **/
-const createPayload = ({ id, run, wells, smrtLinkVersion }) => {
+const createRunPayload = ({ id, run, smrtLinkVersion }) => {
+  const plates = run.plates
+  delete run.plates
+
+  const platesAttributes = Object.values(plates).map((plate) => {
+    return createPlatePayload(plate, plate.plate_number)
+  })
+
+  // Currently remove sequencing_kit_box_barcode from a run
+  // because this will be moved to plate attributes
+  // once multiple plates for a run are implemented
+  delete run.sequencing_kit_box_barcode
+
   return {
     data: {
       type: 'runs',
@@ -123,7 +172,7 @@ const createPayload = ({ id, run, wells, smrtLinkVersion }) => {
       attributes: {
         ...run,
         pacbio_smrt_link_version_id: smrtLinkVersion.id,
-        well_attributes: [...wells],
+        plates_attributes: platesAttributes,
       },
     },
   }
@@ -145,10 +194,11 @@ const newRunType = {
   label: 'Create Run',
 
   // returns the payload slightly different for new and existing runs
-  payload({ run, wells, smrtLinkVersion }) {
+  payload({ run, smrtLinkVersion }) {
     // eslint-disable-next-line no-unused-vars
     const { id, ...attributes } = run
-    return createPayload({ run: attributes, wells: Object.values(wells), smrtLinkVersion })
+
+    return createRunPayload({ run: attributes, smrtLinkVersion })
   },
 
   // returns a promise different for create or update
@@ -163,10 +213,11 @@ const existingRunType = {
   theme: 'update',
   action: 'update',
   label: 'Update Run',
-  payload({ run, wells, smrtLinkVersion }) {
+  payload({ run, smrtLinkVersion }) {
     // eslint-disable-next-line no-unused-vars
     const { id, ...attributes } = run
-    return createPayload({ id, run: attributes, wells: Object.values(wells), smrtLinkVersion })
+
+    return createRunPayload({ id, run: attributes, smrtLinkVersion })
   },
   // the function handle should be the same for create and update
   promise({ payload, request }) {
@@ -191,9 +242,11 @@ export {
   valid,
   defaultWellAttributes,
   newWell,
-  createPayload,
+  newPlate,
+  createRunPayload,
   RunTypeEnum,
   createRunType,
   newRunType,
   existingRunType,
+  createPlatePayload,
 }

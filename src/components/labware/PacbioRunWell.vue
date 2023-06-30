@@ -24,12 +24,17 @@
 </template>
 
 <script>
-import { mapActions, mapMutations, mapGetters } from 'vuex'
+import { mapActions, mapGetters } from 'vuex'
+
 export default {
   name: 'PacbioRunWell',
   props: {
     position: {
       type: String,
+      required: true,
+    },
+    plateNumber: {
+      type: Number,
       required: true,
     },
     interactive: {
@@ -57,7 +62,7 @@ export default {
           ? 'ring ring-pink-600 ring-offset-1'
           : 'border border-gray-800',
         this.interactive ? 'cursor-pointer' : '',
-        'flex flex-col justify-center mx-auto rounded-full text-xs font-semibold aspect-square w-full select-none',
+        'flex flex-col justify-center mx-auto rounded-full text-xs font-semibold aspect-square w-full select-none transition duration-200 ease-out',
       ]
     },
     required_metadata_fields() {
@@ -99,7 +104,7 @@ export default {
       return this.required_metadata_fields.some((field) => this.storeWell[field])
     },
     storeWell() {
-      return this.getWell(this.position)
+      return this.getWell(this.position, this.plateNumber)
     },
     status() {
       if (this.hasPools && this.hasValidMetadata) {
@@ -114,10 +119,9 @@ export default {
     },
   },
   methods: {
-    ...mapActions('traction/pacbio/runCreate', ['getOrCreateWell']),
-    ...mapMutations('traction/pacbio/runCreate', ['updateWell']),
+    ...mapActions('traction/pacbio/runCreate', ['getOrCreateWell', 'updateWell']),
     onClick() {
-      this.$emit('click', this.position)
+      this.$emit('click', this.position, this.plateNumber)
     },
     async drop(event) {
       this.hover = false
@@ -125,10 +129,13 @@ export default {
     },
     // It looks like all actions are async even if they do nothing async
     async updatePoolBarcode(barcode) {
-      const well = await this.getOrCreateWell({ position: this.position })
+      const well = await this.getOrCreateWell({
+        position: this.position,
+        plateNumber: this.plateNumber,
+      })
       const { id } = this.poolByBarcode(barcode)
       well.pools.push(id)
-      this.updateWell(well)
+      this.updateWell({ well: well, plateNumber: this.plateNumber })
     },
   },
 }

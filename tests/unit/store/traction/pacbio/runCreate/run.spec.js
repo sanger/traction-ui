@@ -5,9 +5,11 @@ import {
   valid,
   defaultWellAttributes,
   newWell,
-  createPayload,
+  createRunPayload,
   RunTypeEnum,
   createRunType,
+  createPlatePayload,
+  newPlate,
 } from '@/store/traction/pacbio/runCreate/run'
 
 const existingRun = {
@@ -37,6 +39,9 @@ const wells = {
 }
 
 const wellValues = Object.values(wells)
+const plateValues = { 1: { plate_number: '1', wells: wellValues } }
+
+const plateNumber = 1
 
 describe('run.js', () => {
   describe('newRun', () => {
@@ -44,6 +49,11 @@ describe('run.js', () => {
       const run = newRun()
       expect(run.id).toEqual('new')
       expect(run.system_name).toBeTypeOf('string')
+      expect(run.sequencing_kit_box_barcode).toEqual(null)
+      expect(run.dna_control_complex_box_barcode).toEqual(null)
+      expect(run.comments).toEqual(null)
+      expect(run.plates[plateNumber].sequencing_kit_box_barcode).toEqual('')
+      expect(run.plates[plateNumber].wells).toEqual({})
     })
   })
 
@@ -101,22 +111,78 @@ describe('run.js', () => {
     })
   })
 
-  describe('createPayload', () => {
+  describe('createPlatePayload', () => {
+    it('returns the plate data', () => {
+      const well = { ...newWell({ position: 'A2' }), pools: [1, 2] }
+      const plate = {
+        ...newPlate(1),
+        id: 1,
+        pacbio_run_id: 2,
+        wells: {
+          A1: well,
+        },
+      }
+
+      const platePayload = createPlatePayload(plate, plateNumber)
+
+      expect(platePayload.id).toEqual(1)
+      expect(platePayload.plate_number).toEqual(1)
+      expect(platePayload.wells_attributes).toEqual([{ ...well, pool_ids: [1, 2] }])
+    })
+
+    it('returns the plate data, including wells to be destroyed', () => {
+      const well = { ...newWell({ position: 'A2' }), pools: [1, 2] }
+      const plate = {
+        ...newPlate(1),
+        id: 1,
+        pacbio_run_id: 2,
+        wells: {
+          A1_destroy: well,
+        },
+      }
+
+      const platePayload = createPlatePayload(plate, plateNumber)
+
+      expect(platePayload.id).toEqual(1)
+      expect(platePayload.plate_number).toEqual(1)
+      expect(platePayload.wells_attributes).toEqual([{ ...well, pool_ids: [1, 2], _destroy: true }])
+    })
+
+    it('returns null if empty plate data is provided', () => {
+      const plate = {
+        ...newPlate(1),
+        id: undefined,
+        pacbio_run_id: 3,
+        wells: {},
+      }
+
+      const platePayload = createPlatePayload(plate, plateNumber)
+
+      expect(platePayload).toBe(null)
+    })
+  })
+
+  describe('createRunPayload', () => {
     it('for a new run', () => {
       const aRun = newRun()
       // eslint-disable-next-line no-unused-vars
       const { id, ...attributes } = aRun
-      const payload = createPayload({
+      attributes.plates = plateValues
+      const payload = createRunPayload({
         run: attributes,
-        wells: wellValues,
         smrtLinkVersion: smrtLinkVersions['1'],
       })
+
+      const platesAttributes = Object.values(plateValues).map((plate) => {
+        return createPlatePayload(plate, plate.plate_number)
+      })
+
       expect(payload).toEqual({
         data: {
           type: 'runs',
           attributes: {
             pacbio_smrt_link_version_id: smrtLinkVersions['1'].id,
-            well_attributes: wellValues,
+            plates_attributes: platesAttributes,
             ...attributes,
           },
         },
@@ -126,19 +192,24 @@ describe('run.js', () => {
     it('for an existing run', () => {
       const aRun = newRun()
       const { id, ...attributes } = aRun
-      const payload = createPayload({
+      attributes.plates = plateValues
+      const payload = createRunPayload({
         id,
         run: attributes,
-        wells: wellValues,
         smrtLinkVersion: smrtLinkVersions['1'],
       })
+
+      const platesAttributes = Object.values(plateValues).map((plate) => {
+        return createPlatePayload(plate, plate.plate_number)
+      })
+
       expect(payload).toEqual({
         data: {
           type: 'runs',
           id,
           attributes: {
             pacbio_smrt_link_version_id: smrtLinkVersions['1'].id,
-            well_attributes: wellValues,
+            plates_attributes: platesAttributes,
             ...attributes,
           },
         },
@@ -167,12 +238,10 @@ describe('run.js', () => {
         const aRun = newRun()
         // eslint-disable-next-line no-unused-vars
         const { id, ...attributes } = aRun
-        expect(
-          runType.payload({ run: aRun, wells, smrtLinkVersion: smrtLinkVersions['1'] }),
-        ).toEqual(
-          createPayload({
+
+        expect(runType.payload({ run: aRun, smrtLinkVersion: smrtLinkVersions['1'] })).toEqual(
+          createRunPayload({
             run: attributes,
-            wells: wellValues,
             smrtLinkVersion: smrtLinkVersions['1'],
           }),
         )
@@ -214,13 +283,11 @@ describe('run.js', () => {
         const aRun = newRun()
         // eslint-disable-next-line no-unused-vars
         const { id, ...attributes } = aRun
-        expect(
-          runType.payload({ run: aRun, wells, smrtLinkVersion: smrtLinkVersions['1'] }),
-        ).toEqual(
-          createPayload({
+
+        expect(runType.payload({ run: aRun, smrtLinkVersion: smrtLinkVersions['1'] })).toEqual(
+          createRunPayload({
             id,
             run: attributes,
-            wells: wellValues,
             smrtLinkVersion: smrtLinkVersions['1'],
           }),
         )

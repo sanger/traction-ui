@@ -109,13 +109,13 @@ export default {
         { key: 'name', label: 'Name', sortable: true },
         { key: 'state', label: 'State', sortable: true },
         {
-          key: 'sequencing_kit_box_barcode',
-          label: 'Sequencing Kit BB',
+          key: 'dna_control_complex_box_barcode',
+          label: 'DNA Control Complex BB',
           sortable: true,
         },
         {
-          key: 'dna_control_complex_box_barcode',
-          label: 'DNA Control Complex BB',
+          key: 'sequencing_kit_box_barcodes',
+          label: 'Sequencing Kit BB',
           sortable: true,
         },
         { key: 'system_name', label: 'System Name', sortable: true },

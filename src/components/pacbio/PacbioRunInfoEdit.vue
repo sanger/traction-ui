@@ -16,17 +16,6 @@
         />
       </traction-field-group>
 
-      <traction-field-group label="Sequencing Kit Box Barcode" for="sequencing-kit-box-barcode">
-        <traction-input
-          id="sequencing-kit-box-barcode"
-          v-model="runItem.sequencing_kit_box_barcode"
-          :value="runItem.sequencing_kit_box_barcode"
-          placeholder="Sequencing Kit Box Barcode"
-          type="text"
-          data-attribute="sequencing_kit_box_barcode"
-        />
-      </traction-field-group>
-
       <traction-field-group
         label="DNA Control Complex Box Barcode"
         for="dna-control-complex-box-barcode"
@@ -50,6 +39,7 @@
           title="System Name"
           :options="systemNameOptions"
           data-attribute="system_name"
+          :disabled="!newRecord"
         />
       </traction-field-group>
 
@@ -82,12 +72,18 @@
 <script>
 import { createNamespacedHelpers } from 'vuex'
 const { mapGetters, mapActions } = createNamespacedHelpers('traction/pacbio/runCreate')
+import { PacbioRunSystems } from '@/lib/PacbioRunSystems'
 
 export default {
   name: 'PacbioRunInfoEdit',
+  props: {
+    newRecord: {
+      type: Boolean,
+    },
+  },
   data() {
     return {
-      systemNameOptions: ['Sequel IIe', 'Revio'],
+      systemNameOptions: Object.values(PacbioRunSystems).map((system) => system.name),
     }
   },
   computed: {
