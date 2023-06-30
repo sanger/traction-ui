@@ -142,7 +142,7 @@ export default {
       flowcell_id_field_colour() {
         return this.isFlowcellIdExists
           ? this.flowcellIdValidationError.length === 0
-            ? 'border-3 border-solid border-green-600'
+            ? 'border-3 border-solid border-green-400'
             : 'border-3 border-solid border-red-600 focus:border-red-600'
           : ''
       },
@@ -150,7 +150,7 @@ export default {
       flowcell_barcode_field_colour() {
         return this.isBarcodeExists
           ? this.barcodeState
-            ? 'border-3 border-solid border-green-600'
+            ? 'border-3 border-solid border-green-400'
             : 'border-3 border-solid border-red-600 focus:border-red-600'
           : ''
       },
@@ -167,21 +167,21 @@ export default {
         const validBarcodeId = this.isBarcodeExists && this.barcodeState
 
         if (validFlowId && validBarcodeId) {
-          return 'border border-3 border-success'
+          return 'border border-3 border-green-400'
         }
 
         if (
           (validFlowId && !this.isBarcodeExists) ||
           (validBarcodeId && !this.isFlowcellIdExists)
         ) {
-          return 'border border-3 border-warning'
+          return 'border border-3 border-yellow-400'
         }
 
         if (
           this.flowcellIdValidationError.length > 0 ||
           (this.isBarcodeExists && !this.barcodeState)
         ) {
-          return 'border border-3 border-danger'
+          return 'border border-3 border-red-600'
         }
       },
     }),
