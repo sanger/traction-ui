@@ -84,11 +84,7 @@ export default {
   data() {
     return {
       fields: [
-        { 
-          key: 'selected',
-          label: '\u2713',
-          formatter: (obj) => (obj['selected'] ? '✓' : ''),
-        },
+        { key: 'selected', label: '\u2713' },
         { key: 'pool.id', label: 'pool ID', sortable: true },
         { key: 'id', label: 'Library ID', sortable: true },
         {
