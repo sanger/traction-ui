@@ -18,16 +18,18 @@ const newPlate = (plateNumber) => {
  * id 'new' inidcates a new record
  * Currently defaults to one plate, for a Sequel IIe run
  **/
-const runAttributes = {
-  id: 'new',
-  system_name: 'Sequel IIe',
-  sequencing_kit_box_barcode: null,
-  dna_control_complex_box_barcode: null,
-  comments: null,
-  plates: {
-    1: newPlate(1),
-    2: newPlate(2),
-  },
+const runAttributes = () => {
+  return {
+    id: 'new',
+    system_name: 'Sequel IIe',
+    sequencing_kit_box_barcode: null,
+    dna_control_complex_box_barcode: null,
+    comments: null,
+    plates: {
+      1: newPlate(1),
+      2: newPlate(2),
+    },
+  }
 }
 
 /*
@@ -40,7 +42,7 @@ const requiredAttributes = () => ['sequencing_kit_box_barcode', 'dna_control_com
  */
 const newRun = () => {
   return {
-    ...runAttributes,
+    ...runAttributes(),
   }
 }
 
