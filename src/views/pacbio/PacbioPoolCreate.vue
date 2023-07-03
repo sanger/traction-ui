@@ -13,7 +13,7 @@
           >
         </traction-menu>
       </div>
-      <div class="w-full grid grid-cols-2 space-x-2 mt-4">
+      <div class="w-full grid grid-cols-2 gap-x-2 mt-4">
         <div v-if="sourceIndex == 0" class="flex flex-col">
           <traction-section title="Plates" number="1a">
             <div class="text-left">Find Plates</div>

@@ -31,7 +31,10 @@
             :href="generateSampleSheetPath(row.item.id)"
             class="text-primary p-1 mr-1 whitespace-nowrap"
           >
-            <traction-button :id="generateId('generate-sample-sheet', row.item.id)">
+            <traction-button
+              :id="generateId('generate-sample-sheet', row.item.id)"
+              class="bg-sp-400 hover:bg-sp-300"
+            >
               Sample Sheet <DownloadIcon class="pl-1" />
             </traction-button>
           </a>

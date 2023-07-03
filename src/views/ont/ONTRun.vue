@@ -24,9 +24,7 @@
       >
     </div>
     <ONTRunInformation></ONTRunInformation>
-    <div class="mt-4">
-      <ONTRunInstrumentFlowcells></ONTRunInstrumentFlowcells>
-    </div>
+    <ONTRunInstrumentFlowcells></ONTRunInstrumentFlowcells>
   </DataFetcher>
 </template>
 <script>

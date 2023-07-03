@@ -1,7 +1,6 @@
 <template>
   <DataFetcher :fetcher="setLibraries">
     <FilterCard :fetcher="setLibraries" :filter-options="filterOptions" />
-    <div class="flex mt-2 mb-4 border" />
     <div class="flex flex-col">
       <div class="clearfix">
         <traction-button

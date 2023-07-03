@@ -1,7 +1,6 @@
 <template>
   <DataFetcher :fetcher="fetchPacbioRuns">
     <FilterCard :fetcher="fetchPacbioRuns" :filter-options="filterOptions" />
-    <div class="flex mt-2 mb-4 border" />
     <div class="flex flex-col">
       <div class="clearfix">
         <traction-button
@@ -82,7 +81,10 @@
             :href="generateSampleSheetPath(row.item.id)"
             class="text-primary"
           >
-            <traction-button :id="generateId('generate-sample-sheet', row.item.id)">
+            <traction-button
+              :id="generateId('generate-sample-sheet', row.item.id)"
+              class="bg-sp-400 hover:bg-sp-300"
+            >
               Generate Sample Sheet <DownloadIcon class="pl-1" />
             </traction-button>
           </a>
