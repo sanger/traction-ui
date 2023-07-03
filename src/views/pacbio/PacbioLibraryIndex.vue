@@ -40,8 +40,8 @@
         @filtered="onFiltered"
         @row-selected="onRowSelected"
       >
-        <template #cell(selected)="{ selected }">
-          <template v-if="selected">
+        <template #cell(selected)="selectedCell">
+          <template v-if="selectedCell.selected">
             <span>&check;</span>
             <span class="sr-only">Selected</span>
           </template>
@@ -84,7 +84,11 @@ export default {
   data() {
     return {
       fields: [
-        { key: 'selected', label: '\u2713' },
+        { 
+          key: 'selected',
+          label: '\u2713',
+          formatter: (obj) => (obj['selected'] ? '✓' : ''),
+        },
         { key: 'pool.id', label: 'pool ID', sortable: true },
         { key: 'id', label: 'Library ID', sortable: true },
         {
