@@ -43,7 +43,7 @@ import { PacbioRunSystems } from '@/lib/PacbioRunSystems'
 import { mapGetters } from 'vuex'
 
 export default {
-  name: 'PacbioRunPlate',
+  name: 'PacbioRunPlateList',
   components: {
     WellEdit,
     LabwareMap,

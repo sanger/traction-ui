@@ -1,10 +1,10 @@
 import { mount, localVue, store } from '@support/testHelper'
-import PacbioRunPlate from '@/components/pacbio/PacbioRunPlate'
+import PacbioRunPlateList from '@/components/pacbio/PacbioRunPlateList'
 import { newWell } from '@/store/traction/pacbio/runCreate/run'
 import { it } from 'vitest'
 import { LabwareTypes } from '@/lib/LabwareTypes'
 
-describe('PacbioRunPlate.vue', () => {
+describe('PacbioRunPlateList.vue', () => {
   let plate, wrapper, smrtLinkVersions
 
   const REVIO = 'Revio'
@@ -33,7 +33,7 @@ describe('PacbioRunPlate.vue', () => {
         },
       }
 
-      wrapper = mount(PacbioRunPlate, {
+      wrapper = mount(PacbioRunPlateList, {
         localVue,
         store,
       })
@@ -81,7 +81,7 @@ describe('PacbioRunPlate.vue', () => {
         },
       }
 
-      wrapper = mount(PacbioRunPlate, {
+      wrapper = mount(PacbioRunPlateList, {
         localVue,
         store,
       })
