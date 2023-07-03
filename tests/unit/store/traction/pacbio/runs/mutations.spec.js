@@ -18,22 +18,22 @@ describe('mutate', () => {
         type: 'runs',
         name: 'aname',
         state: 'pending',
-        sequencing_kit_box_barcode: 'DM000110086180012311',
         dna_control_complex_box_barcode: 'Lxxxxx10171760012311',
         system_name: 'Sequel I',
         pacbio_smrt_link_version_id: 1,
         created_at: '11/09/2019 01:11',
+        plates: ['1'],
       },
       2: {
         id: '2',
         type: 'runs',
         name: 'anothername',
         state: 'started',
-        sequencing_kit_box_barcode: 'DM000110086180012312',
         dna_control_complex_box_barcode: 'Lxxxxx10171760012312',
         system_name: 'Sequel II',
         pacbio_smrt_link_version_id: 1,
         created_at: '12/09/2019 02:22',
+        plates: ['2'],
       },
     }
     Mutations.setRuns(state, runs)
@@ -48,7 +48,6 @@ describe('mutate', () => {
       attributes: {
         name: 'a new name',
         state: 'complete',
-        sequencing_kit_box_barcode: 'DM000110086180012312',
         dna_control_complex_box_barcode: 'Lxxxxx10171760012312',
         system_name: 'Sequel II',
         pacbio_smrt_link_version_id: 1,

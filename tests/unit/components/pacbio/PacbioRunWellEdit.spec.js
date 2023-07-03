@@ -1,7 +1,7 @@
 import { mount, localVue, store } from '@support/testHelper'
 import PacbioRunWellEdit from '@/components/pacbio/PacbioRunWellEdit'
 import { beforeEach, describe, expect } from 'vitest'
-import { newWell } from '@/store/traction/pacbio/runCreate/run'
+import { newWell, newPlate } from '@/store/traction/pacbio/runCreate/run'
 
 // They are like the following in the store; not an array.
 const smrtLinkVersions = {
@@ -18,9 +18,10 @@ const smrtLinkVersions = {
 }
 
 const propsData = {
-  position: 'A1',
   isStatic: true,
 }
+const position = 'A1'
+const plateNumber = 1
 
 store.state.traction.pacbio.runCreate.resources.smrtLinkVersions = smrtLinkVersions
 
@@ -41,8 +42,13 @@ describe('PacbioWellEdit', () => {
     describe('if the SMRT Link version is v11', () => {
       beforeEach(async () => {
         store.state.traction.pacbio.runCreate.smrtLinkVersion = smrtLinkVersions['1']
-        store.state.traction.pacbio.runCreate.wells = {
-          A1: newWell({ position: propsData.position }),
+        store.state.traction.pacbio.runCreate.run.plates = {
+          1: {
+            ...newPlate(1),
+            wells: {
+              A1: newWell({ position: position }),
+            },
+          },
         }
         wrapper = mount(PacbioRunWellEdit, {
           localVue,
@@ -52,7 +58,8 @@ describe('PacbioWellEdit', () => {
           },
         })
         wrapper.vm.isShow = true
-        wrapper.vm.positionData = propsData.position
+        wrapper.vm.position = position
+        wrapper.vm.plateNumber = plateNumber
       })
 
       describe('has the correct options', () => {
@@ -119,8 +126,13 @@ describe('PacbioWellEdit', () => {
     describe('if the SMRT Link version is v12_revio', () => {
       beforeEach(() => {
         store.state.traction.pacbio.runCreate.smrtLinkVersion = smrtLinkVersions['2']
-        store.state.traction.pacbio.runCreate.wells = {
-          A1: newWell({ position: propsData.position }),
+        store.state.traction.pacbio.runCreate.run.plates = {
+          1: {
+            ...newPlate(1),
+            wells: {
+              A1: newWell({ position: position }),
+            },
+          },
         }
         wrapper = mount(PacbioRunWellEdit, {
           localVue,
@@ -128,7 +140,8 @@ describe('PacbioWellEdit', () => {
           propsData,
         })
         wrapper.vm.isShow = true
-        wrapper.vm.positionData = propsData.position
+        wrapper.vm.position = position
+        wrapper.vm.plateNumber = plateNumber
       })
 
       describe('has the correct options', () => {
@@ -198,7 +211,7 @@ describe('PacbioWellEdit', () => {
     describe('well type', () => {
       it('if it doesnt exist in state (new)', async () => {
         store.state.traction.pacbio.runCreate.smrtLinkVersion = smrtLinkVersions['1']
-        store.state.traction.pacbio.runCreate.wells = {}
+        store.state.traction.pacbio.runCreate.run.plates = { 1: newPlate(1) }
 
         wrapper = mount(PacbioRunWellEdit, {
           localVue,
@@ -207,7 +220,8 @@ describe('PacbioWellEdit', () => {
         })
 
         wrapper.vm.isShow = true
-        wrapper.vm.positionData = propsData.position
+        wrapper.vm.position = position
+        wrapper.vm.plateNumber = plateNumber
         await wrapper.vm.$nextTick()
         const button = wrapper.find('[data-action=create-well]')
         expect(button.text()).toEqual('Create')
@@ -215,8 +229,14 @@ describe('PacbioWellEdit', () => {
 
       it('if it is an existing well', async () => {
         store.state.traction.pacbio.runCreate.smrtLinkVersion = smrtLinkVersions['1']
-        store.state.traction.pacbio.runCreate.wells = {
-          A1: newWell({ attributes: { id: 1 }, position: propsData.position }),
+
+        store.state.traction.pacbio.runCreate.run.plates = {
+          1: {
+            ...newPlate(1),
+            wells: {
+              A1: newWell({ attributes: { id: 1 }, position: position }),
+            },
+          },
         }
 
         wrapper = mount(PacbioRunWellEdit, {
@@ -226,7 +246,8 @@ describe('PacbioWellEdit', () => {
         })
 
         wrapper.vm.isShow = true
-        wrapper.vm.positionData = propsData.position
+        wrapper.vm.position = position
+        wrapper.vm.plateNumber = plateNumber
         await wrapper.vm.$nextTick()
         const button = wrapper.find('[data-action=update-well]')
         expect(button.text()).toEqual('Update')
@@ -235,14 +256,21 @@ describe('PacbioWellEdit', () => {
 
     describe('pools', () => {
       it('well should have correct pools when updated', async () => {
-        const well = newWell({ position: propsData.position, ...{ id: 1, pools: [1] } })
+        const well = newWell({ position: position, ...{ id: 1, pools: [1] } })
 
         store.state.traction.pacbio.runCreate = {
           pools: { 1: { id: 1, tube: 1 }, 2: { id: 2, tube: 2 } },
           tubes: { 1: { barcode: 'TRAC-1' }, 2: { barcode: 'TRAC-2' } },
           smrtLinkVersion: smrtLinkVersions['1'],
-          wells: {
-            A1: well,
+          run: {
+            plates: {
+              1: {
+                plate_number: 1,
+                wells: {
+                  A1: well,
+                },
+              },
+            },
           },
         }
 
@@ -253,7 +281,7 @@ describe('PacbioWellEdit', () => {
         })
 
         // This method sets the well data for the modal on show
-        await wrapper.vm.showModalForPosition()
+        await wrapper.vm.showModalForPositionAndPlate('A1', 1)
 
         expect(wrapper.vm.poolIds).toEqual([1])
 

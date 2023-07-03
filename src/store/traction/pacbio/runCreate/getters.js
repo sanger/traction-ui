@@ -57,7 +57,9 @@ export default {
 
   runType: (state) => state.runType || {},
 
-  getWell: (state) => (position) => state.wells[position],
+  getWell: (state) => (position, plateNumber) => {
+    return state.run.plates[plateNumber]?.wells[position]
+  },
 
   runDefaultWellAttributes: (state) => state.defaultWellAttributes || {},
 }

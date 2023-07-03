@@ -1,6 +1,6 @@
 <template>
   <traction-modal ref="well-modal" :static="isStatic" size="lg" :visible="isShow" @cancel="hide">
-    <template #modal-title> Add Pool to Well: {{ position }} </template>
+    <template #modal-title>Add Pool to Well: {{ position }}</template>
 
     <fieldset>
       <traction-form v-for="field in smrtLinkWellDefaults" :key="field.name">
@@ -27,8 +27,7 @@
             placeholder="Pool Barcode"
             :debounce="500"
             @input="updatePoolBarcode(row, $event)"
-          >
-          </traction-input>
+          ></traction-input>
 
           <traction-button class="button btn-xs btn-danger" @click="removeRow(row)"
             >-</traction-button
@@ -46,17 +45,15 @@
         data-action="delete-well"
         theme="delete"
         @click="removeWell()"
+        >Delete well</traction-button
       >
-        Delete well
-      </traction-button>
       <traction-button
         :id="action.id"
         :data-action="action.dataAction"
         :theme="action.theme"
         @click="update()"
+        >{{ action.label }}</traction-button
       >
-        {{ action.label }}
-      </traction-button>
     </template>
   </traction-modal>
 </template>
@@ -64,16 +61,12 @@
 <script>
 // There is a lot of duplication between this component and PacbioRunWellEdit.
 // A lot of it could be moved to the store
-import { mapGetters, mapActions, mapMutations } from 'vuex'
+import { mapGetters, mapActions } from 'vuex'
 import PacbioRunWellComponents from '@/config/PacbioRunWellComponents'
 
 export default {
   name: 'WellModal',
   props: {
-    position: {
-      type: [String],
-      required: true,
-    },
     /*
       we need this as by default static is false
       which means we can't test it.
@@ -94,7 +87,8 @@ export default {
       wellPoolsFields: [{ key: 'barcode', label: 'Barcode' }],
       decimalPercentageRegex: /^(?:1(?:\.0{0,2})?|0?(?:\.\d{0,2})?)$/,
       isShow: false,
-      positionData: this.position,
+      position: '',
+      plateNumber: '',
     }
   },
   computed: {
@@ -110,7 +104,7 @@ export default {
     },
     newWell() {
       // Check if well exists in state
-      return !this.getWell(this.positionData)
+      return !this.getWell(this.position, this.plateNumber)
     },
     // this is needed to update the well. We need to make sure we have the
     // right pools
@@ -137,8 +131,7 @@ export default {
     },
   },
   methods: {
-    ...mapActions('traction/pacbio/runCreate', ['getOrCreateWell', 'updateWell']),
-    ...mapMutations('traction/pacbio/runCreate', ['deleteWell']),
+    ...mapActions('traction/pacbio/runCreate', ['getOrCreateWell', 'updateWell', 'deleteWell']),
     addRow() {
       this.localPools.push({ id: '', barcode: '' })
     },
@@ -167,10 +160,9 @@ export default {
     disableAdaptiveLoadingInput() {
       this.well.loading_target_p1_plus_p2 = ''
     },
-    async showModalForPosition(position) {
-      if (position) {
-        this.positionData = position
-      }
+    async showModalForPositionAndPlate(position, plateNumber) {
+      position ? (this.position = position) : ''
+      plateNumber ? (this.plateNumber = plateNumber) : ''
       // We also need to setup the well here in case state has updated since
       await this.setupWell()
       this.isShow = true
@@ -180,12 +172,13 @@ export default {
     },
     async update() {
       this.removeInvalidPools()
-      this.updateWell(this.wellPayload)
+      this.updateWell({ well: this.wellPayload, plateNumber: this.plateNumber })
       this.alert('Well created', 'success')
       this.hide()
     },
     removeWell() {
-      this.deleteWell(this.positionData)
+      // This currently updates the well object key `<position>_destroy`
+      this.deleteWell({ well: this.wellPayload, plateNumber: this.plateNumber })
       this.alert('Well successfully deleted', 'success')
       this.hide()
     },
@@ -203,7 +196,10 @@ export default {
       this.$emit('alert', message, type)
     },
     async setupWell() {
-      this.well = await this.getOrCreateWell({ position: this.positionData })
+      this.well = await this.getOrCreateWell({
+        position: this.position,
+        plateNumber: this.plateNumber,
+      })
       // We need to flush localPools to prevent duplicates
       this.localPools = []
       // If the well has pools we want the barcode and id of each to display

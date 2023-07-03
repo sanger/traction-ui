@@ -1,8 +1,13 @@
 import mutations from '@/store/traction/pacbio/runCreate/mutations'
 import defaultState from '@/store/traction/pacbio/runCreate/state'
 import { Data } from '@support/testHelper'
-import { dataToObjectById, dataToObjectByPosition } from '@/api/JsonApi'
-import { newRun, createRunType, defaultWellAttributes } from '@/store/traction/pacbio/runCreate/run'
+import { dataToObjectById } from '@/api/JsonApi'
+import {
+  newRun,
+  newPlate,
+  createRunType,
+  defaultWellAttributes,
+} from '@/store/traction/pacbio/runCreate/run'
 import storePools from '@tests/data/StorePools'
 import { expect, it } from 'vitest'
 
@@ -13,13 +18,13 @@ const tubes = included.slice(0, 2)
 const libraries = included.slice(2, 4)
 const tags = included.slice(4, 6)
 const requests = included.slice(6, 8)
+const PLATE_NUMBER = 1
 
 describe('mutations.js', () => {
   const {
     populateSmrtLinkVersions,
     populateSmrtLinkVersion,
     populateRun,
-    populateWells,
     populatePools,
     populateRunType,
     clearRunData,
@@ -70,20 +75,6 @@ describe('mutations.js', () => {
       populateRun(state, run)
       // assert result
       expect(state.run).toEqual({ ...newRun, id: 1 })
-    })
-  })
-
-  describe('populateWells', () => {
-    it('updates the state', () => {
-      // mock state
-      const wells = Data.PacbioRun.data.included.slice(1, 2)
-      const state = defaultState()
-      // apply mutation
-      populateWells(state, wells)
-      // assert result
-      expect(state.wells).toEqual(
-        dataToObjectByPosition({ data: wells, includeRelationships: true }),
-      )
     })
   })
 
@@ -160,7 +151,6 @@ describe('mutations.js', () => {
           smrtLinkVersions: {},
         },
         run: {},
-        wells: {},
         pools: {},
         tubes: {},
         libraries: {},
@@ -195,27 +185,47 @@ describe('mutations.js', () => {
   describe('updateWell', () => {
     it('when it is a new well', () => {
       const state = defaultState()
+      state.run = {
+        plates: {
+          1: newPlate(1),
+          2: newPlate(2),
+        },
+      }
+
       const well = { position: 'A1', row: 'A', column: '1' }
-      updateWell(state, well)
-      expect(state.wells['A1']).toEqual(well)
+      updateWell(state, { well: well, plateNumber: PLATE_NUMBER })
+      expect(state.run.plates[PLATE_NUMBER].wells['A1']).toEqual(well)
     })
 
     it('when it is an existing well', () => {
       const state = defaultState()
+      state.run = {
+        plates: {
+          1: newPlate(1),
+        },
+      }
       const well = { position: 'A1', row: 'A', column: '1' }
-      updateWell(state, well)
+      updateWell(state, { well: well, plateNumber: PLATE_NUMBER })
       const updatedWell = { ...well, newAttribute: 'some nonsense' }
-      updateWell(state, updatedWell)
-      expect(state.wells['A1']).toEqual(updatedWell)
+      updateWell(state, { well: updatedWell, plateNumber: PLATE_NUMBER })
+      expect(state.run.plates[PLATE_NUMBER].wells['A1']).toEqual(updatedWell)
     })
   })
 
   describe('deleteWell', () => {
-    it('should delete the well', () => {
+    it('should add _destroy to the well', () => {
       const state = defaultState()
-      state.wells = { A1: { position: 'A1' }, A2: { position: 'A2' } }
-      deleteWell(state, 'A1')
-      expect(state.wells).toEqual({ A2: { position: 'A2' } })
+      state.run = {
+        plates: {
+          1: newPlate(1),
+        },
+      }
+      state.run.plates[PLATE_NUMBER].wells = { A1: { position: 'A1' }, A2: { position: 'A2' } }
+      deleteWell(state, { well: { position: 'A1' }, plateNumber: PLATE_NUMBER })
+      expect(state.run.plates[PLATE_NUMBER].wells).toEqual({
+        A1_destroy: { position: 'A1' },
+        A2: { position: 'A2' },
+      })
     })
   })
 })

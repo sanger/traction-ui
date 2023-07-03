@@ -1,39 +1,41 @@
 <template>
   <DataFetcher :fetcher="fetchOntRequests">
     <FilterCard :fetcher="fetchOntRequests" :filter-options="filterOptions" />
-    <div class="clearfix">
-      <traction-pagination
-        v-model="currentPage"
-        class="float-right"
-        :total-rows="requests.length"
-        :per-page="perPage"
-        aria-controls="samples-table"
-        @input="onPageChange($event)"
-      >
-      </traction-pagination>
-    </div>
+    <div class="flex flex-col">
+      <div class="clearfix">
+        <traction-pagination
+          v-model="currentPage"
+          class="float-right"
+          :total-rows="requests.length"
+          :per-page="perPage"
+          aria-controls="samples-table"
+          @input="onPageChange($event)"
+        >
+        </traction-pagination>
+      </div>
 
-    <traction-table
-      id="samples-table"
-      :items="tableData"
-      :fields="fields"
-      :sort-by.sync="sortBy"
-      selectable
-      select-mode="single"
-      @filtered="onFiltered"
-      @row-selected="onRowSelected"
-    >
-      <template #cell(selected)="{ selected }">
-        <template v-if="selected">
-          <span>&check;</span>
-          <span class="sr-only">Selected</span>
+      <traction-table
+        id="samples-table"
+        :items="tableData"
+        :fields="fields"
+        :sort-by.sync="sortBy"
+        selectable
+        select-mode="single"
+        @filtered="onFiltered"
+        @row-selected="onRowSelected"
+      >
+        <template #cell(selected)="{ selected }">
+          <template v-if="selected">
+            <span>&check;</span>
+            <span class="sr-only">Selected</span>
+          </template>
+          <template v-else>
+            <span>&nbsp;</span>
+            <span class="sr-only">Not selected</span>
+          </template>
         </template>
-        <template v-else>
-          <span>&nbsp;</span>
-          <span class="sr-only">Not selected</span>
-        </template>
-      </template>
-    </traction-table>
+      </traction-table>
+    </div>
   </DataFetcher>
 </template>
 
@@ -67,7 +69,7 @@ export default {
         },
         { key: 'cost_code', label: 'Cost code' },
         { key: 'external_study_id', label: 'External study ID' },
-        { key: 'created_at', label: 'Created at', sortable: true },
+        { key: 'created_at', label: 'Created at (UTC)', sortable: true },
       ],
       filterOptions: [
         { value: '', text: '' },

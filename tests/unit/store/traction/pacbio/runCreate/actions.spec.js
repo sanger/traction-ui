@@ -3,6 +3,7 @@ import actions from '@/store/traction/pacbio/runCreate/actions'
 import { describe, expect, it } from 'vitest'
 import {
   newRun,
+  newPlate,
   newWell,
   createRunType,
   newRunType,
@@ -26,6 +27,8 @@ const defaultSmrtLinkVersion = {
   version: 'v1',
   default: true,
 }
+
+const PLATE_NUMBER = 1
 
 describe('actions.js', () => {
   const {
@@ -74,20 +77,94 @@ describe('actions.js', () => {
       find.mockResolvedValue(Data.PacbioRun)
       const { success } = await fetchRun({ commit, rootState }, { id: 1 })
 
-      const smrtLinkVersion = {
-        id: Data.PacbioRun.data.included.slice(7, 8)[0].id,
-        type: Data.PacbioRun.data.included.slice(7, 8)[0].type,
-        ...Data.PacbioRun.data.included.slice(7, 8)[0].attributes,
+      const runData = Data.PacbioRun.data.data
+      const includedData = Data.PacbioRun.data.included
+      let idx = 0
+
+      // first payload
+      expect(includedData[idx].type).toBe('plates')
+      const plateInfo5 = {
+        id: includedData[idx].id,
+        plate_number: includedData[idx].attributes.plate_number,
+        wells: includedData[idx].relationships.wells.data.map((w) => w.id),
       }
 
-      expect(commit).toHaveBeenCalledWith('populateRun', Data.PacbioRun.data.data)
-      expect(commit).toHaveBeenCalledWith('populateWells', Data.PacbioRun.data.included.slice(1, 2))
-      expect(commit).toHaveBeenCalledWith('populatePools', Data.PacbioRun.data.included.slice(2, 3))
-      expect(commit).toHaveBeenCalledWith('setTubes', Data.PacbioRun.data.included.slice(3, 4))
-      expect(commit).toHaveBeenCalledWith('setLibraries', Data.PacbioRun.data.included.slice(4, 5))
-      expect(commit).toHaveBeenCalledWith('setTags', Data.PacbioRun.data.included.slice(5, 6))
-      expect(commit).toHaveBeenCalledWith('setRequests', Data.PacbioRun.data.included.slice(6, 7))
-      expect(commit).toHaveBeenCalledWith('populateSmrtLinkVersion', smrtLinkVersion)
+      idx += 1 // next payload
+      expect(includedData[idx].type).toBe('plates')
+      const plateInfo6 = {
+        id: includedData[idx].id,
+        plate_number: includedData[idx].attributes.plate_number,
+        wells: includedData[idx].relationships.wells.data.map((w) => w.id),
+      }
+
+      idx += 1 // next payload
+      expect(includedData[idx].type).toBe('wells')
+      const wellInfo5 = {
+        id: includedData[idx].id,
+        type: includedData[idx].type,
+        position: includedData[idx].attributes.position,
+        ...includedData[idx].attributes,
+        pools: ['1'],
+      }
+
+      idx += 1 // next payload
+      expect(includedData[idx].type).toBe('wells')
+      const wellInfo6 = {
+        id: includedData[idx].id,
+        type: includedData[idx].type,
+        position: includedData[idx].attributes.position,
+        ...includedData[idx].attributes,
+        pools: ['1'],
+      }
+
+      idx += 1 // next payload
+      expect(includedData[idx].type).toBe('wells')
+      const wellInfo7 = {
+        id: includedData[idx].id,
+        type: includedData[idx].type,
+        position: includedData[idx].attributes.position,
+        ...includedData[idx].attributes,
+        pools: ['1'],
+      }
+
+      const plateData = {
+        1: {
+          id: plateInfo5.id,
+          plate_number: plateInfo5.plate_number,
+          pacbio_run_id: 5,
+          wells: { A2: wellInfo5 },
+        },
+        2: {
+          id: plateInfo6.id,
+          plate_number: plateInfo6.plate_number,
+          pacbio_run_id: 5,
+          wells: { A3: wellInfo6, A4: wellInfo7 },
+        },
+      }
+
+      const runInfo = {
+        id: runData.id,
+        attributes: runData.attributes,
+        plates: plateData,
+      }
+
+      // note: order of commit calls does not match order of includedData payloads
+      let call_num = 0
+      expect(commit).toHaveBeenNthCalledWith(++call_num, 'populateRun', runInfo)
+      expect(commit).toHaveBeenNthCalledWith(++call_num, 'populatePools', [includedData[++idx]])
+      expect(commit).toHaveBeenNthCalledWith(++call_num + 3, 'setTubes', [includedData[++idx]])
+      expect(commit).toHaveBeenNthCalledWith(++call_num - 1, 'setLibraries', [includedData[++idx]])
+      expect(commit).toHaveBeenNthCalledWith(++call_num - 1, 'setTags', [includedData[++idx]])
+      expect(commit).toHaveBeenNthCalledWith(++call_num - 1, 'setRequests', [includedData[++idx]])
+
+      idx += 1 // next payload
+      expect(includedData[idx].type).toBe('smrt_link_versions')
+      const smrtLinkVersion = {
+        id: includedData[idx].id,
+        type: includedData[idx].type,
+        ...includedData[idx].attributes,
+      }
+      expect(commit).toHaveBeenNthCalledWith(++call_num, 'populateSmrtLinkVersion', smrtLinkVersion)
       expect(success).toBeTruthy()
     })
 
@@ -202,12 +279,15 @@ describe('actions.js', () => {
       const getters = { defaultSmrtLinkVersion }
       const run = newRun()
       const { id, ...attributes } = run
+      const plates = attributes.plates
+      delete attributes.plates
       const commit = vi.fn()
       const { success } = await setRun({ commit, getters }, { id })
       expect(success).toBeTruthy()
       expect(commit).toHaveBeenCalledWith('populateRun', {
         id,
         attributes: { ...attributes },
+        plates,
       })
       expect(commit).toHaveBeenCalledWith('populateSmrtLinkVersion', getters.defaultSmrtLinkVersion)
       expect(commit).toHaveBeenCalledWith('populateRunType', newRunType)
@@ -236,13 +316,17 @@ describe('actions.js', () => {
   describe('getOrCreateWell', () => {
     it('if it is a new well', () => {
       const state = {
-        wells: {},
+        run: {
+          plates: {
+            1: newPlate(1),
+          },
+        },
         defaultWellAttributes: { ...defaultWellAttributes() },
       }
 
       const position = 'A1'
 
-      const well = getOrCreateWell({ state }, { position })
+      const well = getOrCreateWell({ state }, { position, plateNumber: PLATE_NUMBER })
       expect(well).toEqual(newWell({ position, ...state.defaultWellAttributes }))
     })
 
@@ -251,11 +335,14 @@ describe('actions.js', () => {
       const well = newWell({ position })
 
       const state = {
-        wells: { [position]: well },
+        run: { plates: { 1: { ...newPlate(1), wells: { [position]: well } } } },
         defaultWellAttributes: { ...defaultWellAttributes() },
       }
 
-      const gottenWell = getOrCreateWell({ state }, { position })
+      const gottenWell = getOrCreateWell(
+        { state },
+        { position: position, plateNumber: PLATE_NUMBER },
+      )
       expect(gottenWell).toEqual(well)
     })
   })
@@ -264,8 +351,8 @@ describe('actions.js', () => {
     it('updates the well', () => {
       const well = { position: 'A1', row: 'A', column: '1' }
       const commit = vi.fn()
-      updateWell({ commit }, well)
-      expect(commit).toHaveBeenCalledWith('updateWell', well)
+      updateWell({ commit }, { well: well, plateNumber: PLATE_NUMBER })
+      expect(commit).toHaveBeenCalledWith('updateWell', { well: well, plateNumber: PLATE_NUMBER })
     })
   })
 

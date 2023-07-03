@@ -1,4 +1,4 @@
-import { populateById, populateBy, dataToObjectById, dataToObjectByPosition } from '@/api/JsonApi'
+import { populateById, dataToObjectById } from '@/api/JsonApi'
 import Vue from 'vue'
 import defaultState from './state'
 
@@ -23,23 +23,17 @@ export default {
   /**
    * Populated via API calls from the actions
    * @param {Object} state The VueXState object
-   * @param {Object} run The current run to populate the store
+   * @param {Object} id The id of the current run
+   * @param {Object} attributes The current runs attributes
+   * @param {Object} plates The current runs plates
    */
-  populateRun: (state, { id, attributes }) => {
+  populateRun: (state, { id, attributes, plates }) => {
     state.run = {
       id,
       ...attributes,
+      plates,
     }
   },
-
-  /**
-   * Populated via API calls from the actions
-   * @param {Object} state The VueXState object
-   */
-  populateWells: populateBy('wells', dataToObjectByPosition, {
-    includeRelationships: true,
-    populateResources: false,
-  }),
 
   /**
    * Populated the run type
@@ -101,21 +95,37 @@ export default {
   },
 
   /**
-   * @param {Object} { wells } The VueXState object
+   * @param {Object} { state } The VueXState object
    * @param {Object} well The well to update
+   * @param {Number} plateNumber The number of the plate
    * Replaces the well in store with the updated well
    */
-  updateWell({ wells }, well) {
+  updateWell: (state, { well, plateNumber }) => {
     const position = well.position
-    Vue.set(wells, position, Object.assign({}, wells[position], well))
+    Vue.set(
+      state.run.plates[plateNumber].wells,
+      position,
+      Object.assign({}, state.run.plates[plateNumber].wells[position], well),
+    )
   },
 
   /**
-   * @param {Object} { wells } The VueXState object
-   * @param {Object} well The well to update
-   * Replaces the well in store with the updated well
+   * @param {Object} { state } The VueXState object
+   * @param {Object} well The well to delete
+   * @param {Number} plateNumber The number of the plate
+   * Adds _destroy key to the well in store so future wells
+   * for the same position can be added
    */
-  deleteWell({ wells }, position) {
-    Vue.delete(wells, position)
+  deleteWell: (state, { well, plateNumber }) => {
+    const position = well.position
+
+    Vue.delete(state.run.plates[plateNumber].wells, position)
+    const newKey = position + '_destroy'
+
+    Vue.set(
+      state.run.plates[plateNumber].wells,
+      newKey,
+      Object.assign({}, state.run.plates[plateNumber].wells[newKey], well),
+    )
   },
 }

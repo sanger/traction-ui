@@ -39,7 +39,9 @@
         "self": "http://localhost:3100/v1/pacbio/runs/plates/8"
       },
       "attributes": {
-        "pacbio_run_id": 8
+        "pacbio_run_id": 8,
+        "plate_number": 1,
+        "sequencing_kit_box_barcode": "skbb1"
       },
       "relationships": {
         "wells": {

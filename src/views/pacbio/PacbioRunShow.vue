@@ -26,7 +26,7 @@
     </div>
 
     <div class="grid grid-cols-2 w-full space-x-4 mb-6">
-      <PacbioRunInfoEdit ref="pacbioRunInfoEdit" />
+      <PacbioRunInfoEdit ref="pacbioRunInfoEdit" :new-record="newRecord" />
       <PacbioRunWellDefaultEdit ref="pacbioRunWellDefaultEdit" />
     </div>
 

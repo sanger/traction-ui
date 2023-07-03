@@ -118,7 +118,7 @@ describe('getters.js', () => {
           barcode: 'DN1',
           id: '1',
           type: 'plates',
-          wells: [],
+          wells: {},
         },
       }
       state.selected.plates = plates

@@ -44,13 +44,13 @@ describe('getters.js', () => {
           barcode: 'DN1',
           id: '1',
           type: 'plates',
-          wells: [],
+          wells: {},
         },
         2: {
           barcode: 'DN2',
           id: '2',
           type: 'plates',
-          wells: [],
+          wells: {},
         },
       }
       const expected = [
@@ -58,14 +58,14 @@ describe('getters.js', () => {
           barcode: 'DN1',
           id: '1',
           type: 'plates',
-          wells: [],
+          wells: {},
           selected: true,
         },
         {
           barcode: 'DN2',
           id: '2',
           type: 'plates',
-          wells: [],
+          wells: {},
         },
       ]
       state.resources.plates = plates
@@ -155,7 +155,7 @@ describe('getters.js', () => {
           barcode: 'DN1',
           id: '1',
           type: 'plates',
-          wells: [],
+          wells: {},
         },
       }
       state.selected.plates = plates

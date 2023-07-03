@@ -2,51 +2,53 @@
   <DataFetcher :fetcher="setPlates">
     <FilterCard :fetcher="setPlates" :filter-options="filterOptions" />
 
-    <div class="clearfix">
-      <traction-pagination
-        v-model="currentPage"
-        class="float-right"
-        :total-rows="plates.length"
-        :per-page="perPage"
-        aria-controls="plate-index"
-        @input="onPageChange($event)"
-      >
-      </traction-pagination>
-    </div>
-
-    <traction-table
-      id="plate-index"
-      primary_key="id"
-      :fields="fields"
-      :items="tableData"
-      :current-page="currentPage"
-      :sort-by.sync="sortBy"
-      @filtered="onFiltered"
-    >
-      <template #cell(show_details)="row">
-        <traction-button
-          :id="'details-btn-' + row.id"
-          size="sm"
-          theme="default"
-          @click="
-            row.toggleDetails()
-            getPlate(row.item.barcode)
-          "
+    <div class="flex flex-col">
+      <div class="clearfix">
+        <traction-pagination
+          v-model="currentPage"
+          class="float-right"
+          :total-rows="plates.length"
+          :per-page="perPage"
+          aria-controls="plate-index"
+          @input="onPageChange($event)"
         >
-          {{ row.detailsShowing ? 'Hide' : 'Show' }} Plate
-        </traction-button>
-      </template>
-      <template #row-details="row">
-        <Plate
-          v-if="currentPlate.id == row.item.id"
-          ref="plate"
-          :height="row.detailsDim"
-          :width="row.detailsDim"
-          :plate="currentPlate"
-          @alert="alert"
-        ></Plate>
-      </template>
-    </traction-table>
+        </traction-pagination>
+      </div>
+
+      <traction-table
+        id="plate-index"
+        primary_key="id"
+        :fields="fields"
+        :items="tableData"
+        :current-page="currentPage"
+        :sort-by.sync="sortBy"
+        @filtered="onFiltered"
+      >
+        <template #cell(show_details)="row">
+          <traction-button
+            :id="'details-btn-' + row.id"
+            size="sm"
+            theme="default"
+            @click="
+              row.toggleDetails()
+              getPlate(row.item.barcode)
+            "
+          >
+            {{ row.detailsShowing ? 'Hide' : 'Show' }} Plate
+          </traction-button>
+        </template>
+        <template #row-details="row">
+          <Plate
+            v-if="currentPlate.id == row.item.id"
+            ref="plate"
+            :height="row.detailsDim"
+            :width="row.detailsDim"
+            :plate="currentPlate"
+            @alert="alert"
+          ></Plate>
+        </template>
+      </traction-table>
+    </div>
   </DataFetcher>
 </template>
 
@@ -70,7 +72,7 @@ export default {
       fields: [
         { key: 'id', label: 'Plate ID', sortable: true },
         { key: 'barcode', label: 'Plate Barcode', sortable: true },
-        { key: 'created_at', label: 'Created at', sortable: true },
+        { key: 'created_at', label: 'Created at (UTC)', sortable: true },
         { key: 'show_details', label: 'Show Details' },
       ],
       filterOptions: [

@@ -2,7 +2,7 @@ const defaultOptions = require('@sanger/ui-styling/tailwind.config')
 
 module.exports = {
   ...defaultOptions,
-  content: [...defaultOptions.content, './src/**/*.{html,vue}'],
+  content: [...defaultOptions.content, './src/**/*.{html,vue,js}'],
   theme: {
     ...defaultOptions.theme,
     fontSize: {

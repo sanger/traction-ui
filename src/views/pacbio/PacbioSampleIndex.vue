@@ -1,86 +1,88 @@
 <template>
   <DataFetcher :fetcher="setRequests">
     <FilterCard :fetcher="setRequests" :filter-options="filterOptions" />
-    <div class="clearfix">
-      <PrinterModal
-        ref="printerModal"
-        class="float-left"
-        :disabled="selected.length === 0"
-        @selectPrinter="printLabels($event)"
-      >
-      </PrinterModal>
-
-      <PacbioLibraryCreate
-        ref="libraryCreateBtn"
-        :selected-sample="selected[0]"
-        :disabled="selected.length === 0"
-        class="float-left"
-        @alert="showAlert"
-      >
-      </PacbioLibraryCreate>
-
-      <traction-pagination
-        v-model="currentPage"
-        class="float-right"
-        :total-rows="requests.length"
-        :per-page="perPage"
-        aria-controls="samples-table"
-        @input="onPageChange($event)"
-      >
-      </traction-pagination>
-    </div>
-
-    <traction-table
-      id="samples-table"
-      primary_key="id"
-      :items="tableData"
-      :fields="fields"
-      :sort-by.sync="sortBy"
-      selectable
-      select-mode="single"
-      @filtered="onFiltered"
-      @row-selected="onRowSelected"
-    >
-      <template #cell(selected)="{ selected }">
-        <template v-if="selected">
-          <span>&check;</span>
-          <span class="sr-only">Selected</span>
-        </template>
-        <template v-else>
-          <span>&nbsp;</span>
-          <span class="sr-only">Not selected</span>
-        </template>
-      </template>
-
-      <template #cell(actions)="row">
-        <PacbioSampleMetadataEdit ref="sampleMetadata" :req="row.item" @alert="showAlert">
-        </PacbioSampleMetadataEdit>
-      </template>
-
-      <template #cell(show_details)="row">
-        <traction-button
-          :id="'details-btn-' + row.item.id"
-          size="sm"
-          class="mr-2"
-          theme="default"
-          @click="row.toggleDetails"
+    <div class="flex flex-col">
+      <div class="clearfix">
+        <PrinterModal
+          ref="printerModal"
+          class="float-left"
+          :disabled="selected.length === 0"
+          @selectPrinter="printLabels($event)"
         >
-          {{ row.detailsShowing ? 'Hide' : 'Show' }} Details
-        </traction-button>
-      </template>
+        </PrinterModal>
 
-      <template #row-details="row">
-        <div class="text-left">
-          <template v-for="(field, index) in field_in_details">
-            <span v-if="field" :key="field.label + index" class="font-weight-bold">{{
-              field.label
-            }}</span
-            >: {{ row.item[field.item] }}
-            <br v-if="field" :key="field.label" />
+        <PacbioLibraryCreate
+          ref="libraryCreateBtn"
+          :selected-sample="selected[0]"
+          :disabled="selected.length === 0"
+          class="float-left"
+          @alert="showAlert"
+        >
+        </PacbioLibraryCreate>
+
+        <traction-pagination
+          v-model="currentPage"
+          class="float-right"
+          :total-rows="requests.length"
+          :per-page="perPage"
+          aria-controls="samples-table"
+          @input="onPageChange($event)"
+        >
+        </traction-pagination>
+      </div>
+
+      <traction-table
+        id="samples-table"
+        primary_key="id"
+        :items="tableData"
+        :fields="fields"
+        :sort-by.sync="sortBy"
+        selectable
+        select-mode="single"
+        @filtered="onFiltered"
+        @row-selected="onRowSelected"
+      >
+        <template #cell(selected)="{ selected }">
+          <template v-if="selected">
+            <span>&check;</span>
+            <span class="sr-only">Selected</span>
           </template>
-        </div>
-      </template>
-    </traction-table>
+          <template v-else>
+            <span>&nbsp;</span>
+            <span class="sr-only">Not selected</span>
+          </template>
+        </template>
+
+        <template #cell(actions)="row">
+          <PacbioSampleMetadataEdit ref="sampleMetadata" :req="row.item" @alert="showAlert">
+          </PacbioSampleMetadataEdit>
+        </template>
+
+        <template #cell(show_details)="row">
+          <traction-button
+            :id="'details-btn-' + row.item.id"
+            size="sm"
+            class="mr-2"
+            theme="default"
+            @click="row.toggleDetails"
+          >
+            {{ row.detailsShowing ? 'Hide' : 'Show' }} Details
+          </traction-button>
+        </template>
+
+        <template #row-details="row">
+          <div class="text-left">
+            <template v-for="(field, index) in field_in_details">
+              <span v-if="field" :key="field.label + index" class="font-weight-bold">{{
+                field.label
+              }}</span
+              >: {{ row.item[field.item] }}
+              <br v-if="field" :key="field.label" />
+            </template>
+          </div>
+        </template>
+      </traction-table>
+    </div>
   </DataFetcher>
 </template>
 
@@ -113,7 +115,7 @@ export default {
         { key: 'sample_name', label: 'Name', sortable: true },
         { key: 'sample_species', label: 'Species', sortable: true },
         { key: 'source_identifier', label: 'Source', sortable: true },
-        { key: 'created_at', label: 'Created at', sortable: true },
+        { key: 'created_at', label: 'Created at (UTC)', sortable: true },
         { key: 'actions', label: 'Actions' },
         { key: 'show_details', label: '' },
       ],
