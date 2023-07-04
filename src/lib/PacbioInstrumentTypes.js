@@ -1,6 +1,6 @@
 import { LabwareTypes } from '@/lib/LabwareTypes'
 
-const PacbioRunSystems = {
+const PacbioInstrumentTypes = {
   Revio: {
     name: 'Revio',
     plateCount: 1,
@@ -15,4 +15,4 @@ const PacbioRunSystems = {
   },
 }
 
-export { PacbioRunSystems }
+export { PacbioInstrumentTypes }

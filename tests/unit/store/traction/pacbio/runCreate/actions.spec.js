@@ -10,6 +10,7 @@ import {
   existingRunType,
   defaultWellAttributes,
 } from '@/store/traction/pacbio/runCreate/run'
+import { PacbioInstrumentTypes } from '@/lib/PacbioInstrumentTypes'
 
 const failedResponse = {
   data: { data: [] },
@@ -40,6 +41,7 @@ describe('actions.js', () => {
     getOrCreateWell,
     updateWell,
     getPool,
+    setInstrumentType,
   } = actions
 
   describe('fetchSmrtLinkVersions', () => {
@@ -375,6 +377,18 @@ describe('actions.js', () => {
       const { success, errors } = await getPool({ dispatch, getters }, { barcode })
       expect(success).toBeFalsy()
       expect(errors).toEqual(['it didnt work'])
+    })
+  })
+
+  describe('setInstrumentType', () => {
+    it('sets the instrument type', () => {
+      const commit = vi.fn()
+      const instrumentName = 'Sequel IIe'
+      const state = {
+        instrumentTypeList: PacbioInstrumentTypes,
+      }
+      setInstrumentType({ commit, state }, instrumentName)
+      expect(commit).toHaveBeenCalledWith('populateInstrumentType', PacbioInstrumentTypes.SequelIIe)
     })
   })
 })

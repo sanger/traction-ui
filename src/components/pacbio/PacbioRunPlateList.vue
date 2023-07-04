@@ -39,7 +39,7 @@
 import WellEdit from '@/components/pacbio/PacbioRunWellEdit'
 import PacbioRunWell from '@/components/labware/PacbioRunWell'
 import LabwareMap from '@/components/labware/LabwareMap.vue'
-import { PacbioRunSystems } from '@/lib/PacbioRunSystems'
+import { PacbioInstrumentTypes } from '@/lib/PacbioInstrumentTypes'
 import { mapGetters } from 'vuex'
 
 export default {
@@ -58,10 +58,10 @@ export default {
   computed: {
     ...mapGetters('traction/pacbio/runCreate', ['runItem']),
     labware() {
-      if (this.runItem.system_name == PacbioRunSystems.Revio.name) {
-        return PacbioRunSystems.Revio
-      } else if (this.runItem.system_name == PacbioRunSystems.SequelIIe.name) {
-        return PacbioRunSystems.SequelIIe
+      if (this.runItem.system_name == PacbioInstrumentTypes.Revio.name) {
+        return PacbioInstrumentTypes.Revio
+      } else if (this.runItem.system_name == PacbioInstrumentTypes.SequelIIe.name) {
+        return PacbioInstrumentTypes.SequelIIe
       }
       return {}
     },

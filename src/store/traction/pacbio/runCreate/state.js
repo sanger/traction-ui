@@ -4,6 +4,8 @@
  * @example newLibrary({pacbio_request_id: '1'})
  */
 
+import { PacbioInstrumentTypes } from '@/lib/PacbioInstrumentTypes'
+
 export default () => {
   return {
     // Resources returned by the server, each key represents a resource type.
@@ -38,5 +40,8 @@ export default () => {
 
     //Default well attributes: The default attributes needed for each well
     defaultWellAttributes: {},
+
+    //Instrument types: The instrument types available for selection
+    instrumentTypeList: PacbioInstrumentTypes
   }
 }

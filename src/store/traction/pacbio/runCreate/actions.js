@@ -1,7 +1,7 @@
 import { handleResponse } from '@/api/ResponseHelper'
 import { groupIncludedByResource, extractAttributes, extractPlateData } from '@/api/JsonApi'
 import { newRun, createRunType, RunTypeEnum, newWell, defaultWellAttributes, newPlate } from './run'
-import { PacbioRunSystems } from '@/lib/PacbioRunSystems'
+import { PacbioInstrumentTypes } from '@/lib/PacbioInstrumentTypes'
 
 // Asynchronous update of state.
 export default {
@@ -112,7 +112,7 @@ export default {
 
       // Handles edge case for when we have revio with only 1 plate
       if (
-        data.attributes.system_name.includes(PacbioRunSystems.Revio.name) &&
+        data.attributes.system_name.includes(PacbioInstrumentTypes.Revio.name) &&
         Object.values(plateData).length == 1
       ) {
         plateData['2'] = newPlate(2)
@@ -254,5 +254,15 @@ export default {
    */
   setDefaultWellAttributes: ({ commit }) => {
     commit('populateDefaultWellAttributes', defaultWellAttributes())
+  },
+
+  /**
+   * Sets the Instrument Type
+   * @param commit the vuex commit object. Provides access to mutations
+   * @param state the vuex state object. Provides access to current state
+  */
+  setInstrumentType: ({ commit, state: { instrumentTypeList} }, instrumentName) => {
+    const instrumentType = Object.values(instrumentTypeList).find(instrumentType => instrumentType.name === instrumentName)
+    commit('populateInstrumentType', instrumentType)
   },
 }

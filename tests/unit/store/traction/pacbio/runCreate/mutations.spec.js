@@ -10,6 +10,7 @@ import {
 } from '@/store/traction/pacbio/runCreate/run'
 import storePools from '@tests/data/StorePools'
 import { expect, it } from 'vitest'
+import { PacbioInstrumentTypes} from '@/lib/PacbioInstrumentTypes'
 
 let state
 
@@ -159,6 +160,7 @@ describe('mutations.js', () => {
         smrtLinkVersion: {},
         runType: {},
         defaultWellAttributes: {},
+        instrumentTypeList: PacbioInstrumentTypes
       })
     })
   })

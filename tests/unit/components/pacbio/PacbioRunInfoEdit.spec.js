@@ -1,7 +1,6 @@
 import PacbioRunInfoEdit from '@/components/pacbio/PacbioRunInfoEdit'
 import { localVue, mount, store } from '@support/testHelper'
 import { beforeEach, describe, expect } from 'vitest'
-import { PacbioRunSystems } from '@/lib/PacbioRunSystems'
 
 // required as suggestion to remove the deprecated function
 // https://vue-test-utils.vuejs.org/api/options.html#attachtodocument
@@ -37,6 +36,15 @@ describe('PacbioRunInfoEdit', () => {
     },
   ]
 
+  const PacbioInstrumentTypes = {
+    SequelIIe: {
+      name: 'Sequel IIe',
+    },
+    Revio: {
+      name: 'Revio',
+    }
+  }
+
   const run = {
     id: 'new',
     name: 'TRACTION-RUN-3',
@@ -53,11 +61,12 @@ describe('PacbioRunInfoEdit', () => {
     runInfo = wrapper.vm
     store.state.traction.pacbio.runCreate.run = run
     store.state.traction.pacbio.runCreate.resources.smrtLinkVersions = smrtLinkVersions
+    store.state.traction.pacbio.runCreate.resources.instrumentTypes = PacbioInstrumentTypes
   })
 
   it('must have systemName data', () => {
-    const systemNames = Object.values(PacbioRunSystems).map((system) => system.name)
-    expect(runInfo.systemNameOptions).toEqual(systemNames)
+    const systemNames = Object.values(PacbioInstrumentTypes).map((system) => system.name)
+    expect(runInfo.instrumentNameList.length).toEqual(2)
   })
 
   describe('smrt link versions', () => {

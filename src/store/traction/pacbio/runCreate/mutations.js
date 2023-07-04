@@ -128,4 +128,8 @@ export default {
       Object.assign({}, state.run.plates[plateNumber].wells[newKey], well),
     )
   },
+
+  populateInstrumentType: (state, { instrumentType}) => {
+    state.instrumentType = instrumentType
+  }
 }
