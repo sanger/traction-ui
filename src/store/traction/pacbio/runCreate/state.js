@@ -45,6 +45,7 @@ export default () => {
     instrumentTypeList: PacbioInstrumentTypes,
 
     //Instrument type: The instrument type selected for the run
-    instrumentType: {},
+    //Set this to Sequel IIe by default??
+    instrumentType: PacbioInstrumentTypes.SequelIIe,
   }
 }

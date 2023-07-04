@@ -162,7 +162,7 @@ describe('mutations.js', () => {
         runType: {},
         defaultWellAttributes: {},
         instrumentTypeList: PacbioInstrumentTypes,
-        instrumentType: {},
+        instrumentType: PacbioInstrumentTypes.SequelIIe,
       })
     })
   })

@@ -106,8 +106,5 @@ export default {
       this.updateSmrtLinkVersion(option)
     },
   },
-  mounted() {
-    this.setInstrumentType(this.runItem.system_name)
-  },
 }
 </script>
