@@ -2,7 +2,7 @@ import { mount, localVue, store } from '@support/testHelper'
 import PacbioRunPlateList from '@/components/pacbio/PacbioRunPlateList'
 import { newWell } from '@/store/traction/pacbio/runCreate/run'
 import { it } from 'vitest'
-import { LabwareTypes } from '@/lib/LabwareTypes'
+import { PacbioInstrumentTypes } from '@/lib/PacbioInstrumentTypes'
 
 describe('PacbioRunPlateList.vue', () => {
   let plate, wrapper, smrtLinkVersions
@@ -33,6 +33,8 @@ describe('PacbioRunPlateList.vue', () => {
         },
       }
 
+      store.state.traction.pacbio.runCreate.instrumentType = PacbioInstrumentTypes.SequelIIe
+
       wrapper = mount(PacbioRunPlateList, {
         localVue,
         store,
@@ -49,10 +51,9 @@ describe('PacbioRunPlateList.vue', () => {
       expect(wells.length).toEqual(96)
     })
 
-    describe('#computed', () => {
-      it('labware returns the correct information', () => {
-        expect(plate.labware.plateCount).toEqual(1)
-        expect(plate.labware.labwareType).toEqual(LabwareTypes.Plate96)
+    describe('#instrumentType', () => {
+      it('returns the correct instrument type', () => {
+        expect(plate.instrumentType).toEqual(PacbioInstrumentTypes.SequelIIe)
       })
     })
   })
@@ -81,6 +82,8 @@ describe('PacbioRunPlateList.vue', () => {
         },
       }
 
+      store.state.traction.pacbio.runCreate.instrumentType = PacbioInstrumentTypes.Revio
+
       wrapper = mount(PacbioRunPlateList, {
         localVue,
         store,
@@ -97,10 +100,9 @@ describe('PacbioRunPlateList.vue', () => {
       expect(wells.length).toEqual(4)
     })
 
-    describe('#computed', () => {
-      it('labware returns the correct information', () => {
-        expect(plate.labware.plateCount).toEqual(1)
-        expect(plate.labware.labwareType).toEqual(LabwareTypes.Plate4)
+    describe('#instrumentType', () => {
+      it('returns the correct instrument type', () => {
+        expect(plate.instrumentType).toEqual(PacbioInstrumentTypes.Revio)
       })
     })
   })

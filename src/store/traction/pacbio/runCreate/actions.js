@@ -260,9 +260,11 @@ export default {
    * Sets the Instrument Type
    * @param commit the vuex commit object. Provides access to mutations
    * @param state the vuex state object. Provides access to current state
-  */
-  setInstrumentType: ({ commit, state: { instrumentTypeList} }, instrumentName) => {
-    const instrumentType = Object.values(instrumentTypeList).find(instrumentType => instrumentType.name === instrumentName)
-    commit('populateInstrumentType', instrumentType)
+   */
+  setInstrumentType: ({ commit, state: { instrumentTypeList } }, instrumentName) => {
+    const instrumentType = Object.values(instrumentTypeList).find(
+      (instrumentType) => instrumentType.name === instrumentName,
+    )
+    commit('populateInstrumentType', { ...instrumentType })
   },
 }

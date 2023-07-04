@@ -4,8 +4,14 @@ import storePools from '@tests/data/StorePools'
 import { describe } from 'vitest'
 
 describe('getters.js', () => {
-  const { smrtLinkVersionList, defaultSmrtLinkVersion, smrtLinkVersion, pools, poolByBarcode, instrumentNameList } =
-    getters
+  const {
+    smrtLinkVersionList,
+    defaultSmrtLinkVersion,
+    smrtLinkVersion,
+    pools,
+    poolByBarcode,
+    instrumentNameList,
+  } = getters
 
   // TODO: we probably need to sort the way we create the pools for tests
   const mockPools = [
@@ -167,6 +173,5 @@ describe('getters.js', () => {
     it('returns a list of system names', () => {
       expect(instrumentNameList(state)).toEqual(['Revio', 'Sequel IIe'])
     })
-
   })
 })

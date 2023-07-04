@@ -42,6 +42,9 @@ export default () => {
     defaultWellAttributes: {},
 
     //Instrument types: The instrument types available for selection
-    instrumentTypeList: PacbioInstrumentTypes
+    instrumentTypeList: PacbioInstrumentTypes,
+
+    //Instrument type: The instrument type selected for the run
+    instrumentType: {},
   }
 }

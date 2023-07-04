@@ -10,7 +10,7 @@ import {
 } from '@/store/traction/pacbio/runCreate/run'
 import storePools from '@tests/data/StorePools'
 import { expect, it } from 'vitest'
-import { PacbioInstrumentTypes} from '@/lib/PacbioInstrumentTypes'
+import { PacbioInstrumentTypes } from '@/lib/PacbioInstrumentTypes'
 
 let state
 
@@ -38,6 +38,7 @@ describe('mutations.js', () => {
     populateDefaultWellAttributes,
     updateWell,
     deleteWell,
+    populateInstrumentType,
   } = mutations
 
   describe('populateSmrtLinkVersions', () => {
@@ -160,7 +161,8 @@ describe('mutations.js', () => {
         smrtLinkVersion: {},
         runType: {},
         defaultWellAttributes: {},
-        instrumentTypeList: PacbioInstrumentTypes
+        instrumentTypeList: PacbioInstrumentTypes,
+        instrumentType: {},
       })
     })
   })
@@ -228,6 +230,18 @@ describe('mutations.js', () => {
         A1_destroy: { position: 'A1' },
         A2: { position: 'A2' },
       })
+    })
+  })
+
+  describe('populateInstrumentType', () => {
+    it('updates the state', () => {
+      // mock state
+      const instrumentType = { name: 'Instrument Type 1' }
+      const state = defaultState()
+      // apply mutations
+      populateInstrumentType(state, instrumentType)
+      // assert result
+      expect(state.instrumentType).toEqual(instrumentType)
     })
   })
 })

@@ -1,7 +1,7 @@
 <template>
   <traction-section title="Plates" class="min-w-[500px]">
     <div class="flex flex-row w-full">
-      <div v-for="plateNumber in labware.plateCount" :key="plateNumber" class="w-full">
+      <div v-for="plateNumber in instrumentType.plateCount" :key="plateNumber" class="w-full">
         <div class="text-left mx-5 mb-5 flex flex-col">
           <traction-label classes="text-left my-2">Plate number: {{ plateNumber }}</traction-label>
           <traction-label classes="text-left">Sequencing Kit Box Barcode:</traction-label>
@@ -14,11 +14,11 @@
             :data-attribute="`sequencing_kit_box_barcode-${plateNumber}`"
           />
         </div>
-        <div :class="labware.plateClasses">
+        <div :class="instrumentType.plateClasses">
           <LabwareMap
             v-slot="{ position }"
-            :labware-type="labware.labwareType"
-            :name="labware.labwareType.name"
+            :labware-type="instrumentType.labwareType"
+            :name="instrumentType.labwareType.name"
             :data-attribute="`pacbio-run-plate-${plateNumber}`"
           >
             <PacbioRunWell
@@ -39,7 +39,6 @@
 import WellEdit from '@/components/pacbio/PacbioRunWellEdit'
 import PacbioRunWell from '@/components/labware/PacbioRunWell'
 import LabwareMap from '@/components/labware/LabwareMap.vue'
-import { PacbioInstrumentTypes } from '@/lib/PacbioInstrumentTypes'
 import { mapGetters } from 'vuex'
 
 export default {
@@ -56,15 +55,7 @@ export default {
     }
   },
   computed: {
-    ...mapGetters('traction/pacbio/runCreate', ['runItem']),
-    labware() {
-      if (this.runItem.system_name == PacbioInstrumentTypes.Revio.name) {
-        return PacbioInstrumentTypes.Revio
-      } else if (this.runItem.system_name == PacbioInstrumentTypes.SequelIIe.name) {
-        return PacbioInstrumentTypes.SequelIIe
-      }
-      return {}
-    },
+    ...mapGetters('traction/pacbio/runCreate', ['runItem', 'instrumentType']),
   },
   methods: {
     alert(message, type) {

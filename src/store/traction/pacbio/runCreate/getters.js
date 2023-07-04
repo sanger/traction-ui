@@ -63,5 +63,8 @@ export default {
 
   runDefaultWellAttributes: (state) => state.defaultWellAttributes || {},
 
-  instrumentNameList: (state) => Object.values(state.instrumentTypeList).map((instrumentType) => instrumentType.name)
+  instrumentNameList: (state) =>
+    Object.values(state.instrumentTypeList).map((instrumentType) => instrumentType.name),
+
+  instrumentType: (state) => state.instrumentType || {},
 }

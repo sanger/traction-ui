@@ -129,7 +129,7 @@ export default {
     )
   },
 
-  populateInstrumentType: (state, { instrumentType}) => {
+  populateInstrumentType: (state, instrumentType) => {
     state.instrumentType = instrumentType
-  }
+  },
 }
