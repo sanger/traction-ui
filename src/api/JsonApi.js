@@ -266,6 +266,36 @@ const populateBy =
     })
   }
 
+/**
+ * Splits the given data into an object keyed by the key of the parent
+ * @param {Array} data The data to split
+ * @param {Function} fn The function to populate the child data
+ * @param {Boolean} includeRelationships indicates if related resource ids should be extracted and included in the resulting object.
+ * @param {Array} parent The parent array includes the data, children and key to use for the resulting object
+ * @returns
+ */
+const splitDataByParent = ({
+  data,
+  fn,
+  includeRelationships = false,
+  parent: { parentData, children, key },
+}) => {
+  return parentData.reduce((result, item) => {
+    // Get the child ids for the given parent
+    const childIds = item.relationships[children].data.map((child) => child.id)
+
+    // Get the child records which match the child ids and then run the passed function
+    const childData = fn({
+      data: data.filter((record) => childIds.includes(record.id)),
+      includeRelationships,
+    })
+
+    // Add the child data to the result keyed by the parent key
+    result[item.attributes[key]] = childData
+    return result
+  }, {})
+}
+
 export {
   extractAttributes,
   mapRelationships,
@@ -284,6 +314,7 @@ export {
   dataToObjectByPosition,
   populateBy,
   extractPlateData,
+  splitDataByParent,
 }
 
 export default deserialize

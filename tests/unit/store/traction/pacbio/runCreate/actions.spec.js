@@ -134,13 +134,13 @@ describe('actions.js', () => {
           id: plateInfo5.id,
           plate_number: plateInfo5.plate_number,
           pacbio_run_id: 5,
-          wells: { A2: wellInfo5 },
+          wells: { A1: wellInfo5 },
         },
         2: {
           id: plateInfo6.id,
           plate_number: plateInfo6.plate_number,
           pacbio_run_id: 5,
-          wells: { A3: wellInfo6, A4: wellInfo7 },
+          wells: { A1: wellInfo6, B1: wellInfo7 },
         },
       }
 
