@@ -42,8 +42,8 @@
         @filtered="onFiltered"
         @row-selected="onRowSelected"
       >
-        <template #cell(selected)="{ selected }">
-          <template v-if="selected">
+        <template #cell(selected)="selectedCell">
+          <template v-if="selectedCell.selected">
             <span>&check;</span>
             <span class="sr-only">Selected</span>
           </template>
