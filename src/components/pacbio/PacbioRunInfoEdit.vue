@@ -34,13 +34,13 @@
         <traction-select
           id="system-name"
           ref="systemName"
-          @input="setInstrumentType($event)"
           v-model="runItem.system_name"
           :value="runItem.system_name"
           title="System Name"
           :options="instrumentNameList"
           data-attribute="system_name"
           :disabled="!newRecord"
+          @input="setInstrumentType($event)"
         />
       </traction-field-group>
 

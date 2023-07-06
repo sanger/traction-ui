@@ -1,7 +1,12 @@
 <template>
   <traction-section title="Plates" class="min-w-[500px]">
     <div class="flex flex-row w-full">
-      <PacbioRunPlateItem v-for="plateNumber in instrumentType.plateCount" :key="plateNumber" :plateNumber="plateNumber" class="w-full" />
+      <PacbioRunPlateItem
+        v-for="plateNumber in instrumentType.plateCount"
+        :key="plateNumber"
+        :plate-number="plateNumber"
+        class="w-full"
+      />
     </div>
   </traction-section>
 </template>

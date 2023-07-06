@@ -1,6 +1,6 @@
 <template>
   <div>
-   <div class="text-left mx-5 mb-5 flex flex-col">
+    <div class="text-left mx-5 mb-5 flex flex-col">
       <traction-label classes="text-left my-2">Plate number: {{ plateNumber }}</traction-label>
       <traction-label classes="text-left">Sequencing Kit Box Barcode:</traction-label>
       <traction-input
