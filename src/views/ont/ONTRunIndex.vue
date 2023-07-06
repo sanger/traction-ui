@@ -29,9 +29,14 @@
           <a
             :id="generateId('sample-sheet', row.item.id)"
             :href="generateSampleSheetPath(row.item.id)"
-            class="text-primary p-1 mr-1 inline-block border-2 rounded-md whitespace-nowrap"
+            class="text-primary p-1 mr-1 whitespace-nowrap"
           >
-            Sample Sheet
+            <traction-button
+              :id="generateId('generate-sample-sheet', row.item.id)"
+              class="bg-sp-400 hover:bg-sp-300"
+            >
+              Sample Sheet <DownloadIcon class="pl-1" />
+            </traction-button>
           </a>
         </template>
       </traction-table>
@@ -42,6 +47,7 @@
 <script>
 import TableHelper from '@/mixins/TableHelper'
 import DataFetcher from '@/components/DataFetcher.vue'
+import DownloadIcon from '@/icons/DownloadIcon.vue'
 
 import { createNamespacedHelpers } from 'vuex'
 const { mapActions, mapGetters } = createNamespacedHelpers('traction/ont')
@@ -50,6 +56,7 @@ export default {
   name: 'ONTRuns',
   components: {
     DataFetcher,
+    DownloadIcon,
   },
   mixins: [TableHelper],
   data() {

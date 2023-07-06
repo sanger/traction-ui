@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="mt-4">
     <traction-section number="2" title="Run Instrument Flowcells">
       <div v-if="instrument">
         <div v-for="rowIndex in instrument.rows" :key="rowIndex" class="flex flex-row px-2 py-2">
