@@ -97,7 +97,6 @@ export default {
       'smrtLinkVersion',
       'getWell',
       'pools',
-      'runItem',
     ]),
     smrtLinkWellDefaults() {
       return PacbioRunWellComponents[this.smrtLinkVersion.name]
