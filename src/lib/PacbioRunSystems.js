@@ -3,7 +3,7 @@ import { LabwareTypes } from '@/lib/LabwareTypes'
 const PacbioRunSystems = {
   Revio: {
     name: 'Revio',
-    plateCount: 1,
+    plateCount: 2,
     labwareType: LabwareTypes.Plate4,
     plateClasses: 'w-32 mx-auto',
   },
