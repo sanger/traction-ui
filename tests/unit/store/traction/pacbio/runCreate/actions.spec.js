@@ -42,6 +42,7 @@ describe('actions.js', () => {
     updateWell,
     getPool,
     setInstrumentType,
+    _fetchRun,
   } = actions
 
   describe('fetchSmrtLinkVersions', () => {
@@ -182,8 +183,46 @@ describe('actions.js', () => {
   })
 
   describe('_fetchRun', () => {
-    it('works', async () => {
-      expect(true).toBeTruthy()
+    it('handles success', async () => {
+      const commit = vi.fn()
+      const find = vi.fn()
+      const rootState = { api: { traction: { pacbio: { runs: { find } } } } }
+      find.mockResolvedValue(Data.PacbioRun)
+      const { success } = await _fetchRun({ commit, rootState }, { id: 1 })
+
+      const smrtLinkVersion = {
+        id: Data.PacbioRun.data.included.slice(10)[0].id,
+        type: Data.PacbioRun.data.included.slice(10)[0].type,
+        ...Data.PacbioRun.data.included.slice(10)[0].attributes,
+      }
+
+      expect(commit).toHaveBeenCalledWith('populateRun', Data.PacbioRun.data.data)
+      expect(commit).toHaveBeenCalledWith(
+        'populatePlates',
+        Data.PacbioRun.data.included.slice(0, 2),
+      )
+      expect(commit).toHaveBeenCalledWith(
+        'populateWells',
+        Data.PacbioRun.data.included.slice(0, 2),
+        Data.PacbioRun.data.included.slice(2, 5),
+      )
+      expect(commit).toHaveBeenCalledWith('populatePools', Data.PacbioRun.data.included.slice(5, 6))
+      expect(commit).toHaveBeenCalledWith('setTubes', Data.PacbioRun.data.included.slice(6, 7))
+      expect(commit).toHaveBeenCalledWith('setLibraries', Data.PacbioRun.data.included.slice(7, 8))
+      expect(commit).toHaveBeenCalledWith('setTags', Data.PacbioRun.data.included.slice(8, 9))
+      expect(commit).toHaveBeenCalledWith('setRequests', Data.PacbioRun.data.included.slice(9, 10))
+      expect(commit).toHaveBeenCalledWith('populateSmrtLinkVersion', smrtLinkVersion)
+      expect(success).toBeTruthy()
+    })
+
+    it('handles failure', async () => {
+      const commit = vi.fn()
+      const find = vi.fn()
+      const rootState = { api: { traction: { pacbio: { runs: { find } } } } }
+      find.mockRejectedValue(failedResponse)
+      const { success } = await fetchRun({ commit, rootState }, { id: 1 })
+      expect(commit).not.toHaveBeenCalled()
+      expect(success).toBeFalsy()
     })
   })
 

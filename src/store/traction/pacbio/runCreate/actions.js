@@ -130,6 +130,57 @@ export default {
   },
 
   /**
+   * Retrieves a pacbio run and populates the store.
+   * @param rootState the vuex rootState object. Provides access to current state
+   * @param commit the vuex commit object. Provides access to mutations
+   * @returns { success, errors }. Was the request successful? were there any errors?
+   */
+  _fetchRun: async ({ commit, rootState }, { id }) => {
+    const request = rootState.api.traction.pacbio.runs
+    const promise = request.find({
+      id,
+      // This is long but we want to include pool data
+      include:
+        'plate.wells.pools.tube,plate.wells.pools.libraries.tag,plates.wells.pools.libraries.request,smrt_link_version',
+      fields: {
+        requests: 'sample_name',
+        tubes: 'barcode',
+        tags: 'group_id',
+        libraries: 'request,tag,run_suitability',
+      },
+    })
+    const response = await handleResponse(promise)
+
+    const { success, data: { data, included = [] } = {}, errors = [] } = response
+
+    if (success) {
+      const {
+        plates,
+        wells,
+        pools,
+        tubes,
+        libraries,
+        tags,
+        requests,
+        smrt_link_versions: [smrt_link_version = {}] = [],
+      } = groupIncludedByResource(included)
+
+      const smrtLinkVersion = extractAttributes(smrt_link_version)
+
+      commit('populateRun', data)
+      commit('populatePlates', plates)
+      commit('populateWells', plates, wells)
+      commit('populatePools', pools)
+      commit('setLibraries', libraries)
+      commit('setTags', tags)
+      commit('setRequests', requests)
+      commit('setTubes', tubes)
+      commit('populateSmrtLinkVersion', smrtLinkVersion)
+    }
+    return { success, errors }
+  },
+
+  /**
    * Saves (persists) the existing run. If it is a new run it will be created.
    * If it is an existing run it will be updated.
    * @param rootState the vuex rootState object. Provides access to current state
