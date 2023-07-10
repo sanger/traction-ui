@@ -99,6 +99,32 @@ const dataToObjectByPosition = ({ data = [], includeRelationships = false }) => 
   }, {})
 }
 
+/**
+ * Useful for grouping resources by a plate_number
+ * @param {Array} data Array of JSON API data
+ * @returns {Object} keys will be the plate_number for the data. This usually will be wells
+ */
+const dataToObjectByPlateNumber = ({ data = [], includeRelationships = false }) => {
+  return data.reduce(
+    (result, { id, type, attributes: { plate_number, ...rest }, relationships }) => {
+      return {
+        [plate_number]: {
+          // we still keep the id as it will be needed
+          id,
+          // the type can be useful for components
+          type,
+          plate_number,
+          ...rest,
+          // we might not want to use the relationships
+          ...(includeRelationships ? extractRelationshipsAndGroupById(relationships) : {}),
+        },
+        ...result,
+      }
+    },
+    {},
+  )
+}
+
 const extractRelationship = (relationship, included, includeStore = {}) => {
   if (Array.isArray(relationship)) {
     return relationship.map((item) => deserializeIncluded(item, included, includeStore))
@@ -315,6 +341,7 @@ export {
   populateBy,
   extractPlateData,
   splitDataByParent,
+  dataToObjectByPlateNumber,
 }
 
 export default deserialize

@@ -1,4 +1,11 @@
-import { populateById, dataToObjectById } from '@/api/JsonApi'
+import {
+  populateById,
+  dataToObjectById,
+  populateBy,
+  dataToObjectByPlateNumber,
+  splitDataByParent,
+  dataToObjectByPosition,
+} from '@/api/JsonApi'
 import Vue from 'vue'
 import defaultState from './state'
 
@@ -124,7 +131,43 @@ export default {
     state.run.plates[plateNumber].wells['_destroy'].push({ _destroy: true, id })
   },
 
+  /**
+   * @param {Object} { state } The VueXState object
+   * @param {Object} instrumentType The instrumentType to add
+   * Adds the instrumentType to state
+   */
   populateInstrumentType: (state, instrumentType) => {
     state.instrumentType = instrumentType
+  },
+
+  /**
+   * @param {Object} { state } The VueXState object
+   * @param {Object} plates The plates to add
+   * Adds the plates to state by plate number
+   */
+  populatePlates: (state, plates) => {
+    populateBy('plates', dataToObjectByPlateNumber, {
+      includeRelationships: true,
+      populateResources: false,
+    })(state, plates)
+  },
+
+  /**
+   * @param {Object} { state } The VueXState object
+   * @param {Object} plates The plates for the run
+   * @param {Object} wells The wells for the run
+   * Adds the wells to state by plate number and well position, two dimensional array
+   */
+  populateWells: (state, plates, wells) => {
+    Vue.set(
+      state,
+      'wells',
+      splitDataByParent({
+        data: wells,
+        fn: dataToObjectByPosition,
+        includeRelationships: true,
+        parent: { parentData: plates, children: 'wells', key: 'plate_number' },
+      }),
+    )
   },
 }

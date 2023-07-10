@@ -25,6 +25,7 @@ describe('JsonApi', () => {
     populateBy,
     extractPlateData,
     splitDataByParent,
+    dataToObjectByPlateNumber,
   } = JsonApi
 
   let data, included, dataItem
@@ -312,6 +313,30 @@ describe('JsonApi', () => {
       const item = wells['A1']
       const keys = Object.keys(item)
       expect(keys.includes('pools')).toBeTruthy()
+    })
+  })
+
+  describe('dataToObjectByPlateNumber', () => {
+    it('creates an object with the plate number as key', () => {
+      const data = Data.PacbioRun.data.included.slice(0, 1)
+      const plates = dataToObjectByPlateNumber({ data })
+      const keys = Object.keys(plates)
+      expect(keys.length).toEqual(data.length)
+      // bizarre. It reverses the keys.
+      expect(plates[keys[0]]).toEqual({
+        id: data[0].id,
+        plate_number: data[0].plate_number,
+        type: data[0].type,
+        ...data[0].attributes,
+      })
+    })
+
+    it('adds the relationships if requested', () => {
+      const data = Data.PacbioRun.data.included.slice(0, 1)
+      const plates = dataToObjectByPlateNumber({ data, includeRelationships: true })
+      const item = plates['1']
+      const keys = Object.keys(item)
+      expect(keys.includes('wells')).toBeTruthy()
     })
   })
 

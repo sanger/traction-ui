@@ -17,6 +17,12 @@ export default () => {
     // Run: The current run being edited or created
     run: {},
 
+    // Plates: The plates for the current run
+    plates: {},
+
+    // Wells: The wells for the plates in the current run
+    wells: {},
+
     //Pools: The pools that belong to the wells or the pool selected for a new run
     pools: {},
 

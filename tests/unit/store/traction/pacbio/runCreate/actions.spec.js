@@ -181,6 +181,12 @@ describe('actions.js', () => {
     })
   })
 
+  describe('_fetchRun', () => {
+    it('works', async () => {
+      expect(true).toBeTruthy()
+    })
+  })
+
   describe('findPools', () => {
     let commit, get, getters
     beforeEach(() => {

@@ -1,7 +1,12 @@
 import mutations from '@/store/traction/pacbio/runCreate/mutations'
 import defaultState from '@/store/traction/pacbio/runCreate/state'
 import { Data } from '@support/testHelper'
-import { dataToObjectById } from '@/api/JsonApi'
+import {
+  dataToObjectById,
+  dataToObjectByPlateNumber,
+  splitDataByParent,
+  dataToObjectByPosition,
+} from '@/api/JsonApi'
 import {
   newRun,
   newPlate,
@@ -39,6 +44,8 @@ describe('mutations.js', () => {
     updateWell,
     deleteWell,
     populateInstrumentType,
+    populatePlates,
+    populateWells,
   } = mutations
 
   describe('populateSmrtLinkVersions', () => {
@@ -146,7 +153,6 @@ describe('mutations.js', () => {
       const state = {
         ...defaultStateObject,
       }
-      // populates an existing pool into state
       clearRunData(state)
       expect(state).toEqual({
         resources: {
@@ -163,6 +169,8 @@ describe('mutations.js', () => {
         defaultWellAttributes: {},
         instrumentTypeList: PacbioInstrumentTypes,
         instrumentType: PacbioInstrumentTypes.SequelIIe,
+        plates: {},
+        wells: {},
       })
     })
   })
@@ -246,6 +254,40 @@ describe('mutations.js', () => {
       populateInstrumentType(state, instrumentType)
       // assert result
       expect(state.instrumentType).toEqual(instrumentType)
+    })
+  })
+
+  describe('populatePlates', () => {
+    it('updates the state', () => {
+      // mock state
+      const plates = Data.PacbioRun.data.included.slice(0, 1)
+      const state = defaultState()
+      // apply mutations
+      populatePlates(state, plates)
+      // assert result
+      expect(state.plates).toEqual(
+        dataToObjectByPlateNumber({ data: plates, includeRelationships: true }),
+      )
+    })
+  })
+
+  describe('populateWells', () => {
+    it('updates the state', () => {
+      // mock state
+      const plates = Data.PacbioRun.data.included.slice(0, 2)
+      const wells = Data.PacbioRun.data.included.slice(2, 5)
+      const state = defaultState()
+      // apply mutations
+      populateWells(state, plates, wells)
+      // assert result
+      expect(state.wells).toEqual(
+        splitDataByParent({
+          data: wells,
+          fn: dataToObjectByPosition,
+          includeRelationships: true,
+          parent: { parentData: plates, children: 'wells', key: 'plate_number' },
+        }),
+      )
     })
   })
 })
