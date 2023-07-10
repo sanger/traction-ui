@@ -243,6 +243,10 @@ const createRunType = ({ id }) => {
   return isNaN(id) ? newRunType : existingRunType
 }
 
+const createPayload = ({ id, run, plates, wells, smrtLinkVersion }) => {
+  return { id, run, plates, wells, smrtLinkVersion }
+}
+
 export {
   newRun,
   validate,
@@ -256,4 +260,5 @@ export {
   newRunType,
   existingRunType,
   createPlatePayload,
+  createPayload,
 }

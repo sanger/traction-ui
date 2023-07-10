@@ -10,7 +10,9 @@ import {
   createRunType,
   createPlatePayload,
   newPlate,
+  createPayload,
 } from '@/store/traction/pacbio/runCreate/run'
+import { it } from 'vitest'
 
 const existingRun = {
   id: 1,
@@ -306,6 +308,113 @@ describe('run.js', () => {
         const request = { create: vi.fn(), update: vi.fn() }
         runType.promise({ payload, request })
         expect(request.update).toBeCalledWith(payload)
+      })
+    })
+  })
+
+  describe.skip('createPayload', () => {
+    it('will create a new run payload', () => {
+      const run = { smrt_link_version_id: 1 }
+      const plates = {
+        1: {
+          plate_number: 1,
+          sequencing_kit_box_barcode: '123',
+        },
+        2: {
+          plate_number: 2,
+          sequencing_kit_box_barcode: '456',
+        },
+      }
+      const wells = {
+        1: {
+          A1: newWell({ position: 'A1' }),
+        },
+        2: {
+          A1: newWell({ position: 'A1' }),
+        },
+      }
+
+      const payload = createPayload({
+        run,
+        plates,
+        wells,
+        smrtLinkVersion: smrtLinkVersions['1'],
+      })
+      expect(payload).toEqual({
+        data: {
+          type: 'runs',
+          attributes: {
+            pacbio_smrt_link_version_id: smrtLinkVersions['1'].id,
+            plates_attributes: [
+              {
+                plate_number: 1,
+                sequencing_kit_box_barcode: '123',
+                wells_attributes: [wells[1].A1],
+              },
+              {
+                plate_number: 2,
+                sequencing_kit_box_barcode: '456',
+                wells_attributes: [wells[2].A1],
+              },
+            ],
+          },
+        },
+      })
+    })
+
+    it('will create an existing run payload', () => {
+      const aRun = { smrt_link_version_id: 1, id: 1 }
+      const { id, ...attributes } = aRun
+      const plates = {
+        1: {
+          id: 1,
+          plate_number: 1,
+          sequencing_kit_box_barcode: '123',
+        },
+        2: {
+          id: 2,
+          plate_number: 2,
+          sequencing_kit_box_barcode: '456',
+        },
+      }
+      const wells = {
+        1: {
+          A1: { ...newWell({ position: 'A1' }), id: 1 },
+        },
+        2: {
+          A1: { ...newWell({ position: 'A1' }), id: 2, pools: [1, 2] },
+          _destroy: [{ id: 3, _destroy: true }],
+        },
+      }
+      const payload = createPayload({
+        id,
+        run: attributes,
+        plates,
+        wells,
+        smrtLinkVersion: smrtLinkVersions['1'],
+      })
+      expect(payload).toEqual({
+        data: {
+          type: 'runs',
+          id: 1,
+          attributes: {
+            pacbio_smrt_link_version_id: smrtLinkVersions['1'].id,
+            plates_attributes: [
+              {
+                id: 1,
+                plate_number: 1,
+                sequencing_kit_box_barcode: '123',
+                wells_attributes: [wells[1].A1],
+              },
+              {
+                id: 2,
+                plate_number: 2,
+                sequencing_kit_box_barcode: '456',
+                wells_attributes: [{ ...newWell({ position: 'A1' }), id: 2, pool_ids: [1, 2] }],
+              },
+            ],
+          },
+        },
       })
     })
   })
