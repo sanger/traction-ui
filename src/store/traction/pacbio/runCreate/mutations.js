@@ -116,17 +116,12 @@ export default {
    * Adds _destroy key to the well in store so future wells
    * for the same position can be added
    */
-  deleteWell: (state, { well, plateNumber }) => {
-    const position = well.position
+  deleteWell: (state, { position, plateNumber }) => {
+    const id = state.run.plates[plateNumber].wells[position].id
 
     Vue.delete(state.run.plates[plateNumber].wells, position)
-    const newKey = position + '_destroy'
 
-    Vue.set(
-      state.run.plates[plateNumber].wells,
-      newKey,
-      Object.assign({}, state.run.plates[plateNumber].wells[newKey], well),
-    )
+    state.run.plates[plateNumber].wells['_destroy'].push({ _destroy: true, id })
   },
 
   populateInstrumentType: (state, instrumentType) => {

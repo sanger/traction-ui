@@ -36,6 +36,7 @@ const smrtLinkVersions = {
 const wells = {
   1: { ...newWell({ position: 'A1' }) },
   2: { ...newWell({ position: 'A2' }), pools: [1, 2] },
+  _destroy: [],
 }
 
 const wellValues = Object.values(wells)
@@ -53,7 +54,7 @@ describe('run.js', () => {
       expect(run.dna_control_complex_box_barcode).toEqual(null)
       expect(run.comments).toEqual(null)
       expect(run.plates[plateNumber].sequencing_kit_box_barcode).toEqual('')
-      expect(run.plates[plateNumber].wells).toEqual({})
+      expect(run.plates[plateNumber].wells).toEqual({ _destroy: [] })
     })
   })
 
@@ -131,13 +132,12 @@ describe('run.js', () => {
     })
 
     it('returns the plate data, including wells to be destroyed', () => {
-      const well = { ...newWell({ position: 'A2' }), pools: [1, 2] }
       const plate = {
         ...newPlate(1),
         id: 1,
         pacbio_run_id: 2,
         wells: {
-          A1_destroy: well,
+          _destroy: [{ id: 1, _destroy: true }],
         },
       }
 
@@ -145,7 +145,7 @@ describe('run.js', () => {
 
       expect(platePayload.id).toEqual(1)
       expect(platePayload.plate_number).toEqual(1)
-      expect(platePayload.wells_attributes).toEqual([{ ...well, pool_ids: [1, 2], _destroy: true }])
+      expect(platePayload.wells_attributes).toEqual([{ id: 1, _destroy: true }])
     })
 
     it('returns null if empty plate data is provided', () => {

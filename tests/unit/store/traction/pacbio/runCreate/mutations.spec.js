@@ -224,11 +224,15 @@ describe('mutations.js', () => {
           1: newPlate(1),
         },
       }
-      state.run.plates[PLATE_NUMBER].wells = { A1: { position: 'A1' }, A2: { position: 'A2' } }
-      deleteWell(state, { well: { position: 'A1' }, plateNumber: PLATE_NUMBER })
+      state.run.plates[PLATE_NUMBER].wells = {
+        A1: { position: 'A1', id: 1 },
+        A2: { position: 'A2', id: 2 },
+        _destroy: [],
+      }
+      deleteWell(state, { position: 'A1', plateNumber: PLATE_NUMBER })
       expect(state.run.plates[PLATE_NUMBER].wells).toEqual({
-        A1_destroy: { position: 'A1' },
-        A2: { position: 'A2' },
+        _destroy: [{ _destroy: true, id: 1 }],
+        A2: { position: 'A2', id: 2 },
       })
     })
   })

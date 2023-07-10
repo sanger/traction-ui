@@ -9,7 +9,7 @@ const newPlate = (plateNumber) => {
   return {
     plate_number: plateNumber,
     sequencing_kit_box_barcode: '',
-    wells: {},
+    wells: { _destroy: [] },
   }
 }
 
@@ -131,10 +131,15 @@ const createWellPayload = (position, well) => {
 const createPlatePayload = (plate, plateNumber) => {
   const plateId = plate.id || ''
 
-  const wells_attributes = Object.keys(plate.wells).map((position) => {
-    const well = plate.wells[position]
-    return createWellPayload(position, well)
-  })
+  const wells_attributes = Object.keys(plate.wells)
+    .map((key) => {
+      if (key === '_destroy') {
+        return plate.wells[key]
+      } else {
+        return createWellPayload(key, plate.wells[key])
+      }
+    })
+    .flat()
 
   // If there is no plate id and no wells then return null
   if (!plateId && wells_attributes.length === 0) {
