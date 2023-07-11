@@ -11,6 +11,7 @@ import {
   createPlatePayload,
   newPlate,
   createPayload,
+  createWellsPayload,
 } from '@/store/traction/pacbio/runCreate/run'
 import { it } from 'vitest'
 
@@ -312,9 +313,9 @@ describe('run.js', () => {
     })
   })
 
-  describe.skip('createPayload', () => {
+  describe('createPayload', () => {
     it('will create a new run payload', () => {
-      const run = { smrt_link_version_id: 1 }
+      const run = { system_name: 'Revio' }
       const plates = {
         1: {
           plate_number: 1,
@@ -340,21 +341,23 @@ describe('run.js', () => {
         wells,
         smrtLinkVersion: smrtLinkVersions['1'],
       })
+
       expect(payload).toEqual({
         data: {
           type: 'runs',
           attributes: {
+            system_name: 'Revio',
             pacbio_smrt_link_version_id: smrtLinkVersions['1'].id,
             plates_attributes: [
               {
                 plate_number: 1,
                 sequencing_kit_box_barcode: '123',
-                wells_attributes: [wells[1].A1],
+                wells_attributes: createWellsPayload(wells[1]),
               },
               {
                 plate_number: 2,
                 sequencing_kit_box_barcode: '456',
-                wells_attributes: [wells[2].A1],
+                wells_attributes: createWellsPayload(wells[2]),
               },
             ],
           },
@@ -363,7 +366,7 @@ describe('run.js', () => {
     })
 
     it('will create an existing run payload', () => {
-      const aRun = { smrt_link_version_id: 1, id: 1 }
+      const aRun = { system_name: 'Revio', id: 1 }
       const { id, ...attributes } = aRun
       const plates = {
         1: {
@@ -398,19 +401,20 @@ describe('run.js', () => {
           type: 'runs',
           id: 1,
           attributes: {
+            system_name: 'Revio',
             pacbio_smrt_link_version_id: smrtLinkVersions['1'].id,
             plates_attributes: [
               {
                 id: 1,
                 plate_number: 1,
                 sequencing_kit_box_barcode: '123',
-                wells_attributes: [wells[1].A1],
+                wells_attributes: createWellsPayload(wells[1]),
               },
               {
                 id: 2,
                 plate_number: 2,
                 sequencing_kit_box_barcode: '456',
-                wells_attributes: [{ ...newWell({ position: 'A1' }), id: 2, pool_ids: [1, 2] }],
+                wells_attributes: createWellsPayload(wells[2]),
               },
             ],
           },

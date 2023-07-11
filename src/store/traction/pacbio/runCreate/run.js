@@ -243,8 +243,54 @@ const createRunType = ({ id }) => {
   return isNaN(id) ? newRunType : existingRunType
 }
 
+/**
+ * @param {id} - An Integer for the id of the run
+ * @param {run} - A pacbio sequencing run object minus id
+ * @param {plates} - An object of plates
+ * @param {wells} - An object of wells
+ * @param {smrtLinkVersion} - The SMRT Link Version of the run
+ * @returns {Object} - A payload for the run
+ * creates a JSONAPI payload for a run
+ */
 const createPayload = ({ id, run, plates, wells, smrtLinkVersion }) => {
-  return { id, run, plates, wells, smrtLinkVersion }
+  return {
+    data: {
+      type: 'runs',
+      id,
+      attributes: {
+        ...run,
+        pacbio_smrt_link_version_id: smrtLinkVersion.id,
+        plates_attributes: Object.values(plates).map(({ plate_number, ...plate }) => {
+          return {
+            plate_number,
+            ...plate,
+            wells_attributes: createWellsPayload(wells[plate_number]),
+          }
+        }),
+      },
+    },
+  }
+}
+
+/**
+ * @param {wells} - An object of wells
+ * @returns {Object} - A payload for the wells
+ */
+const createWellsPayload = (wells) => {
+  // isolate the _destroy attribute from the rest of the wells
+  const { _destroy, ...rest } = wells
+
+  // return the wells with the pools replaced by pool_ids attribute
+  return (
+    Object.values(rest)
+      .map(({ pools: pool_ids, ...attributes }) => {
+        return { ...attributes, pool_ids }
+      })
+      // add the _destroy attribute back to the wells
+      .concat(_destroy || [])
+      // flatten the array
+      .flat()
+  )
 }
 
 export {
@@ -261,4 +307,5 @@ export {
   existingRunType,
   createPlatePayload,
   createPayload,
+  createWellsPayload,
 }
