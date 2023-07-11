@@ -13,6 +13,9 @@
             type="text"
             :data-attribute="`sequencing_kit_box_barcode-${plateNumber}`"
           />
+          <traction-label v-if="isRevio" classes="text-left"
+            >Serial Number: {{ serialNumber(plateNumber) }}</traction-label
+          >
         </div>
         <div :class="labware.plateClasses">
           <LabwareMap
@@ -58,12 +61,18 @@ export default {
   computed: {
     ...mapGetters('traction/pacbio/runCreate', ['runItem']),
     labware() {
-      if (this.runItem.system_name == PacbioRunSystems.Revio.name) {
+      if (this.isRevio) {
         return PacbioRunSystems.Revio
-      } else if (this.runItem.system_name == PacbioRunSystems.SequelIIe.name) {
+      } else if (this.isSequel) {
         return PacbioRunSystems.SequelIIe
       }
       return {}
+    },
+    isRevio() {
+      return this.runItem.system_name == PacbioRunSystems.Revio.name
+    },
+    isSequel() {
+      return this.runItem.system_name == PacbioRunSystems.SequelIIe.name
     },
   },
   methods: {
@@ -72,6 +81,10 @@ export default {
     },
     onWellClick(position, plateNumber) {
       this.$refs.modal.showModalForPositionAndPlate(position, plateNumber)
+    },
+    // Only used for Revio runs
+    serialNumber(plateNumber) {
+      return this.runItem.plates[plateNumber].sequencing_kit_box_barcode.substring(15, 20)
     },
   },
 }

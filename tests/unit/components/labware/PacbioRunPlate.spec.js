@@ -54,6 +54,13 @@ describe('PacbioRunPlate.vue', () => {
         expect(plate.labware.plateCount).toEqual(1)
         expect(plate.labware.labwareType).toEqual(LabwareTypes.Plate96)
       })
+      it('isRevio', () => {
+        expect(plate.isRevio).toEqual(false)
+      })
+
+      it('isSequel', () => {
+        expect(plate.isSequel).toEqual(true)
+      })
     })
   })
 
@@ -64,7 +71,7 @@ describe('PacbioRunPlate.vue', () => {
         plates: {
           1: {
             plate_number: 1,
-            sequencing_kit_box_barcode: 'skbb',
+            sequencing_kit_box_barcode: '1021188000301570037320231019',
             wells: {
               A1: newWell({ position: 'A1' }),
               B1: newWell({ position: 'B1' }),
@@ -72,7 +79,7 @@ describe('PacbioRunPlate.vue', () => {
           },
           2: {
             plate_number: 2,
-            sequencing_kit_box_barcode: 'skbb',
+            sequencing_kit_box_barcode: '1021188000301570123420231019',
             wells: {
               A1: newWell({ position: 'A1' }),
               D1: newWell({ position: 'D1' }),
@@ -101,6 +108,20 @@ describe('PacbioRunPlate.vue', () => {
       it('labware returns the correct information', () => {
         expect(plate.labware.plateCount).toEqual(1)
         expect(plate.labware.labwareType).toEqual(LabwareTypes.Plate4)
+      })
+      it('isRevio', () => {
+        expect(plate.isRevio).toEqual(true)
+      })
+
+      it('isSequel', () => {
+        expect(plate.isSequel).toEqual(false)
+      })
+    })
+
+    describe('#methods', () => {
+      it('returns the serialNumber', () => {
+        expect(plate.serialNumber(1)).toEqual('00373')
+        expect(plate.serialNumber(2)).toEqual('01234')
       })
     })
   })
