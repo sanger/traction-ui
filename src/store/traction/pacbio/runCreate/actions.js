@@ -260,7 +260,7 @@ export default {
    * @param plateNumber The plate number of the well
    */
   updateWell: ({ commit }, { well, plateNumber }) => {
-    commit('updateWell', { well: well, plateNumber: plateNumber })
+    commit('updateWell', { well, plateNumber })
   },
 
   /**
@@ -270,7 +270,7 @@ export default {
    * @param plateNumber The plate number of the well
    */
   deleteWell: ({ commit }, { well, plateNumber }) => {
-    commit('deleteWell', { well: well, plateNumber: plateNumber })
+    commit('deleteWell', { well, plateNumber })
   },
 
   /**
@@ -317,5 +317,23 @@ export default {
       (instrumentType) => instrumentType.name === instrumentName,
     )
     commit('populateInstrumentType', { ...instrumentType })
+  },
+
+  /**
+   * @param commit the vuex commit object. Provides access to mutations
+   * @param state the vuex state object. Provides access to current state
+   * @param integer plateNumber
+   * @returns {Object} plate
+   * if plate exists, return plate
+   * if plate does not exist, create plate and return plate
+   */
+  getOrCreatePlate: ({ commit, state }, { plateNumber }) => {
+    let plate = state.plates[plateNumber]
+    if (plate) {
+      return plate
+    }
+    plate = newPlate(plateNumber)
+    commit('addPlate', plate)
+    return plate
   },
 }

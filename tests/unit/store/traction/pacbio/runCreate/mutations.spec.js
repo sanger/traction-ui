@@ -46,6 +46,7 @@ describe('mutations.js', () => {
     populateInstrumentType,
     populatePlates,
     populateWells,
+    addPlate,
   } = mutations
 
   describe('populateSmrtLinkVersions', () => {
@@ -288,6 +289,15 @@ describe('mutations.js', () => {
           parent: { parentData: plates, children: 'wells', key: 'plate_number' },
         }),
       )
+    })
+  })
+
+  describe('addPlate', () => {
+    it('creates a new plate', () => {
+      const state = defaultState()
+      const plate = { plate_number: 1, sequencing_kit_box_barcode: '' }
+      addPlate(state, plate)
+      expect(state.plates[1]).toEqual(plate)
     })
   })
 })

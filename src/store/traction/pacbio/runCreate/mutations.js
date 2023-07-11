@@ -170,4 +170,13 @@ export default {
       }),
     )
   },
+
+  /**
+   * @param {Object} { state } The VueXState object
+   * @param {Object} plate The plate to add
+   * Adds the plate to state by plate number
+   */
+  addPlate: (state, plate) => {
+    Vue.set(state.plates, plate.plate_number, plate)
+  },
 }

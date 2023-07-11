@@ -43,6 +43,7 @@ describe('actions.js', () => {
     getPool,
     setInstrumentType,
     _fetchRun,
+    getOrCreatePlate,
   } = actions
 
   describe('fetchSmrtLinkVersions', () => {
@@ -434,6 +435,27 @@ describe('actions.js', () => {
       }
       setInstrumentType({ commit, state }, instrumentName)
       expect(commit).toHaveBeenCalledWith('populateInstrumentType', PacbioInstrumentTypes.SequelIIe)
+    })
+  })
+
+  describe('getOrCreatePlate', () => {
+    it('creates and returns a new plate', () => {
+      const commit = vi.fn()
+      const state = { plates: {} }
+      const plateNumber = 1
+      const myPlate = newPlate(plateNumber)
+      const plate = getOrCreatePlate({ commit, state }, { plateNumber })
+      expect(plate).toEqual(myPlate)
+      expect(commit).toHaveBeenCalledWith('addPlate', myPlate)
+    })
+
+    it('returns an existing plate', () => {
+      const commit = vi.fn()
+      const plateNumber = 1
+      const state = { plates: { [plateNumber]: newPlate(plateNumber) } }
+      const plate = getOrCreatePlate({ commit, state }, { plateNumber })
+      expect(plate).toEqual(state.plates[plateNumber])
+      expect(commit).not.toHaveBeenCalled()
     })
   })
 })
