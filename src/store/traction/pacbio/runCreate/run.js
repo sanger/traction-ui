@@ -1,5 +1,3 @@
-import Vue from 'vue'
-
 /**
  *
  * @param {String} plateNumber The number of the plate e.g. 1
@@ -32,10 +30,10 @@ const runAttributes = () => {
   }
 }
 
-/*
- * @returns {Array} of required attributes for a run
- */
-const requiredAttributes = () => ['sequencing_kit_box_barcode', 'dna_control_complex_box_barcode']
+// /*
+//  * @returns {Array} of required attributes for a run
+//  */
+// const requiredAttributes = () => ['sequencing_kit_box_barcode', 'dna_control_complex_box_barcode']
 
 /**
  * @returns {Object} - A Fresh Pacbio Sequencing Run.
@@ -94,30 +92,6 @@ const newWell = ({ position, ...attributes }) => {
     row,
     column,
   }
-}
-
-/*
- * @param {run} - A Pacbio Sequencing Run Object
- * @returns none - It modifies the original as it needs to be reactive
- * checks if requiredAttributes are completed. If not adds an error
- *
- */
-const validate = ({ run }) => {
-  const errors = {}
-  requiredAttributes().forEach((field) => {
-    if (!run[field]) errors[field] = 'must be present'
-  })
-  Vue.set(run, 'errors', errors)
-}
-
-/*
- * @param {run} - A Pacbio Sequencing Run Object
- * @returns {boolean}
- * A run is valid if it has no errors or errors are empty
- * A run is not valid if it has any errors
- */
-const valid = ({ run }) => {
-  return Object.keys(run.errors || {}).length === 0
 }
 
 const createWellPayload = (position, well) => {
@@ -295,8 +269,6 @@ const createWellsPayload = (wells) => {
 
 export {
   newRun,
-  validate,
-  valid,
   defaultWellAttributes,
   newWell,
   newPlate,
