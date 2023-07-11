@@ -35,7 +35,8 @@
 import PacbioRunWellEdit from '@/components/pacbio/PacbioRunWellEdit'
 import PacbioRunWell from '@/components/labware/PacbioRunWell'
 import LabwareMap from '@/components/labware/LabwareMap.vue'
-import { mapGetters } from 'vuex'
+import { createNamespacedHelpers } from 'vuex'
+const { mapActions, mapGetters } = createNamespacedHelpers('traction/pacbio/runCreate')
 
 export default {
   name: 'PacbioRunPlateList',
@@ -53,10 +54,14 @@ export default {
   data() {
     return {
       selectedWellPosition: '',
+      plate: {},
     }
   },
   computed: {
-    ...mapGetters('traction/pacbio/runCreate', ['runItem', 'instrumentType']),
+    ...mapGetters(['runItem', 'instrumentType']),
+  },
+  created() {
+    this.provider()
   },
   methods: {
     alert(message, type) {
@@ -64,6 +69,10 @@ export default {
     },
     onWellClick(position, plateNumber) {
       this.$refs.modal.showModalForPositionAndPlate(position, plateNumber)
+    },
+    ...mapActions(['getOrCreatePlate']),
+    async provider() {
+      this.plate = await this.getOrCreatePlate({ plateNumber: this.plateNumber })
     },
   },
 }
