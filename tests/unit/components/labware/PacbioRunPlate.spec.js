@@ -24,7 +24,7 @@ describe('PacbioRunPlate.vue', () => {
         plates: {
           1: {
             plate_number: 1,
-            sequencing_kit_box_barcode: 'skbb',
+            sequencing_kit_box_barcode: 'twentyonecharacters00',
             wells: {
               A1: newWell({ position: 'A1' }),
               C5: newWell({ position: 'C5' }),
@@ -60,6 +60,28 @@ describe('PacbioRunPlate.vue', () => {
 
       it('isSequel', () => {
         expect(plate.isSequel).toEqual(true)
+      })
+    })
+
+    describe('#methods', () => {
+      describe('validateSequencingKitBoxBarcode', () => {
+        const plateNumber = 1
+
+        it('errors if SequencingKitBoxBarcode is not valid', async () => {
+          const skbbInput = wrapper.find('#sequencing-kit-box-barcode-1')
+          await skbbInput.setValue('some value')
+          expect(plate.validateSequencingKitBoxBarcode(plateNumber)).toEqual({
+            valid: false,
+            error: 'Invalid Sequencing Kit Barcode',
+          })
+        })
+
+        it('does not error if SequencingKitBoxBarcode is valid', async () => {
+          expect(plate.validateSequencingKitBoxBarcode(plateNumber)).toEqual({
+            valid: true,
+            error: '',
+          })
+        })
       })
     })
   })
@@ -122,6 +144,26 @@ describe('PacbioRunPlate.vue', () => {
       it('returns the serialNumber', () => {
         expect(plate.serialNumber(1)).toEqual('00373')
         expect(plate.serialNumber(2)).toEqual('01234')
+      })
+
+      describe('validateSequencingKitBoxBarcode', () => {
+        const plateNumber = 1
+
+        it('errors if SequencingKitBoxBarcode is not valid', async () => {
+          const skbbInput = wrapper.find('#sequencing-kit-box-barcode-1')
+          await skbbInput.setValue('some value')
+          expect(plate.validateSequencingKitBoxBarcode(plateNumber)).toEqual({
+            valid: false,
+            error: 'Invalid Sequencing Kit Barcode',
+          })
+        })
+
+        it('does not error if SequencingKitBoxBarcode is valid', async () => {
+          expect(plate.validateSequencingKitBoxBarcode(plateNumber)).toEqual({
+            valid: true,
+            error: '',
+          })
+        })
       })
     })
   })
