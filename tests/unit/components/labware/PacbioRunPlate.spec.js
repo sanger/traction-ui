@@ -64,6 +64,10 @@ describe('PacbioRunPlate.vue', () => {
     })
 
     describe('#methods', () => {
+      it('returns the sequencingKitBoxBarcode', () => {
+        expect(plate.sequencingKitBoxBarcode(1)).toEqual('twentyonecharacters00')
+      })
+
       describe('validateSequencingKitBoxBarcode', () => {
         const plateNumber = 1
 
@@ -79,6 +83,15 @@ describe('PacbioRunPlate.vue', () => {
         it('does not error if SequencingKitBoxBarcode is valid', async () => {
           expect(plate.validateSequencingKitBoxBarcode(plateNumber)).toEqual({
             valid: true,
+            error: '',
+          })
+        })
+
+        it('does not error if SequencingKitBoxBarcode is empty', async () => {
+          const skbbInput = wrapper.find('#sequencing-kit-box-barcode-1')
+          await skbbInput.setValue('')
+          expect(plate.validateSequencingKitBoxBarcode(plateNumber)).toEqual({
+            valid: null,
             error: '',
           })
         })
@@ -141,6 +154,11 @@ describe('PacbioRunPlate.vue', () => {
     })
 
     describe('#methods', () => {
+      it('returns the sequencingKitBoxBarcode', () => {
+        expect(plate.sequencingKitBoxBarcode(1)).toEqual('1021188000301570037320231019')
+        expect(plate.sequencingKitBoxBarcode(2)).toEqual('1021188000301570123420231019')
+      })
+
       it('returns the serialNumber', () => {
         expect(plate.serialNumber(1)).toEqual('00373')
         expect(plate.serialNumber(2)).toEqual('01234')
@@ -161,6 +179,15 @@ describe('PacbioRunPlate.vue', () => {
         it('does not error if SequencingKitBoxBarcode is valid', async () => {
           expect(plate.validateSequencingKitBoxBarcode(plateNumber)).toEqual({
             valid: true,
+            error: '',
+          })
+        })
+
+        it('does not error if SequencingKitBoxBarcode is empty', async () => {
+          const skbbInput = wrapper.find('#sequencing-kit-box-barcode-1')
+          await skbbInput.setValue('')
+          expect(plate.validateSequencingKitBoxBarcode(plateNumber)).toEqual({
+            valid: null,
             error: '',
           })
         })

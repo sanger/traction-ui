@@ -92,18 +92,25 @@ export default {
     onWellClick(position, plateNumber) {
       this.$refs.modal.showModalForPositionAndPlate(position, plateNumber)
     },
+    sequencingKitBoxBarcode(plateNumber) {
+      return this.runItem.plates[plateNumber].sequencing_kit_box_barcode
+    },
     // Only used for Revio runs
     serialNumber(plateNumber) {
-      return this.runItem.plates[plateNumber].sequencing_kit_box_barcode.substring(15, 20)
+      return this.sequencingKitBoxBarcode(plateNumber).substring(15, 20)
     },
     validateSequencingKitBoxBarcode(plateNumber) {
       const isValid =
-        this.runItem.plates[plateNumber].sequencing_kit_box_barcode.length ==
-        this.labware.sequencingKitBoxBarcodeLength
+        this.sequencingKitBoxBarcode(plateNumber).length == 0
+          ? null
+          : this.sequencingKitBoxBarcode(plateNumber).length ==
+            this.labware.sequencingKitBoxBarcodeLength
+
+      const error = isValid == null ? '' : isValid ? '' : 'Invalid Sequencing Kit Barcode'
 
       return {
         valid: isValid,
-        error: isValid ? '' : 'Invalid Sequencing Kit Barcode',
+        error: error,
       }
     },
   },
