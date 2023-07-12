@@ -65,7 +65,7 @@ describe('PacbioRunPlateList.vue', () => {
         plates: {
           1: {
             plate_number: 1,
-            sequencing_kit_box_barcode: 'skbb',
+            sequencing_kit_box_barcode: '1021188000301570037320231019',
             wells: {
               A1: newWell({ position: 'A1' }),
               B1: newWell({ position: 'B1' }),
@@ -73,7 +73,7 @@ describe('PacbioRunPlateList.vue', () => {
           },
           2: {
             plate_number: 2,
-            sequencing_kit_box_barcode: 'skbb',
+            sequencing_kit_box_barcode: '1021188000301570123420231019',
             wells: {
               A1: newWell({ position: 'A1' }),
               D1: newWell({ position: 'D1' }),
@@ -89,10 +89,6 @@ describe('PacbioRunPlateList.vue', () => {
         store,
       })
       plate = wrapper.vm
-    })
-
-    it('will be defined', () => {
-      expect(plate).toBeDefined()
     })
 
     it('has the correct number of wells', () => {

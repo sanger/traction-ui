@@ -11,6 +11,9 @@
         type="text"
         :data-attribute="`sequencing_kit_box_barcode-${plateNumber}`"
       />
+      <traction-label v-if="isRevio" data-attribute="serial-number" classes="text-left"
+        >Serial Number: {{ serialNumber(plateNumber) }}</traction-label
+      >
     </div>
     <div :class="instrumentType.plateClasses">
       <LabwareMap
@@ -35,6 +38,7 @@
 import PacbioRunWellEdit from '@/components/pacbio/PacbioRunWellEdit'
 import PacbioRunWell from '@/components/labware/PacbioRunWell'
 import LabwareMap from '@/components/labware/LabwareMap.vue'
+import { PacbioInstrumentTypes } from '@/lib/PacbioInstrumentTypes'
 import { createNamespacedHelpers } from 'vuex'
 const { mapActions, mapGetters } = createNamespacedHelpers('traction/pacbio/runCreate')
 
@@ -59,6 +63,9 @@ export default {
   },
   computed: {
     ...mapGetters(['runItem', 'instrumentType']),
+    isRevio() {
+      return this.instrumentType.name === PacbioInstrumentTypes.Revio.name
+    },
   },
   created() {
     this.provider()
@@ -70,10 +77,13 @@ export default {
     onWellClick(position, plateNumber) {
       this.$refs.modal.showModalForPositionAndPlate(position, plateNumber)
     },
-    ...mapActions(['getOrCreatePlate']),
+    serialNumber(plateNumber) {
+      return this.runItem.plates[plateNumber].sequencing_kit_box_barcode.substring(15, 20)
+    },
     async provider() {
       this.plate = await this.getOrCreatePlate({ plateNumber: this.plateNumber })
     },
+    ...mapActions(['getOrCreatePlate']),
   },
 }
 </script>

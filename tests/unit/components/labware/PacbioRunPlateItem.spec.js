@@ -4,7 +4,7 @@ import { newWell, newPlate } from '@/store/traction/pacbio/runCreate/run'
 import { it } from 'vitest'
 import { PacbioInstrumentTypes } from '@/lib/PacbioInstrumentTypes'
 
-describe('PacbioRunPlateList.vue', () => {
+describe('PacbioRunPlateItem.vue', () => {
   let plateItem, wrapper, smrtLinkVersions
 
   const REVIO = 'Revio'
@@ -61,6 +61,12 @@ describe('PacbioRunPlateList.vue', () => {
         expect(plateItem.instrumentType).toEqual(PacbioInstrumentTypes.SequelIIe)
       })
     })
+
+    describe('#methods', () => {
+      it('does not return a serial number', () => {
+        expect(wrapper.find('[data-attribute=serial-number]').exists()).toBeFalsy()
+      })
+    })
   })
 
   describe('when run is a Revio', () => {
@@ -70,7 +76,7 @@ describe('PacbioRunPlateList.vue', () => {
         plates: {
           1: {
             plate_number: 1,
-            sequencing_kit_box_barcode: 'skbb',
+            sequencing_kit_box_barcode: '1021188000301570037320231019',
             wells: {
               A1: newWell({ position: 'A1' }),
               B1: newWell({ position: 'B1' }),
@@ -78,7 +84,7 @@ describe('PacbioRunPlateList.vue', () => {
           },
           2: {
             plate_number: 2,
-            sequencing_kit_box_barcode: 'skbb',
+            sequencing_kit_box_barcode: '1021188000301570123420231019',
             wells: {
               A1: newWell({ position: 'A1' }),
               D1: newWell({ position: 'D1' }),
@@ -114,6 +120,14 @@ describe('PacbioRunPlateList.vue', () => {
 
     it('has a plate', () => {
       expect(plateItem.plate).toEqual(store.state.traction.pacbio.runCreate.plates[1])
+    })
+
+    describe('#methods', () => {
+      it('returns the serialNumber', () => {
+        expect(wrapper.find('[data-attribute=serial-number]').text()).toEqual(
+          'Serial Number: 00373',
+        )
+      })
     })
   })
 })
