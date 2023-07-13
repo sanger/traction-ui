@@ -24,7 +24,7 @@ describe('PacbioRunPlateList.vue', () => {
         plates: {
           1: {
             plate_number: 1,
-            sequencing_kit_box_barcode: 'skbb',
+            sequencing_kit_box_barcode: 'twentyonecharacters00',
             wells: {
               A1: newWell({ position: 'A1' }),
               C5: newWell({ position: 'C5' }),

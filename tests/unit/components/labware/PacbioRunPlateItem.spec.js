@@ -24,7 +24,7 @@ describe('PacbioRunPlateItem.vue', () => {
         plates: {
           1: {
             plate_number: 1,
-            sequencing_kit_box_barcode: 'skbb',
+            sequencing_kit_box_barcode: 'twentyonecharacters00',
             wells: {
               A1: newWell({ position: 'A1' }),
               C5: newWell({ position: 'C5' }),
@@ -65,6 +65,39 @@ describe('PacbioRunPlateItem.vue', () => {
     describe('#methods', () => {
       it('does not return a serial number', () => {
         expect(wrapper.find('[data-attribute=serial-number]').exists()).toBeFalsy()
+      })
+
+      it('returns the sequencingKitBoxBarcode', () => {
+        expect(plateItem.sequencingKitBoxBarcode(1)).toEqual('twentyonecharacters00')
+      })
+
+      describe('validateSequencingKitBoxBarcode', () => {
+        const plateNumber = 1
+
+        it('errors if SequencingKitBoxBarcode is not valid', async () => {
+          const skbbInput = wrapper.find('[data-attribute=sequencing-kit-box-barcode-1]')
+          await skbbInput.setValue('some value')
+          expect(plateItem.validateSequencingKitBoxBarcode(plateNumber)).toEqual({
+            valid: false,
+            error: 'Invalid Sequencing Kit Barcode',
+          })
+        })
+
+        it('does not error if SequencingKitBoxBarcode is valid', async () => {
+          expect(plateItem.validateSequencingKitBoxBarcode(plateNumber)).toEqual({
+            valid: true,
+            error: '',
+          })
+        })
+
+        it('does not error if SequencingKitBoxBarcode is empty', async () => {
+          const skbbInput = wrapper.find('[data-attribute=sequencing-kit-box-barcode-1]')
+          await skbbInput.setValue('')
+          expect(plateItem.validateSequencingKitBoxBarcode(plateNumber)).toEqual({
+            valid: null,
+            error: '',
+          })
+        })
       })
     })
   })
@@ -127,6 +160,35 @@ describe('PacbioRunPlateItem.vue', () => {
         expect(wrapper.find('[data-attribute=serial-number]').text()).toEqual(
           'Serial Number: 00373',
         )
+      })
+    })
+
+    describe('validateSequencingKitBoxBarcode', () => {
+      const plateNumber = 1
+
+      it('errors if SequencingKitBoxBarcode is not valid', async () => {
+        const skbbInput = wrapper.find('[data-attribute=sequencing-kit-box-barcode-1]')
+        await skbbInput.setValue('some value')
+        expect(plateItem.validateSequencingKitBoxBarcode(plateNumber)).toEqual({
+          valid: false,
+          error: 'Invalid Sequencing Kit Barcode',
+        })
+      })
+
+      it('does not error if SequencingKitBoxBarcode is valid', async () => {
+        expect(plateItem.validateSequencingKitBoxBarcode(plateNumber)).toEqual({
+          valid: true,
+          error: '',
+        })
+      })
+
+      it('does not error if SequencingKitBoxBarcode is empty', async () => {
+        const skbbInput = wrapper.find('[data-attribute=sequencing-kit-box-barcode-1]')
+        await skbbInput.setValue('')
+        expect(plateItem.validateSequencingKitBoxBarcode(plateNumber)).toEqual({
+          valid: null,
+          error: '',
+        })
       })
     })
   })
