@@ -7,12 +7,7 @@ import {
   splitDataByParent,
   dataToObjectByPosition,
 } from '@/api/JsonApi'
-import {
-  newRun,
-  newPlate,
-  createRunType,
-  defaultWellAttributes,
-} from '@/store/traction/pacbio/runCreate/run'
+import { newRun, createRunType, defaultWellAttributes } from '@/store/traction/pacbio/runCreate/run'
 import storePools from '@tests/data/StorePools'
 import { expect, it } from 'vitest'
 import { PacbioInstrumentTypes } from '@/lib/PacbioInstrumentTypes'
@@ -24,7 +19,7 @@ const tubes = included.slice(0, 2)
 const libraries = included.slice(2, 4)
 const tags = included.slice(4, 6)
 const requests = included.slice(6, 8)
-const PLATE_NUMBER = 1
+const plateNumber = 1
 
 describe('mutations.js', () => {
   const {
@@ -47,6 +42,7 @@ describe('mutations.js', () => {
     populatePlates,
     populateWells,
     addPlate,
+    addWellsForPlate,
   } = mutations
 
   describe('populateSmrtLinkVersions', () => {
@@ -198,48 +194,39 @@ describe('mutations.js', () => {
   describe('updateWell', () => {
     it('when it is a new well', () => {
       const state = defaultState()
-      state.run = {
-        plates: {
-          1: newPlate(1),
-          2: newPlate(2),
-        },
+      state.wells = {
+        1: { _destroy: [] },
       }
-
       const well = { position: 'A1', row: 'A', column: '1' }
-      updateWell(state, { well: well, plateNumber: PLATE_NUMBER })
-      expect(state.run.plates[PLATE_NUMBER].wells['A1']).toEqual(well)
+      updateWell(state, { well, plateNumber })
+      expect(state.wells[plateNumber]['A1']).toEqual(well)
     })
 
     it('when it is an existing well', () => {
       const state = defaultState()
-      state.run = {
-        plates: {
-          1: newPlate(1),
-        },
+      state.wells = {
+        1: { _destroy: [] },
       }
       const well = { position: 'A1', row: 'A', column: '1' }
-      updateWell(state, { well: well, plateNumber: PLATE_NUMBER })
+      updateWell(state, { well, plateNumber })
       const updatedWell = { ...well, newAttribute: 'some nonsense' }
-      updateWell(state, { well: updatedWell, plateNumber: PLATE_NUMBER })
-      expect(state.run.plates[PLATE_NUMBER].wells['A1']).toEqual(updatedWell)
+      updateWell(state, { well: updatedWell, plateNumber })
+      expect(state.wells[plateNumber]['A1']).toEqual(updatedWell)
     })
   })
 
   describe('deleteWell', () => {
     it('should add _destroy to the well', () => {
       const state = defaultState()
-      state.run = {
-        plates: {
-          1: newPlate(1),
+      state.wells = {
+        1: {
+          A1: { position: 'A1', id: 1 },
+          A2: { position: 'A2', id: 2 },
+          _destroy: [],
         },
       }
-      state.run.plates[PLATE_NUMBER].wells = {
-        A1: { position: 'A1', id: 1 },
-        A2: { position: 'A2', id: 2 },
-        _destroy: [],
-      }
-      deleteWell(state, { position: 'A1', plateNumber: PLATE_NUMBER })
-      expect(state.run.plates[PLATE_NUMBER].wells).toEqual({
+      deleteWell(state, { position: 'A1', plateNumber })
+      expect(state.wells[plateNumber]).toEqual({
         _destroy: [{ _destroy: true, id: 1 }],
         A2: { position: 'A2', id: 2 },
       })
@@ -279,7 +266,7 @@ describe('mutations.js', () => {
       const wells = Data.PacbioRun.data.included.slice(2, 5)
       const state = defaultState()
       // apply mutations
-      populateWells(state, plates, wells)
+      populateWells(state, { plates, wells })
       // assert result
       expect(state.wells).toEqual(
         splitDataByParent({
@@ -298,6 +285,15 @@ describe('mutations.js', () => {
       const plate = { plate_number: 1, sequencing_kit_box_barcode: '' }
       addPlate(state, plate)
       expect(state.plates[1]).toEqual(plate)
+    })
+  })
+
+  describe('addWellsForPlate', () => {
+    it('creates set of wells for plate', () => {
+      const state = defaultState()
+      const plateNumber = 1
+      addWellsForPlate(state, plateNumber)
+      expect(state.wells[1]).toEqual({ _destroy: [] })
     })
   })
 })

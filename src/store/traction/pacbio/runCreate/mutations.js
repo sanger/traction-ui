@@ -34,11 +34,10 @@ export default {
    * @param {Object} attributes The current runs attributes
    * @param {Object} plates The current runs plates
    */
-  populateRun: (state, { id, attributes, plates }) => {
+  populateRun: (state, { id, attributes }) => {
     state.run = {
       id,
       ...attributes,
-      plates,
     }
   },
 
@@ -108,12 +107,7 @@ export default {
    * Replaces the well in store with the updated well
    */
   updateWell: (state, { well, plateNumber }) => {
-    const position = well.position
-    Vue.set(
-      state.run.plates[plateNumber].wells,
-      position,
-      Object.assign({}, state.run.plates[plateNumber].wells[position], well),
-    )
+    Vue.set(state.wells[plateNumber], well.position, well)
   },
 
   /**
@@ -124,11 +118,12 @@ export default {
    * for the same position can be added
    */
   deleteWell: (state, { position, plateNumber }) => {
-    const id = state.run.plates[plateNumber].wells[position].id
+    const id = state.wells[plateNumber][position].id
 
-    Vue.delete(state.run.plates[plateNumber].wells, position)
+    Vue.delete(state.wells[plateNumber], position)
 
-    state.run.plates[plateNumber].wells['_destroy'].push({ _destroy: true, id })
+    // do we need Vue.set here?
+    state.wells[plateNumber]['_destroy'].push({ _destroy: true, id })
   },
 
   /**
@@ -158,7 +153,7 @@ export default {
    * @param {Object} wells The wells for the run
    * Adds the wells to state by plate number and well position, two dimensional array
    */
-  populateWells: (state, plates, wells) => {
+  populateWells: (state, { plates, wells }) => {
     Vue.set(
       state,
       'wells',
@@ -178,5 +173,14 @@ export default {
    */
   addPlate: (state, plate) => {
     Vue.set(state.plates, plate.plate_number, plate)
+  },
+
+  /**
+   * @param {Object} { state } The VueXState object
+   * @param {Integer} plateNumber The plate to add
+   * Adds the plate to state by plate number
+   */
+  addWellsForPlate: (state, plateNumber) => {
+    Vue.set(state.wells, plateNumber, { _destroy: [] })
   },
 }

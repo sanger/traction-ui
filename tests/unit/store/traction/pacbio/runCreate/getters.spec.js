@@ -1,7 +1,7 @@
 import getters from '@/store/traction/pacbio/runCreate/getters'
 import defaultState from '@/store/traction/pacbio/runCreate/state'
 import storePools from '@tests/data/StorePools'
-import { describe } from 'vitest'
+import { describe, expect } from 'vitest'
 
 describe('getters.js', () => {
   const {
@@ -11,6 +11,7 @@ describe('getters.js', () => {
     pools,
     poolByBarcode,
     instrumentNameList,
+    getWell,
   } = getters
 
   // TODO: we probably need to sort the way we create the pools for tests
@@ -172,6 +173,21 @@ describe('getters.js', () => {
 
     it('returns a list of system names', () => {
       expect(instrumentNameList(state)).toEqual(['Revio', 'Sequel IIe'])
+    })
+  })
+
+  describe('getWell', () => {
+    it('will return a well from the state', () => {
+      const state = defaultState()
+      state.wells = {
+        1: {
+          A1: {
+            id: '1',
+            position: 'A1',
+          },
+        },
+      }
+      expect(getWell(state)(1, 'A1')).toEqual(state.wells[1].A1)
     })
   })
 })

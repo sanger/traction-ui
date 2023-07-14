@@ -1,33 +1,39 @@
 import { mount, localVue, store } from '@support/testHelper'
-import PacbioRunPlateItem from '@/components/pacbio/PacbioRunPlateItem'
+import PacbioRunPlateItem from '@/components/pacbio/_PacbioRunPlateItem'
 import { newWell, newPlate } from '@/store/traction/pacbio/runCreate/run'
 import { it } from 'vitest'
 import { PacbioInstrumentTypes } from '@/lib/PacbioInstrumentTypes'
 
-const smrtLinkVersions = {
-  1: { id: 1, name: 'v11', default: true },
-}
-
-store.state.traction.pacbio.runCreate.resources.smrtLinkVersions = smrtLinkVersions
-
 describe.skip('PacbioRunPlateItem.vue', () => {
-  let plateItem, wrapper
+  let plateItem, wrapper, smrtLinkVersions
 
   const REVIO = 'Revio'
   const SEQUEL_IIE = 'Sequel IIe'
 
+  beforeEach(() => {
+    smrtLinkVersions = {
+      1: { id: 1, name: 'v11', default: true },
+    }
+    store.state.traction.pacbio.runCreate.resources.smrtLinkVersions = smrtLinkVersions
+  })
+
   describe('when run is a Sequel IIe', () => {
     beforeEach(() => {
-      store.state.traction.pacbio.runCreate = {
-        run: { system_name: SEQUEL_IIE },
-        plates: { 1: { ...newPlate(1), sequencing_kit_box_barcode: 'twentyonecharacters00' } },
-        wells: {
+      store.state.traction.pacbio.runCreate.run = {
+        system_name: SEQUEL_IIE,
+        plates: {
           1: {
-            A1: newWell({ position: 'A1' }),
-            C5: newWell({ position: 'C5' }),
+            plate_number: 1,
+            sequencing_kit_box_barcode: 'twentyonecharacters00',
+            wells: {
+              A1: newWell({ position: 'A1' }),
+              C5: newWell({ position: 'C5' }),
+            },
           },
         },
       }
+
+      store.state.traction.pacbio.runCreate.plates = { 1: newPlate(1) }
 
       store.state.traction.pacbio.runCreate.instrumentType = PacbioInstrumentTypes.SequelIIe
 
@@ -61,24 +67,24 @@ describe.skip('PacbioRunPlateItem.vue', () => {
         expect(wrapper.find('[data-attribute=serial-number]').exists()).toBeFalsy()
       })
 
-      it.only('returns the sequencing kit box barcode', async () => {
-        expect(wrapper.find('[data-attribute=sequencing-kit-box-barcode-1]').text()).toEqual(
-          'twentyonecharacters00',
-        )
+      it('returns the sequencingKitBoxBarcode', () => {
+        expect(plateItem.sequencingKitBoxBarcode(1)).toEqual('twentyonecharacters00')
       })
 
       describe('validateSequencingKitBoxBarcode', () => {
+        const plateNumber = 1
+
         it('errors if SequencingKitBoxBarcode is not valid', async () => {
           const skbbInput = wrapper.find('[data-attribute=sequencing-kit-box-barcode-1]')
           await skbbInput.setValue('some value')
-          expect(plateItem.validateSequencingKitBoxBarcode()).toEqual({
+          expect(plateItem.validateSequencingKitBoxBarcode(plateNumber)).toEqual({
             valid: false,
             error: 'Invalid Sequencing Kit Barcode',
           })
         })
 
         it('does not error if SequencingKitBoxBarcode is valid', async () => {
-          expect(plateItem.validateSequencingKitBoxBarcode()).toEqual({
+          expect(plateItem.validateSequencingKitBoxBarcode(plateNumber)).toEqual({
             valid: true,
             error: '',
           })
@@ -87,7 +93,7 @@ describe.skip('PacbioRunPlateItem.vue', () => {
         it('does not error if SequencingKitBoxBarcode is empty', async () => {
           const skbbInput = wrapper.find('[data-attribute=sequencing-kit-box-barcode-1]')
           await skbbInput.setValue('')
-          expect(plateItem.validateSequencingKitBoxBarcode()).toEqual({
+          expect(plateItem.validateSequencingKitBoxBarcode(plateNumber)).toEqual({
             valid: null,
             error: '',
           })
@@ -98,31 +104,29 @@ describe.skip('PacbioRunPlateItem.vue', () => {
 
   describe('when run is a Revio', () => {
     beforeEach(() => {
-      store.state.traction.pacbio.runCreate = {
-        run: {
-          system_name: REVIO,
-        },
+      store.state.traction.pacbio.runCreate.run = {
+        system_name: REVIO,
         plates: {
           1: {
             plate_number: 1,
             sequencing_kit_box_barcode: '1021188000301570037320231019',
+            wells: {
+              A1: newWell({ position: 'A1' }),
+              B1: newWell({ position: 'B1' }),
+            },
           },
           2: {
             plate_number: 2,
             sequencing_kit_box_barcode: '1021188000301570123420231019',
-          },
-        },
-        wells: {
-          1: {
-            A1: newWell({ position: 'A1' }),
-            B1: newWell({ position: 'B1' }),
-          },
-          2: {
-            A1: newWell({ position: 'A1' }),
-            D1: newWell({ position: 'D1' }),
+            wells: {
+              A1: newWell({ position: 'A1' }),
+              D1: newWell({ position: 'D1' }),
+            },
           },
         },
       }
+
+      store.state.traction.pacbio.runCreate.plates = { 1: newPlate(1) }
 
       store.state.traction.pacbio.runCreate.instrumentType = PacbioInstrumentTypes.Revio
 
@@ -151,12 +155,6 @@ describe.skip('PacbioRunPlateItem.vue', () => {
       expect(plateItem.plate).toEqual(store.state.traction.pacbio.runCreate.plates[1])
     })
 
-    it('returns the sequencing kit box barcode', async () => {
-      expect(wrapper.find('[data-attribute=sequencing-kit-box-barcode-1]').text()).toEqual(
-        '1021188000301570037320231019',
-      )
-    })
-
     describe('#methods', () => {
       it('returns the serialNumber', () => {
         expect(wrapper.find('[data-attribute=serial-number]').text()).toEqual(
@@ -166,17 +164,19 @@ describe.skip('PacbioRunPlateItem.vue', () => {
     })
 
     describe('validateSequencingKitBoxBarcode', () => {
+      const plateNumber = 1
+
       it('errors if SequencingKitBoxBarcode is not valid', async () => {
         const skbbInput = wrapper.find('[data-attribute=sequencing-kit-box-barcode-1]')
         await skbbInput.setValue('some value')
-        expect(plateItem.validateSequencingKitBoxBarcode()).toEqual({
+        expect(plateItem.validateSequencingKitBoxBarcode(plateNumber)).toEqual({
           valid: false,
           error: 'Invalid Sequencing Kit Barcode',
         })
       })
 
       it('does not error if SequencingKitBoxBarcode is valid', async () => {
-        expect(plateItem.validateSequencingKitBoxBarcode()).toEqual({
+        expect(plateItem.validateSequencingKitBoxBarcode(plateNumber)).toEqual({
           valid: true,
           error: '',
         })
@@ -185,7 +185,7 @@ describe.skip('PacbioRunPlateItem.vue', () => {
       it('does not error if SequencingKitBoxBarcode is empty', async () => {
         const skbbInput = wrapper.find('[data-attribute=sequencing-kit-box-barcode-1]')
         await skbbInput.setValue('')
-        expect(plateItem.validateSequencingKitBoxBarcode()).toEqual({
+        expect(plateItem.validateSequencingKitBoxBarcode(plateNumber)).toEqual({
           valid: null,
           error: '',
         })

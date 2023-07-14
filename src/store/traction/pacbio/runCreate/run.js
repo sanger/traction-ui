@@ -7,7 +7,6 @@ const newPlate = (plateNumber) => {
   return {
     plate_number: plateNumber,
     sequencing_kit_box_barcode: '',
-    wells: { _destroy: [] },
   }
 }
 
@@ -20,20 +19,10 @@ const runAttributes = () => {
   return {
     id: 'new',
     system_name: 'Sequel IIe',
-    sequencing_kit_box_barcode: null,
     dna_control_complex_box_barcode: null,
     comments: null,
-    plates: {
-      1: newPlate(1),
-      2: newPlate(2),
-    },
   }
 }
-
-// /*
-//  * @returns {Array} of required attributes for a run
-//  */
-// const requiredAttributes = () => ['sequencing_kit_box_barcode', 'dna_control_complex_box_barcode']
 
 /**
  * @returns {Object} - A Fresh Pacbio Sequencing Run.
@@ -94,71 +83,6 @@ const newWell = ({ position, ...attributes }) => {
   }
 }
 
-const createWellPayload = (position, well) => {
-  if (position.includes('_destroy')) {
-    well._destroy = true
-  }
-  well.pool_ids = well.pools
-  return well
-}
-
-const createPlatePayload = (plate, plateNumber) => {
-  const plateId = plate.id || ''
-
-  const wells_attributes = Object.keys(plate.wells)
-    .map((key) => {
-      if (key === '_destroy') {
-        return plate.wells[key]
-      } else {
-        return createWellPayload(key, plate.wells[key])
-      }
-    })
-    .flat()
-
-  // If there is no plate id and no wells then return null
-  if (!plateId && wells_attributes.length === 0) {
-    return null
-  }
-
-  return {
-    id: plateId,
-    plate_number: plateNumber,
-    sequencing_kit_box_barcode: plate.sequencing_kit_box_barcode,
-    wells_attributes: [...wells_attributes],
-  }
-}
-
-/**
- * @param {id} - An Integer for the id of the run
- * @param {run} - A pacbio sequencing run object minus id
- * @param {smrtLinkVersion} - The SMRT Link Version of the run
- **/
-const createRunPayload = ({ id, run, smrtLinkVersion }) => {
-  const plates = run.plates
-  delete run.plates
-
-  const platesAttributes = Object.values(plates).map((plate) => {
-    return createPlatePayload(plate, plate.plate_number)
-  })
-
-  // Currently remove sequencing_kit_box_barcode from a run
-  // because this will be moved to plate attributes
-  // once multiple plates for a run are implemented
-  delete run.sequencing_kit_box_barcode
-
-  return {
-    data: {
-      type: 'runs',
-      id,
-      attributes: {
-        ...run,
-        pacbio_smrt_link_version_id: smrtLinkVersion.id,
-        plates_attributes: platesAttributes,
-      },
-    },
-  }
-}
-
 /**
  * @returns enum for new and existing
  */
@@ -175,11 +99,11 @@ const newRunType = {
   label: 'Create Run',
 
   // returns the payload slightly different for new and existing runs
-  payload({ run, smrtLinkVersion }) {
+  payload({ run, plates, wells, smrtLinkVersion }) {
     // eslint-disable-next-line no-unused-vars
     const { id, ...attributes } = run
 
-    return createRunPayload({ run: attributes, smrtLinkVersion })
+    return createPayload({ run: attributes, plates, wells, smrtLinkVersion })
   },
 
   // returns a promise different for create or update
@@ -194,11 +118,11 @@ const existingRunType = {
   theme: 'update',
   action: 'update',
   label: 'Update Run',
-  payload({ run, smrtLinkVersion }) {
+  payload({ run, plates, wells, smrtLinkVersion }) {
     // eslint-disable-next-line no-unused-vars
     const { id, ...attributes } = run
 
-    return createRunPayload({ id, run: attributes, smrtLinkVersion })
+    return createPayload({ id, run: attributes, plates, wells, smrtLinkVersion })
   },
   // the function handle should be the same for create and update
   promise({ payload, request }) {
@@ -272,12 +196,10 @@ export {
   defaultWellAttributes,
   newWell,
   newPlate,
-  createRunPayload,
   RunTypeEnum,
   createRunType,
   newRunType,
   existingRunType,
-  createPlatePayload,
   createPayload,
   createWellsPayload,
 }

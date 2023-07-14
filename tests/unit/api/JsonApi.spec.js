@@ -23,7 +23,6 @@ describe('JsonApi', () => {
     mapAttribute,
     dataToObjectByPosition,
     populateBy,
-    extractPlateData,
     splitDataByParent,
     dataToObjectByPlateNumber,
   } = JsonApi
@@ -362,34 +361,6 @@ describe('JsonApi', () => {
       expect(state.resources.wells).toEqual(
         dataToObjectByPosition({ data: wells, includeRelationships: true }),
       )
-    })
-  })
-
-  describe('extractPlateData', () => {
-    it('builds the plate, well and pool info', () => {
-      const run = Data.PacbioRun.data.data
-      const plate1 = Data.PacbioRun.data.included[0]
-      const plate2 = Data.PacbioRun.data.included[1]
-      const plates = [plate1, plate2]
-      const well1 = Data.PacbioRun.data.included[2]
-      const well2 = Data.PacbioRun.data.included[3]
-      const wells = [well1, well2]
-      const result = extractPlateData(plates, wells)
-
-      const resultPlate1 = result['1']
-      const resultPlate2 = result['2']
-
-      expect(resultPlate1.id).toEqual(plate1.id)
-      expect(resultPlate1.pacbio_run_id).toEqual(parseInt(run.id))
-      expect(resultPlate1.plate_number).toEqual(parseInt(resultPlate1.plate_number))
-      expect(Object.keys(resultPlate1.wells)).toEqual([well1.attributes.position])
-      expect(Object.keys(resultPlate1.wells).length).toEqual(1)
-
-      expect(resultPlate2.id).toEqual(plate2.id)
-      expect(resultPlate2.pacbio_run_id).toEqual(parseInt(run.id))
-      expect(resultPlate2.plate_number).toEqual(parseInt(resultPlate2.plate_number))
-      expect(Object.keys(resultPlate2.wells)).toEqual([well2.attributes.position])
-      expect(Object.keys(resultPlate2.wells).length).toEqual(1)
     })
   })
 

@@ -6,13 +6,13 @@
         Sequencing Kit Box Barcode:
         <traction-field-error
           :data-attribute="`sequencing-kit-box-barcode-${plateNumber}-error`"
-          :error="validateSequencingKitBoxBarcode().error"
-          :with-icon="validateSequencingKitBoxBarcode().valid"
+          :error="validateSequencingKitBoxBarcode(plateNumber).error"
+          :with-icon="validateSequencingKitBoxBarcode(plateNumber).valid"
         >
           <traction-input
             :id="`sequencing-kit-box-barcode-${plateNumber}`"
-            v-model="plate.sequencing_kit_box_barcode"
-            :value="plate.sequencing_kit_box_barcode"
+            v-model="runItem.plates[plateNumber].sequencing_kit_box_barcode"
+            :value="runItem.plates[plateNumber].sequencing_kit_box_barcode"
             placeholder="Sequencing Kit Box Barcode"
             type="text"
             :data-attribute="`sequencing-kit-box-barcode-${plateNumber}`"
@@ -21,7 +21,7 @@
         </traction-field-error>
       </traction-label>
       <traction-label v-if="isRevio" data-attribute="serial-number" classes="text-left"
-        >Serial Number: {{ serialNumber }}</traction-label
+        >Serial Number: {{ serialNumber(plateNumber) }}</traction-label
       >
     </div>
     <div :class="instrumentType.plateClasses">
@@ -52,7 +52,7 @@ import { createNamespacedHelpers } from 'vuex'
 const { mapActions, mapGetters } = createNamespacedHelpers('traction/pacbio/runCreate')
 
 export default {
-  name: 'PacbioRunPlateItem',
+  name: 'PacbioRunPlateList',
   components: {
     PacbioRunWellEdit,
     LabwareMap,
@@ -71,15 +71,9 @@ export default {
     }
   },
   computed: {
-    ...mapGetters(['instrumentType']),
+    ...mapGetters(['runItem', 'instrumentType']),
     isRevio() {
       return this.instrumentType.name === PacbioInstrumentTypes.Revio.name
-    },
-    serialNumber() {
-      if (!this.plate?.sequencing_kit_box_barcode) {
-        return ''
-      }
-      return this.plate.sequencing_kit_box_barcode.substring(15, 20)
     },
   },
   created() {
@@ -92,14 +86,17 @@ export default {
     onWellClick(position, plateNumber) {
       this.$refs.modal.showModalForPositionAndPlate(position, plateNumber)
     },
-    validateSequencingKitBoxBarcode() {
-      if (!this.plate?.sequencing_kit_box_barcode) {
-        return { valid: null, error: '' }
-      }
+    serialNumber(plateNumber) {
+      return this.runItem.plates[plateNumber].sequencing_kit_box_barcode.substring(15, 20)
+    },
+    sequencingKitBoxBarcode(plateNumber) {
+      return this.runItem.plates[plateNumber].sequencing_kit_box_barcode
+    },
+    validateSequencingKitBoxBarcode(plateNumber) {
       const isValid =
-        this.plate.sequencing_kit_box_barcode.length == 0
+        this.sequencingKitBoxBarcode(plateNumber).length == 0
           ? null
-          : this.plate.sequencing_kit_box_barcode.length ==
+          : this.sequencingKitBoxBarcode(plateNumber).length ==
             this.instrumentType.sequencingKitBoxBarcodeLength
 
       const error = isValid == null ? '' : isValid ? '' : 'Invalid Sequencing Kit Barcode'
