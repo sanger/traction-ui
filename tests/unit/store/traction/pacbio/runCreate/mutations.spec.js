@@ -7,7 +7,12 @@ import {
   splitDataByParent,
   dataToObjectByPosition,
 } from '@/api/JsonApi'
-import { newRun, createRunType, defaultWellAttributes } from '@/store/traction/pacbio/runCreate/run'
+import {
+  newRun,
+  createRunType,
+  defaultWellAttributes,
+  newPlate,
+} from '@/store/traction/pacbio/runCreate/run'
 import storePools from '@tests/data/StorePools'
 import { expect, it } from 'vitest'
 import { PacbioInstrumentTypes } from '@/lib/PacbioInstrumentTypes'
@@ -41,8 +46,7 @@ describe('mutations.js', () => {
     populateInstrumentType,
     populatePlates,
     populateWells,
-    addPlate,
-    addWellsForPlate,
+    createPlates,
   } = mutations
 
   describe('populateSmrtLinkVersions', () => {
@@ -279,21 +283,41 @@ describe('mutations.js', () => {
     })
   })
 
-  describe('addPlate', () => {
-    it('creates a new plate', () => {
+  describe('createPlates', () => {
+    it('when there is a single plate creates plate and associated wells', () => {
       const state = defaultState()
-      const plate = { plate_number: 1, sequencing_kit_box_barcode: '' }
-      addPlate(state, plate)
-      expect(state.plates[1]).toEqual(plate)
+      createPlates(state, 1)
+      expect(state.plates).toEqual({
+        1: {
+          ...newPlate(1),
+        },
+      })
+      expect(state.wells).toEqual({
+        1: {
+          _destroy: [],
+        },
+      })
     })
-  })
 
-  describe('addWellsForPlate', () => {
-    it('creates set of wells for plate', () => {
+    it('when there are multiple plates creates plates and associated wells', () => {
       const state = defaultState()
-      const plateNumber = 1
-      addWellsForPlate(state, plateNumber)
-      expect(state.wells[1]).toEqual({ _destroy: [] })
+      createPlates(state, 2)
+      expect(state.plates).toEqual({
+        1: {
+          ...newPlate(1),
+        },
+        2: {
+          ...newPlate(2),
+        },
+      })
+      expect(state.wells).toEqual({
+        1: {
+          _destroy: [],
+        },
+        2: {
+          _destroy: [],
+        },
+      })
     })
   })
 })

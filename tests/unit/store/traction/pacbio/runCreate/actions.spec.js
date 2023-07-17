@@ -38,6 +38,8 @@ const defaultSmrtLinkVersion = {
   default: true,
 }
 
+const instrumentType = PacbioInstrumentTypes.SequelIIe
+
 describe('actions.js', () => {
   const {
     fetchSmrtLinkVersions,
@@ -49,7 +51,6 @@ describe('actions.js', () => {
     updateWell,
     getPool,
     setInstrumentType,
-    getOrCreatePlate,
   } = actions
 
   describe('fetchSmrtLinkVersions', () => {
@@ -219,7 +220,7 @@ describe('actions.js', () => {
     // this works but we are getting into implementation so probably needs a method
     // to construct a new run with smrt link version
     it('for a new run', async () => {
-      const getters = { defaultSmrtLinkVersion }
+      const getters = { defaultSmrtLinkVersion, instrumentType }
       const run = newRun()
       const { id, ...attributes } = run
       const plates = attributes.plates
@@ -234,6 +235,7 @@ describe('actions.js', () => {
       })
       expect(commit).toHaveBeenCalledWith('populateSmrtLinkVersion', getters.defaultSmrtLinkVersion)
       expect(commit).toHaveBeenCalledWith('populateRunType', newRunType)
+      expect(commit).toHaveBeenCalledWith('createPlates', instrumentType.plateCount)
     })
 
     it('for an existing run', async () => {
@@ -325,28 +327,10 @@ describe('actions.js', () => {
       }
       setInstrumentType({ commit, state }, instrumentName)
       expect(commit).toHaveBeenCalledWith('populateInstrumentType', PacbioInstrumentTypes.SequelIIe)
-    })
-  })
-
-  describe('getOrCreatePlate', () => {
-    it('creates and returns a new plate', () => {
-      const commit = vi.fn()
-      const state = { plates: {} }
-      const plateNumber = 1
-      const myPlate = newPlate(plateNumber)
-      const plate = getOrCreatePlate({ commit, state }, { plateNumber })
-      expect(plate).toEqual(myPlate)
-      expect(commit).toHaveBeenCalledWith('addPlate', myPlate)
-      expect(commit).toHaveBeenCalledWith('addWellsForPlate', plateNumber)
-    })
-
-    it('returns an existing plate', () => {
-      const commit = vi.fn()
-      const plateNumber = 1
-      const state = { plates: { [plateNumber]: newPlate(plateNumber) } }
-      const plate = getOrCreatePlate({ commit, state }, { plateNumber })
-      expect(plate).toEqual(state.plates[plateNumber])
-      expect(commit).not.toHaveBeenCalled()
+      expect(commit).toHaveBeenCalledWith(
+        'createPlates',
+        PacbioInstrumentTypes.SequelIIe.plateCount,
+      )
     })
   })
 })

@@ -1,6 +1,6 @@
 import { handleResponse } from '@/api/ResponseHelper'
 import { groupIncludedByResource, extractAttributes } from '@/api/JsonApi'
-import { newRun, createRunType, RunTypeEnum, newWell, defaultWellAttributes, newPlate } from './run'
+import { newRun, createRunType, RunTypeEnum, newWell, defaultWellAttributes } from './run'
 
 // Asynchronous update of state.
 export default {
@@ -164,6 +164,7 @@ export default {
 
       commit('populateRun', { id, attributes })
       commit('populateSmrtLinkVersion', getters.defaultSmrtLinkVersion)
+      commit('createPlates', getters.instrumentType.plateCount)
 
       // success will always be true and errors will be empty
       return { success: true, errors: [] }
@@ -248,30 +249,15 @@ export default {
    * Sets the Instrument Type
    * @param commit the vuex commit object. Provides access to mutations
    * @param state the vuex state object. Provides access to current state
+   * @param instrumentName the name of the instrument
+   * sets the instrument type based on the instrument name
+   * creates the plates based on the instrument type plate count
    */
   setInstrumentType: ({ commit, state: { instrumentTypeList } }, instrumentName) => {
     const instrumentType = Object.values(instrumentTypeList).find(
       (instrumentType) => instrumentType.name === instrumentName,
     )
     commit('populateInstrumentType', { ...instrumentType })
-  },
-
-  /**
-   * @param commit the vuex commit object. Provides access to mutations
-   * @param state the vuex state object. Provides access to current state
-   * @param integer plateNumber
-   * @returns {Object} plate
-   * if plate exists, return plate
-   * if plate does not exist, create plate and return plate
-   */
-  getOrCreatePlate: ({ commit, state }, { plateNumber }) => {
-    let plate = state.plates[plateNumber]
-    if (plate) {
-      return plate
-    }
-    plate = newPlate(plateNumber)
-    commit('addPlate', plate)
-    commit('addWellsForPlate', plateNumber)
-    return plate
+    commit('createPlates', instrumentType.plateCount)
   },
 }

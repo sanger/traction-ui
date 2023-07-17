@@ -61,6 +61,10 @@ export default {
     return state.wells[plateNumber][position]
   },
 
+  getPlate: (state) => (plateNumber) => {
+    return state.plates[plateNumber]
+  },
+
   runDefaultWellAttributes: (state) => state.defaultWellAttributes || {},
 
   instrumentNameList: (state) =>

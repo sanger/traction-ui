@@ -4,31 +4,31 @@ import { newWell } from '@/store/traction/pacbio/runCreate/run'
 import { it } from 'vitest'
 import { PacbioInstrumentTypes } from '@/lib/PacbioInstrumentTypes'
 
+const smrtLinkVersions = {
+  1: { id: 1, name: 'v11', default: true },
+}
+store.state.traction.pacbio.runCreate.resources.smrtLinkVersions = smrtLinkVersions
+
 describe('PacbioRunPlateList.vue', () => {
-  let plate, wrapper, smrtLinkVersions
+  let plate, wrapper
 
   const REVIO = 'Revio'
   const SEQUEL_IIE = 'Sequel IIe'
 
-  beforeEach(() => {
-    smrtLinkVersions = {
-      1: { id: 1, name: 'v11', default: true },
-    }
-    store.state.traction.pacbio.runCreate.resources.smrtLinkVersions = smrtLinkVersions
-  })
-
   describe('when run is a Sequel IIe', () => {
     beforeEach(() => {
-      store.state.traction.pacbio.runCreate.run = {
-        system_name: SEQUEL_IIE,
+      store.state.traction.pacbio.runCreate = {
+        run: { system_name: SEQUEL_IIE },
         plates: {
           1: {
             plate_number: 1,
             sequencing_kit_box_barcode: 'twentyonecharacters00',
-            wells: {
-              A1: newWell({ position: 'A1' }),
-              C5: newWell({ position: 'C5' }),
-            },
+          },
+        },
+        wells: {
+          1: {
+            A1: newWell({ position: 'A1' }),
+            C5: newWell({ position: 'C5' }),
           },
         },
       }
@@ -60,16 +60,12 @@ describe('PacbioRunPlateList.vue', () => {
 
   describe('when run is a Revio', () => {
     beforeEach(() => {
-      store.state.traction.pacbio.runCreate.run = {
-        system_name: REVIO,
+      store.state.traction.pacbio.runCreate = {
+        run: { system_name: REVIO },
         plates: {
           1: {
             plate_number: 1,
             sequencing_kit_box_barcode: '1021188000301570037320231019',
-            wells: {
-              A1: newWell({ position: 'A1' }),
-              B1: newWell({ position: 'B1' }),
-            },
           },
           2: {
             plate_number: 2,
@@ -78,6 +74,16 @@ describe('PacbioRunPlateList.vue', () => {
               A1: newWell({ position: 'A1' }),
               D1: newWell({ position: 'D1' }),
             },
+          },
+        },
+        wells: {
+          1: {
+            A1: newWell({ position: 'A1' }),
+            B1: newWell({ position: 'B1' }),
+          },
+          2: {
+            A1: newWell({ position: 'A1' }),
+            D1: newWell({ position: 'D1' }),
           },
         },
       }

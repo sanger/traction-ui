@@ -11,8 +11,8 @@
         >
           <traction-input
             :id="`sequencing-kit-box-barcode-${plateNumber}`"
-            v-model="plate.sequencing_kit_box_barcode"
-            :value="plate.sequencing_kit_box_barcode"
+            v-model="storePlate.sequencing_kit_box_barcode"
+            :value="storePlate.sequencing_kit_box_barcode"
             placeholder="Sequencing Kit Box Barcode"
             type="text"
             :data-attribute="`sequencing-kit-box-barcode-${plateNumber}`"
@@ -49,7 +49,7 @@ import PacbioRunWell from '@/components/labware/PacbioRunWell'
 import LabwareMap from '@/components/labware/LabwareMap.vue'
 import { PacbioInstrumentTypes } from '@/lib/PacbioInstrumentTypes'
 import { createNamespacedHelpers } from 'vuex'
-const { mapActions, mapGetters } = createNamespacedHelpers('traction/pacbio/runCreate')
+const { mapGetters } = createNamespacedHelpers('traction/pacbio/runCreate')
 
 export default {
   name: 'PacbioRunPlateItem',
@@ -67,23 +67,19 @@ export default {
   data() {
     return {
       selectedWellPosition: '',
-      plate: {},
     }
   },
   computed: {
-    ...mapGetters(['instrumentType']),
+    ...mapGetters(['instrumentType', 'getPlate']),
     isRevio() {
       return this.instrumentType.name === PacbioInstrumentTypes.Revio.name
     },
     serialNumber() {
-      if (!this.plate?.sequencing_kit_box_barcode) {
-        return ''
-      }
-      return this.plate.sequencing_kit_box_barcode.substring(15, 20)
+      return this.storePlate.sequencing_kit_box_barcode.substring(15, 20)
     },
-  },
-  created() {
-    this.provider()
+    storePlate() {
+      return this.getPlate(this.plateNumber)
+    },
   },
   methods: {
     alert(message, type) {
@@ -93,13 +89,10 @@ export default {
       this.$refs.modal.showModalForPositionAndPlate(position, plateNumber)
     },
     validateSequencingKitBoxBarcode() {
-      if (!this.plate?.sequencing_kit_box_barcode) {
-        return { valid: null, error: '' }
-      }
       const isValid =
-        this.plate.sequencing_kit_box_barcode.length == 0
+        this.storePlate.sequencing_kit_box_barcode.length == 0
           ? null
-          : this.plate.sequencing_kit_box_barcode.length ==
+          : this.storePlate.sequencing_kit_box_barcode.length ==
             this.instrumentType.sequencingKitBoxBarcodeLength
 
       const error = isValid == null ? '' : isValid ? '' : 'Invalid Sequencing Kit Barcode'
@@ -109,10 +102,6 @@ export default {
         error: error,
       }
     },
-    async provider() {
-      this.plate = await this.getOrCreatePlate({ plateNumber: this.plateNumber })
-    },
-    ...mapActions(['getOrCreatePlate']),
   },
 }
 </script>

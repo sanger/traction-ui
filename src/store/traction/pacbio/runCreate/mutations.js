@@ -8,6 +8,7 @@ import {
 } from '@/api/JsonApi'
 import Vue from 'vue'
 import defaultState from './state'
+import { newPlate } from './run'
 
 // Mutations handle synchronous update of state
 
@@ -168,19 +169,14 @@ export default {
 
   /**
    * @param {Object} { state } The VueXState object
-   * @param {Object} plate The plate to add
-   * Adds the plate to state by plate number
+   * @param {Object} plateNumber The number of plates to add
+   * Adds the plates to state by plate number
+   * Adds the wells to state by plate number
    */
-  addPlate: (state, plate) => {
-    Vue.set(state.plates, plate.plate_number, plate)
-  },
-
-  /**
-   * @param {Object} { state } The VueXState object
-   * @param {Integer} plateNumber The plate to add
-   * Adds the plate to state by plate number
-   */
-  addWellsForPlate: (state, plateNumber) => {
-    Vue.set(state.wells, plateNumber, { _destroy: [] })
+  createPlates: (state, plateNumber) => {
+    for (let i = 1; i <= plateNumber; i++) {
+      Vue.set(state.plates, i, newPlate(i))
+      Vue.set(state.wells, i, { _destroy: [] })
+    }
   },
 }
