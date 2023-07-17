@@ -1,5 +1,3 @@
-import Vue from 'vue'
-
 const libraryAttributes = {
   pacbio_request_id: null,
   template_prep_kit_box_barcode: null,
@@ -41,7 +39,7 @@ const validate = ({ libraries }) => {
     if (Object.entries(libraries).some(([k, e]) => e.tag_id === library.tag_id && k !== key)) {
       errors['tag_id'] = 'duplicated'
     }
-    Vue.set(library, 'errors', errors)
+    library['errors'] = errors
   }
 }
 

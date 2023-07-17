@@ -1,5 +1,4 @@
 import { dataToObjectById, populateById } from '@/api/JsonApi'
-import Vue from 'vue'
 import { newLibrary } from '@/store/traction/pacbio/poolCreate/pool.js'
 import defaultState from './state'
 
@@ -13,9 +12,9 @@ export default {
    */
   selectPlate: (state, { id, selected = true }) => {
     if (selected) {
-      Vue.set(state.selected.plates, `${id}`, { id: id, selected: true })
+      state.selected.plates[`${id}`] = { id: id, selected: true }
     } else {
-      Vue.delete(state.selected.plates, `${id}`)
+      delete state.selected.plates[`${id}`]
     }
   },
   /**
@@ -26,9 +25,9 @@ export default {
    */
   selectTube: (state, { id, selected = true }) => {
     if (selected) {
-      Vue.set(state.selected.tubes, `${id}`, { id: id, selected: true })
+      state.selected.tubes[`${id}`] = { id: id, selected: true }
     } else {
-      Vue.delete(state.selected.tubes, `${id}`)
+      delete state.selected.tubes[`${id}`]
     }
   },
   /**
@@ -47,9 +46,9 @@ export default {
    */
   selectRequest: ({ libraries }, { id, selected = true }) => {
     if (selected) {
-      Vue.set(libraries, `_${id}`, newLibrary({ pacbio_request_id: id }))
+      libraries[`_${id}`] = newLibrary({ pacbio_request_id: id })
     } else {
-      Vue.delete(libraries, `_${id}`)
+      delete libraries[`_${id}`]
     }
   },
   /**
@@ -97,11 +96,7 @@ export default {
     const newLibraries = dataToObjectById({ data, includeRelationships: true })
     Object.values(newLibraries).forEach((library) => {
       const key = `_${library.request}`
-      Vue.set(
-        libraries,
-        key,
-        newLibrary({ ...library, pacbio_request_id: library.request, tag_id: library.tag }),
-      )
+      libraries[key] = newLibrary({ ...library, pacbio_request_id: library.request, tag_id: library.tag })
     })
   },
   populatePoolAttributes: (store, { id, attributes }) => {
@@ -129,7 +124,7 @@ export default {
    */
   updateLibrary: ({ libraries }, library) => {
     const key = `_${library.pacbio_request_id}`
-    Vue.set(libraries, key, Object.assign({}, libraries[key], library))
+    libraries[key] = Object.assign({}, libraries[key], library)
   },
   // This method clears the editable data in the pool/new page
   // We keep the resources though

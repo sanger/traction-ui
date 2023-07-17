@@ -15,6 +15,7 @@
  * This field probably *shouldn't* render its own labels.
  */
 import useSWRV from 'swrv'
+import { ref } from 'vue'
 import { filterByAttribute, mapAttribute } from '@/api/JsonApi'
 
 // We want undefined (I've not specified a library) and null (I want NO library)
@@ -54,9 +55,9 @@ export default {
     },
   },
   setup() {
-    const baseURL = import.meta.env.VITE_TRACTION_BASE_URL
+    const baseURL = ref(import.meta.env.VITE_TRACTION_BASE_URL)
     const { data: remoteLibraryTypes } = useSWRV(
-      `${baseURL}/v1/library_types?fields[library_types]=name,pipeline`,
+      `${baseURL.value}/v1/library_types?fields[library_types]=name,pipeline`,
     )
     return { remoteLibraryTypes }
   },

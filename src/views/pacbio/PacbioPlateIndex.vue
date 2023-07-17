@@ -28,10 +28,7 @@
             :id="'details-btn-' + row.id"
             size="sm"
             theme="default"
-            @click="
-              row.toggleDetails()
-              getPlate(row.item.barcode)
-            "
+            @click="row.toggleDetails();getPlate(row.item.barcode)"
           >
             {{ row.detailsShowing ? 'Hide' : 'Show' }} Plate
           </traction-button>

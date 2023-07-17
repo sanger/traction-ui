@@ -1,5 +1,3 @@
-import Vue from 'vue'
-
 /**
  * Extract the attributes from a JSON API resource object, merge them with the id
  * and type attributes
@@ -233,10 +231,10 @@ const populateById =
 
     // Store the current data so we dont overwrite it unless specifed to do so
     const before = replaceData ? {} : result[resource]
-    Vue.set(result, resource, {
+    result[resource] = {
       ...before,
       ...dataToObjectById({ data, includeRelationships }),
-    })
+    }
   }
 
 /**
@@ -260,10 +258,10 @@ const populateBy =
 
     // Store the current data so we dont overwrite it unless specifed to do so
     const before = replaceData ? {} : result[resource]
-    Vue.set(result, resource, {
+    result[resource] = {
       ...before,
       ...fn({ data, includeRelationships }),
-    })
+    }
   }
 
 export {

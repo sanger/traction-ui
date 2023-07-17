@@ -1,15 +1,14 @@
 import { populateById, dataToObjectById } from '@/api/JsonApi'
-import Vue from 'vue'
 import defaultState from './state'
 
 // Mutations handle synchronous update of state
 
 // Helper function for setting pools data
 const setData = (state, type, data, includeRelationships = false) => {
-  Vue.set(state, type, {
+  state[type] = {
     ...state[type],
     ...dataToObjectById({ data, includeRelationships }),
-  })
+  }
 }
 
 export default {
@@ -68,10 +67,10 @@ export default {
   },
 
   setPools(state, pools) {
-    Vue.set(state, 'pools', {
+    state['pools'] = {
       ...state.pools,
       ...dataToObjectById({ data: pools, includeRelationships: true }),
-    })
+    }
   },
 
   setTubes(state, tubes) {
@@ -87,7 +86,7 @@ export default {
     setData(state, 'requests', requests, false)
   },
   removePool(state, id) {
-    Vue.delete(state.pools, id)
+    delete state.pools[id]
   },
   clearRunData(state) {
     const new_state = defaultState()
@@ -102,11 +101,8 @@ export default {
    */
   updateWell: (state, { well, plateNumber }) => {
     const position = well.position
-    Vue.set(
-      state.run.plates[plateNumber].wells,
-      position,
-      Object.assign({}, state.run.plates[plateNumber].wells[position], well),
-    )
+    state.run.plates[plateNumber].wells[position] =
+      Object.assign({}, state.run.plates[plateNumber].wells[position], well)
   },
 
   /**
@@ -119,13 +115,9 @@ export default {
   deleteWell: (state, { well, plateNumber }) => {
     const position = well.position
 
-    Vue.delete(state.run.plates[plateNumber].wells, position)
+    delete state.run.plates[plateNumber].wells[position]
     const newKey = position + '_destroy'
 
-    Vue.set(
-      state.run.plates[plateNumber].wells,
-      newKey,
-      Object.assign({}, state.run.plates[plateNumber].wells[newKey], well),
-    )
+    state.run.plates[plateNumber].wells[newKey] = Object.assign({}, state.run.plates[plateNumber].wells[newKey], well)
   },
 }

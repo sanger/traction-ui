@@ -58,8 +58,7 @@
  * namespaced.
  */
 
-import Vuex from 'vuex'
-import Vue from 'vue'
+import { createStore } from 'vuex'
 import Api from '@/api'
 import build from '@/api/ApiBuilder'
 import PrinterList from '@/config/PrinterList'
@@ -67,9 +66,7 @@ import traction from '@/store/traction'
 import printMyBarcode from '@/store/printMyBarcode'
 import PlateMap from '@/config/PlateMap'
 
-Vue.use(Vuex)
-
-export default new Vuex.Store({
+const store = createStore({
   state: {
     api: build({ config: Api.Config, environment: import.meta.env }),
     printers: PrinterList,
@@ -86,3 +83,5 @@ export default new Vuex.Store({
     printMyBarcode,
   },
 })
+
+export default store

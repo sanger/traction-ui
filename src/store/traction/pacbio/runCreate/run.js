@@ -1,5 +1,3 @@
-import Vue from 'vue'
-
 /**
  *
  * @param {String} plateNumber The number of the plate e.g. 1
@@ -107,7 +105,7 @@ const validate = ({ run }) => {
   requiredAttributes().forEach((field) => {
     if (!run[field]) errors[field] = 'must be present'
   })
-  Vue.set(run, 'errors', errors)
+  run['errors'] = errors
 }
 
 /*

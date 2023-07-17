@@ -1,5 +1,5 @@
 // TODO: routes are not tested so cause errors on start
-import Router from 'vue-router'
+import { createRouter, createWebHashHistory } from 'vue-router'
 import TractionDashboard from '@/views/TractionDashboard'
 import GeneralReception from '@/views/GeneralReception'
 import LabelPrinting from '@/views/LabelPrinting'
@@ -25,7 +25,8 @@ import ONTRunIndex from '@/views/ont/ONTRunIndex'
 import ONTRun from '@/views/ont/ONTRun'
 import ONTSampleIndex from '@/views/ont/ONTSampleIndex'
 
-export default new Router({
+const router = createRouter({
+  history: createWebHashHistory(),
   routes: [
     {
       path: '/',
@@ -182,8 +183,10 @@ export default new Router({
       component: PageNotFound,
     },
     {
-      path: '*',
+      path: '/:pathMatch(.*)*',
       redirect: { name: '404' },
     },
   ],
 })
+
+export default router

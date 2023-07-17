@@ -1,5 +1,3 @@
-import Vue from 'vue'
-
 const mutate = (key) => (state, val) => {
   state[key] = val
 }
@@ -14,7 +12,7 @@ const setFlowcellId = () => (state, obj) => {
   )
 
   if (exists) {
-    Vue.set(exists, 'flowcell_id', obj.$event)
+    exists['flowcell_id'] = obj.$event
   } else {
     const flowcell = { flowcell_id: obj.$event, position: obj.position }
     state.currentRun.flowcell_attributes.push(flowcell)
@@ -27,7 +25,7 @@ const setPoolTubeBarcode = () => (state, obj) => {
   )
 
   if (exists) {
-    Vue.set(exists, 'tube_barcode', obj.barcode)
+    exists['tube_barcode'] = obj.barcode
   } else {
     const flowcell = { tube_barcode: obj.barcode, position: obj.position }
     state.currentRun.flowcell_attributes.push(flowcell)

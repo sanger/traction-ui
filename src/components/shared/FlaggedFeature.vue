@@ -7,6 +7,7 @@
 
 <script>
 import useSWRV from 'swrv'
+import { ref } from 'vue'
 const DEFAULT_FEATURE = { enabled: false }
 
 /**
@@ -45,8 +46,8 @@ export default {
     },
   },
   setup() {
-    const baseURL = import.meta.env.VITE_TRACTION_BASE_URL
-    const { data, error } = useSWRV(`${baseURL}/flipper/api/actors/User`)
+    const baseURL = ref(import.meta.env.VITE_TRACTION_BASE_URL)
+    const { data, error } = useSWRV(`${baseURL.value}/flipper/api/actors/User`)
     return {
       data,
       error,
