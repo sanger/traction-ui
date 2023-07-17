@@ -54,7 +54,7 @@
 <script>
 import Plate from '@/components/pacbio/PacbioPlateItem'
 import { createNamespacedHelpers } from 'vuex'
-import { VueSelecto } from 'vue-selecto'
+import { VueSelecto } from 'vue3-selecto'
 
 const { mapGetters, mapMutations, mapActions } = createNamespacedHelpers(
   'traction/pacbio/poolCreate',

@@ -54,7 +54,7 @@
 <script>
 import Plate from '@/components/ont/OntPlateItem'
 import { createNamespacedHelpers } from 'vuex'
-import { VueSelecto } from 'vue-selecto'
+import { VueSelecto } from 'vue3-selecto'
 
 // TODO: Does this need to be moved to top level ONT?
 const { mapGetters, mapMutations, mapActions } = createNamespacedHelpers('traction/ont/pools')
