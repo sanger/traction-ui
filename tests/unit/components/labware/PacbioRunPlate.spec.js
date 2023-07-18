@@ -76,7 +76,7 @@ describe('PacbioRunPlate.vue', () => {
           await skbbInput.setValue('some value')
           expect(plate.validateSequencingKitBoxBarcode(plateNumber)).toEqual({
             valid: false,
-            error: 'Invalid Sequencing Kit Barcode',
+            error: 'Invalid Sequencing Kit Barcode (length 10/21)',
           })
         })
 
@@ -172,7 +172,7 @@ describe('PacbioRunPlate.vue', () => {
           await skbbInput.setValue('some value')
           expect(plate.validateSequencingKitBoxBarcode(plateNumber)).toEqual({
             valid: false,
-            error: 'Invalid Sequencing Kit Barcode',
+            error: 'Invalid Sequencing Kit Barcode (length 10/28)',
           })
         })
 
