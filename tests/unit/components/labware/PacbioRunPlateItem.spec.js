@@ -50,9 +50,10 @@ describe('PacbioRunPlateItem.vue', () => {
       expect(plateItem.storePlate).toEqual(store.state.traction.pacbio.runCreate.plates[1])
     })
 
-    // why is this not showing up?
+    // why is this not showing up? I wonder if this is an issue with traction-input
+    // this is tested elsehwere but it vexes me.
     it.skip('returns the sequencing kit box barcode', () => {
-      expect(wrapper.find('[data-attribute=sequencing-kit-box-barcode-1]').text()).toEqual(
+      expect(wrapper.find('[data-attribute="sequencing-kit-box-barcode-1"]').text()).toEqual(
         'twentyonecharacters00',
       )
     })
@@ -63,36 +64,16 @@ describe('PacbioRunPlateItem.vue', () => {
       })
     })
 
-    describe('#methods', () => {
-      it('does not return a serial number', () => {
-        expect(wrapper.find('[data-attribute=serial-number]').exists()).toBeFalsy()
-      })
+    it('does not return a serial number', () => {
+      expect(wrapper.find('[data-attribute=serial-number]').exists()).toBeFalsy()
+    })
 
-      describe('validateSequencingKitBoxBarcode', () => {
-        it('errors if SequencingKitBoxBarcode is not valid', async () => {
-          const skbbInput = wrapper.find('[data-attribute=sequencing-kit-box-barcode-1]')
-          await skbbInput.setValue('some value')
-          expect(plateItem.validateSequencingKitBoxBarcode()).toEqual({
-            valid: false,
-            error: 'Invalid Sequencing Kit Barcode',
-          })
-        })
-
-        it('does not error if SequencingKitBoxBarcode is valid', async () => {
-          expect(plateItem.validateSequencingKitBoxBarcode()).toEqual({
-            valid: true,
-            error: '',
-          })
-        })
-
-        it('does not error if SequencingKitBoxBarcode is empty', async () => {
-          const skbbInput = wrapper.find('[data-attribute=sequencing-kit-box-barcode-1]')
-          await skbbInput.setValue('')
-          expect(plateItem.validateSequencingKitBoxBarcode()).toEqual({
-            valid: null,
-            error: '',
-          })
-        })
+    // 1 test is sufficient as this is tested thoroughly in the PacbioInstrumentType.spec.js
+    describe('#validateSequencingKitBoxBarcode', () => {
+      it('errors if sequencing kit box barcode is not valid', async () => {
+        const skbbInput = wrapper.find('[data-attribute=sequencing-kit-box-barcode-1]')
+        await skbbInput.setValue('some value')
+        expect(plateItem.validateSequencingKitBoxBarcode.valid).toBeFalsy()
       })
     })
   })
@@ -152,45 +133,24 @@ describe('PacbioRunPlateItem.vue', () => {
       expect(plateItem.storePlate).toEqual(store.state.traction.pacbio.runCreate.plates[1])
     })
 
-    // why is this not showing up?
+    // why is this not showing up? I wonder if this is an issue with traction-input
+    // this is tested elsehwere but it vexes me.
     it.skip('returns the sequencing kit box barcode', () => {
       expect(wrapper.find('[data-attribute=sequencing-kit-box-barcode-1]').text()).toEqual(
         '1021188000301570037320231019',
       )
     })
 
-    describe('#methods', () => {
-      it('returns the serialNumber', () => {
-        expect(wrapper.find('[data-attribute=serial-number]').text()).toEqual(
-          'Serial Number: 00373',
-        )
-      })
+    it('returns the serialNumber', () => {
+      expect(wrapper.find('[data-attribute=serial-number]').text()).toEqual('Serial Number: 00373')
     })
 
-    describe('validateSequencingKitBoxBarcode', () => {
-      it('errors if SequencingKitBoxBarcode is not valid', async () => {
+    // 1 test is sufficient as this is tested thoroughly in the PacbioInstrumentType.spec.js
+    describe('#validateSequencingKitBoxBarcode', () => {
+      it('errors if sequencing kit box barcode is not valid', async () => {
         const skbbInput = wrapper.find('[data-attribute=sequencing-kit-box-barcode-1]')
         await skbbInput.setValue('some value')
-        expect(plateItem.validateSequencingKitBoxBarcode()).toEqual({
-          valid: false,
-          error: 'Invalid Sequencing Kit Barcode',
-        })
-      })
-
-      it('does not error if SequencingKitBoxBarcode is valid', async () => {
-        expect(plateItem.validateSequencingKitBoxBarcode()).toEqual({
-          valid: true,
-          error: '',
-        })
-      })
-
-      it('does not error if SequencingKitBoxBarcode is empty', async () => {
-        const skbbInput = wrapper.find('[data-attribute=sequencing-kit-box-barcode-1]')
-        await skbbInput.setValue('')
-        expect(plateItem.validateSequencingKitBoxBarcode()).toEqual({
-          valid: null,
-          error: '',
-        })
+        expect(plateItem.validateSequencingKitBoxBarcode.valid).toBeFalsy()
       })
     })
   })

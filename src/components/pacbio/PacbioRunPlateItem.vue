@@ -6,8 +6,8 @@
         Sequencing Kit Box Barcode:
         <traction-field-error
           :data-attribute="`sequencing-kit-box-barcode-${plateNumber}-error`"
-          :error="validateSequencingKitBoxBarcode().error"
-          :with-icon="validateSequencingKitBoxBarcode().valid"
+          :error="validateSequencingKitBoxBarcode.error"
+          :with-icon="validateSequencingKitBoxBarcode.valid"
         >
           <traction-input
             :id="`sequencing-kit-box-barcode-${plateNumber}`"
@@ -47,7 +47,7 @@
 import PacbioRunWellEdit from '@/components/pacbio/PacbioRunWellEdit'
 import PacbioRunWell from '@/components/labware/PacbioRunWell'
 import LabwareMap from '@/components/labware/LabwareMap.vue'
-import { PacbioInstrumentTypes } from '@/lib/PacbioInstrumentTypes'
+import { PacbioInstrumentTypes, isInstrumentType, validatePlate } from '@/lib/PacbioInstrumentTypes'
 import { createNamespacedHelpers } from 'vuex'
 const { mapGetters } = createNamespacedHelpers('traction/pacbio/runCreate')
 
@@ -72,13 +72,16 @@ export default {
   computed: {
     ...mapGetters(['instrumentType', 'getPlate']),
     isRevio() {
-      return this.instrumentType.name === PacbioInstrumentTypes.Revio.name
+      return isInstrumentType(this.instrumentType, PacbioInstrumentTypes.Revio)
     },
     serialNumber() {
       return this.storePlate.sequencing_kit_box_barcode.substring(15, 20)
     },
     storePlate() {
       return this.getPlate(this.plateNumber)
+    },
+    validateSequencingKitBoxBarcode() {
+      return validatePlate({ plate: this.storePlate, instrumentType: this.instrumentType })
     },
   },
   methods: {
@@ -87,20 +90,6 @@ export default {
     },
     onWellClick(position, plateNumber) {
       this.$refs.modal.showModalForPositionAndPlate(position, plateNumber)
-    },
-    validateSequencingKitBoxBarcode() {
-      const isValid =
-        this.storePlate.sequencing_kit_box_barcode.length == 0
-          ? null
-          : this.storePlate.sequencing_kit_box_barcode.length ==
-            this.instrumentType.sequencingKitBoxBarcodeLength
-
-      const error = isValid == null ? '' : isValid ? '' : 'Invalid Sequencing Kit Barcode'
-
-      return {
-        valid: isValid,
-        error: error,
-      }
     },
   },
 }
