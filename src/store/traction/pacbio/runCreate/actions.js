@@ -177,7 +177,10 @@ export default {
     const { success, errors = [] } = await dispatch('fetchRun', { id })
 
     // populate the instrument type
-    commit('populateInstrumentType', findInstrumentByName(state.run.system_name, state.instrumentTypeList))
+    commit(
+      'populateInstrumentType',
+      findInstrumentByName(state.run.system_name, state.instrumentTypeList),
+    )
 
     // return the result from the fetchRun
     return { success, errors }

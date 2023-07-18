@@ -244,7 +244,7 @@ describe('actions.js', () => {
         run: {
           system_name: 'Revio',
         },
-        instrumentTypeList: PacbioInstrumentTypes
+        instrumentTypeList: PacbioInstrumentTypes,
       }
       const id = 1
       const commit = vi.fn()

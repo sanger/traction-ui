@@ -18,16 +18,14 @@ const PacbioInstrumentTypes = {
 }
 
 /**
- * 
- * @param {String} name 
+ *
+ * @param {String} name
  * @param {Object} instrumentTypeList
  * @returns PacbioInstrumentType || undefined
  * finds the Pacbio Instrument Type by name
  */
 const findInstrumentByName = (name, instrumentTypeList) => {
-  return Object.values(instrumentTypeList).find(
-    (instrument) => instrument.name === name
-  )
+  return Object.values(instrumentTypeList).find((instrument) => instrument.name === name)
 }
 
 export { PacbioInstrumentTypes, findInstrumentByName }
