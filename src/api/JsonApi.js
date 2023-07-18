@@ -1,5 +1,9 @@
 import Vue from 'vue'
 
+// This library needs a review:
+// - deserialize needs replacing
+// - a lot of the methods can be merged as they are doing similar things
+
 /**
  * Extract the attributes from a JSON API resource object, merge them with the id
  * and type attributes
@@ -178,6 +182,7 @@ const extractResourceObject = (data, included, includeStore = {}) => {
 /*
   Deserialize a json-api object to bring included relationships, ids and types inline.
   @param response: {data: Object, included: Object} the object to deserialize
+  DEPRECATED: use populate by methods instead
 */
 const deserialize = ({ data, included }, includeStore = {}) => {
   if (Array.isArray(data)) {
