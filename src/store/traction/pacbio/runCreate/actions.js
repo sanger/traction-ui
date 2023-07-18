@@ -1,6 +1,7 @@
 import { handleResponse } from '@/api/ResponseHelper'
 import { groupIncludedByResource, extractAttributes } from '@/api/JsonApi'
 import { newRun, createRunType, RunTypeEnum, newWell, defaultWellAttributes } from './run'
+import { findInstrumentByName } from '@/lib/PacbioInstrumentTypes'
 
 // Asynchronous update of state.
 export default {
@@ -150,7 +151,7 @@ export default {
    * @returns { success, errors }. Was the action successful? were there any errors?
    *
    */
-  setRun: async ({ commit, dispatch, getters }, { id }) => {
+  setRun: async ({ commit, dispatch, getters, state }, { id }) => {
     // create and commit the runType based on the id
     const runType = createRunType({ id })
     commit('populateRunType', runType)
@@ -164,14 +165,19 @@ export default {
 
       commit('populateRun', { id, attributes })
       commit('populateSmrtLinkVersion', getters.defaultSmrtLinkVersion)
-      commit('createPlates', getters.instrumentType.plateCount)
+      commit('createPlates', state.instrumentType.plateCount)
 
       // success will always be true and errors will be empty
       return { success: true, errors: [] }
     }
 
+    // if it is an existing run
+
     // call the fetch run action
     const { success, errors = [] } = await dispatch('fetchRun', { id })
+
+    // populate the instrument type
+    commit('populateInstrumentType', findInstrumentByName(state.run.system_name, state.instrumentTypeList))
 
     // return the result from the fetchRun
     return { success, errors }
@@ -254,9 +260,7 @@ export default {
    * creates the plates based on the instrument type plate count
    */
   setInstrumentType: ({ commit, state: { instrumentTypeList } }, instrumentName) => {
-    const instrumentType = Object.values(instrumentTypeList).find(
-      (instrumentType) => instrumentType.name === instrumentName,
-    )
+    const instrumentType = findInstrumentByName(instrumentName, instrumentTypeList)
     commit('populateInstrumentType', { ...instrumentType })
     commit('createPlates', instrumentType.plateCount)
   },

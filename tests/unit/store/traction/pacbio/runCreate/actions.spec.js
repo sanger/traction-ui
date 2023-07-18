@@ -223,15 +223,12 @@ describe('actions.js', () => {
       const getters = { defaultSmrtLinkVersion, instrumentType }
       const run = newRun()
       const { id, ...attributes } = run
-      const plates = attributes.plates
-      delete attributes.plates
       const commit = vi.fn()
-      const { success } = await setRun({ commit, getters }, { id })
+      const { success } = await setRun({ commit, getters, state: { instrumentType } }, { id })
       expect(success).toBeTruthy()
       expect(commit).toHaveBeenCalledWith('populateRun', {
         id,
-        attributes: { ...attributes },
-        plates,
+        attributes,
       })
       expect(commit).toHaveBeenCalledWith('populateSmrtLinkVersion', getters.defaultSmrtLinkVersion)
       expect(commit).toHaveBeenCalledWith('populateRunType', newRunType)
@@ -244,6 +241,10 @@ describe('actions.js', () => {
           1: { barcode: 'TRAC-2-1', id: '1', type: 'tubes' },
           2: { barcode: 'TRAC-2-2', id: '2', type: 'tubes' },
         },
+        run: {
+          system_name: 'Revio',
+        },
+        instrumentTypeList: PacbioInstrumentTypes
       }
       const id = 1
       const commit = vi.fn()
@@ -254,6 +255,7 @@ describe('actions.js', () => {
       const { success } = await setRun({ commit, dispatch, state, getters }, { id })
       expect(dispatch).toHaveBeenCalledWith('fetchRun', { id })
       expect(commit).toHaveBeenCalledWith('populateRunType', existingRunType)
+      expect(commit).toHaveBeenCalledWith('populateInstrumentType', PacbioInstrumentTypes.Revio)
       expect(success).toBeTruthy()
     })
   })

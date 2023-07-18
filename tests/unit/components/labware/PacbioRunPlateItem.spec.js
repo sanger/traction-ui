@@ -50,6 +50,13 @@ describe('PacbioRunPlateItem.vue', () => {
       expect(plateItem.storePlate).toEqual(store.state.traction.pacbio.runCreate.plates[1])
     })
 
+    // why is this not showing up?
+    it.skip('returns the sequencing kit box barcode', () => {
+      expect(wrapper.find('[data-attribute=sequencing-kit-box-barcode-1]').text()).toEqual(
+        'twentyonecharacters00',
+      )
+    })
+
     describe('#instrumentType', () => {
       it('returns the correct instrument type', () => {
         expect(plateItem.instrumentType).toEqual(PacbioInstrumentTypes.SequelIIe)
@@ -59,13 +66,6 @@ describe('PacbioRunPlateItem.vue', () => {
     describe('#methods', () => {
       it('does not return a serial number', () => {
         expect(wrapper.find('[data-attribute=serial-number]').exists()).toBeFalsy()
-      })
-
-      // why is this not showing up?
-      it.skip('returns the sequencing kit box barcode', async () => {
-        expect(wrapper.find('[data-attribute=sequencing-kit-box-barcode-1]').text()).toEqual(
-          'twentyonecharacters00',
-        )
       })
 
       describe('validateSequencingKitBoxBarcode', () => {
@@ -153,7 +153,7 @@ describe('PacbioRunPlateItem.vue', () => {
     })
 
     // why is this not showing up?
-    it.skip('returns the sequencing kit box barcode', async () => {
+    it.skip('returns the sequencing kit box barcode', () => {
       expect(wrapper.find('[data-attribute=sequencing-kit-box-barcode-1]').text()).toEqual(
         '1021188000301570037320231019',
       )
