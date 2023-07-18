@@ -1,5 +1,5 @@
 import ONTRuns from '@/views/ont/ONTRunIndex'
-import { mount, localVue, store, Data, router } from '@support/testHelper'
+import { mount, store, Data, router, flushPromises } from '@support/testHelper'
 import Response from '@/api/Response'
 
 describe('ONTRuns.vue', () => {
@@ -11,7 +11,7 @@ describe('ONTRuns.vue', () => {
     const get = vi.spyOn(store.state.api.traction.ont.runs, 'get')
     get.mockResolvedValue(Data.OntRuns)
 
-    wrapper = await mount(ONTRuns, { store, router, localVue })
+    wrapper = await mount(ONTRuns, { store, router })
     runs = wrapper.vm
   })
 
@@ -33,7 +33,7 @@ describe('ONTRuns.vue', () => {
     })
 
     it('orders the data by created_at desc', () => {
-      expect(wrapper.find('tbody').findAll('tr').at(0).text().includes('ONTRUN-2')).toBeTruthy()
+      expect(wrapper.find('tbody').findAll('tr')[0].text().includes('ONTRUN-2')).toBeTruthy()
     })
   })
 
@@ -45,6 +45,7 @@ describe('ONTRuns.vue', () => {
     it('will redirect to the run when newRun is clicked', async () => {
       const button = wrapper.find('#newRun')
       button.trigger('click')
+      await flushPromises()
       expect(runs.$route.path).toEqual('/ont/run/new')
     })
   })
@@ -58,6 +59,7 @@ describe('ONTRuns.vue', () => {
     it('will call editRun when Edit is clicked', async () => {
       const button = wrapper.find('#editRun-1')
       button.trigger('click')
+      await flushPromises()
       expect(runs.$route.path).toEqual('/ont/run/1')
     })
   })

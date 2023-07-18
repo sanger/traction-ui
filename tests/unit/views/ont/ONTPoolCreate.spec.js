@@ -1,5 +1,5 @@
 import ONTPoolCreate from '@/views/ont/ONTPoolCreate.vue'
-import { mount, localVue, store, Data, router, flushPromises } from '@support/testHelper'
+import { mount, store, Data, router, flushPromises } from '@support/testHelper'
 import { expect } from 'vitest'
 
 describe('OntPoolCreate', () => {
@@ -20,7 +20,6 @@ describe('OntPoolCreate', () => {
     router.push({ name: 'ONTPoolCreate', params: { id: 'new' } })
 
     mount(ONTPoolCreate, {
-      localVue,
       store,
       router,
     })
@@ -59,7 +58,6 @@ describe('OntPoolCreate', () => {
 
     router.push({ name: 'ONTPoolCreate', params: { id: 3 } })
     mount(ONTPoolCreate, {
-      localVue,
       store,
       router,
     })

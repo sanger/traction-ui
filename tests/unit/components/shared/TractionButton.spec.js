@@ -1,4 +1,4 @@
-import { mount, createLocalVue } from '@vue/test-utils'
+import { mount } from '@vue/test-utils'
 
 import TractionButton from '@/components/shared/TractionButton'
 import { expect } from 'vitest'
@@ -9,9 +9,7 @@ describe('TractionButton.vue', () => {
   }
 
   const buildWrapper = (props = {}) => {
-    const localVue = createLocalVue()
     return mount(TractionButton, {
-      localVue,
       props: props,
       slots: {
         default: 'Section Content',

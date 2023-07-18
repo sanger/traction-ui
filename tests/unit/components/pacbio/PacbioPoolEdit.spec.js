@@ -1,4 +1,4 @@
-import { mount, localVue, store } from '@support/testHelper'
+import { mount, store } from '@support/testHelper'
 import PacbioPoolEdit from '@/components/pacbio/PacbioPoolEdit'
 import { newLibrary } from '@/store/traction/pacbio/poolCreate/pool.js'
 import { Data } from '@support/testHelper'
@@ -6,7 +6,6 @@ import * as pacbio from '@/lib/csv/pacbio'
 
 const buildWrapper = () =>
   mount(PacbioPoolEdit, {
-    localVue,
     stubs: {
       PacbioPoolLibraryList: true,
     },
@@ -167,7 +166,7 @@ describe('pacbioPoolEdit#edit', () => {
         libraries: {},
       })
       store.state.traction.pacbio.poolCreate = poolCreateStore
-      await localVue.nextTick()
+      await wrapper.vm.$nextTick()
       expect(wrapper.find('[data-attribute=pool-type]').text()).toContain('Empty')
     })
 
@@ -176,13 +175,13 @@ describe('pacbioPoolEdit#edit', () => {
         libraries: { _1: newLibrary({ pacbio_request_id: '1' }) },
       })
       store.state.traction.pacbio.poolCreate = poolCreateStore
-      await localVue.nextTick()
+      await wrapper.vm.$nextTick()
       expect(wrapper.find('[data-attribute=pool-type]').text()).toContain('Library')
     })
 
     it('says pool when there are multiple libraries', async () => {
       store.state.traction.pacbio.poolCreate = Data.AutoTagStore
-      await localVue.nextTick()
+      await wrapper.vm.$nextTick()
       expect(wrapper.find('[data-attribute=pool-type]').text()).toContain('Pool')
     })
   })

@@ -1,5 +1,5 @@
 import Samples from '@/views/saphyr/SaphyrSamples'
-import { mount, localVue, store, Data, router } from '@support/testHelper'
+import { mount, store, Data, router } from '@support/testHelper'
 import Response from '@/api/Response'
 
 describe('Samples.vue', () => {
@@ -15,7 +15,6 @@ describe('Samples.vue', () => {
       Data.TractionSaphyrRequests,
     )
     wrapper = mount(Samples, {
-      localVue,
       store,
       router,
       stubs: {
@@ -45,7 +44,7 @@ describe('Samples.vue', () => {
     beforeEach(() => {})
 
     it('will create a list of selected requests', () => {
-      const firstCell = wrapper.find('tbody').findAll('td').at(0)
+      const firstCell = wrapper.find('tbody').findAll('td')[0]
       firstCell.trigger('click')
       expect(samples.selected.length).toEqual(1)
     })

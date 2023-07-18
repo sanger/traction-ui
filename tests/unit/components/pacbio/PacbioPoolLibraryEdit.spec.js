@@ -1,5 +1,5 @@
 import PacbioPoolLibraryEdit from '@/components/pacbio/PacbioPoolLibraryEdit'
-import { mount, store, localVue } from '@support/testHelper'
+import { mount, store } from '@support/testHelper'
 import { newLibrary } from '@/store/traction/pacbio/poolCreate/pool.js'
 
 const request = {
@@ -39,7 +39,6 @@ describe('PacbioPoolLibraryEdit.vue', () => {
 
       wrapper = mount(PacbioPoolLibraryEdit, {
         store,
-        localVue,
         props: {
           id: 1,
           request,
@@ -78,7 +77,7 @@ describe('PacbioPoolLibraryEdit.vue', () => {
     describe('when the user selects a tag', () => {
       it('will update the tag_id', async () => {
         const options = wrapper.find('[data-type=tag-list]').findAll('option')
-        await options.at(1).setSelected()
+        await options[1].setSelected()
         expect(store.state.traction.pacbio.poolCreate.libraries['_1'].tag_id).toEqual('1')
       })
     })
@@ -126,7 +125,6 @@ describe('PacbioPoolLibraryEdit.vue', () => {
 
       wrapper = mount(PacbioPoolLibraryEdit, {
         store,
-        localVue,
         props,
       })
 
@@ -140,7 +138,6 @@ describe('PacbioPoolLibraryEdit.vue', () => {
 
       wrapper = mount(PacbioPoolLibraryEdit, {
         store,
-        localVue,
         props,
       })
 
@@ -154,7 +151,6 @@ describe('PacbioPoolLibraryEdit.vue', () => {
 
       wrapper = mount(PacbioPoolLibraryEdit, {
         store,
-        localVue,
         props,
       })
 
@@ -168,7 +164,6 @@ describe('PacbioPoolLibraryEdit.vue', () => {
 
       wrapper = mount(PacbioPoolLibraryEdit, {
         store,
-        localVue,
         props,
       })
 

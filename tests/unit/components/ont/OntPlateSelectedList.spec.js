@@ -1,4 +1,4 @@
-import { mount, localVue, store, Data } from '@support/testHelper'
+import { mount, store, Data } from '@support/testHelper'
 import OntPlateSelectedList from '@/components/ont/OntPlateSelectedList'
 import Response from '@/api/Response'
 
@@ -13,7 +13,6 @@ describe('OntPlateSelectedList', () => {
     store.commit('traction/ont/pools/populateWells', mockWells)
 
     wrapper = mount(OntPlateSelectedList, {
-      localVue,
       store,
       stubs: {
         Plate: true,

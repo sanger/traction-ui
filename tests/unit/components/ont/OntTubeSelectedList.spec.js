@@ -1,4 +1,4 @@
-import { mount, localVue, store, Data } from '@support/testHelper'
+import { mount, store, Data } from '@support/testHelper'
 import OntTubeSelectedList from '@/components/ont/OntTubeSelectedList'
 import Response from '@/api/Response'
 import { expect } from 'vitest'
@@ -15,7 +15,6 @@ describe('OntTubeSelectedList', () => {
       store.commit('traction/ont/pools/populateRequests', mockRequests)
 
       wrapper = mount(OntTubeSelectedList, {
-        localVue,
         store,
       })
     })
@@ -47,20 +46,19 @@ describe('OntTubeSelectedList', () => {
       store.commit('traction/ont/pools/selectRequest', selectRequest)
 
       wrapper = mount(OntTubeSelectedList, {
-        localVue,
         store,
       })
     })
 
     it('contains the selected tube requests', async () => {
       expect(wrapper.find('tbody').findAll('tr').length).toEqual(1)
-      expect(wrapper.find('tbody').findAll('td').at(0).text()).toEqual('191')
-      expect(wrapper.find('tbody').findAll('td').at(1).text()).toEqual('GENSAMPLE-1668092750-191')
-      expect(wrapper.find('tbody').findAll('td').at(2).text()).toEqual('GEN-1668092750-3')
-      expect(wrapper.find('tbody').findAll('td').at(3).text()).toEqual('basecalls')
-      expect(wrapper.find('tbody').findAll('td').at(4).text()).toEqual('ONT_PromethIon')
-      expect(wrapper.find('tbody').findAll('td').at(5).text()).toEqual('1')
-      expect(wrapper.find('tbody').findAll('td').at(6).text()).toEqual('Remove')
+      expect(wrapper.find('tbody').findAll('td')[0].text()).toEqual('191')
+      expect(wrapper.find('tbody').findAll('td')[1].text()).toEqual('GENSAMPLE-1668092750-191')
+      expect(wrapper.find('tbody').findAll('td')[2].text()).toEqual('GEN-1668092750-3')
+      expect(wrapper.find('tbody').findAll('td')[3].text()).toEqual('basecalls')
+      expect(wrapper.find('tbody').findAll('td')[4].text()).toEqual('ONT_PromethIon')
+      expect(wrapper.find('tbody').findAll('td')[5].text()).toEqual('1')
+      expect(wrapper.find('tbody').findAll('td')[6].text()).toEqual('Remove')
     })
 
     it('deselects the tube and request when the remove button is clicked', async () => {

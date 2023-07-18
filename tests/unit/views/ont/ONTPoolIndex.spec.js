@@ -1,5 +1,5 @@
 import ONTPoolIndex from '@/views/ont/ONTPoolIndex.vue'
-import { mount, localVue, store, Data, router, flushPromises } from '@support/testHelper'
+import { mount, store, Data, router, flushPromises } from '@support/testHelper'
 import { vi } from 'vitest'
 
 describe('OntPoolIndex', () => {
@@ -9,7 +9,6 @@ describe('OntPoolIndex', () => {
     const get = vi.spyOn(store.state.api.traction.ont.pools, 'get')
     get.mockResolvedValue(Data.TractionOntPools)
     wrapper = mount(ONTPoolIndex, {
-      localVue,
       store,
       router,
     })

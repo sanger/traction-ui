@@ -1,12 +1,11 @@
-import { localVue, mount } from '@support/testHelper'
+import { mount } from '@support/testHelper'
 import TractionTableRow from '@/components/shared/table/TractionTableRow'
 import { describe, expect, it } from 'vitest'
 
 describe('TractionTableRow', () => {
   const buildWrapper = (props = {}) => {
     return mount(TractionTableRow, {
-      localVue,
-      props: props,
+      props,
       slots: {
         default: 'Row Text',
       },

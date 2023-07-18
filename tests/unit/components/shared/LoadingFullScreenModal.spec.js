@@ -1,11 +1,10 @@
-import { localVue, mount } from '@support/testHelper'
+import { mount } from '@support/testHelper'
 
 import LoadingFullScreenModal from '@/components/shared/LoadingFullScreenModal'
 
 describe('LoadingFullScreenModal.vue', () => {
   const buildWrapper = (props = {}) => {
     return mount(LoadingFullScreenModal, {
-      localVue,
       props: props,
     })
   }

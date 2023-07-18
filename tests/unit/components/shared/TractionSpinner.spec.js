@@ -1,12 +1,11 @@
-import { localVue, mount } from '@support/testHelper'
+import { mount } from '@support/testHelper'
 
 import TractionSpinner from '@/components/shared/TractionSpinner'
 
 describe('TractionSpinner.vue', () => {
   const buildWrapper = (props = {}) => {
     return mount(TractionSpinner, {
-      localVue,
-      props: props,
+      props,
     })
   }
 

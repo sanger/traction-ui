@@ -1,11 +1,11 @@
-import { mount, localVue, router } from '@support/testHelper'
+import { mount, router } from '@support/testHelper'
 import PipelineView from '@/views/PipelineView'
 
 describe('PipelineView', () => {
   let wrapper, pipelineView, store
 
   beforeEach(() => {
-    wrapper = mount(PipelineView, { store, localVue, router, props: { pipeline: 'pacbio' } })
+    wrapper = mount(PipelineView, { store, router, props: { pipeline: 'pacbio' } })
     pipelineView = wrapper.vm
   })
 

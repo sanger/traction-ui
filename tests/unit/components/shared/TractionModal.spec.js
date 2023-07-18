@@ -1,4 +1,4 @@
-import { localVue, mount } from '@support/testHelper'
+import { mount } from '@support/testHelper'
 
 import TractionModal from '@/components/shared/TractionModal'
 
@@ -12,8 +12,7 @@ import TractionButton from '@/components/shared/TractionButton'
 describe('TractionModal.vue', () => {
   const buildWrapper = (props = {}) => {
     return mount(TractionModal, {
-      localVue,
-      props: props,
+      props,
       slots: {
         default: 'Modal Content',
       },
@@ -45,7 +44,6 @@ describe('TractionModal.vue', () => {
   it(' displays header component using modal-header slot', () => {
     const buildModalWrapper = (props = {}) => {
       return mount(TractionModal, {
-        localVue,
         props: { ...props, visible: true },
         components: { 'traction-button': TractionButton },
         slots: {
@@ -62,7 +60,6 @@ describe('TractionModal.vue', () => {
   it(' displays title component using "modal-title" slot', () => {
     const buildModalWrapper = (props = {}) => {
       return mount(TractionModal, {
-        localVue,
         props: { ...props, visible: true },
         slots: {
           'modal-title': '<div data-testid="title-div"/>',
@@ -76,7 +73,6 @@ describe('TractionModal.vue', () => {
   it(' displays footer component using "modal-footer" slot', () => {
     const buildModalWrapper = (props = {}) => {
       return mount(TractionModal, {
-        localVue,
         props: { ...props, visible: true },
         slots: {
           'modal-footer': '<div data-testid="footer-div"/>',
@@ -92,7 +88,6 @@ describe('TractionModal.vue', () => {
     let modalWrapper
     const buildModalWrapper = (props = {}) => {
       return mount(TractionModal, {
-        localVue,
         props: { ...props, visible: true },
         slots: {
           'modal-footer': `<div data-testid="footer-div"> 

@@ -1,5 +1,5 @@
 import PacbioRuns from '@/views/pacbio/PacbioRunIndex'
-import { mount, localVue, store, Data, router, flushPromises } from '@support/testHelper'
+import { mount, store, Data, router, flushPromises } from '@support/testHelper'
 import Response from '@/api/Response'
 
 describe('Runs.vue', () => {
@@ -10,7 +10,7 @@ describe('Runs.vue', () => {
     const get = vi.spyOn(store.state.api.traction.pacbio.runs, 'get')
     get.mockReturnValue(Data.PacbioRuns)
 
-    wrapper = mount(PacbioRuns, { store, router, localVue })
+    wrapper = mount(PacbioRuns, { store, router })
     runs = wrapper.vm
     await flushPromises()
   })
@@ -25,10 +25,10 @@ describe('Runs.vue', () => {
     })
 
     it('contains the correct run skbb information', () => {
-      const run2skbb = wrapper.find('tbody').findAll('tr').at(0).findAll('td').at(4).text()
+      const run2skbb = wrapper.find('tbody').findAll('tr')[0].findAll('td')[4].text()
       expect(run2skbb).toEqual('Plate 1: SKBB 2')
 
-      const run6skbb = wrapper.find('tbody').findAll('tr').at(5).findAll('td').at(4).text()
+      const run6skbb = wrapper.find('tbody').findAll('tr')[5].findAll('td')[4].text()
       expect(run6skbb).toEqual('Plate 1: SKBB 6, Plate 2: SKBB 7')
     })
   })
@@ -41,6 +41,7 @@ describe('Runs.vue', () => {
     it('will redirect to the run when newRun is clicked', async () => {
       const button = wrapper.find('[data-action=new-run]')
       button.trigger('click')
+      await flushPromises()
       expect(runs.$route.path).toEqual('/pacbio/run/new')
     })
   })
@@ -174,7 +175,7 @@ describe('Runs.vue', () => {
 
   describe('sorting', () => {
     it('will sort the runs by created at', () => {
-      expect(wrapper.find('tbody').findAll('tr').at(0).text()).toMatch(/Sequel II/)
+      expect(wrapper.find('tbody').findAll('tr')[0].text()).toMatch(/Sequel II/)
     })
   })
 
@@ -184,7 +185,6 @@ describe('Runs.vue', () => {
       get.mockReturnValue(Data.PacbioRuns)
       wrapper = mount(PacbioRuns, {
         store,
-        localVue,
         data() {
           return {
             filter: mockRuns[0].name,
@@ -197,7 +197,7 @@ describe('Runs.vue', () => {
 
     it('will filter the runs in the table', () => {
       expect(wrapper.find('tbody').findAll('[data-testid="row"]').length).toEqual(1)
-      expect(wrapper.find('tbody').findAll('[data-testid="row"]').at(0).text()).toMatch(/Sequel I/)
+      expect(wrapper.find('tbody').findAll('[data-testid="row"]')[0].text()).toMatch(/Sequel I/)
     })
   })
 
@@ -219,7 +219,6 @@ describe('Runs.vue', () => {
 
       wrapper = mount(PacbioRuns, {
         store,
-        localVue,
         data() {
           return {
             perPage: 2,
@@ -295,6 +294,7 @@ describe('Runs.vue', () => {
     it('will call editRun when Edit is clicked', async () => {
       const button = wrapper.find('#editRun-1')
       button.trigger('click')
+      await flushPromises()
       expect(runs.$route.path).toEqual('/pacbio/run/1')
     })
   })

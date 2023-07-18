@@ -1,4 +1,4 @@
-import { localVue, mount } from '@support/testHelper'
+import { mount } from '@support/testHelper'
 
 import FlaggedFeature from '@/components/shared/FlaggedFeature'
 import { vi } from 'vitest'
@@ -23,7 +23,6 @@ describe('FlaggedFeature.vue', () => {
 
   const buildWrapper = (props = {}) => {
     return mount(FlaggedFeature, {
-      localVue,
       props: props,
       slots: {
         default: 'Feature Content',

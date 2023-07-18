@@ -1,4 +1,4 @@
-import { mount, localVue, store } from '@support/testHelper'
+import { mount, store } from '@support/testHelper'
 import PacbioRunPlate from '@/components/pacbio/PacbioRunPlate'
 import { newWell } from '@/store/traction/pacbio/runCreate/run'
 import { it } from 'vitest'
@@ -34,7 +34,6 @@ describe('PacbioRunPlate.vue', () => {
       }
 
       wrapper = mount(PacbioRunPlate, {
-        localVue,
         store,
       })
       plate = wrapper.vm
@@ -124,8 +123,7 @@ describe('PacbioRunPlate.vue', () => {
       }
 
       wrapper = mount(PacbioRunPlate, {
-        localVue,
-        store,
+        store
       })
       plate = wrapper.vm
     })

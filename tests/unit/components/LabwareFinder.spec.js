@@ -1,4 +1,4 @@
-import { mount, localVue, store, flushPromises } from '@support/testHelper'
+import { mount, flushPromises } from '@support/testHelper'
 import LabwareFinder from '@/components/LabwareFinder'
 import { expect } from 'vitest'
 
@@ -10,8 +10,6 @@ describe('LabwareFinder.vue', () => {
     mockFetch.mockReturnValue(Promise.resolve({ success: true, errors: [] }))
 
     wrapper = mount(LabwareFinder, {
-      localVue,
-      store,
       props: {
         fetcher: mockFetch,
         filter: 'barcode',
@@ -29,8 +27,6 @@ describe('LabwareFinder.vue', () => {
     mockFetch.mockReturnValue(Promise.resolve({ success: true, errors: [] }))
 
     wrapper = mount(LabwareFinder, {
-      localVue,
-      store,
       props: {
         fetcher: mockFetch,
         filter: 'barcode',

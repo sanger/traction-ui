@@ -1,4 +1,4 @@
-import { mount, localVue, store } from '@support/testHelper'
+import { mount, store } from '@support/testHelper'
 import PacbioLibraryCreate from '@/components/pacbio/PacbioLibraryCreate'
 
 describe('PacbioLibraryCreate.vue', () => {
@@ -12,7 +12,6 @@ describe('PacbioLibraryCreate.vue', () => {
     }
 
     wrapper = mount(PacbioLibraryCreate, {
-      localVue,
       store,
       props: props,
     })

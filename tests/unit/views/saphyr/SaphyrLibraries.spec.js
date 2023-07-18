@@ -1,5 +1,5 @@
 import Libraries from '@/views/saphyr/SaphyrLibraries'
-import { mount, localVue, store, Data } from '@support/testHelper'
+import { mount, store, Data } from '@support/testHelper'
 import VueRouter from 'vue-router'
 import Response from '@/api/Response'
 
@@ -57,7 +57,6 @@ describe('Libraries.vue', () => {
     wrapper = mount(Libraries, {
       store,
       router,
-      localVue,
       stubs: {
         PrinterModal: true,
       },

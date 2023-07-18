@@ -1,5 +1,5 @@
 import ONTRun from '@/views/ont/ONTRun'
-import { localVue, mount, store, router, flushPromises } from '@support/testHelper'
+import { mount, store, router, flushPromises } from '@support/testHelper'
 import { beforeEach, describe, it } from 'vitest'
 
 describe('ONTRun.vue', () => {
@@ -15,7 +15,6 @@ describe('ONTRun.vue', () => {
     wrapper = mount(ONTRun, {
       store,
       router,
-      localVue,
       stubs: stubs,
       props: { id: 'new' },
     })
@@ -64,7 +63,6 @@ describe('ONTRun.vue', () => {
       wrapper = mount(ONTRun, {
         store,
         router,
-        localVue,
         stubs: stubs,
         props: { id: '1' },
       })
@@ -122,7 +120,6 @@ describe('ONTRun.vue', () => {
       wrapper = mount(ONTRun, {
         store,
         router,
-        localVue,
         stubs: stubs,
         props: { id: '1' },
       })
@@ -189,7 +186,6 @@ describe('ONTRun.vue', () => {
         wrapper = mount(ONTRun, {
           store,
           router,
-          localVue,
           stubs: stubs,
           props: { id: '1' },
         })

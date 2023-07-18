@@ -1,11 +1,10 @@
-import { localVue, mount } from '@support/testHelper'
+import { mount } from '@support/testHelper'
 
 import TractionInput from '@/components/shared/TractionInput'
 
 describe('TractionInput.vue', () => {
   const buildWrapper = (props = {}) => {
     return mount(TractionInput, {
-      localVue,
       props: props,
     })
   }

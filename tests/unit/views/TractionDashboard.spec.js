@@ -49,7 +49,7 @@ describe('TractionDashboard.vue', () => {
 
     describe('route buttons', () => {
       it('will have a samples button', async () => {
-        const button = box.findAll('a').at(0)
+        const button = box.findAll('a')[0]
         expect(button.text()).toEqual('Samples')
         button.trigger('click')
         await flushPromises()
@@ -57,7 +57,7 @@ describe('TractionDashboard.vue', () => {
       })
 
       it('will have a libraries button', async () => {
-        const button = box.findAll('a').at(1)
+        const button = box.findAll('a')[1]
         expect(button.text()).toEqual('Libraries')
         button.trigger('click')
         await flushPromises()
@@ -65,7 +65,7 @@ describe('TractionDashboard.vue', () => {
       })
 
       it('will have a runs button', async () => {
-        const button = box.findAll('a').at(2)
+        const button = box.findAll('a')[2]
         expect(button.text()).toEqual('Runs')
         button.trigger('click')
         await flushPromises()
@@ -89,42 +89,42 @@ describe('TractionDashboard.vue', () => {
 
     describe('route buttons', () => {
       it('will have a plates button', async () => {
-        const platesButton = box.findAll('a').at(0)
+        const platesButton = box.findAll('a')[0]
         expect(platesButton.text()).toEqual('Plates')
         platesButton.trigger('click')
         await flushPromises()
         expect(wrapper.vm.$route.path).toBe('/pacbio/plates')
       })
       it('will have a samples button', async () => {
-        const button = box.findAll('a').at(1)
+        const button = box.findAll('a')[1]
         expect(button.text()).toEqual('Samples')
         button.trigger('click')
         await flushPromises()
         expect(wrapper.vm.$route.path).toBe('/pacbio/samples')
       })
       it('will have a libraries button', async () => {
-        const button = box.findAll('a').at(2)
+        const button = box.findAll('a')[2]
         expect(button.text()).toEqual('Libraries')
         button.trigger('click')
         await flushPromises()
         expect(wrapper.vm.$route.path).toBe('/pacbio/libraries')
       })
       it('will have a pools button', async () => {
-        const button = box.findAll('a').at(3)
+        const button = box.findAll('a')[3]
         expect(button.text()).toEqual('Pools')
         button.trigger('click')
         await flushPromises()
         expect(wrapper.vm.$route.path).toBe('/pacbio/pools')
       })
       it('will have a runs button', async () => {
-        const button = box.findAll('a').at(4)
+        const button = box.findAll('a')[4]
         expect(button.text()).toEqual('Runs')
         button.trigger('click')
         await flushPromises()
         expect(wrapper.vm.$route.path).toBe('/pacbio/runs')
       })
       it('will have a pool/new button', async () => {
-        const button = box.findAll('a').at(5)
+        const button = box.findAll('a')[5]
         expect(button.text()).toEqual('Pool/new')
         button.trigger('click')
         await flushPromises()
@@ -148,28 +148,28 @@ describe('TractionDashboard.vue', () => {
 
     describe('route buttons', () => {
       it('will have a samples button', async () => {
-        const button = box.findAll('a').at(0)
+        const button = box.findAll('a')[0]
         expect(button.text()).toEqual('Samples')
         button.trigger('click')
         await flushPromises()
         expect(wrapper.vm.$route.path).toBe('/ont/samples')
       })
       it('will have a pools button', async () => {
-        const button = box.findAll('a').at(1)
+        const button = box.findAll('a')[1]
         expect(button.text()).toEqual('Pools')
         button.trigger('click')
         await flushPromises()
         expect(wrapper.vm.$route.path).toBe('/ont/pools')
       })
       it('will have a pool/new button', async () => {
-        const button = box.findAll('a').at(2)
+        const button = box.findAll('a')[2]
         expect(button.text()).toEqual('Pool/new')
         button.trigger('click')
         await flushPromises()
         expect(wrapper.vm.$route.path).toBe('/ont/pool/new')
       })
       it('will have a runs button', async () => {
-        const button = box.findAll('a').at(3)
+        const button = box.findAll('a')[3]
         expect(button.text()).toEqual('Runs')
         button.trigger('click')
         await flushPromises()

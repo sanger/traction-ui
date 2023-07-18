@@ -1,11 +1,10 @@
 import DataTypeSelect from '@/components/shared/DataTypeSelect'
-import { localVue, mount, store } from '@support/testHelper'
+import { mount, store } from '@support/testHelper'
 import { vi } from 'vitest'
 
 describe('DataTypeSelect.vue', () => {
   const buildWrapper = (props = { pipeline: 'ont' }) => {
     return mount(DataTypeSelect, {
-      localVue,
       store,
       props: props,
     })

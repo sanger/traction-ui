@@ -1,5 +1,5 @@
 import Libraries from '@/views/pacbio/PacbioLibraryIndex'
-import { mount, localVue, Data, store, router, flushPromises } from '@support/testHelper'
+import { mount, Data, store, router, flushPromises } from '@support/testHelper'
 import Response from '@/api/Response'
 import { expect } from 'vitest'
 
@@ -13,7 +13,6 @@ describe('Libraries.vue', () => {
     wrapper = mount(Libraries, {
       store,
       router,
-      localVue,
     })
     await flushPromises()
     libraries = wrapper.vm
@@ -40,7 +39,6 @@ describe('Libraries.vue', () => {
       wrapper = mount(Libraries, {
         store,
         router,
-        localVue,
         data() {
           return { perPage: 1 }
         },

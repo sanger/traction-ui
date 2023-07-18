@@ -1,7 +1,7 @@
 import ApiMixin from '@/mixins/Api'
 import build from '@/api/ApiBuilder'
 import config from '@/api/Config'
-import { mount, localVue, store } from '@support/testHelper'
+import { mount, store } from '@support/testHelper'
 
 const Cmp = {
   template: '<div class="say-my-name"></div>',
@@ -16,7 +16,7 @@ describe('Api', () => {
 
   beforeEach(() => {
     api = build({ config, environment: import.meta.env })
-    wrapper = mount(Cmp, { store, localVue })
+    wrapper = mount(Cmp, { store })
     cmp = wrapper.vm
   })
 

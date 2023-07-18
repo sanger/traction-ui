@@ -1,4 +1,4 @@
-import { mount, localVue, store, flushPromises } from '@support/testHelper'
+import { mount, flushPromises } from '@support/testHelper'
 import DataFetcher from '@/components/DataFetcher'
 import { expect } from 'vitest'
 
@@ -10,8 +10,6 @@ describe('DataFetcher.vue', () => {
     mockFetch.mockReturnValue(Promise.resolve({ success: true, data: 'success' }))
 
     wrapper = mount(DataFetcher, {
-      localVue,
-      store,
       props: {
         fetcher: mockFetch,
       },
@@ -25,8 +23,6 @@ describe('DataFetcher.vue', () => {
     mockFetch.mockReturnValue(Promise.resolve({ success: true, data: 'success' }))
 
     wrapper = mount(DataFetcher, {
-      localVue,
-      store,
       props: {
         fetcher: mockFetch,
       },
@@ -42,8 +38,6 @@ describe('DataFetcher.vue', () => {
     mockFetch.mockReturnValue(Promise.resolve({ success: false, data: 'error' }))
 
     wrapper = mount(DataFetcher, {
-      localVue,
-      store,
       props: {
         fetcher: mockFetch,
       },

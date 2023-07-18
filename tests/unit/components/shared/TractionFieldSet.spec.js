@@ -1,4 +1,4 @@
-import { localVue, mount } from '@support/testHelper'
+import { mount } from '@support/testHelper'
 import TractionFieldset from '@/components/shared/TractionFieldset.vue'
 import { expect } from 'vitest'
 
@@ -29,7 +29,6 @@ describe('TractionFieldset.vue', () => {
   ]
   const buildWrapper = (props = {}) => {
     return mount(TractionFieldset, {
-      localVue,
       props: { ...defaultProps, ...props },
       slots: {
         default: 'Section Content',

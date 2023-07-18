@@ -1,5 +1,5 @@
 import PacbioRun from '@/views/pacbio/PacbioRunShow'
-import { localVue, mount, store, router, Data, flushPromises } from '@support/testHelper'
+import { mount, store, router, Data, flushPromises } from '@support/testHelper'
 import { beforeEach, describe, expect, it } from 'vitest'
 import { newRunType, existingRunType } from '@/store/traction/pacbio/runCreate/run'
 
@@ -33,7 +33,6 @@ describe('PacbioRunShow.vue', () => {
       const wrapper = mount(PacbioRun, {
         store,
         router,
-        localVue,
         stubs: {
           Plate: true,
           pacbioPoolList: true,
@@ -75,7 +74,6 @@ describe('PacbioRunShow.vue', () => {
       const wrapper = mount(PacbioRun, {
         store,
         router,
-        localVue,
         stubs: {
           Plate: true,
           pacbioPoolList: true,

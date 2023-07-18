@@ -1,4 +1,4 @@
-import { localVue, mount } from '@support/testHelper'
+import { mount } from '@support/testHelper'
 import TractionFieldGroup from '@/components/shared/TractionFieldGroup.vue'
 
 describe('TractionFieldGroup.vue', () => {
@@ -16,7 +16,6 @@ describe('TractionFieldGroup.vue', () => {
 
   const buildWrapper = (props = {}) => {
     return mount(TractionFieldGroup, {
-      localVue,
       props: { ...defaultProps, ...props },
       slots: {
         default: 'Section Content',

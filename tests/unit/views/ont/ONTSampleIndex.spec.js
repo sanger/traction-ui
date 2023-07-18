@@ -1,5 +1,5 @@
 import ONTSampleIndex from '@/views/ont/ONTSampleIndex.vue'
-import { mount, localVue, store, Data, flushPromises } from '@support/testHelper'
+import { mount, store, Data, flushPromises } from '@support/testHelper'
 import { vi } from 'vitest'
 
 describe('OntSampleIndex', () => {
@@ -8,7 +8,6 @@ describe('OntSampleIndex', () => {
     get.mockResolvedValue(Data.TractionOntRequests)
     const expectedRequests = Data.TractionOntRequests.data.data.length
     const wrapper = mount(ONTSampleIndex, {
-      localVue,
       store,
     })
     await flushPromises()

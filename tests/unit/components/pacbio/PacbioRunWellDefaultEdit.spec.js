@@ -1,5 +1,5 @@
 import PacbioRunWellDefaultEdit from '@/components/pacbio/PacbioRunWellDefaultEdit'
-import { localVue, mount, store } from '@support/testHelper'
+import { mount, store } from '@support/testHelper'
 import { describe, expect, it } from 'vitest'
 import { defaultWellAttributes } from '@/store/traction/pacbio/runCreate/run'
 
@@ -12,7 +12,6 @@ if (document.body) {
 
 const buildWrapper = () =>
   mount(PacbioRunWellDefaultEdit, {
-    localVue,
     store,
     sync: false,
     attachTo: elem,
@@ -72,7 +71,7 @@ describe('PacbioRunWellDefaultEdit', () => {
       it('has a movie time input', async () => {
         const options = wrapper.find('[data-attribute=default-movie-time]').findAll('option')
         // select the first option
-        await options.at(1).setSelected()
+        await options[1].setSelected()
         expect(store.state.traction.pacbio.runCreate.defaultWellAttributes.movie_time).toEqual(
           '10.0',
         )
@@ -107,7 +106,7 @@ describe('PacbioRunWellDefaultEdit', () => {
           .find('[data-attribute=default-ccs-analysis-output-include-kinetics-information]')
           .findAll('option')
         // select the first option
-        await options.at(0).setSelected()
+        await options[0].setSelected()
         expect(
           store.state.traction.pacbio.runCreate.defaultWellAttributes
             .ccs_analysis_output_include_kinetics_information,
@@ -119,7 +118,7 @@ describe('PacbioRunWellDefaultEdit', () => {
           .find('[data-attribute=default-ccs-analysis-output-include-low-quality-reads]')
           .findAll('option')
         // select the first option
-        await options.at(0).setSelected()
+        await options[0].setSelected()
         expect(
           store.state.traction.pacbio.runCreate.defaultWellAttributes
             .ccs_analysis_output_include_low_quality_reads,
@@ -131,7 +130,7 @@ describe('PacbioRunWellDefaultEdit', () => {
           .find('[data-attribute=default-demultiplex-barcodes]')
           .findAll('option')
         // select the first option
-        await options.at(1).setSelected()
+        await options[1].setSelected()
         expect(
           store.state.traction.pacbio.runCreate.defaultWellAttributes.demultiplex_barcodes,
         ).toEqual('In SMRT Link')
@@ -142,7 +141,7 @@ describe('PacbioRunWellDefaultEdit', () => {
           .find('[data-attribute=default-include-fivemc-calls-in-cpg-motifs]')
           .findAll('option')
         // select the first option
-        await options.at(0).setSelected()
+        await options[0].setSelected()
         expect(
           store.state.traction.pacbio.runCreate.defaultWellAttributes
             .include_fivemc_calls_in_cpg_motifs,
@@ -184,7 +183,7 @@ describe('PacbioRunWellDefaultEdit', () => {
           .find('[data-attribute=default-movie-acquisition-time]')
           .findAll('option')
         // select the first option
-        await options.at(1).setSelected()
+        await options[1].setSelected()
         expect(
           store.state.traction.pacbio.runCreate.defaultWellAttributes.movie_acquisition_time,
         ).toEqual('24.0')
@@ -203,7 +202,7 @@ describe('PacbioRunWellDefaultEdit', () => {
           .find('[data-attribute=default-include-base-kinetics]')
           .findAll('option')
         // select the first option
-        await options.at(0).setSelected()
+        await options[0].setSelected()
         expect(
           store.state.traction.pacbio.runCreate.defaultWellAttributes.include_base_kinetics,
         ).toEqual('True')

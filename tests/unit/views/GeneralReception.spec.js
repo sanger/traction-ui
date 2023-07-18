@@ -1,4 +1,4 @@
-import { mount, localVue, store } from '@support/testHelper'
+import { mount, store } from '@support/testHelper'
 import GeneralReception from '@/views/GeneralReception.vue'
 import * as Reception from '@/services/traction/Reception'
 import { expect, it } from 'vitest'
@@ -27,7 +27,6 @@ const Receptions = [
 describe('GeneralReception', () => {
   const buildWrapper = (props = { receptions: Receptions }) => {
     return mount(GeneralReception, {
-      localVue,
       props: props,
       store,
     })
@@ -41,10 +40,10 @@ describe('GeneralReception', () => {
   it('has a source selector', () => {
     const wrapper = buildWrapper()
 
-    expect(wrapper.find('[data-type=source-list]').findAll('option').at(0).text()).toBe(
+    expect(wrapper.find('[data-type=source-list]').findAll('option')[0].text()).toBe(
       'Sequencescape',
     )
-    expect(wrapper.find('[data-type=source-list]').findAll('option').at(1).text()).toBe(
+    expect(wrapper.find('[data-type=source-list]').findAll('option')[1].text()).toBe(
       'Samples Extraction',
     )
     // It defaults to Sequencescape
@@ -53,8 +52,8 @@ describe('GeneralReception', () => {
 
   it('has a pipeline selector', () => {
     const wrapper = buildWrapper()
-    expect(wrapper.find('[data-type=pipeline-list]').findAll('option').at(0).text()).toBe('PacBio')
-    expect(wrapper.find('[data-type=pipeline-list]').findAll('option').at(1).text()).toBe('ONT')
+    expect(wrapper.find('[data-type=pipeline-list]').findAll('option')[0].text()).toBe('PacBio')
+    expect(wrapper.find('[data-type=pipeline-list]').findAll('option')[1].text()).toBe('ONT')
     // It defaults to PacBio
     expect(wrapper.find('[data-type=pipeline-list]').element.value).toEqual('PacBio')
   })
@@ -185,7 +184,7 @@ describe('GeneralReception', () => {
 
     expect(wrapper.text()).not.toContain('Starting import')
 
-    await localVue.nextTick()
+    await wrapper.vm.nextTick()
 
     expect(Object.values(store.state.traction.messages)).toContainEqual({
       type: 'danger',

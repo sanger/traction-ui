@@ -1,5 +1,5 @@
 import PacbioTagSetItem from '@/components/pacbio/PacbioTagSetItem'
-import { localVue, mount, store } from '@support/testHelper'
+import { mount, store } from '@support/testHelper'
 
 const tagSets = {
   1: { id: '1', name: 'TagSet1', tags: ['1', '2', '3', '4', '5', '6'] },
@@ -37,7 +37,6 @@ describe('PacbioTagSetItem', () => {
       store.commit('traction/pacbio/poolCreate/selectTagSet', { id: '1' })
 
       wrapper = mount(PacbioTagSetItem, {
-        localVue,
         store,
       })
     })
@@ -59,7 +58,7 @@ describe('PacbioTagSetItem', () => {
 
     it('shows the group id', () => {
       const groupIds = wrapper.findAll('[data-attribute=group-id]')
-      expect(groupIds.at(0).text()).toEqual(tags['1'].group_id)
+      expect(groupIds[0].text()).toEqual(tags['1'].group_id)
     })
   })
 
@@ -68,7 +67,6 @@ describe('PacbioTagSetItem', () => {
       store.state.traction.pacbio.poolCreate.selected.tagSet = {}
 
       wrapper = mount(PacbioTagSetItem, {
-        localVue,
         store,
       })
     })

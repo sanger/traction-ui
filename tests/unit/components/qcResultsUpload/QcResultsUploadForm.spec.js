@@ -1,5 +1,5 @@
 import QcResultsUploadForm from '@/components/qcResultsUpload/QcResultsUploadForm'
-import { localVue, mount, store } from '@support/testHelper'
+import { mount, store } from '@support/testHelper'
 import { describe } from 'vitest'
 import * as QcResultsUpload from '@/services/traction/QcResultsUpload'
 
@@ -23,7 +23,6 @@ describe('QcResultsUploadForm.vue', () => {
 
   beforeEach(() => {
     wrapper = mount(QcResultsUploadForm, {
-      localVue,
       store,
       props: {},
     })

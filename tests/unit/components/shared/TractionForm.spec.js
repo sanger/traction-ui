@@ -1,10 +1,9 @@
-import { localVue, mount } from '@support/testHelper'
+import { mount } from '@support/testHelper'
 import TractionForm from '@/components/shared/TractionForm'
 
 describe('TractionForm.vue', () => {
   const buildWrapper = (props = {}, slot) => {
     return mount(TractionForm, {
-      localVue,
       props: props,
       slots: {
         default: slot,

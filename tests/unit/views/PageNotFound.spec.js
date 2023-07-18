@@ -1,5 +1,5 @@
 import PageNotFound from '@/views/PageNotFound'
-import { mount, localVue, router, flushPromises } from '@support/testHelper'
+import { mount, router, flushPromises } from '@support/testHelper'
 
 /*
 Add this to router
@@ -16,7 +16,7 @@ describe('PageNotFound.vue', () => {
   let wrapper
 
   beforeEach(() => {
-    wrapper = mount(PageNotFound, { router, localVue })
+    wrapper = mount(PageNotFound, { router })
   })
 
   describe('Links on page ', () => {

@@ -1,4 +1,4 @@
-import { mount, localVue, store, Data } from '@support/testHelper'
+import { mount, store, Data } from '@support/testHelper'
 import PacbioPlateSelectedList from '@/components/pacbio/PacbioPlateSelectedList'
 import Response from '@/api/Response'
 
@@ -13,8 +13,6 @@ describe('PacbioPlateSelectedList', () => {
     store.commit('traction/pacbio/poolCreate/populateWells', mockWells)
 
     wrapper = mount(PacbioPlateSelectedList, {
-      localVue,
-
       store,
       stubs: {
         Plate: true,

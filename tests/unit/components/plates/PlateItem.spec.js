@@ -1,6 +1,6 @@
 import Plate from '@/components/plates/PlateItem'
 import PlateMap from '@/config/PlateMap'
-import { localVue, mount } from '@support/testHelper'
+import { mount } from '@support/testHelper'
 
 describe('Plate.vue', () => {
   let wrapper, plate, mockPlate
@@ -37,7 +37,6 @@ describe('Plate.vue', () => {
     }
 
     wrapper = mount(Plate, {
-      localVue,
       props: { plate: mockPlate },
     })
 

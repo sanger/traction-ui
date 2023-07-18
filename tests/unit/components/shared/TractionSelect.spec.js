@@ -1,11 +1,10 @@
-import { localVue, mount } from '@support/testHelper'
+import { mount } from '@support/testHelper'
 import TractionSelect from '@/components/shared/TractionSelect'
 import { describe, expect, it } from 'vitest'
 
 describe('TractionSelect.vue', () => {
   const buildWrapper = (props = {}) => {
     return mount(TractionSelect, {
-      localVue,
       props: props,
       components: {},
     })
@@ -54,7 +53,7 @@ describe('TractionSelect.vue', () => {
       })
       //Option displayed as disabled
       const options = wrapper.find('select').findAll('option')
-      expect(options.at(0).element.text).toEqual('Option 1')
+      expect(options[0].element.text).toEqual('Option 1')
       expect(wrapper.find('option:disabled').element.text).toBe('Option 1')
       expect(wrapper.find('option:enabled').element.text).toBe('Option 2')
     })
@@ -67,8 +66,8 @@ describe('TractionSelect.vue', () => {
       })
       //Option displayed as disabled
       const options = wrapper.find('select').findAll('option')
-      expect(options.at(0).element.text).toEqual('Option 1')
-      expect(options.at(0).element.value).toEqual('')
+      expect(options[0].element.text).toEqual('Option 1')
+      expect(options[0].element.value).toEqual('')
     })
   })
 
@@ -114,17 +113,16 @@ describe('TractionSelect.vue', () => {
   it('sets selected value for select', async () => {
     const wrapper = buildWrapper({ options: ['Option 1', 'Option 2', 'Option 3'] })
     const options = wrapper.find('select').findAll('option')
-    await options.at(1).setSelected()
+    await options[1].setSelected()
     expect(wrapper.find('option:checked').element.value).toBe('Option 2')
     expect(wrapper.find('select').element.value).toEqual('Option 2')
   })
   it('updates the v-model value when changing the selected value, ', async () => {
     var wrapper = mount(TractionSelect, {
-      localVue,
       props: { options: ['Option 1', 'Option 2', 'Option 3'] },
     })
     const options = wrapper.find('select').findAll('option')
-    await options.at(1).setSelected()
+    await options[1].setSelected()
     expect(wrapper.find('select').element.value).toBe('Option 2')
   })
 
@@ -156,7 +154,7 @@ describe('TractionSelect.vue', () => {
       },
     })
     const options = await wrapper.find('select').findAll('option')
-    await options.at(1).setSelected()
+    await options[1].setSelected()
     expect(wrapper.vm.dummyTest).toEqual('Option 2')
   })
 })

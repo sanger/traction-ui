@@ -1,5 +1,5 @@
 import Plate from '@/components/ont/OntPlateItem'
-import { localVue, mount, store } from '@support/testHelper'
+import { mount, store } from '@support/testHelper'
 
 const plates = {
   1: {
@@ -26,7 +26,6 @@ describe('Plate.vue', () => {
     store.state.traction.ont.pools.resources.wells = wells
 
     wrapper = mount(Plate, {
-      localVue,
       props: { ...plates['1'] },
       store,
       stubs: {

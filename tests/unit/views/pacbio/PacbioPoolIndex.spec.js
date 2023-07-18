@@ -1,5 +1,5 @@
 import PacbioPoolIndex from '@/views/pacbio/PacbioPoolIndex'
-import { mount, localVue, store, Data, router, flushPromises } from '@support/testHelper'
+import { mount, store, Data, router, flushPromises } from '@support/testHelper'
 
 describe('PacbioPoolIndex.vue', () => {
   let wrapper, pools
@@ -10,7 +10,6 @@ describe('PacbioPoolIndex.vue', () => {
     wrapper = mount(PacbioPoolIndex, {
       store,
       router,
-      localVue,
     })
     await flushPromises()
     pools = wrapper.vm
@@ -36,7 +35,6 @@ describe('PacbioPoolIndex.vue', () => {
       wrapper = mount(PacbioPoolIndex, {
         store,
         router,
-        localVue,
         data() {
           return { perPage: 1 }
         },

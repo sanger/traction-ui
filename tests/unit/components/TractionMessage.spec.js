@@ -1,4 +1,4 @@
-import { mount, localVue } from '@support/testHelper'
+import { mount } from '@support/testHelper'
 import TractionMessage from '@/components/TractionMessage'
 
 describe('TractionMessage.vue', () => {
@@ -7,7 +7,6 @@ describe('TractionMessage.vue', () => {
 
   it('has a message', () => {
     wrapper = mount(TractionMessage, {
-      localVue,
       props: { ...requiredProps, message: 'bar' },
     })
     expect(wrapper.vm.message).toBe('bar')
@@ -15,7 +14,6 @@ describe('TractionMessage.vue', () => {
 
   it('has a type', () => {
     wrapper = mount(TractionMessage, {
-      localVue,
       props: { ...requiredProps, type: 'primary' },
     })
     expect(wrapper.vm.type).toBe('primary')
@@ -23,7 +21,6 @@ describe('TractionMessage.vue', () => {
 
   it('displays the message', () => {
     wrapper = mount(TractionMessage, {
-      localVue,
       props: { ...requiredProps, message: 'bar' },
     })
     expect(wrapper.find('[data-attribute=message]').element).toBeTruthy()
@@ -31,7 +28,6 @@ describe('TractionMessage.vue', () => {
   })
   it('displays the close button', () => {
     wrapper = mount(TractionMessage, {
-      localVue,
       props: { ...requiredProps, message: 'bar' },
     })
     expect(wrapper.find('[data-attribute=close]').element).toBeTruthy()
@@ -40,7 +36,6 @@ describe('TractionMessage.vue', () => {
   describe('converts types to html styles', () => {
     it('displays success style', () => {
       wrapper = mount(TractionMessage, {
-        localVue,
         props: { ...requiredProps, type: 'success' },
       })
       expect(wrapper.find('[data-attribute=message]').attributes('class')).toContain(
@@ -53,7 +48,6 @@ describe('TractionMessage.vue', () => {
 
     it('displays error style', () => {
       wrapper = mount(TractionMessage, {
-        localVue,
         props: { ...requiredProps, type: 'error' },
       })
       expect(wrapper.find('[data-attribute=message]').attributes('class')).toContain(
@@ -65,7 +59,6 @@ describe('TractionMessage.vue', () => {
     })
     it('emits dismissed event on close button click', () => {
       wrapper = mount(TractionMessage, {
-        localVue,
         props: { ...requiredProps, type: 'error' },
       })
       wrapper.find('[data-attribute=close]').trigger('click')

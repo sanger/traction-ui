@@ -1,5 +1,5 @@
 import Tube from '@/components/pacbio/PacbioPoolTubeItem'
-import { localVue, mount } from '@support/testHelper'
+import { mount } from '@support/testHelper'
 
 describe('LibraryTubeItem.vue', () => {
   let tube, wrapper, props
@@ -34,7 +34,6 @@ describe('LibraryTubeItem.vue', () => {
       }
 
       wrapper = mount(Tube, {
-        localVue,
         props: props,
       })
 
@@ -125,7 +124,6 @@ describe('LibraryTubeItem.vue', () => {
       }
 
       wrapper = mount(Tube, {
-        localVue,
         props: props,
       })
 

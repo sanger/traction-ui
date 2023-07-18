@@ -1,5 +1,5 @@
 import ONTRunInformation from '@/components/ont/runs/ONTRunInformation'
-import { localVue, mount, store, router, Data } from '@support/testHelper'
+import { mount, store, router, Data } from '@support/testHelper'
 import { beforeEach, describe, it } from 'vitest'
 import Response from '@/api/Response'
 import InstrumentFlowcellLayout from '@/config/InstrumentFlowcellLayout'
@@ -24,7 +24,6 @@ describe('ONTRunInformation.vue', () => {
     wrapper = mount(ONTRunInformation, {
       store,
       router,
-      localVue,
     })
     ontRunInfomation = wrapper.vm
   })

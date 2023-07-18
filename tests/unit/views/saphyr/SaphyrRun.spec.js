@@ -1,6 +1,6 @@
 import SaphyrRun from '@/views/saphyr/SaphyrRun'
 import VueRouter from 'vue-router'
-import { localVue, mount, store } from '@support/testHelper'
+import { mount, store } from '@support/testHelper'
 import SaphyrRuns from '@/views/saphyr/SaphyrRuns'
 
 describe('Run.vue', () => {
@@ -34,10 +34,9 @@ describe('Run.vue', () => {
     vi.spyOn(SaphyrRun.methods, 'provider').mockImplementation(() => {})
 
     wrapper = mount(SaphyrRun, {
-      localVue,
       store,
       router,
-      props: props,
+      props,
     })
     saphyrRun = wrapper.vm
   })
@@ -72,7 +71,6 @@ describe('Run.vue', () => {
       vi.spyOn(SaphyrRun.methods, 'provider').mockImplementation(() => {})
 
       wrapper = mount(SaphyrRun, {
-        localVue,
         store,
         router,
         props: {

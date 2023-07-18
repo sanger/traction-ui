@@ -1,5 +1,5 @@
 import OntPoolLibraryList from '@/components/ont/OntPoolLibraryList'
-import { mount, store, localVue } from '@support/testHelper'
+import { mount, store } from '@support/testHelper'
 
 const libraryAttributes = {
   kit_barcode: 'ABC1',
@@ -50,7 +50,6 @@ describe('OntPoolLibraryList.vue', () => {
     store.state.traction.ont.pools.pooling.libraries = libraries
     const wrapper = mount(OntPoolLibraryList, {
       store,
-      localVue,
       props: {
         notify: () => {},
       },

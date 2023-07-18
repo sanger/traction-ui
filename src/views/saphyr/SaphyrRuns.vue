@@ -21,7 +21,7 @@
       id="runs-table"
       :items="tableData"
       :fields="fields"
-      :sort-by.sync="sortBy"
+      :sort-by="sortBy"
       @filtered="onFiltered"
     >
       <template #cell(chip_barcode)="row">

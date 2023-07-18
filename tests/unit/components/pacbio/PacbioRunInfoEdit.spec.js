@@ -1,5 +1,5 @@
 import PacbioRunInfoEdit from '@/components/pacbio/PacbioRunInfoEdit'
-import { localVue, mount, store } from '@support/testHelper'
+import { mount, store } from '@support/testHelper'
 import { beforeEach, describe, expect } from 'vitest'
 import { PacbioRunSystems } from '@/lib/PacbioRunSystems'
 
@@ -16,7 +16,6 @@ const props = {
 
 const buildWrapper = () =>
   mount(PacbioRunInfoEdit, {
-    localVue,
     store,
     sync: false,
     attachTo: elem,
@@ -88,7 +87,7 @@ describe('PacbioRunInfoEdit', () => {
     })
     it('smrt_link_version_id', async () => {
       const options = wrapper.find('[data-attribute=smrt_link_version]').findAll('option')
-      await options.at(1).setSelected()
+      await options[1].setSelected()
       expect(store.state.traction.pacbio.runCreate.run.smrt_link_version_id).toEqual(1)
     })
     it('comments', async () => {

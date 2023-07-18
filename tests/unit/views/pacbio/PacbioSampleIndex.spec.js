@@ -1,5 +1,5 @@
 import PacbioSamples from '@/views/pacbio/PacbioSampleIndex'
-import { mount, localVue, store, Data, router, flushPromises } from '@support/testHelper'
+import { mount, store, Data, router, flushPromises } from '@support/testHelper'
 import { beforeEach, describe, expect, it } from 'vitest'
 
 // TODO: Because of the way this is setup we are getting stderr throughout on ci
@@ -34,7 +34,6 @@ describe('PacbioSamples.vue', () => {
     wrapper = mount(PacbioSamples, {
       store,
       router,
-      localVue,
     })
 
     samples = wrapper.vm

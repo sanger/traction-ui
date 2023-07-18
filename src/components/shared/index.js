@@ -28,36 +28,40 @@ import TractionArrowIcon from '@/components/shared/icons/TractionArrowIcon'
 import TractionSortIcon from '@/components/shared/icons/TractionSortIcon'
 import TractionCloseIcon from '@/components/shared/icons/TractionCloseIcon'
 
-const registerGlobal = (vue) => {
-  vue.component('FlaggedFeature', FlaggedFeature)
-  vue.component('LoadingFullScreenModal', LoadingFullScreenModal)
-  vue.component('TractionButton', TractionButton)
-  vue.component('TractionFieldGroup', TractionFieldGroup)
-  vue.component('TractionFieldset', TractionFieldset)
-  vue.component('TractionLabel', TractionLabel)
-  vue.component('TractionSection', TractionSection)
-  vue.component('TractionHeading', TractionHeading)
-  vue.component('TractionMenu', TractionMenu)
-  vue.component('TractionMenuItem', TractionMenuItem)
-  vue.component('TractionTag', TractionTag)
-  vue.component('TractionSubSection', TractionSubSection)
-  vue.component('TractionMutedText', TractionMutedText)
-  vue.component('TractionToggle', TractionToggle)
-  vue.component('TractionSpinner', TractionSpinner)
-  vue.component('TractionInput', TractionInput)
-  vue.component('TractionFieldError', TractionFieldError)
-  vue.component('TractionResultIcon', TractionResultIcon)
-  vue.component('TractionSelect', TractionSelect)
-  vue.component('TractionPagination', TractionPagination)
-  vue.component('TractionPaginationIcon', TractionPaginationIcon)
-  vue.component('TractionForm', TractionForm)
-  vue.component('TractionArrowIcon', TractionArrowIcon)
-  vue.component('TractionSortIcon', TractionSortIcon)
-  vue.component('TractionTable', TractionTable)
-  vue.component('TractionTableRow', TractionTableRow)
-  vue.component('TractionTableColumn', TractionTableColumn)
-  vue.component('TractionModal', TractionModal)
-  vue.component('TractionCloseIcon', TractionCloseIcon)
+const components = {
+  FlaggedFeature,
+  LoadingFullScreenModal,
+  TractionButton,
+  TractionFieldGroup,
+  TractionFieldset,
+  TractionLabel,
+  TractionSection,
+  TractionHeading,
+  TractionMenu,
+  TractionMenuItem,
+  TractionTag,
+  TractionSubSection,
+  TractionMutedText,
+  TractionToggle,
+  TractionSpinner,
+  TractionInput,
+  TractionFieldError,
+  TractionResultIcon,
+  TractionSelect,
+  TractionPagination,
+  TractionPaginationIcon,
+  TractionForm,
+  TractionArrowIcon,
+  TractionSortIcon,
+  TractionTable,
+  TractionTableRow,
+  TractionTableColumn,
+  TractionModal,
+  TractionCloseIcon
 }
 
-export { registerGlobal }
+const registerGlobal = (vue) => {
+  Object.entries(components).forEach(([name, component]) => vue.component(name, component))
+}
+
+export { components, registerGlobal }

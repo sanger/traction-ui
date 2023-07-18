@@ -1,4 +1,4 @@
-import { mount, localVue, store } from '@support/testHelper'
+import { mount, store } from '@support/testHelper'
 import PacbioRunWellEdit from '@/components/pacbio/PacbioRunWellEdit'
 import { beforeEach, describe, expect } from 'vitest'
 import { newWell, newPlate } from '@/store/traction/pacbio/runCreate/run'
@@ -51,7 +51,6 @@ describe('PacbioWellEdit', () => {
           },
         }
         wrapper = mount(PacbioRunWellEdit, {
-          localVue,
           store,
           props: {
             ...props,
@@ -135,7 +134,6 @@ describe('PacbioWellEdit', () => {
           },
         }
         wrapper = mount(PacbioRunWellEdit, {
-          localVue,
           store,
           props,
         })
@@ -214,7 +212,6 @@ describe('PacbioWellEdit', () => {
         store.state.traction.pacbio.runCreate.run.plates = { 1: newPlate(1) }
 
         wrapper = mount(PacbioRunWellEdit, {
-          localVue,
           store,
           props,
         })
@@ -240,7 +237,6 @@ describe('PacbioWellEdit', () => {
         }
 
         wrapper = mount(PacbioRunWellEdit, {
-          localVue,
           store,
           props,
         })
@@ -275,7 +271,6 @@ describe('PacbioWellEdit', () => {
         }
 
         wrapper = mount(PacbioRunWellEdit, {
-          localVue,
           store,
           props,
         })

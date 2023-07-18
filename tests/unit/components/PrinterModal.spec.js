@@ -1,4 +1,4 @@
-import { mount, localVue, store } from '@support/testHelper'
+import { mount } from '@support/testHelper'
 import PrinterModal from '@/components/PrinterModal'
 
 describe('Modal.vue', () => {
@@ -6,8 +6,6 @@ describe('Modal.vue', () => {
 
   beforeEach(() => {
     wrapper = mount(PrinterModal, {
-      localVue,
-      store,
       props: {
         disabled: true,
         isStatic: true,
