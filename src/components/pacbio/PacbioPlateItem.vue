@@ -43,6 +43,7 @@ export default {
       },
     },
   },
+  emits: ['clickWell'],
   data() {
     return {
       wellData: [],

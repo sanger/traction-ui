@@ -26,6 +26,7 @@ export default {
     WellEdit,
     Plate96SVG,
   },
+  emits: ['alert'],
   data() {
     return {
       selectedWellPosition: '',

@@ -34,6 +34,7 @@ export default {
     disabled: Boolean,
     isStatic: Boolean,
   },
+  emits: ['selectEnzyme'],
   data() {
     return {
       selectedEnzymeId: null,

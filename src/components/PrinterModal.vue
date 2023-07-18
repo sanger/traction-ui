@@ -31,6 +31,7 @@ export default {
     disabled: Boolean,
     isStatic: Boolean,
   },
+  emits: ['selectPrinter'],
   data() {
     return {
       selectedPrinterId: null,

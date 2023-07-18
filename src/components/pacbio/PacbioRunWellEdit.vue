@@ -80,6 +80,7 @@ export default {
       default: false,
     },
   },
+  emits: ['alert'],
   data() {
     return {
       well: {},
@@ -224,7 +225,7 @@ export default {
           click: this.disableAdaptiveLoadingInput,
         }
       }
-      return component.events
+      return { ...component.events }
     },
   },
 }

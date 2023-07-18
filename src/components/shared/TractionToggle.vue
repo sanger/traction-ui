@@ -35,6 +35,7 @@ export default {
       default: false,
     },
   },
+  emits: ['input'],
   methods: {
     toggle() {
       this.$emit('input', !this.value)

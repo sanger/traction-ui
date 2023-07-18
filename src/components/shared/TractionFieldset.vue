@@ -55,6 +55,7 @@ export default {
       },
     },
   },
+  emits: ['input'],
   methods: {
     input(attribute, value) {
       this.$emit('input', {

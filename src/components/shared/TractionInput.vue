@@ -35,8 +35,8 @@ export default {
   name: 'TractionInput',
   inheritAttrs: false,
   props: {
-    //value field of input which will be bind automatically with 'v-model' prop passed into the component
-    value: {
+    //modelValue field of input which will be bind automatically with 'v-model' prop passed into the component
+    modelValue: {
       type: [Number, String],
       default: '',
     },
@@ -66,6 +66,7 @@ export default {
       default: undefined,
     },
   },
+  emits: ['update:modelValue', 'enterKeyPress'],
   data() {
     return {
       debounceTimer: null,
@@ -81,23 +82,23 @@ export default {
       if (event.key === 'Enter') {
         this.$emit('enterKeyPress', event.target.value)
       }
-      // If debounce is supplied we want to debounce the input events
+      // If debounce is supplied we want to debounce the update events
       if (this.debounce > 0) {
         if (this.debounceTimer) clearTimeout(this.debounceTimer)
         this.debounceTimer = setTimeout(() => {
-          this.$emit('input', event.target.value)
+          this.$emit('update:modelValue', event.target.value)
         }, this.debounce)
       } else {
         // Emit text data the payload event
-        this.$emit('input', event.target.value)
+        this.$emit('update:modelValue', event.target.value)
       }
     },
     displayValue() {
       //Formatter function given, so return formated value to display
       if (this.formatter) {
-        return this.formatter(this.value)
+        return this.formatter(this.modelValue)
       }
-      return this.value
+      return this.modelValue
     },
   },
 }

@@ -71,6 +71,7 @@ export default {
       default: '',
     },
   },
+  emits: ['ok', 'cancel'],
   data() {
     return {
       /**Mutable property to make the dialog visible or not */

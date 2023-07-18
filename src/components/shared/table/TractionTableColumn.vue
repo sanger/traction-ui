@@ -39,6 +39,7 @@ export default {
       default: 1,
     },
   },
+  emits: ['click'],
   methods: {
     click() {
       // Emit text data the payload event

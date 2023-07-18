@@ -62,6 +62,7 @@ export default {
     LabwareMap,
     PacbioRunWell,
   },
+  emits: ['alert'],
   data() {
     return {
       selectedWellPosition: '',

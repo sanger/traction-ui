@@ -206,6 +206,7 @@ export default {
       default: () => {},
     },
   },
+  emits: ['row-click', 'row-select', 'row-deselect', 'sort'],
   data() {
     //Create 'row' data based on initial data passed in through 'items' prop
     const rows = this.generateRowData()

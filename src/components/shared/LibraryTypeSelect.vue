@@ -35,7 +35,7 @@ export default {
       required: false,
       default: null,
     },
-    value: {
+    modelValue: {
       // The library type, we use value to allow us to simply bind it with v-model
       type: String,
       default: undefined,
@@ -54,6 +54,7 @@ export default {
       default: true,
     },
   },
+  emits: ['update:modelValue'],
   setup() {
     const baseURL = ref(import.meta.env.VITE_TRACTION_BASE_URL)
     const { data: remoteLibraryTypes } = useSWRV(
@@ -63,7 +64,7 @@ export default {
   },
   computed: {
     libraryType() {
-      return encode(this.value)
+      return encode(this.modelValue)
     },
     importOption() {
       if (this.import) {
@@ -88,7 +89,7 @@ export default {
   },
   methods: {
     handleInput(input) {
-      this.$emit('input', decode(input))
+      this.$emit('update:modelValue', decode(input))
     },
   },
 }

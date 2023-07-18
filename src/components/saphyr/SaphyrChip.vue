@@ -33,6 +33,7 @@ export default {
       required: true,
     },
   },
+  emits: ['alert'],
   methods: {
     async setBarcode(barcode) {
       const isValid = this.isChipBarcodeValid(barcode)

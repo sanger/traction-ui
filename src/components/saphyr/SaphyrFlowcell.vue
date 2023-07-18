@@ -28,6 +28,7 @@ export default {
       default: 0,
     },
   },
+  emits: ['alert'],
   computed: {
     ...mapState({
       libraryBarcode(state) {

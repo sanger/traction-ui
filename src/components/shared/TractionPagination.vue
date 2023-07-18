@@ -78,7 +78,7 @@ export default {
   inheritAttrs: false,
   props: {
     //value field  which will be bind automatically with 'v-model' prop passed into the component
-    value: {
+    modelValue: {
       type: Number,
       default: 1,
     },
@@ -99,9 +99,10 @@ export default {
       default: 3,
     },
   },
+  emits: ['input'],
   data() {
     return {
-      currentPage: this.value,
+      currentPage: this.modelValue,
       itemsPerPage: Number(this.perPage),
     }
   },

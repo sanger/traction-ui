@@ -126,6 +126,7 @@ export default {
       },
     },
   },
+  emits: ['alert'],
   data() {
     return {
       library: { tag: { id: '' }, sample: {} },

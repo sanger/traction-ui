@@ -28,6 +28,7 @@ export default {
       default: undefined,
     },
   },
+  emits: ['input'],
   setup() {
     const baseURL = import.meta.env.VITE_TRACTION_BASE_URL
     const { data: remoteDataTypes } = useSWRV(
