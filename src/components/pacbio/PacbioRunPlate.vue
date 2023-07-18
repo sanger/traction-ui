@@ -100,13 +100,12 @@ export default {
       return this.sequencingKitBoxBarcode(plateNumber).substring(15, 20)
     },
     validateSequencingKitBoxBarcode(plateNumber) {
-      const isValid =
-        this.sequencingKitBoxBarcode(plateNumber).length == 0
-          ? null
-          : this.sequencingKitBoxBarcode(plateNumber).length ==
-            this.labware.sequencingKitBoxBarcodeLength
+      const currentLength = this.sequencingKitBoxBarcode(plateNumber).length
+      const expectedLength = this.labware.sequencingKitBoxBarcodeLength
+      const isValid = currentLength == 0 ? null : currentLength == expectedLength
+      const validationMessage = `Invalid Sequencing Kit Barcode (length ${currentLength}/${expectedLength})`
 
-      const error = isValid == null ? '' : isValid ? '' : 'Invalid Sequencing Kit Barcode'
+      const error = isValid == null ? '' : isValid ? '' : validationMessage
 
       return {
         valid: isValid,
