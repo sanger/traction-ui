@@ -1,27 +1,28 @@
 <template>
   <DataFetcher :fetcher="provider">
-    <router-link :to="{ name: 'ONTRunIndex' }">
-      <traction-button id="backToRunsButton" class="float-right">Back</traction-button>
-    </router-link>
-    <traction-button
-      v-if="newRecord"
-      id="resetButton"
-      type="reset"
-      theme="default"
-      class="float-right"
-      @click="newRun"
-      >Reset</traction-button
-    >
+    <div class="flex flex-row justify-end mt-2">
+      <router-link :to="{ name: 'ONTRunIndex' }">
+        <traction-button id="backToRunsButton" class="float-right">Back</traction-button>
+      </router-link>
+      <traction-button
+        v-if="newRecord"
+        id="resetButton"
+        type="reset"
+        theme="default"
+        class="float-right"
+        @click="newRun"
+        >Reset</traction-button
+      >
 
-    <traction-button
-      :id="currentAction.id"
-      class="float-right"
-      :theme="currentAction.theme"
-      :disabled="!runValid"
-      @click="runAction"
-      >{{ currentAction.label }}</traction-button
-    >
-
+      <traction-button
+        :id="currentAction.id"
+        class="float-right"
+        :theme="currentAction.theme"
+        :disabled="!runValid"
+        @click="runAction"
+        >{{ currentAction.label }}</traction-button
+      >
+    </div>
     <ONTRunInformation></ONTRunInformation>
     <ONTRunInstrumentFlowcells></ONTRunInstrumentFlowcells>
   </DataFetcher>

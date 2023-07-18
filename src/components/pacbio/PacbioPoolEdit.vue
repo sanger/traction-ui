@@ -21,7 +21,7 @@
         </div>
 
         <div>
-          <traction-sub-section title="Pool information" class="py-6">
+          <traction-sub-section title="Pool information" class="mt-2 py-6">
             <div class="grid gap-5 grid-cols-6 mb-10 text-sm min-h-32" data-type="pool-edit">
               <label> Auto tagging</label>
               <label v-if="!!tubeItem.barcode"> Pool Barcode </label>

@@ -1,48 +1,51 @@
 <template>
-  <div class="flex mx-auto w-full max-w-[1000px] bg-gray-100 rounded-md mb-2 p-3">
-    <div class="grid grid-cols-4 gap-2">
-      <div class="flex flex-col text-left">
-        <p class="flex font-semibold text-xl">Filter results</p>
-        <p class="flex font-light text-gray-700 text-xs italiclist-none">
-          By default returns the most recent 1000 results
-        </p>
-      </div>
-      <div class="col-span-2 flex mx-auto items-center">
-        <traction-input
-          id="filterInput"
-          v-model="filter.input"
-          type="search"
-          placeholder="Type to Search"
-          class="mr-5 w-1/2"
-        />
-        <traction-select
-          id="filterValue"
-          v-model="filter.value"
-          :options="filterOptions"
-          class="mr-5 w-1/2"
-        />
-        <div v-if="isWildcardOption" class="justify-center items-center w-1/3">
-          <label for="checkbox" class="w-1/2">Wildcard</label>
-          <input
-            id="wildcardValue"
-            v-model="filter.wildcard"
-            type="checkbox"
-            class="w-1/2 bg-sbd-400"
-          />
+  <div class="flex flex-col w-full">
+    <div class="flex mx-auto w-full max-w-[1000px] bg-gray-100 rounded-md mt-2 mb-2 p-3">
+      <div class="grid grid-cols-4 gap-2">
+        <div class="flex flex-col text-left">
+          <p class="flex font-semibold text-l">Filter results</p>
+          <p class="flex font-light text-gray-700 text-xs italiclist-none">
+            By default returns the most recent 1000 results
+          </p>
         </div>
-      </div>
-      <div class="flex items-center">
-        <div class="w-full">
-          <traction-button @click="resetFilter()">Reset</traction-button>
-          <traction-button
-            id="filterButton"
-            :disabled="filter.value == '' || filter.input == ''"
-            @click="getFilteredData()"
-            >Search</traction-button
-          >
+        <div class="col-span-2 flex mx-auto items-center">
+          <traction-input
+            id="filterInput"
+            v-model="filter.input"
+            type="search"
+            placeholder="Type to Search"
+            class="mr-5 w-1/2"
+          />
+          <traction-select
+            id="filterValue"
+            v-model="filter.value"
+            :options="filterOptions"
+            class="mr-5 w-1/2"
+          />
+          <div v-if="isWildcardOption" class="justify-center items-center w-1/3">
+            <label for="checkbox" class="w-1/2">Wildcard</label>
+            <input
+              id="wildcardValue"
+              v-model="filter.wildcard"
+              type="checkbox"
+              class="w-1/2 bg-sbd-400"
+            />
+          </div>
+        </div>
+        <div class="flex items-center">
+          <div class="w-full">
+            <traction-button @click="resetFilter()">Reset</traction-button>
+            <traction-button
+              id="filterButton"
+              :disabled="filter.value == '' || filter.input == ''"
+              @click="getFilteredData()"
+              >Search</traction-button
+            >
+          </div>
         </div>
       </div>
     </div>
+    <div v-if="displaySeparator" class="flex mt-2 mb-4 border" />
   </div>
 </template>
 <script>
@@ -74,6 +77,10 @@ export default {
     filterOptions: {
       type: Array,
       required: true,
+    },
+    displaySeparator: {
+      type: Boolean,
+      default: true,
     },
   },
   data() {

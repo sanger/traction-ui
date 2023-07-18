@@ -44,7 +44,7 @@
     "cypress": "^12.16.0",
     "cypress-file-upload": "^5.0.8",
     "dotenv": "^16.3.1",
-    "eslint": "^8.43.0",
+    "eslint": "^8.44.0",
     "eslint-config-prettier": "^8.8.0",
     "eslint-plugin-cypress": "^2.13.3",
     "eslint-plugin-vue": "^9.15.1",
@@ -54,7 +54,7 @@
     "prettier": "2.8.8",
     "rollup-plugin-visualizer": "^5.9.0",
     "sass": "^1.63.6",
-    "vitest": "^0.32.2",
+    "vitest": "^0.33.0",
     "vue-template-compiler": "^2.7.5"
   }
 }
