@@ -12,7 +12,7 @@ describe('FilterCard.vue', () => {
     wrapper = mount(FilterCard, {
       localVue,
       store,
-      propsData: {
+      props: {
         fetcher: mockFetch,
         filterOptions: [
           { value: '1', text: 'Filter 1' },
@@ -49,7 +49,7 @@ describe('FilterCard.vue', () => {
     wrapper = mount(FilterCard, {
       localVue,
       store,
-      propsData: {
+      props: {
         fetcher: mockFetch,
         filterOptions: [
           { value: '1', text: 'Filter 1', wildcard: true },
@@ -75,7 +75,7 @@ describe('FilterCard.vue', () => {
     wrapper = mount(FilterCard, {
       localVue,
       store,
-      propsData: {
+      props: {
         fetcher: mockFetch,
         filterOptions: [
           { value: '1', text: 'Filter 1' },

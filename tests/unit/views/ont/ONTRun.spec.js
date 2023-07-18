@@ -1,5 +1,5 @@
 import ONTRun from '@/views/ont/ONTRun'
-import { localVue, mount, store, router } from '@support/testHelper'
+import { localVue, mount, store, router, flushPromises } from '@support/testHelper'
 import { beforeEach, describe, it } from 'vitest'
 
 describe('ONTRun.vue', () => {
@@ -17,16 +17,17 @@ describe('ONTRun.vue', () => {
       router,
       localVue,
       stubs: stubs,
-      propsData: { id: 'new' },
+      props: { id: 'new' },
     })
     ontRun = wrapper.vm
     ontRun.showAlert = vi.fn()
   })
 
   describe('Back button', () => {
-    it('will always show', () => {
+    it('will always show', async () => {
       expect(wrapper.find('#backToRunsButton').exists()).toBeTruthy()
       wrapper.find('#backToRunsButton').trigger('click')
+      await flushPromises()
       expect(wrapper.vm.$route.path).toBe('/ont/runs')
     })
   })
@@ -65,7 +66,7 @@ describe('ONTRun.vue', () => {
         router,
         localVue,
         stubs: stubs,
-        propsData: { id: '1' },
+        props: { id: '1' },
       })
       ontRun = wrapper.vm
       expect(ontRun.newRecord).toEqual(false)
@@ -123,7 +124,7 @@ describe('ONTRun.vue', () => {
         router,
         localVue,
         stubs: stubs,
-        propsData: { id: '1' },
+        props: { id: '1' },
       })
       ontRun = wrapper.vm
 
@@ -190,7 +191,7 @@ describe('ONTRun.vue', () => {
           router,
           localVue,
           stubs: stubs,
-          propsData: { id: '1' },
+          props: { id: '1' },
         })
         ontRun = wrapper.vm
 

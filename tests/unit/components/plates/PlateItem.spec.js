@@ -38,7 +38,7 @@ describe('Plate.vue', () => {
 
     wrapper = mount(Plate, {
       localVue,
-      propsData: { plate: mockPlate },
+      props: { plate: mockPlate },
     })
 
     plate = wrapper.vm

@@ -6,7 +6,7 @@ describe('TractionTableColumn', () => {
   const buildWrapper = (props = {}) => {
     return mount(TractionTableColumn, {
       localVue,
-      propsData: props,
+      props: props,
       slots: {
         default: 'Column Text',
       },

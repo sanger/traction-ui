@@ -51,7 +51,7 @@ describe('OntPoolLibraryList.vue', () => {
     const wrapper = mount(OntPoolLibraryList, {
       store,
       localVue,
-      propsData: {
+      props: {
         notify: () => {},
       },
     })

@@ -1,5 +1,5 @@
 import PageNotFound from '@/views/PageNotFound'
-import { mount, localVue, router } from '@support/testHelper'
+import { mount, localVue, router, flushPromises } from '@support/testHelper'
 
 /*
 Add this to router
@@ -20,20 +20,24 @@ describe('PageNotFound.vue', () => {
   })
 
   describe('Links on page ', () => {
-    it('will redirect to dashboard', () => {
+    it('will redirect to dashboard', async () => {
       wrapper.find('#dashboard-link').trigger('click')
+      await flushPromises()
       expect(wrapper.vm.$route.path).toBe('/dashboard')
     })
-    it('will redirect to saphyr runs', () => {
+    it('will redirect to saphyr runs', async () => {
       wrapper.find('#saphyr-link').trigger('click')
+      await flushPromises()
       expect(wrapper.vm.$route.path).toBe('/saphyr/runs')
     })
-    it('will redirect to pacbio runs', () => {
+    it('will redirect to pacbio runs', async () => {
       wrapper.find('#pacbio-link').trigger('click')
+      await flushPromises()
       expect(wrapper.vm.$route.path).toBe('/pacbio/runs')
     })
-    it('will redirect to ont runs', () => {
+    it('will redirect to ont runs', async () => {
       wrapper.find('#ont-link').trigger('click')
+      await flushPromises()
       expect(wrapper.vm.$route.path).toBe('/ont/runs')
     })
   })

@@ -8,7 +8,7 @@ describe('TractionMessage.vue', () => {
   it('has a message', () => {
     wrapper = mount(TractionMessage, {
       localVue,
-      propsData: { ...requiredProps, message: 'bar' },
+      props: { ...requiredProps, message: 'bar' },
     })
     expect(wrapper.vm.message).toBe('bar')
   })
@@ -16,7 +16,7 @@ describe('TractionMessage.vue', () => {
   it('has a type', () => {
     wrapper = mount(TractionMessage, {
       localVue,
-      propsData: { ...requiredProps, type: 'primary' },
+      props: { ...requiredProps, type: 'primary' },
     })
     expect(wrapper.vm.type).toBe('primary')
   })
@@ -24,7 +24,7 @@ describe('TractionMessage.vue', () => {
   it('displays the message', () => {
     wrapper = mount(TractionMessage, {
       localVue,
-      propsData: { ...requiredProps, message: 'bar' },
+      props: { ...requiredProps, message: 'bar' },
     })
     expect(wrapper.find('[data-attribute=message]').element).toBeTruthy()
     expect(wrapper.html()).toContain('bar')
@@ -32,7 +32,7 @@ describe('TractionMessage.vue', () => {
   it('displays the close button', () => {
     wrapper = mount(TractionMessage, {
       localVue,
-      propsData: { ...requiredProps, message: 'bar' },
+      props: { ...requiredProps, message: 'bar' },
     })
     expect(wrapper.find('[data-attribute=close]').element).toBeTruthy()
   })
@@ -41,7 +41,7 @@ describe('TractionMessage.vue', () => {
     it('displays success style', () => {
       wrapper = mount(TractionMessage, {
         localVue,
-        propsData: { ...requiredProps, type: 'success' },
+        props: { ...requiredProps, type: 'success' },
       })
       expect(wrapper.find('[data-attribute=message]').attributes('class')).toContain(
         'bg-green-100 text-green-70',
@@ -54,7 +54,7 @@ describe('TractionMessage.vue', () => {
     it('displays error style', () => {
       wrapper = mount(TractionMessage, {
         localVue,
-        propsData: { ...requiredProps, type: 'error' },
+        props: { ...requiredProps, type: 'error' },
       })
       expect(wrapper.find('[data-attribute=message]').attributes('class')).toContain(
         'bg-red-200 text-red-600',
@@ -66,7 +66,7 @@ describe('TractionMessage.vue', () => {
     it('emits dismissed event on close button click', () => {
       wrapper = mount(TractionMessage, {
         localVue,
-        propsData: { ...requiredProps, type: 'error' },
+        props: { ...requiredProps, type: 'error' },
       })
       wrapper.find('[data-attribute=close]').trigger('click')
       expect(wrapper.emitted('dismissed')).toBeTruthy()

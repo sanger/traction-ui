@@ -1,7 +1,6 @@
 import PacbioRuns from '@/views/pacbio/PacbioRunIndex'
-import { mount, localVue, store, Data, router } from '@support/testHelper'
+import { mount, localVue, store, Data, router, flushPromises } from '@support/testHelper'
 import Response from '@/api/Response'
-import flushPromises from 'flush-promises'
 
 describe('Runs.vue', () => {
   let wrapper, runs, mockRuns

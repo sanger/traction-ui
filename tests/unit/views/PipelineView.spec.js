@@ -5,7 +5,7 @@ describe('PipelineView', () => {
   let wrapper, pipelineView, store
 
   beforeEach(() => {
-    wrapper = mount(PipelineView, { store, localVue, router, propsData: { pipeline: 'pacbio' } })
+    wrapper = mount(PipelineView, { store, localVue, router, props: { pipeline: 'pacbio' } })
     pipelineView = wrapper.vm
   })
 

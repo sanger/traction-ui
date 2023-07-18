@@ -1,8 +1,7 @@
 import PacbioRun from '@/views/pacbio/PacbioRunShow'
-import { localVue, mount, store, router, Data } from '@support/testHelper'
+import { localVue, mount, store, router, Data, flushPromises } from '@support/testHelper'
 import { beforeEach, describe, expect, it } from 'vitest'
 import { newRunType, existingRunType } from '@/store/traction/pacbio/runCreate/run'
-import flushPromises from 'flush-promises'
 
 const smrtLinkVersions = [
   {
@@ -41,7 +40,7 @@ describe('PacbioRunShow.vue', () => {
           PacbioRunInfoEdit: true,
           PacbioRunWellDefaultEdit: true,
         },
-        propsData: { id: 'new' },
+        props: { id: 'new' },
       })
       await flushPromises()
 
@@ -83,7 +82,7 @@ describe('PacbioRunShow.vue', () => {
           PacbioRunInfoEdit: true,
           PacbioRunWellDefaultEdit: true,
         },
-        propsData: { id: 1 },
+        props: { id: 1 },
       })
       await flushPromises()
 

@@ -7,7 +7,7 @@ describe('LibraryTypeSelect.vue', () => {
     return mount(LibraryTypeSelect, {
       localVue,
       store,
-      propsData: props,
+      props: props,
     })
   }
 

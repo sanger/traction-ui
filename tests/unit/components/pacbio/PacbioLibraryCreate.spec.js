@@ -14,7 +14,7 @@ describe('PacbioLibraryCreate.vue', () => {
     wrapper = mount(PacbioLibraryCreate, {
       localVue,
       store,
-      propsData: props,
+      props: props,
     })
     modal = wrapper.vm
   })

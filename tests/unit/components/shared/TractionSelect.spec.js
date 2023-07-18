@@ -6,7 +6,7 @@ describe('TractionSelect.vue', () => {
   const buildWrapper = (props = {}) => {
     return mount(TractionSelect, {
       localVue,
-      propsData: props,
+      props: props,
       components: {},
     })
   }
@@ -121,7 +121,7 @@ describe('TractionSelect.vue', () => {
   it('updates the v-model value when changing the selected value, ', async () => {
     var wrapper = mount(TractionSelect, {
       localVue,
-      propsData: { options: ['Option 1', 'Option 2', 'Option 3'] },
+      props: { options: ['Option 1', 'Option 2', 'Option 3'] },
     })
     const options = wrapper.find('select').findAll('option')
     await options.at(1).setSelected()

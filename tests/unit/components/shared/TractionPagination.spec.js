@@ -8,13 +8,13 @@ describe('TractionPagination.vue', () => {
   const buildWrapper = (props = {}) => {
     return mount(TractionPagination, {
       localVue,
-      propsData: props,
+      props: props,
     })
   }
 
   describe('Initial page display', () => {
     const wrapper = mount(TractionPagination, {
-      propsData: { vmodel: 'currentPage', totalRows: 30, perPage: 5, maxVisibleButtons: 3 },
+      props: { vmodel: 'currentPage', totalRows: 30, perPage: 5, maxVisibleButtons: 3 },
       localVue,
       data() {
         return {
@@ -83,7 +83,7 @@ describe('TractionPagination.vue', () => {
   describe('Invoking page buttons', () => {
     it('displays first page', async () => {
       const wrapper = mount(TractionPagination, {
-        propsData: { vmodel: 'currentPage', totalRows: 30, perPage: 5, maxVisibleButtons: 5 },
+        props: { vmodel: 'currentPage', totalRows: 30, perPage: 5, maxVisibleButtons: 5 },
         localVue,
         data() {
           return {
@@ -113,7 +113,7 @@ describe('TractionPagination.vue', () => {
     })
     it('displays next page', async () => {
       const wrapper = mount(TractionPagination, {
-        propsData: { vmodel: 'currentPage', totalRows: 30, perPage: 5, maxVisibleButtons: 5 },
+        props: { vmodel: 'currentPage', totalRows: 30, perPage: 5, maxVisibleButtons: 5 },
         localVue,
         data() {
           return {
@@ -144,7 +144,7 @@ describe('TractionPagination.vue', () => {
 
     it('displays last page', async () => {
       const wrapper = mount(TractionPagination, {
-        propsData: { vmodel: 'currentPage', totalRows: 30, perPage: 5, maxVisibleButtons: 3 },
+        props: { vmodel: 'currentPage', totalRows: 30, perPage: 5, maxVisibleButtons: 3 },
         localVue,
         data() {
           return {
@@ -174,7 +174,7 @@ describe('TractionPagination.vue', () => {
     })
     it('displays prev page', async () => {
       const wrapper = mount(TractionPagination, {
-        propsData: { vmodel: 'currentPage', totalRows: 30, perPage: 5, maxVisibleButtons: 3 },
+        props: { vmodel: 'currentPage', totalRows: 30, perPage: 5, maxVisibleButtons: 3 },
         localVue,
         data() {
           return {
@@ -207,7 +207,7 @@ describe('TractionPagination.vue', () => {
     let wrapper
     beforeEach(() => {
       wrapper = mount(TractionPagination, {
-        propsData: { vmodel: 'currentPage', totalRows: 30, perPage: 5, maxVisibleButtons: 5 },
+        props: { vmodel: 'currentPage', totalRows: 30, perPage: 5, maxVisibleButtons: 5 },
         localVue,
         data() {
           return {

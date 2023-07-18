@@ -26,7 +26,7 @@ describe('LabelPrintingForm.vue', () => {
       wrapper = mount(LabelPrintingForm, {
         localVue,
         store,
-        propsData: {},
+        props: {},
       })
       labelPrintingForm = wrapper.vm
     })

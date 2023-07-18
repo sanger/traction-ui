@@ -8,7 +8,7 @@ describe('Modal.vue', () => {
     wrapper = mount(PrinterModal, {
       localVue,
       store,
-      propsData: {
+      props: {
         disabled: true,
         isStatic: true,
       },

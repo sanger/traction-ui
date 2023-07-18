@@ -1,7 +1,6 @@
 import PacbioSamples from '@/views/pacbio/PacbioSampleIndex'
-import { mount, localVue, store, Data, router } from '@support/testHelper'
+import { mount, localVue, store, Data, router, flushPromises } from '@support/testHelper'
 import { beforeEach, describe, expect, it } from 'vitest'
-import flushPromises from 'flush-promises'
 
 // TODO: Because of the way this is setup we are getting stderr throughout on ci
 // Error: Error: getaddrinfo EAI_AGAIN traction

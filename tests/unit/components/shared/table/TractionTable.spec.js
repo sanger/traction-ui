@@ -9,7 +9,7 @@ describe('TractionTable', () => {
   const buildWrapper = (props = {}) => {
     return mount(TractionTable, {
       localVue,
-      propsData: props,
+      props: props,
       components: {
         TractionTableColumn,
         TractionTableRow,
@@ -202,7 +202,7 @@ describe('TractionTable', () => {
 
     const tableWrapper = mount(TractionTable, {
       localVue,
-      propsData: { fields, items },
+      props: { fields, items },
       components: {
         TractionTableColumn,
         TractionTableRow,
@@ -236,7 +236,7 @@ describe('TractionTable', () => {
 
       const tableWrapper = mount(TractionTable, {
         localVue,
-        propsData: { fields, items },
+        props: { fields, items },
         components: {
           TractionTableColumn,
           TractionTableRow,
@@ -268,7 +268,7 @@ describe('TractionTable', () => {
     const tableWrapper = (props = {}) => {
       return mount(TractionTable, {
         localVue,
-        propsData: { ...props, simple: true },
+        props: { ...props, simple: true },
         slots: {
           default: '<button data-testid="button">Test</button>',
         },

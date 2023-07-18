@@ -13,7 +13,7 @@ describe('TractionModal.vue', () => {
   const buildWrapper = (props = {}) => {
     return mount(TractionModal, {
       localVue,
-      propsData: props,
+      props: props,
       slots: {
         default: 'Modal Content',
       },
@@ -46,7 +46,7 @@ describe('TractionModal.vue', () => {
     const buildModalWrapper = (props = {}) => {
       return mount(TractionModal, {
         localVue,
-        propsData: { ...props, visible: true },
+        props: { ...props, visible: true },
         components: { 'traction-button': TractionButton },
         slots: {
           'modal-header': '<div data-testid="header-div">Heading</div>',
@@ -63,7 +63,7 @@ describe('TractionModal.vue', () => {
     const buildModalWrapper = (props = {}) => {
       return mount(TractionModal, {
         localVue,
-        propsData: { ...props, visible: true },
+        props: { ...props, visible: true },
         slots: {
           'modal-title': '<div data-testid="title-div"/>',
         },
@@ -77,7 +77,7 @@ describe('TractionModal.vue', () => {
     const buildModalWrapper = (props = {}) => {
       return mount(TractionModal, {
         localVue,
-        propsData: { ...props, visible: true },
+        props: { ...props, visible: true },
         slots: {
           'modal-footer': '<div data-testid="footer-div"/>',
         },
@@ -93,7 +93,7 @@ describe('TractionModal.vue', () => {
     const buildModalWrapper = (props = {}) => {
       return mount(TractionModal, {
         localVue,
-        propsData: { ...props, visible: true },
+        props: { ...props, visible: true },
         slots: {
           'modal-footer': `<div data-testid="footer-div"> 
             <button data-testid="ok-btn"> OK </button>

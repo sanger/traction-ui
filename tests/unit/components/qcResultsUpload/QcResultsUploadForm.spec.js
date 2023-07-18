@@ -25,7 +25,7 @@ describe('QcResultsUploadForm.vue', () => {
     wrapper = mount(QcResultsUploadForm, {
       localVue,
       store,
-      propsData: {},
+      props: {},
     })
     form = wrapper.vm
   })

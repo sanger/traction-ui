@@ -17,7 +17,7 @@ const smrtLinkVersions = {
   },
 }
 
-const propsData = {
+const props = {
   isStatic: true,
 }
 const position = 'A1'
@@ -53,8 +53,8 @@ describe('PacbioWellEdit', () => {
         wrapper = mount(PacbioRunWellEdit, {
           localVue,
           store,
-          propsData: {
-            ...propsData,
+          props: {
+            ...props,
           },
         })
         wrapper.vm.isShow = true
@@ -137,7 +137,7 @@ describe('PacbioWellEdit', () => {
         wrapper = mount(PacbioRunWellEdit, {
           localVue,
           store,
-          propsData,
+          props,
         })
         wrapper.vm.isShow = true
         wrapper.vm.position = position
@@ -216,7 +216,7 @@ describe('PacbioWellEdit', () => {
         wrapper = mount(PacbioRunWellEdit, {
           localVue,
           store,
-          propsData,
+          props,
         })
 
         wrapper.vm.isShow = true
@@ -242,7 +242,7 @@ describe('PacbioWellEdit', () => {
         wrapper = mount(PacbioRunWellEdit, {
           localVue,
           store,
-          propsData,
+          props,
         })
 
         wrapper.vm.isShow = true
@@ -277,7 +277,7 @@ describe('PacbioWellEdit', () => {
         wrapper = mount(PacbioRunWellEdit, {
           localVue,
           store,
-          propsData,
+          props,
         })
 
         // This method sets the well data for the modal on show

@@ -28,7 +28,7 @@ describe('GeneralReception', () => {
   const buildWrapper = (props = { receptions: Receptions }) => {
     return mount(GeneralReception, {
       localVue,
-      propsData: props,
+      props: props,
       store,
     })
   }

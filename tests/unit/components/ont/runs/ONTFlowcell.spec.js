@@ -17,7 +17,7 @@ describe('ONTFlowcell', () => {
 
     wrapper = mount(ONTFlowcell, {
       localVue,
-      propsData: props,
+      props: props,
       store,
     })
 

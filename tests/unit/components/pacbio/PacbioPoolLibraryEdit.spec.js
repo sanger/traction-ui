@@ -40,7 +40,7 @@ describe('PacbioPoolLibraryEdit.vue', () => {
       wrapper = mount(PacbioPoolLibraryEdit, {
         store,
         localVue,
-        propsData: {
+        props: {
           id: 1,
           request,
           notify: () => {},
@@ -113,7 +113,7 @@ describe('PacbioPoolLibraryEdit.vue', () => {
   })
 
   describe('invalid', () => {
-    const propsData = {
+    const props = {
       id: 1,
       request,
       notify: () => {},
@@ -127,7 +127,7 @@ describe('PacbioPoolLibraryEdit.vue', () => {
       wrapper = mount(PacbioPoolLibraryEdit, {
         store,
         localVue,
-        propsData,
+        props,
       })
 
       expect(wrapper.find('[data-attribute=tag-id-error]').text()).toEqual('must be present')
@@ -141,7 +141,7 @@ describe('PacbioPoolLibraryEdit.vue', () => {
       wrapper = mount(PacbioPoolLibraryEdit, {
         store,
         localVue,
-        propsData,
+        props,
       })
 
       expect(wrapper.find('[data-attribute=volume-error]').text()).toEqual('must be present')
@@ -155,7 +155,7 @@ describe('PacbioPoolLibraryEdit.vue', () => {
       wrapper = mount(PacbioPoolLibraryEdit, {
         store,
         localVue,
-        propsData,
+        props,
       })
 
       expect(wrapper.find('[data-attribute=concentration-error]').text()).toEqual('must be present')
@@ -169,7 +169,7 @@ describe('PacbioPoolLibraryEdit.vue', () => {
       wrapper = mount(PacbioPoolLibraryEdit, {
         store,
         localVue,
-        propsData,
+        props,
       })
 
       expect(wrapper.find('[data-attribute=insert-size-error]').text()).toEqual('must be present')

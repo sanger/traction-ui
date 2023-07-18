@@ -7,7 +7,7 @@ describe('DataTypeSelect.vue', () => {
     return mount(DataTypeSelect, {
       localVue,
       store,
-      propsData: props,
+      props: props,
     })
   }
 

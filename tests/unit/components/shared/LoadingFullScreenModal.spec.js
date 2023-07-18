@@ -6,7 +6,7 @@ describe('LoadingFullScreenModal.vue', () => {
   const buildWrapper = (props = {}) => {
     return mount(LoadingFullScreenModal, {
       localVue,
-      propsData: props,
+      props: props,
     })
   }
 

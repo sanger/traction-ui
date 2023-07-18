@@ -6,7 +6,7 @@ describe('TractionMenuItem.vue', () => {
   const buildWrapper = (props = {}) => {
     return mount(TractionMenuItem, {
       localVue,
-      propsData: props,
+      props: props,
       slots: {
         default: 'Section Content',
       },

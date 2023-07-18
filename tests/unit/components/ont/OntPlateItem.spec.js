@@ -27,7 +27,7 @@ describe('Plate.vue', () => {
 
     wrapper = mount(Plate, {
       localVue,
-      propsData: { ...plates['1'] },
+      props: { ...plates['1'] },
       store,
       stubs: {
         Plate96SVG: true,

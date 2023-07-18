@@ -12,7 +12,7 @@ describe('TractionButton.vue', () => {
     const localVue = createLocalVue()
     return mount(TractionButton, {
       localVue,
-      propsData: props,
+      props: props,
       slots: {
         default: 'Section Content',
       },
@@ -44,7 +44,7 @@ describe('TractionButton.vue', () => {
 
   it('can have a text prop', () => {
     const wrapper = mount(TractionButton, {
-      propsData: {
+      props: {
         text: 'Button text',
       },
       slots: {},

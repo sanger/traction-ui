@@ -37,7 +37,7 @@ describe('Run.vue', () => {
       localVue,
       store,
       router,
-      propsData: props,
+      props: props,
     })
     saphyrRun = wrapper.vm
   })
@@ -75,7 +75,7 @@ describe('Run.vue', () => {
         localVue,
         store,
         router,
-        propsData: {
+        props: {
           id: 'new',
         },
       })

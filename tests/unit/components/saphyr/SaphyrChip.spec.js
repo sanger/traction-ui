@@ -22,7 +22,7 @@ describe('Chip', () => {
     wrapper = mount(Chip, {
       localVue,
       store,
-      propsData: props,
+      props: props,
     })
     chip = wrapper.vm
   })

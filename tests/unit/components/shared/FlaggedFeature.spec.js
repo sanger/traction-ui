@@ -24,7 +24,7 @@ describe('FlaggedFeature.vue', () => {
   const buildWrapper = (props = {}) => {
     return mount(FlaggedFeature, {
       localVue,
-      propsData: props,
+      props: props,
       slots: {
         default: 'Feature Content',
         disabled: 'Disabled Content',

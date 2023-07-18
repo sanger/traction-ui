@@ -39,7 +39,7 @@ describe('OntPoolLibraryEdit.vue', () => {
       wrapper = mount(OntPoolLibraryEdit, {
         store,
         localVue,
-        propsData: {
+        props: {
           id: 1,
           request,
           notify: () => {},
@@ -112,7 +112,7 @@ describe('OntPoolLibraryEdit.vue', () => {
   })
 
   describe('invalid', () => {
-    const propsData = {
+    const props = {
       id: 1,
       request,
       notify: () => {},
@@ -126,7 +126,7 @@ describe('OntPoolLibraryEdit.vue', () => {
       wrapper = mount(OntPoolLibraryEdit, {
         store,
         localVue,
-        propsData,
+        props,
       })
 
       expect(wrapper.find('[data-attribute=tag-id-error]').text()).toEqual('must be present')
@@ -140,7 +140,7 @@ describe('OntPoolLibraryEdit.vue', () => {
       wrapper = mount(OntPoolLibraryEdit, {
         store,
         localVue,
-        propsData,
+        props,
       })
 
       expect(wrapper.find('[data-attribute=volume-error]').text()).toEqual('must be present')
@@ -154,7 +154,7 @@ describe('OntPoolLibraryEdit.vue', () => {
       wrapper = mount(OntPoolLibraryEdit, {
         store,
         localVue,
-        propsData,
+        props,
       })
 
       expect(wrapper.find('[data-attribute=concentration-error]').text()).toEqual('must be present')
@@ -168,7 +168,7 @@ describe('OntPoolLibraryEdit.vue', () => {
       wrapper = mount(OntPoolLibraryEdit, {
         store,
         localVue,
-        propsData,
+        props,
       })
 
       expect(wrapper.find('[data-attribute=insert-size-error]').text()).toEqual('must be present')

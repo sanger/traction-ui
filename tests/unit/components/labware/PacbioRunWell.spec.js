@@ -43,7 +43,7 @@ describe('PacbioRunWell.vue', () => {
     wrapper = mount(PacbioRunWell, {
       localVue,
       store,
-      propsData: props,
+      props: props,
       stubs: {
         WellModal: true,
       },
@@ -72,7 +72,7 @@ describe('PacbioRunWell.vue', () => {
         wrapper = mount(PacbioRunWell, {
           localVue,
           store,
-          propsData: props,
+          props: props,
           stubs: {
             WellModal: true,
           },
@@ -86,7 +86,7 @@ describe('PacbioRunWell.vue', () => {
         wrapper = mount(PacbioRunWell, {
           localVue,
           store,
-          propsData: props,
+          props: props,
           stubs: {
             WellModal: true,
           },
@@ -99,7 +99,7 @@ describe('PacbioRunWell.vue', () => {
         wrapper = mount(PacbioRunWell, {
           localVue,
           store,
-          propsData: props,
+          props: props,
           stubs: {
             WellModal: true,
           },
@@ -120,7 +120,7 @@ describe('PacbioRunWell.vue', () => {
         wrapper = mount(PacbioRunWell, {
           localVue,
           store,
-          propsData: props,
+          props: props,
           stubs: {
             WellModal: true,
           },
@@ -140,7 +140,7 @@ describe('PacbioRunWell.vue', () => {
         wrapper = mount(PacbioRunWell, {
           localVue,
           store,
-          propsData: props,
+          props: props,
           stubs: {
             WellModal: true,
           },
@@ -155,7 +155,7 @@ describe('PacbioRunWell.vue', () => {
         wrapper = mount(PacbioRunWell, {
           localVue,
           store,
-          propsData: props,
+          props: props,
           stubs: {
             WellModal: true,
           },
@@ -169,7 +169,7 @@ describe('PacbioRunWell.vue', () => {
         wrapper = mount(PacbioRunWell, {
           localVue,
           store,
-          propsData: props,
+          props: props,
           stubs: {
             WellModal: true,
           },
@@ -182,7 +182,7 @@ describe('PacbioRunWell.vue', () => {
         wrapper = mount(PacbioRunWell, {
           localVue,
           store,
-          propsData: props,
+          props: props,
           stubs: {
             WellModal: true,
           },
@@ -202,7 +202,7 @@ describe('PacbioRunWell.vue', () => {
         wrapper = mount(PacbioRunWell, {
           localVue,
           store,
-          propsData: props,
+          props: props,
           stubs: {
             WellModal: true,
           },

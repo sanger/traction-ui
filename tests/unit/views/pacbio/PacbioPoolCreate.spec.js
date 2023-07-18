@@ -1,6 +1,5 @@
 import PacbioPoolCreate from '@/views/pacbio/PacbioPoolCreate'
-import { mount, localVue, store, Data, router } from '@support/testHelper'
-import flushPromises from 'flush-promises'
+import { mount, localVue, store, Data, router, flushPromises } from '@support/testHelper'
 import { expect } from 'vitest'
 
 describe('PacbioPoolCreate', () => {

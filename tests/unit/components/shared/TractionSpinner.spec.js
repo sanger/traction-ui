@@ -6,7 +6,7 @@ describe('TractionSpinner.vue', () => {
   const buildWrapper = (props = {}) => {
     return mount(TractionSpinner, {
       localVue,
-      propsData: props,
+      props: props,
     })
   }
 

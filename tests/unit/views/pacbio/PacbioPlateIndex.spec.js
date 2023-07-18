@@ -1,6 +1,5 @@
 import PacbioPlates from '@/views/pacbio/PacbioPlateIndex'
-import { mount, localVue, store, Data, router } from '@support/testHelper'
-import flushPromises from 'flush-promises'
+import { mount, localVue, store, Data, router, flushPromises } from '@support/testHelper'
 
 describe('PacbioPlates.vue', () => {
   let wrapper, plates

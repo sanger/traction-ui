@@ -35,7 +35,7 @@ describe('LibraryTubeItem.vue', () => {
 
       wrapper = mount(Tube, {
         localVue,
-        propsData: props,
+        props: props,
       })
 
       tube = wrapper.vm
@@ -126,7 +126,7 @@ describe('LibraryTubeItem.vue', () => {
 
       wrapper = mount(Tube, {
         localVue,
-        propsData: props,
+        props: props,
       })
 
       tube = wrapper.vm

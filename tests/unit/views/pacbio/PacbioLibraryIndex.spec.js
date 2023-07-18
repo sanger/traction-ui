@@ -1,8 +1,7 @@
 import Libraries from '@/views/pacbio/PacbioLibraryIndex'
-import { mount, localVue, Data, store, router } from '@support/testHelper'
+import { mount, localVue, Data, store, router, flushPromises } from '@support/testHelper'
 import Response from '@/api/Response'
 import { expect } from 'vitest'
-import flushPromises from 'flush-promises'
 
 describe('Libraries.vue', () => {
   let wrapper, libraries

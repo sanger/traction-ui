@@ -15,7 +15,7 @@ describe('LabwareMap.vue', () => {
     wrapper = mount(LabwareMap, {
       localVue,
       store,
-      propsData: props,
+      props: props,
     })
     labware = wrapper.vm
   })

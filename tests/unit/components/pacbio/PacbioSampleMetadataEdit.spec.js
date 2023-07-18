@@ -14,7 +14,7 @@ describe('PacbioSampleMetadataEdit.vue', () => {
     wrapper = mount(PacbioSampleMetadataEdit, {
       localVue,
       store,
-      propsData: props,
+      props: props,
     })
 
     modal = wrapper.vm

@@ -55,7 +55,7 @@ describe('PacbioPoolLibraryList.vue', () => {
     const wrapper = mount(PacbioPoolLibraryList, {
       store,
       localVue,
-      propsData: {
+      props: {
         notify: () => {},
       },
     })

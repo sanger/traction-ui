@@ -1,7 +1,6 @@
 import ONTSampleIndex from '@/views/ont/ONTSampleIndex.vue'
-import { mount, localVue, store, Data } from '@support/testHelper'
+import { mount, localVue, store, Data, flushPromises } from '@support/testHelper'
 import { vi } from 'vitest'
-import flushPromises from 'flush-promises'
 
 describe('OntSampleIndex', () => {
   it('displays each of the requests', async () => {

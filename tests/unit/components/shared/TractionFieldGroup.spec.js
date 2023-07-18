@@ -17,7 +17,7 @@ describe('TractionFieldGroup.vue', () => {
   const buildWrapper = (props = {}) => {
     return mount(TractionFieldGroup, {
       localVue,
-      propsData: { ...defaultProps, ...props },
+      props: { ...defaultProps, ...props },
       slots: {
         default: 'Section Content',
       },

@@ -6,7 +6,7 @@ describe('TractionInput.vue', () => {
   const buildWrapper = (props = {}) => {
     return mount(TractionInput, {
       localVue,
-      propsData: props,
+      props: props,
     })
   }
 

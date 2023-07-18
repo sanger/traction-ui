@@ -20,7 +20,7 @@ const buildWrapper = () =>
     store,
     sync: false,
     attachTo: elem,
-    propsData: props,
+    props: props,
   })
 
 describe('PacbioRunInfoEdit', () => {

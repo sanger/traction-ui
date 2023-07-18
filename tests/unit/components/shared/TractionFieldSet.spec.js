@@ -30,7 +30,7 @@ describe('TractionFieldset.vue', () => {
   const buildWrapper = (props = {}) => {
     return mount(TractionFieldset, {
       localVue,
-      propsData: { ...defaultProps, ...props },
+      props: { ...defaultProps, ...props },
       slots: {
         default: 'Section Content',
         bottom: 'Lead out content',

@@ -6,7 +6,7 @@ describe('TractionTableRow', () => {
   const buildWrapper = (props = {}) => {
     return mount(TractionTableRow, {
       localVue,
-      propsData: props,
+      props: props,
       slots: {
         default: 'Row Text',
       },

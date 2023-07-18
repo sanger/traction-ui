@@ -5,7 +5,7 @@ describe('TractionForm.vue', () => {
   const buildWrapper = (props = {}, slot) => {
     return mount(TractionForm, {
       localVue,
-      propsData: props,
+      props: props,
       slots: {
         default: slot,
       },
