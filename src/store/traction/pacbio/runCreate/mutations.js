@@ -1,6 +1,14 @@
-import { populateById, dataToObjectById } from '@/api/JsonApi'
+import {
+  populateById,
+  dataToObjectById,
+  populateBy,
+  dataToObjectByPlateNumber,
+  splitDataByParent,
+  dataToObjectByPosition,
+} from '@/api/JsonApi'
 import Vue from 'vue'
 import defaultState from './state'
+import { newPlate } from './run'
 
 // Mutations handle synchronous update of state
 
@@ -27,11 +35,10 @@ export default {
    * @param {Object} attributes The current runs attributes
    * @param {Object} plates The current runs plates
    */
-  populateRun: (state, { id, attributes, plates }) => {
+  populateRun: (state, { id, attributes }) => {
     state.run = {
       id,
       ...attributes,
-      plates,
     }
   },
 
@@ -101,12 +108,7 @@ export default {
    * Replaces the well in store with the updated well
    */
   updateWell: (state, { well, plateNumber }) => {
-    const position = well.position
-    Vue.set(
-      state.run.plates[plateNumber].wells,
-      position,
-      Object.assign({}, state.run.plates[plateNumber].wells[position], well),
-    )
+    Vue.set(state.wells[plateNumber], well.position, well)
   },
 
   /**
@@ -116,16 +118,65 @@ export default {
    * Adds _destroy key to the well in store so future wells
    * for the same position can be added
    */
-  deleteWell: (state, { well, plateNumber }) => {
-    const position = well.position
+  deleteWell: (state, { position, plateNumber }) => {
+    const id = state.wells[plateNumber][position].id
 
-    Vue.delete(state.run.plates[plateNumber].wells, position)
-    const newKey = position + '_destroy'
+    Vue.delete(state.wells[plateNumber], position)
 
+    // do we need Vue.set here?
+    state.wells[plateNumber]['_destroy'].push({ _destroy: true, id })
+  },
+
+  /**
+   * @param {Object} { state } The VueXState object
+   * @param {Object} instrumentType The instrumentType to add
+   * Adds the instrumentType to state
+   */
+  populateInstrumentType: (state, instrumentType) => {
+    state.instrumentType = instrumentType
+  },
+
+  /**
+   * @param {Object} { state } The VueXState object
+   * @param {Object} plates The plates to add
+   * Adds the plates to state by plate number
+   */
+  populatePlates: (state, plates) => {
+    populateBy('plates', dataToObjectByPlateNumber, {
+      includeRelationships: true,
+      populateResources: false,
+    })(state, plates)
+  },
+
+  /**
+   * @param {Object} { state } The VueXState object
+   * @param {Object} plates The plates for the run
+   * @param {Object} wells The wells for the run
+   * Adds the wells to state by plate number and well position, two dimensional array
+   */
+  populateWells: (state, { plates, wells }) => {
     Vue.set(
-      state.run.plates[plateNumber].wells,
-      newKey,
-      Object.assign({}, state.run.plates[plateNumber].wells[newKey], well),
+      state,
+      'wells',
+      splitDataByParent({
+        data: wells,
+        fn: dataToObjectByPosition,
+        includeRelationships: true,
+        parent: { parentData: plates, children: 'wells', key: 'plate_number' },
+      }),
     )
+  },
+
+  /**
+   * @param {Object} { state } The VueXState object
+   * @param {Object} plateNumber The number of plates to add
+   * Adds the plates to state by plate number
+   * Adds the wells to state by plate number
+   */
+  createPlates: (state, plateNumber) => {
+    for (let i = 1; i <= plateNumber; i++) {
+      Vue.set(state.plates, i, newPlate(i))
+      Vue.set(state.wells, i, { _destroy: [] })
+    }
   },
 }

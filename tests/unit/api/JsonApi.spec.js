@@ -23,7 +23,8 @@ describe('JsonApi', () => {
     mapAttribute,
     dataToObjectByPosition,
     populateBy,
-    extractPlateData,
+    splitDataByParent,
+    dataToObjectByPlateNumber,
   } = JsonApi
 
   let data, included, dataItem
@@ -314,6 +315,30 @@ describe('JsonApi', () => {
     })
   })
 
+  describe('dataToObjectByPlateNumber', () => {
+    it('creates an object with the plate number as key', () => {
+      const data = Data.PacbioRun.data.included.slice(0, 1)
+      const plates = dataToObjectByPlateNumber({ data })
+      const keys = Object.keys(plates)
+      expect(keys.length).toEqual(data.length)
+      // bizarre. It reverses the keys.
+      expect(plates[keys[0]]).toEqual({
+        id: data[0].id,
+        plate_number: data[0].plate_number,
+        type: data[0].type,
+        ...data[0].attributes,
+      })
+    })
+
+    it('adds the relationships if requested', () => {
+      const data = Data.PacbioRun.data.included.slice(0, 1)
+      const plates = dataToObjectByPlateNumber({ data, includeRelationships: true })
+      const item = plates['1']
+      const keys = Object.keys(item)
+      expect(keys.includes('wells')).toBeTruthy()
+    })
+  })
+
   describe('populateBy', () => {
     it('with resources', () => {
       const state = { resources: {} }
@@ -339,31 +364,29 @@ describe('JsonApi', () => {
     })
   })
 
-  describe('extractPlateData', () => {
-    it('builds the plate, well and pool info', () => {
-      const run = Data.PacbioRun.data.data
-      const plate1 = Data.PacbioRun.data.included[0]
-      const plate2 = Data.PacbioRun.data.included[1]
-      const plates = [plate1, plate2]
-      const well1 = Data.PacbioRun.data.included[2]
-      const well2 = Data.PacbioRun.data.included[3]
-      const wells = [well1, well2]
-      const result = extractPlateData(plates, wells)
+  describe('splitDataByParent', () => {
+    it('splits the data by parent', () => {
+      const plates = Data.PacbioRun.data.included.slice(0, 2)
+      const wells = Data.PacbioRun.data.included.slice(2, 5)
 
-      const resultPlate1 = result['1']
-      const resultPlate2 = result['2']
+      const plateNumbers = plates.map((p) => p.attributes.plate_number.toString())
 
-      expect(resultPlate1.id).toEqual(plate1.id)
-      expect(resultPlate1.pacbio_run_id).toEqual(parseInt(run.id))
-      expect(resultPlate1.plate_number).toEqual(parseInt(resultPlate1.plate_number))
-      expect(Object.keys(resultPlate1.wells)).toEqual([well1.attributes.position])
-      expect(Object.keys(resultPlate1.wells).length).toEqual(1)
+      const result = splitDataByParent({
+        data: wells,
+        fn: dataToObjectByPosition,
+        parent: { parentData: plates, children: 'wells', key: 'plate_number' },
+        includeRelationships: true,
+      })
 
-      expect(resultPlate2.id).toEqual(plate2.id)
-      expect(resultPlate2.pacbio_run_id).toEqual(parseInt(run.id))
-      expect(resultPlate2.plate_number).toEqual(parseInt(resultPlate2.plate_number))
-      expect(Object.keys(resultPlate2.wells)).toEqual([well2.attributes.position])
-      expect(Object.keys(resultPlate2.wells).length).toEqual(1)
+      // check that result has the correct plate numbers
+      expect(Object.keys(result)).toEqual(plateNumbers)
+      // check that each plate has the correct wells
+      expect(result[plateNumbers[0]]).toEqual(
+        dataToObjectByPosition({ data: [wells[0]], includeRelationships: true }),
+      )
+      expect(result[plateNumbers[1]]).toEqual(
+        dataToObjectByPosition({ data: wells.slice(1), includeRelationships: true }),
+      )
     })
   })
 })

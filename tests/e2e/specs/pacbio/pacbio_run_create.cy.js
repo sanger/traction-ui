@@ -44,7 +44,7 @@ describe('Pacbio Run Create view', () => {
     cy.get('button').contains('Search').click()
 
     // Add the plate metadata
-    cy.get('[data-attribute="sequencing_kit_box_barcode-1"]').type('Lxxxxx101826100123199')
+    cy.get('[data-attribute="sequencing-kit-box-barcode-1"]').type('Lxxxxx101826100123199')
 
     // Get the pool being searched
     cy.get('[data-attribute="selected-pool-list"]')
@@ -88,7 +88,7 @@ describe('Pacbio Run Create view', () => {
     cy.get('button').contains('Search').click()
 
     // Add the plate metadata
-    cy.get('[data-attribute="sequencing_kit_box_barcode-1"]').type('Lxxxxx101826100123199')
+    cy.get('[data-attribute="sequencing-kit-box-barcode-1"]').type('Lxxxxx101826100123199')
     // Get the pool being searched
     cy.get('[data-attribute="selected-pool-list"]')
       // this obviously gets quite a lot into implementation but at least it works!
@@ -109,28 +109,27 @@ describe('Pacbio Run Create view', () => {
     cy.get('[data-attribute="library-concentration"]').type('0.75')
     cy.get('#update').click()
 
-    // TODO uncomment this when we support multi-plate runs
-    // // Add the plate metadata
-    // cy.get('[data-attribute="sequencing_kit_box_barcode-2"]').type('Lxxxxx101826100123199')
-    // // Get the pool being searched
-    // cy.get('[data-attribute="selected-pool-list"]')
-    //   // this obviously gets quite a lot into implementation but at least it works!
-    //   .first()
-    //   .trigger('dragstart', { dataTransfer: dataTransfer, force: true })
-    //   .trigger('drag', { dataTransfer: dataTransfer, force: true })
-    // // Plate 2
-    // cy.get('[data-attribute=pacbio-run-plate-2]')
-    //   .children()
-    //   .get('[data-attribute=pacbio-run-well]')
-    //   .last()
-    //   .trigger('drop', { dataTransfer: dataTransfer, force: true })
-    //   .trigger('click')
-    // cy.get('[data-attribute="movie-acquisition-time"]').select('24.0')
-    // cy.get('[data-attribute="pre-extension-time"]').type('3')
-    // cy.get('[data-attribute="include-base-kinetics"]').select('True')
-    // cy.get('[data-attribute="polymerase-kit"]').type('12345')
-    // cy.get('[data-attribute="library-concentration"]').type('0.75')
-    // cy.get('#update').click()
+    // Add the plate metadata
+    cy.get('[data-attribute="sequencing-kit-box-barcode-2"]').type('Lxxxxx101826100123199')
+    // Get the pool being searched
+    cy.get('[data-attribute="selected-pool-list"]')
+      // this obviously gets quite a lot into implementation but at least it works!
+      .first()
+      .trigger('dragstart', { dataTransfer: dataTransfer, force: true })
+      .trigger('drag', { dataTransfer: dataTransfer, force: true })
+    // Plate 2
+    cy.get('[data-attribute=pacbio-run-plate-2]')
+      .children()
+      .get('[data-attribute=pacbio-run-well]')
+      .last()
+      .trigger('drop', { dataTransfer: dataTransfer, force: true })
+      .trigger('click')
+    cy.get('[data-attribute="movie-acquisition-time"]').select('24.0')
+    cy.get('[data-attribute="pre-extension-time"]').type('3')
+    cy.get('[data-attribute="include-base-kinetics"]').select('True')
+    cy.get('[data-attribute="polymerase-kit"]').type('12345')
+    cy.get('[data-attribute="library-concentration"]').type('0.75')
+    cy.get('#update').click()
 
     cy.get('button').contains('Create').click()
     cy.contains('[data-type=run-create-message]', 'Run successfully created')
@@ -160,7 +159,7 @@ describe('Pacbio Run Create view', () => {
     cy.get('button').contains('Search').click()
 
     // Add the plate metadata
-    cy.get('[data-attribute="sequencing_kit_box_barcode-1"]').type('Lxxxxx101826100123199')
+    cy.get('[data-attribute="sequencing-kit-box-barcode-1"]').type('Lxxxxx101826100123199')
 
     // Get the pool being searched
     cy.get('[data-attribute="selected-pool-list"]')
@@ -205,7 +204,7 @@ describe('Pacbio Run Create view', () => {
     cy.get('[data-attribute="default-include-fivemc-calls-in-cpg-motifs"]').select('No')
 
     // Add the plate metadata
-    cy.get('[data-attribute="sequencing_kit_box_barcode-1"]').type('Lxxxxx101826100123199')
+    cy.get('[data-attribute="sequencing-kit-box-barcode-1"]').type('Lxxxxx101826100123199')
 
     // Click the first well
     cy.get('[data-attribute=pacbio-run-well]').first().trigger('click')
@@ -239,7 +238,7 @@ describe('Pacbio Run Create view', () => {
     cy.get('button').contains('Search').click()
 
     // Add the plate metadata
-    cy.get('[data-attribute="sequencing_kit_box_barcode-1"]').type('Lxxxxx101826100123199')
+    cy.get('[data-attribute="sequencing-kit-box-barcode-1"]').type('Lxxxxx101826100123199')
     // Get the pool being searched
     cy.get('[data-attribute="selected-pool-list"]')
       // this obviously gets quite a lot into implementation but at least it works!
@@ -260,7 +259,7 @@ describe('Pacbio Run Create view', () => {
     cy.get('[data-attribute="dna_control_complex_box_barcode"]').should('have.value', '')
     cy.get('[data-attribute="system_name"]').contains('Sequel IIe')
     cy.get('[data-attribute="smrt_link_version"]').select('v11')
-    cy.get('[data-attribute="sequencing_kit_box_barcode-1"]').should('have.value', '')
+    cy.get('[data-attribute="sequencing-kit-box-barcode-1"]').should('have.value', '')
     // bg-gray-100 is the default colour of the well
     cy.get('[data-attribute=pacbio-run-well]').first().should('have.class', 'bg-gray-100')
   })

@@ -1,11 +1,19 @@
 import getters from '@/store/traction/pacbio/runCreate/getters'
 import defaultState from '@/store/traction/pacbio/runCreate/state'
 import storePools from '@tests/data/StorePools'
-import { describe } from 'vitest'
+import { describe, expect } from 'vitest'
 
 describe('getters.js', () => {
-  const { smrtLinkVersionList, defaultSmrtLinkVersion, smrtLinkVersion, pools, poolByBarcode } =
-    getters
+  const {
+    smrtLinkVersionList,
+    defaultSmrtLinkVersion,
+    smrtLinkVersion,
+    pools,
+    poolByBarcode,
+    instrumentNameList,
+    getWell,
+    getPlate,
+  } = getters
 
   // TODO: we probably need to sort the way we create the pools for tests
   const mockPools = [
@@ -158,6 +166,46 @@ describe('getters.js', () => {
         run_suitability: { ready_for_run: true, errors: [] },
       }
       expect(pools(state)[0].libraries[0].group_id).toEqual(undefined)
+    })
+  })
+
+  describe('instrumentNameList', () => {
+    const state = defaultState()
+
+    it('returns a list of system names', () => {
+      expect(instrumentNameList(state)).toEqual(['Revio', 'Sequel IIe'])
+    })
+  })
+
+  describe('getWell', () => {
+    it('will return a well from the state', () => {
+      const state = defaultState()
+      state.wells = {
+        1: {
+          A1: {
+            id: '1',
+            position: 'A1',
+          },
+        },
+      }
+      expect(getWell(state)(1, 'A1')).toEqual(state.wells[1].A1)
+    })
+  })
+
+  describe('getPlate', () => {
+    it('will return a plate from the state', () => {
+      const state = defaultState()
+      state.plates = {
+        1: {
+          id: 1,
+          plate_number: 1,
+        },
+        2: {
+          id: '2',
+          plate_number: 2,
+        },
+      }
+      expect(getPlate(state)(1)).toEqual(state.plates[1])
     })
   })
 })

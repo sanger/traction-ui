@@ -1,7 +1,7 @@
 import { handleResponse } from '@/api/ResponseHelper'
-import { groupIncludedByResource, extractAttributes, extractPlateData } from '@/api/JsonApi'
-import { newRun, createRunType, RunTypeEnum, newWell, defaultWellAttributes, newPlate } from './run'
-import { PacbioRunSystems } from '@/lib/PacbioRunSystems'
+import { groupIncludedByResource, extractAttributes } from '@/api/JsonApi'
+import { newRun, createRunType, RunTypeEnum, newWell, defaultWellAttributes } from './run'
+import { findInstrumentByName } from '@/lib/PacbioInstrumentTypes'
 
 // Asynchronous update of state.
 export default {
@@ -72,9 +72,8 @@ export default {
 
   /**
    * Retrieves a pacbio run and populates the store.
-   * @param commit the vuex commit object. Provides access to mutations
    * @param rootState the vuex rootState object. Provides access to current state
-   * @param id The id of the existing run
+   * @param commit the vuex commit object. Provides access to mutations
    * @returns { success, errors }. Was the request successful? were there any errors?
    */
   fetchRun: async ({ commit, rootState }, { id }) => {
@@ -108,17 +107,10 @@ export default {
       } = groupIncludedByResource(included)
 
       const smrtLinkVersion = extractAttributes(smrt_link_version)
-      const plateData = extractPlateData(plates, wells)
 
-      // Handles edge case for when we have revio with only 1 plate
-      if (
-        data.attributes.system_name.includes(PacbioRunSystems.Revio.name) &&
-        Object.values(plateData).length == 1
-      ) {
-        plateData['2'] = newPlate(2)
-      }
-
-      commit('populateRun', { id: data.id, attributes: data.attributes, plates: plateData })
+      commit('populateRun', data)
+      commit('populatePlates', plates)
+      commit('populateWells', { plates, wells })
       commit('populatePools', pools)
       commit('setLibraries', libraries)
       commit('setTags', tags)
@@ -133,14 +125,14 @@ export default {
    * Saves (persists) the existing run. If it is a new run it will be created.
    * If it is an existing run it will be updated.
    * @param rootState the vuex rootState object. Provides access to current state
-   * @param state {runType, runs, wells}. The current runType, run and it's wells
+   * @param state {runType, runs, plates, wells}. The current runType, run it's plates and wells
    * @returns { success, errors }. Was the request successful? were there any errors?
    */
-  saveRun: async ({ rootState, state: { runType, run, smrtLinkVersion } }) => {
+  saveRun: async ({ rootState, state: { runType, run, plates, wells, smrtLinkVersion } }) => {
     const request = rootState.api.traction.pacbio.runs
 
     // based on the runType create the payload and the promise
-    const payload = runType.payload({ run, smrtLinkVersion })
+    const payload = runType.payload({ run, plates, wells, smrtLinkVersion })
     const promise = runType.promise({ request, payload })
     const response = await handleResponse(promise)
 
@@ -159,7 +151,7 @@ export default {
    * @returns { success, errors }. Was the action successful? were there any errors?
    *
    */
-  setRun: async ({ commit, dispatch, getters }, { id }) => {
+  setRun: async ({ commit, dispatch, getters, state }, { id }) => {
     // create and commit the runType based on the id
     const runType = createRunType({ id })
     commit('populateRunType', runType)
@@ -170,18 +162,25 @@ export default {
       // eslint-disable-next-line no-unused-vars
 
       const { id, ...attributes } = newRun()
-      const plates = attributes.plates
-      delete attributes.plates
 
-      commit('populateRun', { id, attributes, plates })
+      commit('populateRun', { id, attributes })
       commit('populateSmrtLinkVersion', getters.defaultSmrtLinkVersion)
+      commit('createPlates', state.instrumentType.plateCount)
 
       // success will always be true and errors will be empty
       return { success: true, errors: [] }
     }
 
+    // if it is an existing run
+
     // call the fetch run action
     const { success, errors = [] } = await dispatch('fetchRun', { id })
+
+    // populate the instrument type
+    commit(
+      'populateInstrumentType',
+      findInstrumentByName(state.run.system_name, state.instrumentTypeList),
+    )
 
     // return the result from the fetchRun
     return { success, errors }
@@ -197,8 +196,7 @@ export default {
    */
   getOrCreateWell: ({ state }, { position, plateNumber }) => {
     return (
-      state.run.plates[plateNumber].wells[position] ||
-      newWell({ position, ...state.defaultWellAttributes })
+      state.wells[plateNumber][position] || newWell({ position, ...state.defaultWellAttributes })
     )
   },
 
@@ -209,7 +207,7 @@ export default {
    * @param plateNumber The plate number of the well
    */
   updateWell: ({ commit }, { well, plateNumber }) => {
-    commit('updateWell', { well: well, plateNumber: plateNumber })
+    commit('updateWell', { well, plateNumber })
   },
 
   /**
@@ -219,7 +217,7 @@ export default {
    * @param plateNumber The plate number of the well
    */
   deleteWell: ({ commit }, { well, plateNumber }) => {
-    commit('deleteWell', { well: well, plateNumber: plateNumber })
+    commit('deleteWell', { well, plateNumber })
   },
 
   /**
@@ -254,5 +252,19 @@ export default {
    */
   setDefaultWellAttributes: ({ commit }) => {
     commit('populateDefaultWellAttributes', defaultWellAttributes())
+  },
+
+  /**
+   * Sets the Instrument Type
+   * @param commit the vuex commit object. Provides access to mutations
+   * @param state the vuex state object. Provides access to current state
+   * @param instrumentName the name of the instrument
+   * sets the instrument type based on the instrument name
+   * creates the plates based on the instrument type plate count
+   */
+  setInstrumentType: ({ commit, state: { instrumentTypeList } }, instrumentName) => {
+    const instrumentType = findInstrumentByName(instrumentName, instrumentTypeList)
+    commit('populateInstrumentType', { ...instrumentType })
+    commit('createPlates', instrumentType.plateCount)
   },
 }
