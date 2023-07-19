@@ -99,7 +99,7 @@ describe('PacbioRunPlateList.vue', () => {
 
     it('has the correct number of wells', () => {
       const wells = wrapper.findAll('[data-attribute="pacbio-run-well"]')
-      expect(wells.length).toEqual(4)
+      expect(wells.length).toEqual(8)
     })
 
     describe('#instrumentType', () => {

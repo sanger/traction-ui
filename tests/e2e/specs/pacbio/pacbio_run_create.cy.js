@@ -109,28 +109,27 @@ describe('Pacbio Run Create view', () => {
     cy.get('[data-attribute="library-concentration"]').type('0.75')
     cy.get('#update').click()
 
-    // TODO uncomment this when we support multi-plate runs
-    // // Add the plate metadata
-    // cy.get('[data-attribute="sequencing-kit-box-barcode-2"]').type('Lxxxxx101826100123199')
-    // // Get the pool being searched
-    // cy.get('[data-attribute="selected-pool-list"]')
-    //   // this obviously gets quite a lot into implementation but at least it works!
-    //   .first()
-    //   .trigger('dragstart', { dataTransfer: dataTransfer, force: true })
-    //   .trigger('drag', { dataTransfer: dataTransfer, force: true })
-    // // Plate 2
-    // cy.get('[data-attribute=pacbio-run-plate-2]')
-    //   .children()
-    //   .get('[data-attribute=pacbio-run-well]')
-    //   .last()
-    //   .trigger('drop', { dataTransfer: dataTransfer, force: true })
-    //   .trigger('click')
-    // cy.get('[data-attribute="movie-acquisition-time"]').select('24.0')
-    // cy.get('[data-attribute="pre-extension-time"]').type('3')
-    // cy.get('[data-attribute="include-base-kinetics"]').select('True')
-    // cy.get('[data-attribute="polymerase-kit"]').type('12345')
-    // cy.get('[data-attribute="library-concentration"]').type('0.75')
-    // cy.get('#update').click()
+    // Add the plate metadata
+    cy.get('[data-attribute="sequencing-kit-box-barcode-2"]').type('Lxxxxx101826100123199')
+    // Get the pool being searched
+    cy.get('[data-attribute="selected-pool-list"]')
+      // this obviously gets quite a lot into implementation but at least it works!
+      .first()
+      .trigger('dragstart', { dataTransfer: dataTransfer, force: true })
+      .trigger('drag', { dataTransfer: dataTransfer, force: true })
+    // Plate 2
+    cy.get('[data-attribute=pacbio-run-plate-2]')
+      .children()
+      .get('[data-attribute=pacbio-run-well]')
+      .last()
+      .trigger('drop', { dataTransfer: dataTransfer, force: true })
+      .trigger('click')
+    cy.get('[data-attribute="movie-acquisition-time"]').select('24.0')
+    cy.get('[data-attribute="pre-extension-time"]').type('3')
+    cy.get('[data-attribute="include-base-kinetics"]').select('True')
+    cy.get('[data-attribute="polymerase-kit"]').type('12345')
+    cy.get('[data-attribute="library-concentration"]').type('0.75')
+    cy.get('#update').click()
 
     cy.get('button').contains('Create').click()
     cy.contains('[data-type=run-create-message]', 'Run successfully created')
