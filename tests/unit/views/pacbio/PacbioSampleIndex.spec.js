@@ -1,5 +1,5 @@
 import PacbioSamples from '@/views/pacbio/PacbioSampleIndex'
-import { mount, store, Data, router, flushPromises } from '@support/testHelper'
+import { mount, store, Data, router, flushPromises, nextTick } from '@support/testHelper'
 import { beforeEach, describe, expect, it } from 'vitest'
 
 // TODO: Because of the way this is setup we are getting stderr throughout on ci
@@ -91,11 +91,11 @@ describe('PacbioSamples.vue', () => {
       expect(button.props('disabled')).toBe(true)
     })
 
-    it('create library button is disabled when no sample are selected', () => {
+    it('create library button is disabled when no sample are selected', async () => {
       samples.selected = [{ id: 1 }]
-      samples.$nextTick(() => {
-        expect(button.props('disabled')).toBe(false)
-      })
+      await nextTick()
+        
+      expect(button.props('disabled')).toBe(false)
     })
   })
 

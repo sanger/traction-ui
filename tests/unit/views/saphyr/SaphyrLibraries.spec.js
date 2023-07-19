@@ -1,6 +1,5 @@
 import Libraries from '@/views/saphyr/SaphyrLibraries'
 import { mount, store, Data } from '@support/testHelper'
-import VueRouter from 'vue-router'
 import Response from '@/api/Response'
 
 describe('Libraries.vue', () => {
@@ -43,20 +42,8 @@ describe('Libraries.vue', () => {
       Data.TractionSaphyrLibraries,
     )
 
-    const router = new VueRouter({
-      routes: [
-        {
-          path: '/libraries',
-          name: 'Libraries',
-          component: Libraries,
-          props: true,
-        },
-      ],
-    })
-
     wrapper = mount(Libraries, {
       store,
-      router,
       stubs: {
         PrinterModal: true,
       },

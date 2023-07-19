@@ -1,4 +1,4 @@
-import { mount, store } from '@support/testHelper'
+import { mount, store, nextTick } from '@support/testHelper'
 import OntPoolEdit from '@/components/ont/OntPoolEdit'
 import { newLibrary } from '@/store/traction/ont/pools/pool.js'
 import { Data } from '@support/testHelper'
@@ -172,7 +172,7 @@ describe('ontPoolEdit#edit', () => {
         },
       })
       store.state.traction.ont.pools = poolCreateStore
-      await wrapper.vm.$nextTick()
+      await nextTick()
       expect(wrapper.find('[data-attribute=pool-type]').text()).toContain('Empty')
     })
 
@@ -185,13 +185,13 @@ describe('ontPoolEdit#edit', () => {
         },
       })
       store.state.traction.ont.pools = poolCreateStore
-      await wrapper.vm.$nextTick()
+      await nextTick()
       expect(wrapper.find('[data-attribute=pool-type]').text()).toContain('Library')
     })
 
     it('says pool when there are multiple libraries', async () => {
       store.state.traction.ont.pools = Data.AutoTagStore
-      await wrapper.vm.$nextTick()
+      await nextTick()
       expect(wrapper.find('[data-attribute=pool-type]').text()).toContain('Pool')
     })
   })

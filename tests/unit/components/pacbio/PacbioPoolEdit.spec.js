@@ -1,4 +1,4 @@
-import { mount, store } from '@support/testHelper'
+import { mount, store, nextTick } from '@support/testHelper'
 import PacbioPoolEdit from '@/components/pacbio/PacbioPoolEdit'
 import { newLibrary } from '@/store/traction/pacbio/poolCreate/pool.js'
 import { Data } from '@support/testHelper'
@@ -166,7 +166,7 @@ describe('pacbioPoolEdit#edit', () => {
         libraries: {},
       })
       store.state.traction.pacbio.poolCreate = poolCreateStore
-      await wrapper.vm.$nextTick()
+      await nextTick()
       expect(wrapper.find('[data-attribute=pool-type]').text()).toContain('Empty')
     })
 
@@ -175,13 +175,13 @@ describe('pacbioPoolEdit#edit', () => {
         libraries: { _1: newLibrary({ pacbio_request_id: '1' }) },
       })
       store.state.traction.pacbio.poolCreate = poolCreateStore
-      await wrapper.vm.$nextTick()
+      await nextTick()
       expect(wrapper.find('[data-attribute=pool-type]').text()).toContain('Library')
     })
 
     it('says pool when there are multiple libraries', async () => {
       store.state.traction.pacbio.poolCreate = Data.AutoTagStore
-      await wrapper.vm.$nextTick()
+      await nextTick()
       expect(wrapper.find('[data-attribute=pool-type]').text()).toContain('Pool')
     })
   })

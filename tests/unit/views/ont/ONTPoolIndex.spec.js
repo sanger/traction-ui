@@ -1,5 +1,5 @@
 import ONTPoolIndex from '@/views/ont/ONTPoolIndex.vue'
-import { mount, store, Data, router, flushPromises } from '@support/testHelper'
+import { mount, store, Data, router, flushPromises, nextTick } from '@support/testHelper'
 import { vi } from 'vitest'
 
 describe('OntPoolIndex', () => {
@@ -17,7 +17,7 @@ describe('OntPoolIndex', () => {
 
   it('displays each of the pools', async () => {
     const expectedPools = Data.TractionOntPools.data.data.length
-    await wrapper.vm.$nextTick()
+    await nextTick()
     expect(wrapper.find('tbody').findAll('[data-testid="row"]').length).toEqual(expectedPools)
   })
 

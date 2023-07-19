@@ -1,4 +1,4 @@
-import { mount, store, Data } from '@support/testHelper'
+import { mount, store, Data, nextTick } from '@support/testHelper'
 import OntTubeSelectedList from '@/components/ont/OntTubeSelectedList'
 import Response from '@/api/Response'
 import { expect } from 'vitest'
@@ -64,7 +64,7 @@ describe('OntTubeSelectedList', () => {
     it('deselects the tube and request when the remove button is clicked', async () => {
       const dispatch = vi.fn()
       store.dispatch = dispatch
-      await wrapper.vm.$nextTick()
+      await nextTick()
       const button = wrapper.find('#remove-btn-191')
       button.trigger('click')
       expect(dispatch).toHaveBeenCalledWith(

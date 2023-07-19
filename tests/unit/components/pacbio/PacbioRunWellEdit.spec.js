@@ -1,4 +1,4 @@
-import { mount, store } from '@support/testHelper'
+import { mount, store, nextTick } from '@support/testHelper'
 import PacbioRunWellEdit from '@/components/pacbio/PacbioRunWellEdit'
 import { beforeEach, describe, expect } from 'vitest'
 import { newWell, newPlate } from '@/store/traction/pacbio/runCreate/run'
@@ -219,7 +219,7 @@ describe('PacbioWellEdit', () => {
         wrapper.vm.isShow = true
         wrapper.vm.position = position
         wrapper.vm.plateNumber = plateNumber
-        await wrapper.vm.$nextTick()
+        await nextTick()
         const button = wrapper.find('[data-action=create-well]')
         expect(button.text()).toEqual('Create')
       })
@@ -244,7 +244,7 @@ describe('PacbioWellEdit', () => {
         wrapper.vm.isShow = true
         wrapper.vm.position = position
         wrapper.vm.plateNumber = plateNumber
-        await wrapper.vm.$nextTick()
+        await nextTick()
         const button = wrapper.find('[data-action=update-well]')
         expect(button.text()).toEqual('Update')
       })

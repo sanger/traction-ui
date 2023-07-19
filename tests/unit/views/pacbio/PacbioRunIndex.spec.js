@@ -1,5 +1,5 @@
 import PacbioRuns from '@/views/pacbio/PacbioRunIndex'
-import { mount, store, Data, router, flushPromises } from '@support/testHelper'
+import { mount, store, Data, flushPromises } from '@support/testHelper'
 import Response from '@/api/Response'
 
 describe('Runs.vue', () => {
@@ -10,7 +10,7 @@ describe('Runs.vue', () => {
     const get = vi.spyOn(store.state.api.traction.pacbio.runs, 'get')
     get.mockReturnValue(Data.PacbioRuns)
 
-    wrapper = mount(PacbioRuns, { store, router })
+    wrapper = mount(PacbioRuns, { store })
     runs = wrapper.vm
     await flushPromises()
   })
@@ -52,25 +52,25 @@ describe('Runs.vue', () => {
     it('is enabled when the run state is pending', () => {
       // run at(1) is in state pending
       button = wrapper.find('#startRun-1')
-      expect(button.attributes('disabled')).toBeFalsy()
+      expect(button.element.disabled).toBe(false)
     })
 
     it('is disabled is the run state is started', () => {
       // run at(2) is in state started
       button = wrapper.find('#startRun-2')
-      expect(button.attributes('disabled')).toBeTruthy()
+      expect(button.element.disabled).toBe(true)
     })
 
     it('is disabled is the run state is completed', () => {
       // run at(3) is in state started
       button = wrapper.find('#startRun-3')
-      expect(button.attributes('disabled')).toBeTruthy()
+      expect(button.element.disabled).toBe(true)
     })
 
     it('is disabled is the run state is cancelled', () => {
       // run at(4) is in state started
       button = wrapper.find('#startRun-4')
-      expect(button.attributes('disabled')).toBeTruthy()
+      expect(button.element.disabled).toBe(true)
     })
 
     it('on click updateRun is called', () => {
@@ -85,28 +85,28 @@ describe('Runs.vue', () => {
   describe('complete button', () => {
     let button
 
-    it('is is enabled when the run state is pending', () => {
+    it('is enabled when the run state is pending', () => {
       // run at(1) is in state pending
       button = wrapper.find('#completeRun-1')
-      expect(button.attributes('disabled')).toBeTruthy()
+      expect(button.element.disabled).toBe(true)
     })
 
-    it('is is enabled when the run state is started', () => {
+    it('is enabled when the run state is started', () => {
       // run at(2) is in state started
       button = wrapper.find('#completeRun-2')
-      expect(button.attributes('disabled')).toBeFalsy()
+      expect(button.element.disabled).toBe(false)
     })
 
     it('is disabled if the run state is completed', () => {
       // run at(3) is in state cancelled
       button = wrapper.find('#completeRun-3')
-      expect(button.attributes('disabled')).toBeTruthy()
+      expect(button.element.disabled).toBe(true)
     })
 
     it('is disabled is the run state is cancelled', () => {
       // run at(4) is in state cancelled
       button = wrapper.find('#completeRun-4')
-      expect(button.attributes('disabled')).toBeTruthy()
+      expect(button.element.disabled).toBe(true)
     })
 
     it('on click updateRun is called', () => {
@@ -123,28 +123,28 @@ describe('Runs.vue', () => {
   describe('cancel button', () => {
     let button
 
-    it('is is enabled when the run state is pending', () => {
+    it('is enabled when the run state is pending', () => {
       // run at(1) is in state pending
       button = wrapper.find('#cancelRun-1')
-      expect(button.attributes('disabled')).toBeTruthy()
+      expect(button.element.disabled).toBe(true)
     })
 
-    it('is is enabled when the run state is started', () => {
+    it('is enabled when the run state is started', () => {
       // run at(2) is in state started
       button = wrapper.find('#cancelRun-2')
-      expect(button.attributes('disabled')).toBeFalsy()
+      expect(button.element.disabled).toBe(false)
     })
 
     it('is disabled if the run state is completed', () => {
       // run at(3) is in state cancelled
       button = wrapper.find('#cancelRun-3')
-      expect(button.attributes('disabled')).toBeTruthy()
+      expect(button.element.disabled).toBe(true)
     })
 
     it('is disabled is the run state is cancelled', () => {
       // run at(4) is in state cancelled
       button = wrapper.find('#cancelRun-4')
-      expect(button.attributes('disabled')).toBeTruthy()
+      expect(button.element.disabled).toBe(true)
     })
 
     it('on click updateRun is called', () => {

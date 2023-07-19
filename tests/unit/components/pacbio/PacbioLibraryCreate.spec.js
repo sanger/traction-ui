@@ -1,4 +1,4 @@
-import { mount, store } from '@support/testHelper'
+import { mount, store, nextTick } from '@support/testHelper'
 import PacbioLibraryCreate from '@/components/pacbio/PacbioLibraryCreate'
 
 describe('PacbioLibraryCreate.vue', () => {
@@ -28,7 +28,7 @@ describe('PacbioLibraryCreate.vue', () => {
 
   it('will have an form component', async () => {
     wrapper.vm.showModal = true
-    await wrapper.vm.$nextTick()
+    await nextTick()
     expect(wrapper.find('#libraryCreateModal').element).toBeTruthy()
   })
 

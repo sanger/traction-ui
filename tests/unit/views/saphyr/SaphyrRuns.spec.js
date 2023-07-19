@@ -61,13 +61,13 @@ describe('Runs.vue', () => {
     it('is enabled when the run state is pending', () => {
       // run at(0) is in state pending
       const button = wrapper.find('#startRun-6')
-      expect(button.attributes('disabled')).toBeFalsy()
+      expect(button.element.disabled).toBe(false)
     })
 
     it('is disabled if the run state is not pending', () => {
       // run at(4) is in state started
       const button = wrapper.find('#startRun-2')
-      expect(button.attributes('disabled')).toBeTruthy()
+      expect(button.element.disabled).toBe(true)
     })
 
     it('on click startRun is called', () => {
@@ -83,28 +83,28 @@ describe('Runs.vue', () => {
   })
 
   describe('complete button', () => {
-    it('is is enabled when the run state is pending', () => {
+    it('is enabled when the run state is pending', () => {
       // run at(0) is in state pending
       const button = wrapper.find('#completeRun-6')
-      expect(button.attributes('disabled')).toBeFalsy()
+      expect(button.element.disabled).toBe(false)
     })
 
-    it('is is enabled when the run state is started', () => {
+    it('is enabled when the run state is started', () => {
       // run at(4) is in state started
       const button = wrapper.find('#completeRun-2')
-      expect(button.attributes('disabled')).toBeFalsy()
+      expect(button.element.disabled).toBe(false)
     })
 
     it('is disabled if the run state is completed', () => {
       // run at(3) is in state completed
       const button = wrapper.find('#completeRun-3')
-      expect(button.attributes('disabled')).toBeTruthy()
+      expect(button.element.disabled).toBe(true)
     })
 
     it('is disabled is the run state is cancelled', () => {
       // run at(2) is in state cancelled
       const button = wrapper.find('#completeRun-4')
-      expect(button.attributes('disabled')).toBeTruthy()
+      expect(button.element.disabled).toBe(true)
     })
 
     it('on click completeRun is called', () => {
@@ -120,28 +120,28 @@ describe('Runs.vue', () => {
   })
 
   describe('cancel button', () => {
-    it('is is enabled when the run state is pending', () => {
+    it('is enabled when the run state is pending', () => {
       // run at(0) is in state pending
       const button = wrapper.find('#cancelRun-6')
-      expect(button.attributes('disabled')).toBeFalsy()
+      expect(button.element.disabled).toBe(false)
     })
 
-    it('is is enabled when the run state is started', () => {
+    it('is enabled when the run state is started', () => {
       // run at(4) is in state started
       const button = wrapper.find('#cancelRun-2')
-      expect(button.attributes('disabled')).toBeFalsy()
+      expect(button.element.disabled).toBe(false)
     })
 
     it('is disabled if the run state is completed', () => {
       // run at(3) is in state completed
       const button = wrapper.find('#cancelRun-3')
-      expect(button.attributes('disabled')).toBeTruthy()
+      expect(button.element.disabled).toBe(true)
     })
 
     it('is disabled is the run state is cancelled', () => {
       // run at(2) is in state cancelled
       const button = wrapper.find('#cancelRun-4')
-      expect(button.attributes('disabled')).toBeTruthy()
+      expect(button.element.disabled).toBe(true)
     })
 
     it('on click completeRun is called', () => {

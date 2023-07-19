@@ -1,16 +1,10 @@
 import SaphyrRun from '@/views/saphyr/SaphyrRun'
-import VueRouter from 'vue-router'
 import { mount, store } from '@support/testHelper'
-import SaphyrRuns from '@/views/saphyr/SaphyrRuns'
 
 describe('Run.vue', () => {
   let wrapper, mockRun, saphyrRun, router, props
 
   beforeEach(() => {
-    router = new VueRouter({
-      routes: [{ path: '/runs', name: 'SaphyrRuns', component: SaphyrRuns }],
-    })
-
     mockRun = {
       id: '1',
       name: '',
