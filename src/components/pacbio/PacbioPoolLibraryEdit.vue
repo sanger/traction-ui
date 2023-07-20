@@ -30,7 +30,6 @@
         <traction-input
           v-model="template_prep_kit_box_barcode"
           data-attribute="template-prep-kit-box-barcode"
-          :value="template_prep_kit_box_barcode"
           placeholder="Template Prep Kit Box Barcode"
         />
       </traction-field-error>
@@ -44,7 +43,6 @@
         <traction-input
           v-model="volume"
           data-attribute="volume"
-          :value="volume"
           placeholder="Volume"
         />
       </traction-field-error>
@@ -58,7 +56,6 @@
         <traction-input
           v-model="concentration"
           data-attribute="concentration"
-          :value="concentration"
           placeholder="Concentration"
         />
       </traction-field-error>
@@ -72,7 +69,6 @@
         <traction-input
           v-model="insert_size"
           data-attribute="insert-size"
-          :value="insert_size"
           placeholder="Insert Size"
         />
       </traction-field-error>

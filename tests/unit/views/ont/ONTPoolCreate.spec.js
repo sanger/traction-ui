@@ -17,7 +17,7 @@ describe('OntPoolCreate', () => {
     tagSetsRequest.get = vi.fn(() => Data.TractionOntTagSets)
     poolsRequest.find = vi.fn()
 
-    router.push({ name: 'ONTPoolCreate', params: { id: 'new' } })
+    await router.push({ name: 'ONTPoolCreate', params: { id: 'new' } })
 
     mount(ONTPoolCreate, {
       store,
@@ -56,7 +56,7 @@ describe('OntPoolCreate', () => {
     tagSetsRequest.get = vi.fn(() => Data.TractionOntTagSets)
     poolsRequest.find = vi.fn(() => Data.TractionOntPool)
 
-    router.push({ name: 'ONTPoolCreate', params: { id: 3 } })
+    await router.push({ name: 'ONTPoolCreate', params: { id: 3 } })
     mount(ONTPoolCreate, {
       store,
       router,

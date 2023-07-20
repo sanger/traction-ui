@@ -9,7 +9,6 @@
         <traction-input
           id="run-name"
           v-model="runItem.name"
-          :value="runItem.name"
           placeholder="Run name"
           type="text"
           disabled
@@ -23,7 +22,6 @@
         <traction-input
           id="dna-control-complex-box-barcode"
           v-model="runItem.dna_control_complex_box_barcode"
-          :value="runItem.dna_control_complex_box_barcode"
           placeholder="DNA Control Complex Box Barcode"
           type="text"
           data-attribute="dna_control_complex_box_barcode"
@@ -35,7 +33,6 @@
           id="system-name"
           ref="systemName"
           v-model="runItem.system_name"
-          :value="runItem.system_name"
           title="System Name"
           :options="systemNameOptions"
           data-attribute="system_name"
@@ -47,11 +44,11 @@
         <traction-select
           id="smrt-link-version"
           ref="smrtLinkVersion"
-          :value="smrtLinkVersion.id"
+          :model-value="smrtLinkVersion.id"
           title="SMRT Link Version"
           :options="smrtLinkVersionSelectOptions"
           data-attribute="smrt_link_version"
-          @input="setSmrtLinkVersion"
+          @update:modelValue="setSmrtLinkVersion"
         />
       </traction-field-group>
 
@@ -62,7 +59,6 @@
           placeholder="Comments"
           type="text"
           data-attribute="comments"
-          :value="runItem.comments"
         />
       </traction-field-group>
     </traction-section>

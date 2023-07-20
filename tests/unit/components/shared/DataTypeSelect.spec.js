@@ -13,7 +13,7 @@ describe('DataTypeSelect.vue', () => {
   vi.mock('swrv')
 
   const findOption = (optionText, { from }) =>
-    from.findAll('option').wrappers.find((option) => option.text() == optionText)
+    from.findAll('option').find((option) => option.text() == optionText)
 
   describe('dataType', () => {
     it('lists the expected options', () => {

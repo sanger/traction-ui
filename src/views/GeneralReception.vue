@@ -36,7 +36,7 @@
             :options="pipelineOptions"
             class="inline-block w-full"
             data-type="pipeline-list"
-            @input="resetRequestOptions()"
+            @update:modelValue="resetRequestOptions()"
           />
         </traction-field-group>
       </div>

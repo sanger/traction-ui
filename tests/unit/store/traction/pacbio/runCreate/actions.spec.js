@@ -86,6 +86,7 @@ describe('actions.js', () => {
       const plateInfo5 = {
         id: includedData[idx].id,
         plate_number: includedData[idx].attributes.plate_number,
+        sequencing_kit_box_barcode: includedData[idx].attributes.sequencing_kit_box_barcode,
         wells: includedData[idx].relationships.wells.data.map((w) => w.id),
       }
 
@@ -94,6 +95,7 @@ describe('actions.js', () => {
       const plateInfo6 = {
         id: includedData[idx].id,
         plate_number: includedData[idx].attributes.plate_number,
+        sequencing_kit_box_barcode: includedData[idx].attributes.sequencing_kit_box_barcode,
         wells: includedData[idx].relationships.wells.data.map((w) => w.id),
       }
 

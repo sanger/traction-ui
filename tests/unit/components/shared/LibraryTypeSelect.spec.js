@@ -6,14 +6,14 @@ describe('LibraryTypeSelect.vue', () => {
   const buildWrapper = (props = { pipeline: 'pacbio' }) => {
     return mount(LibraryTypeSelect, {
       store,
-      props: props,
+      props,
     })
   }
 
   vi.mock('swrv')
 
   const findOption = (optionText, { from }) =>
-    from.findAll('option').wrappers.find((option) => option.text() == optionText)
+    from.findAll('option').find((option) => option.text() == optionText)
 
   describe('libraryType', () => {
     it('lists the expected options', () => {
@@ -45,14 +45,14 @@ describe('LibraryTypeSelect.vue', () => {
       const wrapper = buildWrapper()
       const select = wrapper.find('select')
       await findOption('Pacbio_HiFi', { from: select }).setSelected()
-      expect(wrapper.emitted('input')).toEqual([['Pacbio_HiFi']])
+      expect(wrapper.emitted('update:modelValue')).toEqual([['Pacbio_HiFi']])
     })
 
     it('can emit no library type', async () => {
       const wrapper = buildWrapper()
       const select = wrapper.find('select')
       await findOption('None', { from: select }).setSelected()
-      expect(wrapper.emitted('input')).toEqual([[null]])
+      expect(wrapper.emitted('update:modelValue')).toEqual([[null]])
     })
 
     it('can have no library type disabled', async () => {
@@ -62,12 +62,12 @@ describe('LibraryTypeSelect.vue', () => {
     })
 
     it('can emit undefined library type', async () => {
-      const wrapper = buildWrapper({ pipeline: 'pacbio', value: 'Pacbio_HiFi' })
+      const wrapper = buildWrapper({ pipeline: 'pacbio', modelValue: 'Pacbio_HiFi' })
       const select = wrapper.find('select')
       await findOption('Import from Sequencescape (where available)', {
         from: select,
       }).setSelected()
-      expect(wrapper.emitted('input')).toEqual([[undefined]])
+      expect(wrapper.emitted('update:modelValue')).toEqual([[undefined]])
     })
 
     it('only shows the import option when enabled', () => {

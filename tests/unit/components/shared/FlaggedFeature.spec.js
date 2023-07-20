@@ -1,29 +1,25 @@
 import { mount } from '@support/testHelper'
-
 import FlaggedFeature from '@/components/shared/FlaggedFeature'
-import { vi } from 'vitest'
 
 describe('FlaggedFeature.vue', () => {
   beforeEach(() => {
-    // Ideally I'd love to mock the http response here, but swrv seems to tun
-    // into problems mounting via-vue test utils, and `getCurrentInstance` fails
-    // to find the instance
-    vi.mock('swrv', () => ({
-      default: vi.fn(() => ({
-        data: {
-          flipper_id: 'User',
-          features: {
-            enable_feature: { enabled: true },
-            disabled_feature: { enabled: false },
-          },
-        },
-      })),
-    }))
+    // Temporary workaround it has been moved to global mock in __mocks__
+    // vi.mock('swrv', () => ({
+    //   default: vi.fn(() => ({
+    //     data: {
+    //       flipper_id: 'User 1',
+    //       features: {
+    //         enable_feature: { enabled: true },
+    //         disabled_feature: { enabled: false },
+    //       },
+    //     },
+    //   })),
+    // }))
   })
 
   const buildWrapper = (props = {}) => {
     return mount(FlaggedFeature, {
-      props: props,
+      props,
       slots: {
         default: 'Feature Content',
         disabled: 'Disabled Content',

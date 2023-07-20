@@ -21,23 +21,23 @@ describe('TractionInput.vue', () => {
   })
 
   it('sets default value for type string', () => {
-    const wrapper = buildWrapper({ type: 'text', value: 'test' })
+    const wrapper = buildWrapper({ type: 'text', modelValue: 'test' })
     expect(wrapper.find('input[type=text]').element.value).toEqual('test')
   })
 
   it('sets default value for type number', () => {
-    const wrapper = buildWrapper({ type: 'number', value: 10 })
+    const wrapper = buildWrapper({ type: 'number', modelValue: 10 })
     expect(wrapper.find('input[type=number]').element.value).toEqual('10')
   })
 
   it('emits the value', async () => {
     const wrapper = buildWrapper({ type: 'number' })
     await wrapper.find('input').setValue('10000')
-    expect(wrapper.emitted().input).toEqual([['10000']])
+    expect(wrapper.emitted('update:modelValue')).toEqual([['10000']])
   })
 
   it('sets min,max with given value for type number', () => {
-    const wrapper = buildWrapper({ type: 'number', value: 10, min: 4, max: 10 })
+    const wrapper = buildWrapper({ type: 'number', modelValue: 10, min: 4, max: 10 })
     expect(wrapper.find('input[type=number]').element.min).toEqual('4')
     expect(wrapper.find('input[type=number]').element.max).toEqual('10')
   })
@@ -60,7 +60,7 @@ describe('TractionInput.vue', () => {
 
   it('updates the input when changing the v-model value externally,', async () => {
     var wrapper = mount({
-      template: '<traction-input :value="test"></traction-input>',
+      template: '<traction-input :model-value="test"></traction-input>',
       components: { 'traction-input': TractionInput },
       data() {
         return { test: '' }
@@ -73,7 +73,7 @@ describe('TractionInput.vue', () => {
   })
   it('displays formatted text,', async () => {
     var wrapper = mount({
-      template: '<traction-input :value="test" :formatter="formatText"></traction-input>',
+      template: '<traction-input :model-value="test" :formatter="formatText"></traction-input>',
       components: { 'traction-input': TractionInput },
       data() {
         return { test: 'Test' }

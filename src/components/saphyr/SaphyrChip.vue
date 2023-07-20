@@ -2,10 +2,10 @@
   <div class="chip container mx-auto">
     <traction-input
       id="barcode"
-      :value="chip.barcode"
+      :model-value="chip.barcode"
       placeholder="Chip barcode"
       type="text"
-      @input="setBarcode"
+      @update:modelValue="setBarcode"
     />
     <flowcell
       v-for="(flowcell, index) in chip.flowcells"

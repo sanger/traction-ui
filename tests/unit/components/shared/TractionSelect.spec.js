@@ -98,7 +98,7 @@ describe('TractionSelect.vue', () => {
   it('sets default value for type string', () => {
     const wrapper = buildWrapper({
       options: ['Option 1', 'Option 2', 'Option 3'],
-      value: 'Option 2',
+      modelValue: 'Option 2',
     })
     expect(wrapper.find('select').element.value).toEqual('Option 2')
   })
@@ -128,7 +128,7 @@ describe('TractionSelect.vue', () => {
 
   it('updates the selected value when changing the v-model value externally,', async () => {
     var wrapper = mount({
-      template: '<traction-select :value="test" :options="optionData"></traction-select>',
+      template: '<traction-select :model-value="test" :options="optionData"></traction-select>',
       components: { 'traction-select': TractionSelect },
       data() {
         return { test: '', optionData: ['Option 1', 'Option 2', 'Option 3'] }
@@ -142,7 +142,7 @@ describe('TractionSelect.vue', () => {
   it('invokes call back when select changes value,', async () => {
     var wrapper = mount({
       template:
-        '<traction-select :value="test" :options="optionData" @input="setTest"></traction-select>',
+        '<traction-select :model-value="test" :options="optionData" @update:modelValue="setTest"></traction-select>',
       components: { 'traction-select': TractionSelect },
       data() {
         return { test: '', dummyTest: '', optionData: ['Option 1', 'Option 2', 'Option 3'] }

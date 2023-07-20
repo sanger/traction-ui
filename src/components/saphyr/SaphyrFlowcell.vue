@@ -4,10 +4,10 @@
 
     <traction-input
       :id="'libraryBarcode-' + index"
-      :value="libraryBarcode"
+      :model-value="libraryBarcode"
       placeholder="Library barcode"
       type="text"
-      @input="setBarcode"
+      @update:modelValue="setBarcode"
     />
   </div>
 </template>

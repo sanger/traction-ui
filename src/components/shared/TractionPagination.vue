@@ -9,7 +9,7 @@
       class="w-full w-25"
       type="number"
       min="1"
-      @input="onChangePerPage($event)"
+      @update:modelValue="onChangePerPage($event)"
     ></traction-input>
     <TractionButton
       theme="paginationDefault"

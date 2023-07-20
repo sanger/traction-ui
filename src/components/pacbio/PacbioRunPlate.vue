@@ -14,7 +14,6 @@
               <traction-input
                 :id="`sequencing-kit-box-barcode-${plateNumber}`"
                 v-model="runItem.plates[plateNumber].sequencing_kit_box_barcode"
-                :value="runItem.plates[plateNumber].sequencing_kit_box_barcode"
                 placeholder="Sequencing Kit Box Barcode"
                 type="text"
                 :data-attribute="`sequencing_kit_box_barcode-${plateNumber}`"
