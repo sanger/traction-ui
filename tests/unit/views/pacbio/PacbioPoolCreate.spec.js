@@ -17,7 +17,7 @@ describe('PacbioPoolCreate', () => {
     tagSetsRequest.get = vi.fn(() => Data.PacbioTagSets)
     poolsRequest.find = vi.fn()
 
-    router.push('pacbio/pool/new')
+    await router.push('pacbio/pool/new')
 
     mount(PacbioPoolCreate, {
       store,

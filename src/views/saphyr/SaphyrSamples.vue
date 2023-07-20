@@ -19,9 +19,9 @@
 
     <traction-table
       id="samples-table"
+      v-model:sort-by="sortBy"
       :items="tableData"
       :fields="fields"
-      :sort-by.sync="sortBy"
       selectable
       select-mode="single"
       @filtered="onFiltered"
@@ -64,7 +64,7 @@
         :total-rows="requests.length"
         :per-page="perPage"
         aria-controls="samples-table"
-        @input="onPageChange($event)"
+        @update:modelValue="onPageChange($event)"
       >
       </traction-pagination>
     </div>

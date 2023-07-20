@@ -1,4 +1,4 @@
-import { mount, store } from '@support/testHelper'
+import { mount, store, nextTick } from '@support/testHelper'
 import GeneralReception from '@/views/GeneralReception.vue'
 import * as Reception from '@/services/traction/Reception'
 import { expect, it } from 'vitest'
@@ -184,7 +184,7 @@ describe('GeneralReception', () => {
 
     expect(wrapper.text()).not.toContain('Starting import')
 
-    await wrapper.vm.nextTick()
+    await nextTick()
 
     expect(Object.values(store.state.traction.messages)).toContainEqual({
       type: 'danger',

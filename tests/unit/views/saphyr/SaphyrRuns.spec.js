@@ -6,14 +6,18 @@ describe('Runs.vue', () => {
   const pipeline = 'saphyr'
   let wrapper, runs, mockRuns
 
-  beforeEach(() => {
+  beforeEach(async () => {
     mockRuns = new Response(Data.Runs).deserialize.runs
-
     store.commit('traction/saphyr/runs/setRuns', mockRuns)
+    vi.spyOn(store.getters['traction/saphyr/runs/runRequest'], 'get').mockResolvedValue(
+      mockRuns,
+    )
     wrapper = mount(Runs, { store })
     runs = wrapper.vm
     wrapper.vm.tableData = mockRuns
     wrapper.vm.tableData[5].created_at = '03/21/2019 06:01'
+
+    await flushPromises()
   })
 
   describe('created hook', () => {

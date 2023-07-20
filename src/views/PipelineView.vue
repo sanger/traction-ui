@@ -6,7 +6,7 @@
         :key="index"
         :active="isActive(pipelineRoute)"
         color="blue"
-        @click.native="setSource(index)"
+        @click="setSource(index)"
         >{{ humanise(pipelineRoute) }}</traction-menu-item
       >
     </traction-menu>

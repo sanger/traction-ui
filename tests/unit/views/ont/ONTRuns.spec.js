@@ -17,7 +17,7 @@ describe('ONTRuns.vue', () => {
 
   describe('building the table', () => {
     it('exists', () => {
-      expect(wrapper.find('table').exists()).toBeTruthy
+      expect(wrapper.find('table').exists()).toBeTruthy()
     })
 
     it('contains the correct data', () => {

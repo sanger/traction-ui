@@ -1,5 +1,5 @@
 import ONTRun from '@/views/ont/ONTRun'
-import { mount, store, router, flushPromises } from '@support/testHelper'
+import { mount, store, router, flushPromises, Data } from '@support/testHelper'
 import { beforeEach, describe, it } from 'vitest'
 
 describe('ONTRun.vue', () => {
@@ -11,6 +11,10 @@ describe('ONTRun.vue', () => {
       ONTRunInstrumentFlowcells: true,
       ONTRunInformation: true,
     }
+    vi.spyOn(store.state.api.traction.ont.instruments, 'get').mockResolvedValue(
+      Data.OntInstruments
+    )
+    vi.spyOn(store.state.api.traction.ont.pools, 'get').mockResolvedValue(Data.TractionOntPools)
 
     wrapper = mount(ONTRun, {
       store,
@@ -67,6 +71,7 @@ describe('ONTRun.vue', () => {
         props: { id: '1' },
       })
       ontRun = wrapper.vm
+      ontRun.fetchRun = vi.fn(() => Data.OntRun)
       expect(ontRun.newRecord).toEqual(false)
     })
   })
@@ -125,6 +130,7 @@ describe('ONTRun.vue', () => {
       })
       ontRun = wrapper.vm
 
+      ontRun.fetchRun = vi.fn(() => Data.OntRun)
       ontRun.updateRun = vi.fn()
       ontRun.redirectToRuns = vi.fn()
       ontRun.showAlert = vi.fn()

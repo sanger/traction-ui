@@ -131,12 +131,14 @@ describe('actions.js', () => {
         1: {
           id: plateInfo5.id,
           plate_number: plateInfo5.plate_number,
+          sequencing_kit_box_barcode: plateInfo5.sequencing_kit_box_barcode,
           pacbio_run_id: 5,
           wells: { A2: wellInfo5 },
         },
         2: {
           id: plateInfo6.id,
           plate_number: plateInfo6.plate_number,
+          sequencing_kit_box_barcode: plateInfo6.sequencing_kit_box_barcode,
           pacbio_run_id: 5,
           wells: { A3: wellInfo6, A4: wellInfo7 },
         },

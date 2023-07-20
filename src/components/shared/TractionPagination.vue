@@ -99,7 +99,7 @@ export default {
       default: 3,
     },
   },
-  emits: ['input'],
+  emits: ['update:modelValue'],
   data() {
     return {
       currentPage: this.modelValue,
@@ -148,7 +148,7 @@ export default {
     /**Emitted when the page changes */
     pageClick(pageNumber) {
       this.currentPage = pageNumber
-      this.$emit('input', { currentPage: this.currentPage, perPage: this.itemsPerPage })
+      this.$emit('update:modelValue', { currentPage: this.currentPage, perPage: this.itemsPerPage })
     },
     /**Handles the first page button (<<) click */
     firstPageClick() {
@@ -177,7 +177,7 @@ export default {
       if (perPage > this.totalRows || this.totalPages < this.currentPage) {
         this.currentPage = 1
       }
-      this.$emit('input', { currentPage: this.currentPage, perPage: this.itemsPerPage })
+      this.$emit('update:modelValue', { currentPage: this.currentPage, perPage: this.itemsPerPage })
     },
   },
 }

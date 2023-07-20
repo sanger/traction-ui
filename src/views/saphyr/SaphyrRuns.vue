@@ -86,7 +86,7 @@
         :total-rows="runs.length"
         :per-page="perPage"
         aria-controls="libraries-table"
-        @input="onPageChange($event)"
+        @update:modelValue="onPageChange($event)"
       >
       </traction-pagination>
     </div>

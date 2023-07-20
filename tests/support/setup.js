@@ -11,7 +11,10 @@ config.global.mixins = [globalAlert]
 config.global.plugins = [router, store]
 config.global.components = components
 
+// https://vitest.dev/api/vi.html#vi-mock
 vi.mock('swrv')
+vi.mock('axios')
+
 afterEach(() => {
   vi.clearAllMocks()
 })

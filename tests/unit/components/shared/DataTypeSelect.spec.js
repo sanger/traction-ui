@@ -6,7 +6,7 @@ describe('DataTypeSelect.vue', () => {
   const buildWrapper = (props = { pipeline: 'ont' }) => {
     return mount(DataTypeSelect, {
       store,
-      props: props,
+      props,
     })
   }
 

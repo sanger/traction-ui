@@ -35,7 +35,7 @@ describe('Runs.vue', () => {
 
   describe('new run button', () => {
     it('contains a create new run button', () => {
-      expect(wrapper.find('button').exists()).toBeTruthy()
+      expect(wrapper.find('[data-action=new-run]').exists()).toBeTruthy()
     })
 
     it('will redirect to the run when newRun is clicked', async () => {

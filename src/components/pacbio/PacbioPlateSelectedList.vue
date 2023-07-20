@@ -18,7 +18,7 @@
             :key="index"
             :active="index == sourceIndex"
             color="blue"
-            @click.native="setSource(index)"
+            @click="setSource(index)"
             >{{ tabTitle }}</traction-menu-item
           >
         </traction-menu>

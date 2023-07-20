@@ -8,7 +8,6 @@
       },
       "attributes": {
         "name": "TRACTION-RUN-5",
-        "sequencing_kit_box_barcode": "SKB5",
         "dna_control_complex_box_barcode": "DCCB5",
         "system_name": "Sequel IIe",
         "created_at": "2023/06/15 15:47",
@@ -47,7 +46,8 @@
         },
         "attributes": {
           "pacbio_run_id": 5,
-          "plate_number": 1
+          "plate_number": 1,
+          "sequencing_kit_box_barcode": "SKB5"
         },
         "relationships": {
           "wells": {
@@ -68,7 +68,8 @@
         },
         "attributes": {
           "pacbio_run_id": 5,
-          "plate_number": 2
+          "plate_number": 2,
+          "sequencing_kit_box_barcode": "SKB5"
         },
         "relationships": {
           "wells": {

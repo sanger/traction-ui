@@ -2,10 +2,10 @@
   <traction-field-group label="Library Type" label-for="library-type" layout="spacious">
     <traction-select
       id="library-type"
-      :value="libraryType"
+      :model-value="libraryType"
       :options="libraryTypes"
       data-attribute="library-type-list"
-      @input="handleInput"
+      @update:modelValue="handleInput"
     ></traction-select>
   </traction-field-group>
 </template>

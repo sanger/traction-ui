@@ -82,6 +82,8 @@ describe('PacbioRunShow.vue', () => {
         },
         props: { id: 1 },
       })
+      // ClearData is getting rid of the smrtLinkVersion we manually set
+      wrapper.vm.clearData = vi.fn()
       await flushPromises()
 
       const type = existingRunType
