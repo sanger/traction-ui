@@ -26,7 +26,7 @@ export default {
     }
   },
   computed: {
-    ...mapGetters('traction/pacbio/runCreate', ['instrumentType', 'getPlateList']),
+    ...mapGetters('traction/pacbio/runCreate', ['getPlateList']),
   },
 }
 </script>

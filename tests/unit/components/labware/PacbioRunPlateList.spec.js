@@ -50,12 +50,6 @@ describe('PacbioRunPlateList.vue', () => {
       const wells = wrapper.findAll('[data-attribute="pacbio-run-well"]')
       expect(wells.length).toEqual(96)
     })
-
-    describe('#instrumentType', () => {
-      it('returns the correct instrument type', () => {
-        expect(plate.instrumentType).toEqual(PacbioInstrumentTypes.SequelIIe)
-      })
-    })
   })
 
   describe('when run is a Revio', () => {
@@ -101,12 +95,6 @@ describe('PacbioRunPlateList.vue', () => {
       const wells = wrapper.findAll('[data-attribute="pacbio-run-well"]')
       expect(wells.length).toEqual(8)
     })
-
-    describe('#instrumentType', () => {
-      it('returns the correct instrument type', () => {
-        expect(plate.instrumentType).toEqual(PacbioInstrumentTypes.Revio)
-      })
-    })
   })
 
   describe('when run is a Revio but there is only 1 plate', () => {
@@ -139,12 +127,6 @@ describe('PacbioRunPlateList.vue', () => {
     it('has the correct number of wells', () => {
       const wells = wrapper.findAll('[data-attribute="pacbio-run-well"]')
       expect(wells.length).toEqual(4)
-    })
-
-    describe('#instrumentType', () => {
-      it('returns the correct instrument type', () => {
-        expect(plate.instrumentType).toEqual(PacbioInstrumentTypes.Revio)
-      })
     })
   })
 })
