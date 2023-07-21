@@ -44,12 +44,12 @@ const PacbioInstrumentTypes = {
  * if the sequencing kit box barcode is empty, valid is null and error is an empty string
  */
 const validatePlate = ({ plate: { sequencing_kit_box_barcode }, instrumentType }) => {
-  const valid =
-    sequencing_kit_box_barcode.length == 0
-      ? null
-      : sequencing_kit_box_barcode.length === instrumentType.sequencingKitBoxBarcodeLength
+  const currentLength = sequencing_kit_box_barcode.length
+  const expectedLength = instrumentType.sequencingKitBoxBarcodeLength
+  const valid = currentLength == 0 ? null : currentLength == expectedLength
+  const validationMessage = `Invalid Sequencing Kit Barcode (length ${currentLength}/${expectedLength})`
 
-  const error = valid == null ? '' : valid ? '' : 'Invalid Sequencing Kit Barcode'
+  const error = valid == null ? '' : valid ? '' : validationMessage
 
   return { valid, error }
 }

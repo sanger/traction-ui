@@ -8,7 +8,7 @@ describe('PacbioInstrumentTypes', () => {
         const plate = { sequencing_kit_box_barcode: 'some value', plate_number: 1 }
         expect(validatePlate({ plate, instrumentType: PacbioInstrumentTypes.SequelIIe })).toEqual({
           valid: false,
-          error: 'Invalid Sequencing Kit Barcode',
+          error: 'Invalid Sequencing Kit Barcode (length 10/21)',
         })
       })
 
@@ -34,7 +34,7 @@ describe('PacbioInstrumentTypes', () => {
         const plate = { sequencing_kit_box_barcode: 'some value', plate_number: 1 }
         expect(validatePlate({ plate, instrumentType: PacbioInstrumentTypes.Revio })).toEqual({
           valid: false,
-          error: 'Invalid Sequencing Kit Barcode',
+          error: 'Invalid Sequencing Kit Barcode (length 10/28)',
         })
       })
 
