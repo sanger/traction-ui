@@ -1,16 +1,7 @@
-import { PacbioInstrumentTypes, isInstrumentType, validatePlate } from '@/lib/PacbioInstrumentTypes'
+import { PacbioInstrumentTypes, validatePlate } from '@/lib/PacbioInstrumentTypes'
 import { describe, expect } from 'vitest'
 
 describe('PacbioInstrumentTypes', () => {
-  it('#isInstrumentType', () => {
-    expect(
-      isInstrumentType(PacbioInstrumentTypes.SequelIIe, PacbioInstrumentTypes.SequelIIe),
-    ).toBeTruthy()
-    expect(
-      isInstrumentType(PacbioInstrumentTypes.SequelIIe, PacbioInstrumentTypes.Revio),
-    ).toBeFalsy()
-  })
-
   describe('validatePlate', () => {
     describe('for a Sequel IIe', () => {
       it('errors if sequencing kit box barcode is not valid', () => {

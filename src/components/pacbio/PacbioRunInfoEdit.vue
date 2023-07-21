@@ -35,7 +35,7 @@
           id="system-name"
           ref="systemName"
           v-model="runItem.system_name"
-          :value="runItem.system_name"
+          :value="instrumentTypeValue"
           title="System Name"
           :options="instrumentTypeSelectOptions"
           data-attribute="system_name"
@@ -74,6 +74,7 @@
 import { createNamespacedHelpers } from 'vuex'
 const { mapGetters, mapActions } = createNamespacedHelpers('traction/pacbio/runCreate')
 import { PacbioInstrumentTypes } from '@/lib/PacbioInstrumentTypes'
+import { removeSpaces } from '@/lib/stringHumanisation'
 
 export default {
   name: 'PacbioRunInfoEdit',
@@ -99,6 +100,9 @@ export default {
         value: key,
         text: instrumentType.name,
       }))
+    },
+    instrumentTypeValue() {
+      return removeSpaces(this.runItem.system_name || '')
     },
   },
   methods: {

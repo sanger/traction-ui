@@ -12,6 +12,7 @@ describe('getters.js', () => {
     poolByBarcode,
     getWell,
     getPlate,
+    getPlateList,
   } = getters
 
   // TODO: we probably need to sort the way we create the pools for tests
@@ -197,6 +198,23 @@ describe('getters.js', () => {
         },
       }
       expect(getPlate(state)(1)).toEqual(state.plates[1])
+    })
+  })
+
+  describe('getPlateList', () => {
+    it('will return a plate list from the state', () => {
+      const state = defaultState()
+      state.plates = {
+        1: {
+          id: 1,
+          plate_number: 1,
+        },
+        2: {
+          id: '2',
+          plate_number: 2,
+        },
+      }
+      expect(getPlateList(state)).toEqual(Object.values(state.plates))
     })
   })
 })

@@ -158,16 +158,27 @@ const createPayload = ({ id, run, plates, wells, smrtLinkVersion }) => {
       attributes: {
         ...run,
         pacbio_smrt_link_version_id: smrtLinkVersion.id,
-        plates_attributes: Object.values(plates).map(({ plate_number, ...plate }) => {
-          return {
-            plate_number,
-            ...plate,
-            wells_attributes: createWellsPayload(wells[plate_number]),
-          }
-        }),
+        plates_attributes: Object.values(plates)
+          .map(({ plate_number, ...plate }) => {
+            return {
+              plate_number,
+              ...plate,
+              wells_attributes: createWellsPayload(wells[plate_number]),
+            }
+          })
+          .filter((plate) => hasPlateAttributes(plate)),
       },
     },
   }
+}
+
+/**
+ * @param {plate} - A plate object
+ * @returns {Boolean} - True if the plate is empty
+ * A plate has attributes if it has a sequencing_kit_box_barcode and some wells_attributes
+ */
+const hasPlateAttributes = ({ sequencing_kit_box_barcode, wells_attributes }) => {
+  return sequencing_kit_box_barcode || wells_attributes.length > 0
 }
 
 /**
@@ -201,5 +212,6 @@ export {
   newRunType,
   existingRunType,
   createPayload,
+  hasPlateAttributes,
   createWellsPayload,
 }

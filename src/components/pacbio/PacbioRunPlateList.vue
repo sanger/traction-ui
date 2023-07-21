@@ -2,7 +2,7 @@
   <traction-section title="Plates" class="min-w-[500px]">
     <div class="flex flex-row w-full">
       <PacbioRunPlateItem
-        v-for="plateNumber in instrumentType.plateCount"
+        v-for="plateNumber in getPlateList.length"
         :key="plateNumber"
         :plate-number="plateNumber"
         class="w-full"
@@ -26,7 +26,7 @@ export default {
     }
   },
   computed: {
-    ...mapGetters('traction/pacbio/runCreate', ['instrumentType']),
+    ...mapGetters('traction/pacbio/runCreate', ['instrumentType', 'getPlateList']),
   },
 }
 </script>

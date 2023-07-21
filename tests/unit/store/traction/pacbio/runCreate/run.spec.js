@@ -7,6 +7,7 @@ import {
   newPlate,
   createPayload,
   createWellsPayload,
+  hasPlateAttributes,
 } from '@/store/traction/pacbio/runCreate/run'
 import { it } from 'vitest'
 
@@ -32,17 +33,24 @@ const plates = {
     1: { ...newPlate(1), id: 1, sequencing_kit_box_barcode: '123' },
     2: { ...newPlate(2), id: 2, sequencing_kit_box_barcode: '456' },
   },
+  single: {
+    1: { ...newPlate(1), sequencing_kit_box_barcode: '123' },
+    2: { ...newPlate(2) },
+  },
 }
 
 const wells = {
   new: {
-    1: { A1: newWell({ position: 'A1' }) },
-    2: { A1: newWell({ position: 'A1' }) },
-    _destroy: [],
+    1: { A1: newWell({ position: 'A1' }), _destroy: [] },
+    2: { A1: newWell({ position: 'A1' }), _destroy: [] },
   },
   existing: {
-    1: { A1: { ...newWell({ position: 'A1' }), id: 1, pools: [1, 2] } },
+    1: { A1: { ...newWell({ position: 'A1' }), id: 1, pools: [1, 2] }, _destroy: [] },
     2: { A1: { ...newWell({ position: 'A1' }), id: 2 }, _destroy: [{ id: 3, _destroy: true }] },
+  },
+  single: {
+    1: { A1: newWell({ position: 'A1' }), _destroy: [] },
+    2: { _destroy: [] },
   },
 }
 
@@ -200,6 +208,35 @@ describe('run.js', () => {
     })
   })
 
+  describe('hasPlateAttributes', () => {
+    it('when the plate is empty', () => {
+      expect(hasPlateAttributes({ ...newPlate(1), wells_attributes: [] })).toBeFalsy()
+    })
+    it('when the plate is not empty', () => {
+      expect(
+        hasPlateAttributes({
+          ...newPlate(1),
+          sequencing_kit_box_barcode: '123',
+          wells_attributes: [],
+        }),
+      ).toBeTruthy()
+    })
+    it('when the wells_attributes are not empty', () => {
+      expect(
+        hasPlateAttributes({ ...newPlate(1), wells_attributes: [newWell({ position: 'A1' })] }),
+      ).toBeTruthy()
+    }),
+      it('when the plates and wells_attributes are not empty', () => {
+        expect(
+          hasPlateAttributes({
+            ...newPlate(1),
+            sequencing_kit_box_barcode: '123',
+            wells_attributes: [newWell({ position: 'A1' })],
+          }),
+        ).toBeTruthy()
+      })
+  })
+
   describe('createPayload', () => {
     it('will create a new run payload', () => {
       const run = { system_name: 'Revio' }
@@ -257,6 +294,35 @@ describe('run.js', () => {
               {
                 ...plates.existing[2],
                 wells_attributes: createWellsPayload(wells.existing[2]),
+              },
+            ],
+          },
+        },
+      })
+    })
+
+    it('will create the correct payload when there are 2 plates but 1 is empty', () => {
+      const run = { system_name: 'Revio' }
+
+      const payload = createPayload({
+        run,
+        plates: plates.single,
+        wells: wells.single,
+        smrtLinkVersion: smrtLinkVersions['1'],
+      })
+
+      console.log(payload.data.attributes.plates_attributes)
+
+      expect(payload).toEqual({
+        data: {
+          type: 'runs',
+          attributes: {
+            system_name: 'Revio',
+            pacbio_smrt_link_version_id: smrtLinkVersions['1'].id,
+            plates_attributes: [
+              {
+                ...plates.single[1],
+                wells_attributes: createWellsPayload(wells.single[1]),
               },
             ],
           },

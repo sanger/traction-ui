@@ -47,7 +47,7 @@
 import PacbioRunWellEdit from '@/components/pacbio/PacbioRunWellEdit'
 import PacbioRunWell from '@/components/labware/PacbioRunWell'
 import LabwareMap from '@/components/labware/LabwareMap.vue'
-import { PacbioInstrumentTypes, isInstrumentType, validatePlate } from '@/lib/PacbioInstrumentTypes'
+import { PacbioInstrumentTypes, validatePlate } from '@/lib/PacbioInstrumentTypes'
 import { createNamespacedHelpers } from 'vuex'
 const { mapGetters } = createNamespacedHelpers('traction/pacbio/runCreate')
 
@@ -72,7 +72,7 @@ export default {
   computed: {
     ...mapGetters(['instrumentType', 'getPlate']),
     isRevio() {
-      return isInstrumentType(this.instrumentType, PacbioInstrumentTypes.Revio)
+      return Object.is(this.instrumentType, PacbioInstrumentTypes.Revio)
     },
     serialNumber() {
       return this.storePlate.sequencing_kit_box_barcode.substring(15, 20)

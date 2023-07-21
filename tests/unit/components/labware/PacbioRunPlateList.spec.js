@@ -108,4 +108,43 @@ describe('PacbioRunPlateList.vue', () => {
       })
     })
   })
+
+  describe('when run is a Revio but there is only 1 plate', () => {
+    beforeEach(() => {
+      store.state.traction.pacbio.runCreate = {
+        run: { system_name: REVIO },
+        plates: {
+          1: {
+            plate_number: 1,
+            sequencing_kit_box_barcode: '1021188000301570037320231019',
+          },
+        },
+        wells: {
+          1: {
+            A1: newWell({ position: 'A1' }),
+            B1: newWell({ position: 'B1' }),
+          },
+        },
+      }
+
+      store.state.traction.pacbio.runCreate.instrumentType = PacbioInstrumentTypes.Revio
+
+      wrapper = mount(PacbioRunPlateList, {
+        localVue,
+        store,
+      })
+      plate = wrapper.vm
+    })
+
+    it('has the correct number of wells', () => {
+      const wells = wrapper.findAll('[data-attribute="pacbio-run-well"]')
+      expect(wells.length).toEqual(4)
+    })
+
+    describe('#instrumentType', () => {
+      it('returns the correct instrument type', () => {
+        expect(plate.instrumentType).toEqual(PacbioInstrumentTypes.Revio)
+      })
+    })
+  })
 })

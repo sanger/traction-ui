@@ -34,17 +34,6 @@ const PacbioInstrumentTypes = {
 }
 
 /**
- * @param {PacbioInstrumentType} thisInstrumentType
- * @param {PacbioInstrumentType} thatInstrumentType
- * @returns Boolean
- * compare 2 instrument types by name to see if they are the same
- *
- */
-const isInstrumentType = (thisInstrumentType, thatInstrumentType) => {
-  return thisInstrumentType.name === thatInstrumentType.name
-}
-
-/**
  * @param {Object} plate
  * @param {PacbioInstrumentType} instrumentType
  * @returns {Object} {valid: Boolean, error: String}
@@ -65,4 +54,4 @@ const validatePlate = ({ plate: { sequencing_kit_box_barcode }, instrumentType }
   return { valid, error }
 }
 
-export { PacbioInstrumentTypes, isInstrumentType, validatePlate }
+export { PacbioInstrumentTypes, validatePlate }
