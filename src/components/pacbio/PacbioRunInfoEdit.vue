@@ -40,7 +40,7 @@
           :options="instrumentNameList"
           data-attribute="system_name"
           :disabled="!newRecord"
-          @input="setInstrumentType($event)"
+          @input="setInstrumentData($event)"
         />
       </traction-field-group>
 
@@ -93,7 +93,7 @@ export default {
     },
   },
   methods: {
-    ...mapActions(['updateSmrtLinkVersion', 'setInstrumentType']),
+    ...mapActions(['updateSmrtLinkVersion', 'setInstrumentData']),
     alertOnFail({ success, errors }) {
       if (!success) {
         this.showAlert(errors, 'danger')

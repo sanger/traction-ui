@@ -262,7 +262,7 @@ export default {
    * sets the instrument type based on the instrument name
    * creates the plates based on the instrument type plate count
    */
-  setInstrumentType: ({ commit, state: { instrumentTypeList } }, instrumentName) => {
+  setInstrumentData: ({ commit, state: { instrumentTypeList } }, instrumentName) => {
     const instrumentType = findInstrumentByName(instrumentName, instrumentTypeList)
     commit('populateInstrumentType', { ...instrumentType })
     commit('createPlates', instrumentType.plateCount)

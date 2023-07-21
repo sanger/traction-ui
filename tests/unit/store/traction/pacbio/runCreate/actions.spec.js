@@ -50,7 +50,7 @@ describe('actions.js', () => {
     getOrCreateWell,
     updateWell,
     getPool,
-    setInstrumentType,
+    setInstrumentData,
   } = actions
 
   describe('fetchSmrtLinkVersions', () => {
@@ -320,14 +320,14 @@ describe('actions.js', () => {
     })
   })
 
-  describe('setInstrumentType', () => {
+  describe('setInstrumentData', () => {
     it('sets the instrument type', () => {
       const commit = vi.fn()
       const instrumentName = 'Sequel IIe'
       const state = {
         instrumentTypeList: PacbioInstrumentTypes,
       }
-      setInstrumentType({ commit, state }, instrumentName)
+      setInstrumentData({ commit, state }, instrumentName)
       expect(commit).toHaveBeenCalledWith('populateInstrumentType', PacbioInstrumentTypes.SequelIIe)
       expect(commit).toHaveBeenCalledWith(
         'createPlates',
