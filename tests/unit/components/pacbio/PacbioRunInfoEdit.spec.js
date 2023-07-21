@@ -53,12 +53,7 @@ describe('PacbioRunInfoEdit', () => {
     runInfo = wrapper.vm
     store.state.traction.pacbio.runCreate.run = { ...run }
     store.state.traction.pacbio.runCreate.resources.smrtLinkVersions = smrtLinkVersions
-    store.state.traction.pacbio.runCreate.resources.instrumentTypes = PacbioInstrumentTypes
-  })
-
-  it('must have systemName data', () => {
-    const systemNames = Object.values(PacbioInstrumentTypes).map((system) => system.name)
-    expect(runInfo.instrumentNameList.length).toEqual(systemNames.length)
+    store.state.traction.pacbio.runCreate.instrumentTypeList = PacbioInstrumentTypes
   })
 
   it('on mount, will set the instrument type', () => {
@@ -68,10 +63,17 @@ describe('PacbioRunInfoEdit', () => {
   })
 
   it('will update the instrument type', async () => {
-    const input = wrapper.find('[data-attribute=system_name]')
+    let input
+    input = wrapper.find('[data-attribute=system_name]')
     await input.setValue('Revio')
     expect(store.state.traction.pacbio.runCreate.instrumentType).toEqual(
       PacbioInstrumentTypes.Revio,
+    )
+
+    input = wrapper.find('[data-attribute=system_name]')
+    await input.setValue('SequelIIe')
+    expect(store.state.traction.pacbio.runCreate.instrumentType).toEqual(
+      PacbioInstrumentTypes.SequelIIe,
     )
   })
 

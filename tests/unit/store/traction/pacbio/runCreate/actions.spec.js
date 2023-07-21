@@ -323,11 +323,11 @@ describe('actions.js', () => {
   describe('setInstrumentData', () => {
     it('sets the instrument type', () => {
       const commit = vi.fn()
-      const instrumentName = 'Sequel IIe'
+      const instrumentTypeKey = 'SequelIIe'
       const state = {
         instrumentTypeList: PacbioInstrumentTypes,
       }
-      setInstrumentData({ commit, state }, instrumentName)
+      setInstrumentData({ commit, state }, instrumentTypeKey)
       expect(commit).toHaveBeenCalledWith('populateInstrumentType', PacbioInstrumentTypes.SequelIIe)
       expect(commit).toHaveBeenCalledWith(
         'createPlates',

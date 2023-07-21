@@ -37,7 +37,7 @@
           v-model="runItem.system_name"
           :value="runItem.system_name"
           title="System Name"
-          :options="instrumentNameList"
+          :options="instrumentTypeSelectOptions"
           data-attribute="system_name"
           :disabled="!newRecord"
           @input="setInstrumentData($event)"
@@ -73,6 +73,7 @@
 <script>
 import { createNamespacedHelpers } from 'vuex'
 const { mapGetters, mapActions } = createNamespacedHelpers('traction/pacbio/runCreate')
+import { PacbioInstrumentTypes } from '@/lib/PacbioInstrumentTypes'
 
 export default {
   name: 'PacbioRunInfoEdit',
@@ -82,13 +83,21 @@ export default {
     },
   },
   computed: {
-    ...mapGetters(['runItem', 'smrtLinkVersionList', 'smrtLinkVersion', 'instrumentNameList']),
+    ...mapGetters(['runItem', 'smrtLinkVersionList', 'smrtLinkVersion']),
     smrtLinkVersionSelectOptions() {
       // Returns an array of objects with value and text properties to make
       // the options of smrt-link-version select drop-down list.
       return Object.values(this.smrtLinkVersionList).map(({ id, name }) => ({
         value: id,
         text: name,
+      }))
+    },
+    instrumentTypeSelectOptions() {
+      // Returns an array of objects with value and text properties to make
+      // the options of instrument-type select drop-down list.
+      return Object.entries(PacbioInstrumentTypes).map(([key, instrumentType]) => ({
+        value: key,
+        text: instrumentType.name,
       }))
     },
   },

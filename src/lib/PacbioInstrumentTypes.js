@@ -34,17 +34,6 @@ const PacbioInstrumentTypes = {
 }
 
 /**
- *
- * @param {String} name
- * @param {Object} instrumentTypeList
- * @returns PacbioInstrumentType || undefined
- * finds the Pacbio Instrument Type by name
- */
-const findInstrumentByName = (name, instrumentTypeList) => {
-  return Object.values(instrumentTypeList).find((instrument) => instrument.name === name)
-}
-
-/**
  * @param {PacbioInstrumentType} thisInstrumentType
  * @param {PacbioInstrumentType} thatInstrumentType
  * @returns Boolean
@@ -76,4 +65,4 @@ const validatePlate = ({ plate: { sequencing_kit_box_barcode }, instrumentType }
   return { valid, error }
 }
 
-export { PacbioInstrumentTypes, findInstrumentByName, isInstrumentType, validatePlate }
+export { PacbioInstrumentTypes, isInstrumentType, validatePlate }

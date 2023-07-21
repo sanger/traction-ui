@@ -10,7 +10,6 @@ describe('getters.js', () => {
     smrtLinkVersion,
     pools,
     poolByBarcode,
-    instrumentNameList,
     getWell,
     getPlate,
   } = getters
@@ -166,14 +165,6 @@ describe('getters.js', () => {
         run_suitability: { ready_for_run: true, errors: [] },
       }
       expect(pools(state)[0].libraries[0].group_id).toEqual(undefined)
-    })
-  })
-
-  describe('instrumentNameList', () => {
-    const state = defaultState()
-
-    it('returns a list of system names', () => {
-      expect(instrumentNameList(state)).toEqual(['Revio', 'Sequel IIe'])
     })
   })
 

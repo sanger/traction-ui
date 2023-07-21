@@ -1,19 +1,7 @@
-import {
-  PacbioInstrumentTypes,
-  findInstrumentByName,
-  isInstrumentType,
-  validatePlate,
-} from '@/lib/PacbioInstrumentTypes'
+import { PacbioInstrumentTypes, isInstrumentType, validatePlate } from '@/lib/PacbioInstrumentTypes'
 import { describe, expect } from 'vitest'
 
 describe('PacbioInstrumentTypes', () => {
-  it('#findInstrumentByName', () => {
-    expect(findInstrumentByName('Sequel IIe', PacbioInstrumentTypes)).toEqual(
-      PacbioInstrumentTypes.SequelIIe,
-    )
-    expect(findInstrumentByName('War on Drugs', PacbioInstrumentTypes)).not.toBeDefined()
-  })
-
   it('#isInstrumentType', () => {
     expect(
       isInstrumentType(PacbioInstrumentTypes.SequelIIe, PacbioInstrumentTypes.SequelIIe),

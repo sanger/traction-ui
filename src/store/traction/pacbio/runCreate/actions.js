@@ -1,7 +1,7 @@
 import { handleResponse } from '@/api/ResponseHelper'
 import { groupIncludedByResource, extractAttributes } from '@/api/JsonApi'
 import { newRun, createRunType, RunTypeEnum, newWell, defaultWellAttributes } from './run'
-import { findInstrumentByName } from '@/lib/PacbioInstrumentTypes'
+import { removeSpaces } from '@/lib/stringHumanisation'
 
 // Asynchronous update of state.
 export default {
@@ -177,10 +177,7 @@ export default {
     const { success, errors = [] } = await dispatch('fetchRun', { id })
 
     // populate the instrument type
-    commit(
-      'populateInstrumentType',
-      findInstrumentByName(state.run.system_name, state.instrumentTypeList),
-    )
+    commit('populateInstrumentType', state.instrumentTypeList[removeSpaces(state.run.system_name)])
 
     // return the result from the fetchRun
     return { success, errors }
@@ -262,8 +259,8 @@ export default {
    * sets the instrument type based on the instrument name
    * creates the plates based on the instrument type plate count
    */
-  setInstrumentData: ({ commit, state: { instrumentTypeList } }, instrumentName) => {
-    const instrumentType = findInstrumentByName(instrumentName, instrumentTypeList)
+  setInstrumentData: ({ commit, state: { instrumentTypeList } }, key) => {
+    const instrumentType = instrumentTypeList[key]
     commit('populateInstrumentType', { ...instrumentType })
     commit('createPlates', instrumentType.plateCount)
   },
