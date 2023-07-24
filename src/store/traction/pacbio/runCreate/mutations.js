@@ -172,8 +172,12 @@ export default {
    * @param {Object} plateNumber The number of plates to add
    * Adds the plates to state by plate number
    * Adds the wells to state by plate number
+   * Warning: this is a destructive action
+   * Firstly removes wells and plates from state
    */
   createPlates: (state, plateNumber) => {
+    state.plates = {}
+    state.wells = {}
     for (let i = 1; i <= plateNumber; i++) {
       Vue.set(state.plates, i, newPlate(i))
       Vue.set(state.wells, i, { _destroy: [] })

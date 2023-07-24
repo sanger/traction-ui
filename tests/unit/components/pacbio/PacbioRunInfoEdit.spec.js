@@ -54,6 +54,7 @@ describe('PacbioRunInfoEdit', () => {
     store.state.traction.pacbio.runCreate.run = { ...run }
     store.state.traction.pacbio.runCreate.resources.smrtLinkVersions = smrtLinkVersions
     store.state.traction.pacbio.runCreate.instrumentTypeList = PacbioInstrumentTypes
+    store.state.traction.pacbio.runCreate.instrumentType = PacbioInstrumentTypes.SequelIIe
   })
 
   it('on mount, will set the instrument type', () => {

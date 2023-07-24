@@ -38,8 +38,6 @@ const defaultSmrtLinkVersion = {
   default: true,
 }
 
-const instrumentType = PacbioInstrumentTypes.SequelIIe
-
 describe('actions.js', () => {
   const {
     fetchSmrtLinkVersions,
@@ -220,11 +218,11 @@ describe('actions.js', () => {
     // this works but we are getting into implementation so probably needs a method
     // to construct a new run with smrt link version
     it('for a new run', async () => {
-      const getters = { defaultSmrtLinkVersion, instrumentType }
+      const getters = { defaultSmrtLinkVersion }
       const run = newRun()
       const { id, ...attributes } = run
       const commit = vi.fn()
-      const { success } = await setRun({ commit, getters, state: { instrumentType } }, { id })
+      const { success } = await setRun({ commit, getters }, { id })
       expect(success).toBeTruthy()
       expect(commit).toHaveBeenCalledWith('populateRun', {
         id,
@@ -232,30 +230,18 @@ describe('actions.js', () => {
       })
       expect(commit).toHaveBeenCalledWith('populateSmrtLinkVersion', getters.defaultSmrtLinkVersion)
       expect(commit).toHaveBeenCalledWith('populateRunType', newRunType)
-      expect(commit).toHaveBeenCalledWith('createPlates', instrumentType.plateCount)
     })
 
     it('for an existing run', async () => {
-      const state = {
-        tubes: {
-          1: { barcode: 'TRAC-2-1', id: '1', type: 'tubes' },
-          2: { barcode: 'TRAC-2-2', id: '2', type: 'tubes' },
-        },
-        run: {
-          system_name: 'Revio',
-        },
-        instrumentTypeList: PacbioInstrumentTypes,
-      }
       const id = 1
       const commit = vi.fn()
       const getters = {}
       const dispatch = vi.fn()
       dispatch.mockResolvedValue({ success: true })
 
-      const { success } = await setRun({ commit, dispatch, state, getters }, { id })
+      const { success } = await setRun({ commit, dispatch, getters }, { id })
       expect(dispatch).toHaveBeenCalledWith('fetchRun', { id })
       expect(commit).toHaveBeenCalledWith('populateRunType', existingRunType)
-      expect(commit).toHaveBeenCalledWith('populateInstrumentType', PacbioInstrumentTypes.Revio)
       expect(success).toBeTruthy()
     })
   })
@@ -321,18 +307,50 @@ describe('actions.js', () => {
   })
 
   describe('setInstrumentData', () => {
-    it('sets the instrument type', () => {
+    it('when a key is passed', () => {
       const commit = vi.fn()
       const instrumentTypeKey = 'SequelIIe'
       const state = {
         instrumentTypeList: PacbioInstrumentTypes,
+        run: {
+          ...newRun(),
+          system_name: 'Revio',
+        },
+        runType: newRunType,
       }
       setInstrumentData({ commit, state }, instrumentTypeKey)
       expect(commit).toHaveBeenCalledWith('populateInstrumentType', PacbioInstrumentTypes.SequelIIe)
-      expect(commit).toHaveBeenCalledWith(
-        'createPlates',
-        PacbioInstrumentTypes.SequelIIe.plateCount,
-      )
+    })
+
+    it('when it is a new plate', () => {
+      const commit = vi.fn()
+      const state = {
+        instrumentTypeList: PacbioInstrumentTypes,
+        run: {
+          ...newRun(),
+          system_name: 'Revio',
+        },
+        runType: newRunType,
+      }
+      setInstrumentData({ commit, state })
+      expect(commit).toHaveBeenCalledWith('populateInstrumentType', PacbioInstrumentTypes.Revio)
+      expect(commit).toHaveBeenCalledWith('createPlates', PacbioInstrumentTypes.Revio.plateCount)
+    })
+
+    it('when it is an existing plate', () => {
+      const commit = vi.fn()
+      const state = {
+        instrumentTypeList: PacbioInstrumentTypes,
+        run: {
+          ...newRun(),
+          id: 1,
+          system_name: 'Sequel IIe',
+        },
+        runType: existingRunType,
+      }
+      setInstrumentData({ commit, state })
+      expect(commit).toHaveBeenCalledWith('populateInstrumentType', PacbioInstrumentTypes.SequelIIe)
+      expect(commit).not.toHaveBeenCalledWith('createPlates')
     })
   })
 })

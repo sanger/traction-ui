@@ -1,7 +1,6 @@
 import { handleResponse } from '@/api/ResponseHelper'
 import { groupIncludedByResource, extractAttributes } from '@/api/JsonApi'
 import { newRun, createRunType, RunTypeEnum, newWell, defaultWellAttributes } from './run'
-import { removeSpaces } from '@/lib/stringHumanisation'
 
 // Asynchronous update of state.
 export default {
@@ -151,7 +150,7 @@ export default {
    * @returns { success, errors }. Was the action successful? were there any errors?
    *
    */
-  setRun: async ({ commit, dispatch, getters, state }, { id }) => {
+  setRun: async ({ commit, dispatch, getters }, { id }) => {
     // create and commit the runType based on the id
     const runType = createRunType({ id })
     commit('populateRunType', runType)
@@ -165,7 +164,6 @@ export default {
 
       commit('populateRun', { id, attributes })
       commit('populateSmrtLinkVersion', getters.defaultSmrtLinkVersion)
-      commit('createPlates', state.instrumentType.plateCount)
 
       // success will always be true and errors will be empty
       return { success: true, errors: [] }
@@ -175,9 +173,6 @@ export default {
 
     // call the fetch run action
     const { success, errors = [] } = await dispatch('fetchRun', { id })
-
-    // populate the instrument type
-    commit('populateInstrumentType', state.instrumentTypeList[removeSpaces(state.run.system_name)])
 
     // return the result from the fetchRun
     return { success, errors }
@@ -256,12 +251,19 @@ export default {
    * @param commit the vuex commit object. Provides access to mutations
    * @param state the vuex state object. Provides access to current state
    * @param instrumentName the name of the instrument
-   * sets the instrument type based on the instrument name
-   * creates the plates based on the instrument type plate count
+   * if a key is passed set the instrument type based on the key
+   * otherwise find the instrument type based on the instrument name
+   * creates the plates based on the instrument type plate count if it is a new plate
    */
-  setInstrumentData: ({ commit, state: { instrumentTypeList } }, key) => {
-    const instrumentType = instrumentTypeList[key]
+  setInstrumentData: ({ commit, state: { instrumentTypeList, run, runType } }, key) => {
+    const instrumentType = key
+      ? instrumentTypeList[key]
+      : Object.values(instrumentTypeList).find(
+          (instrumentType) => instrumentType.name === run.system_name,
+        )
     commit('populateInstrumentType', { ...instrumentType })
-    commit('createPlates', instrumentType.plateCount)
+    if (runType.type === RunTypeEnum.New) {
+      commit('createPlates', instrumentType.plateCount)
+    }
   },
 }

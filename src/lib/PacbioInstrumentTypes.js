@@ -18,6 +18,7 @@ import { LabwareTypes } from '@/lib/LabwareTypes'
  */
 const PacbioInstrumentTypes = {
   Revio: {
+    key: 'Revio',
     name: 'Revio',
     plateCount: 2,
     labwareType: LabwareTypes.Plate4,
@@ -25,6 +26,7 @@ const PacbioInstrumentTypes = {
     sequencingKitBoxBarcodeLength: 28,
   },
   SequelIIe: {
+    key: 'SequelIIe',
     name: 'Sequel IIe',
     plateCount: 1,
     labwareType: LabwareTypes.Plate96,

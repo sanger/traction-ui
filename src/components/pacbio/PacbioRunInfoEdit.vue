@@ -34,8 +34,7 @@
         <traction-select
           id="system-name"
           ref="systemName"
-          v-model="runItem.system_name"
-          :value="instrumentTypeValue"
+          :value="instrumentType.key"
           title="System Name"
           :options="instrumentTypeSelectOptions"
           data-attribute="system_name"
@@ -74,7 +73,6 @@
 import { createNamespacedHelpers } from 'vuex'
 const { mapGetters, mapActions } = createNamespacedHelpers('traction/pacbio/runCreate')
 import { PacbioInstrumentTypes } from '@/lib/PacbioInstrumentTypes'
-import { removeSpaces } from '@/lib/stringHumanisation'
 
 export default {
   name: 'PacbioRunInfoEdit',
@@ -84,7 +82,7 @@ export default {
     },
   },
   computed: {
-    ...mapGetters(['runItem', 'smrtLinkVersionList', 'smrtLinkVersion']),
+    ...mapGetters(['runItem', 'smrtLinkVersionList', 'smrtLinkVersion', 'instrumentType']),
     smrtLinkVersionSelectOptions() {
       // Returns an array of objects with value and text properties to make
       // the options of smrt-link-version select drop-down list.
@@ -96,13 +94,10 @@ export default {
     instrumentTypeSelectOptions() {
       // Returns an array of objects with value and text properties to make
       // the options of instrument-type select drop-down list.
-      return Object.entries(PacbioInstrumentTypes).map(([key, instrumentType]) => ({
+      return Object.values(PacbioInstrumentTypes).map(({ key, name }) => ({
         value: key,
-        text: instrumentType.name,
+        text: name,
       }))
-    },
-    instrumentTypeValue() {
-      return removeSpaces(this.runItem.system_name || '')
     },
   },
   methods: {

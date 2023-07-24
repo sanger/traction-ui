@@ -319,5 +319,36 @@ describe('mutations.js', () => {
         },
       })
     })
+
+    it('when there are multiple plates and we are moving to one', () => {
+      const state = defaultState()
+      state.plates = {
+        1: {
+          ...newPlate(1),
+        },
+        2: {
+          ...newPlate(2),
+        },
+      }
+      state.wells = {
+        1: {
+          _destroy: [],
+        },
+        2: {
+          _destroy: [],
+        },
+      }
+      createPlates(state, 1)
+      expect(state.plates).toEqual({
+        1: {
+          ...newPlate(1),
+        },
+      })
+      expect(state.wells).toEqual({
+        1: {
+          _destroy: [],
+        },
+      })
+    })
   })
 })
