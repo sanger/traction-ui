@@ -5,5 +5,4 @@ import Data from '@tests/data'
 import router from '@/router'
 import { nextTick } from 'vue'
 
-
 export { mount, store, Data, shallowMount, router, flushPromises, nextTick }

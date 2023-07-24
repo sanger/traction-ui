@@ -96,7 +96,11 @@ export default {
     const newLibraries = dataToObjectById({ data, includeRelationships: true })
     Object.values(newLibraries).forEach((library) => {
       const key = `_${library.request}`
-      libraries[key] = newLibrary({ ...library, pacbio_request_id: library.request, tag_id: library.tag })
+      libraries[key] = newLibrary({
+        ...library,
+        pacbio_request_id: library.request,
+        tag_id: library.tag,
+      })
     })
   },
   populatePoolAttributes: (store, { id, attributes }) => {

@@ -180,7 +180,7 @@ describe('ontPoolEdit#edit', () => {
       const poolCreateStore = Object.assign({}, Data.AutoTagStore, {
         pooling: {
           tube: {},
-          libraries: { _1: newLibrary({ ont_request_id: '1' }) },
+          libraries: { 1: newLibrary({ ont_request_id: '1' }) },
           pool: {},
         },
       })
@@ -190,8 +190,6 @@ describe('ontPoolEdit#edit', () => {
     })
 
     it('says pool when there are multiple libraries', async () => {
-      store.state.traction.ont.pools = Data.AutoTagStore
-      await nextTick()
       expect(wrapper.find('[data-attribute=pool-type]').text()).toContain('Pool')
     })
   })

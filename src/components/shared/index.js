@@ -55,7 +55,7 @@ const components = {
   TractionTableRow,
   TractionTableColumn,
   TractionModal,
-  TractionCloseIcon
+  TractionCloseIcon,
 }
 
 const registerGlobal = (vue) => {

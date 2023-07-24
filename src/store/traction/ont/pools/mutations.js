@@ -64,8 +64,11 @@ export default {
    * @param {Object.{}} library The library data to update
    */
   updatePoolingLibrary: (state, library) => {
-    state.pooling.libraries[`${library.ont_request_id}`] = 
-      Object.assign({}, state.pooling.libraries[library.ont_request_id], library)
+    state.pooling.libraries[`${library.ont_request_id}`] = Object.assign(
+      {},
+      state.pooling.libraries[library.ont_request_id],
+      library,
+    )
   },
   /**
    * Populated the result with the response
@@ -75,8 +78,11 @@ export default {
   populatePoolingLibraries: (state, data) => {
     const newLibraries = dataToObjectById({ data, includeRelationships: true })
     Object.values(newLibraries).forEach((library) => {
-      state.pooling.libraries[`${library.request}`] =
-        newLibrary({ ...library, ont_request_id: library.request, tag_id: library.tag })
+      state.pooling.libraries[`${library.request}`] = newLibrary({
+        ...library,
+        ont_request_id: library.request,
+        tag_id: library.tag,
+      })
     })
   },
   /**

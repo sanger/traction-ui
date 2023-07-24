@@ -64,7 +64,7 @@ describe('OntPlateSelectedList', () => {
     it('selects the requests associated with the well', async () => {
       const dispatch = vi.fn()
       store.dispatch = dispatch
-      const selecto = wrapper.find('.selecto-selection')
+      const selecto = wrapper.findComponent('.selecto-selection')
       await selecto.vm.$emit('select', {
         // I'm not particularly happy with this, and would prefer to test with
         // something a little more realistic. TBH, I'd be happier if we were

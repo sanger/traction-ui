@@ -94,7 +94,7 @@ describe('PacbioSamples.vue', () => {
     it('create library button is disabled when no sample are selected', async () => {
       samples.selected = [{ id: 1 }]
       await nextTick()
-        
+
       expect(button.props('disabled')).toBe(false)
     })
   })

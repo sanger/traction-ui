@@ -11,9 +11,7 @@ describe('ONTRun.vue', () => {
       ONTRunInstrumentFlowcells: true,
       ONTRunInformation: true,
     }
-    vi.spyOn(store.state.api.traction.ont.instruments, 'get').mockResolvedValue(
-      Data.OntInstruments
-    )
+    vi.spyOn(store.state.api.traction.ont.instruments, 'get').mockResolvedValue(Data.OntInstruments)
     vi.spyOn(store.state.api.traction.ont.pools, 'get').mockResolvedValue(Data.TractionOntPools)
 
     wrapper = mount(ONTRun, {
@@ -124,7 +122,7 @@ describe('ONTRun.vue', () => {
   describe('#updateRun', () => {
     beforeEach(async () => {
       vi.spyOn(store.state.api.traction.ont.instruments, 'get').mockResolvedValue(
-        Data.OntInstruments
+        Data.OntInstruments,
       )
       wrapper = mount(ONTRun, {
         store,

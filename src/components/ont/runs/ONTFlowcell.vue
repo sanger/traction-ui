@@ -127,11 +127,11 @@ export default {
         if (flowcell) {
           return flowcell.flowcell_id
         }
-        return ""
+        return ''
       },
       set(value) {
         this.setFlowcellId({ $event: value, position: this.position })
-      }
+      },
     },
     ...mapState({
       poolTubeBarcode(state) {

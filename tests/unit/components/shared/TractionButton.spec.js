@@ -10,7 +10,7 @@ describe('TractionButton.vue', () => {
       slots: {
         default: 'Section Content',
       },
-      router
+      router,
     })
   }
 

@@ -101,8 +101,11 @@ export default {
    */
   updateWell: (state, { well, plateNumber }) => {
     const position = well.position
-    state.run.plates[plateNumber].wells[position] =
-      Object.assign({}, state.run.plates[plateNumber].wells[position], well)
+    state.run.plates[plateNumber].wells[position] = Object.assign(
+      {},
+      state.run.plates[plateNumber].wells[position],
+      well,
+    )
   },
 
   /**
@@ -118,6 +121,10 @@ export default {
     delete state.run.plates[plateNumber].wells[position]
     const newKey = position + '_destroy'
 
-    state.run.plates[plateNumber].wells[newKey] = Object.assign({}, state.run.plates[plateNumber].wells[newKey], well)
+    state.run.plates[plateNumber].wells[newKey] = Object.assign(
+      {},
+      state.run.plates[plateNumber].wells[newKey],
+      well,
+    )
   },
 }

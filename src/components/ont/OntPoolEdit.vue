@@ -37,22 +37,10 @@
                 {{ tubeItem.barcode }}
               </label>
               <label v-else></label>
-              <traction-input
-                v-model="poolItem.kit_barcode"
-                data-attribute="kit-barcode"
-              />
-              <traction-input
-                v-model="poolItem.volume"
-                data-attribute="volume"
-              />
-              <traction-input
-                v-model="poolItem.concentration"
-                data-attribute="concentration"
-              />
-              <traction-input
-                v-model="poolItem.insert_size"
-                data-attribute="insert-size"
-              />
+              <traction-input v-model="poolItem.kit_barcode" data-attribute="kit-barcode" />
+              <traction-input v-model="poolItem.volume" data-attribute="volume" />
+              <traction-input v-model="poolItem.concentration" data-attribute="concentration" />
+              <traction-input v-model="poolItem.insert_size" data-attribute="insert-size" />
             </div>
           </traction-sub-section>
         </div>

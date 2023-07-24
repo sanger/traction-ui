@@ -41,18 +41,9 @@
                 v-model="poolItem.template_prep_kit_box_barcode"
                 data-attribute="template-prep-kit-box-barcode"
               />
-              <traction-input
-                v-model="poolItem.volume"
-                data-attribute="volume"
-              />
-              <traction-input
-                v-model="poolItem.concentration"
-                data-attribute="concentration"
-              />
-              <traction-input
-                v-model="poolItem.insert_size"
-                data-attribute="insert-size"
-              />
+              <traction-input v-model="poolItem.volume" data-attribute="volume" />
+              <traction-input v-model="poolItem.concentration" data-attribute="concentration" />
+              <traction-input v-model="poolItem.insert_size" data-attribute="insert-size" />
             </div>
           </traction-sub-section>
         </div>

@@ -123,7 +123,7 @@ describe('PacbioRunPlate.vue', () => {
       }
 
       wrapper = mount(PacbioRunPlate, {
-        store
+        store,
       })
       plate = wrapper.vm
     })

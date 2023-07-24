@@ -9,9 +9,7 @@ describe('Runs.vue', () => {
   beforeEach(async () => {
     mockRuns = new Response(Data.Runs).deserialize.runs
     store.commit('traction/saphyr/runs/setRuns', mockRuns)
-    vi.spyOn(store.getters['traction/saphyr/runs/runRequest'], 'get').mockResolvedValue(
-      mockRuns,
-    )
+    vi.spyOn(store.getters['traction/saphyr/runs/runRequest'], 'get').mockResolvedValue(mockRuns)
     wrapper = mount(Runs, { store })
     runs = wrapper.vm
     wrapper.vm.tableData = mockRuns
@@ -54,7 +52,7 @@ describe('Runs.vue', () => {
       })
       wrapper.vm.tableData = [mockRuns[0]]
     })
-    
+
     it('will filter the runs in the table', () => {
       expect(wrapper.find('tbody').findAll('tr').length).toEqual(1)
       expect(wrapper.find('tbody').findAll('tr')[0].text()).toMatch(/TRAC-123/)

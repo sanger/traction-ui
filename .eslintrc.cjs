@@ -18,7 +18,7 @@ module.exports = {
         destructuring: 'all',
       },
     ],
-    'vue/no-v-model-argument': 'off'
+    'vue/no-v-model-argument': 'off',
   },
   ignorePatterns: ['dist/**/*.js'],
   overrides: [

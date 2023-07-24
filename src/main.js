@@ -12,6 +12,4 @@ registerGlobal(app)
 app.use(store)
 app.use(router)
 app.mixin(globalAlert)
-app.mount("#app");
-
-
+app.mount('#app')

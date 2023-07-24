@@ -40,11 +40,7 @@
         :error="errorsFor('volume')"
         :with-icon="isValidationExists('volume')"
       >
-        <traction-input
-          v-model="volume"
-          data-attribute="volume"
-          placeholder="Volume"
-        />
+        <traction-input v-model="volume" data-attribute="volume" placeholder="Volume" />
       </traction-field-error>
     </traction-table-column>
     <traction-table-column>

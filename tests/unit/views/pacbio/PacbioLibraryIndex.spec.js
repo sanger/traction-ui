@@ -12,7 +12,7 @@ describe('Libraries.vue', () => {
 
     wrapper = mount(Libraries, {
       store,
-      router
+      router,
     })
     await flushPromises()
     libraries = wrapper.vm
@@ -117,7 +117,7 @@ describe('Libraries.vue', () => {
       expect(button.text()).toEqual('Edit')
       await button.trigger('click')
       expect(router.push).toHaveBeenCalledTimes(1)
-      expect(router.push).toHaveBeenCalledWith({ name: 'PacbioPoolCreate', params: { id: "1" } })
+      expect(router.push).toHaveBeenCalledWith({ name: 'PacbioPoolCreate', params: { id: '1' } })
     })
   })
 

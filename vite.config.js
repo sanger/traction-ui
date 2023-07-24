@@ -14,7 +14,7 @@ export default defineConfig({
     alias: {
       '@': fileURLToPath(new URL('./src', import.meta.url)),
       '@tests': fileURLToPath(new URL('./tests', import.meta.url)),
-      '@support': fileURLToPath(new URL('./tests/support', import.meta.url))
+      '@support': fileURLToPath(new URL('./tests/support', import.meta.url)),
     },
     extensions: ['.mjs', '.js', '.ts', '.jsx', '.tsx', '.json', '.vue'],
   },
