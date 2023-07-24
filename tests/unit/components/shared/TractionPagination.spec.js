@@ -210,7 +210,7 @@ describe('TractionPagination.vue', () => {
       })
     })
     it('changes total number of page buttons displayed ', async () => {
-      const textInput = wrapper.find('[data-testid=per-page-input')
+      const textInput = wrapper.find('[data-testid=per-page-input]')
       textInput.element.value = 10
       await textInput.trigger('input')
       expect(wrapper.findAll('[data-testid=page-button]')).toHaveLength(3)
@@ -219,14 +219,14 @@ describe('TractionPagination.vue', () => {
       expect(wrapper.findAll('[data-testid=page-button]')).toHaveLength(5)
     })
     it('resets current page to 1 if perPage has a value greater than total rows', async () => {
-      const textInput = wrapper.find('[data-testid=per-page-input')
+      const textInput = wrapper.find('[data-testid=per-page-input]')
       textInput.element.value = 40
       await textInput.trigger('input')
       expect(wrapper.findAll('[data-testid=page-button]')).toHaveLength(1)
       expect(wrapper.findAll('[data-testid=page-button]')[0].text()).toBe('1')
     })
     it('resets current page  if total pages required is less than the curret page in display', async () => {
-      const textInput = wrapper.find('[data-testid=per-page-input')
+      const textInput = wrapper.find('[data-testid=per-page-input]')
       textInput.element.value = 3
       await textInput.trigger('input')
       await wrapper.find('[data-testid=last-button]').trigger('click')

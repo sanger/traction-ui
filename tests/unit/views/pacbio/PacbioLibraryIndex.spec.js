@@ -12,7 +12,7 @@ describe('Libraries.vue', () => {
 
     wrapper = mount(Libraries, {
       store,
-      router,
+      router
     })
     await flushPromises()
     libraries = wrapper.vm
@@ -112,9 +112,12 @@ describe('Libraries.vue', () => {
     let button
 
     it('is present for each library', async () => {
+      router.push = vi.fn()
       button = wrapper.find('#editPool-1')
       expect(button.text()).toEqual('Edit')
-      expect(button.props('to')).toStrictEqual({ name: 'PacbioPoolCreate', params: { id: '1' } })
+      await button.trigger('click')
+      expect(router.push).toHaveBeenCalledTimes(1)
+      expect(router.push).toHaveBeenCalledWith({ name: 'PacbioPoolCreate', params: { id: "1" } })
     })
   })
 

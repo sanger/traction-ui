@@ -69,17 +69,17 @@ describe('Plate.vue', () => {
 
   describe('components', () => {
     it('has a Well component', () => {
-      expect(wrapper.findComponent({ ref: 'well' })).toBeTruthy()
+      expect(wrapper.findComponent('[data-attribute="well"]')).toBeTruthy()
     })
 
     it('has a Plate96SVG component', () => {
-      expect(wrapper.findComponent({ ref: 'plate96Svg' })).toBeTruthy()
+      expect(wrapper.findComponent('[data-attribute="plate96svg"]')).toBeTruthy()
     })
   })
 
   describe('SVG wells', () => {
     it('has the correct number of wells', () => {
-      const ellipses = wrapper.findAllComponents({ ref: 'well' })
+      const ellipses = wrapper.findAllComponents('[data-attribute="well"]')
       expect(ellipses.length).toEqual(Object.keys(PlateMap.wells).length)
     })
   })

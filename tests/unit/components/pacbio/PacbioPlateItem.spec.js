@@ -65,24 +65,24 @@ describe('Plate.vue', () => {
 
   describe('components', () => {
     it('has a Well component', () => {
-      expect(wrapper.findComponent({ ref: 'well' })).toBeTruthy()
+      expect(wrapper.findComponent('[data-attribute="well"]')).toBeTruthy()
     })
 
     it('has a Plate96SVG component', () => {
-      expect(wrapper.findComponent({ ref: 'plate96Svg' })).toBeTruthy()
+      expect(wrapper.findComponent('[data-attribute="plate96svg"]')).toBeTruthy()
     })
   })
 
   describe('SVG wells', () => {
     it('has the correct number of wells', () => {
-      const ellipses = wrapper.findAllComponents({ ref: 'well' })
+      const ellipses = wrapper.findAllComponents('[data-attribute="well"]')
       expect(ellipses.length).toEqual(Object.keys(store.state.plateMap.wells).length)
     })
   })
 
   describe('well@click', () => {
     it('emits a clickWell event with the well id', async () => {
-      const well = wrapper.find('well-stub')
+      const well = wrapper.findComponent('[data-attribute="well"]')
       await well.vm.$emit('click')
       expect(wrapper.emitted().clickWell.length).toBe(1)
       expect(wrapper.emitted().clickWell[0]).toEqual(['1'])

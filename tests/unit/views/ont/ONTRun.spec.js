@@ -5,7 +5,7 @@ import { beforeEach, describe, it } from 'vitest'
 describe('ONTRun.vue', () => {
   let wrapper, ontRun, stubs
 
-  beforeEach(() => {
+  beforeEach(async () => {
     stubs = {
       DataFetcher: true,
       ONTRunInstrumentFlowcells: true,
@@ -24,6 +24,7 @@ describe('ONTRun.vue', () => {
     })
     ontRun = wrapper.vm
     ontRun.showAlert = vi.fn()
+    await flushPromises()
   })
 
   describe('Back button', () => {
@@ -121,7 +122,10 @@ describe('ONTRun.vue', () => {
   })
 
   describe('#updateRun', () => {
-    beforeEach(() => {
+    beforeEach(async () => {
+      vi.spyOn(store.state.api.traction.ont.instruments, 'get').mockResolvedValue(
+        Data.OntInstruments
+      )
       wrapper = mount(ONTRun, {
         store,
         router,
@@ -129,11 +133,11 @@ describe('ONTRun.vue', () => {
         props: { id: '1' },
       })
       ontRun = wrapper.vm
-
       ontRun.fetchRun = vi.fn(() => Data.OntRun)
       ontRun.updateRun = vi.fn()
       ontRun.redirectToRuns = vi.fn()
       ontRun.showAlert = vi.fn()
+      await flushPromises()
     })
     it('contains a update new run button', () => {
       expect(wrapper.find('#update')).toBeTruthy()

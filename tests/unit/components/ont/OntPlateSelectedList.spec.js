@@ -51,7 +51,7 @@ describe('OntPlateSelectedList', () => {
 
     it('contains the selected plate', () => {
       expect(wrapper.find('[data-type=selected-plate-item]').text()).toContain('GEN-1668092750-1')
-      expect(wrapper.findAll('plate-stub').length).toEqual(1)
+      expect(wrapper.findAll('.plate').length).toEqual(1)
     })
   })
 
@@ -64,7 +64,7 @@ describe('OntPlateSelectedList', () => {
     it('selects the requests associated with the well', async () => {
       const dispatch = vi.fn()
       store.dispatch = dispatch
-      const selecto = wrapper.find('vueselecto-stub')
+      const selecto = wrapper.find('.selecto-selection')
       await selecto.vm.$emit('select', {
         // I'm not particularly happy with this, and would prefer to test with
         // something a little more realistic. TBH, I'd be happier if we were

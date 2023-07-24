@@ -1,7 +1,6 @@
 import FlaggedFeature from '@/components/shared/FlaggedFeature.vue'
 import LoadingFullScreenModal from '@/components/shared/LoadingFullScreenModal.vue'
 import TractionButton from '@/components/shared/TractionButton.vue'
-import TractionFieldset from '@/components/shared/TractionFieldset.vue'
 import TractionFieldGroup from '@/components/shared/TractionFieldGroup.vue'
 import TractionSection from '@/components/shared/TractionSection.vue'
 import TractionHeading from '@/components/TractionHeading.vue'
@@ -33,7 +32,6 @@ const components = {
   LoadingFullScreenModal,
   TractionButton,
   TractionFieldGroup,
-  TractionFieldset,
   TractionLabel,
   TractionSection,
   TractionHeading,

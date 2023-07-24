@@ -1,22 +1,16 @@
 import { mount } from '@vue/test-utils'
-
+import { router } from '@support/testHelper'
 import TractionButton from '@/components/shared/TractionButton'
 import { expect } from 'vitest'
 
 describe('TractionButton.vue', () => {
-  const mockRouter = {
-    push: vi.fn(),
-  }
-
   const buildWrapper = (props = {}) => {
     return mount(TractionButton, {
       props: props,
       slots: {
         default: 'Section Content',
       },
-      mocks: {
-        $router: mockRouter,
-      },
+      router
     })
   }
 
@@ -56,10 +50,11 @@ describe('TractionButton.vue', () => {
   })
 
   it('can provide a link', async () => {
+    router.push = vi.fn()
     const to = { name: 'PacbioPoolCreate', params: { id: 1 } }
     const wrapper = buildWrapper({ to })
     await wrapper.find('button').trigger('click')
-    expect(mockRouter.push).toHaveBeenCalledTimes(1)
-    expect(mockRouter.push).toHaveBeenCalledWith(to)
+    expect(router.push).toHaveBeenCalledTimes(1)
+    expect(router.push).toHaveBeenCalledWith(to)
   })
 })
