@@ -69,8 +69,8 @@ describe('OntPlateSelectedList', () => {
         // I'm not particularly happy with this, and would prefer to test with
         // something a little more realistic. TBH, I'd be happier if we were
         // emitting a vue component.
-        added: [{ __vue__: { $attrs: { id: '1' } } }],
-        removed: [{ __vue__: { $attrs: { id: '2' } } }],
+        added: [{ __vueParentComponent: { attrs: { id: '1' } } }],
+        removed: [{ __vueParentComponent: { attrs: { id: '2' } } }],
       })
 
       expect(dispatch).toHaveBeenCalledWith('traction/ont/pools/selectWellRequests', '1')
