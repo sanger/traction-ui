@@ -28,10 +28,7 @@
             :id="'details-btn-' + row.id"
             size="sm"
             theme="default"
-            @click="
-              row.toggleDetails()
-              getPlate(row.item.barcode)
-            "
+            @click="handleTogleDetails(row)"
           >
             {{ row.detailsShowing ? 'Hide' : 'Show' }} Plate
           </traction-button>
@@ -98,6 +95,10 @@ export default {
   methods: {
     alert(message, type) {
       this.showAlert(message, type)
+    },
+    handleTogleDetails(row) {
+      row.toggleDetails()
+      this.getPlate(row.item.barcode)
     },
     async getPlate(barcode) {
       this.currentPlate = await this.findPlate({ barcode: barcode })
