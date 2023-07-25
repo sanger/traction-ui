@@ -12,7 +12,7 @@
 -->
 
 <template>
-  <div class="flex flex-col">
+  <div class="flex flex-col" :class="$attrs.class">
     <label v-if="title">{{ title }}</label>
     <input
       v-bind="$attrs"

@@ -68,10 +68,6 @@
       >
       </traction-pagination>
     </div>
-    <fieldset>
-      <label>Per Page</label>
-      <traction-input id="input-per-page" v-model="perPage" trim class="w-25"></traction-input>
-    </fieldset>
   </div>
 </template>
 

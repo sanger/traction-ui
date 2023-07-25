@@ -4,14 +4,15 @@
 
     <fieldset>
       <traction-form v-for="field in smrtLinkWellDefaults" :key="field.name">
-        <label>{{ field.label }}</label>
-        <component
-          :is="field.component"
-          v-model="well[field.value]"
-          v-bind="handleCustomProps(field)"
-          class="pb-2"
-          v-on="handleCustomEvents(field)"
-        />
+        <div class="pb-2">
+          <label>{{ field.label }}</label>
+          <component
+            :is="field.component"
+            v-model="well[field.value]"
+            v-bind="handleCustomProps(field)"
+            v-on="handleCustomEvents(field)"
+          />
+        </div>
       </traction-form>
     </fieldset>
 

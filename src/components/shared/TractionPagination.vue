@@ -1,5 +1,5 @@
 <template>
-  <div class="flex flex-row items-center gap-2 text-gray-700">
+  <div class="flex flex-row items-center gap-2 text-gray-700" :class="$attrs.class">
     <label label-for="input-per-page" class="whitespace-nowrap mr-2"> Per Page</label>
     <traction-input
       id="input-per-page"
@@ -11,7 +11,7 @@
       min="1"
       @update:modelValue="onChangePerPage($event)"
     ></traction-input>
-    <TractionButton
+    <traction-button
       theme="paginationDefault"
       data-testid="first-button"
       :disabled="isInFirstPage"
@@ -22,8 +22,8 @@
           d="m11 18-6-6 6-6 1.4 1.4L7.825 12l4.575 4.6Zm6.6 0-6-6 6-6L19 7.4 14.425 12 19 16.6Z"
         />
       </traction-pagination-icon>
-    </TractionButton>
-    <TractionButton
+    </traction-button>
+    <traction-button
       theme="paginationDefault"
       data-testid="prev-button"
       :disabled="isInFirstPage"
@@ -32,7 +32,7 @@
       <traction-pagination-icon>
         <path d="m14 18-6-6 6-6 1.4 1.4-4.6 4.6 4.6 4.6Z" />
       </traction-pagination-icon>
-    </TractionButton>
+    </traction-button>
     <div v-for="page in pages" :key="page">
       <traction-button
         :disabled="page.isDisabled"
@@ -43,7 +43,7 @@
       >
     </div>
 
-    <TractionButton
+    <traction-button
       theme="paginationDefault"
       :disabled="isInLastPage"
       data-testid="next-button"
@@ -52,8 +52,8 @@
       <traction-pagination-icon>
         <path d="M9.4 18 8 16.6l4.6-4.6L8 7.4 9.4 6l6 6Z" />
       </traction-pagination-icon>
-    </TractionButton>
-    <TractionButton
+    </traction-button>
+    <traction-button
       theme="paginationDefault"
       :disabled="isInLastPage"
       data-testid="last-button"
@@ -64,7 +64,7 @@
           d="M6.4 18 5 16.6 9.575 12 5 7.4 6.4 6l6 6Zm6.6 0-1.4-1.4 4.575-4.6L11.6 7.4 13 6l6 6Z"
         />
       </traction-pagination-icon>
-    </TractionButton>
+    </traction-button>
   </div>
 </template>
 
