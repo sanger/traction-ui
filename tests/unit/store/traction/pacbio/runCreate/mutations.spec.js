@@ -46,7 +46,7 @@ describe('mutations.js', () => {
     populateInstrumentType,
     populatePlates,
     populateWells,
-    createPlates,
+    createPlatesAndWells,
   } = mutations
 
   describe('populateSmrtLinkVersions', () => {
@@ -283,10 +283,10 @@ describe('mutations.js', () => {
     })
   })
 
-  describe('createPlates', () => {
+  describe('createPlatesAndWells', () => {
     it('when there is a single plate creates plate and associated wells', () => {
       const state = defaultState()
-      createPlates(state, 1)
+      createPlatesAndWells(state, 1)
       expect(state.plates).toEqual({
         1: {
           ...newPlate(1),
@@ -301,7 +301,7 @@ describe('mutations.js', () => {
 
     it('when there are multiple plates creates plates and associated wells', () => {
       const state = defaultState()
-      createPlates(state, 2)
+      createPlatesAndWells(state, 2)
       expect(state.plates).toEqual({
         1: {
           ...newPlate(1),
@@ -338,7 +338,7 @@ describe('mutations.js', () => {
           _destroy: [],
         },
       }
-      createPlates(state, 1)
+      createPlatesAndWells(state, 1)
       expect(state.plates).toEqual({
         1: {
           ...newPlate(1),

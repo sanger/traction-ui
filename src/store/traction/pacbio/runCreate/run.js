@@ -99,11 +99,11 @@ const newRunType = {
   label: 'Create Run',
 
   // returns the payload slightly different for new and existing runs
-  payload({ run, plates, wells, smrtLinkVersion }) {
+  payload({ run, plates, wells, smrtLinkVersion, instrumentType }) {
     // eslint-disable-next-line no-unused-vars
     const { id, ...attributes } = run
 
-    return createPayload({ run: attributes, plates, wells, smrtLinkVersion })
+    return createPayload({ run: attributes, plates, wells, smrtLinkVersion, instrumentType })
   },
 
   // returns a promise different for create or update
@@ -118,11 +118,11 @@ const existingRunType = {
   theme: 'update',
   action: 'update',
   label: 'Update Run',
-  payload({ run, plates, wells, smrtLinkVersion }) {
+  payload({ run, plates, wells, smrtLinkVersion, instrumentType }) {
     // eslint-disable-next-line no-unused-vars
     const { id, ...attributes } = run
 
-    return createPayload({ id, run: attributes, plates, wells, smrtLinkVersion })
+    return createPayload({ id, run: attributes, plates, wells, smrtLinkVersion, instrumentType })
   },
   // the function handle should be the same for create and update
   promise({ payload, request }) {
@@ -147,10 +147,11 @@ const createRunType = ({ id }) => {
  * @param {plates} - An object of plates
  * @param {wells} - An object of wells
  * @param {smrtLinkVersion} - The SMRT Link Version of the run
+ * @param {instrumentType} - The instrument type of the run
  * @returns {Object} - A payload for the run
  * creates a JSONAPI payload for a run
  */
-const createPayload = ({ id, run, plates, wells, smrtLinkVersion }) => {
+const createPayload = ({ id, run, plates, wells, smrtLinkVersion, instrumentType }) => {
   return {
     data: {
       type: 'runs',
@@ -158,6 +159,7 @@ const createPayload = ({ id, run, plates, wells, smrtLinkVersion }) => {
       attributes: {
         ...run,
         pacbio_smrt_link_version_id: smrtLinkVersion.id,
+        system_name: instrumentType.name,
         plates_attributes: Object.values(plates)
           .map(({ plate_number, ...plate }) => {
             return {

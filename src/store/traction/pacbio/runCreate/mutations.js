@@ -175,9 +175,12 @@ export default {
    * Warning: this is a destructive action
    * Firstly removes wells and plates from state
    */
-  createPlates: (state, plateNumber) => {
+  createPlatesAndWells: (state, plateNumber) => {
+    // empty the wells and plates
+    // we need to do this as we may be going from 2 plates to 1 plate
     state.plates = {}
     state.wells = {}
+
     for (let i = 1; i <= plateNumber; i++) {
       Vue.set(state.plates, i, newPlate(i))
       Vue.set(state.wells, i, { _destroy: [] })

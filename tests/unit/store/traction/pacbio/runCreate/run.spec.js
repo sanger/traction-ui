@@ -10,6 +10,7 @@ import {
   hasPlateAttributes,
 } from '@/store/traction/pacbio/runCreate/run'
 import { it } from 'vitest'
+import { PacbioInstrumentTypes } from '@/lib/PacbioInstrumentTypes'
 
 const smrtLinkVersions = {
   1: {
@@ -123,6 +124,7 @@ describe('run.js', () => {
             plates: plates.new,
             wells: wells.new,
             smrtLinkVersion: smrtLinkVersions['1'],
+            instrumentType: PacbioInstrumentTypes.Revio,
           }),
         ).toEqual(
           createPayload({
@@ -130,6 +132,7 @@ describe('run.js', () => {
             plates: plates.new,
             wells: wells.new,
             smrtLinkVersion: smrtLinkVersions['1'],
+            instrumentType: PacbioInstrumentTypes.Revio,
           }),
         )
       })
@@ -144,6 +147,7 @@ describe('run.js', () => {
           plates: plates.new,
           wells: wells.new,
           smrtLinkVersion: smrtLinkVersions['1'],
+          instrumentType: PacbioInstrumentTypes.Revio,
         })
         const request = { create: vi.fn(), update: vi.fn() }
         runType.promise({ payload, request })
@@ -178,6 +182,7 @@ describe('run.js', () => {
             plates: plates.existing,
             wells: wells.existing,
             smrtLinkVersion: smrtLinkVersions['1'],
+            instrumentType: PacbioInstrumentTypes.Revio,
           }),
         ).toEqual(
           createPayload({
@@ -186,6 +191,7 @@ describe('run.js', () => {
             wells: wells.existing,
             run: attributes,
             smrtLinkVersion: smrtLinkVersions['1'],
+            instrumentType: PacbioInstrumentTypes.Revio,
           }),
         )
       })
@@ -200,6 +206,7 @@ describe('run.js', () => {
           plates: plates.existing,
           wells: wells.existing,
           smrtLinkVersion: smrtLinkVersions['1'],
+          instrumentType: PacbioInstrumentTypes.Revio,
         })
         const request = { create: vi.fn(), update: vi.fn() }
         runType.promise({ payload, request })
@@ -246,14 +253,15 @@ describe('run.js', () => {
         plates: plates.new,
         wells: wells.new,
         smrtLinkVersion: smrtLinkVersions['1'],
+        instrumentType: PacbioInstrumentTypes.SequelIIe,
       })
 
       expect(payload).toEqual({
         data: {
           type: 'runs',
           attributes: {
-            system_name: 'Revio',
             pacbio_smrt_link_version_id: smrtLinkVersions['1'].id,
+            system_name: PacbioInstrumentTypes.SequelIIe.name,
             plates_attributes: [
               {
                 ...plates.new[1],
@@ -278,14 +286,15 @@ describe('run.js', () => {
         plates: plates.existing,
         wells: wells.existing,
         smrtLinkVersion: smrtLinkVersions['1'],
+        instrumentType: PacbioInstrumentTypes.Revio,
       })
       expect(payload).toEqual({
         data: {
           type: 'runs',
           id: 1,
           attributes: {
-            system_name: 'Revio',
             pacbio_smrt_link_version_id: smrtLinkVersions['1'].id,
+            system_name: PacbioInstrumentTypes.Revio.name,
             plates_attributes: [
               {
                 ...plates.existing[1],
@@ -309,6 +318,7 @@ describe('run.js', () => {
         plates: plates.single,
         wells: wells.single,
         smrtLinkVersion: smrtLinkVersions['1'],
+        instrumentType: PacbioInstrumentTypes.Revio,
       })
 
       console.log(payload.data.attributes.plates_attributes)
@@ -317,8 +327,8 @@ describe('run.js', () => {
         data: {
           type: 'runs',
           attributes: {
-            system_name: 'Revio',
             pacbio_smrt_link_version_id: smrtLinkVersions['1'].id,
+            system_name: PacbioInstrumentTypes.Revio.name,
             plates_attributes: [
               {
                 ...plates.single[1],

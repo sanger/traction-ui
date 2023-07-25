@@ -163,7 +163,14 @@ describe('actions.js', () => {
         create.mockResolvedValue(mockResponse)
         const { success } = await saveRun({
           rootState,
-          state: { runType, run, plates, wells, smrtLinkVersion: defaultSmrtLinkVersion },
+          state: {
+            runType,
+            run,
+            plates,
+            wells,
+            smrtLinkVersion: defaultSmrtLinkVersion,
+            instrumentType: PacbioInstrumentTypes.Revio,
+          },
         })
         expect(create).toHaveBeenCalled()
         expect(success).toBeTruthy()
@@ -175,7 +182,14 @@ describe('actions.js', () => {
         create.mockRejectedValue(failedResponse)
         const { success } = await saveRun({
           rootState,
-          state: { runType, run, plates, wells, smrtLinkVersion: defaultSmrtLinkVersion },
+          state: {
+            runType,
+            run,
+            plates,
+            wells,
+            smrtLinkVersion: defaultSmrtLinkVersion,
+            instrumentType: PacbioInstrumentTypes.Revio,
+          },
         })
         expect(success).toBeFalsy()
       })
@@ -195,7 +209,14 @@ describe('actions.js', () => {
         update.mockResolvedValue(mockResponse)
         const { success } = await saveRun({
           rootState,
-          state: { runType, run, plates, wells, smrtLinkVersion: defaultSmrtLinkVersion },
+          state: {
+            runType,
+            run,
+            plates,
+            wells,
+            smrtLinkVersion: defaultSmrtLinkVersion,
+            instrumentType: PacbioInstrumentTypes.Revio,
+          },
         })
         expect(update).toHaveBeenCalled()
         expect(success).toBeTruthy()
@@ -207,7 +228,14 @@ describe('actions.js', () => {
         update.mockRejectedValue(failedResponse)
         const { success } = await saveRun({
           rootState,
-          state: { runType, run, plates, wells, smrtLinkVersion: defaultSmrtLinkVersion },
+          state: {
+            runType,
+            run,
+            plates,
+            wells,
+            smrtLinkVersion: defaultSmrtLinkVersion,
+            instrumentType: PacbioInstrumentTypes.Revio,
+          },
         })
         expect(success).toBeFalsy()
       })
@@ -334,7 +362,10 @@ describe('actions.js', () => {
       }
       setInstrumentData({ commit, state })
       expect(commit).toHaveBeenCalledWith('populateInstrumentType', PacbioInstrumentTypes.Revio)
-      expect(commit).toHaveBeenCalledWith('createPlates', PacbioInstrumentTypes.Revio.plateCount)
+      expect(commit).toHaveBeenCalledWith(
+        'createPlatesAndWells',
+        PacbioInstrumentTypes.Revio.plateCount,
+      )
     })
 
     it('when it is an existing plate', () => {
@@ -350,7 +381,7 @@ describe('actions.js', () => {
       }
       setInstrumentData({ commit, state })
       expect(commit).toHaveBeenCalledWith('populateInstrumentType', PacbioInstrumentTypes.SequelIIe)
-      expect(commit).not.toHaveBeenCalledWith('createPlates')
+      expect(commit).not.toHaveBeenCalledWith('createPlatesAndWells')
     })
   })
 })

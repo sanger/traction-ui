@@ -127,11 +127,14 @@ export default {
    * @param state {runType, runs, plates, wells}. The current runType, run it's plates and wells
    * @returns { success, errors }. Was the request successful? were there any errors?
    */
-  saveRun: async ({ rootState, state: { runType, run, plates, wells, smrtLinkVersion } }) => {
+  saveRun: async ({
+    rootState,
+    state: { runType, run, plates, wells, smrtLinkVersion, instrumentType },
+  }) => {
     const request = rootState.api.traction.pacbio.runs
 
     // based on the runType create the payload and the promise
-    const payload = runType.payload({ run, plates, wells, smrtLinkVersion })
+    const payload = runType.payload({ run, plates, wells, smrtLinkVersion, instrumentType })
     const promise = runType.promise({ request, payload })
     const response = await handleResponse(promise)
 
@@ -263,7 +266,7 @@ export default {
         )
     commit('populateInstrumentType', { ...instrumentType })
     if (runType.type === RunTypeEnum.New) {
-      commit('createPlates', instrumentType.plateCount)
+      commit('createPlatesAndWells', instrumentType.plateCount)
     }
   },
 }
