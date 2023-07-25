@@ -64,15 +64,13 @@ describe('PacbioRunInfoEdit', () => {
   })
 
   it('will update the instrument type', async () => {
-    let input
-    input = wrapper.find('[data-attribute=system_name]')
-    await input.setValue('Revio')
+    const input = wrapper.find('[data-attribute=system_name]')
+    await input.setValue(PacbioInstrumentTypes.Revio.key)
     expect(store.state.traction.pacbio.runCreate.instrumentType).toEqual(
       PacbioInstrumentTypes.Revio,
     )
 
-    input = wrapper.find('[data-attribute=system_name]')
-    await input.setValue('SequelIIe')
+    await input.setValue(PacbioInstrumentTypes.SequelIIe.key)
     expect(store.state.traction.pacbio.runCreate.instrumentType).toEqual(
       PacbioInstrumentTypes.SequelIIe,
     )

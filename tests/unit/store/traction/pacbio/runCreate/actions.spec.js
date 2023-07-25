@@ -338,12 +338,12 @@ describe('actions.js', () => {
   describe('setInstrumentData', () => {
     it('when a key is passed', () => {
       const commit = vi.fn()
-      const instrumentTypeKey = 'SequelIIe'
+      const instrumentTypeKey = PacbioInstrumentTypes.SequelIIe.key
       const state = {
         instrumentTypeList: PacbioInstrumentTypes,
         run: {
           ...newRun(),
-          system_name: 'Revio',
+          system_name: 'Sequel IIe',
         },
         runType: newRunType,
       }

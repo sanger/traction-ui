@@ -321,8 +321,6 @@ describe('run.js', () => {
         instrumentType: PacbioInstrumentTypes.Revio,
       })
 
-      console.log(payload.data.attributes.plates_attributes)
-
       expect(payload).toEqual({
         data: {
           type: 'runs',

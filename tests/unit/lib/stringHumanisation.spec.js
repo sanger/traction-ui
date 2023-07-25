@@ -14,12 +14,4 @@ describe('stringHumanisation', () => {
       'Is it me youre looking for',
     )
   })
-
-  it('#removeSpaces', () => {
-    expect(stringHumanisation.removeSpaces('hello')).toEqual('hello')
-    expect(stringHumanisation.removeSpaces('Sequel IIe')).toEqual('SequelIIe')
-    expect(stringHumanisation.removeSpaces('is it me youre looking for')).toEqual(
-      'isitmeyourelookingfor',
-    )
-  })
 })
