@@ -100,13 +100,19 @@
             </traction-field-group>
           </div>
           <div v-if="pipeline == 'ONT'">
-            <traction-field-group label="Data Type" attribute="data_type" for="data_type">
+            <traction-field-group
+              label="Data Type"
+              attribute="data_type"
+              for="data_type"
+              layout="spacious"
+            >
               <DataTypeSelect v-model="requestOptions.data_type" pipeline="ont" />
             </traction-field-group>
             <traction-field-group
               label="Number of Flowcells"
               attribute="number_of_flowcells"
               for="number_of_flowcells"
+              layout="spacious"
             >
               <traction-input
                 id="number_of_flowcells"

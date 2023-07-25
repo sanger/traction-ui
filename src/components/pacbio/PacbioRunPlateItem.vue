@@ -10,7 +10,7 @@
       >
       </well>
     </Plate96SVG>
-    <WellEdit ref="modal" class="modal" :position="selectedWellPosition" @alert="alert"></WellEdit>
+    <WellEdit ref="modal" :position="selectedWellPosition" @alert="alert"></WellEdit>
   </div>
 </template>
 
