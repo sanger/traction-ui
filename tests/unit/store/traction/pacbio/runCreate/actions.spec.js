@@ -49,6 +49,7 @@ describe('actions.js', () => {
     updateWell,
     getPool,
     setInstrumentData,
+    setSmrtLinkVersion,
   } = actions
 
   describe('fetchSmrtLinkVersions', () => {
@@ -382,6 +383,25 @@ describe('actions.js', () => {
       setInstrumentData({ commit, state })
       expect(commit).toHaveBeenCalledWith('populateInstrumentType', PacbioInstrumentTypes.SequelIIe)
       expect(commit).not.toHaveBeenCalledWith('createPlatesAndWells')
+    })
+  })
+
+  describe('setSmrtLinkVersion', () => {
+    it('will set the SMRT Link Version', () => {
+      const commit = vi.fn()
+      const state = {
+        resources: {
+          smrtLinkVersions: {
+            1: { id: '1', version: 'v1', default: true },
+            2: { id: '2', version: 'v2', default: false },
+          },
+        },
+      }
+      setSmrtLinkVersion({ commit, state }, '2')
+      expect(commit).toHaveBeenCalledWith(
+        'populateSmrtLinkVersion',
+        state.resources.smrtLinkVersions['2'],
+      )
     })
   })
 })

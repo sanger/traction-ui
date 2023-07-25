@@ -235,10 +235,18 @@ export default {
   /**
    * Updates the store with the SMRT version selected on the component.
    * @param commit the vuex commit object. Provides access to mutations.
-   * @param smrtLinkVersion the smrtLinkVersion object to update the store with.
+   * @param id the id of smrtLinkVersion object to update the store with.
    */
-  updateSmrtLinkVersion: ({ commit }, smrtLinkVersion) => {
-    commit('populateSmrtLinkVersion', { ...smrtLinkVersion })
+  setSmrtLinkVersion: (
+    {
+      commit,
+      state: {
+        resources: { smrtLinkVersions },
+      },
+    },
+    id,
+  ) => {
+    commit('populateSmrtLinkVersion', { ...smrtLinkVersions[id] })
   },
 
   /**

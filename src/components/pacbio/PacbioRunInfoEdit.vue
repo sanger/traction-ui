@@ -51,7 +51,7 @@
           title="SMRT Link Version"
           :options="smrtLinkVersionSelectOptions"
           data-attribute="smrt_link_version"
-          @input="setSmrtLinkVersion"
+          @input="setSmrtLinkVersion($event)"
         />
       </traction-field-group>
 
@@ -101,17 +101,11 @@ export default {
     },
   },
   methods: {
-    ...mapActions(['updateSmrtLinkVersion', 'setInstrumentData']),
+    ...mapActions(['setSmrtLinkVersion', 'setInstrumentData']),
     alertOnFail({ success, errors }) {
       if (!success) {
         this.showAlert(errors, 'danger')
       }
-    },
-
-    // Sets the runCreate/smrtLinkVersion store with the version selected in the component
-    setSmrtLinkVersion(id) {
-      const option = this.smrtLinkVersionList[id]
-      this.updateSmrtLinkVersion(option)
     },
   },
 }
