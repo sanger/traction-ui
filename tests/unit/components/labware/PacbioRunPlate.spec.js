@@ -136,12 +136,12 @@ describe('PacbioRunPlate.vue', () => {
 
     it('has the correct number of wells', () => {
       const wells = wrapper.findAll('[data-attribute="pacbio-run-well"]')
-      expect(wells.length).toEqual(4)
+      expect(wells.length).toEqual(8)
     })
 
     describe('#computed', () => {
       it('labware returns the correct information', () => {
-        expect(plate.labware.plateCount).toEqual(1)
+        expect(plate.labware.plateCount).toEqual(2)
         expect(plate.labware.labwareType).toEqual(LabwareTypes.Plate4)
       })
       it('isRevio', () => {
