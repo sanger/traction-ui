@@ -1,7 +1,7 @@
 import { mount, store, nextTick } from '@support/testHelper'
 import PacbioRunWellEdit from '@/components/pacbio/PacbioRunWellEdit'
 import { beforeEach, describe, expect } from 'vitest'
-import { newWell, newPlate } from '@/store/traction/pacbio/runCreate/run'
+import { newWell } from '@/store/traction/pacbio/runCreate/run'
 
 // They are like the following in the store; not an array.
 const smrtLinkVersions = {
@@ -42,12 +42,9 @@ describe('PacbioWellEdit', () => {
     describe('if the SMRT Link version is v11', () => {
       beforeEach(async () => {
         store.state.traction.pacbio.runCreate.smrtLinkVersion = smrtLinkVersions['1']
-        store.state.traction.pacbio.runCreate.run.plates = {
+        store.state.traction.pacbio.runCreate.wells = {
           1: {
-            ...newPlate(1),
-            wells: {
-              A1: newWell({ position: position }),
-            },
+            A1: newWell({ position }),
           },
         }
         wrapper = mount(PacbioRunWellEdit, {
@@ -125,12 +122,9 @@ describe('PacbioWellEdit', () => {
     describe('if the SMRT Link version is v12_revio', () => {
       beforeEach(() => {
         store.state.traction.pacbio.runCreate.smrtLinkVersion = smrtLinkVersions['2']
-        store.state.traction.pacbio.runCreate.run.plates = {
+        store.state.traction.pacbio.runCreate.wells = {
           1: {
-            ...newPlate(1),
-            wells: {
-              A1: newWell({ position: position }),
-            },
+            A1: newWell({ position }),
           },
         }
         wrapper = mount(PacbioRunWellEdit, {
@@ -209,7 +203,7 @@ describe('PacbioWellEdit', () => {
     describe('well type', () => {
       it('if it doesnt exist in state (new)', async () => {
         store.state.traction.pacbio.runCreate.smrtLinkVersion = smrtLinkVersions['1']
-        store.state.traction.pacbio.runCreate.run.plates = { 1: newPlate(1) }
+        store.state.traction.pacbio.runCreate.wells = { 1: {} }
 
         wrapper = mount(PacbioRunWellEdit, {
           store,
@@ -227,12 +221,9 @@ describe('PacbioWellEdit', () => {
       it('if it is an existing well', async () => {
         store.state.traction.pacbio.runCreate.smrtLinkVersion = smrtLinkVersions['1']
 
-        store.state.traction.pacbio.runCreate.run.plates = {
+        store.state.traction.pacbio.runCreate.wells = {
           1: {
-            ...newPlate(1),
-            wells: {
-              A1: newWell({ attributes: { id: 1 }, position: position }),
-            },
+            A1: newWell({ attributes: { id: 1 }, position: position }),
           },
         }
 
@@ -258,14 +249,11 @@ describe('PacbioWellEdit', () => {
           pools: { 1: { id: 1, tube: 1 }, 2: { id: 2, tube: 2 } },
           tubes: { 1: { barcode: 'TRAC-1' }, 2: { barcode: 'TRAC-2' } },
           smrtLinkVersion: smrtLinkVersions['1'],
-          run: {
-            plates: {
-              1: {
-                plate_number: 1,
-                wells: {
-                  A1: well,
-                },
-              },
+          run: {},
+          plates: { 1: { plate_number: 1 } },
+          wells: {
+            1: {
+              A1: well,
             },
           },
         }

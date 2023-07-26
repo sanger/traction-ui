@@ -1,7 +1,7 @@
 import PacbioRunInfoEdit from '@/components/pacbio/PacbioRunInfoEdit'
 import { mount, store } from '@support/testHelper'
 import { beforeEach, describe, expect } from 'vitest'
-import { PacbioRunSystems } from '@/lib/PacbioRunSystems'
+import { PacbioInstrumentTypes } from '@/lib/PacbioInstrumentTypes'
 
 // required as suggestion to remove the deprecated function
 // https://vue-test-utils.vuejs.org/api/options.html#attachtodocument
@@ -50,13 +50,29 @@ describe('PacbioRunInfoEdit', () => {
   beforeEach(() => {
     wrapper = buildWrapper()
     runInfo = wrapper.vm
-    store.state.traction.pacbio.runCreate.run = run
+    store.state.traction.pacbio.runCreate.run = { ...run }
     store.state.traction.pacbio.runCreate.resources.smrtLinkVersions = smrtLinkVersions
+    store.state.traction.pacbio.runCreate.instrumentTypeList = PacbioInstrumentTypes
+    store.state.traction.pacbio.runCreate.instrumentType = PacbioInstrumentTypes.SequelIIe
   })
 
-  it('must have systemName data', () => {
-    const systemNames = Object.values(PacbioRunSystems).map((system) => system.name)
-    expect(runInfo.systemNameOptions).toEqual(systemNames)
+  it('on mount, will set the instrument type', () => {
+    expect(store.state.traction.pacbio.runCreate.instrumentType).toEqual(
+      PacbioInstrumentTypes.SequelIIe,
+    )
+  })
+
+  it('will update the instrument type', async () => {
+    const input = wrapper.find('[data-attribute=system_name]')
+    await input.setValue(PacbioInstrumentTypes.Revio.key)
+    expect(store.state.traction.pacbio.runCreate.instrumentType).toEqual(
+      PacbioInstrumentTypes.Revio,
+    )
+
+    await input.setValue(PacbioInstrumentTypes.SequelIIe.key)
+    expect(store.state.traction.pacbio.runCreate.instrumentType).toEqual(
+      PacbioInstrumentTypes.SequelIIe,
+    )
   })
 
   describe('smrt link versions', () => {

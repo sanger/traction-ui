@@ -90,7 +90,7 @@ describe('Pacbio Run Edit view', () => {
     cy.get('#actions').within(() => {
       cy.get('#editRun-7').click()
     })
-    cy.get('[data-attribute="sequencing_kit_box_barcode-1"]').clear()
+    cy.get('[data-attribute="sequencing-kit-box-barcode-1"]').clear()
     cy.get('button').contains('Update').click()
     cy.contains(
       '[data-type=run-create-message]',

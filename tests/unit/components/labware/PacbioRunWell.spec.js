@@ -34,7 +34,9 @@ describe('PacbioRunWell.vue', () => {
     }
 
     store.state.traction.pacbio.runCreate = {
-      run: { plates: { 1: { ...newPlate(1), wells: { A1: storeWell } } } },
+      run: {},
+      plates: { 1: newPlate(1) },
+      wells: { 1: { A1: storeWell } },
       ...storePools,
       smrtLinkVersion,
       resources: { smrtLinkVersions },

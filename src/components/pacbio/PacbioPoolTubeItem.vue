@@ -21,24 +21,34 @@
         >
       </div>
       <div class="flex flex-col w-3/4">
-        <dl class="row">
+        <dl class="row flex">
           <dt>Barcode</dt>
           <dd data-attribute="barcode">{{ barcode }}</dd>
         </dl>
         <div v-if="showInfo">
-          <dl class="row">
+          <dl class="row flex">
             <dt>Source</dt>
             <dd data-attribute="source-identifier">{{ source_identifier }}</dd>
+          </dl>
+          <dl class="row flex">
             <dt>Volume</dt>
             <dd data-attribute="volume">{{ volume || 'Unknown' }}</dd>
+          </dl>
+          <dl class="row flex">
             <dt>Concentration</dt>
             <dd data-attribute="concentration">{{ concentration || 'Unknown' }}</dd>
+          </dl>
+          <dl class="row flex">
             <dt>Template prep kit box barcode</dt>
             <dd data-attribute="template-prep-kit-box-barcode">
               {{ template_prep_kit_box_barcode || 'Unknown' }}
             </dd>
+          </dl>
+          <dl class="row flex">
             <dt>Insert size</dt>
             <dd data-attribute="insert-size">{{ insert_size || 'Unknown' }}</dd>
+          </dl>
+          <dl class="row flex">
             <dt>Libraries</dt>
             <dd>
               <ul>
@@ -47,6 +57,8 @@
                 </li>
               </ul>
             </dd>
+          </dl>
+          <dl class="flex">
             <dt v-if="!valid">Errors</dt>
             <dd v-if="!valid">
               <ul>
