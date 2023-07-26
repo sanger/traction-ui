@@ -97,14 +97,13 @@ export default {
       'smrtLinkVersion',
       'getWell',
       'pools',
-      'runItem',
     ]),
     smrtLinkWellDefaults() {
       return PacbioRunWellComponents[this.smrtLinkVersion.name]
     },
     newWell() {
       // Check if well exists in state
-      return !this.getWell(this.position, this.plateNumber)
+      return !this.getWell(this.plateNumber, this.position)
     },
     // this is needed to update the well. We need to make sure we have the
     // right pools

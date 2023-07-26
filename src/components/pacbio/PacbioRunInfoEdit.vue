@@ -34,12 +34,12 @@
         <traction-select
           id="system-name"
           ref="systemName"
-          v-model="runItem.system_name"
-          :value="runItem.system_name"
+          :value="instrumentType.key"
           title="System Name"
-          :options="systemNameOptions"
+          :options="instrumentTypeSelectOptions"
           data-attribute="system_name"
           :disabled="!newRecord"
+          @input="setInstrumentData($event)"
         />
       </traction-field-group>
 
@@ -51,7 +51,7 @@
           title="SMRT Link Version"
           :options="smrtLinkVersionSelectOptions"
           data-attribute="smrt_link_version"
-          @input="setSmrtLinkVersion"
+          @input="setSmrtLinkVersion($event)"
         />
       </traction-field-group>
 
@@ -72,7 +72,7 @@
 <script>
 import { createNamespacedHelpers } from 'vuex'
 const { mapGetters, mapActions } = createNamespacedHelpers('traction/pacbio/runCreate')
-import { PacbioRunSystems } from '@/lib/PacbioRunSystems'
+import { PacbioInstrumentTypes } from '@/lib/PacbioInstrumentTypes'
 
 export default {
   name: 'PacbioRunInfoEdit',
@@ -81,35 +81,31 @@ export default {
       type: Boolean,
     },
   },
-  data() {
-    return {
-      systemNameOptions: Object.values(PacbioRunSystems).map((system) => system.name),
-    }
-  },
   computed: {
-    ...mapGetters(['runItem', 'smrtLinkVersionList', 'smrtLinkVersion']),
+    ...mapGetters(['runItem', 'smrtLinkVersionList', 'smrtLinkVersion', 'instrumentType']),
     smrtLinkVersionSelectOptions() {
       // Returns an array of objects with value and text properties to make
       // the options of smrt-link-version select drop-down list.
-
       return Object.values(this.smrtLinkVersionList).map(({ id, name }) => ({
         value: id,
         text: name,
       }))
     },
+    instrumentTypeSelectOptions() {
+      // Returns an array of objects with value and text properties to make
+      // the options of instrument-type select drop-down list.
+      return Object.values(PacbioInstrumentTypes).map(({ key, name }) => ({
+        value: key,
+        text: name,
+      }))
+    },
   },
   methods: {
-    ...mapActions(['updateSmrtLinkVersion']),
+    ...mapActions(['setSmrtLinkVersion', 'setInstrumentData']),
     alertOnFail({ success, errors }) {
       if (!success) {
         this.showAlert(errors, 'danger')
       }
-    },
-
-    // Sets the runCreate/smrtLinkVersion store with the version selected in the component
-    setSmrtLinkVersion(id) {
-      const option = this.smrtLinkVersionList[id]
-      this.updateSmrtLinkVersion(option)
     },
   },
 }

@@ -36,8 +36,8 @@ describe('PacbioRunShow.vue', () => {
         router,
         localVue,
         stubs: {
-          Plate: true,
-          pacbioPoolList: true,
+          PacbioPlateList: true,
+          PacbioPoolList: true,
           PacbioRunInfoEdit: true,
           PacbioRunWellDefaultEdit: true,
         },
@@ -78,7 +78,7 @@ describe('PacbioRunShow.vue', () => {
         router,
         localVue,
         stubs: {
-          Plate: true,
+          PacbioPlateList: true,
           pacbioPoolList: true,
           PacbioRunInfoEdit: true,
           PacbioRunWellDefaultEdit: true,
