@@ -139,8 +139,7 @@ describe('PacbioRunPlateItem.vue', () => {
       )
     })
 
-    // TODO: last failing test.
-    it.only('returns the serialNumber', () => {
+    it('returns the serialNumber', () => {
       expect(wrapper.find('[data-attribute=serial-number]').text()).toEqual('Serial Number: 00373')
     })
 
