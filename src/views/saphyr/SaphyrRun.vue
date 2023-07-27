@@ -21,11 +21,11 @@
 
     <traction-input
       id="name"
-      :value="runName"
+      :model-value="runName"
       class="runInfo"
       placeholder="name"
       type="text"
-      @change="setRunName"
+      @update:modelValue="setRunName"
     />
 
     <chip :chip="currentRun.chip" @alert="showAlert"></chip>

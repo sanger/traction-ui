@@ -1,4 +1,4 @@
-import { mount, localVue, store } from '@support/testHelper'
+import { mount, store } from '@support/testHelper'
 import Chip from '@/components/saphyr/SaphyrChip'
 import * as Run from '@/api/SaphyrRun'
 
@@ -20,9 +20,8 @@ describe('Chip', () => {
     }
 
     wrapper = mount(Chip, {
-      localVue,
       store,
-      propsData: props,
+      props,
     })
     chip = wrapper.vm
   })

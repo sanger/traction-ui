@@ -1,12 +1,11 @@
 import DragHelper from '@/mixins/DragHelper'
-import { localVue, mount } from '@support/testHelper'
+import { mount } from '@support/testHelper'
 
 describe('DragHelper', () => {
   let dragHelper, wrapper
 
   beforeEach(() => {
     wrapper = mount(DragHelper, {
-      localVue,
       template: '<div />',
       render() {},
     })

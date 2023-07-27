@@ -6,9 +6,9 @@
         <traction-select
           id="instrument-selection"
           :options="instrumentOptions"
-          :value="instrumentName"
+          :model-value="instrumentName"
           :disabled="!newRecord"
-          @input="setInstrumentName"
+          @update:modelValue="setInstrumentName"
         ></traction-select>
       </div>
       <div class="flex flex-col gap-y-2 items-start">
@@ -16,8 +16,8 @@
         <traction-select
           id="state-selection"
           :options="stateOptions"
-          :value="state"
-          @input="setState"
+          :model-value="state"
+          @update:modelValue="setState"
         ></traction-select>
       </div>
     </div>

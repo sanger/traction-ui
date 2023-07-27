@@ -1,10 +1,16 @@
 <template>
   <div>
-    <Plate96SVG v-if="wells" ref="plate96Svg" :height="computedHeight" :width="computedWidth">
+    <Plate96SVG
+      v-if="wells"
+      data-attribute="plate96Svg"
+      :height="computedHeight"
+      :width="computedWidth"
+    >
       <Well
         v-for="(well, position) in plateMap.wells"
         :key="position"
         ref="well"
+        data-attribute="well"
         v-bind="well"
         :well_info="getWellAt(position)"
       >

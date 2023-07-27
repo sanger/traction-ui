@@ -6,19 +6,18 @@
         :key="index"
         :active="isActive(pipelineRoute)"
         color="blue"
-        @click.native="setSource(index)"
+        @click="setSource(index)"
         >{{ humanise(pipelineRoute) }}</traction-menu-item
       >
     </traction-menu>
-    <router-view class="mt-2"></router-view>
+    <router-view class="mt-2" />
   </div>
 </template>
 
 <script>
 import PipelinesConfig from '@/config/PipelinesConfig'
 import { humanise } from '@/lib/stringHumanisation'
-import VueRouter from 'vue-router'
-const { isNavigationFailure, NavigationFailureType } = VueRouter
+import { isNavigationFailure, NavigationFailureType } from 'vue-router'
 export default {
   name: 'PipelineView',
   props: {

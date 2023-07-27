@@ -1,8 +1,7 @@
 import Response from '@/api/Response'
 import EnzymeModal from '@/components/saphyr/SaphyrEnzymeModal'
-import flushPromises from 'flush-promises'
 import EnzymesJson from '@tests/data/enzymes'
-import { localVue, mount, store } from '@support/testHelper'
+import { mount, store, flushPromises } from '@support/testHelper'
 
 describe('SaphyrEnzymeModal.vue', () => {
   let wrapper, enzymeModal
@@ -12,9 +11,8 @@ describe('SaphyrEnzymeModal.vue', () => {
     vi.spyOn(EnzymeModal.methods, 'provider').mockImplementation(() => {})
 
     wrapper = mount(EnzymeModal, {
-      localVue,
       store,
-      propsData: {
+      props: {
         disabled: true,
         isStatic: true,
       },

@@ -1,5 +1,5 @@
 import PacbioRunWell from '@/components/labware/PacbioRunWell'
-import { localVue, mount, store } from '@support/testHelper'
+import { mount, store } from '@support/testHelper'
 import storePools from '@tests/data/StorePools'
 import { newPlate } from '@/store/traction/pacbio/runCreate/run'
 
@@ -43,9 +43,8 @@ describe('PacbioRunWell.vue', () => {
     }
 
     wrapper = mount(PacbioRunWell, {
-      localVue,
       store,
-      propsData: props,
+      props,
       stubs: {
         WellModal: true,
       },
@@ -72,9 +71,8 @@ describe('PacbioRunWell.vue', () => {
       it('will be invalid if there is any missing meta data', () => {
         storeWell.movie_time = ''
         wrapper = mount(PacbioRunWell, {
-          localVue,
           store,
-          propsData: props,
+          props,
           stubs: {
             WellModal: true,
           },
@@ -86,9 +84,8 @@ describe('PacbioRunWell.vue', () => {
       it('will be invalid if there are no pools in the store', () => {
         storeWell.pools = []
         wrapper = mount(PacbioRunWell, {
-          localVue,
           store,
-          propsData: props,
+          props,
           stubs: {
             WellModal: true,
           },
@@ -99,9 +96,8 @@ describe('PacbioRunWell.vue', () => {
 
       it('will be valid if all required metadata is present', () => {
         wrapper = mount(PacbioRunWell, {
-          localVue,
           store,
-          propsData: props,
+          props,
           stubs: {
             WellModal: true,
           },
@@ -120,9 +116,8 @@ describe('PacbioRunWell.vue', () => {
         storeWell.binding_kit_box_barcode = ''
 
         wrapper = mount(PacbioRunWell, {
-          localVue,
           store,
-          propsData: props,
+          props,
           stubs: {
             WellModal: true,
           },
@@ -140,9 +135,8 @@ describe('PacbioRunWell.vue', () => {
 
       it('will be valid if it is complete', () => {
         wrapper = mount(PacbioRunWell, {
-          localVue,
           store,
-          propsData: props,
+          props,
           stubs: {
             WellModal: true,
           },
@@ -155,9 +149,8 @@ describe('PacbioRunWell.vue', () => {
       it('will be invalid if there is any missing meta data', () => {
         storeWell.movie_acquisition_time = ''
         wrapper = mount(PacbioRunWell, {
-          localVue,
           store,
-          propsData: props,
+          props,
           stubs: {
             WellModal: true,
           },
@@ -169,9 +162,8 @@ describe('PacbioRunWell.vue', () => {
       it('will be invalid if there are no pools in the store', () => {
         storeWell.pools = []
         wrapper = mount(PacbioRunWell, {
-          localVue,
           store,
-          propsData: props,
+          props,
           stubs: {
             WellModal: true,
           },
@@ -182,9 +174,8 @@ describe('PacbioRunWell.vue', () => {
 
       it('will be valid if all required metadata is present', () => {
         wrapper = mount(PacbioRunWell, {
-          localVue,
           store,
-          propsData: props,
+          props,
           stubs: {
             WellModal: true,
           },
@@ -202,9 +193,8 @@ describe('PacbioRunWell.vue', () => {
         storeWell.include_base_kinetics = ''
 
         wrapper = mount(PacbioRunWell, {
-          localVue,
           store,
-          propsData: props,
+          props,
           stubs: {
             WellModal: true,
           },

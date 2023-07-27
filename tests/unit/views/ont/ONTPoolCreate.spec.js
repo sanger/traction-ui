@@ -1,6 +1,5 @@
 import ONTPoolCreate from '@/views/ont/ONTPoolCreate.vue'
-import { mount, localVue, store, Data, router } from '@support/testHelper'
-import flushPromises from 'flush-promises'
+import { mount, store, Data, router, flushPromises } from '@support/testHelper'
 import { expect } from 'vitest'
 
 describe('OntPoolCreate', () => {
@@ -18,10 +17,9 @@ describe('OntPoolCreate', () => {
     tagSetsRequest.get = vi.fn(() => Data.TractionOntTagSets)
     poolsRequest.find = vi.fn()
 
-    router.push({ name: 'ONTPoolCreate', params: { id: 'new' } })
+    await router.push({ name: 'ONTPoolCreate', params: { id: 'new' } })
 
     mount(ONTPoolCreate, {
-      localVue,
       store,
       router,
     })
@@ -58,9 +56,8 @@ describe('OntPoolCreate', () => {
     tagSetsRequest.get = vi.fn(() => Data.TractionOntTagSets)
     poolsRequest.find = vi.fn(() => Data.TractionOntPool)
 
-    router.push({ name: 'ONTPoolCreate', params: { id: 3 } })
+    await router.push({ name: 'ONTPoolCreate', params: { id: 3 } })
     mount(ONTPoolCreate, {
-      localVue,
       store,
       router,
     })

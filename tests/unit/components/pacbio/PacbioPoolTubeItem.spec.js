@@ -1,5 +1,5 @@
 import Tube from '@/components/pacbio/PacbioPoolTubeItem'
-import { localVue, mount } from '@support/testHelper'
+import { mount, router } from '@support/testHelper'
 
 describe('LibraryTubeItem.vue', () => {
   let tube, wrapper, props
@@ -34,8 +34,8 @@ describe('LibraryTubeItem.vue', () => {
       }
 
       wrapper = mount(Tube, {
-        localVue,
-        propsData: props,
+        props,
+        router,
       })
 
       tube = wrapper.vm
@@ -125,8 +125,7 @@ describe('LibraryTubeItem.vue', () => {
       }
 
       wrapper = mount(Tube, {
-        localVue,
-        propsData: props,
+        props,
       })
 
       tube = wrapper.vm
@@ -143,13 +142,13 @@ describe('LibraryTubeItem.vue', () => {
       expect(wrapper.text()).toContain("Library 1 (Sample1) insert_size - can't be blank")
     })
 
-    it('has an edit button per library', () => {
+    it('has an edit button per library', async () => {
+      router.push = vi.fn()
       const button = wrapper.find('#editPool-1')
       expect(button.text()).toEqual('Edit')
-      expect(button.props('to')).toStrictEqual({
-        name: 'PacbioPoolCreate',
-        params: { id: '1' },
-      })
+      await button.trigger('click')
+      expect(router.push).toHaveBeenCalledTimes(1)
+      expect(router.push).toHaveBeenCalledWith({ name: 'PacbioPoolCreate', params: { id: '1' } })
     })
   })
 })

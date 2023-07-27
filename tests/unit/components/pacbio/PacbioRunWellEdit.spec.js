@@ -1,4 +1,4 @@
-import { mount, localVue, store } from '@support/testHelper'
+import { mount, store, nextTick } from '@support/testHelper'
 import PacbioRunWellEdit from '@/components/pacbio/PacbioRunWellEdit'
 import { beforeEach, describe, expect } from 'vitest'
 import { newWell } from '@/store/traction/pacbio/runCreate/run'
@@ -17,7 +17,7 @@ const smrtLinkVersions = {
   },
 }
 
-const propsData = {
+const props = {
   isStatic: true,
 }
 const position = 'A1'
@@ -48,10 +48,9 @@ describe('PacbioWellEdit', () => {
           },
         }
         wrapper = mount(PacbioRunWellEdit, {
-          localVue,
           store,
-          propsData: {
-            ...propsData,
+          props: {
+            ...props,
           },
         })
         wrapper.vm.isShow = true
@@ -129,9 +128,8 @@ describe('PacbioWellEdit', () => {
           },
         }
         wrapper = mount(PacbioRunWellEdit, {
-          localVue,
           store,
-          propsData,
+          props,
         })
         wrapper.vm.isShow = true
         wrapper.vm.position = position
@@ -208,15 +206,14 @@ describe('PacbioWellEdit', () => {
         store.state.traction.pacbio.runCreate.wells = { 1: {} }
 
         wrapper = mount(PacbioRunWellEdit, {
-          localVue,
           store,
-          propsData,
+          props,
         })
 
         wrapper.vm.isShow = true
         wrapper.vm.position = position
         wrapper.vm.plateNumber = plateNumber
-        await wrapper.vm.$nextTick()
+        await nextTick()
         const button = wrapper.find('[data-action=create-well]')
         expect(button.text()).toEqual('Create')
       })
@@ -231,15 +228,14 @@ describe('PacbioWellEdit', () => {
         }
 
         wrapper = mount(PacbioRunWellEdit, {
-          localVue,
           store,
-          propsData,
+          props,
         })
 
         wrapper.vm.isShow = true
         wrapper.vm.position = position
         wrapper.vm.plateNumber = plateNumber
-        await wrapper.vm.$nextTick()
+        await nextTick()
         const button = wrapper.find('[data-action=update-well]')
         expect(button.text()).toEqual('Update')
       })
@@ -263,9 +259,8 @@ describe('PacbioWellEdit', () => {
         }
 
         wrapper = mount(PacbioRunWellEdit, {
-          localVue,
           store,
-          propsData,
+          props,
         })
 
         // This method sets the well data for the modal on show

@@ -1,5 +1,5 @@
 import InfoFooter from '@/components/InfoFooter'
-import { localVue, mount } from '@support/testHelper'
+import { mount } from '@support/testHelper'
 
 describe('InfoFooter.vue', () => {
   let wrapper
@@ -15,9 +15,7 @@ describe('InfoFooter.vue', () => {
     }
     global.fetch = vi.fn(() => Promise.resolve(response))
 
-    wrapper = mount(InfoFooter, {
-      localVue,
-    })
+    wrapper = mount(InfoFooter)
   })
 
   it('has a environment', () => {

@@ -1,5 +1,5 @@
 import PacbioPoolLibraryEdit from '@/components/pacbio/PacbioPoolLibraryEdit'
-import { mount, store, localVue } from '@support/testHelper'
+import { mount, store } from '@support/testHelper'
 import { newLibrary } from '@/store/traction/pacbio/poolCreate/pool.js'
 
 const request = {
@@ -39,8 +39,7 @@ describe('PacbioPoolLibraryEdit.vue', () => {
 
       wrapper = mount(PacbioPoolLibraryEdit, {
         store,
-        localVue,
-        propsData: {
+        props: {
           id: 1,
           request,
           notify: () => {},
@@ -78,7 +77,7 @@ describe('PacbioPoolLibraryEdit.vue', () => {
     describe('when the user selects a tag', () => {
       it('will update the tag_id', async () => {
         const options = wrapper.find('[data-type=tag-list]').findAll('option')
-        await options.at(1).setSelected()
+        await options[1].setSelected()
         expect(store.state.traction.pacbio.poolCreate.libraries['_1'].tag_id).toEqual('1')
       })
     })
@@ -113,7 +112,7 @@ describe('PacbioPoolLibraryEdit.vue', () => {
   })
 
   describe('invalid', () => {
-    const propsData = {
+    const props = {
       id: 1,
       request,
       notify: () => {},
@@ -126,8 +125,7 @@ describe('PacbioPoolLibraryEdit.vue', () => {
 
       wrapper = mount(PacbioPoolLibraryEdit, {
         store,
-        localVue,
-        propsData,
+        props,
       })
 
       expect(wrapper.find('[data-attribute=tag-id-error]').text()).toEqual('must be present')
@@ -140,8 +138,7 @@ describe('PacbioPoolLibraryEdit.vue', () => {
 
       wrapper = mount(PacbioPoolLibraryEdit, {
         store,
-        localVue,
-        propsData,
+        props,
       })
 
       expect(wrapper.find('[data-attribute=volume-error]').text()).toEqual('must be present')
@@ -154,8 +151,7 @@ describe('PacbioPoolLibraryEdit.vue', () => {
 
       wrapper = mount(PacbioPoolLibraryEdit, {
         store,
-        localVue,
-        propsData,
+        props,
       })
 
       expect(wrapper.find('[data-attribute=concentration-error]').text()).toEqual('must be present')
@@ -168,8 +164,7 @@ describe('PacbioPoolLibraryEdit.vue', () => {
 
       wrapper = mount(PacbioPoolLibraryEdit, {
         store,
-        localVue,
-        propsData,
+        props,
       })
 
       expect(wrapper.find('[data-attribute=insert-size-error]').text()).toEqual('must be present')

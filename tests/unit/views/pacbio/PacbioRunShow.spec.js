@@ -1,8 +1,7 @@
 import PacbioRun from '@/views/pacbio/PacbioRunShow'
-import { localVue, mount, store, router, Data } from '@support/testHelper'
+import { mount, store, router, Data, flushPromises } from '@support/testHelper'
 import { beforeEach, describe, expect, it } from 'vitest'
 import { newRunType, existingRunType } from '@/store/traction/pacbio/runCreate/run'
-import flushPromises from 'flush-promises'
 
 const smrtLinkVersions = [
   {
@@ -34,14 +33,13 @@ describe('PacbioRunShow.vue', () => {
       const wrapper = mount(PacbioRun, {
         store,
         router,
-        localVue,
         stubs: {
           PacbioPlateList: true,
           PacbioPoolList: true,
           PacbioRunInfoEdit: true,
           PacbioRunWellDefaultEdit: true,
         },
-        propsData: { id: 'new' },
+        props: { id: 'new' },
       })
       await flushPromises()
 
@@ -76,15 +74,16 @@ describe('PacbioRunShow.vue', () => {
       const wrapper = mount(PacbioRun, {
         store,
         router,
-        localVue,
         stubs: {
           PacbioPlateList: true,
           pacbioPoolList: true,
           PacbioRunInfoEdit: true,
           PacbioRunWellDefaultEdit: true,
         },
-        propsData: { id: 1 },
+        props: { id: 1 },
       })
+      // ClearData is getting rid of the smrtLinkVersion we manually set
+      wrapper.vm.clearData = vi.fn()
       await flushPromises()
 
       const type = existingRunType

@@ -2,10 +2,10 @@
   <traction-field-group label="Library Type" label-for="library-type" layout="spacious">
     <traction-select
       id="library-type"
-      :value="libraryType"
+      :model-value="libraryType"
       :options="libraryTypes"
       data-attribute="library-type-list"
-      @input="handleInput"
+      @update:modelValue="handleInput"
     ></traction-select>
   </traction-field-group>
 </template>
@@ -15,6 +15,7 @@
  * This field probably *shouldn't* render its own labels.
  */
 import useSWRV from 'swrv'
+import { ref } from 'vue'
 import { filterByAttribute, mapAttribute } from '@/api/JsonApi'
 
 // We want undefined (I've not specified a library) and null (I want NO library)
@@ -34,7 +35,7 @@ export default {
       required: false,
       default: null,
     },
-    value: {
+    modelValue: {
       // The library type, we use value to allow us to simply bind it with v-model
       type: String,
       default: undefined,
@@ -53,16 +54,17 @@ export default {
       default: true,
     },
   },
+  emits: ['update:modelValue'],
   setup() {
-    const baseURL = import.meta.env.VITE_TRACTION_BASE_URL
+    const baseURL = ref(import.meta.env.VITE_TRACTION_BASE_URL)
     const { data: remoteLibraryTypes } = useSWRV(
-      `${baseURL}/v1/library_types?fields[library_types]=name,pipeline`,
+      `${baseURL.value}/v1/library_types?fields[library_types]=name,pipeline`,
     )
     return { remoteLibraryTypes }
   },
   computed: {
     libraryType() {
-      return encode(this.value)
+      return encode(this.modelValue)
     },
     importOption() {
       if (this.import) {
@@ -87,7 +89,7 @@ export default {
   },
   methods: {
     handleInput(input) {
-      this.$emit('input', decode(input))
+      this.$emit('update:modelValue', decode(input))
     },
   },
 }

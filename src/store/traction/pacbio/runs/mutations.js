@@ -1,4 +1,3 @@
-import Vue from 'vue'
 import { dataToObjectById, extractAttributes } from '@/api/JsonApi'
 
 const mutations = {
@@ -11,7 +10,7 @@ const mutations = {
     state.runs = dataToObjectById({ data, includeRelationships: true })
   },
   updateRun(state, run) {
-    Vue.set(state.runs, run.id, extractAttributes(run))
+    state.runs[run.id] = extractAttributes(run)
   },
 }
 

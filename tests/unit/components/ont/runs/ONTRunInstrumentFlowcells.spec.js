@@ -1,5 +1,5 @@
 import ONTRunInstrumentFlowcells from '@/components/ont/runs/ONTRunInstrumentFlowcells'
-import { localVue, mount, store, router, Data } from '@support/testHelper'
+import { mount, store, router, Data } from '@support/testHelper'
 import { beforeEach, describe, expect, it } from 'vitest'
 import Response from '@/api/Response'
 import InstrumentFlowcellLayout from '@/config/InstrumentFlowcellLayout'
@@ -24,7 +24,6 @@ describe('ONTRunInstrumentFlowcells', () => {
     wrapper = mount(ONTRunInstrumentFlowcells, {
       store,
       router,
-      localVue,
       stubs: {
         ONTFlowcell: true,
       },

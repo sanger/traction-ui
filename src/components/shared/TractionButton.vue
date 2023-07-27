@@ -99,6 +99,7 @@ export default {
       default: '',
     },
   },
+  emits: ['click'],
   computed: {
     themeStyle: ({ theme }) => themes[theme],
     sizeStyle: ({ size }) => ({

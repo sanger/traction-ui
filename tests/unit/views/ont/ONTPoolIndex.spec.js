@@ -1,7 +1,6 @@
 import ONTPoolIndex from '@/views/ont/ONTPoolIndex.vue'
-import { mount, localVue, store, Data, router } from '@support/testHelper'
+import { mount, store, Data, router, flushPromises, nextTick } from '@support/testHelper'
 import { vi } from 'vitest'
-import flushPromises from 'flush-promises'
 
 describe('OntPoolIndex', () => {
   let wrapper, pools
@@ -10,7 +9,6 @@ describe('OntPoolIndex', () => {
     const get = vi.spyOn(store.state.api.traction.ont.pools, 'get')
     get.mockResolvedValue(Data.TractionOntPools)
     wrapper = mount(ONTPoolIndex, {
-      localVue,
       store,
       router,
     })
@@ -19,7 +17,7 @@ describe('OntPoolIndex', () => {
 
   it('displays each of the pools', async () => {
     const expectedPools = Data.TractionOntPools.data.data.length
-    await wrapper.vm.$nextTick()
+    await nextTick()
     expect(wrapper.find('tbody').findAll('[data-testid="row"]').length).toEqual(expectedPools)
   })
 

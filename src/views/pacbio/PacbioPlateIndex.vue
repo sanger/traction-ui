@@ -9,18 +9,18 @@
           :total-rows="plates.length"
           :per-page="perPage"
           aria-controls="plate-index"
-          @input="onPageChange($event)"
+          @update:modelValue="onPageChange($event)"
         >
         </traction-pagination>
       </div>
 
       <traction-table
         id="plate-index"
+        v-model:sort-by="sortBy"
         primary_key="id"
         :fields="fields"
         :items="tableData"
         :current-page="currentPage"
-        :sort-by.sync="sortBy"
         @filtered="onFiltered"
       >
         <template #cell(show_details)="row">
@@ -28,10 +28,7 @@
             :id="'details-btn-' + row.id"
             size="sm"
             theme="default"
-            @click="
-              row.toggleDetails()
-              getPlate(row.item.barcode)
-            "
+            @click="handleTogleDetails(row)"
           >
             {{ row.detailsShowing ? 'Hide' : 'Show' }} Plate
           </traction-button>
@@ -98,6 +95,10 @@ export default {
   methods: {
     alert(message, type) {
       this.showAlert(message, type)
+    },
+    handleTogleDetails(row) {
+      row.toggleDetails()
+      this.getPlate(row.item.barcode)
     },
     async getPlate(barcode) {
       this.currentPlate = await this.findPlate({ barcode: barcode })

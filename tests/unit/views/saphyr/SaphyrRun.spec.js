@@ -1,16 +1,10 @@
 import SaphyrRun from '@/views/saphyr/SaphyrRun'
-import VueRouter from 'vue-router'
-import { localVue, mount, store } from '@support/testHelper'
-import SaphyrRuns from '@/views/saphyr/SaphyrRuns'
+import { mount, store } from '@support/testHelper'
 
 describe('Run.vue', () => {
   let wrapper, mockRun, saphyrRun, router, props
 
   beforeEach(() => {
-    router = new VueRouter({
-      routes: [{ path: '/runs', name: 'SaphyrRuns', component: SaphyrRuns }],
-    })
-
     mockRun = {
       id: '1',
       name: '',
@@ -34,10 +28,9 @@ describe('Run.vue', () => {
     vi.spyOn(SaphyrRun.methods, 'provider').mockImplementation(() => {})
 
     wrapper = mount(SaphyrRun, {
-      localVue,
       store,
       router,
-      propsData: props,
+      props,
     })
     saphyrRun = wrapper.vm
   })
@@ -72,10 +65,9 @@ describe('Run.vue', () => {
       vi.spyOn(SaphyrRun.methods, 'provider').mockImplementation(() => {})
 
       wrapper = mount(SaphyrRun, {
-        localVue,
         store,
         router,
-        propsData: {
+        props: {
           id: 'new',
         },
       })

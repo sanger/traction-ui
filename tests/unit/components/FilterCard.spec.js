@@ -1,4 +1,4 @@
-import { mount, localVue, store } from '@support/testHelper'
+import { mount } from '@support/testHelper'
 import FilterCard from '@/components/FilterCard'
 import { expect } from 'vitest'
 
@@ -10,9 +10,7 @@ describe('FilterCard.vue', () => {
     mockFetch.mockReturnValue(Promise.resolve({ success: true, errors: [] }))
 
     wrapper = mount(FilterCard, {
-      localVue,
-      store,
-      propsData: {
+      props: {
         fetcher: mockFetch,
         filterOptions: [
           { value: '1', text: 'Filter 1' },
@@ -28,11 +26,11 @@ describe('FilterCard.vue', () => {
     expect(wrapper.find('#filterInput')).toBeDefined()
     expect(wrapper.find('#filterValue')).toBeDefined()
     const options = wrapper.find('#filterValue').findAll('option')
-    expect(options.at(0).text()).toBe('Filter 1')
-    expect(options.at(1).text()).toBe('Filter 2')
-    expect(options.at(2).text()).toBe('Filter 3')
-    expect(wrapper.findAll('button').at(0).text()).toBe('Reset')
-    expect(wrapper.findAll('button').at(1).text()).toBe('Search')
+    expect(options[0].text()).toBe('Filter 1')
+    expect(options[1].text()).toBe('Filter 2')
+    expect(options[2].text()).toBe('Filter 3')
+    expect(wrapper.findAll('button')[0].text()).toBe('Reset')
+    expect(wrapper.findAll('button')[1].text()).toBe('Search')
   })
 
   it.each([
@@ -47,9 +45,7 @@ describe('FilterCard.vue', () => {
     mockFetch.mockReturnValue(Promise.resolve({ success: true, errors: [] }))
 
     wrapper = mount(FilterCard, {
-      localVue,
-      store,
-      propsData: {
+      props: {
         fetcher: mockFetch,
         filterOptions: [
           { value: '1', text: 'Filter 1', wildcard: true },
@@ -64,7 +60,7 @@ describe('FilterCard.vue', () => {
       },
     })
     // search button
-    wrapper.findAll('button').at(1).trigger('click')
+    wrapper.findAll('button')[1].trigger('click')
     expect(wrapper.vm.fetcher).toBeCalledWith(expectedSearch)
   })
 
@@ -73,9 +69,7 @@ describe('FilterCard.vue', () => {
     mockFetch.mockReturnValue(Promise.resolve({ success: true, errors: [] }))
 
     wrapper = mount(FilterCard, {
-      localVue,
-      store,
-      propsData: {
+      props: {
         fetcher: mockFetch,
         filterOptions: [
           { value: '1', text: 'Filter 1' },
@@ -94,7 +88,7 @@ describe('FilterCard.vue', () => {
       },
     })
     // reset button
-    wrapper.findAll('button').at(0).trigger('click')
+    wrapper.findAll('button')[0].trigger('click')
     expect(wrapper.vm.fetcher).toBeCalledWith()
     expect(wrapper.vm.filter.input).toBe('')
     expect(wrapper.vm.filter.value).toBe('')

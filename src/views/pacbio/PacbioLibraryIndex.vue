@@ -26,15 +26,15 @@
           :total-rows="libraries.length"
           :per-page="perPage"
           aria-controls="library-index"
-          @input="onPageChange($event)"
+          @update:modelValue="onPageChange($event)"
         />
       </div>
 
       <traction-table
         id="library-index"
+        v-model:sort-by="sortBy"
         :items="tableData"
         :fields="fields"
-        :sort-by.sync="sortBy"
         selectable
         select-mode="multi"
         @filtered="onFiltered"

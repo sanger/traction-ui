@@ -43,6 +43,7 @@ export default {
       default: true,
     },
   },
+  emits: ['click'],
   data() {
     return {
       hover: false,

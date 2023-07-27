@@ -1,5 +1,5 @@
 import OntTagSetItem from '@/components/ont/OntTagSetItem'
-import { localVue, mount, store } from '@support/testHelper'
+import { mount, store } from '@support/testHelper'
 
 const tagSets = {
   1: { id: '1', name: 'TagSet1', tags: ['1', '2', '3', '4', '5', '6'] },
@@ -36,7 +36,6 @@ describe('OntTagSetItem', () => {
       store.commit('traction/ont/pools/selectTagSet', { id: '1' })
 
       wrapper = mount(OntTagSetItem, {
-        localVue,
         store,
       })
     })
@@ -58,7 +57,7 @@ describe('OntTagSetItem', () => {
 
     it('shows the group id', () => {
       const groupIds = wrapper.findAll('[data-attribute=group-id]')
-      expect(groupIds.at(0).text()).toEqual(tags['1'].group_id)
+      expect(groupIds[0].text()).toEqual(tags['1'].group_id)
     })
   })
 
@@ -67,7 +66,6 @@ describe('OntTagSetItem', () => {
       store.state.traction.ont.pools.selected.tagSet = {}
 
       wrapper = mount(OntTagSetItem, {
-        localVue,
         store,
       })
     })

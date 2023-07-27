@@ -1,12 +1,11 @@
-import { localVue, mount } from '@support/testHelper'
+import { mount } from '@support/testHelper'
 import TractionSelect from '@/components/shared/TractionSelect'
 import { describe, expect, it } from 'vitest'
 
 describe('TractionSelect.vue', () => {
   const buildWrapper = (props = {}) => {
     return mount(TractionSelect, {
-      localVue,
-      propsData: props,
+      props,
       components: {},
     })
   }
@@ -54,7 +53,7 @@ describe('TractionSelect.vue', () => {
       })
       //Option displayed as disabled
       const options = wrapper.find('select').findAll('option')
-      expect(options.at(0).element.text).toEqual('Option 1')
+      expect(options[0].element.text).toEqual('Option 1')
       expect(wrapper.find('option:disabled').element.text).toBe('Option 1')
       expect(wrapper.find('option:enabled').element.text).toBe('Option 2')
     })
@@ -67,8 +66,8 @@ describe('TractionSelect.vue', () => {
       })
       //Option displayed as disabled
       const options = wrapper.find('select').findAll('option')
-      expect(options.at(0).element.text).toEqual('Option 1')
-      expect(options.at(0).element.value).toEqual('')
+      expect(options[0].element.text).toEqual('Option 1')
+      expect(options[0].element.value).toEqual('')
     })
   })
 
@@ -99,7 +98,7 @@ describe('TractionSelect.vue', () => {
   it('sets default value for type string', () => {
     const wrapper = buildWrapper({
       options: ['Option 1', 'Option 2', 'Option 3'],
-      value: 'Option 2',
+      modelValue: 'Option 2',
     })
     expect(wrapper.find('select').element.value).toEqual('Option 2')
   })
@@ -114,23 +113,22 @@ describe('TractionSelect.vue', () => {
   it('sets selected value for select', async () => {
     const wrapper = buildWrapper({ options: ['Option 1', 'Option 2', 'Option 3'] })
     const options = wrapper.find('select').findAll('option')
-    await options.at(1).setSelected()
+    await options[1].setSelected()
     expect(wrapper.find('option:checked').element.value).toBe('Option 2')
     expect(wrapper.find('select').element.value).toEqual('Option 2')
   })
   it('updates the v-model value when changing the selected value, ', async () => {
     var wrapper = mount(TractionSelect, {
-      localVue,
-      propsData: { options: ['Option 1', 'Option 2', 'Option 3'] },
+      props: { options: ['Option 1', 'Option 2', 'Option 3'] },
     })
     const options = wrapper.find('select').findAll('option')
-    await options.at(1).setSelected()
+    await options[1].setSelected()
     expect(wrapper.find('select').element.value).toBe('Option 2')
   })
 
   it('updates the selected value when changing the v-model value externally,', async () => {
     var wrapper = mount({
-      template: '<traction-select :value="test" :options="optionData"></traction-select>',
+      template: '<traction-select :model-value="test" :options="optionData"></traction-select>',
       components: { 'traction-select': TractionSelect },
       data() {
         return { test: '', optionData: ['Option 1', 'Option 2', 'Option 3'] }
@@ -144,7 +142,7 @@ describe('TractionSelect.vue', () => {
   it('invokes call back when select changes value,', async () => {
     var wrapper = mount({
       template:
-        '<traction-select :value="test" :options="optionData" @input="setTest"></traction-select>',
+        '<traction-select :model-value="test" :options="optionData" @update:modelValue="setTest"></traction-select>',
       components: { 'traction-select': TractionSelect },
       data() {
         return { test: '', dummyTest: '', optionData: ['Option 1', 'Option 2', 'Option 3'] }
@@ -156,7 +154,7 @@ describe('TractionSelect.vue', () => {
       },
     })
     const options = await wrapper.find('select').findAll('option')
-    await options.at(1).setSelected()
+    await options[1].setSelected()
     expect(wrapper.vm.dummyTest).toEqual('Option 2')
   })
 })

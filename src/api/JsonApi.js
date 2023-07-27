@@ -1,5 +1,3 @@
-import Vue from 'vue'
-
 // This library needs a review:
 // - deserialize needs replacing
 // - a lot of the methods can be merged as they are doing similar things
@@ -244,10 +242,10 @@ const populateById =
 
     // Store the current data so we dont overwrite it unless specifed to do so
     const before = replaceData ? {} : result[resource]
-    Vue.set(result, resource, {
+    result[resource] = {
       ...before,
       ...dataToObjectById({ data, includeRelationships }),
-    })
+    }
   }
 
 /**
@@ -271,10 +269,10 @@ const populateBy =
 
     // Store the current data so we dont overwrite it unless specifed to do so
     const before = replaceData ? {} : result[resource]
-    Vue.set(result, resource, {
+    result[resource] = {
       ...before,
       ...fn({ data, includeRelationships }),
-    })
+    }
   }
 
 /**

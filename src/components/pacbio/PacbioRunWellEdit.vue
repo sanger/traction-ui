@@ -4,14 +4,15 @@
 
     <fieldset>
       <traction-form v-for="field in smrtLinkWellDefaults" :key="field.name">
-        <label>{{ field.label }}</label>
-        <component
-          :is="field.component"
-          v-model="well[field.value]"
-          v-bind="handleCustomProps(field)"
-          class="pb-2"
-          v-on="handleCustomEvents(field)"
-        />
+        <div class="pb-2">
+          <label>{{ field.label }}</label>
+          <component
+            :is="field.component"
+            v-model="well[field.value]"
+            v-bind="handleCustomProps(field)"
+            v-on="handleCustomEvents(field)"
+          />
+        </div>
       </traction-form>
     </fieldset>
 
@@ -23,10 +24,10 @@
           <traction-input
             id="poolBarcode"
             ref="poolBarcode"
-            :value="`${row.item.barcode}`"
+            :model-value="`${row.item.barcode}`"
             placeholder="Pool Barcode"
             :debounce="500"
-            @input="updatePoolBarcode(row, $event)"
+            @update:modelValue="updatePoolBarcode(row, $event)"
           ></traction-input>
 
           <traction-button class="button btn-xs btn-danger" @click="removeRow(row)"
@@ -80,6 +81,7 @@ export default {
       default: false,
     },
   },
+  emits: ['alert'],
   data() {
     return {
       well: {},
@@ -223,7 +225,7 @@ export default {
           click: this.disableAdaptiveLoadingInput,
         }
       }
-      return component.events
+      return { ...component.events }
     },
   },
 }

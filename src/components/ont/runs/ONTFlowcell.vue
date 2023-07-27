@@ -15,11 +15,10 @@
         >
           <traction-input
             :id="'flowcell-id-' + position"
+            v-model="flowcellId"
             placeholder="Scan flowcell ID"
-            :value="flowcellId"
             :formatter="formatter"
             :classes="flowcell_id_field_colour"
-            @input="setFlowcellId({ $event, position })"
           />
         </traction-field-error>
       </fieldset>
@@ -60,7 +59,7 @@
  * yellow - if one of flowcellId and barcode fields are valid and other is empty
  */
 import { createNamespacedHelpers } from 'vuex'
-const { mapState, mapMutations } = createNamespacedHelpers('traction/ont/runs')
+const { mapState, mapMutations, mapGetters } = createNamespacedHelpers('traction/ont/runs')
 const { mapActions } = createNamespacedHelpers('traction/ont/pools')
 export default {
   name: 'ONTFlowcell',
@@ -103,7 +102,6 @@ export default {
     isBarcodeExists() {
       return !!this.barcode
     },
-
     // For Vuex asynchronous validation we need to use computed getter and setter properties
     barcode: {
       get() {
@@ -121,15 +119,21 @@ export default {
         this.setBarcodeState(response.success)
       },
     },
-    ...mapState({
-      flowcellId(state) {
-        const flowcell = state.currentRun.flowcell_attributes.find(
+    flowcellId: {
+      get() {
+        const flowcell = this.currentRun().flowcell_attributes.find(
           (flowcell) => flowcell.position == this.position,
         )
         if (flowcell) {
           return flowcell.flowcell_id
         }
+        return ''
       },
+      set(value) {
+        this.setFlowcellId({ $event: value, position: this.position })
+      },
+    },
+    ...mapState({
       poolTubeBarcode(state) {
         const flowcell = state.currentRun.flowcell_attributes.find(
           (flowcell) => flowcell.position == this.position,
@@ -189,6 +193,7 @@ export default {
   methods: {
     ...mapMutations(['setFlowcellId', 'setPoolTubeBarcode']),
     ...mapActions(['validatePoolBarcode']),
+    ...mapGetters(['currentRun']),
     formatter(value) {
       return value.toUpperCase().trim()
     },

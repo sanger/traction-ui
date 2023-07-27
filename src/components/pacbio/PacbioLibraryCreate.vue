@@ -28,7 +28,7 @@
             data-type="tag-set-list"
             :options="tagSetOptions"
             class="mb-3"
-            @input="resetSelectedTagId"
+            @update:modelValue="resetSelectedTagId"
           ></traction-select>
 
           <traction-select
@@ -126,6 +126,7 @@ export default {
       },
     },
   },
+  emits: ['alert'],
   data() {
     return {
       library: { tag: { id: '' }, sample: {} },

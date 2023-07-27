@@ -26,6 +26,7 @@ export default {
       default: '',
     },
   },
+  emits: ['submit', 'reset'],
   methods: {
     /**submit event will be emitted externally on submit */
     submitAction() {

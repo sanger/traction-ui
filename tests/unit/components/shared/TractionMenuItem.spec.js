@@ -1,12 +1,11 @@
-import { localVue, mount } from '@support/testHelper'
+import { mount } from '@support/testHelper'
 
 import TractionMenuItem from '@/components/shared/TractionMenuItem'
 
 describe('TractionMenuItem.vue', () => {
   const buildWrapper = (props = {}) => {
     return mount(TractionMenuItem, {
-      localVue,
-      propsData: props,
+      props,
       slots: {
         default: 'Section Content',
       },

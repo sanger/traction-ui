@@ -1,4 +1,4 @@
-import { mount, localVue, store } from '@support/testHelper'
+import { mount, store } from '@support/testHelper'
 import PacbioRunPlateItem from '@/components/pacbio/PacbioRunPlateItem'
 import { newWell, newPlate } from '@/store/traction/pacbio/runCreate/run'
 import { it } from 'vitest'
@@ -32,9 +32,8 @@ describe('PacbioRunPlateItem.vue', () => {
       store.state.traction.pacbio.runCreate.instrumentType = PacbioInstrumentTypes.SequelIIe
 
       wrapper = mount(PacbioRunPlateItem, {
-        localVue,
         store,
-        propsData: {
+        props: {
           plateNumber: 1,
         },
       })
@@ -109,7 +108,6 @@ describe('PacbioRunPlateItem.vue', () => {
       store.state.traction.pacbio.runCreate.instrumentType = PacbioInstrumentTypes.Revio
 
       wrapper = mount(PacbioRunPlateItem, {
-        localVue,
         store,
         propsData: {
           plateNumber: 1,

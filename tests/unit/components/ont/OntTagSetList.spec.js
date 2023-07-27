@@ -1,5 +1,5 @@
 import OntTagSetList from '@/components/ont/OntTagSetList'
-import { localVue, mount, store } from '@support/testHelper'
+import { mount, store } from '@support/testHelper'
 
 describe('OntTagSetList', () => {
   let wrapper
@@ -14,7 +14,6 @@ describe('OntTagSetList', () => {
       store.state.traction.ont.pools.resources.tagSets = tagSets
 
       wrapper = mount(OntTagSetList, {
-        localVue,
         store,
       })
     })
@@ -28,7 +27,7 @@ describe('OntTagSetList', () => {
 
     it('allows the user to select a tag set', async () => {
       const options = wrapper.find('[data-type=tag-set-list]').findAll('option')
-      await options.at(1).setSelected()
+      await options[1].setSelected()
 
       expect(store.state.traction.ont.pools.selected.tagSet.id).toEqual(tagSets['1'].id)
     })
@@ -39,7 +38,6 @@ describe('OntTagSetList', () => {
       store.state.traction.ont.pools.resources.tagSets = {}
 
       wrapper = mount(OntTagSetList, {
-        localVue,
         store,
       })
     })
@@ -54,7 +52,6 @@ describe('OntTagSetList', () => {
       store.state.traction.ont.pools.resources.tagSets = {}
 
       wrapper = mount(OntTagSetList, {
-        localVue,
         store,
       })
 

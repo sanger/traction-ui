@@ -1,4 +1,3 @@
-import Vue from 'vue'
 import { populateById, dataToObjectById } from '@/api/JsonApi'
 import { newLibrary } from '@/store/traction/ont/pools/pool.js'
 import defaultState from './state'
@@ -12,9 +11,9 @@ export default {
    */
   selectPlate: (state, { id, selected = true }) => {
     if (selected) {
-      Vue.set(state.selected.plates, `${id}`, { id: id, selected: true })
+      state.selected.plates[`${id}`] = { id: id, selected: true }
     } else {
-      Vue.delete(state.selected.plates, `${id}`)
+      delete state.selected.plates[`${id}`]
     }
   },
   /**
@@ -25,9 +24,9 @@ export default {
    */
   selectTube: (state, { id, selected = true }) => {
     if (selected) {
-      Vue.set(state.selected.tubes, `${id}`, { id: id, selected: true })
+      state.selected.tubes[`${id}`] = { id: id, selected: true }
     } else {
-      Vue.delete(state.selected.tubes, `${id}`)
+      delete state.selected.tubes[`${id}`]
     }
   },
   /**
@@ -38,9 +37,9 @@ export default {
    */
   selectRequest: (state, { id, selected = true }) => {
     if (selected) {
-      Vue.set(state.pooling.libraries, `${id}`, newLibrary({ ont_request_id: id }))
+      state.pooling.libraries[`${id}`] = newLibrary({ ont_request_id: id })
     } else {
-      Vue.delete(state.pooling.libraries, `${id}`)
+      delete state.pooling.libraries[`${id}`]
     }
   },
   /**
@@ -65,10 +64,10 @@ export default {
    * @param {Object.{}} library The library data to update
    */
   updatePoolingLibrary: (state, library) => {
-    Vue.set(
-      state.pooling.libraries,
-      `${library.ont_request_id}`,
-      Object.assign({}, state.pooling.libraries[library.ont_request_id], library),
+    state.pooling.libraries[`${library.ont_request_id}`] = Object.assign(
+      {},
+      state.pooling.libraries[library.ont_request_id],
+      library,
     )
   },
   /**
@@ -79,11 +78,11 @@ export default {
   populatePoolingLibraries: (state, data) => {
     const newLibraries = dataToObjectById({ data, includeRelationships: true })
     Object.values(newLibraries).forEach((library) => {
-      Vue.set(
-        state.pooling.libraries,
-        `${library.request}`,
-        newLibrary({ ...library, ont_request_id: library.request, tag_id: library.tag }),
-      )
+      state.pooling.libraries[`${library.request}`] = newLibrary({
+        ...library,
+        ont_request_id: library.request,
+        tag_id: library.tag,
+      })
     })
   },
   /**

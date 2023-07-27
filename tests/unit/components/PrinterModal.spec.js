@@ -1,4 +1,4 @@
-import { mount, localVue, store } from '@support/testHelper'
+import { mount, nextTick } from '@support/testHelper'
 import PrinterModal from '@/components/PrinterModal'
 
 describe('Modal.vue', () => {
@@ -6,9 +6,7 @@ describe('Modal.vue', () => {
 
   beforeEach(() => {
     wrapper = mount(PrinterModal, {
-      localVue,
-      store,
-      propsData: {
+      props: {
         disabled: true,
         isStatic: true,
       },
@@ -59,7 +57,7 @@ describe('Modal.vue', () => {
 
       wrapper.setData({ printerOptions: printerOptions })
       wrapper.vm.isShow = true
-      await wrapper.vm.$nextTick() // necessary to allow the view to update
+      await nextTick()
       expect(wrapper.find('select').findAll('option').length).toEqual(printerOptions.length)
     })
   })

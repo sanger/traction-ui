@@ -9,7 +9,6 @@
         <traction-input
           id="run-name"
           v-model="runItem.name"
-          :value="runItem.name"
           placeholder="Run name"
           type="text"
           disabled
@@ -23,7 +22,6 @@
         <traction-input
           id="dna-control-complex-box-barcode"
           v-model="runItem.dna_control_complex_box_barcode"
-          :value="runItem.dna_control_complex_box_barcode"
           placeholder="DNA Control Complex Box Barcode"
           type="text"
           data-attribute="dna_control_complex_box_barcode"
@@ -31,15 +29,16 @@
       </traction-field-group>
 
       <traction-field-group label="System Name" for="system-name">
+        <!-- TODO: Not sure what this should be not v-model as the whole object needs to be updated -->
         <traction-select
           id="system-name"
           ref="systemName"
-          :value="instrumentType.key"
+          :model-value="instrumentType.key"
           title="System Name"
           :options="instrumentTypeSelectOptions"
           data-attribute="system_name"
           :disabled="!newRecord"
-          @input="setInstrumentData($event)"
+          @update:modelValue="setInstrumentData($event)"
         />
       </traction-field-group>
 
@@ -47,11 +46,11 @@
         <traction-select
           id="smrt-link-version"
           ref="smrtLinkVersion"
-          :value="smrtLinkVersion.id"
+          :model-value="smrtLinkVersion.id"
           title="SMRT Link Version"
           :options="smrtLinkVersionSelectOptions"
           data-attribute="smrt_link_version"
-          @input="setSmrtLinkVersion($event)"
+          @update:modelValue="setSmrtLinkVersion($event)"
         />
       </traction-field-group>
 
@@ -62,7 +61,6 @@
           placeholder="Comments"
           type="text"
           data-attribute="comments"
-          :value="runItem.comments"
         />
       </traction-field-group>
     </traction-section>

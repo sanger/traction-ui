@@ -92,6 +92,7 @@ export default {
     // come from that
     value: { type: [String, Number, Object, Array], required: false, default: null },
   },
+  emits: ['input'],
   data: (component) => ({ fieldId: component.for || uniqueId() }),
   computed: {
     compact: ({ layout }) => layout == `compact`,

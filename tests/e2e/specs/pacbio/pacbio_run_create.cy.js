@@ -209,7 +209,7 @@ describe('Pacbio Run Create view', () => {
     // Click the first well
     cy.get('[data-attribute=pacbio-run-well]').first().trigger('click')
 
-    cy.get('.modal').within(() => {
+    cy.get('[data-attribute=modal]').within(() => {
       cy.get('[data-attribute="movie-time"]').contains('15.0')
       cy.get('[data-attribute="binding-kit-box-barcode"]').should('have.value', '12345')
       cy.get('[data-attribute="pre-extension-time"]').should('have.value', '3')

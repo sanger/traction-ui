@@ -1,13 +1,11 @@
 import QcResultsUpload from '@/views/QcResultsUpload'
-import { localVue, mount } from '@support/testHelper'
+import { mount } from '@support/testHelper'
 
 describe('QcResultsUpload.vue', () => {
   let wrapper
 
   beforeEach(() => {
-    wrapper = mount(QcResultsUpload, {
-      localVue,
-    })
+    wrapper = mount(QcResultsUpload)
   })
 
   describe('components', () => {

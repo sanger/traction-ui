@@ -3,6 +3,7 @@
  */
 export default {
   name: 'DragHelper',
+  emits: ['updateFlowcell', 'updateLibraryList'],
   data() {
     return {
       hover: false,

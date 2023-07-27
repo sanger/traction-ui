@@ -6,7 +6,6 @@ import {
   splitDataByParent,
   dataToObjectByPosition,
 } from '@/api/JsonApi'
-import Vue from 'vue'
 import defaultState from './state'
 import { newPlate } from './run'
 
@@ -14,10 +13,10 @@ import { newPlate } from './run'
 
 // Helper function for setting pools data
 const setData = (state, type, data, includeRelationships = false) => {
-  Vue.set(state, type, {
+  state[type] = {
     ...state[type],
     ...dataToObjectById({ data, includeRelationships }),
-  })
+  }
 }
 
 export default {
@@ -75,10 +74,10 @@ export default {
   },
 
   setPools(state, pools) {
-    Vue.set(state, 'pools', {
+    state['pools'] = {
       ...state.pools,
       ...dataToObjectById({ data: pools, includeRelationships: true }),
-    })
+    }
   },
 
   setTubes(state, tubes) {
@@ -94,7 +93,7 @@ export default {
     setData(state, 'requests', requests, false)
   },
   removePool(state, id) {
-    Vue.delete(state.pools, id)
+    delete state.pools[id]
   },
   clearRunData(state) {
     const new_state = defaultState()
@@ -108,7 +107,12 @@ export default {
    * Replaces the well in store with the updated well
    */
   updateWell: (state, { well, plateNumber }) => {
-    Vue.set(state.wells[plateNumber], well.position, well)
+    // TODO: is Object.assign necessary here?
+    state.wells[plateNumber][well.position] = Object.assign(
+      {},
+      state.wells[plateNumber][well.position],
+      well,
+    )
   },
 
   /**
@@ -121,9 +125,7 @@ export default {
   deleteWell: (state, { position, plateNumber }) => {
     const id = state.wells[plateNumber][position].id
 
-    Vue.delete(state.wells[plateNumber], position)
-
-    // do we need Vue.set here?
+    delete state.wells[plateNumber][position]
     state.wells[plateNumber]['_destroy'].push({ _destroy: true, id })
   },
 
@@ -155,16 +157,12 @@ export default {
    * Adds the wells to state by plate number and well position, two dimensional array
    */
   populateWells: (state, { plates, wells }) => {
-    Vue.set(
-      state,
-      'wells',
-      splitDataByParent({
-        data: wells,
-        fn: dataToObjectByPosition,
-        includeRelationships: true,
-        parent: { parentData: plates, children: 'wells', key: 'plate_number' },
-      }),
-    )
+    state.wells = splitDataByParent({
+      data: wells,
+      fn: dataToObjectByPosition,
+      includeRelationships: true,
+      parent: { parentData: plates, children: 'wells', key: 'plate_number' },
+    })
   },
 
   /**
@@ -182,8 +180,8 @@ export default {
     state.wells = {}
 
     for (let i = 1; i <= plateNumber; i++) {
-      Vue.set(state.plates, i, newPlate(i))
-      Vue.set(state.wells, i, { _destroy: [] })
+      state.plates[i] = newPlate(i)
+      state.wells[i] = { _destroy: [] }
     }
   },
 }

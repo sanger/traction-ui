@@ -17,9 +17,9 @@
     <traction-table
       id="libraries-table"
       ref="libraries_table"
+      v-model:sort-by="sortBy"
       :items="tableData"
       :fields="fields"
-      :sort-by.sync="sortBy"
       selectable
       select-mode="multi"
       @filtered="onFiltered"
@@ -64,7 +64,7 @@
         :total-rows="libraries.length"
         :per-page="perPage"
         aria-controls="libraries-table"
-        @input="onPageChange($event)"
+        @update:modelValue="onPageChange($event)"
       >
       </traction-pagination>
     </div>
