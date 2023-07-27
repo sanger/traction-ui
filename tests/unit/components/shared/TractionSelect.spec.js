@@ -5,7 +5,7 @@ import { describe, expect, it } from 'vitest'
 describe('TractionSelect.vue', () => {
   const buildWrapper = (props = {}) => {
     return mount(TractionSelect, {
-      props: props,
+      props,
       components: {},
     })
   }

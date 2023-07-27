@@ -6,7 +6,7 @@ import { expect } from 'vitest'
 describe('TractionButton.vue', () => {
   const buildWrapper = (props = {}) => {
     return mount(TractionButton, {
-      props: props,
+      props,
       slots: {
         default: 'Section Content',
       },

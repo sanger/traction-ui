@@ -19,7 +19,7 @@ describe('Well.vue', () => {
     }
 
     wrapper = mount(Well, {
-      props: props,
+      props,
     })
 
     well = wrapper.vm
@@ -74,7 +74,7 @@ describe('Well.vue', () => {
       props['well_info'] = { position: 'A1', requests: [] }
 
       wrapper = mount(Well, {
-        props: props,
+        props,
       })
 
       const ellipse = wrapper.find('ellipse')
@@ -99,7 +99,7 @@ describe('Well.vue', () => {
       props['well_info'] = { position: 'A1', requests: [] }
 
       wrapper = mount(Well, {
-        props: props,
+        props,
       })
 
       expect(wrapper.vm.hasRequest).toEqual(false)

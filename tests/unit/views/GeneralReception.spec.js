@@ -27,7 +27,7 @@ const Receptions = [
 describe('GeneralReception', () => {
   const buildWrapper = (props = { receptions: Receptions }) => {
     return mount(GeneralReception, {
-      props: props,
+      props,
       store,
     })
   }

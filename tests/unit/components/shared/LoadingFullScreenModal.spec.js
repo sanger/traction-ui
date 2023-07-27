@@ -5,7 +5,7 @@ import LoadingFullScreenModal from '@/components/shared/LoadingFullScreenModal'
 describe('LoadingFullScreenModal.vue', () => {
   const buildWrapper = (props = {}) => {
     return mount(LoadingFullScreenModal, {
-      props: props,
+      props,
     })
   }
 

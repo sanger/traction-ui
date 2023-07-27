@@ -19,7 +19,7 @@ describe('Flowcell', () => {
 
     props = { index: 0, position: 1 }
 
-    wrapper = mount(Flowcell, { store, props: props })
+    wrapper = mount(Flowcell, { store, props })
     flowcell = wrapper.vm
   })
 

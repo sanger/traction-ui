@@ -27,7 +27,7 @@ describe('Well.vue', () => {
     store.state.traction.pacbio.poolCreate.resources.requests = requests
 
     wrapper = mount(Well, {
-      props: props,
+      props,
       store,
     })
 
@@ -83,7 +83,7 @@ describe('Well.vue', () => {
       props['requests'] = []
 
       wrapper = mount(Well, {
-        props: props,
+        props,
         store,
       })
 

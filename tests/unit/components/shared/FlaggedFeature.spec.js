@@ -3,18 +3,18 @@ import FlaggedFeature from '@/components/shared/FlaggedFeature'
 
 describe('FlaggedFeature.vue', () => {
   beforeEach(() => {
-    // Temporary workaround it has been moved to global mock in __mocks__
-    // vi.mock('swrv', () => ({
-    //   default: vi.fn(() => ({
-    //     data: {
-    //       flipper_id: 'User 1',
-    //       features: {
-    //         enable_feature: { enabled: true },
-    //         disabled_feature: { enabled: false },
-    //       },
-    //     },
-    //   })),
-    // }))
+    vi.clearAllMocks()
+    vi.mock('swrv', () => ({
+      default: vi.fn(() => ({
+        data: {
+          flipper_id: 'User 1',
+          features: {
+            enable_feature: { enabled: true },
+            disabled_feature: { enabled: false },
+          },
+        },
+      })),
+    }))
   })
 
   const buildWrapper = (props = {}) => {

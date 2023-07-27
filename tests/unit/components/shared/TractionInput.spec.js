@@ -5,7 +5,7 @@ import TractionInput from '@/components/shared/TractionInput'
 describe('TractionInput.vue', () => {
   const buildWrapper = (props = {}) => {
     return mount(TractionInput, {
-      props: props,
+      props,
     })
   }
 

@@ -5,7 +5,7 @@ import { describe, expect, it } from 'vitest'
 describe('TractionTableColumn', () => {
   const buildWrapper = (props = {}) => {
     return mount(TractionTableColumn, {
-      props: props,
+      props,
       slots: {
         default: 'Column Text',
       },

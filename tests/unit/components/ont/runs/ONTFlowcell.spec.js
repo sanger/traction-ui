@@ -16,7 +16,7 @@ describe('ONTFlowcell', () => {
     store.commit('traction/ont/runs/setPoolTubeBarcode', { barcode: 'TRAC-1-A', position: 1 })
 
     wrapper = mount(ONTFlowcell, {
-      props: props,
+      props,
       store,
     })
 

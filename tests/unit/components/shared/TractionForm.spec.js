@@ -4,7 +4,7 @@ import TractionForm from '@/components/shared/TractionForm'
 describe('TractionForm.vue', () => {
   const buildWrapper = (props = {}, slot) => {
     return mount(TractionForm, {
-      props: props,
+      props,
       slots: {
         default: slot,
       },
