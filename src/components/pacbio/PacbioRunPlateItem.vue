@@ -72,7 +72,9 @@ export default {
   computed: {
     ...mapGetters(['instrumentType', 'getPlate']),
     isRevio() {
-      return Object.is(this.instrumentType, PacbioInstrumentTypes.Revio)
+      // we should be able to use object equality here but it doesn't work
+      // e.g. Object.is(this.instrumentType, PacbioInstrumentTypes.Revio)
+      return this.instrumentType.key === PacbioInstrumentTypes.Revio.key
     },
     serialNumber() {
       return this.storePlate.sequencing_kit_box_barcode.substring(15, 20)
