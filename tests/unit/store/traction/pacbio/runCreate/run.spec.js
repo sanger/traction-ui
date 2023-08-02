@@ -23,6 +23,11 @@ const smrtLinkVersions = {
     name: 'v12_revio',
     default: false,
   },
+  3: {
+    id: 2,
+    name: 'v12_sequel_iie',
+    default: false,
+  },
 }
 
 const plates = {
@@ -246,7 +251,7 @@ describe('run.js', () => {
 
   describe('createPayload', () => {
     it('will create a new run payload', () => {
-      const run = { system_name: 'Revio' }
+      const run = { system_name: 'Revio', dna_control_complex_box_barcode: 'to keep' }
 
       const payload = createPayload({
         run,
@@ -262,6 +267,7 @@ describe('run.js', () => {
           attributes: {
             pacbio_smrt_link_version_id: smrtLinkVersions['1'].id,
             system_name: PacbioInstrumentTypes.SequelIIe.name,
+            dna_control_complex_box_barcode: 'to keep',
             plates_attributes: [
               {
                 ...plates.new[1],
@@ -278,7 +284,7 @@ describe('run.js', () => {
     })
 
     it('will create an existing run payload', () => {
-      const aRun = { system_name: 'Revio', id: 1 }
+      const aRun = { system_name: 'Revio', id: 1, dna_control_complex_box_barcode: 'to keep' }
       const { id, ...attributes } = aRun
       const payload = createPayload({
         id,
@@ -295,6 +301,7 @@ describe('run.js', () => {
           attributes: {
             pacbio_smrt_link_version_id: smrtLinkVersions['1'].id,
             system_name: PacbioInstrumentTypes.Revio.name,
+            dna_control_complex_box_barcode: 'to keep',
             plates_attributes: [
               {
                 ...plates.existing[1],
@@ -331,6 +338,39 @@ describe('run.js', () => {
               {
                 ...plates.single[1],
                 wells_attributes: createWellsPayload(wells.single[1]),
+              },
+            ],
+          },
+        },
+      })
+    })
+
+    it('will create the correct payload when SMRT Link Version is v12 Sequel IIe', () => {
+      const run = { system_name: 'Sequel IIe', dna_control_complex_box_barcode: 'redundant' }
+
+      const payload = createPayload({
+        run,
+        plates: plates.new,
+        wells: wells.new,
+        smrtLinkVersion: smrtLinkVersions['3'],
+        instrumentType: PacbioInstrumentTypes.SequelIIe,
+      })
+
+      expect(payload).toEqual({
+        data: {
+          type: 'runs',
+          attributes: {
+            pacbio_smrt_link_version_id: smrtLinkVersions['3'].id,
+            dna_control_complex_box_barcode: null,
+            system_name: PacbioInstrumentTypes.SequelIIe.name,
+            plates_attributes: [
+              {
+                ...plates.new[1],
+                wells_attributes: createWellsPayload(wells.new[1]),
+              },
+              {
+                ...plates.new[2],
+                wells_attributes: createWellsPayload(wells.new[2]),
               },
             ],
           },

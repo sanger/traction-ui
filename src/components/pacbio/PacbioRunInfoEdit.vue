@@ -16,6 +16,7 @@
       </traction-field-group>
 
       <traction-field-group
+        v-if="!smrtLinkVersionv12SequelIIe"
         label="DNA Control Complex Box Barcode"
         for="dna-control-complex-box-barcode"
       >
@@ -72,6 +73,8 @@ import { createNamespacedHelpers } from 'vuex'
 const { mapGetters, mapActions } = createNamespacedHelpers('traction/pacbio/runCreate')
 import { PacbioInstrumentTypes } from '@/lib/PacbioInstrumentTypes'
 
+const SMRT_LINK_VERSION_V12_SEQUEL_IIE = 'v12_sequel_iie'
+
 export default {
   name: 'PacbioRunInfoEdit',
   props: {
@@ -96,6 +99,9 @@ export default {
         value: key,
         text: name,
       }))
+    },
+    smrtLinkVersionv12SequelIIe() {
+      return this.smrtLinkVersion.name == SMRT_LINK_VERSION_V12_SEQUEL_IIE
     },
   },
   methods: {
