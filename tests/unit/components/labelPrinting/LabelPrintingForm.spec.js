@@ -1,7 +1,7 @@
 import LabelPrintingForm from '@/components/labelPrinting/LabelPrintingForm'
 import SuffixList from '@/config/SuffixList'
 import { createSuffixDropdownOptions } from '@/lib/LabelPrintingHelpers'
-import { localVue, mount, store } from '@support/testHelper'
+import { mount, store } from '@support/testHelper'
 import { beforeEach, describe, expect, it } from 'vitest'
 
 const options = {
@@ -24,9 +24,7 @@ describe('LabelPrintingForm.vue', () => {
   describe('computed properties', () => {
     beforeEach(() => {
       wrapper = mount(LabelPrintingForm, {
-        localVue,
         store,
-        propsData: {},
       })
       labelPrintingForm = wrapper.vm
     })
@@ -48,8 +46,6 @@ describe('LabelPrintingForm.vue', () => {
   describe('labels', () => {
     it('should have the correct number', () => {
       const wrapper = mount(LabelPrintingForm, {
-        localVue,
-        store,
         data() {
           return {
             form: options,
@@ -63,8 +59,6 @@ describe('LabelPrintingForm.vue', () => {
 
     it('should remove new lines', () => {
       const wrapper = mount(LabelPrintingForm, {
-        localVue,
-        store,
         data() {
           return {
             form: {
@@ -100,8 +94,6 @@ describe('LabelPrintingForm.vue', () => {
     describe('#printLabels', () => {
       beforeEach(() => {
         const wrapper = mount(LabelPrintingForm, {
-          localVue,
-          store,
           data() {
             return {
               form: options,

@@ -1,20 +1,19 @@
 import DataTypeSelect from '@/components/shared/DataTypeSelect'
-import { localVue, mount, store } from '@support/testHelper'
+import { mount, store } from '@support/testHelper'
 import { vi } from 'vitest'
 
 describe('DataTypeSelect.vue', () => {
   const buildWrapper = (props = { pipeline: 'ont' }) => {
     return mount(DataTypeSelect, {
-      localVue,
       store,
-      propsData: props,
+      props,
     })
   }
 
   vi.mock('swrv')
 
   const findOption = (optionText, { from }) =>
-    from.findAll('option').wrappers.find((option) => option.text() == optionText)
+    from.findAll('option').find((option) => option.text() == optionText)
 
   describe('dataType', () => {
     it('lists the expected options', () => {

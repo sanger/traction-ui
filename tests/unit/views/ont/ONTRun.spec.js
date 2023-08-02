@@ -1,32 +1,35 @@
 import ONTRun from '@/views/ont/ONTRun'
-import { localVue, mount, store, router } from '@support/testHelper'
+import { mount, store, router, flushPromises, Data } from '@support/testHelper'
 import { beforeEach, describe, it } from 'vitest'
 
 describe('ONTRun.vue', () => {
   let wrapper, ontRun, stubs
 
-  beforeEach(() => {
+  beforeEach(async () => {
     stubs = {
       DataFetcher: true,
       ONTRunInstrumentFlowcells: true,
       ONTRunInformation: true,
     }
+    vi.spyOn(store.state.api.traction.ont.instruments, 'get').mockResolvedValue(Data.OntInstruments)
+    vi.spyOn(store.state.api.traction.ont.pools, 'get').mockResolvedValue(Data.TractionOntPools)
 
     wrapper = mount(ONTRun, {
       store,
       router,
-      localVue,
       stubs: stubs,
-      propsData: { id: 'new' },
+      props: { id: 'new' },
     })
     ontRun = wrapper.vm
     ontRun.showAlert = vi.fn()
+    await flushPromises()
   })
 
   describe('Back button', () => {
-    it('will always show', () => {
+    it('will always show', async () => {
       expect(wrapper.find('#backToRunsButton').exists()).toBeTruthy()
       wrapper.find('#backToRunsButton').trigger('click')
+      await flushPromises()
       expect(wrapper.vm.$route.path).toBe('/ont/runs')
     })
   })
@@ -63,11 +66,11 @@ describe('ONTRun.vue', () => {
       wrapper = mount(ONTRun, {
         store,
         router,
-        localVue,
         stubs: stubs,
-        propsData: { id: '1' },
+        props: { id: '1' },
       })
       ontRun = wrapper.vm
+      ontRun.fetchRun = vi.fn(() => Data.OntRun)
       expect(ontRun.newRecord).toEqual(false)
     })
   })
@@ -117,19 +120,22 @@ describe('ONTRun.vue', () => {
   })
 
   describe('#updateRun', () => {
-    beforeEach(() => {
+    beforeEach(async () => {
+      vi.spyOn(store.state.api.traction.ont.instruments, 'get').mockResolvedValue(
+        Data.OntInstruments,
+      )
       wrapper = mount(ONTRun, {
         store,
         router,
-        localVue,
         stubs: stubs,
-        propsData: { id: '1' },
+        props: { id: '1' },
       })
       ontRun = wrapper.vm
-
+      ontRun.fetchRun = vi.fn(() => Data.OntRun)
       ontRun.updateRun = vi.fn()
       ontRun.redirectToRuns = vi.fn()
       ontRun.showAlert = vi.fn()
+      await flushPromises()
     })
     it('contains a update new run button', () => {
       expect(wrapper.find('#update')).toBeTruthy()
@@ -188,9 +194,8 @@ describe('ONTRun.vue', () => {
         wrapper = mount(ONTRun, {
           store,
           router,
-          localVue,
           stubs: stubs,
-          propsData: { id: '1' },
+          props: { id: '1' },
         })
         ontRun = wrapper.vm
 

@@ -1,6 +1,5 @@
 import PacbioPlates from '@/views/pacbio/PacbioPlateIndex'
-import { mount, localVue, store, Data, router } from '@support/testHelper'
-import flushPromises from 'flush-promises'
+import { mount, store, Data, router, flushPromises } from '@support/testHelper'
 
 describe('PacbioPlates.vue', () => {
   let wrapper, plates
@@ -12,7 +11,6 @@ describe('PacbioPlates.vue', () => {
     wrapper = mount(PacbioPlates, {
       store,
       router,
-      localVue,
       stubs: {
         // Plate: true, // Stubbed to prevent unnecessarily loading the plate SVG
       },
@@ -67,7 +65,6 @@ describe('PacbioPlates.vue', () => {
       wrapper = mount(PacbioPlates, {
         store,
         router,
-        localVue,
       })
       wrapper.setData({ perPage: 1 })
       await flushPromises()

@@ -206,6 +206,7 @@ export default {
       default: () => {},
     },
   },
+  emits: ['row-clicked', 'row-selected'],
   data() {
     //Create 'row' data based on initial data passed in through 'items' prop
     const rows = this.generateRowData()
@@ -217,8 +218,12 @@ export default {
   },
   watch: {
     //Update 'row' data, whenever the data changes (passed in through 'items' prop)
-    items: function () {
-      this.rows = this.generateRowData()
+    items: {
+      // We need deep here because items is an array of objects
+      handler() {
+        this.rows = this.generateRowData()
+      },
+      deep: true,
     },
   },
 

@@ -1,4 +1,3 @@
-import Vue from 'vue'
 import defaultState from './state'
 
 const mutations = {
@@ -7,10 +6,10 @@ const mutations = {
   },
   addMessage(state, message) {
     const messageId = Object.keys(state.messages).pop()
-    Vue.set(state.messages, messageId + 1, message)
+    state.messages[messageId + 1] = message
   },
   removeMessage(state, messageIndex) {
-    Vue.delete(state.messages, messageIndex)
+    delete state.messages[messageIndex]
   },
   /**
    * Clears all messages

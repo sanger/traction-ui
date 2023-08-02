@@ -27,7 +27,7 @@ export default {
   computed: {
     ...mapGetters(['runDefaultWellAttributes', 'runItem', 'smrtLinkVersion']),
     smrtLinkWellDefaults() {
-      return PacbioRunWellComponents[this.smrtLinkVersion.name].filter(
+      return PacbioRunWellComponents[this.smrtLinkVersion.name]?.filter(
         (component) => component.default,
       )
     },

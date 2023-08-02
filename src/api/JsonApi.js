@@ -1,4 +1,6 @@
-import Vue from 'vue'
+// This library needs a review:
+// - deserialize needs replacing
+// - a lot of the methods can be merged as they are doing similar things
 
 /**
  * Extract the attributes from a JSON API resource object, merge them with the id
@@ -99,6 +101,32 @@ const dataToObjectByPosition = ({ data = [], includeRelationships = false }) => 
   }, {})
 }
 
+/**
+ * Useful for grouping resources by a plate_number
+ * @param {Array} data Array of JSON API data
+ * @returns {Object} keys will be the plate_number for the data. This usually will be wells
+ */
+const dataToObjectByPlateNumber = ({ data = [], includeRelationships = false }) => {
+  return data.reduce(
+    (result, { id, type, attributes: { plate_number, ...rest }, relationships }) => {
+      return {
+        [plate_number]: {
+          // we still keep the id as it will be needed
+          id,
+          // the type can be useful for components
+          type,
+          plate_number,
+          ...rest,
+          // we might not want to use the relationships
+          ...(includeRelationships ? extractRelationshipsAndGroupById(relationships) : {}),
+        },
+        ...result,
+      }
+    },
+    {},
+  )
+}
+
 const extractRelationship = (relationship, included, includeStore = {}) => {
   if (Array.isArray(relationship)) {
     return relationship.map((item) => deserializeIncluded(item, included, includeStore))
@@ -142,26 +170,6 @@ const extractRelationships = (relationships, included, includeStore = {}) => {
   }, {})
 }
 
-const extractPlateData = (plates, wells) => {
-  return plates.reduce((result, plate) => {
-    // Get the wells for the given plate
-    const wellIds = plate.relationships.wells.data.map((w) => w.id)
-    const plateWells = wells.filter((well) => wellIds.includes(well.id))
-
-    // Format the well data, to include pool ids
-    const wellsData = dataToObjectByPosition({ data: plateWells, includeRelationships: true })
-
-    return {
-      [plate.attributes.plate_number]: {
-        id: plate.id,
-        ...plate.attributes,
-        wells: wellsData,
-      },
-      ...result,
-    }
-  }, {})
-}
-
 const extractResourceObject = (data, included, includeStore = {}) => {
   return Object.assign(
     extractAttributes(data),
@@ -172,6 +180,7 @@ const extractResourceObject = (data, included, includeStore = {}) => {
 /*
   Deserialize a json-api object to bring included relationships, ids and types inline.
   @param response: {data: Object, included: Object} the object to deserialize
+  DEPRECATED: use populate by methods instead
 */
 const deserialize = ({ data, included }, includeStore = {}) => {
   if (Array.isArray(data)) {
@@ -233,10 +242,10 @@ const populateById =
 
     // Store the current data so we dont overwrite it unless specifed to do so
     const before = replaceData ? {} : result[resource]
-    Vue.set(result, resource, {
+    result[resource] = {
       ...before,
       ...dataToObjectById({ data, includeRelationships }),
-    })
+    }
   }
 
 /**
@@ -260,11 +269,41 @@ const populateBy =
 
     // Store the current data so we dont overwrite it unless specifed to do so
     const before = replaceData ? {} : result[resource]
-    Vue.set(result, resource, {
+    result[resource] = {
       ...before,
       ...fn({ data, includeRelationships }),
-    })
+    }
   }
+
+/**
+ * Splits the given data into an object keyed by the key of the parent
+ * @param {Array} data The data to split
+ * @param {Function} fn The function to populate the child data
+ * @param {Boolean} includeRelationships indicates if related resource ids should be extracted and included in the resulting object.
+ * @param {Array} parent The parent array includes the data, children and key to use for the resulting object
+ * @returns
+ */
+const splitDataByParent = ({
+  data,
+  fn,
+  includeRelationships = false,
+  parent: { parentData, children, key },
+}) => {
+  return parentData.reduce((result, item) => {
+    // Get the child ids for the given parent
+    const childIds = item.relationships[children].data.map((child) => child.id)
+
+    // Get the child records which match the child ids and then run the passed function
+    const childData = fn({
+      data: data.filter((record) => childIds.includes(record.id)),
+      includeRelationships,
+    })
+
+    // Add the child data to the result keyed by the parent key
+    result[item.attributes[key]] = childData
+    return result
+  }, {})
+}
 
 export {
   extractAttributes,
@@ -283,7 +322,8 @@ export {
   populateById,
   dataToObjectByPosition,
   populateBy,
-  extractPlateData,
+  splitDataByParent,
+  dataToObjectByPlateNumber,
 }
 
 export default deserialize

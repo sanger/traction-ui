@@ -1,12 +1,11 @@
 // Global setup to disable the vue console messages
 
-import Vue from 'vue'
 import { vi, afterEach } from 'vitest'
 
-Vue.config.productionTip = false
-Vue.config.devtools = false
-
+// https://vitest.dev/api/vi.html#vi-mock
 vi.mock('swrv')
+vi.mock('axios')
+
 afterEach(() => {
   vi.clearAllMocks()
 })

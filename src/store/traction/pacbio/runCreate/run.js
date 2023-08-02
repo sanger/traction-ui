@@ -1,5 +1,3 @@
-import Vue from 'vue'
-
 /**
  *
  * @param {String} plateNumber The number of the plate e.g. 1
@@ -9,7 +7,6 @@ const newPlate = (plateNumber) => {
   return {
     plate_number: plateNumber,
     sequencing_kit_box_barcode: '',
-    wells: {},
   }
 }
 
@@ -22,20 +19,10 @@ const runAttributes = () => {
   return {
     id: 'new',
     system_name: 'Sequel IIe',
-    sequencing_kit_box_barcode: null,
     dna_control_complex_box_barcode: null,
     comments: null,
-    plates: {
-      1: newPlate(1),
-      2: newPlate(2),
-    },
   }
 }
-
-/*
- * @returns {Array} of required attributes for a run
- */
-const requiredAttributes = () => ['sequencing_kit_box_barcode', 'dna_control_complex_box_barcode']
 
 /**
  * @returns {Object} - A Fresh Pacbio Sequencing Run.
@@ -96,90 +83,6 @@ const newWell = ({ position, ...attributes }) => {
   }
 }
 
-/*
- * @param {run} - A Pacbio Sequencing Run Object
- * @returns none - It modifies the original as it needs to be reactive
- * checks if requiredAttributes are completed. If not adds an error
- *
- */
-const validate = ({ run }) => {
-  const errors = {}
-  requiredAttributes().forEach((field) => {
-    if (!run[field]) errors[field] = 'must be present'
-  })
-  Vue.set(run, 'errors', errors)
-}
-
-/*
- * @param {run} - A Pacbio Sequencing Run Object
- * @returns {boolean}
- * A run is valid if it has no errors or errors are empty
- * A run is not valid if it has any errors
- */
-const valid = ({ run }) => {
-  return Object.keys(run.errors || {}).length === 0
-}
-
-const createWellPayload = (position, well) => {
-  if (position.includes('_destroy')) {
-    well._destroy = true
-  }
-  well.pool_ids = well.pools
-  return well
-}
-
-const createPlatePayload = (plate, plateNumber) => {
-  const plateId = plate.id || ''
-
-  const wells_attributes = Object.keys(plate.wells).map((position) => {
-    const well = plate.wells[position]
-    return createWellPayload(position, well)
-  })
-
-  // If there is no plate id and no wells then return null
-  if (!plateId && wells_attributes.length === 0) {
-    return null
-  }
-
-  return {
-    id: plateId,
-    plate_number: plateNumber,
-    sequencing_kit_box_barcode: plate.sequencing_kit_box_barcode,
-    wells_attributes: [...wells_attributes],
-  }
-}
-
-/**
- * @param {id} - An Integer for the id of the run
- * @param {run} - A pacbio sequencing run object minus id
- * @param {smrtLinkVersion} - The SMRT Link Version of the run
- **/
-const createRunPayload = ({ id, run, smrtLinkVersion }) => {
-  const plates = run.plates
-  delete run.plates
-
-  const platesAttributes = Object.values(plates).map((plate) => {
-    return createPlatePayload(plate, plate.plate_number)
-  })
-
-  // Currently remove sequencing_kit_box_barcode from a run
-  // because this will be moved to plate attributes
-  // once multiple plates for a run are implemented
-  delete run.sequencing_kit_box_barcode
-
-  return {
-    data: {
-      type: 'runs',
-      id,
-      attributes: {
-        ...run,
-        pacbio_smrt_link_version_id: smrtLinkVersion.id,
-        plates_attributes: platesAttributes,
-      },
-    },
-  }
-}
-
 /**
  * @returns enum for new and existing
  */
@@ -196,11 +99,11 @@ const newRunType = {
   label: 'Create Run',
 
   // returns the payload slightly different for new and existing runs
-  payload({ run, smrtLinkVersion }) {
+  payload({ run, plates, wells, smrtLinkVersion, instrumentType }) {
     // eslint-disable-next-line no-unused-vars
     const { id, ...attributes } = run
 
-    return createRunPayload({ run: attributes, smrtLinkVersion })
+    return createPayload({ run: attributes, plates, wells, smrtLinkVersion, instrumentType })
   },
 
   // returns a promise different for create or update
@@ -215,11 +118,11 @@ const existingRunType = {
   theme: 'update',
   action: 'update',
   label: 'Update Run',
-  payload({ run, smrtLinkVersion }) {
+  payload({ run, plates, wells, smrtLinkVersion, instrumentType }) {
     // eslint-disable-next-line no-unused-vars
     const { id, ...attributes } = run
 
-    return createRunPayload({ id, run: attributes, smrtLinkVersion })
+    return createPayload({ id, run: attributes, plates, wells, smrtLinkVersion, instrumentType })
   },
   // the function handle should be the same for create and update
   promise({ payload, request }) {
@@ -238,17 +141,79 @@ const createRunType = ({ id }) => {
   return isNaN(id) ? newRunType : existingRunType
 }
 
+/**
+ * @param {id} - An Integer for the id of the run
+ * @param {run} - A pacbio sequencing run object minus id
+ * @param {plates} - An object of plates
+ * @param {wells} - An object of wells
+ * @param {smrtLinkVersion} - The SMRT Link Version of the run
+ * @param {instrumentType} - The instrument type of the run
+ * @returns {Object} - A payload for the run
+ * creates a JSONAPI payload for a run
+ */
+const createPayload = ({ id, run, plates, wells, smrtLinkVersion, instrumentType }) => {
+  return {
+    data: {
+      type: 'runs',
+      id,
+      attributes: {
+        ...run,
+        pacbio_smrt_link_version_id: smrtLinkVersion.id,
+        system_name: instrumentType.name,
+        plates_attributes: Object.values(plates)
+          .map(({ plate_number, ...plate }) => {
+            return {
+              plate_number,
+              ...plate,
+              wells_attributes: createWellsPayload(wells[plate_number]),
+            }
+          })
+          .filter((plate) => hasPlateAttributes(plate)),
+      },
+    },
+  }
+}
+
+/**
+ * @param {plate} - A plate object
+ * @returns {Boolean} - True if the plate is empty
+ * A plate has attributes if it has a sequencing_kit_box_barcode and some wells_attributes
+ */
+const hasPlateAttributes = ({ sequencing_kit_box_barcode, wells_attributes }) => {
+  return sequencing_kit_box_barcode || wells_attributes.length > 0
+}
+
+/**
+ * @param {wells} - An object of wells
+ * @returns {Object} - A payload for the wells
+ */
+const createWellsPayload = (wells) => {
+  // isolate the _destroy attribute from the rest of the wells
+  const { _destroy, ...rest } = wells
+
+  // return the wells with the pools replaced by pool_ids attribute
+  return (
+    Object.values(rest)
+      .map(({ pools: pool_ids, ...attributes }) => {
+        return { ...attributes, pool_ids }
+      })
+      // add the _destroy attribute back to the wells
+      .concat(_destroy || [])
+      // flatten the array
+      .flat()
+  )
+}
+
 export {
   newRun,
-  validate,
-  valid,
   defaultWellAttributes,
   newWell,
   newPlate,
-  createRunPayload,
   RunTypeEnum,
   createRunType,
   newRunType,
   existingRunType,
-  createPlatePayload,
+  createPayload,
+  hasPlateAttributes,
+  createWellsPayload,
 }

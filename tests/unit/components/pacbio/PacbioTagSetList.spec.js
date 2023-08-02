@@ -1,5 +1,5 @@
 import PacbioTagSetList from '@/components/pacbio/PacbioTagSetList'
-import { localVue, mount, store } from '@support/testHelper'
+import { mount, store } from '@support/testHelper'
 
 const tagSets = {
   1: { id: '1', name: 'TagSet1', tags: [] },
@@ -15,7 +15,6 @@ describe('PacbioTagSetList', () => {
       store.state.traction.pacbio.poolCreate.resources.tagSets = tagSets
 
       wrapper = mount(PacbioTagSetList, {
-        localVue,
         store,
       })
     })
@@ -30,7 +29,7 @@ describe('PacbioTagSetList', () => {
     it('allows the user to select a tag set', async () => {
       const options = wrapper.find('[data-type=tag-set-list]').findAll('option')
       // bizarrely if you try to select the first option it returns null
-      await options.at(1).setSelected()
+      await options[1].setSelected()
       expect(store.state.traction.pacbio.poolCreate.selected.tagSet.id).toEqual(tagSets['1'].id)
     })
   })
@@ -40,7 +39,6 @@ describe('PacbioTagSetList', () => {
       store.state.traction.pacbio.poolCreate.resources.tagSets = {}
 
       wrapper = mount(PacbioTagSetList, {
-        localVue,
         store,
       })
     })
@@ -55,7 +53,6 @@ describe('PacbioTagSetList', () => {
       store.state.traction.pacbio.poolCreate.resources.tagSets = {}
 
       wrapper = mount(PacbioTagSetList, {
-        localVue,
         store,
       })
 

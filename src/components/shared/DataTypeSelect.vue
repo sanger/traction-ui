@@ -1,10 +1,10 @@
 <template>
   <traction-select
     id="data-type"
+    :model-value="value"
     data-attribute="data-type-list"
-    :value="value"
     :options="dataTypes"
-    @input="handleInput"
+    @update:modelValue="handleInput"
   ></traction-select>
 </template>
 
@@ -28,6 +28,7 @@ export default {
       default: undefined,
     },
   },
+  emits: ['input'],
   setup() {
     const baseURL = import.meta.env.VITE_TRACTION_BASE_URL
     const { data: remoteDataTypes } = useSWRV(

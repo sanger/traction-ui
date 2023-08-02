@@ -1,5 +1,5 @@
 import ONTFlowcell from '@/components/ont/runs/ONTFlowcell'
-import { localVue, mount, store } from '@support/testHelper'
+import { mount, store } from '@support/testHelper'
 import { describe } from 'vitest'
 
 describe('ONTFlowcell', () => {
@@ -16,8 +16,7 @@ describe('ONTFlowcell', () => {
     store.commit('traction/ont/runs/setPoolTubeBarcode', { barcode: 'TRAC-1-A', position: 1 })
 
     wrapper = mount(ONTFlowcell, {
-      localVue,
-      propsData: props,
+      props,
       store,
     })
 

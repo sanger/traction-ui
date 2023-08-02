@@ -75,6 +75,7 @@ export default {
       },
     },
   },
+  emits: ['alert'],
   data() {
     return {
       request: {

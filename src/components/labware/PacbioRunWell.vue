@@ -43,6 +43,7 @@ export default {
       default: true,
     },
   },
+  emits: ['click'],
   data() {
     return {
       hover: false,
@@ -104,7 +105,7 @@ export default {
       return this.required_metadata_fields.some((field) => this.storeWell[field])
     },
     storeWell() {
-      return this.getWell(this.position, this.plateNumber)
+      return this.getWell(this.plateNumber, this.position)
     },
     status() {
       if (this.hasPools && this.hasValidMetadata) {

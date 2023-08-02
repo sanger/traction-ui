@@ -5,10 +5,10 @@
         Select tag set
         <traction-select
           v-if="!isEmpty"
-          :value="selected"
+          :model-value="selected"
           data-type="tag-set-list"
           :options="options"
-          @input="updateSelected"
+          @update:modelValue="updateSelected"
         ></traction-select>
       </div>
     </traction-section>

@@ -18,7 +18,7 @@
             :key="index"
             :active="index == sourceIndex"
             color="blue"
-            @click.native="setSource(index)"
+            @click="setSource(index)"
             >{{ tabTitle }}</traction-menu-item
           >
         </traction-menu>
@@ -54,7 +54,7 @@
 <script>
 import Plate from '@/components/ont/OntPlateItem'
 import { createNamespacedHelpers } from 'vuex'
-import { VueSelecto } from 'vue-selecto'
+import { VueSelecto } from 'vue3-selecto'
 
 // TODO: Does this need to be moved to top level ONT?
 const { mapGetters, mapMutations, mapActions } = createNamespacedHelpers('traction/ont/pools')
@@ -110,10 +110,10 @@ export default {
     },
     onSelect(e) {
       e.added.forEach((el) => {
-        this.selectWellRequests(el.__vue__.$attrs.id)
+        this.selectWellRequests(el.__vueParentComponent.attrs.id)
       })
       e.removed.forEach((el) => {
-        this.selectWellRequests(el.__vue__.$attrs.id)
+        this.selectWellRequests(el.__vueParentComponent.attrs.id)
       })
     },
     setSource(indx) {

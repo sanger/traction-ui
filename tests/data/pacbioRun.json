@@ -8,7 +8,6 @@
       },
       "attributes": {
         "name": "TRACTION-RUN-5",
-        "sequencing_kit_box_barcode": "SKB5",
         "dna_control_complex_box_barcode": "DCCB5",
         "system_name": "Sequel IIe",
         "created_at": "2023/06/15 15:47",
@@ -47,7 +46,8 @@
         },
         "attributes": {
           "pacbio_run_id": 5,
-          "plate_number": 1
+          "plate_number": 1,
+          "sequencing_kit_box_barcode": "SKB5"
         },
         "relationships": {
           "wells": {
@@ -68,7 +68,8 @@
         },
         "attributes": {
           "pacbio_run_id": 5,
-          "plate_number": 2
+          "plate_number": 2,
+          "sequencing_kit_box_barcode": "SKB5"
         },
         "relationships": {
           "wells": {
@@ -96,11 +97,11 @@
           "insert_size": 100,
           "on_plate_loading_concentration": "nl",
           "row": "A",
-          "column": "2",
+          "column": "1",
           "pacbio_plate_id": 5,
           "comment": null,
           "generate_hifi": "On Instrument",
-          "position": "A2",
+          "position": "A1",
           "pre_extension_time": 2,
           "ccs_analysis_output": "Yes",
           "binding_kit_box_barcode": "bk",
@@ -136,11 +137,11 @@
           "insert_size": 100,
           "on_plate_loading_concentration": "nl",
           "row": "A",
-          "column": "3",
+          "column": "1",
           "pacbio_plate_id": 6,
           "comment": null,
           "generate_hifi": "On Instrument",
-          "position": "A3",
+          "position": "A1",
           "pre_extension_time": 2,
           "ccs_analysis_output": "Yes",
           "binding_kit_box_barcode": "bk",
@@ -175,12 +176,12 @@
           "movie_time": "30.0",
           "insert_size": 100,
           "on_plate_loading_concentration": "nl",
-          "row": "A",
-          "column": "4",
+          "row": "B",
+          "column": "1",
           "pacbio_plate_id": 6,
           "comment": null,
           "generate_hifi": "On Instrument",
-          "position": "A4",
+          "position": "B1",
           "pre_extension_time": 2,
           "ccs_analysis_output": "Yes",
           "binding_kit_box_barcode": "bk",

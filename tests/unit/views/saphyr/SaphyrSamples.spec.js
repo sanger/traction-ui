@@ -1,5 +1,5 @@
 import Samples from '@/views/saphyr/SaphyrSamples'
-import { mount, localVue, store, Data, router } from '@support/testHelper'
+import { mount, store, Data, router } from '@support/testHelper'
 import Response from '@/api/Response'
 
 describe('Samples.vue', () => {
@@ -14,8 +14,11 @@ describe('Samples.vue', () => {
     vi.spyOn(store.getters['traction/saphyr/requests/requestsRequest'], 'get').mockResolvedValue(
       Data.TractionSaphyrRequests,
     )
+    // Here we mock enzymes as they are loaded in the modal
+    vi.spyOn(store.getters.api.traction.saphyr.enzymes, 'get').mockResolvedValue({
+      data: Data.Enzymes,
+    })
     wrapper = mount(Samples, {
-      localVue,
       store,
       router,
       stubs: {
@@ -45,7 +48,7 @@ describe('Samples.vue', () => {
     beforeEach(() => {})
 
     it('will create a list of selected requests', () => {
-      const firstCell = wrapper.find('tbody').findAll('td').at(0)
+      const firstCell = wrapper.find('tbody').findAll('td')[0]
       firstCell.trigger('click')
       expect(samples.selected.length).toEqual(1)
     })

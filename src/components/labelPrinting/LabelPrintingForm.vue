@@ -101,6 +101,7 @@ import {
 import { getCurrentDate } from '@/lib/DateHelpers'
 import { mapActions } from 'vuex'
 import BarcodeIcon from '@/icons/BarcodeIcon.vue'
+import { nextTick } from 'vue'
 
 const defaultForm = () => ({
   sourceBarcodeList: null,
@@ -172,7 +173,7 @@ export default {
 
       // Trick to reset/clear native browser form validation state
       this.show = false
-      this.$nextTick(() => {
+      nextTick(() => {
         this.show = true
       })
     },

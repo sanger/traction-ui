@@ -29,6 +29,7 @@
             role="dialog"
             aria-modal="true"
             aria-labelledby="modal-headline"
+            data-attribute="modal"
           >
             <div
               class="flex flex-row border-b-2 border-gray-200 p-4 pb-4 sm:p-6 sm:pb-4 bg-gray-100 text-lg leading-6 font-medium text-gray-900"
@@ -71,6 +72,7 @@ export default {
       default: '',
     },
   },
+  emits: ['ok', 'cancel'],
   data() {
     return {
       /**Mutable property to make the dialog visible or not */

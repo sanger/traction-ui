@@ -27,7 +27,7 @@ describe('Well.vue', () => {
     store.state.traction.ont.pools.resources.requests = requests
 
     wrapper = mount(Well, {
-      propsData: props,
+      props,
       store,
     })
 
@@ -83,7 +83,7 @@ describe('Well.vue', () => {
       props['requests'] = []
 
       wrapper = mount(Well, {
-        propsData: props,
+        props,
         store,
       })
 

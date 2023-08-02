@@ -1,4 +1,4 @@
-import { localVue, mount } from '@support/testHelper'
+import { mount } from '@support/testHelper'
 
 import TractionPagination from '@/components/shared/TractionPagination'
 
@@ -7,15 +7,13 @@ import { beforeEach, describe, expect, it } from 'vitest'
 describe('TractionPagination.vue', () => {
   const buildWrapper = (props = {}) => {
     return mount(TractionPagination, {
-      localVue,
-      propsData: props,
+      props,
     })
   }
 
   describe('Initial page display', () => {
     const wrapper = mount(TractionPagination, {
-      propsData: { vmodel: 'currentPage', totalRows: 30, perPage: 5, maxVisibleButtons: 3 },
-      localVue,
+      props: { vmodel: 'currentPage', totalRows: 30, perPage: 5, maxVisibleButtons: 3 },
       data() {
         return {
           currentPage: 3,
@@ -23,8 +21,8 @@ describe('TractionPagination.vue', () => {
       },
     })
     it('displays the given current page as selected', () => {
-      expect(wrapper.findAll('[data-testid=page-button]').at(1).text()).toBe('3')
-      expect(wrapper.findAll('[data-testid=page-button]').at(1).attributes('class')).toContain(
+      expect(wrapper.findAll('[data-testid=page-button]')[1].text()).toBe('3')
+      expect(wrapper.findAll('[data-testid=page-button]')[1].attributes('class')).toContain(
         'text-white bg-sdb-200 shadow-sm focus:shadow-outline-sdb hover:bg-sdb-300 active:bg-sdb-400',
       )
       expect(wrapper.vm.itemsPerPage).equals(5)
@@ -39,7 +37,7 @@ describe('TractionPagination.vue', () => {
     })
 
     it('displays the first page button as selected', () => {
-      expect(wrapper.findAll('[data-testid=page-button]').at(0).attributes('class')).toContain(
+      expect(wrapper.findAll('[data-testid=page-button]')[0].attributes('class')).toContain(
         'text-white bg-sdb-200 shadow-sm focus:shadow-outline-sdb hover:bg-sdb-300 active:bg-sdb-400',
       )
     })
@@ -83,8 +81,7 @@ describe('TractionPagination.vue', () => {
   describe('Invoking page buttons', () => {
     it('displays first page', async () => {
       const wrapper = mount(TractionPagination, {
-        propsData: { vmodel: 'currentPage', totalRows: 30, perPage: 5, maxVisibleButtons: 5 },
-        localVue,
+        props: { vmodel: 'currentPage', totalRows: 30, perPage: 5, maxVisibleButtons: 5 },
         data() {
           return {
             currentPage: 3,
@@ -105,16 +102,15 @@ describe('TractionPagination.vue', () => {
         expect(wrapper.find('[data-testid=prev-button]').element.disabled).toBe(true)
       })
       it('displays the first page button as selected', () => {
-        expect(wrapper.findAll('[data-testid=page-button]').at(0).text()).toBe('1')
-        expect(wrapper.findAll('[data-testid=page-button]').at(0).attributes('class')).toContain(
+        expect(wrapper.findAll('[data-testid=page-button]')[0].text()).toBe('1')
+        expect(wrapper.findAll('[data-testid=page-button]')[0].attributes('class')).toContain(
           'text-white bg-sdb-200 shadow-sm focus:shadow-outline-sdb hover:bg-sdb-300 active:bg-sdb-400',
         )
       })
     })
     it('displays next page', async () => {
       const wrapper = mount(TractionPagination, {
-        propsData: { vmodel: 'currentPage', totalRows: 30, perPage: 5, maxVisibleButtons: 5 },
-        localVue,
+        props: { vmodel: 'currentPage', totalRows: 30, perPage: 5, maxVisibleButtons: 5 },
         data() {
           return {
             currentPage: 1,
@@ -135,8 +131,8 @@ describe('TractionPagination.vue', () => {
         expect(wrapper.find('[data-testid=prev-button]').element.disabled).toBe(false)
       })
       it('displays the second page button as selected', () => {
-        expect(wrapper.findAll('[data-testid=page-button]').at(1).text()).toBe('2')
-        expect(wrapper.findAll('[data-testid=page-button]').at(1).attributes('class')).toContain(
+        expect(wrapper.findAll('[data-testid=page-button]')[1].text()).toBe('2')
+        expect(wrapper.findAll('[data-testid=page-button]')[1].attributes('class')).toContain(
           'text-white bg-sdb-200 shadow-sm focus:shadow-outline-sdb hover:bg-sdb-300 active:bg-sdb-400',
         )
       })
@@ -144,8 +140,7 @@ describe('TractionPagination.vue', () => {
 
     it('displays last page', async () => {
       const wrapper = mount(TractionPagination, {
-        propsData: { vmodel: 'currentPage', totalRows: 30, perPage: 5, maxVisibleButtons: 3 },
-        localVue,
+        props: { vmodel: 'currentPage', totalRows: 30, perPage: 5, maxVisibleButtons: 3 },
         data() {
           return {
             currentPage: 1,
@@ -166,16 +161,15 @@ describe('TractionPagination.vue', () => {
         expect(wrapper.find('[data-testid=next-button]').element.disabled).toBe(true)
       })
       it('displays the last page button as selected', () => {
-        expect(wrapper.findAll('[data-testid=page-button]').at(2).text()).toBe('6')
-        expect(wrapper.findAll('[data-testid=page-button]').at(2).attributes('class')).toContain(
+        expect(wrapper.findAll('[data-testid=page-button]')[2].text()).toBe('6')
+        expect(wrapper.findAll('[data-testid=page-button]')[2].attributes('class')).toContain(
           'text-white bg-sdb-200 shadow-sm focus:shadow-outline-sdb hover:bg-sdb-300 active:bg-sdb-400',
         )
       })
     })
     it('displays prev page', async () => {
       const wrapper = mount(TractionPagination, {
-        propsData: { vmodel: 'currentPage', totalRows: 30, perPage: 5, maxVisibleButtons: 3 },
-        localVue,
+        props: { vmodel: 'currentPage', totalRows: 30, perPage: 5, maxVisibleButtons: 3 },
         data() {
           return {
             currentPage: 6,
@@ -196,8 +190,8 @@ describe('TractionPagination.vue', () => {
         expect(wrapper.find('[data-testid=next-button]').element.disabled).toBe(false)
       })
       it('displays the selected page button as selected', () => {
-        expect(wrapper.findAll('[data-testid=page-button]').at(4).text()).toBe('5')
-        expect(wrapper.findAll('[data-testid=page-button]').at(4).attributes('class')).toContain(
+        expect(wrapper.findAll('[data-testid=page-button]')[4].text()).toBe('5')
+        expect(wrapper.findAll('[data-testid=page-button]')[4].attributes('class')).toContain(
           'text-white bg-sdb-200 shadow-sm focus:shadow-outline-sdb hover:bg-sdb-300 active:bg-sdb-400',
         )
       })
@@ -207,8 +201,7 @@ describe('TractionPagination.vue', () => {
     let wrapper
     beforeEach(() => {
       wrapper = mount(TractionPagination, {
-        propsData: { vmodel: 'currentPage', totalRows: 30, perPage: 5, maxVisibleButtons: 5 },
-        localVue,
+        props: { vmodel: 'currentPage', totalRows: 30, perPage: 5, maxVisibleButtons: 5 },
         data() {
           return {
             currentPage: 3,
@@ -217,7 +210,7 @@ describe('TractionPagination.vue', () => {
       })
     })
     it('changes total number of page buttons displayed ', async () => {
-      const textInput = wrapper.find('[data-testid=per-page-input')
+      const textInput = wrapper.find('[data-testid=per-page-input]')
       textInput.element.value = 10
       await textInput.trigger('input')
       expect(wrapper.findAll('[data-testid=page-button]')).toHaveLength(3)
@@ -226,21 +219,21 @@ describe('TractionPagination.vue', () => {
       expect(wrapper.findAll('[data-testid=page-button]')).toHaveLength(5)
     })
     it('resets current page to 1 if perPage has a value greater than total rows', async () => {
-      const textInput = wrapper.find('[data-testid=per-page-input')
+      const textInput = wrapper.find('[data-testid=per-page-input]')
       textInput.element.value = 40
       await textInput.trigger('input')
       expect(wrapper.findAll('[data-testid=page-button]')).toHaveLength(1)
-      expect(wrapper.findAll('[data-testid=page-button]').at(0).text()).toBe('1')
+      expect(wrapper.findAll('[data-testid=page-button]')[0].text()).toBe('1')
     })
     it('resets current page  if total pages required is less than the curret page in display', async () => {
-      const textInput = wrapper.find('[data-testid=per-page-input')
+      const textInput = wrapper.find('[data-testid=per-page-input]')
       textInput.element.value = 3
       await textInput.trigger('input')
       await wrapper.find('[data-testid=last-button]').trigger('click')
       textInput.element.value = 15
       await textInput.trigger('input')
       expect(wrapper.findAll('[data-testid=page-button]')).toHaveLength(2)
-      expect(wrapper.findAll('[data-testid=page-button]').at(0).text()).toBe('1')
+      expect(wrapper.findAll('[data-testid=page-button]')[0].text()).toBe('1')
     })
   })
 })

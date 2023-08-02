@@ -1,7 +1,7 @@
-vi.mock('axios')
-
 import { defaultHeaders, createRequest } from '@/api/createRequest'
 import axios from 'axios'
+
+vi.mock('axios')
 
 describe('createRequest', () => {
   const attributes = {
@@ -133,11 +133,11 @@ describe('createRequest', () => {
       vi.spyOn(axios, 'get')
       vi.spyOn(axios, 'delete')
       vi.spyOn(axios, 'patch')
-      vi.spyOn(axios, 'update')
       vi.spyOn(axios, 'post')
     })
     describe('get', () => {
       it('basic', async () => {
+        axios.get.mockReturnValue(mockResponse)
         const request = createRequest({ ...attributes })
         const response = await request.get()
         expect(axios.get).toBeCalledWith(request.resource)

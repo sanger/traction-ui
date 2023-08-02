@@ -8,7 +8,7 @@
             :key="index"
             :active="index == sourceIndex"
             color="blue"
-            @click.native="setSource(index)"
+            @click="setSource(index)"
             >{{ tabTitle }}</traction-menu-item
           >
         </traction-menu>
@@ -72,6 +72,9 @@ export default {
     // Needed due to left over pool data from previously edited pools
     this.$store.commit('traction/pacbio/poolCreate/clearPoolData')
 
+    // We should come up with a better solution to identify 'new' pools
+    // Anti-pattern params like 'new' in place of id is advised against
+    // https://github.com/vuejs/router/blob/main/packages/router/CHANGELOG.md#414-2022-08-22
     if (this.$route.params.id !== 'new') {
       const libraries = this.populateLibrariesFromPool(this.$route.params.id)
       libraries.then(this.alertOnFail)

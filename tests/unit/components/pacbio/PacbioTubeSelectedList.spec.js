@@ -1,4 +1,4 @@
-import { mount, localVue, store, Data } from '@support/testHelper'
+import { mount, store, Data } from '@support/testHelper'
 import PacbioTubeSelectedList from '@/components/pacbio/PacbioTubeSelectedList'
 import Response from '@/api/Response'
 import { expect } from 'vitest'
@@ -15,7 +15,6 @@ describe('PacbioTubeSelectedList', () => {
       store.commit('traction/pacbio/poolCreate/populateRequests', mockRequests)
 
       wrapper = mount(PacbioTubeSelectedList, {
-        localVue,
         store,
       })
     })
@@ -48,19 +47,18 @@ describe('PacbioTubeSelectedList', () => {
       store.commit('traction/pacbio/poolCreate/selectRequest', selectRequest)
 
       wrapper = mount(PacbioTubeSelectedList, {
-        localVue,
         store,
       })
     })
 
     it('contains the selected tube requests', () => {
       expect(wrapper.find('tbody').findAll('tr').length).toEqual(1)
-      expect(wrapper.find('tbody').findAll('td').at(0).text()).toEqual('GEN-1680611780-6')
-      expect(wrapper.find('tbody').findAll('td').at(1).text()).toEqual('human')
-      expect(wrapper.find('tbody').findAll('td').at(2).text()).toEqual('PacBio_Ultra_Low_Input')
-      expect(wrapper.find('tbody').findAll('td').at(3).text()).toEqual('3')
-      expect(wrapper.find('tbody').findAll('td').at(4).text()).toEqual('100')
-      expect(wrapper.find('tbody').findAll('td').at(5).text()).toEqual('Remove')
+      expect(wrapper.find('tbody').findAll('td')[0].text()).toEqual('GEN-1680611780-6')
+      expect(wrapper.find('tbody').findAll('td')[1].text()).toEqual('human')
+      expect(wrapper.find('tbody').findAll('td')[2].text()).toEqual('PacBio_Ultra_Low_Input')
+      expect(wrapper.find('tbody').findAll('td')[3].text()).toEqual('3')
+      expect(wrapper.find('tbody').findAll('td')[4].text()).toEqual('100')
+      expect(wrapper.find('tbody').findAll('td')[5].text()).toEqual('Remove')
     })
 
     it('deselects the tube and request when the remove button is clicked', async () => {

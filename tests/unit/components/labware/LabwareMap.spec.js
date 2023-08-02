@@ -1,4 +1,4 @@
-import { mount, localVue, store } from '@support/testHelper'
+import { mount } from '@support/testHelper'
 import LabwareMap from '@/components/labware/LabwareMap'
 import { LabwareTypes } from '@/lib/LabwareTypes'
 import { it } from 'vitest'
@@ -13,9 +13,7 @@ describe('LabwareMap.vue', () => {
     }
 
     wrapper = mount(LabwareMap, {
-      localVue,
-      store,
-      propsData: props,
+      props,
     })
     labware = wrapper.vm
   })

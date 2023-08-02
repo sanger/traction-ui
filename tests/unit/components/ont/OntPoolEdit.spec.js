@@ -1,4 +1,4 @@
-import { mount, localVue, store } from '@support/testHelper'
+import { mount, store, nextTick } from '@support/testHelper'
 import OntPoolEdit from '@/components/ont/OntPoolEdit'
 import { newLibrary } from '@/store/traction/ont/pools/pool.js'
 import { Data } from '@support/testHelper'
@@ -7,7 +7,6 @@ import * as pacbio from '@/lib/csv/pacbio'
 
 const buildWrapper = () =>
   mount(OntPoolEdit, {
-    localVue,
     stubs: {
       OntPoolLibraryList: true,
     },
@@ -173,7 +172,7 @@ describe('ontPoolEdit#edit', () => {
         },
       })
       store.state.traction.ont.pools = poolCreateStore
-      await localVue.nextTick()
+      await nextTick()
       expect(wrapper.find('[data-attribute=pool-type]').text()).toContain('Empty')
     })
 
@@ -181,18 +180,16 @@ describe('ontPoolEdit#edit', () => {
       const poolCreateStore = Object.assign({}, Data.AutoTagStore, {
         pooling: {
           tube: {},
-          libraries: { _1: newLibrary({ ont_request_id: '1' }) },
+          libraries: { 1: newLibrary({ ont_request_id: '1' }) },
           pool: {},
         },
       })
       store.state.traction.ont.pools = poolCreateStore
-      await localVue.nextTick()
+      await nextTick()
       expect(wrapper.find('[data-attribute=pool-type]').text()).toContain('Library')
     })
 
     it('says pool when there are multiple libraries', async () => {
-      store.state.traction.ont.pools = Data.AutoTagStore
-      await localVue.nextTick()
       expect(wrapper.find('[data-attribute=pool-type]').text()).toContain('Pool')
     })
   })

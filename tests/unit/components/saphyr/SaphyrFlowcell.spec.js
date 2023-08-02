@@ -1,4 +1,4 @@
-import { mount, localVue, Data, store } from '@support/testHelper'
+import { mount, Data, store } from '@support/testHelper'
 import Flowcell from '@/components/saphyr/SaphyrFlowcell'
 import * as Run from '@/api/SaphyrRun'
 import Response from '@/api/Response'
@@ -19,7 +19,7 @@ describe('Flowcell', () => {
 
     props = { index: 0, position: 1 }
 
-    wrapper = mount(Flowcell, { localVue, store, propsData: props })
+    wrapper = mount(Flowcell, { store, props })
     flowcell = wrapper.vm
   })
 

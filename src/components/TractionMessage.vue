@@ -63,6 +63,7 @@ export default {
       required: true,
     },
   },
+  emits: ['dismissed'],
   computed: {
     /**
      * Returns tailwind colors based on 'type' property with default being grey.

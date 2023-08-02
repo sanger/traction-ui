@@ -1,4 +1,4 @@
-import { localVue, mount } from '@support/testHelper'
+import { mount } from '@support/testHelper'
 import TractionTable from '@/components/shared/table/TractionTable'
 import TractionTableRow from '@/components/shared/table/TractionTableRow'
 import TractionTableColumn from '@/components/shared/table/TractionTableColumn'
@@ -8,8 +8,7 @@ import { describe, expect, it } from 'vitest'
 describe('TractionTable', () => {
   const buildWrapper = (props = {}) => {
     return mount(TractionTable, {
-      localVue,
-      propsData: props,
+      props,
       components: {
         TractionTableColumn,
         TractionTableRow,
@@ -78,19 +77,19 @@ describe('TractionTable', () => {
     })
     it('displays table data', () => {
       expect(wrapper.findAll('[data-testid=column]')).toHaveLength(9)
-      expect(wrapper.findAll('[data-testid=column]').at(0).text()).toContain('Person2')
-      expect(wrapper.findAll('[data-testid=column]').at(1).text()).toContain('20')
-      expect(wrapper.findAll('[data-testid=column]').at(2).text()).toContain('female')
+      expect(wrapper.findAll('[data-testid=column]')[0].text()).toContain('Person2')
+      expect(wrapper.findAll('[data-testid=column]')[1].text()).toContain('20')
+      expect(wrapper.findAll('[data-testid=column]')[2].text()).toContain('female')
     })
     it('sorts first column on clicking sort button of first column', async () => {
       await wrapper.find('[data-testid=name-sort-button]').trigger('click')
-      expect(wrapper.findAll('[data-testid=column]').at(0).text()).toContain('Person1')
-      expect(wrapper.findAll('[data-testid=column]').at(1).text()).toContain('30')
+      expect(wrapper.findAll('[data-testid=column]')[0].text()).toContain('Person1')
+      expect(wrapper.findAll('[data-testid=column]')[1].text()).toContain('30')
     })
     it('sorts second column on clicking sort button of second column', async () => {
       await wrapper.find('[data-testid=age-sort-button]').trigger('click')
-      expect(wrapper.findAll('[data-testid=column]').at(0).text()).toContain('Person2')
-      expect(wrapper.findAll('[data-testid=column]').at(1).text()).toContain('20')
+      expect(wrapper.findAll('[data-testid=column]')[0].text()).toContain('Person2')
+      expect(wrapper.findAll('[data-testid=column]')[1].text()).toContain('20')
     })
   })
   describe('selectable props', () => {
@@ -107,25 +106,25 @@ describe('TractionTable', () => {
 
     it('set table as non selectable by default', async () => {
       const wrapper = buildWrapper({ fields: fields, items: items })
-      await wrapper.findAll('[data-testid=column]').at(0).trigger('click')
+      await wrapper.findAll('[data-testid=column]')[0].trigger('click')
       expect(wrapper.emitted()).not.toHaveProperty('row-selected')
     })
     it('allows selection in table when selectable prop is given', async () => {
       const wrapper = buildWrapper({ fields: fields, items: items, selectable: true })
-      await wrapper.findAll('[data-testid=column]').at(0).trigger('click')
+      await wrapper.findAll('[data-testid=column]')[0].trigger('click')
       expect(wrapper.emitted()).toHaveProperty('row-selected')
       expect(wrapper.emitted('row-selected')[0][0]).toEqual([
         { name: 'Person2', age: '20', gender: 'female' },
       ])
-      expect(wrapper.findAll('[data-testid=column]').at(0).attributes('class')).toContain(
+      expect(wrapper.findAll('[data-testid=column]')[0].attributes('class')).toContain(
         'bg-gray-400',
       )
     })
     it('emits row-click event by default', async () => {
       const wrapper = buildWrapper({ fields: fields, items: items })
-      await wrapper.findAll('[data-testid=column]').at(0).trigger('click')
+      await wrapper.findAll('[data-testid=column]')[0].trigger('click')
       expect(wrapper.emitted()).toHaveProperty('row-clicked')
-      expect(wrapper.findAll('[data-testid=column]').at(0).attributes('class')).not.toContain(
+      expect(wrapper.findAll('[data-testid=column]')[0].attributes('class')).not.toContain(
         'bg-gray-400',
       )
     })
@@ -135,9 +134,9 @@ describe('TractionTable', () => {
         fields: fields,
         items: items,
       })
-      await wrapper.findAll('[data-testid=column]').at(0).trigger('click')
+      await wrapper.findAll('[data-testid=column]')[0].trigger('click')
       expect(wrapper.emitted()).toHaveProperty('row-clicked')
-      expect(wrapper.findAll('[data-testid=column]').at(0).attributes('class')).not.toContain(
+      expect(wrapper.findAll('[data-testid=column]')[0].attributes('class')).not.toContain(
         'bg-gray-400',
       )
     })
@@ -149,23 +148,23 @@ describe('TractionTable', () => {
           return 'bg-gray-400'
         },
       })
-      await wrapper.findAll('[data-testid=column]').at(0).trigger('click')
+      await wrapper.findAll('[data-testid=column]')[0].trigger('click')
       expect(wrapper.emitted()).toHaveProperty('row-clicked')
-      expect(wrapper.findAll('[data-testid=column]').at(0).attributes('class')).toContain(
+      expect(wrapper.findAll('[data-testid=column]')[0].attributes('class')).toContain(
         'bg-gray-400',
       )
     })
     it('allows single selection by default', async () => {
       const wrapper = buildWrapper({ fields: fields, items: items, selectable: true })
-      await wrapper.findAll('[data-testid=column]').at(0).trigger('click')
-      expect(wrapper.findAll('[data-testid=column]').at(0).attributes('class')).toContain(
+      await wrapper.findAll('[data-testid=column]')[0].trigger('click')
+      expect(wrapper.findAll('[data-testid=column]')[0].attributes('class')).toContain(
         'bg-gray-400',
       )
-      await wrapper.findAll('[data-testid=column]').at(3).trigger('click')
-      expect(wrapper.findAll('[data-testid=column]').at(3).attributes('class')).toContain(
+      await wrapper.findAll('[data-testid=column]')[3].trigger('click')
+      expect(wrapper.findAll('[data-testid=column]')[3].attributes('class')).toContain(
         'bg-gray-400',
       )
-      expect(wrapper.findAll('[data-testid=column]').at(0).attributes('class')).not.toContain(
+      expect(wrapper.findAll('[data-testid=column]')[0].attributes('class')).not.toContain(
         'bg-gray-400',
       )
     })
@@ -176,13 +175,13 @@ describe('TractionTable', () => {
         selectable: true,
         selectMode: 'multiple',
       })
-      await wrapper.findAll('[data-testid=column]').at(0).trigger('click')
-      await wrapper.findAll('[data-testid=column]').at(3).trigger('click')
+      await wrapper.findAll('[data-testid=column]')[0].trigger('click')
+      await wrapper.findAll('[data-testid=column]')[3].trigger('click')
       expect(wrapper.emitted()).toHaveProperty('row-selected')
-      expect(wrapper.findAll('[data-testid=column]').at(0).attributes('class')).toContain(
+      expect(wrapper.findAll('[data-testid=column]')[0].attributes('class')).toContain(
         'bg-gray-400',
       )
-      expect(wrapper.findAll('[data-testid=column]').at(3).attributes('class')).toContain(
+      expect(wrapper.findAll('[data-testid=column]')[3].attributes('class')).toContain(
         'bg-gray-400',
       )
     })
@@ -201,8 +200,7 @@ describe('TractionTable', () => {
     ]
 
     const tableWrapper = mount(TractionTable, {
-      localVue,
-      propsData: { fields, items },
+      props: { fields, items },
       components: {
         TractionTableColumn,
         TractionTableRow,
@@ -215,7 +213,7 @@ describe('TractionTable', () => {
       expect(tableWrapper.findAll('[data-testid=editButton]')).toHaveLength(3)
     })
     it('invokes action on button click', async () => {
-      const editButton = tableWrapper.findAll('[data-testid=editButton]').at(0)
+      const editButton = tableWrapper.findAll('[data-testid=editButton]')[0]
       await editButton.trigger('click')
       expect(tableWrapper.emitted).toBeTruthy()
     })
@@ -235,8 +233,7 @@ describe('TractionTable', () => {
       ]
 
       const tableWrapper = mount(TractionTable, {
-        localVue,
-        propsData: { fields, items },
+        props: { fields, items },
         components: {
           TractionTableColumn,
           TractionTableRow,
@@ -252,7 +249,7 @@ describe('TractionTable', () => {
         expect(tableWrapper.findAll('[data-testid=showDetailsButton]')).toHaveLength(3)
       })
       it('should emit on scoped slot button click', async () => {
-        const showDetailsButton = tableWrapper.findAll('[data-testid=showDetailsButton]').at(0)
+        const showDetailsButton = tableWrapper.findAll('[data-testid=showDetailsButton]')[0]
         await showDetailsButton.trigger('click')
         expect(tableWrapper.emitted()).toBeTruthy()
       })
@@ -267,8 +264,7 @@ describe('TractionTable', () => {
   describe('simple table', () => {
     const tableWrapper = (props = {}) => {
       return mount(TractionTable, {
-        localVue,
-        propsData: { ...props, simple: true },
+        props: { ...props, simple: true },
         slots: {
           default: '<button data-testid="button">Test</button>',
         },

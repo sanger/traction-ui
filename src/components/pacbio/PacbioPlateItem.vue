@@ -1,10 +1,10 @@
 <template>
   <div data-type="plate-item">
-    <Plate96SVG v-if="wells" ref="plate96Svg" height="100%" width="100%">
+    <Plate96SVG v-if="wells" data-attribute="plate96Svg" height="100%" width="100%">
       <Well
         v-for="well in mappedWells"
         :key="well.position"
-        ref="well"
+        data-attribute="well"
         v-bind="well"
         @click="clickWell(well.id)"
       >
@@ -43,6 +43,7 @@ export default {
       },
     },
   },
+  emits: ['clickWell'],
   data() {
     return {
       wellData: [],

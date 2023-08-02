@@ -58,8 +58,9 @@ export default {
   name: 'TractionSelect',
   inheritAttrs: false,
   props: {
-    //value field of select which will be bind automatically with 'v-model' prop passed into the component
-    value: {
+    // modelValue field of select which will be bind automatically with 'v-model' prop passed into the component
+    // renamed from value because of vue3 breaking changes to v-model (https://v3-migration.vuejs.org/breaking-changes/v-model.html)
+    modelValue: {
       type: [String, Number],
       default: '',
     },
@@ -90,14 +91,15 @@ export default {
       default: '',
     },
   },
+  emits: ['update:modelValue'],
   computed: {
     propValue: {
       get() {
-        // if value is null or undefined we want to use an empty ''
-        return this.value || ''
+        // if modelValue is null or undefined we want to use an empty ''
+        return this.modelValue || ''
       },
       set(value) {
-        this.$emit('input', value)
+        this.$emit('update:modelValue', value)
       },
     },
     /**

@@ -2,14 +2,14 @@
   <div
     :class="[
       'w-12 h-6 flex rounded-full p-1 duration-100 cursor-pointer bg-gray-300',
-      `${value ? 'bg-sdb-300' : 'bg-gray-300'}`,
+      `${modelValue ? 'bg-sdb-300' : 'bg-gray-300'}`,
     ]"
-    :aria-checked="value.toString()"
+    :aria-checked="modelValue.toString()"
     @click="toggle"
   >
     <div
       class="bg-white w-4 h-4 rounded-full shadow-md transform duration-100"
-      :class="{ 'translate-x-6': value }"
+      :class="{ 'translate-x-6': modelValue }"
     ></div>
   </div>
 </template>
@@ -30,14 +30,15 @@ export default {
    */
   name: 'TractionToggle',
   props: {
-    value: {
+    modelValue: {
       type: Boolean,
       default: false,
     },
   },
+  emits: ['update:modelValue'],
   methods: {
     toggle() {
-      this.$emit('input', !this.value)
+      this.$emit('update:modelValue', !this.modelValue)
     },
   },
 }

@@ -1,4 +1,4 @@
-import { mount, localVue, store, Data } from '@support/testHelper'
+import { mount, store, Data } from '@support/testHelper'
 import OntPlateSelectedList from '@/components/ont/OntPlateSelectedList'
 import Response from '@/api/Response'
 
@@ -13,7 +13,6 @@ describe('OntPlateSelectedList', () => {
     store.commit('traction/ont/pools/populateWells', mockWells)
 
     wrapper = mount(OntPlateSelectedList, {
-      localVue,
       store,
       stubs: {
         Plate: true,
@@ -52,7 +51,7 @@ describe('OntPlateSelectedList', () => {
 
     it('contains the selected plate', () => {
       expect(wrapper.find('[data-type=selected-plate-item]').text()).toContain('GEN-1668092750-1')
-      expect(wrapper.findAll('plate-stub').length).toEqual(1)
+      expect(wrapper.findAll('.plate').length).toEqual(1)
     })
   })
 
@@ -65,13 +64,13 @@ describe('OntPlateSelectedList', () => {
     it('selects the requests associated with the well', async () => {
       const dispatch = vi.fn()
       store.dispatch = dispatch
-      const selecto = wrapper.find('vueselecto-stub')
+      const selecto = wrapper.findComponent('.selecto-selection')
       await selecto.vm.$emit('select', {
         // I'm not particularly happy with this, and would prefer to test with
         // something a little more realistic. TBH, I'd be happier if we were
         // emitting a vue component.
-        added: [{ __vue__: { $attrs: { id: '1' } } }],
-        removed: [{ __vue__: { $attrs: { id: '2' } } }],
+        added: [{ __vueParentComponent: { attrs: { id: '1' } } }],
+        removed: [{ __vueParentComponent: { attrs: { id: '2' } } }],
       })
 
       expect(dispatch).toHaveBeenCalledWith('traction/ont/pools/selectWellRequests', '1')

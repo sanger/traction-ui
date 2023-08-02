@@ -74,6 +74,7 @@ export default {
       },
     },
   },
+  emits: ['click'],
   computed: {
     checkRequest() {
       return this.getRequest ? 'filled' : 'empty'

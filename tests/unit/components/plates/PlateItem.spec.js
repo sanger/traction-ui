@@ -1,6 +1,6 @@
 import Plate from '@/components/plates/PlateItem'
 import PlateMap from '@/config/PlateMap'
-import { localVue, mount } from '@support/testHelper'
+import { mount } from '@support/testHelper'
 
 describe('Plate.vue', () => {
   let wrapper, plate, mockPlate
@@ -37,8 +37,7 @@ describe('Plate.vue', () => {
     }
 
     wrapper = mount(Plate, {
-      localVue,
-      propsData: { plate: mockPlate },
+      props: { plate: mockPlate },
     })
 
     plate = wrapper.vm
@@ -70,17 +69,17 @@ describe('Plate.vue', () => {
 
   describe('components', () => {
     it('has a Well component', () => {
-      expect(wrapper.findComponent({ ref: 'well' })).toBeTruthy()
+      expect(wrapper.findComponent('[data-attribute="well"]')).toBeTruthy()
     })
 
     it('has a Plate96SVG component', () => {
-      expect(wrapper.findComponent({ ref: 'plate96Svg' })).toBeTruthy()
+      expect(wrapper.findComponent('[data-attribute="plate96svg"]')).toBeTruthy()
     })
   })
 
   describe('SVG wells', () => {
     it('has the correct number of wells', () => {
-      const ellipses = wrapper.findAllComponents({ ref: 'well' })
+      const ellipses = wrapper.findAllComponents('[data-attribute="well"]')
       expect(ellipses.length).toEqual(Object.keys(PlateMap.wells).length)
     })
   })

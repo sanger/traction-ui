@@ -1,6 +1,5 @@
 import PacbioPoolIndex from '@/views/pacbio/PacbioPoolIndex'
-import { mount, localVue, store, Data, router } from '@support/testHelper'
-import flushPromises from 'flush-promises'
+import { mount, store, Data, router, flushPromises } from '@support/testHelper'
 
 describe('PacbioPoolIndex.vue', () => {
   let wrapper, pools
@@ -11,7 +10,6 @@ describe('PacbioPoolIndex.vue', () => {
     wrapper = mount(PacbioPoolIndex, {
       store,
       router,
-      localVue,
     })
     await flushPromises()
     pools = wrapper.vm
@@ -37,7 +35,6 @@ describe('PacbioPoolIndex.vue', () => {
       wrapper = mount(PacbioPoolIndex, {
         store,
         router,
-        localVue,
         data() {
           return { perPage: 1 }
         },
@@ -68,9 +65,10 @@ describe('PacbioPoolIndex.vue', () => {
       expect(button.text()).toEqual('Edit')
     })
 
-    it('on click show it shows the pool edit page', () => {
+    it('on click show it shows the pool edit page', async () => {
       button = wrapper.find('#editPool-1')
       button.trigger('click')
+      await flushPromises()
       expect(wrapper.vm.$route.path).toBe('/pacbio/pool/1')
     })
   })

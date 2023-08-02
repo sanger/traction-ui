@@ -18,16 +18,16 @@
           :total-rows="runs.length"
           :per-page="perPage"
           aria-controls="run-index"
-          @input="onPageChange($event)"
+          @update:modelValue="onPageChange($event)"
         >
         </traction-pagination>
       </div>
 
       <traction-table
         id="run-index"
+        v-model:sort-by="sortBy"
         :items="tableData"
         :fields="fields"
-        :sort-by.sync="sortBy"
         :per-page="perPage"
         :current-page="currentPage"
         @filtered="onFiltered"
