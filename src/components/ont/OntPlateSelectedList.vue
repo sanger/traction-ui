@@ -110,10 +110,10 @@ export default {
     },
     onSelect(e) {
       e.added.forEach((el) => {
-        this.selectWellRequests(el.__vueParentComponent.attrs.id)
+        this.selectWellRequests(el.getAttribute('id'))
       })
       e.removed.forEach((el) => {
-        this.selectWellRequests(el.__vueParentComponent.attrs.id)
+        this.selectWellRequests(el.getAttribute('id'))
       })
     },
     setSource(indx) {
