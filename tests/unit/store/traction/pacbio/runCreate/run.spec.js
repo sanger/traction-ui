@@ -377,5 +377,38 @@ describe('run.js', () => {
         },
       })
     })
+
+    it('will create the correct payload when SMRT Link Version is v12 Revio', () => {
+      const run = { system_name: 'Revio', dna_control_complex_box_barcode: 'redundant' }
+
+      const payload = createPayload({
+        run,
+        plates: plates.new,
+        wells: wells.new,
+        smrtLinkVersion: smrtLinkVersions['2'],
+        instrumentType: PacbioInstrumentTypes.SequelIIe,
+      })
+
+      expect(payload).toEqual({
+        data: {
+          type: 'runs',
+          attributes: {
+            pacbio_smrt_link_version_id: smrtLinkVersions['2'].id,
+            dna_control_complex_box_barcode: null,
+            system_name: PacbioInstrumentTypes.SequelIIe.name,
+            plates_attributes: [
+              {
+                ...plates.new[1],
+                wells_attributes: createWellsPayload(wells.new[1]),
+              },
+              {
+                ...plates.new[2],
+                wells_attributes: createWellsPayload(wells.new[2]),
+              },
+            ],
+          },
+        },
+      })
+    })
   })
 })

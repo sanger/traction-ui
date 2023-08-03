@@ -189,12 +189,15 @@ const hasPlateAttributes = ({ sequencing_kit_box_barcode, wells_attributes }) =>
  * @returns {run} - A run object
  */
 const SMRT_LINK_VERSION_V12_SEQUEL_IIE = 'v12_sequel_iie'
+const SMRT_LINK_VERSION_V12_REVIO = 'v12_revio'
 
 const createRunPayload = (run, smrtLinkVersion) => {
   // If the run is v12 Sequel IIe, remove redundant dna_control_complex_box_barcode
   // dna_control_complex_box_barcode is currently an optional field in the service
   // as it is not required for v12 Sequel IIe, but it for the other versions
-  if (smrtLinkVersion.name == SMRT_LINK_VERSION_V12_SEQUEL_IIE) {
+  if (
+    [SMRT_LINK_VERSION_V12_SEQUEL_IIE, SMRT_LINK_VERSION_V12_REVIO].includes(smrtLinkVersion.name)
+  ) {
     run.dna_control_complex_box_barcode = null
   }
   return run

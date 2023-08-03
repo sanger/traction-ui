@@ -31,7 +31,7 @@ describe('PacbioRunInfoEdit', () => {
     },
     2: {
       id: '2',
-      name: 'v2',
+      name: 'v12_revio',
       default: false,
     },
     3: {
@@ -96,15 +96,21 @@ describe('PacbioRunInfoEdit', () => {
       })
     })
 
-    describe('#smrtLinkVersionv12SequelIIe', () => {
-      it('returns false the SMRT Link version is not v12 Sequell IIewhen ', () => {
-        expect(runInfo.smrtLinkVersionv12SequelIIe).toBe(false)
+    describe('#smrtLinkVersionv12', () => {
+      it('returns false when the SMRT Link version is not v12', () => {
+        expect(runInfo.smrtLinkVersionv12).toBe(false)
       })
 
-      it('returns true when the SMRT Link version is v12 Sequell IIe', async () => {
+      it('returns true when the SMRT Link version is v12 Revio', async () => {
+        const options = wrapper.find('[data-attribute=smrt_link_version]').findAll('option')
+        await options[1].setSelected()
+        expect(runInfo.smrtLinkVersionv12).toBe(true)
+      })
+
+      it('returns true when the SMRT Link version is v12 Sequel IIe', async () => {
         const options = wrapper.find('[data-attribute=smrt_link_version]').findAll('option')
         await options[2].setSelected()
-        expect(runInfo.smrtLinkVersionv12SequelIIe).toBe(true)
+        expect(runInfo.smrtLinkVersionv12).toBe(true)
       })
     })
   })
@@ -114,7 +120,7 @@ describe('PacbioRunInfoEdit', () => {
       expect(store.state.traction.pacbio.runCreate.run.name).toEqual('TRACTION-RUN-3')
     })
 
-    it('shows dna_control_complex_box_barcode when SMRT Link version is not v12 Sequell IIe', async () => {
+    it('shows dna_control_complex_box_barcode when SMRT Link version is not v12 Sequel IIe', async () => {
       const input = wrapper.find('[data-attribute=dna_control_complex_box_barcode]')
       await input.setValue('DCCB1')
       expect(store.state.traction.pacbio.runCreate.run.dna_control_complex_box_barcode).toEqual(
@@ -122,7 +128,13 @@ describe('PacbioRunInfoEdit', () => {
       )
       expect(wrapper.text()).toContain('DNA Control Complex Box Barcode')
     })
-    it('does not show dna_control_complex_box_barcode when SMRT Link version is v12 Sequell IIe', async () => {
+    it('does not show dna_control_complex_box_barcode when SMRT Link version is v12 Revio', async () => {
+      const options = wrapper.find('[data-attribute=smrt_link_version]').findAll('option')
+      await options[1].setSelected()
+      expect(runInfo.smrtLinkVersion.id).toEqual(smrtLinkVersions[2].id)
+      expect(wrapper.text()).not.toContain('DNA Control Complex Box Barcode')
+    })
+    it('does not show dna_control_complex_box_barcode when SMRT Link version is v12 Sequel IIe', async () => {
       const options = wrapper.find('[data-attribute=smrt_link_version]').findAll('option')
       await options[2].setSelected()
       expect(runInfo.smrtLinkVersion.id).toEqual(smrtLinkVersions[3].id)
