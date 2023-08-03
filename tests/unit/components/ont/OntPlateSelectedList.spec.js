@@ -65,12 +65,13 @@ describe('OntPlateSelectedList', () => {
       const dispatch = vi.fn()
       store.dispatch = dispatch
       const selecto = wrapper.findComponent('.selecto-selection')
+      const addedWell = wrapper.findAll('[data-attribute=well]')[0]
+      addedWell.getAttribute = vi.fn(() => '1')
+      const removedWell = wrapper.findAll('[data-attribute=well]')[1]
+      removedWell.getAttribute = vi.fn(() => '2')
       await selecto.vm.$emit('select', {
-        // I'm not particularly happy with this, and would prefer to test with
-        // something a little more realistic. TBH, I'd be happier if we were
-        // emitting a vue component.
-        added: [{ __vueParentComponent: { attrs: { id: '1' } } }],
-        removed: [{ __vueParentComponent: { attrs: { id: '2' } } }],
+        added: [addedWell],
+        removed: [removedWell],
       })
 
       expect(dispatch).toHaveBeenCalledWith('traction/ont/pools/selectWellRequests', '1')
