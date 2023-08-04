@@ -1,44 +1,51 @@
 <template>
   <div>
     <div
-      style="width: 200px"
-      class="px-2 rounded overflow-hidden shadow-lg"
+      style="width: 200px; height: 400px"
+      class="rounded-lg overflow-hidden border-2 shadow-lg whitespace-nowrap"
       :class="flowcell_bg_colour"
     >
-      <div class="text-xl mb-2">{{ coordinate }}</div>
-      <fieldset id="input-group-flowcell-id" class="py-2">
-        <label class="flex justify-start">Flowcell ID:</label>
-        <traction-field-error
-          id="input-flowcell-id-feedback"
-          :error="flowcellIdValidationError"
-          :with-icon="isFlowcellIdExists"
-        >
-          <traction-input
-            :id="'flowcell-id-' + position"
-            v-model="flowcellId"
-            placeholder="Scan flowcell ID"
-            :formatter="formatter"
-            :classes="flowcell_id_field_colour"
-          />
-        </traction-field-error>
-      </fieldset>
-      <fieldset id="input-group-pool-id" class="py-2">
-        <label class="flex justify-start">Pool Library Barcode:</label>
-        <traction-field-error
-          id="input-pool-tube-barcode-feedback"
-          :error="barcodeValidationError"
-          :with-icon="isBarcodeExists"
-        >
-          <traction-input
-            :id="'pool-id-' + position"
-            v-model="barcode"
-            :formatter="formatter"
-            :classes="flowcell_barcode_field_colour"
-            placeholder="Scan library barcode"
-            :debounce="500"
-          />
-        </traction-field-error>
-      </fieldset>
+      <div class="text-xl p-2 text-gray-600 border-b-2" :class="flowcell_bg_colour">
+        {{ coordinate }}
+      </div>
+      <!-- <div class="border border-gray-300" /> -->
+      <div class="flex h-full px-3 bg-gray-300 items-center justify-center">
+        <div class="flex flex-col space-y-4">
+          <fieldset id="input-group-flowcell-id">
+            <label class="flex justify-start text-md">Flowcell ID</label>
+            <traction-field-error
+              id="input-flowcell-id-feedback"
+              :error="flowcellIdValidationError"
+              :with-icon="isFlowcellIdExists"
+            >
+              <traction-input
+                :id="'flowcell-id-' + position"
+                v-model="flowcellId"
+                placeholder="Scan flowcell ID"
+                :formatter="formatter"
+                :classes="flowcell_id_field_colour"
+              />
+            </traction-field-error>
+          </fieldset>
+          <fieldset id="input-group-pool-id">
+            <label class="flex justify-start">Pool Library Barcode</label>
+            <traction-field-error
+              id="input-pool-tube-barcode-feedback"
+              :error="barcodeValidationError"
+              :with-icon="isBarcodeExists"
+            >
+              <traction-input
+                :id="'pool-id-' + position"
+                v-model="barcode"
+                :formatter="formatter"
+                :classes="flowcell_barcode_field_colour"
+                placeholder="Scan library barcode"
+                :debounce="500"
+              />
+            </traction-field-error>
+          </fieldset>
+        </div>
+      </div>
     </div>
   </div>
 </template>
