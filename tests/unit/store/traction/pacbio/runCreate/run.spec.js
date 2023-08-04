@@ -251,7 +251,7 @@ describe('run.js', () => {
 
   describe('createPayload', () => {
     it('will create a new run payload', () => {
-      const run = { system_name: 'Revio', dna_control_complex_box_barcode: 'to keep' }
+      const run = { system_name: 'Sequel IIe', dna_control_complex_box_barcode: 'to keep' }
 
       const payload = createPayload({
         run,
@@ -386,7 +386,7 @@ describe('run.js', () => {
         plates: plates.new,
         wells: wells.new,
         smrtLinkVersion: smrtLinkVersions['2'],
-        instrumentType: PacbioInstrumentTypes.SequelIIe,
+        instrumentType: PacbioInstrumentTypes.Revio,
       })
 
       expect(payload).toEqual({
@@ -395,7 +395,7 @@ describe('run.js', () => {
           attributes: {
             pacbio_smrt_link_version_id: smrtLinkVersions['2'].id,
             dna_control_complex_box_barcode: null,
-            system_name: PacbioInstrumentTypes.SequelIIe.name,
+            system_name: PacbioInstrumentTypes.Revio.name,
             plates_attributes: [
               {
                 ...plates.new[1],
