@@ -270,7 +270,7 @@ describe('mutations.js', () => {
       const wells = Data.PacbioRun.data.included.slice(2, 5)
       const state = defaultState()
       // Expected wells are the wells that are expected to be in the state after the mutation
-      // We add the _destroy key to the expected wells on like 281
+      // We add the _destroy key to the expected wells on line 281
       const expectedWells = splitDataByParent({
         data: wells,
         fn: dataToObjectByPosition,
