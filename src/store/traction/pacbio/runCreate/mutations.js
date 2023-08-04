@@ -122,10 +122,10 @@ export default {
    * Adds _destroy key to the well in store so future wells
    * for the same position can be added
    */
-  deleteWell: (state, { position, plateNumber }) => {
-    const id = state.wells[plateNumber][position].id
+  deleteWell: (state, { well, plateNumber }) => {
+    const id = state.wells[plateNumber][well.position].id
 
-    delete state.wells[plateNumber][position]
+    delete state.wells[plateNumber][well.position]
     state.wells[plateNumber]['_destroy'].push({ _destroy: true, id })
   },
 
@@ -155,14 +155,21 @@ export default {
    * @param {Object} plates The plates for the run
    * @param {Object} wells The wells for the run
    * Adds the wells to state by plate number and well position, two dimensional array
+   * Adds the _destroy key to each well plate
    */
   populateWells: (state, { plates, wells }) => {
-    state.wells = splitDataByParent({
+    const wellsByPlate = splitDataByParent({
       data: wells,
       fn: dataToObjectByPosition,
       includeRelationships: true,
       parent: { parentData: plates, children: 'wells', key: 'plate_number' },
     })
+    // We need to add the _destroy key to each plate to handle well deletions
+    // eslint-disable-next-line no-unused-vars
+    Object.entries(wellsByPlate).forEach(([_plateNumber, plate]) => {
+      plate['_destroy'] = []
+    })
+    state.wells = wellsByPlate
   },
 
   /**
