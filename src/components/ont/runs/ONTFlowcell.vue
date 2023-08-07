@@ -5,7 +5,7 @@
       class="rounded-lg overflow-hidden border-2 shadow-lg whitespace-nowrap"
       :class="flowcell_bg_colour"
     >
-      <div class="text-xl p-2 text-gray-500 border-b-2" >
+      <div class="text-xl p-2 text-gray-500 border-b-2">
         {{ coordinate }}
       </div>
       <!-- <div class="border border-gray-300" /> -->
