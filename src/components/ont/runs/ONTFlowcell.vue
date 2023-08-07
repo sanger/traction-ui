@@ -1,18 +1,18 @@
 <template>
   <div>
     <div
-      style="width: 200px; height: 400px"
+      style="width: 200px; height: 300px"
       class="rounded-lg overflow-hidden border-2 shadow-lg whitespace-nowrap"
       :class="flowcell_bg_colour"
     >
-      <div class="text-xl p-2 text-gray-600 border-b-2" :class="flowcell_bg_colour">
+      <div class="text-xl p-2 text-gray-500 border-b-2" >
         {{ coordinate }}
       </div>
       <!-- <div class="border border-gray-300" /> -->
-      <div class="flex h-full px-3 bg-gray-300 items-center justify-center">
-        <div class="flex flex-col space-y-4">
+      <div class="flex flex-col h-full px-2 py-8 bg-gray-300">
+        <div class="flex flex-col mt-2 py-1 justify-center space-y-4">
           <fieldset id="input-group-flowcell-id">
-            <label class="flex justify-start text-md">Flowcell ID</label>
+            <label class="flex justify-start text-sm ml-1 text-gray-600">Flowcell ID</label>
             <traction-field-error
               id="input-flowcell-id-feedback"
               :error="flowcellIdValidationError"
@@ -23,12 +23,14 @@
                 v-model="flowcellId"
                 placeholder="Scan flowcell ID"
                 :formatter="formatter"
-                :classes="flowcell_id_field_colour"
+                :classes="`${flowcell_id_field_colour} text-gray-600 text-sm`"
               />
             </traction-field-error>
           </fieldset>
           <fieldset id="input-group-pool-id">
-            <label class="flex justify-start">Pool Library Barcode</label>
+            <label class="flex justify-start text-sm ml-1 mt-1 text-gray-600"
+              >Pool Library Barcode</label
+            >
             <traction-field-error
               id="input-pool-tube-barcode-feedback"
               :error="barcodeValidationError"
@@ -38,7 +40,7 @@
                 :id="'pool-id-' + position"
                 v-model="barcode"
                 :formatter="formatter"
-                :classes="flowcell_barcode_field_colour"
+                :classes="`${flowcell_barcode_field_colour} text-gray-600 text-sm`"
                 placeholder="Scan library barcode"
                 :debounce="500"
               />
