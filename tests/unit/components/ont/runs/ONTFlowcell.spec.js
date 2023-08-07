@@ -38,7 +38,7 @@ describe('ONTFlowcell', () => {
         const flowcellIdInput = wrapper.find('#flowcell-id-1')
         await flowcellIdInput.setValue('some value')
         expect(ontFlowcell.flowcellIdValidationError).toBe(
-          'Enter at valid Flowcell ID (3 letters then at least 3 numbers)',
+          'Enter a valid Flowcell ID (3 letters then at least 3 numbers)',
         )
       })
 
