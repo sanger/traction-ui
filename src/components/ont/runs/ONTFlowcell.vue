@@ -1,16 +1,16 @@
 <template>
   <div>
     <div
-      style="width: 200px; height: 300px"
+      style="width: 200px; height: 320px"
       class="rounded-lg overflow-hidden border-2 shadow-lg whitespace-nowrap"
       :class="flowcell_bg_colour"
     >
-      <div class="text-xl p-2 text-gray-500 border-b-2">
+      <div class="`text-xl p-2 text-gray-500 border-b-2">
         {{ coordinate }}
       </div>
       <!-- <div class="border border-gray-300" /> -->
-      <div class="flex flex-col h-full px-2 py-8 bg-gray-300">
-        <div class="flex flex-col mt-2 py-1 justify-center space-y-4">
+      <div class="flex flex-col h-full px-2 py-8 bg-blue-100">
+        <div class="flex flex-col mt-2 py-3 justify-center space-y-4">
           <fieldset id="input-group-flowcell-id">
             <label class="flex justify-start text-sm ml-1 text-gray-600">Flowcell ID</label>
             <traction-field-error
@@ -95,7 +95,7 @@ export default {
       if (this.flowcellId) {
         return this.flowcellId.match(/^[a-zA-Z]{3}\d{3,}$/)
           ? ''
-          : 'Enter at valid Flowcell ID (3 letters then at least 3 numbers)'
+          : 'Enter a valid Flowcell ID (3 letters then at least 3 numbers)'
       }
       return ''
     },
@@ -174,7 +174,8 @@ export default {
        * yellow - if one of flowcellId and barcode fields are valid and other is empty
        */
       flowcell_bg_colour() {
-        if (!this.isFlowcellIdExists && !this.isBarcodeExists) return 'border border-3 border-white'
+        if (!this.isFlowcellIdExists && !this.isBarcodeExists)
+          return 'border border-3 border-gray-300'
 
         const validFlowId = this.isFlowcellIdExists && this.flowcellIdValidationError.length === 0
         const validBarcodeId = this.isBarcodeExists && this.barcodeState
