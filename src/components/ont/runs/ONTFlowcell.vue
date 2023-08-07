@@ -8,7 +8,6 @@
       <div class="`text-xl p-2 text-gray-500 border-b-2">
         {{ coordinate }}
       </div>
-      <!-- <div class="border border-gray-300" /> -->
       <div class="flex flex-col h-full px-2 py-8 bg-blue-100">
         <div class="flex flex-col mt-2 py-3 justify-center space-y-4">
           <fieldset id="input-group-flowcell-id">
