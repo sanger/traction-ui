@@ -23,6 +23,7 @@
                 placeholder="Scan flowcell ID"
                 :formatter="formatter"
                 :classes="`${flowcell_id_field_colour} text-gray-600 text-sm`"
+                class="w-full"
               />
             </traction-field-error>
           </fieldset>
@@ -40,6 +41,7 @@
                 v-model="barcode"
                 :formatter="formatter"
                 :classes="`${flowcell_barcode_field_colour} text-gray-600 text-sm`"
+                class="w-full"
                 placeholder="Scan library barcode"
                 :debounce="500"
               />
