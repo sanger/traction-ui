@@ -229,7 +229,7 @@ describe('mutations.js', () => {
           _destroy: [],
         },
       }
-      deleteWell(state, { position: 'A1', plateNumber })
+      deleteWell(state, { well: { position: 'A1', id: 1 }, plateNumber })
       expect(state.wells[plateNumber]).toEqual({
         _destroy: [{ _destroy: true, id: 1 }],
         A2: { position: 'A2', id: 2 },
@@ -269,17 +269,22 @@ describe('mutations.js', () => {
       const plates = Data.PacbioRun.data.included.slice(0, 2)
       const wells = Data.PacbioRun.data.included.slice(2, 5)
       const state = defaultState()
+      // Expected wells are the wells that are expected to be in the state after the mutation
+      // We add the _destroy key to the expected wells on line 281
+      const expectedWells = splitDataByParent({
+        data: wells,
+        fn: dataToObjectByPosition,
+        includeRelationships: true,
+        parent: { parentData: plates, children: 'wells', key: 'plate_number' },
+      })
+      // eslint-disable-next-line no-unused-vars
+      Object.entries(expectedWells).forEach(([_plateNumber, plate]) => {
+        plate['_destroy'] = []
+      })
       // apply mutations
       populateWells(state, { plates, wells })
       // assert result
-      expect(state.wells).toEqual(
-        splitDataByParent({
-          data: wells,
-          fn: dataToObjectByPosition,
-          includeRelationships: true,
-          parent: { parentData: plates, children: 'wells', key: 'plate_number' },
-        }),
-      )
+      expect(state.wells).toEqual(expectedWells)
     })
   })
 
