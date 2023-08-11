@@ -3,15 +3,15 @@
 
 /* Define your custom styles */
 .success-style {
-    @apply bg-success-light text-success-dark hover:bg-success;
+  @apply bg-success-light text-success-dark hover:bg-success;
 }
 .success-icon-style {
-    @apply text-success hover:bg-success-dark;
+  @apply text-success hover:bg-success-dark;
 }
 .failure-style {
-    @apply bg-failure-light text-failure-dark hover:bg-failure;
+  @apply bg-failure-light text-failure-dark hover:bg-failure;
 }
 
 .failure-icon-style {
-    @apply text-failure hover:bg-failure;
+  @apply text-failure hover:bg-failure;
 }

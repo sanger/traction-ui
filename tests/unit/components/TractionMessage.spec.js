@@ -48,7 +48,7 @@ describe('TractionMessage.vue', () => {
 
     it('displays error style', () => {
       wrapper = mount(TractionMessage, {
-        props: { ...requiredProps, type: 'error' },
+        props: { ...requiredProps, type: 'danger' },
       })
       expect(wrapper.find('[data-attribute=message]').attributes('class')).toContain(
         'failure-style',
@@ -59,7 +59,7 @@ describe('TractionMessage.vue', () => {
     })
     it('emits dismissed event on close button click', () => {
       wrapper = mount(TractionMessage, {
-        props: { ...requiredProps, type: 'error' },
+        props: { ...requiredProps, type: 'danger' },
       })
       wrapper.find('[data-attribute=close]').trigger('click')
       expect(wrapper.emitted('dismissed')).toBeTruthy()
