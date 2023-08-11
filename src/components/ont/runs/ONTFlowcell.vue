@@ -1,44 +1,54 @@
 <template>
   <div>
     <div
-      style="width: 200px"
-      class="px-2 rounded overflow-hidden shadow-lg"
+      style="width: 200px; height: 320px"
+      class="rounded-lg overflow-hidden border-2 shadow-lg whitespace-nowrap"
       :class="flowcell_bg_colour"
     >
-      <div class="text-xl mb-2">{{ coordinate }}</div>
-      <fieldset id="input-group-flowcell-id" class="py-2">
-        <label class="flex justify-start">Flowcell ID:</label>
-        <traction-field-error
-          id="input-flowcell-id-feedback"
-          :error="flowcellIdValidationError"
-          :with-icon="isFlowcellIdExists"
-        >
-          <traction-input
-            :id="'flowcell-id-' + position"
-            v-model="flowcellId"
-            placeholder="Scan flowcell ID"
-            :formatter="formatter"
-            :classes="flowcell_id_field_colour"
-          />
-        </traction-field-error>
-      </fieldset>
-      <fieldset id="input-group-pool-id" class="py-2">
-        <label class="flex justify-start">Pool Library Barcode:</label>
-        <traction-field-error
-          id="input-pool-tube-barcode-feedback"
-          :error="barcodeValidationError"
-          :with-icon="isBarcodeExists"
-        >
-          <traction-input
-            :id="'pool-id-' + position"
-            v-model="barcode"
-            :formatter="formatter"
-            :classes="flowcell_barcode_field_colour"
-            placeholder="Scan library barcode"
-            :debounce="500"
-          />
-        </traction-field-error>
-      </fieldset>
+      <div class="`text-xl p-2 text-gray-500 border-b-2">
+        {{ coordinate }}
+      </div>
+      <div class="flex flex-col h-full px-2 py-8 bg-blue-100">
+        <div class="flex flex-col mt-2 py-3 justify-center space-y-4">
+          <fieldset id="input-group-flowcell-id">
+            <label class="flex justify-start text-sm ml-1 text-gray-600">Flowcell ID</label>
+            <traction-field-error
+              id="input-flowcell-id-feedback"
+              :error="flowcellIdValidationError"
+              :with-icon="isFlowcellIdExists"
+            >
+              <traction-input
+                :id="'flowcell-id-' + position"
+                v-model="flowcellId"
+                placeholder="Scan flowcell ID"
+                :formatter="formatter"
+                :classes="`${flowcell_id_field_colour} text-gray-600 text-sm`"
+                class="w-full"
+              />
+            </traction-field-error>
+          </fieldset>
+          <fieldset id="input-group-pool-id">
+            <label class="flex justify-start text-sm ml-1 mt-1 text-gray-600"
+              >Pool Library Barcode</label
+            >
+            <traction-field-error
+              id="input-pool-tube-barcode-feedback"
+              :error="barcodeValidationError"
+              :with-icon="isBarcodeExists"
+            >
+              <traction-input
+                :id="'pool-id-' + position"
+                v-model="barcode"
+                :formatter="formatter"
+                :classes="`${flowcell_barcode_field_colour} text-gray-600 text-sm`"
+                class="w-full"
+                placeholder="Scan library barcode"
+                :debounce="500"
+              />
+            </traction-field-error>
+          </fieldset>
+        </div>
+      </div>
     </div>
   </div>
 </template>
@@ -86,7 +96,7 @@ export default {
       if (this.flowcellId) {
         return this.flowcellId.match(/^[a-zA-Z]{3}\d{3,}$/)
           ? ''
-          : 'Enter at valid Flowcell ID (3 letters then at least 3 numbers)'
+          : 'Enter a valid Flowcell ID (3 letters then at least 3 numbers)'
       }
       return ''
     },
@@ -165,7 +175,8 @@ export default {
        * yellow - if one of flowcellId and barcode fields are valid and other is empty
        */
       flowcell_bg_colour() {
-        if (!this.isFlowcellIdExists && !this.isBarcodeExists) return 'border border-3 border-white'
+        if (!this.isFlowcellIdExists && !this.isBarcodeExists)
+          return 'border border-3 border-gray-300'
 
         const validFlowId = this.isFlowcellIdExists && this.flowcellIdValidationError.length === 0
         const validBarcodeId = this.isBarcodeExists && this.barcodeState
