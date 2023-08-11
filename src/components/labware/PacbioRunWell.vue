@@ -110,10 +110,10 @@ export default {
     status() {
       if (this.hasPools && this.hasValidMetadata) {
         // Complete
-        return 'bg-green-400 text-white'
+        return 'bg-success text-white'
       } else if (this.hasPools || this.hasSomeMetadata) {
         // Incomplete
-        return 'bg-red-400 text-white'
+        return 'bg-failure text-white'
       }
       // Empty
       return 'bg-gray-100 text-black'

@@ -39,10 +39,10 @@ describe('TractionMessage.vue', () => {
         props: { ...requiredProps, type: 'success' },
       })
       expect(wrapper.find('[data-attribute=message]').attributes('class')).toContain(
-        'bg-green-100 text-green-70',
+        'success-style',
       )
       expect(wrapper.find('[data-attribute=close-icon]').attributes('class')).toContain(
-        'text-green-400 hover:text-green-700',
+        'success-icon-style',
       )
     })
 
@@ -51,10 +51,10 @@ describe('TractionMessage.vue', () => {
         props: { ...requiredProps, type: 'error' },
       })
       expect(wrapper.find('[data-attribute=message]').attributes('class')).toContain(
-        'bg-red-200 text-red-600',
+        'failure-style',
       )
       expect(wrapper.find('[data-attribute=close-icon]').attributes('class')).toContain(
-        'text-red-400 hover:text-red-600',
+        'failure-icon-style',
       )
     })
     it('emits dismissed event on close button click', () => {

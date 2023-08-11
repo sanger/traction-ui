@@ -152,7 +152,7 @@ export default {
       // when the pool is invalid we have a red background with red text
       // TODO: modify red background for hover to be slightly softer. Need new tailwind colour
       return `m-1 border-2 cursor-pointer rounded-md pb-2  ${
-        this.valid ? 'hover:bg-gray-200' : 'bg-red-200 hover:bg-red-300 text-red-800'
+        this.valid ? 'hover:bg-gray-200' : 'failure-style'
       }`
     },
   },
