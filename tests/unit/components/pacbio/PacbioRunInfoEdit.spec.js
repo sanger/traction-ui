@@ -23,18 +23,23 @@ const buildWrapper = () =>
   })
 
 describe('PacbioRunInfoEdit', () => {
-  const smrtLinkVersions = [
-    {
+  const smrtLinkVersions = {
+    1: {
       id: '1',
       name: 'v1',
       default: true,
     },
-    {
+    2: {
       id: '2',
-      name: 'v2',
+      name: 'v12_revio',
       default: false,
     },
-  ]
+    3: {
+      id: '3',
+      name: 'v12_sequel_iie',
+      default: false,
+    },
+  }
 
   const run = {
     id: 'new',
@@ -42,7 +47,6 @@ describe('PacbioRunInfoEdit', () => {
     system_name: 'Sequel IIe',
     dna_control_complex_box_barcode: null,
     comments: null,
-    smrt_link_version_id: 1,
   }
 
   let runInfo, wrapper
@@ -51,6 +55,7 @@ describe('PacbioRunInfoEdit', () => {
     wrapper = buildWrapper()
     runInfo = wrapper.vm
     store.state.traction.pacbio.runCreate.run = { ...run }
+    store.state.traction.pacbio.runCreate.smrtLinkVersion = smrtLinkVersions[1]
     store.state.traction.pacbio.runCreate.resources.smrtLinkVersions = smrtLinkVersions
     store.state.traction.pacbio.runCreate.instrumentTypeList = PacbioInstrumentTypes
     store.state.traction.pacbio.runCreate.instrumentType = PacbioInstrumentTypes.SequelIIe
@@ -75,14 +80,38 @@ describe('PacbioRunInfoEdit', () => {
     )
   })
 
-  describe('smrt link versions', () => {
-    it('returns the correct versions', () => {
-      expect(runInfo.smrtLinkVersionList.length).toEqual(2)
+  describe('#computed', () => {
+    describe('#smrtLinkVersionSelectOptions', () => {
+      it('returns the correct versions', () => {
+        expect(Object.values(runInfo.smrtLinkVersionList).length).toEqual(3)
+      })
+
+      it('returns smrt link version select options', () => {
+        const options = Object.values(runInfo.smrtLinkVersionList).map(({ id, name }) => ({
+          value: id,
+          text: name,
+        }))
+
+        expect(runInfo.smrtLinkVersionSelectOptions).toEqual(options)
+      })
     })
 
-    it('returns smrt link version select options', () => {
-      const options = runInfo.smrtLinkVersionList.map(({ id, name }) => ({ value: id, text: name }))
-      expect(runInfo.smrtLinkVersionSelectOptions).toEqual(options)
+    describe('#smrtLinkVersionv12', () => {
+      it('returns false when the SMRT Link version is not v12', () => {
+        expect(runInfo.smrtLinkVersionv12).toBe(false)
+      })
+
+      it('returns true when the SMRT Link version is v12 Revio', async () => {
+        const options = wrapper.find('[data-attribute=smrt_link_version]').findAll('option')
+        await options[1].setSelected()
+        expect(runInfo.smrtLinkVersionv12).toBe(true)
+      })
+
+      it('returns true when the SMRT Link version is v12 Sequel IIe', async () => {
+        const options = wrapper.find('[data-attribute=smrt_link_version]').findAll('option')
+        await options[2].setSelected()
+        expect(runInfo.smrtLinkVersionv12).toBe(true)
+      })
     })
   })
 
@@ -91,12 +120,25 @@ describe('PacbioRunInfoEdit', () => {
       expect(store.state.traction.pacbio.runCreate.run.name).toEqual('TRACTION-RUN-3')
     })
 
-    it('dna control complex box barcode', async () => {
+    it('shows dna_control_complex_box_barcode when SMRT Link version is not v12 Sequel IIe', async () => {
       const input = wrapper.find('[data-attribute=dna_control_complex_box_barcode]')
       await input.setValue('DCCB1')
       expect(store.state.traction.pacbio.runCreate.run.dna_control_complex_box_barcode).toEqual(
         'DCCB1',
       )
+      expect(wrapper.text()).toContain('DNA Control Complex Box Barcode')
+    })
+    it('does not show dna_control_complex_box_barcode when SMRT Link version is v12 Revio', async () => {
+      const options = wrapper.find('[data-attribute=smrt_link_version]').findAll('option')
+      await options[1].setSelected()
+      expect(runInfo.smrtLinkVersion.id).toEqual(smrtLinkVersions[2].id)
+      expect(wrapper.text()).not.toContain('DNA Control Complex Box Barcode')
+    })
+    it('does not show dna_control_complex_box_barcode when SMRT Link version is v12 Sequel IIe', async () => {
+      const options = wrapper.find('[data-attribute=smrt_link_version]').findAll('option')
+      await options[2].setSelected()
+      expect(runInfo.smrtLinkVersion.id).toEqual(smrtLinkVersions[3].id)
+      expect(wrapper.text()).not.toContain('DNA Control Complex Box Barcode')
     })
     it('system name', async () => {
       expect(store.state.traction.pacbio.runCreate.run.system_name).toEqual('Sequel IIe')
@@ -104,7 +146,7 @@ describe('PacbioRunInfoEdit', () => {
     it('smrt_link_version_id', async () => {
       const options = wrapper.find('[data-attribute=smrt_link_version]').findAll('option')
       await options[1].setSelected()
-      expect(store.state.traction.pacbio.runCreate.run.smrt_link_version_id).toEqual(1)
+      expect(runInfo.smrtLinkVersion.id).toEqual(smrtLinkVersions[2].id)
     })
     it('comments', async () => {
       const input = wrapper.find('[data-attribute=comments]')

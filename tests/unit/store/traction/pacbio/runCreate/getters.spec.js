@@ -109,18 +109,18 @@ describe('getters.js', () => {
     },
   ]
 
-  const smrtLinkVersions = [
-    {
-      id: '1',
-      version: 'v1',
+  const smrtLinkVersions = {
+    1: {
+      id: 1,
+      name: 'v1',
       default: true,
     },
-    {
-      id: '2',
-      version: 'v2',
+    2: {
+      id: 2,
+      name: 'v2',
       default: false,
     },
-  ]
+  }
 
   describe('smrtLinkVersionList', () => {
     const state = defaultState()
@@ -134,15 +134,15 @@ describe('getters.js', () => {
     const state = defaultState()
     it('returns the default SMRT Link Version', () => {
       state.resources.smrtLinkVersions = smrtLinkVersions
-      expect(defaultSmrtLinkVersion(state)).toEqual(smrtLinkVersions[0])
+      expect(defaultSmrtLinkVersion(state)).toEqual(smrtLinkVersions[1])
     })
   })
 
   describe('smrtLinkVersion', () => {
     const state = defaultState()
     it('returns the current SMRT Link Version', () => {
-      state.smrtLinkVersion = smrtLinkVersions[0]
-      expect(smrtLinkVersion(state)).toEqual(smrtLinkVersions[0])
+      state.smrtLinkVersion = smrtLinkVersions[2]
+      expect(smrtLinkVersion(state)).toEqual(smrtLinkVersions[2])
     })
   })
 
