@@ -3,13 +3,13 @@ import { mount, store, router, Data, flushPromises } from '@support/testHelper'
 import { beforeEach, describe, expect, it } from 'vitest'
 import { newRunType, existingRunType } from '@/store/traction/pacbio/runCreate/run'
 
-const smrtLinkVersions = [
-  {
+const smrtLinkVersions = {
+  1: {
     id: 1,
     name: 'v11',
     default: true,
   },
-]
+}
 
 describe('PacbioRunShow.vue', () => {
   beforeEach(() => {
