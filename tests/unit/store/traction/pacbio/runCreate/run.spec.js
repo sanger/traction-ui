@@ -337,5 +337,20 @@ describe('run.js', () => {
         },
       })
     })
+
+    it('will sort wells by position', () => {
+      const B1 = newWell({ position: 'B1' })
+      const C1 = newWell({ position: 'C1' })
+      const A1 = newWell({ position: 'A1' })
+      const inputWells = { B1: B1, C1: C1, A1: A1 }
+
+      // pools attribute is replaced with pool_ids in the payload
+      // eslint-disable-next-line no-unused-vars
+      const expected = [A1, B1, C1].map(({ pools, ...rest }) => ({ ...rest, pool_ids: [] }))
+
+      const payload = createWellsPayload(inputWells)
+
+      expect(payload).toEqual(expected)
+    })
   })
 })
