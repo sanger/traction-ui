@@ -1,6 +1,6 @@
 <template>
   <traction-section number="1" title="Run Information">
-    <div class="grid grid-cols-2 mt-2">
+    <div class="flex flex-row mt-2 space-x-4">
       <div class="flex flex-col gap-y-2 items-start">
         <label label-for="instrument-selection"> Instrument </label>
         <traction-select
