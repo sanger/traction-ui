@@ -2,16 +2,16 @@
 @import '../../node_modules/@sanger/ui-styling/tailwind.css';
 
 /* Define your custom styles */
-.success-style {
+.success-message {
   @apply bg-success-light text-success-dark hover:bg-success;
 }
-.success-icon-style {
-  @apply text-success hover:bg-success-dark;
+.success-icon {
+  @apply text-success-dark hover:text-success-light;
 }
-.failure-style {
+.failure-message {
   @apply bg-failure-light text-failure-dark hover:bg-failure;
 }
 
-.failure-icon-style {
-  @apply text-failure hover:bg-failure;
+.failure-icon {
+  @apply text-failure-dark hover:text-failure-light;
 }

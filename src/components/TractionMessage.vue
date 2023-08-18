@@ -29,12 +29,12 @@
 <script>
 const colorStyles = {
   success: {
-    message: 'success-style',
-    icon: 'success-icon-style',
+    message: 'success-message',
+    icon: 'success-icon',
   },
   danger: {
-    message: 'failure-style',
-    icon: 'failure-icon-style',
+    message: 'failure-message',
+    icon: 'failure-icon',
   },
 }
 

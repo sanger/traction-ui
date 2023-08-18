@@ -150,7 +150,6 @@ export default {
     classObject() {
       // when the pool is valid we have a gray background
       // when the pool is invalid we have a red background with red text
-      // TODO: modify red background for hover to be slightly softer. Need new tailwind colour
       return `m-1 border-2 cursor-pointer rounded-md pb-2  ${
         this.valid ? 'hover:bg-gray-200' : 'failure-style'
       }`

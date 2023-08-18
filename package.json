@@ -21,7 +21,7 @@
     "build:css": "postcss src/styles/tailwind.css -o src/styles/index.css --env production"
   },
   "dependencies": {
-    "@sanger/ui-styling": "^4.0.0",
+    "@sanger/ui-styling": "^4.1.0",
     "@vitejs/plugin-vue": "^4.2.3",
     "autoprefixer": "^10.4.14",
     "axios": "^1.4.0",
