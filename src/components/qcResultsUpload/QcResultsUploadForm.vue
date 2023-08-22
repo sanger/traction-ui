@@ -82,9 +82,9 @@ export default {
       // If upload is not successful, highlight the input box in red
       // Otherwise, uploadSuccessful is null and provide no colouring
       if (this.uploadSuccessful === true) {
-        return 'rounded border border-green-500'
+        return 'rounded border border-success'
       } else if (this.uploadSuccessful === false) {
-        return 'rounded border border-red-500'
+        return 'rounded border border-failure'
       }
       return 'border-0'
     },

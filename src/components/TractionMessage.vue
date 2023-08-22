@@ -29,16 +29,12 @@
 <script>
 const colorStyles = {
   success: {
-    message: 'bg-green-100 text-green-700',
-    icon: 'text-green-400 hover:text-green-700',
+    message: 'success-message',
+    icon: 'success-icon',
   },
   danger: {
-    message: 'bg-red-200 text-red-600',
-    icon: 'text-red-400 hover:text-red-600',
-  },
-  error: {
-    message: 'bg-red-200 text-red-600',
-    icon: 'text-red-400 hover:text-red-600',
+    message: 'failure-message',
+    icon: 'failure-icon',
   },
 }
 
@@ -52,7 +48,7 @@ export default {
         return 'error-message'
       },
     },
-    /**Property to specify alert type - 'success', 'error' and 'danger' are the variants supported which are bootstrap compatible*/
+    /**Property to specify alert type - 'success' and 'danger' are the variants supported which are bootstrap compatible*/
     type: {
       type: String,
       default: 'primary',
@@ -69,7 +65,7 @@ export default {
      * Returns tailwind colors based on 'type' property with default being grey.
      *  The supported values for 'type' property are as follows
      * 'success' -  will be displayed in green color
-     * 'error'  -  will be displayed in red color
+     * 'danger'  -  will be displayed in red color
      */
     color() {
       return colorStyles[this.type] ?? { message: 'bg-gray-300 text-gray-500', icon: '' }

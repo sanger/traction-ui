@@ -115,7 +115,7 @@ export default {
     border() {
       if (this.parsedFile === null) return 'border-0'
       else {
-        const borderColour = this.parsedFile ? 'border-green-500' : 'border-red-500'
+        const borderColour = this.parsedFile ? 'border-success' : 'border-failure'
         return `rounded border ${borderColour}`
       }
     },
