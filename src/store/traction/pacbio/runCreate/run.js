@@ -209,7 +209,11 @@ const createRunPayload = (run, smrtLinkVersion) => {
  */
 const createWellsPayload = (wells) => {
   // isolate the _destroy attribute from the rest of the wells
-  const { _destroy, ...rest } = wells
+  // sorting the wells, so if the wells are added to a plate in the order e.g. B1, C1, A1,
+  // they are sorted to be A1, B1, C1, to avoid the validation error - "wells must be in a valid order"
+  const { _destroy, ...rest } = Object.keys(wells)
+    .sort()
+    .reduce((result, key) => ((result[key] = wells[key]), result), {})
 
   // return the wells with the pools replaced by pool_ids attribute
   return (
