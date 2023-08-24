@@ -32,6 +32,14 @@
         :current-page="currentPage"
         @filtered="onFiltered"
       >
+        <template #cell(sequencing_kit_box_barcodes)="row">
+          <ul>
+            <li v-for="barcode in row.item.sequencing_kit_box_barcodes" :key="barcode">
+              {{ barcode }}
+            </li>
+          </ul>
+        </template>
+
         <template #cell(actions)="row">
           <traction-button
             :id="generateId('startRun', row.item.id)"
