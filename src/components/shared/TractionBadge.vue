@@ -33,30 +33,31 @@ export default {
 <style scoped>
 /* badges */
 .badge {
-  @apply inline-flex items-center rounded-md px-2 py-1 text-xs font-medium ring-1 ring-inset;
+  @apply inline-flex items-center rounded-lg px-1 py-0 my-1 text-xs font-medium;
 }
+/* colours defined here to assist dynamic rendering */
 .badge-gray {
-  @apply bg-gray-100 text-gray-600 ring-gray-500;
+  @apply bg-gray-200 text-gray-600;
 }
 .badge-red {
-  @apply bg-red-100 text-red-700 ring-red-600/25;
+  @apply bg-red-200 text-red-700;
 }
 .badge-yellow {
-  @apply bg-yellow-100 text-yellow-800 ring-yellow-600/25;
+  @apply bg-yellow-300 text-yellow-700;
 }
 .badge-green {
-  @apply bg-green-100 text-green-700 ring-green-600/25;
+  @apply bg-green-200 text-green-700;
 }
 .badge-blue {
-  @apply bg-blue-100 text-blue-700 ring-blue-700/25;
+  @apply bg-blue-200 text-blue-700;
 }
 .badge-indigo {
-  @apply bg-indigo-100 text-indigo-700 ring-indigo-700/25;
+  @apply bg-indigo-200 text-indigo-700;
 }
 .badge-purple {
-  @apply bg-purple-100 text-purple-700 ring-purple-700/25;
+  @apply bg-purple-200 text-purple-700;
 }
 .badge-pink {
-  @apply bg-pink-100 text-pink-700 ring-pink-700/25;
+  @apply bg-pink-200 text-pink-700;
 }
 </style>
