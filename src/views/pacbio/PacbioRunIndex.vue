@@ -42,33 +42,33 @@
 
         <template #cell(actions)="row">
           <traction-button
+            v-if="row.item.state == 'pending'"
             :id="generateId('startRun', row.item.id)"
             theme="create"
             size="sm"
             class="mr-1"
-            :disabled="row.item.state !== 'pending'"
             @click="updateRunState('started', row.item.id)"
           >
             Start
           </traction-button>
 
           <traction-button
+            v-if="!isRunDisabled(row.item)"
             :id="generateId('completeRun', row.item.id)"
             theme="update"
             size="sm"
             class="mr-1"
-            :disabled="isRunDisabled(row.item)"
             @click="updateRunState('completed', row.item.id)"
           >
             Complete
           </traction-button>
 
           <traction-button
+            v-if="!isRunDisabled(row.item)"
             :id="generateId('cancelRun', row.item.id)"
             theme="delete"
             size="sm"
             class="mr-1"
-            :disabled="isRunDisabled(row.item)"
             @click="updateRunState('cancelled', row.item.id)"
           >
             Cancel
