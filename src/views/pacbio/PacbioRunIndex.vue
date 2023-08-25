@@ -1,6 +1,6 @@
 <template>
-  <DataFetcher :fetcher="fetchPacbioRuns">
-    <FilterCard :fetcher="fetchPacbioRuns" :filter-options="filterOptions" />
+  <DataFetcher :fetcher="provider">
+    <FilterCard :fetcher="provider" :filter-options="filterOptions" />
     <div class="flex flex-col">
       <div class="clearfix">
         <traction-button
@@ -38,6 +38,15 @@
               {{ barcode }}
             </li>
           </ul>
+        </template>
+
+        <template #cell(system_name_and_version)="row">
+          <div class="flex justify-between gap-1">
+            <span class="grow">{{ row.item.system_name }}</span>
+            <traction-badge :color="generateVersionColour(row.item.pacbio_smrt_link_version_id)">
+              {{ getVersionName(row.item.pacbio_smrt_link_version_id).split('_')[0] }}
+            </traction-badge>
+          </div>
         </template>
 
         <template #cell(actions)="row">
@@ -108,6 +117,7 @@ import FilterCard from '@/components/FilterCard'
 import TableHelper from '@/mixins/TableHelper'
 import { mapActions, mapGetters } from 'vuex'
 import DownloadIcon from '@/icons/DownloadIcon.vue'
+import TractionBadge from '@/components/shared/TractionBadge.vue'
 
 export default {
   name: 'PacbioRuns',
@@ -115,6 +125,7 @@ export default {
     DataFetcher,
     FilterCard,
     DownloadIcon,
+    TractionBadge,
   },
   mixins: [TableHelper],
   data() {
@@ -133,7 +144,7 @@ export default {
           label: 'Sequencing Kit BB',
           sortable: true,
         },
-        { key: 'system_name', label: 'System Name', sortable: true },
+        { key: 'system_name_and_version', label: 'System & Version', sortable: true },
         { key: 'created_at', label: 'Created at (UTC)', sortable: true },
         { key: 'actions', label: 'Actions' },
       ],
@@ -153,6 +164,7 @@ export default {
   },
   computed: {
     ...mapGetters('traction/pacbio/runs', ['runs']),
+    ...mapGetters('traction/pacbio/runCreate', ['smrtLinkVersionList']),
   },
   watch: {
     runs(newValue) {
@@ -160,6 +172,9 @@ export default {
     },
   },
   methods: {
+    getVersionName(versionId) {
+      return this.smrtLinkVersionList[versionId].name
+    },
     isRunDisabled(run) {
       return run.state == 'completed' || run.state == 'cancelled' || run.state == 'pending'
     },
@@ -168,6 +183,11 @@ export default {
     },
     generateSampleSheetPath(id) {
       return import.meta.env.VITE_TRACTION_BASE_URL + '/v1/pacbio/runs/' + id + '/sample_sheet'
+    },
+    generateVersionColour(versionIndex) {
+      const colours = ['gray', 'red', 'yellow', 'green', 'blue', 'indigo', 'purple', 'pink']
+      const colourIndex = versionIndex % colours.length
+      return colours[colourIndex]
     },
     updateRunState(status, id) {
       try {
@@ -179,8 +199,14 @@ export default {
     redirectToRun(runId) {
       this.$router.push({ path: `/pacbio/run/${runId || 'new'}` })
     },
-
     ...mapActions('traction/pacbio/runs', ['fetchPacbioRuns', 'updateRun']),
+    ...mapActions('traction/pacbio/runCreate', ['fetchSmrtLinkVersions']),
+    async provider() {
+      // Seeds required data and loads the page via the DataFetcher
+      await this.fetchSmrtLinkVersions()
+      await this.fetchPacbioRuns()
+      return { success: true }
+    },
   },
 }
 </script>
