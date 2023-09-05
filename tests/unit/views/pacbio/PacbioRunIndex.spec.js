@@ -40,6 +40,25 @@ describe('Runs.vue', () => {
     })
   })
 
+  describe('version badge', () => {
+    let badges
+
+    beforeEach(() => {
+      // find all tags with class 'badge'
+      badges = wrapper.find('tbody').findAll('.badge')
+    })
+
+    it('contains a badge for each run', () => {
+      expect(badges.length).toEqual(6)
+    })
+
+    it('contains the correct badge text', () => {
+      badges.forEach((badge, index) => {
+        expect(badge.text()).toEqual(mockRuns[index].smrt_link_version)
+      })
+    })
+  })
+
   describe('new run button', () => {
     it('contains a create new run button', () => {
       expect(wrapper.find('[data-action=new-run]').exists()).toBeTruthy()
