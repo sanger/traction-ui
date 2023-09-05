@@ -173,7 +173,7 @@ export default {
   },
   methods: {
     getVersionName(versionId) {
-      return this.smrtLinkVersionList[versionId].name
+      return this.smrtLinkVersionList[versionId]?.name || ''
     },
     isRunDisabled(run) {
       return run.state == 'completed' || run.state == 'cancelled' || run.state == 'pending'

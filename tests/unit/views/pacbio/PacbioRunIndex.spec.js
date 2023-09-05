@@ -1,14 +1,14 @@
-import PacbioRuns from '@/views/pacbio/PacbioRunIndex'
 import { mount, store, Data, flushPromises } from '@support/testHelper'
 import Response from '@/api/Response'
+import PacbioRuns from '@/views/pacbio/PacbioRunIndex'
 
 describe('Runs.vue', () => {
   let wrapper, runs, mockRuns
 
   beforeEach(async () => {
     mockRuns = new Response(Data.PacbioRuns).deserialize.runs
-    const get = vi.spyOn(store.state.api.traction.pacbio.runs, 'get')
-    get.mockReturnValue(Data.PacbioRuns)
+
+    vi.spyOn(store.state.api.traction.pacbio.runs, 'get').mockReturnValue(Data.PacbioRuns)
 
     wrapper = mount(PacbioRuns, { store })
     runs = wrapper.vm
@@ -25,11 +25,18 @@ describe('Runs.vue', () => {
     })
 
     it('contains the correct run skbb information', () => {
-      const run2skbb = wrapper.find('tbody').findAll('tr')[0].findAll('td')[4].text()
-      expect(run2skbb).toEqual('Plate 1: SKBB 2')
+      // Within each cell, the SKBB information is displayed as a list-item per plate
+      const run2skbbList = wrapper.find('tbody').findAll('tr')[0].findAll('td')[4].findAll('li')
+      expect(run2skbbList.length).toEqual(1)
+      const run2skbbListItem1 = run2skbbList[0]
+      expect(run2skbbListItem1.text()).toEqual('Plate 1: SKBB 2')
 
-      const run6skbb = wrapper.find('tbody').findAll('tr')[5].findAll('td')[4].text()
-      expect(run6skbb).toEqual('Plate 1: SKBB 6, Plate 2: SKBB 7')
+      const run6skbbList = wrapper.find('tbody').findAll('tr')[5].findAll('td')[4].findAll('li')
+      expect(run6skbbList.length).toEqual(2)
+      const run6skbbListItem1 = run6skbbList[0]
+      expect(run6skbbListItem1.text()).toEqual('Plate 1: SKBB 6')
+      const run6skbbListItem2 = run6skbbList[1]
+      expect(run6skbbListItem2.text()).toEqual('Plate 2: SKBB 7')
     })
   })
 
@@ -55,22 +62,22 @@ describe('Runs.vue', () => {
       expect(button.element.disabled).toBe(false)
     })
 
-    it('is disabled is the run state is started', () => {
+    it('is not shown if the run state is started', () => {
       // run at(2) is in state started
       button = wrapper.find('#startRun-2')
-      expect(button.element.disabled).toBe(true)
+      expect(button.exists()).toBe(false)
     })
 
-    it('is disabled is the run state is completed', () => {
+    it('is not shown if the run state is completed', () => {
       // run at(3) is in state started
       button = wrapper.find('#startRun-3')
-      expect(button.element.disabled).toBe(true)
+      expect(button.exists()).toBe(false)
     })
 
-    it('is disabled is the run state is cancelled', () => {
+    it('is not shown if the run state is cancelled', () => {
       // run at(4) is in state started
       button = wrapper.find('#startRun-4')
-      expect(button.element.disabled).toBe(true)
+      expect(button.exists()).toBe(false)
     })
 
     it('on click updateRun is called', () => {
@@ -88,7 +95,7 @@ describe('Runs.vue', () => {
     it('is enabled when the run state is pending', () => {
       // run at(1) is in state pending
       button = wrapper.find('#completeRun-1')
-      expect(button.element.disabled).toBe(true)
+      expect(button.exists()).toBe(false)
     })
 
     it('is enabled when the run state is started', () => {
@@ -97,16 +104,16 @@ describe('Runs.vue', () => {
       expect(button.element.disabled).toBe(false)
     })
 
-    it('is disabled if the run state is completed', () => {
+    it('is not shown if the run state is completed', () => {
       // run at(3) is in state cancelled
       button = wrapper.find('#completeRun-3')
-      expect(button.element.disabled).toBe(true)
+      expect(button.exists()).toBe(false)
     })
 
-    it('is disabled is the run state is cancelled', () => {
+    it('is not shown if the run state is cancelled', () => {
       // run at(4) is in state cancelled
       button = wrapper.find('#completeRun-4')
-      expect(button.element.disabled).toBe(true)
+      expect(button.exists()).toBe(false)
     })
 
     it('on click updateRun is called', () => {
@@ -126,7 +133,7 @@ describe('Runs.vue', () => {
     it('is enabled when the run state is pending', () => {
       // run at(1) is in state pending
       button = wrapper.find('#cancelRun-1')
-      expect(button.element.disabled).toBe(true)
+      expect(button.exists()).toBe(false)
     })
 
     it('is enabled when the run state is started', () => {
@@ -135,16 +142,16 @@ describe('Runs.vue', () => {
       expect(button.element.disabled).toBe(false)
     })
 
-    it('is disabled if the run state is completed', () => {
+    it('is not shown if the run state is completed', () => {
       // run at(3) is in state cancelled
       button = wrapper.find('#cancelRun-3')
-      expect(button.element.disabled).toBe(true)
+      expect(button.exists()).toBe(false)
     })
 
-    it('is disabled is the run state is cancelled', () => {
+    it('is not shown if the run state is cancelled', () => {
       // run at(4) is in state cancelled
       button = wrapper.find('#cancelRun-4')
-      expect(button.element.disabled).toBe(true)
+      expect(button.exists()).toBe(false)
     })
 
     it('on click updateRun is called', () => {
