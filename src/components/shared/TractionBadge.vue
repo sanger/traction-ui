@@ -10,6 +10,9 @@ export default {
    * # TractionBadge
    *
    * Tailwind component to display a coloured badge with text.
+   * The colour can be set using the `color` prop.
+   * Available colours are: `gray`, `red`, `yellow`, `green`, `blue`, `indigo`, `purple`, `pink`.
+   * The default colour is `blue`.
    *
    * @example
    * <template>
