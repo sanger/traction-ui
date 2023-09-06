@@ -40,27 +40,27 @@ export default {
 }
 /* colours defined here to assist dynamic rendering */
 .badge-gray {
-  @apply bg-gray-200 text-gray-600;
+  @apply bg-gray-200 text-gray-700;
 }
 .badge-red {
-  @apply bg-red-200 text-red-700;
+  @apply bg-red-200 text-red-800;
 }
 .badge-yellow {
-  @apply bg-yellow-300 text-yellow-700;
+  @apply bg-yellow-300 text-yellow-800;
 }
 .badge-green {
-  @apply bg-green-200 text-green-700;
+  @apply bg-green-200 text-green-800;
 }
 .badge-blue {
-  @apply bg-blue-200 text-blue-700;
+  @apply bg-blue-200 text-blue-800;
 }
 .badge-indigo {
-  @apply bg-indigo-200 text-indigo-700;
+  @apply bg-indigo-200 text-indigo-800;
 }
 .badge-purple {
-  @apply bg-purple-200 text-purple-700;
+  @apply bg-purple-200 text-purple-800;
 }
 .badge-pink {
-  @apply bg-pink-200 text-pink-700;
+  @apply bg-pink-200 text-pink-800;
 }
 </style>
