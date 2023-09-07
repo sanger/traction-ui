@@ -1,17 +1,17 @@
-import { mount, store, Data, flushPromises } from '@support/testHelper'
+import PacbioRunIndex from '@/views/pacbio/PacbioRunIndex'
 import Response from '@/api/Response'
-import PacbioRuns from '@/views/pacbio/PacbioRunIndex'
+import { mount, store, Data, flushPromises } from '@support/testHelper'
 
-describe('Runs.vue', () => {
-  let wrapper, runs, mockRuns
+describe('PacbioRunIndex.vue', () => {
+  let wrapper, pacbioRunIndex, mockRuns
 
   beforeEach(async () => {
     mockRuns = new Response(Data.PacbioRuns).deserialize.runs
 
     vi.spyOn(store.state.api.traction.pacbio.runs, 'get').mockReturnValue(Data.PacbioRuns)
 
-    wrapper = mount(PacbioRuns, { store })
-    runs = wrapper.vm
+    wrapper = mount(PacbioRunIndex, { store })
+    pacbioRunIndex = wrapper.vm
     await flushPromises()
   })
 
@@ -68,7 +68,7 @@ describe('Runs.vue', () => {
       const button = wrapper.find('[data-action=new-run]')
       button.trigger('click')
       await flushPromises()
-      expect(runs.$route.path).toEqual('/pacbio/run/new')
+      expect(pacbioRunIndex.$route.path).toEqual('/pacbio/run/new')
     })
   })
 
@@ -100,11 +100,11 @@ describe('Runs.vue', () => {
     })
 
     it('on click updateRun is called', () => {
-      runs.updateRun = vi.fn()
+      pacbioRunIndex.updateRun = vi.fn()
 
       button = wrapper.find('#startRun-1')
       button.trigger('click')
-      expect(runs.updateRun).toBeCalledWith({ id: mockRuns[0].id, state: 'started' })
+      expect(pacbioRunIndex.updateRun).toBeCalledWith({ id: mockRuns[0].id, state: 'started' })
     })
   })
 
@@ -137,12 +137,12 @@ describe('Runs.vue', () => {
 
     it('on click updateRun is called', () => {
       // run at(2) is in state started
-      runs.updateRun = vi.fn()
+      pacbioRunIndex.updateRun = vi.fn()
 
       button = wrapper.find('#completeRun-2')
       button.trigger('click')
 
-      expect(runs.updateRun).toBeCalledWith({ id: mockRuns[1].id, state: 'completed' })
+      expect(pacbioRunIndex.updateRun).toBeCalledWith({ id: mockRuns[1].id, state: 'completed' })
     })
   })
 
@@ -175,12 +175,12 @@ describe('Runs.vue', () => {
 
     it('on click updateRun is called', () => {
       // run at(2) is in state started
-      runs.updateRun = vi.fn()
+      pacbioRunIndex.updateRun = vi.fn()
 
       button = wrapper.find('#cancelRun-2')
       button.trigger('click')
 
-      expect(runs.updateRun).toBeCalledWith({ id: mockRuns[1].id, state: 'cancelled' })
+      expect(pacbioRunIndex.updateRun).toBeCalledWith({ id: mockRuns[1].id, state: 'cancelled' })
     })
   })
 
@@ -195,7 +195,7 @@ describe('Runs.vue', () => {
     it('on click generateSampleSheetPath is called', () => {
       button = wrapper.find('#generate-sample-sheet-1')
 
-      expect(button.attributes('href')).toEqual(runs.generateSampleSheetPath(1))
+      expect(button.attributes('href')).toEqual(pacbioRunIndex.generateSampleSheetPath(1))
     })
   })
 
@@ -209,7 +209,7 @@ describe('Runs.vue', () => {
     beforeEach(async () => {
       const get = vi.spyOn(store.state.api.traction.pacbio.runs, 'get')
       get.mockReturnValue(Data.PacbioRuns)
-      wrapper = mount(PacbioRuns, {
+      wrapper = mount(PacbioRunIndex, {
         store,
         data() {
           return {
@@ -229,7 +229,7 @@ describe('Runs.vue', () => {
 
   describe('#showAlert', () => {
     it('emits an event with the message', () => {
-      runs.showAlert('show this message', 'danger')
+      pacbioRunIndex.showAlert('show this message', 'danger')
 
       expect(Object.values(store.state.traction.messages)).toContainEqual({
         type: 'danger',
@@ -243,7 +243,7 @@ describe('Runs.vue', () => {
       const get = vi.spyOn(store.state.api.traction.pacbio.runs, 'get')
       get.mockReturnValue(Data.PacbioRuns)
 
-      wrapper = mount(PacbioRuns, {
+      wrapper = mount(PacbioRunIndex, {
         store,
         data() {
           return {
@@ -264,32 +264,32 @@ describe('Runs.vue', () => {
   describe('#updateRun', () => {
     const id = 1
     beforeEach(() => {
-      runs.updateRun = vi.fn()
-      runs.showAlert = vi.fn()
+      pacbioRunIndex.updateRun = vi.fn()
+      pacbioRunIndex.showAlert = vi.fn()
     })
 
     it('calls startRun successfully', () => {
-      runs.updateRunState('started', id)
-      expect(runs.updateRun).toBeCalledWith({ id, state: 'started' })
+      pacbioRunIndex.updateRunState('started', id)
+      expect(pacbioRunIndex.updateRun).toBeCalledWith({ id, state: 'started' })
     })
 
     it('calls completeRun successfully', () => {
-      runs.updateRunState('completed', id)
-      expect(runs.updateRun).toBeCalledWith({ id, state: 'completed' })
+      pacbioRunIndex.updateRunState('completed', id)
+      expect(pacbioRunIndex.updateRun).toBeCalledWith({ id, state: 'completed' })
     })
 
     it('calls cancelRun successfully', () => {
       const id = 1
-      runs.updateRunState('cancelled', id)
-      expect(runs.updateRun).toBeCalledWith({ id, state: 'cancelled' })
+      pacbioRunIndex.updateRunState('cancelled', id)
+      expect(pacbioRunIndex.updateRun).toBeCalledWith({ id, state: 'cancelled' })
     })
 
     it('calls setRuns unsuccessfully', () => {
-      runs.updateRun.mockImplementation(() => {
+      pacbioRunIndex.updateRun.mockImplementation(() => {
         throw Error('Raise this error')
       })
-      runs.updateRunState('started', 1)
-      expect(runs.showAlert).toBeCalled()
+      pacbioRunIndex.updateRunState('started', 1)
+      expect(pacbioRunIndex.showAlert).toBeCalled()
     })
   })
 
@@ -321,7 +321,7 @@ describe('Runs.vue', () => {
       const button = wrapper.find('#editRun-1')
       button.trigger('click')
       await flushPromises()
-      expect(runs.$route.path).toEqual('/pacbio/run/1')
+      expect(pacbioRunIndex.$route.path).toEqual('/pacbio/run/1')
     })
   })
 })
