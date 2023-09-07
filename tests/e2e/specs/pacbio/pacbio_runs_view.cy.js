@@ -3,6 +3,9 @@ describe('Pacbio Runs view', () => {
     cy.intercept('/v1/pacbio/runs?include=plates', {
       fixture: 'tractionPacbioRuns.json',
     })
+    cy.intercept('/v1/pacbio/smrt_link_versions', {
+      fixture: 'tractionPacbioSmrtLinkVersions.json',
+    })
     cy.visit('#/pacbio/runs')
     // Check filters are visible
     cy.get('#filterInput').should('be.visible')
