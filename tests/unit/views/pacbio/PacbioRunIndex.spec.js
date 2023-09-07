@@ -3,12 +3,16 @@ import Response from '@/api/Response'
 import { mount, store, Data, flushPromises } from '@support/testHelper'
 
 describe('PacbioRunIndex.vue', () => {
-  let wrapper, pacbioRunIndex, mockRuns
+  let wrapper, pacbioRunIndex, mockRuns, mockVersions
 
   beforeEach(async () => {
     mockRuns = new Response(Data.PacbioRuns).deserialize.runs
+    mockVersions = new Response(Data.TractionPacbioSmrtLinkVersions).deserialize.smrt_link_versions
 
-    vi.spyOn(store.state.api.traction.pacbio.runs, 'get').mockReturnValue(Data.PacbioRuns)
+    vi.spyOn(store.state.api.traction.pacbio.runs, 'get').mockResolvedValue(Data.PacbioRuns)
+    vi.spyOn(store.state.api.traction.pacbio.smrt_link_versions, 'get').mockResolvedValue(
+      Data.TractionPacbioSmrtLinkVersions,
+    )
 
     wrapper = mount(PacbioRunIndex, { store })
     pacbioRunIndex = wrapper.vm
@@ -54,7 +58,10 @@ describe('PacbioRunIndex.vue', () => {
 
     it('contains the correct badge text', () => {
       badges.forEach((badge, index) => {
-        expect(badge.text()).toEqual(mockRuns[index].smrt_link_version)
+        const version_id = mockRuns[index].pacbio_smrt_link_version_id
+        const version = mockVersions.find((version) => version.id == version_id)
+        const version_name = version.name.split('_')[0] // keep only the version number, dropping everything after the underscore
+        expect(badge.text()).toEqual(version_name)
       })
     })
   })
