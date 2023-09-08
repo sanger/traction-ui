@@ -204,9 +204,26 @@ export default {
     ...mapActions('traction/pacbio/runCreate', ['fetchSmrtLinkVersions']),
     async provider() {
       // Seeds required data and loads the page via the DataFetcher
-      await this.fetchSmrtLinkVersions()
-      await this.fetchPacbioRuns()
-      return { success: true }
+      const errorList = []
+      const providers = {
+        'PacBio Runs': this.fetchPacbioRuns,
+        'SMRT-Link Versions': this.fetchSmrtLinkVersions,
+      }
+      // Fetch data in parallel
+      const fetchPromises = Object.entries(providers).map(([key, provider]) => {
+        return provider().then((res) => {
+          if (!res.success) {
+            errorList.push(key)
+          }
+        })
+      })
+      await Promise.all(fetchPromises)
+      const success = errorList.length == 0
+      if (success) {
+        return { success }
+      }
+      const errors = 'Failed to fetch ' + errorList.join(', ')
+      return { success, errors }
     },
   },
 }
