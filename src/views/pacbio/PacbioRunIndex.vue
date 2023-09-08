@@ -185,18 +185,8 @@ export default {
       return import.meta.env.VITE_TRACTION_BASE_URL + '/v1/pacbio/runs/' + id + '/sample_sheet'
     },
     generateVersionColour(versionIndex) {
-      const colours = [
-        // colours from TractionBadge.vue
-        'red',
-        'orange',
-        'yellow',
-        'green',
-        'teal',
-        'blue',
-        'indigo',
-        'purple',
-        'pink',
-      ]
+      // colours used in TractionBadge
+      const colours = ['red', 'orange', 'yellow', 'green', 'blue', 'indigo', 'purple', 'pink']
       const colourIndex = versionIndex % colours.length
       return colours[colourIndex]
     },

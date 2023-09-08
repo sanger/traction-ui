@@ -4,7 +4,7 @@
       'badge', // badge class added for easy testing
       'inline-flex items-center',
       'rounded-lg px-1 py-0 my-1 text-xs font-medium',
-      badgeColor,
+      colorStyle,
     ]"
   >
     <slot />
@@ -12,6 +12,30 @@
 </template>
 
 <script>
+import { within } from '@/lib/propValidations'
+
+const colorClasses = {
+  black: 'bg-black text-gray-300',
+  white: 'bg-white text-gray-800',
+  gray: 'bg-gray-200 text-gray-700',
+  red: 'bg-red-200 text-red-800',
+  orange: 'bg-orange-300 text-orange-800',
+  yellow: 'bg-yellow-300 text-yellow-800',
+  green: 'bg-green-200 text-green-800',
+  teal: 'bg-teal-200 text-teal-800',
+  blue: 'bg-blue-200 text-blue-800',
+  indigo: 'bg-indigo-200 text-indigo-800',
+  purple: 'bg-purple-200 text-purple-800',
+  pink: 'bg-pink-200 text-pink-800',
+  sdb: 'bg-sdb-200 text-gray-300',
+  'sanger-dark-blue': 'bg-sdb-200 text-gray-300',
+  sp: 'bg-sp-400 text-white',
+  'sanger-pink': 'bg-sp-400 text-white',
+  success: 'bg-success-dark text-success-light',
+  warning: 'bg-warning-dark text-warning-light',
+  failure: 'bg-failure-dark text-failure-light',
+}
+
 export default {
   /**
    * # TractionBadge
@@ -40,28 +64,11 @@ export default {
       type: String,
       default: 'sanger-dark-blue',
       required: false,
+      validator: within(...Object.keys(colorClasses)),
     },
   },
   computed: {
-    badgeColor: ({ color }) => ({
-      'bg-black text-gray-300': color === 'black',
-      'bg-white text-gray-800': color === 'white',
-      'bg-gray-200 text-gray-700': color === 'gray',
-      'bg-red-200 text-red-800': color === 'red',
-      'bg-orange-300 text-orange-800': color === 'orange',
-      'bg-yellow-300 text-yellow-800': color === 'yellow',
-      'bg-green-200 text-green-800': color === 'green',
-      'bg-teal-200 text-teal-800': color === 'teal',
-      'bg-blue-200 text-blue-800': color === 'blue',
-      'bg-indigo-200 text-indigo-800': color === 'indigo',
-      'bg-purple-200 text-purple-800': color === 'purple',
-      'bg-pink-200 text-pink-800': color === 'pink',
-      'bg-sdb-200 text-gray-300': color === 'sdb' || color === 'sanger-dark-blue',
-      'bg-sp-400 text-white': color === 'sp' || color === 'sanger-pink',
-      'bg-success-dark text-success-light': color === 'success',
-      'bg-warning-dark text-warning-light': color === 'warning',
-      'bg-failure-dark text-failure-light': color === 'failure',
-    }),
+    colorStyle: ({ color }) => colorClasses[color],
   },
 }
 </script>
