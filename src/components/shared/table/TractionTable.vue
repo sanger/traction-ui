@@ -381,9 +381,3 @@ export default {
   },
 }
 </script>
-<style scoped>
-/* reduce the width of the sorting buttons */
-th button {
-  @apply px-0 !important;
-}
-</style>
