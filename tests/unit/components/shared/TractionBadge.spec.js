@@ -20,7 +20,6 @@ describe('TractionBadge', () => {
       orange: 'bg-orange-300',
       yellow: 'bg-yellow-300',
       green: 'bg-green-200',
-      teal: 'bg-teal-200',
       blue: 'bg-blue-200',
       indigo: 'bg-indigo-200',
       purple: 'bg-purple-200',
@@ -53,5 +52,21 @@ describe('TractionBadge', () => {
     })
     expect(wrapper.classes()).not.toContain('bg-invalid')
     expect(wrapper.classes()).not.toContain('bg-sdb-200')
+  })
+
+  it('provides lists of valid colors', () => {
+    expect(TractionBadge.colours.grays).toEqual(['black', 'white', 'gray'])
+    expect(TractionBadge.colours.rainbow).toEqual([
+      'red',
+      'orange',
+      'yellow',
+      'green',
+      'blue',
+      'indigo',
+      'purple',
+      'pink',
+    ])
+    expect(TractionBadge.colours.sanger).toEqual(['sdb', 'sanger-dark-blue', 'sp', 'sanger-pink'])
+    expect(TractionBadge.colours.statuses).toEqual(['success', 'warning', 'failure'])
   })
 })
