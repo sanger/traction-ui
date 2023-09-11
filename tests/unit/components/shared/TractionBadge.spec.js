@@ -56,7 +56,7 @@ describe('TractionBadge', () => {
 
   it('provides lists of valid colors', () => {
     expect(TractionBadge.colours.grays).toEqual(['black', 'white', 'gray'])
-    expect(TractionBadge.colours.rainbow).toEqual([
+    expect(TractionBadge.colours.spectrum).toEqual([
       'red',
       'orange',
       'yellow',

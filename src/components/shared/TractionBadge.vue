@@ -20,7 +20,7 @@ const colourClasses = {
     white: 'bg-white text-gray-800',
     gray: 'bg-gray-200 text-gray-700',
   },
-  rainbow: {
+  spectrum: {
     red: 'bg-red-200 text-red-800',
     orange: 'bg-orange-300 text-orange-800',
     yellow: 'bg-yellow-300 text-yellow-800',
