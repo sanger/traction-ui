@@ -4,7 +4,7 @@
       'badge', // badge class added for easy testing
       'inline-flex items-center',
       'rounded-lg px-1 py-0 my-1 text-xs font-medium',
-      colorStyle,
+      colourStyle,
     ]"
   >
     <slot />
@@ -14,7 +14,7 @@
 <script>
 import { within } from '@/lib/propValidations'
 
-const colorClasses = {
+const colourClasses = {
   black: 'bg-black text-gray-300',
   white: 'bg-white text-gray-800',
   gray: 'bg-gray-200 text-gray-700',
@@ -60,15 +60,15 @@ export default {
    */
   name: 'TractionBadge',
   props: {
-    color: {
+    colour: {
       type: String,
       default: 'sanger-dark-blue',
       required: false,
-      validator: within(...Object.keys(colorClasses)),
+      validator: within(...Object.keys(colourClasses)),
     },
   },
   computed: {
-    colorStyle: ({ color }) => colorClasses[color],
+    colourStyle: ({ colour }) => colourClasses[colour],
   },
 }
 </script>

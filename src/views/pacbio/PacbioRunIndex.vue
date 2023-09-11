@@ -43,7 +43,7 @@
         <template #cell(system_name_and_version)="row">
           <div class="flex justify-between gap-1">
             <span class="grow">{{ row.item.system_name }}</span>
-            <traction-badge :color="generateVersionColour(row.item.pacbio_smrt_link_version_id)">
+            <traction-badge :colour="generateVersionColour(row.item.pacbio_smrt_link_version_id)">
               {{ getVersionName(row.item.pacbio_smrt_link_version_id).split('_')[0] }}
             </traction-badge>
           </div>

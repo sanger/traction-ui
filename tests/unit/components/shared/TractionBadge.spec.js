@@ -11,8 +11,8 @@ describe('TractionBadge', () => {
     expect(wrapper.text()).toBe('Badge Text')
   })
 
-  it('applies the correct color class', () => {
-    const colors = {
+  it('applies the correct colour class', () => {
+    const colours = {
       black: 'bg-black',
       white: 'bg-white',
       gray: 'bg-gray-200',
@@ -34,9 +34,9 @@ describe('TractionBadge', () => {
       failure: 'bg-failure-dark',
     }
 
-    for (const [colorName, bgClass] of Object.entries(colors)) {
+    for (const [colourName, bgClass] of Object.entries(colours)) {
       const wrapper = mount(TractionBadge, {
-        propsData: { color: colorName },
+        propsData: { colour: colourName },
       })
       expect(wrapper.classes()).toContain(bgClass)
     }
@@ -49,7 +49,7 @@ describe('TractionBadge', () => {
 
   it('applies no color class if an invalid color prop is provided', () => {
     const wrapper = mount(TractionBadge, {
-      propsData: { color: 'invalid' },
+      propsData: { colour: 'invalid' },
     })
     expect(wrapper.classes()).not.toContain('bg-invalid')
     expect(wrapper.classes()).not.toContain('bg-sdb-200')
