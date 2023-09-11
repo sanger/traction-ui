@@ -204,26 +204,29 @@ export default {
     ...mapActions('traction/pacbio/runCreate', ['fetchSmrtLinkVersions']),
     async provider() {
       // Seeds required data and loads the page via the DataFetcher
+      let requiredSucceeds = true
       const errorList = []
-      const providers = {
-        'PacBio Runs': this.fetchPacbioRuns,
-        'SMRT-Link Versions': this.fetchSmrtLinkVersions,
+      const fetchers = {
+        // the keys are used in the error message should the fetcher fail
+        'PacBio Runs': { fetcher: this.fetchPacbioRuns, required: true },
+        'SMRT-Link Versions': { fetcher: this.fetchSmrtLinkVersions, required: false },
       }
       // Fetch data in parallel
-      const fetchPromises = Object.entries(providers).map(([key, provider]) => {
-        return provider().then((res) => {
+      const fetchPromises = Object.entries(fetchers).map(([name, { fetcher, required }]) => {
+        return fetcher().then((res) => {
           if (!res.success) {
-            errorList.push(key)
+            errorList.push(name)
+            if (required) requiredSucceeds = false
           }
         })
       })
       await Promise.all(fetchPromises)
-      const success = errorList.length == 0
-      if (success) {
-        return { success }
+      if (requiredSucceeds) {
+        return { success: true }
       }
+
       const errors = 'Failed to fetch ' + errorList.join(', ')
-      return { success, errors }
+      return { success: false, errors }
     },
   },
 }
