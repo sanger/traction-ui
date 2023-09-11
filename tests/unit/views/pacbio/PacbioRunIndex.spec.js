@@ -7,12 +7,7 @@ describe('PacbioRunIndex.vue', () => {
 
   beforeEach(async () => {
     mockRuns = new Response(Data.PacbioRuns).deserialize.runs
-    mockVersions = new Response(Data.TractionPacbioSmrtLinkVersions).deserialize.smrt_link_versions
-
     vi.spyOn(store.state.api.traction.pacbio.runs, 'get').mockResolvedValue(Data.PacbioRuns)
-    vi.spyOn(store.state.api.traction.pacbio.smrt_link_versions, 'get').mockResolvedValue(
-      Data.TractionPacbioSmrtLinkVersions,
-    )
 
     wrapper = mount(PacbioRunIndex, { store })
     pacbioRunIndex = wrapper.vm
@@ -44,10 +39,24 @@ describe('PacbioRunIndex.vue', () => {
     })
   })
 
+  // must run before the version badge tests below (I can't get the mocks to apply independently)
+  describe('smrt-link versions missing', () => {
+    it('displays an error badge if the version is not found', () => {
+      const badgesMissing = wrapper.find('tbody').findAll('.badge')
+      expect(badgesMissing[0].text()).toEqual('< ! >')
+    })
+  })
+
   describe('version badge', () => {
     let badges
 
     beforeEach(() => {
+      mockVersions = new Response(Data.TractionPacbioSmrtLinkVersions).deserialize
+        .smrt_link_versions
+      vi.spyOn(store.state.api.traction.pacbio.smrt_link_versions, 'get').mockResolvedValue(
+        Data.TractionPacbioSmrtLinkVersions,
+      )
+
       // find all tags with class 'badge'
       badges = wrapper.find('tbody').findAll('.badge')
     })
