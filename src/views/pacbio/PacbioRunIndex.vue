@@ -203,6 +203,7 @@ export default {
     ...mapActions('traction/pacbio/runCreate', ['fetchSmrtLinkVersions']),
     async provider() {
       // Seeds required data and loads the page via the DataFetcher
+      // TODO: update the DataFetcher to handle multiple data fetchers
       let requiredSucceeds = true
       const errorList = []
       const fetchers = {
