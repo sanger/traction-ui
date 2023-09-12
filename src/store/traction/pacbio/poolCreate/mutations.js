@@ -115,7 +115,7 @@ export default {
    * @param {Object} state The VueXState object
    * @param {Object.{}} tube The tube resource to populate the store
    */
-  populateTube: (store, { id, attributes }) => {
+  populatePoolTube: (store, { id, attributes }) => {
     store.tube = {
       id,
       ...attributes,

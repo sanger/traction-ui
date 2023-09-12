@@ -96,7 +96,7 @@ describe('actions.js', () => {
       )
 
       expect(commit).toHaveBeenCalledWith(
-        'populateTube',
+        'populatePoolTube',
         Data.TractionPacbioPool.data.included.slice(-1)[0],
       )
 
