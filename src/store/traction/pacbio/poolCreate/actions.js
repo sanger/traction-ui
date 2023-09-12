@@ -219,7 +219,8 @@ export default {
       // doesn't appear empty. This is especially important if the pool request finishes
       // after the request for all plates, as otherwise the partial record will over-write
       // the full one.
-      include: 'libraries.tag.tag_set,libraries.source_plate.wells.requests,libraries.request,tube',
+      include:
+        'libraries.tag.tag_set,libraries.source_plate.wells.requests,libraries.request.tube,tube',
     })
     const response = await handleResponse(promise)
 
@@ -232,15 +233,23 @@ export default {
         wells,
         plates = [],
         tag_sets: [tag_set] = [{}],
-        tubes: [tube],
+        tubes = [],
       } = groupIncludedByResource(included)
+      // Get the pool tube and remove it from tubes list
+      const poolTube = tubes.splice(
+        tubes.indexOf((tube) => tube.id == data.relationships.tube.data.id),
+        1,
+      )[0]
       commit('populatePoolAttributes', data)
       commit('populateLibraries', libraries)
       commit('populateRequests', requests)
       commit('populateWells', wells)
       commit('populatePlates', plates)
+      commit('populateTubes', tubes)
       commit('selectTagSet', tag_set)
-      commit('populateTube', tube)
+      commit('populatePoolTube', poolTube)
+
+      tubes.forEach(({ id }) => commit('selectTube', { id, selected: true }))
       plates.forEach(({ id }) => commit('selectPlate', { id, selected: true }))
     }
 
