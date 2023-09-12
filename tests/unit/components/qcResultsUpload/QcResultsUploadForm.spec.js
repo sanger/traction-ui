@@ -75,9 +75,9 @@ describe('QcResultsUploadForm.vue', () => {
     it('returns the correct border colour', () => {
       expect(form.border).toEqual('border-0')
       wrapper.setData({ uploadSuccessful: true })
-      expect(form.border).toEqual('rounded border border-green-500')
+      expect(form.border).toEqual('rounded border border-success')
       wrapper.setData({ uploadSuccessful: false })
-      expect(form.border).toEqual('rounded border border-red-500')
+      expect(form.border).toEqual('rounded border border-failure')
     })
   })
 

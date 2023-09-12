@@ -39,27 +39,27 @@ describe('TractionMessage.vue', () => {
         props: { ...requiredProps, type: 'success' },
       })
       expect(wrapper.find('[data-attribute=message]').attributes('class')).toContain(
-        'bg-green-100 text-green-70',
+        'success-message',
       )
       expect(wrapper.find('[data-attribute=close-icon]').attributes('class')).toContain(
-        'text-green-400 hover:text-green-700',
+        'success-icon',
       )
     })
 
     it('displays error style', () => {
       wrapper = mount(TractionMessage, {
-        props: { ...requiredProps, type: 'error' },
+        props: { ...requiredProps, type: 'danger' },
       })
       expect(wrapper.find('[data-attribute=message]').attributes('class')).toContain(
-        'bg-red-200 text-red-600',
+        'failure-message',
       )
       expect(wrapper.find('[data-attribute=close-icon]').attributes('class')).toContain(
-        'text-red-400 hover:text-red-600',
+        'failure-icon',
       )
     })
     it('emits dismissed event on close button click', () => {
       wrapper = mount(TractionMessage, {
-        props: { ...requiredProps, type: 'error' },
+        props: { ...requiredProps, type: 'danger' },
       })
       wrapper.find('[data-attribute=close]').trigger('click')
       expect(wrapper.emitted('dismissed')).toBeTruthy()

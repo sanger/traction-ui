@@ -65,7 +65,7 @@ describe('PacbioRunWell.vue', () => {
     describe('for smrtlink v11', () => {
       it('will be valid if it is complete', () => {
         const well = wrapper.find('[data-attribute=pacbio-run-well]')
-        expect(well.attributes('class')).toContain('bg-green-400 text-white')
+        expect(well.attributes('class')).toContain('bg-success text-white')
       })
 
       it('will be invalid if there is any missing meta data', () => {
@@ -78,7 +78,7 @@ describe('PacbioRunWell.vue', () => {
           },
         })
         const well = wrapper.find('[data-attribute=pacbio-run-well]')
-        expect(well.attributes('class')).toContain('bg-red-400 text-white')
+        expect(well.attributes('class')).toContain('bg-failure text-white')
       })
 
       it('will be invalid if there are no pools in the store', () => {
@@ -91,7 +91,7 @@ describe('PacbioRunWell.vue', () => {
           },
         })
         const well = wrapper.find('[data-attribute=pacbio-run-well]')
-        expect(well.attributes('class')).toContain('bg-red-400 text-white')
+        expect(well.attributes('class')).toContain('bg-failure text-white')
       })
 
       it('will be valid if all required metadata is present', () => {
@@ -103,7 +103,7 @@ describe('PacbioRunWell.vue', () => {
           },
         })
         const well = wrapper.find('[data-attribute=pacbio-run-well]')
-        expect(well.attributes('class')).toContain('bg-green-400 text-white')
+        expect(well.attributes('class')).toContain('bg-success text-white')
       })
 
       it('will be empty if there are no pools or metadata', () => {
@@ -143,7 +143,7 @@ describe('PacbioRunWell.vue', () => {
         })
 
         const well = wrapper.find('[data-attribute=pacbio-run-well]')
-        expect(well.attributes('class')).toContain('bg-green-400 text-white')
+        expect(well.attributes('class')).toContain('bg-success text-white')
       })
 
       it('will be invalid if there is any missing meta data', () => {
@@ -156,7 +156,7 @@ describe('PacbioRunWell.vue', () => {
           },
         })
         const well = wrapper.find('[data-attribute=pacbio-run-well]')
-        expect(well.attributes('class')).toContain('bg-red-400 text-white')
+        expect(well.attributes('class')).toContain('bg-failure text-white')
       })
 
       it('will be invalid if there are no pools in the store', () => {
@@ -169,7 +169,7 @@ describe('PacbioRunWell.vue', () => {
           },
         })
         const well = wrapper.find('[data-attribute=pacbio-run-well]')
-        expect(well.attributes('class')).toContain('bg-red-400 text-white')
+        expect(well.attributes('class')).toContain('bg-failure text-white')
       })
 
       it('will be valid if all required metadata is present', () => {
@@ -181,7 +181,7 @@ describe('PacbioRunWell.vue', () => {
           },
         })
         const well = wrapper.find('[data-attribute=pacbio-run-well]')
-        expect(well.attributes('class')).toContain('bg-green-400 text-white')
+        expect(well.attributes('class')).toContain('bg-success text-white')
       })
 
       it('will be empty if there are no pools or metadata', () => {
