@@ -183,7 +183,6 @@
 </template>
 
 <script>
-import Api from '@/mixins/Api'
 import { createReceptionResource } from '@/services/traction/Reception'
 import Receptions from '@/lib/receptions'
 import TractionHeading from '../components/TractionHeading.vue'
@@ -206,7 +205,7 @@ export default {
     LibraryTypeSelect,
     DataTypeSelect,
   },
-  mixins: [Api],
+  // mixins: [Api],
   props: {
     receptions: {
       type: Array,
@@ -228,8 +227,9 @@ export default {
   }),
   computed: {
     reception: ({ receptions, source }) => receptions.find((r) => r.text == source),
-    receptionComponent: ({ reception }) => reception.component,
-    receptionOptions: ({ reception }) => reception.props,
+    api() {
+      return this.$store.getters.api
+    }, // can't use this in arrow function
     receptionRequest: ({ api }) => api.traction.receptions.create,
     barcodeArray: ({ barcodes }) => barcodes.split(/\s/).filter(Boolean),
     isDisabled: ({ barcodeArray }) => barcodeArray.length === 0,
@@ -255,6 +255,7 @@ export default {
       this.showModal(`Creating ${numberRequests(requestAttributes.length)} for ${this.source}`)
 
       try {
+        console.log(this.receptionRequest)
         await createReceptionResource(this.receptionRequest, {
           source: `traction-ui.${this.reception.name}`,
           requestAttributes,

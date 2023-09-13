@@ -25,11 +25,9 @@
 
 <script>
 import handlePromise from '@/api/PromiseHelper'
-import Api from '@/mixins/Api'
 
 export default {
   name: 'SaphyrEnzymeModal',
-  mixins: [Api],
   props: {
     disabled: Boolean,
     isStatic: Boolean,
@@ -43,6 +41,9 @@ export default {
     }
   },
   computed: {
+    api() {
+      return this.$store.getters.api
+    },
     enzymeRequest() {
       return this.api.traction.saphyr.enzymes
     },
