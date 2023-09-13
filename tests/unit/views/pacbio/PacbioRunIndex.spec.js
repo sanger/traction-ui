@@ -1,6 +1,6 @@
 import PacbioRunIndex from '@/views/pacbio/PacbioRunIndex'
 import Response from '@/api/Response'
-import { mount, store, Data, flushPromises } from '@support/testHelper'
+import { mount, store, Data, flushPromises, nextTick } from '@support/testHelper'
 
 describe('PacbioRunIndex.vue', () => {
   let wrapper, pacbioRunIndex, mockRuns, mockVersions
@@ -39,14 +39,6 @@ describe('PacbioRunIndex.vue', () => {
     })
   })
 
-  // must run before the version badge tests below (I can't get the mocks to apply independently)
-  describe('smrt-link versions missing', () => {
-    it('displays an error badge if the version is not found', () => {
-      const badgesMissing = wrapper.find('tbody').findAll('.badge')
-      expect(badgesMissing[0].text()).toEqual('< ! >')
-    })
-  })
-
   describe('version badge', () => {
     let badges
 
@@ -72,6 +64,14 @@ describe('PacbioRunIndex.vue', () => {
         const version_name = version.name.split('_')[0] // keep only the version number, dropping everything after the underscore
         expect(badge.text()).toEqual(version_name)
       })
+    })
+
+    it('displays an error badge if the version is not found', async () => {
+      // Remove smrtLinkVersions from state
+      store.state.traction.pacbio.runCreate.resources.smrtLinkVersions = {}
+      await nextTick()
+      const badgesMissing = wrapper.find('tbody').findAll('.badge')
+      expect(badgesMissing[0].text()).toEqual('< ! >')
     })
   })
 
