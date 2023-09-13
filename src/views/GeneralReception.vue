@@ -205,7 +205,6 @@ export default {
     LibraryTypeSelect,
     DataTypeSelect,
   },
-  // mixins: [Api],
   props: {
     receptions: {
       type: Array,
@@ -227,9 +226,7 @@ export default {
   }),
   computed: {
     reception: ({ receptions, source }) => receptions.find((r) => r.text == source),
-    api() {
-      return this.$store.getters.api
-    }, // can't use this in arrow function
+    api() { return this.$store.getters.api }, // can't use this in arrow function
     receptionRequest: ({ api }) => api.traction.receptions.create,
     barcodeArray: ({ barcodes }) => barcodes.split(/\s/).filter(Boolean),
     isDisabled: ({ barcodeArray }) => barcodeArray.length === 0,
