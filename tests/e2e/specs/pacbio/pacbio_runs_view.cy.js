@@ -3,6 +3,9 @@ describe('Pacbio Runs view', () => {
     cy.intercept('/v1/pacbio/runs?include=plates', {
       fixture: 'tractionPacbioRuns.json',
     })
+    cy.intercept('/v1/pacbio/smrt_link_versions', {
+      fixture: 'tractionPacbioSmrtLinkVersions.json',
+    })
     cy.visit('#/pacbio/runs')
     // Check filters are visible
     cy.get('#filterInput').should('be.visible')
@@ -10,9 +13,7 @@ describe('Pacbio Runs view', () => {
     cy.get('#filterValue').children().and('contain', 'Name')
     cy.get('#run-index').contains('tr', '5')
     cy.get('#startRun-7')
-    cy.get('#completeRun-7')
     cy.get('#editRun-7')
-    cy.get('#cancelRun-7')
     cy.get('#generate-sample-sheet-7')
     cy.get('#run-index')
       .first()
@@ -22,7 +23,7 @@ describe('Pacbio Runs view', () => {
         cy.get('#state').should('have.length.greaterThan', 0)
         cy.get('#sequencing_kit_box_barcodes').should('have.length.greaterThan', 0)
         cy.get('#dna_control_complex_box_barcode').should('have.length.greaterThan', 0)
-        cy.get('#system_name').should('have.length.greaterThan', 0)
+        cy.get('#system_name_and_version').find('.badge').should('have.length.greaterThan', 0)
       })
   })
 })

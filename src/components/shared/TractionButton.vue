@@ -2,11 +2,12 @@
   <button
     :class="[
       'w-full inline-flex justify-center rounded-md ',
-      'px-4 py-2 font-medium',
+      'py-2 font-medium',
       'sm:mt-0 sm:text-sm disabled:cursor-not-allowed disabled:opacity-50',
       themeStyle,
       sizeStyle,
       widthStyle,
+      pxStyle,
       classes,
     ]"
     @click="click"
@@ -110,6 +111,10 @@ export default {
     widthStyle: ({ fullWidth }) => ({
       'sm:w-auto': !fullWidth,
       'w-full': fullWidth,
+    }),
+    pxStyle: ({ theme }) => ({
+      'px-0': theme === 'sort',
+      'px-4': theme !== 'sort',
     }),
   },
   methods: {

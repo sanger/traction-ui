@@ -1,6 +1,6 @@
 <template>
-  <DataFetcher :fetcher="fetchPacbioRuns">
-    <FilterCard :fetcher="fetchPacbioRuns" :filter-options="filterOptions" />
+  <DataFetcher :fetcher="provider">
+    <FilterCard :fetcher="provider" :filter-options="filterOptions" />
     <div class="flex flex-col">
       <div class="clearfix">
         <traction-button
@@ -32,35 +32,52 @@
         :current-page="currentPage"
         @filtered="onFiltered"
       >
+        <template #cell(sequencing_kit_box_barcodes)="row">
+          <ul>
+            <li v-for="barcode in row.item.sequencing_kit_box_barcodes" :key="barcode">
+              {{ barcode }}
+            </li>
+          </ul>
+        </template>
+
+        <template #cell(system_name_and_version)="row">
+          <div class="flex justify-between gap-1">
+            <span class="grow">{{ row.item.system_name }}</span>
+            <traction-badge :colour="generateVersionColour(row.item.pacbio_smrt_link_version_id)">
+              {{ getVersionName(row.item.pacbio_smrt_link_version_id).split('_')[0] }}
+            </traction-badge>
+          </div>
+        </template>
+
         <template #cell(actions)="row">
           <traction-button
+            v-if="row.item.state == 'pending'"
             :id="generateId('startRun', row.item.id)"
             theme="create"
             size="sm"
             class="mr-1"
-            :disabled="row.item.state !== 'pending'"
             @click="updateRunState('started', row.item.id)"
           >
             Start
           </traction-button>
 
           <traction-button
+            v-if="!isRunDisabled(row.item)"
             :id="generateId('completeRun', row.item.id)"
             theme="update"
             size="sm"
             class="mr-1"
-            :disabled="isRunDisabled(row.item)"
             @click="updateRunState('completed', row.item.id)"
           >
             Complete
           </traction-button>
 
           <traction-button
+            v-if="!isRunDisabled(row.item)"
             :id="generateId('cancelRun', row.item.id)"
             theme="delete"
             size="sm"
             class="mr-1"
-            :disabled="isRunDisabled(row.item)"
             @click="updateRunState('cancelled', row.item.id)"
           >
             Cancel
@@ -100,6 +117,7 @@ import FilterCard from '@/components/FilterCard'
 import TableHelper from '@/mixins/TableHelper'
 import { mapActions, mapGetters } from 'vuex'
 import DownloadIcon from '@/icons/DownloadIcon.vue'
+import TractionBadge from '@/components/shared/TractionBadge.vue'
 
 export default {
   name: 'PacbioRuns',
@@ -107,6 +125,7 @@ export default {
     DataFetcher,
     FilterCard,
     DownloadIcon,
+    TractionBadge,
   },
   mixins: [TableHelper],
   data() {
@@ -125,7 +144,7 @@ export default {
           label: 'Sequencing Kit BB',
           sortable: true,
         },
-        { key: 'system_name', label: 'System Name', sortable: true },
+        { key: 'system_name_and_version', label: 'System & Version', sortable: true },
         { key: 'created_at', label: 'Created at (UTC)', sortable: true },
         { key: 'actions', label: 'Actions' },
       ],
@@ -145,6 +164,7 @@ export default {
   },
   computed: {
     ...mapGetters('traction/pacbio/runs', ['runs']),
+    ...mapGetters('traction/pacbio/runCreate', ['smrtLinkVersionList']),
   },
   watch: {
     runs(newValue) {
@@ -152,6 +172,9 @@ export default {
     },
   },
   methods: {
+    getVersionName(versionId) {
+      return this.smrtLinkVersionList[versionId]?.name || '< ! >'
+    },
     isRunDisabled(run) {
       return run.state == 'completed' || run.state == 'cancelled' || run.state == 'pending'
     },
@@ -160,6 +183,11 @@ export default {
     },
     generateSampleSheetPath(id) {
       return import.meta.env.VITE_TRACTION_BASE_URL + '/v1/pacbio/runs/' + id + '/sample_sheet'
+    },
+    generateVersionColour(versionIndex) {
+      const colours = TractionBadge.colours.spectrum
+      const colourIndex = versionIndex % colours.length
+      return colours[colourIndex]
     },
     updateRunState(status, id) {
       try {
@@ -171,8 +199,35 @@ export default {
     redirectToRun(runId) {
       this.$router.push({ path: `/pacbio/run/${runId || 'new'}` })
     },
-
     ...mapActions('traction/pacbio/runs', ['fetchPacbioRuns', 'updateRun']),
+    ...mapActions('traction/pacbio/runCreate', ['fetchSmrtLinkVersions']),
+    async provider() {
+      // Seeds required data and loads the page via the DataFetcher
+      // TODO: update the DataFetcher to handle multiple data fetchers
+      let requiredSucceeds = true
+      const errorList = []
+      const fetchers = {
+        // the keys are used in the error message should the fetcher fail
+        'PacBio Runs': { fetcher: this.fetchPacbioRuns, required: true },
+        'SMRT-Link Versions': { fetcher: this.fetchSmrtLinkVersions, required: false },
+      }
+      // Fetch data in parallel
+      const fetchPromises = Object.entries(fetchers).map(([name, { fetcher, required }]) => {
+        return fetcher().then((res) => {
+          if (!res.success) {
+            errorList.push(name)
+            if (required) requiredSucceeds = false
+          }
+        })
+      })
+      await Promise.all(fetchPromises)
+      if (requiredSucceeds) {
+        return { success: true }
+      }
+
+      const errors = 'Failed to fetch ' + errorList.join(', ')
+      return { success: false, errors }
+    },
   },
 }
 </script>

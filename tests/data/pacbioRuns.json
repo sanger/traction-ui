@@ -87,7 +87,7 @@
           "state": "cancelled",
           "dna_control_complex_box_barcode": "Lxxxxx10171760012312",
           "system_name": "Sequel II",
-          "pacbio_smrt_link_version_id": 1,
+          "pacbio_smrt_link_version_id": 2,
           "created_at": "10/09/2019 02:22"
         },
         "relationships": {
@@ -112,7 +112,7 @@
           "state": "completed",
           "dna_control_complex_box_barcode": "Lxxxxx10171760012312",
           "system_name": "Sequel II",
-          "pacbio_smrt_link_version_id": 1,
+          "pacbio_smrt_link_version_id": 3,
           "created_at": "10/09/2019 02:22"
         },
         "relationships": {
@@ -137,7 +137,7 @@
           "state": "started",
           "dna_control_complex_box_barcode": "Lxxxxx10171760012312",
           "system_name": "Revio",
-          "pacbio_smrt_link_version_id": 1,
+          "pacbio_smrt_link_version_id": 4,
           "created_at": "10/09/2019 02:22"
         },
         "relationships": {
