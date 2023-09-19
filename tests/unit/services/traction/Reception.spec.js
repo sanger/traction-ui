@@ -1,5 +1,4 @@
 import { createReceptionResource } from '@/services/traction/Reception'
-// import { Data } from '@support/testHelper'
 
 // Setup some of the parameters we'll be testing with
 const source = 'traction-ui.sequencescape'
@@ -41,20 +40,18 @@ describe('Traction', () => {
     it('successfully', async () => {
       createReceptionRequest.mockResolvedValue(createdReceptionResponse)
 
-      const response = await createReceptionResource(createReceptionRequest, {
-        source,
-        requestAttributes,
-      })
+      const attributes = { source, request_attributes: requestAttributes }
+
+      const response = await createReceptionResource(createReceptionRequest, attributes)
 
       expect(response).toEqual(createdReceptionResponse.data)
     })
 
     it('does not import labware if none are present', async () => {
+      const attributes = { source, request_attributes: [] }
+      const labwareCount = 0
       expect(
-        createReceptionResource(createReceptionRequest, {
-          source,
-          requestAttributes: [],
-        }),
+        createReceptionResource(createReceptionRequest, labwareCount, attributes),
       ).rejects.toThrow('No labware to import')
 
       expect(createReceptionRequest).not.toHaveBeenCalled()
@@ -63,16 +60,16 @@ describe('Traction', () => {
     it('generates a valid reception payload', async () => {
       createReceptionRequest.mockResolvedValue(createdReceptionResponse)
 
-      await createReceptionResource(createReceptionRequest, { source, requestAttributes })
+      const attributes = { source, request_attributes: requestAttributes }
+      const labwareCount = 1
+
+      await createReceptionResource(createReceptionRequest, labwareCount, attributes)
 
       expect(createReceptionRequest).toHaveBeenCalledWith({
         data: {
           data: {
             type: 'receptions',
-            attributes: {
-              source,
-              request_attributes: requestAttributes,
-            },
+            attributes,
           },
         },
       })
@@ -81,8 +78,11 @@ describe('Traction', () => {
     it('when the reception could not be created', async () => {
       createReceptionRequest.mockRejectedValue({ response: failedResponse })
 
+      const attributes = { source, request_attributes: requestAttributes }
+      const labwareCount = 1
+
       expect(
-        createReceptionResource(createReceptionRequest, { source, requestAttributes }),
+        createReceptionResource(createReceptionRequest, labwareCount, attributes),
       ).rejects.toThrow('error1 There was an error.')
     })
   })

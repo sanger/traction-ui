@@ -73,6 +73,9 @@ const labwareForReception = async ({ requests, barcodes, requestOptions }) => {
 
   const missing = checkBarcodes(barcodes, foundBarcodes)
 
+  // number of labwares to be imported
+  const labwareCount = new Set(foundBarcodes).size - missing.length
+
   if (missing.length > 0) {
     throw `Labware could not be retrieved from Sequencescape: ${missing}`
   }
@@ -80,6 +83,7 @@ const labwareForReception = async ({ requests, barcodes, requestOptions }) => {
   return {
     source: 'sequencescape',
     requestAttributes,
+    labwareCount,
   }
 }
 

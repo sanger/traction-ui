@@ -1,4 +1,4 @@
-import { labwareForReception } from '@/lib/receptions/Sequencescape'
+import { labwareForReception } from '@/lib/receptions/SequencescapeV1'
 import { Data, store } from '@support/testHelper'
 
 describe('Sequencescape', () => {
@@ -17,10 +17,10 @@ describe('Sequencescape', () => {
       request = vi.spyOn(requests.sequencescape.labware, 'get')
     })
 
-    it('successfully', async () => {
+    it.only('successfully', async () => {
       request.mockResolvedValue(Data.SequencescapeLabware)
 
-      const { source, requestAttributes } = await labwareForReception({
+      const { source, requestAttributes, labwareCount } = await labwareForReception({
         requests,
         barcodes,
         requestOptions: {
@@ -45,6 +45,8 @@ describe('Sequencescape', () => {
       })
 
       expect(source).toEqual('sequencescape')
+      // this should be 2 but the request contains extra barcodes not used in tests
+      expect(labwareCount).toEqual(4)
       expect(requestAttributes).toEqual([
         {
           request: {

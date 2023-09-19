@@ -226,7 +226,9 @@ export default {
   }),
   computed: {
     reception: ({ receptions, source }) => receptions.find((r) => r.text == source),
-    api() { return this.$store.getters.api }, // can't use this in arrow function
+    api() {
+      return this.$store.getters.api
+    }, // can't use this in arrow function
     receptionRequest: ({ api }) => api.traction.receptions.create,
     barcodeArray: ({ barcodes }) => barcodes.split(/\s/).filter(Boolean),
     isDisabled: ({ barcodeArray }) => barcodeArray.length === 0,
@@ -252,7 +254,6 @@ export default {
       this.showModal(`Creating ${numberRequests(requestAttributes.length)} for ${this.source}`)
 
       try {
-        console.log(this.receptionRequest)
         await createReceptionResource(this.receptionRequest, {
           source: `traction-ui.${this.reception.name}`,
           requestAttributes,

@@ -1,5 +1,5 @@
-import * as Sequencescape from './Sequencescape'
-import * as SamplesExtraction from './SamplesExtraction'
+import * as Sequencescape from './SequencescapeV1'
+import * as SamplesExtraction from './SamplesExtractionV1'
 
 const defaultRequestOptions = () => ({
   library_type: undefined,
