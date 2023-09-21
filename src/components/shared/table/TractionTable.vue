@@ -64,7 +64,7 @@
                     :data-testid="`${field.key}-sort-button`"
                     theme="sort"
                     :size="'sm'"
-                    :classes="'bg-gray-50'"
+                    :classes="'bg-gray-50 items-center'"
                     @click="sortButtonClick(field.key, fieldIndex)"
                   >
                     <traction-sort-icon :direction="sortDirection(field.key)" />

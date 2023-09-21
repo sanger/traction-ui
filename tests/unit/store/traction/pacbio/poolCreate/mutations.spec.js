@@ -17,7 +17,7 @@ describe('mutations.js', () => {
     populateTags,
     populateLibraries,
     populatePoolAttributes,
-    populateTube,
+    populatePoolTube,
     updateLibrary,
     clearPoolData,
   } = mutations
@@ -334,12 +334,12 @@ describe('mutations.js', () => {
     })
   })
 
-  describe('populateTube', () => {
+  describe('populatePoolTube', () => {
     it('sets the tube with the correct data', () => {
       const tube = { id: 1, attributes: { barcode: 'TRAC-1' } }
       const state = defaultState()
       //apply mutation
-      populateTube(state, tube)
+      populatePoolTube(state, tube)
       expect(state.tube).toEqual({
         id: 1,
         barcode: 'TRAC-1',
