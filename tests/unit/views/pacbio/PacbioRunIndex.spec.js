@@ -1,15 +1,23 @@
 import PacbioRunIndex from '@/views/pacbio/PacbioRunIndex'
 import Response from '@/api/Response'
 import { mount, store, Data, flushPromises, nextTick } from '@support/testHelper'
+import { createTestingPinia } from '@pinia/testing'
+import { usePacbioRunsStore } from '../../../../src/stores/pacbioRuns'
 
 describe('PacbioRunIndex.vue', () => {
-  let wrapper, pacbioRunIndex, mockRuns, mockVersions
+  let wrapper, pacbioRunIndex, mockRuns, mockVersions, piniaStore
 
   beforeEach(async () => {
     mockRuns = new Response(Data.PacbioRuns).deserialize.runs
-    vi.spyOn(store.state.api.traction.pacbio.runs, 'get').mockResolvedValue(Data.PacbioRuns)
-
-    wrapper = mount(PacbioRunIndex, { store })
+    //vi.spyOn(store.state.api.traction.pacbio.runs, 'get').mockResolvedValue(Data.PacbioRuns)
+    wrapper = mount(PacbioRunIndex, {
+      global: {
+        plugins: [createTestingPinia()],
+      },
+      store,
+    })
+    piniaStore = usePacbioRunsStore()
+    piniaStore.runsArray = Data.PacbioRuns
     pacbioRunIndex = wrapper.vm
     await flushPromises()
   })
