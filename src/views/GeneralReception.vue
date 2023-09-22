@@ -190,8 +190,6 @@ import LibraryTypeSelect from '@/components/shared/LibraryTypeSelect'
 import DataTypeSelect from '@/components/shared/DataTypeSelect'
 import { defaultRequestOptions } from '@/lib/receptions'
 
-const numberRequests = (i) => (i === 1 ? '1 request' : `${i} requests`)
-
 // We don't expect the modal to display without a message. If we end up in this
 // state then something has gone horribly wrong.
 const stuckModal =
@@ -256,10 +254,7 @@ export default {
       try {
         await createReceptionResource(this.receptionRequest, labwareCount, attributes)
 
-        this.showAlert(
-          `Imported ${labwareCount} labware(s) from ${this.source}`,
-          'success',
-        )
+        this.showAlert(`Imported ${labwareCount} labware(s) from ${this.source}`, 'success')
       } catch (e) {
         console.error(e)
         this.showAlert(e, 'danger')
@@ -269,15 +264,15 @@ export default {
     async importLabware() {
       this.importStarted({ message: `Fetching ${this.barcodeCount} items from ${this.source}` })
       try {
-        const {labwareCount, attributes} = await this.reception.importFunction({
+        const { labwareCount, attributes } = await this.reception.importFunction({
           requests: this.api,
           barcodes: this.barcodeArray,
           requestOptions: this.presentRequestOptions,
         })
 
         this.importLoaded({
-          labwareCount, 
-          attributes
+          labwareCount,
+          attributes,
         })
       } catch (e) {
         console.error(e)

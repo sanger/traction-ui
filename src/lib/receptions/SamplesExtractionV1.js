@@ -1,8 +1,6 @@
 import { handleResponse } from '@/api/ResponseHelper'
 import deserialize from '@/api/JsonApi'
 
-const checkBarcodes = (barcodes, foundBarcodes) =>
-  barcodes.filter((barcode) => !foundBarcodes.includes(barcode))
 const extractBarcodes = (assets) => assets.map((labware) => labware.barcode)
 
 /*
@@ -48,7 +46,10 @@ const labwareForReception = async ({ requests, barcodes, requestOptions }) => {
   const labwareCount = new Set(foundBarcodes).size
 
   return {
-    attributes: { source: 'traction-ui.samples-extraction', requests_attributes: requestAttributes },
+    attributes: {
+      source: 'traction-ui.samples-extraction',
+      requests_attributes: requestAttributes,
+    },
     labwareCount,
   }
 }
