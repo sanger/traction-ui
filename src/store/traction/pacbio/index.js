@@ -1,4 +1,3 @@
-import pacbioRunsModule from '@/store/traction/pacbio/runs'
 import pacbioRequestsModule from '@/store/traction/pacbio/requests'
 import pacbioLibrariesModule from '@/store/traction/pacbio/libraries'
 import pacbioPoolsModule from '@/store/traction/pacbio/pools'
@@ -9,7 +8,6 @@ import runCreate from '@/store/traction/pacbio/runCreate'
 const pacbio = {
   namespaced: true,
   modules: {
-    runs: pacbioRunsModule,
     requests: pacbioRequestsModule,
     libraries: pacbioLibrariesModule,
     pools: pacbioPoolsModule,
