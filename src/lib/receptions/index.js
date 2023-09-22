@@ -1,5 +1,7 @@
-import * as Sequencescape from './SequencescapeV1'
-import * as SamplesExtraction from './SamplesExtractionV1'
+import * as SequencescapeV1 from './SequencescapeV1'
+import * as SequencescapeV2 from './SequencescapeV2'
+import * as SamplesExtractionV1 from './SamplesExtractionV1'
+import * as SamplesExtractionV2 from './SamplesExtractionV2'
 
 const defaultRequestOptions = () => ({
   library_type: undefined,
@@ -23,20 +25,28 @@ const ReceptionTypes = {
   },
 }
 
-const Receptions = [
-  {
-    name: 'sequencescape',
-    text: 'Sequencescape',
-    value: 'Sequencescape',
-    importFunction: Sequencescape.labwareForReception,
+const Receptions = {
+  Sequencescape: {
+    v1: {
+      ...ReceptionTypes.Sequencescape,
+      importFunction: SequencescapeV1.labwareForReception,
+    },
+    v2: {
+      ...ReceptionTypes.Sequencescape,
+      importFunction: SequencescapeV2.labwareForReception,
+    },
   },
-  {
-    name: 'samples-extraction',
-    text: 'Samples Extraction',
-    value: 'Samples Extraction',
-    importFunction: SamplesExtraction.labwareForReception,
+  SamplesExtraction: {
+    v1: {
+      ...ReceptionTypes.SamplesExtraction,
+      importFunction: SamplesExtractionV1.labwareForReception,
+    },
+    v2: {
+      ...ReceptionTypes.SamplesExtraction,
+      importFunction: SamplesExtractionV2.labwareForReception,
+    },
   },
-]
+}
 
 export default Receptions
 export { defaultRequestOptions }

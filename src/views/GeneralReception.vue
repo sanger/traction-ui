@@ -208,6 +208,10 @@ export default {
       type: Array,
       default: () => Receptions,
     },
+    version: {
+      type: String,
+      default: 'v1',
+    },
   },
   data: () => ({
     // Default source to sequencescape
@@ -223,7 +227,7 @@ export default {
     modalState: defaultModal(),
   }),
   computed: {
-    reception: ({ receptions, source }) => receptions.find((r) => r.text == source),
+    reception: ({ receptions, source, version }) => receptions[source][version],
     api() {
       return this.$store.getters.api
     }, // can't use this in arrow function
