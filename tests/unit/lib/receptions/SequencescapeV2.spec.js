@@ -19,7 +19,7 @@ describe('Sequencescape', () => {
     it('successfully', async () => {
       request.mockResolvedValue(Data.SequencescapeLabware)
 
-      const { source, containerAttributes, labwareCount } = await labwareForReception({
+      const { attributes, labwareCount } = await labwareForReception({
         requests,
         barcodes,
         requestOptions: {
@@ -43,9 +43,9 @@ describe('Sequencescape', () => {
         },
       })
 
-      expect(source).toEqual('sequencescape')
       expect(labwareCount).toEqual(2)
-      expect(containerAttributes).toEqual({
+      expect(attributes).toEqual({
+        source: 'traction-ui.sequencescape',
         plates_attributes: [
           {
             barcode: 'DN9000002A',

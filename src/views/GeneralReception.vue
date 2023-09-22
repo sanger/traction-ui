@@ -250,17 +250,14 @@ export default {
       this.clearModal()
       this.showAlert(message, 'danger')
     },
-    async importLoaded({ requestAttributes }) {
-      this.showModal(`Creating ${numberRequests(requestAttributes.length)} for ${this.source}`)
+    async importLoaded({ labwareCount, attributes }) {
+      this.showModal(`Creating ${labwareCount} labware(s) for ${this.source}`)
 
       try {
-        await createReceptionResource(this.receptionRequest, {
-          source: `traction-ui.${this.reception.name}`,
-          requestAttributes,
-        })
+        await createReceptionResource(this.receptionRequest, labwareCount, attributes)
 
         this.showAlert(
-          `Imported ${numberRequests(requestAttributes.length)} from ${this.source}`,
+          `Imported ${labwareCount} labware(s) from ${this.source}`,
           'success',
         )
       } catch (e) {
@@ -272,14 +269,15 @@ export default {
     async importLabware() {
       this.importStarted({ message: `Fetching ${this.barcodeCount} items from ${this.source}` })
       try {
-        const response = await this.reception.importFunction({
+        const {labwareCount, attributes} = await this.reception.importFunction({
           requests: this.api,
           barcodes: this.barcodeArray,
           requestOptions: this.presentRequestOptions,
         })
 
         this.importLoaded({
-          requestAttributes: response.requestAttributes,
+          labwareCount, 
+          attributes
         })
       } catch (e) {
         console.error(e)

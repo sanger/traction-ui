@@ -44,9 +44,8 @@ const labwareForReception = async ({ requests, barcodes, requestOptions }) => {
   const labwareCount = containerAttributes.tubes_attributes.length
 
   return {
-    source: 'samples-extraction',
+    attributes: { source: 'traction-ui.samples-extraction', ...containerAttributes },
     labwareCount,
-    containerAttributes,
   }
 }
 

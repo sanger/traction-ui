@@ -155,18 +155,18 @@ describe('GeneralReception', () => {
     // We've begun the import
     await wrapper.vm.importStarted({ message: 'Starting import' })
 
-    await wrapper.vm.importLoaded({ requestAttributes: [{}], source: 'sequencescape' })
+    const labwareCount = 1
+    const attributes = { source: 'traction-ui.sequencescape', request_attributes: [{}] }
+
+    await wrapper.vm.importLoaded({ labwareCount, attributes })
 
     await mockedcreateReception
     expect(wrapper.text()).not.toContain('Starting import')
-    expect(mockedcreateReception).toBeCalledWith(tractionReceptionsCreate, {
-      source: 'traction-ui.sequencescape',
-      requestAttributes: [{}],
-    })
+    expect(mockedcreateReception).toBeCalledWith(tractionReceptionsCreate, labwareCount, attributes)
 
     expect(Object.values(store.state.traction.messages)).toContainEqual({
       type: 'success',
-      message: 'Imported 1 request from Sequencescape',
+      message: 'Imported 1 labware(s) from Sequencescape',
     })
   })
 
@@ -180,7 +180,7 @@ describe('GeneralReception', () => {
     // We've begun the import
     await wrapper.vm.importStarted({ message: 'Starting import' })
 
-    await wrapper.vm.importLoaded({ requestAttributes: [], source: 'sequencescape' })
+    await wrapper.vm.importLoaded({ labwareCount: 0, attributes: {} })
 
     expect(wrapper.text()).not.toContain('Starting import')
 

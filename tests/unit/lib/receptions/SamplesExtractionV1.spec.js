@@ -20,7 +20,7 @@ describe('SamplesExtraction', () => {
     it('successfully', async () => {
       request.mockResolvedValue(Data.SampleExtractionTubesWithSample)
 
-      const { source, requestAttributes } = await labwareForReception({
+      const { attributes, labwareCount } = await labwareForReception({
         requests,
         barcodes,
         requestOptions: {
@@ -33,8 +33,10 @@ describe('SamplesExtraction', () => {
         filter: { barcode: barcodes.join(',') },
       })
 
-      expect(source).toEqual('samples-extraction')
-      expect(requestAttributes).toEqual([
+      expect(labwareCount).toEqual(1)
+      expect(attributes).toEqual({
+        source: 'traction-ui.samples-extraction',
+        requests_attributes: [
         {
           request: {
             external_study_id: '123456-e8f3-11e9-9231-68b59977951e',
@@ -48,7 +50,7 @@ describe('SamplesExtraction', () => {
           },
           container: { type: 'tubes', barcode: 'SE108532I' },
         },
-      ])
+      ]})
     })
 
     it('unsuccessfully', async () => {
@@ -59,12 +61,5 @@ describe('SamplesExtraction', () => {
       )
     })
 
-    it('when barcodes are missing', async () => {
-      request.mockResolvedValue(emptyResponse)
-
-      expect(labwareForReception({ requests, barcodes })).rejects.toThrow(
-        'Labware could not be retrieved from Samples Extraction: SE108532I',
-      )
-    })
   })
 })

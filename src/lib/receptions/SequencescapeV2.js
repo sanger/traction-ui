@@ -72,8 +72,7 @@ const labwareForReception = async ({ requests, barcodes, requestOptions }) => {
   }, 0)
 
   return {
-    source: 'sequencescape',
-    containerAttributes,
+    attributes: { source: 'traction-ui.sequencescape', ...containerAttributes },
     labwareCount,
   }
 }

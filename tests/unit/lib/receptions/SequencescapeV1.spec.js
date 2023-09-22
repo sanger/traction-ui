@@ -17,10 +17,10 @@ describe('Sequencescape', () => {
       request = vi.spyOn(requests.sequencescape.labware, 'get')
     })
 
-    it.only('successfully', async () => {
+    it('successfully', async () => {
       request.mockResolvedValue(Data.SequencescapeLabware)
 
-      const { source, requestAttributes, labwareCount } = await labwareForReception({
+      const { attributes, labwareCount } = await labwareForReception({
         requests,
         barcodes,
         requestOptions: {
@@ -44,10 +44,11 @@ describe('Sequencescape', () => {
         },
       })
 
-      expect(source).toEqual('sequencescape')
       // this should be 2 but the request contains extra barcodes not used in tests
       expect(labwareCount).toEqual(4)
-      expect(requestAttributes).toEqual([
+      expect(attributes).toEqual({
+        source: 'traction-ui.sequencescape',
+        requests_attributes: [
         {
           request: {
             external_study_id: '5b173660-94c9-11ec-8c89-acde48001122',
@@ -87,7 +88,7 @@ describe('Sequencescape', () => {
           },
           container: { type: 'tubes', barcode: '3980000001795' },
         },
-      ])
+      ]})
     })
 
     it('unsuccessfully', async () => {
@@ -98,12 +99,5 @@ describe('Sequencescape', () => {
       )
     })
 
-    it('when barcodes are missing', async () => {
-      request.mockResolvedValue(emptyResponse)
-
-      expect(labwareForReception({ requests, barcodes })).rejects.toThrow(
-        'Labware could not be retrieved from Sequencescape: DN9000002A,3980000001795',
-      )
-    })
   })
 })

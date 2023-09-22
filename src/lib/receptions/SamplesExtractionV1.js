@@ -43,15 +43,13 @@ const labwareForReception = async ({ requests, barcodes, requestOptions }) => {
   })
 
   const foundBarcodes = extractBarcodes(assets)
-  const missing = checkBarcodes(barcodes, foundBarcodes)
 
-  if (missing.length > 0) {
-    throw new Error(`Labware could not be retrieved from Samples Extraction: ${missing}`)
-  }
+  // number of labwares to be imported
+  const labwareCount = new Set(foundBarcodes).size
 
   return {
-    source: 'samples-extraction',
-    requestAttributes,
+    attributes: { source: 'traction-ui.samples-extraction', requests_attributes: requestAttributes },
+    labwareCount,
   }
 }
 

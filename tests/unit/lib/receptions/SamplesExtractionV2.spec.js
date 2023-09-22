@@ -19,7 +19,7 @@ describe('SamplesExtraction', () => {
     it('successfully', async () => {
       request.mockResolvedValue(Data.SampleExtractionTubesWithSample)
 
-      const { source, labwareCount, containerAttributes } = await labwareForReception({
+      const { labwareCount, attributes } = await labwareForReception({
         requests,
         barcodes,
         requestOptions: {
@@ -32,9 +32,9 @@ describe('SamplesExtraction', () => {
         filter: { barcode: barcodes.join(',') },
       })
 
-      expect(source).toEqual('samples-extraction')
       expect(labwareCount).toEqual(1)
-      expect(containerAttributes).toEqual({
+      expect(attributes).toEqual({
+        source: 'traction-ui.samples-extraction',
         tubes_attributes: [
           {
             barcode: 'SE108532I',

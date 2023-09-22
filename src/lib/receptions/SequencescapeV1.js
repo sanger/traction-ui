@@ -5,8 +5,6 @@
 import { handleResponse } from '@/api/ResponseHelper'
 import deserialize from '@/api/JsonApi'
 
-const checkBarcodes = (barcodes, foundBarcodes) =>
-  barcodes.filter((barcode) => !foundBarcodes.includes(barcode))
 const extractBarcodes = ({ plates, tubes }) =>
   [...plates, ...tubes].flatMap((labware) => Object.values(labware.labware_barcode))
 
@@ -71,18 +69,11 @@ const labwareForReception = async ({ requests, barcodes, requestOptions }) => {
   })
   const foundBarcodes = extractBarcodes({ plates, tubes })
 
-  const missing = checkBarcodes(barcodes, foundBarcodes)
-
   // number of labwares to be imported
-  const labwareCount = new Set(foundBarcodes).size - missing.length
-
-  if (missing.length > 0) {
-    throw `Labware could not be retrieved from Sequencescape: ${missing}`
-  }
+  const labwareCount = new Set(foundBarcodes).size
 
   return {
-    source: 'sequencescape',
-    requestAttributes,
+    attributes: { source: 'traction-ui.sequencescape', requests_attributes: requestAttributes },
     labwareCount,
   }
 }
