@@ -15,7 +15,7 @@
             id="sourceSelect"
             v-model="source"
             class="inline-block w-full"
-            :options="receptions"
+            :options="receptions.options"
             data-type="source-list"
           />
         </traction-field-group>
@@ -205,7 +205,7 @@ export default {
   },
   props: {
     receptions: {
-      type: Array,
+      type: Object,
       default: () => Receptions,
     },
     version: {

@@ -5,24 +5,26 @@ import { expect, it } from 'vitest'
 
 const tractionReceptionsCreate = store.getters.api.traction.receptions.create
 
-const Receptions = [
-  {
-    name: 'sequencescape',
-    text: 'Sequencescape',
-    value: 'Sequencescape',
-    props: {
-      title: 'Sequencescape',
+const Receptions = {
+  options: [
+    {
+      name: 'sequencescape',
+      text: 'Sequencescape',
+      value: 'Sequencescape',
+      props: {
+        title: 'Sequencescape',
+      },
     },
-  },
-  {
-    name: 'samples-extraction',
-    text: 'Samples Extraction',
-    value: 'Samples Extraction',
-    props: {
-      title: 'Samples Extraction',
+    {
+      name: 'samples-extraction',
+      text: 'Samples Extraction',
+      value: 'Samples Extraction',
+      props: {
+        title: 'Samples Extraction',
+      },
     },
-  },
-]
+  ],
+}
 
 describe('GeneralReception', () => {
   const buildWrapper = (props = { receptions: Receptions }) => {

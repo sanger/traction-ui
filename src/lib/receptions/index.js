@@ -26,6 +26,7 @@ const ReceptionTypes = {
 }
 
 const Receptions = {
+  options: Object.values(ReceptionTypes),
   Sequencescape: {
     v1: {
       ...ReceptionTypes.Sequencescape,
