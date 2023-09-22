@@ -57,9 +57,6 @@ export const usePacbioRunsStore = defineStore('pacbioRuns', {
 
       if (success) {
         // This updates the store to reflect the state change
-        //console.log("data="+data)
-        //console.log("ID==="+data.id)
-        //console.log("RUNS INSIDE"+this.runs)
         this.runs[data.id] = extractAttributes(data)
       }
 
