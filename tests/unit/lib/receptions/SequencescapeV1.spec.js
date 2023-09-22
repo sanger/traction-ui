@@ -47,7 +47,7 @@ describe('Sequencescape', () => {
       expect(labwareCount).toEqual(4)
       expect(attributes).toEqual({
         source: 'traction-ui.sequencescape',
-        requests_attributes: [
+        request_attributes: [
           {
             request: {
               external_study_id: '5b173660-94c9-11ec-8c89-acde48001122',

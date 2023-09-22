@@ -73,7 +73,7 @@ const labwareForReception = async ({ requests, barcodes, requestOptions }) => {
   const labwareCount = new Set(foundBarcodes).size
 
   return {
-    attributes: { source: 'traction-ui.sequencescape', requests_attributes: requestAttributes },
+    attributes: { source: 'traction-ui.sequencescape', request_attributes: requestAttributes },
     labwareCount,
   }
 }

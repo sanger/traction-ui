@@ -10,6 +10,19 @@ const defaultRequestOptions = () => ({
   data_type: null,
 })
 
+const ReceptionTypes = {
+  Sequencescape: {
+    name: 'sequencescape',
+    text: 'Sequencescape',
+    value: 'Sequencescape',
+  },
+  SamplesExtraction: {
+    name: 'samples-extraction',
+    text: 'Samples Extraction',
+    value: 'Samples Extraction',
+  },
+}
+
 const Receptions = [
   {
     name: 'sequencescape',

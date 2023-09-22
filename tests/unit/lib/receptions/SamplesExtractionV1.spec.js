@@ -35,7 +35,7 @@ describe('SamplesExtraction', () => {
       expect(labwareCount).toEqual(1)
       expect(attributes).toEqual({
         source: 'traction-ui.samples-extraction',
-        requests_attributes: [
+        request_attributes: [
           {
             request: {
               external_study_id: '123456-e8f3-11e9-9231-68b59977951e',
