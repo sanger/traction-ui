@@ -21,7 +21,7 @@ export const usePacbioRunsStore = defineStore('pacbioRuns', {
       const response = await handleResponse(promise)
       const { success, data: { data, included = [] } = {}, errors = [] } = response
 
-      //TODO- There are two calls to dataToObjectById - optimization or refactoring required?
+      //TODO:- There are two calls to dataToObjectById method - optimization or refactoring required?
       const platesById = dataToObjectById({ data: included })
       if (success) {
         // Concatenate SKBB info for a run
@@ -49,7 +49,7 @@ export const usePacbioRunsStore = defineStore('pacbioRuns', {
           attributes: { ...attributes },
         },
       }
-      //TODO- This is a call to the VueX store - optimization or refactoring required?
+      //TODO:- This is a call to the VueX store - optimization or refactoring required?
       const promise = this.runRequest.update(payload)
       const response = await handleResponse(promise)
 
