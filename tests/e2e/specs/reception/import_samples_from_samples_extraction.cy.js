@@ -23,7 +23,7 @@ describe('Import samples from Samples extraction, for Pacbio', () => {
     )
     cy.contains('Import 1 labware into PacBio from Samples Extraction')
     cy.get('[data-action="import-labware"]').click()
-    cy.contains('Imported 1 request from Samples Extraction')
+    cy.contains('Imported 1 labware(s) from Samples Extraction')
   })
 
   it('Unsuccessfully - When tubes are missing', () => {

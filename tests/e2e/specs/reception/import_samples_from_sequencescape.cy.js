@@ -42,7 +42,7 @@ describe('Import samples from Sequencescape', () => {
 
     cy.contains('Import 2 labware into PacBio from Sequencescape')
     cy.get('[data-action="import-labware"]').click()
-    cy.contains('Imported 3 requests from Sequencescape')
+    cy.contains('Imported 3 labware(s) from Sequencescape')
 
     cy.fixture('receptionCreateSourceSequencescape').then(({ data }) => {
       cy.log('@postPayload')
