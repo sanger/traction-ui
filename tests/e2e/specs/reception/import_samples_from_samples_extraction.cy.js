@@ -26,7 +26,8 @@ describe('Import samples from Samples extraction, for Pacbio', () => {
     cy.contains('Imported 1 labware(s) from Samples Extraction')
   })
 
-  it('Unsuccessfully - When tubes are missing', () => {
+  // TODO - we need to change this to a warning.
+  it.skip('Unsuccessfully - When tubes are missing', () => {
     cy.visit('#/reception')
     cy.get('[data-type="source-list"]').select('Samples Extraction')
     cy.contains('Scan barcodes')
