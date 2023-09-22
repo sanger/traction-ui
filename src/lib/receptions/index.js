@@ -21,7 +21,7 @@ const ReceptionTypes = {
   SamplesExtraction: {
     name: 'samples-extraction',
     text: 'Samples Extraction',
-    value: 'Samples Extraction',
+    value: 'SamplesExtraction',
   },
 }
 

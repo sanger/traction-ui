@@ -153,7 +153,7 @@
         <div class="flex flex-col w-full">
           <traction-muted-text class="text-left">Imports data into Traction</traction-muted-text>
           <p id="importText" class="text-left">
-            Import {{ barcodeCount }} labware into {{ pipeline }} from {{ source }}
+            Import {{ barcodeCount }} labware into {{ pipeline }} from {{ reception.text }}
           </p>
           <div class="flex flex-row space-x-8 mt-5">
             <traction-button
@@ -253,12 +253,12 @@ export default {
       this.showAlert(message, 'danger')
     },
     async importLoaded({ labwareCount, attributes }) {
-      this.showModal(`Creating ${labwareCount} labware(s) for ${this.source}`)
+      this.showModal(`Creating ${labwareCount} labware(s) for ${this.reception.text}`)
 
       try {
         await createReceptionResource(this.receptionRequest, labwareCount, attributes)
 
-        this.showAlert(`Imported ${labwareCount} labware(s) from ${this.source}`, 'success')
+        this.showAlert(`Imported ${labwareCount} labware(s) from ${this.reception.text}`, 'success')
       } catch (e) {
         console.error(e)
         this.showAlert(e, 'danger')
@@ -266,7 +266,9 @@ export default {
       this.clearModal()
     },
     async importLabware() {
-      this.importStarted({ message: `Fetching ${this.barcodeCount} items from ${this.source}` })
+      this.importStarted({
+        message: `Fetching ${this.barcodeCount} items from ${this.reception.text}`,
+      })
       try {
         const { labwareCount, attributes } = await this.reception.importFunction({
           requests: this.api,

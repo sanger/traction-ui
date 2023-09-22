@@ -1,30 +1,10 @@
 import { mount, store, nextTick } from '@support/testHelper'
 import GeneralReception from '@/views/GeneralReception.vue'
 import * as Reception from '@/services/traction/Reception'
+import Receptions from '@/lib/receptions'
 import { expect, it } from 'vitest'
 
 const tractionReceptionsCreate = store.getters.api.traction.receptions.create
-
-const Receptions = {
-  options: [
-    {
-      name: 'sequencescape',
-      text: 'Sequencescape',
-      value: 'Sequencescape',
-      props: {
-        title: 'Sequencescape',
-      },
-    },
-    {
-      name: 'samples-extraction',
-      text: 'Samples Extraction',
-      value: 'Samples Extraction',
-      props: {
-        title: 'Samples Extraction',
-      },
-    },
-  ],
-}
 
 describe('GeneralReception', () => {
   const buildWrapper = (props = { receptions: Receptions }) => {
