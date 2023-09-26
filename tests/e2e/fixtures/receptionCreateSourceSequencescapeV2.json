@@ -14,7 +14,8 @@
                 "request": {
                   "external_study_id": "5b173660-94c9-11ec-8c89-acde48001122",
                   "library_type": "Example",
-                  "cost_code": "aCostCodeExample"
+                  "cost_code": "aCostCodeExample",
+                  "estimate_of_gb_required": "3"
                 },
                 "sample": {
                   "external_id": "d5008026-94c9-11ec-a9e3-acde48001122",
@@ -27,7 +28,8 @@
                 "request": {
                   "external_study_id": "5b173660-94c9-11ec-8c89-acde48001122",
                   "library_type": "Example",
-                  "cost_code": "aCostCodeExample"
+                  "cost_code": "aCostCodeExample",
+                  "estimate_of_gb_required": "3"
                 },
                 "sample": {
                   "external_id": "d50bad48-94c9-11ec-a9e3-acde48001122",
@@ -45,7 +47,8 @@
             "request": {
               "external_study_id": "5b173660-94c9-11ec-8c89-acde48001122",
               "library_type": "Example",
-              "cost_code": "aCostCodeExample"
+              "cost_code": "aCostCodeExample",
+              "estimate_of_gb_required": "3"
             },
             "sample": {
               "name": "2STDY97",

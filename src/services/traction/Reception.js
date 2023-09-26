@@ -12,6 +12,8 @@ const createReceptionResource = async (request, labwareCount, attributes) => {
     throw 'No labware to import'
   }
 
+  console.log(attributes)
+
   const { success, data, errors } = await handleResponse(
     request({
       data: {
