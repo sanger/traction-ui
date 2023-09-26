@@ -27,11 +27,10 @@ describe('Import samples from Samples extraction, for Pacbio', () => {
   })
 
   it('Successfully - v2', () => {
-
     cy.withFlags({
       dpl_877_reception_request: { enabled: true },
     })
-    
+
     cy.visit('#/reception')
     cy.get('[data-type="source-list"]').select('Samples Extraction')
     cy.contains('Scan barcodes')
