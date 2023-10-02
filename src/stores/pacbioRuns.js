@@ -17,12 +17,12 @@ export const usePacbioRunsStore = defineStore('pacbioRuns', {
   actions: {
     async fetchPacbioRuns(filter) {
       const promise = this.runRequest.get({ filter, include: 'plates' })
-
       const response = await handleResponse(promise)
       const { success, data: { data, included = [] } = {}, errors = [] } = response
 
-      //TODO:- There are two calls to dataToObjectById method - optimization or refactoring required?
+      //TODO:- Two calls to dataToObjectById method - optimization or refactoring required?
       const platesById = dataToObjectById({ data: included })
+
       if (success) {
         // Concatenate SKBB info for a run
         data.map((run) => {
@@ -37,6 +37,7 @@ export const usePacbioRunsStore = defineStore('pacbioRuns', {
       }
       return { success, errors }
     },
+
     /**
      * Updates an existing run
      * @returns { success, errors }. Was the request successful? were there any errors?

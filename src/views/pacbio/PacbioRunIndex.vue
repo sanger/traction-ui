@@ -169,11 +169,10 @@ export default {
   },
   watch: {
     runsArray(newValue) {
-      console.log('runsArray -length' + newValue.length)
-      debugger
       this.setInitialData(newValue, this.perPage, { sortBy: 'created_at' })
     },
   },
+
   methods: {
     getVersionName(versionId) {
       return this.smrtLinkVersionList[versionId]?.name || '< ! >'

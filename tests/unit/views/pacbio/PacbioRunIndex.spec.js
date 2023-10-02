@@ -3,21 +3,39 @@ import Response from '@/api/Response'
 import { mount, store, Data, flushPromises, nextTick } from '@support/testHelper'
 import { createTestingPinia } from '@pinia/testing'
 import { usePacbioRunsStore } from '../../../../src/stores/pacbioRuns'
+import { vi } from 'vitest'
+
+function factory(options) {
+  const wrapperObj = mount(PacbioRunIndex, {
+    global: {
+      plugins: [createTestingPinia(options)],
+    },
+  })
+
+  const store = usePacbioRunsStore()
+  return { wrapperObj, store }
+}
 
 describe('PacbioRunIndex.vue', () => {
-  let wrapper, pacbioRunIndex, mockRuns, mockVersions, piniaStore
+  let wrapper, pacbioRunIndex, mockRuns, mockVersions
 
   beforeEach(async () => {
     mockRuns = new Response(Data.PacbioRuns).deserialize.runs
-    //vi.spyOn(store.state.api.traction.pacbio.runs, 'get').mockResolvedValue(Data.PacbioRuns)
-    wrapper = mount(PacbioRunIndex, {
-      global: {
-        plugins: [createTestingPinia()],
+    const spy = vi.fn().mockResolvedValue({ success: true, data: Data.PacbioRuns.data })
+    const { wrapperObj } = factory({
+      initialState: {
+        pacbioRuns: {
+          runs: new Response(Data.PacbioRuns).deserialize.runs,
+        },
       },
-      store,
+      stubActions: false,
+      plugins: [
+        ({ store }) => {
+          store.runRequest.get = spy
+        },
+      ],
     })
-    piniaStore = usePacbioRunsStore()
-    piniaStore.runsArray = Data.PacbioRuns
+    wrapper = wrapperObj
     pacbioRunIndex = wrapper.vm
     await flushPromises()
   })
@@ -31,7 +49,7 @@ describe('PacbioRunIndex.vue', () => {
       expect(wrapper.find('tbody').findAll('tr').length).toEqual(6)
     })
 
-    it('contains the correct run skbb information', () => {
+    it('contains the correct run skbb information', async () => {
       // Within each cell, the SKBB information is displayed as a list-item per plate
       const run2skbbList = wrapper.find('tbody').findAll('tr')[0].findAll('td')[4].findAll('li')
       expect(run2skbbList.length).toEqual(1)
