@@ -1,4 +1,5 @@
-import { createReceptionResource } from '@/services/traction/Reception'
+import { createReceptionResource, createMessages } from '@/services/traction/Reception'
+import { expect } from 'vitest'
 
 // Setup some of the parameters we'll be testing with
 const source = 'traction-ui.sequencescape'
@@ -31,6 +32,12 @@ const createdReceptionResponse = {
   status: 201,
   statusText: 'created',
   data: {},
+}
+
+const reception = {
+  name: 'sequencescape',
+  text: 'Sequencescape',
+  value: 'Sequencescape',
 }
 
 describe('Traction', () => {
@@ -84,6 +91,89 @@ describe('Traction', () => {
       expect(
         createReceptionResource(createReceptionRequest, labwareCount, attributes),
       ).rejects.toThrow('error1 There was an error.')
+    })
+  })
+
+  describe('#createMessage', () => {
+    it('when everything is created successfully', () => {
+      const barcodes = ['NT1', 'NT2']
+      const response = { labwares: { NT1: { imported: 'success' }, NT2: { imported: 'success' } } }
+      const messages = createMessages({ barcodes, response, reception })
+      expect(messages).toEqual([
+        {
+          type: 'success',
+          message: 'NT1 imported from Sequencescape.',
+        },
+        {
+          type: 'success',
+          message: 'NT2 imported from Sequencescape.',
+        },
+      ])
+    })
+
+    it('when some of the barcodes could not be found', () => {
+      const barcodes = ['NT1', 'NT2', 'NT3', 'NT4']
+      const response = { labwares: { NT1: { imported: 'success' }, NT2: { imported: 'success' } } }
+      const messages = createMessages({ barcodes, response, reception })
+
+      expect(messages).toEqual(
+        expect.arrayContaining([
+          {
+            type: 'success',
+            message: 'NT1 imported from Sequencescape.',
+          },
+          {
+            type: 'success',
+            message: 'NT2 imported from Sequencescape.',
+          },
+          {
+            type: 'danger',
+            message: 'NT3, NT4 could not be found in Sequencescape.',
+          },
+        ]),
+      )
+    })
+
+    it('when some of the labware includes could not be imported', () => {
+      const barcodes = ['NT1', 'NT2']
+      const response = {
+        labwares: {
+          NT1: { imported: 'success' },
+          NT2: { imported: 'failure', errors: ['error1', 'error2'] },
+        },
+      }
+      const messages = createMessages({ barcodes, response, reception })
+      expect(messages).toEqual([
+        {
+          type: 'success',
+          message: 'NT1 imported from Sequencescape.',
+        },
+        {
+          type: 'danger',
+          message: 'NT2 could not be imported from Sequencescape because: error1, error2.',
+        },
+      ])
+    })
+
+    it('when some of the labware is partially imported', () => {
+      const barcodes = ['NT1', 'NT2']
+      const response = {
+        labwares: {
+          NT1: { imported: 'success' },
+          NT2: { imported: 'partial', errors: ['error1', 'error2'] },
+        },
+      }
+      const messages = createMessages({ barcodes, response, reception })
+      expect(messages).toEqual([
+        {
+          type: 'success',
+          message: 'NT1 imported from Sequencescape.',
+        },
+        {
+          type: 'danger',
+          message: 'NT2 imported from Sequencescape with errors: error1, error2.',
+        },
+      ])
     })
   })
 })
