@@ -183,7 +183,7 @@
 </template>
 
 <script>
-import { createReceptionResource } from '@/services/traction/Reception'
+import { createReceptionResource, createMessages } from '@/services/traction/Reception'
 import Receptions from '@/lib/receptions'
 import TractionHeading from '../components/TractionHeading.vue'
 import LibraryTypeSelect from '@/components/shared/LibraryTypeSelect'
@@ -259,9 +259,30 @@ export default {
       this.showModal(`Creating ${labwareCount} labware(s) for ${this.reception.text}`)
 
       try {
-        await createReceptionResource(this.receptionRequest, labwareCount, attributes)
+        const response = await createReceptionResource(
+          this.receptionRequest,
+          labwareCount,
+          attributes,
+        )
 
-        this.showAlert(`Imported ${labwareCount} labware(s) from ${this.reception.text}`, 'success')
+        // v2 returns a different response to v1, so we need to handle it differently
+        if (this.version === 'v2') {
+          const messages = createMessages({
+            barcodes: this.barcodeArray,
+            response,
+            reception: this.reception,
+          })
+
+          // we create a different alert for each message
+          messages.forEach(({ type, text }) => {
+            this.showAlert(text, type)
+          })
+        } else {
+          this.showAlert(
+            `Imported ${labwareCount} labware(s) from ${this.reception.text}`,
+            'success',
+          )
+        }
       } catch (e) {
         console.error(e)
         this.showAlert(e, 'danger')

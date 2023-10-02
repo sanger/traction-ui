@@ -102,11 +102,11 @@ describe('Traction', () => {
       expect(messages).toEqual([
         {
           type: 'success',
-          message: 'NT1 imported from Sequencescape.',
+          text: 'NT1 imported from Sequencescape.',
         },
         {
           type: 'success',
-          message: 'NT2 imported from Sequencescape.',
+          text: 'NT2 imported from Sequencescape.',
         },
       ])
     })
@@ -120,15 +120,15 @@ describe('Traction', () => {
         expect.arrayContaining([
           {
             type: 'success',
-            message: 'NT1 imported from Sequencescape.',
+            text: 'NT1 imported from Sequencescape.',
           },
           {
             type: 'success',
-            message: 'NT2 imported from Sequencescape.',
+            text: 'NT2 imported from Sequencescape.',
           },
           {
             type: 'danger',
-            message: 'NT3, NT4 could not be found in Sequencescape.',
+            text: 'NT3, NT4 could not be found in Sequencescape.',
           },
         ]),
       )
@@ -146,11 +146,11 @@ describe('Traction', () => {
       expect(messages).toEqual([
         {
           type: 'success',
-          message: 'NT1 imported from Sequencescape.',
+          text: 'NT1 imported from Sequencescape.',
         },
         {
           type: 'danger',
-          message: 'NT2 could not be imported from Sequencescape because: error1, error2.',
+          text: 'NT2 could not be imported from Sequencescape because: error1, error2.',
         },
       ])
     })
@@ -167,11 +167,11 @@ describe('Traction', () => {
       expect(messages).toEqual([
         {
           type: 'success',
-          message: 'NT1 imported from Sequencescape.',
+          text: 'NT1 imported from Sequencescape.',
         },
         {
           type: 'danger',
-          message: 'NT2 imported from Sequencescape with errors: error1, error2.',
+          text: 'NT2 imported from Sequencescape with errors: error1, error2.',
         },
       ])
     })

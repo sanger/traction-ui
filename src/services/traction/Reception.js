@@ -49,13 +49,13 @@ const createMessages = ({ barcodes, response, reception }) => {
       case 'success':
         return {
           type: 'success',
-          message: `${barcode} imported from ${reception.text}.`,
+          text: `${barcode} imported from ${reception.text}.`,
         }
       // if it was not imported successfully add a danger message
       case 'failure':
         return {
           type: 'danger',
-          message: `${barcode} could not be imported from ${
+          text: `${barcode} could not be imported from ${
             reception.text
           } because: ${labware.errors.join(', ')}.`,
         }
@@ -63,7 +63,7 @@ const createMessages = ({ barcodes, response, reception }) => {
       case 'partial':
         return {
           type: 'danger',
-          message: `${barcode} imported from ${reception.text} with errors: ${labware.errors.join(
+          text: `${barcode} imported from ${reception.text} with errors: ${labware.errors.join(
             ', ',
           )}.`,
         }
@@ -77,7 +77,7 @@ const createMessages = ({ barcodes, response, reception }) => {
   if (missingBarcodes.length > 0) {
     messages.push({
       type: 'danger',
-      message: `${missingBarcodes.join(', ')} could not be found in ${reception.text}.`,
+      text: `${missingBarcodes.join(', ')} could not be found in ${reception.text}.`,
     })
   }
 
