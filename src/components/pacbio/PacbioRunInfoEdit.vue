@@ -85,13 +85,21 @@ export default {
   },
   computed: {
     ...mapGetters(['runItem', 'smrtLinkVersionList', 'smrtLinkVersion', 'instrumentType']),
+    // Makes an array of objects with value and text properties to make
+    // the options of smrt-link-version select drop-down list.
     smrtLinkVersionSelectOptions() {
-      // Returns an array of objects with value and text properties to make
-      // the options of smrt-link-version select drop-down list.
-      return Object.values(this.smrtLinkVersionList).map(({ id, name }) => ({
-        value: id,
-        text: name,
-      }))
+      var activeVersionsList = []
+      for(const versionKey in this.smrtLinkVersionList) {
+        const version = this.smrtLinkVersionList[versionKey]
+        // Only includes 'active' versions in the list, unless this record already has an inactive version as its value
+        if(version.active == true || version.id == this.smrtLinkVersion.id) {
+          activeVersionsList.push({
+            value: version.id,
+            text: version.name,
+          })
+        }
+      }
+      return activeVersionsList
     },
     instrumentTypeSelectOptions() {
       // Returns an array of objects with value and text properties to make

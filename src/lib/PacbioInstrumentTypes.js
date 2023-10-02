@@ -4,6 +4,9 @@ import { LabwareTypes } from '@/lib/LabwareTypes'
  * A collection of methods to deal with Pacbio Instrument Types
  * we could possibly add these methods to the object itself
  * which would be better for naming and usage
+ *
+ * TODO: Find out the correct values for the old SequelII and SequelI entries.
+ *
  * @module PacbioInstrumentTypes
  */
 
@@ -28,6 +31,22 @@ const PacbioInstrumentTypes = {
   SequelIIe: {
     key: 'SequelIIe',
     name: 'Sequel IIe',
+    plateCount: 1,
+    labwareType: LabwareTypes.Plate96,
+    plateClasses: 'w-full',
+    sequencingKitBoxBarcodeLength: 21,
+  },
+  SequelII: {
+    key: 'SequelII',
+    name: 'Sequel II',
+    plateCount: 1,
+    labwareType: LabwareTypes.Plate96,
+    plateClasses: 'w-full',
+    sequencingKitBoxBarcodeLength: 21,
+  },
+  SequelI: {
+    key: 'SequelI',
+    name: 'Sequel I',
     plateCount: 1,
     labwareType: LabwareTypes.Plate96,
     plateClasses: 'w-full',
