@@ -97,7 +97,11 @@ describe('Traction', () => {
   describe('#createMessage', () => {
     it('when everything is created successfully', () => {
       const barcodes = ['NT1', 'NT2']
-      const response = { labwares: { NT1: { imported: 'success' }, NT2: { imported: 'success' } } }
+      const response = {
+        data: {
+          attributes: { labware: { NT1: { imported: 'success' }, NT2: { imported: 'success' } } },
+        },
+      }
       const messages = createMessages({ barcodes, response, reception })
       expect(messages).toEqual([
         {
@@ -113,7 +117,11 @@ describe('Traction', () => {
 
     it('when some of the barcodes could not be found', () => {
       const barcodes = ['NT1', 'NT2', 'NT3', 'NT4']
-      const response = { labwares: { NT1: { imported: 'success' }, NT2: { imported: 'success' } } }
+      const response = {
+        data: {
+          attributes: { labware: { NT1: { imported: 'success' }, NT2: { imported: 'success' } } },
+        },
+      }
       const messages = createMessages({ barcodes, response, reception })
 
       expect(messages).toEqual(
@@ -137,9 +145,13 @@ describe('Traction', () => {
     it('when some of the labware includes could not be imported', () => {
       const barcodes = ['NT1', 'NT2']
       const response = {
-        labwares: {
-          NT1: { imported: 'success' },
-          NT2: { imported: 'failure', errors: ['error1', 'error2'] },
+        data: {
+          attributes: {
+            labware: {
+              NT1: { imported: 'success' },
+              NT2: { imported: 'failure', errors: ['error1', 'error2'] },
+            },
+          },
         },
       }
       const messages = createMessages({ barcodes, response, reception })
@@ -158,9 +170,13 @@ describe('Traction', () => {
     it('when some of the labware is partially imported', () => {
       const barcodes = ['NT1', 'NT2']
       const response = {
-        labwares: {
-          NT1: { imported: 'success' },
-          NT2: { imported: 'partial', errors: ['error1', 'error2'] },
+        data: {
+          attributes: {
+            labware: {
+              NT1: { imported: 'success' },
+              NT2: { imported: 'partial', errors: ['error1', 'error2'] },
+            },
+          },
         },
       }
       const messages = createMessages({ barcodes, response, reception })

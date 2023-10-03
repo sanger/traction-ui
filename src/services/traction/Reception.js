@@ -35,7 +35,7 @@ const createReceptionResource = async (request, foundBarcodes, attributes) => {
  * @returns {Array} Array of messages to display to the user
  */
 const createMessages = ({ barcodes, response, reception }) => {
-  const labwares = response.labwares
+  const labwares = response.data.attributes.labware
 
   // which barcodes have been found in the response
   const foundBarcodes = Object.keys(labwares)
