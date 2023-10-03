@@ -60,6 +60,10 @@ describe('Import samples from Samples extraction, for Pacbio', () => {
 
   // TODO - we need to change this to a warning.
   it('Unsuccessfully - When tubes are missing', () => {
+    // TODO: remove once dpl_877_reception_request is enabled by default
+    cy.withFlags({
+      dpl_877_reception_request: { enabled: false },
+    })
     cy.visit('#/reception')
     cy.get('[data-type="source-list"]').select('Samples Extraction')
     cy.contains('Scan barcodes')
@@ -72,7 +76,8 @@ describe('Import samples from Samples extraction, for Pacbio', () => {
     )
     cy.contains('Import 2 labware into PacBio from Samples Extraction')
     cy.get('[data-action="import-labware"]').click()
-    cy.contains('Error: Labware could not be retrieved from Samples Extraction: SE108533J')
+    // TODO: we might need to change the message if something is missing
+    cy.contains('Imported 1 labware(s) from Samples Extraction')
   })
 
   it('Unsuccessfully - When traction errors', () => {

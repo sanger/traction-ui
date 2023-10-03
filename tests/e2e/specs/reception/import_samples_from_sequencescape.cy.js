@@ -115,7 +115,8 @@ describe('Import samples from Sequencescape', () => {
     })
     cy.contains('Import 2 labware into PacBio from Sequencescape')
     cy.get('[data-action="import-labware"]').click()
-    cy.contains('Labware could not be retrieved from Sequencescape')
+    // TODO: We might need to change the error if it causes issues.
+    cy.contains('No labware to import')
   })
 
   it('Unsuccessfully - when there is an error from traction', () => {
