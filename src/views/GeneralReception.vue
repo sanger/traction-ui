@@ -255,13 +255,13 @@ export default {
       this.clearModal()
       this.showAlert(message, 'danger')
     },
-    async importLoaded({ labwareCount, attributes }) {
-      this.showModal(`Creating ${labwareCount} labware(s) for ${this.reception.text}`)
+    async importLoaded({ foundBarcodes, attributes }) {
+      this.showModal(`Creating ${foundBarcodes.size} labware(s) for ${this.reception.text}`)
 
       try {
         const response = await createReceptionResource(
           this.receptionRequest,
-          labwareCount,
+          foundBarcodes,
           attributes,
         )
 
@@ -279,7 +279,7 @@ export default {
           })
         } else {
           this.showAlert(
-            `Imported ${labwareCount} labware(s) from ${this.reception.text}`,
+            `Imported ${foundBarcodes.size} labware(s) from ${this.reception.text}`,
             'success',
           )
         }
@@ -294,14 +294,14 @@ export default {
         message: `Fetching ${this.barcodeCount} items from ${this.reception.text}`,
       })
       try {
-        const { labwareCount, attributes } = await this.reception.importFunction({
+        const { foundBarcodes, attributes } = await this.reception.importFunction({
           requests: this.api,
           barcodes: this.barcodeArray,
           requestOptions: this.presentRequestOptions,
         })
 
         this.importLoaded({
-          labwareCount,
+          foundBarcodes,
           attributes,
         })
       } catch (e) {

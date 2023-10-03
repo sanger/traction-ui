@@ -137,14 +137,14 @@ describe('GeneralReception', () => {
     // We've begun the import
     await wrapper.vm.importStarted({ message: 'Starting import' })
 
-    const labwareCount = 1
+    const foundBarcodes = new Set(['NT1'])
     const attributes = { source: 'traction-ui.sequencescape', request_attributes: [{}] }
 
-    await wrapper.vm.importLoaded({ labwareCount, attributes })
+    await wrapper.vm.importLoaded({ foundBarcodes, attributes })
 
     await mockedcreateReception
     expect(wrapper.text()).not.toContain('Starting import')
-    expect(mockedcreateReception).toBeCalledWith(tractionReceptionsCreate, labwareCount, attributes)
+    expect(mockedcreateReception).toBeCalledWith(tractionReceptionsCreate, foundBarcodes, attributes)
 
     expect(Object.values(store.state.traction.messages)).toContainEqual({
       type: 'success',
@@ -162,7 +162,7 @@ describe('GeneralReception', () => {
     // We've begun the import
     await wrapper.vm.importStarted({ message: 'Starting import' })
 
-    await wrapper.vm.importLoaded({ labwareCount: 0, attributes: {} })
+    await wrapper.vm.importLoaded({ foundBarcodes: new Set([]), attributes: {} })
 
     expect(wrapper.text()).not.toContain('Starting import')
 
