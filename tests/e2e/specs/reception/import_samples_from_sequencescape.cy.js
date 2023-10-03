@@ -105,7 +105,7 @@ describe('Import samples from Sequencescape', () => {
   })
 
   // TODO - we need to change this to a warning.
-  it.skip('Unsuccessfully - when the plates do not exist', () => {
+  it('Unsuccessfully - when the plates do not exist', () => {
     cy.visit('#/reception')
     cy.contains('Scan barcodes')
     cy.get('#barcodes').type('DN9000002A\nNT1O')

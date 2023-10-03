@@ -59,7 +59,7 @@ describe('Import samples from Samples extraction, for Pacbio', () => {
   })
 
   // TODO - we need to change this to a warning.
-  it.skip('Unsuccessfully - When tubes are missing', () => {
+  it('Unsuccessfully - When tubes are missing', () => {
     cy.visit('#/reception')
     cy.get('[data-type="source-list"]').select('Samples Extraction')
     cy.contains('Scan barcodes')
