@@ -1,6 +1,6 @@
 <template>
   <DataFetcher :fetcher="provider">
-    <FilterCard :fetcher="provider" :filter-options="filterOptions" />
+    <FilterCard :fetcher="fetchPacbioRuns" :filter-options="filterOptions" />
     <div class="flex flex-col">
       <div class="clearfix">
         <traction-button
