@@ -144,7 +144,11 @@ describe('GeneralReception', () => {
 
     await mockedcreateReception
     expect(wrapper.text()).not.toContain('Starting import')
-    expect(mockedcreateReception).toBeCalledWith(tractionReceptionsCreate, foundBarcodes, attributes)
+    expect(mockedcreateReception).toBeCalledWith(
+      tractionReceptionsCreate,
+      foundBarcodes,
+      attributes,
+    )
 
     expect(Object.values(store.state.traction.messages)).toContainEqual({
       type: 'success',
