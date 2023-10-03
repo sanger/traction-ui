@@ -23,8 +23,8 @@
   "dependencies": {
     "@sanger/ui-styling": "^4.1.0",
     "@vitejs/plugin-vue": "^4.3.4",
-    "autoprefixer": "^10.4.15",
     "axios": "^1.5.1",
+    "autoprefixer": "^10.4.16",
     "csv-parse": "^5.5.0",
     "global": "^4.4.0",
     "lodash-es": "^4.17.21",
@@ -52,7 +52,7 @@
     "postcss-cli": "^10.1.0",
     "prettier": "3.0.3",
     "rollup-plugin-visualizer": "^5.9.0",
-    "sass": "^1.67.0",
+    "sass": "^1.68.0",
     "vitest": "^0.34.3",
     "vue-template-compiler": "^2.7.5"
   }
