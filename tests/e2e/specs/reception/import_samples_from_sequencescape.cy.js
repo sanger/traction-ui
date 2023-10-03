@@ -9,6 +9,10 @@ describe('Import samples from Sequencescape', () => {
   })
 
   it('Successfully - V1', () => {
+    // TODO: remove once dpl_877_reception_request is enabled by default
+    cy.withFlags({
+      dpl_877_reception_request: { enabled: false },
+    })
     cy.visit('#/reception')
     cy.get('[data-type="source-list"]').select('Sequencescape')
     cy.contains('Scan barcodes')
@@ -35,7 +39,6 @@ describe('Import samples from Sequencescape', () => {
         fixture: 'sequencescapeLabware.json',
       },
     )
-    cy.intercept('POST', '/v1/pacbio/plates', { fixture: 'tractionPlates.json' }).as('postPayload')
     cy.intercept('POST', '/v1/receptions', { fixture: 'tractionPacbioRequest.json' }).as(
       'postPayload',
     )
@@ -52,6 +55,7 @@ describe('Import samples from Sequencescape', () => {
   })
 
   it('Successfully - V2', () => {
+    // TODO: remove once dpl_877_reception_request is enabled by default
     cy.withFlags({
       dpl_877_reception_request: { enabled: true },
     })
@@ -81,19 +85,23 @@ describe('Import samples from Sequencescape', () => {
         fixture: 'sequencescapeLabware.json',
       },
     )
-    cy.intercept('POST', '/v1/pacbio/plates', { fixture: 'tractionPlates.json' }).as('postPayload')
-    cy.intercept('POST', '/v1/receptions', { fixture: 'tractionPacbioRequest.json' }).as(
-      'postPayload',
-    )
+    cy.intercept('POST', '/v1/receptions', {
+      body: {
+        data: {
+          attributes: {
+            labware: {
+              DN9000002A: { imported: 'success' },
+              NT1O: { imported: 'success' },
+            },
+          },
+        },
+      },
+    })
 
     cy.contains('Import 2 labware into PacBio from Sequencescape')
     cy.get('[data-action="import-labware"]').click()
-    cy.contains('Imported 2 labware(s) from Sequencescape')
-
-    cy.fixture('receptionCreateSourceSequencescapeV2').then(({ data }) => {
-      cy.log('@postPayload')
-      cy.wait('@postPayload').its('request.body').should('deep.equal', data)
-    })
+    cy.contains('DN9000002A imported from Sequencescape')
+    cy.contains('NT1O imported from Sequencescape')
   })
 
   // TODO - we need to change this to a warning.
