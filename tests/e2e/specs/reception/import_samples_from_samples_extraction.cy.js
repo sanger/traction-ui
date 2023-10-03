@@ -11,6 +11,10 @@ describe('Import samples from Samples extraction, for Pacbio', () => {
   })
 
   it('Successfully - v1', () => {
+    // TODO: remove once dpl_877_reception_request is enabled by default
+    cy.withFlags({
+      dpl_877_reception_request: { enabled: false },
+    })
     cy.visit('#/reception')
     cy.get('[data-type="source-list"]').select('Samples Extraction')
     cy.contains('Scan barcodes')
@@ -27,10 +31,10 @@ describe('Import samples from Samples extraction, for Pacbio', () => {
   })
 
   it('Successfully - v2', () => {
+    // TODO: remove once dpl_877_reception_request is enabled by default
     cy.withFlags({
       dpl_877_reception_request: { enabled: true },
     })
-
     cy.visit('#/reception')
     cy.get('[data-type="source-list"]').select('Samples Extraction')
     cy.contains('Scan barcodes')
@@ -41,15 +45,17 @@ describe('Import samples from Samples extraction, for Pacbio', () => {
     cy.intercept('POST', '/v1/receptions', {
       body: {
         data: {
-          labwares: {
-            SE108532I: { imported: 'success' },
+          attributes: {
+            labware: {
+              SE108532I: { imported: 'success' },
+            },
           },
         },
       },
     })
     cy.contains('Import 1 labware into PacBio from Samples Extraction')
     cy.get('[data-action="import-labware"]').click()
-    cy.contains('Imported 1 labware(s) from Samples Extraction')
+    cy.contains('SE108532I imported from Samples Extraction')
   })
 
   // TODO - we need to change this to a warning.
