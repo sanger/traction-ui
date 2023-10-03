@@ -19,7 +19,7 @@ describe('Sequencescape', () => {
     it('successfully', async () => {
       request.mockResolvedValue(Data.SequencescapeLabware)
 
-      const { attributes, labwareCount } = await labwareForReception({
+      const { attributes, foundBarcodes } = await labwareForReception({
         requests,
         barcodes,
         requestOptions: {
@@ -44,7 +44,9 @@ describe('Sequencescape', () => {
       })
 
       // this should be 2 but the request contains extra barcodes not used in tests
-      expect(labwareCount).toEqual(4)
+      expect(foundBarcodes).toEqual(
+        new Set(['DN9000002A', '3980000001795', '1229000002657', 'NT1O']),
+      )
       expect(attributes).toEqual({
         source: 'traction-ui.sequencescape',
         request_attributes: [

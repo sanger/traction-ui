@@ -53,7 +53,7 @@ const getLabware = async (request, barcodes) => {
  * @param { Array<String> } barcodes Array of barcodes to look up
  * @param { Object } requestOptions Additional request parameters, will over-ride any
  * imported from Sequencescape if present
- * @returns { Object } Reception object ready for import into traction
+ * @returns { Object } Reception object ready for import into traction includes attributes and foundBarcodes
  *
  */
 const labwareForReception = async ({ requests, barcodes, requestOptions }) => {
@@ -66,14 +66,16 @@ const labwareForReception = async ({ requests, barcodes, requestOptions }) => {
     requestOptions,
   })
 
-  // count the number of labware
-  const labwareCount = Object.keys(labwareTypes).reduce((result, type) => {
-    return result + (containerAttributes[labwareTypes[type].attributes]?.length || 0)
-  }, 0)
+  // find all the barcodes in the containerAttributes by type - plates or tubes
+  const foundBarcodes = new Set(
+    Object.keys(containerAttributes).reduce((result, type) => {
+      return result.concat((containerAttributes[type] || []).map((item) => item.barcode))
+    }, []),
+  )
 
   return {
     attributes: { source: 'traction-ui.sequencescape', ...containerAttributes },
-    labwareCount,
+    foundBarcodes,
   }
 }
 

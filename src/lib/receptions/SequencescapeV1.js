@@ -57,7 +57,7 @@ const getLabware = async (request, barcodes) => {
  * @param { Array<String> } barcodes Array of barcodes to look up
  * @param { Object } requestOptions Additional request parameters, will over-ride any
  * imported from SS if present
- * @returns { Object } Reception object ready for import into traction
+ * @returns { Object } Reception object ready for import into traction includes attributes and foundBarcodes
  *
  */
 const labwareForReception = async ({ requests, barcodes, requestOptions }) => {
@@ -67,14 +67,13 @@ const labwareForReception = async ({ requests, barcodes, requestOptions }) => {
     labwareList: [...plates, ...tubes],
     requestOptions,
   })
-  const foundBarcodes = extractBarcodes({ plates, tubes })
 
-  // number of labwares to be imported
-  const labwareCount = new Set(foundBarcodes).size
+  // unique list of labwares to be imnported
+  const foundBarcodes = new Set(extractBarcodes({ plates, tubes }) || [])
 
   return {
     attributes: { source: 'traction-ui.sequencescape', request_attributes: requestAttributes },
-    labwareCount,
+    foundBarcodes,
   }
 }
 

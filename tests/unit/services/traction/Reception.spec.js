@@ -56,9 +56,9 @@ describe('Traction', () => {
 
     it('does not import labware if none are present', async () => {
       const attributes = { source, request_attributes: [] }
-      const labwareCount = 0
+      const foundBarcodes = new Set([])
       expect(
-        createReceptionResource(createReceptionRequest, labwareCount, attributes),
+        createReceptionResource(createReceptionRequest, foundBarcodes, attributes),
       ).rejects.toThrow('No labware to import')
 
       expect(createReceptionRequest).not.toHaveBeenCalled()
@@ -68,9 +68,9 @@ describe('Traction', () => {
       createReceptionRequest.mockResolvedValue(createdReceptionResponse)
 
       const attributes = { source, request_attributes: requestAttributes }
-      const labwareCount = 1
+      const foundBarcodes = new Set(['NT1'])
 
-      await createReceptionResource(createReceptionRequest, labwareCount, attributes)
+      await createReceptionResource(createReceptionRequest, foundBarcodes, attributes)
 
       expect(createReceptionRequest).toHaveBeenCalledWith({
         data: {
@@ -86,10 +86,10 @@ describe('Traction', () => {
       createReceptionRequest.mockRejectedValue({ response: failedResponse })
 
       const attributes = { source, request_attributes: requestAttributes }
-      const labwareCount = 1
+      const foundBarcodes = new Set(['NT1'])
 
       expect(
-        createReceptionResource(createReceptionRequest, labwareCount, attributes),
+        createReceptionResource(createReceptionRequest, foundBarcodes, attributes),
       ).rejects.toThrow('error1 There was an error.')
     })
   })

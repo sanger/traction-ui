@@ -30,7 +30,7 @@ const getLabware = async (request, barcodes) => {
  * @param { Array<String> } barcodes Array of barcodes to look up
  * @param { Object } requestOptions Additional request parameters, will over-ride any
  * imported from SS if present
- * @returns { Object } Reception object ready for import into traction
+ * @returns { Object } Reception object ready for import into traction made up of attributes and foundBarcodes
  *
  */
 const labwareForReception = async ({ requests, barcodes, requestOptions }) => {
@@ -40,17 +40,15 @@ const labwareForReception = async ({ requests, barcodes, requestOptions }) => {
     requestOptions,
   })
 
-  const foundBarcodes = extractBarcodes(assets)
-
-  // number of labwares to be imported
-  const labwareCount = new Set(foundBarcodes).size
+  // barcodes are unique, so we can use a set to remove duplicates
+  const foundBarcodes = new Set(extractBarcodes(assets) || [])
 
   return {
     attributes: {
       source: 'traction-ui.samples-extraction',
       request_attributes: requestAttributes,
     },
-    labwareCount,
+    foundBarcodes,
   }
 }
 
