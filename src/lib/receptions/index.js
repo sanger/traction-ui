@@ -1,7 +1,9 @@
-import * as SequencescapeV1 from './SequencescapeV1'
-import * as SequencescapeV2 from './SequencescapeV2'
 import * as SamplesExtractionV1 from './SamplesExtractionV1'
 import * as SamplesExtractionV2 from './SamplesExtractionV2'
+
+// DEPRECATED - remove once dpl_877_reception_request is enabled by default
+import * as SequencescapeV1 from './SequencescapeV1'
+import * as SequencescapeV2 from './SequencescapeV2'
 
 const defaultRequestOptions = () => ({
   library_type: undefined,
@@ -25,6 +27,7 @@ const ReceptionTypes = {
   },
 }
 
+// TO MODIFY - remove versions once dpl_877_reception_request is enabled by default
 const Receptions = {
   options: Object.values(ReceptionTypes),
   Sequencescape: {

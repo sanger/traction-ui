@@ -1,3 +1,4 @@
+// DEPRECATED: once dpl_877_reception_request is enabled by default, remove this file
 import { handleResponse } from '@/api/ResponseHelper'
 import deserialize from '@/api/JsonApi'
 

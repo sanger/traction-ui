@@ -8,6 +8,7 @@ describe('Import samples from Sequencescape', () => {
     })
   })
 
+  // DEPRECATED: once dpl_877_reception_request is enabled by default, remove this
   it('Successfully - V1', () => {
     // TODO: remove once dpl_877_reception_request is enabled by default
     cy.withFlags({

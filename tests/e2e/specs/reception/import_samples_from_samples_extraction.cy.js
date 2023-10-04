@@ -10,6 +10,7 @@ describe('Import samples from Samples extraction, for Pacbio', () => {
     })
   })
 
+  // DEPRECATED: once dpl_877_reception_request is enabled by default, remove this
   it('Successfully - v1', () => {
     // TODO: remove once dpl_877_reception_request is enabled by default
     cy.withFlags({
