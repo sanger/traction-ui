@@ -28,16 +28,19 @@ describe('PacbioRunInfoEdit', () => {
       id: '1',
       name: 'v1',
       default: true,
+      active: true,
     },
     2: {
       id: '2',
       name: 'v12_revio',
       default: false,
+      active: true,
     },
     3: {
       id: '3',
       name: 'v12_sequel_iie',
       default: false,
+      active: true,
     },
   }
 
