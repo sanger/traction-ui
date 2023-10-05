@@ -92,12 +92,16 @@ export default {
     },
   },
   watch: {
+    /*
+      page_number and page_size:
+      We ensure the page is paginated before fetching data.
+      This catches an edge case where the watchers are still active when navigating
+      between paginated and unpaginated routes
+    */
     page_size() {
-      // This prevents unnecessary fetches between paginated and non-paginated pages
       this.$route.meta?.paginated ? this.getData() : ''
     },
     page_number() {
-      // This prevents unnecessary fetches between paginated and non-paginated pages
       this.$route.meta?.paginated ? this.getData() : ''
     },
   },
@@ -106,7 +110,7 @@ export default {
       if (this.page_number == 1) {
         await this.getData()
       } else {
-        // This triggers the watcher in the  and ensures we are on the first page
+        // This triggers the page_number watcher and ensures we are on the first page
         this.page_number = 1
       }
     },

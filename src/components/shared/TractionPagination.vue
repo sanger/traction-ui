@@ -71,10 +71,10 @@
 import QueryParamsHelper from '@/mixins/QueryParamsHelper'
 export default {
   /**
-   * # TractionUrlPagination
+   * # TractionPagination
    * Uses router query params to control pagination
    */
-  name: 'TractionUrlPagination',
+  name: 'TractionPagination',
   mixins: [QueryParamsHelper],
   inheritAttrs: false,
   props: {
