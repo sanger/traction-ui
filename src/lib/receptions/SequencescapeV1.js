@@ -1,3 +1,4 @@
+// DEPRECATED: once dpl_877_reception_request is enabled by default, remove this file
 // This module replaces by services.Sequencescape which can be removed
 // when the pipeline-specific receptions are retired. While this change results
 // in temporary code duplication, it allows for complete decoupling of old and

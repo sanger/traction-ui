@@ -1,9 +1,9 @@
-import * as SamplesExtractionV1 from './SamplesExtractionV1'
 import * as SamplesExtractionV2 from './SamplesExtractionV2'
+import * as SequencescapeV2 from './SequencescapeV2'
 
 // DEPRECATED - remove once dpl_877_reception_request is enabled by default
 import * as SequencescapeV1 from './SequencescapeV1'
-import * as SequencescapeV2 from './SequencescapeV2'
+import * as SamplesExtractionV1 from './SamplesExtractionV1'
 
 const defaultRequestOptions = () => ({
   library_type: undefined,
