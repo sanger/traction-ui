@@ -4,7 +4,6 @@ import { LabwareTypes } from '@/lib/LabwareTypes'
  * A collection of methods to deal with Pacbio Instrument Types
  * we could possibly add these methods to the object itself
  * which would be better for naming and usage
- *
  * @module PacbioInstrumentTypes
  */
 
