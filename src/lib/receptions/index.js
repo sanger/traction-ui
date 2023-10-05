@@ -1,7 +1,7 @@
 import * as SamplesExtractionV2 from './SamplesExtractionV2'
 import * as SequencescapeV2 from './SequencescapeV2'
 
-// DEPRECATED - remove once dpl_877_reception_request is enabled by default
+// DEPRECATE-DPL-877
 import * as SequencescapeV1 from './SequencescapeV1'
 import * as SamplesExtractionV1 from './SamplesExtractionV1'
 

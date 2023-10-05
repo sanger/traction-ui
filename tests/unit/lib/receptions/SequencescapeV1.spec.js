@@ -1,4 +1,4 @@
-// DEPRECATED: once dpl_877_reception_request is enabled by default, remove this file
+// DEPRECATE-DPL-877 remove this file
 import { labwareForReception } from '@/lib/receptions/SequencescapeV1'
 import { Data, store } from '@support/testHelper'
 

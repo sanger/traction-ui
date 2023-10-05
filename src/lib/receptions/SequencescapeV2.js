@@ -89,7 +89,6 @@ const labwareForReception = async ({ requests, barcodes, requestOptions }) => {
 const transformPlate = ({ labware, included, requestOptions }) => {
   return {
     barcode: labware.attributes.labware_barcode.machine_barcode,
-    type: 'plates',
     // for the receptacle data, we need to map over the wells and build a request for each
     wells_attributes: labware.relationships.receptacles.data
       .map((receptacle) => {
@@ -141,7 +140,6 @@ const transformTube = ({ labware, included, requestOptions }) => {
 
   return {
     barcode: labware.attributes.labware_barcode.machine_barcode,
-    type: 'tubes',
     // build the request and sample objects
     ...buildRequestAndSample({ aliquot, study, sample, sample_metadata, requestOptions }),
   }

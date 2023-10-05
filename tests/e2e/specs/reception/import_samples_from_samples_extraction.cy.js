@@ -10,9 +10,8 @@ describe('Import samples from Samples extraction, for Pacbio', () => {
     })
   })
 
-  // DEPRECATED: once dpl_877_reception_request is enabled by default, remove this
+  // DEPRECATE-DPL-877 once enabled by default, remove this
   it('Successfully - v1', () => {
-    // TODO: remove once dpl_877_reception_request is enabled by default
     cy.withFlags({
       dpl_877_reception_request: { enabled: false },
     })
@@ -32,7 +31,7 @@ describe('Import samples from Samples extraction, for Pacbio', () => {
   })
 
   it('Successfully - v2', () => {
-    // TODO: remove once dpl_877_reception_request is enabled by default
+    // DEPRECATE-DPL-877 once enabled by default, remove this
     cy.withFlags({
       dpl_877_reception_request: { enabled: true },
     })
@@ -59,9 +58,8 @@ describe('Import samples from Samples extraction, for Pacbio', () => {
     cy.contains('SE108532I imported from Samples Extraction')
   })
 
-  // TODO - we need to change this to a warning.
   it('Unsuccessfully - When tubes are missing', () => {
-    // TODO: remove once dpl_877_reception_request is enabled by default
+    // DEPRECATE-DPL-877 once enabled by default, remove this line
     cy.withFlags({
       dpl_877_reception_request: { enabled: false },
     })

@@ -62,7 +62,7 @@ const createMessages = ({ barcodes, response, reception }) => {
       // if it was partially imported add a danger message with the errors
       case 'partial':
         return {
-          type: 'danger',
+          type: 'warning',
           text: `${barcode} imported from ${reception.text} with errors: ${labware.errors.join(
             ', ',
           )}.`,

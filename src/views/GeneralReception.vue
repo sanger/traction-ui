@@ -189,7 +189,7 @@ import TractionHeading from '../components/TractionHeading.vue'
 import LibraryTypeSelect from '@/components/shared/LibraryTypeSelect'
 import DataTypeSelect from '@/components/shared/DataTypeSelect'
 import { defaultRequestOptions } from '@/lib/receptions'
-// DEPRECATED: once dpl_877_reception_request is enabled by default, remove this
+// DEPRECATE-DPL-877 when is enabled by default, remove this
 import useSWRV from 'swrv'
 
 // We don't expect the modal to display without a message. If we end up in this
@@ -235,7 +235,7 @@ export default {
     barcodeCount: ({ barcodeArray }) => barcodeArray.length,
     presentRequestOptions: ({ requestOptions }) =>
       Object.fromEntries(Object.entries(requestOptions).filter(([, v]) => v)),
-    // DEPRECATED: once dpl_877_reception_request is enabled by default, remove this
+    // DEPRECATE-DPL-877 once is enabled by default, remove this
     version: () => {
       // we only care if the feature is enabled or not, so we can just check for the presence of the feature
       // if the feature flag can't be returned for any reason, we'll default to v1
@@ -268,7 +268,7 @@ export default {
         )
 
         // v2 returns a different response to v1, so we need to handle it differently
-        // DEPRECATED: once dpl_877_reception_request is enabled by default, remove this line
+        // DEPRECATE-DPL-877 once enabled by default, remove this line
         if (this.version === 'v2') {
           const messages = createMessages({
             barcodes: this.barcodeArray,
@@ -280,7 +280,7 @@ export default {
           messages.forEach(({ type, text }) => {
             this.showAlert(text, type)
           })
-          // DEPRECATED: once dpl_877_reception_request is enabled by default, remove this
+          // DEPRECATE-DPL-877 once is enabled by default, remove this
         } else {
           this.showAlert(
             `Imported ${foundBarcodes.size} labware(s) from ${this.reception.text}`,

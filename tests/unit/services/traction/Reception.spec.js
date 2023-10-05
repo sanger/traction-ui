@@ -186,7 +186,7 @@ describe('Traction', () => {
           text: 'NT1 imported from Sequencescape.',
         },
         {
-          type: 'danger',
+          type: 'warning',
           text: 'NT2 imported from Sequencescape with errors: error1, error2.',
         },
       ])

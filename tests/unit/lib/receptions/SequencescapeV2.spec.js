@@ -49,7 +49,6 @@ describe('Sequencescape', () => {
         plates_attributes: [
           {
             barcode: 'DN9000002A',
-            type: 'plates',
             wells_attributes: [
               {
                 position: 'A1',
@@ -83,7 +82,6 @@ describe('Sequencescape', () => {
         tubes_attributes: [
           {
             barcode: '3980000001795',
-            type: 'tubes',
             request: {
               external_study_id: '5b173660-94c9-11ec-8c89-acde48001122',
               library_type: 'Example',
