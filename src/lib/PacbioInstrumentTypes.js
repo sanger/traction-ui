@@ -5,8 +5,6 @@ import { LabwareTypes } from '@/lib/LabwareTypes'
  * we could possibly add these methods to the object itself
  * which would be better for naming and usage
  *
- * TODO: Find out the correct values for the old SequelII and SequelI entries.
- *
  * @module PacbioInstrumentTypes
  */
 
