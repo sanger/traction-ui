@@ -75,7 +75,7 @@ export default {
    * Uses router query params to control pagination
    */
   name: 'TractionUrlPagination',
-  mixins:[QueryParamsHelper],
+  mixins: [QueryParamsHelper],
   inheritAttrs: false,
   props: {
     /**How many total items are in the list */
@@ -147,7 +147,7 @@ export default {
     /**Display page-button style based on whether it is selected or not*/
     getPageButtonTheme(page) {
       return this.page_number === page ? 'paginationSelect' : 'paginationDefault'
-    }
-  }
+    },
+  },
 }
 </script>

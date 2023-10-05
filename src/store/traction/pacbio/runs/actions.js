@@ -1,12 +1,12 @@
 import { handleResponse } from '@/api/ResponseHelper'
 import { dataToObjectById } from '@/api/JsonApi'
 
-const fetchPacbioRuns = async ({ commit, getters }, filter) => {
+const fetchPacbioRuns = async ({ commit, getters }, filter, page) => {
   const request = getters.runRequest
-  const promise = request.get({ filter, include: 'plates' })
+  const promise = request.get({ filter, page, include: 'plates' })
   const response = await handleResponse(promise)
 
-  const { success, data: { data, included = [] } = {}, errors = [] } = response
+  const { success, data: { data, included = [], meta = {} } = {}, errors = [] } = response
 
   const platesById = dataToObjectById({ data: included })
 
@@ -23,7 +23,7 @@ const fetchPacbioRuns = async ({ commit, getters }, filter) => {
     commit('setRuns', data)
   }
 
-  return { success, errors }
+  return { success, errors, meta }
 }
 
 /**

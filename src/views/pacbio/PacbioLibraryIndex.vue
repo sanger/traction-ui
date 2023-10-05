@@ -1,6 +1,6 @@
 <template>
-  <DataFetcher :fetcher="setLibraries">
-    <FilterCard :fetcher="setLibraries" :filter-options="filterOptions" />
+  <DataFetcher :fetcher="fetchLibraries">
+    <FilterCard :fetcher="fetchLibraries" :filter-options="filterOptions" />
     <div class="flex flex-col">
       <div class="clearfix">
         <traction-button
@@ -21,12 +21,9 @@
         </printerModal>
 
         <traction-pagination
-          v-model="currentPage"
           class="float-right"
-          :total-rows="libraries.length"
-          :per-page="perPage"
+          :total-pages="totalPages"
           aria-controls="library-index"
-          @update:modelValue="onPageChange($event)"
         />
       </div>
 
@@ -67,6 +64,7 @@
 
 <script>
 import TableHelper from '@/mixins/TableHelper'
+import QueryParamsHelper from '@/mixins/QueryParamsHelper'
 import PrinterModal from '@/components/PrinterModal'
 import FilterCard from '@/components/FilterCard'
 import DataFetcher from '@/components/DataFetcher'
@@ -80,7 +78,7 @@ export default {
     FilterCard,
     DataFetcher,
   },
-  mixins: [TableHelper],
+  mixins: [TableHelper, QueryParamsHelper],
   data() {
     return {
       fields: [
@@ -121,8 +119,7 @@ export default {
       filter: null,
       sortBy: 'created_at',
       sortDesc: true,
-      perPage: 25,
-      currentPage: 1,
+      totalPages: 1,
     }
   },
   computed: {
@@ -130,7 +127,7 @@ export default {
   },
   watch: {
     libraries(newValue) {
-      this.setInitialData(newValue, this.perPage)
+      this.setInitialData(newValue)
     },
   },
   methods: {
@@ -185,6 +182,28 @@ export default {
       })
 
       this.showAlert(message, success ? 'success' : 'danger')
+    },
+    buildFilter() {
+      if (!this.filter_value || !this.filter_input) {
+        return {}
+      }
+      let searchValue = this.filter_input
+      if (
+        this.filterOptions.filter(({ value }) => value == this.filter_value)[0]?.wildcard &&
+        this.filter_wildcard
+      ) {
+        // If wildcard is selected, add it to the search string
+        searchValue += ',wildcard'
+      }
+      return { [this.filter_value]: searchValue }
+    },
+    async fetchLibraries() {
+      const page = { size: this.page_size.toString(), number: this.page_number.toString() }
+      const filter = this.buildFilter()
+
+      const { success, errors, meta } = await this.setLibraries({ page: page, filter: filter })
+      this.totalPages = meta.page_count
+      return { success, errors }
     },
     ...mapActions('traction/pacbio/libraries', ['deleteLibraries', 'setLibraries']),
     ...mapActions('printMyBarcode', ['createPrintJob']),

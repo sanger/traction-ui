@@ -91,9 +91,26 @@ export default {
       return this.filterOptions.filter(({ value }) => value == this.filter_value)[0]?.wildcard
     },
   },
+  watch: {
+    page_size() {
+      // This prevents unnecessary fetches between paginated and non-paginated pages
+      this.$route.meta?.paginated ? this.getData() : ''
+    },
+    page_number() {
+      // This prevents unnecessary fetches between paginated and non-paginated pages
+      this.$route.meta?.paginated ? this.getData() : ''
+    },
+  },
   methods: {
     async getFilteredData() {
-      this.page_number=1
+      if (this.page_number == 1) {
+        await this.getData()
+      } else {
+        // This triggers the watcher in the  and ensures we are on the first page
+        this.page_number = 1
+      }
+    },
+    async getData() {
       await this.fetcher().then(({ success, errors }) => {
         success ? '' : this.showAlert(errors, 'danger')
       })

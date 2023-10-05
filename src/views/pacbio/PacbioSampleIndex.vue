@@ -144,13 +144,7 @@ export default {
   },
   watch: {
     requests(newValue) {
-      this.setInitialData(newValue, this.size, { sortBy: 'created_at' })
-    },
-    page_size() {
-      this.fetchRequests()
-    },
-    page_number() {
-      this.fetchRequests()
+      this.setInitialData(newValue, { sortBy: 'created_at' })
     },
   },
   methods: {
@@ -186,26 +180,17 @@ export default {
 
       this.showAlert(message, success ? 'success' : 'danger')
     },
-    buildFilter() {
-      if (!this.filter_value || !this.filter_input) {
-        return {}
-      }
-      let searchValue = this.filter_input
-      if (this.filterOptions.filter(({ value }) => value == this.filter_value)[0]?.wildcard && this.filter_wildcard) {
-        // If wildcard is selected, add it to the search string
-        searchValue += ',wildcard'
-      }
-      return { [this.filter_value]: searchValue }
-    },
     /*
       Fetches the requests from the api
       @param {Object} filter The filter to apply to the request
       @returns {Object} { success: Boolean, errors: Array }
     */
     async fetchRequests() {
-      const page = { 'size': this.page_size.toString(), 'number': this.page_number.toString() }
-      const filter = this.buildFilter()
-      const { success, errors, meta } = await this.setRequests({page: page, filter: filter})
+      const page = { size: this.page_size.toString(), number: this.page_number.toString() }
+      const filter =
+        !this.filter_value || !this.filter_input ? {} : { [this.filter_value]: this.filter_input }
+
+      const { success, errors, meta } = await this.setRequests({ page: page, filter: filter })
       this.totalPages = meta.page_count
       return { success, errors }
     },

@@ -1,17 +1,17 @@
 import handleResponse from '@/api/ResponseHelper'
 import { groupIncludedByResource } from '@/api/JsonApi'
 
-const setPlates = async ({ commit, getters }, filter) => {
+const setPlates = async ({ commit, getters }, filter, page) => {
   const request = getters.getPlates
-  const promise = request.get({ filter })
+  const promise = request.get({ filter, page })
   const response = await handleResponse(promise)
-  const { success, data: { data } = {}, errors = [] } = response
+  const { success, data: { data, meta = {} } = {}, errors = [] } = response
 
   if (success) {
     commit('setPlates', data)
   }
 
-  return { success, errors }
+  return { success, errors, meta }
 }
 
 const findPlate = async ({ getters }, filter) => {

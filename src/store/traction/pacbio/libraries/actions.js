@@ -45,15 +45,16 @@ const deleteLibraries = async ({ getters }, libraryIds) => {
   return responses
 }
 
-const setLibraries = async ({ commit, getters }, filter) => {
+const setLibraries = async ({ commit, getters }, filter, page) => {
   const request = getters.libraryRequest
   const promise = request.get({
     include: 'request,tag,tube,pool',
     filter,
+    page,
   })
   const response = await handleResponse(promise)
 
-  const { success, data: { data, included = [] } = {}, errors = [] } = response
+  const { success, data: { data, included = [], meta = {} } = {}, errors = [] } = response
   const { tubes, tags, requests, pools } = groupIncludedByResource(included)
 
   if (success) {
@@ -78,7 +79,7 @@ const setLibraries = async ({ commit, getters }, filter) => {
     commit('setLibraries', libraries)
   }
 
-  return { success, errors }
+  return { success, errors, meta }
 }
 
 const updateTag = async ({ getters }, payload) => {

@@ -1,6 +1,6 @@
 <template>
-  <DataFetcher :fetcher="provider">
-    <FilterCard :fetcher="fetchPacbioRuns" :filter-options="filterOptions" />
+  <DataFetcher :fetcher="fetchRuns">
+    <FilterCard :fetcher="fetchRuns" :filter-options="filterOptions" />
     <div class="flex flex-col">
       <div class="clearfix">
         <traction-button
@@ -13,12 +13,9 @@
           New Run
         </traction-button>
         <traction-pagination
-          v-model="currentPage"
           class="float-right"
-          :total-rows="runs.length"
-          :per-page="perPage"
+          :total-pages="totalPages"
           aria-controls="run-index"
-          @update:modelValue="onPageChange($event)"
         >
         </traction-pagination>
       </div>
@@ -28,8 +25,6 @@
         v-model:sort-by="sortBy"
         :items="tableData"
         :fields="fields"
-        :per-page="perPage"
-        :current-page="currentPage"
         @filtered="onFiltered"
       >
         <template #cell(sequencing_kit_box_barcodes)="row">
@@ -115,6 +110,7 @@
 import DataFetcher from '@/components/DataFetcher'
 import FilterCard from '@/components/FilterCard'
 import TableHelper from '@/mixins/TableHelper'
+import QueryParamsHelper from '@/mixins/QueryParamsHelper'
 import { mapActions, mapGetters } from 'vuex'
 import DownloadIcon from '@/icons/DownloadIcon.vue'
 import TractionBadge from '@/components/shared/TractionBadge.vue'
@@ -127,7 +123,7 @@ export default {
     DownloadIcon,
     TractionBadge,
   },
-  mixins: [TableHelper],
+  mixins: [TableHelper, QueryParamsHelper],
   data() {
     return {
       fields: [
@@ -158,8 +154,7 @@ export default {
       filter: null,
       sortBy: 'created_at',
       sortDesc: true,
-      perPage: 25,
-      currentPage: 1,
+      totalPages: 1,
     }
   },
   computed: {
@@ -168,7 +163,7 @@ export default {
   },
   watch: {
     runs(newValue) {
-      this.setInitialData(newValue, this.perPage, { sortBy: 'created_at' })
+      this.setInitialData(newValue, { sortBy: 'created_at' })
     },
   },
   methods: {
@@ -201,32 +196,15 @@ export default {
     },
     ...mapActions('traction/pacbio/runs', ['fetchPacbioRuns', 'updateRun']),
     ...mapActions('traction/pacbio/runCreate', ['fetchSmrtLinkVersions']),
-    async provider() {
-      // Seeds required data and loads the page via the DataFetcher
-      // TODO: update the DataFetcher to handle multiple data fetchers
-      let requiredSucceeds = true
-      const errorList = []
-      const fetchers = {
-        // the keys are used in the error message should the fetcher fail
-        'PacBio Runs': { fetcher: this.fetchPacbioRuns, required: true },
-        'SMRT-Link Versions': { fetcher: this.fetchSmrtLinkVersions, required: false },
-      }
-      // Fetch data in parallel
-      const fetchPromises = Object.entries(fetchers).map(([name, { fetcher, required }]) => {
-        return fetcher().then((res) => {
-          if (!res.success) {
-            errorList.push(name)
-            if (required) requiredSucceeds = false
-          }
-        })
-      })
-      await Promise.all(fetchPromises)
-      if (requiredSucceeds) {
-        return { success: true }
-      }
+    async fetchRuns() {
+      const page = { size: this.page_size.toString(), number: this.page_number.toString() }
+      const filter =
+        !this.filter_value || !this.filter_input ? {} : { [this.filter_value]: this.filter_input }
 
-      const errors = 'Failed to fetch ' + errorList.join(', ')
-      return { success: false, errors }
+      this.smrtLinkVersionList.length ? null : await this.fetchSmrtLinkVersions()
+      const { success, errors, meta } = await this.fetchPacbioRuns({ page: page, filter: filter })
+      this.totalPages = meta.page_count
+      return { success, errors }
     },
   },
 }

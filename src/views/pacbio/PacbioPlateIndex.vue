@@ -1,15 +1,12 @@
 <template>
-  <DataFetcher :fetcher="setPlates">
-    <FilterCard :fetcher="setPlates" :filter-options="filterOptions" />
+  <DataFetcher :fetcher="fetchPlates">
+    <FilterCard :fetcher="fetchPlates" :filter-options="filterOptions" />
     <div class="flex flex-col">
       <div class="clearfix">
         <traction-pagination
-          v-model="currentPage"
           class="float-right"
-          :total-rows="plates.length"
-          :per-page="perPage"
+          :total-pages="totalPages"
           aria-controls="plate-index"
-          @update:modelValue="onPageChange($event)"
         >
         </traction-pagination>
       </div>
@@ -20,7 +17,6 @@
         primary_key="id"
         :fields="fields"
         :items="tableData"
-        :current-page="currentPage"
         @filtered="onFiltered"
       >
         <template #cell(show_details)="row">
@@ -50,6 +46,7 @@
 
 <script>
 import TableHelper from '@/mixins/TableHelper'
+import QueryParamsHelper from '@/mixins/QueryParamsHelper'
 import Plate from '@/components/plates/PlateItem'
 import FilterCard from '@/components/FilterCard'
 import DataFetcher from '@/components/DataFetcher'
@@ -62,7 +59,7 @@ export default {
     FilterCard,
     DataFetcher,
   },
-  mixins: [TableHelper],
+  mixins: [TableHelper, QueryParamsHelper],
   data() {
     return {
       fields: [
@@ -79,8 +76,7 @@ export default {
       filter: null,
       sortBy: 'created_at',
       sortDesc: true,
-      perPage: 25,
-      currentPage: 1,
+      totalPages: 1,
       currentPlate: {},
     }
   },
@@ -89,7 +85,7 @@ export default {
   },
   watch: {
     plates(newValue) {
-      this.setInitialData(newValue, this.perPage, { sortBy: 'created_at' })
+      this.setInitialData(newValue, { sortBy: 'created_at' })
     },
   },
   methods: {
@@ -102,6 +98,15 @@ export default {
     },
     async getPlate(barcode) {
       this.currentPlate = await this.findPlate({ barcode: barcode })
+    },
+    async fetchPlates() {
+      const page = { size: this.page_size.toString(), number: this.page_number.toString() }
+      const filter =
+        !this.filter_value || !this.filter_input ? {} : { [this.filter_value]: this.filter_input }
+
+      const { success, errors, meta } = await this.setPlates({ page: page, filter: filter })
+      this.totalPages = meta.page_count
+      return { success, errors }
     },
     ...mapActions(['setPlates', 'findPlate']),
   },

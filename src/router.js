@@ -26,8 +26,8 @@ import ONTRun from '@/views/ont/ONTRun'
 import ONTSampleIndex from '@/views/ont/ONTSampleIndex'
 
 function checkPaginationParams(to) {
-  Object.prototype.hasOwnProperty.call(to.query, "page_size") ? "" : to.query.page_size = 25
-  Object.prototype.hasOwnProperty.call(to.query, "page_number") ? "" : to.query.page_number = 1
+  Object.prototype.hasOwnProperty.call(to.query, 'page_size') ? '' : (to.query.page_size = 25)
+  Object.prototype.hasOwnProperty.call(to.query, 'page_number') ? '' : (to.query.page_number = 1)
 }
 
 const router = createRouter({
@@ -101,32 +101,46 @@ const router = createRouter({
           path: 'samples',
           name: 'PacbioSampleIndex',
           component: PacbioSampleIndex,
-          meta: { page: 'Samples' },
-          beforeEnter(to) { checkPaginationParams(to) }
+          meta: { page: 'Samples', paginated: true },
+          beforeEnter(to) {
+            checkPaginationParams(to)
+          },
         },
         {
           path: 'plates',
           name: 'PacbioPlateIndex',
           component: PacbioPlateIndex,
-          meta: { page: 'Plates' },
+          meta: { page: 'Plates', paginated: true },
+          beforeEnter(to) {
+            checkPaginationParams(to)
+          },
         },
         {
           path: 'libraries',
           name: 'PacbioLibraryIndex',
           component: PacbioLibraryIndex,
-          meta: { page: 'Libraries' },
+          meta: { page: 'Libraries', paginated: true },
+          beforeEnter(to) {
+            checkPaginationParams(to)
+          },
         },
         {
           path: 'pools',
           name: 'PacbioPoolIndex',
           component: PacbioPoolIndex,
-          meta: { page: 'Pools' },
+          meta: { page: 'Pools', paginated: true },
+          beforeEnter(to) {
+            checkPaginationParams(to)
+          },
         },
         {
           path: 'runs',
           name: 'PacbioRunIndex',
           component: PacbioRunIndex,
-          meta: { page: 'Runs' },
+          meta: { page: 'Runs', paginated: true },
+          beforeEnter(to) {
+            checkPaginationParams(to)
+          },
         },
         {
           path: 'run/:id',
@@ -194,6 +208,5 @@ const router = createRouter({
     },
   ],
 })
-
 
 export default router
