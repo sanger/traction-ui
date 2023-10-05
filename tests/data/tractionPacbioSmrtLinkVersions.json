@@ -28,7 +28,8 @@
         },
         "attributes": {
           "name": "v11",
-          "default": true
+          "default": true,
+          "active": true
         },
         "relationships": {
           "smrt_link_option_versions": {
@@ -47,7 +48,8 @@
         },
         "attributes": {
           "name": "v12_revio",
-          "default": false
+          "default": false,
+          "active": true
         },
         "relationships": {
           "smrt_link_option_versions": {
@@ -66,7 +68,8 @@
         },
         "attributes": {
           "name": "v12_sequel_iie",
-          "default": false
+          "default": false,
+          "active": true
         },
         "relationships": {
           "smrt_link_option_versions": {
