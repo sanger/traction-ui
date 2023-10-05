@@ -3,13 +3,12 @@
     <label label-for="input-per-page" class="whitespace-nowrap mr-2"> Per Page</label>
     <traction-input
       id="input-per-page"
-      v-model="itemsPerPage"
+      v-model="page_size"
       data-testid="per-page-input"
       trim
       class="w-full w-25"
       type="number"
       min="1"
-      @update:modelValue="onChangePerPage($event)"
     ></traction-input>
     <traction-button
       theme="paginationDefault"
@@ -69,29 +68,20 @@
 </template>
 
 <script>
+import QueryParamsHelper from '@/mixins/QueryParamsHelper'
 export default {
   /**
-   * # TractionPagination
-   * @input - On input, emit its own custom input event with the new value
+   * # TractionUrlPagination
+   * Uses router query params to control pagination
    */
-  name: 'TractionPagination',
+  name: 'TractionUrlPagination',
+  mixins:[QueryParamsHelper],
   inheritAttrs: false,
   props: {
-    //value field  which will be bind automatically with 'v-model' prop passed into the component
-    modelValue: {
+    /**How many total items are in the list */
+    totalPages: {
       type: Number,
       default: 1,
-    },
-
-    /**How many total items are in the list */
-    totalRows: {
-      type: Number,
-      default: 0,
-    },
-    /**Number of items that every page represents */
-    perPage: {
-      type: [Number, String],
-      default: 10,
     },
     /**Maximum visible page buttons to be displayed */
     maxVisibleButtons: {
@@ -99,33 +89,22 @@ export default {
       default: 3,
     },
   },
-  emits: ['update:modelValue'],
-  data() {
-    return {
-      currentPage: this.modelValue,
-      itemsPerPage: Number(this.perPage),
-    }
-  },
   computed: {
-    //Calculate total pages required
-    totalPages() {
-      return Math.ceil(this.totalRows / this.itemsPerPage)
-    },
     //If total number of pages is less than number of buttons given, display only as many buttons as the pages
     visibleButtons() {
       return Math.min(this.totalPages, this.maxVisibleButtons)
     },
-    //Calculate the start page number to be displayed (in page button), based on current selectiobn
+    //Calculate the start page number to be displayed (in page button), based on current selection
     startPage() {
-      if (this.currentPage === 1) {
+      if (this.page_number === 1) {
         return 1
       }
 
-      if (this.currentPage === this.totalPages) {
+      if (this.page_number === this.totalPages) {
         return this.totalPages - this.visibleButtons + 1
       }
 
-      return this.currentPage - 1
+      return this.page_number - 1
     },
     //Calculate the end page number to be displayed, based on current selection
     endPage() {
@@ -137,18 +116,17 @@ export default {
     },
     //Is the very first page of total number of pages selected?
     isInFirstPage() {
-      return this.currentPage === 1
+      return this.page_number === 1
     },
     //Is the very last page of total number of pages selected?
     isInLastPage() {
-      return this.currentPage === this.totalPages
+      return this.page_number === this.totalPages
     },
   },
   methods: {
     /**Emitted when the page changes */
     pageClick(pageNumber) {
-      this.currentPage = pageNumber
-      this.$emit('update:modelValue', { currentPage: this.currentPage, perPage: this.itemsPerPage })
+      this.page_number = pageNumber
     },
     /**Handles the first page button (<<) click */
     firstPageClick() {
@@ -156,11 +134,11 @@ export default {
     },
     /**Handles the previous page button (<) click */
     prevPageClick() {
-      this.pageClick(this.currentPage - 1)
+      this.pageClick(this.page_number - 1)
     },
     /**Handles the next page button (>) click */
     nextPageClick() {
-      this.pageClick(this.currentPage + 1)
+      this.pageClick(this.page_number + 1)
     },
     /**Handles the last page button (>>) click */
     lastPageClick() {
@@ -168,17 +146,8 @@ export default {
     },
     /**Display page-button style based on whether it is selected or not*/
     getPageButtonTheme(page) {
-      return this.currentPage === page ? 'paginationSelect' : 'paginationDefault'
-    },
-    onChangePerPage(perPage) {
-      this.itemsPerPage = Number(perPage)
-      /*When number of items to displayed per page  are greater than the total number of rows or 
-      total pages required is less than the current page, reset current page to 1 **/
-      if (perPage > this.totalRows || this.totalPages < this.currentPage) {
-        this.currentPage = 1
-      }
-      this.$emit('update:modelValue', { currentPage: this.currentPage, perPage: this.itemsPerPage })
-    },
-  },
+      return this.page_number === page ? 'paginationSelect' : 'paginationDefault'
+    }
+  }
 }
 </script>

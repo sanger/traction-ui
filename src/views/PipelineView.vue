@@ -44,6 +44,10 @@ export default {
      * is handled by the router.push method**/
     setSource(indx) {
       this.sourceIndex = indx
+      // If new tab is already active, do nothing
+      if (this.isActive(this.pipelineInfo.routes[indx])) {
+        return
+      }
       this.$router.push({ path: this.path(this.pipelineInfo.routes[indx]) }).catch((error) => {
         if (!isNavigationFailure(error, NavigationFailureType.duplicated)) {
           console.error(error)

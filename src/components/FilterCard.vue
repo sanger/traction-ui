@@ -11,14 +11,15 @@
         <div class="col-span-2 flex mx-auto items-center">
           <traction-input
             id="filterInput"
-            v-model="filter.input"
+            v-model="filter_input"
             type="search"
             placeholder="Type to Search"
             class="mr-5 w-1/2"
+            @enterKeyPress="getFilteredData()"
           />
           <traction-select
             id="filterValue"
-            v-model="filter.value"
+            v-model="filter_value"
             :options="filterOptions"
             class="mr-5 w-1/2"
           />
@@ -26,7 +27,7 @@
             <label for="checkbox" class="w-1/2">Wildcard</label>
             <input
               id="wildcardValue"
-              v-model="filter.wildcard"
+              v-model="filter_wildcard"
               type="checkbox"
               class="w-1/2 bg-sbd-400"
             />
@@ -37,7 +38,7 @@
             <traction-button @click="resetFilter()">Reset</traction-button>
             <traction-button
               id="filterButton"
-              :disabled="filter.value == '' || filter.input == ''"
+              :disabled="filter_value == '' || filter_input == ''"
               @click="getFilteredData()"
               >Search</traction-button
             >
@@ -59,8 +60,10 @@
  *     <FilterCard :fetcher="fetchServiceData" :filter-options=[{ value: '', text: ''}] />
  * </template>
  */
+import QueryParamsHelper from '@/mixins/QueryParamsHelper'
 export default {
   name: 'FilterCard',
+  mixins: [QueryParamsHelper],
   props: {
     // A method that performs the required data fetch
     fetcher: {
@@ -83,41 +86,21 @@ export default {
       default: true,
     },
   },
-  data() {
-    return {
-      filter: {
-        value: '',
-        input: '',
-        wildcard: true,
-      },
-    }
-  },
   computed: {
     isWildcardOption() {
-      return this.filterOptions.filter(({ value }) => value == this.filter.value)[0]?.wildcard
+      return this.filterOptions.filter(({ value }) => value == this.filter_value)[0]?.wildcard
     },
   },
   methods: {
     async getFilteredData() {
-      let searchValue = this.filter.input
-      if (this.isWildcardOption && this.filter.wildcard) {
-        // If wildcard is selected, add it to the search string
-        searchValue += ',wildcard'
-      }
-      const filter = {
-        [this.filter.value]: searchValue,
-      }
-      await this.fetcher(filter).then(({ success, errors }) => {
+      this.page_number=1
+      await this.fetcher().then(({ success, errors }) => {
         success ? '' : this.showAlert(errors, 'danger')
       })
     },
     async resetFilter() {
-      this.filter.value = ''
-      this.filter.input = ''
-      this.filter.wildcard = true
-      await this.fetcher().then(({ success, errors }) => {
-        success ? '' : this.showAlert(errors, 'danger')
-      })
+      await this.clearFilter()
+      await this.getFilteredData()
     },
   },
 }

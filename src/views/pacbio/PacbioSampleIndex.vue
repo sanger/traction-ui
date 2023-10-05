@@ -1,6 +1,6 @@
 <template>
-  <DataFetcher :fetcher="setRequests">
-    <FilterCard :fetcher="setRequests" :filter-options="filterOptions" />
+  <DataFetcher :fetcher="fetchRequests">
+    <FilterCard :fetcher="fetchRequests" :filter-options="filterOptions" />
     <div class="flex flex-col">
       <div class="clearfix">
         <PrinterModal
@@ -21,12 +21,9 @@
         </PacbioLibraryCreate>
 
         <traction-pagination
-          v-model="currentPage"
           class="float-right"
-          :total-rows="requests.length"
-          :per-page="perPage"
+          :total-pages="totalPages"
           aria-controls="samples-table"
-          @update:modelValue="onPageChange($event)"
         >
         </traction-pagination>
       </div>
@@ -93,6 +90,7 @@ import PrinterModal from '@/components/PrinterModal'
 import FilterCard from '@/components/FilterCard'
 import DataFetcher from '@/components/DataFetcher'
 import TableHelper from '@/mixins/TableHelper'
+import QueryParamsHelper from '@/mixins/QueryParamsHelper'
 import { getCurrentDate } from '@/lib/DateHelpers'
 
 import { mapActions, mapGetters } from 'vuex'
@@ -106,7 +104,7 @@ export default {
     FilterCard,
     DataFetcher,
   },
-  mixins: [TableHelper],
+  mixins: [TableHelper, QueryParamsHelper],
   data() {
     return {
       fields: [
@@ -138,8 +136,7 @@ export default {
       filter: null,
       sortBy: 'created_at',
       sortDesc: true,
-      perPage: 25,
-      currentPage: 1,
+      totalPages: 1,
     }
   },
   computed: {
@@ -147,7 +144,13 @@ export default {
   },
   watch: {
     requests(newValue) {
-      this.setInitialData(newValue, this.perPage, { sortBy: 'created_at' })
+      this.setInitialData(newValue, this.size, { sortBy: 'created_at' })
+    },
+    page_size() {
+      this.fetchRequests()
+    },
+    page_number() {
+      this.fetchRequests()
     },
   },
   methods: {
@@ -183,7 +186,29 @@ export default {
 
       this.showAlert(message, success ? 'success' : 'danger')
     },
-
+    buildFilter() {
+      if (!this.filter_value || !this.filter_input) {
+        return {}
+      }
+      let searchValue = this.filter_input
+      if (this.filterOptions.filter(({ value }) => value == this.filter_value)[0]?.wildcard && this.filter_wildcard) {
+        // If wildcard is selected, add it to the search string
+        searchValue += ',wildcard'
+      }
+      return { [this.filter_value]: searchValue }
+    },
+    /*
+      Fetches the requests from the api
+      @param {Object} filter The filter to apply to the request
+      @returns {Object} { success: Boolean, errors: Array }
+    */
+    async fetchRequests() {
+      const page = { 'size': this.page_size.toString(), 'number': this.page_number.toString() }
+      const filter = this.buildFilter()
+      const { success, errors, meta } = await this.setRequests({page: page, filter: filter})
+      this.totalPages = meta.page_count
+      return { success, errors }
+    },
     ...mapActions('traction/pacbio/requests', ['setRequests']),
     ...mapActions('printMyBarcode', ['createPrintJob']),
   },

@@ -64,11 +64,12 @@ const parametersToString = (attributes, parameter = undefined) => {
  * @param {Object} filter - query filters
  * @param String include - query include
  * @param {Object} fields - query fields
+ * @param {Object} page - query page
  * @return String
  * Turns a list of parameters into a query string
  */
-const buildQuery = ({ filter = {}, include = '', fields = {} } = {}) => {
-  const queryString = parametersToString({ filter, include, fields })
+const buildQuery = ({ filter = {}, include = '', fields = {}, page = {} } = {}) => {
+  const queryString = parametersToString({ filter, include, fields, page })
 
   // if the query string has any length then put a ? in front
   // otherwise just return an empty string
@@ -102,8 +103,8 @@ const createRequest = ({ rootURL, apiNamespace, resource, headers = defaultHeade
    * @return AxiosPromise
    * Execute a get query
    */
-  const get = ({ filter = {}, include = '', fields = {} } = {}) => {
-    return execute('get', `${resource}${buildQuery({ filter, include, fields })}`)
+  const get = ({ filter = {}, include = '', fields = {}, page = {} } = {}) => {
+    return execute('get', `${resource}${buildQuery({ filter, include, fields, page })}`)
   }
 
   /*

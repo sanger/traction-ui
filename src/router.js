@@ -25,6 +25,11 @@ import ONTRunIndex from '@/views/ont/ONTRunIndex'
 import ONTRun from '@/views/ont/ONTRun'
 import ONTSampleIndex from '@/views/ont/ONTSampleIndex'
 
+function checkPaginationParams(to) {
+  Object.prototype.hasOwnProperty.call(to.query, "page_size") ? "" : to.query.page_size = 25
+  Object.prototype.hasOwnProperty.call(to.query, "page_number") ? "" : to.query.page_number = 1
+}
+
 const router = createRouter({
   history: createWebHashHistory(),
   routes: [
@@ -97,6 +102,7 @@ const router = createRouter({
           name: 'PacbioSampleIndex',
           component: PacbioSampleIndex,
           meta: { page: 'Samples' },
+          beforeEnter(to) { checkPaginationParams(to) }
         },
         {
           path: 'plates',
@@ -188,5 +194,6 @@ const router = createRouter({
     },
   ],
 })
+
 
 export default router

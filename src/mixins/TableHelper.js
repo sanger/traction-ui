@@ -17,16 +17,14 @@ export default {
     onFiltered(filteredItems) {
       // Trigger pagination to update the number of buttons/pages due to filtering
       this.filteredItems = filteredItems
-      this.currentPage = 1
     },
     /**defaultSortOptions for table data. This should be on object of shape
      * {
      *   sortBy:string, //The default sort field
      *   isAscending:boolean //ascending or descending
      * } */
-    setInitialData(initialData, perPage, defaultSortOptions) {
+    setInitialData(initialData, defaultSortOptions) {
       this.initialData = initialData
-      this.perPage = perPage
       this.defaultSortField = defaultSortOptions
 
       if (
@@ -42,16 +40,8 @@ export default {
           const arr2 = isAsc ? b : a
           return alphaNumericSortDefault(arr1[this.sortBy], arr2[this.sortBy], true)
         })
-      } else {
-        this.initialData = initialData
       }
-      this.tableData = this.initialData.slice(0, perPage)
-    },
-    onPageChange(pageInfo) {
-      this.perPage = pageInfo.perPage
-      this.currentPage = pageInfo.currentPage
-      const start = (this.currentPage - 1) * this.perPage
-      this.tableData = this.initialData.slice(start, start + this.perPage)
+      this.tableData = this.initialData
     },
   },
   computed: {

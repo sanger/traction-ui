@@ -1,17 +1,17 @@
 import handleResponse from '@/api/ResponseHelper'
 
-const setRequests = async ({ commit, getters }, filter) => {
+const setRequests = async ({ commit, getters }, filter, page) => {
   const request = getters.requestsRequest
-  const promise = request.get({ filter })
+  const promise = request.get({ filter, page })
   const response = await handleResponse(promise)
 
-  const { success, data: { data } = {}, errors = [] } = response
+  const { success, data: { data, meta = {} } = {}, errors = [] } = response
 
   if (success) {
     commit('setRequests', data)
   }
 
-  return { success, errors }
+  return { success, errors, meta }
 }
 
 const updateRequest = async ({ commit, getters }, payload) => {
