@@ -45,12 +45,12 @@ describe('PacbioRunInfoEdit', () => {
   }
 
   const buildWrapper = () =>
-  mount(PacbioRunInfoEdit, {
-    store,
-    sync: false,
-    attachTo: elem,
-    props,
-  })
+    mount(PacbioRunInfoEdit, {
+      store,
+      sync: false,
+      attachTo: elem,
+      props,
+    })
 
   const run = {
     id: 'new',
@@ -96,10 +96,12 @@ describe('PacbioRunInfoEdit', () => {
       })
 
       it('returns smrt link version select options', () => {
-        const options = Object.values(runInfo.smrtLinkVersionList).slice(0, 3).map(({ id, name }) => ({
-          value: id,
-          text: name,
-        }))
+        const options = Object.values(runInfo.smrtLinkVersionList)
+          .slice(0, 3)
+          .map(({ id, name }) => ({
+            value: id,
+            text: name,
+          }))
 
         expect(runInfo.smrtLinkVersionSelectOptions).toEqual(options)
       })
@@ -171,12 +173,12 @@ describe('PacbioRunInfoEdit old run', () => {
   }
 
   const buildWrapper = () =>
-  mount(PacbioRunInfoEdit, {
-    store,
-    sync: false,
-    attachTo: elem,
-    props,
-  })
+    mount(PacbioRunInfoEdit, {
+      store,
+      sync: false,
+      attachTo: elem,
+      props,
+    })
 
   const run = {
     id: 'new',
