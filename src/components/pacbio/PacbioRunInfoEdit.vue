@@ -89,10 +89,10 @@ export default {
     // the options of smrt-link-version select drop-down list.
     smrtLinkVersionSelectOptions() {
       var activeVersionsList = []
-      for(const versionKey in this.smrtLinkVersionList) {
+      for (const versionKey in this.smrtLinkVersionList) {
         const version = this.smrtLinkVersionList[versionKey]
         // Only includes 'active' versions in the list, unless this record already has an inactive version as its value
-        if(version.active == true || version.id == this.smrtLinkVersion.id) {
+        if (version.active == true || version.id == this.smrtLinkVersion.id) {
           activeVersionsList.push({
             value: version.id,
             text: version.name,
