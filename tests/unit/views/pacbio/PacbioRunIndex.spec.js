@@ -12,7 +12,7 @@ import { usePacbioRunsStore } from '@/stores/pacbioRuns'
 import { vi } from 'vitest'
 
 /**
- * Helper method for mounting a component with a mock instance of pinia, with the given 'options'. 
+ * Helper method for mounting a component with a mock instance of pinia, with the given 'options'.
  * 'options' allows to define initial state while instantiating the component.
  *
  * @param {*} options - options to be passed to the createTestingPinia method for creating a mock instance of pinia
