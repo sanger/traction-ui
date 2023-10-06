@@ -1,10 +1,23 @@
 import PacbioRunIndex from '@/views/pacbio/PacbioRunIndex'
 import Response from '@/api/Response'
-import { mount, store, Data, flushPromises, nextTick } from '@support/testHelper'
-import { createTestingPinia } from '@pinia/testing'
-import { usePacbioRunsStore } from '../../../../src/stores/pacbioRuns'
+import {
+  mount,
+  store,
+  Data,
+  flushPromises,
+  nextTick,
+  createTestingPinia,
+} from '@support/testHelper'
+import { usePacbioRunsStore } from '@/stores/pacbioRuns'
 import { vi } from 'vitest'
 
+/**
+ * Helper method for mounting a component with a mock instance of pinia, with the given 'options'. 
+ * 'options' allows to define initial state while instantiating the component.
+ *
+ * @param {*} options - options to be passed to the createTestingPinia method for creating a mock instance of pinia
+ * e.g. initialState, stubActions etc.
+ */
 function factory(options) {
   const wrapperObj = mount(PacbioRunIndex, {
     global: {

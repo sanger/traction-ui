@@ -1,6 +1,5 @@
-import { setActivePinia, createPinia } from 'pinia'
-import { usePacbioRunsStore } from '../../../src/stores/pacbioRuns'
-import { Data } from '@support/testHelper'
+import { usePacbioRunsStore } from '@/stores/pacbioRuns'
+import { Data, createPinia, setActivePinia } from '@support/testHelper'
 import Response from '@/api/Response'
 import { beforeEach, describe } from 'vitest'
 import api from '@/api/JsonApi'
@@ -9,9 +8,8 @@ import { extractAttributes } from '@/api/JsonApi'
 
 describe('usePacbioRunsStore', () => {
   beforeEach(() => {
-    // creates a fresh pinia and make it active so it's automatically picked
-    // up by any useStore() call without having to pass it to it:
-    // `useStore(pinia)`
+    /*Creates a fresh pinia instance and make it active so it's automatically picked
+    up by any useStore() call without having to pass it to it for e.g `useStore(pinia)`*/
     const pinia = createPinia()
     setActivePinia(pinia)
   })

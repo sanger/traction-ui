@@ -118,7 +118,7 @@ import TableHelper from '@/mixins/TableHelper'
 import { mapActions, mapGetters } from 'vuex'
 import DownloadIcon from '@/icons/DownloadIcon.vue'
 import TractionBadge from '@/components/shared/TractionBadge.vue'
-import { usePacbioRunsStore } from '../../stores/pacbioRuns'
+import { usePacbioRunsStore } from '@/stores/pacbioRuns'
 import { mapActions as mapActionsPinia, mapState } from 'pinia'
 export default {
   name: 'PacbioRuns',
