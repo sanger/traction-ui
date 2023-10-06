@@ -1,36 +1,28 @@
 <template>
   <div class="flex flex-col w-full">
     <div class="flex mx-auto w-full max-w-[1000px] bg-gray-100 rounded-md mt-2 mb-2 p-3">
-      <div class="grid grid-cols-4 gap-2">
-        <div class="flex flex-col text-left">
-          <p class="flex font-semibold text-l">Filter results</p>
-          <p class="flex font-light text-gray-700 text-xs italiclist-none">
-            By default returns the most recent 1000 results
-          </p>
+      <div class="grid grid-cols-5 gap-2 w-full">
+        <div class="flex items-center justify-center">
+          <p class="flex text-xl font-bold text-sdb">Filter results</p>
         </div>
-        <div class="col-span-2 flex mx-auto items-center">
+        <div class="flex col-span-3 items-center space-x-2">
           <traction-input
             id="filterInput"
             v-model="filter_input"
             type="search"
             placeholder="Type to Search"
-            class="mr-5 w-1/2"
+            class="w-1/2"
             @enterKeyPress="getFilteredData()"
           />
           <traction-select
             id="filterValue"
             v-model="filter_value"
             :options="filterOptions"
-            class="mr-5 w-1/2"
+            class="w-1/2"
           />
           <div v-if="isWildcardOption" class="justify-center items-center w-1/3">
-            <label for="checkbox" class="w-1/2">Wildcard</label>
-            <input
-              id="filterWildcard"
-              v-model="filter_wildcard"
-              type="checkbox"
-              class="w-1/2 bg-sbd-400"
-            />
+            <label for="checkbox" class="p-2">Wildcard</label>
+            <input id="filterWildcard" v-model="filter_wildcard" type="checkbox" />
           </div>
         </div>
         <div class="flex items-center">
