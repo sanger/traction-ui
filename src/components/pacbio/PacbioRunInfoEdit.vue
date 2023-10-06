@@ -90,7 +90,7 @@ export default {
     // Only includes 'active' versions in the list, unless this record already has an inactive version as its value.
     smrtLinkVersionSelectOptions() {
       return Object.values(this.smrtLinkVersionList)
-        .filter((version) => version.active || version.id == this.smrtLinkVersion.id)
+        .filter((version) => version.active || version.id === this.smrtLinkVersion.id)
         .map(({ id, name }) => ({
           value: id,
           text: name,
