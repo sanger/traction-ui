@@ -15,7 +15,7 @@
             id="sourceSelect"
             v-model="source"
             class="inline-block w-full"
-            :options="receptions"
+            :options="receptions.options"
             data-type="source-list"
           />
         </traction-field-group>
@@ -153,7 +153,7 @@
         <div class="flex flex-col w-full">
           <traction-muted-text class="text-left">Imports data into Traction</traction-muted-text>
           <p id="importText" class="text-left">
-            Import {{ barcodeCount }} labware into {{ pipeline }} from {{ source }}
+            Import {{ barcodeCount }} labware into {{ pipeline }} from {{ reception.text }}
           </p>
           <div class="flex flex-row space-x-8 mt-5">
             <traction-button
@@ -183,15 +183,14 @@
 </template>
 
 <script>
-import Api from '@/mixins/Api'
-import { createReceptionResource } from '@/services/traction/Reception'
+import { createReceptionResource, createMessages } from '@/services/traction/Reception'
 import Receptions from '@/lib/receptions'
 import TractionHeading from '../components/TractionHeading.vue'
 import LibraryTypeSelect from '@/components/shared/LibraryTypeSelect'
 import DataTypeSelect from '@/components/shared/DataTypeSelect'
 import { defaultRequestOptions } from '@/lib/receptions'
-
-const numberRequests = (i) => (i === 1 ? '1 request' : `${i} requests`)
+// DEPRECATE-DPL-877 when is enabled by default, remove this
+import useSWRV from 'swrv'
 
 // We don't expect the modal to display without a message. If we end up in this
 // state then something has gone horribly wrong.
@@ -206,10 +205,9 @@ export default {
     LibraryTypeSelect,
     DataTypeSelect,
   },
-  mixins: [Api],
   props: {
     receptions: {
-      type: Array,
+      type: Object,
       default: () => Receptions,
     },
   },
@@ -227,15 +225,23 @@ export default {
     modalState: defaultModal(),
   }),
   computed: {
-    reception: ({ receptions, source }) => receptions.find((r) => r.text == source),
-    receptionComponent: ({ reception }) => reception.component,
-    receptionOptions: ({ reception }) => reception.props,
+    reception: ({ receptions, source, version }) => receptions[source][version],
+    api() {
+      return this.$store.getters.api
+    }, // can't use this in arrow function
     receptionRequest: ({ api }) => api.traction.receptions.create,
     barcodeArray: ({ barcodes }) => barcodes.split(/\s/).filter(Boolean),
     isDisabled: ({ barcodeArray }) => barcodeArray.length === 0,
     barcodeCount: ({ barcodeArray }) => barcodeArray.length,
     presentRequestOptions: ({ requestOptions }) =>
       Object.fromEntries(Object.entries(requestOptions).filter(([, v]) => v)),
+    // DEPRECATE-DPL-877 once is enabled by default, remove this
+    version: () => {
+      // we only care if the feature is enabled or not, so we can just check for the presence of the feature
+      // if the feature flag can't be returned for any reason, we'll default to v1
+      const { data } = useSWRV(`${import.meta.env.VITE_TRACTION_BASE_URL}/flipper/api/actors/User`)
+      return data?.value?.features['dpl_877_reception_request']?.enabled ? 'v2' : 'v1'
+    },
   },
   methods: {
     importStarted({ message }) {
@@ -251,19 +257,36 @@ export default {
       this.clearModal()
       this.showAlert(message, 'danger')
     },
-    async importLoaded({ requestAttributes }) {
-      this.showModal(`Creating ${numberRequests(requestAttributes.length)} for ${this.source}`)
+    async importLoaded({ foundBarcodes, attributes }) {
+      this.showModal(`Creating ${foundBarcodes.size} labware(s) for ${this.reception.text}`)
 
       try {
-        await createReceptionResource(this.receptionRequest, {
-          source: `traction-ui.${this.reception.name}`,
-          requestAttributes,
-        })
-
-        this.showAlert(
-          `Imported ${numberRequests(requestAttributes.length)} from ${this.source}`,
-          'success',
+        const response = await createReceptionResource(
+          this.receptionRequest,
+          foundBarcodes,
+          attributes,
         )
+
+        // v2 returns a different response to v1, so we need to handle it differently
+        // DEPRECATE-DPL-877 once enabled by default, remove this line
+        if (this.version === 'v2') {
+          const messages = createMessages({
+            barcodes: this.barcodeArray,
+            response,
+            reception: this.reception,
+          })
+
+          // we create a different alert for each message
+          messages.forEach(({ type, text }) => {
+            this.showAlert(text, type)
+          })
+          // DEPRECATE-DPL-877 once is enabled by default, remove this
+        } else {
+          this.showAlert(
+            `Imported ${foundBarcodes.size} labware(s) from ${this.reception.text}`,
+            'success',
+          )
+        }
       } catch (e) {
         console.error(e)
         this.showAlert(e, 'danger')
@@ -271,16 +294,19 @@ export default {
       this.clearModal()
     },
     async importLabware() {
-      this.importStarted({ message: `Fetching ${this.barcodeCount} items from ${this.source}` })
+      this.importStarted({
+        message: `Fetching ${this.barcodeCount} items from ${this.reception.text}`,
+      })
       try {
-        const response = await this.reception.importFunction({
+        const { foundBarcodes, attributes } = await this.reception.importFunction({
           requests: this.api,
           barcodes: this.barcodeArray,
           requestOptions: this.presentRequestOptions,
         })
 
         this.importLoaded({
-          requestAttributes: response.requestAttributes,
+          foundBarcodes,
+          attributes,
         })
       } catch (e) {
         console.error(e)

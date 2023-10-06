@@ -10,7 +10,11 @@ describe('Import samples from Samples extraction, for Pacbio', () => {
     })
   })
 
-  it('Successfully', () => {
+  // DEPRECATE-DPL-877 once enabled by default, remove this
+  it('Successfully - v1', () => {
+    cy.withFlags({
+      dpl_877_reception_request: { enabled: false },
+    })
     cy.visit('#/reception')
     cy.get('[data-type="source-list"]').select('Samples Extraction')
     cy.contains('Scan barcodes')
@@ -23,10 +27,42 @@ describe('Import samples from Samples extraction, for Pacbio', () => {
     )
     cy.contains('Import 1 labware into PacBio from Samples Extraction')
     cy.get('[data-action="import-labware"]').click()
-    cy.contains('Imported 1 request from Samples Extraction')
+    cy.contains('Imported 1 labware(s) from Samples Extraction')
+  })
+
+  it('Successfully - v2', () => {
+    // DEPRECATE-DPL-877 once enabled by default, remove this
+    cy.withFlags({
+      dpl_877_reception_request: { enabled: true },
+    })
+    cy.visit('#/reception')
+    cy.get('[data-type="source-list"]').select('Samples Extraction')
+    cy.contains('Scan barcodes')
+    cy.get('#barcodes').type('SE108532I')
+    cy.intercept('/api/v1/assets?filter[barcode]=SE108532I', {
+      fixture: 'sampleExtractionTubesWithSample.json',
+    })
+    cy.intercept('POST', '/v1/receptions', {
+      body: {
+        data: {
+          attributes: {
+            labware: {
+              SE108532I: { imported: 'success' },
+            },
+          },
+        },
+      },
+    })
+    cy.contains('Import 1 labware into PacBio from Samples Extraction')
+    cy.get('[data-action="import-labware"]').click()
+    cy.contains('SE108532I imported from Samples Extraction')
   })
 
   it('Unsuccessfully - When tubes are missing', () => {
+    // DEPRECATE-DPL-877 once enabled by default, remove this line
+    cy.withFlags({
+      dpl_877_reception_request: { enabled: false },
+    })
     cy.visit('#/reception')
     cy.get('[data-type="source-list"]').select('Samples Extraction')
     cy.contains('Scan barcodes')
@@ -39,7 +75,8 @@ describe('Import samples from Samples extraction, for Pacbio', () => {
     )
     cy.contains('Import 2 labware into PacBio from Samples Extraction')
     cy.get('[data-action="import-labware"]').click()
-    cy.contains('Error: Labware could not be retrieved from Samples Extraction: SE108533J')
+    // TODO: we might need to change the message if something is missing
+    cy.contains('Imported 1 labware(s) from Samples Extraction')
   })
 
   it('Unsuccessfully - When traction errors', () => {
