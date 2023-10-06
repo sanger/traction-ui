@@ -241,7 +241,10 @@
           "sample_name": "Sample47"
         }
       }
-    ]
+    ],
+    "meta": {
+      "page_count": 1
+    }
   },
   "status": 200,
   "statusText": "Success"

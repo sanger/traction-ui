@@ -26,7 +26,7 @@
           <div v-if="isWildcardOption" class="justify-center items-center w-1/3">
             <label for="checkbox" class="w-1/2">Wildcard</label>
             <input
-              id="wildcardValue"
+              id="filterWildcard"
               v-model="filter_wildcard"
               type="checkbox"
               class="w-1/2 bg-sbd-400"

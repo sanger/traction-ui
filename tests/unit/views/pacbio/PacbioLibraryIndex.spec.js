@@ -31,23 +31,46 @@ describe('Libraries.vue', () => {
     })
   })
 
-  describe('perPage', () => {
+  describe('pagination', () => {
     beforeEach(async () => {
+      const filtered_data = { ...Data.TractionPacbioLibraries }
+      filtered_data.data.data.splice(1, 4)
       const get = vi.spyOn(store.state.api.traction.pacbio.libraries, 'get')
       get.mockResolvedValue(Data.TractionPacbioLibraries)
 
       wrapper = mount(Libraries, {
         store,
-        router,
-        data() {
-          return { perPage: 1 }
-        },
       })
       await flushPromises()
+
+      get.mockReturnValue(filtered_data)
+      // This push causes pacbio libraries to be fetched because of filterCard watchers
+      // And we return filtered_data
+      await router.push({ query: { page_size: 1, page_number: 1 } })
     })
 
-    it('states how many rows the table should contain', () => {
+    it('will paginate the runs in the table', async () => {
       expect(wrapper.find('tbody').findAll('tr').length).toEqual(1)
+      expect(wrapper.vm.page_number).toEqual(1)
+      expect(wrapper.vm.page_size).toEqual(1)
+    })
+
+    it('calls fetcher with the correct data given the query params', async () => {
+      await router.push({
+        query: { page_size: 2, page_number: 2, filter_value: '123', filter_input: 'barcode' },
+      })
+      wrapper.vm.setLibraries = vi.fn()
+      wrapper.vm.setLibraries.mockReturnValue({
+        success: true,
+        errors: [],
+        meta: { page_count: 1 },
+      })
+
+      await wrapper.vm.fetchLibraries()
+      expect(wrapper.vm.setLibraries).toBeCalledWith({
+        page: { size: '2', number: '2' },
+        filter: { 123: 'barcode' },
+      })
     })
   })
 

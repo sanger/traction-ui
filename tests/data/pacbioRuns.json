@@ -241,7 +241,10 @@
           "sequencing_kit_box_barcode": "SKBB 7"
         }
       }
-    ]
+    ],
+    "meta": {
+      "page_count": 1
+    }
   },
   "status": 200,
   "statusText": "Success"
