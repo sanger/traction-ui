@@ -69,8 +69,8 @@
 </template>
 
 <script>
-import { createNamespacedHelpers } from 'vuex'
-const { mapGetters, mapActions } = createNamespacedHelpers('traction/pacbio/runCreate')
+import {mapActions,mapState} from 'pinia'
+import { usePacbioRunCreate } from '@/stores/pacbioRunCreate'
 import { PacbioInstrumentTypes } from '@/lib/PacbioInstrumentTypes'
 
 const SMRT_LINK_VERSION_V12_REVIO = 'v12_revio'
@@ -84,7 +84,7 @@ export default {
     },
   },
   computed: {
-    ...mapGetters(['runItem', 'smrtLinkVersionList', 'smrtLinkVersion', 'instrumentType']),
+    ...mapState(usePacbioRunCreate,['runItem', 'smrtLinkVersionList', 'smrtLinkVersion', 'instrumentType']),
     smrtLinkVersionSelectOptions() {
       // Returns an array of objects with value and text properties to make
       // the options of smrt-link-version select drop-down list.

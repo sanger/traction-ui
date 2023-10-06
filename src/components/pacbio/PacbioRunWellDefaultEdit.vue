@@ -19,13 +19,14 @@
 <script>
 // There is a lot of duplication between this component and PacbioRunWellEdit.
 // A lot of it could be moved to the store
-import { createNamespacedHelpers } from 'vuex'
-const { mapGetters } = createNamespacedHelpers('traction/pacbio/runCreate')
+import {mapState} from 'pinia'
+import { usePacbioRunCreate } from '@/stores/pacbioRunCreate'
+
 import PacbioRunWellComponents from '@/config/PacbioRunWellComponents'
 export default {
   name: 'PacbioRunWellDefaultEdit',
   computed: {
-    ...mapGetters(['runDefaultWellAttributes', 'runItem', 'smrtLinkVersion']),
+    ...mapState(usePacbioRunCreate,['runDefaultWellAttributes', 'runItem', 'smrtLinkVersion']),
     smrtLinkWellDefaults() {
       return PacbioRunWellComponents[this.smrtLinkVersion.name]?.filter(
         (component) => component.default,

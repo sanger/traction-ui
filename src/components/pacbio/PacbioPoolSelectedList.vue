@@ -5,10 +5,10 @@
 </template>
 
 <script>
-import Tube from '@/components/pacbio/PacbioPoolTubeItem'
-import { createNamespacedHelpers } from 'vuex'
 
-const { mapGetters } = createNamespacedHelpers('traction/pacbio/runCreate')
+import Tube from '@/components/pacbio/PacbioPoolTubeItem'
+import { mapState } from 'pinia'
+import { usePacbioRunCreate } from '@/stores/pacbioRunCreate'
 
 export default {
   name: 'PacbioPoolSelectedList',
@@ -16,7 +16,7 @@ export default {
     Tube,
   },
   computed: {
-    ...mapGetters(['pools']),
+    ...mapState(usePacbioRunCreate,['pools']),
   },
 }
 </script>

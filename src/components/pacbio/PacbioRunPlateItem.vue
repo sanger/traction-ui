@@ -47,8 +47,9 @@ import PacbioRunWellEdit from '@/components/pacbio/PacbioRunWellEdit'
 import PacbioRunWell from '@/components/labware/PacbioRunWell'
 import LabwareMap from '@/components/labware/LabwareMap.vue'
 import { PacbioInstrumentTypes, validatePlate } from '@/lib/PacbioInstrumentTypes'
-import { createNamespacedHelpers } from 'vuex'
-const { mapGetters } = createNamespacedHelpers('traction/pacbio/runCreate')
+import {mapState} from 'pinia'
+import { usePacbioRunCreate } from '@/stores/pacbioRunCreate'
+
 
 export default {
   name: 'PacbioRunPlateItem',
@@ -70,7 +71,7 @@ export default {
     }
   },
   computed: {
-    ...mapGetters(['instrumentType', 'getPlate']),
+    ...mapState(usePacbioRunCreate,['instrumentType', 'getPlate']),
     isRevio() {
       // we should be able to use object equality here but it doesn't work
       // e.g. Object.is(this.instrumentType, PacbioInstrumentTypes.Revio)

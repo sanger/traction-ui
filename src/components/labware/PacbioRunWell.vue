@@ -24,7 +24,8 @@
 </template>
 
 <script>
-import { mapActions, mapGetters } from 'vuex'
+import { mapState,mapActions } from 'pinia'
+import { usePacbioRunCreate } from '@/stores/pacbioRunCreate'
 
 export default {
   name: 'PacbioRunWell',
@@ -50,7 +51,7 @@ export default {
     }
   },
   computed: {
-    ...mapGetters('traction/pacbio/runCreate', [
+    ...mapState(usePacbioRunCreate, [
       'poolByBarcode',
       'getWell',
       'pools',
@@ -120,7 +121,7 @@ export default {
     },
   },
   methods: {
-    ...mapActions('traction/pacbio/runCreate', ['getOrCreateWell', 'updateWell']),
+    ...mapActions(usePacbioRunCreate, ['getOrCreateWell', 'updateWell']),
     onClick() {
       this.$emit('click', this.position, this.plateNumber)
     },

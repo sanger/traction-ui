@@ -62,8 +62,9 @@
 <script>
 // There is a lot of duplication between this component and PacbioRunWellEdit.
 // A lot of it could be moved to the store
-import { mapGetters, mapActions } from 'vuex'
 import PacbioRunWellComponents from '@/config/PacbioRunWellComponents'
+import { mapState,mapActions } from 'pinia'
+import { usePacbioRunCreate } from '@/stores/pacbioRunCreate'
 
 export default {
   name: 'WellModal',
@@ -94,11 +95,11 @@ export default {
     }
   },
   computed: {
-    ...mapGetters('traction/pacbio/runCreate', [
+    ...mapState(usePacbioRunCreate, [
       'poolByBarcode',
       'smrtLinkVersion',
       'getWell',
-      'pools',
+      'poolsArray',
     ]),
     smrtLinkWellDefaults() {
       return PacbioRunWellComponents[this.smrtLinkVersion.name]
@@ -132,7 +133,7 @@ export default {
     },
   },
   methods: {
-    ...mapActions('traction/pacbio/runCreate', ['getOrCreateWell', 'updateWell', 'deleteWell']),
+    ...mapActions(usePacbioRunCreate, ['getOrCreateWell', 'updateWell', 'deleteWell','findPools']),
     addRow() {
       this.localPools.push({ id: '', barcode: '' })
     },
@@ -185,7 +186,7 @@ export default {
     },
     async updatePoolBarcode(row, barcode) {
       const index = row.index
-      await this.$store.dispatch('traction/pacbio/runCreate/findPools', { barcode: barcode })
+      await this.findPools({ barcode: barcode })
       const pool = await this.poolByBarcode(barcode)
       if (pool) {
         this.localPools[index] = { id: pool.id, barcode }

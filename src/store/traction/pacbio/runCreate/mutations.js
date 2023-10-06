@@ -7,7 +7,7 @@ import {
   dataToObjectByPosition,
 } from '@/api/JsonApi'
 import defaultState from './state'
-import { newPlate } from './run'
+import { newPlate } from '../../../../stores/utilities/run'
 
 // Mutations handle synchronous update of state
 

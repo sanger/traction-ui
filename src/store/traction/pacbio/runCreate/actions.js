@@ -1,6 +1,12 @@
 import { handleResponse } from '@/api/ResponseHelper'
 import { groupIncludedByResource, extractAttributes } from '@/api/JsonApi'
-import { newRun, createRunType, RunTypeEnum, newWell, defaultWellAttributes } from './run'
+import {
+  newRun,
+  createRunType,
+  RunTypeEnum,
+  newWell,
+  defaultWellAttributes,
+} from '../../../../stores/utilities/run'
 
 // Asynchronous update of state.
 export default {

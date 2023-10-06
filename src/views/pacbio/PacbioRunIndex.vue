@@ -118,6 +118,9 @@ import TableHelper from '@/mixins/TableHelper'
 import { mapActions, mapGetters } from 'vuex'
 import DownloadIcon from '@/icons/DownloadIcon.vue'
 import TractionBadge from '@/components/shared/TractionBadge.vue'
+import { usePacbioRunCreate } from '@/stores/pacbioRunCreate'
+import {mapActions as mapActionsPinia, mapState} from 'pinia'
+
 
 export default {
   name: 'PacbioRuns',
@@ -163,8 +166,8 @@ export default {
     }
   },
   computed: {
-    ...mapGetters('traction/pacbio/runs', ['runs']),
-    ...mapGetters('traction/pacbio/runCreate', ['smrtLinkVersionList']),
+    ...mapState('traction/pacbio/runs', ['runs']),
+    ...mapGetters(usePacbioRunCreate, ['smrtLinkVersionList']),
   },
   watch: {
     runs(newValue) {
@@ -200,7 +203,7 @@ export default {
       this.$router.push({ path: `/pacbio/run/${runId || 'new'}` })
     },
     ...mapActions('traction/pacbio/runs', ['fetchPacbioRuns', 'updateRun']),
-    ...mapActions('traction/pacbio/runCreate', ['fetchSmrtLinkVersions']),
+    ...mapActionsPinia(usePacbioRunCreate, ['fetchSmrtLinkVersions']),
     async provider() {
       // Seeds required data and loads the page via the DataFetcher
       // TODO: update the DataFetcher to handle multiple data fetchers

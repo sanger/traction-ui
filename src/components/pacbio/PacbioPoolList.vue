@@ -5,12 +5,12 @@
   </traction-section>
 </template>
 <script>
+
 import TableHelper from '@/mixins/TableHelper'
-import { createNamespacedHelpers } from 'vuex'
 import LabwareFinder from '@/components/LabwareFinder'
 import PacbioPoolSelectedList from './PacbioPoolSelectedList.vue'
-
-const { mapActions } = createNamespacedHelpers('traction/pacbio/runCreate')
+import { mapState } from 'pinia'
+import { usePacbioRunCreate } from '@/stores/pacbioRunCreate'
 
 export default {
   name: 'PacbioPoolList',
@@ -23,7 +23,7 @@ export default {
     return {}
   },
   methods: {
-    ...mapActions(['findPools']),
+    ...mapState(usePacbioRunCreate,['findPools']),
   },
 }
 </script>
