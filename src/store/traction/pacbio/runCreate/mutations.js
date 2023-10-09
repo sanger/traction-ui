@@ -21,7 +21,7 @@ const setData = (state, type, data, includeRelationships = false) => {
 
 export default {
   /**
-   * Populated with resources via APi calls from the actions
+   * Populated with resources via API calls from the actions
    * @param {Object} state The VueXState object
    * @param {Array.{}} smrtLinkVersions The SmrtLinkVersions to populate the store
    */
