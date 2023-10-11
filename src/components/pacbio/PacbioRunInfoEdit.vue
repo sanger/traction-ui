@@ -73,9 +73,6 @@ import { createNamespacedHelpers } from 'vuex'
 const { mapGetters, mapActions } = createNamespacedHelpers('traction/pacbio/runCreate')
 import { PacbioInstrumentTypes } from '@/lib/PacbioInstrumentTypes'
 
-const SMRT_LINK_VERSION_V12_REVIO = 'v12_revio'
-const SMRT_LINK_VERSION_V12_SEQUEL_IIE = 'v12_sequel_iie'
-
 export default {
   name: 'PacbioRunInfoEdit',
   props: {
@@ -99,15 +96,18 @@ export default {
     instrumentTypeSelectOptions() {
       // Returns an array of objects with value and text properties to make
       // the options of instrument-type select drop-down list.
-      return Object.values(PacbioInstrumentTypes).map(({ key, name }) => ({
-        value: key,
-        text: name,
-      }))
+      return Object.values(PacbioInstrumentTypes)
+        .filter(
+          (instrumentType) =>
+            instrumentType.active || instrumentType.key === this.instrumentType.key,
+        )
+        .map(({ key, name }) => ({
+          value: key,
+          text: name,
+        }))
     },
     smrtLinkVersionv12() {
-      return [SMRT_LINK_VERSION_V12_SEQUEL_IIE, SMRT_LINK_VERSION_V12_REVIO].includes(
-        this.smrtLinkVersion.name,
-      )
+      return /^v12/.test(this.smrtLinkVersion.name)
     },
   },
   methods: {
