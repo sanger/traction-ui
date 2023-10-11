@@ -89,7 +89,7 @@ describe('PacbioRunInfoEdit', () => {
     )
   })
 
-  it.only('will only show the instrument type options that are active', () => {
+  it('will only show the instrument type options that are active', () => {
     const options = wrapper.find('[data-attribute=system_name]').findAll('option')
     expect(options.length).toEqual(2)
   })
