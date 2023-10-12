@@ -89,6 +89,11 @@ describe('PacbioRunInfoEdit', () => {
     )
   })
 
+  it('will only show the instrument type options that are active', () => {
+    const options = wrapper.find('[data-attribute=system_name]').findAll('option')
+    expect(options.length).toEqual(2)
+  })
+
   describe('#computed', () => {
     describe('#smrtLinkVersionSelectOptions', () => {
       it('returns only the active versions', () => {
