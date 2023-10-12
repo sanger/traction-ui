@@ -69,6 +69,18 @@
 </template>
 
 <script>
+/*
+ @param {Array} list - An array of objects
+  @param {String} key - The key of the object to use as the value of the select option
+  @returns {Array} - An array of objects with value and text properties
+*/
+const createSelectOptions = (list, key) => {
+  return list.map((item) => ({
+    value: item[key],
+    text: item.name,
+  }))
+}
+
 import { createNamespacedHelpers } from 'vuex'
 const { mapGetters, mapActions } = createNamespacedHelpers('traction/pacbio/runCreate')
 import { PacbioInstrumentTypes } from '@/lib/PacbioInstrumentTypes'
@@ -86,25 +98,18 @@ export default {
     // the options of smrt-link-version select drop-down list.
     // Only includes 'active' versions in the list, unless this record already has an inactive version as its value.
     smrtLinkVersionSelectOptions() {
-      return Object.values(this.smrtLinkVersionList)
-        .filter((version) => version.active || version.id === this.smrtLinkVersion.id)
-        .map(({ id, name }) => ({
-          value: id,
-          text: name,
-        }))
+      const list = Object.values(this.smrtLinkVersionList).filter(
+        (version) => version.active || version.id === this.smrtLinkVersion.id,
+      )
+      return createSelectOptions(list, 'id')
     },
     instrumentTypeSelectOptions() {
       // Returns an array of objects with value and text properties to make
       // the options of instrument-type select drop-down list.
-      return Object.values(PacbioInstrumentTypes)
-        .filter(
-          (instrumentType) =>
-            instrumentType.active || instrumentType.key === this.instrumentType.key,
-        )
-        .map(({ key, name }) => ({
-          value: key,
-          text: name,
-        }))
+      const list = Object.values(PacbioInstrumentTypes).filter(
+        (instrumentType) => instrumentType.active || instrumentType.key === this.instrumentType.key,
+      )
+      return createSelectOptions(list, 'key')
     },
     smrtLinkVersionv12() {
       return /^v12/.test(this.smrtLinkVersion.name)
