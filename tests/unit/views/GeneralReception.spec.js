@@ -1,28 +1,10 @@
 import { mount, store, nextTick } from '@support/testHelper'
 import GeneralReception from '@/views/GeneralReception.vue'
 import * as Reception from '@/services/traction/Reception'
+import Receptions from '@/lib/receptions'
 import { expect, it } from 'vitest'
 
 const tractionReceptionsCreate = store.getters.api.traction.receptions.create
-
-const Receptions = [
-  {
-    name: 'sequencescape',
-    text: 'Sequencescape',
-    value: 'Sequencescape',
-    props: {
-      title: 'Sequencescape',
-    },
-  },
-  {
-    name: 'samples-extraction',
-    text: 'Samples Extraction',
-    value: 'Samples Extraction',
-    props: {
-      title: 'Samples Extraction',
-    },
-  },
-]
 
 describe('GeneralReception', () => {
   const buildWrapper = (props = { receptions: Receptions }) => {
@@ -155,18 +137,22 @@ describe('GeneralReception', () => {
     // We've begun the import
     await wrapper.vm.importStarted({ message: 'Starting import' })
 
-    await wrapper.vm.importLoaded({ requestAttributes: [{}], source: 'sequencescape' })
+    const foundBarcodes = new Set(['NT1'])
+    const attributes = { source: 'traction-ui.sequencescape', request_attributes: [{}] }
+
+    await wrapper.vm.importLoaded({ foundBarcodes, attributes })
 
     await mockedcreateReception
     expect(wrapper.text()).not.toContain('Starting import')
-    expect(mockedcreateReception).toBeCalledWith(tractionReceptionsCreate, {
-      source: 'traction-ui.sequencescape',
-      requestAttributes: [{}],
-    })
+    expect(mockedcreateReception).toBeCalledWith(
+      tractionReceptionsCreate,
+      foundBarcodes,
+      attributes,
+    )
 
     expect(Object.values(store.state.traction.messages)).toContainEqual({
       type: 'success',
-      message: 'Imported 1 request from Sequencescape',
+      message: 'Imported 1 labware(s) from Sequencescape',
     })
   })
 
@@ -180,7 +166,7 @@ describe('GeneralReception', () => {
     // We've begun the import
     await wrapper.vm.importStarted({ message: 'Starting import' })
 
-    await wrapper.vm.importLoaded({ requestAttributes: [], source: 'sequencescape' })
+    await wrapper.vm.importLoaded({ foundBarcodes: new Set([]), attributes: {} })
 
     expect(wrapper.text()).not.toContain('Starting import')
 

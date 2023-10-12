@@ -7,8 +7,8 @@ describe('PacbioRunWell.vue', () => {
   let well, wrapper, props, storeWell, smrtLinkVersion
 
   const smrtLinkVersions = {
-    1: { id: 1, name: 'v11', default: true },
-    2: { id: 2, name: 'v12_revio', default: false },
+    1: { id: 1, name: 'v11', default: true, active: true },
+    2: { id: 2, name: 'v12_revio', default: false, active: true },
   }
 
   beforeEach(() => {

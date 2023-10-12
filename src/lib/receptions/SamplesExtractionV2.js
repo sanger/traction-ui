@@ -1,9 +1,4 @@
 import { handleResponse } from '@/api/ResponseHelper'
-import deserialize from '@/api/JsonApi'
-
-const checkBarcodes = (barcodes, foundBarcodes) =>
-  barcodes.filter((barcode) => !foundBarcodes.includes(barcode))
-const extractBarcodes = (assets) => assets.map((labware) => labware.barcode)
 
 /*
   return a set of labware by their barcodes
@@ -14,10 +9,14 @@ const extractBarcodes = (assets) => assets.map((labware) => labware.barcode)
 const getLabware = async (request, barcodes) => {
   const promise = request.get({ filter: { barcode: barcodes } })
 
-  const { success, data, errors } = await handleResponse(promise)
+  const {
+    success,
+    data: { data },
+    errors,
+  } = await handleResponse(promise)
 
   if (success) {
-    return deserialize(data)
+    return data
   } else {
     throw new Error(`Problem talking to Samples Extraction: ${errors}`)
   }
@@ -32,26 +31,21 @@ const getLabware = async (request, barcodes) => {
  * @param { Array<String> } barcodes Array of barcodes to look up
  * @param { Object } requestOptions Additional request parameters, will over-ride any
  * imported from SS if present
- * @returns { Object } Reception object ready for import into traction
+ * @returns { Object } Reception object ready for import into traction including attributes and foundBarcodes
  *
  */
 const labwareForReception = async ({ requests, barcodes, requestOptions }) => {
-  const { assets = [] } = await getLabware(requests.sampleExtraction.assets, barcodes.join(','))
-  const requestAttributes = transformLabwareList({
-    labwareList: assets,
+  const labwareList = await getLabware(requests.sampleExtraction.assets, barcodes.join(','))
+  const containerAttributes = transformLabwareList({
+    labwareList,
     requestOptions,
   })
 
-  const foundBarcodes = extractBarcodes(assets)
-  const missing = checkBarcodes(barcodes, foundBarcodes)
-
-  if (missing.length > 0) {
-    throw new Error(`Labware could not be retrieved from Samples Extraction: ${missing}`)
-  }
+  const foundBarcodes = new Set(containerAttributes.tubes_attributes.map((tube) => tube.barcode))
 
   return {
-    source: 'samples-extraction',
-    requestAttributes,
+    attributes: { source: 'traction-ui.samples-extraction', ...containerAttributes },
+    foundBarcodes,
   }
 }
 
@@ -59,32 +53,33 @@ const labwareForReception = async ({ requests, barcodes, requestOptions }) => {
  * Transforms the provided list of samples extraction assets into requestAttributes
  * for import into traction
  */
-const transformLabwareList = ({ labwareList, requestOptions } = {}) =>
-  labwareList.flatMap((labware) => transformLabware({ labware, requestOptions }))
+const transformLabwareList = ({ labwareList, requestOptions } = {}) => ({
+  tubes_attributes: labwareList.flatMap((labware) => transformLabware({ labware, requestOptions })),
+})
 
 /**
  * Takes a deserialized asset object and extracts the request, sample and
  * container information for import into traction via a reception resource.
  */
 const transformLabware = ({ labware, requestOptions }) => ({
+  barcode: labware.attributes.barcode,
+  type: 'tubes',
   request: {
-    external_study_id: labware.study_uuid,
-    library_type: labware.library_type,
+    external_study_id: labware.attributes.study_uuid,
+    library_type: labware.attributes.library_type,
     ...requestOptions,
   },
   sample: {
-    name: labware.fields.sanger_sample_id,
-    external_id: labware.sample_uuid,
-    species: labware.fields.sample_common_name,
+    name: labware.attributes.fields.sanger_sample_id,
+    external_id: labware.attributes.sample_uuid,
+    species: labware.attributes.fields.sample_common_name,
   },
-  container: { type: 'tubes', barcode: labware.barcode },
 })
 
 const SamplesExtraction = {
-  extractBarcodes,
   labwareForReception,
 }
 
-export { extractBarcodes, labwareForReception }
+export { labwareForReception }
 
 export default SamplesExtraction

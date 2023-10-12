@@ -15,7 +15,7 @@
         <traction-pagination
           v-model="currentPage"
           class="float-right"
-          :total-rows="runs.length"
+          :total-rows="runsArray.length"
           :per-page="perPage"
           aria-controls="run-index"
           @update:modelValue="onPageChange($event)"
@@ -118,10 +118,8 @@ import TableHelper from '@/mixins/TableHelper'
 import { mapActions, mapGetters } from 'vuex'
 import DownloadIcon from '@/icons/DownloadIcon.vue'
 import TractionBadge from '@/components/shared/TractionBadge.vue'
-import { usePacbioRunCreate } from '@/stores/pacbioRunCreate'
-import {mapActions as mapActionsPinia, mapState} from 'pinia'
-
-
+import { usePacbioRunsStore } from '@/stores/pacbioRuns'
+import { mapActions as mapActionsPinia, mapState } from 'pinia'
 export default {
   name: 'PacbioRuns',
   components: {
@@ -166,14 +164,14 @@ export default {
     }
   },
   computed: {
-    ...mapState('traction/pacbio/runs', ['runs']),
-    ...mapGetters(usePacbioRunCreate, ['smrtLinkVersionList']),
+    ...mapState(usePacbioRunsStore, ['runsArray','smrtLinkVersionList']),
   },
   watch: {
-    runs(newValue) {
+    runsArray(newValue) {
       this.setInitialData(newValue, this.perPage, { sortBy: 'created_at' })
     },
   },
+
   methods: {
     getVersionName(versionId) {
       return this.smrtLinkVersionList[versionId]?.name || '< ! >'
@@ -203,6 +201,8 @@ export default {
       this.$router.push({ path: `/pacbio/run/${runId || 'new'}` })
     },
     ...mapActions('traction/pacbio/runs', ['fetchPacbioRuns', 'updateRun']),
+    ...mapActions('traction/pacbio/runCreate', ['fetchSmrtLinkVersions']),
+    ...mapActionsPinia(usePacbioRunsStore, ['fetchPacbioRuns', 'updateRun']),
     ...mapActionsPinia(usePacbioRunCreate, ['fetchSmrtLinkVersions']),
     async provider() {
       // Seeds required data and loads the page via the DataFetcher

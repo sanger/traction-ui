@@ -5,7 +5,7 @@ import { it } from 'vitest'
 import { PacbioInstrumentTypes } from '@/lib/PacbioInstrumentTypes'
 
 const smrtLinkVersions = {
-  1: { id: 1, name: 'v11', default: true },
+  1: { id: 1, name: 'v11', default: true, active: true },
 }
 
 store.state.traction.pacbio.runCreate.resources.smrtLinkVersions = smrtLinkVersions

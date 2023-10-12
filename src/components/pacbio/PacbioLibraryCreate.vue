@@ -108,14 +108,13 @@
 </template>
 
 <script>
-import Api from '@/mixins/Api'
 import ModalHelper from '@/mixins/ModalHelper'
 import { createNamespacedHelpers } from 'vuex'
 const { mapActions, mapGetters } = createNamespacedHelpers('traction/pacbio/libraries')
 
 export default {
   name: 'PacbioLibraryCreate',
-  mixins: [Api, ModalHelper],
+  mixins: [ModalHelper],
   props: {
     disabled: Boolean,
     isStatic: Boolean,

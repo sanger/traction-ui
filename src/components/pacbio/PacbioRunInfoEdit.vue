@@ -84,11 +84,12 @@ export default {
     },
   },
   computed: {
-    ...mapState(usePacbioRunCreate,['runItem', 'smrtLinkVersionList', 'smrtLinkVersion', 'instrumentType']),
+ ...mapState(usePacbioRunCreate,['runItem', 'smrtLinkVersionList', 'smrtLinkVersion', 'instrumentType']),
     smrtLinkVersionSelectOptions() {
       // Returns an array of objects with value and text properties to make
       // the options of smrt-link-version select drop-down list.
       return Object.values(this.smrtLinkVersionList).map(({ id, name }) => ({
+
         value: id,
         text: name,
       }))

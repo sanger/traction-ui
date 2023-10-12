@@ -114,11 +114,13 @@ describe('getters.js', () => {
       id: 1,
       name: 'v1',
       default: true,
+      active: true,
     },
     2: {
       id: 2,
       name: 'v2',
       default: false,
+      active: true,
     },
   }
 

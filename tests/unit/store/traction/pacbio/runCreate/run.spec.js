@@ -17,16 +17,19 @@ const smrtLinkVersions = {
     id: 1,
     name: 'v11',
     default: false,
+    active: true,
   },
   2: {
     id: 2,
     name: 'v12_revio',
     default: false,
+    active: true,
   },
   3: {
     id: 2,
     name: 'v12_sequel_iie',
     default: false,
+    active: true,
   },
 }
 

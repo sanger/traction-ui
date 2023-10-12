@@ -52,7 +52,6 @@
 </template>
 
 <script>
-import Api from '@/mixins/Api'
 import { createQcResultsUploadResource } from '@/services/traction/QcResultsUpload'
 import UploadIcon from '@/icons/UploadIcon.vue'
 
@@ -61,7 +60,6 @@ export default {
   components: {
     UploadIcon,
   },
-  mixins: [Api],
   data() {
     return {
       usedByOptions: [
@@ -76,6 +74,9 @@ export default {
     }
   },
   computed: {
+    api() {
+      return this.$store.getters.api
+    },
     qcResultUploadsRequest: ({ api }) => api.traction.qc_results_uploads.create,
     border() {
       // If upload is successful, highlight the input box in green
