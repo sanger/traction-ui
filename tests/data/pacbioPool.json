@@ -98,6 +98,14 @@
         "attributes": {
           "sample_name": "PacbioSample0"
         }
+      },
+      {
+        "id": "242",
+        "type": "tags",
+        "attributes": {
+          "oligo": "CACATATCAGAGTGCG",
+          "group_id": "bc1001"
+        }
       }
     ]
   }

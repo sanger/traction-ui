@@ -275,7 +275,7 @@ const populateBy =
     }
   }
 
-  /**
+/**
  * Helper function to store json api resource objects in the store.
  * @param {Object} state object representing the state of store
  * @param {string} resource name of the resource to populate in the store
@@ -283,12 +283,12 @@ const populateBy =
  * @param {bool} includeRelationships indicates if related resource ids should
  * be extracted and included in the resulting object.
  */
-const getObjectPopulatedBy = (
+const createObjectPopulatedBy = (
   state,
   resource,
   data,
   fn,
-  { includeRelationships = false, populateResources = true } = {},
+  { includeRelationships = false, populateResources = false } = {},
   replaceData = false,
 ) => {
   // if resources then add to state.resources
@@ -299,6 +299,14 @@ const getObjectPopulatedBy = (
   return {
     ...before,
     ...fn({ data, includeRelationships }),
+  }
+}
+
+// Reformat to an object keyed by the id
+const createObjectById = (stateObj, data, includeRelationships = false) => {
+  return {
+    ...stateObj,
+    ...dataToObjectById({ data, includeRelationships }),
   }
 }
 
@@ -349,7 +357,8 @@ export {
   populateById,
   dataToObjectByPosition,
   populateBy,
-  getObjectPopulatedBy,
+  createObjectById,
+  createObjectPopulatedBy,
   splitDataByParent,
   dataToObjectByPlateNumber,
 }

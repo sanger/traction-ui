@@ -78,7 +78,7 @@ export default {
       await this.setInstrumentData()
       this.showAlert('Run has been reset', 'success', 'run-validation-message')
     },
-    ...mapActions([
+    ...mapActions(usePacbioRunCreate, [
       'setRun',
       'saveRun',
       'fetchSmrtLinkVersions',

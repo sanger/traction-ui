@@ -115,11 +115,10 @@
 import DataFetcher from '@/components/DataFetcher'
 import FilterCard from '@/components/FilterCard'
 import TableHelper from '@/mixins/TableHelper'
-import { mapActions, mapGetters } from 'vuex'
 import DownloadIcon from '@/icons/DownloadIcon.vue'
 import TractionBadge from '@/components/shared/TractionBadge.vue'
-import { usePacbioRunsStore } from '@/stores/pacbioRuns'
-import { mapActions as mapActionsPinia, mapState } from 'pinia'
+import { usePacbioRunsStore, usePacbioRunCreate } from '@/stores/pacbioRuns'
+import { mapActions, mapState } from 'pinia'
 export default {
   name: 'PacbioRuns',
   components: {
@@ -164,7 +163,8 @@ export default {
     }
   },
   computed: {
-    ...mapState(usePacbioRunsStore, ['runsArray','smrtLinkVersionList']),
+    ...mapState(usePacbioRunsStore, ['runsArray']),
+    ...mapState(usePacbioRunCreate, ['smrtLinkVersionList']),
   },
   watch: {
     runsArray(newValue) {
@@ -200,10 +200,9 @@ export default {
     redirectToRun(runId) {
       this.$router.push({ path: `/pacbio/run/${runId || 'new'}` })
     },
-    ...mapActions('traction/pacbio/runs', ['fetchPacbioRuns', 'updateRun']),
-    ...mapActions('traction/pacbio/runCreate', ['fetchSmrtLinkVersions']),
-    ...mapActionsPinia(usePacbioRunsStore, ['fetchPacbioRuns', 'updateRun']),
-    ...mapActionsPinia(usePacbioRunCreate, ['fetchSmrtLinkVersions']),
+
+    ...mapActions(usePacbioRunsStore, ['fetchPacbioRuns', 'updateRun']),
+    ...mapActions(usePacbioRunCreate, ['fetchSmrtLinkVersions']),
     async provider() {
       // Seeds required data and loads the page via the DataFetcher
       // TODO: update the DataFetcher to handle multiple data fetchers

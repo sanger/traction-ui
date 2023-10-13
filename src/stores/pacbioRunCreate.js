@@ -1,17 +1,25 @@
-import { defineStore, useStore } from 'pinia'
+import { defineStore } from 'pinia'
 import { PacbioInstrumentTypes } from '@/lib/PacbioInstrumentTypes'
 import useRootStore from '@/stores'
 import { handleResponse } from '@/api/ResponseHelper'
 import {
   groupIncludedByResource,
   extractAttributes,
-  getObjectPopulatedBy,
+  createObjectPopulatedBy,
+  createObjectById,
   dataToObjectById,
   dataToObjectByPlateNumber,
   splitDataByParent,
   dataToObjectByPosition,
 } from '@/api/JsonApi'
-import { newRun, createRunType, RunTypeEnum, newWell, defaultWellAttributes, newPlate } from './run'
+import {
+  newRun,
+  createRunType,
+  RunTypeEnum,
+  newWell,
+  defaultWellAttributes,
+  newPlate,
+} from './utilities/run'
 
 const buildRunSuitabilityErrors = ({ pool, libraries }) => [
   ...(pool.run_suitability?.errors || []).map(({ detail }) => `Pool ${detail}`),
@@ -21,26 +29,20 @@ const buildRunSuitabilityErrors = ({ pool, libraries }) => [
   }),
 ]
 
-// Helper function for setting pools data
-const formatData = (stateObj, data, includeRelationships = false) => {
-  return {
-    ...stateObj,
-    ...dataToObjectById({ data, includeRelationships }),
-  }
-}
-
 export const usePacbioRunCreateStore = defineStore('pacbioRunCreate', {
   /**
    * Generates an object describing a new library for population `store.libraries`
    * @param {Object} attributes any attributes of the object to pre-populate
    * @example newLibrary({pacbio_request_id: '1'})
    */
-  state: () => ({
-    // Resources returned by the server, each key represents a resource type.
-    // resource types are indexed by their id.
-    resources: {
-      // The SMRT Link version store.
-      smrtLinkVersions: {},
+  state: () => {
+    return {
+      // Resources returned by the server, each key represents a resource type.
+      // resource types are indexed by their id.
+      resources: {
+        // The SMRT Link version store.
+        smrtLinkVersions: {},
+      },
       // Run: The current run being edited or created
       run: {},
 
@@ -80,8 +82,8 @@ export const usePacbioRunCreateStore = defineStore('pacbioRunCreate', {
       //Instrument type: The instrument type selected for the run
       //Set this to Sequel IIe by default??
       instrumentType: PacbioInstrumentTypes.SequelIIe,
-    },
-  }),
+    }
+  },
   getters: {
     /**
      * Returns a list of all fetched smrt link versions
@@ -96,7 +98,7 @@ export const usePacbioRunCreateStore = defineStore('pacbioRunCreate', {
       return Object.values(state.resources.smrtLinkVersions).find((version) => version.default)
     },
     // The smrtLinkVersion of the current run
-    smrtLinkVersion: (state) => {
+    currentSmrtLinkVersion: (state) => {
       return state.smrtLinkVersion || {}
     },
     // TODO refactor to reuse the functions
@@ -127,10 +129,11 @@ export const usePacbioRunCreateStore = defineStore('pacbioRunCreate', {
       })
     },
 
-    poolByBarcode: (state) => (barcode) => {
-      return state.pools.find((pool) => pool.barcode === barcode)
+    poolByBarcode: (state) => {
+      return (barcode) => {
+        return state.poolsArray.find((pool) => pool.barcode === barcode)
+      }
     },
-
     runItem: (state) => state.run || {},
 
     runTypeItem: (state) => state.runType || {},
@@ -147,16 +150,16 @@ export const usePacbioRunCreateStore = defineStore('pacbioRunCreate', {
       return Object.values(state.plates)
     },
 
-    runDefaultWellAttributes: (state) => state.defaultWellAttributes || {},
+    runDefaultWellAttributes: (state) => state.resources.defaultWellAttributes || {},
 
-    instrumentTypeItem: (state) => state.instrumentType || {},
+    instrumentTypeItem: (state) => state.resources.instrumentType || {},
   },
   actions: {
     /**
      * Retrieves a list of pacbio smrt_link_versions and populates the store.
      * @returns { success, errors }. Was the request successful? were there any errors?
      */
-    fetchSmrtLinkVersions: async () => {
+    async fetchSmrtLinkVersions() {
       const rootStore = useRootStore()
       const request = rootStore.api.traction.pacbio.smrt_link_versions
       const promise = request.get({})
@@ -166,7 +169,13 @@ export const usePacbioRunCreateStore = defineStore('pacbioRunCreate', {
 
       if (success) {
         // Populate the store with the smrtLinkVersions
-        this.smrtLinkVersion = data
+        this.resources.smrtLinkVersions = createObjectPopulatedBy(
+          this.$state,
+          'smrtLinkVersions',
+          data,
+          dataToObjectById,
+          { populateResources: true },
+        )
       }
       return { success, errors }
     },
@@ -175,7 +184,7 @@ export const usePacbioRunCreateStore = defineStore('pacbioRunCreate', {
      * @param filter the barcode(s) to find the pools for
      * @returns { success, errors }. Was the request successful? were there any errors?
      */
-    findPools: async (filter) => {
+    async findPools(filter) {
       // when users search for nothing, prompt them to enter a barcode
       if (filter['barcode'].trim() === '') {
         return {
@@ -203,11 +212,11 @@ export const usePacbioRunCreateStore = defineStore('pacbioRunCreate', {
         const { tubes, libraries, tags, requests } = groupIncludedByResource(included)
 
         // populate pools, tubes, libraries, tags and requests in store
-        this.pools = formatData(this.pools, data, true)
-        this.tubes = formatData(this.tubes, tubes)
-        this.libraries = formatData(this.libraries, libraries, true)
-        this.tags = formatData(this.tags, tags)
-        this.requests = formatData(this.requests, requests)
+        this.pools = createObjectById(this.pools, data, true)
+        this.tubes = createObjectById(this.tubes, tubes)
+        this.libraries = createObjectById(this.libraries, libraries, true)
+        this.requests = createObjectById(this.requests, requests)
+        this.tags = createObjectById(this.tags, tags)
 
         return { success, errors }
       } else {
@@ -222,7 +231,7 @@ export const usePacbioRunCreateStore = defineStore('pacbioRunCreate', {
      * @param id the id of the run to retrieve
      * @returns { success, errors }. Was the request successful? were there any errors?
      */
-    fetchRun: async (id) => {
+    async fetchRun({ id }) {
       const rootStore = useRootStore()
       const request = rootStore.api.traction.pacbio.runs
       const promise = request.find({
@@ -259,16 +268,14 @@ export const usePacbioRunCreateStore = defineStore('pacbioRunCreate', {
           id: data.id,
           ...data.attributes,
         }
-
         // Populate the plates
-        this.plates = getObjectPopulatedBy(
-          this.state,
+        this.plates = createObjectPopulatedBy(
+          this.$state,
           'plates',
           plates,
           dataToObjectByPlateNumber,
           {
             includeRelationships: true,
-            populateResources: false,
           },
         )
 
@@ -285,18 +292,21 @@ export const usePacbioRunCreateStore = defineStore('pacbioRunCreate', {
         Object.entries(wellsByPlate).forEach(([_plateNumber, plate]) => {
           plate['_destroy'] = []
         })
+        this.wells = wellsByPlate
 
         //Populate the pools
-        this.pools = getObjectPopulatedBy(this.state, 'pools', pools, dataToObjectById)
+        this.pools = createObjectPopulatedBy(this.$state, 'pools', pools, dataToObjectById, {
+          includeRelationships: true,
+        })
 
         //Populate libraries, tags,tubes and requests
-        this.libraries = formatData(this.libraries, libraries, true)
-        this.tags = formatData(this.tags, tags)
-        this.requests = formatData(this.requests, requests)
-        this.tubes = formatData(this.tubes, tubes)
+        this.libraries = createObjectById(this.libraries, libraries, true)
+        this.tags = createObjectById(this.tags, tags)
+        this.requests = createObjectById(this.requests, requests)
+        this.tubes = createObjectById(this.tubes, tubes)
 
         //Populate the smrtLinkVersion
-        this.smrtLinkVersions = smrtLinkVersion
+        this.resources.smrtLinkVersions = smrtLinkVersion
       }
       return { success, errors }
     },
@@ -305,17 +315,17 @@ export const usePacbioRunCreateStore = defineStore('pacbioRunCreate', {
      * If it is an existing run it will be updated.
      * @returns { success, errors }. Was the request successful? were there any errors?
      */
-    saveRun: async () => {
+    async saveRun() {
       const rootStore = useRootStore()
       const request = rootStore.api.traction.pacbio.runs
-
+      
       // based on the runType create the payload and the promise
       const payload = this.runType.payload({
         run: this.run,
-        plates: this.plates,
-        wells: this.wells,
-        smrtLinkVersion: this.smrtLinkVersion,
-        instrumentType: this.instrumentType,
+        plates:this.plates,
+        wells:this.wells,
+        smrtLinkVersion:this.smrtLinkVersion,
+        instrumentType:this.instrumentType,
       })
       const promise = this.runType.promise({ request, payload })
       const response = await handleResponse(promise)
@@ -332,7 +342,7 @@ export const usePacbioRunCreateStore = defineStore('pacbioRunCreate', {
      * @returns { success, errors }. Was the action successful? were there any errors?
      *
      */
-    setRun: async (id) => {
+    async setRun({ id }) {
       // create and set the runType based on the id
       this.runType = createRunType({ id })
 
@@ -346,13 +356,13 @@ export const usePacbioRunCreateStore = defineStore('pacbioRunCreate', {
           id,
           ...attributes,
         }
-        this.smrtLinkVersion = this.defaultSmrtLinkVersion
+        this.smrtLinkVersion = this.smrtLinkVersionList
         // success will always be true and errors will be empty
         return { success: true, errors: [] }
       }
 
       // if it is an existing run, call the fetch run action
-      const { success, errors = [] } = await this.fetchRun(id)
+      const { success, errors = [] } = await this.fetchRun({ id })
 
       // return the result from the fetchRun
       return { success, errors }
@@ -365,7 +375,7 @@ export const usePacbioRunCreateStore = defineStore('pacbioRunCreate', {
      * @param position The position of the well
      * @param plateNumber The plate number of the well
      */
-    getOrCreateWell: ({ position, plateNumber }) => {
+    getOrCreateWell({ position, plateNumber }) {
       return (
         this.wells[plateNumber][position] || newWell({ position, ...this.defaultWellAttributes })
       )
@@ -376,14 +386,12 @@ export const usePacbioRunCreateStore = defineStore('pacbioRunCreate', {
      * @param well The well to update
      * @param plateNumber The plate number of the well
      */
-    updateWell: ({ well, plateNumber }) => {
+    updateWell({ well, plateNumber }) {
       //Replaces the well in store with the updated well
-      // TODO: is Object.assign necessary here?
-      this.wells[plateNumber][well.position] = Object.assign(
-        {},
-        this.wells[plateNumber][well.position],
-        well,
-      )
+      this.wells[plateNumber][well.position] = {
+        ...this.wells[plateNumber]?.[well.position],
+        ...well,
+      }
     },
 
     /**
@@ -393,7 +401,7 @@ export const usePacbioRunCreateStore = defineStore('pacbioRunCreate', {
      * Adds _destroy key to the well in store so future wells
      * for the same position can be added
      */
-    deleteWell: ({ well, plateNumber }) => {
+    deleteWell({ well, plateNumber }) {
       const id = this.wells[plateNumber][well.position].id
 
       delete this.wells[plateNumber][well.position]
@@ -407,7 +415,7 @@ export const usePacbioRunCreateStore = defineStore('pacbioRunCreate', {
      * @param barcode The barcode to find
      * @returns {Object} {success, errors, pool} success: was the pool returned, errors: any errors from API call, pool: The actual pool
      */
-    getPool: async ({ barcode }) => {
+    async getPool({ barcode }) {
       const { success, errors = [] } = await this.findPools({ barcode })
       const pool = success ? this.poolByBarcode(barcode) : {}
       return { success, errors, pool }
@@ -416,14 +424,14 @@ export const usePacbioRunCreateStore = defineStore('pacbioRunCreate', {
      * Updates the store with the SMRT version selected on the component.
      * @param id the id of smrtLinkVersion object to update the store with.
      */
-    setSmrtLinkVersion: (id) => {
-      this.smrtLinkVersion = { ...this.smrtLinkVersions[id] }
+    setSmrtLinkVersion(id) {
+      this.smrtLinkVersion = { ...this.resources.smrtLinkVersions[id] }
     },
 
     /**
      * Sets the defaultWellAttributes
      */
-    setDefaultWellAttributes: () => {
+    setDefaultWellAttributes() {
       this.defaultWellAttributes = defaultWellAttributes()
     },
 
@@ -434,7 +442,7 @@ export const usePacbioRunCreateStore = defineStore('pacbioRunCreate', {
      * otherwise find the instrument type based on the instrument name
      * creates the plates based on the instrument type plate count if it is a new plate
      */
-    setInstrumentData: (key) => {
+    setInstrumentData(key) {
       //Adds the instrumentType to state
       const instrumentTypeForKey = key
         ? this.instrumentTypeList[key]
@@ -461,8 +469,7 @@ export const usePacbioRunCreateStore = defineStore('pacbioRunCreate', {
       delete this.pools[id]
     },
     clearRunData() {
-      const store = useStore()
-      store.$reset()
+      this.$reset()
     },
   },
 })

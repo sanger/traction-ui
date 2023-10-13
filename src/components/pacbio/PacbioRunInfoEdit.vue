@@ -69,7 +69,7 @@
 </template>
 
 <script>
-import {mapActions,mapState} from 'pinia'
+import { mapActions, mapState } from 'pinia'
 import { usePacbioRunCreate } from '@/stores/pacbioRunCreate'
 import { PacbioInstrumentTypes } from '@/lib/PacbioInstrumentTypes'
 
@@ -84,12 +84,16 @@ export default {
     },
   },
   computed: {
- ...mapState(usePacbioRunCreate,['runItem', 'smrtLinkVersionList', 'smrtLinkVersion', 'instrumentType']),
+    ...mapState(usePacbioRunCreate, [
+      'runItem',
+      'smrtLinkVersionList',
+      'smrtLinkVersion',
+      'instrumentType',
+    ]),
     smrtLinkVersionSelectOptions() {
       // Returns an array of objects with value and text properties to make
       // the options of smrt-link-version select drop-down list.
       return Object.values(this.smrtLinkVersionList).map(({ id, name }) => ({
-
         value: id,
         text: name,
       }))
@@ -109,7 +113,7 @@ export default {
     },
   },
   methods: {
-    ...mapActions(['setSmrtLinkVersion', 'setInstrumentData']),
+    ...mapActions(usePacbioRunCreate, ['setSmrtLinkVersion', 'setInstrumentData']),
     alertOnFail({ success, errors }) {
       if (!success) {
         this.showAlert(errors, 'danger')
