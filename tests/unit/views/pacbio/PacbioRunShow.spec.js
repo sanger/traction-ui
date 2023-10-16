@@ -8,6 +8,7 @@ const smrtLinkVersions = {
     id: 1,
     name: 'v11',
     default: true,
+    active: true,
   },
 }
 

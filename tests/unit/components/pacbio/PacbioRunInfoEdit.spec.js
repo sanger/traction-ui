@@ -10,36 +10,47 @@ if (document.body) {
   document.body.appendChild(elem)
 }
 
-const props = {
-  newRecord: true,
+const smrtLinkVersions = {
+  1: {
+    id: '1',
+    name: 'v1',
+    default: true,
+    active: true,
+  },
+  2: {
+    id: '2',
+    name: 'v12_revio',
+    default: false,
+    active: true,
+  },
+  3: {
+    id: '3',
+    name: 'v12_sequel_iie',
+    default: false,
+    active: true,
+  },
+  4: {
+    id: '4',
+    name: 'v10',
+    default: false,
+    active: false,
+  },
 }
 
-const buildWrapper = () =>
-  mount(PacbioRunInfoEdit, {
-    store,
-    sync: false,
-    attachTo: elem,
-    props,
-  })
+let runInfo, wrapper
 
 describe('PacbioRunInfoEdit', () => {
-  const smrtLinkVersions = {
-    1: {
-      id: '1',
-      name: 'v1',
-      default: true,
-    },
-    2: {
-      id: '2',
-      name: 'v12_revio',
-      default: false,
-    },
-    3: {
-      id: '3',
-      name: 'v12_sequel_iie',
-      default: false,
-    },
+  const props = {
+    newRecord: true,
   }
+
+  const buildWrapper = () =>
+    mount(PacbioRunInfoEdit, {
+      store,
+      sync: false,
+      attachTo: elem,
+      props,
+    })
 
   const run = {
     id: 'new',
@@ -48,8 +59,6 @@ describe('PacbioRunInfoEdit', () => {
     dna_control_complex_box_barcode: null,
     comments: null,
   }
-
-  let runInfo, wrapper
 
   beforeEach(() => {
     wrapper = buildWrapper()
@@ -80,17 +89,24 @@ describe('PacbioRunInfoEdit', () => {
     )
   })
 
+  it('will only show the instrument type options that are active', () => {
+    const options = wrapper.find('[data-attribute=system_name]').findAll('option')
+    expect(options.length).toEqual(2)
+  })
+
   describe('#computed', () => {
     describe('#smrtLinkVersionSelectOptions', () => {
-      it('returns the correct versions', () => {
-        expect(Object.values(runInfo.smrtLinkVersionList).length).toEqual(3)
+      it('returns only the active versions', () => {
+        expect(runInfo.smrtLinkVersionSelectOptions.length).toEqual(3)
       })
 
       it('returns smrt link version select options', () => {
-        const options = Object.values(runInfo.smrtLinkVersionList).map(({ id, name }) => ({
-          value: id,
-          text: name,
-        }))
+        const options = Object.values(runInfo.smrtLinkVersionList)
+          .slice(0, 3)
+          .map(({ id, name }) => ({
+            value: id,
+            text: name,
+          }))
 
         expect(runInfo.smrtLinkVersionSelectOptions).toEqual(options)
       })
@@ -152,6 +168,46 @@ describe('PacbioRunInfoEdit', () => {
       const input = wrapper.find('[data-attribute=comments]')
       await input.setValue('example comment')
       expect(store.state.traction.pacbio.runCreate.run.comments).toEqual('example comment')
+    })
+  })
+})
+
+describe('PacbioRunInfoEdit old run', () => {
+  const props = {
+    newRecord: false,
+  }
+
+  const buildWrapper = () =>
+    mount(PacbioRunInfoEdit, {
+      store,
+      sync: false,
+      attachTo: elem,
+      props,
+    })
+
+  const run = {
+    id: 'new',
+    name: 'TRACTION-RUN-4',
+    system_name: 'Sequel I',
+    dna_control_complex_box_barcode: null,
+    comments: null,
+  }
+
+  beforeEach(() => {
+    wrapper = buildWrapper()
+    runInfo = wrapper.vm
+    store.state.traction.pacbio.runCreate.run = { ...run }
+    store.state.traction.pacbio.runCreate.smrtLinkVersion = smrtLinkVersions[4]
+    store.state.traction.pacbio.runCreate.resources.smrtLinkVersions = smrtLinkVersions
+    store.state.traction.pacbio.runCreate.instrumentTypeList = PacbioInstrumentTypes
+    store.state.traction.pacbio.runCreate.instrumentType = PacbioInstrumentTypes.SequelI
+  })
+
+  describe('#computed', () => {
+    describe('#smrtLinkVersionSelectOptions', () => {
+      it('includes an inactive version if the record has that value', () => {
+        expect(runInfo.smrtLinkVersionSelectOptions.length).toEqual(4)
+      })
     })
   })
 })

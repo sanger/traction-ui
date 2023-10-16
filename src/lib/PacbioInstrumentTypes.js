@@ -24,6 +24,7 @@ const PacbioInstrumentTypes = {
     labwareType: LabwareTypes.Plate4,
     plateClasses: 'w-32 mx-auto',
     sequencingKitBoxBarcodeLength: 28,
+    active: true,
   },
   SequelIIe: {
     key: 'SequelIIe',
@@ -32,6 +33,25 @@ const PacbioInstrumentTypes = {
     labwareType: LabwareTypes.Plate96,
     plateClasses: 'w-full',
     sequencingKitBoxBarcodeLength: 21,
+    active: true,
+  },
+  SequelII: {
+    key: 'SequelII',
+    name: 'Sequel II',
+    plateCount: 1,
+    labwareType: LabwareTypes.Plate96,
+    plateClasses: 'w-full',
+    sequencingKitBoxBarcodeLength: 21,
+    active: false,
+  },
+  SequelI: {
+    key: 'SequelI',
+    name: 'Sequel I',
+    plateCount: 1,
+    labwareType: LabwareTypes.Plate96,
+    plateClasses: 'w-full',
+    sequencingKitBoxBarcodeLength: 21,
+    active: false,
   },
 }
 
