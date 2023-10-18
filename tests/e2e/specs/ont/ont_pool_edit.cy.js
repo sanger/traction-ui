@@ -1,8 +1,11 @@
 describe('ONT Pool Edit', () => {
   beforeEach(() => {
-    cy.intercept('v1/ont/pools?include=tube,libraries.tag,libraries.request', {
-      fixture: 'tractionOntPools.json',
-    })
+    cy.intercept(
+      'v1/ont/pools?page[size]=25&page[number]=1&include=tube,libraries.tag,libraries.request',
+      {
+        fixture: 'tractionOntPools.json',
+      },
+    )
     cy.intercept(
       'v1/ont/pools/7?include=libraries.tag.tag_set,libraries.source_plate.wells.requests,libraries.source_tube.requests,libraries.request,tube',
       {

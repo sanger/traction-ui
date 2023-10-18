@@ -48,9 +48,9 @@ const deleteLibraries = async ({ getters }, libraryIds) => {
 const setLibraries = async ({ commit, getters }, filter, page) => {
   const request = getters.libraryRequest
   const promise = request.get({
-    include: 'request,tag,tube,pool',
-    filter,
     page,
+    filter,
+    include: 'request,tag,tube,pool',
   })
   const response = await handleResponse(promise)
 

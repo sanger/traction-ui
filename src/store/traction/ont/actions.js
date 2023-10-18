@@ -10,7 +10,7 @@ export default {
    */
   fetchOntRuns: async ({ commit, rootState }, filter, page) => {
     const request = rootState.api.traction.ont.runs
-    const promise = request.get({ include: 'instrument', filter, page })
+    const promise = request.get({ page, filter, include: 'instrument' })
 
     const response = await handleResponse(promise)
 

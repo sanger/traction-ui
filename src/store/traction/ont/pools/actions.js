@@ -291,7 +291,7 @@ export default {
    */
   fetchOntRequests: async ({ commit, rootState }, filter, page) => {
     const request = rootState.api.traction.ont.requests
-    const promise = request.get({ filter, page })
+    const promise = request.get({ page, filter })
     const response = await handleResponse(promise)
 
     const { success, data: { data, meta = {} } = {}, errors = [] } = response
@@ -338,8 +338,8 @@ export default {
   fetchOntPools: async ({ commit, rootState }, filter, page) => {
     const request = rootState.api.traction.ont.pools
     const promise = request.get({
-      filter,
       page,
+      filter,
       include: 'tube,libraries.tag,libraries.request',
     })
     const response = await handleResponse(promise)

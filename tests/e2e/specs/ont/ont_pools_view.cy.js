@@ -1,13 +1,11 @@
 describe('Ont pools view', () => {
-  beforeEach(() => {
-    cy.intercept('flipper/api/actors/User', {
-      flipper_id: 'User',
-    })
-  })
   it('Visits the ont pools url', () => {
-    cy.intercept('v1/ont/pools?include=tube,libraries.tag,libraries.request', {
-      fixture: 'tractionOntPools.json',
-    })
+    cy.intercept(
+      'v1/ont/pools?page[size]=25&page[number]=1&include=tube,libraries.tag,libraries.request',
+      {
+        fixture: 'tractionOntPools.json',
+      },
+    )
     cy.visit('#/ont/pools')
     // Check filters are visible
     cy.get('#filterInput').should('be.visible')

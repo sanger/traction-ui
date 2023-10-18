@@ -3,7 +3,7 @@ import { groupIncludedByResource } from '@/api/JsonApi'
 
 const setPlates = async ({ commit, getters }, filter, page) => {
   const request = getters.getPlates
-  const promise = request.get({ filter, page })
+  const promise = request.get({ page, filter })
   const response = await handleResponse(promise)
   const { success, data: { data, meta = {} } = {}, errors = [] } = response
 

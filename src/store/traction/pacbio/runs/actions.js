@@ -3,7 +3,7 @@ import { dataToObjectById } from '@/api/JsonApi'
 
 const fetchPacbioRuns = async ({ commit, getters }, filter, page) => {
   const request = getters.runRequest
-  const promise = request.get({ filter, page, include: 'plates' })
+  const promise = request.get({ page, filter, include: 'plates' })
   const response = await handleResponse(promise)
 
   const { success, data: { data, included = [], meta = {} } = {}, errors = [] } = response

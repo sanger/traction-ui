@@ -1764,5 +1764,8 @@
     "first": "http://localhost:3100/v1/ont/pools?include=tube%2Clibraries.tag%2Clibraries.request&page%5Bnumber%5D=1&page%5Bsize%5D=3",
     "prev": "http://localhost:3100/v1/ont/pools?include=tube%2Clibraries.tag%2Clibraries.request&page%5Bnumber%5D=2&page%5Bsize%5D=3",
     "last": "http://localhost:3100/v1/ont/pools?include=tube%2Clibraries.tag%2Clibraries.request&page%5Bnumber%5D=3&page%5Bsize%5D=3"
+  },
+  "meta": {
+    "page_count": 1
   }
 }
