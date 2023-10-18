@@ -1,7 +1,6 @@
 import PacbioRunIndex from '@/views/pacbio/PacbioRunIndex'
 import Response from '@/api/Response'
-import { mount, store, Data, flushPromises, nextTick } from '@support/testHelper'
-import { router } from '../../../support/testHelper'
+import { mount, store, Data, flushPromises, nextTick, router } from '@support/testHelper'
 
 describe('PacbioRunIndex.vue', () => {
   let wrapper, pacbioRunIndex, mockRuns, mockVersions
@@ -85,7 +84,7 @@ describe('PacbioRunIndex.vue', () => {
       const button = wrapper.find('[data-action=new-run]')
       button.trigger('click')
       await flushPromises()
-      expect(pacbioRunIndex.$route.path).toEqual('/pacbio/run/new')
+      expect(router.currentRoute.value.path).toEqual('/pacbio/run/new')
     })
   })
 
@@ -358,7 +357,7 @@ describe('PacbioRunIndex.vue', () => {
       const button = wrapper.find('#editRun-1')
       button.trigger('click')
       await flushPromises()
-      expect(pacbioRunIndex.$route.path).toEqual('/pacbio/run/1')
+      expect(router.currentRoute.value.path).toEqual('/pacbio/run/1')
     })
   })
 })

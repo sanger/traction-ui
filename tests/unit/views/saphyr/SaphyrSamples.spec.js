@@ -40,7 +40,7 @@ describe('Samples.vue', () => {
     })
 
     it('contains the correct data', () => {
-      expect(wrapper.find('tbody').findAll('tr').length).toEqual(6)
+      expect(wrapper.find('tbody').findAll('tr').length).toEqual(10)
     })
   })
 

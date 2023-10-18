@@ -78,7 +78,8 @@ export default {
     },
   },
   setup() {
-    const { filter_input, filter_value, filter_wildcard, page_size, page_number, clearFilter } = useQueryParams()
+    const { filter_input, filter_value, filter_wildcard, page_size, page_number, clearFilter } =
+      useQueryParams()
     return { filter_input, filter_value, filter_wildcard, page_size, page_number, clearFilter }
   },
   computed: {

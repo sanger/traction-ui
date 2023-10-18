@@ -13,7 +13,6 @@ import { components } from '@/components/shared'
     This is useful for tests that don't use these methods and run in different environments
     e.g. tests/unit/lib/csv/pacbio.spec.js
 */
-
 config.global.mixins = [globalAlert]
 config.global.plugins = [router, store]
 config.global.components = components

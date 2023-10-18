@@ -89,7 +89,7 @@ describe('PacbioPoolIndex.vue', () => {
       button = wrapper.find('#editPool-1')
       button.trigger('click')
       await flushPromises()
-      expect(wrapper.vm.$route.path).toBe('/pacbio/pool/1')
+      expect(router.currentRoute.value.path).toBe('/pacbio/pool/1')
     })
   })
 

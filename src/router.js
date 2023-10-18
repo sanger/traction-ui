@@ -167,7 +167,10 @@ const router = createRouter({
           path: 'samples',
           name: 'ONTSampleIndex',
           component: ONTSampleIndex,
-          meta: { page: 'Samples' },
+          meta: { page: 'Samples', paginated: true },
+          beforeEnter(to) {
+            checkPaginationParams(to)
+          },
         },
         {
           path: 'pool/:id',
@@ -180,13 +183,19 @@ const router = createRouter({
           path: 'pools',
           name: 'ONTPoolIndex',
           component: ONTPoolIndex,
-          meta: { page: 'Pools' },
+          meta: { page: 'Pools', paginated: true },
+          beforeEnter(to) {
+            checkPaginationParams(to)
+          },
         },
         {
           path: 'runs',
           name: 'ONTRunIndex',
           component: ONTRunIndex,
-          meta: { page: 'Runs' },
+          meta: { page: 'Runs', paginated: true },
+          beforeEnter(to) {
+            checkPaginationParams(to)
+          },
         },
         {
           path: 'run/:id',

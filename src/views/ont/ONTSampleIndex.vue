@@ -1,15 +1,12 @@
 <template>
-  <DataFetcher :fetcher="fetchOntRequests">
-    <FilterCard :fetcher="fetchOntRequests" :filter-options="filterOptions" />
+  <DataFetcher :fetcher="fetchRequests">
+    <FilterCard :fetcher="fetchRequests" :filter-options="filterOptions" />
     <div class="flex flex-col">
       <div class="clearfix">
         <traction-pagination
-          v-model="currentPage"
           class="float-right"
-          :total-rows="requests.length"
-          :per-page="perPage"
+          :total-pages="totalPages"
           aria-controls="samples-table"
-          @update:modelValue="onPageChange($event)"
         >
         </traction-pagination>
       </div>
@@ -44,6 +41,7 @@ import TableHelper from '@/mixins/TableHelper'
 import { createNamespacedHelpers } from 'vuex'
 import DataFetcher from '@/components/DataFetcher.vue'
 import FilterCard from '@/components/FilterCard.vue'
+import useQueryParams from '@/lib/QueryParamsHelper'
 // TODO: Move these actions back to top level store.
 const { mapActions, mapGetters } = createNamespacedHelpers('traction/ont/pools')
 
@@ -54,6 +52,10 @@ export default {
     FilterCard,
   },
   mixins: [TableHelper],
+  setup() {
+    const { filter_value, filter_input, filter_wildcard, page_size, page_number } = useQueryParams()
+    return { filter_value, filter_input, filter_wildcard, page_size, page_number }
+  },
   data() {
     return {
       fields: [
@@ -82,8 +84,7 @@ export default {
       selected: [],
       sortBy: 'created_at',
       sortDesc: true,
-      perPage: 25,
-      currentPage: 1,
+      totalPages: 1,
     }
   },
   computed: {
@@ -96,6 +97,14 @@ export default {
   },
   methods: {
     ...mapActions(['fetchOntRequests']),
+    async fetchRequests() {
+      const page = { size: this.page_size.toString(), number: this.page_number.toString() }
+      const filter =
+        !this.filter_value || !this.filter_input ? {} : { [this.filter_value]: this.filter_input }
+      const { success, errors, meta } = await this.fetchOntRequests({ page: page, filter: filter })
+      this.totalPages = meta.page_count
+      return { success, errors }
+    },
   },
 }
 </script>

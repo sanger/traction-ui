@@ -1,15 +1,12 @@
 <template>
-  <DataFetcher :fetcher="fetchOntPools">
-    <FilterCard :fetcher="fetchOntPools" :filter-options="filterOptions" />
+  <DataFetcher :fetcher="fetchPools">
+    <FilterCard :fetcher="fetchPools" :filter-options="filterOptions" />
     <div class="flex flex-col">
       <div class="clearfix">
         <traction-pagination
-          v-model="currentPage"
           class="float-right"
-          :total-rows="pools.length"
-          :per-page="perPage"
+          :total-pages="totalPages"
           aria-controls="pool-index"
-          @update:modelValue="onPageChange($event)"
         >
         </traction-pagination>
       </div>
@@ -86,6 +83,7 @@ import FilterCard from '@/components/FilterCard.vue'
 import PrinterModal from '@/components/PrinterModal'
 import { mapActions, mapGetters } from 'vuex'
 import { getCurrentDate } from '@/lib/DateHelpers'
+import useQueryParams from '@/lib/QueryParamsHelper'
 
 export default {
   name: 'OntPoolIndex',
@@ -95,6 +93,10 @@ export default {
     PrinterModal,
   },
   mixins: [TableHelper],
+  setup() {
+    const { filter_value, filter_input, filter_wildcard, page_size, page_number } = useQueryParams()
+    return { filter_value, filter_input, filter_wildcard, page_size, page_number }
+  },
   data() {
     return {
       fields: [
@@ -132,8 +134,7 @@ export default {
       filter: null,
       sortBy: 'created_at',
       sortDesc: true,
-      perPage: 25,
-      currentPage: 1,
+      totalPages: 1,
     }
   },
   computed: {
@@ -176,6 +177,14 @@ export default {
       })
 
       this.showAlert(message, success ? 'success' : 'danger')
+    },
+    async fetchPools() {
+      const page = { size: this.page_size.toString(), number: this.page_number.toString() }
+      const filter =
+        !this.filter_value || !this.filter_input ? {} : { [this.filter_value]: this.filter_input }
+      const { success, errors, meta } = await this.fetchOntPools({ page: page, filter: filter })
+      this.totalPages = meta.page_count
+      return { success, errors }
     },
     ...mapActions('traction/ont/pools', ['fetchOntPools']),
     ...mapActions('printMyBarcode', ['createPrintJob']),

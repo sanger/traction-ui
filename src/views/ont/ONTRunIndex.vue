@@ -1,18 +1,15 @@
 <template>
-  <DataFetcher :fetcher="fetchOntRuns">
+  <DataFetcher :fetcher="fetchRuns">
+    <FilterCard :fetcher="fetchRuns" :filter-options="filterOptions" />
     <div class="flex flex-col">
-      <div class="clearfix mt-5">
+      <div class="clearfix">
         <traction-button id="newRun" class="float-left" theme="create" @click="redirectToRun()">
           New Run
         </traction-button>
-        <span class="font-weight-bold">Total records: {{ runs.length }}</span>
         <traction-pagination
-          v-model="currentPage"
           class="float-right"
-          :total-rows="runs.length"
-          :per-page="perPage"
+          :total-pages="totalPages"
           aria-controls="run-index"
-          @update:modelValue="onPageChange($event)"
         ></traction-pagination>
       </div>
 
@@ -48,6 +45,8 @@
 import TableHelper from '@/mixins/TableHelper'
 import DataFetcher from '@/components/DataFetcher.vue'
 import DownloadIcon from '@/icons/DownloadIcon.vue'
+import FilterCard from '@/components/FilterCard.vue'
+import useQueryParams from '@/lib/QueryParamsHelper'
 
 import { createNamespacedHelpers } from 'vuex'
 const { mapActions, mapGetters } = createNamespacedHelpers('traction/ont')
@@ -56,9 +55,14 @@ export default {
   name: 'ONTRuns',
   components: {
     DataFetcher,
+    FilterCard,
     DownloadIcon,
   },
   mixins: [TableHelper],
+  setup() {
+    const { filter_value, filter_input, filter_wildcard, page_size, page_number } = useQueryParams()
+    return { filter_value, filter_input, filter_wildcard, page_size, page_number }
+  },
   data() {
     return {
       fields: [
@@ -79,10 +83,15 @@ export default {
         { key: 'created_at', label: 'Created at (UTC)', sortable: true },
         { key: 'actions', label: 'Actions', tdClass: 'actions' },
       ],
+      filterOptions: [
+        { value: '', text: '' },
+        { value: 'experiment_name', text: 'Experiment ID' },
+        { value: 'state', text: 'State' },
+        // Need to specify filters in json api resources if we want more filters
+      ],
       sortBy: 'created_at',
       sortDesc: true,
-      currentPage: 1,
-      perPage: 25,
+      totalPages: 1,
     }
   },
   computed: {
@@ -104,6 +113,15 @@ export default {
       this.$router.push({ path: `/ont/run/${runId || 'new'}` })
     },
     ...mapActions(['fetchOntRuns']),
+    async fetchRuns() {
+      const page = { size: this.page_size.toString(), number: this.page_number.toString() }
+      const filter =
+        !this.filter_value || !this.filter_input ? {} : { [this.filter_value]: this.filter_input }
+
+      const { success, errors, meta } = await this.fetchOntRuns({ page: page, filter: filter })
+      this.totalPages = meta.page_count
+      return { success, errors }
+    },
   },
 }
 </script>

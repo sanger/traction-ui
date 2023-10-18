@@ -13,6 +13,7 @@ describe('ONTRuns.vue', () => {
 
     wrapper = await mount(ONTRuns, { store, router })
     runs = wrapper.vm
+    await flushPromises()
   })
 
   describe('building the table', () => {
@@ -37,6 +38,71 @@ describe('ONTRuns.vue', () => {
     })
   })
 
+  describe('pagination', () => {
+    beforeEach(async () => {
+      const filtered_data = { ...Data.OntRuns }
+      filtered_data.data.data.splice(2, 4)
+      const get = vi.spyOn(store.state.api.traction.ont.runs, 'get')
+      get.mockReturnValue(Data.OntRuns)
+
+      wrapper = mount(ONTRuns, {
+        store,
+      })
+      await flushPromises()
+
+      get.mockReturnValue(filtered_data)
+      // This push causes pacbio runs to be fetched because of filterCard watchers
+      // And we return filtered_data
+      await router.push({ query: { page_size: 2, page_number: 1 } })
+    })
+
+    it('will paginate the runs in the table', () => {
+      expect(wrapper.find('tbody').findAll('tr').length).toEqual(2)
+      expect(wrapper.vm.page_number).toEqual(1)
+      expect(wrapper.vm.page_size).toEqual(2)
+    })
+
+    it('calls fetcher with the correct data given the query params', async () => {
+      await router.push({
+        query: { page_size: 2, page_number: 2, filter_value: '123', filter_input: 'barcode' },
+      })
+      wrapper.vm.fetchOntRuns = vi.fn()
+      wrapper.vm.fetchOntRuns.mockReturnValue({
+        success: true,
+        errors: [],
+        meta: { page_count: 1 },
+      })
+
+      await wrapper.vm.fetchRuns()
+      expect(wrapper.vm.fetchOntRuns).toBeCalledWith({
+        page: { size: '2', number: '2' },
+        filter: { 123: 'barcode' },
+      })
+    })
+  })
+
+  describe('filtering runs', () => {
+    beforeEach(async () => {
+      const get = vi.spyOn(store.state.api.traction.ont.runs, 'get')
+      get.mockReturnValue(Data.OntRuns)
+      wrapper = mount(ONTRuns, {
+        store,
+        data() {
+          return {
+            filter: mockRuns[0].experiment_name,
+          }
+        },
+      })
+      await flushPromises()
+      wrapper.vm.tableData = [mockRuns[0]]
+    })
+
+    it('will filter the runs in the table', () => {
+      expect(wrapper.find('tbody').findAll('[data-testid="row"]').length).toEqual(1)
+      expect(wrapper.find('tbody').findAll('[data-testid="row"]')[0].text()).toContain('ONTRUN-1')
+    })
+  })
+
   describe('New run button', () => {
     it('contains a create new run button', () => {
       expect(wrapper.find('button').exists()).toBeTruthy()
@@ -46,7 +112,7 @@ describe('ONTRuns.vue', () => {
       const button = wrapper.find('#newRun')
       button.trigger('click')
       await flushPromises()
-      expect(runs.$route.path).toEqual('/ont/run/new')
+      expect(router.currentRoute.value.path).toEqual('/ont/run/new')
     })
   })
 
@@ -60,7 +126,7 @@ describe('ONTRuns.vue', () => {
       const button = wrapper.find('#editRun-1')
       button.trigger('click')
       await flushPromises()
-      expect(runs.$route.path).toEqual('/ont/run/1')
+      expect(router.currentRoute.value.path).toEqual('/ont/run/1')
     })
   })
 
