@@ -1,9 +1,6 @@
-import { mount } from '@support/testHelper'
-
+import { mount, flushPromises, router } from '@support/testHelper'
 import TractionPagination from '@/components/shared/TractionPagination'
-
 import { beforeEach, describe, expect, it } from 'vitest'
-import { flushPromises, router } from '../../../support/testHelper'
 
 describe('TractionPagination.vue', () => {
   const buildWrapper = (props = {}) => {
@@ -25,7 +22,6 @@ describe('TractionPagination.vue', () => {
       expect(wrapper.findAll('[data-testid=page-button]')[1].attributes('class')).toContain(
         'text-white bg-sdb-200 shadow-sm focus:shadow-outline-sdb hover:bg-sdb-300 active:bg-sdb-400',
       )
-      console.log(wrapper.vm.$route.query)
       expect(wrapper.vm.page_size).equals(5)
       expect(wrapper.find('[data-testid=per-page-input]').element.value).toBe('5')
     })

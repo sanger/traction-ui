@@ -52,10 +52,9 @@
  *     <FilterCard :fetcher="fetchServiceData" :filter-options=[{ value: '', text: ''}] />
  * </template>
  */
-import QueryParamsHelper from '@/mixins/QueryParamsHelper'
+import useQueryParams from '@/lib/QueryParamsHelper'
 export default {
   name: 'FilterCard',
-  mixins: [QueryParamsHelper],
   props: {
     // A method that performs the required data fetch
     fetcher: {
@@ -77,6 +76,10 @@ export default {
       type: Boolean,
       default: true,
     },
+  },
+  setup() {
+    const { filter_input, filter_value, filter_wildcard, page_size, page_number, clearFilter } = useQueryParams()
+    return { filter_input, filter_value, filter_wildcard, page_size, page_number, clearFilter }
   },
   computed: {
     isWildcardOption() {

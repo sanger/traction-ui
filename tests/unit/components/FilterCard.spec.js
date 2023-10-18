@@ -1,7 +1,6 @@
-import { mount, router } from '@support/testHelper'
+import { mount, flushPromises, router } from '@support/testHelper'
 import FilterCard from '@/components/FilterCard'
 import { expect } from 'vitest'
-import { flushPromises } from '@vue/test-utils'
 
 describe('FilterCard.vue', () => {
   let wrapper
@@ -44,7 +43,7 @@ describe('FilterCard.vue', () => {
     filterInput.element.value = 10
     await filterInput.trigger('input')
     await flushPromises()
-    expect(wrapper.vm.$route.query.filter_input).toBe('10')
+    expect(wrapper.vm.filter_input).toBe('10')
   })
 
   it('filter value updates query params correctly', async () => {
@@ -55,7 +54,7 @@ describe('FilterCard.vue', () => {
     filterValue[0].setSelected()
     await flushPromises()
     // 1 since the selected value of Filter 1 is 1
-    expect(wrapper.vm.$route.query.filter_value).toBe('1')
+    expect(wrapper.vm.filter_value).toBe('1')
   })
 
   describe('filter wildcard', () => {
@@ -82,7 +81,7 @@ describe('FilterCard.vue', () => {
       const filterWildcard = wrapper.find('#filterWildcard')
       filterWildcard.setChecked()
       await flushPromises()
-      expect(wrapper.vm.$route.query.filter_wildcard).toBe('true')
+      expect(wrapper.vm.filter_wildcard).toBe('true')
     })
   })
 
@@ -100,6 +99,7 @@ describe('FilterCard.vue', () => {
     wrapper.findAll('button')[0].trigger('click')
     await flushPromises()
     // removes filter query params and sets page back to 1
-    expect(wrapper.vm.$route.query).toEqual({ page_number: '1', page_size: '5' })
+    expect(wrapper.vm.page_number).toEqual(1)
+    expect(wrapper.vm.page_size).toEqual(5)
   })
 })

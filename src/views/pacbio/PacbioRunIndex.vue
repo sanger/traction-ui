@@ -110,10 +110,10 @@
 import DataFetcher from '@/components/DataFetcher'
 import FilterCard from '@/components/FilterCard'
 import TableHelper from '@/mixins/TableHelper'
-import QueryParamsHelper from '@/mixins/QueryParamsHelper'
 import { mapActions, mapGetters } from 'vuex'
 import DownloadIcon from '@/icons/DownloadIcon.vue'
 import TractionBadge from '@/components/shared/TractionBadge.vue'
+import useQueryParams from '@/lib/QueryParamsHelper'
 
 export default {
   name: 'PacbioRuns',
@@ -123,7 +123,11 @@ export default {
     DownloadIcon,
     TractionBadge,
   },
-  mixins: [TableHelper, QueryParamsHelper],
+  mixins: [TableHelper],
+  setup() {
+    const { filter_value, filter_input, filter_wildcard, page_size, page_number } = useQueryParams()
+    return { filter_value, filter_input, filter_wildcard, page_size, page_number }
+  },
   data() {
     return {
       fields: [

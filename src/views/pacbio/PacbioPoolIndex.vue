@@ -84,12 +84,12 @@
 
 <script>
 import TableHelper from '@/mixins/TableHelper'
-import QueryParamsHelper from '@/mixins/QueryParamsHelper'
 import PrinterModal from '@/components/PrinterModal'
 import FilterCard from '@/components/FilterCard'
 import DataFetcher from '@/components/DataFetcher'
 import { mapActions, mapGetters } from 'vuex'
 import { getCurrentDate } from '@/lib/DateHelpers'
+import useQueryParams from '@/lib/QueryParamsHelper'
 
 export default {
   name: 'PacbioPoolIndex',
@@ -98,7 +98,11 @@ export default {
     FilterCard,
     DataFetcher,
   },
-  mixins: [TableHelper, QueryParamsHelper],
+  mixins: [TableHelper],
+  setup() {
+    const { filter_value, filter_input, filter_wildcard, page_size, page_number } = useQueryParams()
+    return { filter_value, filter_input, filter_wildcard, page_size, page_number }
+  },
   data() {
     return {
       fields: [

@@ -46,12 +46,13 @@
 
 <script>
 import TableHelper from '@/mixins/TableHelper'
-import QueryParamsHelper from '@/mixins/QueryParamsHelper'
 import Plate from '@/components/plates/PlateItem'
 import FilterCard from '@/components/FilterCard'
 import DataFetcher from '@/components/DataFetcher'
 import { createNamespacedHelpers } from 'vuex'
+import useQueryParams from '@/lib/QueryParamsHelper'
 const { mapActions, mapGetters } = createNamespacedHelpers('traction/pacbio/plates')
+
 export default {
   name: 'PacbioPlates',
   components: {
@@ -59,7 +60,11 @@ export default {
     FilterCard,
     DataFetcher,
   },
-  mixins: [TableHelper, QueryParamsHelper],
+  mixins: [TableHelper],
+  setup() {
+    const { filter_value, filter_input, filter_wildcard, page_size, page_number } = useQueryParams()
+    return { filter_value, filter_input, filter_wildcard, page_size, page_number }
+  },
   data() {
     return {
       fields: [

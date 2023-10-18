@@ -68,14 +68,13 @@
 </template>
 
 <script>
-import QueryParamsHelper from '@/mixins/QueryParamsHelper'
+import useQueryParams from '@/lib/QueryParamsHelper'
 export default {
   /**
    * # TractionPagination
    * Uses router query params to control pagination
    */
   name: 'TractionPagination',
-  mixins: [QueryParamsHelper],
   inheritAttrs: false,
   props: {
     /**How many total items are in the list */
@@ -88,6 +87,10 @@ export default {
       type: Number,
       default: 3,
     },
+  },
+  setup() {
+    const { page_number, page_size } = useQueryParams()
+    return { page_number, page_size }
   },
   computed: {
     //If total number of pages is less than number of buttons given, display only as many buttons as the pages
