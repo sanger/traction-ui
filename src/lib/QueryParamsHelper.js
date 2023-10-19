@@ -5,9 +5,9 @@ export default function useQueryParams() {
   const route = useRoute()
   const router = useRouter()
 
-  function updateRouter(values = {}) {
+  async function updateRouter(values = {}) {
     const router_query = { ...route.query, ...values }
-    router.push({ query: router_query })
+    await router.push({ query: router_query })
   }
 
   async function clearFilter() {
@@ -22,42 +22,50 @@ export default function useQueryParams() {
     get() {
       return route.query.filter_value
     },
-    set(value) {
-      updateRouter({ filter_value: value })
+    async set(value) {
+      await updateRouter({ filter_value: value })
     },
   })
   const filter_input = computed({
     get() {
       return route.query.filter_input
     },
-    set(value) {
-      updateRouter({ filter_input: value })
+    async set(value) {
+      await updateRouter({ filter_input: value })
     },
   })
   const filter_wildcard = computed({
     get() {
       return route.query.filter_wildcard
     },
-    set(value) {
-      updateRouter({ filter_wildcard: value })
+    async set(value) {
+      await updateRouter({ filter_wildcard: value })
     },
   })
   const page_size = computed({
     get() {
-      return Number(route.query.page_size)
+      return Number(route.query.page_size) || 0
     },
-    set(value) {
-      updateRouter({ page_size: value })
+    async set(value) {
+      await updateRouter({ page_size: value })
     },
   })
   const page_number = computed({
     get() {
-      return Number(route.query.page_number)
+      return Number(route.query.page_number) || 0
     },
-    set(value) {
-      updateRouter({ page_number: value })
+    async set(value) {
+      await updateRouter({ page_number: value })
     },
   })
 
-  return { filter_value, filter_input, filter_wildcard, page_size, page_number, clearFilter }
+  return {
+    filter_value,
+    filter_input,
+    filter_wildcard,
+    page_size,
+    page_number,
+    clearFilter,
+    updateRouter,
+  }
 }
