@@ -1,55 +1,81 @@
 import PacbioRunWell from '@/components/labware/PacbioRunWell'
-import { mount, store } from '@support/testHelper'
+import { mount, createTestingPinia } from '@support/testHelper'
 import storePools from '@tests/data/StorePools'
-import { newPlate } from '@/store/traction/pacbio/runCreate/run'
+import { newPlate } from '@/stores/utilities/run'
+import { usePacbioRunCreateStore } from '@/stores/pacbioRunCreate'
+import { beforeEach } from 'vitest'
 
-describe('PacbioRunWell.vue', () => {
-  let well, wrapper, props, storeWell, smrtLinkVersion
+const storeWell = {
+  position: 'A1',
+  pools: ['1', '2'],
+  on_plate_loading_concentration: 234,
+  movie_time: 15,
+  generate_hifi: 'In SMRT Link',
+  binding_kit_box_barcode: '12345',
+  movie_acquisition_time: 123,
+  include_base_kinetics: 'Yes',
+  library_concentration: 123,
+  polymerase_kit: '123',
+  pre_extension_time: 1,
+}
+const props = {
+  position: 'A1',
+  plateNumber: 1,
+  interactive: true,
+}
+const smrtLinkVersions = {
+  1: { id: 1, name: 'v11', default: true, active: true },
+  2: { id: 2, name: 'v12_revio', default: false, active: true },
+}
 
-  const smrtLinkVersions = {
-    1: { id: 1, name: 'v11', default: true, active: true },
-    2: { id: 2, name: 'v12_revio', default: false, active: true },
+/**
+ * Helper method for mounting a component with a mock instance of pinia, with the given 'options'.
+ * 'options' allows to define initial state of store while instantiating the component.
+ *
+ * @param {*} options - options to be passed to the createTestingPinia method for creating a mock instance of pinia
+ * options type is
+ * {state :{},stubActions: boolean, plugins:[]}
+ *
+ */
+function mountWithStore(options) {
+  const defaultOptions = {
+    run: {},
+    plates: { 1: newPlate(1) },
+    wells: { 1: { A1: storeWell } },
+    ...storePools,
+    smrtLinkVersion: smrtLinkVersions['1'],
+    resources: { smrtLinkVersions },
   }
-
-  beforeEach(() => {
-    props = {
-      position: 'A1',
-      plateNumber: 1,
-      interactive: true,
-    }
-
-    smrtLinkVersion = smrtLinkVersions['1']
-    storeWell = {
-      position: 'A1',
-      pools: ['1', '2'],
-      on_plate_loading_concentration: 234,
-      movie_time: 15,
-      generate_hifi: 'In SMRT Link',
-      binding_kit_box_barcode: '12345',
-      movie_acquisition_time: 123,
-      include_base_kinetics: 'Yes',
-      library_concentration: 123,
-      polymerase_kit: '123',
-      pre_extension_time: 1,
-    }
-
-    store.state.traction.pacbio.runCreate = {
-      run: {},
-      plates: { 1: newPlate(1) },
-      wells: { 1: { A1: storeWell } },
-      ...storePools,
-      smrtLinkVersion,
-      resources: { smrtLinkVersions },
-    }
-
-    wrapper = mount(PacbioRunWell, {
-      store,
-      props,
+  const state = options?.state ? options.state : {}
+  const stubActions = options?.stubActions ?? false
+  const plugins = options?.plugins ?? []
+  const wrapperObj = mount(PacbioRunWell, {
+    global: {
+      plugins: [
+        createTestingPinia({
+          initialState: {
+            pacbioRunCreate: { ...defaultOptions, ...state },
+          },
+          stubActions,
+          plugins,
+        }),
+      ],
       stubs: {
         WellModal: true,
       },
-    })
+    },
+    props,
+  })
+  usePacbioRunCreateStore()
+  return { wrapperObj }
+}
 
+describe('PacbioRunWell.vue', () => {
+  let well, wrapper
+
+  beforeEach(() => {
+    const { wrapperObj } = mountWithStore()
+    wrapper = wrapperObj
     well = wrapper.vm
   })
 
@@ -69,138 +95,113 @@ describe('PacbioRunWell.vue', () => {
       })
 
       it('will be invalid if there is any missing meta data', () => {
-        storeWell.movie_time = ''
-        wrapper = mount(PacbioRunWell, {
-          store,
-          props,
-          stubs: {
-            WellModal: true,
+        const { wrapperObj } = mountWithStore({
+          state: {
+            wells: { 1: { A1: { ...storeWell, movie_time: '' } } },
           },
         })
-        const well = wrapper.find('[data-attribute=pacbio-run-well]')
+        const well = wrapperObj.find('[data-attribute=pacbio-run-well]')
         expect(well.attributes('class')).toContain('bg-failure text-white')
       })
 
       it('will be invalid if there are no pools in the store', () => {
-        storeWell.pools = []
-        wrapper = mount(PacbioRunWell, {
-          store,
-          props,
-          stubs: {
-            WellModal: true,
+        const { wrapperObj } = mountWithStore({
+          state: {
+            wells: { 1: { A1: { ...storeWell, pools: [] } } },
           },
         })
-        const well = wrapper.find('[data-attribute=pacbio-run-well]')
+        const well = wrapperObj.find('[data-attribute=pacbio-run-well]')
         expect(well.attributes('class')).toContain('bg-failure text-white')
       })
 
       it('will be valid if all required metadata is present', () => {
-        wrapper = mount(PacbioRunWell, {
-          store,
-          props,
-          stubs: {
-            WellModal: true,
-          },
-        })
-        const well = wrapper.find('[data-attribute=pacbio-run-well]')
+        const { wrapperObj } = mountWithStore()
+        const well = wrapperObj.find('[data-attribute=pacbio-run-well]')
         expect(well.attributes('class')).toContain('bg-success text-white')
       })
 
       it('will be empty if there are no pools or metadata', () => {
-        storeWell.pools = []
-        storeWell.movie_time = ''
-        storeWell.generate_hifi = ''
-        storeWell.ccs_analysis_output = ''
-        storeWell.on_plate_loading_concentration = ''
-        storeWell.pre_extension_time = ''
-        storeWell.binding_kit_box_barcode = ''
-
-        wrapper = mount(PacbioRunWell, {
-          store,
-          props,
-          stubs: {
-            WellModal: true,
+        const { wrapperObj } = mountWithStore({
+          state: {
+            wells: {
+              1: {
+                A1: {
+                  ...storeWell,
+                  pools: [],
+                  movie_time: '',
+                  generate_hifi: '',
+                  ccs_analysis_output: '',
+                  on_plate_loading_concentration: '',
+                  pre_extension_time: '',
+                  binding_kit_box_barcode: '',
+                },
+              },
+            },
           },
         })
 
-        const well = wrapper.find('[data-attribute=pacbio-run-well]')
+        const well = wrapperObj.find('[data-attribute=pacbio-run-well]')
         expect(well.attributes('class')).toContain('bg-gray-100 text-black')
       })
     })
 
     describe('for smrtlink v12_revio', () => {
       beforeEach(() => {
-        store.state.traction.pacbio.runCreate.smrtLinkVersion = smrtLinkVersions['2']
+        const { wrapperObj } = mountWithStore({ smrtLinkVersion: smrtLinkVersions['2'] })
+        wrapper = wrapperObj
       })
-
       it('will be valid if it is complete', () => {
-        wrapper = mount(PacbioRunWell, {
-          store,
-          props,
-          stubs: {
-            WellModal: true,
-          },
-        })
-
         const well = wrapper.find('[data-attribute=pacbio-run-well]')
         expect(well.attributes('class')).toContain('bg-success text-white')
       })
 
       it('will be invalid if there is any missing meta data', () => {
-        storeWell.movie_acquisition_time = ''
-        wrapper = mount(PacbioRunWell, {
-          store,
-          props,
-          stubs: {
-            WellModal: true,
+        const { wrapperObj } = mountWithStore({
+          state: {
+            smrtLinkVersion: smrtLinkVersions['2'],
+            wells: { 1: { A1: { ...storeWell, movie_acquisition_time: '' } } },
           },
         })
-        const well = wrapper.find('[data-attribute=pacbio-run-well]')
+        const well = wrapperObj.find('[data-attribute=pacbio-run-well]')
         expect(well.attributes('class')).toContain('bg-failure text-white')
       })
 
       it('will be invalid if there are no pools in the store', () => {
-        storeWell.pools = []
-        wrapper = mount(PacbioRunWell, {
-          store,
-          props,
-          stubs: {
-            WellModal: true,
+        const { wrapperObj } = mountWithStore({
+          state: {
+            wells: { 1: { A1: { ...storeWell, pools: [] } } },
+            smrtLinkVersion: smrtLinkVersions['2'],
           },
         })
-        const well = wrapper.find('[data-attribute=pacbio-run-well]')
+        const well = wrapperObj.find('[data-attribute=pacbio-run-well]')
         expect(well.attributes('class')).toContain('bg-failure text-white')
       })
 
       it('will be valid if all required metadata is present', () => {
-        wrapper = mount(PacbioRunWell, {
-          store,
-          props,
-          stubs: {
-            WellModal: true,
-          },
-        })
         const well = wrapper.find('[data-attribute=pacbio-run-well]')
         expect(well.attributes('class')).toContain('bg-success text-white')
       })
 
       it('will be empty if there are no pools or metadata', () => {
-        storeWell.pools = []
-        storeWell.movie_acquisition_time = ''
-        storeWell.polymerase_kit = ''
-        storeWell.pre_extension_time = ''
-        storeWell.library_concentration = ''
-        storeWell.include_base_kinetics = ''
-
-        wrapper = mount(PacbioRunWell, {
-          store,
-          props,
-          stubs: {
-            WellModal: true,
+        const { wrapperObj } = mountWithStore({
+          state: {
+            wells: {
+              1: {
+                A1: {
+                  ...storeWell,
+                  pools: [],
+                  movie_acquisition_time: '',
+                  polymerase_kit: '',
+                  pre_extension_time: '',
+                  library_concentration: '',
+                  include_base_kinetics: '',
+                },
+              },
+            },
+            smrtLinkVersion: smrtLinkVersions['2'],
           },
         })
-
-        const well = wrapper.find('[data-attribute=pacbio-run-well]')
+        const well = wrapperObj.find('[data-attribute=pacbio-run-well]')
         expect(well.attributes('class')).toContain('bg-gray-100 text-black')
       })
     })
@@ -211,12 +212,19 @@ describe('PacbioRunWell.vue', () => {
     const newBarcode = 'TRAC-2-1'
 
     it('adds the pool to the well', async () => {
-      wrapper.vm.updateWell = vi.fn()
+      const updateWellMockFn = vi.fn()
+      const { wrapperObj } = mountWithStore({
+        stubActions: false,
+        plugins: [
+          ({ store }) => {
+            store.updateWell = updateWellMockFn
+          },
+        ],
+      })
       expectedWell = storeWell
       expectedWell.pools.push('1')
-
-      await wrapper.vm.updatePoolBarcode(newBarcode)
-      expect(wrapper.vm.updateWell).toBeCalledWith({
+      await wrapperObj.vm.updatePoolBarcode(newBarcode)
+      expect(updateWellMockFn).toBeCalledWith({
         well: expectedWell,
         plateNumber: props.plateNumber,
       })
@@ -225,8 +233,11 @@ describe('PacbioRunWell.vue', () => {
 
   describe('tooltip', () => {
     it('will only be visible if there are some pools', async () => {
-      await wrapper.setData({ hover: true })
-      const tooltip = wrapper.find('[data-attribute=tooltip]')
+      storeWell.pools = ['1', '2']
+      const { wrapperObj } = mountWithStore()
+      await wrapperObj.setData({ hover: true })
+
+      const tooltip = wrapperObj.find('[data-attribute=tooltip]')
       // Barcodes of the tubes the store pools relate to
       const expected = 'TRAC-2-1,TRAC-2-2'
       expect(tooltip.text()).toEqual(expected)

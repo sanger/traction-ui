@@ -16,12 +16,12 @@
 
       <div class="spacer me-auto"></div>
       <traction-button
-        :id="runType.id"
+        :id="runTypeItem.id"
         class="float-right"
-        :theme="runType.theme"
-        :data-action="runType.id"
+        :theme="runTypeItem.theme"
+        :data-action="runTypeItem.id"
         @click="save"
-        >{{ runType.label }}</traction-button
+        >{{ runTypeItem.label }}</traction-button
       >
     </div>
 
@@ -44,12 +44,10 @@ import PacbioRunWellDefaultEdit from '@/components/pacbio/PacbioRunWellDefaultEd
 import PacbioPoolList from '@/components/pacbio/PacbioPoolList'
 import PacbioPlateList from '@/components/pacbio/PacbioRunPlateList'
 import DataFetcher from '@/components/DataFetcher'
-import { RunTypeEnum } from '@/store/traction/pacbio/runCreate/run'
+import { RunTypeEnum } from '@/stores/utilities/run'
 
-import { createNamespacedHelpers } from 'vuex'
-const { mapGetters, mapActions, mapMutations } = createNamespacedHelpers(
-  'traction/pacbio/runCreate',
-)
+import { mapState, mapActions } from 'pinia'
+import { usePacbioRunCreateStore } from '@/stores/pacbioRunCreate'
 
 export default {
   name: 'PacbioRunShow',
@@ -69,9 +67,9 @@ export default {
   },
   computed: {
     newRecord() {
-      return this.runType.type === RunTypeEnum.New
+      return this.runTypeItem.type === RunTypeEnum.New
     },
-    ...mapGetters(['runType']),
+    ...mapState(usePacbioRunCreateStore, ['runTypeItem']),
   },
   methods: {
     async resetRun() {
@@ -81,14 +79,14 @@ export default {
       await this.setInstrumentData()
       this.showAlert('Run has been reset', 'success', 'run-validation-message')
     },
-    ...mapActions([
+    ...mapActions(usePacbioRunCreateStore, [
       'setRun',
       'saveRun',
       'fetchSmrtLinkVersions',
       'setDefaultWellAttributes',
       'setInstrumentData',
+      'clearRunData',
     ]),
-    ...mapMutations(['clearRunData']),
 
     redirectToRuns() {
       this.$router.push({ name: 'PacbioRunIndex' })
@@ -102,7 +100,7 @@ export default {
       this.saveRun().then(({ success, errors }) => {
         success
           ? this.showAlert(
-              `Run successfully ${this.runType.action}d`,
+              `Run successfully ${this.runTypeItem.action}d`,
               'success',
               'run-create-message',
             )

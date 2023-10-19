@@ -1,42 +1,73 @@
-import { mount, store } from '@support/testHelper'
+import { mount, createTestingPinia } from '@support/testHelper'
 import PacbioRunPlateItem from '@/components/pacbio/PacbioRunPlateItem'
-import { newWell, newPlate } from '@/store/traction/pacbio/runCreate/run'
+import { newWell, newPlate } from '@/stores/utilities/run'
 import { it } from 'vitest'
 import { PacbioInstrumentTypes } from '@/lib/PacbioInstrumentTypes'
+import { usePacbioRunCreateStore } from '@/stores/PacbioRunCreate'
 
 const smrtLinkVersions = {
   1: { id: 1, name: 'v11', default: true, active: true },
 }
 
-store.state.traction.pacbio.runCreate.resources.smrtLinkVersions = smrtLinkVersions
+const props = {
+  plateNumber: 1,
+}
+/**
+ * Helper method for mounting a component with a mock instance of pinia, with the given 'options'.
+ * 'options' allows to define initial state of store while instantiating the component.
+ *
+ * @param {*} options - options to be passed to the createTestingPinia method for creating a mock instance of pinia
+ * options type is
+ * {state :{},stubActions: boolean, plugins:[]}
+ *
+ */
+function mountWithStore(options) {
+  const state = options?.state ? options.state : {}
+  const stubActions = options?.stubActions ?? false
+  const plugins = options?.plugins ?? []
+
+  const wrapperObj = mount(PacbioRunPlateItem, {
+    global: {
+      plugins: [
+        createTestingPinia({
+          initialState: {
+            pacbioRunCreate: { ...state },
+          },
+          stubActions,
+          plugins,
+        }),
+      ],
+    },
+    props,
+  })
+  const storeObj = usePacbioRunCreateStore()
+  return { wrapperObj, storeObj }
+}
 
 describe('PacbioRunPlateItem.vue', () => {
-  let plateItem, wrapper
+  let plateItem, wrapper, store
 
   const REVIO = 'Revio'
   const SEQUEL_IIE = 'Sequel IIe'
 
   describe('when run is a Sequel IIe', () => {
     beforeEach(() => {
-      store.state.traction.pacbio.runCreate = {
-        run: { system_name: SEQUEL_IIE },
-        plates: { 1: { ...newPlate(1), sequencing_kit_box_barcode: 'twentyonecharacters00' } },
-        wells: {
-          1: {
-            A1: newWell({ position: 'A1' }),
-            C5: newWell({ position: 'C5' }),
+      const { wrapperObj, storeObj } = mountWithStore({
+        state: {
+          resources: { smrtLinkVersions },
+          run: { system_name: SEQUEL_IIE },
+          plates: { 1: { ...newPlate(1), sequencing_kit_box_barcode: 'twentyonecharacters00' } },
+          wells: {
+            1: {
+              A1: newWell({ position: 'A1' }),
+              C5: newWell({ position: 'C5' }),
+            },
           },
-        },
-      }
-
-      store.state.traction.pacbio.runCreate.instrumentType = PacbioInstrumentTypes.SequelIIe
-
-      wrapper = mount(PacbioRunPlateItem, {
-        store,
-        props: {
-          plateNumber: 1,
+          instrumentType: PacbioInstrumentTypes.SequelIIe,
         },
       })
+      wrapper = wrapperObj
+      store = storeObj
       plateItem = wrapper.vm
     })
 
@@ -46,7 +77,7 @@ describe('PacbioRunPlateItem.vue', () => {
     })
 
     it('has a plate', () => {
-      expect(plateItem.storePlate).toEqual(store.state.traction.pacbio.runCreate.plates[1])
+      expect(plateItem.storePlate).toEqual(store.plates[1])
     })
 
     // why is this not showing up? I wonder if this is an issue with traction-input
@@ -79,40 +110,35 @@ describe('PacbioRunPlateItem.vue', () => {
 
   describe('when run is a Revio', () => {
     beforeEach(() => {
-      store.state.traction.pacbio.runCreate = {
-        run: {
-          system_name: REVIO,
-        },
-        plates: {
-          1: {
-            plate_number: 1,
-            sequencing_kit_box_barcode: '1021188000301570037320231019',
+      const { wrapperObj, storeObj } = mountWithStore({
+        state: {
+          resources: { smrtLinkVersions },
+          run: { system_name: REVIO },
+          plates: {
+            1: {
+              plate_number: 1,
+              sequencing_kit_box_barcode: '1021188000301570037320231019',
+            },
+            2: {
+              plate_number: 2,
+              sequencing_kit_box_barcode: '1021188000301570123420231019',
+            },
           },
-          2: {
-            plate_number: 2,
-            sequencing_kit_box_barcode: '1021188000301570123420231019',
+          wells: {
+            1: {
+              A1: newWell({ position: 'A1' }),
+              B1: newWell({ position: 'B1' }),
+            },
+            2: {
+              A1: newWell({ position: 'A1' }),
+              D1: newWell({ position: 'D1' }),
+            },
           },
-        },
-        wells: {
-          1: {
-            A1: newWell({ position: 'A1' }),
-            B1: newWell({ position: 'B1' }),
-          },
-          2: {
-            A1: newWell({ position: 'A1' }),
-            D1: newWell({ position: 'D1' }),
-          },
-        },
-      }
-
-      store.state.traction.pacbio.runCreate.instrumentType = PacbioInstrumentTypes.Revio
-
-      wrapper = mount(PacbioRunPlateItem, {
-        store,
-        propsData: {
-          plateNumber: 1,
+          instrumentType: PacbioInstrumentTypes.Revio,
         },
       })
+      wrapper = wrapperObj
+      store = storeObj
       plateItem = wrapper.vm
     })
 
@@ -128,7 +154,7 @@ describe('PacbioRunPlateItem.vue', () => {
     })
 
     it('has a plate', () => {
-      expect(plateItem.storePlate).toEqual(store.state.traction.pacbio.runCreate.plates[1])
+      expect(plateItem.storePlate).toEqual(store.plates[1])
     })
 
     // why is this not showing up? I wonder if this is an issue with traction-input
