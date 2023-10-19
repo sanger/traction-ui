@@ -47,6 +47,7 @@ export default {
       this.isLoading = true
       this.isError = false
       await this.fetcher().then((res) => {
+        debugger
         if (!res.success) {
           this.isError = true
           this.showAlert(res.errors, 'danger')

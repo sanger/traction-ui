@@ -5,7 +5,6 @@ import { handleResponse } from '@/api/ResponseHelper'
 import {
   groupIncludedByResource,
   extractAttributes,
-  populateStateBy,
   dataToObjectById,
   dataToObjectByPlateNumber,
   splitDataByParent,
@@ -136,6 +135,7 @@ export const usePacbioRunCreateStore = defineStore('pacbioRunCreate', {
 
     poolByBarcode: (state) => {
       return (barcode) => {
+        debugger;
         return state.poolsArray.find((pool) => pool.barcode === barcode)
       }
     },
@@ -156,7 +156,7 @@ export const usePacbioRunCreateStore = defineStore('pacbioRunCreate', {
      */
     getOrCreateWell: (state) => (position, plateNumber) => {
       return (
-        state.wells[plateNumber][position] || newWell({ position, ...this.defaultWellAttributes })
+        state.wells[plateNumber][position] || newWell({ position, ...state.defaultWellAttributes })
       )
     },
 
@@ -186,11 +186,10 @@ export const usePacbioRunCreateStore = defineStore('pacbioRunCreate', {
       const { success, data: { data } = {}, errors = [] } = response
 
       if (success) {
-        // Populate the store with the smrtLinkVersions
-        populateStateBy(this.$state, 'smrtLinkVersions', data, dataToObjectById, {
-          populateResources: true,
-        })
+        // populate smrtLinkVersions in store
+        this.resources.smrtLinkVersions = dataToObjectById({ data })
       }
+
       return { success, errors }
     },
     /**
@@ -283,9 +282,7 @@ export const usePacbioRunCreateStore = defineStore('pacbioRunCreate', {
           ...data.attributes,
         }
         // Populate the plates
-        populateStateBy(this.$state, 'plates', plates, dataToObjectByPlateNumber, {
-          includeRelationships: true,
-        })
+        this.plates = dataToObjectByPlateNumber({ data: plates, includeRelationships: true })
 
         // Populate the wells
         // Adds the wells to state by plate number and well position, two dimensional array
@@ -310,7 +307,7 @@ export const usePacbioRunCreateStore = defineStore('pacbioRunCreate', {
         this.tubes = formatById(this.tubes, tubes)
 
         //Populate the smrtLinkVersion
-        this.resources.smrtLinkVersions = smrtLinkVersion
+        this.smrtLinkVersion = smrtLinkVersion
       }
       return { success, errors }
     },
@@ -460,7 +457,9 @@ export const usePacbioRunCreateStore = defineStore('pacbioRunCreate', {
       delete this.pools[id]
     },
     clearRunData() {
+      const resources = this.resources
       this.$reset()
+      this.resources = resources
     },
   },
 })

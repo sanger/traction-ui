@@ -23,7 +23,6 @@ describe('JsonApi', () => {
     mapAttribute,
     dataToObjectByPosition,
     populateBy,
-    populateStateBy,
     splitDataByParent,
     dataToObjectByPlateNumber,
   } = JsonApi
@@ -355,30 +354,6 @@ describe('JsonApi', () => {
       expect(state.wells).toEqual(dataToObjectByPosition({ data: wells }))
     })
 
-    it('with relationships', () => {
-      const state = { resources: {} }
-      const wells = Data.PacbioRun.data.included.slice(1, 2)
-      populateBy('wells', dataToObjectByPosition, { includeRelationships: true })(state, wells)
-      expect(state.resources.wells).toEqual(
-        dataToObjectByPosition({ data: wells, includeRelationships: true }),
-      )
-    })
-  })
-  describe('populateStateBy', () => {
-    it('without resources by default', () => {
-      const state = {}
-      const wells = Data.PacbioRun.data.included.slice(1, 2)
-      populateStateBy(state, 'wells', wells, dataToObjectByPosition)
-      expect(state.wells).toEqual(dataToObjectByPosition({ data: wells }))
-    })
-    it('with resources', () => {
-      const state = { resources: {} }
-      const wells = Data.PacbioRun.data.included.slice(1, 2)
-      populateStateBy(state, 'wells', wells, dataToObjectByPosition, {
-        populateResources: true,
-      })
-      expect(state.resources.wells).toEqual(dataToObjectByPosition({ data: wells }))
-    })
     it('with relationships', () => {
       const state = { resources: {} }
       const wells = Data.PacbioRun.data.included.slice(1, 2)

@@ -175,7 +175,7 @@ describe('usePacbioRunCreateStore', () => {
       })
     })
     describe('getOrCreateWell', () => {
-       const plateNumber = 1
+      const plateNumber = 1
       it('if it is a new well', () => {
         const store = usePacbioRunCreateStore()
         store.$state = {
@@ -185,7 +185,7 @@ describe('usePacbioRunCreateStore', () => {
           defaultWellAttributes: { ...defaultWellAttributes() },
         }
         const position = 'A1'
-        const well = store.getOrCreateWell( position, plateNumber )
+        const well = store.getOrCreateWell(position, plateNumber)
         expect(well).toEqual(newWell({ position, ...store.resources.defaultWellAttributes }))
       })
 
@@ -240,19 +240,10 @@ describe('usePacbioRunCreateStore', () => {
 
         const store = usePacbioRunCreateStore()
 
-        //Mock populateStateBy
-        const mockapi = vi.spyOn(jsonapi, 'populateStateBy')
-        mockapi.mockImplementation = vi.fn()
-
         const { success } = await store.fetchSmrtLinkVersions()
 
-        expect(mockapi).toHaveBeenCalled()
-        expect(mockapi).toHaveBeenCalledWith(
-          store.$state,
-          'smrtLinkVersions',
-          Data.TractionPacbioSmrtLinkVersions.data.data,
-          jsonapi.dataToObjectById,
-          { populateResources: true },
+        expect(store.resources.smrtLinkVersions).toEqual(
+          jsonapi.dataToObjectById({ data: Data.TractionPacbioSmrtLinkVersions.data.data }),
         )
         expect(success).toBeTruthy()
         expect(get).toHaveBeenCalled()
@@ -267,13 +258,9 @@ describe('usePacbioRunCreateStore', () => {
 
         const store = usePacbioRunCreateStore()
 
-        //Mock populateStateBy
-        const mockapi = vi.spyOn(jsonapi, 'populateStateBy')
-        mockapi.mockImplementation = vi.fn()
-
         // apply action
         const { success } = await store.fetchSmrtLinkVersions()
-        expect(mockapi.mockImplementation).not.toHaveBeenCalled()
+        expect(store.resources.smrtLinkVersions).toEqual({})
         expect(success).toBeFalsy()
       })
     })
@@ -285,10 +272,6 @@ describe('usePacbioRunCreateStore', () => {
         const find = vi.fn()
         find.mockResolvedValue(Data.PacbioRun)
         rootStore.api = { traction: { pacbio: { runs: { find } } } }
-
-        //Mock populateStateBy
-        const mockApiPopulateBy = vi.spyOn(jsonapi, 'populateStateBy')
-        mockApiPopulateBy.mockImplementation = vi.fn()
 
         //Mock splitDataByParent
         const mockApiSplitData = vi.spyOn(jsonapi, 'splitDataByParent')
@@ -319,15 +302,6 @@ describe('usePacbioRunCreateStore', () => {
         })
 
         //plates
-        expect(mockApiPopulateBy).toHaveBeenCalledWith(
-          store.$state,
-          'plates',
-          plates,
-          jsonapi.dataToObjectByPlateNumber,
-          {
-            includeRelationships: true,
-          },
-        )
         expect(store.plates).toEqual(
           jsonapi.dataToObjectByPlateNumber({ data: plates, includeRelationships: true }),
         )
@@ -353,7 +327,7 @@ describe('usePacbioRunCreateStore', () => {
         expect(store.tags).toEqual(jsonapi.dataToObjectById({ data: tags }))
         expect(store.requests).toEqual(jsonapi.dataToObjectById({ data: requests }))
         expect(store.tubes).toEqual(jsonapi.dataToObjectById({ data: tubes }))
-        expect(store.resources.smrtLinkVersions).toEqual(smrtLinkVersion)
+        expect(store.smrtLinkVersion).toEqual(smrtLinkVersion)
         expect(success).toBeTruthy()
       })
 
@@ -364,19 +338,23 @@ describe('usePacbioRunCreateStore', () => {
         find.mockRejectedValue(failedResponse)
         rootStore.api = { traction: { pacbio: { runs: { find } } } }
 
-        //Mock populateStateBy
-        const mockApiPopulateBy = vi.spyOn(jsonapi, 'populateStateBy')
-        mockApiPopulateBy.mockImplementation = vi.fn()
-
         //Mock splitDataByParent
         const mockApiSplitData = vi.spyOn(jsonapi, 'splitDataByParent')
         mockApiSplitData.mockImplementation = vi.fn()
 
         const store = usePacbioRunCreateStore()
         const { success } = await store.fetchRun({ id: 1 })
-        expect(mockApiPopulateBy).not.toHaveBeenCalled()
         expect(mockApiSplitData).not.toHaveBeenCalled()
         expect(success).toBeFalsy()
+        expect(store.pools).toEqual({})
+        expect(store.libraries).toEqual({})
+        expect(store.tags).toEqual(jsonapi.dataToObjectById({}))
+        expect(store.requests).toEqual(jsonapi.dataToObjectById({}))
+        expect(store.tubes).toEqual(jsonapi.dataToObjectById({}))
+        expect(store.smrtLinkVersion).toEqual({})
+        expect(store.run).toEqual({})
+        expect(store.plates).toEqual({})
+        expect(store.wells).toEqual({})
       })
     })
 
@@ -545,7 +523,7 @@ describe('usePacbioRunCreateStore', () => {
         expect(success).toBeTruthy()
       })
     })
-    
+
     describe('updateWell', () => {
       it('updates the well', () => {
         const well = { position: 'A1', row: 'A', column: '1' }
