@@ -1,7 +1,8 @@
-import { mount, store, nextTick } from '@support/testHelper'
+import { mount, nextTick, createTestingPinia } from '@support/testHelper'
 import PacbioRunWellEdit from '@/components/pacbio/PacbioRunWellEdit'
 import { beforeEach, describe, expect } from 'vitest'
-import { newWell } from '@/store/traction/pacbio/runCreate/run'
+import { newWell } from '@/stores/utilities/run'
+import { usePacbioRunCreateStore } from '@/stores/pacbioRunCreate'
 
 // They are like the following in the store; not an array.
 const smrtLinkVersions = {
@@ -25,7 +26,38 @@ const props = {
 const position = 'A1'
 const plateNumber = 1
 
-store.state.traction.pacbio.runCreate.resources.smrtLinkVersions = smrtLinkVersions
+
+/**
+ * Helper method for mounting a component with a mock instance of pinia, with the given 'options'.
+ * 'options' allows to define initial state of store while instantiating the component.
+ *
+ * @param {*} options - options to be passed to the createTestingPinia method for creating a mock instance of pinia
+ * options type is
+ * {state :{},stubActions: boolean, plugins:[]}
+ *
+ */
+function mountWithStore(options) {
+  const state = options?.state ? options.state : {}
+  const stubActions = options?.stubActions ?? false
+  const plugins = options?.plugins ?? []
+
+  const wrapperObj = mount(PacbioRunWellEdit, {
+    global: {
+      plugins: [
+        createTestingPinia({
+          initialState: {
+            pacbioRunCreate: { ...state },
+          },
+          stubActions,
+          plugins,
+        }),
+      ],
+    },
+    props,
+  })
+  const storeObj = usePacbioRunCreateStore()
+  return { wrapperObj, storeObj }
+}
 
 describe('PacbioWellEdit', () => {
   let wrapper
@@ -43,18 +75,17 @@ describe('PacbioWellEdit', () => {
     */
     describe('if the SMRT Link version is v11', () => {
       beforeEach(async () => {
-        store.state.traction.pacbio.runCreate.smrtLinkVersion = smrtLinkVersions['1']
-        store.state.traction.pacbio.runCreate.wells = {
-          1: {
-            A1: newWell({ position }),
-          },
-        }
-        wrapper = mount(PacbioRunWellEdit, {
-          store,
-          props: {
-            ...props,
+        const { wrapperObj } = mountWithStore({
+          state: {
+            smrtLinkVersion: smrtLinkVersions['1'],
+            wells: {
+              1: {
+                A1: newWell({ position }),
+              },
+            },
           },
         })
+        wrapper = wrapperObj
         wrapper.vm.isShow = true
         wrapper.vm.position = position
         wrapper.vm.plateNumber = plateNumber
@@ -123,16 +154,17 @@ describe('PacbioWellEdit', () => {
     // ["movie_acquisition_time", "include_base_kinetics", "library_concentration", "polymerase_kit", "pre_extension_time"]
     describe('if the SMRT Link version is v12_revio', () => {
       beforeEach(() => {
-        store.state.traction.pacbio.runCreate.smrtLinkVersion = smrtLinkVersions['2']
-        store.state.traction.pacbio.runCreate.wells = {
-          1: {
-            A1: newWell({ position }),
+        const { wrapperObj } = mountWithStore({
+          state: {
+            smrtLinkVersion: smrtLinkVersions['2'],
+            wells: {
+              1: {
+                A1: newWell({ position }),
+              },
+            },
           },
-        }
-        wrapper = mount(PacbioRunWellEdit, {
-          store,
-          props,
         })
+        wrapper = wrapperObj
         wrapper.vm.isShow = true
         wrapper.vm.position = position
         wrapper.vm.plateNumber = plateNumber
@@ -204,14 +236,15 @@ describe('PacbioWellEdit', () => {
 
     describe('well type', () => {
       it('if it doesnt exist in state (new)', async () => {
-        store.state.traction.pacbio.runCreate.smrtLinkVersion = smrtLinkVersions['1']
-        store.state.traction.pacbio.runCreate.wells = { 1: {} }
-
-        wrapper = mount(PacbioRunWellEdit, {
-          store,
-          props,
+        const { wrapperObj } = mountWithStore({
+          state: {
+            smrtLinkVersion: smrtLinkVersions['1'],
+            wells: {
+              1: {},
+            },
+          },
         })
-
+        wrapper = wrapperObj
         wrapper.vm.isShow = true
         wrapper.vm.position = position
         wrapper.vm.plateNumber = plateNumber
@@ -221,19 +254,17 @@ describe('PacbioWellEdit', () => {
       })
 
       it('if it is an existing well', async () => {
-        store.state.traction.pacbio.runCreate.smrtLinkVersion = smrtLinkVersions['1']
-
-        store.state.traction.pacbio.runCreate.wells = {
-          1: {
-            A1: newWell({ attributes: { id: 1 }, position: position }),
+        const { wrapperObj } = mountWithStore({
+          state: {
+            smrtLinkVersion: smrtLinkVersions['1'],
+            wells: {
+              1: {
+                A1: newWell({ attributes: { id: 1 }, position: position }),
+              },
+            },
           },
-        }
-
-        wrapper = mount(PacbioRunWellEdit, {
-          store,
-          props,
         })
-
+        wrapper = wrapperObj
         wrapper.vm.isShow = true
         wrapper.vm.position = position
         wrapper.vm.plateNumber = plateNumber
@@ -247,24 +278,21 @@ describe('PacbioWellEdit', () => {
       it('well should have correct pools when updated', async () => {
         const well = newWell({ position: position, ...{ id: 1, pools: [1] } })
 
-        store.state.traction.pacbio.runCreate = {
-          pools: { 1: { id: 1, tube: 1 }, 2: { id: 2, tube: 2 } },
-          tubes: { 1: { barcode: 'TRAC-1' }, 2: { barcode: 'TRAC-2' } },
-          smrtLinkVersion: smrtLinkVersions['1'],
-          run: {},
-          plates: { 1: { plate_number: 1 } },
-          wells: {
-            1: {
-              A1: well,
+        const { wrapperObj } = mountWithStore({
+          state: {
+            pools: { 1: { id: 1, tube: 1 }, 2: { id: 2, tube: 2 } },
+            tubes: { 1: { barcode: 'TRAC-1' }, 2: { barcode: 'TRAC-2' } },
+            smrtLinkVersion: smrtLinkVersions['1'],
+            run: {},
+            plates: { 1: { plate_number: 1 } },
+            wells: {
+              1: {
+                A1: well,
+              },
             },
           },
-        }
-
-        wrapper = mount(PacbioRunWellEdit, {
-          store,
-          props,
         })
-
+        wrapper = wrapperObj
         // This method sets the well data for the modal on show
         await wrapper.vm.showModalForPositionAndPlate('A1', 1)
 

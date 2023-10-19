@@ -1,7 +1,8 @@
 import PacbioRunWellDefaultEdit from '@/components/pacbio/PacbioRunWellDefaultEdit'
-import { mount, store } from '@support/testHelper'
+import { mount, createTestingPinia } from '@support/testHelper'
 import { describe, expect, it } from 'vitest'
-import { defaultWellAttributes } from '@/store/traction/pacbio/runCreate/run'
+import { defaultWellAttributes } from '@/stores/utilities/run'
+import { usePacbioRunCreateStore } from '@/stores/PacbioRunCreate'
 
 // required as suggestion to remove the deprecated function
 // https://vue-test-utils.vuejs.org/api/options.html#attachtodocument
@@ -9,13 +10,6 @@ const elem = document.createElement('div')
 if (document.body) {
   document.body.appendChild(elem)
 }
-
-const buildWrapper = () =>
-  mount(PacbioRunWellDefaultEdit, {
-    store,
-    sync: false,
-    attachTo: elem,
-  })
 
 const smrtLinkVersions = {
   1: {
@@ -32,23 +26,52 @@ const smrtLinkVersions = {
   },
 }
 
-const run = {
-  id: 'new',
-  system_name: 'Sequel IIe',
-  sequencing_kit_box_barcode: null,
-  dna_control_complex_box_barcode: null,
-  comments: null,
+/**
+ * Helper method for mounting a component with a mock instance of pinia, with the given 'options'.
+ * 'options' allows to define initial state of store while instantiating the component.
+ *
+ * @param {*} options - options to be passed to the createTestingPinia method for creating a mock instance of pinia
+ * options type is
+ * {state :{},stubActions: boolean, plugins:[]}
+ *
+ */
+function mountWithStore(options) {
+  const state = options?.state ? options.state : {}
+  const stubActions = options?.stubActions ?? false
+  const plugins = options?.plugins ?? []
+
+  const wrapperObj = mount(PacbioRunWellDefaultEdit, {
+    global: {
+      plugins: [
+        createTestingPinia({
+          initialState: {
+            pacbioRunCreate: {
+              resources: { smrtLinkVersions },
+              run: {
+                id: 'new',
+                system_name: 'Sequel IIe',
+                sequencing_kit_box_barcode: null,
+                dna_control_complex_box_barcode: null,
+                comments: null,
+              },
+              defaultWellAttributes,
+              ...state,
+            },
+          },
+          stubActions,
+          plugins,
+        }),
+      ],
+    },
+    sync: false,
+    attachTo: elem,
+  })
+  const storeObj = usePacbioRunCreateStore()
+  return { wrapperObj, storeObj }
 }
 
 describe('PacbioRunWellDefaultEdit', () => {
-  let wrapper, runInfo
-
-  beforeEach(() => {
-    store.state.traction.pacbio.runCreate.run = run
-    store.state.traction.pacbio.runCreate.defaultWellAttributes = defaultWellAttributes()
-    store.state.traction.pacbio.runCreate.resources.smrtLinkVersions = smrtLinkVersions
-  })
-
+  let wrapper, runInfo, store
   /*["ccs_analysis_output_include_kinetics_information",
     "ccs_analysis_output_include_low_quality_reads",
     "include_fivemc_calls_in_cpg_motifs",
@@ -60,8 +83,13 @@ describe('PacbioRunWellDefaultEdit', () => {
   */
   describe('if the SMRT Link version is v11', () => {
     beforeEach(() => {
-      store.state.traction.pacbio.runCreate.smrtLinkVersion = smrtLinkVersions[1]
-      wrapper = buildWrapper()
+      const { wrapperObj, storeObj } = mountWithStore({
+        state: {
+          smrtLinkVersion: smrtLinkVersions[1],
+        },
+      })
+      wrapper = wrapperObj
+      store = storeObj
       runInfo = wrapper.vm
     })
 
@@ -74,33 +102,25 @@ describe('PacbioRunWellDefaultEdit', () => {
         const options = wrapper.find('[data-attribute=default-movie-time]').findAll('option')
         // select the first option
         await options[1].setSelected()
-        expect(store.state.traction.pacbio.runCreate.defaultWellAttributes.movie_time).toEqual(
-          '10.0',
-        )
+        expect(store.defaultWellAttributes.movie_time).toEqual('10.0')
       })
 
       it('has a pre extension time input', async () => {
         const input = wrapper.find('[data-attribute=default-pre-extension-time]')
         await input.setValue('3')
-        expect(
-          store.state.traction.pacbio.runCreate.defaultWellAttributes.pre_extension_time,
-        ).toEqual('3')
+        expect(store.defaultWellAttributes.pre_extension_time).toEqual('3')
       })
 
       it('has a loading target p1 plus p2 input', async () => {
         const input = wrapper.find('[data-attribute=default-loading-target-p1-plus-p2]')
         await input.setValue('1')
-        expect(
-          store.state.traction.pacbio.runCreate.defaultWellAttributes.loading_target_p1_plus_p2,
-        ).toEqual('1')
+        expect(store.defaultWellAttributes.loading_target_p1_plus_p2).toEqual('1')
       })
 
       it('has a binding kit box barcode input', async () => {
         const input = wrapper.find('[data-attribute=default-binding-kit-box-barcode]')
         await input.setValue('ABC123')
-        expect(
-          store.state.traction.pacbio.runCreate.defaultWellAttributes.binding_kit_box_barcode,
-        ).toEqual('ABC123')
+        expect(store.defaultWellAttributes.binding_kit_box_barcode).toEqual('ABC123')
       })
 
       it('has a CCS analysis output include kinetics information input', async () => {
@@ -110,8 +130,7 @@ describe('PacbioRunWellDefaultEdit', () => {
         // select the first option
         await options[0].setSelected()
         expect(
-          store.state.traction.pacbio.runCreate.defaultWellAttributes
-            .ccs_analysis_output_include_kinetics_information,
+          store.defaultWellAttributes.ccs_analysis_output_include_kinetics_information,
         ).toEqual('Yes')
       })
 
@@ -121,10 +140,9 @@ describe('PacbioRunWellDefaultEdit', () => {
           .findAll('option')
         // select the first option
         await options[0].setSelected()
-        expect(
-          store.state.traction.pacbio.runCreate.defaultWellAttributes
-            .ccs_analysis_output_include_low_quality_reads,
-        ).toEqual('Yes')
+        expect(store.defaultWellAttributes.ccs_analysis_output_include_low_quality_reads).toEqual(
+          'Yes',
+        )
       })
 
       it('has a demultiplex barcodes default input', async () => {
@@ -133,9 +151,7 @@ describe('PacbioRunWellDefaultEdit', () => {
           .findAll('option')
         // select the first option
         await options[1].setSelected()
-        expect(
-          store.state.traction.pacbio.runCreate.defaultWellAttributes.demultiplex_barcodes,
-        ).toEqual('In SMRT Link')
+        expect(store.defaultWellAttributes.demultiplex_barcodes).toEqual('In SMRT Link')
       })
 
       it('has a fivemc calls in cpg motifs default input', async () => {
@@ -144,10 +160,7 @@ describe('PacbioRunWellDefaultEdit', () => {
           .findAll('option')
         // select the first option
         await options[0].setSelected()
-        expect(
-          store.state.traction.pacbio.runCreate.defaultWellAttributes
-            .include_fivemc_calls_in_cpg_motifs,
-        ).toEqual('Yes')
+        expect(store.defaultWellAttributes.include_fivemc_calls_in_cpg_motifs).toEqual('Yes')
       })
 
       // checks components only specific to v11 are being shown
@@ -170,8 +183,13 @@ describe('PacbioRunWellDefaultEdit', () => {
   */
   describe('if the SMRT Link version is v12', () => {
     beforeEach(() => {
-      store.state.traction.pacbio.runCreate.smrtLinkVersion = smrtLinkVersions[2]
-      wrapper = buildWrapper()
+      const { wrapperObj, storeObj } = mountWithStore({
+        state: {
+          smrtLinkVersion: smrtLinkVersions[2],
+        },
+      })
+      wrapper = wrapperObj
+      store = storeObj
       runInfo = wrapper.vm
     })
 
@@ -186,17 +204,13 @@ describe('PacbioRunWellDefaultEdit', () => {
           .findAll('option')
         // select the first option
         await options[1].setSelected()
-        expect(
-          store.state.traction.pacbio.runCreate.defaultWellAttributes.movie_acquisition_time,
-        ).toEqual('24.0')
+        expect(store.defaultWellAttributes.movie_acquisition_time).toEqual('24.0')
       })
 
       it('has a pre extension time input', async () => {
         const input = wrapper.find('[data-attribute=default-pre-extension-time]')
         await input.setValue('3')
-        expect(
-          store.state.traction.pacbio.runCreate.defaultWellAttributes.pre_extension_time,
-        ).toEqual('3')
+        expect(store.defaultWellAttributes.pre_extension_time).toEqual('3')
       })
 
       it('has a include base kinetics input', async () => {
@@ -205,25 +219,19 @@ describe('PacbioRunWellDefaultEdit', () => {
           .findAll('option')
         // select the first option
         await options[0].setSelected()
-        expect(
-          store.state.traction.pacbio.runCreate.defaultWellAttributes.include_base_kinetics,
-        ).toEqual('True')
+        expect(store.defaultWellAttributes.include_base_kinetics).toEqual('True')
       })
 
       it('has a library concentration', async () => {
         const input = wrapper.find('[data-attribute=default-library-concentration]')
         await input.setValue('1')
-        expect(
-          store.state.traction.pacbio.runCreate.defaultWellAttributes.library_concentration,
-        ).toEqual('1')
+        expect(store.defaultWellAttributes.library_concentration).toEqual('1')
       })
 
       it('has a polymerase kit', async () => {
         const input = wrapper.find('[data-attribute=default-polymerase-kit]')
         await input.setValue('1')
-        expect(store.state.traction.pacbio.runCreate.defaultWellAttributes.polymerase_kit).toEqual(
-          '1',
-        )
+        expect(store.defaultWellAttributes.polymerase_kit).toEqual('1')
       })
     })
   })

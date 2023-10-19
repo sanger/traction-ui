@@ -39,14 +39,14 @@ const smrtLinkVersions = {
 }
 
 /**
- * Helper method for mounting a component with given 'props as well as with a mock instance of pinia, 
+ * Helper method for mounting a component with given 'props as well as with a mock instance of pinia,
  *  with the given 'options.
  * 'options' allows to define initial state of store while instantiating the component.
  *
  * @param {*} options - options to be passed to the createTestingPinia method for creating a mock instance of pinia
  * options type is
  * {state :{},stubActions: boolean, plugins:[]}
- * 
+ *
  * @param {*} props - props to be passed to the component while mounting
  *
  */

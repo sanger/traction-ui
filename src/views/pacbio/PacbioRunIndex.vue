@@ -115,10 +115,10 @@
 import DataFetcher from '@/components/DataFetcher'
 import FilterCard from '@/components/FilterCard'
 import TableHelper from '@/mixins/TableHelper'
-import { mapActions, mapGetters } from 'vuex'
 import DownloadIcon from '@/icons/DownloadIcon.vue'
 import TractionBadge from '@/components/shared/TractionBadge.vue'
 import { usePacbioRunsStore } from '@/stores/pacbioRuns'
+import { usePacbioRunCreateStore } from '@/stores/pacbioRunCreate'
 import { mapActions as mapActionsPinia, mapState } from 'pinia'
 export default {
   name: 'PacbioRuns',
@@ -165,7 +165,7 @@ export default {
   },
   computed: {
     ...mapState(usePacbioRunsStore, ['runsArray']),
-    ...mapGetters('traction/pacbio/runCreate', ['smrtLinkVersionList']),
+    ...mapState(usePacbioRunCreateStore, ['smrtLinkVersionList']),
   },
   watch: {
     runsArray(newValue) {
@@ -202,7 +202,7 @@ export default {
       this.$router.push({ path: `/pacbio/run/${runId || 'new'}` })
     },
     ...mapActionsPinia(usePacbioRunsStore, ['fetchPacbioRuns', 'updateRun']),
-    ...mapActions('traction/pacbio/runCreate', ['fetchSmrtLinkVersions']),
+    ...mapActionsPinia(usePacbioRunCreateStore, ['fetchSmrtLinkVersions']),
     async provider() {
       // Seeds required data and loads the page via the DataFetcher
       // TODO: update the DataFetcher to handle multiple data fetchers
