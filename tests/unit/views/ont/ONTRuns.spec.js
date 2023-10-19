@@ -81,28 +81,6 @@ describe('ONTRuns.vue', () => {
     })
   })
 
-  describe('filtering runs', () => {
-    beforeEach(async () => {
-      const get = vi.spyOn(store.state.api.traction.ont.runs, 'get')
-      get.mockReturnValue(Data.OntRuns)
-      wrapper = mount(ONTRuns, {
-        store,
-        data() {
-          return {
-            filter: mockRuns[0].experiment_name,
-          }
-        },
-      })
-      await flushPromises()
-      wrapper.vm.tableData = [mockRuns[0]]
-    })
-
-    it('will filter the runs in the table', () => {
-      expect(wrapper.find('tbody').findAll('[data-testid="row"]').length).toEqual(1)
-      expect(wrapper.find('tbody').findAll('[data-testid="row"]')[0].text()).toContain('ONTRUN-1')
-    })
-  })
-
   describe('New run button', () => {
     it('contains a create new run button', () => {
       expect(wrapper.find('button').exists()).toBeTruthy()

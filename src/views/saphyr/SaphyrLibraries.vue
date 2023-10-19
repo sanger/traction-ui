@@ -1,29 +1,14 @@
 <template>
   <div>
-    <fieldset class="flex flex-row space-x-4 mb-0">
-      <label class="text-lg font-bold">Filter</label>
-      <traction-input
-        id="filterInput"
-        v-model="filter"
-        type="search"
-        placeholder="Type to Search"
-        class="w-48"
-      >
-      </traction-input>
-      <traction-button :disabled="!filter" @click="filter = ''">Clear</traction-button>
-    </fieldset>
-    <br />
-
     <traction-table
       id="libraries-table"
       ref="libraries_table"
       v-model:sort-by="sortBy"
-      :items="tableData"
+      :items="libraries"
       :fields="fields"
       selectable
       select-mode="multi"
-      @filtered="onFiltered"
-      @row-selected="onRowSelected"
+      @row-selected="(items) => (selected = items)"
     >
       <template #cell(selected)="selectedCell">
         <template v-if="selectedCell.selected">
@@ -58,21 +43,13 @@
         Delete Libraries
       </traction-button>
 
-      <traction-pagination
-        v-model="currentPage"
-        class="float-right"
-        :total-rows="libraries.length"
-        :per-page="perPage"
-        aria-controls="libraries-table"
-        @update:modelValue="onPageChange($event)"
-      >
+      <traction-pagination class="float-right" :total-pages="1" aria-controls="libraries-table">
       </traction-pagination>
     </div>
   </div>
 </template>
 
 <script>
-import TableHelper from '@/mixins/TableHelper'
 import PrinterModal from '@/components/PrinterModal'
 import { mapActions, mapGetters } from 'vuex'
 import { getCurrentDate } from '@/lib/DateHelpers'
@@ -82,7 +59,6 @@ export default {
   components: {
     PrinterModal,
   },
-  mixins: [TableHelper],
   props: {
     pipeline: {
       type: String,
@@ -99,25 +75,14 @@ export default {
         { key: 'enzyme_name', label: 'Enzyme Name', sortable: true },
         { key: 'created_at', label: 'Created at (UTC)', sortable: true },
       ],
-      items: [],
-      filteredItems: [],
       selected: [],
-      filter: null,
       sortBy: 'created_at',
       sortDesc: true,
-      perPage: 6,
-      currentPage: 1,
-      preFilteredMaterials: [],
       isBusy: false,
     }
   },
   computed: {
     ...mapGetters('traction/saphyr/tubes', ['libraries']),
-  },
-  watch: {
-    libraries(newValue) {
-      this.setInitialData(newValue, this.perPage, { sortBy: 'created_at' })
-    },
   },
   created() {
     // When this component is created (the 'created' lifecycle hook is called), we need to get the

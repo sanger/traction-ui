@@ -44,7 +44,7 @@ export default function useQueryParams() {
   })
   const page_size = computed({
     get() {
-      return Number(route.query.page_size) || 0
+      return Number(route.query.page_size) || 25
     },
     async set(value) {
       await updateRouter({ page_size: value })
@@ -52,7 +52,7 @@ export default function useQueryParams() {
   })
   const page_number = computed({
     get() {
-      return Number(route.query.page_number) || 0
+      return Number(route.query.page_number) || 1
     },
     async set(value) {
       await updateRouter({ page_number: value })

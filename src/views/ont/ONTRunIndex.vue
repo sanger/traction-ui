@@ -13,7 +13,7 @@
         ></traction-pagination>
       </div>
 
-      <traction-table id="run-index" v-model:sort-by="sortBy" :items="tableData" :fields="fields">
+      <traction-table id="run-index" v-model:sort-by="sortBy" :items="runs" :fields="fields">
         <template #cell(actions)="row">
           <traction-button
             :id="generateId('editRun', row.item.id)"
@@ -42,7 +42,6 @@
 </template>
 
 <script>
-import TableHelper from '@/mixins/TableHelper'
 import DataFetcher from '@/components/DataFetcher.vue'
 import DownloadIcon from '@/icons/DownloadIcon.vue'
 import FilterCard from '@/components/FilterCard.vue'
@@ -58,7 +57,6 @@ export default {
     FilterCard,
     DownloadIcon,
   },
-  mixins: [TableHelper],
   setup() {
     const { filter_value, filter_input, filter_wildcard, page_size, page_number } = useQueryParams()
     return { filter_value, filter_input, filter_wildcard, page_size, page_number }
@@ -96,11 +94,6 @@ export default {
   },
   computed: {
     ...mapGetters(['runs']),
-  },
-  watch: {
-    runs(newValue) {
-      this.setInitialData(newValue, this.perPage, { sortBy: 'created_at' })
-    },
   },
   methods: {
     generateId(text, id) {

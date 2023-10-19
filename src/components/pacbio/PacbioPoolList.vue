@@ -5,7 +5,6 @@
   </traction-section>
 </template>
 <script>
-import TableHelper from '@/mixins/TableHelper'
 import { createNamespacedHelpers } from 'vuex'
 import LabwareFinder from '@/components/LabwareFinder'
 import PacbioPoolSelectedList from './PacbioPoolSelectedList.vue'
@@ -18,7 +17,6 @@ export default {
     LabwareFinder,
     PacbioPoolSelectedList,
   },
-  mixins: [TableHelper],
   data() {
     return {}
   },

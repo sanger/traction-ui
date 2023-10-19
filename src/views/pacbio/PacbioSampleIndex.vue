@@ -32,12 +32,11 @@
         id="samples-table"
         v-model:sort-by="sortBy"
         primary_key="id"
-        :items="tableData"
+        :items="requests"
         :fields="fields"
         selectable
         select-mode="single"
-        @filtered="onFiltered"
-        @row-selected="onRowSelected"
+        @row-selected="(items) => (selected = items)"
       >
         <template #cell(selected)="selectedCell">
           <template v-if="selectedCell.selected">
@@ -89,7 +88,6 @@ import PacbioSampleMetadataEdit from '@/components/pacbio/PacbioSampleMetadataEd
 import PrinterModal from '@/components/PrinterModal'
 import FilterCard from '@/components/FilterCard'
 import DataFetcher from '@/components/DataFetcher'
-import TableHelper from '@/mixins/TableHelper'
 import useQueryParams from '@/lib/QueryParamsHelper'
 import { getCurrentDate } from '@/lib/DateHelpers'
 
@@ -104,7 +102,6 @@ export default {
     FilterCard,
     DataFetcher,
   },
-  mixins: [TableHelper],
   setup() {
     const { filter_value, filter_input, filter_wildcard, page_size, page_number } = useQueryParams()
     return { filter_value, filter_input, filter_wildcard, page_size, page_number }
@@ -135,9 +132,7 @@ export default {
         { value: 'sample_name', text: 'Name' },
         // Need to specify filters in json api resources if we want more filters
       ],
-      filteredItems: [],
       selected: [],
-      filter: null,
       sortBy: 'created_at',
       sortDesc: true,
       totalPages: 1,
@@ -145,11 +140,6 @@ export default {
   },
   computed: {
     ...mapGetters('traction/pacbio/requests', ['requests']),
-  },
-  watch: {
-    requests(newValue) {
-      this.setInitialData(newValue, { sortBy: 'created_at' })
-    },
   },
   methods: {
     /*

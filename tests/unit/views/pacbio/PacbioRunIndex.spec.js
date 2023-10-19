@@ -221,28 +221,6 @@ describe('PacbioRunIndex.vue', () => {
     })
   })
 
-  describe('filtering runs', () => {
-    beforeEach(async () => {
-      const get = vi.spyOn(store.state.api.traction.pacbio.runs, 'get')
-      get.mockReturnValue(Data.PacbioRuns)
-      wrapper = mount(PacbioRunIndex, {
-        store,
-        data() {
-          return {
-            filter: mockRuns[0].name,
-          }
-        },
-      })
-      await flushPromises()
-      wrapper.vm.tableData = [mockRuns[0]]
-    })
-
-    it('will filter the runs in the table', () => {
-      expect(wrapper.find('tbody').findAll('[data-testid="row"]').length).toEqual(1)
-      expect(wrapper.find('tbody').findAll('[data-testid="row"]')[0].text()).toMatch(/Sequel I/)
-    })
-  })
-
   describe('#showAlert', () => {
     it('emits an event with the message', () => {
       pacbioRunIndex.showAlert('show this message', 'danger')

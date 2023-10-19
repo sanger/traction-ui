@@ -20,13 +20,7 @@
         </traction-pagination>
       </div>
 
-      <traction-table
-        id="run-index"
-        v-model:sort-by="sortBy"
-        :items="tableData"
-        :fields="fields"
-        @filtered="onFiltered"
-      >
+      <traction-table id="run-index" v-model:sort-by="sortBy" :items="runs" :fields="fields">
         <template #cell(sequencing_kit_box_barcodes)="row">
           <ul>
             <li v-for="barcode in row.item.sequencing_kit_box_barcodes" :key="barcode">
@@ -109,7 +103,6 @@
 <script>
 import DataFetcher from '@/components/DataFetcher'
 import FilterCard from '@/components/FilterCard'
-import TableHelper from '@/mixins/TableHelper'
 import { mapActions, mapGetters } from 'vuex'
 import DownloadIcon from '@/icons/DownloadIcon.vue'
 import TractionBadge from '@/components/shared/TractionBadge.vue'
@@ -123,7 +116,6 @@ export default {
     DownloadIcon,
     TractionBadge,
   },
-  mixins: [TableHelper],
   setup() {
     const { filter_value, filter_input, filter_wildcard, page_size, page_number } = useQueryParams()
     return { filter_value, filter_input, filter_wildcard, page_size, page_number }
@@ -148,14 +140,12 @@ export default {
         { key: 'created_at', label: 'Created at (UTC)', sortable: true },
         { key: 'actions', label: 'Actions' },
       ],
-      filteredItems: [],
       filterOptions: [
         { value: '', text: '' },
         { value: 'name', text: 'Name' },
         { value: 'state', text: 'State' },
         // Need to specify filters in json api resources if we want more filters
       ],
-      filter: null,
       sortBy: 'created_at',
       sortDesc: true,
       totalPages: 1,
@@ -164,11 +154,6 @@ export default {
   computed: {
     ...mapGetters('traction/pacbio/runs', ['runs']),
     ...mapGetters('traction/pacbio/runCreate', ['smrtLinkVersionList']),
-  },
-  watch: {
-    runs(newValue) {
-      this.setInitialData(newValue, { sortBy: 'created_at' })
-    },
   },
   methods: {
     getVersionName(versionId) {
