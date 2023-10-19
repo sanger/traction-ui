@@ -68,8 +68,8 @@ const parametersToString = (attributes, parameter = undefined) => {
  * @return String
  * Turns a list of parameters into a query string
  */
-const buildQuery = ({ filter = {}, include = '', fields = {}, page = {} } = {}) => {
-  const queryString = parametersToString({ filter, include, fields, page })
+const buildQuery = ({ page = {}, filter = {}, include = '', fields = {} } = {}) => {
+  const queryString = parametersToString({ page, filter, include, fields })
 
   // if the query string has any length then put a ? in front
   // otherwise just return an empty string
