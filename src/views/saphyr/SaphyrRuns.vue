@@ -57,8 +57,6 @@
       <traction-button id="newRun" class="float-left" theme="create" @click="redirectToRun()">
         New Run
       </traction-button>
-      <traction-pagination class="float-right" :total-pages="1" aria-controls="libraries-table">
-      </traction-pagination>
     </div>
   </div>
 </template>

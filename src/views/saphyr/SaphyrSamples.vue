@@ -39,9 +39,6 @@
         @selectEnzyme="createLibraries"
       >
       </enzymeModal>
-
-      <traction-pagination class="float-right" :total-pages="1" aria-controls="samples-table">
-      </traction-pagination>
     </div>
   </div>
 </template>

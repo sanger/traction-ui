@@ -15,6 +15,7 @@
         <traction-pagination
           class="float-right"
           :total-pages="totalPages"
+          :fetcher="fetchRuns"
           aria-controls="run-index"
         >
         </traction-pagination>

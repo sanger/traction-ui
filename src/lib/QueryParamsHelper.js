@@ -11,7 +11,8 @@ export default function useQueryParams() {
   }
 
   async function clearFilter() {
-    const router_query = { ...route.query }
+    // We want to return to the first page if the filter is cleared
+    const router_query = { ...route.query, page_number: 1 }
     delete router_query['filter_value']
     delete router_query['filter_input']
     delete router_query['filter_wildcard']

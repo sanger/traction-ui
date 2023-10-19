@@ -23,6 +23,7 @@
         <traction-pagination
           class="float-right"
           :total-pages="totalPages"
+          :fetcher="fetchLibraries"
           aria-controls="library-index"
         />
       </div>
