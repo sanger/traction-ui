@@ -20,7 +20,7 @@ const SelectOptionsType = ({ key, name, list }) => {
    * @param {object} currentItem - the current item to compare to
    * @returns {array} - a list of items that are active or have the same key as the current item
    */
-  const filter = (currentItem) => {
+  const filterByActiveOrKey = (currentItem) => {
     return list.filter((item) => item.active || item[key] === currentItem[key])
   }
 
@@ -30,7 +30,7 @@ const SelectOptionsType = ({ key, name, list }) => {
    * @returns {array} - a list of options for the dropdown
    */
   const options = (currentItem) => {
-    return filter(currentItem).map((item) => {
+    return filterByActiveOrKey(currentItem).map((item) => {
       return {
         value: item[key],
         text: item[name],
@@ -38,7 +38,7 @@ const SelectOptionsType = ({ key, name, list }) => {
     })
   }
 
-  return { fields, list, filter, options }
+  return { fields, list, filterByActiveOrKey, options }
 }
 
 // InstrumentTypeSelectOptionsType is a SelectOptionsType with key 'key' and name 'name'

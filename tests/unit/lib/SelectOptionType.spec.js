@@ -53,7 +53,7 @@ describe('SelectOptionType', () => {
   })
 
   it('can filter the list', () => {
-    expect(SelectOptionsType({ key, name, list }).filter(currentItem)).toEqual([
+    expect(SelectOptionsType({ key, name, list }).filterByActiveOrKey(currentItem)).toEqual([
       list[0],
       list[1],
       list[2],
