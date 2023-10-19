@@ -1,15 +1,55 @@
 import PacbioRunIndex from '@/views/pacbio/PacbioRunIndex'
 import Response from '@/api/Response'
-import { mount, store, Data, flushPromises, nextTick, router } from '@support/testHelper'
+import {
+  mount,
+  store,
+  Data,
+  flushPromises,
+  nextTick,
+  createTestingPinia,
+  router,
+} from '@support/testHelper'
+import { usePacbioRunsStore } from '@/stores/pacbioRuns'
+import { vi } from 'vitest'
+
+/**
+ * Helper method for mounting a component with a mock instance of pinia, with the given 'options'.
+ * 'options' allows to define initial state while instantiating the component.
+ *
+ * @param {*} options - options to be passed to the createTestingPinia method for creating a mock instance of pinia
+ * e.g. initialState, stubActions etc.
+ */
+function factory(options) {
+  const wrapperObj = mount(PacbioRunIndex, {
+    global: {
+      plugins: [createTestingPinia(options)],
+    },
+  })
+
+  const store = usePacbioRunsStore()
+  return { wrapperObj, store }
+}
 
 describe('PacbioRunIndex.vue', () => {
   let wrapper, pacbioRunIndex, mockRuns, mockVersions
 
   beforeEach(async () => {
     mockRuns = new Response(Data.PacbioRuns).deserialize.runs
-    vi.spyOn(store.state.api.traction.pacbio.runs, 'get').mockResolvedValue(Data.PacbioRuns)
-
-    wrapper = mount(PacbioRunIndex, { store })
+    const spy = vi.fn().mockResolvedValue({ success: true, data: Data.PacbioRuns.data })
+    const { wrapperObj } = factory({
+      initialState: {
+        pacbioRuns: {
+          runs: new Response(Data.PacbioRuns).deserialize.runs,
+        },
+      },
+      stubActions: false,
+      plugins: [
+        ({ store }) => {
+          store.runRequest.get = spy
+        },
+      ],
+    })
+    wrapper = wrapperObj
     pacbioRunIndex = wrapper.vm
     await flushPromises()
   })
@@ -23,7 +63,7 @@ describe('PacbioRunIndex.vue', () => {
       expect(wrapper.find('tbody').findAll('tr').length).toEqual(6)
     })
 
-    it('contains the correct run skbb information', () => {
+    it('contains the correct run skbb information', async () => {
       // Within each cell, the SKBB information is displayed as a list-item per plate
       const run2skbbList = wrapper.find('tbody').findAll('tr')[0].findAll('td')[4].findAll('li')
       expect(run2skbbList.length).toEqual(1)
@@ -268,10 +308,10 @@ describe('PacbioRunIndex.vue', () => {
       })
 
       await wrapper.vm.fetchRuns()
-      expect(wrapper.vm.fetchPacbioRuns).toBeCalledWith({
-        page: { size: '2', number: '2' },
-        filter: { 123: 'barcode' },
-      })
+      expect(wrapper.vm.fetchPacbioRuns).toBeCalledWith(
+        { 123: 'barcode' },
+        { size: '2', number: '2' },
+      )
     })
   })
 

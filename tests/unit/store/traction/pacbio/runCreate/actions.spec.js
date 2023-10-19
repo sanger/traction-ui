@@ -392,8 +392,8 @@ describe('actions.js', () => {
       const state = {
         resources: {
           smrtLinkVersions: {
-            1: { id: '1', version: 'v1', default: true },
-            2: { id: '2', version: 'v2', default: false },
+            1: { id: '1', version: 'v1', default: true, active: true },
+            2: { id: '2', version: 'v2', default: false, active: true },
           },
         },
       }

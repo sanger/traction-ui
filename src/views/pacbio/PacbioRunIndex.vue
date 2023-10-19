@@ -20,7 +20,7 @@
         </traction-pagination>
       </div>
 
-      <traction-table id="run-index" v-model:sort-by="sortBy" :items="runs" :fields="fields">
+      <traction-table id="run-index" v-model:sort-by="sortBy" :items="runsArray" :fields="fields">
         <template #cell(sequencing_kit_box_barcodes)="row">
           <ul>
             <li v-for="barcode in row.item.sequencing_kit_box_barcodes" :key="barcode">
@@ -107,6 +107,8 @@ import { mapActions, mapGetters } from 'vuex'
 import DownloadIcon from '@/icons/DownloadIcon.vue'
 import TractionBadge from '@/components/shared/TractionBadge.vue'
 import useQueryParams from '@/lib/QueryParamsHelper'
+import { usePacbioRunsStore } from '@/stores/pacbioRuns'
+import { mapActions as mapActionsPinia, mapState } from 'pinia'
 
 export default {
   name: 'PacbioRuns',
@@ -152,7 +154,7 @@ export default {
     }
   },
   computed: {
-    ...mapGetters('traction/pacbio/runs', ['runs']),
+    ...mapState(usePacbioRunsStore, ['runsArray']),
     ...mapGetters('traction/pacbio/runCreate', ['smrtLinkVersionList']),
   },
   methods: {
@@ -183,7 +185,7 @@ export default {
     redirectToRun(runId) {
       this.$router.push({ path: `/pacbio/run/${runId || 'new'}` })
     },
-    ...mapActions('traction/pacbio/runs', ['fetchPacbioRuns', 'updateRun']),
+    ...mapActionsPinia(usePacbioRunsStore, ['fetchPacbioRuns', 'updateRun']),
     ...mapActions('traction/pacbio/runCreate', ['fetchSmrtLinkVersions']),
     async fetchRuns() {
       const page = { size: this.page_size.toString(), number: this.page_number.toString() }
@@ -191,7 +193,7 @@ export default {
         !this.filter_value || !this.filter_input ? {} : { [this.filter_value]: this.filter_input }
 
       this.smrtLinkVersionList.length ? null : await this.fetchSmrtLinkVersions()
-      const { success, errors, meta } = await this.fetchPacbioRuns({ page: page, filter: filter })
+      const { success, errors, meta } = await this.fetchPacbioRuns(filter, page)
       this.totalPages = meta.page_count
       return { success, errors }
     },
