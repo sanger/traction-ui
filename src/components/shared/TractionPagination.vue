@@ -77,11 +77,6 @@ export default {
   name: 'TractionPagination',
   inheritAttrs: false,
   props: {
-    /* A method that performs the required data fetch */
-    fetcher: {
-      type: Function,
-      required: true,
-    },
     /**How many total items are in the list */
     totalPages: {
       type: Number,
@@ -131,21 +126,6 @@ export default {
       return this.page_number === this.totalPages
     },
   },
-  watch: {
-    /*
-      page_number and page_size:
-      We ensure the page is paginated before fetching data.
-      This catches an edge case where the watchers are still active when navigating
-      between paginated and unpaginated routes
-      There may be a nicer way of doing this but its tricky with an async router
-    */
-    page_size() {
-      this.$route.meta?.paginated ? this.getData() : ''
-    },
-    page_number() {
-      this.$route.meta?.paginated ? this.getData() : ''
-    },
-  },
   methods: {
     /**Emitted when the page changes */
     pageClick(pageNumber) {
@@ -170,11 +150,6 @@ export default {
     /**Display page-button style based on whether it is selected or not*/
     getPageButtonTheme(page) {
       return this.page_number === page ? 'paginationSelect' : 'paginationDefault'
-    },
-    async getData() {
-      this.fetcher().then(({ success, errors }) => {
-        success ? '' : this.showAlert(errors, 'danger')
-      })
     },
   },
 }

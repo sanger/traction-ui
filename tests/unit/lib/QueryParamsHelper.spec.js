@@ -63,8 +63,7 @@ describe('QueryParamsHelper', () => {
 
       const { clearFilter } = useQueryParams()
       await clearFilter()
-      // We return to page_number 1 when the filter is cleared
-      expect(router.currentRoute.value.query).toEqual({ page_number: '1' })
+      expect(router.currentRoute.value.query).toEqual({})
     })
 
     it('should not remove any other query params', async () => {

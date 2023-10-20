@@ -14,7 +14,6 @@
         <traction-pagination
           class="float-right"
           :total-pages="totalPages"
-          :fetcher="fetchPools"
           aria-controls="pool-index"
         >
         </traction-pagination>

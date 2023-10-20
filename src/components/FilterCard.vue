@@ -15,7 +15,6 @@
             type="search"
             placeholder="Type to Search"
             class="w-1/2"
-            @enterKeyPress="getFilteredData()"
           />
           <traction-select
             id="filterValue"
@@ -90,7 +89,29 @@ export default {
       return this.filterOptions.filter(({ value }) => value == this.filter_value)[0]?.wildcard
     },
   },
+  watch: {
+    /*
+      page_number and page_size:
+      We ensure the page is paginated before fetching data.
+      This catches an edge case where the watchers are still active when navigating
+      between paginated and unpaginated routes
+    */
+    page_size() {
+      this.$route.meta?.paginated ? this.getData() : ''
+    },
+    page_number() {
+      this.$route.meta?.paginated ? this.getData() : ''
+    },
+  },
   methods: {
+    async getFilteredData() {
+      if (this.page_number == 1) {
+        await this.getData()
+      } else {
+        // This triggers the page_number watcher and ensures we are on the first page
+        this.page_number = 1
+      }
+    },
     async getData() {
       await this.fetcher().then(({ success, errors }) => {
         success ? '' : this.showAlert(errors, 'danger')
@@ -98,7 +119,7 @@ export default {
     },
     async resetFilter() {
       await this.clearFilter()
-      await this.getData()
+      await this.getFilteredData()
     },
   },
 }

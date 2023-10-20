@@ -6,7 +6,6 @@
         <traction-pagination
           class="float-right"
           :total-pages="totalPages"
-          :fetcher="fetchPlates"
           aria-controls="plate-index"
         >
         </traction-pagination>

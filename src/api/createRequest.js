@@ -103,8 +103,8 @@ const createRequest = ({ rootURL, apiNamespace, resource, headers = defaultHeade
    * @return AxiosPromise
    * Execute a get query
    */
-  const get = ({ filter = {}, include = '', fields = {}, page = {} } = {}) => {
-    return execute('get', `${resource}${buildQuery({ filter, include, fields, page })}`)
+  const get = ({ page = {}, filter = {}, include = '', fields = {} } = {}) => {
+    return execute('get', `${resource}${buildQuery({ page, filter, include, fields })}`)
   }
 
   /*
