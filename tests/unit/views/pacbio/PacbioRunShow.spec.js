@@ -2,7 +2,7 @@ import PacbioRunShow from '@/views/pacbio/PacbioRunShow'
 import { mount, Data, router, flushPromises, createTestingPinia } from '@support/testHelper'
 import { describe, expect, it } from 'vitest'
 import { newRunType, existingRunType } from '@/stores/utilities/run'
-import { usePacbioRunCreateStore } from '@/stores/PacbioRunCreate'
+import { usePacbioRunCreateStore } from '@/stores/pacbioRunCreate'
 
 const smrtLinkVersions = {
   1: {

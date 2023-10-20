@@ -2,7 +2,7 @@ import PacbioRunWellDefaultEdit from '@/components/pacbio/PacbioRunWellDefaultEd
 import { mount, createTestingPinia } from '@support/testHelper'
 import { describe, expect, it } from 'vitest'
 import { defaultWellAttributes } from '@/stores/utilities/run'
-import { usePacbioRunCreateStore } from '@/stores/PacbioRunCreate'
+import { usePacbioRunCreateStore } from '@/stores/pacbioRunCreate'
 
 // required as suggestion to remove the deprecated function
 // https://vue-test-utils.vuejs.org/api/options.html#attachtodocument

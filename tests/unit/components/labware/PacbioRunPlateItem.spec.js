@@ -3,7 +3,7 @@ import PacbioRunPlateItem from '@/components/pacbio/PacbioRunPlateItem'
 import { newWell, newPlate } from '@/stores/utilities/run'
 import { it } from 'vitest'
 import { PacbioInstrumentTypes } from '@/lib/PacbioInstrumentTypes'
-import { usePacbioRunCreateStore } from '@/stores/PacbioRunCreate'
+import { usePacbioRunCreateStore } from '@/stores/pacbioRunCreate'
 
 const smrtLinkVersions = {
   1: { id: 1, name: 'v11', default: true, active: true },
