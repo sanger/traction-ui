@@ -47,7 +47,7 @@ import PacbioRunWellEdit from '@/components/pacbio/PacbioRunWellEdit'
 import PacbioRunWell from '@/components/labware/PacbioRunWell'
 import LabwareMap from '@/components/labware/LabwareMap.vue'
 import { PacbioInstrumentTypes, validatePlate } from '@/lib/PacbioInstrumentTypes'
-import {mapState} from 'pinia'
+import { mapState } from 'pinia'
 import { usePacbioRunCreateStore } from '@/stores/pacbioRunCreate'
 
 export default {
@@ -70,7 +70,7 @@ export default {
     }
   },
   computed: {
-    ...mapState(usePacbioRunCreateStore,['instrumentType', 'getPlate']),
+    ...mapState(usePacbioRunCreateStore, ['instrumentType', 'getPlate']),
     isRevio() {
       // we should be able to use object equality here but it doesn't work
       // e.g. Object.is(this.instrumentType, PacbioInstrumentTypes.Revio)

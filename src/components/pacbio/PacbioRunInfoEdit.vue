@@ -93,7 +93,12 @@ export default {
     },
   },
   computed: {
-    ...mapState(usePacbioRunCreateStore,['runItem', 'smrtLinkVersionList', 'smrtLinkVersion', 'instrumentType']),
+    ...mapState(usePacbioRunCreateStore, [
+      'runItem',
+      'smrtLinkVersionList',
+      'smrtLinkVersion',
+      'instrumentType',
+    ]),
     // Makes an array of objects with value and text properties to make
     // the options of smrt-link-version select drop-down list.
     // Only includes 'active' versions in the list, unless this record already has an inactive version as its value.
@@ -116,7 +121,7 @@ export default {
     },
   },
   methods: {
-    ...mapActions(usePacbioRunCreateStore,['setSmrtLinkVersion', 'setInstrumentData']),
+    ...mapActions(usePacbioRunCreateStore, ['setSmrtLinkVersion', 'setInstrumentData']),
     alertOnFail({ success, errors }) {
       if (!success) {
         this.showAlert(errors, 'danger')

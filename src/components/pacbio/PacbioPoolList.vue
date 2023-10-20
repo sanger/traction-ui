@@ -22,7 +22,7 @@ export default {
     return {}
   },
   methods: {
-    ...mapActions(usePacbioRunCreateStore,['findPools']),
+    ...mapActions(usePacbioRunCreateStore, ['findPools']),
   },
 }
 </script>

@@ -26,7 +26,6 @@ const props = {
 const position = 'A1'
 const plateNumber = 1
 
-
 /**
  * Helper method for mounting a component with a mock instance of pinia, with the given 'options'.
  * 'options' allows to define initial state of store while instantiating the component.

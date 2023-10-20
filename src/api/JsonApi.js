@@ -275,7 +275,6 @@ const populateBy =
     }
   }
 
-
 /**
  * Splits the given data into an object keyed by the key of the parent
  * @param {Array} data The data to split

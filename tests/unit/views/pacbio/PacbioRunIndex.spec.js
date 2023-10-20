@@ -373,7 +373,7 @@ describe('PacbioRunIndex.vue', () => {
       )
     })
   })
- 
+
   describe('Edit Run button', () => {
     it('contains a Edit Run button', () => {
       expect(wrapper.find('#editRun-1')).toBeDefined()
