@@ -100,6 +100,7 @@ export default {
       'smrtLinkVersion',
       'getWell',
       'poolsArray',
+      'getOrCreateWell',
     ]),
     smrtLinkWellDefaults() {
       return PacbioRunWellComponents[this.smrtLinkVersion.name]
@@ -133,7 +134,7 @@ export default {
     },
   },
   methods: {
-    ...mapActions(usePacbioRunCreateStore, ['getOrCreateWell', 'updateWell', 'deleteWell','findPools']),
+    ...mapActions(usePacbioRunCreateStore, ['updateWell', 'deleteWell', 'findPools']),
     addRow() {
       this.localPools.push({ id: '', barcode: '' })
     },

@@ -135,7 +135,6 @@ export const usePacbioRunCreateStore = defineStore('pacbioRunCreate', {
 
     poolByBarcode: (state) => {
       return (barcode) => {
-        debugger;
         return state.poolsArray.find((pool) => pool.barcode === barcode)
       }
     },

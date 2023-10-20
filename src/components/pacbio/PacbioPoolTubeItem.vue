@@ -160,7 +160,7 @@ export default {
       event.dataTransfer.setDragImage(img, 120, 50)
       event.dataTransfer.setData('barcode', barcode)
     },
-    ...mapActions(usePacbioRunCreateStore,['removePool']),
+    ...mapActions(usePacbioRunCreateStore, ['removePool']),
   },
 }
 </script>

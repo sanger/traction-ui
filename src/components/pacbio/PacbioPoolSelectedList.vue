@@ -1,12 +1,12 @@
 <template>
   <div class="list-group">
-    <tube v-for="pool in pools" :key="pool.id" v-bind="pool"> </tube>
+    <tube v-for="pool in poolsArray" :key="pool.id" v-bind="pool"> </tube>
   </div>
 </template>
 
 <script>
 import Tube from '@/components/pacbio/PacbioPoolTubeItem'
-import {mapState} from 'pinia'
+import { mapState } from 'pinia'
 import { usePacbioRunCreateStore } from '@/stores/pacbioRunCreate'
 
 export default {
@@ -15,7 +15,7 @@ export default {
     Tube,
   },
   computed: {
-    ...mapState(usePacbioRunCreateStore,['pools']),
+    ...mapState(usePacbioRunCreateStore, ['poolsArray']),
   },
 }
 </script>

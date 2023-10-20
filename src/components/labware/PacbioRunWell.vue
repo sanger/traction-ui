@@ -128,14 +128,12 @@ export default {
     },
     async drop(event) {
       this.hover = false
-      debugger
       await this.updatePoolBarcode(event.dataTransfer.getData('barcode'))
     },
     // It looks like all actions are async even if they do nothing async
     async updatePoolBarcode(barcode) {
       const well = await this.getOrCreateWell(this.position, this.plateNumber)
-      debugger;
-      const { id } = this.poolByBarcode({barcode})
+      const { id } = this.poolByBarcode(barcode)
       well.pools.push(id)
       this.updateWell({ well: well, plateNumber: this.plateNumber })
     },
