@@ -20,11 +20,7 @@
         >
         </PacbioLibraryCreate>
 
-        <traction-pagination
-          class="float-right"
-          :total-pages="totalPages"
-          aria-controls="samples-table"
-        >
+        <traction-pagination class="float-right" aria-controls="samples-table">
         </traction-pagination>
       </div>
 
@@ -103,8 +99,8 @@ export default {
     DataFetcher,
   },
   setup() {
-    const { filter_value, filter_input, filter_wildcard, page_size, page_number } = useQueryParams()
-    return { filter_value, filter_input, filter_wildcard, page_size, page_number }
+    const { fetchWithQueryParams } = useQueryParams()
+    return { fetchWithQueryParams }
   },
   data() {
     return {
@@ -135,7 +131,6 @@ export default {
       selected: [],
       sortBy: 'created_at',
       sortDesc: true,
-      totalPages: 1,
     }
   },
   computed: {
@@ -180,13 +175,7 @@ export default {
       @returns {Object} { success: Boolean, errors: Array }
     */
     async fetchRequests() {
-      const page = { size: this.page_size.toString(), number: this.page_number.toString() }
-      const filter =
-        !this.filter_value || !this.filter_input ? {} : { [this.filter_value]: this.filter_input }
-
-      const { success, errors, meta } = await this.setRequests({ page: page, filter: filter })
-      this.totalPages = meta.page_count
-      return { success, errors }
+      return await this.fetchWithQueryParams(this.setRequests, this.filterOptions)
     },
     ...mapActions('traction/pacbio/requests', ['setRequests']),
     ...mapActions('printMyBarcode', ['createPrintJob']),

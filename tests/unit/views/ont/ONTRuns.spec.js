@@ -38,49 +38,6 @@ describe('ONTRuns.vue', () => {
     })
   })
 
-  describe('pagination', () => {
-    beforeEach(async () => {
-      const filtered_data = { ...Data.OntRuns }
-      filtered_data.data.data.splice(2, 4)
-      const get = vi.spyOn(store.state.api.traction.ont.runs, 'get')
-      get.mockReturnValue(Data.OntRuns)
-
-      wrapper = mount(ONTRuns, {
-        store,
-      })
-      await flushPromises()
-
-      get.mockReturnValue(filtered_data)
-      // This push causes pacbio runs to be fetched because of filterCard watchers
-      // And we return filtered_data
-      await router.push({ query: { page_size: 2, page_number: 1 } })
-    })
-
-    it('will paginate the runs in the table', () => {
-      expect(wrapper.find('tbody').findAll('tr').length).toEqual(2)
-      expect(wrapper.vm.page_number).toEqual(1)
-      expect(wrapper.vm.page_size).toEqual(2)
-    })
-
-    it('calls fetcher with the correct data given the query params', async () => {
-      await router.push({
-        query: { page_size: 2, page_number: 2, filter_value: '123', filter_input: 'barcode' },
-      })
-      wrapper.vm.fetchOntRuns = vi.fn()
-      wrapper.vm.fetchOntRuns.mockReturnValue({
-        success: true,
-        errors: [],
-        meta: { page_count: 1 },
-      })
-
-      await wrapper.vm.fetchRuns()
-      expect(wrapper.vm.fetchOntRuns).toBeCalledWith({
-        page: { size: '2', number: '2' },
-        filter: { 123: 'barcode' },
-      })
-    })
-  })
-
   describe('New run button', () => {
     it('contains a create new run button', () => {
       expect(wrapper.find('button').exists()).toBeTruthy()

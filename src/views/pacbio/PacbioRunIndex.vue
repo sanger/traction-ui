@@ -12,12 +12,7 @@
         >
           New Run
         </traction-button>
-        <traction-pagination
-          class="float-right"
-          :total-pages="totalPages"
-          aria-controls="run-index"
-        >
-        </traction-pagination>
+        <traction-pagination class="float-right" aria-controls="run-index"> </traction-pagination>
       </div>
 
       <traction-table id="run-index" v-model:sort-by="sortBy" :items="runsArray" :fields="fields">
@@ -119,8 +114,8 @@ export default {
     TractionBadge,
   },
   setup() {
-    const { filter_value, filter_input, filter_wildcard, page_size, page_number } = useQueryParams()
-    return { filter_value, filter_input, filter_wildcard, page_size, page_number }
+    const { fetchWithQueryParams } = useQueryParams()
+    return { fetchWithQueryParams }
   },
   data() {
     return {
@@ -150,7 +145,6 @@ export default {
       ],
       sortBy: 'created_at',
       sortDesc: true,
-      totalPages: 1,
     }
   },
   computed: {
@@ -188,14 +182,8 @@ export default {
     ...mapActionsPinia(usePacbioRunsStore, ['fetchPacbioRuns', 'updateRun']),
     ...mapActions('traction/pacbio/runCreate', ['fetchSmrtLinkVersions']),
     async fetchRuns() {
-      const page = { size: this.page_size.toString(), number: this.page_number.toString() }
-      const filter =
-        !this.filter_value || !this.filter_input ? {} : { [this.filter_value]: this.filter_input }
-
       this.smrtLinkVersionList.length ? null : await this.fetchSmrtLinkVersions()
-      const { success, errors, meta } = await this.fetchPacbioRuns(filter, page)
-      this.totalPages = meta.page_count
-      return { success, errors }
+      return await this.fetchWithQueryParams(this.fetchPacbioRuns, this.filterOptions)
     },
   },
 }

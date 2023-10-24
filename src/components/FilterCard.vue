@@ -33,7 +33,7 @@
             <traction-button
               id="filterButton"
               :disabled="filter_value == '' || filter_input == ''"
-              @click="getFilteredData()"
+              @click="getFirstPageData()"
               >Search</traction-button
             >
           </div>
@@ -104,7 +104,7 @@ export default {
     },
   },
   methods: {
-    async getFilteredData() {
+    async getFirstPageData() {
       if (this.page_number == 1) {
         await this.getData()
       } else {
@@ -119,7 +119,7 @@ export default {
     },
     async resetFilter() {
       await this.clearFilter()
-      await this.getFilteredData()
+      await this.getFirstPageData()
     },
   },
 }

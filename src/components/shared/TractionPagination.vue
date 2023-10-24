@@ -77,11 +77,6 @@ export default {
   name: 'TractionPagination',
   inheritAttrs: false,
   props: {
-    /**How many total items are in the list */
-    totalPages: {
-      type: Number,
-      default: 1,
-    },
     /**Maximum visible page buttons to be displayed */
     maxVisibleButtons: {
       type: Number,
@@ -89,13 +84,13 @@ export default {
     },
   },
   setup() {
-    const { page_number, page_size } = useQueryParams()
-    return { page_number, page_size }
+    const { page_number, page_size, page_count } = useQueryParams()
+    return { page_number, page_size, page_count }
   },
   computed: {
     //If total number of pages is less than number of buttons given, display only as many buttons as the pages
     visibleButtons() {
-      return Math.min(this.totalPages, this.maxVisibleButtons)
+      return Math.min(this.page_count, this.maxVisibleButtons)
     },
     //Calculate the start page number to be displayed (in page button), based on current selection
     startPage() {
@@ -103,15 +98,15 @@ export default {
         return 1
       }
 
-      if (this.page_number === this.totalPages) {
-        return this.totalPages - this.visibleButtons + 1
+      if (this.page_number === this.page_count) {
+        return this.page_count - this.visibleButtons + 1
       }
 
       return this.page_number - 1
     },
     //Calculate the end page number to be displayed, based on current selection
     endPage() {
-      return Math.min(this.startPage + this.visibleButtons - 1, this.totalPages)
+      return Math.min(this.startPage + this.visibleButtons - 1, this.page_count)
     },
     //Get page numbers to display in page-buttons
     pages() {
@@ -123,7 +118,7 @@ export default {
     },
     //Is the very last page of total number of pages selected?
     isInLastPage() {
-      return this.page_number === this.totalPages
+      return this.page_number === this.page_count
     },
   },
   methods: {
@@ -145,7 +140,7 @@ export default {
     },
     /**Handles the last page button (>>) click */
     lastPageClick() {
-      this.pageClick(this.totalPages)
+      this.pageClick(this.page_count)
     },
     /**Display page-button style based on whether it is selected or not*/
     getPageButtonTheme(page) {

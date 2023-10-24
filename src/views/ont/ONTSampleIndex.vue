@@ -3,11 +3,7 @@
     <FilterCard :fetcher="fetchRequests" :filter-options="filterOptions" />
     <div class="flex flex-col">
       <div class="clearfix">
-        <traction-pagination
-          class="float-right"
-          :total-pages="totalPages"
-          aria-controls="samples-table"
-        >
+        <traction-pagination class="float-right" aria-controls="samples-table">
         </traction-pagination>
       </div>
 
@@ -50,8 +46,8 @@ export default {
     FilterCard,
   },
   setup() {
-    const { filter_value, filter_input, filter_wildcard, page_size, page_number } = useQueryParams()
-    return { filter_value, filter_input, filter_wildcard, page_size, page_number }
+    const { fetchWithQueryParams } = useQueryParams()
+    return { fetchWithQueryParams }
   },
   data() {
     return {
@@ -80,7 +76,6 @@ export default {
       selected: [],
       sortBy: 'created_at',
       sortDesc: true,
-      totalPages: 1,
     }
   },
   computed: {
@@ -89,12 +84,7 @@ export default {
   methods: {
     ...mapActions(['fetchOntRequests']),
     async fetchRequests() {
-      const page = { size: this.page_size.toString(), number: this.page_number.toString() }
-      const filter =
-        !this.filter_value || !this.filter_input ? {} : { [this.filter_value]: this.filter_input }
-      const { success, errors, meta } = await this.fetchOntRequests({ page: page, filter: filter })
-      this.totalPages = meta.page_count
-      return { success, errors }
+      return await this.fetchWithQueryParams(this.fetchOntRequests, this.filterOptions)
     },
   },
 }

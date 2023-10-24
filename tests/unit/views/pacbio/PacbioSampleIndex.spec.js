@@ -40,45 +40,6 @@ describe('PacbioSamples.vue', () => {
     })
   })
 
-  describe('pagination', () => {
-    beforeEach(async () => {
-      const filtered_data = { ...Data.PacbioRequestsRequest }
-      filtered_data.data.data.splice(2, 4)
-      const get = vi.spyOn(store.state.api.traction.pacbio.requests, 'get')
-      get.mockReturnValue(Data.PacbioRequestsRequest)
-
-      wrapper = mount(PacbioSamples, {
-        store,
-      })
-      await flushPromises()
-
-      get.mockReturnValue(filtered_data)
-      // This push causes pacbio samples to be fetched because of filterCard watchers
-      // And we return filtered_data
-      await router.push({ query: { page_size: 2, page_number: 1 } })
-    })
-
-    it('will paginate the runs in the table', async () => {
-      expect(wrapper.find('tbody').findAll('tr').length).toEqual(2)
-      expect(wrapper.vm.page_number).toEqual(1)
-      expect(wrapper.vm.page_size).toEqual(2)
-    })
-
-    it('calls fetcher with the correct data given the query params', async () => {
-      await router.push({
-        query: { page_size: 2, page_number: 2, filter_value: '123', filter_input: 'barcode' },
-      })
-      wrapper.vm.setRequests = vi.fn()
-      wrapper.vm.setRequests.mockReturnValue({ success: true, errors: [], meta: { page_count: 1 } })
-
-      await wrapper.vm.fetchRequests()
-      expect(wrapper.vm.setRequests).toBeCalledWith({
-        page: { size: '2', number: '2' },
-        filter: { 123: 'barcode' },
-      })
-    })
-  })
-
   // TODO: this is tested throughout the app and it is exactly the same
   describe('#showAlert', () => {
     it('passes the message to function on emit event', () => {

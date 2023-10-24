@@ -3,12 +3,7 @@
     <FilterCard :fetcher="fetchPlates" :filter-options="filterOptions" />
     <div class="flex flex-col">
       <div class="clearfix">
-        <traction-pagination
-          class="float-right"
-          :total-pages="totalPages"
-          aria-controls="plate-index"
-        >
-        </traction-pagination>
+        <traction-pagination class="float-right" aria-controls="plate-index"> </traction-pagination>
       </div>
 
       <traction-table
@@ -59,8 +54,8 @@ export default {
     DataFetcher,
   },
   setup() {
-    const { filter_value, filter_input, filter_wildcard, page_size, page_number } = useQueryParams()
-    return { filter_value, filter_input, filter_wildcard, page_size, page_number }
+    const { fetchWithQueryParams } = useQueryParams()
+    return { fetchWithQueryParams }
   },
   data() {
     return {
@@ -75,7 +70,6 @@ export default {
         { value: 'barcode', text: 'Barcode' },
       ],
       sortBy: 'created_at',
-      totalPages: 1,
       currentPlate: {},
     }
   },
@@ -94,13 +88,7 @@ export default {
       this.currentPlate = await this.findPlate({ barcode: barcode })
     },
     async fetchPlates() {
-      const page = { size: this.page_size.toString(), number: this.page_number.toString() }
-      const filter =
-        !this.filter_value || !this.filter_input ? {} : { [this.filter_value]: this.filter_input }
-
-      const { success, errors, meta } = await this.setPlates({ page: page, filter: filter })
-      this.totalPages = meta.page_count
-      return { success, errors }
+      return await this.fetchWithQueryParams(this.setPlates, this.filterOptions)
     },
     ...mapActions(['setPlates', 'findPlate']),
   },

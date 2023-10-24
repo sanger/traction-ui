@@ -13,8 +13,8 @@ describe('TractionPagination.vue', () => {
     let wrapper
 
     beforeEach(async () => {
-      await router.push({ query: { page_number: 3, page_size: 5 } })
-      wrapper = buildWrapper({ totalPages: 6, maxVisibleButtons: 3 })
+      await router.push({ query: { page_number: 3, page_size: 5, page_count: 6 } })
+      wrapper = buildWrapper({ maxVisibleButtons: 3 })
     })
 
     it('displays the given current page as selected', () => {
@@ -31,8 +31,8 @@ describe('TractionPagination.vue', () => {
     let wrapper
 
     beforeEach(async () => {
-      await router.push({ query: { page_number: 1, page_size: 10 } })
-      wrapper = buildWrapper({ totalPages: 100, maxVisibleButtons: 5 })
+      await router.push({ query: { page_number: 1, page_size: 10, page_count: 100 } })
+      wrapper = buildWrapper({ maxVisibleButtons: 5 })
     })
 
     it('displays the given number of buttons to show pages', () => {
@@ -66,8 +66,8 @@ describe('TractionPagination.vue', () => {
     let wrapper
 
     beforeEach(async () => {
-      await router.push({ query: { page_number: 1, page_size: 10 } })
-      wrapper = buildWrapper({ totalPages: 1, maxVisibleButtons: 5 })
+      await router.push({ query: { page_number: 1, page_size: 10, page_count: 1 } })
+      wrapper = buildWrapper({ maxVisibleButtons: 5 })
     })
 
     it('displays only as many buttons required to display pages', () => {
@@ -92,8 +92,8 @@ describe('TractionPagination.vue', () => {
       let wrapper
 
       beforeEach(async () => {
-        await router.push({ query: { page_number: 3, page_size: 5 } })
-        wrapper = buildWrapper({ totalPages: 6, maxVisibleButtons: 5 })
+        await router.push({ query: { page_number: 3, page_size: 5, page_count: 6 } })
+        wrapper = buildWrapper({ maxVisibleButtons: 5 })
         await wrapper.find('[data-testid=first-button]').trigger('click')
         await flushPromises()
       })
@@ -122,8 +122,8 @@ describe('TractionPagination.vue', () => {
       let wrapper
 
       beforeEach(async () => {
-        await router.push({ query: { page_number: 1, page_size: 5 } })
-        wrapper = buildWrapper({ totalPages: 6, maxVisibleButtons: 5 })
+        await router.push({ query: { page_number: 1, page_size: 5, page_count: 6 } })
+        wrapper = buildWrapper({ maxVisibleButtons: 5 })
         await wrapper.find('[data-testid=next-button]').trigger('click')
         await flushPromises()
       })
@@ -152,8 +152,8 @@ describe('TractionPagination.vue', () => {
       let wrapper
 
       beforeEach(async () => {
-        await router.push({ query: { page_number: 1, page_size: 5 } })
-        wrapper = buildWrapper({ totalPages: 6, maxVisibleButtons: 3 })
+        await router.push({ query: { page_number: 1, page_size: 5, page_count: 6 } })
+        wrapper = buildWrapper({ maxVisibleButtons: 3 })
         await wrapper.find('[data-testid=last-button]').trigger('click')
         await flushPromises()
       })
@@ -182,8 +182,8 @@ describe('TractionPagination.vue', () => {
       let wrapper
 
       beforeEach(async () => {
-        await router.push({ query: { page_number: 6, page_size: 5 } })
-        wrapper = buildWrapper({ totalPages: 6, maxVisibleButtons: 3 })
+        await router.push({ query: { page_number: 6, page_size: 5, page_count: 6 } })
+        wrapper = buildWrapper({ maxVisibleButtons: 3 })
         await wrapper.find('[data-testid=prev-button]').trigger('click')
         await flushPromises()
       })
@@ -214,8 +214,8 @@ describe('TractionPagination.vue', () => {
     let wrapper
 
     beforeEach(async () => {
-      await router.push({ query: { page_number: 3, page_size: 5 } })
-      wrapper = buildWrapper({ totalPages: 6, maxVisibleButtons: 5 })
+      await router.push({ query: { page_number: 3, page_size: 5, page_count: 6 } })
+      wrapper = buildWrapper({ maxVisibleButtons: 5 })
     })
 
     it('updates page size', async () => {

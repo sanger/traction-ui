@@ -11,12 +11,7 @@
         >
         </printerModal>
 
-        <traction-pagination
-          class="float-right"
-          :total-pages="totalPages"
-          aria-controls="pool-index"
-        >
-        </traction-pagination>
+        <traction-pagination class="float-right" aria-controls="pool-index"> </traction-pagination>
       </div>
 
       <traction-table
@@ -97,8 +92,8 @@ export default {
     DataFetcher,
   },
   setup() {
-    const { filter_value, filter_input, filter_wildcard, page_size, page_number } = useQueryParams()
-    return { filter_value, filter_input, filter_wildcard, page_size, page_number }
+    const { fetchWithQueryParams } = useQueryParams()
+    return { fetchWithQueryParams }
   },
   data() {
     return {
@@ -138,7 +133,6 @@ export default {
       selected: [],
       sortBy: 'created_at',
       sortDesc: true,
-      totalPages: 1,
     }
   },
   computed: {
@@ -177,13 +171,7 @@ export default {
       this.showAlert(message, success ? 'success' : 'danger')
     },
     async fetchPools() {
-      const page = { size: this.page_size.toString(), number: this.page_number.toString() }
-      const filter =
-        !this.filter_value || !this.filter_input ? {} : { [this.filter_value]: this.filter_input }
-
-      const { success, errors, meta } = await this.setPools({ page: page, filter: filter })
-      this.totalPages = meta.page_count
-      return { success, errors }
+      return await this.fetchWithQueryParams(this.setPools, this.filterOptions)
     },
     ...mapActions('traction/pacbio/pools', ['setPools']),
     ...mapActions('printMyBarcode', ['createPrintJob']),

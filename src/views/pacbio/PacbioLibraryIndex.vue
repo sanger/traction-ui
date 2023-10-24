@@ -20,11 +20,7 @@
         >
         </printerModal>
 
-        <traction-pagination
-          class="float-right"
-          :total-pages="totalPages"
-          aria-controls="library-index"
-        />
+        <traction-pagination class="float-right" aria-controls="library-index" />
       </div>
 
       <traction-table
@@ -77,8 +73,8 @@ export default {
     DataFetcher,
   },
   setup() {
-    const { filter_value, filter_input, filter_wildcard, page_size, page_number } = useQueryParams()
-    return { filter_value, filter_input, filter_wildcard, page_size, page_number }
+    const { fetchWithQueryParams } = useQueryParams()
+    return { fetchWithQueryParams }
   },
   data() {
     return {
@@ -117,7 +113,6 @@ export default {
       selected: [],
       sortBy: 'created_at',
       sortDesc: true,
-      totalPages: 1,
     }
   },
   computed: {
@@ -176,27 +171,8 @@ export default {
 
       this.showAlert(message, success ? 'success' : 'danger')
     },
-    buildFilter() {
-      if (!this.filter_value || !this.filter_input) {
-        return {}
-      }
-      let searchValue = this.filter_input
-      if (
-        this.filterOptions.filter(({ value }) => value == this.filter_value)[0]?.wildcard &&
-        this.filter_wildcard
-      ) {
-        // If wildcard is selected, add it to the search string
-        searchValue += ',wildcard'
-      }
-      return { [this.filter_value]: searchValue }
-    },
     async fetchLibraries() {
-      const page = { size: this.page_size.toString(), number: this.page_number.toString() }
-      const filter = this.buildFilter()
-
-      const { success, errors, meta } = await this.setLibraries({ page: page, filter: filter })
-      this.totalPages = meta.page_count
-      return { success, errors }
+      return await this.fetchWithQueryParams(this.setLibraries, this.filterOptions)
     },
     ...mapActions('traction/pacbio/libraries', ['deleteLibraries', 'setLibraries']),
     ...mapActions('printMyBarcode', ['createPrintJob']),
