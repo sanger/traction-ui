@@ -42,13 +42,13 @@ export default {
     },
     /** Callback handler for tab item selection - Each tab selection navigates user to a different page which
      * is handled by the router.push method**/
-    setSource(indx) {
-      this.sourceIndex = indx
+    setSource(index) {
+      this.sourceIndex = index
       // If new tab is already active, do nothing
-      if (this.isActive(this.pipelineInfo.routes[indx])) {
+      if (this.isActive(this.pipelineInfo.routes[index])) {
         return
       }
-      this.$router.push({ path: this.path(this.pipelineInfo.routes[indx]) }).catch((error) => {
+      this.$router.push({ path: this.path(this.pipelineInfo.routes[index]) }).catch((error) => {
         if (!isNavigationFailure(error, NavigationFailureType.duplicated)) {
           console.error(error)
         }
