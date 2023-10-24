@@ -62,8 +62,9 @@
 <script>
 // There is a lot of duplication between this component and PacbioRunWellEdit.
 // A lot of it could be moved to the store
-import { mapGetters, mapActions } from 'vuex'
+import { mapState, mapActions } from 'pinia'
 import PacbioRunWellComponents from '@/config/PacbioRunWellComponents'
+import { usePacbioRunCreateStore } from '@/stores/pacbioRunCreate'
 
 export default {
   name: 'WellModal',
@@ -94,11 +95,12 @@ export default {
     }
   },
   computed: {
-    ...mapGetters('traction/pacbio/runCreate', [
+    ...mapState(usePacbioRunCreateStore, [
       'poolByBarcode',
       'smrtLinkVersion',
       'getWell',
-      'pools',
+      'poolsArray',
+      'getOrCreateWell',
     ]),
     smrtLinkWellDefaults() {
       return PacbioRunWellComponents[this.smrtLinkVersion.name]
@@ -132,7 +134,7 @@ export default {
     },
   },
   methods: {
-    ...mapActions('traction/pacbio/runCreate', ['getOrCreateWell', 'updateWell', 'deleteWell']),
+    ...mapActions(usePacbioRunCreateStore, ['updateWell', 'deleteWell', 'findPools']),
     addRow() {
       this.localPools.push({ id: '', barcode: '' })
     },
@@ -185,7 +187,7 @@ export default {
     },
     async updatePoolBarcode(row, barcode) {
       const index = row.index
-      await this.$store.dispatch('traction/pacbio/runCreate/findPools', { barcode: barcode })
+      await this.findPools({ barcode })
       const pool = await this.poolByBarcode(barcode)
       if (pool) {
         this.localPools[index] = { id: pool.id, barcode }
@@ -197,15 +199,12 @@ export default {
       this.$emit('alert', message, type)
     },
     async setupWell() {
-      this.well = await this.getOrCreateWell({
-        position: this.position,
-        plateNumber: this.plateNumber,
-      })
+      this.well = await this.getOrCreateWell(this.position, this.plateNumber)
       // We need to flush localPools to prevent duplicates
       this.localPools = []
       // If the well has pools we want the barcode and id of each to display
       this.well.pools?.forEach((id) => {
-        const pool = this.pools.find((pool) => pool.id == id)
+        const pool = this.poolsArray.find((pool) => pool.id == id)
         this.localPools.push({ id, barcode: pool.barcode })
       })
     },
