@@ -13,19 +13,16 @@ const props = {
   plateNumber: 1,
 }
 /**
- * Helper method for mounting a component with a mock instance of pinia, with the given 'options'.
- * 'options' allows to define initial state of store while instantiating the component.
+ * Helper method for mounting a component with a mock instance of pinia, with the given props.
+ * This method also returns the wrapper and the store object for further testing.
  *
- * @param {*} options - options to be passed to the createTestingPinia method for creating a mock instance of pinia
- * options type is
- * {state :{},stubActions: boolean, plugins:[]}
- *
+ * @param {*} - params to be passed to the createTestingPinia method for creating a mock instance of pinia
+ * which includes
+ * state - initial state of the store.
+ * stubActions - boolean to stub actions or not.
+ * plugins - plugins to be used while creating the mock instance of pinia.
  */
-function mountWithStore(options) {
-  const state = options?.state ? options.state : {}
-  const stubActions = options?.stubActions ?? false
-  const plugins = options?.plugins ?? []
-
+function mountWithStore({ state = {}, stubActions = false, plugins = [] } = {}) {
   const wrapperObj = mount(PacbioRunPlateItem, {
     global: {
       plugins: [

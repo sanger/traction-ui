@@ -35,11 +35,7 @@ const smrtLinkVersions = {
  * {state :{},stubActions: boolean, plugins:[]}
  *
  */
-function mountWithStore(options) {
-  const state = options?.state ? options.state : {}
-  const stubActions = options?.stubActions ?? false
-  const plugins = options?.plugins ?? []
-
+function mountWithStore({ state = {}, stubActions = false, plugins = [] } = {}) {
   const wrapperObj = mount(PacbioRunWellDefaultEdit, {
     global: {
       plugins: [

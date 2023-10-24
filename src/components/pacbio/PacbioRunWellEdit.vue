@@ -187,7 +187,7 @@ export default {
     },
     async updatePoolBarcode(row, barcode) {
       const index = row.index
-      await this.findPools({ barcode: barcode })
+      await this.findPools({ barcode })
       const pool = await this.poolByBarcode(barcode)
       if (pool) {
         this.localPools[index] = { id: pool.id, barcode }

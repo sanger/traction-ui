@@ -508,7 +508,7 @@ describe('usePacbioRunCreateStore', () => {
           id,
           ...attributes,
         })
-        expect(store.smrtLinkVersion.get).toEqual(defaultSmrtLinkVersion)
+        expect(store.smrtLinkVersion).toEqual(defaultSmrtLinkVersion)
       })
 
       it('for an existing run', async () => {

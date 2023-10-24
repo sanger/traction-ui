@@ -356,7 +356,7 @@ export const usePacbioRunCreateStore = defineStore('pacbioRunCreate', {
           id,
           ...attributes,
         }
-        this.smrtLinkVersion = this.smrtLinkVersionList
+        this.smrtLinkVersion = this.defaultSmrtLinkVersion
         // success will always be true and errors will be empty
         return { success: true, errors: [] }
       }

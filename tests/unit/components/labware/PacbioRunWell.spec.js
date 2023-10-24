@@ -37,7 +37,7 @@ const smrtLinkVersions = {
  * {state :{},stubActions: boolean, plugins:[]}
  *
  */
-function mountWithStore(options) {
+function mountWithStore({ state = {}, stubActions = false, plugins = [] } = {}) {
   const defaultOptions = {
     run: {},
     plates: { 1: newPlate(1) },
@@ -46,9 +46,6 @@ function mountWithStore(options) {
     smrtLinkVersion: smrtLinkVersions['1'],
     resources: { smrtLinkVersions },
   }
-  const state = options?.state ? options.state : {}
-  const stubActions = options?.stubActions ?? false
-  const plugins = options?.plugins ?? []
   const wrapperObj = mount(PacbioRunWell, {
     global: {
       plugins: [
