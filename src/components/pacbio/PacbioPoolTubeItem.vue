@@ -74,8 +74,8 @@
 </template>
 
 <script>
-import { createNamespacedHelpers } from 'vuex'
-const { mapMutations } = createNamespacedHelpers('traction/pacbio/runCreate')
+import { mapActions } from 'pinia'
+import { usePacbioRunCreateStore } from '@/stores/pacbioRunCreate'
 
 const img = new Image()
 img.src = '/tube.png'
@@ -160,7 +160,7 @@ export default {
       event.dataTransfer.setDragImage(img, 120, 50)
       event.dataTransfer.setData('barcode', barcode)
     },
-    ...mapMutations(['removePool']),
+    ...mapActions(usePacbioRunCreateStore, ['removePool']),
   },
 }
 </script>

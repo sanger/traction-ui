@@ -13,7 +13,8 @@
 
 <script>
 import PacbioRunPlateItem from '@/components/pacbio/PacbioRunPlateItem.vue'
-import { mapGetters } from 'vuex'
+import { mapState } from 'pinia'
+import { usePacbioRunCreateStore } from '@/stores/pacbioRunCreate'
 
 export default {
   name: 'PacbioRunPlateList',
@@ -26,7 +27,7 @@ export default {
     }
   },
   computed: {
-    ...mapGetters('traction/pacbio/runCreate', ['getPlateList']),
+    ...mapState(usePacbioRunCreateStore, ['getPlateList']),
   },
 }
 </script>

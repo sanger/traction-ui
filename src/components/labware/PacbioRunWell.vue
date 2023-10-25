@@ -24,7 +24,8 @@
 </template>
 
 <script>
-import { mapActions, mapGetters } from 'vuex'
+import { mapActions, mapState } from 'pinia'
+import { usePacbioRunCreateStore } from '@/stores/pacbioRunCreate'
 
 export default {
   name: 'PacbioRunWell',
@@ -50,11 +51,12 @@ export default {
     }
   },
   computed: {
-    ...mapGetters('traction/pacbio/runCreate', [
+    ...mapState(usePacbioRunCreateStore, [
       'poolByBarcode',
       'getWell',
-      'pools',
+      'poolsArray',
       'smrtLinkVersion',
+      'getOrCreateWell',
     ]),
     wellClassNames() {
       return [
@@ -88,7 +90,7 @@ export default {
     tooltip() {
       return this.storeWell.pools
         .map((p) => {
-          return this.pools.find((pool) => p == pool.id).barcode
+          return this.poolsArray.find((pool) => p == pool.id).barcode
         })
         .join(',')
     },
@@ -120,7 +122,7 @@ export default {
     },
   },
   methods: {
-    ...mapActions('traction/pacbio/runCreate', ['getOrCreateWell', 'updateWell']),
+    ...mapActions(usePacbioRunCreateStore, ['updateWell']),
     onClick() {
       this.$emit('click', this.position, this.plateNumber)
     },
@@ -130,10 +132,7 @@ export default {
     },
     // It looks like all actions are async even if they do nothing async
     async updatePoolBarcode(barcode) {
-      const well = await this.getOrCreateWell({
-        position: this.position,
-        plateNumber: this.plateNumber,
-      })
+      const well = await this.getOrCreateWell(this.position, this.plateNumber)
       const { id } = this.poolByBarcode(barcode)
       well.pools.push(id)
       this.updateWell({ well: well, plateNumber: this.plateNumber })

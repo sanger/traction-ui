@@ -1,7 +1,8 @@
 import PacbioRunInfoEdit from '@/components/pacbio/PacbioRunInfoEdit'
-import { mount, store } from '@support/testHelper'
+import { mount, createTestingPinia } from '@support/testHelper'
 import { beforeEach, describe, expect } from 'vitest'
 import { PacbioInstrumentTypes } from '@/lib/PacbioInstrumentTypes'
+import { usePacbioRunCreateStore } from '@/stores/pacbioRunCreate'
 
 // required as suggestion to remove the deprecated function
 // https://vue-test-utils.vuejs.org/api/options.html#attachtodocument
@@ -37,56 +38,79 @@ const smrtLinkVersions = {
   },
 }
 
-let runInfo, wrapper
+/**
+ * Helper method for mounting a component with a mock instance of pinia, with the given props.
+ * This method also returns the wrapper and the store object for further testing.
+ *
+ * @param {*} - params to be passed to the createTestingPinia method for creating a mock instance of pinia
+ * which includes
+ * state - initial state of the store.
+ * stubActions - boolean to stub actions or not.
+ * plugins - plugins to be used while creating the mock instance of pinia.
+ *
+ * @param {*} props - props to be passed to the component while mounting
+ */
+function mountWithStore({ state = {}, stubActions = false, plugins = [] } = {}, props) {
+  const wrapperObj = mount(PacbioRunInfoEdit, {
+    global: {
+      plugins: [
+        createTestingPinia({
+          initialState: {
+            pacbioRunCreate: { ...state },
+          },
+          stubActions,
+          plugins,
+        }),
+      ],
+    },
+    sync: false,
+    attachTo: elem,
+    props,
+  })
+  const storeObj = usePacbioRunCreateStore()
+  return { wrapperObj, storeObj }
+}
+
+let runInfo, wrapper, store
 
 describe('PacbioRunInfoEdit', () => {
-  const props = {
-    newRecord: true,
-  }
-
-  const buildWrapper = () =>
-    mount(PacbioRunInfoEdit, {
-      store,
-      sync: false,
-      attachTo: elem,
-      props,
-    })
-
-  const run = {
-    id: 'new',
-    name: 'TRACTION-RUN-3',
-    system_name: 'Sequel IIe',
-    dna_control_complex_box_barcode: null,
-    comments: null,
-  }
-
   beforeEach(() => {
-    wrapper = buildWrapper()
+    const { wrapperObj, storeObj } = mountWithStore(
+      {
+        state: {
+          run: {
+            id: 'new',
+            name: 'TRACTION-RUN-3',
+            system_name: 'Sequel IIe',
+            dna_control_complex_box_barcode: null,
+            comments: null,
+          },
+          smrtLinkVersion: smrtLinkVersions[1],
+          resources: { smrtLinkVersions },
+          instrumentTypeList: PacbioInstrumentTypes,
+          instrumentType: PacbioInstrumentTypes.SequelIIe,
+        },
+      },
+      {
+        newRecord: true,
+      },
+    )
+    wrapper = wrapperObj
+    store = storeObj
     runInfo = wrapper.vm
-    store.state.traction.pacbio.runCreate.run = { ...run }
-    store.state.traction.pacbio.runCreate.smrtLinkVersion = smrtLinkVersions[1]
-    store.state.traction.pacbio.runCreate.resources.smrtLinkVersions = smrtLinkVersions
-    store.state.traction.pacbio.runCreate.instrumentTypeList = PacbioInstrumentTypes
-    store.state.traction.pacbio.runCreate.instrumentType = PacbioInstrumentTypes.SequelIIe
   })
 
   it('on mount, will set the instrument type', () => {
-    expect(store.state.traction.pacbio.runCreate.instrumentType).toEqual(
-      PacbioInstrumentTypes.SequelIIe,
-    )
+    expect(store.instrumentType).toEqual(PacbioInstrumentTypes.SequelIIe)
   })
 
   it('will update the instrument type', async () => {
     const input = wrapper.find('[data-attribute=system_name]')
     await input.setValue(PacbioInstrumentTypes.Revio.key)
-    expect(store.state.traction.pacbio.runCreate.instrumentType).toEqual(
-      PacbioInstrumentTypes.Revio,
-    )
+    expect(store.instrumentType).toEqual(PacbioInstrumentTypes.Revio)
 
     await input.setValue(PacbioInstrumentTypes.SequelIIe.key)
-    expect(store.state.traction.pacbio.runCreate.instrumentType).toEqual(
-      PacbioInstrumentTypes.SequelIIe,
-    )
+    expect(store.instrumentType).toEqual(PacbioInstrumentTypes.SequelIIe)
   })
 
   it('will only show the instrument type options that are active', () => {
@@ -133,15 +157,13 @@ describe('PacbioRunInfoEdit', () => {
 
   describe('input', () => {
     it('has a run name on run edit', async () => {
-      expect(store.state.traction.pacbio.runCreate.run.name).toEqual('TRACTION-RUN-3')
+      expect(store.run.name).toEqual('TRACTION-RUN-3')
     })
 
     it('shows dna_control_complex_box_barcode when SMRT Link version is not v12 Sequel IIe', async () => {
       const input = wrapper.find('[data-attribute=dna_control_complex_box_barcode]')
       await input.setValue('DCCB1')
-      expect(store.state.traction.pacbio.runCreate.run.dna_control_complex_box_barcode).toEqual(
-        'DCCB1',
-      )
+      expect(store.run.dna_control_complex_box_barcode).toEqual('DCCB1')
       expect(wrapper.text()).toContain('DNA Control Complex Box Barcode')
     })
     it('does not show dna_control_complex_box_barcode when SMRT Link version is v12 Revio', async () => {
@@ -157,7 +179,7 @@ describe('PacbioRunInfoEdit', () => {
       expect(wrapper.text()).not.toContain('DNA Control Complex Box Barcode')
     })
     it('system name', async () => {
-      expect(store.state.traction.pacbio.runCreate.run.system_name).toEqual('Sequel IIe')
+      expect(store.run.system_name).toEqual('Sequel IIe')
     })
     it('smrt_link_version_id', async () => {
       const options = wrapper.find('[data-attribute=smrt_link_version]').findAll('option')
@@ -167,42 +189,34 @@ describe('PacbioRunInfoEdit', () => {
     it('comments', async () => {
       const input = wrapper.find('[data-attribute=comments]')
       await input.setValue('example comment')
-      expect(store.state.traction.pacbio.runCreate.run.comments).toEqual('example comment')
+      expect(store.run.comments).toEqual('example comment')
     })
   })
 })
 
 describe('PacbioRunInfoEdit old run', () => {
-  const props = {
-    newRecord: false,
-  }
-
-  const buildWrapper = () =>
-    mount(PacbioRunInfoEdit, {
-      store,
-      sync: false,
-      attachTo: elem,
-      props,
-    })
-
-  const run = {
-    id: 'new',
-    name: 'TRACTION-RUN-4',
-    system_name: 'Sequel I',
-    dna_control_complex_box_barcode: null,
-    comments: null,
-  }
-
   beforeEach(() => {
-    wrapper = buildWrapper()
-    runInfo = wrapper.vm
-    store.state.traction.pacbio.runCreate.run = { ...run }
-    store.state.traction.pacbio.runCreate.smrtLinkVersion = smrtLinkVersions[4]
-    store.state.traction.pacbio.runCreate.resources.smrtLinkVersions = smrtLinkVersions
-    store.state.traction.pacbio.runCreate.instrumentTypeList = PacbioInstrumentTypes
-    store.state.traction.pacbio.runCreate.instrumentType = PacbioInstrumentTypes.SequelI
+    const { wrapperObj } = mountWithStore(
+      {
+        state: {
+          run: {
+            id: 'new',
+            name: 'TRACTION-RUN-4',
+            system_name: 'Sequel I',
+            dna_control_complex_box_barcode: null,
+            comments: null,
+          },
+          smrtLinkVersion: smrtLinkVersions[4],
+          resources: { smrtLinkVersions },
+          instrumentTypeList: PacbioInstrumentTypes,
+        },
+      },
+      {
+        newRecord: false,
+      },
+    )
+    runInfo = wrapperObj.vm
   })
-
   describe('#computed', () => {
     describe('#smrtLinkVersionSelectOptions', () => {
       it('includes an inactive version if the record has that value', () => {

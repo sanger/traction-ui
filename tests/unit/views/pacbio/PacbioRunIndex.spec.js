@@ -9,46 +9,76 @@ import {
   createTestingPinia,
 } from '@support/testHelper'
 import { usePacbioRunsStore } from '@/stores/pacbioRuns'
+import { usePacbioRunCreateStore } from '@/stores/pacbioRunCreate'
 import { vi } from 'vitest'
 
+const mockRuns = new Response(Data.PacbioRuns).deserialize.runs
 /**
- * Helper method for mounting a component with a mock instance of pinia, with the given 'options'.
+ * Helper method for mounting a component 'dataProps' if any and with a mock instance of pinia, with the given 'options'.
  * 'options' allows to define initial state while instantiating the component.
  *
  * @param {*} options - options to be passed to the createTestingPinia method for creating a mock instance of pinia
  * e.g. initialState, stubActions etc.
+ * @param {*} dataProps - data to be passed to the component while mounting
  */
-function factory(options) {
+function factory(options, dataProps) {
+  const spy = vi.fn().mockResolvedValue({ success: true, data: Data.PacbioRuns.data })
+  const spy2 = vi.fn().mockResolvedValue(Data.TractionPacbioSmrtLinkVersions)
+
   const wrapperObj = mount(PacbioRunIndex, {
     global: {
-      plugins: [createTestingPinia(options)],
+      plugins: [
+        createTestingPinia({
+          initialState: {
+            pacbioRuns: {
+              runs: new Response(Data.PacbioRuns).deserialize.runs,
+            },
+            pacbioRunCreate: {
+              resources: {
+                smrtLinkVersions: new Response(Data.TractionPacbioSmrtLinkVersions).deserialize
+                  .smrt_link_versions,
+              },
+            },
+            root: {},
+          },
+          stubActions: false,
+          plugins: [
+            ({ store }) => {
+              if (store.$id === 'pacbioRuns') {
+                store.runRequest.get = spy
+              }
+              if (store.$id === 'root') {
+                store.api.traction.pacbio.smrt_link_versions.get = spy2
+                store.api.traction.pacbio.runs = vi.fn().mockReturnValue(Data.PacbioRuns)
+              }
+            },
+          ],
+        }),
+      ],
+    },
+    data() {
+      return {
+        filter: mockRuns[0].name,
+        ...dataProps,
+      }
     },
   })
 
-  const store = usePacbioRunsStore()
-  return { wrapperObj, store }
+  const runCreateStoreObj = usePacbioRunCreateStore()
+  usePacbioRunsStore()
+
+  return { wrapperObj, runCreateStoreObj }
 }
 
 describe('PacbioRunIndex.vue', () => {
-  let wrapper, pacbioRunIndex, mockRuns, mockVersions
+  let wrapper, pacbioRunIndex, mockVersions, runCreateStore
 
   beforeEach(async () => {
-    mockRuns = new Response(Data.PacbioRuns).deserialize.runs
-    const spy = vi.fn().mockResolvedValue({ success: true, data: Data.PacbioRuns.data })
-    const { wrapperObj } = factory({
-      initialState: {
-        pacbioRuns: {
-          runs: new Response(Data.PacbioRuns).deserialize.runs,
-        },
-      },
-      stubActions: false,
-      plugins: [
-        ({ store }) => {
-          store.runRequest.get = spy
-        },
-      ],
-    })
+    mockVersions = new Response(Data.TractionPacbioSmrtLinkVersions).deserialize.smrt_link_versions
+
+    const { wrapperObj, runCreateStoreObj } = factory()
     wrapper = wrapperObj
+    runCreateStore = runCreateStoreObj
     pacbioRunIndex = wrapper.vm
     await flushPromises()
   })
@@ -82,12 +112,6 @@ describe('PacbioRunIndex.vue', () => {
     let badges
 
     beforeEach(() => {
-      mockVersions = new Response(Data.TractionPacbioSmrtLinkVersions).deserialize
-        .smrt_link_versions
-      vi.spyOn(store.state.api.traction.pacbio.smrt_link_versions, 'get').mockResolvedValue(
-        Data.TractionPacbioSmrtLinkVersions,
-      )
-
       // find all tags with class 'badge'
       badges = wrapper.find('tbody').findAll('.badge')
     })
@@ -97,6 +121,7 @@ describe('PacbioRunIndex.vue', () => {
     })
 
     it('contains the correct badge text', () => {
+      //rootStore.api.traction.pacbio.smrt_link_versions = mockVersions
       badges.forEach((badge, index) => {
         const version_id = mockRuns[index].pacbio_smrt_link_version_id
         const version = mockVersions.find((version) => version.id == version_id)
@@ -107,7 +132,7 @@ describe('PacbioRunIndex.vue', () => {
 
     it('displays an error badge if the version is not found', async () => {
       // Remove smrtLinkVersions from state
-      store.state.traction.pacbio.runCreate.resources.smrtLinkVersions = {}
+      runCreateStore.resources.smrtLinkVersions = {}
       await nextTick()
       const badgesMissing = wrapper.find('tbody').findAll('.badge')
       expect(badgesMissing[0].text()).toEqual('< ! >')
@@ -262,16 +287,6 @@ describe('PacbioRunIndex.vue', () => {
 
   describe('filtering runs', () => {
     beforeEach(async () => {
-      const get = vi.spyOn(store.state.api.traction.pacbio.runs, 'get')
-      get.mockReturnValue(Data.PacbioRuns)
-      wrapper = mount(PacbioRunIndex, {
-        store,
-        data() {
-          return {
-            filter: mockRuns[0].name,
-          }
-        },
-      })
       await flushPromises()
       wrapper.vm.tableData = [mockRuns[0]]
     })
@@ -295,17 +310,9 @@ describe('PacbioRunIndex.vue', () => {
 
   describe('pagination', () => {
     beforeEach(async () => {
-      const get = vi.spyOn(store.state.api.traction.pacbio.runs, 'get')
-      get.mockReturnValue(Data.PacbioRuns)
-
-      wrapper = mount(PacbioRunIndex, {
-        store,
-        data() {
-          return {
-            perPage: 2,
-            currentPage: 1,
-          }
-        },
+      factory({
+        perPage: 2,
+        currentPage: 1,
       })
       wrapper.vm.tableData = [mockRuns[0], mockRuns[1]]
       await flushPromises()

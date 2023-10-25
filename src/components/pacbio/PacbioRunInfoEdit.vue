@@ -69,21 +69,13 @@
 </template>
 
 <script>
-/*
- @param {Array} list - An array of objects
-  @param {String} key - The key of the object to use as the value of the select option
-  @returns {Array} - An array of objects with value and text properties
-*/
-const createSelectOptions = (list, key) => {
-  return list.map((item) => ({
-    value: item[key],
-    text: item.name,
-  }))
-}
-
-import { createNamespacedHelpers } from 'vuex'
-const { mapGetters, mapActions } = createNamespacedHelpers('traction/pacbio/runCreate')
+import { mapState, mapActions } from 'pinia'
+import { usePacbioRunCreateStore } from '@/stores/pacbioRunCreate'
 import { PacbioInstrumentTypes } from '@/lib/PacbioInstrumentTypes'
+import {
+  InstrumentTypeSelectOptionsType,
+  SmrtLinkVersionSelectOptionsType,
+} from '@/lib/SelectOptionsTypes'
 
 export default {
   name: 'PacbioRunInfoEdit',
@@ -93,30 +85,34 @@ export default {
     },
   },
   computed: {
-    ...mapGetters(['runItem', 'smrtLinkVersionList', 'smrtLinkVersion', 'instrumentType']),
+    ...mapState(usePacbioRunCreateStore, [
+      'runItem',
+      'smrtLinkVersionList',
+      'smrtLinkVersion',
+      'instrumentType',
+    ]),
     // Makes an array of objects with value and text properties to make
     // the options of smrt-link-version select drop-down list.
     // Only includes 'active' versions in the list, unless this record already has an inactive version as its value.
     smrtLinkVersionSelectOptions() {
-      const list = Object.values(this.smrtLinkVersionList).filter(
-        (version) => version.active || version.id === this.smrtLinkVersion.id,
+      return SmrtLinkVersionSelectOptionsType(Object.values(this.smrtLinkVersionList)).options(
+        this.smrtLinkVersion,
       )
-      return createSelectOptions(list, 'id')
     },
+    // Returns an array of objects with value and text properties to make
+    // the options of instrument-type select drop-down list.
+    // Only includes 'active' versions in the list, unless this record already has an inactive version as its value.
     instrumentTypeSelectOptions() {
-      // Returns an array of objects with value and text properties to make
-      // the options of instrument-type select drop-down list.
-      const list = Object.values(PacbioInstrumentTypes).filter(
-        (instrumentType) => instrumentType.active || instrumentType.key === this.instrumentType.key,
+      return InstrumentTypeSelectOptionsType(Object.values(PacbioInstrumentTypes)).options(
+        this.instrumentType,
       )
-      return createSelectOptions(list, 'key')
     },
     smrtLinkVersionv12() {
       return /^v12/.test(this.smrtLinkVersion.name)
     },
   },
   methods: {
-    ...mapActions(['setSmrtLinkVersion', 'setInstrumentData']),
+    ...mapActions(usePacbioRunCreateStore, ['setSmrtLinkVersion', 'setInstrumentData']),
     alertOnFail({ success, errors }) {
       if (!success) {
         this.showAlert(errors, 'danger')
