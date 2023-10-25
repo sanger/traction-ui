@@ -1,7 +1,8 @@
-import PacbioRun from '@/views/pacbio/PacbioRunShow'
-import { mount, store, router, Data, flushPromises } from '@support/testHelper'
-import { beforeEach, describe, expect, it } from 'vitest'
-import { newRunType, existingRunType } from '@/store/traction/pacbio/runCreate/run'
+import PacbioRunShow from '@/views/pacbio/PacbioRunShow'
+import { mount, Data, router, flushPromises, createTestingPinia } from '@support/testHelper'
+import { describe, expect, it } from 'vitest'
+import { newRunType, existingRunType } from '@/stores/utilities/run'
+import { usePacbioRunCreateStore } from '@/stores/pacbioRunCreate'
 
 const smrtLinkVersions = {
   1: {
@@ -12,36 +13,50 @@ const smrtLinkVersions = {
   },
 }
 
-describe('PacbioRunShow.vue', () => {
-  beforeEach(() => {
-    store.state.traction.pacbio.runCreate.resources.smrtLinkVersions = smrtLinkVersions
-  })
-
-  describe('new', () => {
-    it('shows as a new run ', async () => {
-      const {
-        state: {
-          api: {
-            traction: {
-              pacbio: { smrt_link_versions: smrtLinkVersionsRequest },
+/**
+ * Helper method for mounting a component with a mock instance of pinia, with the given 'props'.
+ * @param {*} props - props to be passed to the component while mounting
+ *
+ */
+function mountWithStore(props) {
+  const wrapper = mount(PacbioRunShow, {
+    global: {
+      plugins: [
+        createTestingPinia({
+          initialState: {
+            pacbioRunCreate: {
+              resources: { smrtLinkVersions },
             },
           },
-        },
-      } = store
-
-      smrtLinkVersionsRequest.get = vi.fn()
-
-      const wrapper = mount(PacbioRun, {
-        store,
-        router,
-        stubs: {
-          PacbioPlateList: true,
-          PacbioPoolList: true,
-          PacbioRunInfoEdit: true,
-          PacbioRunWellDefaultEdit: true,
-        },
-        props: { id: 'new' },
-      })
+          stubActions: false,
+          plugins: [
+            ({ store }) => {
+              if (store.$id === 'root') {
+                ;(store.api.traction.pacbio.smrt_link_versions.get = vi.fn()),
+                  (store.api.traction.pacbio.runs.find = vi.fn(() => Data.PacbioRun)),
+                  (store.api.traction.pacbio.pools.get = vi.fn(() => Data.PacbioPool))
+              }
+            },
+          ],
+        }),
+      ],
+      stubs: {
+        PacbioPlateList: true,
+        PacbioPoolList: true,
+        PacbioRunInfoEdit: true,
+        PacbioRunWellDefaultEdit: true,
+      },
+    },
+    router,
+    props,
+  })
+  usePacbioRunCreateStore()
+  return { wrapper }
+}
+describe('PacbioRunShow.vue', () => {
+  describe('new', () => {
+    it('shows as a new run ', async () => {
+      const { wrapper } = mountWithStore({ id: 'new' })
       await flushPromises()
 
       const type = newRunType
@@ -54,41 +69,13 @@ describe('PacbioRunShow.vue', () => {
 
   describe('existing run', () => {
     it('shows as an existing run ', async () => {
-      const {
-        state: {
-          api: {
-            traction: {
-              pacbio: {
-                smrt_link_versions: smrtLinkVersionsRequest,
-                runs: runsRequest,
-                pools: poolsRequest,
-              },
-            },
-          },
-        },
-      } = store
+      const { wrapper } = mountWithStore({ id: 1 })
 
-      smrtLinkVersionsRequest.get = vi.fn()
-      runsRequest.find = vi.fn(() => Data.PacbioRun)
-      poolsRequest.get = vi.fn(() => Data.PacbioPool)
-
-      const wrapper = mount(PacbioRun, {
-        store,
-        router,
-        stubs: {
-          PacbioPlateList: true,
-          pacbioPoolList: true,
-          PacbioRunInfoEdit: true,
-          PacbioRunWellDefaultEdit: true,
-        },
-        props: { id: 1 },
-      })
       // ClearData is getting rid of the smrtLinkVersion we manually set
       wrapper.vm.clearData = vi.fn()
       await flushPromises()
 
       const type = existingRunType
-
       const button = wrapper.find(`[data-action=${type.id}]`)
       expect(button.element.id).toEqual(type.id)
       expect(button.text()).toEqual(type.label)

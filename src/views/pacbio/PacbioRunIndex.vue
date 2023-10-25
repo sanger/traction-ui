@@ -98,11 +98,11 @@
 <script>
 import DataFetcher from '@/components/DataFetcher'
 import FilterCard from '@/components/FilterCard'
-import { mapActions, mapGetters } from 'vuex'
 import DownloadIcon from '@/icons/DownloadIcon.vue'
 import TractionBadge from '@/components/shared/TractionBadge.vue'
 import useQueryParams from '@/lib/QueryParamsHelper'
 import { usePacbioRunsStore } from '@/stores/pacbioRuns'
+import { usePacbioRunCreateStore } from '@/stores/pacbioRunCreate'
 import { mapActions as mapActionsPinia, mapState } from 'pinia'
 
 export default {
@@ -149,7 +149,7 @@ export default {
   },
   computed: {
     ...mapState(usePacbioRunsStore, ['runsArray']),
-    ...mapGetters('traction/pacbio/runCreate', ['smrtLinkVersionList']),
+    ...mapState(usePacbioRunCreateStore, ['smrtLinkVersionList']),
   },
   methods: {
     getVersionName(versionId) {
@@ -180,7 +180,7 @@ export default {
       this.$router.push({ path: `/pacbio/run/${runId || 'new'}` })
     },
     ...mapActionsPinia(usePacbioRunsStore, ['fetchPacbioRuns', 'updateRun']),
-    ...mapActions('traction/pacbio/runCreate', ['fetchSmrtLinkVersions']),
+    ...mapActionsPinia(usePacbioRunCreateStore, ['fetchSmrtLinkVersions']),
     async fetchRuns() {
       this.smrtLinkVersionList.length ? null : await this.fetchSmrtLinkVersions()
       return await this.fetchWithQueryParams(this.fetchPacbioRuns, this.filterOptions)

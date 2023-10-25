@@ -5,11 +5,10 @@
   </traction-section>
 </template>
 <script>
-import { createNamespacedHelpers } from 'vuex'
 import LabwareFinder from '@/components/LabwareFinder'
 import PacbioPoolSelectedList from './PacbioPoolSelectedList.vue'
-
-const { mapActions } = createNamespacedHelpers('traction/pacbio/runCreate')
+import { mapActions } from 'pinia'
+import { usePacbioRunCreateStore } from '@/stores/pacbioRunCreate'
 
 export default {
   name: 'PacbioPoolList',
@@ -21,7 +20,7 @@ export default {
     return {}
   },
   methods: {
-    ...mapActions(['findPools']),
+    ...mapActions(usePacbioRunCreateStore, ['findPools']),
   },
 }
 </script>

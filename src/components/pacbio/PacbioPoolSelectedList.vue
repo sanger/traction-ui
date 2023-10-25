@@ -1,14 +1,13 @@
 <template>
   <div class="list-group">
-    <tube v-for="pool in pools" :key="pool.id" v-bind="pool"> </tube>
+    <tube v-for="pool in poolsArray" :key="pool.id" v-bind="pool"> </tube>
   </div>
 </template>
 
 <script>
 import Tube from '@/components/pacbio/PacbioPoolTubeItem'
-import { createNamespacedHelpers } from 'vuex'
-
-const { mapGetters } = createNamespacedHelpers('traction/pacbio/runCreate')
+import { mapState } from 'pinia'
+import { usePacbioRunCreateStore } from '@/stores/pacbioRunCreate'
 
 export default {
   name: 'PacbioPoolSelectedList',
@@ -16,7 +15,7 @@ export default {
     Tube,
   },
   computed: {
-    ...mapGetters(['pools']),
+    ...mapState(usePacbioRunCreateStore, ['poolsArray']),
   },
 }
 </script>

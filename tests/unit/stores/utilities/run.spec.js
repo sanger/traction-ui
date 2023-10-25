@@ -8,7 +8,7 @@ import {
   createPayload,
   createWellsPayload,
   hasPlateAttributes,
-} from '@/store/traction/pacbio/runCreate/run'
+} from '@/stores/utilities/run'
 import { it } from 'vitest'
 import { PacbioInstrumentTypes } from '@/lib/PacbioInstrumentTypes'
 
