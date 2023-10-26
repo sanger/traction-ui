@@ -37,7 +37,7 @@ function factory(options, dataProps) {
             pacbioRunCreate: {
               resources: {
                 smrtLinkVersions: new Response(Data.TractionPacbioSmrtLinkVersions).deserialize
-                  .smrt_link_versions,
+                  .smrt_link_versions[0],
               },
             },
             root: {},
@@ -59,7 +59,6 @@ function factory(options, dataProps) {
     },
     data() {
       return {
-        filter: mockRuns[0].name,
         ...dataProps,
       }
     },
@@ -72,11 +71,9 @@ function factory(options, dataProps) {
 }
 
 describe('PacbioRunIndex.vue', () => {
-  let wrapper, pacbioRunIndex, mockVersions, runCreateStore
+  let wrapper, pacbioRunIndex, runCreateStore
 
   beforeEach(async () => {
-    mockVersions = new Response(Data.TractionPacbioSmrtLinkVersions).deserialize.smrt_link_versions
-
     const { wrapperObj, runCreateStoreObj } = factory()
     wrapper = wrapperObj
     runCreateStore = runCreateStoreObj
@@ -122,13 +119,16 @@ describe('PacbioRunIndex.vue', () => {
     })
 
     it('contains the correct badge text', () => {
-      //rootStore.api.traction.pacbio.smrt_link_versions = mockVersions
-      badges.forEach((badge, index) => {
-        const version_id = mockRuns[index].pacbio_smrt_link_version_id
-        const version = mockVersions.find((version) => version.id == version_id)
-        const version_name = version.name.split('_')[0] // keep only the version number, dropping everything after the underscore
-        expect(badge.text()).toEqual(version_name)
-      })
+      wrapper
+        .find('tbody')
+        .findAll('tr')
+        .forEach((row) => {
+          const run_id = row.find('#id').text()
+          const badge = row.find('.badge').text()
+          const version_id = mockRuns.find((run) => run.id == run_id).pacbio_smrt_link_version_id
+          const version = pacbioRunIndex.smrtLinkVersionList[version_id]
+          expect(badge).toEqual(version.name.split('_')[0])
+        })
     })
 
     it('displays an error badge if the version is not found', async () => {
