@@ -1,14 +1,18 @@
 describe('Ont samples view', () => {
-  beforeEach(() => {
-    cy.intercept('flipper/api/actors/User', {
-      flipper_id: 'User',
-    })
-  })
   it('Visits the ont samples url', () => {
-    cy.intercept('/v1/ont/requests', {
+    cy.intercept('/v1/ont/requests?page[size]=25&page[number]=1', {
       fixture: 'tractionOntRequests.json',
     })
     cy.visit('#/ont/samples')
+    // Check filters are visible
+    cy.get('#filterInput').should('be.visible')
+    cy.get('#filterValue').should('be.visible')
+    cy.get('#filterValue')
+      .children()
+      .should('contain', 'Sample ID (Request)')
+      .and('contain', 'Sample name')
+      .and('contain', 'Source barcode')
+
     cy.get('#samples-table').find('tr').should('have.length', '7')
     cy.get('#id').should('have.length.greaterThan', 0)
     cy.get('#source_identifier').should('have.length.greaterThan', 0)

@@ -57,24 +57,6 @@ describe('PacbioPlates.vue', () => {
     })
   })
 
-  describe('perPage', () => {
-    beforeEach(async () => {
-      const get = vi.spyOn(store.state.api.traction.pacbio.plates, 'get')
-      get.mockResolvedValue(Data.PacbioPlatesRequest)
-
-      wrapper = mount(PacbioPlates, {
-        store,
-        router,
-      })
-      wrapper.setData({ perPage: 1 })
-      await flushPromises()
-    })
-
-    it('states how many rows the table should contain', () => {
-      expect(wrapper.find('tbody').findAll('tr').length).toEqual(1)
-    })
-  })
-
   describe('#alert', () => {
     it('shows an alert', () => {
       plates.showAlert = vi.fn()

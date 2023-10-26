@@ -1,31 +1,13 @@
 <template>
   <div>
-    <fieldset class="flex flex-row space-x-4 mb-0">
-      <label class="text-lg font-bold">Filter</label>
-
-      <traction-input
-        id="filterInput"
-        v-model="filter"
-        type="search"
-        placeholder="Type to Search"
-        class="w-48"
-      >
-      </traction-input>
-
-      <traction-button :disabled="!filter" @click="filter = ''">Clear</traction-button>
-    </fieldset>
-
-    <br />
-
     <traction-table
       id="samples-table"
       v-model:sort-by="sortBy"
-      :items="tableData"
+      :items="requests"
       :fields="fields"
       selectable
       select-mode="single"
-      @filtered="onFiltered"
-      @row-selected="onRowSelected"
+      @row-selected="(items) => (selected = items)"
     >
       <template #cell(selected)="{ rowSelected }">
         <template v-if="rowSelected">
@@ -57,16 +39,6 @@
         @selectEnzyme="createLibraries"
       >
       </enzymeModal>
-
-      <traction-pagination
-        v-model="currentPage"
-        class="float-right"
-        :total-rows="requests.length"
-        :per-page="perPage"
-        aria-controls="samples-table"
-        @update:modelValue="onPageChange($event)"
-      >
-      </traction-pagination>
     </div>
   </div>
 </template>
@@ -74,7 +46,6 @@
 <script>
 import EnzymeModal from '@/components/saphyr/SaphyrEnzymeModal'
 import PrinterModal from '@/components/PrinterModal'
-import TableHelper from '@/mixins/TableHelper'
 import { mapActions, mapGetters } from 'vuex'
 import { getCurrentDate } from '@/lib/DateHelpers'
 
@@ -84,7 +55,6 @@ export default {
     EnzymeModal,
     PrinterModal,
   },
-  mixins: [TableHelper],
   data() {
     return {
       fields: [
@@ -95,22 +65,13 @@ export default {
         { key: 'barcode', label: 'Barcode', sortable: true },
         { key: 'created_at', label: 'Created at (UTC)', sortable: true },
       ],
-      filteredItems: [],
       selected: [],
-      filter: null,
       sortBy: 'created_at',
       sortDesc: true,
-      perPage: 6,
-      currentPage: 1,
     }
   },
   computed: {
     ...mapGetters('traction/saphyr/requests', ['requests']),
-  },
-  watch: {
-    requests(newValue) {
-      this.setInitialData(newValue, this.perPage, { sortBy: 'created_at' })
-    },
   },
   created() {
     this.provider()

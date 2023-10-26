@@ -31,26 +31,6 @@ describe('Libraries.vue', () => {
     })
   })
 
-  describe('perPage', () => {
-    beforeEach(async () => {
-      const get = vi.spyOn(store.state.api.traction.pacbio.libraries, 'get')
-      get.mockResolvedValue(Data.TractionPacbioLibraries)
-
-      wrapper = mount(Libraries, {
-        store,
-        router,
-        data() {
-          return { perPage: 1 }
-        },
-      })
-      await flushPromises()
-    })
-
-    it('states how many rows the table should contain', () => {
-      expect(wrapper.find('tbody').findAll('tr').length).toEqual(1)
-    })
-  })
-
   describe('#handleLibraryDelete', () => {
     let mockLibraries
     beforeEach(() => {

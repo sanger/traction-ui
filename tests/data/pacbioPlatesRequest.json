@@ -301,7 +301,10 @@
           }
         }
       }
-    ]
+    ],
+    "meta": {
+      "page_count": 1
+    }
   },
   "status": 200,
   "statusText": "Success"

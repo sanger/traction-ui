@@ -1,6 +1,6 @@
 <template>
-  <DataFetcher :fetcher="setRequests">
-    <FilterCard :fetcher="setRequests" :filter-options="filterOptions" />
+  <DataFetcher :fetcher="fetchRequests">
+    <FilterCard :fetcher="fetchRequests" :filter-options="filterOptions" />
     <div class="flex flex-col">
       <div class="clearfix">
         <PrinterModal
@@ -20,14 +20,7 @@
         >
         </PacbioLibraryCreate>
 
-        <traction-pagination
-          v-model="currentPage"
-          class="float-right"
-          :total-rows="requests.length"
-          :per-page="perPage"
-          aria-controls="samples-table"
-          @update:modelValue="onPageChange($event)"
-        >
+        <traction-pagination class="float-right" aria-controls="samples-table">
         </traction-pagination>
       </div>
 
@@ -35,12 +28,11 @@
         id="samples-table"
         v-model:sort-by="sortBy"
         primary_key="id"
-        :items="tableData"
+        :items="requests"
         :fields="fields"
         selectable
         select-mode="single"
-        @filtered="onFiltered"
-        @row-selected="onRowSelected"
+        @row-selected="(items) => (selected = items)"
       >
         <template #cell(selected)="selectedCell">
           <template v-if="selectedCell.selected">
@@ -92,7 +84,7 @@ import PacbioSampleMetadataEdit from '@/components/pacbio/PacbioSampleMetadataEd
 import PrinterModal from '@/components/PrinterModal'
 import FilterCard from '@/components/FilterCard'
 import DataFetcher from '@/components/DataFetcher'
-import TableHelper from '@/mixins/TableHelper'
+import useQueryParams from '@/lib/QueryParamsHelper'
 import { getCurrentDate } from '@/lib/DateHelpers'
 
 import { mapActions, mapGetters } from 'vuex'
@@ -106,7 +98,10 @@ export default {
     FilterCard,
     DataFetcher,
   },
-  mixins: [TableHelper],
+  setup() {
+    const { fetchWithQueryParams } = useQueryParams()
+    return { fetchWithQueryParams }
+  },
   data() {
     return {
       fields: [
@@ -133,22 +128,13 @@ export default {
         { value: 'sample_name', text: 'Name' },
         // Need to specify filters in json api resources if we want more filters
       ],
-      filteredItems: [],
       selected: [],
-      filter: null,
       sortBy: 'created_at',
       sortDesc: true,
-      perPage: 25,
-      currentPage: 1,
     }
   },
   computed: {
     ...mapGetters('traction/pacbio/requests', ['requests']),
-  },
-  watch: {
-    requests(newValue) {
-      this.setInitialData(newValue, this.perPage, { sortBy: 'created_at' })
-    },
   },
   methods: {
     /*
@@ -183,7 +169,14 @@ export default {
 
       this.showAlert(message, success ? 'success' : 'danger')
     },
-
+    /*
+      Fetches the requests from the api
+      @param {Object} filter The filter to apply to the request
+      @returns {Object} { success: Boolean, errors: Array }
+    */
+    async fetchRequests() {
+      return await this.fetchWithQueryParams(this.setRequests, this.filterOptions)
+    },
     ...mapActions('traction/pacbio/requests', ['setRequests']),
     ...mapActions('printMyBarcode', ['createPrintJob']),
   },

@@ -1,17 +1,9 @@
 <template>
-  <DataFetcher :fetcher="setPlates">
-    <FilterCard :fetcher="setPlates" :filter-options="filterOptions" />
+  <DataFetcher :fetcher="fetchPlates">
+    <FilterCard :fetcher="fetchPlates" :filter-options="filterOptions" />
     <div class="flex flex-col">
       <div class="clearfix">
-        <traction-pagination
-          v-model="currentPage"
-          class="float-right"
-          :total-rows="plates.length"
-          :per-page="perPage"
-          aria-controls="plate-index"
-          @update:modelValue="onPageChange($event)"
-        >
-        </traction-pagination>
+        <traction-pagination class="float-right" aria-controls="plate-index"> </traction-pagination>
       </div>
 
       <traction-table
@@ -19,9 +11,7 @@
         v-model:sort-by="sortBy"
         primary_key="id"
         :fields="fields"
-        :items="tableData"
-        :current-page="currentPage"
-        @filtered="onFiltered"
+        :items="plates"
       >
         <template #cell(show_details)="row">
           <traction-button
@@ -49,12 +39,13 @@
 </template>
 
 <script>
-import TableHelper from '@/mixins/TableHelper'
 import Plate from '@/components/plates/PlateItem'
 import FilterCard from '@/components/FilterCard'
 import DataFetcher from '@/components/DataFetcher'
 import { createNamespacedHelpers } from 'vuex'
+import useQueryParams from '@/lib/QueryParamsHelper'
 const { mapActions, mapGetters } = createNamespacedHelpers('traction/pacbio/plates')
+
 export default {
   name: 'PacbioPlates',
   components: {
@@ -62,7 +53,10 @@ export default {
     FilterCard,
     DataFetcher,
   },
-  mixins: [TableHelper],
+  setup() {
+    const { fetchWithQueryParams } = useQueryParams()
+    return { fetchWithQueryParams }
+  },
   data() {
     return {
       fields: [
@@ -75,22 +69,12 @@ export default {
         { value: '', text: '' },
         { value: 'barcode', text: 'Barcode' },
       ],
-      filteredItems: [],
-      filter: null,
       sortBy: 'created_at',
-      sortDesc: true,
-      perPage: 25,
-      currentPage: 1,
       currentPlate: {},
     }
   },
   computed: {
     ...mapGetters(['plates']),
-  },
-  watch: {
-    plates(newValue) {
-      this.setInitialData(newValue, this.perPage, { sortBy: 'created_at' })
-    },
   },
   methods: {
     alert(message, type) {
@@ -102,6 +86,9 @@ export default {
     },
     async getPlate(barcode) {
       this.currentPlate = await this.findPlate({ barcode: barcode })
+    },
+    async fetchPlates() {
+      return await this.fetchWithQueryParams(this.setPlates, this.filterOptions)
     },
     ...mapActions(['setPlates', 'findPlate']),
   },

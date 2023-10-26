@@ -1,22 +1,15 @@
 <template>
-  <DataFetcher :fetcher="fetchOntRuns">
+  <DataFetcher :fetcher="fetchRuns">
+    <FilterCard :fetcher="fetchRuns" :filter-options="filterOptions" />
     <div class="flex flex-col">
-      <div class="clearfix mt-5">
+      <div class="clearfix">
         <traction-button id="newRun" class="float-left" theme="create" @click="redirectToRun()">
           New Run
         </traction-button>
-        <span class="font-weight-bold">Total records: {{ runs.length }}</span>
-        <traction-pagination
-          v-model="currentPage"
-          class="float-right"
-          :total-rows="runs.length"
-          :per-page="perPage"
-          aria-controls="run-index"
-          @update:modelValue="onPageChange($event)"
-        ></traction-pagination>
+        <traction-pagination class="float-right" aria-controls="run-index"></traction-pagination>
       </div>
 
-      <traction-table id="run-index" v-model:sort-by="sortBy" :items="tableData" :fields="fields">
+      <traction-table id="run-index" v-model:sort-by="sortBy" :items="runs" :fields="fields">
         <template #cell(actions)="row">
           <traction-button
             :id="generateId('editRun', row.item.id)"
@@ -45,9 +38,10 @@
 </template>
 
 <script>
-import TableHelper from '@/mixins/TableHelper'
 import DataFetcher from '@/components/DataFetcher.vue'
 import DownloadIcon from '@/icons/DownloadIcon.vue'
+import FilterCard from '@/components/FilterCard.vue'
+import useQueryParams from '@/lib/QueryParamsHelper'
 
 import { createNamespacedHelpers } from 'vuex'
 const { mapActions, mapGetters } = createNamespacedHelpers('traction/ont')
@@ -56,9 +50,13 @@ export default {
   name: 'ONTRuns',
   components: {
     DataFetcher,
+    FilterCard,
     DownloadIcon,
   },
-  mixins: [TableHelper],
+  setup() {
+    const { fetchWithQueryParams } = useQueryParams()
+    return { fetchWithQueryParams }
+  },
   data() {
     return {
       fields: [
@@ -79,19 +77,18 @@ export default {
         { key: 'created_at', label: 'Created at (UTC)', sortable: true },
         { key: 'actions', label: 'Actions', tdClass: 'actions' },
       ],
+      filterOptions: [
+        { value: '', text: '' },
+        { value: 'experiment_name', text: 'Experiment ID' },
+        { value: 'state', text: 'State' },
+        // Need to specify filters in json api resources if we want more filters
+      ],
       sortBy: 'created_at',
       sortDesc: true,
-      currentPage: 1,
-      perPage: 25,
     }
   },
   computed: {
     ...mapGetters(['runs']),
-  },
-  watch: {
-    runs(newValue) {
-      this.setInitialData(newValue, this.perPage, { sortBy: 'created_at' })
-    },
   },
   methods: {
     generateId(text, id) {
@@ -104,6 +101,9 @@ export default {
       this.$router.push({ path: `/ont/run/${runId || 'new'}` })
     },
     ...mapActions(['fetchOntRuns']),
+    async fetchRuns() {
+      return await this.fetchWithQueryParams(this.fetchOntRuns, this.filterOptions)
+    },
   },
 }
 </script>

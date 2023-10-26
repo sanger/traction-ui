@@ -1,35 +1,30 @@
 <template>
   <div class="flex flex-col w-full">
     <div class="flex mx-auto w-full max-w-[1000px] bg-gray-100 rounded-md mt-2 mb-2 p-3">
-      <div class="grid grid-cols-4 gap-2">
+      <div class="grid grid-cols-5 gap-2 w-full">
         <div class="flex flex-col text-left">
           <p class="flex font-semibold text-l">Filter results</p>
           <p class="flex font-light text-gray-700 text-xs italiclist-none">
-            By default returns the most recent 1000 results
+            By default filters by created at
           </p>
         </div>
-        <div class="col-span-2 flex mx-auto items-center">
+        <div class="flex col-span-3 items-center space-x-2">
           <traction-input
             id="filterInput"
-            v-model="filter.input"
+            v-model="filter_input"
             type="search"
             placeholder="Type to Search"
-            class="mr-5 w-1/2"
+            class="w-1/2"
           />
           <traction-select
             id="filterValue"
-            v-model="filter.value"
+            v-model="filter_value"
             :options="filterOptions"
-            class="mr-5 w-1/2"
+            class="w-1/2"
           />
           <div v-if="isWildcardOption" class="justify-center items-center w-1/3">
-            <label for="checkbox" class="w-1/2">Wildcard</label>
-            <input
-              id="wildcardValue"
-              v-model="filter.wildcard"
-              type="checkbox"
-              class="w-1/2 bg-sbd-400"
-            />
+            <label for="checkbox" class="p-2">Wildcard</label>
+            <input id="filterWildcard" v-model="filter_wildcard" type="checkbox" />
           </div>
         </div>
         <div class="flex items-center">
@@ -37,8 +32,8 @@
             <traction-button @click="resetFilter()">Reset</traction-button>
             <traction-button
               id="filterButton"
-              :disabled="filter.value == '' || filter.input == ''"
-              @click="getFilteredData()"
+              :disabled="filter_value == '' || filter_input == ''"
+              @click="getFirstPageData()"
               >Search</traction-button
             >
           </div>
@@ -59,6 +54,7 @@
  *     <FilterCard :fetcher="fetchServiceData" :filter-options=[{ value: '', text: ''}] />
  * </template>
  */
+import useQueryParams from '@/lib/QueryParamsHelper'
 export default {
   name: 'FilterCard',
   props: {
@@ -83,41 +79,47 @@ export default {
       default: true,
     },
   },
-  data() {
-    return {
-      filter: {
-        value: '',
-        input: '',
-        wildcard: true,
-      },
-    }
+  setup() {
+    const { filter_input, filter_value, filter_wildcard, page_size, page_number, clearFilter } =
+      useQueryParams()
+    return { filter_input, filter_value, filter_wildcard, page_size, page_number, clearFilter }
   },
   computed: {
     isWildcardOption() {
-      return this.filterOptions.filter(({ value }) => value == this.filter.value)[0]?.wildcard
+      return this.filterOptions.filter(({ value }) => value == this.filter_value)[0]?.wildcard
+    },
+  },
+  watch: {
+    /*
+      page_number and page_size:
+      We ensure the page is paginated before fetching data.
+      This catches an edge case where the watchers are still active when navigating
+      between paginated and unpaginated routes
+    */
+    page_size() {
+      this.$route.meta?.paginated ? this.getData() : ''
+    },
+    page_number() {
+      this.$route.meta?.paginated ? this.getData() : ''
     },
   },
   methods: {
-    async getFilteredData() {
-      let searchValue = this.filter.input
-      if (this.isWildcardOption && this.filter.wildcard) {
-        // If wildcard is selected, add it to the search string
-        searchValue += ',wildcard'
+    async getFirstPageData() {
+      if (this.page_number == 1) {
+        await this.getData()
+      } else {
+        // This triggers the page_number watcher and ensures we are on the first page
+        this.page_number = 1
       }
-      const filter = {
-        [this.filter.value]: searchValue,
-      }
-      await this.fetcher(filter).then(({ success, errors }) => {
+    },
+    async getData() {
+      await this.fetcher().then(({ success, errors }) => {
         success ? '' : this.showAlert(errors, 'danger')
       })
     },
     async resetFilter() {
-      this.filter.value = ''
-      this.filter.input = ''
-      this.filter.wildcard = true
-      await this.fetcher().then(({ success, errors }) => {
-        success ? '' : this.showAlert(errors, 'danger')
-      })
+      await this.clearFilter()
+      await this.getFirstPageData()
     },
   },
 }

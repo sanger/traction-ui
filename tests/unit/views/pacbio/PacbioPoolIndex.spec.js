@@ -28,25 +28,6 @@ describe('PacbioPoolIndex.vue', () => {
     })
   })
 
-  describe('perPage', () => {
-    beforeEach(async () => {
-      const get = vi.spyOn(store.state.api.traction.pacbio.pools, 'get')
-      get.mockResolvedValue(Data.TractionPacbioPools)
-      wrapper = mount(PacbioPoolIndex, {
-        store,
-        router,
-        data() {
-          return { perPage: 1 }
-        },
-      })
-      await flushPromises()
-    })
-
-    it('states how many rows the table should contain', () => {
-      expect(wrapper.find('tbody').findAll('tr').length).toEqual(1)
-    })
-  })
-
   describe('#showAlert', () => {
     it('passes the message to function on emit event', () => {
       pools.showAlert('show this message', 'danger')
@@ -69,7 +50,7 @@ describe('PacbioPoolIndex.vue', () => {
       button = wrapper.find('#editPool-1')
       button.trigger('click')
       await flushPromises()
-      expect(wrapper.vm.$route.path).toBe('/pacbio/pool/1')
+      expect(router.currentRoute.value.path).toBe('/pacbio/pool/1')
     })
   })
 

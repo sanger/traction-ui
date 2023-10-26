@@ -1,29 +1,17 @@
 <template>
-  <div>
-    <div class="flex flex-col">
-      <label v-if="label">{{ label }}</label>
-      <select
-        v-if="options"
-        v-bind="$attrs"
-        v-model="propValue"
-        :placeholder="placeholder"
-        :data-attribute="dataAttribute"
-        :class="`w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-sdb-100 focus:border-sdb-100 disabled:opacity-75 disabled:bg-gray-200 disabled:cursor-not-allowed ${classes}`"
-      >
-        <template v-for="(optionGroupName, index) in optionGroupNames">
-          <template v-if="optionGroupName">
-            <optgroup :key="'optionGroupName' + index" :label="optionGroupName">
-              <option
-                v-for="option in optionsForGroup(optionGroupName)"
-                :key="option.value"
-                :value="option.value == null ? '' : option.value"
-                :disabled="option.disabled"
-              >
-                {{ option.text }}
-              </option>
-            </optgroup>
-          </template>
-          <template v-else>
+  <div class="flex flex-col" :class="$attrs.class">
+    <label v-if="label">{{ label }}</label>
+    <select
+      v-if="options"
+      v-bind="$attrs"
+      v-model="propValue"
+      :placeholder="placeholder"
+      :data-attribute="dataAttribute"
+      :class="`w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-sdb-100 focus:border-sdb-100 disabled:opacity-75 disabled:bg-gray-200 disabled:cursor-not-allowed ${classes}`"
+    >
+      <template v-for="(optionGroupName, index) in optionGroupNames">
+        <template v-if="optionGroupName">
+          <optgroup :key="'optionGroupName' + index" :label="optionGroupName">
             <option
               v-for="option in optionsForGroup(optionGroupName)"
               :key="option.value"
@@ -32,10 +20,20 @@
             >
               {{ option.text }}
             </option>
-          </template>
+          </optgroup>
         </template>
-      </select>
-    </div>
+        <template v-else>
+          <option
+            v-for="option in optionsForGroup(optionGroupName)"
+            :key="option.value"
+            :value="option.value == null ? '' : option.value"
+            :disabled="option.disabled"
+          >
+            {{ option.text }}
+          </option>
+        </template>
+      </template>
+    </select>
   </div>
 </template>
 

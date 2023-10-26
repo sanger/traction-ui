@@ -3,14 +3,29 @@ import { mount, store, Data, flushPromises } from '@support/testHelper'
 import { vi } from 'vitest'
 
 describe('OntSampleIndex', () => {
-  it('displays each of the requests', async () => {
+  let wrapper
+
+  beforeEach(async () => {
     const get = vi.spyOn(store.state.api.traction.ont.requests, 'get')
-    get.mockResolvedValue(Data.TractionOntRequests)
-    const expectedRequests = Data.TractionOntRequests.data.data.length
-    const wrapper = mount(ONTSampleIndex, {
+    get.mockReturnValue(Data.TractionOntRequests)
+
+    wrapper = mount(ONTSampleIndex, {
       store,
     })
     await flushPromises()
-    expect(wrapper.findAll('tr').length).toEqual(expectedRequests + 1)
+  })
+
+  describe('building the table', () => {
+    it('contains the correct fields', () => {
+      const headers = wrapper.findAll('th')
+      for (const field of wrapper.vm.fields) {
+        expect(headers.filter((header) => header.text() === field.label)).toBeDefined()
+      }
+    })
+
+    it('displays each of the requests', async () => {
+      const expectedRequests = Data.TractionOntRequests.data.data.length
+      expect(wrapper.findAll('tr').length).toEqual(expectedRequests + 1)
+    })
   })
 })
