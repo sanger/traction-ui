@@ -95,7 +95,8 @@ export default function useQueryParams() {
       return Number(route.query.page_size) || 25
     },
     async set(value) {
-      await updateRouter({ page_size: value })
+      // When we update page size we also want to ensure we are on page 1
+      await updateRouter({ page_size: value, page_number: 1 })
     },
   })
   const page_number = computed({
