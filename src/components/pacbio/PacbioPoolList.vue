@@ -5,7 +5,6 @@
   </traction-section>
 </template>
 <script>
-import TableHelper from '@/mixins/TableHelper'
 import LabwareFinder from '@/components/LabwareFinder'
 import PacbioPoolSelectedList from './PacbioPoolSelectedList.vue'
 import { mapActions } from 'pinia'
@@ -17,7 +16,6 @@ export default {
     LabwareFinder,
     PacbioPoolSelectedList,
   },
-  mixins: [TableHelper],
   data() {
     return {}
   },

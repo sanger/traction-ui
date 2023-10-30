@@ -60,7 +60,7 @@ describe('Libraries.vue', () => {
     })
 
     it('contains the correct data', async () => {
-      expect(wrapper.find('tbody').findAll('tr').length).toEqual(6)
+      expect(wrapper.find('tbody').findAll('tr').length).toEqual(17)
     })
   })
 

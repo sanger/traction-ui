@@ -1,29 +1,6 @@
 <template>
   <div>
-    <fieldset class="flex flex-row space-x-4 mb-0">
-      <label class="text-lg font-bold">Filter</label>
-
-      <traction-input
-        id="filterInput"
-        v-model="filter"
-        type="search"
-        placeholder="Type to Search"
-        class="w-48"
-      >
-      </traction-input>
-
-      <traction-button :disabled="!filter" @click="filter = ''">Clear</traction-button>
-    </fieldset>
-
-    <br />
-
-    <traction-table
-      id="runs-table"
-      :items="tableData"
-      :fields="fields"
-      :sort-by="sortBy"
-      @filtered="onFiltered"
-    >
+    <traction-table id="runs-table" v-model:sort-by="sortBy" :items="runs" :fields="fields">
       <template #cell(chip_barcode)="row">
         {{ truncateText(row.item.chip_barcode, 40) }}
       </template>
@@ -80,27 +57,16 @@
       <traction-button id="newRun" class="float-left" theme="create" @click="redirectToRun()">
         New Run
       </traction-button>
-      <traction-pagination
-        v-model="currentPage"
-        class="float-right"
-        :total-rows="runs.length"
-        :per-page="perPage"
-        aria-controls="libraries-table"
-        @update:modelValue="onPageChange($event)"
-      >
-      </traction-pagination>
     </div>
   </div>
 </template>
 
 <script>
-import TableHelper from '@/mixins/TableHelper'
 import truncate from 'lodash-es/truncate'
 import { mapActions, mapGetters } from 'vuex'
 
 export default {
   name: 'SaphyrRuns',
-  mixins: [TableHelper],
   props: {},
   data() {
     return {
@@ -112,21 +78,12 @@ export default {
         { key: 'created_at', label: 'Created at (UTC)', sortable: true },
         { key: 'actions', label: 'Actions' },
       ],
-      filteredItems: [],
-      filter: null,
       sortBy: 'created_at',
       sortDesc: true,
-      perPage: 6,
-      currentPage: 1,
     }
   },
   computed: {
     ...mapGetters('traction/saphyr/runs', ['runs']),
-  },
-  watch: {
-    runs(newValue) {
-      this.setInitialData(newValue, this.perPage)
-    },
   },
   created() {
     this.provider()

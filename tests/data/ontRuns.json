@@ -89,7 +89,10 @@
           "max_number_of_flowcells": 24
         }
       }
-    ]
+    ],
+    "meta": {
+      "page_count": 1
+    }
   },
   "status": 200,
   "statusText": "Success"

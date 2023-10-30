@@ -12,8 +12,6 @@ describe('Runs.vue', () => {
     vi.spyOn(store.getters['traction/saphyr/runs/runRequest'], 'get').mockResolvedValue(mockRuns)
     wrapper = mount(Runs, { store })
     runs = wrapper.vm
-    wrapper.vm.tableData = mockRuns
-    wrapper.vm.tableData[5].created_at = '03/21/2019 06:01'
 
     await flushPromises()
   })
@@ -34,35 +32,10 @@ describe('Runs.vue', () => {
     })
   })
 
-  describe('sorting', () => {
-    it('will sort the runs by created at', () => {
-      expect(wrapper.find('tbody').findAll('tr')[0].text()).toMatch(/TRAC-678/)
-    })
-  })
-
-  describe('filtering runs', () => {
-    beforeEach(() => {
-      wrapper = mount(Runs, {
-        store,
-        data() {
-          return {
-            filter: mockRuns[0].chip_barcode,
-          }
-        },
-      })
-      wrapper.vm.tableData = [mockRuns[0]]
-    })
-
-    it('will filter the runs in the table', () => {
-      expect(wrapper.find('tbody').findAll('tr').length).toEqual(1)
-      expect(wrapper.find('tbody').findAll('tr')[0].text()).toMatch(/TRAC-123/)
-    })
-  })
-
   describe('start button', () => {
     it('is enabled when the run state is pending', () => {
       // run at(0) is in state pending
-      const button = wrapper.find('#startRun-6')
+      const button = wrapper.find('#startRun-1')
       expect(button.element.disabled).toBe(false)
     })
 
@@ -76,10 +49,10 @@ describe('Runs.vue', () => {
       // run at(0) is in state pending
       runs.startRun = vi.fn()
 
-      const button = wrapper.find('#startRun-6')
+      const button = wrapper.find('#startRun-1')
       button.trigger('click')
 
-      const id = wrapper.find('tbody').findAll('tr')[0].findAll('td')[0].text()
+      const id = wrapper.find('tbody').findAll('tr')[4].findAll('td')[0].text()
       expect(runs.startRun).toBeCalledWith({ id, pipeline })
     })
   })
@@ -87,7 +60,7 @@ describe('Runs.vue', () => {
   describe('complete button', () => {
     it('is enabled when the run state is pending', () => {
       // run at(0) is in state pending
-      const button = wrapper.find('#completeRun-6')
+      const button = wrapper.find('#completeRun-1')
       expect(button.element.disabled).toBe(false)
     })
 
@@ -110,13 +83,13 @@ describe('Runs.vue', () => {
     })
 
     it('on click completeRun is called', () => {
-      // run at(4) is in state started
+      // run at(2) is in state started
       runs.completeRun = vi.fn()
 
       const button = wrapper.find('#completeRun-2')
       button.trigger('click')
 
-      const id = wrapper.find('tbody').findAll('tr')[4].findAll('td')[0].text()
+      const id = wrapper.find('tbody').findAll('tr')[3].findAll('td')[0].text()
       expect(runs.completeRun).toBeCalledWith({ id, pipeline })
     })
   })
@@ -147,13 +120,13 @@ describe('Runs.vue', () => {
     })
 
     it('on click completeRun is called', () => {
-      // run at(4) is in state started
+      // run at(3) is in state started
       runs.cancelRun = vi.fn()
 
       const button = wrapper.find('#cancelRun-2')
       button.trigger('click')
 
-      const id = wrapper.find('tbody').findAll('tr')[4].findAll('td')[0].text()
+      const id = wrapper.find('tbody').findAll('tr')[3].findAll('td')[0].text()
       expect(runs.cancelRun).toBeCalledWith({ id, pipeline })
     })
   })
@@ -191,29 +164,6 @@ describe('Runs.vue', () => {
         type: 'danger',
         message: 'show this message',
       })
-    })
-  })
-
-  describe('pagination', () => {
-    beforeEach(async () => {
-      mockRuns = new Response(Data.Runs).deserialize.runs
-
-      store.commit('traction/saphyr/runs/setRuns', mockRuns)
-      wrapper = mount(Runs, {
-        store,
-        data() {
-          return {
-            perPage: 2,
-            currentPage: 1,
-          }
-        },
-      })
-
-      wrapper.vm.tableData = [mockRuns[0], mockRuns[1]]
-    })
-
-    it('will paginate the runs in the table', () => {
-      expect(wrapper.find('tbody').findAll('tr').length).toEqual(2)
     })
   })
 

@@ -1,28 +1,20 @@
 <template>
-  <DataFetcher :fetcher="fetchOntRequests">
-    <FilterCard :fetcher="fetchOntRequests" :filter-options="filterOptions" />
+  <DataFetcher :fetcher="fetchRequests">
+    <FilterCard :fetcher="fetchRequests" :filter-options="filterOptions" />
     <div class="flex flex-col">
       <div class="clearfix">
-        <traction-pagination
-          v-model="currentPage"
-          class="float-right"
-          :total-rows="requests.length"
-          :per-page="perPage"
-          aria-controls="samples-table"
-          @update:modelValue="onPageChange($event)"
-        >
+        <traction-pagination class="float-right" aria-controls="samples-table">
         </traction-pagination>
       </div>
 
       <traction-table
         id="samples-table"
         v-model:sort-by="sortBy"
-        :items="tableData"
+        :items="requests"
         :fields="fields"
         selectable
         select-mode="single"
-        @filtered="onFiltered"
-        @row-selected="onRowSelected"
+        @row-selected="(items) => (selected = items)"
       >
         <template #cell(selected)="selectedCell">
           <template v-if="selectedCell.selected">
@@ -40,10 +32,10 @@
 </template>
 
 <script>
-import TableHelper from '@/mixins/TableHelper'
 import { createNamespacedHelpers } from 'vuex'
 import DataFetcher from '@/components/DataFetcher.vue'
 import FilterCard from '@/components/FilterCard.vue'
+import useQueryParams from '@/lib/QueryParamsHelper'
 // TODO: Move these actions back to top level store.
 const { mapActions, mapGetters } = createNamespacedHelpers('traction/ont/pools')
 
@@ -53,7 +45,10 @@ export default {
     DataFetcher,
     FilterCard,
   },
-  mixins: [TableHelper],
+  setup() {
+    const { fetchWithQueryParams } = useQueryParams()
+    return { fetchWithQueryParams }
+  },
   data() {
     return {
       fields: [
@@ -78,24 +73,19 @@ export default {
         { value: 'sample_name', text: 'Sample name' },
         // Need to specify filters in json api resources if we want more filters
       ],
-      filteredItems: [],
       selected: [],
       sortBy: 'created_at',
       sortDesc: true,
-      perPage: 25,
-      currentPage: 1,
     }
   },
   computed: {
     ...mapGetters(['requests']),
   },
-  watch: {
-    requests(newValue) {
-      this.setInitialData(newValue, this.perPage, { sortBy: 'created_at' })
-    },
-  },
   methods: {
     ...mapActions(['fetchOntRequests']),
+    async fetchRequests() {
+      return await this.fetchWithQueryParams(this.fetchOntRequests, this.filterOptions)
+    },
   },
 }
 </script>

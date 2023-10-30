@@ -214,5 +214,8 @@
         "sample_name": "Sample47"
       }
     }
-  ]
+  ],
+  "meta": {
+    "page_count": 2
+  }
 }

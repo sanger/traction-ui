@@ -174,5 +174,8 @@
         "sequencing_kit_box_barcode": "23"
       }
     }
-  ]
+  ],
+  "meta": {
+    "page_count": 1
+  }
 }

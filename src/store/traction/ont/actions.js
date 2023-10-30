@@ -8,13 +8,13 @@ export default {
    * @param rootState the vuex rootState object. Provides access to the current state
    * @param commit the vuex commit object. Provides access to mutations
    */
-  fetchOntRuns: async ({ commit, rootState }) => {
+  fetchOntRuns: async ({ commit, rootState }, filter, page) => {
     const request = rootState.api.traction.ont.runs
-    const promise = request.get({ include: 'instrument' })
+    const promise = request.get({ page, filter, include: 'instrument' })
 
     const response = await handleResponse(promise)
 
-    const { success, data: { data, included = [] } = {}, errors = [] } = response
+    const { success, data: { data, included = [], meta = {} } = {}, errors = [] } = response
     const { instruments } = groupIncludedByResource(included)
 
     if (success) {
@@ -22,7 +22,7 @@ export default {
       commit('populateInstruments', instruments)
     }
 
-    return { success, errors, response }
+    return { success, errors, meta }
   },
   setInstruments: async ({ commit, rootState }) => {
     const request = rootState.api.traction.ont.instruments

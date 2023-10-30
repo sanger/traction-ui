@@ -7,6 +7,7 @@ import {
   flushPromises,
   nextTick,
   createTestingPinia,
+  router,
 } from '@support/testHelper'
 import { usePacbioRunsStore } from '@/stores/pacbioRuns'
 import { usePacbioRunCreateStore } from '@/stores/pacbioRunCreate'
@@ -36,7 +37,7 @@ function factory(options, dataProps) {
             pacbioRunCreate: {
               resources: {
                 smrtLinkVersions: new Response(Data.TractionPacbioSmrtLinkVersions).deserialize
-                  .smrt_link_versions,
+                  .smrt_link_versions[0],
               },
             },
             root: {},
@@ -58,7 +59,6 @@ function factory(options, dataProps) {
     },
     data() {
       return {
-        filter: mockRuns[0].name,
         ...dataProps,
       }
     },
@@ -71,11 +71,9 @@ function factory(options, dataProps) {
 }
 
 describe('PacbioRunIndex.vue', () => {
-  let wrapper, pacbioRunIndex, mockVersions, runCreateStore
+  let wrapper, pacbioRunIndex, runCreateStore
 
   beforeEach(async () => {
-    mockVersions = new Response(Data.TractionPacbioSmrtLinkVersions).deserialize.smrt_link_versions
-
     const { wrapperObj, runCreateStoreObj } = factory()
     wrapper = wrapperObj
     runCreateStore = runCreateStoreObj
@@ -121,13 +119,16 @@ describe('PacbioRunIndex.vue', () => {
     })
 
     it('contains the correct badge text', () => {
-      //rootStore.api.traction.pacbio.smrt_link_versions = mockVersions
-      badges.forEach((badge, index) => {
-        const version_id = mockRuns[index].pacbio_smrt_link_version_id
-        const version = mockVersions.find((version) => version.id == version_id)
-        const version_name = version.name.split('_')[0] // keep only the version number, dropping everything after the underscore
-        expect(badge.text()).toEqual(version_name)
-      })
+      wrapper
+        .find('tbody')
+        .findAll('tr')
+        .forEach((row) => {
+          const run_id = row.find('#id').text()
+          const badge = row.find('.badge').text()
+          const version_id = mockRuns.find((run) => run.id == run_id).pacbio_smrt_link_version_id
+          const version = pacbioRunIndex.smrtLinkVersionList[version_id]
+          expect(badge).toEqual(version.name.split('_')[0])
+        })
     })
 
     it('displays an error badge if the version is not found', async () => {
@@ -148,7 +149,7 @@ describe('PacbioRunIndex.vue', () => {
       const button = wrapper.find('[data-action=new-run]')
       button.trigger('click')
       await flushPromises()
-      expect(pacbioRunIndex.$route.path).toEqual('/pacbio/run/new')
+      expect(router.currentRoute.value.path).toEqual('/pacbio/run/new')
     })
   })
 
@@ -285,18 +286,6 @@ describe('PacbioRunIndex.vue', () => {
     })
   })
 
-  describe('filtering runs', () => {
-    beforeEach(async () => {
-      await flushPromises()
-      wrapper.vm.tableData = [mockRuns[0]]
-    })
-
-    it('will filter the runs in the table', () => {
-      expect(wrapper.find('tbody').findAll('[data-testid="row"]').length).toEqual(1)
-      expect(wrapper.find('tbody').findAll('[data-testid="row"]')[0].text()).toMatch(/Sequel I/)
-    })
-  })
-
   describe('#showAlert', () => {
     it('emits an event with the message', () => {
       pacbioRunIndex.showAlert('show this message', 'danger')
@@ -305,21 +294,6 @@ describe('PacbioRunIndex.vue', () => {
         type: 'danger',
         message: 'show this message',
       })
-    })
-  })
-
-  describe('pagination', () => {
-    beforeEach(async () => {
-      factory({
-        perPage: 2,
-        currentPage: 1,
-      })
-      wrapper.vm.tableData = [mockRuns[0], mockRuns[1]]
-      await flushPromises()
-    })
-
-    it('will paginate the runs in the table', () => {
-      expect(wrapper.find('tbody').findAll('tr').length).toEqual(2)
     })
   })
 
@@ -383,7 +357,7 @@ describe('PacbioRunIndex.vue', () => {
       const button = wrapper.find('#editRun-1')
       button.trigger('click')
       await flushPromises()
-      expect(pacbioRunIndex.$route.path).toEqual('/pacbio/run/1')
+      expect(router.currentRoute.value.path).toEqual('/pacbio/run/1')
     })
   })
 })

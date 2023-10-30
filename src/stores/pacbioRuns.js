@@ -15,10 +15,10 @@ export const usePacbioRunsStore = defineStore('pacbioRuns', {
   },
 
   actions: {
-    async fetchPacbioRuns(filter) {
-      const promise = this.runRequest.get({ filter, include: 'plates' })
+    async fetchPacbioRuns(filter, page) {
+      const promise = this.runRequest.get({ page, filter, include: 'plates' })
       const response = await handleResponse(promise)
-      const { success, data: { data, included = [] } = {}, errors = [] } = response
+      const { success, data: { data, included = [], meta = {} } = {}, errors = [] } = response
 
       //TODO:- Two calls to dataToObjectById method - optimization or refactoring required?
       const platesById = dataToObjectById({ data: included })
@@ -35,7 +35,7 @@ export const usePacbioRunsStore = defineStore('pacbioRuns', {
         })
         this.runs = dataToObjectById({ data, includeRelationships: true })
       }
-      return { success, errors }
+      return { success, errors, meta }
     },
 
     /**

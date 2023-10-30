@@ -13,6 +13,7 @@ describe('ONTRuns.vue', () => {
 
     wrapper = await mount(ONTRuns, { store, router })
     runs = wrapper.vm
+    await flushPromises()
   })
 
   describe('building the table', () => {
@@ -46,7 +47,7 @@ describe('ONTRuns.vue', () => {
       const button = wrapper.find('#newRun')
       button.trigger('click')
       await flushPromises()
-      expect(runs.$route.path).toEqual('/ont/run/new')
+      expect(router.currentRoute.value.path).toEqual('/ont/run/new')
     })
   })
 
@@ -60,7 +61,7 @@ describe('ONTRuns.vue', () => {
       const button = wrapper.find('#editRun-1')
       button.trigger('click')
       await flushPromises()
-      expect(runs.$route.path).toEqual('/ont/run/1')
+      expect(router.currentRoute.value.path).toEqual('/ont/run/1')
     })
   })
 

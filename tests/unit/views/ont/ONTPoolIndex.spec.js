@@ -1,5 +1,5 @@
 import ONTPoolIndex from '@/views/ont/ONTPoolIndex.vue'
-import { mount, store, Data, router, flushPromises, nextTick } from '@support/testHelper'
+import { mount, store, Data, router, flushPromises } from '@support/testHelper'
 import { vi } from 'vitest'
 
 describe('OntPoolIndex', () => {
@@ -15,10 +15,18 @@ describe('OntPoolIndex', () => {
     await flushPromises()
   })
 
-  it('displays each of the pools', async () => {
-    const expectedPools = Data.TractionOntPools.data.data.length
-    await nextTick()
-    expect(wrapper.find('tbody').findAll('[data-testid="row"]').length).toEqual(expectedPools)
+  describe('building the table', () => {
+    it('contains the correct fields', () => {
+      const headers = wrapper.findAll('th')
+      for (const field of wrapper.vm.fields) {
+        expect(headers.filter((header) => header.text() === field.label)).toBeDefined()
+      }
+    })
+
+    it('displays each of the requests', async () => {
+      const expectedPools = Data.TractionOntPools.data.data.length
+      expect(wrapper.findAll('tr').length).toEqual(expectedPools + 1)
+    })
   })
 
   describe('Printing labels', () => {

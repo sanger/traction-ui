@@ -1,6 +1,6 @@
 <template>
-  <DataFetcher :fetcher="setPools">
-    <FilterCard :fetcher="setPools" :filter-options="filterOptions" />
+  <DataFetcher :fetcher="fetchPools">
+    <FilterCard :fetcher="fetchPools" :filter-options="filterOptions" />
     <div class="flex flex-col">
       <div class="clearfix">
         <printerModal
@@ -11,26 +11,17 @@
         >
         </printerModal>
 
-        <traction-pagination
-          v-model="currentPage"
-          class="float-right"
-          :total-rows="pools.length"
-          :per-page="perPage"
-          aria-controls="pool-index"
-          @update:modelValue="onPageChange($event)"
-        >
-        </traction-pagination>
+        <traction-pagination class="float-right" aria-controls="pool-index"> </traction-pagination>
       </div>
 
       <traction-table
         id="pool-index"
         v-model:sort-by="sortBy"
-        :items="tableData"
+        :items="pools"
         :fields="fields"
         selectable
         select-mode="multi"
-        @filtered="onFiltered"
-        @row-selected="onRowSelected"
+        @row-selected="(items) => (selected = items)"
       >
         <template #cell(selected)="selectedCell">
           <template v-if="selectedCell.selected">
@@ -86,12 +77,12 @@
 </template>
 
 <script>
-import TableHelper from '@/mixins/TableHelper'
 import PrinterModal from '@/components/PrinterModal'
 import FilterCard from '@/components/FilterCard'
 import DataFetcher from '@/components/DataFetcher'
 import { mapActions, mapGetters } from 'vuex'
 import { getCurrentDate } from '@/lib/DateHelpers'
+import useQueryParams from '@/lib/QueryParamsHelper'
 
 export default {
   name: 'PacbioPoolIndex',
@@ -100,7 +91,10 @@ export default {
     FilterCard,
     DataFetcher,
   },
-  mixins: [TableHelper],
+  setup() {
+    const { fetchWithQueryParams } = useQueryParams()
+    return { fetchWithQueryParams }
+  },
   data() {
     return {
       fields: [
@@ -136,23 +130,13 @@ export default {
         { value: 'sample_name', text: 'Sample Name' },
         // Need to specify filters in json api resources if we want more filters
       ],
-      primary_key: 'id',
-      filteredItems: [],
       selected: [],
-      filter: null,
       sortBy: 'created_at',
       sortDesc: true,
-      perPage: 25,
-      currentPage: 1,
     }
   },
   computed: {
     ...mapGetters('traction/pacbio/pools', ['pools']),
-  },
-  watch: {
-    pools(newValue) {
-      this.setInitialData(newValue, this.perPage, { sortBy: 'created_at' })
-    },
   },
   methods: {
     /*
@@ -185,6 +169,9 @@ export default {
       })
 
       this.showAlert(message, success ? 'success' : 'danger')
+    },
+    async fetchPools() {
+      return await this.fetchWithQueryParams(this.setPools, this.filterOptions)
     },
     ...mapActions('traction/pacbio/pools', ['setPools']),
     ...mapActions('printMyBarcode', ['createPrintJob']),

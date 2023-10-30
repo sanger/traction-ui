@@ -289,18 +289,18 @@ export default {
    * @param rootState the vuex rootState object. Provides access to the current state
    * @param commit the vuex commit object. Provides access to mutations
    */
-  fetchOntRequests: async ({ commit, rootState }, filter) => {
+  fetchOntRequests: async ({ commit, rootState }, filter, page) => {
     const request = rootState.api.traction.ont.requests
-    const promise = request.get({ filter: filter })
+    const promise = request.get({ page, filter })
     const response = await handleResponse(promise)
 
-    const { success, data: { data } = {}, errors = [] } = response
+    const { success, data: { data, meta = {} } = {}, errors = [] } = response
 
     if (success) {
       commit('setRequests', data)
     }
 
-    return { success, errors }
+    return { success, errors, meta }
   },
 
   /**
@@ -335,15 +335,16 @@ export default {
    * @param rootState the vuex rootState object. Provides access to the current state
    * @param commit the vuex commit object. Provides access to mutations
    */
-  fetchOntPools: async ({ commit, rootState }, filter) => {
+  fetchOntPools: async ({ commit, rootState }, filter, page) => {
     const request = rootState.api.traction.ont.pools
     const promise = request.get({
-      filter: filter,
+      page,
+      filter,
       include: 'tube,libraries.tag,libraries.request',
     })
     const response = await handleResponse(promise)
 
-    const { success, data: { data, included = [] } = {}, errors = [] } = response
+    const { success, data: { data, included = [], meta = {} } = {}, errors = [] } = response
     const { tubes, libraries, tags, requests } = groupIncludedByResource(included)
 
     if (success) {
@@ -354,7 +355,7 @@ export default {
       commit('setPools', data)
     }
 
-    return { success, errors }
+    return { success, errors, meta }
   },
 
   /**

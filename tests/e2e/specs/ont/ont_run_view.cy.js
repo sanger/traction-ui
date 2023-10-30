@@ -7,7 +7,7 @@ describe('ONT Run page', () => {
       statusCode: 200,
       fixture: 'tractionOntPool.json',
     })
-    cy.intercept('/v1/ont/runs?include=instrument', {
+    cy.intercept('/v1/ont/runs?page[size]=25&page[number]=1&include=instrument', {
       fixture: 'tractionOntRuns.json',
     })
     cy.intercept('/v1/ont/pools?include=tube,libraries.tag,libraries.request', {

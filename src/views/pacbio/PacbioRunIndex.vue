@@ -1,6 +1,6 @@
 <template>
-  <DataFetcher :fetcher="provider">
-    <FilterCard :fetcher="fetchPacbioRuns" :filter-options="filterOptions" />
+  <DataFetcher :fetcher="fetchRuns">
+    <FilterCard :fetcher="fetchRuns" :filter-options="filterOptions" />
     <div class="flex flex-col">
       <div class="clearfix">
         <traction-button
@@ -12,26 +12,10 @@
         >
           New Run
         </traction-button>
-        <traction-pagination
-          v-model="currentPage"
-          class="float-right"
-          :total-rows="runsArray.length"
-          :per-page="perPage"
-          aria-controls="run-index"
-          @update:modelValue="onPageChange($event)"
-        >
-        </traction-pagination>
+        <traction-pagination class="float-right" aria-controls="run-index"> </traction-pagination>
       </div>
 
-      <traction-table
-        id="run-index"
-        v-model:sort-by="sortBy"
-        :items="tableData"
-        :fields="fields"
-        :per-page="perPage"
-        :current-page="currentPage"
-        @filtered="onFiltered"
-      >
+      <traction-table id="run-index" v-model:sort-by="sortBy" :items="runsArray" :fields="fields">
         <template #cell(sequencing_kit_box_barcodes)="row">
           <ul>
             <li v-for="barcode in row.item.sequencing_kit_box_barcodes" :key="barcode">
@@ -114,12 +98,13 @@
 <script>
 import DataFetcher from '@/components/DataFetcher'
 import FilterCard from '@/components/FilterCard'
-import TableHelper from '@/mixins/TableHelper'
 import DownloadIcon from '@/icons/DownloadIcon.vue'
 import TractionBadge from '@/components/shared/TractionBadge.vue'
+import useQueryParams from '@/lib/QueryParamsHelper'
 import { usePacbioRunsStore } from '@/stores/pacbioRuns'
 import { usePacbioRunCreateStore } from '@/stores/pacbioRunCreate'
 import { mapActions as mapActionsPinia, mapState } from 'pinia'
+
 export default {
   name: 'PacbioRuns',
   components: {
@@ -128,7 +113,10 @@ export default {
     DownloadIcon,
     TractionBadge,
   },
-  mixins: [TableHelper],
+  setup() {
+    const { fetchWithQueryParams } = useQueryParams()
+    return { fetchWithQueryParams }
+  },
   data() {
     return {
       fields: [
@@ -149,30 +137,20 @@ export default {
         { key: 'created_at', label: 'Created at (UTC)', sortable: true },
         { key: 'actions', label: 'Actions' },
       ],
-      filteredItems: [],
       filterOptions: [
         { value: '', text: '' },
         { value: 'name', text: 'Name' },
         { value: 'state', text: 'State' },
         // Need to specify filters in json api resources if we want more filters
       ],
-      filter: null,
       sortBy: 'created_at',
       sortDesc: true,
-      perPage: 25,
-      currentPage: 1,
     }
   },
   computed: {
     ...mapState(usePacbioRunsStore, ['runsArray']),
     ...mapState(usePacbioRunCreateStore, ['smrtLinkVersionList']),
   },
-  watch: {
-    runsArray(newValue) {
-      this.setInitialData(newValue, this.perPage, { sortBy: 'created_at' })
-    },
-  },
-
   methods: {
     getVersionName(versionId) {
       return this.smrtLinkVersionList[versionId]?.name || '< ! >'
@@ -203,32 +181,9 @@ export default {
     },
     ...mapActionsPinia(usePacbioRunsStore, ['fetchPacbioRuns', 'updateRun']),
     ...mapActionsPinia(usePacbioRunCreateStore, ['fetchSmrtLinkVersions']),
-    async provider() {
-      // Seeds required data and loads the page via the DataFetcher
-      // TODO: update the DataFetcher to handle multiple data fetchers
-      let requiredSucceeds = true
-      const errorList = []
-      const fetchers = {
-        // the keys are used in the error message should the fetcher fail
-        'PacBio Runs': { fetcher: this.fetchPacbioRuns, required: true },
-        'SMRT-Link Versions': { fetcher: this.fetchSmrtLinkVersions, required: false },
-      }
-      // Fetch data in parallel
-      const fetchPromises = Object.entries(fetchers).map(([name, { fetcher, required }]) => {
-        return fetcher().then((res) => {
-          if (!res.success) {
-            errorList.push(name)
-            if (required) requiredSucceeds = false
-          }
-        })
-      })
-      await Promise.all(fetchPromises)
-      if (requiredSucceeds) {
-        return { success: true }
-      }
-
-      const errors = 'Failed to fetch ' + errorList.join(', ')
-      return { success: false, errors }
+    async fetchRuns() {
+      this.smrtLinkVersionList.length ? null : await this.fetchSmrtLinkVersions()
+      return await this.fetchWithQueryParams(this.fetchPacbioRuns, this.filterOptions)
     },
   },
 }
