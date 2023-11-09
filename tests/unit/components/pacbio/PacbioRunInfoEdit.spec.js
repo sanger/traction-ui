@@ -170,13 +170,13 @@ describe('PacbioRunInfoEdit', () => {
       const options = wrapper.find('[data-attribute=smrt_link_version]').findAll('option')
       await options[1].setSelected()
       expect(runInfo.smrtLinkVersion.id).toEqual(smrtLinkVersions[2].id)
-      expect(wrapper.text()).not.toContain('DNA Control Complex Box Barcode')
+      expect(wrapper.text()).toContain('DNA Control Complex Box Barcode')
     })
     it('does not show dna_control_complex_box_barcode when SMRT Link version is v12 Sequel IIe', async () => {
       const options = wrapper.find('[data-attribute=smrt_link_version]').findAll('option')
       await options[2].setSelected()
       expect(runInfo.smrtLinkVersion.id).toEqual(smrtLinkVersions[3].id)
-      expect(wrapper.text()).not.toContain('DNA Control Complex Box Barcode')
+      expect(wrapper.text()).toContain('DNA Control Complex Box Barcode')
     })
     it('system name', async () => {
       expect(store.run.system_name).toEqual('Sequel IIe')

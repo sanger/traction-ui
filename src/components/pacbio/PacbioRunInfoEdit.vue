@@ -16,7 +16,7 @@
       </traction-field-group>
 
       <traction-field-group
-        v-if="!smrtLinkVersionv12"
+        v-if="!isRevio"
         label="DNA Control Complex Box Barcode"
         for="dna-control-complex-box-barcode"
       >
@@ -109,6 +109,9 @@ export default {
     },
     smrtLinkVersionv12() {
       return /^v12/.test(this.smrtLinkVersion.name)
+    },
+    isRevio() {
+      return this.instrumentType.key == PacbioInstrumentTypes.Revio.key
     },
   },
   methods: {

@@ -364,7 +364,7 @@ describe('run.js', () => {
     })
 
     it('will create the correct payload when SMRT Link Version is v12 Sequel IIe', () => {
-      const run = { system_name: 'Sequel IIe', dna_control_complex_box_barcode: 'redundant' }
+      const run = { system_name: 'Sequel IIe', dna_control_complex_box_barcode: 'to keep' }
 
       const payload = createPayload({
         run,
@@ -379,7 +379,7 @@ describe('run.js', () => {
           type: 'runs',
           attributes: {
             pacbio_smrt_link_version_id: smrtLinkVersions['3'].id,
-            dna_control_complex_box_barcode: null,
+            dna_control_complex_box_barcode: 'to keep',
             system_name: PacbioInstrumentTypes.SequelIIe.name,
             plates_attributes: [
               {
