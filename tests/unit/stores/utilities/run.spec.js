@@ -304,7 +304,7 @@ describe('run.js', () => {
           attributes: {
             pacbio_smrt_link_version_id: smrtLinkVersions['1'].id,
             system_name: PacbioInstrumentTypes.Revio.name,
-            dna_control_complex_box_barcode: 'to keep',
+            dna_control_complex_box_barcode: null,
             plates_attributes: [
               {
                 ...plates.existing[1],
@@ -337,6 +337,7 @@ describe('run.js', () => {
           attributes: {
             pacbio_smrt_link_version_id: smrtLinkVersions['1'].id,
             system_name: PacbioInstrumentTypes.Revio.name,
+            dna_control_complex_box_barcode: null,
             plates_attributes: [
               {
                 ...plates.single[1],

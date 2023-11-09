@@ -136,21 +136,15 @@ describe('PacbioRunInfoEdit', () => {
       })
     })
 
-    describe('#smrtLinkVersionv12', () => {
-      it('returns false when the SMRT Link version is not v12', () => {
-        expect(runInfo.smrtLinkVersionv12).toBe(false)
+    describe('#isRevio', () => {
+      it('returns false when the System Name is not Revio', () => {
+        expect(runInfo.isRevio).toBe(false)
       })
 
-      it('returns true when the SMRT Link version is v12 Revio', async () => {
-        const options = wrapper.find('[data-attribute=smrt_link_version]').findAll('option')
-        await options[1].setSelected()
-        expect(runInfo.smrtLinkVersionv12).toBe(true)
-      })
-
-      it('returns true when the SMRT Link version is v12 Sequel IIe', async () => {
-        const options = wrapper.find('[data-attribute=smrt_link_version]').findAll('option')
-        await options[2].setSelected()
-        expect(runInfo.smrtLinkVersionv12).toBe(true)
+      it('returns true when the System Name is Revio', async () => {
+        const options = wrapper.find('[data-attribute=system_name]').findAll('option')
+        await options[0].setSelected()
+        expect(runInfo.isRevio).toBe(true)
       })
     })
   })

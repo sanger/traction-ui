@@ -107,11 +107,8 @@ export default {
         this.instrumentType,
       )
     },
-    smrtLinkVersionv12() {
-      return /^v12/.test(this.smrtLinkVersion.name)
-    },
     isRevio() {
-      return this.instrumentType.key == PacbioInstrumentTypes.Revio.key
+      return this.instrumentType.key === PacbioInstrumentTypes.Revio.key
     },
   },
   methods: {
