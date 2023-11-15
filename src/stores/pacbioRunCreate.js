@@ -437,9 +437,6 @@ export const usePacbioRunCreateStore = defineStore('pacbioRunCreate', {
             (instrumentType) => instrumentType.name === this.run.system_name,
           )
       this.instrumentType = { ...instrumentTypeForKey }
-      if (this.instrumentType.key === PacbioInstrumentTypes.Revio.key) {
-        this.run.dna_control_complex_box_barcode = null
-      }
       if (this.runType.type === RunTypeEnum.New) {
         /*
          * Adds the plates and wells to state by plate number
@@ -453,6 +450,7 @@ export const usePacbioRunCreateStore = defineStore('pacbioRunCreate', {
           this.plates[i] = newPlate(i)
           this.wells[i] = { _destroy: [] }
         }
+        this.run.dna_control_complex_box_barcode = null
       }
     },
     removePool(id) {
