@@ -607,6 +607,20 @@ describe('usePacbioRunCreateStore', () => {
         expect(store.instrumentType).toEqual(PacbioInstrumentTypes.SequelIIe)
         expect(store.plates.get).toBe(undefined)
       })
+      it('when an existing plate Sequel IIe changes to Revio', () => {
+        const store = usePacbioRunCreateStore()
+        store.$state = {
+          instrumentTypeList: PacbioInstrumentTypes,
+          run: {
+            ...newRun(),
+            id: 1,
+            system_name: 'Sequel IIe',
+          },
+        }
+        store.run.dna_control_complex_box_barcode = 'Lxxxxx10171760012311'
+        store.setInstrumentData('Revio')
+        expect(store.run.dna_control_complex_box_barcode).toBe(null)
+      })
     })
     describe('setSmrtLinkVersion', () => {
       it('will set the SMRT Link Version', () => {

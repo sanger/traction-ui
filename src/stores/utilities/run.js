@@ -1,5 +1,3 @@
-import { PacbioInstrumentTypes } from '@/lib/PacbioInstrumentTypes'
-
 /**
  *
  * @param {String} plateNumber The number of the plate e.g. 1
@@ -159,7 +157,7 @@ const createPayload = ({ id, run, plates, wells, smrtLinkVersion, instrumentType
       type: 'runs',
       id,
       attributes: {
-        ...createRunPayload(run, instrumentType),
+        ...run,
         pacbio_smrt_link_version_id: smrtLinkVersion.id,
         system_name: instrumentType.name,
         plates_attributes: Object.values(plates)
@@ -183,21 +181,6 @@ const createPayload = ({ id, run, plates, wells, smrtLinkVersion, instrumentType
  */
 const hasPlateAttributes = ({ sequencing_kit_box_barcode, wells_attributes }) => {
   return sequencing_kit_box_barcode || wells_attributes.length > 0
-}
-
-/**
- * @param {run} - A run object
- * @param {smrtLinkVersion} - The SMRT Link Version of the run
- * @returns {run} - A run object
- */
-
-const createRunPayload = (run, instrumentType) => {
-  // If the system is Revio, remove redundant dna_control_complex_box_barcode
-  // as it is not required for Revio, but required for the other systems
-  if (instrumentType.key === PacbioInstrumentTypes.Revio.key) {
-    run.dna_control_complex_box_barcode = null
-  }
-  return run
 }
 
 /**

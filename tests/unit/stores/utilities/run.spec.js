@@ -287,7 +287,7 @@ describe('run.js', () => {
     })
 
     it('will create an existing run payload', () => {
-      const aRun = { system_name: 'Revio', id: 1, dna_control_complex_box_barcode: 'to keep' }
+      const aRun = { system_name: 'Revio', id: 1, dna_control_complex_box_barcode: null }
       const { id, ...attributes } = aRun
       const payload = createPayload({
         id,
@@ -321,7 +321,7 @@ describe('run.js', () => {
     })
 
     it('will create the correct payload when there are 2 plates but 1 is empty', () => {
-      const run = { system_name: 'Revio' }
+      const run = { system_name: 'Revio', dna_control_complex_box_barcode: null }
 
       const payload = createPayload({
         run,
@@ -398,7 +398,7 @@ describe('run.js', () => {
     })
 
     it('will create the correct payload when SMRT Link Version is v12 Revio', () => {
-      const run = { system_name: 'Revio', dna_control_complex_box_barcode: 'redundant' }
+      const run = { system_name: 'Revio', dna_control_complex_box_barcode: null }
 
       const payload = createPayload({
         run,
