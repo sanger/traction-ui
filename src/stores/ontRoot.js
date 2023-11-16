@@ -16,8 +16,7 @@ const formatById = (obj, data, includeRelationships = false) => {
     ...dataToObjectById({ data, includeRelationships }),
   }
 }
-
-export const useOntRootStore = defineStore('ontRoot', {
+const useOntRootStore = defineStore('ontRoot', {
   state: () => ({
     // Resources returned by the server, each key represents a resource type.
     // resource types are indexed by their id.
@@ -101,3 +100,4 @@ export const useOntRootStore = defineStore('ontRoot', {
     },
   },
 })
+export default useOntRootStore

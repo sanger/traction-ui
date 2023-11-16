@@ -131,38 +131,38 @@ export const useOntRunsStore = defineStore('ontRuns', {
         return { success, errors }
       }
     },
-  },
-  setInstrumentName(name) {
-    this.currentRun.instrument_name = name
-  },
-  setState(state) {
-    this.currentRun.state = state
-  },
-  setFlowcellId(obj) {
-    const exists = this.currentRun.flowcell_attributes.find(
-      (flowcell) => flowcell.position == obj.position,
-    )
+    setInstrumentName(name) {
+      this.currentRun.instrument_name = name
+    },
+    setState(state) {
+      this.currentRun.state = state
+    },
+    setFlowcellId(obj) {
+      const exists = this.currentRun.flowcell_attributes.find(
+        (flowcell) => flowcell.position == obj.position,
+      )
 
-    if (exists) {
-      exists['flowcell_id'] = obj.$event
-    } else {
-      const flowcell = { flowcell_id: obj.$event, position: obj.position }
-      this.currentRun.flowcell_attributes.push(flowcell)
-    }
-  },
-  setPoolTubeBarcode(obj) {
-    const exists = this.currentRun.flowcell_attributes.find(
-      (flowcell) => flowcell.position == obj.position,
-    )
+      if (exists) {
+        exists['flowcell_id'] = obj.$event
+      } else {
+        const flowcell = { flowcell_id: obj.$event, position: obj.position }
+        this.currentRun.flowcell_attributes.push(flowcell)
+      }
+    },
+    setPoolTubeBarcode(obj) {
+      const exists = this.currentRun.flowcell_attributes.find(
+        (flowcell) => flowcell.position == obj.position,
+      )
 
-    if (exists) {
-      exists['tube_barcode'] = obj.barcode
-    } else {
-      const flowcell = { tube_barcode: obj.barcode, position: obj.position }
-      this.currentRun.flowcell_attributes.push(flowcell)
-    }
-  },
-  setCurrentRun(run) {
-    this.currentRun = run
+      if (exists) {
+        exists['tube_barcode'] = obj.barcode
+      } else {
+        const flowcell = { tube_barcode: obj.barcode, position: obj.position }
+        this.currentRun.flowcell_attributes.push(flowcell)
+      }
+    },
+    setCurrentRun(run) {
+      this.currentRun = run
+    },
   },
 })
