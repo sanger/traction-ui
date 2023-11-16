@@ -450,6 +450,7 @@ export const usePacbioRunCreateStore = defineStore('pacbioRunCreate', {
           this.plates[i] = newPlate(i)
           this.wells[i] = { _destroy: [] }
         }
+        this.run.dna_control_complex_box_barcode = null
       }
     },
     removePool(id) {
