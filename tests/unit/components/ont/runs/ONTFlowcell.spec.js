@@ -13,7 +13,7 @@ import { useOntRunsStore } from '@/stores/ontRuns'
  * stubActions - boolean to stub actions or not.
  * plugins - plugins to be used while creating the mock instance of pinia.
  */
-function mountWithStore( props = {} ) {
+function mountWithStore(props = {}) {
   const wrapperObj = mount(ONTFlowcell, {
     global: {
       plugins: [
@@ -37,7 +37,7 @@ describe('ONTFlowcell', () => {
       position: 1,
       coordinate: 'A1',
     }
-    const { wrapperObj, storeObj } = mountWithStore( props )
+    const { wrapperObj, storeObj } = mountWithStore(props)
     store = storeObj
     wrapper = wrapperObj
     ontFlowcell = wrapperObj.vm

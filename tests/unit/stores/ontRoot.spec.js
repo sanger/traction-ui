@@ -1,4 +1,4 @@
-import  useOntRootStore  from '@/stores/ontRoot'
+import useOntRootStore from '@/stores/ontRoot'
 import useRootStore from '@/stores'
 import InstrumentFlowcellLayout from '@/config/InstrumentFlowcellLayout'
 import { Data, createPinia, setActivePinia } from '@support/testHelper'
@@ -126,20 +126,20 @@ describe('useOntRootStore', () => {
         expect(success).toBeTruthy()
         expect(get).toHaveBeenCalled()
       })
-       it('handles failure', async () => {
-         //Mock useroot store
-         const rootStore = useRootStore()
-         const get = vi.fn()
-         get.mockRejectedValue(failedResponse)
-         rootStore.api = { traction: { ont: { instruments: { get } } } }
+      it('handles failure', async () => {
+        //Mock useroot store
+        const rootStore = useRootStore()
+        const get = vi.fn()
+        get.mockRejectedValue(failedResponse)
+        rootStore.api = { traction: { ont: { instruments: { get } } } }
 
-         const store = useOntRootStore()
+        const store = useOntRootStore()
 
-         // apply action
-         const { success } = await store.setInstruments()
-         expect(store.resources.instruments).toEqual({})
-         expect(success).toBeFalsy()
-       })
+        // apply action
+        const { success } = await store.setInstruments()
+        expect(store.resources.instruments).toEqual({})
+        expect(success).toBeFalsy()
+      })
     })
   })
 })
