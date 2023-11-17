@@ -56,11 +56,9 @@ const useOntRootStore = defineStore('ontRoot', {
         return []
       }
     },
-    instrumentByName:
-      (state, { instruments }) =>
-      (name) => {
-        return instruments.find((i) => i.name == name)
-      },
+    instrumentByName: (state) => (name) => {
+      return state.instruments.find((i) => i.name == name)
+    },
   },
   actions: {
     /**

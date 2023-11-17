@@ -9,6 +9,7 @@
     "build": "npm-run-all build:css build:js",
     "build:js": "vite build",
     "test:unit": "vitest run",
+    "test:unit:single": "vitest run /Users/st26/Desktop/Project/TRACTION/traction-ui/tests/unit/components/ont/runs/ONTRunInstrumentFlowcells.spec.js",
     "test:e2e": "test:e2e:all",
     "test:e2e:all": "npm-run-all -p start test:cypress:all",
     "test:e2e:one": "npm-run-all -p start test:cypress:one",

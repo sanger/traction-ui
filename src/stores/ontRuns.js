@@ -2,7 +2,7 @@ import { defineStore } from 'pinia'
 import { handleResponse } from '@/api/ResponseHelper'
 import useRootStore from '@/stores'
 import useOntRootStore from '@/stores/ontRoot'
-import ontPools from '@/store/traction/ont/pools'
+import pools from '@/store/traction/ont/pools'
 
 export const useOntRunsStore = defineStore('ontRuns', {
   state: () => ({
@@ -35,8 +35,7 @@ export const useOntRunsStore = defineStore('ontRuns', {
 
       const existingInstruments = ontRootStore.instruments
       const instrument_id = existingInstruments.find((i) => i.name == run.instrument_name).id
-
-      const existingPools = ontPools.pools
+      const existingPools = pools.getters['pools']()
 
       const flowcell_attributes = run.flowcell_attributes
         .filter((fc) => fc.flowcell_id && fc.tube_barcode)
@@ -68,7 +67,7 @@ export const useOntRunsStore = defineStore('ontRuns', {
       const existingInstruments = ontRootStore.instruments
       const instrument_id = existingInstruments.find((i) => i.name == run.instrument_name).id
 
-      const existingPools = ontPools.pools
+      const existingPools = pools.getters['pools']()
 
       const flowcell_attributes = run.flowcell_attributes
         .filter((fc) => fc.flowcell_id && fc.tube_barcode)
@@ -108,8 +107,7 @@ export const useOntRunsStore = defineStore('ontRuns', {
           (i) => i.id == data.attributes.ont_instrument_id,
         ).name
 
-        const existingPools = ontPools.pools
-
+        const existingPools = pools.getters['pools']()
         const currentRun = {
           id: data.id,
           instrument_name: instrument_name,

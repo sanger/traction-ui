@@ -1,4 +1,4 @@
-import { useOntRootStore } from '@/stores/ontRoot'
+import  useOntRootStore  from '@/stores/ontRoot'
 import useRootStore from '@/stores'
 import InstrumentFlowcellLayout from '@/config/InstrumentFlowcellLayout'
 import { Data, createPinia, setActivePinia } from '@support/testHelper'

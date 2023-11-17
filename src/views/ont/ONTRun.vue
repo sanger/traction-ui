@@ -31,7 +31,10 @@
 import DataFetcher from '@/components/DataFetcher.vue'
 import ONTRunInformation from '@/components/ont/runs/ONTRunInformation'
 import ONTRunInstrumentFlowcells from '@/components/ont/runs/ONTRunInstrumentFlowcells'
-import { mapActions, mapGetters } from 'vuex'
+import { mapState, mapActions as mapActionsPinia } from 'pinia'
+import { mapActions } from 'vuex'
+import { useOntRunsStore } from '@/stores/ontRuns'
+import useOntRootStore from '@/stores/ontRoot'
 
 export default {
   name: 'ONTRun',
@@ -66,8 +69,8 @@ export default {
     }
   },
   computed: {
-    ...mapGetters('traction/ont/runs', ['currentRun']),
-    ...mapGetters('traction/ont', ['instruments']),
+    ...mapState(useOntRunsStore, ['currentRun']),
+    ...mapState(useOntRootStore, ['instruments']),
     currentAction() {
       return this.actions[this.newRecord ? 'create' : 'update']
     },
@@ -79,12 +82,11 @@ export default {
     },
   },
   methods: {
-    ...mapActions('traction/ont/runs', ['createRun', 'fetchRun', 'newRun', 'updateRun']),
-    ...mapActions('traction/ont', ['setInstruments']),
+    ...mapActionsPinia(useOntRunsStore, ['createRun', 'fetchRun', 'newRun', 'updateRun']),
+    ...mapActionsPinia(useOntRootStore, ['setInstruments']),
     ...mapActions('traction/ont/pools', ['fetchOntPools']),
     async runAction() {
       const response = await this[this.currentAction.method]()
-
       if (response.success) {
         this.redirectToRuns()
       } else {

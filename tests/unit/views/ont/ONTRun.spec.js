@@ -1,25 +1,56 @@
 import ONTRun from '@/views/ont/ONTRun'
-import { mount, store, router, flushPromises, Data } from '@support/testHelper'
+import { mount, store, router, flushPromises, Data, createTestingPinia } from '@support/testHelper'
 import { beforeEach, describe, it } from 'vitest'
+import { useOntRunsStore } from '@/stores/ontRuns'
 
-describe('ONTRun.vue', () => {
-  let wrapper, ontRun, stubs
-
-  beforeEach(async () => {
-    stubs = {
+/**
+ * Helper method for mounting a component with a mock instance of pinia, with the given props.
+ * This method also returns the wrapper and the store object for further testing.
+ *
+ * @param {*} - params to be passed to the createTestingPinia method for creating a mock instance of pinia
+ * which includes
+ * state - initial state of the store.
+ * stubActions - boolean to stub actions or not.
+ * plugins - plugins to be used while creating the mock instance of pinia.
+ */
+function mountWithStore(props) {
+  vi.spyOn(store.state.api.traction.ont.pools, 'get').mockResolvedValue(Data.TractionOntPools)
+  const wrapperObj = mount(ONTRun, {
+    global: {
+      plugins: [
+        createTestingPinia({
+          stubActions: false,
+          plugins: [
+            ({ store }) => {
+              if (store.$id === 'root') {
+                store.api.traction.ont.instruments.get = vi
+                  .fn()
+                  .mockReturnValue(Data.OntInstruments)
+              }
+            },
+          ],
+        }),
+      ],
+    },
+    stubs: {
       DataFetcher: true,
       ONTRunInstrumentFlowcells: true,
       ONTRunInformation: true,
-    }
-    vi.spyOn(store.state.api.traction.ont.instruments, 'get').mockResolvedValue(Data.OntInstruments)
-    vi.spyOn(store.state.api.traction.ont.pools, 'get').mockResolvedValue(Data.TractionOntPools)
+    },
+    props,
+    store,
+    router,
+  })
+  const storeObj = useOntRunsStore()
+  return { wrapperObj, storeObj }
+}
 
-    wrapper = mount(ONTRun, {
-      store,
-      router,
-      stubs: stubs,
-      props: { id: 'new' },
-    })
+describe('ONTRun.vue', () => {
+  let wrapper, ontRun
+
+  beforeEach(async () => {
+    const { wrapperObj } = mountWithStore({ id: 'new' })
+    wrapper = wrapperObj
     ontRun = wrapper.vm
     ontRun.showAlert = vi.fn()
     await flushPromises()
@@ -63,12 +94,8 @@ describe('ONTRun.vue', () => {
       expect(ontRun.newRecord).toEqual(true)
     })
     it('returns false when currentRun is not a new record', () => {
-      wrapper = mount(ONTRun, {
-        store,
-        router,
-        stubs: stubs,
-        props: { id: '1' },
-      })
+      const { wrapperObj } = mountWithStore({ id: '1' })
+      wrapper = wrapperObj
       ontRun = wrapper.vm
       ontRun.fetchRun = vi.fn(() => Data.OntRun)
       expect(ontRun.newRecord).toEqual(false)
@@ -121,15 +148,8 @@ describe('ONTRun.vue', () => {
 
   describe('#updateRun', () => {
     beforeEach(async () => {
-      vi.spyOn(store.state.api.traction.ont.instruments, 'get').mockResolvedValue(
-        Data.OntInstruments,
-      )
-      wrapper = mount(ONTRun, {
-        store,
-        router,
-        stubs: stubs,
-        props: { id: '1' },
-      })
+      const { wrapperObj } = mountWithStore({ id: '1' })
+      wrapper = wrapperObj
       ontRun = wrapper.vm
       ontRun.fetchRun = vi.fn(() => Data.OntRun)
       ontRun.updateRun = vi.fn()
@@ -191,12 +211,8 @@ describe('ONTRun.vue', () => {
 
     describe('when it is an existing run', () => {
       beforeEach(() => {
-        wrapper = mount(ONTRun, {
-          store,
-          router,
-          stubs: stubs,
-          props: { id: '1' },
-        })
+        const { wrapperObj } = mountWithStore({ id: '1' })
+        wrapper = wrapperObj
         ontRun = wrapper.vm
 
         ontRun.fetchOntPools = vi.fn()

@@ -1,4 +1,3 @@
-import runs from '@/store/traction/ont/runs'
 import pools from '@/store/traction/ont/pools'
 import state from './state'
 import getters from './getters'
@@ -8,7 +7,6 @@ import actions from './actions'
 const ont = {
   namespaced: true,
   modules: {
-    runs,
     pools,
   },
   getters,

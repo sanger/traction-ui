@@ -18,7 +18,9 @@
 </template>
 
 <script>
-import { mapGetters } from 'vuex'
+import { mapState } from 'pinia'
+import { useOntRunsStore } from '@/stores/ontRuns'
+import useOntRootStore from '@/stores/ontRoot'
 import ONTFlowcell from '@/components/ont/runs/ONTFlowcell'
 /**
  * # ONTRunInstrumentFlowcells
@@ -33,8 +35,8 @@ export default {
   },
   props: {},
   computed: {
-    ...mapGetters('traction/ont/runs', ['currentRun']),
-    ...mapGetters('traction/ont', ['instruments', 'instrumentByName']),
+    ...mapState(useOntRunsStore, ['currentRun']),
+    ...mapState(useOntRootStore, ['instruments', 'instrumentByName']),
     instrument() {
       return this.instrumentByName(this.currentRun.instrument_name)
     },

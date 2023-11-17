@@ -1,30 +1,58 @@
 import ONTRunInformation from '@/components/ont/runs/ONTRunInformation'
-import { mount, store, router, Data } from '@support/testHelper'
+import { mount, router, Data, createTestingPinia } from '@support/testHelper'
 import { beforeEach, describe, it } from 'vitest'
 import Response from '@/api/Response'
 import InstrumentFlowcellLayout from '@/config/InstrumentFlowcellLayout'
+import { useOntRunsStore } from '@/stores/ontRuns'
+
+/**
+ * Helper method for mounting a component with a mock instance of pinia, with the given props.
+ * This method also returns the wrapper and the store object for further testing.
+ *
+ * @param {*} - params to be passed to the createTestingPinia method for creating a mock instance of pinia
+ * which includes
+ * state - initial state of the store.
+ * stubActions - boolean to stub actions or not.
+ * plugins - plugins to be used while creating the mock instance of pinia.
+ */
+function mountWithStore({ state = {}, rootState = {} } = {}, props = {}) {
+  const wrapperObj = mount(ONTRunInformation, {
+    global: {
+      plugins: [
+        createTestingPinia({
+          initialState: {
+            ontRuns: { ...state },
+            ontRoot: { resources: { ...rootState } },
+          },
+          stubActions: false,
+        }),
+      ],
+    },
+    router,
+    props,
+  })
+  const storeObj = useOntRunsStore()
+  return { wrapperObj, storeObj }
+}
 
 describe('ONTRunInformation.vue', () => {
-  let wrapper, ontRunInfomation, mockInstruments, mockRun
+  let wrapper, ontRunInfomation, mockInstruments, mockRun, store
 
   beforeEach(() => {
     mockInstruments = new Response(Data.OntInstruments).deserialize.instruments
-
-    const rawInstruments = new Response(Data.OntInstruments)._body.data
-    store.commit('traction/ont/setInstruments', rawInstruments)
-
     mockRun = {
       id: 'new',
       instrument_name: '',
       state: '',
       flowcell_attributes: [],
     }
-    store.commit('traction/ont/runs/setCurrentRun', mockRun)
-
-    wrapper = mount(ONTRunInformation, {
-      store,
-      router,
+    const { wrapperObj, storeObj } = mountWithStore({
+      state: { currentRun: mockRun },
+      rootState: { instruments: mockInstruments },
     })
+
+    wrapper = wrapperObj
+    store = storeObj
     ontRunInfomation = wrapper.vm
   })
 
@@ -103,7 +131,7 @@ describe('ONTRunInformation.vue', () => {
       expect(ontRunInfomation.newRecord).toEqual(true)
     })
     it('returns false when currentRun is not a new record', () => {
-      store.commit('traction/ont/runs/setCurrentRun', {
+      store.setCurrentRun({
         id: '1',
         instrument_name: '',
         state: '',

@@ -1,26 +1,49 @@
 import ONTFlowcell from '@/components/ont/runs/ONTFlowcell'
-import { mount, store } from '@support/testHelper'
+import { mount, createTestingPinia } from '@support/testHelper'
 import { describe } from 'vitest'
+import { useOntRunsStore } from '@/stores/ontRuns'
+
+/**
+ * Helper method for mounting a component with a mock instance of pinia, with the given props.
+ * This method also returns the wrapper and the store object for further testing.
+ *
+ * @param {*} - params to be passed to the createTestingPinia method for creating a mock instance of pinia
+ * which includes
+ * state - initial state of the store.
+ * stubActions - boolean to stub actions or not.
+ * plugins - plugins to be used while creating the mock instance of pinia.
+ */
+function mountWithStore( props = {} ) {
+  const wrapperObj = mount(ONTFlowcell, {
+    global: {
+      plugins: [
+        createTestingPinia({
+          stubActions: false,
+          plugins: [],
+        }),
+      ],
+    },
+    props,
+  })
+  const storeObj = useOntRunsStore()
+  return { wrapperObj, storeObj }
+}
 
 describe('ONTFlowcell', () => {
-  let wrapper, ontFlowcell, props
+  let wrapper, ontFlowcell, props, store
 
   beforeEach(() => {
     props = {
       position: 1,
       coordinate: 'A1',
     }
+    const { wrapperObj, storeObj } = mountWithStore( props )
+    store = storeObj
+    wrapper = wrapperObj
+    ontFlowcell = wrapperObj.vm
 
-    // Create a flowcell in the store and set its tube barcode
-    store.commit('traction/ont/runs/setFlowcellId', { $event: 'ABC123', position: 1 })
-    store.commit('traction/ont/runs/setPoolTubeBarcode', { barcode: 'TRAC-1-A', position: 1 })
-
-    wrapper = mount(ONTFlowcell, {
-      props,
-      store,
-    })
-
-    ontFlowcell = wrapper.vm
+    store.setFlowcellId({ $event: 'ABC123', position: 1 })
+    store.setPoolTubeBarcode({ barcode: 'TRAC-1-A', position: 1 })
   })
 
   describe('props', () => {
@@ -60,7 +83,7 @@ describe('ONTFlowcell', () => {
   })
 
   describe('#methods', () => {
-    describe('#mapMutations', () => {
+    describe('#mapActions', () => {
       it('#setFlowcellId', () => {
         ontFlowcell.setFlowcellId({ $event: 'FC2', position: 1 })
         expect(ontFlowcell.flowcellId).toEqual('FC2')

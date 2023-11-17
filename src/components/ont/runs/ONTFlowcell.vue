@@ -69,7 +69,8 @@
  * yellow - if one of flowcellId and barcode fields are valid and other is empty
  */
 import { createNamespacedHelpers } from 'vuex'
-const { mapState, mapMutations, mapGetters } = createNamespacedHelpers('traction/ont/runs')
+import { mapState, mapActions as mapActionsPinia } from 'pinia'
+import { useOntRunsStore } from '@/stores/ontRuns'
 const { mapActions } = createNamespacedHelpers('traction/ont/pools')
 export default {
   name: 'ONTFlowcell',
@@ -90,6 +91,7 @@ export default {
     }
   },
   computed: {
+    ...mapState(useOntRunsStore, ['currentRun']),
     /**Returns an error message if invalid otherwise an empty string */
     flowcellIdValidationError() {
       // 3 letters followed by at least 3 numbers
@@ -118,7 +120,7 @@ export default {
         return this.poolTubeBarcode
       },
       async set(value) {
-        /*It is required to update the barcode here because components are externally 
+        /*It is required to update the barcode here because components are externally
           listening to this state */
         this.setPoolTubeBarcode({
           barcode: value,
@@ -131,11 +133,13 @@ export default {
     },
     flowcellId: {
       get() {
-        const flowcell = this.currentRun().flowcell_attributes.find(
-          (flowcell) => flowcell.position == this.position,
-        )
-        if (flowcell) {
-          return flowcell.flowcell_id
+        if (this.currentRun) {
+          const flowcell = this.currentRun.flowcell_attributes.find(
+            (flowcell) => flowcell.position == this.position,
+          )
+          if (flowcell) {
+            return flowcell.flowcell_id
+          }
         }
         return ''
       },
@@ -143,68 +147,67 @@ export default {
         this.setFlowcellId({ $event: value, position: this.position })
       },
     },
-    ...mapState({
-      poolTubeBarcode(state) {
-        const flowcell = state.currentRun.flowcell_attributes.find(
-          (flowcell) => flowcell.position == this.position,
-        )
-        if (flowcell) {
-          return flowcell.tube_barcode
-        }
-      },
-      /**Displays green if valid, red if invalid and no border if empty */
-      flowcell_id_field_colour() {
-        return this.isFlowcellIdExists
-          ? this.flowcellIdValidationError.length === 0
-            ? 'border-3 border-solid border-success'
-            : 'border-3 border-solid border-failure focus:border-failure'
-          : ''
-      },
-      /**Displays green if valid, red if invalid and no border if empty */
-      flowcell_barcode_field_colour() {
-        return this.isBarcodeExists
-          ? this.barcodeState
-            ? 'border-3 border-solid border-success'
-            : 'border-3 border-solid border-failure focus:border-failure'
-          : ''
-      },
-      /**
-       * green - if both flowcellId and barcode fields contain valid values
-       * red - if any of flowcellId and barcode fields contain invalid values
-       * white - if both flowcellId and barcode fields are empty
-       * yellow - if one of flowcellId and barcode fields are valid and other is empty
-       */
-      flowcell_bg_colour() {
-        if (!this.isFlowcellIdExists && !this.isBarcodeExists)
-          return 'border border-3 border-gray-300'
+    poolTubeBarcode() {
+      //This is keep poolTubeBarcode in sync with the Pinia store state  (option api way)
+      const ontRunStore = useOntRunsStore()
+      const flowcell = ontRunStore.currentRun.flowcell_attributes.find(
+        (flowcell) => flowcell.position == this.position,
+      )
+      if (flowcell) {
+        return flowcell.tube_barcode
+      }
+      return ''
+    },
+    /**Displays green if valid, red if invalid and no border if empty */
+    flowcell_id_field_colour() {
+      return this.isFlowcellIdExists
+        ? this.flowcellIdValidationError.length === 0
+          ? 'border-3 border-solid border-success'
+          : 'border-3 border-solid border-failure focus:border-failure'
+        : ''
+    },
 
-        const validFlowId = this.isFlowcellIdExists && this.flowcellIdValidationError.length === 0
-        const validBarcodeId = this.isBarcodeExists && this.barcodeState
+    /**Displays green if valid, red if invalid and no border if empty */
+    flowcell_barcode_field_colour() {
+      return this.isBarcodeExists
+        ? this.barcodeState
+          ? 'border-3 border-solid border-success'
+          : 'border-3 border-solid border-failure focus:border-failure'
+        : ''
+    },
+    /**
+     * green - if both flowcellId and barcode fields contain valid values
+     * red - if any of flowcellId and barcode fields contain invalid values
+     * white - if both flowcellId and barcode fields are empty
+     * yellow - if one of flowcellId and barcode fields are valid and other is empty
+     */
+    flowcell_bg_colour() {
+      if (!this.isFlowcellIdExists && !this.isBarcodeExists)
+        return 'border border-3 border-gray-300'
 
-        if (validFlowId && validBarcodeId) {
-          return 'border border-3 border-success'
-        }
+      const validFlowId = this.isFlowcellIdExists && this.flowcellIdValidationError.length === 0
+      const validBarcodeId = this.isBarcodeExists && this.barcodeState
 
-        if (
-          (validFlowId && !this.isBarcodeExists) ||
-          (validBarcodeId && !this.isFlowcellIdExists)
-        ) {
-          return 'border border-3 border-warning'
-        }
+      if (validFlowId && validBarcodeId) {
+        return 'border border-3 border-success'
+      }
 
-        if (
-          this.flowcellIdValidationError.length > 0 ||
-          (this.isBarcodeExists && !this.barcodeState)
-        ) {
-          return 'border border-3 border-failure'
-        }
-      },
-    }),
+      if ((validFlowId && !this.isBarcodeExists) || (validBarcodeId && !this.isFlowcellIdExists)) {
+        return 'border border-3 border-warning'
+      }
+
+      if (
+        this.flowcellIdValidationError.length > 0 ||
+        (this.isBarcodeExists && !this.barcodeState)
+      ) {
+        return 'border border-3 border-failure'
+      }
+      return ''
+    },
   },
   methods: {
-    ...mapMutations(['setFlowcellId', 'setPoolTubeBarcode']),
+    ...mapActionsPinia(useOntRunsStore, ['setFlowcellId', 'setPoolTubeBarcode']),
     ...mapActions(['validatePoolBarcode']),
-    ...mapGetters(['currentRun']),
     formatter(value) {
       return value.toUpperCase().trim()
     },

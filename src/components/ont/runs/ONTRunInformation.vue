@@ -25,8 +25,9 @@
 </template>
 
 <script>
-import { createNamespacedHelpers, mapGetters } from 'vuex'
-const { mapState, mapMutations } = createNamespacedHelpers('traction/ont/runs')
+import { mapState, mapActions } from 'pinia'
+import { useOntRunsStore } from '@/stores/ontRuns'
+import useOntRootStore from '@/stores/ontRoot'
 
 /**
  * # ONTRunInformation
@@ -41,12 +42,19 @@ export default {
     }
   },
   computed: {
-    ...mapGetters('traction/ont', ['instruments']),
-    ...mapGetters('traction/ont/runs', ['currentRun']),
-    ...mapState({
-      instrumentName: (state) => state.currentRun.instrument_name,
-      state: (state) => state.currentRun.state,
-    }),
+    ...mapState(useOntRootStore, ['instruments']),
+    ...mapState(useOntRunsStore, ['currentRun']),
+    instrumentName() {
+      //This is keep instrumentName in sync with the Pinia store state  (option api way)
+      const ontRunsStore = useOntRunsStore()
+      return ontRunsStore.currentRun.instrument_name
+    },
+    state() {
+      //This is keep state in sync with the Pinia store state  (option api way)
+      const ontRunsStore = useOntRunsStore()
+      return ontRunsStore.currentRun.state
+    },
+
     instrumentOptions() {
       const options = this.instruments.map((instrument) => ({
         value: instrument.name,
@@ -71,7 +79,7 @@ export default {
     formatState(str) {
       return str.replace(/\s+/g, '_').toLowerCase()
     },
-    ...mapMutations(['setInstrumentName', 'setState']),
+    ...mapActions(useOntRunsStore, ['setInstrumentName', 'setState']),
   },
 }
 </script>
