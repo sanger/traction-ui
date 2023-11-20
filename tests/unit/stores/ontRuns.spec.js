@@ -5,9 +5,6 @@ import InstrumentFlowcellLayout from '@/config/InstrumentFlowcellLayout'
 import { Data, createPinia, setActivePinia } from '@support/testHelper'
 import Response from '@/api/Response'
 import { beforeEach, describe } from 'vitest'
-import ontPools from '@/store/traction/ont/pools'
-
-//import * as jsonapi from '@/api/JsonApi'
 
 describe('useOntRunsStore', () => {
   beforeEach(() => {
@@ -98,7 +95,6 @@ describe('useOntRunsStore', () => {
         }
         const ontRootStore = useOntRootStore()
         ontRootStore.resources.instruments = [{ id: 1, name: 'GXB02004' }]
-        ontPools.pools = [{ id: 1, barcode: 'TRAC-A-1' }]
       })
 
       it('runs successfully', async () => {
@@ -160,7 +156,6 @@ describe('useOntRunsStore', () => {
         store.currentRun = run
         const ontRootStore = useOntRootStore()
         ontRootStore.resources.instruments = [{ id: 1, name: 'GXB02004' }]
-        ontPools.pools = [{ id: 1, barcode: 'TRAC-A-1' }]
       })
 
       it('successfully', async () => {
@@ -200,7 +195,6 @@ describe('useOntRunsStore', () => {
         }
         const ontRootStore = useOntRootStore()
         ontRootStore.resources.instruments = [{ id: 1, name: 'GXB02004' }]
-        ontPools.pools = [{ id: 1, barcode: 'TRAC-A-1' }]
 
         mockRun = {
           id: 1,
