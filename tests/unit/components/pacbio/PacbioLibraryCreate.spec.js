@@ -52,7 +52,7 @@ describe('PacbioLibraryCreate.vue', () => {
     expect(modal.tagOptions).toEqual([{ value: '', text: 'Please select a tag' }])
   })
 
-  // I have removed the call. Not sure why but when updating vue test utils to 1.4.2
+  // I have removed the call. Not sure why but when updating vue test utils to 2.4.2
   // it started failing. The object now includes getters and setters.
   // I think it is to do with setData.
   describe('#createLibrary', () => {
