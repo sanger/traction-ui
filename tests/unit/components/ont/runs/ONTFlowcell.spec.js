@@ -9,9 +9,7 @@ import { useOntRunsStore } from '@/stores/ontRuns'
  *
  * @param {*} - params to be passed to the createTestingPinia method for creating a mock instance of pinia
  * which includes
- * state - initial state of the store.
- * stubActions - boolean to stub actions or not.
- * plugins - plugins to be used while creating the mock instance of pinia.
+ * props - props to pass to the component
  */
 function mountWithStore(props = {}) {
   const wrapperObj = mount(ONTFlowcell, {

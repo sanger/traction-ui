@@ -45,12 +45,12 @@ export default {
     ...mapState(useOntRootStore, ['instruments']),
     ...mapState(useOntRunsStore, ['currentRun']),
     instrumentName() {
-      //This is keep instrumentName in sync with the Pinia store state  (option api way)
+      //This is to keep instrumentName in sync with the Pinia store state  (option api way)
       const ontRunsStore = useOntRunsStore()
       return ontRunsStore.currentRun.instrument_name
     },
     state() {
-      //This is keep state in sync with the Pinia store state  (option api way)
+      //This is to keep currentRun.state in sync with the Pinia store state  (option api way)
       const ontRunsStore = useOntRunsStore()
       return ontRunsStore.currentRun.state
     },

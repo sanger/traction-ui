@@ -9,7 +9,7 @@ import useRootStore from '@/stores'
  * store
  */
 
-// Helper function for setting pools data
+// Helper function for reformatting data
 const formatById = (obj, data, includeRelationships = false) => {
   return {
     ...obj,

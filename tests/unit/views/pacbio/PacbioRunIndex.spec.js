@@ -19,7 +19,7 @@ const mockRuns = new Response(Data.PacbioRuns).deserialize.runs
  * 'options' allows to define initial state while instantiating the component.
  *
  * @param {*} options - options to be passed to the createTestingPinia method for creating a mock instance of pinia
- * e.g. , stubActions etc.
+ * e.g. initialState, stubActions etc.
  * @param {*} dataProps - data to be passed to the component while mounting
  */
 function factory(options, dataProps) {
