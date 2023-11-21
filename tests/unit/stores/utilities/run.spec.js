@@ -287,7 +287,7 @@ describe('run.js', () => {
     })
 
     it('will create an existing run payload', () => {
-      const aRun = { system_name: 'Revio', id: 1, dna_control_complex_box_barcode: 'to keep' }
+      const aRun = { system_name: 'Revio', id: 1, dna_control_complex_box_barcode: null }
       const { id, ...attributes } = aRun
       const payload = createPayload({
         id,
@@ -304,7 +304,7 @@ describe('run.js', () => {
           attributes: {
             pacbio_smrt_link_version_id: smrtLinkVersions['1'].id,
             system_name: PacbioInstrumentTypes.Revio.name,
-            dna_control_complex_box_barcode: 'to keep',
+            dna_control_complex_box_barcode: null,
             plates_attributes: [
               {
                 ...plates.existing[1],
@@ -321,7 +321,7 @@ describe('run.js', () => {
     })
 
     it('will create the correct payload when there are 2 plates but 1 is empty', () => {
-      const run = { system_name: 'Revio' }
+      const run = { system_name: 'Revio', dna_control_complex_box_barcode: null }
 
       const payload = createPayload({
         run,
@@ -337,6 +337,7 @@ describe('run.js', () => {
           attributes: {
             pacbio_smrt_link_version_id: smrtLinkVersions['1'].id,
             system_name: PacbioInstrumentTypes.Revio.name,
+            dna_control_complex_box_barcode: null,
             plates_attributes: [
               {
                 ...plates.single[1],
@@ -364,7 +365,7 @@ describe('run.js', () => {
     })
 
     it('will create the correct payload when SMRT Link Version is v12 Sequel IIe', () => {
-      const run = { system_name: 'Sequel IIe', dna_control_complex_box_barcode: 'redundant' }
+      const run = { system_name: 'Sequel IIe', dna_control_complex_box_barcode: 'to keep' }
 
       const payload = createPayload({
         run,
@@ -379,7 +380,7 @@ describe('run.js', () => {
           type: 'runs',
           attributes: {
             pacbio_smrt_link_version_id: smrtLinkVersions['3'].id,
-            dna_control_complex_box_barcode: null,
+            dna_control_complex_box_barcode: 'to keep',
             system_name: PacbioInstrumentTypes.SequelIIe.name,
             plates_attributes: [
               {
@@ -397,7 +398,7 @@ describe('run.js', () => {
     })
 
     it('will create the correct payload when SMRT Link Version is v12 Revio', () => {
-      const run = { system_name: 'Revio', dna_control_complex_box_barcode: 'redundant' }
+      const run = { system_name: 'Revio', dna_control_complex_box_barcode: null }
 
       const payload = createPayload({
         run,

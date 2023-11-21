@@ -371,8 +371,8 @@ export default {
       return typeof field === 'object' && 'label' in field
         ? field.label
         : typeof field == 'string'
-        ? field
-        : ''
+          ? field
+          : ''
     },
     /**Callback when a row is clicked */
     onRowClicked(value) {
