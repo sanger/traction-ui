@@ -41,7 +41,7 @@ describe('createRequest', () => {
 
     it('will have some headers', () => {
       const request = createRequest({ ...attributes })
-      expect(request.headers).toEqual(attributes.headers)
+      expect(request.headers).toEqual({ ...defaultHeaders, ...attributes.headers })
     })
 
     it('will have some default headers if none were passed', () => {
