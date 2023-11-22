@@ -2,7 +2,7 @@ import { Data } from '@support/testHelper'
 import Response from '@/api/Response'
 import * as Run from '@/api/SaphyrRun'
 import build from '@/api/ApiBuilder'
-import config from '@/api/config'
+import config from '@/api/Config'
 
 describe('Run', () => {
   let failedResponse, chipBarcode, run
