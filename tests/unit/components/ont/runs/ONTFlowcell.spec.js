@@ -1,6 +1,6 @@
 import ONTFlowcell from '@/components/ont/runs/ONTFlowcell'
 import { mount, createTestingPinia } from '@support/testHelper'
-import { describe } from 'vitest'
+import { describe, expect } from 'vitest'
 import { useOntRunsStore } from '@/stores/ontRuns'
 
 /**
@@ -70,7 +70,14 @@ describe('ONTFlowcell', () => {
       })
     })
 
-    it('#mapState', () => {
+    it('#mapState', async () => {
+      ontFlowcell.flowCellValidationState = {
+        statusBarcode: 'Valid',
+        statusId: 'Valid',
+        errorBarcode: '',
+        errorId: '',
+        state: 'Success',
+      }
       expect(ontFlowcell.flowcellId).toBeDefined()
       expect(ontFlowcell.flowcellId).toEqual('ABC123')
       expect(ontFlowcell.poolTubeBarcode).toBeDefined()

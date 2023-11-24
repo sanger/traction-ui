@@ -5,6 +5,7 @@ import InstrumentFlowcellLayout from '@/config/InstrumentFlowcellLayout'
 import { Data, createPinia, setActivePinia } from '@support/testHelper'
 import Response from '@/api/Response'
 import { beforeEach, describe } from 'vitest'
+import { flowCellType } from '@/stores/utilities/flowCell'
 
 describe('useOntRunsStore', () => {
   beforeEach(() => {
@@ -18,7 +19,7 @@ describe('useOntRunsStore', () => {
     it('should have an intialized state for currentrRunObj on initial load', () => {
       const store = useOntRunsStore()
       expect(store.currentRun).toEqual({
-        flowcell_attributes: [],
+        flowcell_attributes: [{ ...flowCellType }],
         id: 'new',
         instrument_name: null,
         state: null,
@@ -74,7 +75,7 @@ describe('useOntRunsStore', () => {
           id: 'new',
           instrument_name: null,
           state: null,
-          flowcell_attributes: [],
+          flowcell_attributes: [{ ...flowCellType }],
         }
         store.newRun()
         expect(store.currentRun).toEqual(newRun)
@@ -107,6 +108,7 @@ describe('useOntRunsStore', () => {
           data: {
             data: {
               type: 'runs',
+              id: 1,
               attributes: {
                 ont_instrument_id: 1,
                 state: 'pending',
@@ -241,6 +243,7 @@ describe('useOntRunsStore', () => {
         store.setPoolTubeBarcode(obj)
         expect(store.currentRun.flowcell_attributes.length).toEqual(1)
         expect(store.currentRun.flowcell_attributes[0]).toEqual({
+          ...flowCellType,
           tube_barcode: 'TRAC-A-1',
           position: '1',
         })
@@ -252,6 +255,7 @@ describe('useOntRunsStore', () => {
         store.setPoolTubeBarcode(obj)
         expect(store.currentRun.flowcell_attributes.length).toEqual(1)
         expect(store.currentRun.flowcell_attributes[0]).toEqual({
+          ...flowCellType,
           tube_barcode: 'TRAC-A-2',
           position: '1',
         })
@@ -274,6 +278,7 @@ describe('useOntRunsStore', () => {
         store.setFlowcellId(obj)
         expect(store.currentRun.flowcell_attributes.length).toEqual(1)
         expect(store.currentRun.flowcell_attributes[0]).toEqual({
+          ...flowCellType,
           flowcell_id: 'flowcell1',
           position: '1',
         })
@@ -285,6 +290,7 @@ describe('useOntRunsStore', () => {
         store.setFlowcellId(obj)
         expect(store.currentRun.flowcell_attributes.length).toEqual(1)
         expect(store.currentRun.flowcell_attributes[0]).toEqual({
+          ...flowCellType,
           flowcell_id: 'flowcell1updated',
           position: '1',
         })

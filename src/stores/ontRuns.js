@@ -3,11 +3,42 @@ import { handleResponse } from '@/api/ResponseHelper'
 import useRootStore from '@/stores'
 import useOntRootStore from '@/stores/ontRoot'
 import store from '@/store'
+import { flowCellType } from '@/stores/utilities/flowCell'
 
+function createPayload(run) {
+  const ontRootStore = useOntRootStore()
+  const existingInstruments = ontRootStore.instruments
+  const instrument_id = existingInstruments.find((i) => i.name == run.instrument_name).id
+
+  //TODO: This need to be refactored to use the Pinia once ont/ppols is migrated
+  const existingPools = store.getters['traction/ont/pools/pools']
+
+  const flowcell_attributes = run.flowcell_attributes
+    .filter((fc) => fc.flowcell_id && fc.tube_barcode)
+    .map((fc) => {
+      const pool = existingPools.find((p) => p.barcode == fc.tube_barcode)
+      const pool_id = pool ? pool.id : ''
+
+      return { ...fc, ...{ ont_pool_id: pool_id } }
+    })
+
+  const runPayload = {
+    data: {
+      type: 'runs',
+      id: run.id,
+      attributes: {
+        ont_instrument_id: instrument_id,
+        state: run.state,
+        flowcell_attributes: flowcell_attributes,
+      },
+    },
+  }
+  return runPayload
+}
 export const useOntRunsStore = defineStore('ontRuns', {
   state: () => ({
     currentRun: {
-      flowcell_attributes: [],
+      flowcell_attributes: [flowCellType],
       id: 'new',
       state: null,
       instrument_name: null,
@@ -18,6 +49,9 @@ export const useOntRunsStore = defineStore('ontRuns', {
       const rootStore = useRootStore()
       return rootStore.api.traction.ont.runs
     },
+    getFlowCell: (state) => (position) => {
+      return state.currentRun.flowcell_attributes.find((fc) => fc.position == position)
+    },
   },
   actions: {
     newRun() {
@@ -25,75 +59,15 @@ export const useOntRunsStore = defineStore('ontRuns', {
         id: 'new',
         instrument_name: null,
         state: null,
-        flowcell_attributes: [],
+        flowcell_attributes: [flowCellType],
       }
     },
     async createRun() {
-      const ontRootStore = useOntRootStore()
-      const run = this.currentRun
-      const request = this.runRequest
-
-      const existingInstruments = ontRootStore.instruments
-      const instrument_id = existingInstruments.find((i) => i.name == run.instrument_name).id
-
-      //TODO: This need to be refactored to use the Pinia once ont/ppols is migrated
-      const existingPools = store.getters['traction/ont/pools/pools']
-
-      const flowcell_attributes = run.flowcell_attributes
-        .filter((fc) => fc.flowcell_id && fc.tube_barcode)
-        .map((fc) => {
-          const pool = existingPools.find((p) => p.barcode == fc.tube_barcode)
-          const pool_id = pool ? pool.id : ''
-          return { ...fc, ...{ ont_pool_id: pool_id } }
-        })
-
-      const runPayload = {
-        data: {
-          type: 'runs',
-          attributes: {
-            ont_instrument_id: instrument_id,
-            state: run.state,
-            flowcell_attributes: flowcell_attributes,
-          },
-        },
-      }
-
-      const promise = request.create({ data: runPayload })
+      const promise = this.runRequest.create({ data: createPayload(this.currentRun) })
       return await handleResponse(promise)
     },
     async updateRun() {
-      const run = this.currentRun
-      const request = this.runRequest
-
-      const ontRootStore = useOntRootStore()
-      const existingInstruments = ontRootStore.instruments
-      const instrument_id = existingInstruments.find((i) => i.name == run.instrument_name).id
-
-      //TODO: This need to be refactored to use the Pinia once ont/ppols is migrated
-      const existingPools = store.getters['traction/ont/pools/pools']
-
-      const flowcell_attributes = run.flowcell_attributes
-        .filter((fc) => fc.flowcell_id && fc.tube_barcode)
-        .map((fc) => {
-          const pool = existingPools.find((p) => p.barcode == fc.tube_barcode)
-          const pool_id = pool ? pool.id : ''
-
-          return { ...fc, ...{ ont_pool_id: pool_id } }
-        })
-
-      const runPayload = {
-        data: {
-          type: 'runs',
-          id: run.id,
-          attributes: {
-            ont_instrument_id: instrument_id,
-            state: run.state,
-            flowcell_attributes: flowcell_attributes,
-          },
-        },
-      }
-
-      const promise = request.update(runPayload)
+      const promise = this.runRequest.update(createPayload(this.currentRun))
       return await handleResponse(promise)
     },
     async fetchRun(runId) {
@@ -140,27 +114,27 @@ export const useOntRunsStore = defineStore('ontRuns', {
     setState(state) {
       this.currentRun.state = state
     },
+    setNewFlowCell(position) {
+      this.currentRun.flowcell_attributes.push({
+        ...flowCellType,
+        position,
+      })
+    },
     setFlowcellId(obj) {
-      const exists = this.currentRun.flowcell_attributes.find(
-        (flowcell) => flowcell.position == obj.position,
-      )
-
-      if (exists) {
-        exists['flowcell_id'] = obj.$event
+      const flowCellObj = this.getFlowCell(obj.position)
+      if (flowCellObj) {
+        flowCellObj['flowcell_id'] = obj.$event
       } else {
-        const flowcell = { flowcell_id: obj.$event, position: obj.position }
+        const flowcell = { ...flowCellType, flowcell_id: obj.$event, position: obj.position }
         this.currentRun.flowcell_attributes.push(flowcell)
       }
     },
     setPoolTubeBarcode(obj) {
-      const exists = this.currentRun.flowcell_attributes.find(
-        (flowcell) => flowcell.position == obj.position,
-      )
-
-      if (exists) {
-        exists['tube_barcode'] = obj.barcode
+      const flowCellObj = this.getFlowCell(obj.position)
+      if (flowCellObj) {
+        flowCellObj['tube_barcode'] = obj.barcode
       } else {
-        const flowcell = { tube_barcode: obj.barcode, position: obj.position }
+        const flowcell = { ...flowCellType, tube_barcode: obj.barcode, position: obj.position }
         this.currentRun.flowcell_attributes.push(flowcell)
       }
     },
