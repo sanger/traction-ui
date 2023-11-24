@@ -14,15 +14,14 @@ import createRequest from '@/api/createRequest'
 
 /*
  * @param {*} config - A piece of json containing all the apis, resources and pipeline
- * @param {*} environment - The current node environment which should contain the variables for the base URLs which are sensitive
  * @returns {*} an object of apis
  */
-const build = ({ config, environment }) => {
+const build = ({ config }) => {
   return config.reduce((result, api) => {
     return {
       ...result,
-      // each api will be a property and we need to extract the baseURL from the environment
-      [api.name]: buildApi({ ...api, rootURL: environment[api.baseURL] }),
+      // each api will be a property
+      [api.name]: buildApi({ ...api }),
     }
   }, {})
 }
@@ -35,21 +34,31 @@ const build = ({ config, environment }) => {
  * @returns {*} an object which is a set of nested resources
  *
  */
-const buildApi = ({ apiNamespace, rootURL, resources, pipelines = [] }) => {
-  const apiResources = buildResources({ apiNamespace, rootURL, resources })
+const buildApi = ({ apiNamespace, rootURL, resources, pipelines = [], headers = {} }) => {
+  const apiResources = buildResources({ apiNamespace, rootURL, resources, headers })
 
   pipelines.forEach(({ name, resources }) => {
-    apiResources[name] = buildResources({ apiNamespace, rootURL, resources, pipeline: name })
+    apiResources[name] = buildResources({
+      apiNamespace,
+      rootURL,
+      resources,
+      pipeline: name,
+      headers,
+    })
   })
 
   return apiResources
 }
 
 /*
+ * @param {String} apiNamespace - the namespace of the API e.g. v1
+ * @param {String} rootURL -  the base URL of the API
+ * @param [*] resources - a list of end points
  * @param {String} pipeline - e.g. Pacbio. Useful for nesting. e.g. traction.pacbio.requests
- * @returns {*} - an object which is a set of resources. Each resource will be a callabke request
+ * @param {String} headers - headers for the request
+ * @returns {*} - an object which is a set of resources. Each resource will be a callable request
  */
-const buildResources = ({ apiNamespace, rootURL, resources, pipeline = null }) => {
+const buildResources = ({ apiNamespace, rootURL, resources, pipeline = null, headers }) => {
   return resources.reduce((result, { name, resources = [] }) => {
     return {
       ...result,
@@ -59,6 +68,7 @@ const buildResources = ({ apiNamespace, rootURL, resources, pipeline = null }) =
         rootURL,
         resource: pipeline ? `${pipeline}/${name}` : name,
         resources,
+        headers,
       }),
     }
   }, {})
@@ -68,8 +78,8 @@ const buildResources = ({ apiNamespace, rootURL, resources, pipeline = null }) =
  * @param [*] - resources. A list of resources that belong to the request. e.g. runs can have plates and wells.
  * @returns {Request} - a request
  */
-const buildRequest = ({ apiNamespace, rootURL, resource, resources }) => {
-  const request = createRequest({ apiNamespace, rootURL, resource })
+const buildRequest = ({ apiNamespace, rootURL, resource, resources, headers }) => {
+  const request = createRequest({ apiNamespace, rootURL, resource, headers })
 
   resources.forEach(({ name }) => {
     // the resources path will be a combination of the parent resource and the child resource e.g. runs/plates
@@ -77,6 +87,7 @@ const buildRequest = ({ apiNamespace, rootURL, resource, resources }) => {
       apiNamespace,
       rootURL,
       resource: `${request.resource}/${name}`,
+      headers,
     })
   })
 
