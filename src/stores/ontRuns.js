@@ -5,6 +5,15 @@ import useOntRootStore from '@/stores/ontRoot'
 import store from '@/store'
 import { flowCellType } from '@/stores/utilities/flowCell'
 
+/**
+ * 
+ * @param {*} run  the run object
+ * @returns {Object} payload for the create/update run request
+ * @field {Object} data - the payload for the request
+ * Note:-
+ * The payload returned doesn't have the id field as it is not required for create request
+ * and for update request the id field is added in the updateRun action
+ */
 function createPayload(run) {
   const ontRootStore = useOntRootStore()
   const existingInstruments = ontRootStore.instruments
@@ -25,7 +34,6 @@ function createPayload(run) {
   const runPayload = {
     data: {
       type: 'runs',
-      id: run.id,
       attributes: {
         ont_instrument_id: instrument_id,
         state: run.state,
@@ -67,7 +75,14 @@ export const useOntRunsStore = defineStore('ontRuns', {
       return await handleResponse(promise)
     },
     async updateRun() {
-      const promise = this.runRequest.update(createPayload(this.currentRun))
+      //Add id field to the payload for update
+      const payload = {
+        data: {
+          id: this.currentRun.id,
+          ...createPayload(this.currentRun).data,
+        },
+      }
+      const promise = this.runRequest.update(payload)
       return await handleResponse(promise)
     },
     async fetchRun(runId) {

@@ -108,7 +108,6 @@ describe('useOntRunsStore', () => {
           data: {
             data: {
               type: 'runs',
-              id: 1,
               attributes: {
                 ont_instrument_id: 1,
                 state: 'pending',
