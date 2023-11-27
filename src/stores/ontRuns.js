@@ -6,7 +6,7 @@ import store from '@/store'
 import { flowCellType } from '@/stores/utilities/flowCell'
 
 /**
- * 
+ *
  * @param {*} run  the run object
  * @returns {Object} payload for the create/update run request
  * @field {Object} data - the payload for the request
