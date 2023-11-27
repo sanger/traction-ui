@@ -16,9 +16,6 @@ jobs:
 
     steps:
       - uses: actions/checkout@v4
-      - name: Export node version
-        id: node_version
-        run: echo ::set-output name=NODE_VERSION::$(cat .nvmrc)
       - name: Setup node
         uses: actions/setup-node@v4
         with:
