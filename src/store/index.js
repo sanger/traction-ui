@@ -59,7 +59,7 @@
  */
 
 import { createStore } from 'vuex'
-import Api from '@/api'
+import config from '@/api/Config'
 import build from '@/api/ApiBuilder'
 import PrinterList from '@/config/PrinterList'
 import traction from '@/store/traction'
@@ -68,7 +68,7 @@ import PlateMap from '@/config/PlateMap'
 
 const store = createStore({
   state: {
-    api: build({ config: Api.Config, environment: import.meta.env }),
+    api: build({ config }),
     printers: PrinterList,
     plateMap: PlateMap,
   },

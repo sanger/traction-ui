@@ -1,4 +1,4 @@
-import Api from '@/api'
+import config from '@/api/Config'
 import build from '@/api/ApiBuilder'
 import PrinterList from '@/config/PrinterList'
 import PlateMap from '@/config/PlateMap'
@@ -6,7 +6,7 @@ import { defineStore } from 'pinia'
 
 const useRootStore = defineStore('root', {
   state: () => ({
-    api: build({ config: Api.Config, environment: import.meta.env }),
+    api: build({ config }),
     printers: PrinterList,
     plateMap: PlateMap,
   }),

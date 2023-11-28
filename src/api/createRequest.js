@@ -83,7 +83,8 @@ const buildQuery = ({ page = {}, filter = {}, include = '', fields = {} } = {}) 
  * @param {Object} headers - these will default to json api headers
  * @returns {Object} instance of request
  */
-const createRequest = ({ rootURL, apiNamespace, resource, headers = defaultHeaders }) => {
+const createRequest = ({ rootURL, apiNamespace, resource, headers = {} }) => {
+  headers = { ...defaultHeaders, ...headers }
   const baseURL = `${rootURL}/${apiNamespace}`
   const api = axios.create({ baseURL, headers })
 

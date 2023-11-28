@@ -2,7 +2,7 @@ import { Data } from '@support/testHelper'
 import Response from '@/api/Response'
 import * as Run from '@/api/SaphyrRun'
 import build from '@/api/ApiBuilder'
-import Api from '@/api'
+import config from '@/api/Config'
 
 describe('Run', () => {
   let failedResponse, chipBarcode, run
@@ -227,7 +227,7 @@ describe('Run', () => {
       let api
 
       beforeEach(() => {
-        api = build({ config: Api.Config, environment: import.meta.env })
+        api = build({ config })
         api.traction.saphyr.runs.create = vi.fn()
         api.traction.saphyr.chips.create = vi.fn()
         api.traction.saphyr.flowcells.create = vi.fn()
@@ -293,7 +293,7 @@ describe('Run', () => {
       let responses, api, runResponse, chipResponse
 
       beforeEach(() => {
-        api = build({ config: Api.Config, environment: import.meta.env })
+        api = build({ config })
         runResponse = new Response(Data.CreateRun)
         chipResponse = new Response(Data.CreateChip)
         responses = [runResponse, chipResponse]
@@ -318,7 +318,7 @@ describe('Run', () => {
       let api
 
       beforeEach(() => {
-        api = build({ config: Api.Config, environment: import.meta.env })
+        api = build({ config })
         api.traction.saphyr.runs.destroy = vi.fn()
       })
 
@@ -338,7 +338,7 @@ describe('Run', () => {
     let request, payload
 
     beforeEach(() => {
-      const api = build({ config: Api.Config, environment: import.meta.env })
+      const api = build({ config })
       request = api.traction.saphyr
       request.update = vi.fn()
 
@@ -377,7 +377,7 @@ describe('Run', () => {
       run.chip.flowcells[0] = { position: 1, library: { baroce: 'TRAC-1' } }
       run.chip.flowcells[1] = { position: 2, library: { baroce: 'TRAC-2' } }
 
-      const api = build({ config: Api.Config, environment: import.meta.env })
+      const api = build({ config })
       request = api.traction.saphyr
 
       request.runs.update = vi.fn()
