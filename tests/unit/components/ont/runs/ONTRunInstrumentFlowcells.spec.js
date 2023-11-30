@@ -1,34 +1,59 @@
 import ONTRunInstrumentFlowcells from '@/components/ont/runs/ONTRunInstrumentFlowcells'
-import { mount, store, router, Data } from '@support/testHelper'
+import { mount, router, Data, createTestingPinia } from '@support/testHelper'
 import { beforeEach, describe, expect, it } from 'vitest'
 import Response from '@/api/Response'
 import InstrumentFlowcellLayout from '@/config/InstrumentFlowcellLayout'
+import { useOntRunsStore } from '@/stores/ontRuns'
+
+/**
+ * Helper method for mounting a component with a mock instance of pinia, with the given props.
+ * This method also returns the wrapper and the store object for further testing.
+ *
+ * @param {*} - params to be passed to the createTestingPinia method for creating a mock instance of pinia
+ * which include
+ * state - initial state of the ontRuns store.
+ * rootState - initial state of the ontRoot store.
+ */
+function mountWithStore({ state = {}, rootState = {} } = {}) {
+  const wrapperObj = mount(ONTRunInstrumentFlowcells, {
+    global: {
+      plugins: [
+        createTestingPinia({
+          initialState: {
+            ontRuns: { ...state },
+            ontRoot: { resources: { ...rootState } },
+          },
+          stubActions: false,
+          plugins: [],
+        }),
+      ],
+      stubs: {
+        ONTFlowcell: true,
+      },
+    },
+    router,
+  })
+  const storeObj = useOntRunsStore()
+  return { wrapperObj, storeObj }
+}
 
 describe('ONTRunInstrumentFlowcells', () => {
   let wrapper, ontRunInstrumentFlowcell, mockInstruments, mockRun
 
   beforeEach(() => {
     mockInstruments = new Response(Data.OntInstruments).deserialize.instruments
-
-    const rawInstruments = new Response(Data.OntInstruments)._body.data
-    store.commit('traction/ont/setInstruments', rawInstruments)
-
     mockRun = {
       id: 'new',
       instrument_name: 'PC24B148',
       state: 'pending',
       flowcell_attributes: [],
     }
-    store.commit('traction/ont/runs/setCurrentRun', mockRun)
-
-    wrapper = mount(ONTRunInstrumentFlowcells, {
-      store,
-      router,
-      stubs: {
-        ONTFlowcell: true,
-      },
+    const { wrapperObj } = mountWithStore({
+      state: { currentRun: mockRun },
+      rootState: { instruments: mockInstruments },
     })
 
+    wrapper = wrapperObj
     ontRunInstrumentFlowcell = wrapper.vm
   })
 
@@ -39,26 +64,32 @@ describe('ONTRunInstrumentFlowcells', () => {
   })
 
   describe('#computed', () => {
-    it('#mapGetters', () => {
-      it('must have currentRun', () => {
-        expect(ontRunInstrumentFlowcell.currentRun).toEqual(mockRun)
-      })
+    it('must have currentRun', () => {
+      expect(ontRunInstrumentFlowcell.currentRun).toEqual(mockRun)
+    })
 
-      it('must have instruments', () => {
-        const expected = mockInstruments.map((i) => {
+    it('must have instruments', () => {
+      const expected = mockInstruments.map((i) => {
+        const instrumentConfig = InstrumentFlowcellLayout[i.instrument_type]
+        return {
+          ...i,
+          ...instrumentConfig,
+        }
+      })
+      expect(ontRunInstrumentFlowcell.instruments).toEqual(expected)
+    })
+
+    it('must have instrumentByName', () => {
+      const expected = mockInstruments
+        .map((i) => {
           const instrumentConfig = InstrumentFlowcellLayout[i.instrument_type]
           return {
             ...i,
             ...instrumentConfig,
           }
         })
-        expect(ontRunInstrumentFlowcell.instruments).toEqual(expected)
-      })
-
-      it('must have instrumentByName', () => {
-        const expected = mockInstruments.find((i) => i.name == 'PC24B148')
-        expect(ontRunInstrumentFlowcell.instrument).toEqual(expected)
-      })
+        .find((i) => i.name === mockRun.instrument_name)
+      expect(ontRunInstrumentFlowcell.instrument).toEqual(expected)
     })
   })
 
