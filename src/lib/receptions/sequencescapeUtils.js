@@ -2,47 +2,7 @@
 // when the pipeline-specific receptions are retired. While this change results
 // in temporary code duplication, it allows for complete decoupling of old and
 // new paths, greatly simplifying the removal.
-import { handleResponse } from '@/api/ResponseHelper'
-
-/**
- * Request parameters for retrieval of labware from Sequencescape v2 API
- */
-const labwareRequestConfig = {
-  include: 'receptacles.aliquots.sample.sample_metadata,receptacles.aliquots.study',
-  fields: {
-    plates: 'labware_barcode,receptacles',
-    tubes: 'labware_barcode,receptacles',
-    wells: 'position,aliquots',
-    receptacles: 'aliquots',
-    samples: 'sample_metadata,name,uuid',
-    sample_metadata: 'sample_common_name',
-    studies: 'uuid',
-    aliquots: 'study,library_type,sample',
-  },
-}
-
-/**
- * Sends a request to the Sequencescape V2 API and return a set of labware by
- * their barcodes
- *
- * The labware will be converted from json api to nested structure labware: { receptacles: ... }
- * will throw any errors returned from the API
- * @param { get: Function } request Request object for the Sequencescape V2
- * labware API
- * @param { String } barcodes List of comma separated barcodes to look up
- * @returns { Array<Object> } Array of normalized labware objects
- */
-const getLabware = async (request, barcodes) => {
-  const promise = request.get({ filter: { barcode: barcodes }, ...labwareRequestConfig })
-
-  const { success, data: { data, included = [] } = {}, errors } = await handleResponse(promise)
-
-  if (success) {
-    return { data, included }
-  } else {
-    throw new Error(`Problem talking to Sequencescape: ${errors}`)
-  }
-}
+import { handleResponse } from '@/api/ResponseHelper.js'
 
 /**
  * Makes a request to the Sequencescape v2 API to retrieve the labware
@@ -52,18 +12,28 @@ const getLabware = async (request, barcodes) => {
  * @param { sequencescape: { labware: { get: Function } } } requests The API requests store ($store.getters.api)
  * @param { Array<String> } barcodes Array of barcodes to look up
  * @param { Object } requestOptions Additional request parameters, will over-ride any
+ * @param { Object } labwareTypes Object containing the labware types and their attributes
+ * @param { Object } labwareRequestConfig Request parameters for retrieval of labware from Sequencescape v2 API
  * imported from Sequencescape if present
  * @returns { Object } Reception object ready for import into traction includes attributes and foundBarcodes
  *
  */
-const labwareForReception = async ({ requests, barcodes, requestOptions }) => {
+const fetchLabwareFromSequencescape = async ({
+  requests,
+  barcodes,
+  requestOptions,
+  labwareTypes,
+  labwareRequestConfig,
+}) => {
   const request = requests.sequencescape.labware
-  const { data, included } = await getLabware(request, barcodes.join(','))
+  const { data, included } = await getLabware(request, barcodes.join(','), labwareRequestConfig)
 
-  const containerAttributes = transformLabwareList({
+  //Transforms the provided list of Sequencescape labware into containerAttributes
+  const containerAttributes = transformAllLabware({
     data,
     included,
     requestOptions,
+    labwareTypes,
   })
 
   // find all the barcodes in the containerAttributes by type - plates or tubes
@@ -80,82 +50,26 @@ const labwareForReception = async ({ requests, barcodes, requestOptions }) => {
 }
 
 /**
+ * Sends a request to the Sequencescape V2 API and return a set of labware by
+ * their barcodes
  *
- * @param { Object } labware Labware object from Sequencescape
- * @param { Array<Object> } included Included objects from Sequencescape
- * @param { Object } requestOptions Additional request parameters, will over-ride any
- * @returns { Object } plates_attributes object ready for import into traction
+ * The labware will be converted from json api to nested structure labware: { receptacles: ... }
+ * will throw any errors returned from the API
+ * @param { get: Function } request Request object for the Sequencescape V2 labware API
+ * @param { String } barcodes List of comma separated barcodes to look up
+ * @param { Object } labwareRequestConfig Request parameters for retrieval of labware from Sequencescape v2 API
+ * @returns { Array<Object> } Array of normalized labware objects
  */
-const transformPlate = ({ labware, included, requestOptions }) => {
-  return {
-    barcode: labware.attributes.labware_barcode.machine_barcode,
-    // for the receptacle data, we need to map over the wells and build a request for each
-    wells_attributes: labware.relationships.receptacles.data
-      .map((receptacle) => {
-        // find the well in the included data
-        const well = findIncluded({ included, data: receptacle, type: 'wells' })
+const getLabware = async (request, barcodes, labwareRequestConfig) => {
+  const promise = request.get({ filter: { barcode: barcodes }, ...labwareRequestConfig })
 
-        // if the well doesn't have any aliquots, we can't import it
-        if (well.relationships.aliquots.data.length === 0) {
-          return
-        }
+  const { success, data: { data, included = [] } = {}, errors } = await handleResponse(promise)
 
-        // get the aliquot, study, sample and sample_metadata from the included data
-        const { aliquot, study, sample, sample_metadata } = getIncludedData({
-          labware: well,
-          included,
-        })
-
-        return {
-          position: well.attributes.position.name,
-          // build the request and sample objects
-          ...buildRequestAndSample({ aliquot, study, sample, sample_metadata, requestOptions }),
-        }
-        // filter out any wells that don't have aliquots
-      })
-      .filter((item) => item !== undefined),
+  if (success) {
+    return { data, included }
+  } else {
+    throw new Error(`Problem talking to Sequencescape: ${errors}`)
   }
-}
-
-/**
- *
- * @param {Object} labware Labware object from Sequencescape
- * @param {Array<Object>} included Included objects from Sequencescape
- * @param {Object} requestOptions Additional request parameters, will over-ride any
- * @returns {Object} tubes_attributes object ready for import into traction
- */
-const transformTube = ({ labware, included, requestOptions }) => {
-  // find the receptacle in the included data
-  const receptacle = findIncluded({
-    included,
-    data: labware.relationships.receptacles.data[0],
-    type: 'receptacles',
-  })
-
-  // get the aliquot, study, sample and sample_metadata from the included data
-  const { aliquot, study, sample, sample_metadata } = getIncludedData({
-    labware: receptacle,
-    included,
-  })
-
-  return {
-    barcode: labware.attributes.labware_barcode.machine_barcode,
-    // build the request and sample objects
-    ...buildRequestAndSample({ aliquot, study, sample, sample_metadata, requestOptions }),
-  }
-}
-
-const labwareTypes = {
-  plates: {
-    type: 'plates',
-    attributes: 'plates_attributes',
-    transformFunction: transformPlate,
-  },
-  tubes: {
-    type: 'tubes',
-    attributes: 'tubes_attributes',
-    transformFunction: transformTube,
-  },
 }
 
 /**
@@ -164,9 +78,10 @@ const labwareTypes = {
  * @param { Array<Object> } data Array of Sequencescape labware objects
  * @param { Array<Object> } included Array of Sequencescape included objects
  * @param { Object } requestOptions Additional request parameters
+ * @param { Object } labwareTypes Object containing the labware types and their attributes
  * @returns { Object } Object of containerAttributes for import into traction
  */
-const transformLabwareList = ({ data, included, requestOptions } = {}) => {
+const transformAllLabware = ({ data, included, requestOptions, labwareTypes } = {}) => {
   return data.reduce((result, labware) => {
     // find the labware type
     const labwareType = labwareTypes[labware.type]
@@ -250,10 +165,4 @@ const buildRequestAndSample = ({ aliquot, study, sample, sample_metadata, reques
   }
 }
 
-const Sequencescape = {
-  labwareForReception,
-}
-
-export { labwareForReception }
-
-export default Sequencescape
+export { fetchLabwareFromSequencescape, getIncludedData, buildRequestAndSample }

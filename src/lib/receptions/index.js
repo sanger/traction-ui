@@ -1,9 +1,6 @@
-import * as SamplesExtractionV2 from './SamplesExtractionV2'
-import * as SequencescapeV2 from './SequencescapeV2'
-
-// DEPRECATE-DPL-877
-import * as SequencescapeV1 from './SequencescapeV1'
-import * as SamplesExtractionV1 from './SamplesExtractionV1'
+import * as SamplesExtraction from './SamplesExtraction.js'
+import * as Sequencescape from './Sequencescape.js'
+import * as SequencescapeTubes from './SequencescapeTubes.js'
 
 const defaultRequestOptions = () => ({
   library_type: undefined,
@@ -25,30 +22,28 @@ const ReceptionTypes = {
     text: 'Samples Extraction',
     value: 'SamplesExtraction',
   },
+  SequencescapeTubes:{
+    name: 'sequencescape-tubes',
+    text: 'Sequencescape Tubes',
+    value: 'SequencescapeTubes',
+  },
+  
 }
 
 // TO MODIFY - remove versions once dpl_877_reception_request is enabled by default
 const Receptions = {
   options: Object.values(ReceptionTypes),
   Sequencescape: {
-    v1: {
-      ...ReceptionTypes.Sequencescape,
-      importFunction: SequencescapeV1.labwareForReception,
-    },
-    v2: {
-      ...ReceptionTypes.Sequencescape,
-      importFunction: SequencescapeV2.labwareForReception,
-    },
+    ...ReceptionTypes.Sequencescape,
+    fetchFunction: Sequencescape.fetchLabwareForReception,
   },
   SamplesExtraction: {
-    v1: {
-      ...ReceptionTypes.SamplesExtraction,
-      importFunction: SamplesExtractionV1.labwareForReception,
-    },
-    v2: {
-      ...ReceptionTypes.SamplesExtraction,
-      importFunction: SamplesExtractionV2.labwareForReception,
-    },
+    ...ReceptionTypes.SamplesExtraction,
+    fetchFunction: SamplesExtraction.fetchLabwareForReception,
+  },
+  SequencescapeTubes: {
+    ...ReceptionTypes.SequencescapeTubes,
+    fetchFunction: SequencescapeTubes.fetchLabwareForReception,
   },
 }
 

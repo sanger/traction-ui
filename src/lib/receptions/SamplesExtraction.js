@@ -34,7 +34,7 @@ const getLabware = async (request, barcodes) => {
  * @returns { Object } Reception object ready for import into traction including attributes and foundBarcodes
  *
  */
-const labwareForReception = async ({ requests, barcodes, requestOptions }) => {
+const fetchLabwareForReception = async ({ requests, barcodes, requestOptions }) => {
   const labwareList = await getLabware(requests.sampleExtraction.assets, barcodes.join(','))
   const containerAttributes = transformLabwareList({
     labwareList,
@@ -77,9 +77,9 @@ const transformLabware = ({ labware, requestOptions }) => ({
 })
 
 const SamplesExtraction = {
-  labwareForReception,
+  fetchLabwareForReception,
 }
 
-export { labwareForReception }
+export { fetchLabwareForReception }
 
 export default SamplesExtraction

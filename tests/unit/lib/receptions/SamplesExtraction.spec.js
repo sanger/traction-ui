@@ -1,4 +1,4 @@
-import { labwareForReception } from '@/lib/receptions/SamplesExtractionV2'
+import { labwareForReception } from '@/lib/receptions/SamplesExtraction'
 import { Data, store } from '@support/testHelper'
 
 describe('SamplesExtraction', () => {

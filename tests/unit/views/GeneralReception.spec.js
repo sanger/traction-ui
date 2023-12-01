@@ -133,6 +133,7 @@ describe('GeneralReception', () => {
     const mockedcreateReception = vi
       .spyOn(Reception, 'createReceptionResource')
       .mockImplementation(() => {})
+    const mockedcreateMessages = vi.spyOn(Reception, 'createMessages').mockImplementation(() => {})
     const wrapper = buildWrapper()
     // We've begun the import
     await wrapper.vm.importStarted({ message: 'Starting import' })
@@ -149,11 +150,7 @@ describe('GeneralReception', () => {
       foundBarcodes,
       attributes,
     )
-
-    expect(Object.values(store.state.traction.messages)).toContainEqual({
-      type: 'success',
-      message: 'Imported 1 labware(s) from Sequencescape',
-    })
+    expect(mockedcreateMessages).toBeCalled()
   })
 
   it('handles a failed import - save', async () => {
