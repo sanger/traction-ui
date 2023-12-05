@@ -148,6 +148,45 @@
           />
         </traction-field-group>
       </div>
+      <div v-if="printEnabled">
+        <traction-heading level="4" :show-border="true">Print labels</traction-heading>
+        <traction-field-group
+          label=""
+          attribute="printLabels"
+          for="printLabels"
+          description="Print labels for the imported labware"
+          layout="spacious"
+        >
+          <traction-button
+            id="printLabels"
+            full-width
+            theme="create"
+            data-action="print-labels"
+            :disabled="isDisabled"
+            @click="fetchLabware"
+          >
+            Create Print labels
+          </traction-button>
+        </traction-field-group>
+        <div v-if="displayPrintOptions">
+          <fieldset>
+            <BarcodeIcon class="float-left mr-2 mt-3" />
+            <traction-heading level="3" show-border>Barcodes</traction-heading>
+            <traction-muted-text>A list of barcodes to create labels for</traction-muted-text>
+            <div class="mt-2">
+              <textarea
+                id="barcode-input"
+                v-model="labwareData.foundBarcodes"
+                class="w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-sdb-100 focus:border-sdb-100 disabled:opacity-75 disabled:bg-gray-200 disabled:cursor-not-allowed"
+                placeholder="Please scan the barcodes"
+                required
+                rows="6"
+                max-rows="10"
+              />
+            </div>
+          </fieldset>
+        </div>
+      </div>
       <div class="bg-gray-100 rounded p-3">
         <traction-heading level="4" :show-border="true"> Summary </traction-heading>
         <div class="flex flex-col w-full">
@@ -189,6 +228,7 @@ import TractionHeading from '../components/TractionHeading.vue'
 import LibraryTypeSelect from '@/components/shared/LibraryTypeSelect'
 import DataTypeSelect from '@/components/shared/DataTypeSelect'
 import { defaultRequestOptions } from '@/lib/receptions'
+import BarcodeIcon from '@/icons/BarcodeIcon.vue'
 
 // We don't expect the modal to display without a message. If we end up in this
 // state then something has gone horribly wrong.
@@ -202,6 +242,7 @@ export default {
     TractionHeading,
     LibraryTypeSelect,
     DataTypeSelect,
+    BarcodeIcon,
   },
   props: {
     receptions: {
@@ -221,6 +262,10 @@ export default {
     requestOptions: defaultRequestOptions(),
     barcodes: '',
     modalState: defaultModal(),
+    labwareData: {
+      foundBarcodes: new Set(),
+      attributes: {},
+    },
   }),
   computed: {
     reception: ({ receptions, source }) => receptions[source],
@@ -233,29 +278,45 @@ export default {
     barcodeCount: ({ barcodeArray }) => barcodeArray.length,
     presentRequestOptions: ({ requestOptions }) =>
       Object.fromEntries(Object.entries(requestOptions).filter(([, v]) => v)),
+    printEnabled: ({ source }) => source === 'SequencescapeTubes',
+    displayPrintOptions: ({ source, labwareData }) =>
+      source === 'SequencescapeTubes' && labwareData.foundBarcodes.size > 0,
   },
   methods: {
-    importStarted({ message }) {
+    fetchStarted({ message }) {
       this.showModal(message)
     },
     clearModal() {
       this.modalState = defaultModal()
+      this.labwareData = {
+        foundBarcodes: new Set(),
+        attributes: {},
+      }
     },
     showModal(message) {
       this.modalState = { visible: true, message }
     },
-    importFailed({ message }) {
+    handleBarcode() {},
+    fetchFailed({ message }) {
       this.clearModal()
       this.showAlert(message, 'danger')
     },
-    async importLoaded({ foundBarcodes, attributes }) {
-      this.showModal(`Creating ${foundBarcodes.size} labware(s) for ${this.reception.text}`)
+    async importLabware() {
+      if (this.labwareData.foundBarcodes.size === 0) {
+        await this.fetchLabware()
+        if (this.labwareData.foundBarcodes.size === 0) {
+          return
+        }
+      }
+      this.showModal(
+        `Creating ${this.labwareData.foundBarcodes.size} labware(s) for ${this.reception.text}`,
+      )
 
       try {
         const response = await createReceptionResource(
           this.receptionRequest,
-          foundBarcodes,
-          attributes,
+          this.labwareData.foundBarcodes,
+          this.labwareData.attributes,
         )
         const messages = createMessages({
           barcodes: this.barcodeArray,
@@ -273,24 +334,24 @@ export default {
       }
       this.clearModal()
     },
-    async importLabware() {
-      this.importStarted({
+
+    async fetchLabware() {
+      this.fetchStarted({
         message: `Fetching ${this.barcodeCount} items from ${this.reception.text}`,
       })
       try {
-        const { foundBarcodes, attributes } = await this.reception.importFunction({
+        const { foundBarcodes, attributes } = await this.reception.fetchFunction({
           requests: this.api,
           barcodes: this.barcodeArray,
           requestOptions: this.presentRequestOptions,
         })
-
-        this.importLoaded({
+        this.labwareData = {
           foundBarcodes,
           attributes,
-        })
+        }
       } catch (e) {
         console.error(e)
-        this.importFailed({
+        this.fetchFailed({
           message: e.toString(),
         })
       }
@@ -301,6 +362,10 @@ export default {
       this.requestOptions = defaultRequestOptions()
       this.barcodes = ''
       this.resetRequestOptions()
+      this.labwareData = {
+        foundBarcodes: new Set(),
+        attributes: {},
+      }
     },
     resetRequestOptions() {
       this.requestOptions = defaultRequestOptions()

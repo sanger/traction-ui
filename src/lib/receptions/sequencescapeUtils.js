@@ -165,4 +165,4 @@ const buildRequestAndSample = ({ aliquot, study, sample, sample_metadata, reques
   }
 }
 
-export { fetchLabwareFromSequencescape, getIncludedData, buildRequestAndSample }
+export { fetchLabwareFromSequencescape, getIncludedData, buildRequestAndSample,findIncluded }

@@ -1,6 +1,6 @@
 import { Data, store } from '@support/testHelper.js'
 import { vi } from 'vitest'
-import { fetchLabwareFromSequencescape } from '@/lib/receptions/sequencescapeUtils.js'
+import { fetchLabwareFromSequencescape, findIncluded } from '@/lib/receptions/sequencescapeUtils.js'
 
 const retAttributes = {
   plates_attributes: [
@@ -122,4 +122,15 @@ describe('sequencescapeUtils', () => {
       )
     })
   })
+  describe('#findIncluded', () => {
+    it('returns the included item', () => {
+      const { data } = Data.SequencescapeLabware
+      const receptacle = data.data[0].relationships.receptacles.data[0]
+      const res = findIncluded({ included: data.included, data: receptacle, type: 'wells' })
+      const expected = data.included.find((item) => item.id === receptacle.id)
+      expect(res).toEqual(expected)
+    })
+  })
+
+  
 })

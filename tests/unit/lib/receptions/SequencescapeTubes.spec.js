@@ -1,9 +1,9 @@
-import { fetchLabwareForReception } from '@/lib/receptions/Sequencescape'
+import { fetchLabwareForReception } from '@/lib/receptions/SequencescapeTubes'
 import { Data, store } from '@support/testHelper'
 
-describe('Sequencescape', () => {
+describe('SequencescapeTubes', () => {
   describe('#fetchLabwareForReception', () => {
-    const barcodes = ['DN9000002A', '3980000001795']
+    const barcodes = ['3980000001795']
     const failedResponse = {
       data: { errors: [{ title: 'error1', detail: 'There was an error.' }] },
       status: 500,
@@ -33,7 +33,6 @@ describe('Sequencescape', () => {
         include: 'receptacles.aliquots.sample.sample_metadata,receptacles.aliquots.study',
         fields: {
           aliquots: 'study,library_type,sample',
-          plates: 'labware_barcode,receptacles',
           receptacles: 'aliquots',
           sample_metadata: 'sample_common_name',
           samples: 'sample_metadata,name,uuid',
@@ -43,45 +42,12 @@ describe('Sequencescape', () => {
         },
       })
 
-      expect(foundBarcodes).toEqual(new Set(['DN9000002A', '3980000001795']))
+      expect(foundBarcodes).toEqual(new Set(['NT1O']))
       expect(attributes).toEqual({
         source: 'traction-ui.sequencescape',
-        plates_attributes: [
-          {
-            barcode: 'DN9000002A',
-            wells_attributes: [
-              {
-                position: 'A1',
-                request: {
-                  external_study_id: '5b173660-94c9-11ec-8c89-acde48001122',
-                  library_type: 'Example',
-                  cost_code: 'aCostCodeExample',
-                },
-                sample: {
-                  external_id: 'd5008026-94c9-11ec-a9e3-acde48001122',
-                  name: '2STDY1',
-                  species: 'Dragon',
-                },
-              },
-              {
-                position: 'B1',
-                request: {
-                  external_study_id: '5b173660-94c9-11ec-8c89-acde48001122',
-                  library_type: 'Example',
-                  cost_code: 'aCostCodeExample',
-                },
-                sample: {
-                  external_id: 'd50bad48-94c9-11ec-a9e3-acde48001122',
-                  name: '2STDY2',
-                  species: 'Unicorn',
-                },
-              },
-            ],
-          },
-        ],
         tubes_attributes: [
           {
-            barcode: '3980000001795',
+            barcode: 'NT1O',
             request: {
               external_study_id: '5b173660-94c9-11ec-8c89-acde48001122',
               library_type: 'Example',
