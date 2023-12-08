@@ -17,6 +17,7 @@
             class="inline-block w-full"
             :options="receptions.options"
             data-type="source-list"
+            @update:modelValue="handleSourceChange"
           />
         </traction-field-group>
       </div>
@@ -127,7 +128,7 @@
         </div>
       </div>
     </div>
-    <div class="w-1/2 space-y-8">
+    <div class="w-1/2 space-y-4">
       <div class="flex flex-col w-full">
         <traction-heading level="4" :show-border="true">Scan barcodes</traction-heading>
         <traction-field-group
@@ -140,51 +141,45 @@
           <textarea
             id="barcodes"
             v-model="barcodes"
-            placeholder="Scan barcodes to import..."
+            placeholder="Scan barcodes to print/import..."
             rows="4"
             max-rows="10"
             name="barcodes"
             class="w-full text-base py-2 px-3 border border-gray-300 bg-white rounded-md"
+            @keypress.enter="fetchLabware"
+            @keyup.delete="handleBarcodeDeletion"
           />
         </traction-field-group>
       </div>
-      <div v-if="printEnabled">
+      <div v-if="printEnabled" id="print" class="p-2 bg-gray-100 rounded p-3">
         <traction-heading level="4" :show-border="true">Print labels</traction-heading>
-        <traction-field-group
-          label=""
-          attribute="printLabels"
-          for="printLabels"
-          description="Print labels for the imported labware"
-          layout="spacious"
-        >
-          <traction-button
-            id="printLabels"
-            full-width
-            theme="create"
-            data-action="print-labels"
-            :disabled="isDisabled"
-            @click="fetchLabware"
+        <div class="flex flex-row space-x-4 w-full">
+          <div class="flex flex-col w-1/2 text-left space-y-2">
+            <traction-label>Barcodes</traction-label>
+            <textarea
+              id="print-barcodes"
+              v-model="printBarcodes"
+              class="w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-sdb-100 focus:border-sdb-100 disabled:opacity-75 disabled:bg-gray-200 disabled:cursor-not-allowed"
+              rows="4"
+              disabled
+              max-rows="10"
+            />
+          </div>
+          <div class="flex flex-col text-left w-1/2 space-y-2">
+            <traction-label>Printers</traction-label>
+            <traction-select
+              id="printer-choice"
+              v-model="printerName"
+              :options="printerOptions"
+              value-field="text"
+              required
+            />
+          </div>
+        </div>
+        <div class="flex justify-end mt-3 w-full">
+          <traction-button id="print-button" class="grow" theme="print" @click="printLabels"
+            >Print Labels</traction-button
           >
-            Create Print labels
-          </traction-button>
-        </traction-field-group>
-        <div v-if="displayPrintOptions">
-          <fieldset>
-            <BarcodeIcon class="float-left mr-2 mt-3" />
-            <traction-heading level="3" show-border>Barcodes</traction-heading>
-            <traction-muted-text>A list of barcodes to create labels for</traction-muted-text>
-            <div class="mt-2">
-              <textarea
-                id="barcode-input"
-                v-model="labwareData.foundBarcodes"
-                class="w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-sdb-100 focus:border-sdb-100 disabled:opacity-75 disabled:bg-gray-200 disabled:cursor-not-allowed"
-                placeholder="Please scan the barcodes"
-                required
-                rows="6"
-                max-rows="10"
-              />
-            </div>
-          </fieldset>
         </div>
       </div>
       <div class="bg-gray-100 rounded p-3">
@@ -192,7 +187,8 @@
         <div class="flex flex-col w-full">
           <traction-muted-text class="text-left">Imports data into Traction</traction-muted-text>
           <p id="importText" class="text-left">
-            Import {{ barcodeCount }} labware into {{ pipeline }} from {{ reception.text }}
+            Import {{ labwareData.foundBarcodes.size }} labware into {{ pipeline }} from
+            {{ reception.text }}
           </p>
           <div class="flex flex-row space-x-8 mt-5">
             <traction-button
@@ -228,7 +224,7 @@ import TractionHeading from '../components/TractionHeading.vue'
 import LibraryTypeSelect from '@/components/shared/LibraryTypeSelect'
 import DataTypeSelect from '@/components/shared/DataTypeSelect'
 import { defaultRequestOptions } from '@/lib/receptions'
-import BarcodeIcon from '@/icons/BarcodeIcon.vue'
+import { mapActions } from 'vuex'
 
 // We don't expect the modal to display without a message. If we end up in this
 // state then something has gone horribly wrong.
@@ -242,7 +238,6 @@ export default {
     TractionHeading,
     LibraryTypeSelect,
     DataTypeSelect,
-    BarcodeIcon,
   },
   props: {
     receptions: {
@@ -263,9 +258,11 @@ export default {
     barcodes: '',
     modalState: defaultModal(),
     labwareData: {
+      inputBarcodes: [],
       foundBarcodes: new Set(),
-      attributes: {},
+      attributes: [],
     },
+    printerName: '',
   }),
   computed: {
     reception: ({ receptions, source }) => receptions[source],
@@ -281,6 +278,12 @@ export default {
     printEnabled: ({ source }) => source === 'SequencescapeTubes',
     displayPrintOptions: ({ source, labwareData }) =>
       source === 'SequencescapeTubes' && labwareData.foundBarcodes.size > 0,
+    printBarcodes: ({ labwareData }) => Array.from(labwareData.foundBarcodes).join('\n'),
+    printerOptions() {
+      return this.$store.getters.printers.map((name) => ({
+        text: name,
+      }))
+    },
   },
   methods: {
     fetchStarted({ message }) {
@@ -288,30 +291,39 @@ export default {
     },
     clearModal() {
       this.modalState = defaultModal()
-      this.labwareData = {
-        foundBarcodes: new Set(),
-        attributes: {},
-      }
     },
+
     showModal(message) {
       this.modalState = { visible: true, message }
     },
-    handleBarcode() {},
+    handleBarcodeDeletion() {
+      // Remove labwareData for barcodes that have been deleted
+      const foundBarcodesArray = Array.from(this.labwareData.foundBarcodes)
+      const inputBarcodeArrayCopy = [...this.labwareData.inputBarcodes]
+      inputBarcodeArrayCopy.forEach((barcode, index) => {
+        if (!this.barcodeArray.includes(barcode)) {
+          //Update attributes
+          this.reception.getAttributeKeysFunction().forEach((attributeType) => {
+            if (this.labwareData.attributes[attributeType]) {
+              this.labwareData.attributes[attributeType] = this.labwareData.attributes[
+                attributeType
+              ].filter((attribute) => attribute.barcode !== foundBarcodesArray[index])
+            }
+          })
+          foundBarcodesArray.splice(index, 1)
+          this.labwareData.inputBarcodes.splice(index, 1)
+        }
+      })
+      this.labwareData = { ...this.labwareData, foundBarcodes: new Set(foundBarcodesArray) }
+    },
     fetchFailed({ message }) {
       this.clearModal()
       this.showAlert(message, 'danger')
     },
     async importLabware() {
-      if (this.labwareData.foundBarcodes.size === 0) {
-        await this.fetchLabware()
-        if (this.labwareData.foundBarcodes.size === 0) {
-          return
-        }
-      }
       this.showModal(
         `Creating ${this.labwareData.foundBarcodes.size} labware(s) for ${this.reception.text}`,
       )
-
       try {
         const response = await createReceptionResource(
           this.receptionRequest,
@@ -319,7 +331,7 @@ export default {
           this.labwareData.attributes,
         )
         const messages = createMessages({
-          barcodes: this.barcodeArray,
+          barcodes: Array.from(this.labwareData.foundBarcodes),
           response,
           reception: this.reception,
         })
@@ -328,11 +340,12 @@ export default {
         messages.forEach(({ type, text }) => {
           this.showAlert(text, type)
         })
+        this.clearModal()
       } catch (e) {
         console.error(e)
         this.showAlert(e, 'danger')
+        this.clearModal()
       }
-      this.clearModal()
     },
 
     async fetchLabware() {
@@ -340,15 +353,14 @@ export default {
         message: `Fetching ${this.barcodeCount} items from ${this.reception.text}`,
       })
       try {
+        //Fetch barcodes from sequencescape
         const { foundBarcodes, attributes } = await this.reception.fetchFunction({
           requests: this.api,
           barcodes: this.barcodeArray,
           requestOptions: this.presentRequestOptions,
         })
-        this.labwareData = {
-          foundBarcodes,
-          attributes,
-        }
+        this.labwareData = { foundBarcodes, attributes, inputBarcodes: this.barcodeArray }
+        this.clearModal()
       } catch (e) {
         console.error(e)
         this.fetchFailed({
@@ -356,20 +368,58 @@ export default {
         })
       }
     },
+    /*
+      create the labels needed for the print job
+      
+    */
+    createLabels() {
+      return Array.from(this.labwareData.foundBarcodes).map((barcode) => {
+        return {
+          barcode,
+        }
+      })
+    },
+    /*
+      Creates the print job and shows a success or failure alert
+    */
+    async printLabels() {
+      const { success, message = {} } = await this.createPrintJob({
+        printerName: this.printerName,
+        labels: this.createLabels(),
+        copies: 1,
+      })
+
+      this.showAlert(message, success ? 'success' : 'danger')
+    },
     reset() {
       this.source = 'Sequencescape'
       this.pipeline = 'PacBio'
       this.requestOptions = defaultRequestOptions()
       this.barcodes = ''
       this.resetRequestOptions()
-      this.labwareData = {
-        foundBarcodes: new Set(),
-        attributes: {},
-      }
+      this.resetLabwareData()
     },
     resetRequestOptions() {
       this.requestOptions = defaultRequestOptions()
     },
+    /*
+      Resets the labware data
+    */
+    resetLabwareData() {
+      this.labwareData = {
+        foundBarcodes: new Set(),
+        attributes: [],
+        inputBarcodes: [],
+      }
+    },
+    /*
+      Resets the labware data and input barcodes when the source is changed
+    */
+    handleSourceChange() {
+      this.resetLabwareData()
+      this.barcodes = ''
+    },
+    ...mapActions('printMyBarcode', ['createPrintJob']),
   },
 }
 </script>

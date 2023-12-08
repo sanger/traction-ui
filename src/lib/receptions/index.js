@@ -36,14 +36,17 @@ const Receptions = {
   Sequencescape: {
     ...ReceptionTypes.Sequencescape,
     fetchFunction: Sequencescape.fetchLabwareForReception,
+    getAttributeKeysFunction: Sequencescape.getAttributeKeys,
   },
   SamplesExtraction: {
     ...ReceptionTypes.SamplesExtraction,
     fetchFunction: SamplesExtraction.fetchLabwareForReception,
+    getAttributeKeysFunction: SamplesExtraction.getAttributeKeys,
   },
   SequencescapeTubes: {
     ...ReceptionTypes.SequencescapeTubes,
     fetchFunction: SequencescapeTubes.fetchLabwareForReception,
+    getAttributeKeysFunction: SequencescapeTubes.getAttributeKeys,
   },
 }
 

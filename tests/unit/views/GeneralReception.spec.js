@@ -28,8 +28,22 @@ describe('GeneralReception', () => {
     expect(wrapper.find('[data-type=source-list]').findAll('option')[1].text()).toBe(
       'Samples Extraction',
     )
+    expect(wrapper.find('[data-type=source-list]').findAll('option')[2].text()).toBe(
+      'Sequencescape Tubes',
+    )
     // It defaults to Sequencescape
     expect(wrapper.find('[data-type=source-list]').element.value).toEqual('Sequencescape')
+  })
+
+  it('shows print options for only for Sequencescape Tubes', async () => {
+    const wrapper = buildWrapper()
+    const options = wrapper.find('[data-type=source-list]').findAll('option')
+    await options[2].setSelected()
+    expect(wrapper.find('[id=print]').exists()).toBe(true)
+    await options[0].setSelected()
+    expect(wrapper.find('[id=print]').exists()).toBe(false)
+    await options[1].setSelected()
+    expect(wrapper.find('[id=print]').exists()).toBe(false)
   })
 
   it('has a pipeline selector', () => {
@@ -87,16 +101,51 @@ describe('GeneralReception', () => {
   describe('barcode text area', () => {
     it('single barcode', async () => {
       const wrapper = buildWrapper()
+      const mockedFetchFunction = vi
+        .fn()
+        .mockResolvedValue({ foundBarcodes: new Set(['DN1']), attributes: {} })
+      wrapper.vm.reception.fetchFunction = mockedFetchFunction
       await wrapper.find('#barcodes').setValue('DN1\n')
       expect(wrapper.vm.barcodes).toEqual('DN1\n')
+      expect(wrapper.find('#importText').text()).toEqual(
+        'Import 0 labware into PacBio from Sequencescape',
+      )
+    })
+    it('when fetch function is called with single barcode', async () => {
+      const wrapper = buildWrapper()
+      const mockedFetchFunction = vi
+        .fn()
+        .mockResolvedValue({ foundBarcodes: new Set(['DN1']), attributes: {} })
+      wrapper.vm.reception.fetchFunction = mockedFetchFunction
+      await wrapper.vm.fetchLabware()
+      expect(mockedFetchFunction).toBeCalled()
+      expect(wrapper.vm.labwareData.foundBarcodes).toEqual(new Set(['DN1']))
       expect(wrapper.find('#importText').text()).toEqual(
         'Import 1 labware into PacBio from Sequencescape',
       )
     })
+
     it('multiple barcodes', async () => {
       const wrapper = buildWrapper()
-      await wrapper.find('#barcodes').setValue('DN1\nDN2\nDN3\nDN4\nDN5')
-      expect(wrapper.vm.barcodes).toEqual('DN1\nDN2\nDN3\nDN4\nDN5')
+      const value = 'DN1\nDN2\nDN3\nDN4\nDN5'
+      await wrapper.find('#barcodes').setValue(value)
+      expect(wrapper.vm.barcodes).toEqual(value)
+      expect(wrapper.find('[id=barcodes]').element.value).toEqual(value)
+      expect(wrapper.find('#importText').text()).toEqual(
+        'Import 0 labware into PacBio from Sequencescape',
+      )
+    })
+    it('when fetch function is called with multiple barcode', async () => {
+      const wrapper = buildWrapper()
+      const foundBarcodes = new Set(['DN1', 'DN2', 'DN3', 'DN4', 'DN5'])
+      const mockedFetchFunction = vi.fn().mockResolvedValue({
+        foundBarcodes,
+        attributes: {},
+      })
+      wrapper.vm.reception.fetchFunction = mockedFetchFunction
+      await wrapper.vm.fetchLabware()
+      expect(mockedFetchFunction).toBeCalled()
+      expect(wrapper.vm.labwareData.foundBarcodes).toEqual(foundBarcodes)
       expect(wrapper.find('#importText').text()).toEqual(
         'Import 5 labware into PacBio from Sequencescape',
       )
@@ -117,14 +166,14 @@ describe('GeneralReception', () => {
     vi.spyOn(console, 'error').mockImplementation(() => {})
     const wrapper = buildWrapper()
     // We've begun the import
-    await wrapper.vm.importStarted({ message: 'Starting import' })
+    await wrapper.vm.fetchStarted({ message: 'Starting fetch' })
     // But it fails
-    await wrapper.vm.importFailed({ message: 'Failed import' })
+    await wrapper.vm.fetchFailed({ message: 'Failed fetch' })
 
-    expect(wrapper.text()).not.toContain('Starting import')
+    expect(wrapper.text()).not.toContain('Starting fetch')
     expect(Object.values(store.state.traction.messages)).toContainEqual({
       type: 'danger',
-      message: 'Failed import',
+      message: 'Failed fetch',
     })
   })
 
@@ -135,16 +184,16 @@ describe('GeneralReception', () => {
       .mockImplementation(() => {})
     const mockedcreateMessages = vi.spyOn(Reception, 'createMessages').mockImplementation(() => {})
     const wrapper = buildWrapper()
-    // We've begun the import
-    await wrapper.vm.importStarted({ message: 'Starting import' })
 
     const foundBarcodes = new Set(['NT1'])
     const attributes = { source: 'traction-ui.sequencescape', request_attributes: [{}] }
+    wrapper.vm.labwareData = { foundBarcodes, attributes }
 
-    await wrapper.vm.importLoaded({ foundBarcodes, attributes })
-
+    // We've begun the import
+    await wrapper.vm.importLabware()
+    expect(wrapper.text()).toContain('Creating 1 labware(s) for Sequencescape')
     await mockedcreateReception
-    expect(wrapper.text()).not.toContain('Starting import')
+    expect(wrapper.text()).not.toContain('Creating 1 labware(s) for Sequencescape')
     expect(mockedcreateReception).toBeCalledWith(
       tractionReceptionsCreate,
       foundBarcodes,

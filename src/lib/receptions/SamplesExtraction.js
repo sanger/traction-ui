@@ -75,11 +75,19 @@ const transformLabware = ({ labware, requestOptions }) => ({
     species: labware.attributes.fields.sample_common_name,
   },
 })
+/**
+ *
+ * @returns {Array} Array of attribute keys
+ */
+const getAttributeKeys = () => {
+  return ['tubes_attributes']
+}
 
 const SamplesExtraction = {
   fetchLabwareForReception,
+  getAttributeKeys,
 }
 
-export { fetchLabwareForReception }
+export { fetchLabwareForReception, getAttributeKeys }
 
 export default SamplesExtraction

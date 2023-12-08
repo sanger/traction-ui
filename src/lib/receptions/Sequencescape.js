@@ -123,10 +123,20 @@ const fetchLabwareForReception = async ({ requests, barcodes, requestOptions }) 
   })
 }
 
-const Sequencescape = {
-  fetchLabwareForReception,
+/**
+ * 
+ * @returns {Array} Array of attribute keys
+ */
+const getAttributeKeys = () => {
+  const values = Object.keys(labwareTypes).flatMap((type) => labwareTypes[type].attributes)
+  return values
 }
 
-export { fetchLabwareForReception }
+const Sequencescape = {
+  fetchLabwareForReception,
+  getAttributeKeys,
+}
+
+export { fetchLabwareForReception, getAttributeKeys }
 
 export default Sequencescape
