@@ -1,7 +1,7 @@
 <template>
   <div>
     <div v-if="isLoading" class="flex items-center justify-center">
-      <traction-spinner class="h-32 w-32"/>
+      <traction-spinner class="h-32 w-32" />
     </div>
     <div v-else-if="isError" class="flex flex-col items-center justify-center">
       <p class="flex mb-5 mt-10 text-lg font-bold">There was an error retrieving the data</p>

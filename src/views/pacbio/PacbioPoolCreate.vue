@@ -63,7 +63,7 @@ export default {
     PacbioTagSetItem,
     PacbioPoolEdit,
     LabwareFinder,
-    DataFetcher
+    DataFetcher,
   },
 
   data() {
