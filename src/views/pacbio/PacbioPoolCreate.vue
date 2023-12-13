@@ -1,5 +1,5 @@
 <template>
-  <div id="pool">
+  <data-fetcher :fetcher="fetchPoolsData">
     <div class="flex flex-col pt-4">
       <div class="flex flex-col w-1/2 px-4">
         <traction-menu :border="true">
@@ -39,16 +39,17 @@
         </div>
       </div>
     </div>
-  </div>
+  </data-fetcher>
 </template>
 
 <script>
-import PacbioTagSetList from '@/components/pacbio/PacbioTagSetList'
-import PacbioPlateSelectedList from '@/components/pacbio/PacbioPlateSelectedList'
-import PacbioTubeSelectedList from '@/components/pacbio/PacbioTubeSelectedList'
-import PacbioTagSetItem from '@/components/pacbio/PacbioTagSetItem'
-import PacbioPoolEdit from '@/components/pacbio/PacbioPoolEdit'
-import LabwareFinder from '@/components/LabwareFinder'
+import PacbioTagSetList from '@/components/pacbio/PacbioTagSetList.vue'
+import PacbioPlateSelectedList from '@/components/pacbio/PacbioPlateSelectedList.vue'
+import PacbioTubeSelectedList from '@/components/pacbio/PacbioTubeSelectedList.vue'
+import PacbioTagSetItem from '@/components/pacbio/PacbioTagSetItem.vue'
+import PacbioPoolEdit from '@/components/pacbio/PacbioPoolEdit.vue'
+import LabwareFinder from '@/components/LabwareFinder.vue'
+import DataFetcher from '@/components/DataFetcher.vue'
 
 import { createNamespacedHelpers } from 'vuex'
 const { mapActions } = createNamespacedHelpers('traction/pacbio/poolCreate')
@@ -62,26 +63,11 @@ export default {
     PacbioTagSetItem,
     PacbioPoolEdit,
     LabwareFinder,
+    DataFetcher
   },
 
   data() {
     return { sourceIndex: 0, tabTitles: ['Add Plates', 'Add Tubes'] }
-  },
-  created() {
-    const tagSets = this.fetchPacbioTagSets()
-    // Needed due to left over pool data from previously edited pools
-    this.$store.commit('traction/pacbio/poolCreate/clearPoolData')
-
-    // We should come up with a better solution to identify 'new' pools
-    // Anti-pattern params like 'new' in place of id is advised against
-    // https://github.com/vuejs/router/blob/main/packages/router/CHANGELOG.md#414-2022-08-22
-    if (this.$route.params.id !== 'new') {
-      const libraries = this.populateLibrariesFromPool(this.$route.params.id)
-      libraries.then(this.alertOnFail)
-    }
-    // We don't use await here as otherwise the handling of one response will be blocked
-    // by the other
-    tagSets.then(this.alertOnFail)
   },
   methods: {
     alertOnFail({ success, errors }) {
@@ -98,8 +84,19 @@ export default {
       'findPacbioPlate',
       'findPacbioTube',
     ]),
+    async fetchPoolsData() {
+      this.$store.commit('traction/pacbio/poolCreate/clearPoolData')
+      await this.fetchPacbioTagSets().then(this.alertOnFail)
+
+      // We should come up with a better solution to identify 'new' pools
+      // Anti-pattern params like 'new' in place of id is advised against
+      // https://github.com/vuejs/router/blob/main/packages/router/CHANGELOG.md#414-2022-08-22
+      if (this.$route.params.id !== 'new') {
+        return await this.populateLibrariesFromPool(this.$route.params.id)
+      } else {
+        return { success: true, errors: [] }
+      }
+    },
   },
 }
 </script>
-
-<style scoped></style>
