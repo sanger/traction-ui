@@ -22,7 +22,7 @@
   },
   "dependencies": {
     "@sanger/ui-styling": "^4.1.0",
-    "@vitejs/plugin-vue": "^4.5.0",
+    "@vitejs/plugin-vue": "^4.5.2",
     "axios": "^1.6.2",
     "autoprefixer": "^10.4.16",
     "csv-parse": "^5.5.2",
