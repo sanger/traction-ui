@@ -40,11 +40,11 @@ const createPrintJob = async (
     ? // if it was success just send a simple message
       'Barcode(s) successfully printed'
     : // print my barcode does not return the errors in the correct format
-    // so we need to extract the errors and turn them into something meaningful
-    data?.errors?.length > 0
-    ? data.errors.map((e) => e.source.pointer + ' ' + e.detail).join(', ')
-    : // otherwise we can just return the errors
-      errors
+      // so we need to extract the errors and turn them into something meaningful
+      data?.errors?.length > 0
+      ? data.errors.map((e) => e.source.pointer + ' ' + e.detail).join(', ')
+      : // otherwise we can just return the errors
+        errors
 
   return { success, message }
 }
