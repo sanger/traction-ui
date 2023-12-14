@@ -228,7 +228,7 @@ import { createReceptionResource, createMessages } from '@/services/traction/Rec
 import Receptions from '@/lib/receptions'
 import TractionHeading from '../components/TractionHeading.vue'
 import LibraryTypeSelect from '@/components/shared/LibraryTypeSelect.vue'
-import DataTypeSelect from '@/components/shared/DataTypeSelec.vue'
+import DataTypeSelect from '@/components/shared/DataTypeSelect.vue'
 import { defaultRequestOptions } from '@/lib/receptions'
 import { mapActions } from 'vuex'
 
