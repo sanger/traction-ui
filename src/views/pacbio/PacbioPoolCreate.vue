@@ -89,8 +89,8 @@ export default {
       await this.fetchPacbioTagSets().then(this.alertOnFail)
 
       // We should come up with a better solution to identify 'new' pools
-      // Anti-pattern params like 'new' in place of id is advised against
-      // https://github.com/vuejs/router/blob/main/packages/router/CHANGELOG.md#414-2022-08-22
+      // Currently if the route is anything other than 'new' we assume its a pool id
+      // However that is not always the case, maybe we could check the type as well.
       if (this.$route.params.id !== 'new') {
         return await this.populateLibrariesFromPool(this.$route.params.id)
       } else {
