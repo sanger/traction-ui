@@ -231,6 +231,7 @@ import LibraryTypeSelect from '@/components/shared/LibraryTypeSelect.vue'
 import DataTypeSelect from '@/components/shared/DataTypeSelect.vue'
 import { defaultRequestOptions } from '@/lib/receptions'
 import { mapActions } from 'vuex'
+import { getCurrentDate } from '@/lib/DateHelpers.js'
 
 // We don't expect the modal to display without a message. If we end up in this
 // state then something has gone horribly wrong.
@@ -395,6 +396,9 @@ export default {
       return Array.from(this.labwareData.foundBarcodes).map((barcode) => {
         return {
           barcode,
+          label_name: 'main_label',
+          date: getCurrentDate(),
+          third_line: barcode,
         }
       })
     },
