@@ -232,6 +232,7 @@ import DataTypeSelect from '@/components/shared/DataTypeSelect.vue'
 import { defaultRequestOptions } from '@/lib/receptions'
 import { mapActions } from 'vuex'
 import { getCurrentDate } from '@/lib/DateHelpers.js'
+import { createLabelsFromBarcodes } from '@/lib/LabelPrintingHelpers'
 
 // We don't expect the modal to display without a message. If we end up in this
 // state then something has gone horribly wrong.
@@ -393,14 +394,19 @@ export default {
       create the labels needed for the print job
     */
     createLabels() {
-      return Array.from(this.labwareData.foundBarcodes).map((barcode) => {
+      return createLabelsFromBarcodes({
+        sourceBarcodeList: Array.from(this.labwareData.foundBarcodes),
+        date: getCurrentDate(),
+        numberOfLabels: 1,
+      })
+      /*return Array.from(this.labwareData.foundBarcodes).map((barcode) => {
         return {
           barcode,
           label_name: 'main_label',
           date: getCurrentDate(),
           third_line: barcode,
         }
-      })
+      })*/
     },
     /*
       Creates the print job and shows a success or failure alert
