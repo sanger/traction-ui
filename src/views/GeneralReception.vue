@@ -151,11 +151,12 @@
           />
         </traction-field-group>
       </div>
-      <div v-if="printEnabled" id="print" class="p-2 bg-gray-100 rounded p-3">
+      <div v-if="displayPrintOptions" id="print" class="p-2 bg-gray-100 rounded p-3">
         <traction-heading level="4" :show-border="true">Print labels</traction-heading>
         <div class="flex flex-row space-x-4 w-full">
           <div class="flex flex-col w-1/2 text-left space-y-2">
             <traction-label>Barcodes</traction-label>
+
             <textarea
               id="print-barcodes"
               v-model="printBarcodes"
@@ -177,7 +178,12 @@
           </div>
         </div>
         <div class="flex justify-end mt-3 w-full">
-          <traction-button id="print-button" class="grow" theme="print" @click="printLabels"
+          <traction-button
+            id="print-button"
+            class="grow"
+            theme="print"
+            :disabled="!printEnabled"
+            @click="printLabels"
             >Print Labels</traction-button
           >
         </div>
@@ -257,10 +263,11 @@ export default {
     requestOptions: defaultRequestOptions(),
     barcodes: '',
     modalState: defaultModal(),
+    // labwareData is used to store the input barcodes as well as the data fetched from sequencescape which is then imported into traction
     labwareData: {
-      inputBarcodes: [],
-      foundBarcodes: new Set(),
-      attributes: [],
+      inputBarcodes: [], // inputBarcodes is used to store the barcodes that the user has inputted
+      foundBarcodes: new Set(), // foundBarcodes is used to store the barcodes that have been found in sequencescape
+      attributes: [], // attributes is used to store the attributes that have been found in sequencescape
     },
     printerName: '',
   }),
@@ -275,15 +282,18 @@ export default {
     barcodeCount: ({ barcodeArray }) => barcodeArray.length,
     presentRequestOptions: ({ requestOptions }) =>
       Object.fromEntries(Object.entries(requestOptions).filter(([, v]) => v)),
-    printEnabled: ({ source }) => source === 'SequencescapeTubes',
-    displayPrintOptions: ({ source, labwareData }) =>
-      source === 'SequencescapeTubes' && labwareData.foundBarcodes.size > 0,
+    //displayPrintOptions is used to decide whether print options should be displayed or not
+    displayPrintOptions: ({ source }) => source === 'SequencescapeTubes',
+    // printBarcodes is used to display the barcodes that will be printed
     printBarcodes: ({ labwareData }) => Array.from(labwareData.foundBarcodes).join('\n'),
+    // printerOptions is used to display the printers that are available to print to
     printerOptions() {
       return this.$store.getters.printers.map((name) => ({
         text: name,
       }))
     },
+    // printEnabled is used to disable the print button if there are no barcodes to print
+    printEnabled: ({ printerName, printBarcodes }) => printerName && printBarcodes,
   },
   methods: {
     fetchStarted({ message }) {
@@ -296,13 +306,14 @@ export default {
     showModal(message) {
       this.modalState = { visible: true, message }
     },
+    //Handler for deleting barcodes from the input field
     handleBarcodeDeletion() {
-      // Remove labwareData for barcodes that have been deleted
       const foundBarcodesArray = Array.from(this.labwareData.foundBarcodes)
       const inputBarcodeArrayCopy = [...this.labwareData.inputBarcodes]
+      // Remove labwareData for barcode that have been deleted
       inputBarcodeArrayCopy.forEach((barcode, index) => {
         if (!this.barcodeArray.includes(barcode)) {
-          //Update attributes
+          //Update attributes fields in labwareData
           this.reception.getAttributeKeysFunction().forEach((attributeType) => {
             if (this.labwareData.attributes[attributeType]) {
               this.labwareData.attributes[attributeType] = this.labwareData.attributes[
@@ -320,10 +331,15 @@ export default {
       this.clearModal()
       this.showAlert(message, 'danger')
     },
+    /*
+      Imports the labware into traction. 
+      This function is called when the user presses 'import'
+    */
     async importLabware() {
       this.showModal(
         `Creating ${this.labwareData.foundBarcodes.size} labware(s) for ${this.reception.text}`,
       )
+      //Creates the reception resource and shows a success or failure alert
       try {
         const response = await createReceptionResource(
           this.receptionRequest,
@@ -348,6 +364,10 @@ export default {
       }
     },
 
+    /*
+    Fetches the labware from sequencescape and updates the labwareData
+    This function is called when the user presses 'enter' in the barcodes field
+    */
     async fetchLabware() {
       this.fetchStarted({
         message: `Fetching ${this.barcodeCount} items from ${this.reception.text}`,
@@ -370,7 +390,6 @@ export default {
     },
     /*
       create the labels needed for the print job
-      
     */
     createLabels() {
       return Array.from(this.labwareData.foundBarcodes).map((barcode) => {
@@ -403,7 +422,7 @@ export default {
       this.requestOptions = defaultRequestOptions()
     },
     /*
-      Resets the labware data
+      Resets the labwareData
     */
     resetLabwareData() {
       this.labwareData = {

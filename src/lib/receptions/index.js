@@ -22,12 +22,11 @@ const ReceptionTypes = {
     text: 'Samples Extraction',
     value: 'SamplesExtraction',
   },
-  SequencescapeTubes:{
+  SequencescapeTubes: {
     name: 'sequencescape-tubes',
     text: 'Sequencescape Tubes',
     value: 'SequencescapeTubes',
   },
-  
 }
 
 // TO MODIFY - remove versions once dpl_877_reception_request is enabled by default

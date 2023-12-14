@@ -82,7 +82,7 @@ const fetchLabwareForReception = async ({ requests, barcodes, requestOptions }) 
   })
 }
 /**
- * 
+ *
  * @returns {Array} Array of attribute keys
  */
 const getAttributeKeys = () => {
