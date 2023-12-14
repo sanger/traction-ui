@@ -399,14 +399,6 @@ export default {
         date: getCurrentDate(),
         numberOfLabels: 1,
       })
-      /*return Array.from(this.labwareData.foundBarcodes).map((barcode) => {
-        return {
-          barcode,
-          label_name: 'main_label',
-          date: getCurrentDate(),
-          third_line: barcode,
-        }
-      })*/
     },
     /*
       Creates the print job and shows a success or failure alert
