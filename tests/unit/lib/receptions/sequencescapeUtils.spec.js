@@ -131,6 +131,4 @@ describe('sequencescapeUtils', () => {
       expect(res).toEqual(expected)
     })
   })
-
-  
 })
