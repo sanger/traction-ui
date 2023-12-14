@@ -21,7 +21,7 @@ describe('Pacbio plates view', () => {
       },
     })
     // When we type 1 into input per page we search for page size 1
-    cy.intercept('/v1/pacbio/plates?page[size]=10&page[number]=1', {
+    cy.intercept('/v1/pacbio/plates?page[size]=1&page[number]=1', {
       fixture: 'pacbioPlatesRequest.json',
     })
     cy.visit('#/pacbio/plates')
