@@ -279,7 +279,7 @@ export default {
       return this.$store.getters.api
     }, // can't use this in arrow function
     receptionRequest: ({ api }) => api.traction.receptions.create,
-    barcodeArray: ({ barcodes }) => barcodes.split(/\s/).filter(Boolean),
+    barcodeArray: ({ barcodes }) => [...new Set(barcodes.split(/\s/).filter(Boolean))],
     isDisabled: ({ barcodeArray }) => barcodeArray.length === 0,
     barcodeCount: ({ barcodeArray }) => barcodeArray.length,
     presentRequestOptions: ({ requestOptions }) =>
@@ -310,19 +310,26 @@ export default {
     },
     //Handler for deleting barcodes from the input field
     handleBarcodeDeletion() {
+      //Create a copy of the foundBarcodes array and inputBarcodeArray because we will be modifying them on the fly
       const foundBarcodesArray = Array.from(this.labwareData.foundBarcodes)
       const inputBarcodeArrayCopy = [...this.labwareData.inputBarcodes]
+
       // Remove labwareData for barcode that have been deleted
       inputBarcodeArrayCopy.forEach((barcode, index) => {
+        //If the input barcode that we have in labwareData is deleted by user, then remove it from the labwareData
         if (!this.barcodeArray.includes(barcode)) {
-          //Update attributes fields in labwareData
+          //Remove attributes in labwareData that correspond to the removed barcode
           this.reception.getAttributeKeysFunction().forEach((attributeType) => {
             if (this.labwareData.attributes[attributeType]) {
               this.labwareData.attributes[attributeType] = this.labwareData.attributes[
                 attributeType
-              ].filter((attribute) => attribute.barcode !== foundBarcodesArray[index])
+              ].filter(
+                (attribute) =>
+                  attribute.barcode !== Array.from(this.labwareData.foundBarcodes)[index],
+              )
             }
           })
+          //Remove the barcode from the foundBarcodes array and the inputBarcodeArray
           foundBarcodesArray.splice(index, 1)
           this.labwareData.inputBarcodes.splice(index, 1)
         }

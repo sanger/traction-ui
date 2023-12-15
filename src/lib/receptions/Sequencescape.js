@@ -127,10 +127,8 @@ const fetchLabwareForReception = async ({ requests, barcodes, requestOptions }) 
  *
  * @returns {Array} Array of attribute keys
  */
-const getAttributeKeys = () => {
-  const values = Object.keys(labwareTypes).flatMap((type) => labwareTypes[type].attributes)
-  return values
-}
+const getAttributeKeys = () =>
+  Object.keys(labwareTypes).flatMap((type) => labwareTypes[type].attributes)
 
 const Sequencescape = {
   fetchLabwareForReception,

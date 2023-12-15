@@ -85,9 +85,7 @@ const fetchLabwareForReception = async ({ requests, barcodes, requestOptions }) 
  *
  * @returns {Array} Array of attribute keys
  */
-const getAttributeKeys = () => {
-  return ['tubes_attributes']
-}
+const getAttributeKeys = () => ['tubes_attributes']
 
 const SequencescapeTubes = {
   fetchLabwareForReception,

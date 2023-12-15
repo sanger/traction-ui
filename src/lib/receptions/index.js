@@ -28,8 +28,6 @@ const ReceptionTypes = {
     value: 'SequencescapeTubes',
   },
 }
-
-// TO MODIFY - remove versions once dpl_877_reception_request is enabled by default
 const Receptions = {
   options: Object.values(ReceptionTypes),
   Sequencescape: {
