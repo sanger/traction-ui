@@ -165,4 +165,84 @@ const buildRequestAndSample = ({ aliquot, study, sample, sample_metadata, reques
   }
 }
 
-export { fetchLabwareFromSequencescape, getIncludedData, buildRequestAndSample, findIncluded }
+/**
+ *
+ * @param {Object} labware Labware object from Sequencescape
+ * @param {Array<Object>} included Included objects from Sequencescape
+ * @param {Object} requestOptions Additional request parameters, will over-ride any
+ * @returns {Object} tubes_attributes object ready for import into traction
+ */
+const transformTube = ({ labware, included, requestOptions }) => {
+  // find the receptacle in the included data
+  const receptacle = findIncluded({
+    included,
+    data: labware.relationships.receptacles.data[0],
+    type: 'receptacles',
+  })
+
+  // get the aliquot, study, sample and sample_metadata from the included data
+  const { aliquot, study, sample, sample_metadata } = getIncludedData({
+    labware: receptacle,
+    included,
+  })
+
+  return {
+    barcode: labware.attributes.labware_barcode.machine_barcode,
+    // build the request and sample objects
+    ...buildRequestAndSample({ aliquot, study, sample, sample_metadata, requestOptions }),
+  }
+}
+
+/**
+ *
+ * @param { Object } labware Labware object from Sequencescape
+ * @param { Array<Object> } included Included objects from Sequencescape
+ * @param { Object } requestOptions Additional request parameters, will over-ride any
+ * @returns { Object } plates_attributes object ready for import into traction
+ */
+const transformPlate = ({ labware, included, requestOptions }) => {
+  return {
+    barcode: labware.attributes.labware_barcode.machine_barcode,
+    // for the receptacle data, we need to map over the wells and build a request for each
+    wells_attributes: labware.relationships.receptacles.data
+      .map((receptacle) => {
+        // find the well in the included data
+        const well = findIncluded({ included, data: receptacle, type: 'wells' })
+
+        // if the well doesn't have any aliquots, we can't import it
+        if (well.relationships.aliquots.data.length === 0) {
+          return
+        }
+
+        // get the aliquot, study, sample and sample_metadata from the included data
+        const { aliquot, study, sample, sample_metadata } = getIncludedData({
+          labware: well,
+          included,
+        })
+
+        return {
+          position: well.attributes.position.name,
+          // build the request and sample objects
+          ...buildRequestAndSample({ aliquot, study, sample, sample_metadata, requestOptions }),
+        }
+        // filter out any wells that don't have aliquots
+      })
+      .filter((item) => item !== undefined),
+  }
+}
+
+
+const labwareTypes = {
+  tubes: {
+    type: 'tubes',
+    attributes: 'tubes_attributes',
+    transformFunction: transformTube,
+  },
+  plates: {
+    type: 'plates',
+    attributes: 'plates_attributes',
+    transformFunction: transformPlate,
+  },
+}
+
+export { fetchLabwareFromSequencescape, getIncludedData, buildRequestAndSample, findIncluded,labwareTypes }

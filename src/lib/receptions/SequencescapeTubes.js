@@ -1,8 +1,6 @@
 import {
   fetchLabwareFromSequencescape,
-  findIncluded,
-  getIncludedData,
-  buildRequestAndSample,
+  labwareTypes,
 } from './sequencescapeUtils.js'
 // This module replaces by services.Sequencescape which can be removed
 // when the pipeline-specific receptions are retired. While this change results
@@ -16,7 +14,6 @@ const labwareRequestConfig = {
   include: 'receptacles.aliquots.sample.sample_metadata,receptacles.aliquots.study',
   fields: {
     tubes: 'labware_barcode,receptacles',
-    wells: 'position,aliquots',
     receptacles: 'aliquots',
     samples: 'sample_metadata,name,uuid',
     sample_metadata: 'sample_common_name',
@@ -25,41 +22,7 @@ const labwareRequestConfig = {
   },
 }
 
-/**
- *
- * @param {Object} labware Labware object from Sequencescape
- * @param {Array<Object>} included Included objects from Sequencescape
- * @param {Object} requestOptions Additional request parameters, will over-ride any
- * @returns {Object} tubes_attributes object ready for import into traction
- */
-const transformTube = ({ labware, included, requestOptions }) => {
-  // find the receptacle in the included data
-  const receptacle = findIncluded({
-    included,
-    data: labware.relationships.receptacles.data[0],
-    type: 'receptacles',
-  })
-
-  // get the aliquot, study, sample and sample_metadata from the included data
-  const { aliquot, study, sample, sample_metadata } = getIncludedData({
-    labware: receptacle,
-    included,
-  })
-
-  return {
-    barcode: labware.attributes.labware_barcode.human_barcode,
-    // build the request and sample objects
-    ...buildRequestAndSample({ aliquot, study, sample, sample_metadata, requestOptions }),
-  }
-}
-const labwareTypes = {
-  tubes: {
-    type: 'tubes',
-    attributes: 'tubes_attributes',
-    transformFunction: transformTube,
-  },
-}
-
+const labwareTypesTube = { tubes: labwareTypes.tubes }
 /**
  * Makes a request to the Sequencescape v2 API to retrieve the labware
  * associated with the provided barcodes. Uses the provided requestOptions to
@@ -77,7 +40,7 @@ const fetchLabwareForReception = async ({ requests, barcodes, requestOptions }) 
     requests,
     barcodes,
     requestOptions,
-    labwareTypes,
+    labwareTypesTube,
     labwareRequestConfig,
   })
 }
