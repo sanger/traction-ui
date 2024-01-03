@@ -32,16 +32,6 @@
               "id": "481"
             }
           },
-          "tube": {
-            "links": {
-              "self": "http://localhost:3100/v1/pacbio/libraries/721/relationships/tube",
-              "related": "http://localhost:3100/v1/pacbio/libraries/721/tube"
-            },
-            "data": {
-              "type": "tubes",
-              "id": "721"
-            }
-          },
           "tag": {
             "links": {
               "self": "http://localhost:3100/v1/pacbio/libraries/721/relationships/tag",
@@ -93,16 +83,6 @@
             "data": {
               "type": "requests",
               "id": "482"
-            }
-          },
-          "tube": {
-            "links": {
-              "self": "http://localhost:3100/v1/pacbio/libraries/722/relationships/tube",
-              "related": "http://localhost:3100/v1/pacbio/libraries/722/tube"
-            },
-            "data": {
-              "type": "tubes",
-              "id": "722"
             }
           },
           "tag": {
@@ -158,16 +138,6 @@
               "id": "483"
             }
           },
-          "tube": {
-            "links": {
-              "self": "http://localhost:3100/v1/pacbio/libraries/723/relationships/tube",
-              "related": "http://localhost:3100/v1/pacbio/libraries/723/tube"
-            },
-            "data": {
-              "type": "tubes",
-              "id": "723"
-            }
-          },
           "tag": {
             "links": {
               "self": "http://localhost:3100/v1/pacbio/libraries/723/relationships/tag",
@@ -221,16 +191,6 @@
               "id": "484"
             }
           },
-          "tube": {
-            "links": {
-              "self": "http://localhost:3100/v1/pacbio/libraries/724/relationships/tube",
-              "related": "http://localhost:3100/v1/pacbio/libraries/724/tube"
-            },
-            "data": {
-              "type": "tubes",
-              "id": "724"
-            }
-          },
           "tag": {
             "links": {
               "self": "http://localhost:3100/v1/pacbio/libraries/724/relationships/tag",
@@ -282,16 +242,6 @@
             "data": {
               "type": "requests",
               "id": "485"
-            }
-          },
-          "tube": {
-            "links": {
-              "self": "http://localhost:3100/v1/pacbio/libraries/725/relationships/tube",
-              "related": "http://localhost:3100/v1/pacbio/libraries/725/tube"
-            },
-            "data": {
-              "type": "tubes",
-              "id": "725"
             }
           },
           "tag": {
@@ -609,6 +559,14 @@
             "ready_for_run": true,
             "errors": []
           }
+        },
+        "relationships": {
+          "tube": {
+            "data": {
+              "type": "tubes",
+              "id": "721"
+            }
+          }
         }
       },
       {
@@ -628,6 +586,14 @@
           "run_suitability": {
             "ready_for_run": true,
             "errors": []
+          }
+        },
+        "relationships": {
+          "tube": {
+            "data": {
+              "type": "tubes",
+              "id": "722"
+            }
           }
         }
       },
@@ -649,6 +615,14 @@
             "ready_for_run": true,
             "errors": []
           }
+        },
+        "relationships": {
+          "tube": {
+            "data": {
+              "type": "tubes",
+              "id": "723"
+            }
+          }
         }
       },
       {
@@ -669,6 +643,14 @@
             "ready_for_run": true,
             "errors": []
           }
+        },
+        "relationships": {
+          "tube": {
+            "data": {
+              "type": "tubes",
+              "id": "724"
+            }
+          }
         }
       },
       {
@@ -688,6 +670,14 @@
           "run_suitability": {
             "ready_for_run": true,
             "errors": []
+          }
+        },
+        "relationships": {
+          "tube": {
+            "data": {
+              "type": "tubes",
+              "id": "725"
+            }
           }
         }
       }
