@@ -176,7 +176,6 @@ const buildRequestAndSample = ({ aliquot, study, sample, sample_metadata, reques
  * @returns {Object} tubes_attributes object ready for import into traction
  */
 const transformTube = ({ labware, included, requestOptions, barcodeAttribute }) => {
-  debugger
   // find the receptacle in the included data
   const receptacle = findIncluded({
     included,

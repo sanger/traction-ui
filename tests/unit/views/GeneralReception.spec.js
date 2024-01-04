@@ -112,6 +112,7 @@ describe('GeneralReception', () => {
       })
       it('should update importText when fetch function is called', async () => {
         const wrapper = buildWrapper()
+        await wrapper.find('#barcodes').setValue('DN1\n')
         const mockedFetchFunction = vi
           .fn()
           .mockResolvedValue({ foundBarcodes: new Set(['DN1']), attributes: {} })
@@ -128,6 +129,7 @@ describe('GeneralReception', () => {
     describe('multiple barcodes', () => {
       it('when fetch function is called with multiple barcode', async () => {
         const wrapper = buildWrapper()
+        await wrapper.find('#barcodes').setValue('DN1\n,DN2\n,DN3\n,DN4\n,DN5\n')
         const foundBarcodes = new Set(['DN1', 'DN2', 'DN3', 'DN4', 'DN5'])
         const mockedFetchFunction = vi.fn().mockResolvedValue({
           foundBarcodes,
@@ -163,27 +165,31 @@ describe('GeneralReception', () => {
     })
     it('calls handleBarcode Deletion when a delete key is pressed in barcode text area', () => {
       const barcodesInput = wrapper.find('#barcodes')
-      const mockedHandleBarcodeDeletion = vi.fn()
-      wrapper.vm.handleBarcodeDeletion = mockedHandleBarcodeDeletion
+      const mockDebounceBarcodeDeletion = vi.fn()
+      wrapper.vm.debounceBarcodeDeletion = mockDebounceBarcodeDeletion
       barcodesInput.trigger('keyup.delete')
-      expect(mockedHandleBarcodeDeletion).toBeCalled()
+      expect(mockDebounceBarcodeDeletion).toBeCalled()
     })
     it('removes barcodes from print area when barcode is removed in  text area', async () => {
       const value = 'DN1\nDN2\nDN3\nDN4\nDN5'
       const barcodesInput = wrapper.find('#barcodes')
       await barcodesInput.setValue(value)
-      const mockedFetchFunction = vi.fn().mockResolvedValue({
+      let mockedFetchFunction = vi.fn().mockResolvedValue({
         foundBarcodes: new Set(['DN1', 'DN2', 'DN3', 'DN4', 'DN5']),
         attributes: {},
       })
       wrapper.vm.reception.fetchFunction = mockedFetchFunction
+
       //simulate fetch
       await wrapper.vm.fetchLabware()
       expect(wrapper.find('[id=print-barcodes]').element.value).toEqual(value)
-      wrapper.vm.barcodes = 'DN1\nDN2\nDN3\nDN4\nDN'
-
-      //simulate delete key press
-      await barcodesInput.trigger('keyup.delete')
+      mockedFetchFunction = wrapper.vm.reception.fetchFunction = vi.fn().mockResolvedValue({
+        foundBarcodes: new Set(['DN1', 'DN2', 'DN3', 'DN4']),
+        attributes: {},
+      })
+      await wrapper.find('#barcodes').setValue('DN1\n,DN2\n,DN3\n,DN4\n,DN\n')
+      await wrapper.vm.fetchLabware()
+      barcodesInput.trigger('keyup.delete')
       expect(wrapper.find('[id=print-barcodes]').element.value).toEqual('DN1\nDN2\nDN3\nDN4')
     })
     it('enables print button only when print barcodes are present and a print option is selected', async () => {

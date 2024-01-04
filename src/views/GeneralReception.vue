@@ -147,7 +147,7 @@
             name="barcodes"
             class="w-full text-base py-2 px-3 border border-gray-300 bg-white rounded-md"
             @keypress.enter="fetchLabware"
-            @keyup.delete="handleBarcodeDeletion"
+            @keyup.delete="debounceBarcodeDeletion"
           />
         </traction-field-group>
       </div>
@@ -232,7 +232,7 @@ import DataTypeSelect from '@/components/shared/DataTypeSelect.vue'
 import { defaultRequestOptions } from '@/lib/receptions'
 import { mapActions } from 'vuex'
 import { getCurrentDate } from '@/lib/DateHelpers.js'
-import { createLabelsFromBarcodes } from '@/lib/LabelPrintingHelpers'
+import { createLabelsFromBarcodes } from '@/lib/LabelPrintingHelpers.js'
 
 // We don't expect the modal to display without a message. If we end up in this
 // state then something has gone horribly wrong.
@@ -272,6 +272,7 @@ export default {
       attributes: [], // attributes is used to store the attributes that have been found in sequencescape
     },
     printerName: '',
+    debounceTimer: 1000, // debounce timer for barcode deletion
   }),
   computed: {
     reception: ({ receptions, source }) => receptions[source],
@@ -308,40 +309,23 @@ export default {
     showModal(message) {
       this.modalState = { visible: true, message }
     },
-    //Handler for deleting barcodes from the input field
-    handleBarcodeDeletion() {
-      //Create a copy of the foundBarcodes array and inputBarcodeArray because we will be modifying them on the fly
-      const foundBarcodesArray = Array.from(this.labwareData.foundBarcodes)
-      const inputBarcodeArrayCopy = [...this.labwareData.inputBarcodes]
 
-      // Remove labwareData for barcode that have been deleted
-      inputBarcodeArrayCopy.forEach((barcode, index) => {
-        //If the input barcode that we have in labwareData is deleted by user, then remove it from the labwareData
-        if (!this.barcodeArray.includes(barcode)) {
-          //Remove attributes in labwareData that correspond to the removed barcode
-          this.reception.getAttributeKeysFunction().forEach((attributeType) => {
-            if (this.labwareData.attributes[attributeType]) {
-              this.labwareData.attributes[attributeType] = this.labwareData.attributes[
-                attributeType
-              ].filter(
-                (attribute) =>
-                  attribute.barcode !== Array.from(this.labwareData.foundBarcodes)[index],
-              )
-            }
-          })
-          //Remove the barcode from the foundBarcodes array and the inputBarcodeArray
-          foundBarcodesArray.splice(index, 1)
-          this.labwareData.inputBarcodes.splice(index, 1)
-        }
-      })
-      this.labwareData = { ...this.labwareData, foundBarcodes: new Set(foundBarcodesArray) }
+    //Debounces the delete keypresses in the barcodes field so that the barcodes are not fetched on every keypress
+    debounceBarcodeDeletion() {
+      if (this.debounceTimer) {
+        clearTimeout(this.debounceTimer)
+      }
+      this.debounceTimer = setTimeout(() => {
+        this.fetchLabware()
+      }, 300)
     },
+
     fetchFailed({ message }) {
       this.clearModal()
       this.showAlert(message, 'danger')
     },
     /*
-      Imports the labware into traction. 
+      Imports the labware into traction.
       This function is called when the user presses 'import'
     */
     async importLabware() {
@@ -378,6 +362,7 @@ export default {
     This function is called when the user presses 'enter' in the barcodes field
     */
     async fetchLabware() {
+      if (this.barcodeArray.length === 0) return
       this.fetchStarted({
         message: `Fetching ${this.barcodeCount} items from ${this.reception.text}`,
       })
