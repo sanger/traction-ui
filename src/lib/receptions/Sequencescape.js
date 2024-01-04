@@ -1,7 +1,4 @@
-import {
-  fetchLabwareFromSequencescape,
-  labwareTypes
-} from './sequencescapeUtils.js'
+import { fetchLabwareFromSequencescape, labwareTypes } from './sequencescapeUtils.js'
 
 /**
  * Request parameters for retrieval of labware from Sequencescape v2 API
@@ -39,6 +36,7 @@ const fetchLabwareForReception = async ({ requests, barcodes, requestOptions }) 
     requestOptions,
     labwareTypes,
     labwareRequestConfig,
+    barcodeAttributes: 'machine_barcode',
   })
 }
 

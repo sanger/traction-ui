@@ -1,7 +1,4 @@
-import {
-  fetchLabwareFromSequencescape,
-  labwareTypes,
-} from './sequencescapeUtils.js'
+import { fetchLabwareFromSequencescape, labwareTypes } from './sequencescapeUtils.js'
 // This module replaces by services.Sequencescape which can be removed
 // when the pipeline-specific receptions are retired. While this change results
 // in temporary code duplication, it allows for complete decoupling of old and
@@ -22,7 +19,6 @@ const labwareRequestConfig = {
   },
 }
 
-const labwareTypesTube = { tubes: labwareTypes.tubes }
 /**
  * Makes a request to the Sequencescape v2 API to retrieve the labware
  * associated with the provided barcodes. Uses the provided requestOptions to
@@ -40,7 +36,7 @@ const fetchLabwareForReception = async ({ requests, barcodes, requestOptions }) 
     requests,
     barcodes,
     requestOptions,
-    labwareTypesTube,
+    labwareTypes: { tubes: { ...labwareTypes.tubes, barcodeAttribute: 'human_barcode' } },
     labwareRequestConfig,
   })
 }

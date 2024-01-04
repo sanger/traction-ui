@@ -38,7 +38,6 @@ describe('SequencescapeTubes', () => {
           samples: 'sample_metadata,name,uuid',
           studies: 'uuid',
           tubes: 'labware_barcode,receptacles',
-          wells: 'position,aliquots',
         },
       })
 

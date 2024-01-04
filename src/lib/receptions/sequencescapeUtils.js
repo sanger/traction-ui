@@ -27,7 +27,6 @@ const fetchLabwareFromSequencescape = async ({
 }) => {
   const request = requests.sequencescape.labware
   const { data, included } = await getLabware(request, barcodes.join(','), labwareRequestConfig)
-
   //Transforms the provided list of Sequencescape labware into containerAttributes
   const containerAttributes = transformAllLabware({
     data,
@@ -85,7 +84,6 @@ const transformAllLabware = ({ data, included, requestOptions, labwareTypes } = 
   return data.reduce((result, labware) => {
     // find the labware type
     const labwareType = labwareTypes[labware.type]
-
     // if we don't have a labware type, we can't import it
     if (!labwareType) {
       return result
@@ -97,7 +95,12 @@ const transformAllLabware = ({ data, included, requestOptions, labwareTypes } = 
     }
     // add the transformed labware to the attributes object
     result[labwareType.attributes].push(
-      labwareType.transformFunction({ labware, included, requestOptions }),
+      labwareType.transformFunction({
+        labware,
+        included,
+        requestOptions,
+        barcodeAttribute: labwareType.barcodeAttribute,
+      }),
     )
 
     return result
@@ -172,7 +175,8 @@ const buildRequestAndSample = ({ aliquot, study, sample, sample_metadata, reques
  * @param {Object} requestOptions Additional request parameters, will over-ride any
  * @returns {Object} tubes_attributes object ready for import into traction
  */
-const transformTube = ({ labware, included, requestOptions }) => {
+const transformTube = ({ labware, included, requestOptions, barcodeAttribute }) => {
+  debugger
   // find the receptacle in the included data
   const receptacle = findIncluded({
     included,
@@ -187,7 +191,7 @@ const transformTube = ({ labware, included, requestOptions }) => {
   })
 
   return {
-    barcode: labware.attributes.labware_barcode.machine_barcode,
+    barcode: labware.attributes.labware_barcode[barcodeAttribute],
     // build the request and sample objects
     ...buildRequestAndSample({ aliquot, study, sample, sample_metadata, requestOptions }),
   }
@@ -200,9 +204,9 @@ const transformTube = ({ labware, included, requestOptions }) => {
  * @param { Object } requestOptions Additional request parameters, will over-ride any
  * @returns { Object } plates_attributes object ready for import into traction
  */
-const transformPlate = ({ labware, included, requestOptions }) => {
+const transformPlate = ({ labware, included, requestOptions, barcodeAttribute }) => {
   return {
-    barcode: labware.attributes.labware_barcode.machine_barcode,
+    barcode: labware.attributes.labware_barcode[barcodeAttribute],
     // for the receptacle data, we need to map over the wells and build a request for each
     wells_attributes: labware.relationships.receptacles.data
       .map((receptacle) => {
@@ -231,18 +235,25 @@ const transformPlate = ({ labware, included, requestOptions }) => {
   }
 }
 
-
 const labwareTypes = {
   tubes: {
     type: 'tubes',
     attributes: 'tubes_attributes',
+    barcodeAttribute: 'machine_barcode',
     transformFunction: transformTube,
   },
   plates: {
     type: 'plates',
     attributes: 'plates_attributes',
     transformFunction: transformPlate,
+    barcodeAttribute: 'machine_barcode',
   },
 }
 
-export { fetchLabwareFromSequencescape, getIncludedData, buildRequestAndSample, findIncluded,labwareTypes }
+export {
+  fetchLabwareFromSequencescape,
+  getIncludedData,
+  buildRequestAndSample,
+  findIncluded,
+  labwareTypes,
+}

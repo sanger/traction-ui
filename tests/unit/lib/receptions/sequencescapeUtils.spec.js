@@ -78,11 +78,13 @@ describe('sequencescapeUtils', () => {
         type: 'plates',
         attributes: 'plates_attributes',
         transformFunction: vi.fn().mockReturnValue({ ...retAttributes.plates_attributes[0] }),
+        barcodeAttribute: 'machine_barcode',
       },
       tubes: {
         type: 'tubes',
         attributes: 'tubes_attributes',
         transformFunction: vi.fn().mockReturnValue({ ...retAttributes.tubes_attributes[0] }),
+        barcodesAttribute: 'machine_barcode',
       },
     }
 
@@ -122,6 +124,7 @@ describe('sequencescapeUtils', () => {
       )
     })
   })
+
   describe('#findIncluded', () => {
     it('returns the included item', () => {
       const { data } = Data.SequencescapeLabware
