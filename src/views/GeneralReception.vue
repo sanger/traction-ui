@@ -272,7 +272,7 @@ export default {
       attributes: [], // attributes is used to store the attributes that have been found in sequencescape
     },
     printerName: '',
-    debounceTimer: 1000, // debounce timer for barcode deletion
+    debounceTimer: null, // debounce timer for barcode deletion
   }),
   computed: {
     reception: ({ receptions, source }) => receptions[source],
