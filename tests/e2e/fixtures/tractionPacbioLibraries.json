@@ -26,13 +26,6 @@
           },
           "data": { "type": "requests", "id": "241" }
         },
-        "tube": {
-          "links": {
-            "self": "http://traction/v1/pacbio/libraries/1/relationships/tube",
-            "related": "http://traction/v1/pacbio/libraries/1/tube"
-          },
-          "data": { "type": "tubes", "id": "2" }
-        },
         "tag": {
           "links": {
             "self": "http://traction/v1/pacbio/libraries/1/relationships/tag",
@@ -86,13 +79,6 @@
             "related": "http://traction/v1/pacbio/libraries/2/request"
           },
           "data": { "type": "requests", "id": "242" }
-        },
-        "tube": {
-          "links": {
-            "self": "http://traction/v1/pacbio/libraries/2/relationships/tube",
-            "related": "http://traction/v1/pacbio/libraries/2/tube"
-          },
-          "data": { "type": "tubes", "id": "4" }
         },
         "tag": {
           "links": {
@@ -148,13 +134,6 @@
           },
           "data": { "type": "requests", "id": "243" }
         },
-        "tube": {
-          "links": {
-            "self": "http://traction/v1/pacbio/libraries/3/relationships/tube",
-            "related": "http://traction/v1/pacbio/libraries/3/tube"
-          },
-          "data": { "type": "tubes", "id": "10" }
-        },
         "tag": {
           "links": {
             "self": "http://traction/v1/pacbio/libraries/3/relationships/tag",
@@ -208,13 +187,6 @@
             "related": "http://traction/v1/pacbio/libraries/4/request"
           },
           "data": { "type": "requests", "id": "244" }
-        },
-        "tube": {
-          "links": {
-            "self": "http://traction/v1/pacbio/libraries/4/relationships/tube",
-            "related": "http://traction/v1/pacbio/libraries/4/tube"
-          },
-          "data": { "type": "tubes", "id": "10" }
         },
         "tag": {
           "links": {
@@ -270,13 +242,6 @@
           },
           "data": { "type": "requests", "id": "245" }
         },
-        "tube": {
-          "links": {
-            "self": "http://traction/v1/pacbio/libraries/5/relationships/tube",
-            "related": "http://traction/v1/pacbio/libraries/5/tube"
-          },
-          "data": { "type": "tubes", "id": "10" }
-        },
         "tag": {
           "links": {
             "self": "http://traction/v1/pacbio/libraries/5/relationships/tag",
@@ -330,13 +295,6 @@
             "related": "http://traction/v1/pacbio/libraries/6/request"
           },
           "data": { "type": "requests", "id": "246" }
-        },
-        "tube": {
-          "links": {
-            "self": "http://traction/v1/pacbio/libraries/6/relationships/tube",
-            "related": "http://traction/v1/pacbio/libraries/6/tube"
-          },
-          "data": { "type": "tubes", "id": "10" }
         },
         "tag": {
           "links": {
@@ -392,13 +350,6 @@
           },
           "data": { "type": "requests", "id": "247" }
         },
-        "tube": {
-          "links": {
-            "self": "http://traction/v1/pacbio/libraries/7/relationships/tube",
-            "related": "http://traction/v1/pacbio/libraries/7/tube"
-          },
-          "data": { "type": "tubes", "id": "10" }
-        },
         "tag": {
           "links": {
             "self": "http://traction/v1/pacbio/libraries/7/relationships/tag",
@@ -452,13 +403,6 @@
             "related": "http://traction/v1/pacbio/libraries/8/request"
           },
           "data": { "type": "requests", "id": "248" }
-        },
-        "tube": {
-          "links": {
-            "self": "http://traction/v1/pacbio/libraries/8/relationships/tube",
-            "related": "http://traction/v1/pacbio/libraries/8/tube"
-          },
-          "data": { "type": "tubes", "id": "12" }
         },
         "tag": {
           "links": {
@@ -514,13 +458,6 @@
           },
           "data": { "type": "requests", "id": "249" }
         },
-        "tube": {
-          "links": {
-            "self": "http://traction/v1/pacbio/libraries/9/relationships/tube",
-            "related": "http://traction/v1/pacbio/libraries/9/tube"
-          },
-          "data": { "type": "tubes", "id": "18" }
-        },
         "tag": {
           "links": {
             "self": "http://traction/v1/pacbio/libraries/9/relationships/tag",
@@ -574,13 +511,6 @@
             "related": "http://traction/v1/pacbio/libraries/10/request"
           },
           "data": { "type": "requests", "id": "250" }
-        },
-        "tube": {
-          "links": {
-            "self": "http://traction/v1/pacbio/libraries/10/relationships/tube",
-            "related": "http://traction/v1/pacbio/libraries/10/tube"
-          },
-          "data": { "type": "tubes", "id": "18" }
         },
         "tag": {
           "links": {
@@ -636,13 +566,6 @@
           },
           "data": { "type": "requests", "id": "251" }
         },
-        "tube": {
-          "links": {
-            "self": "http://traction/v1/pacbio/libraries/11/relationships/tube",
-            "related": "http://traction/v1/pacbio/libraries/11/tube"
-          },
-          "data": { "type": "tubes", "id": "18" }
-        },
         "tag": {
           "links": {
             "self": "http://traction/v1/pacbio/libraries/11/relationships/tag",
@@ -696,13 +619,6 @@
             "related": "http://traction/v1/pacbio/libraries/12/request"
           },
           "data": { "type": "requests", "id": "252" }
-        },
-        "tube": {
-          "links": {
-            "self": "http://traction/v1/pacbio/libraries/12/relationships/tube",
-            "related": "http://traction/v1/pacbio/libraries/12/tube"
-          },
-          "data": { "type": "tubes", "id": "18" }
         },
         "tag": {
           "links": {
@@ -758,13 +674,6 @@
           },
           "data": { "type": "requests", "id": "253" }
         },
-        "tube": {
-          "links": {
-            "self": "http://traction/v1/pacbio/libraries/13/relationships/tube",
-            "related": "http://traction/v1/pacbio/libraries/13/tube"
-          },
-          "data": { "type": "tubes", "id": "18" }
-        },
         "tag": {
           "links": {
             "self": "http://traction/v1/pacbio/libraries/13/relationships/tag",
@@ -818,13 +727,6 @@
             "related": "http://traction/v1/pacbio/libraries/14/request"
           },
           "data": { "type": "requests", "id": "254" }
-        },
-        "tube": {
-          "links": {
-            "self": "http://traction/v1/pacbio/libraries/14/relationships/tube",
-            "related": "http://traction/v1/pacbio/libraries/14/tube"
-          },
-          "data": { "type": "tubes", "id": "24" }
         },
         "tag": {
           "links": {
@@ -1918,6 +1820,15 @@
           "ready_for_run": true,
           "errors": []
         }
+      },
+      "relationships": {
+        "tube": {
+          "links": {
+            "self": "http://traction/v1/pacbio/libraries/1/relationships/tube",
+            "related": "http://traction/v1/pacbio/libraries/1/tube"
+          },
+          "data": { "type": "tubes", "id": "2" }
+        }
       }
     },
     {
@@ -1937,6 +1848,15 @@
         "run_suitability": {
           "ready_for_run": true,
           "errors": []
+        }
+      },
+      "relationships": {
+        "tube": {
+          "links": {
+            "self": "http://traction/v1/pacbio/libraries/1/relationships/tube",
+            "related": "http://traction/v1/pacbio/libraries/1/tube"
+          },
+          "data": { "type": "tubes", "id": "4" }
         }
       }
     },
@@ -1958,6 +1878,15 @@
           "ready_for_run": true,
           "errors": []
         }
+      },
+      "relationships": {
+        "tube": {
+          "links": {
+            "self": "http://traction/v1/pacbio/libraries/1/relationships/tube",
+            "related": "http://traction/v1/pacbio/libraries/1/tube"
+          },
+          "data": { "type": "tubes", "id": "10" }
+        }
       }
     },
     {
@@ -1977,6 +1906,15 @@
         "run_suitability": {
           "ready_for_run": true,
           "errors": []
+        }
+      },
+      "relationships": {
+        "tube": {
+          "links": {
+            "self": "http://traction/v1/pacbio/libraries/1/relationships/tube",
+            "related": "http://traction/v1/pacbio/libraries/1/tube"
+          },
+          "data": { "type": "tubes", "id": "12" }
         }
       }
     },
@@ -1998,6 +1936,15 @@
           "ready_for_run": true,
           "errors": []
         }
+      },
+      "relationships": {
+        "tube": {
+          "links": {
+            "self": "http://traction/v1/pacbio/libraries/1/relationships/tube",
+            "related": "http://traction/v1/pacbio/libraries/1/tube"
+          },
+          "data": { "type": "tubes", "id": "18" }
+        }
       }
     },
     {
@@ -2017,6 +1964,15 @@
         "run_suitability": {
           "ready_for_run": true,
           "errors": []
+        }
+      },
+      "relationships": {
+        "tube": {
+          "links": {
+            "self": "http://traction/v1/pacbio/libraries/1/relationships/tube",
+            "related": "http://traction/v1/pacbio/libraries/1/tube"
+          },
+          "data": { "type": "tubes", "id": "24" }
         }
       }
     }

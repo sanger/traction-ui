@@ -32,12 +32,6 @@
               "type": "tags",
               "id": "3"
             }
-          },
-          "tube": {
-            "data": {
-              "type": "tubes",
-              "id": "4"
-            }
           }
         }
       }
@@ -58,6 +52,14 @@
           "concentration": 1.0,
           "template_prep_kit_box_barcode": "LK12345",
           "insert_size": 100
+        },
+        "relationships": {
+          "tube": {
+            "data": {
+              "type": "tubes",
+              "id": "4"
+            }
+          }
         }
       },
       {

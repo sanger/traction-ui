@@ -25,13 +25,6 @@
             },
             "data": null
           },
-          "tube": {
-            "links": {
-              "self": "http://traction/v1/pacbio/libraries/7/relationships/tube",
-              "related": "http://traction/v1/pacbio/libraries/7/tube"
-            },
-            "data": null
-          },
           "tag": {
             "links": {
               "self": "http://traction/v1/pacbio/libraries/7/relationships/tag",
