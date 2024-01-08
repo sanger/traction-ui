@@ -16,12 +16,4 @@ describe('getters', () => {
     const actual = getters.libraries(state)
     expect(actual).toEqual(libraries)
   })
-
-  it('"libraryByBarcode" returns the library with the specified barcode from "state.libraries"', () => {
-    const state = {
-      libraries: libraries,
-    }
-    const actual = getters.libraryByBarcode(state)(libraries[0].tube.barcode)
-    expect(actual).toEqual(libraries[0])
-  })
 })

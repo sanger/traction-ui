@@ -50,7 +50,7 @@ const setLibraries = async ({ commit, getters }, filter, page) => {
   const promise = request.get({
     page,
     filter,
-    include: 'request,tag,tube,pool',
+    include: 'request,tag,pool.tube',
   })
   const response = await handleResponse(promise)
 
@@ -63,16 +63,17 @@ const setLibraries = async ({ commit, getters }, filter, page) => {
       for the pacbio libraries page
     */
     const libraries = data.map((library) => {
+      const pool = pools?.find((pool) => pool.id == library.relationships.pool.data?.id)
       return {
         id: library.id,
         ...library.attributes,
-        pool: pools?.find((pool) => pool.id == library.relationships.pool.data?.id),
+        pool,
         tag_group_id: tags?.find((tag) => tag.id == library.relationships.tag.data?.id)?.attributes
           .group_id,
         sample_name: requests?.find(
           (request) => request.id == library.relationships.request.data?.id,
         )?.attributes.sample_name,
-        barcode: tubes?.find((tube) => tube.id == library.relationships.tube.data?.id)?.attributes
+        barcode: tubes?.find((tube) => tube.id == pool.relationships.tube.data?.id)?.attributes
           .barcode,
       }
     })
@@ -80,63 +81,6 @@ const setLibraries = async ({ commit, getters }, filter, page) => {
   }
 
   return { success, errors, meta }
-}
-
-const updateTag = async ({ getters }, payload) => {
-  const body = {
-    data: {
-      id: payload.request_library_id,
-      type: 'tags',
-      attributes: {
-        tag_id: payload.selectedSampleTagId,
-      },
-    },
-  }
-
-  const request = getters.requestLibraryRequest
-  const promise = request.update(body)
-  const response = await handlePromise(promise)
-
-  return response
-}
-
-const updateLibrary = async ({ commit, getters }, payload) => {
-  const body = {
-    id: payload.id,
-    type: 'libraries',
-    attributes: {
-      volume: payload.volume,
-      concentration: payload.concentration,
-      template_prep_kit_box_barcode: payload.template_prep_kit_box_barcode,
-      insert_size: payload.insert_size,
-    },
-  }
-  const req = getters.libraryRequest
-  const promise = req.update({ data: body, include: 'request,tag,tube,pool' })
-  const { success, data: { data = {}, included = [] } = {}, errors } = await handleResponse(promise)
-  const {
-    tubes: [tube = {}] = [],
-    requests: [request = {}] = [],
-    tags: [tag = { attributes: { group_id: null } }] = [],
-    pools: [pool = {}] = [],
-  } = groupIncludedByResource(included)
-
-  if (success) {
-    // Formats returned data into correct structure for library store
-    const formattedLibrary = {
-      ...data.attributes,
-      id: data.id,
-      tag_group_id: tag.attributes.group_id,
-      sample_name: request.attributes.sample_name,
-      barcode: tube.attributes.barcode,
-      pool,
-      tag,
-      request,
-      tube,
-    }
-    commit('updateLibrary', formattedLibrary)
-  }
-  return { success, errors }
 }
 
 // Fetch Pacbio tagSets and tags and store choices in state
@@ -165,18 +109,9 @@ const actions = {
   createLibraryInTraction,
   deleteLibraries,
   setLibraries,
-  updateLibrary,
-  updateTag,
   fetchPacbioTagSets,
 }
 
-export {
-  createLibraryInTraction,
-  deleteLibraries,
-  setLibraries,
-  updateLibrary,
-  updateTag,
-  fetchPacbioTagSets,
-}
+export { createLibraryInTraction, deleteLibraries, setLibraries, fetchPacbioTagSets }
 
 export default actions
