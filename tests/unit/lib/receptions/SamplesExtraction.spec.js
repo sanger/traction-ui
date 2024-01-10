@@ -1,8 +1,8 @@
-import { labwareForReception } from '@/lib/receptions/SamplesExtractionV2'
+import { fetchLabwareForReception } from '@/lib/receptions/SamplesExtraction'
 import { Data, store } from '@support/testHelper'
 
 describe('SamplesExtraction', () => {
-  describe('#labwareForReception', () => {
+  describe('#fetchLabwareForReception', () => {
     const barcodes = ['SE108532I']
     const failedResponse = {
       data: { errors: [{ title: 'error1', detail: 'There was an error.' }] },
@@ -19,7 +19,7 @@ describe('SamplesExtraction', () => {
     it('successfully', async () => {
       request.mockResolvedValue(Data.SampleExtractionTubesWithSample)
 
-      const { foundBarcodes, attributes } = await labwareForReception({
+      const { foundBarcodes, attributes } = await fetchLabwareForReception({
         requests,
         barcodes,
         requestOptions: {
@@ -57,7 +57,7 @@ describe('SamplesExtraction', () => {
     it('unsuccessfully', async () => {
       request.mockRejectedValue({ response: failedResponse })
 
-      expect(() => labwareForReception({ requests, barcodes })).rejects.toThrow(
+      expect(() => fetchLabwareForReception({ requests, barcodes })).rejects.toThrow(
         'There was an error',
       )
     })
