@@ -180,6 +180,14 @@ describe('#setLibraries', () => {
             updated_at: '2021-07-23T10:15:37.000Z',
             volume: 1,
           },
+          relationships: {
+            tube: {
+              data: {
+                id: '721',
+                type: 'tubes',
+              },
+            },
+          },
           links: {
             self: 'http://localhost:3100/v1/pacbio/pools/1',
           },
@@ -214,6 +222,14 @@ describe('#setLibraries', () => {
             source_identifier: 'DN1:A5',
             template_prep_kit_box_barcode: '2424',
             updated_at: '2021-07-23T10:15:37.000Z',
+          },
+          relationships: {
+            tube: {
+              data: {
+                id: '722',
+                type: 'tubes',
+              },
+            },
           },
           links: {
             self: 'http://localhost:3100/v1/pacbio/pools/2',
@@ -263,65 +279,6 @@ describe('#setLibraries', () => {
     const { success, errors } = await Actions.setLibraries({ commit, getters })
 
     expect(success).toEqual(false)
-    expect(errors).toEqual(expectedResponse.errors)
-  })
-})
-
-describe('#updateLibrary', () => {
-  let commit, update, getters, failedResponse, library, successfulResponse, body
-
-  beforeEach(() => {
-    commit = vi.fn()
-    update = vi.fn()
-    getters = { libraryRequest: { update: update } }
-    library = {
-      id: 1,
-      tag: { group_id: '123abc1' },
-      volume: 1.0,
-      concentration: 1.0,
-      template_prep_kit_box_barcode: 'LK12345',
-      insert_size: 100,
-      sample: { id: 1 },
-    }
-    body = {
-      id: library.id,
-      type: 'libraries',
-      attributes: {
-        template_prep_kit_box_barcode: library.template_prep_kit_box_barcode,
-        volume: library.volume,
-        concentration: library.concentration,
-        insert_size: library.insert_size,
-      },
-    }
-
-    successfulResponse = { status: '200', data: Data.TractionPacbioLibrary.data }
-    failedResponse = {
-      status: '422',
-      data: { data: { errors: { error1: ['There was an error'] } } },
-    }
-  })
-
-  it('successfully', async () => {
-    update.mockResolvedValue(successfulResponse)
-
-    const { success, errors } = await Actions.updateLibrary({ commit, getters }, library)
-
-    expect(update).toBeCalledWith({
-      data: body,
-      include: 'request,tag,tube,pool',
-    })
-    expect(success).toBeTruthy()
-    expect(errors).toBeUndefined()
-  })
-
-  it('unsuccessfully', async () => {
-    update.mockRejectedValue({ response: failedResponse })
-
-    const expectedResponse = newResponse({ ...failedResponse, success: false })
-    const { success, errors } = await Actions.updateLibrary({ commit, getters }, library)
-
-    expect(commit).not.toHaveBeenCalled()
-    expect(success).toBeFalsy()
     expect(errors).toEqual(expectedResponse.errors)
   })
 })

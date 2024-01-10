@@ -17,6 +17,7 @@
             class="inline-block w-full"
             :options="receptions.options"
             data-type="source-list"
+            @update:modelValue="handleSourceChange"
           />
         </traction-field-group>
       </div>
@@ -127,7 +128,7 @@
         </div>
       </div>
     </div>
-    <div class="w-1/2 space-y-8">
+    <div class="w-1/2 space-y-4">
       <div class="flex flex-col w-full">
         <traction-heading level="4" :show-border="true">Scan barcodes</traction-heading>
         <traction-field-group
@@ -140,20 +141,60 @@
           <textarea
             id="barcodes"
             v-model="barcodes"
-            placeholder="Scan barcodes to import..."
+            placeholder="Scan barcodes to print/import..."
             rows="4"
             max-rows="10"
             name="barcodes"
             class="w-full text-base py-2 px-3 border border-gray-300 bg-white rounded-md"
+            @keypress.enter="fetchLabware"
+            @keyup.delete="debounceBarcodeDeletion"
           />
         </traction-field-group>
+      </div>
+      <div v-if="displayPrintOptions" id="print" class="p-2 bg-gray-100 rounded p-3">
+        <traction-heading level="4" :show-border="true">Print labels</traction-heading>
+        <div class="flex flex-row space-x-4 w-full">
+          <div class="flex flex-col w-1/2 text-left space-y-2">
+            <traction-label>Barcodes</traction-label>
+
+            <textarea
+              id="print-barcodes"
+              v-model="printBarcodes"
+              class="w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-sdb-100 focus:border-sdb-100 disabled:opacity-75 disabled:bg-gray-200 disabled:cursor-not-allowed"
+              rows="4"
+              disabled
+              max-rows="10"
+            />
+          </div>
+          <div class="flex flex-col text-left w-1/2 space-y-2">
+            <traction-label>Printers</traction-label>
+            <traction-select
+              id="printer-choice"
+              v-model="printerName"
+              :options="printerOptions"
+              value-field="text"
+              required
+            />
+          </div>
+        </div>
+        <div class="flex justify-end mt-3 w-full">
+          <traction-button
+            id="print-button"
+            class="grow"
+            theme="print"
+            :disabled="!printEnabled"
+            @click="printLabels"
+            >Print Labels</traction-button
+          >
+        </div>
       </div>
       <div class="bg-gray-100 rounded p-3">
         <traction-heading level="4" :show-border="true"> Summary </traction-heading>
         <div class="flex flex-col w-full">
           <traction-muted-text class="text-left">Imports data into Traction</traction-muted-text>
           <p id="importText" class="text-left">
-            Import {{ barcodeCount }} labware into {{ pipeline }} from {{ reception.text }}
+            Import {{ labwareData.foundBarcodes.size }} labware into {{ pipeline }} from
+            {{ reception.text }}
           </p>
           <div class="flex flex-row space-x-8 mt-5">
             <traction-button
@@ -183,14 +224,15 @@
 </template>
 
 <script>
-import { createReceptionResource, createMessages } from '@/services/traction/Reception'
+import { createReceptionResource, createMessages } from '@/services/traction/Reception.js'
 import Receptions from '@/lib/receptions'
 import TractionHeading from '../components/TractionHeading.vue'
-import LibraryTypeSelect from '@/components/shared/LibraryTypeSelect'
-import DataTypeSelect from '@/components/shared/DataTypeSelect'
+import LibraryTypeSelect from '@/components/shared/LibraryTypeSelect.vue'
+import DataTypeSelect from '@/components/shared/DataTypeSelect.vue'
 import { defaultRequestOptions } from '@/lib/receptions'
-// DEPRECATE-DPL-877 when is enabled by default, remove this
-import useSWRV from 'swrv'
+import { mapActions } from 'vuex'
+import { getCurrentDate } from '@/lib/DateHelpers.js'
+import { createLabelsFromBarcodes } from '@/lib/LabelPrintingHelpers.js'
 
 // We don't expect the modal to display without a message. If we end up in this
 // state then something has gone horribly wrong.
@@ -223,97 +265,144 @@ export default {
     requestOptions: defaultRequestOptions(),
     barcodes: '',
     modalState: defaultModal(),
+    // labwareData is used to store the input barcodes as well as the data fetched from sequencescape which is then imported into traction
+    labwareData: {
+      inputBarcodes: [], // inputBarcodes is used to store the barcodes that the user has inputted
+      foundBarcodes: new Set(), // foundBarcodes is used to store the barcodes that have been found in sequencescape
+      attributes: [], // attributes is used to store the attributes that have been found in sequencescape
+    },
+    printerName: '',
+    debounceTimer: null, // debounce timer for barcode deletion
   }),
   computed: {
-    reception: ({ receptions, source, version }) => receptions[source][version],
+    reception: ({ receptions, source }) => receptions[source],
     api() {
       return this.$store.getters.api
     }, // can't use this in arrow function
     receptionRequest: ({ api }) => api.traction.receptions.create,
-    barcodeArray: ({ barcodes }) => barcodes.split(/\s/).filter(Boolean),
+    barcodeArray: ({ barcodes }) => [...new Set(barcodes.split(/\s/).filter(Boolean))],
     isDisabled: ({ barcodeArray }) => barcodeArray.length === 0,
     barcodeCount: ({ barcodeArray }) => barcodeArray.length,
     presentRequestOptions: ({ requestOptions }) =>
       Object.fromEntries(Object.entries(requestOptions).filter(([, v]) => v)),
-    // DEPRECATE-DPL-877 once is enabled by default, remove this
-    version: () => {
-      // we only care if the feature is enabled or not, so we can just check for the presence of the feature
-      // if the feature flag can't be returned for any reason, we'll default to v1
-      const { data } = useSWRV(`${import.meta.env.VITE_TRACTION_BASE_URL}/flipper/api/actors/User`)
-      return data?.value?.features['dpl_877_reception_request']?.enabled ? 'v2' : 'v1'
+    //displayPrintOptions is used to decide whether print options should be displayed or not
+    displayPrintOptions: ({ source }) => source === 'SequencescapeTubes',
+    // printBarcodes is used to display the barcodes that will be printed
+    printBarcodes: ({ labwareData }) => Array.from(labwareData.foundBarcodes).join('\n'),
+    // printerOptions is used to display the printers that are available to print to
+    printerOptions() {
+      return this.$store.getters.printers.map((name) => ({
+        text: name,
+      }))
     },
+    // printEnabled is used to disable the print button if there are no barcodes to print
+    printEnabled: ({ printerName, printBarcodes }) => printerName && printBarcodes,
   },
   methods: {
-    importStarted({ message }) {
+    fetchStarted({ message }) {
       this.showModal(message)
     },
     clearModal() {
       this.modalState = defaultModal()
     },
+
     showModal(message) {
       this.modalState = { visible: true, message }
     },
-    importFailed({ message }) {
+
+    //Debounces the delete keypresses in the barcodes field so that the barcodes are not fetched on every keypress
+    debounceBarcodeDeletion() {
+      if (this.debounceTimer) {
+        clearTimeout(this.debounceTimer)
+      }
+      this.debounceTimer = setTimeout(() => {
+        this.fetchLabware()
+      }, 300)
+    },
+
+    fetchFailed({ message }) {
       this.clearModal()
       this.showAlert(message, 'danger')
     },
-    async importLoaded({ foundBarcodes, attributes }) {
-      this.showModal(`Creating ${foundBarcodes.size} labware(s) for ${this.reception.text}`)
-
+    /*
+      Imports the labware into traction.
+      This function is called when the user presses 'import'
+    */
+    async importLabware() {
+      this.showModal(
+        `Creating ${this.labwareData.foundBarcodes.size} labware(s) for ${this.reception.text}`,
+      )
+      //Creates the reception resource and shows a success or failure alert
       try {
         const response = await createReceptionResource(
           this.receptionRequest,
-          foundBarcodes,
-          attributes,
+          this.labwareData.foundBarcodes,
+          this.labwareData.attributes,
         )
+        const messages = createMessages({
+          barcodes: Array.from(this.labwareData.foundBarcodes),
+          response,
+          reception: this.reception,
+        })
 
-        // v2 returns a different response to v1, so we need to handle it differently
-        // DEPRECATE-DPL-877 once enabled by default, remove this line
-        if (this.version === 'v2') {
-          const messages = createMessages({
-            barcodes: this.barcodeArray,
-            response,
-            reception: this.reception,
-          })
-
-          // we create a different alert for each message
-          messages.forEach(({ type, text }) => {
-            this.showAlert(text, type)
-          })
-          // DEPRECATE-DPL-877 once is enabled by default, remove this
-        } else {
-          this.showAlert(
-            `Imported ${foundBarcodes.size} labware(s) from ${this.reception.text}`,
-            'success',
-          )
-        }
+        // we create a different alert for each message
+        messages.forEach(({ type, text }) => {
+          this.showAlert(text, type)
+        })
+        this.clearModal()
       } catch (e) {
         console.error(e)
         this.showAlert(e, 'danger')
+        this.clearModal()
       }
-      this.clearModal()
     },
-    async importLabware() {
-      this.importStarted({
+
+    /*
+    Fetches the labware from sequencescape and updates the labwareData
+    This function is called when the user presses 'enter' in the barcodes field
+    */
+    async fetchLabware() {
+      if (this.barcodeArray.length === 0) return
+      this.fetchStarted({
         message: `Fetching ${this.barcodeCount} items from ${this.reception.text}`,
       })
       try {
-        const { foundBarcodes, attributes } = await this.reception.importFunction({
+        //Fetch barcodes from sequencescape
+        const { foundBarcodes, attributes } = await this.reception.fetchFunction({
           requests: this.api,
           barcodes: this.barcodeArray,
           requestOptions: this.presentRequestOptions,
         })
-
-        this.importLoaded({
-          foundBarcodes,
-          attributes,
-        })
+        this.labwareData = { foundBarcodes, attributes, inputBarcodes: this.barcodeArray }
+        this.clearModal()
       } catch (e) {
         console.error(e)
-        this.importFailed({
+        this.fetchFailed({
           message: e.toString(),
         })
       }
+    },
+    /*
+      create the labels needed for the print job
+    */
+    createLabels() {
+      return createLabelsFromBarcodes({
+        sourceBarcodeList: Array.from(this.labwareData.foundBarcodes),
+        date: getCurrentDate(),
+        numberOfLabels: 1,
+      })
+    },
+    /*
+      Creates the print job and shows a success or failure alert
+    */
+    async printLabels() {
+      const { success, message = {} } = await this.createPrintJob({
+        printerName: this.printerName,
+        labels: this.createLabels(),
+        copies: 1,
+      })
+
+      this.showAlert(message, success ? 'success' : 'danger')
     },
     reset() {
       this.source = 'Sequencescape'
@@ -321,10 +410,29 @@ export default {
       this.requestOptions = defaultRequestOptions()
       this.barcodes = ''
       this.resetRequestOptions()
+      this.resetLabwareData()
     },
     resetRequestOptions() {
       this.requestOptions = defaultRequestOptions()
     },
+    /*
+      Resets the labwareData
+    */
+    resetLabwareData() {
+      this.labwareData = {
+        foundBarcodes: new Set(),
+        attributes: [],
+        inputBarcodes: [],
+      }
+    },
+    /*
+      Resets the labware data and input barcodes when the source is changed
+    */
+    handleSourceChange() {
+      this.resetLabwareData()
+      this.barcodes = ''
+    },
+    ...mapActions('printMyBarcode', ['createPrintJob']),
   },
 }
 </script>
