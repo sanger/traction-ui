@@ -45,9 +45,11 @@ describe('TractionBadge', () => {
   })
 
   it('applies no color class if an invalid color prop is provided', () => {
+    vi.spyOn(console, 'warn').mockImplementation(() => {})
     const wrapper = mount(TractionBadge, {
       propsData: { colour: 'invalid' },
     })
+    expect(console.warn).toHaveBeenCalled()
     expect(wrapper.classes()).not.toContain('bg-invalid')
     expect(wrapper.classes()).not.toContain('bg-sdb-200')
   })

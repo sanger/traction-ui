@@ -1,8 +1,8 @@
-import { labwareForReception } from '@/lib/receptions/SequencescapeV2'
+import { fetchLabwareForReception } from '@/lib/receptions/Sequencescape'
 import { Data, store } from '@support/testHelper'
 
 describe('Sequencescape', () => {
-  describe('#labwareForReception', () => {
+  describe('#fetchLabwareForReception', () => {
     const barcodes = ['DN9000002A', '3980000001795']
     const failedResponse = {
       data: { errors: [{ title: 'error1', detail: 'There was an error.' }] },
@@ -19,7 +19,7 @@ describe('Sequencescape', () => {
     it('successfully', async () => {
       request.mockResolvedValue(Data.SequencescapeLabware)
 
-      const { attributes, foundBarcodes } = await labwareForReception({
+      const { attributes, foundBarcodes } = await fetchLabwareForReception({
         requests,
         barcodes,
         requestOptions: {
@@ -100,7 +100,7 @@ describe('Sequencescape', () => {
     it('unsuccessfully', async () => {
       request.mockRejectedValue({ response: failedResponse })
 
-      expect(() => labwareForReception({ requests, barcodes })).rejects.toThrow(
+      expect(() => fetchLabwareForReception({ requests, barcodes })).rejects.toThrow(
         'There was an error',
       )
     })
