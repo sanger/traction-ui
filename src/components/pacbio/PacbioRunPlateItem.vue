@@ -1,10 +1,12 @@
 <template>
-  <div>
+  <!-- I have added a v-if as we are having render errors. I suspect we will need to fix this properly. -->
+  <div v-if="storePlate">
     <div class="text-left mx-5 mb-5 flex flex-col">
       <traction-label classes="text-left my-2">Plate number: {{ plateNumber }}</traction-label>
       <traction-label classes="text-left">
         Sequencing Kit Box Barcode:
         <traction-field-error
+          v-if="storePlate"
           :data-attribute="`sequencing-kit-box-barcode-${plateNumber}-error`"
           :error="validateSequencingKitBoxBarcode.error"
           :with-icon="validateSequencingKitBoxBarcode.valid"
@@ -83,6 +85,7 @@ export default {
       return this.getPlate(this.plateNumber)
     },
     validateSequencingKitBoxBarcode() {
+      if (!this.storePlate) return
       return validatePlate({ plate: this.storePlate, instrumentType: this.instrumentType })
     },
   },
