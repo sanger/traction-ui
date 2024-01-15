@@ -146,7 +146,6 @@
             max-rows="10"
             name="barcodes"
             class="w-full text-base py-2 px-3 border border-gray-300 bg-white rounded-md"
-            @keypress.enter="fetchLabware"
           />
         </traction-field-group>
       </div>
@@ -299,6 +298,7 @@ export default {
     // printEnabled is used to disable the print button if there are no barcodes to print
     printEnabled: ({ printerName, printBarcodes }) => printerName && printBarcodes,
   },
+  // Refetches the data when the barcodes field is changed
   watch: {
     barcodes: {
       handler: 'debounceBarcodeFetch',
@@ -316,17 +316,17 @@ export default {
     showModal(message) {
       this.modalState = { visible: true, message }
     },
-
-    //Debounces the delete keypresses in the barcodes field so that the barcodes are not fetched on every keypress
+    //Debounces the barcodes field so that the barcodes are not fetched on every keypress or deletion
     debounceBarcodeFetch() {
-      if (this.barcodeArray.length === 0) {
-        this.labwareData.foundBarcodes.clear()
-        return
-      }
-      this.isFetching = true
       if (this.debounceTimer) {
         clearTimeout(this.debounceTimer)
       }
+      if (this.barcodeArray.length === 0) {
+        this.labwareData.foundBarcodes.clear()
+        this.isFetching = false
+        return
+      }
+      this.isFetching = true
       this.debounceTimer = setTimeout(async () => {
         await this.fetchLabware()
         this.isFetching = false
