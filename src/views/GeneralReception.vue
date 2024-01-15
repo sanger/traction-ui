@@ -306,13 +306,9 @@ export default {
     },
   },
   methods: {
-    fetchStarted({ message }) {
-      this.showModal(message)
-    },
     clearModal() {
       this.modalState = defaultModal()
     },
-
     showModal(message) {
       this.modalState = { visible: true, message }
     },
@@ -331,11 +327,6 @@ export default {
         await this.fetchLabware()
         this.isFetching = false
       }, 500)
-    },
-
-    fetchFailed({ message }) {
-      this.clearModal()
-      this.showAlert(message, 'danger')
     },
     /*
       Imports the labware into traction.
@@ -386,9 +377,7 @@ export default {
         this.clearModal()
       } catch (e) {
         console.error(e)
-        this.fetchFailed({
-          message: e.toString(),
-        })
+        this.showAlert(e.toString(), 'danger')
       }
     },
     /*
