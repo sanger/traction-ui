@@ -216,12 +216,10 @@ describe('GeneralReception', () => {
   it('handles a failed import - load', async () => {
     vi.spyOn(console, 'error').mockImplementation(() => {})
     const wrapper = buildWrapper()
-    // We've begun the import
-    await wrapper.vm.fetchStarted({ message: 'Starting fetch' })
-    // But it fails
-    await wrapper.vm.fetchFailed({ message: 'Failed fetch' })
+    wrapper.vm.reception.fetchFunction = vi.fn().mockRejectedValue('Failed fetch')
 
-    expect(wrapper.text()).not.toContain('Starting fetch')
+    await wrapper.vm.fetchLabware()
+
     expect(Object.values(store.state.traction.messages)).toContainEqual({
       type: 'danger',
       message: 'Failed fetch',
