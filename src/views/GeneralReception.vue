@@ -147,7 +147,6 @@
             name="barcodes"
             class="w-full text-base py-2 px-3 border border-gray-300 bg-white rounded-md"
             @keypress.enter="fetchLabware"
-            @keyup.delete="debounceBarcodeDeletion"
           />
         </traction-field-group>
       </div>
@@ -214,7 +213,8 @@
               data-action="import-labware"
               @click="importLabware"
             >
-              Import
+              <traction-spinner v-if="isFetching" class="h-5"></traction-spinner>
+              <span v-else class="button-text">Import</span>
             </traction-button>
           </div>
         </div>
@@ -273,6 +273,7 @@ export default {
     },
     printerName: '',
     debounceTimer: null, // debounce timer for barcode deletion
+    isFetching: false,
   }),
   computed: {
     reception: ({ receptions, source }) => receptions[source],
@@ -281,7 +282,7 @@ export default {
     }, // can't use this in arrow function
     receptionRequest: ({ api }) => api.traction.receptions.create,
     barcodeArray: ({ barcodes }) => [...new Set(barcodes.split(/\s/).filter(Boolean))],
-    isDisabled: ({ barcodeArray }) => barcodeArray.length === 0,
+    isDisabled: ({ barcodeArray, isFetching }) => Boolean(barcodeArray.length === 0 || isFetching),
     barcodeCount: ({ barcodeArray }) => barcodeArray.length,
     presentRequestOptions: ({ requestOptions }) =>
       Object.fromEntries(Object.entries(requestOptions).filter(([, v]) => v)),
@@ -298,6 +299,12 @@ export default {
     // printEnabled is used to disable the print button if there are no barcodes to print
     printEnabled: ({ printerName, printBarcodes }) => printerName && printBarcodes,
   },
+  watch: {
+    barcodes: {
+      handler: 'debounceBarcodeFetch',
+      immediate: true,
+    },
+  },
   methods: {
     fetchStarted({ message }) {
       this.showModal(message)
@@ -311,13 +318,19 @@ export default {
     },
 
     //Debounces the delete keypresses in the barcodes field so that the barcodes are not fetched on every keypress
-    debounceBarcodeDeletion() {
+    debounceBarcodeFetch() {
+      if (this.barcodeArray.length === 0) {
+        this.labwareData.foundBarcodes.clear()
+        return
+      }
+      this.isFetching = true
       if (this.debounceTimer) {
         clearTimeout(this.debounceTimer)
       }
-      this.debounceTimer = setTimeout(() => {
-        this.fetchLabware()
-      }, 300)
+      this.debounceTimer = setTimeout(async () => {
+        await this.fetchLabware()
+        this.isFetching = false
+      }, 500)
     },
 
     fetchFailed({ message }) {
@@ -362,10 +375,6 @@ export default {
     This function is called when the user presses 'enter' in the barcodes field
     */
     async fetchLabware() {
-      if (this.barcodeArray.length === 0) return
-      this.fetchStarted({
-        message: `Fetching ${this.barcodeCount} items from ${this.reception.text}`,
-      })
       try {
         //Fetch barcodes from sequencescape
         const { foundBarcodes, attributes } = await this.reception.fetchFunction({

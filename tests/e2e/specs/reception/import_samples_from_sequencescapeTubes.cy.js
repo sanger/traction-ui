@@ -1,6 +1,3 @@
-const sequencescapeRequest =
-  '/api/v2/labware?filter[barcode]=3980000001795&include=receptacles.aliquots.sample.sample_metadata,receptacles.aliquots.study&fields[plates]=labware_barcode,receptacles&fields[tubes]=labware_barcode,receptacles&fields[wells]=position,aliquots&fields[receptacles]=aliquots&fields[samples]=sample_metadata,name,uuid&fields[sample_metadata]=sample_common_name&fields[studies]=uuid&fields[aliquots]=study,library_type,sample'
-
 describe('Import samples from Sequencescape Tubes', () => {
   beforeEach(() => {
     cy.intercept('v1/library_types?fields[library_types]=name,pipeline', {
@@ -51,14 +48,29 @@ describe('Import samples from Sequencescape Tubes', () => {
     cy.contains('NT1O imported from Sequencescape')
   })
 
-  it('Unsuccessfully - when the plates do not exist', () => {
+  it('Unsuccessfully - when the tubes do not exist', () => {
     cy.visit('#/reception')
     cy.contains('Scan barcodes')
     cy.get('[data-type="source-list"]').select('Sequencescape Tubes')
-    cy.intercept(sequencescapeRequest, {
-      statusCode: 200,
-      body: { data: [] },
-    })
+    cy.intercept(
+      {
+        url: '/api/v2/labware*',
+        query: {
+          'filter[barcode]': 'NT10',
+          include: 'receptacles.aliquots.sample.sample_metadata,receptacles.aliquots.study',
+          'fields[tubes]': 'labware_barcode,receptacles',
+          'fields[aliquots]': 'study,library_type,sample',
+          'fields[receptacles]': 'aliquots',
+          'fields[sample_metadata]': 'sample_common_name',
+          'fields[samples]': 'sample_metadata,name,uuid',
+          'fields[studies]': 'uuid',
+        },
+      },
+      {
+        statusCode: 200,
+        body: { data: [] },
+      },
+    )
     cy.get('#barcodes').type('NT10\n')
     cy.contains('Import 0 labware into PacBio from Sequencescape Tubes')
     cy.get('[data-action="import-labware"]').click()
