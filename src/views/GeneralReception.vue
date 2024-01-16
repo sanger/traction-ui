@@ -298,10 +298,16 @@ export default {
     // printEnabled is used to disable the print button if there are no barcodes to print
     printEnabled: ({ printerName, printBarcodes }) => printerName && printBarcodes,
   },
-  // Refetches the data when the barcodes field is changed
   watch: {
+    // Refetches the data when the barcodes field is changed
     barcodes: {
       handler: 'debounceBarcodeFetch',
+      immediate: true,
+    },
+    // Refetches the data when a request option changes as it may require information from sequencescape
+    requestOptions: {
+      handler: 'debounceBarcodeFetch',
+      deep: true,
       immediate: true,
     },
   },
