@@ -1,4 +1,4 @@
-import { handleResponse } from '@/api/ResponseHelper'
+import { handleResponse } from '@/api/ResponseHelper.js'
 
 /*
   return a set of labware by their barcodes
@@ -34,7 +34,7 @@ const getLabware = async (request, barcodes) => {
  * @returns { Object } Reception object ready for import into traction including attributes and foundBarcodes
  *
  */
-const labwareForReception = async ({ requests, barcodes, requestOptions }) => {
+const fetchLabwareForReception = async ({ requests, barcodes, requestOptions }) => {
   const labwareList = await getLabware(requests.sampleExtraction.assets, barcodes.join(','))
   const containerAttributes = transformLabwareList({
     labwareList,
@@ -75,11 +75,19 @@ const transformLabware = ({ labware, requestOptions }) => ({
     species: labware.attributes.fields.sample_common_name,
   },
 })
-
-const SamplesExtraction = {
-  labwareForReception,
+/**
+ *
+ * @returns {Array} Array of attribute keys
+ */
+const getAttributeKeys = () => {
+  return ['tubes_attributes']
 }
 
-export { labwareForReception }
+const SamplesExtraction = {
+  fetchLabwareForReception,
+  getAttributeKeys,
+}
+
+export { fetchLabwareForReception, getAttributeKeys }
 
 export default SamplesExtraction
