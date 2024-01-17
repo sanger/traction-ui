@@ -146,8 +146,6 @@
             max-rows="10"
             name="barcodes"
             class="w-full text-base py-2 px-3 border border-gray-300 bg-white rounded-md"
-            @keypress.enter="fetchLabware"
-            @keyup.delete="debounceBarcodeDeletion"
           />
         </traction-field-group>
       </div>
@@ -214,7 +212,8 @@
               data-action="import-labware"
               @click="importLabware"
             >
-              Import
+              <traction-spinner v-if="isFetching" class="h-5"></traction-spinner>
+              <span v-else class="button-text">Import</span>
             </traction-button>
           </div>
         </div>
@@ -273,6 +272,7 @@ export default {
     },
     printerName: '',
     debounceTimer: null, // debounce timer for barcode deletion
+    isFetching: false,
   }),
   computed: {
     reception: ({ receptions, source }) => receptions[source],
@@ -281,7 +281,7 @@ export default {
     }, // can't use this in arrow function
     receptionRequest: ({ api }) => api.traction.receptions.create,
     barcodeArray: ({ barcodes }) => [...new Set(barcodes.split(/\s/).filter(Boolean))],
-    isDisabled: ({ barcodeArray }) => barcodeArray.length === 0,
+    isDisabled: ({ barcodeArray, isFetching }) => Boolean(barcodeArray.length === 0 || isFetching),
     barcodeCount: ({ barcodeArray }) => barcodeArray.length,
     presentRequestOptions: ({ requestOptions }) =>
       Object.fromEntries(Object.entries(requestOptions).filter(([, v]) => v)),
@@ -298,31 +298,41 @@ export default {
     // printEnabled is used to disable the print button if there are no barcodes to print
     printEnabled: ({ printerName, printBarcodes }) => printerName && printBarcodes,
   },
-  methods: {
-    fetchStarted({ message }) {
-      this.showModal(message)
+  watch: {
+    // Refetches the data when the barcodes field is changed
+    barcodes: {
+      handler: 'debounceBarcodeFetch',
+      immediate: true,
     },
+    // Refetches the data when a request option changes as it may require information from sequencescape
+    requestOptions: {
+      handler: 'debounceBarcodeFetch',
+      deep: true,
+      immediate: true,
+    },
+  },
+  methods: {
     clearModal() {
       this.modalState = defaultModal()
     },
-
     showModal(message) {
       this.modalState = { visible: true, message }
     },
-
-    //Debounces the delete keypresses in the barcodes field so that the barcodes are not fetched on every keypress
-    debounceBarcodeDeletion() {
+    //Debounces the barcodes field so that the barcodes are not fetched on every keypress or deletion
+    debounceBarcodeFetch() {
       if (this.debounceTimer) {
         clearTimeout(this.debounceTimer)
       }
-      this.debounceTimer = setTimeout(() => {
-        this.fetchLabware()
-      }, 300)
-    },
-
-    fetchFailed({ message }) {
-      this.clearModal()
-      this.showAlert(message, 'danger')
+      if (this.barcodeArray.length === 0) {
+        this.labwareData.foundBarcodes.clear()
+        this.isFetching = false
+        return
+      }
+      this.isFetching = true
+      this.debounceTimer = setTimeout(async () => {
+        await this.fetchLabware()
+        this.isFetching = false
+      }, 500)
     },
     /*
       Imports the labware into traction.
@@ -362,10 +372,6 @@ export default {
     This function is called when the user presses 'enter' in the barcodes field
     */
     async fetchLabware() {
-      if (this.barcodeArray.length === 0) return
-      this.fetchStarted({
-        message: `Fetching ${this.barcodeCount} items from ${this.reception.text}`,
-      })
       try {
         //Fetch barcodes from sequencescape
         const { foundBarcodes, attributes } = await this.reception.fetchFunction({
@@ -377,9 +383,7 @@ export default {
         this.clearModal()
       } catch (e) {
         console.error(e)
-        this.fetchFailed({
-          message: e.toString(),
-        })
+        this.showAlert(e.toString(), 'danger')
       }
     },
     /*
