@@ -24,7 +24,7 @@
     "@sanger/ui-styling": "^4.1.0",
     "@vitejs/plugin-vue": "^5.0.3",
     "axios": "^1.6.5",
-    "autoprefixer": "^10.4.16",
+    "autoprefixer": "^10.4.17",
     "csv-parse": "^5.5.3",
     "global": "^4.4.0",
     "lodash-es": "^4.17.21",
