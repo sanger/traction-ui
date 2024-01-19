@@ -34,6 +34,7 @@ export const usePacbioLibrariesStore = defineStore('pacbioLibraries', {
     /**Create a new libary */
     async createLibraryInTraction(library, tagId) {
       const rootState = useRootStore()
+      //TODO_LIBRARY_CHANGE: The body structure needs review- updated the attriutes to match the new library structure
       const body = {
         data: {
           type: 'library',
