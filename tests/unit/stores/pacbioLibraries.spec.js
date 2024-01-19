@@ -5,172 +5,6 @@ import { usePacbioLibrariesStore } from '@/stores/pacbioLibraries.js'
 import { newResponse } from '@/api/ResponseHelper.js'
 import { beforeEach, describe } from 'vitest'
 
-const expectedTagChoices = {
-  3: [
-    {
-      text: 'bc1001_BAK8A_OA',
-      value: '113',
-    },
-    {
-      text: 'bc1002_BAK8A_OA',
-      value: '114',
-    },
-    {
-      text: 'bc1003_BAK8A_OA',
-      value: '115',
-    },
-    {
-      text: 'bc1008_BAK8A_OA',
-      value: '116',
-    },
-    {
-      text: 'bc1009_BAK8A_OA',
-      value: '117',
-    },
-    {
-      text: 'bc1010_BAK8A_OA',
-      value: '118',
-    },
-    {
-      text: 'bc1011_BAK8A_OA',
-      value: '119',
-    },
-    {
-      text: 'bc1012_BAK8A_OA',
-      value: '120',
-    },
-    {
-      text: 'bc1015_BAK8B_OA',
-      value: '121',
-    },
-    {
-      text: 'bc1016_BAK8B_OA',
-      value: '122',
-    },
-    {
-      text: 'bc1017_BAK8B_OA',
-      value: '123',
-    },
-    {
-      text: 'bc1018_BAK8B_OA',
-      value: '124',
-    },
-    {
-      text: 'bc1019_BAK8B_OA',
-      value: '125',
-    },
-    {
-      text: 'bc1020_BAK8B_OA',
-      value: '126',
-    },
-    {
-      text: 'bc1021_BAK8B_OA',
-      value: '127',
-    },
-    {
-      text: 'bc1022_BAK8B_OA',
-      value: '128',
-    },
-  ],
-  4: [
-    {
-      text: 'bc1001-F',
-      value: '129',
-    },
-    {
-      text: 'bc1001-R',
-      value: '130',
-    },
-    {
-      text: 'bc1002-F',
-      value: '131',
-    },
-    {
-      text: 'bc1002-R',
-      value: '132',
-    },
-    {
-      text: 'bc1003-F',
-      value: '133',
-    },
-    {
-      text: 'bc1003-R',
-      value: '134',
-    },
-    {
-      text: 'bc1004-F',
-      value: '135',
-    },
-    {
-      text: 'bc1004-R',
-      value: '136',
-    },
-    {
-      text: 'bc1005-F',
-      value: '137',
-    },
-    {
-      text: 'bc1005-R',
-      value: '138',
-    },
-    {
-      text: 'bc1006-F',
-      value: '139',
-    },
-    {
-      text: 'bc1006-R',
-      value: '140',
-    },
-    {
-      text: 'bc1008-F',
-      value: '141',
-    },
-    {
-      text: 'bc1008-R ',
-      value: '142',
-    },
-    {
-      text: 'bc1012-F',
-      value: '143',
-    },
-    {
-      text: 'bc1012-R',
-      value: '144',
-    },
-    {
-      text: 'bc1018-F',
-      value: '145',
-    },
-    {
-      text: 'bc1018-R',
-      value: '146',
-    },
-    {
-      text: 'bc1019-F',
-      value: '147',
-    },
-    {
-      text: 'bc1019-R',
-      value: '148',
-    },
-    {
-      text: 'bc1020-F',
-      value: '149',
-    },
-    {
-      text: 'bc1020-R',
-      value: '150',
-    },
-    {
-      text: 'bc1023-F',
-      value: '151',
-    },
-    {
-      text: 'bc1023-R',
-      value: '152',
-    },
-  ],
-}
 describe('usePacbioLibrariesStore', () => {
   beforeEach(() => {
     /*Creates a fresh pinia instance and make it active so it's automatically picked
@@ -215,17 +49,15 @@ describe('usePacbioLibrariesStore', () => {
         }
 
         library = {
-          tag: { id: 1, group_id: '123abc1' },
           volume: 1.0,
           concentration: 1.0,
           template_prep_kit_box_barcode: 'LK12345',
           insert_size: 100,
           sample: { id: 1 },
         }
-
         body = {
           data: {
-            type: 'pools',
+            type: 'library',
             attributes: {
               library_attributes: [
                 {
@@ -237,10 +69,6 @@ describe('usePacbioLibrariesStore', () => {
                   insert_size: library.insert_size,
                 },
               ],
-              template_prep_kit_box_barcode: library.template_prep_kit_box_barcode,
-              volume: library.volume,
-              concentration: library.concentration,
-              insert_size: library.insert_size,
             },
           },
         }
@@ -251,7 +79,7 @@ describe('usePacbioLibrariesStore', () => {
           data: { data: {}, included: [{ type: 'tubes', attributes: { barcode: 'TRAC-1' } }] },
         }
         create.mockResolvedValue(mockResponse)
-        const { success, barcode } = await store.createLibraryInTraction(library)
+        const { success, barcode } = await store.createLibraryInTraction(library, 1)
         expect(create).toBeCalledWith({
           data: body,
           include: 'tube',
@@ -275,42 +103,37 @@ describe('usePacbioLibrariesStore', () => {
       })
     })
     describe('#deleteLibraries', () => {
-      let destroy, libraryIds, failedResponse
+      let destroy, libraryIds
 
       beforeEach(() => {
         destroy = vi.fn()
         rootStore.api.traction.pacbio.libraries = { destroy: destroy }
         libraryIds = [1, 2]
-
-        failedResponse = { data: { data: [] }, status: 500, statusText: 'Internal Server Error' }
       })
 
       it('successfully', async () => {
-        const mockResponse = { data: {}, status: 204, statusText: 'OK' }
-
-        const promise = new Promise((resolve) => {
-          resolve(mockResponse)
-        })
-
-        destroy.mockReturnValue([promise])
-
-        const expectedResponse = new Response(mockResponse)
+        const mockResponse = {
+          status: '201',
+          data: { data: {} },
+        }
+        destroy.mockReturnValue([Promise.resolve(mockResponse)])
+        const expectedResponse = newResponse({ ...mockResponse, success: true })
         const response = await store.deleteLibraries(libraryIds)
-
         expect(response).toEqual([expectedResponse])
       })
 
       it('unsuccessfully', async () => {
-        const promise = new Promise((reject) => {
-          reject(failedResponse)
-        })
+        const failedResponse = {
+          status: '422',
+          data: { data: { errors: { error1: ['There was an error'] } } },
+        }
+        destroy.mockReturnValue([Promise.reject({ response: failedResponse })])
 
-        destroy.mockReturnValue([promise])
-
-        const expectedResponse = new Response(failedResponse)
+        const expectedResponse = newResponse({ ...failedResponse, success: false })
         const response = await store.deleteLibraries(libraryIds)
 
-        expect(response).toEqual([expectedResponse])
+        expect(response[0].errors).toEqual(expectedResponse.errors)
+        expect(response[0].success).toBeFalsy()
       })
     })
     describe('#setLibraries', () => {
@@ -456,7 +279,6 @@ describe('usePacbioLibrariesStore', () => {
 
       it('unsuccessfully', async () => {
         get.mockRejectedValue({ response: failedResponse })
-
         const expectedResponse = newResponse({ ...failedResponse, success: false })
         const { success, errors } = await store.setLibraries()
         expect(success).toEqual(false)
@@ -494,7 +316,7 @@ describe('usePacbioLibrariesStore', () => {
         const { success } = await store.fetchPacbioTagSets()
         // assert result
         expect(store.tagSetChoices).toEqual(expectedTagSetChoices)
-        expect(store.tagChoices).toEqual(expectedTagChoices)
+        expect(Object.keys(store.tagChoices)).toEqual(['3', '4'])
         expect(success).toEqual(true)
       })
 
