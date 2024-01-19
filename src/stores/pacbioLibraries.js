@@ -3,6 +3,10 @@ import useRootStore from '@/stores'
 import { handleResponse } from '@/api/ResponseHelper.js'
 import { groupIncludedByResource, dataToObjectById } from '@/api/JsonApi.js'
 
+/**
+ * 'TODO_LIBRARY_CHANGE': This store needs to be updated to use the new library creation
+ * All the changes, that might be required, are marked with the above comment
+ */
 export const usePacbioLibrariesStore = defineStore('pacbioLibraries', {
   state: () => ({
     tagSetChoices: [],
