@@ -59,16 +59,12 @@ describe('usePacbioLibrariesStore', () => {
           data: {
             type: 'library',
             attributes: {
-              library_attributes: [
-                {
-                  pacbio_request_id: library.sample.id,
-                  template_prep_kit_box_barcode: library.template_prep_kit_box_barcode,
-                  tag_id: 1,
-                  volume: library.volume,
-                  concentration: library.concentration,
-                  insert_size: library.insert_size,
-                },
-              ],
+              pacbio_request_id: library.sample.id,
+              template_prep_kit_box_barcode: library.template_prep_kit_box_barcode,
+              tag_id: 1,
+              volume: library.volume,
+              concentration: library.concentration,
+              insert_size: library.insert_size,
             },
           },
         }
