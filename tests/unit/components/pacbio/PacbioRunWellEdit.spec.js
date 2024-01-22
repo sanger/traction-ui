@@ -207,24 +207,24 @@ describe('PacbioWellEdit', () => {
               .find('[data-attribute="ccs-analysis-output-include-kinetics-information"]')
               .exists(),
           ).toBeFalsy()
+        })
 
-          it('has a CCS analysis output include low quality reads input', () => {
-            expect(
-              wrapper
-                .find('[data-attribute="ccs-analysis-output-include-low-quality-reads"]')
-                .exists(),
-            ).toBeFalsy()
-          })
+        it('has a CCS analysis output include low quality reads input', () => {
+          expect(
+            wrapper
+              .find('[data-attribute="ccs-analysis-output-include-low-quality-reads"]')
+              .exists(),
+          ).toBeFalsy()
+        })
 
-          it('has a fivemc calls in cpg motifs input', () => {
-            expect(
-              wrapper.find('[data-attribute="include-fivemc-calls-in-cpg-motifs"]').exists(),
-            ).toBeFalsy()
-          })
+        it('has a fivemc calls in cpg motifs input', () => {
+          expect(
+            wrapper.find('[data-attribute="include-fivemc-calls-in-cpg-motifs"]').exists(),
+          ).toBeFalsy()
+        })
 
-          it('has a demultiplex barcodes input', () => {
-            expect(wrapper.find('[data-attribute="demultiplex-barcodes"]').exists()).toBeFalsy()
-          })
+        it('has a demultiplex barcodes input', () => {
+          expect(wrapper.find('[data-attribute="demultiplex-barcodes"]').exists()).toBeFalsy()
         })
       })
     })
