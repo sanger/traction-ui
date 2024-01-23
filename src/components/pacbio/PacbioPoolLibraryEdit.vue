@@ -189,13 +189,3 @@ export default {
   },
 }
 </script>
-<style scoped lang="scss">
-td,
-.custom-select,
-.form-control {
-  font-size: 0.8em;
-}
-.tag-id {
-  width: 110px;
-}
-</style>
