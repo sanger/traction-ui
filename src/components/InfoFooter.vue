@@ -94,8 +94,3 @@ export default {
   },
 }
 </script>
-<style scoped>
-#footer {
-  padding-bottom: 20px;
-}
-</style>
