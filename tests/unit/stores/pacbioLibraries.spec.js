@@ -43,8 +43,9 @@ describe('usePacbioLibrariesStore', () => {
         rootStore.api = {
           traction: {
             pacbio: {
-              pools: { create },
+              libraries: { create },
             },
+            tractionTags: [{ id: 1, group_id: '123abc1' }],
           },
         }
 
@@ -54,17 +55,24 @@ describe('usePacbioLibrariesStore', () => {
           template_prep_kit_box_barcode: 'LK12345',
           insert_size: 100,
           sample: { id: 1 },
+          tag: { id: 1, group_id: '123abc1' },
         }
         body = {
           data: {
-            type: 'library',
+            type: 'libraries',
             attributes: {
               pacbio_request_id: library.sample.id,
               template_prep_kit_box_barcode: library.template_prep_kit_box_barcode,
               tag_id: 1,
-              volume: library.volume,
               concentration: library.concentration,
+              volume: library.volume,
               insert_size: library.insert_size,
+              primary_aliquot_attributes: {
+                template_prep_kit_box_barcode: library.template_prep_kit_box_barcode,
+                volume: library.volume,
+                concentration: library.concentration,
+                insert_size: library.insert_size,
+              },
             },
           },
         }
@@ -78,7 +86,7 @@ describe('usePacbioLibrariesStore', () => {
         const { success, barcode } = await store.createLibraryInTraction(library, 1)
         expect(create).toBeCalledWith({
           data: body,
-          include: 'tube',
+          include: 'tube,primary_aliquot',
         })
         expect(success).toBeTruthy()
         expect(barcode).toEqual('TRAC-1')
@@ -137,7 +145,7 @@ describe('usePacbioLibrariesStore', () => {
 
       beforeEach(() => {
         get = vi.fn()
-        store.libraryRequest.get = get
+        rootStore.api.traction.pacbio.libraries.get = get
         failedResponse = {
           data: { data: { errors: { error1: ['There was an error'] } } },
           status: 500,
@@ -146,99 +154,50 @@ describe('usePacbioLibrariesStore', () => {
       })
 
       it('successfully', async () => {
-        const libraries = Data.TractionPacbioLibraries
-        libraries.data.data.splice(2, 4)
+        const libraries = Data.TractionPacbioLibrariesNoRelationships
         get.mockResolvedValue(libraries)
         const { success, errors } = await store.setLibraries()
-
         // Because we do some data manipulation in the action the easiest way to build the expected data
         // is to do it manually
         const expectedLibraries = [
           {
-            id: '721',
+            id: '7',
             state: 'pending',
-            volume: 1,
-            concentration: 1,
-            template_prep_kit_box_barcode: 'LK12345',
-            insert_size: 100,
-            created_at: '2021/06/15 10:25',
-            deactivated_at: null,
-            source_identifier: 'DN1:A1',
-            run_suitability: { ready_for_run: true, errors: [] },
-            pool: {
-              id: '1',
-              type: 'pools',
-              attributes: {
-                concentration: 1,
-                created_at: '2021-07-23T10:15:37.000Z',
-                insert_size: 1,
-                run_suitability: {
-                  errors: [],
-                  ready_for_run: true,
-                },
-                source_identifier: 'DN1:A4',
-                template_prep_kit_box_barcode: '2424',
-                updated_at: '2021-07-23T10:15:37.000Z',
-                volume: 1,
+            attributes: {
+              concentration: 1,
+              insert_size: 1,
+              run_suitability: {
+                errors: [],
+                ready_for_run: true,
               },
-              relationships: {
-                tube: {
-                  data: {
-                    id: '721',
-                    type: 'tubes',
-                  },
+              source_identifier: 'null',
+              template_prep_kit_box_barcode: 'LK12345',
+              created_at: '2019/10/16 13:52',
+              volume: 1,
+            },
+            relationships: {
+              tube: {
+                data: {
+                  id: '721',
+                  type: 'tubes',
                 },
               },
-              links: {
-                self: 'http://localhost:3100/v1/pacbio/pools/1',
+              request: {
+                data: {
+                  id: '481',
+                  type: 'requests',
+                },
+              },
+              tag: {
+                data: {
+                  id: '5',
+                  type: 'tags',
+                },
               },
             },
             tag_group_id: 'bc1009_BAK8A_OA',
             sample_name: 'Sample48',
             barcode: 'TRAC-2-721',
-          },
-          {
-            id: '722',
-            state: 'pending',
-            volume: 1,
-            concentration: 1,
-            template_prep_kit_box_barcode: 'LK12345',
-            insert_size: 100,
-            created_at: '2021/06/15 10:25',
-            deactivated_at: null,
-            source_identifier: 'DN1:A2',
-            run_suitability: { ready_for_run: true, errors: [] },
-            pool: {
-              id: '2',
-              type: 'pools',
-              attributes: {
-                concentration: 1,
-                created_at: '2021-07-23T10:15:37.000Z',
-                insert_size: 1,
-                volume: 1,
-                run_suitability: {
-                  errors: [],
-                  ready_for_run: true,
-                },
-                source_identifier: 'DN1:A5',
-                template_prep_kit_box_barcode: '2424',
-                updated_at: '2021-07-23T10:15:37.000Z',
-              },
-              relationships: {
-                tube: {
-                  data: {
-                    id: '722',
-                    type: 'tubes',
-                  },
-                },
-              },
-              links: {
-                self: 'http://localhost:3100/v1/pacbio/pools/2',
-              },
-            },
-            tag_group_id: 'bc1008_BAK8A_OA',
-            sample_name: 'Sample47',
-            barcode: 'TRAC-2-722',
           },
         ]
         expect(store.libraries).toEqual(expectedLibraries)
