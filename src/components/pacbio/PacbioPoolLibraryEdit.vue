@@ -17,7 +17,6 @@
           v-model="tag_id"
           data-type="tag-list"
           :options="tagListOptions"
-          class="tag-id"
         ></traction-select>
       </traction-field-error>
     </traction-table-column>
@@ -189,13 +188,3 @@ export default {
   },
 }
 </script>
-<style scoped lang="scss">
-td,
-.custom-select,
-.form-control {
-  font-size: 0.8em;
-}
-.tag-id {
-  width: 110px;
-}
-</style>
