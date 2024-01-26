@@ -118,13 +118,5 @@ export const usePacbioLibrariesStore = defineStore('pacbioLibraries', {
       }
       return { success, errors, response }
     },
-
-    /**Update a library */
-    async updateLibrary(library) {
-      const index = this.libraries.findIndex((lib) => lib.id == library.id)
-      const libraries = this.libraries
-      this.libraries.splice(index, 1, library)
-      this.libraries = libraries
-    },
   },
 })

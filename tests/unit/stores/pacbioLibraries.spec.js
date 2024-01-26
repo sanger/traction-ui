@@ -214,16 +214,7 @@ describe('usePacbioLibrariesStore', () => {
         expect(errors).toEqual(expectedResponse.errors)
       })
     })
-    describe('updateLibrary', () => {
-      it('"updateLibrary" updates "state.libraries" with the given library change', () => {
-        const library = new Response(Data.TractionPacbioLibrary).deserialize.libraries[0]
-        const libraries = new Response(Data.TractionPacbioLibraries).deserialize.libraries
-        library.volume = 7
-        store.libraries = [...libraries]
-        store.updateLibrary(library)
-        expect(store.libraries).not.toEqual(libraries)
-      })
-    })
+
     describe('fetchPacbioTagSets', () => {
       it('handles success', async () => {
         const expectedTagSetChoices = [
