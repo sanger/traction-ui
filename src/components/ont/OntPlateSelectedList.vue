@@ -22,7 +22,7 @@
             >{{ tabTitle }}</traction-menu-item
           >
         </traction-menu>
-        <div v-if="sourceIndex == 0" class="wrapper">
+        <div v-if="sourceIndex == 0" class="w-1/2 overflow-auto">
           <div v-if="selectedPlates.length == 0" data-type="warning-message" class="mt-4">
             No plates selected
           </div>
@@ -122,15 +122,3 @@ export default {
   },
 }
 </script>
-
-<style scoped lang="scss">
-@import 'src/styles/components.scss';
-.wrapper {
-  overflow: auto;
-  display: flex;
-  flex-wrap: wrap;
-}
-.wrapper > div {
-  width: 50%;
-}
-</style>
