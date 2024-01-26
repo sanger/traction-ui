@@ -16,7 +16,7 @@ describe('usePacbioLibrariesStore', () => {
   describe('state', () => {
     let libraries
     beforeEach(() => {
-      libraries = new Response(Data.TractionPacbioLibraries).deserialize.libraries
+      libraries = new Response(Data.TractionPacbioLibrary).deserialize.libraries
     })
 
     it('"libraries" returns libraries from "state.libraries"', () => {
@@ -154,49 +154,23 @@ describe('usePacbioLibrariesStore', () => {
       })
 
       it('successfully', async () => {
-        const libraries = Data.TractionPacbioLibrariesNoRelationships
+        const libraries = Data.TractionPacbioLibrary
         get.mockResolvedValue(libraries)
         const { success, errors } = await store.setLibraries()
         // Because we do some data manipulation in the action the easiest way to build the expected data
         // is to do it manually
         const expectedLibraries = [
           {
-            id: '7',
+            id: '1',
             state: 'pending',
-            attributes: {
-              concentration: 1,
-              insert_size: 1,
-              run_suitability: {
-                errors: [],
-                ready_for_run: true,
-              },
-              source_identifier: 'null',
-              template_prep_kit_box_barcode: 'LK12345',
-              created_at: '2019/10/16 13:52',
-              volume: 1,
-            },
-            relationships: {
-              tube: {
-                data: {
-                  id: '721',
-                  type: 'tubes',
-                },
-              },
-              request: {
-                data: {
-                  id: '481',
-                  type: 'requests',
-                },
-              },
-              tag: {
-                data: {
-                  id: '5',
-                  type: 'tags',
-                },
-              },
-            },
-            tag_group_id: 'bc1009_BAK8A_OA',
-            sample_name: 'Sample48',
+            volume: 1.0,
+            concentration: 1,
+            insert_size: 100,
+            source_identifier: 'DN1:A1',
+            template_prep_kit_box_barcode: 'LK12345',
+            created_at: '09/23/2019 11:18',
+            tag_group_id: '1234',
+            sample_name: '4616STDY7535900',
             barcode: 'TRAC-2-721',
           },
         ]

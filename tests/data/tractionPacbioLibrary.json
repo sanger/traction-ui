@@ -2,52 +2,59 @@
   "data": {
     "data": [
       {
-        "id": "7",
+        "id": "1",
         "type": "libraries",
-        "links": {
-          "self": "http://traction/v1/pacbio/libraries/7"
-        },
         "attributes": {
           "state": "pending",
-          "volume": 1,
-          "concentration": 1,
+          "volume": 1.0,
+          "concentration": 1.0,
           "template_prep_kit_box_barcode": "LK12345",
           "insert_size": 100,
-          "created_at": "2019/10/16 13:52",
-          "deactivated_at": null,
-          "source_identifier": null
+          "created_at": "09/23/2019 11:18",
+          "source_identifier": "DN1:A1"
         },
         "relationships": {
           "request": {
-            "links": {
-              "self": "http://traction/v1/pacbio/libraries/7/relationships/request",
-              "related": "http://traction/v1/pacbio/libraries/7/request"
-            },
-             "data": {
+            "data": {
               "type": "requests",
-              "id": "481"
+              "id": "1"
             }
           },
           "tag": {
-            "links": {
-              "self": "http://traction/v1/pacbio/libraries/7/relationships/tag",
-              "related": "http://traction/v1/pacbio/libraries/7/tag"
-            },
             "data": {
               "type": "tags",
-              "id": "5"
+              "id": "3"
             }
           },
-          "tube":{
-            "links":{
-              "self": "http://traction/v1/pacbio/libraries/7/relationships/tube",
-              "related": "http://traction/v1/pacbio/libraries/7/tube"
-            },
+          "tube": {
             "data": {
               "type": "tubes",
-              "id": "721"
+              "id": "4"
             }
           }
+        }
+      }
+    ],
+    "included": [
+      {
+        "id": "1",
+        "type": "requests",
+        "attributes": {
+          "sample_name": "4616STDY7535900"
+        }
+      },
+      {
+        "id": "4",
+        "type": "tubes",
+        "attributes": {
+          "barcode": "TRAC-2-721"
+        }
+      },
+      {
+        "id": "3",
+        "type": "tags",
+        "attributes": {
+          "group_id": "1234"
         }
       }
     ]
