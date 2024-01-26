@@ -3,11 +3,6 @@ import useRootStore from '@/stores'
 import { handleResponse } from '@/api/ResponseHelper.js'
 import { groupIncludedByResource, dataToObjectById } from '@/api/JsonApi.js'
 
-/**
- * 'TODO_LIBRARY_CHANGE': This store needs to be updated to use the new library creation
- * All the changes, that might be required, are marked with the above comment
- */
-
 export const usePacbioLibrariesStore = defineStore('pacbioLibraries', {
   state: () => ({
     tagSetChoices: [],
@@ -66,10 +61,10 @@ export const usePacbioLibrariesStore = defineStore('pacbioLibraries', {
     /**Set libraries in store with those fetched using given filter and page  */
     async setLibraries(filter, page) {
       const rootStore = useRootStore()
-      const promise = rootStore.api.traction.pacbio.libraries.get({
+      const pacbioLibraries = rootStore.api.traction.pacbio.libraries
+      const promise = pacbioLibraries.get({
         page,
         filter,
-        //TODO_LIBRARY_CHANGE: Instead of pool.tube we should be using tube relation in library
         include: 'request,tag,tube',
       })
       const response = await handleResponse(promise)
@@ -81,7 +76,7 @@ export const usePacbioLibrariesStore = defineStore('pacbioLibraries', {
         /* 
       Here we build library objects to include necessary relational data
       for the pacbio libraries page
-    */
+      */
         const libraries = data.map((library) => {
           return {
             /** */
@@ -92,7 +87,7 @@ export const usePacbioLibrariesStore = defineStore('pacbioLibraries', {
             sample_name: requests?.find(
               (request) => request.id == library.relationships.request.data?.id,
             )?.attributes.sample_name,
-            barcode: tubes?.find((tube) => tube.id == libraries.relationships.tube.data?.id)
+            barcode: tubes?.find((tube) => tube.id == library.relationships.tube.data?.id)
               ?.attributes.barcode,
           }
         })
