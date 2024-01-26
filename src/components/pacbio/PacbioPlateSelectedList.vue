@@ -27,7 +27,12 @@
             No plates selected
           </div>
 
-          <div v-for="plate in selectedPlates" :key="plate.id" data-type="selected-plate-item" class="w-1/2">
+          <div
+            v-for="plate in selectedPlates"
+            :key="plate.id"
+            data-type="selected-plate-item"
+            class="w-1/2"
+          >
             {{ plate.barcode }}
             <Plate ref="plate" v-bind="plate"></Plate>
             <traction-button
