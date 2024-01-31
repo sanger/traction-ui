@@ -45,7 +45,7 @@ describe('PacbioRunPlateList.vue', () => {
 
   describe('when run is a Sequel IIe', () => {
     beforeEach(() => {
-      const { wrapperObj } = mountWithStore({
+      const { wrapperObj, storeObj } = mountWithStore({
         state: {
           run: { system_name: SEQUEL_IIE },
           plates: { 1: { plate_number: 1, sequencing_kit_box_barcode: 'twentyonecharacters00' } },
@@ -55,11 +55,11 @@ describe('PacbioRunPlateList.vue', () => {
               C5: newWell({ position: 'C5' }),
             },
           },
-          instrumentType: PacbioInstrumentTypes.SequelIIe,
         },
       })
       wrapper = wrapperObj
       plate = wrapper.vm
+      storeObj.instrumentType = PacbioInstrumentTypes.SequelIIe
     })
 
     it('will be defined', () => {
@@ -74,7 +74,7 @@ describe('PacbioRunPlateList.vue', () => {
 
   describe('when run is a Revio', () => {
     beforeEach(() => {
-      const { wrapperObj } = mountWithStore({
+      const { wrapperObj, storeObj } = mountWithStore({
         state: {
           run: { system_name: REVIO },
           plates: {
@@ -101,11 +101,11 @@ describe('PacbioRunPlateList.vue', () => {
               D1: newWell({ position: 'D1' }),
             },
           },
-          instrumentType: PacbioInstrumentTypes.Revio,
         },
       })
       wrapper = wrapperObj
       plate = wrapper.vm
+      storeObj.instrumentType = PacbioInstrumentTypes.Revio
     })
 
     it('has the correct number of wells', () => {
@@ -116,7 +116,7 @@ describe('PacbioRunPlateList.vue', () => {
 
   describe('when run is a Revio but there is only 1 plate', () => {
     beforeEach(() => {
-      const { wrapperObj } = mountWithStore({
+      const { wrapperObj, storeObj } = mountWithStore({
         state: {
           run: { system_name: REVIO },
           plates: {
@@ -136,6 +136,7 @@ describe('PacbioRunPlateList.vue', () => {
       })
       wrapper = wrapperObj
       plate = wrapper.vm
+      storeObj.instrumentType = PacbioInstrumentTypes.Revio
     })
 
     it('has the correct number of wells', () => {

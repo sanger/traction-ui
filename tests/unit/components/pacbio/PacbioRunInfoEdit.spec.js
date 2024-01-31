@@ -204,22 +204,20 @@ describe('PacbioRunInfoEdit', () => {
 
 describe('PacbioRunInfoEdit old run', () => {
   beforeEach(() => {
-    const { wrapperObj } = mountWithStore(
-      {
-        state: {
-          run: {
-            id: 'new',
-            name: 'TRACTION-RUN-4',
-            system_name: 'Sequel I',
-            dna_control_complex_box_barcode: null,
-            comments: null,
-          },
-          smrtLinkVersion: smrtLinkVersions[4],
-          resources: { smrtLinkVersions },
-          instrumentTypeList: PacbioInstrumentTypes,
+    const { wrapperObj } = mountWithStore({
+      state: {
+        run: {
+          id: 'new',
+          name: 'TRACTION-RUN-4',
+          system_name: 'Sequel I',
+          dna_control_complex_box_barcode: null,
+          comments: null,
         },
+        smrtLinkVersion: smrtLinkVersions[4],
+        resources: { smrtLinkVersions },
+        instrumentTypeList: PacbioInstrumentTypes,
       },
-    )
+    })
     runInfo = wrapperObj.vm
   })
   describe('#computed', () => {

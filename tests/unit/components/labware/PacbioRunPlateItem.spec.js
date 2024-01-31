@@ -60,11 +60,11 @@ describe('PacbioRunPlateItem.vue', () => {
               C5: newWell({ position: 'C5' }),
             },
           },
-          instrumentType: PacbioInstrumentTypes.SequelIIe,
         },
       })
       wrapper = wrapperObj
       store = storeObj
+      store.instrumentType = PacbioInstrumentTypes.SequelIIe
       plateItem = wrapper.vm
     })
 
@@ -131,11 +131,11 @@ describe('PacbioRunPlateItem.vue', () => {
               D1: newWell({ position: 'D1' }),
             },
           },
-          instrumentType: PacbioInstrumentTypes.Revio,
         },
       })
       wrapper = wrapperObj
       store = storeObj
+      store.instrumentType = PacbioInstrumentTypes.Revio
       plateItem = wrapper.vm
     })
 

@@ -82,10 +82,10 @@ export const usePacbioRunCreateStore = defineStore('pacbioRunCreate', {
     defaultWellAttributes: {},
 
     //Instrument types: The instrument types available for selection
-    instrumentTypeList: { ...PacbioInstrumentTypes },
+    instrumentTypeList: PacbioInstrumentTypes,
 
     //Instrument type: The instrument type selected for the run
-    instrumentType: { ...PacbioInstrumentTypes.Revio },
+    instrumentType: PacbioInstrumentTypes.Revio,
   }),
   getters: {
     /**
